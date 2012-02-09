@@ -1,0 +1,4 @@
+# Application dependencies
+
+require:
+    - play -> securesocial 0.2.2

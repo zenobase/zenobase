@@ -1,0 +1,7 @@
+/tmp
+/.settings
+/eclipse
+/lib
+/.project
+/.classpath
+/guice-1.2

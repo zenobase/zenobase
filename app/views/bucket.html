@@ -1,0 +1,122 @@
+#{extends 'main.html' /}
+#{set title:bucket /}
+
+<div class="container-fluid">
+
+	<h3>${bucket}</h3>
+
+	<div class="row-fluid">
+		<div class="span6">
+			<table class="table">
+				<thead>
+					<tr>
+						<th>Latest</th>
+					</tr>
+				</thead>
+				<tbody>
+					#{list items:result.events, as:'event'}
+						<tr>
+							<td>
+								#{zeno.fields value:event /}
+								<i class="icon-user" title="user"></i>&nbsp;${bucket.user}</i>
+								<div class="pull-right">
+									<a href="/${bucket.id}/${event.id}">&raquo;</a>
+								</div>
+							</td>
+						</tr>
+					#{/list}
+				</tbody>
+			</table>
+		</div>
+		<div class="span6">
+			<table class="table">
+				<thead>
+					<tr>
+						<th>Tag</th>
+						<th style="text-align: right">Count</th>
+					</tr>
+				</thead>
+				<tbody>
+					#{list items:result.tags.elementSet(), as:'tag'}
+						<tr>
+							<td><i class="icon-tag"></i> ${tag}</td>
+							<td style="text-align: right">${result.tags.count(tag)}</td>
+						</tr>
+					#{/list}
+				</tbody>
+			</table>
+			<table class="table">
+				<thead>
+					<tr>
+						<th>Rating</th>
+						<th style="text-align: right">Count</th>
+					</tr>
+				</thead>
+				<tbody>
+					#{list items:result.ratings.elementSet(), as:'rating'}
+						<tr>
+							<td><i class="icon-star"></i> ${rating}</td>
+							<td style="text-align: right">${result.ratings.count(rating)}</td>
+						</tr>
+					#{/list}
+				</tbody>
+			</table>
+			#{form @post(bucket.id)}
+				<label for="template">Template</label>
+				<div class="input">
+					#{select 'type', id:'template', value:flash.type}
+						#{option 0}#{/option}
+						#{option 1}Exercise#{/option}
+						#{option 2}Movie#{/option}
+						#{option 3}Food#{/option}
+						#{option 4}Random!#{/option}
+					#{/select}
+				</div>
+				<fieldset class="control-group ${errors.forKey('content') ? 'error' : ''}">
+					<label for="label">Content</label>
+					<div id="label-field" class="input">
+						<textarea rows="6" id="content" name="content" class="span10">${flash.content}</textarea>
+						<span class="help-inline">#{error 'content' /}</span>
+					</div>
+				</fieldset>
+				<div class="form-actions">
+					<button class="btn btn-primary" type="submit">Add</button>
+				</div>
+			#{/form}    
+			<script type="text/javascript">
+				var examples = [
+					undefined,
+					{
+						"tag" : [ "run" ],
+						"dateTime" : "2012-02-01T07:30:00.000-08:00"
+						// distance
+						// duration
+					},
+					{
+						"tag" : [ "movie" ],
+						"dateTime" : "2012-02-01T20:15:00.000-08:00"
+						// cost
+						// rating
+						// resource
+					},
+					{
+						"tag" : [ "lunch", "pizza" ],
+						"dateTime" : "2012-02-01T12:10:00.000-08:00",
+						"location" : {
+							"latitude" : "47.62",
+							"longitude" : "-122.35"
+						}
+					},
+					{
+						"random" : 1000
+					}
+				]
+				$("#template").change(function(x) {
+					console.log($(this).val());
+					$("#content").val(JSON.stringify(examples[$(this).val()], null, 2));
+				});
+			</script>
+		</div>
+	</div>
+
+</div>

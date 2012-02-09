@@ -1,0 +1,4 @@
+self: play -> securesocial 0.2.3
+
+require:
+    - play

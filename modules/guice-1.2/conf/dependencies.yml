@@ -1,0 +1,7 @@
+self: play -> guice 1.2
+
+require:
+    - play
+    - com.google.inject -> guice [2.0,):
+        transitive: false
+    - aopalliance 1.0
