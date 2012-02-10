@@ -19,6 +19,12 @@ public class LocationType extends Type<Location> {
 	}
 
 	@Override
+	public void configureSchema(ObjectNode schema) {
+		super.configureSchema(schema);
+		schema.put("lat_lon", true);
+	}
+
+	@Override
 	protected Location get(JsonNode node) {
 		BigDecimal latitude = node.get(LATITUDE).getDecimalValue();
 		BigDecimal longitude = node.get(LONGITUDE).getDecimalValue();
