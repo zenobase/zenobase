@@ -22,54 +22,54 @@ import common.RandomElement;
 
 class RandomEvent {
 
+	private static final RandomElement<Builder> builders = new RandomElement<Builder>()
+		.add(new Builder() {
+			RandomElement<Token> meals = new RandomElement<Token>()
+				.add(Token.valueOf("lunch"), 1)
+				.add(Token.valueOf("dinner"), 1);
+			RandomElement<Token> order = new RandomElement<Token>()
+				.add(Token.valueOf("pizza"), 1)
+				.add(Token.valueOf("sushi"), 1)
+				.add(Token.valueOf("mexican"), 2)
+				.add(Token.valueOf("sandwich"), 2)
+				.add(Token.valueOf("chinese"), 2);
+			@Override
+			protected void addFields(Event event) {
+				event.add(Event.TAG, meals.next());
+				event.add(Event.TAG, order.next());
+				event.add(Event.LOCATION, nextLocation());
+				event.add(Event.RATING, nextRating());
+			}
+		}, 4)
+		.add(new Builder() {
+			@Override
+			protected void addFields(Event event) {
+				event.add(Event.TAG, Token.valueOf("sleep"));
+			}
+		}, 2)
+		.add(new Builder() {
+			RandomElement<Resource> resources = new Parser().parse(new File("data/movies.tsv"));
+			@Override
+			protected void addFields(Event event) {
+				event.add(Event.TAG, Token.valueOf("movie"));
+				event.add(Event.RESOURCE, resources.next());
+				event.add(Event.RATING, nextRating());
+			}
+		}, 2)
+		.add(new Builder() {
+			@Override
+			protected void addFields(Event event) {
+				event.add(Event.TAG, Token.valueOf("hike"));
+				event.add(Event.LOCATION, nextLocation());
+				event.add(Event.LENGTH, nextLength(500, 10000));
+				event.add(Event.HEIGHT, nextLength(0, 5000));
+			}
+		}, 1);
+
 	private final String bucketId;
-	private final RandomElement<Builder> builders;
 
 	public RandomEvent(String bucketId) {
 		this.bucketId = bucketId;
-		this.builders = new RandomElement<Builder>()
-			.add(new Builder() {
-				RandomElement<Token> meals = new RandomElement<Token>()
-					.add(Token.valueOf("lunch"), 1)
-					.add(Token.valueOf("dinner"), 1);
-				RandomElement<Token> order = new RandomElement<Token>()
-					.add(Token.valueOf("pizza"), 1)
-					.add(Token.valueOf("sushi"), 1)
-					.add(Token.valueOf("mexican"), 2)
-					.add(Token.valueOf("sandwich"), 2)
-					.add(Token.valueOf("chinese"), 2);
-				@Override
-				protected void addFields(Event event) {
-					event.add(Event.TAG, meals.next());
-					event.add(Event.TAG, order.next());
-					event.add(Event.LOCATION, nextLocation());
-					event.add(Event.RATING, nextRating());
-				}
-			}, 4)
-			.add(new Builder() {
-				@Override
-				protected void addFields(Event event) {
-					event.add(Event.TAG, Token.valueOf("sleep"));
-				}
-			}, 2)
-			.add(new Builder() {
-				RandomElement<Resource> resources = new Parser().parse(new File("data/movies.tsv"));
-				@Override
-				protected void addFields(Event event) {
-					event.add(Event.TAG, Token.valueOf("movie"));
-					event.add(Event.RESOURCE, resources.next());
-					event.add(Event.RATING, nextRating());
-				}
-			}, 2)
-			.add(new Builder() {
-				@Override
-				protected void addFields(Event event) {
-					event.add(Event.TAG, Token.valueOf("hike"));
-					event.add(Event.LOCATION, nextLocation());
-					event.add(Event.LENGTH, nextLength(500, 10000));
-					event.add(Event.HEIGHT, nextLength(0, 5000));
-				}
-			}, 1);
 	}
 
 	public Event next() {
