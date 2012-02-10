@@ -24,16 +24,17 @@ public class NodeManager {
 		client = node.client();
 		recover();
 	}
-	
+
 	private void recover() {
 		ClusterHealthStatus status = getHealthStatus();
 		Logger.info("Status: %s", status);
 		if (ClusterHealthStatus.RED.equals(status)) {
 			Logger.warn("Recovering: %s", status);
-			client.admin().cluster().prepareHealth().setWaitForYellowStatus().setTimeout(new TimeValue(30000)).execute().actionGet();
+			status = client.admin().cluster().prepareHealth().setWaitForYellowStatus().setTimeout(new TimeValue(30000)).execute().actionGet().getStatus();
+			Logger.info("Recovered: %s", status);
 		}
 	}
-	
+
 	private ClusterHealthStatus getHealthStatus() {
 		return client.admin().cluster().prepareHealth().execute().actionGet().getStatus();
 	}
