@@ -66,10 +66,11 @@
 				<div class="input">
 					#{select 'type', id:'template', value:flash.type}
 						#{option 0}#{/option}
-						#{option 1}Exercise#{/option}
-						#{option 2}Movie#{/option}
-						#{option 3}Food#{/option}
-						#{option 4}Random!#{/option}
+						#{option 1}Lunch#{/option}
+						#{option 2}Sleep#{/option}
+						#{option 3}Movie#{/option}
+						#{option 4}Hike#{/option}
+						#{option 5}Random!#{/option}
 					#{/select}
 				</div>
 				<fieldset class="control-group ${errors.forKey('content') ? 'error' : ''}">
@@ -87,25 +88,36 @@
 				var examples = [
 					undefined,
 					{
-						"tag" : [ "run" ],
-						"dateTime" : "2012-02-01T07:30:00.000-08:00"
-						// distance
-						// duration
-					},
-					{
-						"tag" : [ "movie" ],
-						"dateTime" : "2012-02-01T20:15:00.000-08:00"
-						// cost
-						// rating
-						// resource
-					},
-					{
 						"tag" : [ "lunch", "pizza" ],
 						"dateTime" : "2012-02-01T12:10:00.000-08:00",
 						"location" : {
-							"latitude" : "47.62",
-							"longitude" : "-122.35"
+							"latitude" : 47.62,
+							"longitude" : -122.35
+						},
+						"rating" : 80
+					},
+					{
+						"tag" : [ "sleep" ],
+						"dateTime" : "2012-02-01T07:30:00.000-08:00"
+					},
+					{
+						"tag" : [ "movie" ],
+						"dateTime" : "2012-02-01T20:15:00.000-08:00",
+						"rating" : 40,
+						"resource" : {
+							"title" : "Citizen Kane",
+							"url" : "http://www.imdb.com/title/tt0033467/"
 						}
+					},
+					{
+						"tag" : [ "hike" ],
+						"dateTime" : "2012-02-01T07:30:00.000-08:00",
+						"location" : {
+							"latitude" : 60.57,
+							"longitude" : -151.25
+						},
+						"length" : 10000.0,
+						"height" : 550.0
 					},
 					{
 						"random" : 1000
