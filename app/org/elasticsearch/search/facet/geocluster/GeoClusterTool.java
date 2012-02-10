@@ -24,8 +24,8 @@ public class GeoClusterTool {
 	public static void main(String[] args) throws IOException {
 		List<GeoPoint> points = new PointParser().parse(new File("data/cities.txt"));
 		PointTracker tracker = new PointTracker();
-		List<GeoCluster> clusters = new GeoClusterBuilder(1000.0, DistanceUnit.KILOMETERS).addListener(tracker).addAll(points).build();
-		new GeoClusterReducer(1000.0, DistanceUnit.KILOMETERS).addListener(tracker).reduce(clusters);
+		List<GeoCluster> clusters = new GeoClusterBuilder(500.0, DistanceUnit.KILOMETERS).addListener(tracker).addAll(points).build();
+		new GeoClusterReducer(250.0, DistanceUnit.KILOMETERS).addListener(tracker).reduce(clusters);
 		new PointPrinter(System.out).print(tracker.asMap());
 	}
 

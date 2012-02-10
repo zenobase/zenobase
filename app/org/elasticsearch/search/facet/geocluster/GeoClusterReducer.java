@@ -8,12 +8,12 @@ import com.google.common.collect.Lists;
 
 public class GeoClusterReducer {
 
-	private final double maxClusterDiagonal;
+	private final double minDistance;
 	private final DistanceUnit unit;
 	private final List<Listener> listeners = Lists.newArrayList();
 
-	public GeoClusterReducer(double maxClusterDiagonal, DistanceUnit unit) {
-		this.maxClusterDiagonal = maxClusterDiagonal;
+	public GeoClusterReducer(double minDistance, DistanceUnit unit) {
+		this.minDistance = minDistance;
 		this.unit = unit;
 	}
 
@@ -40,7 +40,8 @@ public class GeoClusterReducer {
 	private boolean shouldMerge(GeoCluster a, GeoCluster b) {
 		// GeoBoundingBox overlap = c1.bounds().intersect(c2.bounds());
 		// return overlap != null && overlap.size() > Math.min(c1.bounds().size(), c2.bounds().size()) * 0.5;
-		return a.bounds().intersects(b.bounds()) && a.bounds().extend(b.bounds()).size(unit) <= maxClusterDiagonal;
+		// return a.bounds().intersects(b.bounds()) && a.bounds().extend(b.bounds()).size(unit) <= maxClusterDiagonalLength;
+		return GeoPoints.distance(a.center(), b.center(), unit) <= minDistance;
 	}
 
 	public GeoClusterReducer addListener(Listener listener) {

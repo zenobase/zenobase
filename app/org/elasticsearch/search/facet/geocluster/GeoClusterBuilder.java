@@ -10,13 +10,13 @@ import com.google.common.collect.Lists;
 
 public class GeoClusterBuilder {
 
-	private final double maxPointDistanceFromCenter;
+	private final double maxClusterDiagonalLength;
 	private final DistanceUnit unit;
 	private final List<GeoCluster> clusters = Lists.newArrayList();
 	private final List<Listener> listeners = Lists.newArrayList();
 	
-	public GeoClusterBuilder(double maxPointDistanceFromCenter, DistanceUnit unit) {
-		this.maxPointDistanceFromCenter = maxPointDistanceFromCenter;
+	public GeoClusterBuilder(double maxClusterDiagonalLength, DistanceUnit unit) {
+		this.maxClusterDiagonalLength = maxClusterDiagonalLength;
 		this.unit = unit;
 	}
 
@@ -25,7 +25,7 @@ public class GeoClusterBuilder {
 		double distance = Double.MAX_VALUE;
 		for (GeoCluster c : clusters) {
 			double d = GeoPoints.distance(c.center(), point, unit);
-			if (d < distance && d <= maxPointDistanceFromCenter) {
+			if (d < distance && d <= maxClusterDiagonalLength && c.bounds().extend(point).size(unit) <= maxClusterDiagonalLength) {
 				d = distance;
 				cluster = c;
 			}
