@@ -23,9 +23,11 @@ import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.search.facet.AbstractFacetBuilder;
 import org.elasticsearch.search.sort.SortBuilder;
+import org.elasticsearch.search.sort.SortBuilders;
 
 import play.Logger;
 
+import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import common.Nodes;
 
@@ -44,8 +46,7 @@ public class IndexManager {
 		Settings settings = ImmutableSettings.settingsBuilder()
 			.put("number_of_shards", shards)
 			.put("number_of_replicas", replicas).build();
-		CreateIndexRequest request = Requests.createIndexRequest(indexName).settings(settings);
-		CreateIndexResponse response = client.admin().indices().create(request).actionGet();
+		CreateIndexResponse response = client.admin().indices().prepareCreate(indexName).setSettings(settings).execute().actionGet();
 		Preconditions.checkState(response.acknowledged(), "Expected acknowledgement of index creation: %s", indexName);
 	}
 
@@ -57,47 +58,35 @@ public class IndexManager {
 
 	public void putMapping(String typeName, ObjectNode mapping) {
 		Logger.info("Mapping: %s", mapping);
-		PutMappingRequest request = Requests.putMappingRequest(indexName).type(typeName).source(mapping.toString());
-		client.admin().indices().putMapping(request).actionGet();
+		client.admin().indices().preparePutMapping(indexName).setType(typeName).setSource(mapping.toString()).execute().actionGet();
 	}
 
 	public void index(String type, String id, ObjectNode object, boolean refresh) {
-		IndexRequest request = Requests.indexRequest(indexName).type(type).id(id).source(Nodes.toByteArray(object)).refresh(refresh);
-		IndexResponse response = client.index(request).actionGet();
-		Preconditions.checkState(id.equals(response.id()), "Expected '%s' but got '%s' after indexing", id, response.id());
+		client.prepareIndex(indexName, type, id).setSource(Nodes.toByteArray(object)).setRefresh(refresh).execute().actionGet();
 	}
 
 	public void delete(String type, String id) {
 		Logger.info("Delete: %s/%s", indexName, id);
-		DeleteRequest request = Requests.deleteRequest(indexName).type(type).id(id);
-		client.delete(request).actionGet();
+		client.prepareDelete(indexName, type, id).execute().actionGet();
 	}
 
 	public boolean exists() {
-		IndicesExistsRequest request = Requests.indicesExistsRequest(indexName);
-		IndicesExistsResponse response = client.admin().indices().exists(request).actionGet();
-		return response.exists();
+		return client.admin().indices().prepareExists(indexName).execute().actionGet().exists();
 	}
 
-	public SearchResponse search(QueryBuilder query, SortBuilder sort, int offset, int limit, Iterable<AbstractFacetBuilder> facets) {
-		SearchRequestBuilder request = client.prepareSearch(indexName)
+	public SearchRequestBuilder prepareSearch(QueryBuilder query, SortBuilder sort, int offset, int limit) {
+		return client.prepareSearch(indexName)
 	        .setSearchType(SearchType.DFS_QUERY_THEN_FETCH)
 	        .setQuery(query)
-	        .setFrom(offset).setSize(limit);
-		if (facets != null) {
-			for (AbstractFacetBuilder facet : facets) {
-				request.addFacet(facet);
-			}
-		}
-		if (sort != null) {
-			request.addSort(sort);
-		}
+	        .setFrom(offset).setSize(limit).addSort(Objects.firstNonNull(sort, SortBuilders.scoreSort()));
+	}
+
+	public SearchResponse search(SearchRequestBuilder request) {
 		return request.execute().actionGet();
 	}
 
 	public void delete(QueryBuilder query) {
-		DeleteByQueryRequest request = Requests.deleteByQueryRequest(indexName).query(query);
-		client.deleteByQuery(request).actionGet();
+		client.prepareDeleteByQuery(indexName).setQuery(query).execute().actionGet();
 	}
 
 	public ObjectNode get(String type, String id) {
@@ -106,7 +95,6 @@ public class IndexManager {
 	}
 
 	public long count() {
-		CountResponse response = client.prepareCount(indexName).execute().actionGet();
-		return response.count();
+		return client.prepareCount(indexName).execute().actionGet().count();
 	}
 }

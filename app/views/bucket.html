@@ -29,38 +29,10 @@
 			</table>
 		</div>
 		<div class="span6">
-			<table class="table">
-				<thead>
-					<tr>
-						<th>Tag</th>
-						<th style="text-align: right">Count</th>
-					</tr>
-				</thead>
-				<tbody>
-					#{list items:result.tags.elementSet(), as:'tag'}
-						<tr>
-							<td><i class="icon-tag"></i> ${tag}</td>
-							<td style="text-align: right">${result.tags.count(tag)}</td>
-						</tr>
-					#{/list}
-				</tbody>
-			</table>
-			<table class="table">
-				<thead>
-					<tr>
-						<th>Rating</th>
-						<th style="text-align: right">Count</th>
-					</tr>
-				</thead>
-				<tbody>
-					#{list items:result.ratings.elementSet(), as:'rating'}
-						<tr>
-							<td><i class="icon-star"></i> ${rating}</td>
-							<td style="text-align: right">${result.ratings.count(rating)}</td>
-						</tr>
-					#{/list}
-				</tbody>
-			</table>
+			#{tags items:result.getResult('TagWidget') /}
+
+			#{ratings items:result.getResult('RatingWidget') /}
+
 			#{form @post(bucket.id)}
 				<label for="template">Template</label>
 				<div class="input">

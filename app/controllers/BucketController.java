@@ -9,6 +9,8 @@ import models.Event;
 
 import org.codehaus.jackson.node.ObjectNode;
 
+import com.google.common.collect.ImmutableList;
+
 import play.Logger;
 import play.mvc.Controller;
 import play.mvc.With;
@@ -17,6 +19,10 @@ import queries.BucketResult;
 import services.BucketManager;
 import services.CommandQueue;
 import services.NodeManager;
+import widgets.RatingWidget;
+import widgets.TagWidget;
+import widgets.TimelineWidget;
+import widgets.Widget;
 
 import commands.CreateEventCommand;
 import commands.GenerateRandomEventsCommand;
@@ -33,7 +39,7 @@ public class BucketController extends Controller {
 	@Inject
 	static BucketManager buckets;
 
-    public static void get(String bucketId) {
+	public static void get(String bucketId) {
 		Logger.info("Bucket: %s", bucketId);
     	Bucket bucket = buckets.findBucket(bucketId, Security.connected());
     	notFoundIfNull(bucket);

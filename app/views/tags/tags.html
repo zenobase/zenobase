@@ -1,0 +1,16 @@
+<table class="table">
+	<thead>
+		<tr>
+			<th>Tag</th>
+			<th style="text-align: right">Count</th>
+		</tr>
+	</thead>
+	<tbody>
+		#{list items:_items.elementSet(), as:'tag'}
+			<tr>
+				<td><i class="icon-tag"></i> ${tag}</td>
+				<td style="text-align: right">${_items.count(tag)}</td>
+			</tr>
+		#{/list}
+	</tbody>
+</table>

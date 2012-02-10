@@ -10,7 +10,6 @@ import models.Event;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
-import org.elasticsearch.search.facet.AbstractFacetBuilder;
 
 import play.Logger;
 
@@ -64,7 +63,7 @@ public class BucketManager {
 		QueryBuilder query = QueryBuilders.boolQuery()
 			.must(QueryBuilders.fieldQuery(Bucket.ID.getName(), bucketId))
 			.must(QueryBuilders.fieldQuery(Bucket.USER.getName(), user));
-		for (SearchHit hit : buckets.search(query, null, 0, 10, ImmutableList.<AbstractFacetBuilder>of()).getHits()) {
+		for (SearchHit hit : buckets.search(buckets.prepareSearch(query, null, 0, 10)).getHits()) {
 			return fromMap(hit.getSource());
 		}
 		return null;
@@ -73,7 +72,7 @@ public class BucketManager {
 	public ImmutableList<Bucket> findParticipants(String bucketId) {
 		ImmutableList.Builder<Bucket> buckets = ImmutableList.builder();
 		QueryBuilder query = QueryBuilders.fieldQuery(Bucket.ID.getName(), bucketId);
-		for (SearchHit hit : this.buckets.search(query, null, 0, Integer.MAX_VALUE, ImmutableList.<AbstractFacetBuilder>of()).getHits()) {
+		for (SearchHit hit : this.buckets.search(this.buckets.prepareSearch(query, null, 0, Integer.MAX_VALUE)).getHits()) {
 			buckets.add(fromMap(hit.getSource()));
 		}
 		return buckets.build();
@@ -81,7 +80,7 @@ public class BucketManager {
 
 	public ImmutableList<Bucket> findBuckets() {
 		ImmutableList.Builder<Bucket> buckets = ImmutableList.builder();
-		for (SearchHit hit : this.buckets.search(QueryBuilders.matchAllQuery(), null, 0, 10, ImmutableList.<AbstractFacetBuilder>of()).getHits()) {
+		for (SearchHit hit : this.buckets.search(this.buckets.prepareSearch(QueryBuilders.matchAllQuery(), null, 0, 10)).getHits()) {
 			buckets.add(fromMap(hit.getSource()));
 		}
 		return buckets.build();

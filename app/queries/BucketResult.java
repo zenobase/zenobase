@@ -1,22 +1,19 @@
 package queries;
 
 import java.util.List;
-
-import org.joda.time.YearMonth;
+import java.util.Map;
 
 import models.Event;
 
-import com.google.common.collect.LinkedHashMultiset;
+import org.elasticsearch.common.collect.Maps;
+
 import com.google.common.collect.Lists;
-import com.google.common.collect.Multiset;
 
 public class BucketResult {
 
 	private final String bucketId;
 	private final List<Event> events = Lists.newArrayList();
-	private final Multiset<String> tags = LinkedHashMultiset.create();
-	private final Multiset<String> ratings = LinkedHashMultiset.create();
-	private final Multiset<YearMonth> months = LinkedHashMultiset.create();
+	private final Map<String, Iterable<?>> results = Maps.newHashMap();
 
 	public BucketResult(String bucketId) {
 		this.bucketId = bucketId;
@@ -34,27 +31,11 @@ public class BucketResult {
 		events.add(event);
 	}
 
-	public Multiset<String> getTags() {
-		return tags;
+	public void addResult(String widget, Iterable<?> result) {
+		results.put(widget, result);
 	}
 
-	public void addTag(String tag, int count) {
-		tags.add(tag, count);
-	}
-
-	public void addRating(String rating, int count) {
-		ratings.add(rating, count);
-	}
-
-	public Multiset<String> getRatings() {
-		return ratings;
-	}
-
-	public void addMonth(YearMonth month, int count) {
-		months.add(month, count);
-	}
-
-	public Multiset<YearMonth> getMonths() {
-		return months;
+	public Iterable<?> getResult(String widget) {
+		return results.get(widget);
 	}
 }
