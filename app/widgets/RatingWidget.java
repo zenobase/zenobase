@@ -7,6 +7,7 @@ import org.elasticsearch.search.facet.FacetBuilders;
 import org.elasticsearch.search.facet.range.RangeFacet;
 
 import com.google.common.collect.LinkedHashMultiset;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Multiset;
 
 public class RatingWidget implements Widget {
@@ -26,7 +27,7 @@ public class RatingWidget implements Widget {
 	public Multiset<String> getResult(SearchResponse response) {
 		Multiset<String> result = LinkedHashMultiset.create();
 		RangeFacet ratings = response.facets().facet(RangeFacet.class, getClass().getName());
-		for (RangeFacet.Entry rating : ratings.entries()) {
+		for (RangeFacet.Entry rating : Lists.reverse(ratings.entries())) {
 			result.add(Integer.toString((int) rating.getFrom() / 20), (int) rating.getCount());
 		}
 		return result;
