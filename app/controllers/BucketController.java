@@ -44,6 +44,7 @@ public class BucketController extends Controller {
 		Logger.info("Bucket: %s", bucketId);
     	Bucket bucket = buckets.findBucket(bucketId, Security.connected());
     	notFoundIfNull(bucket);
+		Logger.info("Bucket: %s", bucket.getId());
     	IndexManager index = node.getIndex(bucketId);
     	BucketResult result = new BucketQuery(bucket).execute(index);
     	renderJson(result.toJson());

@@ -6,12 +6,16 @@ import javax.inject.Inject;
 
 import models.Bucket;
 import models.Event;
+
+import org.codehaus.jackson.JsonNode;
+import org.codehaus.jackson.node.ObjectNode;
+
 import play.Logger;
 import play.mvc.Controller;
 import play.mvc.With;
 import services.BucketManager;
 
-import common.JsonPrinter;
+import common.RenderJackson;
 
 @With(UserController.class)
 public class EventController extends Controller {
@@ -25,12 +29,13 @@ public class EventController extends Controller {
     	notFoundIfNull(bucket);
     	Event event = bucket.findEvent(eventId);
     	notFoundIfNull(event);    	
-    	if ("json".equals(request.format)) {
-        	new JsonPrinter(response.out).print(event.toJson());
-    	}
-    	else {
-    		renderArgs.put("map", event.toMap());
-    		renderTemplate("event.html", event, bucket);
-    	}
+		ObjectNode eventNode = event.toJson();
+		eventNode.put("id", event.getId());
+		eventNode.put("bucket", event.getBucket());
+    	renderJson(eventNode);
     }
+
+	private static void renderJson(JsonNode object) {
+		throw new RenderJackson(object);
+	}
 }

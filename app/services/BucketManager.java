@@ -10,10 +10,12 @@ import models.Event;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
+import org.elasticsearch.search.SearchHits;
 
 import play.Logger;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Iterables;
 
 public class BucketManager {
 
@@ -63,8 +65,12 @@ public class BucketManager {
 		QueryBuilder query = QueryBuilders.boolQuery()
 			.must(QueryBuilders.fieldQuery(Bucket.ID.getName(), bucketId))
 			.must(QueryBuilders.fieldQuery(Bucket.USER.getName(), user));
-		for (SearchHit hit : buckets.search(buckets.prepareSearch(query, null, 0, 10)).getHits()) {
-			return fromMap(hit.getSource());
+		SearchHits hits = buckets.search(buckets.prepareSearch(query, null, 0, 10)).getHits();
+		if (hits.totalHits() > 1) {
+			Logger.warn("Expected a single match for bucket %s for user %s but got %d", bucketId, user, hits.getTotalHits());
+		}
+		if (hits.totalHits() == 1) {
+			return fromMap(hits.getAt(0).getSource());
 		}
 		return null;
 	}

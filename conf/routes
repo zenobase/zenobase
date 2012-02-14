@@ -9,16 +9,16 @@ GET     /buckets/                              DashboardController.get
 POST    /buckets/                              DashboardController.post
 
 GET     /queue/                                QueueController.get
-POST    /queue/{<[-\w]{22}>id}                 QueueController.post
+POST    /queue/{<[-\w]{8}>id}                  QueueController.post
 
 # GET     /terms                               TemplateController.get(template:'legal/terms.html')
 # GET     /privacy                             TemplateController.get(template:'legal/privacy.html')
 
-GET     /buckets/{<[-\w]{22}>bucketId}/        BucketController.get
-POST    /buckets/{<[-\w]{22}>bucketId}/        BucketController.post
-DELETE  /buckets/{<[-\w]{22}>bucketId}/        BucketController.delete
+GET     /buckets/{<[-\w]{8}>bucketId}/         BucketController.get
+POST    /buckets/{<[-\w]{8}>bucketId}/         BucketController.post
+DELETE  /buckets/{<[-\w]{8}>bucketId}/         BucketController.delete
 
-GET     /buckets/{<[-\w]{22}>bucketId}/{<[-\w]{22}>eventId}  EventController.get
+GET     /buckets/{<[-\w]{8}>bucketId}/{<[-\w]{8}>eventId}  EventController.get
 
 # Ignore favicon requests
 GET     /favicon.ico                           404
