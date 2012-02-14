@@ -24,12 +24,12 @@ public class Event {
 	public static final Field<Token> TAG = Field.of("tag", new TokenType());
 	public static final Field<DateTime> DATE_TIME = Field.of("dateTime", new DateTimeType());
 	public static final Field<Location> LOCATION = Field.of("location", new LocationType());
-	public static final Field<Length> LENGTH = Field.of("length", new LengthType());
+	public static final Field<Length> DISTANCE = Field.of("distance", new LengthType());
 	public static final Field<Length> HEIGHT = Field.of("height", new LengthType());
 	public static final Field<Resource> RESOURCE = Field.of("resource", new ResourceType());
 	public static final Field<Rating> RATING = Field.of("rating", new RatingType());
 
-	private static final ImmutableSet<Field<?>> FIELDS = ImmutableSet.of(TAG, RESOURCE, LENGTH, HEIGHT, LOCATION, DATE_TIME, RATING);
+	private static final ImmutableSet<Field<?>> FIELDS = ImmutableSet.of(TAG, RESOURCE, DISTANCE, HEIGHT, LOCATION, DATE_TIME, RATING);
 
 	private final String id;
 	private final String bucket;

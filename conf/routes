@@ -2,6 +2,9 @@
 # This file defines all application routes (Higher priority routes first)
 # ~~~~
 
+POST    /signin                                AuthenticationController.signIn
+POST    /signout                               AuthenticationController.signOut
+
 GET     /                                      staticFile:public/index.html
 
 # Home page

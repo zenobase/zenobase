@@ -62,7 +62,7 @@ public class DashboardController extends Controller {
 		String id = Generator.bucketId();
 		Bucket bucket = new Bucket(node.getIndex(id), id);
 		bucket.setLabel(label);
-		bucket.setUser(Security.connected());
+		bucket.setUser(AuthenticationController.connected());
 		bucket.setRole("owner");
 		return bucket;
 	}

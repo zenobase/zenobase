@@ -61,7 +61,7 @@ class RandomEvent {
 			protected void addFields(Event event) {
 				event.add(Event.TAG, Token.valueOf("hike"));
 				event.add(Event.LOCATION, nextLocation());
-				event.add(Event.LENGTH, nextLength(500, 10000));
+				event.add(Event.DISTANCE, nextLength(500, 10000));
 				event.add(Event.HEIGHT, nextLength(0, 5000));
 			}
 		}, 1);

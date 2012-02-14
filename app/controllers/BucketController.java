@@ -9,7 +9,6 @@ import models.Event;
 
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.node.ObjectNode;
-import org.codehaus.jackson.node.TextNode;
 import org.joda.time.DateTime;
 
 import play.Logger;
@@ -42,7 +41,7 @@ public class BucketController extends Controller {
 
 	public static void get(String bucketId) {
 		Logger.info("Bucket: %s", bucketId);
-    	Bucket bucket = buckets.findBucket(bucketId, Security.connected());
+    	Bucket bucket = buckets.findBucket(bucketId, AuthenticationController.connected());
     	notFoundIfNull(bucket);
 		Logger.info("Bucket: %s", bucket.getId());
     	IndexManager index = node.getIndex(bucketId);
@@ -58,10 +57,10 @@ public class BucketController extends Controller {
     		badRequest();
     	}
     	Logger.info("Content: %s", body);
-    	Bucket bucket = buckets.findBucket(bucketId, Security.connected());
+    	Bucket bucket = buckets.findBucket(bucketId, AuthenticationController.connected());
     	notFoundIfNull(bucket);
     	if (body.has("random")) {
-    		String commandId = queue.execute(new GenerateRandomEventsCommand(Security.connected(), bucket, body.get("random").asInt()));
+    		String commandId = queue.execute(new GenerateRandomEventsCommand(AuthenticationController.connected(), bucket, body.get("random").asInt()));
     		response.status = StatusCode.CREATED;
             response.setHeader("Location", String.format("/buckets/%s/", bucket.getId()));
             response.setHeader("Undo", String.format("/queue/%s", commandId));
@@ -80,7 +79,7 @@ public class BucketController extends Controller {
 
     public static void delete(String bucketId) {
 		Logger.info("Delete: %s", bucketId);
-    	Bucket bucket = buckets.findBucket(bucketId, Security.connected());
+    	Bucket bucket = buckets.findBucket(bucketId, AuthenticationController.connected());
     	notFoundIfNull(bucket);
     	// TODO: unauthorized() if not owner
     	queue.execute(new DeleteBucketCommand(buckets, bucket));
