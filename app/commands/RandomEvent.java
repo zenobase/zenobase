@@ -100,7 +100,7 @@ class RandomEvent {
 		}
 
 		protected DateTime nextTimestamp() {
-			return new DateTime().minusMinutes(rand.nextInt(60 * 60 * 24 * 365)); // 1 year
+			return new DateTime().minusMinutes(rand.nextInt(60 * 24 * 365)); // 1 year
 		}
 
 		protected Location nextLocation() {

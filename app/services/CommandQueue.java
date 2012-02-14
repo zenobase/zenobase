@@ -12,9 +12,10 @@ public class CommandQueue {
 
 	private final LinkedHashMap<String, Command> history = Maps.newLinkedHashMap();
 
-	public void execute(Command command) {
+	public String execute(Command command) {
 		command.execute();
 		history.put(command.getId(), command);
+		return command.getId();
 	}
 
 	public Command find(String id) {

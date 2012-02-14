@@ -3,8 +3,8 @@ package common;
 import java.io.IOException;
 import java.io.OutputStream;
 
+import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.node.ObjectNode;
 
 public class JsonPrinter {
 
@@ -16,7 +16,11 @@ public class JsonPrinter {
 		this.out = out;
 	}
 
-	public void print(ObjectNode object) throws IOException {
-		mapper.writerWithDefaultPrettyPrinter().writeValue(out, object);
+	public void print(JsonNode object) throws IOException {
+		try {
+			mapper.writerWithDefaultPrettyPrinter().writeValue(out, object);
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
 	}
 }

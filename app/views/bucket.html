@@ -28,78 +28,130 @@
 				</tbody>
 			</table>
 		</div>
-		<div class="span6">
-			#{tags items:result.getResult('TagWidget') /}
-
-			#{ratings items:result.getResult('RatingWidget') /}
-
-			#{form @post(bucket.id)}
-				<label for="template">Template</label>
-				<div class="input">
-					#{select 'type', id:'template', value:flash.type}
-						#{option 0}#{/option}
-						#{option 1}Lunch#{/option}
-						#{option 2}Sleep#{/option}
-						#{option 3}Movie#{/option}
-						#{option 4}Hike#{/option}
-						#{option 5}Random!#{/option}
-					#{/select}
-				</div>
-				<fieldset class="control-group ${errors.forKey('content') ? 'error' : ''}">
-					<label for="label">Content</label>
-					<div id="label-field" class="input">
-						<textarea rows="6" id="content" name="content" class="span10">${flash.content}</textarea>
-						<span class="help-inline">#{error 'content' /}</span>
-					</div>
-				</fieldset>
-				<div class="form-actions">
-					<button class="btn btn-primary" type="submit">Add</button>
-				</div>
-			#{/form}    
-			<script type="text/javascript">
-				var examples = [
-					undefined,
-					{
-						"tag" : [ "lunch", "pizza" ],
-						"dateTime" : "2012-02-01T12:10:00.000-08:00",
-						"location" : {
-							"latitude" : 47.62,
-							"longitude" : -122.35
-						},
-						"rating" : 80
-					},
-					{
-						"tag" : [ "sleep" ],
-						"dateTime" : "2012-02-01T07:30:00.000-08:00"
-					},
-					{
-						"tag" : [ "movie" ],
-						"dateTime" : "2012-02-01T20:15:00.000-08:00",
-						"rating" : 40,
-						"resource" : {
-							"title" : "Citizen Kane",
-							"url" : "http://www.imdb.com/title/tt0033467/"
-						}
-					},
-					{
-						"tag" : [ "hike" ],
-						"dateTime" : "2012-02-01T07:30:00.000-08:00",
-						"location" : {
-							"latitude" : 60.57,
-							"longitude" : -151.25
-						},
-						"length" : 10000.0,
-						"height" : 550.0
-					},
-					{
-						"random" : 1000
-					}
-				]
-				$("#template").change(function(x) {
-					console.log($(this).val());
-					$("#content").val(JSON.stringify(examples[$(this).val()], null, 2));
+		<div class="span6" ng:controller="BucketCtrl">
+			<script>
+				angular.service('Bucket', function($resource) {
+					return $resource('/:bucketId.json', { bucketId: '${bucket.id}' }, {
+						add : { method: 'POST', params: {  } }
+					});
 				});
+				function BucketCtrl(Bucket) {
+					var self = this;
+					self.refresh = function() {
+						// alert('Refresh!');
+						self.bucket = Bucket.get({ bucketId : '${bucket.id}' }, function(bucket) {
+							// alert('Bucket loaded.');
+						});
+					}
+					self.bucket = Bucket.get({ bucketId : '${bucket.id}' });
+				}
+				// BucketCtrl.$inject = ['Bucket'];
 			</script>
+			<table class="table">
+				<thead>
+					<tr>
+						<th>Tag</th>
+						<th style="text-align: right">Count</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr ng:repeat="tag in bucket.TagWidget">
+						<td><i class="icon-tag"></i> {{tag.label}}</td>
+						<td style="text-align: right">{{tag.count}}</td>
+					</tr>
+				</tbody>
+			</table>
+			<table class="table">
+				<thead>
+					<tr>
+						<th>Rating</th>
+						<th style="text-align: right">Count</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr ng:repeat="rating in bucket.RatingWidget">
+						<td><i class="icon-star"></i> {{rating.label}}</td>
+						<td style="text-align: right">{{rating.count}}</td>
+					</tr>
+				</tbody>
+			</table>
+
+			<div ng:controller="TemplateCtrl">
+				<script type="text/javascript">
+					function TemplateCtrl($xhr) {
+						var self = this;
+						self.content;
+						self.templates = [
+							undefined,
+							{
+								"tag" : [ "lunch", "pizza" ],
+								"dateTime" : "2012-02-01T12:10:00.000-08:00",
+								"location" : {
+									"latitude" : 47.62,
+									"longitude" : -122.35
+								},
+								"rating" : 80
+							},
+							{
+								"tag" : [ "sleep" ],
+								"dateTime" : "2012-02-01T07:30:00.000-08:00"
+							},
+							{
+								"tag" : [ "movie" ],
+								"dateTime" : "2012-02-01T20:15:00.000-08:00",
+								"rating" : 40,
+								"resource" : {
+									"title" : "Citizen Kane",
+									"url" : "http://www.imdb.com/title/tt0033467/"
+								}
+							},
+							{
+								"tag" : [ "hike" ],
+								"dateTime" : "2012-02-01T07:30:00.000-08:00",
+								"location" : {
+									"latitude" : 60.57,
+									"longitude" : -151.25
+								},
+								"length" : 10000.0,
+								"height" : 550.0
+							},
+							{
+								"random" : 1000
+							}
+						];
+						self.f = function() {
+							console.log('submit', content);
+							$xhr('POST', '/${bucket.id}/', self.content);
+							// Bucket.add({'content' : content });
+						}
+					}
+				</script>
+
+				<form ng:submit="f()">
+					<label for="template">Template</label>
+					<div class="input">
+						<select name="i" ng:change="content = templates[i]">
+							<option value="0"></option>
+							<option value="1">Lunch</option>
+							<option value="2">Sleep</option>
+							<option value="3">Movie</option>
+							<option value="4">Hike</option>
+							<option value="5">(Random)</option>
+						</select>
+					</div>
+					<fieldset class="control-group">
+						<label for="label">Content</label>
+						<div id="label-field" class="input">
+							<textarea name="content" rows="6" ng:format="json" class="span10"></textarea>
+							<span class="help-inline">JSON</span>
+						</div>
+					</fieldset>
+					<div class="form-actions">
+						<button class="btn btn-primary" type="submit">Add</button>
+					</div>
+				</form>
+			</div>
+
 		</div>
 	</div>
 

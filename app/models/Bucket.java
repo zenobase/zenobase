@@ -2,13 +2,11 @@ package models;
 
 import org.codehaus.jackson.node.ObjectNode;
 
-import play.Logger;
 import schema.Field;
 import schema.SchemaBuilder;
 import schema.TextType;
 import schema.TokenType;
 import services.IndexManager;
-import services.NodeManager;
 
 import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableSet;
@@ -69,7 +67,6 @@ public class Bucket {
 
 	public Event findEvent(String eventId) {
 		ObjectNode object = index.get(Event.TYPE_NAME, eventId);
-		Logger.info("e:%s", object);
 		return object != null ? new Event(eventId, id, object) : null;
 	}
 

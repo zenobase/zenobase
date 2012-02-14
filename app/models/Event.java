@@ -63,6 +63,10 @@ public class Event {
 		return field.getType().get(object, field.getName());
 	}
 
+	public <T> boolean contains(Field<T> field) {
+		return object.has(field.getName());
+	}
+
 	public ObjectNode toJson() {
 		return object;
 	}

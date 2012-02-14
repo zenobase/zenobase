@@ -3,24 +3,29 @@ package queries;
 import java.util.List;
 import java.util.Map;
 
+import models.Bucket;
 import models.Event;
 
+import org.codehaus.jackson.node.ArrayNode;
+import org.codehaus.jackson.node.ObjectNode;
 import org.elasticsearch.common.collect.Maps;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Multiset;
+import common.Nodes;
 
 public class BucketResult {
 
-	private final String bucketId;
+	private final Bucket bucket;
 	private final List<Event> events = Lists.newArrayList();
-	private final Map<String, Iterable<?>> results = Maps.newHashMap();
+	private final Map<String, Multiset<?>> facets = Maps.newHashMap();
 
-	public BucketResult(String bucketId) {
-		this.bucketId = bucketId;
+	public BucketResult(Bucket bucket) {
+		this.bucket = bucket;
 	}
 
-	public String getBucketId() {
-		return bucketId;
+	public Bucket getBucket() {
+		return bucket;
 	}
 
 	public List<Event> getEvents() {
@@ -31,11 +36,31 @@ public class BucketResult {
 		events.add(event);
 	}
 
-	public void addResult(String widget, Iterable<?> result) {
-		results.put(widget, result);
+	public void addFacet(String name, Multiset<?> facet) {
+		facets.put(name, facet);
 	}
 
-	public Iterable<?> getResult(String widget) {
-		return results.get(widget);
+	public Multiset<?> getFacet(String name) {
+		return facets.get(name);
+	}
+
+	public ObjectNode toJson() {
+		ObjectNode object = Nodes.newObject();
+		object.putAll(bucket.toJson());
+		ArrayNode eventsNode = object.putArray("events");
+		for (Event event : events) {
+			ObjectNode eventNode = event.toJson();
+			eventNode.put("id", event.getId());
+			eventsNode.add(eventNode);
+		}
+		for (Map.Entry<String, Multiset<?>> facet : facets.entrySet()) {
+			ArrayNode facetNode = object.putArray(facet.getKey());
+			for (Multiset.Entry<?> entry : facet.getValue().entrySet()) {
+				ObjectNode entryNode = facetNode.addObject();
+				entryNode.put("label", entry.getElement().toString());
+				entryNode.put("count", entry.getCount());
+			}
+		}
+		return object;
 	}
 }
