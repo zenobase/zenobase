@@ -21,17 +21,17 @@
 							{{command.timestamp}}
 						</td>
 					</tr>
-					<tr ng:hide="history">
+					<tr ng:hide="history.commands">
 						<td colspan="2"><i>None</i></td>
 					</tr>
 				</tbody>
 			</table>
 			<div class="btn-toolbar">
-				<div class="btn-group pull-right">
+				<div class="btn-group pull-right" ng:show="history.commands">
 					<a class="btn {{css(hasPrev)}}" title="Previous" ng:click="prev()"><i class="icon-chevron-left"></i></a>
 					<a class="btn {{css(hasNext)}}" title="Next" ng:click="next()"><i class="icon-chevron-right"></i></a>
 				</div>
-				<div class="btn-group pull-right">
+				<div class="btn-group pull-right" ng:show="history.commands">
 					<a class="btn disabled zeno-paging"><b>{{offset + 1}}</b> &ndash; <b>{{offset + history.commands.length}}</b> of <b>{{history.total}}</b></a>
 				</div>
 			</div>
@@ -56,7 +56,7 @@
 						</td>
 					</tr>
 					<tr ng:hide="buckets">
-						<td colspan="2"><i>None</i></td>
+						<td colspan="3"><i>None</i></td>
 					</tr>
 				</tbody>
 			</table>
@@ -64,12 +64,12 @@
 				<div class="btn-group">
 					<a class="btn" data-toggle="modal" href="#create-bucket-dialog"><i class="icon-plus" title="Create"></i></a>
 				</div>
-				<div class="btn-group pull-right">
+				<div class="btn-group pull-right" ng:show="buckets">
 					<a class="btn disabled" href="#" title="Previous"><i class="icon-chevron-left"></i></a>
 					<a class="btn disabled" href="#" title="Next"><i class="icon-chevron-right"></i></a>
 				</div>
-				<div class="btn-group pull-right">
-					<a class="btn disabled zeno-paging"><b>1</b> &ndash; <b>1</b> of <b>1</b></a>
+				<div class="btn-group pull-right" ng:show="buckets">
+					<a class="btn disabled zeno-paging"><b>1</b> &ndash; <b>{{buckets.length}}</b> of <b>{{buckets.length}}</b></a>
 				</div>
 			</div>
 			<div id="create-bucket-dialog" class="modal hide" ng:controller="CreateBucketDialogCtrl">
