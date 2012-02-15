@@ -1,6 +1,14 @@
-MainCtrl.$inject = ['$route', '$http', '$location'];
-function MainCtrl($route, $http, $location) {
+function getUser(token) {
+	var tokens = token ?
+		token.split('-') : [];
+	return tokens.length > 1 ?
+		new User(tokens[1]) : undefined;
+}
+
+MainCtrl.$inject = ['$route', '$http', '$location', '$cookies'];
+function MainCtrl($route, $http, $location, $cookies) {
 	var self = this;
+	self.user = getUser($cookies.token);
 	self.alert = new Alert();
 	self.undo = function(commandId) {
 		$http.post(commandId).success(function(response, code, headers) {
@@ -23,7 +31,11 @@ function MainCtrl($route, $http, $location) {
 		$http.post('/signout').success(function(response, code) {
 				self.user = null;
 				self.alert.show('Signed out.', 'alert-success');
-				$location.url('/');
+				if ($location.url() == '/') {
+					self.reload();
+				} else {
+					$location.url('/');
+				}
 		});
 	};
 	self.setUser = function(user) {
@@ -57,11 +69,13 @@ function AuthFormCtrl($http, $location) {
 	var self = this;
 	self.username = '';
 	self.password = '';
-	self.remember = true;
+	self.remember = false;
 	self.signIn = function() {
 		$http.post('/signin', self).success(function(response, code) {
 				self.setUser(new User(self.username));
-				self.alert.show('Signed in as ' + self.user.name, 'alert-success');
+				self.username = '';
+				self.password = '';
+				self.alert.clear();
 				$('#sign-in-dialog').modal('hide');
 				self.reload();
 		});

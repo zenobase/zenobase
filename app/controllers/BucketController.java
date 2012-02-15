@@ -39,7 +39,7 @@ public class BucketController extends Controller {
 
 	public static void get(String bucketId) {
 		Logger.info("Bucket: %s", bucketId);
-    	Bucket bucket = buckets.findBucket(bucketId, AuthenticationController.connected());
+    	Bucket bucket = buckets.findBucket(bucketId, AuthController.currentUser());
     	notFoundIfNull(bucket);
 		Logger.info("Bucket: %s", bucket.getId());
     	IndexManager index = node.getIndex(bucketId);
@@ -48,6 +48,10 @@ public class BucketController extends Controller {
     }
 
 	public static void post(String bucketId, ObjectNode body) throws IOException {
+		String user = AuthController.currentUser();
+		if (user == null) {
+			forbidden();
+		}
 		validation.required(bucketId);
     	validation.required(body);
     	if (validation.hasErrors()) {
@@ -55,10 +59,13 @@ public class BucketController extends Controller {
     		badRequest();
     	}
     	Logger.info("Content: %s", body);
-    	Bucket bucket = buckets.findBucket(bucketId, AuthenticationController.connected());
+    	Bucket bucket = buckets.findBucket(bucketId, user);
     	notFoundIfNull(bucket);
+    	if (!"owner".equals(bucket.getRole())) {
+    		forbidden();
+    	}
     	if (body.has("random")) {
-    		String commandId = queue.execute(new GenerateRandomEventsCommand(AuthenticationController.connected(), bucket, body.get("random").asInt()));
+    		String commandId = queue.execute(new GenerateRandomEventsCommand(user, bucket, body.get("random").asInt()));
     		response.status = StatusCode.CREATED;
             response.setHeader("Location", String.format("/buckets/%s/", bucket.getId()));
             response.setHeader("Undo", String.format("/queue/%s", commandId));
@@ -77,9 +84,15 @@ public class BucketController extends Controller {
 
     public static void delete(String bucketId) {
 		Logger.info("Delete: %s", bucketId);
-    	Bucket bucket = buckets.findBucket(bucketId, AuthenticationController.connected());
+		String user = AuthController.currentUser();
+		if (user == null) {
+			forbidden();
+		}
+    	Bucket bucket = buckets.findBucket(bucketId, user);
     	notFoundIfNull(bucket);
-    	// TODO: unauthorized() if not owner
+    	if (!"owner".equals(bucket.getRole())) {
+    		forbidden();
+    	}
     	queue.execute(new DeleteBucketCommand(buckets, bucket));
     	response.status = StatusCode.NO_RESPONSE;
     }

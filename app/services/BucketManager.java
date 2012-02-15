@@ -11,6 +11,8 @@ import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
+import org.elasticsearch.search.sort.SortBuilder;
+import org.elasticsearch.search.sort.SortBuilders;
 
 import play.Logger;
 
@@ -84,9 +86,10 @@ public class BucketManager {
 		return buckets.build();
 	}
 
-	public ImmutableList<Bucket> findBuckets() {
+	public ImmutableList<Bucket> findBuckets(String user, int offset, int limit) {
 		ImmutableList.Builder<Bucket> buckets = ImmutableList.builder();
-		for (SearchHit hit : this.buckets.search(this.buckets.prepareSearch(QueryBuilders.matchAllQuery(), null, 0, 10)).getHits()) {
+		QueryBuilder query = QueryBuilders.fieldQuery(Bucket.USER.getName(), user);
+		for (SearchHit hit : this.buckets.search(this.buckets.prepareSearch(query, null, offset, limit)).getHits()) {
 			buckets.add(fromMap(hit.getSource()));
 		}
 		return buckets.build();

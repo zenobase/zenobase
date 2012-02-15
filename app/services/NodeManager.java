@@ -19,6 +19,7 @@ public class NodeManager {
 		Logger.info("Starting node...");
 		Settings settings = ImmutableSettings.settingsBuilder()
 			.put("index.mapper.dynamic", false)
+			.put("index.cache.filter.type", "none")
 			.put("action.auto_create_index", false).build();
 		node = NodeBuilder.nodeBuilder().settings(settings).node();
 		client = node.client();

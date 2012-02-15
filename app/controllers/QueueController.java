@@ -38,6 +38,10 @@ public class QueueController extends Controller {
 		Logger.info("Undo: %s", id);
     	Command cmd = queue.find(id);
     	notFoundIfNull(cmd);
+		String user = AuthController.currentUser();
+		if (!user.equals(cmd.getUser())) {
+			forbidden();
+		}
     	String commandId = queue.execute(cmd.reverse());
     	response.status = StatusCode.CREATED; 
         response.setHeader("Undo", String.format("/queue/%s", commandId));

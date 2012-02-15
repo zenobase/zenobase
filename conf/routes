@@ -4,8 +4,8 @@
 
 GET     /                                      staticFile:public/index.html
 
-POST    /signin                                AuthenticationController.signIn
-POST    /signout                               AuthenticationController.signOut
+POST    /signin                                AuthController.signIn
+POST    /signout                               AuthController.signOut
 
 # Home page
 GET     /buckets/                              DashboardController.get

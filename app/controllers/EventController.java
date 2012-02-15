@@ -23,7 +23,7 @@ public class EventController extends Controller {
 
     public static void get(String bucketId, String eventId) throws IOException {
 		Logger.info("Event: %s/%s", bucketId, eventId);
-    	Bucket bucket = manager.findBucket(bucketId, AuthenticationController.connected());
+    	Bucket bucket = manager.findBucket(bucketId, AuthController.currentUser());
     	notFoundIfNull(bucket);
     	Event event = bucket.findEvent(eventId);
     	notFoundIfNull(event);    	
