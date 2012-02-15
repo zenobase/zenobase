@@ -71,9 +71,32 @@ function AuthFormCtrl($http, $location) {
 HistoryCtrl.$inject = ['$http'];
 function HistoryCtrl($http) {
 	var self = this;
-	$http.get('/queue/').success(function(response, code) {
-		self.history = response;
-	});
+	self.offset = 0;
+	self.limit = 10;
+	self.hasPrev = false;
+	self.hasNext = false;
+	self.refresh = function(offset) {
+		$http.get('/queue/?offset=' + offset + "&limit=" + self.limit).success(function(response, code) {
+			self.history = response;
+			self.offset = offset;
+			self.hasPrev = offset > 0;
+			self.hasNext = offset + self.limit < self.history.total;
+		});
+	};
+	self.prev = function() {
+		if (self.hasPrev) {
+			self.refresh(self.offset - self.limit, self.limit);
+		}
+	}
+	self.next = function() {
+		if (self.hasNext) {
+			self.refresh(self.offset + self.limit, self.limit);
+		}
+	}
+	self.css = function(enabled) {
+		return enabled ? '' : 'disabled';
+	}
+	self.refresh(0, 10);
 }
 
 BucketListCtrl.$inject = ['$http'];
@@ -159,7 +182,7 @@ function TemplateCtrl($http, $defer, $routeParams) {
 				latitude : 60.57,
 				longitude : -151.25
 			},
-			length : 10000.0,
+			distance : 10000.0,
 			height : 550.0
 		},
 		{
