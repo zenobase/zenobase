@@ -14,7 +14,6 @@ import org.joda.time.DateTime;
 import play.Logger;
 import play.mvc.Controller;
 import play.mvc.Http.StatusCode;
-import play.mvc.With;
 import queries.BucketQuery;
 import queries.BucketResult;
 import services.BucketManager;
@@ -27,7 +26,6 @@ import commands.DeleteBucketCommand;
 import commands.GenerateRandomEventsCommand;
 import common.RenderJackson;
 
-@With(UserController.class)
 public class BucketController extends Controller {
 
 	@Inject

@@ -2,10 +2,10 @@
 # This file defines all application routes (Higher priority routes first)
 # ~~~~
 
+GET     /                                      staticFile:public/index.html
+
 POST    /signin                                AuthenticationController.signIn
 POST    /signout                               AuthenticationController.signOut
-
-GET     /                                      staticFile:public/index.html
 
 # Home page
 GET     /buckets/                              DashboardController.get
@@ -28,6 +28,3 @@ GET     /favicon.ico                           404
 
 # Map static resources from the /app/public folder to the /public path
 GET     /public/                               staticDir:public
-
-# Import Secure routes
-*       /                                      module:secure

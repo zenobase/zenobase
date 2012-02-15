@@ -1,0 +1,99 @@
+<div class="container-fluid">
+
+	<h3>Dashboard <small><a ng:click="reload()" title="Refresh"><i class="icon-refresh"></i></a></small></h3>
+
+	<div class="row-fluid">
+		<div class="span6" ng:controller="HistoryCtrl">
+			<table class="table">
+				<thead>
+					<tr>
+						<th>What</th>
+						<th>When</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr ng:repeat="command in history">
+						<td>
+							<i class="icon-user"></i> <b>{{command.user}}</b>
+							{{command.label}}
+						</td>
+						<td>
+							{{command.timestamp}}
+						</td>
+					</tr>
+					<tr ng:hide="history">
+						<td colspan="2"><i>None</i></td>
+					</tr>
+				</tbody>
+			</table>
+			<div class="btn-toolbar">
+				<div class="btn-group pull-right">
+					<a class="btn disabled" href="#" title="Previous"><i class="icon-chevron-left"></i></a>
+					<a class="btn" href="#" title="Next"><i class="icon-chevron-right"></i></a>
+				</div>
+				<div class="btn-group pull-right">
+					<a class="btn disabled zeno-paging"><b>1</b> &ndash; <b>10</b> of <b>10023</b></a>
+				</div>
+			</div>
+		</div>
+		<div class="span6" ng:controller="BucketListCtrl">
+			<table class="table">
+				<thead>
+					<tr>
+						<th>Bucket</th>
+						<th>Role</th>
+						<th style="text-align: right">Size</th>
+						<th></th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr ng:repeat="bucket in buckets">
+						<td><a href="#/buckets/{{bucket.id}}/">{{bucket.label}}</a></td>
+						<td>{{bucket.user}} ({{bucket.role}})</td>
+						<td style="text-align: right">{{bucket.size}}</td>
+						<td style="text-align: right">
+							<a ng:click="remove(bucket.id)"><i class="icon-trash" title="Delete"></i></a>
+						</td>
+					</tr>
+					<tr ng:hide="buckets">
+						<td colspan="2"><i>None</i></td>
+					</tr>
+				</tbody>
+			</table>
+			<div class="btn-toolbar">
+				<div class="btn-group">
+					<a class="btn" data-toggle="modal" href="#create-bucket-dialog"><i class="icon-plus" title="Create"></i></a>
+				</div>
+				<div class="btn-group pull-right">
+					<a class="btn disabled" href="#" title="Previous"><i class="icon-chevron-left"></i></a>
+					<a class="btn disabled" href="#" title="Next"><i class="icon-chevron-right"></i></a>
+				</div>
+				<div class="btn-group pull-right">
+					<a class="btn disabled zeno-paging"><b>1</b> &ndash; <b>1</b> of <b>1</b></a>
+				</div>
+			</div>
+			<div id="create-bucket-dialog" class="modal hide" ng:controller="CreateBucketDialogCtrl">
+				<form ng:submit="create()">
+						<div class="modal-header">
+							<a class="close" data-dismiss="modal">&times;</a>
+							<h3>Create Bucket</h3>
+						</div>
+						<div class="modal-body">
+							<label for="template">Label</label>
+							<input id="bucket-label-field" type="text" class="xlarge" ng:model="label"/>
+						</div>
+						<div class="modal-footer">
+							<button type="submit" class="btn btn-primary">Create</button>
+							<button type="reset" class="btn" data-dismiss="modal">Cancel</button>
+						</div>
+				</form>
+			</div>
+			<script type="text/javascript">
+				$('#create-bucket-dialog').on('shown', function () {
+					$('#bucket-label-field').select();
+				})
+			</script>
+		</div>
+	</div>
+
+</div>

@@ -1,0 +1,109 @@
+<!doctype html>
+<html xmlns:ng="http://angularjs.org" xmlns:zeno="http://zenobase.com" ng:app="ZenoModule">
+	<head>
+		<title>Zenobase</title>
+		<link rel="shortcut icon" type="image/png" href="/public/images/favicon.png"/>
+		<link rel="stylesheet" type="text/css" href="/public/stylesheets/bootstrap-2.0.0.css"/>
+		<style>
+			body {
+				padding-top: 60px;
+			}
+			.btn-group .zeno-paging {
+				background-color:white;
+				border:none;
+			}
+			.modal form {
+				margin: 0;
+			}
+			.nowrap {
+				white-space: nowrap;
+			}
+		</style>
+		<link rel="stylesheet" type="text/css" href="/public/stylesheets/bootstrap-responsive-2.0.0.css"/>
+		<script src="/public/javascripts/jquery-1.7.js" type="text/javascript"></script>
+		<script src="/public/javascripts/bootstrap-modal-2.0.0.js" type="text/javascript"></script>
+		<script src="/public/javascripts/bootstrap-dropdown-2.0.0.js" type="text/javascript"></script>
+		<script src="/public/javascripts/angular-0.10.6.js" type="text/javascript" ng:autobind></script>
+		<script src="/public/javascripts/controller.js"></script>
+	</head>
+
+	<body ng:controller="MainCtrl">
+
+		<div class="navbar navbar-fixed-top">
+			<div class="navbar-inner">
+				<div class="container-fluid">
+					<ul class="nav">
+						<li><a href="#/"><strong>Home</strong></a></li>
+					</ul>
+					<ul class="nav pull-right">
+						<li class="dropdown" ng:show="user">
+							<a class="dropdown-toggle" data-toggle="dropdown" href="#">{{user.name}} <b class="caret"></b></a>
+							<ul class="dropdown-menu">
+								<li><a ng:click="signOut()">Sign out</a></li>
+							</ul>
+						</li>
+						<li ng:hide="user">
+							<a href="#sign-in-dialog" data-toggle="modal">Sign in</a>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+
+		<div class="container-fluid" ng:cloak>
+			<div class="alert {{alert.level}}">
+				<a class="close" ng:click="alert.clear()">&times;</a>
+				{{alert.message | html}}
+				<span ng:show="alert.undo">
+					<a ng:click="undo(alert.undo)">Undo.</a>
+				</span>
+			</div>
+		</div>
+
+    <ng:view></ng:view>
+
+		<div class="container-fluid">
+			<footer>
+				<p><zeno:copyright start="2010" author="Zenobase LLC"/></p>
+			</footer>
+		</div>
+
+		<div id="sign-in-dialog" class="modal hide" ng:controller="AuthFormCtrl">
+			<form ng:submit="signIn()">
+					<div class="modal-header">
+						<a class="close" data-dismiss="modal">&times;</a>
+						<h3>Sign in</h3>
+					</div>
+					<div class="modal-body">
+						<div class="control-group">
+							<label for="username">User Name</label>
+							<input id="username" type="text" class="large" ng:model="username"/>
+						</div>
+						<div class="control-group">
+							<label for="password">Password</label>
+							<input id="password" type="password" class="large" ng:model="password"/>
+						</div>
+						<div class="control-group">
+							<div class="controls">
+								<label class="checkbox">
+									<input type="checkbox" id="remember" ng:model="remember">
+									Remember
+								</label>
+							</div>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="submit" class="btn btn-primary">Sign in</button>
+						<button type="reset" class="btn" data-dismiss="modal">Cancel</button>
+					</div>
+			</form>
+		</div>
+		<script type="text/javascript">
+			$('#sign-in-dialog').on('shown', function () {
+				$('#username').select();
+			})
+		</script>
+
+	</body>
+
+</html>

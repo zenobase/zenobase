@@ -11,7 +11,6 @@ import org.codehaus.jackson.node.ObjectNode;
 import play.Logger;
 import play.mvc.Controller;
 import play.mvc.Http.StatusCode;
-import play.mvc.With;
 import services.BucketManager;
 import services.CommandQueue;
 import services.NodeManager;
@@ -21,7 +20,6 @@ import common.Generator;
 import common.Nodes;
 import common.RenderJackson;
 
-@With(UserController.class)
 public class DashboardController extends Controller {
 
 	@Inject

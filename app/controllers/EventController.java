@@ -12,12 +12,10 @@ import org.codehaus.jackson.node.ObjectNode;
 
 import play.Logger;
 import play.mvc.Controller;
-import play.mvc.With;
 import services.BucketManager;
 
 import common.RenderJackson;
 
-@With(UserController.class)
 public class EventController extends Controller {
 
 	@Inject

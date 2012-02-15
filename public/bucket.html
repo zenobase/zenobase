@@ -1,0 +1,118 @@
+<div class="container-fluid" ng:controller="BucketCtrl">
+
+	<h3>{{bucket.label}} <small><a ng:click="reload()" title="Refresh"><i class="icon-refresh"></i></a></small></h3>
+
+	<div class="row-fluid">
+		<div class="span6">
+			<table class="table">
+				<thead>
+					<tr>
+						<th>Latest</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr ng:repeat="event in bucket.events">
+						<td>
+							{{event | fields | html}}
+							&nbsp;
+							<span class="nowrap" title="User">
+								<i class="icon-user" title="user"></i> {{bucket.user}}</i>
+							</span>
+							<div class="pull-right">
+								<a href="/#/buckets/{{bucket.id}}/{{event.id}}">&raquo;</a>
+							</div>
+						</td>
+					</tr>
+					<tr ng:hide="bucket.events">
+						<td><i>None</i></td>
+					</tr>
+				</tbody>
+			</table>
+			<div class="btn-toolbar">
+				<div class="btn-group">
+					<a class="btn" data-toggle="modal" href="#create-event-dialog"><i class="icon-plus" title="Add..."></i></a>
+				</div>
+				<div class="btn-group pull-right">
+					<a class="btn disabled" href="#" title="Previous"><i class="icon-chevron-left"></i></a>
+					<a class="btn disabled" href="#" title="Next"><i class="icon-chevron-right"></i></a>
+				</div>
+				<div class="btn-group pull-right">
+					<a class="btn disabled zeno-paging"><b>1</b> &ndash; <b>1</b> of <b>1</b></a>
+				</div>
+			</div>
+			<div id="create-event-dialog" class="modal hide" ng:controller="TemplateCtrl">
+				<form ng:submit="create()">
+					<div class="modal-header">
+							<a class="close" data-dismiss="modal">&times;</a>
+						<h3>Create Event</h3>
+					</div>
+					<div class="modal-body">
+						<label for="template">Template</label>
+						<div class="input">
+							<select name="template" ng:model="i" ng:change="content = getTemplate(i)">
+								<option value="0"></option>
+								<option value="1">Lunch</option>
+								<option value="2">Sleep</option>
+								<option value="3">Movie</option>
+								<option value="4">Hike</option>
+								<option value="5">(Random)</option>
+							</select>
+						</div>
+						<fieldset class="control-group">
+							<label for="label">Content</label>
+							<div class="input">
+								<textarea id="event-label-field" rows="10" class="span10" ng:model="content"></textarea>
+							</div>
+						</fieldset>
+					</div>
+					<div class="modal-footer">
+						<button type="submit" class="btn btn-primary">Create</button>
+						<button type="reset" class="btn" data-dismiss="modal">Cancel</button>
+					</div>
+				</form>
+			</div>
+			<script type="text/javascript">
+				$('#create-event-dialog').on('shown', function () {
+					$('#event-label-field').select();
+				})
+			</script>
+		</div>
+		<div class="span6">
+			<table class="table">
+				<thead>
+					<tr>
+						<th>Tag</th>
+						<th style="text-align: right">Count</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr ng:repeat="tag in bucket.TagWidget">
+						<td><i class="icon-tag"></i> {{tag.label}}</td>
+						<td style="text-align: right">{{tag.count}}</td>
+					</tr>
+					<tr ng:hide="bucket.TagWidget">
+						<td colspan="2"><i>None</i></td>
+					</tr>
+				</tbody>
+			</table>
+			<table class="table">
+				<thead>
+					<tr>
+						<th>Rating</th>
+						<th style="text-align: right">Count</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr ng:repeat="rating in bucket.RatingWidget">
+						<td><i class="icon-star"></i> {{rating.label}}</td>
+						<td style="text-align: right">{{rating.count}}</td>
+					</tr>
+					<tr ng:hide="bucket.RatingWidget">
+						<td colspan="2"><i>None</i></td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+
+</div>

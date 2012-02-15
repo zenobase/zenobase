@@ -10,7 +10,6 @@ import org.codehaus.jackson.node.ArrayNode;
 import play.Logger;
 import play.mvc.Controller;
 import play.mvc.Http.StatusCode;
-import play.mvc.With;
 import services.CommandQueue;
 
 import commands.Command;
@@ -18,7 +17,6 @@ import commands.CommandSerializer;
 import common.Nodes;
 import common.RenderJackson;
 
-@With(UserController.class)
 public class QueueController extends Controller {
 
 	@Inject
