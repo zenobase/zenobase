@@ -13,8 +13,11 @@ function MainCtrl($route, $http, $location, $cookies) {
 	self.undo = function(commandId) {
 		$http.post(commandId).success(function(response, code, headers) {
 			self.alert.clear();
-			// TODO alert for redo
-			$location.url('/');
+			if ($location.url() == '/') {
+				self.reload();
+			} else {
+				$location.url('/');
+			}
 		});
 	};
 	$route.when('/', { template: '/public/dashboard.html' });
@@ -87,30 +90,25 @@ function HistoryCtrl($http) {
 	var self = this;
 	self.offset = 0;
 	self.limit = 10;
-	self.hasPrev = false;
-	self.hasNext = false;
 	self.refresh = function(offset) {
 		$http.get('/queue/?offset=' + offset + "&limit=" + self.limit).success(function(response, code) {
 			self.history = response;
 			self.offset = offset;
-			self.hasPrev = offset > 0;
-			self.hasNext = offset + self.limit < self.history.total;
 		});
 	};
+	self.hasPrev = function() {
+		return self.offset > 0;
+	}
+	self.hasNext = function() {
+		return self.history && self.offset + self.limit < self.history.total;
+	}
 	self.prev = function() {
-		if (self.hasPrev) {
-			self.refresh(self.offset - self.limit, self.limit);
-		}
+		self.refresh(self.offset - self.limit, self.limit);
 	}
 	self.next = function() {
-		if (self.hasNext) {
-			self.refresh(self.offset + self.limit, self.limit);
-		}
+		self.refresh(self.offset + self.limit, self.limit);
 	}
-	self.css = function(enabled) {
-		return enabled ? '' : 'disabled';
-	}
-	self.refresh(0, 10);
+	self.refresh(0);
 }
 
 BucketListCtrl.$inject = ['$http'];
