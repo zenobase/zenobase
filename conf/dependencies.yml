@@ -2,8 +2,6 @@
 
 require:
     - play
-    - play -> secure
-    - play -> securesocial 0.2.3
     - play -> guice 1.2
     - com.google.guava -> guava 11.0.1:
         transitive: false
