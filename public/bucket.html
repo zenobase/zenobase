@@ -95,7 +95,7 @@
 					</tr>
 				</tbody>
 			</table>
-			<table class="table">
+			<table class="table" ng:controller="RatingCountCtrl">
 				<thead>
 					<tr>
 						<th>Rating</th>
@@ -103,11 +103,11 @@
 					</tr>
 				</thead>
 				<tbody>
-					<tr ng:repeat="rating in bucket.RatingWidget">
+					<tr ng:repeat="rating in ratings">
 						<td><i class="icon-star"></i> {{rating.label}}</td>
 						<td style="text-align: right">{{rating.count}}</td>
 					</tr>
-					<tr ng:hide="bucket.RatingWidget">
+					<tr ng:hide="ratings">
 						<td colspan="2"><i>None</i></td>
 					</tr>
 				</tbody>

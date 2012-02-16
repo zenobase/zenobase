@@ -216,14 +216,25 @@ function EventListCtrl() {
 function TagCountCtrl() {
 	var self = this;
 	self.facet = 'TagWidget';
-	// self.field = 'tag';
-	// self.limit = 10;
 	self.tags = [];
 	self.prepare = function(request) {
 		request.facet.push(self.facet)
 	};
 	self.update = function(result) {
 		self.tags = result[self.facet];
+	};
+	self.register(self);
+}
+
+function RatingCountCtrl() {
+	var self = this;
+	self.facet = 'RatingWidget';
+	self.ratings = [];
+	self.prepare = function(request) {
+		request.facet.push(self.facet)
+	};
+	self.update = function(result) {
+		self.ratings = result[self.facet];
 	};
 	self.register(self);
 }
