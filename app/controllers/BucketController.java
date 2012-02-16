@@ -11,6 +11,8 @@ import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.node.ObjectNode;
 import org.joda.time.DateTime;
 
+import com.google.common.base.Objects;
+
 import play.Logger;
 import play.mvc.Controller;
 import play.mvc.Http.StatusCode;
@@ -43,7 +45,10 @@ public class BucketController extends Controller {
     	notFoundIfNull(bucket);
 		Logger.info("Bucket: %s", bucket.getId());
     	IndexManager index = node.getIndex(bucketId);
-    	BucketResult result = new BucketQuery(bucket).execute(index);
+    	int offset = Objects.firstNonNull(params.get("offset", Integer.class), Integer.valueOf(0));
+    	int limit = Objects.firstNonNull(params.get("limit", Integer.class), Integer.valueOf(0));
+    	String[] facets = Objects.firstNonNull(params.getAll("facet"), new String[0]);
+    	BucketResult result = new BucketQuery(bucket).setOffset(offset).setLimit(limit).addFacets(facets).execute(index);
     	renderJson(result.toJson());
     }
 

@@ -147,18 +147,85 @@ BucketCtrl.$inject = ['$http', '$routeParams'];
 function BucketCtrl($http, $routeParams) {
 	var self = this;
 	self.params = $routeParams;
-	$http.get('/buckets/' + self.params.bucketId + '/').success(function(response, code) {
-		self.bucket = response;
-	});
-	/*$.ajax({
-		url: '/buckets/' + self.params.bucketId + '/',
-		dataType : 'json',
-		async : false,
-		success: function(data) {
-			self.bucket = data;
-			console.log('loaded events (jquery)', data);
-		}
-  });*/
+	self.filters = [];
+	self.widgets = [];
+	self.register = function(widget) {
+		self.widgets.push(widget);
+	};
+	self.search = function(query, callback) {
+		$http.get('/buckets/' + self.params.bucketId + '/?' + $.param(query, true)).success(function(response) {
+			callback(response);
+		});
+	};
+	self.refresh = function() {
+		var query = { facet : [ ] };
+		$.each(self.widgets, function(i, widget) {
+			widget.prepare(query);
+		});
+		self.search(query, function(response) {
+			self.bucket = response;
+			$.each(self.widgets, function(i, widget) {
+				widget.update(response);
+			});
+		});
+	};
+	self.$evalAsync(self.refresh);
+}
+
+function EventListCtrl() {
+	var self = this;
+
+	self.offset = 0;
+	self.limit = 10;
+	self.hasPrev = function() {
+		return self.offset > 0;
+	}
+	self.hasNext = function() {
+		return self.offset + self.limit < self.total;
+	}
+	self.prev = function() {
+		self.refresh(self.offset - self.limit, self.limit);
+	}
+	self.next = function() {
+		self.refresh(self.offset + self.limit, self.limit);
+	}
+
+	self.total = 0;
+	self.events = [];
+	self.prepare = function(query) {
+		query.offset = self.offset;
+		query.limit = self.limit;
+	};
+	self.update = function(result) {
+		self.total = result.total;
+		self.events = result.events;
+	};
+	self.refresh = function(offset, limit) {
+		var query = { };
+		query.offset = offset;
+		query.limit = limit;
+		self.search(query, function(result) {
+			self.offset = offset;
+			self.limit = limit;
+			self.update(result);
+		});
+	};
+	self.register(self);
+}
+
+function TagCountCtrl() {
+	var self = this;
+	self.facet = 'TagWidget';
+	// self.field = 'tag';
+	// self.limit = 10;
+	self.tags = [];
+	self.prepare = function(request) {
+		request.facet.push(self.facet)
+	};
+	self.update = function(result) {
+		self.tags = result[self.facet];
+	};
+	self.register(self);
 }
 
 TemplateCtrl.$inject = ['$http', '$defer', '$routeParams'];

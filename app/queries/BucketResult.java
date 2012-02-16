@@ -19,6 +19,7 @@ public class BucketResult {
 	private final Bucket bucket;
 	private final List<Event> events = Lists.newArrayList();
 	private final Map<String, Multiset<?>> facets = Maps.newHashMap();
+	private int total; 
 
 	public BucketResult(Bucket bucket) {
 		this.bucket = bucket;
@@ -44,9 +45,18 @@ public class BucketResult {
 		return facets.get(name);
 	}
 
+	public int getTotal() {
+		return total;
+	}
+
+	public void setTotal(int total) {
+		this.total = total;
+	}
+
 	public ObjectNode toJson() {
 		ObjectNode object = Nodes.newObject();
 		object.putAll(bucket.toJson());
+		object.put("total", total);
 		ArrayNode eventsNode = object.putArray("events");
 		for (Event event : events) {
 			ObjectNode eventNode = event.toJson();

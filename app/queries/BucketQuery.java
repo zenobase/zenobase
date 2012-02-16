@@ -1,7 +1,6 @@
 package queries;
 
-import java.io.OutputStream;
-import java.io.PrintStream;
+import java.util.Set;
 
 import models.Bucket;
 import models.Event;
@@ -22,6 +21,8 @@ import widgets.TimelineWidget;
 import widgets.Widget;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Sets;
+import com.google.common.primitives.Ints;
 import common.Nodes;
 
 public class BucketQuery {
@@ -34,25 +35,55 @@ public class BucketQuery {
 		new TimelineWidget(Event.DATE_TIME.getName(), "month"));
 
 	private final Bucket bucket;
+	private int offset = 0;
+	private int limit = 10;
+	private final Set<Widget> widgets = Sets.newLinkedHashSet();
 
 	public BucketQuery(Bucket bucket) {
 		this.bucket = bucket;
 	}
 
+	public BucketQuery setOffset(int offset) {
+		this.offset = offset;
+		return this;
+	}
+
+	public BucketQuery setLimit(int limit) {
+		this.limit = limit;
+		return this;
+	}
+
+	public BucketQuery addFacets(String[] facets) {
+		for (String facet : facets) {
+			addFacet(facet);
+		}
+		return this;
+	}
+
+	public BucketQuery addFacet(String facet) {
+		for (Widget widget : WIDGETS) {
+			if (widget.getClass().getSimpleName().equals(facet)) {
+				widgets.add(widget);
+			}
+		}
+		return this;
+	}
+
 	public BucketResult execute(IndexManager index) {
 		SearchResponse response = search(index);
 		BucketResult result = new BucketResult(bucket);
+		result.setTotal(Ints.checkedCast(response.hits().getTotalHits()));
 		for (SearchHit hit : response.hits()) {
 			result.addEvent(new Event(hit.getId(), hit.getIndex(), Nodes.read(hit.source())));
 		}
-		for (Widget widget : WIDGETS) {
+		for (Widget widget : widgets) {
 			result.addFacet(widget.getClass().getSimpleName(), widget.getResult(response));
 		}
 		return result;
 	}
 
 	public SearchResponse search(IndexManager index) {
-		SearchRequestBuilder request = index.prepareSearch(QUERY, SORT, 0, 10);
+		SearchRequestBuilder request = index.prepareSearch(QUERY, SORT, offset, limit);
 		for (Widget widget : WIDGETS) {
 			widget.configure(request);
 		}
