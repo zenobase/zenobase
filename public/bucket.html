@@ -2,12 +2,12 @@
 
 	<h3>{{bucket.label}} <small><a ng:click="reload()" title="Refresh"><i class="icon-refresh"></i></a></small></h3>
 
-	<ul>
-		<li ng:repeat="filter in filters">
-			{{filter}}
-			<a ng:click="removeFilter(filter)"><i class="icon-remove"></i></a>
+	<ul class="nav nav-pills">
+		<li class="active" ng:repeat="filter in filters">
+			<a ng:click="removeFilter(filter)">{{filter}} <i class="icon-remove"></i></a>
 		</li>
 	</ul>
+
 	<div class="row-fluid">
 		<div class="span6" ng:controller="EventListCtrl">
 			<table class="table">

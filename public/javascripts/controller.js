@@ -143,11 +143,14 @@ function CreateBucketDialogCtrl($http, $location) {
 	}
 }
 
-BucketCtrl.$inject = ['$http', '$routeParams'];
-function BucketCtrl($http, $routeParams) {
+BucketCtrl.$inject = ['$http', '$routeParams', '$location'];
+function BucketCtrl($http, $routeParams, $location) {
 	var self = this;
 	self.params = $routeParams;
-	self.filters = [];
+
+	var q = $location.search()['q'];
+	self.filters = q ? q.split(',') : [ ];
+
 	self.widgets = [];
 	self.register = function(widget) {
 		self.widgets.push(widget);
@@ -171,14 +174,17 @@ function BucketCtrl($http, $routeParams) {
 	};
 	self.addFilter = function(filter) {
 		self.filters.push(filter);
+		$location.search('q', self.filters.join(','));
 		self.refresh();
 	};
 	self.removeFilter = function(filter) {
 		self.filters = jQuery.grep(self.filters, function(value) {
 			return value != filter;
 		});
+		$location.search('q', self.filters.length ? self.filters.join(',') : null);
 		self.refresh();
 	};
+	console.log();
 	self.$evalAsync(self.refresh);
 }
 
