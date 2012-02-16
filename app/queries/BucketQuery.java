@@ -7,6 +7,8 @@ import models.Event;
 
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
+import org.elasticsearch.index.query.AndFilterBuilder;
+import org.elasticsearch.index.query.FilterBuilders;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
@@ -14,6 +16,7 @@ import org.elasticsearch.search.sort.SortBuilder;
 import org.elasticsearch.search.sort.SortBuilders;
 import org.elasticsearch.search.sort.SortOrder;
 
+import play.Logger;
 import services.IndexManager;
 import widgets.RatingWidget;
 import widgets.TagWidget;
@@ -38,6 +41,7 @@ public class BucketQuery {
 	private int offset = 0;
 	private int limit = 10;
 	private final Set<Widget> widgets = Sets.newLinkedHashSet();
+	private AndFilterBuilder filters;
 
 	public BucketQuery(Bucket bucket) {
 		this.bucket = bucket;
@@ -69,6 +73,22 @@ public class BucketQuery {
 		return this;
 	}
 
+	public BucketQuery addFilters(String[] filters) {
+		for (String filter : filters) {
+			addFilter(filter);
+		}
+		return this;
+	}
+
+	public BucketQuery addFilter(String filter) {
+		String[] tokens = filter.split(":", 2);
+		if (filters == null) {
+			filters = FilterBuilders.andFilter();
+		}
+		filters.add(FilterBuilders.termFilter(tokens[0], tokens[1]));
+		return this;
+	}
+
 	public BucketResult execute(IndexManager index) {
 		SearchResponse response = search(index);
 		BucketResult result = new BucketResult(bucket);
@@ -83,7 +103,10 @@ public class BucketQuery {
 	}
 
 	public SearchResponse search(IndexManager index) {
-		SearchRequestBuilder request = index.prepareSearch(QUERY, SORT, offset, limit);
+		QueryBuilder query = filters != null ?
+			QueryBuilders.filteredQuery(QUERY, filters) : QUERY;
+		SearchRequestBuilder request = index.prepareSearch(query, SORT, offset, limit);
+		Logger.info("Filters: %s", filters);
 		for (Widget widget : WIDGETS) {
 			widget.configure(request);
 		}

@@ -48,7 +48,9 @@ public class BucketController extends Controller {
     	int offset = Objects.firstNonNull(params.get("offset", Integer.class), Integer.valueOf(0));
     	int limit = Objects.firstNonNull(params.get("limit", Integer.class), Integer.valueOf(0));
     	String[] facets = Objects.firstNonNull(params.getAll("facet"), new String[0]);
-    	BucketResult result = new BucketQuery(bucket).setOffset(offset).setLimit(limit).addFacets(facets).execute(index);
+    	String[] filters = Objects.firstNonNull(params.getAll("filter"), new String[0]);
+    	BucketResult result = new BucketQuery(bucket).setOffset(offset).setLimit(limit)
+			.addFacets(facets).addFilters(filters).execute(index);
     	renderJson(result.toJson());
     }
 

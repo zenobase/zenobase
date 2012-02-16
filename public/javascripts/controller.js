@@ -158,7 +158,7 @@ function BucketCtrl($http, $routeParams) {
 		});
 	};
 	self.refresh = function() {
-		var query = { facet : [ ] };
+		var query = { facet : [ ], filter : self.filters };
 		$.each(self.widgets, function(i, widget) {
 			widget.prepare(query);
 		});
@@ -168,6 +168,16 @@ function BucketCtrl($http, $routeParams) {
 				widget.update(response);
 			});
 		});
+	};
+	self.addFilter = function(filter) {
+		self.filters.push(filter);
+		self.refresh();
+	};
+	self.removeFilter = function(filter) {
+		self.filters = jQuery.grep(self.filters, function(value) {
+			return value != filter;
+		});
+		self.refresh();
 	};
 	self.$evalAsync(self.refresh);
 }
