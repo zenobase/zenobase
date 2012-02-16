@@ -173,12 +173,14 @@ function BucketCtrl($http, $routeParams, $location) {
 		});
 	};
 	self.addFilter = function(filter) {
-		self.filters.push(filter);
-		$location.search('q', self.filters.join(','));
-		self.refresh();
+		if (self.filters.indexOf(filter) == -1) {
+			self.filters.push(filter);
+			$location.search('q', self.filters.join(','));
+			self.refresh();
+		}
 	};
 	self.removeFilter = function(filter) {
-		self.filters = jQuery.grep(self.filters, function(value) {
+		self.filters = $.grep(self.filters, function(value) {
 			return value != filter;
 		});
 		$location.search('q', self.filters.length ? self.filters.join(',') : null);
