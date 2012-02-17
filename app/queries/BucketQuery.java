@@ -1,5 +1,6 @@
 package queries;
 
+import java.util.List;
 import java.util.Set;
 
 import models.Bucket;
@@ -7,7 +8,9 @@ import models.Event;
 
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
+import org.elasticsearch.common.collect.Lists;
 import org.elasticsearch.index.query.AndFilterBuilder;
+import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.FilterBuilders;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
@@ -29,7 +32,6 @@ import common.Nodes;
 
 public class BucketQuery {
 
-	private static final QueryBuilder QUERY = QueryBuilders.matchAllQuery();
 	private static final SortBuilder SORT = SortBuilders.fieldSort(Event.DATE_TIME.getName()).order(SortOrder.DESC);
 	private static final ImmutableList<Widget> WIDGETS = ImmutableList.<Widget>of(
 		new TagWidget(Event.TAG.getName(), 10), 
@@ -40,7 +42,7 @@ public class BucketQuery {
 	private int offset = 0;
 	private int limit = 10;
 	private final Set<Widget> widgets = Sets.newLinkedHashSet();
-	private AndFilterBuilder filters;
+	private final List<QueryBuilder> constraints = Lists.newArrayList();
 
 	public BucketQuery(Bucket bucket) {
 		this.bucket = bucket;
@@ -85,10 +87,7 @@ public class BucketQuery {
 
 	public BucketQuery addFilter(String filter) {
 		String[] tokens = filter.split(":", 2);
-		if (filters == null) {
-			filters = FilterBuilders.andFilter();
-		}
-		filters.add(FilterBuilders.termFilter(tokens[0], tokens[1]));
+		constraints.add(QueryBuilders.fieldQuery(tokens[0], tokens[1]));
 		return this;
 	}
 
@@ -106,8 +105,15 @@ public class BucketQuery {
 	}
 
 	public SearchResponse search(IndexManager index) {
-		QueryBuilder query = filters != null ?
-			QueryBuilders.filteredQuery(QUERY, filters) : QUERY;
+		QueryBuilder query = null;
+		if (constraints.isEmpty()) {
+			query = QueryBuilders.matchAllQuery();
+		} else {
+			query = QueryBuilders.boolQuery();
+			for (QueryBuilder constraint : constraints) {
+				((BoolQueryBuilder) query).must(constraint);
+			}
+		}
 		SearchRequestBuilder request = index.prepareSearch(query, SORT, offset, limit);
 		// Logger.info("Filters: %s", filters);
 		for (Widget widget : WIDGETS) {

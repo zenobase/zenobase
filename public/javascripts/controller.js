@@ -171,7 +171,6 @@ function BucketCtrl($http, $routeParams, $location) {
 		if (self.filters.indexOf(filter) == -1) {
 			self.filters.push(filter);
 			$location.search('q', self.filters.join(','));
-			self.refresh();
 		}
 	};
 	self.removeFilter = function(filter) {
@@ -179,7 +178,6 @@ function BucketCtrl($http, $routeParams, $location) {
 			return value != filter;
 		});
 		$location.search('q', self.filters.length ? self.filters.join(',') : null);
-		self.refresh();
 	};
 	console.log();
 	self.$evalAsync(self.refresh);

@@ -13,6 +13,7 @@ import org.joda.time.DateTime;
 import play.data.Form;
 import play.mvc.BodyParser;
 import play.mvc.Result;
+import play.mvc.With;
 import queries.BucketQuery;
 import queries.BucketResult;
 import services.BucketManager;
@@ -23,6 +24,7 @@ import commands.CreateEventCommand;
 import commands.DeleteBucketCommand;
 import commands.GenerateRandomEventsCommand;
 
+@With(Timed.class)
 public class BucketController extends ControllerSupport {
 
 	@Inject
