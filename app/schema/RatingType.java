@@ -1,7 +1,6 @@
 package schema;
 
 import models.Rating;
-import models.Token;
 
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.node.ObjectNode;

@@ -11,13 +11,10 @@ function MainCtrl($route, $http, $location, $cookies) {
 	self.user = getUser($cookies.token);
 	self.alert = new Alert();
 	self.undo = function(commandId) {
-		$http.post(commandId).success(function(response, code, headers) {
+		$http({ method : 'POST', url : commandId, data : 'undo', headers : { 'Content-Type' : 'application/x-www-form-urlencoded' }}).success(function(response, code) {
 			self.alert.clear();
-			if ($location.url() == '/') {
-				self.reload();
-			} else {
-				$location.url('/');
-			}
+			$location.url('/');
+			self.reload();
 		});
 	};
 	$route.when('/', { template: '/public/dashboard.html' });
@@ -31,7 +28,7 @@ function MainCtrl($route, $http, $location, $cookies) {
 		$route.reload();
 	};
 	self.signOut = function() {
-		$http.post('/signout').success(function(response, code) {
+		$http({ method : 'POST', url : '/signout', headers : { 'Content-Type' : 'application/x-www-form-urlencoded' }}).success(function(response, code) {
 				self.user = null;
 				self.alert.show('Signed out.', 'alert-success');
 				if ($location.url() == '/') {
@@ -74,13 +71,13 @@ function AuthFormCtrl($http, $location) {
 	self.password = '';
 	self.remember = false;
 	self.signIn = function() {
-		$http.post('/signin', self).success(function(response, code) {
-				self.setUser(new User(self.username));
-				self.username = '';
-				self.password = '';
-				self.alert.clear();
-				$('#sign-in-dialog').modal('hide');
-				self.reload();
+		$http({ method : 'POST', url : '/signin', data : $.param({ username : self.username, password : self.password, remember : self.remember }), headers : { 'Content-Type' : 'application/x-www-form-urlencoded' }}).success(function(response, code) {
+			self.setUser(new User(self.username));
+			self.username = '';
+			self.password = '';
+			self.alert.clear();
+			$('#sign-in-dialog').modal('hide');
+			self.reload();
 		});
 	}
 }
@@ -130,7 +127,7 @@ function CreateBucketDialogCtrl($http, $location) {
 	var self = this;
 	self.label = 'My Data';
 	self.create = function() {
-		$http.post('/buckets/?label=' + self.label).success(function(data, status, headers) {
+		$http.post('/buckets/', { label : self.label}).success(function(data, status, headers) {
 			var location = headers('Location');
 			var undo = headers('Undo');
 			console.assert(status == 201, status);
@@ -156,9 +153,7 @@ function BucketCtrl($http, $routeParams, $location) {
 		self.widgets.push(widget);
 	};
 	self.search = function(query, callback) {
-		$http.get('/buckets/' + self.params.bucketId + '/?' + $.param(query, true)).success(function(response) {
-			callback(response);
-		});
+		$http.get('/buckets/' + self.params.bucketId + '/?' + $.param(query, true)).success(callback);
 	};
 	self.refresh = function() {
 		var query = { facet : [ ], filter : self.filters };

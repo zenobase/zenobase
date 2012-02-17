@@ -1,18 +1,9 @@
 package services;
 
 import org.codehaus.jackson.node.ObjectNode;
-import org.elasticsearch.action.admin.indices.create.CreateIndexRequest;
 import org.elasticsearch.action.admin.indices.create.CreateIndexResponse;
 import org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest;
-import org.elasticsearch.action.admin.indices.exists.IndicesExistsRequest;
-import org.elasticsearch.action.admin.indices.exists.IndicesExistsResponse;
-import org.elasticsearch.action.admin.indices.mapping.put.PutMappingRequest;
-import org.elasticsearch.action.count.CountResponse;
-import org.elasticsearch.action.delete.DeleteRequest;
-import org.elasticsearch.action.deletebyquery.DeleteByQueryRequest;
 import org.elasticsearch.action.get.GetResponse;
-import org.elasticsearch.action.index.IndexRequest;
-import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.search.SearchType;
@@ -21,11 +12,8 @@ import org.elasticsearch.client.Requests;
 import org.elasticsearch.common.settings.ImmutableSettings;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.index.query.QueryBuilder;
-import org.elasticsearch.search.facet.AbstractFacetBuilder;
 import org.elasticsearch.search.sort.SortBuilder;
 import org.elasticsearch.search.sort.SortBuilders;
-
-import play.Logger;
 
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
@@ -42,7 +30,7 @@ public class IndexManager {
 	}
 
 	public void create(int shards, int replicas) {
-		Logger.info("Creating index '%s'...", indexName);
+		// Logger.info("Creating index '%s'...", indexName);
 		Settings settings = ImmutableSettings.settingsBuilder()
 			.put("number_of_shards", shards)
 			.put("number_of_replicas", replicas).build();
@@ -51,13 +39,13 @@ public class IndexManager {
 	}
 
 	public void delete() {
-		Logger.info("Delete: %s", indexName);
+		// Logger.info("Delete: %s", indexName);
 		DeleteIndexRequest request = Requests.deleteIndexRequest(indexName);
 		client.admin().indices().delete(request).actionGet();
 	}
 
 	public void putMapping(String typeName, ObjectNode mapping) {
-		Logger.info("Mapping: %s", mapping);
+		// Logger.info("Mapping: %s", mapping);
 		client.admin().indices().preparePutMapping(indexName).setType(typeName).setSource(mapping.toString()).execute().actionGet();
 	}
 
@@ -66,7 +54,7 @@ public class IndexManager {
 	}
 
 	public void delete(String type, String id) {
-		Logger.info("Delete: %s/%s", indexName, id);
+		// Logger.info("Delete: %s/%s", indexName, id);
 		client.prepareDelete(indexName, type, id).execute().actionGet();
 	}
 

@@ -1,7 +1,6 @@
-/tmp
-/.settings
-/eclipse
-/lib
-/.project
-/.classpath
-/guice-1.2
+logs
+project/project
+project/target
+target
+tmp
+.history

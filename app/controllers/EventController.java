@@ -7,33 +7,29 @@ import javax.inject.Inject;
 import models.Bucket;
 import models.Event;
 
-import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.node.ObjectNode;
 
-import play.Logger;
-import play.mvc.Controller;
+import play.mvc.Result;
 import services.BucketManager;
 
-import common.RenderJackson;
-
-public class EventController extends Controller {
+public class EventController extends ControllerSupport {
 
 	@Inject
 	static BucketManager manager;
 
-    public static void get(String bucketId, String eventId) throws IOException {
-		Logger.info("Event: %s/%s", bucketId, eventId);
-    	Bucket bucket = manager.findBucket(bucketId, AuthController.currentUser());
-    	notFoundIfNull(bucket);
+    public static Result get(String bucketId, String eventId) throws IOException {
+		// Logger.info("Event: %s/%s", bucketId, eventId);
+    	Bucket bucket = manager.findBucket(bucketId, SecurityController.user());
+    	if (bucket == null) {
+    		return notFound();
+    	}
     	Event event = bucket.findEvent(eventId);
-    	notFoundIfNull(event);    	
+    	if (event == null) {
+    		return notFound();
+    	}
 		ObjectNode eventNode = event.toJson();
 		eventNode.put("id", event.getId());
 		eventNode.put("bucket", event.getBucket());
-    	renderJson(eventNode);
+    	return ok(eventNode);
     }
-
-	private static void renderJson(JsonNode object) {
-		throw new RenderJackson(object);
-	}
 }

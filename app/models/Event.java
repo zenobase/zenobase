@@ -29,7 +29,8 @@ public class Event {
 	public static final Field<Resource> RESOURCE = Field.of("resource", new ResourceType());
 	public static final Field<Rating> RATING = Field.of("rating", new RatingType());
 
-	private static final ImmutableSet<Field<?>> FIELDS = ImmutableSet.of(TAG, RESOURCE, DISTANCE, HEIGHT, LOCATION, DATE_TIME, RATING);
+	private static final ImmutableSet<Field<?>> FIELDS = 
+		ImmutableSet.<Field<?>>of(TAG, RESOURCE, DISTANCE, HEIGHT, LOCATION, DATE_TIME, RATING);
 
 	private final String id;
 	private final String bucket;

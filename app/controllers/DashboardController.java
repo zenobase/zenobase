@@ -4,25 +4,20 @@ import javax.inject.Inject;
 
 import models.Bucket;
 
-import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.node.ArrayNode;
 import org.codehaus.jackson.node.ObjectNode;
 
-import com.google.common.base.Objects;
-
-import play.Logger;
-import play.mvc.Controller;
-import play.mvc.Http.StatusCode;
+import play.mvc.Result;
 import services.BucketManager;
 import services.CommandQueue;
 import services.NodeManager;
 
+import com.google.common.base.Objects;
 import commands.CreateBucketCommand;
 import common.Generator;
 import common.Nodes;
-import common.RenderJackson;
 
-public class DashboardController extends Controller {
+public class DashboardController extends ControllerSupport {
 
 	@Inject
 	static CommandQueue queue;
@@ -33,34 +28,31 @@ public class DashboardController extends Controller {
 	@Inject
 	static BucketManager buckets;
 
-    public static void get() {
-		String user = Objects.firstNonNull(AuthController.currentUser(), "guest");
+    public static Result get() {
+		String user = Objects.firstNonNull(SecurityController.user(), "guest");
     	ArrayNode array = Nodes.newArray();
     	for (Bucket bucket : buckets.findBuckets(user, 0, 10)) {
     		ObjectNode object = bucket.toJson();
     		object.put("size", bucket.getSize());
     		array.add(object);
     	}
-        renderJson(array);
+        return ok(array);
     }
 
-    public static void post() {
-		String user = AuthController.currentUser();
+    public static Result post() {
+    	String user = SecurityController.user();
 		if (user == null) {
 			forbidden();
 		}
-		String label = params.get("label");
-		validation.required(label);
-		validation.minSize(label, 1);
-		if (validation.hasErrors()) {
-			Logger.warn("Rejected: %s", validation.errorsMap());
-			badRequest();
+		ObjectNode body = (ObjectNode) request().body().asJson();
+		if (body == null || !body.has("label")) {
+			return badRequest("missing label");
 		}
-    	Bucket bucket = createBucket(label, user);
+    	Bucket bucket = createBucket(body.get("label").asText(), user);
 		String commandId = queue.execute(new CreateBucketCommand(buckets, bucket, true));
-        response.status = StatusCode.CREATED;
-        response.setHeader("Location", String.format("/buckets/%s/", bucket.getId()));
-        response.setHeader("Undo", String.format("/queue/%s", commandId));
+        response().setHeader(LOCATION, String.format("/buckets/%s/", bucket.getId()));
+        response().setHeader("Undo", String.format("/queue/%s", commandId));
+        return created();
     }
 
 	private static Bucket createBucket(String label, String user) {
@@ -70,9 +62,5 @@ public class DashboardController extends Controller {
 		bucket.setUser(user);
 		bucket.setRole("owner");
 		return bucket;
-	}
-
-	private static void renderJson(JsonNode object) {
-		throw new RenderJackson(object);
 	}
 }

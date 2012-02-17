@@ -2,29 +2,27 @@
 # This file defines all application routes (Higher priority routes first)
 # ~~~~
 
-GET     /                                      staticFile:public/index.html
-
-POST    /signin                                AuthController.signIn
-POST    /signout                               AuthController.signOut
-
 # Home page
-GET     /buckets/                              DashboardController.get
-POST    /buckets/                              DashboardController.post
+GET     /                            controllers.Assets.at(path="/public", file="index.html")
 
-GET     /queue/                                QueueController.get
-POST    /queue/{<[-\w]{8}>id}                  QueueController.post
+POST    /signin                      controllers.SecurityController.signIn()
+POST    /signout                     controllers.SecurityController.signOut()
 
-# GET     /terms                               TemplateController.get(template:'legal/terms.html')
-# GET     /privacy                             TemplateController.get(template:'legal/privacy.html')
+GET     /buckets/                    controllers.DashboardController.get()
+POST    /buckets/                    controllers.DashboardController.post()
 
-GET     /buckets/{<[-\w]{8}>bucketId}/         BucketController.get
-POST    /buckets/{<[-\w]{8}>bucketId}/         BucketController.post
-DELETE  /buckets/{<[-\w]{8}>bucketId}/         BucketController.delete
+GET     /queue/                      controllers.QueueController.get(offset : Int, limit : Int)
+POST    /queue/:id                   controllers.QueueController.post(id)
 
-GET     /buckets/{<[-\w]{8}>bucketId}/{<[-\w]{8}>eventId}  EventController.get
+GET     /buckets/:bucketId/          controllers.BucketController.get(bucketId)
+POST    /buckets/:bucketId/          controllers.BucketController.post(bucketId)
+DELETE  /buckets/:bucketId/          controllers.BucketController.delete(bucketId)
+
+GET     /buckets/:bucketId/:eventId  controllers.EventController.get(bucketId, eventId)
 
 # Ignore favicon requests
-GET     /favicon.ico                           404
+# GET     /favicon.ico                           404
 
-# Map static resources from the /app/public folder to the /public path
-GET     /public/                               staticDir:public
+
+# Map static resources from the /public folder to the /assets URL path
+GET     /public/*file                controllers.Assets.at(path="/public", file)

@@ -1,8 +1,6 @@
 package commands;
-import java.util.Locale;
 
 import models.Bucket;
-
 
 public class GenerateRandomEventsCommand extends CompoundCommand {
 

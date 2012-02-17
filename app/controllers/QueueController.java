@@ -1,53 +1,46 @@
 package controllers;
 
-import java.io.IOException;
-
 import javax.inject.Inject;
 
-import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.node.ArrayNode;
 import org.codehaus.jackson.node.ObjectNode;
 
-import play.Logger;
-import play.mvc.Controller;
-import play.mvc.Http.StatusCode;
+import play.mvc.Result;
 import services.CommandQueue;
 
 import commands.Command;
 import commands.CommandSerializer;
 import common.Nodes;
-import common.RenderJackson;
 
-public class QueueController extends Controller {
+public class QueueController extends ControllerSupport {
 
 	@Inject
 	static CommandQueue queue;
 
-    public static void get(int offset, int limit) {
-		Logger.info("History: %d-%d", offset, limit);
+    public static Result get(int offset, int limit) {
     	ObjectNode object = Nodes.newObject();
     	object.put("total", queue.size());
     	ArrayNode commandsNode = object.putArray("commands");
     	for (Command command : queue.getHistory(offset, limit)) {
     		commandsNode.add(CommandSerializer.toJson(command));
     	}
-    	renderJson(object);
+    	return ok(object);
     }
 
-    public static void post(String id) throws IOException {
-		Logger.info("Undo: %s", id);
-    	Command cmd = queue.find(id);
-    	notFoundIfNull(cmd);
-		String user = AuthController.currentUser();
-		if (!user.equals(cmd.getUser())) {
-			forbidden();
+    public static Result post(String id) {
+    	Command command = queue.find(id);
+    	if (command == null) {
+    		return notFound();
+    	}
+		if (!command.getUser().equals(SecurityController.user())) {
+			return forbidden();
 		}
-    	String commandId = queue.execute(cmd.reverse());
-    	response.status = StatusCode.CREATED; 
-        response.setHeader("Undo", String.format("/queue/%s", commandId));
+        return undo(command);
     }
 
-	private static void renderJson(JsonNode object) {
-		throw new RenderJackson(object);
-	}
+    private static Result undo(Command command) {
+    	String undoId = queue.execute(command.reverse());
+    	response().setHeader("Undo",  String.format("/queue/%s", undoId));
+        return created();
+    }
 }

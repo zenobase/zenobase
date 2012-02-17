@@ -2,8 +2,6 @@ package models;
 
 import java.math.BigDecimal;
 
-import com.google.common.base.Preconditions;
-
 public class Length implements Comparable<Length> {
 
 	public enum Unit {

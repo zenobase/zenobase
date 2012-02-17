@@ -43,6 +43,6 @@ public class CompoundCommand extends CommandSupport {
 
 	@Override
 	public String toString() {
-		return String.format("%s × %d", Iterables.getLast(commands), commands.size());
+		return String.format("%s x %d", Iterables.getLast(commands), commands.size());
 	}
 }

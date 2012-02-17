@@ -11,13 +11,10 @@ import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
-import org.elasticsearch.search.sort.SortBuilder;
-import org.elasticsearch.search.sort.SortBuilders;
 
 import play.Logger;
 
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Iterables;
 
 public class BucketManager {
 
@@ -69,7 +66,7 @@ public class BucketManager {
 			.must(QueryBuilders.fieldQuery(Bucket.USER.getName(), user));
 		SearchHits hits = buckets.search(buckets.prepareSearch(query, null, 0, 10)).getHits();
 		if (hits.totalHits() > 1) {
-			Logger.warn("Expected a single match for bucket %s for user %s but got %d", bucketId, user, hits.getTotalHits());
+			// Logger.warn("Expected a single match for bucket %s for user %s but got %d", bucketId, user, hits.getTotalHits());
 		}
 		if (hits.totalHits() == 1) {
 			return fromMap(hits.getAt(0).getSource());

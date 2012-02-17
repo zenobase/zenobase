@@ -1,5 +1,7 @@
 package services;
 
+import java.io.Closeable;
+
 import org.elasticsearch.action.admin.cluster.health.ClusterHealthStatus;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.common.settings.ImmutableSettings;
@@ -10,7 +12,7 @@ import org.elasticsearch.node.NodeBuilder;
 
 import play.Logger;
 
-public class NodeManager {
+public class NodeManager implements Closeable {
 
 	private Node node;
 	private Client client;
@@ -28,11 +30,11 @@ public class NodeManager {
 
 	private void recover() {
 		ClusterHealthStatus status = getHealthStatus();
-		Logger.info("Status: %s", status);
+		// Logger.info("Status: %s", status);
 		if (ClusterHealthStatus.RED.equals(status)) {
-			Logger.warn("Recovering: %s", status);
+			// Logger.warn("Recovering: %s", status);
 			status = client.admin().cluster().prepareHealth().setWaitForYellowStatus().setTimeout(new TimeValue(30000)).execute().actionGet().getStatus();
-			Logger.info("Recovered: %s", status);
+			// Logger.info("Recovered: %s", status);
 		}
 	}
 
@@ -44,6 +46,7 @@ public class NodeManager {
 		return new IndexManager(indexName, client);
 	}
 
+	@Override
     public void close() {
 		client.close();
 		node.close();

@@ -1,6 +1,5 @@
 package commands;
 
-import play.Logger;
 import models.Bucket;
 import services.BucketManager;
 
@@ -18,7 +17,7 @@ public class CreateBucketCommand extends CommandSupport {
 	}
 
 	public void execute() {
-		Logger.info("Creating bucket: %s", bucket);
+		// Logger.info("Creating bucket: %s", bucket);
 		manager.store(bucket, createIndex);
 	}
 

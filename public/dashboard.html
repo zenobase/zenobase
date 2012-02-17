@@ -15,7 +15,7 @@
 					<tr ng:repeat="command in history.commands">
 						<td>
 							<i class="icon-user"></i> <b>{{command.user}}</b>
-							{{command.label}}
+							{{command.label | html}}
 						</td>
 						<td>
 							{{command.timestamp}}

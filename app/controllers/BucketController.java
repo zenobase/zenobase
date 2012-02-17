@@ -7,28 +7,23 @@ import javax.inject.Inject;
 import models.Bucket;
 import models.Event;
 
-import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.node.ObjectNode;
 import org.joda.time.DateTime;
 
-import com.google.common.base.Objects;
-
-import play.Logger;
-import play.mvc.Controller;
-import play.mvc.Http.StatusCode;
+import play.data.Form;
+import play.mvc.BodyParser;
+import play.mvc.Result;
 import queries.BucketQuery;
 import queries.BucketResult;
 import services.BucketManager;
 import services.CommandQueue;
-import services.IndexManager;
 import services.NodeManager;
 
 import commands.CreateEventCommand;
 import commands.DeleteBucketCommand;
 import commands.GenerateRandomEventsCommand;
-import common.RenderJackson;
 
-public class BucketController extends Controller {
+public class BucketController extends ControllerSupport {
 
 	@Inject
 	static CommandQueue queue;
@@ -39,43 +34,45 @@ public class BucketController extends Controller {
 	@Inject
 	static BucketManager buckets;
 
-	public static void get(String bucketId) {
-		Logger.info("Bucket: %s", bucketId);
-    	Bucket bucket = buckets.findBucket(bucketId, AuthController.currentUser());
-    	notFoundIfNull(bucket);
-		Logger.info("Bucket: %s", bucket.getId());
-    	IndexManager index = node.getIndex(bucketId);
-    	int offset = Objects.firstNonNull(params.get("offset", Integer.class), Integer.valueOf(0));
-    	int limit = Objects.firstNonNull(params.get("limit", Integer.class), Integer.valueOf(0));
-    	String[] facets = Objects.firstNonNull(params.getAll("facet"), new String[0]);
-    	String[] filters = Objects.firstNonNull(params.getAll("filter"), new String[0]);
-    	BucketResult result = new BucketQuery(bucket).setOffset(offset).setLimit(limit)
-			.addFacets(facets).addFilters(filters).execute(index);
-    	renderJson(result.toJson());
+	public static Result get(String bucketId) throws IOException {
+		Bucket bucket = buckets.findBucket(bucketId, SecurityController.user());
+    	if (bucket == null) {
+    		return notFound();
+    	}
+    	Form<SearchForm> form = form(SearchForm.class);
+    	if (form.hasErrors()) {
+    		return badRequest();
+    	}
+    	SearchForm search = form.bindFromRequest().get();
+    	BucketResult result = new BucketQuery(bucket).setOffset(search.offset).setLimit(search.limit)
+			.addFacets(search.facet).addFilters(search.filter)
+			.execute(node.getIndex(bucketId));
+    	return ok(result.toJson());
     }
 
-	public static void post(String bucketId, ObjectNode body) throws IOException {
-		String user = AuthController.currentUser();
+	@BodyParser.Of(value = BodyParser.Json.class, maxLength = 1000)
+	public static Result post(String bucketId) throws IOException {
+		
+		String user = SecurityController.user();
 		if (user == null) {
-			forbidden();
+			return forbidden();
 		}
-		validation.required(bucketId);
-    	validation.required(body);
-    	if (validation.hasErrors()) {
-    		Logger.warn("Rejected: %s", validation.errorsMap());
-    		badRequest();
-    	}
-    	Logger.info("Content: %s", body);
+		ObjectNode body = (ObjectNode) request().body().asJson();
+		if (body == null) {
+			return badRequest();
+		}
     	Bucket bucket = buckets.findBucket(bucketId, user);
-    	notFoundIfNull(bucket);
+    	if (bucket == null) {
+    		return notFound();
+    	}
     	if (!"owner".equals(bucket.getRole())) {
-    		forbidden();
+    		return forbidden();
     	}
     	if (body.has("random")) {
     		String commandId = queue.execute(new GenerateRandomEventsCommand(user, bucket, body.get("random").asInt()));
-    		response.status = StatusCode.CREATED;
-            response.setHeader("Location", String.format("/buckets/%s/", bucket.getId()));
-            response.setHeader("Undo", String.format("/queue/%s", commandId));
+            response().setHeader(LOCATION, String.format("/buckets/%s/", bucket.getId()));
+            response().setHeader("Undo", String.format("/queue/%s", commandId));
+            return created();
     	}
     	else {
     		Event event = Event.newEvent(bucket.getId(), body);
@@ -83,28 +80,25 @@ public class BucketController extends Controller {
     			event.add(Event.DATE_TIME, new DateTime());
     		}
     		String commandId = queue.execute(new CreateEventCommand(bucket, event));
-    		response.status = StatusCode.CREATED;
-            response.setHeader("Location", String.format("/buckets/%s/%s", bucket.getId(), event.getId()));
-            response.setHeader("Undo", String.format("/queue/%s", commandId));
+            response().setHeader(LOCATION, String.format("/buckets/%s/%s", bucket.getId(), event.getId()));
+            response().setHeader("Undo", String.format("/queue/%s", commandId));
+            return created();
     	}
     }
 
-    public static void delete(String bucketId) {
-		Logger.info("Delete: %s", bucketId);
-		String user = AuthController.currentUser();
+    public static Result delete(String bucketId) {
+		String user = SecurityController.user();
 		if (user == null) {
-			forbidden();
+			return forbidden();
 		}
     	Bucket bucket = buckets.findBucket(bucketId, user);
-    	notFoundIfNull(bucket);
+    	if (bucket == null) {
+    		return notFound();
+    	}
     	if (!"owner".equals(bucket.getRole())) {
-    		forbidden();
+    		return forbidden();
     	}
     	queue.execute(new DeleteBucketCommand(buckets, bucket));
-    	response.status = StatusCode.NO_RESPONSE;
+    	return noContent();
     }
-
-	private static void renderJson(JsonNode object) {
-		throw new RenderJackson(object);
-	}
 }

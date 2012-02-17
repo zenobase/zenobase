@@ -16,7 +16,6 @@ import org.elasticsearch.search.sort.SortBuilder;
 import org.elasticsearch.search.sort.SortBuilders;
 import org.elasticsearch.search.sort.SortOrder;
 
-import play.Logger;
 import services.IndexManager;
 import widgets.RatingWidget;
 import widgets.TagWidget;
@@ -58,8 +57,10 @@ public class BucketQuery {
 	}
 
 	public BucketQuery addFacets(String[] facets) {
-		for (String facet : facets) {
-			addFacet(facet);
+		if (facets != null) {
+			for (String facet : facets) {
+				addFacet(facet);
+			}
 		}
 		return this;
 	}
@@ -74,8 +75,10 @@ public class BucketQuery {
 	}
 
 	public BucketQuery addFilters(String[] filters) {
-		for (String filter : filters) {
-			addFilter(filter);
+		if (filters != null) {
+			for (String filter : filters) {
+				addFilter(filter);
+			}
 		}
 		return this;
 	}
@@ -106,7 +109,7 @@ public class BucketQuery {
 		QueryBuilder query = filters != null ?
 			QueryBuilders.filteredQuery(QUERY, filters) : QUERY;
 		SearchRequestBuilder request = index.prepareSearch(query, SORT, offset, limit);
-		Logger.info("Filters: %s", filters);
+		// Logger.info("Filters: %s", filters);
 		for (Widget widget : WIDGETS) {
 			widget.configure(request);
 		}
