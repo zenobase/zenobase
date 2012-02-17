@@ -1,0 +1,16 @@
+body {
+	padding-top: 60px;
+}
+
+.btn-group .zeno-paging {
+	background-color:white;
+	border:none;
+}
+
+.modal form {
+	margin: 0;
+}
+
+.nowrap {
+	white-space: nowrap;
+}
