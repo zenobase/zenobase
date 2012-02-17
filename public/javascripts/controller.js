@@ -325,7 +325,7 @@ var fields = [
 		name : 'tag', 
 		format : function(value) { 
 			return '<span class="nowrap" title="Tag">' +
-				        '<i class="icon-tag"></i> ' + value +
+				        '<i class="icon-tag"></i> ' + encode(value) +
 				      '</span> &nbsp; ';
 		}
 	},
@@ -334,7 +334,7 @@ var fields = [
 		format : function(value) {
 			return '<span title="Resource">' +
 				        '<i class="icon-bookmark"></i>&nbsp;' +
-				        '<a href="' +  value.url + '">' +  value.title + '</a>' +
+				        '<a href="' +  encode(value.url) + '">' +  encode(value.title) + '</a>' +
 				      '</span> &nbsp; ';
 		}
 	},
@@ -342,7 +342,7 @@ var fields = [
 		name : 'distance', 
 		format : function(value) { 
 			return '<span class="nowrap" title="Distance">' +
-				        '<i class="icon-resize-horizontal"></i> ' + value + 'm' +
+				        '<i class="icon-resize-horizontal"></i> ' + encode(value) + 'm' +
 				      '</span> &nbsp; ';
 		}
 	},
@@ -350,7 +350,7 @@ var fields = [
 		name : 'height', 
 		format : function(value) { 
 			return '<span class="nowrap" title="Height">' +
-				        '<i class="icon-resize-vertical"></i>' + value + 'm' +
+				        '<i class="icon-resize-vertical"></i>' + encode(value) + 'm' +
 				      '</span> &nbsp; ';
 		}
 	},
@@ -360,8 +360,8 @@ var fields = [
 			return '<span class="nowrap" title="Location">' +
 				        '<i class="icon-map-marker"></i> ' +
 				        '<a href="http://maps.google.com/maps?q=' + 
-				        value.latitude + ',' + value.longitude + '&t=p&z=5">' + 
-				        value.latitude + ', ' + value.longitude + '</a>' +
+				        encode(value.latitude + ',' + value.longitude) + '&t=p&z=5">' + 
+				        encode(value.latitude + ', ' + value.longitude) + '</a>' +
 				      '</span> &nbsp; ';
 		}
 	},
@@ -369,7 +369,7 @@ var fields = [
 		name : 'dateTime',
 		format : function(value) {
 			return '<span class="nowrap" title="Date &amp; Time">' +
-				         '<i class="icon-time"></i> ' + value +
+				         '<i class="icon-time"></i> ' + encode(value) +
 				       '</span> &nbsp; ';
 		}
 	},
@@ -444,3 +444,7 @@ angular.widget('zeno:copyright', function(compileElement) {
 		linkElement.html(text);
 	};
 });
+
+function encode(value) {
+	return $('<div />').text(value).html();
+}
