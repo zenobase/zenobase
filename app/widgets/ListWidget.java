@@ -1,0 +1,68 @@
+package widgets;
+
+import models.Event;
+
+import org.codehaus.jackson.JsonNode;
+import org.codehaus.jackson.node.ArrayNode;
+import org.codehaus.jackson.node.ObjectNode;
+import org.elasticsearch.action.search.SearchRequestBuilder;
+import org.elasticsearch.action.search.SearchResponse;
+import org.elasticsearch.search.SearchHit;
+import org.elasticsearch.search.sort.SortOrder;
+
+import common.Nodes;
+
+public class ListWidget implements Widget {
+
+	private final String id;
+	private final int offset;
+	private final int limit;
+	private final String sort;
+	private final SortOrder order;
+
+	private ListWidget(String id, int offset, int limit, String sort, SortOrder order) {
+		this.id = id;
+		this.offset = offset;
+		this.limit = limit;
+		this.sort = sort;
+		this.order = order;
+	}
+
+	@Override
+	public String getId() {
+		return id;
+	}
+
+	@Override
+	public void configure(SearchRequestBuilder request) {
+		request.setFrom(offset);
+		request.setSize(limit);
+		request.addSort(sort, order);
+	}
+
+	@Override
+	public JsonNode process(SearchResponse response) {
+		ArrayNode eventsNode = Nodes.newArray();
+		for (SearchHit hit : response.hits()) {
+			Event event = new Event(hit.getId(), hit.getIndex(), Nodes.read(hit.source()));
+			ObjectNode eventNode = event.toJson();
+			eventNode.put("id", event.getId());
+			eventsNode.add(eventNode);
+		}
+		return eventsNode;
+	}
+
+	public static WidgetBuilder builder() {
+		return new WidgetBuilder() {
+			@Override
+			public Widget build(WidgetOptions options) {
+				return new ListWidget(
+					options.get("id"),
+					options.get("offset", Integer.class, 0),
+					options.get("limit", Integer.class, 10),
+					options.get("sort", String.class, "dateTime"),
+					options.get("reverse", Boolean.class, Boolean.TRUE) ? SortOrder.DESC : SortOrder.ASC);
+			}
+		};
+	}
+}

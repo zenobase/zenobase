@@ -152,15 +152,15 @@ function BucketCtrl($http, $routeParams, $location) {
 	self.register = function(widget) {
 		self.widgets.push(widget);
 	};
-	self.search = function(query, callback) {
-		$http.get('/buckets/' + self.params.bucketId + '/?' + $.param(query, true)).success(callback);
+	self.search = function(widgetConfigs, callback) {
+		$http.get('/buckets/' + self.params.bucketId + '/?q=' + self.filters.join(escape(';')) + '&w=' + widgetConfigs.join(escape(';'))).success(callback);
 	};
 	self.refresh = function() {
-		var query = { facet : [ ], filter : self.filters };
+		var widgetConfigs = [ ];
 		$.each(self.widgets, function(i, widget) {
-			widget.prepare(query);
+			widgetConfigs.push(widget.prepare());
 		});
-		self.search(query, function(response) {
+		self.search(widgetConfigs, function(response) {
 			self.bucket = response;
 			$.each(self.widgets, function(i, widget) {
 				widget.update(response);
@@ -203,19 +203,15 @@ function EventListCtrl() {
 
 	self.total = 0;
 	self.events = [];
-	self.prepare = function(query) {
-		query.offset = self.offset;
-		query.limit = self.limit;
+	self.prepare = function(offset, limit) {
+		return 'list(id:events,offset:' + defined(offset, self.offset) + ',limit:' + defined(limit, self.limit) + ',sort:dateTime,asc:false)';
 	};
 	self.update = function(result) {
 		self.total = result.total;
-		self.events = result.events;
+		self.events = result['events'];
 	};
 	self.refresh = function(offset, limit) {
-		var query = { };
-		query.offset = offset;
-		query.limit = limit;
-		self.search(query, function(result) {
+		self.search([ self.prepare(offset, limit) ], function(result) {
 			self.offset = offset;
 			self.limit = limit;
 			self.update(result);
@@ -226,26 +222,24 @@ function EventListCtrl() {
 
 function TagCountCtrl() {
 	var self = this;
-	self.facet = 'TagWidget';
 	self.tags = [];
-	self.prepare = function(request) {
-		request.facet.push(self.facet)
+	self.prepare = function() {
+		return 'count(id:tags,field:tag,limit:10)';
 	};
 	self.update = function(result) {
-		self.tags = result[self.facet];
+		self.tags = result['tags'];
 	};
 	self.register(self);
 }
 
 function RatingCountCtrl() {
 	var self = this;
-	self.facet = 'RatingWidget';
 	self.ratings = [];
-	self.prepare = function(request) {
-		request.facet.push(self.facet)
+	self.prepare = function() {
+		return 'histogram(id:ratings,field:rating,from:0,to:100,step:20)';
 	};
 	self.update = function(result) {
-		self.ratings = result[self.facet];
+		self.ratings = result['ratings'];
 	};
 	self.register(self);
 }
@@ -445,4 +439,8 @@ angular.widget('zeno:copyright', function(compileElement) {
 
 function encode(value) {
 	return $('<div />').text(value).html();
+}
+
+function defined(a, b) {
+	return a !== undefined ? a : b;	
 }

@@ -2,43 +2,44 @@ package queries;
 
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import models.Bucket;
-import models.Event;
 
+import org.codehaus.jackson.node.ObjectNode;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.common.collect.Lists;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
-import org.elasticsearch.search.SearchHit;
-import org.elasticsearch.search.sort.SortBuilder;
-import org.elasticsearch.search.sort.SortBuilders;
-import org.elasticsearch.search.sort.SortOrder;
 
 import services.IndexManager;
-import widgets.RatingWidget;
-import widgets.TagWidget;
+import widgets.CountWidget;
+import widgets.HistogramWidget;
+import widgets.ListWidget;
 import widgets.TimelineWidget;
 import widgets.Widget;
+import widgets.WidgetBuilder;
+import widgets.WidgetOptions;
 
-import com.google.common.collect.ImmutableList;
+import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Sets;
 import com.google.common.primitives.Ints;
 import common.Nodes;
 
 public class BucketQuery {
 
-	private static final SortBuilder SORT = SortBuilders.fieldSort(Event.DATE_TIME.getName()).order(SortOrder.DESC);
-	private static final ImmutableList<Widget> WIDGETS = ImmutableList.<Widget>of(
-		new TagWidget(Event.TAG.getName(), 10), 
-		new RatingWidget(Event.RATING.getName()),
-		new TimelineWidget(Event.DATE_TIME.getName(), "month"));
+	private static final ImmutableMap<String, WidgetBuilder> builders = ImmutableMap.<String, WidgetBuilder>builder()
+		.put("list", ListWidget.builder())
+		.put("count", CountWidget.builder())
+		.put("histogram", HistogramWidget.builder())
+		.put("timeline", TimelineWidget.builder())
+		.build();
 
 	private final Bucket bucket;
-	private int offset = 0;
-	private int limit = 10;
 	private final Set<Widget> widgets = Sets.newLinkedHashSet();
 	private final List<QueryBuilder> constraints = Lists.newArrayList();
 
@@ -46,31 +47,21 @@ public class BucketQuery {
 		this.bucket = bucket;
 	}
 
-	public BucketQuery setOffset(int offset) {
-		this.offset = offset;
-		return this;
-	}
-
-	public BucketQuery setLimit(int limit) {
-		this.limit = limit;
-		return this;
-	}
-
-	public BucketQuery addFacets(String[] facets) {
-		if (facets != null) {
-			for (String facet : facets) {
-				addFacet(facet);
+	public BucketQuery addWidgets(String[] widgets) {
+		if (widgets != null) {
+			for (String widget : widgets) {
+				addWidget(widget);
 			}
 		}
 		return this;
 	}
 
-	public BucketQuery addFacet(String facet) {
-		for (Widget widget : WIDGETS) {
-			if (widget.getClass().getSimpleName().equals(facet)) {
-				widgets.add(widget);
-			}
-		}
+	public BucketQuery addWidget(String widget) {
+		Matcher m = Pattern.compile("([a-z]+)\\(([^)]+)\\)").matcher(widget);
+		Preconditions.checkState(m.matches(), "Invalid widget: %s", widget);
+		String type = m.group(1);
+		String options = m.group(2);
+		widgets.add(builders.get(type).build(WidgetOptions.parse(options)));
 		return this;
 	}
 
@@ -89,17 +80,15 @@ public class BucketQuery {
 		return this;
 	}
 
-	public BucketResult execute(IndexManager index) {
+	public ObjectNode execute(IndexManager index) {
 		SearchResponse response = search(index);
-		BucketResult result = new BucketResult(bucket);
-		result.setTotal(Ints.checkedCast(response.hits().getTotalHits()));
-		for (SearchHit hit : response.hits()) {
-			result.addEvent(new Event(hit.getId(), hit.getIndex(), Nodes.read(hit.source())));
-		}
+		ObjectNode object = Nodes.newObject();
+		object.putAll(bucket.toJson());
+		object.put("total", Ints.checkedCast(response.hits().getTotalHits()));
 		for (Widget widget : widgets) {
-			result.addFacet(widget.getClass().getSimpleName(), widget.getResult(response));
+			object.put(widget.getId(), widget.process(response));
 		}
-		return result;
+		return object;
 	}
 
 	public SearchResponse search(IndexManager index) {
@@ -112,9 +101,8 @@ public class BucketQuery {
 				((BoolQueryBuilder) query).must(constraint);
 			}
 		}
-		SearchRequestBuilder request = index.prepareSearch(query, SORT, offset, limit);
-		// Logger.info("Filters: %s", filters);
-		for (Widget widget : WIDGETS) {
+		SearchRequestBuilder request = index.prepareSearch(query);
+		for (Widget widget : widgets) {
 			widget.configure(request);
 		}
 		return index.search(request);

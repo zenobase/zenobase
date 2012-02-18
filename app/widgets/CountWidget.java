@@ -6,42 +6,40 @@ import org.codehaus.jackson.node.ObjectNode;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.search.facet.FacetBuilders;
-import org.elasticsearch.search.facet.datehistogram.DateHistogramFacet;
-import org.joda.time.YearMonth;
+import org.elasticsearch.search.facet.terms.TermsFacet;
 
 import common.Nodes;
 
-public class TimelineWidget implements Widget {
+public class CountWidget implements Widget {
 
 	private final String id;
 	private final String field;
-	private final String interval;
+	private final int limit;
 
-	public TimelineWidget(String id, String field, String interval) {
+	private CountWidget(String id, String field, int limit) {
 		this.id = id;
 		this.field = field;
-		this.interval = interval;
+		this.limit = limit;
 	}
 
-	@Override
 	public String getId() {
 		return id;
 	}
 
 	@Override
 	public void configure(SearchRequestBuilder request) {
-		request.addFacet(FacetBuilders.dateHistogramFacet(id)
-			.field(field).interval(interval));
+		request.addFacet(FacetBuilders.termsFacet(id)
+			.field(field).size(limit)); 
 	}
 
 	@Override
 	public JsonNode process(SearchResponse response) {
 		ArrayNode result = Nodes.newArray();
-		DateHistogramFacet months = response.facets().facet(DateHistogramFacet.class, id);
-		for (DateHistogramFacet.Entry month : months.entries()) {
+		TermsFacet terms = response.facets().facet(TermsFacet.class, id);
+		for (TermsFacet.Entry entry : terms.entries()) {
 			ObjectNode entryNode = result.addObject();
-			entryNode.put("label", new YearMonth(month.getTime()).toString());
-			entryNode.put("count", month.getCount());
+			entryNode.put("label", entry.getTerm());
+			entryNode.put("count", entry.getCount());
 		}
 		return result;
 	}
@@ -50,10 +48,10 @@ public class TimelineWidget implements Widget {
 		return new WidgetBuilder() {
 			@Override
 			public Widget build(WidgetOptions options) {
-				return new TimelineWidget(
+				return new CountWidget(
 					options.get("id"),
 					options.get("field"),
-					options.get("interval"));
+					options.get("limit", Integer.class, 10));
 			}
 		};
 	}

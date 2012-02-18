@@ -1,43 +1,39 @@
 package controllers;
 
-import java.util.Arrays;
-
 import com.google.common.base.Objects;
 
 public class SearchForm {
-	public int offset;
-	public int limit = 1;
-	public String[] facet;
-	public String[] filter;
-	public int getOffset() {
-		return offset;
+
+	public String w = "";
+	public String q = "";
+
+	public String getW() {
+		return w;
 	}
-	public void setOffset(int offset) {
-		this.offset = offset;
+
+	public String[] getWidgets() {
+		return w.length() > 0 ? w.split(";") : new String[0];
 	}
-	public int getLimit() {
-		return limit;
+
+	public void setW(String w) {
+		this.w = w;
 	}
-	public void setLimit(int limit) {
-		this.limit = limit;
+
+	public String getQ() {
+		return q;
 	}
-	public String[] getFacet() {
-		return facet;
+
+	public String[] getQueries() {
+		return q.length() > 0 ? q.split(";") : new String[0];
 	}
-	public void setFacet(String[] facet) {
-		this.facet = facet;
+
+	public void setQ(String q) {
+		this.q = q;
 	}
-	public String[] getFilter() {
-		return filter;
-	}
-	public void setFilter(String[] filter) {
-		this.filter = filter;
-	}
+
 	@Override
 	public String toString() {
-		return Objects.toStringHelper(this).add("offset", offset).add("limit", limit)
-				.add("facet", Arrays.toString(facet))
-				.add("filter", Arrays.toString(filter))
-				.toString();
+		return Objects.toStringHelper(this)
+			.add("w", w).add("q", q).toString();
 	}
 }

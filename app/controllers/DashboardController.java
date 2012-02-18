@@ -31,7 +31,7 @@ public class DashboardController extends ControllerSupport {
     public static Result get() {
 		String user = Objects.firstNonNull(SecurityController.user(), "guest");
     	ArrayNode array = Nodes.newArray();
-    	for (Bucket bucket : buckets.findBuckets(user, 0, 10)) {
+    	for (Bucket bucket : buckets.findBuckets(user)) {
     		ObjectNode object = bucket.toJson();
     		object.put("size", bucket.getSize());
     		array.add(object);

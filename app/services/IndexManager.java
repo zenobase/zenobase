@@ -12,10 +12,7 @@ import org.elasticsearch.client.Requests;
 import org.elasticsearch.common.settings.ImmutableSettings;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.index.query.QueryBuilder;
-import org.elasticsearch.search.sort.SortBuilder;
-import org.elasticsearch.search.sort.SortBuilders;
 
-import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import common.Nodes;
 
@@ -62,11 +59,8 @@ public class IndexManager {
 		return client.admin().indices().prepareExists(indexName).execute().actionGet().exists();
 	}
 
-	public SearchRequestBuilder prepareSearch(QueryBuilder query, SortBuilder sort, int offset, int limit) {
-		return client.prepareSearch(indexName)
-	        .setSearchType(SearchType.DFS_QUERY_THEN_FETCH)
-	        .setQuery(query)
-	        .setFrom(offset).setSize(limit).addSort(Objects.firstNonNull(sort, SortBuilders.scoreSort()));
+	public SearchRequestBuilder prepareSearch(QueryBuilder query) {
+		return client.prepareSearch(indexName).setQuery(query).setSearchType(SearchType.DFS_QUERY_THEN_FETCH);
 	}
 
 	public SearchResponse search(SearchRequestBuilder request) {
