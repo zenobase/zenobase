@@ -3,8 +3,8 @@ package widgets;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.node.ArrayNode;
 import org.codehaus.jackson.node.ObjectNode;
-import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
+import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.elasticsearch.search.facet.FacetBuilders;
 import org.elasticsearch.search.facet.datehistogram.DateHistogramFacet;
 import org.joda.time.YearMonth;
@@ -29,8 +29,8 @@ public class TimelineWidget implements Widget {
 	}
 
 	@Override
-	public void configure(SearchRequestBuilder request) {
-		request.addFacet(FacetBuilders.dateHistogramFacet(id)
+	public void configure(SearchSourceBuilder builder) {
+		builder.facet(FacetBuilders.dateHistogramFacet(id)
 			.field(field).interval(interval));
 	}
 

@@ -8,12 +8,12 @@ import java.util.regex.Pattern;
 import models.Bucket;
 
 import org.codehaus.jackson.node.ObjectNode;
-import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.common.collect.Lists;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.search.builder.SearchSourceBuilder;
 
 import services.IndexManager;
 import widgets.CountWidget;
@@ -81,17 +81,20 @@ public class BucketQuery {
 	}
 
 	public ObjectNode execute(IndexManager index) {
-		SearchResponse response = search(index);
-		ObjectNode object = Nodes.newObject();
-		object.putAll(bucket.toJson());
-		object.put("total", Ints.checkedCast(response.hits().getTotalHits()));
-		for (Widget widget : widgets) {
-			object.put(widget.getId(), widget.process(response));
-		}
-		return object;
+		SearchSourceBuilder builder = buildSearch();
+		SearchResponse response = index.search(builder);
+		return toJson(response);
 	}
 
-	public SearchResponse search(IndexManager index) {
+	private SearchSourceBuilder buildSearch() {
+		SearchSourceBuilder builder = new SearchSourceBuilder().query(buildQuery());
+		for (Widget widget : widgets) {
+			widget.configure(builder);
+		}
+		return builder;
+	}
+
+	private QueryBuilder buildQuery() {
 		QueryBuilder query = null;
 		if (constraints.isEmpty()) {
 			query = QueryBuilders.matchAllQuery();
@@ -101,10 +104,16 @@ public class BucketQuery {
 				((BoolQueryBuilder) query).must(constraint);
 			}
 		}
-		SearchRequestBuilder request = index.prepareSearch(query);
+		return query;
+	}
+
+	private ObjectNode toJson(SearchResponse response) {
+		ObjectNode object = Nodes.newObject();
+		object.putAll(bucket.toJson());
+		object.put("total", Ints.checkedCast(response.hits().getTotalHits()));
 		for (Widget widget : widgets) {
-			widget.configure(request);
+			object.put(widget.getId(), widget.process(response));
 		}
-		return index.search(request);
+		return object;
 	}
 }

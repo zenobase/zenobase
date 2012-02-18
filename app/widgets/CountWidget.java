@@ -3,8 +3,8 @@ package widgets;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.node.ArrayNode;
 import org.codehaus.jackson.node.ObjectNode;
-import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
+import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.elasticsearch.search.facet.FacetBuilders;
 import org.elasticsearch.search.facet.terms.TermsFacet;
 
@@ -27,8 +27,8 @@ public class CountWidget implements Widget {
 	}
 
 	@Override
-	public void configure(SearchRequestBuilder request) {
-		request.addFacet(FacetBuilders.termsFacet(id)
+	public void configure(SearchSourceBuilder builder) {
+		builder.facet(FacetBuilders.termsFacet(id)
 			.field(field).size(limit)); 
 	}
 

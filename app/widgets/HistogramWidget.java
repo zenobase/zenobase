@@ -3,8 +3,8 @@ package widgets;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.node.ArrayNode;
 import org.codehaus.jackson.node.ObjectNode;
-import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
+import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.elasticsearch.search.facet.FacetBuilders;
 import org.elasticsearch.search.facet.range.RangeFacet;
 import org.elasticsearch.search.facet.range.RangeFacetBuilder;
@@ -30,14 +30,14 @@ public class HistogramWidget implements Widget {
 		return id;
 	}
 
-	public void configure(SearchRequestBuilder request) {
+	public void configure(SearchSourceBuilder builder) {
 		RangeFacetBuilder facet = FacetBuilders.rangeFacet(id).field(field);
 		facet.addUnboundedFrom(from);
 		for (double i = from; i < to; i += step) {
 			facet.addRange(i, Math.min(i + step, to));
 		}
 		facet.addUnboundedTo(to);
-		request.addFacet(facet);
+		builder.facet(facet);
 	}
 
 	public JsonNode process(SearchResponse response) {

@@ -1,14 +1,14 @@
 package widgets;
 
 import org.codehaus.jackson.JsonNode;
-import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
+import org.elasticsearch.search.builder.SearchSourceBuilder;
 
 public interface Widget {
 
 	String getId();
 
-	void configure(SearchRequestBuilder request);
+	void configure(SearchSourceBuilder request);
 
 	JsonNode process(SearchResponse response);
 }

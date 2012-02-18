@@ -144,16 +144,14 @@ BucketCtrl.$inject = ['$http', '$routeParams', '$location'];
 function BucketCtrl($http, $routeParams, $location) {
 	var self = this;
 	self.params = $routeParams;
-
 	var q = $location.search()['q'];
 	self.filters = q ? q.split(',') : [ ];
-
 	self.widgets = [];
 	self.register = function(widget) {
 		self.widgets.push(widget);
 	};
 	self.search = function(widgetConfigs, callback) {
-		$http.get('/buckets/' + self.params.bucketId + '/?q=' + self.filters.join(escape(';')) + '&w=' + widgetConfigs.join(escape(';'))).success(callback);
+		$http.get('/buckets/' + self.params.bucketId + '/?' + $.param({ 'q' : self.filters, 'w' : widgetConfigs }, true)).success(callback);
 	};
 	self.refresh = function() {
 		var widgetConfigs = [ ];

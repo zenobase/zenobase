@@ -5,9 +5,9 @@ import models.Event;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.node.ArrayNode;
 import org.codehaus.jackson.node.ObjectNode;
-import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.search.SearchHit;
+import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.elasticsearch.search.sort.SortOrder;
 
 import common.Nodes;
@@ -34,10 +34,10 @@ public class ListWidget implements Widget {
 	}
 
 	@Override
-	public void configure(SearchRequestBuilder request) {
-		request.setFrom(offset);
-		request.setSize(limit);
-		request.addSort(sort, order);
+	public void configure(SearchSourceBuilder builder) {
+		builder.from(offset);
+		builder.size(limit);
+		builder.sort(sort, order);
 	}
 
 	@Override

@@ -64,7 +64,7 @@ public class BucketManager {
 		QueryBuilder query = QueryBuilders.boolQuery()
 			.must(QueryBuilders.fieldQuery(Bucket.ID.getName(), bucketId))
 			.must(QueryBuilders.fieldQuery(Bucket.USER.getName(), user));
-		SearchHits hits = buckets.search(buckets.prepareSearch(query)).getHits();
+		SearchHits hits = buckets.search(query).getHits();
 		if (hits.totalHits() > 1) {
 			// Logger.warn("Expected a single match for bucket %s for user %s but got %d", bucketId, user, hits.getTotalHits());
 		}
@@ -77,7 +77,7 @@ public class BucketManager {
 	public ImmutableList<Bucket> findParticipants(String bucketId) {
 		ImmutableList.Builder<Bucket> buckets = ImmutableList.builder();
 		QueryBuilder query = QueryBuilders.fieldQuery(Bucket.ID.getName(), bucketId);
-		for (SearchHit hit : this.buckets.search(this.buckets.prepareSearch(query)).getHits()) {
+		for (SearchHit hit : this.buckets.search(query).getHits()) {
 			buckets.add(fromMap(hit.getSource()));
 		}
 		return buckets.build();
@@ -86,7 +86,7 @@ public class BucketManager {
 	public ImmutableList<Bucket> findBuckets(String user) {
 		ImmutableList.Builder<Bucket> buckets = ImmutableList.builder();
 		QueryBuilder query = QueryBuilders.fieldQuery(Bucket.USER.getName(), user);
-		for (SearchHit hit : this.buckets.search(this.buckets.prepareSearch(query)).getHits()) {
+		for (SearchHit hit : this.buckets.search(query).getHits()) {
 			buckets.add(fromMap(hit.getSource()));
 		}
 		return buckets.build();

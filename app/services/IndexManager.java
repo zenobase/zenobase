@@ -4,7 +4,6 @@ import org.codehaus.jackson.node.ObjectNode;
 import org.elasticsearch.action.admin.indices.create.CreateIndexResponse;
 import org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest;
 import org.elasticsearch.action.get.GetResponse;
-import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.search.SearchType;
 import org.elasticsearch.client.Client;
@@ -12,6 +11,7 @@ import org.elasticsearch.client.Requests;
 import org.elasticsearch.common.settings.ImmutableSettings;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.index.query.QueryBuilder;
+import org.elasticsearch.search.builder.SearchSourceBuilder;
 
 import com.google.common.base.Preconditions;
 import common.Nodes;
@@ -59,12 +59,13 @@ public class IndexManager {
 		return client.admin().indices().prepareExists(indexName).execute().actionGet().exists();
 	}
 
-	public SearchRequestBuilder prepareSearch(QueryBuilder query) {
-		return client.prepareSearch(indexName).setQuery(query).setSearchType(SearchType.DFS_QUERY_THEN_FETCH);
+	public SearchResponse search(QueryBuilder query) {
+		return search(new SearchSourceBuilder().query(query));
 	}
 
-	public SearchResponse search(SearchRequestBuilder request) {
-		return request.execute().actionGet();
+	public SearchResponse search(SearchSourceBuilder search) {
+		return client.search(Requests.searchRequest(indexName)
+			.searchType(SearchType.DFS_QUERY_THEN_FETCH).source(search)).actionGet();
 	}
 
 	public void delete(QueryBuilder query) {

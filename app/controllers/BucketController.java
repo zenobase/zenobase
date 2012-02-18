@@ -10,8 +10,6 @@ import models.Event;
 import org.codehaus.jackson.node.ObjectNode;
 import org.joda.time.DateTime;
 
-import play.Logger;
-import play.data.Form;
 import play.mvc.BodyParser;
 import play.mvc.Result;
 import play.mvc.With;
@@ -41,16 +39,9 @@ public class BucketController extends ControllerSupport {
     	if (bucket == null) {
     		return notFound();
     	}
-    	Form<SearchForm> form = form(SearchForm.class);
-    	if (form.hasErrors()) {
-    		return badRequest();
-    	}
-    	SearchForm search = form.bindFromRequest().get();
-    	Logger.info("?=" + request().uri());
-    	Logger.info("q=" + search.getQ());
-    	Logger.info("w=" + search.getW());
     	ObjectNode result = new BucketQuery(bucket)
-			.addWidgets(search.getWidgets()).addFilters(search.getQueries())
+			.addWidgets(request().queryString().get("w"))
+			.addFilters(request().queryString().get("q"))
 			.execute(node.getIndex(bucketId));
     	return ok(result);
     }
