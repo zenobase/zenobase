@@ -13,7 +13,7 @@ import org.joda.time.DateTime;
 import play.mvc.BodyParser;
 import play.mvc.Result;
 import play.mvc.With;
-import queries.BucketQuery;
+import search.EventSearch;
 import services.BucketManager;
 import services.CommandQueue;
 import services.NodeManager;
@@ -39,7 +39,7 @@ public class BucketController extends ControllerSupport {
     	if (bucket == null) {
     		return notFound();
     	}
-    	ObjectNode result = new BucketQuery(bucket)
+    	ObjectNode result = new EventSearch(bucket)
 			.addWidgets(request().queryString().get("w"))
 			.addFilters(request().queryString().get("q"))
 			.execute(node.getIndex(bucketId));

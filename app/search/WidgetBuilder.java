@@ -1,4 +1,4 @@
-package widgets;
+package search;
 
 public interface WidgetBuilder {
 

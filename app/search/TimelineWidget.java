@@ -1,4 +1,4 @@
-package widgets;
+package search;
 
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.node.ArrayNode;

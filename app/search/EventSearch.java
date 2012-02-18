@@ -1,4 +1,4 @@
-package queries;
+package search;
 
 import java.util.List;
 import java.util.Set;
@@ -16,13 +16,6 @@ import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 
 import services.IndexManager;
-import widgets.CountWidget;
-import widgets.HistogramWidget;
-import widgets.ListWidget;
-import widgets.TimelineWidget;
-import widgets.Widget;
-import widgets.WidgetBuilder;
-import widgets.WidgetOptions;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
@@ -30,7 +23,7 @@ import com.google.common.collect.Sets;
 import com.google.common.primitives.Ints;
 import common.Nodes;
 
-public class BucketQuery {
+public class EventSearch {
 
 	private static final ImmutableMap<String, WidgetBuilder> builders = ImmutableMap.<String, WidgetBuilder>builder()
 		.put("list", ListWidget.builder())
@@ -43,11 +36,11 @@ public class BucketQuery {
 	private final Set<Widget> widgets = Sets.newLinkedHashSet();
 	private final List<QueryBuilder> constraints = Lists.newArrayList();
 
-	public BucketQuery(Bucket bucket) {
+	public EventSearch(Bucket bucket) {
 		this.bucket = bucket;
 	}
 
-	public BucketQuery addWidgets(String[] widgets) {
+	public EventSearch addWidgets(String[] widgets) {
 		if (widgets != null) {
 			for (String widget : widgets) {
 				addWidget(widget);
@@ -56,7 +49,7 @@ public class BucketQuery {
 		return this;
 	}
 
-	public BucketQuery addWidget(String widget) {
+	public EventSearch addWidget(String widget) {
 		Matcher m = Pattern.compile("([a-z]+)\\(([^)]+)\\)").matcher(widget);
 		Preconditions.checkState(m.matches(), "Invalid widget: %s", widget);
 		String type = m.group(1);
@@ -65,7 +58,7 @@ public class BucketQuery {
 		return this;
 	}
 
-	public BucketQuery addFilters(String[] filters) {
+	public EventSearch addFilters(String[] filters) {
 		if (filters != null) {
 			for (String filter : filters) {
 				addFilter(filter);
@@ -74,7 +67,7 @@ public class BucketQuery {
 		return this;
 	}
 
-	public BucketQuery addFilter(String filter) {
+	public EventSearch addFilter(String filter) {
 		String[] tokens = filter.split(":", 2);
 		constraints.add(QueryBuilders.fieldQuery(tokens[0], tokens[1]));
 		return this;

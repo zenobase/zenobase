@@ -1,4 +1,4 @@
-package widgets;
+package search;
 
 import java.util.Map;
 
