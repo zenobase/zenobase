@@ -36,14 +36,14 @@ public class BucketController extends ControllerSupport {
 
 	public static Result get(String bucketId) throws IOException {
 		Bucket bucket = buckets.findBucket(bucketId, SecurityController.user());
-    	if (bucket == null) {
-    		return notFound();
-    	}
-    	ObjectNode result = new EventSearch(bucket)
+    	return bucket != null ? get(bucket) : notFound();
+    }
+
+	private static Result get(Bucket bucket) throws IOException {
+    	return ok(new EventSearch(bucket)
 			.addWidgets(request().queryString().get("w"))
 			.addFilters(request().queryString().get("q"))
-			.execute(node.getIndex(bucketId));
-    	return ok(result);
+			.execute(node.getIndex(bucket.getId())));
     }
 
 	@BodyParser.Of(value = BodyParser.Json.class, maxLength = 1000)
@@ -84,13 +84,15 @@ public class BucketController extends ControllerSupport {
 
     public static Result delete(String bucketId) {
 		String user = SecurityController.user();
-		if (user == null) {
-			return forbidden();
-		}
+		return user != null ? delete(bucketId, user) : forbidden();
+    }
+
+    private static Result delete(String bucketId, String user) {
     	Bucket bucket = buckets.findBucket(bucketId, user);
-    	if (bucket == null) {
-    		return notFound();
-    	}
+    	return bucket != null ? delete(bucket) : notFound();
+    }
+
+    private static Result delete(Bucket bucket) {
     	if (!"owner".equals(bucket.getRole())) {
     		return forbidden();
     	}
