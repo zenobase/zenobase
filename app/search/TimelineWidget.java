@@ -38,10 +38,10 @@ public class TimelineWidget implements Widget {
 	public JsonNode process(SearchResponse response) {
 		ArrayNode result = Nodes.newArray();
 		DateHistogramFacet months = response.facets().facet(DateHistogramFacet.class, id);
-		for (DateHistogramFacet.Entry month : months.entries()) {
+		for (DateHistogramFacet.Entry entry : months.entries()) {
 			ObjectNode entryNode = result.addObject();
-			entryNode.put("label", new YearMonth(month.getTime()).toString());
-			entryNode.put("count", month.getCount());
+			entryNode.put("label", new YearMonth(entry.getTime()).toString());
+			entryNode.put("count", entry.getCount());
 		}
 		return result;
 	}

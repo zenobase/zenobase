@@ -242,6 +242,44 @@ function RatingCountCtrl() {
 	self.register(self);
 }
 
+function TimelineCtrl() {
+	var self = this;
+	self.interval = 'month';
+	self.times = [];
+	self.prepare = function() {
+		return 'timeline(id:timeline,field:dateTime,interval:' + self.interval + ')';
+	};
+	self.update = function(result) {
+		self.times = result['timeline'];
+		self.draw();
+	};
+	self.register(self);
+}
+
+TimelineCtrl.prototype.draw = function() {
+	var data = new google.visualization.DataTable();
+	data.addColumn('string', this.interval);
+	data.addColumn('number', 'Count');
+	$.each(this.times, function(i, time) {
+		data.addRow([ time.label, time.count ]);
+	});
+	var options = {
+		height : 200,
+		legend : { position : 'none' },
+		series : [ { color : 'gray' } ],
+		chartArea : { width: '100%', left: 0 },
+		vAxis : { gridlines : { color : 'silver' }, baselineColor : 'white' },
+		hAxis : { baselineColor : 'white', textPosition : 'none' }, 
+	};
+	var chart = new google.visualization.ColumnChart(document.getElementById('timeline'));
+	chart.draw(data, options);
+	google.visualization.events.addListener(chart, 'select', function() {
+		var selection = chart.getSelection();
+		console.log('v', data.getValue(selection[0].row, 0));
+	});
+}
+
+
 TemplateCtrl.$inject = ['$http', '$defer', '$routeParams'];
 function TemplateCtrl($http, $defer, $routeParams) {
 	var self = this;
