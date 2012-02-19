@@ -15,6 +15,7 @@ import org.elasticsearch.search.SearchHits;
 import play.Logger;
 import secure.Identity;
 
+import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 
 public class BucketManager {
@@ -67,9 +68,8 @@ public class BucketManager {
 			.must(QueryBuilders.termQuery(Bucket.ID.getName(), bucketId))
 			.must(QueryBuilders.termQuery(Bucket.IDENTITY.getName(), identity.getId()));
 		SearchHits hits = buckets.search(query).getHits();
-		if (hits.totalHits() > 1) {
-			// Logger.warn("Expected a single match for bucket %s for user %s but got %d", bucketId, user, hits.getTotalHits());
-		}
+		Preconditions.checkState(hits.totalHits() <= 1,
+			"Expected 0..1 hits for bucket '%s' with identity '%s' but got %s", bucketId, identity, hits.totalHits());
 		if (hits.totalHits() == 1) {
 			return fromMap(hits.getAt(0).getSource());
 		}

@@ -21,9 +21,9 @@
 					<ul class="nav">
 						<li><a href="#/"><strong>Home</strong></a></li>
 					</ul>
-					<ul class="nav pull-right">
+					<ul class="nav pull-right ng-cloak" ng:cloak>
 						<li class="dropdown" ng:show="user">
-							<a class="dropdown-toggle" data-toggle="dropdown" href="#">{{user.name}} <b class="caret"></b></a>
+							<a class="dropdown-toggle" data-toggle="dropdown" href="#">{{username()}} <b class="caret"></b></a>
 							<ul class="dropdown-menu">
 								<li><a ng:click="signOut()">Sign out</a></li>
 							</ul>
@@ -73,7 +73,7 @@
 							<div class="controls">
 								<label class="checkbox">
 									<input type="checkbox" id="remember" ng:model="remember">
-									Remember
+									Remember me
 								</label>
 							</div>
 						</div>

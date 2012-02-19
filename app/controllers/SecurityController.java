@@ -21,8 +21,9 @@ public class SecurityController extends ControllerSupport {
 
 	public static Result signUp(SignInForm form) {
 		User user = new User(identity(true), form.getUsername());
-		user.setPassword(form.getPassword());
+		user.changePassword(form.getPassword());
 		users.store(user);
+		setCookie(user.getIdentity(), form.isRemember());
 		return noContent();
 	}
 
@@ -34,17 +35,20 @@ public class SecurityController extends ControllerSupport {
 		}
 		User user = users.find(signIn.getUsername());
 		if (user == null) {
+			Logger.info(String.format("Signing up %s", signIn.getUsername()));
 			return signUp(signIn);
 		}
 		else if (!user.passwordEquals(signIn.getPassword())) {
+			Logger.info(String.format("Rejected sign in for %s", signIn.getUsername()));
 			return unauthorized();
 		}
+		Logger.info(String.format("Signing in %s", signIn.getUsername()));
 		setCookie(user.getIdentity(), signIn.isRemember());
 		return noContent();
 	}
 
 	private static void setCookie(Identity identity, boolean remember) {
-		response().setCookie(TOKEN_NAME, Crypto.sign(identity.getId()) + TOKEN_SEPARATOR + identity.getId(), remember ? 60 * 60 * 24 * 30 : -1);
+		response().setCookie(TOKEN_NAME, Crypto.sign(identity.getId()) + TOKEN_SEPARATOR + identity.getId(), remember ? 60 * 60 * 24 * 30 : -1, "/", null, false, true);
 	}
 
 	public static Result signOut() {

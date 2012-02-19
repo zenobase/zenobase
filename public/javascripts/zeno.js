@@ -7,12 +7,18 @@ function MainCtrl($route, $http, $location, $cookies) {
 	}
 
 	self.user = null;
-	var identity = self.parseToken($cookies.token);
-	if (identity != null) {
-		$http({ method : 'GET', url : '/users/?identity=' + identity, headers : { 'Content-Type' : 'application/x-www-form-urlencoded' }}).success(function(response, code) {
-			self.user = response;
-		});
-	}
+	$http({ method : 'GET', url : '/who', headers : { 'Content-Type' : 'application/x-www-form-urlencoded' }}).success(function(response, code) {
+		self.user = response;
+	});
+	self.username = function() {
+		if (!self.user) {
+			return null;
+		}
+		if (!self.user.hasOwnProperty('name')) {
+			return 'guest';
+		}
+		return self.user.name;
+	};
 
 	self.alert = new Alert();
 	self.undo = function(commandId) {
