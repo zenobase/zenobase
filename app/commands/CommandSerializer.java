@@ -14,7 +14,7 @@ public class CommandSerializer {
 		ObjectNode object = Nodes.newObject();
 		object.put("id", command.getId());
 		object.put("label", command.toString());
-		object.put("user", command.getUser());
+		object.put("identity", command.getIdentity().getId());
 		object.put("timestamp", command.getTimestamp().toString());
 		return object;
 	}

@@ -4,6 +4,8 @@ import junit.framework.Assert;
 
 import org.junit.Test;
 
+import secure.Identity;
+
 import commands.Command;
 import commands.CommandSupport;
 
@@ -42,7 +44,7 @@ public class CommandQueueTest {
 		private final String label;
 
 		public MockCommand(String label) {
-			super("me");
+			super(new Identity("me"));
 			this.label = label;
 		}
 

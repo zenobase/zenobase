@@ -9,13 +9,13 @@ public class DeleteBucketCommand extends CommandSupport {
 	private final Bucket bucket;
 
 	public DeleteBucketCommand(BucketManager manager, Bucket bucket) {
-		super(bucket.getUser());
+		super(bucket.getIdentity());
 		this.manager = manager;
 		this.bucket = bucket;
 	}
 
 	public void execute() {
-		manager.deleteBucket(bucket.getId(), bucket.getUser());
+		manager.deleteBucket(bucket.getId(), bucket.getIdentity());
 	}
 
 	public CreateBucketCommand reverse() {

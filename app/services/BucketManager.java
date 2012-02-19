@@ -13,6 +13,7 @@ import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
 
 import play.Logger;
+import secure.Identity;
 
 import com.google.common.collect.ImmutableList;
 
@@ -53,17 +54,18 @@ public class BucketManager {
 		buckets.index(Bucket.TYPE_NAME, bucket.getId(), bucket.toJson(), true);
 	}
 
-	public void deleteBucket(String id, String user) {
+	public void deleteBucket(String id, Identity identity) {
 		QueryBuilder query = QueryBuilders.boolQuery()
-			.must(QueryBuilders.fieldQuery(Bucket.ID.getName(), id))
-			.must(QueryBuilders.fieldQuery(Bucket.USER.getName(), user));
+			.must(QueryBuilders.termQuery(Bucket.ID.getName(), id))
+			.must(QueryBuilders.termQuery(Bucket.IDENTITY.getName(), identity.getId()));
 		buckets.delete(query);
 	}
 
-	public Bucket findBucket(String bucketId, String user) {
+	public Bucket findBucket(String bucketId, Identity identity) {
+		Logger.info("find bucket " + bucketId + " for " + identity);
 		QueryBuilder query = QueryBuilders.boolQuery()
-			.must(QueryBuilders.fieldQuery(Bucket.ID.getName(), bucketId))
-			.must(QueryBuilders.fieldQuery(Bucket.USER.getName(), user));
+			.must(QueryBuilders.termQuery(Bucket.ID.getName(), bucketId))
+			.must(QueryBuilders.termQuery(Bucket.IDENTITY.getName(), identity.getId()));
 		SearchHits hits = buckets.search(query).getHits();
 		if (hits.totalHits() > 1) {
 			// Logger.warn("Expected a single match for bucket %s for user %s but got %d", bucketId, user, hits.getTotalHits());
@@ -76,16 +78,16 @@ public class BucketManager {
 
 	public ImmutableList<Bucket> findParticipants(String bucketId) {
 		ImmutableList.Builder<Bucket> buckets = ImmutableList.builder();
-		QueryBuilder query = QueryBuilders.fieldQuery(Bucket.ID.getName(), bucketId);
+		QueryBuilder query = QueryBuilders.termQuery(Bucket.ID.getName(), bucketId);
 		for (SearchHit hit : this.buckets.search(query).getHits()) {
 			buckets.add(fromMap(hit.getSource()));
 		}
 		return buckets.build();
 	}
 
-	public ImmutableList<Bucket> findBuckets(String user) {
+	public ImmutableList<Bucket> findBuckets(Identity identity) {
 		ImmutableList.Builder<Bucket> buckets = ImmutableList.builder();
-		QueryBuilder query = QueryBuilders.fieldQuery(Bucket.USER.getName(), user);
+		QueryBuilder query = QueryBuilders.termQuery(Bucket.IDENTITY.getName(), identity.getId());
 		for (SearchHit hit : this.buckets.search(query).getHits()) {
 			buckets.add(fromMap(hit.getSource()));
 		}
@@ -96,7 +98,7 @@ public class BucketManager {
 		String id = (String) map.get(Bucket.ID.getName());
 		Bucket bucket = new Bucket(manager.getIndex(id), id);
 		bucket.setLabel(map.get(Bucket.LABEL.getName()).toString());
-		bucket.setUser(map.get(Bucket.USER.getName()).toString());
+		bucket.setIdentity(new Identity(map.get(Bucket.IDENTITY.getName()).toString()));
 		bucket.setRole(map.get(Bucket.ROLE.getName()).toString());
 		return bucket;
 	}

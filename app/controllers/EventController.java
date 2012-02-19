@@ -1,7 +1,5 @@
 package controllers;
 
-import java.io.IOException;
-
 import javax.inject.Inject;
 
 import models.Bucket;
@@ -17,9 +15,9 @@ public class EventController extends ControllerSupport {
 	@Inject
 	static BucketManager manager;
 
-    public static Result get(String bucketId, String eventId) throws IOException {
+    public static Result get(String bucketId, String eventId) {
 		// Logger.info("Event: %s/%s", bucketId, eventId);
-    	Bucket bucket = manager.findBucket(bucketId, SecurityController.user());
+    	Bucket bucket = manager.findBucket(bucketId, SecurityController.identity(false));
     	if (bucket == null) {
     		return notFound();
     	}

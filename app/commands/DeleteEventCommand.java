@@ -9,7 +9,7 @@ public class DeleteEventCommand extends CommandSupport {
 	private final Event event;
 
 	public DeleteEventCommand(Bucket bucket, Event event) {
-		super(bucket.getUser());
+		super(bucket.getIdentity());
 		this.bucket = bucket;
 		this.event = event;
 	}

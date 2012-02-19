@@ -5,6 +5,8 @@
 # Home page
 GET     /                            controllers.Assets.at(path="/public", file="index.html")
 
+GET     /users/                      controllers.UserController.find(identity)
+
 POST    /signin                      controllers.SecurityController.signIn()
 POST    /signout                     controllers.SecurityController.signOut()
 

@@ -2,24 +2,26 @@ package commands;
 
 import org.joda.time.DateTime;
 
+import secure.Identity;
+
 import common.Generator;
 
 public abstract class CommandSupport implements Command {
 
 	private final String id = Generator.id();
-	private final String user;
+	private final Identity identity;
 	private final DateTime timestamp = new DateTime();
 
-	public CommandSupport(String user) {
-		this.user = user;
+	public CommandSupport(Identity identity) {
+		this.identity = identity;
 	}
 
 	public String getId() {
 		return id;
 	}
-	
-	public String getUser() {
-		return user;
+
+	public Identity getIdentity() {
+		return identity;
 	}
 
 	public DateTime getTimestamp() {

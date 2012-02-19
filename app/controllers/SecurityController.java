@@ -1,44 +1,89 @@
 package controllers;
 
-import java.io.IOException;
-
+import play.Logger;
 import play.api.libs.Crypto;
 import play.data.Form;
 import play.mvc.Http;
 import play.mvc.Result;
+import secure.Identity;
+import secure.User;
+import secure.UserManager;
+
+import com.google.inject.Inject;
 
 public class SecurityController extends ControllerSupport {
 
-	private static final String COOKIE_NAME = "token";
+	private static final String TOKEN_NAME = "token";
+	private static final char TOKEN_SEPARATOR = '-';
 
-	public static Result signIn() throws IOException {
+	@Inject
+	static UserManager users;
+
+	public static Result signUp(SignInForm form) {
+		User user = new User(identity(true), form.getUsername());
+		user.setPassword(form.getPassword());
+		users.store(user);
+		return noContent();
+	}
+
+	public static Result signIn() {
 		Form<SignInForm> form = form(SignInForm.class);
 		SignInForm signIn = form.bindFromRequest().get();
 		if (form.hasErrors()) {
 			return badRequest();
 		}
-		else {
-			response().setCookie(COOKIE_NAME, Crypto.sign(signIn.getUsername()) + "-" + signIn.getUsername(), signIn.isRemember() ? 60 * 60 * 24 * 30 : -1);
-			return noContent();
+		User user = users.find(signIn.getUsername());
+		if (user == null) {
+			return signUp(signIn);
 		}
-	}
-
-	public static Result signOut() {
-		response().discardCookies(COOKIE_NAME);
+		else if (!user.passwordEquals(signIn.getPassword())) {
+			return unauthorized();
+		}
+		setCookie(user.getIdentity(), signIn.isRemember());
 		return noContent();
 	}
 
-	public boolean authenticate(SignInForm sigIn) {
-		return "123".equals(sigIn.getPassword());
+	private static void setCookie(Identity identity, boolean remember) {
+		response().setCookie(TOKEN_NAME, Crypto.sign(identity.getId()) + TOKEN_SEPARATOR + identity.getId(), remember ? 60 * 60 * 24 * 30 : -1);
 	}
 
-	public static String user() {
-		Http.Cookie remember = request().cookies().get(COOKIE_NAME);
-		if (remember != null && remember.value().indexOf('-') > 0) {
-			String sign = remember.value().substring(0, remember.value().indexOf('-'));
-			String username = remember.value().substring(remember.value() .indexOf('-') + 1);
-			return Crypto.sign(username).equals(sign) ? username : null;
+	public static Result signOut() {
+		response().discardCookies(TOKEN_NAME);
+		return noContent();
+	}
+
+	public static User user() {
+		Identity identity = identity(false);
+		return identity != null ? users.find(identity()) : null;
+	}
+
+	public static Identity identity(boolean createIfNotPresent) {
+		Identity identity = identity();
+		if (identity == null && createIfNotPresent) {
+			identity = createIdentity();
+		}
+		return identity;
+	}
+
+	private static Identity identity() {
+		Http.Cookie remember = request().cookies().get(TOKEN_NAME);
+		if (remember != null && remember.value().indexOf(TOKEN_SEPARATOR) > 0) {
+			String sign = remember.value().substring(0, remember.value().indexOf(TOKEN_SEPARATOR));
+			String identity = remember.value().substring(remember.value() .indexOf(TOKEN_SEPARATOR) + 1);
+			if (Crypto.sign(identity).equals(sign)) {
+				Logger.info("Found existing identity: " + identity);
+				return new Identity(identity);
+			} else {
+				Logger.warn("Corrupted identity: " + identity);
+			}
 		}
 		return null;
+	}
+
+	private static Identity createIdentity() {
+		Identity identity = new Identity();
+		Logger.info("Created new identity: " + identity);
+		setCookie(identity, true);
+		return identity;
 	}
 }

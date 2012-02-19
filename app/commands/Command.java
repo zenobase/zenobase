@@ -2,6 +2,8 @@ package commands;
 
 import org.joda.time.DateTime;
 
+import secure.Identity;
+
 public interface Command {
 
 	void execute();
@@ -10,7 +12,7 @@ public interface Command {
 
 	String getId();
 
-	String getUser();
+	Identity getIdentity();
 
 	DateTime getTimestamp();
 }

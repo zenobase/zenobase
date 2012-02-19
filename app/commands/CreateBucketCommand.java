@@ -10,7 +10,7 @@ public class CreateBucketCommand extends CommandSupport {
 	private final boolean createIndex;
 
 	public CreateBucketCommand(BucketManager manager, Bucket bucket, boolean createIndex) {
-		super(bucket.getUser());
+		super(bucket.getIdentity());
 		this.manager = manager;
 		this.bucket = bucket;
 		this.createIndex = createIndex;

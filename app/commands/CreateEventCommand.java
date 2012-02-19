@@ -9,7 +9,7 @@ public class CreateEventCommand extends CommandSupport {
 	private final Event event;
 
 	public CreateEventCommand(Bucket bucket, Event event) {
-		super(bucket.getUser());
+		super(bucket.getIdentity());
 		this.bucket = bucket;
 		this.event = event;
 	}

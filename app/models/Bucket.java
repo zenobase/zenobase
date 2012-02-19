@@ -6,6 +6,7 @@ import schema.Field;
 import schema.SchemaBuilder;
 import schema.TextType;
 import schema.TokenType;
+import secure.Identity;
 import services.IndexManager;
 
 import com.google.common.base.Objects;
@@ -16,16 +17,16 @@ public class Bucket {
 
 	public static final String TYPE_NAME = "bucket";
 	public static final Field<Token> ID = Field.of("id", new TokenType());
-	public static final Field<Token> USER = Field.of("user", new TokenType());
+	public static final Field<Token> IDENTITY = Field.of("identity", new TokenType());
 	public static final Field<Token> ROLE = Field.of("role", new TokenType());
 	public static final Field<Text> LABEL = Field.of("label", new TextType());
 
-	private static final ImmutableSet<Field<?>> FIELDS = ImmutableSet.of(ID, USER, ROLE, LABEL);
+	private static final ImmutableSet<Field<?>> FIELDS = ImmutableSet.of(ID, IDENTITY, ROLE, LABEL);
 
 	private final IndexManager index;
 	private final String id;
 	private String label;
-	private String user;
+	private Identity identity;
 	private String role;
 
 	public Bucket(IndexManager index, String id) {
@@ -41,12 +42,12 @@ public class Bucket {
 		this.label = label;
 	}
 
-	public String getUser() {
-		return user;
+	public Identity getIdentity() {
+		return identity;
 	}
 
-	public void setUser(String user) {
-		this.user = user;
+	public void setIdentity(Identity identity) {
+		this.identity = identity;
 	}
 
 	public String getRole() {
@@ -90,7 +91,7 @@ public class Bucket {
 	public ObjectNode toJson() {
 		ObjectNode object = Nodes.newObject();
 		ID.getType().add(object, ID.getName(), Token.valueOf(id));
-		USER.getType().add(object, USER.getName(), Token.valueOf(user));
+		IDENTITY.getType().add(object, IDENTITY.getName(), Token.valueOf(identity.getId()));
 		ROLE.getType().add(object, ROLE.getName(), Token.valueOf(role));
 		LABEL.getType().add(object, LABEL.getName(), Text.valueOf(label));
 		return object;

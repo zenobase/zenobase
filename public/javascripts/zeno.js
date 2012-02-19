@@ -1,14 +1,19 @@
-function getUser(token) {
-	var tokens = token ?
-		token.split('-') : [];
-	return tokens.length > 1 ?
-		new User(tokens[1]) : undefined;
-}
-
 MainCtrl.$inject = ['$route', '$http', '$location', '$cookies'];
 function MainCtrl($route, $http, $location, $cookies) {
 	var self = this;
-	self.user = getUser($cookies.token);
+	self.parseToken = function(token) {
+		var i = token ? token.indexOf('-') : -1;
+		return i != -1 ? token.substring(i + 1) : null;
+	}
+
+	self.user = null;
+	var identity = self.parseToken($cookies.token);
+	if (identity != null) {
+		$http({ method : 'GET', url : '/users/?identity=' + identity, headers : { 'Content-Type' : 'application/x-www-form-urlencoded' }}).success(function(response, code) {
+			self.user = response;
+		});
+	}
+
 	self.alert = new Alert();
 	self.undo = function(commandId) {
 		$http({ method : 'POST', url : commandId, data : 'undo', headers : { 'Content-Type' : 'application/x-www-form-urlencoded' }}).success(function(response, code) {

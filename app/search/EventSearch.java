@@ -69,7 +69,7 @@ public class EventSearch {
 
 	public EventSearch addFilter(String filter) {
 		String[] tokens = filter.split(":", 2);
-		constraints.add(QueryBuilders.fieldQuery(tokens[0], tokens[1]));
+		constraints.add(QueryBuilders.termQuery(tokens[0], tokens[1]));
 		return this;
 	}
 

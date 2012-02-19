@@ -32,7 +32,7 @@ public class QueueController extends ControllerSupport {
     	if (command == null) {
     		return notFound();
     	}
-		if (!command.getUser().equals(SecurityController.user())) {
+		if (!command.getIdentity().equals(SecurityController.identity(false))) {
 			return forbidden();
 		}
         return undo(command);

@@ -1,5 +1,6 @@
 import play.Application;
 import play.GlobalSettings;
+import secure.UserManager;
 import services.BucketManager;
 import services.CommandQueue;
 import services.NodeManager;
@@ -9,11 +10,12 @@ import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Singleton;
 
-import controllers.SecurityController;
 import controllers.BucketController;
 import controllers.DashboardController;
 import controllers.EventController;
 import controllers.QueueController;
+import controllers.SecurityController;
+import controllers.UserController;
 
 public class Global extends GlobalSettings {
 
@@ -27,11 +29,13 @@ public class Global extends GlobalSettings {
 				bind(NodeManager.class).in(Singleton.class);
 				bind(BucketManager.class).in(Singleton.class);
 				bind(CommandQueue.class).in(Singleton.class);
+				bind(UserManager.class).in(Singleton.class);
 				requestStaticInjection(QueueController.class);
 				requestStaticInjection(DashboardController.class);
 				requestStaticInjection(SecurityController.class);
 				requestStaticInjection(BucketController.class);
 				requestStaticInjection(EventController.class);
+				requestStaticInjection(UserController.class);
 			}
 		});
 	}

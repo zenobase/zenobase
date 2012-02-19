@@ -1,7 +1,5 @@
 package controllers;
 
-import java.io.IOException;
-
 import javax.inject.Inject;
 
 import models.Bucket;
@@ -14,6 +12,7 @@ import play.mvc.BodyParser;
 import play.mvc.Result;
 import play.mvc.With;
 import search.EventSearch;
+import secure.Identity;
 import services.BucketManager;
 import services.CommandQueue;
 import services.NodeManager;
@@ -34,12 +33,12 @@ public class BucketController extends ControllerSupport {
 	@Inject
 	static BucketManager buckets;
 
-	public static Result get(String bucketId) throws IOException {
-		Bucket bucket = buckets.findBucket(bucketId, SecurityController.user());
+	public static Result get(String bucketId) {
+		Bucket bucket = buckets.findBucket(bucketId, SecurityController.identity(false));
     	return bucket != null ? get(bucket) : notFound();
     }
 
-	private static Result get(Bucket bucket) throws IOException {
+	private static Result get(Bucket bucket) {
     	return ok(new EventSearch(bucket)
 			.addWidgets(request().queryString().get("w"))
 			.addFilters(request().queryString().get("q"))
@@ -47,17 +46,17 @@ public class BucketController extends ControllerSupport {
     }
 
 	@BodyParser.Of(value = BodyParser.Json.class, maxLength = 1000)
-	public static Result post(String bucketId) throws IOException {
+	public static Result post(String bucketId) {
 		
-		String user = SecurityController.user();
-		if (user == null) {
+		Identity identity = SecurityController.identity(false);
+		if (identity == null) {
 			return forbidden();
 		}
 		ObjectNode body = (ObjectNode) request().body().asJson();
 		if (body == null) {
 			return badRequest();
 		}
-    	Bucket bucket = buckets.findBucket(bucketId, user);
+    	Bucket bucket = buckets.findBucket(bucketId, identity);
     	if (bucket == null) {
     		return notFound();
     	}
@@ -65,7 +64,7 @@ public class BucketController extends ControllerSupport {
     		return forbidden();
     	}
     	if (body.has("random")) {
-    		String commandId = queue.execute(new GenerateRandomEventsCommand(user, bucket, body.get("random").asInt()));
+    		String commandId = queue.execute(new GenerateRandomEventsCommand(identity, bucket, body.get("random").asInt()));
             response().setHeader(LOCATION, String.format("/buckets/%s/", bucket.getId()));
             response().setHeader("Undo", String.format("/queue/%s", commandId));
             return created();
@@ -83,12 +82,12 @@ public class BucketController extends ControllerSupport {
     }
 
     public static Result delete(String bucketId) {
-		String user = SecurityController.user();
-		return user != null ? delete(bucketId, user) : forbidden();
+    	Identity identity = SecurityController.identity(false);
+		return identity != null ? delete(bucketId, identity) : forbidden();
     }
 
-    private static Result delete(String bucketId, String user) {
-    	Bucket bucket = buckets.findBucket(bucketId, user);
+    private static Result delete(String bucketId, Identity identity) {
+    	Bucket bucket = buckets.findBucket(bucketId, identity);
     	return bucket != null ? delete(bucket) : notFound();
     }
 
