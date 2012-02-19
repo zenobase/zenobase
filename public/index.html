@@ -36,6 +36,13 @@
 			</div>
 		</div>
 
+		<div class="container-fluid" ng:show="username() == 'guest'" ng:cloak>
+			<div class="alert">
+				Your data will be lost when you sign out or close the browser. 
+				<a href="#sign-up-dialog" data-toggle="modal">Sign up</a> to save your data.
+			</div>
+		</div>
+
 		<div class="container-fluid" ng:cloak>
 			<div class="alert {{alert.level}}">
 				<a class="close" ng:click="alert.clear()">&times;</a>
@@ -87,6 +94,45 @@
 		<script type="text/javascript">
 			$('#sign-in-dialog').on('shown', function () {
 				$('#username').select();
+			})
+		</script>
+
+		<div id="sign-up-dialog" class="modal hide" ng:controller="SignUpFormCtrl">
+			<form name="signUpForm" ng:submit="submit()">
+					<div class="modal-header">
+						<a class="close" data-dismiss="modal">&times;</a>
+						<h3>Sign up</h3>
+					</div>
+					<div class="modal-body">
+						<div class="control-group">
+							<label for="sign-up-username">User Name</label>
+							<input id="sign-up-username" name="username" type="text" class="large" required ng:minlength="4" ng:maxlength="16" ng:pattern="/[a-z0-9]+/" ng:model="username"/>
+							<span class="help-inline error" ng:show="signUpForm.username.$error.MINLENGTH">Too short</span>
+							<span class="help-inline error" ng:show="signUpForm.username.$error.MAXLENGTH">Too long</span>
+							<span class="help-inline error" ng:show="signUpForm.username.$error.REQUIRED">Required</span>
+						</div>
+						<div class="control-group">
+							<label for="sign-up-password">Password</label>
+							<input id="sign-up-password" name="password" type="password" class="large" required ng:model="password"/>
+						</div>
+						<div class="control-group">
+							<label for="sign-up-password-repeat">Password (repeat)</label>
+							<input id="sign-up-password-repeat" name="passwordRepeat" type="password" class="large" required ng:model="passwordRepeat"/>
+						</div>
+						<div class="control-group">
+							<label for="sign-up-email">Email</label>
+							<input id="sign-up-email" name="email" type="password" class="large" required ng:model="email"/>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="submit" class="btn btn-primary">Sign up</button>
+						<button type="reset" class="btn" data-dismiss="modal">Cancel</button>
+					</div>
+			</form>
+		</div>
+		<script type="text/javascript">
+			$('#sign-up-dialog').on('shown', function () {
+				$('#sign-up-username').select();
 			})
 		</script>
 

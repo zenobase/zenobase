@@ -7,9 +7,12 @@ function MainCtrl($route, $http, $location, $cookies) {
 	}
 
 	self.user = null;
-	$http({ method : 'GET', url : '/who', headers : { 'Content-Type' : 'application/x-www-form-urlencoded' }}).success(function(response, code) {
-		self.user = response;
-	});
+	self.whoami = function() {
+		$http({ method : 'GET', url : '/who', headers : { 'Content-Type' : 'application/x-www-form-urlencoded' }}).success(function(response, code) {
+			self.user = response;
+		});
+	};
+	self.whoami();
 	self.username = function() {
 		if (!self.user) {
 			return null;
@@ -75,8 +78,8 @@ function User(name) {
 	this.name = name;
 }
 
-AuthFormCtrl.$inject = ['$http', '$location'];
-function AuthFormCtrl($http, $location) {
+AuthFormCtrl.$inject = ['$http'];
+function AuthFormCtrl($http) {
 	var self = this;
 	self.username = '';
 	self.password = '';
@@ -88,6 +91,27 @@ function AuthFormCtrl($http, $location) {
 			self.password = '';
 			self.alert.clear();
 			$('#sign-in-dialog').modal('hide');
+			self.reload();
+		});
+	}
+}
+
+SignUpFormCtrl.$inject = ['$http'];
+function SignUpFormCtrl($http) {
+	var self = this;
+	self.username = '';
+	self.password = '';
+	self.passwordRepeat = '';
+	self.email = '';
+	self.submit = function() {
+		$http({ method : 'POST', url : '/signup', data : $.param({ username : self.username, password : self.password, email : self.email, remember : true }), headers : { 'Content-Type' : 'application/x-www-form-urlencoded' }}).success(function(response, code) {
+			self.setUser(response);
+			self.username = '';
+			self.password = '';
+			self.passwordRepeat = '';
+			self.email = '';
+			self.alert.clear();
+			$('#sign-up-dialog').modal('hide');
 			self.reload();
 		});
 	}
@@ -147,6 +171,7 @@ function CreateBucketDialogCtrl($http, $location) {
 			self.alert.show('Created a new bucket.', 'alert-success', undo);
 			$('#create-bucket-dialog').modal('hide');
 			$location.url(location);
+			self.whoami();
 		});
 	}
 }

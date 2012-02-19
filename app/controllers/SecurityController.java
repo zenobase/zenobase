@@ -19,12 +19,26 @@ public class SecurityController extends ControllerSupport {
 	@Inject
 	static UserManager users;
 
-	public static Result signUp(SignInForm form) {
-		User user = new User(identity(true), form.getUsername());
-		user.changePassword(form.getPassword());
+	public static Result signUp() {
+		Form<SignUpForm> form = form(SignUpForm.class);
+		SignUpForm signUp = form.bindFromRequest().get();
+		if (form.hasErrors()) {
+			return badRequest();
+		}
+		User user = users.find(signUp.getUsername());
+		if (user != null) {
+			return badRequest("user exists");
+		}
+		boolean isGuest = identity(false) != null;
+		Logger.info(String.format("Signing up %s", signUp.getUsername()));
+		user = new User(identity(true), signUp.getUsername());
+		user.setEmail(signUp.getEmail());
+		user.changePassword(signUp.getPassword());
 		users.store(user);
-		setCookie(user.getIdentity(), form.isRemember());
-		return noContent();
+		if (!isGuest) {
+			setCookie(user.getIdentity(), true);
+		}
+		return created(user.toJson());
 	}
 
 	public static Result signIn() {
@@ -34,11 +48,7 @@ public class SecurityController extends ControllerSupport {
 			return badRequest();
 		}
 		User user = users.find(signIn.getUsername());
-		if (user == null) {
-			Logger.info(String.format("Signing up %s", signIn.getUsername()));
-			return signUp(signIn);
-		}
-		else if (!user.passwordEquals(signIn.getPassword())) {
+		if (user == null || !user.passwordEquals(signIn.getPassword())) {
 			Logger.info(String.format("Rejected sign in for %s", signIn.getUsername()));
 			return unauthorized();
 		}

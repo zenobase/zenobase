@@ -10,6 +10,7 @@ GET     /users/:name                 controllers.UserController.get(name)
 
 POST    /signin                      controllers.SecurityController.signIn()
 POST    /signout                     controllers.SecurityController.signOut()
+POST    /signup                      controllers.SecurityController.signUp()
 
 GET     /buckets/                    controllers.DashboardController.get()
 POST    /buckets/                    controllers.DashboardController.post()
