@@ -18,14 +18,14 @@ public class NodeManager implements Closeable {
 	private Client client;
 
 	public NodeManager() {
-		Logger.info("Starting node...");
 		Settings settings = ImmutableSettings.settingsBuilder()
 			.put("index.mapper.dynamic", false)
 			.put("index.cache.filter.type", "none")
 			.put("action.auto_create_index", false).build();
-		node = NodeBuilder.nodeBuilder().settings(settings).node().start();
+		node = NodeBuilder.nodeBuilder().settings(settings).node();
 		client = node.client();
 		recover();
+		Logger.info("Started node: " + getHealthStatus());
 	}
 
 	private void recover() {
@@ -45,8 +45,8 @@ public class NodeManager implements Closeable {
 
 	@Override
     public void close() {
+		Logger.info("Closing node: " + getHealthStatus());
 		client.close();
 		node.close();
-		Logger.info("Closed node");
 	}
 }

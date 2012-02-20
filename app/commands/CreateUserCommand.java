@@ -24,6 +24,6 @@ public class CreateUserCommand extends CommandSupport {
 
 	@Override
 	public String toString() {
-		return String.format("%s signed up as %s", user.getIdentity(), user.getName());
+		return String.format("signed up as %s", user.getName());
 	}
 }
