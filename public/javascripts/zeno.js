@@ -5,7 +5,6 @@ function MainCtrl($route, $http, $location, $cookies) {
 		var i = token ? token.indexOf('-') : -1;
 		return i != -1 ? token.substring(i + 1) : null;
 	}
-
 	self.user = null;
 	self.whoami = function() {
 		$http({ method : 'GET', url : '/who', headers : { 'Content-Type' : 'application/x-www-form-urlencoded' }}).success(function(response, code) {
@@ -118,7 +117,6 @@ function SignUpFormCtrl($http) {
 			self.reload();
 		});
 	};
-	self.isEmpty = $.isEmptyObject;
 }
 
 HistoryCtrl.$inject = ['$http'];

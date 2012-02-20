@@ -104,28 +104,28 @@
 						<h3>Sign up</h3>
 					</div>
 					<div class="modal-body">
-						<div class="control-group">
+						<div class="control-group" ng:class="signUpForm.username.$valid && 'success' || 'error'">
 							<label for="sign-up-username">User Name</label>
-							<input id="sign-up-username" name="username" type="text" class="large" required ng:minlength="4" ng:maxlength="16" ng:pattern="/[a-z0-9]+/" ng:model="username"/>
+							<input id="sign-up-username" name="username" type="text" class="large" required ng:minlength="4" ng:maxlength="16" ng:pattern="/^[a-z0-9]+$/" ng:model="username"/>
 							<span class="help-inline error" ng:show="signUpForm.username.$error.MINLENGTH">Too short</span>
 							<span class="help-inline error" ng:show="signUpForm.username.$error.MAXLENGTH">Too long</span>
 							<span class="help-inline error" ng:show="signUpForm.username.$error.REQUIRED">Required</span>
 						</div>
-						<div class="control-group">
+						<div class="control-group" ng:class="signUpForm.password.$valid && 'success' || 'error'">
 							<label for="sign-up-password">Password</label>
 							<input id="sign-up-password" name="password" type="password" class="large" required ng:model="password"/>
 						</div>
-						<div class="control-group">
-							<label for="sign-up-password-repeat">Password (repeat)</label>
+						<div class="control-group" ng:class="signUpForm.passwordRepeat.$valid && 'success' || 'error'">
+							<label for="sign-up-password-repeat">Confirm Password</label>
 							<input id="sign-up-password-repeat" name="passwordRepeat" type="password" class="large" required ng:model="passwordRepeat"/>
 						</div>
-						<div class="control-group">
+						<div class="control-group" ng:class="signUpForm.email.$valid && 'success' || 'error'">
 							<label for="sign-up-email">Email</label>
-							<input id="sign-up-email" name="email" type="password" class="large" required ng:model="email"/>
+							<input id="sign-up-email" name="email" type="email" class="large" required ng:model="email"/>
 						</div>
 					</div>
 					<div class="modal-footer">
-						<button type="submit" class="btn btn-primary" ng:disabled="{{!isEmpty(signUpForm.$error)}}">Sign up</button>
+						<button type="submit" class="btn btn-primary" ng:disabled="{{!signUpForm.$valid}}">Sign up</button>
 						<button type="reset" class="btn" data-dismiss="modal">Cancel</button>
 					</div>
 			</form>
