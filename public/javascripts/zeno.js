@@ -117,7 +117,8 @@ function SignUpFormCtrl($http) {
 			$('#sign-up-dialog').modal('hide');
 			self.reload();
 		});
-	}
+	};
+	self.isEmpty = $.isEmptyObject;
 }
 
 HistoryCtrl.$inject = ['$http'];
