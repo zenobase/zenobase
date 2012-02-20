@@ -2,7 +2,7 @@ MainCtrl.$inject = ['$route', '$http', '$location'];
 function MainCtrl($route, $http, $location) {
 	var self = this;
 	self.whoami = function() {
-		$http({ method : 'GET', url : '/who', headers : { 'Content-Type' : 'application/x-www-form-urlencoded' }}).success(function(response, code) {
+		$http.get('/who', httpConfig()).success(function(response, code) {
 			self.user = response;
 		});
 	};
@@ -18,7 +18,7 @@ function MainCtrl($route, $http, $location) {
 
 	self.alert = new Alert();
 	self.undo = function(commandId) {
-		$http({ method : 'POST', url : commandId, data : 'undo', headers : { 'Content-Type' : 'application/x-www-form-urlencoded' }}).success(function(response, code) {
+		$http.post(commandId, 'undo', httpConfig()).success(function(response, code) {
 			self.alert.clear();
 			$location.url('/');
 			self.reload();
@@ -35,7 +35,7 @@ function MainCtrl($route, $http, $location) {
 		$route.reload();
 	};
 	self.signOut = function() {
-		$http({ method : 'POST', url : '/signout', headers : { 'Content-Type' : 'application/x-www-form-urlencoded' }}).success(function(response, code) {
+		$http.post('/signout', httpConfig()).success(function(response, code) {
 				self.user = null;
 				self.alert.show('Signed out.', 'alert-success');
 				if ($location.url() == '/') {
@@ -77,7 +77,7 @@ function AuthFormCtrl($http) {
 	self.password = '';
 	self.remember = false;
 	self.signIn = function() {
-		$http({ method : 'POST', url : '/signin', data : $.param({ username : self.username, password : self.password, remember : self.remember }), headers : { 'Content-Type' : 'application/x-www-form-urlencoded' }}).success(function(response, code) {
+		$http.post('/signin', $.param({ username : self.username, password : self.password, remember : self.remember }), httpConfig()).success(function(response, code) {
 			self.$parent.user = new User(self.username);
 			self.username = '';
 			self.password = '';
@@ -99,7 +99,7 @@ function SignUpFormCtrl($http) {
 		return self.username == 'guest' ? 'error' : 'success'; 
 	};
 	self.submit = function() {
-		$http({ method : 'POST', url : '/signup', data : $.param({ username : self.username, password : self.password, email : self.email, remember : true }), headers : { 'Content-Type' : 'application/x-www-form-urlencoded' }}).success(function(response, code) {
+		$http.post('/signup', $.param({ username : self.username, password : self.password, email : self.email, remember : true }), httpConfig()).success(function(response, code) {
 			self.$parent.user = response;
 			self.username = '';
 			self.password = '';
@@ -509,4 +509,8 @@ function encode(value) {
 
 function defined(a, b) {
 	return a !== undefined ? a : b;	
+}
+
+function httpConfig() {
+	return { headers : { 'Content-Type' : 'application/x-www-form-urlencoded' } };
 }
