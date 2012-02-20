@@ -1,17 +1,11 @@
-MainCtrl.$inject = ['$route', '$http', '$location', '$cookies'];
-function MainCtrl($route, $http, $location, $cookies) {
+MainCtrl.$inject = ['$route', '$http', '$location'];
+function MainCtrl($route, $http, $location) {
 	var self = this;
-	self.parseToken = function(token) {
-		var i = token ? token.indexOf('-') : -1;
-		return i != -1 ? token.substring(i + 1) : null;
-	}
-	self.user = null;
 	self.whoami = function() {
 		$http({ method : 'GET', url : '/who', headers : { 'Content-Type' : 'application/x-www-form-urlencoded' }}).success(function(response, code) {
 			self.user = response;
 		});
 	};
-	self.whoami();
 	self.username = function() {
 		if (!self.user) {
 			return null;
@@ -51,9 +45,7 @@ function MainCtrl($route, $http, $location, $cookies) {
 				}
 		});
 	};
-	self.setUser = function(user) {
-		self.user = user;
-	};
+	self.whoami();
 }
 
 function Alert() {
@@ -81,11 +73,12 @@ AuthFormCtrl.$inject = ['$http'];
 function AuthFormCtrl($http) {
 	var self = this;
 	self.username = '';
+	self.username = '';
 	self.password = '';
 	self.remember = false;
 	self.signIn = function() {
 		$http({ method : 'POST', url : '/signin', data : $.param({ username : self.username, password : self.password, remember : self.remember }), headers : { 'Content-Type' : 'application/x-www-form-urlencoded' }}).success(function(response, code) {
-			self.setUser(new User(self.username));
+			self.$parent.user = new User(self.username);
 			self.username = '';
 			self.password = '';
 			self.alert.clear();
@@ -107,7 +100,7 @@ function SignUpFormCtrl($http) {
 	};
 	self.submit = function() {
 		$http({ method : 'POST', url : '/signup', data : $.param({ username : self.username, password : self.password, email : self.email, remember : true }), headers : { 'Content-Type' : 'application/x-www-form-urlencoded' }}).success(function(response, code) {
-			self.setUser(response);
+			self.$parent.user = response;
 			self.username = '';
 			self.password = '';
 			self.passwordRepeat = '';
