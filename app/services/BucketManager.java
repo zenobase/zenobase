@@ -63,7 +63,6 @@ public class BucketManager {
 	}
 
 	public Bucket findBucket(String bucketId, Identity identity) {
-		Logger.info("find bucket " + bucketId + " for " + identity);
 		QueryBuilder query = QueryBuilders.boolQuery()
 			.must(QueryBuilders.termQuery(Bucket.ID.getName(), bucketId))
 			.must(QueryBuilders.termQuery(Bucket.IDENTITY.getName(), identity.getId()));

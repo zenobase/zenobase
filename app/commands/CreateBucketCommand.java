@@ -17,7 +17,6 @@ public class CreateBucketCommand extends CommandSupport {
 	}
 
 	public void execute() {
-		// Logger.info("Creating bucket: %s", bucket);
 		manager.store(bucket, createIndex);
 	}
 

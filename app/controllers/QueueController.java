@@ -6,12 +6,14 @@ import org.codehaus.jackson.node.ArrayNode;
 import org.codehaus.jackson.node.ObjectNode;
 
 import play.mvc.Result;
+import play.mvc.With;
 import services.CommandQueue;
 
 import commands.Command;
 import commands.CommandSerializer;
 import common.Nodes;
 
+@With(Timed.class)
 public class QueueController extends ControllerSupport {
 
 	@Inject

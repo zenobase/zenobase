@@ -23,18 +23,15 @@ public class NodeManager implements Closeable {
 			.put("index.mapper.dynamic", false)
 			.put("index.cache.filter.type", "none")
 			.put("action.auto_create_index", false).build();
-		node = NodeBuilder.nodeBuilder().settings(settings).node();
+		node = NodeBuilder.nodeBuilder().settings(settings).node().start();
 		client = node.client();
 		recover();
 	}
 
 	private void recover() {
 		ClusterHealthStatus status = getHealthStatus();
-		// Logger.info("Status: %s", status);
 		if (ClusterHealthStatus.RED.equals(status)) {
-			// Logger.warn("Recovering: %s", status);
 			status = client.admin().cluster().prepareHealth().setWaitForYellowStatus().setTimeout(new TimeValue(30000)).execute().actionGet().getStatus();
-			// Logger.info("Recovered: %s", status);
 		}
 	}
 
@@ -50,5 +47,6 @@ public class NodeManager implements Closeable {
     public void close() {
 		client.close();
 		node.close();
+		Logger.info("Closed node");
 	}
 }

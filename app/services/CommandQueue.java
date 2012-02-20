@@ -2,15 +2,20 @@ package services;
 
 import java.util.LinkedHashMap;
 
+import play.Logger;
+import play.Logger.ALogger;
+
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Maps;
 import commands.Command;
 
 public class CommandQueue {
 
+	private final ALogger log = Logger.of("queue");
 	private final LinkedHashMap<String, Command> history = Maps.newLinkedHashMap();
 
 	public String execute(Command command) {
+		log.info(String.format("%s %s", command.getIdentity(), command.toString()));
 		command.execute();
 		history.put(command.getId(), command);
 		return command.getId();

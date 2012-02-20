@@ -103,6 +103,9 @@ function SignUpFormCtrl($http) {
 	self.password = '';
 	self.passwordRepeat = '';
 	self.email = '';
+	self.isValid = function(field) {
+		return self.username == 'guest' ? 'error' : 'success'; 
+	};
 	self.submit = function() {
 		$http({ method : 'POST', url : '/signup', data : $.param({ username : self.username, password : self.password, email : self.email, remember : true }), headers : { 'Content-Type' : 'application/x-www-form-urlencoded' }}).success(function(response, code) {
 			self.setUser(response);
@@ -213,7 +216,6 @@ function BucketCtrl($http, $routeParams, $location) {
 		});
 		$location.search('q', self.filters.length ? self.filters.join(',') : null);
 	};
-	console.log();
 	self.$evalAsync(self.refresh);
 }
 

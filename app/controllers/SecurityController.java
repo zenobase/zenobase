@@ -5,12 +5,16 @@ import play.api.libs.Crypto;
 import play.data.Form;
 import play.mvc.Http;
 import play.mvc.Result;
+import play.mvc.With;
 import secure.Identity;
 import secure.User;
 import secure.UserManager;
+import services.CommandQueue;
 
 import com.google.inject.Inject;
+import commands.CreateUserCommand;
 
+@With(Timed.class)
 public class SecurityController extends ControllerSupport {
 
 	private static final String TOKEN_NAME = "token";
@@ -18,6 +22,9 @@ public class SecurityController extends ControllerSupport {
 
 	@Inject
 	static UserManager users;
+
+	@Inject
+	static CommandQueue queue;
 
 	public static Result signUp() {
 		Form<SignUpForm> form = form(SignUpForm.class);
@@ -30,11 +37,10 @@ public class SecurityController extends ControllerSupport {
 			return badRequest("user exists");
 		}
 		boolean isGuest = identity(false) != null;
-		Logger.info(String.format("Signing up %s", signUp.getUsername()));
 		user = new User(identity(true), signUp.getUsername());
 		user.setEmail(signUp.getEmail());
 		user.changePassword(signUp.getPassword());
-		users.store(user);
+		queue.execute(new CreateUserCommand(users, user));
 		if (!isGuest) {
 			setCookie(user.getIdentity(), true);
 		}
@@ -49,10 +55,8 @@ public class SecurityController extends ControllerSupport {
 		}
 		User user = users.find(signIn.getUsername());
 		if (user == null || !user.passwordEquals(signIn.getPassword())) {
-			Logger.info(String.format("Rejected sign in for %s", signIn.getUsername()));
 			return unauthorized();
 		}
-		Logger.info(String.format("Signing in %s", signIn.getUsername()));
 		setCookie(user.getIdentity(), signIn.isRemember());
 		return noContent();
 	}
@@ -85,7 +89,6 @@ public class SecurityController extends ControllerSupport {
 			String sign = remember.value().substring(0, remember.value().indexOf(TOKEN_SEPARATOR));
 			String identity = remember.value().substring(remember.value() .indexOf(TOKEN_SEPARATOR) + 1);
 			if (Crypto.sign(identity).equals(sign)) {
-				Logger.info("Found existing identity: " + identity);
 				return new Identity(identity);
 			} else {
 				Logger.warn("Corrupted identity: " + identity);
@@ -96,7 +99,6 @@ public class SecurityController extends ControllerSupport {
 
 	private static Identity createIdentity() {
 		Identity identity = new Identity();
-		Logger.info("Created new identity: " + identity);
 		setCookie(identity, true);
 		return identity;
 	}

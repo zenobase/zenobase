@@ -6,7 +6,6 @@ import models.Token;
 
 import org.codehaus.jackson.node.ObjectNode;
 
-import play.Logger;
 import schema.BooleanType;
 import schema.Field;
 import schema.SchemaBuilder;
@@ -43,7 +42,6 @@ public class User {
 	}
 
 	public boolean passwordEquals(String password) {
-		Logger.info("checking '" + password + "' against '" + this.password + "'");
 		return BCrypt.checkpw(password, this.password);
 	}
 
@@ -53,7 +51,6 @@ public class User {
 
 	public void changePassword(String password) {
 		this.password = BCrypt.hashpw(password, BCrypt.gensalt());
-		Logger.info("hashed '" + password + "' to '" + this.password + "'");
 	}
 
 	public String getEmail() {

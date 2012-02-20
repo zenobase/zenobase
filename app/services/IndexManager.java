@@ -27,7 +27,6 @@ public class IndexManager {
 	}
 
 	public void create(int shards, int replicas) {
-		// Logger.info("Creating index '%s'...", indexName);
 		Settings settings = ImmutableSettings.settingsBuilder()
 			.put("number_of_shards", shards)
 			.put("number_of_replicas", replicas).build();
@@ -36,13 +35,11 @@ public class IndexManager {
 	}
 
 	public void delete() {
-		// Logger.info("Delete: %s", indexName);
 		DeleteIndexRequest request = Requests.deleteIndexRequest(indexName);
 		client.admin().indices().delete(request).actionGet();
 	}
 
 	public void putMapping(String typeName, ObjectNode mapping) {
-		// Logger.info("Mapping: %s", mapping);
 		client.admin().indices().preparePutMapping(indexName).setType(typeName).setSource(mapping.toString()).execute().actionGet();
 	}
 
@@ -51,7 +48,6 @@ public class IndexManager {
 	}
 
 	public void delete(String type, String id) {
-		// Logger.info("Delete: %s/%s", indexName, id);
 		client.prepareDelete(indexName, type, id).execute().actionGet();
 	}
 

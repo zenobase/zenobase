@@ -8,6 +8,7 @@ import org.codehaus.jackson.node.ArrayNode;
 import org.codehaus.jackson.node.ObjectNode;
 
 import play.mvc.Result;
+import play.mvc.With;
 import secure.Identity;
 import services.BucketManager;
 import services.CommandQueue;
@@ -17,6 +18,7 @@ import commands.CreateBucketCommand;
 import common.Generator;
 import common.Nodes;
 
+@With(Timed.class)
 public class DashboardController extends ControllerSupport {
 
 	@Inject
