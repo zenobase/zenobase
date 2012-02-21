@@ -19,7 +19,7 @@ function humaneDate(date, compareTo){
     var lang = {
             ago: 'ago',
             from: '',
-            now: 'just Now',
+            now: 'just now',
             minute: 'minute',
             minutes: 'minutes',
             hour: 'hour',
