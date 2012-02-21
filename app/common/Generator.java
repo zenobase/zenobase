@@ -1,14 +1,13 @@
 package common;
 
-import org.elasticsearch.common.UUID;
+import java.math.BigInteger;
+import java.security.SecureRandom;
 
 public class Generator {
 
-	public static String id() {
-		return UUID.randomBase64UUID().replace('_', '-').substring(0, 8);
-	}
+	private static final SecureRandom rand = new SecureRandom();
 
-	public static String bucketId() {
-		return id().toLowerCase();
+	public static String id() {
+		return String.format("%10s", new BigInteger(50, rand).toString(32)).replace(' ', '0');
 	}
 }

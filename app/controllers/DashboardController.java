@@ -57,7 +57,7 @@ public class DashboardController extends ControllerSupport {
     }
 
 	private static Bucket createBucket(String label, Identity identity) {
-		String id = Generator.bucketId();
+		String id = Generator.id();
 		Bucket bucket = new Bucket(node.getIndex(id), id);
 		bucket.setLabel(label);
 		bucket.setIdentity(identity);
