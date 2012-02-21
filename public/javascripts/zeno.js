@@ -196,6 +196,11 @@ function BucketCtrl($http, $routeParams, $location) {
 			});
 		});
 	};
+	self.getFilters = function(field) {
+		return $.grep(self.filters, function(filter) {
+			return filter.indexOf(field + ':') == 0;
+		});
+	};
 	self.addFilter = function(filter) {
 		if (self.filters.indexOf(filter) == -1) {
 			self.filters.push(filter);
@@ -274,10 +279,29 @@ function RatingCountCtrl() {
 
 function TimelineCtrl() {
 	var self = this;
-	self.interval = 'month';
+
+	self.field = 'dateTime';
+	self.intervals = [ 'year', 'month', 'day' ];
+	self.patterns = [ /^[0-9]{4}$/, /^[0-9]{4}-[0-9]{2}$/, /^[0-9]{4}-[0-9]{2}-[0-9]{2}$/ ];
+	self.interval = 1;
+	$.each(self.getFilters(self.field), function(i, filter) {
+		var value = filter.split(':')[1];
+		$.each(self.patterns, function(j, pattern) {
+			if (value.match(pattern)) {
+				self.interval = Math.min(j + 1, self.intervals.length);
+			}
+		});
+	});
+	self.currentInterval = function() {
+		return self.intervals[self.interval];
+	};
+	self.zoomIn = function() {
+		self.interval = Math.min(self.interval + 1, self.intervals.length);
+	};
+
 	self.times = [];
 	self.prepare = function() {
-		return 'timeline(id:timeline,field:dateTime,interval:' + self.interval + ')';
+		return 'timeline(id:timeline,field:' + self.field + ',interval:' + self.currentInterval() + ')';
 	};
 	self.update = function(result) {
 		self.times = result['timeline'];
@@ -287,10 +311,11 @@ function TimelineCtrl() {
 }
 
 TimelineCtrl.prototype.draw = function() {
+	var self = this;
 	var data = new google.visualization.DataTable();
-	data.addColumn('string', this.interval);
+	data.addColumn('string', self.currentInterval());
 	data.addColumn('number', 'Count');
-	$.each(this.times, function(i, time) {
+	$.each(self.times, function(i, time) {
 		data.addRow([ time.label, time.count ]);
 	});
 	var options = {
@@ -305,7 +330,10 @@ TimelineCtrl.prototype.draw = function() {
 	chart.draw(data, options);
 	google.visualization.events.addListener(chart, 'select', function() {
 		var selection = chart.getSelection();
-		console.log('v', data.getValue(selection[0].row, 0));
+		var value = data.getValue(selection[0].row, 0);
+		self.zoomIn();
+		self.addFilter(self.field + ':' + value);
+		self.refresh();
 	});
 }
 
@@ -426,9 +454,9 @@ var fields = [
 	{
 		name : 'dateTime',
 		format : function(value) {
-			return '<span class="nowrap" title="Date &amp; Time">' +
-				         '<i class="icon-time"></i> ' + humaneDate(new Date(Date.parse(value))) +
-				       '</span> &nbsp; ';
+			return '<span class="nowrap">' +
+				         '<i class="icon-time" title="Date &amp; Time"></i><span title="' + value + '"> ' + humaneDate(new Date(Date.parse(value))) +
+				       '</span></span> &nbsp; ';
 		}
 	},
 	{

@@ -7,7 +7,12 @@ import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.elasticsearch.search.facet.FacetBuilders;
 import org.elasticsearch.search.facet.datehistogram.DateHistogramFacet;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
+import org.joda.time.LocalDate;
 import org.joda.time.YearMonth;
+
+import play.Logger;
 
 import common.Nodes;
 
@@ -31,19 +36,34 @@ public class TimelineWidget implements Widget {
 	@Override
 	public void configure(SearchSourceBuilder builder) {
 		builder.facet(FacetBuilders.dateHistogramFacet(id)
-			.field(field).interval(interval));
+			.field(field).interval(interval).zone("-08:00"));
 	}
 
 	@Override
 	public JsonNode process(SearchResponse response) {
 		ArrayNode result = Nodes.newArray();
 		DateHistogramFacet months = response.facets().facet(DateHistogramFacet.class, id);
+		Logger.info("type " + months.getType());
 		for (DateHistogramFacet.Entry entry : months.entries()) {
 			ObjectNode entryNode = result.addObject();
-			entryNode.put("label", new YearMonth(entry.getTime()).toString());
+			entryNode.put("label", getLabel(entry));
 			entryNode.put("count", entry.getCount());
 		}
 		return result;
+	}
+
+	private String getLabel(DateHistogramFacet.Entry entry) {
+		DateTime time = new DateTime(entry.getTime(), DateTimeZone.UTC);
+		if ("year".equals(interval)) {
+			return Integer.toString(new YearMonth(time).getYear());
+		}
+		if ("month".equals(interval)) {
+			return new YearMonth(time).toString();
+		}
+		if ("day".equals(interval)) {
+			return new LocalDate(time).toString();
+		}
+		throw new AssertionError("Can't handle interval: " + interval);
 	}
 
 	public static WidgetBuilder builder() {

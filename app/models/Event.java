@@ -35,6 +35,7 @@ public class Event {
 	private final String id;
 	private final String bucket;
 	private final ObjectNode object;
+	// TODO Identity owner
 
 	public Event(String id, String bucket) {
 		this.id = id;

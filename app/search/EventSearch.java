@@ -14,13 +14,20 @@ import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
+import org.joda.time.DateTimeZone;
+import org.joda.time.Interval;
+import org.joda.time.YearMonth;
+import org.joda.time.format.ISODateTimeFormat;
 
+import play.Logger;
 import services.IndexManager;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Sets;
 import com.google.common.primitives.Ints;
+
+import common.Intervals;
 import common.Nodes;
 
 public class EventSearch {
@@ -69,7 +76,18 @@ public class EventSearch {
 
 	public EventSearch addFilter(String filter) {
 		String[] tokens = filter.split(":", 2);
-		constraints.add(QueryBuilders.termQuery(tokens[0], tokens[1]));
+		String field = tokens[0];
+		String value = tokens[1];
+		if ("dateTime".equals(field)) {
+			Interval interval = Intervals.forMonth(YearMonth.parse(value), DateTimeZone.forOffsetHours(-8));
+			Logger.info("interval: " + interval);
+			String from = interval.getStart().toString(ISODateTimeFormat.dateTime());
+			String to = interval.getEnd().toString(ISODateTimeFormat.dateTime());
+			constraints.add(QueryBuilders.rangeQuery(field).gte(from).lt(to));
+		}
+		else {
+			constraints.add(QueryBuilders.termQuery(field, false));
+		}
 		return this;
 	}
 
