@@ -18,7 +18,7 @@
 							{{command.label | html}}
 						</td>
 						<td>
-							{{command.timestamp}}
+							{{command.timestamp | humaneDate}}
 						</td>
 					</tr>
 					<tr ng:hide="history.commands">

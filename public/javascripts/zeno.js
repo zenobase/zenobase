@@ -427,7 +427,7 @@ var fields = [
 		name : 'dateTime',
 		format : function(value) {
 			return '<span class="nowrap" title="Date &amp; Time">' +
-				         '<i class="icon-time"></i> ' + encode(value) +
+				         '<i class="icon-time"></i> ' + humaneDate(new Date(Date.parse(value))) +
 				       '</span> &nbsp; ';
 		}
 	},
@@ -488,6 +488,11 @@ angular.module('ZenoModule', [])
 				}
 			});
 			return html;
+		}
+	})
+	.filter('humaneDate', function() {
+		return function(date) {
+			return humaneDate(new Date(Date.parse(date)));
 		}
 	});
 
