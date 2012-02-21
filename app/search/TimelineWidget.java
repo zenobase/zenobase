@@ -36,7 +36,7 @@ public class TimelineWidget implements Widget {
 	@Override
 	public void configure(SearchSourceBuilder builder) {
 		builder.facet(FacetBuilders.dateHistogramFacet(id)
-			.field(field).interval(interval).zone("-08:00"));
+			.field(field).interval(interval).preZone("-08:00"));
 	}
 
 	@Override
