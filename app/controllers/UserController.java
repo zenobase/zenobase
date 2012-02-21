@@ -19,18 +19,23 @@ public class UserController extends ControllerSupport {
 	static UserManager users;
 
 	public static Result who() {
-		User user = SecurityController.user();
-		if (user != null) {
-			return ok(user.toJson());
-		}
 		Identity identity = SecurityController.identity(false);
 		if (identity != null) {
+			User user = users.find(identity);
+			if (user != null) {
+				return ok(user.toJson());
+			}
 			ObjectNode object = Nodes.newObject();
 			object.put(User.IDENTITY.getName(), identity.getId());
 			return ok(object);
 		}
     	return noContent();
     }
+
+	public static User user() {
+		Identity identity = SecurityController.identity(false);
+		return identity != null ? users.find(identity) : null;
+	}
 
 	public static Result get(String name) {
 		User user = users.find(name);

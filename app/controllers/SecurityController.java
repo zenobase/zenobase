@@ -1,6 +1,5 @@
 package controllers;
 
-import play.Logger;
 import play.api.libs.Crypto;
 import play.data.Form;
 import play.mvc.Http;
@@ -61,24 +60,16 @@ public class SecurityController extends ControllerSupport {
 		return noContent();
 	}
 
-	private static void setCookie(Identity identity, boolean remember) {
-		response().setCookie(TOKEN_NAME, Crypto.sign(identity.getId()) + TOKEN_SEPARATOR + identity.getId(), remember ? 60 * 60 * 24 * 30 : -1, "/", null, false, true);
-	}
-
 	public static Result signOut() {
 		response().discardCookies(TOKEN_NAME);
 		return noContent();
 	}
 
-	public static User user() {
-		Identity identity = identity(false);
-		return identity != null ? users.find(identity()) : null;
-	}
-
 	public static Identity identity(boolean createIfNotPresent) {
 		Identity identity = identity();
 		if (identity == null && createIfNotPresent) {
-			identity = createIdentity();
+			identity = new Identity();
+			setCookie(identity, true);
 		}
 		return identity;
 	}
@@ -91,15 +82,18 @@ public class SecurityController extends ControllerSupport {
 			if (Crypto.sign(identity).equals(sign)) {
 				return new Identity(identity);
 			} else {
-				Logger.warn("Corrupted identity: " + identity);
+				response().discardCookies(TOKEN_NAME);
 			}
 		}
 		return null;
 	}
 
-	private static Identity createIdentity() {
-		Identity identity = new Identity();
-		setCookie(identity, true);
-		return identity;
+	private static void setCookie(Identity identity, boolean remember) {
+		setCookie(TOKEN_NAME, Crypto.sign(identity.getId()) + TOKEN_SEPARATOR + identity.getId(), remember);
+		
+	}
+
+	private static void setCookie(String name, String value, boolean remember) {
+		response().setCookie(name, value, remember ? 60 * 60 * 24 * 30 : -1, "/", null, false, true);
 	}
 }

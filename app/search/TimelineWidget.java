@@ -12,8 +12,6 @@ import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDate;
 import org.joda.time.YearMonth;
 
-import play.Logger;
-
 import common.Nodes;
 
 public class TimelineWidget implements Widget {
@@ -43,7 +41,6 @@ public class TimelineWidget implements Widget {
 	public JsonNode process(SearchResponse response) {
 		ArrayNode result = Nodes.newArray();
 		DateHistogramFacet months = response.facets().facet(DateHistogramFacet.class, id);
-		Logger.info("type " + months.getType());
 		for (DateHistogramFacet.Entry entry : months.entries()) {
 			ObjectNode entryNode = result.addObject();
 			entryNode.put("label", getLabel(entry));

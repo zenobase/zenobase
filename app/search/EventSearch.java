@@ -19,7 +19,6 @@ import org.joda.time.Interval;
 import org.joda.time.YearMonth;
 import org.joda.time.format.ISODateTimeFormat;
 
-import play.Logger;
 import services.IndexManager;
 
 import com.google.common.base.Preconditions;
@@ -80,13 +79,12 @@ public class EventSearch {
 		String value = tokens[1];
 		if ("dateTime".equals(field)) {
 			Interval interval = Intervals.forMonth(YearMonth.parse(value), DateTimeZone.forOffsetHours(-8));
-			Logger.info("interval: " + interval);
 			String from = interval.getStart().toString(ISODateTimeFormat.dateTime());
 			String to = interval.getEnd().toString(ISODateTimeFormat.dateTime());
 			constraints.add(QueryBuilders.rangeQuery(field).gte(from).lt(to));
 		}
 		else {
-			constraints.add(QueryBuilders.termQuery(field, false));
+			constraints.add(QueryBuilders.termQuery(field, value));
 		}
 		return this;
 	}
