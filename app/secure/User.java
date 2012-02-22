@@ -84,15 +84,25 @@ public class User {
 		return schema.build();
 	}
 
-	public ObjectNode toJson() {
+	public ObjectNode toPublicJson() {
 		ObjectNode object = Nodes.newObject();
 		object.put(NAME.getName(), name);
 		object.put(IDENTITY.getName(), identity.getId());
-		object.put(PASSWORD.getName(), password);
+		return object;
+	}
+
+	public ObjectNode toPrivateJson() {
+		ObjectNode object = toPublicJson();
 		if (email != null) {
 			object.put(EMAIL.getName(), email);
 			object.put(VERIFIED.getName(), verified);
 		}
+		return object;
+	}
+
+	public ObjectNode toJson() {
+		ObjectNode object = toPrivateJson();
+		object.put(PASSWORD.getName(), password);
 		return object;
 	}
 

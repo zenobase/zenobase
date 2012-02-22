@@ -65,6 +65,11 @@ public class SecurityController extends ControllerSupport {
 		return noContent();
 	}
 
+	public static boolean checkIdentity(Identity expected) {
+		Identity identity = identity();
+		return identity != null && identity.equals(expected);
+	}
+
 	public static Identity identity(boolean createIfNotPresent) {
 		Identity identity = identity();
 		if (identity == null && createIfNotPresent) {

@@ -32,13 +32,11 @@ public class UserController extends ControllerSupport {
     	return noContent();
     }
 
-	public static User user() {
-		Identity identity = SecurityController.identity(false);
-		return identity != null ? users.find(identity) : null;
-	}
-
 	public static Result get(String name) {
 		User user = users.find(name);
-    	return user != null ? ok(user.toJson()) : noContent();
+    	if (user == null) {
+    		return notFound();
+    	}
+		return ok(SecurityController.checkIdentity(user.getIdentity()) ? user.toPrivateJson() : user.toPublicJson());
     }
 }
