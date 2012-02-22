@@ -296,7 +296,7 @@ function TimelineCtrl() {
 		return self.intervals[self.interval];
 	};
 	self.zoomIn = function() {
-		self.interval = Math.min(self.interval + 1, self.intervals.length);
+		self.interval = Math.min(self.interval + 1, self.intervals.length - 1);
 	};
 
 	self.times = [];

@@ -6,6 +6,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import models.Bucket;
+import models.Event;
 
 import org.codehaus.jackson.node.ObjectNode;
 import org.elasticsearch.action.search.SearchResponse;
@@ -77,7 +78,7 @@ public class EventSearch {
 		String[] tokens = filter.split(":", 2);
 		String field = tokens[0];
 		String value = tokens[1];
-		if ("dateTime".equals(field)) {
+		if (Event.TIMESTAMP.getName().equals(field)) {
 			Interval interval = Intervals.forMonth(YearMonth.parse(value), DateTimeZone.forOffsetHours(-8));
 			String from = interval.getStart().toString(ISODateTimeFormat.dateTime());
 			String to = interval.getEnd().toString(ISODateTimeFormat.dateTime());
