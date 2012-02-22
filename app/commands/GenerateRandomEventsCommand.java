@@ -7,7 +7,7 @@ public class GenerateRandomEventsCommand extends CompoundCommand {
 
 	public GenerateRandomEventsCommand(Identity identity, Bucket bucket, int events) {
 		super(identity);
-		RandomEvent rand = new RandomEvent(bucket.getId());
+		RandomEvent rand = new RandomEvent(bucket);
 		for (int i = 0; i < events; ++i) {
 			add(new CreateEventCommand(bucket, rand.next()));
 		}

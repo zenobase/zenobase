@@ -23,11 +23,6 @@ public class SchemaBuilder {
 		return this;
 	}
 
-	public SchemaBuilder index(boolean b) {
-		type.putObject("_index").put("enabled", b);
-		return this;
-	}
-
 	public ObjectNode build() {
 		return Nodes.copy(schema);
 	}

@@ -4,7 +4,6 @@ import models.Event;
 
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.node.ArrayNode;
-import org.codehaus.jackson.node.ObjectNode;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
@@ -45,9 +44,7 @@ public class ListWidget implements Widget {
 		ArrayNode eventsNode = Nodes.newArray();
 		for (SearchHit hit : response.hits()) {
 			Event event = new Event(hit.getId(), hit.getIndex(), Nodes.read(hit.source()));
-			ObjectNode eventNode = event.toJson();
-			eventNode.put("id", event.getId());
-			eventsNode.add(eventNode);
+			eventsNode.add(event.toJson());
 		}
 		return eventsNode;
 	}

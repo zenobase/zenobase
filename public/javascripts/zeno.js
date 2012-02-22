@@ -237,7 +237,7 @@ function EventListCtrl() {
 	self.total = 0;
 	self.events = [];
 	self.prepare = function(offset, limit) {
-		return 'list(id:events,offset:' + defined(offset, self.offset) + ',limit:' + defined(limit, self.limit) + ',sort:dateTime,asc:false)';
+		return 'list(id:events,offset:' + defined(offset, self.offset) + ',limit:' + defined(limit, self.limit) + ',sort:timestamp,asc:false)';
 	};
 	self.update = function(result) {
 		self.total = result.total;
@@ -280,7 +280,7 @@ function RatingCountCtrl() {
 function TimelineCtrl() {
 	var self = this;
 
-	self.field = 'dateTime';
+	self.field = 'timestamp';
 	self.intervals = [ 'year', 'month', 'day' ];
 	self.patterns = [ /^[0-9]{4}$/, /^[0-9]{4}-[0-9]{2}$/, /^[0-9]{4}-[0-9]{2}-[0-9]{2}$/ ];
 	self.interval = 1;
@@ -452,10 +452,10 @@ var fields = [
 		}
 	},
 	{
-		name : 'dateTime',
+		name : 'timestamp',
 		format : function(value) {
 			return '<span class="nowrap">' +
-				         '<i class="icon-time" title="Date &amp; Time"></i><span title="' + value + '"> ' + humaneDate(new Date(Date.parse(value))) +
+				         '<i class="icon-time" title="Timestamp"></i><span title="' + value + '"> ' + humaneDate(new Date(Date.parse(value))) +
 				       '</span></span> &nbsp; ';
 		}
 	},
@@ -470,7 +470,15 @@ var fields = [
 			html += '</span> &nbsp; ';
 			return html;
 		}
-	}
+	},
+	/*{
+		name : 'creator',
+		format : function(value) {
+			return '<span class="nowrap">' +
+				         '<i class="icon-user" title="User"></i> ' + value +
+				       '</span> &nbsp; ';
+		}
+	}*/
 ];
 
 /*angular.widget('zeno:event', function(compileElement) {

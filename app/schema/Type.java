@@ -52,6 +52,10 @@ public abstract class Type<T> {
 		}
 	}
 
+	public void set(ObjectNode object, String fieldName, T value) {
+		object.put(fieldName, get(value));
+	}
+
 	protected abstract JsonNode get(T value);
 
 	public void configureSchema(ObjectNode schema) {

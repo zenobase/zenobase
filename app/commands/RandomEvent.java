@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.Random;
 
+import models.Bucket;
 import models.Event;
 import models.Length;
 import models.Location;
@@ -66,14 +67,14 @@ class RandomEvent {
 			}
 		}, 1);
 
-	private final String bucketId;
+	private final Bucket bucket;
 
-	public RandomEvent(String bucketId) {
-		this.bucketId = bucketId;
+	public RandomEvent(Bucket bucket) {
+		this.bucket = bucket;
 	}
 
 	public Event next() {
-		return builders.next().build(bucketId);
+		return builders.next().build(bucket);
 	}
 
 	private static class Builder {
@@ -88,9 +89,10 @@ class RandomEvent {
 			.add(Rating.valueOf( 20), 2)
 			.add(Rating.valueOf(  0), 1);
 
-		public Event build(String bucketId) {
-			Event event = new Event(Generator.id(), bucketId);
-			event.add(Event.DATE_TIME, nextTimestamp());
+		public Event build(Bucket bucket) {
+			Event event = new Event(Generator.id(), bucket.getId());
+			event.set(Event.CREATOR, bucket.getIdentity());
+			event.add(Event.TIMESTAMP, nextTimestamp());
 			addFields(event);
 			return event;
 		}

@@ -71,8 +71,9 @@ public class BucketController extends ControllerSupport {
     	}
     	else {
     		Event event = Event.newEvent(bucket.getId(), body);
-    		if (!event.contains(Event.DATE_TIME)) {
-    			event.add(Event.DATE_TIME, new DateTime());
+			event.set(Event.CREATOR, identity);
+    		if (!event.contains(Event.TIMESTAMP)) {
+    			event.add(Event.TIMESTAMP, new DateTime());
     		}
     		String commandId = queue.execute(new CreateEventCommand(bucket, event));
             response().setHeader(LOCATION, String.format("/buckets/%s/%s", bucket.getId(), event.getId()));

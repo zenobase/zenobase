@@ -59,7 +59,7 @@ public class Bucket {
 	}
 
 	public void add(Event event) {
-		index.index(Event.TYPE_NAME, event.getId(), event.toJson(), false);
+		index.index(Event.TYPE_NAME, event.getId(), event.getContent(), false);
 	}
 
 	public void delete(String eventId) {
