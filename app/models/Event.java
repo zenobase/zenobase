@@ -80,7 +80,7 @@ public class Event {
 	public ObjectNode toJson() {
 		ObjectNode object = Nodes.newObject();
 		object.putAll(content);
-		object.put("id", id);
+		object.put("@id", id);
 		object.put("bucket", bucket);
 		return object;
 	}

@@ -48,11 +48,11 @@
 				</thead>
 				<tbody>
 					<tr ng:repeat="bucket in buckets">
-						<td><a href="#/buckets/{{bucket.id}}/">{{bucket.label}}</a></td>
+						<td><a href="#/buckets/{{bucket['@id']}}/">{{bucket.label}}</a></td>
 						<td>{{bucket.role}}</td>
 						<td style="text-align: right">{{bucket.size}}</td>
 						<td style="text-align: right">
-							<a ng:click="remove(bucket.id)"><i class="icon-trash" title="Delete"></i></a>
+							<a ng:click="remove(bucket['@id'])"><i class="icon-trash" title="Delete"></i></a>
 						</td>
 					</tr>
 					<tr ng:hide="buckets">

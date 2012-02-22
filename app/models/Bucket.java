@@ -16,7 +16,7 @@ import common.Nodes;
 public class Bucket {
 
 	public static final String TYPE_NAME = "bucket";
-	public static final Field<Token> ID = Field.of("id", new TokenType());
+	public static final Field<Token> ID = Field.of("@id", new TokenType());
 	public static final Field<Token> IDENTITY = Field.of("identity", new TokenType());
 	public static final Field<Token> ROLE = Field.of("role", new TokenType());
 	public static final Field<Text> LABEL = Field.of("label", new TextType());
