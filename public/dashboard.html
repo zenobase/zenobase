@@ -73,17 +73,19 @@
 				</div>
 			</div>
 			<div id="create-bucket-dialog" class="modal hide" ng:controller="CreateBucketDialogCtrl">
-				<form ng:submit="create()">
+				<form name="createBucketForm" ng:submit="create()">
 						<div class="modal-header">
 							<a class="close" data-dismiss="modal">&times;</a>
 							<h3>Create Bucket</h3>
 						</div>
 						<div class="modal-body">
-							<label for="template">Label</label>
-							<input id="bucket-label-field" type="text" class="xlarge" ng:model="label"/>
+							<div class="control-group" ng:class="createBucketForm.label.$valid && 'success' || 'error'">
+								<label for="template">Label</label>
+								<input id="bucket-label-field" name="label" type="text" class="xlarge" required ng:minlength="1" ng:maxlength="20" ng:pattern="/^[a-zA-Z0-9-_ ]+$/" ng:model="label"/>
+							</div>
 						</div>
 						<div class="modal-footer">
-							<button type="submit" class="btn btn-primary">Create</button>
+							<button type="submit" class="btn btn-primary" ng:disabled="{{!createBucketForm.$valid}}">Create</button>
 							<button type="reset" class="btn" data-dismiss="modal">Cancel</button>
 						</div>
 				</form>

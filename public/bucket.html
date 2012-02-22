@@ -52,7 +52,7 @@
 				</div>
 			</div>
 			<div id="create-event-dialog" class="modal hide" ng:controller="TemplateCtrl">
-				<form ng:submit="create()">
+				<form name="createEventForm" ng:submit="create()">
 					<div class="modal-header">
 						<a class="close" data-dismiss="modal">&times;</a>
 						<h3>Create Event</h3>
@@ -72,12 +72,12 @@
 						<fieldset class="control-group">
 							<label for="label">Content</label>
 							<div class="input">
-								<textarea id="event-label-field" rows="10" class="span10" ng:model="content"></textarea>
+								<textarea id="event-label-field" rows="10" class="span10" required ng:model="content"></textarea>
 							</div>
 						</fieldset>
 					</div>
 					<div class="modal-footer">
-						<button type="submit" class="btn btn-primary">Create</button>
+						<button type="submit" class="btn btn-primary" ng:disabled="{{!createEventForm.$valid}}">Create</button>
 						<button type="reset" class="btn" data-dismiss="modal">Cancel</button>
 					</div>
 				</form>
