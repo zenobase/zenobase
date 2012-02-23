@@ -19,11 +19,13 @@ public class TimelineWidget implements Widget {
 	private final String id;
 	private final String field;
 	private final String interval;
+	private final DateTimeZone timezone;
 
-	public TimelineWidget(String id, String field, String interval) {
+	public TimelineWidget(String id, String field, String interval, DateTimeZone timezone) {
 		this.id = id;
 		this.field = field;
 		this.interval = interval;
+		this.timezone = timezone;
 	}
 
 	@Override
@@ -34,7 +36,7 @@ public class TimelineWidget implements Widget {
 	@Override
 	public void configure(SearchSourceBuilder builder) {
 		builder.facet(FacetBuilders.dateHistogramFacet(id)
-			.field(field).interval(interval).preZone("-08:00"));
+			.field(field).interval(interval).preZone(timezone.toString()));
 	}
 
 	@Override
@@ -70,7 +72,8 @@ public class TimelineWidget implements Widget {
 				return new TimelineWidget(
 					options.get("id"),
 					options.get("field"),
-					options.get("interval"));
+					options.get("interval"),
+					DateTimeZone.forOffsetHours(-8));
 			}
 		};
 	}

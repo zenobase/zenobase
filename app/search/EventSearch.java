@@ -20,8 +20,6 @@ import org.joda.time.Interval;
 import org.joda.time.YearMonth;
 import org.joda.time.format.ISODateTimeFormat;
 
-import play.Logger;
-
 import services.IndexManager;
 
 import com.google.common.base.Preconditions;
@@ -95,7 +93,6 @@ public class EventSearch {
 
 	public ObjectNode execute(IndexManager index) {
 		SearchSourceBuilder builder = buildSearch();
-		Logger.info("q:" + builder.toString());
 		SearchResponse response = index.search(builder);
 		return toJson(response);
 	}
