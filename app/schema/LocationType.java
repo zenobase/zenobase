@@ -11,8 +11,8 @@ import common.Nodes;
 
 public class LocationType extends Type<Location> {
 
-	private static final String LATITUDE = "latitude";
-	private static final String LONGITUDE = "longitude";
+	private static final String LATITUDE = "lat";
+	private static final String LONGITUDE = "lon";
 
 	public LocationType() {
 		super(Location.class, "geo_point");

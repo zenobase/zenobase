@@ -187,7 +187,10 @@ function BucketCtrl($http, $routeParams, $location) {
 	self.refresh = function() {
 		var widgetConfigs = [ ];
 		$.each(self.widgets, function(i, widget) {
-			widgetConfigs.push(widget.prepare());
+			var config = widget.prepare();
+			if (config) {
+				widgetConfigs.push(config);
+			}
 		});
 		self.search(widgetConfigs, function(response) {
 			self.bucket = response;
@@ -353,6 +356,56 @@ TimelineCtrl.prototype.draw = function() {
 	}});
 }
 
+function MapCtrl() {
+	var self = this;
+	self.id = 'map';
+	self.field = 'location';
+	self.map = null;
+
+	$.each(self.getFilters(self.field), function(i, filter) {
+		var value = filter.split(':')[1];
+		
+	});
+	self.prepare = function() {
+		return '';
+	};
+	self.update = function(result) {
+		var points = [ ];
+		self.events = $.each(result['events'], function(i, event) {
+			var location = event[self.field];
+			if (location) {
+				points.push(location);
+			}
+		});
+		self.draw(points);
+	};
+	self.register(self);
+	self.filterBounds = function() {
+		var b = self.map.getBounds();
+		self.addFilter('location:' + b.toUrlValue(2).split(',').join('x'));
+	};
+}
+
+MapCtrl.prototype.draw = function(points) {
+	var self = this;
+	google.load("maps", "3.8", { other_params : 'sensor=false', callback : function() {
+		var options = {
+			mapTypeId: google.maps.MapTypeId.TERRAIN
+		};
+		self.map = new google.maps.Map(document.getElementById('map'), options);
+		var bounds = new google.maps.LatLngBounds();
+		$.each(points, function(i, point) {
+			var latLng = new google.maps.LatLng(point.lat, point.lon);
+			var marker = new google.maps.Marker({
+				position : latLng, 
+				map : self.map,
+				title : 'Event: ' + latLng
+			});
+			bounds.extend(latLng);
+		});
+		self.map.fitBounds(bounds);
+	}});
+}
 
 TemplateCtrl.$inject = ['$http', '$defer', '$routeParams'];
 function TemplateCtrl($http, $defer, $routeParams) {
@@ -365,8 +418,8 @@ function TemplateCtrl($http, $defer, $routeParams) {
 		{
 			tag : [ "lunch", "pizza" ],
 			location : {
-				latitude : 47.62,
-				longitude : -122.35
+				lat : 47.62,
+				lon : -122.35
 			},
 			rating : 80
 		},
@@ -384,8 +437,8 @@ function TemplateCtrl($http, $defer, $routeParams) {
 		{
 			tag : [ "hike" ],
 			location : {
-				latitude : 60.57,
-				longitude : -151.25
+				lat : 60.57,
+				lon : -151.25
 			},
 			distance : 10000.0,
 			height : 550.0
@@ -462,8 +515,8 @@ var fields = [
 			return '<span class="nowrap" title="Location">' +
 				        '<i class="icon-map-marker"></i> ' +
 				        '<a href="http://maps.google.com/maps?q=' + 
-				        encode(value.latitude + ',' + value.longitude) + '&t=p&z=5">' + 
-				        encode(value.latitude + ', ' + value.longitude) + '</a>' +
+				        encode(value.lat + ',' + value.lon) + '&t=p&z=5">' + 
+				        encode(value.lat + ', ' + value.lon) + '</a>' +
 				      '</span> &nbsp; ';
 		}
 	},

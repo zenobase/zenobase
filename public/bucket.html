@@ -87,6 +87,10 @@
 					$('#event-label-field').select();
 				})
 			</script>
+			<div ng:controller="MapCtrl">
+				<div id="map" style="height: 250px"></div>
+				<button class="btn" ng:click="filterBounds()">Filter</button>
+			</div>
 		</div>
 		<div class="span6">
 			<table class="table" ng:controller="TagCountCtrl">

@@ -11,7 +11,10 @@ import models.Event;
 import org.codehaus.jackson.node.ObjectNode;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.common.collect.Lists;
+import org.elasticsearch.index.mapper.geo.GeoPoint;
 import org.elasticsearch.index.query.BoolQueryBuilder;
+import org.elasticsearch.index.query.FilterBuilder;
+import org.elasticsearch.index.query.FilterBuilders;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
@@ -20,13 +23,13 @@ import org.joda.time.Interval;
 import org.joda.time.YearMonth;
 import org.joda.time.format.ISODateTimeFormat;
 
+import play.Logger;
 import services.IndexManager;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Sets;
 import com.google.common.primitives.Ints;
-
 import common.Intervals;
 import common.Nodes;
 
@@ -85,15 +88,30 @@ public class EventSearch {
 			String to = interval.getEnd().toString(ISODateTimeFormat.dateTime());
 			constraints.add(QueryBuilders.rangeQuery(field).gte(from).lt(to));
 		}
+		else if (Event.LOCATION.getName().equals(field)) {
+			String[] c = value.split("x");
+			GeoPoint topLeft = new GeoPoint(Double.parseDouble(c[2]), Double.parseDouble(c[1]));
+			GeoPoint bottomRight = new GeoPoint(Double.parseDouble(c[0]), Double.parseDouble(c[3]));
+			Logger.info("topLeft: " + toString(topLeft));
+			Logger.info("bottomRight: " + toString(bottomRight));
+			FilterBuilder locationFilter = FilterBuilders.geoBoundingBoxFilter(field).topLeft(topLeft.getLat(), topLeft.getLon()).bottomRight(bottomRight.getLat(), bottomRight.getLon()).type("memory");
+			constraints.add(QueryBuilders.constantScoreQuery(locationFilter));
+		}
 		else {
 			constraints.add(QueryBuilders.termQuery(field, value));
 		}
 		return this;
 	}
 
+	public static String toString(GeoPoint point) {
+		return String.format("%.4f,%.4f", point.getLat(), point.getLon());
+	}
+
 	public ObjectNode execute(IndexManager index) {
 		SearchSourceBuilder builder = buildSearch();
+		Logger.info("q: " + builder);
 		SearchResponse response = index.search(builder);
+		// Logger.info("r: " + response);
 		return toJson(response);
 	}
 
