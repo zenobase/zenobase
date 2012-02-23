@@ -25,7 +25,8 @@ DELETE  /buckets/:bucketId/          controllers.BucketController.delete(bucketI
 GET     /buckets/:bucketId/:eventId  controllers.EventController.get(bucketId, eventId)
 
 # Ignore favicon requests
-# GET     /favicon.ico                           404
+GET     /favicon.ico                 controllers.Default.notFound
+GET     /b/                          controllers.Default.redirect(to = "/buckets/") 
 
 
 # Map static resources from the /public folder to the /assets URL path
