@@ -255,12 +255,26 @@ function EventListCtrl() {
 
 function TagCountCtrl() {
 	var self = this;
+	self.id = 'tagCount';
 	self.tags = [];
 	self.prepare = function() {
-		return 'count(id:tags,field:tag,limit:10)';
+		return 'count(id:' + self.id + ',field:tag,limit:10)';
 	};
 	self.update = function(result) {
-		self.tags = result['tags'];
+		self.tags = result[self.id];
+	};
+	self.register(self);
+}
+
+function TagGanttCtrl() {
+	var self = this;
+	self.id = 'tagsGantt';
+	self.tags = [];
+	self.prepare = function() {
+		return 'gantt(id:' + self.id + ',tokenField:tag,timeField:timestamp,order:max,limit:10)';
+	};
+	self.update = function(result) {
+		self.tags = result[self.id];
 	};
 	self.register(self);
 }
@@ -455,8 +469,8 @@ var fields = [
 		name : 'timestamp',
 		format : function(value) {
 			return '<span class="nowrap">' +
-				         '<i class="icon-time" title="Timestamp"></i><span title="' + value + '"> ' + humaneDate(new Date(Date.parse(value))) +
-				       '</span></span> &nbsp; ';
+				         '<i class="icon-time" title="Timestamp"></i><abbr title="' + value + '"> ' + humaneDate(new Date(Date.parse(value))) +
+				       '</abbr></span> &nbsp; ';
 		}
 	},
 	{

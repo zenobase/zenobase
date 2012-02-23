@@ -123,6 +123,23 @@
 					</tr>
 				</tbody>
 			</table>
+			<table class="table" ng:controller="TagGanttCtrl">
+				<thead>
+					<tr>
+						<th>Tag</th>
+						<th style="text-align: right">Last</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr ng:repeat="tag in tags">
+						<td><i class="icon-tag"></i> <a ng:click="addFilter('tag:' + tag.label)">{{tag.label}}</a></td>
+						<td style="text-align: right"><abbr title="{{tag.last}}">{{tag.last | humaneDate}}</abbr></td>
+					</tr>
+					<tr ng:hide="tags">
+						<td colspan="2"><i>None</i></td>
+					</tr>
+				</tbody>
+			</table>
 		</div>
 	</div>
 
