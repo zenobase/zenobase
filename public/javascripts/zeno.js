@@ -326,29 +326,31 @@ function TimelineCtrl() {
 
 TimelineCtrl.prototype.draw = function() {
 	var self = this;
-	var data = new google.visualization.DataTable();
-	data.addColumn('string', self.currentInterval());
-	data.addColumn('number', 'Count');
-	$.each(self.times, function(i, time) {
-		data.addRow([ time.label, time.count ]);
-	});
-	var options = {
-		height : 200,
-		legend : { position : 'none' },
-		series : [ { color : 'gray' } ],
-		chartArea : { width: '100%', left: 0 },
-		vAxis : { gridlines : { color : 'silver' }, baselineColor : 'white' },
-		hAxis : { baselineColor : 'white', textPosition : 'none' }, 
-	};
-	var chart = new google.visualization.ColumnChart(document.getElementById('timeline'));
-	chart.draw(data, options);
-	google.visualization.events.addListener(chart, 'select', function() {
-		var selection = chart.getSelection();
-		var value = data.getValue(selection[0].row, 0);
-		self.zoomIn();
-		self.addFilter(self.field + ':' + value);
-		self.refresh();
-	});
+	google.load("visualization", "1", { packages : [ "corechart" ], callback : function() { 
+		var data = new google.visualization.DataTable();
+		data.addColumn('string', self.currentInterval());
+		data.addColumn('number', 'Count');
+		$.each(self.times, function(i, time) {
+			data.addRow([ time.label, time.count ]);
+		});
+		var options = {
+			height : 200,
+			legend : { position : 'none' },
+			series : [ { color : 'gray' } ],
+			chartArea : { width: '100%', left: 0 },
+			vAxis : { gridlines : { color : 'silver' }, baselineColor : 'white' },
+			hAxis : { baselineColor : 'white', textPosition : 'none' }, 
+		};
+		var chart = new google.visualization.ColumnChart(document.getElementById('timeline'));
+		chart.draw(data, options);
+		google.visualization.events.addListener(chart, 'select', function() {
+			var selection = chart.getSelection();
+			var value = data.getValue(selection[0].row, 0);
+			self.zoomIn();
+			self.addFilter(self.field + ':' + value);
+			self.refresh();
+		});
+	}});
 }
 
 
