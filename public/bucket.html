@@ -48,7 +48,7 @@
 					<button class="btn" title="Next" ng:click="next()" ng:disabled="{{!hasNext()}}"><i class="icon-chevron-right"></i></button>
 				</div>
 				<div class="btn-group pull-right">
-					<a class="btn disabled zeno-paging"><b>{{offset + 1}}</b> &ndash; <b>{{offset + events.length}}</b> of <b>{{total}}</b></a>
+					<a class="btn disabled zeno-paging"><b>{{offset + 1}}</b> &ndash; <b>{{offset + events.length}}</b> of <b>{{total | number }}</b></a>
 				</div>
 			</div>
 			<div id="create-event-dialog" class="modal hide" ng:controller="TemplateCtrl">
@@ -95,8 +95,9 @@
 		<div class="span6">
 			<ul class="nav nav-tabs">
 				<li class="active"><a href="#widget-tag-count" data-toggle="tab">Tags</a></li>
+				<li><a href="#widget-tag-gantt" data-toggle="tab">Tag Age</a></li>
 				<li><a href="#widget-rating-count" data-toggle="tab">Ratings</a></li>
-				<li><a href="#widget-tag-gantt" data-toggle="tab">Last Seen</a></li>
+				<li><a href="#widget-distance-scoreboard" data-toggle="tab">Distances</a></li>
 			</ul>
 			<div class="tab-content">
 				<div id="widget-tag-count" class="tab-pane active">
@@ -110,28 +111,9 @@
 						<tbody>
 							<tr ng:repeat="tag in tags">
 								<td><i class="icon-tag"></i> <a ng:click="addFilter('tag:' + tag.label)">{{tag.label}}</a></td>
-								<td style="text-align: right">{{tag.count}}</td>
+								<td style="text-align: right">{{tag.count | number }}</td>
 							</tr>
 							<tr ng:hide="tags">
-								<td colspan="2"><i>None</i></td>
-							</tr>
-						</tbody>
-					</table>
-				</div>
-				<div id="widget-rating-count" class="tab-pane">
-					<table class="table" ng:controller="RatingCountCtrl">
-						<thead>
-							<tr>
-								<th>Rating</th>
-								<th style="text-align: right">Count</th>
-							</tr>
-						</thead>
-						<tbody>
-							<tr ng:repeat="rating in ratings">
-								<td><i class="icon-star"></i> {{rating.from}}-{{rating.to}}</td>
-								<td style="text-align: right">{{rating.count}}</td>
-							</tr>
-							<tr ng:hide="ratings">
 								<td colspan="2"><i>None</i></td>
 							</tr>
 						</tbody>
@@ -151,6 +133,52 @@
 								<td style="text-align: right"><abbr title="{{tag.last}}">{{tag.last | humaneDate}}</abbr></td>
 							</tr>
 							<tr ng:hide="tags">
+								<td colspan="2"><i>None</i></td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				<div id="widget-rating-count" class="tab-pane">
+					<table class="table" ng:controller="RatingCountCtrl">
+						<thead>
+							<tr>
+								<th>Rating</th>
+								<th style="text-align: right">Count</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr ng:repeat="rating in ratings">
+								<td><i class="icon-star"></i> {{rating.from}}-{{rating.to}}</td>
+								<td style="text-align: right">{{rating.count | number }}</td>
+							</tr>
+							<tr ng:hide="ratings">
+								<td colspan="2"><i>None</i></td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				<div id="widget-distance-scoreboard" class="tab-pane">
+					<table class="table" ng:controller="DistanceScoreboardCtrl">
+						<thead>
+							<tr>
+								<th>User</th>
+								<th style="text-align: right">Count</th>
+								<th style="text-align: right">Min</th>
+								<th style="text-align: right">Max</th>
+								<th style="text-align: right">Sum</th>
+								<th style="text-align: right">Avg</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr ng:repeat="user in users">
+								<td><i class="icon-user"></i> <a ng:click="addFilter('owner:' + user.label)">{{user.label}}</a></td>
+								<td style="text-align: right">{{user.count | number }}</td>
+								<td style="text-align: right">{{user.min | number }}m</td>
+								<td style="text-align: right">{{user.max | number }}m</td>
+								<td style="text-align: right">{{user.sum | number }}m</td>
+								<td style="text-align: right">{{user.avg | number : 2 }}m</td>
+							</tr>
+							<tr ng:hide="users">
 								<td colspan="2"><i>None</i></td>
 							</tr>
 						</tbody>

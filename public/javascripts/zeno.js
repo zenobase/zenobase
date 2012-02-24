@@ -299,6 +299,19 @@ function RatingCountCtrl() {
 	self.register(self);
 }
 
+function DistanceScoreboardCtrl() {
+	var self = this;
+	self.id = 'distances';
+	self.users = [];
+	self.prepare = function() {
+		return 'scoreboard(id:' + self.id + ',tokenField:creator,valueField:distance,order:total,limit:10)';
+	};
+	self.update = function(result) {
+		self.users = result[self.id];
+	};
+	self.register(self);
+}
+
 function TimelineCtrl() {
 	var self = this;
 
@@ -625,7 +638,13 @@ angular.module('ZenoModule', [])
 		return function(date) {
 			return humaneDate(new Date(Date.parse(date)));
 		}
-	});
+	})
+	.filter('humaneNumber', function() {
+		return function(num) {
+			return num.toPrecision(2).toLocaleString();
+		}
+	})
+	;
 
 angular.widget('zeno:copyright', function(compileElement) {
 	var start = compileElement.attr('start');

@@ -41,6 +41,7 @@ public class EventSearch {
 		.put("gantt", GanttWidget.builder())
 		.put("histogram", HistogramWidget.builder())
 		.put("timeline", TimelineWidget.builder())
+		.put("scoreboard", ScoreboardWidget.builder())
 		.build();
 
 	private final Bucket bucket;
