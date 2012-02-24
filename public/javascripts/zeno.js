@@ -204,8 +204,13 @@ function BucketCtrl($http, $routeParams, $location) {
 			return filter.indexOf(field + ':') == 0;
 		});
 	};
-	self.addFilter = function(filter) {
+	self.addFilter = function(filter, replace) {
 		if (self.filters.indexOf(filter) == -1) {
+			if (replace) {
+				self.filters = $.grep(self.filters, function(value) {
+					return value.indexOf(filter.split(':')[0] + ':') == -1;
+				});
+			}
 			self.filters.push(filter);
 			$location.search('q', self.filters.join(','));
 		}
@@ -381,8 +386,7 @@ function MapCtrl() {
 	};
 	self.register(self);
 	self.filterBounds = function() {
-		var b = self.map.getBounds();
-		self.addFilter('location:' + b.toUrlValue(2).split(',').join('x'));
+		self.addFilter('location:' + self.map.getBounds().toUrlValue(2).split(',').join('x'), true);
 	};
 }
 
@@ -390,7 +394,10 @@ MapCtrl.prototype.draw = function(points) {
 	var self = this;
 	google.load("maps", "3.8", { other_params : 'sensor=false', callback : function() {
 		var options = {
-			mapTypeId: google.maps.MapTypeId.TERRAIN
+			mapTypeId: google.maps.MapTypeId.TERRAIN,
+			mapTypeControlOptions : {
+				style : google.maps.MapTypeControlStyle.DROPDOWN_MENU
+			}
 		};
 		self.map = new google.maps.Map(document.getElementById('map'), options);
 		var bounds = new google.maps.LatLngBounds();
@@ -404,7 +411,26 @@ MapCtrl.prototype.draw = function(points) {
 			bounds.extend(latLng);
 		});
 		self.map.fitBounds(bounds);
+	  self.map.controls[google.maps.ControlPosition.TOP_RIGHT].push(self.createFilterControl());
 	}});
+}
+
+MapCtrl.prototype.createFilterControl = function() {
+	var self = this;
+	var parent = document.createElement('div');
+	parent.style.padding = '5px';
+	var control = document.createElement('div');
+	control.title = 'Click to filter using the current map bounds';
+	control.className = 'control';
+	parent.appendChild(control);	
+	var label = document.createElement('div');
+	label.innerHTML = 'Filter';
+	control.appendChild(label);
+	google.maps.event.addDomListener(control, 'click', function() {
+		self.filterBounds();
+		self.refresh();
+	});
+	return parent;
 }
 
 TemplateCtrl.$inject = ['$http', '$defer', '$routeParams'];

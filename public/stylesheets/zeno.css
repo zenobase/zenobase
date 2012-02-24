@@ -22,3 +22,22 @@ body {
 abbr {
 	text-transform: none;
 }
+
+.widget h4 {
+	padding: 8px;
+	border-bottom: 1px solid #DDD;
+	margin-bottom: 8px;
+}
+
+#map .control {
+	cursor: pointer;
+	font-size: 13px;
+	font-weight: bold;
+	border: 1px solid #717B87;
+	padding: 1px 6px;
+	-webkit-box-shadow: rgba(0, 0, 0, 0.398438) 0px 2px 4px;
+	box-shadow: rgba(0, 0, 0, 0.398438) 0px 2px 4px;
+	background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(white), to(#E6E6E6));
+	color: black;
+	line-height: 18px;
+}
