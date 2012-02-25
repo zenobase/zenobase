@@ -14,6 +14,7 @@ import models.Text;
 import models.Token;
 
 import org.joda.time.DateTime;
+import org.joda.time.Duration;
 
 import com.google.common.base.Charsets;
 import com.google.common.io.Files;
@@ -49,11 +50,15 @@ class RandomEvent {
 			}
 		}, 2)
 		.add(new Builder() {
-			RandomElement<Resource> resources = new Parser().parse(new File("data/movies.tsv"));
+			RandomElement<Movie> movies = new MovieParser().parse(new File("data/movies.tsv"));
 			@Override
 			protected void addFields(Event event) {
+				Movie movie = movies.next();
 				event.add(Event.TAG, Token.valueOf("movie"));
-				event.add(Event.RESOURCE, resources.next());
+				event.add(Event.RESOURCE, movie.getResource());
+				if (movie.getDuration() != null) {
+					event.add(Event.DURATION, movie.getDuration());
+				}
 				event.add(Event.RATING, nextRating());
 			}
 		}, 2)
@@ -61,6 +66,7 @@ class RandomEvent {
 			@Override
 			protected void addFields(Event event) {
 				event.add(Event.TAG, Token.valueOf("hike"));
+				event.add(Event.DURATION, nextDuration(30, 330));
 				event.add(Event.LOCATION, nextLocation());
 				event.add(Event.DISTANCE, nextLength(500, 10000));
 				event.add(Event.HEIGHT, nextLength(0, 5000));
@@ -105,6 +111,10 @@ class RandomEvent {
 			return new DateTime().minusMinutes(rand.nextInt(60 * 24 * 365)); // 1 year
 		}
 
+		protected Duration nextDuration(int minMinutes, int maxMinutes) {
+			return Duration.standardMinutes(minMinutes + rand.nextInt(maxMinutes - minMinutes));
+		}
+
 		protected Location nextLocation() {
 			BigDecimal lat = BigDecimal.valueOf(rand.nextInt(18000) - 9000).movePointLeft(2);
 			BigDecimal lon = BigDecimal.valueOf(rand.nextInt(36000) - 18000).movePointLeft(2);
@@ -120,23 +130,43 @@ class RandomEvent {
 		}
 	}
 
-	private static class Parser {
+	private static class Movie {
 
-		public RandomElement<Resource> parse(File source) {
+		private final Resource resource;
+		private final Duration duration;
+
+		public Movie(Text title, Token url, Duration duration) {
+			this.resource = new Resource(title, url);
+			this.duration = duration;
+		}
+
+		public Resource getResource() {
+			return resource;
+		}
+
+		public Duration getDuration() {
+			return duration;
+		}
+	}
+
+	private static class MovieParser {
+
+		public RandomElement<Movie> parse(File source) {
 			try {
-				return Files.readLines(source, Charsets.UTF_8, new LineProcessor<RandomElement<Resource>>() {
-					private final RandomElement<Resource> resources = new RandomElement<Resource>();
+				return Files.readLines(source, Charsets.UTF_8, new LineProcessor<RandomElement<Movie>>() {
+					private final RandomElement<Movie> resources = new RandomElement<Movie>();
 					@Override
 					public boolean processLine(String line) {
 						String[] tokens = line.split("\t");
 						String title = String.format("%s (%d)", tokens[5], Integer.parseInt(tokens[11]));
 						String url = tokens[15];
+						Duration duration = !tokens[10].isEmpty() ? Duration.standardMinutes(Integer.parseInt(tokens[10])) : null;
 						int weight = Integer.parseInt(tokens[13]);
-						resources.add(new Resource(Text.valueOf(title), Token.valueOf(url)), weight);
+						resources.add(new Movie(Text.valueOf(title), Token.valueOf(url), duration), weight);
 						return true;
 					}
 					@Override
-					public RandomElement<Resource> getResult() {
+					public RandomElement<Movie> getResult() {
 						return resources;
 					}
 				});

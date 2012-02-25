@@ -2,8 +2,10 @@ package models;
 
 import org.codehaus.jackson.node.ObjectNode;
 import org.joda.time.DateTime;
+import org.joda.time.Duration;
 
 import schema.DateTimeType;
+import schema.DurationType;
 import schema.Field;
 import schema.IdentityType;
 import schema.LengthType;
@@ -23,6 +25,7 @@ public class Event {
 	public static final String TYPE_NAME = "event";
 	public static final Field<Identity> CREATOR = Field.of("creator", new IdentityType());
 	public static final Field<DateTime> TIMESTAMP = Field.of("timestamp", new DateTimeType());
+	public static final Field<Duration> DURATION = Field.of("duration", new DurationType());
 	public static final Field<Location> LOCATION = Field.of("location", new LocationType());
 	public static final Field<Token> TAG = Field.of("tag", new TokenType());
 	public static final Field<Resource> RESOURCE = Field.of("resource", new ResourceType());
@@ -31,7 +34,7 @@ public class Event {
 	public static final Field<Rating> RATING = Field.of("rating", new RatingType());
 
 	private static final ImmutableSet<Field<?>> FIELDS = 
-		ImmutableSet.<Field<?>>of(CREATOR, TIMESTAMP, LOCATION, TAG, RESOURCE, DISTANCE, HEIGHT, RATING);
+		ImmutableSet.<Field<?>>of(CREATOR, TIMESTAMP, DURATION, LOCATION, TAG, RESOURCE, DISTANCE, HEIGHT, RATING);
 
 	private final String id;
 	private final String bucket;

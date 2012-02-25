@@ -347,31 +347,35 @@ function TimelineCtrl() {
 
 TimelineCtrl.prototype.draw = function() {
 	var self = this;
-	google.load("visualization", "1", { packages : [ "corechart" ], callback : function() { 
-		var data = new google.visualization.DataTable();
-		data.addColumn('string', self.currentInterval());
-		data.addColumn('number', 'Count');
-		$.each(self.times, function(i, time) {
-			data.addRow([ time.label, time.count ]);
-		});
-		var options = {
-			height : 200,
-			legend : { position : 'none' },
-			series : [ { color : 'gray' } ],
-			chartArea : { width: '100%', left: 0 },
-			vAxis : { gridlines : { color : 'silver' }, baselineColor : 'white' },
-			hAxis : { baselineColor : 'white', textPosition : 'none' }, 
-		};
-		var chart = new google.visualization.ColumnChart(document.getElementById('timeline'));
-		chart.draw(data, options);
-		google.visualization.events.addListener(chart, 'select', function() {
-			var selection = chart.getSelection();
-			var value = data.getValue(selection[0].row, 0);
-			self.zoomIn();
-			self.addFilter(self.field + ':' + value);
-			self.refresh();
-		});
-	}});
+	if (self.times.length) {
+		google.load("visualization", "1", { packages : [ "corechart" ], callback : function() { 
+			var data = new google.visualization.DataTable();
+			data.addColumn('string', self.currentInterval());
+			data.addColumn('number', 'Count');
+			$.each(self.times, function(i, time) {
+				data.addRow([ time.label, time.count ]);
+			});
+			var options = {
+				height : 200,
+				legend : { position : 'none' },
+				series : [ { color : 'gray' } ],
+				chartArea : { width: '100%', left: 0 },
+				vAxis : { gridlines : { color : 'silver' }, baselineColor : 'white' },
+				hAxis : { baselineColor : 'white', textPosition : 'none' }, 
+			};
+			var chart = new google.visualization.ColumnChart(document.getElementById('timeline'));
+			chart.draw(data, options);
+			google.visualization.events.addListener(chart, 'select', function() {
+				var selection = chart.getSelection();
+				var value = data.getValue(selection[0].row, 0);
+				self.zoomIn();
+				self.addFilter(self.field + ':' + value);
+				self.refresh();
+			});
+		}});
+	} else {
+		$('#timeline').html('<i class="none">None</i>');
+	}
 }
 
 function MapCtrl() {
@@ -405,27 +409,31 @@ function MapCtrl() {
 
 MapCtrl.prototype.draw = function(points) {
 	var self = this;
-	google.load("maps", "3.8", { other_params : 'sensor=false', callback : function() {
-		var options = {
-			mapTypeId: google.maps.MapTypeId.TERRAIN,
-			mapTypeControlOptions : {
-				style : google.maps.MapTypeControlStyle.DROPDOWN_MENU
-			}
-		};
-		self.map = new google.maps.Map(document.getElementById('map'), options);
-		var bounds = new google.maps.LatLngBounds();
-		$.each(points, function(i, point) {
-			var latLng = new google.maps.LatLng(point.lat, point.lon);
-			var marker = new google.maps.Marker({
-				position : latLng, 
-				map : self.map,
-				title : 'Event: ' + latLng
+	if (points.length) {
+		google.load("maps", "3.8", { other_params : 'sensor=false', callback : function() {
+			var options = {
+				mapTypeId: google.maps.MapTypeId.TERRAIN,
+				mapTypeControlOptions : {
+					style : google.maps.MapTypeControlStyle.DROPDOWN_MENU
+				}
+			};
+			self.map = new google.maps.Map(document.getElementById('map'), options);
+			var bounds = new google.maps.LatLngBounds();
+			$.each(points, function(i, point) {
+				var latLng = new google.maps.LatLng(point.lat, point.lon);
+				var marker = new google.maps.Marker({
+					position : latLng, 
+					map : self.map,
+					title : 'Event: ' + latLng
+				});
+				bounds.extend(latLng);
 			});
-			bounds.extend(latLng);
-		});
-		self.map.fitBounds(bounds);
-	  self.map.controls[google.maps.ControlPosition.TOP_RIGHT].push(self.createFilterControl());
-	}});
+			self.map.fitBounds(bounds);
+		  self.map.controls[google.maps.ControlPosition.TOP_RIGHT].push(self.createFilterControl());
+		}});
+	} else {
+		$('#map').html('<i class="none">None</i>');
+	}
 }
 
 MapCtrl.prototype.createFilterControl = function() {
@@ -563,8 +571,16 @@ var fields = [
 		name : 'timestamp',
 		format : function(value) {
 			return '<span class="nowrap">' +
-				         '<i class="icon-time" title="Timestamp"></i><abbr title="' + value + '"> ' + humaneDate(new Date(Date.parse(value))) +
+				         '<i class="icon-calendar" title="Timestamp"></i><abbr title="' + value + '"> ' + humaneDate(new Date(Date.parse(value))) +
 				       '</abbr></span> &nbsp; ';
+		}
+	},
+	{
+		name : 'duration',
+		format : function(value) {
+			return '<span class="nowrap">' +
+				         '<i class="icon-time" title="Duration"></i> ' + humaneDuration(value) +
+				       '</span> &nbsp; ';
 		}
 	},
 	{
@@ -639,9 +655,9 @@ angular.module('ZenoModule', [])
 			return humaneDate(new Date(Date.parse(date)));
 		}
 	})
-	.filter('humaneNumber', function() {
-		return function(num) {
-			return num.toPrecision(2).toLocaleString();
+	.filter('humaneDuration', function() {
+		return function(millis) {
+			return humaneDuration(millis);
 		}
 	})
 	;

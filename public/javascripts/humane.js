@@ -11,6 +11,33 @@
  * Licensed under the MIT license.
  */
 
+function humaneDuration(millis) {
+  var lang = {
+      second: 'second',
+      seconds: 'seconds',
+      minute: 'minute',
+      minutes: 'minutes',
+      hour: 'hour',
+      hours: 'hours',
+      day: 'day',
+      days: 'days'
+  };
+	var seconds = millis / 1000;
+	if (seconds % 60) {
+		return seconds + ' ' + (seconds != 1 ? lang.seconds : lang.second);  			
+	}
+	var minutes = seconds / 60;
+	if (minutes % 60) {
+		return minutes + ' ' + (minutes != 1 ? lang.minutes : lang.minute);  
+	}
+	var hours = minutes / 60;
+	if (hours % 24) {
+		return hours + ' ' + (hours != 1 ? lang.hours : lang.hour);  
+	}
+	var days = hours / 24;
+	return days + ' ' + (days != 1 ? lang.days : lang.day);
+}
+
 function humaneDate(date, compareTo){
     if(!date) {
         return;

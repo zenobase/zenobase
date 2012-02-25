@@ -42,7 +42,7 @@ public class ScoreboardWidget implements Widget {
 		ArrayNode result = Nodes.newArray();
 		TermsStatsFacet terms = response.facets().facet(TermsStatsFacet.class, id);
 		for (TermsStatsFacet.Entry entry : terms.entries()) {
-			if (!Double.isNaN(entry.getMin())) {
+			if (entry.getTotalCount() > 0) {
 				ObjectNode entryNode = result.addObject();
 				entryNode.put("label", entry.getTerm());
 				entryNode.put("count", entry.getTotalCount());
