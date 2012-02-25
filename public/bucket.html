@@ -130,7 +130,7 @@
 						<tbody>
 							<tr ng:repeat="tag in tags">
 								<td><i class="icon-tag"></i> <a ng:click="addFilter('tag:' + tag.label)">{{tag.label}}</a></td>
-								<td style="text-align: right"><abbr title="{{tag.last}}">{{tag.last | humaneDate}}</abbr></td>
+								<td style="text-align: right"><abbr title="{{tag.last}}">{{tag.last | age}}</abbr></td>
 							</tr>
 							<tr ng:hide="tags">
 								<td colspan="2"><i>None</i></td>
@@ -176,10 +176,10 @@
 								<td style="text-align: right">{{user.min | number }}m</td>
 								<td style="text-align: right">{{user.max | number }}m</td>
 								<td style="text-align: right">{{user.sum | number }}m</td>
-								<td style="text-align: right">{{user.avg | number : 2 }}m</td>
+								<td style="text-align: right">{{user.avg | number : 0 }}m</td>
 							</tr>
 							<tr ng:hide="users">
-								<td colspan="2"><i>None</i></td>
+								<td colspan="6"><i>None</i></td>
 							</tr>
 						</tbody>
 					</table>

@@ -90,7 +90,7 @@ public class EventSearch {
 			constraints.add(QueryBuilders.rangeQuery(field).gte(from).lt(to));
 		}
 		else if (Event.LOCATION.getName().equals(field)) {
-			String[] c = value.split("x");
+			String[] c = value.split("_");
 			GeoPoint topLeft = new GeoPoint(Double.parseDouble(c[2]), Double.parseDouble(c[1]));
 			GeoPoint bottomRight = new GeoPoint(Double.parseDouble(c[0]), Double.parseDouble(c[3]));
 			Logger.info("topLeft: " + toString(topLeft));

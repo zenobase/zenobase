@@ -264,9 +264,11 @@ function EventListCtrl() {
 function TagCountCtrl() {
 	var self = this;
 	self.id = 'tagCount';
+	self.field = 'tag';
+	self.limit = 10;
 	self.tags = [];
 	self.prepare = function() {
-		return 'count(id:' + self.id + ',field:tag,limit:10)';
+		return 'count(id:' + self.id + ',field:' + self.field + ',limit:' + self.limit + ')';
 	};
 	self.update = function(result) {
 		self.tags = result[self.id];
@@ -277,9 +279,13 @@ function TagCountCtrl() {
 function TagGanttCtrl() {
 	var self = this;
 	self.id = 'tagsGantt';
+	self.tokenField = 'tag';
+	self.timeField = 'timestamp';
+	self.order = 'max';
+	self.limit = 10;
 	self.tags = [];
 	self.prepare = function() {
-		return 'gantt(id:' + self.id + ',tokenField:tag,timeField:timestamp,order:max,limit:10)';
+		return 'gantt(id:' + self.id + ',tokenField:' + self.tokenField + ',timeField:' + self.timeField + ',order:' + self.order + ',limit:' + self.limit + ')';
 	};
 	self.update = function(result) {
 		self.tags = result[self.id];
@@ -289,12 +295,17 @@ function TagGanttCtrl() {
 
 function RatingCountCtrl() {
 	var self = this;
+	self.id = 'ratings';
+	self.field = 'rating';
+	self.from = 0;
+	self.to = 100;
+	self.step = 20;
 	self.ratings = [];
 	self.prepare = function() {
-		return 'histogram(id:ratings,field:rating,from:0,to:100,step:20)';
+		return 'histogram(id:' + self.id + ',field:' + self.field + ',from:' + self.from + ',to:' + self.to + ',step:' + self.step + ')';
 	};
 	self.update = function(result) {
-		self.ratings = result['ratings'];
+		self.ratings = result[self.id];
 	};
 	self.register(self);
 }
@@ -302,9 +313,13 @@ function RatingCountCtrl() {
 function DistanceScoreboardCtrl() {
 	var self = this;
 	self.id = 'distances';
+	self.tokenField = 'creator';
+	self.valueField = 'distance';
+	self.order = 'total';
+	self.limit = 10;
 	self.users = [];
 	self.prepare = function() {
-		return 'scoreboard(id:' + self.id + ',tokenField:creator,valueField:distance,order:total,limit:10)';
+		return 'scoreboard(id:' + self.id + ',tokenField:' + self.tokenField + ',valueField:' + self.valueField + ',order:' + self.order + ',limit:' + self.limit + ')';
 	};
 	self.update = function(result) {
 		self.users = result[self.id];
@@ -314,7 +329,7 @@ function DistanceScoreboardCtrl() {
 
 function TimelineCtrl() {
 	var self = this;
-
+	self.id = 'timeline';
 	self.field = 'timestamp';
 	self.intervals = [ 'year', 'month', 'day' ];
 	self.patterns = [ /^[0-9]{4}$/, /^[0-9]{4}-[0-9]{2}$/, /^[0-9]{4}-[0-9]{2}-[0-9]{2}$/ ];
@@ -336,10 +351,10 @@ function TimelineCtrl() {
 
 	self.times = [];
 	self.prepare = function() {
-		return 'timeline(id:timeline,field:' + self.field + ',interval:' + self.currentInterval() + ')';
+		return 'timeline(id:' + self.id + ',field:' + self.field + ',interval:' + self.currentInterval() + ')';
 	};
 	self.update = function(result) {
-		self.times = result['timeline'];
+		self.times = result[self.id];
 		self.draw();
 	};
 	self.register(self);
@@ -403,7 +418,7 @@ function MapCtrl() {
 	};
 	self.register(self);
 	self.filterBounds = function() {
-		self.addFilter('location:' + self.map.getBounds().toUrlValue(2).split(',').join('x'), true);
+		self.addFilter('location:' + self.map.getBounds().toUrlValue(2).split(',').join('_'), true);
 	};
 }
 
@@ -650,12 +665,12 @@ angular.module('ZenoModule', [])
 			return html;
 		}
 	})
-	.filter('humaneDate', function() {
+	.filter('age', function() {
 		return function(date) {
 			return humane.date(new Date(Date.parse(date)));
 		}
 	})
-	.filter('humaneDuration', function() {
+	.filter('duration', function() {
 		return function(millis) {
 			return humane.duration(millis);
 		}
