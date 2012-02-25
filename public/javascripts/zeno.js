@@ -571,7 +571,7 @@ var fields = [
 		name : 'timestamp',
 		format : function(value) {
 			return '<span class="nowrap">' +
-				         '<i class="icon-calendar" title="Timestamp"></i><abbr title="' + value + '"> ' + humaneDate(new Date(Date.parse(value))) +
+				         '<i class="icon-calendar" title="Timestamp"></i><abbr title="' + value + '"> ' + humane.date(new Date(Date.parse(value))) +
 				       '</abbr></span> &nbsp; ';
 		}
 	},
@@ -579,7 +579,7 @@ var fields = [
 		name : 'duration',
 		format : function(value) {
 			return '<span class="nowrap">' +
-				         '<i class="icon-time" title="Duration"></i> ' + humaneDuration(value) +
+				         '<i class="icon-time" title="Duration"></i> ' + humane.duration(value) +
 				       '</span> &nbsp; ';
 		}
 	},
@@ -652,12 +652,12 @@ angular.module('ZenoModule', [])
 	})
 	.filter('humaneDate', function() {
 		return function(date) {
-			return humaneDate(new Date(Date.parse(date)));
+			return humane.date(new Date(Date.parse(date)));
 		}
 	})
 	.filter('humaneDuration', function() {
 		return function(millis) {
-			return humaneDuration(millis);
+			return humane.duration(millis);
 		}
 	})
 	;
