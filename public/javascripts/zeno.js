@@ -176,7 +176,7 @@ function BucketCtrl($http, $routeParams, $location) {
 	var self = this;
 	self.params = $routeParams;
 	var q = $location.search()['q'];
-	self.filters = q ? q.split(',') : [ ];
+	self.filters = q ? q.split('__') : [ ];
 	self.widgets = [];
 	self.register = function(widget) {
 		self.widgets.push(widget);
@@ -212,14 +212,14 @@ function BucketCtrl($http, $routeParams, $location) {
 				});
 			}
 			self.filters.push(filter);
-			$location.search('q', self.filters.join(','));
+			$location.search('q', self.filters.join('__'));
 		}
 	};
 	self.removeFilter = function(filter) {
 		self.filters = $.grep(self.filters, function(value) {
 			return value != filter;
 		});
-		$location.search('q', self.filters.length ? self.filters.join(',') : null);
+		$location.search('q', self.filters.length ? self.filters.join('__') : null);
 	};
 	self.$evalAsync(self.refresh);
 }
@@ -418,7 +418,7 @@ function MapCtrl() {
 	};
 	self.register(self);
 	self.filterBounds = function() {
-		self.addFilter('location:' + self.map.getBounds().toUrlValue(2).split(',').join('_'), true);
+		self.addFilter('location:' + self.map.getBounds().toUrlValue(2), true);
 	};
 }
 
