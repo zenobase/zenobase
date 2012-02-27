@@ -41,9 +41,12 @@ function MainCtrl($route, $http, $location) {
 				if ($location.url() == '/') {
 					self.reload();
 				} else {
-					$location.url('/');
+					home();
 				}
 		});
+	};
+	self.home = function() {
+		$location.url('/');
 	};
 	self.whoami();
 }
@@ -86,6 +89,9 @@ function AuthFormCtrl($http) {
 			self.reload();
 		});
 	}
+	self.$on('event:unauthorized', function() {
+		$('#sign-in-dialog').modal('show');
+	});
 }
 
 SignUpFormCtrl.$inject = ['$http'];
@@ -680,13 +686,13 @@ app.filter('duration', function() {
 });
 
 app.config(function($httpProvider) {
-	var interceptor = [ '$q', function($q) {
+	var interceptor = ['$rootScope', '$q', function(scope, $q) {
 		function success(response) {
 			return response;
 		}
 		function error(response) {
 			if (response.status == 401) {
-				$('#sign-in-dialog').modal('show');
+				scope.$broadcast('event:unauthorized');
 			}
 			return $q.reject(response);
 		}
