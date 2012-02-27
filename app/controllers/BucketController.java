@@ -34,7 +34,12 @@ public class BucketController extends ControllerSupport {
 	static BucketManager buckets;
 
 	public static Result get(String bucketId) {
-		Bucket bucket = buckets.findBucket(bucketId, SecurityController.identity(false));
+		Identity identity = SecurityController.identity(false);
+		return identity != null ? get(bucketId, identity) : unauthorized(); 
+    }
+
+	private static Result get(String bucketId, Identity identity) {
+		Bucket bucket = buckets.findBucket(bucketId, identity);
     	return bucket != null ? get(bucket) : notFound();
     }
 
@@ -50,7 +55,7 @@ public class BucketController extends ControllerSupport {
 		
 		Identity identity = SecurityController.identity(false);
 		if (identity == null) {
-			return forbidden();
+			return unauthorized();
 		}
 		ObjectNode body = (ObjectNode) request().body().asJson();
 		if (body == null) {
@@ -84,7 +89,7 @@ public class BucketController extends ControllerSupport {
 
     public static Result delete(String bucketId) {
     	Identity identity = SecurityController.identity(false);
-		return identity != null ? delete(bucketId, identity) : forbidden();
+		return identity != null ? delete(bucketId, identity) : unauthorized();
     }
 
     private static Result delete(String bucketId, Identity identity) {

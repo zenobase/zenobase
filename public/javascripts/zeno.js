@@ -645,37 +645,57 @@ var fields = [
 	};
 });*/
 
-angular.module('ZenoModule', [])
-	.filter('fields', function() {
-		return function(event) {
-			var html = '';
-			$.each(fields, function(i, field) {
-				var value = event[field.name];
-				if (value) {
-					if ($.isArray(value)) {
-						$.each(value, function(i, value) {
-							html += field.format(value);
-						});
-					}
-					else {
-							html += field.format(value);
-					}
+var app = angular.module('ZenoModule', []);
+
+app.filter('fields', function() {
+	return function(event) {
+		var html = '';
+		$.each(fields, function(i, field) {
+			var value = event[field.name];
+			if (value) {
+				if ($.isArray(value)) {
+					$.each(value, function(i, value) {
+						html += field.format(value);
+					});
 				}
-			});
-			return html;
+				else {
+						html += field.format(value);
+				}
+			}
+		});
+		return html;
+	}
+});
+
+app.filter('age', function() {
+	return function(date) {
+		return humane.date(new Date(Date.parse(date)));
+	}
+});
+
+app.filter('duration', function() {
+	return function(millis) {
+		return humane.duration(millis);
+	}
+});
+
+app.config(function($httpProvider) {
+	var interceptor = [ '$q', function($q) {
+		function success(response) {
+			return response;
 		}
-	})
-	.filter('age', function() {
-		return function(date) {
-			return humane.date(new Date(Date.parse(date)));
+		function error(response) {
+			if (response.status == 401) {
+				$('#sign-in-dialog').modal('show');
+			}
+			return $q.reject(response);
 		}
-	})
-	.filter('duration', function() {
-		return function(millis) {
-			return humane.duration(millis);
+		return function(promise) {
+			return promise.then(success, error);
 		}
-	})
-	;
+	}];
+	$httpProvider.responseInterceptors.push(interceptor);
+});
 
 angular.widget('zeno:copyright', function(compileElement) {
 	var start = compileElement.attr('start');
