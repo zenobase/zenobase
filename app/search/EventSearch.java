@@ -16,7 +16,6 @@ import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 
-import play.Logger;
 import services.IndexManager;
 
 import com.google.common.base.Preconditions;
@@ -94,7 +93,7 @@ public class EventSearch {
 
 	public ObjectNode execute(IndexManager index) {
 		SearchSourceBuilder builder = buildSearch();
-		Logger.info("q: " + builder);
+		// Logger.info("q: " + builder);
 		SearchResponse response = index.search(builder);
 		// Logger.info("r: " + response);
 		return toJson(response);
