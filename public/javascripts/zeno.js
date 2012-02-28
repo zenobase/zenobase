@@ -378,11 +378,11 @@ TimelineCtrl.prototype.draw = function() {
 				data.addRow([ time.label, time.count ]);
 			});
 			var options = {
-				height : 200,
+				height : 100,
 				legend : { position : 'none' },
 				series : [ { color : 'gray' } ],
 				chartArea : { width: '100%', left: 0 },
-				vAxis : { gridlines : { color : 'silver' }, baselineColor : 'white' },
+				vAxis : { gridlines : { color : '#EEE' }, baselineColor : '#EEE' },
 				hAxis : { baselineColor : 'white', textPosition : 'none' }, 
 			};
 			var chart = new google.visualization.ColumnChart(document.getElementById('timeline'));
