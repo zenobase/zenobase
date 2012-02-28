@@ -13,8 +13,6 @@ import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.Interval;
 
-import play.Logger;
-
 import com.google.common.base.Strings;
 import com.google.common.collect.Maps;
 import common.Intervals;
@@ -52,7 +50,6 @@ public class TimelineWidget implements Widget {
 		DateHistogramFacet facet = response.facets().facet(DateHistogramFacet.class, id);
 		Map<String, Long> counts = getMap(getInterval(facet.getEntries()));
 		for (DateHistogramFacet.Entry entry : facet.getEntries()) {
-			Logger.info("Time: " + toDateTime(entry.getTime()) + " -> " + getLabel(toDateTime(entry.getTime())));
 			counts.put(getLabel(toDateTime(entry.getTime())), entry.getCount());
 		}
 		return toJson(counts);
@@ -78,7 +75,6 @@ public class TimelineWidget implements Widget {
 	}
 
 	private Map<String, Long> getMap(Interval interval) {
-		Logger.info("Map: " + interval);
 		Map<String, Long> counts = Maps.newTreeMap();
 		if (interval != null) {
 			for (DateTime time : Intervals.expand(interval.getStart(), interval.getEnd(), this.interval)) {
