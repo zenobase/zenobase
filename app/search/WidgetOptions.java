@@ -3,6 +3,7 @@ package search;
 import java.util.Map;
 
 import org.elasticsearch.common.collect.Maps;
+import org.joda.time.DateTimeZone;
 
 public class WidgetOptions {
 
@@ -29,6 +30,9 @@ public class WidgetOptions {
 		}
 		if (type.equals(Boolean.class)) {
 			return (T) Boolean.valueOf(value);
+		}
+		if (type.equals(DateTimeZone.class)) {
+			return (T) DateTimeZone.forOffsetMillis(Integer.parseInt(value) * 60 * 1000);
 		}
 		if (type.isEnum()) {
 			return (T) Enum.valueOf((Class<? extends Enum>) type, value);

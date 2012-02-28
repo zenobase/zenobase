@@ -9,9 +9,10 @@ import org.elasticsearch.search.facet.FacetBuilders;
 import org.elasticsearch.search.facet.datehistogram.DateHistogramFacet;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
-import org.joda.time.LocalDate;
-import org.joda.time.YearMonth;
 
+import com.google.common.base.Preconditions;
+
+import common.Intervals;
 import common.Nodes;
 
 public class TimelineWidget implements Widget {
@@ -52,17 +53,9 @@ public class TimelineWidget implements Widget {
 	}
 
 	private String getLabel(DateHistogramFacet.Entry entry) {
-		DateTime time = new DateTime(entry.getTime(), DateTimeZone.UTC);
-		if ("year".equals(interval)) {
-			return Integer.toString(new YearMonth(time).getYear());
-		}
-		if ("month".equals(interval)) {
-			return new YearMonth(time).toString();
-		}
-		if ("day".equals(interval)) {
-			return new LocalDate(time).toString();
-		}
-		throw new AssertionError("Can't handle interval: " + interval);
+		Intervals format = Intervals.valueOf(interval.toUpperCase());
+		Preconditions.checkNotNull(format, "Can't handle interval: %s", interval);
+		return format.toString(new DateTime(entry.getTime(), DateTimeZone.UTC));
 	}
 
 	public static WidgetBuilder builder() {
@@ -73,7 +66,7 @@ public class TimelineWidget implements Widget {
 					options.get("id"),
 					options.get("field"),
 					options.get("interval"),
-					DateTimeZone.forOffsetHours(-8));
+					options.get("timezone", DateTimeZone.class, DateTimeZone.UTC));
 			}
 		};
 	}

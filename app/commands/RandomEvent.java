@@ -116,7 +116,7 @@ class RandomEvent {
 		}
 
 		protected Location nextLocation() {
-			BigDecimal lat = BigDecimal.valueOf(rand.nextInt(18000) - 9000).movePointLeft(2);
+			BigDecimal lat = BigDecimal.valueOf(rand.nextInt(16000) - 8000).movePointLeft(2); // avoid the poles
 			BigDecimal lon = BigDecimal.valueOf(rand.nextInt(36000) - 18000).movePointLeft(2);
 			return new Location(lat, lon);
 		}

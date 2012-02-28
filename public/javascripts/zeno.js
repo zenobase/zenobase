@@ -291,7 +291,7 @@ function TagGanttCtrl() {
 	self.limit = 10;
 	self.tags = [];
 	self.prepare = function() {
-		return 'gantt(id:' + self.id + ',tokenField:' + self.tokenField + ',timeField:' + self.timeField + ',order:' + self.order + ',limit:' + self.limit + ')';
+		return 'gantt(id:' + self.id + ',tokenField:' + self.tokenField + ',timeField:' + self.timeField + ',timezone:' + locale.timezoneOffset + ',order:' + self.order + ',limit:' + self.limit + ')';
 	};
 	self.update = function(result) {
 		self.tags = result[self.id];
@@ -337,13 +337,13 @@ function TimelineCtrl() {
 	var self = this;
 	self.id = 'timeline';
 	self.field = 'timestamp';
-	self.intervals = [ 'year', 'month', 'day' ];
-	self.patterns = [ /^[0-9]{4}$/, /^[0-9]{4}-[0-9]{2}$/, /^[0-9]{4}-[0-9]{2}-[0-9]{2}$/ ];
+	self.intervals = [ 'year', 'month', 'day', 'hour', 'minute' ];
+	self.intervalLengths = [ 4, 7, 10, 13, 16 ];
 	self.interval = 1;
 	$.each(self.getFilters(self.field), function(i, filter) {
 		var value = filter.split(':')[1];
-		$.each(self.patterns, function(j, pattern) {
-			if (value.match(pattern)) {
+		$.each(self.intervalLengths, function(j, length) {
+			if (value.length == length) {
 				self.interval = Math.min(j + 1, self.intervals.length);
 			}
 		});
@@ -357,7 +357,7 @@ function TimelineCtrl() {
 
 	self.times = [];
 	self.prepare = function() {
-		return 'timeline(id:' + self.id + ',field:' + self.field + ',interval:' + self.currentInterval() + ')';
+		return 'timeline(id:' + self.id + ',field:' + self.field + ',interval:' + self.currentInterval() + ',timezone:' + locale.timezoneOffset + ')';
 	};
 	self.update = function(result) {
 		self.times = result[self.id];
@@ -390,7 +390,7 @@ TimelineCtrl.prototype.draw = function() {
 				var selection = chart.getSelection();
 				var value = data.getValue(selection[0].row, 0);
 				self.zoomIn();
-				self.addFilter(self.field + ':' + value);
+				self.addFilter(self.field + ':' + value, true);
 				self.refresh();
 			});
 		}});
@@ -449,7 +449,12 @@ MapCtrl.prototype.draw = function(points) {
 				});
 				bounds.extend(latLng);
 			});
-			self.map.fitBounds(bounds);
+			if (bounds.getNorthEast().equals(bounds.getSouthWest())) {
+				self.map.setCenter(bounds.getCenter());
+				self.map.setZoom(2);
+			} else {
+				self.map.fitBounds(bounds);
+			}
 		  self.map.controls[google.maps.ControlPosition.TOP_RIGHT].push(self.createFilterControl());
 		}});
 	} else {
@@ -726,3 +731,7 @@ function defined(a, b) {
 function httpConfig() {
 	return { headers : { 'Content-Type' : 'application/x-www-form-urlencoded' } };
 }
+
+var locale = {
+		timezoneOffset : -new Date().getTimezoneOffset()
+};

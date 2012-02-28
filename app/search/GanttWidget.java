@@ -77,7 +77,7 @@ public class GanttWidget implements Widget {
 					options.get("timeField"),
 					ComparatorType.valueOf(options.get("order", String.class, "term").toUpperCase()),
 					options.get("limit", Integer.class, 10),
-					DateTimeZone.forOffsetHours(-8));
+					options.get("timezone", DateTimeZone.class, DateTimeZone.UTC));
 			}
 		};
 	}
