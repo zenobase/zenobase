@@ -340,10 +340,11 @@ function TimelineCtrl() {
 	self.intervals = [ 'year', 'month', 'day', 'hour', 'minute' ];
 	self.intervalLengths = [ 4, 7, 10, 13, 16 ];
 	self.interval = 1;
+	self.range = '';
 	$.each(self.getFilters(self.field), function(i, filter) {
-		var value = filter.split(':')[1];
+		self.range = filter.split(':')[1];
 		$.each(self.intervalLengths, function(j, length) {
-			if (value.length == length) {
+			if (self.range.length == length) {
 				self.interval = Math.min(j + 1, self.intervals.length);
 			}
 		});
@@ -357,7 +358,7 @@ function TimelineCtrl() {
 
 	self.times = [];
 	self.prepare = function() {
-		return 'timeline(id:' + self.id + ',field:' + self.field + ',interval:' + self.currentInterval() + ',timezone:' + locale.timezoneOffset + ')';
+		return 'timeline(id:' + self.id + ',field:' + self.field + ',interval:' + self.currentInterval() + ',range:' + self.range + ',timezone:' + locale.timezoneOffset + ')';
 	};
 	self.update = function(result) {
 		self.times = result[self.id];

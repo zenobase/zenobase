@@ -47,8 +47,10 @@ public class WidgetOptions {
 	public static WidgetOptions parse(String value) {
 		WidgetOptions options = new WidgetOptions();
 		for (String option : value.split(",")) {
-			String[] tokens = option.split(":");
-			options.set(tokens[0], tokens[1]);
+			String[] tokens = option.split(":", 2);
+			if (tokens.length == 2) {
+				options.set(tokens[0], tokens[1]);
+			}
 		}
 		return options;
 	}

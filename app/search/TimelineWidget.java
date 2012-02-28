@@ -13,6 +13,7 @@ import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.Interval;
 
+import com.google.common.base.Strings;
 import com.google.common.collect.Maps;
 import common.Intervals;
 import common.Nodes;
@@ -22,12 +23,14 @@ public class TimelineWidget implements Widget {
 	private final String id;
 	private final String field;
 	private final String interval;
+	private final Interval range;
 	private final DateTimeZone timezone;
 
-	public TimelineWidget(String id, String field, String interval, DateTimeZone timezone) {
+	public TimelineWidget(String id, String field, String interval, String range, DateTimeZone timezone) {
 		this.id = id;
 		this.field = field;
 		this.interval = interval;
+		this.range = !Strings.isNullOrEmpty(range) ? Intervals.valueOf(range, timezone) : null;
 		this.timezone = timezone;
 	}
 
@@ -53,6 +56,9 @@ public class TimelineWidget implements Widget {
 	}
 
 	private Interval getInterval(Iterable<? extends DateHistogramFacet.Entry> entries) {
+		if (range != null) {
+			return range;
+		}
 		long min = Long.MAX_VALUE, max = Long.MIN_VALUE;
 		for (DateHistogramFacet.Entry entry : entries) {
 			min = Math.min(min, entry.getTime());
@@ -97,6 +103,7 @@ public class TimelineWidget implements Widget {
 					options.get("id"),
 					options.get("field"),
 					options.get("interval"),
+					options.get("range"),
 					options.get("timezone", DateTimeZone.class, DateTimeZone.UTC));
 			}
 		};

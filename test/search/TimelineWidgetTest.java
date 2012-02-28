@@ -7,6 +7,6 @@ public class TimelineWidgetTest {
 
 	@Test
 	public void test() {
-		new TimelineWidget("a", "timestamp", "month", DateTimeZone.UTC);
+		new TimelineWidget("a", "timestamp", "month", null, DateTimeZone.UTC);
 	}
 }
