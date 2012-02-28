@@ -1,5 +1,7 @@
 package search;
 
+import java.util.Map;
+
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.node.ArrayNode;
 import org.codehaus.jackson.node.ObjectNode;
@@ -9,9 +11,9 @@ import org.elasticsearch.search.facet.FacetBuilders;
 import org.elasticsearch.search.facet.datehistogram.DateHistogramFacet;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
+import org.joda.time.Interval;
 
-import com.google.common.base.Preconditions;
-
+import com.google.common.collect.Maps;
 import common.Intervals;
 import common.Nodes;
 
@@ -42,20 +44,49 @@ public class TimelineWidget implements Widget {
 
 	@Override
 	public JsonNode process(SearchResponse response) {
-		ArrayNode result = Nodes.newArray();
-		DateHistogramFacet months = response.facets().facet(DateHistogramFacet.class, id);
-		for (DateHistogramFacet.Entry entry : months.entries()) {
-			ObjectNode entryNode = result.addObject();
-			entryNode.put("label", getLabel(entry));
-			entryNode.put("count", entry.getCount());
+		DateHistogramFacet facet = response.facets().facet(DateHistogramFacet.class, id);
+		Map<String, Long> counts = getMap(getInterval(facet.getEntries()));
+		for (DateHistogramFacet.Entry entry : facet.getEntries()) {
+			counts.put(getLabel(toDateTime(entry.getTime())), entry.getCount());
 		}
-		return result;
+		return toJson(counts);
 	}
 
-	private String getLabel(DateHistogramFacet.Entry entry) {
-		Intervals format = Intervals.valueOf(interval.toUpperCase());
-		Preconditions.checkNotNull(format, "Can't handle interval: %s", interval);
-		return format.toString(new DateTime(entry.getTime(), DateTimeZone.UTC));
+	private Interval getInterval(Iterable<? extends DateHistogramFacet.Entry> entries) {
+		long min = Long.MAX_VALUE, max = Long.MIN_VALUE;
+		for (DateHistogramFacet.Entry entry : entries) {
+			min = Math.min(min, entry.getTime());
+			max = Math.max(max, entry.getTime());
+		}
+		return min <= max ? new Interval(toDateTime(min), toDateTime(max)) : null;
+	}
+
+	private DateTime toDateTime(long time) {
+		return new DateTime(time, DateTimeZone.UTC);
+	}
+
+	private Map<String, Long> getMap(Interval interval) {
+		Map<String, Long> counts = Maps.newTreeMap();
+		if (interval != null) {
+			for (DateTime time : Intervals.expand(interval.getStart(), interval.getEnd(), this.interval)) {
+				counts.put(getLabel(time), 0L);
+			}
+		}
+		return counts;
+	}
+
+	private String getLabel(DateTime time) {
+		return Intervals.toString(time, interval);
+	}
+
+	private JsonNode toJson(Map<String, Long> counts) {
+		ArrayNode result = Nodes.newArray();
+		for (Map.Entry<String, Long> entry : counts.entrySet()) {
+			ObjectNode entryNode = result.addObject();
+			entryNode.put("label", entry.getKey());
+			entryNode.put("count", entry.getValue());
+		}
+		return result;
 	}
 
 	public static WidgetBuilder builder() {

@@ -1,69 +1,87 @@
 package common;
 
+import java.util.List;
+
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
+import org.joda.time.Days;
+import org.joda.time.Hours;
 import org.joda.time.Interval;
+import org.joda.time.Minutes;
+import org.joda.time.Months;
+import org.joda.time.ReadablePeriod;
+import org.joda.time.Seconds;
+import org.joda.time.Years;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
 
-public enum Intervals {
+import com.google.common.base.Preconditions;
+import com.google.common.collect.Lists;
 
-	YEAR(ISODateTimeFormat.year()),
-	MONTH(ISODateTimeFormat.yearMonth()),
-	DAY(ISODateTimeFormat.date()),
-	HOUR(ISODateTimeFormat.dateHour()),
-	MINUTE(ISODateTimeFormat.dateHourMinute());
+public class Intervals {
 
-	private final DateTimeFormatter format;
+	private enum Format {
 
-	private Intervals(DateTimeFormatter format) {
-		this.format = format;
-	}
+		YEAR(ISODateTimeFormat.year(), 4, Years.years(1), Months.months(1)),
+		MONTH(ISODateTimeFormat.yearMonth(), 7, Months.months(1), Days.days(1)),
+		DAY(ISODateTimeFormat.date(), 10, Days.days(1), Hours.hours(1)),
+		HOUR(ISODateTimeFormat.dateHour(), 13, Hours.hours(1), Minutes.minutes(1)),
+		MINUTE(ISODateTimeFormat.dateHourMinute(), 16, Minutes.minutes(1), Seconds.seconds(1));
+	
+		private final DateTimeFormatter format;
+		private final int length;
+		private final ReadablePeriod unit, subunit;
+	
+		private Format(DateTimeFormatter format, int length, ReadablePeriod unit, ReadablePeriod subunit) {
+			this.format = format;
+			this.length = length;
+			this.unit = unit;
+			this.subunit = subunit;
+		}
 
-	public DateTime parse(String value, DateTimeZone tz) {
-		return format.withZone(tz).parseDateTime(value);
-	}
+		public DateTime parse(String value, DateTimeZone tz) {
+			return format.withZone(tz).parseDateTime(value);
+		}
 
-	public String toString(DateTime time) {
-		return format.print(time);
+		public Interval toInterval(DateTime start) {
+			return new Interval(start, start.plus(unit));
+		}
+
+		public Interval toInterval(String value, DateTimeZone tz) {
+			return toInterval(parse(value, tz));
+		}
+
+		public String toString(DateTime time) {
+			return format.print(time);
+		}
+
+		public List<DateTime> expand(Interval interval) {
+			List<DateTime> times = Lists.newArrayList();
+			for (DateTime start = interval.getStart(); interval.contains(start); start = start.plus(subunit)) {
+				times.add(start);
+			}
+			return times;
+		}	
 	}
 
 	public static Interval valueOf(String value, DateTimeZone tz) {
-		if (value.length() == 4) {
-			return forYear(YEAR.parse(value, tz));
-		}
-		if (value.length() == 7) {
-			return forMonth(MONTH.parse(value, tz));
-		}
-		if (value.length() == 10) {
-			return forDay(DAY.parse(value, tz));
-		}
-		if (value.length() == 13) {
-			return forHour(HOUR.parse(value, tz));
-		}
-		if (value.length() == 16) {
-			return forMinute(MINUTE.parse(value, tz));
+		for (Format format : Format.values()) {
+			if (value.length() == format.length) {
+				return format.toInterval(value, tz);
+			}
 		}
 		throw new IllegalArgumentException("Unsupported date/time format: " + value);
 	}
 
-	private static Interval forYear(DateTime year) {
-		return new Interval(year, year.plusYears(1));
+	public static String toString(DateTime time, String interval) {
+		Format format = Format.valueOf(interval.toUpperCase());
+		Preconditions.checkNotNull(format, "Unsupported interval: %s", interval);
+		return format.toString(time);
 	}
 
-	private static Interval forMonth(DateTime month) {
-		return new Interval(month, month.plusMonths(1));
-	}
-
-	private static Interval forDay(DateTime day) {
-		return new Interval(day, day.plusDays(1));
-	}
-
-	private static Interval forHour(DateTime hour) {
-		return new Interval(hour, hour.plusHours(1));
-	}
-
-	private static Interval forMinute(DateTime minute) {
-		return new Interval(minute, minute.plusMinutes(1));
+	public static List<DateTime> expand(DateTime start, DateTime end, String interval) {
+		Format format = Format.valueOf(interval.toUpperCase());
+		Preconditions.checkNotNull(format, "Unsupported interval: %s", interval);
+		return format.expand(new Interval(start, end));
 	}
 }

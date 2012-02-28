@@ -2,6 +2,8 @@ package common;
 
 import static org.hamcrest.Matchers.equalTo;
 
+import java.util.List;
+
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.Interval;
@@ -50,5 +52,14 @@ public class IntervalsTest {
 		Interval day = Intervals.valueOf("2012-01-01T14:59", DateTimeZone.UTC);
 		Assert.assertThat(day.getStart(), equalTo(new DateTime(2012, 1, 1, 14, 59, DateTimeZone.UTC))); 
 		Assert.assertThat(day.getEnd(), equalTo(new DateTime(2012, 1, 1, 15, 0, DateTimeZone.UTC))); 
+	}
+
+	@Test
+	public void testExpandMonth() {
+		DateTime start = new DateTime(2012, 1, 1, 0, 0, DateTimeZone.UTC);
+		DateTime end = new DateTime(2012, 2, 1, 0, 0, DateTimeZone.UTC);
+		List<DateTime> days = Intervals.expand(start, end, "month");
+		Assert.assertEquals(31, days.size());
+		Assert.assertEquals(start, days.get(0));
 	}
 }
