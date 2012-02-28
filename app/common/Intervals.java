@@ -10,7 +10,6 @@ import org.joda.time.Interval;
 import org.joda.time.Minutes;
 import org.joda.time.Months;
 import org.joda.time.ReadablePeriod;
-import org.joda.time.Seconds;
 import org.joda.time.Years;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
@@ -22,21 +21,20 @@ public class Intervals {
 
 	private enum Format {
 
-		YEAR(ISODateTimeFormat.year(), 4, Years.years(1), Months.months(1)),
-		MONTH(ISODateTimeFormat.yearMonth(), 7, Months.months(1), Days.days(1)),
-		DAY(ISODateTimeFormat.date(), 10, Days.days(1), Hours.hours(1)),
-		HOUR(ISODateTimeFormat.dateHour(), 13, Hours.hours(1), Minutes.minutes(1)),
-		MINUTE(ISODateTimeFormat.dateHourMinute(), 16, Minutes.minutes(1), Seconds.seconds(1));
+		YEAR(ISODateTimeFormat.year(), 4, Years.years(1)),
+		MONTH(ISODateTimeFormat.yearMonth(), 7, Months.months(1)),
+		DAY(ISODateTimeFormat.date(), 10, Days.days(1)),
+		HOUR(ISODateTimeFormat.dateHour(), 13, Hours.hours(1)),
+		MINUTE(ISODateTimeFormat.dateHourMinute(), 16, Minutes.minutes(1));
 	
 		private final DateTimeFormatter format;
 		private final int length;
-		private final ReadablePeriod unit, subunit;
+		private final ReadablePeriod unit;
 	
-		private Format(DateTimeFormatter format, int length, ReadablePeriod unit, ReadablePeriod subunit) {
+		private Format(DateTimeFormatter format, int length, ReadablePeriod unit) {
 			this.format = format;
 			this.length = length;
 			this.unit = unit;
-			this.subunit = subunit;
 		}
 
 		public DateTime parse(String value, DateTimeZone tz) {
@@ -57,7 +55,7 @@ public class Intervals {
 
 		public List<DateTime> expand(Interval interval) {
 			List<DateTime> times = Lists.newArrayList();
-			for (DateTime start = interval.getStart(); interval.contains(start); start = start.plus(subunit)) {
+			for (DateTime start = interval.getStart(); interval.contains(start); start = start.plus(unit)) {
 				times.add(start);
 			}
 			return times;

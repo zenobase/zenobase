@@ -1,6 +1,6 @@
 package search;
 
-import java.util.concurrent.TimeUnit;
+import junit.framework.Assert;
 
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.common.settings.ImmutableSettings;
@@ -11,39 +11,49 @@ import org.elasticsearch.search.facet.FacetBuilders;
 import org.elasticsearch.search.facet.datehistogram.DateHistogramFacet;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
-import org.joda.time.format.ISODateTimeFormat;
 import org.junit.Test;
 
 public class DateHistogramFacetTest {
 
 	@Test
-    public void test() {
-        Node node = NodeBuilder.nodeBuilder().clusterName("test").local(true)
-                .settings(ImmutableSettings.settingsBuilder().put("gateway.type", "none"))
-                .node();
+	public void test() {
 
-        node.client().prepareIndex("test", "type", "1")
-                .setSource("date", "2012-01-15T01:00:00-08:00")
-                .execute().actionGet();
-        node.client().admin().indices().prepareRefresh().execute().actionGet();
+		DateTimeZone timezone = DateTimeZone.forOffsetHours(-8);
 
-        SearchResponse searchResponse = node.client().prepareSearch("test")
-                .setQuery(QueryBuilders.matchAllQuery())
-                        // facet1 will take the offset into account, but return UTC
-                .addFacet(FacetBuilders.dateHistogramFacet("facet1").field("date").interval("month").preZone("-08:00"))
-                        // facet 2 will take offset into account, but also return it with an offset
-                .addFacet(FacetBuilders.dateHistogramFacet("facet2").field("date").interval("month").preZone("-08:00").postZone("-08:00"))
-                .execute().actionGet();
+		Node node = NodeBuilder.nodeBuilder().clusterName("test").local(true)
+			.settings(ImmutableSettings.settingsBuilder().put("gateway.type", "none")).node();
+		node.client().prepareIndex("test", "type", "1")
+			.setSource("date", "2012-03-31T20:15:30-08:00").execute().actionGet();
+		node.client().admin().indices().prepareRefresh().execute().actionGet();
 
-        DateHistogramFacet facet = searchResponse.facets().facet("facet1");
-        long utcExpected = ISODateTimeFormat.dateOptionalTimeParser().withZone(DateTimeZone.UTC).parseMillis("2012-01-01T00:00:00");
-        // long pstExpected = ISODateTimeFormat.dateOptionalTimeParser().withZone(DateTimeZone.forOffsetHours(-8)).parseMillis("2012-01-01T00:00:00");
-        System.out.println("UTC: Expected: " + utcExpected + ", got: " + facet.getEntries().get(0).time());
-        facet = searchResponse.facets().facet("facet2");
-        long offsetExpected = utcExpected - TimeUnit.HOURS.toMillis(-8);
-        System.out.println("Offset: Expected: " + offsetExpected + ", got: " + facet.getEntries().get(0).time());
-        System.out.println(new DateTime(offsetExpected, DateTimeZone.forOffsetHours(-8)));
+		SearchResponse response = node.client().prepareSearch("test")
+			.setQuery(QueryBuilders.matchAllQuery())
+			.addFacet(FacetBuilders.dateHistogramFacet("years").field("date").interval("year").preZone(timezone.toString()))
+			.addFacet(FacetBuilders.dateHistogramFacet("months").field("date").interval("month").preZone(timezone.toString()))
+			.addFacet(FacetBuilders.dateHistogramFacet("days").field("date").interval("day").preZone(timezone.toString()))
+			.addFacet(FacetBuilders.dateHistogramFacet("hours").field("date").interval("hour").preZone(timezone.toString()))
+			.addFacet(FacetBuilders.dateHistogramFacet("minutes").field("date").interval("minute").preZone(timezone.toString()))
+			.execute().actionGet();
 
-        node.close();
-    }
+		assertFacetDateTimeEquals(new DateTime(2012, 1, 1, 0, 0, timezone), response, "years", true);
+		assertFacetDateTimeEquals(new DateTime(2012, 3, 1, 0, 0, timezone), response, "months", true);
+		assertFacetDateTimeEquals(new DateTime(2012, 3, 31, 0, 0, timezone), response, "days", true);
+		assertFacetDateTimeEquals(new DateTime(2012, 3, 31, 20, 0, timezone), response, "hours", false);
+		assertFacetDateTimeEquals(new DateTime(2012, 3, 31, 20, 15, timezone), response, "minutes", false);
+
+		node.close();
+	}
+
+	private void assertFacetDateTimeEquals(DateTime expected, SearchResponse response, String facetName, boolean correctOffset) {
+		DateHistogramFacet facet = response.facets().facet(facetName);
+		long time = facet.getEntries().get(0).time();
+		if (correctOffset) {
+			time = time - expected.getZone().getOffset(time);
+		}
+		Assert.assertEquals(facetName, expected, toDateTime(time, expected.getZone()));
+	}
+
+	private DateTime toDateTime(long time, DateTimeZone timezone) {
+		return new DateTime(time, timezone);
+	}
 }
