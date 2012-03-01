@@ -56,6 +56,7 @@ public class GanttWidget implements Widget {
 				DateTime last = asDateTime(entry.getMax());
 				ObjectNode entryNode = result.addObject();
 				entryNode.put("label", entry.getTerm());
+				entryNode.put("count", entry.getCount());
 				VALUE_TYPE.set(entryNode, "first", first);
 				VALUE_TYPE.set(entryNode, "last", last);
 			}

@@ -17,6 +17,10 @@ var humane = (function() {
     ago: 'ago',
     from: '',
     now: 'just now',
+    millisecond: 'millisecond',
+    milliseconds: 'milliseconds',
+    second: 'second',
+    seconds: 'seconds',
     minute: 'minute',
     minutes: 'minutes',
     hour: 'hour',
@@ -41,7 +45,13 @@ var humane = (function() {
     [Infinity, lang.year, lang.years, 31536000] // Infinity, 1 year
   ];
 
-	var duration = function(millis) {
+	var duration = function(millis, round) {
+		if (round) {
+			return roundedDuration(millis); 
+		}
+		if (millis % 1000) {
+			return millis + ' ' + (millis != 1 ? lang.milliseconds : lang.millisecond);  			
+		}
 		var seconds = millis / 1000;
 		if (seconds % 60) {
 			return seconds + ' ' + (seconds != 1 ? lang.seconds : lang.second);  			
@@ -58,6 +68,19 @@ var humane = (function() {
 		return days + ' ' + (days != 1 ? lang.days : lang.day);
 	}
 
+	function roundedDuration(millis) {
+		var seconds = Math.round(Math.abs(millis) / 1000),
+			minutes = Math.round(seconds / 60),
+			hours = Math.round(minutes / 60),
+			days = Math.round(hours / 24),
+			args = seconds < 60 && [lang.now] ||
+				minutes === 1 && [1, lang.minute] ||
+				minutes < 60 && [minutes, lang.minutes] ||
+				hours === 1 && [1, lang.hour] ||
+				hours < 22 && [hours, lang.hours] ||
+				days === 1 && [1, lang.day] || [days, lang.days];
+		return args.join(' ');
+	}
 
   function normalize(val, single) {
       var margin = 0.1;

@@ -295,6 +295,9 @@ function TagGanttCtrl() {
 	};
 	self.update = function(result) {
 		self.tags = result[self.id];
+		$.each(self.tags, function(i, tag) {
+			tag.freq = Math.round((new Date(tag.last).getTime() - new Date(tag.first).getTime()) / tag.count);
+		});
 	};
 	self.register(self);
 }
@@ -606,7 +609,7 @@ var fields = [
 		name : 'duration',
 		format : function(value) {
 			return '<span class="nowrap">' +
-				         '<i class="icon-time" title="Duration"></i> ' + humane.duration(value) +
+				         '<i class="icon-time" title="Duration"></i> ' + humane.duration(value, false) +
 				       '</span> &nbsp; ';
 		}
 	},
@@ -687,7 +690,7 @@ app.filter('age', function() {
 
 app.filter('duration', function() {
 	return function(millis) {
-		return humane.duration(millis);
+		return humane.duration(millis, true);
 	}
 });
 
