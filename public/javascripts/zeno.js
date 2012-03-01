@@ -267,6 +267,15 @@ function EventListCtrl() {
 	self.register(self);
 }
 
+function EventListConfigCtrl() {
+	var self = this;
+	self.limit = self.$parent.limit;
+	self.save = function() {
+		self.refresh(0, self.limit);
+		$('#event-list-config-dialog').modal('hide');
+	};
+}
+
 function TagCountCtrl() {
 	var self = this;
 	self.id = 'tagCount';

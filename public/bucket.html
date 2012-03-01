@@ -30,7 +30,10 @@
 					<table class="table">
 						<thead>
 							<tr>
-								<th>Latest</th>
+								<th>
+									Latest
+									<a href="#event-list-config-dialog" title="Configure" data-toggle="modal"><i class="icon-cog"></i></a>
+								</th>
 							</tr>
 						</thead>
 						<tbody>
@@ -60,6 +63,29 @@
 							<a class="btn disabled zeno-paging"><b>{{offset + 1}}</b> &ndash; <b>{{offset + events.length}}</b> of <b>{{total | number }}</b></a>
 						</div>
 					</div>
+
+					<div id="event-list-config-dialog" class="modal hide" ng:controller="EventListConfigCtrl">
+						<form name="eventListConfigForm" ng:submit="save()">
+							<div class="modal-header">
+								<a class="close" data-dismiss="modal">&times;</a>
+								<h3>Event List</h3>
+							</div>
+							<div class="modal-body">
+								<fieldset class="control-group">
+									<label for="label">Limit</label>
+									<div class="input">
+										<input name="limit" type="number" required min="1" max="100" ng:model="limit"/>
+										<p class="help-block">The number of events to show.</p>
+									</div>
+								</fieldset>
+							</div>
+							<div class="modal-footer">
+								<button type="submit" class="btn btn-primary" ng:disabled="{{!eventListConfigForm.$valid}}">Save</button>
+								<button type="reset" class="btn" data-dismiss="modal">Cancel</button>
+							</div>
+						</form>
+					</div>
+
 				</div>
 				<div id="widget-tag-count" class="tab-pane">
 					<table class="table" ng:controller="TagCountCtrl">
