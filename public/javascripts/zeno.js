@@ -244,11 +244,12 @@ function EventListCtrl() {
 
 	var $scope = this;
 	$scope.id = 'events';
-	$scope.limit = 10;
-
 	$scope.offset = 0;
+	$scope.limit = 10;
+	$scope.order = 'timestamp';
+	$scope.reverse = false;
 	$scope.total = 0;
-	$scope.events = [];
+	$scope.items = [];
 
 	$scope.hasPrev = function() {
 		return $scope.offset > 0;
@@ -268,8 +269,8 @@ function EventListCtrl() {
 			type : 'list',
 			offset : $scope.offset, 
 			limit : $scope.limit,
-			sort : 'timestamp',
-			asc : false
+			order : $scope.order,
+			reverse : $scope.reverse
 		};
 	};
 	$scope.refresh = function(params) {
@@ -280,8 +281,9 @@ function EventListCtrl() {
 	};
 	$scope.update = function(event, result) {
 		$scope.total = result.total;
-		$scope.events = result[$scope.id];
+		$scope.items = result[$scope.id];
 	};
+
 	$scope.register($scope);
 	$scope.$on('result', $scope.update);
 }

@@ -19,10 +19,10 @@ public class CountWidget implements Widget {
 	private final int offset;
 	private final int limit;
 
-	private CountWidget(String id, String field, ComparatorType order, int offset, int limit) {
+	private CountWidget(String id, String field, String order, boolean reverse, int offset, int limit) {
 		this.id = id;
 		this.field = field;
-		this.order = order;
+		this.order = ComparatorType.fromString((reverse ? "reverse_" : "") + order);
 		this.offset = offset;
 		this.limit = limit;
 	}
@@ -58,12 +58,11 @@ public class CountWidget implements Widget {
 		return new WidgetBuilder() {
 			@Override
 			public Widget build(WidgetOptions options) {
-				boolean reverse = options.get("reverse", Boolean.class, Boolean.FALSE);
-				String order = options.get("order", String.class, "count");
 				return new CountWidget(
 					options.get("id"),
 					options.get("field"),
-					ComparatorType.fromString((reverse ? "reverse_" : "") + order),
+					options.get("order", String.class, "count"),
+					options.get("reverse", Boolean.class, Boolean.FALSE),
 					options.get("offset", Integer.class, 0),
 					options.get("limit", Integer.class, 10));
 			}
