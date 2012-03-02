@@ -120,15 +120,12 @@ function SignUpFormCtrl($http) {
 
 HistoryCtrl.$inject = ['$http'];
 function HistoryCtrl($http) {
+
 	var $scope = this;
 	$scope.offset = 0;
 	$scope.limit = 10;
-	$scope.refresh = function(offset) {
-		$http.get('/queue/?offset=' + offset + "&limit=" + $scope.limit).success(function(response, code) {
-			$scope.history = response;
-			$scope.offset = offset;
-		});
-	};
+	$scope.history = [];
+
 	$scope.hasPrev = function() {
 		return $scope.offset > 0;
 	}
@@ -136,12 +133,25 @@ function HistoryCtrl($http) {
 		return $scope.history && $scope.offset + $scope.limit < $scope.history.total;
 	}
 	$scope.prev = function() {
-		$scope.refresh($scope.offset - $scope.limit, $scope.limit);
+		$scope.refresh({ offset : $scope.offset - $scope.limit });
 	}
 	$scope.next = function() {
-		$scope.refresh($scope.offset + $scope.limit, $scope.limit);
+		$scope.refresh({ offset : $scope.offset + $scope.limit });
 	}
-	$scope.refresh(0);
+	$scope.params = function() {
+		return {
+			offset : $scope.offset,
+			limit : $scope.limit
+		};
+	}
+	$scope.refresh = function(params) {
+		$http.get('/queue/?' + $.param($.extend($scope.params(), params))).success(function(response) {
+			$.extend($scope, params);
+			$scope.history = response;
+		});
+	};
+
+	$scope.refresh({});
 }
 
 BucketListCtrl.$inject = ['$http'];
