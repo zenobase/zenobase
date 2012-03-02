@@ -308,8 +308,9 @@ function EventListConfigCtrl() {
 }
 
 function TagCountCtrl() {
+
 	var $scope = this;
-	$scope.id = 'tagCount';
+	$scope.id = 'tags';
 	$scope.field = 'tag';
 	$scope.order = 'count';
 	$scope.reverse = false;
@@ -317,6 +318,7 @@ function TagCountCtrl() {
 	$scope.limit = 10;
 	$scope.more = false;
 	$scope.tags = [];
+
 	$scope.hasPrev = function() {
 		return $scope.offset > 0;
 	}
@@ -364,6 +366,7 @@ function TagCountCtrl() {
 		$scope.more = tags.length > $scope.limit;
 		$scope.tags = tags.slice(0, $scope.limit);
 	};
+
 	$scope.register($scope);
 	$scope.$on('result', $scope.update);
 }
@@ -378,6 +381,7 @@ function TagCountConfigCtrl() {
 }
 
 function TagGanttCtrl() {
+
 	var $scope = this;
 	$scope.id = 'tagsGantt';
 	$scope.tokenField = 'tag';
@@ -385,6 +389,7 @@ function TagGanttCtrl() {
 	$scope.order = 'max';
 	$scope.limit = 10;
 	$scope.tags = [];
+
 	$scope.params = function() {
 		return { 
 			id : $scope.id,
@@ -407,6 +412,7 @@ function TagGanttCtrl() {
 }
 
 function RatingCountCtrl() {
+
 	var $scope = this;
 	$scope.id = 'ratings';
 	$scope.field = 'rating';
@@ -414,6 +420,7 @@ function RatingCountCtrl() {
 	$scope.to = 100;
 	$scope.step = 20;
 	$scope.ratings = [];
+
 	$scope.params = function() {
 		return { 
 			id : $scope.id,
@@ -427,11 +434,13 @@ function RatingCountCtrl() {
 	$scope.update = function(event, result) {
 		$scope.ratings = result[$scope.id];
 	};
+
 	$scope.register($scope);
 	$scope.$on('result', $scope.update);
 }
 
 function ScoreboardCtrl() {
+
 	var $scope = this;
 	$scope.id = 'distances';
 	$scope.title = 'Scoreboard';
@@ -440,6 +449,7 @@ function ScoreboardCtrl() {
 	$scope.order = 'total';
 	$scope.limit = 10;
 	$scope.users = [];
+
 	$scope.params = function() {
 		return { 
 			id : $scope.id,
@@ -453,6 +463,7 @@ function ScoreboardCtrl() {
 	$scope.update = function(event, result) {
 		$scope.users = result[$scope.id];
 	};
+
 	$scope.register($scope);
 	$scope.$on('result', $scope.update);
 }
@@ -472,6 +483,7 @@ function ScoreboardConfigCtrl() {
 }
 
 function TimelineCtrl() {
+
 	var $scope = this;
 	$scope.id = 'timeline';
 	$scope.field = 'timestamp';
@@ -487,14 +499,14 @@ function TimelineCtrl() {
 			}
 		});
 	});
+	$scope.times = [];
+
 	$scope.currentInterval = function() {
 		return $scope.intervals[$scope.interval];
 	};
 	$scope.zoomIn = function() {
 		$scope.interval = Math.min($scope.interval + 1, $scope.intervals.length - 1);
 	};
-
-	$scope.times = [];
 	$scope.params = function() {
 		return { 
 			id : $scope.id,
@@ -509,6 +521,7 @@ function TimelineCtrl() {
 		$scope.times = result[$scope.id];
 		$scope.draw();
 	};
+
 	$scope.register($scope);
 	$scope.$on('result', $scope.update);
 }
@@ -547,15 +560,12 @@ TimelineCtrl.prototype.draw = function() {
 }
 
 function MapCtrl() {
+
 	var $scope = this;
 	$scope.id = 'map';
 	$scope.field = 'location';
 	$scope.map = null;
 
-	$.each($scope.getFilters($scope.field), function(i, filter) {
-		var value = filter.split(':')[1];
-		
-	});
 	$scope.update = function(event, result) {
 		var points = [ ];
 		$scope.events = $.each(result['events'], function(i, event) {
@@ -566,11 +576,12 @@ function MapCtrl() {
 		});
 		$scope.draw(points);
 	};
-	$scope.register($scope);
-	$scope.$on('result', $scope.update);
 	$scope.filterBounds = function() {
 		$scope.addFilter('location:' + $scope.map.getBounds().toUrlValue(2), true);
 	};
+
+	$scope.register($scope);
+	$scope.$on('result', $scope.update);
 }
 
 MapCtrl.prototype.draw = function(points) {
