@@ -49,3 +49,22 @@ abbr {
 footer {
 	margin-top: 2em;
 }
+
+.caret-inverted {
+  display: inline-block;
+  width: 0;
+  height: 0;
+  text-indent: -99999px;
+  *text-indent: 0;
+  vertical-align: top;
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  border-bottom: 4px solid #000000;
+  opacity: 0.3;
+  filter: alpha(opacity=30);
+  content: "\2191";
+}
+
+.caret-active {
+  opacity: 1.0;
+}

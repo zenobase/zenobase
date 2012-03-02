@@ -278,6 +278,8 @@ function TagCountCtrl() {
 	var $scope = this;
 	$scope.id = 'tagCount';
 	$scope.field = 'tag';
+	$scope.order = 'count';
+	$scope.reverse = false;
 	$scope.offset = 0;
 	$scope.limit = 10;
 	$scope.more = false;
@@ -289,18 +291,23 @@ function TagCountCtrl() {
 		return $scope.more;
 	}
 	$scope.prev = function() {
-		$scope.refresh($scope.offset - $scope.limit, $scope.limit);
+		$scope.refresh($scope.offset - $scope.limit, $scope.limit, $scope.order, $scope.reverse);
 	}
 	$scope.next = function() {
-		$scope.refresh($scope.offset + $scope.limit, $scope.limit);
+		$scope.refresh($scope.offset + $scope.limit, $scope.limit, $scope.order, $scope.reverse);
 	}
-	$scope.prepare = function(offset, limit) {
-		return 'count(id:' + $scope.id + ',field:' + $scope.field + ',offset:' + defined(offset, $scope.offset) + ',limit:' + defined(limit, $scope.limit) + ')';
+	$scope.setOrder = function(order) {
+		$scope.refresh(0, $scope.limit, order, order == $scope.order && !$scope.reverse);
+	}
+	$scope.prepare = function(offset, limit, order, reverse) {
+		return 'count(id:' + $scope.id + ',field:' + $scope.field + ',order:' + defined(order, $scope.order) + ',reverse:' + defined(reverse, $scope.reverse) + ',offset:' + defined(offset, $scope.offset) + ',limit:' + defined(limit, $scope.limit) + ')';
 	};
-	$scope.refresh = function(offset, limit) {
-		$scope.search([ $scope.prepare(offset, limit) ], function(result) {
+	$scope.refresh = function(offset, limit, order, reverse) {
+		$scope.search([ $scope.prepare(offset, limit, order, reverse) ], function(result) {
 			$scope.offset = offset;
 			$scope.limit = limit;
+			$scope.order = order;
+			$scope.reverse = reverse;
 			$scope.update(result);
 		});
 	};
