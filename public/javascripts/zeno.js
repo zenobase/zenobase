@@ -257,10 +257,10 @@ function EventListCtrl() {
 		return $scope.offset + $scope.limit < $scope.total;
 	}
 	$scope.prev = function() {
-		$scope.refresh($scope.offset - $scope.limit, $scope.limit);
+		$scope.refresh({ offset : $scope.offset - $scope.limit });
 	}
 	$scope.next = function() {
-		$scope.refresh($scope.offset + $scope.limit, $scope.limit);
+		$scope.refresh({ offset : $scope.offset + $scope.limit });
 	}
 	$scope.params = function() {
 		return { 
@@ -272,13 +272,9 @@ function EventListCtrl() {
 			asc : false
 		};
 	};
-	$scope.refresh = function(offset, limit) {
-		var params = $scope.params();
-		params.offset = offset;
-		params.limit = limit;
-		$scope.search([ params ], function(result) {
-			$scope.offset = offset;
-			$scope.limit = limit;
+	$scope.refresh = function(params) {
+		$scope.search([ $.extend($scope.params(), params) ], function(result) {
+			$.extend($scope, params);
 			$scope.update(null, result);
 		});
 	};
@@ -294,7 +290,7 @@ function EventListConfigCtrl() {
 	var $scope = this;
 	$scope.limit = $scope.$parent.limit;
 	$scope.save = function() {
-		$scope.refresh(0, $scope.limit);
+		$scope.refresh({ offset : 0, limit : $scope.limit });
 		$('#event-list-config-dialog').modal('hide');
 	};
 }
@@ -316,13 +312,13 @@ function TagCountCtrl() {
 		return $scope.more;
 	}
 	$scope.prev = function() {
-		$scope.refresh($scope.offset - $scope.limit, $scope.limit, $scope.order, $scope.reverse);
+		$scope.refresh({ offset : $scope.offset - $scope.limit });
 	}
 	$scope.next = function() {
-		$scope.refresh($scope.offset + $scope.limit, $scope.limit, $scope.order, $scope.reverse);
+		$scope.refresh({ offset : $scope.offset + $scope.limit });
 	}
 	$scope.setOrder = function(order) {
-		$scope.refresh(0, $scope.limit, order, order == $scope.order && !$scope.reverse);
+		$scope.refresh({ offset : 0, order : order, reverse : order == $scope.order && !$scope.reverse });
 	}
 	$scope.getClasses = function(column) {
 		var classes = [];
@@ -345,17 +341,9 @@ function TagCountCtrl() {
 			reverse : $scope.reverse
 		};
 	};
-	$scope.refresh = function(offset, limit, order, reverse) {
-		var params = $scope.params();
-		params.offset = offset;
-		params.limit = limit;
-		params.order = order;
-		params.reverse = reverse;
-		$scope.search([ params ], function(result) {
-			$scope.offset = offset;
-			$scope.limit = limit;
-			$scope.order = order;
-			$scope.reverse = reverse;
+	$scope.refresh = function(params) {
+		$scope.search([ $.extend($scope.params(), params) ], function(result) {
+			$.extend($scope, params)
 			$scope.update(null, result);
 		});
 	};
@@ -372,7 +360,7 @@ function TagCountConfigCtrl() {
 	var $scope = this;
 	$scope.limit = $scope.$parent.limit;
 	$scope.save = function() {
-		$scope.refresh(0, $scope.limit);
+		$scope.refresh({ offset : 0, limit : $scope.limit });
 		$('#tag-count-config-dialog').modal('hide');
 	};
 }
