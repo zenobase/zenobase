@@ -299,6 +299,16 @@ function TagCountCtrl() {
 	$scope.setOrder = function(order) {
 		$scope.refresh(0, $scope.limit, order, order == $scope.order && !$scope.reverse);
 	}
+	$scope.getClasses = function(column) {
+		var classes = [];
+		if (column == $scope.order) {
+			classes.push('caret-active');
+			classes.push($scope.reverse ? 'caret-inverted' : 'caret');
+		} else {
+			classes.push('caret');
+		}
+		return classes;
+	}
 	$scope.prepare = function(offset, limit, order, reverse) {
 		return 'count(id:' + $scope.id + ',field:' + $scope.field + ',order:' + defined(order, $scope.order) + ',reverse:' + defined(reverse, $scope.reverse) + ',offset:' + defined(offset, $scope.offset) + ',limit:' + defined(limit, $scope.limit) + ')';
 	};

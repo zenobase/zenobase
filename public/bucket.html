@@ -89,13 +89,11 @@
 							<tr>
 								<th>
 									<a ng:click="setOrder('term')">Tag</a>
-									<b class="caret" ng:show="order != 'term' || !reverse" ng:class="order == 'term' && !reverse && 'caret-active'"></b>
-									<b class="caret-inverted" ng:show="order == 'term' && reverse" ng:class="order == 'term' && reverse && 'caret-active'"></b>
+									<b ng:class="getClasses('term')"></b>
 								</th>
 								<th style="text-align: right">
 									<a ng:click="setOrder('count')">Count</a> 
-									<b class="caret caret-active" ng:show="order != 'count' || !reverse" ng:class="order == 'count' && !reverse && 'caret-active'"></b>
-									<b class="caret-inverted" ng:show="order == 'count' && reverse" ng:class="order == 'count' && reverse && 'caret-active'"></b>
+									<b ng:class="getClasses('count')"></b>
 								</th>
 							</tr>
 						</thead>
