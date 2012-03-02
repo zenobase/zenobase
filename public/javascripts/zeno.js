@@ -327,9 +327,10 @@ function RatingCountCtrl() {
 	$scope.register($scope);
 }
 
-function DistanceScoreboardCtrl() {
+function ScoreboardCtrl() {
 	var $scope = this;
 	$scope.id = 'distances';
+	$scope.title = 'Scoreboard';
 	$scope.tokenField = 'creator';
 	$scope.valueField = 'distance';
 	$scope.order = 'total';
@@ -342,6 +343,20 @@ function DistanceScoreboardCtrl() {
 		$scope.users = result[$scope.id];
 	};
 	$scope.register($scope);
+}
+
+function ScoreboardConfigCtrl() {
+	var $scope = this;
+	$scope.title = $scope.$parent.title;
+	$scope.limit = $scope.$parent.limit;
+	$scope.valueField = $scope.$parent.valueField;
+	$scope.save = function() {
+		$scope.$parent.title = $scope.title;
+		$scope.$parent.limit = $scope.limit;
+		$scope.$parent.valueField = $scope.valueField;
+		$scope.refresh();
+		$('#scoreboard-config-dialog').modal('hide');
+	};
 }
 
 function TimelineCtrl() {
