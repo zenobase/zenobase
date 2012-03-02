@@ -2,8 +2,6 @@ package search;
 
 import java.util.List;
 import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import models.Bucket;
 import models.Event;
@@ -18,7 +16,6 @@ import org.elasticsearch.search.builder.SearchSourceBuilder;
 
 import services.IndexManager;
 
-import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Sets;
@@ -60,11 +57,8 @@ public class EventSearch {
 	}
 
 	public EventSearch addWidget(String widget) {
-		Matcher m = Pattern.compile("([a-z]+)\\(([^)]+)\\)").matcher(widget);
-		Preconditions.checkState(m.matches(), "Invalid widget: %s", widget);
-		String type = m.group(1);
-		String options = m.group(2);
-		widgets.add(widgetBuilders.get(type).build(WidgetOptions.parse(options)));
+		WidgetOptions options = WidgetOptions.parse(widget);
+		widgets.add(widgetBuilders.get(options.get("type")).build(options));
 		return this;
 	}
 

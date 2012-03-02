@@ -177,34 +177,43 @@ function CreateBucketDialogCtrl($http, $location) {
 	}
 }
 
+function WidgetParams() {
+	this.params = [];
+}
+
+WidgetParams.prototype.add = function(params) {
+	this.params.push();
+}; 
+
 BucketCtrl.$inject = ['$http', '$routeParams', '$location'];
 function BucketCtrl($http, $routeParams, $location) {
+
 	var $scope = this;
-	$scope.params = $routeParams;
-	var q = $location.search()['q'];
-	$scope.filters = q ? q.split('__') : [ ];
+	$scope.bucketId = $routeParams.bucketId;
+
 	$scope.widgets = [];
 	$scope.register = function(widget) {
 		$scope.widgets.push(widget);
 	};
-	$scope.search = function(widgetConfigs, callback) {
-		$http.get('/buckets/' + $scope.params.bucketId + '/?' + $.param({ 'q' : $scope.filters, 'w' : widgetConfigs }, true)).success(callback);
+	$scope.search = function(params, callback) {
+		var q = $scope.filters;
+		var w = $.map(params, function(param) {
+			return $.map(param, function(value, key) { return key + ':' + value }).join(',');
+		});
+		$http.get('/buckets/' + $scope.bucketId + '/?' + $.param({ 'q' : q, 'w' : w }, true)).success(callback);
 	};
 	$scope.refresh = function() {
-		var widgetConfigs = [ ];
-		$.each($scope.widgets, function(i, widget) {
-			var config = widget.prepare();
-			if (config) {
-				widgetConfigs.push(config);
-			}
-		});
-		$scope.search(widgetConfigs, function(response) {
+		var params = $.map($scope.widgets, function(widget) { return widget.params(); });
+		$scope.search(params, function(response) {
 			$scope.bucket = response;
-			$.each($scope.widgets, function(i, widget) {
-				widget.update(response);
-			});
+			$scope.$broadcast('result', response);
 		});
 	};
+	$scope.params = function() {
+		return null;
+	};
+	var q = $location.search()['q'];
+	$scope.filters = q ? q.split('__') : [ ];
 	$scope.getFilters = function(field) {
 		return $.grep($scope.filters, function(filter) {
 			return filter.indexOf(field + ':') == 0;
@@ -227,13 +236,20 @@ function BucketCtrl($http, $routeParams, $location) {
 		});
 		$location.search('q', $scope.filters.length ? $scope.filters.join('__') : null);
 	};
+
 	$scope.$evalAsync($scope.refresh);
 }
 
 function EventListCtrl() {
+
 	var $scope = this;
-	$scope.offset = 0;
+	$scope.id = 'events';
 	$scope.limit = 10;
+
+	$scope.offset = 0;
+	$scope.total = 0;
+	$scope.events = [];
+
 	$scope.hasPrev = function() {
 		return $scope.offset > 0;
 	}
@@ -246,23 +262,32 @@ function EventListCtrl() {
 	$scope.next = function() {
 		$scope.refresh($scope.offset + $scope.limit, $scope.limit);
 	}
-	$scope.total = 0;
-	$scope.events = [];
-	$scope.prepare = function(offset, limit) {
-		return 'list(id:events,offset:' + defined(offset, $scope.offset) + ',limit:' + defined(limit, $scope.limit) + ',sort:timestamp,asc:false)';
-	};
-	$scope.update = function(result) {
-		$scope.total = result.total;
-		$scope.events = result['events'];
+	$scope.params = function() {
+		return { 
+			id : $scope.id,
+			type : 'list',
+			offset : $scope.offset, 
+			limit : $scope.limit,
+			sort : 'timestamp',
+			asc : false
+		};
 	};
 	$scope.refresh = function(offset, limit) {
-		$scope.search([ $scope.prepare(offset, limit) ], function(result) {
+		var params = $scope.params();
+		params.offset = offset;
+		params.limit = limit;
+		$scope.search([ params ], function(result) {
 			$scope.offset = offset;
 			$scope.limit = limit;
-			$scope.update(result);
+			$scope.update(null, result);
 		});
 	};
+	$scope.update = function(event, result) {
+		$scope.total = result.total;
+		$scope.events = result[$scope.id];
+	};
 	$scope.register($scope);
+	$scope.$on('result', $scope.update);
 }
 
 function EventListConfigCtrl() {
@@ -309,24 +334,38 @@ function TagCountCtrl() {
 		}
 		return classes;
 	}
-	$scope.prepare = function(offset, limit, order, reverse) {
-		return 'count(id:' + $scope.id + ',field:' + $scope.field + ',order:' + defined(order, $scope.order) + ',reverse:' + defined(reverse, $scope.reverse) + ',offset:' + defined(offset, $scope.offset) + ',limit:' + defined(limit, $scope.limit) + ')';
+	$scope.params = function() {
+		return { 
+			id : $scope.id,
+			type : 'count',
+			field : $scope.field, 
+			offset : $scope.offset, 
+			limit : $scope.limit,
+			order : $scope.order,
+			reverse : $scope.reverse
+		};
 	};
 	$scope.refresh = function(offset, limit, order, reverse) {
-		$scope.search([ $scope.prepare(offset, limit, order, reverse) ], function(result) {
+		var params = $scope.params();
+		params.offset = offset;
+		params.limit = limit;
+		params.order = order;
+		params.reverse = reverse;
+		$scope.search([ params ], function(result) {
 			$scope.offset = offset;
 			$scope.limit = limit;
 			$scope.order = order;
 			$scope.reverse = reverse;
-			$scope.update(result);
+			$scope.update(null, result);
 		});
 	};
-	$scope.update = function(result) {
+	$scope.update = function(event, result) {
 		var tags = result[$scope.id];
 		$scope.more = tags.length > $scope.limit;
 		$scope.tags = tags.slice(0, $scope.limit);
 	};
 	$scope.register($scope);
+	$scope.$on('result', $scope.update);
 }
 
 function TagCountConfigCtrl() {
@@ -346,16 +385,25 @@ function TagGanttCtrl() {
 	$scope.order = 'max';
 	$scope.limit = 10;
 	$scope.tags = [];
-	$scope.prepare = function() {
-		return 'gantt(id:' + $scope.id + ',tokenField:' + $scope.tokenField + ',timeField:' + $scope.timeField + ',timezone:' + locale.timezoneOffset + ',order:' + $scope.order + ',limit:' + $scope.limit + ')';
+	$scope.params = function() {
+		return { 
+			id : $scope.id,
+			type : 'gantt',
+			tokenField : $scope.tokenField, 
+			timeField : $scope.timeField,
+			timezone : locale.timezoneOffset,
+			order : $scope.order,
+			limit : $scope.limit
+		};
 	};
-	$scope.update = function(result) {
+	$scope.update = function(event, result) {
 		$scope.tags = result[$scope.id];
 		$.each($scope.tags, function(i, tag) {
 			tag.freq = Math.round((new Date(tag.last).getTime() - new Date(tag.first).getTime()) / tag.count);
 		});
 	};
 	$scope.register($scope);
+	$scope.$on('result', $scope.update);
 }
 
 function RatingCountCtrl() {
@@ -366,13 +414,21 @@ function RatingCountCtrl() {
 	$scope.to = 100;
 	$scope.step = 20;
 	$scope.ratings = [];
-	$scope.prepare = function() {
-		return 'histogram(id:' + $scope.id + ',field:' + $scope.field + ',from:' + $scope.from + ',to:' + $scope.to + ',step:' + $scope.step + ')';
+	$scope.params = function() {
+		return { 
+			id : $scope.id,
+			type : 'histogram',
+			field : $scope.field, 
+			from : $scope.from,
+			to : $scope.to,
+			step : $scope.step
+		};
 	};
-	$scope.update = function(result) {
+	$scope.update = function(event, result) {
 		$scope.ratings = result[$scope.id];
 	};
 	$scope.register($scope);
+	$scope.$on('result', $scope.update);
 }
 
 function ScoreboardCtrl() {
@@ -384,13 +440,21 @@ function ScoreboardCtrl() {
 	$scope.order = 'total';
 	$scope.limit = 10;
 	$scope.users = [];
-	$scope.prepare = function() {
-		return 'scoreboard(id:' + $scope.id + ',tokenField:' + $scope.tokenField + ',valueField:' + $scope.valueField + ',order:' + $scope.order + ',limit:' + $scope.limit + ')';
+	$scope.params = function() {
+		return { 
+			id : $scope.id,
+			type : 'scoreboard',
+			tokenField : $scope.tokenField, 
+			valueField : $scope.valueField,
+			order : $scope.order,
+			limit : $scope.limit
+		};
 	};
-	$scope.update = function(result) {
+	$scope.update = function(event, result) {
 		$scope.users = result[$scope.id];
 	};
 	$scope.register($scope);
+	$scope.$on('result', $scope.update);
 }
 
 function ScoreboardConfigCtrl() {
@@ -431,14 +495,22 @@ function TimelineCtrl() {
 	};
 
 	$scope.times = [];
-	$scope.prepare = function() {
-		return 'timeline(id:' + $scope.id + ',field:' + $scope.field + ',interval:' + $scope.currentInterval() + ',range:' + $scope.range + ',timezone:' + locale.timezoneOffset + ')';
+	$scope.params = function() {
+		return { 
+			id : $scope.id,
+			type : 'timeline',
+			field : $scope.field, 
+			interval : $scope.currentInterval(),
+			range : $scope.range,
+			timezone : locale.timezoneOffset
+		};
 	};
-	$scope.update = function(result) {
+	$scope.update = function(event, result) {
 		$scope.times = result[$scope.id];
 		$scope.draw();
 	};
 	$scope.register($scope);
+	$scope.$on('result', $scope.update);
 }
 
 TimelineCtrl.prototype.draw = function() {
@@ -484,10 +556,7 @@ function MapCtrl() {
 		var value = filter.split(':')[1];
 		
 	});
-	$scope.prepare = function() {
-		return '';
-	};
-	$scope.update = function(result) {
+	$scope.update = function(event, result) {
 		var points = [ ];
 		$scope.events = $.each(result['events'], function(i, event) {
 			var location = event[$scope.field];
@@ -498,6 +567,7 @@ function MapCtrl() {
 		$scope.draw(points);
 	};
 	$scope.register($scope);
+	$scope.$on('result', $scope.update);
 	$scope.filterBounds = function() {
 		$scope.addFilter('location:' + $scope.map.getBounds().toUrlValue(2), true);
 	};
