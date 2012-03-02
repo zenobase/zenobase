@@ -246,7 +246,6 @@ function EventListCtrl() {
 	$scope.next = function() {
 		$scope.refresh($scope.offset + $scope.limit, $scope.limit);
 	}
-
 	$scope.total = 0;
 	$scope.events = [];
 	$scope.prepare = function(offset, limit) {
@@ -279,15 +278,47 @@ function TagCountCtrl() {
 	var $scope = this;
 	$scope.id = 'tagCount';
 	$scope.field = 'tag';
+	$scope.offset = 0;
 	$scope.limit = 10;
+	$scope.more = false;
 	$scope.tags = [];
-	$scope.prepare = function() {
-		return 'count(id:' + $scope.id + ',field:' + $scope.field + ',limit:' + $scope.limit + ')';
+	$scope.hasPrev = function() {
+		return $scope.offset > 0;
+	}
+	$scope.hasNext = function() {
+		return $scope.more;
+	}
+	$scope.prev = function() {
+		$scope.refresh($scope.offset - $scope.limit, $scope.limit);
+	}
+	$scope.next = function() {
+		$scope.refresh($scope.offset + $scope.limit, $scope.limit);
+	}
+	$scope.prepare = function(offset, limit) {
+		return 'count(id:' + $scope.id + ',field:' + $scope.field + ',offset:' + defined(offset, $scope.offset) + ',limit:' + defined(limit, $scope.limit) + ')';
+	};
+	$scope.refresh = function(offset, limit) {
+		$scope.search([ $scope.prepare(offset, limit) ], function(result) {
+			$scope.offset = offset;
+			$scope.limit = limit;
+			$scope.update(result);
+		});
 	};
 	$scope.update = function(result) {
-		$scope.tags = result[$scope.id];
+		var tags = result[$scope.id];
+		$scope.more = tags.length > $scope.limit;
+		$scope.tags = tags.slice(0, $scope.limit);
 	};
 	$scope.register($scope);
+}
+
+function TagCountConfigCtrl() {
+	var $scope = this;
+	$scope.limit = $scope.$parent.limit;
+	$scope.save = function() {
+		$scope.refresh(0, $scope.limit);
+		$('#tag-count-config-dialog').modal('hide');
+	};
 }
 
 function TagGanttCtrl() {

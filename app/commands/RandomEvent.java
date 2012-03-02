@@ -34,6 +34,7 @@ class RandomEvent {
 				.add(Token.valueOf("sushi"), 1)
 				.add(Token.valueOf("mexican"), 2)
 				.add(Token.valueOf("sandwich"), 2)
+				.add(Token.valueOf("greek"), 2)
 				.add(Token.valueOf("chinese"), 2);
 			@Override
 			protected void addFields(Event event) {
