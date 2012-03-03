@@ -462,6 +462,9 @@ function RatingCountCtrl() {
 	$scope.update = function(event, result) {
 		$scope.ratings = result[$scope.id];
 	};
+	$scope.stars = function(rating) {
+		return rating.from / 20;
+	};
 
 	$scope.register($scope);
 	$scope.$on('result', $scope.update);
@@ -815,6 +818,15 @@ var fields = [
 	}*/
 ];
 
+function getField(name) {
+	for (var i = 0; i < fields.length; ++i) {
+		if (fields[i].name === name) {
+			return fields[i];
+		}
+	}
+	return;
+}
+
 /*angular.widget('zeno:event', function(compileElement) {
 	return function(linkElement) {
 		var $scope = this;
@@ -871,6 +883,13 @@ app.filter('age', function() {
 app.filter('duration', function() {
 	return function(millis) {
 		return humane.duration(millis, true);
+	}
+});
+
+app.filter('stars', function() {
+	var field = getField('rating');
+	return function(rating) {
+		return field.format(rating);
 	}
 });
 

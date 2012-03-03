@@ -172,7 +172,7 @@
 						</thead>
 						<tbody>
 							<tr ng:repeat="rating in ratings">
-								<td><i class="icon-star"></i> {{rating.from}}-{{rating.to}}</td>
+								<td>{{rating.from | stars | html}}</td>
 								<td style="text-align: right">{{rating.count | number }}</td>
 							</tr>
 							<tr ng:hide="ratings">
