@@ -444,8 +444,8 @@ function RatingCountCtrl() {
 	var $scope = this;
 	$scope.id = 'ratings';
 	$scope.field = 'rating';
-	$scope.from = 0;
-	$scope.to = 100;
+	$scope.from = 10;
+	$scope.to = 90;
 	$scope.step = 20;
 	$scope.ratings = [];
 
@@ -461,9 +461,6 @@ function RatingCountCtrl() {
 	};
 	$scope.update = function(event, result) {
 		$scope.ratings = result[$scope.id];
-	};
-	$scope.stars = function(rating) {
-		return rating.from / 20;
 	};
 
 	$scope.register($scope);
@@ -799,7 +796,7 @@ var fields = [
 	{
 		name : 'rating',
 		format : function(value) {
-			var stars = Math.floor(value / 20);
+			var stars = Math.round((value || 0) / 20);
 			var html = '<span class="nowrap" title="Rated ' + stars + '/5">';
 			for (var i = 0; i < 5; ++i) {
 				html += '<i class="' + (stars > i ? 'icon-star' : 'icon-star-empty') + '"></i>';
