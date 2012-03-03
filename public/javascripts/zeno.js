@@ -72,6 +72,27 @@ function User(name) {
 	this.name = name;
 }
 
+function Filter(field, value) {
+	this.field = field;
+	this.value = value;
+}
+
+Filter.SEPARATOR = ':';
+
+Filter.prototype.toString = function() {
+	return this.field + Filter.SEPARATOR + this.value;
+};
+
+Filter.parse = function(s) {
+	var pos = s.indexOf(Filter.SEPARATOR);
+	if (pos < 1 || pos > s.length - 1) {
+		throw "Can't parse filter: " + s;
+	}
+	var field = s.substring(0, pos);
+	var value = s.substring(pos + 1);
+	return new Filter(field, value);
+}
+
 AuthFormCtrl.$inject = ['$http'];
 function AuthFormCtrl($http) {
 	var $scope = this;
@@ -222,27 +243,34 @@ function BucketCtrl($http, $routeParams, $location) {
 	$scope.params = function() {
 		return null;
 	};
+
 	var q = $location.search()['q'];
-	$scope.filters = q ? q.split('__') : [ ];
+	$scope.filters = q ? $.map(q.split('__'), function(s) { return Filter.parse(s) }) : [ ];
 	$scope.getFilters = function(field) {
 		return $.grep($scope.filters, function(filter) {
-			return filter.indexOf(field + ':') == 0;
+			return filter.field === field;
 		});
 	};
+	$scope.containsFilter = function(filter) {
+		return $.grep($scope.filters, function(f) {
+			return angular.equals(f, filter);
+		}).length > 0;
+	};
 	$scope.addFilter = function(filter, replace) {
-		if ($scope.filters.indexOf(filter) == -1) {
-			if (replace) {
-				$scope.filters = $.grep($scope.filters, function(value) {
-					return value.indexOf(filter.split(':')[0] + ':') == -1;
-				});
-			}
-			$scope.filters.push(filter);
-			$location.search('q', $scope.filters.join('__'));
+		if ($scope.containsFilter(filter)) {
+			return;
 		}
+		if (replace) {
+			$scope.filters = $.grep($scope.filters, function(f) {
+				return f.field !== filter.field;
+			});
+		}
+		$scope.filters.push(filter);
+		$location.search('q', $scope.filters.join('__'));
 	};
 	$scope.removeFilter = function(filter) {
-		$scope.filters = $.grep($scope.filters, function(value) {
-			return value != filter;
+		$scope.filters = $.grep($scope.filters, function(f) {
+			return !angular.equals(f, filter);
 		});
 		$location.search('q', $scope.filters.length ? $scope.filters.join('__') : null);
 	};
@@ -492,7 +520,7 @@ function TimelineCtrl() {
 	$scope.interval = 1;
 	$scope.range = '';
 	$.each($scope.getFilters($scope.field), function(i, filter) {
-		$scope.range = filter.split(':')[1];
+		$scope.range = filter.value;
 		$.each($scope.intervalLengths, function(j, length) {
 			if ($scope.range.length == length) {
 				$scope.interval = Math.min(j + 1, $scope.intervals.length);
@@ -550,7 +578,7 @@ TimelineCtrl.prototype.draw = function() {
 				var selection = chart.getSelection();
 				var value = data.getValue(selection[0].row, 0);
 				$scope.zoomIn();
-				$scope.addFilter($scope.field + ':' + value, true);
+				$scope.addFilter(new Filter($scope.field, value), true);
 				$scope.refresh();
 			});
 		}});
@@ -577,7 +605,7 @@ function MapCtrl() {
 		$scope.draw(points);
 	};
 	$scope.filterBounds = function() {
-		$scope.addFilter('location:' + $scope.map.getBounds().toUrlValue(2), true);
+		$scope.addFilter(new Filter($scope.field, $scope.map.getBounds().toUrlValue(2)), true);
 	};
 
 	$scope.register($scope);
