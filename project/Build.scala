@@ -12,7 +12,7 @@ object ApplicationBuild extends Build {
       "org.hamcrest" % "hamcrest-integration" % "1.2.1" withSources(),
       "com.google.guava" % "guava" % "11.0.1" withSources(),
       "com.google.inject" % "guice" % "3.0" withSources(),
-      "org.elasticsearch" % "elasticsearch" % "0.19.0.RC3"
+      "org.elasticsearch" % "elasticsearch" % "0.19.0"
     )
 
     val main = PlayProject(appName, appVersion, appDependencies, mainLang = JAVA).settings(

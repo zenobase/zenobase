@@ -42,7 +42,9 @@ public class TimelineWidget implements Widget {
 	@Override
 	public void configure(SearchSourceBuilder builder) {
 		builder.facet(FacetBuilders.dateHistogramFacet(id)
-			.field(field).interval(interval).preZone(timezone.toString()));
+			.field(field).interval(interval)
+			.preZone(timezone.toString())
+			.preZoneAdjustLargeInterval(true));
 	}
 
 	@Override
@@ -68,9 +70,6 @@ public class TimelineWidget implements Widget {
 	}
 
 	private DateTime toDateTime(long time) {
-		if (!interval.equals("hour") && !interval.equals("minute")) {
-			time = time - timezone.getOffset(time);
-		}
 		return new DateTime(time, timezone);
 	}
 
