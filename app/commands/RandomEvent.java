@@ -16,6 +16,8 @@ import models.Token;
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
 
+import secure.Identity;
+
 import com.google.common.base.Charsets;
 import com.google.common.io.Files;
 import com.google.common.io.LineProcessor;
@@ -75,13 +77,15 @@ class RandomEvent {
 		}, 1);
 
 	private final Bucket bucket;
+	private final Identity identity;
 
-	public RandomEvent(Bucket bucket) {
+	public RandomEvent(Bucket bucket, Identity identity) {
 		this.bucket = bucket;
+		this.identity = identity;
 	}
 
 	public Event next() {
-		return builders.next().build(bucket);
+		return builders.next().build(bucket, identity);
 	}
 
 	private static class Builder {
@@ -96,9 +100,9 @@ class RandomEvent {
 			.add(Rating.valueOf( 20), 2)
 			.add(Rating.valueOf(  0), 1);
 
-		public Event build(Bucket bucket) {
+		public Event build(Bucket bucket, Identity identity) {
 			Event event = new Event(Generator.id(), bucket.getId());
-			event.set(Event.CREATOR, bucket.getIdentity());
+			event.set(Event.CREATOR, identity);
 			event.add(Event.TIMESTAMP, nextTimestamp());
 			addFields(event);
 			return event;

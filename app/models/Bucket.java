@@ -1,12 +1,19 @@
 package models;
 
+import java.util.List;
+
 import org.codehaus.jackson.node.ObjectNode;
+import org.elasticsearch.common.collect.Lists;
+
+import play.Logger;
 
 import schema.Field;
+import schema.RoleType;
 import schema.SchemaBuilder;
 import schema.TextType;
 import schema.TokenType;
 import secure.Identity;
+import secure.Role;
 import services.IndexManager;
 
 import com.google.common.base.Objects;
@@ -17,17 +24,15 @@ public class Bucket {
 
 	public static final String TYPE_NAME = "bucket";
 	public static final Field<Token> ID = Field.of("@id", new TokenType());
-	public static final Field<Token> IDENTITY = Field.of("identity", new TokenType());
-	public static final Field<Token> ROLE = Field.of("role", new TokenType());
 	public static final Field<Text> LABEL = Field.of("label", new TextType());
+	public static final Field<Role> ROLE = Field.of("role", new RoleType());
 
-	private static final ImmutableSet<Field<?>> FIELDS = ImmutableSet.of(ID, IDENTITY, ROLE, LABEL);
+	private static final ImmutableSet<Field<?>> FIELDS = ImmutableSet.of(ID, LABEL, ROLE);
 
 	private final IndexManager index;
 	private final String id;
 	private String label;
-	private Identity identity;
-	private String role;
+	private final List<Role> roles = Lists.newArrayList();
 
 	public Bucket(IndexManager index, String id) {
 		this.index = index;
@@ -42,20 +47,18 @@ public class Bucket {
 		this.label = label;
 	}
 
-	public Identity getIdentity() {
-		return identity;
+	public String getRole(Identity identity) {
+		Logger.info("looking for roles for " + identity + " in " + roles);
+		for (Role role : roles) {
+			if (role.getIdentity().equals(identity)) {
+				return role.getRole();
+			}
+		}
+		return null;
 	}
 
-	public void setIdentity(Identity identity) {
-		this.identity = identity;
-	}
-
-	public String getRole() {
-		return role;
-	}
-
-	public void setRole(String role) {
-		this.role = role;
+	public void addRole(Role role) {
+		roles.add(role);
 	}
 
 	public void add(Event event) {
@@ -91,9 +94,10 @@ public class Bucket {
 	public ObjectNode toJson() {
 		ObjectNode object = Nodes.newObject();
 		ID.getType().add(object, ID.getName(), Token.valueOf(id));
-		IDENTITY.getType().add(object, IDENTITY.getName(), Token.valueOf(identity.getId()));
-		ROLE.getType().add(object, ROLE.getName(), Token.valueOf(role));
 		LABEL.getType().add(object, LABEL.getName(), Text.valueOf(label));
+		for (Role role : roles) {
+			ROLE.getType().add(object, ROLE.getName(), role);
+		}
 		return object;
 	}
 }

@@ -2,14 +2,15 @@ package commands;
 
 import models.Bucket;
 import models.Event;
+import secure.Identity;
 
 public class CreateEventCommand extends CommandSupport {
 
 	private final Bucket bucket;
 	private final Event event;
 
-	public CreateEventCommand(Bucket bucket, Event event) {
-		super(bucket.getIdentity());
+	public CreateEventCommand(Bucket bucket, Identity identity, Event event) {
+		super(identity);
 		this.bucket = bucket;
 		this.event = event;
 	}
@@ -19,7 +20,7 @@ public class CreateEventCommand extends CommandSupport {
 	}
 
 	public Command reverse() {
-		return new DeleteEventCommand(bucket, event);
+		return new DeleteEventCommand(bucket, getIdentity(), event);
 	}
 
 	@Override

@@ -15,9 +15,12 @@ public class EventController extends ControllerSupport {
 	static BucketManager manager;
 
     public static Result get(String bucketId, String eventId) {
-    	Bucket bucket = manager.findBucket(bucketId, SecurityController.identity(false));
+		Bucket bucket = manager.findBucket(bucketId);
     	if (bucket == null) {
     		return notFound();
+    	}
+    	if (bucket.getRole(SecurityController.identity(false)) == null) {
+    		return forbidden();
     	}
     	Event event = bucket.findEvent(eventId);
     	if (event == null) {

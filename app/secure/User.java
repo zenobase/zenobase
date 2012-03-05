@@ -106,6 +106,7 @@ public class User {
 		return object;
 	}
 
+	@Deprecated // TODO should read from an ObjectNode
 	public static User fromMap(Map<String, Object> map) {
 		Identity identity = new Identity((String) map.get(IDENTITY.getName()));
 		String name = (String) map.get(NAME.getName());

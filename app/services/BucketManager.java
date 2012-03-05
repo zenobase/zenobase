@@ -1,22 +1,22 @@
 package services;
 
-import java.util.Map;
-
 import javax.inject.Inject;
 
 import models.Bucket;
 import models.Event;
 
+import org.codehaus.jackson.node.ObjectNode;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
-import org.elasticsearch.search.SearchHits;
 
 import play.Logger;
+import schema.RoleType;
 import secure.Identity;
+import secure.Role;
 
-import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
+import common.Nodes;
 
 public class BucketManager {
 
@@ -55,50 +55,43 @@ public class BucketManager {
 		buckets.index(Bucket.TYPE_NAME, bucket.getId(), bucket.toJson(), true);
 	}
 
-	public void deleteBucket(String id, Identity identity) {
-		QueryBuilder query = QueryBuilders.boolQuery()
-			.must(QueryBuilders.termQuery(Bucket.ID.getName(), id))
-			.must(QueryBuilders.termQuery(Bucket.IDENTITY.getName(), identity.getId()));
-		buckets.delete(query);
+	public void deleteBucket(String id) {
+		buckets.delete(QueryBuilders.termQuery(Bucket.ID.getName(), id));
 	}
 
-	public Bucket findBucket(String bucketId, Identity identity) {
-		QueryBuilder query = QueryBuilders.boolQuery()
-			.must(QueryBuilders.termQuery(Bucket.ID.getName(), bucketId))
-			.must(QueryBuilders.termQuery(Bucket.IDENTITY.getName(), identity.getId()));
-		SearchHits hits = buckets.search(query).getHits();
-		Preconditions.checkState(hits.totalHits() <= 1,
-			"Expected 0..1 hits for bucket '%s' with identity '%s' but got %s", bucketId, identity, hits.totalHits());
-		if (hits.totalHits() == 1) {
-			return fromMap(hits.getAt(0).getSource());
-		}
-		return null;
+	public Bucket findBucket(String bucketId) {
+		return parse(buckets.get(Bucket.TYPE_NAME, bucketId));
 	}
 
 	public ImmutableList<Bucket> findParticipants(String bucketId) {
 		ImmutableList.Builder<Bucket> buckets = ImmutableList.builder();
 		QueryBuilder query = QueryBuilders.termQuery(Bucket.ID.getName(), bucketId);
 		for (SearchHit hit : this.buckets.search(query).getHits()) {
-			buckets.add(fromMap(hit.getSource()));
+			buckets.add(parse(hit.source()));
 		}
 		return buckets.build();
 	}
 
 	public ImmutableList<Bucket> findBuckets(Identity identity) {
 		ImmutableList.Builder<Bucket> buckets = ImmutableList.builder();
-		QueryBuilder query = QueryBuilders.termQuery(Bucket.IDENTITY.getName(), identity.getId());
+		QueryBuilder query = QueryBuilders.nestedQuery(Bucket.ROLE.getName(), QueryBuilders.termQuery(RoleType.IDENTITY.getName(), identity.getId()));
 		for (SearchHit hit : this.buckets.search(query).getHits()) {
-			buckets.add(fromMap(hit.getSource()));
+			buckets.add(parse(hit.source()));
 		}
 		return buckets.build();
 	}
 
-	private Bucket fromMap(Map<String, Object> map) {
-		String id = (String) map.get(Bucket.ID.getName());
+	private Bucket parse(byte[] source) {
+		return parse(Nodes.read(source));
+	}
+
+	private Bucket parse(ObjectNode object) {
+		String id = object.get(Bucket.ID.getName()).asText();
 		Bucket bucket = new Bucket(manager.getIndex(id), id);
-		bucket.setLabel(map.get(Bucket.LABEL.getName()).toString());
-		bucket.setIdentity(new Identity(map.get(Bucket.IDENTITY.getName()).toString()));
-		bucket.setRole(map.get(Bucket.ROLE.getName()).toString());
+		bucket.setLabel(object.get(Bucket.LABEL.getName()).asText());
+		for (Role role : Bucket.ROLE.getType().get(object, Bucket.ROLE.getName())) {
+			bucket.addRole(role);
+		}
 		return bucket;
 	}
 }

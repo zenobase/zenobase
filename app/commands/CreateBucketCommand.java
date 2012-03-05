@@ -1,6 +1,7 @@
 package commands;
 
 import models.Bucket;
+import secure.Identity;
 import services.BucketManager;
 
 public class CreateBucketCommand extends CommandSupport {
@@ -9,8 +10,8 @@ public class CreateBucketCommand extends CommandSupport {
 	private final Bucket bucket;
 	private final boolean createIndex;
 
-	public CreateBucketCommand(BucketManager manager, Bucket bucket, boolean createIndex) {
-		super(bucket.getIdentity());
+	public CreateBucketCommand(BucketManager manager, Identity identity, Bucket bucket, boolean createIndex) {
+		super(identity);
 		this.manager = manager;
 		this.bucket = bucket;
 		this.createIndex = createIndex;
@@ -21,7 +22,7 @@ public class CreateBucketCommand extends CommandSupport {
 	}
 
 	public DeleteBucketCommand reverse() {
-		return new DeleteBucketCommand(manager, bucket);
+		return new DeleteBucketCommand(manager, getIdentity(), bucket);
 	}
 
 	@Override

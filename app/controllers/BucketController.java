@@ -39,15 +39,15 @@ public class BucketController extends ControllerSupport {
     }
 
 	private static Result get(String bucketId, Identity identity) {
-		Bucket bucket = buckets.findBucket(bucketId, identity);
-    	return bucket != null ? get(bucket) : notFound();
+		Bucket bucket = buckets.findBucket(bucketId);
+    	return bucket != null ? get(bucket, identity) : notFound();
     }
 
-	private static Result get(Bucket bucket) {
-    	return ok(new EventSearch(bucket)
+	private static Result get(Bucket bucket, Identity identity) {
+    	return bucket.getRole(identity) != null ? ok(new EventSearch(bucket)
 			.addWidgets(request().queryString().get("w"))
 			.addFilters(request().queryString().get("q"))
-			.execute(node.getIndex(bucket.getId())));
+			.execute(node.getIndex(bucket.getId()))) : forbidden();
     }
 
 	@BodyParser.Of(value = BodyParser.Json.class, maxLength = 1000)
@@ -61,11 +61,11 @@ public class BucketController extends ControllerSupport {
 		if (body == null) {
 			return badRequest();
 		}
-    	Bucket bucket = buckets.findBucket(bucketId, identity);
+    	Bucket bucket = buckets.findBucket(bucketId);
     	if (bucket == null) {
     		return notFound();
     	}
-    	if (!"owner".equals(bucket.getRole())) {
+    	if (!"owner".equals(bucket.getRole(identity))) {
     		return forbidden();
     	}
     	if (body.has("random")) {
@@ -80,7 +80,7 @@ public class BucketController extends ControllerSupport {
     		if (!event.contains(Event.TIMESTAMP)) {
     			event.add(Event.TIMESTAMP, new DateTime());
     		}
-    		String commandId = queue.execute(new CreateEventCommand(bucket, event));
+    		String commandId = queue.execute(new CreateEventCommand(bucket, identity, event));
             response().setHeader(LOCATION, String.format("/buckets/%s/%s", bucket.getId(), event.getId()));
             response().setHeader("Undo", String.format("/queue/%s", commandId));
             return created();
@@ -93,15 +93,15 @@ public class BucketController extends ControllerSupport {
     }
 
     private static Result delete(String bucketId, Identity identity) {
-    	Bucket bucket = buckets.findBucket(bucketId, identity);
-    	return bucket != null ? delete(bucket) : notFound();
+    	Bucket bucket = buckets.findBucket(bucketId);
+    	return bucket != null ? delete(bucket, identity) : notFound();
     }
 
-    private static Result delete(Bucket bucket) {
-    	if (!"owner".equals(bucket.getRole())) {
+    private static Result delete(Bucket bucket, Identity identity) {
+    	if (!"owner".equals(bucket.getRole(identity))) {
     		return forbidden();
     	}
-    	queue.execute(new DeleteBucketCommand(buckets, bucket));
+    	queue.execute(new DeleteBucketCommand(buckets, identity, bucket));
     	return noContent();
     }
 }

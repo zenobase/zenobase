@@ -10,6 +10,7 @@ import org.codehaus.jackson.node.ObjectNode;
 import play.mvc.Result;
 import play.mvc.With;
 import secure.Identity;
+import secure.Role;
 import services.BucketManager;
 import services.CommandQueue;
 import services.NodeManager;
@@ -50,7 +51,7 @@ public class BucketListController extends ControllerSupport {
 		}
 		Identity identity = SecurityController.identity(true);
     	Bucket bucket = createBucket(body.get("label").asText(), identity);
-		String commandId = queue.execute(new CreateBucketCommand(buckets, bucket, true));
+		String commandId = queue.execute(new CreateBucketCommand(buckets, identity, bucket, true));
         response().setHeader(LOCATION, String.format("/buckets/%s/", bucket.getId()));
         response().setHeader("Undo", String.format("/queue/%s", commandId));
         return created();
@@ -60,8 +61,7 @@ public class BucketListController extends ControllerSupport {
 		String id = Generator.id();
 		Bucket bucket = new Bucket(node.getIndex(id), id);
 		bucket.setLabel(label);
-		bucket.setIdentity(identity);
-		bucket.setRole("owner");
+		bucket.addRole(new Role(identity, "owner"));
 		return bucket;
 	}
 }
