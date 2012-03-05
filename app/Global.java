@@ -11,7 +11,7 @@ import com.google.inject.Injector;
 import com.google.inject.Singleton;
 
 import controllers.BucketController;
-import controllers.DashboardController;
+import controllers.BucketListController;
 import controllers.EventController;
 import controllers.QueueController;
 import controllers.SecurityController;
@@ -31,7 +31,7 @@ public class Global extends GlobalSettings {
 				bind(CommandQueue.class).in(Singleton.class);
 				bind(UserManager.class).in(Singleton.class);
 				requestStaticInjection(QueueController.class);
-				requestStaticInjection(DashboardController.class);
+				requestStaticInjection(BucketListController.class);
 				requestStaticInjection(SecurityController.class);
 				requestStaticInjection(BucketController.class);
 				requestStaticInjection(EventController.class);

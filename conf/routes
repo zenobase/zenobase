@@ -12,17 +12,17 @@ POST    /signin                      controllers.SecurityController.signIn()
 POST    /signout                     controllers.SecurityController.signOut()
 POST    /signup                      controllers.SecurityController.signUp()
 
-GET     /buckets/                    controllers.DashboardController.get()
-POST    /buckets/                    controllers.DashboardController.post()
-
-GET     /queue/                      controllers.QueueController.get(offset : Int, limit : Int)
-POST    /queue/:id                   controllers.QueueController.post(id)
+GET     /buckets/                    controllers.BucketListController.get()
+POST    /buckets/                    controllers.BucketListController.post()
 
 GET     /buckets/:bucketId/          controllers.BucketController.get(bucketId)
 POST    /buckets/:bucketId/          controllers.BucketController.post(bucketId)
 DELETE  /buckets/:bucketId/          controllers.BucketController.delete(bucketId)
 
 GET     /buckets/:bucketId/:eventId  controllers.EventController.get(bucketId, eventId)
+
+GET     /queue/                      controllers.QueueController.get(offset : Int, limit : Int)
+POST    /queue/:id                   controllers.QueueController.post(id)
 
 # Ignore favicon requests
 GET     /favicon.ico                 controllers.Default.notFound

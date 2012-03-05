@@ -19,7 +19,7 @@ import common.Generator;
 import common.Nodes;
 
 @With(Timed.class)
-public class DashboardController extends ControllerSupport {
+public class BucketListController extends ControllerSupport {
 
 	@Inject
 	static CommandQueue queue;
