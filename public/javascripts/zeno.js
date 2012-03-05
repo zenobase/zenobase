@@ -618,6 +618,7 @@ MapCtrl.prototype.draw = function(points) {
 		google.load("maps", "3.8", { other_params : 'sensor=false', callback : function() {
 			var options = {
 				mapTypeId: google.maps.MapTypeId.TERRAIN,
+				streetViewControl: false,
 				mapTypeControlOptions : {
 					style : google.maps.MapTypeControlStyle.DROPDOWN_MENU
 				}
