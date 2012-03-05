@@ -24,8 +24,8 @@ function MainCtrl($route, $http, $location) {
 			$scope.reload();
 		});
 	};
-	$route.when('/', { template: '/public/dashboard.html' });
-	$route.when('/buckets/:bucketId/', { template: '/public/bucket.html' });
+	$route.when('/', { template: '/public/home.html' });
+	$route.when('/buckets/:bucketId/', { template: '/public/dashboard.html' });
 	$route.when('/buckets/:bucketId/:eventId', { template: '/public/event.html' });
 	$route.when('/terms', { template: '/public/terms.html' });
 	$route.when('/privacy', { template: '/public/privacy.html' });
