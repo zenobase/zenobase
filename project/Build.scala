@@ -8,10 +8,9 @@ object ApplicationBuild extends Build {
     val appVersion      = "1.0-SNAPSHOT"
 
     val appDependencies = Seq(
-      // "play" %% "play-test" % "2.0",
-      "org.hamcrest" % "hamcrest-integration" % "1.2.1" withSources(),
-      "com.google.guava" % "guava" % "11.0.1" withSources(),
-      "com.google.inject" % "guice" % "3.0" withSources(),
+      "org.hamcrest" % "hamcrest-integration" % "1.2.1",
+      "com.google.guava" % "guava" % "11.0.1",
+      "com.google.inject" % "guice" % "3.0",
       "org.elasticsearch" % "elasticsearch" % "0.19.0"
     )
 
