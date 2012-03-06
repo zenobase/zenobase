@@ -10,6 +10,7 @@ import services.IndexManager;
 import services.NodeManager;
 
 import com.google.common.base.Preconditions;
+import common.Nodes;
 
 public class UserManager {
 
@@ -32,7 +33,7 @@ public class UserManager {
 		Preconditions.checkState(hits.totalHits() <= 1,
 			"Expected 0..1 hits for identity '%s' but got %s", identity, hits.totalHits());
 		return hits.totalHits() > 0L ?
-			User.fromMap(hits.getAt(0).getSource()) : null;
+			User.parse(Nodes.read(hits.getAt(0).source())) : null;
 	}
 
 	public User find(String name) {
@@ -40,7 +41,7 @@ public class UserManager {
 		Preconditions.checkState(hits.totalHits() <= 1,
 			"Expected 0..1 hits for name '%s' but got %s", name, hits.totalHits());
 		return hits.totalHits() > 0L ?
-			User.fromMap(hits.getAt(0).getSource()) : null;
+			User.parse(Nodes.read(hits.getAt(0).source())) : null;
 	}
 
 	public void store(User user) {

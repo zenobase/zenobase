@@ -1,13 +1,15 @@
 package secure;
 
-import java.util.Map;
+import java.util.List;
 
 import models.Token;
 
 import org.codehaus.jackson.node.ObjectNode;
+import org.elasticsearch.common.collect.Iterables;
 
 import schema.BooleanType;
 import schema.Field;
+import schema.IdentityType;
 import schema.SchemaBuilder;
 import schema.TokenType;
 
@@ -17,7 +19,7 @@ public class User {
 
 	public static final String TYPE_NAME = "user";
 	public static final Field<Token> NAME = Field.of("name", new TokenType());
-	public static final Field<Token> IDENTITY = Field.of("identity", new TokenType());
+	public static final Field<Identity> IDENTITY = Field.of("identity", new IdentityType());
 	public static final Field<Token> PASSWORD = Field.of("password", new TokenType());
 	public static final Field<Token> EMAIL = Field.of("email", new TokenType());
 	public static final Field<Boolean> VERIFIED = Field.of("verified", new BooleanType());
@@ -86,8 +88,8 @@ public class User {
 
 	public ObjectNode toPublicJson() {
 		ObjectNode object = Nodes.newObject();
-		object.put(NAME.getName(), name);
-		object.put(IDENTITY.getName(), identity.getId());
+		NAME.getType().set(object, NAME.getName(), Token.valueOf(name));
+		IDENTITY.getType().set(object, IDENTITY.getName(), identity);
 		return object;
 	}
 
@@ -106,16 +108,16 @@ public class User {
 		return object;
 	}
 
-	@Deprecated // TODO should read from an ObjectNode
-	public static User fromMap(Map<String, Object> map) {
-		Identity identity = new Identity((String) map.get(IDENTITY.getName()));
-		String name = (String) map.get(NAME.getName());
+	public static User parse(ObjectNode object) {
+		Identity identity = Iterables.getOnlyElement(IDENTITY.getType().get(object, IDENTITY.getName()));
+		String name = Iterables.getOnlyElement(NAME.getType().get(object, NAME.getName())).toString();
 		User user = new User(identity, name);
-		user.setPassword((String) map.get(PASSWORD.getName()));
-		String email = (String) map.get(EMAIL.getName());
+		user.setPassword(Iterables.getOnlyElement(PASSWORD.getType().get(object, PASSWORD.getName())).toString());
+		List<Token> tokens = EMAIL.getType().get(object, EMAIL.getName());
+		String email = !tokens.isEmpty() ? Iterables.getOnlyElement(tokens).toString() : null;
 		if (email != null) {
 			user.setEmail(email);
-			user.setVerified((Boolean) map.get(VERIFIED.getName()));
+			user.setVerified(Iterables.getOnlyElement(VERIFIED.getType().get(object, VERIFIED.getName())));
 		}
 		return user;
 	}
