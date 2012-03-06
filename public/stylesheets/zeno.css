@@ -73,3 +73,7 @@ footer {
 	line-height: inherit;
 	float: none;
 }
+
+.table-unbordered td {
+	border-style: none;
+}

@@ -19,7 +19,7 @@
 		<div class="span6">
 			<ul class="nav nav-tabs">
 				<li ng:repeat="tab in tabs" ng:class="$index == 0 && 'active'">
-					<a href="#{{tab.id}}" data-toggle="tab">{{tab.label}} <span class="close" onclick="alert('close'); return true;">&times;</span></a>
+					<a href="#{{tab.id}}" data-toggle="tab">{{tab.label}} <span class="close">&times;</span></a>
 				</li>
 			</ul>
 			<div class="tab-content">
@@ -41,8 +41,15 @@
 			</div>
 		</div>
 		<div class="span6">
-			<div ng:controller="MapCtrl" class="widget">
-				<ng:include src="'public/dashboard/map.html'"/>
+			<ul class="nav nav-tabs">
+				<li class="active">
+					<a href="#widget-map" data-toggle="tab">Map <span class="close">&times;</span></a>
+				</li>
+			</ul>
+			<div class="tab-content">
+				<div id="widget-map" ng:controller="MapCtrl" class="tab-pane active">
+					<ng:include src="'public/dashboard/map.html'"/>
+				</div>
 			</div>
 		</div>
 	</div>
