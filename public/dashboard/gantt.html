@@ -8,12 +8,12 @@
 			</tr>
 		</thead>
 		<tbody>
-			<tr ng:repeat="tag in tags">
-				<td><i class="icon-tag"></i> <a ng:click="addFilter('tag:' + tag.label)">{{tag.label}}</a></td>
-				<td style="text-align: right"><abbr title="{{tag.last}}">{{tag.last | age}}</abbr></td>
-				<td style="text-align: right">{{tag.freq  | duration}}</td>
+			<tr ng:repeat="term in terms">
+				<td><i class="icon-tag"></i> <a ng:click="addFilter('tag:' + term.label)">{{term.label}}</a></td>
+				<td style="text-align: right"><abbr title="{{tag.last}}">{{term.last | age}}</abbr></td>
+				<td style="text-align: right">{{term.freq  | duration}}</td>
 			</tr>
-			<tr ng:hide="tags">
+			<tr ng:hide="terms">
 				<td colspan="3"><i>None</i></td>
 			</tr>
 		</tbody>

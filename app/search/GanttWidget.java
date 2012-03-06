@@ -21,15 +21,15 @@ public class GanttWidget implements Widget {
 	private static final Type<DateTime> VALUE_TYPE = new DateTimeType();
 
 	private final String id;
-	private final String tokenField;
+	private final String termField;
 	private final String timeField;
 	private final ComparatorType order;
 	private final int limit;
 	private final DateTimeZone timezone;
 
-	private GanttWidget(String id, String tokenField, String timeField, ComparatorType order, int limit, DateTimeZone timezone) {
+	private GanttWidget(String id, String termField, String timeField, ComparatorType order, int limit, DateTimeZone timezone) {
 		this.id = id;
-		this.tokenField = tokenField;
+		this.termField = termField;
 		this.timeField = timeField;
 		this.order = order;
 		this.limit = limit;
@@ -43,7 +43,7 @@ public class GanttWidget implements Widget {
 	@Override
 	public void configure(SearchSourceBuilder builder) {
 		builder.facet(FacetBuilders.termsStatsFacet(id)
-			.keyField(tokenField).valueField(timeField).order(order).size(limit)); 
+			.keyField(termField).valueField(timeField).order(order).size(limit)); 
 	}
 
 	@Override
@@ -74,7 +74,7 @@ public class GanttWidget implements Widget {
 			public Widget build(WidgetOptions options) {
 				return new GanttWidget(
 					options.get("id"),
-					options.get("tokenField"),
+					options.get("termField"),
 					options.get("timeField"),
 					ComparatorType.valueOf(options.get("order", String.class, "term").toUpperCase()),
 					options.get("limit", Integer.class, 10),

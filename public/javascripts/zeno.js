@@ -352,7 +352,7 @@ function TagCountCtrl() {
 	$scope.offset = 0;
 	$scope.limit = 10;
 	$scope.more = false;
-	$scope.tags = [];
+	$scope.terms = [];
 
 	$scope.hasPrev = function() {
 		return $scope.offset > 0;
@@ -397,9 +397,9 @@ function TagCountCtrl() {
 		});
 	};
 	$scope.update = function(event, result) {
-		var tags = result[$scope.id];
-		$scope.more = tags.length > $scope.limit;
-		$scope.tags = tags.slice(0, $scope.limit);
+		var terms = result[$scope.id];
+		$scope.more = terms.length > $scope.limit;
+		$scope.terms = terms.slice(0, $scope.limit);
 	};
 
 	$scope.register($scope);
@@ -419,17 +419,17 @@ function TagGanttCtrl() {
 
 	var $scope = this;
 	$scope.id = 'tagsGantt';
-	$scope.tokenField = 'tag';
+	$scope.termField = 'tag';
 	$scope.timeField = 'timestamp';
 	$scope.order = 'max';
 	$scope.limit = 10;
-	$scope.tags = [];
+	$scope.terms = [];
 
 	$scope.params = function() {
 		return { 
 			id : $scope.id,
 			type : 'gantt',
-			tokenField : $scope.tokenField, 
+			termField : $scope.termField, 
 			timeField : $scope.timeField,
 			timezone : locale.timezoneOffset,
 			order : $scope.order,
@@ -437,10 +437,10 @@ function TagGanttCtrl() {
 		};
 	};
 	$scope.update = function(event, result) {
-		$scope.tags = result[$scope.id];
-		if ($scope.tags) {
-			$.each($scope.tags, function(i, tag) {
-				tag.freq = Math.round((new Date(tag.last).getTime() - new Date(tag.first).getTime()) / tag.count);
+		$scope.terms = result[$scope.id];
+		if ($scope.terms) {
+			$.each($scope.terms, function(i, term) {
+				term.freq = Math.round((new Date(term.last).getTime() - new Date(term.first).getTime()) / term.count);
 			});
 		}
 	};
@@ -480,25 +480,30 @@ function ScoreboardCtrl() {
 
 	var $scope = this;
 	$scope.id = 'distances';
-	$scope.title = 'Scoreboard';
-	$scope.tokenField = 'creator';
+	$scope.termField = 'creator';
 	$scope.valueField = 'distance';
 	$scope.order = 'total';
 	$scope.limit = 10;
-	$scope.users = [];
+	$scope.terms = [];
 
 	$scope.params = function() {
 		return { 
 			id : $scope.id,
 			type : 'scoreboard',
-			tokenField : $scope.tokenField, 
+			termField : $scope.termField, 
 			valueField : $scope.valueField,
 			order : $scope.order,
 			limit : $scope.limit
 		};
 	};
+	$scope.refresh = function(params) {
+		$scope.search([ $.extend($scope.params(), params) ], function(result) {
+			$.extend($scope, params)
+			$scope.update(null, result);
+		});
+	};
 	$scope.update = function(event, result) {
-		$scope.users = result[$scope.id];
+		$scope.terms = result[$scope.id];
 	};
 
 	$scope.register($scope);
@@ -507,14 +512,10 @@ function ScoreboardCtrl() {
 
 function ScoreboardConfigCtrl() {
 	var $scope = this;
-	$scope.title = $scope.$parent.title;
 	$scope.limit = $scope.$parent.limit;
 	$scope.valueField = $scope.$parent.valueField;
 	$scope.save = function() {
-		$scope.$parent.title = $scope.title;
-		$scope.$parent.limit = $scope.limit;
-		$scope.$parent.valueField = $scope.valueField;
-		$scope.refresh();
+		$scope.refresh({ limit : $scope.limit, termField : $scope.termField, valueField : $scope.valueField });
 		$('#scoreboard-config-dialog').modal('hide');
 	};
 }

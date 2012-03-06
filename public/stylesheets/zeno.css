@@ -77,3 +77,7 @@ footer {
 .table-unbordered td {
 	border-style: none;
 }
+
+.table thead a {
+	color: #333;
+}

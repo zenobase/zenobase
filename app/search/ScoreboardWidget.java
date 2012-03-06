@@ -14,14 +14,14 @@ import common.Nodes;
 public class ScoreboardWidget implements Widget {
 
 	private final String id;
-	private final String tokenField;
+	private final String termField;
 	private final String valueField;
 	private final ComparatorType order;
 	private final int limit;
 
-	private ScoreboardWidget(String id, String tokenField, String valueField, ComparatorType order, int limit) {
+	private ScoreboardWidget(String id, String termField, String valueField, ComparatorType order, int limit) {
 		this.id = id;
-		this.tokenField = tokenField;
+		this.termField = termField;
 		this.valueField = valueField;
 		this.order = order;
 		this.limit = limit;
@@ -34,7 +34,7 @@ public class ScoreboardWidget implements Widget {
 	@Override
 	public void configure(SearchSourceBuilder builder) {
 		builder.facet(FacetBuilders.termsStatsFacet(id)
-			.keyField(tokenField).valueField(valueField).order(order).size(limit)); 
+			.keyField(termField).valueField(valueField).order(order).size(limit)); 
 	}
 
 	@Override
@@ -61,7 +61,7 @@ public class ScoreboardWidget implements Widget {
 			public Widget build(WidgetOptions options) {
 				return new ScoreboardWidget(
 					options.get("id"),
-					options.get("tokenField"),
+					options.get("termField"),
 					options.get("valueField"),
 					ComparatorType.valueOf(options.get("order", String.class, "term").toUpperCase()),
 					options.get("limit", Integer.class, 10));
