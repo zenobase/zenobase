@@ -1,0 +1,21 @@
+<div>
+	<table class="table">
+		<thead>
+			<tr>
+				<th>Tag</th>
+				<th style="text-align: right">Last</th>
+				<th style="text-align: right">Freq</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr ng:repeat="tag in tags">
+				<td><i class="icon-tag"></i> <a ng:click="addFilter('tag:' + tag.label)">{{tag.label}}</a></td>
+				<td style="text-align: right"><abbr title="{{tag.last}}">{{tag.last | age}}</abbr></td>
+				<td style="text-align: right">{{tag.freq  | duration}}</td>
+			</tr>
+			<tr ng:hide="tags">
+				<td colspan="3"><i>None</i></td>
+			</tr>
+		</tbody>
+	</table>
+</div>

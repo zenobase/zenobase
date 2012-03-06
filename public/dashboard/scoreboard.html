@@ -1,0 +1,67 @@
+<div>
+	<table class="table">
+		<thead>
+			<tr>
+				<th>User</th>
+				<th style="text-align: right">Count</th>
+				<th style="text-align: right">Min</th>
+				<th style="text-align: right">Max</th>
+				<th style="text-align: right">Sum</th>
+				<th style="text-align: right">Avg</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr ng:repeat="user in users">
+				<td><i class="icon-user"></i> <a ng:click="addFilter('owner:' + user.label)">{{user.label}}</a></td>
+				<td style="text-align: right">{{user.count | number }}</td>
+				<td style="text-align: right">{{user.min | number }}m</td>
+				<td style="text-align: right">{{user.max | number }}m</td>
+				<td style="text-align: right">{{user.sum | number }}m</td>
+				<td style="text-align: right">{{user.avg | number : 0 }}m</td>
+			</tr>
+			<tr ng:hide="users">
+				<td colspan="6"><i>None</i></td>
+			</tr>
+		</tbody>
+	</table>
+	<div class="btn-toolbar">
+		<div class="btn-group">
+			<a class="btn" href="#scoreboard-config-dialog" title="Configure" data-toggle="modal"><i class="icon-cog"></i></a>
+		</div>
+	</div>
+	<div id="scoreboard-config-dialog" class="modal hide" ng:controller="ScoreboardConfigCtrl">
+		<form name="scoreboardConfigForm" ng:submit="save()">
+			<div class="modal-header">
+				<a class="close" data-dismiss="modal">&times;</a>
+				<h3>Scoreboard</h3>
+			</div>
+			<div class="modal-body">
+				<fieldset class="control-group">
+					<label for="title">Title</label>
+					<div class="input">
+						<input name="title" type="text" required ng:model="title"/>
+						<p class="help-block">A title for this widget.</p>
+					</div>
+				</fieldset>
+				<fieldset class="control-group">
+					<label for="limit">Limit</label>
+					<div class="input">
+						<input name="limit" type="number" required min="1" max="100" ng:model="limit"/>
+						<p class="help-block">The number of items to show.</p>
+					</div>
+				</fieldset>
+				<fieldset class="control-group">
+					<label for="label">Value Field</label>
+					<div class="input">
+						<input name="valueField" type="text" required ng:model="valueField"/>
+						<p class="help-block">The numeric field on which to gather statistics.</p>
+					</div>
+				</fieldset>
+			</div>
+			<div class="modal-footer">
+				<button type="submit" class="btn btn-primary" ng:disabled="{{!scoreboardConfigForm.$valid}}">Save</button>
+				<button type="reset" class="btn" data-dismiss="modal">Cancel</button>
+			</div>
+		</form>
+	</div>
+</div>

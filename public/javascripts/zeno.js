@@ -431,9 +431,11 @@ function TagGanttCtrl() {
 	};
 	$scope.update = function(event, result) {
 		$scope.tags = result[$scope.id];
-		$.each($scope.tags, function(i, tag) {
-			tag.freq = Math.round((new Date(tag.last).getTime() - new Date(tag.first).getTime()) / tag.count);
-		});
+		if ($scope.tags) {
+			$.each($scope.tags, function(i, tag) {
+				tag.freq = Math.round((new Date(tag.last).getTime() - new Date(tag.first).getTime()) / tag.count);
+			});
+		}
 	};
 	$scope.register($scope);
 	$scope.$on('result', $scope.update);
@@ -556,7 +558,7 @@ function TimelineCtrl() {
 
 TimelineCtrl.prototype.draw = function() {
 	var $scope = this;
-	if ($scope.times.length) {
+	if ($scope.times && $scope.times.length) {
 		google.load("visualization", "1", { packages : [ "corechart" ], callback : function() { 
 			var data = new google.visualization.DataTable();
 			data.addColumn('string', $scope.currentInterval());

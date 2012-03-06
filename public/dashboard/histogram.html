@@ -1,0 +1,19 @@
+<div>
+	<table class="table">
+		<thead>
+			<tr>
+				<th>Rating</th>
+				<th style="text-align: right">Count</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr ng:repeat="rating in ratings">
+				<td>{{rating.from | stars | html}}</td>
+				<td style="text-align: right">{{rating.count | number }}</td>
+			</tr>
+			<tr ng:hide="ratings">
+				<td colspan="2"><i>None</i></td>
+			</tr>
+		</tbody>
+	</table>
+</div>
