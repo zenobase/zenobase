@@ -31,6 +31,7 @@ public class NodeManager implements Closeable {
 	private void recover() {
 		ClusterHealthStatus status = getHealthStatus();
 		if (ClusterHealthStatus.RED.equals(status)) {
+			Logger.info("Recovering...");
 			status = client.admin().cluster().prepareHealth().setWaitForYellowStatus().setTimeout(new TimeValue(30000)).execute().actionGet().getStatus();
 		}
 	}
@@ -43,9 +44,14 @@ public class NodeManager implements Closeable {
 		return new IndexManager(indexName, client);
 	}
 
+	public void flush() {
+		client.admin().indices().prepareFlush("_all").execute().actionGet();
+	}
+
 	@Override
-    public void close() {
+	public void close() {
 		Logger.info("Closing node: " + getHealthStatus());
+		flush();
 		client.close();
 		node.close();
 	}
