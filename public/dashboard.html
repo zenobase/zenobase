@@ -18,11 +18,9 @@
 	<div class="row-fluid">
 		<div class="span6">
 			<ul class="nav nav-tabs">
-				<li class="active"><a href="#widget-event-list" data-toggle="tab">Latest</a></li>
-				<li><a href="#widget-tag-count" data-toggle="tab">Tags</a></li>
-				<li><a href="#widget-tag-gantt" data-toggle="tab">Tag Age</a></li>
-				<li><a href="#widget-rating-count" data-toggle="tab">Ratings</a></li>
-				<li><a href="#widget-scoreboard" data-toggle="tab">Distances</a></li>
+				<li ng:repeat="tab in tabs" ng:class="$index == 0 && 'active'">
+					<a href="#{{tab.id}}" data-toggle="tab">{{tab.label}} <span class="close" onclick="alert('close'); return true;">&times;</span></a>
+				</li>
 			</ul>
 			<div class="tab-content">
 				<div id="widget-event-list" ng:controller="EventListCtrl" class="tab-pane active">

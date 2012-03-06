@@ -221,6 +221,13 @@ function BucketCtrl($http, $routeParams, $location) {
 
 	var $scope = this;
 	$scope.bucketId = $routeParams.bucketId;
+	$scope.tabs = [
+		{ id : 'widget-event-list', label : 'Latest'},
+		{ id : 'widget-tag-count', label : 'Tags'},
+		{ id : 'widget-tag-gantt', label : 'Tag Age'},
+		{ id : 'widget-rating-count', label : 'Ratings'},
+		{ id : 'widget-scoreboard', label : 'Scoreboard'}
+	];
 
 	$scope.widgets = [];
 	$scope.register = function(widget) {

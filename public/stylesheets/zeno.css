@@ -68,3 +68,8 @@ footer {
 .caret-active {
   opacity: 1.0;
 }
+
+.nav .close {
+	line-height: inherit;
+	float: none;
+}
