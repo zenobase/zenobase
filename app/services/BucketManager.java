@@ -73,6 +73,14 @@ public class BucketManager {
 		return buckets.build();
 	}
 
+	public ImmutableList<Bucket> findBuckets() {
+		ImmutableList.Builder<Bucket> buckets = ImmutableList.builder();
+		for (SearchHit hit : this.buckets.search(QueryBuilders.matchAllQuery()).getHits()) {
+			buckets.add(parse(hit.source()));
+		}
+		return buckets.build();
+	}
+
 	public ImmutableList<Bucket> findBuckets(Identity identity) {
 		ImmutableList.Builder<Bucket> buckets = ImmutableList.builder();
 		QueryBuilder query = QueryBuilders.nestedQuery(Bucket.ROLE.getName(), QueryBuilders.termQuery(RoleType.IDENTITY.getName(), identity.getId()));
