@@ -26,11 +26,11 @@ public class IndexManager {
 		this.client = client;
 	}
 
-	public void create(int shards, int replicas) {
+	public void create(int replicas) {
 		Settings settings = ImmutableSettings.settingsBuilder()
-			.put("number_of_shards", shards)
-			.put("number_of_replicas", replicas)
-			// .put("auto_expand_replicas", "0-all")
+			.put("number_of_shards", 1)
+		//	.put("number_of_replicas", replicas)
+			.put("auto_expand_replicas", replicas == Integer.MAX_VALUE ? "0-all" : "0-" + replicas)
 			.build();
 		CreateIndexResponse response = client.admin().indices().prepareCreate(indexName).setSettings(settings).execute().actionGet();
 		Preconditions.checkState(response.acknowledged(), "Expected acknowledgement of index creation: %s", indexName);

@@ -22,7 +22,7 @@ public class UserManager {
 		this.index = node.getIndex(INDEX_NAME);
 		if (!index.exists()) {
 			Logger.info("Creating user index...");
-			index.create(1, 0);
+			index.create(Integer.MAX_VALUE);
 			index.putMapping(User.TYPE_NAME, User.getSchema());
 		}
 	}

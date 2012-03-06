@@ -31,7 +31,7 @@ public class BucketManager {
 		this.buckets = manager.getIndex(INDEX_NAME);
 		if (!buckets.exists()) {
 			Logger.info("Creating bucket index...");
-			buckets.create(1, 0);
+			buckets.create(Integer.MAX_VALUE);
 			buckets.putMapping(Bucket.TYPE_NAME, Bucket.getSchema());
 		}
 	}
@@ -45,7 +45,7 @@ public class BucketManager {
 		}
 		else {
 			if (createIndex) {
-				index.create(1, 0);
+				index.create(1);
 				index.putMapping(Event.TYPE_NAME, Event.getSchema());
 			}
 			else {
@@ -60,7 +60,8 @@ public class BucketManager {
 	}
 
 	public Bucket findBucket(String bucketId) {
-		return parse(buckets.get(Bucket.TYPE_NAME, bucketId));
+		ObjectNode object = buckets.get(Bucket.TYPE_NAME, bucketId);
+		return object != null ? parse(object) : null;
 	}
 
 	public ImmutableList<Bucket> findParticipants(String bucketId) {
