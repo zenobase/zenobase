@@ -22,11 +22,11 @@ public class IndexTest {
 	@Before
 	public void setUp() throws Exception {
 		Settings settings = ImmutableSettings.settingsBuilder()
-				.put("node.http.enabled", false)
-				.put("index.gateway.type", "none")
-				.put("index.store.type", "memory")
-				.put("index.number_of_shards", 1)
-				.put("index.number_of_replicas", 0).build();
+			.put("node.http.enabled", false)
+			.put("index.gateway.type", "none")
+			.put("index.store.type", "memory")
+			.put("index.number_of_shards", 1)
+			.put("index.number_of_replicas", 0).build();
 		node = NodeBuilder.nodeBuilder().local(true).settings(settings).node();
 		client = node.client();
 	}
@@ -47,9 +47,16 @@ public class IndexTest {
 
 		Assert.assertEquals(fieldName + " in " + result, fieldValue, result.get(fieldName));
 		Assert.assertEquals("_index in " + result, indexName, result.get("_index"));
+
+		tearDown();
+		setUp();
+
+		Map<String, Object> result2 = get(indexName, typeName, docId);
+		Assert.assertEquals(fieldName + " in " + result2, fieldValue, result2.get(fieldName));
+		Assert.assertEquals("_index in " + result2, indexName, result2.get("_index"));
 	}
 
-	private void createIndex(String indexName) throws Exception {
+	private void createIndex(String indexName) {
 		client.admin().indices().prepareCreate(indexName).execute().actionGet();
 	}
 
