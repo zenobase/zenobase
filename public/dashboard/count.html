@@ -15,7 +15,7 @@
 		</thead>
 		<tbody>
 			<tr ng:repeat="term in terms">
-				<td><i class="icon-tag"></i> <a ng:click="addFilter('tag:' + term.label)">{{term.label}}</a></td>
+				<td><a ng:click="addFilter(field + ':' + term.label)">{{term.label | field:field | html}}</a></td>
 				<td style="text-align: right">{{term.count | number }}</td>
 			</tr>
 			<tr ng:hide="terms">

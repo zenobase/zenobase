@@ -14,10 +14,10 @@
 			<tr ng:repeat="term in terms">
 				<td><i class="icon-user"></i> <a ng:click="addFilter('owner:' + term.label)">{{term.label}}</a></td>
 				<td style="text-align: right">{{term.count | number }}</td>
-				<td style="text-align: right">{{term.min | number }}m</td>
-				<td style="text-align: right">{{term.max | number }}m</td>
-				<td style="text-align: right">{{term.sum | number }}m</td>
-				<td style="text-align: right">{{term.avg | number : 0 }}m</td>
+				<td style="text-align: right">{{term.min | field:valueField | html }}</td>
+				<td style="text-align: right">{{term.max | field:valueField | html }}</td>
+				<td style="text-align: right">{{term.sum | field:valueField | html }}</td>
+				<td style="text-align: right">{{term.avg | field:valueField | html }}</td>
 			</tr>
 			<tr ng:hide="terms">
 				<td colspan="6"><i>None</i></td>

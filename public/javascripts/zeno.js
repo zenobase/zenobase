@@ -749,7 +749,7 @@ var fields = [
 		format : function(value) { 
 			return '<span class="nowrap" title="Tag">' +
 				        '<i class="icon-tag"></i> ' + encode(value) +
-				      '</span> &nbsp; ';
+				      '</span>';
 		}
 	},
 	{
@@ -758,23 +758,23 @@ var fields = [
 			return '<span title="Resource">' +
 				        '<i class="icon-bookmark"></i>&nbsp;' +
 				        '<a href="' +  encode(value.url) + '">' +  encode(value.title) + '</a>' +
-				      '</span> &nbsp; ';
+				      '</span>';
 		}
 	},
 	{
 		name : 'distance', 
 		format : function(value) { 
 			return '<span class="nowrap" title="Distance">' +
-				        '<i class="icon-resize-horizontal"></i> ' + encode(value) + 'm' +
-				      '</span> &nbsp; ';
+				        '<i class="icon-resize-horizontal"></i> ' + Math.round(value) + 'm' +
+				      '</span>';
 		}
 	},
 	{
 		name : 'height', 
 		format : function(value) { 
 			return '<span class="nowrap" title="Height">' +
-				        '<i class="icon-resize-vertical"></i>' + encode(value) + 'm' +
-				      '</span> &nbsp; ';
+				        '<i class="icon-resize-vertical"></i>' + Math.round(value) + 'm' +
+				      '</span>';
 		}
 	},
 	{
@@ -785,7 +785,7 @@ var fields = [
 				        '<a href="http://maps.google.com/maps?q=' + 
 				        encode(value.lat + ',' + value.lon) + '&t=p&z=5">' + 
 				        encode(value.lat + ', ' + value.lon) + '</a>' +
-				      '</span> &nbsp; ';
+				      '</span>';
 		}
 	},
 	{
@@ -793,7 +793,7 @@ var fields = [
 		format : function(value) {
 			return '<span class="nowrap">' +
 				         '<i class="icon-calendar" title="Timestamp"></i><abbr title="' + value + '"> ' + humane.date(new Date(Date.parse(value))) +
-				       '</abbr></span> &nbsp; ';
+				       '</abbr></span>';
 		}
 	},
 	{
@@ -801,7 +801,7 @@ var fields = [
 		format : function(value) {
 			return '<span class="nowrap">' +
 				         '<i class="icon-time" title="Duration"></i> ' + humane.duration(value, false) +
-				       '</span> &nbsp; ';
+				       '</span>';
 		}
 	},
 	{
@@ -812,7 +812,7 @@ var fields = [
 			for (var i = 0; i < 5; ++i) {
 				html += '<i class="' + (stars > i ? 'icon-star' : 'icon-star-empty') + '"></i>';
 			}
-			html += '</span> &nbsp; ';
+			html += '</span>';
 			return html;
 		}
 	},
@@ -821,7 +821,7 @@ var fields = [
 		format : function(value) {
 			return '<span class="nowrap">' +
 				         '<i class="icon-user" title="User"></i> ' + value +
-				       '</span> &nbsp; ';
+				       '</span>';
 		}
 	}*/
 ];
@@ -835,31 +835,6 @@ function getField(name) {
 	return;
 }
 
-/*angular.widget('zeno:event', function(compileElement) {
-	return function(linkElement) {
-		var $scope = this;
-		function update() {
-			var event = $scope.$eval(linkElement.attr('value'));
-			var html = '';
-			$.each(fields, function(i, field) {
-				var value = event[field.name];
-				if (value) {
-					if ($.isArray(value)) {
-						$.each(value, function(i, value) {
-							html += field.format(value);
-						});
-					}
-					else {
-							html += field.format(value);
-					}
-				}
-			});
-			linkElement.append(html);
-		}
-		update();
-	};
-});*/
-
 var app = angular.module('ZenoModule', []);
 
 app.filter('fields', function() {
@@ -868,8 +843,14 @@ app.filter('fields', function() {
 		$.each(fields, function(i, field) {
 			var value = event[field.name];
 			if (value) {
+				if (i > 0) {
+					html += ' &nbsp; ';
+				}
 				if ($.isArray(value)) {
 					$.each(value, function(i, value) {
+						if (i > 0) {
+							html += ' &nbsp; ';
+						}
 						html += field.format(value);
 					});
 				}
@@ -879,6 +860,13 @@ app.filter('fields', function() {
 			}
 		});
 		return html;
+	}
+});
+
+app.filter('field', function() {
+	return function(value, fieldName) {
+		var field = getField(fieldName);
+		return field.format(value);
 	}
 });
 
