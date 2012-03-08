@@ -44,6 +44,7 @@ public class ListWidget implements Widget {
 		ArrayNode eventsNode = Nodes.newArray();
 		for (SearchHit hit : response.hits()) {
 			Event event = new Event(hit.getId(), hit.getIndex(), Nodes.read(hit.source()));
+			event.postLoad();
 			eventsNode.add(event.toJson());
 		}
 		return eventsNode;

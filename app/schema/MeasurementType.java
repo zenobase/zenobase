@@ -74,8 +74,8 @@ public class MeasurementType<Q extends Quantity> extends Type<DecimalMeasure<Q>>
 
 	@Override
 	public void postLoad(ObjectNode object, String fieldName) {
-		for (JsonNode node : object.get(fieldName)) {
-			ObjectNode fieldNode = (ObjectNode) node;
+		ObjectNode fieldNode = (ObjectNode) object.get(fieldName); // TODO: hande arrays!
+		if (fieldNode != null) {
 			fieldNode.remove(VALUE_SI.getName());
 		}
 	}
