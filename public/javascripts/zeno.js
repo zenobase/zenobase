@@ -482,6 +482,7 @@ function ScoreboardCtrl() {
 	$scope.id = 'distances';
 	$scope.termField = 'creator';
 	$scope.valueField = 'distance';
+	$scope.unit = 'km';
 	$scope.order = 'total';
 	$scope.limit = 10;
 	$scope.terms = [];
@@ -492,6 +493,7 @@ function ScoreboardCtrl() {
 			type : 'scoreboard',
 			termField : $scope.termField, 
 			valueField : $scope.valueField,
+			unit : $scope.unit,
 			order : $scope.order,
 			limit : $scope.limit
 		};
@@ -515,7 +517,7 @@ function ScoreboardConfigCtrl() {
 	$scope.limit = $scope.$parent.limit;
 	$scope.valueField = $scope.$parent.valueField;
 	$scope.save = function() {
-		$scope.refresh({ limit : $scope.limit, termField : $scope.termField, valueField : $scope.valueField });
+		$scope.refresh({ limit : $scope.limit, termField : $scope.termField, valueField : $scope.valueField, unit : $scope.unit });
 		$('#scoreboard-config-dialog').modal('hide');
 	};
 }
@@ -708,8 +710,14 @@ function TemplateCtrl($http, $defer, $routeParams) {
 				lat : 60.57,
 				lon : -151.25
 			},
-			distance : 10000.0,
-			height : 550.0
+			distance : {
+				'@value' : 10,
+				unit : 'km'
+			},
+			height : {
+				'@value' : 1500,
+				unit : 'm'
+			}
 		},
 		{
 			random : 1000
@@ -765,7 +773,7 @@ var fields = [
 		name : 'distance', 
 		format : function(value) { 
 			return '<span class="nowrap" title="Distance">' +
-				        '<i class="icon-resize-horizontal"></i> ' + Math.round(value) + 'm' +
+				        '<i class="icon-resize-horizontal"></i> ' + Math.round(value['@value']) + value.unit +
 				      '</span>';
 		}
 	},
@@ -773,7 +781,7 @@ var fields = [
 		name : 'height', 
 		format : function(value) { 
 			return '<span class="nowrap" title="Height">' +
-				        '<i class="icon-resize-vertical"></i>' + Math.round(value) + 'm' +
+				        '<i class="icon-resize-vertical"></i>' + Math.round(value['@value']) + 'm' +
 				      '</span>';
 		}
 	},
@@ -866,6 +874,7 @@ app.filter('fields', function() {
 app.filter('field', function() {
 	return function(value, fieldName) {
 		var field = getField(fieldName);
+		console.assert(field, "Don't know how to format field: " + fieldName)
 		return field.format(value);
 	}
 });

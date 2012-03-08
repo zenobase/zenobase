@@ -11,15 +11,15 @@ import com.google.common.collect.Lists;
 
 public abstract class Type<T> {
 
-	private final Class<T> type;
+	private final java.lang.reflect.Type type;
 	private final String schemaType;
 
-	protected Type(Class<T> type, String schemaType) {
+	protected Type(java.lang.reflect.Type type, String schemaType) {
 		this.type = type;
 		this.schemaType = schemaType;
 	}
 
-	public Class<T> getType() {
+	public java.lang.reflect.Type getType() {
 		return type;
 	}
 
@@ -60,5 +60,13 @@ public abstract class Type<T> {
 
 	public void configureSchema(ObjectNode schema) {
 		schema.put("type", schemaType);
+	}
+
+	public void prePersist(ObjectNode object, String fieldName) {
+		
+	}
+
+	public void postLoad(ObjectNode object, String fieldName) {
+		
 	}
 }

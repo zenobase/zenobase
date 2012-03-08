@@ -62,6 +62,7 @@ public class Bucket {
 	}
 
 	public void add(Event event) {
+		event.prePersist();
 		index.index(Event.TYPE_NAME, event.getId(), event.getContent(), false);
 	}
 

@@ -1,5 +1,7 @@
 package search;
 
+import javax.measure.unit.Unit;
+
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.node.ArrayNode;
 import org.codehaus.jackson.node.ObjectNode;
@@ -16,13 +18,15 @@ public class ScoreboardWidget implements Widget {
 	private final String id;
 	private final String termField;
 	private final String valueField;
+	private final Unit<?> unit;
 	private final ComparatorType order;
 	private final int limit;
 
-	private ScoreboardWidget(String id, String termField, String valueField, ComparatorType order, int limit) {
+	private ScoreboardWidget(String id, String termField, String valueField, Unit<?> unit, ComparatorType order, int limit) {
 		this.id = id;
-		this.termField = termField;
-		this.valueField = valueField;
+		this.termField = termField; // TODO must be token
+		this.valueField = valueField; // TODO must be measure
+		this.unit = unit;
 		this.order = order;
 		this.limit = limit;
 	}
@@ -34,7 +38,7 @@ public class ScoreboardWidget implements Widget {
 	@Override
 	public void configure(SearchSourceBuilder builder) {
 		builder.facet(FacetBuilders.termsStatsFacet(id)
-			.keyField(termField).valueField(valueField).order(order).size(limit)); 
+			.keyField(termField).valueField(valueField + ".value").order(order).size(limit)); 
 	}
 
 	@Override
@@ -46,13 +50,20 @@ public class ScoreboardWidget implements Widget {
 				ObjectNode entryNode = result.addObject();
 				entryNode.put("label", entry.getTerm());
 				entryNode.put("count", entry.getTotalCount());
-				entryNode.put("min", entry.getMin());
-				entryNode.put("max", entry.getMax());
-				entryNode.put("sum", entry.getTotal());
-				entryNode.put("avg", entry.getMean());
+				addValue(entryNode, "min",  entry.getMin());
+				addValue(entryNode, "max", entry.getMax());
+				addValue(entryNode, "sum", entry.getTotal());
+				addValue(entryNode, "avg", entry.getMean());
 			}
 		}
 		return result;
+	}
+
+	private void addValue(ObjectNode parent, String property, double value) {
+		// new MeasurementType<Quantity>().add(parent, property, (DecimalMeasure<Quantity>) DecimalMeasure.valueOf(new BigDecimal(value), unit));
+		ObjectNode object = parent.putObject(property);
+		object.put("@value", unit.getStandardUnit().getConverterTo(unit).convert(value));
+		object.put("unit", unit.toString());
 	}
 
 	public static WidgetBuilder builder() {
@@ -63,6 +74,7 @@ public class ScoreboardWidget implements Widget {
 					options.get("id"),
 					options.get("termField"),
 					options.get("valueField"),
+					Unit.valueOf(options.get("unit")),
 					ComparatorType.valueOf(options.get("order", String.class, "term").toUpperCase()),
 					options.get("limit", Integer.class, 10));
 			}

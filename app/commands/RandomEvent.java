@@ -4,9 +4,12 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.Random;
 
+import javax.measure.DecimalMeasure;
+import javax.measure.quantity.Length;
+import javax.measure.unit.SI;
+
 import models.Bucket;
 import models.Event;
-import models.Length;
 import models.Location;
 import models.Rating;
 import models.Resource;
@@ -130,8 +133,8 @@ class RandomEvent {
 			return ratings.next();
 		}
 
-		protected Length nextLength(int min, int max) {
-			return Length.valueOf(BigDecimal.valueOf(min + rand.nextInt(10) * (max / 10)), Length.Unit.m);
+		protected DecimalMeasure<Length> nextLength(int min, int max) {
+			return DecimalMeasure.valueOf(BigDecimal.valueOf(min + rand.nextInt(10) * (max / 10)), SI.METER);
 		}
 	}
 

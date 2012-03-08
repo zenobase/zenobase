@@ -1,5 +1,8 @@
 package models;
 
+import javax.measure.DecimalMeasure;
+import javax.measure.quantity.Length;
+
 import org.codehaus.jackson.node.ObjectNode;
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
@@ -29,8 +32,8 @@ public class Event {
 	public static final Field<Location> LOCATION = Field.of("location", new LocationType());
 	public static final Field<Token> TAG = Field.of("tag", new TokenType());
 	public static final Field<Resource> RESOURCE = Field.of("resource", new ResourceType());
-	public static final Field<Length> DISTANCE = Field.of("distance", new LengthType());
-	public static final Field<Length> HEIGHT = Field.of("height", new LengthType());
+	public static final Field<DecimalMeasure<Length>> DISTANCE = Field.of("distance", new LengthType());
+	public static final Field<DecimalMeasure<Length>> HEIGHT = Field.of("height", new LengthType());
 	public static final Field<Rating> RATING = Field.of("rating", new RatingType());
 
 	private static final ImmutableSet<Field<?>> FIELDS = 
@@ -88,7 +91,19 @@ public class Event {
 		return object;
 	}
 
-    public static ObjectNode getSchema() {
+	public void prePersist() {
+		for (Field<?> field : FIELDS) {
+			field.prePersist(content);
+		}
+	}
+
+	public void postLoad() {
+		for (Field<?> field : FIELDS) {
+			field.postLoad(content);
+		}
+	}
+
+	public static ObjectNode getSchema() {
 		SchemaBuilder schema = new SchemaBuilder(TYPE_NAME);
 		for (Field<?> field : FIELDS) {
 			schema.add(field);

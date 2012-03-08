@@ -1,5 +1,7 @@
 package schema;
 
+import org.codehaus.jackson.node.ObjectNode;
+
 public class Field<T> {
 
 	private final String name;
@@ -20,6 +22,18 @@ public class Field<T> {
 
 	public Type<T> getType() {
 		return type;
+	}
+
+	public void prePersist(ObjectNode object) {
+		if (object.has(name)) {
+			type.prePersist(object, name);
+		}
+	}
+
+	public void postLoad(ObjectNode object) {
+		if (object.has(name)) {
+			type.postLoad(object, name);
+		}
 	}
 
 	@Override

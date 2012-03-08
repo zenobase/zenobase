@@ -12,6 +12,7 @@ object ApplicationBuild extends Build {
       "com.google.guava" % "guava" % "11.0.1",
       "com.google.inject" % "guice" % "3.0",
       "org.elasticsearch" % "elasticsearch" % "0.19.0"
+      // "org.jscience" % "jscience" % "4.3.1"
     )
 
     val main = PlayProject(appName, appVersion, appDependencies, mainLang = JAVA).settings(

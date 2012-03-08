@@ -57,6 +57,13 @@
 						<p class="help-block">The numeric field on which to gather statistics.</p>
 					</div>
 				</fieldset>
+				<fieldset class="control-group">
+					<label for="unit">Unit</label>
+					<div class="input">
+						<input name="valueField" type="text" required ng:model="unit"/>
+						<p class="help-block">The unit to use.</p>
+					</div>
+				</fieldset>
 			</div>
 			<div class="modal-footer">
 				<button type="submit" class="btn btn-primary" ng:disabled="{{!scoreboardConfigForm.$valid}}">Save</button>
