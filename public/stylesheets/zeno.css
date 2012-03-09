@@ -23,12 +23,6 @@ abbr {
 	text-transform: none;
 }
 
-.widget h4 {
-	padding: 8px;
-	border-bottom: 1px solid #DDD;
-	margin-bottom: 8px;
-}
-
 #map .control {
 	cursor: pointer;
 	font-size: 13px;
