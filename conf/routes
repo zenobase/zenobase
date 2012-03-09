@@ -20,6 +20,7 @@ POST    /buckets/:bucketId/          controllers.BucketController.post(bucketId)
 DELETE  /buckets/:bucketId/          controllers.BucketController.delete(bucketId)
 
 GET     /buckets/:bucketId/:eventId  controllers.EventController.get(bucketId, eventId)
+DELETE  /buckets/:bucketId/:eventId  controllers.EventController.delete(bucketId, eventId)
 
 GET     /queue/                      controllers.QueueController.get(offset : Int, limit : Int)
 POST    /queue/:id                   controllers.QueueController.post(id)

@@ -6,8 +6,8 @@
 				<td style="line-height: 1.5">
 					{{event | fields | html}}
 					&nbsp;
-					<div class="pull-right">
-						<a href="/#/buckets/{{bucket['@id']}}/{{event['@id']}}">&raquo;</a>
+					<div class="trash pull-right">
+						<a ng:click="remove(event['@id'])"><i class="icon-trash" title="Delete"></i></a>
 					</div>
 				</td>
 			</tr>

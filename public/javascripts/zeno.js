@@ -26,7 +26,6 @@ function MainCtrl($route, $http, $location) {
 	};
 	$route.when('/', { template: '/public/home.html' });
 	$route.when('/buckets/:bucketId/', { template: '/public/dashboard.html' });
-	$route.when('/buckets/:bucketId/:eventId', { template: '/public/event.html' });
 	$route.when('/terms', { template: '/public/terms.html' });
 	$route.when('/privacy', { template: '/public/privacy.html' });
 	$route.otherwise({ redirectTo: '/' });
@@ -249,6 +248,11 @@ function BucketCtrl($http, $routeParams, $location) {
 	};
 	$scope.params = function() {
 		return null;
+	};
+	$scope.remove = function(eventId) {
+		$http.delete('/buckets/' + $scope.bucketId + '/' + eventId).success(function() {
+			setTimeout($scope.refresh, 1000);
+		});
 	};
 
 	var q = $location.search()['q'];
@@ -740,15 +744,6 @@ function TemplateCtrl($http, $defer, $routeParams) {
 	$scope.getTemplate = function(i) {
 		return JSON.stringify($scope.templates[i], null, ' ');
 	}
-}
-
-EventCtrl.$inject = ['$http', '$routeParams'];
-function EventCtrl($http, $routeParams) {
-	var $scope = this;
-	$scope.params = $routeParams;
-	$http.get('/buckets/' + $scope.params.bucketId + '/' + $scope.params.eventId).success(function(response, code) {
-		$scope.event = response;
-	});
 }
 
 

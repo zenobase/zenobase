@@ -77,3 +77,15 @@ footer {
 .table thead a {
 	color: #333;
 }
+
+.table tr:hover {
+	background-color: #f8f8f8;
+}
+
+.trash {
+	visibility: hidden;
+}
+
+tr:hover .trash {
+	visibility: visible;
+}
