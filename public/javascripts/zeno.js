@@ -751,104 +751,98 @@ function EventCtrl($http, $routeParams) {
 	});
 }
 
-var fields = [
-	{
-		name : 'tag', 
-		format : function(value) { 
-			return '<span class="nowrap" title="Tag">' +
-				        '<i class="icon-tag"></i> ' + encode(value) +
-				      '</span>';
-		}
-	},
-	{
-		name : 'resource',
-		format : function(value) {
-			return '<span title="Resource">' +
-				        '<i class="icon-bookmark"></i>&nbsp;' +
-				        '<a href="' +  encode(value.url) + '">' +  encode(value.title) + '</a>' +
-				      '</span>';
-		}
-	},
-	{
-		name : 'distance', 
-		format : function(value) { 
-			return '<span class="nowrap" title="Distance">' +
-				        '<i class="icon-resize-horizontal"></i> ' + Math.round(value['@value']) + value.unit +
-				      '</span>';
-		}
-	},
-	{
-		name : 'height', 
-		format : function(value) { 
-			return '<span class="nowrap" title="Height">' +
-				        '<i class="icon-resize-vertical"></i>' + Math.round(value['@value']) + 'm' +
-				      '</span>';
-		}
-	},
-	{
-		name : 'location',
-		format : function(value) {
-			return '<span class="nowrap" title="Location">' +
-				        '<i class="icon-map-marker"></i> ' +
-				        '<a href="http://maps.google.com/maps?q=' + 
-				        encode(value.lat + ',' + value.lon) + '&t=p&z=5">' + 
-				        encode(value.lat + ', ' + value.lon) + '</a>' +
-				      '</span>';
-		}
-	},
-	{
-		name : 'timestamp',
-		format : function(value) {
-			return '<span class="nowrap">' +
-				         '<i class="icon-calendar" title="Timestamp"></i><abbr title="' + value + '"> ' + humane.date(new Date(Date.parse(value))) +
-				       '</abbr></span>';
-		}
-	},
-	{
-		name : 'duration',
-		format : function(value) {
-			return '<span class="nowrap">' +
-				         '<i class="icon-time" title="Duration"></i> ' + humane.duration(value, false) +
-				       '</span>';
-		}
-	},
-	{
-		name : 'rating',
-		format : function(value) {
-			var stars = Math.round((value || 0) / 20);
-			var html = '<span class="nowrap" title="Rated ' + stars + '/5">';
-			for (var i = 0; i < 5; ++i) {
-				html += '<i class="' + (stars > i ? 'icon-star' : 'icon-star-empty') + '"></i>';
-			}
-			html += '</span>';
-			return html;
-		}
-	},
-	/*{
-		name : 'creator',
-		format : function(value) {
-			return '<span class="nowrap">' +
-				         '<i class="icon-user" title="User"></i> ' + value +
-				       '</span>';
-		}
-	}*/
-];
 
-function getField(name) {
-	for (var i = 0; i < fields.length; ++i) {
-		if (fields[i].name === name) {
-			return fields[i];
-		}
-	}
-	return;
+function Field(name, format) {
+	this.name = name;
+	this.format = format;
 }
+
+Field.FIELDS = [];
+Field.FIELDS_BY_NAME = {};
+
+Field.register = function(field) {
+	Field.FIELDS.push(field); 
+	Field.FIELDS_BY_NAME[field.name] = field; 
+}
+
+Field.register(new Field('tag', function(value) { 
+	return '<span class="nowrap" title="Tag">' +
+		'<i class="icon-tag"></i> ' + encode(value) +
+  '</span>';
+}));
+
+Field.register(new Field('resource', function(value) { 
+	return '<span title="Resource">' +
+  	'<i class="icon-bookmark"></i>&nbsp;' +
+  	'<a href="' +  encode(value.url) + '">' +  encode(value.title) + '</a>' +
+  '</span>';
+}));
+
+Field.register(new Field('distance', function(value) { 
+	return '<span class="nowrap" title="Distance">' +
+  	'<i class="icon-resize-horizontal"></i> ' + Math.round(value['@value']) + value.unit +
+  '</span>';
+}));
+
+Field.register(new Field('height', function(value) { 
+	return '<span class="nowrap" title="Height">' +
+  	'<i class="icon-resize-vertical"></i>' + Math.round(value['@value']) + 'm' +
+  '</span>';
+}));
+
+Field.register(new Field('location', function(value) { 
+	return '<span class="nowrap" title="Location">' +
+		'<i class="icon-map-marker"></i> ' +
+		'<a href="http://maps.google.com/maps?q=' + 
+			encode(value.lat + ',' + value.lon) + '&t=p&z=5">' + 
+			encode(value.lat + ', ' + value.lon) + '</a>' +
+	'</span>';
+}));
+
+Field.register(new Field('timestamp', function(value) { 
+	return '<span class="nowrap">' +
+  	'<i class="icon-calendar" title="Timestamp"></i>' +
+		'<abbr title="' + value + '"> ' + humane.date(new Date(Date.parse(value))) + '</abbr>' +
+  '</span>';
+}));
+
+Field.register(new Field('duration', function(value) { 
+	return '<span class="nowrap">' +
+  	'<i class="icon-time" title="Duration"></i> ' + humane.duration(value, false) +
+  '</span>';
+}));
+
+Field.register(new Field('rating', function(value) { 
+	var stars = Math.round((value || 0) / 20);
+	var html = '<span class="nowrap" title="Rated ' + stars + '/5">';
+	for (var i = 0; i < 5; ++i) {
+		html += '<i class="' + (stars > i ? 'icon-star' : 'icon-star-empty') + '"></i>';
+	}
+	html += '</span>';
+	return html;
+}));
+
+Field.register(new Field('creator', function(value) { 
+	return '<span class="nowrap">' +
+  	'<i class="icon-user" title="User"></i> ' + value +
+  '</span>';
+}));
+
+Field.find = function(name) {
+	return Field.FIELDS_BY_NAME[name];
+}
+
+Field.findAll = function() {
+	return Field.FIELDS;
+}
+
 
 var app = angular.module('ZenoModule', []);
 
 app.filter('fields', function() {
 	return function(event) {
 		var html = '';
-		$.each(fields, function(i, field) {
+		$.each(Field.findAll(), function(i, field) {
 			var value = event[field.name];
 			if (value) {
 				if (i > 0) {
@@ -873,7 +867,7 @@ app.filter('fields', function() {
 
 app.filter('field', function() {
 	return function(value, fieldName) {
-		var field = getField(fieldName);
+		var field = Field.find(fieldName);
 		console.assert(field, "Don't know how to format field: " + fieldName)
 		return field.format(value);
 	}
@@ -892,7 +886,7 @@ app.filter('duration', function() {
 });
 
 app.filter('stars', function() {
-	var field = getField('rating');
+	var field = Field.find('rating');
 	return function(rating) {
 		return field.format(rating);
 	}
