@@ -1,5 +1,6 @@
 <div>
-	<table class="table">
+
+	<table class="table" ng:show="terms">
 		<thead>
 			<tr>
 				<th style="text-transform: capitalize">{{termField}}</th>
@@ -24,11 +25,15 @@
 			</tr>
 		</tbody>
 	</table>
+
+	<p ng:hide="terms" class="none">None</p>
+
 	<div class="btn-toolbar">
 		<div class="btn-group">
 			<a class="btn" href="#scoreboard-config-dialog" title="Configure" data-toggle="modal"><i class="icon-cog"></i></a>
 		</div>
 	</div>
+
 	<div id="scoreboard-config-dialog" class="modal hide" ng:controller="ScoreboardConfigCtrl">
 		<form name="scoreboardConfigForm" ng:submit="save()">
 			<div class="modal-header">
@@ -71,4 +76,5 @@
 			</div>
 		</form>
 	</div>
+
 </div>

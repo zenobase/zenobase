@@ -1,5 +1,6 @@
 <div>
-	<table class="table">
+
+	<table class="table" ng:show="ratings">
 		<thead>
 			<tr>
 				<th>Rating</th>
@@ -16,4 +17,7 @@
 			</tr>
 		</tbody>
 	</table>
+
+	<p ng:hide="ratings" class="none">None</p>
+
 </div>

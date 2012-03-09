@@ -1,5 +1,6 @@
 <div>
-	<table class="table">
+
+	<table class="table" ng:show="terms">
 		<thead>
 			<tr>
 				<th>Tag</th>
@@ -13,9 +14,9 @@
 				<td style="text-align: right"><abbr title="{{tag.last}}">{{term.last | age}}</abbr></td>
 				<td style="text-align: right">{{term.freq  | duration}}</td>
 			</tr>
-			<tr ng:hide="terms">
-				<td colspan="3"><i>None</i></td>
-			</tr>
 		</tbody>
 	</table>
+
+	<p ng:hide="terms" class="none">None</p>
+
 </div>

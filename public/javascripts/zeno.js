@@ -594,8 +594,6 @@ TimelineCtrl.prototype.draw = function() {
 				$scope.refresh();
 			});
 		}});
-	} else {
-		$('#timeline').html('<i class="none">None</i>');
 	}
 }
 
@@ -604,6 +602,7 @@ function MapCtrl() {
 	var $scope = this;
 	$scope.id = 'map';
 	$scope.field = 'location';
+	$scope.points = null;
 	$scope.map = null;
 
 	$scope.update = function(event, result) {
@@ -614,7 +613,8 @@ function MapCtrl() {
 				points.push(location);
 			}
 		});
-		$scope.draw(points);
+		$scope.points = points;
+		$scope.draw();
 	};
 	$scope.filterBounds = function() {
 		$scope.addFilter(new Filter($scope.field, $scope.map.getBounds().toUrlValue(2)), true);
@@ -624,9 +624,9 @@ function MapCtrl() {
 	$scope.$on('result', $scope.update);
 }
 
-MapCtrl.prototype.draw = function(points) {
+MapCtrl.prototype.draw = function() {
 	var $scope = this;
-	if (points.length) {
+	if ($scope.points.length) {
 		google.load("maps", "3.8", { other_params : 'sensor=false', callback : function() {
 			var options = {
 				mapTypeId: google.maps.MapTypeId.TERRAIN,
@@ -637,7 +637,7 @@ MapCtrl.prototype.draw = function(points) {
 			};
 			$scope.map = new google.maps.Map(document.getElementById('map'), options);
 			var bounds = new google.maps.LatLngBounds();
-			$.each(points, function(i, point) {
+			$.each($scope.points, function(i, point) {
 				var latLng = new google.maps.LatLng(point.lat, point.lon);
 				var marker = new google.maps.Marker({
 					position : latLng, 

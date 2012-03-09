@@ -1,5 +1,6 @@
 package search;
 
+import java.util.Collections;
 import java.util.Map;
 
 import org.codehaus.jackson.JsonNode;
@@ -50,9 +51,12 @@ public class TimelineWidget implements Widget {
 	@Override
 	public JsonNode process(SearchResponse response) {
 		DateHistogramFacet facet = response.facets().facet(DateHistogramFacet.class, id);
-		Map<String, Long> counts = getMap(getInterval(facet.getEntries()));
-		for (DateHistogramFacet.Entry entry : facet.getEntries()) {
-			counts.put(getLabel(toDateTime(entry.getTime())), entry.getCount());
+		Map<String, Long> counts = Collections.emptyMap();
+		if (!facet.getEntries().isEmpty()) {
+			counts = getMap(getInterval(facet.getEntries()));
+			for (DateHistogramFacet.Entry entry : facet.getEntries()) {
+				counts.put(getLabel(toDateTime(entry.getTime())), entry.getCount());
+			}
 		}
 		return toJson(counts);
 	}
