@@ -13,7 +13,7 @@
 		</thead>
 		<tbody>
 			<tr ng:repeat="term in terms">
-				<td>{{term.label | field:termField | html}} <a ng:click="filter(term)" class="action"><i class="icon-search"></i></a></td>
+				<td><a ng:click="filter(term)">{{term.label | field:termField | html}}</a></td>
 				<td style="text-align: right">{{term.count | number }}</td>
 				<td style="text-align: right">{{term.min | field:valueField | html }}</td>
 				<td style="text-align: right">{{term.max | field:valueField | html }}</td>

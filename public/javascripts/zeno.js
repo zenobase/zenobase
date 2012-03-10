@@ -3,7 +3,7 @@ function MainCtrl($route, $http, $location) {
 	var $scope = this;
 	$scope.whoami = function() {
 		$http.get('/who', httpConfig()).success(function(response) {
-			$scope.user = new User(response.identity, response.name);
+			$scope.user = response ? new User(response.identity, response.name) : null;
 		});
 	};
 
@@ -31,7 +31,7 @@ function MainCtrl($route, $http, $location) {
 				if ($location.url() == '/') {
 					$scope.reload();
 				} else {
-					home();
+					$scope.home();
 				}
 		});
 	};
@@ -135,7 +135,7 @@ function SignUpFormCtrl($http) {
 	};
 	$scope.submit = function() {
 		$http.post('/signup', $.param({ username : $scope.username, password : $scope.password, email : $scope.email, remember : true }), httpConfig()).success(function(response, code) {
-			$scope.$parent.user = response;
+			$scope.$parent.user = new User(response.identity, response.name);
 			$scope.username = '';
 			$scope.password = '';
 			$scope.passwordRepeat = '';
@@ -901,6 +901,12 @@ app.filter('stars', function() {
 	var field = Field.find('rating');
 	return function(rating) {
 		return field.format(rating);
+	}
+});
+
+app.filter('username', function() {
+	return function(identity) {
+		return User.find(identity).getName();
 	}
 });
 

@@ -14,7 +14,7 @@
 				<tbody>
 					<tr ng:repeat="command in history.commands">
 						<td>
-							<i class="icon-user"></i> <b>{{command.identity}}</b>
+							<i class="icon-user"></i> <b>{{command.identity | username}}</b>
 							{{command.label | html}}
 						</td>
 						<td>
@@ -49,7 +49,7 @@
 				<tbody>
 					<tr ng:repeat="bucket in buckets">
 						<td><a href="#/buckets/{{bucket['@id']}}/">{{bucket.label}}</a></td>
-						<td>{{bucket.role.identity}} ({{bucket.role.role}})</td>
+						<td>{{bucket.role.identity | username}} ({{bucket.role.role}})</td>
 						<td style="text-align: right">{{bucket.size}}</td>
 						<td style="text-align: right">
 							<a class="action" ng:click="remove(bucket['@id'])"><i class="icon-trash" title="Delete"></i></a>
