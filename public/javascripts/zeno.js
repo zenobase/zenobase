@@ -285,6 +285,10 @@ function BucketCtrl($http, $routeParams, $location) {
 		});
 		$location.search('q', $scope.filters.length ? $scope.filters.join('__') : null);
 	};
+	$scope.getFilterIcon = function(filter) {
+		var field = Field.find(filter.field);
+		return field ? field.icon : 'icon-ban-circle';
+	};
 
 	$scope.$evalAsync($scope.refresh);
 }
@@ -750,8 +754,9 @@ function TemplateCtrl($http, $defer, $routeParams) {
 }
 
 
-function Field(name, format) {
+function Field(name, icon, format) {
 	this.name = name;
+	this.icon = icon;
 	this.format = format;
 }
 
@@ -763,54 +768,54 @@ Field.register = function(field) {
 	Field.FIELDS_BY_NAME[field.name] = field; 
 }
 
-Field.register(new Field('tag', function(value) { 
+Field.register(new Field('tag', 'icon-tag', function(value) { 
 	return '<span class="nowrap" title="Tag">' +
-		'<i class="icon-tag"></i> ' + encode(value) +
+		'<i class="' + this.icon + '"></i> ' + encode(value) +
   '</span>';
 }));
 
-Field.register(new Field('resource', function(value) { 
+Field.register(new Field('resource', 'icon-bookmark', function(value) { 
 	return '<span title="Resource">' +
-  	'<i class="icon-bookmark"></i>&nbsp;' +
+  	'<i class="' + this.icon + '"></i>&nbsp;' +
   	'<a href="' +  encode(value.url) + '" rel="nofollow">' +  encode(value.title) + '</a>' +
   '</span>';
 }));
 
-Field.register(new Field('distance', function(value) { 
+Field.register(new Field('distance', 'icon-resize-horizontal', function(value) { 
 	return '<span class="nowrap" title="Distance">' +
-  	'<i class="icon-resize-horizontal"></i> ' + Math.round(value['@value']) + value.unit +
+  	'<i class="' + this.icon + '"></i> ' + Math.round(value['@value']) + value.unit +
   '</span>';
 }));
 
-Field.register(new Field('height', function(value) { 
+Field.register(new Field('height', 'icon-resize-vertical', function(value) { 
 	return '<span class="nowrap" title="Height">' +
-  	'<i class="icon-resize-vertical"></i>' + Math.round(value['@value']) + 'm' +
+  	'<i class="' + this.icon + '"></i>' + Math.round(value['@value']) + 'm' +
   '</span>';
 }));
 
-Field.register(new Field('location', function(value) { 
+Field.register(new Field('location', 'icon-map-marker', function(value) { 
 	return '<span class="nowrap" title="Location">' +
-		'<i class="icon-map-marker"></i> ' +
+		'<i class="' + this.icon + '"></i> ' +
 		'<a href="http://maps.google.com/maps?q=' + 
 			encode(value.lat + ',' + value.lon) + '&t=p&z=5">' + 
 			encode(value.lat + ', ' + value.lon) + '</a>' +
 	'</span>';
 }));
 
-Field.register(new Field('timestamp', function(value) { 
+Field.register(new Field('timestamp', 'icon-calendar', function(value) { 
 	return '<span class="nowrap">' +
-  	'<i class="icon-calendar" title="Timestamp"></i>' +
+  	'<i class="' + this.icon + '" title="Timestamp"></i>' +
 		'<abbr title="' + value + '"> ' + humane.date(new Date(Date.parse(value))) + '</abbr>' +
   '</span>';
 }));
 
-Field.register(new Field('duration', function(value) { 
+Field.register(new Field('duration', 'icon-time', function(value) { 
 	return '<span class="nowrap">' +
-  	'<i class="icon-time" title="Duration"></i> ' + humane.duration(value, false) +
+  	'<i class="' + this.icon + '" title="Duration"></i> ' + humane.duration(value, false) +
   '</span>';
 }));
 
-Field.register(new Field('rating', function(value) { 
+Field.register(new Field('rating', 'icon-star', function(value) { 
 	var stars = Math.round((value || 0) / 20);
 	var html = '<span class="nowrap" title="Rated ' + stars + '/5">';
 	for (var i = 0; i < 5; ++i) {
@@ -820,9 +825,9 @@ Field.register(new Field('rating', function(value) {
 	return html;
 }));
 
-Field.register(new Field('author', function(value) { 
+Field.register(new Field('author', 'icon-user', function(value) { 
 	return '<span class="nowrap">' +
-  	'<i class="icon-user" title="User"></i> ' + value +
+  	'<i class="' + this.icon + '" title="User"></i> ' + value +
   '</span>';
 }));
 

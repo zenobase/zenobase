@@ -4,7 +4,7 @@
 
 	<ul class="nav nav-pills" style="margin-bottom:9px;margin-top:9px">
 		<li class="active" ng:repeat="filter in filters">
-			<a ng:click="removeFilter(filter)">{{filter.toString()}} <i class="icon-remove"></i></a>
+			<a ng:click="removeFilter(filter)"><i class="icon-white" ng:class="getFilterIcon(filter)"></i> {{filter.value}} <i class="icon-remove icon-white"></i></a>
 		</li>
 	</ul>
 
