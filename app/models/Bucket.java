@@ -5,8 +5,6 @@ import java.util.List;
 import org.codehaus.jackson.node.ObjectNode;
 import org.elasticsearch.common.collect.Lists;
 
-import play.Logger;
-
 import schema.Field;
 import schema.RoleType;
 import schema.SchemaBuilder;
@@ -48,7 +46,6 @@ public class Bucket {
 	}
 
 	public String getRole(Identity identity) {
-		Logger.info("looking for roles for " + identity + " in " + roles);
 		for (Role role : roles) {
 			if (role.getIdentity().equals(identity)) {
 				return role.getRole();
