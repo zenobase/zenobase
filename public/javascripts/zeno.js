@@ -772,7 +772,7 @@ Field.register(new Field('tag', function(value) {
 Field.register(new Field('resource', function(value) { 
 	return '<span title="Resource">' +
   	'<i class="icon-bookmark"></i>&nbsp;' +
-  	'<a href="' +  encode(value.url) + '">' +  encode(value.title) + '</a>' +
+  	'<a href="' +  encode(value.url) + '" rel="nofollow">' +  encode(value.title) + '</a>' +
   '</span>';
 }));
 
