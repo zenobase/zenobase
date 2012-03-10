@@ -27,7 +27,7 @@
 					</ul>
 					<ul class="nav pull-right ng-cloak" ng:cloak>
 						<li class="dropdown" ng:show="user">
-							<a class="dropdown-toggle" data-toggle="dropdown" href="#">{{username()}} <b class="caret"></b></a>
+							<a class="dropdown-toggle" data-toggle="dropdown" href="#">{{user.getName()}} <b class="caret"></b></a>
 							<ul class="dropdown-menu">
 								<li><a ng:click="signOut()">Sign out</a></li>
 							</ul>
@@ -40,7 +40,7 @@
 			</div>
 		</div>
 
-		<div class="container-fluid" ng:show="username() == 'guest'" ng:cloak>
+		<div class="container-fluid" ng:show="user.getName() == 'guest'" ng:cloak>
 			<div class="alert">
 				Your data will be lost when you sign out or close the browser. 
 				<a href="#sign-up-dialog" data-toggle="modal">Sign up</a> to save your data.

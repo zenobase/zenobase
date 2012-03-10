@@ -82,10 +82,10 @@ footer {
 	background-color: #f8f8f8;
 }
 
-.trash {
+.action {
 	visibility: hidden;
 }
 
-tr:hover .trash {
+tr:hover .action {
 	visibility: visible;
 }

@@ -2,18 +2,9 @@ MainCtrl.$inject = ['$route', '$http', '$location'];
 function MainCtrl($route, $http, $location) {
 	var $scope = this;
 	$scope.whoami = function() {
-		$http.get('/who', httpConfig()).success(function(response, code) {
-			$scope.user = response;
+		$http.get('/who', httpConfig()).success(function(response) {
+			$scope.user = new User(response.identity, response.name);
 		});
-	};
-	$scope.username = function() {
-		if (!$scope.user) {
-			return null;
-		}
-		if (!$scope.user.hasOwnProperty('name')) {
-			return 'guest';
-		}
-		return $scope.user.name;
 	};
 
 	$scope.alert = new Alert();
@@ -67,9 +58,28 @@ Alert.prototype = {
 	}
 }
 
-function User(name) {
+User.CACHE = {};
+
+function User(id, name) {
+	this.id = id;
 	this.name = name;
+	User.CACHE[id] = this;
 }
+
+User.prototype.getName = function() {
+	return this.name || 'guest';
+};
+
+User.find = function(identity) {
+	if (User.CACHE[identity]) {
+		return User.CACHE[identity];
+	}
+	var user;
+	$.ajax('/users/?identity=' + identity, { async : false, success : function(response) {
+		user = new User(identity, response.name);
+	}});
+	return user;
+};
 
 function Filter(field, value) {
 	this.field = field;
@@ -96,12 +106,11 @@ AuthFormCtrl.$inject = ['$http'];
 function AuthFormCtrl($http) {
 	var $scope = this;
 	$scope.username = '';
-	$scope.username = '';
 	$scope.password = '';
 	$scope.remember = false;
 	$scope.signIn = function() {
-		$http.post('/signin', $.param({ username : $scope.username, password : $scope.password, remember : $scope.remember }), httpConfig()).success(function(response, code) {
-			$scope.$parent.user = new User($scope.username);
+		$http.post('/signin', $.param({ username : $scope.username, password : $scope.password, remember : $scope.remember }), httpConfig()).success(function(response) {
+			$scope.$parent.user = new User(response.identity, response.username);
 			$scope.username = '';
 			$scope.password = '';
 			$scope.alert.clear();
@@ -827,7 +836,7 @@ Field.register(new Field('rating', 'icon-star', function(value) {
 
 Field.register(new Field('author', 'icon-user', function(value) { 
 	return '<span class="nowrap">' +
-  	'<i class="' + this.icon + '" title="User"></i> ' + value +
+  	'<i class="' + this.icon + '" title="User"></i> ' + User.find(value).getName() +
   '</span>';
 }));
 

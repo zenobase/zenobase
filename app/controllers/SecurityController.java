@@ -57,7 +57,7 @@ public class SecurityController extends ControllerSupport {
 			return unauthorized();
 		}
 		setCookie(user.getIdentity(), signIn.isRemember());
-		return noContent();
+		return ok(user.toJson());
 	}
 
 	public static Result signOut() {

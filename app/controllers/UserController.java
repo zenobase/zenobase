@@ -2,6 +2,7 @@ package controllers;
 
 import javax.inject.Inject;
 
+import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.node.ObjectNode;
 
 import play.mvc.Result;
@@ -22,12 +23,7 @@ public class UserController extends ControllerSupport {
 		Identity identity = SecurityController.identity(false);
 		if (identity != null) {
 			User user = users.find(identity);
-			if (user != null) {
-				return ok(user.toJson());
-			}
-			ObjectNode object = Nodes.newObject();
-			object.put(User.IDENTITY.getName(), identity.getId());
-			return ok(object);
+			return ok(user != null ? user.toJson() : toJson(identity));
 		}
     	return noContent();
     }
@@ -39,4 +35,19 @@ public class UserController extends ControllerSupport {
     	}
 		return ok(SecurityController.checkIdentity(user.getIdentity()) ? user.toPrivateJson() : user.toPublicJson());
     }
+
+	public static Result find(String identity) {
+    	return find(new Identity(identity)); 
+    }
+
+	private static Result find(Identity identity) {
+		User user = users.find(identity);
+    	return ok(user != null ? user.toPublicJson() : toJson(identity)); 
+    }
+
+	private static JsonNode toJson(Identity identity) {
+		ObjectNode object = Nodes.newObject();
+		object.put(User.IDENTITY.getName(), identity.getId());
+		return object;
+	}
 }

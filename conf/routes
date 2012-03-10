@@ -6,6 +6,7 @@
 GET     /                            controllers.Assets.at(path="/public", file="index.html")
 
 GET     /who                         controllers.UserController.who()
+GET     /users/                      controllers.UserController.find(identity)
 GET     /users/:name                 controllers.UserController.get(name)
 
 POST    /signin                      controllers.SecurityController.signIn()
