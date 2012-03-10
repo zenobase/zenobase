@@ -26,7 +26,7 @@ import common.Nodes;
 public class Event {
 
 	public static final String TYPE_NAME = "event";
-	public static final Field<Identity> CREATOR = Field.of("creator", new IdentityType());
+	public static final Field<Identity> AUTHOR = Field.of("author", new IdentityType());
 	public static final Field<DateTime> TIMESTAMP = Field.of("timestamp", new DateTimeType());
 	public static final Field<Duration> DURATION = Field.of("duration", new DurationType());
 	public static final Field<Location> LOCATION = Field.of("location", new LocationType());
@@ -37,7 +37,7 @@ public class Event {
 	public static final Field<Rating> RATING = Field.of("rating", new RatingType());
 
 	private static final ImmutableSet<Field<?>> FIELDS = 
-		ImmutableSet.<Field<?>>of(CREATOR, TIMESTAMP, DURATION, LOCATION, TAG, RESOURCE, DISTANCE, HEIGHT, RATING);
+		ImmutableSet.<Field<?>>of(AUTHOR, TIMESTAMP, DURATION, LOCATION, TAG, RESOURCE, DISTANCE, HEIGHT, RATING);
 
 	private final String id;
 	private final String bucket;

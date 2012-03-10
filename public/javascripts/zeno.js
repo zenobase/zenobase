@@ -484,7 +484,7 @@ function ScoreboardCtrl() {
 
 	var $scope = this;
 	$scope.id = 'distances';
-	$scope.termField = 'creator';
+	$scope.termField = 'author';
 	$scope.valueField = 'distance';
 	$scope.unit = 'km';
 	$scope.order = 'total';
@@ -510,6 +510,9 @@ function ScoreboardCtrl() {
 	};
 	$scope.update = function(event, result) {
 		$scope.terms = result[$scope.id];
+	};
+	$scope.filter = function(term) {
+		$scope.addFilter(new Filter($scope.termField, term.label))
 	};
 
 	$scope.register($scope);
@@ -817,7 +820,7 @@ Field.register(new Field('rating', function(value) {
 	return html;
 }));
 
-Field.register(new Field('creator', function(value) { 
+Field.register(new Field('author', function(value) { 
 	return '<span class="nowrap">' +
   	'<i class="icon-user" title="User"></i> ' + value +
   '</span>';

@@ -76,7 +76,7 @@ public class BucketController extends ControllerSupport {
     	}
     	else {
     		Event event = Event.newEvent(bucket.getId(), body);
-			event.set(Event.CREATOR, identity);
+			event.set(Event.AUTHOR, identity);
     		if (!event.contains(Event.TIMESTAMP)) {
     			event.add(Event.TIMESTAMP, new DateTime());
     		}
