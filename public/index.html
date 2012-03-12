@@ -19,33 +19,20 @@
 
 	<body ng:controller="MainCtrl">
 
-		<div class="navbar navbar-fixed-top">
-			<div class="navbar-inner">
-				<div class="container-fluid">
-					<ul class="nav">
-						<li><a href="#/"><strong>Home</strong></a></li>
-					</ul>
-					<ul class="nav pull-right ng-cloak" ng:cloak>
-						<li class="dropdown" ng:show="user.name">
-							<a class="dropdown-toggle" data-toggle="dropdown" href="#">{{user.name}} <b class="caret"></b></a>
-							<ul class="dropdown-menu">
-								<li><a href="#/users/{{user.name}}">Profile</a></li>
-								<li><a ng:click="signOut()">Sign out</a></li>
-							</ul>
-						</li>
-						<li class="dropdown" ng:show="user && user.name == null">
-							<a class="dropdown-toggle" data-toggle="dropdown" href="#">Guest <b class="caret"></b></a>
-							<ul class="dropdown-menu">
-								<li><a ng:click="signOut()">Sign out</a></li>
-							</ul>
-						</li>
-						<li ng:hide="user">
-							<a href="#sign-in-dialog" data-toggle="modal">Sign in</a>
-						</li>
-					</ul>
-				</div>
+		<header class="container-fluid"">
+			<p class="logo pull-left"><a href="#/"><img src="/public/img/logo.png" alt="ZenoBase"/></a></p>
+			<div class="pull-right ng-cloak" ng:cloak>
+				<p ng:show="user.name">
+					<i class="icon-user"></i> <a href="#/users/{{user.name}}">{{user.name}}</a> | <a ng:click="signOut()">Sign out</a>
+				</p>
+				<p ng:show="user && user.name == null">
+					<i class="icon-user"></i> guest | <a ng:click="signOut()">Sign out</a>
+				</p>
+				<p ng:hide="user">
+					<a href="#sign-in-dialog" data-toggle="modal">Sign in</a>
+				</p>
 			</div>
-		</div>
+		</header>
 
 		<div class="container-fluid" ng:show="user.getName() == 'guest'" ng:cloak>
 			<div class="alert">
