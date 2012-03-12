@@ -1,0 +1,29 @@
+<div class="container-fluid" ng:controller="UserCtrl">
+
+	<h3>{{user.name}}</h3>
+	
+	<table class="table">
+		<tbody>
+			<tr>
+				<th>Signed up</th>
+				<td>{{user.created}}</td>
+			</tr>
+			<tr>
+				<th>Last update</th>
+				<td>{{user.updated}}</td>
+			</tr>
+			<tr>
+				<th>Email</th>
+				<td>{{user.email}}</td>
+			</tr>
+			<tr>
+				<th>Verified</th>
+				<td>{{user.verified}}</td>
+			</tr>
+		</tbody>
+	</table>
+
+	<button class="btn">Update Email/Password</button>
+	<button class="btn" ng:click="close()">Close Account</button>
+
+</div>

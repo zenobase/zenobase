@@ -25,6 +25,6 @@ public class DeleteBucketCommand extends CommandSupport {
 
 	@Override
 	public String toString() {
-		return String.format("deleted '%s'", bucket);
+		return String.format("deleted bucket '%s'", bucket);
 	}
 }

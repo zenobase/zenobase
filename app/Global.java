@@ -10,6 +10,7 @@ import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Singleton;
 
+import controllers.AccountController;
 import controllers.BucketController;
 import controllers.BucketListController;
 import controllers.EventController;
@@ -36,6 +37,7 @@ public class Global extends GlobalSettings {
 				requestStaticInjection(BucketController.class);
 				requestStaticInjection(EventController.class);
 				requestStaticInjection(UserController.class);
+				requestStaticInjection(AccountController.class);
 			}
 		});
 	}

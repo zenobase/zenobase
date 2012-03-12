@@ -24,6 +24,6 @@ public class DeleteUserCommand extends CommandSupport {
 
 	@Override
 	public String toString() {
-		return String.format("%s closed the account", user.getName());
+		return String.format("deleted user %s", user.getName());
 	}
 }

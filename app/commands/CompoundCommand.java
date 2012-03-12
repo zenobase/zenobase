@@ -4,7 +4,6 @@ import java.util.List;
 
 import secure.Identity;
 
-import com.google.common.base.Preconditions;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 
@@ -17,9 +16,6 @@ public class CompoundCommand extends CommandSupport {
 	}
 
 	public void add(Command command) {
-		if (!commands.isEmpty()) {
-			Preconditions.checkArgument(Iterables.getLast(commands).getClass().equals(command.getClass()));
-		}
 		commands.add(command);
 	}
 

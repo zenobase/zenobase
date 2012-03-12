@@ -26,8 +26,15 @@
 						<li><a href="#/"><strong>Home</strong></a></li>
 					</ul>
 					<ul class="nav pull-right ng-cloak" ng:cloak>
-						<li class="dropdown" ng:show="user">
-							<a class="dropdown-toggle" data-toggle="dropdown" href="#">{{user.getName()}} <b class="caret"></b></a>
+						<li class="dropdown" ng:show="user.name">
+							<a class="dropdown-toggle" data-toggle="dropdown" href="#">{{user.name}} <b class="caret"></b></a>
+							<ul class="dropdown-menu">
+								<li><a href="#/users/{{user.name}}">Profile</a></li>
+								<li><a ng:click="signOut()">Sign out</a></li>
+							</ul>
+						</li>
+						<li class="dropdown" ng:show="user && user.name == null">
+							<a class="dropdown-toggle" data-toggle="dropdown" href="#">Guest <b class="caret"></b></a>
 							<ul class="dropdown-menu">
 								<li><a ng:click="signOut()">Sign out</a></li>
 							</ul>

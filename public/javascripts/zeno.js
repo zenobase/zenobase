@@ -17,6 +17,7 @@ function MainCtrl($route, $http, $location) {
 	};
 	$route.when('/', { template: '/public/home.html' });
 	$route.when('/buckets/:bucketId/', { template: '/public/dashboard.html' });
+	$route.when('/users/:userId', { template: '/public/user.html' });
 	$route.when('/terms', { template: '/public/terms.html' });
 	$route.when('/privacy', { template: '/public/privacy.html' });
 	$route.otherwise({ redirectTo: '/' });
@@ -120,6 +121,22 @@ var locale = {
 			return result;
 		}
 };
+
+UserCtrl.$inject = ['$http', '$routeParams'];
+function UserCtrl($http, $routeParams) {
+	var $scope = this;
+	$scope.user = null;
+	$http.get('/users/' + $routeParams.userId).success(function(response) {
+		$scope.user = response;
+	});
+	$scope.close = function() {
+		$http.delete('/users/' + $routeParams.userId).success(function(response) {
+			$scope.alert.show('Closed account.', 'alert-success');
+			$scope.home();
+			$scope.whoami();
+		});
+	};
+}
 
 AuthFormCtrl.$inject = ['$http'];
 function AuthFormCtrl($http) {

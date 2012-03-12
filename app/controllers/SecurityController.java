@@ -22,7 +22,7 @@ public class SecurityController extends ControllerSupport {
 			return badRequest();
 		}
 		User user = users.find(signIn.getUsername());
-		if (user == null || !user.passwordEquals(signIn.getPassword())) {
+		if (user == null || user.isSuspended() || !user.passwordEquals(signIn.getPassword())) {
 			return unauthorized();
 		}
 		IdentityHelper.in(ctx()).set(user.getIdentity(), signIn.isRemember());

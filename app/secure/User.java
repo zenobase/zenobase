@@ -6,8 +6,11 @@ import models.Token;
 
 import org.codehaus.jackson.node.ObjectNode;
 import org.elasticsearch.common.collect.Iterables;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 
 import schema.BooleanType;
+import schema.DateTimeType;
 import schema.Field;
 import schema.IdentityType;
 import schema.SchemaBuilder;
@@ -20,19 +23,30 @@ public class User {
 	public static final String TYPE_NAME = "user";
 	public static final Field<Token> NAME = Field.of("name", new TokenType());
 	public static final Field<Identity> IDENTITY = Field.of("identity", new IdentityType());
+	public static final Field<DateTime> CREATED = Field.of("created", new DateTimeType());
 	public static final Field<Token> PASSWORD = Field.of("password", new TokenType());
 	public static final Field<Token> EMAIL = Field.of("email", new TokenType());
 	public static final Field<Boolean> VERIFIED = Field.of("verified", new BooleanType());
+	public static final Field<Boolean> SUSPENDED = Field.of("suspended", new BooleanType());
 
 	private final Identity identity;
 	private final String name;
+	private final DateTime created;
 	private String password;
 	private String email;
 	private boolean verified;
+	private boolean suspended;
 
 	public User(Identity identity, String name) {
 		this.identity = identity;
 		this.name = name;
+		this.created = new DateTime(DateTimeZone.UTC);
+	}
+
+	public User(Identity identity, String name, DateTime created) {
+		this.identity = identity;
+		this.name = name;
+		this.created = created;
 	}
 
 	public Identity getIdentity() {
@@ -41,6 +55,10 @@ public class User {
 
 	public String getName() {
 		return name;
+	}
+
+	public DateTime getCreated() {
+		return created;
 	}
 
 	public boolean passwordEquals(String password) {
@@ -71,6 +89,14 @@ public class User {
 		this.verified = verified;
 	}
 
+	public boolean isSuspended() {
+		return suspended;
+	}
+
+	public void setSuspended(boolean suspended) {
+		this.suspended = suspended;
+	}
+
 	@Override
 	public String toString() {
 		return name;
@@ -80,9 +106,11 @@ public class User {
 		SchemaBuilder schema = new SchemaBuilder(TYPE_NAME);
 		schema.add(NAME);
 		schema.add(IDENTITY);
+		schema.add(CREATED);
 		schema.add(PASSWORD);
 		schema.add(EMAIL);
 		schema.add(VERIFIED);
+		schema.add(SUSPENDED);
 		return schema.build();
 	}
 
@@ -91,24 +119,30 @@ public class User {
 		NAME.getType().set(object, NAME.getName(), Token.valueOf(name));
 		IDENTITY.getType().set(object, IDENTITY.getName(), identity);
 		if (includeProfile && email != null) {
-			object.put(EMAIL.getName(), email);
-			object.put(VERIFIED.getName(), verified);
+			CREATED.getType().set(object, CREATED.getName(), created);
+			if (email != null) {
+				object.put(EMAIL.getName(), email);
+				object.put(VERIFIED.getName(), verified);
+			}
 		}
 		return object;
 	}
 
 	public ObjectNode toJson() {
 		ObjectNode object = toJson(true);
-		object.put(PASSWORD.getName(), password);
+		PASSWORD.getType().set(object, PASSWORD.getName(), Token.valueOf(password));
+		SUSPENDED.getType().set(object, SUSPENDED.getName(), suspended);
 		return object;
 	}
 
 	public static User parse(ObjectNode object) {
 		Identity identity = Iterables.getOnlyElement(IDENTITY.getType().get(object, IDENTITY.getName()));
 		String name = Iterables.getOnlyElement(NAME.getType().get(object, NAME.getName())).toString();
-		User user = new User(identity, name);
+		DateTime created = Iterables.getOnlyElement(CREATED.getType().get(object, CREATED.getName()));
+		User user = new User(identity, name, created);
 		user.setPassword(Iterables.getOnlyElement(PASSWORD.getType().get(object, PASSWORD.getName())).toString());
 		List<Token> tokens = EMAIL.getType().get(object, EMAIL.getName());
+		user.setSuspended(Iterables.getOnlyElement(SUSPENDED.getType().get(object, SUSPENDED.getName())));
 		String email = !tokens.isEmpty() ? Iterables.getOnlyElement(tokens).toString() : null;
 		if (email != null) {
 			user.setEmail(email);

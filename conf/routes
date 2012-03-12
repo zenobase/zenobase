@@ -7,8 +7,10 @@ GET     /                            controllers.Assets.at(path="/public", file=
 
 GET     /who                         controllers.UserController.who()
 GET     /users/                      controllers.UserController.find(identity)
-POST    /users/                      controllers.UserController.signUp()
 GET     /users/:name                 controllers.UserController.get(name)
+
+POST    /users/                      controllers.AccountController.open()
+DELETE  /users/:name                 controllers.AccountController.close(name)
 
 POST    /signin                      controllers.SecurityController.signIn()
 POST    /signout                     controllers.SecurityController.signOut()
