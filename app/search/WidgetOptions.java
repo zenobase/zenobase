@@ -32,7 +32,7 @@ public class WidgetOptions {
 			return (T) Boolean.valueOf(value);
 		}
 		if (type.equals(DateTimeZone.class)) {
-			return (T) DateTimeZone.forOffsetMillis(Integer.parseInt(value) * 60 * 1000);
+			return (T) DateTimeZone.forID(value);
 		}
 		if (type.isEnum()) {
 			return (T) Enum.valueOf((Class<? extends Enum>) type, value);

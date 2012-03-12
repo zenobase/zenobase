@@ -3,16 +3,16 @@ package common;
 import java.util.List;
 
 import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
 import org.joda.time.Days;
 import org.joda.time.Hours;
 import org.joda.time.Interval;
 import org.joda.time.Minutes;
 import org.joda.time.Months;
 import org.joda.time.ReadablePeriod;
+import org.joda.time.Seconds;
 import org.joda.time.Years;
+import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
-import org.joda.time.format.ISODateTimeFormat;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
@@ -21,11 +21,12 @@ public class Intervals {
 
 	private enum Format {
 
-		YEAR(ISODateTimeFormat.year(), 4, Years.years(1)),
-		MONTH(ISODateTimeFormat.yearMonth(), 7, Months.months(1)),
-		DAY(ISODateTimeFormat.date(), 10, Days.days(1)),
-		HOUR(ISODateTimeFormat.dateHour(), 13, Hours.hours(1)),
-		MINUTE(ISODateTimeFormat.dateHourMinute(), 16, Minutes.minutes(1));
+		YEAR(DateTimeFormat.forPattern("yyyy'T'Z").withOffsetParsed(), 10, Years.years(1)),
+		MONTH(DateTimeFormat.forPattern("yyyy-MM'T'Z").withOffsetParsed(), 13, Months.months(1)),
+		DAY(DateTimeFormat.forPattern("yyyy-MM-dd'T'Z").withOffsetParsed(), 16, Days.days(1)),
+		HOUR(DateTimeFormat.forPattern("yyyy-MM-dd'T'HHZ").withOffsetParsed(), 18, Hours.hours(1)),
+		MINUTE(DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mmZ").withOffsetParsed(), 21, Minutes.minutes(1)),
+		SECOND(DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ssZ").withOffsetParsed(), 24, Seconds.seconds(1));
 	
 		private final DateTimeFormatter format;
 		private final int length;
@@ -37,16 +38,16 @@ public class Intervals {
 			this.unit = unit;
 		}
 
-		public DateTime parse(String value, DateTimeZone tz) {
-			return format.withZone(tz).parseDateTime(value);
+		public DateTime parse(String value) {
+			return format.parseDateTime(value);
 		}
 
 		public Interval toInterval(DateTime start) {
 			return new Interval(start, start.plus(unit));
 		}
 
-		public Interval toInterval(String value, DateTimeZone tz) {
-			return toInterval(parse(value, tz));
+		public Interval toInterval(String value) {
+			return toInterval(parse(value));
 		}
 
 		public String toString(DateTime time) {
@@ -62,10 +63,10 @@ public class Intervals {
 		}	
 	}
 
-	public static Interval valueOf(String value, DateTimeZone tz) {
+	public static Interval valueOf(String value) {
 		for (Format format : Format.values()) {
 			if (value.length() == format.length) {
-				return format.toInterval(value, tz);
+				return format.toInterval(value);
 			}
 		}
 		throw new IllegalArgumentException("Unsupported date/time format: " + value);

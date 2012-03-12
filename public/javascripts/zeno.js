@@ -102,6 +102,25 @@ Filter.parse = function(s) {
 	return new Filter(field, value);
 }
 
+var locale = {
+		getTimezone : function() {
+			var offset = -new Date().getTimezoneOffset();
+			var result = offset < 0 ? '-' : '+';
+			offset = Math.abs(offset);
+			var hours = offset / 60;
+			var minutes = offset % 60;
+			if (hours < 10) {
+				result += '0';
+			}
+			result += hours;
+			if (minutes < 10) {
+				minutes += '0';
+			}
+			result += minutes;
+			return result;
+		}
+};
+
 AuthFormCtrl.$inject = ['$http'];
 function AuthFormCtrl($http) {
 	var $scope = this;
@@ -448,7 +467,7 @@ function TagGanttCtrl() {
 			type : 'gantt',
 			termField : $scope.termField, 
 			timeField : $scope.timeField,
-			timezone : locale.timezoneOffset,
+			timezone : locale.getTimezone(),
 			order : $scope.order,
 			limit : $scope.limit
 		};
@@ -542,39 +561,57 @@ function ScoreboardConfigCtrl() {
 	};
 }
 
+function Interval(name, pattern) {
+	this.name = name;
+	this.pattern = pattern;
+}
+
+Interval.prototype.zoomIn = function() {
+	for (var i = 0; i < Interval.VALUES.length; ++i) {
+		if (Interval.VALUES[i].pattern > this.pattern) {
+			return Interval.VALUES[i];
+		}
+	}
+};
+
+Interval.VALUES = [
+	new Interval('year', 0),
+	new Interval('month', 10), 
+	new Interval('day', 13), 
+	new Interval('hour', 16), 
+	new Interval('minute', 18),
+	new Interval('second', 21)
+];
+
+Interval.match = function(value) {
+	for (var i = 0; i < Interval.VALUES.length; ++i) {
+		if (Interval.VALUES[i].pattern === value.length) {
+			return Interval.VALUES[i];
+		}
+	}
+};
+
 function TimelineCtrl() {
 
 	var $scope = this;
 	$scope.id = 'timeline';
 	$scope.field = 'timestamp';
-	$scope.intervals = [ 'year', 'month', 'day', 'hour', 'minute' ];
-	$scope.intervalLengths = [ 4, 7, 10, 13, 16 ];
-	$scope.interval = 1;
+	$scope.interval = Interval.VALUES[1];
 	$scope.range = '';
 	$.each($scope.getFilters($scope.field), function(i, filter) {
+		$scope.interval = Interval.match(filter.value);
 		$scope.range = filter.value;
-		$.each($scope.intervalLengths, function(j, length) {
-			if ($scope.range.length == length) {
-				$scope.interval = Math.min(j + 1, $scope.intervals.length);
-			}
-		});
 	});
 	$scope.times = [];
 
-	$scope.currentInterval = function() {
-		return $scope.intervals[$scope.interval];
-	};
-	$scope.zoomIn = function() {
-		$scope.interval = Math.min($scope.interval + 1, $scope.intervals.length - 1);
-	};
 	$scope.params = function() {
-		return { 
+		return $scope.interval && { 
 			id : $scope.id,
 			type : 'timeline',
 			field : $scope.field, 
-			interval : $scope.currentInterval(),
+			interval : $scope.interval.name,
 			range : $scope.range,
-			timezone : locale.timezoneOffset
+			timezone : locale.getTimezone()
 		};
 	};
 	$scope.update = function(event, result) {
@@ -591,7 +628,7 @@ TimelineCtrl.prototype.draw = function() {
 	if ($scope.times && $scope.times.length) {
 		google.load("visualization", "1", { packages : [ "corechart" ], callback : function() { 
 			var data = new google.visualization.DataTable();
-			data.addColumn('string', $scope.currentInterval());
+			data.addColumn('string', $scope.interval.name);
 			data.addColumn('number', 'Count');
 			$.each($scope.times, function(i, time) {
 				data.addRow([ time.label, time.count ]);
@@ -609,7 +646,7 @@ TimelineCtrl.prototype.draw = function() {
 			google.visualization.events.addListener(chart, 'select', function() {
 				var selection = chart.getSelection();
 				var value = data.getValue(selection[0].row, 0);
-				$scope.zoomIn();
+				$scope.interval = $scope.interval.zoomIn();
 				$scope.addFilter(new Filter($scope.field, value), true);
 				$scope.refresh();
 			});
@@ -951,7 +988,3 @@ function defined(a, b) {
 function httpConfig() {
 	return { headers : { 'Content-Type' : 'application/x-www-form-urlencoded' } };
 }
-
-var locale = {
-		timezoneOffset : -new Date().getTimezoneOffset()
-};

@@ -31,7 +31,7 @@ public class TimelineWidget implements Widget {
 		this.id = id;
 		this.field = field;
 		this.interval = interval;
-		this.range = !Strings.isNullOrEmpty(range) ? Intervals.valueOf(range, timezone) : null;
+		this.range = !Strings.isNullOrEmpty(range) ? Intervals.valueOf(range) : null;
 		this.timezone = timezone;
 	}
 

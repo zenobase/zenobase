@@ -36,7 +36,7 @@ public class EventSearch {
 	private final ImmutableMultimap<String, Constraint> constraintBuilders = ImmutableMultimap.<String, Constraint>builder()
 		.put(Event.TAG.getName(), new TermConstraint())
 		.put(Event.AUTHOR.getName(), new TermConstraint())
-		.put(Event.TIMESTAMP.getName(), new RangeConstraint())
+		.put(Event.TIMESTAMP.getName(), new DateTimeRangeConstraint())
 		.put(Event.LOCATION.getName(), new BoundingBoxConstraint())
 		.build();
 
