@@ -129,7 +129,7 @@ function AuthFormCtrl($http) {
 	$scope.remember = false;
 	$scope.signIn = function() {
 		$http.post('/signin', $.param({ username : $scope.username, password : $scope.password, remember : $scope.remember }), httpConfig()).success(function(response) {
-			$scope.$parent.user = new User(response.identity, response.username);
+			$scope.$parent.user = new User(response.identity, response.name);
 			$scope.username = '';
 			$scope.password = '';
 			$scope.alert.clear();

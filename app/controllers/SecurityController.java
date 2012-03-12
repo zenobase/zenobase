@@ -26,7 +26,7 @@ public class SecurityController extends ControllerSupport {
 			return unauthorized();
 		}
 		IdentityHelper.in(ctx()).set(user.getIdentity(), signIn.isRemember());
-		return ok(user.toJson());
+		return ok(user.toJson(false));
 	}
 
 	public static Result signOut() {
