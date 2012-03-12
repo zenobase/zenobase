@@ -7,6 +7,7 @@ import org.codehaus.jackson.node.ObjectNode;
 
 import play.mvc.Result;
 import play.mvc.With;
+import secure.IdentityHelper;
 import services.CommandQueue;
 
 import commands.Command;
@@ -34,7 +35,7 @@ public class QueueController extends ControllerSupport {
     	if (command == null) {
     		return notFound();
     	}
-		if (!command.getIdentity().equals(SecurityController.identity(false))) {
+		if (!IdentityHelper.in(ctx()).is(command.getIdentity())) {
 			return forbidden();
 		}
         return undo(command);

@@ -7,6 +7,7 @@ import models.Event;
 import play.mvc.Result;
 import play.mvc.With;
 import secure.Identity;
+import secure.IdentityHelper;
 import services.BucketManager;
 import services.CommandQueue;
 
@@ -26,7 +27,7 @@ public class EventController extends ControllerSupport {
     	if (bucket == null) {
     		return notFound();
     	}
-    	if (bucket.getRole(SecurityController.identity(false)) == null) {
+    	if (bucket.getRole(IdentityHelper.in(ctx()).get()) == null) {
     		return forbidden();
     	}
     	Event event = bucket.findEvent(eventId);
@@ -37,7 +38,7 @@ public class EventController extends ControllerSupport {
     }
 
     public static Result delete(String bucketId, String eventId) {
-    	Identity identity = SecurityController.identity(false);
+    	Identity identity = IdentityHelper.in(ctx()).get();
 		return identity != null ? delete(bucketId, eventId, identity) : unauthorized();
     }
 

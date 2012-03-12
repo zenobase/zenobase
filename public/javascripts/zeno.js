@@ -153,7 +153,7 @@ function SignUpFormCtrl($http) {
 		return $scope.username == 'guest' ? 'error' : 'success'; 
 	};
 	$scope.submit = function() {
-		$http.post('/signup', $.param({ username : $scope.username, password : $scope.password, email : $scope.email, remember : true }), httpConfig()).success(function(response, code) {
+		$http.post('/users/', $.param({ username : $scope.username, password : $scope.password, email : $scope.email, remember : true }), httpConfig()).success(function(response, code) {
 			$scope.$parent.user = new User(response.identity, response.name);
 			$scope.username = '';
 			$scope.password = '';

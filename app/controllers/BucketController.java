@@ -13,6 +13,7 @@ import play.mvc.Result;
 import play.mvc.With;
 import search.EventSearch;
 import secure.Identity;
+import secure.IdentityHelper;
 import services.BucketManager;
 import services.CommandQueue;
 import services.NodeManager;
@@ -34,7 +35,7 @@ public class BucketController extends ControllerSupport {
 	static BucketManager buckets;
 
 	public static Result get(String bucketId) {
-		Identity identity = SecurityController.identity(false);
+		Identity identity = IdentityHelper.in(ctx()).get();
 		return identity != null ? get(bucketId, identity) : unauthorized(); 
     }
 
@@ -53,7 +54,7 @@ public class BucketController extends ControllerSupport {
 	@BodyParser.Of(value = BodyParser.Json.class, maxLength = 1000)
 	public static Result post(String bucketId) {
 		
-		Identity identity = SecurityController.identity(false);
+		Identity identity = IdentityHelper.in(ctx()).get();
 		if (identity == null) {
 			return unauthorized();
 		}
@@ -88,7 +89,7 @@ public class BucketController extends ControllerSupport {
     }
 
     public static Result delete(String bucketId) {
-    	Identity identity = SecurityController.identity(false);
+    	Identity identity = IdentityHelper.in(ctx()).get();
 		return identity != null ? delete(bucketId, identity) : unauthorized();
     }
 

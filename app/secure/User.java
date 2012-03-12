@@ -86,16 +86,11 @@ public class User {
 		return schema.build();
 	}
 
-	public ObjectNode toPublicJson() {
+	public ObjectNode toJson(boolean includeProfile) {
 		ObjectNode object = Nodes.newObject();
 		NAME.getType().set(object, NAME.getName(), Token.valueOf(name));
 		IDENTITY.getType().set(object, IDENTITY.getName(), identity);
-		return object;
-	}
-
-	public ObjectNode toPrivateJson() {
-		ObjectNode object = toPublicJson();
-		if (email != null) {
+		if (includeProfile && email != null) {
 			object.put(EMAIL.getName(), email);
 			object.put(VERIFIED.getName(), verified);
 		}
@@ -103,7 +98,7 @@ public class User {
 	}
 
 	public ObjectNode toJson() {
-		ObjectNode object = toPrivateJson();
+		ObjectNode object = toJson(true);
 		object.put(PASSWORD.getName(), password);
 		return object;
 	}

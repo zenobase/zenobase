@@ -10,6 +10,7 @@ import org.codehaus.jackson.node.ObjectNode;
 import play.mvc.Result;
 import play.mvc.With;
 import secure.Identity;
+import secure.IdentityHelper;
 import secure.Role;
 import services.BucketManager;
 import services.CommandQueue;
@@ -33,7 +34,7 @@ public class BucketListController extends ControllerSupport {
 
     public static Result get() {
     	ArrayNode array = Nodes.newArray();
-    	Identity identity = SecurityController.identity(false);
+    	Identity identity = IdentityHelper.in(ctx()).get();
     	if (identity != null) {
 	    	for (Bucket bucket : buckets.findBuckets(identity)) {
 	    		ObjectNode object = bucket.toJson();
@@ -49,7 +50,7 @@ public class BucketListController extends ControllerSupport {
 		if (body == null || !body.has("label")) {
 			return badRequest("missing label");
 		}
-		Identity identity = SecurityController.identity(true);
+		Identity identity = IdentityHelper.in(ctx()).get(true);
     	Bucket bucket = createBucket(body.get("label").asText(), identity);
 		String commandId = queue.execute(new CreateBucketCommand(buckets, identity, bucket, true));
         response().setHeader(LOCATION, String.format("/buckets/%s/", bucket.getId()));

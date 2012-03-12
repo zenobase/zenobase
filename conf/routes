@@ -7,11 +7,11 @@ GET     /                            controllers.Assets.at(path="/public", file=
 
 GET     /who                         controllers.UserController.who()
 GET     /users/                      controllers.UserController.find(identity)
+POST    /users/                      controllers.UserController.signUp()
 GET     /users/:name                 controllers.UserController.get(name)
 
 POST    /signin                      controllers.SecurityController.signIn()
 POST    /signout                     controllers.SecurityController.signOut()
-POST    /signup                      controllers.SecurityController.signUp()
 
 GET     /buckets/                    controllers.BucketListController.get()
 POST    /buckets/                    controllers.BucketListController.post()
