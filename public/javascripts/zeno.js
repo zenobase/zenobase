@@ -19,12 +19,13 @@ function MainCtrl($route, $http, $location) {
 		});
 	};
 	$route.when('/', { template: '/public/home.html' });
-	$route.when('/buckets/:bucketId/', { template: '/public/dashboard.html' });
-	$route.when('/users/:userId', { template: '/public/user.html' });
-	$route.when('/terms', { template: '/public/terms.html' });
-	$route.when('/privacy', { template: '/public/privacy.html' });
-	$route.otherwise({ redirectTo: '/' });
+	$route.when('/buckets/:bucketId/', { template : '/public/dashboard.html' });
+	$route.when('/users/:userId', { template : '/public/user.html' });
+	$route.when('/terms', { template : '/public/terms.html' });
+	$route.when('/privacy', { template : '/public/privacy.html' });
+	$route.otherwise({ redirectTo : '/' });
 	$route.parent(this);
+	$scope.$watch(function() { return $route.current.params.myHashSearchParam; }, function(params) { console.log('watch', params); });
 	$scope.reload = function() {
 		$route.reload();
 	};
@@ -325,12 +326,14 @@ function BucketCtrl($http, $routeParams, $location) {
 		}
 		$scope.filters.push(filter);
 		$location.search('q', $scope.filters.join('__'));
+		// $scope.refresh();
 	};
 	$scope.removeFilter = function(filter) {
 		$scope.filters = $.grep($scope.filters, function(f) {
 			return !angular.equals(f, filter);
 		});
 		$location.search('q', $scope.filters.length ? $scope.filters.join('__') : null);
+		// $scope.refresh();
 	};
 	$scope.getFilterIcon = function(filter) {
 		var field = Field.find(filter.field);
@@ -456,6 +459,9 @@ function TagCountCtrl() {
 		$scope.more = terms.length > $scope.limit;
 		$scope.terms = terms.slice(0, $scope.limit);
 	};
+	$scope.filter = function(term) {
+		$scope.addFilter(new Filter($scope.field, term.label))
+	};
 
 	$scope.register($scope);
 	$scope.$on('result', $scope.update);
@@ -498,6 +504,9 @@ function TagGanttCtrl() {
 				term.freq = Math.round((new Date(term.last).getTime() - new Date(term.first).getTime()) / term.count);
 			});
 		}
+	};
+	$scope.filter = function(term) {
+		$scope.addFilter(new Filter($scope.termField, term.label))
 	};
 	$scope.register($scope);
 	$scope.$on('result', $scope.update);
@@ -615,15 +624,15 @@ function TimelineCtrl() {
 	var $scope = this;
 	$scope.id = 'timeline';
 	$scope.field = 'timestamp';
-	$scope.interval = Interval.VALUES[1];
-	$scope.range = '';
-	$.each($scope.getFilters($scope.field), function(i, filter) {
-		$scope.interval = Interval.match(filter.value);
-		$scope.range = filter.value;
-	});
 	$scope.times = [];
 
 	$scope.params = function() {
+		$scope.interval = Interval.VALUES[1];
+		$scope.range = '';
+		$.each($scope.getFilters($scope.field), function(i, filter) {
+			$scope.interval = Interval.match(filter.value);
+			$scope.range = filter.value;
+		});
 		return $scope.interval && { 
 			id : $scope.id,
 			type : 'timeline',

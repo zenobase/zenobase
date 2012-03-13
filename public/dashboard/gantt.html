@@ -10,7 +10,7 @@
 		</thead>
 		<tbody>
 			<tr ng:repeat="term in terms">
-				<td><i class="icon-tag"></i> <a ng:click="addFilter('tag:' + term.label)">{{term.label}}</a></td>
+				<td><i class="icon-tag"></i> <a ng:click="filter(term)">{{term.label}}</a></td>
 				<td style="text-align: right"><abbr title="{{tag.last}}">{{term.last | age}}</abbr></td>
 				<td style="text-align: right">{{term.freq  | duration}}</td>
 			</tr>
