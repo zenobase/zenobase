@@ -25,7 +25,6 @@ function MainCtrl($route, $http, $location) {
 	$route.when('/privacy', { template : '/public/privacy.html' });
 	$route.otherwise({ redirectTo : '/' });
 	$route.parent(this);
-	$scope.$watch(function() { return $route.current.params.myHashSearchParam; }, function(params) { console.log('watch', params); });
 	$scope.reload = function() {
 		$route.reload();
 	};
