@@ -8,6 +8,9 @@
 		<p class="pull-left" style="margin-left: 8px; margin-top: 6px; vertical-align: middle">
 			<a ng:click="refresh()" title="Refresh"><i class="icon-refresh"></i></a>
 		</p>
+		<p class="pull-left" style="margin-left: 8px; margin-top: 6px; vertical-align: middle">
+			<a data-toggle="modal" href="#create-event-dialog"><i class="icon-plus" title="Add..."></i></a>
+		</p>
 		<ul class="nav nav-pills" style="clear: both; margin-bottom:12px;" ng:show="filters">
 			<li class="active" ng:repeat="filter in filters">
 				<a ng:click="removeFilter(filter)"><i class="icon-white" ng:class="getFilterIcon(filter)"></i> {{filter.value}} <i class="icon-remove icon-white"></i></a>
@@ -90,7 +93,7 @@
 				<fieldset class="control-group">
 					<label for="label">Content</label>
 					<div class="input">
-						<textarea id="event-label-field" rows="10" class="span10" required ng:model="content"></textarea>
+						<textarea id="event-label-field" rows="10" class="span6" required ng:model="content"></textarea>
 					</div>
 				</fieldset>
 			</div>
