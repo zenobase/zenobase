@@ -1,8 +1,11 @@
 <div class="container-fluid" ng:controller="BucketCtrl">
 
-	<h3><i class="icon-th-large"></i> {{bucket.label}} <a ng:click="reload()" title="Refresh"><i class="icon-refresh"></i></a></h3>
+	<h3 style="margin-bottom:12px;">
+		{{bucket.label}} 
+		<span class="badge" ng:class="bucket.total && 'badge-success' || 'badge-error'">{{bucket.total}}</span> 
+	</h3>
 
-	<ul class="nav nav-pills" style="margin-bottom:9px;margin-top:9px">
+	<ul class="nav nav-pills" style="margin-bottom:12px;" ng:show="filters">
 		<li class="active" ng:repeat="filter in filters">
 			<a ng:click="removeFilter(filter)"><i class="icon-white" ng:class="getFilterIcon(filter)"></i> {{filter.value}} <i class="icon-remove icon-white"></i></a>
 		</li>
