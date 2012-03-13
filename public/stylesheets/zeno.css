@@ -96,15 +96,19 @@ h3 i {
 	margin-top: 3px;
 }
 
-dt, dd {
-	padding: 0.5em 1em;	
+.table-narrow {
+	width: auto;
+	max-width: none;
 }
 
-.table-narrow th {
-	width: 0%;
-	white-space: nowrap;
+.table-narrow th, .table-narrow td {
+	vertical-align: middle;
 }
 
-.table-narrow td {
-	width: 100%;
+.align-right {
+	text-align: right;
+}
+
+.top-row th, .top-row td {
+	border-top: none;
 }

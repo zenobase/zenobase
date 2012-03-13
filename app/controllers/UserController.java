@@ -36,13 +36,18 @@ public class UserController extends ControllerSupport {
     }
 
 	public static Result get(String name) {
-		User user = users.find(name);
-    	return user != null ? get(user) : notFound();
-    }
+		Identity identity = IdentityHelper.in(ctx()).get();
+		return identity != null ? get(name, identity) : unauthorized();
+	}
 
-	private static Result get(User user) {
-		return ok(user.toJson(IdentityHelper.in(ctx()).is(user.getIdentity())));
-    }
+	private static Result get(String name, Identity identity) {
+		User user = users.find(name);
+		return user != null ? get(user, identity) : notFound();
+	}
+
+	private static Result get(User user, Identity identity) {
+		return user.getIdentity().equals(identity) ? ok(user.toJson(true)) : forbidden();
+	}
 
 	public static Result find(String identity) {
     	return find(new Identity(identity)); 

@@ -1,25 +1,26 @@
 <div class="container-fluid" ng:controller="UserCtrl">
 
-	<h3 style="margin-bottom: 0.5em"><i class="icon-user middle"></i> {{user.name}}</h3>
+	<h3 style="margin-bottom: 0.5em"><i class="icon-user middle"></i> {{userId}}</h3>
 
-	<table class="table table-narrow">
+	<table class="table table-narrow" ng:show="user">
 		<tbody>
-			<tr>
+			<tr class="top-row">
 				<th>Email</th>
-				<td>{{user.email}} <a data-toggle="modal" href="#update-email-dialog" class="action"><i class="icon-pencil"></i></a></td>
+				<td>{{user.email}}</td>
+				<td><a data-toggle="modal" href="#update-email-dialog" title="Edit" class="btn"><i class="icon-pencil"></i></a></td>
 			</tr>
 			<tr>
 				<th>Password</th>
-				<td>******** <a data-toggle="modal" href="#reset-password-dialog" class="action"><i class="icon-pencil"></i></a></td>
+				<td>********</td>
+				<td><a data-toggle="modal" href="#reset-password-dialog" title="Reset" class="btn"><i class="icon-pencil"></i></a></td>
 			</tr>
 			<tr>
 				<th>Signed up</th>
 				<td>{{user.created | age}}</td>
+				<td><a data-toggle="modal" href="#close-account-dialog" title="Close Account" class="btn btn-danger"><i class="icon-trash icon-white"></i></a></td>
 			</tr>
 		</tbody>
 	</table>
-
-	<p><a data-toggle="modal" href="#close-account-dialog" class="btn btn-danger">Close Account</a></p>
 
 	<div id="update-email-dialog" class="modal hide">
 		<form ng:submit="close()">

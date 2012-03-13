@@ -125,8 +125,9 @@ var locale = {
 UserCtrl.$inject = ['$http', '$routeParams'];
 function UserCtrl($http, $routeParams) {
 	var $scope = this;
+	$scope.userId = $routeParams.userId;
 	$scope.user = null;
-	$http.get('/users/' + $routeParams.userId).success(function(response) {
+	$http.get('/users/' + $scope.userId).success(function(response) {
 		$scope.user = response;
 	});
 	$scope.close = function() {

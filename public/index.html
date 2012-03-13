@@ -19,6 +19,13 @@
 
 	<body ng:controller="MainCtrl">
 
+		<div ng:show="user.getName() == 'guest'" ng:cloak>
+			<div class="alert">
+				Your data will be lost when you sign out or close the browser. 
+				<a href="#sign-up-dialog" data-toggle="modal">Sign up</a> to save your data.
+			</div>
+		</div>
+
 		<header class="container-fluid"">
 			<p class="logo pull-left"><a href="#/"><img src="/public/img/logo.png" alt="ZenoBase"/></a></p>
 			<div class="pull-right ng-cloak" ng:cloak>
@@ -34,13 +41,6 @@
 			</div>
 		</header>
 
-		<div class="container-fluid" ng:show="user.getName() == 'guest'" ng:cloak>
-			<div class="alert">
-				Your data will be lost when you sign out or close the browser. 
-				<a href="#sign-up-dialog" data-toggle="modal">Sign up</a> to save your data.
-			</div>
-		</div>
-
 		<div class="container-fluid" ng:cloak>
 			<div class="alert {{alert.level}}">
 				<a class="close" ng:click="alert.clear()">&times;</a>
@@ -51,7 +51,7 @@
 			</div>
 		</div>
 
-    <ng:view></ng:view>
+		<ng:view></ng:view>
 
 		<div class="container-fluid">
 			<footer>
