@@ -45,6 +45,7 @@ header {
 
 footer {
 	margin-top: 2em;
+	color: #555;
 }
 
 .caret-inverted {
@@ -79,7 +80,7 @@ footer {
 	color: #333;
 }
 
-.table tr:hover {
+.table tbody tr:hover {
 	background-color: #f8f8f8;
 }
 
@@ -89,4 +90,21 @@ footer {
 
 tr:hover .action {
 	visibility: visible;
+}
+
+h3 i {
+	margin-top: 3px;
+}
+
+dt, dd {
+	padding: 0.5em 1em;	
+}
+
+.table-narrow th {
+	width: 0%;
+	white-space: nowrap;
+}
+
+.table-narrow td {
+	width: 100%;
 }

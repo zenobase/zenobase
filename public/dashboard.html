@@ -1,6 +1,6 @@
 <div class="container-fluid" ng:controller="BucketCtrl">
 
-	<h3>{{bucket.label}} <small><a ng:click="reload()" title="Refresh"><i class="icon-refresh"></i></a></small></h3>
+	<h3><i class="icon-th-large"></i> {{bucket.label}} <a ng:click="reload()" title="Refresh"><i class="icon-refresh"></i></a></h3>
 
 	<ul class="nav nav-pills" style="margin-bottom:9px;margin-top:9px">
 		<li class="active" ng:repeat="filter in filters">

@@ -1,29 +1,72 @@
 <div class="container-fluid" ng:controller="UserCtrl">
 
-	<h3>{{user.name}}</h3>
-	
-	<table class="table">
+	<h3 style="margin-bottom: 0.5em"><i class="icon-user middle"></i> {{user.name}}</h3>
+
+	<table class="table table-narrow">
 		<tbody>
 			<tr>
-				<th>Signed up</th>
-				<td>{{user.created}}</td>
-			</tr>
-			<tr>
-				<th>Last update</th>
-				<td>{{user.updated}}</td>
-			</tr>
-			<tr>
 				<th>Email</th>
-				<td>{{user.email}}</td>
+				<td>{{user.email}} <a data-toggle="modal" href="#update-email-dialog" class="action"><i class="icon-pencil"></i></a></td>
 			</tr>
 			<tr>
-				<th>Verified</th>
-				<td>{{user.verified}}</td>
+				<th>Password</th>
+				<td>******** <a data-toggle="modal" href="#reset-password-dialog" class="action"><i class="icon-pencil"></i></a></td>
+			</tr>
+			<tr>
+				<th>Signed up</th>
+				<td>{{user.created | age}}</td>
 			</tr>
 		</tbody>
 	</table>
 
-	<button class="btn">Update Email/Password</button>
-	<button class="btn" ng:click="close()">Close Account</button>
+	<p><a data-toggle="modal" href="#close-account-dialog" class="btn btn-danger">Close Account</a></p>
+
+	<div id="update-email-dialog" class="modal hide">
+		<form ng:submit="close()">
+			<div class="modal-header">
+				<a class="close" data-dismiss="modal">&times;</a>
+				<h3>Update Email</h3>
+			</div>
+			<div class="modal-body">
+				...
+			</div>
+			<div class="modal-footer">
+				<button type="submit" class="btn btn-primary">OK</button>
+				<button type="reset" class="btn" data-dismiss="modal">Cancel</button>
+			</div>
+		</form>
+	</div>
+
+	<div id="reset-password-dialog" class="modal hide">
+		<form ng:submit="close()">
+			<div class="modal-header">
+				<a class="close" data-dismiss="modal">&times;</a>
+				<h3>Reset Password</h3>
+			</div>
+			<div class="modal-body">
+				<p>A link to reset the password for this account will be sent to <strong>{{user.email}}</strong>.</p>
+			</div>
+			<div class="modal-footer">
+				<button type="submit" class="btn btn-primary">OK</button>
+				<button type="reset" class="btn" data-dismiss="modal">Cancel</button>
+			</div>
+		</form>
+	</div>
+	
+	<div id="close-account-dialog" class="modal hide">
+		<form ng:submit="close()">
+			<div class="modal-header">
+				<a class="close" data-dismiss="modal">&times;</a>
+				<h3>Close Account</h3>
+			</div>
+			<div class="modal-body">
+				<p>Are you sure?</p>
+			</div>
+			<div class="modal-footer">
+				<button type="submit" class="btn btn-danger">OK</button>
+				<button type="reset" class="btn" data-dismiss="modal">Cancel</button>
+			</div>
+		</form>
+	</div>
 
 </div>
