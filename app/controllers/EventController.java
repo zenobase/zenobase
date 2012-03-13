@@ -56,7 +56,8 @@ public class EventController extends ControllerSupport {
     }
 
     private static Result delete(Bucket bucket, Event event, Identity identity) {
-    	queue.execute(new DeleteEventCommand(bucket, identity, event));
+    	String commandId = queue.execute(new DeleteEventCommand(bucket, identity, event));
+        response().setHeader("Undo", String.format("/queue/%s", commandId));
     	return noContent();
     }
 }

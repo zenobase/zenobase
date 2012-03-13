@@ -1,3 +1,7 @@
+var evalAsync = function(f) {
+	setTimeout(f, 1000); // need to increase this if index updates take more than 1s to propagate
+};
+
 MainCtrl.$inject = ['$route', '$http', '$location'];
 function MainCtrl($route, $http, $location) {
 	var $scope = this;
@@ -11,8 +15,7 @@ function MainCtrl($route, $http, $location) {
 	$scope.undo = function(commandId) {
 		$http.post(commandId, 'undo', httpConfig()).success(function(response, code) {
 			$scope.alert.clear();
-			$location.url('/');
-			$scope.reload();
+			evalAsync(function() { window.location.reload(); });
 		});
 	};
 	$route.when('/', { template: '/public/home.html' });
@@ -28,7 +31,6 @@ function MainCtrl($route, $http, $location) {
 	$scope.signOut = function() {
 		$http.post('/signout', httpConfig()).success(function(response, code) {
 				$scope.user = null;
-				$scope.alert.show('Signed out.', 'alert-success');
 				if ($location.url() == '/') {
 					$scope.reload();
 				} else {
@@ -46,18 +48,17 @@ function Alert() {
 	this.clear();
 }
 
-Alert.prototype = {
-	show : function(message, level, undo) {
-		this.message = message;
-		this.level = level;
-		this.undo = undo;
-	},
-	clear : function() {
-		this.message = '';
-		this.level = 'hide';
-		this.undo = '';
-	}
-}
+Alert.prototype.show = function(message, level, undo) {
+	this.message = message;
+	this.level = level;
+	this.undo = undo;
+};
+
+Alert.prototype.clear = function() {
+	this.message = '';
+	this.level = 'hide';
+	this.undo = '';
+};
 
 User.CACHE = {};
 
@@ -132,7 +133,6 @@ function UserCtrl($http, $routeParams) {
 	});
 	$scope.close = function() {
 		$http.delete('/users/' + $routeParams.userId).success(function(response) {
-			$scope.alert.show('Closed account.', 'alert-success');
 			$scope.home();
 			$scope.whoami();
 		});
@@ -150,7 +150,6 @@ function AuthFormCtrl($http) {
 			$scope.$parent.user = new User(response.identity, response.name);
 			$scope.username = '';
 			$scope.password = '';
-			$scope.alert.clear();
 			$('#sign-in-dialog').modal('hide');
 			$scope.reload();
 		});
@@ -177,7 +176,6 @@ function SignUpFormCtrl($http) {
 			$scope.password = '';
 			$scope.passwordRepeat = '';
 			$scope.email = '';
-			$scope.alert.clear();
 			$('#sign-up-dialog').modal('hide');
 			$scope.reload();
 		});
@@ -228,7 +226,10 @@ function BucketListCtrl($http) {
 		$scope.buckets = response;
 	});
 	$scope.remove = function(bucketId) {
-		$http.delete('/buckets/' + bucketId + '/').success(function(response, code) {
+		$http.delete('/buckets/' + bucketId + '/').success(function(response, code, headers) {
+			var undo = headers('Undo');
+			console.assert(undo, 'missing undo header');
+			$scope.alert.show('Deleted a bucket.', 'alert-success', undo);
 			$scope.reload();
 		});
 	};
@@ -241,11 +242,8 @@ function CreateBucketDialogCtrl($http, $location) {
 	$scope.create = function() {
 		$http.post('/buckets/', { label : $scope.label}).success(function(data, status, headers) {
 			var location = headers('Location');
-			var undo = headers('Undo');
 			console.assert(status == 201, status);
 			console.assert(location, 'missing location header');
-			console.assert(undo, 'missing undo header');
-			$scope.alert.show('Created a new bucket.', 'alert-success', undo);
 			$('#create-bucket-dialog').modal('hide');
 			$location.url(location);
 			$scope.whoami();
@@ -296,8 +294,11 @@ function BucketCtrl($http, $routeParams, $location) {
 		return null;
 	};
 	$scope.remove = function(eventId) {
-		$http.delete('/buckets/' + $scope.bucketId + '/' + eventId).success(function() {
-			setTimeout($scope.refresh, 1000);
+		$http.delete('/buckets/' + $scope.bucketId + '/' + eventId).success(function(response, status, headers) {
+			evalAsync($scope.refresh);
+			var undo = headers('Undo');
+			console.assert(undo, 'missing undo header');
+			$scope.alert.show('Deleted an event.', 'alert-success', undo);
 		});
 	};
 
@@ -801,13 +802,10 @@ function TemplateCtrl($http, $defer, $routeParams) {
 	$scope.create = function() {
 		$http.post('/buckets/' + $scope.params.bucketId + '/', $scope.content).success(function(response, status, headers) {
 			var location = headers('Location');
-			var undo = headers('Undo');
 			console.assert(status == 201, status);
 			console.assert(location, 'missing location header');
-			console.assert(undo, 'missing undo header');
 			$defer(function() {
 				$scope.reload();
-				$scope.alert.show('Created a new event.', 'alert-success', undo);
 				$('#create-event-dialog').modal('hide');
 			}, 1000);
 		});

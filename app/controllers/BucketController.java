@@ -102,7 +102,8 @@ public class BucketController extends ControllerSupport {
     	if (!"owner".equals(bucket.getRole(identity))) {
     		return forbidden();
     	}
-    	queue.execute(new DeleteBucketCommand(buckets, identity, bucket));
+    	String commandId = queue.execute(new DeleteBucketCommand(buckets, identity, bucket));
+        response().setHeader("Undo", String.format("/queue/%s", commandId));
     	return noContent();
     }
 }
