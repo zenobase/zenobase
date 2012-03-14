@@ -19,7 +19,7 @@ function MainCtrl($route, $http, $location) {
 		});
 	};
 	$route.when('/', { template: '/public/home.html' });
-	$route.when('/buckets/:bucketId/', { template : '/public/dashboard.html' });
+	$route.when('/buckets/:bucketId/', { template : '/public/dashboard.html', reloadOnSearch : false });
 	$route.when('/users/:userId', { template : '/public/user.html' });
 	$route.when('/terms', { template : '/public/terms.html' });
 	$route.when('/privacy', { template : '/public/privacy.html' });
@@ -259,8 +259,8 @@ WidgetParams.prototype.add = function(params) {
 	this.params.push();
 }; 
 
-BucketCtrl.$inject = ['$http', '$routeParams', '$location'];
-function BucketCtrl($http, $routeParams, $location) {
+BucketCtrl.$inject = ['$http', '$route', '$routeParams', '$location'];
+function BucketCtrl($http, $route, $routeParams, $location) {
 
 	var $scope = this;
 	$scope.bucketId = $routeParams.bucketId;
@@ -302,8 +302,12 @@ function BucketCtrl($http, $routeParams, $location) {
 		});
 	};
 
-	var q = $location.search()['q'];
-	$scope.filters = q ? $.map(q.split('__'), function(s) { return Filter.parse(s) }) : [ ];
+	$scope.filters = [];
+	$scope.$watch(function() { return $route.current.params.q; }, function() {
+		$scope.$evalAsync($scope.refresh);
+		var q = $location.search()['q'];
+		$scope.filters = q ? $.map(q.split('__'), function(s) { return Filter.parse(s) }) : [ ];
+	});
 	$scope.getFilters = function(field) {
 		return $.grep($scope.filters, function(filter) {
 			return filter.field === field;
@@ -325,21 +329,19 @@ function BucketCtrl($http, $routeParams, $location) {
 		}
 		$scope.filters.push(filter);
 		$location.search('q', $scope.filters.join('__'));
-		// $scope.refresh();
 	};
 	$scope.removeFilter = function(filter) {
 		$scope.filters = $.grep($scope.filters, function(f) {
 			return !angular.equals(f, filter);
 		});
 		$location.search('q', $scope.filters.length ? $scope.filters.join('__') : null);
-		// $scope.refresh();
 	};
 	$scope.getFilterIcon = function(filter) {
 		var field = Field.find(filter.field);
 		return field ? field.icon : 'icon-ban-circle';
 	};
 
-	$scope.$evalAsync($scope.refresh);
+	// $scope.$evalAsync($scope.refresh);
 }
 
 function EventListCtrl() {
