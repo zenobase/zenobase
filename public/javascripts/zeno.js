@@ -258,6 +258,7 @@ function BucketCtrl($scope, $http, $route, $routeParams, $location) {
 		{ id : 'widget-scoreboard', label : 'Scoreboard'}
 	];
 
+	$scope.filters = [];
 	$scope.widgets = [];
 	$scope.register = function(widget) {
 		$scope.widgets.push(widget);
@@ -270,6 +271,7 @@ function BucketCtrl($scope, $http, $route, $routeParams, $location) {
 		$http.get('/buckets/' + $scope.bucketId + '/?' + $.param({ 'q' : q, 'w' : w }, true)).success(callback);
 	};
 	$scope.refresh = function() {
+		$scope.updateFilters();
 		var params = $.map($scope.widgets, function(widget) { return widget.params(); });
 		$scope.search(params, function(response) {
 			$scope.bucket = response;
@@ -288,12 +290,13 @@ function BucketCtrl($scope, $http, $route, $routeParams, $location) {
 		});
 	};
 
-	$scope.filters = [];
-	$scope.$watch(function() { return $route.current.params.q; }, function() {
-		$scope.$evalAsync($scope.refresh);
+	$scope.$on('$routeUpdate', function() {
+		$scope.refresh();
+	});
+	$scope.updateFilters = function() {
 		var q = $location.search()['q'];
 		$scope.filters = q ? $.map(q.split('__'), function(s) { return Filter.parse(s) }) : [ ];
-	});
+	};
 	$scope.getFilters = function(field) {
 		return $.grep($scope.filters, function(filter) {
 			return filter.field === field;
@@ -327,7 +330,7 @@ function BucketCtrl($scope, $http, $route, $routeParams, $location) {
 		return field ? field.icon : 'icon-ban-circle';
 	};
 
-	// $scope.$evalAsync($scope.refresh);
+	$scope.$evalAsync($scope.refresh);
 }
 
 EventListCtrl.$inject = ['$scope'];
