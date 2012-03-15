@@ -15,7 +15,7 @@
 					<tr ng:repeat="command in history.commands">
 						<td>
 							<i class="icon-user"></i> <b>{{command.identity | username}}</b>
-							{{command.label | html}}
+							<span ng:bind-html="command.label"></span>
 						</td>
 						<td>
 							{{command.timestamp | age}}
@@ -81,7 +81,7 @@
 						<div class="modal-body">
 							<div class="control-group" ng:class="createBucketForm.label.$valid && 'success' || 'error'">
 								<label for="template">Label</label>
-								<input id="bucket-label-field" name="label" type="text" class="xlarge" required ng:minlength="1" ng:maxlength="20" ng:pattern="/^[a-zA-Z0-9-_ ]+$/" ng:model="label"/>
+								<input id="bucket-label-field" name="label" type="text" class="xlarge" required ng:minlength="1" ng:maxlength="20" ng:pattern="/^[a-zA-Z0-9-_ ]+$/" ng:model="label" ng:model-instant/>
 							</div>
 						</div>
 						<div class="modal-footer">

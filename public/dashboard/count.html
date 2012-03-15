@@ -15,7 +15,7 @@
 		</thead>
 		<tbody>
 			<tr ng:repeat="term in terms">
-				<td><a ng:click="filter(term)">{{term.label | field:field | html}}</a></td>
+				<td><a ng:click="filter(term)" ng:bind-html="term.label | field:field"></a></td>
 				<td style="text-align: right">{{term.count | number }}</td>
 			</tr>
 		</tbody>
@@ -46,7 +46,7 @@
 				<fieldset class="control-group">
 					<label for="limit">Limit</label>
 					<div class="input">
-						<input name="limit" type="number" required min="1" max="100" ng:model="limit"/>
+						<input name="limit" type="number" required min="1" max="100" ng:model="limit" ng:model-instant/>
 						<p class="help-block">The number of items to show.</p>
 					</div>
 				</fieldset>

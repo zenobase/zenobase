@@ -13,12 +13,12 @@
 		</thead>
 		<tbody>
 			<tr ng:repeat="term in terms">
-				<td><a ng:click="filter(term)">{{term.label | field:termField | html}}</a></td>
-				<td style="text-align: right">{{term.count | number }}</td>
-				<td style="text-align: right">{{term.min | field:valueField | html }}</td>
-				<td style="text-align: right">{{term.max | field:valueField | html }}</td>
-				<td style="text-align: right">{{term.sum | field:valueField | html }}</td>
-				<td style="text-align: right">{{term.avg | field:valueField | html }}</td>
+				<td><a ng:click="filter(term)" ng:bind-html="term.label | field:termField"></a></td>
+				<td style="text-align: right" ng:bind-html="term.count | number"></td>
+				<td style="text-align: right" ng:bind-html="term.min | field:valueField"></td>
+				<td style="text-align: right" ng:bind-html="term.max | field:valueField"></td>
+				<td style="text-align: right" ng:bind-html="term.sum | field:valueField"></td>
+				<td style="text-align: right" ng:bind-html="term.avg | field:valueField"></td>
 			</tr>
 			<tr ng:hide="terms">
 				<td colspan="6"><i>None</i></td>
@@ -44,28 +44,28 @@
 				<fieldset class="control-group">
 					<label for="limit">Limit</label>
 					<div class="input">
-						<input name="limit" type="number" required min="1" max="100" ng:model="limit"/>
+						<input name="limit" type="number" required min="1" max="100" ng:model="limit" ng:model-instant/>
 						<p class="help-block">The number of items to show.</p>
 					</div>
 				</fieldset>
 				<fieldset class="control-group">
 					<label for="termField">Term Field</label>
 					<div class="input">
-						<input name="termField" type="text" required ng:model="termField"/>
+						<input name="termField" type="text" required ng:model="termField" ng:model-instant/>
 						<p class="help-block">The field for which to aggregate statistics.</p>
 					</div>
 				</fieldset>
 				<fieldset class="control-group">
 					<label for="valueField">Value Field</label>
 					<div class="input">
-						<input name="valueField" type="text" required ng:model="valueField"/>
+						<input name="valueField" type="text" required ng:model="valueField" ng:model-instant/>
 						<p class="help-block">The numeric field on which to gather statistics.</p>
 					</div>
 				</fieldset>
 				<fieldset class="control-group">
 					<label for="unit">Unit</label>
 					<div class="input">
-						<input name="valueField" type="text" required ng:model="unit"/>
+						<input name="valueField" type="text" required ng:model="unit" ng:model-instant/>
 						<p class="help-block">The unit to use.</p>
 					</div>
 				</fieldset>

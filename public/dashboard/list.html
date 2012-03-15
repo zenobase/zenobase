@@ -4,7 +4,7 @@
 		<tbody>
 			<tr ng:repeat="event in items">
 				<td style="line-height: 1.5">
-					{{event | fields | html}}
+					<span ng:bind-html="event | fields"></span>
 					&nbsp;
 					<div class="action pull-right">
 						<a ng:click="remove(event['@id'])"><i class="icon-trash" title="Delete"></i></a>
@@ -39,7 +39,7 @@
 				<fieldset class="control-group">
 					<label for="limit">Limit</label>
 					<div class="input">
-						<input name="limit" type="number" required min="1" max="100" ng:model="limit"/>
+						<input name="limit" type="number" required min="1" max="100" ng:model="limit" ng:model-instant/>
 						<p class="help-block">The number of items to show.</p>
 					</div>
 				</fieldset>
