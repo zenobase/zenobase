@@ -1,3 +1,5 @@
+angular.module('ZenoAdminModule', [ 'ZenoModule' ]);
+
 HistoryCtrl.$inject = ['$scope', '$http'];
 function HistoryCtrl($scope, $http) {
 

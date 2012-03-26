@@ -65,7 +65,7 @@ public class UserController extends ControllerSupport {
 			return badRequest();
 		}
 		User user = users.find(signUp.getUsername());
-		if (user != null) {
+		if (user != null) { // TODO use version=1 instead
 			return badRequest("user exists");
 		}
 		Identity identity = IdentityHelper.in(ctx()).get(true);
