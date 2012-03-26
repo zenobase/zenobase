@@ -4,6 +4,7 @@
 
 # Home page
 GET     /                            controllers.Assets.at(path="/public", file="index.html")
+GET     /admin/                      controllers.Assets.at(path="/public", file="admin.html")
 
 GET     /who                         controllers.UserController.who()
 GET     /users/                      controllers.UserController.find(identity)
