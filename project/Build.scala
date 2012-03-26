@@ -11,7 +11,7 @@ object ApplicationBuild extends Build {
       "org.hamcrest" % "hamcrest-integration" % "1.2.1",
       "com.google.guava" % "guava" % "11.0.2",
       "com.google.inject" % "guice" % "3.0",
-      "org.elasticsearch" % "elasticsearch" % "0.19.0"
+      "org.elasticsearch" % "elasticsearch" % "0.19.1"
       // "org.jscience" % "jscience" % "4.3.1"
     )
 
