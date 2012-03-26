@@ -172,41 +172,6 @@ function SignUpFormCtrl($scope, $http) {
 	};
 }
 
-HistoryCtrl.$inject = ['$scope', '$http'];
-function HistoryCtrl($scope, $http) {
-
-	$scope.offset = 0;
-	$scope.limit = 10;
-	$scope.history = [];
-
-	$scope.hasPrev = function() {
-		return $scope.offset > 0;
-	}
-	$scope.hasNext = function() {
-		return $scope.history && $scope.offset + $scope.limit < $scope.history.total;
-	}
-	$scope.prev = function() {
-		$scope.refresh({ offset : $scope.offset - $scope.limit });
-	}
-	$scope.next = function() {
-		$scope.refresh({ offset : $scope.offset + $scope.limit });
-	}
-	$scope.params = function() {
-		return {
-			offset : $scope.offset,
-			limit : $scope.limit
-		};
-	}
-	$scope.refresh = function(params) {
-		$http.get('/queue/?' + $.param($.extend($scope.params(), params))).success(function(response) {
-			$.extend($scope, params);
-			$scope.history = response;
-		});
-	};
-
-	$scope.refresh({});
-}
-
 BucketListCtrl.$inject = ['$scope', '$http'];
 function BucketListCtrl($scope, $http) {
 	$scope.buckets = [ ];
@@ -987,15 +952,20 @@ app.config(function($httpProvider) {
 	$httpProvider.responseInterceptors.push(interceptor);
 });
 
-app.directive('zeno:copyright', function(compileElement) {
-	var start = compileElement.attr('start');
-	var author = compileElement.attr('author');
-	return function(linkElement) {
-		var year = new Date().getFullYear();
-		var text = start == year ?
-			'&copy; ' + start + ' ' + author :
-			'&copy; ' + start + '&ndash;' + year + ' ' + author;
-		linkElement.html(text);
+app.directive('zenoCopyright', function() {
+	return {
+		restrict: 'E',
+		compile: function() {
+			return function(scope, element, attrs) {
+				var start = attrs.start;
+				var author = attrs.author;
+				var year = new Date().getFullYear();
+				var text = start == year ?
+					'&copy; ' + start + ' ' + author :
+					'&copy; ' + start + '&ndash;' + year + ' ' + author;
+				element.html(text);
+			};
+		}
 	};
 });
 
