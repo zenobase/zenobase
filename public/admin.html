@@ -128,12 +128,12 @@
 							<tbody>
 								<tr ng:repeat="user in users">
 									<td>
-										<a href="/users/{{user.name}}" ng:show="!user.suspended">{{user.name}}</a>
+										<a href="/users/{{user.name}}" ng:show="!user.suspended" ng:class="user.superuser && 'b'">{{user.name}}</a>
 										<span style="color:gray" ng:show="user.suspended">{{user.name}}</span>
 									</td>
 									<td>{{user.created | age}}</td>
 									<td style="text-align: right">
-										<a class="action" ng:click="close(user.name)" ng:show="!user.suspended"><i class="icon-ban-circle" title="Close Account"></i></a>
+										<a class="action" ng:click="close(user.name)" ng:show="!user.suspended && !user.superuser"><i class="icon-ban-circle" title="Close Account"></i></a>
 									</td>
 								</tr>
 								<tr ng:hide="users">

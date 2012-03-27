@@ -4,19 +4,19 @@ import models.Bucket;
 import secure.Identity;
 import services.BucketManager;
 
-public class CreateBucketCommand extends CommandSupport {
+public class RestoreBucketCommand extends CommandSupport {
 
 	private final BucketManager manager;
 	private final Bucket bucket;
 
-	public CreateBucketCommand(BucketManager manager, Identity identity, Bucket bucket) {
+	public RestoreBucketCommand(BucketManager manager, Identity identity, Bucket bucket) {
 		super(identity);
 		this.manager = manager;
 		this.bucket = bucket;
 	}
 
 	public void execute() {
-		manager.store(bucket, true);
+		manager.store(bucket, false);
 	}
 
 	public DeleteBucketCommand reverse(Identity identity) {
@@ -25,6 +25,6 @@ public class CreateBucketCommand extends CommandSupport {
 
 	@Override
 	public String toString() {
-		return String.format("created '%s'", bucket);
+		return String.format("restored bucket '%s'", bucket);
 	}
 }

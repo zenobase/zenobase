@@ -112,3 +112,7 @@ h3 i {
 .top-row th, .top-row td {
 	border-top: none;
 }
+
+.b {
+	font-weight: bold; 
+}

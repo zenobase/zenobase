@@ -42,6 +42,9 @@ public class BucketManager {
 			if (createIndex) {
 				throw new IllegalStateException("Index exists already: " + bucket.getId());
 			}
+			else {
+				index.open();
+			}
 		}
 		else {
 			if (createIndex) {
@@ -57,6 +60,7 @@ public class BucketManager {
 
 	public void deleteBucket(String id) {
 		buckets.delete(QueryBuilders.termQuery(Bucket.ID.getName(), id));
+		manager.getIndex(id).close();
 	}
 
 	public Bucket findBucket(String bucketId) {

@@ -155,7 +155,7 @@ function SignUpFormCtrl($scope, $http) {
 	$scope.username = '';
 	$scope.password = '';
 	$scope.passwordRepeat = '';
-	$scope.email = '';
+	$scope.email = 'me@me.me';
 	$scope.isValid = function(field) {
 		return $scope.username == 'guest' ? 'error' : 'success'; 
 	};
@@ -165,7 +165,7 @@ function SignUpFormCtrl($scope, $http) {
 			$scope.username = '';
 			$scope.password = '';
 			$scope.passwordRepeat = '';
-			$scope.email = '';
+			$scope.email = 'me@me.me';
 			$('#sign-up-dialog').modal('hide');
 			$scope.reload();
 		});

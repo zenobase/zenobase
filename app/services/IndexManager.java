@@ -78,4 +78,12 @@ public class IndexManager {
 	public long count() {
 		return client.prepareCount(indexName).execute().actionGet().count();
 	}
+
+	public void open() {
+		client.admin().indices().prepareOpen(indexName).execute().actionGet();
+	}
+
+	public void close() {
+		client.admin().indices().prepareClose(indexName).execute().actionGet();
+	}
 }

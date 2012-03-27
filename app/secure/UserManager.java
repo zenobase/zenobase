@@ -7,6 +7,7 @@ import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
+import org.elasticsearch.search.builder.SearchSourceBuilder;
 
 import play.Logger;
 import services.IndexManager;
@@ -42,7 +43,10 @@ public class UserManager {
 
 	public ImmutableList<User> find() {
 		ImmutableList.Builder<User> users = ImmutableList.builder();
-		for (SearchHit hit : index.search(QueryBuilders.matchAllQuery()).hits()) {
+		SearchSourceBuilder search = new SearchSourceBuilder()
+			.query(QueryBuilders.matchAllQuery())
+			.sort(User.NAME.getName());
+		for (SearchHit hit : index.search(search).hits()) {
 			users.add(User.parse(Nodes.read(hit.source())));
 		}
 		return users.build();
