@@ -12,6 +12,7 @@ import play.mvc.With;
 import secure.Identity;
 import secure.IdentityHelper;
 import secure.Role;
+import secure.UserManager;
 import services.BucketManager;
 import services.CommandQueue;
 import services.NodeManager;
@@ -32,15 +33,43 @@ public class BucketListController extends ControllerSupport {
 	@Inject
 	static BucketManager buckets;
 
+	@Inject
+	static UserManager users;
+
+    public static Result get(String identity) {
+        return "*".equals(identity) ? get() : get(new Identity(identity));
+    }
+
     public static Result get() {
-    	ArrayNode array = Nodes.newArray();
     	Identity identity = IdentityHelper.in(ctx()).get();
-    	if (identity != null) {
-	    	for (Bucket bucket : buckets.findBuckets(identity)) {
-	    		ObjectNode object = bucket.toJson();
-	    		object.put("size", bucket.getSize());
-	    		array.add(object);
-	    	}
+    	if (identity == null) {
+    		return unauthorized();
+    	}
+    	if (!users.isSuperuser(identity)) {
+    		return forbidden();
+    	}
+    	ArrayNode array = Nodes.newArray();
+    	for (Bucket bucket : buckets.findBuckets()) {
+    		ObjectNode object = bucket.toJson();
+    		object.put("size", bucket.getSize());
+    		array.add(object);
+    	}
+        return ok(array);
+    }
+
+    private static Result get(Identity identity) {
+    	Identity current = IdentityHelper.in(ctx()).get();
+    	if (current == null) {
+    		return unauthorized();
+    	}
+    	if (!identity.equals(current)) {
+    		return forbidden();
+    	}
+    	ArrayNode array = Nodes.newArray();
+    	for (Bucket bucket : buckets.findBuckets(identity)) {
+    		ObjectNode object = bucket.toJson();
+    		object.put("size", bucket.getSize());
+    		array.add(object);
     	}
         return ok(array);
     }

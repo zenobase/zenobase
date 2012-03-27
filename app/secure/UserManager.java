@@ -3,6 +3,7 @@ package secure;
 import javax.inject.Inject;
 
 import org.codehaus.jackson.node.ObjectNode;
+import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHits;
 
@@ -30,16 +31,34 @@ public class UserManager {
 	}
 
 	public User find(Identity identity) {
-		SearchHits hits = index.search(QueryBuilders.termQuery(User.IDENTITY.getName(), identity)).hits();
+		SearchHits hits = index.search(identityEquals(identity)).hits();
 		Preconditions.checkState(hits.totalHits() <= 1,
 			"Expected 0..1 hits for identity '%s' but got %s", identity, hits.totalHits());
 		return hits.totalHits() > 0L ?
 			User.parse(Nodes.read(hits.getAt(0).source())) : null;
 	}
 
+	private QueryBuilder identityEquals(Identity identity) {
+		return QueryBuilders.termQuery(User.IDENTITY.getName(), identity);
+	}
+
+	private QueryBuilder isSuperuser(boolean b) {
+		return QueryBuilders.termQuery(User.SUPERUSER.getName(), true);
+	}
+
 	public User find(String name) {
 		ObjectNode object = index.get(User.TYPE_NAME, name);
 		return object != null ? User.parse(object) : null;
+	}
+
+	public boolean isSuperuser(Identity identity) {
+		QueryBuilder query = QueryBuilders.boolQuery()
+			.must(identityEquals(identity))
+			.must(isSuperuser(true));
+		SearchHits hits = index.search(query).hits();
+		Preconditions.checkState(hits.totalHits() <= 1,
+			"Expected 0..1 hits for identity '%s' but got %s", identity, hits.totalHits());
+		return hits.totalHits() > 0L;
 	}
 
 	public void store(User user) {
@@ -48,5 +67,9 @@ public class UserManager {
 
 	public void delete(User user) {
 		index.delete(User.TYPE_NAME, user.getName());
+	}
+
+	public boolean isEmpty() {
+		return index.count() == 0L;
 	}
 }

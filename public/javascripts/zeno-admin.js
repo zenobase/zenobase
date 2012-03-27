@@ -1,7 +1,7 @@
 angular.module('ZenoAdminModule', [ 'ZenoModule' ]);
 
-HistoryCtrl.$inject = ['$scope', '$http'];
-function HistoryCtrl($scope, $http) {
+HistoryAdminCtrl.$inject = ['$scope', '$http'];
+function HistoryAdminCtrl($scope, $http) {
 
 	$scope.offset = 0;
 	$scope.limit = 10;
@@ -33,4 +33,20 @@ function HistoryCtrl($scope, $http) {
 	};
 
 	$scope.refresh({});
+}
+
+BucketListAdminCtrl.$inject = ['$scope', '$http'];
+function BucketListAdminCtrl($scope, $http) {
+	$scope.buckets = [ ];
+	$http.get('/buckets/?identity=*').success(function(response, code) {
+		$scope.buckets = response;
+	});
+	$scope.remove = function(bucketId) {
+		$http.delete('/buckets/' + bucketId + '/').success(function(response, code, headers) {
+			var undo = headers('Undo');
+			console.assert(undo, 'missing undo header');
+			$scope.alert.show('Deleted a bucket.', 'alert-success', undo);
+			$scope.reload();
+		});
+	};
 }

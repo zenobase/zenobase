@@ -41,6 +41,7 @@ public class AccountController extends ControllerSupport {
 		user = new User(identity, signUp.getUsername());
 		user.setEmail(signUp.getEmail());
 		user.changePassword(signUp.getPassword());
+		user.setSuperuser(users.isEmpty());
 		queue.execute(new CreateUserCommand(users, user));
 		return created(user.toJson());
 	}

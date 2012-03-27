@@ -21,6 +21,7 @@ public class QueueController extends ControllerSupport {
 	static CommandQueue queue;
 
     public static Result get(int offset, int limit) {
+    	// TODO: forbidden() unless superuser
     	ObjectNode object = Nodes.newObject();
     	object.put("total", queue.size());
     	ArrayNode commandsNode = object.putArray("commands");

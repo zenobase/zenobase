@@ -16,7 +16,7 @@ DELETE  /users/:name                 controllers.AccountController.close(name)
 POST    /signin                      controllers.SecurityController.signIn()
 POST    /signout                     controllers.SecurityController.signOut()
 
-GET     /buckets/                    controllers.BucketListController.get()
+GET     /buckets/                    controllers.BucketListController.get(identity)
 POST    /buckets/                    controllers.BucketListController.post()
 
 GET     /buckets/:bucketId/          controllers.BucketController.get(bucketId)

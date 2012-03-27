@@ -175,8 +175,12 @@ function SignUpFormCtrl($scope, $http) {
 BucketListCtrl.$inject = ['$scope', '$http'];
 function BucketListCtrl($scope, $http) {
 	$scope.buckets = [ ];
-	$http.get('/buckets/').success(function(response, code) {
-		$scope.buckets = response;
+	$scope.$watch('user', function(user) {
+		if (user) {
+			$http.get('/buckets/?identity=' + user.id).success(function(response, code) {
+				$scope.buckets = response;
+			});
+		}
 	});
 	$scope.remove = function(bucketId) {
 		$http.delete('/buckets/' + bucketId + '/').success(function(response, code, headers) {

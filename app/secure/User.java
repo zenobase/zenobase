@@ -28,6 +28,7 @@ public class User {
 	public static final Field<Token> EMAIL = Field.of("email", new TokenType());
 	public static final Field<Boolean> VERIFIED = Field.of("verified", new BooleanType());
 	public static final Field<Boolean> SUSPENDED = Field.of("suspended", new BooleanType());
+	public static final Field<Boolean> SUPERUSER = Field.of("superuser", new BooleanType());
 
 	private final Identity identity;
 	private final String name;
@@ -36,6 +37,7 @@ public class User {
 	private String email;
 	private boolean verified;
 	private boolean suspended;
+	private boolean superuser;
 
 	public User(Identity identity, String name) {
 		this.identity = identity;
@@ -97,6 +99,14 @@ public class User {
 		this.suspended = suspended;
 	}
 
+	public boolean isSuperuser() {
+		return superuser;
+	}
+
+	public void setSuperuser(boolean superuser) {
+		this.superuser = superuser;
+	}
+
 	@Override
 	public String toString() {
 		return name;
@@ -111,6 +121,7 @@ public class User {
 		schema.add(EMAIL);
 		schema.add(VERIFIED);
 		schema.add(SUSPENDED);
+		schema.add(SUPERUSER);
 		return schema.build();
 	}
 
@@ -132,6 +143,7 @@ public class User {
 		ObjectNode object = toJson(true);
 		PASSWORD.getType().set(object, PASSWORD.getName(), Token.valueOf(password));
 		SUSPENDED.getType().set(object, SUSPENDED.getName(), suspended);
+		SUPERUSER.getType().set(object, SUPERUSER.getName(), superuser);
 		return object;
 	}
 
@@ -142,11 +154,12 @@ public class User {
 		User user = new User(identity, name, created);
 		user.setPassword(Iterables.getOnlyElement(PASSWORD.getType().get(object, PASSWORD.getName())).toString());
 		List<Token> tokens = EMAIL.getType().get(object, EMAIL.getName());
-		user.setSuspended(Iterables.getOnlyElement(SUSPENDED.getType().get(object, SUSPENDED.getName())));
+		user.setSuspended(Iterables.getOnlyElement(SUSPENDED.getType().get(object, SUSPENDED.getName()), Boolean.FALSE));
+		user.setSuperuser(Iterables.getOnlyElement(SUPERUSER.getType().get(object, SUPERUSER.getName()), Boolean.FALSE));
 		String email = !tokens.isEmpty() ? Iterables.getOnlyElement(tokens).toString() : null;
 		if (email != null) {
 			user.setEmail(email);
-			user.setVerified(Iterables.getOnlyElement(VERIFIED.getType().get(object, VERIFIED.getName())));
+			user.setVerified(Iterables.getOnlyElement(VERIFIED.getType().get(object, VERIFIED.getName()), Boolean.FALSE));
 		}
 		return user;
 	}

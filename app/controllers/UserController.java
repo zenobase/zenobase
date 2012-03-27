@@ -5,7 +5,6 @@ import javax.inject.Inject;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.node.ObjectNode;
 
-import play.data.Form;
 import play.mvc.Result;
 import play.mvc.With;
 import secure.Identity;
@@ -14,7 +13,6 @@ import secure.User;
 import secure.UserManager;
 import services.CommandQueue;
 
-import commands.CreateUserCommand;
 import common.Nodes;
 
 @With(Timed.class)
@@ -57,24 +55,6 @@ public class UserController extends ControllerSupport {
 		User user = users.find(identity);
     	return ok(user != null ? user.toJson(false) : toJson(identity)); 
     }
-
-	public static Result signUp() {
-		Form<SignUpForm> form = form(SignUpForm.class);
-		SignUpForm signUp = form.bindFromRequest().get();
-		if (form.hasErrors()) {
-			return badRequest();
-		}
-		User user = users.find(signUp.getUsername());
-		if (user != null) { // TODO use version=1 instead
-			return badRequest("user exists");
-		}
-		Identity identity = IdentityHelper.in(ctx()).get(true);
-		user = new User(identity, signUp.getUsername());
-		user.setEmail(signUp.getEmail());
-		user.changePassword(signUp.getPassword());
-		queue.execute(new CreateUserCommand(users, user));
-		return created(user.toJson());
-	}
 
 	private static JsonNode toJson(Identity identity) {
 		ObjectNode object = Nodes.newObject();
