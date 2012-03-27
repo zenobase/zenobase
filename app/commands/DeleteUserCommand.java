@@ -1,5 +1,6 @@
 package commands;
 
+import secure.Identity;
 import secure.User;
 import secure.UserManager;
 
@@ -8,8 +9,8 @@ public class DeleteUserCommand extends CommandSupport {
 	private final UserManager manager;
 	private final User user;
 
-	public DeleteUserCommand(UserManager manager, User user) {
-		super(user.getIdentity());
+	public DeleteUserCommand(UserManager manager, Identity identity, User user) {
+		super(identity);
 		this.manager = manager;
 		this.user = user;
 	}
@@ -18,8 +19,8 @@ public class DeleteUserCommand extends CommandSupport {
 		manager.delete(user);
 	}
 
-	public CreateUserCommand reverse() {
-		return new CreateUserCommand(manager, user);
+	public CreateUserCommand reverse(Identity identity) {
+		return new CreateUserCommand(manager, identity, user);
 	}
 
 	@Override

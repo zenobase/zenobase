@@ -52,7 +52,7 @@ public class CommandQueueTest {
 			
 		}
 
-		public Command reverse() {
+		public Command reverse(Identity identity) {
 			throw new UnsupportedOperationException();
 		}
 

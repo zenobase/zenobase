@@ -8,7 +8,7 @@ public interface Command {
 
 	void execute();
 
-	Command reverse();
+	Command reverse(Identity identity);
 
 	String getId();
 

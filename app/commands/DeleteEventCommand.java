@@ -19,8 +19,8 @@ public class DeleteEventCommand extends CommandSupport {
 		bucket.delete(event.getId());
 	}
 
-	public Command reverse() {
-		return new CreateEventCommand(bucket, getIdentity(), event);
+	public Command reverse(Identity identity) {
+		return new CreateEventCommand(bucket, identity, event);
 	}
 
 	@Override

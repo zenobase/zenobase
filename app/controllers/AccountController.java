@@ -42,7 +42,7 @@ public class AccountController extends ControllerSupport {
 		user.setEmail(signUp.getEmail());
 		user.changePassword(signUp.getPassword());
 		user.setSuperuser(users.isEmpty());
-		queue.execute(new CreateUserCommand(users, user));
+		queue.execute(new CreateUserCommand(users, identity, user));
 		return created(user.toJson());
 	}
 
@@ -55,11 +55,11 @@ public class AccountController extends ControllerSupport {
 		if (user == null) {
 			return notFound();
 		}
-		if (!user.getIdentity().equals(identity)) {
+		if (!user.getIdentity().equals(identity) && !users.isSuperuser(identity)) {
 			return forbidden();
 		}
-		queue.execute(new CloseAccountCommand(buckets, users, user));
-		IdentityHelper.in(ctx()).unset();
+		String commandId = queue.execute(new CloseAccountCommand(identity, buckets, users, user));
+        response().setHeader("Undo", String.format("/queue/%s", commandId));
 		return noContent();
 	}
 }

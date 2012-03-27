@@ -7,7 +7,9 @@ import org.codehaus.jackson.node.ObjectNode;
 
 import play.mvc.Result;
 import play.mvc.With;
+import secure.Identity;
 import secure.IdentityHelper;
+import secure.UserManager;
 import services.CommandQueue;
 
 import commands.Command;
@@ -19,6 +21,9 @@ public class QueueController extends ControllerSupport {
 
 	@Inject
 	static CommandQueue queue;
+
+	@Inject
+	static UserManager users;
 
     public static Result get(int offset, int limit) {
     	// TODO: forbidden() unless superuser
@@ -32,18 +37,22 @@ public class QueueController extends ControllerSupport {
     }
 
     public static Result post(String id) {
+    	Identity identity = IdentityHelper.in(ctx()).get();
     	Command command = queue.find(id);
+    	if (id == null) {
+    		return unauthorized();
+    	}
     	if (command == null) {
     		return notFound();
     	}
-		if (!IdentityHelper.in(ctx()).is(command.getIdentity())) {
+		if (!identity.equals(command.getIdentity()) && !users.isSuperuser(identity)) {
 			return forbidden();
 		}
-        return undo(command);
+        return undo(command, identity);
     }
 
-    private static Result undo(Command command) {
-    	String undoId = queue.execute(command.reverse());
+    private static Result undo(Command command, Identity identity) {
+    	String undoId = queue.execute(command.reverse(identity));
     	response().setHeader("Undo",  String.format("/queue/%s", undoId));
         return created();
     }

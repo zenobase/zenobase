@@ -27,10 +27,10 @@ public class CompoundCommand extends CommandSupport {
 	}
 
 	@Override
-	public Command reverse() {
-		CompoundCommand reverse = new CompoundCommand(getIdentity());
+	public Command reverse(Identity identity) {
+		CompoundCommand reverse = new CompoundCommand(identity);
 		for (Command command : Lists.reverse(commands)) {
-			reverse.add(command.reverse());
+			reverse.add(command.reverse(identity));
 		}
 		return reverse;
 	}

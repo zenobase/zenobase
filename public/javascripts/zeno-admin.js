@@ -5,7 +5,7 @@ function HistoryAdminCtrl($scope, $http) {
 
 	$scope.offset = 0;
 	$scope.limit = 10;
-	$scope.history = [];
+	$scope.history = null;
 
 	$scope.hasPrev = function() {
 		return $scope.offset > 0;
@@ -32,6 +32,7 @@ function HistoryAdminCtrl($scope, $http) {
 		});
 	};
 
+	$scope.$on('reload', $scope.refresh);
 	$scope.refresh({});
 }
 
@@ -46,6 +47,22 @@ function BucketListAdminCtrl($scope, $http) {
 			var undo = headers('Undo');
 			console.assert(undo, 'missing undo header');
 			$scope.alert.show('Deleted a bucket.', 'alert-success', undo);
+			$scope.reload();
+		});
+	};
+}
+
+UserListAdminCtrl.$inject = ['$scope', '$http'];
+function UserListAdminCtrl($scope, $http) {
+	$scope.users = [ ];
+	$http.get('/users/?identity=*').success(function(response, code) {
+		$scope.users = response;
+	});
+	$scope.close = function(userId) {
+		$http.delete('/users/' + userId).success(function(response, code, headers) {
+			var undo = headers('Undo');
+			console.assert(undo, 'missing undo header');
+			$scope.alert.show('Closed account of ' + userId + '.', 'alert-success', undo);
 			$scope.reload();
 		});
 	};

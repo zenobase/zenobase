@@ -14,6 +14,7 @@ import play.mvc.With;
 import search.EventSearch;
 import secure.Identity;
 import secure.IdentityHelper;
+import secure.UserManager;
 import services.BucketManager;
 import services.CommandQueue;
 import services.NodeManager;
@@ -33,6 +34,9 @@ public class BucketController extends ControllerSupport {
 
 	@Inject
 	static BucketManager buckets;
+
+	@Inject
+	static UserManager users;
 
 	public static Result get(String bucketId) {
 		Identity identity = IdentityHelper.in(ctx()).get();
@@ -99,7 +103,7 @@ public class BucketController extends ControllerSupport {
     }
 
     private static Result delete(Bucket bucket, Identity identity) {
-    	if (!"owner".equals(bucket.getRole(identity))) {
+    	if (!"owner".equals(bucket.getRole(identity)) && !users.isSuperuser(identity)) {
     		return forbidden();
     	}
     	String commandId = queue.execute(new DeleteBucketCommand(buckets, identity, bucket));

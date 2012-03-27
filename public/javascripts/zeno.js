@@ -12,7 +12,7 @@ function MainCtrl($scope, $route, $http, $location) {
 
 	$scope.alert = new Alert();
 	$scope.undo = function(commandId) {
-		$http.post(commandId, 'undo', httpConfig()).success(function(response, code) {
+		$http.post('/queue/' + commandId, 'undo', httpConfig()).success(function(response, code) {
 			$scope.alert.clear();
 			evalAsync(function() { window.location.reload(); });
 		});
@@ -124,8 +124,7 @@ function UserCtrl($scope, $http, $routeParams) {
 	});
 	$scope.close = function() {
 		$http.delete('/users/' + $routeParams.userId).success(function(response) {
-			$scope.home();
-			$scope.whoami();
+			$scope.signOut();
 		});
 	};
 }

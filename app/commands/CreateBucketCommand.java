@@ -21,8 +21,8 @@ public class CreateBucketCommand extends CommandSupport {
 		manager.store(bucket, createIndex);
 	}
 
-	public DeleteBucketCommand reverse() {
-		return new DeleteBucketCommand(manager, getIdentity(), bucket);
+	public DeleteBucketCommand reverse(Identity identity) {
+		return new DeleteBucketCommand(manager, identity, bucket);
 	}
 
 	@Override

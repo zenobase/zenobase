@@ -3,6 +3,7 @@ package controllers;
 import javax.inject.Inject;
 
 import org.codehaus.jackson.JsonNode;
+import org.codehaus.jackson.node.ArrayNode;
 import org.codehaus.jackson.node.ObjectNode;
 
 import play.mvc.Result;
@@ -33,6 +34,22 @@ public class UserController extends ControllerSupport {
     	return noContent();
     }
 
+	public static Result get() {
+    	Identity identity = IdentityHelper.in(ctx()).get();
+    	if (identity == null) {
+    		return unauthorized();
+    	}
+    	if (!users.isSuperuser(identity)) {
+    		return forbidden();
+    	}
+    	ArrayNode array = Nodes.newArray();
+    	for (User user : users.find()) {
+    		ObjectNode object = user.toJson();
+    		array.add(object);
+    	}
+        return ok(array);
+	}
+
 	public static Result get(String name) {
 		Identity identity = IdentityHelper.in(ctx()).get();
 		return identity != null ? get(name, identity) : unauthorized();
@@ -48,7 +65,7 @@ public class UserController extends ControllerSupport {
 	}
 
 	public static Result find(String identity) {
-    	return find(new Identity(identity)); 
+    	return "*".equals(identity) ? get() : find(new Identity(identity)); 
     }
 
 	private static Result find(Identity identity) {

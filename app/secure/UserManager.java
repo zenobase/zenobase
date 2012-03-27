@@ -5,6 +5,7 @@ import javax.inject.Inject;
 import org.codehaus.jackson.node.ObjectNode;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
 
 import play.Logger;
@@ -12,6 +13,7 @@ import services.IndexManager;
 import services.NodeManager;
 
 import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableList;
 import common.Nodes;
 
 public class UserManager {
@@ -36,6 +38,14 @@ public class UserManager {
 			"Expected 0..1 hits for identity '%s' but got %s", identity, hits.totalHits());
 		return hits.totalHits() > 0L ?
 			User.parse(Nodes.read(hits.getAt(0).source())) : null;
+	}
+
+	public ImmutableList<User> find() {
+		ImmutableList.Builder<User> users = ImmutableList.builder();
+		for (SearchHit hit : index.search(QueryBuilders.matchAllQuery()).hits()) {
+			users.add(User.parse(Nodes.read(hit.source())));
+		}
+		return users.build();
 	}
 
 	private QueryBuilder identityEquals(Identity identity) {

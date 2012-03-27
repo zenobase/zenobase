@@ -1,5 +1,6 @@
 package commands;
 
+import secure.Identity;
 import secure.User;
 import secure.UserManager;
 
@@ -9,8 +10,8 @@ public class SuspendUserCommand extends CommandSupport {
 	private final User user;
 	private final boolean suspend;
 
-	public SuspendUserCommand(UserManager manager, User user, boolean suspend) {
-		super(user.getIdentity());
+	public SuspendUserCommand(UserManager manager, Identity identity, User user, boolean suspend) {
+		super(identity);
 		this.manager = manager;
 		this.user = user;
 		this.suspend = suspend;
@@ -21,8 +22,8 @@ public class SuspendUserCommand extends CommandSupport {
 		manager.store(user);
 	}
 
-	public SuspendUserCommand reverse() {
-		return new SuspendUserCommand(manager, user, !suspend);
+	public SuspendUserCommand reverse(Identity identity) {
+		return new SuspendUserCommand(manager, identity, user, !suspend);
 	}
 
 	@Override
