@@ -65,7 +65,7 @@ public class UserController extends ControllerSupport {
 	}
 
 	public static Result find(String identity) {
-    	return "*".equals(identity) ? get() : find(new Identity(identity)); 
+    	return identity == null ? get() : find(new Identity(identity)); 
     }
 
 	private static Result find(Identity identity) {

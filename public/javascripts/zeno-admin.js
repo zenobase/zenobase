@@ -39,7 +39,7 @@ function HistoryAdminCtrl($scope, $http) {
 BucketListAdminCtrl.$inject = ['$scope', '$http'];
 function BucketListAdminCtrl($scope, $http) {
 	$scope.buckets = [ ];
-	$http.get('/buckets/?identity=*').success(function(response, code) {
+	$http.get('/buckets/').success(function(response, code) {
 		$scope.buckets = response;
 	});
 	$scope.remove = function(bucketId) {
@@ -55,7 +55,7 @@ function BucketListAdminCtrl($scope, $http) {
 UserListAdminCtrl.$inject = ['$scope', '$http'];
 function UserListAdminCtrl($scope, $http) {
 	$scope.users = [ ];
-	$http.get('/users/?identity=*').success(function(response, code) {
+	$http.get('/users/').success(function(response, code) {
 		$scope.users = response;
 	});
 	$scope.close = function(userId) {

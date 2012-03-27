@@ -37,7 +37,7 @@ public class BucketListController extends ControllerSupport {
 	static UserManager users;
 
     public static Result get(String identity) {
-        return "*".equals(identity) ? get() : get(new Identity(identity));
+        return identity == null ? get() : get(new Identity(identity));
     }
 
     public static Result get() {

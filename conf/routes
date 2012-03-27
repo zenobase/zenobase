@@ -7,7 +7,7 @@ GET     /                            controllers.Assets.at(path="/public", file=
 GET     /admin                       controllers.Assets.at(path="/public", file="admin.html")
 
 GET     /who                         controllers.UserController.who()
-GET     /users/                      controllers.UserController.find(identity)
+GET     /users/                      controllers.UserController.find(identity ?= null)
 GET     /users/:name                 controllers.UserController.get(name)
 
 POST    /users/                      controllers.AccountController.open()
@@ -16,7 +16,7 @@ DELETE  /users/:name                 controllers.AccountController.close(name)
 POST    /signin                      controllers.SecurityController.signIn()
 POST    /signout                     controllers.SecurityController.signOut()
 
-GET     /buckets/                    controllers.BucketListController.get(identity)
+GET     /buckets/                    controllers.BucketListController.get(identity ?= null)
 POST    /buckets/                    controllers.BucketListController.post()
 
 GET     /buckets/:bucketId/          controllers.BucketController.get(bucketId)
