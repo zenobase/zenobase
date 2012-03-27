@@ -4,15 +4,17 @@ import java.util.List;
 
 import secure.Identity;
 
-import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 
 public class CompoundCommand extends CommandSupport {
 
 	private final List<Command> commands = Lists.newArrayList();
+	private final String message, reverseMessage;
 
-	public CompoundCommand(Identity identity) {
+	public CompoundCommand(Identity identity, String message, String reverseMessage) {
 		super(identity);
+		this.message = message;
+		this.reverseMessage = reverseMessage;
 	}
 
 	public void add(Command command) {
@@ -28,19 +30,15 @@ public class CompoundCommand extends CommandSupport {
 
 	@Override
 	public Command reverse(Identity identity) {
-		CompoundCommand reverse = new CompoundCommand(identity);
+		CompoundCommand reverse = new CompoundCommand(identity, reverseMessage, message);
 		for (Command command : Lists.reverse(commands)) {
 			reverse.add(command.reverse(identity));
 		}
 		return reverse;
 	}
 
-	public int size() {
-		return commands.size();
-	}
-
 	@Override
 	public String toString() {
-		return String.format("%s x %d", Iterables.getLast(commands), commands.size());
+		return message;
 	}
 }
