@@ -51,7 +51,15 @@
 			</div>
 		</div>
 
-		<ng:view></ng:view>
+		<div class="container-fluid" ng:show="user.suspended" ng:cloak>
+			<div class="alert alert-error">
+				This account has been suspended. Please contact support.
+			</div>
+		</div>
+
+		<div ng:hide="user.suspended">
+			<ng:view></ng:view>
+		</div>
 
 		<div class="container-fluid">
 			<footer>

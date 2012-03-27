@@ -6,7 +6,7 @@ MainCtrl.$inject = ['$scope', '$route', '$http', '$location'];
 function MainCtrl($scope, $route, $http, $location) {
 	$scope.whoami = function() {
 		$http.get('/who', httpConfig()).success(function(response) {
-			$scope.user = response ? new User(response.identity, response.name) : null;
+			$scope.user = response ? new User(response) : null;
 		});
 	};
 
@@ -54,10 +54,11 @@ Alert.prototype.clear = function() {
 
 User.CACHE = {};
 
-function User(id, name) {
-	this.id = id;
-	this.name = name;
-	User.CACHE[id] = this;
+function User(data) {
+	this.id = data.identity;
+	this.name = data.name;
+	this.suspended = data.suspended;
+	User.CACHE[this.id] = this;
 }
 
 User.prototype.getName = function() {
@@ -70,7 +71,7 @@ User.find = function(identity) {
 	}
 	var user;
 	$.ajax('/users/?identity=' + identity, { async : false, success : function(response) {
-		user = new User(identity, response.name);
+		user = new User(response);
 	}});
 	return user;
 };
@@ -137,7 +138,7 @@ function AuthFormCtrl($scope, $http) {
 	$scope.remember = false;
 	$scope.signIn = function() {
 		$http.post('/signin', $.param({ username : $scope.username, password : $scope.password, remember : $scope.remember }), httpConfig()).success(function(response) {
-			$scope.$parent.user = new User(response.identity, response.name);
+			$scope.$parent.user = new User(response);
 			$scope.username = '';
 			$scope.password = '';
 			$scope.dialog.modal('hide');
@@ -160,7 +161,7 @@ function SignUpFormCtrl($scope, $http) {
 	};
 	$scope.submit = function() {
 		$http.post('/users/', $.param({ username : $scope.username, password : $scope.password, email : $scope.email, remember : true }), httpConfig()).success(function(response, code) {
-			$scope.$parent.user = new User(response.identity, response.name);
+			$scope.$parent.user = new User(response);
 			$scope.username = '';
 			$scope.password = '';
 			$scope.passwordRepeat = '';
