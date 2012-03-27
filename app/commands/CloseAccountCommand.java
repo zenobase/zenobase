@@ -9,7 +9,7 @@ import services.BucketManager;
 public class CloseAccountCommand extends CompoundCommand {
 
 	public CloseAccountCommand(Identity identity, BucketManager buckets, UserManager users, User user) {
-		super(identity, String.format("closed account of %s", user.getName()), String.format("reopened account of %s", user.getName()));
+		super(identity, String.format("closed account %s", user.getName()), String.format("reopened account %s", user.getName()));
 		add(new SuspendUserCommand(users, identity, user, true));
 		for (Bucket bucket : buckets.findBuckets(user.getIdentity())) {
 			add(new DeleteBucketCommand(buckets, getIdentity(), bucket));
