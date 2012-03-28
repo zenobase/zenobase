@@ -1,8 +1,11 @@
 package secure;
 
+import java.util.List;
+
 import javax.inject.Inject;
 
 import org.codehaus.jackson.node.ObjectNode;
+import org.elasticsearch.common.collect.Lists;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
@@ -14,8 +17,8 @@ import services.IndexManager;
 import services.NodeManager;
 
 import com.google.common.base.Preconditions;
-import com.google.common.collect.ImmutableList;
 import common.Nodes;
+import common.PartialList;
 
 public class UserManager {
 
@@ -41,15 +44,17 @@ public class UserManager {
 			User.parse(Nodes.read(hits.getAt(0).source())) : null;
 	}
 
-	public ImmutableList<User> find() {
-		ImmutableList.Builder<User> users = ImmutableList.builder();
+	public PartialList<User> find(int offset, int limit) {
+		List<User> users = Lists.newArrayList();
 		SearchSourceBuilder search = new SearchSourceBuilder()
 			.query(QueryBuilders.matchAllQuery())
+			.from(offset).size(limit)
 			.sort(User.NAME.getName());
-		for (SearchHit hit : index.search(search).hits()) {
+		SearchHits hits = index.search(search).hits();
+		for (SearchHit hit : hits) {
 			users.add(User.parse(Nodes.read(hit.source())));
 		}
-		return users.build();
+		return new PartialList<User>(users, hits.totalHits());
 	}
 
 	private QueryBuilder identityEquals(Identity identity) {

@@ -7,7 +7,7 @@ GET     /                            controllers.Assets.at(path="/public", file=
 GET     /admin                       controllers.Assets.at(path="/public", file="admin.html")
 
 GET     /who                         controllers.UserController.who()
-GET     /users/                      controllers.UserController.find(identity ?= null)
+GET     /users/                      controllers.UserController.find(identity ?= null, offset : Int ?= 0, limit : Int ?= java.lang.Integer.MAX_VALUE)
 GET     /users/:name                 controllers.UserController.get(name)
 
 POST    /users/                      controllers.AccountController.open()

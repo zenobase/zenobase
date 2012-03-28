@@ -15,6 +15,7 @@ import secure.UserManager;
 import services.CommandQueue;
 
 import common.Nodes;
+import common.PartialList;
 
 @With(Timed.class)
 public class UserController extends ControllerSupport {
@@ -34,22 +35,6 @@ public class UserController extends ControllerSupport {
     	return noContent();
     }
 
-	public static Result get() {
-    	Identity identity = IdentityHelper.in(ctx()).get();
-    	if (identity == null) {
-    		return unauthorized();
-    	}
-    	if (!users.isSuperuser(identity)) {
-    		return forbidden();
-    	}
-    	ArrayNode array = Nodes.newArray();
-    	for (User user : users.find()) {
-    		ObjectNode object = user.toJson();
-    		array.add(object);
-    	}
-        return ok(array);
-	}
-
 	public static Result get(String name) {
 		Identity identity = IdentityHelper.in(ctx()).get();
 		return identity != null ? get(name, identity) : unauthorized();
@@ -64,9 +49,27 @@ public class UserController extends ControllerSupport {
 		return user.getIdentity().equals(identity) ? ok(user.toJson(true)) : forbidden();
 	}
 
-	public static Result find(String identity) {
-    	return identity == null ? get() : find(new Identity(identity)); 
+	public static Result find(String identity, int offset, int limit) {
+		return identity == null ? find(offset, limit) : find(new Identity(identity)); 
     }
+
+	public static Result find(int offset, int limit) {
+    	Identity identity = IdentityHelper.in(ctx()).get();
+    	if (identity == null) {
+    		return unauthorized();
+    	}
+    	if (!users.isSuperuser(identity)) {
+    		return forbidden();
+    	}
+    	PartialList<User> result = users.find(offset, limit);
+    	ObjectNode object = Nodes.newObject();
+    	object.put("total", result.size());
+    	ArrayNode usersNode = object.putArray("users");
+    	for (User user : result.getElements()) {
+    		usersNode.add(user.toJson());
+    	}
+        return ok(object);
+	}
 
 	private static Result find(Identity identity) {
 		User user = users.find(identity);

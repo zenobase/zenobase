@@ -4,14 +4,15 @@ HistoryAdminCtrl.$inject = ['$scope', '$http'];
 function HistoryAdminCtrl($scope, $http) {
 
 	$scope.offset = 0;
-	$scope.limit = 10;
-	$scope.history = null;
+	$scope.limit = 5;
+	$scope.total = 0;
+	$scope.commands = null;
 
 	$scope.hasPrev = function() {
 		return $scope.offset > 0;
 	}
 	$scope.hasNext = function() {
-		return $scope.history && $scope.offset + $scope.limit < $scope.history.total;
+		return $scope.offset + $scope.limit < $scope.total;
 	}
 	$scope.prev = function() {
 		$scope.refresh({ offset : $scope.offset - $scope.limit });
@@ -28,7 +29,8 @@ function HistoryAdminCtrl($scope, $http) {
 	$scope.refresh = function(params) {
 		$http.get('/queue/?' + $.param($.extend($scope.params(), params))).success(function(response) {
 			$.extend($scope, params);
-			$scope.history = response;
+			$scope.total = response.total;
+			$scope.commands = response.commands;
 		});
 	};
 
@@ -54,10 +56,37 @@ function BucketListAdminCtrl($scope, $http) {
 
 UserListAdminCtrl.$inject = ['$scope', '$http'];
 function UserListAdminCtrl($scope, $http) {
-	$scope.users = [ ];
-	$http.get('/users/').success(function(response, code) {
-		$scope.users = response;
-	});
+
+	$scope.offset = 0;
+	$scope.limit = 5;
+	$scope.total = 0;
+	$scope.users = null;
+
+	$scope.hasPrev = function() {
+		return $scope.offset > 0;
+	}
+	$scope.hasNext = function() {
+		return $scope.offset + $scope.limit < $scope.total;
+	}
+	$scope.prev = function() {
+		$scope.refresh({ offset : $scope.offset - $scope.limit });
+	}
+	$scope.next = function() {
+		$scope.refresh({ offset : $scope.offset + $scope.limit });
+	}
+	$scope.params = function() {
+		return {
+			offset : $scope.offset,
+			limit : $scope.limit
+		};
+	}
+	$scope.refresh = function(params) {
+		$http.get('/users/?' + $.param($.extend($scope.params(), params))).success(function(response) {
+			$.extend($scope, params);
+			$scope.total = response.total;
+			$scope.users = response.users;
+		});
+	};
 	$scope.close = function(userId) {
 		$http.delete('/users/' + userId).success(function(response, code, headers) {
 			var undo = headers('Undo');
@@ -66,4 +95,7 @@ function UserListAdminCtrl($scope, $http) {
 			$scope.reload();
 		});
 	};
+
+	$scope.$on('reload', $scope.refresh);
+	$scope.refresh({});
 }
