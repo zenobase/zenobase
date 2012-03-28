@@ -1,5 +1,7 @@
 package controllers;
 
+import io.UserPrinter;
+
 import javax.inject.Inject;
 
 import org.codehaus.jackson.JsonNode;
@@ -14,6 +16,7 @@ import secure.User;
 import secure.UserManager;
 import services.CommandQueue;
 
+import common.Callback;
 import common.Nodes;
 import common.PartialList;
 
@@ -61,6 +64,9 @@ public class UserController extends ControllerSupport {
     	if (!users.isSuperuser(identity)) {
     		return forbidden();
     	}
+    	if (offset == 0 && limit == Integer.MAX_VALUE) {
+    		return findAll();
+    	}
     	PartialList<User> result = users.find(offset, limit);
     	ObjectNode object = Nodes.newObject();
     	object.put("total", result.size());
@@ -69,6 +75,23 @@ public class UserController extends ControllerSupport {
     		usersNode.add(user.toJson());
     	}
         return ok(object);
+	}
+
+	private static Result findAll() {
+    	Chunks<String> chunks = new StringChunks() {
+			@Override
+			public void onReady(final Out<String> out) {
+		    	final UserPrinter printer = new UserPrinter(out);
+				users.findAll(new Callback<User>() {
+					@Override
+					public void call(User user) {
+						printer.print(user);
+					}
+				});
+		    	out.close();
+			}
+		};
+        return ok(chunks);
 	}
 
 	private static Result find(Identity identity) {

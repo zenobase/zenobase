@@ -10,6 +10,7 @@ import org.elasticsearch.client.Client;
 import org.elasticsearch.client.Requests;
 import org.elasticsearch.common.settings.ImmutableSettings;
 import org.elasticsearch.common.settings.Settings;
+import org.elasticsearch.common.unit.TimeValue;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 
@@ -64,6 +65,18 @@ public class IndexManager {
 	public SearchResponse search(SearchSourceBuilder search) {
 		return client.search(Requests.searchRequest(indexName)
 			.searchType(SearchType.DFS_QUERY_THEN_FETCH).source(search)).actionGet();
+	}
+
+	public SearchResponse scroll(SearchSourceBuilder search) {
+		final TimeValue timeout = TimeValue.timeValueMillis(1000);
+		SearchResponse response = client.search(Requests.searchRequest(indexName)
+			.searchType(SearchType.SCAN).scroll(timeout).source(search)).actionGet();
+		return scroll(response.getScrollId());
+	}
+
+	public SearchResponse scroll(String scrollId) {
+		final TimeValue timeout = TimeValue.timeValueMillis(1000);
+		return client.searchScroll(Requests.searchScrollRequest(indexName).scrollId(scrollId).scroll(timeout)).actionGet();
 	}
 
 	public void delete(QueryBuilder query) {

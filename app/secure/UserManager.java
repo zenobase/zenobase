@@ -5,6 +5,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import org.codehaus.jackson.node.ObjectNode;
+import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.common.collect.Lists;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
@@ -17,6 +18,7 @@ import services.IndexManager;
 import services.NodeManager;
 
 import com.google.common.base.Preconditions;
+import common.Callback;
 import common.Nodes;
 import common.PartialList;
 
@@ -55,6 +57,16 @@ public class UserManager {
 			users.add(User.parse(Nodes.read(hit.source())));
 		}
 		return new PartialList<User>(users, hits.totalHits());
+	}
+
+	public void findAll(Callback<User> callback) {
+		SearchSourceBuilder search = new SearchSourceBuilder()
+			.query(QueryBuilders.matchAllQuery()).size(2);
+		for (SearchResponse response = index.scroll(search); response.hits().hits().length > 0; response = index.scroll(response.getScrollId())) {
+			for (SearchHit hit : response.hits()) {
+				callback.call(User.parse(Nodes.read(hit.source())));
+			}
+		}
 	}
 
 	private QueryBuilder identityEquals(Identity identity) {
