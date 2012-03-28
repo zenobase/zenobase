@@ -174,14 +174,38 @@ function SignUpFormCtrl($scope, $http) {
 
 BucketListCtrl.$inject = ['$scope', '$http'];
 function BucketListCtrl($scope, $http) {
-	$scope.buckets = [ ];
-	$scope.$watch('user', function(user) {
-		if (user) {
-			$http.get('/buckets/?identity=' + user.id).success(function(response, code) {
-				$scope.buckets = response;
-			});
-		}
-	});
+
+	$scope.offset = 0;
+	$scope.limit = 5;
+	$scope.total = 0;
+	$scope.buckets = null;
+
+	$scope.hasPrev = function() {
+		return $scope.offset > 0;
+	}
+	$scope.hasNext = function() {
+		return $scope.offset + $scope.limit < $scope.total;
+	}
+	$scope.prev = function() {
+		$scope.refresh({ offset : $scope.offset - $scope.limit });
+	}
+	$scope.next = function() {
+		$scope.refresh({ offset : $scope.offset + $scope.limit });
+	}
+	$scope.params = function() {
+		return {
+			identity : $scope.user.id,
+			offset : $scope.offset,
+			limit : $scope.limit
+		};
+	}
+	$scope.refresh = function(params) {
+		$http.get('/buckets/?' + $.param($.extend($scope.params(), params))).success(function(response) {
+			$.extend($scope, params);
+			$scope.total = response.total;
+			$scope.buckets = response.buckets;
+		});
+	};
 	$scope.remove = function(bucketId) {
 		$http.delete('/buckets/' + bucketId + '/').success(function(response, code, headers) {
 			var undo = headers('Undo');
@@ -190,6 +214,13 @@ function BucketListCtrl($scope, $http) {
 			$scope.reload();
 		});
 	};
+
+	$scope.$watch('user', function(user) {
+		if (user) {
+			$scope.refresh({});
+		}
+	});
+	$scope.$on('reload', $scope.refresh);
 }
 
 CreateBucketDialogCtrl.$inject = ['$scope', '$http', '$location'];

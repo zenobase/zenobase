@@ -2,6 +2,8 @@ package secure;
 
 public class Role {
 
+	public static final String OWNER = "owner";
+
 	private final Identity identity;
 	private final String role;
 

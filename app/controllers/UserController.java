@@ -68,13 +68,13 @@ public class UserController extends ControllerSupport {
     		return findAll();
     	}
     	PartialList<User> result = users.find(offset, limit);
-    	ObjectNode object = Nodes.newObject();
-    	object.put("total", result.size());
-    	ArrayNode usersNode = object.putArray("users");
+    	ObjectNode resultNode = Nodes.newObject();
+    	resultNode.put("total", result.size());
+    	ArrayNode usersNode = resultNode.putArray("users");
     	for (User user : result.getElements()) {
     		usersNode.add(user.toJson());
     	}
-        return ok(object);
+        return ok(resultNode);
 	}
 
 	private static Result findAll() {
@@ -82,7 +82,7 @@ public class UserController extends ControllerSupport {
 			@Override
 			public void onReady(final Out<String> out) {
 		    	final UserPrinter printer = new UserPrinter(out);
-				users.findAll(new Callback<User>() {
+				users.find(new Callback<User>() {
 					@Override
 					public void call(User user) {
 						printer.print(user);

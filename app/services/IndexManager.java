@@ -12,9 +12,11 @@ import org.elasticsearch.common.settings.ImmutableSettings;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.unit.TimeValue;
 import org.elasticsearch.index.query.QueryBuilder;
+import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 
 import com.google.common.base.Preconditions;
+import common.Callback;
 import common.Nodes;
 
 public class IndexManager {
@@ -67,14 +69,23 @@ public class IndexManager {
 			.searchType(SearchType.DFS_QUERY_THEN_FETCH).source(search)).actionGet();
 	}
 
-	public SearchResponse scroll(SearchSourceBuilder search) {
+	public void search(QueryBuilder query, Callback<ObjectNode> callback) {
+		SearchSourceBuilder search = new SearchSourceBuilder().query(query).size(100);
+		for (SearchResponse response = scroll(search); response.hits().hits().length > 0; response = scroll(response.getScrollId())) {
+			for (SearchHit hit : response.hits()) {
+				callback.call(Nodes.read(hit.source()));
+			}
+		}
+	}
+
+	private SearchResponse scroll(SearchSourceBuilder search) {
 		final TimeValue timeout = TimeValue.timeValueMillis(1000);
 		SearchResponse response = client.search(Requests.searchRequest(indexName)
 			.searchType(SearchType.SCAN).scroll(timeout).source(search)).actionGet();
 		return scroll(response.getScrollId());
 	}
 
-	public SearchResponse scroll(String scrollId) {
+	private SearchResponse scroll(String scrollId) {
 		final TimeValue timeout = TimeValue.timeValueMillis(1000);
 		return client.searchScroll(Requests.searchScrollRequest(indexName).scrollId(scrollId).scroll(timeout)).actionGet();
 	}

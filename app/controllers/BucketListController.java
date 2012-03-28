@@ -1,5 +1,7 @@
 package controllers;
 
+import io.BucketPrinter;
+
 import javax.inject.Inject;
 
 import models.Bucket;
@@ -18,8 +20,10 @@ import services.CommandQueue;
 import services.NodeManager;
 
 import commands.CreateBucketCommand;
+import common.Callback;
 import common.Generator;
 import common.Nodes;
+import common.PartialList;
 
 @With(Timed.class)
 public class BucketListController extends ControllerSupport {
@@ -36,11 +40,11 @@ public class BucketListController extends ControllerSupport {
 	@Inject
 	static UserManager users;
 
-    public static Result get(String identity) {
-        return identity == null ? get() : get(new Identity(identity));
+    public static Result find(String identity, int offset, int limit) {
+        return identity == null ? find(offset, limit) : find(new Identity(identity), offset, limit);
     }
 
-    public static Result get() {
+    private static Result find(int offset, int limit) {
     	Identity identity = IdentityHelper.in(ctx()).get();
     	if (identity == null) {
     		return unauthorized();
@@ -48,30 +52,50 @@ public class BucketListController extends ControllerSupport {
     	if (!users.isSuperuser(identity)) {
     		return forbidden();
     	}
-    	ArrayNode array = Nodes.newArray();
-    	for (Bucket bucket : buckets.findBuckets()) {
-    		ObjectNode object = bucket.toJson();
-    		object.put("size", bucket.getSize());
-    		array.add(object);
+    	if (offset == 0 && limit == Integer.MAX_VALUE) {
+    		return findAll();
     	}
-        return ok(array);
+        return ok(toJson(buckets.findBuckets(offset, limit)));
     }
 
-    private static Result get(Identity identity) {
+    private static Result find(Identity identity, int offset, int limit) {
     	Identity current = IdentityHelper.in(ctx()).get();
     	if (current == null) {
     		return unauthorized();
     	}
-    	if (!identity.equals(current)) {
+    	if (!identity.equals(current) && !users.isSuperuser(identity)) {
     		return forbidden();
     	}
-    	ArrayNode array = Nodes.newArray();
-    	for (Bucket bucket : buckets.findBuckets(identity)) {
-    		ObjectNode object = bucket.toJson();
-    		object.put("size", bucket.getSize());
-    		array.add(object);
+        return ok(toJson(buckets.findBuckets(identity, offset, limit)));
+    }
+
+    private static Result findAll() {
+    	Chunks<String> chunks = new StringChunks() {
+			@Override
+			public void onReady(final Out<String> out) {
+		    	final BucketPrinter printer = new BucketPrinter(out);
+				buckets.findBuckets(new Callback<Bucket>() {
+					@Override
+					public void call(Bucket bucket) {
+						printer.print(bucket);
+					}
+				});
+		    	out.close();
+			}
+		};
+        return ok(chunks);
+	}
+
+    private static ObjectNode toJson(PartialList<Bucket> results) {
+    	ObjectNode resultNode = Nodes.newObject();
+    	resultNode.put("total", results.size());
+    	ArrayNode bucketsNode = resultNode.putArray("buckets");
+    	for (Bucket bucket : results.getElements()) {
+    		ObjectNode bucketNode = bucket.toJson();
+    		bucketNode.put("size", bucket.getSize());
+    		bucketsNode.add(bucketNode);
     	}
-        return ok(array);
+    	return resultNode;
     }
 
     public static Result post() {
@@ -91,7 +115,7 @@ public class BucketListController extends ControllerSupport {
 		String id = Generator.id();
 		Bucket bucket = new Bucket(node.getIndex(id), id);
 		bucket.setLabel(label);
-		bucket.addRole(new Role(identity, "owner"));
+		bucket.addRole(new Role(identity, Role.OWNER));
 		return bucket;
 	}
 }

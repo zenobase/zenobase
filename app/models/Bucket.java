@@ -54,6 +54,15 @@ public class Bucket {
 		return null;
 	}
 
+	public Identity getIdentity(String role) {
+		for (Role r : roles) {
+			if (r.getRole().equals(role)) {
+				return r.getIdentity();
+			}
+		}
+		return null;
+	}
+
 	public void addRole(Role role) {
 		roles.add(role);
 	}

@@ -40,10 +40,37 @@ function HistoryAdminCtrl($scope, $http) {
 
 BucketListAdminCtrl.$inject = ['$scope', '$http'];
 function BucketListAdminCtrl($scope, $http) {
-	$scope.buckets = [ ];
-	$http.get('/buckets/').success(function(response, code) {
-		$scope.buckets = response;
-	});
+
+	$scope.offset = 0;
+	$scope.limit = 5;
+	$scope.total = 0;
+	$scope.buckets = null;
+
+	$scope.hasPrev = function() {
+		return $scope.offset > 0;
+	}
+	$scope.hasNext = function() {
+		return $scope.offset + $scope.limit < $scope.total;
+	}
+	$scope.prev = function() {
+		$scope.refresh({ offset : $scope.offset - $scope.limit });
+	}
+	$scope.next = function() {
+		$scope.refresh({ offset : $scope.offset + $scope.limit });
+	}
+	$scope.params = function() {
+		return {
+			offset : $scope.offset,
+			limit : $scope.limit
+		};
+	}
+	$scope.refresh = function(params) {
+		$http.get('/buckets/?' + $.param($.extend($scope.params(), params))).success(function(response) {
+			$.extend($scope, params);
+			$scope.total = response.total;
+			$scope.buckets = response.buckets;
+		});
+	};
 	$scope.remove = function(bucketId) {
 		$http.delete('/buckets/' + bucketId + '/').success(function(response, code, headers) {
 			var undo = headers('Undo');
@@ -52,6 +79,9 @@ function BucketListAdminCtrl($scope, $http) {
 			$scope.reload();
 		});
 	};
+
+	$scope.$on('reload', $scope.refresh);
+	$scope.refresh({});
 }
 
 UserListAdminCtrl.$inject = ['$scope', '$http'];

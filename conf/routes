@@ -16,7 +16,7 @@ DELETE  /users/:name                 controllers.AccountController.close(name)
 POST    /signin                      controllers.SecurityController.signIn()
 POST    /signout                     controllers.SecurityController.signOut()
 
-GET     /buckets/                    controllers.BucketListController.get(identity ?= null)
+GET     /buckets/                    controllers.BucketListController.find(identity ?= null, offset : Int ?= 0, limit : Int ?= java.lang.Integer.MAX_VALUE)
 POST    /buckets/                    controllers.BucketListController.post()
 
 GET     /buckets/:bucketId/          controllers.BucketController.get(bucketId)
