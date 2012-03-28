@@ -4,7 +4,7 @@
 
 # Home page
 GET     /                            controllers.Assets.at(path="/public", file="index.html")
-GET     /admin                       controllers.Assets.at(path="/public", file="admin.html")
+GET     /admin/                      controllers.Assets.at(path="/public/admin", file="index.html")
 
 GET     /who                         controllers.UserController.who()
 GET     /users/                      controllers.UserController.find(identity ?= null, offset : Int ?= 0, limit : Int ?= java.lang.Integer.MAX_VALUE)

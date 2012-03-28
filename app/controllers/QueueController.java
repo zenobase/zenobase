@@ -26,7 +26,13 @@ public class QueueController extends ControllerSupport {
 	static UserManager users;
 
     public static Result get(int offset, int limit) {
-    	// TODO: forbidden() unless superuser
+    	Identity identity = IdentityHelper.in(ctx()).get();
+    	if (identity == null) {
+    		return unauthorized();
+    	}
+    	if (!users.isSuperuser(identity)) {
+    		return forbidden();
+    	}
     	ObjectNode object = Nodes.newObject();
     	object.put("total", queue.size());
     	ArrayNode commandsNode = object.putArray("commands");
@@ -38,10 +44,10 @@ public class QueueController extends ControllerSupport {
 
     public static Result post(String id) {
     	Identity identity = IdentityHelper.in(ctx()).get();
-    	Command command = queue.find(id);
-    	if (id == null) {
+    	if (identity == null) {
     		return unauthorized();
     	}
+    	Command command = queue.find(id);
     	if (command == null) {
     		return notFound();
     	}

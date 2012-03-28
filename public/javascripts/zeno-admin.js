@@ -1,4 +1,10 @@
-angular.module('ZenoAdminModule', [ 'ZenoModule' ]);
+var adminApp = angular.module('ZenoAdminModule', [ 'ZenoModule' ]);
+
+adminApp.config(function($routeProvider) {
+	$routeProvider.when('/', { template: '/public/admin/dashboard.html' });
+	$routeProvider.otherwise({ redirectTo : '/' });
+});
+
 
 HistoryAdminCtrl.$inject = ['$scope', '$http'];
 function HistoryAdminCtrl($scope, $http) {
