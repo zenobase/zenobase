@@ -1,12 +1,13 @@
 <div class="container-fluid">
 
 	<div class="hero-unit" ng:controller="HomeCtrl">
-		<h1>Collect, Analyze & Share Data</h1>
+		<h1>Data Happens.</h1>
+		<br/>
+		<p>Collect and analyze <a href="#/buckets/qrs2pf24e2/">your activities</a>, or just about anything else.</p>
 		<br/>
 		<p><img src="/public/img/dashboard-screenshot.png"/></p>
 		<br/>
 		<p>
-			<a class="btn btn-large" href="#/buckets/qrs2pf24e2/">Sample Data</a>
 			<a class="btn btn-primary btn-large" ng:click="create()" ng:hide="user">Enter Data &raquo;</a>
 			<a class="btn btn-primary btn-large" href="#/users/{{user.getName()}}" ng:show="user">Your Data &raquo;</a>
 		</p>

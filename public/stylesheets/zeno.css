@@ -45,10 +45,7 @@ header {
 
 footer {
 	margin-top: 18px;
-	border-top: 1px solid #eee;
-	padding-top: 24px;
 	padding-bottom: 9px;
-	background-color: #f8f8f8;
 	color: #999;
 }
 
@@ -119,4 +116,8 @@ h3 i {
 
 .b {
 	font-weight: bold; 
+}
+
+.hero-unit {
+	margin-bottom: 0;
 }
