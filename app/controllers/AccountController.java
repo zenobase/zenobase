@@ -33,12 +33,11 @@ public class AccountController extends ControllerSupport {
 		if (form.hasErrors()) {
 			return badRequest();
 		}
-		User user = users.find(signUp.getUsername());
-		if (user != null) {
+		if (users.find(signUp.getUsername()) != null) {
 			return badRequest("user exists");
 		}
 		Identity identity = IdentityHelper.in(ctx()).get(true);
-		user = new User(identity, signUp.getUsername());
+		User user = new User(identity, signUp.getUsername());
 		user.setEmail(signUp.getEmail());
 		user.changePassword(signUp.getPassword());
 		user.setSuperuser(users.isEmpty());

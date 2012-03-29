@@ -4,6 +4,7 @@ import org.codehaus.jackson.node.ObjectNode;
 import org.elasticsearch.action.admin.indices.create.CreateIndexResponse;
 import org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest;
 import org.elasticsearch.action.get.GetResponse;
+import org.elasticsearch.action.index.IndexRequest.OpType;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.search.SearchType;
 import org.elasticsearch.client.Client;
@@ -48,8 +49,16 @@ public class IndexManager {
 		client.admin().indices().preparePutMapping(indexName).setType(typeName).setSource(mapping.toString()).execute().actionGet();
 	}
 
-	public void index(String type, String id, ObjectNode object, boolean refresh) {
-		client.prepareIndex(indexName, type, id).setSource(Nodes.toByteArray(object)).setRefresh(refresh).execute().actionGet();
+	public void store(String type, String id, ObjectNode object, boolean refresh) {
+		index(type, id, object, OpType.CREATE, refresh);
+	}
+
+	public void update(String type, String id, ObjectNode object, boolean refresh) {
+		index(type, id, object, OpType.INDEX, refresh);
+	}
+
+	private void index(String type, String id, ObjectNode object, OpType operation, boolean refresh) {
+		client.prepareIndex(indexName, type, id).setSource(Nodes.toByteArray(object)).setOpType(operation).setRefresh(refresh).execute().actionGet();
 	}
 
 	public void delete(String type, String id) {

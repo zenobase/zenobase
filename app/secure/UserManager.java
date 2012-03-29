@@ -91,7 +91,11 @@ public class UserManager {
 	}
 
 	public void store(User user) {
-		index.index(User.TYPE_NAME, user.getName(), user.toJson(), true);
+		index.store(User.TYPE_NAME, user.getName(), user.toJson(), true);
+	}
+
+	public void update(User user) {
+		index.update(User.TYPE_NAME, user.getName(), user.toJson(), true);
 	}
 
 	public void delete(User user) {

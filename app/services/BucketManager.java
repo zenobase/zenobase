@@ -62,7 +62,7 @@ public class BucketManager {
 				throw new IllegalStateException("Can't find index: " + bucket.getId());
 			}
 		}
-		this.index.index(Bucket.TYPE_NAME, bucket.getId(), bucket.toJson(), true);
+		this.index.store(Bucket.TYPE_NAME, bucket.getId(), bucket.toJson(), true);
 	}
 
 	public void deleteBucket(String id) {
