@@ -133,6 +133,9 @@ function UserCtrl($scope, $http, $routeParams) {
 		$scope.userInfo = $scope.user;
 	}
 
+	$scope.editable = function() {
+		return $scope.user && $scope.userInfo && $scope.userInfo.id == $scope.user.id;
+	};
 	$scope.close = function() {
 		if (confirm('Close your account and delete all associated data?')) {
 			$http.delete('/users/' + $routeParams.userId).success(function(response) {
