@@ -24,7 +24,7 @@
 			<p class="logo pull-left"><a href="#/"><img src="/public/img/logo.png" alt="ZenoBase"/></a></p>
 			<div class="pull-right ng-cloak" ng:cloak>
 				<p ng:show="user.name">
-					<i class="icon-user"></i> <a href="#/users/{{user.name}}">{{user.name}}</a> | <a ng:click="signOut()">Sign out</a>
+					<i class="icon-user"></i> <a href="#/users/{{user.getName()}}">{{user.getName()}}</a> | <a ng:click="signOut()">Sign out</a>
 				</p>
 				<p ng:hide="user">
 					<a href="#sign-in-dialog" data-toggle="modal">Sign in</a>

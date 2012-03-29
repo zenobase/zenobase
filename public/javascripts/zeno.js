@@ -120,9 +120,11 @@ UserCtrl.$inject = ['$scope', '$http', '$routeParams'];
 function UserCtrl($scope, $http, $routeParams) {
 	$scope.userId = $routeParams.userId;
 	$scope.user = null;
-	$http.get('/users/' + $scope.userId).success(function(response) {
-		$scope.user = response;
-	});
+	if ($scope.userId !== 'guest') {
+		$http.get('/users/' + $scope.userId).success(function(response) {
+			$scope.user = response;
+		});
+	}
 	$scope.close = function() {
 		$http.delete('/users/' + $routeParams.userId).success(function(response) {
 			$scope.signOut();
@@ -221,6 +223,20 @@ function BucketListCtrl($scope, $http) {
 		}
 	});
 	$scope.$on('reload', $scope.refresh);
+}
+
+HomeCtrl.$inject = ['$scope', '$http', '$location'];
+function HomeCtrl($scope, $http, $location) {
+	$scope.label = 'My Data';
+	$scope.create = function() {
+		$http.post('/buckets/', { label : $scope.label}).success(function(data, status, headers) {
+			var location = headers('Location');
+			console.assert(status == 201, status);
+			console.assert(location, 'missing location header');
+			$location.url(location);
+			$scope.whoami();
+		});
+	}
 }
 
 CreateBucketDialogCtrl.$inject = ['$scope', '$http', '$location'];
