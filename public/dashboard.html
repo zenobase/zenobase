@@ -9,7 +9,7 @@
 			<a ng:click="refresh()" title="Refresh"><i class="icon-refresh"></i></a>
 		</p>
 		<p class="pull-left" style="margin-left: 8px; margin-top: 6px; vertical-align: middle">
-			<a data-toggle="modal" href="#create-event-dialog"><i class="icon-plus" title="Add..."></i></a>
+			<a data-toggle="modal" href="#create-event-dialog"><i class="icon-plus" title="Add Event"></i></a>
 		</p>
 		<ul class="nav nav-pills" style="clear: both; margin-bottom:12px;" ng:show="filters">
 			<li class="active" ng:repeat="filter in filters">
@@ -76,7 +76,7 @@
 		<form name="createEventForm" ng:submit="create()">
 			<div class="modal-header">
 				<a class="close" data-dismiss="modal">&times;</a>
-				<h3>Create Event</h3>
+				<h3>Add Event</h3>
 			</div>
 			<div class="modal-body">
 				<label for="template">Template</label>
