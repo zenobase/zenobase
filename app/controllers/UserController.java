@@ -16,6 +16,7 @@ import secure.User;
 import secure.UserManager;
 import services.CommandQueue;
 
+import commands.UpdateUserCommand;
 import common.Callback;
 import common.Nodes;
 import common.PartialList;
@@ -98,6 +99,60 @@ public class UserController extends ControllerSupport {
 		User user = users.find(identity);
     	return ok(user != null ? user.toJson(false) : toJson(identity)); 
     }
+
+	public static class UserUpdate {
+
+		private final String email;
+		private final String password;
+
+		public UserUpdate(String email, String password) {
+			this.email = email;
+			this.password = password;
+		}
+
+		public String getEmail() {
+			return email;
+		}
+
+		public String getPassword() {
+			return password;
+		}
+
+		public boolean isEmpty() {
+			return email == null && password == null;
+		}
+
+		public static UserUpdate parse(ObjectNode objectNode) {
+			String email = objectNode.findPath(User.EMAIL.getName()).getTextValue();
+			String password = objectNode.findPath(User.PASSWORD.getName()).getTextValue();
+			return new UserUpdate(email, password);
+		}
+	}
+
+	public static Result update(String name) {
+		ObjectNode body = (ObjectNode) request().body().asJson();
+		if (body == null) {
+			return badRequest();
+		}
+		Identity identity = IdentityHelper.in(ctx()).get();
+    	if (identity == null) {
+    		return unauthorized();
+    	}
+		User user = users.find(name);
+    	if (user == null) {
+    		return notFound();
+    	}
+    	if (!user.getIdentity().equals(identity) && !users.isSuperuser(identity)) {
+    		return forbidden();
+    	}
+    	UserUpdate update = UserUpdate.parse(body);
+    	if (!update.isEmpty()) {
+    		String commandId = queue.execute(new UpdateUserCommand(users, identity, user, update.getEmail(), update.getPassword(), update.getEmail() != null));
+            response().setHeader("Undo", String.format("/queue/%s", commandId));
+    		return noContent();
+    	}
+		return badRequest();
+	}
 
 	private static JsonNode toJson(Identity identity) {
 		ObjectNode object = Nodes.newObject();

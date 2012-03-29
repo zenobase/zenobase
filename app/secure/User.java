@@ -32,7 +32,7 @@ public class User {
 
 	private final Identity identity;
 	private final String name;
-	private final DateTime created;
+	private DateTime created;
 	private String password;
 	private String email;
 	private boolean verified;
@@ -63,12 +63,16 @@ public class User {
 		return created;
 	}
 
-	public boolean passwordEquals(String password) {
-		return BCrypt.checkpw(password, this.password);
+	public String getPassword() {
+		return password;
 	}
 
 	public void setPassword(String password) {
 		this.password = password;
+	}
+
+	public boolean passwordEquals(String password) {
+		return BCrypt.checkpw(password, this.password);
 	}
 
 	public void changePassword(String password) {
@@ -110,6 +114,17 @@ public class User {
 	@Override
 	public String toString() {
 		return name;
+	}
+
+	public User copy() {
+		User copy = new User(identity, name);
+		copy.created = created;
+		copy.email = email;
+		copy.password = password;
+		copy.verified = verified;
+		copy.superuser = superuser;
+		copy.suspended = suspended;
+		return copy;
 	}
 
 	public static ObjectNode getSchema() {

@@ -12,7 +12,7 @@ function MainCtrl($scope, $route, $http, $location) {
 
 	$scope.alert = new Alert();
 	$scope.undo = function(commandId) {
-		$http.post('/queue/' + commandId, 'undo', httpConfig()).success(function(response, code) {
+		$http.post(commandId, 'undo', httpConfig()).success(function(response, code) {
 			$scope.alert.clear();
 			evalAsync(function() { window.location.reload(); });
 		});
@@ -20,8 +20,12 @@ function MainCtrl($scope, $route, $http, $location) {
 	$scope.reload = function() {
 		$route.reload();
 	};
+	$scope.broadcast = function(event) {
+		$scope.$broadcast(event);
+	};
 	$scope.signOut = function() {
 		$http.post('/signout', httpConfig()).success(function(response, code) {
+				$scope.alert.clear();
 				$scope.user = null;
 				if ($location.url() == '/') {
 					$scope.reload();
@@ -56,8 +60,7 @@ User.CACHE = {};
 
 function User(data) {
 	this.id = data.identity;
-	this.name = data.name;
-	this.suspended = data.suspended;
+	$.extend(this, data);
 	User.CACHE[this.id] = this;
 }
 
@@ -118,18 +121,64 @@ var locale = {
 
 UserCtrl.$inject = ['$scope', '$http', '$routeParams'];
 function UserCtrl($scope, $http, $routeParams) {
+
 	$scope.userId = $routeParams.userId;
-	$scope.user = null;
+	$scope.userInfo = null;
+
 	if ($scope.userId !== 'guest') {
 		$http.get('/users/' + $scope.userId).success(function(response) {
-			$scope.user = response;
+			$scope.userInfo = new User(response);
 		});
+	} else {
+		$scope.userInfo = $scope.user;
 	}
+
 	$scope.close = function() {
-		$http.delete('/users/' + $routeParams.userId).success(function(response) {
-			$scope.signOut();
-		});
+		if (confirm('Close your account and delete all associated data?')) {
+			$http.delete('/users/' + $routeParams.userId).success(function(response) {
+				$scope.signOut();
+			});
+		}
 	};
+}
+
+UserFormCtrl.$inject = ['$scope', '$http'];
+function UserFormCtrl($scope, $http) {
+
+	$scope.message = '';
+	$scope.editing = false;
+
+	$scope.data = function() {
+		var data = {};
+		if ($scope.email && $scope.email !== $scope.userInfo.email) {
+			data.email = $scope.email;
+		}
+		if ($scope.password) {
+			data.password = $scope.password;
+		}
+		return data;
+	};
+	$scope.save = function() {
+		var data = $scope.data();
+		if (!$.isEmptyObject(data)) { 
+			$http.post('/users/' + $scope.userInfo.name, data).success(function(response, status, headers) {
+				var undo = headers('Undo');
+				console.assert(undo, 'missing undo header');
+				$scope.alert.show('Updated user info.', 'alert-success', undo);
+				$scope.reload();
+			});
+		} else {
+			$scope.cancel();
+		}
+	};
+	$scope.cancel = function() {
+		$scope.editing = false;
+	};
+	$scope.$on('edit:user', function() {
+		$scope.editing = true;		
+		$scope.email = $scope.userInfo.email;
+		$scope.password = '';
+	});
 }
 
 AuthFormCtrl.$inject = ['$scope', '$http'];
@@ -196,7 +245,7 @@ function BucketListCtrl($scope, $http) {
 	}
 	$scope.params = function() {
 		return {
-			identity : $scope.user.id,
+			identity : $scope.userInfo.id,
 			offset : $scope.offset,
 			limit : $scope.limit
 		};
@@ -217,7 +266,7 @@ function BucketListCtrl($scope, $http) {
 		});
 	};
 
-	$scope.$watch('user', function(user) {
+	$scope.$watch('userInfo', function(user) {
 		if (user) {
 			$scope.refresh({});
 		}
