@@ -319,16 +319,27 @@ function BucketCtrl($scope, $http, $route, $routeParams, $location) {
 
 	$scope.bucketId = $routeParams.bucketId;
 	$scope.tabs = [
-		{ id : 'widget-event-list', label : 'Latest'},
-		{ id : 'widget-tag-count', label : 'Tags'},
-		{ id : 'widget-tag-gantt', label : 'Tag Age'},
-		{ id : 'widget-rating-count', label : 'Ratings'},
-		{ id : 'widget-scoreboard', label : 'Scoreboard'}
-	];
+		{ id : 'widget-timeline', label : 'Timeline', template : 'public/dashboard/timeline.html', placement : 'top' },
+ 		{ id : 'widget-map', label : 'Map', template : 'public/dashboard/map.html', placement : 'right' },
+ 		{ id : 'widget-event-list', label : 'Latest', template : 'public/dashboard/list.html', placement : 'left' },
+ 		{ id : 'widget-tag-count', label : 'Tags', template : 'public/dashboard/count.html', placement : 'left' },
+ 		{ id : 'widget-tag-gantt', label : 'Tag Age', template : 'public/dashboard/gantt.html', placement : 'left' },
+ 		{ id : 'widget-rating-count', label : 'Ratings', template : 'public/dashboard/histogram.html', placement : 'left' },
+ 		{ id : 'widget-scoreboard', label : 'Scoreboard', template : 'public/dashboard/scoreboard.html', placement : 'left' }
+ 	];
+	$scope.widgetsExpected = 7;
+	$scope.widgetsFound = 0;
 
 	$scope.filters = [];
 	$scope.widgets = [];
+
+	$scope.getWidgets = function(placement) {
+		return $.grep($scope.tabs, function(config) {
+			return config.placement == placement;
+		});
+	};
 	$scope.register = function(widget) {
+		++$scope.widgetsFound;
 		$scope.widgets.push(widget);
 	};
 	$scope.search = function(params, callback) {
@@ -398,7 +409,12 @@ function BucketCtrl($scope, $http, $route, $routeParams, $location) {
 		return field ? field.icon : 'icon-ban-circle';
 	};
 
-	$scope.$evalAsync($scope.refresh);
+	// $scope.$evalAsync($scope.refresh);
+	$scope.$watch('widgetsFound', function(count) {
+		if (count === $scope.widgetsExpected) {
+			$scope.refresh();
+		}
+	});
 }
 
 EventListCtrl.$inject = ['$scope'];

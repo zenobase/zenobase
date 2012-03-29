@@ -21,13 +21,13 @@
 	<div class="row-fluid">
 		<div class="span12">
 			<ul class="nav nav-tabs">
-				<li class="active">
-					<a href="#widget-timeline" data-toggle="tab">Timeline <span class="close">&times;</span></a>
+				<li ng:class="$index == 0 && 'active'" ng:repeat="tab in getWidgets('top')">
+					<a href="#{{tab.id}}" data-toggle="tab">{{tab.label}} <span class="close">&times;</span></a>
 				</li>
 			</ul>
 			<div class="tab-content">
-				<div id="widget-timeline" ng:controller="TimelineCtrl" class="tab-pane active">
-					<ng:include src="'public/dashboard/timeline.html'"/>
+				<div id="{{tab.id}}" class="tab-pane active" ng:repeat="tab in getWidgets('top')">
+					<ng:include src="tab.template"/>
 				</div>
 			</div>
 		</div>
@@ -36,37 +36,25 @@
 	<div class="row-fluid">
 		<div class="span6">
 			<ul class="nav nav-tabs">
-				<li ng:repeat="tab in tabs" ng:class="$index == 0 && 'active'">
+				<li ng:class="$index == 0 && 'active'" ng:repeat="tab in getWidgets('left')">
 					<a href="#{{tab.id}}" data-toggle="tab">{{tab.label}} <span class="close">&times;</span></a>
 				</li>
 			</ul>
 			<div class="tab-content">
-				<div id="widget-event-list" ng:controller="EventListCtrl" class="tab-pane active">
-					<ng:include src="'public/dashboard/list.html'"/>
-				</div>
-				<div id="widget-tag-count" ng:controller="TagCountCtrl" class="tab-pane">
-					<ng:include src="'public/dashboard/count.html'"/>
-				</div>
-				<div id="widget-tag-gantt" ng:controller="TagGanttCtrl" class="tab-pane">
-					<ng:include src="'public/dashboard/gantt.html'"/>
-				</div>
-				<div id="widget-rating-count" ng:controller="RatingCountCtrl" class="tab-pane">
-					<ng:include src="'public/dashboard/histogram.html'"/>
-				</div>
-				<div class="tab-pane" id="widget-scoreboard" ng:controller="ScoreboardCtrl">
-					<ng:include src="'public/dashboard/scoreboard.html'"/>
+				<div id="{{tab.id}}" class="tab-pane active" ng:repeat="tab in getWidgets('left')">
+					<ng:include src="tab.template"/>
 				</div>
 			</div>
 		</div>
 		<div class="span6">
 			<ul class="nav nav-tabs">
-				<li class="active">
-					<a href="#widget-map" data-toggle="tab">Map <span class="close">&times;</span></a>
+				<li ng:class="$index == 0 && 'active'" ng:repeat="tab in getWidgets('right')">
+					<a href="#{{tab.id}}" data-toggle="tab">{{tab.label}} <span class="close">&times;</span></a>
 				</li>
 			</ul>
 			<div class="tab-content">
-				<div id="widget-map" ng:controller="MapCtrl" class="tab-pane active">
-					<ng:include src="'public/dashboard/map.html'"/>
+				<div id="{{tab.id}}" class="tab-pane active" ng:repeat="tab in getWidgets('right')">
+					<ng:include src="tab.template"/>
 				</div>
 			</div>
 		</div>

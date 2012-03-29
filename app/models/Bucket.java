@@ -31,6 +31,7 @@ public class Bucket {
 	private final String id;
 	private String label;
 	private final List<Role> roles = Lists.newArrayList();
+	private String dashboard;
 
 	public Bucket(IndexManager index, String id) {
 		this.index = index;
