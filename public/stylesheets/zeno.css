@@ -121,3 +121,7 @@ h3 i {
 .hero-unit {
 	margin-bottom: 0;
 }
+
+.control-group {
+	margin-top: 9px;
+}
