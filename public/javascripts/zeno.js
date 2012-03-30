@@ -338,6 +338,11 @@ function BucketCtrl($scope, $http, $route, $routeParams, $location) {
 			return widget.placement == placement;
 		});
 	};
+	$scope.removeWidget = function(id) {
+		$scope.dashboard.widgets = $.grep($scope.dashboard.widgets, function(widget) {
+			return widget.id != id;
+		});
+	};
 	$scope.createScope = function(config) {
 		var scope = $scope.$new();
 		$.extend(scope, config);

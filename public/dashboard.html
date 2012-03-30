@@ -22,7 +22,7 @@
 		<div class="span12">
 			<ul class="nav nav-tabs">
 				<li ng:class="$index == 0 && 'active'" ng:repeat="widget in getWidgets('top')">
-					<a href="#{{widget.id}}" data-toggle="tab">{{widget.label}} <span class="close">&times;</span></a>
+					<a href="#{{widget.id}}" data-toggle="tab">{{widget.label}} <span class="close" ng:click="removeWidget(widget.id)">&times;</span></a>
 				</li>
 			</ul>
 			<div class="tab-content">
@@ -37,7 +37,7 @@
 		<div class="span6">
 			<ul class="nav nav-tabs">
 				<li ng:class="$index == 0 && 'active'" ng:repeat="widget in getWidgets('left')">
-					<a href="#{{widget.id}}" data-toggle="tab">{{widget.label}} <span class="close">&times;</span></a>
+					<a href="#{{widget.id}}" data-toggle="tab">{{widget.label}} <span class="close" ng:click="removeWidget(widget.id)">&times;</span></a>
 				</li>
 			</ul>
 			<div class="tab-content">
@@ -49,7 +49,7 @@
 		<div class="span6">
 			<ul class="nav nav-tabs">
 				<li ng:class="$index == 0 && 'active'" ng:repeat="widget in getWidgets('right')">
-					<a href="#{{widget.id}}" data-toggle="tab">{{widget.label}} <span class="close">&times;</span></a>
+					<a href="#{{widget.id}}" data-toggle="tab">{{widget.label}} <span class="close" ng:click="removeWidget(widget.id)">&times;</span></a>
 				</li>
 			</ul>
 			<div class="tab-content">
