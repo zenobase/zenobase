@@ -321,7 +321,7 @@ function BucketCtrl($scope, $http, $route, $routeParams, $location) {
 	$scope.tabs = [
 		{ id : 'widget-timeline', label : 'Timeline', template : 'public/dashboard/timeline.html', placement : 'top' },
  		{ id : 'widget-map', label : 'Map', template : 'public/dashboard/map.html', placement : 'right' },
- 		{ id : 'widget-event-list', label : 'Latest', template : 'public/dashboard/list.html', placement : 'left' },
+ 		{ id : 'widget-event-list', label : 'Latest', template : 'public/dashboard/list.html', placement : 'left', limit : 5 },
  		{ id : 'widget-tag-count', label : 'Tags', template : 'public/dashboard/count.html', placement : 'left' },
  		{ id : 'widget-tag-gantt', label : 'Tag Age', template : 'public/dashboard/gantt.html', placement : 'left' },
  		{ id : 'widget-rating-count', label : 'Ratings', template : 'public/dashboard/histogram.html', placement : 'left' },
@@ -337,6 +337,11 @@ function BucketCtrl($scope, $http, $route, $routeParams, $location) {
 		return $.grep($scope.tabs, function(config) {
 			return config.placement == placement;
 		});
+	};
+	$scope.createScope = function(config) {
+		var scope = $scope.$new();
+		$.extend(scope, config);
+		return scope;
 	};
 	$scope.register = function(widget) {
 		++$scope.widgetsFound;
@@ -422,7 +427,7 @@ function EventListCtrl($scope) {
 
 	$scope.id = 'events';
 	$scope.offset = 0;
-	$scope.limit = 10;
+	$scope.limit = $scope.limit || 10;
 	$scope.order = 'timestamp';
 	$scope.reverse = false;
 	$scope.total = 0;
