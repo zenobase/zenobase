@@ -64,19 +64,20 @@
 	</div>
 
 	<div id="add-widget-dialog" class="modal" ng:controller="AddWidgetCtrl" ng:show="placement">
-		<form>
+		<form name="addWidgetForm">
 			<div class="modal-header">
 				<a class="close" ng:click="cancel()">&times;</a>
 				<h3>Add Widget</h3>
 			</div>
 			<div class="modal-body">
-				<label for="template">Type</label>
-				<div class="input">
-					<select name="template" ng:model="template" ng-options="t.label for t in templates"></select>
+				<label for="template" class="control-label">Type</label>
+				<div class="controls">
+					<select name="template" ng:model="template" ng-options="t.label for t in findTemplates()" required></select>
+					<p class="help-block">{{template.description}}</p>
 				</div>
 			</div>
 			<div class="modal-footer">
-				<button class="btn btn-primary" ng:click="add()">Add</button>
+				<button class="btn btn-primary" ng:click="add()" ng:disabled="!addWidgetForm.$valid">Add</button>
 				<button class="btn" ng:click="cancel()">Cancel</button>
 			</div>
 		</form>

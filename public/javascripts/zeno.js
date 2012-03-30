@@ -330,23 +330,36 @@ function AddWidgetCtrl($scope, $http, $route, $routeParams, $location) {
 
 	$scope.templates = [
   	{ label : 'Timeline', description : 'Timeline with event counts.', template : 'public/dashboard/timeline.html' },
-  	{ label : 'Map', description : 'Shows event locations on a map.', template : 'public/dashboard/map.html', singleton : true },
-  	{ label : 'List', description : 'Shows the most recent events.', template : 'public/dashboard/list.html', singleton : true, limit : 5, order : 'timestamp', reverse : false },
-  	{ label : 'Count', description : 'Number of events for each value in a field.', template : 'public/dashboard/count.html', field : 'tag', order : 'count', reverse : false, limit : 5 },
+  	{ label : 'Map', description : 'Map with event locations.', template : 'public/dashboard/map.html', singleton : true },
+  	{ label : 'List', description : 'List with the most recent events.', template : 'public/dashboard/list.html', singleton : true, limit : 5, order : 'timestamp', reverse : false },
+  	{ label : 'Count', description : 'Counts events for each value in a field.', template : 'public/dashboard/count.html', field : 'tag', order : 'count', reverse : false, limit : 5 },
   	{ label : 'First/Last', description : 'First and last occurence of each value in a field.', template : 'public/dashboard/gantt.html', termField : 'tag', timeField : 'timestamp', order : 'max', limit : 10 },
-  	{ label : 'Ratings', description : 'Counts events by rating.', template : 'public/dashboard/histogram.html' },
-  	{ label : 'Scoreboard', description : 'Basic stats for each value in a field', template : 'public/dashboard/scoreboard.html', termField : 'author', valueField : 'distance', unit : 'km', order : 'total', limit : 10 }                    
+  	{ label : 'Ratings', description : 'Counts events by their rating.', template : 'public/dashboard/histogram.html' },
+  	{ label : 'Scoreboard', description : 'Statistics for the values in a field', template : 'public/dashboard/scoreboard.html', termField : 'author', valueField : 'distance', unit : 'km', order : 'total', limit : 10 }                    
   ];
-	$scope.template = $scope.templates[0];
+	$scope.template = null;
 	$scope.add = function() {
 		var settings = { id : randomID(), placement : $scope.placement };
 		$.extend(settings, $scope.template);
 		$scope.addWidget(settings);
 		$scope.closeWidgetDialog();
-	}
+	};
 	$scope.cancel = function() {
 		$scope.closeWidgetDialog();
-	}
+	};
+	$scope.findTemplates = function() {
+		return $.grep($scope.templates, function(template) {
+			return !template.singleton || !$scope.exists(template.template);
+		});
+	};
+	$scope.exists = function(template) {
+		for (var i = 0; i < $scope.settings.widgets.length; ++i) {
+			if ($scope.settings.widgets[i].template == template) {
+				return true;
+			}
+		}
+		return false;
+	};
 }
 
 BucketCtrl.$inject = ['$scope', '$http', '$route', '$routeParams', '$location'];
@@ -376,6 +389,9 @@ function BucketCtrl($scope, $http, $route, $routeParams, $location) {
 	$scope.removeWidget = function(id) {
 		$scope.settings.widgets = $.grep($scope.settings.widgets, function(widget) {
 			return widget.id != id;
+		});
+		$scope.widgets = $.grep($scope.widgets, function(widget) {
+			return widget.settings.id != id;
 		});
 	};
 	$scope.placement = null;
@@ -797,7 +813,7 @@ function MapCtrl($scope) {
 
 	$scope.update = function(event, result) {
 		var points = [ ];
-		$scope.events = $.each(result['widget-event-list'], function(i, event) {
+		$scope.events = $.each($scope.getEvents(result), function(i, event) {
 			var location = event[$scope.field];
 			if (location) {
 				points.push(location);
@@ -808,6 +824,19 @@ function MapCtrl($scope) {
 	};
 	$scope.filterBounds = function() {
 		$scope.addFilter(new Filter($scope.field, $scope.map.getBounds().toUrlValue(2)), true);
+	};
+	$scope.getEvents = function(result) {
+		for (var key in result) {
+			var value = result[key];
+			if ($.isArray(value)) {
+				for (var i = 0; i < value.length; ++i) {
+					if (value[i][$scope.field]) {
+						return value;
+					}
+				}
+			}
+		}
+		return [];
 	};
 
 	$scope.register($scope);
