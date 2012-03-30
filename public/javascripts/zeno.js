@@ -332,7 +332,7 @@ function AddWidgetCtrl($scope, $http, $route, $routeParams, $location) {
   	{ label : 'Timeline', description : 'Timeline with event counts.', template : 'public/dashboard/timeline.html' },
   	{ label : 'Map', description : 'Shows event locations on a map.', template : 'public/dashboard/map.html' },
   	{ label : 'List', description : 'Shows the most recent events.', template : 'public/dashboard/list.html', id : 'widget-event-list' },
-  	{ label : 'Count', description : 'Number of events for each value in a field.', template : 'public/dashboard/count.html' },
+  	{ label : 'Count', description : 'Number of events for each value in a field.', template : 'public/dashboard/count.html', limit : 5 },
   	{ label : 'First/Last', description : 'First and last occurence of each value in a field.', template : 'public/dashboard/gantt.html' },
   	{ label : 'Ratings', description : 'Counts events by rating.', template : 'public/dashboard/histogram.html' },
   	{ label : 'Scoreboard', description : 'Basic stats for each value in a field', template : 'public/dashboard/scoreboard.html' }                    
@@ -521,19 +521,21 @@ function EventListConfigCtrl($scope) {
 	};
 }
 
-TagCountCtrl.$inject = ['$scope'];
-function TagCountCtrl($scope) {
+TermCountCtrl.$inject = ['$scope'];
+function TermCountCtrl($scope) {
 
-	$scope.id = 'tags';
-	$scope.field = 'tag';
-	$scope.order = 'count';
-	$scope.reverse = false;
+	console.log('initial scope', $scope);
+	$scope.id = $scope.widget.id || 'tags';
+	$scope.field = $scope.widget.field || 'tag';
+	$scope.order = $scope.widget.order || 'count';
+	$scope.reverse = $scope.widget.reverse || false;
 	$scope.offset = 0;
-	$scope.limit = 10;
+	$scope.limit = $scope.widget.limit || 10;
 	$scope.more = false;
 	$scope.terms = [];
 
 	$scope.hasPrev = function() {
+		console.log('count has prev?', $scope.offset, $scope.offset > 0)
 		return $scope.offset > 0;
 	}
 	$scope.hasNext = function() {
@@ -588,11 +590,11 @@ function TagCountCtrl($scope) {
 	$scope.$on('result', $scope.update);
 }
 
-function TagCountConfigCtrl($scope) {
+function TermCountConfigCtrl($scope) {
 	$scope.limit = $scope.$parent.limit;
 	$scope.save = function() {
 		$scope.refresh({ offset : 0, limit : $scope.limit });
-		$('#tag-count-config-dialog').modal('hide');
+		$('#term-count-config-dialog').modal('hide');
 	};
 }
 
