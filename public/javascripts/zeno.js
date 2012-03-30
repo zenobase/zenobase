@@ -330,12 +330,12 @@ function AddWidgetCtrl($scope, $http, $route, $routeParams, $location) {
 
 	$scope.templates = [
   	{ label : 'Timeline', description : 'Timeline with event counts.', template : 'public/dashboard/timeline.html' },
-  	{ label : 'Map', description : 'Shows event locations on a map.', template : 'public/dashboard/map.html' },
-  	{ label : 'List', description : 'Shows the most recent events.', template : 'public/dashboard/list.html', id : 'widget-event-list' },
-  	{ label : 'Count', description : 'Number of events for each value in a field.', template : 'public/dashboard/count.html', limit : 5 },
-  	{ label : 'First/Last', description : 'First and last occurence of each value in a field.', template : 'public/dashboard/gantt.html' },
+  	{ label : 'Map', description : 'Shows event locations on a map.', template : 'public/dashboard/map.html', singleton : true },
+  	{ label : 'List', description : 'Shows the most recent events.', template : 'public/dashboard/list.html', singleton : true, limit : 5, order : 'timestamp', reverse : false },
+  	{ label : 'Count', description : 'Number of events for each value in a field.', template : 'public/dashboard/count.html', field : 'tag', order : 'count', reverse : false, limit : 5 },
+  	{ label : 'First/Last', description : 'First and last occurence of each value in a field.', template : 'public/dashboard/gantt.html', termField : 'tag', timeField : 'timestamp', order : 'max', limit : 10 },
   	{ label : 'Ratings', description : 'Counts events by rating.', template : 'public/dashboard/histogram.html' },
-  	{ label : 'Scoreboard', description : 'Basic stats for each value in a field', template : 'public/dashboard/scoreboard.html' }                    
+  	{ label : 'Scoreboard', description : 'Basic stats for each value in a field', template : 'public/dashboard/scoreboard.html', termField : 'author', valueField : 'distance', unit : 'km', order : 'total', limit : 10 }                    
   ];
 	$scope.template = $scope.templates[0];
 	$scope.add = function() {
@@ -353,11 +353,11 @@ BucketCtrl.$inject = ['$scope', '$http', '$route', '$routeParams', '$location'];
 function BucketCtrl($scope, $http, $route, $routeParams, $location) {
 
 	$scope.bucketId = $routeParams.bucketId;
-	$scope.dashboard = { 
+	$scope.settings = { 
 			widgets : [
-				{ id : 'widget-timeline', label : 'Timeline', template : 'public/dashboard/timeline.html', placement : 'top' },
-		 		{ id : 'widget-map', label : 'Map', template : 'public/dashboard/map.html', placement : 'right' },
-		 		{ id : 'widget-event-list', label : 'Latest', template : 'public/dashboard/list.html', placement : 'left', limit : 5 },
+				{ id : 'widget-timeline', placement : 'top', label : 'Timeline', template : 'public/dashboard/timeline.html' },
+		 		{ id : 'widget-map', placement : 'right', label : 'Map', template : 'public/dashboard/map.html', singleton : true },
+		 		{ id : 'widget-event-list', placement : 'left', label : 'List', description : 'Shows the most recent events.', template : 'public/dashboard/list.html', singleton : true, limit : 5, order : 'timestamp', reverse : false },
 		 		//{ id : 'widget-tag-count', label : 'Tags', template : 'public/dashboard/count.html', placement : 'left' },
 		 		//{ id : 'widget-tag-gantt', label : 'Tag Age', template : 'public/dashboard/gantt.html', placement : 'left' },
 		 		//{ id : 'widget-rating-count', label : 'Ratings', template : 'public/dashboard/histogram.html', placement : 'left' },
@@ -368,13 +368,13 @@ function BucketCtrl($scope, $http, $route, $routeParams, $location) {
 	$scope.filters = [];
 	$scope.widgets = [];
 
-	$scope.getWidgets = function(placement) {
-		return $.grep($scope.dashboard.widgets, function(widget) {
+	$scope.getWidgetSettings = function(placement) {
+		return $.grep($scope.settings.widgets, function(widget) {
 			return widget.placement == placement;
 		});
 	};
 	$scope.removeWidget = function(id) {
-		$scope.dashboard.widgets = $.grep($scope.dashboard.widgets, function(widget) {
+		$scope.settings.widgets = $.grep($scope.settings.widgets, function(widget) {
 			return widget.id != id;
 		});
 	};
@@ -386,11 +386,12 @@ function BucketCtrl($scope, $http, $route, $routeParams, $location) {
 		$scope.placement = null;
 	};
 	$scope.addWidget = function(settings) {
-		$scope.dashboard.widgets.push(settings);
+		$scope.settings.widgets.push(settings);
+		$scope.refresh();
 	};
 	$scope.register = function(widget) {
 		$scope.widgets.push(widget);
-		if ($scope.widgets.length === $scope.dashboard.widgets.length) {
+		if ($scope.widgets.length === $scope.settings.widgets.length) {
 			$scope.refresh();
 		}
 	};
@@ -467,11 +468,7 @@ function BucketCtrl($scope, $http, $route, $routeParams, $location) {
 EventListCtrl.$inject = ['$scope'];
 function EventListCtrl($scope) {
 
-	$scope.id = 'events';
 	$scope.offset = 0;
-	$scope.limit = $scope.limit || 10;
-	$scope.order = 'timestamp';
-	$scope.reverse = false;
 	$scope.total = 0;
 	$scope.items = [];
 
@@ -479,33 +476,34 @@ function EventListCtrl($scope) {
 		return $scope.offset > 0;
 	}
 	$scope.hasNext = function() {
-		return $scope.offset + $scope.limit < $scope.total;
+		return $scope.offset + $scope.settings.limit < $scope.total;
 	}
 	$scope.prev = function() {
-		$scope.refresh({ offset : $scope.offset - $scope.limit });
+		$scope.refresh({ offset : $scope.offset - $scope.settings.limit });
 	}
 	$scope.next = function() {
-		$scope.refresh({ offset : $scope.offset + $scope.limit });
+		$scope.refresh({ offset : $scope.offset + $scope.settings.limit });
 	}
 	$scope.params = function() {
 		return { 
-			id : $scope.id,
+			id : $scope.settings.id,
 			type : 'list',
 			offset : $scope.offset, 
-			limit : $scope.limit,
-			order : $scope.order,
-			reverse : $scope.reverse
+			limit : $scope.settings.limit,
+			order : $scope.settings.order,
+			reverse : $scope.settings.reverse
 		};
 	};
-	$scope.refresh = function(params) {
-		$scope.search([ $.extend($scope.params(), params) ], function(result) {
-			$.extend($scope, params);
+	$scope.refresh = function(options, settings) {
+		$scope.search([ $.extend($scope.params(), options, settings) ], function(result) {
+			$.extend($scope, options);
+			$.extend($scope.settings, settings);
 			$scope.update(null, result);
 		});
 	};
 	$scope.update = function(event, result) {
 		$scope.total = result.total;
-		$scope.items = result[$scope.id];
+		$scope.items = result[$scope.settings.id];
 	};
 
 	$scope.register($scope);
@@ -514,9 +512,9 @@ function EventListCtrl($scope) {
 
 EventListConfigCtrl.$inject = ['$scope'];
 function EventListConfigCtrl($scope) {
-	$scope.limit = $scope.$parent.limit;
+	$scope.limit = $scope.settings.limit;
 	$scope.save = function() {
-		$scope.refresh({ offset : 0, limit : $scope.limit });
+		$scope.refresh({ offset : 0 }, { limit : $scope.limit });
 		$('#event-list-config-dialog').modal('hide');
 	};
 }
@@ -524,31 +522,24 @@ function EventListConfigCtrl($scope) {
 TermCountCtrl.$inject = ['$scope'];
 function TermCountCtrl($scope) {
 
-	console.log('initial scope', $scope);
-	$scope.id = $scope.widget.id || 'tags';
-	$scope.field = $scope.widget.field || 'tag';
-	$scope.order = $scope.widget.order || 'count';
-	$scope.reverse = $scope.widget.reverse || false;
 	$scope.offset = 0;
-	$scope.limit = $scope.widget.limit || 10;
 	$scope.more = false;
 	$scope.terms = [];
 
 	$scope.hasPrev = function() {
-		console.log('count has prev?', $scope.offset, $scope.offset > 0)
 		return $scope.offset > 0;
 	}
 	$scope.hasNext = function() {
 		return $scope.more;
 	}
 	$scope.prev = function() {
-		$scope.refresh({ offset : $scope.offset - $scope.limit });
+		$scope.refresh({ offset : $scope.offset - $scope.settings.limit });
 	}
 	$scope.next = function() {
-		$scope.refresh({ offset : $scope.offset + $scope.limit });
+		$scope.refresh({ offset : $scope.offset + $scope.settings.limit });
 	}
 	$scope.setOrder = function(order) {
-		$scope.refresh({ offset : 0, order : order, reverse : order == $scope.order && !$scope.reverse });
+		$scope.refresh({ offset : 0 }, { order : order, reverse : order == $scope.settings.order && !$scope.settings.reverse });
 	}
 	$scope.getClasses = function(column) {
 		var classes = [];
@@ -562,28 +553,30 @@ function TermCountCtrl($scope) {
 	}
 	$scope.params = function() {
 		return { 
-			id : $scope.id,
+			id : $scope.settings.id,
 			type : 'count',
-			field : $scope.field, 
+			field : $scope.settings.field, 
 			offset : $scope.offset, 
-			limit : $scope.limit,
-			order : $scope.order,
-			reverse : $scope.reverse
+			limit : $scope.settings.limit,
+			order : $scope.settings.order,
+			reverse : $scope.settings.reverse
 		};
 	};
-	$scope.refresh = function(params) {
-		$scope.search([ $.extend($scope.params(), params) ], function(result) {
-			$.extend($scope, params)
+	$scope.refresh = function(options, settings) {
+		$scope.search([ $.extend($scope.params(), options, settings) ], function(result) {
+			$.extend($scope, options)
+			$.extend($scope.settings, settings)
 			$scope.update(null, result);
 		});
 	};
 	$scope.update = function(event, result) {
-		var terms = result[$scope.id];
-		$scope.more = terms.length > $scope.limit;
-		$scope.terms = terms.slice(0, $scope.limit);
+		var terms = result[$scope.settings.id];
+		$scope.more = terms.length > $scope.settings.limit;
+		$scope.terms = terms.slice(0, $scope.settings.limit);
 	};
 	$scope.filter = function(term) {
-		$scope.addFilter(new Filter($scope.field, term.label))
+		$scope.offset = 0;
+		$scope.addFilter(new Filter($scope.settings.field, term.label))
 	};
 
 	$scope.register($scope);
@@ -591,36 +584,31 @@ function TermCountCtrl($scope) {
 }
 
 function TermCountConfigCtrl($scope) {
-	$scope.limit = $scope.$parent.limit;
+	$scope.limit = $scope.settings.limit;
 	$scope.save = function() {
-		$scope.refresh({ offset : 0, limit : $scope.limit });
+		$scope.refresh({ offset : 0 }, { limit : $scope.limit });
 		$('#term-count-config-dialog').modal('hide');
 	};
 }
 
-TagGanttCtrl.$inject = ['$scope'];
-function TagGanttCtrl($scope) {
+TermGanttCtrl.$inject = ['$scope'];
+function TermGanttCtrl($scope) {
 
-	$scope.id = 'tagsGantt';
-	$scope.termField = 'tag';
-	$scope.timeField = 'timestamp';
-	$scope.order = 'max';
-	$scope.limit = 10;
 	$scope.terms = [];
 
 	$scope.params = function() {
 		return { 
-			id : $scope.id,
+			id : $scope.settings.id,
 			type : 'gantt',
-			termField : $scope.termField, 
-			timeField : $scope.timeField,
+			termField : $scope.settings.termField, 
+			timeField : $scope.settings.timeField,
 			timezone : locale.getTimezone(),
-			order : $scope.order,
-			limit : $scope.limit
+			order : $scope.settings.order,
+			limit : $scope.settings.limit
 		};
 	};
 	$scope.update = function(event, result) {
-		$scope.terms = result[$scope.id];
+		$scope.terms = result[$scope.settings.id];
 		if ($scope.terms) {
 			$.each($scope.terms, function(i, term) {
 				term.freq = Math.round((new Date(term.last).getTime() - new Date(term.first).getTime()) / term.count);
@@ -628,7 +616,7 @@ function TagGanttCtrl($scope) {
 		}
 	};
 	$scope.filter = function(term) {
-		$scope.addFilter(new Filter($scope.termField, term.label))
+		$scope.addFilter(new Filter($scope.settings.termField, term.label))
 	};
 	$scope.register($scope);
 	$scope.$on('result', $scope.update);
@@ -637,7 +625,6 @@ function TagGanttCtrl($scope) {
 RatingCountCtrl.$inject = ['$scope'];
 function RatingCountCtrl($scope) {
 
-	$scope.id = 'ratings';
 	$scope.field = 'rating';
 	$scope.from = 10;
 	$scope.to = 90;
@@ -646,7 +633,7 @@ function RatingCountCtrl($scope) {
 
 	$scope.params = function() {
 		return { 
-			id : $scope.id,
+			id : $scope.settings.id,
 			type : 'histogram',
 			field : $scope.field, 
 			from : $scope.from,
@@ -655,7 +642,7 @@ function RatingCountCtrl($scope) {
 		};
 	};
 	$scope.update = function(event, result) {
-		$scope.ratings = result[$scope.id];
+		$scope.ratings = result[$scope.settings.id];
 	};
 
 	$scope.register($scope);
@@ -665,36 +652,31 @@ function RatingCountCtrl($scope) {
 ScoreboardCtrl.$inject = ['$scope'];
 function ScoreboardCtrl($scope) {
 
-	$scope.id = 'distances';
-	$scope.termField = 'author';
-	$scope.valueField = 'distance';
-	$scope.unit = 'km';
-	$scope.order = 'total';
-	$scope.limit = 10;
 	$scope.terms = [];
 
 	$scope.params = function() {
 		return { 
-			id : $scope.id,
+			id : $scope.settings.id,
 			type : 'scoreboard',
-			termField : $scope.termField, 
-			valueField : $scope.valueField,
-			unit : $scope.unit,
-			order : $scope.order,
-			limit : $scope.limit
+			termField : $scope.settings.termField, 
+			valueField : $scope.settings.valueField,
+			unit : $scope.settings.unit,
+			order : $scope.settings.order,
+			limit : $scope.settings.limit
 		};
 	};
-	$scope.refresh = function(params) {
-		$scope.search([ $.extend($scope.params(), params) ], function(result) {
-			$.extend($scope, params)
+	$scope.refresh = function(options, settings) {
+		$scope.search([ $.extend($scope.params(), options, settings) ], function(result) {
+			$.extend($scope, options)
+			$.extend($scope.settings, settings)
 			$scope.update(null, result);
 		});
 	};
 	$scope.update = function(event, result) {
-		$scope.terms = result[$scope.id];
+		$scope.terms = result[$scope.settings.id];
 	};
 	$scope.filter = function(term) {
-		$scope.addFilter(new Filter($scope.termField, term.label))
+		$scope.addFilter(new Filter($scope.settings.termField, term.label))
 	};
 
 	$scope.register($scope);
@@ -703,10 +685,12 @@ function ScoreboardCtrl($scope) {
 
 ScoreboardConfigCtrl.$inject = ['$scope'];
 function ScoreboardConfigCtrl($scope) {
-	$scope.limit = $scope.$parent.limit;
-	$scope.valueField = $scope.$parent.valueField;
+	$scope.limit = $scope.settings.limit;
+	$scope.termField = $scope.settings.termField;
+	$scope.valueField = $scope.settings.valueField;
+	$scope.unit = $scope.settings.unit;
 	$scope.save = function() {
-		$scope.refresh({ limit : $scope.limit, termField : $scope.termField, valueField : $scope.valueField, unit : $scope.unit });
+		$scope.refresh({}, { limit : $scope.limit, termField : $scope.termField, valueField : $scope.valueField, unit : $scope.unit });
 		$('#scoreboard-config-dialog').modal('hide');
 	};
 }
@@ -745,7 +729,6 @@ TimelineCtrl.$inject = ['$scope'];
 function TimelineCtrl($scope) {
 
 	var self = this;
-	$scope.id = 'timeline';
 	$scope.field = 'timestamp';
 	$scope.times = [];
 
@@ -757,7 +740,7 @@ function TimelineCtrl($scope) {
 			$scope.range = filter.value;
 		});
 		return $scope.interval && { 
-			id : $scope.id,
+			id : $scope.settings.id,
 			type : 'timeline',
 			field : $scope.field, 
 			interval : $scope.interval.name,
@@ -766,7 +749,7 @@ function TimelineCtrl($scope) {
 		};
 	};
 	$scope.update = function(event, result) {
-		$scope.times = result[$scope.id];
+		$scope.times = result[$scope.settings.id];
 		self.draw($scope);
 	};
 
@@ -791,7 +774,7 @@ TimelineCtrl.prototype.draw = function($scope) {
 				vAxis : { gridlines : { color : '#EEE' }, baselineColor : '#EEE' },
 				hAxis : { baselineColor : 'white', textPosition : 'none' }, 
 			};
-			var chart = new google.visualization.ColumnChart(document.getElementById('timeline'));
+			var chart = new google.visualization.ColumnChart(document.getElementById('timeline-' + $scope.settings.id));
 			chart.draw(data, options);
 			google.visualization.events.addListener(chart, 'select', function() {
 				var selection = chart.getSelection();
@@ -808,14 +791,13 @@ MapCtrl.$inject = ['$scope'];
 function MapCtrl($scope) {
 
 	var self = this;
-	$scope.id = 'map';
 	$scope.field = 'location';
 	$scope.points = null;
 	$scope.map = null;
 
 	$scope.update = function(event, result) {
 		var points = [ ];
-		$scope.events = $.each(result['events'], function(i, event) {
+		$scope.events = $.each(result['widget-event-list'], function(i, event) {
 			var location = event[$scope.field];
 			if (location) {
 				points.push(location);

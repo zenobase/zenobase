@@ -3,7 +3,7 @@
 	<table class="table" ng:show="terms">
 		<thead>
 			<tr>
-				<th style="text-transform: capitalize">{{termField}}</th>
+				<th style="text-transform: capitalize">{{settings.termField}}</th>
 				<th style="text-align: right">Count</th>
 				<th style="text-align: right">Min</th>
 				<th style="text-align: right">Max</th>
@@ -13,12 +13,12 @@
 		</thead>
 		<tbody>
 			<tr ng:repeat="term in terms">
-				<td><a ng:click="filter(term)" ng:bind-html="term.label | field:termField"></a></td>
+				<td><a ng:click="filter(term)" ng:bind-html="term.label | field:settings.termField"></a></td>
 				<td style="text-align: right" ng:bind-html="term.count | number"></td>
-				<td style="text-align: right" ng:bind-html="term.min | field:valueField"></td>
-				<td style="text-align: right" ng:bind-html="term.max | field:valueField"></td>
-				<td style="text-align: right" ng:bind-html="term.sum | field:valueField"></td>
-				<td style="text-align: right" ng:bind-html="term.avg | field:valueField"></td>
+				<td style="text-align: right" ng:bind-html="term.min | field:settings.valueField"></td>
+				<td style="text-align: right" ng:bind-html="term.max | field:settings.valueField"></td>
+				<td style="text-align: right" ng:bind-html="term.sum | field:settings.valueField"></td>
+				<td style="text-align: right" ng:bind-html="term.avg | field:settings.valueField"></td>
 			</tr>
 			<tr ng:hide="terms">
 				<td colspan="6"><i>None</i></td>

@@ -21,14 +21,14 @@
 	<div class="row-fluid">
 		<div class="span12">
 			<ul class="nav nav-tabs">
-				<li ng:class="$index == 0 && 'active'" ng:repeat="widget in getWidgets('top')">
-					<a href="#{{widget.id}}" data-toggle="tab">{{widget.label}} <span class="close" ng:click="removeWidget(widget.id)">&times;</span></a>
+				<li ng:class="$index == 0 && 'active'" ng:repeat="settings in getWidgetSettings('top')">
+					<a href="#{{settings.id}}" data-toggle="tab">{{settings.label}} <span class="close" title="Remove" ng:click="removeWidget(settings.id)">&times;</span></a>
 				</li>
-				<li><a ng:click="chooseWidget('top')" title="Add Widget"><i class="icon-plus-sign"></i></a></li>
+				<li><a ng:click="chooseWidget('top')" title="Add Widget..."><i class="icon-plus-sign"></i></a></li>
 			</ul>
 			<div class="tab-content">
-				<div id="{{widget.id}}" class="tab-pane" ng:class="$index == 0 && 'active'" ng:repeat="widget in getWidgets('top')">
-					<ng:include src="widget.template"/>
+				<div id="{{settings.id}}" class="tab-pane" ng:class="$index == 0 && 'active'" ng:repeat="settings in getWidgetSettings('top')">
+					<ng:include src="settings.template"/>
 				</div>
 			</div>
 		</div>
@@ -37,27 +37,27 @@
 	<div class="row-fluid">
 		<div class="span6">
 			<ul class="nav nav-tabs">
-				<li ng:class="$index == 0 && 'active'" ng:repeat="widget in getWidgets('left')">
-					<a href="#{{widget.id}}" data-toggle="tab">{{widget.label}} <span class="close" ng:click="removeWidget(widget.id)">&times;</span></a>
+				<li ng:class="$index == 0 && 'active'" ng:repeat="settings in getWidgetSettings('left')">
+					<a href="#{{settings.id}}" data-toggle="tab">{{settings.label}} <span class="close" title="Remove" ng:click="removeWidget(settings.id)">&times;</span></a>
 				</li>
-				<li><a ng:click="chooseWidget('left')" title="Add Widget"><i class="icon-plus-sign"></i></a></li>
+				<li><a ng:click="chooseWidget('left')" title="Add Widget..."><i class="icon-plus-sign"></i></a></li>
 			</ul>
 			<div class="tab-content">
-				<div id="{{widget.id}}" class="tab-pane" ng:class="$index == 0 && 'active'" ng:repeat="widget in getWidgets('left')">
-					<ng:include src="widget.template"/>
+				<div id="{{settings.id}}" class="tab-pane" ng:class="$index == 0 && 'active'" ng:repeat="settings in getWidgetSettings('left')">
+					<ng:include src="settings.template"/>
 				</div>
 			</div>
 		</div>
 		<div class="span6">
 			<ul class="nav nav-tabs">
-				<li ng:class="$index == 0 && 'active'" ng:repeat="widget in getWidgets('right')">
-					<a href="#{{widget.id}}" data-toggle="tab">{{widget.label}} <span class="close" ng:click="removeWidget(widget.id)">&times;</span></a>
+				<li ng:class="$index == 0 && 'active'" ng:repeat="settings in getWidgetSettings('right')">
+					<a href="#{{settings.id}}" data-toggle="tab">{{settings.label}} <span class="close" title="Remove" ng:click="removeWidget(settings.id)">&times;</span></a>
 				</li>
-				<li><a ng:click="chooseWidget('right')" title="Add Widget"><i class="icon-plus-sign"></i></a></li>
+				<li><a ng:click="chooseWidget('right')" title="Add Widget..."><i class="icon-plus-sign"></i></a></li>
 			</ul>
 			<div class="tab-content">
-				<div id="{{widget.id}}" class="tab-pane" ng:class="$index == 0 && 'active'" ng:repeat="widget in getWidgets('right')">
-					<ng:include src="widget.template"/>
+				<div id="{{settings.id}}" class="tab-pane" ng:class="$index == 0 && 'active'" ng:repeat="settings in getWidgetSettings('right')">
+					<ng:include src="settings.template"/>
 				</div>
 			</div>
 		</div>

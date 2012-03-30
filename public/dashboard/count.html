@@ -4,7 +4,7 @@
 		<thead>
 			<tr>
 				<th style="text-transform: capitalize">
-					<a ng:click="setOrder('term')">{{field}}
+					<a ng:click="setOrder('term')">{{settings.field}}
 					<b ng:class="getClasses('term')"></b></a>
 				</th>
 				<th style="text-align: right">
@@ -15,7 +15,7 @@
 		</thead>
 		<tbody>
 			<tr ng:repeat="term in terms">
-				<td><a ng:click="filter(term)" ng:bind-html="term.label | field:field"></a></td>
+				<td><a ng:click="filter(term)" ng:bind-html="term.label | field:settings.field"></a></td>
 				<td style="text-align: right">{{term.count | number }}</td>
 			</tr>
 		</tbody>
