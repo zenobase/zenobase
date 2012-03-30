@@ -314,6 +314,41 @@ WidgetParams.prototype.add = function(params) {
 	this.params.push();
 }; 
 
+function randomID() {
+	var len = 5;
+	var chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+	var id = '';
+	for (var i = 0; i < len; ++i) {
+		var pos = Math.floor(Math.random() * chars.length);
+		id += chars.substring(pos, pos + 1);
+	}
+	return id;
+}
+
+AddWidgetCtrl.$inject = ['$scope', '$http', '$route', '$routeParams', '$location'];
+function AddWidgetCtrl($scope, $http, $route, $routeParams, $location) {
+
+	$scope.templates = [
+  	{ label : 'Timeline', description : 'Timeline with event counts.', template : 'public/dashboard/timeline.html' },
+  	{ label : 'Map', description : 'Shows event locations on a map.', template : 'public/dashboard/map.html' },
+  	{ label : 'List', description : 'Shows the most recent events.', template : 'public/dashboard/list.html', id : 'widget-event-list' },
+  	{ label : 'Count', description : 'Number of events for each value in a field.', template : 'public/dashboard/count.html' },
+  	{ label : 'First/Last', description : 'First and last occurence of each value in a field.', template : 'public/dashboard/gantt.html' },
+  	{ label : 'Ratings', description : 'Counts events by rating.', template : 'public/dashboard/histogram.html' },
+  	{ label : 'Scoreboard', description : 'Basic stats for each value in a field', template : 'public/dashboard/scoreboard.html' }                    
+  ];
+	$scope.template = $scope.templates[0];
+	$scope.add = function() {
+		var settings = { id : randomID(), placement : $scope.placement };
+		$.extend(settings, $scope.template);
+		$scope.addWidget(settings);
+		$scope.closeWidgetDialog();
+	}
+	$scope.cancel = function() {
+		$scope.closeWidgetDialog();
+	}
+}
+
 BucketCtrl.$inject = ['$scope', '$http', '$route', '$routeParams', '$location'];
 function BucketCtrl($scope, $http, $route, $routeParams, $location) {
 
@@ -323,10 +358,10 @@ function BucketCtrl($scope, $http, $route, $routeParams, $location) {
 				{ id : 'widget-timeline', label : 'Timeline', template : 'public/dashboard/timeline.html', placement : 'top' },
 		 		{ id : 'widget-map', label : 'Map', template : 'public/dashboard/map.html', placement : 'right' },
 		 		{ id : 'widget-event-list', label : 'Latest', template : 'public/dashboard/list.html', placement : 'left', limit : 5 },
-		 		{ id : 'widget-tag-count', label : 'Tags', template : 'public/dashboard/count.html', placement : 'left' },
-		 		{ id : 'widget-tag-gantt', label : 'Tag Age', template : 'public/dashboard/gantt.html', placement : 'left' },
-		 		{ id : 'widget-rating-count', label : 'Ratings', template : 'public/dashboard/histogram.html', placement : 'left' },
-		 		{ id : 'widget-scoreboard', label : 'Scoreboard', template : 'public/dashboard/scoreboard.html', placement : 'left' }
+		 		//{ id : 'widget-tag-count', label : 'Tags', template : 'public/dashboard/count.html', placement : 'left' },
+		 		//{ id : 'widget-tag-gantt', label : 'Tag Age', template : 'public/dashboard/gantt.html', placement : 'left' },
+		 		//{ id : 'widget-rating-count', label : 'Ratings', template : 'public/dashboard/histogram.html', placement : 'left' },
+		 		//{ id : 'widget-scoreboard', label : 'Scoreboard', template : 'public/dashboard/scoreboard.html', placement : 'left' }
 		 	]
 	};
 
@@ -343,10 +378,15 @@ function BucketCtrl($scope, $http, $route, $routeParams, $location) {
 			return widget.id != id;
 		});
 	};
-	$scope.createScope = function(config) {
-		var scope = $scope.$new();
-		$.extend(scope, config);
-		return scope;
+	$scope.placement = null;
+	$scope.chooseWidget = function(placement) {
+		$scope.placement = placement;
+	};
+	$scope.closeWidgetDialog = function() {
+		$scope.placement = null;
+	};
+	$scope.addWidget = function(settings) {
+		$scope.dashboard.widgets.push(settings);
 	};
 	$scope.register = function(widget) {
 		$scope.widgets.push(widget);

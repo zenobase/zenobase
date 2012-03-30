@@ -24,9 +24,10 @@
 				<li ng:class="$index == 0 && 'active'" ng:repeat="widget in getWidgets('top')">
 					<a href="#{{widget.id}}" data-toggle="tab">{{widget.label}} <span class="close" ng:click="removeWidget(widget.id)">&times;</span></a>
 				</li>
+				<li><a ng:click="chooseWidget('top')" title="Add Widget"><i class="icon-plus-sign"></i></a></li>
 			</ul>
 			<div class="tab-content">
-				<div id="{{tab.id}}" class="tab-pane" ng:class="$index == 0 && 'active'" ng:repeat="widget in getWidgets('top')">
+				<div id="{{widget.id}}" class="tab-pane" ng:class="$index == 0 && 'active'" ng:repeat="widget in getWidgets('top')">
 					<ng:include src="widget.template"/>
 				</div>
 			</div>
@@ -39,6 +40,7 @@
 				<li ng:class="$index == 0 && 'active'" ng:repeat="widget in getWidgets('left')">
 					<a href="#{{widget.id}}" data-toggle="tab">{{widget.label}} <span class="close" ng:click="removeWidget(widget.id)">&times;</span></a>
 				</li>
+				<li><a ng:click="chooseWidget('left')" title="Add Widget"><i class="icon-plus-sign"></i></a></li>
 			</ul>
 			<div class="tab-content">
 				<div id="{{widget.id}}" class="tab-pane" ng:class="$index == 0 && 'active'" ng:repeat="widget in getWidgets('left')">
@@ -51,6 +53,7 @@
 				<li ng:class="$index == 0 && 'active'" ng:repeat="widget in getWidgets('right')">
 					<a href="#{{widget.id}}" data-toggle="tab">{{widget.label}} <span class="close" ng:click="removeWidget(widget.id)">&times;</span></a>
 				</li>
+				<li><a ng:click="chooseWidget('right')" title="Add Widget"><i class="icon-plus-sign"></i></a></li>
 			</ul>
 			<div class="tab-content">
 				<div id="{{widget.id}}" class="tab-pane" ng:class="$index == 0 && 'active'" ng:repeat="widget in getWidgets('right')">
@@ -58,6 +61,25 @@
 				</div>
 			</div>
 		</div>
+	</div>
+
+	<div id="add-widget-dialog" class="modal" ng:controller="AddWidgetCtrl" ng:show="placement">
+		<form>
+			<div class="modal-header">
+				<a class="close" ng:click="cancel()">&times;</a>
+				<h3>Add Widget</h3>
+			</div>
+			<div class="modal-body">
+				<label for="template">Type</label>
+				<div class="input">
+					<select name="template" ng:model="template" ng-options="t.label for t in templates"></select>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button class="btn btn-primary" ng:click="add()">Add</button>
+				<button class="btn" ng:click="cancel()">Cancel</button>
+			</div>
+		</form>
 	</div>
 
 	<div id="create-event-dialog" class="modal hide" ng:controller="TemplateCtrl">
@@ -90,10 +112,11 @@
 				<button type="reset" class="btn" data-dismiss="modal">Cancel</button>
 			</div>
 		</form>
+		<script type="text/javascript">
+			$('#create-event-dialog').on('shown', function () {
+				$('#event-label-field').select();
+			})
+		</script>
 	</div>
-	<script type="text/javascript">
-		$('#create-event-dialog').on('shown', function () {
-			$('#event-label-field').select();
-		})
-	</script>
+
 </div>
