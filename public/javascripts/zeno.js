@@ -129,12 +129,12 @@ function UserCtrl($scope, $http, $routeParams) {
 		$http.get('/users/' + $scope.userId).success(function(response) {
 			$scope.userInfo = new User(response);
 		});
-	} else {
+	} else if ($scope.user && $scope.user.getName() === 'guest') {
 		$scope.userInfo = $scope.user;
 	}
 
 	$scope.editable = function() {
-		return $scope.user && $scope.userInfo && $scope.userInfo.id == $scope.user.id;
+		return $scope.user && $scope.userInfo && $scope.user.name && $scope.userInfo.name === $scope.user.name;
 	};
 	$scope.close = function() {
 		if (confirm('Close your account and delete all associated data?')) {
@@ -204,8 +204,8 @@ function AuthFormCtrl($scope, $http) {
 	});
 }
 
-SignUpFormCtrl.$inject = ['$scope', '$http'];
-function SignUpFormCtrl($scope, $http) {
+SignUpFormCtrl.$inject = ['$scope', '$http', '$location'];
+function SignUpFormCtrl($scope, $http, $location) {
 	$scope.username = '';
 	$scope.password = '';
 	$scope.passwordRepeat = '';
@@ -221,7 +221,7 @@ function SignUpFormCtrl($scope, $http) {
 			$scope.passwordRepeat = '';
 			$scope.email = 'me@me.me';
 			$('#sign-up-dialog').modal('hide');
-			$scope.reload();
+			$location.url('/users/' + $scope.$parent.user.name);
 		});
 	};
 }
@@ -377,7 +377,6 @@ function BucketCtrl($scope, $http, $route, $routeParams, $location) {
 		 	];
 		}
 		$scope.bucket = response;
-		console.log('bucket', response);
 	});
 
 	$scope.filters = [];

@@ -19,7 +19,7 @@ public class SuspendUserCommand extends CommandSupport {
 
 	public void execute() {
 		user.setSuspended(suspend);
-		manager.store(user);
+		manager.update(user);
 	}
 
 	public SuspendUserCommand reverse(Identity identity) {
