@@ -369,12 +369,15 @@ function BucketCtrl($scope, $http, $route, $routeParams, $location) {
 
 	$scope.bucketId = $routeParams.bucketId;
 	$http.get('/buckets/' + $scope.bucketId).success(function(response) {
-		response.widgets = [
+		if ($.isEmptyObject(response.widgets)) {
+			response.widgets = [
 				{ id : 'widget-timeline', placement : 'top', label : 'Timeline', template : 'public/dashboard/timeline.html' },
 		 		{ id : 'widget-map', placement : 'right', label : 'Map', template : 'public/dashboard/map.html', singleton : true },
-		 		{ id : 'widget-event-list', placement : 'left', label : 'List', description : 'Shows the most recent events.', template : 'public/dashboard/list.html', singleton : true, limit : 5, order : 'timestamp', reverse : false },
+		 		{ id : 'widget-event-list', placement : 'left', label : 'List', template : 'public/dashboard/list.html', singleton : true, limit : 5, order : 'timestamp', reverse : false },
 		 	];
+		}
 		$scope.bucket = response;
+		console.log('bucket', response);
 	});
 
 	$scope.filters = [];

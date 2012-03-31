@@ -2,11 +2,11 @@ package models;
 
 import java.util.List;
 
-import org.codehaus.jackson.node.ArrayNode;
 import org.codehaus.jackson.node.ObjectNode;
 import org.elasticsearch.common.collect.Lists;
 
 import schema.Field;
+import schema.ObjectType;
 import schema.RoleType;
 import schema.SchemaBuilder;
 import schema.TextType;
@@ -24,9 +24,10 @@ public class Bucket {
 	public static final String TYPE_NAME = "bucket";
 	public static final Field<Token> ID = Field.of("@id", new TokenType());
 	public static final Field<Text> LABEL = Field.of("label", new TextType());
-	public static final Field<Role> ROLE = Field.of("role", new RoleType());
+	public static final Field<Role> ROLE = Field.of("roles", new RoleType());
+	public static final Field<ObjectNode> WIDGET = Field.of("widgets", new ObjectType());
 
-	private static final ImmutableSet<Field<?>> FIELDS = ImmutableSet.of(ID, LABEL, ROLE);
+	private static final ImmutableSet<Field<?>> FIELDS = ImmutableSet.of(ID, LABEL, ROLE, WIDGET);
 
 	private final IndexManager index;
 	private final String id;
@@ -69,6 +70,10 @@ public class Bucket {
 		roles.add(role);
 	}
 
+	public void addWidget(ObjectNode widget) {
+		widgets.add(widget);
+	}
+
 	public void add(Event event) {
 		event.prePersist();
 		index.store(Event.TYPE_NAME, event.getId(), event.getContent(), false);
@@ -104,13 +109,8 @@ public class Bucket {
 		ObjectNode object = Nodes.newObject();
 		ID.getType().add(object, ID.getName(), Token.valueOf(id));
 		LABEL.getType().add(object, LABEL.getName(), Text.valueOf(label));
-		for (Role role : roles) {
-			ROLE.getType().add(object, ROLE.getName(), role);
-		}
-		ArrayNode widgetsNode = object.putArray("widgets");
-		for (ObjectNode widgetNode : widgets) {
-			widgetsNode.add(widgetNode);
-		}
+		ROLE.getType().add(object, ROLE.getName(), roles);
+		WIDGET.getType().add(object, WIDGET.getName(), widgets);
 		return object;
 	}
 }

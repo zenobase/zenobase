@@ -141,6 +141,9 @@ public class BucketManager {
 		for (Role role : Bucket.ROLE.getType().get(object, Bucket.ROLE.getName())) {
 			bucket.addRole(role);
 		}
+		for (ObjectNode widget : Bucket.WIDGET.getType().get(object, Bucket.WIDGET.getName())) {
+			bucket.addWidget(widget);
+		}
 		return bucket;
 	}
 }

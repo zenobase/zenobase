@@ -116,6 +116,21 @@ public class BucketListController extends ControllerSupport {
 		Bucket bucket = new Bucket(node.getIndex(id), id);
 		bucket.setLabel(label);
 		bucket.addRole(new Role(identity, Role.OWNER));
+		bucket.addWidget(getDefaultWidget());
 		return bucket;
+	}
+
+	private static ObjectNode getDefaultWidget(){
+		ObjectNode widget = Nodes.newObject();
+		widget.put("id", "list-widget");
+		widget.put("template", "public/dashboard/list.html");
+		widget.put("placement", "left");
+		widget.put("label", "Latest");
+		widget.put("placement", "left");
+		widget.put("singleton", true);
+		widget.put("limit", 5);
+		widget.put("order", "timestamp");
+		widget.put("reverse", false);
+		return widget;
 	}
 }

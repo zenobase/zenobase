@@ -52,8 +52,31 @@ public abstract class Type<T> {
 		}
 	}
 
+	public void add(ObjectNode object, String fieldName, Iterable<T> values) {
+		JsonNode node = object.get(fieldName);
+		if (node == null) {
+			object.putArray(fieldName).addAll(get(values));
+		}
+		else if (node.isArray()) {
+			((ArrayNode) node).addAll(get(values));
+		}
+		else {
+			List<JsonNode> nodes = Lists.newArrayList(node);
+			nodes.addAll(get(values));
+			object.putArray(fieldName).addAll(nodes);
+		}
+	}
+
 	public void set(ObjectNode object, String fieldName, T value) {
 		object.put(fieldName, get(value));
+	}
+
+	private List<JsonNode> get(Iterable<T> values) {
+		List<JsonNode> nodes = Lists.newArrayList();
+		for (T value : values) {
+			nodes.add(get(value));
+		}
+		return nodes;
 	}
 
 	protected abstract JsonNode get(T value);
