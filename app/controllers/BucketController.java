@@ -16,6 +16,7 @@ import services.BucketManager;
 import services.CommandQueue;
 
 import commands.DeleteBucketCommand;
+import commands.UpdateBucketCommand;
 
 @With(Timed.class)
 public class BucketController extends ControllerSupport {
@@ -61,8 +62,9 @@ public class BucketController extends ControllerSupport {
     	if (!"owner".equals(bucket.getRole(identity))) {
     		return forbidden();
     	}
-    	buckets.update(bucket);
-        return ok(bucket.toJson());
+		String commandId = queue.execute(new UpdateBucketCommand(buckets, identity, bucket, buckets.parse(body)));
+        response().setHeader("Undo", String.format("/queue/%s", commandId));
+		return noContent();
     }
 
     public static Result delete(String bucketId) {

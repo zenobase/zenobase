@@ -11,6 +11,9 @@
 		<p class="pull-left" style="margin-left: 8px; margin-top: 6px; vertical-align: middle">
 			<a data-toggle="modal" href="#create-event-dialog"><i class="icon-plus" title="Add Event"></i></a>
 		</p>
+		<p class="pull-left" style="margin-left: 8px; margin-top: 6px; vertical-align: middle">
+			<a ng:click="save()" title="Save">Save</a>
+		</p>
 		<ul class="nav nav-pills" style="clear: both; margin-bottom:12px;" ng:show="filters">
 			<li class="active" ng:repeat="filter in filters">
 				<a ng:click="removeFilter(filter)"><i class="icon-white" ng:class="getFilterIcon(filter)"></i> {{filter.value}} <i class="icon-remove icon-white"></i></a>

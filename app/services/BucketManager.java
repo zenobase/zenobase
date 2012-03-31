@@ -134,7 +134,7 @@ public class BucketManager {
 		return parse(Nodes.read(source));
 	}
 
-	private Bucket parse(ObjectNode object) {
+	public Bucket parse(ObjectNode object) {
 		String id = object.get(Bucket.ID.getName()).asText();
 		Bucket bucket = new Bucket(manager.getIndex(id), id);
 		bucket.setLabel(object.get(Bucket.LABEL.getName()).asText());

@@ -412,6 +412,15 @@ function BucketCtrl($scope, $http, $route, $routeParams, $location) {
 			$scope.refresh();
 		}
 	};
+	$scope.save = function(settings) {
+		$http.post('/buckets/' + $scope.bucketId, $scope.bucket).success(function (response, status, headers) {
+			console.log('saved');
+			var undo = headers('Undo');
+			console.assert(undo, 'missing undo header');
+			$scope.alert.show('Saved settings.', 'alert-success', undo);
+		});
+	};
+
 	$scope.search = function(params, callback) {
 		var q = $scope.filters;
 		var w = $.map(params, function(param) {
