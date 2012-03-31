@@ -354,8 +354,8 @@ function AddWidgetCtrl($scope, $http, $route, $routeParams, $location) {
 	};
 	$scope.exists = function(template) {
 		if ($scope.bucket) {
-			for (var i = 0; i < $scope.bucket.settings.widgets.length; ++i) {
-				if ($scope.bucket.settings.widgets[i].template == template) {
+			for (var i = 0; i < $scope.bucket.widgets.length; ++i) {
+				if ($scope.bucket.widgets[i].template == template) {
 					return true;
 				}
 			}
@@ -369,13 +369,11 @@ function BucketCtrl($scope, $http, $route, $routeParams, $location) {
 
 	$scope.bucketId = $routeParams.bucketId;
 	$http.get('/buckets/' + $scope.bucketId).success(function(response) {
-		response.settings = { 
-				widgets : [
-					{ id : 'widget-timeline', placement : 'top', label : 'Timeline', template : 'public/dashboard/timeline.html' },
-			 		{ id : 'widget-map', placement : 'right', label : 'Map', template : 'public/dashboard/map.html', singleton : true },
-			 		{ id : 'widget-event-list', placement : 'left', label : 'List', description : 'Shows the most recent events.', template : 'public/dashboard/list.html', singleton : true, limit : 5, order : 'timestamp', reverse : false },
-			 	]
-		};
+		response.widgets = [
+				{ id : 'widget-timeline', placement : 'top', label : 'Timeline', template : 'public/dashboard/timeline.html' },
+		 		{ id : 'widget-map', placement : 'right', label : 'Map', template : 'public/dashboard/map.html', singleton : true },
+		 		{ id : 'widget-event-list', placement : 'left', label : 'List', description : 'Shows the most recent events.', template : 'public/dashboard/list.html', singleton : true, limit : 5, order : 'timestamp', reverse : false },
+		 	];
 		$scope.bucket = response;
 	});
 
@@ -383,12 +381,12 @@ function BucketCtrl($scope, $http, $route, $routeParams, $location) {
 	$scope.widgets = [];
 
 	$scope.getWidgetSettings = function(placement) {
-		return $scope.bucket && $.grep($scope.bucket.settings.widgets, function(widget) {
+		return $scope.bucket && $.grep($scope.bucket.widgets, function(widget) {
 			return widget.placement == placement;
 		});
 	};
 	$scope.removeWidget = function(id) {
-		$scope.bucket.settings.widgets = $.grep($scope.bucket.settings.widgets, function(widget) {
+		$scope.bucket.widgets = $.grep($scope.bucket.widgets, function(widget) {
 			return widget.id != id;
 		});
 		$scope.widgets = $.grep($scope.widgets, function(widget) {
@@ -403,12 +401,12 @@ function BucketCtrl($scope, $http, $route, $routeParams, $location) {
 		$scope.placement = null;
 	};
 	$scope.addWidget = function(settings) {
-		$scope.bucket.settings.widgets.push(settings);
+		$scope.bucket.widgets.push(settings);
 		$scope.refresh();
 	};
 	$scope.register = function(widget) {
 		$scope.widgets.push(widget);
-		if ($scope.widgets.length === $scope.bucket.settings.widgets.length) {
+		if ($scope.widgets.length === $scope.bucket.widgets.length) {
 			$scope.refresh();
 		}
 	};
