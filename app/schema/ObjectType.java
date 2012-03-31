@@ -14,7 +14,7 @@ public class ObjectType extends Type<ObjectNode> {
 	@Override
 	public void configureSchema(ObjectNode schema) {
 		super.configureSchema(schema);
-		schema.put("dynamic", true);
+		schema.put("enabled", false);
 	}
 
 	@Override
