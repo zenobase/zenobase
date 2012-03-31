@@ -85,6 +85,13 @@ function BucketListAdminCtrl($scope, $http) {
 			$scope.reload();
 		});
 	};
+	$scope.getOwner = function(bucket) {
+		for (var i = 0; i < bucket.roles.length; ++i) {
+			if (bucket.roles[i].role === 'owner') {
+				return bucket.roles[i].identity;
+			}
+		}
+	};
 
 	$scope.$on('reload', $scope.refresh);
 	$scope.refresh({});
