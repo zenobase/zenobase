@@ -8,6 +8,7 @@ import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.common.settings.ImmutableSettings;
+import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.node.Node;
 import org.elasticsearch.node.NodeBuilder;
@@ -33,8 +34,10 @@ public class DateHistogramFacetTest {
 
 	@Before
 	public void init() {
-		node = NodeBuilder.nodeBuilder().clusterName(cluster).local(true)
-			.settings(ImmutableSettings.settingsBuilder().put("gateway.type", "none")).node();
+		Settings settings = ImmutableSettings.settingsBuilder()
+			.put("gateway.type", "none")
+			.put("index.store.type", "memory").build();
+		node = NodeBuilder.nodeBuilder().clusterName(cluster).local(true).settings(settings).node();
 		client = node.client();
 	}
 
