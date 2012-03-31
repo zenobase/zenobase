@@ -65,6 +65,10 @@ public class BucketManager {
 		this.index.store(Bucket.TYPE_NAME, bucket.getId(), bucket.toJson(), true);
 	}
 
+	public void update(Bucket bucket) {
+		index.update(Bucket.TYPE_NAME, bucket.getId(), bucket.toJson(), true);
+	}
+
 	public void deleteBucket(String id) {
 		index.delete(QueryBuilders.termQuery(Bucket.ID.getName(), id));
 		manager.getIndex(id).close();

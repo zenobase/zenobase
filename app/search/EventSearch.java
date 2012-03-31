@@ -3,7 +3,6 @@ package search;
 import java.util.List;
 import java.util.Set;
 
-import models.Bucket;
 import models.Event;
 
 import org.codehaus.jackson.node.ObjectNode;
@@ -40,13 +39,8 @@ public class EventSearch {
 		.put(Event.LOCATION.getName(), new BoundingBoxConstraint())
 		.build();
 
-	private final Bucket bucket;
 	private final Set<Widget> widgets = Sets.newLinkedHashSet();
 	private final List<QueryBuilder> constraints = Lists.newArrayList();
-
-	public EventSearch(Bucket bucket) {
-		this.bucket = bucket;
-	}
 
 	public EventSearch addWidgets(String[] widgets) {
 		if (widgets != null) {
@@ -117,7 +111,6 @@ public class EventSearch {
 
 	private ObjectNode toJson(SearchResponse response) {
 		ObjectNode object = Nodes.newObject();
-		object.putAll(bucket.toJson());
 		object.put("total", Ints.checkedCast(response.hits().getTotalHits()));
 		for (Widget widget : widgets) {
 			object.put(widget.getId(), widget.process(response));

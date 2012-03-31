@@ -353,9 +353,11 @@ function AddWidgetCtrl($scope, $http, $route, $routeParams, $location) {
 		});
 	};
 	$scope.exists = function(template) {
-		for (var i = 0; i < $scope.settings.widgets.length; ++i) {
-			if ($scope.settings.widgets[i].template == template) {
-				return true;
+		if ($scope.bucket) {
+			for (var i = 0; i < $scope.bucket.settings.widgets.length; ++i) {
+				if ($scope.bucket.settings.widgets[i].template == template) {
+					return true;
+				}
 			}
 		}
 		return false;
@@ -366,28 +368,27 @@ BucketCtrl.$inject = ['$scope', '$http', '$route', '$routeParams', '$location'];
 function BucketCtrl($scope, $http, $route, $routeParams, $location) {
 
 	$scope.bucketId = $routeParams.bucketId;
-	$scope.settings = { 
-			widgets : [
-				{ id : 'widget-timeline', placement : 'top', label : 'Timeline', template : 'public/dashboard/timeline.html' },
-		 		{ id : 'widget-map', placement : 'right', label : 'Map', template : 'public/dashboard/map.html', singleton : true },
-		 		{ id : 'widget-event-list', placement : 'left', label : 'List', description : 'Shows the most recent events.', template : 'public/dashboard/list.html', singleton : true, limit : 5, order : 'timestamp', reverse : false },
-		 		//{ id : 'widget-tag-count', label : 'Tags', template : 'public/dashboard/count.html', placement : 'left' },
-		 		//{ id : 'widget-tag-gantt', label : 'Tag Age', template : 'public/dashboard/gantt.html', placement : 'left' },
-		 		//{ id : 'widget-rating-count', label : 'Ratings', template : 'public/dashboard/histogram.html', placement : 'left' },
-		 		//{ id : 'widget-scoreboard', label : 'Scoreboard', template : 'public/dashboard/scoreboard.html', placement : 'left' }
-		 	]
-	};
+	$http.get('/buckets/' + $scope.bucketId).success(function(response) {
+		response.settings = { 
+				widgets : [
+					{ id : 'widget-timeline', placement : 'top', label : 'Timeline', template : 'public/dashboard/timeline.html' },
+			 		{ id : 'widget-map', placement : 'right', label : 'Map', template : 'public/dashboard/map.html', singleton : true },
+			 		{ id : 'widget-event-list', placement : 'left', label : 'List', description : 'Shows the most recent events.', template : 'public/dashboard/list.html', singleton : true, limit : 5, order : 'timestamp', reverse : false },
+			 	]
+		};
+		$scope.bucket = response;
+	});
 
 	$scope.filters = [];
 	$scope.widgets = [];
 
 	$scope.getWidgetSettings = function(placement) {
-		return $.grep($scope.settings.widgets, function(widget) {
+		return $scope.bucket && $.grep($scope.bucket.settings.widgets, function(widget) {
 			return widget.placement == placement;
 		});
 	};
 	$scope.removeWidget = function(id) {
-		$scope.settings.widgets = $.grep($scope.settings.widgets, function(widget) {
+		$scope.bucket.settings.widgets = $.grep($scope.bucket.settings.widgets, function(widget) {
 			return widget.id != id;
 		});
 		$scope.widgets = $.grep($scope.widgets, function(widget) {
@@ -402,12 +403,12 @@ function BucketCtrl($scope, $http, $route, $routeParams, $location) {
 		$scope.placement = null;
 	};
 	$scope.addWidget = function(settings) {
-		$scope.settings.widgets.push(settings);
+		$scope.bucket.settings.widgets.push(settings);
 		$scope.refresh();
 	};
 	$scope.register = function(widget) {
 		$scope.widgets.push(widget);
-		if ($scope.widgets.length === $scope.settings.widgets.length) {
+		if ($scope.widgets.length === $scope.bucket.settings.widgets.length) {
 			$scope.refresh();
 		}
 	};
@@ -422,7 +423,7 @@ function BucketCtrl($scope, $http, $route, $routeParams, $location) {
 		$scope.updateFilters();
 		var params = $.map($scope.widgets, function(widget) { return widget.params(); });
 		$scope.search(params, function(response) {
-			$scope.bucket = response;
+			$scope.total = response.total;
 			$scope.$broadcast('result', response);
 		});
 	};

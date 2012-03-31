@@ -2,6 +2,7 @@ package models;
 
 import java.util.List;
 
+import org.codehaus.jackson.node.ArrayNode;
 import org.codehaus.jackson.node.ObjectNode;
 import org.elasticsearch.common.collect.Lists;
 
@@ -31,7 +32,7 @@ public class Bucket {
 	private final String id;
 	private String label;
 	private final List<Role> roles = Lists.newArrayList();
-	private String dashboard;
+	private final List<ObjectNode> widgets = Lists.newArrayList();
 
 	public Bucket(IndexManager index, String id) {
 		this.index = index;
@@ -105,6 +106,10 @@ public class Bucket {
 		LABEL.getType().add(object, LABEL.getName(), Text.valueOf(label));
 		for (Role role : roles) {
 			ROLE.getType().add(object, ROLE.getName(), role);
+		}
+		ArrayNode widgetsNode = object.putArray("widgets");
+		for (ObjectNode widgetNode : widgets) {
+			widgetsNode.add(widgetNode);
 		}
 		return object;
 	}

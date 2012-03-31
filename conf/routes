@@ -20,9 +20,12 @@ POST    /signout                     controllers.SecurityController.signOut()
 GET     /buckets/                    controllers.BucketListController.find(identity ?= null, offset : Int ?= 0, limit : Int ?= java.lang.Integer.MAX_VALUE)
 POST    /buckets/                    controllers.BucketListController.post()
 
-GET     /buckets/:bucketId/          controllers.BucketController.get(bucketId)
-POST    /buckets/:bucketId/          controllers.BucketController.post(bucketId)
-DELETE  /buckets/:bucketId/          controllers.BucketController.delete(bucketId)
+GET     /buckets/:bucketId           controllers.BucketController.get(bucketId)
+POST    /buckets/:bucketId           controllers.BucketController.update(bucketId)
+DELETE  /buckets/:bucketId           controllers.BucketController.delete(bucketId)
+
+GET     /buckets/:bucketId/          controllers.EventController.find(bucketId)
+POST    /buckets/:bucketId/          controllers.EventController.post(bucketId)
 
 GET     /buckets/:bucketId/:eventId  controllers.EventController.get(bucketId, eventId)
 DELETE  /buckets/:bucketId/:eventId  controllers.EventController.delete(bucketId, eventId)
