@@ -17,6 +17,7 @@ import services.CommandQueue;
 
 import commands.DeleteBucketCommand;
 import commands.UpdateBucketCommand;
+import common.DefaultDashboard;
 
 @With(Timed.class)
 public class BucketController extends ControllerSupport {
@@ -41,7 +42,13 @@ public class BucketController extends ControllerSupport {
     }
 
 	private static Result get(Bucket bucket, Identity identity) {
-    	return bucket.getRole(identity) != null ? ok(bucket.toJson()) : forbidden();
+    	if (bucket.getRole(identity) == null) {
+    		return forbidden();
+    	}
+		if (bucket.getWidgets().isEmpty()) {
+			bucket.setWidgets(new DefaultDashboard().widgets());
+		}
+    	return  ok(bucket.toJson());
     }
 
 	@BodyParser.Of(value = BodyParser.Json.class, maxLength = 1000)

@@ -16,6 +16,7 @@ import secure.Role;
 import services.IndexManager;
 
 import com.google.common.base.Objects;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import common.Nodes;
 
@@ -35,7 +36,7 @@ public class Bucket {
 	private String label;
 	private String description;
 	private final List<Role> roles = Lists.newArrayList();
-	private final List<ObjectNode> widgets = Lists.newArrayList();
+	private ImmutableList<ObjectNode> widgets = ImmutableList.of();
 
 	public Bucket(IndexManager index, String id) {
 		this.index = index;
@@ -84,8 +85,12 @@ public class Bucket {
 		roles.add(role);
 	}
 
-	public void addWidget(ObjectNode widget) {
-		widgets.add(widget);
+	public void setWidgets(Iterable<ObjectNode> widgets) {
+		this.widgets = ImmutableList.copyOf(widgets);
+	}
+
+	public List<ObjectNode> getWidgets() {
+		return widgets;
 	}
 
 	public void add(Event event) {

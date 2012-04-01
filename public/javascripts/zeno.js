@@ -136,6 +136,9 @@ function UserCtrl($scope, $http, $routeParams) {
 	$scope.editable = function() {
 		return $scope.user && $scope.userInfo && $scope.user.name && $scope.userInfo.name === $scope.user.name;
 	};
+	$scope.addable = function() {
+		return $scope.user && $scope.userInfo && $scope.userInfo.getName() === $scope.user.getName();
+	};
 	$scope.close = function() {
 		if (confirm('Close your account and delete all associated data?')) {
 			$http.delete('/users/' + $routeParams.userId).success(function(response) {
@@ -260,7 +263,7 @@ function BucketListCtrl($scope, $http) {
 		});
 	};
 	$scope.remove = function(bucketId) {
-		$http.delete('/buckets/' + bucketId + '/').success(function(response, code, headers) {
+		$http.delete('/buckets/' + bucketId).success(function(response, code, headers) {
 			var undo = headers('Undo');
 			console.assert(undo, 'missing undo header');
 			$scope.alert.show('Deleted a bucket.', 'alert-success', undo);
@@ -279,8 +282,7 @@ function BucketListCtrl($scope, $http) {
 HomeCtrl.$inject = ['$scope', '$http', '$location'];
 function HomeCtrl($scope, $http, $location) {
 	$scope.template = {
-		label : 'My Data',
-		description : 'Click the edit icon above to change this message and to add or remove widgets below.'
+		label : 'My Data'
 	};
 	$scope.create = function() {
 		$http.post('/buckets/', $scope.template).success(function(data, status, headers) {
@@ -371,13 +373,6 @@ function BucketCtrl($scope, $http, $route, $routeParams, $location) {
 
 	$scope.bucketId = $routeParams.bucketId;
 	$http.get('/buckets/' + $scope.bucketId).success(function(response) {
-		if ($.isEmptyObject(response.widgets)) {
-			response.widgets = [
-				{ id : 'widget-timeline', placement : 'top', label : 'Timeline', template : 'public/dashboard/timeline.html' },
-		 		{ id : 'widget-map', placement : 'right', label : 'Map', template : 'public/dashboard/map.html', singleton : true },
-		 		{ id : 'widget-event-list', placement : 'left', label : 'List', template : 'public/dashboard/list.html', singleton : true, limit : 5, order : 'timestamp', reverse : false },
-		 	];
-		}
 		$scope.bucket = response;
 	});
 
