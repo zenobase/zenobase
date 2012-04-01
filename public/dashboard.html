@@ -9,10 +9,10 @@
 			<a ng:click="refresh()" title="Refresh"><i class="icon-refresh"></i></a>
 		</p>
 		<p class="pull-left" style="margin-left: 8px; margin-top: 6px; vertical-align: middle">
-			<a data-toggle="modal" href="#create-event-dialog"><i class="icon-plus" title="Add Event"></i></a>
+			<a ng:click="edit()" title="Edit"><i class="icon-pencil"></i></a>
 		</p>
 		<p class="pull-left" style="margin-left: 8px; margin-top: 6px; vertical-align: middle">
-			<a ng:click="save()" title="Save">Save</a>
+			<a data-toggle="modal" href="#create-event-dialog"><i class="icon-plus" title="Add Event"></i></a>
 		</p>
 		<ul class="nav nav-pills" style="clear: both; margin-bottom:12px;" ng:show="filters">
 			<li class="active" ng:repeat="filter in filters">
@@ -21,13 +21,38 @@
 		</ul>
 	</div>
 
+	<div class="alert alert-block alert-info" ng:controller="BucketFormCtrl" ng:show="editing">
+		<a class="close" ng:click="cancel()">&times;</a>
+		<h3 class="alert-heading">Edit</h3>
+		<form name="dashboardForm">
+			<fieldset>
+				<div class="control-group">
+					<label class="control-label" for="edit-label"><strong>Title</strong></label>
+					<div class="controls">
+						<input type="text" class="input-large" required ng:model="bucket.label" ng:model-instant>
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label" for="edit-description"><strong>Description</strong></label>
+					<div class="controls">
+						<textarea class="input-xxlarge" rows="3" ng:model="bucket.description" ng:model-instant></textarea>
+					</div>
+				</div>
+			</fieldset>
+		</form>
+		<p>
+			<a ng:click="save()" class="btn btn-primary" ng:disabled="!dashboardForm.$valid">Save</a>
+			<a ng:click="cancel()" class="btn">Cancel</a>
+		</p>
+	</div>
+
 	<div class="row-fluid">
 		<div class="span12">
 			<ul class="nav nav-tabs">
 				<li ng:class="$index == 0 && 'active'" ng:repeat="settings in getWidgetSettings('top')">
-					<a href="#{{settings.id}}" data-toggle="tab">{{settings.label}} <span class="close" title="Remove" ng:click="removeWidget(settings.id)">&times;</span></a>
+					<a href="#{{settings.id}}" data-toggle="tab">{{settings.label}} <span class="close" title="Remove" ng:click="removeWidget(settings.id)" ng:show="editing">&times;</span></a>
 				</li>
-				<li><a ng:click="chooseWidget('top')" title="Add Widget..."><i class="icon-plus-sign"></i></a></li>
+				<li ng:show="editing"><a ng:click="chooseWidget('top')" title="Add Widget..."><i class="icon-plus-sign"></i></a></li>
 			</ul>
 			<div class="tab-content">
 				<div id="{{settings.id}}" class="tab-pane" ng:class="$index == 0 && 'active'" ng:repeat="settings in getWidgetSettings('top')">
@@ -41,9 +66,9 @@
 		<div class="span6">
 			<ul class="nav nav-tabs">
 				<li ng:class="$index == 0 && 'active'" ng:repeat="settings in getWidgetSettings('left')">
-					<a href="#{{settings.id}}" data-toggle="tab">{{settings.label}} <span class="close" title="Remove" ng:click="removeWidget(settings.id)">&times;</span></a>
+					<a href="#{{settings.id}}" data-toggle="tab">{{settings.label}} <span class="close" title="Remove" ng:click="removeWidget(settings.id)" ng:show="editing">&times;</span></a>
 				</li>
-				<li><a ng:click="chooseWidget('left')" title="Add Widget..."><i class="icon-plus-sign"></i></a></li>
+				<li ng:show="editing"><a ng:click="chooseWidget('left')" title="Add Widget..."><i class="icon-plus-sign"></i></a></li>
 			</ul>
 			<div class="tab-content">
 				<div id="{{settings.id}}" class="tab-pane" ng:class="$index == 0 && 'active'" ng:repeat="settings in getWidgetSettings('left')">
@@ -54,9 +79,9 @@
 		<div class="span6">
 			<ul class="nav nav-tabs">
 				<li ng:class="$index == 0 && 'active'" ng:repeat="settings in getWidgetSettings('right')">
-					<a href="#{{settings.id}}" data-toggle="tab">{{settings.label}} <span class="close" title="Remove" ng:click="removeWidget(settings.id)">&times;</span></a>
+					<a href="#{{settings.id}}" data-toggle="tab">{{settings.label}} <span class="close" title="Remove" ng:click="removeWidget(settings.id)" ng:show="editing">&times;</span></a>
 				</li>
-				<li><a ng:click="chooseWidget('right')" title="Add Widget..."><i class="icon-plus-sign"></i></a></li>
+				<li ng:show="editing"><a ng:click="chooseWidget('right')" title="Add Widget..."><i class="icon-plus-sign"></i></a></li>
 			</ul>
 			<div class="tab-content">
 				<div id="{{settings.id}}" class="tab-pane" ng:class="$index == 0 && 'active'" ng:repeat="settings in getWidgetSettings('right')">

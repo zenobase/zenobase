@@ -24,7 +24,7 @@
 	<p ng:hide="terms" class="none">None</p>
 
 	<div class="btn-toolbar">
-		<div class="btn-group">
+		<div class="btn-group" ng:show="editing">
 			<a class="btn" href="#term-count-config-dialog" title="Configure" data-toggle="modal"><i class="icon-cog"></i></a>
 		</div>
 		<div class="btn-group pull-right" ng:show="terms">

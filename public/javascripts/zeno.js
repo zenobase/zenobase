@@ -148,7 +148,6 @@ function UserCtrl($scope, $http, $routeParams) {
 UserFormCtrl.$inject = ['$scope', '$http'];
 function UserFormCtrl($scope, $http) {
 
-	$scope.message = '';
 	$scope.editing = false;
 
 	$scope.data = function() {
@@ -404,21 +403,13 @@ function BucketCtrl($scope, $http, $route, $routeParams, $location) {
 	};
 	$scope.addWidget = function(settings) {
 		$scope.bucket.widgets.push(settings);
-		$scope.refresh();
+		// $scope.refresh();
 	};
 	$scope.register = function(widget) {
 		$scope.widgets.push(widget);
 		if ($scope.widgets.length === $scope.bucket.widgets.length) {
 			$scope.refresh();
 		}
-	};
-	$scope.save = function(settings) {
-		$http.post('/buckets/' + $scope.bucketId, $scope.bucket).success(function (response, status, headers) {
-			console.log('saved');
-			var undo = headers('Undo');
-			console.assert(undo, 'missing undo header');
-			$scope.alert.show('Saved settings.', 'alert-success', undo);
-		});
 	};
 
 	$scope.search = function(params, callback) {
@@ -488,7 +479,33 @@ function BucketCtrl($scope, $http, $route, $routeParams, $location) {
 		return field ? field.icon : 'icon-ban-circle';
 	};
 
+	$scope.editing = false;
+	$scope.edit = function() {
+		$scope.editing = true;
+	};
+	$scope.cancel = function() {
+		$scope.editing = false;
+	};
+
 	// $scope.$evalAsync($scope.refresh);
+}
+
+BucketFormCtrl.$inject = ['$scope', '$http'];
+function BucketFormCtrl($scope, $http) {
+
+	$scope.save = function(settings) {
+		$http.post('/buckets/' + $scope.bucketId, $scope.bucket).success(function (response, status, headers) {
+			console.log('saved');
+			var undo = headers('Undo');
+			console.assert(undo, 'missing undo header');
+			$scope.alert.show('Saved settings.', 'alert-success', undo);
+			$scope.$parent.cancel();
+		});
+	};
+	$scope.cancel = function() {
+		$scope.$parent.cancel();
+		$scope.reload();
+	};
 }
 
 EventListCtrl.$inject = ['$scope'];
