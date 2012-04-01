@@ -278,9 +278,12 @@ function BucketListCtrl($scope, $http) {
 
 HomeCtrl.$inject = ['$scope', '$http', '$location'];
 function HomeCtrl($scope, $http, $location) {
-	$scope.label = 'My Data';
+	$scope.template = {
+		label : 'My Data',
+		description : 'Click the edit icon above to change this message and to add or remove widgets below.'
+	};
 	$scope.create = function() {
-		$http.post('/buckets/', { label : $scope.label}).success(function(data, status, headers) {
+		$http.post('/buckets/', $scope.template).success(function(data, status, headers) {
 			var location = headers('Location');
 			console.assert(status == 201, status);
 			console.assert(location, 'missing location header');
@@ -403,7 +406,6 @@ function BucketCtrl($scope, $http, $route, $routeParams, $location) {
 	};
 	$scope.addWidget = function(settings) {
 		$scope.bucket.widgets.push(settings);
-		// $scope.refresh();
 	};
 	$scope.register = function(widget) {
 		$scope.widgets.push(widget);
@@ -495,7 +497,6 @@ function BucketFormCtrl($scope, $http) {
 
 	$scope.save = function(settings) {
 		$http.post('/buckets/' + $scope.bucketId, $scope.bucket).success(function (response, status, headers) {
-			console.log('saved');
 			var undo = headers('Undo');
 			console.assert(undo, 'missing undo header');
 			$scope.alert.show('Saved settings.', 'alert-success', undo);

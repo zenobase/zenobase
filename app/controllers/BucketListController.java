@@ -101,20 +101,26 @@ public class BucketListController extends ControllerSupport {
     public static Result post() {
 		ObjectNode body = (ObjectNode) request().body().asJson();
 		if (body == null || !body.has("label")) {
+			return badRequest("missing request body");
+		}
+		String label = body.findPath(Bucket.LABEL.getName()).getTextValue();
+		String description = body.findPath(Bucket.DESCRIPTION.getName()).getTextValue();
+		if (label == null) { // TODO validate label
 			return badRequest("missing label");
 		}
 		Identity identity = IdentityHelper.in(ctx()).get(true);
-    	Bucket bucket = createBucket(body.get("label").asText(), identity);
-		String commandId = queue.execute(new CreateBucketCommand(buckets, identity, bucket));
+    	Bucket bucket = createBucket(label, description, identity);
+    	String commandId = queue.execute(new CreateBucketCommand(buckets, identity, bucket));
         response().setHeader(LOCATION, String.format("/buckets/%s/", bucket.getId()));
         response().setHeader("Undo", String.format("/queue/%s", commandId));
         return created();
     }
 
-	private static Bucket createBucket(String label, Identity identity) {
+	private static Bucket createBucket(String label, String description, Identity identity) {
 		String id = Generator.id();
 		Bucket bucket = new Bucket(node.getIndex(id), id);
 		bucket.setLabel(label);
+		bucket.setDescription(description);
 		bucket.addRole(new Role(identity, Role.OWNER));
 		bucket.addWidget(getDefaultWidget());
 		return bucket;

@@ -24,14 +24,16 @@ public class Bucket {
 	public static final String TYPE_NAME = "bucket";
 	public static final Field<Token> ID = Field.of("@id", new TokenType());
 	public static final Field<Text> LABEL = Field.of("label", new TextType());
+	public static final Field<Text> DESCRIPTION = Field.of("description", new TextType());
 	public static final Field<Role> ROLE = Field.of("roles", new RoleType());
 	public static final Field<ObjectNode> WIDGET = Field.of("widgets", new ObjectType());
 
-	private static final ImmutableSet<Field<?>> FIELDS = ImmutableSet.of(ID, LABEL, ROLE, WIDGET);
+	private static final ImmutableSet<Field<?>> FIELDS = ImmutableSet.of(ID, LABEL, DESCRIPTION, ROLE, WIDGET);
 
 	private final IndexManager index;
 	private final String id;
 	private String label;
+	private String description;
 	private final List<Role> roles = Lists.newArrayList();
 	private final List<ObjectNode> widgets = Lists.newArrayList();
 
@@ -44,8 +46,20 @@ public class Bucket {
 		return id;
 	}
 
+	public String getLabel() {
+		return label;
+	}
+
 	public void setLabel(String label) {
 		this.label = label;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
 	}
 
 	public String getRole(Identity identity) {
@@ -109,6 +123,9 @@ public class Bucket {
 		ObjectNode object = Nodes.newObject();
 		ID.getType().add(object, ID.getName(), Token.valueOf(id));
 		LABEL.getType().add(object, LABEL.getName(), Text.valueOf(label));
+		if (description != null) {
+			DESCRIPTION.getType().add(object, DESCRIPTION.getName(), Text.valueOf(description));
+		}
 		ROLE.getType().add(object, ROLE.getName(), roles);
 		WIDGET.getType().add(object, WIDGET.getName(), widgets);
 		return object;

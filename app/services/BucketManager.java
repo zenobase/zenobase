@@ -138,6 +138,9 @@ public class BucketManager {
 		String id = object.get(Bucket.ID.getName()).asText();
 		Bucket bucket = new Bucket(manager.getIndex(id), id);
 		bucket.setLabel(object.get(Bucket.LABEL.getName()).asText());
+		if (object.has(Bucket.DESCRIPTION.getName())) {
+			bucket.setDescription(object.get(Bucket.DESCRIPTION.getName()).asText());
+		}
 		for (Role role : Bucket.ROLE.getType().get(object, Bucket.ROLE.getName())) {
 			bucket.addRole(role);
 		}
