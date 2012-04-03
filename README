@@ -1,4 +1,19 @@
-This is your new Play 2.0 application
-=====================================
+Developer Guide
+===============
 
-This file will be packaged with your application, when using `play dist`.
+To refresh the dependencies in Eclipse, open the play console and run:
+
+  eclipsify with-source=true
+
+Then substitute the following in the .project file:
+
+	<buildSpec>
+		<buildCommand>
+			<name>org.eclipse.jdt.core.javabuilder</name>
+			<arguments>
+			</arguments>
+		</buildCommand>
+	</buildSpec>
+	<natures>
+		<nature>org.eclipse.jdt.core.javanature</nature>
+	</natures>
