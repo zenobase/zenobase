@@ -337,7 +337,7 @@ function AddWidgetCtrl($scope, $http, $route, $routeParams, $location) {
   	{ label : 'Map', description : 'Map with event locations.', template : 'public/dashboard/map.html', singleton : true },
   	{ label : 'List', description : 'List with the most recent events.', template : 'public/dashboard/list.html', singleton : true, limit : 5, order : 'timestamp', reverse : false },
   	{ label : 'Count', description : 'Counts events for each value in a field.', template : 'public/dashboard/count.html', field : 'tag', order : 'count', reverse : false, limit : 5 },
-  	{ label : 'First/Last', description : 'First and last occurence of each value in a field.', template : 'public/dashboard/gantt.html', termField : 'tag', timeField : 'timestamp', order : 'max', limit : 10 },
+  	{ label : 'Date Range', description : 'First and last occurence of each value in a field.', template : 'public/dashboard/gantt.html', termField : 'tag', timeField : 'timestamp', order : 'max', limit : 10 },
   	{ label : 'Ratings', description : 'Counts events by their rating.', template : 'public/dashboard/histogram.html' },
   	{ label : 'Scoreboard', description : 'Statistics for the values in a field', template : 'public/dashboard/scoreboard.html', termField : 'author', valueField : 'distance', unit : 'km', order : 'total', limit : 10 }                    
   ];
@@ -545,6 +545,11 @@ function EventListCtrl($scope) {
 		$scope.items = result[$scope.settings.id];
 	};
 
+	$scope.dialogShown = false;
+	$scope.showDialog = function(dialogShown) {
+		$scope.dialogShown = dialogShown;
+	};
+
 	$scope.register($scope);
 	$scope.$on('result', $scope.update);
 }
@@ -618,16 +623,28 @@ function TermCountCtrl($scope) {
 		$scope.addFilter(new Filter($scope.settings.field, term.label))
 	};
 
+	$scope.dialogShown = false;
+	$scope.showDialog = function(dialogShown) {
+		$scope.dialogShown = dialogShown;
+	};
+
 	$scope.register($scope);
 	$scope.$on('result', $scope.update);
 }
 
-function TermCountConfigCtrl($scope) {
-	$scope.limit = $scope.settings.limit;
+function WidgetSettingsCtrl($scope) {
 	$scope.save = function() {
-		$scope.refresh({ offset : 0 }, { limit : $scope.limit });
-		$('#term-count-config-dialog').modal('hide');
+		$scope.refresh({ offset : 0 }, $scope.settings);
+		$scope.showDialog(false);
 	};
+	$scope.cancel = function() {
+		$scope.showDialog(false);
+		$scope.reset();
+	};
+	$scope.reset = function() {
+		$scope.settings = angular.copy($scope.$parent.settings);
+	};
+	$scope.reset();
 }
 
 TermGanttCtrl.$inject = ['$scope'];
@@ -646,6 +663,13 @@ function TermGanttCtrl($scope) {
 			limit : $scope.settings.limit
 		};
 	};
+	$scope.refresh = function(options, settings) {
+		$scope.search([ $.extend($scope.params(), options, settings) ], function(result) {
+			$.extend($scope, options)
+			$.extend($scope.settings, settings)
+			$scope.update(null, result);
+		});
+	};
 	$scope.update = function(event, result) {
 		$scope.terms = result[$scope.settings.id];
 		if ($scope.terms) {
@@ -657,6 +681,12 @@ function TermGanttCtrl($scope) {
 	$scope.filter = function(term) {
 		$scope.addFilter(new Filter($scope.settings.termField, term.label))
 	};
+
+	$scope.dialogShown = false;
+	$scope.showDialog = function(dialogShown) {
+		$scope.dialogShown = dialogShown;
+	};
+
 	$scope.register($scope);
 	$scope.$on('result', $scope.update);
 }
@@ -682,6 +712,18 @@ function RatingCountCtrl($scope) {
 	};
 	$scope.update = function(event, result) {
 		$scope.ratings = result[$scope.settings.id];
+	};
+	$scope.refresh = function(options, settings) {
+		$scope.search([ $.extend($scope.params(), options, settings) ], function(result) {
+			$.extend($scope, options);
+			$.extend($scope.settings, settings);
+			$scope.update(null, result);
+		});
+	};
+
+	$scope.dialogShown = false;
+	$scope.showDialog = function(dialogShown) {
+		$scope.dialogShown = dialogShown;
 	};
 
 	$scope.register($scope);
@@ -718,20 +760,13 @@ function ScoreboardCtrl($scope) {
 		$scope.addFilter(new Filter($scope.settings.termField, term.label))
 	};
 
+	$scope.dialogShown = false;
+	$scope.showDialog = function(dialogShown) {
+		$scope.dialogShown = dialogShown;
+	};
+
 	$scope.register($scope);
 	$scope.$on('result', $scope.update);
-}
-
-ScoreboardConfigCtrl.$inject = ['$scope'];
-function ScoreboardConfigCtrl($scope) {
-	$scope.limit = $scope.settings.limit;
-	$scope.termField = $scope.settings.termField;
-	$scope.valueField = $scope.settings.valueField;
-	$scope.unit = $scope.settings.unit;
-	$scope.save = function() {
-		$scope.refresh({}, { limit : $scope.limit, termField : $scope.termField, valueField : $scope.valueField, unit : $scope.unit });
-		$('#scoreboard-config-dialog').modal('hide');
-	};
 }
 
 function Interval(name, pattern) {
@@ -787,9 +822,21 @@ function TimelineCtrl($scope) {
 			timezone : locale.getTimezone()
 		};
 	};
+	$scope.refresh = function(options, settings) {
+		$scope.search([ $.extend($scope.params(), options, settings) ], function(result) {
+			$.extend($scope, options)
+			$.extend($scope.settings, settings)
+			$scope.update(null, result);
+		});
+	};
 	$scope.update = function(event, result) {
 		$scope.times = result[$scope.settings.id];
 		self.draw($scope);
+	};
+
+	$scope.dialogShown = false;
+	$scope.showDialog = function(dialogShown) {
+		$scope.dialogShown = dialogShown;
 	};
 
 	$scope.register($scope);
@@ -834,6 +881,10 @@ function MapCtrl($scope) {
 	$scope.points = null;
 	$scope.map = null;
 
+	$scope.refresh = function(options, settings) {
+		$.extend($scope, options)
+		$.extend($scope.settings, settings)
+	};
 	$scope.update = function(event, result) {
 		var points = [ ];
 		$scope.events = $.each($scope.getEvents(result), function(i, event) {
@@ -860,6 +911,11 @@ function MapCtrl($scope) {
 			}
 		}
 		return [];
+	};
+
+	$scope.dialogShown = false;
+	$scope.showDialog = function(dialogShown) {
+		$scope.dialogShown = dialogShown;
 	};
 
 	$scope.register($scope);

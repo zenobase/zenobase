@@ -51,7 +51,7 @@ public class BucketController extends ControllerSupport {
     	return  ok(bucket.toJson());
     }
 
-	@BodyParser.Of(value = BodyParser.Json.class, maxLength = 1000)
+	@BodyParser.Of(value = BodyParser.Json.class, maxLength = 10000)
 	public static Result update(String bucketId) {
 		
 		Identity identity = IdentityHelper.in(ctx()).get();
