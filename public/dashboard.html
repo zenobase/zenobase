@@ -63,7 +63,7 @@
 			</ul>
 			<div class="tab-content">
 				<div id="{{settings.id}}" class="tab-pane" ng:class="$index == 0 && 'active'" ng:repeat="settings in getWidgetSettings('top')">
-					<ng:include src="settings.template"/>
+					<ng:include src="getTemplate(settings.type)"/>
 				</div>
 			</div>
 		</div>
@@ -79,7 +79,7 @@
 			</ul>
 			<div class="tab-content">
 				<div id="{{settings.id}}" class="tab-pane" ng:class="$index == 0 && 'active'" ng:repeat="settings in getWidgetSettings('left')">
-					<ng:include src="settings.template"/>
+					<ng:include src="getTemplate(settings.type)"/>
 				</div>
 			</div>
 		</div>
@@ -92,7 +92,7 @@
 			</ul>
 			<div class="tab-content">
 				<div id="{{settings.id}}" class="tab-pane" ng:class="$index == 0 && 'active'" ng:repeat="settings in getWidgetSettings('right')">
-					<ng:include src="settings.template"/>
+					<ng:include src="getTemplate(settings.type)"/>
 				</div>
 			</div>
 		</div>

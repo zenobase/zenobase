@@ -333,13 +333,13 @@ AddWidgetCtrl.$inject = ['$scope', '$http', '$route', '$routeParams', '$location
 function AddWidgetCtrl($scope, $http, $route, $routeParams, $location) {
 
 	$scope.templates = [
-  	{ label : 'Timeline', description : 'Timeline with event counts.', template : 'public/dashboard/timeline.html' },
-  	{ label : 'Map', description : 'Map with event locations.', template : 'public/dashboard/map.html', singleton : true },
-  	{ label : 'List', description : 'List with the most recent events.', template : 'public/dashboard/list.html', singleton : true, limit : 5, order : 'timestamp', reverse : false },
-  	{ label : 'Count', description : 'Counts events for each value in a field.', template : 'public/dashboard/count.html', field : 'tag', order : 'count', reverse : false, limit : 5 },
-  	{ label : 'Date Range', description : 'First and last occurence of each value in a field.', template : 'public/dashboard/gantt.html', termField : 'tag', timeField : 'timestamp', order : 'max', limit : 10 },
-  	{ label : 'Ratings', description : 'Counts events by their rating.', template : 'public/dashboard/histogram.html' },
-  	{ label : 'Scoreboard', description : 'Statistics for the values in a field', template : 'public/dashboard/scoreboard.html', termField : 'author', valueField : 'distance', unit : 'km', order : 'total', limit : 10 }                    
+  	{ label : 'Timeline', description : 'Timeline with event counts.', type : 'timeline' },
+  	{ label : 'Map', description : 'Map with event locations.', type : 'map', singleton : true },
+  	{ label : 'List', description : 'List with the most recent events.', type : 'list', singleton : true, limit : 5, order : 'timestamp', reverse : false },
+  	{ label : 'Count', description : 'Counts events for each value in a field.', type : 'count', field : 'tag', order : 'count', reverse : false, limit : 5 },
+  	{ label : 'Date Range', description : 'First and last occurence of each value in a field.', type : 'gantt', termField : 'tag', timeField : 'timestamp', order : 'max', limit : 10 },
+  	{ label : 'Ratings', description : 'Counts events by their rating.', type : 'histogram' },
+  	{ label : 'Scoreboard', description : 'Statistics for the values in a field', type : 'scoreboard', termField : 'author', valueField : 'distance', unit : 'km', order : 'total', limit : 10 }                    
   ];
 	$scope.template = null;
 	$scope.add = function() {
@@ -401,6 +401,9 @@ function BucketCtrl($scope, $http, $route, $routeParams, $location) {
 	};
 	$scope.addWidget = function(settings) {
 		$scope.bucket.widgets.push(settings);
+	};
+	$scope.getTemplate = function(type) {
+		return '/public/dashboard/' + type + '.html';
 	};
 	$scope.register = function(widget) {
 		$scope.widgets.push(widget);
