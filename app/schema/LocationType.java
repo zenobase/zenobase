@@ -32,7 +32,7 @@ public class LocationType extends Type<Location> {
 	}
 
 	@Override
-	protected JsonNode get(Location value) {
+	protected JsonNode toJson(Location value) {
 		ObjectNode object = Nodes.newObject();
 		object.put(LATITUDE, value.getLatitude());
 		object.put(LONGITUDE, value.getLongitude());

@@ -16,7 +16,7 @@ public class TokenType extends Type<String> {
 	}
 
 	@Override
-	protected JsonNode get(String value) {
+	protected JsonNode toJson(String value) {
 		return new TextNode(value);
 	}
 

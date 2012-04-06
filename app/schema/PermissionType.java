@@ -33,7 +33,7 @@ public class PermissionType extends Type<ObjectNode> {
 	}
 
 	@Override
-	protected JsonNode get(ObjectNode value) {
+	protected JsonNode toJson(ObjectNode value) {
 		return value;
 	}
 }

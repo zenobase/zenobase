@@ -18,7 +18,7 @@ public class IdentityType extends Type<Identity> {
 	}
 
 	@Override
-	protected JsonNode get(Identity value) {
+	protected JsonNode toJson(Identity value) {
 		return new TextNode(value.getId());
 	}
 

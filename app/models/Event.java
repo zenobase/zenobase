@@ -65,15 +65,15 @@ public class Event {
 	}
 
 	public <T> void add(Field<T> field, T value) {
-		field.getType().add(content, field.getName(), value);
+		field.getType().addValue(content, field.getName(), value);
 	}
 
 	public <T> Iterable<T> get(Field<T> field) {
-		return field.getType().get(content, field.getName());
+		return field.getType().getValues(content, field.getName());
 	}
 
 	public <T> void set(Field<T> field, T value) {
-		field.getType().set(content, field.getName(), value);
+		field.getType().setValue(content, field.getName(), value);
 	}
 
 	public <T> boolean contains(Field<T> field) {

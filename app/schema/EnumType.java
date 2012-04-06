@@ -16,7 +16,7 @@ public class EnumType<E extends Enum<E>> extends Type<E> {
 	}
 
 	@Override
-	protected JsonNode get(E value) {
+	protected JsonNode toJson(E value) {
 		return new TextNode(value.toString());
 	}
 

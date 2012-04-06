@@ -21,7 +21,7 @@ public class DateTimeType extends Type<DateTime> {
 	}
 
 	@Override
-	protected JsonNode get(DateTime value) {
+	protected JsonNode toJson(DateTime value) {
 		return new TextNode(value.toString());
 	}
 

@@ -15,7 +15,7 @@ public class BooleanType extends Type<Boolean> {
 	}
 
 	@Override
-	protected JsonNode get(Boolean value) {
+	protected JsonNode toJson(Boolean value) {
 		return BooleanNode.valueOf(value);
 	}
 }

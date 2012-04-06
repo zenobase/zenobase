@@ -57,8 +57,8 @@ public class GanttWidget implements Widget {
 				ObjectNode entryNode = result.addObject();
 				entryNode.put("label", entry.getTerm());
 				entryNode.put("count", entry.getCount());
-				VALUE_TYPE.set(entryNode, "first", first);
-				VALUE_TYPE.set(entryNode, "last", last);
+				VALUE_TYPE.setValue(entryNode, "first", first);
+				VALUE_TYPE.setValue(entryNode, "last", last);
 			}
 		}
 		return result;

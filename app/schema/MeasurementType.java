@@ -48,11 +48,11 @@ public class MeasurementType<Q extends Quantity> extends Type<DecimalMeasure<Q>>
 	}
 
 	private static <T> T get(JsonNode node, Field<T> field) {
-		return Iterables.getOnlyElement(field.getType().get((ObjectNode) node, field.getName()));
+		return Iterables.getOnlyElement(field.getType().getValues((ObjectNode) node, field.getName()));
 	}
 
 	@Override
-	protected JsonNode get(DecimalMeasure<Q> value) {
+	protected JsonNode toJson(DecimalMeasure<Q> value) {
 		ObjectNode object = Nodes.newObject();
 		add(object, VALUE, value.getValue());
 		add(object, UNIT, value.getUnit().toString());
@@ -60,7 +60,7 @@ public class MeasurementType<Q extends Quantity> extends Type<DecimalMeasure<Q>>
 	}
 
 	private static <T> void add(ObjectNode object, Field<T> field, T value) {
-		field.getType().add(object, field.getName(), value);
+		field.getType().addValue(object, field.getName(), value);
 	}
 
 	@Override

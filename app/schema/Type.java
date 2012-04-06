@@ -20,7 +20,7 @@ public abstract class Type<T> {
 		return type;
 	}
 
-	public ImmutableList<T> get(ObjectNode object, String fieldName) {
+	public ImmutableList<T> getValues(ObjectNode object, String fieldName) {
 		ImmutableList.Builder<T> values = ImmutableList.builder();
 		JsonNode node = object.get(fieldName);
 		if (node != null && node.isArray()) {
@@ -36,53 +36,53 @@ public abstract class Type<T> {
 
 	protected abstract T get(JsonNode node);
 
-	public void add(ObjectNode object, String fieldName, T value) {
+	public void addValue(ObjectNode object, String fieldName, T value) {
 		JsonNode node = object.get(fieldName);
 		if (node == null) {
-			object.put(fieldName, get(value));
+			object.put(fieldName, toJson(value));
 		}
 		else if (node.isArray()) {
-			((ArrayNode) node).add(get(value));
+			((ArrayNode) node).add(toJson(value));
 		}
 		else {
 			ArrayNode arrayNode = object.putArray(fieldName);
 			arrayNode.add(node);
-			arrayNode.add(get(value));
+			arrayNode.add(toJson(value));
 		}
 	}
 
-	public void add(ObjectNode object, String fieldName, Iterable<T> values) {
+	public void addValues(ObjectNode object, String fieldName, Iterable<T> values) {
 		JsonNode node = object.get(fieldName);
 		if (node == null) {
 			ArrayNode arrayNode = object.putArray(fieldName);
-			add(arrayNode, values);
+			addValues(arrayNode, values);
 		}
 		else if (node.isArray()) {
-			add((ArrayNode) node, values);
+			addValues((ArrayNode) node, values);
 		}
 		else {
 			ArrayNode arrayNode = object.putArray(fieldName);
 			arrayNode.add(node);
-			add(arrayNode, values);
+			addValues(arrayNode, values);
 		}
 	}
 
-	public void set(ObjectNode object, String fieldName, T value) {
-		object.put(fieldName, get(value));
+	public void setValue(ObjectNode object, String fieldName, T value) {
+		object.put(fieldName, toJson(value));
 	}
 
-	public void set(ObjectNode object, String fieldName, Iterable<T> values) {
+	public void setValues(ObjectNode object, String fieldName, Iterable<T> values) {
 		ArrayNode arrayNode = object.putArray(fieldName);
-		add(arrayNode, values);
+		addValues(arrayNode, values);
 	}
 
-	private void add(ArrayNode node, Iterable<T> values) {
+	private void addValues(ArrayNode node, Iterable<T> values) {
 		for (T value : values) {
-			node.add(get(value));
+			node.add(toJson(value));
 		}
 	}
 
-	protected abstract JsonNode get(T value);
+	protected abstract JsonNode toJson(T value);
 
 	public void configureSchema(ObjectNode schema) {
 		schema.put("type", schemaType);

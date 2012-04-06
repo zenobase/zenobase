@@ -21,35 +21,35 @@ public class DomainNode {
 
 	public DomainNode(String id) {
 		object = Nodes.newObject();
-		ID.getType().set(object, ID.getName(), id);
+		ID.getType().setValue(object, ID.getName(), id);
 	}
 
 	public String getId() {
-		return Iterables.getOnlyElement(ID.getType().get(object, ID.getName())).toString();
+		return Iterables.getOnlyElement(ID.getType().getValues(object, ID.getName()));
 	}
 
 	protected <T> T getValue(Field<T> field) {
-		return Iterables.getOnlyElement(getValues(field));
+		return Iterables.getOnlyElement(getValues(field), null);
 	}
 
 	protected <T> ImmutableList<T> getValues(Field<T> field) {
-		return field.getType().get(object, field.getName());
+		return field.getType().getValues(object, field.getName());
 	}
 
 	protected <T> void setValue(Field<T> field, T value) {
-		field.getType().set(object, field.getName(), value);
+		field.getType().setValue(object, field.getName(), value);
 	}
 
 	protected <T> void setValues(Field<T> field, Iterable<T> values) {
-		field.getType().set(object, field.getName(), values);
+		field.getType().setValues(object, field.getName(), values);
 	}
 
 	protected <T> void addValue(Field<T> field, T value) {
-		field.getType().add(object, field.getName(), value);
+		field.getType().addValue(object, field.getName(), value);
 	}
 
 	protected <T> void addValues(Field<T> field, Iterable<T> values) {
-		field.getType().add(object, field.getName(), values);
+		field.getType().addValues(object, field.getName(), values);
 	}
 
 	public ObjectNode toJson() {

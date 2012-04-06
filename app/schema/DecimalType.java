@@ -17,7 +17,7 @@ public class DecimalType extends Type<BigDecimal> {
 	}
 
 	@Override
-	protected JsonNode get(BigDecimal value) {
+	protected JsonNode toJson(BigDecimal value) {
 		return new DecimalNode(value);
 	}
 }

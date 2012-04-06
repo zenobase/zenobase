@@ -18,7 +18,7 @@ public class RatingType extends Type<Rating> {
 	}
 
 	@Override
-	protected JsonNode get(Rating value) {
+	protected JsonNode toJson(Rating value) {
 		return new TextNode(value.toString());
 	}
 

@@ -15,7 +15,7 @@ public class LongType extends Type<Long> {
 	}
 
 	@Override
-	protected JsonNode get(Long value) {
+	protected JsonNode toJson(Long value) {
 		return new LongNode(value);
 	}
 }

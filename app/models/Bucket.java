@@ -53,8 +53,8 @@ public class Bucket extends DomainNode {
 	public ImmutableMap<Identity, Permission> getPermissions() {
 		Builder<Identity, Permission> builder = ImmutableMap.builder();
 		for (ObjectNode object : getValues(PERMISSIONS)) {
-			Identity identity = Iterables.getOnlyElement(PermissionType.IDENTITY.getType().get(object, PermissionType.IDENTITY.getName()));
-			Permission permission = Iterables.getOnlyElement(PermissionType.PERMISSION.getType().get(object, PermissionType.PERMISSION.getName()));
+			Identity identity = Iterables.getOnlyElement(PermissionType.IDENTITY.getType().getValues(object, PermissionType.IDENTITY.getName()));
+			Permission permission = Iterables.getOnlyElement(PermissionType.PERMISSION.getType().getValues(object, PermissionType.PERMISSION.getName()));
 			builder.put(identity, permission);
 		}
 		return builder.build();
@@ -62,8 +62,8 @@ public class Bucket extends DomainNode {
 
 	public Permission getPermission(Identity identity) {
 		for (ObjectNode object : getValues(PERMISSIONS)) {
-			if (PermissionType.IDENTITY.getType().get(object, PermissionType.IDENTITY.getName()).contains(identity)) {
-				return Iterables.getOnlyElement(PermissionType.PERMISSION.getType().get(object, PermissionType.PERMISSION.getName()));
+			if (PermissionType.IDENTITY.getType().getValues(object, PermissionType.IDENTITY.getName()).contains(identity)) {
+				return Iterables.getOnlyElement(PermissionType.PERMISSION.getType().getValues(object, PermissionType.PERMISSION.getName()));
 			}
 		}
 		return Permission.NONE;
@@ -75,8 +75,8 @@ public class Bucket extends DomainNode {
 
 	public void addPermission(Identity identity, Permission permission) {
 		ObjectNode object = Nodes.newObject();
-		PermissionType.IDENTITY.getType().set(object, PermissionType.IDENTITY.getName(), identity);
-		PermissionType.PERMISSION.getType().set(object, PermissionType.PERMISSION.getName(), permission);
+		PermissionType.IDENTITY.getType().setValue(object, PermissionType.IDENTITY.getName(), identity);
+		PermissionType.PERMISSION.getType().setValue(object, PermissionType.PERMISSION.getName(), permission);
 		addValue(PERMISSIONS, object);
 	}
 	

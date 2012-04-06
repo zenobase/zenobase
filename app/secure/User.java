@@ -133,10 +133,10 @@ public class User {
 
 	public ObjectNode toJson(boolean includeProfile) {
 		ObjectNode object = Nodes.newObject();
-		NAME.getType().set(object, NAME.getName(), name);
-		IDENTITY.getType().set(object, IDENTITY.getName(), identity);
+		NAME.getType().setValue(object, NAME.getName(), name);
+		IDENTITY.getType().setValue(object, IDENTITY.getName(), identity);
 		if (includeProfile && email != null) {
-			CREATED.getType().set(object, CREATED.getName(), created);
+			CREATED.getType().setValue(object, CREATED.getName(), created);
 			if (email != null) {
 				object.put(EMAIL.getName(), email);
 				object.put(VERIFIED.getName(), verified);
@@ -147,24 +147,24 @@ public class User {
 
 	public ObjectNode toJson() {
 		ObjectNode object = toJson(true);
-		PASSWORD.getType().set(object, PASSWORD.getName(), password);
-		SUSPENDED.getType().set(object, SUSPENDED.getName(), suspended);
-		SUPERUSER.getType().set(object, SUPERUSER.getName(), superuser);
+		PASSWORD.getType().setValue(object, PASSWORD.getName(), password);
+		SUSPENDED.getType().setValue(object, SUSPENDED.getName(), suspended);
+		SUPERUSER.getType().setValue(object, SUPERUSER.getName(), superuser);
 		return object;
 	}
 
 	public static User parse(ObjectNode object) {
-		Identity identity = Iterables.getOnlyElement(IDENTITY.getType().get(object, IDENTITY.getName()));
-		String name = Iterables.getOnlyElement(NAME.getType().get(object, NAME.getName()));
-		DateTime created = Iterables.getOnlyElement(CREATED.getType().get(object, CREATED.getName()));
+		Identity identity = Iterables.getOnlyElement(IDENTITY.getType().getValues(object, IDENTITY.getName()));
+		String name = Iterables.getOnlyElement(NAME.getType().getValues(object, NAME.getName()));
+		DateTime created = Iterables.getOnlyElement(CREATED.getType().getValues(object, CREATED.getName()));
 		User user = new User(identity, name, created);
-		user.setPassword(Iterables.getOnlyElement(PASSWORD.getType().get(object, PASSWORD.getName())));
-		user.setSuspended(Iterables.getOnlyElement(SUSPENDED.getType().get(object, SUSPENDED.getName()), Boolean.FALSE));
-		user.setSuperuser(Iterables.getOnlyElement(SUPERUSER.getType().get(object, SUPERUSER.getName()), Boolean.FALSE));
-		String email = Iterables.getOnlyElement(EMAIL.getType().get(object, EMAIL.getName()), null);
+		user.setPassword(Iterables.getOnlyElement(PASSWORD.getType().getValues(object, PASSWORD.getName())));
+		user.setSuspended(Iterables.getOnlyElement(SUSPENDED.getType().getValues(object, SUSPENDED.getName()), Boolean.FALSE));
+		user.setSuperuser(Iterables.getOnlyElement(SUPERUSER.getType().getValues(object, SUPERUSER.getName()), Boolean.FALSE));
+		String email = Iterables.getOnlyElement(EMAIL.getType().getValues(object, EMAIL.getName()), null);
 		if (email != null) {
 			user.setEmail(email);
-			user.setVerified(Iterables.getOnlyElement(VERIFIED.getType().get(object, VERIFIED.getName()), Boolean.FALSE));
+			user.setVerified(Iterables.getOnlyElement(VERIFIED.getType().getValues(object, VERIFIED.getName()), Boolean.FALSE));
 		}
 		return user;
 	}

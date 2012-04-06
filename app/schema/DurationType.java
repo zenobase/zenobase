@@ -16,7 +16,7 @@ public class DurationType extends Type<Duration> {
 	}
 
 	@Override
-	protected JsonNode get(Duration value) {
+	protected JsonNode toJson(Duration value) {
 		return new LongNode(value.getMillis());
 	}
 }

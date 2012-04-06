@@ -39,11 +39,11 @@ public class ResourceType extends Type<Resource> {
 	}
 
 	private static <T> T get(JsonNode node, Field<T> field) {
-		return Iterables.getOnlyElement(field.getType().get((ObjectNode) node, field.getName()));
+		return Iterables.getOnlyElement(field.getType().getValues((ObjectNode) node, field.getName()));
 	}
 
 	@Override
-	protected JsonNode get(Resource value) {
+	protected JsonNode toJson(Resource value) {
 		ObjectNode object = Nodes.newObject();
 		add(object, title, value.getTitle());
 		add(object, url, value.getUrl());
@@ -51,6 +51,6 @@ public class ResourceType extends Type<Resource> {
 	}
 
 	private static <T> void add(ObjectNode object, Field<T> field, T value) {
-		field.getType().add(object, field.getName(), value);
+		field.getType().addValue(object, field.getName(), value);
 	}
 }

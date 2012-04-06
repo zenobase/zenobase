@@ -14,7 +14,7 @@ public class ObjectType extends Type<ObjectNode> {
 	@Override
 	public void configureSchema(ObjectNode schema) {
 		super.configureSchema(schema);
-		schema.put("enabled", false); // TODO: move to field
+		schema.put("enabled", false);
 	}
 
 	@Override
@@ -23,7 +23,7 @@ public class ObjectType extends Type<ObjectNode> {
 	}
 
 	@Override
-	protected JsonNode get(ObjectNode value) {
+	protected JsonNode toJson(ObjectNode value) {
 		return value;
 	}
 }
