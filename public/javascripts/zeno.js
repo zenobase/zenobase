@@ -1,3 +1,5 @@
+'use strict';
+
 var evalAsync = function(f) {
 	setTimeout(f, 1000); // need to increase this if index updates take more than 1s to propagate
 };
@@ -887,6 +889,7 @@ function MapCtrl($scope) {
 	$scope.refresh = function(options, settings) {
 		$.extend($scope, options)
 		$.extend($scope.settings, settings)
+		$scope.$parent.refresh();
 	};
 	$scope.update = function(event, result) {
 		var points = [ ];
