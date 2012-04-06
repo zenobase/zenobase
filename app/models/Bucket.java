@@ -8,6 +8,7 @@ import org.elasticsearch.common.collect.Iterables;
 import schema.Field;
 import schema.ObjectType;
 import schema.PermissionType;
+import schema.Schema;
 import schema.SchemaBuilder;
 import schema.TextType;
 import secure.Identity;
@@ -87,7 +88,7 @@ public class Bucket extends DomainNode {
 		setValues(WIDGETS, widgets);
 	}
 
-	public static ObjectNode getSchema() {
+	public static Schema getSchema() {
 		return new SchemaBuilder(TYPE_NAME)
 			.add(ID).add(LABEL).add(DESCRIPTION)
 			.add(PERMISSIONS).add(WIDGETS).build();

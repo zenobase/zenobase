@@ -8,14 +8,16 @@ public class SchemaBuilder {
 
 	private static final String PROPERTIES = "properties";
 
+	private final String typeName;
 	private final ObjectNode schema = Nodes.newObject();
 	private final ObjectNode type;
 	private final ObjectNode properties;
 
 	public SchemaBuilder(String typeName) {
-		type = schema.putObject(typeName);
-		type.put("dynamic", "strict");
-		properties = type.putObject(PROPERTIES);
+		this.typeName = typeName;
+		this.type = schema.putObject(typeName);
+		this.type.put("dynamic", "strict");
+		this.properties = type.putObject(PROPERTIES);
 	}
 
 	public SchemaBuilder add(Field<?> field) {
@@ -23,7 +25,7 @@ public class SchemaBuilder {
 		return this;
 	}
 
-	public ObjectNode build() {
-		return Nodes.copy(schema);
+	public Schema build() {
+		return new Schema(typeName, Nodes.copy(schema));
 	}
 }

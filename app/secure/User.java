@@ -9,6 +9,7 @@ import schema.BooleanType;
 import schema.DateTimeType;
 import schema.Field;
 import schema.IdentityType;
+import schema.Schema;
 import schema.SchemaBuilder;
 import schema.TokenType;
 
@@ -123,17 +124,11 @@ public class User {
 		return copy;
 	}
 
-	public static ObjectNode getSchema() {
-		SchemaBuilder schema = new SchemaBuilder(TYPE_NAME);
-		schema.add(NAME);
-		schema.add(IDENTITY);
-		schema.add(CREATED);
-		schema.add(PASSWORD);
-		schema.add(EMAIL);
-		schema.add(VERIFIED);
-		schema.add(SUSPENDED);
-		schema.add(SUPERUSER);
-		return schema.build();
+	public static Schema getSchema() {
+		return new SchemaBuilder(TYPE_NAME)
+			.add(NAME).add(IDENTITY)
+			.add(CREATED).add(PASSWORD).add(EMAIL)
+			.add(VERIFIED).add(SUSPENDED).add(SUPERUSER).build();
 	}
 
 	public ObjectNode toJson(boolean includeProfile) {

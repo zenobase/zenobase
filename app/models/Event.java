@@ -15,6 +15,7 @@ import schema.LengthType;
 import schema.LocationType;
 import schema.RatingType;
 import schema.ResourceType;
+import schema.Schema;
 import schema.SchemaBuilder;
 import schema.TokenType;
 import secure.Identity;
@@ -103,7 +104,7 @@ public class Event {
 		}
 	}
 
-	public static ObjectNode getSchema() {
+	public static Schema getSchema() {
 		SchemaBuilder schema = new SchemaBuilder(TYPE_NAME);
 		for (Field<?> field : FIELDS) {
 			schema.add(field);

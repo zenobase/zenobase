@@ -102,11 +102,12 @@ public class BucketListController extends ControllerSupport {
 
     public static Result post() {
 		ObjectNode body = (ObjectNode) request().body().asJson();
-		if (body == null || !body.has("label")) {
+		if (body == null) {
 			return badRequest("missing request body");
 		}
-		String label = body.findPath(Bucket.LABEL.getName()).getTextValue();
-		String description = body.findPath(Bucket.DESCRIPTION.getName()).getTextValue();
+		Bucket update = new Bucket(body);
+		String label = update.getLabel();
+		String description = update.getDescription();
 		if (label == null) { // TODO validate label
 			return badRequest("missing label");
 		}

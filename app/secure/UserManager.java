@@ -33,7 +33,7 @@ public class UserManager {
 		if (!index.exists()) {
 			Logger.info("Creating user index...");
 			index.create(Integer.MAX_VALUE);
-			index.putMapping(User.TYPE_NAME, User.getSchema());
+			index.putMapping(User.getSchema());
 		}
 	}
 

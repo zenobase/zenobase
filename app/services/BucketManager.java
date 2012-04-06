@@ -38,7 +38,7 @@ public class BucketManager {
 		if (!index.exists()) {
 			Logger.info("Creating bucket index...");
 			index.create(Integer.MAX_VALUE);
-			index.putMapping(Bucket.TYPE_NAME, Bucket.getSchema());
+			index.putMapping(Bucket.getSchema());
 		}
 	}
 
@@ -55,7 +55,7 @@ public class BucketManager {
 		else {
 			if (createIndex) {
 				index.create(1);
-				index.putMapping(Event.TYPE_NAME, Event.getSchema());
+				index.putMapping(Event.getSchema());
 			}
 			else {
 				throw new IllegalStateException("Can't find index: " + bucket.getId());

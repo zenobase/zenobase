@@ -16,6 +16,8 @@ import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 
+import schema.Schema;
+
 import com.google.common.base.Preconditions;
 import common.Callback;
 import common.Nodes;
@@ -45,8 +47,8 @@ public class IndexManager {
 		client.admin().indices().delete(request).actionGet();
 	}
 
-	public void putMapping(String typeName, ObjectNode mapping) {
-		client.admin().indices().preparePutMapping(indexName).setType(typeName).setSource(mapping.toString()).execute().actionGet();
+	public void putMapping(Schema schema) {
+		client.admin().indices().preparePutMapping(indexName).setType(schema.getTypeName()).setSource(schema.toJson().toString()).execute().actionGet();
 	}
 
 	public void store(String type, String id, ObjectNode object, boolean refresh) {
