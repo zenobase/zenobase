@@ -1,9 +1,9 @@
 package models;
 
 import java.util.List;
+import java.util.Map;
 
 import org.codehaus.jackson.node.ObjectNode;
-import org.elasticsearch.common.collect.Iterables;
 
 import schema.Field;
 import schema.ObjectType;
@@ -15,15 +15,14 @@ import secure.Identity;
 import secure.Permission;
 
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableMap.Builder;
-import common.Nodes;
+import com.google.common.collect.Maps;
 
 public class Bucket extends DomainNode {
 
 	public static final String TYPE_NAME = "bucket";
 	public static final Field<String> LABEL = Field.of("label", new TextType());
 	public static final Field<String> DESCRIPTION = Field.of("description", new TextType());
-	public static final Field<ObjectNode> PERMISSIONS = Field.of("permissions", new PermissionType());
+	public static final Field<Map.Entry<Identity, Permission>> PERMISSIONS = Field.of("permissions", new PermissionType());
 	public static final Field<ObjectNode> WIDGETS = Field.of("widgets", new ObjectType());
 
 	public Bucket(ObjectNode object) {
@@ -51,33 +50,24 @@ public class Bucket extends DomainNode {
 	}
 
 	public ImmutableMap<Identity, Permission> getPermissions() {
-		Builder<Identity, Permission> builder = ImmutableMap.builder();
-		for (ObjectNode object : getValues(PERMISSIONS)) {
-			Identity identity = Iterables.getOnlyElement(PermissionType.IDENTITY.getType().getValues(object, PermissionType.IDENTITY.getName()));
-			Permission permission = Iterables.getOnlyElement(PermissionType.PERMISSION.getType().getValues(object, PermissionType.PERMISSION.getName()));
-			builder.put(identity, permission);
+		ImmutableMap.Builder<Identity, Permission> builder = ImmutableMap.builder();
+		for (Map.Entry<Identity, Permission> entry : getValues(PERMISSIONS)) {
+			builder.put(entry);
 		}
 		return builder.build();
 	}
 
 	public Permission getPermission(Identity identity) {
-		for (ObjectNode object : getValues(PERMISSIONS)) {
-			if (PermissionType.IDENTITY.getType().getValues(object, PermissionType.IDENTITY.getName()).contains(identity)) {
-				return Iterables.getOnlyElement(PermissionType.PERMISSION.getType().getValues(object, PermissionType.PERMISSION.getName()));
+		for (Map.Entry<Identity, Permission> entry : getValues(PERMISSIONS)) {
+			if (entry.getKey().equals(identity)) {
+				return entry.getValue();
 			}
 		}
 		return Permission.NONE;
 	}
 
-	public void setPermissions(Iterable<ObjectNode> permissions) {
-		setValues(PERMISSIONS, permissions);
-	}
-
 	public void addPermission(Identity identity, Permission permission) {
-		ObjectNode object = Nodes.newObject();
-		PermissionType.IDENTITY.getType().setValue(object, PermissionType.IDENTITY.getName(), identity);
-		PermissionType.PERMISSION.getType().setValue(object, PermissionType.PERMISSION.getName(), permission);
-		addValue(PERMISSIONS, object);
+		addValue(PERMISSIONS, Maps.immutableEntry(identity, permission));
 	}
 	
 	public List<ObjectNode> getWidgets() {
