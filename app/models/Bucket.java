@@ -3,19 +3,22 @@ package models;
 import java.util.List;
 
 import org.codehaus.jackson.node.ObjectNode;
+import org.elasticsearch.common.collect.Iterables;
 import org.elasticsearch.common.collect.Lists;
 
 import schema.Field;
 import schema.ObjectType;
-import schema.RoleType;
+import schema.PermissionType;
 import schema.SchemaBuilder;
 import schema.TextType;
 import schema.TokenType;
 import secure.Identity;
-import secure.Role;
+import secure.Permission;
 
 import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableMap.Builder;
 import com.google.common.collect.ImmutableSet;
 import common.Nodes;
 
@@ -25,15 +28,15 @@ public class Bucket {
 	public static final Field<Token> ID = Field.of("@id", new TokenType());
 	public static final Field<Text> LABEL = Field.of("label", new TextType());
 	public static final Field<Text> DESCRIPTION = Field.of("description", new TextType());
-	public static final Field<Role> ROLE = Field.of("roles", new RoleType());
-	public static final Field<ObjectNode> WIDGET = Field.of("widgets", new ObjectType());
+	public static final Field<ObjectNode> PERMISSIONS = Field.of("permissions", new PermissionType());
+	public static final Field<ObjectNode> WIDGETS = Field.of("widgets", new ObjectType());
 
-	private static final ImmutableSet<Field<?>> FIELDS = ImmutableSet.of(ID, LABEL, DESCRIPTION, ROLE, WIDGET);
+	private static final ImmutableSet<Field<?>> FIELDS = ImmutableSet.of(ID, LABEL, DESCRIPTION, PERMISSIONS, WIDGETS);
 
 	private final String id;
 	private String label;
 	private String description;
-	private final List<Role> roles = Lists.newArrayList();
+	private List<ObjectNode> permissions = Lists.newArrayList();
 	private ImmutableList<ObjectNode> widgets = ImmutableList.of();
 
 	public Bucket(String id) {
@@ -60,26 +63,34 @@ public class Bucket {
 		this.description = description;
 	}
 
-	public String getRole(Identity identity) {
-		for (Role role : roles) {
-			if (role.getIdentity().equals(identity)) {
-				return role.getRole();
-			}
+	public ImmutableMap<Identity, Permission> getPermissions() {
+		Builder<Identity, Permission> builder = ImmutableMap.builder();
+		for (ObjectNode object : permissions) {
+			Identity identity = Iterables.getOnlyElement(PermissionType.IDENTITY.getType().get(object, PermissionType.IDENTITY.getName()));
+			Permission permission = Iterables.getOnlyElement(PermissionType.PERMISSION.getType().get(object, PermissionType.PERMISSION.getName()));
+			builder.put(identity, permission);
 		}
-		return null;
+		return builder.build();
 	}
 
-	public Identity getIdentity(String role) {
-		for (Role r : roles) {
-			if (r.getRole().equals(role)) {
-				return r.getIdentity();
+	public Permission getPermission(Identity identity) {
+		for (ObjectNode object : permissions) {
+			if (PermissionType.IDENTITY.getType().get(object, PermissionType.IDENTITY.getName()).contains(identity)) {
+				return Iterables.getOnlyElement(PermissionType.PERMISSION.getType().get(object, PermissionType.PERMISSION.getName()));
 			}
 		}
-		return null;
+		return Permission.NONE;
 	}
 
-	public void addRole(Role role) {
-		roles.add(role);
+	public void setPermissions(Iterable<ObjectNode> permissions) {
+		this.permissions = Lists.newArrayList(permissions);
+	}
+
+	public void grant(Identity identity, Permission permission) {
+		ObjectNode object = Nodes.newObject();
+		PermissionType.IDENTITY.getType().set(object, PermissionType.IDENTITY.getName(), identity);
+		PermissionType.PERMISSION.getType().set(object, PermissionType.PERMISSION.getName(), permission);
+		permissions.add(object);
 	}
 
 	public void setWidgets(Iterable<ObjectNode> widgets) {
@@ -110,8 +121,8 @@ public class Bucket {
 		if (description != null) {
 			DESCRIPTION.getType().add(object, DESCRIPTION.getName(), Text.valueOf(description));
 		}
-		ROLE.getType().add(object, ROLE.getName(), roles);
-		WIDGET.getType().add(object, WIDGET.getName(), widgets);
+		PERMISSIONS.getType().add(object, PERMISSIONS.getName(), permissions);
+		WIDGETS.getType().add(object, WIDGETS.getName(), widgets);
 		return object;
 	}
 
@@ -122,10 +133,8 @@ public class Bucket {
 		if (object.has(Bucket.DESCRIPTION.getName())) {
 			bucket.setDescription(object.get(Bucket.DESCRIPTION.getName()).asText());
 		}
-		for (Role role : Bucket.ROLE.getType().get(object, Bucket.ROLE.getName())) {
-			bucket.addRole(role);
-		}
-		bucket.setWidgets(Bucket.WIDGET.getType().get(object, Bucket.WIDGET.getName()));
+		bucket.setPermissions(Bucket.PERMISSIONS.getType().get(object, Bucket.PERMISSIONS.getName()));
+		bucket.setWidgets(Bucket.WIDGETS.getType().get(object, Bucket.WIDGETS.getName()));
 		return bucket;
 	}
 }

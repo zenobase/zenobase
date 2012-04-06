@@ -16,7 +16,7 @@ import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 
 import play.Logger;
-import schema.RoleType;
+import schema.PermissionType;
 import secure.Identity;
 
 import com.google.common.collect.ImmutableList;
@@ -96,8 +96,8 @@ public class BucketManager {
 	}
 
 	private static QueryBuilder queryFor(Identity identity) {
-		return QueryBuilders.nestedQuery(Bucket.ROLE.getName(), 
-			QueryBuilders.termQuery(RoleType.IDENTITY.getName(), identity.getId()));
+		return QueryBuilders.nestedQuery(Bucket.PERMISSIONS.getName(), 
+			QueryBuilders.termQuery(PermissionType.IDENTITY.getName(), identity.getId()));
 	}
 
 	private PartialList<Bucket> findBuckets(QueryBuilder query, int offset, int limit) {

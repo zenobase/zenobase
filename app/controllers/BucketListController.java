@@ -10,11 +10,12 @@ import models.Bucket;
 import org.codehaus.jackson.node.ArrayNode;
 import org.codehaus.jackson.node.ObjectNode;
 
+import play.Logger;
 import play.mvc.Result;
 import play.mvc.With;
 import secure.Identity;
 import secure.IdentityHelper;
-import secure.Role;
+import secure.Permission;
 import secure.UserManager;
 import services.BucketManager;
 import services.CommandQueue;
@@ -121,7 +122,8 @@ public class BucketListController extends ControllerSupport {
 		Bucket bucket = new Bucket(Generator.id());
 		bucket.setLabel(label);
 		bucket.setDescription(description);
-		bucket.addRole(new Role(identity, Role.OWNER));
+		bucket.grant(identity, Permission.ALL);
+		Logger.info("Bucket: " + bucket.getPermission(identity));
 		return bucket;
 	}
 }

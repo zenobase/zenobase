@@ -6,7 +6,7 @@ import org.elasticsearch.common.base.Joiner;
 
 import play.mvc.Results.Chunks;
 import play.mvc.Results.Chunks.Out;
-import secure.Role;
+import secure.Permission;
 
 public class BucketPrinter {
 
@@ -21,6 +21,6 @@ public class BucketPrinter {
 	}
 
 	private String toString(Bucket bucket) {
-		return Joiner.on('\t').join(bucket.getId(), bucket.toString(), bucket.getIdentity(Role.OWNER), "\n");
+		return Joiner.on('\t').join(bucket.getId(), bucket.toString(), bucket.getPermissions().get(Permission.ALL), "\n");
 	}
 }

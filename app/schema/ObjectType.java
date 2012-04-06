@@ -14,7 +14,7 @@ public class ObjectType extends Type<ObjectNode> {
 	@Override
 	public void configureSchema(ObjectNode schema) {
 		super.configureSchema(schema);
-		schema.put("enabled", false);
+		schema.put("enabled", false); // TODO: move to field
 	}
 
 	@Override

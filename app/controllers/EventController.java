@@ -13,6 +13,7 @@ import play.mvc.With;
 import search.EventSearch;
 import secure.Identity;
 import secure.IdentityHelper;
+import secure.Permission;
 import services.BucketManager;
 import services.CommandQueue;
 import services.NodeManager;
@@ -44,7 +45,7 @@ public class EventController extends ControllerSupport {
     }
 
 	private static Result find(Bucket bucket, Identity identity) {
-    	return bucket.getRole(identity) != null ? ok(new EventSearch()
+    	return bucket.getPermission(identity) != Permission.NONE ? ok(new EventSearch()
 			.addWidgets(request().queryString().get("w"))
 			.addFilters(request().queryString().get("q"))
 			.execute(node.getIndex(bucket.getId()))) : forbidden();
@@ -65,7 +66,7 @@ public class EventController extends ControllerSupport {
     	if (bucket == null) {
     		return notFound();
     	}
-    	if (!"owner".equals(bucket.getRole(identity))) {
+    	if (bucket.getPermission(identity) != Permission.ALL) {
     		return forbidden();
     	}
     	if (body.has("random")) {
@@ -92,7 +93,7 @@ public class EventController extends ControllerSupport {
     	if (bucket == null) {
     		return notFound();
     	}
-    	if (bucket.getRole(IdentityHelper.in(ctx()).get()) == null) {
+    	if (bucket.getPermission(IdentityHelper.in(ctx()).get()) == Permission.NONE) {
     		return forbidden();
     	}
     	Event event = manager.findEvent(bucketId, eventId);
@@ -113,7 +114,7 @@ public class EventController extends ControllerSupport {
     }
 
     private static Result delete(Bucket bucket, String eventId, Identity identity) {
-    	if (!"owner".equals(bucket.getRole(identity))) {
+    	if (bucket.getPermission(identity) != Permission.ALL) {
     		return forbidden();
     	}
     	Event event = manager.findEvent(bucket.getId(), eventId);

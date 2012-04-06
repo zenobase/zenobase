@@ -86,9 +86,9 @@ function BucketListAdminCtrl($scope, $http) {
 		});
 	};
 	$scope.getOwner = function(bucket) {
-		for (var i = 0; i < bucket.roles.length; ++i) {
-			if (bucket.roles[i].role === 'owner') {
-				return bucket.roles[i].identity;
+		for (var i = 0; i < bucket.permissions.length; ++i) {
+			if (bucket.permissions[i].permission === 'ALL') {
+				return bucket.permissions[i].identity;
 			}
 		}
 	};

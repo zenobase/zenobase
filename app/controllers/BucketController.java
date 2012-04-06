@@ -11,6 +11,7 @@ import play.mvc.Result;
 import play.mvc.With;
 import secure.Identity;
 import secure.IdentityHelper;
+import secure.Permission;
 import secure.UserManager;
 import services.BucketManager;
 import services.CommandQueue;
@@ -42,7 +43,7 @@ public class BucketController extends ControllerSupport {
     }
 
 	private static Result get(Bucket bucket, Identity identity) {
-    	if (bucket.getRole(identity) == null) {
+    	if (bucket.getPermission(identity) == Permission.NONE) {
     		return forbidden();
     	}
 		if (bucket.getWidgets().isEmpty()) {
@@ -66,7 +67,7 @@ public class BucketController extends ControllerSupport {
     	if (bucket == null) {
     		return notFound();
     	}
-    	if (!"owner".equals(bucket.getRole(identity))) {
+    	if (bucket.getPermission(identity) != Permission.ALL) {
     		return forbidden();
     	}
 		String commandId = queue.execute(new UpdateBucketCommand(buckets, identity, bucket, Bucket.parse(body)));
@@ -85,7 +86,7 @@ public class BucketController extends ControllerSupport {
     }
 
     private static Result delete(Bucket bucket, Identity identity) {
-    	if (!"owner".equals(bucket.getRole(identity)) && !users.isSuperuser(identity)) {
+    	if (bucket.getPermission(identity) != Permission.ALL && !users.isSuperuser(identity)) {
     		return forbidden();
     	}
     	String commandId = queue.execute(new DeleteBucketCommand(buckets, identity, bucket));
