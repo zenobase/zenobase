@@ -1,20 +1,17 @@
 package schema;
 
 import models.Resource;
-import models.Text;
-import models.Token;
 
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.node.ObjectNode;
 
 import com.google.common.collect.Iterables;
-
 import common.Nodes;
 
 public class ResourceType extends Type<Resource> {
 
-	private static final Field<Text> title = Field.of("title", new TextType());
-	private static final Field<Token> url = Field.of("url", new TokenType());
+	private static final Field<String> title = Field.of("title", new TextType());
+	private static final Field<String> url = Field.of("url", new TokenType());
 
 	public ResourceType() {
 		super(Resource.class, "object");

@@ -20,8 +20,8 @@ import common.Nodes;
 public class Bucket extends DomainNode {
 
 	public static final String TYPE_NAME = "bucket";
-	public static final Field<Text> LABEL = Field.of("label", new TextType());
-	public static final Field<Text> DESCRIPTION = Field.of("description", new TextType());
+	public static final Field<String> LABEL = Field.of("label", new TextType());
+	public static final Field<String> DESCRIPTION = Field.of("description", new TextType());
 	public static final Field<ObjectNode> PERMISSIONS = Field.of("permissions", new PermissionType());
 	public static final Field<ObjectNode> WIDGETS = Field.of("widgets", new ObjectType());
 
@@ -38,15 +38,15 @@ public class Bucket extends DomainNode {
 	}
 
 	public void setLabel(String label) {
-		setValue(LABEL, Text.valueOf(label));
+		setValue(LABEL, label);
 	}
 
 	public String getDescription() {
-		return getValue(DESCRIPTION).toString();
+		return getValue(DESCRIPTION);
 	}
 
 	public void setDescription(String description) {
-		setValue(DESCRIPTION, Text.valueOf(description));
+		setValue(DESCRIPTION, description);
 	}
 
 	public ImmutableMap<Identity, Permission> getPermissions() {

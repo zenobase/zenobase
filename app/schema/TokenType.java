@@ -1,25 +1,23 @@
 package schema;
 
-import models.Token;
-
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.node.ObjectNode;
 import org.codehaus.jackson.node.TextNode;
 
-public class TokenType extends Type<Token> {
+public class TokenType extends Type<String> {
 
 	public TokenType() {
-		super(Token.class, "string");
+		super(String.class, "string");
 	}
 
 	@Override
-	protected Token get(JsonNode node) {
-		return Token.valueOf(node.asText());
+	protected String get(JsonNode node) {
+		return node.asText();
 	}
 
 	@Override
-	protected JsonNode get(Token value) {
-		return new TextNode(value.toString());
+	protected JsonNode get(String value) {
+		return new TextNode(value);
 	}
 
 	@Override

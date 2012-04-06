@@ -6,8 +6,6 @@ import javax.measure.DecimalMeasure;
 import javax.measure.quantity.Quantity;
 import javax.measure.unit.Unit;
 
-import models.Token;
-
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.node.ObjectNode;
 
@@ -18,7 +16,7 @@ import common.Nodes;
 public class MeasurementType<Q extends Quantity> extends Type<DecimalMeasure<Q>> {
 
 	private static final Field<BigDecimal> VALUE = Field.of("@value", new DecimalType());
-	private static final Field<Token> UNIT = Field.of("unit", new TokenType());
+	private static final Field<String> UNIT = Field.of("unit", new TokenType());
 	private static final Field<BigDecimal> VALUE_SI = Field.of("value", new DecimalType());
 
 	public MeasurementType() {
@@ -45,7 +43,7 @@ public class MeasurementType<Q extends Quantity> extends Type<DecimalMeasure<Q>>
 
 	private static <Q extends Quantity> DecimalMeasure<Q> get(ObjectNode object) {
 		BigDecimal value = get(object, VALUE);
-		Unit<Q> unit = (Unit<Q>) Unit.valueOf(get(object, UNIT).toString());
+		Unit<Q> unit = (Unit<Q>) Unit.valueOf(get(object, UNIT));
 		return DecimalMeasure.valueOf(value, unit);
 	}
 
@@ -57,7 +55,7 @@ public class MeasurementType<Q extends Quantity> extends Type<DecimalMeasure<Q>>
 	protected JsonNode get(DecimalMeasure<Q> value) {
 		ObjectNode object = Nodes.newObject();
 		add(object, VALUE, value.getValue());
-		add(object, UNIT, Token.valueOf(value.getUnit().toString()));
+		add(object, UNIT, value.getUnit().toString());
 		return object;
 	}
 

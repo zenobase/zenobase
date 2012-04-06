@@ -11,7 +11,7 @@ import common.Nodes;
 
 public class DomainNode {
 
-	public static final Field<Token> ID = Field.of("@id", new TokenType());
+	public static final Field<String> ID = Field.of("@id", new TokenType());
 
 	private final ObjectNode object;
 
@@ -21,7 +21,7 @@ public class DomainNode {
 
 	public DomainNode(String id) {
 		object = Nodes.newObject();
-		ID.getType().set(object, ID.getName(), Token.valueOf(id));
+		ID.getType().set(object, ID.getName(), id);
 	}
 
 	public String getId() {

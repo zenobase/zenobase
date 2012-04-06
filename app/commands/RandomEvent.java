@@ -12,8 +12,6 @@ import models.Event;
 import models.Location;
 import models.Rating;
 import models.Resource;
-import models.Text;
-import models.Token;
 
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
@@ -30,16 +28,16 @@ class RandomEvent {
 
 	private static final RandomElement<Builder> builders = new RandomElement<Builder>()
 		.add(new Builder() {
-			RandomElement<Token> meals = new RandomElement<Token>()
-				.add(Token.valueOf("lunch"), 1)
-				.add(Token.valueOf("dinner"), 1);
-			RandomElement<Token> order = new RandomElement<Token>()
-				.add(Token.valueOf("pizza"), 1)
-				.add(Token.valueOf("sushi"), 1)
-				.add(Token.valueOf("mexican"), 2)
-				.add(Token.valueOf("sandwich"), 2)
-				.add(Token.valueOf("greek"), 2)
-				.add(Token.valueOf("chinese"), 2);
+			RandomElement<String> meals = new RandomElement<String>()
+				.add("lunch", 1)
+				.add("dinner", 1);
+			RandomElement<String> order = new RandomElement<String>()
+				.add("pizza", 1)
+				.add("sushi", 1)
+				.add("mexican", 2)
+				.add("sandwich", 2)
+				.add("greek", 2)
+				.add("chinese", 2);
 			@Override
 			protected void addFields(Event event) {
 				event.add(Event.TAG, meals.next());
@@ -51,7 +49,7 @@ class RandomEvent {
 		.add(new Builder() {
 			@Override
 			protected void addFields(Event event) {
-				event.add(Event.TAG, Token.valueOf("sleep"));
+				event.add(Event.TAG, "sleep");
 			}
 		}, 2)
 		.add(new Builder() {
@@ -59,7 +57,7 @@ class RandomEvent {
 			@Override
 			protected void addFields(Event event) {
 				Movie movie = movies.next();
-				event.add(Event.TAG, Token.valueOf("movie"));
+				event.add(Event.TAG, "movie");
 				event.add(Event.RESOURCE, movie.getResource());
 				if (movie.getDuration() != null) {
 					event.add(Event.DURATION, movie.getDuration());
@@ -70,7 +68,7 @@ class RandomEvent {
 		.add(new Builder() {
 			@Override
 			protected void addFields(Event event) {
-				event.add(Event.TAG, Token.valueOf("hike"));
+				event.add(Event.TAG, "hike");
 				event.add(Event.DURATION, nextDuration(30, 330));
 				event.add(Event.LOCATION, nextLocation());
 				event.add(Event.DISTANCE, nextLength(500, 10000));
@@ -142,7 +140,7 @@ class RandomEvent {
 		private final Resource resource;
 		private final Duration duration;
 
-		public Movie(Text title, Token url, Duration duration) {
+		public Movie(String title, String url, Duration duration) {
 			this.resource = new Resource(title, url);
 			this.duration = duration;
 		}
@@ -169,7 +167,7 @@ class RandomEvent {
 						String url = tokens[15];
 						Duration duration = !tokens[10].isEmpty() ? Duration.standardMinutes(Integer.parseInt(tokens[10])) : null;
 						int weight = Integer.parseInt(tokens[13]);
-						resources.add(new Movie(Text.valueOf(title), Token.valueOf(url), duration), weight);
+						resources.add(new Movie(title, url, duration), weight);
 						return true;
 					}
 					@Override

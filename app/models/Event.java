@@ -30,7 +30,7 @@ public class Event {
 	public static final Field<DateTime> TIMESTAMP = Field.of("timestamp", new DateTimeType());
 	public static final Field<Duration> DURATION = Field.of("duration", new DurationType());
 	public static final Field<Location> LOCATION = Field.of("location", new LocationType());
-	public static final Field<Token> TAG = Field.of("tag", new TokenType());
+	public static final Field<String> TAG = Field.of("tag", new TokenType());
 	public static final Field<Resource> RESOURCE = Field.of("resource", new ResourceType());
 	public static final Field<DecimalMeasure<Length>> DISTANCE = Field.of("distance", new LengthType());
 	public static final Field<DecimalMeasure<Length>> HEIGHT = Field.of("height", new LengthType());

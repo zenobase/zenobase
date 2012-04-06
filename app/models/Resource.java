@@ -2,19 +2,19 @@ package models;
 
 public class Resource {
 
-	private final Text title;
-	private final Token url;
+	private final String title;
+	private final String url;
 
-	public Resource(Text title, Token url) {
+	public Resource(String title, String url) {
 		this.title = title;
 		this.url = url;
 	}
 
-	public Text getTitle() {
+	public String getTitle() {
 		return title;
 	}
 
-	public Token getUrl() {
+	public String getUrl() {
 		return url;
 	}
 }

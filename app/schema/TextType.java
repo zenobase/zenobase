@@ -1,25 +1,23 @@
 package schema;
 
-import models.Text;
-
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.node.ObjectNode;
 import org.codehaus.jackson.node.TextNode;
 
-public class TextType extends Type<Text> {
+public class TextType extends Type<String> {
 
 	public TextType() {
-		super(Text.class, "string");
+		super(String.class, "string");
 	}
 
 	@Override
-	protected Text get(JsonNode node) {
-		return Text.valueOf(node.asText());
+	protected String get(JsonNode node) {
+		return node.asText();
 	}
 
 	@Override
-	protected JsonNode get(Text value) {
-		return new TextNode(value.toString());
+	protected JsonNode get(String value) {
+		return new TextNode(value);
 	}
 
 	@Override
