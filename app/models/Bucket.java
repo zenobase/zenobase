@@ -13,7 +13,6 @@ import schema.TextType;
 import schema.TokenType;
 import secure.Identity;
 import secure.Role;
-import services.IndexManager;
 
 import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableList;
@@ -31,15 +30,13 @@ public class Bucket {
 
 	private static final ImmutableSet<Field<?>> FIELDS = ImmutableSet.of(ID, LABEL, DESCRIPTION, ROLE, WIDGET);
 
-	private final IndexManager index;
 	private final String id;
 	private String label;
 	private String description;
 	private final List<Role> roles = Lists.newArrayList();
 	private ImmutableList<ObjectNode> widgets = ImmutableList.of();
 
-	public Bucket(IndexManager index, String id) {
-		this.index = index;
+	public Bucket(String id) {
 		this.id = id;
 	}
 
@@ -93,24 +90,6 @@ public class Bucket {
 		return widgets;
 	}
 
-	public void add(Event event) {
-		event.prePersist();
-		index.store(Event.TYPE_NAME, event.getId(), event.getContent(), false);
-	}
-
-	public void delete(String eventId) {
-		index.delete(Event.TYPE_NAME, eventId);
-	}
-
-	public Event findEvent(String eventId) {
-		ObjectNode object = index.get(Event.TYPE_NAME, eventId);
-		return object != null ? new Event(eventId, id, object) : null;
-	}
-
-	public long getSize() {
-		return index.count();
-	}
-
 	public static ObjectNode getSchema() {
 		SchemaBuilder schema = new SchemaBuilder(TYPE_NAME);
 		for (Field<?> field : FIELDS) {
@@ -134,5 +113,19 @@ public class Bucket {
 		ROLE.getType().add(object, ROLE.getName(), roles);
 		WIDGET.getType().add(object, WIDGET.getName(), widgets);
 		return object;
+	}
+
+	public static Bucket parse(ObjectNode object) {
+		String id = object.get(Bucket.ID.getName()).asText();
+		Bucket bucket = new Bucket(id);
+		bucket.setLabel(object.get(Bucket.LABEL.getName()).asText());
+		if (object.has(Bucket.DESCRIPTION.getName())) {
+			bucket.setDescription(object.get(Bucket.DESCRIPTION.getName()).asText());
+		}
+		for (Role role : Bucket.ROLE.getType().get(object, Bucket.ROLE.getName())) {
+			bucket.addRole(role);
+		}
+		bucket.setWidgets(Bucket.WIDGET.getType().get(object, Bucket.WIDGET.getName()));
+		return bucket;
 	}
 }

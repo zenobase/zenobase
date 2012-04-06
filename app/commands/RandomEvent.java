@@ -8,7 +8,6 @@ import javax.measure.DecimalMeasure;
 import javax.measure.quantity.Length;
 import javax.measure.unit.SI;
 
-import models.Bucket;
 import models.Event;
 import models.Location;
 import models.Rating;
@@ -79,16 +78,16 @@ class RandomEvent {
 			}
 		}, 1);
 
-	private final Bucket bucket;
+	private final String bucketId;
 	private final Identity identity;
 
-	public RandomEvent(Bucket bucket, Identity identity) {
-		this.bucket = bucket;
+	public RandomEvent(String bucketId, Identity identity) {
+		this.bucketId = bucketId;
 		this.identity = identity;
 	}
 
 	public Event next() {
-		return builders.next().build(bucket, identity);
+		return builders.next().build(bucketId, identity);
 	}
 
 	private static class Builder {
@@ -103,8 +102,8 @@ class RandomEvent {
 			.add(Rating.valueOf( 20), 2)
 			.add(Rating.valueOf(  0), 1);
 
-		public Event build(Bucket bucket, Identity identity) {
-			Event event = new Event(Generator.id(), bucket.getId());
+		public Event build(String bucketId, Identity identity) {
+			Event event = new Event(Generator.id(), bucketId);
 			event.set(Event.AUTHOR, identity);
 			event.add(Event.TIMESTAMP, nextTimestamp());
 			addFields(event);

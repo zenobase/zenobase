@@ -69,7 +69,7 @@ public class BucketController extends ControllerSupport {
     	if (!"owner".equals(bucket.getRole(identity))) {
     		return forbidden();
     	}
-		String commandId = queue.execute(new UpdateBucketCommand(buckets, identity, bucket, buckets.parse(body)));
+		String commandId = queue.execute(new UpdateBucketCommand(buckets, identity, bucket, Bucket.parse(body)));
         response().setHeader("Undo", String.format("/queue/%s", commandId));
 		return noContent();
     }

@@ -1,22 +1,22 @@
 package commands;
 
-import models.Bucket;
 import models.Event;
 import secure.Identity;
+import services.BucketManager;
 
 public class CreateEventCommand extends CommandSupport {
 
-	private final Bucket bucket;
+	private final BucketManager bucket;
 	private final Event event;
 
-	public CreateEventCommand(Bucket bucket, Identity identity, Event event) {
+	public CreateEventCommand(BucketManager bucket, Identity identity, Event event) {
 		super(identity);
 		this.bucket = bucket;
 		this.event = event;
 	}
 
 	public void execute() {
-		bucket.add(event);
+		bucket.add(event.getBucket(), event);
 	}
 
 	public Command reverse(Identity identity) {

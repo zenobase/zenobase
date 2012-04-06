@@ -21,6 +21,6 @@ public class BucketPrinter {
 	}
 
 	private String toString(Bucket bucket) {
-		return Joiner.on('\t').join(bucket.getId(), bucket.toString(), bucket.getSize(), bucket.getIdentity(Role.OWNER), "\n");
+		return Joiner.on('\t').join(bucket.getId(), bucket.toString(), bucket.getIdentity(Role.OWNER), "\n");
 	}
 }

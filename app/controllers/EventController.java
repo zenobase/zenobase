@@ -69,7 +69,7 @@ public class EventController extends ControllerSupport {
     		return forbidden();
     	}
     	if (body.has("random")) {
-    		String commandId = queue.execute(new GenerateRandomEventsCommand(identity, bucket, body.get("random").asInt()));
+    		String commandId = queue.execute(new GenerateRandomEventsCommand(identity, manager, bucketId, body.get("random").asInt()));
             response().setHeader(LOCATION, String.format("/buckets/%s/", bucket.getId()));
             response().setHeader("Undo", String.format("/queue/%s", commandId));
             return created();
@@ -80,7 +80,7 @@ public class EventController extends ControllerSupport {
     		if (!event.contains(Event.TIMESTAMP)) {
     			event.add(Event.TIMESTAMP, new DateTime());
     		}
-    		String commandId = queue.execute(new CreateEventCommand(bucket, identity, event));
+    		String commandId = queue.execute(new CreateEventCommand(manager, identity, event));
             response().setHeader(LOCATION, String.format("/buckets/%s/%s", bucket.getId(), event.getId()));
             response().setHeader("Undo", String.format("/queue/%s", commandId));
             return created();
@@ -95,7 +95,7 @@ public class EventController extends ControllerSupport {
     	if (bucket.getRole(IdentityHelper.in(ctx()).get()) == null) {
     		return forbidden();
     	}
-    	Event event = bucket.findEvent(eventId);
+    	Event event = manager.findEvent(bucketId, eventId);
     	if (event == null) {
     		return notFound();
     	}
@@ -116,12 +116,12 @@ public class EventController extends ControllerSupport {
     	if (!"owner".equals(bucket.getRole(identity))) {
     		return forbidden();
     	}
-    	Event event = bucket.findEvent(eventId);
-    	return event != null ? delete(bucket, event, identity) : notFound();
+    	Event event = manager.findEvent(bucket.getId(), eventId);
+    	return event != null ? delete(event, identity) : notFound();
     }
 
-    private static Result delete(Bucket bucket, Event event, Identity identity) {
-    	String commandId = queue.execute(new DeleteEventCommand(bucket, identity, event));
+    private static Result delete(Event event, Identity identity) {
+    	String commandId = queue.execute(new DeleteEventCommand(manager, identity, event));
         response().setHeader("Undo", String.format("/queue/%s", commandId));
     	return noContent();
     }

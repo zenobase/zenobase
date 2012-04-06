@@ -18,7 +18,6 @@ import org.elasticsearch.search.builder.SearchSourceBuilder;
 import play.Logger;
 import schema.RoleType;
 import secure.Identity;
-import secure.Role;
 
 import com.google.common.collect.ImmutableList;
 import common.Callback;
@@ -71,19 +70,19 @@ public class BucketManager {
 
 	public void deleteBucket(String id) {
 		index.delete(QueryBuilders.termQuery(Bucket.ID.getName(), id));
-		manager.getIndex(id).close();
+		getIndex(id).close();
 	}
 
 	public Bucket findBucket(String bucketId) {
 		ObjectNode object = index.get(Bucket.TYPE_NAME, bucketId);
-		return object != null ? parse(object) : null;
+		return object != null ? Bucket.parse(object) : null;
 	}
 
 	public ImmutableList<Bucket> findParticipants(String bucketId) {
 		ImmutableList.Builder<Bucket> buckets = ImmutableList.builder();
 		QueryBuilder query = QueryBuilders.termQuery(Bucket.ID.getName(), bucketId);
 		for (SearchHit hit : this.index.search(query).getHits()) {
-			buckets.add(parse(hit.source()));
+			buckets.add(Bucket.parse(Nodes.read(hit.source())));
 		}
 		return buckets.build();
 	}
@@ -108,7 +107,7 @@ public class BucketManager {
 			// TODO .sort(Bucket.CREATED.getName());
 		SearchHits hits = index.search(search).hits();
 		for (SearchHit hit : hits) {
-			buckets.add(parse(hit.source()));
+			buckets.add(Bucket.parse(Nodes.read(hit.source())));
 		}
 		return new PartialList<Bucket>(buckets, hits.getTotalHits());
 	}
@@ -125,26 +124,30 @@ public class BucketManager {
 		index.search(query, new Callback<ObjectNode>() {
 			@Override
 			public void call(ObjectNode object) {
-				callback.call(parse(object));
+				callback.call(Bucket.parse(object));
 			}
 		});
 	}
 
-	private Bucket parse(byte[] source) {
-		return parse(Nodes.read(source));
+	public void add(String bucketId, Event event) {
+		event.prePersist();
+		getIndex(bucketId).store(Event.TYPE_NAME, event.getId(), event.getContent(), false);
 	}
 
-	public Bucket parse(ObjectNode object) {
-		String id = object.get(Bucket.ID.getName()).asText();
-		Bucket bucket = new Bucket(manager.getIndex(id), id);
-		bucket.setLabel(object.get(Bucket.LABEL.getName()).asText());
-		if (object.has(Bucket.DESCRIPTION.getName())) {
-			bucket.setDescription(object.get(Bucket.DESCRIPTION.getName()).asText());
-		}
-		for (Role role : Bucket.ROLE.getType().get(object, Bucket.ROLE.getName())) {
-			bucket.addRole(role);
-		}
-		bucket.setWidgets(Bucket.WIDGET.getType().get(object, Bucket.WIDGET.getName()));
-		return bucket;
+	public void delete(String bucketId, String eventId) {
+		getIndex(bucketId).delete(Event.TYPE_NAME, eventId);
+	}
+
+	public Event findEvent(String bucketId, String eventId) {
+		ObjectNode object = getIndex(bucketId).get(Event.TYPE_NAME, eventId);
+		return object != null ? new Event(eventId, bucketId, object) : null;
+	}
+
+	public long getSize(String bucketId) {
+		return getIndex(bucketId).count();
+	}
+
+	private IndexManager getIndex(String bucketId) {
+		return manager.getIndex(bucketId);
 	}
 }

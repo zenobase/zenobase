@@ -93,7 +93,7 @@ public class BucketListController extends ControllerSupport {
     	ArrayNode bucketsNode = resultNode.putArray("buckets");
     	for (Bucket bucket : results.getElements()) {
     		ObjectNode bucketNode = bucket.toJson();
-    		bucketNode.put("size", bucket.getSize());
+    		bucketNode.put("size", buckets.getSize(bucket.getId()));
     		bucketsNode.add(bucketNode);
     	}
     	return resultNode;
@@ -118,8 +118,7 @@ public class BucketListController extends ControllerSupport {
     }
 
 	private static Bucket createBucket(String label, String description, Identity identity) {
-		String id = Generator.id();
-		Bucket bucket = new Bucket(node.getIndex(id), id);
+		Bucket bucket = new Bucket(Generator.id());
 		bucket.setLabel(label);
 		bucket.setDescription(description);
 		bucket.addRole(new Role(identity, Role.OWNER));
