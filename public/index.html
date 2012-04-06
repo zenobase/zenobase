@@ -10,7 +10,7 @@
 		<script src="/public/javascripts/bootstrap-modal-2.0.2.js" type="text/javascript"></script>
 		<script src="/public/javascripts/bootstrap-dropdown-2.0.2.js" type="text/javascript"></script>
 		<script src="/public/javascripts/bootstrap-tab-2.0.2.js" type="text/javascript"></script>
-		<script src="/public/javascripts/angular-1.0.0rc3.js" type="text/javascript" ng:autobind></script>
+		<script src="/public/javascripts/angular-1.0.0rc4.js" type="text/javascript" ng:autobind></script>
 		<script src="/public/javascripts/iso8601.js" type="text/javascript"></script>
 		<script src="/public/javascripts/humane.js" type="text/javascript"></script>
 		<script src="//www.google.com/jsapi" type="text/javascript"></script>
@@ -71,16 +71,16 @@
 					<div class="modal-body">
 						<div class="control-group">
 							<label for="username">User Name</label>
-							<input id="username" type="text" class="large" ng:model="username" ng:model-instant/>
+							<input id="username" type="text" class="large" ng:model="username"/>
 						</div>
 						<div class="control-group">
 							<label for="password">Password</label>
-							<input id="password" type="password" class="large" ng:model="password" ng:model-instant/>
+							<input id="password" type="password" class="large" ng:model="password"/>
 						</div>
 						<div class="control-group">
 							<div class="controls">
 								<label class="checkbox">
-									<input type="checkbox" id="remember" ng:model="remember" ng:model-instant>
+									<input type="checkbox" id="remember" ng:model="remember">
 									Remember me
 								</label>
 							</div>
@@ -107,22 +107,22 @@
 					<div class="modal-body">
 						<div class="control-group" ng:class="signUpForm.username.$valid && 'success' || 'error'">
 							<label for="sign-up-username">User Name</label>
-							<input id="sign-up-username" name="username" type="text" class="large" required ng:minlength="4" ng:maxlength="16" ng:pattern="/^[a-z0-9]+$/" ng:model="username" ng:model-instant/>
+							<input id="sign-up-username" name="username" type="text" class="large" required ng:minlength="4" ng:maxlength="16" ng:pattern="/^[a-z0-9]+$/" ng:model="username"/>
 							<span class="help-inline error" ng:show="signUpForm.username.$error.MINLENGTH">Too short</span>
 							<span class="help-inline error" ng:show="signUpForm.username.$error.MAXLENGTH">Too long</span>
 							<span class="help-inline error" ng:show="signUpForm.username.$error.REQUIRED">Required</span>
 						</div>
 						<div class="control-group" ng:class="signUpForm.password.$valid && 'success' || 'error'">
 							<label for="sign-up-password">Password</label>
-							<input id="sign-up-password" name="password" type="password" class="large" required ng:model="password" ng:model-instant/>
+							<input id="sign-up-password" name="password" type="password" class="large" required ng:model="password"/>
 						</div>
 						<div class="control-group" ng:class="signUpForm.passwordRepeat.$valid && 'success' || 'error'">
 							<label for="sign-up-password-repeat">Confirm Password</label>
-							<input id="sign-up-password-repeat" name="passwordRepeat" type="password" class="large" required ng:model="passwordRepeat" ng:model-instant/>
+							<input id="sign-up-password-repeat" name="passwordRepeat" type="password" class="large" required ng:model="passwordRepeat"/>
 						</div>
 						<div class="control-group" ng:class="signUpForm.email.$valid && 'success' || 'error'">
 							<label for="sign-up-email">Email</label>
-							<input id="sign-up-email" name="email" type="email" class="large" required ng:model="email" ng:model-instant/>
+							<input id="sign-up-email" name="email" type="email" class="large" required ng:model="email"/>
 						</div>
 					</div>
 					<div class="modal-footer">

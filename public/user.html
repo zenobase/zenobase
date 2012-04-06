@@ -15,14 +15,14 @@
 				<div class="control-group">
 					<label class="control-label" for="edit-email"><strong>Email</strong></label>
 					<div class="controls">
-						<input type="email" class="input-large" required ng:model="email" ng:model-instant>
+						<input type="email" class="input-large" required ng:model="email">
 						<p class="help-block">For important, account-related messages.</p>
 					</div>
 				</div>
 				<div class="control-group">
 					<label class="control-label" for="edit-password"><strong>Password</strong></label>
 					<div class="controls">
-						<input type="password" class="input-large" ng:model="password" ng:model-instant>
+						<input type="password" class="input-large" ng:model="password">
 						<p class="help-block">Leave blank to keep your current password.</p>
 					</div>
 				</div>
@@ -78,7 +78,7 @@
 						<div class="modal-body">
 							<div class="control-group" ng:class="createBucketForm.label.$valid && 'success' || 'error'">
 								<label for="template">Label</label>
-								<input id="bucket-label-field" name="label" type="text" class="xlarge" required ng:minlength="1" ng:maxlength="20" ng:pattern="/^[a-zA-Z0-9-_ ]+$/" ng:model="label" ng:model-instant/>
+								<input id="bucket-label-field" name="label" type="text" class="xlarge" required ng:minlength="1" ng:maxlength="20" ng:pattern="/^[a-zA-Z0-9-_ ]+$/" ng:model="label"/>
 							</div>
 						</div>
 						<div class="modal-footer">

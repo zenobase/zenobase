@@ -1131,12 +1131,12 @@ Field.findAll = function() {
 var app = angular.module('ZenoModule', []);
 
 app.config(function($routeProvider) {
-	$routeProvider.when('/', { template: '/public/home.html' });
-	$routeProvider.when('/buckets/:bucketId/', { template : '/public/dashboard.html', reloadOnSearch : false });
-	$routeProvider.when('/users/:userId', { template : '/public/user.html' });
-	$routeProvider.when('/terms', { template : '/public/terms.html' });
-	$routeProvider.when('/privacy', { template : '/public/privacy.html' });
-	$routeProvider.otherwise({ redirectTo : '/' });
+	$routeProvider.when('/', { template: '/public/home.html' })
+		.when('/buckets/:bucketId/', { template : '/public/dashboard.html', reloadOnSearch : false })
+		.when('/users/:userId', { template : '/public/user.html' })
+		.when('/terms', { template : '/public/terms.html' })
+		.when('/privacy', { template : '/public/privacy.html' })
+		.otherwise({ redirectTo : '/' });
 });
 
 app.filter('fields', function() {
