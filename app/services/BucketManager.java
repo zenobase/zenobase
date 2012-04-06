@@ -75,14 +75,14 @@ public class BucketManager {
 
 	public Bucket findBucket(String bucketId) {
 		ObjectNode object = index.get(Bucket.TYPE_NAME, bucketId);
-		return object != null ? Bucket.parse(object) : null;
+		return object != null ? new Bucket(object) : null;
 	}
 
 	public ImmutableList<Bucket> findParticipants(String bucketId) {
 		ImmutableList.Builder<Bucket> buckets = ImmutableList.builder();
 		QueryBuilder query = QueryBuilders.termQuery(Bucket.ID.getName(), bucketId);
 		for (SearchHit hit : this.index.search(query).getHits()) {
-			buckets.add(Bucket.parse(Nodes.read(hit.source())));
+			buckets.add(new Bucket(Nodes.read(hit.source())));
 		}
 		return buckets.build();
 	}
@@ -107,7 +107,7 @@ public class BucketManager {
 			// TODO .sort(Bucket.CREATED.getName());
 		SearchHits hits = index.search(search).hits();
 		for (SearchHit hit : hits) {
-			buckets.add(Bucket.parse(Nodes.read(hit.source())));
+			buckets.add(new Bucket(Nodes.read(hit.source())));
 		}
 		return new PartialList<Bucket>(buckets, hits.getTotalHits());
 	}
@@ -124,7 +124,7 @@ public class BucketManager {
 		index.search(query, new Callback<ObjectNode>() {
 			@Override
 			public void call(ObjectNode object) {
-				callback.call(Bucket.parse(object));
+				callback.call(new Bucket(object));
 			}
 		});
 	}

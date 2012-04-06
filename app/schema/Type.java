@@ -1,13 +1,10 @@
 package schema;
 
-import java.util.List;
-
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.node.ArrayNode;
 import org.codehaus.jackson.node.ObjectNode;
 
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Lists;
 
 public abstract class Type<T> {
 
@@ -24,7 +21,7 @@ public abstract class Type<T> {
 	}
 
 	public ImmutableList<T> get(ObjectNode object, String fieldName) {
-		List<T> values = Lists.newArrayList();
+		ImmutableList.Builder<T> values = ImmutableList.builder();
 		JsonNode node = object.get(fieldName);
 		if (node != null && node.isArray()) {
 			for (JsonNode element : ((ArrayNode) node)) {
@@ -34,7 +31,7 @@ public abstract class Type<T> {
 		else if (node != null && !node.isMissingNode() && !node.isNull()) {
 			values.add(get(node));
 		}
-		return ImmutableList.copyOf(values);
+		return values.build();
 	}
 
 	protected abstract T get(JsonNode node);
@@ -48,22 +45,25 @@ public abstract class Type<T> {
 			((ArrayNode) node).add(get(value));
 		}
 		else {
-			object.putArray(fieldName).addAll(Lists.newArrayList(node, get(value)));
+			ArrayNode arrayNode = object.putArray(fieldName);
+			arrayNode.add(node);
+			arrayNode.add(get(value));
 		}
 	}
 
 	public void add(ObjectNode object, String fieldName, Iterable<T> values) {
 		JsonNode node = object.get(fieldName);
 		if (node == null) {
-			object.putArray(fieldName).addAll(get(values));
+			ArrayNode arrayNode = object.putArray(fieldName);
+			add(arrayNode, values);
 		}
 		else if (node.isArray()) {
-			((ArrayNode) node).addAll(get(values));
+			add((ArrayNode) node, values);
 		}
 		else {
-			List<JsonNode> nodes = Lists.newArrayList(node);
-			nodes.addAll(get(values));
-			object.putArray(fieldName).addAll(nodes);
+			ArrayNode arrayNode = object.putArray(fieldName);
+			arrayNode.add(node);
+			add(arrayNode, values);
 		}
 	}
 
@@ -71,12 +71,15 @@ public abstract class Type<T> {
 		object.put(fieldName, get(value));
 	}
 
-	private List<JsonNode> get(Iterable<T> values) {
-		List<JsonNode> nodes = Lists.newArrayList();
+	public void set(ObjectNode object, String fieldName, Iterable<T> values) {
+		ArrayNode arrayNode = object.putArray(fieldName);
+		add(arrayNode, values);
+	}
+
+	private void add(ArrayNode node, Iterable<T> values) {
 		for (T value : values) {
-			nodes.add(get(value));
+			node.add(get(value));
 		}
-		return nodes;
 	}
 
 	protected abstract JsonNode get(T value);

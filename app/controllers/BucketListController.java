@@ -122,7 +122,7 @@ public class BucketListController extends ControllerSupport {
 		Bucket bucket = new Bucket(Generator.id());
 		bucket.setLabel(label);
 		bucket.setDescription(description);
-		bucket.grant(identity, Permission.ALL);
+		bucket.addPermission(identity, Permission.ALL);
 		Logger.info("Bucket: " + bucket.getPermission(identity));
 		return bucket;
 	}
