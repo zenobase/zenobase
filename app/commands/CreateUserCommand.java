@@ -1,8 +1,8 @@
 package commands;
 
-import secure.Identity;
-import secure.User;
-import secure.UserManager;
+import models.User;
+import models.Identity;
+import services.UserManager;
 
 public class CreateUserCommand extends CommandSupport {
 

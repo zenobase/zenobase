@@ -6,6 +6,7 @@ import io.BucketPrinter;
 import javax.inject.Inject;
 
 import models.Bucket;
+import models.Permission;
 
 import org.codehaus.jackson.node.ArrayNode;
 import org.codehaus.jackson.node.ObjectNode;
@@ -13,17 +14,16 @@ import org.codehaus.jackson.node.ObjectNode;
 import play.Logger;
 import play.mvc.Result;
 import play.mvc.With;
-import secure.Identity;
-import secure.IdentityHelper;
-import secure.Permission;
-import secure.UserManager;
+import models.Identity;
 import services.BucketManager;
 import services.CommandQueue;
-import services.NodeManager;
+import services.IndexManager;
+import services.UserManager;
 
 import commands.CreateBucketCommand;
 import common.Callback;
 import common.Generator;
+import common.Identities;
 import common.Nodes;
 import common.PartialList;
 
@@ -34,7 +34,7 @@ public class BucketListController extends ControllerSupport {
 	static CommandQueue queue;
 
 	@Inject
-	static NodeManager node;
+	static IndexManager node;
 
 	@Inject
 	static BucketManager buckets;
@@ -47,7 +47,7 @@ public class BucketListController extends ControllerSupport {
     }
 
     private static Result find(int offset, int limit) {
-    	Identity identity = IdentityHelper.in(ctx()).get();
+    	Identity identity = Identities.in(ctx()).get();
     	if (identity == null) {
     		return unauthorized();
     	}
@@ -61,7 +61,7 @@ public class BucketListController extends ControllerSupport {
     }
 
     private static Result find(Identity identity, int offset, int limit) {
-    	Identity current = IdentityHelper.in(ctx()).get();
+    	Identity current = Identities.in(ctx()).get();
     	if (current == null) {
     		return unauthorized();
     	}
@@ -111,7 +111,7 @@ public class BucketListController extends ControllerSupport {
 		if (label == null) {
 			return badRequest("missing label");
 		}
-		Identity identity = IdentityHelper.in(ctx()).get(true);
+		Identity identity = Identities.in(ctx()).get(true);
     	Bucket bucket = createBucket(label, description, identity);
     	String commandId = queue.execute(new CreateBucketCommand(buckets, identity, bucket));
         response().setHeader(LOCATION, String.format("/buckets/%s/", bucket.getId()));

@@ -1,7 +1,7 @@
 package commands;
 
 import models.Bucket;
-import secure.Identity;
+import models.Identity;
 import services.BucketManager;
 
 public class RestoreBucketCommand extends CommandSupport {

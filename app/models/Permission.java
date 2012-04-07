@@ -1,4 +1,4 @@
-package secure;
+package models;
 
 public enum Permission {
 

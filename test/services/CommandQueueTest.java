@@ -4,7 +4,7 @@ import junit.framework.Assert;
 
 import org.junit.Test;
 
-import secure.Identity;
+import models.Identity;
 
 import commands.Command;
 import commands.CommandSupport;

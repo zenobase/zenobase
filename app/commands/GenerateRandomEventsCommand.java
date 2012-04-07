@@ -1,6 +1,6 @@
 package commands;
 
-import secure.Identity;
+import models.Identity;
 import services.BucketManager;
 
 public class GenerateRandomEventsCommand extends CompoundCommand {

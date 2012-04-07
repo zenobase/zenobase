@@ -17,7 +17,7 @@ import org.elasticsearch.search.builder.SearchSourceBuilder;
 
 import play.Logger;
 import schema.PermissionField;
-import secure.Identity;
+import models.Identity;
 
 import com.google.common.collect.ImmutableList;
 import common.Callback;
@@ -28,11 +28,11 @@ public class BucketManager {
 
 	private static final String INDEX_NAME = "buckets";
 
-	private final NodeManager manager;
-	private final IndexManager index;
+	private final IndexManager manager;
+	private final Index index;
 
 	@Inject
-	public BucketManager(NodeManager manager) {
+	public BucketManager(IndexManager manager) {
 		this.manager = manager;
 		this.index = manager.getIndex(INDEX_NAME);
 		if (!index.exists()) {
@@ -43,7 +43,7 @@ public class BucketManager {
 	}
 
 	public void store(Bucket bucket, boolean createIndex) {
-		IndexManager index = manager.getIndex(bucket.getId());
+		Index index = manager.getIndex(bucket.getId());
 		if (index.exists()) {
 			if (createIndex) {
 				throw new IllegalStateException("Index exists already: " + bucket.getId());
@@ -146,7 +146,7 @@ public class BucketManager {
 		return getIndex(bucketId).count();
 	}
 
-	private IndexManager getIndex(String bucketId) {
+	private Index getIndex(String bucketId) {
 		return manager.getIndex(bucketId);
 	}
 }

@@ -1,10 +1,11 @@
 package schema;
 
+import io.JsonPrinter;
+
 import java.io.IOException;
 
 import org.junit.Test;
 
-import common.JsonPrinter;
 
 public class SchemaBuilderTest {
 

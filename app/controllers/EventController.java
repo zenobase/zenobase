@@ -7,21 +7,21 @@ import org.joda.time.DateTime;
 
 import models.Bucket;
 import models.Event;
+import models.Permission;
 import play.mvc.BodyParser;
 import play.mvc.Result;
 import play.mvc.With;
 import search.EventSearch;
-import secure.Identity;
-import secure.IdentityHelper;
-import secure.Permission;
+import models.Identity;
 import services.BucketManager;
 import services.CommandQueue;
-import services.NodeManager;
+import services.IndexManager;
 
 import commands.CreateEventCommand;
 import commands.DeleteEventCommand;
 import commands.GenerateRandomEventsCommand;
 import common.Generator;
+import common.Identities;
 
 @With(Timed.class)
 public class EventController extends ControllerSupport {
@@ -30,13 +30,13 @@ public class EventController extends ControllerSupport {
 	static BucketManager manager;
 
 	@Inject
-	static NodeManager node;
+	static IndexManager node;
 
 	@Inject
 	static CommandQueue queue;
 
 	public static Result find(String bucketId) {
-		Identity identity = IdentityHelper.in(ctx()).get();
+		Identity identity = Identities.in(ctx()).get();
 		return identity != null ? find(bucketId, identity) : unauthorized(); 
     }
 
@@ -55,7 +55,7 @@ public class EventController extends ControllerSupport {
 	@BodyParser.Of(value = BodyParser.Json.class, maxLength = 1000)
 	public static Result post(String bucketId) {
 		
-		Identity identity = IdentityHelper.in(ctx()).get();
+		Identity identity = Identities.in(ctx()).get();
 		if (identity == null) {
 			return unauthorized();
 		}
@@ -95,7 +95,7 @@ public class EventController extends ControllerSupport {
     	if (bucket == null) {
     		return notFound();
     	}
-    	if (bucket.getPermission(IdentityHelper.in(ctx()).get()) == Permission.NONE) {
+    	if (bucket.getPermission(Identities.in(ctx()).get()) == Permission.NONE) {
     		return forbidden();
     	}
     	Event event = manager.findEvent(bucketId, eventId);
@@ -106,7 +106,7 @@ public class EventController extends ControllerSupport {
     }
 
     public static Result delete(String bucketId, String eventId) {
-    	Identity identity = IdentityHelper.in(ctx()).get();
+    	Identity identity = Identities.in(ctx()).get();
 		return identity != null ? delete(bucketId, eventId, identity) : unauthorized();
     }
 

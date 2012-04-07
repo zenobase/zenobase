@@ -1,7 +1,7 @@
 package commands;
 
 import models.Event;
-import secure.Identity;
+import models.Identity;
 import services.BucketManager;
 
 public class DeleteEventCommand extends CommandSupport {

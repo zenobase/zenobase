@@ -7,13 +7,13 @@ import org.codehaus.jackson.node.ObjectNode;
 
 import play.mvc.Result;
 import play.mvc.With;
-import secure.Identity;
-import secure.IdentityHelper;
-import secure.UserManager;
+import models.Identity;
 import services.CommandQueue;
+import services.UserManager;
 
 import commands.Command;
 import commands.CommandSerializer;
+import common.Identities;
 import common.Nodes;
 
 @With(Timed.class)
@@ -26,7 +26,7 @@ public class QueueController extends ControllerSupport {
 	static UserManager users;
 
     public static Result get(int offset, int limit) {
-    	Identity identity = IdentityHelper.in(ctx()).get();
+    	Identity identity = Identities.in(ctx()).get();
     	if (identity == null) {
     		return unauthorized();
     	}
@@ -43,7 +43,7 @@ public class QueueController extends ControllerSupport {
     }
 
     public static Result post(String id) {
-    	Identity identity = IdentityHelper.in(ctx()).get();
+    	Identity identity = Identities.in(ctx()).get();
     	if (identity == null) {
     		return unauthorized();
     	}

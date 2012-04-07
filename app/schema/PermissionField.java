@@ -1,7 +1,7 @@
 package schema;
 
-import secure.Identity;
-import secure.Permission;
+import models.Permission;
+import models.Identity;
 
 public class PermissionField extends MapField<Identity, Permission> {
 

@@ -1,13 +1,13 @@
 package controllers;
 
+import models.User;
 import play.data.Form;
 import play.mvc.Result;
 import play.mvc.With;
-import secure.IdentityHelper;
-import secure.User;
-import secure.UserManager;
+import services.UserManager;
 
 import com.google.inject.Inject;
+import common.Identities;
 
 @With(Timed.class)
 public class SecurityController extends ControllerSupport {
@@ -25,12 +25,12 @@ public class SecurityController extends ControllerSupport {
 		if (user == null || user.isSuspended() || !user.passwordEquals(signIn.getPassword())) {
 			return unauthorized();
 		}
-		IdentityHelper.in(ctx()).set(user.asIdentity(), signIn.isRemember());
+		Identities.in(ctx()).set(user.asIdentity(), signIn.isRemember());
 		return ok(toJson(user));
 	}
 
 	public static Result signOut() {
-		IdentityHelper.in(ctx()).unset();
+		Identities.in(ctx()).unset();
 		return noContent();
 	}
 }

@@ -2,7 +2,7 @@ package commands;
 
 import java.util.List;
 
-import secure.Identity;
+import models.Identity;
 
 import com.google.common.collect.Lists;
 

@@ -11,8 +11,7 @@ import schema.Schema;
 import schema.SchemaBuilder;
 import schema.TextField;
 import schema.TokenField;
-import secure.Identity;
-import secure.Permission;
+import models.Identity;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;

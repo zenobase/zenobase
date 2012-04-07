@@ -2,18 +2,19 @@ package controllers;
 
 import javax.inject.Inject;
 
+import models.User;
+
 import play.data.Form;
 import play.mvc.Result;
 import play.mvc.With;
-import secure.Identity;
-import secure.IdentityHelper;
-import secure.User;
-import secure.UserManager;
+import models.Identity;
 import services.BucketManager;
 import services.CommandQueue;
+import services.UserManager;
 
 import commands.CloseAccountCommand;
 import commands.CreateUserCommand;
+import common.Identities;
 
 @With(Timed.class)
 public class AccountController extends ControllerSupport {
@@ -36,7 +37,7 @@ public class AccountController extends ControllerSupport {
 		if (users.exists(signUp.getUsername())) {
 			return badRequest("user exists");
 		}
-		Identity identity = IdentityHelper.in(ctx()).get(true);
+		Identity identity = Identities.in(ctx()).get(true);
 		User user = new User(identity.getId(), signUp.getUsername());
 		user.setEmail(signUp.getEmail());
 		user.changePassword(signUp.getPassword());
@@ -46,7 +47,7 @@ public class AccountController extends ControllerSupport {
 	}
 
 	public static Result close(String name) {
-		Identity identity = IdentityHelper.in(ctx()).get();
+		Identity identity = Identities.in(ctx()).get();
 		if (identity == null) {
 			return unauthorized();
 		}

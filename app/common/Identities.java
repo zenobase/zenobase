@@ -1,22 +1,23 @@
-package secure;
+package common;
 
+import models.Identity;
 import play.api.libs.Crypto;
 import play.mvc.Http;
 import play.mvc.Http.Context;
 
-public class IdentityHelper {
+public class Identities {
 
 	private static final String TOKEN_NAME = "token";
 	private static final char TOKEN_SEPARATOR = '-';
 
 	private final Http.Context context;
 
-	private IdentityHelper(Context context) {
+	private Identities(Context context) {
 		this.context = context;
 	}
 
-	public static IdentityHelper in(Http.Context context) {
-		return new IdentityHelper(context);
+	public static Identities in(Http.Context context) {
+		return new Identities(context);
 	}
 
 	public boolean is(Identity identity) {

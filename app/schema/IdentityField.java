@@ -4,7 +4,7 @@ import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.node.ObjectNode;
 import org.codehaus.jackson.node.TextNode;
 
-import secure.Identity;
+import models.Identity;
 
 public class IdentityField extends Field<Identity> {
 

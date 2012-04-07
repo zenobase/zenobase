@@ -1,4 +1,4 @@
-package secure;
+package models;
 
 import common.Generator;
 

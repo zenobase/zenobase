@@ -1,4 +1,4 @@
-package secure;
+package common;
 
 // Copyright (c) 2006 Damien Miller <djm@mindrot.org>
 //

@@ -4,6 +4,8 @@ import junit.framework.Assert;
 
 import org.junit.Test;
 
+import common.BCrypt;
+
 public class BCryptTest {
 
 	@Test

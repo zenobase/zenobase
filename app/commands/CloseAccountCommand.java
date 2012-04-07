@@ -3,10 +3,10 @@ package commands;
 import common.Callback;
 
 import models.Bucket;
-import secure.Identity;
-import secure.User;
-import secure.UserManager;
+import models.User;
+import models.Identity;
 import services.BucketManager;
+import services.UserManager;
 
 public class CloseAccountCommand extends CompoundCommand {
 

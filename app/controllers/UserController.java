@@ -4,20 +4,21 @@ import io.UserPrinter;
 
 import javax.inject.Inject;
 
+import models.User;
+
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.node.ArrayNode;
 import org.codehaus.jackson.node.ObjectNode;
 
 import play.mvc.Result;
 import play.mvc.With;
-import secure.Identity;
-import secure.IdentityHelper;
-import secure.User;
-import secure.UserManager;
+import models.Identity;
 import services.CommandQueue;
+import services.UserManager;
 
 import commands.UpdateUserCommand;
 import common.Callback;
+import common.Identities;
 import common.Nodes;
 import common.PartialList;
 
@@ -31,7 +32,7 @@ public class UserController extends ControllerSupport {
 	static CommandQueue queue;
 
 	public static Result who() {
-		Identity identity = IdentityHelper.in(ctx()).get();
+		Identity identity = Identities.in(ctx()).get();
 		if (identity != null) {
 			User user = users.find(identity);
 			return ok(user != null ? toJson(user) : toJson(identity));
@@ -40,7 +41,7 @@ public class UserController extends ControllerSupport {
     }
 
 	public static Result get(String name) {
-		Identity identity = IdentityHelper.in(ctx()).get();
+		Identity identity = Identities.in(ctx()).get();
 		return identity != null ? get(name, identity) : unauthorized();
 	}
 
@@ -58,7 +59,7 @@ public class UserController extends ControllerSupport {
     }
 
 	public static Result find(int offset, int limit) {
-    	Identity identity = IdentityHelper.in(ctx()).get();
+    	Identity identity = Identities.in(ctx()).get();
     	if (identity == null) {
     		return unauthorized();
     	}
@@ -134,7 +135,7 @@ public class UserController extends ControllerSupport {
 		if (body == null) {
 			return badRequest();
 		}
-		Identity identity = IdentityHelper.in(ctx()).get();
+		Identity identity = Identities.in(ctx()).get();
     	if (identity == null) {
     		return unauthorized();
     	}

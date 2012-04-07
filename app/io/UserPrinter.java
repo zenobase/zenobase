@@ -1,11 +1,12 @@
 package io;
 
+import models.User;
+
 import org.elasticsearch.common.base.Joiner;
 
 import play.mvc.Results.Chunks;
 import play.mvc.Results.Chunks.Out;
 
-import secure.User;
 
 public class UserPrinter {
 

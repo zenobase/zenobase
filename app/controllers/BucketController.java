@@ -3,22 +3,22 @@ package controllers;
 import javax.inject.Inject;
 
 import models.Bucket;
+import models.Permission;
 
 import org.codehaus.jackson.node.ObjectNode;
 
 import play.mvc.BodyParser;
 import play.mvc.Result;
 import play.mvc.With;
-import secure.Identity;
-import secure.IdentityHelper;
-import secure.Permission;
-import secure.UserManager;
+import models.Identity;
 import services.BucketManager;
 import services.CommandQueue;
+import services.UserManager;
 
 import commands.DeleteBucketCommand;
 import commands.UpdateBucketCommand;
 import common.DefaultDashboard;
+import common.Identities;
 
 @With(Timed.class)
 public class BucketController extends ControllerSupport {
@@ -33,7 +33,7 @@ public class BucketController extends ControllerSupport {
 	static UserManager users;
 
 	public static Result get(String bucketId) {
-		Identity identity = IdentityHelper.in(ctx()).get();
+		Identity identity = Identities.in(ctx()).get();
 		return identity != null ? get(bucketId, identity) : unauthorized(); 
     }
 
@@ -55,7 +55,7 @@ public class BucketController extends ControllerSupport {
 	@BodyParser.Of(value = BodyParser.Json.class, maxLength = 10000)
 	public static Result update(String bucketId) {
 		
-		Identity identity = IdentityHelper.in(ctx()).get();
+		Identity identity = Identities.in(ctx()).get();
 		if (identity == null) {
 			return unauthorized();
 		}
@@ -76,7 +76,7 @@ public class BucketController extends ControllerSupport {
     }
 
     public static Result delete(String bucketId) {
-    	Identity identity = IdentityHelper.in(ctx()).get();
+    	Identity identity = Identities.in(ctx()).get();
 		return identity != null ? delete(bucketId, identity) : unauthorized();
     }
 

@@ -2,7 +2,7 @@ package commands;
 
 import org.joda.time.DateTime;
 
-import secure.Identity;
+import models.Identity;
 
 import common.Generator;
 

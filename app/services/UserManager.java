@@ -1,8 +1,11 @@
-package secure;
+package services;
 
 import java.util.List;
 
 import javax.inject.Inject;
+
+import models.Identity;
+import models.User;
 
 import org.codehaus.jackson.node.ObjectNode;
 import org.elasticsearch.common.collect.Lists;
@@ -13,8 +16,6 @@ import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 
 import play.Logger;
-import services.IndexManager;
-import services.NodeManager;
 
 import com.google.common.base.Preconditions;
 import common.Callback;
@@ -25,10 +26,10 @@ public class UserManager {
 
 	private static final String INDEX_NAME = "users";
 
-	private final IndexManager index;
+	private final Index index;
 
 	@Inject
-	public UserManager(NodeManager node) {
+	public UserManager(IndexManager node) {
 		this.index = node.getIndex(INDEX_NAME);
 		if (!index.exists()) {
 			Logger.info("Creating user index...");

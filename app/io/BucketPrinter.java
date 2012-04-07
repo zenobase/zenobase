@@ -1,12 +1,12 @@
 package io;
 
 import models.Bucket;
+import models.Permission;
 
 import org.elasticsearch.common.base.Joiner;
 
 import play.mvc.Results.Chunks;
 import play.mvc.Results.Chunks.Out;
-import secure.Permission;
 
 public class BucketPrinter {
 

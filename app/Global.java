@@ -1,9 +1,9 @@
 import play.Application;
 import play.GlobalSettings;
-import secure.UserManager;
 import services.BucketManager;
 import services.CommandQueue;
-import services.NodeManager;
+import services.IndexManager;
+import services.UserManager;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
@@ -27,7 +27,7 @@ public class Global extends GlobalSettings {
 		injector = Guice.createInjector(new AbstractModule() {
 			@Override
 			protected void configure() {
-				bind(NodeManager.class).in(Singleton.class);
+				bind(IndexManager.class).in(Singleton.class);
 				bind(BucketManager.class).in(Singleton.class);
 				bind(CommandQueue.class).in(Singleton.class);
 				bind(UserManager.class).in(Singleton.class);
@@ -44,6 +44,6 @@ public class Global extends GlobalSettings {
 
 	@Override
 	public void onStop(Application application) {
-		injector.getInstance(NodeManager.class).close();
+		injector.getInstance(IndexManager.class).close();
 	}
 }

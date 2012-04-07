@@ -16,7 +16,7 @@ import models.Resource;
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
 
-import secure.Identity;
+import models.Identity;
 
 import com.google.common.base.Charsets;
 import com.google.common.io.Files;

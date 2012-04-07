@@ -13,7 +13,7 @@ import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 
-import services.IndexManager;
+import services.Index;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMultimap;
@@ -80,7 +80,7 @@ public class EventSearch {
 		throw new IllegalArgumentException("Don't know whet to do with filter: " + filter);
 	}
 
-	public ObjectNode execute(IndexManager index) {
+	public ObjectNode execute(Index index) {
 		SearchSourceBuilder builder = buildSearch();
 		// Logger.info("q: " + builder);
 		SearchResponse response = index.search(builder);

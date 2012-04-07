@@ -2,11 +2,12 @@ package controllers;
 
 import java.util.Set;
 
+import models.User;
+
 import org.codehaus.jackson.node.ObjectNode;
 import org.elasticsearch.common.collect.Sets;
 
 import play.mvc.Controller;
-import secure.User;
 
 import common.Nodes;
 

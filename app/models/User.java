@@ -1,11 +1,11 @@
-package secure;
+package models;
 
-import models.DomainNode;
 
 import org.codehaus.jackson.node.ObjectNode;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 
+import common.BCrypt;
 import common.Nodes;
 
 import schema.BooleanField;
@@ -13,6 +13,7 @@ import schema.DateTimeField;
 import schema.Schema;
 import schema.SchemaBuilder;
 import schema.TokenField;
+import models.Identity;
 
 public class User extends DomainNode {
 
