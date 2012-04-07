@@ -42,8 +42,8 @@ class RandomEvent {
 			protected void addFields(Event event) {
 				event.add(Event.TAG, meals.next());
 				event.add(Event.TAG, order.next());
-				event.add(Event.LOCATION, nextLocation());
-				event.add(Event.RATING, nextRating());
+				event.set(Event.LOCATION, nextLocation());
+				event.set(Event.RATING, nextRating());
 			}
 		}, 4)
 		.add(new Builder() {
@@ -58,21 +58,21 @@ class RandomEvent {
 			protected void addFields(Event event) {
 				Movie movie = movies.next();
 				event.add(Event.TAG, "movie");
-				event.add(Event.RESOURCE, movie.getResource());
+				event.set(Event.RESOURCE, movie.getResource());
 				if (movie.getDuration() != null) {
-					event.add(Event.DURATION, movie.getDuration());
+					event.set(Event.DURATION, movie.getDuration());
 				}
-				event.add(Event.RATING, nextRating());
+				event.set(Event.RATING, nextRating());
 			}
 		}, 2)
 		.add(new Builder() {
 			@Override
 			protected void addFields(Event event) {
 				event.add(Event.TAG, "hike");
-				event.add(Event.DURATION, nextDuration(30, 330));
-				event.add(Event.LOCATION, nextLocation());
-				event.add(Event.DISTANCE, nextLength(500, 10000));
-				event.add(Event.HEIGHT, nextLength(0, 5000));
+				event.set(Event.DURATION, nextDuration(30, 330));
+				event.set(Event.LOCATION, nextLocation());
+				event.set(Event.DISTANCE, nextLength(500, 10000));
+				event.set(Event.HEIGHT, nextLength(0, 5000));
 			}
 		}, 1);
 

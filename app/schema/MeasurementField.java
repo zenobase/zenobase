@@ -35,10 +35,10 @@ public class MeasurementField<Q extends Quantity> extends Field<DecimalMeasure<Q
 
 	@Override
 	protected DecimalMeasure<Q> getValue(JsonNode node) {
-		return get((ObjectNode) node);
+		return getDecimalMeasure((ObjectNode) node);
 	}
 
-	private static <Q extends Quantity> DecimalMeasure<Q> get(ObjectNode object) {
+	private DecimalMeasure<Q> getDecimalMeasure(ObjectNode object) {
 		return DecimalMeasure.valueOf(VALUE.getValue(object),
 			(Unit<Q>) Unit.valueOf(UNIT.getValue(object)));
 	}
@@ -53,16 +53,20 @@ public class MeasurementField<Q extends Quantity> extends Field<DecimalMeasure<Q
 
 	@Override
 	public void prePersist(ObjectNode object) {
-		ObjectNode fieldNode = (ObjectNode) object.get(getName()); // TODO: hande arrays!
-		DecimalMeasure<Q> value = get(fieldNode);
-		VALUE_SI.setValue(fieldNode, Measures.toStandard(value).getValue());
+		for (JsonNode node : getNodes(object)) {
+			ObjectNode fieldNode = (ObjectNode) node;
+			DecimalMeasure<Q> value = getDecimalMeasure(fieldNode);
+			VALUE_SI.setValue(fieldNode, Measures.toStandard(value).getValue());
+		}
 	}
 
 	@Override
-	public void postLoad(ObjectNode object) {
-		ObjectNode fieldNode = (ObjectNode) object.get(getName()); // TODO: hande arrays!
-		if (fieldNode != null) {
-			fieldNode.remove(VALUE_SI.getName());
+	public void postLoad(ObjectNode object) { // TODO: _source should ignore _* instead
+		for (JsonNode node : getNodes(object)) {
+			ObjectNode fieldNode = (ObjectNode) node;
+			if (fieldNode != null) {
+				fieldNode.remove(VALUE_SI.getName());
+			}
 		}
 	}
 }

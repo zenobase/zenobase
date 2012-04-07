@@ -895,7 +895,11 @@ function MapCtrl($scope) {
 		var points = [ ];
 		$scope.events = $.each($scope.getEvents(result), function(i, event) {
 			var location = event[$scope.field];
-			if (location) {
+			if ($.isArray(location)) {
+				$.each(location, function(i, l) {
+					points.push(l);
+				});
+			} else if (location) {
 				points.push(location);
 			}
 		});

@@ -5,6 +5,7 @@ import java.lang.reflect.Type;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.node.ArrayNode;
 import org.codehaus.jackson.node.ObjectNode;
+import org.elasticsearch.common.collect.Iterables;
 
 import com.google.common.collect.ImmutableList;
 
@@ -30,8 +31,8 @@ public abstract class Field<T> {
 
 	public T getValue(ObjectNode object) {
 		JsonNode node = object.get(name);
-		if (node != null && node.isArray()) {
-			throw new IllegalArgumentException("Expected a single value but found an array");
+		if (node != null && node.isArray() && node.size() > 0) {
+			return getValue(Iterables.getOnlyElement(((ArrayNode) node)));
 		}
 		if (node != null && !node.isMissingNode() && !node.isNull()) {
 			return getValue(node);
@@ -53,15 +54,31 @@ public abstract class Field<T> {
 		return values.build();
 	}
 
+	protected ImmutableList<JsonNode> getNodes(ObjectNode object) {
+		ImmutableList.Builder<JsonNode> values = ImmutableList.builder();
+		JsonNode node = object.get(name);
+		if (node != null && node.isArray()) {
+			for (JsonNode element : ((ArrayNode) node)) {
+				values.add(element);
+			}
+		}
+		else if (node != null && !node.isMissingNode() && !node.isNull()) {
+			values.add(node);
+		}
+		return values.build();
+	}
+
 	protected abstract T getValue(JsonNode node);
 
 	public void addValue(ObjectNode object, T value) {
 		JsonNode node = object.get(name);
 		if (node == null) {
-			object.put(name, toJson(value));
+			ArrayNode arrayNode = object.putArray(name);
+			arrayNode.add(toJson(value));
 		}
 		else if (node.isArray()) {
-			((ArrayNode) node).add(toJson(value));
+			ArrayNode arrayNode = ((ArrayNode) node);
+			arrayNode.add(toJson(value));
 		}
 		else {
 			ArrayNode arrayNode = object.putArray(name);
@@ -77,7 +94,8 @@ public abstract class Field<T> {
 			addValues(arrayNode, values);
 		}
 		else if (node.isArray()) {
-			addValues((ArrayNode) node, values);
+			ArrayNode arrayNode = ((ArrayNode) node);
+			addValues(arrayNode, values);
 		}
 		else {
 			ArrayNode arrayNode = object.putArray(name);
