@@ -1,7 +1,7 @@
 package secure;
 
 import org.codehaus.jackson.node.ObjectNode;
-import org.elasticsearch.common.collect.Iterables;
+import org.elasticsearch.common.base.Objects;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 
@@ -153,17 +153,17 @@ public class User {
 	}
 
 	public static User parse(ObjectNode object) {
-		Identity identity = Iterables.getOnlyElement(IDENTITY.getValues(object));
-		String name = Iterables.getOnlyElement(NAME.getValues(object));
-		DateTime created = Iterables.getOnlyElement(CREATED.getValues(object));
+		Identity identity = IDENTITY.getValue(object);
+		String name = NAME.getValue(object);
+		DateTime created = CREATED.getValue(object);
 		User user = new User(identity, name, created);
-		user.setPassword(Iterables.getOnlyElement(PASSWORD.getValues(object)));
-		user.setSuspended(Iterables.getOnlyElement(SUSPENDED.getValues(object), Boolean.FALSE));
-		user.setSuperuser(Iterables.getOnlyElement(SUPERUSER.getValues(object), Boolean.FALSE));
-		String email = Iterables.getOnlyElement(EMAIL.getValues(object), null);
+		user.setPassword(PASSWORD.getValue(object));
+		user.setSuspended(Objects.firstNonNull(SUSPENDED.getValue(object), Boolean.FALSE));
+		user.setSuperuser(Objects.firstNonNull(SUPERUSER.getValue(object), Boolean.FALSE));
+		String email = EMAIL.getValue(object);
 		if (email != null) {
 			user.setEmail(email);
-			user.setVerified(Iterables.getOnlyElement(VERIFIED.getValues(object), Boolean.FALSE));
+			user.setVerified(Objects.firstNonNull(VERIFIED.getValue(object), Boolean.FALSE));
 		}
 		return user;
 	}

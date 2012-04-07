@@ -1,7 +1,6 @@
 package models;
 
 import org.codehaus.jackson.node.ObjectNode;
-import org.elasticsearch.common.collect.Iterables;
 
 import schema.TokenField;
 import schema.Field;
@@ -25,11 +24,11 @@ public class DomainNode {
 	}
 
 	public String getId() {
-		return Iterables.getOnlyElement(ID.getValues(object));
+		return ID.getValue(object);
 	}
 
 	protected <T> T getValue(Field<T> field) {
-		return Iterables.getOnlyElement(getValues(field), null);
+		return field.getValue(object);
 	}
 
 	protected <T> ImmutableList<T> getValues(Field<T> field) {

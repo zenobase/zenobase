@@ -1,7 +1,5 @@
 package schema;
 
-import java.math.BigDecimal;
-
 import javax.measure.DecimalMeasure;
 import javax.measure.quantity.Quantity;
 import javax.measure.unit.Unit;
@@ -9,7 +7,6 @@ import javax.measure.unit.Unit;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.node.ObjectNode;
 
-import com.google.common.collect.Iterables;
 import common.Measures;
 import common.Nodes;
 
@@ -42,9 +39,8 @@ public class MeasurementField<Q extends Quantity> extends Field<DecimalMeasure<Q
 	}
 
 	private static <Q extends Quantity> DecimalMeasure<Q> get(ObjectNode object) {
-		BigDecimal value = Iterables.getOnlyElement(VALUE.getValues(object));
-		Unit<Q> unit = (Unit<Q>) Unit.valueOf(Iterables.getOnlyElement(UNIT.getValues(object)));
-		return DecimalMeasure.valueOf(value, unit);
+		return DecimalMeasure.valueOf(VALUE.getValue(object),
+			(Unit<Q>) Unit.valueOf(UNIT.getValue(object)));
 	}
 
 	@Override

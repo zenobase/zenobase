@@ -28,6 +28,17 @@ public abstract class Field<T> {
 		return type;
 	}
 
+	public T getValue(ObjectNode object) {
+		JsonNode node = object.get(name);
+		if (node != null && node.isArray()) {
+			throw new IllegalArgumentException("Expected a single value but found an array");
+		}
+		if (node != null && !node.isMissingNode() && !node.isNull()) {
+			return getValue(node);
+		}
+		return null;
+	}
+
 	public ImmutableList<T> getValues(ObjectNode object) {
 		ImmutableList.Builder<T> values = ImmutableList.builder();
 		JsonNode node = object.get(name);

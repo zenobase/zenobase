@@ -7,7 +7,6 @@ import models.Resource;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.node.ObjectNode;
 
-import com.google.common.collect.Iterables;
 import com.google.common.collect.Maps;
 import common.Nodes;
 
@@ -44,7 +43,7 @@ public abstract class MapField<K, V> extends Field<Map.Entry<K, V>> {
 	}
 
 	private static <T> T get(JsonNode node, Field<T> field) {
-		return Iterables.getOnlyElement(field.getValues((ObjectNode) node));
+		return field.getValue((ObjectNode) node);
 	}
 
 	@Override

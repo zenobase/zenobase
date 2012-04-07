@@ -5,7 +5,6 @@ import models.Resource;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.node.ObjectNode;
 
-import com.google.common.collect.Iterables;
 import common.Nodes;
 
 public class ResourceField extends Field<Resource> {
@@ -31,11 +30,7 @@ public class ResourceField extends Field<Resource> {
 
 	@Override
 	protected Resource getValue(JsonNode node) {
-		return new Resource(get((ObjectNode) node, TITLE), get((ObjectNode) node, URL));
-	}
-
-	private static <T> T get(JsonNode node, Field<T> field) {
-		return Iterables.getOnlyElement(field.getValues((ObjectNode) node));
+		return new Resource(TITLE.getValue((ObjectNode) node), URL.getValue((ObjectNode) node));
 	}
 
 	@Override
