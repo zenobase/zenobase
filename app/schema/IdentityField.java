@@ -13,7 +13,7 @@ public class IdentityField extends Field<Identity> {
 	}
 
 	@Override
-	protected Identity get(JsonNode node) {
+	protected Identity getValue(JsonNode node) {
 		return new Identity(node.asText());
 	}
 

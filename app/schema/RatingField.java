@@ -13,7 +13,7 @@ public class RatingField extends Field<Rating> {
 	}
 
 	@Override
-	protected Rating get(JsonNode node) {
+	protected Rating getValue(JsonNode node) {
 		return Rating.valueOf(node.asInt());
 	}
 

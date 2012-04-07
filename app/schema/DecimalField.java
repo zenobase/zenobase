@@ -12,7 +12,7 @@ public class DecimalField extends Field<BigDecimal> {
 	}
 
 	@Override
-	protected BigDecimal get(JsonNode node) {
+	protected BigDecimal getValue(JsonNode node) {
 		return node.getDecimalValue();
 	}
 

@@ -10,7 +10,7 @@ public class LongField extends Field<Long> {
 	}
 
 	@Override
-	protected Long get(JsonNode node) {
+	protected Long getValue(JsonNode node) {
 		return node.asLong();
 	}
 

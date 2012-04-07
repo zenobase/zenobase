@@ -30,7 +30,7 @@ public class ResourceField extends Field<Resource> {
 	}
 
 	@Override
-	protected Resource get(JsonNode node) {
+	protected Resource getValue(JsonNode node) {
 		return new Resource(get((ObjectNode) node, TITLE), get((ObjectNode) node, URL));
 	}
 

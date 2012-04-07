@@ -11,7 +11,7 @@ public class DurationField extends Field<Duration> {
 	}
 
 	@Override
-	protected Duration get(JsonNode node) {
+	protected Duration getValue(JsonNode node) {
 		return Duration.millis(node.getIntValue());
 	}
 

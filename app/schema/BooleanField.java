@@ -10,7 +10,7 @@ public class BooleanField extends Field<Boolean> {
 	}
 
 	@Override
-	protected Boolean get(JsonNode node) {
+	protected Boolean getValue(JsonNode node) {
 		return node.asBoolean();
 	}
 

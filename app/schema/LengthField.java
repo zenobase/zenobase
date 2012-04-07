@@ -1,6 +1,8 @@
 package schema;
 
-public class LengthField extends MeasurementField<javax.measure.quantity.Length> {
+import javax.measure.quantity.Length;
+
+public class LengthField extends MeasurementField<Length> {
 
 	public LengthField(String name) {
 		super(name);		

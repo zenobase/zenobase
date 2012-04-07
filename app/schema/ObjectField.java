@@ -18,7 +18,7 @@ public class ObjectField extends Field<ObjectNode> {
 	}
 
 	@Override
-	protected ObjectNode get(JsonNode node) {
+	protected ObjectNode getValue(JsonNode node) {
 		return (ObjectNode) node;
 	}
 

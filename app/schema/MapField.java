@@ -35,7 +35,7 @@ public abstract class MapField<K, V> extends Field<Map.Entry<K, V>> {
 	}
 
 	@Override
-	protected Map.Entry<K, V> get(JsonNode node) {
+	protected Map.Entry<K, V> getValue(JsonNode node) {
 		return get((ObjectNode) node);
 	}
 

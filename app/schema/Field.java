@@ -33,16 +33,16 @@ public abstract class Field<T> {
 		JsonNode node = object.get(name);
 		if (node != null && node.isArray()) {
 			for (JsonNode element : ((ArrayNode) node)) {
-				values.add(get(element));
+				values.add(getValue(element));
 			}
 		}
 		else if (node != null && !node.isMissingNode() && !node.isNull()) {
-			values.add(get(node));
+			values.add(getValue(node));
 		}
 		return values.build();
 	}
 
-	protected abstract T get(JsonNode node);
+	protected abstract T getValue(JsonNode node);
 
 	public void addValue(ObjectNode object, T value) {
 		JsonNode node = object.get(name);

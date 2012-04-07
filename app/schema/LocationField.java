@@ -25,7 +25,7 @@ public class LocationField extends Field<Location> {
 	}
 
 	@Override
-	protected Location get(JsonNode node) {
+	protected Location getValue(JsonNode node) {
 		BigDecimal latitude = node.get(LATITUDE).getDecimalValue();
 		BigDecimal longitude = node.get(LONGITUDE).getDecimalValue();
 		return new Location(latitude, longitude);

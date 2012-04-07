@@ -11,7 +11,7 @@ public class TextField extends Field<String> {
 	}
 
 	@Override
-	protected String get(JsonNode node) {
+	protected String getValue(JsonNode node) {
 		return node.asText();
 	}
 

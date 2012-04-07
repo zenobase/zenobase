@@ -37,7 +37,7 @@ public class MeasurementField<Q extends Quantity> extends Field<DecimalMeasure<Q
 	}
 
 	@Override
-	protected DecimalMeasure<Q> get(JsonNode node) {
+	protected DecimalMeasure<Q> getValue(JsonNode node) {
 		return get((ObjectNode) node);
 	}
 

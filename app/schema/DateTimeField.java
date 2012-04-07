@@ -16,7 +16,7 @@ public class DateTimeField extends Field<DateTime> {
 	}
 
 	@Override
-	protected DateTime get(JsonNode node) {
+	protected DateTime getValue(JsonNode node) {
 		return formatter.parseDateTime(node.getTextValue());
 	}
 
