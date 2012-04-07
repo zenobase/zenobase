@@ -103,7 +103,7 @@ class RandomEvent {
 		public Event build(String bucketId, Identity identity) {
 			Event event = new Event(Generator.id());
 			event.setValue(Event.AUTHOR, identity);
-			event.addValue(Event.TIMESTAMP, nextTimestamp());
+			event.setValue(Event.TIMESTAMP, nextTimestamp());
 			addFields(event);
 			return event;
 		}
