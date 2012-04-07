@@ -131,7 +131,7 @@ public class BucketManager {
 
 	public void add(String bucketId, Event event) {
 		event.prePersist();
-		getIndex(bucketId).store(Event.TYPE_NAME, event.getId(), event.getContent(), false);
+		getIndex(bucketId).store(Event.TYPE_NAME, event.getId(), event.toJson(), false);
 	}
 
 	public void delete(String bucketId, String eventId) {
@@ -140,7 +140,7 @@ public class BucketManager {
 
 	public Event findEvent(String bucketId, String eventId) {
 		ObjectNode object = getIndex(bucketId).get(Event.TYPE_NAME, eventId);
-		return object != null ? new Event(eventId, bucketId, object) : null;
+		return object != null ? new Event(object) : null;
 	}
 
 	public long getSize(String bucketId) {

@@ -43,7 +43,7 @@ public class ListWidget implements Widget {
 	public JsonNode process(SearchResponse response) {
 		ArrayNode eventsNode = Nodes.newArray();
 		for (SearchHit hit : response.hits()) {
-			Event event = new Event(hit.getId(), hit.getIndex(), Nodes.read(hit.source()));
+			Event event = new Event(Nodes.read(hit.source()));
 			event.postLoad();
 			eventsNode.add(event.toJson());
 		}

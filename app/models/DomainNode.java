@@ -51,6 +51,10 @@ public class DomainNode {
 		field.addValues(object, values);
 	}
 
+	protected <T> boolean contains(Field<T> field) {
+		return object.has(field.getName());
+	}
+
 	public ObjectNode toJson() {
 		return object;
 	}

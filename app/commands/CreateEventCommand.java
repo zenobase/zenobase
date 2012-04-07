@@ -6,27 +6,29 @@ import services.BucketManager;
 
 public class CreateEventCommand extends CommandSupport {
 
-	private final BucketManager bucket;
+	private final BucketManager bucketManager;
+	private final String bucketId;
 	private final Event event;
 
-	public CreateEventCommand(BucketManager bucket, Identity identity, Event event) {
+	public CreateEventCommand(BucketManager bucketManager, Identity identity, String bucketId, Event event) {
 		super(identity);
-		this.bucket = bucket;
+		this.bucketManager = bucketManager;
+		this.bucketId = bucketId;
 		this.event = event;
 	}
 
 	@Override
 	public void execute() {
-		bucket.add(event.getBucket(), event);
+		bucketManager.add(bucketId, event);
 	}
 
 	@Override
 	public Command reverse(Identity identity) {
-		return new DeleteEventCommand(bucket, identity, event);
+		return new DeleteEventCommand(bucketManager, identity, bucketId, event);
 	}
 
 	@Override
 	public String toString() {
-		return String.format("added an event to '%s'", bucket);
+		return String.format("added an event to '%s'", bucketManager);
 	}
 }

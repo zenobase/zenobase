@@ -4,6 +4,7 @@ import org.codehaus.jackson.node.ObjectNode;
 
 import schema.DateTimeField;
 import schema.DurationField;
+import schema.Field;
 import schema.IdentityField;
 import schema.LengthField;
 import schema.LocationField;
@@ -12,13 +13,10 @@ import schema.ResourceField;
 import schema.Schema;
 import schema.SchemaBuilder;
 import schema.TokenField;
-import schema.Field;
 
 import com.google.common.collect.ImmutableSet;
-import common.Generator;
-import common.Nodes;
 
-public class Event {
+public class Event extends DomainNode {
 
 	public static final String TYPE_NAME = "event";
 	public static final IdentityField AUTHOR = new IdentityField("author");
@@ -32,64 +30,35 @@ public class Event {
 	public static final RatingField RATING = new RatingField("rating");
 
 	private static final ImmutableSet<Field<?>> FIELDS = 
-		ImmutableSet.<Field<?>>of(AUTHOR, TIMESTAMP, DURATION, LOCATION, TAG, RESOURCE, DISTANCE, HEIGHT, RATING);
+		ImmutableSet.<Field<?>>of(ID, AUTHOR, TIMESTAMP, DURATION, LOCATION, TAG, RESOURCE, DISTANCE, HEIGHT, RATING);
 
-	private final String id;
-	private final String bucket;
-	private final ObjectNode content;
-
-	public Event(String id, String bucket) {
-		this.id = id;
-		this.bucket = bucket;
-		content = Nodes.newObject();
+	public Event(String id) {
+		super(id);
 	}
 
-	public Event(String id, String bucket, ObjectNode content) {
-		this.id = id;
-		this.bucket = bucket;
-		this.content = Nodes.copy(content);
+	public Event(ObjectNode object) {
+		super(object);
 	}
 
-	public String getId() {
-		return id;
+	@Override
+	public <T> void addValue(Field<T> field, T value) {
+		super.addValue(field, value);
 	}
 
-	public String getBucket() {
-		return bucket;
+	@Override
+	public <T> void setValue(Field<T> field, T value) {
+		super.setValue(field, value);
 	}
 
-	public <T> void add(Field<T> field, T value) {
-		field.addValue(content, value);
-	}
-
-	public <T> Iterable<T> get(Field<T> field) {
-		return field.getValues(content);
-	}
-
-	public <T> void set(Field<T> field, T value) {
-		field.setValue(content, value);
-	}
-
+	@Override
 	public <T> boolean contains(Field<T> field) {
-		return content.has(field.getName());
-	}
-
-	public ObjectNode getContent() {
-		return content;
-	}
-
-	public ObjectNode toJson() {
-		ObjectNode object = Nodes.newObject();
-		object.putAll(content);
-		object.put("@id", id);
-		object.put("bucket", bucket);
-		return object;
+		return super.contains(field);
 	}
 
 	public void prePersist() {
 		for (Field<?> field : FIELDS) {
 			if (contains(field)) {
-				field.prePersist(content);
+				field.prePersist(toJson());
 			}
 		}
 	}
@@ -97,7 +66,7 @@ public class Event {
 	public void postLoad() {
 		for (Field<?> field : FIELDS) {
 			if (contains(field)) {
-				field.postLoad(content);
+				field.postLoad(toJson());
 			}
 		}
 	}
@@ -109,13 +78,4 @@ public class Event {
 		}
 		return schema.build();
     }
-
-	public static Event newEvent(String bucket, ObjectNode content) {
-    	return new Event(Generator.id(), bucket, content);
-	}
-
-	@Override
-	public String toString() {
-		return content.toString();
-	}
 }

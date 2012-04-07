@@ -21,6 +21,7 @@ import services.NodeManager;
 import commands.CreateEventCommand;
 import commands.DeleteEventCommand;
 import commands.GenerateRandomEventsCommand;
+import common.Generator;
 
 @With(Timed.class)
 public class EventController extends ControllerSupport {
@@ -76,12 +77,13 @@ public class EventController extends ControllerSupport {
             return created();
     	}
     	else {
-    		Event event = Event.newEvent(bucket.getId(), body);
-			event.set(Event.AUTHOR, identity);
+    		Event event = new Event(body);
+			event.setValue(Event.ID, Generator.id());
+			event.setValue(Event.AUTHOR, identity);
     		if (!event.contains(Event.TIMESTAMP)) {
-    			event.add(Event.TIMESTAMP, new DateTime());
+    			event.addValue(Event.TIMESTAMP, new DateTime());
     		}
-    		String commandId = queue.execute(new CreateEventCommand(manager, identity, event));
+    		String commandId = queue.execute(new CreateEventCommand(manager, identity, bucketId, event));
             response().setHeader(LOCATION, String.format("/buckets/%s/%s", bucket.getId(), event.getId()));
             response().setHeader("Undo", String.format("/queue/%s", commandId));
             return created();
@@ -118,11 +120,11 @@ public class EventController extends ControllerSupport {
     		return forbidden();
     	}
     	Event event = manager.findEvent(bucket.getId(), eventId);
-    	return event != null ? delete(event, identity) : notFound();
+    	return event != null ? delete(bucket.getId(), event, identity) : notFound();
     }
 
-    private static Result delete(Event event, Identity identity) {
-    	String commandId = queue.execute(new DeleteEventCommand(manager, identity, event));
+    private static Result delete(String bucketId, Event event, Identity identity) {
+    	String commandId = queue.execute(new DeleteEventCommand(manager, identity, bucketId, event));
         response().setHeader("Undo", String.format("/queue/%s", commandId));
     	return noContent();
     }

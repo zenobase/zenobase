@@ -40,16 +40,16 @@ class RandomEvent {
 				.add("chinese", 2);
 			@Override
 			protected void addFields(Event event) {
-				event.add(Event.TAG, meals.next());
-				event.add(Event.TAG, order.next());
-				event.set(Event.LOCATION, nextLocation());
-				event.set(Event.RATING, nextRating());
+				event.addValue(Event.TAG, meals.next());
+				event.addValue(Event.TAG, order.next());
+				event.setValue(Event.LOCATION, nextLocation());
+				event.setValue(Event.RATING, nextRating());
 			}
 		}, 4)
 		.add(new Builder() {
 			@Override
 			protected void addFields(Event event) {
-				event.add(Event.TAG, "sleep");
+				event.addValue(Event.TAG, "sleep");
 			}
 		}, 2)
 		.add(new Builder() {
@@ -57,22 +57,22 @@ class RandomEvent {
 			@Override
 			protected void addFields(Event event) {
 				Movie movie = movies.next();
-				event.add(Event.TAG, "movie");
-				event.set(Event.RESOURCE, movie.getResource());
+				event.addValue(Event.TAG, "movie");
+				event.setValue(Event.RESOURCE, movie.getResource());
 				if (movie.getDuration() != null) {
-					event.set(Event.DURATION, movie.getDuration());
+					event.setValue(Event.DURATION, movie.getDuration());
 				}
-				event.set(Event.RATING, nextRating());
+				event.setValue(Event.RATING, nextRating());
 			}
 		}, 2)
 		.add(new Builder() {
 			@Override
 			protected void addFields(Event event) {
-				event.add(Event.TAG, "hike");
-				event.set(Event.DURATION, nextDuration(30, 330));
-				event.set(Event.LOCATION, nextLocation());
-				event.set(Event.DISTANCE, nextLength(500, 10000));
-				event.set(Event.HEIGHT, nextLength(0, 5000));
+				event.addValue(Event.TAG, "hike");
+				event.setValue(Event.DURATION, nextDuration(30, 330));
+				event.setValue(Event.LOCATION, nextLocation());
+				event.setValue(Event.DISTANCE, nextLength(500, 10000));
+				event.setValue(Event.HEIGHT, nextLength(0, 5000));
 			}
 		}, 1);
 
@@ -101,9 +101,9 @@ class RandomEvent {
 			.add(Rating.valueOf(  0), 1);
 
 		public Event build(String bucketId, Identity identity) {
-			Event event = new Event(Generator.id(), bucketId);
-			event.set(Event.AUTHOR, identity);
-			event.add(Event.TIMESTAMP, nextTimestamp());
+			Event event = new Event(Generator.id());
+			event.setValue(Event.AUTHOR, identity);
+			event.addValue(Event.TIMESTAMP, nextTimestamp());
 			addFields(event);
 			return event;
 		}
