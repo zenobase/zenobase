@@ -6,8 +6,15 @@ import org.codehaus.jackson.node.TextNode;
 
 public class TokenField extends Field<String> {
 
+	private final boolean indexed;
+
 	public TokenField(String name) {
+		this(name, true);
+	}
+
+	public TokenField(String name, boolean indexed) {
 		super(name, String.class, "string");
+		this.indexed = indexed;
 	}
 
 	@Override
@@ -23,6 +30,6 @@ public class TokenField extends Field<String> {
 	@Override
 	public void configureSchema(ObjectNode schema) {
 		super.configureSchema(schema);
-		schema.put("index", "not_analyzed");
+		schema.put("index", indexed ? "not_analyzed" : "no");
 	}
 }

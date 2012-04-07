@@ -10,7 +10,7 @@ import common.Nodes;
 
 public class DomainNode {
 
-	public static final TokenField ID = new TokenField("@id");
+	public static final TokenField ID = new TokenField("@id", false);
 
 	private final ObjectNode object;
 

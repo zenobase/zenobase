@@ -48,6 +48,7 @@ public class IndexManager {
 	}
 
 	public void putMapping(Schema schema) {
+		// Logger.info("Mapping: " + schema.toJson());
 		client.admin().indices().preparePutMapping(indexName).setType(schema.getTypeName()).setSource(schema.toJson().toString()).execute().actionGet();
 	}
 

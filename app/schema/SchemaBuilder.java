@@ -20,14 +20,25 @@ public class SchemaBuilder {
 		this.type.put("dynamic", "strict");
 		this.properties = type.putObject(PROPERTIES);
 		configureSourceField();
+		configureTypeField();
+		configureAllField();
 	}
 
 	private void configureSourceField() {
 		ObjectNode sourceNode = type.putObject("_source");
-		sourceNode.put("enabled", true);
 		ArrayNode excludesNode = sourceNode.putArray("excludes");
 		excludesNode.add("_*");
 		excludesNode.add("*._*");
+	}
+
+	private void configureTypeField() {
+		ObjectNode sourceNode = type.putObject("_type");
+		sourceNode.put("index", "no");
+	}
+
+	private void configureAllField() {
+		ObjectNode sourceNode = type.putObject("_all");
+		sourceNode.put("enabled", false);
 	}
 
 	public SchemaBuilder add(Field<?> field) {
