@@ -50,7 +50,7 @@ public class UserController extends ControllerSupport {
 	}
 
 	private static Result get(User user, Identity identity) {
-		return user.getIdentity().equals(identity) ? ok(user.toJson(true)) : forbidden();
+		return user.equals(identity) ? ok(user.toJson()) : forbidden();
 	}
 
 	public static Result find(String identity, int offset, int limit) {
@@ -97,7 +97,7 @@ public class UserController extends ControllerSupport {
 
 	private static Result find(Identity identity) {
 		User user = users.find(identity);
-    	return ok(user != null ? user.toJson(false) : toJson(identity)); 
+    	return ok(user != null ? new User(identity.getId(), user.getName()).toJson() : toJson(identity));
     }
 
 	public static class UserUpdate {
@@ -142,7 +142,7 @@ public class UserController extends ControllerSupport {
     	if (user == null) {
     		return notFound();
     	}
-    	if (!user.getIdentity().equals(identity) && !users.isSuperuser(identity)) {
+    	if (!user.equals(identity) && !users.isSuperuser(identity)) {
     		return forbidden();
     	}
     	UserUpdate update = UserUpdate.parse(body);
@@ -156,7 +156,7 @@ public class UserController extends ControllerSupport {
 
 	private static JsonNode toJson(Identity identity) {
 		ObjectNode object = Nodes.newObject();
-		object.put(User.IDENTITY.getName(), identity.getId());
+		object.put(User.ID.getName(), identity.getId());
 		return object;
 	}
 }

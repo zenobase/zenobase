@@ -10,7 +10,7 @@ public class CreateUserCommand extends CommandSupport {
 	private final User user;
 
 	public CreateUserCommand(UserManager manager, Identity identity, User user) {
-		super(user.getIdentity());
+		super(identity);
 		this.manager = manager;
 		this.user = user;
 	}

@@ -108,7 +108,7 @@ public class BucketListController extends ControllerSupport {
 		Bucket update = new Bucket(body);
 		String label = update.getLabel();
 		String description = update.getDescription();
-		if (label == null) { // TODO validate label
+		if (label == null) {
 			return badRequest("missing label");
 		}
 		Identity identity = IdentityHelper.in(ctx()).get(true);

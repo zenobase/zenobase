@@ -111,6 +111,11 @@ public class IndexManager {
 		return response.exists() ? Nodes.read(response.source()) : null;
 	}
 
+	public boolean exists(String type, String id) {
+		GetResponse response = client.prepareGet(indexName, type, id).execute().actionGet();
+		return response.exists();
+	}
+
 	public long count() {
 		return client.prepareCount(indexName).execute().actionGet().count();
 	}

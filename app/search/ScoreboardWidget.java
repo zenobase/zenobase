@@ -26,8 +26,8 @@ public class ScoreboardWidget implements Widget {
 
 	private ScoreboardWidget(String id, String termField, String valueField, Unit<?> unit, ComparatorType order, int limit) {
 		this.id = id;
-		this.termField = termField; // TODO must be token
-		this.valueField = valueField; // TODO must be measure
+		this.termField = termField;
+		this.valueField = valueField;
 		this.unit = unit;
 		this.order = order;
 		this.limit = limit;

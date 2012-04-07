@@ -61,9 +61,8 @@ Alert.prototype.clear = function() {
 User.CACHE = {};
 
 function User(data) {
-	this.id = data.identity;
 	$.extend(this, data);
-	User.CACHE[this.id] = this;
+	User.CACHE[this['@id']] = this;
 }
 
 User.prototype.getName = function() {
@@ -252,7 +251,7 @@ function BucketListCtrl($scope, $http) {
 	}
 	$scope.params = function() {
 		return {
-			identity : $scope.userInfo.id,
+			identity : $scope.userInfo['@id'],
 			offset : $scope.offset,
 			limit : $scope.limit
 		};

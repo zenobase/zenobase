@@ -70,7 +70,7 @@ public class BucketController extends ControllerSupport {
     	if (bucket.getPermission(identity) != Permission.ALL) {
     		return forbidden();
     	}
-		String commandId = queue.execute(new UpdateBucketCommand(buckets, identity, bucket, new Bucket(body))); // TODO: validate bucket/body
+		String commandId = queue.execute(new UpdateBucketCommand(buckets, identity, bucket, new Bucket(body)));
         response().setHeader("Undo", String.format("/queue/%s", commandId));
 		return noContent();
     }

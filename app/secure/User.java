@@ -1,170 +1,127 @@
 package secure;
 
+import models.DomainNode;
+
 import org.codehaus.jackson.node.ObjectNode;
-import org.elasticsearch.common.base.Objects;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 
+import common.Nodes;
+
 import schema.BooleanField;
 import schema.DateTimeField;
-import schema.IdentityField;
 import schema.Schema;
 import schema.SchemaBuilder;
 import schema.TokenField;
 
-import common.Nodes;
-
-public class User {
+public class User extends DomainNode {
 
 	public static final String TYPE_NAME = "user";
-	public static final TokenField NAME = new TokenField("name");
-	public static final IdentityField IDENTITY = new IdentityField("identity");
+
+	public static final TokenField ID = new TokenField("@id");
+	public static final TokenField NAME = new TokenField("name", false);
 	public static final DateTimeField CREATED = new DateTimeField("created");
-	public static final TokenField PASSWORD = new TokenField("password");
+	public static final TokenField PASSWORD = new TokenField("password", false);
 	public static final TokenField EMAIL = new TokenField("email");
 	public static final BooleanField VERIFIED = new BooleanField("verified");
 	public static final BooleanField SUSPENDED = new BooleanField("suspended");
 	public static final BooleanField SUPERUSER = new BooleanField("superuser");
 
-	private final Identity identity;
-	private final String name;
-	private DateTime created;
-	private String password;
-	private String email;
-	private boolean verified;
-	private boolean suspended;
-	private boolean superuser;
-
-	public User(Identity identity, String name) {
-		this.identity = identity;
-		this.name = name;
-		this.created = new DateTime(DateTimeZone.UTC);
+	public User(ObjectNode object) {
+		super(object);
 	}
 
-	public User(Identity identity, String name, DateTime created) {
-		this.identity = identity;
-		this.name = name;
-		this.created = created;
+	public User(String id, String name) {
+		this(id, name, new DateTime(DateTimeZone.UTC));
 	}
 
-	public Identity getIdentity() {
-		return identity;
+	public User(String id, String name, DateTime created) {
+		setValue(ID, id);
+		setValue(NAME, name);
+		setValue(CREATED, created);
+	}
+
+	public String getId() {
+		return getValue(ID);
 	}
 
 	public String getName() {
-		return name;
+		return getValue(NAME);
 	}
 
 	public DateTime getCreated() {
-		return created;
+		return getValue(CREATED);
 	}
 
 	public String getPassword() {
-		return password;
+		return getValue(PASSWORD);
 	}
 
 	public void setPassword(String password) {
-		this.password = password;
+		setValue(PASSWORD, password);
 	}
 
 	public boolean passwordEquals(String password) {
-		return BCrypt.checkpw(password, this.password);
+		return BCrypt.checkpw(password, getPassword());
 	}
 
 	public void changePassword(String password) {
-		this.password = BCrypt.hashpw(password, BCrypt.gensalt());
+		setPassword(BCrypt.hashpw(password, BCrypt.gensalt()));
 	}
 
 	public String getEmail() {
-		return email;
+		return getValue(EMAIL);
 	}
 
 	public void setEmail(String email) {
-		this.email = email;
+		setValue(EMAIL, email);
 	}
 
 	public boolean isVerified() {
-		return verified;
+		return getValue(VERIFIED, false);
 	}
 
 	public void setVerified(boolean verified) {
-		this.verified = verified;
+		setValue(VERIFIED, verified);
 	}
 
 	public boolean isSuspended() {
-		return suspended;
+		return getValue(SUSPENDED, false);
 	}
 
 	public void setSuspended(boolean suspended) {
-		this.suspended = suspended;
+		setValue(SUSPENDED, suspended);
 	}
 
 	public boolean isSuperuser() {
-		return superuser;
+		return getValue(SUPERUSER, false);
 	}
 
 	public void setSuperuser(boolean superuser) {
-		this.superuser = superuser;
+		setValue(SUPERUSER, superuser);
+	}
+
+	public boolean equals(Identity identity) {
+		return getId().equals(identity.getId());
 	}
 
 	@Override
 	public String toString() {
-		return name;
+		return getName();
 	}
 
-	public User copy() {
-		User copy = new User(identity, name);
-		copy.created = created;
-		copy.email = email;
-		copy.password = password;
-		copy.verified = verified;
-		copy.superuser = superuser;
-		copy.suspended = suspended;
-		return copy;
+	public Identity asIdentity() {
+		return new Identity(getId());
 	}
 
 	public static Schema getSchema() {
 		return new SchemaBuilder(TYPE_NAME)
-			.add(NAME).add(IDENTITY)
+			.add(ID).add(NAME)
 			.add(CREATED).add(PASSWORD).add(EMAIL)
 			.add(VERIFIED).add(SUSPENDED).add(SUPERUSER).build();
 	}
 
-	public ObjectNode toJson(boolean includeProfile) {
-		ObjectNode object = Nodes.newObject();
-		NAME.setValue(object, name);
-		IDENTITY.setValue(object, identity);
-		if (includeProfile && email != null) {
-			CREATED.setValue(object, created);
-			if (email != null) {
-				object.put(EMAIL.getName(), email);
-				object.put(VERIFIED.getName(), verified);
-			}
-		}
-		return object;
-	}
-
-	public ObjectNode toJson() {
-		ObjectNode object = toJson(true);
-		PASSWORD.setValue(object, password);
-		SUSPENDED.setValue(object, suspended);
-		SUPERUSER.setValue(object, superuser);
-		return object;
-	}
-
-	public static User parse(ObjectNode object) {
-		Identity identity = IDENTITY.getValue(object);
-		String name = NAME.getValue(object);
-		DateTime created = CREATED.getValue(object);
-		User user = new User(identity, name, created);
-		user.setPassword(PASSWORD.getValue(object));
-		user.setSuspended(Objects.firstNonNull(SUSPENDED.getValue(object), Boolean.FALSE));
-		user.setSuperuser(Objects.firstNonNull(SUPERUSER.getValue(object), Boolean.FALSE));
-		String email = EMAIL.getValue(object);
-		if (email != null) {
-			user.setEmail(email);
-			user.setVerified(Objects.firstNonNull(VERIFIED.getValue(object), Boolean.FALSE));
-		}
-		return user;
+	public User copy() {
+		return new User(Nodes.copy(toJson()));
 	}
 }

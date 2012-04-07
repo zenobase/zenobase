@@ -1,8 +1,8 @@
 package models;
 
 import org.codehaus.jackson.node.ObjectNode;
+import org.elasticsearch.common.base.Objects;
 
-import schema.TokenField;
 import schema.Field;
 
 import com.google.common.collect.ImmutableList;
@@ -10,25 +10,22 @@ import common.Nodes;
 
 public class DomainNode {
 
-	public static final TokenField ID = new TokenField("@id", false);
-
 	private final ObjectNode object;
 
 	public DomainNode(ObjectNode object) {
 		this.object = object;
 	}
 
-	public DomainNode(String id) {
+	public DomainNode() {
 		object = Nodes.newObject();
-		ID.setValue(object, id);
-	}
-
-	public String getId() {
-		return ID.getValue(object);
 	}
 
 	protected <T> T getValue(Field<T> field) {
 		return field.getValue(object);
+	}
+
+	protected <T> T getValue(Field<T> field, T defaultValue) {
+		return Objects.firstNonNull(field.getValue(object), defaultValue);
 	}
 
 	protected <T> ImmutableList<T> getValues(Field<T> field) {

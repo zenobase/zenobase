@@ -10,6 +10,7 @@ import schema.PermissionField;
 import schema.Schema;
 import schema.SchemaBuilder;
 import schema.TextField;
+import schema.TokenField;
 import secure.Identity;
 import secure.Permission;
 
@@ -19,6 +20,8 @@ import com.google.common.collect.Maps;
 public class Bucket extends DomainNode {
 
 	public static final String TYPE_NAME = "bucket";
+
+	public static final TokenField ID = new TokenField("@id", false);
 	public static final TextField LABEL = new TextField("label");
 	public static final TextField DESCRIPTION = new TextField("description");
 	public static final PermissionField PERMISSIONS = new PermissionField("permissions");
@@ -29,7 +32,11 @@ public class Bucket extends DomainNode {
 	}
 
 	public Bucket(String id) {
-		super(id);
+		setValue(ID, id);
+	}
+
+	public String getId() {
+		return getValue(ID);
 	}
 
 	public String getLabel() {

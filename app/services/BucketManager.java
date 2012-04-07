@@ -104,7 +104,6 @@ public class BucketManager {
 		List<Bucket> buckets = Lists.newArrayList();
 		SearchSourceBuilder search = new SearchSourceBuilder()
 			.query(query).from(offset).size(limit);
-			// TODO .sort(Bucket.CREATED.getName());
 		SearchHits hits = index.search(search).hits();
 		for (SearchHit hit : hits) {
 			buckets.add(new Bucket(Nodes.read(hit.source())));

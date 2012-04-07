@@ -42,7 +42,7 @@ public class UserManager {
 		Preconditions.checkState(hits.totalHits() <= 1,
 			"Expected 0..1 hits for identity '%s' but got %s", identity, hits.totalHits());
 		return hits.totalHits() > 0L ?
-			User.parse(Nodes.read(hits.getAt(0).source())) : null;
+			new User(Nodes.read(hits.getAt(0).source())) : null;
 	}
 
 	public PartialList<User> find(int offset, int limit) {
@@ -53,7 +53,7 @@ public class UserManager {
 			.sort(User.NAME.getName());
 		SearchHits hits = index.search(search).hits();
 		for (SearchHit hit : hits) {
-			users.add(User.parse(Nodes.read(hit.source())));
+			users.add(new User(Nodes.read(hit.source())));
 		}
 		return new PartialList<User>(users, hits.totalHits());
 	}
@@ -62,13 +62,13 @@ public class UserManager {
 		index.search(QueryBuilders.matchAllQuery(), new Callback<ObjectNode>() {
 			@Override
 			public void call(ObjectNode object) {
-				callback.call(User.parse(object));
+				callback.call(new User(object));
 			}
 		});
 	}
 
 	private QueryBuilder identityEquals(Identity identity) {
-		return QueryBuilders.termQuery(User.IDENTITY.getName(), identity);
+		return QueryBuilders.termQuery(User.ID.getName(), identity.getId());
 	}
 
 	private QueryBuilder isSuperuser(boolean b) {
@@ -77,7 +77,11 @@ public class UserManager {
 
 	public User find(String name) {
 		ObjectNode object = index.get(User.TYPE_NAME, name);
-		return object != null ? User.parse(object) : null;
+		return object != null ? new User(object) : null;
+	}
+
+	public boolean exists(String name) {
+		return index.exists(User.TYPE_NAME, name);
 	}
 
 	public boolean isSuperuser(Identity identity) {

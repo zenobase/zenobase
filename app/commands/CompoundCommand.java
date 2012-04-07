@@ -24,7 +24,7 @@ public class CompoundCommand extends CommandSupport {
 	@Override
 	public void execute() {
 		for (Command command : commands) {
-			command.execute(); // TODO: undo all if one fails
+			command.execute();
 		}
 	}
 

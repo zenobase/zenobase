@@ -25,8 +25,8 @@ public class SecurityController extends ControllerSupport {
 		if (user == null || user.isSuspended() || !user.passwordEquals(signIn.getPassword())) {
 			return unauthorized();
 		}
-		IdentityHelper.in(ctx()).set(user.getIdentity(), signIn.isRemember());
-		return ok(user.toJson(false));
+		IdentityHelper.in(ctx()).set(user.asIdentity(), signIn.isRemember());
+		return ok(user.toJson());
 	}
 
 	public static Result signOut() {

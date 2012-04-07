@@ -19,6 +19,8 @@ import com.google.common.collect.ImmutableSet;
 public class Event extends DomainNode {
 
 	public static final String TYPE_NAME = "event";
+
+	public static final TokenField ID = new TokenField("@id", false);
 	public static final IdentityField AUTHOR = new IdentityField("author");
 	public static final DateTimeField TIMESTAMP = new DateTimeField("timestamp");
 	public static final DurationField DURATION = new DurationField("duration");
@@ -33,11 +35,15 @@ public class Event extends DomainNode {
 		ImmutableSet.<Field<?>>of(ID, AUTHOR, TIMESTAMP, DURATION, LOCATION, TAG, RESOURCE, DISTANCE, HEIGHT, RATING);
 
 	public Event(String id) {
-		super(id);
+		setValue(ID, id);
 	}
 
 	public Event(ObjectNode object) {
 		super(object);
+	}
+
+	public String getId() {
+		return getValue(ID);
 	}
 
 	@Override

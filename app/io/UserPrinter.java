@@ -20,6 +20,6 @@ public class UserPrinter {
 	}
 
 	private String toString(User user) {
-		return Joiner.on('\t').join(user.getName(), user.getIdentity(), user.getEmail(), user.getCreated(), "\n");
+		return Joiner.on('\t').join(user.getId(), user.getName(), user.getEmail(), user.getCreated(), "\n");
 	}
 }

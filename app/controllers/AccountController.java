@@ -33,11 +33,11 @@ public class AccountController extends ControllerSupport {
 		if (form.hasErrors()) {
 			return badRequest();
 		}
-		if (users.find(signUp.getUsername()) != null) {
+		if (users.exists(signUp.getUsername())) {
 			return badRequest("user exists");
 		}
 		Identity identity = IdentityHelper.in(ctx()).get(true);
-		User user = new User(identity, signUp.getUsername());
+		User user = new User(identity.getId(), signUp.getUsername());
 		user.setEmail(signUp.getEmail());
 		user.changePassword(signUp.getPassword());
 		user.setSuperuser(users.isEmpty());
@@ -54,7 +54,7 @@ public class AccountController extends ControllerSupport {
 		if (user == null) {
 			return notFound();
 		}
-		if (!user.getIdentity().equals(identity) && !users.isSuperuser(identity)) {
+		if (!user.equals(identity) && !users.isSuperuser(identity)) {
 			return forbidden();
 		}
 		String commandId = queue.execute(new CloseAccountCommand(identity, buckets, users, user));
