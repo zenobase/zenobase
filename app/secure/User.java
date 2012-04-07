@@ -5,27 +5,26 @@ import org.elasticsearch.common.collect.Iterables;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 
-import schema.BooleanType;
-import schema.DateTimeType;
-import schema.Field;
-import schema.IdentityType;
+import schema.BooleanField;
+import schema.DateTimeField;
+import schema.IdentityField;
 import schema.Schema;
 import schema.SchemaBuilder;
-import schema.TokenType;
+import schema.TokenField;
 
 import common.Nodes;
 
 public class User {
 
 	public static final String TYPE_NAME = "user";
-	public static final Field<String> NAME = Field.of("name", new TokenType());
-	public static final Field<Identity> IDENTITY = Field.of("identity", new IdentityType());
-	public static final Field<DateTime> CREATED = Field.of("created", new DateTimeType());
-	public static final Field<String> PASSWORD = Field.of("password", new TokenType());
-	public static final Field<String> EMAIL = Field.of("email", new TokenType());
-	public static final Field<Boolean> VERIFIED = Field.of("verified", new BooleanType());
-	public static final Field<Boolean> SUSPENDED = Field.of("suspended", new BooleanType());
-	public static final Field<Boolean> SUPERUSER = Field.of("superuser", new BooleanType());
+	public static final TokenField NAME = new TokenField("name");
+	public static final IdentityField IDENTITY = new IdentityField("identity");
+	public static final DateTimeField CREATED = new DateTimeField("created");
+	public static final TokenField PASSWORD = new TokenField("password");
+	public static final TokenField EMAIL = new TokenField("email");
+	public static final BooleanField VERIFIED = new BooleanField("verified");
+	public static final BooleanField SUSPENDED = new BooleanField("suspended");
+	public static final BooleanField SUPERUSER = new BooleanField("superuser");
 
 	private final Identity identity;
 	private final String name;
@@ -133,10 +132,10 @@ public class User {
 
 	public ObjectNode toJson(boolean includeProfile) {
 		ObjectNode object = Nodes.newObject();
-		NAME.getType().setValue(object, NAME.getName(), name);
-		IDENTITY.getType().setValue(object, IDENTITY.getName(), identity);
+		NAME.setValue(object, name);
+		IDENTITY.setValue(object, identity);
 		if (includeProfile && email != null) {
-			CREATED.getType().setValue(object, CREATED.getName(), created);
+			CREATED.setValue(object, created);
 			if (email != null) {
 				object.put(EMAIL.getName(), email);
 				object.put(VERIFIED.getName(), verified);
@@ -147,24 +146,24 @@ public class User {
 
 	public ObjectNode toJson() {
 		ObjectNode object = toJson(true);
-		PASSWORD.getType().setValue(object, PASSWORD.getName(), password);
-		SUSPENDED.getType().setValue(object, SUSPENDED.getName(), suspended);
-		SUPERUSER.getType().setValue(object, SUPERUSER.getName(), superuser);
+		PASSWORD.setValue(object, password);
+		SUSPENDED.setValue(object, suspended);
+		SUPERUSER.setValue(object, superuser);
 		return object;
 	}
 
 	public static User parse(ObjectNode object) {
-		Identity identity = Iterables.getOnlyElement(IDENTITY.getType().getValues(object, IDENTITY.getName()));
-		String name = Iterables.getOnlyElement(NAME.getType().getValues(object, NAME.getName()));
-		DateTime created = Iterables.getOnlyElement(CREATED.getType().getValues(object, CREATED.getName()));
+		Identity identity = Iterables.getOnlyElement(IDENTITY.getValues(object));
+		String name = Iterables.getOnlyElement(NAME.getValues(object));
+		DateTime created = Iterables.getOnlyElement(CREATED.getValues(object));
 		User user = new User(identity, name, created);
-		user.setPassword(Iterables.getOnlyElement(PASSWORD.getType().getValues(object, PASSWORD.getName())));
-		user.setSuspended(Iterables.getOnlyElement(SUSPENDED.getType().getValues(object, SUSPENDED.getName()), Boolean.FALSE));
-		user.setSuperuser(Iterables.getOnlyElement(SUPERUSER.getType().getValues(object, SUPERUSER.getName()), Boolean.FALSE));
-		String email = Iterables.getOnlyElement(EMAIL.getType().getValues(object, EMAIL.getName()), null);
+		user.setPassword(Iterables.getOnlyElement(PASSWORD.getValues(object)));
+		user.setSuspended(Iterables.getOnlyElement(SUSPENDED.getValues(object), Boolean.FALSE));
+		user.setSuperuser(Iterables.getOnlyElement(SUPERUSER.getValues(object), Boolean.FALSE));
+		String email = Iterables.getOnlyElement(EMAIL.getValues(object), null);
 		if (email != null) {
 			user.setEmail(email);
-			user.setVerified(Iterables.getOnlyElement(VERIFIED.getType().getValues(object, VERIFIED.getName()), Boolean.FALSE));
+			user.setVerified(Iterables.getOnlyElement(VERIFIED.getValues(object), Boolean.FALSE));
 		}
 		return user;
 	}

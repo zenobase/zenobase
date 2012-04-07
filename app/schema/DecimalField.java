@@ -5,10 +5,10 @@ import java.math.BigDecimal;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.node.DecimalNode;
 
-public class DecimalType extends Type<BigDecimal> {
+public class DecimalField extends Field<BigDecimal> {
 
-	public DecimalType() {
-		super(BigDecimal.class, "double");
+	public DecimalField(String name) {
+		super(name, BigDecimal.class, "double");
 	}
 
 	@Override

@@ -6,10 +6,10 @@ import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.node.ObjectNode;
 import org.codehaus.jackson.node.TextNode;
 
-public class RatingType extends Type<Rating> {
+public class RatingField extends Field<Rating> {
 
-	public RatingType() {
-		super(Rating.class, "byte");
+	public RatingField(String name) {
+		super(name, Rating.class, "byte");
 	}
 
 	@Override

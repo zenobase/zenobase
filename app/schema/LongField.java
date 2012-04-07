@@ -3,10 +3,10 @@ package schema;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.node.LongNode;
 
-public class LongType extends Type<Long> {
+public class LongField extends Field<Long> {
 
-	public LongType() {
-		super(Long.class, "long");
+	public LongField(String name) {
+		super(name, Long.class, "long");
 	}
 
 	@Override

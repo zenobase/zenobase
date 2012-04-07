@@ -4,10 +4,10 @@ import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.node.LongNode;
 import org.joda.time.Duration;
 
-public class DurationType extends Type<Duration> {
+public class DurationField extends Field<Duration> {
 
-	public DurationType() {
-		super(Duration.class, "long");
+	public DurationField(String name) {
+		super(name, Duration.class, "long");
 	}
 
 	@Override

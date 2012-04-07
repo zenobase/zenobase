@@ -21,7 +21,7 @@ public class SchemaBuilder {
 	}
 
 	public SchemaBuilder add(Field<?> field) {
-		field.getType().configureSchema(properties.putObject(field.getName()));
+		field.configureSchema(properties.putObject(field.getName()));
 		return this;
 	}
 

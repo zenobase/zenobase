@@ -3,15 +3,15 @@ package models;
 import org.codehaus.jackson.node.ObjectNode;
 import org.elasticsearch.common.collect.Iterables;
 
+import schema.TokenField;
 import schema.Field;
-import schema.TokenType;
 
 import com.google.common.collect.ImmutableList;
 import common.Nodes;
 
 public class DomainNode {
 
-	public static final Field<String> ID = Field.of("@id", new TokenType());
+	public static final TokenField ID = new TokenField("@id");
 
 	private final ObjectNode object;
 
@@ -21,11 +21,11 @@ public class DomainNode {
 
 	public DomainNode(String id) {
 		object = Nodes.newObject();
-		ID.getType().setValue(object, ID.getName(), id);
+		ID.setValue(object, id);
 	}
 
 	public String getId() {
-		return Iterables.getOnlyElement(ID.getType().getValues(object, ID.getName()));
+		return Iterables.getOnlyElement(ID.getValues(object));
 	}
 
 	protected <T> T getValue(Field<T> field) {
@@ -33,23 +33,23 @@ public class DomainNode {
 	}
 
 	protected <T> ImmutableList<T> getValues(Field<T> field) {
-		return field.getType().getValues(object, field.getName());
+		return field.getValues(object);
 	}
 
 	protected <T> void setValue(Field<T> field, T value) {
-		field.getType().setValue(object, field.getName(), value);
+		field.setValue(object, value);
 	}
 
 	protected <T> void setValues(Field<T> field, Iterable<T> values) {
-		field.getType().setValues(object, field.getName(), values);
+		field.setValues(object, field.getName(), values);
 	}
 
 	protected <T> void addValue(Field<T> field, T value) {
-		field.getType().addValue(object, field.getName(), value);
+		field.addValue(object, value);
 	}
 
 	protected <T> void addValues(Field<T> field, Iterable<T> values) {
-		field.getType().addValues(object, field.getName(), values);
+		field.addValues(object, values);
 	}
 
 	public ObjectNode toJson() {

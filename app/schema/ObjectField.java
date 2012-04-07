@@ -5,10 +5,10 @@ import models.Resource;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.node.ObjectNode;
 
-public class ObjectType extends Type<ObjectNode> {
+public class ObjectField extends Field<ObjectNode> {
 
-	public ObjectType() {
-		super(Resource.class, "object");
+	public ObjectField(String name) {
+		super(name, Resource.class, "object");
 	}
 
 	@Override

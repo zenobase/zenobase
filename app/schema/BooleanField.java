@@ -3,10 +3,10 @@ package schema;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.node.BooleanNode;
 
-public class BooleanType extends Type<Boolean> {
+public class BooleanField extends Field<Boolean> {
 
-	public BooleanType() {
-		super(Boolean.class, "boolean");
+	public BooleanField(String name) {
+		super(name, Boolean.class, "boolean");
 	}
 
 	@Override

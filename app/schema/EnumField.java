@@ -4,20 +4,20 @@ import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.node.ObjectNode;
 import org.codehaus.jackson.node.TextNode;
 
-public class TokenType extends Type<String> {
+public class EnumField<E extends Enum<E>> extends Field<E> {
 
-	public TokenType() {
-		super(String.class, "string");
+	public EnumField(String name, Class<E> type) {
+		super(name, type, "string");
 	}
 
 	@Override
-	protected String get(JsonNode node) {
-		return node.asText();
+	protected E get(JsonNode node) {
+		return Enum.valueOf((Class<E>) getType(), node.asText());
 	}
 
 	@Override
-	protected JsonNode toJson(String value) {
-		return new TextNode(value);
+	protected JsonNode toJson(E value) {
+		return new TextNode(value.toString());
 	}
 
 	@Override

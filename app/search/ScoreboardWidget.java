@@ -11,6 +11,8 @@ import org.elasticsearch.search.facet.FacetBuilders;
 import org.elasticsearch.search.facet.termsstats.TermsStatsFacet;
 import org.elasticsearch.search.facet.termsstats.TermsStatsFacet.ComparatorType;
 
+import schema.MeasurementField;
+
 import common.Nodes;
 
 public class ScoreboardWidget implements Widget {
@@ -38,7 +40,7 @@ public class ScoreboardWidget implements Widget {
 	@Override
 	public void configure(SearchSourceBuilder builder) {
 		builder.facet(FacetBuilders.termsStatsFacet(id)
-			.keyField(termField).valueField(valueField + ".value").order(order).size(limit)); 
+			.keyField(termField).valueField(valueField + "." + MeasurementField.VALUE_SI.getName()).order(order).size(limit)); 
 	}
 
 	@Override
@@ -60,7 +62,6 @@ public class ScoreboardWidget implements Widget {
 	}
 
 	private void addValue(ObjectNode parent, String property, double value) {
-		// new MeasurementType<Quantity>().add(parent, property, (DecimalMeasure<Quantity>) DecimalMeasure.valueOf(new BigDecimal(value), unit));
 		ObjectNode object = parent.putObject(property);
 		object.put("@value", unit.getStandardUnit().getConverterTo(unit).convert(value));
 		object.put("unit", unit.toString());

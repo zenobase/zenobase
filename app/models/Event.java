@@ -1,24 +1,18 @@
 package models;
 
-import javax.measure.DecimalMeasure;
-import javax.measure.quantity.Length;
-
 import org.codehaus.jackson.node.ObjectNode;
-import org.joda.time.DateTime;
-import org.joda.time.Duration;
 
-import schema.DateTimeType;
-import schema.DurationType;
-import schema.Field;
-import schema.IdentityType;
-import schema.LengthType;
-import schema.LocationType;
-import schema.RatingType;
-import schema.ResourceType;
+import schema.DateTimeField;
+import schema.DurationField;
+import schema.IdentityField;
+import schema.LengthField;
+import schema.LocationField;
+import schema.RatingField;
+import schema.ResourceField;
 import schema.Schema;
 import schema.SchemaBuilder;
-import schema.TokenType;
-import secure.Identity;
+import schema.TokenField;
+import schema.Field;
 
 import com.google.common.collect.ImmutableSet;
 import common.Generator;
@@ -27,15 +21,15 @@ import common.Nodes;
 public class Event {
 
 	public static final String TYPE_NAME = "event";
-	public static final Field<Identity> AUTHOR = Field.of("author", new IdentityType());
-	public static final Field<DateTime> TIMESTAMP = Field.of("timestamp", new DateTimeType());
-	public static final Field<Duration> DURATION = Field.of("duration", new DurationType());
-	public static final Field<Location> LOCATION = Field.of("location", new LocationType());
-	public static final Field<String> TAG = Field.of("tag", new TokenType());
-	public static final Field<Resource> RESOURCE = Field.of("resource", new ResourceType());
-	public static final Field<DecimalMeasure<Length>> DISTANCE = Field.of("distance", new LengthType());
-	public static final Field<DecimalMeasure<Length>> HEIGHT = Field.of("height", new LengthType());
-	public static final Field<Rating> RATING = Field.of("rating", new RatingType());
+	public static final IdentityField AUTHOR = new IdentityField("author");
+	public static final DateTimeField TIMESTAMP = new DateTimeField("timestamp");
+	public static final DurationField DURATION = new DurationField("duration");
+	public static final LocationField LOCATION = new LocationField("location");
+	public static final TokenField TAG = new TokenField("tag");
+	public static final ResourceField RESOURCE = new ResourceField("resource");
+	public static final LengthField DISTANCE = new LengthField("distance");
+	public static final LengthField HEIGHT = new LengthField("height");
+	public static final RatingField RATING = new RatingField("rating");
 
 	private static final ImmutableSet<Field<?>> FIELDS = 
 		ImmutableSet.<Field<?>>of(AUTHOR, TIMESTAMP, DURATION, LOCATION, TAG, RESOURCE, DISTANCE, HEIGHT, RATING);
@@ -65,15 +59,15 @@ public class Event {
 	}
 
 	public <T> void add(Field<T> field, T value) {
-		field.getType().addValue(content, field.getName(), value);
+		field.addValue(content, value);
 	}
 
 	public <T> Iterable<T> get(Field<T> field) {
-		return field.getType().getValues(content, field.getName());
+		return field.getValues(content);
 	}
 
 	public <T> void set(Field<T> field, T value) {
-		field.getType().setValue(content, field.getName(), value);
+		field.setValue(content, value);
 	}
 
 	public <T> boolean contains(Field<T> field) {
@@ -94,13 +88,17 @@ public class Event {
 
 	public void prePersist() {
 		for (Field<?> field : FIELDS) {
-			field.prePersist(content);
+			if (contains(field)) {
+				field.prePersist(content);
+			}
 		}
 	}
 
 	public void postLoad() {
 		for (Field<?> field : FIELDS) {
-			field.postLoad(content);
+			if (contains(field)) {
+				field.postLoad(content);
+			}
 		}
 	}
 

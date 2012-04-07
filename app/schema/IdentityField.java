@@ -4,20 +4,22 @@ import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.node.ObjectNode;
 import org.codehaus.jackson.node.TextNode;
 
-public class EnumType<E extends Enum<E>> extends Type<E> {
+import secure.Identity;
 
-	public EnumType(Class<E> type) {
-		super(type, "string");
+public class IdentityField extends Field<Identity> {
+
+	public IdentityField(String name) {
+		super(name, Identity.class, "string");
 	}
 
 	@Override
-	protected E get(JsonNode node) {
-		return Enum.valueOf((Class<E>) getType(), node.asText());
+	protected Identity get(JsonNode node) {
+		return new Identity(node.asText());
 	}
 
 	@Override
-	protected JsonNode toJson(E value) {
-		return new TextNode(value.toString());
+	protected JsonNode toJson(Identity value) {
+		return new TextNode(value.getId());
 	}
 
 	@Override

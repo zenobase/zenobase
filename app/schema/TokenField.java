@@ -4,10 +4,10 @@ import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.node.ObjectNode;
 import org.codehaus.jackson.node.TextNode;
 
-public class TextType extends Type<String> {
+public class TokenField extends Field<String> {
 
-	public TextType() {
-		super(String.class, "string");
+	public TokenField(String name) {
+		super(name, String.class, "string");
 	}
 
 	@Override
@@ -23,6 +23,6 @@ public class TextType extends Type<String> {
 	@Override
 	public void configureSchema(ObjectNode schema) {
 		super.configureSchema(schema);
-		schema.put("index", "analyzed");
+		schema.put("index", "not_analyzed");
 	}
 }

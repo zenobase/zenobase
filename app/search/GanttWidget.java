@@ -11,14 +11,14 @@ import org.elasticsearch.search.facet.termsstats.TermsStatsFacet.ComparatorType;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 
-import schema.DateTimeType;
-import schema.Type;
+import schema.DateTimeField;
 
 import common.Nodes;
 
 public class GanttWidget implements Widget {
 
-	private static final Type<DateTime> VALUE_TYPE = new DateTimeType();
+	private static final DateTimeField FIRST = new DateTimeField("first");
+	private static final DateTimeField LAST = new DateTimeField("last");
 
 	private final String id;
 	private final String termField;
@@ -57,8 +57,8 @@ public class GanttWidget implements Widget {
 				ObjectNode entryNode = result.addObject();
 				entryNode.put("label", entry.getTerm());
 				entryNode.put("count", entry.getCount());
-				VALUE_TYPE.setValue(entryNode, "first", first);
-				VALUE_TYPE.setValue(entryNode, "last", last);
+				FIRST.setValue(entryNode, first);
+				LAST.setValue(entryNode, last);
 			}
 		}
 		return result;

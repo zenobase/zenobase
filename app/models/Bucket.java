@@ -5,12 +5,11 @@ import java.util.Map;
 
 import org.codehaus.jackson.node.ObjectNode;
 
-import schema.Field;
-import schema.ObjectType;
-import schema.PermissionType;
+import schema.ObjectField;
+import schema.PermissionField;
 import schema.Schema;
 import schema.SchemaBuilder;
-import schema.TextType;
+import schema.TextField;
 import secure.Identity;
 import secure.Permission;
 
@@ -20,10 +19,10 @@ import com.google.common.collect.Maps;
 public class Bucket extends DomainNode {
 
 	public static final String TYPE_NAME = "bucket";
-	public static final Field<String> LABEL = Field.of("label", new TextType());
-	public static final Field<String> DESCRIPTION = Field.of("description", new TextType());
-	public static final Field<Map.Entry<Identity, Permission>> PERMISSIONS = Field.of("permissions", new PermissionType());
-	public static final Field<ObjectNode> WIDGETS = Field.of("widgets", new ObjectType());
+	public static final TextField LABEL = new TextField("label");
+	public static final TextField DESCRIPTION = new TextField("description");
+	public static final PermissionField PERMISSIONS = new PermissionField("permissions");
+	public static final ObjectField WIDGETS = new ObjectField("widgets");
 
 	public Bucket(ObjectNode object) {
 		super(object);

@@ -11,13 +11,13 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.Maps;
 import common.Nodes;
 
-public abstract class MapEntryType<K, V> extends Type<Map.Entry<K, V>> {
+public abstract class MapField<K, V> extends Field<Map.Entry<K, V>> {
 
 	private final Field<K> keyField;
 	private final Field<V> valueField;
 
-	public MapEntryType(Field<K> keyField, Field<V> valueField) {
-		super(Resource.class, "nested");
+	public MapField(String name, Field<K> keyField, Field<V> valueField) {
+		super(name, Resource.class, "nested");
 		this.keyField = keyField;
 		this.valueField = valueField;
 	}
@@ -31,7 +31,7 @@ public abstract class MapEntryType<K, V> extends Type<Map.Entry<K, V>> {
 	}
 
 	private static void configureSchema(ObjectNode properties, Field<?> field) {
-		field.getType().configureSchema(properties.putObject(field.getName()));
+		field.configureSchema(properties.putObject(field.getName()));
 	}
 
 	@Override
@@ -44,18 +44,14 @@ public abstract class MapEntryType<K, V> extends Type<Map.Entry<K, V>> {
 	}
 
 	private static <T> T get(JsonNode node, Field<T> field) {
-		return Iterables.getOnlyElement(field.getType().getValues((ObjectNode) node, field.getName()));
+		return Iterables.getOnlyElement(field.getValues((ObjectNode) node));
 	}
 
 	@Override
 	protected JsonNode toJson(Map.Entry<K, V> entry) {
 		ObjectNode object = Nodes.newObject();
-		add(object, keyField, entry.getKey());
-		add(object, valueField, entry.getValue());
+		keyField.setValue(object, entry.getKey());
+		valueField.setValue(object, entry.getValue());
 		return object;
-	}
-
-	private static <T> void add(ObjectNode object, Field<T> field, T value) {
-		field.getType().addValue(object, field.getName(), value);
 	}
 }

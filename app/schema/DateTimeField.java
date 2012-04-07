@@ -7,12 +7,12 @@ import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
 
-public class DateTimeType extends Type<DateTime> {
+public class DateTimeField extends Field<DateTime> {
 
 	private final DateTimeFormatter formatter = ISODateTimeFormat.dateTime().withOffsetParsed();
 
-	public DateTimeType() {
-		super(DateTime.class, "date");
+	public DateTimeField(String name) {
+		super(name, DateTime.class, "date");
 	}
 
 	@Override

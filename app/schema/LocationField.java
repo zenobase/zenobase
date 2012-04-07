@@ -9,13 +9,13 @@ import org.codehaus.jackson.node.ObjectNode;
 
 import common.Nodes;
 
-public class LocationType extends Type<Location> {
+public class LocationField extends Field<Location> {
 
 	private static final String LATITUDE = "lat";
 	private static final String LONGITUDE = "lon";
 
-	public LocationType() {
-		super(Location.class, "geo_point");
+	public LocationField(String name) {
+		super(name, Location.class, "geo_point");
 	}
 
 	@Override
