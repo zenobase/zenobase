@@ -42,7 +42,7 @@ public class AccountController extends ControllerSupport {
 		user.changePassword(signUp.getPassword());
 		user.setSuperuser(users.isEmpty());
 		queue.execute(new CreateUserCommand(users, identity, user));
-		return created(user.toJson());
+		return created(toJson(user));
 	}
 
 	public static Result close(String name) {

@@ -49,7 +49,7 @@ public class BucketController extends ControllerSupport {
 		if (bucket.getWidgets().isEmpty()) {
 			bucket.setWidgets(new DefaultDashboard().widgets());
 		}
-    	return  ok(bucket.toJson());
+    	return ok(bucket.toJson());
     }
 
 	@BodyParser.Of(value = BodyParser.Json.class, maxLength = 10000)

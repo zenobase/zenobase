@@ -34,7 +34,7 @@ public class UserController extends ControllerSupport {
 		Identity identity = IdentityHelper.in(ctx()).get();
 		if (identity != null) {
 			User user = users.find(identity);
-			return ok(user != null ? user.toJson() : toJson(identity));
+			return ok(user != null ? toJson(user) : toJson(identity));
 		}
     	return noContent();
     }
@@ -50,7 +50,7 @@ public class UserController extends ControllerSupport {
 	}
 
 	private static Result get(User user, Identity identity) {
-		return user.equals(identity) ? ok(user.toJson()) : forbidden();
+		return user.equals(identity) ? ok(toJson(user)) : forbidden();
 	}
 
 	public static Result find(String identity, int offset, int limit) {
@@ -73,7 +73,7 @@ public class UserController extends ControllerSupport {
     	resultNode.put("total", result.size());
     	ArrayNode usersNode = resultNode.putArray("users");
     	for (User user : result.getElements()) {
-    		usersNode.add(user.toJson());
+    		usersNode.add(toJson(user));
     	}
         return ok(resultNode);
 	}

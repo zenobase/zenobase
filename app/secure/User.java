@@ -124,4 +124,9 @@ public class User extends DomainNode {
 	public User copy() {
 		return new User(Nodes.copy(toJson()));
 	}
+
+	@Override
+	public ObjectNode toJson() {
+		return super.toJson();
+	}
 }
