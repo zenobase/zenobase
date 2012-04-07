@@ -14,7 +14,7 @@ public class MeasurementField<Q extends Quantity> extends Field<DecimalMeasure<Q
 
 	public static final DecimalField VALUE = new DecimalField("@value");
 	public static final TokenField UNIT = new TokenField("unit");
-	public static final DecimalField VALUE_SI = new DecimalField("_value_si");
+	public static final DecimalField VALUE_SI = new DecimalField("_value");
 
 	public MeasurementField(String name) {
 		super(name, DecimalMeasure.class.getGenericSuperclass(), "object");
@@ -24,8 +24,8 @@ public class MeasurementField<Q extends Quantity> extends Field<DecimalMeasure<Q
 	public void configureSchema(ObjectNode schema) {
 		super.configureSchema(schema);
 		ObjectNode properties = schema.putObject("properties");
-		configureSchema(properties, VALUE); // TODO: no index no store
-		configureSchema(properties, UNIT); // TODO: no index no store
+		configureSchema(properties, VALUE);
+		configureSchema(properties, UNIT);
 		configureSchema(properties, VALUE_SI);
 	}
 
@@ -57,16 +57,6 @@ public class MeasurementField<Q extends Quantity> extends Field<DecimalMeasure<Q
 			ObjectNode fieldNode = (ObjectNode) node;
 			DecimalMeasure<Q> value = getDecimalMeasure(fieldNode);
 			VALUE_SI.setValue(fieldNode, Measures.toStandard(value).getValue());
-		}
-	}
-
-	@Override
-	public void postLoad(ObjectNode object) { // TODO: _source should ignore _* instead
-		for (JsonNode node : getNodes(object)) {
-			ObjectNode fieldNode = (ObjectNode) node;
-			if (fieldNode != null) {
-				fieldNode.remove(VALUE_SI.getName());
-			}
 		}
 	}
 }

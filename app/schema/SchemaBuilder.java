@@ -1,5 +1,6 @@
 package schema;
 
+import org.codehaus.jackson.node.ArrayNode;
 import org.codehaus.jackson.node.ObjectNode;
 
 import common.Nodes;
@@ -18,6 +19,15 @@ public class SchemaBuilder {
 		this.type = schema.putObject(typeName);
 		this.type.put("dynamic", "strict");
 		this.properties = type.putObject(PROPERTIES);
+		configureSourceField();
+	}
+
+	private void configureSourceField() {
+		ObjectNode sourceNode = type.putObject("_source");
+		sourceNode.put("enabled", true);
+		ArrayNode excludesNode = sourceNode.putArray("excludes");
+		excludesNode.add("_*");
+		excludesNode.add("*._*");
 	}
 
 	public SchemaBuilder add(Field<?> field) {
