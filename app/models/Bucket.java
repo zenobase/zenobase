@@ -49,8 +49,12 @@ public class Bucket extends DomainNode {
 	}
 
 	public ImmutableMap<Identity, Permission> getPermissions() {
-		ImmutableMap.Builder<Identity, Permission> builder = ImmutableMap.builder();
-		for (Map.Entry<Identity, Permission> entry : getValues(PERMISSIONS)) {
+		return toMap(getValues(PERMISSIONS));
+	}
+
+	private static <K, V> ImmutableMap<K, V> toMap(Iterable<Map.Entry<K, V>> entries) {
+		ImmutableMap.Builder<K, V> builder = ImmutableMap.builder();
+		for (Map.Entry<K, V> entry : entries) {
 			builder.put(entry);
 		}
 		return builder.build();
