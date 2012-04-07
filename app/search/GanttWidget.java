@@ -36,6 +36,7 @@ public class GanttWidget implements Widget {
 		this.timezone = timezone;
 	}
 
+	@Override
 	public String getId() {
 		return id;
 	}

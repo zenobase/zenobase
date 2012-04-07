@@ -15,10 +15,12 @@ public class CreateUserCommand extends CommandSupport {
 		this.user = user;
 	}
 
+	@Override
 	public void execute() {
 		manager.store(user);
 	}
 
+	@Override
 	public DeleteUserCommand reverse(Identity identity) {
 		return new DeleteUserCommand(manager, identity, user);
 	}

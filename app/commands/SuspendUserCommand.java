@@ -17,11 +17,13 @@ public class SuspendUserCommand extends CommandSupport {
 		this.suspend = suspend;
 	}
 
+	@Override
 	public void execute() {
 		user.setSuspended(suspend);
 		manager.update(user);
 	}
 
+	@Override
 	public SuspendUserCommand reverse(Identity identity) {
 		return new SuspendUserCommand(manager, identity, user, !suspend);
 	}

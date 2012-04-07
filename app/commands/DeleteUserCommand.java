@@ -15,10 +15,12 @@ public class DeleteUserCommand extends CommandSupport {
 		this.user = user;
 	}
 
+	@Override
 	public void execute() {
 		manager.delete(user);
 	}
 
+	@Override
 	public CreateUserCommand reverse(Identity identity) {
 		return new CreateUserCommand(manager, identity, user);
 	}

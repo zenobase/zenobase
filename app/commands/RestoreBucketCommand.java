@@ -15,10 +15,12 @@ public class RestoreBucketCommand extends CommandSupport {
 		this.bucket = bucket;
 	}
 
+	@Override
 	public void execute() {
 		manager.store(bucket, false);
 	}
 
+	@Override
 	public DeleteBucketCommand reverse(Identity identity) {
 		return new DeleteBucketCommand(manager, identity, bucket);
 	}

@@ -23,10 +23,12 @@ public class UpdateUserCommand extends CommandSupport {
 		}
 	}
 
+	@Override
 	public void execute() {
 		manager.update(newUser);
 	}
 
+	@Override
 	public UpdateUserCommand reverse(Identity identity) {
 		return new UpdateUserCommand(manager, identity, newUser, oldUser.getEmail(), oldUser.getPassword(), oldUser.isVerified());
 	}

@@ -48,10 +48,12 @@ public class CommandQueueTest {
 			this.label = label;
 		}
 
+		@Override
 		public void execute() {
 			
 		}
 
+		@Override
 		public Command reverse(Identity identity) {
 			throw new UnsupportedOperationException();
 		}

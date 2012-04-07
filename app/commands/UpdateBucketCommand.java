@@ -16,10 +16,12 @@ public class UpdateBucketCommand extends CommandSupport {
 		this.to = to;
 	}
 
+	@Override
 	public void execute() {
 		manager.update(to);
 	}
 
+	@Override
 	public UpdateBucketCommand reverse(Identity identity) {
 		return new UpdateBucketCommand(manager, identity, to, from);
 	}

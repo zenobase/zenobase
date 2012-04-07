@@ -33,6 +33,7 @@ public class ScoreboardWidget implements Widget {
 		this.limit = limit;
 	}
 
+	@Override
 	public String getId() {
 		return id;
 	}

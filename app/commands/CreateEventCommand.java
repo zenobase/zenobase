@@ -15,10 +15,12 @@ public class CreateEventCommand extends CommandSupport {
 		this.event = event;
 	}
 
+	@Override
 	public void execute() {
 		bucket.add(event.getBucket(), event);
 	}
 
+	@Override
 	public Command reverse(Identity identity) {
 		return new DeleteEventCommand(bucket, identity, event);
 	}

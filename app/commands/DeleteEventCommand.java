@@ -15,10 +15,12 @@ public class DeleteEventCommand extends CommandSupport {
 		this.event = event;
 	}
 
+	@Override
 	public void execute() {
 		bucketManager.delete(event.getBucket(), event.getId());
 	}
 
+	@Override
 	public Command reverse(Identity identity) {
 		return new CreateEventCommand(bucketManager, identity, event);
 	}

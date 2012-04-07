@@ -26,10 +26,12 @@ public class HistogramWidget implements Widget {
 		this.step = step;
 	}
 
+	@Override
 	public String getId() {
 		return id;
 	}
 
+	@Override
 	public void configure(SearchSourceBuilder builder) {
 		RangeFacetBuilder facet = FacetBuilders.rangeFacet(id).field(field);
 		facet.addUnboundedFrom(from);
@@ -40,6 +42,7 @@ public class HistogramWidget implements Widget {
 		builder.facet(facet);
 	}
 
+	@Override
 	public JsonNode process(SearchResponse response) {
 		ArrayNode result = Nodes.newArray();
 		RangeFacet ratings = response.facets().facet(RangeFacet.class, id);
@@ -60,6 +63,7 @@ public class HistogramWidget implements Widget {
 
 	public static WidgetBuilder builder() {
 		return new WidgetBuilder() {
+			@Override
 			public Widget build(WidgetOptions options) {
 				return new HistogramWidget(
 					options.get("id"),

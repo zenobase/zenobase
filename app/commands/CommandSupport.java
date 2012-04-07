@@ -16,14 +16,17 @@ public abstract class CommandSupport implements Command {
 		this.identity = identity;
 	}
 
+	@Override
 	public String getId() {
 		return id;
 	}
 
+	@Override
 	public Identity getIdentity() {
 		return identity;
 	}
 
+	@Override
 	public DateTime getTimestamp() {
 		return timestamp;
 	}
