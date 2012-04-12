@@ -1,9 +1,9 @@
-.btn-group .zeno-paging {
-	background-color:white;
-	border:none;
+.btn-group > button.zeno-paging {
+	background-color: white;
+	border: none;
 }
 
-.modal form {
+.modal-form {
 	margin: 0;
 }
 
@@ -19,7 +19,7 @@ abbr {
 	text-transform: none;
 }
 
-#map .control {
+.map-control {
 	cursor: pointer;
 	font-size: 13px;
 	font-weight: bold;
@@ -68,20 +68,16 @@ footer {
   opacity: 1.0;
 }
 
-.nav .close {
+.close-tab {
 	line-height: inherit;
 	float: none;
 }
 
-.table-unbordered td {
-	border-style: none;
-}
-
-.table thead a {
+a.sort {
 	color: #333;
 }
 
-.table tbody tr:hover {
+.table > tbody > tr:hover {
 	background-color: #f8f8f8;
 }
 
@@ -89,29 +85,12 @@ footer {
 	visibility: hidden;
 }
 
-tr:hover .action {
+tr:hover > td > .action {
 	visibility: visible;
-}
-
-h3 i {
-	margin-top: 3px;
-}
-
-.table-narrow {
-	width: auto;
-	max-width: none;
-}
-
-.table-narrow th, .table-narrow td {
-	vertical-align: middle;
 }
 
 .align-right {
 	text-align: right;
-}
-
-.top-row th, .top-row td {
-	border-top: none;
 }
 
 .b {

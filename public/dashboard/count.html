@@ -4,11 +4,11 @@
 		<thead>
 			<tr>
 				<th style="text-transform: capitalize">
-					<a ng-click="setOrder('term')">{{settings.field}}
+					<a ng-click="setOrder('term')" class="sort">{{settings.field}}
 					<b ng-class="getClasses('term')"></b></a>
 				</th>
 				<th style="text-align: right">
-					<a ng-click="setOrder('count')">Count 
+					<a ng-click="setOrder('count')" class="sort">Count 
 					<b ng-class="getClasses('count')"></b></a>
 				</th>
 			</tr>
@@ -32,12 +32,12 @@
 			<button class="btn" title="Next" ng-click="next()" ng-disabled="!hasNext()"><i class="icon-chevron-right"></i></button>
 		</div>
 		<div class="btn-group pull-right" ng-show="terms">
-			<a class="btn disabled zeno-paging"><b>{{offset + 1}}</b> &ndash; <b>{{offset + terms.length}}</b></a>
+			<button class="btn disabled zeno-paging"><b>{{offset + 1}}</b> &ndash; <b>{{offset + terms.length}}</b></button>
 		</div>
 	</div>
 
 	<div class="modal" ng-controller="WidgetSettingsCtrl" ng-show="dialogShown">
-		<form name="form">
+		<form name="form" class="modal-form">
 			<div class="modal-header">
 				<a class="close" ng-click="cancel()">&times;</a>
 				<h3>Term Counts</h3>

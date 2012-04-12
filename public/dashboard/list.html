@@ -1,9 +1,9 @@
 <div ng-controller="EventListCtrl">
 
-	<table class="table table-unbordered" ng-show="items">
+	<table class="table" ng-show="items">
 		<tbody>
 			<tr ng-repeat="event in items">
-				<td style="line-height: 1.5">
+				<td style="line-height: 1.5; border-style: none;">
 					<span ng-bind-html="event | fields"></span>
 					&nbsp;
 					<div class="action pull-right">
@@ -30,7 +30,7 @@
 	</div>
 
 	<div class="modal" ng-controller="WidgetSettingsCtrl" ng-show="dialogShown">
-		<form name="form">
+		<form name="form" class="modal-form">
 			<div class="modal-header">
 				<a class="close" ng-click="cancel()">&times;</a>
 				<h3>Event List</h3>

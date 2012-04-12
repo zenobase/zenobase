@@ -971,7 +971,7 @@ MapCtrl.prototype.createFilterControl = function($scope) {
 	parent.style.padding = '5px';
 	var control = document.createElement('div');
 	control.title = 'Click to filter using the current map bounds';
-	control.className = 'control';
+	control.className = 'map-control';
 	parent.appendChild(control);	
 	var label = document.createElement('div');
 	label.innerHTML = 'Filter';

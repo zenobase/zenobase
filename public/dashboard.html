@@ -57,7 +57,7 @@
 		<div class="span12">
 			<ul class="nav nav-tabs">
 				<li ng-class="$index == 0 && 'active'" ng-repeat="settings in getWidgetSettings('top')">
-					<a href="#{{settings.id}}" data-toggle="tab">{{settings.label}} <span class="close" title="Remove" ng-click="removeWidget(settings.id)" ng-show="editing">&times;</span></a>
+					<a href="#{{settings.id}}" data-toggle="tab">{{settings.label}} <span class="close close-tab" title="Remove" ng-click="removeWidget(settings.id)" ng-show="editing">&times;</span></a>
 				</li>
 				<li ng-show="editing"><a ng-click="chooseWidget('top')" title="Add Widget..."><i class="icon-plus-sign"></i></a></li>
 			</ul>
@@ -71,7 +71,7 @@
 		<div class="span6">
 			<ul class="nav nav-tabs">
 				<li ng-class="$index == 0 && 'active'" ng-repeat="settings in getWidgetSettings('left')">
-					<a href="#{{settings.id}}" data-toggle="tab">{{settings.label}} <span class="close" title="Remove" ng-click="removeWidget(settings.id)" ng-show="editing">&times;</span></a>
+					<a href="#{{settings.id}}" data-toggle="tab">{{settings.label}} <span class="close close-tab" title="Remove" ng-click="removeWidget(settings.id)" ng-show="editing">&times;</span></a>
 				</li>
 				<li ng-show="editing"><a ng-click="chooseWidget('left')" title="Add Widget..."><i class="icon-plus-sign"></i></a></li>
 			</ul>
@@ -82,7 +82,7 @@
 		<div class="span6">
 			<ul class="nav nav-tabs">
 				<li ng-class="$index == 0 && 'active'" ng-repeat="settings in getWidgetSettings('right')">
-					<a href="#{{settings.id}}" data-toggle="tab">{{settings.label}} <span class="close" title="Remove" ng-click="removeWidget(settings.id)" ng-show="editing">&times;</span></a>
+					<a href="#{{settings.id}}" data-toggle="tab">{{settings.label}} <span class="close close-tab" title="Remove" ng-click="removeWidget(settings.id)" ng-show="editing">&times;</span></a>
 				</li>
 				<li ng-show="editing"><a ng-click="chooseWidget('right')" title="Add Widget..."><i class="icon-plus-sign"></i></a></li>
 			</ul>
@@ -93,7 +93,7 @@
 	</div>
 
 	<div id="add-widget-dialog" class="modal" ng-controller="AddWidgetCtrl" ng-show="placement">
-		<form name="addWidgetForm">
+		<form name="addWidgetForm" class="modal-form">
 			<div class="modal-header">
 				<a class="close" ng-click="cancel()">&times;</a>
 				<h3>Add Widget</h3>
