@@ -19,11 +19,11 @@
 		<script src="/public/javascripts/zeno-admin.js"></script>
 	</head>
 
-	<body ng-controller="MainCtrl">
+	<body ng-controller="MainCtrl" class="ng-cloak">
 
 		<header class="container-fluid">
 			<p class="logo pull-left"><a href="#/"><img src="/public/img/logo.png" alt="ZenoBase"/></a></p>
-			<div class="pull-right ng-cloak">
+			<div class="pull-right">
 				<p ng-show="user.name">
 					<i class="icon-user"></i> <a href="#/users/{{user.getName()}}">{{user.getName()}}</a> | <a ng-click="signOut()">Sign out</a>
 				</p>
