@@ -62,9 +62,7 @@
 				<li ng-show="editing"><a ng-click="chooseWidget('top')" title="Add Widget..."><i class="icon-plus-sign"></i></a></li>
 			</ul>
 			<div class="tab-content">
-				<div id="{{settings.id}}" class="tab-pane" ng-class="$index == 0 && 'active'" ng-repeat="settings in getWidgetSettings('top')">
-					<ng-include src="getTemplate(settings.type)"/>
-				</div>
+				<div id="{{settings.id}}" class="tab-pane" ng-class="$index == 0 && 'active'" ng-repeat="settings in getWidgetSettings('top')" ng-include="getTemplate(settings.type)"></div>
 			</div>
 		</div>
 	</div>
@@ -78,9 +76,7 @@
 				<li ng-show="editing"><a ng-click="chooseWidget('left')" title="Add Widget..."><i class="icon-plus-sign"></i></a></li>
 			</ul>
 			<div class="tab-content">
-				<div id="{{settings.id}}" class="tab-pane" ng-class="$index == 0 && 'active'" ng-repeat="settings in getWidgetSettings('left')">
-					<ng-include src="getTemplate(settings.type)"/>
-				</div>
+				<div id="{{settings.id}}" class="tab-pane" ng-class="$index == 0 && 'active'" ng-repeat="settings in getWidgetSettings('left')" ng-include="getTemplate(settings.type)"></div>
 			</div>
 		</div>
 		<div class="span6">
@@ -91,9 +87,7 @@
 				<li ng-show="editing"><a ng-click="chooseWidget('right')" title="Add Widget..."><i class="icon-plus-sign"></i></a></li>
 			</ul>
 			<div class="tab-content">
-				<div id="{{settings.id}}" class="tab-pane" ng-class="$index == 0 && 'active'" ng-repeat="settings in getWidgetSettings('right')">
-					<ng-include src="getTemplate(settings.type)"/>
-				</div>
+				<div id="{{settings.id}}" class="tab-pane" ng-class="$index == 0 && 'active'" ng-repeat="settings in getWidgetSettings('right')" ng-include="getTemplate(settings.type)"></div>
 			</div>
 		</div>
 	</div>

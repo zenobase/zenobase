@@ -1221,7 +1221,7 @@ app.config(function($httpProvider) {
 
 app.directive('zenoCopyright', function() {
 	return {
-		restrict: 'E',
+		restrict: 'A',
 		compile: function() {
 			return function(scope, element, attrs) {
 				var start = attrs.start;

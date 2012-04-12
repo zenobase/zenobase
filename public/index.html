@@ -55,12 +55,10 @@
 			</div>
 		</div>
 
-		<div ng-hide="user.suspended">
-			<ng-view></ng-view>
-		</div>
+		<div ng-hide="user.suspended" ng-view></div>
 
 		<footer class="container-fluid">
-			<zeno-copyright start="2012" author="Zenobase LLC"/>
+			<p zeno-copyright start="2012" author="Zenobase LLC"/>
 		</footer>
 
 		<div id="sign-in-dialog" class="modal hide" ng-controller="AuthFormCtrl">
