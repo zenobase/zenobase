@@ -1131,7 +1131,7 @@ Field.findAll = function() {
 }
 
 
-var app = angular.module('ZenoModule', []);
+var app = angular.module('ZenoModule', ['ngSanitize']);
 
 app.config(function($routeProvider) {
 	$routeProvider.when('/', { template: '/public/home.html' })
