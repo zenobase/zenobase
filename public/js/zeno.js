@@ -1215,14 +1215,14 @@ Field.findAll = function() {
 
 var app = angular.module('ZenoModule', ['ngSanitize']);
 
-app.config(function($routeProvider) {
+app.config(['$routeProvider', function($routeProvider) {
 	$routeProvider.when('/', { template: '/public/home.html' })
 		.when('/buckets/:bucketId/', { template : '/public/dashboard.html', reloadOnSearch : false })
 		.when('/users/:userId', { template : '/public/user.html' })
 		.when('/terms', { template : '/public/terms.html' })
 		.when('/privacy', { template : '/public/privacy.html' })
 		.otherwise({ redirectTo : '/' });
-});
+}]);
 
 app.filter('fields', function() {
 	return function(event) {
@@ -1283,7 +1283,7 @@ app.filter('username', function() {
 	}
 });
 
-app.config(function($httpProvider) {
+app.config(['$httpProvider', function($httpProvider) {
 	var interceptor = ['$rootScope', '$q', function(scope, $q) {
 		function success(response) {
 			return response;
@@ -1299,7 +1299,7 @@ app.config(function($httpProvider) {
 		}
 	}];
 	$httpProvider.responseInterceptors.push(interceptor);
-});
+}]);
 
 app.directive('zenoCopyright', function() {
 	return {
