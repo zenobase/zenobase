@@ -1,6 +1,6 @@
-<div ng:controller="ScoreboardCtrl">
+<div ng-controller="ScoreboardCtrl">
 
-	<table class="table" ng:show="terms">
+	<table class="table" ng-show="terms">
 		<thead>
 			<tr>
 				<th style="text-transform: capitalize">{{settings.termField}}</th>
@@ -12,73 +12,73 @@
 			</tr>
 		</thead>
 		<tbody>
-			<tr ng:repeat="term in terms">
-				<td><a ng:click="filter(term)" ng:bind-html="term.label | field:settings.termField"></a></td>
-				<td style="text-align: right" ng:bind-html="term.count | number"></td>
-				<td style="text-align: right" ng:bind-html="term.min | field:settings.valueField"></td>
-				<td style="text-align: right" ng:bind-html="term.max | field:settings.valueField"></td>
-				<td style="text-align: right" ng:bind-html="term.sum | field:settings.valueField"></td>
-				<td style="text-align: right" ng:bind-html="term.avg | field:settings.valueField"></td>
+			<tr ng-repeat="term in terms">
+				<td><a ng-click="filter(term)" ng-bind-html="term.label | field:settings.termField"></a></td>
+				<td style="text-align: right" ng-bind-html="term.count | number"></td>
+				<td style="text-align: right" ng-bind-html="term.min | field:settings.valueField"></td>
+				<td style="text-align: right" ng-bind-html="term.max | field:settings.valueField"></td>
+				<td style="text-align: right" ng-bind-html="term.sum | field:settings.valueField"></td>
+				<td style="text-align: right" ng-bind-html="term.avg | field:settings.valueField"></td>
 			</tr>
-			<tr ng:hide="terms">
+			<tr ng-hide="terms">
 				<td colspan="6"><i>None</i></td>
 			</tr>
 		</tbody>
 	</table>
 
-	<p ng:hide="terms" class="none">None</p>
+	<p ng-hide="terms" class="none">None</p>
 
 	<div class="btn-toolbar">
-		<div class="btn-group" ng:show="editing">
-			<button class="btn" title="Settings" ng:click="showDialog(true)"><i class="icon-cog"></i></button>
+		<div class="btn-group" ng-show="editing">
+			<button class="btn" title="Settings" ng-click="showDialog(true)"><i class="icon-cog"></i></button>
 		</div>
 	</div>
 
-	<div class="modal" ng:controller="WidgetSettingsCtrl" ng:show="dialogShown">
+	<div class="modal" ng-controller="WidgetSettingsCtrl" ng-show="dialogShown">
 		<form name="form">
 			<div class="modal-header">
-				<a class="close" ng:click="cancel()">&times;</a>
+				<a class="close" ng-click="cancel()">&times;</a>
 				<h3>Scoreboard</h3>
 			</div>
 			<div class="modal-body">
 				<div class="control-group">
 					<label class="control-label" for="label">Title</label>
 					<div class="controls">
-						<input name="label" type="text" required min="1" max="20" ng:model="settings.label"/>
+						<input name="label" type="text" required min="1" max="20" ng-model="settings.label"/>
 					</div>
 				</div>
 				<div class="control-group">
 					<label class="control-label" for="limit">Limit</label>
 					<div class="controls">
-						<input name="limit" type="number" required min="1" max="100" ng:model="settings.limit"/>
+						<input name="limit" type="number" required min="1" max="100" ng-model="settings.limit"/>
 						<p class="help-block">The number of items to show.</p>
 					</div>
 				</div>
 				<div class="control-group">
 					<label class="control-label" for="termField">Term Field</label>
 					<div class="controls">
-						<input name="termField" type="text" required ng:model="settings.termField"/>
+						<input name="termField" type="text" required ng-model="settings.termField"/>
 						<p class="help-block">The field for which to aggregate statistics.</p>
 					</div>
 				</div>
 				<div class="control-group">
 					<label class="control-label" for="valueField">Value Field</label>
 					<div class="controls">
-						<input name="valueField" type="text" required ng:model="settings.valueField"/>
+						<input name="valueField" type="text" required ng-model="settings.valueField"/>
 						<p class="help-block">The numeric field on which to gather statistics.</p>
 					</div>
 				</div>
 				<div class="control-group">
 					<label class="control-label" for="unit">Unit</label>
 					<div class="controls">
-						<input name="valueField" type="text" required ng:model="settings.unit"/>
+						<input name="valueField" type="text" required ng-model="settings.unit"/>
 						<p class="help-block">The unit to use.</p>
 					</div>
 				</div>
 			</div>
 			<div class="modal-footer">
-				<button class="btn btn-primary" ng:click="save()" ng:disabled="!form.$valid">Save</button>
-				<button class="btn" ng:click="cancel()">Cancel</button>
+				<button class="btn btn-primary" ng-click="save()" ng-disabled="!form.$valid">Save</button>
+				<button class="btn" ng-click="cancel()">Cancel</button>
 			</div>
 		</form>
 	</div>
