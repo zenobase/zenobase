@@ -1,6 +1,6 @@
 <div class="container-fluid">
 
-	<div class="hero-unit" ng-controller="HomeCtrl">
+	<div class="hero-unit" data-ng-controller="HomeCtrl">
 		<h1>Data Happens.</h1>
 		<br/>
 		<p>Collect and analyze <a href="#/buckets/qrs2pf24e2/">your activities</a>, or just about anything else.</p>
@@ -8,8 +8,8 @@
 		<p><img src="/public/img/dashboard-screenshot.png"/></p>
 		<br/>
 		<p>
-			<a class="btn btn-primary btn-large" ng-click="create()" ng-hide="user">Enter Data &raquo;</a>
-			<a class="btn btn-primary btn-large" href="#/users/{{user.getName()}}" ng-show="user">Your Data &raquo;</a>
+			<a class="btn btn-primary btn-large" data-ng-click="create()" data-ng-hide="user">Enter Data &raquo;</a>
+			<a class="btn btn-primary btn-large" href="#/users/{{user.getName()}}" data-ng-show="user">Your Data &raquo;</a>
 		</p>
 	</div>
 

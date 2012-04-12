@@ -1,6 +1,6 @@
-<div ng-controller="TermGanttCtrl">
+<div data-ng-controller="TermGanttCtrl">
 
-	<table class="table" ng-show="terms">
+	<table class="table" data-ng-show="terms">
 		<thead>
 			<tr>
 				<th>Tag</th>
@@ -9,39 +9,39 @@
 			</tr>
 		</thead>
 		<tbody>
-			<tr ng-repeat="term in terms">
-				<td><i class="icon-tag"></i> <a ng-click="filter(term)">{{term.label}}</a></td>
+			<tr data-ng-repeat="term in terms">
+				<td><i class="icon-tag"></i> <a data-ng-click="filter(term)">{{term.label}}</a></td>
 				<td style="text-align: right"><abbr title="{{term.last}}">{{term.last | age}}</abbr></td>
 				<td style="text-align: right">{{term.freq  | duration}}</td>
 			</tr>
 		</tbody>
 	</table>
 
-	<p ng-hide="terms" class="none">None</p>
+	<p data-ng-hide="terms" class="none">None</p>
 
 	<div class="btn-toolbar">
-		<div class="btn-group" ng-show="editing">
-			<button class="btn" title="Settings" ng-click="showDialog(true)"><i class="icon-cog"></i></button>
+		<div class="btn-group" data-ng-show="editing">
+			<button class="btn" title="Settings" data-ng-click="showDialog(true)"><i class="icon-cog"></i></button>
 		</div>
 	</div>
 
-	<div class="modal" ng-controller="WidgetSettingsCtrl" ng-show="dialogShown">
+	<div class="modal" data-ng-controller="WidgetSettingsCtrl" data-ng-show="dialogShown">
 		<form name="form" class="modal-form">
 			<div class="modal-header">
-				<a class="close" ng-click="cancel()">&times;</a>
+				<a class="close" data-ng-click="cancel()">&times;</a>
 				<h3>Term Date Ranges</h3>
 			</div>
 			<div class="modal-body">
 				<div class="control-group">
 					<label class="control-label" for="label">Title</label>
 					<div class="controls">
-						<input name="label" type="text" required min="1" max="20" ng-model="settings.label"/>
+						<input name="label" type="text" required min="1" max="20" data-ng-model="settings.label"/>
 					</div>
 				</div>
 			</div>
 			<div class="modal-footer">
-				<button class="btn btn-primary" ng-click="save()" ng-disabled="!form.$valid">Save</button>
-				<button class="btn" ng-click="cancel()">Cancel</button>
+				<button class="btn btn-primary" data-ng-click="save()" data-ng-disabled="!form.$valid">Save</button>
+				<button class="btn" data-ng-click="cancel()">Cancel</button>
 			</div>
 		</form>
 	</div>

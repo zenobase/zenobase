@@ -1,5 +1,5 @@
 <!doctype html>
-<html ng-app="ZenoModule">
+<html data-ng-app="ZenoModule">
 	<head>
 		<title>Zenobase</title>
 		<link rel="shortcut icon" type="image/png" href="/public/images/favicon.png"/>
@@ -18,9 +18,9 @@
 		<script src="/public/javascripts/zeno.js"></script>
 	</head>
 
-	<body ng-controller="MainCtrl" class="ng-cloak">
+	<body data-ng-controller="MainCtrl" class="data-ng-cloak">
 
-		<div ng-show="user.getName() == 'guest'">
+		<div data-ng-show="user.getName() == 'guest'">
 			<div class="alert">
 				Your data will be lost when you sign out or close the browser. 
 				<a href="#sign-up-dialog" data-toggle="modal">Sign up</a> to save your data.
@@ -30,10 +30,10 @@
 		<header class="container-fluid">
 			<p class="logo pull-left"><a href="#/"><img src="/public/img/logo.png" alt="ZenoBase"/></a></p>
 			<div class="pull-right">
-				<p ng-show="user">
-					<i class="icon-user"></i> <a href="#/users/{{user.getName()}}">{{user.getName()}}</a> | <a ng-click="signOut()">Sign out</a>
+				<p data-ng-show="user">
+					<i class="icon-user"></i> <a href="#/users/{{user.getName()}}">{{user.getName()}}</a> | <a data-ng-click="signOut()">Sign out</a>
 				</p>
-				<p ng-hide="user">
+				<p data-ng-hide="user">
 					<a href="#sign-in-dialog" data-toggle="modal">Sign in</a>
 				</p>
 			</div>
@@ -41,28 +41,28 @@
 
 		<div class="container-fluid">
 			<div class="alert {{alert.level}}">
-				<a class="close" ng-click="alert.clear()">&times;</a>
-				<span ng-bind-html="alert.message"></span>
-				<span ng-show="alert.undo">
-					<a ng-click="undo(alert.undo)">Undo.</a>
+				<a class="close" data-ng-click="alert.clear()">&times;</a>
+				<span data-ng-bind-html="alert.message"></span>
+				<span data-ng-show="alert.undo">
+					<a data-ng-click="undo(alert.undo)">Undo.</a>
 				</span>
 			</div>
 		</div>
 
-		<div class="container-fluid" ng-show="user.suspended">
+		<div class="container-fluid" data-ng-show="user.suspended">
 			<div class="alert alert-error">
 				This account has been suspended. Please contact support.
 			</div>
 		</div>
 
-		<div ng-hide="user.suspended" ng-view></div>
+		<div data-ng-hide="user.suspended" data-ng-view></div>
 
 		<footer class="container-fluid">
-			<p zeno-copyright start="2012" author="Zenobase LLC"/>
+			<p data-zeno-copyright data-start="2012" data-author="Zenobase LLC"></p>
 		</footer>
 
-		<div id="sign-in-dialog" class="modal hide" ng-controller="AuthFormCtrl">
-			<form ng-submit="signIn()">
+		<div id="sign-in-dialog" class="modal hide" data-ng-controller="AuthFormCtrl">
+			<form data-ng-submit="signIn()">
 					<div class="modal-header">
 						<a class="close" data-dismiss="modal">&times;</a>
 						<h3>Sign in</h3>
@@ -70,16 +70,16 @@
 					<div class="modal-body">
 						<div class="control-group">
 							<label for="username">User Name</label>
-							<input id="username" type="text" class="large" ng-model="username"/>
+							<input id="username" type="text" class="large" data-ng-model="username"/>
 						</div>
 						<div class="control-group">
 							<label for="password">Password</label>
-							<input id="password" type="password" class="large" ng-model="password"/>
+							<input id="password" type="password" class="large" data-ng-model="password"/>
 						</div>
 						<div class="control-group">
 							<div class="controls">
 								<label class="checkbox">
-									<input type="checkbox" id="remember" ng-model="remember">
+									<input type="checkbox" id="remember" data-ng-model="remember">
 									Remember me
 								</label>
 							</div>
@@ -97,35 +97,35 @@
 			})
 		</script>
 
-		<div id="sign-up-dialog" class="modal hide" ng-controller="SignUpFormCtrl">
-			<form name="signUpForm" ng-submit="submit()">
+		<div id="sign-up-dialog" class="modal hide" data-ng-controller="SignUpFormCtrl">
+			<form name="signUpForm" data-ng-submit="submit()">
 					<div class="modal-header">
 						<a class="close" data-dismiss="modal">&times;</a>
 						<h3>Sign up</h3>
 					</div>
 					<div class="modal-body">
-						<div class="control-group" ng-class="signUpForm.username.$valid && 'success' || 'error'">
+						<div class="control-group" data-ng-class="signUpForm.username.$valid && 'success' || 'error'">
 							<label for="sign-up-username">User Name</label>
-							<input id="sign-up-username" name="username" type="text" class="large" required ng-minlength="4" ng-maxlength="16" ng-pattern="/^[a-z0-9]+$/" ng-model="username"/>
-							<span class="help-inline error" ng-show="signUpForm.username.$error.MINLENGTH">Too short</span>
-							<span class="help-inline error" ng-show="signUpForm.username.$error.MAXLENGTH">Too long</span>
-							<span class="help-inline error" ng-show="signUpForm.username.$error.REQUIRED">Required</span>
+							<input id="sign-up-username" name="username" type="text" class="large" required data-ng-minlength="4" data-ng-maxlength="16" data-ng-pattern="/^[a-z0-9]+$/" data-ng-model="username"/>
+							<span class="help-inline error" data-ng-show="signUpForm.username.$error.MINLENGTH">Too short</span>
+							<span class="help-inline error" data-ng-show="signUpForm.username.$error.MAXLENGTH">Too long</span>
+							<span class="help-inline error" data-ng-show="signUpForm.username.$error.REQUIRED">Required</span>
 						</div>
-						<div class="control-group" ng-class="signUpForm.password.$valid && 'success' || 'error'">
+						<div class="control-group" data-ng-class="signUpForm.password.$valid && 'success' || 'error'">
 							<label for="sign-up-password">Password</label>
-							<input id="sign-up-password" name="password" type="password" class="large" required ng-model="password"/>
+							<input id="sign-up-password" name="password" type="password" class="large" required data-ng-model="password"/>
 						</div>
-						<div class="control-group" ng-class="signUpForm.passwordRepeat.$valid && 'success' || 'error'">
+						<div class="control-group" data-ng-class="signUpForm.passwordRepeat.$valid && 'success' || 'error'">
 							<label for="sign-up-password-repeat">Confirm Password</label>
-							<input id="sign-up-password-repeat" name="passwordRepeat" type="password" class="large" required ng-model="passwordRepeat"/>
+							<input id="sign-up-password-repeat" name="passwordRepeat" type="password" class="large" required data-ng-model="passwordRepeat"/>
 						</div>
-						<div class="control-group" ng-class="signUpForm.email.$valid && 'success' || 'error'">
+						<div class="control-group" data-ng-class="signUpForm.email.$valid && 'success' || 'error'">
 							<label for="sign-up-email">Email</label>
-							<input id="sign-up-email" name="email" type="email" class="large" required ng-model="email"/>
+							<input id="sign-up-email" name="email" type="email" class="large" required data-ng-model="email"/>
 						</div>
 					</div>
 					<div class="modal-footer">
-						<button type="submit" class="btn btn-primary" ng-disabled="!signUpForm.$valid">Sign up</button>
+						<button type="submit" class="btn btn-primary" data-ng-disabled="!signUpForm.$valid">Sign up</button>
 						<button type="reset" class="btn" data-dismiss="modal">Cancel</button>
 					</div>
 			</form>

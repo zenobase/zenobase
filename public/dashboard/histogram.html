@@ -1,6 +1,6 @@
-<div ng-controller="RatingCountCtrl">
+<div data-ng-controller="RatingCountCtrl">
 
-	<table class="table" ng-show="ratings">
+	<table class="table" data-ng-show="ratings">
 		<thead>
 			<tr>
 				<th>Rating</th>
@@ -8,41 +8,41 @@
 			</tr>
 		</thead>
 		<tbody>
-			<tr ng-repeat="rating in ratings">
-				<td ng-bind-html="rating.from | stars"></td>
+			<tr data-ng-repeat="rating in ratings">
+				<td data-ng-bind-html="rating.from | stars"></td>
 				<td style="text-align: right">{{rating.count | number }}</td>
 			</tr>
-			<tr ng-hide="ratings">
+			<tr data-ng-hide="ratings">
 				<td colspan="2"><i>None</i></td>
 			</tr>
 		</tbody>
 	</table>
 
-	<p ng-hide="ratings" class="none">None</p>
+	<p data-ng-hide="ratings" class="none">None</p>
 
 	<div class="btn-toolbar">
-		<div class="btn-group" ng-show="editing">
-			<button class="btn" title="Settings" ng-click="showDialog(true)"><i class="icon-cog"></i></button>
+		<div class="btn-group" data-ng-show="editing">
+			<button class="btn" title="Settings" data-ng-click="showDialog(true)"><i class="icon-cog"></i></button>
 		</div>
 	</div>
 
-	<div class="modal" ng-controller="WidgetSettingsCtrl" ng-show="dialogShown">
+	<div class="modal" data-ng-controller="WidgetSettingsCtrl" data-ng-show="dialogShown">
 		<form name="form" class="modal-form">
 			<div class="modal-header">
-				<a class="close" ng-click="cancel()">&times;</a>
+				<a class="close" data-ng-click="cancel()">&times;</a>
 				<h3>Ratings</h3>
 			</div>
 			<div class="modal-body">
 				<div class="control-group">
 					<label class="control-label" for="label">Title</label>
 					<div class="controls">
-						<input name="label" type="text" required min="1" max="20" ng-model="settings.label"/>
+						<input name="label" type="text" required min="1" max="20" data-ng-model="settings.label"/>
 					</div>
 				</div>
 			</div>
 			<div class="modal-footer">
-				<button class="btn btn-primary" ng-click="save()" ng-disabled="!form.$valid">Save</button>
-				<button class="btn" ng-click="cancel()">Cancel</button>
+				<button class="btn btn-primary" data-ng-click="save()" data-ng-disabled="!form.$valid">Save</button>
+				<button class="btn" data-ng-click="cancel()">Cancel</button>
 			</div>
 		</form>
 	</div>

@@ -1,5 +1,5 @@
 <!doctype html>
-<html ng-app="ZenoAdminModule">
+<html data-ng-app="ZenoAdminModule">
 	<head>
 		<title>Zenobase</title>
 		<link rel="shortcut icon" type="image/png" href="/public/images/favicon.png"/>
@@ -19,24 +19,24 @@
 		<script src="/public/javascripts/zeno-admin.js"></script>
 	</head>
 
-	<body ng-controller="MainCtrl" class="ng-cloak">
+	<body data-ng-controller="MainCtrl" class="data-ng-cloak">
 
 		<header class="container-fluid">
 			<p class="logo pull-left"><a href="#/"><img src="/public/img/logo.png" alt="ZenoBase"/></a></p>
 			<div class="pull-right">
-				<p ng-show="user.name">
-					<i class="icon-user"></i> <a href="#/users/{{user.getName()}}">{{user.getName()}}</a> | <a ng-click="signOut()">Sign out</a>
+				<p data-ng-show="user.name">
+					<i class="icon-user"></i> <a href="#/users/{{user.getName()}}">{{user.getName()}}</a> | <a data-ng-click="signOut()">Sign out</a>
 				</p>
-				<p ng-hide="user">
+				<p data-ng-hide="user">
 					<a href="#sign-in-dialog" data-toggle="modal">Sign in</a>
 				</p>
 			</div>
 		</header>
 
-		<div ng-view></div>
+		<div data-ng-view></div>
 
 		<footer class="container-fluid">
-			<p zeno-copyright start="2012" author="Zenobase LLC"/>
+			<p data-zeno-copyright data-start="2012" data-author="Zenobase LLC"></p>
 		</footer>
 
 	</body>
