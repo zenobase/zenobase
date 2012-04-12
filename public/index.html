@@ -20,7 +20,7 @@
 
 	<body ng-controller="MainCtrl">
 
-		<div ng-show="user.getName() == 'guest'" ng-cloak>
+		<div ng-show="user.getName() == 'guest'" class="ng-cloak">
 			<div class="alert">
 				Your data will be lost when you sign out or close the browser. 
 				<a href="#sign-up-dialog" data-toggle="modal">Sign up</a> to save your data.
@@ -29,7 +29,7 @@
 
 		<header class="container-fluid">
 			<p class="logo pull-left"><a href="#/"><img src="/public/img/logo.png" alt="ZenoBase"/></a></p>
-			<div class="pull-right ng-cloak" ng-cloak>
+			<div class="pull-right ng-cloak">
 				<p ng-show="user">
 					<i class="icon-user"></i> <a href="#/users/{{user.getName()}}">{{user.getName()}}</a> | <a ng-click="signOut()">Sign out</a>
 				</p>
@@ -39,7 +39,7 @@
 			</div>
 		</header>
 
-		<div class="container-fluid" ng-cloak>
+		<div class="container-fluid ng-cloak">
 			<div class="alert {{alert.level}}">
 				<a class="close" ng-click="alert.clear()">&times;</a>
 				<span ng-bind-html="alert.message"></span>
@@ -49,7 +49,7 @@
 			</div>
 		</div>
 
-		<div class="container-fluid" ng-show="user.suspended" ng-cloak>
+		<div class="container-fluid ng-cloak" ng-show="user.suspended">
 			<div class="alert alert-error">
 				This account has been suspended. Please contact support.
 			</div>
