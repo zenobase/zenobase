@@ -7,6 +7,9 @@ adminApp.config(function($routeProvider) {
 
 
 HistoryAdminCtrl.$inject = ['$scope', '$http'];
+/**
+ * @constructor
+ */
 function HistoryAdminCtrl($scope, $http) {
 
 	$scope.offset = 0;
@@ -45,6 +48,9 @@ function HistoryAdminCtrl($scope, $http) {
 }
 
 BucketListAdminCtrl.$inject = ['$scope', '$http'];
+/**
+ * @constructor
+ */
 function BucketListAdminCtrl($scope, $http) {
 
 	$scope.offset = 0;
@@ -98,6 +104,9 @@ function BucketListAdminCtrl($scope, $http) {
 }
 
 UserListAdminCtrl.$inject = ['$scope', '$http'];
+/**
+ * @constructor
+ */
 function UserListAdminCtrl($scope, $http) {
 
 	$scope.offset = 0;

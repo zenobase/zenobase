@@ -5,6 +5,9 @@ var evalAsync = function(f) {
 };
 
 MainCtrl.$inject = ['$scope', '$route', '$http', '$location'];
+/**
+ * @constructor
+ */
 function MainCtrl($scope, $route, $http, $location) {
 	$scope.whoami = function() {
 		$http.get('/who', httpConfig()).success(function(response) {
@@ -42,6 +45,9 @@ function MainCtrl($scope, $route, $http, $location) {
 	$scope.whoami();
 }
 
+/**
+ * @constructor
+ */
 function Alert() {
 	this.clear();
 }
@@ -60,6 +66,9 @@ Alert.prototype.clear = function() {
 
 User.CACHE = {};
 
+/**
+ * @constructor
+ */
 function User(data) {
 	$.extend(this, data);
 	User.CACHE[this['@id']] = this;
@@ -80,6 +89,9 @@ User.find = function(identity) {
 	return user;
 };
 
+/**
+ * @constructor
+ */
 function Filter(field, value) {
 	this.field = field;
 	this.value = value;
@@ -121,6 +133,9 @@ var locale = {
 };
 
 UserCtrl.$inject = ['$scope', '$http', '$routeParams'];
+/**
+ * @constructor
+ */
 function UserCtrl($scope, $http, $routeParams) {
 
 	$scope.userId = $routeParams.userId;
@@ -150,6 +165,9 @@ function UserCtrl($scope, $http, $routeParams) {
 }
 
 UserFormCtrl.$inject = ['$scope', '$http'];
+/**
+ * @constructor
+ */
 function UserFormCtrl($scope, $http) {
 
 	$scope.editing = false;
@@ -188,6 +206,9 @@ function UserFormCtrl($scope, $http) {
 }
 
 AuthFormCtrl.$inject = ['$scope', '$http'];
+/**
+ * @constructor
+ */
 function AuthFormCtrl($scope, $http) {
 	$scope.dialog = $('#sign-in-dialog');
 	$scope.username = '';
@@ -208,6 +229,9 @@ function AuthFormCtrl($scope, $http) {
 }
 
 SignUpFormCtrl.$inject = ['$scope', '$http', '$location'];
+/**
+ * @constructor
+ */
 function SignUpFormCtrl($scope, $http, $location) {
 	$scope.username = '';
 	$scope.password = '';
@@ -230,6 +254,9 @@ function SignUpFormCtrl($scope, $http, $location) {
 }
 
 BucketListCtrl.$inject = ['$scope', '$http'];
+/**
+ * @constructor
+ */
 function BucketListCtrl($scope, $http) {
 
 	$scope.offset = 0;
@@ -281,6 +308,9 @@ function BucketListCtrl($scope, $http) {
 }
 
 HomeCtrl.$inject = ['$scope', '$http', '$location'];
+/**
+ * @constructor
+ */
 function HomeCtrl($scope, $http, $location) {
 	$scope.template = {
 		label : 'My Data'
@@ -297,6 +327,9 @@ function HomeCtrl($scope, $http, $location) {
 }
 
 CreateBucketDialogCtrl.$inject = ['$scope', '$http', '$location'];
+/**
+ * @constructor
+ */
 function CreateBucketDialogCtrl($scope, $http, $location) {
 	$scope.label = 'My Data';
 	$scope.create = function() {
@@ -311,6 +344,9 @@ function CreateBucketDialogCtrl($scope, $http, $location) {
 	}
 }
 
+/**
+ * @constructor
+ */
 function WidgetParams() {
 	this.params = [];
 }
@@ -331,6 +367,9 @@ function randomID() {
 }
 
 AddWidgetCtrl.$inject = ['$scope', '$http', '$route', '$routeParams', '$location'];
+/**
+ * @constructor
+ */
 function AddWidgetCtrl($scope, $http, $route, $routeParams, $location) {
 
 	$scope.templates = [
@@ -370,6 +409,9 @@ function AddWidgetCtrl($scope, $http, $route, $routeParams, $location) {
 }
 
 BucketCtrl.$inject = ['$scope', '$http', '$route', '$routeParams', '$location'];
+/**
+ * @constructor
+ */
 function BucketCtrl($scope, $http, $route, $routeParams, $location) {
 
 	$scope.bucketId = $routeParams.bucketId;
@@ -492,6 +534,9 @@ function BucketCtrl($scope, $http, $route, $routeParams, $location) {
 }
 
 BucketFormCtrl.$inject = ['$scope', '$http'];
+/**
+ * @constructor
+ */
 function BucketFormCtrl($scope, $http) {
 
 	$scope.save = function(settings) {
@@ -509,6 +554,9 @@ function BucketFormCtrl($scope, $http) {
 }
 
 EventListCtrl.$inject = ['$scope'];
+/**
+ * @constructor
+ */
 function EventListCtrl($scope) {
 
 	$scope.offset = 0;
@@ -559,6 +607,9 @@ function EventListCtrl($scope) {
 }
 
 EventListConfigCtrl.$inject = ['$scope'];
+/**
+ * @constructor
+ */
 function EventListConfigCtrl($scope) {
 	$scope.limit = $scope.settings.limit;
 	$scope.save = function() {
@@ -568,6 +619,9 @@ function EventListConfigCtrl($scope) {
 }
 
 TermCountCtrl.$inject = ['$scope'];
+/**
+ * @constructor
+ */
 function TermCountCtrl($scope) {
 
 	$scope.offset = 0;
@@ -636,6 +690,10 @@ function TermCountCtrl($scope) {
 	$scope.$on('result', $scope.update);
 }
 
+WidgetSettingsCtrl.$inject = ['$scope'];
+/**
+ * @constructor
+ */
 function WidgetSettingsCtrl($scope) {
 	$scope.save = function() {
 		$scope.refresh({ offset : 0 }, $scope.settings);
@@ -652,6 +710,9 @@ function WidgetSettingsCtrl($scope) {
 }
 
 TermGanttCtrl.$inject = ['$scope'];
+/**
+ * @constructor
+ */
 function TermGanttCtrl($scope) {
 
 	$scope.terms = [];
@@ -696,6 +757,9 @@ function TermGanttCtrl($scope) {
 }
 
 RatingCountCtrl.$inject = ['$scope'];
+/**
+ * @constructor
+ */
 function RatingCountCtrl($scope) {
 
 	$scope.field = 'rating';
@@ -735,6 +799,9 @@ function RatingCountCtrl($scope) {
 }
 
 ScoreboardCtrl.$inject = ['$scope'];
+/**
+ * @constructor
+ */
 function ScoreboardCtrl($scope) {
 
 	$scope.terms = [];
@@ -773,6 +840,9 @@ function ScoreboardCtrl($scope) {
 	$scope.$on('result', $scope.update);
 }
 
+/**
+ * @constructor
+ */
 function Interval(name, pattern) {
 	this.name = name;
 	this.pattern = pattern;
@@ -804,6 +874,9 @@ Interval.match = function(value) {
 };
 
 TimelineCtrl.$inject = ['$scope'];
+/**
+ * @constructor
+ */
 function TimelineCtrl($scope) {
 
 	var self = this;
@@ -878,6 +951,9 @@ TimelineCtrl.prototype.draw = function($scope) {
 }
 
 MapCtrl.$inject = ['$scope'];
+/**
+ * @constructor
+ */
 function MapCtrl($scope) {
 
 	var self = this;
@@ -984,6 +1060,9 @@ MapCtrl.prototype.createFilterControl = function($scope) {
 }
 
 TemplateCtrl.$inject = ['$scope', '$http', '$defer', '$routeParams'];
+/**
+ * @constructor
+ */
 function TemplateCtrl($scope, $http, $defer, $routeParams) {
 	$scope.content = '';
 	$scope.params = $routeParams;
@@ -1045,6 +1124,9 @@ function TemplateCtrl($scope, $http, $defer, $routeParams) {
 }
 
 
+/**
+ * @constructor
+ */
 function Field(name, icon, format) {
 	this.name = name;
 	this.icon = icon;
