@@ -78,7 +78,7 @@ function BucketListAdminCtrl($scope, $http) {
 		});
 	};
 	$scope.remove = function(bucketId) {
-		$http.delete('/buckets/' + bucketId + '/').success(function(response, code, headers) {
+		$http({ method : 'DELETE', url : '/buckets/' + bucketId + '/' }).success(function(response, code, headers) {
 			var undo = headers('Undo');
 			console.assert(undo, 'missing undo header');
 			$scope.alert.show('Deleted a bucket.', 'alert-success', undo);
@@ -131,7 +131,7 @@ function UserListAdminCtrl($scope, $http) {
 		});
 	};
 	$scope.close = function(userId) {
-		$http.delete('/users/' + userId).success(function(response, code, headers) {
+		$http({ method : 'DELETE', url : '/users/' + userId }).success(function(response, code, headers) {
 			var undo = headers('Undo');
 			console.assert(undo, 'missing undo header');
 			$scope.alert.show('Closed account of ' + userId + '.', 'alert-success', undo);

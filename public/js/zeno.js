@@ -142,7 +142,7 @@ function UserCtrl($scope, $http, $routeParams) {
 	};
 	$scope.close = function() {
 		if (confirm('Close your account and delete all associated data?')) {
-			$http.delete('/users/' + $routeParams.userId).success(function(response) {
+			$http({ method : 'DELETE', url : '/users/' + $routeParams.userId }).success(function(response) {
 				$scope.signOut();
 			});
 		}
@@ -264,7 +264,7 @@ function BucketListCtrl($scope, $http) {
 		});
 	};
 	$scope.remove = function(bucketId) {
-		$http.delete('/buckets/' + bucketId).success(function(response, code, headers) {
+		$http({ method : 'DELETE', url : '/buckets/' + bucketId }).success(function(response, code, headers) {
 			var undo = headers('Undo');
 			console.assert(undo, 'missing undo header');
 			$scope.alert.show('Deleted a bucket.', 'alert-success', undo);
@@ -432,7 +432,7 @@ function BucketCtrl($scope, $http, $route, $routeParams, $location) {
 		return null;
 	};
 	$scope.remove = function(eventId) {
-		$http.delete('/buckets/' + $scope.bucketId + '/' + eventId).success(function(response, status, headers) {
+		$http({ method : 'DELETE', url : '/buckets/' + $scope.bucketId + '/' + eventId }).success(function(response, status, headers) {
 			evalAsync($scope.refresh);
 			var undo = headers('Undo');
 			console.assert(undo, 'missing undo header');
@@ -862,7 +862,7 @@ TimelineCtrl.prototype.draw = function($scope) {
 				series : [ { color : 'gray' } ],
 				chartArea : { width: '100%', left: 0 },
 				vAxis : { gridlines : { color : '#EEE' }, baselineColor : '#EEE' },
-				hAxis : { baselineColor : 'white', textPosition : 'none' }, 
+				hAxis : { baselineColor : 'white', textPosition : 'none' } 
 			};
 			var chart = new google.visualization.ColumnChart(document.getElementById('timeline-' + $scope.settings.id));
 			chart.draw(data, options);
