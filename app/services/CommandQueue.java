@@ -4,8 +4,6 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
-import org.elasticsearch.common.base.Objects;
-
 import play.Logger;
 import play.Logger.ALogger;
 
@@ -15,6 +13,7 @@ import com.google.common.collect.Maps;
 import com.google.inject.Inject;
 import commands.Command;
 import commands.CommandHandler;
+import commands.CompoundCommand;
 
 public class CommandQueue {
 
@@ -31,11 +30,27 @@ public class CommandQueue {
 
 	public String dispatch(Command command) {
 		log.info(String.format("%s %s", command.getIdentity(), command.toString()));
-		CommandHandler<?> handler = Objects.firstNonNull(handlers.get(command.getClass()), handlers.get(command.getClass().getSuperclass()));
-		Preconditions.checkNotNull(handler, "Missing handler for %s", command.getClass());
-		handler.executeCommand(command);
+		if (command instanceof CompoundCommand) {
+			execute((CompoundCommand) command);
+		}
+		else {
+			execute(command);
+		}
+
 		history.put(command.getId(), command);
 		return command.getId();
+	}
+
+	private void execute(CompoundCommand command) {
+		for (Command c : command.getCommands()) {
+			execute(c);
+		}
+	}
+
+	private void execute(Command command) {
+		CommandHandler<?> handler = handlers.get(command.getClass());
+		Preconditions.checkNotNull(handler, "Missing handler for %s", command.getClass());
+		handler.executeCommand(command);
 	}
 
 	public Command find(String id) {

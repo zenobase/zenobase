@@ -12,7 +12,6 @@ import com.google.inject.Singleton;
 import com.google.inject.TypeLiteral;
 import com.google.inject.multibindings.Multibinder;
 import commands.CommandHandler;
-import commands.CompoundCommandHandler;
 import commands.CreateBucketCommandHandler;
 import commands.CreateEventCommandHandler;
 import commands.CreateUserCommandHandler;
@@ -58,7 +57,6 @@ public class Global extends GlobalSettings {
 				handlers.addBinding().to(DeleteUserCommandHandler.class);
 				handlers.addBinding().to(UpdateUserCommandHandler.class);
 				handlers.addBinding().to(SuspendUserCommandHandler.class);
-				handlers.addBinding().to(CompoundCommandHandler.class);
 
 				requestStaticInjection(QueueController.class);
 				requestStaticInjection(BucketListController.class);
