@@ -1,28 +1,26 @@
 package commands;
 
-import models.User;
 import models.Identity;
-import services.UserManager;
+import models.User;
 
 public class DeleteUserCommand extends CommandSupport {
 
-	private final UserManager manager;
+	public static final String TYPE = "delete user";
+
 	private final User user;
 
-	public DeleteUserCommand(UserManager manager, Identity identity, User user) {
-		super(identity);
-		this.manager = manager;
+	public DeleteUserCommand(Identity identity, User user) {
+		super(TYPE, identity);
 		this.user = user;
 	}
 
-	@Override
-	public void execute() {
-		manager.delete(user);
+	public User getUser() {
+		return user;
 	}
 
 	@Override
-	public CreateUserCommand reverse(Identity identity) {
-		return new CreateUserCommand(manager, identity, user);
+	public Command reverse(Identity identity) {
+		return new CreateUserCommand(identity, user);
 	}
 
 	@Override

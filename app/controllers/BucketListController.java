@@ -113,7 +113,7 @@ public class BucketListController extends ControllerSupport {
 		}
 		Identity identity = Identities.in(ctx()).get(true);
     	Bucket bucket = createBucket(label, description, identity);
-    	String commandId = queue.execute(new CreateBucketCommand(buckets, identity, bucket));
+    	String commandId = queue.dispatch(new CreateBucketCommand(identity, bucket));
         response().setHeader(LOCATION, String.format("/buckets/%s/", bucket.getId()));
         response().setHeader("Undo", String.format("/queue/%s", commandId));
         return created();

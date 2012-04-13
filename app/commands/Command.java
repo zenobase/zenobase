@@ -6,13 +6,13 @@ import models.Identity;
 
 public interface Command {
 
-	void execute();
-
-	Command reverse(Identity identity);
+	String getType();
 
 	String getId();
 
 	Identity getIdentity();
 
 	DateTime getTimestamp();
+
+	Command reverse(Identity identity);
 }

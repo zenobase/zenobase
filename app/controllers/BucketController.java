@@ -70,7 +70,7 @@ public class BucketController extends ControllerSupport {
     	if (bucket.getPermission(identity) != Permission.ALL) {
     		return forbidden();
     	}
-		String commandId = queue.execute(new UpdateBucketCommand(buckets, identity, bucket, new Bucket(body)));
+		String commandId = queue.dispatch(new UpdateBucketCommand(identity, bucket, new Bucket(body)));
         response().setHeader("Undo", String.format("/queue/%s", commandId));
 		return noContent();
     }
@@ -89,7 +89,7 @@ public class BucketController extends ControllerSupport {
     	if (bucket.getPermission(identity) != Permission.ALL && !users.isSuperuser(identity)) {
     		return forbidden();
     	}
-    	String commandId = queue.execute(new DeleteBucketCommand(buckets, identity, bucket));
+    	String commandId = queue.dispatch(new DeleteBucketCommand(identity, bucket));
         response().setHeader("Undo", String.format("/queue/%s", commandId));
     	return noContent();
     }

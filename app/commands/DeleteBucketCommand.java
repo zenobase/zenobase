@@ -2,27 +2,25 @@ package commands;
 
 import models.Bucket;
 import models.Identity;
-import services.BucketManager;
 
 public class DeleteBucketCommand extends CommandSupport {
 
-	private final BucketManager manager;
+	public static final String TYPE = "delete bucket";
+
 	private final Bucket bucket;
 
-	public DeleteBucketCommand(BucketManager manager, Identity identity, Bucket bucket) {
-		super(identity);
-		this.manager = manager;
+	public DeleteBucketCommand(Identity identity, Bucket bucket) {
+		super(TYPE, identity);
 		this.bucket = bucket;
 	}
 
-	@Override
-	public void execute() {
-		manager.deleteBucket(bucket.getId());
+	public Bucket getBucket() {
+		return bucket;
 	}
 
 	@Override
-	public RestoreBucketCommand reverse(Identity identity) {
-		return new RestoreBucketCommand(manager, identity, bucket);
+	public Command reverse(Identity identity) {
+		return new RestoreBucketCommand(identity, bucket);
 	}
 
 	@Override

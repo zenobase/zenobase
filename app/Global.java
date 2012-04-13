@@ -9,6 +9,20 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Singleton;
+import com.google.inject.TypeLiteral;
+import com.google.inject.multibindings.Multibinder;
+import commands.CommandHandler;
+import commands.CompoundCommandHandler;
+import commands.CreateBucketCommandHandler;
+import commands.CreateEventCommandHandler;
+import commands.CreateUserCommandHandler;
+import commands.DeleteBucketCommandHandler;
+import commands.DeleteEventCommandHandler;
+import commands.DeleteUserCommandHandler;
+import commands.RestoreBucketCommandHandler;
+import commands.SuspendUserCommandHandler;
+import commands.UpdateBucketCommandHandler;
+import commands.UpdateUserCommandHandler;
 
 import controllers.AccountController;
 import controllers.BucketController;
@@ -27,10 +41,25 @@ public class Global extends GlobalSettings {
 		injector = Guice.createInjector(new AbstractModule() {
 			@Override
 			protected void configure() {
+
 				bind(IndexManager.class).in(Singleton.class);
 				bind(BucketManager.class).in(Singleton.class);
 				bind(CommandQueue.class).in(Singleton.class);
 				bind(UserManager.class).in(Singleton.class);
+
+				Multibinder<CommandHandler<?>> handlers = Multibinder.newSetBinder(binder(), new TypeLiteral<CommandHandler<?>>() {});
+				handlers.addBinding().to(CreateBucketCommandHandler.class);
+				handlers.addBinding().to(DeleteBucketCommandHandler.class);
+				handlers.addBinding().to(RestoreBucketCommandHandler.class);
+				handlers.addBinding().to(UpdateBucketCommandHandler.class);
+				handlers.addBinding().to(CreateEventCommandHandler.class);
+				handlers.addBinding().to(DeleteEventCommandHandler.class);
+				handlers.addBinding().to(CreateUserCommandHandler.class);
+				handlers.addBinding().to(DeleteUserCommandHandler.class);
+				handlers.addBinding().to(UpdateUserCommandHandler.class);
+				handlers.addBinding().to(SuspendUserCommandHandler.class);
+				handlers.addBinding().to(CompoundCommandHandler.class);
+
 				requestStaticInjection(QueueController.class);
 				requestStaticInjection(BucketListController.class);
 				requestStaticInjection(SecurityController.class);

@@ -2,28 +2,30 @@ package commands;
 
 import models.Bucket;
 import models.Identity;
-import services.BucketManager;
 
 public class UpdateBucketCommand extends CommandSupport {
 
-	private final BucketManager manager;
+	public static final String TYPE = "update bucket";
+
 	private final Bucket from, to;
 
-	public UpdateBucketCommand(BucketManager manager, Identity identity, Bucket from, Bucket to) {
-		super(identity);
-		this.manager = manager;
+	public UpdateBucketCommand(Identity identity, Bucket from, Bucket to) {
+		super(TYPE, identity);
 		this.from = from;
 		this.to = to;
 	}
 
-	@Override
-	public void execute() {
-		manager.update(to);
+	public Bucket getFrom() {
+		return from;
+	}
+
+	public Bucket getTo() {
+		return to;
 	}
 
 	@Override
-	public UpdateBucketCommand reverse(Identity identity) {
-		return new UpdateBucketCommand(manager, identity, to, from);
+	public Command reverse(Identity identity) {
+		return new UpdateBucketCommand(identity, to, from);
 	}
 
 	@Override

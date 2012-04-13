@@ -2,31 +2,29 @@ package commands;
 
 import models.Bucket;
 import models.Identity;
-import services.BucketManager;
 
 public class CreateBucketCommand extends CommandSupport {
 
-	private final BucketManager manager;
+	public static final String TYPE = "create bucket";
+
 	private final Bucket bucket;
 
-	public CreateBucketCommand(BucketManager manager, Identity identity, Bucket bucket) {
-		super(identity);
-		this.manager = manager;
+	public CreateBucketCommand(Identity identity, Bucket bucket) {
+		super(TYPE, identity);
 		this.bucket = bucket;
 	}
 
-	@Override
-	public void execute() {
-		manager.store(bucket, true);
+	public Bucket getBucket() {
+		return bucket;
 	}
 
 	@Override
-	public DeleteBucketCommand reverse(Identity identity) {
-		return new DeleteBucketCommand(manager, identity, bucket);
+	public Command reverse(Identity identity) {
+		return new DeleteBucketCommand(identity, bucket);
 	}
 
 	@Override
 	public String toString() {
-		return String.format("created '%s'", bucket);
+		return String.format("create '%s'", bucket);
 	}
 }

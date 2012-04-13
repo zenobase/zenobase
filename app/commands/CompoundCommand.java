@@ -8,11 +8,13 @@ import com.google.common.collect.Lists;
 
 public class CompoundCommand extends CommandSupport {
 
+	public static final String TYPE = "compound command";
+
 	private final List<Command> commands = Lists.newArrayList();
 	private final String message, reverseMessage;
 
 	public CompoundCommand(Identity identity, String message, String reverseMessage) {
-		super(identity);
+		super(TYPE, identity);
 		this.message = message;
 		this.reverseMessage = reverseMessage;
 	}
@@ -21,18 +23,15 @@ public class CompoundCommand extends CommandSupport {
 		commands.add(command);
 	}
 
-	@Override
-	public void execute() {
-		for (Command command : commands) {
-			command.execute();
-		}
+	public List<Command> getCommands() {
+		return commands;
 	}
 
 	@Override
 	public Command reverse(Identity identity) {
 		CompoundCommand reverse = new CompoundCommand(identity, reverseMessage, message);
-		for (Command command : Lists.reverse(commands)) {
-			reverse.add(command.reverse(identity));
+		for (Command c : Lists.reverse(commands)) {
+			reverse.add(c.reverse(identity));
 		}
 		return reverse;
 	}

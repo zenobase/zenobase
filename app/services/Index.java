@@ -61,6 +61,7 @@ public class Index {
 	}
 
 	private void index(String type, String id, ObjectNode object, OpType operation, boolean refresh) {
+		// TODO: .setReplicationType(ReplicationType.ASYNC)
 		client.prepareIndex(indexName, type, id).setSource(Nodes.toByteArray(object)).setOpType(operation).setRefresh(refresh).execute().actionGet();
 	}
 

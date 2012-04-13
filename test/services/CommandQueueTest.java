@@ -1,12 +1,17 @@
 package services;
 
+import java.util.Set;
+
 import junit.framework.Assert;
 
+import org.elasticsearch.common.collect.Sets;
 import org.junit.Test;
 
 import models.Identity;
 
 import commands.Command;
+import commands.CommandHandler;
+import commands.CommandHandlerSupport;
 import commands.CommandSupport;
 
 public class CommandQueueTest {
@@ -14,7 +19,8 @@ public class CommandQueueTest {
 	@Test
 	public void test() {
 
-		CommandQueue queue = new CommandQueue();
+		Set<CommandHandler<?>> handlers = Sets.<CommandHandler<?>>newHashSet(new MockCommandHandler());
+		CommandQueue queue = new CommandQueue(handlers);
 		Assert.assertEquals(0, queue.size());
 		Assert.assertEquals(0, queue.getHistory(0, 2).size());
 		Assert.assertEquals(0, queue.getHistory(2, 4).size());
@@ -23,14 +29,14 @@ public class CommandQueueTest {
 		Command c2 = new MockCommand("second");
 		Command c3 = new MockCommand("third");
 
-		queue.execute(c1);
+		queue.dispatch(c1);
 		Assert.assertEquals(1, queue.size());
 		Assert.assertEquals(1, queue.getHistory(0, 2).size());
 		Assert.assertEquals(0, queue.getHistory(2, 4).size());
 		Assert.assertSame(c1, queue.getHistory(0, 2).get(0));
 
-		queue.execute(c2);
-		queue.execute(c3);
+		queue.dispatch(c2);
+		queue.dispatch(c3);
 		Assert.assertEquals(3, queue.size());
 		Assert.assertEquals(2, queue.getHistory(0, 2).size());
 		Assert.assertEquals(1, queue.getHistory(2, 4).size());
@@ -44,13 +50,8 @@ public class CommandQueueTest {
 		private final String label;
 
 		public MockCommand(String label) {
-			super(new Identity("me"));
+			super("mock", new Identity("me"));
 			this.label = label;
-		}
-
-		@Override
-		public void execute() {
-			
 		}
 
 		@Override
@@ -61,6 +62,18 @@ public class CommandQueueTest {
 		@Override
 		public String toString() {
 			return label;
+		}
+	}
+
+	private static class MockCommandHandler extends CommandHandlerSupport<MockCommand> {
+
+		public MockCommandHandler() {
+			super(MockCommand.class);
+		}
+
+		@Override
+		public void execute(MockCommand command) {
+			
 		}
 	}
 }

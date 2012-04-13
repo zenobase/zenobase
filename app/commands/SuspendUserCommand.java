@@ -1,31 +1,32 @@
 package commands;
 
-import models.User;
 import models.Identity;
-import services.UserManager;
+import models.User;
 
 public class SuspendUserCommand extends CommandSupport {
 
-	private final UserManager manager;
+	public static final String TYPE = "suspend user";
+
 	private final User user;
 	private final boolean suspend;
 
-	public SuspendUserCommand(UserManager manager, Identity identity, User user, boolean suspend) {
-		super(identity);
-		this.manager = manager;
+	public SuspendUserCommand(Identity identity, User user, boolean suspend) {
+		super(TYPE, identity);
 		this.user = user;
 		this.suspend = suspend;
 	}
 
-	@Override
-	public void execute() {
-		user.setSuspended(suspend);
-		manager.update(user);
+	public User getUser() {
+		return user;
+	}
+
+	public boolean isSuspend() {
+		return suspend;
 	}
 
 	@Override
-	public SuspendUserCommand reverse(Identity identity) {
-		return new SuspendUserCommand(manager, identity, user, !suspend);
+	public Command reverse(Identity identity) {
+		return new SuspendUserCommand(identity, user, !suspend);
 	}
 
 	@Override

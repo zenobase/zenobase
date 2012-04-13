@@ -71,7 +71,7 @@ public class EventController extends ControllerSupport {
     		return forbidden();
     	}
     	if (body.has("random")) {
-    		String commandId = queue.execute(new GenerateRandomEventsCommand(identity, manager, bucketId, body.get("random").asInt()));
+    		String commandId = queue.dispatch(new GenerateRandomEventsCommand(identity, bucketId, body.get("random").asInt()));
             response().setHeader(LOCATION, String.format("/buckets/%s/", bucket.getId()));
             response().setHeader("Undo", String.format("/queue/%s", commandId));
             return created();
@@ -83,7 +83,7 @@ public class EventController extends ControllerSupport {
     		if (!event.contains(Event.TIMESTAMP)) {
     			event.addValue(Event.TIMESTAMP, new DateTime());
     		}
-    		String commandId = queue.execute(new CreateEventCommand(manager, identity, bucketId, event));
+    		String commandId = queue.dispatch(new CreateEventCommand( identity, bucketId, event));
             response().setHeader(LOCATION, String.format("/buckets/%s/%s", bucket.getId(), event.getId()));
             response().setHeader("Undo", String.format("/queue/%s", commandId));
             return created();
@@ -124,7 +124,7 @@ public class EventController extends ControllerSupport {
     }
 
     private static Result delete(String bucketId, Event event, Identity identity) {
-    	String commandId = queue.execute(new DeleteEventCommand(manager, identity, bucketId, event));
+    	String commandId = queue.dispatch(new DeleteEventCommand(identity, bucketId, event));
         response().setHeader("Undo", String.format("/queue/%s", commandId));
     	return noContent();
     }

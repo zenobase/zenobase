@@ -1,40 +1,48 @@
 package commands;
 
-import models.User;
 import models.Identity;
-import services.UserManager;
+import models.User;
 
 public class UpdateUserCommand extends CommandSupport {
 
-	private final UserManager manager;
-	private final User oldUser, newUser;
+	public static final String TYPE = "update user";
 
-	public UpdateUserCommand(UserManager manager, Identity identity, User user, String email, String password, boolean verified) {
-		super(identity);
-		this.manager = manager;
-		oldUser = user;
-		newUser = user.copy();
+	private final User from, to;
+
+	public UpdateUserCommand(Identity identity, User user, String email, String password, boolean verified) {
+		super(TYPE, identity);
+		from = user;
+		to = user.copy();
 		if (email != null) {
-			newUser.setEmail(email);
-			newUser.setVerified(verified);
+			to.setEmail(email);
+			to.setVerified(verified);
 		}
 		if (password != null) {
-			newUser.changePassword(password);
+			to.changePassword(password);
 		}
 	}
 
-	@Override
-	public void execute() {
-		manager.update(newUser);
+	public UpdateUserCommand(Identity identity, User from, User to) {
+		super(TYPE, identity);
+		this.from = from;
+		this.to = to;
+	}
+
+	public User getFrom() {
+		return from;
+	}
+
+	public User getTo() {
+		return to;
 	}
 
 	@Override
-	public UpdateUserCommand reverse(Identity identity) {
-		return new UpdateUserCommand(manager, identity, newUser, oldUser.getEmail(), oldUser.getPassword(), oldUser.isVerified());
+	public Command reverse(Identity identity) {
+		return new UpdateUserCommand(identity, to, from);
 	}
 
 	@Override
 	public String toString() {
-		return String.format("updated user %s", oldUser.getName());
+		return String.format("updated user %s", from.getName());
 	}
 }

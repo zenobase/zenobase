@@ -2,33 +2,35 @@ package commands;
 
 import models.Event;
 import models.Identity;
-import services.BucketManager;
 
 public class DeleteEventCommand extends CommandSupport {
 
-	private final BucketManager bucketManager;
+	public static final String TYPE = "delete event";
+
 	private final String bucketId;
 	private final Event event;
 
-	public DeleteEventCommand(BucketManager bucketManager, Identity identity, String bucketId, Event event) {
-		super(identity);
-		this.bucketManager = bucketManager;
+	public DeleteEventCommand(Identity identity, String bucketId, Event event) {
+		super(TYPE, identity);
 		this.bucketId = bucketId;
 		this.event = event;
 	}
 
-	@Override
-	public void execute() {
-		bucketManager.delete(bucketId, event.getId());
+	public String getBucketId() {
+		return bucketId;
+	}
+
+	public Event getEvent() {
+		return event;
 	}
 
 	@Override
 	public Command reverse(Identity identity) {
-		return new CreateEventCommand(bucketManager, identity, bucketId, event);
+		return new CreateEventCommand(identity, bucketId, event);
 	}
 
 	@Override
 	public String toString() {
-		return String.format("removed an event from '%s'", bucketManager);
+		return String.format("removed an event from '%s'", bucketId);
 	}
 }

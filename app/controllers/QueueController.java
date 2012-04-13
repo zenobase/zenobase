@@ -58,7 +58,7 @@ public class QueueController extends ControllerSupport {
     }
 
     private static Result undo(Command command, Identity identity) {
-    	String undoId = queue.execute(command.reverse(identity));
+    	String undoId = queue.dispatch(command.reverse(identity));
     	response().setHeader("Undo",  String.format("/queue/%s", undoId));
         return created();
     }
