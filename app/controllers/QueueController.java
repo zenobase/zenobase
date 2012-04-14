@@ -2,17 +2,18 @@ package controllers;
 
 import javax.inject.Inject;
 
+import models.Identity;
+
 import org.codehaus.jackson.node.ArrayNode;
 import org.codehaus.jackson.node.ObjectNode;
 
 import play.mvc.Result;
 import play.mvc.With;
-import models.Identity;
 import services.CommandQueue;
 import services.UserManager;
 
 import commands.Command;
-import commands.CommandSerializer;
+import commands.CommandSupport;
 import common.Identities;
 import common.Nodes;
 
@@ -37,7 +38,10 @@ public class QueueController extends ControllerSupport {
     	object.put("total", queue.size());
     	ArrayNode commandsNode = object.putArray("commands");
     	for (Command command : queue.getHistory(offset, limit)) {
-    		commandsNode.add(CommandSerializer.toJson(command));
+    		ObjectNode commandNode = command.toJson();
+    		commandNode.put("label", command.toString());
+    		commandNode.remove(CommandSupport.PARAMETERS.getName());
+    		commandsNode.add(commandNode);
     	}
     	return ok(object);
     }

@@ -12,7 +12,7 @@ import services.BucketManager;
 import services.CommandQueue;
 import services.UserManager;
 
-import commands.CloseAccountCommand;
+import commands.CloseAccountCommandBuilder;
 import commands.CreateUserCommand;
 import common.Identities;
 
@@ -58,7 +58,7 @@ public class AccountController extends ControllerSupport {
 		if (!user.equals(identity) && !users.isSuperuser(identity)) {
 			return forbidden();
 		}
-		String commandId = queue.dispatch(new CloseAccountCommand(identity, buckets, users, user));
+		String commandId = queue.dispatch(new CloseAccountCommandBuilder(identity, buckets, user).build());
         response().setHeader("Undo", String.format("/queue/%s", commandId));
 		return noContent();
 	}

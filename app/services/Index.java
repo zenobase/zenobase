@@ -65,8 +65,8 @@ public class Index {
 		client.prepareIndex(indexName, type, id).setSource(Nodes.toByteArray(object)).setOpType(operation).setRefresh(refresh).execute().actionGet();
 	}
 
-	public void delete(String type, String id) {
-		client.prepareDelete(indexName, type, id).execute().actionGet();
+	public void delete(String type, String id, boolean refresh) {
+		client.prepareDelete(indexName, type, id).setRefresh(refresh).execute().actionGet();
 	}
 
 	public boolean exists() {

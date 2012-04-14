@@ -14,9 +14,9 @@ public abstract class CommandHandlerSupport<C extends Command> implements Comman
 	}
 
 	@Override
-	public void executeCommand(Command command) {
-		execute(type.cast(command));
+	public void execute(Command command) {
+		executeTyped(type.cast(command));
 	}
 
-	protected abstract void execute(C command);
+	protected abstract void executeTyped(C command);
 }

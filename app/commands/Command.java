@@ -1,8 +1,9 @@
 package commands;
 
-import org.joda.time.DateTime;
-
 import models.Identity;
+
+import org.codehaus.jackson.node.ObjectNode;
+import org.joda.time.DateTime;
 
 public interface Command {
 
@@ -15,4 +16,6 @@ public interface Command {
 	DateTime getTimestamp();
 
 	Command reverse(Identity identity);
+
+	ObjectNode toJson();
 }

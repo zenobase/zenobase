@@ -3,15 +3,20 @@ package services;
 import java.util.Set;
 
 import junit.framework.Assert;
+import models.Identity;
 
+import org.codehaus.jackson.node.ObjectNode;
 import org.elasticsearch.common.collect.Sets;
 import org.junit.Test;
 
-import models.Identity;
+import schema.TokenField;
 
 import commands.Command;
 import commands.CommandHandler;
 import commands.CommandHandlerSupport;
+import commands.CommandParser;
+import commands.CommandParserRegistry;
+import commands.CommandParserSupport;
 import commands.CommandSupport;
 
 public class CommandQueueTest {
@@ -19,8 +24,9 @@ public class CommandQueueTest {
 	@Test
 	public void test() {
 
-		Set<CommandHandler<?>> handlers = Sets.<CommandHandler<?>>newHashSet(new MockCommandHandler());
-		CommandQueue queue = new CommandQueue(handlers);
+		Set<CommandHandler<?>> handlers = Sets.<CommandHandler<?>>newHashSet(new MockCommand.Handler());
+		Set<CommandParser> parsers = Sets.<CommandParser>newHashSet(new MockCommand.Parser());
+		CommandQueue queue = new CommandQueue(new CommandHandlerRegistry(handlers), new CommandParserRegistry(parsers));
 		Assert.assertEquals(0, queue.size());
 		Assert.assertEquals(0, queue.getHistory(0, 2).size());
 		Assert.assertEquals(0, queue.getHistory(2, 4).size());
@@ -47,11 +53,15 @@ public class CommandQueueTest {
 
 	private static class MockCommand extends CommandSupport {
 
-		private final String label;
+		private static final TokenField LABEL = new TokenField("label");
+
+		private MockCommand(ObjectNode object) {
+			super(object);
+		}
 
 		public MockCommand(String label) {
 			super("mock", new Identity("me"));
-			this.label = label;
+			setParameter(LABEL, label);
 		}
 
 		@Override
@@ -61,19 +71,30 @@ public class CommandQueueTest {
 
 		@Override
 		public String toString() {
-			return label;
-		}
-	}
-
-	private static class MockCommandHandler extends CommandHandlerSupport<MockCommand> {
-
-		public MockCommandHandler() {
-			super(MockCommand.class);
+			return getValue(LABEL);
 		}
 
-		@Override
-		public void execute(MockCommand command) {
-			
+		static class Handler extends CommandHandlerSupport<MockCommand> {
+
+			public Handler() {
+				super(MockCommand.class);
+			}
+
+			@Override
+			public void executeTyped(MockCommand command) {
+				
+			}
+		}
+
+		static class Parser extends CommandParserSupport {
+			@Override
+			public String getType() {
+				return "mock";
+			}
+			@Override
+			public Command parse(ObjectNode object) {
+				return new MockCommand(object);
+			}
 		}
 	}
 }

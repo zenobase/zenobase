@@ -123,6 +123,18 @@ public class UserController extends ControllerSupport {
 			return email == null && password == null;
 		}
 
+		public User apply(User from) {
+			User to = from.copy();
+			if (email != null) {
+				to.setEmail(email);
+				to.setVerified(false);
+			}
+			if (password != null) {
+				to.changePassword(password);
+			}
+			return to;
+		}
+
 		public static UserUpdate parse(ObjectNode objectNode) {
 			String email = objectNode.findPath(User.EMAIL.getName()).getTextValue();
 			String password = objectNode.findPath(User.PASSWORD.getName()).getTextValue();
@@ -148,7 +160,7 @@ public class UserController extends ControllerSupport {
     	}
     	UserUpdate update = UserUpdate.parse(body);
     	if (!update.isEmpty()) {
-    		String commandId = queue.dispatch(new UpdateUserCommand(identity, user, update.getEmail(), update.getPassword(), update.getEmail() != null));
+    		String commandId = queue.dispatch(new UpdateUserCommand(identity, user, update.apply(user)));
             response().setHeader("Undo", String.format("/queue/%s", commandId));
     		return noContent();
     	}

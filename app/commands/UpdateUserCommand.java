@@ -3,46 +3,73 @@ package commands;
 import models.Identity;
 import models.User;
 
+import org.codehaus.jackson.node.ObjectNode;
+
+import schema.ObjectField;
+import services.UserManager;
+
+import com.google.inject.Inject;
+
 public class UpdateUserCommand extends CommandSupport {
 
-	public static final String TYPE = "update user";
+	private static final String TYPE = "update user";
+	private static final ObjectField FROM = new ObjectField("from");
+	private static final ObjectField TO = new ObjectField("to");
 
-	private final User from, to;
-
-	public UpdateUserCommand(Identity identity, User user, String email, String password, boolean verified) {
-		super(TYPE, identity);
-		from = user;
-		to = user.copy();
-		if (email != null) {
-			to.setEmail(email);
-			to.setVerified(verified);
-		}
-		if (password != null) {
-			to.changePassword(password);
-		}
+	private UpdateUserCommand(ObjectNode object) {
+		super(object);
 	}
 
 	public UpdateUserCommand(Identity identity, User from, User to) {
 		super(TYPE, identity);
-		this.from = from;
-		this.to = to;
+		setParameter(FROM, from.toJson());
+		setParameter(TO, to.toJson());
 	}
 
-	public User getFrom() {
-		return from;
+	private User getFrom() {
+		return new User(getParameter(FROM));
 	}
 
-	public User getTo() {
-		return to;
+	private User getTo() {
+		return new User(getParameter(TO));
 	}
 
 	@Override
 	public Command reverse(Identity identity) {
-		return new UpdateUserCommand(identity, to, from);
+		return new UpdateUserCommand(identity, getTo(), getFrom());
 	}
 
 	@Override
 	public String toString() {
-		return String.format("updated user %s", from.getName());
+		return String.format("updated user %s", getTo().getName());
+	}
+
+	public static class Parser extends CommandParserSupport {
+
+		@Override
+		public String getType() {
+			return TYPE;
+		}
+
+		@Override
+		public Command parse(ObjectNode object) {
+			return new UpdateUserCommand(object);
+		}
+	}
+
+	public static class Handler extends CommandHandlerSupport<UpdateUserCommand> {
+
+		private final UserManager manager;
+
+		@Inject
+		public Handler(UserManager manager) {
+			super(UpdateUserCommand.class);
+			this.manager = manager;
+		}
+
+		@Override
+		public void executeTyped(UpdateUserCommand command) {
+			manager.update(command.getTo());
+		}
 	}
 }

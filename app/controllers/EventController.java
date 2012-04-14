@@ -2,24 +2,25 @@ package controllers;
 
 import javax.inject.Inject;
 
+import models.Bucket;
+import models.Event;
+import models.Identity;
+import models.Permission;
+
 import org.codehaus.jackson.node.ObjectNode;
 import org.joda.time.DateTime;
 
-import models.Bucket;
-import models.Event;
-import models.Permission;
 import play.mvc.BodyParser;
 import play.mvc.Result;
 import play.mvc.With;
 import search.EventSearch;
-import models.Identity;
 import services.BucketManager;
 import services.CommandQueue;
 import services.IndexManager;
 
 import commands.CreateEventCommand;
 import commands.DeleteEventCommand;
-import commands.GenerateRandomEventsCommand;
+import commands.RandomEventsCommandBuilder;
 import common.Generator;
 import common.Identities;
 
@@ -71,7 +72,7 @@ public class EventController extends ControllerSupport {
     		return forbidden();
     	}
     	if (body.has("random")) {
-    		String commandId = queue.dispatch(new GenerateRandomEventsCommand(identity, bucketId, body.get("random").asInt()));
+    		String commandId = queue.dispatch(new RandomEventsCommandBuilder(identity, bucketId).build(body.get("random").asInt()));
             response().setHeader(LOCATION, String.format("/buckets/%s/", bucket.getId()));
             response().setHeader("Undo", String.format("/queue/%s", commandId));
             return created();

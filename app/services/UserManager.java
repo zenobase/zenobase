@@ -104,7 +104,7 @@ public class UserManager {
 	}
 
 	public void delete(User user) {
-		index.delete(User.TYPE_NAME, user.getName());
+		index.delete(User.TYPE_NAME, user.getName(), true);
 	}
 
 	public boolean isEmpty() {

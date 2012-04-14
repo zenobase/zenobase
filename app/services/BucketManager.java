@@ -6,6 +6,7 @@ import javax.inject.Inject;
 
 import models.Bucket;
 import models.Event;
+import models.Identity;
 
 import org.codehaus.jackson.node.ObjectNode;
 import org.elasticsearch.common.collect.Lists;
@@ -17,7 +18,6 @@ import org.elasticsearch.search.builder.SearchSourceBuilder;
 
 import play.Logger;
 import schema.PermissionField;
-import models.Identity;
 
 import com.google.common.collect.ImmutableList;
 import common.Callback;
@@ -69,7 +69,7 @@ public class BucketManager {
 	}
 
 	public void deleteBucket(String id) {
-		index.delete(QueryBuilders.termQuery(Bucket.ID.getName(), id));
+		index.delete(Bucket.TYPE_NAME, id, true);
 		getIndex(id).close();
 	}
 
@@ -134,7 +134,7 @@ public class BucketManager {
 	}
 
 	public void delete(String bucketId, String eventId) {
-		getIndex(bucketId).delete(Event.TYPE_NAME, eventId);
+		getIndex(bucketId).delete(Event.TYPE_NAME, eventId, false);
 	}
 
 	public Event findEvent(String bucketId, String eventId) {
