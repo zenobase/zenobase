@@ -38,7 +38,7 @@ public class QueueController extends ControllerSupport {
     	object.put("total", queue.size());
     	ArrayNode commandsNode = object.putArray("commands");
     	for (Command command : queue.getHistory(offset, limit)) {
-    		ObjectNode commandNode = command.toJson();
+    		ObjectNode commandNode = Nodes.copy(command.toJson());
     		commandNode.put("label", command.toString());
     		commandNode.remove(CommandSupport.PARAMETERS.getName());
     		commandsNode.add(commandNode);
