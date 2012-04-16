@@ -7,6 +7,7 @@ import org.codehaus.jackson.node.ArrayNode;
 import org.codehaus.jackson.node.ObjectNode;
 import org.elasticsearch.common.collect.Iterables;
 
+import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 
 public abstract class Field<T> {
@@ -71,6 +72,7 @@ public abstract class Field<T> {
 	protected abstract T getValue(JsonNode node);
 
 	public void addValue(ObjectNode object, T value) {
+		Preconditions.checkNotNull(value, "Can't add null value");
 		JsonNode node = object.get(name);
 		if (node == null) {
 			ArrayNode arrayNode = object.putArray(name);
@@ -105,7 +107,12 @@ public abstract class Field<T> {
 	}
 
 	public void setValue(ObjectNode object, T value) {
-		object.put(name, toJson(value));
+		if (value != null) {
+			object.put(name, toJson(value));
+		}
+		else {
+			object.remove(name);
+		}
 	}
 
 	public void setValues(ObjectNode object, String fieldName, Iterable<T> values) {
@@ -115,6 +122,7 @@ public abstract class Field<T> {
 
 	private void addValues(ArrayNode node, Iterable<T> values) {
 		for (T value : values) {
+			Preconditions.checkNotNull(value, "Can't add null value");
 			node.add(toJson(value));
 		}
 	}
