@@ -13,7 +13,7 @@ HistoryAdminCtrl.$inject = ['$scope', '$http'];
 function HistoryAdminCtrl($scope, $http) {
 
 	$scope.offset = 0;
-	$scope.limit = 5;
+	$scope.limit = 10;
 	$scope.total = 0;
 	$scope.commands = null;
 
@@ -54,7 +54,7 @@ BucketListAdminCtrl.$inject = ['$scope', '$http'];
 function BucketListAdminCtrl($scope, $http) {
 
 	$scope.offset = 0;
-	$scope.limit = 5;
+	$scope.limit = 10;
 	$scope.total = 0;
 	$scope.buckets = null;
 
@@ -110,7 +110,7 @@ UserListAdminCtrl.$inject = ['$scope', '$http'];
 function UserListAdminCtrl($scope, $http) {
 
 	$scope.offset = 0;
-	$scope.limit = 5;
+	$scope.limit = 10;
 	$scope.total = 0;
 	$scope.users = null;
 
