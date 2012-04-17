@@ -12,16 +12,12 @@ import org.codehaus.jackson.node.ObjectNode;
 import org.elasticsearch.common.collect.Lists;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
-import org.elasticsearch.search.SearchHit;
-import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 
 import play.Logger;
 import schema.PermissionField;
 
-import com.google.common.collect.ImmutableList;
 import common.Callback;
-import common.Nodes;
 import common.PartialList;
 
 public class BucketManager {
@@ -78,15 +74,6 @@ public class BucketManager {
 		return object != null ? new Bucket(object) : null;
 	}
 
-	public ImmutableList<Bucket> findParticipants(String bucketId) {
-		ImmutableList.Builder<Bucket> buckets = ImmutableList.builder();
-		QueryBuilder query = QueryBuilders.termQuery(Bucket.ID.getName(), bucketId);
-		for (SearchHit hit : index.search(query).getHits()) {
-			buckets.add(new Bucket(Nodes.read(hit.source())));
-		}
-		return buckets.build();
-	}
-
 	public PartialList<Bucket> findBuckets(int offset, int limit) {
 		return findBuckets(QueryBuilders.matchAllQuery(), offset, limit);
 	}
@@ -104,11 +91,11 @@ public class BucketManager {
 		List<Bucket> buckets = Lists.newArrayList();
 		SearchSourceBuilder search = new SearchSourceBuilder()
 			.query(query).from(offset).size(limit);
-		SearchHits hits = index.search(search).hits();
-		for (SearchHit hit : hits) {
-			buckets.add(new Bucket(Nodes.read(hit.source())));
+		PartialList<ObjectNode> hits = index.find(search);
+		for (ObjectNode hit : hits.getElements()) {
+			buckets.add(new Bucket(hit));
 		}
-		return new PartialList<Bucket>(buckets, hits.getTotalHits());
+		return new PartialList<Bucket>(buckets, hits.size());
 	}
 
 	public void findBuckets(final Callback<Bucket> callback) {
@@ -120,7 +107,7 @@ public class BucketManager {
 	}
 
 	public void findBuckets(QueryBuilder query, final Callback<Bucket> callback) {
-		index.search(query, new Callback<ObjectNode>() {
+		index.find(query, new Callback<ObjectNode>() {
 			@Override
 			public void call(ObjectNode object) {
 				callback.call(new Bucket(object));

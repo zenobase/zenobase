@@ -4,11 +4,14 @@ import org.codehaus.jackson.node.ObjectNode;
 import org.elasticsearch.common.base.Objects;
 
 import schema.Field;
+import schema.LongField;
 
 import com.google.common.collect.ImmutableList;
 import common.Nodes;
 
 public class DomainNode {
+
+	public static final LongField VERSION = new LongField("version", false);
 
 	private final ObjectNode object;
 
@@ -18,6 +21,10 @@ public class DomainNode {
 
 	public DomainNode() {
 		object = Nodes.newObject();
+	}
+
+	public long getVersion() {
+		return getValue(VERSION);
 	}
 
 	protected <T> T getValue(Field<T> field) {

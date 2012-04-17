@@ -5,15 +5,14 @@ import org.codehaus.jackson.node.ObjectNode;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 
-import common.BCrypt;
-import common.Nodes;
-
 import schema.BooleanField;
 import schema.DateTimeField;
 import schema.Schema;
 import schema.SchemaBuilder;
 import schema.TokenField;
-import models.Identity;
+
+import common.BCrypt;
+import common.Nodes;
 
 public class User extends DomainNode {
 
@@ -117,7 +116,7 @@ public class User extends DomainNode {
 
 	public static Schema getSchema() {
 		return new SchemaBuilder(TYPE_NAME)
-			.add(ID).add(NAME)
+			.add(VERSION).add(ID).add(NAME)
 			.add(CREATED).add(PASSWORD).add(EMAIL)
 			.add(VERIFIED).add(SUSPENDED).add(SUPERUSER).build();
 	}

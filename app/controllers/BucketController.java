@@ -7,6 +7,7 @@ import models.Permission;
 
 import org.codehaus.jackson.node.ObjectNode;
 
+import play.Logger;
 import play.mvc.BodyParser;
 import play.mvc.Result;
 import play.mvc.With;
@@ -67,6 +68,7 @@ public class BucketController extends ControllerSupport {
     	if (bucket == null) {
     		return notFound();
     	}
+    	Logger.info("got bucket " + bucket.getVersion());
     	if (bucket.getPermission(identity) != Permission.ALL) {
     		return forbidden();
     	}

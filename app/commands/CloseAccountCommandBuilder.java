@@ -21,7 +21,7 @@ public class CloseAccountCommandBuilder {
 
 	public Command build() {
 		final CompoundCommand command = new CompoundCommand(identity, String.format("closed account %s", user.getName()), String.format("reopened account %s", user.getName()));
-		command.add(new SuspendUserCommand(identity, user.asIdentity(), true));
+		command.add(new SuspendUserCommand(identity, user.getName(), true));
 		buckets.findBuckets(user.asIdentity(), new Callback<Bucket>() {
 			@Override
 			public void call(Bucket bucket) {

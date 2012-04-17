@@ -11,15 +11,12 @@ import org.codehaus.jackson.node.ObjectNode;
 import org.elasticsearch.common.collect.Lists;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
-import org.elasticsearch.search.SearchHit;
-import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 
 import play.Logger;
 
 import com.google.common.base.Preconditions;
 import common.Callback;
-import common.Nodes;
 import common.PartialList;
 
 public class UserManager {
@@ -39,11 +36,11 @@ public class UserManager {
 	}
 
 	public User find(Identity identity) {
-		SearchHits hits = index.search(identityEquals(identity)).hits();
-		Preconditions.checkState(hits.totalHits() <= 1,
-			"Expected 0..1 hits for identity '%s' but got %s", identity, hits.totalHits());
-		return hits.totalHits() > 0L ?
-			new User(Nodes.read(hits.getAt(0).source())) : null;
+		PartialList<ObjectNode> hits = index.find(identityEquals(identity));
+		Preconditions.checkState(hits.size() <= 1,
+			"Expected 0..1 hits for identity '%s' but got %s", identity, hits.size());
+		return hits.size() > 0L ?
+			new User(hits.getElements().get(0)) : null;
 	}
 
 	public PartialList<User> find(int offset, int limit) {
@@ -52,15 +49,15 @@ public class UserManager {
 			.query(QueryBuilders.matchAllQuery())
 			.from(offset).size(limit)
 			.sort(User.NAME.getName());
-		SearchHits hits = index.search(search).hits();
-		for (SearchHit hit : hits) {
-			users.add(new User(Nodes.read(hit.source())));
+		PartialList<ObjectNode> hits = index.find(search);
+		for (ObjectNode object : hits.getElements()) {
+			users.add(new User(object));
 		}
-		return new PartialList<User>(users, hits.totalHits());
+		return new PartialList<User>(users, hits.size());
 	}
 
 	public void find(final Callback<User> callback) {
-		index.search(QueryBuilders.matchAllQuery(), new Callback<ObjectNode>() {
+		index.find(QueryBuilders.matchAllQuery(), new Callback<ObjectNode>() {
 			@Override
 			public void call(ObjectNode object) {
 				callback.call(new User(object));
@@ -89,10 +86,10 @@ public class UserManager {
 		QueryBuilder query = QueryBuilders.boolQuery()
 			.must(identityEquals(identity))
 			.must(isSuperuser(true));
-		SearchHits hits = index.search(query).hits();
-		Preconditions.checkState(hits.totalHits() <= 1,
-			"Expected 0..1 hits for identity '%s' but got %s", identity, hits.totalHits());
-		return hits.totalHits() > 0L;
+		PartialList<ObjectNode> hits = index.find(query);
+		Preconditions.checkState(hits.size() <= 1,
+			"Expected 0..1 hits for identity '%s' but got %s", identity, hits.size());
+		return hits.size() > 0L;
 	}
 
 	public void store(User user) {

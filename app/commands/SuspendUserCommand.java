@@ -6,7 +6,7 @@ import models.User;
 import org.codehaus.jackson.node.ObjectNode;
 
 import schema.BooleanField;
-import schema.IdentityField;
+import schema.TokenField;
 import services.UserManager;
 
 import com.google.inject.Inject;
@@ -14,21 +14,21 @@ import com.google.inject.Inject;
 public class SuspendUserCommand extends CommandSupport {
 
 	private static final String TYPE = "suspend user";
-	private static final IdentityField IDENTITY = new IdentityField("identity");
+	private static final TokenField NAME = new TokenField("name");
 	private static final BooleanField SUSPEND = new BooleanField("suspend");
 
 	private SuspendUserCommand(ObjectNode object) {
 		super(object);
 	}
 
-	public SuspendUserCommand(Identity identity, Identity user, boolean suspend) {
+	public SuspendUserCommand(Identity identity, String name, boolean suspend) {
 		super(TYPE, identity);
-		setParameter(IDENTITY, user);
+		setParameter(NAME, name);
 		setParameter(SUSPEND, suspend);
 	}
 
-	private Identity getUser() {
-		return getParameter(IDENTITY);
+	private String getName() {
+		return getParameter(NAME);
 	}
 
 	private boolean isSuspend() {
@@ -37,12 +37,12 @@ public class SuspendUserCommand extends CommandSupport {
 
 	@Override
 	public Command reverse(Identity identity) {
-		return new SuspendUserCommand(identity, getUser(), !isSuspend());
+		return new SuspendUserCommand(identity, getName(), !isSuspend());
 	}
 
 	@Override
 	public String toString() {
-		return String.format("%s user %s", isSuspend() ? "suspended" : "unsuspended", getUser());
+		return String.format("%s user %s", isSuspend() ? "suspended" : "unsuspended", getName());
 	}
 
 	public static class Parser extends CommandParserSupport {
@@ -70,7 +70,7 @@ public class SuspendUserCommand extends CommandSupport {
 
 		@Override
 		public void executeTyped(SuspendUserCommand command) {
-			User user = manager.find(command.getUser());
+			User user = manager.find(command.getName());
 			user.setSuspended(command.isSuspend());
 			manager.update(user);
 		}

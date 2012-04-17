@@ -544,6 +544,7 @@ function BucketFormCtrl($scope, $http) {
 			var undo = headers('Undo');
 			console.assert(undo, 'missing undo header');
 			$scope.alert.show('Saved settings.', 'alert-success', undo);
+			++$scope.$parent.bucket.version;
 			$scope.$parent.cancel();
 		});
 	};

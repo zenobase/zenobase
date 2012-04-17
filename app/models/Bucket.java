@@ -88,7 +88,7 @@ public class Bucket extends DomainNode {
 	}
 
 	public static Schema getSchema() {
-		return new SchemaBuilder(TYPE_NAME)
+		return new SchemaBuilder(TYPE_NAME).add(VERSION)
 			.add(ID).add(LABEL).add(DESCRIPTION)
 			.add(PERMISSIONS).add(WIDGETS).build();
 	}

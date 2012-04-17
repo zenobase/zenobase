@@ -2,7 +2,6 @@ package services;
 
 import org.codehaus.jackson.node.ObjectNode;
 import org.elasticsearch.index.query.QueryBuilders;
-import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.elasticsearch.search.sort.SortOrder;
 
@@ -13,7 +12,6 @@ import com.google.inject.Inject;
 import commands.Command;
 import commands.CommandParserRegistry;
 import commands.CommandSupport;
-import common.Nodes;
 
 public class PersistentCommandStore implements CommandStore {
 
@@ -49,8 +47,8 @@ public class PersistentCommandStore implements CommandStore {
 		ImmutableList.Builder<Command> commands = ImmutableList.builder();
 		SearchSourceBuilder search = new SearchSourceBuilder().query(QueryBuilders.matchAllQuery())
 			.from(offset).size(limit).sort(CommandSupport.TIMESTAMP.getName(), SortOrder.DESC);
-		for (SearchHit hit : index.search(search).getHits()) {
-			commands.add(parsers.parse(Nodes.read(hit.source())));
+		for (ObjectNode hit : index.find(search).getElements()) {
+			commands.add(parsers.parse(hit));
 		}
 		return commands.build();
 	}

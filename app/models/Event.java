@@ -32,7 +32,7 @@ public class Event extends DomainNode {
 	public static final RatingField RATING = new RatingField("rating");
 
 	private static final ImmutableSet<Field<?>> FIELDS = 
-		ImmutableSet.<Field<?>>of(ID, AUTHOR, TIMESTAMP, DURATION, LOCATION, TAG, RESOURCE, DISTANCE, HEIGHT, RATING);
+		ImmutableSet.<Field<?>>of(ID, VERSION, AUTHOR, TIMESTAMP, DURATION, LOCATION, TAG, RESOURCE, DISTANCE, HEIGHT, RATING);
 
 	public Event(String id) {
 		setValue(ID, id);

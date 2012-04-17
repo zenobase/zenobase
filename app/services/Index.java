@@ -1,19 +1,26 @@
 package services;
 
+import java.util.List;
+
+import models.DomainNode;
+
 import org.codehaus.jackson.node.ObjectNode;
 import org.elasticsearch.action.admin.indices.create.CreateIndexResponse;
 import org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest;
 import org.elasticsearch.action.get.GetResponse;
 import org.elasticsearch.action.index.IndexRequest.OpType;
+import org.elasticsearch.action.index.IndexRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.search.SearchType;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.client.Requests;
+import org.elasticsearch.common.collect.Lists;
 import org.elasticsearch.common.settings.ImmutableSettings;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.unit.TimeValue;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.search.SearchHit;
+import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 
 import schema.Schema;
@@ -21,6 +28,7 @@ import schema.Schema;
 import com.google.common.base.Preconditions;
 import common.Callback;
 import common.Nodes;
+import common.PartialList;
 
 public class Index {
 
@@ -61,8 +69,15 @@ public class Index {
 	}
 
 	private void index(String type, String id, ObjectNode object, OpType operation, boolean refresh) {
-		// TODO: .setReplicationType(ReplicationType.ASYNC)
-		client.prepareIndex(indexName, type, id).setSource(Nodes.toByteArray(object)).setOpType(operation).setRefresh(refresh).execute().actionGet();
+		IndexRequestBuilder request = client.prepareIndex(indexName, type, id);
+		Long version = DomainNode.VERSION.getValue(object);
+		if (version != null) {
+			request.setVersion(version);
+		}
+		request.setSource(Nodes.toByteArray(object));
+		request.setOpType(operation);
+		request.setRefresh(refresh);
+		request.execute().actionGet();
 	}
 
 	public void delete(String type, String id, boolean refresh) {
@@ -73,8 +88,18 @@ public class Index {
 		return client.admin().indices().prepareExists(indexName).execute().actionGet().exists();
 	}
 
-	public SearchResponse search(QueryBuilder query) {
-		return search(new SearchSourceBuilder().query(query));
+	public PartialList<ObjectNode> find(QueryBuilder query) {
+		return find(new SearchSourceBuilder().query(query));
+	}
+
+	public PartialList<ObjectNode> find(SearchSourceBuilder search) {
+		SearchResponse response = search(search);
+		SearchHits hits = response.hits();
+		List<ObjectNode> nodes = Lists.newArrayListWithCapacity(hits.hits().length);
+		for (SearchHit hit : hits) {
+			nodes.add(Nodes.read(hit.source()));
+		}
+		return new PartialList<ObjectNode>(nodes, hits.totalHits());
 	}
 
 	public SearchResponse search(SearchSourceBuilder search) {
@@ -82,9 +107,9 @@ public class Index {
 			.searchType(SearchType.DFS_QUERY_THEN_FETCH).source(search)).actionGet();
 	}
 
-	public void search(QueryBuilder query, Callback<ObjectNode> callback) {
+	public void find(QueryBuilder query, Callback<ObjectNode> callback) {
 		SearchSourceBuilder search = new SearchSourceBuilder().query(query).size(100);
-		for (SearchResponse response = scroll(search); response.hits().hits().length > 0; response = scroll(response.getScrollId())) {
+		for (SearchResponse response = scroll(search.version(true)); response.hits().hits().length > 0; response = scroll(response.getScrollId())) {
 			for (SearchHit hit : response.hits()) {
 				callback.call(Nodes.read(hit.source()));
 			}
@@ -109,7 +134,15 @@ public class Index {
 
 	public ObjectNode get(String type, String id) {
 		GetResponse response = client.prepareGet(indexName, type, id).execute().actionGet();
-		return response.exists() ? Nodes.read(response.source()) : null;
+		return response.exists() ? read(response.source(), response.version()) : null;
+	}
+
+	private static ObjectNode read(byte[] source, long version) {
+		ObjectNode object = Nodes.read(source);
+		if (version > 0) {
+			DomainNode.VERSION.setValue(object, version);
+		}
+		return object;
 	}
 
 	public boolean exists(String type, String id) {

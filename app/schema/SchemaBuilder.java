@@ -1,5 +1,7 @@
 package schema;
 
+import models.DomainNode;
+
 import org.codehaus.jackson.node.ArrayNode;
 import org.codehaus.jackson.node.ObjectNode;
 
@@ -29,6 +31,7 @@ public class SchemaBuilder {
 		ArrayNode excludesNode = sourceNode.putArray("excludes");
 		excludesNode.add("_*");
 		excludesNode.add("*._*");
+		excludesNode.add(DomainNode.VERSION.getName());
 	}
 
 	private void configureTypeField() {
