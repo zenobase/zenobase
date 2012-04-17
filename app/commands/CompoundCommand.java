@@ -6,8 +6,6 @@ import models.Identity;
 
 import org.codehaus.jackson.node.ObjectNode;
 
-import play.Logger;
-
 import schema.ObjectField;
 import schema.TokenField;
 
@@ -49,11 +47,8 @@ public class CompoundCommand extends CommandSupport {
 	}
 
 	public ImmutableList<Command> getCommands() {
-		Logger.info("commands: " + commands + ", r=" + registry);
 		if (commands.isEmpty() && registry != null) {
-			Logger.info("  params: " + getParameters(COMMANDS));
 			for (ObjectNode commandNode : getParameters(COMMANDS)) {
-				Logger.info("  cmd: " + commandNode);
 				commands.add(registry.parse(commandNode));
 			}
 		}
