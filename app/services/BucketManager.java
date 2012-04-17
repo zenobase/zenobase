@@ -81,7 +81,7 @@ public class BucketManager {
 	public ImmutableList<Bucket> findParticipants(String bucketId) {
 		ImmutableList.Builder<Bucket> buckets = ImmutableList.builder();
 		QueryBuilder query = QueryBuilders.termQuery(Bucket.ID.getName(), bucketId);
-		for (SearchHit hit : this.index.search(query).getHits()) {
+		for (SearchHit hit : index.search(query).getHits()) {
 			buckets.add(new Bucket(Nodes.read(hit.source())));
 		}
 		return buckets.build();

@@ -11,6 +11,8 @@ import schema.DateTimeField;
 import schema.Field;
 import schema.IdentityField;
 import schema.ObjectField;
+import schema.Schema;
+import schema.SchemaBuilder;
 import schema.TokenField;
 
 import com.google.common.collect.ImmutableList;
@@ -18,6 +20,8 @@ import common.Generator;
 import common.Nodes;
 
 public abstract class CommandSupport extends DomainNode implements Command {
+
+	public static final String TYPE_NAME = "command";
 
 	public static final TokenField ID = new TokenField("@id", false);
 	public static final TokenField TYPE = new TokenField("@type", false);
@@ -71,5 +75,11 @@ public abstract class CommandSupport extends DomainNode implements Command {
 
 	protected <T> void addParameter(Field<T> field, T value) {
 		field.addValue(getValue(PARAMETERS), value);
+	}
+
+	public static Schema getSchema() {
+		return new SchemaBuilder(TYPE_NAME)
+			.add(ID).add(TYPE).add(IDENTITY)
+			.add(TIMESTAMP).add(PARAMETERS).build();
 	}
 }

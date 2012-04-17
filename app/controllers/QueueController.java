@@ -10,6 +10,7 @@ import org.codehaus.jackson.node.ObjectNode;
 import play.mvc.Result;
 import play.mvc.With;
 import services.CommandQueue;
+import services.CommandStore;
 import services.UserManager;
 
 import commands.Command;
@@ -24,6 +25,9 @@ public class QueueController extends ControllerSupport {
 	static CommandQueue queue;
 
 	@Inject
+	static CommandStore store;
+
+	@Inject
 	static UserManager users;
 
     public static Result get(int offset, int limit) {
@@ -35,9 +39,9 @@ public class QueueController extends ControllerSupport {
     		return forbidden();
     	}
     	ObjectNode object = Nodes.newObject();
-    	object.put("total", queue.size());
+    	object.put("total", store.size());
     	ArrayNode commandsNode = object.putArray("commands");
-    	for (Command command : queue.getHistory(offset, limit)) {
+    	for (Command command : store.getHistory(offset, limit)) {
     		ObjectNode commandNode = Nodes.copy(command.toJson());
     		commandNode.put("label", command.toString());
     		commandNode.remove(CommandSupport.PARAMETERS.getName());
@@ -51,7 +55,7 @@ public class QueueController extends ControllerSupport {
     	if (identity == null) {
     		return unauthorized();
     	}
-    	Command command = queue.find(id);
+    	Command command = store.find(id);
     	if (command == null) {
     		return notFound();
     	}

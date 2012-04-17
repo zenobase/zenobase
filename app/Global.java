@@ -3,7 +3,9 @@ import play.GlobalSettings;
 import services.BucketManager;
 import services.CommandHandlerRegistry;
 import services.CommandQueue;
+import services.CommandStore;
 import services.IndexManager;
+import services.PersistentCommandStore;
 import services.UserManager;
 
 import com.google.inject.AbstractModule;
@@ -48,6 +50,7 @@ public class Global extends GlobalSettings {
 				bind(IndexManager.class).in(Singleton.class);
 				bind(BucketManager.class).in(Singleton.class);
 				bind(CommandQueue.class).in(Singleton.class);
+				bind(CommandStore.class).to(PersistentCommandStore.class).in(Singleton.class);
 				bind(UserManager.class).in(Singleton.class);
 				bind(CommandParserRegistry.class).in(Singleton.class);
 				bind(CommandHandlerRegistry.class).in(Singleton.class);
