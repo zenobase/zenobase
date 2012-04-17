@@ -4,6 +4,7 @@ public abstract class CommandParserSupport implements CommandParser {
 
 	private CommandParserRegistry registry;
 
+	@Override
 	public void registered(CommandParserRegistry registry) {
 		this.registry = registry;
 	}

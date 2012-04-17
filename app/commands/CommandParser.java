@@ -7,4 +7,6 @@ public interface CommandParser {
 	String getType();
 
 	Command parse(ObjectNode object);
+
+	void registered(CommandParserRegistry registry);
 }

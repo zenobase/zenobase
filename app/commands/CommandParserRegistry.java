@@ -17,6 +17,7 @@ public class CommandParserRegistry {
 	public CommandParserRegistry(Set<CommandParser> parsers) {
 		for (CommandParser parser : parsers) {
 			this.parsers.put(parser.getType(), parser);		
+			parser.registered(this);
 		}
 	}
 
