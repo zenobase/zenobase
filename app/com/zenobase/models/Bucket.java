@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.codehaus.jackson.node.ObjectNode;
-import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
 
 import com.zenobase.schema.ObjectField;
@@ -52,16 +52,14 @@ public class Bucket extends DomainNode {
 		setValue(DESCRIPTION, description);
 	}
 
-	public ImmutableMap<Identity, Permission> getPermissions() {
-		return toMap(getValues(PERMISSIONS));
-	}
-
-	private static <K, V> ImmutableMap<K, V> toMap(Iterable<Map.Entry<K, V>> entries) {
-		ImmutableMap.Builder<K, V> builder = ImmutableMap.builder();
-		for (Map.Entry<K, V> entry : entries) {
-			builder.put(entry);
+	public ImmutableSet<Identity> getPrincipals(Permission permission) {
+		ImmutableSet.Builder<Identity> principals = ImmutableSet.builder();
+		for (Map.Entry<Identity, Permission> entry : getValues(PERMISSIONS)) {
+			if (entry.getValue() == permission) {
+				principals.add(entry.getKey());
+			}
 		}
-		return builder.build();
+		return principals.build();
 	}
 
 	public Permission getPermission(Identity principal) {

@@ -4,6 +4,7 @@ import java.util.Map;
 
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.node.ObjectNode;
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 
 import com.zenobase.common.Nodes;
@@ -43,6 +44,14 @@ public abstract class MapField<K, V> extends Field<Map.Entry<K, V>> {
 
 	private static <T> T get(JsonNode node, Field<T> field) {
 		return field.getValue((ObjectNode) node);
+	}
+
+	public static <K, V> ImmutableMap<K, V> toMap(Iterable<Map.Entry<K, V>> entries) {
+		ImmutableMap.Builder<K, V> builder = ImmutableMap.builder();
+		for (Map.Entry<K, V> entry : entries) {
+			builder.put(entry);
+		}
+		return builder.build();
 	}
 
 	@Override

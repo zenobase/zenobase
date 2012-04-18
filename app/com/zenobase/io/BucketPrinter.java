@@ -1,5 +1,6 @@
 package com.zenobase.io;
 
+import org.elasticsearch.common.collect.Iterables;
 import play.mvc.Results.Chunks;
 import play.mvc.Results.Chunks.Out;
 import com.google.common.base.Joiner;
@@ -20,6 +21,6 @@ public class BucketPrinter {
 	}
 
 	private String toString(Bucket bucket) {
-		return Joiner.on('\t').join(bucket.getId(), bucket.toString(), bucket.getPermissions().get(Permission.ALL), "\n");
+		return Joiner.on('\t').join(bucket.getId(), bucket.toString(), Iterables.getOnlyElement(bucket.getPrincipals(Permission.ALL)), "\n");
 	}
 }
