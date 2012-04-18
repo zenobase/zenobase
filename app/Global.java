@@ -3,6 +3,7 @@ import play.GlobalSettings;
 import services.BucketManager;
 import services.CommandHandlerRegistry;
 import services.CommandQueue;
+import services.CommandReplay;
 import services.CommandStore;
 import services.IndexManager;
 import services.PersistentCommandStore;
@@ -43,6 +44,11 @@ public class Global extends GlobalSettings {
 
 	@Override
 	public void onStart(Application application) {
+		createInjector();
+		replay();
+	}
+
+	private void createInjector() {
 		injector = Guice.createInjector(new AbstractModule() {
 			@Override
 			protected void configure() {
@@ -54,6 +60,7 @@ public class Global extends GlobalSettings {
 				bind(UserManager.class).in(Singleton.class);
 				bind(CommandParserRegistry.class).in(Singleton.class);
 				bind(CommandHandlerRegistry.class).in(Singleton.class);
+				bind(CommandReplay.class).in(Singleton.class);
 
 				Multibinder<CommandParser> parsers = Multibinder.newSetBinder(binder(), CommandParser.class);
 				parsers.addBinding().to(CreateBucketCommand.Parser.class);
@@ -89,6 +96,13 @@ public class Global extends GlobalSettings {
 				requestStaticInjection(AccountController.class);
 			}
 		});
+	}
+
+	private void replay() {
+		UserManager users = injector.getInstance(UserManager.class);
+		if (users.isEmpty()) {
+			injector.getInstance(CommandReplay.class).replay();
+		}
 	}
 
 	@Override

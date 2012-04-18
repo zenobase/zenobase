@@ -1,6 +1,7 @@
 package services;
 
 import org.codehaus.jackson.node.ObjectNode;
+import org.elasticsearch.common.primitives.Ints;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.elasticsearch.search.sort.SortOrder;
@@ -12,6 +13,7 @@ import com.google.inject.Inject;
 import commands.Command;
 import commands.CommandParserRegistry;
 import commands.CommandSupport;
+import common.Callback;
 
 public class PersistentCommandStore implements CommandStore {
 
@@ -40,6 +42,15 @@ public class PersistentCommandStore implements CommandStore {
 	public Command find(String id) {
 		ObjectNode object = index.get(CommandSupport.TYPE_NAME, id);
 		return object != null ? parsers.parse(object) : null;
+	}
+
+	@Override
+	public void findAll(Callback<Command> callback) {
+		SearchSourceBuilder search = new SearchSourceBuilder().query(QueryBuilders.matchAllQuery())
+			.sort(CommandSupport.TIMESTAMP.getName(), SortOrder.ASC).size(Ints.checkedCast(size()));
+		for (ObjectNode hit : index.find(search).getElements()) {
+			callback.call(parsers.parse(hit));
+		}
 	}
 
 	@Override

@@ -11,6 +11,7 @@ import com.google.common.collect.Maps;
 import com.google.inject.Inject;
 import commands.Command;
 import commands.CommandParserRegistry;
+import common.Callback;
 
 public class MockCommandStore implements CommandStore {
 
@@ -31,6 +32,11 @@ public class MockCommandStore implements CommandStore {
 	public Command find(String id) {
 		ObjectNode commandNode = history.get(id);
 		return commandNode != null ? parsers.parse(commandNode) : null;
+	}
+
+	@Override
+	public void findAll(Callback<Command> callback) {
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
