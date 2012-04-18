@@ -6,32 +6,32 @@
 GET     /                            controllers.Assets.at(path="/public", file="index.html")
 GET     /admin/                      controllers.Assets.at(path="/public/admin", file="index.html")
 
-GET     /who                         controllers.UserController.who()
-GET     /users/                      controllers.UserController.find(identity ?= null, offset : Int ?= 0, limit : Int ?= java.lang.Integer.MAX_VALUE)
-GET     /users/:name                 controllers.UserController.get(name)
-POST    /users/:name                 controllers.UserController.update(name)
+GET     /who                         com.zenobase.controllers.UserController.who()
+GET     /users/                      com.zenobase.controllers.UserController.find(identity ?= null, offset : Int ?= 0, limit : Int ?= java.lang.Integer.MAX_VALUE)
+GET     /users/:name                 com.zenobase.controllers.UserController.get(name)
+POST    /users/:name                 com.zenobase.controllers.UserController.update(name)
 
-POST    /users/                      controllers.AccountController.open()
-DELETE  /users/:name                 controllers.AccountController.close(name)
+POST    /users/                      com.zenobase.controllers.AccountController.open()
+DELETE  /users/:name                 com.zenobase.controllers.AccountController.close(name)
 
-POST    /signin                      controllers.SecurityController.signIn()
-POST    /signout                     controllers.SecurityController.signOut()
+POST    /signin                      com.zenobase.controllers.SecurityController.signIn()
+POST    /signout                     com.zenobase.controllers.SecurityController.signOut()
 
-GET     /buckets/                    controllers.BucketListController.find(identity ?= null, offset : Int ?= 0, limit : Int ?= java.lang.Integer.MAX_VALUE)
-POST    /buckets/                    controllers.BucketListController.post()
+GET     /buckets/                    com.zenobase.controllers.BucketListController.find(identity ?= null, offset : Int ?= 0, limit : Int ?= java.lang.Integer.MAX_VALUE)
+POST    /buckets/                    com.zenobase.controllers.BucketListController.post()
 
-GET     /buckets/:bucketId           controllers.BucketController.get(bucketId)
-POST    /buckets/:bucketId           controllers.BucketController.update(bucketId)
-DELETE  /buckets/:bucketId           controllers.BucketController.delete(bucketId)
+GET     /buckets/:bucketId           com.zenobase.controllers.BucketController.get(bucketId)
+POST    /buckets/:bucketId           com.zenobase.controllers.BucketController.update(bucketId)
+DELETE  /buckets/:bucketId           com.zenobase.controllers.BucketController.delete(bucketId)
 
-GET     /buckets/:bucketId/          controllers.EventController.find(bucketId)
-POST    /buckets/:bucketId/          controllers.EventController.post(bucketId)
+GET     /buckets/:bucketId/          com.zenobase.controllers.EventController.find(bucketId)
+POST    /buckets/:bucketId/          com.zenobase.controllers.EventController.post(bucketId)
 
-GET     /buckets/:bucketId/:eventId  controllers.EventController.get(bucketId, eventId)
-DELETE  /buckets/:bucketId/:eventId  controllers.EventController.delete(bucketId, eventId)
+GET     /buckets/:bucketId/:eventId  com.zenobase.controllers.EventController.get(bucketId, eventId)
+DELETE  /buckets/:bucketId/:eventId  com.zenobase.controllers.EventController.delete(bucketId, eventId)
 
-GET     /queue/                      controllers.QueueController.get(offset : Int, limit : Int)
-POST    /queue/:id                   controllers.QueueController.post(id)
+GET     /queue/                      com.zenobase.controllers.QueueController.get(offset : Int, limit : Int)
+POST    /queue/:id                   com.zenobase.controllers.QueueController.post(id)
 
 # Ignore favicon requests
 GET     /favicon.ico                 controllers.Default.notFound
