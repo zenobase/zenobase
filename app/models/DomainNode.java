@@ -1,11 +1,11 @@
 package models;
 
 import org.codehaus.jackson.node.ObjectNode;
-import org.elasticsearch.common.base.Objects;
 
 import schema.Field;
 import schema.LongField;
 
+import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableList;
 import common.Nodes;
 

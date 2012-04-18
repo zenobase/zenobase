@@ -1,12 +1,10 @@
 package io;
 
 import models.User;
-
-import org.elasticsearch.common.base.Joiner;
-
 import play.mvc.Results.Chunks;
 import play.mvc.Results.Chunks.Out;
 
+import com.google.common.base.Joiner;
 
 public class UserPrinter {
 

@@ -6,11 +6,11 @@ import junit.framework.Assert;
 import models.Identity;
 
 import org.codehaus.jackson.node.ObjectNode;
-import org.elasticsearch.common.collect.Sets;
 import org.junit.Test;
 
 import schema.TokenField;
 
+import com.google.common.collect.Sets;
 import commands.Command;
 import commands.CommandHandler;
 import commands.CommandHandlerSupport;

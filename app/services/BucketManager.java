@@ -9,7 +9,6 @@ import models.Event;
 import models.Identity;
 
 import org.codehaus.jackson.node.ObjectNode;
-import org.elasticsearch.common.collect.Lists;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
@@ -17,6 +16,7 @@ import org.elasticsearch.search.builder.SearchSourceBuilder;
 import play.Logger;
 import schema.PermissionField;
 
+import com.google.common.collect.Lists;
 import common.Callback;
 import common.PartialList;
 

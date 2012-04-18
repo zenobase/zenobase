@@ -3,14 +3,14 @@ package services;
 import java.util.List;
 
 import org.codehaus.jackson.node.ObjectNode;
-import org.elasticsearch.common.collect.Lists;
-import org.elasticsearch.common.primitives.Ints;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.elasticsearch.search.sort.SortOrder;
 
 import play.Logger;
 
+import com.google.common.collect.Lists;
+import com.google.common.primitives.Ints;
 import com.google.inject.Inject;
 import commands.Command;
 import commands.CommandParserRegistry;

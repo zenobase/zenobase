@@ -2,8 +2,9 @@ package search;
 
 import java.util.Map;
 
-import org.elasticsearch.common.collect.Maps;
 import org.joda.time.DateTimeZone;
+
+import com.google.common.collect.Maps;
 
 public class WidgetOptions {
 

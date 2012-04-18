@@ -5,10 +5,10 @@ import java.util.Set;
 import models.User;
 
 import org.codehaus.jackson.node.ObjectNode;
-import org.elasticsearch.common.collect.Sets;
 
 import play.mvc.Controller;
 
+import com.google.common.collect.Sets;
 import common.Nodes;
 
 public abstract class ControllerSupport extends Controller {

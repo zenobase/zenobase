@@ -14,7 +14,6 @@ import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.search.SearchType;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.client.Requests;
-import org.elasticsearch.common.collect.Lists;
 import org.elasticsearch.common.settings.ImmutableSettings;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.unit.TimeValue;
@@ -26,6 +25,7 @@ import org.elasticsearch.search.builder.SearchSourceBuilder;
 import schema.Schema;
 
 import com.google.common.base.Preconditions;
+import com.google.common.collect.Lists;
 import common.Callback;
 import common.Nodes;
 import common.PartialList;
