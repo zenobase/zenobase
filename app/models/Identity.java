@@ -1,6 +1,9 @@
 package models;
 
+import org.codehaus.jackson.node.ObjectNode;
+
 import common.Generator;
+import common.Nodes;
 
 public class Identity {
 
@@ -36,5 +39,11 @@ public class Identity {
 	@Override
 	public String toString() {
 		return id;
+	}
+
+	public ObjectNode toJson() {
+		ObjectNode node = Nodes.newObject();
+		node.put(User.ID.getName(), id);
+		return node;
 	}
 }

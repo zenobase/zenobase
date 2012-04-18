@@ -1,8 +1,8 @@
 package services;
 
-import com.google.common.collect.ImmutableList;
 import commands.Command;
 import common.Callback;
+import common.PartialList;
 
 public interface CommandStore {
 
@@ -12,7 +12,7 @@ public interface CommandStore {
 
 	void findAll(Callback<Command> callback);
 
-	ImmutableList<Command> getHistory(int offset, int limit); // TODO return a PartialList
+	PartialList<Command> getHistory(int offset, int limit);
 
 	long size();
 }

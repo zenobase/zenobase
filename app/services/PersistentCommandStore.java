@@ -1,6 +1,9 @@
 package services;
 
+import java.util.List;
+
 import org.codehaus.jackson.node.ObjectNode;
+import org.elasticsearch.common.collect.Lists;
 import org.elasticsearch.common.primitives.Ints;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
@@ -8,12 +11,12 @@ import org.elasticsearch.search.sort.SortOrder;
 
 import play.Logger;
 
-import com.google.common.collect.ImmutableList;
 import com.google.inject.Inject;
 import commands.Command;
 import commands.CommandParserRegistry;
 import commands.CommandSupport;
 import common.Callback;
+import common.PartialList;
 
 public class PersistentCommandStore implements CommandStore {
 
@@ -54,14 +57,14 @@ public class PersistentCommandStore implements CommandStore {
 	}
 
 	@Override
-	public ImmutableList<Command> getHistory(int offset, int limit) {
-		ImmutableList.Builder<Command> commands = ImmutableList.builder();
+	public PartialList<Command> getHistory(int offset, int limit) {
+		List<Command> commands = Lists.newArrayListWithCapacity(limit);
 		SearchSourceBuilder search = new SearchSourceBuilder().query(QueryBuilders.matchAllQuery())
 			.from(offset).size(limit).sort(CommandSupport.TIMESTAMP.getName(), SortOrder.DESC);
 		for (ObjectNode hit : index.find(search).getElements()) {
 			commands.add(parsers.parse(hit));
 		}
-		return commands.build();
+		return new PartialList<Command>(commands, size());
 	}
 
 	@Override

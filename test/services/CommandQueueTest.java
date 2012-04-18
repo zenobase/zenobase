@@ -38,18 +38,18 @@ public class CommandQueueTest {
 
 		queue.dispatch(c1);
 		Assert.assertEquals(1, store.size());
-		Assert.assertEquals(1, store.getHistory(0, 2).size());
-		Assert.assertEquals(0, store.getHistory(2, 4).size());
-		Assert.assertSame(c1, store.getHistory(0, 2).get(0));
+		Assert.assertEquals(1, store.getHistory(0, 2).getElements().size());
+		Assert.assertEquals(0, store.getHistory(2, 4).getElements().size());
+		Assert.assertSame(c1, store.getHistory(0, 2).getElements().get(0));
 
 		queue.dispatch(c2);
 		queue.dispatch(c3);
 		Assert.assertEquals(3, store.size());
 		Assert.assertEquals(2, store.getHistory(0, 2).size());
 		Assert.assertEquals(1, store.getHistory(2, 4).size());
-		Assert.assertSame(c3, store.getHistory(0, 2).get(0));
-		Assert.assertSame(c2, store.getHistory(0, 2).get(1));
-		Assert.assertSame(c1, store.getHistory(2, 4).get(0));
+		Assert.assertSame(c3, store.getHistory(0, 2).getElements().get(0));
+		Assert.assertSame(c2, store.getHistory(0, 2).getElements().get(1));
+		Assert.assertSame(c1, store.getHistory(2, 4).getElements().get(0));
 	}
 
 	private static class MockCommand extends CommandSupport {

@@ -16,6 +16,7 @@ import services.UserManager;
 import commands.Command;
 import commands.CommandSupport;
 import common.Nodes;
+import common.PartialList;
 import common.SecurityContext;
 
 @With(Timed.class)
@@ -38,16 +39,20 @@ public class QueueController extends ControllerSupport {
     	if (!users.isSuperuser(principal)) {
     		return forbidden();
     	}
+    	return ok(toJson(store.getHistory(offset, limit)));
+    }
+
+    private static ObjectNode toJson(PartialList<Command> commands) {
     	ObjectNode node = Nodes.newObject();
-    	node.put("total", store.size());
+    	node.put("total", commands.size());
     	ArrayNode commandsNode = node.putArray("commands");
-    	for (Command command : store.getHistory(offset, limit)) {
+    	for (Command command : commands.getElements()) {
     		ObjectNode commandNode = Nodes.copy(command.toJson());
     		commandNode.put("label", command.toString());
     		commandNode.remove(CommandSupport.PARAMETERS.getName());
     		commandsNode.add(commandNode);
     	}
-    	return ok(node);
+    	return node;
     }
 
     public static Result post(String id) {

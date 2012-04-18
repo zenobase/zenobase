@@ -1,17 +1,19 @@
 package services;
 
 import java.util.LinkedHashMap;
+import java.util.List;
 
 import org.codehaus.jackson.node.ObjectNode;
-import org.elasticsearch.common.collect.Iterables;
-import org.elasticsearch.common.primitives.Ints;
 
-import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.common.primitives.Ints;
 import com.google.inject.Inject;
 import commands.Command;
 import commands.CommandParserRegistry;
 import common.Callback;
+import common.PartialList;
 
 public class MockCommandStore implements CommandStore {
 
@@ -40,14 +42,14 @@ public class MockCommandStore implements CommandStore {
 	}
 
 	@Override
-	public ImmutableList<Command> getHistory(int offset, int limit) {
-		ImmutableList.Builder<Command> commands = ImmutableList.builder();
+	public PartialList<Command> getHistory(int offset, int limit) {
+		List<Command> commands = Lists.newArrayListWithExpectedSize(limit);
 		int from = Ints.checkedCast(Math.min(offset, size()));
 		int to = Ints.checkedCast(Math.min(offset + limit, size()));
 		for (int i = to - 1; i >= from; --i) {
 			commands.add(parsers.parse(Iterables.get(history.values(), i)));
 		}
-		return commands.build();
+		return new PartialList<Command>(commands, size());
 	}
 
 	@Override

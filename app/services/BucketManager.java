@@ -88,7 +88,7 @@ public class BucketManager {
 	}
 
 	private PartialList<Bucket> findBuckets(QueryBuilder query, int offset, int limit) {
-		List<Bucket> buckets = Lists.newArrayList();
+		List<Bucket> buckets = Lists.newArrayListWithCapacity(limit);
 		SearchSourceBuilder search = new SearchSourceBuilder()
 			.query(query).from(offset).size(limit);
 		PartialList<ObjectNode> hits = index.find(search);

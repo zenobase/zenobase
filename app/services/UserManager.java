@@ -44,7 +44,7 @@ public class UserManager {
 	}
 
 	public PartialList<User> find(int offset, int limit) {
-		List<User> users = Lists.newArrayList();
+		List<User> users = Lists.newArrayListWithCapacity(limit);
 		SearchSourceBuilder search = new SearchSourceBuilder()
 			.query(QueryBuilders.matchAllQuery())
 			.from(offset).size(limit)

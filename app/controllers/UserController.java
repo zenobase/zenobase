@@ -7,7 +7,6 @@ import javax.inject.Inject;
 import models.Identity;
 import models.User;
 
-import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.node.ArrayNode;
 import org.codehaus.jackson.node.ObjectNode;
 
@@ -35,7 +34,7 @@ public class UserController extends ControllerSupport {
 		Identity principal = new SecurityContext(ctx()).getPrincipal();
 		if (principal != null) {
 			User user = users.find(principal);
-			return ok(user != null ? toJson(user) : toJson(principal));
+			return ok(user != null ? toJson(user) : principal.toJson());
 		}
     	return noContent();
     }
@@ -99,7 +98,7 @@ public class UserController extends ControllerSupport {
 
 	private static Result find(Identity identity) {
 		User user = users.find(identity);
-    	return ok(user != null ? new User(identity.getId(), user.getName()).toJson() : toJson(identity));
+    	return ok(user != null ? new User(identity.getId(), user.getName()).toJson() : identity.toJson());
     }
 
 	public static class UserUpdate {
@@ -166,11 +165,5 @@ public class UserController extends ControllerSupport {
     		return noContent();
     	}
 		return badRequest();
-	}
-
-	private static JsonNode toJson(Identity identity) { // TODO move to Identity
-		ObjectNode node = Nodes.newObject();
-		node.put(User.ID.getName(), identity.getId());
-		return node;
 	}
 }
