@@ -25,7 +25,7 @@ public abstract class CommandSupport extends DomainNode implements Command {
 
 	public static final TokenField ID = new TokenField("@id", false);
 	public static final TokenField TYPE = new TokenField("@type", false);
-	public static final IdentityField IDENTITY = new IdentityField("identity");
+	public static final IdentityField PRINCIPAL = new IdentityField("principal");
 	public static final DateTimeField TIMESTAMP = new DateTimeField("timestamp");
 	public static final ObjectField PARAMETERS = new ObjectField("parameters");
 
@@ -33,10 +33,10 @@ public abstract class CommandSupport extends DomainNode implements Command {
 		super(object);
 	}
 
-	public CommandSupport(String type, Identity identity) {
+	public CommandSupport(String type, Identity principal) {
 		setValue(ID, Generator.id());
 		setValue(TYPE, type);
-		setValue(IDENTITY, identity);
+		setValue(PRINCIPAL, principal);
 		setValue(TIMESTAMP, new DateTime(DateTimeZone.UTC));		
 		setValue(PARAMETERS, Nodes.newObject());
 	}
@@ -52,8 +52,8 @@ public abstract class CommandSupport extends DomainNode implements Command {
 	}
 
 	@Override
-	public Identity getIdentity() {
-		return getValue(IDENTITY);
+	public Identity getPrincipal() {
+		return getValue(PRINCIPAL);
 	}
 
 	@Override
@@ -79,7 +79,7 @@ public abstract class CommandSupport extends DomainNode implements Command {
 
 	public static Schema getSchema() {
 		return new SchemaBuilder(TYPE_NAME)
-			.add(ID).add(TYPE).add(IDENTITY)
+			.add(ID).add(TYPE).add(PRINCIPAL)
 			.add(TIMESTAMP).add(PARAMETERS).build();
 	}
 }

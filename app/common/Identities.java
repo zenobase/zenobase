@@ -20,17 +20,13 @@ public class Identities {
 		return new Identities(context);
 	}
 
-	public boolean is(Identity identity) {
-		return identity.equals(get());
-	}
-
 	public Identity get(boolean createIfNotPresent) {
-		Identity identity = get();
-		if (identity == null && createIfNotPresent) {
-			identity = new Identity();
-			set(identity, true);
+		Identity principal = get();
+		if (principal == null && createIfNotPresent) {
+			principal = new Identity();
+			set(principal, true);
 		}
-		return identity;
+		return principal;
 	}
 
 	public Identity get() {
@@ -39,9 +35,9 @@ public class Identities {
 			int p = cookie.value().indexOf(TOKEN_SEPARATOR);
 			if (p > 0 && p < cookie.value().length() - 1) {
 				String sign = cookie.value().substring(0, p);
-				String identity = cookie.value().substring(p + 1);
-				if (Crypto.sign(identity).equals(sign)) {
-					return new Identity(identity);
+				String principal = cookie.value().substring(p + 1);
+				if (Crypto.sign(principal).equals(sign)) {
+					return new Identity(principal);
 				}
 			}
 			unset();
@@ -49,8 +45,8 @@ public class Identities {
 		return null;
 	}
 
-	public void set(Identity identity, boolean remember) {
-		set(TOKEN_NAME, Crypto.sign(identity.getId()) + TOKEN_SEPARATOR + identity.getId(), remember);
+	public void set(Identity principal, boolean remember) {
+		set(TOKEN_NAME, Crypto.sign(principal.getId()) + TOKEN_SEPARATOR + principal.getId(), remember);
 	}
 
 	public void unset() {

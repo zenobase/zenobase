@@ -66,19 +66,19 @@ public class Bucket extends DomainNode {
 		return builder.build();
 	}
 
-	public Permission getPermission(Identity identity) {
+	public Permission getPermission(Identity principal) {
 		for (Map.Entry<Identity, Permission> entry : getValues(PERMISSIONS)) {
-			if (entry.getKey().equals(identity)) {
+			if (entry.getKey().equals(principal)) {
 				return entry.getValue();
 			}
 		}
 		return Permission.NONE;
 	}
 
-	public void addPermission(Identity identity, Permission permission) {
-		addValue(PERMISSIONS, Maps.immutableEntry(identity, permission));
+	public void addPermission(Identity principal, Permission permission) {
+		addValue(PERMISSIONS, Maps.immutableEntry(principal, permission));
 	}
-	
+
 	public List<ObjectNode> getWidgets() {
 		return getValues(WIDGETS);
 	}

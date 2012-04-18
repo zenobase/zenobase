@@ -37,28 +37,28 @@ public class AccountController extends ControllerSupport {
 		if (users.exists(signUp.getUsername())) {
 			return badRequest("user exists");
 		}
-		Identity identity = Identities.in(ctx()).get(true);
-		User user = new User(identity.getId(), signUp.getUsername());
+		Identity principal = Identities.in(ctx()).get(true);
+		User user = new User(principal.getId(), signUp.getUsername());
 		user.setEmail(signUp.getEmail());
 		user.changePassword(signUp.getPassword());
 		user.setSuperuser(users.isEmpty());
-		queue.dispatch(new CreateUserCommand(identity, user));
+		queue.dispatch(new CreateUserCommand(principal, user));
 		return created(toJson(user));
 	}
 
 	public static Result close(String name) {
-		Identity identity = Identities.in(ctx()).get();
-		if (identity == null) {
+		Identity principal = Identities.in(ctx()).get();
+		if (principal == null) {
 			return unauthorized();
 		}
 		User user = users.find(name);
 		if (user == null) {
 			return notFound();
 		}
-		if (!user.equals(identity) && !users.isSuperuser(identity)) {
+		if (!user.equals(principal) && !users.isSuperuser(principal)) {
 			return forbidden();
 		}
-		String commandId = queue.dispatch(new CloseAccountCommandBuilder(identity, buckets, user).build());
+		String commandId = queue.dispatch(new CloseAccountCommandBuilder(principal, buckets, user).build());
         response().setHeader("Undo", String.format("/queue/%s", commandId));
 		return noContent();
 	}

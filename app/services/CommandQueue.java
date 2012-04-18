@@ -20,7 +20,7 @@ public class CommandQueue {
 	}
 
 	public String dispatch(Command command) {
-		log.info(String.format("%s %s", command.getIdentity(), command.toString()));
+		log.info(String.format("%s %s", command.getPrincipal(), command.toString()));
 		if (command instanceof CompoundCommand) {
 			dispatch((CompoundCommand) command);
 		}

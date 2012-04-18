@@ -84,7 +84,7 @@ public class BucketManager {
 
 	private static QueryBuilder queryFor(Identity identity) {
 		return QueryBuilders.nestedQuery(Bucket.PERMISSIONS.getName(), 
-			QueryBuilders.termQuery(PermissionField.IDENTITY.getName(), identity.getId()));
+			QueryBuilders.termQuery(PermissionField.PRINCIPAL.getName(), identity.getId()));
 	}
 
 	private PartialList<Bucket> findBuckets(QueryBuilder query, int offset, int limit) {

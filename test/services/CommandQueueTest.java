@@ -66,7 +66,7 @@ public class CommandQueueTest {
 		}
 
 		@Override
-		public Command reverse(Identity identity) {
+		public Command reverse(Identity principal) {
 			throw new UnsupportedOperationException();
 		}
 

@@ -34,17 +34,17 @@ public class BucketController extends ControllerSupport {
 	static UserManager users;
 
 	public static Result get(String bucketId) {
-		Identity identity = Identities.in(ctx()).get();
-		return identity != null ? get(bucketId, identity) : unauthorized(); 
+		Identity principal = Identities.in(ctx()).get();
+		return principal != null ? get(bucketId, principal) : unauthorized(); 
     }
 
-	private static Result get(String bucketId, Identity identity) {
+	private static Result get(String bucketId, Identity principal) {
 		Bucket bucket = buckets.findBucket(bucketId);
-    	return bucket != null ? get(bucket, identity) : notFound();
+    	return bucket != null ? get(bucket, principal) : notFound();
     }
 
-	private static Result get(Bucket bucket, Identity identity) {
-    	if (bucket.getPermission(identity) == Permission.NONE) {
+	private static Result get(Bucket bucket, Identity principal) {
+    	if (bucket.getPermission(principal) == Permission.NONE) {
     		return forbidden();
     	}
 		if (bucket.getWidgets().isEmpty()) {
@@ -56,8 +56,8 @@ public class BucketController extends ControllerSupport {
 	@BodyParser.Of(value = BodyParser.Json.class, maxLength = 10000)
 	public static Result update(String bucketId) {
 		
-		Identity identity = Identities.in(ctx()).get();
-		if (identity == null) {
+		Identity principal = Identities.in(ctx()).get();
+		if (principal == null) {
 			return unauthorized();
 		}
 		ObjectNode body = (ObjectNode) request().body().asJson();
@@ -69,29 +69,29 @@ public class BucketController extends ControllerSupport {
     		return notFound();
     	}
     	Logger.info("got bucket " + bucket.getVersion());
-    	if (bucket.getPermission(identity) != Permission.ALL) {
+    	if (bucket.getPermission(principal) != Permission.ALL) {
     		return forbidden();
     	}
-		String commandId = queue.dispatch(new UpdateBucketCommand(identity, bucket, new Bucket(body)));
+		String commandId = queue.dispatch(new UpdateBucketCommand(principal, bucket, new Bucket(body)));
         response().setHeader("Undo", String.format("/queue/%s", commandId));
 		return noContent();
     }
 
     public static Result delete(String bucketId) {
-    	Identity identity = Identities.in(ctx()).get();
-		return identity != null ? delete(bucketId, identity) : unauthorized();
+    	Identity principal = Identities.in(ctx()).get();
+		return principal != null ? delete(bucketId, principal) : unauthorized();
     }
 
-    private static Result delete(String bucketId, Identity identity) {
+    private static Result delete(String bucketId, Identity principal) {
     	Bucket bucket = buckets.findBucket(bucketId);
-    	return bucket != null ? delete(bucket, identity) : notFound();
+    	return bucket != null ? delete(bucket, principal) : notFound();
     }
 
-    private static Result delete(Bucket bucket, Identity identity) {
-    	if (bucket.getPermission(identity) != Permission.ALL && !users.isSuperuser(identity)) {
+    private static Result delete(Bucket bucket, Identity principal) {
+    	if (bucket.getPermission(principal) != Permission.ALL && !users.isSuperuser(principal)) {
     		return forbidden();
     	}
-    	String commandId = queue.dispatch(new DeleteBucketCommand(identity, bucket));
+    	String commandId = queue.dispatch(new DeleteBucketCommand(principal, bucket));
         response().setHeader("Undo", String.format("/queue/%s", commandId));
     	return noContent();
     }

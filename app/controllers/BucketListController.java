@@ -6,15 +6,14 @@ import io.BucketPrinter;
 import javax.inject.Inject;
 
 import models.Bucket;
+import models.Identity;
 import models.Permission;
 
 import org.codehaus.jackson.node.ArrayNode;
 import org.codehaus.jackson.node.ObjectNode;
 
-import play.Logger;
 import play.mvc.Result;
 import play.mvc.With;
-import models.Identity;
 import services.BucketManager;
 import services.CommandQueue;
 import services.IndexManager;
@@ -47,11 +46,11 @@ public class BucketListController extends ControllerSupport {
     }
 
     private static Result find(int offset, int limit) {
-    	Identity identity = Identities.in(ctx()).get();
-    	if (identity == null) {
+    	Identity principal = Identities.in(ctx()).get();
+    	if (principal == null) {
     		return unauthorized();
     	}
-    	if (!users.isSuperuser(identity)) {
+    	if (!users.isSuperuser(principal)) {
     		return forbidden();
     	}
     	if (offset == 0 && limit == Integer.MAX_VALUE) {
@@ -61,11 +60,11 @@ public class BucketListController extends ControllerSupport {
     }
 
     private static Result find(Identity identity, int offset, int limit) {
-    	Identity current = Identities.in(ctx()).get();
-    	if (current == null) {
+    	Identity principal = Identities.in(ctx()).get();
+    	if (principal == null) {
     		return unauthorized();
     	}
-    	if (!identity.equals(current) && !users.isSuperuser(identity)) {
+    	if (!identity.equals(principal) && !users.isSuperuser(identity)) {
     		return forbidden();
     	}
         return ok(toJson(buckets.findBuckets(identity, offset, limit)));
@@ -111,20 +110,19 @@ public class BucketListController extends ControllerSupport {
 		if (label == null) {
 			return badRequest("missing label");
 		}
-		Identity identity = Identities.in(ctx()).get(true);
-    	Bucket bucket = createBucket(label, description, identity);
-    	String commandId = queue.dispatch(new CreateBucketCommand(identity, bucket));
+		Identity principal = Identities.in(ctx()).get(true);
+    	Bucket bucket = createBucket(label, description, principal);
+    	String commandId = queue.dispatch(new CreateBucketCommand(principal, bucket));
         response().setHeader(LOCATION, String.format("/buckets/%s/", bucket.getId()));
         response().setHeader("Undo", String.format("/queue/%s", commandId));
         return created();
     }
 
-	private static Bucket createBucket(String label, String description, Identity identity) {
+	private static Bucket createBucket(String label, String description, Identity principal) {
 		Bucket bucket = new Bucket(Generator.id());
 		bucket.setLabel(label);
 		bucket.setDescription(description);
-		bucket.addPermission(identity, Permission.ALL);
-		Logger.info("Bucket: " + bucket.getPermission(identity));
+		bucket.addPermission(principal, Permission.ALL);
 		return bucket;
 	}
 }

@@ -19,8 +19,8 @@ public class DeleteBucketCommand extends CommandSupport {
 		super(object);
 	}
 
-	public DeleteBucketCommand(Identity identity, Bucket bucket) {
-		super(TYPE, identity);
+	public DeleteBucketCommand(Identity principal, Bucket bucket) {
+		super(TYPE, principal);
 		setParameter(BUCKET, bucket.toJson());
 	}
 
@@ -29,8 +29,8 @@ public class DeleteBucketCommand extends CommandSupport {
 	}
 
 	@Override
-	public Command reverse(Identity identity) {
-		return new RestoreBucketCommand(identity, getBucket());
+	public Command reverse(Identity principal) {
+		return new RestoreBucketCommand(principal, getBucket());
 	}
 
 	@Override

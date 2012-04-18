@@ -77,15 +77,15 @@ class RandomEvent {
 		}, 1);
 
 	private final String bucketId;
-	private final Identity identity;
+	private final Identity principal;
 
-	public RandomEvent(String bucketId, Identity identity) {
+	public RandomEvent(String bucketId, Identity principal) {
 		this.bucketId = bucketId;
-		this.identity = identity;
+		this.principal = principal;
 	}
 
 	public Event next() {
-		return builders.next().build(bucketId, identity);
+		return builders.next().build(bucketId, principal);
 	}
 
 	private static class Builder {
@@ -100,9 +100,9 @@ class RandomEvent {
 			.add(Rating.valueOf( 20), 2)
 			.add(Rating.valueOf(  0), 1);
 
-		public Event build(String bucketId, Identity identity) {
+		public Event build(String bucketId, Identity principal) {
 			Event event = new Event(Generator.id());
-			event.setValue(Event.AUTHOR, identity);
+			event.setValue(Event.AUTHOR, principal);
 			event.setValue(Event.TIMESTAMP, nextTimestamp());
 			addFields(event);
 			return event;

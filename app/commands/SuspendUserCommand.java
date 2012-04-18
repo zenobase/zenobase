@@ -21,8 +21,8 @@ public class SuspendUserCommand extends CommandSupport {
 		super(object);
 	}
 
-	public SuspendUserCommand(Identity identity, String name, boolean suspend) {
-		super(TYPE, identity);
+	public SuspendUserCommand(Identity principal, String name, boolean suspend) {
+		super(TYPE, principal);
 		setParameter(NAME, name);
 		setParameter(SUSPEND, suspend);
 	}
@@ -36,8 +36,8 @@ public class SuspendUserCommand extends CommandSupport {
 	}
 
 	@Override
-	public Command reverse(Identity identity) {
-		return new SuspendUserCommand(identity, getName(), !isSuspend());
+	public Command reverse(Identity principal) {
+		return new SuspendUserCommand(principal, getName(), !isSuspend());
 	}
 
 	@Override

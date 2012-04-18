@@ -31,11 +31,11 @@ public class QueueController extends ControllerSupport {
 	static UserManager users;
 
     public static Result get(int offset, int limit) {
-    	Identity identity = Identities.in(ctx()).get();
-    	if (identity == null) {
+    	Identity principal = Identities.in(ctx()).get();
+    	if (principal == null) {
     		return unauthorized();
     	}
-    	if (!users.isSuperuser(identity)) {
+    	if (!users.isSuperuser(principal)) {
     		return forbidden();
     	}
     	ObjectNode object = Nodes.newObject();
@@ -51,22 +51,22 @@ public class QueueController extends ControllerSupport {
     }
 
     public static Result post(String id) {
-    	Identity identity = Identities.in(ctx()).get();
-    	if (identity == null) {
+    	Identity principal = Identities.in(ctx()).get();
+    	if (principal == null) {
     		return unauthorized();
     	}
     	Command command = store.find(id);
     	if (command == null) {
     		return notFound();
     	}
-		if (!identity.equals(command.getIdentity()) && !users.isSuperuser(identity)) {
+		if (!principal.equals(command.getPrincipal()) && !users.isSuperuser(principal)) {
 			return forbidden();
 		}
-        return undo(command, identity);
+        return undo(command, principal);
     }
 
-    private static Result undo(Command command, Identity identity) {
-    	String undoId = queue.dispatch(command.reverse(identity));
+    private static Result undo(Command command, Identity principal) {
+    	String undoId = queue.dispatch(command.reverse(principal));
     	response().setHeader("Undo",  String.format("/queue/%s", undoId));
         return created();
     }

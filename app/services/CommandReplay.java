@@ -25,7 +25,7 @@ public class CommandReplay {
 		store.findAll(new Callback<Command>() {
 			@Override
 			public void call(Command command) {
-				log.info(String.format("%s %s", command.getIdentity(), command.toString()));
+				log.info(String.format("%s %s", command.getPrincipal(), command.toString()));
 				if (command instanceof CompoundCommand) {
 					dispatch((CompoundCommand) command);
 				}

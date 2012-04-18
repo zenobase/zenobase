@@ -21,8 +21,8 @@ public class CreateEventCommand extends CommandSupport {
 		super(object);
 	}
 
-	public CreateEventCommand(Identity identity, String bucketId, Event event) {
-		super(TYPE, identity);
+	public CreateEventCommand(Identity principal, String bucketId, Event event) {
+		super(TYPE, principal);
 		setParameter(BUCKET_ID, bucketId);
 		setParameter(EVENT, event.toJson());
 	}
@@ -36,8 +36,8 @@ public class CreateEventCommand extends CommandSupport {
 	}
 
 	@Override
-	public Command reverse(Identity identity) {
-		return new DeleteEventCommand(identity, getBucketId(), getEvent());
+	public Command reverse(Identity principal) {
+		return new DeleteEventCommand(principal, getBucketId(), getEvent());
 	}
 
 	@Override

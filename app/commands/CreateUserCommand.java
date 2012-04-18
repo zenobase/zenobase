@@ -19,8 +19,8 @@ public class CreateUserCommand extends CommandSupport {
 		super(object);
 	}
 
-	public CreateUserCommand(Identity identity, User user) {
-		super(TYPE, identity);
+	public CreateUserCommand(Identity principal, User user) {
+		super(TYPE, principal);
 		setParameter(USER, user.toJson());
 	}
 
@@ -29,8 +29,8 @@ public class CreateUserCommand extends CommandSupport {
 	}
 
 	@Override
-	public Command reverse(Identity identity) {
-		return new DeleteUserCommand(identity, getUser());
+	public Command reverse(Identity principal) {
+		return new DeleteUserCommand(principal, getUser());
 	}
 
 	@Override

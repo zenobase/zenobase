@@ -20,8 +20,8 @@ public class UpdateUserCommand extends CommandSupport {
 		super(object);
 	}
 
-	public UpdateUserCommand(Identity identity, User from, User to) {
-		super(TYPE, identity);
+	public UpdateUserCommand(Identity principal, User from, User to) {
+		super(TYPE, principal);
 		setParameter(FROM, from.toJson());
 		setParameter(TO, to.toJson());
 	}
@@ -35,8 +35,8 @@ public class UpdateUserCommand extends CommandSupport {
 	}
 
 	@Override
-	public Command reverse(Identity identity) {
-		return new UpdateUserCommand(identity, getTo(), getFrom());
+	public Command reverse(Identity principal) {
+		return new UpdateUserCommand(principal, getTo(), getFrom());
 	}
 
 	@Override

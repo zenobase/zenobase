@@ -27,8 +27,8 @@ public class CompoundCommand extends CommandSupport {
 		this.registry = registry;
 	}
 
-	public CompoundCommand(Identity identity, String message, String undoMessage) {
-		super(TYPE, identity);
+	public CompoundCommand(Identity principal, String message, String undoMessage) {
+		super(TYPE, principal);
 		setParameter(MESSAGE, message);
 		setParameter(UNDO_MESSAGE, undoMessage);
 	}
@@ -56,10 +56,10 @@ public class CompoundCommand extends CommandSupport {
 	}
 
 	@Override
-	public Command reverse(Identity identity) {
-		CompoundCommand reverse = new CompoundCommand(identity, getUndoMessage(), getMessage());
+	public Command reverse(Identity principal) {
+		CompoundCommand reverse = new CompoundCommand(principal, getUndoMessage(), getMessage());
 		for (Command c : Lists.reverse(getCommands())) {
-			reverse.add(c.reverse(identity));
+			reverse.add(c.reverse(principal));
 		}
 		return reverse;
 	}

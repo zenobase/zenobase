@@ -19,8 +19,8 @@ public class CreateBucketCommand extends CommandSupport {
 		super(object);
 	}
 
-	public CreateBucketCommand(Identity identity, Bucket bucket) {
-		super(TYPE, identity);
+	public CreateBucketCommand(Identity principal, Bucket bucket) {
+		super(TYPE, principal);
 		setParameter(BUCKET, bucket.toJson());
 	}
 
@@ -29,8 +29,8 @@ public class CreateBucketCommand extends CommandSupport {
 	}
 
 	@Override
-	public Command reverse(Identity identity) {
-		return new DeleteBucketCommand(identity, getBucket());
+	public Command reverse(Identity principal) {
+		return new DeleteBucketCommand(principal, getBucket());
 	}
 
 	@Override

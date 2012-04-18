@@ -20,8 +20,8 @@ public class UpdateBucketCommand extends CommandSupport {
 		super(object);
 	}
 
-	public UpdateBucketCommand(Identity identity, Bucket from, Bucket to) {
-		super(TYPE, identity);
+	public UpdateBucketCommand(Identity principal, Bucket from, Bucket to) {
+		super(TYPE, principal);
 		setParameter(FROM, from.toJson());
 		setParameter(TO, to.toJson());
 	}
@@ -35,8 +35,8 @@ public class UpdateBucketCommand extends CommandSupport {
 	}
 
 	@Override
-	public Command reverse(Identity identity) {
-		return new UpdateBucketCommand(identity, getTo(), getFrom());
+	public Command reverse(Identity principal) {
+		return new UpdateBucketCommand(principal, getTo(), getFrom());
 	}
 
 	@Override

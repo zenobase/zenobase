@@ -32,26 +32,26 @@ public class UserController extends ControllerSupport {
 	static CommandQueue queue;
 
 	public static Result who() {
-		Identity identity = Identities.in(ctx()).get();
-		if (identity != null) {
-			User user = users.find(identity);
-			return ok(user != null ? toJson(user) : toJson(identity));
+		Identity principal = Identities.in(ctx()).get();
+		if (principal != null) {
+			User user = users.find(principal);
+			return ok(user != null ? toJson(user) : toJson(principal));
 		}
     	return noContent();
     }
 
 	public static Result get(String name) {
-		Identity identity = Identities.in(ctx()).get();
-		return identity != null ? get(name, identity) : unauthorized();
+		Identity principal = Identities.in(ctx()).get();
+		return principal != null ? get(name, principal) : unauthorized();
 	}
 
-	private static Result get(String name, Identity identity) {
+	private static Result get(String name, Identity principal) {
 		User user = users.find(name);
-		return user != null ? get(user, identity) : notFound();
+		return user != null ? get(user, principal) : notFound();
 	}
 
-	private static Result get(User user, Identity identity) {
-		return user.equals(identity) ? ok(toJson(user)) : forbidden();
+	private static Result get(User user, Identity principal) {
+		return user.equals(principal) ? ok(toJson(user)) : forbidden();
 	}
 
 	public static Result find(String identity, int offset, int limit) {
@@ -59,11 +59,11 @@ public class UserController extends ControllerSupport {
     }
 
 	public static Result find(int offset, int limit) {
-    	Identity identity = Identities.in(ctx()).get();
-    	if (identity == null) {
+    	Identity principal = Identities.in(ctx()).get();
+    	if (principal == null) {
     		return unauthorized();
     	}
-    	if (!users.isSuperuser(identity)) {
+    	if (!users.isSuperuser(principal)) {
     		return forbidden();
     	}
     	if (offset == 0 && limit == Integer.MAX_VALUE) {
@@ -147,20 +147,20 @@ public class UserController extends ControllerSupport {
 		if (body == null) {
 			return badRequest();
 		}
-		Identity identity = Identities.in(ctx()).get();
-    	if (identity == null) {
+		Identity principal = Identities.in(ctx()).get();
+    	if (principal == null) {
     		return unauthorized();
     	}
 		User user = users.find(name);
     	if (user == null) {
     		return notFound();
     	}
-    	if (!user.equals(identity) && !users.isSuperuser(identity)) {
+    	if (!user.equals(principal) && !users.isSuperuser(principal)) {
     		return forbidden();
     	}
     	UserUpdate update = UserUpdate.parse(body);
     	if (!update.isEmpty()) {
-    		String commandId = queue.dispatch(new UpdateUserCommand(identity, user, update.apply(user)));
+    		String commandId = queue.dispatch(new UpdateUserCommand(principal, user, update.apply(user)));
             response().setHeader("Undo", String.format("/queue/%s", commandId));
     		return noContent();
     	}

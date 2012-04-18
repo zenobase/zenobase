@@ -37,17 +37,17 @@ public class EventController extends ControllerSupport {
 	static CommandQueue queue;
 
 	public static Result find(String bucketId) {
-		Identity identity = Identities.in(ctx()).get();
-		return identity != null ? find(bucketId, identity) : unauthorized(); 
+		Identity principal = Identities.in(ctx()).get();
+		return principal != null ? find(bucketId, principal) : unauthorized(); 
     }
 
-	private static Result find(String bucketId, Identity identity) {
+	private static Result find(String bucketId, Identity principal) {
 		Bucket bucket = manager.findBucket(bucketId);
-    	return bucket != null ? find(bucket, identity) : notFound();
+    	return bucket != null ? find(bucket, principal) : notFound();
     }
 
-	private static Result find(Bucket bucket, Identity identity) {
-    	return bucket.getPermission(identity) != Permission.NONE ? ok(new EventSearch()
+	private static Result find(Bucket bucket, Identity principal) {
+    	return bucket.getPermission(principal) != Permission.NONE ? ok(new EventSearch()
 			.addWidgets(request().queryString().get("w"))
 			.addFilters(request().queryString().get("q"))
 			.execute(node.getIndex(bucket.getId()))) : forbidden();
@@ -56,8 +56,8 @@ public class EventController extends ControllerSupport {
 	@BodyParser.Of(value = BodyParser.Json.class, maxLength = 1000)
 	public static Result post(String bucketId) {
 		
-		Identity identity = Identities.in(ctx()).get();
-		if (identity == null) {
+		Identity principal = Identities.in(ctx()).get();
+		if (principal == null) {
 			return unauthorized();
 		}
 		ObjectNode body = (ObjectNode) request().body().asJson();
@@ -68,11 +68,11 @@ public class EventController extends ControllerSupport {
     	if (bucket == null) {
     		return notFound();
     	}
-    	if (bucket.getPermission(identity) != Permission.ALL) {
+    	if (bucket.getPermission(principal) != Permission.ALL) {
     		return forbidden();
     	}
     	if (body.has("random")) {
-    		String commandId = queue.dispatch(new RandomEventsCommandBuilder(identity, bucketId).build(body.get("random").asInt()));
+    		String commandId = queue.dispatch(new RandomEventsCommandBuilder(principal, bucketId).build(body.get("random").asInt()));
             response().setHeader(LOCATION, String.format("/buckets/%s/", bucket.getId()));
             response().setHeader("Undo", String.format("/queue/%s", commandId));
             return created();
@@ -80,11 +80,11 @@ public class EventController extends ControllerSupport {
     	else {
     		Event event = new Event(body);
 			event.setValue(Event.ID, Generator.id());
-			event.setValue(Event.AUTHOR, identity);
+			event.setValue(Event.AUTHOR, principal);
     		if (!event.contains(Event.TIMESTAMP)) {
     			event.addValue(Event.TIMESTAMP, new DateTime());
     		}
-    		String commandId = queue.dispatch(new CreateEventCommand( identity, bucketId, event));
+    		String commandId = queue.dispatch(new CreateEventCommand( principal, bucketId, event));
             response().setHeader(LOCATION, String.format("/buckets/%s/%s", bucket.getId(), event.getId()));
             response().setHeader("Undo", String.format("/queue/%s", commandId));
             return created();
@@ -107,25 +107,25 @@ public class EventController extends ControllerSupport {
     }
 
     public static Result delete(String bucketId, String eventId) {
-    	Identity identity = Identities.in(ctx()).get();
-		return identity != null ? delete(bucketId, eventId, identity) : unauthorized();
+    	Identity principal = Identities.in(ctx()).get();
+		return principal != null ? delete(bucketId, eventId, principal) : unauthorized();
     }
 
-    private static Result delete(String bucketId, String eventId, Identity identity) {
+    private static Result delete(String bucketId, String eventId, Identity principal) {
     	Bucket bucket = manager.findBucket(bucketId);
-    	return bucket != null ? delete(bucket, eventId, identity) : notFound();
+    	return bucket != null ? delete(bucket, eventId, principal) : notFound();
     }
 
-    private static Result delete(Bucket bucket, String eventId, Identity identity) {
-    	if (bucket.getPermission(identity) != Permission.ALL) {
+    private static Result delete(Bucket bucket, String eventId, Identity principal) {
+    	if (bucket.getPermission(principal) != Permission.ALL) {
     		return forbidden();
     	}
     	Event event = manager.findEvent(bucket.getId(), eventId);
-    	return event != null ? delete(bucket.getId(), event, identity) : notFound();
+    	return event != null ? delete(bucket.getId(), event, principal) : notFound();
     }
 
-    private static Result delete(String bucketId, Event event, Identity identity) {
-    	String commandId = queue.dispatch(new DeleteEventCommand(identity, bucketId, event));
+    private static Result delete(String bucketId, Event event, Identity principal) {
+    	String commandId = queue.dispatch(new DeleteEventCommand(principal, bucketId, event));
         response().setHeader("Undo", String.format("/queue/%s", commandId));
     	return noContent();
     }

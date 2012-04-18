@@ -94,7 +94,7 @@ function BucketListAdminCtrl($scope, $http) {
 	$scope.getOwner = function(bucket) {
 		for (var i = 0; i < bucket.permissions.length; ++i) {
 			if (bucket.permissions[i].permission === 'ALL') {
-				return bucket.permissions[i].identity;
+				return bucket.permissions[i].principal;
 			}
 		}
 	};

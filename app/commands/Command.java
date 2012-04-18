@@ -11,11 +11,11 @@ public interface Command {
 
 	String getId();
 
-	Identity getIdentity();
+	Identity getPrincipal();
 
 	DateTime getTimestamp();
 
-	Command reverse(Identity identity);
+	Command reverse(Identity principal);
 
 	ObjectNode toJson();
 }
