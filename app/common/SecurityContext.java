@@ -5,31 +5,27 @@ import play.api.libs.Crypto;
 import play.mvc.Http;
 import play.mvc.Http.Context;
 
-public class Identities {
+public class SecurityContext {
 
 	private static final String TOKEN_NAME = "token";
 	private static final char TOKEN_SEPARATOR = '-';
 
 	private final Http.Context context;
 
-	private Identities(Context context) {
+	public SecurityContext(Context context) {
 		this.context = context;
 	}
 
-	public static Identities in(Http.Context context) {
-		return new Identities(context);
-	}
-
-	public Identity get(boolean createIfNotPresent) {
-		Identity principal = get();
+	public Identity getPrincipal(boolean createIfNotPresent) {
+		Identity principal = getPrincipal();
 		if (principal == null && createIfNotPresent) {
 			principal = new Identity();
-			set(principal, true);
+			setPrincipal(principal, true);
 		}
 		return principal;
 	}
 
-	public Identity get() {
+	public Identity getPrincipal() {
 		Http.Cookie cookie = context.request().cookies().get(TOKEN_NAME);
 		if (cookie != null) {
 			int p = cookie.value().indexOf(TOKEN_SEPARATOR);
@@ -40,20 +36,20 @@ public class Identities {
 					return new Identity(principal);
 				}
 			}
-			unset();
+			unsetPrincipal();
 		}
 		return null;
 	}
 
-	public void set(Identity principal, boolean remember) {
-		set(TOKEN_NAME, Crypto.sign(principal.getId()) + TOKEN_SEPARATOR + principal.getId(), remember);
+	public void setPrincipal(Identity principal, boolean remember) {
+		setPrincipal(TOKEN_NAME, Crypto.sign(principal.getId()) + TOKEN_SEPARATOR + principal.getId(), remember);
 	}
 
-	public void unset() {
-		context.response().discardCookies(TOKEN_NAME);
-	}
-
-	private void set(String name, String value, boolean remember) {
+	private void setPrincipal(String name, String value, boolean remember) {
 		context.response().setCookie(name, value, remember ? 60 * 60 * 24 * 30 : -1, "/", null, false, true);
+	}
+
+	public void unsetPrincipal() {
+		context.response().discardCookies(TOKEN_NAME);
 	}
 }

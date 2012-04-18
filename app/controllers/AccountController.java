@@ -14,7 +14,7 @@ import services.UserManager;
 
 import commands.CloseAccountCommandBuilder;
 import commands.CreateUserCommand;
-import common.Identities;
+import common.SecurityContext;
 
 @With(Timed.class)
 public class AccountController extends ControllerSupport {
@@ -37,7 +37,7 @@ public class AccountController extends ControllerSupport {
 		if (users.exists(signUp.getUsername())) {
 			return badRequest("user exists");
 		}
-		Identity principal = Identities.in(ctx()).get(true);
+		Identity principal = new SecurityContext(ctx()).getPrincipal(true);
 		User user = new User(principal.getId(), signUp.getUsername());
 		user.setEmail(signUp.getEmail());
 		user.changePassword(signUp.getPassword());
@@ -47,7 +47,7 @@ public class AccountController extends ControllerSupport {
 	}
 
 	public static Result close(String name) {
-		Identity principal = Identities.in(ctx()).get();
+		Identity principal = new SecurityContext(ctx()).getPrincipal();
 		if (principal == null) {
 			return unauthorized();
 		}

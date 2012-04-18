@@ -7,7 +7,7 @@ import play.mvc.With;
 import services.UserManager;
 
 import com.google.inject.Inject;
-import common.Identities;
+import common.SecurityContext;
 
 @With(Timed.class)
 public class SecurityController extends ControllerSupport {
@@ -25,12 +25,12 @@ public class SecurityController extends ControllerSupport {
 		if (user == null || user.isSuspended() || !user.passwordEquals(signIn.getPassword())) {
 			return unauthorized();
 		}
-		Identities.in(ctx()).set(user.asIdentity(), signIn.isRemember());
+		new SecurityContext(ctx()).setPrincipal(user.asIdentity(), signIn.isRemember());
 		return ok(toJson(user));
 	}
 
 	public static Result signOut() {
-		Identities.in(ctx()).unset();
+		new SecurityContext(ctx()).unsetPrincipal();
 		return noContent();
 	}
 }

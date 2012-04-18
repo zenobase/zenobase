@@ -4,6 +4,7 @@ import io.UserPrinter;
 
 import javax.inject.Inject;
 
+import models.Identity;
 import models.User;
 
 import org.codehaus.jackson.JsonNode;
@@ -12,15 +13,14 @@ import org.codehaus.jackson.node.ObjectNode;
 
 import play.mvc.Result;
 import play.mvc.With;
-import models.Identity;
 import services.CommandQueue;
 import services.UserManager;
 
 import commands.UpdateUserCommand;
 import common.Callback;
-import common.Identities;
 import common.Nodes;
 import common.PartialList;
+import common.SecurityContext;
 
 @With(Timed.class)
 public class UserController extends ControllerSupport {
@@ -32,7 +32,7 @@ public class UserController extends ControllerSupport {
 	static CommandQueue queue;
 
 	public static Result who() {
-		Identity principal = Identities.in(ctx()).get();
+		Identity principal = new SecurityContext(ctx()).getPrincipal();
 		if (principal != null) {
 			User user = users.find(principal);
 			return ok(user != null ? toJson(user) : toJson(principal));
@@ -41,16 +41,14 @@ public class UserController extends ControllerSupport {
     }
 
 	public static Result get(String name) {
-		Identity principal = Identities.in(ctx()).get();
-		return principal != null ? get(name, principal) : unauthorized();
-	}
-
-	private static Result get(String name, Identity principal) {
+		Identity principal = new SecurityContext(ctx()).getPrincipal();
+		if (principal == null) {
+			return unauthorized();
+		}
 		User user = users.find(name);
-		return user != null ? get(user, principal) : notFound();
-	}
-
-	private static Result get(User user, Identity principal) {
+		if (user == null) {
+			return notFound();
+		}
 		return user.equals(principal) ? ok(toJson(user)) : forbidden();
 	}
 
@@ -59,7 +57,7 @@ public class UserController extends ControllerSupport {
     }
 
 	public static Result find(int offset, int limit) {
-    	Identity principal = Identities.in(ctx()).get();
+    	Identity principal = new SecurityContext(ctx()).getPrincipal();
     	if (principal == null) {
     		return unauthorized();
     	}
@@ -69,14 +67,17 @@ public class UserController extends ControllerSupport {
     	if (offset == 0 && limit == Integer.MAX_VALUE) {
     		return findAll();
     	}
-    	PartialList<User> result = users.find(offset, limit);
+        return ok(toJson(users.find(offset, limit)));
+	}
+
+	private static ObjectNode toJson(PartialList<User> result) {
     	ObjectNode resultNode = Nodes.newObject();
     	resultNode.put("total", result.size());
     	ArrayNode usersNode = resultNode.putArray("users");
     	for (User user : result.getElements()) {
     		usersNode.add(toJson(user));
     	}
-        return ok(resultNode);
+		return resultNode;
 	}
 
 	private static Result findAll() {
@@ -147,7 +148,7 @@ public class UserController extends ControllerSupport {
 		if (body == null) {
 			return badRequest();
 		}
-		Identity principal = Identities.in(ctx()).get();
+		Identity principal = new SecurityContext(ctx()).getPrincipal();
     	if (principal == null) {
     		return unauthorized();
     	}

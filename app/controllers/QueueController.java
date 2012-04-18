@@ -15,8 +15,8 @@ import services.UserManager;
 
 import commands.Command;
 import commands.CommandSupport;
-import common.Identities;
 import common.Nodes;
+import common.SecurityContext;
 
 @With(Timed.class)
 public class QueueController extends ControllerSupport {
@@ -31,7 +31,7 @@ public class QueueController extends ControllerSupport {
 	static UserManager users;
 
     public static Result get(int offset, int limit) {
-    	Identity principal = Identities.in(ctx()).get();
+    	Identity principal = new SecurityContext(ctx()).getPrincipal();
     	if (principal == null) {
     		return unauthorized();
     	}
@@ -51,7 +51,7 @@ public class QueueController extends ControllerSupport {
     }
 
     public static Result post(String id) {
-    	Identity principal = Identities.in(ctx()).get();
+    	Identity principal = new SecurityContext(ctx()).getPrincipal();
     	if (principal == null) {
     		return unauthorized();
     	}

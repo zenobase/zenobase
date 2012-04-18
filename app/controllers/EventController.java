@@ -22,7 +22,7 @@ import commands.CreateEventCommand;
 import commands.DeleteEventCommand;
 import commands.RandomEventsCommandBuilder;
 import common.Generator;
-import common.Identities;
+import common.SecurityContext;
 
 @With(Timed.class)
 public class EventController extends ControllerSupport {
@@ -37,16 +37,14 @@ public class EventController extends ControllerSupport {
 	static CommandQueue queue;
 
 	public static Result find(String bucketId) {
-		Identity principal = Identities.in(ctx()).get();
-		return principal != null ? find(bucketId, principal) : unauthorized(); 
-    }
-
-	private static Result find(String bucketId, Identity principal) {
+		Identity principal = new SecurityContext(ctx()).getPrincipal();
+		if (principal == null) {
+			return unauthorized();
+		}
 		Bucket bucket = manager.findBucket(bucketId);
-    	return bucket != null ? find(bucket, principal) : notFound();
-    }
-
-	private static Result find(Bucket bucket, Identity principal) {
+    	if (bucket == null) {
+    		return notFound();
+    	}
     	return bucket.getPermission(principal) != Permission.NONE ? ok(new EventSearch()
 			.addWidgets(request().queryString().get("w"))
 			.addFilters(request().queryString().get("q"))
@@ -55,8 +53,7 @@ public class EventController extends ControllerSupport {
 
 	@BodyParser.Of(value = BodyParser.Json.class, maxLength = 1000)
 	public static Result post(String bucketId) {
-		
-		Identity principal = Identities.in(ctx()).get();
+		Identity principal = new SecurityContext(ctx()).getPrincipal();
 		if (principal == null) {
 			return unauthorized();
 		}
@@ -96,7 +93,8 @@ public class EventController extends ControllerSupport {
     	if (bucket == null) {
     		return notFound();
     	}
-    	if (bucket.getPermission(Identities.in(ctx()).get()) == Permission.NONE) {
+    	Identity principal = new SecurityContext(ctx()).getPrincipal();
+    	if (bucket.getPermission(principal) == Permission.NONE) {
     		return forbidden();
     	}
     	Event event = manager.findEvent(bucketId, eventId);
@@ -107,24 +105,21 @@ public class EventController extends ControllerSupport {
     }
 
     public static Result delete(String bucketId, String eventId) {
-    	Identity principal = Identities.in(ctx()).get();
-		return principal != null ? delete(bucketId, eventId, principal) : unauthorized();
-    }
-
-    private static Result delete(String bucketId, String eventId, Identity principal) {
+    	Identity principal = new SecurityContext(ctx()).getPrincipal();
+		if (principal == null) {
+			return unauthorized();
+		}
     	Bucket bucket = manager.findBucket(bucketId);
-    	return bucket != null ? delete(bucket, eventId, principal) : notFound();
-    }
-
-    private static Result delete(Bucket bucket, String eventId, Identity principal) {
+    	if (bucket == null) {
+    		return notFound();
+    	}
     	if (bucket.getPermission(principal) != Permission.ALL) {
     		return forbidden();
     	}
     	Event event = manager.findEvent(bucket.getId(), eventId);
-    	return event != null ? delete(bucket.getId(), event, principal) : notFound();
-    }
-
-    private static Result delete(String bucketId, Event event, Identity principal) {
+    	if (event == null) {
+    		return notFound();
+    	}
     	String commandId = queue.dispatch(new DeleteEventCommand(principal, bucketId, event));
         response().setHeader("Undo", String.format("/queue/%s", commandId));
     	return noContent();

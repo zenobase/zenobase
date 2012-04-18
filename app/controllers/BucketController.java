@@ -19,7 +19,7 @@ import services.UserManager;
 import commands.DeleteBucketCommand;
 import commands.UpdateBucketCommand;
 import common.DefaultDashboard;
-import common.Identities;
+import common.SecurityContext;
 
 @With(Timed.class)
 public class BucketController extends ControllerSupport {
@@ -34,16 +34,14 @@ public class BucketController extends ControllerSupport {
 	static UserManager users;
 
 	public static Result get(String bucketId) {
-		Identity principal = Identities.in(ctx()).get();
-		return principal != null ? get(bucketId, principal) : unauthorized(); 
-    }
-
-	private static Result get(String bucketId, Identity principal) {
+		Identity principal = new SecurityContext(ctx()).getPrincipal();
+		if (principal == null) {
+			return unauthorized();
+		}
 		Bucket bucket = buckets.findBucket(bucketId);
-    	return bucket != null ? get(bucket, principal) : notFound();
-    }
-
-	private static Result get(Bucket bucket, Identity principal) {
+		if (bucket == null) {
+			return notFound();
+		}
     	if (bucket.getPermission(principal) == Permission.NONE) {
     		return forbidden();
     	}
@@ -55,8 +53,7 @@ public class BucketController extends ControllerSupport {
 
 	@BodyParser.Of(value = BodyParser.Json.class, maxLength = 10000)
 	public static Result update(String bucketId) {
-		
-		Identity principal = Identities.in(ctx()).get();
+		Identity principal = new SecurityContext(ctx()).getPrincipal();
 		if (principal == null) {
 			return unauthorized();
 		}
@@ -78,16 +75,14 @@ public class BucketController extends ControllerSupport {
     }
 
     public static Result delete(String bucketId) {
-    	Identity principal = Identities.in(ctx()).get();
-		return principal != null ? delete(bucketId, principal) : unauthorized();
-    }
-
-    private static Result delete(String bucketId, Identity principal) {
+    	Identity principal = new SecurityContext(ctx()).getPrincipal();
+		if (principal == null) {
+			return unauthorized();
+		}
     	Bucket bucket = buckets.findBucket(bucketId);
-    	return bucket != null ? delete(bucket, principal) : notFound();
-    }
-
-    private static Result delete(Bucket bucket, Identity principal) {
+    	if (bucket == null) {
+    		return notFound();
+    	}
     	if (bucket.getPermission(principal) != Permission.ALL && !users.isSuperuser(principal)) {
     		return forbidden();
     	}

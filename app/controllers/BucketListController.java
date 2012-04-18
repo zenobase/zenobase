@@ -22,7 +22,7 @@ import services.UserManager;
 import commands.CreateBucketCommand;
 import common.Callback;
 import common.Generator;
-import common.Identities;
+import common.SecurityContext;
 import common.Nodes;
 import common.PartialList;
 
@@ -46,7 +46,7 @@ public class BucketListController extends ControllerSupport {
     }
 
     private static Result find(int offset, int limit) {
-    	Identity principal = Identities.in(ctx()).get();
+    	Identity principal = new SecurityContext(ctx()).getPrincipal();
     	if (principal == null) {
     		return unauthorized();
     	}
@@ -60,7 +60,7 @@ public class BucketListController extends ControllerSupport {
     }
 
     private static Result find(Identity identity, int offset, int limit) {
-    	Identity principal = Identities.in(ctx()).get();
+    	Identity principal = new SecurityContext(ctx()).getPrincipal();
     	if (principal == null) {
     		return unauthorized();
     	}
@@ -110,7 +110,7 @@ public class BucketListController extends ControllerSupport {
 		if (label == null) {
 			return badRequest("missing label");
 		}
-		Identity principal = Identities.in(ctx()).get(true);
+		Identity principal = new SecurityContext(ctx()).getPrincipal(true);
     	Bucket bucket = createBucket(label, description, principal);
     	String commandId = queue.dispatch(new CreateBucketCommand(principal, bucket));
         response().setHeader(LOCATION, String.format("/buckets/%s/", bucket.getId()));
