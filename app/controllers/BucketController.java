@@ -3,6 +3,7 @@ package controllers;
 import javax.inject.Inject;
 
 import models.Bucket;
+import models.Identity;
 import models.Permission;
 
 import org.codehaus.jackson.node.ObjectNode;
@@ -11,7 +12,6 @@ import play.Logger;
 import play.mvc.BodyParser;
 import play.mvc.Result;
 import play.mvc.With;
-import models.Identity;
 import services.BucketManager;
 import services.CommandQueue;
 import services.UserManager;
