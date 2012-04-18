@@ -70,9 +70,11 @@ public class Index {
 
 	private void index(String type, String id, ObjectNode object, OpType operation, boolean refresh) {
 		IndexRequestBuilder request = client.prepareIndex(indexName, type, id);
-		Long version = DomainNode.VERSION.getValue(object);
-		if (version != null) {
-			request.setVersion(version);
+		if (operation == OpType.INDEX) {
+			Long version = DomainNode.VERSION.getValue(object);
+			if (version != null) {
+				request.setVersion(version);
+			}
 		}
 		request.setSource(Nodes.toByteArray(object));
 		request.setOpType(operation);
