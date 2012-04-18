@@ -36,10 +36,10 @@ public class Nodes {
 		}
 	}
 
-	public static byte[] toByteArray(ObjectNode object) {
+	public static byte[] toByteArray(ObjectNode node) {
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		try {
-			new JsonPrinter(out).print(object);
+			new JsonPrinter(out).print(node);
 		} catch (IOException e) {
 			throw new AssertionError(e);
 		}

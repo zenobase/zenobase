@@ -33,10 +33,10 @@ public class LocationField extends Field<Location> {
 
 	@Override
 	protected JsonNode toJson(Location value) {
-		ObjectNode object = Nodes.newObject();
-		object.put(LATITUDE, value.getLatitude());
-		object.put(LONGITUDE, value.getLongitude());
-		return object;
+		ObjectNode node = Nodes.newObject();
+		node.put(LATITUDE, value.getLatitude());
+		node.put(LONGITUDE, value.getLongitude());
+		return node;
 	}
 
 }

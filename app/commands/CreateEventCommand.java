@@ -17,8 +17,8 @@ public class CreateEventCommand extends CommandSupport {
 	private static final TokenField BUCKET_ID = new TokenField("bucketId");
 	private static final ObjectField EVENT = new ObjectField("event");
 
-	private CreateEventCommand(ObjectNode object) {
-		super(object);
+	private CreateEventCommand(ObjectNode node) {
+		super(node);
 	}
 
 	public CreateEventCommand(Identity principal, String bucketId, Event event) {
@@ -53,8 +53,8 @@ public class CreateEventCommand extends CommandSupport {
 		}
 
 		@Override
-		public Command parse(ObjectNode object) {
-			return new CreateEventCommand(object);
+		public Command parse(ObjectNode node) {
+			return new CreateEventCommand(node);
 		}
 	}
 

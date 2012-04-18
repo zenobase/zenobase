@@ -16,8 +16,8 @@ public class UpdateBucketCommand extends CommandSupport {
 	private static final ObjectField FROM = new ObjectField("from");
 	private static final ObjectField TO = new ObjectField("to");
 
-	private UpdateBucketCommand(ObjectNode object) {
-		super(object);
+	private UpdateBucketCommand(ObjectNode node) {
+		super(node);
 	}
 
 	public UpdateBucketCommand(Identity principal, Bucket from, Bucket to) {
@@ -52,8 +52,8 @@ public class UpdateBucketCommand extends CommandSupport {
 		}
 
 		@Override
-		public Command parse(ObjectNode object) {
-			return new UpdateBucketCommand(object);
+		public Command parse(ObjectNode node) {
+			return new UpdateBucketCommand(node);
 		}
 	}
 

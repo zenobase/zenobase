@@ -40,8 +40,8 @@ public class PersistentCommandStore implements CommandStore {
 
 	@Override
 	public Command find(String id) {
-		ObjectNode object = index.get(CommandSupport.TYPE_NAME, id);
-		return object != null ? parsers.parse(object) : null;
+		ObjectNode node = index.get(CommandSupport.TYPE_NAME, id);
+		return node != null ? parsers.parse(node) : null;
 	}
 
 	@Override

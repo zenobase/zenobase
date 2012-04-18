@@ -15,8 +15,8 @@ public class CreateUserCommand extends CommandSupport {
 	private static final String TYPE = "create user";
 	private static final ObjectField USER = new ObjectField("user");
 
-	public CreateUserCommand(ObjectNode object) {
-		super(object);
+	public CreateUserCommand(ObjectNode node) {
+		super(node);
 	}
 
 	public CreateUserCommand(Identity principal, User user) {
@@ -46,8 +46,8 @@ public class CreateUserCommand extends CommandSupport {
 		}
 
 		@Override
-		public Command parse(ObjectNode object) {
-			return new CreateUserCommand(object);
+		public Command parse(ObjectNode node) {
+			return new CreateUserCommand(node);
 		}
 	}
 

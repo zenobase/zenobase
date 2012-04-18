@@ -48,9 +48,9 @@ public abstract class MapField<K, V> extends Field<Map.Entry<K, V>> {
 
 	@Override
 	protected JsonNode toJson(Map.Entry<K, V> entry) {
-		ObjectNode object = Nodes.newObject();
-		keyField.setValue(object, entry.getKey());
-		valueField.setValue(object, entry.getValue());
-		return object;
+		ObjectNode node = Nodes.newObject();
+		keyField.setValue(node, entry.getKey());
+		valueField.setValue(node, entry.getValue());
+		return node;
 	}
 }

@@ -16,8 +16,8 @@ public class UpdateUserCommand extends CommandSupport {
 	private static final ObjectField FROM = new ObjectField("from");
 	private static final ObjectField TO = new ObjectField("to");
 
-	private UpdateUserCommand(ObjectNode object) {
-		super(object);
+	private UpdateUserCommand(ObjectNode node) {
+		super(node);
 	}
 
 	public UpdateUserCommand(Identity principal, User from, User to) {
@@ -52,8 +52,8 @@ public class UpdateUserCommand extends CommandSupport {
 		}
 
 		@Override
-		public Command parse(ObjectNode object) {
-			return new UpdateUserCommand(object);
+		public Command parse(ObjectNode node) {
+			return new UpdateUserCommand(node);
 		}
 	}
 

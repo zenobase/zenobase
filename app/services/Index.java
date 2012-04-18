@@ -60,23 +60,23 @@ public class Index {
 		client.admin().indices().preparePutMapping(indexName).setType(schema.getTypeName()).setSource(schema.toJson().toString()).execute().actionGet();
 	}
 
-	public void store(String type, String id, ObjectNode object, boolean refresh) {
-		index(type, id, object, OpType.CREATE, refresh);
+	public void store(String type, String id, ObjectNode node, boolean refresh) {
+		index(type, id, node, OpType.CREATE, refresh);
 	}
 
-	public void update(String type, String id, ObjectNode object, boolean refresh) {
-		index(type, id, object, OpType.INDEX, refresh);
+	public void update(String type, String id, ObjectNode node, boolean refresh) {
+		index(type, id, node, OpType.INDEX, refresh);
 	}
 
-	private void index(String type, String id, ObjectNode object, OpType operation, boolean refresh) {
+	private void index(String type, String id, ObjectNode node, OpType operation, boolean refresh) {
 		IndexRequestBuilder request = client.prepareIndex(indexName, type, id);
 		if (operation == OpType.INDEX) {
-			Long version = DomainNode.VERSION.getValue(object);
+			Long version = DomainNode.VERSION.getValue(node);
 			if (version != null) {
 				request.setVersion(version);
 			}
 		}
-		request.setSource(Nodes.toByteArray(object));
+		request.setSource(Nodes.toByteArray(node));
 		request.setOpType(operation);
 		request.setRefresh(refresh);
 		request.execute().actionGet();
@@ -140,11 +140,11 @@ public class Index {
 	}
 
 	private static ObjectNode read(byte[] source, long version) {
-		ObjectNode object = Nodes.read(source);
+		ObjectNode node = Nodes.read(source);
 		if (version > 0) {
-			DomainNode.VERSION.setValue(object, version);
+			DomainNode.VERSION.setValue(node, version);
 		}
-		return object;
+		return node;
 	}
 
 	public boolean exists(String type, String id) {

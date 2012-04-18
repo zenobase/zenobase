@@ -15,8 +15,8 @@ public class RestoreBucketCommand extends CommandSupport {
 	private static final String TYPE = "restore bucket";
 	private static final ObjectField BUCKET = new ObjectField("bucket");
 
-	private RestoreBucketCommand(ObjectNode object) {
-		super(object);
+	private RestoreBucketCommand(ObjectNode node) {
+		super(node);
 	}
 
 	public RestoreBucketCommand(Identity principal, Bucket bucket) {
@@ -46,8 +46,8 @@ public class RestoreBucketCommand extends CommandSupport {
 		}
 
 		@Override
-		public Command parse(ObjectNode object) {
-			return new RestoreBucketCommand(object);
+		public Command parse(ObjectNode node) {
+			return new RestoreBucketCommand(node);
 		}
 	}
 

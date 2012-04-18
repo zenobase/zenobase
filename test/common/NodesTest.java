@@ -15,21 +15,21 @@ public class NodesTest {
 	@Test
 	public void testFilter() {
 
-		ObjectNode object = Nodes.newObject();
-		object.put(FIELD_NAME, "me");
-		object.put(FIELD_PASSWORD, "xyz");
-		ArrayNode friendsNode = object.putArray(FIELD_FRIENDS);
+		ObjectNode node = Nodes.newObject();
+		node.put(FIELD_NAME, "me");
+		node.put(FIELD_PASSWORD, "xyz");
+		ArrayNode friendsNode = node.putArray(FIELD_FRIENDS);
 		ObjectNode friendNode = friendsNode.addObject();
 		friendNode.put(FIELD_NAME, "you");
 		friendNode.put(FIELD_PASSWORD, "abc");
-		assertPassword(object, true);
+		assertPassword(node, true);
 
-		Nodes.filter(object, Sets.newHashSet(FIELD_PASSWORD));
-		assertPassword(object, false);
+		Nodes.filter(node, Sets.newHashSet(FIELD_PASSWORD));
+		assertPassword(node, false);
 	}
 
-	private static void assertPassword(ObjectNode object, boolean expected) {
-		Assert.assertEquals("me have password in " + object, expected, object.has(FIELD_PASSWORD));
-		Assert.assertEquals("you have password in " + object, expected, object.path(FIELD_FRIENDS).get(0).has(FIELD_PASSWORD));
+	private static void assertPassword(ObjectNode node, boolean expected) {
+		Assert.assertEquals("me have password in " + node, expected, node.has(FIELD_PASSWORD));
+		Assert.assertEquals("you have password in " + node, expected, node.path(FIELD_FRIENDS).get(0).has(FIELD_PASSWORD));
 	}
 }

@@ -56,8 +56,8 @@ public class CommandQueueTest {
 
 		private static final TokenField LABEL = new TokenField("label");
 
-		private MockCommand(ObjectNode object) {
-			super(object);
+		private MockCommand(ObjectNode node) {
+			super(node);
 		}
 
 		public MockCommand(String label) {
@@ -93,8 +93,8 @@ public class CommandQueueTest {
 				return "mock";
 			}
 			@Override
-			public Command parse(ObjectNode object) {
-				return new MockCommand(object);
+			public Command parse(ObjectNode node) {
+				return new MockCommand(node);
 			}
 		}
 	}

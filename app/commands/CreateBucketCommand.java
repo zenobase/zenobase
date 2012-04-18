@@ -15,8 +15,8 @@ public class CreateBucketCommand extends CommandSupport {
 	private static final String TYPE = "create bucket";
 	private static final ObjectField BUCKET = new ObjectField("bucket");
 	
-	private CreateBucketCommand(ObjectNode object) {
-		super(object);
+	private CreateBucketCommand(ObjectNode node) {
+		super(node);
 	}
 
 	public CreateBucketCommand(Identity principal, Bucket bucket) {
@@ -46,8 +46,8 @@ public class CreateBucketCommand extends CommandSupport {
 		}
 
 		@Override
-		public Command parse(ObjectNode object) {
-			return new CreateBucketCommand(object);
+		public Command parse(ObjectNode node) {
+			return new CreateBucketCommand(node);
 		}
 	}
 

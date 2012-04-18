@@ -21,11 +21,11 @@ public class CommandParserRegistry {
 		}
 	}
 
-	public Command parse(ObjectNode object) {
-		String type = CommandSupport.TYPE.getValue(object);
-		Preconditions.checkNotNull(type, "Missing type field in " + object);
+	public Command parse(ObjectNode node) {
+		String type = CommandSupport.TYPE.getValue(node);
+		Preconditions.checkNotNull(type, "Missing type field in " + node);
 		CommandParser parser = parsers.get(type);
 		Preconditions.checkNotNull(type, "Missing parser for type " + type);
-		return parser.parse(object);
+		return parser.parse(node);
 	}	
 }

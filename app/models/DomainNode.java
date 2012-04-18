@@ -13,14 +13,14 @@ public class DomainNode {
 
 	public static final LongField VERSION = new LongField("version", false);
 
-	private final ObjectNode object;
+	private final ObjectNode node;
 
-	public DomainNode(ObjectNode object) {
-		this.object = object;
+	public DomainNode(ObjectNode node) {
+		this.node = node;
 	}
 
 	public DomainNode() {
-		object = Nodes.newObject();
+		node = Nodes.newObject();
 	}
 
 	public long getVersion() {
@@ -28,38 +28,38 @@ public class DomainNode {
 	}
 
 	protected <T> T getValue(Field<T> field) {
-		return field.getValue(object);
+		return field.getValue(node);
 	}
 
 	protected <T> T getValue(Field<T> field, T defaultValue) {
-		return Objects.firstNonNull(field.getValue(object), defaultValue);
+		return Objects.firstNonNull(field.getValue(node), defaultValue);
 	}
 
 	protected <T> ImmutableList<T> getValues(Field<T> field) {
-		return field.getValues(object);
+		return field.getValues(node);
 	}
 
 	protected <T> void setValue(Field<T> field, T value) {
-		field.setValue(object, value);
+		field.setValue(node, value);
 	}
 
 	protected <T> void setValues(Field<T> field, Iterable<T> values) {
-		field.setValues(object, field.getName(), values);
+		field.setValues(node, field.getName(), values);
 	}
 
 	protected <T> void addValue(Field<T> field, T value) {
-		field.addValue(object, value);
+		field.addValue(node, value);
 	}
 
 	protected <T> void addValues(Field<T> field, Iterable<T> values) {
-		field.addValues(object, values);
+		field.addValues(node, values);
 	}
 
 	protected <T> boolean contains(Field<T> field) {
-		return object.has(field.getName());
+		return node.has(field.getName());
 	}
 
 	public ObjectNode toJson() {
-		return object;
+		return node;
 	}
 }

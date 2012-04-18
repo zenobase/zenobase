@@ -30,93 +30,93 @@ public abstract class Field<T> {
 		return type;
 	}
 
-	public T getValue(ObjectNode object) {
-		JsonNode node = object.get(name);
-		if (node != null && node.isArray() && node.size() > 0) {
-			return getValue(Iterables.getOnlyElement(((ArrayNode) node)));
+	public T getValue(ObjectNode node) {
+		JsonNode fieldNode = node.get(name);
+		if (fieldNode != null && fieldNode.isArray() && fieldNode.size() > 0) {
+			return getValue(Iterables.getOnlyElement(((ArrayNode) fieldNode)));
 		}
-		if (node != null && !node.isMissingNode() && !node.isNull()) {
-			return getValue(node);
+		if (fieldNode != null && !fieldNode.isMissingNode() && !fieldNode.isNull()) {
+			return getValue(fieldNode);
 		}
 		return null;
 	}
 
-	public ImmutableList<T> getValues(ObjectNode object) {
+	public ImmutableList<T> getValues(ObjectNode node) {
 		ImmutableList.Builder<T> values = ImmutableList.builder();
-		JsonNode node = object.get(name);
-		if (node != null && node.isArray()) {
-			for (JsonNode element : ((ArrayNode) node)) {
+		JsonNode fieldNode = node.get(name);
+		if (fieldNode != null && fieldNode.isArray()) {
+			for (JsonNode element : ((ArrayNode) fieldNode)) {
 				values.add(getValue(element));
 			}
 		}
-		else if (node != null && !node.isMissingNode() && !node.isNull()) {
-			values.add(getValue(node));
+		else if (fieldNode != null && !fieldNode.isMissingNode() && !fieldNode.isNull()) {
+			values.add(getValue(fieldNode));
 		}
 		return values.build();
 	}
 
-	protected ImmutableList<JsonNode> getNodes(ObjectNode object) {
+	protected ImmutableList<JsonNode> getNodes(ObjectNode node) {
 		ImmutableList.Builder<JsonNode> values = ImmutableList.builder();
-		JsonNode node = object.get(name);
-		if (node != null && node.isArray()) {
-			for (JsonNode element : ((ArrayNode) node)) {
+		JsonNode fieldNode = node.get(name);
+		if (fieldNode != null && fieldNode.isArray()) {
+			for (JsonNode element : ((ArrayNode) fieldNode)) {
 				values.add(element);
 			}
 		}
-		else if (node != null && !node.isMissingNode() && !node.isNull()) {
-			values.add(node);
+		else if (fieldNode != null && !fieldNode.isMissingNode() && !fieldNode.isNull()) {
+			values.add(fieldNode);
 		}
 		return values.build();
 	}
 
 	protected abstract T getValue(JsonNode node);
 
-	public void addValue(ObjectNode object, T value) {
+	public void addValue(ObjectNode node, T value) {
 		Preconditions.checkNotNull(value, "Can't add null value");
-		JsonNode node = object.get(name);
-		if (node == null) {
-			ArrayNode arrayNode = object.putArray(name);
+		JsonNode fieldNode = node.get(name);
+		if (fieldNode == null) {
+			ArrayNode arrayNode = node.putArray(name);
 			arrayNode.add(toJson(value));
 		}
-		else if (node.isArray()) {
-			ArrayNode arrayNode = ((ArrayNode) node);
+		else if (fieldNode.isArray()) {
+			ArrayNode arrayNode = ((ArrayNode) fieldNode);
 			arrayNode.add(toJson(value));
 		}
 		else {
-			ArrayNode arrayNode = object.putArray(name);
-			arrayNode.add(node);
+			ArrayNode arrayNode = node.putArray(name);
+			arrayNode.add(fieldNode);
 			arrayNode.add(toJson(value));
 		}
 	}
 
-	public void addValues(ObjectNode object, Iterable<T> values) {
-		JsonNode node = object.get(name);
-		if (node == null) {
-			ArrayNode arrayNode = object.putArray(name);
+	public void addValues(ObjectNode node, Iterable<T> values) {
+		JsonNode fieldNode = node.get(name);
+		if (fieldNode == null) {
+			ArrayNode arrayNode = node.putArray(name);
 			addValues(arrayNode, values);
 		}
-		else if (node.isArray()) {
-			ArrayNode arrayNode = ((ArrayNode) node);
+		else if (fieldNode.isArray()) {
+			ArrayNode arrayNode = ((ArrayNode) fieldNode);
 			addValues(arrayNode, values);
 		}
 		else {
-			ArrayNode arrayNode = object.putArray(name);
-			arrayNode.add(node);
+			ArrayNode arrayNode = node.putArray(name);
+			arrayNode.add(fieldNode);
 			addValues(arrayNode, values);
 		}
 	}
 
-	public void setValue(ObjectNode object, T value) {
+	public void setValue(ObjectNode node, T value) {
 		if (value != null) {
-			object.put(name, toJson(value));
+			node.put(name, toJson(value));
 		}
 		else {
-			object.remove(name);
+			node.remove(name);
 		}
 	}
 
-	public void setValues(ObjectNode object, String fieldName, Iterable<T> values) {
-		ArrayNode arrayNode = object.putArray(fieldName);
+	public void setValues(ObjectNode node, String fieldName, Iterable<T> values) {
+		ArrayNode arrayNode = node.putArray(fieldName);
 		addValues(arrayNode, values);
 	}
 
@@ -133,11 +133,11 @@ public abstract class Field<T> {
 		schema.put("type", schemaType);
 	}
 
-	public void prePersist(ObjectNode object) {
+	public void prePersist(ObjectNode node) {
 		
 	}
 
-	public void postLoad(ObjectNode object) {
+	public void postLoad(ObjectNode node) {
 		
 	}
 }

@@ -50,8 +50,8 @@ public class UserManager {
 			.from(offset).size(limit)
 			.sort(User.NAME.getName());
 		PartialList<ObjectNode> hits = index.find(search);
-		for (ObjectNode object : hits.getElements()) {
-			users.add(new User(object));
+		for (ObjectNode node : hits.getElements()) {
+			users.add(new User(node));
 		}
 		return new PartialList<User>(users, hits.size());
 	}
@@ -59,8 +59,8 @@ public class UserManager {
 	public void find(final Callback<User> callback) {
 		index.find(QueryBuilders.matchAllQuery(), new Callback<ObjectNode>() {
 			@Override
-			public void call(ObjectNode object) {
-				callback.call(new User(object));
+			public void call(ObjectNode node) {
+				callback.call(new User(node));
 			}
 		});
 	}
@@ -74,8 +74,8 @@ public class UserManager {
 	}
 
 	public User find(String name) {
-		ObjectNode object = index.get(User.TYPE_NAME, name);
-		return object != null ? new User(object) : null;
+		ObjectNode node = index.get(User.TYPE_NAME, name);
+		return node != null ? new User(node) : null;
 	}
 
 	public boolean exists(String name) {

@@ -63,9 +63,9 @@ public class ScoreboardWidget implements Widget {
 	}
 
 	private void addValue(ObjectNode parent, String property, double value) {
-		ObjectNode object = parent.putObject(property);
-		object.put("@value", unit.getStandardUnit().getConverterTo(unit).convert(value));
-		object.put("unit", unit.toString());
+		ObjectNode node = parent.putObject(property);
+		node.put("@value", unit.getStandardUnit().getConverterTo(unit).convert(value));
+		node.put("unit", unit.toString());
 	}
 
 	public static WidgetBuilder builder() {

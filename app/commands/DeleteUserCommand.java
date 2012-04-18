@@ -15,8 +15,8 @@ public class DeleteUserCommand extends CommandSupport {
 	private static final String TYPE = "delete user";
 	private static final ObjectField USER = new ObjectField("user");
 
-	private DeleteUserCommand(ObjectNode object) {
-		super(object);
+	private DeleteUserCommand(ObjectNode node) {
+		super(node);
 	}
 
 	public DeleteUserCommand(Identity principal, User user) {
@@ -46,8 +46,8 @@ public class DeleteUserCommand extends CommandSupport {
 		}
 
 		@Override
-		public Command parse(ObjectNode object) {
-			return new DeleteUserCommand(object);
+		public Command parse(ObjectNode node) {
+			return new DeleteUserCommand(node);
 		}
 	}
 

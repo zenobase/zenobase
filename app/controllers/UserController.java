@@ -136,9 +136,9 @@ public class UserController extends ControllerSupport {
 			return to;
 		}
 
-		public static UserUpdate parse(ObjectNode objectNode) {
-			String email = objectNode.findPath(User.EMAIL.getName()).getTextValue();
-			String password = objectNode.findPath(User.PASSWORD.getName()).getTextValue();
+		public static UserUpdate parse(ObjectNode node) {
+			String email = node.findPath(User.EMAIL.getName()).getTextValue();
+			String password = node.findPath(User.PASSWORD.getName()).getTextValue();
 			return new UserUpdate(email, password);
 		}
 	}
@@ -168,9 +168,9 @@ public class UserController extends ControllerSupport {
 		return badRequest();
 	}
 
-	private static JsonNode toJson(Identity identity) {
-		ObjectNode object = Nodes.newObject();
-		object.put(User.ID.getName(), identity.getId());
-		return object;
+	private static JsonNode toJson(Identity identity) { // TODO move to Identity
+		ObjectNode node = Nodes.newObject();
+		node.put(User.ID.getName(), identity.getId());
+		return node;
 	}
 }

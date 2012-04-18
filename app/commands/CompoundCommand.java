@@ -22,8 +22,8 @@ public class CompoundCommand extends CommandSupport {
 	private CommandParserRegistry registry;
 	private final List<Command> commands = Lists.newArrayList();
 
-	private CompoundCommand(ObjectNode object, CommandParserRegistry registry) {
-		super(object);
+	private CompoundCommand(ObjectNode node, CommandParserRegistry registry) {
+		super(node);
 		this.registry = registry;
 	}
 
@@ -77,8 +77,8 @@ public class CompoundCommand extends CommandSupport {
 		}
 
 		@Override
-		public Command parse(ObjectNode object) {
-			return new CompoundCommand(object, getRegistry());
+		public Command parse(ObjectNode node) {
+			return new CompoundCommand(node, getRegistry());
 		}
 	}
 }

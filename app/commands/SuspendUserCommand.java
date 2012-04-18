@@ -17,8 +17,8 @@ public class SuspendUserCommand extends CommandSupport {
 	private static final TokenField NAME = new TokenField("name");
 	private static final BooleanField SUSPEND = new BooleanField("suspend");
 
-	private SuspendUserCommand(ObjectNode object) {
-		super(object);
+	private SuspendUserCommand(ObjectNode node) {
+		super(node);
 	}
 
 	public SuspendUserCommand(Identity principal, String name, boolean suspend) {
@@ -53,8 +53,8 @@ public class SuspendUserCommand extends CommandSupport {
 		}
 
 		@Override
-		public Command parse(ObjectNode object) {
-			return new SuspendUserCommand(object);
+		public Command parse(ObjectNode node) {
+			return new SuspendUserCommand(node);
 		}
 	}
 

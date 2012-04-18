@@ -17,8 +17,8 @@ public class DeleteEventCommand extends CommandSupport {
 	private static final TokenField BUCKET_ID = new TokenField("bucketId");
 	private static final ObjectField EVENT = new ObjectField("event");
 
-	private DeleteEventCommand(ObjectNode object) {
-		super(object);
+	private DeleteEventCommand(ObjectNode node) {
+		super(node);
 	}
 
 	public DeleteEventCommand(Identity principal, String bucketId, Event event) {
@@ -53,8 +53,8 @@ public class DeleteEventCommand extends CommandSupport {
 		}
 
 		@Override
-		public Command parse(ObjectNode object) {
-			return new DeleteEventCommand(object);
+		public Command parse(ObjectNode node) {
+			return new DeleteEventCommand(node);
 		}
 	}
 

@@ -38,23 +38,23 @@ public class MeasurementField<Q extends Quantity> extends Field<DecimalMeasure<Q
 		return getDecimalMeasure((ObjectNode) node);
 	}
 
-	private DecimalMeasure<Q> getDecimalMeasure(ObjectNode object) {
-		return DecimalMeasure.valueOf(VALUE.getValue(object),
-			(Unit<Q>) Unit.valueOf(UNIT.getValue(object)));
+	private DecimalMeasure<Q> getDecimalMeasure(ObjectNode node) {
+		return DecimalMeasure.valueOf(VALUE.getValue(node),
+			(Unit<Q>) Unit.valueOf(UNIT.getValue(node)));
 	}
 
 	@Override
 	protected JsonNode toJson(DecimalMeasure<Q> value) {
-		ObjectNode object = Nodes.newObject();
-		VALUE.setValue(object, value.getValue());
-		UNIT.setValue(object, value.getUnit().toString());
-		return object;
+		ObjectNode node = Nodes.newObject();
+		VALUE.setValue(node, value.getValue());
+		UNIT.setValue(node, value.getUnit().toString());
+		return node;
 	}
 
 	@Override
-	public void prePersist(ObjectNode object) {
-		for (JsonNode node : getNodes(object)) {
-			ObjectNode fieldNode = (ObjectNode) node;
+	public void prePersist(ObjectNode node) {
+		for (JsonNode childNode : getNodes(node)) {
+			ObjectNode fieldNode = (ObjectNode) childNode;
 			DecimalMeasure<Q> value = getDecimalMeasure(fieldNode);
 			VALUE_SI.setValue(fieldNode, Measures.toStandard(value).getValue());
 		}

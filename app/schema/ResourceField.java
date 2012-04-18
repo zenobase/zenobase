@@ -35,9 +35,9 @@ public class ResourceField extends Field<Resource> {
 
 	@Override
 	protected JsonNode toJson(Resource value) {
-		ObjectNode object = Nodes.newObject();
-		TITLE.setValue(object, value.getTitle());
-		URL.setValue(object, value.getUrl());
-		return object;
+		ObjectNode node = Nodes.newObject();
+		TITLE.setValue(node, value.getTitle());
+		URL.setValue(node, value.getUrl());
+		return node;
 	}
 }

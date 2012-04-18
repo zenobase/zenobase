@@ -12,8 +12,7 @@ public interface CommandStore {
 
 	void findAll(Callback<Command> callback);
 
-	ImmutableList<Command> getHistory(int offset, int limit);
+	ImmutableList<Command> getHistory(int offset, int limit); // TODO return a PartialList
 
 	long size();
-
 }

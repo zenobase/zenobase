@@ -15,9 +15,9 @@ public abstract class ControllerSupport extends Controller {
 
 	private static final Set<String> USER_FILTER_FIELDS = Sets.newHashSet(User.PASSWORD.getName());
 
-	protected static ObjectNode toJson(User user) {
-		ObjectNode object = user.toJson();
-		Nodes.filter(object, USER_FILTER_FIELDS);
-		return object;
+	protected static ObjectNode toJson(User user) { // TODO move to User
+		ObjectNode node = user.toJson();
+		Nodes.filter(node, USER_FILTER_FIELDS);
+		return node;
 	}
 }

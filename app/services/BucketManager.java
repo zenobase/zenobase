@@ -70,8 +70,8 @@ public class BucketManager {
 	}
 
 	public Bucket findBucket(String bucketId) {
-		ObjectNode object = index.get(Bucket.TYPE_NAME, bucketId);
-		return object != null ? new Bucket(object) : null;
+		ObjectNode node = index.get(Bucket.TYPE_NAME, bucketId);
+		return node != null ? new Bucket(node) : null;
 	}
 
 	public PartialList<Bucket> findBuckets(int offset, int limit) {
@@ -109,8 +109,8 @@ public class BucketManager {
 	public void findBuckets(QueryBuilder query, final Callback<Bucket> callback) {
 		index.find(query, new Callback<ObjectNode>() {
 			@Override
-			public void call(ObjectNode object) {
-				callback.call(new Bucket(object));
+			public void call(ObjectNode node) {
+				callback.call(new Bucket(node));
 			}
 		});
 	}
@@ -125,8 +125,8 @@ public class BucketManager {
 	}
 
 	public Event findEvent(String bucketId, String eventId) {
-		ObjectNode object = getIndex(bucketId).get(Event.TYPE_NAME, eventId);
-		return object != null ? new Event(object) : null;
+		ObjectNode node = getIndex(bucketId).get(Event.TYPE_NAME, eventId);
+		return node != null ? new Event(node) : null;
 	}
 
 	public long getSize(String bucketId) {

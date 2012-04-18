@@ -38,8 +38,8 @@ public class Event extends DomainNode {
 		setValue(ID, id);
 	}
 
-	public Event(ObjectNode object) {
-		super(object);
+	public Event(ObjectNode node) {
+		super(node);
 	}
 
 	public String getId() {

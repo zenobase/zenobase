@@ -15,8 +15,8 @@ public class DeleteBucketCommand extends CommandSupport {
 	private static final String TYPE = "delete bucket";
 	private static final ObjectField BUCKET = new ObjectField("bucket");
 
-	private DeleteBucketCommand(ObjectNode object) {
-		super(object);
+	private DeleteBucketCommand(ObjectNode node) {
+		super(node);
 	}
 
 	public DeleteBucketCommand(Identity principal, Bucket bucket) {
@@ -46,8 +46,8 @@ public class DeleteBucketCommand extends CommandSupport {
 		}
 
 		@Override
-		public Command parse(ObjectNode object) {
-			return new DeleteBucketCommand(object);
+		public Command parse(ObjectNode node) {
+			return new DeleteBucketCommand(node);
 		}
 	}
 

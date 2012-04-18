@@ -110,11 +110,11 @@ public class EventSearch {
 	}
 
 	private ObjectNode toJson(SearchResponse response) {
-		ObjectNode object = Nodes.newObject();
-		object.put("total", Ints.checkedCast(response.hits().getTotalHits()));
+		ObjectNode node = Nodes.newObject();
+		node.put("total", Ints.checkedCast(response.hits().getTotalHits()));
 		for (Widget widget : widgets) {
-			object.put(widget.getId(), widget.process(response));
+			node.put(widget.getId(), widget.process(response));
 		}
-		return object;
+		return node;
 	}
 }

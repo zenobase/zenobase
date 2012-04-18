@@ -26,8 +26,8 @@ public class Bucket extends DomainNode {
 	public static final PermissionField PERMISSIONS = new PermissionField("permissions");
 	public static final ObjectField WIDGETS = new ObjectField("widgets");
 
-	public Bucket(ObjectNode object) {
-		super(object);
+	public Bucket(ObjectNode node) {
+		super(node);
 	}
 
 	public Bucket(String id) {

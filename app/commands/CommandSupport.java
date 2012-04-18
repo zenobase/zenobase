@@ -29,8 +29,8 @@ public abstract class CommandSupport extends DomainNode implements Command {
 	public static final DateTimeField TIMESTAMP = new DateTimeField("timestamp");
 	public static final ObjectField PARAMETERS = new ObjectField("parameters");
 
-	public CommandSupport(ObjectNode object) {
-		super(object);
+	public CommandSupport(ObjectNode node) {
+		super(node);
 	}
 
 	public CommandSupport(String type, Identity principal) {

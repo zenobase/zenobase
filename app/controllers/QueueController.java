@@ -38,16 +38,16 @@ public class QueueController extends ControllerSupport {
     	if (!users.isSuperuser(principal)) {
     		return forbidden();
     	}
-    	ObjectNode object = Nodes.newObject();
-    	object.put("total", store.size());
-    	ArrayNode commandsNode = object.putArray("commands");
+    	ObjectNode node = Nodes.newObject();
+    	node.put("total", store.size());
+    	ArrayNode commandsNode = node.putArray("commands");
     	for (Command command : store.getHistory(offset, limit)) {
     		ObjectNode commandNode = Nodes.copy(command.toJson());
     		commandNode.put("label", command.toString());
     		commandNode.remove(CommandSupport.PARAMETERS.getName());
     		commandsNode.add(commandNode);
     	}
-    	return ok(object);
+    	return ok(node);
     }
 
     public static Result post(String id) {

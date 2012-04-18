@@ -27,8 +27,8 @@ public class User extends DomainNode {
 	public static final BooleanField SUSPENDED = new BooleanField("suspended");
 	public static final BooleanField SUPERUSER = new BooleanField("superuser");
 
-	public User(ObjectNode object) {
-		super(object);
+	public User(ObjectNode node) {
+		super(node);
 	}
 
 	public User(String id, String name) {
