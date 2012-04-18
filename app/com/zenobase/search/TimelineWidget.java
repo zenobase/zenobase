@@ -13,9 +13,9 @@ import org.elasticsearch.search.facet.datehistogram.DateHistogramFacet;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.Interval;
-
 import com.google.common.base.Strings;
 import com.google.common.collect.Maps;
+
 import com.zenobase.common.Intervals;
 import com.zenobase.common.Nodes;
 

@@ -4,7 +4,6 @@ import org.codehaus.jackson.node.ArrayNode;
 import org.codehaus.jackson.node.ObjectNode;
 import org.junit.Assert;
 import org.junit.Test;
-
 import com.google.common.collect.Sets;
 
 public class NodesTest {

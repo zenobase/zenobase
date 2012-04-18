@@ -1,8 +1,8 @@
 package com.zenobase.models;
 
 import org.codehaus.jackson.node.ObjectNode;
-
 import com.google.common.collect.ImmutableSet;
+
 import com.zenobase.schema.DateTimeField;
 import com.zenobase.schema.DurationField;
 import com.zenobase.schema.Field;
@@ -30,7 +30,7 @@ public class Event extends DomainNode {
 	public static final LengthField HEIGHT = new LengthField("height");
 	public static final RatingField RATING = new RatingField("rating");
 
-	private static final ImmutableSet<Field<?>> FIELDS = 
+	private static final ImmutableSet<Field<?>> FIELDS =
 		ImmutableSet.<Field<?>>of(ID, VERSION, AUTHOR, TIMESTAMP, DURATION, LOCATION, TAG, RESOURCE, DISTANCE, HEIGHT, RATING);
 
 	public Event(String id) {

@@ -3,9 +3,9 @@ package com.zenobase.commands;
 import java.util.List;
 
 import org.codehaus.jackson.node.ObjectNode;
-
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
+
 import com.zenobase.models.Identity;
 import com.zenobase.schema.ObjectField;
 import com.zenobase.schema.TokenField;

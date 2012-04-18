@@ -9,7 +9,7 @@ public class SignInForm {
 
 	@Required
 	public String password;
-	
+
 	public boolean remember;
 
 	public String getUsername() {

@@ -19,9 +19,9 @@ import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
-
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
+
 import com.zenobase.common.Callback;
 import com.zenobase.common.Nodes;
 import com.zenobase.common.PartialList;

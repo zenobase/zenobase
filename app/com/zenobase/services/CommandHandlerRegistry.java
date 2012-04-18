@@ -6,6 +6,7 @@ import java.util.Set;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
 import com.google.inject.Inject;
+
 import com.zenobase.commands.Command;
 import com.zenobase.commands.CommandHandler;
 
@@ -16,7 +17,7 @@ public class CommandHandlerRegistry {
 	@Inject
 	public CommandHandlerRegistry(Set<CommandHandler<?>> handlers) {
 		for (CommandHandler<?> handler : handlers) {
-			this.handlers.put(handler.getType(), handler);		
+			this.handlers.put(handler.getType(), handler);
 		}
 	}
 

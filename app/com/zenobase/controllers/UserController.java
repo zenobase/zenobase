@@ -4,7 +4,6 @@ import javax.inject.Inject;
 
 import org.codehaus.jackson.node.ArrayNode;
 import org.codehaus.jackson.node.ObjectNode;
-
 import play.mvc.Result;
 import play.mvc.With;
 
@@ -50,7 +49,7 @@ public class UserController extends ControllerSupport {
 	}
 
 	public static Result find(String identity, int offset, int limit) {
-		return identity == null ? find(offset, limit) : find(new Identity(identity)); 
+		return identity == null ? find(offset, limit) : find(new Identity(identity));
     }
 
 	public static Result find(int offset, int limit) {

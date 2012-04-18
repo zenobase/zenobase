@@ -3,8 +3,8 @@ package com.zenobase.controllers;
 import play.data.Form;
 import play.mvc.Result;
 import play.mvc.With;
-
 import com.google.inject.Inject;
+
 import com.zenobase.common.SecurityContext;
 import com.zenobase.models.User;
 import com.zenobase.services.UserManager;

@@ -13,7 +13,6 @@ import org.joda.time.Seconds;
 import org.joda.time.Years;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
-
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 
@@ -27,11 +26,11 @@ public class Intervals {
 		HOUR(DateTimeFormat.forPattern("yyyy-MM-dd'T'HHZ").withOffsetParsed(), 18, Hours.hours(1)),
 		MINUTE(DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mmZ").withOffsetParsed(), 21, Minutes.minutes(1)),
 		SECOND(DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ssZ").withOffsetParsed(), 24, Seconds.seconds(1));
-	
+
 		private final DateTimeFormatter format;
 		private final int length;
 		private final ReadablePeriod unit;
-	
+
 		private Format(DateTimeFormatter format, int length, ReadablePeriod unit) {
 			this.format = format;
 			this.length = length;
@@ -60,7 +59,7 @@ public class Intervals {
 				times.add(start);
 			}
 			return times;
-		}	
+		}
 	}
 
 	public static Interval valueOf(String value) {

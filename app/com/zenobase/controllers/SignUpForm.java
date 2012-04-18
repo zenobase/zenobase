@@ -16,7 +16,7 @@ public class SignUpForm {
 
 	@Required
 	public String email;
-	
+
 	public String getUsername() {
 		return username;
 	}

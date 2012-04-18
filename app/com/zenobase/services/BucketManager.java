@@ -8,10 +8,9 @@ import org.codehaus.jackson.node.ObjectNode;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
-
 import play.Logger;
-
 import com.google.common.collect.Lists;
+
 import com.zenobase.common.Callback;
 import com.zenobase.common.PartialList;
 import com.zenobase.models.Bucket;
@@ -82,7 +81,7 @@ public class BucketManager {
 	}
 
 	private static QueryBuilder queryFor(Identity identity) {
-		return QueryBuilders.nestedQuery(Bucket.PERMISSIONS.getName(), 
+		return QueryBuilders.nestedQuery(Bucket.PERMISSIONS.getName(),
 			QueryBuilders.termQuery(PermissionField.PRINCIPAL.getName(), identity.getId()));
 	}
 

@@ -43,7 +43,7 @@ public class GanttWidget implements Widget {
 	@Override
 	public void configure(SearchSourceBuilder builder) {
 		builder.facet(FacetBuilders.termsStatsFacet(id)
-			.keyField(termField).valueField(timeField).order(order).size(limit)); 
+			.keyField(termField).valueField(timeField).order(order).size(limit));
 	}
 
 	@Override

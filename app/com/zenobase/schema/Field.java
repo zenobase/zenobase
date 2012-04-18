@@ -5,7 +5,6 @@ import java.lang.reflect.Type;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.node.ArrayNode;
 import org.codehaus.jackson.node.ObjectNode;
-
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
@@ -134,10 +133,10 @@ public abstract class Field<T> {
 	}
 
 	public void prePersist(ObjectNode node) {
-		
+
 	}
 
 	public void postLoad(ObjectNode node) {
-		
+
 	}
 }

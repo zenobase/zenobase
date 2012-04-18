@@ -13,8 +13,8 @@ public class RandomEventsCommandBuilder {
 	}
 
 	public Command build(int events) {
-		CompoundCommand command = new CompoundCommand(principal, 
-			String.format("added %,d random events", events), 
+		CompoundCommand command = new CompoundCommand(principal,
+			String.format("added %,d random events", events),
 			String.format("removed %,d random events", events));
 		RandomEvent rand = new RandomEvent(bucketId, principal);
 		for (int i = 0; i < events; ++i) {

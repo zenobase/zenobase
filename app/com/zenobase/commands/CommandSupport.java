@@ -3,8 +3,8 @@ package com.zenobase.commands;
 import org.codehaus.jackson.node.ObjectNode;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
-
 import com.google.common.collect.ImmutableList;
+
 import com.zenobase.common.Generator;
 import com.zenobase.common.Nodes;
 import com.zenobase.models.DomainNode;
@@ -35,7 +35,7 @@ public abstract class CommandSupport extends DomainNode implements Command {
 		setValue(ID, Generator.id());
 		setValue(TYPE, type);
 		setValue(PRINCIPAL, principal);
-		setValue(TIMESTAMP, new DateTime(DateTimeZone.UTC));		
+		setValue(TIMESTAMP, new DateTime(DateTimeZone.UTC));
 		setValue(PARAMETERS, Nodes.newObject());
 	}
 

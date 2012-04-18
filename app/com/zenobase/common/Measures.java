@@ -13,7 +13,7 @@ public class Measures {
 	}
 
 	private Measures() {
-		
+
 	}
 
 	public static <Q extends Quantity> DecimalMeasure<Q> toStandard(DecimalMeasure<Q> measure) {

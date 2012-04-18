@@ -1,12 +1,12 @@
 import play.Application;
 import play.GlobalSettings;
-
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Singleton;
 import com.google.inject.TypeLiteral;
 import com.google.inject.multibindings.Multibinder;
+
 import com.zenobase.commands.CommandHandler;
 import com.zenobase.commands.CommandParser;
 import com.zenobase.commands.CommandParserRegistry;
@@ -36,7 +36,6 @@ import com.zenobase.services.CommandStore;
 import com.zenobase.services.IndexManager;
 import com.zenobase.services.PersistentCommandStore;
 import com.zenobase.services.UserManager;
-
 
 public class Global extends GlobalSettings {
 

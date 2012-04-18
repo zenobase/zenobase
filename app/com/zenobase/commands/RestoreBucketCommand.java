@@ -1,8 +1,8 @@
 package com.zenobase.commands;
 
 import org.codehaus.jackson.node.ObjectNode;
-
 import com.google.inject.Inject;
+
 import com.zenobase.models.Bucket;
 import com.zenobase.models.Identity;
 import com.zenobase.schema.ObjectField;

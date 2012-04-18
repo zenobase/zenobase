@@ -4,7 +4,6 @@ import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.joda.time.Interval;
 import org.joda.time.format.ISODateTimeFormat;
-
 import play.Logger;
 
 import com.zenobase.common.Intervals;

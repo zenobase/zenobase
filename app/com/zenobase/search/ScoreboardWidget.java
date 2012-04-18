@@ -40,7 +40,7 @@ public class ScoreboardWidget implements Widget {
 	@Override
 	public void configure(SearchSourceBuilder builder) {
 		builder.facet(FacetBuilders.termsStatsFacet(id)
-			.keyField(termField).valueField(valueField + "." + MeasurementField.VALUE_SI.getName()).order(order).size(limit)); 
+			.keyField(termField).valueField(valueField + "." + MeasurementField.VALUE_SI.getName()).order(order).size(limit));
 	}
 
 	@Override

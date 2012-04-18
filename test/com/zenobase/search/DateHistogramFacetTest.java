@@ -3,7 +3,6 @@ package com.zenobase.search;
 import java.util.Map;
 
 import junit.framework.Assert;
-
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.Client;
@@ -19,7 +18,6 @@ import org.joda.time.DateTimeZone;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
 import com.google.common.collect.ImmutableMap;
 
 public class DateHistogramFacetTest {

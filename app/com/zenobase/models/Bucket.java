@@ -4,9 +4,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.codehaus.jackson.node.ObjectNode;
-
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
+
 import com.zenobase.schema.ObjectField;
 import com.zenobase.schema.PermissionField;
 import com.zenobase.schema.Schema;

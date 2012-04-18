@@ -3,10 +3,9 @@ package com.zenobase.controllers;
 import java.util.Set;
 
 import org.codehaus.jackson.node.ObjectNode;
-
 import play.mvc.Controller;
-
 import com.google.common.collect.Sets;
+
 import com.zenobase.common.Nodes;
 import com.zenobase.models.User;
 

@@ -1,8 +1,8 @@
 package com.zenobase.commands;
 
 import org.codehaus.jackson.node.ObjectNode;
-
 import com.google.inject.Inject;
+
 import com.zenobase.models.Bucket;
 import com.zenobase.models.Identity;
 import com.zenobase.schema.ObjectField;
@@ -12,7 +12,7 @@ public class CreateBucketCommand extends CommandSupport {
 
 	private static final String TYPE = "create bucket";
 	private static final ObjectField BUCKET = new ObjectField("bucket");
-	
+
 	private CreateBucketCommand(ObjectNode node) {
 		super(node);
 	}

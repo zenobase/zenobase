@@ -3,11 +3,10 @@ package com.zenobase.common;
 import java.util.List;
 
 import org.codehaus.jackson.node.ObjectNode;
-
 import com.google.common.collect.ImmutableList;
 
 public class DefaultDashboard {
-	
+
 	public List<ObjectNode> widgets(){
 		return ImmutableList.of(timeline(), list(), map());
 	}

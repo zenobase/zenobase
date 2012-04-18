@@ -1,10 +1,10 @@
 package com.zenobase.common;
 
-import com.zenobase.models.Identity;
-
 import play.api.libs.Crypto;
 import play.mvc.Http;
 import play.mvc.Http.Context;
+
+import com.zenobase.models.Identity;
 
 public class SecurityContext {
 

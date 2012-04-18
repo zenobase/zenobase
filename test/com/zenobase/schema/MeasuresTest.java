@@ -15,10 +15,9 @@ import javax.measure.unit.SI;
 import javax.measure.unit.Unit;
 
 import junit.framework.Assert;
-
 import org.junit.Test;
-
 import com.google.common.collect.Lists;
+
 import com.zenobase.common.Measures;
 
 public class MeasuresTest {

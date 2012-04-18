@@ -8,11 +8,10 @@ import org.codehaus.jackson.node.ObjectNode;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
-
 import play.Logger;
-
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
+
 import com.zenobase.common.Callback;
 import com.zenobase.common.PartialList;
 import com.zenobase.models.Identity;

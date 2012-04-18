@@ -2,8 +2,8 @@ package com.zenobase.services;
 
 import play.Logger;
 import play.Logger.ALogger;
-
 import com.google.inject.Inject;
+
 import com.zenobase.commands.Command;
 import com.zenobase.commands.CompoundCommand;
 import com.zenobase.common.Callback;

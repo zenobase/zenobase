@@ -3,11 +3,10 @@ package com.zenobase.services;
 import java.util.Set;
 
 import junit.framework.Assert;
-
 import org.codehaus.jackson.node.ObjectNode;
 import org.junit.Test;
-
 import com.google.common.collect.Sets;
+
 import com.zenobase.commands.Command;
 import com.zenobase.commands.CommandHandler;
 import com.zenobase.commands.CommandHandlerSupport;
@@ -82,7 +81,7 @@ public class CommandQueueTest {
 
 			@Override
 			public void executeTyped(MockCommand command) {
-				
+
 			}
 		}
 

@@ -11,10 +11,10 @@ import javax.measure.unit.SI;
 
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
-
 import com.google.common.base.Charsets;
 import com.google.common.io.Files;
 import com.google.common.io.LineProcessor;
+
 import com.zenobase.common.Generator;
 import com.zenobase.common.RandomElement;
 import com.zenobase.models.Event;
@@ -108,7 +108,7 @@ class RandomEvent {
 		}
 
 		protected void addFields(Event event) {
-			
+
 		}
 
 		protected DateTime nextTimestamp() {

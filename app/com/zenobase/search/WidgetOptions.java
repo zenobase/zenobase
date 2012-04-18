@@ -3,7 +3,6 @@ package com.zenobase.search;
 import java.util.Map;
 
 import org.joda.time.DateTimeZone;
-
 import com.google.common.collect.Maps;
 
 public class WidgetOptions {

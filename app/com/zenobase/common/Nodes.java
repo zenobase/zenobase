@@ -17,7 +17,7 @@ public class Nodes {
 	private static final ObjectMapper mapper = new ObjectMapper();
 
 	private Nodes() {
-		
+
 	}
 
 	public static ObjectNode newObject() {

@@ -8,8 +8,8 @@ import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.elasticsearch.search.facet.FacetBuilders;
 import org.elasticsearch.search.facet.range.RangeFacet;
 import org.elasticsearch.search.facet.range.RangeFacetBuilder;
-
 import com.google.common.collect.Lists;
+
 import com.zenobase.common.Nodes;
 
 public class HistogramWidget implements Widget {

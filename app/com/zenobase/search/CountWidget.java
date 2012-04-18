@@ -35,7 +35,7 @@ public class CountWidget implements Widget {
 	@Override
 	public void configure(SearchSourceBuilder builder) {
 		builder.facet(FacetBuilders.termsFacet(id)
-			.field(field).size(offset + limit).order(order)); 
+			.field(field).size(offset + limit).order(order));
 	}
 
 	@Override
