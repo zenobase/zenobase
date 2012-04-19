@@ -11,7 +11,7 @@ import com.zenobase.services.UserManager;
 
 public class SuspendUserCommand extends CommandSupport {
 
-	private static final String TYPE = "suspend user";
+	private static final Command.Type TYPE = new Command.Type("suspend user", 1);
 	private static final TokenField NAME = new TokenField("name");
 	private static final BooleanField SUSPEND = new BooleanField("suspend");
 
@@ -46,13 +46,16 @@ public class SuspendUserCommand extends CommandSupport {
 	public static class Parser extends CommandParserSupport {
 
 		@Override
-		public String getType() {
-			return TYPE;
+		public String getTypeName() {
+			return TYPE.getName();
 		}
 
 		@Override
-		public Command parse(ObjectNode node) {
-			return new SuspendUserCommand(node);
+		public Command parse(ObjectNode node, int version) {
+			switch (version) {
+				case 1: return new SuspendUserCommand(node);
+			}
+			return null;
 		}
 	}
 

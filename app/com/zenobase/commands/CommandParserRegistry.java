@@ -15,16 +15,18 @@ public class CommandParserRegistry {
 	@Inject
 	public CommandParserRegistry(Set<CommandParser> parsers) {
 		for (CommandParser parser : parsers) {
-			this.parsers.put(parser.getType(), parser);
+			this.parsers.put(parser.getTypeName(), parser);
 			parser.registered(this);
 		}
 	}
 
 	public Command parse(ObjectNode node) {
-		String type = CommandSupport.TYPE.getValue(node);
-		Preconditions.checkNotNull(type, "Missing type field in " + node);
-		CommandParser parser = parsers.get(type);
-		Preconditions.checkNotNull(type, "Missing parser for type " + type);
-		return parser.parse(node);
+		Command.Type type = CommandSupport.TYPE.getValue(node);
+		Preconditions.checkNotNull(type, "Missing type field in %s", node);
+		CommandParser parser = parsers.get(type.getName());
+		Preconditions.checkNotNull(type, "Missing parser for type %s", type.getName());
+		Command command = parser.parse(node, type.getVersion());
+		Preconditions.checkNotNull(type, "Missing parser for version %s of type %s", type.getVersion(), type.getName());
+		return command;
 	}
 }

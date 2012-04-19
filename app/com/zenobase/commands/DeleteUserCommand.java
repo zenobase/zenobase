@@ -10,7 +10,7 @@ import com.zenobase.services.UserManager;
 
 public class DeleteUserCommand extends CommandSupport {
 
-	private static final String TYPE = "delete user";
+	private static final Command.Type TYPE = new Command.Type("delete user", 1);
 	private static final ObjectField USER = new ObjectField("user");
 
 	private DeleteUserCommand(ObjectNode node) {
@@ -39,13 +39,16 @@ public class DeleteUserCommand extends CommandSupport {
 	public static class Parser extends CommandParserSupport {
 
 		@Override
-		public String getType() {
-			return TYPE;
+		public String getTypeName() {
+			return TYPE.getName();
 		}
 
 		@Override
-		public Command parse(ObjectNode node) {
-			return new DeleteUserCommand(node);
+		public Command parse(ObjectNode node, int version) {
+			switch (version) {
+				case 1: return new DeleteUserCommand(node);
+			}
+			return null;
 		}
 	}
 

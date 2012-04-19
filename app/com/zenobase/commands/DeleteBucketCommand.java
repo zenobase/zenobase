@@ -10,7 +10,7 @@ import com.zenobase.services.BucketManager;
 
 public class DeleteBucketCommand extends CommandSupport {
 
-	private static final String TYPE = "delete bucket";
+	private static final Command.Type TYPE = new Command.Type("delete bucket", 1);
 	private static final ObjectField BUCKET = new ObjectField("bucket");
 
 	private DeleteBucketCommand(ObjectNode node) {
@@ -39,13 +39,16 @@ public class DeleteBucketCommand extends CommandSupport {
 	public static class Parser extends CommandParserSupport {
 
 		@Override
-		public String getType() {
-			return TYPE;
+		public String getTypeName() {
+			return TYPE.getName();
 		}
 
 		@Override
-		public Command parse(ObjectNode node) {
-			return new DeleteBucketCommand(node);
+		public Command parse(ObjectNode node, int version) {
+			switch (version) {
+				case 1: return new DeleteBucketCommand(node);
+			}
+			return null;
 		}
 	}
 

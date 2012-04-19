@@ -4,9 +4,9 @@ import org.codehaus.jackson.node.ObjectNode;
 
 public interface CommandParser {
 
-	String getType();
+	String getTypeName();
 
-	Command parse(ObjectNode node);
+	Command parse(ObjectNode node, int version);
 
 	void registered(CommandParserRegistry registry);
 }

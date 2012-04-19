@@ -11,7 +11,7 @@ import com.zenobase.services.BucketManager;
 
 public class CreateEventCommand extends CommandSupport {
 
-	private static final String TYPE = "create event";
+	private static final Command.Type TYPE = new Command.Type("create event", 1);
 	private static final TokenField BUCKET_ID = new TokenField("bucketId");
 	private static final ObjectField EVENT = new ObjectField("event");
 
@@ -46,13 +46,16 @@ public class CreateEventCommand extends CommandSupport {
 	public static class Parser extends CommandParserSupport {
 
 		@Override
-		public String getType() {
-			return TYPE;
+		public String getTypeName() {
+			return TYPE.getName();
 		}
 
 		@Override
-		public Command parse(ObjectNode node) {
-			return new CreateEventCommand(node);
+		public Command parse(ObjectNode node, int version) {
+			switch (version) {
+				case 1: return new CreateEventCommand(node);
+			}
+			return null;
 		}
 	}
 

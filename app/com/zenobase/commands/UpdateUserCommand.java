@@ -10,7 +10,7 @@ import com.zenobase.services.UserManager;
 
 public class UpdateUserCommand extends CommandSupport {
 
-	private static final String TYPE = "update user";
+	private static final Command.Type TYPE = new Command.Type("update user", 1);
 	private static final ObjectField FROM = new ObjectField("from");
 	private static final ObjectField TO = new ObjectField("to");
 
@@ -45,13 +45,16 @@ public class UpdateUserCommand extends CommandSupport {
 	public static class Parser extends CommandParserSupport {
 
 		@Override
-		public String getType() {
-			return TYPE;
+		public String getTypeName() {
+			return TYPE.getName();
 		}
 
 		@Override
-		public Command parse(ObjectNode node) {
-			return new UpdateUserCommand(node);
+		public Command parse(ObjectNode node, int version) {
+			switch (version) {
+				case 1: return new UpdateUserCommand(node);
+			}
+			return null;
 		}
 	}
 

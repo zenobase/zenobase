@@ -9,6 +9,7 @@ import com.zenobase.common.Generator;
 import com.zenobase.common.Nodes;
 import com.zenobase.models.DomainNode;
 import com.zenobase.models.Identity;
+import com.zenobase.schema.CommandTypeField;
 import com.zenobase.schema.DateTimeField;
 import com.zenobase.schema.Field;
 import com.zenobase.schema.IdentityField;
@@ -22,7 +23,7 @@ public abstract class CommandSupport extends DomainNode implements Command {
 	public static final String TYPE_NAME = "command";
 
 	public static final TokenField ID = new TokenField("@id", false);
-	public static final TokenField TYPE = new TokenField("@type", false);
+	public static final CommandTypeField TYPE = new CommandTypeField("@type");
 	public static final IdentityField PRINCIPAL = new IdentityField("principal");
 	public static final DateTimeField TIMESTAMP = new DateTimeField("timestamp");
 	public static final ObjectField PARAMETERS = new ObjectField("parameters");
@@ -31,7 +32,7 @@ public abstract class CommandSupport extends DomainNode implements Command {
 		super(node);
 	}
 
-	public CommandSupport(String type, Identity principal) {
+	public CommandSupport(Command.Type type, Identity principal) {
 		setValue(ID, Generator.id());
 		setValue(TYPE, type);
 		setValue(PRINCIPAL, principal);
@@ -40,13 +41,13 @@ public abstract class CommandSupport extends DomainNode implements Command {
 	}
 
 	@Override
-	public String getType() {
-		return getValue(TYPE);
+	public String getId() {
+		return getValue(ID);
 	}
 
 	@Override
-	public String getId() {
-		return getValue(ID);
+	public Command.Type getType() {
+		return getValue(TYPE);
 	}
 
 	@Override

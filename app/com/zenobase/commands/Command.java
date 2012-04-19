@@ -7,9 +7,9 @@ import com.zenobase.models.Identity;
 
 public interface Command {
 
-	String getType();
-
 	String getId();
+
+	Command.Type getType();
 
 	Identity getPrincipal();
 
@@ -18,4 +18,23 @@ public interface Command {
 	Command reverse(Identity principal);
 
 	ObjectNode toJson();
+
+	public static class Type {
+
+		private final String name;
+		private final int version;
+
+		public Type(String name, int version) {
+			this.name = name;
+			this.version = version;
+		}
+
+		public String getName() {
+			return name;
+		}
+
+		public int getVersion() {
+			return version;
+		}
+	}
 }

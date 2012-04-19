@@ -2,8 +2,8 @@ package com.zenobase.services;
 
 import java.util.Set;
 
-import junit.framework.Assert;
 import org.codehaus.jackson.node.ObjectNode;
+import org.junit.Assert;
 import org.junit.Test;
 import com.google.common.collect.Sets;
 
@@ -52,6 +52,7 @@ public class CommandQueueTest {
 
 	private static class MockCommand extends CommandSupport {
 
+		private static final Command.Type TYPE = new Command.Type("mock me", 1);
 		private static final TokenField LABEL = new TokenField("label");
 
 		private MockCommand(ObjectNode node) {
@@ -59,7 +60,7 @@ public class CommandQueueTest {
 		}
 
 		public MockCommand(String label) {
-			super("mock", new Identity("me"));
+			super(TYPE, new Identity("me"));
 			setParameter(LABEL, label);
 		}
 
@@ -87,11 +88,12 @@ public class CommandQueueTest {
 
 		static class Parser extends CommandParserSupport {
 			@Override
-			public String getType() {
-				return "mock";
+			public String getTypeName() {
+				return TYPE.getName();
 			}
 			@Override
-			public Command parse(ObjectNode node) {
+			public Command parse(ObjectNode node, int version) {
+				Assert.assertEquals("Command type version", TYPE.getVersion(), version);
 				return new MockCommand(node);
 			}
 		}

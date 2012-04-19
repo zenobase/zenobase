@@ -10,7 +10,7 @@ import com.zenobase.services.BucketManager;
 
 public class RestoreBucketCommand extends CommandSupport {
 
-	private static final String TYPE = "restore bucket";
+	private static final Command.Type TYPE = new Command.Type("restore bucket", 1);
 	private static final ObjectField BUCKET = new ObjectField("bucket");
 
 	private RestoreBucketCommand(ObjectNode node) {
@@ -39,13 +39,16 @@ public class RestoreBucketCommand extends CommandSupport {
 	public static class Parser extends CommandParserSupport {
 
 		@Override
-		public String getType() {
-			return TYPE;
+		public String getTypeName() {
+			return TYPE.getName();
 		}
 
 		@Override
-		public Command parse(ObjectNode node) {
-			return new RestoreBucketCommand(node);
+		public Command parse(ObjectNode node, int version) {
+			switch (version) {
+				case 1: return new RestoreBucketCommand(node);
+			}
+			return null;
 		}
 	}
 

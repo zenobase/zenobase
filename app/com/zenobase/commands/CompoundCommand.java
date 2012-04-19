@@ -12,7 +12,7 @@ import com.zenobase.schema.TokenField;
 
 public class CompoundCommand extends CommandSupport {
 
-	private static final String TYPE = "compound command";
+	private static final Command.Type TYPE = new Command.Type("compound command", 1);
 	private static final TokenField MESSAGE = new TokenField("message");
 	private static final TokenField UNDO_MESSAGE = new TokenField("undoMessage");
 	private static final ObjectField COMMANDS = new ObjectField("commands");
@@ -70,13 +70,16 @@ public class CompoundCommand extends CommandSupport {
 	public static class Parser extends CommandParserSupport {
 
 		@Override
-		public String getType() {
-			return TYPE;
+		public String getTypeName() {
+			return TYPE.getName();
 		}
 
 		@Override
-		public Command parse(ObjectNode node) {
-			return new CompoundCommand(node, getRegistry());
+		public Command parse(ObjectNode node, int version) {
+			switch (version) {
+				case 1: return new CompoundCommand(node, getRegistry());
+			}
+			return null;
 		}
 	}
 }
