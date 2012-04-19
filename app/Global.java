@@ -1,11 +1,14 @@
 import play.Application;
 import play.GlobalSettings;
+import play.Play;
+import com.google.common.base.Objects;
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Singleton;
 import com.google.inject.TypeLiteral;
 import com.google.inject.multibindings.Multibinder;
+import com.google.inject.name.Names;
 
 import com.zenobase.commands.CommandHandler;
 import com.zenobase.commands.CommandParser;
@@ -52,6 +55,8 @@ public class Global extends GlobalSettings {
 			@Override
 			protected void configure() {
 
+				bindConfiguration("es.cluster", "elasticsearch");
+
 				bind(IndexManager.class).in(Singleton.class);
 				bind(BucketManager.class).in(Singleton.class);
 				bind(CommandQueue.class).in(Singleton.class);
@@ -93,6 +98,11 @@ public class Global extends GlobalSettings {
 				requestStaticInjection(EventController.class);
 				requestStaticInjection(UserController.class);
 				requestStaticInjection(AccountController.class);
+			}
+
+			private void bindConfiguration(String propertyName, String defaultValue) {
+				String value = Play.application().configuration().getString(propertyName);
+				bind(String.class).annotatedWith(Names.named(propertyName)).toInstance(Objects.firstNonNull(value, defaultValue));
 			}
 		});
 	}

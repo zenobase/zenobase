@@ -2,6 +2,9 @@ package com.zenobase.services;
 
 import java.io.Closeable;
 
+import javax.inject.Inject;
+import javax.inject.Named;
+
 import org.elasticsearch.action.admin.cluster.health.ClusterHealthStatus;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.common.settings.ImmutableSettings;
@@ -16,15 +19,16 @@ public class IndexManager implements Closeable {
 	private Node node;
 	private Client client;
 
-	public IndexManager() {
+	@Inject
+	public IndexManager(@Named("es.cluster") String clusterName) {
+		Logger.info("Starting node in cluster " + clusterName + "...");
 		Settings settings = ImmutableSettings.settingsBuilder()
 			.put("index.mapper.dynamic", false)
 			.put("index.cache.filter.type", "none")
 			.put("action.auto_create_index", false).build();
-		node = NodeBuilder.nodeBuilder().settings(settings).node();
+		node = NodeBuilder.nodeBuilder().clusterName(clusterName).settings(settings).node();
 		client = node.client();
 		recover();
-		Logger.info("Started node: " + getHealthStatus());
 	}
 
 	private void recover() {
