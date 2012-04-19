@@ -1,44 +1,39 @@
 package com.zenobase.services;
 
+import javax.inject.Named;
+
 import play.Logger;
-import play.Logger.ALogger;
 import com.google.inject.Inject;
 
 import com.zenobase.commands.Command;
-import com.zenobase.commands.CompoundCommand;
+import com.zenobase.commands.CommandParserRegistry;
 import com.zenobase.common.Callback;
 
 public class CommandReplay {
 
-	private final ALogger log = Logger.of("replay");
-	private final CommandHandlerRegistry handlers;
-	private final CommandStore store;
+	private final String sourceCluster;
+	private final CommandParserRegistry parsers;
+	private final CommandQueue queue;
 
 	@Inject
-	public CommandReplay(CommandHandlerRegistry handlers, CommandStore store) {
-		this.handlers = handlers;
-		this.store = store;
+	public CommandReplay(@Named("es.replay") String sourceCluster, CommandParserRegistry parsers, CommandQueue queue) {
+		this.sourceCluster = sourceCluster;
+		this.parsers = parsers;
+		this.queue = queue;
 	}
 
 	public void replay() {
-		Logger.info("Replaying " + store.size() + " command(s)...");
-		store.findAll(new Callback<Command>() {
-			@Override
-			public void call(Command command) {
-				log.info(String.format("%s %s", command.getPrincipal(), command.toString()));
-				if (command instanceof CompoundCommand) {
-					dispatch((CompoundCommand) command);
+		if (!sourceCluster.isEmpty()) {
+			Logger.info("Replaying commands from " + sourceCluster + "...");
+			IndexManager indexManager = new IndexManager(sourceCluster, true);
+			CommandStore store = new PersistentCommandStore(indexManager, parsers);
+			store.findAll(new Callback<Command>() {
+				@Override
+				public void call(Command command) {
+					queue.dispatch(command);
 				}
-				else {
-					handlers.execute(command);
-				}
-			}
-		});
-	}
-
-	private void dispatch(CompoundCommand command) {
-		for (Command c : command.getCommands()) {
-			handlers.execute(c);
+			});
+			indexManager.close();
 		}
 	}
 }

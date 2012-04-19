@@ -56,6 +56,7 @@ public class Global extends GlobalSettings {
 			protected void configure() {
 
 				bindConfiguration("es.cluster", "elasticsearch");
+				bindConfiguration("es.replay", "");
 
 				bind(IndexManager.class).in(Singleton.class);
 				bind(BucketManager.class).in(Singleton.class);
