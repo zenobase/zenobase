@@ -11,6 +11,7 @@ import com.zenobase.commands.CreateUserCommand;
 import com.zenobase.common.SecurityContext;
 import com.zenobase.models.Identity;
 import com.zenobase.models.User;
+import com.zenobase.models.UserInfo;
 import com.zenobase.services.BucketManager;
 import com.zenobase.services.CommandQueue;
 import com.zenobase.services.UserManager;
@@ -42,7 +43,7 @@ public class AccountController extends ControllerSupport {
 		user.changePassword(signUp.getPassword());
 		user.setSuperuser(users.isEmpty());
 		queue.dispatch(new CreateUserCommand(principal, user));
-		return created(toJson(user));
+		return created(new UserInfo(user).toJson());
 	}
 
 	public static Result close(String name) {

@@ -7,6 +7,7 @@ import com.google.inject.Inject;
 
 import com.zenobase.common.SecurityContext;
 import com.zenobase.models.User;
+import com.zenobase.models.UserInfo;
 import com.zenobase.services.UserManager;
 
 @With(Timed.class)
@@ -26,7 +27,7 @@ public class SecurityController extends ControllerSupport {
 			return unauthorized();
 		}
 		new SecurityContext(ctx()).setPrincipal(user.asIdentity(), signIn.isRemember());
-		return ok(toJson(user));
+		return ok(new UserInfo(user).toJson());
 	}
 
 	public static Result signOut() {

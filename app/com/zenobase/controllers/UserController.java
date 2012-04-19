@@ -15,6 +15,8 @@ import com.zenobase.common.SecurityContext;
 import com.zenobase.io.UserPrinter;
 import com.zenobase.models.Identity;
 import com.zenobase.models.User;
+import com.zenobase.models.UserInfo;
+import com.zenobase.models.UserProfile;
 import com.zenobase.services.CommandQueue;
 import com.zenobase.services.UserManager;
 
@@ -31,7 +33,7 @@ public class UserController extends ControllerSupport {
 		Identity principal = new SecurityContext(ctx()).getPrincipal();
 		if (principal != null) {
 			User user = users.find(principal);
-			return ok(user != null ? toJson(user) : principal.toJson());
+			return ok(user != null ? new UserInfo(user).toJson() : principal.toJson());
 		}
     	return noContent();
     }
@@ -45,7 +47,7 @@ public class UserController extends ControllerSupport {
 		if (user == null) {
 			return notFound();
 		}
-		return user.equals(principal) ? ok(toJson(user)) : forbidden();
+		return user.equals(principal) ? ok(new UserProfile(user).toJson()) : forbidden();
 	}
 
 	public static Result find(String identity, int offset, int limit) {
@@ -71,7 +73,7 @@ public class UserController extends ControllerSupport {
     	resultNode.put("total", result.size());
     	ArrayNode usersNode = resultNode.putArray("users");
     	for (User user : result.getElements()) {
-    		usersNode.add(toJson(user));
+    		usersNode.add(new UserProfile(user).toJson());
     	}
 		return resultNode;
 	}
@@ -95,7 +97,7 @@ public class UserController extends ControllerSupport {
 
 	private static Result find(Identity identity) {
 		User user = users.find(identity);
-    	return ok(user != null ? new User(identity.getId(), user.getName()).toJson() : identity.toJson());
+    	return ok(user != null ? new UserInfo(user).toJson() : identity.toJson());
     }
 
 	public static class UserUpdate {

@@ -8,7 +8,7 @@ import play.mvc.Result;
 import play.mvc.With;
 
 import com.zenobase.commands.Command;
-import com.zenobase.commands.CommandSupport;
+import com.zenobase.commands.CommandInfo;
 import com.zenobase.common.Nodes;
 import com.zenobase.common.PartialList;
 import com.zenobase.common.SecurityContext;
@@ -46,10 +46,7 @@ public class QueueController extends ControllerSupport {
     	node.put("total", commands.size());
     	ArrayNode commandsNode = node.putArray("commands");
     	for (Command command : commands.getElements()) {
-    		ObjectNode commandNode = Nodes.copy(command.toJson());
-    		commandNode.put("label", command.toString());
-    		commandNode.remove(CommandSupport.PARAMETERS.getName());
-    		commandsNode.add(commandNode);
+    		commandsNode.add(new CommandInfo(command).toJson());
     	}
     	return node;
     }

@@ -2,7 +2,6 @@ package com.zenobase.common;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.Set;
 
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -53,14 +52,4 @@ public class Nodes {
 			throw new AssertionError(e);
 		}
 	}
-
-	public static void filter(JsonNode node, Set<String> fields) {
-		if (node.isObject()) {
-			((ObjectNode) node).remove(fields);
-		}
-		for (JsonNode child : node) {
-			filter(child, fields);
-		}
-	}
-
 }
