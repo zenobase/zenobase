@@ -236,7 +236,7 @@ function SignUpFormCtrl($scope, $http, $location) {
 	$scope.username = '';
 	$scope.password = '';
 	$scope.passwordRepeat = '';
-	$scope.email = 'me@me.me';
+	$scope.email = 'jdoe@zenobase.com';
 	$scope.isValid = function(field) {
 		return $scope.username == 'guest' ? 'error' : 'success'; 
 	};
@@ -246,7 +246,7 @@ function SignUpFormCtrl($scope, $http, $location) {
 			$scope.username = '';
 			$scope.password = '';
 			$scope.passwordRepeat = '';
-			$scope.email = 'me@me.me';
+			$scope.email = 'jdoe@zenobase.com';
 			$('#sign-up-dialog').modal('hide');
 			$location.url('/users/' + $scope.$parent.user.name);
 		});

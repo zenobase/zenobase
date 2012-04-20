@@ -13,6 +13,7 @@ POST    /users/:name                 com.zenobase.controllers.UserController.upd
 
 POST    /users/                      com.zenobase.controllers.AccountController.open()
 DELETE  /users/:name                 com.zenobase.controllers.AccountController.close(name)
+GET     /verify/*hash                com.zenobase.controllers.AccountController.verify(hash)
 
 POST    /signin                      com.zenobase.controllers.SecurityController.signIn()
 POST    /signout                     com.zenobase.controllers.SecurityController.signOut()

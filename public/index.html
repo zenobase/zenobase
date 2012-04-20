@@ -67,7 +67,7 @@
 		</footer>
 
 		<div id="sign-in-dialog" class="modal hide" data-ng-controller="AuthFormCtrl">
-			<form data-ng-submit="signIn()">
+			<form data-ng-submit="signIn()" class="modal-form">
 					<div class="modal-header">
 						<a class="close" data-dismiss="modal">&times;</a>
 						<h3>Sign in</h3>
@@ -103,7 +103,7 @@
 		</script>
 
 		<div id="sign-up-dialog" class="modal hide" data-ng-controller="SignUpFormCtrl">
-			<form name="signUpForm" data-ng-submit="submit()">
+			<form name="signUpForm" data-ng-submit="submit()" class="modal-form">
 					<div class="modal-header">
 						<a class="close" data-dismiss="modal">&times;</a>
 						<h3>Sign up</h3>

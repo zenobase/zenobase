@@ -1,12 +1,13 @@
 import play.Application;
+import play.Configuration;
 import play.GlobalSettings;
 import play.Play;
-import com.google.common.base.Objects;
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Singleton;
 import com.google.inject.TypeLiteral;
+import com.google.inject.matcher.Matchers;
 import com.google.inject.multibindings.Multibinder;
 import com.google.inject.name.Names;
 
@@ -24,6 +25,9 @@ import com.zenobase.commands.RestoreBucketCommand;
 import com.zenobase.commands.SuspendUserCommand;
 import com.zenobase.commands.UpdateBucketCommand;
 import com.zenobase.commands.UpdateUserCommand;
+import com.zenobase.commands.VerifyUserCommand;
+import com.zenobase.common.Scheduled;
+import com.zenobase.common.ScheduledInterceptor;
 import com.zenobase.controllers.AccountController;
 import com.zenobase.controllers.BucketController;
 import com.zenobase.controllers.BucketListController;
@@ -37,7 +41,9 @@ import com.zenobase.services.CommandQueue;
 import com.zenobase.services.CommandReplay;
 import com.zenobase.services.CommandStore;
 import com.zenobase.services.IndexManager;
+import com.zenobase.services.Mailer;
 import com.zenobase.services.PersistentCommandStore;
+import com.zenobase.services.SmtpMailer;
 import com.zenobase.services.UserManager;
 
 public class Global extends GlobalSettings {
@@ -55,17 +61,17 @@ public class Global extends GlobalSettings {
 			@Override
 			protected void configure() {
 
-				bindConfiguration("es.cluster", "elasticsearch");
-				bindConfiguration("es.replay", "");
+				bindConfiguration();
 
 				bind(IndexManager.class).in(Singleton.class);
 				bind(BucketManager.class).in(Singleton.class);
 				bind(CommandQueue.class).in(Singleton.class);
-				bind(CommandStore.class).to(PersistentCommandStore.class).in(Singleton.class);
+				bind(CommandStore.class).to(PersistentCommandStore.class);
 				bind(UserManager.class).in(Singleton.class);
 				bind(CommandParserRegistry.class).in(Singleton.class);
 				bind(CommandHandlerRegistry.class).in(Singleton.class);
 				bind(CommandReplay.class).in(Singleton.class);
+				bind(Mailer.class).to(SmtpMailer.class);
 
 				Multibinder<CommandParser> parsers = Multibinder.newSetBinder(binder(), CommandParser.class);
 				parsers.addBinding().to(CreateBucketCommand.Parser.class);
@@ -91,6 +97,7 @@ public class Global extends GlobalSettings {
 				handlers.addBinding().to(DeleteUserCommand.Handler.class);
 				handlers.addBinding().to(UpdateUserCommand.Handler.class);
 				handlers.addBinding().to(SuspendUserCommand.Handler.class);
+				handlers.addBinding().to(VerifyUserCommand.Handler.class);
 
 				requestStaticInjection(QueueController.class);
 				requestStaticInjection(BucketListController.class);
@@ -99,11 +106,15 @@ public class Global extends GlobalSettings {
 				requestStaticInjection(EventController.class);
 				requestStaticInjection(UserController.class);
 				requestStaticInjection(AccountController.class);
+
+				bindInterceptor(Matchers.any(), Matchers.annotatedWith(Scheduled.class), new ScheduledInterceptor());
 			}
 
-			private void bindConfiguration(String propertyName, String defaultValue) {
-				String value = Play.application().configuration().getString(propertyName);
-				bind(String.class).annotatedWith(Names.named(propertyName)).toInstance(Objects.firstNonNull(value, defaultValue));
+			private void bindConfiguration() {
+				Configuration conf = Play.application().configuration().getConfig("zeno");
+				for (String key : conf.keys()) {
+					bind(String.class).annotatedWith(Names.named(key)).toInstance(conf.getString(key));
+				}
 			}
 		});
 	}

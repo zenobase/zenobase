@@ -12,7 +12,8 @@ object ApplicationBuild extends Build {
       "com.google.guava" % "guava" % "11.0.2",
       "com.google.inject" % "guice" % "3.0",
       "com.google.inject.extensions" % "guice-multibindings" % "3.0",
-      "org.elasticsearch" % "elasticsearch" % "0.19.2"
+      "org.elasticsearch" % "elasticsearch" % "0.19.2",
+      "javax.mail" % "mail" % "1.4.5"
       // "org.jscience" % "jscience" % "4.3.1"
     )
 
