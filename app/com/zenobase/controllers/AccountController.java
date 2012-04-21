@@ -2,11 +2,10 @@ package com.zenobase.controllers;
 
 import javax.inject.Inject;
 
+import org.codehaus.jackson.node.ObjectNode;
 import play.data.Form;
 import play.mvc.Result;
 import play.mvc.With;
-import com.google.common.base.Joiner;
-import com.google.common.base.Preconditions;
 
 import com.zenobase.commands.CloseAccountCommandBuilder;
 import com.zenobase.commands.CreateUserCommand;
@@ -18,8 +17,6 @@ import com.zenobase.models.User;
 import com.zenobase.models.UserInfo;
 import com.zenobase.services.BucketManager;
 import com.zenobase.services.CommandQueue;
-import com.zenobase.services.Mailer;
-import com.zenobase.services.Message;
 import com.zenobase.services.UserManager;
 
 @With(Timed.class)
@@ -35,7 +32,7 @@ public class AccountController extends ControllerSupport {
 	static CommandQueue queue;
 
 	@Inject
-	static Mailer mailer;
+	static VerificationMailer mailer;
 
 	public static Result open() {
 		Form<SignUpForm> form = form(SignUpForm.class);
@@ -52,7 +49,7 @@ public class AccountController extends ControllerSupport {
 		user.changePassword(signUp.getPassword());
 		user.setSuperuser(users.isEmpty());
 		queue.dispatch(new CreateUserCommand(principal, user));
-		mailer.send(new VerificationMessageBuilder(user).build());
+		mailer.send(user);
 		return created(new UserInfo(user).toJson());
 	}
 
@@ -73,38 +70,26 @@ public class AccountController extends ControllerSupport {
 		return noContent();
 	}
 
-	public static Result verify(String hash) {
+	public static Result verify() {
 		Identity principal = new SecurityContext(ctx()).getPrincipal();
 		if (principal == null) {
 			return unauthorized();
+		}
+		ObjectNode body = (ObjectNode) request().body().asJson();
+		String hash = body.path("hash").getTextValue();
+		if (hash == null || hash.length() < 50) {
+			return badRequest("missing hash");
 		}
 		User user = users.find(principal);
 		if (user == null) {
 			return notFound();
 		}
-		if (!BCrypt.checkpw(new VerificationMessageBuilder(user).getHash(), hash)) {
+		if (!BCrypt.checkpw(VerificationMailer.toString(user), hash)) {
 			return badRequest("verification failed");
 		}
-		queue.dispatch(new VerifyUserCommand(principal, user.getName(), true));
+		if (!user.isVerified()) {
+			queue.dispatch(new VerifyUserCommand(principal, user.getName(), true));
+		}
 		return ok("verified");
-	}
-
-	public static class VerificationMessageBuilder {
-
-		private final User user;
-
-		public VerificationMessageBuilder(User user) {
-			Preconditions.checkNotNull(user.getEmail());
-			this.user = user;
-		}
-
-		public String getHash() {
-			return Joiner.on('|').join(user.getName(), user.getEmail());
-		}
-
-		public Message build() {
-			String text = "http://localhost:9000/verify/" + BCrypt.hashpw(getHash(), BCrypt.gensalt());
-			return new Message(user.getEmail(), "Verification", text);
-		}
 	}
 }

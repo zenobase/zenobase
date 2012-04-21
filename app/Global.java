@@ -35,6 +35,7 @@ import com.zenobase.controllers.EventController;
 import com.zenobase.controllers.QueueController;
 import com.zenobase.controllers.SecurityController;
 import com.zenobase.controllers.UserController;
+import com.zenobase.controllers.VerificationMailer;
 import com.zenobase.services.BucketManager;
 import com.zenobase.services.CommandHandlerRegistry;
 import com.zenobase.services.CommandQueue;
@@ -72,6 +73,7 @@ public class Global extends GlobalSettings {
 				bind(CommandHandlerRegistry.class).in(Singleton.class);
 				bind(CommandReplay.class).in(Singleton.class);
 				bind(Mailer.class).to(SmtpMailer.class);
+				bind(VerificationMailer.class).in(Singleton.class);
 
 				Multibinder<CommandParser> parsers = Multibinder.newSetBinder(binder(), CommandParser.class);
 				parsers.addBinding().to(CreateBucketCommand.Parser.class);

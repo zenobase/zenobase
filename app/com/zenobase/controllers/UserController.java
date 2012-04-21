@@ -29,6 +29,9 @@ public class UserController extends ControllerSupport {
 	@Inject
 	static CommandQueue queue;
 
+	@Inject
+	static VerificationMailer mailer;
+
 	public static Result who() {
 		Identity principal = new SecurityContext(ctx()).getPrincipal();
 		if (principal != null) {
@@ -124,7 +127,7 @@ public class UserController extends ControllerSupport {
 
 		public User apply(User from) {
 			User to = from.copy();
-			if (email != null) {
+			if (email != null && !email.equals(from.getEmail())) {
 				to.setEmail(email);
 				to.setVerified(false);
 			}
@@ -159,8 +162,12 @@ public class UserController extends ControllerSupport {
     	}
     	UserUpdate update = UserUpdate.parse(body);
     	if (!update.isEmpty()) {
-    		String commandId = queue.dispatch(new UpdateUserCommand(principal, user, update.apply(user)));
-            response().setHeader("Undo", String.format("/queue/%s", commandId));
+    		User updated = update.apply(user);
+    		String commandId = queue.dispatch(new UpdateUserCommand(principal, user, updated));
+    		if (!updated.isVerified()) {
+    			mailer.send(updated);
+    		}
+    		response().setHeader("Undo", String.format("/queue/%s", commandId));
     		return noContent();
     	}
 		return badRequest();

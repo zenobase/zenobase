@@ -253,6 +253,24 @@ function SignUpFormCtrl($scope, $http, $location) {
 	};
 }
 
+VerifyCtrl.$inject = ['$scope', '$http', '$location', '$routeParams'];
+/**
+ * @constructor
+ */
+function VerifyCtrl($scope, $http, $location) {
+
+	var hash = $location.search()['h'];
+	$http.post('/verify', { 'hash' : hash })
+		.success(function(response) {
+			$scope.alert.show('Your email address has been verified.', 'alert-success');
+			$location.url('/users/' + $scope.user.getName());
+		})
+		.error(function(response) {
+			$scope.alert.show('Your email address could not be verified. Edit your profile below to change your email address or to resend a verification message.', 'alert-error');
+			$location.url($scope.user ? '/users/' + $scope.user.getName() : '/');
+		});
+}
+
 BucketListCtrl.$inject = ['$scope', '$http'];
 /**
  * @constructor
@@ -1222,6 +1240,7 @@ app.config(['$routeProvider', function($routeProvider) {
 		.when('/users/:userId', { template : '/public/user.html' })
 		.when('/terms', { template : '/public/terms.html' })
 		.when('/privacy', { template : '/public/privacy.html' })
+		.when('/verify', { template : '/public/verify.html' })
 		.otherwise({ redirectTo : '/' });
 }]);
 
