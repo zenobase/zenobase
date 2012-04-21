@@ -174,7 +174,7 @@ function UserFormCtrl($scope, $http) {
 
 	$scope.data = function() {
 		var data = {};
-		if ($scope.email && $scope.email !== $scope.userInfo.email) {
+		if ($scope.email && $scope.email !== $scope.userInfo.email || !$scope.userInfo.verified) {
 			data.email = $scope.email;
 		}
 		if ($scope.password) {
