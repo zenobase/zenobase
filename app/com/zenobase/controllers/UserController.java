@@ -6,8 +6,11 @@ import org.codehaus.jackson.node.ArrayNode;
 import org.codehaus.jackson.node.ObjectNode;
 import play.mvc.Result;
 import play.mvc.With;
+import com.google.common.base.Strings;
 
+import com.zenobase.commands.ChangePasswordCommand;
 import com.zenobase.commands.UpdateUserCommand;
+import com.zenobase.common.BCrypt;
 import com.zenobase.common.Callback;
 import com.zenobase.common.Nodes;
 import com.zenobase.common.PartialList;
@@ -30,7 +33,10 @@ public class UserController extends ControllerSupport {
 	static CommandQueue queue;
 
 	@Inject
-	static VerificationMailer mailer;
+	static VerificationMailer verificationMailer;
+
+	@Inject
+	static PasswordResetMailer resetMailer;
 
 	public static Result who() {
 		Identity principal = new SecurityContext(ctx()).getPrincipal();
@@ -161,15 +167,64 @@ public class UserController extends ControllerSupport {
     		return forbidden();
     	}
     	UserUpdate update = UserUpdate.parse(body);
-    	if (!update.isEmpty()) {
-    		User updated = update.apply(user);
-    		String commandId = queue.dispatch(new UpdateUserCommand(principal, user, updated));
-    		if (!updated.isVerified()) {
-    			mailer.send(updated);
-    		}
-    		response().setHeader("Undo", String.format("/queue/%s", commandId));
-    		return noContent();
+    	if (update.isEmpty()) {
+    		return badRequest();
     	}
-		return badRequest();
+		User updated = update.apply(user);
+		String commandId = queue.dispatch(new UpdateUserCommand(principal, user, updated));
+		if (!updated.isVerified()) {
+			verificationMailer.send(updated);
+		}
+		response().setHeader("Undo", String.format("/queue/%s", commandId));
+		return noContent();
+	}
+
+	public static Result requestReset() {
+		ObjectNode body = (ObjectNode) request().body().asJson();
+		if (body == null) {
+			return badRequest("missing request body");
+		}
+		String username = body.path("username").getTextValue();
+		if (username == null) {
+			return badRequest("missing user name");
+		}
+		User user = users.find(username);
+    	if (user == null) {
+    		return notFound("user not found");
+    	}
+		if (!user.isVerified()) {
+			// return badRequest("can't perform reset because email is not verified");
+		}
+		String email = body.path("email").getTextValue();
+		if (email == null || !email.equals(user.getEmail())) {
+			return badRequest("invalid email");
+		}
+		resetMailer.send(user);
+		return noContent();
+	}
+
+	public static Result performReset(String name) {
+		ObjectNode body = (ObjectNode) request().body().asJson();
+		if (body == null) {
+			return badRequest();
+		}
+		User user = users.find(name);
+    	if (user == null) {
+    		return notFound();
+    	}
+		String pass = body.path("pass").getTextValue();
+		String hash = body.path("hash").getTextValue();
+		String time = body.path("time").getTextValue();
+		if (System.currentTimeMillis() - Long.parseLong(time, 36) > 1000 * 60 * 60 * 24) {
+			return badRequest("too long");
+		}
+		if (Strings.isNullOrEmpty(pass) || Strings.isNullOrEmpty(hash) || Strings.isNullOrEmpty(time)) {
+			return badRequest("missing data");
+		}
+		if (!BCrypt.checkpw(PasswordResetMailer.toString(user, time), hash)) {
+			return badRequest("invalid data");
+		}
+		queue.dispatch(new ChangePasswordCommand(user.asIdentity(), user.getName(), user.getPassword(), BCrypt.hashpw(pass, BCrypt.gensalt())));
+		return noContent();
 	}
 }

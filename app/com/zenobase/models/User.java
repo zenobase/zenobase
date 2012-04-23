@@ -55,7 +55,7 @@ public class User extends DomainNode {
 		return getValue(PASSWORD);
 	}
 
-	public void setPassword(String password) {
+	public void setPassword(String password) { // TODO rename to passwordHash
 		setValue(PASSWORD, password);
 	}
 

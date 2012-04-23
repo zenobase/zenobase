@@ -1,0 +1,15 @@
+<div class="container-fluid" data-ng-controller="ResetPasswordCtrl">
+
+	<form name="resetPasswordForm" data-ng-submit="submit()">
+		<div class="control-group">
+			<label for="reset-password">Password</label>
+			<input id="reset-password" name="password" type="password" class="large" required data-ng-model="password"/>
+		</div>
+		<div class="control-group">
+			<label for="reset-password-repeat">Confirm Password</label>
+			<input id="reset-password-repeat" name="passwordRepeat" type="password" class="large" required data-ng-model="passwordRepeat"/>
+		</div>
+		<button type="submit" class="btn btn-primary" data-ng-disabled="!resetPasswordForm.$valid">Reset Password</button>
+	</form>
+
+</div>

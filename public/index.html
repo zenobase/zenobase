@@ -89,6 +89,9 @@
 								</label>
 							</div>
 						</div>
+						<div class="control-group" class="pull-right">
+							<a data-dismiss="modal" href="#reset-password-dialog" data-toggle="modal">Reset password</a>
+						</div>
 					</div>
 					<div class="modal-footer">
 						<button type="submit" class="btn btn-primary">Sign in</button>
@@ -99,6 +102,34 @@
 		<script>
 			$('#sign-in-dialog').on('shown', function () {
 				$('#username').select();
+			})
+		</script>
+
+		<div id="reset-password-dialog" class="modal hide" data-ng-controller="ResetPasswordFormCtrl">
+			<form data-ng-submit="requestReset()" class="modal-form">
+					<div class="modal-header">
+						<a class="close" data-dismiss="modal">&times;</a>
+						<h3>Reset Password</h3>
+					</div>
+					<div class="modal-body">
+						<div class="control-group">
+							<label for="username">User Name</label>
+							<input id="reset-username" type="text" class="large" data-ng-model="username"/>
+						</div>
+						<div class="control-group">
+							<label for="email">Email</label>
+							<input id="reset-email" type="text" class="large" data-ng-model="email"/>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="submit" class="btn btn-primary">Reset</button>
+						<button type="reset" class="btn" data-dismiss="modal">Cancel</button>
+					</div>
+			</form>
+		</div>
+		<script>
+			$('#reset-password-dialog').on('shown', function () {
+				$('#reset-username').select();
 			})
 		</script>
 

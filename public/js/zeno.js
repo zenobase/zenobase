@@ -228,6 +228,23 @@ function AuthFormCtrl($scope, $http) {
 	});
 }
 
+ResetPasswordFormCtrl.$inject = ['$scope', '$http'];
+/**
+ * @constructor
+ */
+function ResetPasswordFormCtrl($scope, $http) {
+	$scope.dialog = $('#reset-password-dialog');
+	$scope.username = '';
+	$scope.email = '';
+	$scope.requestReset = function() {
+		$http.post('/reset', { username : $scope.username, email : $scope.email }).success(function(response) {
+			$scope.alert.show('A password reset request has been sent by email. Check your inbox.');
+			$scope.dialog.modal('hide');
+			$scope.home();
+		});
+	}
+}
+
 SignUpFormCtrl.$inject = ['$scope', '$http', '$location'];
 /**
  * @constructor
@@ -253,7 +270,7 @@ function SignUpFormCtrl($scope, $http, $location) {
 	};
 }
 
-VerifyCtrl.$inject = ['$scope', '$http', '$location', '$routeParams'];
+VerifyCtrl.$inject = ['$scope', '$http', '$location'];
 /**
  * @constructor
  */
@@ -269,6 +286,27 @@ function VerifyCtrl($scope, $http, $location) {
 			$scope.alert.show('Your email address could not be verified. Edit your profile below to change your email address or to resend a verification message.', 'alert-error');
 			$location.url($scope.user ? '/users/' + $scope.user.getName() : '/');
 		});
+}
+
+ResetPasswordCtrl.$inject = ['$scope', '$http', '$location', '$routeParams'];
+/**
+ * @constructor
+ */
+function ResetPasswordCtrl($scope, $http, $location, $routeParams) {
+
+	var userId = $routeParams.userId;
+	var key = $location.search()['key'];
+	var time = $location.search()['time'];
+	$scope.submit = function() {
+		$http.post('/users/' + userId + '/reset', { 'hash' : key, 'time' : time, 'pass' : $scope.password })
+		.success(function(response) {
+			$scope.alert.show('Your password has been changed.', 'alert-success');
+			$location.url('/users/' + userId);
+		})
+		.error(function(response) {
+			$scope.alert.show('Your password could not be changed.', 'alert-error');
+		});		
+	};
 }
 
 BucketListCtrl.$inject = ['$scope', '$http'];
@@ -1238,8 +1276,7 @@ app.config(['$routeProvider', function($routeProvider) {
 	$routeProvider.when('/', { template: '/public/home.html' })
 		.when('/buckets/:bucketId/', { template : '/public/dashboard.html', reloadOnSearch : false })
 		.when('/users/:userId', { template : '/public/user.html' })
-		.when('/terms', { template : '/public/terms.html' })
-		.when('/privacy', { template : '/public/privacy.html' })
+		.when('/users/:userId/reset', { template : '/public/reset.html' })
 		.when('/verify', { template : '/public/verify.html' })
 		.otherwise({ redirectTo : '/' });
 }]);

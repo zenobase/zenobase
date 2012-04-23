@@ -10,6 +10,8 @@ GET     /who                         com.zenobase.controllers.UserController.who
 GET     /users/                      com.zenobase.controllers.UserController.find(identity ?= null, offset : Int ?= 0, limit : Int ?= java.lang.Integer.MAX_VALUE)
 GET     /users/:name                 com.zenobase.controllers.UserController.get(name)
 POST    /users/:name                 com.zenobase.controllers.UserController.update(name)
+POST    /reset                       com.zenobase.controllers.UserController.requestReset()
+POST    /users/:name/reset           com.zenobase.controllers.UserController.performReset(name)
 
 POST    /users/                      com.zenobase.controllers.AccountController.open()
 DELETE  /users/:name                 com.zenobase.controllers.AccountController.close(name)

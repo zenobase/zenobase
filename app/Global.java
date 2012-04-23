@@ -11,6 +11,7 @@ import com.google.inject.matcher.Matchers;
 import com.google.inject.multibindings.Multibinder;
 import com.google.inject.name.Names;
 
+import com.zenobase.commands.ChangePasswordCommand;
 import com.zenobase.commands.CommandHandler;
 import com.zenobase.commands.CommandParser;
 import com.zenobase.commands.CommandParserRegistry;
@@ -32,6 +33,7 @@ import com.zenobase.controllers.AccountController;
 import com.zenobase.controllers.BucketController;
 import com.zenobase.controllers.BucketListController;
 import com.zenobase.controllers.EventController;
+import com.zenobase.controllers.PasswordResetMailer;
 import com.zenobase.controllers.QueueController;
 import com.zenobase.controllers.SecurityController;
 import com.zenobase.controllers.UserController;
@@ -74,6 +76,7 @@ public class Global extends GlobalSettings {
 				bind(CommandReplay.class).in(Singleton.class);
 				bind(Mailer.class).to(SmtpMailer.class);
 				bind(VerificationMailer.class).in(Singleton.class);
+				bind(PasswordResetMailer.class).in(Singleton.class);
 
 				Multibinder<CommandParser> parsers = Multibinder.newSetBinder(binder(), CommandParser.class);
 				parsers.addBinding().to(CreateBucketCommand.Parser.class);
@@ -86,6 +89,7 @@ public class Global extends GlobalSettings {
 				parsers.addBinding().to(DeleteUserCommand.Parser.class);
 				parsers.addBinding().to(UpdateUserCommand.Parser.class);
 				parsers.addBinding().to(SuspendUserCommand.Parser.class);
+				parsers.addBinding().to(ChangePasswordCommand.Parser.class);
 				parsers.addBinding().to(CompoundCommand.Parser.class);
 
 				Multibinder<CommandHandler<?>> handlers = Multibinder.newSetBinder(binder(), new TypeLiteral<CommandHandler<?>>() {});
@@ -100,6 +104,7 @@ public class Global extends GlobalSettings {
 				handlers.addBinding().to(UpdateUserCommand.Handler.class);
 				handlers.addBinding().to(SuspendUserCommand.Handler.class);
 				handlers.addBinding().to(VerifyUserCommand.Handler.class);
+				handlers.addBinding().to(ChangePasswordCommand.Handler.class);
 
 				requestStaticInjection(QueueController.class);
 				requestStaticInjection(BucketListController.class);
