@@ -31,7 +31,7 @@ public class PasswordResetMailer {
 			"Account:\n\n" +
 			"  " + user.getName() + "\n\n" +
 			"Follow the following link to reset your password:\n\n" +
-			"  <" + hostname + "/#/users/" + user.getName() + "/reset?key=" + BCrypt.hashpw(toString(user, expires), BCrypt.gensalt()) + "&expires=" + expires + ">\n\n" +
+			"  " + hostname + "/#/users/" + user.getName() + "/reset?key=" + BCrypt.hashpw(toString(user, expires), BCrypt.gensalt()) + "&expires=" + expires + "\n\n" +
 			"If this was a mistake, just ignore this email and nothing will happen.\n";
 		mailer.send(new Message(user.getEmail(), "Your Zenobase Password", text));
 	}

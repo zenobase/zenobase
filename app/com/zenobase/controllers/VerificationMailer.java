@@ -32,7 +32,7 @@ public class VerificationMailer {
 			"Account:\n\n" +
 			"  " + username + "\n\n" +
 			"Please verify your email address by opening the following link:\n\n" +
-			"  <" + hostname + "/#/users/" + username + "/verify?key=" + BCrypt.hashpw(toString(username, email), BCrypt.gensalt()) + ">\n\n" +
+			"  " + hostname + "/#/users/" + username + "/verify?key=" + BCrypt.hashpw(toString(username, email), BCrypt.gensalt()) + "\n\n" +
 			"Thanks!\n";
 		mailer.send(new Message(email, "Your Zenobase Account", text));
 	}

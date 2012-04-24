@@ -7,7 +7,6 @@ import org.codehaus.jackson.node.ObjectNode;
 import org.joda.time.DateTime;
 import play.mvc.Result;
 import play.mvc.With;
-import com.google.common.base.Strings;
 
 import com.zenobase.commands.ChangeUserEmailCommand;
 import com.zenobase.commands.ChangeUserPasswordCommand;
@@ -146,8 +145,8 @@ public class UserController extends ControllerSupport {
     		return forbidden();
     	}
 		String email = User.EMAIL.getValue(node);
-    	if (Strings.isNullOrEmpty(email)) {
-    		return badRequest("missing field " + User.EMAIL);
+    	if (!SignUpForm.isValidEmail(email)) {
+    		return badRequest("invalid email address");
     	}
 		String commandId = queue.dispatch(new ChangeUserEmailCommand(principal, user.getName(), user.isVerified() && user.getEmail().equals(email), user.getEmail(), email));
 		verificationMailer.send(user.getName(), email);
@@ -161,8 +160,8 @@ public class UserController extends ControllerSupport {
     		return badRequest("missing key field");
     	}
     	String password = User.PASSWORD.getValue(node);
-		if (Strings.isNullOrEmpty(password)) {
-			return badRequest("missing field " + User.PASSWORD);
+		if (!SignUpForm.isValidPassword(password)) {
+			return badRequest("invalid password");
 		}
     	String expires = EXPIRES.getValue(node);
 		if (expires == null) {

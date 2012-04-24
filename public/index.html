@@ -138,6 +138,9 @@
 						<h3>Sign up</h3>
 					</div>
 					<div class="modal-body">
+						<div class="alert alert-error" data-ng-show="message">
+							{{message}}
+						</div>
 						<div class="control-group">
 							<label for="sign-up-username">Username (4-16 lowercase letters and numbers)</label>
 							<input id="sign-up-username" name="username" type="text" class="large" required data-ng-minlength="4" data-ng-maxlength="16" data-ng-pattern="/^[a-z0-9]+$/" data-ng-model="username"/>
@@ -161,11 +164,6 @@
 					</div>
 			</form>
 		</div>
-		<script>
-			$('#sign-up-dialog').on('shown', function () {
-				$('#sign-up-username').select();
-			})
-		</script>
 
 	</body>
 

@@ -182,12 +182,16 @@ function UserFormCtrl($scope, $http) {
 	$scope.save = function() {
 		var data = $scope.data();
 		if (!$.isEmptyObject(data)) { 
-			$http.post('/users/' + $scope.userInfo.name, data).success(function(response, status, headers) {
-				var undo = headers('Undo');
-				console.assert(undo, 'missing undo header');
-				$scope.alert.show('Updated user info.', 'alert-success', undo);
-				$scope.reload();
-			});
+			$http.post('/users/' + $scope.userInfo.name, data)
+				.success(function(response, status, headers) {
+					var undo = headers('Undo');
+					console.assert(undo, 'missing undo header');
+					$scope.alert.show('Updated user info.', 'alert-success', undo);
+					$scope.reload();
+				})
+				.error(function(response, code) {
+					$scope.message = 'Update failed. Try again later or contact support.';
+				});
 		} else {
 			$scope.cancel();
 		}
@@ -196,8 +200,9 @@ function UserFormCtrl($scope, $http) {
 		$scope.editing = false;
 	};
 	$scope.$on('edit:user', function() {
-		$scope.editing = true;		
+		$scope.message = '';
 		$scope.email = $scope.userInfo.email;
+		$scope.editing = true;		
 	});
 }
 
@@ -295,24 +300,48 @@ SignUpFormCtrl.$inject = ['$scope', '$http', '$location'];
  * @constructor
  */
 function SignUpFormCtrl($scope, $http, $location) {
-	$scope.username = '';
-	$scope.password = '';
-	$scope.retypedPassword = '';
-	$scope.email = 'jdoe@zenobase.com';
-	$scope.isValid = function(field) {
-		return $scope.username == 'guest' ? 'error' : 'success'; 
+	$scope.dialog = $('#sign-up-dialog');
+	$scope.data = function() {
+		return {
+			'username' : $scope.username,
+			'password' : $scope.password,
+			'email' : $scope.email
+		};
 	};
 	$scope.submit = function() {
-		$http.post('/users/', $.param({ username : $scope.username, password : $scope.password, email : $scope.email, remember : true }), httpConfig()).success(function(response, code) {
-			$scope.$parent.user = new User(response);
-			$scope.username = '';
-			$scope.password = '';
-			$scope.retypedPassword = '';
-			$scope.email = 'jdoe@zenobase.com';
-			$('#sign-up-dialog').modal('hide');
-			$location.url('/users/' + $scope.$parent.user.name);
-		});
+		if ($scope.password !== $scope.retypedPassword) {
+			$scope.message = 'Passwords don\'t match.';
+			return;
+		}
+		$http.post('/users/', $scope.data())
+			.success(function(response, code) {
+				$scope.$parent.user = new User(response);
+				$scope.clear();
+				$scope.dialog.modal('hide');
+				$location.url('/users/' + $scope.$parent.user.name);
+			})
+			.error(function(response, code) {
+				switch (code) {
+					case 409:
+						$scope.message = 'The chosen username is not available.';
+						break;
+					default:
+						$scope.message = 'Unable to sign up, please try again later or contact support.';
+				}				
+			});
 	};
+	$scope.clear = function() {
+		$scope.username = '';
+		$scope.password = '';
+		$scope.retypedPassword = '';
+		$scope.email = '';
+		$scope.message = '';
+	};
+	$scope.clear();
+	$scope.dialog.on('shown', function () {
+		$scope.clear();
+		$('#sign-up-username').select();
+	});
 }
 
 VerifyCtrl.$inject = ['$scope', '$http', '$location', '$routeParams'];

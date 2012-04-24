@@ -1,43 +1,62 @@
 package com.zenobase.controllers;
 
-import play.data.validation.Constraints.MaxLength;
-import play.data.validation.Constraints.MinLength;
-import play.data.validation.Constraints.Required;
+import java.util.regex.Pattern;
 
-public class SignUpForm {
+import javax.mail.internet.AddressException;
+import javax.mail.internet.InternetAddress;
 
-	@Required
-	@MinLength(4)
-	@MaxLength(12)
-	public String username;
+import org.codehaus.jackson.node.ObjectNode;
+import com.google.common.base.Strings;
 
-	@Required
-	public String password;
+import com.zenobase.models.DomainNode;
+import com.zenobase.schema.TokenField;
 
-	@Required
-	public String email;
+public class SignUpForm extends DomainNode {
 
-	public String getUsername() {
-		return username;
+	private static final Pattern USERNAME_PATTERN = Pattern.compile("[a-z0-9]{4,16}");
+
+	private static final TokenField USERNAME = new TokenField("username");
+	private static final TokenField PASSWORD = new TokenField("password");
+	private static final TokenField EMAIL = new TokenField("email");
+
+	public SignUpForm(ObjectNode node) {
+		super(node);
 	}
 
-	public void setUsername(String username) {
-		this.username = username;
+	public String getUsername() {
+		return getValue(USERNAME);
 	}
 
 	public String getPassword() {
-		return password;
-	}
-
-	public void setPassword(String password) {
-		this.password = password;
+		return getValue(PASSWORD);
 	}
 
 	public String getEmail() {
-		return email;
+		return getValue(EMAIL);
 	}
 
-	public void setEmail(String email) {
-		this.email = email;
+	public boolean valid() {
+		return isValidUsername(getUsername()) &&
+			isValidPassword(getPassword()) &&
+			isValidEmail(getEmail());
+	}
+
+	public static boolean isValidUsername(String value) {
+		return !Strings.isNullOrEmpty(value) &&
+			USERNAME_PATTERN.matcher(value).matches();
+	}
+
+	public static boolean isValidPassword(String value) {
+		return !Strings.isNullOrEmpty(value) &&
+			value.length() >= 8;
+	}
+
+	public static boolean isValidEmail(String value) {
+		try {
+			InternetAddress.parse(value);
+		} catch (AddressException e) {
+			return false;
+		}
+		return true;
 	}
 }

@@ -7,15 +7,18 @@
 		<a data-toggle="modal" href="#create-bucket-dialog" data-ng-show="addable()"><i class="icon-plus" title="Add Bucket"></i></a>
 	</h3>
 
-	<div id="user-edit-dialog" class="alert alert-block alert-info" data-ng-controller="UserFormCtrl" data-ng-show="editing">
+	<div id="user-edit-dialog" class="alert alert-info" data-ng-controller="UserFormCtrl" data-ng-show="editing">
 		<a class="close" data-ng-click="cancel()">&times;</a>
 		<h3 class="alert-heading">Edit</h3>
 		<form name="userForm">
 			<fieldset>
+				<div class="alert alert-block alert-error" data-ng-show="message">
+					{{message}}
+				</div>
 				<div class="control-group">
 					<label class="control-label" for="edit-email"><strong>Email</strong></label>
 					<div class="controls">
-						<input type="email" class="input-large" required data-ng-model="email">
+						<input type="text" class="input-large" required data-ng-model="email">
 						<p class="help-block">For important, account-related messages.
 							<strong data-ng-show="userInfo.verified">Verified.</strong>
 							<strong data-ng-hide="userInfo.verified">Not verified.</strong>

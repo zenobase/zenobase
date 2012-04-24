@@ -2,7 +2,7 @@ package com.zenobase.controllers;
 
 import javax.inject.Inject;
 
-import play.data.Form;
+import org.codehaus.jackson.node.ObjectNode;
 import play.mvc.Result;
 import play.mvc.With;
 
@@ -32,18 +32,21 @@ public class AccountController extends ControllerSupport {
 	static VerificationMailer mailer;
 
 	public static Result open() {
-		Form<SignUpForm> form = form(SignUpForm.class);
-		SignUpForm signUp = form.bindFromRequest().get();
-		if (form.hasErrors()) {
-			return badRequest();
+		ObjectNode body = body();
+		if (body == null) {
+			return badRequest("missing request body");
 		}
-		if (users.exists(signUp.getUsername())) {
-			return badRequest("user exists");
+		SignUpForm form = new SignUpForm(body);
+		if (!form.valid()) {
+			return badRequest("invalid request body");
+		}
+		if ("guest".equals(form.getUsername()) || users.exists(form.getUsername())) {
+			return status(CONFLICT, "user exists");
 		}
 		Identity principal = new SecurityContext(ctx()).getPrincipal(true);
-		final User user = new User(principal.getId(), signUp.getUsername());
-		user.setEmail(signUp.getEmail());
-		user.setHashedPassword(User.getHashedPassword(signUp.getPassword()));
+		final User user = new User(principal.getId(), form.getUsername());
+		user.setEmail(form.getEmail());
+		user.setHashedPassword(User.getHashedPassword(form.getPassword()));
 		user.setSuperuser(users.isEmpty());
 		queue.dispatch(new CreateUserCommand(principal, user));
 		mailer.send(user);
