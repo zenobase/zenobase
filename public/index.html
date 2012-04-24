@@ -67,7 +67,7 @@
 		</footer>
 
 		<div id="sign-in-dialog" class="modal hide" data-ng-controller="AuthFormCtrl">
-			<form name="signInForm" data-ng-submit="signIn()" class="modal-form">
+			<form name="signInForm" novalidate data-ng-submit="signIn()" class="modal-form">
 					<div class="modal-header">
 						<a class="close" data-dismiss="modal">&times;</a>
 						<h3>Sign in</h3>
@@ -84,6 +84,7 @@
 							<label for="password">Password</label>
 							<input id="password" type="password" class="large" data-ng-model="password" required/>
 						</div>
+						<!--
 						<div class="control-group">
 							<div class="controls">
 								<label class="checkbox">
@@ -92,6 +93,7 @@
 								</label>
 							</div>
 						</div>
+						-->
 					</div>
 					<div class="modal-footer">
 						<div class="pull-left">
@@ -103,7 +105,7 @@
 			</form>
 		</div>
 
-		<div id="reset-password-dialog" class="modal hide" data-ng-controller="ResetPasswordFormCtrl">
+		<div id="reset-password-dialog" novalidate class="modal hide" data-ng-controller="ResetPasswordFormCtrl">
 			<form name="resetPasswordForm" data-ng-submit="requestReset()" class="modal-form">
 					<div class="modal-header">
 						<a class="close" data-dismiss="modal">&times;</a>
@@ -128,35 +130,27 @@
 					</div>
 			</form>
 		</div>
-		<script>
-			$('#reset-password-dialog').on('shown', function () {
-				$('#reset-username').select();
-			})
-		</script>
 
 		<div id="sign-up-dialog" class="modal hide" data-ng-controller="SignUpFormCtrl">
-			<form name="signUpForm" data-ng-submit="submit()" class="modal-form">
+			<form name="signUpForm" novalidate data-ng-submit="submit()" class="modal-form">
 					<div class="modal-header">
 						<a class="close" data-dismiss="modal">&times;</a>
 						<h3>Sign up</h3>
 					</div>
 					<div class="modal-body">
-						<div class="control-group" data-ng-class="signUpForm.username.$valid && 'success' || 'error'">
-							<label for="sign-up-username">User Name</label>
+						<div class="control-group">
+							<label for="sign-up-username">Username (4-16 lowercase letters and numbers)</label>
 							<input id="sign-up-username" name="username" type="text" class="large" required data-ng-minlength="4" data-ng-maxlength="16" data-ng-pattern="/^[a-z0-9]+$/" data-ng-model="username"/>
-							<span class="help-inline error" data-ng-show="signUpForm.username.$error.MINLENGTH">Too short</span>
-							<span class="help-inline error" data-ng-show="signUpForm.username.$error.MAXLENGTH">Too long</span>
-							<span class="help-inline error" data-ng-show="signUpForm.username.$error.REQUIRED">Required</span>
 						</div>
-						<div class="control-group" data-ng-class="signUpForm.password.$valid && 'success' || 'error'">
-							<label for="sign-up-password">Password</label>
-							<input id="sign-up-password" name="password" type="password" class="large" required data-ng-model="password"/>
+						<div class="control-group">
+							<label for="sign-up-password">Password (min 8 characters)</label>
+							<input id="sign-up-password" name="password" type="password" class="large" required data-ng-minlength="8" data-ng-model="password"/>
 						</div>
-						<div class="control-group" data-ng-class="signUpForm.passwordRepeat.$valid && 'success' || 'error'">
-							<label for="sign-up-password-repeat">Confirm Password</label>
-							<input id="sign-up-password-repeat" name="passwordRepeat" type="password" class="large" required data-ng-model="passwordRepeat"/>
+						<div class="control-group">
+							<label for="sign-up-password-repeat">Retype Password</label>
+							<input id="sign-up-password-repeat" name="retypedPassword" type="password" class="large" required data-ng-minlength="8" data-ng-model="retypedPassword"/>
 						</div>
-						<div class="control-group" data-ng-class="signUpForm.email.$valid && 'success' || 'error'">
+						<div class="control-group">
 							<label for="sign-up-email">Email</label>
 							<input id="sign-up-email" name="email" type="email" class="large" required data-ng-model="email"/>
 						</div>

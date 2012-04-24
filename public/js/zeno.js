@@ -235,7 +235,7 @@ function AuthFormCtrl($scope, $http) {
 	$scope.clear = function() {
 		$scope.username = '';
 		$scope.password = '';
-		$scope.remember = false;
+		$scope.remember = true;
 		$scope.message = '';
 	};
 	$scope.clear();
@@ -297,7 +297,7 @@ SignUpFormCtrl.$inject = ['$scope', '$http', '$location'];
 function SignUpFormCtrl($scope, $http, $location) {
 	$scope.username = '';
 	$scope.password = '';
-	$scope.passwordRepeat = '';
+	$scope.retypedPassword = '';
 	$scope.email = 'jdoe@zenobase.com';
 	$scope.isValid = function(field) {
 		return $scope.username == 'guest' ? 'error' : 'success'; 
@@ -307,7 +307,7 @@ function SignUpFormCtrl($scope, $http, $location) {
 			$scope.$parent.user = new User(response);
 			$scope.username = '';
 			$scope.password = '';
-			$scope.passwordRepeat = '';
+			$scope.retypedPassword = '';
 			$scope.email = 'jdoe@zenobase.com';
 			$('#sign-up-dialog').modal('hide');
 			$location.url('/users/' + $scope.$parent.user.name);
@@ -320,7 +320,6 @@ VerifyCtrl.$inject = ['$scope', '$http', '$location', '$routeParams'];
  * @constructor
  */
 function VerifyCtrl($scope, $http, $location, $routeParams) {
-
 	$http.post('/users/' + $routeParams.userId, { 'key' : $location.search()['key'], 'verified' : true })
 		.success(function(response) {
 			$scope.alert.show('Your email address has been verified.', 'alert-success');
@@ -337,21 +336,30 @@ ResetPasswordCtrl.$inject = ['$scope', '$http', '$location', '$routeParams'];
  * @constructor
  */
 function ResetPasswordCtrl($scope, $http, $location, $routeParams) {
-
 	var userId = $routeParams.userId;
 	var key = $location.search()['key'];
 	var expires = $location.search()['expires'];
 	$scope.submit = function() {
+		if ($scope.password !== $scope.retypedPassword) {
+			$scope.message = 'Passwords don\'t match.';
+			return;
+		}
 		$http.post('/users/' + userId, { 'key' : key, 'expires' : expires, 'password' : $scope.password })
-		.success(function(response) {
-			$scope.alert.show('Your password has been changed.', 'alert-success');
-			$location.url('/users/' + userId);
-			$scope.whoami();
-		})
-		.error(function(response) {
-			$scope.alert.show('Your password could not be changed.', 'alert-error');
-		});		
+			.success(function(response) {
+				$scope.alert.show('Your password has been changed.', 'alert-success');
+				$location.url('/users/' + userId);
+				$scope.whoami();
+			})
+			.error(function(response) {
+				$scope.alert.show('Your password could not be changed.', 'alert-error');
+			});		
 	};
+	$scope.clear = function() {
+		$scope.password = '';
+		$scope.retypedPassword = '';
+		$scope.message = '';
+	};
+	$scope.clear();
 }
 
 BucketListCtrl.$inject = ['$scope', '$http'];

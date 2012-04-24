@@ -109,3 +109,15 @@ tr:hover > td > .action {
 .control-group {
 	margin-top: 9px;
 }
+
+input.ng-invalid.ng-dirty {
+  color: #b94a48;
+  border-color: #ee5f5b;
+}
+
+input.ng-invalid.ng-dirty:focus {
+  border-color: #e9322d;
+  -webkit-box-shadow: 0 0 6px #f8b9b7;
+  -moz-box-shadow: 0 0 6px #f8b9b7;
+  box-shadow: 0 0 6px #f8b9b7;
+}

@@ -1,13 +1,20 @@
 <div class="container-fluid" data-ng-controller="ResetPasswordCtrl">
 
-	<form name="resetPasswordForm" data-ng-submit="submit()">
-		<div class="control-group">
-			<label for="reset-password">Password</label>
-			<input id="reset-password" name="password" type="password" class="large" required data-ng-model="password"/>
+	<form name="resetPasswordForm" novalidate data-ng-submit="submit()">
+		<div class="alert alert-error" data-ng-show="message">
+			{{message}}
 		</div>
 		<div class="control-group">
-			<label for="reset-password-repeat">Confirm Password</label>
-			<input id="reset-password-repeat" name="passwordRepeat" type="password" class="large" required data-ng-model="passwordRepeat"/>
+			<label class="control-label" for="new-password">New Password (min 8 characters)</label>
+			<div class="controls">
+				<input id="new-password" type="password" class="large" autofocus required data-ng-minlength="8" data-ng-model="password"/>
+			</div>
+		</div>
+		<div class="control-group">
+			<label class="control-label" for="new-password-retyped">Retype Password</label>
+			<div class="controls">
+				<input id="new-password-retyped" type="password" class="large" required data-ng-minlength="8" data-ng-model="retypedPassword"/>
+			</div>
 		</div>
 		<button type="submit" class="btn btn-primary" data-ng-disabled="!resetPasswordForm.$valid">Reset Password</button>
 	</form>
