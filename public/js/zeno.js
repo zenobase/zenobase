@@ -25,14 +25,14 @@ app.config(['$routeProvider', function($routeProvider) {
 
 app.controller('MainCtrl', ['$scope', '$route', '$http', '$location', '$defer', function($scope, $route, $http, $location, $defer) {
 	$scope.whoami = function() {
-		$http.get('/who', httpConfig()).success(function(response) {
+		$http.get('/who').success(function(response) {
 			$scope.user = response ? new User(response) : null;
 		});
 	};
 
 	$scope.alert = new Alert();
 	$scope.undo = function(commandId) {
-		$http.post(commandId, 'undo', httpConfig()).success(function(response, code) {
+		$http.post('/queue/' , { 'undo' : commandId }).success(function(response, code) {
 			$scope.alert.clear();
 			$defer(function() { window.location.reload(); }, DELAY);
 		});
@@ -44,7 +44,7 @@ app.controller('MainCtrl', ['$scope', '$route', '$http', '$location', '$defer', 
 		$scope.$broadcast(event);
 	};
 	$scope.signOut = function() {
-		$http.post('/signout', httpConfig()).success(function(response, code) {
+		$http.post('/signout', { 'username' : $scope.user.getName() }).success(function(response, code) {
 				$scope.alert.clear();
 				$scope.user = null;
 				if ($location.url() == '/') {
@@ -190,13 +190,11 @@ app.controller('UserFormCtrl', ['$scope', '$http', function($scope, $http) {
 		var data = $scope.data();
 		if (!$.isEmptyObject(data)) { 
 			$http.post('/users/' + $scope.userInfo.name, data)
-				.success(function(response, status, headers) {
-					var undo = headers('Undo');
-					console.assert(undo, 'missing undo header');
-					$scope.alert.show('Updated user info.', 'alert-success', undo);
+				.success(function(response) {
+					$scope.alert.show('Updated user info.', 'alert-success', response.undo);
 					$scope.reload();
 				})
-				.error(function(response, code) {
+				.error(function(response) {
 					$scope.message = 'Update failed. Try again later or contact support.';
 				});
 		} else {
@@ -413,9 +411,7 @@ app.controller('BucketListCtrl', ['$scope', '$http', function($scope, $http) {
 	};
 	$scope.remove = function(bucketId) {
 		$http({ method : 'DELETE', url : '/buckets/' + bucketId }).success(function(response, code, headers) {
-			var undo = headers('Undo');
-			console.assert(undo, 'missing undo header');
-			$scope.alert.show('Deleted a bucket.', 'alert-success', undo);
+			$scope.alert.show('Deleted a bucket.', 'alert-success', response.undo);
 			$scope.reload();
 		});
 	};
@@ -581,9 +577,7 @@ app.controller('BucketCtrl', ['$scope', '$http', '$route', '$routeParams', '$loc
 	$scope.remove = function(eventId) {
 		$http({ method : 'DELETE', url : '/buckets/' + $scope.bucketId + '/' + eventId }).success(function(response, status, headers) {
 			$defer($scope.refresh, DELAY);
-			var undo = headers('Undo');
-			console.assert(undo, 'missing undo header');
-			$scope.alert.show('Deleted an event.', 'alert-success', undo);
+			$scope.alert.show('Deleted an event.', 'alert-success', response.undo);
 		});
 	};
 
@@ -639,9 +633,7 @@ app.controller('BucketCtrl', ['$scope', '$http', '$route', '$routeParams', '$loc
 app.controller('BucketFormCtrl', ['$scope', '$http', function($scope, $http) {
 	$scope.save = function(settings) {
 		$http.post('/buckets/' + $scope.bucketId, $scope.bucket).success(function (response, status, headers) {
-			var undo = headers('Undo');
-			console.assert(undo, 'missing undo header');
-			$scope.alert.show('Saved settings.', 'alert-success', undo);
+			$scope.alert.show('Saved settings.', 'alert-success', response.undo);
 			++$scope.$parent.bucket.version;
 			$scope.$parent.cancel();
 		});
@@ -1364,8 +1356,4 @@ function encode(value) {
 
 function defined(a, b) {
 	return a !== undefined ? a : b;	
-}
-
-function httpConfig() {
-	return { headers : { 'Content-Type' : 'application/x-www-form-urlencoded' } };
 }

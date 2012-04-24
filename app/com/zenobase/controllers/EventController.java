@@ -69,8 +69,7 @@ public class EventController extends ControllerSupport {
     	if (body.has("random")) {
     		String commandId = queue.dispatch(new RandomEventsCommandBuilder(principal, bucketId).build(body.get("random").asInt()));
             response().setHeader(LOCATION, String.format("/buckets/%s/", bucket.getId()));
-            response().setHeader("Undo", String.format("/queue/%s", commandId));
-            return created();
+            return created(receipt(commandId));
     	}
     	else {
     		Event event = new Event(body);
@@ -81,8 +80,7 @@ public class EventController extends ControllerSupport {
     		}
     		String commandId = queue.dispatch(new CreateEventCommand( principal, bucketId, event));
             response().setHeader(LOCATION, String.format("/buckets/%s/%s", bucket.getId(), event.getId()));
-            response().setHeader("Undo", String.format("/queue/%s", commandId));
-            return created();
+            return created(receipt(commandId));
     	}
     }
 
@@ -119,7 +117,6 @@ public class EventController extends ControllerSupport {
     		return notFound();
     	}
     	String commandId = queue.dispatch(new DeleteEventCommand(principal, bucketId, event));
-        response().setHeader("Undo", String.format("/queue/%s", commandId));
-    	return noContent();
+    	return ok(receipt(commandId));
     }
 }

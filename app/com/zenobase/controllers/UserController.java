@@ -150,8 +150,7 @@ public class UserController extends ControllerSupport {
     	}
 		String commandId = queue.dispatch(new ChangeUserEmailCommand(principal, user.getName(), user.isVerified() && user.getEmail().equals(email), user.getEmail(), email));
 		verificationMailer.send(user.getName(), email);
-		response().setHeader("Undo", String.format("/queue/%s", commandId));
-		return noContent();
+		return ok(receipt(commandId));
 	}
 
 	private static Result updatePassword(ObjectNode node, User user) {

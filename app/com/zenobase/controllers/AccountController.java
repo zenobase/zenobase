@@ -66,7 +66,6 @@ public class AccountController extends ControllerSupport {
 			return forbidden();
 		}
 		String commandId = queue.dispatch(new CloseAccountCommandBuilder(principal, buckets, user).build());
-        response().setHeader("Undo", String.format("/queue/%s", commandId));
-		return noContent();
+		return ok(receipt(commandId));
 	}
 }

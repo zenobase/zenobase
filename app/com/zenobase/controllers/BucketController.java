@@ -66,8 +66,7 @@ public class BucketController extends ControllerSupport {
     		return forbidden();
     	}
 		String commandId = queue.dispatch(new UpdateBucketCommand(principal, bucket, new Bucket(body)));
-        response().setHeader("Undo", String.format("/queue/%s", commandId));
-		return noContent();
+		return ok(receipt(commandId));
     }
 
     public static Result delete(String bucketId) {
@@ -83,7 +82,6 @@ public class BucketController extends ControllerSupport {
     		return forbidden();
     	}
     	String commandId = queue.dispatch(new DeleteBucketCommand(principal, bucket));
-        response().setHeader("Undo", String.format("/queue/%s", commandId));
-    	return noContent();
+    	return ok(receipt(commandId));
     }
 }

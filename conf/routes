@@ -32,7 +32,7 @@ GET     /buckets/:bucketId/:eventId  com.zenobase.controllers.EventController.ge
 DELETE  /buckets/:bucketId/:eventId  com.zenobase.controllers.EventController.delete(bucketId, eventId)
 
 GET     /queue/                      com.zenobase.controllers.QueueController.get(offset : Int, limit : Int)
-POST    /queue/:id                   com.zenobase.controllers.QueueController.post(id)
+POST    /queue/                      com.zenobase.controllers.QueueController.post()
 
 # Ignore favicon requests
 GET     /favicon.ico                 controllers.Default.notFound

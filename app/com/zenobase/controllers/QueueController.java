@@ -51,14 +51,22 @@ public class QueueController extends ControllerSupport {
     	return node;
     }
 
-    public static Result post(String id) {
-    	Identity principal = new SecurityContext(ctx()).getPrincipal();
+    public static Result post() {
+		ObjectNode body = body();
+		if (body == null) {
+			return badRequest("missing request body");
+		}
+    	String commandId = UNDO.getValue(body);
+		if (commandId == null) {
+			return badRequest("missing command");
+		}
+		Identity principal = new SecurityContext(ctx()).getPrincipal();
     	if (principal == null) {
     		return unauthorized();
     	}
-    	Command command = store.find(id);
+    	Command command = store.find(commandId);
     	if (command == null) {
-    		return notFound();
+    		return notFound("command not found");
     	}
 		if (!principal.equals(command.getPrincipal()) && !users.isSuperuser(principal)) {
 			return forbidden();
@@ -68,7 +76,6 @@ public class QueueController extends ControllerSupport {
 
     private static Result undo(Command command, Identity principal) {
     	String undoId = queue.dispatch(command.reverse(principal));
-    	response().setHeader("Undo",  String.format("/queue/%s", undoId));
-        return created();
+        return created(receipt(undoId));
     }
 }

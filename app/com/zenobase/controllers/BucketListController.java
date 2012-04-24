@@ -109,8 +109,7 @@ public class BucketListController extends ControllerSupport {
     	Bucket bucket = createBucket(label, description, principal);
     	String commandId = queue.dispatch(new CreateBucketCommand(principal, bucket));
         response().setHeader(LOCATION, String.format("/buckets/%s/", bucket.getId()));
-        response().setHeader("Undo", String.format("/queue/%s", commandId));
-        return created();
+        return created(receipt(commandId));
     }
 
 	private static Bucket createBucket(String label, String description, Identity principal) {
