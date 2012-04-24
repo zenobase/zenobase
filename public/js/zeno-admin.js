@@ -6,11 +6,7 @@ adminApp.config(function($routeProvider) {
 });
 
 
-HistoryAdminCtrl.$inject = ['$scope', '$http'];
-/**
- * @constructor
- */
-function HistoryAdminCtrl($scope, $http) {
+adminApp.controller('HistoryAdminCtrl', ['$scope', '$http', function($scope, $http) {
 
 	$scope.offset = 0;
 	$scope.limit = 10;
@@ -45,13 +41,9 @@ function HistoryAdminCtrl($scope, $http) {
 
 	$scope.$on('reload', $scope.refresh);
 	$scope.refresh({});
-}
+}]);
 
-BucketListAdminCtrl.$inject = ['$scope', '$http'];
-/**
- * @constructor
- */
-function BucketListAdminCtrl($scope, $http) {
+adminApp.controller('BucketListAdminCtrl', ['$scope', '$http', function($scope, $http) {
 
 	$scope.offset = 0;
 	$scope.limit = 10;
@@ -101,13 +93,9 @@ function BucketListAdminCtrl($scope, $http) {
 
 	$scope.$on('reload', $scope.refresh);
 	$scope.refresh({});
-}
+}]);
 
-UserListAdminCtrl.$inject = ['$scope', '$http'];
-/**
- * @constructor
- */
-function UserListAdminCtrl($scope, $http) {
+adminApp.controller('UserListAdminCtrl', ['$scope', '$http', function($scope, $http) {
 
 	$scope.offset = 0;
 	$scope.limit = 10;
@@ -150,4 +138,4 @@ function UserListAdminCtrl($scope, $http) {
 
 	$scope.$on('reload', $scope.refresh);
 	$scope.refresh({});
-}
+}]);

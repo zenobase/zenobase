@@ -1,14 +1,21 @@
 'use strict';
 
+var app = angular.module('ZenoModule', ['ngSanitize']);
+
+app.config(['$routeProvider', function($routeProvider) {
+	$routeProvider.when('/', { template: '/public/home.html' })
+		.when('/buckets/:bucketId/', { template : '/public/dashboard.html', reloadOnSearch : false })
+		.when('/users/:userId', { template : '/public/user.html' })
+		.when('/users/:userId/reset', { template : '/public/reset.html' })
+		.when('/users/:userId/verify', { template : '/public/verify.html' })
+		.otherwise({ redirectTo : '/' });
+}]);
+
 var evalAsync = function(f) {
 	setTimeout(f, 1000); // need to increase this if index updates take more than 1s to propagate
 };
 
-MainCtrl.$inject = ['$scope', '$route', '$http', '$location'];
-/**
- * @constructor
- */
-function MainCtrl($scope, $route, $http, $location) {
+app.controller('MainCtrl', ['$scope', '$route', '$http', '$location', function($scope, $route, $http, $location) {
 	$scope.whoami = function() {
 		$http.get('/who', httpConfig()).success(function(response) {
 			$scope.user = response ? new User(response) : null;
@@ -43,7 +50,7 @@ function MainCtrl($scope, $route, $http, $location) {
 		$location.url('/');
 	};
 	$scope.whoami();
-}
+}]);
 
 /**
  * @constructor
@@ -132,11 +139,7 @@ var locale = {
 		}
 };
 
-UserCtrl.$inject = ['$scope', '$http', '$routeParams'];
-/**
- * @constructor
- */
-function UserCtrl($scope, $http, $routeParams) {
+app.controller('UserCtrl', ['$scope', '$http', '$routeParams', function($scope, $http, $routeParams) {
 
 	$scope.userId = $routeParams.userId;
 	$scope.userInfo = null;
@@ -162,13 +165,9 @@ function UserCtrl($scope, $http, $routeParams) {
 			});
 		}
 	};
-}
+}]);
 
-UserFormCtrl.$inject = ['$scope', '$http'];
-/**
- * @constructor
- */
-function UserFormCtrl($scope, $http) {
+app.controller('UserFormCtrl', ['$scope', '$http', function($scope, $http) {
 
 	$scope.editing = false;
 
@@ -204,13 +203,9 @@ function UserFormCtrl($scope, $http) {
 		$scope.email = $scope.userInfo.email;
 		$scope.editing = true;		
 	});
-}
+}]);
 
-AuthFormCtrl.$inject = ['$scope', '$http'];
-/**
- * @constructor
- */
-function AuthFormCtrl($scope, $http) {
+app.controller('AuthFormCtrl', ['$scope', '$http', function($scope, $http) {
 	$scope.dialog = $('#sign-in-dialog');
 	$scope.data = function() {
 		return {
@@ -251,13 +246,9 @@ function AuthFormCtrl($scope, $http) {
 		$scope.clear();
 		$('#username').select();
 	});
-}
+}]);
 
-ResetPasswordFormCtrl.$inject = ['$scope', '$http'];
-/**
- * @constructor
- */
-function ResetPasswordFormCtrl($scope, $http) {
+app.controller('ResetPasswordFormCtrl', ['$scope', '$http', function($scope, $http) {
 	$scope.dialog = $('#reset-password-dialog');
 	$scope.data = function() {
 		return {
@@ -293,13 +284,9 @@ function ResetPasswordFormCtrl($scope, $http) {
 		$scope.clear();
 		$('#reset-username').select();
 	});
-}
+}]);
 
-SignUpFormCtrl.$inject = ['$scope', '$http', '$location'];
-/**
- * @constructor
- */
-function SignUpFormCtrl($scope, $http, $location) {
+app.controller('SignUpFormCtrl', ['$scope', '$http', '$location', function($scope, $http, $location) {
 	$scope.dialog = $('#sign-up-dialog');
 	$scope.data = function() {
 		return {
@@ -342,13 +329,9 @@ function SignUpFormCtrl($scope, $http, $location) {
 		$scope.clear();
 		$('#sign-up-username').select();
 	});
-}
+}]);
 
-VerifyCtrl.$inject = ['$scope', '$http', '$location', '$routeParams'];
-/**
- * @constructor
- */
-function VerifyCtrl($scope, $http, $location, $routeParams) {
+app.controller('VerifyCtrl', ['$scope', '$http', '$location', '$routeParams', function($scope, $http, $location, $routeParams) {
 	$http.post('/users/' + $routeParams.userId, { 'key' : $location.search()['key'], 'verified' : true })
 		.success(function(response) {
 			$scope.alert.show('Your email address has been verified.', 'alert-success');
@@ -358,13 +341,9 @@ function VerifyCtrl($scope, $http, $location, $routeParams) {
 			$scope.alert.show('Your email address could not be verified.', 'alert-error');
 			$location.url('/users/' + $routeParams.userId);
 		});
-}
+}]);
 
-ResetPasswordCtrl.$inject = ['$scope', '$http', '$location', '$routeParams'];
-/**
- * @constructor
- */
-function ResetPasswordCtrl($scope, $http, $location, $routeParams) {
+app.controller('ResetPasswordCtrl', ['$scope', '$http', '$location', '$routeParams', function($scope, $http, $location, $routeParams) {
 	var userId = $routeParams.userId;
 	var key = $location.search()['key'];
 	var expires = $location.search()['expires'];
@@ -389,13 +368,9 @@ function ResetPasswordCtrl($scope, $http, $location, $routeParams) {
 		$scope.message = '';
 	};
 	$scope.clear();
-}
+}]);
 
-BucketListCtrl.$inject = ['$scope', '$http'];
-/**
- * @constructor
- */
-function BucketListCtrl($scope, $http) {
+app.controller('BucketListCtrl', ['$scope', '$http', function($scope, $http) {
 
 	$scope.offset = 0;
 	$scope.limit = 5;
@@ -443,13 +418,9 @@ function BucketListCtrl($scope, $http) {
 		}
 	});
 	$scope.$on('reload', $scope.refresh);
-}
+}]);
 
-HomeCtrl.$inject = ['$scope', '$http', '$location'];
-/**
- * @constructor
- */
-function HomeCtrl($scope, $http, $location) {
+app.controller('HomeCtrl', ['$scope', '$http', '$location', function($scope, $http, $location) {
 	$scope.template = {
 		label : 'My Data'
 	};
@@ -462,13 +433,9 @@ function HomeCtrl($scope, $http, $location) {
 			$scope.whoami();
 		});
 	}
-}
+}]);
 
-CreateBucketDialogCtrl.$inject = ['$scope', '$http', '$location'];
-/**
- * @constructor
- */
-function CreateBucketDialogCtrl($scope, $http, $location) {
+app.controller('CreateBucketDialogCtrl', ['$scope', '$http', '$location', function($scope, $http, $location) {
 	$scope.label = 'My Data';
 	$scope.create = function() {
 		$http.post('/buckets/', { label : $scope.label}).success(function(data, status, headers) {
@@ -480,7 +447,7 @@ function CreateBucketDialogCtrl($scope, $http, $location) {
 			$scope.whoami();
 		});
 	}
-}
+}]);
 
 /**
  * @constructor
@@ -504,11 +471,7 @@ function randomID() {
 	return id;
 }
 
-AddWidgetCtrl.$inject = ['$scope', '$http', '$route', '$routeParams', '$location'];
-/**
- * @constructor
- */
-function AddWidgetCtrl($scope, $http, $route, $routeParams, $location) {
+app.controller('AddWidgetCtrl', ['$scope', '$http', '$route', '$routeParams', '$location', function($scope, $http, $route, $routeParams, $location) {
 
 	$scope.templates = [
   	{ label : 'Timeline', description : 'Timeline with event counts.', type : 'timeline' },
@@ -544,13 +507,9 @@ function AddWidgetCtrl($scope, $http, $route, $routeParams, $location) {
 		}
 		return false;
 	};
-}
+}]);
 
-BucketCtrl.$inject = ['$scope', '$http', '$route', '$routeParams', '$location'];
-/**
- * @constructor
- */
-function BucketCtrl($scope, $http, $route, $routeParams, $location) {
+app.controller('BucketCtrl', ['$scope', '$http', '$route', '$routeParams', '$location', function($scope, $http, $route, $routeParams, $location) {
 
 	$scope.bucketId = $routeParams.bucketId;
 	$http.get('/buckets/' + $scope.bucketId).success(function(response) {
@@ -667,16 +626,9 @@ function BucketCtrl($scope, $http, $route, $routeParams, $location) {
 	$scope.cancel = function() {
 		$scope.editing = false;
 	};
+}]);
 
-	// $scope.$evalAsync($scope.refresh);
-}
-
-BucketFormCtrl.$inject = ['$scope', '$http'];
-/**
- * @constructor
- */
-function BucketFormCtrl($scope, $http) {
-
+app.controller('BucketFormCtrl', ['$scope', '$http', function($scope, $http) {
 	$scope.save = function(settings) {
 		$http.post('/buckets/' + $scope.bucketId, $scope.bucket).success(function (response, status, headers) {
 			var undo = headers('Undo');
@@ -690,13 +642,9 @@ function BucketFormCtrl($scope, $http) {
 		$scope.$parent.cancel();
 		$scope.reload();
 	};
-}
+}]);
 
-EventListCtrl.$inject = ['$scope'];
-/**
- * @constructor
- */
-function EventListCtrl($scope) {
+app.controller('EventListCtrl', ['$scope', function($scope) {
 
 	$scope.offset = 0;
 	$scope.total = 0;
@@ -743,25 +691,17 @@ function EventListCtrl($scope) {
 
 	$scope.register($scope);
 	$scope.$on('result', $scope.update);
-}
+}]);
 
-EventListConfigCtrl.$inject = ['$scope'];
-/**
- * @constructor
- */
-function EventListConfigCtrl($scope) {
+app.controller('EventListConfigCtrl', ['$scope', function($scope) {
 	$scope.limit = $scope.settings.limit;
 	$scope.save = function() {
 		$scope.refresh({ offset : 0 }, { limit : $scope.limit });
 		$('#event-list-config-dialog').modal('hide');
 	};
-}
+}]);
 
-TermCountCtrl.$inject = ['$scope'];
-/**
- * @constructor
- */
-function TermCountCtrl($scope) {
+app.controller('TermCountCtrl', ['$scope', function($scope) {
 
 	$scope.offset = 0;
 	$scope.more = false;
@@ -827,13 +767,9 @@ function TermCountCtrl($scope) {
 
 	$scope.register($scope);
 	$scope.$on('result', $scope.update);
-}
+}]);
 
-WidgetSettingsCtrl.$inject = ['$scope'];
-/**
- * @constructor
- */
-function WidgetSettingsCtrl($scope) {
+app.controller('WidgetSettingsCtrl', ['$scope', function($scope) {
 	$scope.save = function() {
 		$scope.refresh({ offset : 0 }, $scope.settings);
 		$scope.showDialog(false);
@@ -846,13 +782,9 @@ function WidgetSettingsCtrl($scope) {
 		$scope.settings = angular.copy($scope.$parent.settings);
 	};
 	$scope.reset();
-}
+}]);
 
-TermGanttCtrl.$inject = ['$scope'];
-/**
- * @constructor
- */
-function TermGanttCtrl($scope) {
+app.controller('TermGanttCtrl', ['$scope', function($scope) {
 
 	$scope.terms = [];
 
@@ -893,13 +825,9 @@ function TermGanttCtrl($scope) {
 
 	$scope.register($scope);
 	$scope.$on('result', $scope.update);
-}
+}]);
 
-RatingCountCtrl.$inject = ['$scope'];
-/**
- * @constructor
- */
-function RatingCountCtrl($scope) {
+app.controller('RatingCountCtrl', ['$scope', function($scope) {
 
 	$scope.field = 'rating';
 	$scope.from = 10;
@@ -935,13 +863,9 @@ function RatingCountCtrl($scope) {
 
 	$scope.register($scope);
 	$scope.$on('result', $scope.update);
-}
+}]);
 
-ScoreboardCtrl.$inject = ['$scope'];
-/**
- * @constructor
- */
-function ScoreboardCtrl($scope) {
+app.controller('ScoreboardCtrl', ['$scope', function($scope) {
 
 	$scope.terms = [];
 
@@ -977,7 +901,7 @@ function ScoreboardCtrl($scope) {
 
 	$scope.register($scope);
 	$scope.$on('result', $scope.update);
-}
+}]);
 
 /**
  * @constructor
@@ -1012,13 +936,8 @@ Interval.match = function(value) {
 	}
 };
 
-TimelineCtrl.$inject = ['$scope'];
-/**
- * @constructor
- */
-function TimelineCtrl($scope) {
+app.controller('TimelineCtrl', ['$scope', function($scope) {
 
-	var self = this;
 	$scope.field = 'timestamp';
 	$scope.times = [];
 
@@ -1047,8 +966,37 @@ function TimelineCtrl($scope) {
 	};
 	$scope.update = function(event, result) {
 		$scope.times = result[$scope.settings.id];
-		self.draw($scope);
+		$scope.draw($scope);
 	};
+	$scope.draw = function($scope) {
+		if ($scope.times && $scope.times.length) {
+			google.load("visualization", "1", { packages : [ "corechart" ], callback : function() { 
+				var data = new google.visualization.DataTable();
+				data.addColumn('string', $scope.interval.name);
+				data.addColumn('number', 'Count');
+				$.each($scope.times, function(i, time) {
+					data.addRow([ time.label, time.count ]);
+				});
+				var options = {
+					height : 100,
+					legend : { position : 'none' },
+					series : [ { color : 'gray' } ],
+					chartArea : { width: '100%', left: 0 },
+					vAxis : { gridlines : { color : '#EEE' }, baselineColor : '#EEE' },
+					hAxis : { baselineColor : 'white', textPosition : 'none' } 
+				};
+				var chart = new google.visualization.ColumnChart(document.getElementById('timeline-' + $scope.settings.id));
+				chart.draw(data, options);
+				google.visualization.events.addListener(chart, 'select', function() {
+					var selection = chart.getSelection();
+					var value = data.getValue(selection[0].row, 0);
+					$scope.interval = $scope.interval.zoomIn();
+					$scope.addFilter(new Filter($scope.field, value), true);
+					$scope.refresh();
+				});
+			}});
+		}
+	}
 
 	$scope.dialogShown = false;
 	$scope.showDialog = function(dialogShown) {
@@ -1057,45 +1005,10 @@ function TimelineCtrl($scope) {
 
 	$scope.register($scope);
 	$scope.$on('result', $scope.update);
-}
+}]);
 
-TimelineCtrl.prototype.draw = function($scope) {
-	if ($scope.times && $scope.times.length) {
-		google.load("visualization", "1", { packages : [ "corechart" ], callback : function() { 
-			var data = new google.visualization.DataTable();
-			data.addColumn('string', $scope.interval.name);
-			data.addColumn('number', 'Count');
-			$.each($scope.times, function(i, time) {
-				data.addRow([ time.label, time.count ]);
-			});
-			var options = {
-				height : 100,
-				legend : { position : 'none' },
-				series : [ { color : 'gray' } ],
-				chartArea : { width: '100%', left: 0 },
-				vAxis : { gridlines : { color : '#EEE' }, baselineColor : '#EEE' },
-				hAxis : { baselineColor : 'white', textPosition : 'none' } 
-			};
-			var chart = new google.visualization.ColumnChart(document.getElementById('timeline-' + $scope.settings.id));
-			chart.draw(data, options);
-			google.visualization.events.addListener(chart, 'select', function() {
-				var selection = chart.getSelection();
-				var value = data.getValue(selection[0].row, 0);
-				$scope.interval = $scope.interval.zoomIn();
-				$scope.addFilter(new Filter($scope.field, value), true);
-				$scope.refresh();
-			});
-		}});
-	}
-}
+app.controller('MapCtrl', ['$scope', function($scope) {
 
-MapCtrl.$inject = ['$scope'];
-/**
- * @constructor
- */
-function MapCtrl($scope) {
-
-	var self = this;
 	$scope.field = 'location';
 	$scope.points = null;
 	$scope.map = null;
@@ -1118,7 +1031,7 @@ function MapCtrl($scope) {
 			}
 		});
 		$scope.points = points;
-		self.draw($scope);
+		$scope.draw();
 	};
 	$scope.filterBounds = function() {
 		$scope.addFilter(new Filter($scope.field, $scope.map.getBounds().toUrlValue(2)), true);
@@ -1136,6 +1049,55 @@ function MapCtrl($scope) {
 		}
 		return [];
 	};
+	$scope.draw = function() {
+		if ($scope.points.length) {
+			google.load("maps", "3.8", { other_params : 'sensor=false', callback : function() {
+				var options = {
+					mapTypeId: google.maps.MapTypeId.TERRAIN,
+					streetViewControl: false,
+					mapTypeControlOptions : {
+						style : google.maps.MapTypeControlStyle.DROPDOWN_MENU
+					}
+				};
+				$scope.map = new google.maps.Map(document.getElementById('map'), options);
+				var bounds = new google.maps.LatLngBounds();
+				$.each($scope.points, function(i, point) {
+					var latLng = new google.maps.LatLng(point.lat, point.lon);
+					var marker = new google.maps.Marker({
+						position : latLng, 
+						map : $scope.map,
+						title : 'Event: ' + latLng
+					});
+					bounds.extend(latLng);
+				});
+				if (bounds.getNorthEast().equals(bounds.getSouthWest())) {
+					$scope.map.setCenter(bounds.getCenter());
+					$scope.map.setZoom(2);
+				} else {
+					$scope.map.fitBounds(bounds);
+				}
+			  $scope.map.controls[google.maps.ControlPosition.TOP_RIGHT].push($scope.createFilterControl());
+			}});
+		} else {
+			$('#map').html('<i class="none">None</i>');
+		}
+	}
+	$scope.createFilterControl = function() {
+		var parent = document.createElement('div');
+		parent.style.padding = '5px';
+		var control = document.createElement('div');
+		control.title = 'Click to filter using the current map bounds';
+		control.className = 'map-control';
+		parent.appendChild(control);	
+		var label = document.createElement('div');
+		label.innerHTML = 'Filter';
+		control.appendChild(label);
+		google.maps.event.addDomListener(control, 'click', function() {
+			$scope.filterBounds();
+			$scope.refresh();
+		});
+		return parent;
+	}
 
 	$scope.dialogShown = false;
 	$scope.showDialog = function(dialogShown) {
@@ -1144,65 +1106,10 @@ function MapCtrl($scope) {
 
 	$scope.register($scope);
 	$scope.$on('result', $scope.update);
-}
+}]);
 
-MapCtrl.prototype.draw = function($scope) {
-	var self = this;
-	if ($scope.points.length) {
-		google.load("maps", "3.8", { other_params : 'sensor=false', callback : function() {
-			var options = {
-				mapTypeId: google.maps.MapTypeId.TERRAIN,
-				streetViewControl: false,
-				mapTypeControlOptions : {
-					style : google.maps.MapTypeControlStyle.DROPDOWN_MENU
-				}
-			};
-			$scope.map = new google.maps.Map(document.getElementById('map'), options);
-			var bounds = new google.maps.LatLngBounds();
-			$.each($scope.points, function(i, point) {
-				var latLng = new google.maps.LatLng(point.lat, point.lon);
-				var marker = new google.maps.Marker({
-					position : latLng, 
-					map : $scope.map,
-					title : 'Event: ' + latLng
-				});
-				bounds.extend(latLng);
-			});
-			if (bounds.getNorthEast().equals(bounds.getSouthWest())) {
-				$scope.map.setCenter(bounds.getCenter());
-				$scope.map.setZoom(2);
-			} else {
-				$scope.map.fitBounds(bounds);
-			}
-		  $scope.map.controls[google.maps.ControlPosition.TOP_RIGHT].push(self.createFilterControl($scope));
-		}});
-	} else {
-		$('#map').html('<i class="none">None</i>');
-	}
-}
 
-MapCtrl.prototype.createFilterControl = function($scope) {
-	var parent = document.createElement('div');
-	parent.style.padding = '5px';
-	var control = document.createElement('div');
-	control.title = 'Click to filter using the current map bounds';
-	control.className = 'map-control';
-	parent.appendChild(control);	
-	var label = document.createElement('div');
-	label.innerHTML = 'Filter';
-	control.appendChild(label);
-	google.maps.event.addDomListener(control, 'click', function() {
-		$scope.filterBounds();
-		$scope.refresh();
-	});
-	return parent;
-}
-
-TemplateCtrl.$inject = ['$scope', '$http', '$defer', '$routeParams'];
-/**
- * @constructor
- */
-function TemplateCtrl($scope, $http, $defer, $routeParams) {
+app.controller('TemplateCtrl', ['$scope', '$http', '$defer', '$routeParams', function($scope, $http, $defer, $routeParams) {
 	$scope.content = '';
 	$scope.params = $routeParams;
 	$scope.i = 0;
@@ -1260,8 +1167,7 @@ function TemplateCtrl($scope, $http, $defer, $routeParams) {
 	$scope.getTemplate = function(i) {
 		return JSON.stringify($scope.templates[i], null, ' ');
 	}
-}
-
+}]);
 
 /**
  * @constructor
@@ -1350,18 +1256,6 @@ Field.find = function(name) {
 Field.findAll = function() {
 	return Field.FIELDS;
 }
-
-
-var app = angular.module('ZenoModule', ['ngSanitize']);
-
-app.config(['$routeProvider', function($routeProvider) {
-	$routeProvider.when('/', { template: '/public/home.html' })
-		.when('/buckets/:bucketId/', { template : '/public/dashboard.html', reloadOnSearch : false })
-		.when('/users/:userId', { template : '/public/user.html' })
-		.when('/users/:userId/reset', { template : '/public/reset.html' })
-		.when('/users/:userId/verify', { template : '/public/verify.html' })
-		.otherwise({ redirectTo : '/' });
-}]);
 
 app.filter('fields', function() {
 	return function(event) {
