@@ -2,6 +2,8 @@
 
 var app = angular.module('ZenoModule', ['ngSanitize']);
 
+var DELAY = 1000; // ms after which we assume changes will be visible
+
 app.config(['$routeProvider', function($routeProvider) {
 	$routeProvider.when('/', { template: '/public/home.html' })
 		.when('/buckets/:bucketId/', { template : '/public/dashboard.html', reloadOnSearch : false })
@@ -11,11 +13,7 @@ app.config(['$routeProvider', function($routeProvider) {
 		.otherwise({ redirectTo : '/' });
 }]);
 
-var evalAsync = function(f) {
-	setTimeout(f, 1000); // need to increase this if index updates take more than 1s to propagate
-};
-
-app.controller('MainCtrl', ['$scope', '$route', '$http', '$location', function($scope, $route, $http, $location) {
+app.controller('MainCtrl', ['$scope', '$route', '$http', '$location', '$defer', function($scope, $route, $http, $location, $defer) {
 	$scope.whoami = function() {
 		$http.get('/who', httpConfig()).success(function(response) {
 			$scope.user = response ? new User(response) : null;
@@ -26,7 +24,7 @@ app.controller('MainCtrl', ['$scope', '$route', '$http', '$location', function($
 	$scope.undo = function(commandId) {
 		$http.post(commandId, 'undo', httpConfig()).success(function(response, code) {
 			$scope.alert.clear();
-			evalAsync(function() { window.location.reload(); });
+			$defer(function() { window.location.reload(); }, DELAY);
 		});
 	};
 	$scope.reload = function() {
@@ -509,7 +507,7 @@ app.controller('AddWidgetCtrl', ['$scope', '$http', '$route', '$routeParams', '$
 	};
 }]);
 
-app.controller('BucketCtrl', ['$scope', '$http', '$route', '$routeParams', '$location', function($scope, $http, $route, $routeParams, $location) {
+app.controller('BucketCtrl', ['$scope', '$http', '$route', '$routeParams', '$location', '$defer', function($scope, $http, $route, $routeParams, $location, $defer) {
 
 	$scope.bucketId = $routeParams.bucketId;
 	$http.get('/buckets/' + $scope.bucketId).success(function(response) {
@@ -572,7 +570,7 @@ app.controller('BucketCtrl', ['$scope', '$http', '$route', '$routeParams', '$loc
 	};
 	$scope.remove = function(eventId) {
 		$http({ method : 'DELETE', url : '/buckets/' + $scope.bucketId + '/' + eventId }).success(function(response, status, headers) {
-			evalAsync($scope.refresh);
+			$defer($scope.refresh, DELAY);
 			var undo = headers('Undo');
 			console.assert(undo, 'missing undo header');
 			$scope.alert.show('Deleted an event.', 'alert-success', undo);
@@ -1110,6 +1108,7 @@ app.controller('MapCtrl', ['$scope', function($scope) {
 
 
 app.controller('TemplateCtrl', ['$scope', '$http', '$defer', '$routeParams', function($scope, $http, $defer, $routeParams) {
+	$scope.dialog = $('#create-event-dialog');
 	$scope.content = '';
 	$scope.params = $routeParams;
 	$scope.i = 0;
@@ -1160,8 +1159,8 @@ app.controller('TemplateCtrl', ['$scope', '$http', '$defer', '$routeParams', fun
 			console.assert(location, 'missing location header');
 			$defer(function() {
 				$scope.reload();
-				$('#create-event-dialog').modal('hide');
-			}, 1000);
+				$scope.dialog.modal('hide');
+			}, DELAY);
 		});
 	}
 	$scope.getTemplate = function(i) {
