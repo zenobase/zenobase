@@ -1188,6 +1188,11 @@ function Field(name, icon, format) {
 Field.FIELDS = [];
 Field.FIELDS_BY_NAME = {};
 
+
+Field.encode = function(value) {
+	return $('<div />').text(value).html();
+}
+
 Field.register = function(field) {
 	Field.FIELDS.push(field); 
 	Field.FIELDS_BY_NAME[field.name] = field; 
@@ -1195,14 +1200,14 @@ Field.register = function(field) {
 
 Field.register(new Field('tag', 'icon-tag', function(value) { 
 	return '<span class="nowrap" title="Tag">' +
-		'<i class="' + this.icon + '"></i> ' + encode(value) +
+		'<i class="' + this.icon + '"></i> ' + Field.encode(value) +
   '</span>';
 }));
 
 Field.register(new Field('resource', 'icon-bookmark', function(value) { 
 	return '<span title="Resource">' +
   	'<i class="' + this.icon + '"></i>&nbsp;' +
-  	'<a href="' +  encode(value.url) + '" rel="nofollow">' +  encode(value.title) + '</a>' +
+  	'<a href="' +  Field.encode(value.url) + '" rel="nofollow">' +  Field.encode(value.title) + '</a>' +
   '</span>';
 }));
 
@@ -1222,8 +1227,8 @@ Field.register(new Field('location', 'icon-map-marker', function(value) {
 	return '<span class="nowrap" title="Location">' +
 		'<i class="' + this.icon + '"></i> ' +
 		'<a href="http://maps.google.com/maps?q=' + 
-			encode(value.lat + ',' + value.lon) + '&t=p&z=5">' + 
-			encode(value.lat + ', ' + value.lon) + '</a>' +
+			Field.encode(value.lat + ',' + value.lon) + '&t=p&z=5">' + 
+			Field.encode(value.lat + ', ' + value.lon) + '</a>' +
 	'</span>';
 }));
 
@@ -1355,7 +1360,3 @@ app.directive('copyrightYear', function() {
 		}
 	};
 });
-
-function encode(value) {
-	return $('<div />').text(value).html();
-}
