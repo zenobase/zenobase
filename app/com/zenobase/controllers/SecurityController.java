@@ -1,6 +1,6 @@
 package com.zenobase.controllers;
 
-import play.data.Form;
+import org.codehaus.jackson.node.ObjectNode;
 import play.mvc.Result;
 import play.mvc.With;
 import com.google.inject.Inject;
@@ -17,16 +17,19 @@ public class SecurityController extends ControllerSupport {
 	static UserManager users;
 
 	public static Result signIn() {
-		Form<SignInForm> form = form(SignInForm.class);
-		SignInForm signIn = form.bindFromRequest().get();
-		if (form.hasErrors()) {
-			return badRequest();
+		ObjectNode body = body();
+		if (body == null) {
+			return badRequest("missing request body");
 		}
-		User user = users.find(signIn.getUsername());
-		if (user == null || user.isSuspended() || !user.passwordEquals(signIn.getPassword())) {
+		SignInForm form = new SignInForm(body);
+		if (!form.valid()) {
+			return badRequest("invalid request body");
+		}
+		User user = users.find(form.getUsername());
+		if (user == null || user.isSuspended() || !user.passwordEquals(form.getPassword())) {
 			return unauthorized();
 		}
-		new SecurityContext(ctx()).setPrincipal(user.asIdentity(), signIn.isRemember());
+		new SecurityContext(ctx()).setPrincipal(user.asIdentity(), form.isRemember());
 		return ok(new UserInfo(user).toJson());
 	}
 

@@ -1,38 +1,37 @@
 package com.zenobase.controllers;
 
-import play.data.validation.Constraints.Required;
+import org.codehaus.jackson.node.ObjectNode;
+import com.google.common.base.Objects;
+import com.google.common.base.Strings;
 
-public class SignInForm {
+import com.zenobase.models.DomainNode;
+import com.zenobase.schema.BooleanField;
+import com.zenobase.schema.TokenField;
 
-	@Required
-	public String username;
+public class SignInForm extends DomainNode {
 
-	@Required
-	public String password;
+	private static final TokenField USERNAME = new TokenField("username");
+	private static final TokenField PASSWORD = new TokenField("password");
+	private static final BooleanField REMEMBER = new BooleanField("remember");
 
-	public boolean remember;
-
-	public String getUsername() {
-		return username;
+	public SignInForm(ObjectNode node) {
+		super(node);
 	}
 
-	public void setUsername(String username) {
-		this.username = username;
+	public String getUsername() {
+		return getValue(USERNAME);
 	}
 
 	public String getPassword() {
-		return password;
-	}
-
-	public void setPassword(String password) {
-		this.password = password;
+		return getValue(PASSWORD);
 	}
 
 	public boolean isRemember() {
-		return remember;
+		return Objects.firstNonNull(getValue(REMEMBER), Boolean.FALSE);
 	}
 
-	public void setRemember(boolean remember) {
-		this.remember = remember;
+	public boolean valid() {
+		return !Strings.isNullOrEmpty(getUsername()) &&
+			!Strings.isNullOrEmpty(getPassword());
 	}
 }
