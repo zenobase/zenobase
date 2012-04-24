@@ -12,7 +12,7 @@ import com.zenobase.services.UserManager;
 public class SuspendUserCommand extends CommandSupport {
 
 	private static final Command.Type TYPE = new Command.Type("suspend user", 1);
-	private static final TokenField NAME = new TokenField("name");
+	private static final TokenField USERNAME = new TokenField("username");
 	private static final BooleanField SUSPEND = new BooleanField("suspend");
 
 	private SuspendUserCommand(ObjectNode node) {
@@ -21,12 +21,12 @@ public class SuspendUserCommand extends CommandSupport {
 
 	public SuspendUserCommand(Identity principal, String name, boolean suspend) {
 		super(TYPE, principal);
-		setParameter(NAME, name);
+		setParameter(USERNAME, name);
 		setParameter(SUSPEND, suspend);
 	}
 
 	private String getName() {
-		return getParameter(NAME);
+		return getParameter(USERNAME);
 	}
 
 	private boolean isSuspend() {

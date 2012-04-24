@@ -8,25 +8,25 @@ import com.zenobase.models.User;
 import com.zenobase.schema.TokenField;
 import com.zenobase.services.UserManager;
 
-public class ChangePasswordCommand extends CommandSupport {
+public class ChangeUserPasswordCommand extends CommandSupport {
 
-	private static final Command.Type TYPE = new Command.Type("reset password", 1);
+	private static final Command.Type TYPE = new Command.Type("change user password", 1);
 	private static final TokenField USERNAME = new TokenField("username");
 	private static final TokenField FROM = new TokenField("from");
 	private static final TokenField TO = new TokenField("to");
 
-	private ChangePasswordCommand(ObjectNode node) {
+	private ChangeUserPasswordCommand(ObjectNode node) {
 		super(node);
 	}
 
-	public ChangePasswordCommand(Identity principal, String user, String from, String to) {
+	public ChangeUserPasswordCommand(Identity principal, String username, String from, String to) {
 		super(TYPE, principal);
-		setParameter(USERNAME, user);
+		setParameter(USERNAME, username);
 		setParameter(FROM, from);
 		setParameter(TO, to);
 	}
 
-	private String getUser() {
+	private String getUsername() {
 		return getParameter(USERNAME);
 	}
 
@@ -40,12 +40,12 @@ public class ChangePasswordCommand extends CommandSupport {
 
 	@Override
 	public Command reverse(Identity principal) {
-		return new ChangePasswordCommand(principal, getUser(), getTo(), getFrom());
+		return new ChangeUserPasswordCommand(principal, getUsername(), getTo(), getFrom());
 	}
 
 	@Override
 	public String toString() {
-		return String.format("changed password for user %s", getUser());
+		return String.format("changed password for user %s", getUsername());
 	}
 
 	public static class Parser extends CommandParserSupport {
@@ -58,26 +58,26 @@ public class ChangePasswordCommand extends CommandSupport {
 		@Override
 		public Command parse(ObjectNode node, int version) {
 			switch (version) {
-				case 1: return new ChangePasswordCommand(node);
+				case 1: return new ChangeUserPasswordCommand(node);
 			}
 			return null;
 		}
 	}
 
-	public static class Handler extends CommandHandlerSupport<ChangePasswordCommand> {
+	public static class Handler extends CommandHandlerSupport<ChangeUserPasswordCommand> {
 
 		private final UserManager manager;
 
 		@Inject
 		public Handler(UserManager manager) {
-			super(ChangePasswordCommand.class);
+			super(ChangeUserPasswordCommand.class);
 			this.manager = manager;
 		}
 
 		@Override
-		public void executeTyped(ChangePasswordCommand command) {
-			User user = manager.find(command.getUser());
-			user.setPassword(command.getTo());
+		public void executeTyped(ChangeUserPasswordCommand command) {
+			User user = manager.find(command.getUsername());
+			user.setHashedPassword(command.getTo());
 			manager.update(user);
 		}
 	}

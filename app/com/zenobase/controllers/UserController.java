@@ -4,12 +4,14 @@ import javax.inject.Inject;
 
 import org.codehaus.jackson.node.ArrayNode;
 import org.codehaus.jackson.node.ObjectNode;
+import org.joda.time.DateTime;
 import play.mvc.Result;
 import play.mvc.With;
 import com.google.common.base.Strings;
 
-import com.zenobase.commands.ChangePasswordCommand;
-import com.zenobase.commands.UpdateUserCommand;
+import com.zenobase.commands.ChangeUserEmailCommand;
+import com.zenobase.commands.ChangeUserPasswordCommand;
+import com.zenobase.commands.ChangeUserVerifiedCommand;
 import com.zenobase.common.BCrypt;
 import com.zenobase.common.Callback;
 import com.zenobase.common.Nodes;
@@ -20,11 +22,16 @@ import com.zenobase.models.Identity;
 import com.zenobase.models.User;
 import com.zenobase.models.UserInfo;
 import com.zenobase.models.UserProfile;
+import com.zenobase.schema.TokenField;
 import com.zenobase.services.CommandQueue;
 import com.zenobase.services.UserManager;
 
 @With(Timed.class)
 public class UserController extends ControllerSupport {
+
+	private static final TokenField KEY = new TokenField("key");
+	private static final TokenField EXPIRES = new TokenField("expires");
+	private static final TokenField USERNAME = new TokenField("username");
 
 	@Inject
 	static UserManager users;
@@ -109,82 +116,94 @@ public class UserController extends ControllerSupport {
     	return ok(user != null ? new UserInfo(user).toJson() : identity.toJson());
     }
 
-	public static class UserUpdate {
-
-		private final String email;
-		private final String password;
-
-		public UserUpdate(String email, String password) {
-			this.email = email;
-			this.password = password;
-		}
-
-		public String getEmail() {
-			return email;
-		}
-
-		public String getPassword() {
-			return password;
-		}
-
-		public boolean isEmpty() {
-			return email == null && password == null;
-		}
-
-		public User apply(User from) {
-			User to = from.copy();
-			if (email != null && !email.equals(from.getEmail())) {
-				to.setEmail(email);
-				to.setVerified(false);
-			}
-			if (password != null) {
-				to.changePassword(password);
-			}
-			return to;
-		}
-
-		public static UserUpdate parse(ObjectNode node) {
-			String email = node.findPath(User.EMAIL.getName()).getTextValue();
-			String password = node.findPath(User.PASSWORD.getName()).getTextValue();
-			return new UserUpdate(email, password);
-		}
-	}
-
-	public static Result update(String name) {
-		ObjectNode body = (ObjectNode) request().body().asJson();
-		if (body == null) {
-			return badRequest();
-		}
-		Identity principal = new SecurityContext(ctx()).getPrincipal();
-    	if (principal == null) {
-    		return unauthorized();
-    	}
-		User user = users.find(name);
-    	if (user == null) {
-    		return notFound();
-    	}
-    	if (!user.equals(principal) && !users.isSuperuser(principal)) {
-    		return forbidden();
-    	}
-    	UserUpdate update = UserUpdate.parse(body);
-    	if (update.isEmpty()) {
-    		return badRequest();
-    	}
-		User updated = update.apply(user);
-		String commandId = queue.dispatch(new UpdateUserCommand(principal, user, updated));
-		if (!updated.isVerified()) {
-			verificationMailer.send(updated);
-		}
-		response().setHeader("Undo", String.format("/queue/%s", commandId));
-		return noContent();
-	}
-
-	public static Result requestReset() {
+	public static Result update(String username) {
 		ObjectNode body = (ObjectNode) request().body().asJson();
 		if (body == null) {
 			return badRequest("missing request body");
 		}
-		String username = body.path("username").getTextValue();
+		User user = users.find(username);
+    	if (user == null) {
+    		return notFound("user not found");
+    	}
+    	if (body.has(User.EMAIL.getName())) {
+    		return updateEmail(body, user);
+    	}
+    	if (body.has(User.PASSWORD.getName())) {
+    		return updatePassword(body, user);
+    	}
+    	if (body.has(User.VERIFIED.getName())) {
+    		return updateVerified(body, user);
+    	}
+    	return badRequest("invalid update request");
+	}
+
+	private static Result updateEmail(ObjectNode node, User user) {
+		Identity principal = new SecurityContext(ctx()).getPrincipal();
+    	if (principal == null) {
+    		return unauthorized();
+    	}
+    	if (!user.equals(principal) && !users.isSuperuser(principal)) {
+    		return forbidden();
+    	}
+		String email = User.EMAIL.getValue(node);
+    	if (Strings.isNullOrEmpty(email)) {
+    		return badRequest("missing field " + User.EMAIL);
+    	}
+		String commandId = queue.dispatch(new ChangeUserEmailCommand(principal, user.getName(), user.isVerified() && user.getEmail().equals(email), user.getEmail(), email));
+		verificationMailer.send(user.getName(), email);
+		response().setHeader("Undo", String.format("/queue/%s", commandId));
+		return noContent();
+	}
+
+	private static Result updatePassword(ObjectNode node, User user) {
+    	String key = KEY.getValue(node);
+    	if (key == null || key.length() < 50) {
+    		return badRequest("missing key field");
+    	}
+    	String password = User.PASSWORD.getValue(node);
+		if (Strings.isNullOrEmpty(password)) {
+			return badRequest("missing field " + User.PASSWORD);
+		}
+    	String expires = EXPIRES.getValue(node);
+		if (expires == null) {
+			return badRequest("missing field " + EXPIRES);
+		}
+		if (new DateTime(Long.parseLong(expires, 36)).isBefore(new DateTime())) {
+			return badRequest("request expired");
+		}
+		if (!BCrypt.checkpw(PasswordResetMailer.toString(user, expires), key)) {
+			return badRequest("invalid key");
+		}
+		queue.dispatch(new ChangeUserPasswordCommand(user.asIdentity(), user.getName(), user.getHashedPassword(), User.getHashedPassword(password)));
+		new SecurityContext(ctx()).setPrincipal(user.asIdentity(), true);
+		return noContent();
+	}
+
+	private static Result updateVerified(ObjectNode node, User user) {
+		if (user.isVerified()) {
+			return badRequest("already verified");
+		}
+		String key = KEY.getValue(node);
+		if (key == null || key.length() < 50) {
+			return badRequest("missing key");
+		}
+		boolean verified = User.VERIFIED.getValue(node);
+		if (!verified) {
+			return badRequest("verified expected true");
+		}
+		if (!BCrypt.checkpw(VerificationMailer.toString(user), key)) {
+			return badRequest("invalid key");
+		}
+		queue.dispatch(new ChangeUserVerifiedCommand(user.asIdentity(), user.getName(), true));
+		return noContent();
+	}
+
+	public static Result requestReset() {
+		ObjectNode node = (ObjectNode) request().body().asJson();
+		if (node == null) {
+			return badRequest("missing request body");
+		}
+		String username = USERNAME.getValue(node);
 		if (username == null) {
 			return badRequest("missing user name");
 		}
@@ -193,38 +212,13 @@ public class UserController extends ControllerSupport {
     		return notFound("user not found");
     	}
 		if (!user.isVerified()) {
-			// return badRequest("can't perform reset because email is not verified");
+			return badRequest("can't reset password without a verified email address");
 		}
-		String email = body.path("email").getTextValue();
+		String email = User.EMAIL.getValue(node);
 		if (email == null || !email.equals(user.getEmail())) {
 			return badRequest("invalid email");
 		}
 		resetMailer.send(user);
-		return noContent();
-	}
-
-	public static Result performReset(String name) {
-		ObjectNode body = (ObjectNode) request().body().asJson();
-		if (body == null) {
-			return badRequest();
-		}
-		User user = users.find(name);
-    	if (user == null) {
-    		return notFound();
-    	}
-		String pass = body.path("pass").getTextValue();
-		String hash = body.path("hash").getTextValue();
-		String time = body.path("time").getTextValue();
-		if (System.currentTimeMillis() - Long.parseLong(time, 36) > 1000 * 60 * 60 * 24) {
-			return badRequest("too long");
-		}
-		if (Strings.isNullOrEmpty(pass) || Strings.isNullOrEmpty(hash) || Strings.isNullOrEmpty(time)) {
-			return badRequest("missing data");
-		}
-		if (!BCrypt.checkpw(PasswordResetMailer.toString(user, time), hash)) {
-			return badRequest("invalid data");
-		}
-		queue.dispatch(new ChangePasswordCommand(user.asIdentity(), user.getName(), user.getPassword(), BCrypt.hashpw(pass, BCrypt.gensalt())));
 		return noContent();
 	}
 }

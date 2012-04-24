@@ -177,9 +177,6 @@ function UserFormCtrl($scope, $http) {
 		if ($scope.email && $scope.email !== $scope.userInfo.email || !$scope.userInfo.verified) {
 			data.email = $scope.email;
 		}
-		if ($scope.password) {
-			data.password = $scope.password;
-		}
 		return data;
 	};
 	$scope.save = function() {
@@ -201,7 +198,6 @@ function UserFormCtrl($scope, $http) {
 	$scope.$on('edit:user', function() {
 		$scope.editing = true;		
 		$scope.email = $scope.userInfo.email;
-		$scope.password = '';
 	});
 }
 
@@ -270,21 +266,20 @@ function SignUpFormCtrl($scope, $http, $location) {
 	};
 }
 
-VerifyCtrl.$inject = ['$scope', '$http', '$location'];
+VerifyCtrl.$inject = ['$scope', '$http', '$location', '$routeParams'];
 /**
  * @constructor
  */
-function VerifyCtrl($scope, $http, $location) {
+function VerifyCtrl($scope, $http, $location, $routeParams) {
 
-	var hash = $location.search()['h'];
-	$http.post('/verify', { 'hash' : hash })
+	$http.post('/users/' + $routeParams.userId, { 'key' : $location.search()['key'], 'verified' : true })
 		.success(function(response) {
 			$scope.alert.show('Your email address has been verified.', 'alert-success');
-			$location.url('/users/' + $scope.user.getName());
+			$location.url('/users/' + $routeParams.userId);
 		})
 		.error(function(response) {
-			$scope.alert.show('Your email address could not be verified. Edit your profile below to change your email address or to resend a verification message.', 'alert-error');
-			$location.url($scope.user ? '/users/' + $scope.user.getName() : '/');
+			$scope.alert.show('Your email address could not be verified.', 'alert-error');
+			$location.url('/users/' + $routeParams.userId);
 		});
 }
 
@@ -296,12 +291,13 @@ function ResetPasswordCtrl($scope, $http, $location, $routeParams) {
 
 	var userId = $routeParams.userId;
 	var key = $location.search()['key'];
-	var time = $location.search()['time'];
+	var expires = $location.search()['expires'];
 	$scope.submit = function() {
-		$http.post('/users/' + userId + '/reset', { 'hash' : key, 'time' : time, 'pass' : $scope.password })
+		$http.post('/users/' + userId, { 'key' : key, 'expires' : expires, 'password' : $scope.password })
 		.success(function(response) {
 			$scope.alert.show('Your password has been changed.', 'alert-success');
 			$location.url('/users/' + userId);
+			$scope.whoami();
 		})
 		.error(function(response) {
 			$scope.alert.show('Your password could not be changed.', 'alert-error');
@@ -1277,7 +1273,7 @@ app.config(['$routeProvider', function($routeProvider) {
 		.when('/buckets/:bucketId/', { template : '/public/dashboard.html', reloadOnSearch : false })
 		.when('/users/:userId', { template : '/public/user.html' })
 		.when('/users/:userId/reset', { template : '/public/reset.html' })
-		.when('/verify', { template : '/public/verify.html' })
+		.when('/users/:userId/verify', { template : '/public/verify.html' })
 		.otherwise({ redirectTo : '/' });
 }]);
 

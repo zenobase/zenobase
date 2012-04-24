@@ -11,11 +11,9 @@ GET     /users/                      com.zenobase.controllers.UserController.fin
 GET     /users/:name                 com.zenobase.controllers.UserController.get(name)
 POST    /users/:name                 com.zenobase.controllers.UserController.update(name)
 POST    /reset                       com.zenobase.controllers.UserController.requestReset()
-POST    /users/:name/reset           com.zenobase.controllers.UserController.performReset(name)
 
 POST    /users/                      com.zenobase.controllers.AccountController.open()
 DELETE  /users/:name                 com.zenobase.controllers.AccountController.close(name)
-POST    /verify                      com.zenobase.controllers.AccountController.verify()
 
 POST    /signin                      com.zenobase.controllers.SecurityController.signIn()
 POST    /signout                     com.zenobase.controllers.SecurityController.signOut()

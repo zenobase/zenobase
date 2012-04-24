@@ -11,7 +11,7 @@ import com.google.inject.matcher.Matchers;
 import com.google.inject.multibindings.Multibinder;
 import com.google.inject.name.Names;
 
-import com.zenobase.commands.ChangePasswordCommand;
+import com.zenobase.commands.ChangeUserPasswordCommand;
 import com.zenobase.commands.CommandHandler;
 import com.zenobase.commands.CommandParser;
 import com.zenobase.commands.CommandParserRegistry;
@@ -25,8 +25,8 @@ import com.zenobase.commands.DeleteUserCommand;
 import com.zenobase.commands.RestoreBucketCommand;
 import com.zenobase.commands.SuspendUserCommand;
 import com.zenobase.commands.UpdateBucketCommand;
-import com.zenobase.commands.UpdateUserCommand;
-import com.zenobase.commands.VerifyUserCommand;
+import com.zenobase.commands.ChangeUserEmailCommand;
+import com.zenobase.commands.ChangeUserVerifiedCommand;
 import com.zenobase.common.Scheduled;
 import com.zenobase.common.ScheduledInterceptor;
 import com.zenobase.controllers.AccountController;
@@ -87,9 +87,9 @@ public class Global extends GlobalSettings {
 				parsers.addBinding().to(DeleteEventCommand.Parser.class);
 				parsers.addBinding().to(CreateUserCommand.Parser.class);
 				parsers.addBinding().to(DeleteUserCommand.Parser.class);
-				parsers.addBinding().to(UpdateUserCommand.Parser.class);
+				parsers.addBinding().to(ChangeUserEmailCommand.Parser.class);
 				parsers.addBinding().to(SuspendUserCommand.Parser.class);
-				parsers.addBinding().to(ChangePasswordCommand.Parser.class);
+				parsers.addBinding().to(ChangeUserPasswordCommand.Parser.class);
 				parsers.addBinding().to(CompoundCommand.Parser.class);
 
 				Multibinder<CommandHandler<?>> handlers = Multibinder.newSetBinder(binder(), new TypeLiteral<CommandHandler<?>>() {});
@@ -101,10 +101,10 @@ public class Global extends GlobalSettings {
 				handlers.addBinding().to(DeleteEventCommand.Handler.class);
 				handlers.addBinding().to(CreateUserCommand.Handler.class);
 				handlers.addBinding().to(DeleteUserCommand.Handler.class);
-				handlers.addBinding().to(UpdateUserCommand.Handler.class);
+				handlers.addBinding().to(ChangeUserEmailCommand.Handler.class);
 				handlers.addBinding().to(SuspendUserCommand.Handler.class);
-				handlers.addBinding().to(VerifyUserCommand.Handler.class);
-				handlers.addBinding().to(ChangePasswordCommand.Handler.class);
+				handlers.addBinding().to(ChangeUserVerifiedCommand.Handler.class);
+				handlers.addBinding().to(ChangeUserPasswordCommand.Handler.class);
 
 				requestStaticInjection(QueueController.class);
 				requestStaticInjection(BucketListController.class);

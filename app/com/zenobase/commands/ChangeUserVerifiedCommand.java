@@ -9,24 +9,24 @@ import com.zenobase.schema.BooleanField;
 import com.zenobase.schema.TokenField;
 import com.zenobase.services.UserManager;
 
-public class VerifyUserCommand extends CommandSupport {
+public class ChangeUserVerifiedCommand extends CommandSupport {
 
-	private static final Command.Type TYPE = new Command.Type("verify user", 1);
-	private static final TokenField NAME = new TokenField("name");
+	private static final Command.Type TYPE = new Command.Type("change user verified", 1);
+	private static final TokenField USERNAME = new TokenField("username");
 	private static final BooleanField VERIFIED = new BooleanField("verified");
 
-	private VerifyUserCommand(ObjectNode node) {
+	private ChangeUserVerifiedCommand(ObjectNode node) {
 		super(node);
 	}
 
-	public VerifyUserCommand(Identity principal, String name, boolean verified) {
+	public ChangeUserVerifiedCommand(Identity principal, String name, boolean verified) {
 		super(TYPE, principal);
-		setParameter(NAME, name);
+		setParameter(USERNAME, name);
 		setParameter(VERIFIED, verified);
 	}
 
 	private String getName() {
-		return getParameter(NAME);
+		return getParameter(USERNAME);
 	}
 
 	private boolean isVerified() {
@@ -35,7 +35,7 @@ public class VerifyUserCommand extends CommandSupport {
 
 	@Override
 	public Command reverse(Identity principal) {
-		return new VerifyUserCommand(principal, getName(), !isVerified());
+		return new ChangeUserVerifiedCommand(principal, getName(), !isVerified());
 	}
 
 	@Override
@@ -53,24 +53,24 @@ public class VerifyUserCommand extends CommandSupport {
 		@Override
 		public Command parse(ObjectNode node, int version) {
 			switch (version) {
-				case 1: return new VerifyUserCommand(node);
+				case 1: return new ChangeUserVerifiedCommand(node);
 			}
 			return null;
 		}
 	}
 
-	public static class Handler extends CommandHandlerSupport<VerifyUserCommand> {
+	public static class Handler extends CommandHandlerSupport<ChangeUserVerifiedCommand> {
 
 		private final UserManager manager;
 
 		@Inject
 		public Handler(UserManager manager) {
-			super(VerifyUserCommand.class);
+			super(ChangeUserVerifiedCommand.class);
 			this.manager = manager;
 		}
 
 		@Override
-		public void executeTyped(VerifyUserCommand command) {
+		public void executeTyped(ChangeUserVerifiedCommand command) {
 			User user = manager.find(command.getName());
 			user.setVerified(command.isVerified());
 			manager.update(user);

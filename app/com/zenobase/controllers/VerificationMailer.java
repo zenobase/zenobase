@@ -23,15 +23,25 @@ public class VerificationMailer {
 	}
 
 	public void send(User user) {
-		Preconditions.checkNotNull(user.getEmail());
+		send(user.getName(), user.getEmail());
+	}
+
+	public void send(String username, String email) {
+		Preconditions.checkNotNull(email);
 		String text =
+			"Account:\n\n" +
+			"  " + username + "\n\n" +
 			"Please verify your email address by opening the following link:\n\n" +
-			"  <" + hostname + "/#/verify?h=" + BCrypt.hashpw(toString(user), BCrypt.gensalt()) + ">\n\n" +
+			"  <" + hostname + "/#/users/" + username + "/verify?key=" + BCrypt.hashpw(toString(username, email), BCrypt.gensalt()) + ">\n\n" +
 			"Thanks!\n";
-		mailer.send(new Message(user.getEmail(), "Your Zenobase Account", text));
+		mailer.send(new Message(email, "Your Zenobase Account", text));
 	}
 
 	public static String toString(User user) {
-		return Joiner.on('|').join(user.getName(), user.getEmail());
+		return toString(user.getName(), user.getEmail());
+	}
+
+	public static String toString(String username, String email) {
+		return Joiner.on('\t').join(username, email);
 	}
 }

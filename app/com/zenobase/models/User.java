@@ -51,20 +51,24 @@ public class User extends DomainNode {
 		return getValue(CREATED);
 	}
 
-	public String getPassword() {
+	public String getHashedPassword() {
 		return getValue(PASSWORD);
 	}
 
-	public void setPassword(String password) { // TODO rename to passwordHash
-		setValue(PASSWORD, password);
+	public static String getHashedPassword(String password) {
+		return BCrypt.hashpw(password, BCrypt.gensalt());
+	}
+
+	public void setHashedPassword(String hashed) {
+		setValue(PASSWORD, hashed);
+	}
+
+	public void setPassword(String password) {
+		setHashedPassword(getHashedPassword(password));
 	}
 
 	public boolean passwordEquals(String password) {
-		return BCrypt.checkpw(password, getPassword());
-	}
-
-	public void changePassword(String password) {
-		setPassword(BCrypt.hashpw(password, BCrypt.gensalt()));
+		return BCrypt.checkpw(password, getHashedPassword());
 	}
 
 	public String getEmail() {

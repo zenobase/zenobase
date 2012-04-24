@@ -139,4 +139,9 @@ public abstract class Field<T> {
 	public void postLoad(ObjectNode node) {
 
 	}
+
+	@Override
+	public String toString() {
+		return name;
+	}
 }

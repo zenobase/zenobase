@@ -2,15 +2,12 @@ package com.zenobase.controllers;
 
 import javax.inject.Inject;
 
-import org.codehaus.jackson.node.ObjectNode;
 import play.data.Form;
 import play.mvc.Result;
 import play.mvc.With;
 
 import com.zenobase.commands.CloseAccountCommandBuilder;
 import com.zenobase.commands.CreateUserCommand;
-import com.zenobase.commands.VerifyUserCommand;
-import com.zenobase.common.BCrypt;
 import com.zenobase.common.SecurityContext;
 import com.zenobase.models.Identity;
 import com.zenobase.models.User;
@@ -46,7 +43,7 @@ public class AccountController extends ControllerSupport {
 		Identity principal = new SecurityContext(ctx()).getPrincipal(true);
 		final User user = new User(principal.getId(), signUp.getUsername());
 		user.setEmail(signUp.getEmail());
-		user.changePassword(signUp.getPassword());
+		user.setHashedPassword(User.getHashedPassword(signUp.getPassword()));
 		user.setSuperuser(users.isEmpty());
 		queue.dispatch(new CreateUserCommand(principal, user));
 		mailer.send(user);
@@ -68,28 +65,5 @@ public class AccountController extends ControllerSupport {
 		String commandId = queue.dispatch(new CloseAccountCommandBuilder(principal, buckets, user).build());
         response().setHeader("Undo", String.format("/queue/%s", commandId));
 		return noContent();
-	}
-
-	public static Result verify() {
-		Identity principal = new SecurityContext(ctx()).getPrincipal();
-		if (principal == null) {
-			return unauthorized();
-		}
-		ObjectNode body = (ObjectNode) request().body().asJson();
-		String hash = body.path("hash").getTextValue();
-		if (hash == null || hash.length() < 50) {
-			return badRequest("missing hash");
-		}
-		User user = users.find(principal);
-		if (user == null) {
-			return notFound();
-		}
-		if (!BCrypt.checkpw(VerificationMailer.toString(user), hash)) {
-			return badRequest("verification failed");
-		}
-		if (!user.isVerified()) {
-			queue.dispatch(new VerifyUserCommand(principal, user.getName(), true));
-		}
-		return ok("verified");
 	}
 }
