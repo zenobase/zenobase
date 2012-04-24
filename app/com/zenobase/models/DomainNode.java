@@ -26,6 +26,10 @@ public class DomainNode {
 		return getValue(VERSION);
 	}
 
+	public void setVersion(long version) {
+		setValue(VERSION, version);
+	}
+
 	protected <T> T getValue(Field<T> field) {
 		return field.getValue(node);
 	}

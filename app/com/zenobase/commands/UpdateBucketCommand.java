@@ -34,7 +34,10 @@ public class UpdateBucketCommand extends CommandSupport {
 
 	@Override
 	public Command reverse(Identity principal) {
-		return new UpdateBucketCommand(principal, getTo(), getFrom());
+		Bucket from = getTo();
+		Bucket to = getFrom();
+		to.setVersion(from.getVersion() + 1);
+		return new UpdateBucketCommand(principal, from, to);
 	}
 
 	@Override
