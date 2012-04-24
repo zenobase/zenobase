@@ -468,8 +468,9 @@ function randomID() {
 	var len = 5;
 	var chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
 	var id = '';
+	var pos;
 	for (var i = 0; i < len; ++i) {
-		var pos = Math.floor(Math.random() * chars.length);
+		pos = Math.floor(Math.random() * chars.length);
 		id += chars.substring(pos, pos + 1);
 	}
 	return id;
@@ -502,8 +503,9 @@ app.controller('AddWidgetCtrl', ['$scope', '$http', '$route', '$routeParams', '$
 		});
 	};
 	$scope.exists = function(template) {
+		var i, max;
 		if ($scope.bucket) {
-			for (var i = 0; i < $scope.bucket.widgets.length; ++i) {
+			for (i = 0, max = $scope.bucket.widgets.length; i < max; ++i) {
 				if ($scope.bucket.widgets[i].template == template) {
 					return true;
 				}
@@ -607,6 +609,7 @@ app.controller('BucketCtrl', ['$scope', '$http', '$route', '$routeParams', '$loc
 				return f.field !== filter.field;
 			});
 		}
+		console.log('add filter', filter);
 		$scope.filters.push(filter);
 		$location.search('q', $scope.filters.join('__'));
 	};
@@ -912,7 +915,8 @@ function Interval(name, pattern) {
 }
 
 Interval.prototype.zoomIn = function() {
-	for (var i = 0; i < Interval.VALUES.length; ++i) {
+	var i, max;
+	for (i = 0, max = Interval.VALUES.length; i < max; ++i) {
 		if (Interval.VALUES[i].pattern > this.pattern) {
 			return Interval.VALUES[i];
 		}
@@ -929,7 +933,8 @@ Interval.VALUES = [
 ];
 
 Interval.match = function(value) {
-	for (var i = 0; i < Interval.VALUES.length; ++i) {
+	var i, max;
+	for (i = 0, max = Interval.VALUES.length; i < max; ++i) {
 		if (Interval.VALUES[i].pattern === value.length) {
 			return Interval.VALUES[i];
 		}
@@ -966,9 +971,9 @@ app.controller('TimelineCtrl', ['$scope', function($scope) {
 	};
 	$scope.update = function(event, result) {
 		$scope.times = result[$scope.settings.id];
-		$scope.draw($scope);
+		$scope.draw();
 	};
-	$scope.draw = function($scope) {
+	$scope.draw = function() {
 		if ($scope.times && $scope.times.length) {
 			google.load("visualization", "1", { packages : [ "corechart" ], callback : function() { 
 				var data = new google.visualization.DataTable();
@@ -991,8 +996,9 @@ app.controller('TimelineCtrl', ['$scope', function($scope) {
 					var selection = chart.getSelection();
 					var value = data.getValue(selection[0].row, 0);
 					$scope.interval = $scope.interval.zoomIn();
-					$scope.addFilter(new Filter($scope.field, value), true);
-					$scope.refresh();
+					$scope.$apply(function() {
+						$scope.addFilter(new Filter($scope.field, value), true);
+					});
 				});
 			}});
 		}
@@ -1040,7 +1046,7 @@ app.controller('MapCtrl', ['$scope', function($scope) {
 		for (var key in result) {
 			var value = result[key];
 			if ($.isArray(value)) {
-				for (var i = 0; i < value.length; ++i) {
+				for (var i = 0, max = value.length; i < max; ++i) {
 					if (value[i][$scope.field]) {
 						return value;
 					}
@@ -1093,8 +1099,9 @@ app.controller('MapCtrl', ['$scope', function($scope) {
 		label.innerHTML = 'Filter';
 		control.appendChild(label);
 		google.maps.event.addDomListener(control, 'click', function() {
-			$scope.filterBounds();
-			$scope.refresh();
+			$scope.$apply(function() {
+				$scope.filterBounds();
+			});
 		});
 		return parent;
 	}
