@@ -47,7 +47,7 @@ app.controller('MainCtrl', ['$scope', '$route', '$http', '$location', '$defer', 
 		$http.post('/signout', { 'username' : $scope.user.getName() }).success(function(response, code) {
 				$scope.alert.clear();
 				$scope.user = null;
-				if ($location.url() == '/') {
+				if ($location.url() === '/') {
 					$scope.reload();
 				} else {
 					$scope.home();
@@ -431,7 +431,7 @@ app.controller('HomeCtrl', ['$scope', '$http', '$location', function($scope, $ht
 	$scope.create = function() {
 		$http.post('/buckets/', $scope.template).success(function(data, status, headers) {
 			var location = headers('Location');
-			console.assert(status == 201, status);
+			console.assert(status === 201, status);
 			console.assert(location, 'missing location header');
 			$location.url(location);
 			$scope.whoami();
@@ -444,7 +444,7 @@ app.controller('CreateBucketDialogCtrl', ['$scope', '$http', '$location', functi
 	$scope.create = function() {
 		$http.post('/buckets/', { label : $scope.label}).success(function(data, status, headers) {
 			var location = headers('Location');
-			console.assert(status == 201, status);
+			console.assert(status === 201, status);
 			console.assert(location, 'missing location header');
 			$('#create-bucket-dialog').modal('hide');
 			$location.url(location);
@@ -506,7 +506,7 @@ app.controller('AddWidgetCtrl', ['$scope', '$http', '$route', '$routeParams', '$
 		var i, max;
 		if ($scope.bucket) {
 			for (i = 0, max = $scope.bucket.widgets.length; i < max; ++i) {
-				if ($scope.bucket.widgets[i].template == template) {
+				if ($scope.bucket.widgets[i].template === template) {
 					return true;
 				}
 			}
@@ -527,15 +527,15 @@ app.controller('BucketCtrl', ['$scope', '$http', '$route', '$routeParams', '$loc
 
 	$scope.getWidgetSettings = function(placement) {
 		return $scope.bucket && $.grep($scope.bucket.widgets, function(widget) {
-			return widget.placement == placement;
+			return widget.placement === placement;
 		});
 	};
 	$scope.removeWidget = function(id) {
 		$scope.bucket.widgets = $.grep($scope.bucket.widgets, function(widget) {
-			return widget.id != id;
+			return widget.id !== id;
 		});
 		$scope.widgets = $.grep($scope.widgets, function(widget) {
-			return widget.settings.id != id;
+			return widget.settings.id !== id;
 		});
 	};
 	$scope.placement = null;
@@ -609,7 +609,6 @@ app.controller('BucketCtrl', ['$scope', '$http', '$route', '$routeParams', '$loc
 				return f.field !== filter.field;
 			});
 		}
-		console.log('add filter', filter);
 		$scope.filters.push(filter);
 		$location.search('q', $scope.filters.join('__'));
 	};
@@ -723,11 +722,11 @@ app.controller('TermCountCtrl', ['$scope', function($scope) {
 		$scope.refresh({ offset : $scope.offset + $scope.settings.limit });
 	}
 	$scope.setOrder = function(order) {
-		$scope.refresh({ offset : 0 }, { order : order, reverse : order == $scope.settings.order && !$scope.settings.reverse });
+		$scope.refresh({ offset : 0 }, { order : order, reverse : order === $scope.settings.order && !$scope.settings.reverse });
 	}
 	$scope.getClasses = function(column) {
 		var classes = [];
-		if (column == $scope.order) {
+		if (column === $scope.order) {
 			classes.push('caret-active');
 			classes.push($scope.reverse ? 'caret-inverted' : 'caret');
 		} else {
@@ -1164,7 +1163,7 @@ app.controller('TemplateCtrl', ['$scope', '$http', '$defer', '$routeParams', fun
 	$scope.create = function() {
 		$http.post('/buckets/' + $scope.params.bucketId + '/', $scope.content).success(function(response, status, headers) {
 			var location = headers('Location');
-			console.assert(status == 201, status);
+			console.assert(status === 201, status);
 			console.assert(location, 'missing location header');
 			$defer(function() {
 				$scope.reload();
@@ -1330,7 +1329,7 @@ app.config(['$httpProvider', function($httpProvider) {
 			return response;
 		}
 		function error(response) {
-			if (response.status == 401) {
+			if (response.status === 401) {
 				scope.$broadcast('event:unauthorized');
 			}
 			return $q.reject(response);
@@ -1349,7 +1348,7 @@ app.directive('copyrightYear', function() {
 			return function(scope, element, attrs) {
 				var start = attrs.copyrightYear;
 				var year = new Date().getFullYear();
-				var text = start == year ?
+				var text = start === year ?
 					start : start + '&ndash;' + year;
 				element.html(text);
 			};
