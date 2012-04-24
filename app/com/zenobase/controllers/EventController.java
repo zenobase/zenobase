@@ -55,7 +55,7 @@ public class EventController extends ControllerSupport {
 		if (principal == null) {
 			return unauthorized();
 		}
-		ObjectNode body = (ObjectNode) request().body().asJson();
+		ObjectNode body = body();
 		if (body == null) {
 			return badRequest();
 		}

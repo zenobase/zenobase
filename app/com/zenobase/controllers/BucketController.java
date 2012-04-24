@@ -3,7 +3,6 @@ package com.zenobase.controllers;
 import javax.inject.Inject;
 
 import org.codehaus.jackson.node.ObjectNode;
-import play.Logger;
 import play.mvc.BodyParser;
 import play.mvc.Result;
 import play.mvc.With;
@@ -55,15 +54,14 @@ public class BucketController extends ControllerSupport {
 		if (principal == null) {
 			return unauthorized();
 		}
-		ObjectNode body = (ObjectNode) request().body().asJson();
+		ObjectNode body = body();
 		if (body == null) {
-			return badRequest();
+			return badRequest("missing request body");
 		}
     	Bucket bucket = buckets.findBucket(bucketId);
     	if (bucket == null) {
-    		return notFound();
+    		return notFound("bucket not found");
     	}
-    	Logger.info("got bucket " + bucket.getVersion());
     	if (bucket.getPermission(principal) != Permission.ALL) {
     		return forbidden();
     	}

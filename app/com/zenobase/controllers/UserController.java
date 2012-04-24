@@ -117,7 +117,7 @@ public class UserController extends ControllerSupport {
     }
 
 	public static Result update(String username) {
-		ObjectNode body = (ObjectNode) request().body().asJson();
+		ObjectNode body = body();
 		if (body == null) {
 			return badRequest("missing request body");
 		}
@@ -199,11 +199,11 @@ public class UserController extends ControllerSupport {
 	}
 
 	public static Result requestReset() {
-		ObjectNode node = (ObjectNode) request().body().asJson();
-		if (node == null) {
+		ObjectNode body = body();
+		if (body == null) {
 			return badRequest("missing request body");
 		}
-		String username = USERNAME.getValue(node);
+		String username = USERNAME.getValue(body);
 		if (username == null) {
 			return badRequest("missing user name");
 		}
@@ -214,7 +214,7 @@ public class UserController extends ControllerSupport {
 		if (!user.isVerified()) {
 			return badRequest("can't reset password without a verified email address");
 		}
-		String email = User.EMAIL.getValue(node);
+		String email = User.EMAIL.getValue(body);
 		if (email == null || !email.equals(user.getEmail())) {
 			return badRequest("invalid email");
 		}

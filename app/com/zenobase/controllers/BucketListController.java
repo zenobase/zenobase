@@ -96,16 +96,15 @@ public class BucketListController extends ControllerSupport {
     }
 
     public static Result post() {
-		ObjectNode body = (ObjectNode) request().body().asJson();
+		ObjectNode body = body();
 		if (body == null) {
 			return badRequest("missing request body");
 		}
-		Bucket update = new Bucket(body);
-		String label = update.getLabel();
-		String description = update.getDescription();
+		String label = Bucket.LABEL.getValue(body);
 		if (label == null) {
-			return badRequest("missing label");
+			return badRequest("missing field " + Bucket.LABEL);
 		}
+		String description = Bucket.DESCRIPTION.getValue(body);
 		Identity principal = new SecurityContext(ctx()).getPrincipal(true);
     	Bucket bucket = createBucket(label, description, principal);
     	String commandId = queue.dispatch(new CreateBucketCommand(principal, bucket));
