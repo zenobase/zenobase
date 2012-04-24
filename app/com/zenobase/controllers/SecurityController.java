@@ -26,8 +26,11 @@ public class SecurityController extends ControllerSupport {
 			return badRequest("invalid request body");
 		}
 		User user = users.find(form.getUsername());
-		if (user == null || user.isSuspended() || !user.passwordEquals(form.getPassword())) {
-			return unauthorized();
+		if (user == null || !user.passwordEquals(form.getPassword())) {
+			return unauthorized("invalid username or password");
+		}
+		if (user.isSuspended()) {
+			return unauthorized("user suspended");
 		}
 		new SecurityContext(ctx()).setPrincipal(user.asIdentity(), form.isRemember());
 		return ok(new UserInfo(user).toJson());
