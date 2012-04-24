@@ -78,7 +78,6 @@ adminApp.controller('BucketListAdminCtrl', ['$scope', '$http', function($scope, 
 	$scope.remove = function(bucketId) {
 		$http({ method : 'DELETE', url : '/buckets/' + bucketId + '/' }).success(function(response, code, headers) {
 			var undo = headers('Undo');
-			console.assert(undo, 'missing undo header');
 			$scope.alert.show('Deleted a bucket.', 'alert-success', undo);
 			$scope.reload();
 		});
@@ -130,7 +129,6 @@ adminApp.controller('UserListAdminCtrl', ['$scope', '$http', function($scope, $h
 	$scope.close = function(userId) {
 		$http({ method : 'DELETE', url : '/users/' + userId }).success(function(response, code, headers) {
 			var undo = headers('Undo');
-			console.assert(undo, 'missing undo header');
 			$scope.alert.show('Closed account of ' + userId + '.', 'alert-success', undo);
 			$scope.reload();
 		});

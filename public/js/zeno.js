@@ -182,7 +182,6 @@ app.controller('UserFormCtrl', ['$scope', '$http', function($scope, $http) {
 			$http.post('/users/' + $scope.userInfo.name, data)
 				.success(function(response, status, headers) {
 					var undo = headers('Undo');
-					console.assert(undo, 'missing undo header');
 					$scope.alert.show('Updated user info.', 'alert-success', undo);
 					$scope.reload();
 				})
@@ -404,7 +403,6 @@ app.controller('BucketListCtrl', ['$scope', '$http', function($scope, $http) {
 	$scope.remove = function(bucketId) {
 		$http({ method : 'DELETE', url : '/buckets/' + bucketId }).success(function(response, code, headers) {
 			var undo = headers('Undo');
-			console.assert(undo, 'missing undo header');
 			$scope.alert.show('Deleted a bucket.', 'alert-success', undo);
 			$scope.reload();
 		});
@@ -425,8 +423,6 @@ app.controller('HomeCtrl', ['$scope', '$http', '$location', function($scope, $ht
 	$scope.create = function() {
 		$http.post('/buckets/', $scope.template).success(function(data, status, headers) {
 			var location = headers('Location');
-			console.assert(status == 201, status);
-			console.assert(location, 'missing location header');
 			$location.url(location);
 			$scope.whoami();
 		});
@@ -438,8 +434,6 @@ app.controller('CreateBucketDialogCtrl', ['$scope', '$http', '$location', functi
 	$scope.create = function() {
 		$http.post('/buckets/', { label : $scope.label}).success(function(data, status, headers) {
 			var location = headers('Location');
-			console.assert(status == 201, status);
-			console.assert(location, 'missing location header');
 			$('#create-bucket-dialog').modal('hide');
 			$location.url(location);
 			$scope.whoami();
@@ -572,7 +566,6 @@ app.controller('BucketCtrl', ['$scope', '$http', '$route', '$routeParams', '$loc
 		$http({ method : 'DELETE', url : '/buckets/' + $scope.bucketId + '/' + eventId }).success(function(response, status, headers) {
 			$defer($scope.refresh, DELAY);
 			var undo = headers('Undo');
-			console.assert(undo, 'missing undo header');
 			$scope.alert.show('Deleted an event.', 'alert-success', undo);
 		});
 	};
@@ -630,7 +623,6 @@ app.controller('BucketFormCtrl', ['$scope', '$http', function($scope, $http) {
 	$scope.save = function(settings) {
 		$http.post('/buckets/' + $scope.bucketId, $scope.bucket).success(function (response, status, headers) {
 			var undo = headers('Undo');
-			console.assert(undo, 'missing undo header');
 			$scope.alert.show('Saved settings.', 'alert-success', undo);
 			++$scope.$parent.bucket.version;
 			$scope.$parent.cancel();
@@ -1155,8 +1147,6 @@ app.controller('TemplateCtrl', ['$scope', '$http', '$defer', '$routeParams', fun
 	$scope.create = function() {
 		$http.post('/buckets/' + $scope.params.bucketId + '/', $scope.content).success(function(response, status, headers) {
 			var location = headers('Location');
-			console.assert(status == 201, status);
-			console.assert(location, 'missing location header');
 			$defer(function() {
 				$scope.reload();
 				$scope.dialog.modal('hide');
@@ -1285,7 +1275,6 @@ app.filter('fields', function() {
 app.filter('field', function() {
 	return function(value, fieldName) {
 		var field = Field.find(fieldName);
-		console.assert(field, "Don't know how to format field: " + fieldName)
 		return field.format(value);
 	}
 });
