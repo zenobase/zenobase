@@ -224,7 +224,7 @@ function AuthFormCtrl($scope, $http) {
 			})
 			.error(function(response, code) {
 				switch (code) {
-					case 402:
+					case 401:
 						$scope.message = 'The username or password you entered is incorrect.';
 						break;
 					default:
