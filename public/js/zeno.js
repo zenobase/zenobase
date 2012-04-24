@@ -20,7 +20,7 @@ app.config(['$routeProvider', function($routeProvider) {
 		.when('/users/:userId', { template : '/public/user.html' })
 		.when('/users/:userId/reset', { template : '/public/reset.html' })
 		.when('/users/:userId/verify', { template : '/public/verify.html' })
-		.otherwise({ redirectTo : '/' });
+		.otherwise({ template : '/public/404.html' });
 }]);
 
 app.controller('MainCtrl', ['$scope', '$route', '$http', '$location', '$defer', function($scope, $route, $http, $location, $defer) {
