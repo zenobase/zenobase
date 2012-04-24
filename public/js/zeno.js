@@ -1359,7 +1359,3 @@ app.directive('copyrightYear', function() {
 function encode(value) {
 	return $('<div />').text(value).html();
 }
-
-function defined(a, b) {
-	return a !== undefined ? a : b;	
-}
