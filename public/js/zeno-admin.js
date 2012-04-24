@@ -82,7 +82,7 @@ adminApp.controller('BucketListAdminCtrl', ['$scope', '$http', function($scope, 
 		});
 	};
 	$scope.getOwner = function(bucket) {
-		for (var i = 0; i < bucket.permissions.length; ++i) {
+		for (var i = 0, max = bucket.permissions.length; i < max; ++i) {
 			if (bucket.permissions[i].permission === 'ALL') {
 				return bucket.permissions[i].principal;
 			}

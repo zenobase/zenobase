@@ -11,7 +11,9 @@ import com.google.inject.matcher.Matchers;
 import com.google.inject.multibindings.Multibinder;
 import com.google.inject.name.Names;
 
+import com.zenobase.commands.ChangeUserEmailCommand;
 import com.zenobase.commands.ChangeUserPasswordCommand;
+import com.zenobase.commands.ChangeUserVerifiedCommand;
 import com.zenobase.commands.CommandHandler;
 import com.zenobase.commands.CommandParser;
 import com.zenobase.commands.CommandParserRegistry;
@@ -25,8 +27,6 @@ import com.zenobase.commands.DeleteUserCommand;
 import com.zenobase.commands.RestoreBucketCommand;
 import com.zenobase.commands.SuspendUserCommand;
 import com.zenobase.commands.UpdateBucketCommand;
-import com.zenobase.commands.ChangeUserEmailCommand;
-import com.zenobase.commands.ChangeUserVerifiedCommand;
 import com.zenobase.common.Scheduled;
 import com.zenobase.common.ScheduledInterceptor;
 import com.zenobase.controllers.AccountController;
@@ -90,6 +90,7 @@ public class Global extends GlobalSettings {
 				parsers.addBinding().to(ChangeUserEmailCommand.Parser.class);
 				parsers.addBinding().to(SuspendUserCommand.Parser.class);
 				parsers.addBinding().to(ChangeUserPasswordCommand.Parser.class);
+				parsers.addBinding().to(ChangeUserVerifiedCommand.Parser.class);
 				parsers.addBinding().to(CompoundCommand.Parser.class);
 
 				Multibinder<CommandHandler<?>> handlers = Multibinder.newSetBinder(binder(), new TypeLiteral<CommandHandler<?>>() {});
