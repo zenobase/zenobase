@@ -1440,17 +1440,15 @@ app.config(['$httpProvider', function($httpProvider) {
 	$httpProvider.responseInterceptors.push(interceptor);
 }]);
 
-app.directive('zenoCopyright', function() {
+app.directive('copyrightYear', function() {
 	return {
 		restrict: 'A',
 		compile: function() {
 			return function(scope, element, attrs) {
-				var start = attrs.start;
-				var author = attrs.author;
+				var start = attrs.copyrightYear;
 				var year = new Date().getFullYear();
 				var text = start == year ?
-					'&copy; ' + start + ' ' + author :
-					'&copy; ' + start + '&ndash;' + year + ' ' + author;
+					start : start + '&ndash;' + year;
 				element.html(text);
 			};
 		}

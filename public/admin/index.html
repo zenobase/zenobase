@@ -20,11 +20,11 @@
 		<script src="/public/js/zeno-admin.js"></script>
 	</head>
 
-	<body data-ng-controller="MainCtrl" class="ng-cloak">
+	<body data-ng-controller="MainCtrl">
 
 		<header class="container-fluid">
 			<p class="logo pull-left"><a href="#/"><img src="/public/img/logo.png" alt="ZenoBase"/></a></p>
-			<div class="pull-right">
+			<div class="pull-right ng-cloak">
 				<p data-ng-show="user.name">
 					<i class="icon-user"></i> <a href="#/users/{{user.getName()}}">{{user.getName()}}</a> | <a data-ng-click="signOut()">Sign out</a>
 				</p>
@@ -34,10 +34,16 @@
 			</div>
 		</header>
 
-		<div data-ng-view></div>
+		<div data-ng-view>
+			<div class="container-fluid">
+				<div class="alert alert-block alert-error">
+					Couldn't load site.
+				</div>
+			</div>
+		</div>
 
 		<footer class="container-fluid">
-			<p data-zeno-copyright data-start="2012" data-author="Zenobase LLC"></p>
+			&copy; <span data-copyright-year="2012"></span> Zenobase LLC
 		</footer>
 
 	</body>
