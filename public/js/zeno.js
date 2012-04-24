@@ -233,7 +233,7 @@ function AuthFormCtrl($scope, $http) {
 			});
 	}
 	$scope.clear = function() {
-		$scope.username = 'foo';
+		$scope.username = '';
 		$scope.password = '';
 		$scope.remember = false;
 		$scope.message = '';
