@@ -104,23 +104,26 @@
 		</div>
 
 		<div id="reset-password-dialog" class="modal hide" data-ng-controller="ResetPasswordFormCtrl">
-			<form data-ng-submit="requestReset()" class="modal-form">
+			<form name="resetPasswordForm" data-ng-submit="requestReset()" class="modal-form">
 					<div class="modal-header">
 						<a class="close" data-dismiss="modal">&times;</a>
 						<h3>Reset Password</h3>
 					</div>
 					<div class="modal-body">
+						<div class="alert alert-error" data-ng-show="message">
+							{{message}}
+						</div>
 						<div class="control-group">
-							<label for="username">User Name</label>
-							<input id="reset-username" type="text" class="large" data-ng-model="username"/>
+							<label for="username">Username</label>
+							<input id="reset-username" type="text" class="large" data-ng-model="username" required/>
 						</div>
 						<div class="control-group">
 							<label for="email">Email</label>
-							<input id="reset-email" type="text" class="large" data-ng-model="email"/>
+							<input id="reset-email" type="email" class="large" data-ng-model="email" required/>
 						</div>
 					</div>
 					<div class="modal-footer">
-						<button type="submit" class="btn btn-primary">Reset</button>
+						<button type="submit" class="btn btn-primary" data-ng-disabled="!resetPasswordForm.$valid">Reset</button>
 						<button type="reset" class="btn" data-dismiss="modal">Cancel</button>
 					</div>
 			</form>

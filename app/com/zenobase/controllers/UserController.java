@@ -209,7 +209,7 @@ public class UserController extends ControllerSupport {
 		}
 		User user = users.find(username);
     	if (user == null) {
-    		return notFound("user not found");
+    		return badRequest("user not found");
     	}
 		if (!user.isVerified()) {
 			return badRequest("can't reset password without a verified email address");

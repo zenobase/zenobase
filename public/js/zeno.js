@@ -254,15 +254,40 @@ ResetPasswordFormCtrl.$inject = ['$scope', '$http'];
  */
 function ResetPasswordFormCtrl($scope, $http) {
 	$scope.dialog = $('#reset-password-dialog');
-	$scope.username = '';
-	$scope.email = '';
+	$scope.data = function() {
+		return {
+			username : $scope.username,
+			email : $scope.email
+		};
+	};
 	$scope.requestReset = function() {
-		$http.post('/reset', { username : $scope.username, email : $scope.email }).success(function(response) {
-			$scope.alert.show('A password reset request has been sent by email. Check your inbox.');
-			$scope.dialog.modal('hide');
-			$scope.home();
-		});
-	}
+		$http.post('/reset', $scope.data())
+			.success(function(response) {
+				$scope.alert.show('A password reset request has been sent by email. Check your inbox.');
+				$scope.dialog.modal('hide');
+				$scope.clear();
+				$scope.home();
+			})
+			.error(function(response, code) {
+				switch (code) {
+					case 400:
+						$scope.message = 'The username and email address you entered don\'t match our records.';
+						break;
+					default:
+						$scope.message = 'Unable to reset your password, please try again later or contact support.';
+				}				
+			});
+	};
+	$scope.clear = function() {
+		$scope.username = '';
+		$scope.email = '';
+		$scope.message = '';
+	};
+	$scope.clear();
+	$scope.dialog.on('shown', function () {
+		$scope.clear();
+		$('#reset-username').select();
+	});
 }
 
 SignUpFormCtrl.$inject = ['$scope', '$http', '$location'];
