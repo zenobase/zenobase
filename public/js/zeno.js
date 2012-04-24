@@ -207,9 +207,6 @@ AuthFormCtrl.$inject = ['$scope', '$http'];
  */
 function AuthFormCtrl($scope, $http) {
 	$scope.dialog = $('#sign-in-dialog');
-	$scope.username = '';
-	$scope.password = '';
-	$scope.remember = false;
 	$scope.data = function() {
 		return {
 			username : $scope.username,
@@ -218,16 +215,36 @@ function AuthFormCtrl($scope, $http) {
 		};
 	};
 	$scope.signIn = function() {
-		$http.post('/signin', $scope.data()).success(function(response) {
-			$scope.$parent.user = new User(response);
-			$scope.username = '';
-			$scope.password = '';
-			$scope.dialog.modal('hide');
-			$scope.reload();
-		});
+		$http.post('/signin', $scope.data())
+			.success(function(response) {
+				$scope.$parent.user = new User(response);
+				$scope.dialog.modal('hide');
+				$scope.clear();
+				$scope.reload();
+			})
+			.error(function(response, code) {
+				switch (code) {
+					case 402:
+						$scope.message = 'The username or password you entered is incorrect.';
+						break;
+					default:
+						$scope.message = 'Unable to sign in, please try again later or contact support.';
+				}
+			});
 	}
+	$scope.clear = function() {
+		$scope.username = 'foo';
+		$scope.password = '';
+		$scope.remember = false;
+		$scope.message = '';
+	};
+	$scope.clear();
 	$scope.$on('event:unauthorized', function() {
 		$scope.dialog.modal('show');
+	});
+	$scope.dialog.on('shown', function () {
+		$scope.clear();
+		$('#username').select();
 	});
 }
 

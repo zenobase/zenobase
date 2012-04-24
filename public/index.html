@@ -73,8 +73,11 @@
 						<h3>Sign in</h3>
 					</div>
 					<div class="modal-body">
+						<div class="alert alert-error" data-ng-show="message">
+							{{message}}
+						</div>
 						<div class="control-group">
-							<label for="username">User Name</label>
+							<label for="username">Username</label>
 							<input id="username" type="text" class="large" data-ng-model="username" required/>
 						</div>
 						<div class="control-group">
@@ -92,18 +95,13 @@
 					</div>
 					<div class="modal-footer">
 						<div class="pull-left">
-							<a data-dismiss="modal" href="#reset-password-dialog" data-toggle="modal">Reset password</a>
+							<a data-dismiss="modal" href="#reset-password-dialog" data-toggle="modal">Lost password?</a>
 						</div>
 						<button type="submit" class="btn btn-primary" data-ng-disabled="!signInForm.$valid">Sign in</button>
 						<button type="reset" class="btn" data-dismiss="modal">Cancel</button>
 					</div>
 			</form>
 		</div>
-		<script>
-			$('#sign-in-dialog').on('shown', function () {
-				$('#username').select();
-			})
-		</script>
 
 		<div id="reset-password-dialog" class="modal hide" data-ng-controller="ResetPasswordFormCtrl">
 			<form data-ng-submit="requestReset()" class="modal-form">
