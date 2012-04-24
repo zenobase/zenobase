@@ -67,7 +67,7 @@
 		</footer>
 
 		<div id="sign-in-dialog" class="modal hide" data-ng-controller="AuthFormCtrl">
-			<form data-ng-submit="signIn()" class="modal-form">
+			<form name="signInForm" data-ng-submit="signIn()" class="modal-form">
 					<div class="modal-header">
 						<a class="close" data-dismiss="modal">&times;</a>
 						<h3>Sign in</h3>
@@ -75,11 +75,11 @@
 					<div class="modal-body">
 						<div class="control-group">
 							<label for="username">User Name</label>
-							<input id="username" type="text" class="large" data-ng-model="username"/>
+							<input id="username" type="text" class="large" data-ng-model="username" required/>
 						</div>
 						<div class="control-group">
 							<label for="password">Password</label>
-							<input id="password" type="password" class="large" data-ng-model="password"/>
+							<input id="password" type="password" class="large" data-ng-model="password" required/>
 						</div>
 						<div class="control-group">
 							<div class="controls">
@@ -94,7 +94,7 @@
 						<div class="pull-left">
 							<a data-dismiss="modal" href="#reset-password-dialog" data-toggle="modal">Reset password</a>
 						</div>
-						<button type="submit" class="btn btn-primary">Sign in</button>
+						<button type="submit" class="btn btn-primary" data-ng-disabled="!signInForm.$valid">Sign in</button>
 						<button type="reset" class="btn" data-dismiss="modal">Cancel</button>
 					</div>
 			</form>
