@@ -1,4 +1,4 @@
-package com.zenobase.common;
+package com.zenobase.controllers;
 
 import play.api.libs.Crypto;
 import play.mvc.Http;

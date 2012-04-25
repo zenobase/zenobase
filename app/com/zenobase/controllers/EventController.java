@@ -12,7 +12,6 @@ import com.zenobase.commands.CreateEventCommand;
 import com.zenobase.commands.DeleteEventCommand;
 import com.zenobase.commands.RandomEventsCommandBuilder;
 import com.zenobase.common.Generator;
-import com.zenobase.common.SecurityContext;
 import com.zenobase.models.Bucket;
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;

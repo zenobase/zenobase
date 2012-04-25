@@ -12,7 +12,6 @@ import com.zenobase.commands.Command;
 import com.zenobase.commands.CommandInfo;
 import com.zenobase.common.Nodes;
 import com.zenobase.common.PartialList;
-import com.zenobase.common.SecurityContext;
 import com.zenobase.models.Identity;
 import com.zenobase.services.CommandQueue;
 import com.zenobase.services.CommandStore;

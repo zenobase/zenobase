@@ -1,15 +1,18 @@
 package com.zenobase.controllers;
 
+import java.util.List;
+
 import javax.inject.Inject;
 
+import org.codehaus.jackson.node.ObjectNode;
 import play.mvc.BodyParser;
 import play.mvc.Result;
 import play.mvc.With;
+import com.google.common.collect.ImmutableList;
 
 import com.zenobase.commands.DeleteBucketCommand;
 import com.zenobase.commands.UpdateBucketCommand;
-import com.zenobase.common.DefaultDashboard;
-import com.zenobase.common.SecurityContext;
+import com.zenobase.common.Nodes;
 import com.zenobase.models.Bucket;
 import com.zenobase.models.Identity;
 import com.zenobase.models.Permission;
@@ -46,6 +49,44 @@ public class BucketController extends ControllerSupport {
 		}
     	return ok(bucket.toJson());
     }
+
+	private static class DefaultDashboard {
+
+		public List<ObjectNode> widgets(){
+			return ImmutableList.of(timeline(), list(), map());
+		}
+
+		private ObjectNode list(){
+			ObjectNode widget = Nodes.newObject();
+			widget.put("id", "default-list");
+			widget.put("label", "Latest");
+			widget.put("type", "list");
+			widget.put("placement", "left");
+			widget.put("singleton", true);
+			widget.put("limit", 5);
+			widget.put("order", "timestamp");
+			widget.put("reverse", false);
+			return widget;
+		}
+
+		private ObjectNode timeline(){
+			ObjectNode widget = Nodes.newObject();
+			widget.put("id", "default-timeline");
+			widget.put("label", "Timeline");
+			widget.put("type", "timeline");
+			widget.put("placement", "top");
+			return widget;
+		}
+
+		private ObjectNode map(){
+			ObjectNode widget = Nodes.newObject();
+			widget.put("id", "default-map");
+			widget.put("label", "Map");
+			widget.put("type", "map");
+			widget.put("placement", "right");
+			return widget;
+		}
+	}
 
 	@BodyParser.Of(BodyParser.Json.class)
 	public static Result update(String bucketId) {

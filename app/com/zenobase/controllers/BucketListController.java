@@ -13,7 +13,6 @@ import com.zenobase.common.Callback;
 import com.zenobase.common.Generator;
 import com.zenobase.common.Nodes;
 import com.zenobase.common.PartialList;
-import com.zenobase.common.SecurityContext;
 import com.zenobase.io.BucketPrinter;
 import com.zenobase.models.Bucket;
 import com.zenobase.models.Identity;

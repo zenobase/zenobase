@@ -16,7 +16,6 @@ import com.zenobase.common.BCrypt;
 import com.zenobase.common.Callback;
 import com.zenobase.common.Nodes;
 import com.zenobase.common.PartialList;
-import com.zenobase.common.SecurityContext;
 import com.zenobase.io.UserPrinter;
 import com.zenobase.models.Identity;
 import com.zenobase.models.User;
