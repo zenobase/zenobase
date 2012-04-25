@@ -17,6 +17,7 @@ import com.zenobase.models.Bucket;
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
 import com.zenobase.models.Permission;
+import com.zenobase.schema.IntegerField;
 import com.zenobase.search.EventSearch;
 import com.zenobase.services.BucketManager;
 import com.zenobase.services.CommandQueue;
@@ -24,6 +25,8 @@ import com.zenobase.services.IndexManager;
 
 @With(Timed.class)
 public class EventController extends ControllerSupport {
+
+	private static final IntegerField RANDOM = new IntegerField("random");
 
 	@Inject
 	static BucketManager manager;
@@ -49,16 +52,13 @@ public class EventController extends ControllerSupport {
 			.execute(node.getIndex(bucket.getId()))) : forbidden();
     }
 
-	@BodyParser.Of(value = BodyParser.Json.class, maxLength = 1000)
+	@BodyParser.Of(value = BodyParser.Json.class)
 	public static Result post(String bucketId) {
 		Identity principal = new SecurityContext(ctx()).getPrincipal();
 		if (principal == null) {
 			return unauthorized();
 		}
 		ObjectNode body = body();
-		if (body == null) {
-			return badRequest();
-		}
     	Bucket bucket = manager.findBucket(bucketId);
     	if (bucket == null) {
     		return notFound();
@@ -66,8 +66,9 @@ public class EventController extends ControllerSupport {
     	if (bucket.getPermission(principal) != Permission.ALL) {
     		return forbidden();
     	}
-    	if (body.has("random")) {
-    		String commandId = queue.dispatch(new RandomEventsCommandBuilder(principal, bucketId).build(body.get("random").asInt()));
+    	Integer random = RANDOM.getValue(body);
+    	if (random != null) {
+    		String commandId = queue.dispatch(new RandomEventsCommandBuilder(principal, bucketId).build(random));
             response().setHeader(LOCATION, String.format("/buckets/%s/", bucket.getId()));
             return created(receipt(commandId));
     	}

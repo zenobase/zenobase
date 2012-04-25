@@ -4,6 +4,7 @@ import javax.inject.Inject;
 
 import org.codehaus.jackson.node.ArrayNode;
 import org.codehaus.jackson.node.ObjectNode;
+import play.mvc.BodyParser;
 import play.mvc.Result;
 import play.mvc.With;
 
@@ -51,12 +52,9 @@ public class QueueController extends ControllerSupport {
     	return node;
     }
 
+	@BodyParser.Of(BodyParser.Json.class)
     public static Result post() {
-		ObjectNode body = body();
-		if (body == null) {
-			return badRequest("missing request body");
-		}
-    	String commandId = UNDO.getValue(body);
+    	String commandId = UNDO.getValue(body());
 		if (commandId == null) {
 			return badRequest("missing command");
 		}

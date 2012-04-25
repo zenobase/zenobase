@@ -1,6 +1,6 @@
 package com.zenobase.controllers;
 
-import org.codehaus.jackson.node.ObjectNode;
+import play.mvc.BodyParser;
 import play.mvc.Result;
 import play.mvc.With;
 import com.google.inject.Inject;
@@ -16,12 +16,9 @@ public class SecurityController extends ControllerSupport {
 	@Inject
 	static UserManager users;
 
+	@BodyParser.Of(BodyParser.Json.class)
 	public static Result signIn() {
-		ObjectNode body = body();
-		if (body == null) {
-			return badRequest("missing request body");
-		}
-		SignInForm form = new SignInForm(body);
+		SignInForm form = new SignInForm(body());
 		if (!form.valid()) {
 			return badRequest("invalid request body");
 		}

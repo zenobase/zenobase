@@ -2,7 +2,7 @@ package com.zenobase.controllers;
 
 import javax.inject.Inject;
 
-import org.codehaus.jackson.node.ObjectNode;
+import play.mvc.BodyParser;
 import play.mvc.Result;
 import play.mvc.With;
 
@@ -31,12 +31,9 @@ public class AccountController extends ControllerSupport {
 	@Inject
 	static VerificationMailer mailer;
 
+	@BodyParser.Of(BodyParser.Json.class)
 	public static Result open() {
-		ObjectNode body = body();
-		if (body == null) {
-			return badRequest("missing request body");
-		}
-		SignUpForm form = new SignUpForm(body);
+		SignUpForm form = new SignUpForm(body());
 		if (!form.valid()) {
 			return badRequest("invalid request body");
 		}

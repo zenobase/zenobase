@@ -2,7 +2,6 @@ package com.zenobase.controllers;
 
 import javax.inject.Inject;
 
-import org.codehaus.jackson.node.ObjectNode;
 import play.mvc.BodyParser;
 import play.mvc.Result;
 import play.mvc.With;
@@ -48,15 +47,11 @@ public class BucketController extends ControllerSupport {
     	return ok(bucket.toJson());
     }
 
-	@BodyParser.Of(value = BodyParser.Json.class, maxLength = 10000)
+	@BodyParser.Of(BodyParser.Json.class)
 	public static Result update(String bucketId) {
 		Identity principal = new SecurityContext(ctx()).getPrincipal();
 		if (principal == null) {
 			return unauthorized();
-		}
-		ObjectNode body = body();
-		if (body == null) {
-			return badRequest("missing request body");
 		}
     	Bucket bucket = buckets.findBucket(bucketId);
     	if (bucket == null) {
@@ -65,7 +60,7 @@ public class BucketController extends ControllerSupport {
     	if (bucket.getPermission(principal) != Permission.ALL) {
     		return forbidden();
     	}
-		String commandId = queue.dispatch(new UpdateBucketCommand(principal, bucket, new Bucket(body)));
+		String commandId = queue.dispatch(new UpdateBucketCommand(principal, bucket, new Bucket(body())));
 		return ok(receipt(commandId));
     }
 

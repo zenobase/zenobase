@@ -5,6 +5,7 @@ import javax.inject.Inject;
 import org.codehaus.jackson.node.ArrayNode;
 import org.codehaus.jackson.node.ObjectNode;
 import org.joda.time.DateTime;
+import play.mvc.BodyParser;
 import play.mvc.Result;
 import play.mvc.With;
 
@@ -115,11 +116,9 @@ public class UserController extends ControllerSupport {
     	return ok(user != null ? new UserInfo(user).toJson() : identity.toJson());
     }
 
+	@BodyParser.Of(BodyParser.Json.class)
 	public static Result update(String username) {
 		ObjectNode body = body();
-		if (body == null) {
-			return badRequest("missing request body");
-		}
 		User user = users.find(username);
     	if (user == null) {
     		return notFound("user not found");
@@ -196,11 +195,9 @@ public class UserController extends ControllerSupport {
 		return noContent();
 	}
 
+	@BodyParser.Of(BodyParser.Json.class)
 	public static Result requestReset() {
 		ObjectNode body = body();
-		if (body == null) {
-			return badRequest("missing request body");
-		}
 		String username = USERNAME.getValue(body);
 		if (username == null) {
 			return badRequest("missing user name");
