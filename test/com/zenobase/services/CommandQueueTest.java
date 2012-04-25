@@ -38,16 +38,16 @@ public class CommandQueueTest {
 		Assert.assertEquals(1, store.size());
 		Assert.assertEquals(1, store.getHistory(0, 2).getElements().size());
 		Assert.assertEquals(0, store.getHistory(2, 4).getElements().size());
-		Assert.assertSame(c1, store.getHistory(0, 2).getElements().get(0));
+		Assert.assertEquals(c1, store.getHistory(0, 2).getElements().get(0));
 
 		queue.dispatch(c2);
 		queue.dispatch(c3);
 		Assert.assertEquals(3, store.size());
-		Assert.assertEquals(2, store.getHistory(0, 2).size());
-		Assert.assertEquals(1, store.getHistory(2, 4).size());
-		Assert.assertSame(c3, store.getHistory(0, 2).getElements().get(0));
-		Assert.assertSame(c2, store.getHistory(0, 2).getElements().get(1));
-		Assert.assertSame(c1, store.getHistory(2, 4).getElements().get(0));
+		Assert.assertEquals(2, store.getHistory(0, 2).getElements().size());
+		Assert.assertEquals(1, store.getHistory(2, 4).getElements().size());
+		Assert.assertEquals(c3, store.getHistory(0, 2).getElements().get(0));
+		Assert.assertEquals(c2, store.getHistory(0, 2).getElements().get(1));
+		Assert.assertEquals(c1, store.getHistory(2, 4).getElements().get(0));
 	}
 
 	private static class MockCommand extends CommandSupport {
@@ -64,14 +64,33 @@ public class CommandQueueTest {
 			setParameter(LABEL, label);
 		}
 
+		private String getLabel() {
+			return getParameter(LABEL);
+		}
+
 		@Override
 		public Command reverse(Identity principal) {
 			throw new UnsupportedOperationException();
 		}
 
 		@Override
+		public int hashCode() {
+			return getLabel().hashCode();
+		}
+
+		@Override
+		public boolean equals(Object that) {
+			return that instanceof MockCommand &&
+				equals((MockCommand) that);
+		}
+
+		private boolean equals(MockCommand that) {
+			return getLabel().equals(that.getLabel());
+		}
+
+		@Override
 		public String toString() {
-			return getValue(LABEL);
+			return getParameter(LABEL);
 		}
 
 		static class Handler extends CommandHandlerSupport<MockCommand> {
