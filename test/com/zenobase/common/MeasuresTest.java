@@ -27,16 +27,16 @@ public class MeasuresTest {
 
 	@Test
 	public void testToStandard() {
-		assertMeasureEqual("16093.44 m", "10 mi");
-		assertMeasureEqual("10000 m", "10 km");
-		assertMeasureEqual("68.0388555 kg", "150 lb");
-		assertMeasureEqual("294.2611111111112 K", "70 °F");
-		assertMeasureEqual("293.15 K", "20 °C");
-		assertMeasureEqual("0.001 m³", "1 L");
-		assertMeasureEqual("1 m³", "1 m³");
+		assertThatIsEqualTo("16093.44 m", "10 mi");
+		assertThatIsEqualTo("10000 m", "10 km");
+		assertThatIsEqualTo("68.0388555 kg", "150 lb");
+		assertThatIsEqualTo("294.2611111111112 K", "70 °F");
+		assertThatIsEqualTo("293.15 K", "20 °C");
+		assertThatIsEqualTo("0.001 m³", "1 L");
+		assertThatIsEqualTo("1 m³", "1 m³");
 	}
 
-	private void assertMeasureEqual(String expected, String value) {
+	private void assertThatIsEqualTo(String expected, String value) {
 		assertThat(Measures.toStandard(DecimalMeasure.valueOf(value))).isEqualTo(DecimalMeasure.valueOf(expected));
 	}
 }
