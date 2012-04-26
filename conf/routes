@@ -6,6 +6,9 @@
 GET     /                            controllers.Assets.at(path="/public", file="index.html")
 GET     /admin/                      controllers.Assets.at(path="/public/admin", file="index.html")
 
+GET     /favicon.ico                 controllers.Default.notFound
+GET     /robots.txt                  controllers.Assets.at(path="/public", file="robots.txt")
+
 GET     /who                         com.zenobase.controllers.UserController.who()
 GET     /users/                      com.zenobase.controllers.UserController.find(identity ?= null, offset : Int ?= 0, limit : Int ?= java.lang.Integer.MAX_VALUE)
 GET     /users/:name                 com.zenobase.controllers.UserController.get(name)
@@ -18,6 +21,7 @@ DELETE  /users/:name                 com.zenobase.controllers.AccountController.
 POST    /signin                      com.zenobase.controllers.SecurityController.signIn()
 POST    /signout                     com.zenobase.controllers.SecurityController.signOut()
 
+GET     /buckets                     controllers.Default.redirect(to = "/buckets/") 
 GET     /buckets/                    com.zenobase.controllers.BucketListController.find(identity ?= null, offset : Int ?= 0, limit : Int ?= java.lang.Integer.MAX_VALUE)
 POST    /buckets/                    com.zenobase.controllers.BucketListController.post()
 
@@ -33,11 +37,6 @@ DELETE  /buckets/:bucketId/:eventId  com.zenobase.controllers.EventController.de
 
 GET     /queue/                      com.zenobase.controllers.QueueController.get(offset : Int, limit : Int)
 POST    /queue/                      com.zenobase.controllers.QueueController.post()
-
-# Ignore favicon requests
-GET     /favicon.ico                 controllers.Default.notFound
-GET     /b/                          controllers.Default.redirect(to = "/buckets/") 
-
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /public/*file                controllers.Assets.at(path="/public", file)
