@@ -372,6 +372,10 @@ public class BCrypt {
 	private int P[];
 	private int S[];
 
+	private BCrypt() {
+
+	}
+
 	/**
 	 * Encode a byte array using bcrypt's slightly-modified base64
 	 * encoding scheme. Note that this is *not* compatible with
@@ -638,13 +642,22 @@ public class BCrypt {
 	}
 
 	/**
+	 * Hash a password using the OpenBSD bcrypt scheme with a generated salt
+	 * @param password	the password to hash
+	 * @return	the hashed password
+	 */
+	public static String hashpw(String password) {
+		return hashpw(password, gensalt());
+	}
+
+	/**
 	 * Hash a password using the OpenBSD bcrypt scheme
 	 * @param password	the password to hash
 	 * @param salt	the salt to hash with (perhaps generated
 	 * using BCrypt.gensalt)
 	 * @return	the hashed password
 	 */
-	public static String hashpw(String password, String salt) {
+	private static String hashpw(String password, String salt) {
 		BCrypt B;
 		String real_salt;
 		byte passwordb[], saltb[], hashed[];
@@ -734,7 +747,7 @@ public class BCrypt {
 	 * rounds to apply
 	 * @return	an encoded salt value
 	 */
-	public static String gensalt() {
+	private static String gensalt() {
 		return gensalt(GENSALT_DEFAULT_LOG2_ROUNDS);
 	}
 

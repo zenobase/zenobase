@@ -9,11 +9,9 @@ import org.codehaus.jackson.node.ArrayNode;
 import org.codehaus.jackson.node.JsonNodeFactory;
 import org.codehaus.jackson.node.ObjectNode;
 
-import com.zenobase.io.JsonPrinter;
-
 public class Nodes {
 
-	private static final ObjectMapper mapper = new ObjectMapper();
+	private static final ObjectMapper MAPPER = new ObjectMapper();
 
 	private Nodes() {
 
@@ -29,27 +27,27 @@ public class Nodes {
 
 	public static <T extends JsonNode> T copy(T node) {
 		try {
-			return (T) mapper.readTree(node.traverse());
+			return (T) MAPPER.readTree(node.traverse());
 		} catch (IOException e) {
-			throw new AssertionError(e);
+			throw new AssertionError();
 		}
 	}
 
 	public static byte[] toByteArray(ObjectNode node) {
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		try {
-			new JsonPrinter(out).print(node);
+			MAPPER.writer().writeValue(out, node);
 		} catch (IOException e) {
-			throw new AssertionError(e);
+			throw new AssertionError();
 		}
 		return out.toByteArray();
 	}
 
 	public static ObjectNode read(byte[] in) {
 		try {
-			return (ObjectNode) mapper.readTree(in);
+			return (ObjectNode) MAPPER.readTree(in);
 		} catch (IOException e) {
-			throw new AssertionError(e);
+			throw new IllegalArgumentException("Can't read json: '" + new String(in) + "'");
 		}
 	}
 }

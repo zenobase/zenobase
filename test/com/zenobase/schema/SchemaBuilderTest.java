@@ -1,10 +1,10 @@
 package com.zenobase.schema;
 
+import static org.fest.assertions.Assertions.assertThat;
+
 import java.io.IOException;
 
 import org.junit.Test;
-
-import com.zenobase.io.JsonPrinter;
 
 public class SchemaBuilderTest {
 
@@ -16,6 +16,6 @@ public class SchemaBuilderTest {
 			.add(new LocationField("where"));
 		Schema schema = builder.build();
 		builder.add(new TokenField("what"));
-		new JsonPrinter(System.out).print(schema.toJson());
+		assertThat(schema.toJson().has("what")).as("has what").isFalse();
 	}
 }

@@ -62,6 +62,10 @@ public class Intervals {
 		}
 	}
 
+	private Intervals() {
+		throw new AssertionError();
+	}
+
 	public static Interval valueOf(String value) {
 		for (Format format : Format.values()) {
 			if (value.length() == format.length) {

@@ -56,7 +56,7 @@ public class User extends DomainNode {
 	}
 
 	public static String getHashedPassword(String password) {
-		return BCrypt.hashpw(password, BCrypt.gensalt());
+		return BCrypt.hashpw(password);
 	}
 
 	public void setHashedPassword(String hashed) {

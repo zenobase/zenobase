@@ -1,10 +1,16 @@
 package com.zenobase.common;
 
+import java.util.List;
+
 import javax.measure.DecimalMeasure;
 import javax.measure.quantity.Quantity;
+import javax.measure.unit.Dimension;
+import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
 import javax.measure.unit.Unit;
 import javax.measure.unit.UnitFormat;
+
+import com.google.common.collect.Lists;
 
 public class Measures {
 
@@ -13,10 +19,25 @@ public class Measures {
 	}
 
 	private Measures() {
-
+		throw new AssertionError();
 	}
 
 	public static <Q extends Quantity> DecimalMeasure<Q> toStandard(DecimalMeasure<Q> measure) {
 		return measure.to((Unit<Q>) measure.getUnit().getStandardUnit());
+	}
+
+	public static <Q extends Quantity> Iterable<Unit<Q>> getUnits(Dimension dimension, Class<Q> type) {
+		List<Unit<Q>> units = Lists.newArrayList();
+		for (Unit<?> unit : SI.getInstance().getUnits()) {
+			if (unit.getDimension().equals(dimension)) {
+				units.add(unit.asType(type));
+			}
+		}
+		for (Unit<?> unit : NonSI.getInstance().getUnits()) {
+			if (unit.getDimension().equals(dimension)) {
+				units.add(unit.asType(type));
+			}
+		}
+		return units;
 	}
 }

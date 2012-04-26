@@ -7,7 +7,6 @@ import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Singleton;
 import com.google.inject.TypeLiteral;
-import com.google.inject.matcher.Matchers;
 import com.google.inject.multibindings.Multibinder;
 import com.google.inject.name.Names;
 
@@ -27,8 +26,6 @@ import com.zenobase.commands.DeleteUserCommand;
 import com.zenobase.commands.RestoreBucketCommand;
 import com.zenobase.commands.SuspendUserCommand;
 import com.zenobase.commands.UpdateBucketCommand;
-import com.zenobase.common.Scheduled;
-import com.zenobase.common.ScheduledInterceptor;
 import com.zenobase.controllers.AccountController;
 import com.zenobase.controllers.BucketController;
 import com.zenobase.controllers.BucketListController;
@@ -114,8 +111,6 @@ public class Global extends GlobalSettings {
 				requestStaticInjection(EventController.class);
 				requestStaticInjection(UserController.class);
 				requestStaticInjection(AccountController.class);
-
-				bindInterceptor(Matchers.any(), Matchers.annotatedWith(Scheduled.class), new ScheduledInterceptor());
 			}
 
 			private void bindConfiguration() {

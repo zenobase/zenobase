@@ -1,6 +1,7 @@
 package com.zenobase.common;
 
-import org.junit.Assert;
+import static org.fest.assertions.Assertions.assertThat;
+
 import org.junit.Test;
 import com.google.common.collect.Multiset;
 import com.google.common.collect.TreeMultiset;
@@ -17,7 +18,7 @@ public class RandomElementTest {
 		for (int i = 0; i < 10000; ++i) {
 			found.add(rand.next());
 		}
-		Assert.assertTrue("Expected more As than Bs: " + found, found.count('A') > found.count('B'));
-		Assert.assertTrue("Expected more Bs than Cs: " + found, found.count('B') > found.count('C'));
+		assertThat(found.count('A')).as("#A vs #B").isGreaterThan(found.count('B'));
+		assertThat(found.count('B')).as("#B vs #C").isGreaterThan(found.count('C'));
 	}
 }

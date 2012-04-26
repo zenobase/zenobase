@@ -1,6 +1,7 @@
 package com.zenobase.common;
 
-import org.junit.Assert;
+import static org.fest.assertions.Assertions.assertThat;
+
 import org.junit.Test;
 import com.google.common.collect.Multiset;
 import com.google.common.collect.TreeMultiset;
@@ -12,12 +13,12 @@ public class GeneratorTest {
 		Multiset<Character> freq = TreeMultiset.create();
 		for (int i = 0; i < 10000; ++i) {
 			String id = Generator.id();
-			Assert.assertEquals("Length of identifier: " + id, 10, id.length());
+			assertThat(id.length()).as("length of identifier " + id).isEqualTo(10);
 			freq.add(id.charAt(0));
 		}
 		for (Multiset.Entry<Character> entry : freq.entrySet()) {
-			Assert.assertTrue("Improbable distribution of " + entry.getElement() + ": " + entry.getCount(),
-				entry.getCount() > 250 && entry.getCount() < 400);
+			assertThat(entry.getCount()).as("frequency of " + entry.getElement())
+				.isGreaterThan(250).isLessThan(400);
 		}
 	}
 }

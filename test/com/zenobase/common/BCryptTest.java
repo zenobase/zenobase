@@ -1,18 +1,21 @@
 package com.zenobase.common;
 
-import junit.framework.Assert;
+import static org.fest.assertions.Assertions.assertThat;
+
 import org.junit.Test;
 
 public class BCryptTest {
 
 	@Test
 	public void test() {
-		String password = "123";
-		String hashed = BCrypt.hashpw(password, BCrypt.gensalt());
-		System.out.println(hashed);
-		String rehashed = BCrypt.hashpw(password, BCrypt.gensalt());
-		Assert.assertTrue("Password matches first hash", BCrypt.checkpw(password, hashed));
-		Assert.assertTrue("Password matches second hash", BCrypt.checkpw(password, rehashed));
-		Assert.assertTrue("First and second hashes differ", !hashed.equals(rehashed));
+
+		String password = "abc";
+		String hashed = BCrypt.hashpw(password);
+		String rehashed = BCrypt.hashpw(password);
+
+		assertThat(BCrypt.checkpw(password, hashed)).as("password matches first hash").isTrue();
+		assertThat(BCrypt.checkpw(password, hashed)).as("password matches second hash").isTrue();
+		assertThat(hashed.equals(rehashed)).as("hashes are equal").isFalse();
+		assertThat(BCrypt.checkpw(password.toUpperCase(), hashed)).as("invalid password matches hash").isFalse();
 	}
 }
