@@ -51,15 +51,15 @@ public class IndexManager implements Closeable {
 		return new Index(indexName, client);
 	}
 
-	public void flush() {
-		client.admin().indices().prepareFlush("_all").execute().actionGet();
-	}
-
 	@Override
 	public void close() {
 		Logger.info("Closing node: " + getHealthStatus());
 		flush();
 		client.close();
 		node.close();
+	}
+
+	private void flush() {
+		client.admin().indices().prepareFlush("_all").execute().actionGet();
 	}
 }
