@@ -3,10 +3,10 @@ package com.zenobase.commands;
 import org.codehaus.jackson.node.ObjectNode;
 import com.google.inject.Inject;
 
+import com.zenobase.json.ObjectField;
+import com.zenobase.json.TokenField;
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
-import com.zenobase.schema.ObjectField;
-import com.zenobase.schema.TokenField;
 import com.zenobase.services.BucketManager;
 
 public class CreateEventCommand extends CommandSupport {

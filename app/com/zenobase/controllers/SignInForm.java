@@ -4,9 +4,9 @@ import org.codehaus.jackson.node.ObjectNode;
 import com.google.common.base.Objects;
 import com.google.common.base.Strings;
 
+import com.zenobase.json.BooleanField;
+import com.zenobase.json.TokenField;
 import com.zenobase.models.DomainNode;
-import com.zenobase.schema.BooleanField;
-import com.zenobase.schema.TokenField;
 
 public class SignInForm extends DomainNode {
 

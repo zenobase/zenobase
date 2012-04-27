@@ -1,8 +1,8 @@
 package com.zenobase.models;
 
-import com.zenobase.schema.BooleanField;
-import com.zenobase.schema.DateTimeField;
-import com.zenobase.schema.TokenField;
+import com.zenobase.json.BooleanField;
+import com.zenobase.json.DateTimeField;
+import com.zenobase.json.TokenField;
 
 public class UserProfile extends DomainNode {
 

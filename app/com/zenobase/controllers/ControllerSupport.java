@@ -4,7 +4,7 @@ import org.codehaus.jackson.node.ObjectNode;
 import play.mvc.Controller;
 
 import com.zenobase.common.Nodes;
-import com.zenobase.schema.TokenField;
+import com.zenobase.json.TokenField;
 
 public abstract class ControllerSupport extends Controller {
 

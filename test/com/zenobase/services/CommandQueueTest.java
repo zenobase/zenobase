@@ -14,8 +14,8 @@ import com.zenobase.commands.CommandParser;
 import com.zenobase.commands.CommandParserRegistry;
 import com.zenobase.commands.CommandParserSupport;
 import com.zenobase.commands.CommandSupport;
+import com.zenobase.json.TokenField;
 import com.zenobase.models.Identity;
-import com.zenobase.schema.TokenField;
 
 public class CommandQueueTest {
 

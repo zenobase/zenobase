@@ -17,11 +17,11 @@ import com.zenobase.common.Callback;
 import com.zenobase.common.Nodes;
 import com.zenobase.common.PartialList;
 import com.zenobase.io.UserPrinter;
+import com.zenobase.json.TokenField;
 import com.zenobase.models.Identity;
 import com.zenobase.models.User;
 import com.zenobase.models.UserInfo;
 import com.zenobase.models.UserProfile;
-import com.zenobase.schema.TokenField;
 import com.zenobase.services.CommandQueue;
 import com.zenobase.services.UserManager;
 

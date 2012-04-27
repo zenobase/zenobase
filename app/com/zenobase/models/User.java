@@ -6,11 +6,11 @@ import org.joda.time.DateTimeZone;
 
 import com.zenobase.common.BCrypt;
 import com.zenobase.common.Nodes;
-import com.zenobase.schema.BooleanField;
-import com.zenobase.schema.DateTimeField;
-import com.zenobase.schema.Schema;
-import com.zenobase.schema.SchemaBuilder;
-import com.zenobase.schema.TokenField;
+import com.zenobase.json.BooleanField;
+import com.zenobase.json.DateTimeField;
+import com.zenobase.json.Schema;
+import com.zenobase.json.SchemaBuilder;
+import com.zenobase.json.TokenField;
 
 public class User extends DomainNode {
 

@@ -3,9 +3,9 @@ package com.zenobase.commands;
 import org.codehaus.jackson.node.ObjectNode;
 import com.google.inject.Inject;
 
+import com.zenobase.json.ObjectField;
 import com.zenobase.models.Bucket;
 import com.zenobase.models.Identity;
-import com.zenobase.schema.ObjectField;
 import com.zenobase.services.BucketManager;
 
 public class DeleteBucketCommand extends CommandSupport {

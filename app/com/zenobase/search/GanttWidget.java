@@ -12,7 +12,7 @@ import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 
 import com.zenobase.common.Nodes;
-import com.zenobase.schema.DateTimeField;
+import com.zenobase.json.DateTimeField;
 
 public class GanttWidget implements Widget {
 

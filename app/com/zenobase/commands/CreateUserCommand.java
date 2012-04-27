@@ -3,9 +3,9 @@ package com.zenobase.commands;
 import org.codehaus.jackson.node.ObjectNode;
 import com.google.inject.Inject;
 
+import com.zenobase.json.ObjectField;
 import com.zenobase.models.Identity;
 import com.zenobase.models.User;
-import com.zenobase.schema.ObjectField;
 import com.zenobase.services.UserManager;
 
 public class CreateUserCommand extends CommandSupport {

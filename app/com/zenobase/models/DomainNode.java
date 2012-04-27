@@ -5,8 +5,8 @@ import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableList;
 
 import com.zenobase.common.Nodes;
-import com.zenobase.schema.Field;
-import com.zenobase.schema.LongField;
+import com.zenobase.json.Field;
+import com.zenobase.json.LongField;
 
 public class DomainNode {
 

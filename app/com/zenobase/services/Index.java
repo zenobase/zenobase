@@ -25,8 +25,8 @@ import com.google.common.collect.Lists;
 import com.zenobase.common.Callback;
 import com.zenobase.common.Nodes;
 import com.zenobase.common.PartialList;
+import com.zenobase.json.Schema;
 import com.zenobase.models.DomainNode;
-import com.zenobase.schema.Schema;
 
 public class Index {
 

@@ -12,7 +12,7 @@ import org.elasticsearch.search.facet.termsstats.TermsStatsFacet;
 import org.elasticsearch.search.facet.termsstats.TermsStatsFacet.ComparatorType;
 
 import com.zenobase.common.Nodes;
-import com.zenobase.schema.MeasurementField;
+import com.zenobase.json.MeasurementField;
 
 public class ScoreboardWidget implements Widget {
 

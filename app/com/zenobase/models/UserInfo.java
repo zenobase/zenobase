@@ -1,7 +1,7 @@
 package com.zenobase.models;
 
-import com.zenobase.schema.BooleanField;
-import com.zenobase.schema.TokenField;
+import com.zenobase.json.BooleanField;
+import com.zenobase.json.TokenField;
 
 public class UserInfo extends DomainNode {
 

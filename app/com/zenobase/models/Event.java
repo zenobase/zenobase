@@ -3,17 +3,17 @@ package com.zenobase.models;
 import org.codehaus.jackson.node.ObjectNode;
 import com.google.common.collect.ImmutableSet;
 
-import com.zenobase.schema.DateTimeField;
-import com.zenobase.schema.DurationField;
-import com.zenobase.schema.Field;
-import com.zenobase.schema.IdentityField;
-import com.zenobase.schema.LengthField;
-import com.zenobase.schema.LocationField;
-import com.zenobase.schema.RatingField;
-import com.zenobase.schema.ResourceField;
-import com.zenobase.schema.Schema;
-import com.zenobase.schema.SchemaBuilder;
-import com.zenobase.schema.TokenField;
+import com.zenobase.json.DateTimeField;
+import com.zenobase.json.DurationField;
+import com.zenobase.json.Field;
+import com.zenobase.json.IdentityField;
+import com.zenobase.json.LengthField;
+import com.zenobase.json.LocationField;
+import com.zenobase.json.RatingField;
+import com.zenobase.json.ResourceField;
+import com.zenobase.json.Schema;
+import com.zenobase.json.SchemaBuilder;
+import com.zenobase.json.TokenField;
 
 public class Event extends DomainNode {
 

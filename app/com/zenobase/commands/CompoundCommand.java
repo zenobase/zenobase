@@ -6,9 +6,9 @@ import org.codehaus.jackson.node.ObjectNode;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 
+import com.zenobase.json.ObjectField;
+import com.zenobase.json.TokenField;
 import com.zenobase.models.Identity;
-import com.zenobase.schema.ObjectField;
-import com.zenobase.schema.TokenField;
 
 public class CompoundCommand extends CommandSupport {
 

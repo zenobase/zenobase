@@ -7,12 +7,12 @@ import org.codehaus.jackson.node.ObjectNode;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
 
-import com.zenobase.schema.ObjectField;
-import com.zenobase.schema.PermissionField;
-import com.zenobase.schema.Schema;
-import com.zenobase.schema.SchemaBuilder;
-import com.zenobase.schema.TextField;
-import com.zenobase.schema.TokenField;
+import com.zenobase.json.ObjectField;
+import com.zenobase.json.PermissionField;
+import com.zenobase.json.Schema;
+import com.zenobase.json.SchemaBuilder;
+import com.zenobase.json.TextField;
+import com.zenobase.json.TokenField;
 
 public class Bucket extends DomainNode {
 
