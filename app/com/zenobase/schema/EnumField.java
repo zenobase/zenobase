@@ -12,7 +12,7 @@ public class EnumField<E extends Enum<E>> extends Field<E> {
 
 	@Override
 	protected E getValue(JsonNode node) {
-		return Enum.valueOf((Class<E>) getType(), node.asText());
+		return Enum.valueOf((Class<E>) getType(), node.getTextValue());
 	}
 
 	@Override

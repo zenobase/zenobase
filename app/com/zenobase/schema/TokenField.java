@@ -19,7 +19,7 @@ public class TokenField extends Field<String> {
 
 	@Override
 	protected String getValue(JsonNode node) {
-		return node.asText();
+		return node.getTextValue();
 	}
 
 	@Override

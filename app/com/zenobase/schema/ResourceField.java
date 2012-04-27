@@ -23,10 +23,6 @@ public class ResourceField extends Field<Resource> {
 		configureSchema(properties, URL);
 	}
 
-	private static void configureSchema(ObjectNode properties, Field<?> field) {
-		field.configureSchema(properties.putObject(field.getName()));
-	}
-
 	@Override
 	protected Resource getValue(JsonNode node) {
 		return new Resource(TITLE.getValue((ObjectNode) node), URL.getValue((ObjectNode) node));

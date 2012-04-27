@@ -19,7 +19,7 @@ public class IntegerField extends Field<Integer> {
 
 	@Override
 	protected Integer getValue(JsonNode node) {
-		return node.asInt();
+		return node.getIntValue();
 	}
 
 	@Override

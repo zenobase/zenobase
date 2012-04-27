@@ -11,7 +11,7 @@ public class BooleanField extends Field<Boolean> {
 
 	@Override
 	protected Boolean getValue(JsonNode node) {
-		return node.asBoolean();
+		return node.getBooleanValue();
 	}
 
 	@Override

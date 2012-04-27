@@ -5,7 +5,6 @@ import org.codehaus.jackson.node.ObjectNode;
 
 import com.zenobase.commands.Command;
 import com.zenobase.common.Nodes;
-import com.zenobase.models.Resource;
 
 public class CommandTypeField extends Field<Command.Type> {
 
@@ -13,7 +12,7 @@ public class CommandTypeField extends Field<Command.Type> {
 	private static final IntegerField VERSION = new IntegerField("version");
 
 	public CommandTypeField(String name) {
-		super(name, Resource.class, "object");
+		super(name, Command.Type.class, "object");
 	}
 
 	@Override
@@ -22,10 +21,6 @@ public class CommandTypeField extends Field<Command.Type> {
 		ObjectNode properties = schema.putObject("properties");
 		configureSchema(properties, NAME);
 		configureSchema(properties, VERSION);
-	}
-
-	private static void configureSchema(ObjectNode properties, Field<?> field) {
-		field.configureSchema(properties.putObject(field.getName()));
 	}
 
 	@Override

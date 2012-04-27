@@ -29,10 +29,6 @@ public class MeasurementField<Q extends Quantity> extends Field<DecimalMeasure<Q
 		configureSchema(properties, VALUE_SI);
 	}
 
-	private static void configureSchema(ObjectNode properties, Field<?> field) {
-		field.configureSchema(properties.putObject(field.getName()));
-	}
-
 	@Override
 	protected DecimalMeasure<Q> getValue(JsonNode node) {
 		return getDecimalMeasure((ObjectNode) node);

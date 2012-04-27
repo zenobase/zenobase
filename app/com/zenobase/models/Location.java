@@ -2,6 +2,8 @@ package com.zenobase.models;
 
 import java.math.BigDecimal;
 
+import com.google.common.base.Objects;
+
 public class Location {
 
 	private final BigDecimal latitude, longitude;
@@ -17,6 +19,22 @@ public class Location {
 
 	public BigDecimal getLongitude() {
 		return longitude;
+	}
+
+	@Override
+	public boolean equals(Object that) {
+		return that instanceof Location &&
+			equals((Location) that);
+	}
+
+	private boolean equals(Location that) {
+		return latitude.equals(that.getLatitude()) &&
+			longitude.equals(that.getLongitude());
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hashCode(latitude, longitude);
 	}
 
 	@Override

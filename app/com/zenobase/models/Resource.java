@@ -1,5 +1,7 @@
 package com.zenobase.models;
 
+import com.google.common.base.Objects;
+
 public class Resource {
 
 	private final String title;
@@ -16,5 +18,26 @@ public class Resource {
 
 	public String getUrl() {
 		return url;
+	}
+
+	@Override
+	public boolean equals(Object that) {
+		return that instanceof Resource &&
+			equals((Resource) that);
+	}
+
+	private boolean equals(Resource that) {
+		return title.equals(that.getTitle()) &&
+			url.equals(that.getUrl());
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hashCode(title, url);
+	}
+
+	@Override
+	public String toString() {
+		return String.format("%s <%>", title, url);
 	}
 }

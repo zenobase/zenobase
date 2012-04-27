@@ -34,7 +34,7 @@ public abstract class Field<T> {
 		if (fieldNode != null && fieldNode.isArray() && fieldNode.size() > 0) {
 			return getValue(Iterables.getOnlyElement(((ArrayNode) fieldNode)));
 		}
-		if (fieldNode != null && !fieldNode.isMissingNode() && !fieldNode.isNull()) {
+		if (fieldNode != null) {
 			return getValue(fieldNode);
 		}
 		return null;
@@ -48,7 +48,7 @@ public abstract class Field<T> {
 				values.add(getValue(element));
 			}
 		}
-		else if (fieldNode != null && !fieldNode.isMissingNode() && !fieldNode.isNull()) {
+		else if (fieldNode != null) {
 			values.add(getValue(fieldNode));
 		}
 		return values.build();
@@ -114,8 +114,8 @@ public abstract class Field<T> {
 		}
 	}
 
-	public void setValues(ObjectNode node, String fieldName, Iterable<T> values) {
-		ArrayNode arrayNode = node.putArray(fieldName);
+	public void setValues(ObjectNode node, Iterable<T> values) {
+		ArrayNode arrayNode = node.putArray(name);
 		addValues(arrayNode, values);
 	}
 
@@ -130,6 +130,10 @@ public abstract class Field<T> {
 
 	public void configureSchema(ObjectNode schema) {
 		schema.put("type", schemaType);
+	}
+
+	protected static void configureSchema(ObjectNode properties, Field<?> field) {
+		field.configureSchema(properties.putObject(field.getName()));
 	}
 
 	public void prePersist(ObjectNode node) {

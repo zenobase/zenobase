@@ -47,7 +47,7 @@ public class DomainNode {
 	}
 
 	protected <T> void setValues(Field<T> field, Iterable<T> values) {
-		field.setValues(node, field.getName(), values);
+		field.setValues(node, values);
 	}
 
 	protected <T> void addValue(Field<T> field, T value) {

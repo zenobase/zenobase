@@ -10,8 +10,8 @@ import com.zenobase.models.Location;
 
 public class LocationField extends Field<Location> {
 
-	private static final String LATITUDE = "lat";
-	private static final String LONGITUDE = "lon";
+	private static final DecimalField LATITUDE = new DecimalField("lat");
+	private static final DecimalField LONGITUDE = new DecimalField("lon");
 
 	public LocationField(String name) {
 		super(name, Location.class, "geo_point");
@@ -25,17 +25,16 @@ public class LocationField extends Field<Location> {
 
 	@Override
 	protected Location getValue(JsonNode node) {
-		BigDecimal latitude = node.get(LATITUDE).getDecimalValue();
-		BigDecimal longitude = node.get(LONGITUDE).getDecimalValue();
+		BigDecimal latitude = LATITUDE.getValue((ObjectNode) node);
+		BigDecimal longitude = LONGITUDE.getValue((ObjectNode) node);
 		return new Location(latitude, longitude);
 	}
 
 	@Override
 	protected JsonNode toJson(Location value) {
 		ObjectNode node = Nodes.newObject();
-		node.put(LATITUDE, value.getLatitude());
-		node.put(LONGITUDE, value.getLongitude());
+		LATITUDE.setValue(node, value.getLatitude());
+		LONGITUDE.setValue(node, value.getLongitude());
 		return node;
 	}
-
 }
