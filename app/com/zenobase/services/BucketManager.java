@@ -9,6 +9,7 @@ import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import play.Logger;
+import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 
 import com.zenobase.common.Callback;
@@ -39,21 +40,13 @@ public class BucketManager {
 	public void store(Bucket bucket, boolean createIndex) {
 		Index index = manager.getIndex(bucket.getId());
 		if (index.exists()) {
-			if (createIndex) {
-				throw new IllegalStateException("Index exists already: " + bucket.getId());
-			}
-			else {
-				index.open();
-			}
+			Preconditions.checkState(!createIndex, "Index exists already: %s", bucket.getId());
+			index.open();
 		}
 		else {
-			if (createIndex) {
-				index.create(1);
-				index.putMapping(Event.getSchema());
-			}
-			else {
-				throw new IllegalStateException("Can't find index: " + bucket.getId());
-			}
+			Preconditions.checkState(createIndex, "Can't find index: %s", bucket.getId());
+			index.create(1);
+			index.putMapping(Event.getSchema());
 		}
 		this.index.store(Bucket.TYPE_NAME, bucket.getId(), bucket.toJson(), true);
 	}

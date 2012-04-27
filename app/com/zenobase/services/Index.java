@@ -41,7 +41,6 @@ public class Index {
 	public void create(int replicas) {
 		Settings settings = ImmutableSettings.settingsBuilder()
 			.put("number_of_shards", 1)
-		//	.put("number_of_replicas", replicas)
 			.put("auto_expand_replicas", replicas == Integer.MAX_VALUE ? "0-all" : "0-" + replicas)
 			.build();
 		CreateIndexResponse response = client.admin().indices().prepareCreate(indexName).setSettings(settings).execute().actionGet();
@@ -146,8 +145,7 @@ public class Index {
 	}
 
 	public boolean exists(String type, String id) {
-		GetResponse response = client.prepareGet(indexName, type, id).execute().actionGet();
-		return response.exists();
+		return client.prepareGet(indexName, type, id).execute().actionGet().exists();
 	}
 
 	public long count() {

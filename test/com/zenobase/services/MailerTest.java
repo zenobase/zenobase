@@ -14,7 +14,7 @@ public class MailerTest {
 	@Test
 	public void test() throws Exception {
 
-		SmtpMailer mailer = new SmtpMailer("username", "secret", new Properties());
+		Mailer mailer = new Mailer("username", "secret", new Properties());
 		Message message = new Message("jdoe@zenobase.com", "Unit Test", "PASS");
 		mailer.send(message);
 

@@ -43,7 +43,6 @@ import com.zenobase.services.CommandStore;
 import com.zenobase.services.IndexManager;
 import com.zenobase.services.Mailer;
 import com.zenobase.services.PersistentCommandStore;
-import com.zenobase.services.SmtpMailer;
 import com.zenobase.services.UserManager;
 
 public class Global extends GlobalSettings {
@@ -71,7 +70,7 @@ public class Global extends GlobalSettings {
 				bind(CommandParserRegistry.class).in(Singleton.class);
 				bind(CommandHandlerRegistry.class).in(Singleton.class);
 				bind(CommandReplay.class).in(Singleton.class);
-				bind(Mailer.class).to(SmtpMailer.class);
+				bind(Mailer.class).in(Singleton.class);
 				bind(VerificationMailer.class).in(Singleton.class);
 				bind(PasswordResetMailer.class).in(Singleton.class);
 

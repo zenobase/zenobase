@@ -5,45 +5,22 @@ import java.util.Map;
 import junit.framework.Assert;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
-import org.elasticsearch.client.Client;
-import org.elasticsearch.common.settings.ImmutableSettings;
-import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.index.query.QueryBuilders;
-import org.elasticsearch.node.Node;
-import org.elasticsearch.node.NodeBuilder;
 import org.elasticsearch.search.facet.FacetBuilders;
 import org.elasticsearch.search.facet.datehistogram.DateHistogramFacet;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
 import com.google.common.collect.ImmutableMap;
 
-public class DateHistogramFacetTest {
+import com.zenobase.services.ElasticSearchTestSupport;
 
-	@Rule
-	public TemporaryFolder folder = new TemporaryFolder();
+public class DateHistogramFacetTest extends ElasticSearchTestSupport {
 
-	private Node node;
-	private Client client;
 	private final DateTimeZone timezone = DateTimeZone.forOffsetHours(-8);
-	private final String cluster = "test";
 	private final String index = "test";
 	private final String type = "type";
 	private final String field = "date";
-
-	@Before
-	public void init() {
-		Settings settings = ImmutableSettings.settingsBuilder()
-			.put("path.home", folder.getRoot().getAbsolutePath())
-			.put("gateway.type", "none")
-			.put("index.store.type", "memory").build();
-		node = NodeBuilder.nodeBuilder().clusterName(cluster).local(true).settings(settings).node();
-		client = node.client();
-	}
 
 	@Test
 	public void test() {
@@ -67,12 +44,12 @@ public class DateHistogramFacetTest {
 	}
 
 	private void index(String value) {
-		client.prepareIndex(index, type).setSource(field, value).execute().actionGet();
-		client.admin().indices().prepareRefresh().execute().actionGet();
+		getClient().prepareIndex(index, type).setSource(field, value).execute().actionGet();
+		getClient().admin().indices().prepareRefresh().execute().actionGet();
 	}
 
 	private SearchResponse search(ImmutableMap<String, DateTime> intervals) {
-		SearchRequestBuilder request = client.prepareSearch(index).setQuery(QueryBuilders.matchAllQuery());
+		SearchRequestBuilder request = getClient().prepareSearch(index).setQuery(QueryBuilders.matchAllQuery());
 		for (String interval : intervals.keySet()) {
 			request.addFacet(FacetBuilders.dateHistogramFacet(interval).field(field)
 				.interval(interval).preZone(timezone.toString()).preZoneAdjustLargeInterval(true));
@@ -84,11 +61,5 @@ public class DateHistogramFacetTest {
 		DateHistogramFacet facet = response.facets().facet(interval);
 		long time = facet.getEntries().get(0).time();
 		Assert.assertEquals(interval, expected, new DateTime(time, expected.getZone()));
-	}
-
-	@After
-	public void close() {
-		client.close();
-		node.close();
 	}
 }
