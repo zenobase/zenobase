@@ -17,10 +17,15 @@ import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 import com.google.common.collect.ImmutableMap;
 
 public class DateHistogramFacetTest {
+
+	@Rule
+	public TemporaryFolder folder = new TemporaryFolder();
 
 	private Node node;
 	private Client client;
@@ -33,6 +38,7 @@ public class DateHistogramFacetTest {
 	@Before
 	public void init() {
 		Settings settings = ImmutableSettings.settingsBuilder()
+			.put("path.home", folder.getRoot().getAbsolutePath())
 			.put("gateway.type", "none")
 			.put("index.store.type", "memory").build();
 		node = NodeBuilder.nodeBuilder().clusterName(cluster).local(true).settings(settings).node();
