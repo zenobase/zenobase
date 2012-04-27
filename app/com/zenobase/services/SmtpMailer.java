@@ -14,6 +14,8 @@ import javax.mail.internet.MimeMessage;
 
 import play.Logger;
 
+import com.zenobase.common.PropertiesBuilder;
+
 public class SmtpMailer implements Mailer {
 
 	private final Session session;
@@ -27,22 +29,24 @@ public class SmtpMailer implements Mailer {
 		@Named("mail.smtp.host") String host,
 		@Named("mail.smtp.port") String port) {
 
-		Properties props = new Properties();
-		props.put("mail.smtp.auth", auth);
-		props.put("mail.smtp.starttls.enable", starttls);
-		props.put("mail.smtp.host", host);
-		props.put("mail.smtp.port", port);
-		props.put("mail.user", user);
-		session = Session.getInstance(props, new Authenticator() {
+		this(user, pass, new PropertiesBuilder()
+			.put("mail.smtp.auth", auth)
+			.put("mail.smtp.starttls.enable", starttls)
+			.put("mail.smtp.host", host)
+			.put("mail.smtp.port", port)
+			.put("mail.user", user).build());
+	}
+
+	public SmtpMailer(final String username, final String password, Properties properties) {
+		session = Session.getInstance(properties, new Authenticator() {
 			@Override
 			protected PasswordAuthentication getPasswordAuthentication() {
-				return new PasswordAuthentication(user, pass);
+				return new PasswordAuthentication(username, password);
 			}
 		});
 	}
 
 	@Override
-	// @Scheduled
 	public void send(final Message message) {
 		Logger.info("Sending message: " + message.getSubject());
 		try {

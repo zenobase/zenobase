@@ -10,8 +10,6 @@ Then substitute the following in the .project file:
 	<buildSpec>
 		<buildCommand>
 			<name>org.eclipse.jdt.core.javabuilder</name>
-			<arguments>
-			</arguments>
 		</buildCommand>
 	</buildSpec>
 	<natures>
