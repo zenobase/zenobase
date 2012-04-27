@@ -1353,7 +1353,7 @@
 			restrict: 'A',
 			compile: function() {
 				return function(scope, element, attrs) {
-					var start = attrs.copyrightYear;
+					var start = parseInt(attrs.copyrightYear, 10);
 					var year = new Date().getFullYear();
 					var text = start === year ?
 						start : start + '&ndash;' + year;
