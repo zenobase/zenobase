@@ -1,5 +1,5 @@
 <!doctype html>
-<html data-ng-app="ZenoAdminModule" class="ng-app:ZenoAdminModule">
+<html>
 	<head>
 		<title>Zenobase</title>
 		<meta charset="utf-8"/>
@@ -42,7 +42,9 @@
 			.script("/public/js/humane.js")
 			.script("//www.google.com/jsapi").wait()
 			.script("/public/js/zeno.js").wait()
-			.script("/public/js/zeno-admin.js").wait();
+			.script("/public/js/zeno-admin.js").wait(function() {
+				angular.bootstrap(document, ['ZenoAdminModule']);
+			});
 		</script>
 
 	</body>
