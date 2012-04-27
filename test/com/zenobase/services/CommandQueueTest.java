@@ -1,71 +1,72 @@
 package com.zenobase.services;
 
-import java.util.Set;
+import static org.mockito.Mockito.*;
 
-import org.codehaus.jackson.node.ObjectNode;
-import org.junit.Assert;
 import org.junit.Test;
-import com.google.common.collect.Sets;
 
 import com.zenobase.commands.Command;
-import com.zenobase.commands.CommandHandler;
-import com.zenobase.commands.CommandHandlerSupport;
-import com.zenobase.commands.CommandParser;
-import com.zenobase.commands.CommandParserRegistry;
-import com.zenobase.commands.CommandParserSupport;
 import com.zenobase.commands.CommandSupport;
-import com.zenobase.json.TokenField;
+import com.zenobase.commands.CompoundCommand;
 import com.zenobase.models.Identity;
 
 public class CommandQueueTest {
 
+	private static final Identity TESTER = new Identity("tester");
+
 	@Test
 	public void test() {
 
-		Set<CommandHandler<?>> handlers = Sets.<CommandHandler<?>>newHashSet(new MockCommand.Handler());
-		Set<CommandParser> parsers = Sets.<CommandParser>newHashSet(new MockCommand.Parser());
-		CommandStore store = new MockCommandStore(new CommandParserRegistry(parsers));
-		CommandQueue queue = new CommandQueue(new CommandHandlerRegistry(handlers), store);
-		Assert.assertEquals(0, store.size());
-		Assert.assertEquals(0, store.getHistory(0, 2).size());
-		Assert.assertEquals(0, store.getHistory(2, 4).size());
+		CommandHandlerRegistry handlers = mock(CommandHandlerRegistry.class);
+		CommandStore store = mock(CommandStore.class);
 
-		Command c1 = new MockCommand("first");
-		Command c2 = new MockCommand("second");
-		Command c3 = new MockCommand("third");
+		CommandQueue queue = new CommandQueue(handlers, store);
+
+		Command c1 = new MockCommand("do a bit");
+		Command c2 = new MockCommand("do more");
+		Command c3 = new MockCommand("do most");
 
 		queue.dispatch(c1);
-		Assert.assertEquals(1, store.size());
-		Assert.assertEquals(1, store.getHistory(0, 2).getElements().size());
-		Assert.assertEquals(0, store.getHistory(2, 4).getElements().size());
-		Assert.assertEquals(c1, store.getHistory(0, 2).getElements().get(0));
-
 		queue.dispatch(c2);
 		queue.dispatch(c3);
-		Assert.assertEquals(3, store.size());
-		Assert.assertEquals(2, store.getHistory(0, 2).getElements().size());
-		Assert.assertEquals(1, store.getHistory(2, 4).getElements().size());
-		Assert.assertEquals(c3, store.getHistory(0, 2).getElements().get(0));
-		Assert.assertEquals(c2, store.getHistory(0, 2).getElements().get(1));
-		Assert.assertEquals(c1, store.getHistory(2, 4).getElements().get(0));
+
+		verify(store).put(c1);
+		verify(store).put(c2);
+		verify(store).put(c3);
+
+		verify(handlers).execute(c1);
+		verify(handlers).execute(c2);
+		verify(handlers).execute(c3);
+	}
+
+	@Test
+	public void testCompoundCommand() {
+
+		CommandHandlerRegistry handlers = mock(CommandHandlerRegistry.class);
+		CommandStore store = mock(CommandStore.class);
+
+		CommandQueue queue = new CommandQueue(handlers, store);
+
+		Command c1 = new MockCommand("do a bit");
+		Command c2 = new MockCommand("do more");
+		Command c3 = new MockCommand("do most");
+		CompoundCommand cc = new CompoundCommand(TESTER, "do it all", "undo it all");
+		cc.add(c1);
+		cc.add(c2);
+		cc.add(c3);
+
+		queue.dispatch(cc);
+
+		verify(store).put(cc);
+
+		verify(handlers).execute(c1);
+		verify(handlers).execute(c2);
+		verify(handlers).execute(c3);
 	}
 
 	private static class MockCommand extends CommandSupport {
 
-		private static final Command.Type TYPE = new Command.Type("mock me", 1);
-		private static final TokenField LABEL = new TokenField("label");
-
-		private MockCommand(ObjectNode node) {
-			super(node);
-		}
-
-		public MockCommand(String label) {
-			super(TYPE, new Identity("me"));
-			setParameter(LABEL, label);
-		}
-
-		private String getLabel() {
-			return getParameter(LABEL);
+		public MockCommand(String typeName) {
+			super(new Command.Type(typeName, 1), TESTER);
 		}
 
 		@Override
@@ -74,47 +75,8 @@ public class CommandQueueTest {
 		}
 
 		@Override
-		public int hashCode() {
-			return getLabel().hashCode();
-		}
-
-		@Override
-		public boolean equals(Object that) {
-			return that instanceof MockCommand &&
-				equals((MockCommand) that);
-		}
-
-		private boolean equals(MockCommand that) {
-			return getLabel().equals(that.getLabel());
-		}
-
-		@Override
 		public String toString() {
-			return getParameter(LABEL);
-		}
-
-		static class Handler extends CommandHandlerSupport<MockCommand> {
-
-			public Handler() {
-				super(MockCommand.class);
-			}
-
-			@Override
-			public void executeTyped(MockCommand command) {
-
-			}
-		}
-
-		static class Parser extends CommandParserSupport {
-			@Override
-			public String getTypeName() {
-				return TYPE.getName();
-			}
-			@Override
-			public Command parse(ObjectNode node, int version) {
-				Assert.assertEquals("Command type version", TYPE.getVersion(), version);
-				return new MockCommand(node);
-			}
+			return getType().toString();
 		}
 	}
 }

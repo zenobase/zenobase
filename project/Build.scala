@@ -8,13 +8,12 @@ object ApplicationBuild extends Build {
     val appVersion      = "1.0-SNAPSHOT"
 
     val appDependencies = Seq(
-      "org.hamcrest" % "hamcrest-integration" % "1.2.1",
+      "javax.mail" % "mail" % "1.4.5",
       "com.google.guava" % "guava" % "11.0.2",
       "com.google.inject" % "guice" % "3.0",
       "com.google.inject.extensions" % "guice-multibindings" % "3.0",
       "org.elasticsearch" % "elasticsearch" % "0.19.2",
-      "javax.mail" % "mail" % "1.4.5"
-      // "org.jscience" % "jscience" % "4.3.1"
+      "org.mockito" % "mockito-all" % "1.9.0" % "test"
     )
 
     val main = PlayProject(appName, appVersion, appDependencies, mainLang = JAVA).settings(

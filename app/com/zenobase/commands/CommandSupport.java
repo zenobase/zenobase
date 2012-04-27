@@ -76,6 +76,24 @@ public abstract class CommandSupport extends DomainNode implements Command {
 		field.addValue(getValue(PARAMETERS), value);
 	}
 
+	@Override
+	public boolean equals(Object that) {
+		return that instanceof CommandSupport &&
+			equals((CommandSupport) that);
+	}
+
+	private boolean equals(CommandSupport that) {
+		return getId().equals(that.getId());
+	}
+
+	@Override
+	public int hashCode() {
+		return getId().hashCode();
+	}
+
+	@Override
+	public abstract String toString();
+
 	public static Schema getSchema() {
 		return new SchemaBuilder(TYPE_NAME)
 			.add(ID).add(TYPE).add(PRINCIPAL)
