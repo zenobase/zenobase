@@ -11,8 +11,8 @@ import org.elasticsearch.search.facet.FacetBuilders;
 import org.elasticsearch.search.facet.termsstats.TermsStatsFacet;
 import org.elasticsearch.search.facet.termsstats.TermsStatsFacet.ComparatorType;
 
-import com.zenobase.common.Nodes;
 import com.zenobase.json.MeasurementField;
+import com.zenobase.json.Nodes;
 
 public class ScoreboardWidget implements Widget {
 

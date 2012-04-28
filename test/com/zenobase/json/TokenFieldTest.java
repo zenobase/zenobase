@@ -8,7 +8,6 @@ import org.codehaus.jackson.node.ObjectNode;
 import org.junit.Test;
 import com.google.common.collect.ImmutableList;
 
-import com.zenobase.common.Nodes;
 import com.zenobase.json.TokenField;
 
 public class TokenFieldTest extends FieldTestSupport {

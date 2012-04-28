@@ -3,7 +3,6 @@ package com.zenobase.json;
 import org.codehaus.jackson.node.ObjectNode;
 import org.junit.Test;
 
-import com.zenobase.common.Nodes;
 import com.zenobase.json.ObjectField;
 
 public class ObjectFieldTest extends FieldTestSupport {

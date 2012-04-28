@@ -6,11 +6,11 @@ import org.joda.time.DateTimeZone;
 import com.google.common.collect.ImmutableList;
 
 import com.zenobase.common.Generator;
-import com.zenobase.common.Nodes;
 import com.zenobase.json.CommandTypeField;
 import com.zenobase.json.DateTimeField;
 import com.zenobase.json.Field;
 import com.zenobase.json.IdentityField;
+import com.zenobase.json.Nodes;
 import com.zenobase.json.ObjectField;
 import com.zenobase.json.Schema;
 import com.zenobase.json.SchemaBuilder;

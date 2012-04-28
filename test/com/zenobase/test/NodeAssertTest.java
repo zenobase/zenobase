@@ -8,7 +8,7 @@ import org.codehaus.jackson.node.ObjectNode;
 import org.codehaus.jackson.node.TextNode;
 import org.junit.Test;
 
-import com.zenobase.common.Nodes;
+import com.zenobase.json.Nodes;
 
 public class NodeAssertTest {
 

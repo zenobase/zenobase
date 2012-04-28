@@ -7,7 +7,6 @@ import org.codehaus.jackson.node.ObjectNode;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 
-import com.zenobase.common.Nodes;
 import com.zenobase.models.Resource;
 
 public abstract class MapField<K, V> extends Field<Map.Entry<K, V>> {

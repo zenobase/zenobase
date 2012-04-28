@@ -12,7 +12,7 @@ import com.google.common.collect.ImmutableList;
 
 import com.zenobase.commands.DeleteBucketCommand;
 import com.zenobase.commands.UpdateBucketCommand;
-import com.zenobase.common.Nodes;
+import com.zenobase.json.Nodes;
 import com.zenobase.models.Bucket;
 import com.zenobase.models.Identity;
 import com.zenobase.models.Permission;

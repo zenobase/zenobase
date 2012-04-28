@@ -9,7 +9,7 @@ import org.elasticsearch.search.facet.FacetBuilders;
 import org.elasticsearch.search.facet.terms.TermsFacet;
 import org.elasticsearch.search.facet.terms.TermsFacet.ComparatorType;
 
-import com.zenobase.common.Nodes;
+import com.zenobase.json.Nodes;
 
 public class CountWidget implements Widget {
 

@@ -1,4 +1,4 @@
-package com.zenobase.common;
+package com.zenobase.json;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;

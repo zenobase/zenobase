@@ -10,7 +10,7 @@ import org.elasticsearch.search.facet.range.RangeFacet;
 import org.elasticsearch.search.facet.range.RangeFacetBuilder;
 import com.google.common.collect.Lists;
 
-import com.zenobase.common.Nodes;
+import com.zenobase.json.Nodes;
 
 public class HistogramWidget implements Widget {
 

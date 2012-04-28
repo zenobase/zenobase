@@ -4,9 +4,9 @@ import org.codehaus.jackson.node.ObjectNode;
 import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableList;
 
-import com.zenobase.common.Nodes;
 import com.zenobase.json.Field;
 import com.zenobase.json.LongField;
+import com.zenobase.json.Nodes;
 
 public class DomainNode {
 

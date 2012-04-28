@@ -23,8 +23,8 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 
 import com.zenobase.common.Callback;
-import com.zenobase.common.Nodes;
 import com.zenobase.common.PartialList;
+import com.zenobase.json.Nodes;
 import com.zenobase.json.Schema;
 import com.zenobase.models.DomainNode;
 

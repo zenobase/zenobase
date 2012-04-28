@@ -8,7 +8,6 @@ import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.node.ObjectNode;
 
 import com.zenobase.common.Measures;
-import com.zenobase.common.Nodes;
 
 public class MeasurementField<Q extends Quantity> extends Field<DecimalMeasure<Q>> {
 

@@ -1,4 +1,6 @@
-package com.zenobase.common;
+package com.zenobase.json;
+
+import com.zenobase.json.Nodes;
 
 import static org.fest.assertions.Assertions.assertThat;
 

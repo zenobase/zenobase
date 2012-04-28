@@ -17,7 +17,7 @@ import com.google.common.base.Strings;
 import com.google.common.collect.Maps;
 
 import com.zenobase.common.Intervals;
-import com.zenobase.common.Nodes;
+import com.zenobase.json.Nodes;
 
 public class TimelineWidget implements Widget {
 

@@ -4,7 +4,6 @@ import static org.fest.assertions.Assertions.assertThat;
 
 import org.codehaus.jackson.node.ObjectNode;
 
-import com.zenobase.common.Nodes;
 import com.zenobase.json.Field;
 import com.zenobase.json.SchemaBuilder;
 

@@ -11,8 +11,8 @@ import org.elasticsearch.search.facet.termsstats.TermsStatsFacet.ComparatorType;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 
-import com.zenobase.common.Nodes;
 import com.zenobase.json.DateTimeField;
+import com.zenobase.json.Nodes;
 
 public class GanttWidget implements Widget {
 

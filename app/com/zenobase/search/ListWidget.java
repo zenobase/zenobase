@@ -7,7 +7,7 @@ import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.elasticsearch.search.sort.SortOrder;
 
-import com.zenobase.common.Nodes;
+import com.zenobase.json.Nodes;
 import com.zenobase.models.Event;
 
 public class ListWidget implements Widget {

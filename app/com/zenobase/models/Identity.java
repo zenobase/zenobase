@@ -3,7 +3,7 @@ package com.zenobase.models;
 import org.codehaus.jackson.node.ObjectNode;
 
 import com.zenobase.common.Generator;
-import com.zenobase.common.Nodes;
+import com.zenobase.json.Nodes;
 
 public class Identity {
 

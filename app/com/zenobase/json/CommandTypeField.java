@@ -4,7 +4,6 @@ import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.node.ObjectNode;
 
 import com.zenobase.commands.Command;
-import com.zenobase.common.Nodes;
 
 public class CommandTypeField extends Field<Command.Type> {
 

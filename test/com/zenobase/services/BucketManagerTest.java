@@ -10,7 +10,7 @@ import org.junit.Test;
 import com.google.common.collect.ImmutableList;
 
 import com.zenobase.common.Generator;
-import com.zenobase.common.Nodes;
+import com.zenobase.json.Nodes;
 import com.zenobase.models.Bucket;
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
