@@ -106,7 +106,7 @@ public class BucketListController extends ControllerSupport {
 		Identity principal = new SecurityContext(ctx()).getPrincipal(true);
     	Bucket bucket = createBucket(label, description, principal);
     	String commandId = queue.dispatch(new CreateBucketCommand(principal, bucket));
-        response().setHeader(LOCATION, String.format("/buckets/%s/", bucket.getId()));
+        response().setHeader(LOCATION, com.zenobase.controllers.routes.BucketController.get(bucket.getId()).toString());
         return created(receipt(commandId));
     }
 

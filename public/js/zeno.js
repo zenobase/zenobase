@@ -1164,9 +1164,6 @@
 		];
 		$scope.create = function() {
 			$http.post('/buckets/' + $scope.params.bucketId + '/', $scope.content).success(function(response, status, headers) {
-				var location = headers('Location');
-				console.assert(status === 201, status);
-				console.assert(location, 'missing location header');
 				$defer(function() {
 					$scope.reload();
 					$scope.dialog.modal('hide');

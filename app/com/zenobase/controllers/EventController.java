@@ -68,8 +68,7 @@ public class EventController extends ControllerSupport {
     	Integer random = RANDOM.getValue(body);
     	if (random != null) {
     		String commandId = queue.dispatch(new RandomEventsCommandBuilder(principal, bucketId).build(random));
-            response().setHeader(LOCATION, String.format("/buckets/%s/", bucket.getId()));
-            return created(receipt(commandId));
+            return ok(receipt(commandId));
     	}
     	else {
     		Event event = new Event(body);
@@ -78,8 +77,8 @@ public class EventController extends ControllerSupport {
     		if (!event.contains(Event.TIMESTAMP)) {
     			event.addValue(Event.TIMESTAMP, new DateTime());
     		}
-    		String commandId = queue.dispatch(new CreateEventCommand( principal, bucketId, event));
-            response().setHeader(LOCATION, String.format("/buckets/%s/%s", bucket.getId(), event.getId()));
+    		String commandId = queue.dispatch(new CreateEventCommand(principal, bucketId, event));
+            response().setHeader(LOCATION, com.zenobase.controllers.routes.EventController.get(bucket.getId(), event.getId()).toString());
             return created(receipt(commandId));
     	}
     }
