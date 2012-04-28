@@ -76,7 +76,8 @@ public class Index {
 		request.setSource(Nodes.toByteArray(node));
 		request.setOpType(operation);
 		request.setRefresh(refresh);
-		request.execute().actionGet();
+		long version = request.execute().actionGet().getVersion();
+		DomainNode.VERSION.setValue(node, version);
 	}
 
 	public void delete(String type, String id, boolean refresh) {
@@ -85,6 +86,10 @@ public class Index {
 
 	public boolean exists() {
 		return client.admin().indices().prepareExists(indexName).execute().actionGet().exists();
+	}
+
+	public void refresh() {
+		client.admin().indices().prepareRefresh(indexName).execute().actionGet();
 	}
 
 	public PartialList<ObjectNode> find(QueryBuilder query) {

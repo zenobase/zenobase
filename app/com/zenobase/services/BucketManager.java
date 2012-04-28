@@ -21,7 +21,7 @@ import com.zenobase.models.Identity;
 
 public class BucketManager {
 
-	private static final String INDEX_NAME = "buckets";
+	static final String INDEX_NAME = "buckets";
 
 	private final IndexManager manager;
 	private final Index index;
@@ -55,9 +55,9 @@ public class BucketManager {
 		index.update(Bucket.TYPE_NAME, bucket.getId(), bucket.toJson(), true);
 	}
 
-	public void deleteBucket(String id) {
-		index.delete(Bucket.TYPE_NAME, id, true);
-		getIndex(id).close();
+	public void deleteBucket(String bucketId) {
+		index.delete(Bucket.TYPE_NAME, bucketId, true);
+		getIndex(bucketId).close();
 	}
 
 	public Bucket findBucket(String bucketId) {

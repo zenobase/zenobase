@@ -36,7 +36,7 @@ public class UpdateBucketCommand extends CommandSupport {
 	public Command reverse(Identity principal) {
 		Bucket from = getTo();
 		Bucket to = getFrom();
-		to.setVersion(from.getVersion() + 1);
+		to.setVersion(from.getVersion());
 		return new UpdateBucketCommand(principal, from, to);
 	}
 
