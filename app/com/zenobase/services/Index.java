@@ -93,7 +93,7 @@ public class Index {
 	}
 
 	public PartialList<ObjectNode> find(QueryBuilder query) {
-		return find(new SearchSourceBuilder().query(query));
+		return find(new SearchSourceBuilder().query(query).version(Boolean.TRUE));
 	}
 
 	public PartialList<ObjectNode> find(SearchSourceBuilder search) {
@@ -101,7 +101,7 @@ public class Index {
 		SearchHits hits = response.hits();
 		List<ObjectNode> nodes = Lists.newArrayListWithCapacity(hits.hits().length);
 		for (SearchHit hit : hits) {
-			nodes.add(Nodes.read(hit.source()));
+			nodes.add(read(hit));
 		}
 		return new PartialList<ObjectNode>(nodes, hits.totalHits());
 	}
@@ -115,7 +115,7 @@ public class Index {
 		SearchSourceBuilder search = new SearchSourceBuilder().query(query).size(100);
 		for (SearchResponse response = scroll(search.version(true)); response.hits().hits().length > 0; response = scroll(response.getScrollId())) {
 			for (SearchHit hit : response.hits()) {
-				callback.call(Nodes.read(hit.source()));
+				callback.call(read(hit));
 			}
 		}
 	}
@@ -139,6 +139,10 @@ public class Index {
 	public ObjectNode get(String type, String id) {
 		GetResponse response = client.prepareGet(indexName, type, id).execute().actionGet();
 		return response.exists() ? read(response.source(), response.version()) : null;
+	}
+
+	private static ObjectNode read(SearchHit hit) {
+		return read(hit.source(), hit.getVersion());
 	}
 
 	private static ObjectNode read(byte[] source, long version) {

@@ -19,7 +19,7 @@ import com.zenobase.models.User;
 
 public class UserManager {
 
-	private static final String INDEX_NAME = "users";
+	static final String INDEX_NAME = "users";
 
 	private final Index index;
 
