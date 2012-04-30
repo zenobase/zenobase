@@ -12,7 +12,7 @@ object ApplicationBuild extends Build {
       "com.google.guava" % "guava" % "11.0.2",
       "com.google.inject" % "guice" % "3.0",
       "com.google.inject.extensions" % "guice-multibindings" % "3.0",
-      "org.elasticsearch" % "elasticsearch" % "0.19.2",
+      "org.elasticsearch" % "elasticsearch" % "0.19.3",
       "org.mockito" % "mockito-all" % "1.9.0" % "test",
       "org.jvnet.mock-javamail" % "mock-javamail" % "1.9" % "test"
     )
