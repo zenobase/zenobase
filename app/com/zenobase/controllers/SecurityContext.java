@@ -2,7 +2,6 @@ package com.zenobase.controllers;
 
 import play.api.libs.Crypto;
 import play.mvc.Http;
-import play.mvc.Http.Context;
 
 import com.zenobase.models.Identity;
 
@@ -10,12 +9,6 @@ public class SecurityContext {
 
 	private static final String TOKEN_NAME = "token";
 	private static final char TOKEN_SEPARATOR = '-';
-
-	private final Http.Context context;
-
-	public SecurityContext(Context context) {
-		this.context = context;
-	}
 
 	public Identity getPrincipal(boolean createIfNotPresent) {
 		Identity principal = getPrincipal();
@@ -27,7 +20,7 @@ public class SecurityContext {
 	}
 
 	public Identity getPrincipal() {
-		Http.Cookie cookie = context.request().cookies().get(TOKEN_NAME);
+		Http.Cookie cookie = context().request().cookies().get(TOKEN_NAME);
 		if (cookie != null) {
 			int p = cookie.value().indexOf(TOKEN_SEPARATOR);
 			if (p > 0 && p < cookie.value().length() - 1) {
@@ -47,10 +40,14 @@ public class SecurityContext {
 	}
 
 	private void setPrincipal(String name, String value, boolean remember) {
-		context.response().setCookie(name, value, remember ? 60 * 60 * 24 * 30 : -1, "/", null, false, true);
+		context().response().setCookie(name, value, remember ? 60 * 60 * 24 * 30 : -1, "/", null, false, true);
 	}
 
 	public void unsetPrincipal() {
-		context.response().discardCookies(TOKEN_NAME);
+		context().response().discardCookies(TOKEN_NAME);
+	}
+
+	private static Http.Context context() {
+		return Http.Context.current();
 	}
 }

@@ -9,11 +9,11 @@ GET     /admin/                      controllers.Assets.at(path="/public/admin",
 GET     /favicon.ico                 controllers.Assets.at(path="/public/img", file="favicon.ico")
 GET     /robots.txt                  controllers.Assets.at(path="/public", file="robots.txt")
 
-GET     /who                         com.zenobase.controllers.UserController.who()
+GET     /who                         com.zenobase.controllers.WhoController.who()
 GET     /users/                      com.zenobase.controllers.UserController.find(identity ?= null, offset : Int ?= 0, limit : Int ?= java.lang.Integer.MAX_VALUE)
 GET     /users/:name                 com.zenobase.controllers.UserController.get(name)
 POST    /users/:name                 com.zenobase.controllers.UserController.update(name)
-POST    /reset                       com.zenobase.controllers.UserController.requestReset()
+POST    /reset                       com.zenobase.controllers.PasswordResetController.requestReset()
 
 POST    /users/                      com.zenobase.controllers.AccountController.open()
 DELETE  /users/:name                 com.zenobase.controllers.AccountController.close(name)

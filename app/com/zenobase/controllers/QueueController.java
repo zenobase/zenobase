@@ -31,7 +31,7 @@ public class QueueController extends ControllerSupport {
 	static UserManager users;
 
     public static Result get(int offset, int limit) {
-    	Identity principal = new SecurityContext(ctx()).getPrincipal();
+    	Identity principal = auth.getPrincipal();
     	if (principal == null) {
     		return unauthorized();
     	}
@@ -57,7 +57,7 @@ public class QueueController extends ControllerSupport {
 		if (commandId == null) {
 			return badRequest("missing command");
 		}
-		Identity principal = new SecurityContext(ctx()).getPrincipal();
+		Identity principal = auth.getPrincipal();
     	if (principal == null) {
     		return unauthorized();
     	}

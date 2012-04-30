@@ -28,12 +28,12 @@ public class SecurityController extends ControllerSupport {
 		if (user.isSuspended()) {
 			return unauthorized("user suspended");
 		}
-		new SecurityContext(ctx()).setPrincipal(user.asIdentity(), form.isRemember());
+		auth.setPrincipal(user.asIdentity(), form.isRemember());
 		return ok(new UserInfo(user).toJson());
 	}
 
 	public static Result signOut() {
-		new SecurityContext(ctx()).unsetPrincipal();
+		auth.unsetPrincipal();
 		return noContent();
 	}
 }

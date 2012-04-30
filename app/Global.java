@@ -30,11 +30,14 @@ import com.zenobase.controllers.AccountController;
 import com.zenobase.controllers.BucketController;
 import com.zenobase.controllers.BucketListController;
 import com.zenobase.controllers.EventController;
+import com.zenobase.controllers.PasswordResetController;
 import com.zenobase.controllers.PasswordResetMailer;
 import com.zenobase.controllers.QueueController;
+import com.zenobase.controllers.SecurityContext;
 import com.zenobase.controllers.SecurityController;
 import com.zenobase.controllers.UserController;
 import com.zenobase.controllers.VerificationMailer;
+import com.zenobase.controllers.WhoController;
 import com.zenobase.services.BucketManager;
 import com.zenobase.services.CommandHandlerRegistry;
 import com.zenobase.services.CommandQueue;
@@ -73,6 +76,7 @@ public class Global extends GlobalSettings {
 				bind(Mailer.class).in(Singleton.class);
 				bind(VerificationMailer.class).in(Singleton.class);
 				bind(PasswordResetMailer.class).in(Singleton.class);
+				bind(SecurityContext.class).in(Singleton.class);
 
 				Multibinder<CommandParser> parsers = Multibinder.newSetBinder(binder(), CommandParser.class);
 				parsers.addBinding().to(CreateBucketCommand.Parser.class);
@@ -110,6 +114,8 @@ public class Global extends GlobalSettings {
 				requestStaticInjection(EventController.class);
 				requestStaticInjection(UserController.class);
 				requestStaticInjection(AccountController.class);
+				requestStaticInjection(WhoController.class);
+				requestStaticInjection(PasswordResetController.class);
 			}
 
 			private void bindConfiguration() {

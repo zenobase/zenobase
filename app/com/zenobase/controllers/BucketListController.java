@@ -42,7 +42,7 @@ public class BucketListController extends ControllerSupport {
     }
 
     private static Result find(int offset, int limit) {
-    	Identity principal = new SecurityContext(ctx()).getPrincipal();
+    	Identity principal = auth.getPrincipal();
     	if (principal == null) {
     		return unauthorized();
     	}
@@ -56,7 +56,7 @@ public class BucketListController extends ControllerSupport {
     }
 
     private static Result find(Identity identity, int offset, int limit) {
-    	Identity principal = new SecurityContext(ctx()).getPrincipal();
+    	Identity principal = auth.getPrincipal();
     	if (principal == null) {
     		return unauthorized();
     	}
@@ -103,7 +103,7 @@ public class BucketListController extends ControllerSupport {
 			return badRequest("missing field " + Bucket.LABEL);
 		}
 		String description = Bucket.DESCRIPTION.getValue(body);
-		Identity principal = new SecurityContext(ctx()).getPrincipal(true);
+		Identity principal = auth.getPrincipal(true);
     	Bucket bucket = createBucket(label, description, principal);
     	String commandId = queue.dispatch(new CreateBucketCommand(principal, bucket));
         response().setHeader(LOCATION, com.zenobase.controllers.routes.BucketController.get(bucket.getId()).toString());

@@ -30,7 +30,6 @@ public class UserController extends ControllerSupport {
 
 	private static final TokenField KEY = new TokenField("key");
 	private static final TokenField EXPIRES = new TokenField("expires");
-	private static final TokenField USERNAME = new TokenField("username");
 
 	@Inject
 	static UserManager users;
@@ -41,20 +40,8 @@ public class UserController extends ControllerSupport {
 	@Inject
 	static VerificationMailer verificationMailer;
 
-	@Inject
-	static PasswordResetMailer resetMailer;
-
-	public static Result who() {
-		Identity principal = new SecurityContext(ctx()).getPrincipal();
-		if (principal != null) {
-			User user = users.find(principal);
-			return ok(user != null ? new UserInfo(user).toJson() : principal.toJson());
-		}
-    	return noContent();
-    }
-
 	public static Result get(String name) {
-		Identity principal = new SecurityContext(ctx()).getPrincipal();
+		Identity principal = auth.getPrincipal();
 		if (principal == null) {
 			return unauthorized();
 		}
@@ -70,7 +57,7 @@ public class UserController extends ControllerSupport {
     }
 
 	public static Result find(int offset, int limit) {
-    	Identity principal = new SecurityContext(ctx()).getPrincipal();
+    	Identity principal = auth.getPrincipal();
     	if (principal == null) {
     		return unauthorized();
     	}
@@ -110,7 +97,7 @@ public class UserController extends ControllerSupport {
         return ok(chunks);
 	}
 
-	private static Result find(Identity identity) {
+	public static Result find(Identity identity) {
 		User user = users.find(identity);
     	return ok(user != null ? new UserInfo(user).toJson() : identity.toJson());
     }
@@ -135,7 +122,7 @@ public class UserController extends ControllerSupport {
 	}
 
 	private static Result updateEmail(ObjectNode node, User user) {
-		Identity principal = new SecurityContext(ctx()).getPrincipal();
+		Identity principal = auth.getPrincipal();
     	if (principal == null) {
     		return unauthorized();
     	}
@@ -171,7 +158,7 @@ public class UserController extends ControllerSupport {
 			return badRequest("invalid key");
 		}
 		queue.dispatch(new ChangeUserPasswordCommand(user.asIdentity(), user.getName(), user.getHashedPassword(), User.getHashedPassword(password)));
-		new SecurityContext(ctx()).setPrincipal(user.asIdentity(), true);
+		auth.setPrincipal(user.asIdentity(), true);
 		return noContent();
 	}
 
@@ -191,28 +178,6 @@ public class UserController extends ControllerSupport {
 			return badRequest("invalid key");
 		}
 		queue.dispatch(new ChangeUserVerifiedCommand(user.asIdentity(), user.getName(), true));
-		return noContent();
-	}
-
-	@BodyParser.Of(BodyParser.Json.class)
-	public static Result requestReset() {
-		ObjectNode body = body();
-		String username = USERNAME.getValue(body);
-		if (username == null) {
-			return badRequest("missing user name");
-		}
-		User user = users.find(username);
-    	if (user == null) {
-    		return badRequest("user not found");
-    	}
-		if (!user.isVerified()) {
-			return badRequest("can't reset password without a verified email address");
-		}
-		String email = User.EMAIL.getValue(body);
-		if (email == null || !email.equals(user.getEmail())) {
-			return badRequest("invalid email");
-		}
-		resetMailer.send(user);
 		return noContent();
 	}
 }

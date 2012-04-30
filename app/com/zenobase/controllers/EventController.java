@@ -37,7 +37,7 @@ public class EventController extends ControllerSupport {
 	static CommandQueue queue;
 
 	public static Result find(String bucketId) {
-		Identity principal = new SecurityContext(ctx()).getPrincipal();
+		Identity principal = auth.getPrincipal();
 		if (principal == null) {
 			return unauthorized();
 		}
@@ -53,7 +53,7 @@ public class EventController extends ControllerSupport {
 
 	@BodyParser.Of(value = BodyParser.Json.class)
 	public static Result post(String bucketId) {
-		Identity principal = new SecurityContext(ctx()).getPrincipal();
+		Identity principal = auth.getPrincipal();
 		if (principal == null) {
 			return unauthorized();
 		}
@@ -88,7 +88,7 @@ public class EventController extends ControllerSupport {
     	if (bucket == null) {
     		return notFound();
     	}
-    	Identity principal = new SecurityContext(ctx()).getPrincipal();
+    	Identity principal = auth.getPrincipal();
     	if (bucket.getPermission(principal) == Permission.NONE) {
     		return forbidden();
     	}
@@ -100,7 +100,7 @@ public class EventController extends ControllerSupport {
     }
 
     public static Result delete(String bucketId, String eventId) {
-    	Identity principal = new SecurityContext(ctx()).getPrincipal();
+    	Identity principal = auth.getPrincipal();
 		if (principal == null) {
 			return unauthorized();
 		}

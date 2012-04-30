@@ -1,0 +1,44 @@
+package com.zenobase.test;
+
+import static play.test.Helpers.contentAsBytes;
+
+import org.codehaus.jackson.node.ObjectNode;
+import org.fest.assertions.Assertions;
+import org.fest.assertions.GenericAssert;
+import play.mvc.Result;
+import play.test.Helpers;
+
+import com.zenobase.json.Nodes;
+
+public class ResultAssert extends GenericAssert<ResultAssert, Result> {
+
+	private ResultAssert(Result actual) {
+		super(ResultAssert.class, actual);
+	}
+
+	public static ResultAssert assertThat(Result actual) {
+		return new ResultAssert(actual);
+	}
+
+	public ResultAssert hasStatus(int status) {
+		Assertions.assertThat(Helpers.status(actual)).as("status of result " + Helpers.contentAsString(actual)).isEqualTo(status);
+		return this;
+	}
+
+	public ResultAssert hasContentType(String contentType) {
+		Assertions.assertThat(Helpers.contentType(actual)).as("content type").isEqualTo(contentType);
+		return this;
+	}
+
+	public ResultAssert hasContent(ObjectNode node) {
+		hasContentType("application/json");
+		NodeAssert.assertThat(Nodes.read(contentAsBytes(actual))).isEqualTo(node);
+		return this;
+	}
+
+	public ResultAssert isEmpty() {
+		hasContentType(null);
+		Assertions.assertThat(Helpers.contentAsBytes(actual).length).as("content length").isZero();
+		return this;
+	}
+}

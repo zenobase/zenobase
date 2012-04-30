@@ -39,7 +39,7 @@ public class AccountController extends ControllerSupport {
 		if ("guest".equals(form.getUsername()) || users.exists(form.getUsername())) {
 			return status(CONFLICT, "user exists");
 		}
-		Identity principal = new SecurityContext(ctx()).getPrincipal(true);
+		Identity principal = auth.getPrincipal(true);
 		final User user = new User(principal.getId(), form.getUsername());
 		user.setEmail(form.getEmail());
 		user.setHashedPassword(User.getHashedPassword(form.getPassword()));
@@ -50,7 +50,7 @@ public class AccountController extends ControllerSupport {
 	}
 
 	public static Result close(String name) {
-		Identity principal = new SecurityContext(ctx()).getPrincipal();
+		Identity principal = auth.getPrincipal();
 		if (principal == null) {
 			return unauthorized();
 		}

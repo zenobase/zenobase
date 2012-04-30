@@ -33,7 +33,7 @@ public class BucketController extends ControllerSupport {
 	static UserManager users;
 
 	public static Result get(String bucketId) {
-		Identity principal = new SecurityContext(ctx()).getPrincipal();
+		Identity principal = auth.getPrincipal();
 		if (principal == null) {
 			return unauthorized();
 		}
@@ -90,7 +90,7 @@ public class BucketController extends ControllerSupport {
 
 	@BodyParser.Of(BodyParser.Json.class)
 	public static Result update(String bucketId) {
-		Identity principal = new SecurityContext(ctx()).getPrincipal();
+		Identity principal = auth.getPrincipal();
 		if (principal == null) {
 			return unauthorized();
 		}
@@ -106,7 +106,7 @@ public class BucketController extends ControllerSupport {
     }
 
     public static Result delete(String bucketId) {
-    	Identity principal = new SecurityContext(ctx()).getPrincipal();
+    	Identity principal = auth.getPrincipal();
 		if (principal == null) {
 			return unauthorized();
 		}
