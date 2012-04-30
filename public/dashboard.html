@@ -8,7 +8,7 @@
 	<div class="row-fluid" style="margin-bottom: 9px;">
 		<h3 class="pull-left">{{bucket.label}}</h3>
 		<p class="pull-left" style="margin-left: 9px; margin-top: 5px; vertical-align: middle">
-			<span class="badge" title="Events" data-ng-class="total && 'badge-success' || 'badge-error'">{{total}}</span>
+			<span id="event-count" class="badge" title="Events" data-ng-class="total && 'badge-success' || 'badge-error'">{{total}}</span>
 		</p>
 		<p class="pull-left" style="margin-left: 8px; margin-top: 6px; vertical-align: middle">
 			<a data-ng-click="refresh()" title="Refresh"><i class="icon-refresh"></i></a>
