@@ -84,11 +84,14 @@ public class EventController extends ControllerSupport {
     }
 
     public static Result get(String bucketId, String eventId) {
+    	Identity principal = auth.getPrincipal();
+    	if (principal == null) {
+    		return unauthorized();
+    	}
 		Bucket bucket = manager.findBucket(bucketId);
     	if (bucket == null) {
     		return notFound();
     	}
-    	Identity principal = auth.getPrincipal();
     	if (bucket.getPermission(principal) == Permission.NONE) {
     		return forbidden();
     	}
