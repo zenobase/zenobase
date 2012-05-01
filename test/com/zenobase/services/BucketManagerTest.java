@@ -1,5 +1,6 @@
 package com.zenobase.services;
 
+import static com.zenobase.test.NodeAssert.assertThat;
 import static org.fest.assertions.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
@@ -40,19 +41,19 @@ public class BucketManagerTest extends ElasticSearchTestSupport {
 
 		// store and retrieve bucket
 		manager.store(bucket, true);
-		assertThat((Object) manager.findBucket(bucket.getId()).toJson()).isEqualTo(bucket.toJson());
+		assertThat(manager.findBucket(bucket.getId()).toJson()).isEqualTo(bucket.toJson());
 
 		// update bucket
 		String description = "just a test";
 		bucket.setDescription(description);
 		manager.update(bucket);
-		assertThat((Object) manager.findBucket(bucket.getId()).toJson()).isEqualTo(bucket.toJson());
+		assertThat(manager.findBucket(bucket.getId()).toJson()).isEqualTo(bucket.toJson());
 
 		// delete and recreate bucket
 		manager.deleteBucket(bucket.getId());
 		assertThat(manager.findBucket(bucket.getId())).as("bucket").isNull();
 		manager.store(bucket, false);
-		assertThat((Object) manager.findBucket(bucket.getId()).toJson()).isEqualTo(bucket.toJson());
+		assertThat(manager.findBucket(bucket.getId()).toJson()).isEqualTo(bucket.toJson());
 
 		// create event
 		Event event = new Event();
@@ -66,7 +67,7 @@ public class BucketManagerTest extends ElasticSearchTestSupport {
 		manager.add(bucket.getId(), event);
 		eventIndex.refresh();
 		assertThat(manager.getSize(bucket.getId())).as("bucket size").isEqualTo(1L);
-		assertThat((Object) manager.findEvent(bucket.getId(), event.getId()).toJson()).isEqualTo(event.toJson());
+		assertThat(manager.findEvent(bucket.getId(), event.getId()).toJson()).isEqualTo(event.toJson());
 
 		// delete event
 		manager.delete(bucket.getId(), event.getId());

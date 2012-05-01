@@ -5,6 +5,7 @@ import java.util.Set;
 
 import org.codehaus.jackson.node.ObjectNode;
 import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
 import com.google.inject.Inject;
 
@@ -18,6 +19,10 @@ public class CommandParserRegistry {
 			this.parsers.put(parser.getTypeName(), parser);
 			parser.registered(this);
 		}
+	}
+
+	public static CommandParserRegistry create(CommandParser... parsers) {
+		return new CommandParserRegistry(ImmutableSet.copyOf(parsers));
 	}
 
 	public Command parse(ObjectNode node) {

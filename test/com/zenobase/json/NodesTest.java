@@ -1,8 +1,6 @@
 package com.zenobase.json;
 
-import com.zenobase.json.Nodes;
-
-import static org.fest.assertions.Assertions.assertThat;
+import static com.zenobase.test.NodeAssert.assertThat;
 
 import org.codehaus.jackson.node.ObjectNode;
 import org.junit.Test;
@@ -16,10 +14,10 @@ public class NodesTest {
 		node.putObject("owner").put("name", "Foo");
 
 		ObjectNode copy = Nodes.copy(node);
-		assertThat((Object) copy).as("copied node").isEqualTo(node);
+		assertThat(copy).as("copied node").isEqualTo(node);
 
 		((ObjectNode) copy.get("owner")).put("name", "Bar");
-		assertThat((Object) copy).as("copied node after editing a nested field").isNotEqualTo(node);
+		assertThat(copy).as("copied node after editing a nested field").isNotEqualTo(node);
 	}
 
 	@Test
@@ -29,7 +27,7 @@ public class NodesTest {
 		node.put("name", "Foo");
 
 		byte[] bytes = Nodes.toByteArray(node);
-		assertThat((Object) Nodes.read(bytes)).as("deserialized node").isEqualTo(node);
+		assertThat(Nodes.read(bytes)).as("deserialized node").isEqualTo(node);
 	}
 
 	@Test(expected = IllegalArgumentException.class)

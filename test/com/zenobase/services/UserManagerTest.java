@@ -1,5 +1,6 @@
 package com.zenobase.services;
 
+import static com.zenobase.test.NodeAssert.assertThat;
 import static org.fest.assertions.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
@@ -31,12 +32,12 @@ public class UserManagerTest extends ElasticSearchTestSupport {
 
 		// store and retrieve user
 		manager.store(user);
-		assertThat((Object) manager.find(userId).toJson()).isEqualTo(user.toJson());
+		assertThat(manager.find(userId).toJson()).isEqualTo(user.toJson());
 
 		// update user
 		user.setVerified(true);
 		manager.update(user);
-		assertThat((Object) manager.find(userId).toJson()).isEqualTo(user.toJson());
+		assertThat(manager.find(userId).toJson()).isEqualTo(user.toJson());
 
 
 		// delete user

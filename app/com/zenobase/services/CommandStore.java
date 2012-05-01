@@ -19,7 +19,7 @@ import com.zenobase.common.PartialList;
 
 public class CommandStore {
 
-	private static final String INDEX_NAME = "queue";
+	static final String INDEX_NAME = "queue";
 
 	private final Index index;
 	private final CommandParserRegistry parsers;
