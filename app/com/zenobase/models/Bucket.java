@@ -8,6 +8,7 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
 
 import com.zenobase.common.Generator;
+import com.zenobase.json.Nodes;
 import com.zenobase.json.ObjectField;
 import com.zenobase.json.PermissionField;
 import com.zenobase.json.Schema;
@@ -88,6 +89,10 @@ public class Bucket extends DomainNode {
 		return new SchemaBuilder(TYPE_NAME).add(VERSION)
 			.add(ID).add(LABEL).add(DESCRIPTION)
 			.add(PERMISSIONS).add(WIDGETS).build();
+	}
+
+	public Bucket copy() {
+		return new Bucket(Nodes.copy(toJson()));
 	}
 
 	@Override
