@@ -11,7 +11,7 @@ import com.zenobase.services.UserManager;
 
 public class SuspendUserCommand extends CommandSupport {
 
-	private static final Command.Type TYPE = new Command.Type("suspend user", 1);
+	static final Command.Type TYPE = new Command.Type("suspend user", 1);
 	private static final TokenField USERNAME = new TokenField("username");
 	private static final BooleanField SUSPEND = new BooleanField("suspend");
 

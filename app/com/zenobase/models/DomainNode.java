@@ -65,4 +65,19 @@ public class DomainNode {
 	public ObjectNode toJson() {
 		return node;
 	}
+
+	@Override
+	public boolean equals(Object that) {
+		return that instanceof DomainNode &&
+			equals((DomainNode) that);
+	}
+
+	private boolean equals(DomainNode that) {
+		return node.equals(that.node);
+	}
+
+	@Override
+	public int hashCode() {
+		return node.hashCode();
+	}
 }

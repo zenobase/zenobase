@@ -4,6 +4,7 @@ import java.util.Map;
 import java.util.Set;
 
 import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
 import com.google.inject.Inject;
 
@@ -19,6 +20,10 @@ public class CommandHandlerRegistry {
 		for (CommandHandler<?> handler : handlers) {
 			this.handlers.put(handler.getType(), handler);
 		}
+	}
+
+	public static CommandHandlerRegistry create(CommandHandler<?>... handlers) {
+		return new CommandHandlerRegistry(ImmutableSet.copyOf(handlers));
 	}
 
 	public void execute(Command command) {
