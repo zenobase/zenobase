@@ -5,10 +5,11 @@ import static org.mockito.Mockito.*;
 import static play.mvc.Http.Status.*;
 import static play.test.Helpers.*;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import play.mvc.Result;
+import com.google.inject.AbstractModule;
+import com.google.inject.Guice;
 
 import com.zenobase.common.Generator;
 import com.zenobase.models.Identity;
@@ -23,14 +24,14 @@ public class WhoControllerTest {
 
 	@Before
 	public void setUp() {
-		WhoController.auth = auth;
-		WhoController.users = users;
-	}
-
-	@After
-	public void tearDown() {
-		WhoController.auth = null;
-		WhoController.users = null;
+		Guice.createInjector(new AbstractModule() {
+			@Override
+			protected void configure() {
+				bind(SecurityContext.class).toInstance(auth);
+				bind(UserManager.class).toInstance(users);
+				requestStaticInjection(WhoController.class);
+			}
+		});
 	}
 
 	@Test

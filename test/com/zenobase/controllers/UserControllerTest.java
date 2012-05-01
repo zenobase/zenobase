@@ -5,15 +5,17 @@ import static org.mockito.Mockito.*;
 import static play.mvc.Http.Status.*;
 import static play.test.Helpers.*;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import play.mvc.Result;
+import com.google.inject.AbstractModule;
+import com.google.inject.Guice;
 
 import com.zenobase.common.Generator;
 import com.zenobase.models.Identity;
 import com.zenobase.models.User;
 import com.zenobase.models.UserProfile;
+import com.zenobase.services.CommandQueue;
 import com.zenobase.services.UserManager;
 
 public class UserControllerTest {
@@ -24,14 +26,16 @@ public class UserControllerTest {
 
 	@Before
 	public void setUp() {
-		UserController.auth = auth;
-		UserController.users = users;
-	}
-
-	@After
-	public void tearDown() {
-		UserController.auth = null;
-		UserController.users = null;
+		Guice.createInjector(new AbstractModule() {
+			@Override
+			protected void configure() {
+				bind(SecurityContext.class).toInstance(auth);
+				bind(UserManager.class).toInstance(users);
+				bind(VerificationMailer.class).toInstance(mock(VerificationMailer.class)); // unused
+				bind(CommandQueue.class).toInstance(mock(CommandQueue.class)); // unused
+				requestStaticInjection(UserController.class);
+			}
+		});
 	}
 
 	@Test

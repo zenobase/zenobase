@@ -6,10 +6,11 @@ import static play.mvc.Http.Status.*;
 import static play.test.Helpers.*;
 
 import org.codehaus.jackson.node.ObjectNode;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import play.mvc.Result;
+import com.google.inject.AbstractModule;
+import com.google.inject.Guice;
 
 import com.zenobase.common.Generator;
 import com.zenobase.json.Nodes;
@@ -21,81 +22,80 @@ public class PasswordResetControllerTest {
 	private final SecurityContext auth = mock(SecurityContext.class);
 	private final UserManager users = mock(UserManager.class);
 	private final PasswordResetMailer mailer = mock(PasswordResetMailer.class);
+	private final User user = new User(Generator.id(), "tester");
 
 	@Before
 	public void setUp() {
-		PasswordResetController.auth = auth;
-		PasswordResetController.users = users;
-		PasswordResetController.resetMailer = mailer;
-	}
-
-	@After
-	public void tearDown() {
-		PasswordResetController.auth = null;
-		PasswordResetController.users = null;
-		PasswordResetController.resetMailer = null;
+		Guice.createInjector(new AbstractModule() {
+			@Override
+			protected void configure() {
+				bind(SecurityContext.class).toInstance(auth);
+				bind(UserManager.class).toInstance(users);
+				bind(PasswordResetMailer.class).toInstance(mailer);
+				requestStaticInjection(PasswordResetController.class);
+			}
+		});
 	}
 
 	@Test
 	public void test() {
-		User user = new User(Generator.id(), "tester");
-		user.setVerified(true);
 		user.setEmail("jdoe@zenobase.com");
+		user.setVerified(true);
 		when(users.find(user.getName())).thenReturn(user);
 		ObjectNode body = Nodes.newObject();
 		body.put(PasswordResetController.USERNAME.getName(), user.getName());
 		body.put(User.EMAIL.getName(), user.getEmail());
-		Result result = callAction(com.zenobase.controllers.routes.ref.PasswordResetController.requestReset(), fakeRequest().withJsonBody(body));
+		Result result = call(body);
 		assertThat(result).hasStatus(NO_CONTENT).isEmpty();
 		verify(mailer).send(user);
 	}
 
 	@Test
 	public void testFailBecauseUnverified() {
-		User user = new User(Generator.id(), "tester");
+		user.setEmail("jdoe@zenobase.com");
+		user.setVerified(false);
 		when(users.find(user.getName())).thenReturn(user);
 		ObjectNode body = Nodes.newObject();
 		body.put(PasswordResetController.USERNAME.getName(), user.getName());
-		Result result = callAction(com.zenobase.controllers.routes.ref.PasswordResetController.requestReset(), fakeRequest().withJsonBody(body));
+		Result result = call(body);
 		assertThat(result).hasStatus(BAD_REQUEST);
 		verifyZeroInteractions(mailer);
 	}
 
 	@Test
 	public void testFailBecauseEmailDoesntMatch() {
-		User user = new User(Generator.id(), "tester");
-		user.setVerified(true);
 		user.setEmail("jdoe@zenobase.com");
+		user.setVerified(true);
 		when(users.find(user.getName())).thenReturn(user);
 		ObjectNode body = Nodes.newObject();
 		body.put(PasswordResetController.USERNAME.getName(), user.getName());
-		Result result = callAction(com.zenobase.controllers.routes.ref.PasswordResetController.requestReset(), fakeRequest().withJsonBody(body));
+		Result result = call(body);
 		assertThat(result).hasStatus(BAD_REQUEST);
 		verifyZeroInteractions(mailer);
 	}
 
 	@Test
 	public void testFailBecauseUsernameIsMissing() {
-		User user = new User(Generator.id(), "tester");
-		user.setVerified(true);
 		user.setEmail("jdoe@zenobase.com");
+		user.setVerified(true);
 		when(users.find(user.getName())).thenReturn(user);
 		ObjectNode body = Nodes.newObject();
-		Result result = callAction(com.zenobase.controllers.routes.ref.PasswordResetController.requestReset(), fakeRequest().withJsonBody(body));
+		Result result = call(body);
 		assertThat(result).hasStatus(BAD_REQUEST);
 		verifyZeroInteractions(mailer);
 	}
 
 	@Test
 	public void testFailBecauseUserNotFound() {
-		User user = new User(Generator.id(), "tester");
-		user.setVerified(true);
-		user.setEmail("jdoe@zenobase.com");
-		when(users.find(user.getName())).thenReturn(user);
+		when(users.find(user.getName())).thenReturn(null);
 		ObjectNode body = Nodes.newObject();
-		body.put(PasswordResetController.USERNAME.getName(), "me");
-		Result result = callAction(com.zenobase.controllers.routes.ref.PasswordResetController.requestReset(), fakeRequest().withJsonBody(body));
+		body.put(PasswordResetController.USERNAME.getName(), user.getName());
+		Result result = call(body);
 		assertThat(result).hasStatus(BAD_REQUEST);
 		verifyZeroInteractions(mailer);
+	}
+
+	private static Result call(ObjectNode body) {
+		return callAction(com.zenobase.controllers.routes.ref.PasswordResetController.requestReset(), fakeRequest().withJsonBody(body));
 	}
 }
