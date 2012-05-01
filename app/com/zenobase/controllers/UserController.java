@@ -133,7 +133,7 @@ public class UserController extends ControllerSupport {
     	if (!SignUpForm.isValidEmail(email)) {
     		return badRequest("invalid email address");
     	}
-		String commandId = queue.dispatch(new ChangeUserEmailCommand(principal, user.getName(), user.isVerified() && user.getEmail().equals(email), user.getEmail(), email));
+		String commandId = queue.dispatch(new ChangeUserEmailCommand(principal, user.getName(), user.getEmail(), email, user.isVerified(), user.isVerified() && user.getEmail().equals(email)));
 		verificationMailer.send(user.getName(), email);
 		return ok(receipt(commandId));
 	}
