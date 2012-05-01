@@ -26,7 +26,7 @@ public class CommandReplay {
 		if (!sourceCluster.isEmpty()) {
 			Logger.info("Replaying commands from " + sourceCluster + "...");
 			IndexManager indexManager = new IndexManager(sourceCluster, true);
-			CommandStore store = new PersistentCommandStore(indexManager, parsers);
+			CommandStore store = new CommandStore(indexManager, parsers);
 			store.findAll(new Callback<Command>() {
 				@Override
 				public void call(Command command) {

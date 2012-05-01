@@ -45,7 +45,6 @@ import com.zenobase.services.CommandReplay;
 import com.zenobase.services.CommandStore;
 import com.zenobase.services.IndexManager;
 import com.zenobase.services.Mailer;
-import com.zenobase.services.PersistentCommandStore;
 import com.zenobase.services.UserManager;
 
 public class Global extends GlobalSettings {
@@ -68,7 +67,7 @@ public class Global extends GlobalSettings {
 				bind(IndexManager.class).in(Singleton.class);
 				bind(BucketManager.class).in(Singleton.class);
 				bind(CommandQueue.class).in(Singleton.class);
-				bind(CommandStore.class).to(PersistentCommandStore.class);
+				bind(CommandStore.class).in(Singleton.class);
 				bind(UserManager.class).in(Singleton.class);
 				bind(CommandParserRegistry.class).in(Singleton.class);
 				bind(CommandHandlerRegistry.class).in(Singleton.class);
