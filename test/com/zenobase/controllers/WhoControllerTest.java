@@ -12,7 +12,6 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 
 import com.zenobase.common.Generator;
-import com.zenobase.models.Identity;
 import com.zenobase.models.User;
 import com.zenobase.models.UserInfo;
 import com.zenobase.services.UserManager;
@@ -21,6 +20,7 @@ public class WhoControllerTest {
 
 	private final SecurityContext auth = mock(SecurityContext.class);
 	private final UserManager users = mock(UserManager.class);
+	private final User user = new User(Generator.id(), "tester");
 
 	@Before
 	public void setUp() {
@@ -37,25 +37,27 @@ public class WhoControllerTest {
 	@Test
 	public void testUnknown() {
 		when(auth.getPrincipal()).thenReturn(null);
-		Result result = callAction(com.zenobase.controllers.routes.ref.WhoController.who(), fakeRequest());
+		Result result = call();
 		assertThat(result).hasStatus(NO_CONTENT).isEmpty();
 	}
 
 	@Test
 	public void testGuest() {
-		Identity principal = new Identity();
-		when(auth.getPrincipal()).thenReturn(principal);
-		when(users.find(principal)).thenReturn(null);
-		Result result = callAction(com.zenobase.controllers.routes.ref.WhoController.who(), fakeRequest());
-		assertThat(result).hasStatus(OK).hasContent(principal.toJson());
+		when(auth.getPrincipal()).thenReturn(user.asIdentity());
+		when(users.find(user.asIdentity())).thenReturn(null);
+		Result result = call();
+		assertThat(result).hasStatus(OK).hasContent(user.asIdentity().toJson());
 	}
 
 	@Test
 	public void testUser() {
-		User user = new User(Generator.id(), "tester");
 		when(auth.getPrincipal()).thenReturn(user.asIdentity());
 		when(users.find(user.asIdentity())).thenReturn(user);
-		Result result = callAction(com.zenobase.controllers.routes.ref.WhoController.who(), fakeRequest());
+		Result result = call();
 		assertThat(result).hasStatus(OK).hasContent(new UserInfo(user).toJson());
+	}
+
+	private static Result call() {
+		return callAction(com.zenobase.controllers.routes.ref.WhoController.who(), fakeRequest());
 	}
 }

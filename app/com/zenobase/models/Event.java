@@ -3,6 +3,7 @@ package com.zenobase.models;
 import org.codehaus.jackson.node.ObjectNode;
 import com.google.common.collect.ImmutableSet;
 
+import com.zenobase.common.Generator;
 import com.zenobase.json.DateTimeField;
 import com.zenobase.json.DurationField;
 import com.zenobase.json.Field;
@@ -33,8 +34,8 @@ public class Event extends DomainNode {
 	private static final ImmutableSet<Field<?>> FIELDS =
 		ImmutableSet.<Field<?>>of(ID, VERSION, AUTHOR, TIMESTAMP, DURATION, LOCATION, TAG, RESOURCE, DISTANCE, HEIGHT, RATING);
 
-	public Event(String id) {
-		setValue(ID, id);
+	public Event() {
+		setValue(ID, Generator.id());
 	}
 
 	public Event(ObjectNode node) {

@@ -9,7 +9,6 @@ import org.joda.time.DateTimeZone;
 import org.junit.Test;
 import com.google.common.collect.ImmutableList;
 
-import com.zenobase.common.Generator;
 import com.zenobase.json.Nodes;
 import com.zenobase.models.Bucket;
 import com.zenobase.models.Event;
@@ -22,59 +21,57 @@ public class BucketManagerTest extends ElasticSearchTestSupport {
 	public void test() {
 
 		// create bucket
-		String bucketId = Generator.id();
 		String label = "Test Bucket";
 		Identity principal = new Identity("me");
 		ObjectNode widget = Nodes.newObject();
 		ImmutableList<ObjectNode> widgets = ImmutableList.of(widget);
 		widget.put("option", true);
-		Bucket bucket = new Bucket(bucketId);
+		Bucket bucket = new Bucket();
 		bucket.setLabel(label);
 		bucket.addPermission(principal, Permission.ALL);
 		bucket.setWidgets(widgets);
 
 		IndexManager indexManager = mock(IndexManager.class);
 		Index bucketIndex = new Index(BucketManager.INDEX_NAME, getClient());
-		Index eventIndex = new Index(bucketId, getClient());
+		Index eventIndex = new Index(bucket.getId(), getClient());
 		when(indexManager.getIndex(BucketManager.INDEX_NAME)).thenReturn(bucketIndex);
-		when(indexManager.getIndex(bucketId)).thenReturn(eventIndex);
+		when(indexManager.getIndex(bucket.getId())).thenReturn(eventIndex);
 		BucketManager manager = new BucketManager(indexManager);
 
 		// store and retrieve bucket
 		manager.store(bucket, true);
-		assertThat((Object) manager.findBucket(bucketId).toJson()).isEqualTo(bucket.toJson());
+		assertThat((Object) manager.findBucket(bucket.getId()).toJson()).isEqualTo(bucket.toJson());
 
 		// update bucket
 		String description = "just a test";
 		bucket.setDescription(description);
 		manager.update(bucket);
-		assertThat((Object) manager.findBucket(bucketId).toJson()).isEqualTo(bucket.toJson());
+		assertThat((Object) manager.findBucket(bucket.getId()).toJson()).isEqualTo(bucket.toJson());
 
 		// delete and recreate bucket
-		manager.deleteBucket(bucketId);
-		assertThat(manager.findBucket(bucketId)).as("bucket").isNull();
+		manager.deleteBucket(bucket.getId());
+		assertThat(manager.findBucket(bucket.getId())).as("bucket").isNull();
 		manager.store(bucket, false);
-		assertThat((Object) manager.findBucket(bucketId).toJson()).isEqualTo(bucket.toJson());
+		assertThat((Object) manager.findBucket(bucket.getId()).toJson()).isEqualTo(bucket.toJson());
 
 		// create event
-		String eventId = Generator.id();
-		Event event = new Event(eventId);
+		Event event = new Event();
 		event.setValue(Event.AUTHOR, principal);
 		event.setValue(Event.TIMESTAMP, new DateTime(DateTimeZone.UTC));
 		event.addValue(Event.TAG, "test");
 		event.addValue(Event.TAG, "demo");
 
 		// store and retrieve event
-		assertThat(manager.getSize(bucketId)).as("bucket size").isZero();
-		manager.add(bucketId, event);
+		assertThat(manager.getSize(bucket.getId())).as("bucket size").isZero();
+		manager.add(bucket.getId(), event);
 		eventIndex.refresh();
-		assertThat(manager.getSize(bucketId)).as("bucket size").isEqualTo(1L);
-		assertThat((Object) manager.findEvent(bucketId, eventId).toJson()).isEqualTo(event.toJson());
+		assertThat(manager.getSize(bucket.getId())).as("bucket size").isEqualTo(1L);
+		assertThat((Object) manager.findEvent(bucket.getId(), event.getId()).toJson()).isEqualTo(event.toJson());
 
 		// delete event
-		manager.delete(bucketId, eventId);
+		manager.delete(bucket.getId(), event.getId());
 		eventIndex.refresh();
-		assertThat(manager.getSize(bucketId)).as("bucket size").isZero();
-		assertThat(manager.findEvent(bucketId, eventId)).as("event").isNull();
+		assertThat(manager.getSize(bucket.getId())).as("bucket size").isZero();
+		assertThat(manager.findEvent(bucket.getId(), event.getId())).as("event").isNull();
 	}
 }

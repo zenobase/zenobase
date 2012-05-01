@@ -38,7 +38,7 @@ public class PasswordResetControllerTest {
 	}
 
 	@Test
-	public void test() {
+	public void testSuccess() {
 		user.setEmail("jdoe@zenobase.com");
 		user.setVerified(true);
 		when(users.find(user.getName())).thenReturn(user);
@@ -51,7 +51,7 @@ public class PasswordResetControllerTest {
 	}
 
 	@Test
-	public void testFailBecauseUnverified() {
+	public void testUnverifiedUser() {
 		user.setEmail("jdoe@zenobase.com");
 		user.setVerified(false);
 		when(users.find(user.getName())).thenReturn(user);
@@ -63,7 +63,7 @@ public class PasswordResetControllerTest {
 	}
 
 	@Test
-	public void testFailBecauseEmailDoesntMatch() {
+	public void testEmailDoesntMatch() {
 		user.setEmail("jdoe@zenobase.com");
 		user.setVerified(true);
 		when(users.find(user.getName())).thenReturn(user);
@@ -75,7 +75,7 @@ public class PasswordResetControllerTest {
 	}
 
 	@Test
-	public void testFailBecauseUsernameIsMissing() {
+	public void testMissingUsername() {
 		user.setEmail("jdoe@zenobase.com");
 		user.setVerified(true);
 		when(users.find(user.getName())).thenReturn(user);
@@ -86,7 +86,7 @@ public class PasswordResetControllerTest {
 	}
 
 	@Test
-	public void testFailBecauseUserNotFound() {
+	public void testUserNotFound() {
 		when(users.find(user.getName())).thenReturn(null);
 		ObjectNode body = Nodes.newObject();
 		body.put(PasswordResetController.USERNAME.getName(), user.getName());

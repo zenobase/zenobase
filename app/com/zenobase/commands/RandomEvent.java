@@ -15,7 +15,6 @@ import com.google.common.base.Charsets;
 import com.google.common.io.Files;
 import com.google.common.io.LineProcessor;
 
-import com.zenobase.common.Generator;
 import com.zenobase.common.RandomElement;
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
@@ -100,7 +99,7 @@ class RandomEvent {
 			.add(Rating.valueOf(  0), 1);
 
 		public Event build(String bucketId, Identity principal) {
-			Event event = new Event(Generator.id());
+			Event event = new Event();
 			event.setValue(Event.AUTHOR, principal);
 			event.setValue(Event.TIMESTAMP, nextTimestamp());
 			addFields(event);

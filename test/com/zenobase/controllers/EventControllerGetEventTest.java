@@ -28,8 +28,8 @@ public class EventControllerGetEventTest {
 	private final IndexManager indexes = mock(IndexManager.class);
 	private final CommandQueue queue = mock(CommandQueue.class);
 	private final User user = new User(Generator.id(), "tester");
-	private final Bucket bucket = new Bucket(Generator.id());
-	private final Event event = new Event(Generator.id());
+	private final Bucket bucket = new Bucket();
+	private final Event event = new Event();
 
 	@Before
 	public void setUp() {

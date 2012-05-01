@@ -18,7 +18,7 @@ import com.zenobase.models.UserProfile;
 import com.zenobase.services.CommandQueue;
 import com.zenobase.services.UserManager;
 
-public class UserControllerTest {
+public class UserControllerGetUserTest {
 
 	private final SecurityContext auth = mock(SecurityContext.class);
 	private final UserManager users = mock(UserManager.class);

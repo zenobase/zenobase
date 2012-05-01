@@ -7,6 +7,7 @@ import org.codehaus.jackson.node.ObjectNode;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
 
+import com.zenobase.common.Generator;
 import com.zenobase.json.ObjectField;
 import com.zenobase.json.PermissionField;
 import com.zenobase.json.Schema;
@@ -28,8 +29,8 @@ public class Bucket extends DomainNode {
 		super(node);
 	}
 
-	public Bucket(String id) {
-		setValue(ID, id);
+	public Bucket() {
+		setValue(ID, Generator.id());
 	}
 
 	public String getId() {

@@ -10,7 +10,6 @@ import play.mvc.With;
 
 import com.zenobase.commands.CreateBucketCommand;
 import com.zenobase.common.Callback;
-import com.zenobase.common.Generator;
 import com.zenobase.common.PartialList;
 import com.zenobase.io.BucketPrinter;
 import com.zenobase.json.Nodes;
@@ -111,7 +110,7 @@ public class BucketListController extends ControllerSupport {
     }
 
 	private static Bucket createBucket(String label, String description, Identity principal) {
-		Bucket bucket = new Bucket(Generator.id());
+		Bucket bucket = new Bucket();
 		bucket.setLabel(label);
 		bucket.setDescription(description);
 		bucket.addPermission(principal, Permission.ALL);
