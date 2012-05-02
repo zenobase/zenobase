@@ -39,15 +39,16 @@ public class ListWidgetTest extends WidgetTestSupport {
 		e3.setValue(Event.AUTHOR, principal);
 		e3.setValue(Event.TAG, "beta");
 		e3.setValue(Event.TIMESTAMP, new DateTime(DateTimeZone.UTC).minusHours(3));
-
-		addEvent(e2);
-		addEvent(e1);
-		addEvent(e3);
 	}
 
 	@Test
 	public void testDefault() {
+
+		addEvent(e2);
+		addEvent(e1);
+		addEvent(e3);
 		addWidget(String.format("id:%s,type:%s", id, "list"));
+
 		ObjectNode result = execute();
 		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(3);
 		assertThat(result).path(id).path(0).isEqualTo(e1.toJson());
@@ -57,7 +58,12 @@ public class ListWidgetTest extends WidgetTestSupport {
 
 	@Test
 	public void testConfigured() {
+
+		addEvent(e2);
+		addEvent(e1);
+		addEvent(e3);
 		addWidget(String.format("id:%s,type:%s,offset:%d,limit:%d,order:%s,reverse:%s", id, "list", 1, 1, Event.TAG.getName(), true));
+
 		ObjectNode result = execute();
 		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(3);
 		assertThat(result).path(id).hasSize(1).path(0).isEqualTo(e3.toJson());
