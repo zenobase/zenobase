@@ -22,6 +22,8 @@ import com.zenobase.models.Event;
 
 public class TimelineWidget implements Widget {
 
+	public static final String TYPE = "timeline";
+
 	private final String id;
 	private final String field;
 	private final String interval;

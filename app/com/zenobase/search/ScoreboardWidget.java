@@ -16,6 +16,8 @@ import com.zenobase.json.Nodes;
 
 public class ScoreboardWidget implements Widget {
 
+	public static final String TYPE = "scoreboard";
+
 	private final String id;
 	private final String termField;
 	private final String valueField;

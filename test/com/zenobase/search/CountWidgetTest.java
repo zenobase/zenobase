@@ -21,26 +21,24 @@ public class CountWidgetTest extends WidgetTestSupport {
 	@Before
 	@Override
 	public void setUp() {
-
 		super.setUp();
-
-		e1 = new Event();
-		e1.setValue(Event.TAG, TAG_LUNCH);
-
-		e2 = new Event();
-		e2.setValue(Event.TAG, TAG_DINNER);
-
-		e3 = new Event();
-		e3.setValue(Event.TAG, TAG_LUNCH);
+		e1 = newEvent(TAG_LUNCH);
+		e2 = newEvent(TAG_DINNER);
+		e3 = newEvent(TAG_LUNCH);
 	}
 
+	private static Event newEvent(String tag) {
+		Event event = new Event();
+		event.setValue(Event.TAG, tag);
+		return event;
+	}
 	@Test
 	public void testDefault() {
 
 		addEvent(e1);
 		addEvent(e2);
 		addEvent(e3);
-		addWidget(String.format("id:%s,type:%s,field:%s", id, "count", Event.TAG));
+		addWidget(String.format("id:%s,type:%s,field:%s", id, CountWidget.TYPE, Event.TAG));
 
 		ObjectNode result = execute();
 		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(3);
@@ -57,7 +55,7 @@ public class CountWidgetTest extends WidgetTestSupport {
 		addEvent(e1);
 		addEvent(e2);
 		addEvent(e3);
-		addWidget(String.format("id:%s,type:%s,field:%s,order:%s", id, "count", Event.TAG, "term"));
+		addWidget(String.format("id:%s,type:%s,field:%s,order:%s", id, CountWidget.TYPE, Event.TAG, "term"));
 
 		ObjectNode result = execute();
 		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(3);
@@ -74,7 +72,7 @@ public class CountWidgetTest extends WidgetTestSupport {
 		addEvent(e1);
 		addEvent(e2);
 		addEvent(e3);
-		addWidget(String.format("id:%s,type:%s,field:%s,reverse:%s", id, "count", Event.TAG, true));
+		addWidget(String.format("id:%s,type:%s,field:%s,reverse:%s", id, CountWidget.TYPE, Event.TAG, true));
 
 		ObjectNode result = execute();
 		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(3);
@@ -91,7 +89,7 @@ public class CountWidgetTest extends WidgetTestSupport {
 		addEvent(e1);
 		addEvent(e2);
 		addEvent(e3);
-		addWidget(String.format("id:%s,type:%s,field:%s,limit:%s", id, "count", Event.TAG, 1));
+		addWidget(String.format("id:%s,type:%s,field:%s,limit:%s", id, CountWidget.TYPE, Event.TAG, 1));
 
 		ObjectNode result = execute();
 		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(3);
@@ -108,7 +106,7 @@ public class CountWidgetTest extends WidgetTestSupport {
 		addEvent(e1);
 		addEvent(e2);
 		addEvent(e3);
-		addWidget(String.format("id:%s,type:%s,field:%s,offset:%s", id, "count", Event.TAG, 1));
+		addWidget(String.format("id:%s,type:%s,field:%s,offset:%s", id, CountWidget.TYPE, Event.TAG, 1));
 
 		ObjectNode result = execute();
 		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(3);
@@ -120,7 +118,7 @@ public class CountWidgetTest extends WidgetTestSupport {
 	@Test
 	public void testEmpty() {
 
-		addWidget(String.format("id:%s,type:%s,field:%s", id, "count", Event.TAG));
+		addWidget(String.format("id:%s,type:%s,field:%s", id, CountWidget.TYPE, Event.TAG));
 
 		ObjectNode result = execute();
 		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(0);

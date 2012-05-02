@@ -41,7 +41,7 @@ public class HistogramWidgetTest extends WidgetTestSupport {
 		addEvent(e3);
 		addEvent(e4);
 		addEvent(e5);
-		addWidget(String.format("id:%s,type:%s,field:%s", id, "histogram", Event.RATING));
+		addWidget(String.format("id:%s,type:%s,field:%s", id, HistogramWidget.TYPE, Event.RATING));
 
 		ObjectNode result = execute();
 		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(5);
@@ -63,7 +63,7 @@ public class HistogramWidgetTest extends WidgetTestSupport {
 	@Test
 	public void testEmpty() {
 
-		addWidget(String.format("id:%s,type:%s,field:%s", id, "histogram", Event.RATING));
+		addWidget(String.format("id:%s,type:%s,field:%s", id, HistogramWidget.TYPE, Event.RATING));
 
 		ObjectNode result = execute();
 		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(0);

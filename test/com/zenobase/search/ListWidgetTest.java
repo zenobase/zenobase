@@ -47,13 +47,24 @@ public class ListWidgetTest extends WidgetTestSupport {
 		addEvent(e2);
 		addEvent(e1);
 		addEvent(e3);
-		addWidget(String.format("id:%s,type:%s", id, "list"));
+		addWidget(String.format("id:%s,type:%s", id, ListWidget.TYPE));
 
 		ObjectNode result = execute();
 		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(3);
+		assertThat(result).path(id).hasSize(3);
 		assertThat(result).path(id).path(0).isEqualTo(e1.toJson());
 		assertThat(result).path(id).path(1).isEqualTo(e2.toJson());
 		assertThat(result).path(id).path(2).isEqualTo(e3.toJson());
+	}
+
+	@Test
+	public void testEmpty() {
+
+		addWidget(String.format("id:%s,type:%s", id, ListWidget.TYPE));
+
+		ObjectNode result = execute();
+		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(0);
+		assertThat(result).path(id).hasSize(0);
 	}
 
 	@Test
@@ -62,10 +73,11 @@ public class ListWidgetTest extends WidgetTestSupport {
 		addEvent(e2);
 		addEvent(e1);
 		addEvent(e3);
-		addWidget(String.format("id:%s,type:%s,offset:%d,limit:%d,order:%s,reverse:%s", id, "list", 1, 1, Event.TAG.getName(), true));
+		addWidget(String.format("id:%s,type:%s,offset:%d,limit:%d,order:%s,reverse:%s", id, ListWidget.TYPE, 1, 1, Event.TAG.getName(), true));
 
 		ObjectNode result = execute();
 		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(3);
-		assertThat(result).path(id).hasSize(1).path(0).isEqualTo(e3.toJson());
+		assertThat(result).path(id).hasSize(1);
+		assertThat(result).path(id).path(0).isEqualTo(e3.toJson());
 	}
 }

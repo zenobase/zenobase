@@ -20,14 +20,15 @@ public class TimelineWidgetTest extends WidgetTestSupport {
 	@Before
 	@Override
 	public void setUp() {
-
 		super.setUp();
+		first = newEvent(new DateTime(2012, 3, 31, 20, 15, 30, DateTimeZone.UTC));
+		last = newEvent(new DateTime(2012, 5, 15, 8, 30, 00, DateTimeZone.UTC));
+	}
 
-		first = new Event();
-		first.setValue(Event.TIMESTAMP, new DateTime(2012, 3, 31, 20, 15, 30, DateTimeZone.UTC));
-
-		last = new Event();
-		last.setValue(Event.TIMESTAMP, new DateTime(2012, 5, 15, 8, 30, 00, DateTimeZone.UTC));
+	private static Event newEvent(DateTime timestamp) {
+		Event event = new Event();
+		event.setValue(Event.TIMESTAMP, timestamp);
+		return event;
 	}
 
 	@Test
@@ -35,7 +36,7 @@ public class TimelineWidgetTest extends WidgetTestSupport {
 
 		addEvent(first);
 		addEvent(last);
-		addWidget(String.format("id:%s,type:%s", id, "timeline"));
+		addWidget(String.format("id:%s,type:%s", id, TimelineWidget.TYPE));
 
 		ObjectNode result = execute();
 		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(2);
@@ -51,7 +52,7 @@ public class TimelineWidgetTest extends WidgetTestSupport {
 	@Test
 	public void testEmpty() {
 
-		addWidget(String.format("id:%s,type:%s", id, "timeline"));
+		addWidget(String.format("id:%s,type:%s", id, TimelineWidget.TYPE));
 
 		ObjectNode result = execute();
 		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(0);
@@ -63,7 +64,7 @@ public class TimelineWidgetTest extends WidgetTestSupport {
 
 		addEvent(first);
 		addEvent(last);
-		addWidget(String.format("id:%s,type:%s,interval:%s", id, "timeline", "year"));
+		addWidget(String.format("id:%s,type:%s,interval:%s", id, TimelineWidget.TYPE, "year"));
 
 		ObjectNode result = execute();
 		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(2);
@@ -77,7 +78,7 @@ public class TimelineWidgetTest extends WidgetTestSupport {
 
 		addEvent(first);
 		addEvent(last);
-		addWidget(String.format("id:%s,type:%s,interval:%s,range:%s", id, "timeline", "month", "2012T+0000"));
+		addWidget(String.format("id:%s,type:%s,interval:%s,range:%s", id, TimelineWidget.TYPE, "month", "2012T+0000"));
 
 		ObjectNode result = execute();
 		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(2);
@@ -97,7 +98,7 @@ public class TimelineWidgetTest extends WidgetTestSupport {
 
 		addEvent(first);
 		addEvent(last);
-		addWidget(String.format("id:%s,type:%s,interval:%s,range:%s", id, "timeline", "day", "2012-03T+0000"));
+		addWidget(String.format("id:%s,type:%s,interval:%s,range:%s", id, TimelineWidget.TYPE, "day", "2012-03T+0000"));
 
 		ObjectNode result = execute();
 		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(2);
@@ -113,7 +114,7 @@ public class TimelineWidgetTest extends WidgetTestSupport {
 
 		addEvent(first);
 		addEvent(last);
-		addWidget(String.format("id:%s,type:%s,interval:%s,range:%s", id, "timeline", "hour", "2012-03-31T+0000"));
+		addWidget(String.format("id:%s,type:%s,interval:%s,range:%s", id, TimelineWidget.TYPE, "hour", "2012-03-31T+0000"));
 
 		ObjectNode result = execute();
 		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(2);
@@ -131,7 +132,7 @@ public class TimelineWidgetTest extends WidgetTestSupport {
 
 		addEvent(first);
 		addEvent(last);
-		addWidget(String.format("id:%s,type:%s,interval:%s,range:%s,timezone:%s", id, "timeline", "hour", "2012-03-31T-0800", "-08:00"));
+		addWidget(String.format("id:%s,type:%s,interval:%s,range:%s,timezone:%s", id, TimelineWidget.TYPE, "hour", "2012-03-31T-0800", "-08:00"));
 
 		ObjectNode result = execute();
 		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(2);
@@ -149,7 +150,7 @@ public class TimelineWidgetTest extends WidgetTestSupport {
 
 		addEvent(first);
 		addEvent(last);
-		addWidget(String.format("id:%s,type:%s,interval:%s,range:%s", id, "timeline", "minute", "2012-03-31T20+0000"));
+		addWidget(String.format("id:%s,type:%s,interval:%s,range:%s", id, TimelineWidget.TYPE, "minute", "2012-03-31T20+0000"));
 
 		ObjectNode result = execute();
 		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(2);

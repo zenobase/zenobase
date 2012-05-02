@@ -13,7 +13,8 @@ import com.zenobase.json.Nodes;
 
 public class CountWidget implements Widget {
 
-	static final String LABEL_MORE = "...";
+	public static final String TYPE = "count";
+	public static final String LABEL_MORE = "...";
 
 	private final String id;
 	private final String field;

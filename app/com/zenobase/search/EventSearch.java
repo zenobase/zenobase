@@ -25,12 +25,12 @@ public class EventSearch {
 	static final IntegerField TOTAL = new IntegerField("total");
 
 	private static final ImmutableMap<String, WidgetBuilder> widgetBuilders = ImmutableMap.<String, WidgetBuilder>builder()
-		.put("list", ListWidget.builder())
-		.put("count", CountWidget.builder())
-		.put("gantt", GanttWidget.builder())
-		.put("histogram", HistogramWidget.builder())
-		.put("timeline", TimelineWidget.builder())
-		.put("scoreboard", ScoreboardWidget.builder())
+		.put(ListWidget.TYPE, ListWidget.builder())
+		.put(CountWidget.TYPE, CountWidget.builder())
+		.put(GanttWidget.TYPE, GanttWidget.builder())
+		.put(HistogramWidget.TYPE, HistogramWidget.builder())
+		.put(TimelineWidget.TYPE, TimelineWidget.builder())
+		.put(ScoreboardWidget.TYPE, ScoreboardWidget.builder())
 		.build();
 
 	private final ImmutableMultimap<String, Constraint> constraintBuilders = ImmutableMultimap.<String, Constraint>builder()

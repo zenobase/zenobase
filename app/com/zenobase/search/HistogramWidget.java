@@ -14,6 +14,8 @@ import com.zenobase.json.Nodes;
 
 public class HistogramWidget implements Widget {
 
+	public static final String TYPE = "histogram";
+
 	private final String id;
 	private final String field;
 	private final double from, to, step;

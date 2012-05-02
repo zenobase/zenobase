@@ -12,6 +12,8 @@ import com.zenobase.models.Event;
 
 public class ListWidget implements Widget {
 
+	public static final String TYPE = "list";
+
 	private final String id;
 	private final int offset;
 	private final int limit;

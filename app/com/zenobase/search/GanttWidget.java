@@ -12,10 +12,16 @@ import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 
 import com.zenobase.json.DateTimeField;
+import com.zenobase.json.LongField;
 import com.zenobase.json.Nodes;
+import com.zenobase.json.TokenField;
 
 public class GanttWidget implements Widget {
 
+	public static final String TYPE = "gantt";
+
+	private static final TokenField LABEL = new TokenField("label");
+	private static final LongField COUNT = new LongField("count");
 	private static final DateTimeField FIRST = new DateTimeField("first");
 	private static final DateTimeField LAST = new DateTimeField("last");
 
@@ -53,12 +59,11 @@ public class GanttWidget implements Widget {
 		for (TermsStatsFacet.Entry entry : terms.entries()) {
 			DateTime first = asDateTime(entry.getMin());
 			if (first != null) {
-				DateTime last = asDateTime(entry.getMax());
 				ObjectNode entryNode = result.addObject();
-				entryNode.put("label", entry.getTerm());
-				entryNode.put("count", entry.getCount());
+				LABEL.setValue(entryNode, entry.getTerm());
+				COUNT.setValue(entryNode, entry.getCount());
 				FIRST.setValue(entryNode, first);
-				LAST.setValue(entryNode, last);
+				LAST.setValue(entryNode, asDateTime(entry.getMax()));
 			}
 		}
 		return result;
