@@ -68,9 +68,9 @@ public class HistogramWidget implements Widget {
 				return new HistogramWidget(
 					options.get("id"),
 					options.get("field"),
-					options.get("from", Double.class, 0.0),
-					options.get("to", Double.class, 10.0),
-					options.get("step", Double.class, 1.0));
+					options.get("from", Double.class, 10.0),
+					options.get("to", Double.class, 90.0),
+					options.get("step", Double.class, 20.0));
 			}
 		};
 	}

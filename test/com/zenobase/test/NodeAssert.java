@@ -4,6 +4,7 @@ import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.node.ArrayNode;
 import org.codehaus.jackson.node.ObjectNode;
 import org.fest.assertions.Assertions;
+import org.fest.assertions.Delta;
 import org.fest.assertions.GenericAssert;
 
 public class NodeAssert extends GenericAssert<NodeAssert, JsonNode> {
@@ -34,6 +35,12 @@ public class NodeAssert extends GenericAssert<NodeAssert, JsonNode> {
 	public NodeAssert isEqualTo(int expected) {
 		Assertions.assertThat(actual.isIntegralNumber()).overridingErrorMessage("expected int node but found " + actual).isTrue();
 		Assertions.assertThat(actual.getIntValue()).as("int value").isEqualTo(expected);
+		return this;
+	}
+
+	public NodeAssert isEqualTo(double expected) {
+		Assertions.assertThat(actual.isFloatingPointNumber()).overridingErrorMessage("expected floating point node but found " + actual).isTrue();
+		Assertions.assertThat(actual.asDouble()).as("double value").isEqualTo(expected, Delta.delta(0.001));
 		return this;
 	}
 
