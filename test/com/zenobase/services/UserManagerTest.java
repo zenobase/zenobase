@@ -29,6 +29,7 @@ public class UserManagerTest extends ElasticSearchTestSupport {
 		Index index = new Index(UserManager.INDEX_NAME, getClient());
 		when(indexManager.getIndex(UserManager.INDEX_NAME)).thenReturn(index);
 		UserManager manager = new UserManager(indexManager);
+		assertThat(manager.isEmpty()).as("no users").isTrue();
 
 		// store and retrieve user
 		manager.store(user);
@@ -38,7 +39,6 @@ public class UserManagerTest extends ElasticSearchTestSupport {
 		user.setVerified(true);
 		manager.update(user);
 		assertThat(manager.find(userId).toJson()).isEqualTo(user.toJson());
-
 
 		// delete user
 		manager.delete(user);

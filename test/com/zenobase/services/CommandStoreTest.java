@@ -8,9 +8,8 @@ import org.junit.Test;
 
 import com.zenobase.commands.Command;
 import com.zenobase.commands.CommandParserRegistry;
-import com.zenobase.commands.CreateUserCommand;
+import com.zenobase.commands.TestCommand;
 import com.zenobase.models.Identity;
-import com.zenobase.models.User;
 
 public class CommandStoreTest extends ElasticSearchTestSupport {
 
@@ -19,17 +18,23 @@ public class CommandStoreTest extends ElasticSearchTestSupport {
 	@Test
 	public void test() {
 
-		CommandParserRegistry parsers = CommandParserRegistry.create(new CreateUserCommand.Parser());
+		CommandParserRegistry parsers = CommandParserRegistry.create(new TestCommand.Parser());
 		IndexManager indexManager = mock(IndexManager.class);
 		Index index = new Index(CommandStore.INDEX_NAME, getClient());
 		when(indexManager.getIndex(CommandStore.INDEX_NAME)).thenReturn(index);
 		CommandStore store = new CommandStore(indexManager, parsers);
 		assertThat(store.size()).as("stored commands").isZero();
 
-		Command command = new CreateUserCommand(principal, new User(principal.getId(), "tester"));
-		store.put(command);
-		assertThat(store.find(command.getId()).toJson()).isEqualTo(command.toJson());
+		Command command1 = new TestCommand(principal, "some work");
+		store.put(command1);
+		assertThat(store.find(command1.getId()).toJson()).isEqualTo(command1.toJson());
 		index.refresh();
 		assertThat(store.size()).as("stored commands").isEqualTo(1);
+
+		Command command2 = new TestCommand(principal, "more work");
+		store.put(command2);
+		assertThat(store.find(command2.getId()).toJson()).isEqualTo(command2.toJson());
+		index.refresh();
+		assertThat(store.size()).as("stored commands").isEqualTo(2);
 	}
 }
