@@ -7,7 +7,6 @@ import org.junit.Test;
 import com.zenobase.models.Bucket;
 import com.zenobase.models.Identity;
 import com.zenobase.services.BucketManager;
-import com.zenobase.services.CommandHandlerRegistry;
 
 public class CreateDeleteAndRestoreBucketCommandTest {
 

@@ -5,6 +5,7 @@ import static org.mockito.Mockito.*;
 import org.junit.Test;
 
 import com.zenobase.commands.Command;
+import com.zenobase.commands.CommandHandlerRegistry;
 import com.zenobase.commands.CompoundCommand;
 import com.zenobase.commands.TestCommand;
 import com.zenobase.models.Identity;

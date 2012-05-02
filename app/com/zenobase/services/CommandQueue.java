@@ -5,6 +5,7 @@ import play.Logger.ALogger;
 import com.google.inject.Inject;
 
 import com.zenobase.commands.Command;
+import com.zenobase.commands.CommandHandlerRegistry;
 import com.zenobase.commands.CompoundCommand;
 
 public class CommandQueue {

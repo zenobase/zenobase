@@ -1,4 +1,4 @@
-package com.zenobase.services;
+package com.zenobase.commands;
 
 import java.util.Map;
 import java.util.Set;
@@ -8,8 +8,6 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
 import com.google.inject.Inject;
 
-import com.zenobase.commands.Command;
-import com.zenobase.commands.CommandHandler;
 
 public class CommandHandlerRegistry {
 

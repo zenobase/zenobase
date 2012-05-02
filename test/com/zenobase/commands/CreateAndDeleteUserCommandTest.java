@@ -6,7 +6,6 @@ import org.junit.Test;
 
 import com.zenobase.common.Generator;
 import com.zenobase.models.User;
-import com.zenobase.services.CommandHandlerRegistry;
 import com.zenobase.services.UserManager;
 
 public class CreateAndDeleteUserCommandTest {
