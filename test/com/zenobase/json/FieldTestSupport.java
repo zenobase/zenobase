@@ -4,9 +4,6 @@ import static org.fest.assertions.Assertions.assertThat;
 
 import org.codehaus.jackson.node.ObjectNode;
 
-import com.zenobase.json.Field;
-import com.zenobase.json.SchemaBuilder;
-
 public abstract class FieldTestSupport {
 
 	protected final String FIELD_NAME = "field";
@@ -17,7 +14,6 @@ public abstract class FieldTestSupport {
 		field.setValue(node, value);
 		field.prePersist(node);
 		// TODO: roundtrip to index
-		field.postLoad(node);
 		assertThat(field.getValue(node)).as("field value").isEqualTo(value);
 		field.configureSchema(Nodes.newObject());
 	}

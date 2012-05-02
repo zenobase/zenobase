@@ -69,14 +69,6 @@ public class Event extends DomainNode {
 		}
 	}
 
-	public void postLoad() {
-		for (Field<?> field : FIELDS) {
-			if (contains(field)) {
-				field.postLoad(toJson());
-			}
-		}
-	}
-
 	public static Schema getSchema() {
 		SchemaBuilder schema = new SchemaBuilder(TYPE_NAME);
 		for (Field<?> field : FIELDS) {
