@@ -12,6 +12,9 @@ import com.zenobase.test.NodeAssert;
 
 public class CountWidgetTest extends WidgetTestSupport {
 
+	private static final String TAG_LUNCH = "lunch";
+	private static final String TAG_DINNER = "dinner";
+
 	private String id = Generator.id();
 	private Event e1, e2, e3;
 
@@ -22,13 +25,13 @@ public class CountWidgetTest extends WidgetTestSupport {
 		super.setUp();
 
 		e1 = new Event();
-		e1.setValue(Event.TAG, "lunch");
+		e1.setValue(Event.TAG, TAG_LUNCH);
 
 		e2 = new Event();
-		e2.setValue(Event.TAG, "dinner");
+		e2.setValue(Event.TAG, TAG_DINNER);
 
 		e3 = new Event();
-		e3.setValue(Event.TAG, "lunch");
+		e3.setValue(Event.TAG, TAG_LUNCH);
 	}
 
 	@Test
@@ -42,9 +45,9 @@ public class CountWidgetTest extends WidgetTestSupport {
 		ObjectNode result = execute();
 		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(3);
 		NodeAssert node = assertThat(result).path(id).hasSize(2);
-		node.path(0).path("label").isEqualTo("lunch");
+		node.path(0).path("label").isEqualTo(TAG_LUNCH);
 		node.path(0).path("count").isEqualTo(2);
-		node.path(1).path("label").isEqualTo("dinner");
+		node.path(1).path("label").isEqualTo(TAG_DINNER);
 		node.path(1).path("count").isEqualTo(1);
 	}
 
@@ -59,9 +62,9 @@ public class CountWidgetTest extends WidgetTestSupport {
 		ObjectNode result = execute();
 		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(3);
 		NodeAssert node = assertThat(result).path(id).hasSize(2);
-		node.path(0).path("label").isEqualTo("dinner");
+		node.path(0).path("label").isEqualTo(TAG_DINNER);
 		node.path(0).path("count").isEqualTo(1);
-		node.path(1).path("label").isEqualTo("lunch");
+		node.path(1).path("label").isEqualTo(TAG_LUNCH);
 		node.path(1).path("count").isEqualTo(2);
 	}
 
@@ -76,9 +79,9 @@ public class CountWidgetTest extends WidgetTestSupport {
 		ObjectNode result = execute();
 		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(3);
 		NodeAssert node = assertThat(result).path(id).hasSize(2);
-		node.path(0).path("label").isEqualTo("dinner");
+		node.path(0).path("label").isEqualTo(TAG_DINNER);
 		node.path(0).path("count").isEqualTo(1);
-		node.path(1).path("label").isEqualTo("lunch");
+		node.path(1).path("label").isEqualTo(TAG_LUNCH);
 		node.path(1).path("count").isEqualTo(2);
 	}
 
@@ -93,7 +96,7 @@ public class CountWidgetTest extends WidgetTestSupport {
 		ObjectNode result = execute();
 		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(3);
 		NodeAssert node = assertThat(result).path(id).hasSize(2);
-		node.path(0).path("label").isEqualTo("lunch");
+		node.path(0).path("label").isEqualTo(TAG_LUNCH);
 		node.path(0).path("count").isEqualTo(2);
 		node.path(1).path("label").isEqualTo("...");
 		node.path(1).path("count").isEqualTo(1);
@@ -110,7 +113,7 @@ public class CountWidgetTest extends WidgetTestSupport {
 		ObjectNode result = execute();
 		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(3);
 		NodeAssert node = assertThat(result).path(id).hasSize(1);
-		node.path(0).path("label").isEqualTo("dinner");
+		node.path(0).path("label").isEqualTo(TAG_DINNER);
 		node.path(0).path("count").isEqualTo(1);
 	}
 
