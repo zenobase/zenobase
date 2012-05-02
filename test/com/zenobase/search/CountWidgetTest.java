@@ -98,7 +98,7 @@ public class CountWidgetTest extends WidgetTestSupport {
 		NodeAssert node = assertThat(result).path(id).hasSize(2);
 		node.path(0).path("label").isEqualTo(TAG_LUNCH);
 		node.path(0).path("count").isEqualTo(2);
-		node.path(1).path("label").isEqualTo("...");
+		node.path(1).path("label").isEqualTo(CountWidget.LABEL_MORE);
 		node.path(1).path("count").isEqualTo(1);
 	}
 

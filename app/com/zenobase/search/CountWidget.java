@@ -13,6 +13,8 @@ import com.zenobase.json.Nodes;
 
 public class CountWidget implements Widget {
 
+	static final String LABEL_MORE = "...";
+
 	private final String id;
 	private final String field;
 	private final ComparatorType order;
@@ -49,7 +51,7 @@ public class CountWidget implements Widget {
 		}
 		if (terms.getOtherCount() > 0) {
 			ObjectNode entryNode = result.addObject();
-			entryNode.put("label", "...");
+			entryNode.put("label", LABEL_MORE);
 			entryNode.put("count", terms.getOtherCount());
 		}
 		return result;
