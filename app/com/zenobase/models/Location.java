@@ -3,12 +3,15 @@ package com.zenobase.models;
 import java.math.BigDecimal;
 
 import com.google.common.base.Objects;
+import com.google.common.base.Preconditions;
 
 public class Location {
 
 	private final BigDecimal latitude, longitude;
 
 	public Location(BigDecimal latitude, BigDecimal longitude) {
+		Preconditions.checkNotNull(latitude);
+		Preconditions.checkNotNull(longitude);
 		this.latitude = latitude;
 		this.longitude = longitude;
 	}

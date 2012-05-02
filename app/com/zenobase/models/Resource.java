@@ -1,6 +1,7 @@
 package com.zenobase.models;
 
 import com.google.common.base.Objects;
+import com.google.common.base.Preconditions;
 
 public class Resource {
 
@@ -8,6 +9,8 @@ public class Resource {
 	private final String url;
 
 	public Resource(String title, String url) {
+		Preconditions.checkNotNull(title);
+		Preconditions.checkNotNull(url);
 		this.title = title;
 		this.url = url;
 	}
@@ -38,6 +41,6 @@ public class Resource {
 
 	@Override
 	public String toString() {
-		return String.format("%s <%>", title, url);
+		return String.format("%s <%s>", title, url);
 	}
 }
