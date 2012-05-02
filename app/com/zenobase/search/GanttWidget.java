@@ -70,7 +70,7 @@ public class GanttWidget implements Widget {
 	}
 
 	private DateTime asDateTime(double value) {
-		return !Double.isNaN(value) ? new DateTime((long) value, timezone) : null;
+		return !Double.isInfinite(value) ? new DateTime((long) value, timezone) : null;
 	}
 
 	public static WidgetBuilder builder() {
