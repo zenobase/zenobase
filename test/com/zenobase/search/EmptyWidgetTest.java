@@ -5,18 +5,22 @@ import static com.zenobase.test.NodeAssert.assertThat;
 import org.codehaus.jackson.node.ObjectNode;
 import org.junit.Test;
 
-import com.zenobase.models.Event;
+import com.zenobase.commands.RandomEvent;
+import com.zenobase.common.Generator;
+import com.zenobase.models.Identity;
 
 public class EmptyWidgetTest extends WidgetTestSupport {
 
 	@Test
-	public void testBasic() {
+	public void test() {
 
-		addEvent(new Event());
-		addEvent(new Event());
-		addEvent(new Event());
+		RandomEvent rand = new RandomEvent(Generator.id(), new Identity());
+		int size = 100;
+		for (int i = 0; i < size; ++i) {
+			addEvent(rand.next());
+		}
 
 		ObjectNode result = execute();
-		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(3);
+		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(size);
 	}
 }
