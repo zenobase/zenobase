@@ -56,7 +56,7 @@ public class ListWidget implements Widget {
 					options.get("id"),
 					options.get("offset", Integer.class, 0),
 					options.get("limit", Integer.class, 10),
-					options.get("order", String.class, "dateTime"),
+					options.get("order", String.class, Event.TIMESTAMP.getName()),
 					options.get("reverse", Boolean.class, Boolean.FALSE) ? SortOrder.ASC : SortOrder.DESC);
 			}
 		};

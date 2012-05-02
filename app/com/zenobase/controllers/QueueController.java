@@ -7,6 +7,7 @@ import org.codehaus.jackson.node.ObjectNode;
 import play.mvc.BodyParser;
 import play.mvc.Result;
 import play.mvc.With;
+import com.google.common.primitives.Ints;
 
 import com.zenobase.commands.Command;
 import com.zenobase.commands.CommandInfo;
@@ -43,7 +44,7 @@ public class QueueController extends ControllerSupport {
 
     private static ObjectNode toJson(PartialList<Command> commands) {
     	ObjectNode node = Nodes.newObject();
-    	node.put("total", commands.size());
+    	TOTAL.setValue(node, Ints.checkedCast(commands.size()));
     	ArrayNode commandsNode = node.putArray("commands");
     	for (Command command : commands.getElements()) {
     		commandsNode.add(new CommandInfo(command).toJson());

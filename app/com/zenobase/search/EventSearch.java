@@ -15,11 +15,14 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.google.common.primitives.Ints;
 
+import com.zenobase.json.IntegerField;
 import com.zenobase.json.Nodes;
 import com.zenobase.models.Event;
 import com.zenobase.services.Index;
 
 public class EventSearch {
+
+	static final IntegerField TOTAL = new IntegerField("total");
 
 	private static final ImmutableMap<String, WidgetBuilder> widgetBuilders = ImmutableMap.<String, WidgetBuilder>builder()
 		.put("list", ListWidget.builder())
@@ -51,7 +54,11 @@ public class EventSearch {
 
 	public EventSearch addWidget(String widget) {
 		WidgetOptions options = WidgetOptions.parse(widget);
-		widgets.add(widgetBuilders.get(options.get("type")).build(options));
+		return addWidget(widgetBuilders.get(options.get("type")).build(options));
+	}
+
+	private EventSearch addWidget(Widget widget) {
+		widgets.add(widget);
 		return this;
 	}
 
@@ -109,7 +116,7 @@ public class EventSearch {
 
 	private ObjectNode toJson(SearchResponse response) {
 		ObjectNode node = Nodes.newObject();
-		node.put("total", Ints.checkedCast(response.hits().getTotalHits()));
+		TOTAL.setValue(node, Ints.checkedCast(response.hits().getTotalHits()));
 		for (Widget widget : widgets) {
 			node.put(widget.getId(), widget.process(response));
 		}

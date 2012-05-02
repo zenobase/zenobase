@@ -22,7 +22,7 @@ import com.zenobase.models.Location;
 import com.zenobase.models.Rating;
 import com.zenobase.models.Resource;
 
-class RandomEvent {
+public class RandomEvent {
 
 	private static final RandomElement<Builder> builders = new RandomElement<Builder>()
 		.add(new Builder() {

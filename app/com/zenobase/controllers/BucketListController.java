@@ -7,6 +7,7 @@ import org.codehaus.jackson.node.ObjectNode;
 import play.mvc.BodyParser;
 import play.mvc.Result;
 import play.mvc.With;
+import com.google.common.primitives.Ints;
 
 import com.zenobase.commands.CreateBucketCommand;
 import com.zenobase.common.Callback;
@@ -84,7 +85,7 @@ public class BucketListController extends ControllerSupport {
 
     private static ObjectNode toJson(PartialList<Bucket> results) {
     	ObjectNode resultNode = Nodes.newObject();
-    	resultNode.put("total", results.size());
+    	TOTAL.setValue(resultNode, Ints.checkedCast(results.size()));
     	ArrayNode bucketsNode = resultNode.putArray("buckets");
     	for (Bucket bucket : results.getElements()) {
     		ObjectNode bucketNode = bucket.toJson();

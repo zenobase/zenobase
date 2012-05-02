@@ -8,6 +8,7 @@ import org.joda.time.DateTime;
 import play.mvc.BodyParser;
 import play.mvc.Result;
 import play.mvc.With;
+import com.google.common.primitives.Ints;
 
 import com.zenobase.commands.ChangeUserEmailCommand;
 import com.zenobase.commands.ChangeUserPasswordCommand;
@@ -72,7 +73,7 @@ public class UserController extends ControllerSupport {
 
 	private static ObjectNode toJson(PartialList<User> result) {
     	ObjectNode resultNode = Nodes.newObject();
-    	resultNode.put("total", result.size());
+    	TOTAL.setValue(resultNode, Ints.checkedCast(result.size()));
     	ArrayNode usersNode = resultNode.putArray("users");
     	for (User user : result.getElements()) {
     		usersNode.add(new UserProfile(user).toJson());

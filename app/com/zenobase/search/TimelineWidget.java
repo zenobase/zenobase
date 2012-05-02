@@ -18,6 +18,7 @@ import com.google.common.collect.Maps;
 
 import com.zenobase.common.Intervals;
 import com.zenobase.json.Nodes;
+import com.zenobase.models.Event;
 
 public class TimelineWidget implements Widget {
 
@@ -55,7 +56,10 @@ public class TimelineWidget implements Widget {
 		if (!facet.getEntries().isEmpty()) {
 			counts = getMap(getInterval(facet.getEntries()));
 			for (DateHistogramFacet.Entry entry : facet.getEntries()) {
-				counts.put(getLabel(toDateTime(entry.getTime())), entry.getCount());
+				String key = getLabel(toDateTime(entry.getTime()));
+				if (range == null || counts.containsKey(key)) {
+					counts.put(key, entry.getCount());
+				}
 			}
 		}
 		return toJson(counts);
@@ -107,8 +111,8 @@ public class TimelineWidget implements Widget {
 			public Widget build(WidgetOptions options) {
 				return new TimelineWidget(
 					options.get("id"),
-					options.get("field"),
-					options.get("interval"),
+					options.get("field", String.class, Event.TIMESTAMP.getName()),
+					options.get("interval", String.class, "month"),
 					options.get("range"),
 					options.get("timezone", DateTimeZone.class, DateTimeZone.UTC));
 			}
