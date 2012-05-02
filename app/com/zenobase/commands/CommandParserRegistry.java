@@ -21,7 +21,7 @@ public class CommandParserRegistry {
 		}
 	}
 
-	public static CommandParserRegistry create(CommandParser... parsers) {
+	public static CommandParserRegistry containing(CommandParser... parsers) {
 		return new CommandParserRegistry(ImmutableSet.copyOf(parsers));
 	}
 

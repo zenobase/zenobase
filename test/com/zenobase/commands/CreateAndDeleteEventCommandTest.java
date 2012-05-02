@@ -14,7 +14,7 @@ import com.zenobase.services.BucketManager;
 public class CreateAndDeleteEventCommandTest {
 
 	private final BucketManager buckets = mock(BucketManager.class);
-	private final CommandHandlerRegistry registry = CommandHandlerRegistry.create(
+	private final CommandHandlerRegistry registry = CommandHandlerRegistry.containing(
 		new CreateEventCommand.Handler(buckets),
 		new DeleteEventCommand.Handler(buckets));
 

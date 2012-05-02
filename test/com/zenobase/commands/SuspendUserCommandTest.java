@@ -12,7 +12,7 @@ import com.zenobase.services.UserManager;
 public class SuspendUserCommandTest {
 
 	private final UserManager users = mock(UserManager.class);
-	private final CommandHandlerRegistry registry = CommandHandlerRegistry.create(
+	private final CommandHandlerRegistry registry = CommandHandlerRegistry.containing(
 		new SuspendUserCommand.Handler(users));
 
 	@Test

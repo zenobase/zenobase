@@ -18,7 +18,7 @@ public class CommandStoreTest extends ElasticSearchTestSupport {
 	@Test
 	public void test() {
 
-		CommandParserRegistry parsers = CommandParserRegistry.create(new TestCommand.Parser());
+		CommandParserRegistry parsers = CommandParserRegistry.containing(new TestCommand.Parser());
 		IndexManager indexManager = mock(IndexManager.class);
 		Index index = new Index(CommandStore.INDEX_NAME, getClient());
 		when(indexManager.getIndex(CommandStore.INDEX_NAME)).thenReturn(index);

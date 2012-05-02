@@ -11,7 +11,7 @@ import com.zenobase.services.BucketManager;
 public class CreateDeleteAndRestoreBucketCommandTest {
 
 	private final BucketManager buckets = mock(BucketManager.class);
-	private final CommandHandlerRegistry registry = CommandHandlerRegistry.create(
+	private final CommandHandlerRegistry registry = CommandHandlerRegistry.containing(
 		new CreateBucketCommand.Handler(buckets),
 		new DeleteBucketCommand.Handler(buckets),
 		new RestoreBucketCommand.Handler(buckets));

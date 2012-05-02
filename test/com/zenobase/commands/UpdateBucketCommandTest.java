@@ -11,7 +11,7 @@ import com.zenobase.services.BucketManager;
 public class UpdateBucketCommandTest {
 
 	private final BucketManager buckets = mock(BucketManager.class);
-	private final CommandHandlerRegistry registry = CommandHandlerRegistry.create(
+	private final CommandHandlerRegistry registry = CommandHandlerRegistry.containing(
 		new UpdateBucketCommand.Handler(buckets));
 
 	@Test

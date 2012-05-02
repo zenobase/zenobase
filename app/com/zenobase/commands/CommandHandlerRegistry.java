@@ -20,7 +20,7 @@ public class CommandHandlerRegistry {
 		}
 	}
 
-	public static CommandHandlerRegistry create(CommandHandler<?>... handlers) {
+	public static CommandHandlerRegistry containing(CommandHandler<?>... handlers) {
 		return new CommandHandlerRegistry(ImmutableSet.copyOf(handlers));
 	}
 

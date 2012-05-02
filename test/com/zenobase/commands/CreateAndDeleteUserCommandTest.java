@@ -11,7 +11,7 @@ import com.zenobase.services.UserManager;
 public class CreateAndDeleteUserCommandTest {
 
 	private final UserManager users = mock(UserManager.class);
-	private final CommandHandlerRegistry registry = CommandHandlerRegistry.create(
+	private final CommandHandlerRegistry registry = CommandHandlerRegistry.containing(
 		new CreateUserCommand.Handler(users),
 		new DeleteUserCommand.Handler(users));
 
