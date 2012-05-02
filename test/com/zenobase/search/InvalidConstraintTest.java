@@ -2,7 +2,7 @@ package com.zenobase.search;
 
 import org.junit.Test;
 
-public class InvalidConstraintTest extends WidgetTestSupport {
+public class InvalidConstraintTest extends SearchTestSupport {
 
 	@Test(expected = IllegalArgumentException.class)
 	public void test() {

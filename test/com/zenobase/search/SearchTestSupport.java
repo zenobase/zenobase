@@ -8,7 +8,7 @@ import com.zenobase.models.Event;
 import com.zenobase.services.ElasticSearchTestSupport;
 import com.zenobase.services.Index;
 
-public class WidgetTestSupport extends ElasticSearchTestSupport {
+public class SearchTestSupport extends ElasticSearchTestSupport {
 
 	private final String bucketId = Generator.id();
 	private Index index;

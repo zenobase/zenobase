@@ -11,7 +11,7 @@ import org.junit.Test;
 import com.zenobase.common.Intervals;
 import com.zenobase.models.Event;
 
-public class DateTimeRangeConstraintTest extends WidgetTestSupport {
+public class DateTimeRangeConstraintTest extends SearchTestSupport {
 
 	private Event e1, e2, e3;
 

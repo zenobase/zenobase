@@ -12,7 +12,7 @@ import com.zenobase.common.Generator;
 import com.zenobase.models.Event;
 import com.zenobase.test.NodeAssert;
 
-public class TimelineWidgetTest extends WidgetTestSupport {
+public class TimelineWidgetTest extends SearchTestSupport {
 
 	private String id = Generator.id();
 	private Event first, last;

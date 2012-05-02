@@ -12,7 +12,7 @@ import com.zenobase.common.Generator;
 import com.zenobase.models.Event;
 import com.zenobase.test.NodeAssert;
 
-public class GanttWidgetTest extends WidgetTestSupport {
+public class GanttWidgetTest extends SearchTestSupport {
 
 	private String id = Generator.id();
 	private Event e1, e2, e3, e4, e5;

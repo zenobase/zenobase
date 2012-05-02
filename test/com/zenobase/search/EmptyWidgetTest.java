@@ -9,7 +9,7 @@ import com.zenobase.commands.RandomEvent;
 import com.zenobase.common.Generator;
 import com.zenobase.models.Identity;
 
-public class EmptyWidgetTest extends WidgetTestSupport {
+public class EmptyWidgetTest extends SearchTestSupport {
 
 	@Test
 	public void test() {

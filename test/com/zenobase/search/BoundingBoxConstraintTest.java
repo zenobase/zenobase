@@ -12,7 +12,7 @@ import com.google.common.base.Joiner;
 import com.zenobase.models.Event;
 import com.zenobase.models.Location;
 
-public class BoundingBoxConstraintTest extends WidgetTestSupport {
+public class BoundingBoxConstraintTest extends SearchTestSupport {
 
 	private Event e1, e2, e3;
 	private Location seattle = new Location(new BigDecimal("47.6097"), new BigDecimal("-122.3331"));

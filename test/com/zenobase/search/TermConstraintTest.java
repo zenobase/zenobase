@@ -8,7 +8,7 @@ import org.junit.Test;
 
 import com.zenobase.models.Event;
 
-public class TermConstraintTest extends WidgetTestSupport {
+public class TermConstraintTest extends SearchTestSupport {
 
 	private Event e1, e2, e3;
 

@@ -11,7 +11,7 @@ import com.zenobase.models.Event;
 import com.zenobase.models.Rating;
 import com.zenobase.test.NodeAssert;
 
-public class HistogramWidgetTest extends WidgetTestSupport {
+public class HistogramWidgetTest extends SearchTestSupport {
 
 	private String id = Generator.id();
 	private Event e1, e2, e3, e4, e5;

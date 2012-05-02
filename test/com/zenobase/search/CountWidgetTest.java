@@ -10,7 +10,7 @@ import com.zenobase.common.Generator;
 import com.zenobase.models.Event;
 import com.zenobase.test.NodeAssert;
 
-public class CountWidgetTest extends WidgetTestSupport {
+public class CountWidgetTest extends SearchTestSupport {
 
 	private static final String TAG_LUNCH = "lunch";
 	private static final String TAG_DINNER = "dinner";
