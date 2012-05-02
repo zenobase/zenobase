@@ -12,6 +12,7 @@ public class WidgetTestSupport extends ElasticSearchTestSupport {
 
 	private final String bucketId = Generator.id();
 	private Index index;
+	private EventSearch search = new EventSearch();
 
 	@Before
 	public void setUp() {
@@ -20,17 +21,17 @@ public class WidgetTestSupport extends ElasticSearchTestSupport {
 		index.putMapping(Event.getSchema());
 	}
 
-	protected void add(Event event) {
+	protected void addEvent(Event event) {
 		event.prePersist();
 		index.store(Event.TYPE_NAME, event.getId(), event.toJson(), true);
 		event.setValue(Event.VERSION, null);
 	}
 
-	protected ObjectNode execute(String options) {
-		EventSearch search = new EventSearch();
-		if (!options.isEmpty()) {
-			search.addWidget(options);
-		}
+	protected void addWidget(String options) {
+		search.addWidget(options);
+	}
+
+	protected ObjectNode execute() {
 		ObjectNode result = search.execute(index);
 		// System.out.println("r:" + result);
 		return result;

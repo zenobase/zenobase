@@ -33,10 +33,11 @@ public class TimelineWidgetTest extends WidgetTestSupport {
 	@Test
 	public void testDefault() {
 
-		add(first);
-		add(last);
+		addEvent(first);
+		addEvent(last);
+		addWidget(String.format("id:%s,type:%s", id, "timeline"));
 
-		ObjectNode result = execute(String.format("id:%s,type:%s", id, "timeline"));
+		ObjectNode result = execute();
 		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(2);
 		NodeAssert node = assertThat(result).path(id).hasSize(3);
 		node.path(0).path("label").isEqualTo("2012-03T+0000");
@@ -50,7 +51,9 @@ public class TimelineWidgetTest extends WidgetTestSupport {
 	@Test
 	public void testEmpty() {
 
-		ObjectNode result = execute(String.format("id:%s,type:%s", id, "timeline"));
+		addWidget(String.format("id:%s,type:%s", id, "timeline"));
+
+		ObjectNode result = execute();
 		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(0);
 		assertThat(result).path(id).hasSize(0);
 	}
@@ -58,10 +61,11 @@ public class TimelineWidgetTest extends WidgetTestSupport {
 	@Test
 	public void testYear() {
 
-		add(first);
-		add(last);
+		addEvent(first);
+		addEvent(last);
+		addWidget(String.format("id:%s,type:%s,interval:%s", id, "timeline", "year"));
 
-		ObjectNode result = execute(String.format("id:%s,type:%s,interval:%s", id, "timeline", "year"));
+		ObjectNode result = execute();
 		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(2);
 		NodeAssert node = assertThat(result).path(id).hasSize(1);
 		node.path(0).path("label").isEqualTo("2012T+0000");
@@ -71,10 +75,11 @@ public class TimelineWidgetTest extends WidgetTestSupport {
 	@Test
 	public void testMonth() {
 
-		add(first);
-		add(last);
+		addEvent(first);
+		addEvent(last);
+		addWidget(String.format("id:%s,type:%s,interval:%s,range:%s", id, "timeline", "month", "2012T+0000"));
 
-		ObjectNode result = execute(String.format("id:%s,type:%s,interval:%s,range:%s", id, "timeline", "month", "2012T+0000"));
+		ObjectNode result = execute();
 		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(2);
 		NodeAssert node = assertThat(result).path(id).hasSize(12);
 		node.path(0).path("label").isEqualTo("2012-01T+0000");
@@ -90,10 +95,11 @@ public class TimelineWidgetTest extends WidgetTestSupport {
 	@Test
 	public void testDay() {
 
-		add(first);
-		add(last);
+		addEvent(first);
+		addEvent(last);
+		addWidget(String.format("id:%s,type:%s,interval:%s,range:%s", id, "timeline", "day", "2012-03T+0000"));
 
-		ObjectNode result = execute(String.format("id:%s,type:%s,interval:%s,range:%s", id, "timeline", "day", "2012-03T+0000"));
+		ObjectNode result = execute();
 		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(2);
 		NodeAssert node = assertThat(result).path(id).hasSize(31);
 		node.path(0).path("label").isEqualTo("2012-03-01T+0000");
@@ -105,10 +111,11 @@ public class TimelineWidgetTest extends WidgetTestSupport {
 	@Test
 	public void testHour() {
 
-		add(first);
-		add(last);
+		addEvent(first);
+		addEvent(last);
+		addWidget(String.format("id:%s,type:%s,interval:%s,range:%s", id, "timeline", "hour", "2012-03-31T+0000"));
 
-		ObjectNode result = execute(String.format("id:%s,type:%s,interval:%s,range:%s", id, "timeline", "hour", "2012-03-31T+0000"));
+		ObjectNode result = execute();
 		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(2);
 		NodeAssert node = assertThat(result).path(id).hasSize(24);
 		node.path(0).path("label").isEqualTo("2012-03-31T00+0000");
@@ -122,10 +129,11 @@ public class TimelineWidgetTest extends WidgetTestSupport {
 	@Test
 	public void testHourWithTimezone() {
 
-		add(first);
-		add(last);
+		addEvent(first);
+		addEvent(last);
+		addWidget(String.format("id:%s,type:%s,interval:%s,range:%s,timezone:%s", id, "timeline", "hour", "2012-03-31T-0800", "-08:00"));
 
-		ObjectNode result = execute(String.format("id:%s,type:%s,interval:%s,range:%s,timezone:%s", id, "timeline", "hour", "2012-03-31T-0800", "-08:00"));
+		ObjectNode result = execute();
 		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(2);
 		NodeAssert node = assertThat(result).path(id).hasSize(24);
 		node.path(0).path("label").isEqualTo("2012-03-31T00-0800");
@@ -139,10 +147,11 @@ public class TimelineWidgetTest extends WidgetTestSupport {
 	@Test
 	public void testMinute() {
 
-		add(first);
-		add(last);
+		addEvent(first);
+		addEvent(last);
+		addWidget(String.format("id:%s,type:%s,interval:%s,range:%s", id, "timeline", "minute", "2012-03-31T20+0000"));
 
-		ObjectNode result = execute(String.format("id:%s,type:%s,interval:%s,range:%s", id, "timeline", "minute", "2012-03-31T20+0000"));
+		ObjectNode result = execute();
 		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(2);
 		NodeAssert node = assertThat(result).path(id).hasSize(60);
 		node.path(0).path("label").isEqualTo("2012-03-31T20:00+0000");

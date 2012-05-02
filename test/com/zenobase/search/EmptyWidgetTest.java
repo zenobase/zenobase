@@ -14,14 +14,14 @@ public class EmptyWidgetTest extends WidgetTestSupport {
 	@Override
 	public void setUp() {
 		super.setUp();
-		add(new Event());
-		add(new Event());
-		add(new Event());
+		addEvent(new Event());
+		addEvent(new Event());
+		addEvent(new Event());
 	}
 
 	@Test
 	public void testBasic() {
-		ObjectNode result = execute("");
+		ObjectNode result = execute();
 		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(3);
 	}
 }
