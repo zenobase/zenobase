@@ -31,6 +31,10 @@ public class WidgetTestSupport extends ElasticSearchTestSupport {
 		search.addWidget(options);
 	}
 
+	protected void addFilter(String expression) {
+		search.addFilter(expression);
+	}
+
 	protected ObjectNode execute() {
 		ObjectNode result = search.execute(index);
 		// System.out.println("r:" + result);

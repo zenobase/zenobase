@@ -52,6 +52,11 @@ public class Event extends DomainNode {
 	}
 
 	@Override
+	public <T> T getValue(Field<T> field) {
+		return super.getValue(field);
+	}
+
+	@Override
 	public <T> void setValue(Field<T> field, T value) {
 		super.setValue(field, value);
 	}

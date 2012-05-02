@@ -49,7 +49,7 @@ public class Intervals {
 			return toInterval(parse(value));
 		}
 
-		public String toString(DateTime time) {
+		private String toString(DateTime time) {
 			return format.print(time);
 		}
 

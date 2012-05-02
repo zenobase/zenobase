@@ -71,8 +71,8 @@ public class EventSearch {
 		return this;
 	}
 
-	public EventSearch addFilter(String filter) {
-		String[] tokens = filter.split(":", 2);
+	public EventSearch addFilter(String expression) {
+		String[] tokens = expression.split(":", 2);
 		String field = tokens[0];
 		String value = tokens[1];
 		for (Constraint constraint : constraintBuilders.get(field)) {
@@ -82,7 +82,7 @@ public class EventSearch {
 				return this;
 			}
 		}
-		throw new IllegalArgumentException("Don't know whet to do with filter: " + filter);
+		throw new IllegalArgumentException("Don't know what to do with filter: " + expression);
 	}
 
 	public ObjectNode execute(Index index) {
