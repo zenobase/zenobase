@@ -12,7 +12,7 @@ import play.mvc.Result;
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 
-import com.zenobase.commands.Command;
+import com.zenobase.commands.DeleteEventCommand;
 import com.zenobase.common.Generator;
 import com.zenobase.models.Bucket;
 import com.zenobase.models.Event;
@@ -57,7 +57,7 @@ public class EventControllerDeleteEventTest {
 		when(buckets.findBucket(bucket.getId())).thenReturn(bucket);
 		when(buckets.findEvent(bucket.getId(), event.getId())).thenReturn(event);
 		String commandId = Generator.id();
-		when(queue.dispatch(any(Command.class))).thenReturn(commandId);
+		when(queue.dispatch(any(DeleteEventCommand.class))).thenReturn(commandId);
 		Result result = call(bucket, event);
 		assertThat(result).hasStatus(OK).hasContent(EventController.receipt(commandId));
 	}

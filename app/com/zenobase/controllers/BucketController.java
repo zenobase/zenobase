@@ -45,10 +45,14 @@ public class BucketController extends ControllerSupport {
     		return forbidden();
     	}
 		if (bucket.getWidgets().isEmpty()) {
-			bucket.setWidgets(new DefaultDashboard().widgets());
+			setDefaultDashboard(bucket);
 		}
     	return ok(bucket.toJson());
     }
+
+	static void setDefaultDashboard(Bucket bucket) {
+		bucket.setWidgets(new DefaultDashboard().widgets());
+	}
 
 	private static class DefaultDashboard {
 

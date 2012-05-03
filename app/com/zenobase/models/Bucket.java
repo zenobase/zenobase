@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.codehaus.jackson.node.ObjectNode;
+import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
 
@@ -39,7 +40,7 @@ public class Bucket extends DomainNode {
 	}
 
 	public String getLabel() {
-		return getValue(LABEL).toString();
+		return getValue(LABEL);
 	}
 
 	public void setLabel(String label) {
@@ -97,6 +98,6 @@ public class Bucket extends DomainNode {
 
 	@Override
 	public String toString() {
-		return getLabel();
+		return Objects.firstNonNull(getLabel(), getId());
 	}
 }
