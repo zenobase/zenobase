@@ -18,6 +18,12 @@ public class SignInForm extends DomainNode {
 		super(node);
 	}
 
+	SignInForm(String username, String password, boolean remember) {
+		setValue(USERNAME, username);
+		setValue(PASSWORD, password);
+		setValue(REMEMBER, remember);
+	}
+
 	public String getUsername() {
 		return getValue(USERNAME);
 	}
