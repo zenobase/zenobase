@@ -2,13 +2,20 @@ package com.zenobase.controllers;
 
 import play.api.libs.Crypto;
 import play.mvc.Http;
+import com.google.common.base.Joiner;
 
 import com.zenobase.models.Identity;
 
 public class SecurityContext {
 
-	private static final String TOKEN_NAME = "token";
+	static final String TOKEN_NAME = "token";
 	private static final char TOKEN_SEPARATOR = '-';
+
+	private final byte[] key;
+
+	public SecurityContext(String key) {
+		this.key = key.getBytes();
+	}
 
 	public Identity getPrincipal(boolean createIfNotPresent) {
 		Identity principal = getPrincipal();
@@ -20,13 +27,16 @@ public class SecurityContext {
 	}
 
 	public Identity getPrincipal() {
-		Http.Cookie cookie = context().request().cookies().get(TOKEN_NAME);
+		return getPrincipal(context().request().cookies().get(TOKEN_NAME));
+	}
+
+	Identity getPrincipal(Http.Cookie cookie) {
 		if (cookie != null) {
 			int p = cookie.value().indexOf(TOKEN_SEPARATOR);
 			if (p > 0 && p < cookie.value().length() - 1) {
 				String sign = cookie.value().substring(0, p);
 				String principal = cookie.value().substring(p + 1);
-				if (Crypto.sign(principal).equals(sign)) {
+				if (sign(principal).equals(sign)) {
 					return new Identity(principal);
 				}
 			}
@@ -36,7 +46,7 @@ public class SecurityContext {
 	}
 
 	public void setPrincipal(Identity principal, boolean remember) {
-		setPrincipal(TOKEN_NAME, Crypto.sign(principal.getId()) + TOKEN_SEPARATOR + principal.getId(), remember);
+		setPrincipal(TOKEN_NAME, Joiner.on(TOKEN_SEPARATOR).join(sign(principal.getId()), principal.getId()), remember);
 	}
 
 	private void setPrincipal(String name, String value, boolean remember) {
@@ -47,7 +57,11 @@ public class SecurityContext {
 		context().response().discardCookies(TOKEN_NAME);
 	}
 
-	private static Http.Context context() {
+	private String sign(String content) {
+		return Crypto.sign(content, key);
+	}
+
+	private Http.Context context() {
 		return Http.Context.current();
 	}
 }

@@ -1,6 +1,7 @@
 package com.zenobase.controllers;
 
 import static com.zenobase.testing.ResultAssert.assertThat;
+import static org.fest.assertions.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 import static play.mvc.Http.Status.*;
 import static play.test.Helpers.*;
@@ -8,7 +9,9 @@ import static play.test.Helpers.*;
 import org.codehaus.jackson.node.ObjectNode;
 import org.junit.Before;
 import org.junit.Test;
+import play.mvc.Http.Cookie;
 import play.mvc.Result;
+import play.test.Helpers;
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 
@@ -19,7 +22,7 @@ import com.zenobase.services.UserManager;
 
 public class SecurityControllerTest {
 
-	private final SecurityContext auth = mock(SecurityContext.class);
+	private final SecurityContext auth = new SecurityContext("secret");
 	private final UserManager users = mock(UserManager.class);
 	private final User user = new User(Generator.id(), "tester");
 	private final String password = "secret123";
@@ -39,11 +42,13 @@ public class SecurityControllerTest {
 
 	@Test
 	public void testSignIn() {
+		fakeApplication();
 		SignInForm form = new SignInForm(user.getName(), password, true);
 		when(users.find(user.getName())).thenReturn(user);
 		Result result = call(form.toJson());
 		assertThat(result).hasStatus(OK).hasContent(new UserInfo(user).toJson());
-		verify(auth).setPrincipal(user.asIdentity(), form.isRemember());
+		assertThat(cookie(result)).as("auth cookie").isNotNull();
+		assertThat(auth.getPrincipal(cookie(result))).isEqualTo(user.asIdentity());
 	}
 
 	@Test
@@ -52,7 +57,7 @@ public class SecurityControllerTest {
 		when(users.find(user.getName())).thenReturn(user);
 		Result result = call(form.toJson());
 		assertThat(result).hasStatus(BAD_REQUEST);
-		verifyZeroInteractions(auth);
+		assertThat(cookie(result)).as("auth cookie").isNull();
 	}
 
 	@Test
@@ -61,7 +66,7 @@ public class SecurityControllerTest {
 		when(users.find(user.getName())).thenReturn(user);
 		Result result = call(form.toJson());
 		assertThat(result).hasStatus(BAD_REQUEST);
-		verifyZeroInteractions(auth);
+		assertThat(cookie(result)).as("auth cookie").isNull();
 	}
 
 	@Test
@@ -70,7 +75,7 @@ public class SecurityControllerTest {
 		when(users.find(user.getName())).thenReturn(null);
 		Result result = call(form.toJson());
 		assertThat(result).hasStatus(UNAUTHORIZED);
-		verifyZeroInteractions(auth);
+		assertThat(cookie(result)).as("auth cookie").isNull();
 	}
 
 	@Test
@@ -80,7 +85,7 @@ public class SecurityControllerTest {
 		when(users.find(user.getName())).thenReturn(user);
 		Result result = call(form.toJson());
 		assertThat(result).hasStatus(UNAUTHORIZED);
-		verifyZeroInteractions(auth);
+		assertThat(cookie(result)).as("auth cookie").isNull();
 	}
 
 	@Test
@@ -90,14 +95,15 @@ public class SecurityControllerTest {
 		when(users.find(user.getName())).thenReturn(user);
 		Result result = call(form.toJson());
 		assertThat(result).hasStatus(UNAUTHORIZED);
-		verifyZeroInteractions(auth);
+		assertThat(cookie(result)).as("auth cookie").isNull();
 	}
 
 	@Test
 	public void testSignOut() {
 		Result result = call();
 		assertThat(result).hasStatus(NO_CONTENT).isEmpty();
-		verify(auth).unsetPrincipal();
+		assertThat(cookie(result)).as("auth cookie").isNotNull();
+		assertThat(cookie(result).value()).as("auth cookie value").isEmpty();
 	}
 
 	private static Result call(ObjectNode body) {
@@ -106,5 +112,9 @@ public class SecurityControllerTest {
 
 	private static Result call() {
 		return callAction(com.zenobase.controllers.routes.ref.SecurityController.signOut());
+	}
+
+	private static Cookie cookie(Result result) {
+		return Helpers.cookie(SecurityContext.TOKEN_NAME, result);
 	}
 }

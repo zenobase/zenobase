@@ -2,6 +2,7 @@ import play.Application;
 import play.Configuration;
 import play.GlobalSettings;
 import play.Play;
+import com.google.common.base.Objects;
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
@@ -76,7 +77,7 @@ public class Global extends GlobalSettings {
 				bind(Mailer.class).in(Singleton.class);
 				bind(VerificationMailer.class).in(Singleton.class);
 				bind(PasswordResetMailer.class).in(Singleton.class);
-				bind(SecurityContext.class).in(Singleton.class);
+				bind(SecurityContext.class).toInstance(new SecurityContext(getConfiguration("application.secret", "secret")));
 
 				Multibinder<CommandParser> parsers = Multibinder.newSetBinder(binder(), CommandParser.class);
 				parsers.addBinding().to(CreateBucketCommand.Parser.class);
@@ -124,6 +125,10 @@ public class Global extends GlobalSettings {
 				for (String key : conf.keys()) {
 					bind(String.class).annotatedWith(Names.named(key)).toInstance(conf.getString(key));
 				}
+			}
+
+			private String getConfiguration(String key, String defaultValue) {
+				return Objects.firstNonNull(Play.application().configuration().getString(key), defaultValue);
 			}
 		});
 	}
