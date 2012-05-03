@@ -22,7 +22,7 @@ public class CreateUserCommand extends CommandSupport {
 		setParameter(USER, user.toJson());
 	}
 
-	private User getUser() {
+	public User getUser() {
 		return new User(getParameter(USER));
 	}
 

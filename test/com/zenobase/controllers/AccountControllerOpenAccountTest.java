@@ -1,6 +1,7 @@
 package com.zenobase.controllers;
 
 import static com.zenobase.test.ResultAssert.assertThat;
+import static org.fest.assertions.Assertions.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 import static play.mvc.Http.Status.*;
@@ -9,6 +10,7 @@ import static play.test.Helpers.*;
 import org.codehaus.jackson.node.ObjectNode;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
 import play.mvc.Result;
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
@@ -55,8 +57,14 @@ public class AccountControllerOpenAccountTest {
 		SignUpForm form = new SignUpForm(user.getName(), password, user.getEmail());
 		Result result = call(form.toJson());
 		assertThat(result).hasStatus(CREATED).hasContent(new UserInfo(user).toJson());
-		verify(queue).dispatch(any(CreateUserCommand.class));
-		verify(mailer).send(any(User.class));
+		ArgumentCaptor<CreateUserCommand> commandArg = ArgumentCaptor.forClass(CreateUserCommand.class);
+		verify(queue).dispatch(commandArg.capture());
+		User actual = commandArg.getValue().getUser();
+		assertThat(actual.getName()).isEqualTo(user.getName());
+		assertThat(actual.getEmail()).isEqualTo(user.getEmail());
+		ArgumentCaptor<User> userArg = ArgumentCaptor.forClass(User.class);
+		verify(mailer).send(userArg.capture());
+		assertThat(userArg.getValue()).isEqualTo(actual);
 	}
 
 	@Test
