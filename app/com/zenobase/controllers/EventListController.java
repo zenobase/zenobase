@@ -23,7 +23,7 @@ import com.zenobase.services.CommandQueue;
 @With(Timed.class)
 public class EventListController extends ControllerSupport {
 
-	private static final IntegerField RANDOM = new IntegerField("random");
+	static final IntegerField RANDOM = new IntegerField("random");
 
 	@Inject
 	static BucketManager manager;

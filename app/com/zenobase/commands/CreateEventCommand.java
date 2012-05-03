@@ -25,11 +25,11 @@ public class CreateEventCommand extends CommandSupport {
 		setParameter(EVENT, event.toJson());
 	}
 
-	private String getBucketId() {
+	public String getBucketId() {
 		return getParameter(BUCKET_ID);
 	}
 
-	private Event getEvent() {
+	public Event getEvent() {
 		return new Event(getParameter(EVENT));
 	}
 
