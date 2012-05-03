@@ -10,40 +10,21 @@ import org.codehaus.jackson.node.ObjectNode;
 import org.junit.Before;
 import org.junit.Test;
 import play.mvc.Result;
-import com.google.inject.AbstractModule;
-import com.google.inject.Guice;
 
 import com.zenobase.commands.UpdateBucketCommand;
 import com.zenobase.common.Generator;
 import com.zenobase.models.Bucket;
 import com.zenobase.models.Identity;
 import com.zenobase.models.Permission;
-import com.zenobase.models.User;
-import com.zenobase.services.BucketManager;
-import com.zenobase.services.CommandQueue;
-import com.zenobase.services.UserManager;
 
-public class BucketControllerUpdateBucketTest {
+public class BucketControllerUpdateBucketTest extends BucketControllerTestSupport {
 
-	private final SecurityContext auth = mock(SecurityContext.class);
-	private final BucketManager buckets = mock(BucketManager.class);
-	private final UserManager users = mock(UserManager.class);
-	private final CommandQueue queue = mock(CommandQueue.class);
-	private final User user = new User(Generator.id(), "tester");
 	private Bucket from, to;
 
 	@Before
+	@Override
 	public void setUp() {
-		Guice.createInjector(new AbstractModule() {
-			@Override
-			protected void configure() {
-				bind(SecurityContext.class).toInstance(auth);
-				bind(BucketManager.class).toInstance(buckets);
-				bind(UserManager.class).toInstance(users); // unused
-				bind(CommandQueue.class).toInstance(queue);
-				requestStaticInjection(BucketController.class);
-			}
-		});
+		super.setUp();
 		from = new Bucket();
 		from.setLabel("Test Bucket");
 		from.addPermission(user.asIdentity(), Permission.ALL);
@@ -88,7 +69,7 @@ public class BucketControllerUpdateBucketTest {
 		verifyZeroInteractions(queue);
 	}
 
-	private Result call(String bucketId, ObjectNode body) {
+	private static Result call(String bucketId, ObjectNode body) {
 		return callAction(com.zenobase.controllers.routes.ref.BucketController.update(bucketId), fakeRequest().withJsonBody(body));
 	}
 }
