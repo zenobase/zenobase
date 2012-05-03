@@ -1,6 +1,6 @@
 package com.zenobase.search;
 
-import static com.zenobase.test.NodeAssert.assertThat;
+import static com.zenobase.testing.NodeAssert.assertThat;
 
 import java.math.BigDecimal;
 

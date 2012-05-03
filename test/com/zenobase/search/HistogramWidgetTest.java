@@ -1,6 +1,6 @@
 package com.zenobase.search;
 
-import static com.zenobase.test.NodeAssert.assertThat;
+import static com.zenobase.testing.NodeAssert.assertThat;
 
 import org.codehaus.jackson.node.ObjectNode;
 import org.junit.Before;
@@ -9,7 +9,7 @@ import org.junit.Test;
 import com.zenobase.common.Generator;
 import com.zenobase.models.Event;
 import com.zenobase.models.Rating;
-import com.zenobase.test.NodeAssert;
+import com.zenobase.testing.NodeAssert;
 
 public class HistogramWidgetTest extends SearchTestSupport {
 

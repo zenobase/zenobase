@@ -1,6 +1,6 @@
 package com.zenobase.json;
 
-import static com.zenobase.test.NodeAssert.assertThat;
+import static com.zenobase.testing.NodeAssert.assertThat;
 
 import org.codehaus.jackson.node.ObjectNode;
 import org.junit.Test;

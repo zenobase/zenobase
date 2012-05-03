@@ -1,6 +1,6 @@
 package com.zenobase.models;
 
-import static com.zenobase.test.NodeAssert.assertThat;
+import static com.zenobase.testing.NodeAssert.assertThat;
 
 import org.junit.Test;
 import com.google.common.testing.EqualsTester;

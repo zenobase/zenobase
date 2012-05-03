@@ -1,4 +1,4 @@
-package com.zenobase.test;
+package com.zenobase.testing;
 
 import static play.test.Helpers.contentAsBytes;
 

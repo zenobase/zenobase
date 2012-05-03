@@ -1,4 +1,4 @@
-package com.zenobase.test;
+package com.zenobase.testing;
 
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.node.ArrayNode;

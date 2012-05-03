@@ -1,7 +1,7 @@
 package com.zenobase.controllers;
 
-import static com.zenobase.test.EventAssert.assertThat;
-import static com.zenobase.test.ResultAssert.assertThat;
+import static com.zenobase.testing.EventAssert.assertThat;
+import static com.zenobase.testing.ResultAssert.assertThat;
 import static org.fest.assertions.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 import static play.mvc.Http.Status.*;

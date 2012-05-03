@@ -1,4 +1,4 @@
-package com.zenobase.test;
+package com.zenobase.testing;
 
 import org.fest.assertions.Assertions;
 import org.fest.assertions.GenericAssert;

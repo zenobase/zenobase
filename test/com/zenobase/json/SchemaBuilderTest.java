@@ -1,6 +1,7 @@
 package com.zenobase.json;
 
-import static com.zenobase.test.NodeAssert.assertThat;
+import static com.zenobase.testing.NodeAssert.assertThat;
+
 import static org.fest.assertions.Assertions.assertThat;
 
 import java.io.IOException;

@@ -1,4 +1,4 @@
-package com.zenobase.test;
+package com.zenobase.testing;
 
 import static org.fest.assertions.Assertions.assertThat;
 import static org.fest.assertions.fluentlenium.FluentLeniumAssertions.assertThat;
