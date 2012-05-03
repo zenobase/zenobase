@@ -31,7 +31,7 @@ public class EventListController extends ControllerSupport {
 	@Inject
 	static CommandQueue queue;
 
-	public static Result find(String bucketId) {
+	public static Result get(String bucketId) {
 		Identity principal = auth.getPrincipal();
 		if (principal == null) {
 			return unauthorized();

@@ -16,7 +16,7 @@ import com.zenobase.models.Identity;
 import com.zenobase.models.Permission;
 import com.zenobase.search.EventSearch;
 
-public class EventControllerFindEventsTest extends EventListControllerTestSupport {
+public class EventListControllerGetTest extends EventListControllerTestSupport {
 
 	@Before
 	@Override
@@ -26,7 +26,7 @@ public class EventControllerFindEventsTest extends EventListControllerTestSuppor
 	}
 
 	@Test
-	public void testFindEvents() {
+	public void testGet() {
 		String filterExpression = "tag:value";
 		String widgetExpression = "id:xyz,type:list";
 		EventSearch expected = new EventSearch().addFilter(filterExpression).addWidget(widgetExpression);
@@ -64,6 +64,6 @@ public class EventControllerFindEventsTest extends EventListControllerTestSuppor
 	}
 
 	private static Result call(Bucket bucket, String q, String w) {
-		return callAction(com.zenobase.controllers.routes.ref.EventListController.find(bucket.getId()), fakeRequest(GET, String.format("?q=%s&w=%s", q, w)));
+		return callAction(com.zenobase.controllers.routes.ref.EventListController.get(bucket.getId()), fakeRequest(GET, String.format("?q=%s&w=%s", q, w)));
 	}
 }
