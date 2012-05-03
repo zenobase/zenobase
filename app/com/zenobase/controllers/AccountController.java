@@ -36,7 +36,7 @@ public class AccountController extends ControllerSupport {
 		if (!form.valid()) {
 			return badRequest("invalid request body");
 		}
-		if ("guest".equals(form.getUsername()) || users.exists(form.getUsername())) {
+		if (users.exists(form.getUsername())) {
 			return status(CONFLICT, "user exists");
 		}
 		Identity principal = auth.getPrincipal(true);

@@ -23,6 +23,12 @@ public class SignUpForm extends DomainNode {
 		super(node);
 	}
 
+	SignUpForm(String username, String password, String email) {
+		setValue(USERNAME, username);
+		setValue(PASSWORD, password);
+		setValue(EMAIL, email);
+	}
+
 	public String getUsername() {
 		return getValue(USERNAME);
 	}
@@ -43,6 +49,7 @@ public class SignUpForm extends DomainNode {
 
 	public static boolean isValidUsername(String value) {
 		return !Strings.isNullOrEmpty(value) &&
+			!"guest".equalsIgnoreCase(value) &&
 			USERNAME_PATTERN.matcher(value).matches();
 	}
 
@@ -53,10 +60,9 @@ public class SignUpForm extends DomainNode {
 
 	public static boolean isValidEmail(String value) {
 		try {
-			InternetAddress.parse(value);
+			return value.indexOf('@') != -1 && InternetAddress.parse(value, true).length == 1;
 		} catch (AddressException e) {
 			return false;
 		}
-		return true;
 	}
 }

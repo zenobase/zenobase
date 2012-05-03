@@ -20,7 +20,6 @@ import com.zenobase.models.Permission;
 import com.zenobase.models.User;
 import com.zenobase.services.BucketManager;
 import com.zenobase.services.CommandQueue;
-import com.zenobase.services.IndexManager;
 import com.zenobase.services.UserManager;
 
 public class BucketControllerDeleteBucketTest {
@@ -28,7 +27,6 @@ public class BucketControllerDeleteBucketTest {
 	private final SecurityContext auth = mock(SecurityContext.class);
 	private final BucketManager buckets = mock(BucketManager.class);
 	private final UserManager users = mock(UserManager.class);
-	private final IndexManager indexes = mock(IndexManager.class);
 	private final CommandQueue queue = mock(CommandQueue.class);
 	private final User user = new User(Generator.id(), "tester");
 	private final Bucket bucket = new Bucket();
@@ -41,7 +39,6 @@ public class BucketControllerDeleteBucketTest {
 				bind(SecurityContext.class).toInstance(auth);
 				bind(BucketManager.class).toInstance(buckets);
 				bind(UserManager.class).toInstance(users);
-				bind(IndexManager.class).toInstance(indexes); // unused
 				bind(CommandQueue.class).toInstance(queue);
 				requestStaticInjection(BucketController.class);
 			}
