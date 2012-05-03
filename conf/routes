@@ -29,8 +29,8 @@ GET     /buckets/:bucketId           com.zenobase.controllers.BucketController.g
 POST    /buckets/:bucketId           com.zenobase.controllers.BucketController.update(bucketId)
 DELETE  /buckets/:bucketId           com.zenobase.controllers.BucketController.delete(bucketId)
 
-GET     /buckets/:bucketId/          com.zenobase.controllers.EventController.find(bucketId)
-POST    /buckets/:bucketId/          com.zenobase.controllers.EventController.post(bucketId)
+GET     /buckets/:bucketId/          com.zenobase.controllers.EventListController.find(bucketId)
+POST    /buckets/:bucketId/          com.zenobase.controllers.EventListController.post(bucketId)
 
 GET     /buckets/:bucketId/:eventId  com.zenobase.controllers.EventController.get(bucketId, eventId)
 DELETE  /buckets/:bucketId/:eventId  com.zenobase.controllers.EventController.delete(bucketId, eventId)

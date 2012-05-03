@@ -31,6 +31,7 @@ import com.zenobase.controllers.AccountController;
 import com.zenobase.controllers.BucketController;
 import com.zenobase.controllers.BucketListController;
 import com.zenobase.controllers.EventController;
+import com.zenobase.controllers.EventListController;
 import com.zenobase.controllers.PasswordResetController;
 import com.zenobase.controllers.PasswordResetMailer;
 import com.zenobase.controllers.QueueController;
@@ -106,15 +107,16 @@ public class Global extends GlobalSettings {
 				handlers.addBinding().to(ChangeUserVerifiedCommand.Handler.class);
 				handlers.addBinding().to(ChangeUserPasswordCommand.Handler.class);
 
-				requestStaticInjection(QueueController.class);
-				requestStaticInjection(BucketListController.class);
-				requestStaticInjection(SecurityController.class);
-				requestStaticInjection(BucketController.class);
-				requestStaticInjection(EventController.class);
-				requestStaticInjection(UserController.class);
 				requestStaticInjection(AccountController.class);
-				requestStaticInjection(WhoController.class);
+				requestStaticInjection(BucketController.class);
+				requestStaticInjection(BucketListController.class);
+				requestStaticInjection(EventController.class);
+				requestStaticInjection(EventListController.class);
 				requestStaticInjection(PasswordResetController.class);
+				requestStaticInjection(QueueController.class);
+				requestStaticInjection(SecurityController.class);
+				requestStaticInjection(UserController.class);
+				requestStaticInjection(WhoController.class);
 			}
 
 			private void bindConfiguration() {

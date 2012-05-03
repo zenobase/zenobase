@@ -16,7 +16,7 @@ import com.zenobase.models.Identity;
 import com.zenobase.models.Permission;
 import com.zenobase.search.EventSearch;
 
-public class EventControllerFindEventsTest extends EventControllerTestSupport {
+public class EventControllerFindEventsTest extends EventListControllerTestSupport {
 
 	@Before
 	@Override
@@ -64,6 +64,6 @@ public class EventControllerFindEventsTest extends EventControllerTestSupport {
 	}
 
 	private static Result call(Bucket bucket, String q, String w) {
-		return callAction(com.zenobase.controllers.routes.ref.EventController.find(bucket.getId()), fakeRequest(GET, String.format("?q=%s&w=%s", q, w)));
+		return callAction(com.zenobase.controllers.routes.ref.EventListController.find(bucket.getId()), fakeRequest(GET, String.format("?q=%s&w=%s", q, w)));
 	}
 }
