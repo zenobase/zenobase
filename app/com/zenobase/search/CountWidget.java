@@ -11,19 +11,18 @@ import org.elasticsearch.search.facet.terms.TermsFacet.ComparatorType;
 
 import com.zenobase.json.Nodes;
 
-public class CountWidget implements Widget {
+public class CountWidget extends Widget {
 
 	public static final String TYPE = "count";
 	public static final String LABEL_MORE = "...";
 
-	private final String id;
 	private final String field;
 	private final ComparatorType order;
 	private final int offset;
 	private final int limit;
 
 	private CountWidget(String id, String field, String order, boolean reverse, int offset, int limit) {
-		this.id = id;
+		super(id);
 		this.field = field;
 		this.order = ComparatorType.fromString((reverse ? "reverse_" : "") + order);
 		this.offset = offset;
@@ -31,20 +30,15 @@ public class CountWidget implements Widget {
 	}
 
 	@Override
-	public String getId() {
-		return id;
-	}
-
-	@Override
 	public void configure(SearchSourceBuilder builder) {
-		builder.facet(FacetBuilders.termsFacet(id)
+		builder.facet(FacetBuilders.termsFacet(getId())
 			.field(field).size(offset + limit).order(order));
 	}
 
 	@Override
 	public JsonNode process(SearchResponse response) {
 		ArrayNode result = Nodes.newArray();
-		TermsFacet terms = response.facets().facet(TermsFacet.class, id);
+		TermsFacet terms = response.facets().facet(TermsFacet.class, getId());
 		for (TermsFacet.Entry entry : terms.entries().subList(offset, Math.min(terms.entries().size(), offset + limit))) {
 			ObjectNode entryNode = result.addObject();
 			entryNode.put("label", entry.getTerm());

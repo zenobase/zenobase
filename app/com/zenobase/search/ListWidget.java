@@ -10,27 +10,21 @@ import org.elasticsearch.search.sort.SortOrder;
 import com.zenobase.json.Nodes;
 import com.zenobase.models.Event;
 
-public class ListWidget implements Widget {
+public class ListWidget extends Widget {
 
 	public static final String TYPE = "list";
 
-	private final String id;
 	private final int offset;
 	private final int limit;
 	private final String sort;
 	private final SortOrder order;
 
 	private ListWidget(String id, int offset, int limit, String sort, SortOrder order) {
-		this.id = id;
+		super(id);
 		this.offset = offset;
 		this.limit = limit;
 		this.sort = sort;
 		this.order = order;
-	}
-
-	@Override
-	public String getId() {
-		return id;
 	}
 
 	@Override

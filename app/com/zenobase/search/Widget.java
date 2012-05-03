@@ -4,11 +4,30 @@ import org.codehaus.jackson.JsonNode;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 
-public interface Widget {
+public abstract class Widget {
 
-	String getId();
+	private final String id;
 
-	void configure(SearchSourceBuilder request);
+	protected Widget(String id) {
+		this.id = id;
+	}
 
-	JsonNode process(SearchResponse response);
+	public String getId() {
+		return id;
+	}
+
+	public abstract void configure(SearchSourceBuilder request);
+
+	public abstract JsonNode process(SearchResponse response);
+
+	@Override
+	public boolean equals(Object that) {
+		return that instanceof Widget &&
+			id.equals(((Widget) that).getId());
+	}
+
+	@Override
+	public int hashCode() {
+		return id.hashCode();
+	}
 }

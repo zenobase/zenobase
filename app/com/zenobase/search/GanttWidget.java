@@ -16,7 +16,7 @@ import com.zenobase.json.LongField;
 import com.zenobase.json.Nodes;
 import com.zenobase.json.TokenField;
 
-public class GanttWidget implements Widget {
+public class GanttWidget extends Widget {
 
 	public static final String TYPE = "gantt";
 
@@ -25,7 +25,6 @@ public class GanttWidget implements Widget {
 	private static final DateTimeField FIRST = new DateTimeField("first");
 	private static final DateTimeField LAST = new DateTimeField("last");
 
-	private final String id;
 	private final String termField;
 	private final String timeField;
 	private final ComparatorType order;
@@ -33,7 +32,7 @@ public class GanttWidget implements Widget {
 	private final DateTimeZone timezone;
 
 	private GanttWidget(String id, String termField, String timeField, ComparatorType order, int limit, DateTimeZone timezone) {
-		this.id = id;
+		super(id);
 		this.termField = termField;
 		this.timeField = timeField;
 		this.order = order;
@@ -42,20 +41,15 @@ public class GanttWidget implements Widget {
 	}
 
 	@Override
-	public String getId() {
-		return id;
-	}
-
-	@Override
 	public void configure(SearchSourceBuilder builder) {
-		builder.facet(FacetBuilders.termsStatsFacet(id)
+		builder.facet(FacetBuilders.termsStatsFacet(getId())
 			.keyField(termField).valueField(timeField).order(order).size(limit));
 	}
 
 	@Override
 	public JsonNode process(SearchResponse response) {
 		ArrayNode result = Nodes.newArray();
-		TermsStatsFacet terms = response.facets().facet(TermsStatsFacet.class, id);
+		TermsStatsFacet terms = response.facets().facet(TermsStatsFacet.class, getId());
 		for (TermsStatsFacet.Entry entry : terms.entries()) {
 			DateTime first = asDateTime(entry.getMin());
 			if (first != null) {

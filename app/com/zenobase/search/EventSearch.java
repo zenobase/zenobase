@@ -9,6 +9,7 @@ import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
+import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Lists;
@@ -121,5 +122,26 @@ public class EventSearch {
 			node.put(widget.getId(), widget.process(response));
 		}
 		return node;
+	}
+
+	@Override
+	public String toString() {
+		return String.format("EventSearch(widgets:%s, constraints:%s", widgets, constraints);
+	}
+
+	@Override
+	public boolean equals(Object that) {
+		return that instanceof EventSearch &&
+			equals((EventSearch) that);
+	}
+
+	private boolean equals(EventSearch that) {
+		return widgets.toString().equals(that.widgets.toString()) &&
+			constraints.toString().equals(that.constraints.toString());
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hashCode(widgets.toString(), constraints.toString());
 	}
 }

@@ -20,18 +20,17 @@ import com.zenobase.common.Intervals;
 import com.zenobase.json.Nodes;
 import com.zenobase.models.Event;
 
-public class TimelineWidget implements Widget {
+public class TimelineWidget extends Widget {
 
 	public static final String TYPE = "timeline";
 
-	private final String id;
 	private final String field;
 	private final String interval;
 	private final Interval range;
 	private final DateTimeZone timezone;
 
 	public TimelineWidget(String id, String field, String interval, String range, DateTimeZone timezone) {
-		this.id = id;
+		super(id);
 		this.field = field;
 		this.interval = interval;
 		this.range = !Strings.isNullOrEmpty(range) ? Intervals.valueOf(range) : null;
@@ -39,13 +38,8 @@ public class TimelineWidget implements Widget {
 	}
 
 	@Override
-	public String getId() {
-		return id;
-	}
-
-	@Override
 	public void configure(SearchSourceBuilder builder) {
-		builder.facet(FacetBuilders.dateHistogramFacet(id)
+		builder.facet(FacetBuilders.dateHistogramFacet(getId())
 			.field(field).interval(interval)
 			.preZone(timezone.toString())
 			.preZoneAdjustLargeInterval(true));
@@ -53,7 +47,7 @@ public class TimelineWidget implements Widget {
 
 	@Override
 	public JsonNode process(SearchResponse response) {
-		DateHistogramFacet facet = response.facets().facet(DateHistogramFacet.class, id);
+		DateHistogramFacet facet = response.facets().facet(DateHistogramFacet.class, getId());
 		Map<String, Long> counts = Collections.emptyMap();
 		if (!facet.getEntries().isEmpty()) {
 			counts = getMap(getInterval(facet.getEntries()));

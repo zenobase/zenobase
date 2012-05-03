@@ -20,7 +20,6 @@ import com.zenobase.models.Permission;
 import com.zenobase.search.EventSearch;
 import com.zenobase.services.BucketManager;
 import com.zenobase.services.CommandQueue;
-import com.zenobase.services.IndexManager;
 
 @With(Timed.class)
 public class EventController extends ControllerSupport {
@@ -29,9 +28,6 @@ public class EventController extends ControllerSupport {
 
 	@Inject
 	static BucketManager manager;
-
-	@Inject
-	static IndexManager node;
 
 	@Inject
 	static CommandQueue queue;
@@ -45,10 +41,13 @@ public class EventController extends ControllerSupport {
     	if (bucket == null) {
     		return notFound();
     	}
-    	return bucket.getPermission(principal) != Permission.NONE ? ok(new EventSearch()
+    	if (bucket.getPermission(principal) == Permission.NONE) {
+    		return forbidden();
+    	}
+    	EventSearch search = new EventSearch()
 			.addWidgets(request().queryString().get("w"))
-			.addFilters(request().queryString().get("q"))
-			.execute(node.getIndex(bucket.getId()))) : forbidden();
+			.addFilters(request().queryString().get("q"));
+    	return ok(manager.findEvents(bucketId, search));
     }
 
 	@BodyParser.Of(value = BodyParser.Json.class)

@@ -12,16 +12,15 @@ import com.google.common.collect.Lists;
 
 import com.zenobase.json.Nodes;
 
-public class HistogramWidget implements Widget {
+public class HistogramWidget extends Widget {
 
 	public static final String TYPE = "histogram";
 
-	private final String id;
 	private final String field;
 	private final double from, to, step;
 
 	public HistogramWidget(String id, String field, double from, double to, double step) {
-		this.id = id;
+		super(id);
 		this.field = field;
 		this.from = from;
 		this.to = to;
@@ -29,13 +28,8 @@ public class HistogramWidget implements Widget {
 	}
 
 	@Override
-	public String getId() {
-		return id;
-	}
-
-	@Override
 	public void configure(SearchSourceBuilder builder) {
-		RangeFacetBuilder facet = FacetBuilders.rangeFacet(id).field(field);
+		RangeFacetBuilder facet = FacetBuilders.rangeFacet(getId()).field(field);
 		facet.addUnboundedFrom(from);
 		for (double i = from; i < to; i += step) {
 			facet.addRange(i, Math.min(i + step, to));
@@ -47,7 +41,7 @@ public class HistogramWidget implements Widget {
 	@Override
 	public JsonNode process(SearchResponse response) {
 		ArrayNode result = Nodes.newArray();
-		RangeFacet ratings = response.facets().facet(RangeFacet.class, id);
+		RangeFacet ratings = response.facets().facet(RangeFacet.class, getId());
 		for (RangeFacet.Entry entry : Lists.reverse(ratings.entries())) {
 			if (entry.getCount() > 0L) {
 				ObjectNode entryNode = result.addObject();

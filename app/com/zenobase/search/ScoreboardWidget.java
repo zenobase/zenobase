@@ -14,11 +14,10 @@ import org.elasticsearch.search.facet.termsstats.TermsStatsFacet.ComparatorType;
 import com.zenobase.json.MeasurementField;
 import com.zenobase.json.Nodes;
 
-public class ScoreboardWidget implements Widget {
+public class ScoreboardWidget extends Widget {
 
 	public static final String TYPE = "scoreboard";
 
-	private final String id;
 	private final String termField;
 	private final String valueField;
 	private final Unit<?> unit;
@@ -26,7 +25,7 @@ public class ScoreboardWidget implements Widget {
 	private final int limit;
 
 	private ScoreboardWidget(String id, String termField, String valueField, Unit<?> unit, ComparatorType order, int limit) {
-		this.id = id;
+		super(id);
 		this.termField = termField;
 		this.valueField = valueField;
 		this.unit = unit;
@@ -35,20 +34,15 @@ public class ScoreboardWidget implements Widget {
 	}
 
 	@Override
-	public String getId() {
-		return id;
-	}
-
-	@Override
 	public void configure(SearchSourceBuilder builder) {
-		builder.facet(FacetBuilders.termsStatsFacet(id)
+		builder.facet(FacetBuilders.termsStatsFacet(getId())
 			.keyField(termField).valueField(valueField + "." + MeasurementField.VALUE_SI.getName()).order(order).size(limit));
 	}
 
 	@Override
 	public JsonNode process(SearchResponse response) {
 		ArrayNode result = Nodes.newArray();
-		TermsStatsFacet terms = response.facets().facet(TermsStatsFacet.class, id);
+		TermsStatsFacet terms = response.facets().facet(TermsStatsFacet.class, getId());
 		for (TermsStatsFacet.Entry entry : terms.entries()) {
 			if (entry.getTotalCount() > 0) {
 				ObjectNode entryNode = result.addObject();

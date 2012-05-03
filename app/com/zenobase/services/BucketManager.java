@@ -18,6 +18,7 @@ import com.zenobase.json.PermissionField;
 import com.zenobase.models.Bucket;
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
+import com.zenobase.search.EventSearch;
 
 public class BucketManager {
 
@@ -118,6 +119,10 @@ public class BucketManager {
 	public Event findEvent(String bucketId, String eventId) {
 		ObjectNode node = getIndex(bucketId).get(Event.TYPE_NAME, eventId);
 		return node != null ? new Event(node) : null;
+	}
+
+	public ObjectNode findEvents(String bucketId, EventSearch search) {
+		return search.execute(manager.getIndex(bucketId));
 	}
 
 	public long getSize(String bucketId) {

@@ -4,7 +4,7 @@ import static com.zenobase.test.ResultAssert.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
 import static play.mvc.Http.Status.*;
-import static play.test.Helpers.*;
+import static play.test.Helpers.callAction;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -19,6 +19,7 @@ import com.zenobase.models.Permission;
 
 public class EventControllerDeleteEventTest extends EventControllerTestSupport {
 
+	private final Event event = new Event();
 	private final Identity friend = new Identity();
 
 	@Before
@@ -77,6 +78,6 @@ public class EventControllerDeleteEventTest extends EventControllerTestSupport {
 	}
 
 	private static Result call(Bucket bucket, Event event) {
-		return callAction(com.zenobase.controllers.routes.ref.EventController.delete(bucket.getId(), event.getId()), fakeRequest());
+		return callAction(com.zenobase.controllers.routes.ref.EventController.delete(bucket.getId(), event.getId()));
 	}
 }
