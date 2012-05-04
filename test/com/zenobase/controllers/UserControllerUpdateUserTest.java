@@ -12,7 +12,6 @@ import play.mvc.Result;
 
 import com.zenobase.commands.ChangeUserEmailCommand;
 import com.zenobase.commands.ChangeUserPasswordCommand;
-import com.zenobase.common.BCrypt;
 import com.zenobase.common.Generator;
 import com.zenobase.models.Identity;
 
@@ -61,9 +60,8 @@ public class UserControllerUpdateUserTest extends UserControllerTestSupport {
 		String commandId = Generator.id();
 		when(users.find(user.getName())).thenReturn(user);
 		when(queue.dispatch(Matchers.any(ChangeUserPasswordCommand.class))).thenReturn(commandId);
-		String expires = Long.toString(System.currentTimeMillis() + 60000, 36);
-		String key = BCrypt.hashpw(PasswordResetMailer.toString(user, expires));
-		Result result = call(user.getName(), new UpdateUserForm("newpassword",  key, expires).toJson());
+		PasswordResetKey key = new PasswordResetKey(user);
+		Result result = call(user.getName(), new UpdateUserForm("newpassword",  key.getKey(), key.getExpirationToken()).toJson());
 		assertThat(result).hasStatus(NO_CONTENT);
 		verify(auth).setPrincipal(user.asIdentity(), true);
 	}

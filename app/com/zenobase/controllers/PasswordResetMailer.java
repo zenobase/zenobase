@@ -3,12 +3,8 @@ package com.zenobase.controllers;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
 import com.google.common.base.Preconditions;
 
-import com.zenobase.common.BCrypt;
-import com.zenobase.common.SecureHash;
 import com.zenobase.models.User;
 import com.zenobase.services.Mailer;
 import com.zenobase.services.Message;
@@ -26,17 +22,13 @@ public class PasswordResetMailer {
 
 	public void send(User user) {
 		Preconditions.checkNotNull(user.getEmail());
-		String expires = Long.toString(new DateTime(DateTimeZone.UTC).plusDays(1).getMillis(), 36);
+		PasswordResetKey key = new PasswordResetKey(user);
 		String text =
 			"Account:\n\n" +
 			"  " + user.getName() + "\n\n" +
 			"Follow the following link to reset your password:\n\n" +
-			"  " + hostname + "/#/users/" + user.getName() + "/reset?key=" + BCrypt.hashpw(toString(user, expires)) + "&expires=" + expires + "\n\n" +
+			"  " + hostname + "/#/users/" + user.getName() + "/reset?key=" + key.getKey() + "&expires=" + key.getExpirationToken() + "\n\n" +
 			"If this was a mistake, just ignore this email and nothing will happen.\n";
 		mailer.send(new Message(user.getEmail(), "Your Zenobase Password", text));
-	}
-
-	public static String toString(User user, String expires) {
-		return new SecureHash().add(user.getName()).add(user.getHashedPassword()).add(expires).build();
 	}
 }

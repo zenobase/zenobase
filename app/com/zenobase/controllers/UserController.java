@@ -3,7 +3,6 @@ package com.zenobase.controllers;
 import javax.inject.Inject;
 
 import org.codehaus.jackson.node.ObjectNode;
-import org.joda.time.DateTime;
 import play.mvc.BodyParser;
 import play.mvc.Result;
 import play.mvc.With;
@@ -11,7 +10,6 @@ import play.mvc.With;
 import com.zenobase.commands.ChangeUserEmailCommand;
 import com.zenobase.commands.ChangeUserPasswordCommand;
 import com.zenobase.commands.ChangeUserVerifiedCommand;
-import com.zenobase.common.BCrypt;
 import com.zenobase.models.Identity;
 import com.zenobase.models.User;
 import com.zenobase.models.UserProfile;
@@ -84,7 +82,7 @@ public class UserController extends ControllerSupport {
 
 	private static Result updatePassword(UpdateUserForm form, User user) {
     	String key = form.getKey();
-    	if (key == null || key.length() < 50) {
+    	if (key == null) {
     		return badRequest("missing key field");
     	}
     	String password = form.getPassword();
@@ -95,10 +93,7 @@ public class UserController extends ControllerSupport {
 		if (expires == null) {
 			return badRequest("missing expires field");
 		}
-		if (form.getExpiresDate().isBefore(new DateTime())) {
-			return badRequest("request expired");
-		}
-		if (!BCrypt.checkpw(PasswordResetMailer.toString(user, expires), key)) {
+		if (!new PasswordResetKey(user, expires).validate(key)) {
 			return badRequest("invalid key");
 		}
 		queue.dispatch(new ChangeUserPasswordCommand(user.asIdentity(), user.getName(), user.getHashedPassword(), User.getHashedPassword(password)));
@@ -111,10 +106,10 @@ public class UserController extends ControllerSupport {
 			return badRequest("already verified");
 		}
 		String key = form.getKey();
-		if (key == null || key.length() < 50) {
+		if (key == null) {
 			return badRequest("missing key");
 		}
-		if (!BCrypt.checkpw(VerificationMailer.toString(user.getName(), user.getEmail()), key)) {
+		if (!new EmailVerificationKey(user.getName(), user.getEmail()).validate(key)) {
 			return badRequest("invalid key");
 		}
 		queue.dispatch(new ChangeUserVerifiedCommand(user.asIdentity(), user.getName(), true));

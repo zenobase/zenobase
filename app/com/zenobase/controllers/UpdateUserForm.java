@@ -1,7 +1,6 @@
 package com.zenobase.controllers;
 
 import org.codehaus.jackson.node.ObjectNode;
-import org.joda.time.DateTime;
 
 import com.zenobase.json.BooleanField;
 import com.zenobase.json.TokenField;
@@ -52,10 +51,5 @@ public class UpdateUserForm extends DomainNode {
 
 	public String getExpires() {
 		return getValue(EXPIRES);
-	}
-
-	public DateTime getExpiresDate() {
-		String value = getValue(EXPIRES);
-		return value != null ? new DateTime(Long.parseLong(value, 36)) : null;
 	}
 }
