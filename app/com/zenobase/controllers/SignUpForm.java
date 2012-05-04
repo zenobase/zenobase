@@ -8,8 +8,8 @@ import javax.mail.internet.InternetAddress;
 import org.codehaus.jackson.node.ObjectNode;
 import com.google.common.base.Strings;
 
+import com.zenobase.json.DomainNode;
 import com.zenobase.json.TokenField;
-import com.zenobase.models.DomainNode;
 
 public class SignUpForm extends DomainNode {
 

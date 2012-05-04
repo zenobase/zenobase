@@ -5,8 +5,8 @@ import com.google.common.base.Objects;
 import com.google.common.base.Strings;
 
 import com.zenobase.json.BooleanField;
+import com.zenobase.json.DomainNode;
 import com.zenobase.json.TokenField;
-import com.zenobase.models.DomainNode;
 
 public class SignInForm extends DomainNode {
 

@@ -3,7 +3,6 @@ package com.zenobase.json;
 import org.codehaus.jackson.node.ArrayNode;
 import org.codehaus.jackson.node.ObjectNode;
 
-import com.zenobase.models.DomainNode;
 
 public class SchemaBuilder {
 

@@ -2,6 +2,7 @@ package com.zenobase.models;
 
 import com.zenobase.json.BooleanField;
 import com.zenobase.json.DateTimeField;
+import com.zenobase.json.DomainNode;
 import com.zenobase.json.TokenField;
 
 public class UserProfile extends DomainNode {

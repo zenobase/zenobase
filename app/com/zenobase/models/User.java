@@ -7,6 +7,7 @@ import org.joda.time.DateTimeZone;
 import com.zenobase.common.BCrypt;
 import com.zenobase.json.BooleanField;
 import com.zenobase.json.DateTimeField;
+import com.zenobase.json.DomainNode;
 import com.zenobase.json.Nodes;
 import com.zenobase.json.Schema;
 import com.zenobase.json.SchemaBuilder;

@@ -5,6 +5,7 @@ import com.google.common.collect.ImmutableSet;
 
 import com.zenobase.common.Generator;
 import com.zenobase.json.DateTimeField;
+import com.zenobase.json.DomainNode;
 import com.zenobase.json.DurationField;
 import com.zenobase.json.Field;
 import com.zenobase.json.IdentityField;

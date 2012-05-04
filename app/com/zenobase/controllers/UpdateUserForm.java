@@ -3,8 +3,8 @@ package com.zenobase.controllers;
 import org.codehaus.jackson.node.ObjectNode;
 
 import com.zenobase.json.BooleanField;
+import com.zenobase.json.DomainNode;
 import com.zenobase.json.TokenField;
-import com.zenobase.models.DomainNode;
 
 public class UpdateUserForm extends DomainNode {
 

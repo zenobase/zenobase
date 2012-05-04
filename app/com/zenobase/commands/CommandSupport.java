@@ -8,6 +8,7 @@ import com.google.common.collect.ImmutableList;
 import com.zenobase.common.Generator;
 import com.zenobase.json.CommandTypeField;
 import com.zenobase.json.DateTimeField;
+import com.zenobase.json.DomainNode;
 import com.zenobase.json.Field;
 import com.zenobase.json.IdentityField;
 import com.zenobase.json.Nodes;
@@ -15,7 +16,6 @@ import com.zenobase.json.ObjectField;
 import com.zenobase.json.Schema;
 import com.zenobase.json.SchemaBuilder;
 import com.zenobase.json.TokenField;
-import com.zenobase.models.DomainNode;
 import com.zenobase.models.Identity;
 
 public abstract class CommandSupport extends DomainNode implements Command {

@@ -2,10 +2,10 @@ package com.zenobase.commands;
 
 import com.zenobase.json.CommandTypeField;
 import com.zenobase.json.DateTimeField;
+import com.zenobase.json.DomainNode;
 import com.zenobase.json.IdentityField;
 import com.zenobase.json.TextField;
 import com.zenobase.json.TokenField;
-import com.zenobase.models.DomainNode;
 
 public class CommandInfo extends DomainNode {
 
