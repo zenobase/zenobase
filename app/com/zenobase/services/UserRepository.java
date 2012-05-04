@@ -14,9 +14,9 @@ import com.google.common.collect.Lists;
 
 import com.zenobase.common.Callback;
 import com.zenobase.common.PartialList;
-import com.zenobase.controllers.UserList;
 import com.zenobase.models.Identity;
 import com.zenobase.models.User;
+import com.zenobase.models.UserList;
 
 public class UserRepository {
 

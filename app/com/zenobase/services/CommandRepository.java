@@ -15,7 +15,7 @@ import com.zenobase.commands.Command;
 import com.zenobase.commands.CommandParserRegistry;
 import com.zenobase.commands.CommandSupport;
 import com.zenobase.common.Callback;
-import com.zenobase.controllers.CommandList;
+import com.zenobase.models.CommandList;
 
 public class CommandRepository {
 

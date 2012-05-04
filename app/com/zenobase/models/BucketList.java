@@ -1,4 +1,4 @@
-package com.zenobase.controllers;
+package com.zenobase.models;
 
 import org.codehaus.jackson.node.ArrayNode;
 import org.codehaus.jackson.node.ObjectNode;
@@ -7,7 +7,6 @@ import com.google.common.primitives.Ints;
 import com.zenobase.common.PartialList;
 import com.zenobase.json.LongField;
 import com.zenobase.json.Nodes;
-import com.zenobase.models.Bucket;
 import com.zenobase.services.BucketRepository;
 
 public class BucketList extends PartialList<Bucket> {

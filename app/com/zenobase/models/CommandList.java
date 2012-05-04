@@ -1,4 +1,4 @@
-package com.zenobase.controllers;
+package com.zenobase.models;
 
 import org.codehaus.jackson.node.ArrayNode;
 import org.codehaus.jackson.node.ObjectNode;

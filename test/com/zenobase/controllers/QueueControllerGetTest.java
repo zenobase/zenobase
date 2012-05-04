@@ -11,6 +11,7 @@ import com.google.common.collect.Lists;
 
 import com.zenobase.commands.Command;
 import com.zenobase.commands.TestCommand;
+import com.zenobase.models.CommandList;
 import com.zenobase.models.Identity;
 
 public class QueueControllerGetTest extends QueueControllerTestSupport {

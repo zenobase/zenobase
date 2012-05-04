@@ -14,9 +14,9 @@ import com.google.common.collect.Lists;
 
 import com.zenobase.common.Callback;
 import com.zenobase.common.PartialList;
-import com.zenobase.controllers.BucketList;
 import com.zenobase.json.PermissionField;
 import com.zenobase.models.Bucket;
+import com.zenobase.models.BucketList;
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
 import com.zenobase.search.EventSearch;
