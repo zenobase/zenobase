@@ -13,7 +13,7 @@ import com.zenobase.commands.ChangeUserVerifiedCommand;
 import com.zenobase.models.Identity;
 import com.zenobase.models.User;
 import com.zenobase.models.UserProfile;
-import com.zenobase.services.CommandQueue;
+import com.zenobase.services.CommandDispatcher;
 import com.zenobase.services.UserRepository;
 
 @With(Timed.class)
@@ -23,10 +23,10 @@ public class UserController extends ControllerSupport {
 	static UserRepository users;
 
 	@Inject
-	static CommandQueue queue;
+	static CommandDispatcher dispatcher;
 
 	@Inject
-	static VerificationMailer verificationMailer;
+	static VerificationMailer mailer;
 
 	public static Result get(String name) {
 		Identity principal = auth.getPrincipal();
@@ -75,8 +75,8 @@ public class UserController extends ControllerSupport {
     	if (!SignUpForm.isValidEmail(email)) {
     		return badRequest("invalid email address");
     	}
-		String commandId = queue.dispatch(new ChangeUserEmailCommand(principal, user.getName(), user.getEmail(), email, user.isVerified(), user.isVerified() && user.getEmail().equals(email)));
-		verificationMailer.send(user.getName(), email);
+		String commandId = dispatcher.dispatch(new ChangeUserEmailCommand(principal, user.getName(), user.getEmail(), email, user.isVerified(), user.isVerified() && user.getEmail().equals(email)));
+		mailer.send(user.getName(), email);
 		return ok(receipt(commandId));
 	}
 
@@ -96,7 +96,7 @@ public class UserController extends ControllerSupport {
 		if (!new PasswordResetKey(user, expires).validate(key)) {
 			return badRequest("invalid key");
 		}
-		queue.dispatch(new ChangeUserPasswordCommand(user.asIdentity(), user.getName(), user.getHashedPassword(), User.getHashedPassword(password)));
+		dispatcher.dispatch(new ChangeUserPasswordCommand(user.asIdentity(), user.getName(), user.getHashedPassword(), User.getHashedPassword(password)));
 		auth.setPrincipal(user.asIdentity(), true);
 		return noContent();
 	}
@@ -112,7 +112,7 @@ public class UserController extends ControllerSupport {
 		if (!new EmailVerificationKey(user.getName(), user.getEmail()).validate(key)) {
 			return badRequest("invalid key");
 		}
-		queue.dispatch(new ChangeUserVerifiedCommand(user.asIdentity(), user.getName(), true));
+		dispatcher.dispatch(new ChangeUserVerifiedCommand(user.asIdentity(), user.getName(), true));
 		return noContent();
 	}
 }

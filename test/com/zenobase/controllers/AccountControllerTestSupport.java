@@ -9,7 +9,7 @@ import com.google.inject.Guice;
 import com.zenobase.common.Generator;
 import com.zenobase.models.User;
 import com.zenobase.services.BucketRepository;
-import com.zenobase.services.CommandQueue;
+import com.zenobase.services.CommandDispatcher;
 import com.zenobase.services.UserRepository;
 
 public abstract class AccountControllerTestSupport {
@@ -17,7 +17,7 @@ public abstract class AccountControllerTestSupport {
 	protected final SecurityContext auth = mock(SecurityContext.class);
 	protected final BucketRepository buckets = mock(BucketRepository.class);
 	protected final UserRepository users = mock(UserRepository.class);
-	protected final CommandQueue queue = mock(CommandQueue.class);
+	protected final CommandDispatcher dispatcher = mock(CommandDispatcher.class);
 	protected final VerificationMailer mailer = mock(VerificationMailer.class);
 	protected final User user = new User(Generator.id(), "tester");
 	protected final String password = "secret123";
@@ -30,7 +30,7 @@ public abstract class AccountControllerTestSupport {
 				bind(SecurityContext.class).toInstance(auth);
 				bind(BucketRepository.class).toInstance(buckets);
 				bind(UserRepository.class).toInstance(users);
-				bind(CommandQueue.class).toInstance(queue);
+				bind(CommandDispatcher.class).toInstance(dispatcher);
 				bind(VerificationMailer.class).toInstance(mailer); // unused
 				requestStaticInjection(AccountController.class);
 			}

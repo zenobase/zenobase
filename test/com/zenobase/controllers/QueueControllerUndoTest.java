@@ -27,7 +27,7 @@ public class QueueControllerUndoTest extends QueueControllerTestSupport {
 		ArgumentCaptor<TestCommand> commandArg = ArgumentCaptor.forClass(TestCommand.class);
 		when(auth.getPrincipal()).thenReturn(principal);
 		when(commands.find(command.getId())).thenReturn(command);
-		when(queue.dispatch(commandArg.capture())).thenReturn(command.getId());
+		when(dispatcher.dispatch(commandArg.capture())).thenReturn(command.getId());
 		Result result = call(new UndoForm(command.getId()).toJson());
 		assertThat(result).hasStatus(CREATED).hasContent(QueueController.receipt(command.getId()));
 		assertThat(commandArg.getValue().getTag()).isEqualTo("gnitset");
@@ -38,7 +38,7 @@ public class QueueControllerUndoTest extends QueueControllerTestSupport {
 		Identity superuser = new Identity();
 		when(auth.getPrincipal()).thenReturn(superuser);
 		when(commands.find(command.getId())).thenReturn(command);
-		when(queue.dispatch(any(TestCommand.class))).thenReturn(command.getId());
+		when(dispatcher.dispatch(any(TestCommand.class))).thenReturn(command.getId());
 		when(users.isSuperuser(superuser)).thenReturn(true);
 		Result result = call(new UndoForm(command.getId()).toJson());
 		assertThat(result).hasStatus(CREATED).hasContent(QueueController.receipt(command.getId()));
@@ -49,7 +49,7 @@ public class QueueControllerUndoTest extends QueueControllerTestSupport {
 		when(auth.getPrincipal()).thenReturn(null);
 		Result result = call(new UndoForm(command.getId()).toJson());
 		assertThat(result).hasStatus(UNAUTHORIZED);
-		verifyZeroInteractions(queue);
+		verifyZeroInteractions(dispatcher);
 	}
 
 	@Test
@@ -57,7 +57,7 @@ public class QueueControllerUndoTest extends QueueControllerTestSupport {
 		when(auth.getPrincipal()).thenReturn(null);
 		Result result = call(Nodes.newObject());
 		assertThat(result).hasStatus(BAD_REQUEST);
-		verifyZeroInteractions(queue);
+		verifyZeroInteractions(dispatcher);
 	}
 
 	@Test
@@ -66,7 +66,7 @@ public class QueueControllerUndoTest extends QueueControllerTestSupport {
 		when(commands.find(command.getId())).thenReturn(null);
 		Result result = call(new UndoForm(Generator.id()).toJson());
 		assertThat(result).hasStatus(NOT_FOUND);
-		verifyZeroInteractions(queue);
+		verifyZeroInteractions(dispatcher);
 	}
 
 	@Test
@@ -75,7 +75,7 @@ public class QueueControllerUndoTest extends QueueControllerTestSupport {
 		when(commands.find(command.getId())).thenReturn(command);
 		Result result = call(new UndoForm(command.getId()).toJson());
 		assertThat(result).hasStatus(FORBIDDEN);
-		verifyZeroInteractions(queue);
+		verifyZeroInteractions(dispatcher);
 	}
 
 	private Result call(ObjectNode body) {

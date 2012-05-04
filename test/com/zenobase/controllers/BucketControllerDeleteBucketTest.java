@@ -34,7 +34,7 @@ public class BucketControllerDeleteBucketTest extends BucketControllerTestSuppor
 		String commandId = Generator.id();
 		when(auth.getPrincipal()).thenReturn(user.asIdentity());
 		when(buckets.findBucket(bucket.getId())).thenReturn(bucket.copy());
-		when(queue.dispatch(any(DeleteBucketCommand.class))).thenReturn(commandId);
+		when(dispatcher.dispatch(any(DeleteBucketCommand.class))).thenReturn(commandId);
 		Result result = call(bucket.getId());
 		assertThat(result).hasStatus(OK).hasContent(BucketController.receipt(commandId));
 	}
@@ -46,7 +46,7 @@ public class BucketControllerDeleteBucketTest extends BucketControllerTestSuppor
 		when(auth.getPrincipal()).thenReturn(superuser);
 		when(users.isSuperuser(superuser)).thenReturn(true);
 		when(buckets.findBucket(bucket.getId())).thenReturn(bucket.copy());
-		when(queue.dispatch(any(DeleteBucketCommand.class))).thenReturn(commandId);
+		when(dispatcher.dispatch(any(DeleteBucketCommand.class))).thenReturn(commandId);
 		Result result = call(bucket.getId());
 		assertThat(result).hasStatus(OK).hasContent(BucketController.receipt(commandId));
 	}
@@ -57,7 +57,7 @@ public class BucketControllerDeleteBucketTest extends BucketControllerTestSuppor
 		when(buckets.findBucket(bucket.getId())).thenReturn(null);
 		Result result = call(bucket.getId());
 		assertThat(result).hasStatus(NOT_FOUND);
-		verifyZeroInteractions(queue);
+		verifyZeroInteractions(dispatcher);
 	}
 
 	@Test
@@ -66,7 +66,7 @@ public class BucketControllerDeleteBucketTest extends BucketControllerTestSuppor
 		when(buckets.findBucket(bucket.getId())).thenReturn(bucket.copy());
 		Result result = call(bucket.getId());
 		assertThat(result).hasStatus(UNAUTHORIZED);
-		verifyZeroInteractions(queue);
+		verifyZeroInteractions(dispatcher);
 	}
 
 	@Test
@@ -75,7 +75,7 @@ public class BucketControllerDeleteBucketTest extends BucketControllerTestSuppor
 		when(buckets.findBucket(bucket.getId())).thenReturn(bucket.copy());
 		Result result = call(bucket.getId());
 		assertThat(result).hasStatus(FORBIDDEN);
-		verifyZeroInteractions(queue);
+		verifyZeroInteractions(dispatcher);
 	}
 
 	private static Result call(String bucketId) {

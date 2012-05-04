@@ -14,18 +14,14 @@ import com.zenobase.models.Bucket;
 import com.zenobase.models.Identity;
 import com.zenobase.models.Permission;
 import com.zenobase.services.BucketRepository;
-import com.zenobase.services.CommandQueue;
-import com.zenobase.services.IndexManager;
+import com.zenobase.services.CommandDispatcher;
 import com.zenobase.services.UserRepository;
 
 @With(Timed.class)
 public class BucketListController extends ControllerSupport {
 
 	@Inject
-	static CommandQueue queue;
-
-	@Inject
-	static IndexManager node;
+	static CommandDispatcher dispatcher;
 
 	@Inject
 	static BucketRepository buckets;
@@ -89,7 +85,7 @@ public class BucketListController extends ControllerSupport {
 		String description = Bucket.DESCRIPTION.getValue(body);
 		Identity principal = auth.getPrincipal(true);
     	Bucket bucket = createBucket(label, description, principal);
-    	String commandId = queue.dispatch(new CreateBucketCommand(principal, bucket));
+    	String commandId = dispatcher.dispatch(new CreateBucketCommand(principal, bucket));
         response().setHeader(LOCATION, com.zenobase.controllers.routes.BucketController.get(bucket.getId()).toString());
         return created(receipt(commandId));
     }

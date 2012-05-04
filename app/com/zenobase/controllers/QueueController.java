@@ -8,7 +8,7 @@ import play.mvc.With;
 
 import com.zenobase.commands.Command;
 import com.zenobase.models.Identity;
-import com.zenobase.services.CommandQueue;
+import com.zenobase.services.CommandDispatcher;
 import com.zenobase.services.CommandRepository;
 import com.zenobase.services.UserRepository;
 
@@ -16,7 +16,7 @@ import com.zenobase.services.UserRepository;
 public class QueueController extends ControllerSupport {
 
 	@Inject
-	static CommandQueue queue;
+	static CommandDispatcher dispatcher;
 
 	@Inject
 	static CommandRepository repository;
@@ -52,7 +52,7 @@ public class QueueController extends ControllerSupport {
 		if (!principal.equals(command.getPrincipal()) && !users.isSuperuser(principal)) {
 			return forbidden();
 		}
-    	String undoId = queue.dispatch(command.reverse(principal));
+    	String undoId = dispatcher.dispatch(command.reverse(principal));
         return created(receipt(undoId));
     }
 }

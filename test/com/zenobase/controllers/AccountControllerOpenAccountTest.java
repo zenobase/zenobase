@@ -28,7 +28,7 @@ public class AccountControllerOpenAccountTest extends AccountControllerTestSuppo
 		Result result = call(form.toJson());
 		assertThat(result).hasStatus(CREATED).hasContent(new UserInfo(user).toJson());
 		ArgumentCaptor<CreateUserCommand> commandArg = ArgumentCaptor.forClass(CreateUserCommand.class);
-		verify(queue).dispatch(commandArg.capture());
+		verify(dispatcher).dispatch(commandArg.capture());
 		User actual = commandArg.getValue().getUser();
 		assertThat(actual.getName()).isEqualTo(user.getName());
 		assertThat(actual.getEmail()).isEqualTo(user.getEmail());
@@ -42,11 +42,11 @@ public class AccountControllerOpenAccountTest extends AccountControllerTestSuppo
 		String commandId = Generator.id();
 		when(users.exists(user.getName())).thenReturn(true);
 		when(auth.getPrincipal(true)).thenReturn(user.asIdentity());
-		when(queue.dispatch(any(CreateUserCommand.class))).thenReturn(commandId);
+		when(dispatcher.dispatch(any(CreateUserCommand.class))).thenReturn(commandId);
 		SignUpForm form = new SignUpForm(user.getName(), password, user.getEmail());
 		Result result = call(form.toJson());
 		assertThat(result).hasStatus(CONFLICT);
-		verifyZeroInteractions(queue, mailer);
+		verifyZeroInteractions(dispatcher, mailer);
 	}
 
 	@Test
@@ -57,7 +57,7 @@ public class AccountControllerOpenAccountTest extends AccountControllerTestSuppo
 		SignUpForm form = new SignUpForm(username, password, user.getEmail());
 		Result result = call(form.toJson());
 		assertThat(result).hasStatus(BAD_REQUEST);
-		verifyZeroInteractions(queue, mailer);
+		verifyZeroInteractions(dispatcher, mailer);
 	}
 
 	@Test
@@ -67,7 +67,7 @@ public class AccountControllerOpenAccountTest extends AccountControllerTestSuppo
 		SignUpForm form = new SignUpForm(user.getName(), password, "x");
 		Result result = call(form.toJson());
 		assertThat(result).hasStatus(BAD_REQUEST);
-		verifyZeroInteractions(queue, mailer);
+		verifyZeroInteractions(dispatcher, mailer);
 	}
 
 	private Result call(ObjectNode body) {

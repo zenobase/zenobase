@@ -41,7 +41,7 @@ public class EventListControllerPostTest extends EventListControllerTestSupport 
 		ArgumentCaptor<CreateEventCommand> commandArg = ArgumentCaptor.forClass(CreateEventCommand.class);
 		when(auth.getPrincipal()).thenReturn(user.asIdentity());
 		when(buckets.findBucket(bucket.getId())).thenReturn(bucket);
-		when(queue.dispatch(commandArg.capture())).thenReturn(commandId);
+		when(dispatcher.dispatch(commandArg.capture())).thenReturn(commandId);
 		Result result = call(bucket, body);
 		assertThat(result).hasStatus(CREATED).hasContent(EventListController.receipt(commandId));
 		assertThat(commandArg.getValue().getEvent())
@@ -60,7 +60,7 @@ public class EventListControllerPostTest extends EventListControllerTestSupport 
 		Event.TAG.setValue(body, tag);
 		when(auth.getPrincipal()).thenReturn(user.asIdentity());
 		when(buckets.findBucket(bucket.getId())).thenReturn(bucket);
-		when(queue.dispatch(commandArg.capture())).thenReturn(commandId);
+		when(dispatcher.dispatch(commandArg.capture())).thenReturn(commandId);
 		Result result = call(bucket, body);
 		assertThat(result).hasStatus(CREATED).hasContent(EventListController.receipt(commandId));
 		assertThat(commandArg.getValue().getEvent())
@@ -78,7 +78,7 @@ public class EventListControllerPostTest extends EventListControllerTestSupport 
 		EventListController.RANDOM.setValue(body, eventCount);
 		when(auth.getPrincipal()).thenReturn(user.asIdentity());
 		when(buckets.findBucket(bucket.getId())).thenReturn(bucket);
-		when(queue.dispatch(commandArg.capture())).thenReturn(commandId);
+		when(dispatcher.dispatch(commandArg.capture())).thenReturn(commandId);
 		Result result = call(bucket, body);
 		assertThat(result).hasStatus(OK).hasContent(EventListController.receipt(commandId));
 		assertThat(commandArg.getValue().getCommands().size()).as("number of commands").isEqualTo(eventCount);

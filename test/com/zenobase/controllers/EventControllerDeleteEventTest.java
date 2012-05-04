@@ -37,7 +37,7 @@ public class EventControllerDeleteEventTest extends EventControllerTestSupport {
 		when(buckets.findBucket(bucket.getId())).thenReturn(bucket);
 		when(buckets.findEvent(bucket.getId(), event.getId())).thenReturn(event);
 		String commandId = Generator.id();
-		when(queue.dispatch(any(DeleteEventCommand.class))).thenReturn(commandId);
+		when(dispatcher.dispatch(any(DeleteEventCommand.class))).thenReturn(commandId);
 		Result result = call(bucket, event);
 		assertThat(result).hasStatus(OK).hasContent(EventController.receipt(commandId));
 	}
@@ -48,7 +48,7 @@ public class EventControllerDeleteEventTest extends EventControllerTestSupport {
 		when(buckets.findBucket(bucket.getId())).thenReturn(null);
 		Result result = call(bucket, event);
 		assertThat(result).hasStatus(NOT_FOUND);
-		verifyZeroInteractions(queue);
+		verifyZeroInteractions(dispatcher);
 	}
 
 	@Test
@@ -58,7 +58,7 @@ public class EventControllerDeleteEventTest extends EventControllerTestSupport {
 		when(buckets.findEvent(bucket.getId(), event.getId())).thenReturn(null);
 		Result result = call(bucket, event);
 		assertThat(result).hasStatus(NOT_FOUND);
-		verifyZeroInteractions(queue);
+		verifyZeroInteractions(dispatcher);
 	}
 
 	@Test
@@ -68,7 +68,7 @@ public class EventControllerDeleteEventTest extends EventControllerTestSupport {
 		when(buckets.findEvent(bucket.getId(), event.getId())).thenReturn(event);
 		Result result = call(bucket, event);
 		assertThat(result).hasStatus(UNAUTHORIZED);
-		verifyZeroInteractions(queue);
+		verifyZeroInteractions(dispatcher);
 	}
 
 	@Test
@@ -78,7 +78,7 @@ public class EventControllerDeleteEventTest extends EventControllerTestSupport {
 		when(buckets.findEvent(bucket.getId(), event.getId())).thenReturn(event);
 		Result result = call(bucket, event);
 		assertThat(result).hasStatus(FORBIDDEN);
-		verifyZeroInteractions(queue);
+		verifyZeroInteractions(dispatcher);
 	}
 
 	private static Result call(Bucket bucket, Event event) {

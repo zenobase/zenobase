@@ -10,7 +10,7 @@ import com.zenobase.commands.CompoundCommand;
 import com.zenobase.commands.TestCommand;
 import com.zenobase.models.Identity;
 
-public class CommandQueueTest {
+public class CommandDispatcherTest {
 
 	static final Identity TESTER = new Identity("tester");
 
@@ -20,15 +20,15 @@ public class CommandQueueTest {
 		CommandHandlerRegistry handlers = mock(CommandHandlerRegistry.class);
 		CommandRepository repository = mock(CommandRepository.class);
 
-		CommandQueue queue = new CommandQueue(handlers, repository);
+		CommandDispatcher dispatcher = new CommandDispatcher(handlers, repository);
 
 		Command c1 = new TestCommand(TESTER, "do a bit");
 		Command c2 = new TestCommand(TESTER, "do more");
 		Command c3 = new TestCommand(TESTER, "do most");
 
-		queue.dispatch(c1);
-		queue.dispatch(c2);
-		queue.dispatch(c3);
+		dispatcher.dispatch(c1);
+		dispatcher.dispatch(c2);
+		dispatcher.dispatch(c3);
 
 		verify(repository).put(c1);
 		verify(repository).put(c2);
@@ -45,7 +45,7 @@ public class CommandQueueTest {
 		CommandHandlerRegistry handlers = mock(CommandHandlerRegistry.class);
 		CommandRepository repository = mock(CommandRepository.class);
 
-		CommandQueue queue = new CommandQueue(handlers, repository);
+		CommandDispatcher dispatcher = new CommandDispatcher(handlers, repository);
 
 		Command c1 = new TestCommand(TESTER, "do a bit");
 		Command c2 = new TestCommand(TESTER, "do more");
@@ -55,7 +55,7 @@ public class CommandQueueTest {
 		cc.add(c2);
 		cc.add(c3);
 
-		queue.dispatch(cc);
+		dispatcher.dispatch(cc);
 
 		verify(repository).put(cc);
 

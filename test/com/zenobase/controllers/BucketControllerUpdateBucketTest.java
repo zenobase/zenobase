@@ -38,7 +38,7 @@ public class BucketControllerUpdateBucketTest extends BucketControllerTestSuppor
 		String commandId = Generator.id();
 		when(auth.getPrincipal()).thenReturn(user.asIdentity());
 		when(buckets.findBucket(from.getId())).thenReturn(from.copy());
-		when(queue.dispatch(any(UpdateBucketCommand.class))).thenReturn(commandId);
+		when(dispatcher.dispatch(any(UpdateBucketCommand.class))).thenReturn(commandId);
 		Result result = call(from.getId(), to.toJson());
 		assertThat(result).hasStatus(OK).hasContent(BucketController.receipt(commandId));
 	}
@@ -49,7 +49,7 @@ public class BucketControllerUpdateBucketTest extends BucketControllerTestSuppor
 		when(buckets.findBucket(from.getId())).thenReturn(null);
 		Result result = call(from.getId(), to.toJson());
 		assertThat(result).hasStatus(NOT_FOUND);
-		verifyZeroInteractions(queue);
+		verifyZeroInteractions(dispatcher);
 	}
 
 	@Test
@@ -58,7 +58,7 @@ public class BucketControllerUpdateBucketTest extends BucketControllerTestSuppor
 		when(buckets.findBucket(from.getId())).thenReturn(from.copy());
 		Result result = call(from.getId(), to.toJson());
 		assertThat(result).hasStatus(UNAUTHORIZED);
-		verifyZeroInteractions(queue);
+		verifyZeroInteractions(dispatcher);
 	}
 
 	@Test
@@ -67,7 +67,7 @@ public class BucketControllerUpdateBucketTest extends BucketControllerTestSuppor
 		when(buckets.findBucket(from.getId())).thenReturn(from.copy());
 		Result result = call(from.getId(), to.toJson());
 		assertThat(result).hasStatus(FORBIDDEN);
-		verifyZeroInteractions(queue);
+		verifyZeroInteractions(dispatcher);
 	}
 
 	private static Result call(String bucketId, ObjectNode body) {

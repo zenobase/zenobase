@@ -17,14 +17,14 @@ import com.zenobase.models.Bucket;
 import com.zenobase.models.Identity;
 import com.zenobase.models.Permission;
 import com.zenobase.services.BucketRepository;
-import com.zenobase.services.CommandQueue;
+import com.zenobase.services.CommandDispatcher;
 import com.zenobase.services.UserRepository;
 
 @With(Timed.class)
 public class BucketController extends ControllerSupport {
 
 	@Inject
-	static CommandQueue queue;
+	static CommandDispatcher dispatcher;
 
 	@Inject
 	static BucketRepository buckets;
@@ -105,7 +105,7 @@ public class BucketController extends ControllerSupport {
     	if (bucket.getPermission(principal) != Permission.ALL) {
     		return forbidden();
     	}
-		String commandId = queue.dispatch(new UpdateBucketCommand(principal, bucket, new Bucket(body())));
+		String commandId = dispatcher.dispatch(new UpdateBucketCommand(principal, bucket, new Bucket(body())));
 		return ok(receipt(commandId));
     }
 
@@ -121,7 +121,7 @@ public class BucketController extends ControllerSupport {
     	if (bucket.getPermission(principal) != Permission.ALL && !users.isSuperuser(principal)) {
     		return forbidden();
     	}
-    	String commandId = queue.dispatch(new DeleteBucketCommand(principal, bucket));
+    	String commandId = dispatcher.dispatch(new DeleteBucketCommand(principal, bucket));
     	return ok(receipt(commandId));
     }
 }

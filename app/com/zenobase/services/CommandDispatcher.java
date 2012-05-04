@@ -8,14 +8,14 @@ import com.zenobase.commands.Command;
 import com.zenobase.commands.CommandHandlerRegistry;
 import com.zenobase.commands.CompoundCommand;
 
-public class CommandQueue {
+public class CommandDispatcher {
 
-	private final ALogger log = Logger.of("queue");
+	private final ALogger log = Logger.of("dispatch");
 	private final CommandHandlerRegistry handlers;
 	private final CommandRepository repository;
 
 	@Inject
-	public CommandQueue(CommandHandlerRegistry handlers, CommandRepository repository) {
+	public CommandDispatcher(CommandHandlerRegistry handlers, CommandRepository repository) {
 		this.handlers = handlers;
 		this.repository = repository;
 	}

@@ -18,7 +18,7 @@ import com.zenobase.models.Identity;
 import com.zenobase.models.Permission;
 import com.zenobase.search.EventSearch;
 import com.zenobase.services.BucketRepository;
-import com.zenobase.services.CommandQueue;
+import com.zenobase.services.CommandDispatcher;
 
 @With(Timed.class)
 public class EventListController extends ControllerSupport {
@@ -26,17 +26,17 @@ public class EventListController extends ControllerSupport {
 	static final IntegerField RANDOM = new IntegerField("random");
 
 	@Inject
-	static BucketRepository repository;
+	static BucketRepository buckets;
 
 	@Inject
-	static CommandQueue queue;
+	static CommandDispatcher dispatcher;
 
 	public static Result get(String bucketId) {
 		Identity principal = auth.getPrincipal();
 		if (principal == null) {
 			return unauthorized();
 		}
-		Bucket bucket = repository.findBucket(bucketId);
+		Bucket bucket = buckets.findBucket(bucketId);
     	if (bucket == null) {
     		return notFound();
     	}
@@ -46,7 +46,7 @@ public class EventListController extends ControllerSupport {
     	EventSearch search = new EventSearch()
 			.addWidgets(request().queryString().get("w"))
 			.addFilters(request().queryString().get("q"));
-    	return ok(repository.findEvents(bucketId, search));
+    	return ok(buckets.findEvents(bucketId, search));
     }
 
 	@BodyParser.Of(value = BodyParser.Json.class)
@@ -56,7 +56,7 @@ public class EventListController extends ControllerSupport {
 			return unauthorized();
 		}
 		ObjectNode body = body();
-    	Bucket bucket = repository.findBucket(bucketId);
+    	Bucket bucket = buckets.findBucket(bucketId);
     	if (bucket == null) {
     		return notFound();
     	}
@@ -65,7 +65,7 @@ public class EventListController extends ControllerSupport {
     	}
     	Integer random = RANDOM.getValue(body);
     	if (random != null) {
-    		String commandId = queue.dispatch(new RandomEventsCommandBuilder(principal, bucketId).build(random));
+    		String commandId = dispatcher.dispatch(new RandomEventsCommandBuilder(principal, bucketId).build(random));
             return ok(receipt(commandId));
     	}
     	else {
@@ -75,7 +75,7 @@ public class EventListController extends ControllerSupport {
     		if (!event.contains(Event.TIMESTAMP)) {
     			event.addValue(Event.TIMESTAMP, new DateTime());
     		}
-    		String commandId = queue.dispatch(new CreateEventCommand(principal, bucketId, event));
+    		String commandId = dispatcher.dispatch(new CreateEventCommand(principal, bucketId, event));
             response().setHeader(LOCATION, com.zenobase.controllers.routes.EventController.get(bucket.getId(), event.getId()).toString());
             return created(receipt(commandId));
     	}

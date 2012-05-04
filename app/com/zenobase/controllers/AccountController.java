@@ -12,7 +12,7 @@ import com.zenobase.models.Identity;
 import com.zenobase.models.User;
 import com.zenobase.models.UserInfo;
 import com.zenobase.services.BucketRepository;
-import com.zenobase.services.CommandQueue;
+import com.zenobase.services.CommandDispatcher;
 import com.zenobase.services.UserRepository;
 
 @With(Timed.class)
@@ -25,7 +25,7 @@ public class AccountController extends ControllerSupport {
 	static UserRepository users;
 
 	@Inject
-	static CommandQueue queue;
+	static CommandDispatcher dispatcher;
 
 	@Inject
 	static VerificationMailer mailer;
@@ -44,7 +44,7 @@ public class AccountController extends ControllerSupport {
 		user.setEmail(form.getEmail());
 		user.setHashedPassword(User.getHashedPassword(form.getPassword()));
 		user.setSuperuser(users.isEmpty());
-		queue.dispatch(new CreateUserCommand(principal, user));
+		dispatcher.dispatch(new CreateUserCommand(principal, user));
 		mailer.send(user);
 		return created(new UserInfo(user).toJson());
 	}
@@ -61,7 +61,7 @@ public class AccountController extends ControllerSupport {
 		if (!user.is(principal) && !users.isSuperuser(principal)) {
 			return forbidden();
 		}
-		String commandId = queue.dispatch(new CloseAccountCommandBuilder(principal, buckets, user).build());
+		String commandId = dispatcher.dispatch(new CloseAccountCommandBuilder(principal, buckets, user).build());
 		return ok(receipt(commandId));
 	}
 }

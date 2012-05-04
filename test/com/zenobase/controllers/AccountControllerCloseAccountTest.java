@@ -21,7 +21,7 @@ public class AccountControllerCloseAccountTest extends AccountControllerTestSupp
 		String commandId = Generator.id();
 		when(auth.getPrincipal()).thenReturn(user.asIdentity());
 		when(users.find(user.getName())).thenReturn(user);
-		when(queue.dispatch(any(Command.class))).thenReturn(commandId);
+		when(dispatcher.dispatch(any(Command.class))).thenReturn(commandId);
 		Result result = call(user.getName());
 		assertThat(result).hasStatus(OK).hasContent(AccountController.receipt(commandId));
 	}
@@ -33,7 +33,7 @@ public class AccountControllerCloseAccountTest extends AccountControllerTestSupp
 		when(auth.getPrincipal()).thenReturn(superuser);
 		when(users.find(user.getName())).thenReturn(user);
 		when(users.isSuperuser(superuser)).thenReturn(true);
-		when(queue.dispatch(any(Command.class))).thenReturn(commandId);
+		when(dispatcher.dispatch(any(Command.class))).thenReturn(commandId);
 		Result result = call(user.getName());
 		assertThat(result).hasStatus(OK).hasContent(AccountController.receipt(commandId));
 	}
@@ -44,7 +44,7 @@ public class AccountControllerCloseAccountTest extends AccountControllerTestSupp
 		when(users.find(user.getName())).thenReturn(user);
 		Result result = call(user.getName());
 		assertThat(result).hasStatus(UNAUTHORIZED);
-		verifyZeroInteractions(queue);
+		verifyZeroInteractions(dispatcher);
 	}
 
 	@Test
@@ -53,7 +53,7 @@ public class AccountControllerCloseAccountTest extends AccountControllerTestSupp
 		when(users.find(user.getName())).thenReturn(null);
 		Result result = call(user.getName());
 		assertThat(result).hasStatus(NOT_FOUND);
-		verifyZeroInteractions(queue);
+		verifyZeroInteractions(dispatcher);
 	}
 
 	@Test
@@ -62,7 +62,7 @@ public class AccountControllerCloseAccountTest extends AccountControllerTestSupp
 		when(users.find(user.getName())).thenReturn(user);
 		Result result = call(user.getName());
 		assertThat(result).hasStatus(FORBIDDEN);
-		verifyZeroInteractions(queue);
+		verifyZeroInteractions(dispatcher);
 	}
 
 	private Result call(String username) {

@@ -13,13 +13,13 @@ public class CommandReplay {
 
 	private final String sourceCluster;
 	private final CommandParserRegistry parsers;
-	private final CommandQueue queue;
+	private final CommandDispatcher dispatcher;
 
 	@Inject
-	public CommandReplay(@Named("es.replay") String sourceCluster, CommandParserRegistry parsers, CommandQueue queue) {
+	public CommandReplay(@Named("es.replay") String sourceCluster, CommandParserRegistry parsers, CommandDispatcher dispatcher) {
 		this.sourceCluster = sourceCluster;
 		this.parsers = parsers;
-		this.queue = queue;
+		this.dispatcher = dispatcher;
 	}
 
 	public void replay() {
@@ -30,7 +30,7 @@ public class CommandReplay {
 			repository.findAll(new Callback<Command>() {
 				@Override
 				public void call(Command command) {
-					queue.dispatch(command);
+					dispatcher.dispatch(command);
 				}
 			});
 			indexManager.close();
