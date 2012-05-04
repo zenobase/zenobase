@@ -18,10 +18,10 @@ import com.zenobase.json.Nodes;
 import com.zenobase.models.Bucket;
 import com.zenobase.models.Permission;
 
-public class BucketListControllerPostTest extends BucketListControllerTestSupport {
+public class BucketListControllerHttpPostTest extends BucketListControllerTestSupport {
 
 	@Test
-	public void testPostToCreateBucket() {
+	public void testCreateBucket() {
 		ArgumentCaptor<CreateBucketCommand> arg = ArgumentCaptor.forClass(CreateBucketCommand.class);
 		String commandId = Generator.id();
 		String label = "test";
@@ -38,7 +38,7 @@ public class BucketListControllerPostTest extends BucketListControllerTestSuppor
 	}
 
 	@Test
-	public void testCantCreateBucketWithoutLabel() {
+	public void testCreateBucketWithoutLabel() {
 		when(auth.getPrincipal(true)).thenReturn(user.asIdentity());
 		Result result = call(Nodes.newObject());
 		assertThat(result).hasStatus(BAD_REQUEST);

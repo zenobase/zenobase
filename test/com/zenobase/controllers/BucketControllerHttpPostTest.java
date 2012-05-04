@@ -1,7 +1,6 @@
 package com.zenobase.controllers;
 
 import static com.zenobase.testing.ResultAssert.assertThat;
-
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 import static play.mvc.Http.Status.*;
@@ -18,7 +17,7 @@ import com.zenobase.models.Bucket;
 import com.zenobase.models.Identity;
 import com.zenobase.models.Permission;
 
-public class BucketControllerUpdateBucketTest extends BucketControllerTestSupport {
+public class BucketControllerHttpPostTest extends BucketControllerTestSupport {
 
 	private Bucket from, to;
 
@@ -34,7 +33,7 @@ public class BucketControllerUpdateBucketTest extends BucketControllerTestSuppor
 	}
 
 	@Test
-	public void testSuccess() {
+	public void testUpdateBucket() {
 		String commandId = Generator.id();
 		when(auth.getPrincipal()).thenReturn(user.asIdentity());
 		when(buckets.findBucket(from.getId())).thenReturn(from.copy());
@@ -44,17 +43,15 @@ public class BucketControllerUpdateBucketTest extends BucketControllerTestSuppor
 	}
 
 	@Test
-	public void testNotFound() {
+	public void testUpdateBucketNotFound() {
 		when(auth.getPrincipal()).thenReturn(user.asIdentity());
-		when(buckets.findBucket(from.getId())).thenReturn(null);
 		Result result = call(from.getId(), to.toJson());
 		assertThat(result).hasStatus(NOT_FOUND);
 		verifyZeroInteractions(dispatcher);
 	}
 
 	@Test
-	public void testUnauthorized() {
-		when(auth.getPrincipal()).thenReturn(null);
+	public void testUpdateBucketUnauthorized() {
 		when(buckets.findBucket(from.getId())).thenReturn(from.copy());
 		Result result = call(from.getId(), to.toJson());
 		assertThat(result).hasStatus(UNAUTHORIZED);
@@ -62,7 +59,7 @@ public class BucketControllerUpdateBucketTest extends BucketControllerTestSuppor
 	}
 
 	@Test
-	public void testForbidden() {
+	public void testUpdateBucketForbidden() {
 		when(auth.getPrincipal()).thenReturn(new Identity());
 		when(buckets.findBucket(from.getId())).thenReturn(from.copy());
 		Result result = call(from.getId(), to.toJson());

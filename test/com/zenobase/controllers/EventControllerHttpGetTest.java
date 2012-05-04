@@ -1,8 +1,7 @@
 package com.zenobase.controllers;
 
 import static com.zenobase.testing.ResultAssert.assertThat;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.when;
 import static play.mvc.Http.Status.*;
 import static play.test.Helpers.callAction;
 
@@ -10,78 +9,68 @@ import org.junit.Before;
 import org.junit.Test;
 import play.mvc.Result;
 
-import com.zenobase.commands.DeleteEventCommand;
-import com.zenobase.common.Generator;
 import com.zenobase.models.Bucket;
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
 import com.zenobase.models.Permission;
 
-public class EventControllerDeleteEventTest extends EventControllerTestSupport {
+public class EventControllerHttpGetTest extends EventControllerTestSupport {
 
 	private final Event event = new Event();
-	private final Identity friend = new Identity();
 
 	@Before
 	@Override
 	public void setUp() {
 		super.setUp();
 		bucket.addPermission(user.asIdentity(), Permission.ALL);
-		bucket.addPermission(friend, Permission.CONTRIBUTE);
 		event.setValue(Event.AUTHOR, user.asIdentity());
 	}
 
 	@Test
-	public void testDeleteEvent() {
+	public void testGetEvent() {
 		when(auth.getPrincipal()).thenReturn(user.asIdentity());
 		when(buckets.findBucket(bucket.getId())).thenReturn(bucket);
 		when(buckets.findEvent(bucket.getId(), event.getId())).thenReturn(event);
-		String commandId = Generator.id();
-		when(dispatcher.dispatch(any(DeleteEventCommand.class))).thenReturn(commandId);
 		Result result = call(bucket, event);
-		assertThat(result).hasStatus(OK).hasContent(EventController.receipt(commandId));
+		assertThat(result).hasStatus(OK).hasContent(event.toJson());
 	}
 
 	@Test
-	public void testMissingBucket() {
+	public void testGetEventBucketNotFound() {
 		when(auth.getPrincipal()).thenReturn(user.asIdentity());
 		when(buckets.findBucket(bucket.getId())).thenReturn(null);
 		Result result = call(bucket, event);
 		assertThat(result).hasStatus(NOT_FOUND);
-		verifyZeroInteractions(dispatcher);
 	}
 
 	@Test
-	public void testMissingEvent() {
+	public void testGetEventNotFound() {
 		when(auth.getPrincipal()).thenReturn(user.asIdentity());
 		when(buckets.findBucket(bucket.getId())).thenReturn(bucket);
 		when(buckets.findEvent(bucket.getId(), event.getId())).thenReturn(null);
 		Result result = call(bucket, event);
 		assertThat(result).hasStatus(NOT_FOUND);
-		verifyZeroInteractions(dispatcher);
 	}
 
 	@Test
-	public void testUnauthorized() {
+	public void testGetEventUnauthorized() {
 		when(auth.getPrincipal()).thenReturn(null);
 		when(buckets.findBucket(bucket.getId())).thenReturn(bucket);
 		when(buckets.findEvent(bucket.getId(), event.getId())).thenReturn(event);
 		Result result = call(bucket, event);
 		assertThat(result).hasStatus(UNAUTHORIZED);
-		verifyZeroInteractions(dispatcher);
 	}
 
 	@Test
-	public void testForbidden() {
-		when(auth.getPrincipal()).thenReturn(friend);
+	public void testGetEventForbidden() {
+		when(auth.getPrincipal()).thenReturn(new Identity());
 		when(buckets.findBucket(bucket.getId())).thenReturn(bucket);
 		when(buckets.findEvent(bucket.getId(), event.getId())).thenReturn(event);
 		Result result = call(bucket, event);
 		assertThat(result).hasStatus(FORBIDDEN);
-		verifyZeroInteractions(dispatcher);
 	}
 
 	private static Result call(Bucket bucket, Event event) {
-		return callAction(com.zenobase.controllers.routes.ref.EventController.delete(bucket.getId(), event.getId()));
+		return callAction(com.zenobase.controllers.routes.ref.EventController.get(bucket.getId(), event.getId()));
 	}
 }

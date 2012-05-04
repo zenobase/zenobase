@@ -18,7 +18,7 @@ import com.zenobase.json.Nodes;
 import com.zenobase.models.Identity;
 import com.zenobase.models.User;
 
-public class UserControllerUpdateUserTest extends UserControllerTestSupport {
+public class UserControllerHttpPostTest extends UserControllerTestSupport {
 
 	@Test
 	public void testUpdateEmail() {
@@ -31,17 +31,15 @@ public class UserControllerUpdateUserTest extends UserControllerTestSupport {
 	}
 
 	@Test
-	public void testUserNotFound() {
+	public void testUpdateUserNotFound() {
 		when(auth.getPrincipal()).thenReturn(user.asIdentity());
-		when(users.find(user.getName())).thenReturn(null);
 		Result result = call(user.getName(), new UpdateUserForm("jdoe@zenobase.com").toJson());
 		assertThat(result).hasStatus(NOT_FOUND);
 		verifyZeroInteractions(dispatcher, mailer);
 	}
 
 	@Test
-	public void testUpdateEmailUnauthorized() {
-		when(auth.getPrincipal()).thenReturn(null);
+	public void testUpdateEmailNotSignedIn() {
 		when(users.find(user.getName())).thenReturn(user);
 		Result result = call(user.getName(), new UpdateUserForm("jdoe@zenobase.com").toJson());
 		assertThat(result).hasStatus(UNAUTHORIZED);
@@ -49,7 +47,7 @@ public class UserControllerUpdateUserTest extends UserControllerTestSupport {
 	}
 
 	@Test
-	public void testUpdateEmailForbidden() {
+	public void testUpdateEmailDifferentUser() {
 		when(auth.getPrincipal()).thenReturn(new Identity());
 		when(users.find(user.getName())).thenReturn(user);
 		Result result = call(user.getName(), new UpdateUserForm("jdoe@zenobase.com").toJson());
@@ -58,7 +56,7 @@ public class UserControllerUpdateUserTest extends UserControllerTestSupport {
 	}
 
 	@Test
-	public void testUpdateInvalidEmail() {
+	public void testUpdateEmailWithInvalidAddress() {
 		when(auth.getPrincipal()).thenReturn(user.asIdentity());
 		when(users.find(user.getName())).thenReturn(user);
 		Result result = call(user.getName(), new UpdateUserForm("jdoe").toJson());
@@ -79,7 +77,7 @@ public class UserControllerUpdateUserTest extends UserControllerTestSupport {
 	}
 
 	@Test
-	public void testUpdatePasswordInvalidPassword() {
+	public void testUpdatePasswordWithInvalidPassword() {
 		user.setPassword("secret123");
 		when(users.find(user.getName())).thenReturn(user);
 		PasswordResetKey key = new PasswordResetKey(user);
@@ -89,7 +87,7 @@ public class UserControllerUpdateUserTest extends UserControllerTestSupport {
 	}
 
 	@Test
-	public void testUpdatePasswordMissingKey() {
+	public void testUpdatePasswordWithoutKey() {
 		user.setPassword("secret123");
 		when(users.find(user.getName())).thenReturn(user);
 		PasswordResetKey key = new PasswordResetKey(user);
@@ -99,7 +97,7 @@ public class UserControllerUpdateUserTest extends UserControllerTestSupport {
 	}
 
 	@Test
-	public void testUpdatePasswordMissingExpiresToken() {
+	public void testUpdatePasswordWithoutExpiresToken() {
 		user.setPassword("secret123");
 		when(users.find(user.getName())).thenReturn(user);
 		PasswordResetKey key = new PasswordResetKey(user);
@@ -109,7 +107,7 @@ public class UserControllerUpdateUserTest extends UserControllerTestSupport {
 	}
 
 	@Test
-	public void testUpdatePasswordInvalidKey() {
+	public void testUpdatePasswordWithInvalidKey() {
 		user.setPassword("secret123");
 		when(users.find(user.getName())).thenReturn(user);
 		User other = user.copy();
@@ -132,7 +130,7 @@ public class UserControllerUpdateUserTest extends UserControllerTestSupport {
 	}
 
 	@Test
-	public void testUpdateVerifiedAlreadyVerified() {
+	public void testUpdateVerifiedWhenAlreadyVerified() {
 		user.setEmail("jdoe@zenobase.com");
 		user.setVerified(true);
 		when(auth.getPrincipal()).thenReturn(user.asIdentity());
@@ -144,7 +142,7 @@ public class UserControllerUpdateUserTest extends UserControllerTestSupport {
 	}
 
 	@Test
-	public void testUpdateVerifiedMissingKey() {
+	public void testUpdateVerifiedWithoutKey() {
 		user.setEmail("jdoe@zenobase.com");
 		when(auth.getPrincipal()).thenReturn(user.asIdentity());
 		when(users.find(user.getName())).thenReturn(user);
@@ -154,7 +152,7 @@ public class UserControllerUpdateUserTest extends UserControllerTestSupport {
 	}
 
 	@Test
-	public void testUpdateVerifiedInvalidKey() {
+	public void testUpdateVerifiedWithInvalidKey() {
 		user.setEmail("jdoe@zenobase.com");
 		when(auth.getPrincipal()).thenReturn(user.asIdentity());
 		when(users.find(user.getName())).thenReturn(user);
@@ -165,7 +163,7 @@ public class UserControllerUpdateUserTest extends UserControllerTestSupport {
 	}
 
 	@Test
-	public void testEmptyUpdate() {
+	public void testUpdateNothing() {
 		when(auth.getPrincipal()).thenReturn(user.asIdentity());
 		when(users.find(user.getName())).thenReturn(user);
 		Result result = call(user.getName(), new UpdateUserForm(Nodes.newObject()).toJson());

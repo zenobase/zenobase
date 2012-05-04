@@ -1,7 +1,6 @@
 package com.zenobase.controllers;
 
 import static com.zenobase.testing.ResultAssert.assertThat;
-
 import static org.mockito.Mockito.when;
 import static play.mvc.Http.Status.*;
 import static play.test.Helpers.*;
@@ -17,7 +16,7 @@ import com.zenobase.models.Identity;
 import com.zenobase.models.Permission;
 import com.zenobase.search.EventSearch;
 
-public class EventListControllerGetTest extends EventListControllerTestSupport {
+public class EventListControllerHttpGetTest extends EventListControllerTestSupport {
 
 	@Before
 	@Override
@@ -27,7 +26,7 @@ public class EventListControllerGetTest extends EventListControllerTestSupport {
 	}
 
 	@Test
-	public void testGet() {
+	public void testSearchEvents() {
 		String filterExpression = "tag:value";
 		String widgetExpression = "id:xyz,type:list";
 		EventSearch expected = new EventSearch().addFilter(filterExpression).addWidget(widgetExpression);
@@ -41,7 +40,7 @@ public class EventListControllerGetTest extends EventListControllerTestSupport {
 	}
 
 	@Test
-	public void testMissingBucket() {
+	public void testSearchEventsBucketNotFound() {
 		when(auth.getPrincipal()).thenReturn(user.asIdentity());
 		when(buckets.findBucket(bucket.getId())).thenReturn(null);
 		Result result = call(bucket, "", "");
@@ -49,7 +48,7 @@ public class EventListControllerGetTest extends EventListControllerTestSupport {
 	}
 
 	@Test
-	public void testUnauthorized() {
+	public void testSearchEventsUnauthorized() {
 		when(auth.getPrincipal()).thenReturn(null);
 		when(buckets.findBucket(bucket.getId())).thenReturn(bucket);
 		Result result = call(bucket, "", "");
@@ -57,7 +56,7 @@ public class EventListControllerGetTest extends EventListControllerTestSupport {
 	}
 
 	@Test
-	public void testForbidden() {
+	public void testSearchEventsForbidden() {
 		when(auth.getPrincipal()).thenReturn(new Identity());
 		when(buckets.findBucket(bucket.getId())).thenReturn(bucket);
 		Result result = call(bucket, "", "");

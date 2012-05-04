@@ -24,7 +24,7 @@ import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
 import com.zenobase.models.Permission;
 
-public class EventListControllerPostTest extends EventListControllerTestSupport {
+public class EventListControllerHttpPostTest extends EventListControllerTestSupport {
 
 	private final ObjectNode body = Nodes.newObject();
 
@@ -85,7 +85,7 @@ public class EventListControllerPostTest extends EventListControllerTestSupport 
 	}
 
 	@Test
-	public void testMissingBucket() {
+	public void testCreateEventBucketNotFound() {
 		when(auth.getPrincipal()).thenReturn(user.asIdentity());
 		when(buckets.findBucket(bucket.getId())).thenReturn(null);
 		Result result = call(bucket, body);
@@ -93,7 +93,7 @@ public class EventListControllerPostTest extends EventListControllerTestSupport 
 	}
 
 	@Test
-	public void testUnauthorized() {
+	public void testCreateEventUnauthorized() {
 		when(auth.getPrincipal()).thenReturn(null);
 		when(buckets.findBucket(bucket.getId())).thenReturn(bucket);
 		Result result = call(bucket, body);
@@ -101,7 +101,7 @@ public class EventListControllerPostTest extends EventListControllerTestSupport 
 	}
 
 	@Test
-	public void testForbidden() {
+	public void testCreateEventForbidden() {
 		when(auth.getPrincipal()).thenReturn(new Identity());
 		when(buckets.findBucket(bucket.getId())).thenReturn(bucket);
 		Result result = call(bucket, body);

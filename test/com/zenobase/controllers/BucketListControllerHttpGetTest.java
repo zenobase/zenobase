@@ -13,10 +13,10 @@ import com.zenobase.models.Bucket;
 import com.zenobase.models.BucketList;
 import com.zenobase.models.Identity;
 
-public class BucketListControllerGetTest extends BucketListControllerTestSupport {
+public class BucketListControllerHttpGetTest extends BucketListControllerTestSupport {
 
 	@Test
-	public void testGetMyBuckets() {
+	public void testGetBucketList() {
 		BucketList list = new BucketList(ImmutableList.<Bucket>of(), 0, buckets);
 		when(auth.getPrincipal()).thenReturn(user.asIdentity());
 		when(buckets.findBuckets(user.asIdentity(), 0, 10)).thenReturn(list);
@@ -25,21 +25,21 @@ public class BucketListControllerGetTest extends BucketListControllerTestSupport
 	}
 
 	@Test
-	public void testNotLoggedIn() {
+	public void testGetBucketListNotSignedIn() {
 		when(auth.getPrincipal()).thenReturn(null);
 		Result result = call(user.getId(), 0, 10);
 		assertThat(result).hasStatus(UNAUTHORIZED);
 	}
 
 	@Test
-	public void testGetYourBuckets() {
+	public void testGetBucketListForbidden() {
 		when(auth.getPrincipal()).thenReturn(new Identity());
 		Result result = call(user.getId(), 0, 10);
 		assertThat(result).hasStatus(FORBIDDEN);
 	}
 
 	@Test
-	public void testGetAllBucketsAsAdmin() {
+	public void testGetCompleteBucketListSignedInAsAdmin() {
 		BucketList list = new BucketList(ImmutableList.<Bucket>of(), 0, buckets);
 		when(auth.getPrincipal()).thenReturn(user.asIdentity());
 		when(users.isSuperuser(user.asIdentity())).thenReturn(true);
@@ -49,7 +49,7 @@ public class BucketListControllerGetTest extends BucketListControllerTestSupport
 	}
 
 	@Test
-	public void testDownloadBucketsAsAdmin() {
+	public void testDownloadCompleteBucketListAsAdmin() {
 		when(auth.getPrincipal()).thenReturn(user.asIdentity());
 		when(users.isSuperuser(user.asIdentity())).thenReturn(true);
 		Result result = call(null, 0, Integer.MAX_VALUE);
@@ -57,7 +57,7 @@ public class BucketListControllerGetTest extends BucketListControllerTestSupport
 	}
 
 	@Test
-	public void testGetAllBuckets() {
+	public void testGetCompleteBucketLisForbidden() {
 		when(auth.getPrincipal()).thenReturn(user.asIdentity());
 		Result result = call(null, 0, 10);
 		assertThat(result).hasStatus(FORBIDDEN);

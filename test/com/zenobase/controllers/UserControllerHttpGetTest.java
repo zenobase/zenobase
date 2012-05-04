@@ -1,7 +1,6 @@
 package com.zenobase.controllers;
 
 import static com.zenobase.testing.ResultAssert.assertThat;
-
 import static org.mockito.Mockito.when;
 import static play.mvc.Http.Status.*;
 import static play.test.Helpers.callAction;
@@ -12,10 +11,10 @@ import play.mvc.Result;
 import com.zenobase.models.Identity;
 import com.zenobase.models.UserProfile;
 
-public class UserControllerGetUserTest extends UserControllerTestSupport {
+public class UserControllerHttpGetTest extends UserControllerTestSupport {
 
 	@Test
-	public void testGetExistingUser() {
+	public void testGetUser() {
 		when(auth.getPrincipal()).thenReturn(user.asIdentity());
 		when(users.find(user.getName())).thenReturn(user);
 		Result result = call(user.getName());
@@ -23,9 +22,8 @@ public class UserControllerGetUserTest extends UserControllerTestSupport {
 	}
 
 	@Test
-	public void testGetMissingUser() {
+	public void testGetUserNotFound() {
 		when(auth.getPrincipal()).thenReturn(user.asIdentity());
-		when(users.find(user.getName())).thenReturn(null);
 		Result result = call(user.getName());
 		assertThat(result).hasStatus(NOT_FOUND);
 	}

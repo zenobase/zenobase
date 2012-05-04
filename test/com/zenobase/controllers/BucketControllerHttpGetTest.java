@@ -1,23 +1,21 @@
 package com.zenobase.controllers;
 
 import static com.zenobase.testing.ResultAssert.assertThat;
-
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.when;
 import static play.mvc.Http.Status.*;
-import static play.test.Helpers.callAction;
+import static play.test.Helpers.*;
 
 import org.junit.Before;
 import org.junit.Test;
 import play.mvc.Result;
+import com.google.common.collect.ImmutableList;
 
-import com.zenobase.commands.DeleteBucketCommand;
-import com.zenobase.common.Generator;
+import com.zenobase.json.Nodes;
 import com.zenobase.models.Bucket;
 import com.zenobase.models.Identity;
 import com.zenobase.models.Permission;
 
-public class BucketControllerDeleteBucketTest extends BucketControllerTestSupport {
+public class BucketControllerHttpGetTest extends BucketControllerTestSupport {
 
 	private Bucket bucket = new Bucket();
 
@@ -25,60 +23,51 @@ public class BucketControllerDeleteBucketTest extends BucketControllerTestSuppor
 	@Override
 	public void setUp() {
 		super.setUp();
-		bucket.setLabel("Obsolete Bucket");
 		bucket.addPermission(user.asIdentity(), Permission.ALL);
 	}
 
 	@Test
-	public void test() {
-		String commandId = Generator.id();
+	public void testGetBucketWithDashboard() {
+		bucket.setWidgets(ImmutableList.of(Nodes.newObject()));
 		when(auth.getPrincipal()).thenReturn(user.asIdentity());
 		when(buckets.findBucket(bucket.getId())).thenReturn(bucket.copy());
-		when(dispatcher.dispatch(any(DeleteBucketCommand.class))).thenReturn(commandId);
 		Result result = call(bucket.getId());
-		assertThat(result).hasStatus(OK).hasContent(BucketController.receipt(commandId));
+		assertThat(result).hasStatus(OK).hasContent(bucket.toJson());
 	}
 
 	@Test
-	public void testAsSuperuser() {
-		String commandId = Generator.id();
-		Identity superuser = new Identity();
-		when(auth.getPrincipal()).thenReturn(superuser);
-		when(users.isSuperuser(superuser)).thenReturn(true);
+	public void testGetBucketWithDefaultDashboard() {
+		when(auth.getPrincipal()).thenReturn(user.asIdentity());
 		when(buckets.findBucket(bucket.getId())).thenReturn(bucket.copy());
-		when(dispatcher.dispatch(any(DeleteBucketCommand.class))).thenReturn(commandId);
 		Result result = call(bucket.getId());
-		assertThat(result).hasStatus(OK).hasContent(BucketController.receipt(commandId));
+		BucketController.setDefaultDashboard(bucket);
+		assertThat(result).hasStatus(OK).hasContent(bucket.toJson());
 	}
 
 	@Test
-	public void testNotFound() {
+	public void testGetBucketNotFound() {
 		when(auth.getPrincipal()).thenReturn(user.asIdentity());
-		when(buckets.findBucket(bucket.getId())).thenReturn(null);
 		Result result = call(bucket.getId());
 		assertThat(result).hasStatus(NOT_FOUND);
-		verifyZeroInteractions(dispatcher);
 	}
 
 	@Test
-	public void testUnauthorized() {
+	public void testGetBucketUnauthorized() {
 		when(auth.getPrincipal()).thenReturn(null);
 		when(buckets.findBucket(bucket.getId())).thenReturn(bucket.copy());
 		Result result = call(bucket.getId());
 		assertThat(result).hasStatus(UNAUTHORIZED);
-		verifyZeroInteractions(dispatcher);
 	}
 
 	@Test
-	public void testForbidden() {
+	public void testGetBucketForbidden() {
 		when(auth.getPrincipal()).thenReturn(new Identity());
 		when(buckets.findBucket(bucket.getId())).thenReturn(bucket.copy());
 		Result result = call(bucket.getId());
 		assertThat(result).hasStatus(FORBIDDEN);
-		verifyZeroInteractions(dispatcher);
 	}
 
 	private static Result call(String bucketId) {
-		return callAction(com.zenobase.controllers.routes.ref.BucketController.delete(bucketId));
+		return callAction(com.zenobase.controllers.routes.ref.BucketController.get(bucketId), fakeRequest());
 	}
 }

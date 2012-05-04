@@ -14,10 +14,10 @@ import com.zenobase.commands.TestCommand;
 import com.zenobase.models.CommandList;
 import com.zenobase.models.Identity;
 
-public class QueueControllerGetTest extends QueueControllerTestSupport {
+public class QueueControllerHttpGetTest extends QueueControllerTestSupport {
 
 	@Test
-	public void testUndo() {
+	public void testGet() {
 		CommandList history = new CommandList(Lists.<Command>newArrayList(new TestCommand(principal, "do it"), new TestCommand(principal, "do it again")), 10);
 		when(auth.getPrincipal()).thenReturn(principal);
 		when(users.isSuperuser(principal)).thenReturn(true);
@@ -28,14 +28,14 @@ public class QueueControllerGetTest extends QueueControllerTestSupport {
 	}
 
 	@Test
-	public void testUnauthorized() {
+	public void testGetUnauthorized() {
 		when(auth.getPrincipal()).thenReturn(null);
 		Result result = call(0, 1);
 		assertThat(result).hasStatus(UNAUTHORIZED);
 	}
 
 	@Test
-	public void testForbidden() {
+	public void testGetForbidden() {
 		when(auth.getPrincipal()).thenReturn(new Identity());
 		when(users.isSuperuser(principal)).thenReturn(false);
 		Result result = call(0, 1);

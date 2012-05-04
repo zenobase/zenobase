@@ -18,7 +18,7 @@ import com.zenobase.common.Generator;
 import com.zenobase.json.Nodes;
 import com.zenobase.models.Identity;
 
-public class QueueControllerUndoTest extends QueueControllerTestSupport {
+public class QueueControllerHttpPostTest extends QueueControllerTestSupport {
 
 	private final Command command = new TestCommand(principal, "testing");
 
@@ -45,7 +45,7 @@ public class QueueControllerUndoTest extends QueueControllerTestSupport {
 	}
 
 	@Test
-	public void testUnauthorized() {
+	public void testUndoUnauthorized() {
 		when(auth.getPrincipal()).thenReturn(null);
 		Result result = call(new UndoForm(command.getId()).toJson());
 		assertThat(result).hasStatus(UNAUTHORIZED);
@@ -53,7 +53,7 @@ public class QueueControllerUndoTest extends QueueControllerTestSupport {
 	}
 
 	@Test
-	public void testFormNotValid() {
+	public void testUndoFormNotValid() {
 		when(auth.getPrincipal()).thenReturn(null);
 		Result result = call(Nodes.newObject());
 		assertThat(result).hasStatus(BAD_REQUEST);
@@ -61,7 +61,7 @@ public class QueueControllerUndoTest extends QueueControllerTestSupport {
 	}
 
 	@Test
-	public void testCommandNotFound() {
+	public void testUndoNotFound() {
 		when(auth.getPrincipal()).thenReturn(principal);
 		when(commands.find(command.getId())).thenReturn(null);
 		Result result = call(new UndoForm(Generator.id()).toJson());
@@ -70,7 +70,7 @@ public class QueueControllerUndoTest extends QueueControllerTestSupport {
 	}
 
 	@Test
-	public void testForbidden() {
+	public void testUndoForbidden() {
 		when(auth.getPrincipal()).thenReturn(new Identity());
 		when(commands.find(command.getId())).thenReturn(command);
 		Result result = call(new UndoForm(command.getId()).toJson());
