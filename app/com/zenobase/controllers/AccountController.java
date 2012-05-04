@@ -8,6 +8,7 @@ import play.mvc.With;
 
 import com.zenobase.commands.CloseAccountCommandBuilder;
 import com.zenobase.commands.CreateUserCommand;
+import com.zenobase.mail.VerificationMailer;
 import com.zenobase.models.Identity;
 import com.zenobase.models.User;
 import com.zenobase.models.UserInfo;

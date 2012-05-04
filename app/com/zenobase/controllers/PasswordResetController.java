@@ -8,6 +8,7 @@ import play.mvc.Result;
 import play.mvc.With;
 
 import com.zenobase.json.TokenField;
+import com.zenobase.mail.PasswordResetMailer;
 import com.zenobase.models.User;
 import com.zenobase.services.UserRepository;
 

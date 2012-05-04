@@ -7,6 +7,7 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 
 import com.zenobase.common.Generator;
+import com.zenobase.mail.VerificationMailer;
 import com.zenobase.models.User;
 import com.zenobase.services.CommandDispatcher;
 import com.zenobase.services.UserRepository;

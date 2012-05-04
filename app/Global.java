@@ -34,20 +34,20 @@ import com.zenobase.controllers.BucketListController;
 import com.zenobase.controllers.EventController;
 import com.zenobase.controllers.EventListController;
 import com.zenobase.controllers.PasswordResetController;
-import com.zenobase.controllers.PasswordResetMailer;
 import com.zenobase.controllers.QueueController;
 import com.zenobase.controllers.SecurityContext;
 import com.zenobase.controllers.SecurityController;
 import com.zenobase.controllers.UserController;
 import com.zenobase.controllers.UserListController;
-import com.zenobase.controllers.VerificationMailer;
 import com.zenobase.controllers.WhoController;
+import com.zenobase.mail.Mailer;
+import com.zenobase.mail.PasswordResetMailer;
+import com.zenobase.mail.VerificationMailer;
 import com.zenobase.services.BucketRepository;
 import com.zenobase.services.CommandDispatcher;
 import com.zenobase.services.CommandReplay;
 import com.zenobase.services.CommandRepository;
 import com.zenobase.services.IndexManager;
-import com.zenobase.services.Mailer;
 import com.zenobase.services.UserRepository;
 
 public class Global extends GlobalSettings {

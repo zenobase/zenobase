@@ -1,13 +1,12 @@
-package com.zenobase.controllers;
+package com.zenobase.mail;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 
 import com.google.common.base.Preconditions;
 
+import com.zenobase.controllers.EmailVerificationKey;
 import com.zenobase.models.User;
-import com.zenobase.services.Mailer;
-import com.zenobase.services.Message;
 
 public class VerificationMailer {
 

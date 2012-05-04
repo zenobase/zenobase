@@ -1,4 +1,4 @@
-package com.zenobase.services;
+package com.zenobase.mail;
 
 import java.util.Properties;
 

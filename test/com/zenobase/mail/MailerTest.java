@@ -1,9 +1,12 @@
-package com.zenobase.services;
+package com.zenobase.mail;
 
 import static org.fest.assertions.Assertions.assertThat;
 
 import java.util.List;
 import java.util.Properties;
+
+import com.zenobase.mail.Mailer;
+import com.zenobase.mail.Message;
 
 import org.junit.Test;
 import org.jvnet.mock_javamail.Mailbox;

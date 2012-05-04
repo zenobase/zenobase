@@ -1,4 +1,4 @@
-package com.zenobase.services;
+package com.zenobase.mail;
 
 public class Message {
 
