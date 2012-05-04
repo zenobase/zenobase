@@ -22,7 +22,7 @@ public class CreateBucketCommand extends Command {
 		setParameter(BUCKET, bucket.toJson());
 	}
 
-	private Bucket getBucket() {
+	public Bucket getBucket() {
 		return new Bucket(getParameter(BUCKET));
 	}
 

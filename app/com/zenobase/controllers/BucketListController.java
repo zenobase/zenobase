@@ -2,7 +2,6 @@ package com.zenobase.controllers;
 
 import javax.inject.Inject;
 
-import org.codehaus.jackson.node.ObjectNode;
 import play.mvc.BodyParser;
 import play.mvc.Result;
 import play.mvc.With;
@@ -75,26 +74,19 @@ public class BucketListController extends ControllerSupport {
         return ok(chunks);
 	}
 
-	@BodyParser.Of(BodyParser.Json.class)
+    @BodyParser.Of(BodyParser.Json.class)
     public static Result post() {
-		ObjectNode body = body();
-		String label = Bucket.LABEL.getValue(body);
-		if (label == null) {
-			return badRequest("missing field " + Bucket.LABEL);
+    	Identity principal = auth.getPrincipal(true);
+		CreateBucketForm form = new CreateBucketForm(body());
+		if (!form.valid()) {
+			return badRequest("missing fields");
 		}
-		String description = Bucket.DESCRIPTION.getValue(body);
-		Identity principal = auth.getPrincipal(true);
-    	Bucket bucket = createBucket(label, description, principal);
+		Bucket bucket = new Bucket();
+		bucket.setLabel(form.getLabel());
+		bucket.setDescription(form.getDescription());
+		bucket.addPermission(principal, Permission.ALL);
     	String commandId = dispatcher.dispatch(new CreateBucketCommand(principal, bucket));
         response().setHeader(LOCATION, com.zenobase.controllers.routes.BucketController.get(bucket.getId()).toString());
         return created(receipt(commandId));
     }
-
-	private static Bucket createBucket(String label, String description, Identity principal) {
-		Bucket bucket = new Bucket();
-		bucket.setLabel(label);
-		bucket.setDescription(description);
-		bucket.addPermission(principal, Permission.ALL);
-		return bucket;
-	}
 }
