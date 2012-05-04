@@ -5,10 +5,11 @@ import play.mvc.Results.Chunks;
 import play.mvc.Results.Chunks.Out;
 import com.google.common.base.Joiner;
 
+import com.zenobase.common.Callback;
 import com.zenobase.models.Bucket;
 import com.zenobase.models.Permission;
 
-public class BucketPrinter {
+public class BucketPrinter implements Callback<Bucket> {
 
 	private final Chunks.Out<String> out;
 
@@ -16,7 +17,8 @@ public class BucketPrinter {
 		this.out = out;
 	}
 
-	public void print(Bucket bucket) {
+	@Override
+	public void call(Bucket bucket) {
 		out.write(toString(bucket));
 	}
 

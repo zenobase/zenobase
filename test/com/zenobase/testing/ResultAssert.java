@@ -21,7 +21,7 @@ public class ResultAssert extends GenericAssert<ResultAssert, Result> {
 	}
 
 	public ResultAssert hasStatus(int status) {
-		Assertions.assertThat(Helpers.status(actual)).as("status of result " + Helpers.contentAsString(actual)).isEqualTo(status);
+		Assertions.assertThat(Helpers.status(actual)).as("status of result").isEqualTo(status);
 		return this;
 	}
 

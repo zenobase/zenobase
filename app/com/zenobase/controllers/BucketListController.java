@@ -7,7 +7,6 @@ import play.mvc.Result;
 import play.mvc.With;
 
 import com.zenobase.commands.CreateBucketCommand;
-import com.zenobase.common.Callback;
 import com.zenobase.io.BucketPrinter;
 import com.zenobase.models.Bucket;
 import com.zenobase.models.Identity;
@@ -29,45 +28,38 @@ public class BucketListController extends ControllerSupport {
 	static UserRepository users;
 
     public static Result find(String identity, int offset, int limit) {
-        return identity == null ? find(offset, limit) : find(new Identity(identity), offset, limit);
-    }
-
-    private static Result find(int offset, int limit) {
     	Identity principal = auth.getPrincipal();
     	if (principal == null) {
     		return unauthorized();
     	}
-    	if (!users.isSuperuser(principal)) {
-    		return forbidden();
+    	if (identity != null) {
+    		return find(principal, new Identity(identity), offset, limit);
     	}
-    	if (offset == 0 && limit == Integer.MAX_VALUE) {
-    		return findAll();
-    	}
-        return ok(buckets.findBuckets(offset, limit).toJson());
+        return find(principal, offset, limit);
     }
 
-    private static Result find(Identity identity, int offset, int limit) {
-    	Identity principal = auth.getPrincipal();
-    	if (principal == null) {
-    		return unauthorized();
-    	}
-    	if (!identity.equals(principal) && !users.isSuperuser(identity)) {
+    private static Result find(Identity principal, Identity identity, int offset, int limit) {
+    	if (!identity.equals(principal)) {
     		return forbidden();
     	}
         return ok(buckets.findBuckets(identity, offset, limit).toJson());
+    }
+
+    private static Result find(Identity principal, int offset, int limit) {
+    	if (!users.isSuperuser(principal)) {
+    		return forbidden();
+    	}
+    	if (limit == Integer.MAX_VALUE) {
+    		return findAll();
+    	}
+        return ok(buckets.findBuckets(offset, limit).toJson());
     }
 
     private static Result findAll() {
     	Chunks<String> chunks = new StringChunks() {
 			@Override
 			public void onReady(final Out<String> out) {
-		    	final BucketPrinter printer = new BucketPrinter(out);
-				buckets.findBuckets(new Callback<Bucket>() {
-					@Override
-					public void call(Bucket bucket) {
-						printer.print(bucket);
-					}
-				});
+				buckets.findBuckets(new BucketPrinter(out));
 		    	out.close();
 			}
 		};

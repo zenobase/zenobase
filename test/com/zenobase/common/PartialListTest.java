@@ -1,23 +1,23 @@
 package com.zenobase.common;
 
-import static org.fest.assertions.Assertions.assertThat;
-
 import java.util.List;
 
 import org.junit.Test;
 import com.google.common.collect.Lists;
+import com.google.common.testing.EqualsTester;
 
 public class PartialListTest {
 
 	@Test
-	public void test() {
+	public void testEqualsHashCode() {
 
-		List<String> values = Lists.newArrayList("a", "b", "c");
-		PartialList<String> partial = new PartialList<String>(values, 100L);
-		assertThat(partial.getElements()).as("elements").isEqualTo(values);
-		assertThat(partial.size()).as("size").isEqualTo(100L);
+		List<String> alphabet = Lists.newArrayList("a", "b", "c");
+		List<String> numbers = Lists.newArrayList("1", "2", "3");
 
-		values.add("d");
-		assertThat(partial.getElements()).as("original elements").isNotEqualTo(values);
+		new EqualsTester()
+			.addEqualityGroup(new PartialList<String>(alphabet, 100), new PartialList<String>(alphabet, 100))
+			.addEqualityGroup(new PartialList<String>(alphabet, 200))
+			.addEqualityGroup(new PartialList<String>(numbers, 100))
+			.testEquals();
 	}
 }

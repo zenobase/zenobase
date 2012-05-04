@@ -2,7 +2,7 @@ package com.zenobase.controllers;
 
 import static com.zenobase.testing.ResultAssert.assertThat;
 import static org.fest.assertions.Assertions.assertThat;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static play.mvc.Http.Status.*;
 import static play.test.Helpers.*;
 
@@ -42,6 +42,7 @@ public class BucketListControllerPostTest extends BucketListControllerTestSuppor
 		when(auth.getPrincipal(true)).thenReturn(user.asIdentity());
 		Result result = call(Nodes.newObject());
 		assertThat(result).hasStatus(BAD_REQUEST);
+		verifyZeroInteractions(dispatcher);
 	}
 
 	private static Result call(ObjectNode body) {
