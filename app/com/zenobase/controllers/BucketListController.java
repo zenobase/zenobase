@@ -2,18 +2,14 @@ package com.zenobase.controllers;
 
 import javax.inject.Inject;
 
-import org.codehaus.jackson.node.ArrayNode;
 import org.codehaus.jackson.node.ObjectNode;
 import play.mvc.BodyParser;
 import play.mvc.Result;
 import play.mvc.With;
-import com.google.common.primitives.Ints;
 
 import com.zenobase.commands.CreateBucketCommand;
 import com.zenobase.common.Callback;
-import com.zenobase.common.PartialList;
 import com.zenobase.io.BucketPrinter;
-import com.zenobase.json.Nodes;
 import com.zenobase.models.Bucket;
 import com.zenobase.models.Identity;
 import com.zenobase.models.Permission;
@@ -52,7 +48,7 @@ public class BucketListController extends ControllerSupport {
     	if (offset == 0 && limit == Integer.MAX_VALUE) {
     		return findAll();
     	}
-        return ok(toJson(buckets.findBuckets(offset, limit)));
+        return ok(buckets.findBuckets(offset, limit).toJson());
     }
 
     private static Result find(Identity identity, int offset, int limit) {
@@ -63,7 +59,7 @@ public class BucketListController extends ControllerSupport {
     	if (!identity.equals(principal) && !users.isSuperuser(identity)) {
     		return forbidden();
     	}
-        return ok(toJson(buckets.findBuckets(identity, offset, limit)));
+        return ok(buckets.findBuckets(identity, offset, limit).toJson());
     }
 
     private static Result findAll() {
@@ -82,18 +78,6 @@ public class BucketListController extends ControllerSupport {
 		};
         return ok(chunks);
 	}
-
-    private static ObjectNode toJson(PartialList<Bucket> results) {
-    	ObjectNode resultNode = Nodes.newObject();
-    	TOTAL.setValue(resultNode, Ints.checkedCast(results.size()));
-    	ArrayNode bucketsNode = resultNode.putArray("buckets");
-    	for (Bucket bucket : results.getElements()) {
-    		ObjectNode bucketNode = bucket.toJson();
-    		bucketNode.put("size", buckets.getSize(bucket.getId()));
-    		bucketsNode.add(bucketNode);
-    	}
-    	return resultNode;
-    }
 
 	@BodyParser.Of(BodyParser.Json.class)
     public static Result post() {

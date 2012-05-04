@@ -15,7 +15,7 @@ import com.zenobase.commands.Command;
 import com.zenobase.commands.CommandParserRegistry;
 import com.zenobase.commands.CommandSupport;
 import com.zenobase.common.Callback;
-import com.zenobase.common.PartialList;
+import com.zenobase.controllers.CommandList;
 
 public class CommandStore {
 
@@ -52,14 +52,14 @@ public class CommandStore {
 		}
 	}
 
-	public PartialList<Command> getHistory(int offset, int limit) {
+	public CommandList getHistory(int offset, int limit) {
 		List<Command> commands = Lists.newArrayListWithCapacity(limit);
 		SearchSourceBuilder search = new SearchSourceBuilder().query(QueryBuilders.matchAllQuery())
 			.from(offset).size(limit).sort(CommandSupport.TIMESTAMP.getName(), SortOrder.DESC);
 		for (ObjectNode hit : index.find(search).getElements()) {
 			commands.add(parsers.parse(hit));
 		}
-		return new PartialList<Command>(commands, size());
+		return new CommandList(commands, size());
 	}
 
 	public long size() {

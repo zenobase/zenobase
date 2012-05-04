@@ -14,6 +14,7 @@ import com.google.common.collect.Lists;
 
 import com.zenobase.common.Callback;
 import com.zenobase.common.PartialList;
+import com.zenobase.controllers.BucketList;
 import com.zenobase.json.PermissionField;
 import com.zenobase.models.Bucket;
 import com.zenobase.models.Event;
@@ -66,11 +67,11 @@ public class BucketManager {
 		return node != null ? new Bucket(node) : null;
 	}
 
-	public PartialList<Bucket> findBuckets(int offset, int limit) {
+	public BucketList findBuckets(int offset, int limit) {
 		return findBuckets(QueryBuilders.matchAllQuery(), offset, limit);
 	}
 
-	public PartialList<Bucket> findBuckets(Identity identity, int offset, int limit) {
+	public BucketList findBuckets(Identity identity, int offset, int limit) {
 		return findBuckets(queryFor(identity), offset, limit);
 	}
 
@@ -79,7 +80,7 @@ public class BucketManager {
 			QueryBuilders.termQuery(PermissionField.PRINCIPAL.getName(), identity.getId()));
 	}
 
-	private PartialList<Bucket> findBuckets(QueryBuilder query, int offset, int limit) {
+	private BucketList findBuckets(QueryBuilder query, int offset, int limit) {
 		List<Bucket> buckets = Lists.newArrayListWithCapacity(limit);
 		SearchSourceBuilder search = new SearchSourceBuilder()
 			.query(query).from(offset).size(limit);
@@ -87,7 +88,7 @@ public class BucketManager {
 		for (ObjectNode hit : hits.getElements()) {
 			buckets.add(new Bucket(hit));
 		}
-		return new PartialList<Bucket>(buckets, hits.size());
+		return new BucketList(buckets, hits.size(), this);
 	}
 
 	public void findBuckets(final Callback<Bucket> callback) {

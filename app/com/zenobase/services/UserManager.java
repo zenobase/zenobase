@@ -14,6 +14,7 @@ import com.google.common.collect.Lists;
 
 import com.zenobase.common.Callback;
 import com.zenobase.common.PartialList;
+import com.zenobase.controllers.UserList;
 import com.zenobase.models.Identity;
 import com.zenobase.models.User;
 
@@ -41,7 +42,7 @@ public class UserManager {
 			new User(hits.getElements().get(0)) : null;
 	}
 
-	public PartialList<User> find(int offset, int limit) {
+	public UserList find(int offset, int limit) {
 		List<User> users = Lists.newArrayListWithCapacity(limit);
 		SearchSourceBuilder search = new SearchSourceBuilder()
 			.query(QueryBuilders.matchAllQuery())
@@ -51,7 +52,7 @@ public class UserManager {
 		for (ObjectNode node : hits.getElements()) {
 			users.add(new User(node));
 		}
-		return new PartialList<User>(users, hits.size());
+		return new UserList(users, hits.size());
 	}
 
 	public void find(final Callback<User> callback) {

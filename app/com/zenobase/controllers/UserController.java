@@ -2,22 +2,18 @@ package com.zenobase.controllers;
 
 import javax.inject.Inject;
 
-import org.codehaus.jackson.node.ArrayNode;
 import org.codehaus.jackson.node.ObjectNode;
 import org.joda.time.DateTime;
 import play.mvc.BodyParser;
 import play.mvc.Result;
 import play.mvc.With;
-import com.google.common.primitives.Ints;
 
 import com.zenobase.commands.ChangeUserEmailCommand;
 import com.zenobase.commands.ChangeUserPasswordCommand;
 import com.zenobase.commands.ChangeUserVerifiedCommand;
 import com.zenobase.common.BCrypt;
 import com.zenobase.common.Callback;
-import com.zenobase.common.PartialList;
 import com.zenobase.io.UserPrinter;
-import com.zenobase.json.Nodes;
 import com.zenobase.json.TokenField;
 import com.zenobase.models.Identity;
 import com.zenobase.models.User;
@@ -68,17 +64,7 @@ public class UserController extends ControllerSupport {
     	if (offset == 0 && limit == Integer.MAX_VALUE) {
     		return findAll();
     	}
-        return ok(toJson(users.find(offset, limit)));
-	}
-
-	private static ObjectNode toJson(PartialList<User> result) {
-    	ObjectNode resultNode = Nodes.newObject();
-    	TOTAL.setValue(resultNode, Ints.checkedCast(result.size()));
-    	ArrayNode usersNode = resultNode.putArray("users");
-    	for (User user : result.getElements()) {
-    		usersNode.add(new UserProfile(user).toJson());
-    	}
-		return resultNode;
+        return ok(users.find(offset, limit).toJson());
 	}
 
 	private static Result findAll() {
