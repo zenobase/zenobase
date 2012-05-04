@@ -18,7 +18,7 @@ import com.zenobase.common.Generator;
 import com.zenobase.json.Nodes;
 import com.zenobase.models.Identity;
 
-public class QueueControllerPostTest extends QueueControllerTestSupport {
+public class QueueControllerUndoTest extends QueueControllerTestSupport {
 
 	private final Command command = new TestCommand(principal, "testing");
 
