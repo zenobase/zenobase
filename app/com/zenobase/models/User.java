@@ -103,7 +103,7 @@ public class User extends DomainNode {
 		setValue(SUPERUSER, superuser);
 	}
 
-	public boolean equals(Identity identity) {
+	public boolean is(Identity identity) {
 		return getId().equals(identity.getId());
 	}
 

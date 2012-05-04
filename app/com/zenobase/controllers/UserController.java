@@ -43,7 +43,10 @@ public class UserController extends ControllerSupport {
 		if (user == null) {
 			return notFound();
 		}
-		return user.equals(principal) ? ok(new UserProfile(user).toJson()) : forbidden();
+		if (!user.is(principal)) {
+			return forbidden();
+		}
+		return ok(new UserProfile(user).toJson());
 	}
 
 	@BodyParser.Of(BodyParser.Json.class)
@@ -70,7 +73,7 @@ public class UserController extends ControllerSupport {
     	if (principal == null) {
     		return unauthorized();
     	}
-    	if (!user.equals(principal) && !users.isSuperuser(principal)) {
+    	if (!user.is(principal) && !users.isSuperuser(principal)) {
     		return forbidden();
     	}
 		String email = User.EMAIL.getValue(node);

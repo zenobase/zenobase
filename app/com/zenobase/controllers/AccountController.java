@@ -58,7 +58,7 @@ public class AccountController extends ControllerSupport {
 		if (user == null) {
 			return notFound();
 		}
-		if (!user.equals(principal) && !users.isSuperuser(principal)) {
+		if (!user.is(principal) && !users.isSuperuser(principal)) {
 			return forbidden();
 		}
 		String commandId = queue.dispatch(new CloseAccountCommandBuilder(principal, buckets, user).build());
