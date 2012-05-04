@@ -12,12 +12,12 @@ public class CommandQueue {
 
 	private final ALogger log = Logger.of("queue");
 	private final CommandHandlerRegistry handlers;
-	private final CommandStore store;
+	private final CommandRepository repository;
 
 	@Inject
-	public CommandQueue(CommandHandlerRegistry handlers, CommandStore store) {
+	public CommandQueue(CommandHandlerRegistry handlers, CommandRepository repository) {
 		this.handlers = handlers;
-		this.store = store;
+		this.repository = repository;
 	}
 
 	public String dispatch(Command command) {
@@ -28,7 +28,7 @@ public class CommandQueue {
 		else {
 			handlers.execute(command);
 		}
-		store.put(command);
+		repository.put(command);
 		return command.getId();
 	}
 

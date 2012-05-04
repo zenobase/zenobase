@@ -9,7 +9,7 @@ import play.mvc.With;
 import com.zenobase.commands.Command;
 import com.zenobase.models.Identity;
 import com.zenobase.services.CommandQueue;
-import com.zenobase.services.CommandStore;
+import com.zenobase.services.CommandRepository;
 import com.zenobase.services.UserManager;
 
 @With(Timed.class)
@@ -19,7 +19,7 @@ public class QueueController extends ControllerSupport {
 	static CommandQueue queue;
 
 	@Inject
-	static CommandStore store;
+	static CommandRepository repository;
 
 	@Inject
 	static UserManager users;
@@ -32,7 +32,7 @@ public class QueueController extends ControllerSupport {
     	if (!users.isSuperuser(principal)) {
     		return forbidden();
     	}
-    	return ok(store.getHistory(offset, limit).toJson());
+    	return ok(repository.getHistory(offset, limit).toJson());
     }
 
 	@BodyParser.Of(BodyParser.Json.class)
@@ -45,7 +45,7 @@ public class QueueController extends ControllerSupport {
     	if (principal == null) {
     		return unauthorized();
     	}
-    	Command command = store.find(form.getCommandId());
+    	Command command = repository.find(form.getCommandId());
     	if (command == null) {
     		return notFound("command not found");
     	}

@@ -17,7 +17,7 @@ import com.zenobase.commands.CommandSupport;
 import com.zenobase.common.Callback;
 import com.zenobase.controllers.CommandList;
 
-public class CommandStore {
+public class CommandRepository {
 
 	static final String INDEX_NAME = "queue";
 
@@ -25,7 +25,7 @@ public class CommandStore {
 	private final CommandParserRegistry parsers;
 
 	@Inject
-	public CommandStore(IndexManager manager, CommandParserRegistry parsers) {
+	public CommandRepository(IndexManager manager, CommandParserRegistry parsers) {
 		this.parsers = parsers;
 		this.index = manager.getIndex(INDEX_NAME);
 		if (!index.exists()) {

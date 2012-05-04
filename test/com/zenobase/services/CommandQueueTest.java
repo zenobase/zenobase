@@ -18,9 +18,9 @@ public class CommandQueueTest {
 	public void test() {
 
 		CommandHandlerRegistry handlers = mock(CommandHandlerRegistry.class);
-		CommandStore store = mock(CommandStore.class);
+		CommandRepository repository = mock(CommandRepository.class);
 
-		CommandQueue queue = new CommandQueue(handlers, store);
+		CommandQueue queue = new CommandQueue(handlers, repository);
 
 		Command c1 = new TestCommand(TESTER, "do a bit");
 		Command c2 = new TestCommand(TESTER, "do more");
@@ -30,9 +30,9 @@ public class CommandQueueTest {
 		queue.dispatch(c2);
 		queue.dispatch(c3);
 
-		verify(store).put(c1);
-		verify(store).put(c2);
-		verify(store).put(c3);
+		verify(repository).put(c1);
+		verify(repository).put(c2);
+		verify(repository).put(c3);
 
 		verify(handlers).execute(c1);
 		verify(handlers).execute(c2);
@@ -43,9 +43,9 @@ public class CommandQueueTest {
 	public void testCompoundCommand() {
 
 		CommandHandlerRegistry handlers = mock(CommandHandlerRegistry.class);
-		CommandStore store = mock(CommandStore.class);
+		CommandRepository repository = mock(CommandRepository.class);
 
-		CommandQueue queue = new CommandQueue(handlers, store);
+		CommandQueue queue = new CommandQueue(handlers, repository);
 
 		Command c1 = new TestCommand(TESTER, "do a bit");
 		Command c2 = new TestCommand(TESTER, "do more");
@@ -57,7 +57,7 @@ public class CommandQueueTest {
 
 		queue.dispatch(cc);
 
-		verify(store).put(cc);
+		verify(repository).put(cc);
 
 		verify(handlers).execute(c1);
 		verify(handlers).execute(c2);
