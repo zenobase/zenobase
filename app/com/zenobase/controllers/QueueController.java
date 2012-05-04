@@ -18,7 +18,6 @@ import com.zenobase.services.CommandQueue;
 import com.zenobase.services.CommandStore;
 import com.zenobase.services.UserManager;
 
-
 @With(Timed.class)
 public class QueueController extends ControllerSupport {
 
@@ -54,25 +53,21 @@ public class QueueController extends ControllerSupport {
 
 	@BodyParser.Of(BodyParser.Json.class)
     public static Result post() {
-    	String commandId = UNDO.getValue(body());
-		if (commandId == null) {
+    	UndoForm form = new UndoForm(body());
+		if (!form.valid()) {
 			return badRequest("missing command");
 		}
 		Identity principal = auth.getPrincipal();
     	if (principal == null) {
     		return unauthorized();
     	}
-    	Command command = store.find(commandId);
+    	Command command = store.find(form.getCommandId());
     	if (command == null) {
     		return notFound("command not found");
     	}
 		if (!principal.equals(command.getPrincipal()) && !users.isSuperuser(principal)) {
 			return forbidden();
 		}
-        return undo(command, principal);
-    }
-
-    private static Result undo(Command command, Identity principal) {
     	String undoId = queue.dispatch(command.reverse(principal));
         return created(receipt(undoId));
     }

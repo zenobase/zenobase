@@ -20,13 +20,13 @@ public class TestCommand extends CommandSupport {
 		super(node);
 	}
 
-	private String getTag() {
+	public String getTag() {
 		return getParameter(TAG);
 	}
 
 	@Override
 	public Command reverse(Identity principal) {
-		throw new UnsupportedOperationException();
+		return new TestCommand(principal, new StringBuilder(getTag()).reverse().toString());
 	}
 
 	@Override
