@@ -13,7 +13,6 @@ import play.mvc.Result;
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 
-import com.zenobase.common.Generator;
 import com.zenobase.json.Nodes;
 import com.zenobase.mail.PasswordResetMailer;
 import com.zenobase.models.User;
@@ -24,7 +23,7 @@ public class PasswordResetControllerTest {
 	private final SecurityContext auth = mock(SecurityContext.class);
 	private final UserRepository users = mock(UserRepository.class);
 	private final PasswordResetMailer mailer = mock(PasswordResetMailer.class);
-	private final User user = new User(Generator.id(), "tester");
+	private final User user = new User("tester");
 
 	@Before
 	public void setUp() {

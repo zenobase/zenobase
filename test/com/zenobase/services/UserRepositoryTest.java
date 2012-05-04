@@ -4,8 +4,6 @@ import static com.zenobase.testing.NodeAssert.assertThat;
 import static org.fest.assertions.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
 import org.junit.Test;
 
 import com.zenobase.common.Generator;
@@ -20,8 +18,7 @@ public class UserRepositoryTest extends ElasticSearchTestSupport {
 		// create user
 		Identity userId = new Identity(Generator.id());
 		String name = "tester";
-		DateTime created = new DateTime(DateTimeZone.UTC);
-		User user = new User(userId.getId(), name, created);
+		User user = new User(userId.getId(), name);
 		user.setEmail("jdoe@zenobase.com");
 		user.setPassword("secret");
 

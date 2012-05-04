@@ -5,7 +5,6 @@ import static org.mockito.Mockito.*;
 
 import org.junit.Test;
 
-import com.zenobase.common.Generator;
 import com.zenobase.models.User;
 import com.zenobase.services.UserRepository;
 
@@ -18,7 +17,7 @@ public class ChangeUserEmailCommandTest {
 	@Test
 	public void test() {
 
-		User user = new User(Generator.id(), "tester");
+		User user = new User("tester");
 		when(users.find(user.getName())).thenReturn(user);
 		String first = "jdoe@zenobase.org";
 		String second = "jdoe@zenobase.com";

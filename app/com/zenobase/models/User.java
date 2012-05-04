@@ -5,6 +5,7 @@ import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 
 import com.zenobase.common.BCrypt;
+import com.zenobase.common.Generator;
 import com.zenobase.json.BooleanField;
 import com.zenobase.json.DateTimeField;
 import com.zenobase.json.DomainNode;
@@ -30,14 +31,14 @@ public class User extends DomainNode {
 		super(node);
 	}
 
-	public User(String id, String name) {
-		this(id, name, new DateTime(DateTimeZone.UTC));
+	public User(String name) {
+		this(Generator.id(), name);
 	}
 
-	public User(String id, String name, DateTime created) {
+	public User(String id, String name) {
 		setValue(ID, id);
 		setValue(NAME, name);
-		setValue(CREATED, created);
+		setValue(CREATED, new DateTime(DateTimeZone.UTC));
 	}
 
 	public String getId() {

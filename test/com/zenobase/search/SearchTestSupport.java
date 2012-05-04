@@ -19,6 +19,7 @@ public class SearchTestSupport extends ElasticSearchTestSupport {
 		index = new Index(bucketId, getClient());
 		index.create(0);
 		index.putMapping(Event.getSchema());
+		index.refresh();
 	}
 
 	protected void addEvent(Event event) {

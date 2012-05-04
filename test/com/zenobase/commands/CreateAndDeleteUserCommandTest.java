@@ -4,7 +4,6 @@ import static org.mockito.Mockito.*;
 
 import org.junit.Test;
 
-import com.zenobase.common.Generator;
 import com.zenobase.models.User;
 import com.zenobase.services.UserRepository;
 
@@ -18,7 +17,7 @@ public class CreateAndDeleteUserCommandTest {
 	@Test
 	public void test() {
 
-		User user = new User(Generator.id(), "tester");
+		User user = new User("tester");
 
 		Command command = new CreateUserCommand(user.asIdentity(), user);
 		registry.execute(command);

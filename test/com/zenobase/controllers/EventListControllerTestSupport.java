@@ -6,7 +6,6 @@ import org.junit.Before;
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 
-import com.zenobase.common.Generator;
 import com.zenobase.models.Bucket;
 import com.zenobase.models.User;
 import com.zenobase.services.BucketRepository;
@@ -17,7 +16,7 @@ public abstract class EventListControllerTestSupport {
 	protected final SecurityContext auth = mock(SecurityContext.class);
 	protected final BucketRepository buckets = mock(BucketRepository.class);
 	protected final CommandDispatcher dispatcher = mock(CommandDispatcher.class);
-	protected final User user = new User(Generator.id(), "tester");
+	protected final User user = new User("tester");
 	protected final Bucket bucket = new Bucket();
 
 	@Before

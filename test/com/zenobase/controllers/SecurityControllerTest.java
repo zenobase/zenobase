@@ -15,7 +15,6 @@ import play.test.Helpers;
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 
-import com.zenobase.common.Generator;
 import com.zenobase.models.User;
 import com.zenobase.models.UserInfo;
 import com.zenobase.services.UserRepository;
@@ -24,7 +23,7 @@ public class SecurityControllerTest {
 
 	private final SecurityContext auth = new SecurityContext("secret");
 	private final UserRepository users = mock(UserRepository.class);
-	private final User user = new User(Generator.id(), "tester");
+	private final User user = new User("tester");
 	private final String password = "secret123";
 
 	@Before

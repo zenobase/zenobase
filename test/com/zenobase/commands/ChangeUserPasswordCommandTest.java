@@ -5,7 +5,6 @@ import static org.mockito.Mockito.*;
 
 import org.junit.Test;
 
-import com.zenobase.common.Generator;
 import com.zenobase.models.User;
 import com.zenobase.services.UserRepository;
 
@@ -20,7 +19,7 @@ public class ChangeUserPasswordCommandTest {
 
 		String from = "secret";
 		String to = "s3cr3t";
-		User user = new User(Generator.id(), "tester");
+		User user = new User("tester");
 		user.setPassword(from);
 		when(users.find(user.getName())).thenReturn(user);
 

@@ -6,12 +6,11 @@ import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.zenobase.common.Generator;
 import com.zenobase.models.User;
 
 public class PasswordResetKeyTest {
 
-	private final User user = new User(Generator.id(), "jdoe");
+	private final User user = new User("jdoe");
 
 	@Before
 	public void setUp() {

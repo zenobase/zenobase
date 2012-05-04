@@ -12,7 +12,6 @@ import com.google.common.collect.ImmutableList;
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 
-import com.zenobase.common.Generator;
 import com.zenobase.models.User;
 import com.zenobase.models.UserInfo;
 import com.zenobase.models.UserList;
@@ -22,7 +21,7 @@ public class UserListControllerTest {
 
 	private final SecurityContext auth = mock(SecurityContext.class);
 	private final UserRepository users = mock(UserRepository.class);
-	private final User user = new User(Generator.id(), "tester");
+	private final User user = new User("tester");
 
 	@Before
 	public void setUp() {
