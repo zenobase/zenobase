@@ -10,18 +10,18 @@ GET     /favicon.ico                 controllers.Assets.at(path="/public/img", f
 GET     /robots.txt                  controllers.Assets.at(path="/public", file="robots.txt")
 
 GET     /who                         com.zenobase.controllers.WhoController.who()
+POST    /signin                      com.zenobase.controllers.SecurityController.signIn()
+POST    /signout                     com.zenobase.controllers.SecurityController.signOut()
+POST    /reset                       com.zenobase.controllers.PasswordResetController.requestReset()
+
 GET     /users/                      com.zenobase.controllers.UserListController.find(identity ?= null, offset : Int ?= 0, limit : Int ?= java.lang.Integer.MAX_VALUE)
 GET     /users/:name                 com.zenobase.controllers.UserController.get(name)
 POST    /users/:name                 com.zenobase.controllers.UserController.update(name)
-POST    /reset                       com.zenobase.controllers.PasswordResetController.requestReset()
 
 POST    /users/                      com.zenobase.controllers.AccountController.open()
 DELETE  /users/:name                 com.zenobase.controllers.AccountController.close(name)
 
-POST    /signin                      com.zenobase.controllers.SecurityController.signIn()
-POST    /signout                     com.zenobase.controllers.SecurityController.signOut()
-
-GET     /buckets                     controllers.Default.redirect(to = "/buckets/") 
+GET     /buckets                     controllers.Default.redirect(to="/buckets/") 
 GET     /buckets/                    com.zenobase.controllers.BucketListController.find(identity ?= null, offset : Int ?= 0, limit : Int ?= java.lang.Integer.MAX_VALUE)
 POST    /buckets/                    com.zenobase.controllers.BucketListController.post()
 
