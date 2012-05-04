@@ -1,0 +1,24 @@
+package com.zenobase.mail;
+
+import org.fest.assertions.Assertions;
+import org.junit.Test;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Mockito;
+
+import com.zenobase.common.Generator;
+import com.zenobase.models.User;
+
+public class VerificationMailerTest {
+
+	@Test
+	public void test() {
+		Mailer mailer = Mockito.mock(Mailer.class);
+		User user = new User(Generator.id(), "tester");
+		user.setEmail("jdoe@zenobase.com");
+		user.setPassword("secret123");
+		new VerificationMailer(mailer, "http://localhost").send(user);
+		ArgumentCaptor<Message> arg = ArgumentCaptor.forClass(Message.class);
+		Mockito.verify(mailer).send(arg.capture());
+		Assertions.assertThat(arg.getValue().getTo()).isEqualTo(user.getEmail());
+	}
+}
