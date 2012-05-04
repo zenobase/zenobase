@@ -10,7 +10,7 @@ import com.zenobase.json.ObjectField;
 import com.zenobase.json.TokenField;
 import com.zenobase.models.Identity;
 
-public class CompoundCommand extends CommandSupport {
+public class CompoundCommand extends Command {
 
 	private static final Command.Type TYPE = new Command.Type("compound command", 1);
 	private static final TokenField MESSAGE = new TokenField("message");

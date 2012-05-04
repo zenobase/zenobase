@@ -9,7 +9,7 @@ import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
 import com.zenobase.services.BucketRepository;
 
-public class DeleteEventCommand extends CommandSupport {
+public class DeleteEventCommand extends Command {
 
 	private static final Command.Type TYPE = new Command.Type("delete event", 1);
 	private static final TokenField BUCKET_ID = new TokenField("bucketId");

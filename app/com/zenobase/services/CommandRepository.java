@@ -13,7 +13,6 @@ import com.google.inject.Inject;
 
 import com.zenobase.commands.Command;
 import com.zenobase.commands.CommandParserRegistry;
-import com.zenobase.commands.CommandSupport;
 import com.zenobase.common.Callback;
 import com.zenobase.models.CommandList;
 
@@ -31,22 +30,22 @@ public class CommandRepository {
 		if (!index.exists()) {
 			Logger.info("Creating queue index...");
 			index.create(2);
-			index.putMapping(CommandSupport.getSchema());
+			index.putMapping(Command.getSchema());
 		}
 	}
 
 	public void put(Command command) {
-		index.store(CommandSupport.TYPE_NAME, command.getId(), command.toJson(), false);
+		index.store(Command.TYPE_NAME, command.getId(), command.toJson(), false);
 	}
 
 	public Command find(String id) {
-		ObjectNode node = index.get(CommandSupport.TYPE_NAME, id);
+		ObjectNode node = index.get(Command.TYPE_NAME, id);
 		return node != null ? parsers.parse(node) : null;
 	}
 
 	public void findAll(Callback<Command> callback) {
 		SearchSourceBuilder search = new SearchSourceBuilder().query(QueryBuilders.matchAllQuery())
-			.sort(CommandSupport.TIMESTAMP.getName(), SortOrder.ASC).size(Ints.checkedCast(size()));
+			.sort(Command.TIMESTAMP.getName(), SortOrder.ASC).size(Ints.checkedCast(size()));
 		for (ObjectNode hit : index.find(search).getElements()) {
 			callback.call(parsers.parse(hit));
 		}
@@ -55,7 +54,7 @@ public class CommandRepository {
 	public CommandList getHistory(int offset, int limit) {
 		List<Command> commands = Lists.newArrayListWithCapacity(limit);
 		SearchSourceBuilder search = new SearchSourceBuilder().query(QueryBuilders.matchAllQuery())
-			.from(offset).size(limit).sort(CommandSupport.TIMESTAMP.getName(), SortOrder.DESC);
+			.from(offset).size(limit).sort(Command.TIMESTAMP.getName(), SortOrder.DESC);
 		for (ObjectNode hit : index.find(search).getElements()) {
 			commands.add(parsers.parse(hit));
 		}

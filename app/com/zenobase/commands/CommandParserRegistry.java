@@ -26,7 +26,7 @@ public class CommandParserRegistry {
 	}
 
 	public Command parse(ObjectNode node) {
-		Command.Type type = CommandSupport.TYPE.getValue(node);
+		Command.Type type = Command.TYPE.getValue(node);
 		Preconditions.checkNotNull(type, "Missing type field in %s", node);
 		CommandParser parser = parsers.get(type.getName());
 		Preconditions.checkNotNull(parser, "Missing parser for type '%s'", type.getName());

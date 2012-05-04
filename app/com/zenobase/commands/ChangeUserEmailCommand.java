@@ -9,7 +9,7 @@ import com.zenobase.models.Identity;
 import com.zenobase.models.User;
 import com.zenobase.services.UserRepository;
 
-public class ChangeUserEmailCommand extends CommandSupport {
+public class ChangeUserEmailCommand extends Command {
 
 	private static final Command.Type TYPE = new Command.Type("change user email", 1);
 	private static final TokenField USERNAME = new TokenField("username");

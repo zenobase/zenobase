@@ -8,7 +8,7 @@ import com.zenobase.models.Identity;
 import com.zenobase.models.User;
 import com.zenobase.services.UserRepository;
 
-public class CreateUserCommand extends CommandSupport {
+public class CreateUserCommand extends Command {
 
 	private static final Command.Type TYPE = new Command.Type("create user", 1);
 	private static final ObjectField USER = new ObjectField("user");

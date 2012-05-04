@@ -8,7 +8,7 @@ import com.zenobase.models.Bucket;
 import com.zenobase.models.Identity;
 import com.zenobase.services.BucketRepository;
 
-public class UpdateBucketCommand extends CommandSupport {
+public class UpdateBucketCommand extends Command {
 
 	private static final Command.Type TYPE = new Command.Type("update bucket", 1);
 	private static final ObjectField FROM = new ObjectField("from");

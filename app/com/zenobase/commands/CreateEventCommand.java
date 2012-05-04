@@ -9,7 +9,7 @@ import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
 import com.zenobase.services.BucketRepository;
 
-public class CreateEventCommand extends CommandSupport {
+public class CreateEventCommand extends Command {
 
 	private static final Command.Type TYPE = new Command.Type("create event", 1);
 	private static final TokenField BUCKET_ID = new TokenField("bucketId");

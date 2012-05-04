@@ -8,7 +8,7 @@ import com.zenobase.models.Identity;
 import com.zenobase.models.User;
 import com.zenobase.services.UserRepository;
 
-public class ChangeUserPasswordCommand extends CommandSupport {
+public class ChangeUserPasswordCommand extends Command {
 
 	private static final Command.Type TYPE = new Command.Type("change user password", 1);
 	private static final TokenField USERNAME = new TokenField("username");

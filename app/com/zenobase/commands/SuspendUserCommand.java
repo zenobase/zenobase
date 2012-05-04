@@ -9,7 +9,7 @@ import com.zenobase.models.Identity;
 import com.zenobase.models.User;
 import com.zenobase.services.UserRepository;
 
-public class SuspendUserCommand extends CommandSupport {
+public class SuspendUserCommand extends Command {
 
 	static final Command.Type TYPE = new Command.Type("suspend user", 1);
 	private static final TokenField USERNAME = new TokenField("username");

@@ -8,7 +8,7 @@ import com.zenobase.models.Bucket;
 import com.zenobase.models.Identity;
 import com.zenobase.services.BucketRepository;
 
-public class RestoreBucketCommand extends CommandSupport {
+public class RestoreBucketCommand extends Command {
 
 	private static final Command.Type TYPE = new Command.Type("restore bucket", 1);
 	private static final ObjectField BUCKET = new ObjectField("bucket");

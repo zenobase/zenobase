@@ -8,7 +8,7 @@ import com.zenobase.models.Bucket;
 import com.zenobase.models.Identity;
 import com.zenobase.services.BucketRepository;
 
-public class DeleteBucketCommand extends CommandSupport {
+public class DeleteBucketCommand extends Command {
 
 	private static final Command.Type TYPE = new Command.Type("delete bucket", 1);
 	private static final ObjectField BUCKET = new ObjectField("bucket");

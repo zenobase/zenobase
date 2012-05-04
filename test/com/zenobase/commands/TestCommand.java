@@ -6,7 +6,7 @@ import com.google.common.base.Preconditions;
 import com.zenobase.json.TokenField;
 import com.zenobase.models.Identity;
 
-public class TestCommand extends CommandSupport {
+public class TestCommand extends Command {
 
 	private static final Command.Type TYPE = new Command.Type("test command", 1);
 	private static final TokenField TAG = new TokenField("tag");
