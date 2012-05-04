@@ -10,14 +10,14 @@ import com.zenobase.models.Bucket;
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
 import com.zenobase.models.Permission;
-import com.zenobase.services.BucketManager;
+import com.zenobase.services.BucketRepository;
 import com.zenobase.services.CommandQueue;
 
 @With(Timed.class)
 public class EventController extends ControllerSupport {
 
 	@Inject
-	static BucketManager manager;
+	static BucketRepository repository;
 
 	@Inject
 	static CommandQueue queue;
@@ -27,14 +27,14 @@ public class EventController extends ControllerSupport {
     	if (principal == null) {
     		return unauthorized();
     	}
-		Bucket bucket = manager.findBucket(bucketId);
+		Bucket bucket = repository.findBucket(bucketId);
     	if (bucket == null) {
     		return notFound();
     	}
     	if (bucket.getPermission(principal) == Permission.NONE) {
     		return forbidden();
     	}
-    	Event event = manager.findEvent(bucketId, eventId);
+    	Event event = repository.findEvent(bucketId, eventId);
     	if (event == null) {
     		return notFound();
     	}
@@ -46,14 +46,14 @@ public class EventController extends ControllerSupport {
 		if (principal == null) {
 			return unauthorized();
 		}
-    	Bucket bucket = manager.findBucket(bucketId);
+    	Bucket bucket = repository.findBucket(bucketId);
     	if (bucket == null) {
     		return notFound();
     	}
     	if (bucket.getPermission(principal) != Permission.ALL) {
     		return forbidden();
     	}
-    	Event event = manager.findEvent(bucket.getId(), eventId);
+    	Event event = repository.findEvent(bucket.getId(), eventId);
     	if (event == null) {
     		return notFound();
     	}

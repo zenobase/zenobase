@@ -1,7 +1,6 @@
 package com.zenobase.services;
 
 import static com.zenobase.testing.NodeAssert.assertThat;
-
 import static org.fest.assertions.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
@@ -17,7 +16,7 @@ import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
 import com.zenobase.models.Permission;
 
-public class BucketManagerTest extends ElasticSearchTestSupport {
+public class BucketRepositoryTest extends ElasticSearchTestSupport {
 
 	@Test
 	public void test() {
@@ -34,27 +33,27 @@ public class BucketManagerTest extends ElasticSearchTestSupport {
 		bucket.setWidgets(widgets);
 
 		IndexManager indexManager = mock(IndexManager.class);
-		Index bucketIndex = new Index(BucketManager.INDEX_NAME, getClient());
+		Index bucketIndex = new Index(BucketRepository.INDEX_NAME, getClient());
 		Index eventIndex = new Index(bucket.getId(), getClient());
-		when(indexManager.getIndex(BucketManager.INDEX_NAME)).thenReturn(bucketIndex);
+		when(indexManager.getIndex(BucketRepository.INDEX_NAME)).thenReturn(bucketIndex);
 		when(indexManager.getIndex(bucket.getId())).thenReturn(eventIndex);
-		BucketManager manager = new BucketManager(indexManager);
+		BucketRepository repository = new BucketRepository(indexManager);
 
 		// store and retrieve bucket
-		manager.store(bucket, true);
-		assertThat(manager.findBucket(bucket.getId()).toJson()).isEqualTo(bucket.toJson());
+		repository.store(bucket, true);
+		assertThat(repository.findBucket(bucket.getId()).toJson()).isEqualTo(bucket.toJson());
 
 		// update bucket
 		String description = "just a test";
 		bucket.setDescription(description);
-		manager.update(bucket);
-		assertThat(manager.findBucket(bucket.getId()).toJson()).isEqualTo(bucket.toJson());
+		repository.update(bucket);
+		assertThat(repository.findBucket(bucket.getId()).toJson()).isEqualTo(bucket.toJson());
 
 		// delete and recreate bucket
-		manager.deleteBucket(bucket.getId());
-		assertThat(manager.findBucket(bucket.getId())).as("bucket").isNull();
-		manager.store(bucket, false);
-		assertThat(manager.findBucket(bucket.getId()).toJson()).isEqualTo(bucket.toJson());
+		repository.deleteBucket(bucket.getId());
+		assertThat(repository.findBucket(bucket.getId())).as("bucket").isNull();
+		repository.store(bucket, false);
+		assertThat(repository.findBucket(bucket.getId()).toJson()).isEqualTo(bucket.toJson());
 
 		// create event
 		Event event = new Event();
@@ -64,16 +63,16 @@ public class BucketManagerTest extends ElasticSearchTestSupport {
 		event.addValue(Event.TAG, "demo");
 
 		// store and retrieve event
-		assertThat(manager.getSize(bucket.getId())).as("bucket size").isZero();
-		manager.add(bucket.getId(), event);
+		assertThat(repository.getSize(bucket.getId())).as("bucket size").isZero();
+		repository.add(bucket.getId(), event);
 		eventIndex.refresh();
-		assertThat(manager.getSize(bucket.getId())).as("bucket size").isEqualTo(1L);
-		assertThat(manager.findEvent(bucket.getId(), event.getId()).toJson()).isEqualTo(event.toJson());
+		assertThat(repository.getSize(bucket.getId())).as("bucket size").isEqualTo(1L);
+		assertThat(repository.findEvent(bucket.getId(), event.getId()).toJson()).isEqualTo(event.toJson());
 
 		// delete event
-		manager.delete(bucket.getId(), event.getId());
+		repository.delete(bucket.getId(), event.getId());
 		eventIndex.refresh();
-		assertThat(manager.getSize(bucket.getId())).as("bucket size").isZero();
-		assertThat(manager.findEvent(bucket.getId(), event.getId())).as("event").isNull();
+		assertThat(repository.getSize(bucket.getId())).as("bucket size").isZero();
+		assertThat(repository.findEvent(bucket.getId(), event.getId())).as("event").isNull();
 	}
 }

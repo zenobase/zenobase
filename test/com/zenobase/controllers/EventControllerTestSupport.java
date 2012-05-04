@@ -9,13 +9,13 @@ import com.google.inject.Guice;
 import com.zenobase.common.Generator;
 import com.zenobase.models.Bucket;
 import com.zenobase.models.User;
-import com.zenobase.services.BucketManager;
+import com.zenobase.services.BucketRepository;
 import com.zenobase.services.CommandQueue;
 
 public abstract class EventControllerTestSupport {
 
 	protected final SecurityContext auth = mock(SecurityContext.class);
-	protected final BucketManager buckets = mock(BucketManager.class);
+	protected final BucketRepository buckets = mock(BucketRepository.class);
 	protected final CommandQueue queue = mock(CommandQueue.class);
 	protected final User user = new User(Generator.id(), "tester");
 	protected final Bucket bucket = new Bucket();
@@ -26,7 +26,7 @@ public abstract class EventControllerTestSupport {
 			@Override
 			protected void configure() {
 				bind(SecurityContext.class).toInstance(auth);
-				bind(BucketManager.class).toInstance(buckets);
+				bind(BucketRepository.class).toInstance(buckets);
 				bind(CommandQueue.class).toInstance(queue);
 				requestStaticInjection(EventController.class);
 			}

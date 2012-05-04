@@ -7,7 +7,7 @@ import com.zenobase.json.BooleanField;
 import com.zenobase.json.TokenField;
 import com.zenobase.models.Identity;
 import com.zenobase.models.User;
-import com.zenobase.services.UserManager;
+import com.zenobase.services.UserRepository;
 
 public class ChangeUserVerifiedCommand extends CommandSupport {
 
@@ -61,19 +61,19 @@ public class ChangeUserVerifiedCommand extends CommandSupport {
 
 	public static class Handler extends CommandHandlerSupport<ChangeUserVerifiedCommand> {
 
-		private final UserManager manager;
+		private final UserRepository repository;
 
 		@Inject
-		public Handler(UserManager manager) {
+		public Handler(UserRepository repository) {
 			super(ChangeUserVerifiedCommand.class);
-			this.manager = manager;
+			this.repository = repository;
 		}
 
 		@Override
 		public void executeTyped(ChangeUserVerifiedCommand command) {
-			User user = manager.find(command.getName());
+			User user = repository.find(command.getName());
 			user.setVerified(command.isVerified());
-			manager.update(user);
+			repository.update(user);
 		}
 	}
 }

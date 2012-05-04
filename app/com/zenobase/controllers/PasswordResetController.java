@@ -9,7 +9,7 @@ import play.mvc.With;
 
 import com.zenobase.json.TokenField;
 import com.zenobase.models.User;
-import com.zenobase.services.UserManager;
+import com.zenobase.services.UserRepository;
 
 @With(Timed.class)
 public class PasswordResetController extends ControllerSupport {
@@ -17,7 +17,7 @@ public class PasswordResetController extends ControllerSupport {
 	static final TokenField USERNAME = new TokenField("username");
 
 	@Inject
-	static UserManager users;
+	static UserRepository users;
 
 	@Inject
 	static PasswordResetMailer resetMailer;

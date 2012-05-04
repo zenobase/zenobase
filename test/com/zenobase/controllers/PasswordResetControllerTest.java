@@ -16,12 +16,12 @@ import com.google.inject.Guice;
 import com.zenobase.common.Generator;
 import com.zenobase.json.Nodes;
 import com.zenobase.models.User;
-import com.zenobase.services.UserManager;
+import com.zenobase.services.UserRepository;
 
 public class PasswordResetControllerTest {
 
 	private final SecurityContext auth = mock(SecurityContext.class);
-	private final UserManager users = mock(UserManager.class);
+	private final UserRepository users = mock(UserRepository.class);
 	private final PasswordResetMailer mailer = mock(PasswordResetMailer.class);
 	private final User user = new User(Generator.id(), "tester");
 
@@ -31,7 +31,7 @@ public class PasswordResetControllerTest {
 			@Override
 			protected void configure() {
 				bind(SecurityContext.class).toInstance(auth);
-				bind(UserManager.class).toInstance(users);
+				bind(UserRepository.class).toInstance(users);
 				bind(PasswordResetMailer.class).toInstance(mailer);
 				requestStaticInjection(PasswordResetController.class);
 			}

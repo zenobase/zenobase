@@ -4,15 +4,15 @@ import com.zenobase.common.Callback;
 import com.zenobase.models.Bucket;
 import com.zenobase.models.Identity;
 import com.zenobase.models.User;
-import com.zenobase.services.BucketManager;
+import com.zenobase.services.BucketRepository;
 
 public class CloseAccountCommandBuilder {
 
 	private final Identity principal;
-	private final BucketManager buckets;
+	private final BucketRepository buckets;
 	private final User user;
 
-	public CloseAccountCommandBuilder(Identity principal, BucketManager buckets, User user) {
+	public CloseAccountCommandBuilder(Identity principal, BucketRepository buckets, User user) {
 		this.principal = principal;
 		this.buckets = buckets;
 		this.user = user;

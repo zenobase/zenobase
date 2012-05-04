@@ -17,7 +17,7 @@ import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
 import com.zenobase.models.Permission;
 import com.zenobase.search.EventSearch;
-import com.zenobase.services.BucketManager;
+import com.zenobase.services.BucketRepository;
 import com.zenobase.services.CommandQueue;
 
 @With(Timed.class)
@@ -26,7 +26,7 @@ public class EventListController extends ControllerSupport {
 	static final IntegerField RANDOM = new IntegerField("random");
 
 	@Inject
-	static BucketManager manager;
+	static BucketRepository repository;
 
 	@Inject
 	static CommandQueue queue;
@@ -36,7 +36,7 @@ public class EventListController extends ControllerSupport {
 		if (principal == null) {
 			return unauthorized();
 		}
-		Bucket bucket = manager.findBucket(bucketId);
+		Bucket bucket = repository.findBucket(bucketId);
     	if (bucket == null) {
     		return notFound();
     	}
@@ -46,7 +46,7 @@ public class EventListController extends ControllerSupport {
     	EventSearch search = new EventSearch()
 			.addWidgets(request().queryString().get("w"))
 			.addFilters(request().queryString().get("q"));
-    	return ok(manager.findEvents(bucketId, search));
+    	return ok(repository.findEvents(bucketId, search));
     }
 
 	@BodyParser.Of(value = BodyParser.Json.class)
@@ -56,7 +56,7 @@ public class EventListController extends ControllerSupport {
 			return unauthorized();
 		}
 		ObjectNode body = body();
-    	Bucket bucket = manager.findBucket(bucketId);
+    	Bucket bucket = repository.findBucket(bucketId);
     	if (bucket == null) {
     		return notFound();
     	}

@@ -6,11 +6,11 @@ import org.junit.Test;
 
 import com.zenobase.models.Bucket;
 import com.zenobase.models.Identity;
-import com.zenobase.services.BucketManager;
+import com.zenobase.services.BucketRepository;
 
 public class CreateDeleteAndRestoreBucketCommandTest {
 
-	private final BucketManager buckets = mock(BucketManager.class);
+	private final BucketRepository buckets = mock(BucketRepository.class);
 	private final CommandHandlerRegistry registry = CommandHandlerRegistry.containing(
 		new CreateBucketCommand.Handler(buckets),
 		new DeleteBucketCommand.Handler(buckets),

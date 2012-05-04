@@ -6,7 +6,7 @@ import com.google.inject.Inject;
 import com.zenobase.json.TokenField;
 import com.zenobase.models.Identity;
 import com.zenobase.models.User;
-import com.zenobase.services.UserManager;
+import com.zenobase.services.UserRepository;
 
 public class ChangeUserPasswordCommand extends CommandSupport {
 
@@ -66,19 +66,19 @@ public class ChangeUserPasswordCommand extends CommandSupport {
 
 	public static class Handler extends CommandHandlerSupport<ChangeUserPasswordCommand> {
 
-		private final UserManager manager;
+		private final UserRepository repository;
 
 		@Inject
-		public Handler(UserManager manager) {
+		public Handler(UserRepository repository) {
 			super(ChangeUserPasswordCommand.class);
-			this.manager = manager;
+			this.repository = repository;
 		}
 
 		@Override
 		public void executeTyped(ChangeUserPasswordCommand command) {
-			User user = manager.find(command.getUsername());
+			User user = repository.find(command.getUsername());
 			user.setHashedPassword(command.getTo());
-			manager.update(user);
+			repository.update(user);
 		}
 	}
 }

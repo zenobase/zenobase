@@ -8,15 +8,15 @@ import com.google.inject.Guice;
 
 import com.zenobase.common.Generator;
 import com.zenobase.models.User;
-import com.zenobase.services.BucketManager;
+import com.zenobase.services.BucketRepository;
 import com.zenobase.services.CommandQueue;
-import com.zenobase.services.UserManager;
+import com.zenobase.services.UserRepository;
 
 public abstract class BucketControllerTestSupport {
 
 	protected final SecurityContext auth = mock(SecurityContext.class);
-	protected final BucketManager buckets = mock(BucketManager.class);
-	protected final UserManager users = mock(UserManager.class);
+	protected final BucketRepository buckets = mock(BucketRepository.class);
+	protected final UserRepository users = mock(UserRepository.class);
 	protected final CommandQueue queue = mock(CommandQueue.class);
 	protected final User user = new User(Generator.id(), "tester");
 
@@ -26,8 +26,8 @@ public abstract class BucketControllerTestSupport {
 			@Override
 			protected void configure() {
 				bind(SecurityContext.class).toInstance(auth);
-				bind(BucketManager.class).toInstance(buckets);
-				bind(UserManager.class).toInstance(users);
+				bind(BucketRepository.class).toInstance(buckets);
+				bind(UserRepository.class).toInstance(users);
 				bind(CommandQueue.class).toInstance(queue);
 				requestStaticInjection(BucketController.class);
 			}

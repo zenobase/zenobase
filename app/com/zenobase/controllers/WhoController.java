@@ -8,13 +8,13 @@ import play.mvc.With;
 import com.zenobase.models.Identity;
 import com.zenobase.models.User;
 import com.zenobase.models.UserInfo;
-import com.zenobase.services.UserManager;
+import com.zenobase.services.UserRepository;
 
 @With(Timed.class)
 public class WhoController extends ControllerSupport {
 
 	@Inject
-	static UserManager users;
+	static UserRepository users;
 
 	public static Result who() {
 		Identity principal = auth.getPrincipal();

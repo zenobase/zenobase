@@ -7,11 +7,11 @@ import org.junit.Test;
 
 import com.zenobase.common.Generator;
 import com.zenobase.models.User;
-import com.zenobase.services.UserManager;
+import com.zenobase.services.UserRepository;
 
 public class ChangeUserPasswordCommandTest {
 
-	private final UserManager users = mock(UserManager.class);
+	private final UserRepository users = mock(UserRepository.class);
 	private final CommandHandlerRegistry registry = CommandHandlerRegistry.containing(
 		new ChangeUserPasswordCommand.Handler(users));
 

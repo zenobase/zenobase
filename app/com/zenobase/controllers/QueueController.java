@@ -10,7 +10,7 @@ import com.zenobase.commands.Command;
 import com.zenobase.models.Identity;
 import com.zenobase.services.CommandQueue;
 import com.zenobase.services.CommandRepository;
-import com.zenobase.services.UserManager;
+import com.zenobase.services.UserRepository;
 
 @With(Timed.class)
 public class QueueController extends ControllerSupport {
@@ -22,7 +22,7 @@ public class QueueController extends ControllerSupport {
 	static CommandRepository repository;
 
 	@Inject
-	static UserManager users;
+	static UserRepository users;
 
     public static Result get(int offset, int limit) {
     	Identity principal = auth.getPrincipal();

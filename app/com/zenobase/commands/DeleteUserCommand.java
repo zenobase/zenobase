@@ -6,7 +6,7 @@ import com.google.inject.Inject;
 import com.zenobase.json.ObjectField;
 import com.zenobase.models.Identity;
 import com.zenobase.models.User;
-import com.zenobase.services.UserManager;
+import com.zenobase.services.UserRepository;
 
 public class DeleteUserCommand extends CommandSupport {
 
@@ -54,17 +54,17 @@ public class DeleteUserCommand extends CommandSupport {
 
 	public static class Handler extends CommandHandlerSupport<DeleteUserCommand> {
 
-		private final UserManager manager;
+		private final UserRepository repository;
 
 		@Inject
-		public Handler(UserManager manager) {
+		public Handler(UserRepository repository) {
 			super(DeleteUserCommand.class);
-			this.manager = manager;
+			this.repository = repository;
 		}
 
 		@Override
 		public void executeTyped(DeleteUserCommand command) {
-			manager.delete(command.getUser());
+			repository.delete(command.getUser());
 		}
 	}
 }

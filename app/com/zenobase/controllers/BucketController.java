@@ -16,9 +16,9 @@ import com.zenobase.json.Nodes;
 import com.zenobase.models.Bucket;
 import com.zenobase.models.Identity;
 import com.zenobase.models.Permission;
-import com.zenobase.services.BucketManager;
+import com.zenobase.services.BucketRepository;
 import com.zenobase.services.CommandQueue;
-import com.zenobase.services.UserManager;
+import com.zenobase.services.UserRepository;
 
 @With(Timed.class)
 public class BucketController extends ControllerSupport {
@@ -27,10 +27,10 @@ public class BucketController extends ControllerSupport {
 	static CommandQueue queue;
 
 	@Inject
-	static BucketManager buckets;
+	static BucketRepository buckets;
 
 	@Inject
-	static UserManager users;
+	static UserRepository users;
 
 	public static Result get(String bucketId) {
 		Identity principal = auth.getPrincipal();

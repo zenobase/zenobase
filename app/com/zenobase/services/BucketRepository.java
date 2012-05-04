@@ -21,7 +21,7 @@ import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
 import com.zenobase.search.EventSearch;
 
-public class BucketManager {
+public class BucketRepository {
 
 	static final String INDEX_NAME = "buckets";
 
@@ -29,7 +29,7 @@ public class BucketManager {
 	private final Index index;
 
 	@Inject
-	public BucketManager(IndexManager manager) {
+	public BucketRepository(IndexManager manager) {
 		this.manager = manager;
 		this.index = manager.getIndex(INDEX_NAME);
 		if (!index.exists()) {

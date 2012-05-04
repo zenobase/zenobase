@@ -13,10 +13,10 @@ import com.zenobase.io.BucketPrinter;
 import com.zenobase.models.Bucket;
 import com.zenobase.models.Identity;
 import com.zenobase.models.Permission;
-import com.zenobase.services.BucketManager;
+import com.zenobase.services.BucketRepository;
 import com.zenobase.services.CommandQueue;
 import com.zenobase.services.IndexManager;
-import com.zenobase.services.UserManager;
+import com.zenobase.services.UserRepository;
 
 @With(Timed.class)
 public class BucketListController extends ControllerSupport {
@@ -28,10 +28,10 @@ public class BucketListController extends ControllerSupport {
 	static IndexManager node;
 
 	@Inject
-	static BucketManager buckets;
+	static BucketRepository buckets;
 
 	@Inject
-	static UserManager users;
+	static UserRepository users;
 
     public static Result find(String identity, int offset, int limit) {
         return identity == null ? find(offset, limit) : find(new Identity(identity), offset, limit);

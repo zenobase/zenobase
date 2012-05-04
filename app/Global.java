@@ -41,13 +41,13 @@ import com.zenobase.controllers.SecurityController;
 import com.zenobase.controllers.UserController;
 import com.zenobase.controllers.VerificationMailer;
 import com.zenobase.controllers.WhoController;
-import com.zenobase.services.BucketManager;
+import com.zenobase.services.BucketRepository;
 import com.zenobase.services.CommandQueue;
 import com.zenobase.services.CommandReplay;
 import com.zenobase.services.CommandRepository;
 import com.zenobase.services.IndexManager;
 import com.zenobase.services.Mailer;
-import com.zenobase.services.UserManager;
+import com.zenobase.services.UserRepository;
 
 public class Global extends GlobalSettings {
 
@@ -67,10 +67,10 @@ public class Global extends GlobalSettings {
 				bindConfiguration();
 
 				bind(IndexManager.class).in(Singleton.class);
-				bind(BucketManager.class).in(Singleton.class);
+				bind(BucketRepository.class).in(Singleton.class);
 				bind(CommandQueue.class).in(Singleton.class);
 				bind(CommandRepository.class).in(Singleton.class);
-				bind(UserManager.class).in(Singleton.class);
+				bind(UserRepository.class).in(Singleton.class);
 				bind(CommandParserRegistry.class).in(Singleton.class);
 				bind(CommandHandlerRegistry.class).in(Singleton.class);
 				bind(CommandReplay.class).in(Singleton.class);
@@ -134,7 +134,7 @@ public class Global extends GlobalSettings {
 	}
 
 	private void replay() {
-		UserManager users = injector.getInstance(UserManager.class);
+		UserRepository users = injector.getInstance(UserRepository.class);
 		if (users.isEmpty()) {
 			injector.getInstance(CommandReplay.class).replay();
 		}

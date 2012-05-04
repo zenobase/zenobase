@@ -1,7 +1,6 @@
 package com.zenobase.services;
 
 import static com.zenobase.testing.NodeAssert.assertThat;
-
 import static org.fest.assertions.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
@@ -13,7 +12,7 @@ import com.zenobase.common.Generator;
 import com.zenobase.models.Identity;
 import com.zenobase.models.User;
 
-public class UserManagerTest extends ElasticSearchTestSupport {
+public class UserRepositoryTest extends ElasticSearchTestSupport {
 
 	@Test
 	public void test() {
@@ -27,23 +26,23 @@ public class UserManagerTest extends ElasticSearchTestSupport {
 		user.setPassword("secret");
 
 		IndexManager indexManager = mock(IndexManager.class);
-		Index index = new Index(UserManager.INDEX_NAME, getClient());
-		when(indexManager.getIndex(UserManager.INDEX_NAME)).thenReturn(index);
-		UserManager manager = new UserManager(indexManager);
-		assertThat(manager.isEmpty()).as("no users").isTrue();
+		Index index = new Index(UserRepository.INDEX_NAME, getClient());
+		when(indexManager.getIndex(UserRepository.INDEX_NAME)).thenReturn(index);
+		UserRepository repository = new UserRepository(indexManager);
+		assertThat(repository.isEmpty()).as("no users").isTrue();
 
 		// store and retrieve user
-		manager.store(user);
-		assertThat(manager.find(userId).toJson()).isEqualTo(user.toJson());
+		repository.store(user);
+		assertThat(repository.find(userId).toJson()).isEqualTo(user.toJson());
 
 		// update user
 		user.setVerified(true);
-		manager.update(user);
-		assertThat(manager.find(userId).toJson()).isEqualTo(user.toJson());
+		repository.update(user);
+		assertThat(repository.find(userId).toJson()).isEqualTo(user.toJson());
 
 		// delete user
-		manager.delete(user);
+		repository.delete(user);
 		index.refresh();
-		assertThat(manager.find(userId)).as("user").isNull();
+		assertThat(repository.find(userId)).as("user").isNull();
 	}
 }

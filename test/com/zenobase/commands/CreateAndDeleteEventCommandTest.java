@@ -9,11 +9,11 @@ import org.junit.Test;
 import com.zenobase.common.Generator;
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
-import com.zenobase.services.BucketManager;
+import com.zenobase.services.BucketRepository;
 
 public class CreateAndDeleteEventCommandTest {
 
-	private final BucketManager buckets = mock(BucketManager.class);
+	private final BucketRepository buckets = mock(BucketRepository.class);
 	private final CommandHandlerRegistry registry = CommandHandlerRegistry.containing(
 		new CreateEventCommand.Handler(buckets),
 		new DeleteEventCommand.Handler(buckets));

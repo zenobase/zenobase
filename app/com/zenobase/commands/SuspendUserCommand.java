@@ -7,7 +7,7 @@ import com.zenobase.json.BooleanField;
 import com.zenobase.json.TokenField;
 import com.zenobase.models.Identity;
 import com.zenobase.models.User;
-import com.zenobase.services.UserManager;
+import com.zenobase.services.UserRepository;
 
 public class SuspendUserCommand extends CommandSupport {
 
@@ -61,19 +61,19 @@ public class SuspendUserCommand extends CommandSupport {
 
 	public static class Handler extends CommandHandlerSupport<SuspendUserCommand> {
 
-		private final UserManager manager;
+		private final UserRepository repository;
 
 		@Inject
-		public Handler(UserManager manager) {
+		public Handler(UserRepository repository) {
 			super(SuspendUserCommand.class);
-			this.manager = manager;
+			this.repository = repository;
 		}
 
 		@Override
 		public void executeTyped(SuspendUserCommand command) {
-			User user = manager.find(command.getName());
+			User user = repository.find(command.getName());
 			user.setSuspended(command.isSuspend());
-			manager.update(user);
+			repository.update(user);
 		}
 	}
 }

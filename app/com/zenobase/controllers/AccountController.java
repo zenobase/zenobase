@@ -11,18 +11,18 @@ import com.zenobase.commands.CreateUserCommand;
 import com.zenobase.models.Identity;
 import com.zenobase.models.User;
 import com.zenobase.models.UserInfo;
-import com.zenobase.services.BucketManager;
+import com.zenobase.services.BucketRepository;
 import com.zenobase.services.CommandQueue;
-import com.zenobase.services.UserManager;
+import com.zenobase.services.UserRepository;
 
 @With(Timed.class)
 public class AccountController extends ControllerSupport {
 
 	@Inject
-	static BucketManager buckets;
+	static BucketRepository buckets;
 
 	@Inject
-	static UserManager users;
+	static UserRepository users;
 
 	@Inject
 	static CommandQueue queue;

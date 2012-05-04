@@ -6,7 +6,7 @@ import com.google.inject.Inject;
 import com.zenobase.json.ObjectField;
 import com.zenobase.models.Bucket;
 import com.zenobase.models.Identity;
-import com.zenobase.services.BucketManager;
+import com.zenobase.services.BucketRepository;
 
 public class UpdateBucketCommand extends CommandSupport {
 
@@ -63,17 +63,17 @@ public class UpdateBucketCommand extends CommandSupport {
 
 	public static class Handler extends CommandHandlerSupport<UpdateBucketCommand> {
 
-		private final BucketManager manager;
+		private final BucketRepository repository;
 
 		@Inject
-		public Handler(BucketManager manager) {
+		public Handler(BucketRepository repository) {
 			super(UpdateBucketCommand.class);
-			this.manager = manager;
+			this.repository = repository;
 		}
 
 		@Override
 		public void executeTyped(UpdateBucketCommand command) {
-			manager.update(command.getTo());
+			repository.update(command.getTo());
 		}
 	}
 }

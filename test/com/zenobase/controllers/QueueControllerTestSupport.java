@@ -9,13 +9,13 @@ import com.google.inject.Guice;
 import com.zenobase.models.Identity;
 import com.zenobase.services.CommandQueue;
 import com.zenobase.services.CommandRepository;
-import com.zenobase.services.UserManager;
+import com.zenobase.services.UserRepository;
 
 public abstract class QueueControllerTestSupport {
 
 	protected final SecurityContext auth = mock(SecurityContext.class);
 	protected final CommandRepository commands = mock(CommandRepository.class);
-	protected final UserManager users = mock(UserManager.class);
+	protected final UserRepository users = mock(UserRepository.class);
 	protected final CommandQueue queue = mock(CommandQueue.class);
 	protected final Identity principal = new Identity();
 
@@ -26,7 +26,7 @@ public abstract class QueueControllerTestSupport {
 			protected void configure() {
 				bind(SecurityContext.class).toInstance(auth);
 				bind(CommandRepository.class).toInstance(commands);
-				bind(UserManager.class).toInstance(users);
+				bind(UserRepository.class).toInstance(users);
 				bind(CommandQueue.class).toInstance(queue);
 				requestStaticInjection(QueueController.class);
 			}

@@ -7,7 +7,7 @@ import com.zenobase.json.BooleanField;
 import com.zenobase.json.TokenField;
 import com.zenobase.models.Identity;
 import com.zenobase.models.User;
-import com.zenobase.services.UserManager;
+import com.zenobase.services.UserRepository;
 
 public class ChangeUserEmailCommand extends CommandSupport {
 
@@ -79,20 +79,20 @@ public class ChangeUserEmailCommand extends CommandSupport {
 
 	public static class Handler extends CommandHandlerSupport<ChangeUserEmailCommand> {
 
-		private final UserManager manager;
+		private final UserRepository repository;
 
 		@Inject
-		public Handler(UserManager manager) {
+		public Handler(UserRepository repository) {
 			super(ChangeUserEmailCommand.class);
-			this.manager = manager;
+			this.repository = repository;
 		}
 
 		@Override
 		public void executeTyped(ChangeUserEmailCommand command) {
-			User user = manager.find(command.getUsername());
+			User user = repository.find(command.getUsername());
 			user.setEmail(command.getTo());
 			user.setVerified(command.getToVerified());
-			manager.update(user);
+			repository.update(user);
 		}
 	}
 }

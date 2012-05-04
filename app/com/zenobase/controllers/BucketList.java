@@ -8,17 +8,17 @@ import com.zenobase.common.PartialList;
 import com.zenobase.json.LongField;
 import com.zenobase.json.Nodes;
 import com.zenobase.models.Bucket;
-import com.zenobase.services.BucketManager;
+import com.zenobase.services.BucketRepository;
 
 public class BucketList extends PartialList<Bucket> {
 
 	private static final LongField SIZE = new LongField("size");
 
-	private final BucketManager manager;
+	private final BucketRepository repository;
 
-	public BucketList(Iterable<Bucket> elements, long size, BucketManager manager) {
+	public BucketList(Iterable<Bucket> elements, long size, BucketRepository repository) {
 		super(elements, size);
-		this.manager = manager;
+		this.repository = repository;
 	}
 
     public ObjectNode toJson() {
@@ -27,7 +27,7 @@ public class BucketList extends PartialList<Bucket> {
     	ArrayNode bucketsNode = resultNode.putArray("buckets");
     	for (Bucket bucket : getElements()) {
     		ObjectNode bucketNode = bucket.toJson();
-    		SIZE.setValue(bucketNode, manager.getSize(bucket.getId()));
+    		SIZE.setValue(bucketNode, repository.getSize(bucket.getId()));
     		bucketsNode.add(bucketNode);
     	}
     	return resultNode;

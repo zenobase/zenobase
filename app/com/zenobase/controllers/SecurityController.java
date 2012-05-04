@@ -7,13 +7,13 @@ import com.google.inject.Inject;
 
 import com.zenobase.models.User;
 import com.zenobase.models.UserInfo;
-import com.zenobase.services.UserManager;
+import com.zenobase.services.UserRepository;
 
 @With(Timed.class)
 public class SecurityController extends ControllerSupport {
 
 	@Inject
-	static UserManager users;
+	static UserRepository users;
 
 	@BodyParser.Of(BodyParser.Json.class)
 	public static Result signIn() {

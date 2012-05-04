@@ -18,15 +18,15 @@ import com.zenobase.controllers.UserList;
 import com.zenobase.models.Identity;
 import com.zenobase.models.User;
 
-public class UserManager {
+public class UserRepository {
 
 	static final String INDEX_NAME = "users";
 
 	private final Index index;
 
 	@Inject
-	public UserManager(IndexManager node) {
-		this.index = node.getIndex(INDEX_NAME);
+	public UserRepository(IndexManager manager) {
+		this.index = manager.getIndex(INDEX_NAME);
 		if (!index.exists()) {
 			Logger.info("Creating user index...");
 			index.create(Integer.MAX_VALUE);

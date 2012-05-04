@@ -20,7 +20,7 @@ import com.zenobase.models.User;
 import com.zenobase.models.UserInfo;
 import com.zenobase.models.UserProfile;
 import com.zenobase.services.CommandQueue;
-import com.zenobase.services.UserManager;
+import com.zenobase.services.UserRepository;
 
 @With(Timed.class)
 public class UserController extends ControllerSupport {
@@ -29,7 +29,7 @@ public class UserController extends ControllerSupport {
 	private static final TokenField EXPIRES = new TokenField("expires");
 
 	@Inject
-	static UserManager users;
+	static UserRepository users;
 
 	@Inject
 	static CommandQueue queue;
