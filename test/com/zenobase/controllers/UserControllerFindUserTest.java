@@ -1,7 +1,6 @@
 package com.zenobase.controllers;
 
 import static com.zenobase.testing.ResultAssert.assertThat;
-
 import static org.mockito.Mockito.when;
 import static play.mvc.Http.Status.OK;
 import static play.test.Helpers.callAction;
@@ -11,7 +10,7 @@ import play.mvc.Result;
 
 import com.zenobase.models.UserInfo;
 
-public class UserControllerFindUserTest extends UserControllerTestSupport {
+public class UserControllerFindUserTest extends UserListControllerTestSupport {
 
 	@Test
 	public void testFindExistingUser() {
@@ -22,7 +21,6 @@ public class UserControllerFindUserTest extends UserControllerTestSupport {
 	}
 
 	private static Result call(String id, int offset, int limit) {
-		return callAction(com.zenobase.controllers.routes.ref.UserController.find(id, 0, 1));
-
+		return callAction(com.zenobase.controllers.routes.ref.UserListController.find(id, 0, 1));
 	}
 }

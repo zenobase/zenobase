@@ -8,10 +8,9 @@ import com.google.inject.Guice;
 
 import com.zenobase.common.Generator;
 import com.zenobase.models.User;
-import com.zenobase.services.CommandQueue;
 import com.zenobase.services.UserRepository;
 
-public abstract class UserControllerTestSupport {
+public abstract class UserListControllerTestSupport {
 
 	protected final SecurityContext auth = mock(SecurityContext.class);
 	protected final UserRepository users = mock(UserRepository.class);
@@ -24,9 +23,7 @@ public abstract class UserControllerTestSupport {
 			protected void configure() {
 				bind(SecurityContext.class).toInstance(auth);
 				bind(UserRepository.class).toInstance(users);
-				bind(VerificationMailer.class).toInstance(mock(VerificationMailer.class));
-				bind(CommandQueue.class).toInstance(mock(CommandQueue.class));
-				requestStaticInjection(UserController.class);
+				requestStaticInjection(UserListController.class);
 			}
 		});
 	}

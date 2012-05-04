@@ -10,7 +10,7 @@ GET     /favicon.ico                 controllers.Assets.at(path="/public/img", f
 GET     /robots.txt                  controllers.Assets.at(path="/public", file="robots.txt")
 
 GET     /who                         com.zenobase.controllers.WhoController.who()
-GET     /users/                      com.zenobase.controllers.UserController.find(identity ?= null, offset : Int ?= 0, limit : Int ?= java.lang.Integer.MAX_VALUE)
+GET     /users/                      com.zenobase.controllers.UserListController.find(identity ?= null, offset : Int ?= 0, limit : Int ?= java.lang.Integer.MAX_VALUE)
 GET     /users/:name                 com.zenobase.controllers.UserController.get(name)
 POST    /users/:name                 com.zenobase.controllers.UserController.update(name)
 POST    /reset                       com.zenobase.controllers.PasswordResetController.requestReset()

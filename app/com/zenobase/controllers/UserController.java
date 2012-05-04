@@ -12,12 +12,9 @@ import com.zenobase.commands.ChangeUserEmailCommand;
 import com.zenobase.commands.ChangeUserPasswordCommand;
 import com.zenobase.commands.ChangeUserVerifiedCommand;
 import com.zenobase.common.BCrypt;
-import com.zenobase.common.Callback;
-import com.zenobase.io.UserPrinter;
 import com.zenobase.json.TokenField;
 import com.zenobase.models.Identity;
 import com.zenobase.models.User;
-import com.zenobase.models.UserInfo;
 import com.zenobase.models.UserProfile;
 import com.zenobase.services.CommandQueue;
 import com.zenobase.services.UserRepository;
@@ -48,46 +45,6 @@ public class UserController extends ControllerSupport {
 		}
 		return user.equals(principal) ? ok(new UserProfile(user).toJson()) : forbidden();
 	}
-
-	public static Result find(String identity, int offset, int limit) {
-		return identity == null ? find(offset, limit) : find(new Identity(identity));
-    }
-
-	public static Result find(int offset, int limit) {
-    	Identity principal = auth.getPrincipal();
-    	if (principal == null) {
-    		return unauthorized();
-    	}
-    	if (!users.isSuperuser(principal)) {
-    		return forbidden();
-    	}
-    	if (offset == 0 && limit == Integer.MAX_VALUE) {
-    		return findAll();
-    	}
-        return ok(users.find(offset, limit).toJson());
-	}
-
-	private static Result findAll() {
-    	Chunks<String> chunks = new StringChunks() {
-			@Override
-			public void onReady(final Out<String> out) {
-		    	final UserPrinter printer = new UserPrinter(out);
-				users.find(new Callback<User>() {
-					@Override
-					public void call(User user) {
-						printer.print(user);
-					}
-				});
-		    	out.close();
-			}
-		};
-        return ok(chunks);
-	}
-
-	public static Result find(Identity identity) {
-		User user = users.find(identity);
-    	return ok(user != null ? new UserInfo(user).toJson() : identity.toJson());
-    }
 
 	@BodyParser.Of(BodyParser.Json.class)
 	public static Result update(String username) {

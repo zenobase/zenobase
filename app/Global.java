@@ -39,6 +39,7 @@ import com.zenobase.controllers.QueueController;
 import com.zenobase.controllers.SecurityContext;
 import com.zenobase.controllers.SecurityController;
 import com.zenobase.controllers.UserController;
+import com.zenobase.controllers.UserListController;
 import com.zenobase.controllers.VerificationMailer;
 import com.zenobase.controllers.WhoController;
 import com.zenobase.services.BucketRepository;
@@ -117,6 +118,7 @@ public class Global extends GlobalSettings {
 				requestStaticInjection(QueueController.class);
 				requestStaticInjection(SecurityController.class);
 				requestStaticInjection(UserController.class);
+				requestStaticInjection(UserListController.class);
 				requestStaticInjection(WhoController.class);
 			}
 
