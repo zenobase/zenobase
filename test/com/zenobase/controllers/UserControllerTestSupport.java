@@ -15,6 +15,8 @@ public abstract class UserControllerTestSupport {
 
 	protected final SecurityContext auth = mock(SecurityContext.class);
 	protected final UserRepository users = mock(UserRepository.class);
+	protected final CommandQueue queue = mock(CommandQueue.class);
+	protected final VerificationMailer mailer = mock(VerificationMailer.class);
 	protected final User user = new User(Generator.id(), "tester");
 
 	@Before
@@ -24,8 +26,8 @@ public abstract class UserControllerTestSupport {
 			protected void configure() {
 				bind(SecurityContext.class).toInstance(auth);
 				bind(UserRepository.class).toInstance(users);
-				bind(VerificationMailer.class).toInstance(mock(VerificationMailer.class));
-				bind(CommandQueue.class).toInstance(mock(CommandQueue.class));
+				bind(CommandQueue.class).toInstance(queue);
+				bind(VerificationMailer.class).toInstance(mailer);
 				requestStaticInjection(UserController.class);
 			}
 		});

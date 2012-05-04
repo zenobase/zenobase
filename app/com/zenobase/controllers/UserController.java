@@ -12,7 +12,6 @@ import com.zenobase.commands.ChangeUserEmailCommand;
 import com.zenobase.commands.ChangeUserPasswordCommand;
 import com.zenobase.commands.ChangeUserVerifiedCommand;
 import com.zenobase.common.BCrypt;
-import com.zenobase.json.TokenField;
 import com.zenobase.models.Identity;
 import com.zenobase.models.User;
 import com.zenobase.models.UserProfile;
@@ -21,9 +20,6 @@ import com.zenobase.services.UserRepository;
 
 @With(Timed.class)
 public class UserController extends ControllerSupport {
-
-	private static final TokenField KEY = new TokenField("key");
-	private static final TokenField EXPIRES = new TokenField("expires");
 
 	@Inject
 	static UserRepository users;
@@ -56,19 +52,20 @@ public class UserController extends ControllerSupport {
     	if (user == null) {
     		return notFound("user not found");
     	}
-    	if (body.has(User.EMAIL.getName())) {
-    		return updateEmail(body, user);
+    	UpdateUserForm form = new UpdateUserForm(body);
+    	if (form.getEmail() != null) {
+    		return updateEmail(form, user);
     	}
-    	if (body.has(User.PASSWORD.getName())) {
-    		return updatePassword(body, user);
+    	if (form.getPassword() != null) {
+    		return updatePassword(form, user);
     	}
-    	if (body.has(User.VERIFIED.getName())) {
-    		return updateVerified(body, user);
+    	if (form.isVerified()) {
+    		return updateVerified(form, user);
     	}
     	return badRequest("invalid update request");
 	}
 
-	private static Result updateEmail(ObjectNode node, User user) {
+	private static Result updateEmail(UpdateUserForm form, User user) {
 		Identity principal = auth.getPrincipal();
     	if (principal == null) {
     		return unauthorized();
@@ -76,7 +73,7 @@ public class UserController extends ControllerSupport {
     	if (!user.is(principal) && !users.isSuperuser(principal)) {
     		return forbidden();
     	}
-		String email = User.EMAIL.getValue(node);
+		String email = form.getEmail();
     	if (!SignUpForm.isValidEmail(email)) {
     		return badRequest("invalid email address");
     	}
@@ -85,20 +82,20 @@ public class UserController extends ControllerSupport {
 		return ok(receipt(commandId));
 	}
 
-	private static Result updatePassword(ObjectNode node, User user) {
-    	String key = KEY.getValue(node);
+	private static Result updatePassword(UpdateUserForm form, User user) {
+    	String key = form.getKey();
     	if (key == null || key.length() < 50) {
     		return badRequest("missing key field");
     	}
-    	String password = User.PASSWORD.getValue(node);
+    	String password = form.getPassword();
 		if (!SignUpForm.isValidPassword(password)) {
 			return badRequest("invalid password");
 		}
-    	String expires = EXPIRES.getValue(node);
+    	String expires = form.getExpires();
 		if (expires == null) {
-			return badRequest("missing field " + EXPIRES);
+			return badRequest("missing expires field");
 		}
-		if (new DateTime(Long.parseLong(expires, 36)).isBefore(new DateTime())) {
+		if (form.getExpiresDate().isBefore(new DateTime())) {
 			return badRequest("request expired");
 		}
 		if (!BCrypt.checkpw(PasswordResetMailer.toString(user, expires), key)) {
@@ -109,19 +106,15 @@ public class UserController extends ControllerSupport {
 		return noContent();
 	}
 
-	private static Result updateVerified(ObjectNode node, User user) {
+	private static Result updateVerified(UpdateUserForm form, User user) {
 		if (user.isVerified()) {
 			return badRequest("already verified");
 		}
-		String key = KEY.getValue(node);
+		String key = form.getKey();
 		if (key == null || key.length() < 50) {
 			return badRequest("missing key");
 		}
-		boolean verified = User.VERIFIED.getValue(node);
-		if (!verified) {
-			return badRequest("verified expected true");
-		}
-		if (!BCrypt.checkpw(VerificationMailer.toString(user), key)) {
+		if (!BCrypt.checkpw(VerificationMailer.toString(user.getName(), user.getEmail()), key)) {
 			return badRequest("invalid key");
 		}
 		queue.dispatch(new ChangeUserVerifiedCommand(user.asIdentity(), user.getName(), true));

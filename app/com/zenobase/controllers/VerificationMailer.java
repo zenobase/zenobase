@@ -3,10 +3,10 @@ package com.zenobase.controllers;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import com.google.common.base.Joiner;
 import com.google.common.base.Preconditions;
 
 import com.zenobase.common.BCrypt;
+import com.zenobase.common.SecureHash;
 import com.zenobase.models.User;
 import com.zenobase.services.Mailer;
 import com.zenobase.services.Message;
@@ -37,11 +37,7 @@ public class VerificationMailer {
 		mailer.send(new Message(email, "Your Zenobase Account", text));
 	}
 
-	public static String toString(User user) {
-		return toString(user.getName(), user.getEmail());
-	}
-
 	public static String toString(String username, String email) {
-		return Joiner.on('\t').join(username, email);
+		return new SecureHash().add(username).add(email).build();
 	}
 }

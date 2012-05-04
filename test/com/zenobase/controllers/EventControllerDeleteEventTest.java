@@ -1,9 +1,8 @@
 package com.zenobase.controllers;
 
 import static com.zenobase.testing.ResultAssert.assertThat;
-
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static play.mvc.Http.Status.*;
 import static play.test.Helpers.callAction;
 
@@ -49,6 +48,7 @@ public class EventControllerDeleteEventTest extends EventControllerTestSupport {
 		when(buckets.findBucket(bucket.getId())).thenReturn(null);
 		Result result = call(bucket, event);
 		assertThat(result).hasStatus(NOT_FOUND);
+		verifyZeroInteractions(queue);
 	}
 
 	@Test
@@ -58,6 +58,7 @@ public class EventControllerDeleteEventTest extends EventControllerTestSupport {
 		when(buckets.findEvent(bucket.getId(), event.getId())).thenReturn(null);
 		Result result = call(bucket, event);
 		assertThat(result).hasStatus(NOT_FOUND);
+		verifyZeroInteractions(queue);
 	}
 
 	@Test
@@ -67,6 +68,7 @@ public class EventControllerDeleteEventTest extends EventControllerTestSupport {
 		when(buckets.findEvent(bucket.getId(), event.getId())).thenReturn(event);
 		Result result = call(bucket, event);
 		assertThat(result).hasStatus(UNAUTHORIZED);
+		verifyZeroInteractions(queue);
 	}
 
 	@Test
@@ -76,6 +78,7 @@ public class EventControllerDeleteEventTest extends EventControllerTestSupport {
 		when(buckets.findEvent(bucket.getId(), event.getId())).thenReturn(event);
 		Result result = call(bucket, event);
 		assertThat(result).hasStatus(FORBIDDEN);
+		verifyZeroInteractions(queue);
 	}
 
 	private static Result call(Bucket bucket, Event event) {

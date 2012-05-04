@@ -5,10 +5,10 @@ import javax.inject.Named;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
-import com.google.common.base.Joiner;
 import com.google.common.base.Preconditions;
 
 import com.zenobase.common.BCrypt;
+import com.zenobase.common.SecureHash;
 import com.zenobase.models.User;
 import com.zenobase.services.Mailer;
 import com.zenobase.services.Message;
@@ -37,6 +37,6 @@ public class PasswordResetMailer {
 	}
 
 	public static String toString(User user, String expires) {
-		return Joiner.on('|').join(user.getName(), user.getHashedPassword(), expires);
+		return new SecureHash().add(user.getName()).add(user.getHashedPassword()).add(expires).build();
 	}
 }
