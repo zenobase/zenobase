@@ -4,9 +4,10 @@ import play.mvc.Results.Chunks;
 import play.mvc.Results.Chunks.Out;
 import com.google.common.base.Joiner;
 
+import com.zenobase.common.Callback;
 import com.zenobase.models.User;
 
-public class UserPrinter {
+public class UserPrinter implements Callback<User> {
 
 	private final Chunks.Out<String> out;
 
@@ -14,7 +15,8 @@ public class UserPrinter {
 		this.out = out;
 	}
 
-	public void print(User user) {
+	@Override
+	public void call(User user) {
 		out.write(toString(user));
 	}
 

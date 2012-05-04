@@ -54,7 +54,6 @@ public class BucketListControllerGetTest extends BucketListControllerTestSupport
 		when(users.isSuperuser(user.asIdentity())).thenReturn(true);
 		Result result = call(null, 0, Integer.MAX_VALUE);
 		assertThat(result).hasStatus(OK).hasContentType("text/plain");
-		// TODO: Figure out how to test the contents of a chunked result.
 	}
 
 	@Test
