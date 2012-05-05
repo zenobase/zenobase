@@ -16,7 +16,7 @@ public class TestCommand extends Command {
 		setParameter(TAG, tag);
 	}
 
-	private TestCommand(ObjectNode node) {
+	public TestCommand(ObjectNode node) {
 		super(node);
 	}
 

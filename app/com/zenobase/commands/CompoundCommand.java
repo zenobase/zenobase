@@ -20,7 +20,7 @@ public class CompoundCommand extends Command {
 	private CommandParserRegistry registry;
 	private final List<Command> commands = Lists.newArrayList();
 
-	private CompoundCommand(ObjectNode node, CommandParserRegistry registry) {
+	CompoundCommand(ObjectNode node, CommandParserRegistry registry) {
 		super(node);
 		this.registry = registry;
 	}
@@ -54,7 +54,7 @@ public class CompoundCommand extends Command {
 	}
 
 	@Override
-	public Command reverse(Identity principal) {
+	public CompoundCommand reverse(Identity principal) {
 		CompoundCommand reverse = new CompoundCommand(principal, getUndoMessage(), getMessage());
 		for (Command c : Lists.reverse(getCommands())) {
 			reverse.add(c.reverse(principal));
