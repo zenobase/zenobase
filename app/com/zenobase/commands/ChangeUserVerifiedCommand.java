@@ -43,7 +43,7 @@ public class ChangeUserVerifiedCommand extends Command {
 		return String.format("%s user %s", isVerified() ? "verified" : "unverified", getName());
 	}
 
-	public static class Parser extends CommandParserSupport {
+	public static class Parser extends CommandParser {
 
 		@Override
 		public String getTypeName() {
@@ -59,7 +59,7 @@ public class ChangeUserVerifiedCommand extends Command {
 		}
 	}
 
-	public static class Handler extends CommandHandlerSupport<ChangeUserVerifiedCommand> {
+	public static class Handler extends CommandHandler<ChangeUserVerifiedCommand> {
 
 		private final UserRepository repository;
 

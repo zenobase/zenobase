@@ -43,7 +43,7 @@ public class CreateEventCommand extends Command {
 		return String.format("added an event to '%s'", getBucketId());
 	}
 
-	public static class Parser extends CommandParserSupport {
+	public static class Parser extends CommandParser {
 
 		@Override
 		public String getTypeName() {
@@ -59,7 +59,7 @@ public class CreateEventCommand extends Command {
 		}
 	}
 
-	public static class Handler extends CommandHandlerSupport<CreateEventCommand> {
+	public static class Handler extends CommandHandler<CreateEventCommand> {
 
 		private final BucketRepository repository;
 

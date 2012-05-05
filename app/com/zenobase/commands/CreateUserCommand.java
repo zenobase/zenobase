@@ -36,7 +36,7 @@ public class CreateUserCommand extends Command {
 		return String.format("signed up as %s", getUser().getName());
 	}
 
-	public static class Parser extends CommandParserSupport {
+	public static class Parser extends CommandParser {
 
 		@Override
 		public String getTypeName() {
@@ -52,7 +52,7 @@ public class CreateUserCommand extends Command {
 		}
 	}
 
-	public static class Handler extends CommandHandlerSupport<CreateUserCommand> {
+	public static class Handler extends CommandHandler<CreateUserCommand> {
 
 		private final UserRepository repository;
 

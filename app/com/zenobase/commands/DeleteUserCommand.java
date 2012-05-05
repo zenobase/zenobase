@@ -36,7 +36,7 @@ public class DeleteUserCommand extends Command {
 		return String.format("deleted user %s", getUser().getName());
 	}
 
-	public static class Parser extends CommandParserSupport {
+	public static class Parser extends CommandParser {
 
 		@Override
 		public String getTypeName() {
@@ -52,7 +52,7 @@ public class DeleteUserCommand extends Command {
 		}
 	}
 
-	public static class Handler extends CommandHandlerSupport<DeleteUserCommand> {
+	public static class Handler extends CommandHandler<DeleteUserCommand> {
 
 		private final UserRepository repository;
 

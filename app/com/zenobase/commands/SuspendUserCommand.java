@@ -43,7 +43,7 @@ public class SuspendUserCommand extends Command {
 		return String.format("%s user %s", isSuspend() ? "suspended" : "unsuspended", getName());
 	}
 
-	public static class Parser extends CommandParserSupport {
+	public static class Parser extends CommandParser {
 
 		@Override
 		public String getTypeName() {
@@ -59,7 +59,7 @@ public class SuspendUserCommand extends Command {
 		}
 	}
 
-	public static class Handler extends CommandHandlerSupport<SuspendUserCommand> {
+	public static class Handler extends CommandHandler<SuspendUserCommand> {
 
 		private final UserRepository repository;
 

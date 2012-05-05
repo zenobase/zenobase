@@ -67,7 +67,7 @@ public class CompoundCommand extends Command {
 		return getMessage();
 	}
 
-	public static class Parser extends CommandParserSupport {
+	public static class Parser extends CommandParser {
 
 		@Override
 		public String getTypeName() {

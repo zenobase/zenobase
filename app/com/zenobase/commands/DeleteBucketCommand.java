@@ -36,7 +36,7 @@ public class DeleteBucketCommand extends Command {
 		return String.format("deleted bucket '%s'", getBucket());
 	}
 
-	public static class Parser extends CommandParserSupport {
+	public static class Parser extends CommandParser {
 
 		@Override
 		public String getTypeName() {
@@ -52,7 +52,7 @@ public class DeleteBucketCommand extends Command {
 		}
 	}
 
-	public static class Handler extends CommandHandlerSupport<DeleteBucketCommand> {
+	public static class Handler extends CommandHandler<DeleteBucketCommand> {
 
 		private final BucketRepository repository;
 

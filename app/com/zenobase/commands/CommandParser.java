@@ -2,11 +2,19 @@ package com.zenobase.commands;
 
 import org.codehaus.jackson.node.ObjectNode;
 
-public interface CommandParser {
+public abstract class CommandParser {
 
-	String getTypeName();
+	private CommandParserRegistry registry;
 
-	Command parse(ObjectNode node, int version);
+	public abstract String getTypeName();
 
-	void registered(CommandParserRegistry registry);
+	public void registered(CommandParserRegistry registry) {
+		this.registry = registry;
+	}
+
+	protected CommandParserRegistry getRegistry() {
+		return registry;
+	}
+
+	public abstract Command parse(ObjectNode node, int version);
 }

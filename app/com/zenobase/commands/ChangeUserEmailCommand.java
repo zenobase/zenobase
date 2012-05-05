@@ -61,7 +61,7 @@ public class ChangeUserEmailCommand extends Command {
 		return String.format("changed email for %s", getUsername());
 	}
 
-	public static class Parser extends CommandParserSupport {
+	public static class Parser extends CommandParser {
 
 		@Override
 		public String getTypeName() {
@@ -77,7 +77,7 @@ public class ChangeUserEmailCommand extends Command {
 		}
 	}
 
-	public static class Handler extends CommandHandlerSupport<ChangeUserEmailCommand> {
+	public static class Handler extends CommandHandler<ChangeUserEmailCommand> {
 
 		private final UserRepository repository;
 

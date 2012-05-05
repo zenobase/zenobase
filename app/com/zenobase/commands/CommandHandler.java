@@ -1,8 +1,20 @@
 package com.zenobase.commands;
 
-public interface CommandHandler<C extends Command> {
+public abstract class CommandHandler<C extends Command> {
 
-	Class<C> getType();
+	private final Class<C> type;
 
-	void execute(Command command);
+	protected CommandHandler(Class<C> type) {
+		this.type = type;
+	}
+
+	public Class<C> getType() {
+		return type;
+	}
+
+	public void execute(Command command) {
+		executeTyped(type.cast(command));
+	}
+
+	protected abstract void executeTyped(C command);
 }

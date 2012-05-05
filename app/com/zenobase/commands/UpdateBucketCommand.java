@@ -45,7 +45,7 @@ public class UpdateBucketCommand extends Command {
 		return String.format("updated '%s'", getTo());
 	}
 
-	public static class Parser extends CommandParserSupport {
+	public static class Parser extends CommandParser {
 
 		@Override
 		public String getTypeName() {
@@ -61,7 +61,7 @@ public class UpdateBucketCommand extends Command {
 		}
 	}
 
-	public static class Handler extends CommandHandlerSupport<UpdateBucketCommand> {
+	public static class Handler extends CommandHandler<UpdateBucketCommand> {
 
 		private final BucketRepository repository;
 

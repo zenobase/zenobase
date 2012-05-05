@@ -34,7 +34,7 @@ public class TestCommand extends Command {
 		return String.format("%s: %s", TYPE.getName(), getTag());
 	}
 
-	public static class Parser extends CommandParserSupport {
+	public static class Parser extends CommandParser {
 
 		@Override
 		public String getTypeName() {

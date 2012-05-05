@@ -36,7 +36,7 @@ public class RestoreBucketCommand extends Command {
 		return String.format("restored bucket '%s'", getBucket());
 	}
 
-	public static class Parser extends CommandParserSupport {
+	public static class Parser extends CommandParser {
 
 		@Override
 		public String getTypeName() {
@@ -52,7 +52,7 @@ public class RestoreBucketCommand extends Command {
 		}
 	}
 
-	public static class Handler extends CommandHandlerSupport<RestoreBucketCommand> {
+	public static class Handler extends CommandHandler<RestoreBucketCommand> {
 
 		private final BucketRepository repository;
 

@@ -36,7 +36,7 @@ public class CreateBucketCommand extends Command {
 		return String.format("created '%s'", getBucket());
 	}
 
-	public static class Parser extends CommandParserSupport {
+	public static class Parser extends CommandParser {
 
 		@Override
 		public String getTypeName() {
@@ -52,7 +52,7 @@ public class CreateBucketCommand extends Command {
 		}
 	}
 
-	public static class Handler extends CommandHandlerSupport<CreateBucketCommand> {
+	public static class Handler extends CommandHandler<CreateBucketCommand> {
 
 		private final BucketRepository repository;
 

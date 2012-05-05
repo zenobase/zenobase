@@ -48,7 +48,7 @@ public class ChangeUserPasswordCommand extends Command {
 		return String.format("changed password for user %s", getUsername());
 	}
 
-	public static class Parser extends CommandParserSupport {
+	public static class Parser extends CommandParser {
 
 		@Override
 		public String getTypeName() {
@@ -64,7 +64,7 @@ public class ChangeUserPasswordCommand extends Command {
 		}
 	}
 
-	public static class Handler extends CommandHandlerSupport<ChangeUserPasswordCommand> {
+	public static class Handler extends CommandHandler<ChangeUserPasswordCommand> {
 
 		private final UserRepository repository;
 

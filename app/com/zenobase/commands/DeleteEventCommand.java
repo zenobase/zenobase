@@ -43,7 +43,7 @@ public class DeleteEventCommand extends Command {
 		return String.format("removed an event from '%s'", getBucketId());
 	}
 
-	public static class Parser extends CommandParserSupport {
+	public static class Parser extends CommandParser {
 
 		@Override
 		public String getTypeName() {
@@ -59,7 +59,7 @@ public class DeleteEventCommand extends Command {
 		}
 	}
 
-	public static class Handler extends CommandHandlerSupport<DeleteEventCommand> {
+	public static class Handler extends CommandHandler<DeleteEventCommand> {
 
 		private final BucketRepository repository;
 
