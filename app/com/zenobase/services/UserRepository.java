@@ -68,7 +68,7 @@ public class UserRepository {
 		return QueryBuilders.termQuery(User.ID.getName(), identity.getId());
 	}
 
-	private QueryBuilder isSuperuser(boolean b) {
+	private QueryBuilder isSuperuser() {
 		return QueryBuilders.termQuery(User.SUPERUSER.getName(), true);
 	}
 
@@ -84,7 +84,7 @@ public class UserRepository {
 	public boolean isSuperuser(Identity identity) {
 		QueryBuilder query = QueryBuilders.boolQuery()
 			.must(identityEquals(identity))
-			.must(isSuperuser(true));
+			.must(isSuperuser());
 		PartialList<ObjectNode> hits = index.find(query);
 		Preconditions.checkState(hits.size() <= 1,
 			"Expected 0..1 hits for identity '%s' but got %s", identity, hits.size());
