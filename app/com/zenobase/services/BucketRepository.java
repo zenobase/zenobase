@@ -83,7 +83,7 @@ public class BucketRepository {
 	private BucketList findBuckets(QueryBuilder query, int offset, int limit) {
 		List<Bucket> buckets = Lists.newArrayListWithCapacity(limit);
 		SearchSourceBuilder search = new SearchSourceBuilder()
-			.query(query).from(offset).size(limit);
+			.query(query).from(offset).size(limit).version(true);
 		PartialList<ObjectNode> hits = index.find(search);
 		for (ObjectNode hit : hits.getElements()) {
 			buckets.add(new Bucket(hit));

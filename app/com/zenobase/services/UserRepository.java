@@ -47,7 +47,8 @@ public class UserRepository {
 		SearchSourceBuilder search = new SearchSourceBuilder()
 			.query(QueryBuilders.matchAllQuery())
 			.from(offset).size(limit)
-			.sort(User.NAME.getName());
+			.sort(User.NAME.getName())
+			.version(true);
 		PartialList<ObjectNode> hits = index.find(search);
 		for (ObjectNode node : hits.getElements()) {
 			users.add(new User(node));
@@ -105,9 +106,5 @@ public class UserRepository {
 
 	public boolean isEmpty() {
 		return index.count() == 0L;
-	}
-
-	public void refresh() {
-		index.refresh();
 	}
 }
