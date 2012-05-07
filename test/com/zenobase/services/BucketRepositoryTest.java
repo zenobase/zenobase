@@ -2,7 +2,6 @@ package com.zenobase.services;
 
 import static com.zenobase.testing.NodeAssert.assertThat;
 import static org.fest.assertions.Assertions.assertThat;
-import static org.mockito.Mockito.*;
 
 import org.codehaus.jackson.node.ObjectNode;
 import org.joda.time.DateTime;
@@ -32,12 +31,7 @@ public class BucketRepositoryTest extends ElasticSearchTestSupport {
 		bucket.addPermission(principal, Permission.ALL);
 		bucket.setWidgets(widgets);
 
-		IndexManager indexManager = mock(IndexManager.class);
-		Index bucketIndex = new Index(BucketRepository.INDEX_NAME, getClient());
-		Index eventIndex = new Index(bucket.getId(), getClient());
-		when(indexManager.getIndex(BucketRepository.INDEX_NAME)).thenReturn(bucketIndex);
-		when(indexManager.getIndex(bucket.getId())).thenReturn(eventIndex);
-		BucketRepository repository = new BucketRepository(indexManager);
+		BucketRepository repository = new BucketRepository(getManager());
 
 		// store and retrieve bucket
 		repository.store(bucket, true);
@@ -65,13 +59,13 @@ public class BucketRepositoryTest extends ElasticSearchTestSupport {
 		// store and retrieve event
 		assertThat(repository.getSize(bucket.getId())).as("bucket size").isZero();
 		repository.add(bucket.getId(), event);
-		eventIndex.refresh();
+		repository.refresh(bucket.getId());
 		assertThat(repository.getSize(bucket.getId())).as("bucket size").isEqualTo(1L);
 		assertThat(repository.findEvent(bucket.getId(), event.getId()).toJson()).isEqualTo(event.toJson());
 
 		// delete event
 		repository.delete(bucket.getId(), event.getId());
-		eventIndex.refresh();
+		repository.refresh(bucket.getId());
 		assertThat(repository.getSize(bucket.getId())).as("bucket size").isZero();
 		assertThat(repository.findEvent(bucket.getId(), event.getId())).as("event").isNull();
 	}

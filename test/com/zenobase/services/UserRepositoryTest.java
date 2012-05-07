@@ -2,7 +2,6 @@ package com.zenobase.services;
 
 import static com.zenobase.testing.NodeAssert.assertThat;
 import static org.fest.assertions.Assertions.assertThat;
-import static org.mockito.Mockito.*;
 
 import org.junit.Test;
 
@@ -22,10 +21,7 @@ public class UserRepositoryTest extends ElasticSearchTestSupport {
 		user.setEmail("jdoe@zenobase.com");
 		user.setPassword("secret");
 
-		IndexManager indexManager = mock(IndexManager.class);
-		Index index = new Index(UserRepository.INDEX_NAME, getClient());
-		when(indexManager.getIndex(UserRepository.INDEX_NAME)).thenReturn(index);
-		UserRepository repository = new UserRepository(indexManager);
+		UserRepository repository = new UserRepository(getManager());
 		assertThat(repository.isEmpty()).as("no users").isTrue();
 
 		// store and retrieve user
@@ -39,7 +35,7 @@ public class UserRepositoryTest extends ElasticSearchTestSupport {
 
 		// delete user
 		repository.delete(user);
-		index.refresh();
+		repository.refresh();
 		assertThat(repository.find(userId)).as("user").isNull();
 	}
 }

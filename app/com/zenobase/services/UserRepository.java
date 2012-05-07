@@ -106,4 +106,8 @@ public class UserRepository {
 	public boolean isEmpty() {
 		return index.count() == 0L;
 	}
+
+	public void refresh() {
+		index.refresh();
+	}
 }

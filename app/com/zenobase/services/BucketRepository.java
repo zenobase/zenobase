@@ -133,4 +133,8 @@ public class BucketRepository {
 	private Index getIndex(String bucketId) {
 		return manager.getIndex(bucketId);
 	}
+
+	public void refresh(String bucketId) {
+		getIndex(bucketId).refresh();
+	}
 }

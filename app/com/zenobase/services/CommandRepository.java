@@ -64,4 +64,8 @@ public class CommandRepository {
 	public long size() {
 		return index.count();
 	}
+
+	public void refresh() {
+		index.refresh();
+	}
 }

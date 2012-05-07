@@ -25,12 +25,18 @@ public class IndexManager implements Closeable {
 	}
 
 	public IndexManager(String clusterName, boolean clientOnly) {
+		this(clusterName, clientOnly, false, ImmutableSettings.settingsBuilder().build());
+	}
+
+
+	public IndexManager(String clusterName, boolean clientOnly, boolean local, Settings defaultSettings) {
 		Logger.info("Starting node in cluster " + clusterName + "...");
 		Settings settings = ImmutableSettings.settingsBuilder()
+			.put(defaultSettings)
 			.put("index.mapper.dynamic", false)
 			.put("index.cache.filter.type", "none")
 			.put("action.auto_create_index", false).build();
-		node = NodeBuilder.nodeBuilder().clusterName(clusterName).client(clientOnly).settings(settings).node();
+		node = NodeBuilder.nodeBuilder().clusterName(clusterName).client(clientOnly).local(local).settings(settings).node();
 		client = node.client();
 		recover();
 	}
