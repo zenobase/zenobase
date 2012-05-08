@@ -24,16 +24,24 @@ public class CommandReplay {
 
 	public void replay() {
 		if (!sourceCluster.isEmpty()) {
-			Logger.info("Replaying commands from " + sourceCluster + "...");
 			IndexManager indexManager = new IndexManager(sourceCluster, true);
-			CommandRepository repository = new CommandRepository(indexManager, parsers);
-			repository.findAll(new Callback<Command>() {
-				@Override
-				public void call(Command command) {
-					dispatcher.dispatch(command);
-				}
-			});
+			replay(indexManager);
 			indexManager.close();
 		}
+	}
+
+	void replay(IndexManager indexManager) {
+		Logger.info("Replaying commands from " + sourceCluster + "...");
+		CommandRepository repository = new CommandRepository(indexManager, parsers);
+		repository.findAll(new Callback<Command>() {
+			@Override
+			public void call(Command command) {
+				dispatcher.dispatch(command);
+			}
+		});
+	}
+
+	protected IndexManager open(String clusterName) {
+		return new IndexManager(clusterName, true);
 	}
 }

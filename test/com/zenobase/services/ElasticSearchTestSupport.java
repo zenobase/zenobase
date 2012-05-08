@@ -11,11 +11,12 @@ public abstract class ElasticSearchTestSupport {
 	@Rule
 	public TemporaryFolder folder = new TemporaryFolder();
 
+	private String clusterName = "test";
 	private IndexManager manager;
 
 	@Before
 	public void init() {
-		manager = new IndexManager("test", false, true, ImmutableSettings.settingsBuilder()
+		manager = new IndexManager(clusterName, false, true, ImmutableSettings.settingsBuilder()
 			.put("path.home", folder.getRoot().getAbsolutePath())
 			.put("gateway.type", "none")
 			.put("index.store.type", "memory").build());
@@ -23,6 +24,10 @@ public abstract class ElasticSearchTestSupport {
 
 	protected IndexManager getManager() {
 		return manager;
+	}
+
+	protected String getClusterName() {
+		return clusterName;
 	}
 
 	@After

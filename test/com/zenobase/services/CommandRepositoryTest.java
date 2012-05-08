@@ -37,6 +37,6 @@ public class CommandRepositoryTest extends ElasticSearchTestSupport {
 		repository.refresh();
 		assertThat(repository.size()).as("stored commands").isEqualTo(2);
 
-		PartialListAssert.assertThat(repository.findAll(0, 10)).hasSize(2).isEqualTo(ImmutableList.of(command2, command1));
+		PartialListAssert.assertThat(repository.findAll(0, 10, true)).hasSize(2).isEqualTo(ImmutableList.of(command2, command1));
 	}
 }

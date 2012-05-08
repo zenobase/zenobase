@@ -22,7 +22,7 @@ public class QueueControllerHttpGetTest extends QueueControllerTestSupport {
 		when(auth.getPrincipal()).thenReturn(principal);
 		when(users.isSuperuser(principal)).thenReturn(true);
 		when(commands.size()).thenReturn(history.size());
-		when(commands.findAll(0, 2)).thenReturn(history);
+		when(commands.findAll(0, 2, true)).thenReturn(history);
 		Result result = call(0, 2);
 		assertThat(result).hasStatus(OK).hasContent(history.toJson());
 	}

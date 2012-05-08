@@ -25,9 +25,8 @@ public class IndexManager implements Closeable {
 	}
 
 	public IndexManager(String clusterName, boolean clientOnly) {
-		this(clusterName, clientOnly, false, ImmutableSettings.settingsBuilder().build());
+		this(clusterName, clientOnly, false, ImmutableSettings.Builder.EMPTY_SETTINGS);
 	}
-
 
 	public IndexManager(String clusterName, boolean clientOnly, boolean local, Settings defaultSettings) {
 		Logger.info("Starting node in cluster " + clusterName + "...");

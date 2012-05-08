@@ -44,23 +44,23 @@ public class CommandRepository {
 	}
 
 	public void findAll(Callback<Command> callback) {
-		for (ObjectNode hit : index.find(newSearchSource().size(Ints.checkedCast(size()))).getElements()) {
+		for (ObjectNode hit : index.find(newSearchSource(false).size(Ints.checkedCast(size()))).getElements()) {
 			callback.call(parsers.parse(hit));
 		}
 	}
 
-	public CommandList findAll(int offset, int limit) {
+	public CommandList findAll(int offset, int limit, boolean newestFirst) {
 		List<Command> commands = Lists.newArrayListWithCapacity(limit);
-		for (ObjectNode hit : index.find(newSearchSource().from(offset).size(limit)).getElements()) {
+		for (ObjectNode hit : index.find(newSearchSource(newestFirst).from(offset).size(limit)).getElements()) {
 			commands.add(parsers.parse(hit));
 		}
 		return new CommandList(commands, size());
 	}
 
-	private static SearchSourceBuilder newSearchSource() {
+	private static SearchSourceBuilder newSearchSource(boolean newestFirst) {
 		return new SearchSourceBuilder()
 			.query(QueryBuilders.matchAllQuery())
-			.sort(Command.TIMESTAMP.getName(), SortOrder.DESC);
+			.sort(Command.TIMESTAMP.getName(), newestFirst ? SortOrder.DESC : SortOrder.ASC);
 	}
 
 	public long size() {
