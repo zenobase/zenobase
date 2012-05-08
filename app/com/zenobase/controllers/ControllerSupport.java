@@ -4,7 +4,6 @@ import org.codehaus.jackson.node.ObjectNode;
 import play.mvc.Controller;
 import com.google.inject.Inject;
 
-import com.zenobase.json.IntegerField;
 import com.zenobase.json.Nodes;
 import com.zenobase.json.TokenField;
 
@@ -13,7 +12,6 @@ public abstract class ControllerSupport extends Controller {
 	@Inject
 	static SecurityContext auth;
 
-	protected static final IntegerField TOTAL = new IntegerField("total");
 	protected static final TokenField UNDO = new TokenField("undo");
 
 	protected static ObjectNode body() {

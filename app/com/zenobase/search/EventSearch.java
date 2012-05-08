@@ -23,7 +23,7 @@ import com.zenobase.services.Index;
 
 public class EventSearch {
 
-	static final IntegerField TOTAL = new IntegerField("total");
+	public static final IntegerField TOTAL = new IntegerField("total");
 
 	private static final ImmutableMap<String, WidgetBuilder> widgetBuilders = ImmutableMap.<String, WidgetBuilder>builder()
 		.put(ListWidget.TYPE, ListWidget.builder())

@@ -1,6 +1,7 @@
 package com.zenobase.services;
 
 import static com.zenobase.testing.NodeAssert.assertThat;
+import static com.zenobase.testing.PartialListAssert.assertThat;
 import static org.fest.assertions.Assertions.assertThat;
 
 import java.util.List;
@@ -9,12 +10,11 @@ import org.junit.Test;
 import com.google.common.collect.ImmutableList;
 
 import com.zenobase.models.User;
-import com.zenobase.models.UserList;
 
 public class UserRepositoryTest extends ElasticSearchTestSupport {
 
 	@Test
-	public void testCRUD() {
+	public void testCrudUser() {
 
 		// create user
 		String name = "tester";
@@ -49,7 +49,7 @@ public class UserRepositoryTest extends ElasticSearchTestSupport {
 	}
 
 	@Test
-	public void testFind() {
+	public void testFindUsers() {
 
 		List<User> users = ImmutableList.of(
 			new User("alice"), new User("bob"), new User("carol"),
@@ -61,12 +61,7 @@ public class UserRepositoryTest extends ElasticSearchTestSupport {
 			repository.store(user);
 		}
 
-		UserList result = repository.find(0, 10);
-		assertThat(result.size()).isEqualTo(users.size());
-		assertThat(result.getElements()).isEqualTo(users);
-
-		UserList pagedResult = repository.find(1, 2);
-		assertThat(pagedResult.size()).isEqualTo(users.size());
-		assertThat(pagedResult.getElements()).isEqualTo(users.subList(1, 3));
+		assertThat(repository.find(0, 10)).hasSize(users.size()).isEqualTo(users);
+		assertThat(repository.find(1, 2)).hasSize(users.size()).isEqualTo(users.subList(1, 3));
 	}
 }

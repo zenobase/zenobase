@@ -99,7 +99,7 @@ public class BucketRepository {
 		findBuckets(queryFor(identity), callback);
 	}
 
-	public void findBuckets(QueryBuilder query, final Callback<Bucket> callback) {
+	private void findBuckets(QueryBuilder query, final Callback<Bucket> callback) {
 		index.find(query, new Callback<ObjectNode>() {
 			@Override
 			public void call(ObjectNode node) {
