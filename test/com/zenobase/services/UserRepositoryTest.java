@@ -36,6 +36,7 @@ public class UserRepositoryTest extends ElasticSearchTestSupport {
 		assertThat(repository.isEmpty()).isTrue();
 		assertThat(repository.exists(user.getName())).isFalse();
 		assertThat(repository.find(user.asIdentity())).isNull();
+		assertThat(repository.delete(user)).isFalse();
 
 		// store and retrieve user
 		repository.store(user);
@@ -53,8 +54,7 @@ public class UserRepositoryTest extends ElasticSearchTestSupport {
 		assertThat(repository.find(user.getName()).toJson()).isEqualTo(user.toJson());
 
 		// delete user
-		repository.delete(user);
-		// repository.refresh();
+		assertThat(repository.delete(user)).isTrue();
 		assertThat(repository.find(user.getId())).isNull();
 	}
 

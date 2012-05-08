@@ -101,8 +101,8 @@ public class UserRepository {
 		index.update(User.TYPE_NAME, user.getName(), user.toJson(), true);
 	}
 
-	public void delete(User user) {
-		index.delete(User.TYPE_NAME, user.getName(), true);
+	public boolean delete(User user) {
+		return index.delete(User.TYPE_NAME, user.getName(), true);
 	}
 
 	public boolean isEmpty() {

@@ -73,8 +73,8 @@ public class Index {
 		DomainNode.VERSION.setValue(node, version);
 	}
 
-	public void delete(String type, String id, boolean refresh) {
-		client.prepareDelete(indexName, type, id).setRefresh(refresh).execute().actionGet();
+	public boolean delete(String type, String id, boolean refresh) {
+		return !client.prepareDelete(indexName, type, id).setRefresh(refresh).execute().actionGet().notFound();
 	}
 
 	public boolean exists() {

@@ -58,9 +58,12 @@ public class BucketRepository {
 		index.update(Bucket.TYPE_NAME, bucket.getId(), bucket.toJson(), true);
 	}
 
-	public void deleteBucket(String bucketId) {
-		index.delete(Bucket.TYPE_NAME, bucketId, true);
-		getIndex(bucketId).close();
+	public boolean deleteBucket(String bucketId) {
+		boolean deleted = index.delete(Bucket.TYPE_NAME, bucketId, true);
+		if (deleted) {
+			getIndex(bucketId).close();
+		}
+		return deleted;
 	}
 
 	public Bucket findBucket(String bucketId) {
@@ -115,8 +118,8 @@ public class BucketRepository {
 		getIndex(bucketId).store(Event.TYPE_NAME, event.getId(), event.toJson(), false);
 	}
 
-	public void delete(String bucketId, String eventId) {
-		getIndex(bucketId).delete(Event.TYPE_NAME, eventId, false);
+	public boolean delete(String bucketId, String eventId) {
+		return getIndex(bucketId).delete(Event.TYPE_NAME, eventId, false);
 	}
 
 	public Event findEvent(String bucketId, String eventId) {

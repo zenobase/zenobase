@@ -34,10 +34,14 @@
 	
 		$scope.alert = new Alert();
 		$scope.undo = function(commandId) {
-			$http.post('/queue/' , { 'undo' : commandId }).success(function(response, code) {
-				$scope.alert.clear();
-				$defer(function() { window.location.reload(); }, DELAY);
-			});
+			$http.post('/queue/' , { 'undo' : commandId })
+				.success(function(response, code) {
+					$scope.alert.clear();
+					$defer(function() { window.location.reload(); }, DELAY);
+				})
+				.error(function(response) {
+					$scope.alert.show('Couldn\'t undo.');
+				});
 		};
 		$scope.reload = function() {
 			$route.reload();
@@ -180,7 +184,7 @@
 	app.controller('UserFormCtrl', ['$scope', '$http', function($scope, $http) {
 	
 		$scope.editing = false;
-	
+
 		$scope.data = function() {
 			var data = {};
 			if ($scope.email && $scope.email !== $scope.userInfo.email || !$scope.userInfo.verified) {
@@ -412,10 +416,14 @@
 			});
 		};
 		$scope.remove = function(bucketId) {
-			$http({ method : 'DELETE', url : '/buckets/' + bucketId }).success(function(response, code, headers) {
-				$scope.alert.show('Deleted a bucket.', 'alert-success', response.undo);
-				$scope.reload();
-			});
+			$http({ method : 'DELETE', url : '/buckets/' + bucketId })
+				.success(function(response) {
+					$scope.alert.show('Deleted a bucket.', 'alert-success', response.undo);
+					$scope.reload();
+				})
+				.error(function(response) {
+					$scope.alert.show('Couldn\'t delete the bucket.', 'alert-error');
+				});
 		};
 	
 		$scope.$watch('userInfo', function(user) {
@@ -431,28 +439,49 @@
 			label : 'My Data'
 		};
 		$scope.create = function() {
-			$http.post('/buckets/', $scope.template).success(function(data, status, headers) {
-				var location = headers('Location');
-				console.assert(status === 201, status);
-				console.assert(location, 'missing location header');
-				$location.url(location);
-				$scope.whoami();
-			});
+			$http.post('/buckets/', $scope.template)
+				.success(function(response, status, headers) {
+					var location = headers('Location');
+					console.assert(status === 201, status);
+					console.assert(location, 'missing location header');
+					$location.url(location);
+					$scope.whoami();
+				})
+				.error(function(response) {
+					$scope.alert.show('Couldn\'t create a new bucket.', 'alert-error');					
+				});
 		}
 	}]);
 	
 	app.controller('CreateBucketDialogCtrl', ['$scope', '$http', '$location', function($scope, $http, $location) {
-		$scope.label = 'My Data';
+		$scope.dialog = $('#create-bucket-dialog');
 		$scope.create = function() {
-			$http.post('/buckets/', { label : $scope.label}).success(function(data, status, headers) {
-				var location = headers('Location');
-				console.assert(status === 201, status);
-				console.assert(location, 'missing location header');
-				$('#create-bucket-dialog').modal('hide');
-				$location.url(location);
-				$scope.whoami();
-			});
+			$http.post('/buckets/', { label : $scope.label})
+				.success(function(response, status, headers) {
+					var location = headers('Location');
+					console.assert(status === 201, status);
+					console.assert(location, 'missing location header');
+					$scope.dialog.modal('hide');
+					$location.url(location);
+				})
+				.error(function(response, status) {
+					if (status === 400) {
+						$scope.message = 'Can\'t create a new bucket with this label.';					
+					} else {
+						$scope.message = 'Couldn\'t create a new bucket. Please try agan later or contact support.';					
+					}
+				});
 		}
+		$scope.clear = function() {
+			$scope.label = 'My Data';
+			$scope.message = '';
+		};
+		$scope.clear();
+		$scope.dialog.on('shown', function () {
+			console.log('shown');
+			$scope.clear();
+			$('#bucket-label-field').select();
+		});
 	}]);
 	
 	/**

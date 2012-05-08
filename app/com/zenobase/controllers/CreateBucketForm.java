@@ -26,6 +26,6 @@ public class CreateBucketForm extends DomainNode {
 	}
 
 	public boolean valid() {
-		return !Strings.isNullOrEmpty(getLabel());
+		return !Strings.isNullOrEmpty(getLabel()) && getLabel().length() < 10;
 	}
 }

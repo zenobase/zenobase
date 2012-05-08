@@ -1,6 +1,7 @@
 package com.zenobase.commands;
 
 import org.codehaus.jackson.node.ObjectNode;
+import play.Logger;
 import com.google.inject.Inject;
 
 import com.zenobase.json.ObjectField;
@@ -64,7 +65,9 @@ public class DeleteUserCommand extends Command {
 
 		@Override
 		public void executeTyped(DeleteUserCommand command) {
-			repository.delete(command.getUser());
+			if (!repository.delete(command.getUser())) {
+				Logger.warn("Tried to delete nonexistent user: " + command.getUser().getName());
+			}
 		}
 	}
 }

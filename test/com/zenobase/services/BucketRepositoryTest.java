@@ -55,8 +55,9 @@ public class BucketRepositoryTest extends ElasticSearchTestSupport {
 		assertThat(repository.findBucket(bucket.getId()).toJson()).isEqualTo(bucket.toJson());
 
 		// delete and recreate bucket
-		repository.deleteBucket(bucket.getId());
+		assertThat(repository.deleteBucket(bucket.getId())).isTrue();
 		assertThat(repository.findBucket(bucket.getId())).as("bucket").isNull();
+		assertThat(repository.deleteBucket(bucket.getId())).isFalse();
 		repository.store(bucket, false);
 		assertThat(repository.findBucket(bucket.getId()).toJson()).isEqualTo(bucket.toJson());
 	}
