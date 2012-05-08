@@ -32,7 +32,7 @@ public class QueueController extends ControllerSupport {
     	if (!users.isSuperuser(principal)) {
     		return forbidden();
     	}
-    	return ok(repository.getHistory(offset, limit).toJson());
+    	return ok(repository.findAll(offset, limit).toJson());
     }
 
 	@BodyParser.Of(BodyParser.Json.class)

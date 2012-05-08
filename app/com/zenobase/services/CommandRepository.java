@@ -44,21 +44,23 @@ public class CommandRepository {
 	}
 
 	public void findAll(Callback<Command> callback) {
-		SearchSourceBuilder search = new SearchSourceBuilder().query(QueryBuilders.matchAllQuery())
-			.sort(Command.TIMESTAMP.getName(), SortOrder.ASC).size(Ints.checkedCast(size()));
-		for (ObjectNode hit : index.find(search).getElements()) {
+		for (ObjectNode hit : index.find(newSearchSource().size(Ints.checkedCast(size()))).getElements()) {
 			callback.call(parsers.parse(hit));
 		}
 	}
 
-	public CommandList getHistory(int offset, int limit) {
+	public CommandList findAll(int offset, int limit) {
 		List<Command> commands = Lists.newArrayListWithCapacity(limit);
-		SearchSourceBuilder search = new SearchSourceBuilder().query(QueryBuilders.matchAllQuery())
-			.from(offset).size(limit).sort(Command.TIMESTAMP.getName(), SortOrder.DESC);
-		for (ObjectNode hit : index.find(search).getElements()) {
+		for (ObjectNode hit : index.find(newSearchSource().from(offset).size(limit)).getElements()) {
 			commands.add(parsers.parse(hit));
 		}
 		return new CommandList(commands, size());
+	}
+
+	private static SearchSourceBuilder newSearchSource() {
+		return new SearchSourceBuilder()
+			.query(QueryBuilders.matchAllQuery())
+			.sort(Command.TIMESTAMP.getName(), SortOrder.DESC);
 	}
 
 	public long size() {
