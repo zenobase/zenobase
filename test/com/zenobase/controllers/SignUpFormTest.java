@@ -1,6 +1,7 @@
 package com.zenobase.controllers;
 
-import org.fest.assertions.Assertions;
+import static org.fest.assertions.Assertions.assertThat;
+
 import org.junit.Test;
 
 public class SignUpFormTest {
@@ -57,6 +58,6 @@ public class SignUpFormTest {
 
 	private void test(String username, String password, String email, boolean valid) {
 		SignUpForm form = new SignUpForm(username, password, email);
-		Assertions.assertThat(form.valid()).as("valid").isEqualTo(valid);
+		assertThat(form.valid()).as("valid").isEqualTo(valid);
 	}
 }

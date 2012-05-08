@@ -1,6 +1,7 @@
 package com.zenobase.controllers;
 
 import static com.zenobase.testing.ResultAssert.assertThat;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 import static play.mvc.Http.Status.*;
 import static play.test.Helpers.*;
@@ -25,7 +26,7 @@ public class UserControllerHttpPostTest extends UserControllerTestSupport {
 		String commandId = Generator.id();
 		when(auth.getPrincipal()).thenReturn(user.asIdentity());
 		when(users.find(user.getName())).thenReturn(user);
-		when(dispatcher.dispatch(Matchers.any(ChangeUserEmailCommand.class))).thenReturn(commandId);
+		when(dispatcher.dispatch(any(ChangeUserEmailCommand.class))).thenReturn(commandId);
 		Result result = call(user.getName(), new UpdateUserForm("jdoe@zenobase.com").toJson());
 		assertThat(result).hasStatus(OK).hasContent(UserController.receipt(commandId));
 	}
