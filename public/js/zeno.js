@@ -159,9 +159,17 @@
 		$scope.userInfo = null;
 	
 		if ($scope.userId !== 'guest') {
-			$http.get('/users/' + $scope.userId).success(function(response) {
-				$scope.userInfo = new User(response);
-			});
+			$http.get('/users/' + $scope.userId)
+				.success(function(response) {
+					$scope.userInfo = new User(response);
+				})
+				.error(function(response, status) {
+					if (status < 500) {
+						$scope.message = 'Can\'t retrieve this user.';
+					} else {
+						$scope.message = 'Couldn\'t retrieve this user. Try again later or contact support.';
+					}
+				});
 		} else if ($scope.user && $scope.user.getName() === 'guest') {
 			$scope.userInfo = $scope.user;
 		}
@@ -548,9 +556,17 @@
 	app.controller('BucketCtrl', ['$scope', '$http', '$route', '$routeParams', '$location', '$defer', function($scope, $http, $route, $routeParams, $location, $defer) {
 	
 		$scope.bucketId = $routeParams.bucketId;
-		$http.get('/buckets/' + $scope.bucketId).success(function(response) {
-			$scope.bucket = response;
-		});
+		$http.get('/buckets/' + $scope.bucketId)
+			.success(function(response) {
+				$scope.bucket = response;
+			})
+			.error(function(response, status) {
+				if (status < 500) {
+					$scope.message = 'Can\'t retrieve this bucket.';
+				} else {
+					$scope.message = 'Couldn\'t retrieve this bucket. Try again later or contact support.';
+				}
+			});
 	
 		$scope.filters = [];
 		$scope.widgets = [];
