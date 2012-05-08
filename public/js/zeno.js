@@ -609,7 +609,9 @@
 			var w = $.map(params, function(param) {
 				return $.map(param, function(value, key) { return key + ':' + value }).join(',');
 			});
-			$http.get('/buckets/' + $scope.bucketId + '/?' + $.param({ 'q' : q, 'w' : w }, true)).success(callback);
+			$http.get('/buckets/' + $scope.bucketId + '/?' + $.param({ 'q' : q, 'w' : w }, true))
+				.success(callback)
+				.error(function(response) { callback({ total : -1 }) });
 		};
 		$scope.refresh = function() {
 			$scope.updateFilters();
@@ -705,7 +707,7 @@
 	
 		$scope.offset = 0;
 		$scope.total = 0;
-		$scope.items = [];
+		$scope.items = null;
 	
 		$scope.hasPrev = function() {
 			return $scope.offset > 0;
@@ -730,6 +732,7 @@
 			};
 		};
 		$scope.refresh = function(options, settings) {
+			$scope.items = null;
 			$scope.search([ $.extend($scope.params(), options, settings) ], function(result) {
 				$.extend($scope, options);
 				$.extend($scope.settings, settings);
@@ -738,7 +741,7 @@
 		};
 		$scope.update = function(event, result) {
 			$scope.total = result.total;
-			$scope.items = result[$scope.settings.id];
+			$scope.items = result[$scope.settings.id] || [];
 		};
 	
 		$scope.dialogShown = false;
@@ -762,7 +765,7 @@
 	
 		$scope.offset = 0;
 		$scope.more = false;
-		$scope.terms = [];
+		$scope.terms = null;
 	
 		$scope.hasPrev = function() {
 			return $scope.offset > 0;
@@ -801,6 +804,7 @@
 			};
 		};
 		$scope.refresh = function(options, settings) {
+			$scope.terms = null;
 			$scope.search([ $.extend($scope.params(), options, settings) ], function(result) {
 				$.extend($scope, options)
 				$.extend($scope.settings, settings)
@@ -808,9 +812,9 @@
 			});
 		};
 		$scope.update = function(event, result) {
-			var terms = result[$scope.settings.id];
+			var terms = result[$scope.settings.id] || [];
 			$scope.more = terms.length > $scope.settings.limit;
-			$scope.terms = terms.slice(0, $scope.settings.limit);
+			$scope.terms = $scope.more ? terms.slice(0, $scope.settings.limit) : terms;
 		};
 		$scope.filter = function(term) {
 			$scope.offset = 0;
@@ -843,7 +847,7 @@
 	
 	app.controller('TermGanttCtrl', ['$scope', function($scope) {
 	
-		$scope.terms = [];
+		$scope.terms = null;
 	
 		$scope.params = function() {
 			return { 
@@ -864,7 +868,7 @@
 			});
 		};
 		$scope.update = function(event, result) {
-			$scope.terms = result[$scope.settings.id];
+			$scope.terms = result[$scope.settings.id] || [];
 			if ($scope.terms) {
 				$.each($scope.terms, function(i, term) {
 					term.freq = Math.round((new Date(term.last).getTime() - new Date(term.first).getTime()) / term.count);
@@ -890,7 +894,7 @@
 		$scope.from = 10;
 		$scope.to = 90;
 		$scope.step = 20;
-		$scope.ratings = [];
+		$scope.ratings = null;
 	
 		$scope.params = function() {
 			return { 
@@ -903,7 +907,7 @@
 			};
 		};
 		$scope.update = function(event, result) {
-			$scope.ratings = result[$scope.settings.id];
+			$scope.ratings = result[$scope.settings.id] || [];
 		};
 		$scope.refresh = function(options, settings) {
 			$scope.search([ $.extend($scope.params(), options, settings) ], function(result) {
@@ -924,7 +928,7 @@
 	
 	app.controller('ScoreboardCtrl', ['$scope', function($scope) {
 	
-		$scope.terms = [];
+		$scope.terms = null;
 	
 		$scope.params = function() {
 			return { 
@@ -945,7 +949,7 @@
 			});
 		};
 		$scope.update = function(event, result) {
-			$scope.terms = result[$scope.settings.id];
+			$scope.terms = result[$scope.settings.id] || [];
 		};
 		$scope.filter = function(term) {
 			$scope.addFilter(new Filter($scope.settings.termField, term.label))
@@ -998,7 +1002,7 @@
 	app.controller('TimelineCtrl', ['$scope', function($scope) {
 	
 		$scope.field = 'timestamp';
-		$scope.times = [];
+		$scope.times = null;
 	
 		$scope.params = function() {
 			$scope.interval = Interval.VALUES[1];
@@ -1024,7 +1028,7 @@
 			});
 		};
 		$scope.update = function(event, result) {
-			$scope.times = result[$scope.settings.id];
+			$scope.times = result[$scope.settings.id] || [];
 			$scope.draw();
 		};
 		$scope.draw = function() {

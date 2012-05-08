@@ -14,7 +14,9 @@
 		</tbody>
 	</table>
 
-	<p data-ng-hide="items" class="none">None</p>
+	<p data-ng-show="items == null" class="none">Loading...</p>
+
+	<p data-ng-show="items.length == 0" class="none">None</p>
 
 	<div class="btn-toolbar">
 		<div class="btn-group" data-ng-show="editing">

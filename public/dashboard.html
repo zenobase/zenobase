@@ -9,16 +9,14 @@
 	</div>
 
 	<div data-ng-show="bucket">
-
-		<div class="alert alert-info" data-ng-show="total == 0">
-			Click <i class="icon-plus"></i> below to start adding data.<br/> 
-			Click <i class="icon-pencil"></i> below to edit the title and to add or remove widgets below. 
-		</div>
 	
 		<div class="row-fluid" style="margin-bottom: 9px;">
 			<h3 class="pull-left">{{bucket.label}}</h3>
-			<p class="pull-left" style="margin-left: 9px; margin-top: 5px; vertical-align: middle">
-				<span id="event-count" class="badge" title="Events" data-ng-class="total && 'badge-success' || 'badge-error'">{{total}}</span>
+			<p class="pull-left" style="margin-left: 9px; margin-top: 5px; vertical-align: middle" data-ng-show="total >= 0">
+				<span id="event-count" class="badge badge-success" title="Events">{{total}}</span>
+			</p>
+			<p class="pull-left" style="margin-left: 9px; margin-top: 5px; vertical-align: middle" data-ng-show="total < 0">
+				<span class="badge badge-important" title="Couldn't load any events">0</span>
 			</p>
 			<p class="pull-left" style="margin-left: 8px; margin-top: 6px; vertical-align: middle">
 				<a data-ng-click="refresh()" title="Refresh"><i class="icon-refresh"></i></a>

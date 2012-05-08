@@ -2,7 +2,9 @@
 
 	<div id="timeline-{{settings.id}}" data-ng-show="times"></div>
 
-	<p data-ng-hide="times" class="none">None</p>
+	<p data-ng-show="times == null" class="none">Loading...</p>
+
+	<p data-ng-show="times.length == 0" class="none">None</p>
 
 	<div class="btn-toolbar">
 		<div class="btn-group" data-ng-show="editing">
