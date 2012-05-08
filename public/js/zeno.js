@@ -616,6 +616,7 @@
 		$scope.refresh = function() {
 			$scope.updateFilters();
 			var params = $.map($scope.widgets, function(widget) { return widget.params(); });
+			$scope.$broadcast('refresh');
 			$scope.search(params, function(response) {
 				$scope.total = response.total;
 				$scope.$broadcast('result', response);
@@ -705,10 +706,11 @@
 	
 	app.controller('EventListCtrl', ['$scope', function($scope) {
 	
-		$scope.offset = 0;
-		$scope.total = 0;
-		$scope.items = null;
-	
+		$scope.init = function() {
+			$scope.offset = 0;
+			$scope.total = 0;
+			$scope.items = null;
+		};
 		$scope.hasPrev = function() {
 			return $scope.offset > 0;
 		}
@@ -732,7 +734,7 @@
 			};
 		};
 		$scope.refresh = function(options, settings) {
-			$scope.items = null;
+			$scope.init();
 			$scope.search([ $.extend($scope.params(), options, settings) ], function(result) {
 				$.extend($scope, options);
 				$.extend($scope.settings, settings);
@@ -749,8 +751,10 @@
 			$scope.dialogShown = dialogShown;
 		};
 	
+		$scope.init();
 		$scope.register($scope);
 		$scope.$on('result', $scope.update);
+		$scope.$on('refresh', $scope.init);
 	}]);
 	
 	app.controller('EventListConfigCtrl', ['$scope', function($scope) {
@@ -763,10 +767,11 @@
 	
 	app.controller('TermCountCtrl', ['$scope', function($scope) {
 	
-		$scope.offset = 0;
-		$scope.more = false;
-		$scope.terms = null;
-	
+		$scope.init = function() {
+			$scope.offset = 0;
+			$scope.more = false;
+			$scope.terms = null;
+		};
 		$scope.hasPrev = function() {
 			return $scope.offset > 0;
 		}
@@ -804,7 +809,7 @@
 			};
 		};
 		$scope.refresh = function(options, settings) {
-			$scope.terms = null;
+			$scope.init();
 			$scope.search([ $.extend($scope.params(), options, settings) ], function(result) {
 				$.extend($scope, options)
 				$.extend($scope.settings, settings)
@@ -826,8 +831,10 @@
 			$scope.dialogShown = dialogShown;
 		};
 	
+		$scope.init();
 		$scope.register($scope);
 		$scope.$on('result', $scope.update);
+		$scope.$on('refresh', $scope.init);
 	}]);
 	
 	app.controller('WidgetSettingsCtrl', ['$scope', function($scope) {
@@ -847,8 +854,9 @@
 	
 	app.controller('TermGanttCtrl', ['$scope', function($scope) {
 	
-		$scope.terms = null;
-	
+		$scope.init = function() {
+			$scope.terms = null;
+		};
 		$scope.params = function() {
 			return { 
 				id : $scope.settings.id,
@@ -861,6 +869,7 @@
 			};
 		};
 		$scope.refresh = function(options, settings) {
+			$scope.init();
 			$scope.search([ $.extend($scope.params(), options, settings) ], function(result) {
 				$.extend($scope, options)
 				$.extend($scope.settings, settings)
@@ -883,9 +892,11 @@
 		$scope.showDialog = function(dialogShown) {
 			$scope.dialogShown = dialogShown;
 		};
-	
+
+		$scope.init();
 		$scope.register($scope);
 		$scope.$on('result', $scope.update);
+		$scope.$on('refresh', $scope.init);
 	}]);
 	
 	app.controller('RatingCountCtrl', ['$scope', function($scope) {
@@ -894,8 +905,10 @@
 		$scope.from = 10;
 		$scope.to = 90;
 		$scope.step = 20;
-		$scope.ratings = null;
-	
+
+		$scope.init = function() {
+			$scope.ratings = null;
+		};
 		$scope.params = function() {
 			return { 
 				id : $scope.settings.id,
@@ -910,6 +923,7 @@
 			$scope.ratings = result[$scope.settings.id] || [];
 		};
 		$scope.refresh = function(options, settings) {
+			$scope.init();
 			$scope.search([ $.extend($scope.params(), options, settings) ], function(result) {
 				$.extend($scope, options);
 				$.extend($scope.settings, settings);
@@ -922,14 +936,17 @@
 			$scope.dialogShown = dialogShown;
 		};
 	
+		$scope.init();
 		$scope.register($scope);
 		$scope.$on('result', $scope.update);
+		$scope.$on('refresh', $scope.init);
 	}]);
 	
 	app.controller('ScoreboardCtrl', ['$scope', function($scope) {
 	
-		$scope.terms = null;
-	
+		$scope.init = function() {
+			$scope.terms = null;
+		};
 		$scope.params = function() {
 			return { 
 				id : $scope.settings.id,
@@ -942,6 +959,7 @@
 			};
 		};
 		$scope.refresh = function(options, settings) {
+			$scope.init();
 			$scope.search([ $.extend($scope.params(), options, settings) ], function(result) {
 				$.extend($scope, options)
 				$.extend($scope.settings, settings)
@@ -959,9 +977,11 @@
 		$scope.showDialog = function(dialogShown) {
 			$scope.dialogShown = dialogShown;
 		};
-	
+
+		$scope.init();
 		$scope.register($scope);
 		$scope.$on('result', $scope.update);
+		$scope.$on('refresh', $scope.init);
 	}]);
 	
 	/**
@@ -1002,8 +1022,9 @@
 	app.controller('TimelineCtrl', ['$scope', function($scope) {
 	
 		$scope.field = 'timestamp';
-		$scope.times = null;
-	
+		$scope.init = function() {
+			$scope.times = null;
+		};
 		$scope.params = function() {
 			$scope.interval = Interval.VALUES[1];
 			$scope.range = '';
@@ -1021,6 +1042,7 @@
 			};
 		};
 		$scope.refresh = function(options, settings) {
+			$scope.init();
 			$scope.search([ $.extend($scope.params(), options, settings) ], function(result) {
 				$.extend($scope, options)
 				$.extend($scope.settings, settings)
@@ -1067,17 +1089,22 @@
 			$scope.dialogShown = dialogShown;
 		};
 	
+		$scope.init();
 		$scope.register($scope);
 		$scope.$on('result', $scope.update);
+		$scope.$on('refresh', $scope.init);
 	}]);
 	
 	app.controller('MapCtrl', ['$scope', function($scope) {
 	
 		$scope.field = 'location';
-		$scope.points = null;
-		$scope.map = null;
 	
+		$scope.init = function() {
+			$scope.points = null;
+			$scope.map = null;
+		};
 		$scope.refresh = function(options, settings) {
+			$scope.init();
 			$.extend($scope, options)
 			$.extend($scope.settings, settings)
 			$scope.$parent.refresh();
@@ -1168,9 +1195,11 @@
 		$scope.showDialog = function(dialogShown) {
 			$scope.dialogShown = dialogShown;
 		};
-	
+
+		$scope.init();
 		$scope.register($scope);
 		$scope.$on('result', $scope.update);
+		$scope.$on('refresh', $scope.init);
 	}]);
 	
 	
