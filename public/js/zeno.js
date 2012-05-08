@@ -7,7 +7,7 @@
 	 */
 	(function(console) {
 		$.each([ 'assert', 'log' ], function(i, method) {
-			console[method] = console[method] || function() {};		
+			console[method] = console[method] || function() {};	
 		});
 	}(window.console = window.console || {})); 
 	
@@ -226,7 +226,15 @@
 	}]);
 	
 	app.controller('AuthFormCtrl', ['$scope', '$http', function($scope, $http) {
+
 		$scope.dialog = $('#sign-in-dialog');
+
+		$scope.init = function() {
+			$scope.username = '';
+			$scope.password = '';
+			$scope.remember = true;
+			$scope.message = '';
+		};
 		$scope.data = function() {
 			return {
 				username : $scope.username,
@@ -239,37 +247,36 @@
 				.success(function(response) {
 					$scope.$parent.user = new User(response);
 					$scope.dialog.modal('hide');
-					$scope.clear();
 					$scope.reload();
 				})
 				.error(function(response, code) {
-					switch (code) {
-						case 401:
-							$scope.message = 'The username or password you entered is incorrect.';
-							break;
-						default:
-							$scope.message = 'Unable to sign in, please try again later or contact support.';
+					if (code === 401) {
+						$scope.message = 'The username or password you entered is incorrect.';
+					} else {
+						$scope.message = 'Unable to sign in, please try again later or contact support.';
 					}
 				});
 		}
-		$scope.clear = function() {
-			$scope.username = '';
-			$scope.password = '';
-			$scope.remember = true;
-			$scope.message = '';
-		};
-		$scope.clear();
+
+		$scope.init();
 		$scope.$on('event:unauthorized', function() {
 			$scope.dialog.modal('show');
 		});
 		$scope.dialog.on('shown', function () {
-			$scope.clear();
+			$scope.$apply($scope.init);
 			$('#username').select();
 		});
 	}]);
 	
 	app.controller('ResetPasswordFormCtrl', ['$scope', '$http', function($scope, $http) {
+
 		$scope.dialog = $('#reset-password-dialog');
+
+		$scope.init = function() {
+			$scope.username = '';
+			$scope.email = '';
+			$scope.message = '';
+		};
 		$scope.data = function() {
 			return {
 				username : $scope.username,
@@ -281,33 +288,35 @@
 				.success(function(response) {
 					$scope.alert.show('A password reset request has been sent by email. Check your inbox.');
 					$scope.dialog.modal('hide');
-					$scope.clear();
 					$scope.home();
 				})
 				.error(function(response, code) {
-					switch (code) {
-						case 400:
-							$scope.message = 'The username and email address you entered don\'t match our records.';
-							break;
-						default:
-							$scope.message = 'Unable to reset your password, please try again later or contact support.';
-					}				
+					if (code === 400) {
+						$scope.message = 'The username and email address you entered don\'t match our records.';
+					} else {
+						$scope.message = 'Unable to reset your password, please try again later or contact support.';
+					}
 				});
 		};
-		$scope.clear = function() {
-			$scope.username = '';
-			$scope.email = '';
-			$scope.message = '';
-		};
-		$scope.clear();
+
+		$scope.init();
 		$scope.dialog.on('shown', function () {
-			$scope.clear();
+			$scope.$apply($scope.init);
 			$('#reset-username').select();
 		});
 	}]);
 	
 	app.controller('SignUpFormCtrl', ['$scope', '$http', '$location', function($scope, $http, $location) {
+
 		$scope.dialog = $('#sign-up-dialog');
+
+		$scope.init = function() {
+			$scope.username = '';
+			$scope.password = '';
+			$scope.retypedPassword = '';
+			$scope.email = '';
+			$scope.message = '';
+		};
 		$scope.data = function() {
 			return {
 				'username' : $scope.username,
@@ -323,30 +332,21 @@
 			$http.post('/users/', $scope.data())
 				.success(function(response, code) {
 					$scope.$parent.user = new User(response);
-					$scope.clear();
 					$scope.dialog.modal('hide');
 					$location.url('/users/' + $scope.$parent.user.name);
 				})
 				.error(function(response, code) {
-					switch (code) {
-						case 409:
-							$scope.message = 'The chosen username is not available.';
-							break;
-						default:
-							$scope.message = 'Unable to sign up, please try again later or contact support.';
-					}				
+					if (code === 409) {
+						$scope.message = 'The chosen username is not available.';
+					} else {
+						$scope.message = 'Unable to sign up, please try again later or contact support.';
+					}
 				});
 		};
-		$scope.clear = function() {
-			$scope.username = '';
-			$scope.password = '';
-			$scope.retypedPassword = '';
-			$scope.email = '';
-			$scope.message = '';
-		};
-		$scope.clear();
+
+		$scope.init();
 		$scope.dialog.on('shown', function () {
-			$scope.clear();
+			$scope.$apply($scope.init);
 			$('#sign-up-username').select();
 		});
 	}]);
@@ -364,9 +364,16 @@
 	}]);
 	
 	app.controller('ResetPasswordCtrl', ['$scope', '$http', '$location', '$routeParams', function($scope, $http, $location, $routeParams) {
+
 		var userId = $routeParams.userId;
 		var key = $location.search()['key'];
 		var expires = $location.search()['expires'];
+
+		$scope.init = function() {
+			$scope.password = '';
+			$scope.retypedPassword = '';
+			$scope.message = '';
+		};
 		$scope.submit = function() {
 			if ($scope.password !== $scope.retypedPassword) {
 				$scope.message = 'Passwords don\'t match.';
@@ -382,12 +389,8 @@
 					$scope.alert.show('Your password could not be changed.', 'alert-error');
 				});		
 		};
-		$scope.clear = function() {
-			$scope.password = '';
-			$scope.retypedPassword = '';
-			$scope.message = '';
-		};
-		$scope.clear();
+
+		$scope.init();
 	}]);
 	
 	app.controller('BucketListCtrl', ['$scope', '$http', function($scope, $http) {
@@ -399,23 +402,23 @@
 	
 		$scope.hasPrev = function() {
 			return $scope.offset > 0;
-		}
+		};
 		$scope.hasNext = function() {
 			return $scope.offset + $scope.limit < $scope.total;
-		}
+		};
 		$scope.prev = function() {
 			$scope.refresh({ offset : $scope.offset - $scope.limit });
-		}
+		};
 		$scope.next = function() {
 			$scope.refresh({ offset : $scope.offset + $scope.limit });
-		}
+		};
 		$scope.params = function() {
 			return {
 				identity : $scope.userInfo['@id'],
 				offset : $scope.offset,
 				limit : $scope.limit
 			};
-		}
+		};
 		$scope.refresh = function(params) {
 			$http.get('/buckets/?' + $.param($.extend($scope.params(), params))).success(function(response) {
 				$.extend($scope, params);
@@ -458,11 +461,17 @@
 				.error(function(response) {
 					$scope.alert.show('Couldn\'t create a new bucket.', 'alert-error');					
 				});
-		}
+		};
 	}]);
 	
 	app.controller('CreateBucketDialogCtrl', ['$scope', '$http', '$location', function($scope, $http, $location) {
+
 		$scope.dialog = $('#create-bucket-dialog');
+
+		$scope.init = function() {
+			$scope.label = 'My Data';
+			$scope.message = '';
+		};
 		$scope.create = function() {
 			$http.post('/buckets/', { label : $scope.label})
 				.success(function(response, status, headers) {
@@ -479,14 +488,11 @@
 						$scope.message = 'Couldn\'t create a new bucket. Please try agan later or contact support.';					
 					}
 				});
-		}
-		$scope.clear = function() {
-			$scope.label = 'My Data';
-			$scope.message = '';
 		};
-		$scope.clear();
+
+		$scope.init();
 		$scope.dialog.on('shown', function () {
-			$scope.clear();
+			$scope.$apply($scope.init);
 			$('#bucket-label-field').select();
 		});
 	}]);
@@ -1204,10 +1210,9 @@
 	
 	
 	app.controller('TemplateCtrl', ['$scope', '$http', '$defer', '$routeParams', function($scope, $http, $defer, $routeParams) {
+
 		$scope.dialog = $('#create-event-dialog');
-		$scope.content = '';
 		$scope.params = $routeParams;
-		$scope.i = 0;
 		$scope.templates = [
 			undefined,
 			{
@@ -1248,17 +1253,32 @@
 				random : 1000
 			}
 		];
+		$scope.init = function() {
+			$scope.message = '';
+			$scope.content = '';
+			$scope.i = 0;
+		};
 		$scope.create = function() {
-			$http.post('/buckets/' + $scope.params.bucketId + '/', $scope.content).success(function(response, status, headers) {
-				$defer(function() {
-					$scope.reload();
-					$scope.dialog.modal('hide');
-				}, DELAY);
-			});
-		}
+			$http.post('/buckets/' + $scope.params.bucketId + '/', $scope.content)
+				.success(function(response) {
+					$defer(function() {
+						$scope.reload();
+						$scope.dialog.modal('hide');
+					}, DELAY);
+				})
+				.error(function(response) {
+					$scope.message = 'Couldn\'t create this event.';
+				});
+		};
 		$scope.getTemplate = function(i) {
 			return JSON.stringify($scope.templates[i], null, ' ');
-		}
+		};
+
+		$scope.init();
+		$scope.dialog.on('shown', function () {
+			$scope.$apply($scope.init);
+			$('#event-label-field').select();
+		});
 	}]);
 	
 	/**
