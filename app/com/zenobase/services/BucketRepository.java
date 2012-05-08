@@ -8,6 +8,7 @@ import org.codehaus.jackson.node.ObjectNode;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
+import org.elasticsearch.search.sort.SortOrder;
 import play.Logger;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
@@ -83,7 +84,8 @@ public class BucketRepository {
 	private BucketList findBuckets(QueryBuilder query, int offset, int limit) {
 		List<Bucket> buckets = Lists.newArrayListWithCapacity(limit);
 		SearchSourceBuilder search = new SearchSourceBuilder()
-			.query(query).from(offset).size(limit).version(true);
+			.query(query).version(true).from(offset).size(limit)
+			.sort(Bucket.CREATED.getName(), SortOrder.DESC);
 		PartialList<ObjectNode> hits = index.find(search);
 		for (ObjectNode hit : hits.getElements()) {
 			buckets.add(new Bucket(hit));
@@ -105,7 +107,7 @@ public class BucketRepository {
 			public void call(ObjectNode node) {
 				callback.call(new Bucket(node));
 			}
-		});
+		}, 10);
 	}
 
 	public void add(String bucketId, Event event) {

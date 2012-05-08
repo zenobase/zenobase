@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.codehaus.jackson.node.ObjectNode;
 import org.elasticsearch.action.admin.indices.create.CreateIndexResponse;
-import org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest;
 import org.elasticsearch.action.get.GetResponse;
 import org.elasticsearch.action.index.IndexRequest.OpType;
 import org.elasticsearch.action.index.IndexRequestBuilder;
@@ -47,11 +46,6 @@ public class Index {
 		Preconditions.checkState(response.acknowledged(), "Expected acknowledgement of index creation: %s", indexName);
 	}
 
-	public void delete() {
-		DeleteIndexRequest request = Requests.deleteIndexRequest(indexName);
-		client.admin().indices().delete(request).actionGet();
-	}
-
 	public void putMapping(Schema schema) {
 		// Logger.info("Mapping: " + schema.toJson());
 		client.admin().indices().preparePutMapping(indexName).setType(schema.getTypeName()).setSource(schema.toJson().toString()).execute().actionGet();
@@ -69,9 +63,8 @@ public class Index {
 		IndexRequestBuilder request = client.prepareIndex(indexName, type, id);
 		if (operation == OpType.INDEX) {
 			Long version = DomainNode.VERSION.getValue(node);
-			if (version != null) {
-				request.setVersion(version);
-			}
+			Preconditions.checkNotNull(version, "Missing a version field: %s", node);
+			request.setVersion(version);
 		}
 		request.setSource(Nodes.toByteArray(node));
 		request.setOpType(operation);
@@ -111,8 +104,8 @@ public class Index {
 			.searchType(SearchType.DFS_QUERY_THEN_FETCH).source(search)).actionGet();
 	}
 
-	public void find(QueryBuilder query, Callback<ObjectNode> callback) {
-		SearchSourceBuilder search = new SearchSourceBuilder().query(query).size(100);
+	public void find(QueryBuilder query, Callback<ObjectNode> callback, int scrollSize) {
+		SearchSourceBuilder search = new SearchSourceBuilder().query(query).size(scrollSize);
 		for (SearchResponse response = scroll(search.version(true)); response.hits().hits().length > 0; response = scroll(response.getScrollId())) {
 			for (SearchHit hit : response.hits()) {
 				callback.call(read(hit));
@@ -130,10 +123,6 @@ public class Index {
 	private SearchResponse scroll(String scrollId) {
 		final TimeValue timeout = TimeValue.timeValueMillis(1000);
 		return client.searchScroll(Requests.searchScrollRequest(indexName).scrollId(scrollId).scroll(timeout)).actionGet();
-	}
-
-	public void delete(QueryBuilder query) {
-		client.prepareDeleteByQuery(indexName).setQuery(query).execute().actionGet();
 	}
 
 	public ObjectNode get(String type, String id) {

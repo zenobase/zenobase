@@ -8,6 +8,7 @@ import org.codehaus.jackson.node.ObjectNode;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
+import org.elasticsearch.search.sort.SortOrder;
 import play.Logger;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
@@ -46,12 +47,12 @@ public class UserRepository {
 		List<User> users = Lists.newArrayListWithCapacity(limit);
 		SearchSourceBuilder search = new SearchSourceBuilder()
 			.query(QueryBuilders.matchAllQuery())
+			.sort(User.NAME.getName(), SortOrder.ASC)
 			.from(offset).size(limit)
-			.sort(User.NAME.getName())
 			.version(true);
 		PartialList<ObjectNode> hits = index.find(search);
-		for (ObjectNode node : hits.getElements()) {
-			users.add(new User(node));
+		for (ObjectNode hit : hits.getElements()) {
+			users.add(new User(hit));
 		}
 		return new UserList(users, hits.size());
 	}
@@ -62,7 +63,7 @@ public class UserRepository {
 			public void call(ObjectNode node) {
 				callback.call(new User(node));
 			}
-		});
+		}, 10);
 	}
 
 	private QueryBuilder identityEquals(Identity identity) {

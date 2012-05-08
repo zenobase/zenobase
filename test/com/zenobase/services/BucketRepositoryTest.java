@@ -3,15 +3,22 @@ package com.zenobase.services;
 import static com.zenobase.testing.NodeAssert.assertThat;
 import static com.zenobase.testing.PartialListAssert.assertThat;
 import static org.fest.assertions.Assertions.assertThat;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.*;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import org.codehaus.jackson.node.ObjectNode;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
+import org.junit.Before;
 import org.junit.Test;
+import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
+import com.google.common.util.concurrent.Uninterruptibles;
 
+import com.zenobase.common.Callback;
 import com.zenobase.json.Nodes;
 import com.zenobase.models.Bucket;
 import com.zenobase.models.Event;
@@ -22,27 +29,28 @@ import com.zenobase.testing.NodeAssert;
 
 public class BucketRepositoryTest extends ElasticSearchTestSupport {
 
+	private Identity me = new Identity("me");
+	private Identity you = new Identity("you");
+	private BucketRepository repository;
+
+	@Before
+	public void setUp() {
+		repository = new BucketRepository(getManager());
+	}
+
 	@Test
 	public void testCrudBucket() {
 
 		// create bucket
-		String label = "Test Bucket";
-		Identity principal = new Identity("me");
-		ObjectNode widget = Nodes.newObject();
-		ImmutableList<ObjectNode> widgets = ImmutableList.of(widget);
-		widget.put("option", true);
-		Bucket bucket = newBucket(label, principal);
-		bucket.setWidgets(widgets);
-
-		BucketRepository repository = new BucketRepository(getManager());
+		Bucket bucket = newBucket("Test Bucket", me);
+		bucket.setWidgets(ImmutableList.of(newWidget()));
 
 		// store and retrieve bucket
 		repository.store(bucket, true);
 		assertThat(repository.findBucket(bucket.getId()).toJson()).isEqualTo(bucket.toJson());
 
 		// update bucket
-		String description = "just a test";
-		bucket.setDescription(description);
+		bucket.setDescription("just a test");
 		repository.update(bucket);
 		assertThat(repository.findBucket(bucket.getId()).toJson()).isEqualTo(bucket.toJson());
 
@@ -53,31 +61,47 @@ public class BucketRepositoryTest extends ElasticSearchTestSupport {
 		assertThat(repository.findBucket(bucket.getId()).toJson()).isEqualTo(bucket.toJson());
 	}
 
+	private static ObjectNode newWidget() {
+		ObjectNode widget = Nodes.newObject();
+		widget.put("option", true);
+		return widget;
+	}
+
 	@Test
 	public void testFindBuckets() {
-		Identity me = new Identity("me");
-		Identity you = new Identity("you");
-		List<Bucket> buckets = ImmutableList.of(newBucket("My Bucket", me), newBucket("Also My Bucket", me), newBucket("Your Bucket", you));
-		BucketRepository repository = new BucketRepository(getManager());
+
+		List<Bucket> buckets = newBucketList(20);
 		for (Bucket bucket : buckets) {
 			repository.store(bucket, true);
 		}
-		assertThat(repository.findBuckets(0, 10)).hasSize(3).isEqualTo(buckets);
-		assertThat(repository.findBuckets(me, 0, 10)).hasSize(2).isEqualTo(buckets.subList(0, 2));
-		assertThat(repository.findBuckets(you, 0, 10)).hasSize(1).isEqualTo(buckets.subList(2, 3));
+
+		assertThat(repository.findBuckets(0, 10)).hasSize(buckets.size()).isEqualTo(buckets.subList(0, 10));
+		assertThat(repository.findBuckets(me, 0, 10)).hasSize(buckets.size() / 2);
+		assertThat(repository.findBuckets(you, 0, 10)).hasSize(buckets.size() / 2);
+	}
+
+	@Test
+	public void testScrollBuckets() {
+
+		List<Bucket> buckets = newBucketList(15); // large enough to require scrolling
+		for (Bucket bucket : buckets) {
+			repository.store(bucket, true);
+		}
+
+		Callback<Bucket> callback = mock(Callback.class);
+		repository.findBuckets(callback);
+		verify(callback, times(buckets.size())).call(any(Bucket.class));
 	}
 
 	@Test
 	public void testCrudEvent() {
 
-		Identity principal = new Identity("me");
-		BucketRepository repository = new BucketRepository(getManager());
-		Bucket bucket = newBucket("Test", principal);
+		Bucket bucket = newBucket("Test", me);
 		repository.store(bucket, true);
 
 		// create event
 		Event event = new Event();
-		event.setValue(Event.AUTHOR, principal);
+		event.setValue(Event.AUTHOR, me);
 		event.setValue(Event.TIMESTAMP, new DateTime(DateTimeZone.UTC));
 		event.addValue(Event.TAG, "test");
 		event.addValue(Event.TAG, "demo");
@@ -102,5 +126,15 @@ public class BucketRepositoryTest extends ElasticSearchTestSupport {
 		bucket.setLabel(label);
 		bucket.addPermission(owner, Permission.ALL);
 		return bucket;
+	}
+
+	private List<Bucket> newBucketList(int size) {
+		Preconditions.checkArgument(size < 100);
+		ImmutableList.Builder<Bucket> buckets = ImmutableList.builder();
+		for (int i = 0; i < size; ++i) {
+			Uninterruptibles.sleepUninterruptibly(5, TimeUnit.MILLISECONDS); // to allow buckets to be sorted
+			buckets.add(newBucket(String.format("bucket%03d", i + 1), i % 2 == 0 ? me : you));
+		}
+		return buckets.build().reverse();
 	}
 }

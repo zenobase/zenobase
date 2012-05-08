@@ -4,11 +4,14 @@ import java.util.List;
 import java.util.Map;
 
 import org.codehaus.jackson.node.ObjectNode;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
 
 import com.zenobase.common.Generator;
+import com.zenobase.json.DateTimeField;
 import com.zenobase.json.DomainNode;
 import com.zenobase.json.Nodes;
 import com.zenobase.json.ObjectField;
@@ -25,6 +28,7 @@ public class Bucket extends DomainNode {
 	public static final TokenField ID = new TokenField("@id", false);
 	public static final TextField LABEL = new TextField("label");
 	public static final TextField DESCRIPTION = new TextField("description");
+	public static final DateTimeField CREATED = new DateTimeField("created");
 	public static final PermissionField PERMISSIONS = new PermissionField("permissions");
 	public static final ObjectField WIDGETS = new ObjectField("widgets");
 
@@ -34,6 +38,7 @@ public class Bucket extends DomainNode {
 
 	public Bucket() {
 		setValue(ID, Generator.id());
+		setValue(CREATED, new DateTime(DateTimeZone.UTC));
 	}
 
 	public String getId() {
@@ -54,6 +59,10 @@ public class Bucket extends DomainNode {
 
 	public void setDescription(String description) {
 		setValue(DESCRIPTION, description);
+	}
+
+	public DateTime getCreated() {
+		return getValue(CREATED);
 	}
 
 	public ImmutableSet<Identity> getPrincipals(Permission permission) {
@@ -89,7 +98,7 @@ public class Bucket extends DomainNode {
 
 	public static Schema getSchema() {
 		return new SchemaBuilder(TYPE_NAME).add(VERSION)
-			.add(ID).add(LABEL).add(DESCRIPTION)
+			.add(ID).add(LABEL).add(DESCRIPTION).add(CREATED)
 			.add(PERMISSIONS).add(WIDGETS).build();
 	}
 
