@@ -105,7 +105,14 @@ public class BucketController extends ControllerSupport {
     	if (bucket.getPermission(principal) != Permission.ALL) {
     		return forbidden();
     	}
-		String commandId = dispatcher.dispatch(new UpdateBucketCommand(principal, bucket, new Bucket(body())));
+    	Bucket updated = new Bucket(body());
+		if (!updated.valid()) {
+			return badRequest("not valid");
+		}
+		if (!updated.getPrincipals(Permission.ALL).equals(bucket.getPrincipals(Permission.ALL))) {
+			return badRequest("changing the bucket owner is not supported");
+		}
+		String commandId = dispatcher.dispatch(new UpdateBucketCommand(principal, bucket, updated));
 		return ok(receipt(commandId));
     }
 

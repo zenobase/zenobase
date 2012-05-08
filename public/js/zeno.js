@@ -478,7 +478,6 @@
 		};
 		$scope.clear();
 		$scope.dialog.on('shown', function () {
-			console.log('shown');
 			$scope.clear();
 			$('#bucket-label-field').select();
 		});
@@ -665,14 +664,23 @@
 	
 	app.controller('BucketFormCtrl', ['$scope', '$http', function($scope, $http) {
 		$scope.save = function(settings) {
-			$http.post('/buckets/' + $scope.bucketId, $scope.bucket).success(function (response, status, headers) {
-				$scope.alert.show('Saved settings.', 'alert-success', response.undo);
-				++$scope.$parent.bucket.version;
-				$scope.$parent.cancel();
-			});
+			$http.post('/buckets/' + $scope.bucketId, $scope.bucket)
+				.success(function (response, status, headers) {
+					$scope.alert.show('Saved settings.', 'alert-success', response.undo);
+					++$scope.$parent.bucket.version;
+					$scope.$parent.cancel();
+				})
+				.error(function(response, status) {
+					if (status === 400) {
+						$scope.alert.show('Can\'t save this bucket', 'alert-error');
+					} else {
+						$scope.alert.show('Couldn\'t save this bucket. Try again later or contact support.', 'alert-error');						
+					}
+				});
 		};
 		$scope.cancel = function() {
 			$scope.$parent.cancel();
+			$scope.alert.clear();
 			$scope.reload();
 		};
 	}]);

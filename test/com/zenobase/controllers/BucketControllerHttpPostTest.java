@@ -43,6 +43,26 @@ public class BucketControllerHttpPostTest extends BucketControllerTestSupport {
 	}
 
 	@Test
+	public void testUpdateBucketInvalidLabel() {
+		to.setLabel("");
+		when(auth.getPrincipal()).thenReturn(user.asIdentity());
+		when(buckets.findBucket(from.getId())).thenReturn(from.copy());
+		Result result = call(from.getId(), to.toJson());
+		assertThat(result).hasStatus(BAD_REQUEST);
+		verifyZeroInteractions(dispatcher);
+	}
+
+	@Test
+	public void testUpdateBucketAddOwner() {
+		to.addPermission(new Identity(), Permission.ALL);
+		when(auth.getPrincipal()).thenReturn(user.asIdentity());
+		when(buckets.findBucket(from.getId())).thenReturn(from.copy());
+		Result result = call(from.getId(), to.toJson());
+		assertThat(result).hasStatus(BAD_REQUEST);
+		verifyZeroInteractions(dispatcher);
+	}
+
+	@Test
 	public void testUpdateBucketNotFound() {
 		when(auth.getPrincipal()).thenReturn(user.asIdentity());
 		Result result = call(from.getId(), to.toJson());

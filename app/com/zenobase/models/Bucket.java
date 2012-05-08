@@ -2,11 +2,13 @@ package com.zenobase.models;
 
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import org.codehaus.jackson.node.ObjectNode;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import com.google.common.base.Objects;
+import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
 
@@ -22,6 +24,8 @@ import com.zenobase.json.TextField;
 import com.zenobase.json.TokenField;
 
 public class Bucket extends DomainNode {
+
+	private static final Pattern LABEL_PATTERN = Pattern.compile("[a-zA-Z0-9-_ ]{1,20}");
 
 	public static final String TYPE_NAME = "bucket";
 
@@ -104,6 +108,12 @@ public class Bucket extends DomainNode {
 
 	public Bucket copy() {
 		return new Bucket(Nodes.copy(toJson()));
+	}
+
+	public boolean valid() {
+		return !Strings.isNullOrEmpty(getLabel()) &&
+			LABEL_PATTERN.matcher(getLabel().trim()).matches() &&
+			!getPrincipals(Permission.ALL).isEmpty();
 	}
 
 	@Override

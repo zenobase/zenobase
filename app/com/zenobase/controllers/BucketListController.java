@@ -70,13 +70,13 @@ public class BucketListController extends ControllerSupport {
     public static Result post() {
     	Identity principal = auth.getPrincipal(true);
 		CreateBucketForm form = new CreateBucketForm(body());
-		if (!form.valid()) {
-			return badRequest("missing fields");
-		}
 		Bucket bucket = new Bucket();
 		bucket.setLabel(form.getLabel());
 		bucket.setDescription(form.getDescription());
 		bucket.addPermission(principal, Permission.ALL);
+		if (!bucket.valid()) {
+			return badRequest("not valid");
+		}
     	String commandId = dispatcher.dispatch(new CreateBucketCommand(principal, bucket));
         response().setHeader(LOCATION, com.zenobase.controllers.routes.BucketController.get(bucket.getId()).toString());
         return created(receipt(commandId));

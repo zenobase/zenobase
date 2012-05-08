@@ -36,7 +36,7 @@
 				<div class="control-group">
 					<label class="control-label" for="edit-label"><strong>Title</strong></label>
 					<div class="controls">
-						<input type="text" class="input-large" required data-ng-model="bucket.label">
+						<input type="text" class="input-large" required data-ng-minlength="1" data-ng-maxlength="20" data-ng-pattern="/^[a-zA-Z0-9-_ ]+$/" data-ng-model="bucket.label">
 					</div>
 				</div>
 				<div class="control-group">
@@ -48,8 +48,8 @@
 			</fieldset>
 		</form>
 		<p>
-			<a data-ng-click="save()" class="btn btn-primary" data-ng-disabled="!dashboardForm.$valid">Save</a>
-			<a data-ng-click="cancel()" class="btn">Cancel</a>
+			<button data-ng-click="save()" class="btn btn-primary" data-ng-disabled="!dashboardForm.$valid">Save</button>
+			<button data-ng-click="cancel()" class="btn">Cancel</button>
 		</p>
 	</div>
 
