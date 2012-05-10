@@ -16,7 +16,7 @@ public class RandomEventsCommandBuilder {
 		CompoundCommand command = new CompoundCommand(principal,
 			String.format("added %,d random events", events),
 			String.format("removed %,d random events", events));
-		RandomEvent rand = new RandomEvent(bucketId, principal);
+		RandomEvent rand = new RandomEvent(principal);
 		for (int i = 0; i < events; ++i) {
 			command.add(new CreateEventCommand(principal, bucketId, rand.next()));
 		}

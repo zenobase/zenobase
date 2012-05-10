@@ -74,16 +74,14 @@ public class RandomEvent {
 			}
 		}, 1);
 
-	private final String bucketId;
 	private final Identity principal;
 
-	public RandomEvent(String bucketId, Identity principal) {
-		this.bucketId = bucketId;
+	public RandomEvent(Identity principal) {
 		this.principal = principal;
 	}
 
 	public Event next() {
-		return builders.next().build(bucketId, principal);
+		return builders.next().build(principal);
 	}
 
 	private static class Builder {
@@ -98,7 +96,7 @@ public class RandomEvent {
 			.add(Rating.valueOf( 20), 2)
 			.add(Rating.valueOf(  0), 1);
 
-		public Event build(String bucketId, Identity principal) {
+		public Event build(Identity principal) {
 			Event event = new Event();
 			event.setValue(Event.AUTHOR, principal);
 			event.setValue(Event.TIMESTAMP, nextTimestamp());
