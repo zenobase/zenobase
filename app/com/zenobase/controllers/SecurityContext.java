@@ -1,5 +1,8 @@
 package com.zenobase.controllers;
 
+import javax.inject.Inject;
+import javax.inject.Named;
+
 import play.api.libs.Crypto;
 import play.mvc.Http;
 import com.google.common.base.Joiner;
@@ -13,7 +16,8 @@ public class SecurityContext {
 
 	private final byte[] key;
 
-	public SecurityContext(String key) {
+	@Inject
+	public SecurityContext(@Named("application.secret") String key) {
 		this.key = key.getBytes();
 	}
 

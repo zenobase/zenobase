@@ -1,8 +1,9 @@
 import play.Application;
 import play.Configuration;
 import play.GlobalSettings;
+import play.Logger;
 import play.Play;
-import com.google.common.base.Objects;
+import play.api.PlayException;
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
@@ -78,7 +79,7 @@ public class Global extends GlobalSettings {
 				bind(Mailer.class).in(Singleton.class);
 				bind(VerificationMailer.class).in(Singleton.class);
 				bind(PasswordResetMailer.class).in(Singleton.class);
-				bind(SecurityContext.class).toInstance(new SecurityContext(getConfiguration("application.secret", "secret")));
+				bind(SecurityContext.class).in(Singleton.class);
 
 				Multibinder<CommandParser> parsers = Multibinder.newSetBinder(binder(), CommandParser.class);
 				parsers.addBinding().to(CreateBucketCommand.Parser.class);
@@ -123,14 +124,15 @@ public class Global extends GlobalSettings {
 			}
 
 			private void bindConfiguration() {
-				Configuration conf = Play.application().configuration().getConfig("zeno");
+				Configuration conf = Play.application().configuration();
 				for (String key : conf.keys()) {
-					bind(String.class).annotatedWith(Names.named(key)).toInstance(conf.getString(key));
+					try {
+						String value = conf.getString(key);
+						bind(String.class).annotatedWith(Names.named(key)).toInstance(value);
+					} catch (PlayException e) {
+						Logger.warn("Can't bind property from " + e.description());
+					}
 				}
-			}
-
-			private String getConfiguration(String key, String defaultValue) {
-				return Objects.firstNonNull(Play.application().configuration().getString(key), defaultValue);
 			}
 		});
 	}
