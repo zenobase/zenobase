@@ -20,11 +20,7 @@ public class IndexManager implements Closeable {
 	private Client client;
 
 	@Inject
-	public IndexManager(@Named("es.cluster") String clusterName) {
-		this(clusterName, false);
-	}
-
-	public IndexManager(String clusterName, boolean clientOnly) {
+	public IndexManager(@Named("es.cluster") String clusterName, @Named("es.clientOnly") boolean clientOnly) {
 		this(clusterName, clientOnly, false, ImmutableSettings.Builder.EMPTY_SETTINGS);
 	}
 

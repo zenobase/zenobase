@@ -66,6 +66,8 @@ public class Global extends GlobalSettings {
 			@Override
 			protected void configure() {
 
+				bind(Boolean.class).annotatedWith(Names.named("es.clientOnly")).toInstance(Play.isProd());
+
 				bindConfiguration();
 
 				bind(IndexManager.class).in(Singleton.class);
