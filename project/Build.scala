@@ -1,3 +1,4 @@
+import scala.compat.Platform
 import sbt._
 import Keys._
 import PlayProject._
@@ -5,7 +6,7 @@ import PlayProject._
 object ApplicationBuild extends Build {
 
     val appName         = "Zenobase"
-    val appVersion      = "1.0-SNAPSHOT"
+    val appVersion      = "1.0-" + Platform.currentTime
 
     val appDependencies = Seq(
       "javax.mail" % "mail" % "1.4.5",
