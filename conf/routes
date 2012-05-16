@@ -6,6 +6,8 @@
 GET     /                            controllers.Assets.at(path="/public", file="index.html")
 GET     /admin/                      controllers.Assets.at(path="/public/admin", file="index.html")
 
+GET     /status                      com.zenobase.controllers.StatusController.get()
+
 GET     /favicon.ico                 controllers.Assets.at(path="/public/img", file="favicon.ico")
 GET     /robots.txt                  controllers.Assets.at(path="/public", file="robots.txt")
 

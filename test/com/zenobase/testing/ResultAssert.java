@@ -1,6 +1,6 @@
 package com.zenobase.testing;
 
-import static play.test.Helpers.contentAsBytes;
+import static play.test.Helpers.*;
 
 import org.codehaus.jackson.node.ObjectNode;
 import org.fest.assertions.Assertions;
@@ -33,6 +33,12 @@ public class ResultAssert extends GenericAssert<ResultAssert, Result> {
 	public ResultAssert hasContent(ObjectNode node) {
 		hasContentType("application/json");
 		NodeAssert.assertThat(Nodes.read(contentAsBytes(actual))).isEqualTo(node);
+		return this;
+	}
+
+	public ResultAssert hasContent(String content) {
+		hasContentType("text/plain");
+		Assertions.assertThat(contentAsString(actual)).isEqualTo(content);
 		return this;
 	}
 
