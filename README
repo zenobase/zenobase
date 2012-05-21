@@ -4,3 +4,10 @@ Developer Guide
 To refresh the dependencies in Eclipse, open the play console and run:
 
   eclipsify with-source=true
+
+
+js libs
+-------
+
+*.gz: gzip -9 *.min.js
+bootstrap.js: concatenate modal + tabs only
