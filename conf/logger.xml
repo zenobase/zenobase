@@ -1,0 +1,22 @@
+<configuration>
+
+	<conversionRule conversionWord="coloredLevel" converterClass="play.api.Logger$ColoredLevel" />
+
+	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<pattern>%coloredLevel %logger{15} - %message%n%xException{5}</pattern>
+		</encoder>
+	</appender>
+
+	<appender name="SYSLOG" class="ch.qos.logback.classic.net.SyslogAppender">
+		<syslogHost>localhost</syslogHost>
+		<facility>USER</facility>
+		<suffixPattern>[%p][%c] %m%n</suffixPattern>
+	</appender>
+
+	<root level="DEBUG">
+		<appender-ref ref="STDOUT"/>
+		<appender-ref ref="SYSLOG"/>
+	</root>
+
+</configuration>
