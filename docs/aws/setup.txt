@@ -32,21 +32,22 @@ sudo aptitude install ntp
 
 === File Handles ===
 
-sudo nano /etc/security/limits.conf
+sudoedit /etc/security/limits.conf
 --
-elasticsearch soft nofile 64000
-elasticsearch hard nofile 64000
+elasticsearch  -  nofile   64000
+elasticsearch  -  memlock  unlimited 
 --
 
 
-=== Papertrail ===
+=== Papertrail/Loggly/Splunk ===
 
-sudo nano /etc/rsyslog.d/80-papertrail.conf
+sudoedit /etc/rsyslog.d/80-papertrail.conf
 ---
 $ModLoad imudp
 $UDPServerRun 514
-*.*    @logs.papertrailapp.com:20382
-# *.*  @@logs.loggly.com:28388
+#*.warn  @logs.papertrailapp.com:20382
+#*.warn  @@logs.loggly.com:28388
+*.warn  @@logs3.splunkstorm.com:20502
 ---
 
 sudo service rsyslog restart
@@ -63,7 +64,7 @@ rm elasticsearch-0.19.3.deb
 
 TODO: export ES_JAVA_OPTS=-server
 
-sudo nano /etc/elasticsearch/logging.yml
+sudoedit /etc/elasticsearch/logging.yml
 # replace console,file with syslog and add:
 --
   syslog:
@@ -76,9 +77,10 @@ sudo nano /etc/elasticsearch/logging.yml
       conversionPattern: "[%p][%c] %m%n"
 --
 
-sudo nano /etc/elasticsearch/elasticsearch.yml
+sudoedit /etc/elasticsearch/elasticsearch.yml
 --
-cluster.name: zeno-1
+# bootstrap.mlockall: true
+cluster.name: zeno
 plugin.mandatory: cloud-aws
 cloud:
     aws:
@@ -105,7 +107,7 @@ sudo /etc/init.d/elasticsearch restart
 
 sudo adduser --system --no-create-home play
 
-sudo nano /etc/init/d/play
+sudoedit /etc/init.d/play
 --
 ...
 --
@@ -113,7 +115,7 @@ sudo nano /etc/init/d/play
 sudo chmod +x /etc/init.d/play
 sudo update-rc.d play defaults 25
 
-sudo nano /etc/play.conf
+sudoedit /etc/play.conf
 --
 include "application.conf"
 
@@ -134,7 +136,7 @@ mail.from="info@zenobase.com"
 sudo service play stop
 sudo rm -r /var/play
 
-unzip zenobase-*.zip && rm zenobase-*.zip
+unzip -q zenobase-*.zip && rm zenobase-*.zip
 sudo mv zenobase-* /var/play
 sudo chmod +x /var/play/start
 sudo chown -R play:nogroup /var/play
