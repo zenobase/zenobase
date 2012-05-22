@@ -14,7 +14,7 @@
 		<suffixPattern>[%p][%c] %m%n</suffixPattern>
 	</appender>
 
-	<root level="DEBUG">
+	<root level="INFO">
 		<appender-ref ref="STDOUT"/>
 		<appender-ref ref="SYSLOG"/>
 	</root>
