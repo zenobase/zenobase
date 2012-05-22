@@ -1,0 +1,141 @@
+=== AWS Account ===
+
+ejain@zenobase.com
+7dsqh3io97
+
+
+=== SSL Certificate (via namecheap.com) ===
+
+# generate certificate signing request (csr)
+openssl req -new -newkey rsa:2048 -keyout server.key -out server.csr
+# z3nowhat
+
+# for aws-lb:
+openssl rsa -in server.key -text
+
+
+=== EC2 ===
+
+# AMI: ami-b89842d1 (Ubuntu Server 12.04 LTS, 32 bit, instance store)
+# Instance Type: m1.small
+# Availability Zone: us-east-1c
+# Security Group: zeno
+
+
+=== Install Packages ===
+
+sudo aptitude update && sudo aptitude upgrade
+sudo aptitude install openjdk-6-jre-headless
+sudo aptitude install unzip
+sudo aptitude install ntp
+
+
+=== File Handles ===
+
+sudo nano /etc/security/limits.conf
+--
+elasticsearch soft nofile 64000
+elasticsearch hard nofile 64000
+--
+
+
+=== Papertrail ===
+
+sudo nano /etc/rsyslog.d/80-papertrail.conf
+---
+$ModLoad imudp
+$UDPServerRun 514
+*.*    @logs.papertrailapp.com:20382
+# *.*  @@logs.loggly.com:28388
+---
+
+sudo service rsyslog restart
+
+logger hello
+
+
+=== Elasticsearch ===
+
+wget 'https://github.com/downloads/elasticsearch/elasticsearch/elasticsearch-0.19.3.deb'
+sudo ln -s /usr/lib/jvm/java-6-openjdk-i386 /usr/lib/jvm/java-6-openjdk
+sudo dpkg -i elasticsearch-0.19.3.deb
+rm elasticsearch-0.19.3.deb
+
+TODO: export ES_JAVA_OPTS=-server
+
+sudo nano /etc/elasticsearch/logging.yml
+# replace console,file with syslog and add:
+--
+  syslog:
+    type: syslog
+    syslogHost: localhost
+    facility: user
+    facilityPrinting: true
+    layout:
+      type: pattern
+      conversionPattern: "[%p][%c] %m%n"
+--
+
+sudo nano /etc/elasticsearch/elasticsearch.yml
+--
+cluster.name: zeno-1
+plugin.mandatory: cloud-aws
+cloud:
+    aws:
+        access_key: AKIAI23R5FZZ4L4KPSRA
+        secret_key: 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
+        region: us-east-1
+discovery:
+    type: ec2
+--
+
+TODO:
+--
+gateway:
+    type: s3
+    s3:
+        bucket: bucket_name
+--
+
+sudo /usr/share/elasticsearch/bin/plugin -install elasticsearch/elasticsearch-cloud-aws/1.5.0
+sudo /etc/init.d/elasticsearch restart
+
+
+=== Play ===
+
+sudo adduser --system --no-create-home play
+
+sudo nano /etc/init/d/play
+--
+...
+--
+
+sudo chmod +x /etc/init.d/play
+sudo update-rc.d play defaults 25
+
+sudo nano /etc/play.conf
+--
+include "application.conf"
+
+hostname="https://zenobase.com"
+
+es.cluster=zeno
+
+mail.smtp.auth=true
+mail.smtp.starttls.enable=true
+mail.smtp.host="email-smtp.us-east-1.amazonaws.com"
+mail.smtp.port=587
+mail.user="AKIAISDJQHVFYCGXJE3Q"
+mail.pass="Arn+fbdGQrVi9nI0usc+3C7xfEvtapDsF6hmPzhkuLh9"
+mail.from="info@zenobase.com"
+--
+
+# if updating
+sudo service play stop
+sudo rm -r /var/play
+
+unzip zenobase-*.zip && rm zenobase-*.zip
+sudo mv zenobase-* /var/play
+sudo chmod +x /var/play/start
+sudo chown -R play:nogroup /var/play
+sudo service play start

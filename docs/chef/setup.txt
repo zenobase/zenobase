@@ -1,0 +1,43 @@
+=== Chef Workstation ===
+
+# see http://wiki.opscode.com/display/chef/Fast+Start+Guide
+sudo aptitude install ruby ruby-dev rubygems libopenssl-ruby rdoc ri irb build-essential wget ssl-cert git-core
+sudo gem install chef
+git clone git://github.com/opscode/chef-repo.git
+mkdir -p ~/.chef
+# download knife.rb, ejain.pem, zenobase-validator.pem from https://manage.opscode.com/ to ~/.chef
+
+# see http://wiki.opscode.com/display/chef/EC2+Bootstrap+Fast+Start+Guide
+sudo aptitude install libxslt-dev libxml2-dev
+sudo gem install knife-ec2 --no-rdoc --no-ri
+
+# install chef-client
+knife cookbook site install chef-client
+knife cookbook upload chef-client
+
+# create .ssh/config
+User ubuntu
+IdentityFile /home/ubuntu/.ssh/ejain.pem
+
+# create node
+knife ec2 server create -I ami-b89842d1 -f m1.small -G zeno --region us-east-1 -Z us-east-1c -S ejain -r 'recipe[chef-client]'
+
+# do stuff
+knife ssh 'name:*' "ls -hal"
+
+knife cookbook create elasticsearch
+nano cookbooks/elasticsearch/recipes/default.rb
+"""
+package "openjdk-6-jre-headless" do
+        action [:install]
+end
+"""
+knife cookbook upload elasticsearch
+knife node run list add NODE 'recipe[elasticsearch]'
+
+# update nodes
+knife ssh 'name:*' "sudo chef-client"
+
+# drop node
+knife ec2 server delete i-xxxxxxxx --region us-east-1
+knife node delete i-xxxxxxxx
