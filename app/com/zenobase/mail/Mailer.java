@@ -9,6 +9,7 @@ import javax.mail.MessagingException;
 import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
 import javax.mail.Transport;
+import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
@@ -18,6 +19,7 @@ import com.zenobase.common.PropertiesBuilder;
 
 public class Mailer {
 
+	private final InternetAddress from;
 	private final Session session;
 
 	@Inject
@@ -27,9 +29,10 @@ public class Mailer {
 		@Named("mail.smtp.auth") String auth,
 		@Named("mail.smtp.starttls.enable") String starttls,
 		@Named("mail.smtp.host") String host,
-		@Named("mail.smtp.port") String port) {
+		@Named("mail.smtp.port") String port,
+		@Named("mail.from") final String from) throws AddressException {
 
-		this(user, pass, new PropertiesBuilder()
+		this(user, pass, from, new PropertiesBuilder()
 			.put("mail.smtp.auth", auth)
 			.put("mail.smtp.starttls.enable", starttls)
 			.put("mail.smtp.host", host)
@@ -37,8 +40,9 @@ public class Mailer {
 			.put("mail.user", user).build());
 	}
 
-	public Mailer(final String username, final String password, Properties properties) {
-		session = Session.getInstance(properties, new Authenticator() {
+	public Mailer(final String username, final String password, String from, Properties properties) throws AddressException {
+		this.from = InternetAddress.parse(from, true)[0];
+		this.session = Session.getInstance(properties, new Authenticator() {
 			@Override
 			protected PasswordAuthentication getPasswordAuthentication() {
 				return new PasswordAuthentication(username, password);
@@ -52,6 +56,7 @@ public class Mailer {
 			MimeMessage mime = new MimeMessage(session);
 			mime.setRecipients(MimeMessage.RecipientType.TO, InternetAddress.parse(message.getTo()));
 			mime.setSubject(message.getSubject());
+			mime.setFrom(from);
 			mime.setText(message.getText());
 			Transport.send(mime);
 		} catch (MessagingException e) {
