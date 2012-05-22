@@ -9,7 +9,7 @@ APP_USER="play"
 case "$1" in
 	start)
 		log_daemon_msg "Starting $APP_NAME"
-		sudo -u $APP_USER $APP_PATH/start -Dconfig.file=/etc/play.conf >/dev/null &
+		sudo -u $APP_USER $APP_PATH/start -server -Dconfig.file=/etc/play.conf >/dev/null &
 		log_end_msg 0
 		;;
 	stop)

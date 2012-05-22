@@ -52,7 +52,7 @@ $UDPServerRun 514
 
 sudo service rsyslog restart
 
-logger hello
+logger -p err just kidding
 
 
 === Elasticsearch ===
@@ -62,7 +62,11 @@ sudo ln -s /usr/lib/jvm/java-6-openjdk-i386 /usr/lib/jvm/java-6-openjdk
 sudo dpkg -i elasticsearch-0.19.3.deb
 rm elasticsearch-0.19.3.deb
 
-TODO: export ES_JAVA_OPTS=-server
+sudoedit /etc/init.d/elasticsearch
+--
+ES_JAVA_OPTS=-server
+export ES_JAVA_OPTS
+--
 
 sudoedit /etc/elasticsearch/logging.yml
 # replace console,file with syslog and add:
