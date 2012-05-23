@@ -32,8 +32,8 @@ public class IndexManager implements Closeable {
 			.put("index.cache.filter.type", "none")
 			.put("action.auto_create_index", false);
 		if (clientOnly) {
-			settings.put("cloud.aws.access_key", "AKIAI23R5FZZ4L4KPSRA");
-			settings.put("cloud.aws.secret_key", "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");
+			settings.put("cloud.aws.access_key", "AKIAI7MHM3G2FTHQJJ3A");
+			settings.put("cloud.aws.secret_key", "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");
 			settings.put("cloud.aws.region", "us-east-1");
 			settings.put("discovery.type", "ec2");
 		}

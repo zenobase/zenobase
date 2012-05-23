@@ -4,6 +4,41 @@ ejain@zenobase.com
 7dsqh3io97
 
 
+=== IAM ===
+
+policy-mail
+{
+	"Statement": [
+		{
+			"Action": "ses:SendRawEmail",
+			"Effect": "Allow",
+			"Resource": "*"
+		}
+	]
+}
+policy-elasticsearch
+{
+  "Statement": [
+    {
+      "Action": [
+        "s3:*"
+      ],
+      "Effect": "Allow",
+      "Resource": [
+        "arn:aws:s3:::zeno-elasticsearch",
+        "arn:aws:s3:::zeno-elasticsearch/*"
+      ]
+    }
+  ],
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": "EC2:Describe*",
+      "Resource": "*"
+    }
+  ]
+}
+
 === SSL Certificate (via namecheap.com) ===
 
 # generate certificate signing request (csr)
@@ -88,8 +123,8 @@ cluster.name: zeno
 plugin.mandatory: cloud-aws
 cloud:
     aws:
-        access_key: AKIAI23R5FZZ4L4KPSRA
-        secret_key: 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
+        access_key: AKIAI7MHM3G2FTHQJJ3A
+        secret_key: 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
         region: us-east-1
 discovery:
     type: ec2
