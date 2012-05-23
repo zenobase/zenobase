@@ -26,12 +26,18 @@ public class IndexManager implements Closeable {
 
 	public IndexManager(String clusterName, boolean clientOnly, boolean local, Settings defaultSettings) {
 		Logger.info("Starting node in cluster " + clusterName + "...");
-		Settings settings = ImmutableSettings.settingsBuilder()
+		ImmutableSettings.Builder settings = ImmutableSettings.settingsBuilder()
 			.put(defaultSettings)
 			.put("index.mapper.dynamic", false)
 			.put("index.cache.filter.type", "none")
-			.put("action.auto_create_index", false).build();
-		node = NodeBuilder.nodeBuilder().clusterName(clusterName).client(clientOnly).local(local).settings(settings).node();
+			.put("action.auto_create_index", false);
+		if (clientOnly) {
+			settings.put("cloud.aws.access_key", "AKIAI23R5FZZ4L4KPSRA");
+			settings.put("cloud.aws.secret_key", "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");
+			settings.put("cloud.aws.region", "us-east-1");
+			settings.put("discovery.type", "ec2");
+		}
+		node = NodeBuilder.nodeBuilder().clusterName(clusterName).client(clientOnly).local(local).settings(settings.build()).node();
 		client = node.client();
 		recover();
 	}

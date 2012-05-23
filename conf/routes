@@ -10,6 +10,7 @@ GET     /status                      com.zenobase.controllers.StatusController.g
 
 GET     /favicon.ico                 controllers.Assets.at(path="/public/img", file="favicon.ico")
 GET     /robots.txt                  controllers.Assets.at(path="/public", file="robots.txt")
+GET     /echo/:message               com.zenobase.controllers.CacheTestController.get(message)
 
 GET     /who                         com.zenobase.controllers.WhoController.who()
 POST    /signin                      com.zenobase.controllers.SecurityController.signIn()
