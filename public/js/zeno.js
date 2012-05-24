@@ -25,7 +25,7 @@
 			.otherwise({ template : '/public/404.html' });
 	}]);
 	
-	app.controller('MainCtrl', ['$scope', '$route', '$http', '$location', '$defer', function($scope, $route, $http, $location, $defer) {
+	app.controller('MainCtrl', ['$scope', '$route', '$http', '$location', '$timeout', function($scope, $route, $http, $location, $timeout) {
 		$scope.whoami = function() {
 			$http.get('/who').success(function(response) {
 				$scope.user = response ? new User(response) : null;
@@ -37,7 +37,7 @@
 			$http.post('/queue/' , { 'undo' : commandId })
 				.success(function(response, code) {
 					$scope.alert.clear();
-					$defer(function() { window.location.reload(); }, DELAY);
+					$timeout(function() { window.location.reload(); }, DELAY);
 				})
 				.error(function(response) {
 					$scope.alert.show('Couldn\'t undo.');
@@ -559,7 +559,7 @@
 		};
 	}]);
 	
-	app.controller('BucketCtrl', ['$scope', '$http', '$route', '$routeParams', '$location', '$defer', function($scope, $http, $route, $routeParams, $location, $defer) {
+	app.controller('BucketCtrl', ['$scope', '$http', '$route', '$routeParams', '$location', '$timeout', function($scope, $http, $route, $routeParams, $location, $timeout) {
 	
 		$scope.bucketId = $routeParams.bucketId;
 		$http.get('/buckets/' + $scope.bucketId)
@@ -633,7 +633,7 @@
 		};
 		$scope.remove = function(eventId) {
 			$http({ method : 'DELETE', url : '/buckets/' + $scope.bucketId + '/' + eventId }).success(function(response, status, headers) {
-				$defer($scope.refresh, DELAY);
+				$timeout($scope.refresh, DELAY);
 				$scope.alert.show('Deleted an event.', 'alert-success', response.undo);
 			});
 		};
@@ -1209,7 +1209,7 @@
 	}]);
 	
 	
-	app.controller('TemplateCtrl', ['$scope', '$http', '$defer', '$routeParams', function($scope, $http, $defer, $routeParams) {
+	app.controller('TemplateCtrl', ['$scope', '$http', '$timeout', '$routeParams', function($scope, $http, $timeout, $routeParams) {
 
 		$scope.dialog = $('#create-event-dialog');
 		$scope.params = $routeParams;
@@ -1261,7 +1261,7 @@
 		$scope.create = function() {
 			$http.post('/buckets/' + $scope.params.bucketId + '/', $scope.content)
 				.success(function(response) {
-					$defer(function() {
+					$timeout(function() {
 						$scope.reload();
 						$scope.dialog.modal('hide');
 					}, DELAY);
