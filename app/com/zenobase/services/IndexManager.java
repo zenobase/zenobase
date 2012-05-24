@@ -30,6 +30,7 @@ public class IndexManager implements Closeable {
 			.put(defaultSettings)
 			.put("index.mapper.dynamic", false)
 			.put("index.cache.filter.type", "none")
+			.put("index.cache.field.type", "soft")
 			.put("action.auto_create_index", false);
 		if (clientOnly) {
 			settings.put("cloud.aws.access_key", "AKIAI7MHM3G2FTHQJJ3A");
