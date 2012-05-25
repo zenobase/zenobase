@@ -92,10 +92,10 @@ logger -p err just kidding
 
 === Elasticsearch ===
 
-wget 'https://github.com/downloads/elasticsearch/elasticsearch/elasticsearch-0.19.3.deb'
+wget 'https://github.com/downloads/elasticsearch/elasticsearch/elasticsearch-0.19.4.deb'
 sudo ln -s /usr/lib/jvm/java-6-openjdk-i386 /usr/lib/jvm/java-6-openjdk
-sudo dpkg -i elasticsearch-0.19.3.deb
-rm elasticsearch-0.19.3.deb
+sudo dpkg -i elasticsearch-0.19.4.deb
+rm elasticsearch-0.19.4.deb
 
 sudoedit /etc/init.d/elasticsearch
 --
