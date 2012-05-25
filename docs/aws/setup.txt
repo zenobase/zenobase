@@ -146,13 +146,10 @@ sudo /etc/init.d/elasticsearch restart
 
 sudo adduser --system --no-create-home play
 
-sudoedit /etc/init.d/play
+sudoedit /etc/init/play.conf
 --
 ...
 --
-
-sudo chmod +x /etc/init.d/play
-sudo update-rc.d play defaults 25
 
 sudoedit /etc/play.conf
 --
