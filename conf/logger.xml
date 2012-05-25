@@ -10,7 +10,8 @@
 
 	<appender name="SYSLOG" class="ch.qos.logback.classic.net.SyslogAppender">
 		<syslogHost>localhost</syslogHost>
-		<facility>LOCAL2</facility>
+		<facility>USER</facility>
+		<facilityPrinting>true</facilityPrinting>
 		<suffixPattern>[%p][%c] %m%n</suffixPattern>
 	</appender>
 
