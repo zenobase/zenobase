@@ -5,7 +5,7 @@
 # Home page
 GET     /                            controllers.Assets.at(path="/public", file="index.html")
 GET     /admin/                      controllers.Assets.at(path="/public/admin", file="index.html")
-
+GET     /mu-d0a62d64-4aee47b2-9b6e0c4b-0685f936  controllers.Assets.at(path="/public", file="blitz.txt")
 GET     /status                      com.zenobase.controllers.StatusController.get()
 
 GET     /favicon.ico                 controllers.Assets.at(path="/public/img", file="favicon.ico")
