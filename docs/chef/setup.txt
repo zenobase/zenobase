@@ -9,7 +9,14 @@ mkdir -p ~/.chef
 
 # see http://wiki.opscode.com/display/chef/EC2+Bootstrap+Fast+Start+Guide
 sudo aptitude install libxslt-dev libxml2-dev
-sudo gem install knife-ec2 --no-rdoc --no-ri
+
+# sudo gem install knife-ec2 --no-rdoc --no-ri
+# build patched version of ec2-knife (supports setting node attributes)
+git clone https://github.com/johntdyer/knife-ec2
+cd knife-ec2
+gem build knife-ec2.gemspec
+sudo gem install knife-ec2-0.5.13.gem
+sudo gem cleanup knife-ec2
 
 # install chef-client
 knife cookbook site install chef-client
@@ -20,7 +27,7 @@ User ubuntu
 IdentityFile /home/ubuntu/.ssh/ejain.pem
 
 # create node
-knife ec2 server create -I ami-b89842d1 -f m1.small -G zeno --region us-east-1 -Z us-east-1c -S ejain -r 'recipe[chef-client]'
+knife ec2 server create -I ami-b89842d1 -f m1.small -G zeno --region us-east-1 -Z us-east-1c -x ubuntu -S ejain -r 'recipe[chef-client]' -j @node.json
 
 # do stuff
 knife ssh 'name:*' "ls -hal"
