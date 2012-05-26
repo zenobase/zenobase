@@ -46,5 +46,5 @@ knife node run list add NODE 'recipe[elasticsearch]'
 knife ssh 'name:*' "sudo chef-client"
 
 # drop node
-knife ec2 server delete i-xxxxxxxx --region us-east-1
+knife ec2 server delete --region us-east-1 i-xxxxxxxx
 knife node delete i-xxxxxxxx
