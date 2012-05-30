@@ -61,7 +61,7 @@
 			&bull; <a href="http://blog.zenobase.com/" class="footer-link">Blog</a>
 		</footer>
 
-		<div id="sign-in-dialog" novalidate class="modal hide" data-ng-controller="AuthFormCtrl">
+		<div id="sign-in-dialog" class="modal hide" data-ng-controller="AuthFormCtrl">
 			<form name="signInForm" novalidate data-ng-submit="signIn()" class="modal-form">
 					<div class="modal-header">
 						<a class="close" data-dismiss="modal">&times;</a>
@@ -100,8 +100,8 @@
 			</form>
 		</div>
 
-		<div id="reset-password-dialog" novalidate class="modal hide" data-ng-controller="ResetPasswordFormCtrl">
-			<form name="resetPasswordForm" data-ng-submit="requestReset()" class="modal-form">
+		<div id="reset-password-dialog" class="modal hide" data-ng-controller="ResetPasswordFormCtrl">
+			<form name="resetPasswordForm" novalidate data-ng-submit="requestReset()" class="modal-form">
 					<div class="modal-header">
 						<a class="close" data-dismiss="modal">&times;</a>
 						<h3>Reset Password</h3>
@@ -115,7 +115,7 @@
 							<input id="reset-username" type="text" class="large" data-ng-model="username" required/>
 						</div>
 						<div class="control-group">
-							<label for="email">Email</label>
+							<label for="reset-email">Email</label>
 							<input id="reset-email" type="email" class="large" data-ng-model="email" required/>
 						</div>
 					</div>
