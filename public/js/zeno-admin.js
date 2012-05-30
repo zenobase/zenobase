@@ -80,7 +80,7 @@
 			});
 		};
 		$scope.remove = function(bucketId) {
-			$http({ method : 'DELETE', url : '/buckets/' + bucketId + '/' }).success(function(response, code, headers) {
+			$http({ method : 'DELETE', url : '/buckets/' + bucketId }).success(function(response, code, headers) {
 				$scope.alert.show('Deleted a bucket.', 'alert-success', response.undo);
 				$scope.reload();
 			});
