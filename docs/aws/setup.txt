@@ -6,16 +6,6 @@ ejain@zenobase.com
 
 === IAM ===
 
-policy-mail
-{
-	"Statement": [
-		{
-			"Action": "ses:SendRawEmail",
-			"Effect": "Allow",
-			"Resource": "*"
-		}
-	]
-}
 policy-elasticsearch
 {
   "Statement": [
@@ -74,22 +64,6 @@ elasticsearch  -  memlock  unlimited
 --
 
 
-=== Papertrail/Loggly/Splunk ===
-
-sudoedit /etc/rsyslog.d/80-papertrail.conf
----
-$ModLoad imudp
-$UDPServerRun 514
-#*.warn  @logs.papertrailapp.com:20382
-#*.warn  @@logs.loggly.com:28388
-*.warn  @@logs3.splunkstorm.com:20502
----
-
-sudo service rsyslog restart
-
-logger -p err just kidding
-
-
 === Elasticsearch ===
 
 wget 'https://github.com/downloads/elasticsearch/elasticsearch/elasticsearch-0.19.4.deb'
@@ -97,10 +71,9 @@ sudo ln -s /usr/lib/jvm/java-6-openjdk-i386 /usr/lib/jvm/java-6-openjdk
 sudo dpkg -i elasticsearch-0.19.4.deb
 rm elasticsearch-0.19.4.deb
 
-sudoedit /etc/init.d/elasticsearch
+sudoedit /etc/default/elasticsearch
 --
 ES_JAVA_OPTS=-server
-export ES_JAVA_OPTS
 --
 
 sudoedit /etc/elasticsearch/logging.yml
@@ -140,6 +113,64 @@ gateway:
 
 sudo /usr/share/elasticsearch/bin/plugin -install elasticsearch/elasticsearch-cloud-aws/1.5.0
 sudo /etc/init.d/elasticsearch restart
+
+
+=== rsyslogd for Papertrail/Loggly/Splunk ===
+
+sudoedit /etc/rsyslog.d/80-papertrail.conf
+---
+$ModLoad imudp
+$UDPServerRun 514
+#*.warn  @logs.papertrailapp.com:20382
+#*.warn  @@logs.loggly.com:28388
+*.warn  @@logs3.splunkstorm.com:20502
+---
+
+sudo service rsyslog restart
+
+logger -p err just kidding
+
+
+=== Sematext SPM ===
+
+sudo aptitude install ntp
+wget http://apps.sematext.com/spm-dist/spm-client-es-ubuntu-1.5.0.zip
+unzip -q spm-client-es-ubuntu-*.zip
+cd spm-client-es-ubuntu-*
+nano nano spm-setup.properties
+--
+spm_sender_system_token=XXX
+--
+sudo bash spm-client-install.sh 2>&1 | tee -a /tmp/spm-install.log
+sudoedit /etc/init.d/elasticsearch
+--
+ES_JAVA_OPTS="-server -Dcom.sun.management.jmxremote -javaagent:/spm/spm-monitor/lib/spm-monitor-es-1.5.0-withdeps.jar=/spm/spm-monitor/conf/spm-monitor-config-83dae3f9-1a35-458c-b6ca-e1e6eec43d1b-default.xml"
+--
+sudo service elasticsearch restart
+cd ..
+rm -rf spm-client-es-ubuntu-*
+
+
+=== New Relic ===
+
+# download newrelic_agent2.5.0.zip
+sudo unzip -q -d /usr/lib/newrelic newrelic_agent2.5.0.zip
+rm newrelic_agent2.5.0.zip
+sudoedit /etc/init.d/elasticsearch
+--
+ES_JAVA_OPTS="-server -javaagent:/usr/lib/newrelic/newrelic.jar -Dnewrelic.app_name=Elasticsearch"
+--
+sudo service elasticsearch restart
+
+
+=== New Relic Server Monitoring ===
+
+sudo wget -O /etc/apt/sources.list.d/newrelic.list http://download.newrelic.com/debian/newrelic.list
+sudo apt-key adv --keyserver hkp://subkeys.pgp.net --recv-keys 548C16BF
+sudo aptitude update
+sudo aptitude install newrelic-sysmond
+sudo nrsysmond-config --set license_key=93915b5044846b31eec878fee1dac53bf5cc3ce3
+sudo /etc/init.d/newrelic-sysmond start
 
 
 === Play ===

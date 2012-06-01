@@ -11,40 +11,51 @@ mkdir -p ~/.chef
 sudo aptitude install libxslt-dev libxml2-dev
 
 # sudo gem install knife-ec2 --no-rdoc --no-ri
-# build patched version of ec2-knife (supports setting node attributes)
+# build patched version of ec2-knife instead (supports setting node attributes)
 git clone https://github.com/johntdyer/knife-ec2
 cd knife-ec2
 gem build knife-ec2.gemspec
 sudo gem install knife-ec2-0.5.13.gem
 sudo gem cleanup knife-ec2
 
-# install chef-client
+# install chef-client cookbook
 knife cookbook site install chef-client
 knife cookbook upload chef-client
+
+# install ntp cookbook
+knife cookbook site install ntp
+knife cookbook upload ntp
 
 # create .ssh/config
 User ubuntu
 IdentityFile /home/ubuntu/.ssh/ejain.pem
 
 # create node
-knife ec2 server create -I ami-b89842d1 -f m1.small -G zeno --region us-east-1 -Z us-east-1c -x ubuntu -S ejain -r 'recipe[chef-client]' -j @node.json
+knife ec2 server create -I ami-b89842d1 -f m1.small -G zeno --region us-east-1 -Z us-east-1c -x ubuntu -S ejain -r 'recipe[ntp],recipe[elasticsearch],recipe[play]' \
+  -j '{ "aws": { "secret_key": "VpgSPpz10TAaNft2/NVbIQG5smIEQfviNd/A5Yvx", "access_key": "AKIAI7MHM3G2FTHQJJ3A" }, "elasticsearch" : { "clusterName" : "zeno-test" }, "play" : { "version" : "1.0.1338397258805" } }'
 
-# do stuff
-knife ssh 'name:*' "ls -hal"
+NODE=
+
+# update
+knife ssh name:$NODE 'sudo aptitude -q update && sudo aptitude -yq safe-upgrade && sudo shutdown -r now'
 
 knife cookbook create elasticsearch
-nano cookbooks/elasticsearch/recipes/default.rb
-"""
-package "openjdk-6-jre-headless" do
-        action [:install]
-end
-"""
+...
 knife cookbook upload elasticsearch
-knife node run list add NODE 'recipe[elasticsearch]'
+knife node run list add $NODE 'recipe[elasticsearch]'
 
-# update nodes
-knife ssh 'name:*' "sudo chef-client"
+knife cookbook create play
+...
+knife cookbook upload play
+knife node run list add $NODE 'recipe[play]'
+
+# update node
+knife ssh name:$NODE 'sudo chef-client'
+
+# check node
+knife ssh name:$NODE 'curl localhost:9000/status'
+knife ssh name:$NODE 'curl localhost:9200/_cluster/health?pretty=true'
 
 # drop node
-knife ec2 server delete --region us-east-1 i-xxxxxxxx
-knife node delete i-xxxxxxxx
+yes | knife ec2 server delete $NODE
+yes | knife node delete $NODE
