@@ -73,7 +73,8 @@ rm elasticsearch-0.19.4.deb
 
 sudoedit /etc/default/elasticsearch
 --
-ES_JAVA_OPTS=-server
+export ES_JAVA_OPTS=-server
+export ES_HEAP_SIZE=1g
 --
 
 sudoedit /etc/elasticsearch/logging.yml
@@ -91,7 +92,7 @@ sudoedit /etc/elasticsearch/logging.yml
 
 sudoedit /etc/elasticsearch/elasticsearch.yml
 --
-# bootstrap.mlockall: true
+bootstrap.mlockall: true
 cluster.name: zeno
 plugin.mandatory: cloud-aws
 cloud:
