@@ -1,8 +1,8 @@
 === Chef Workstation (Windows) ===
 
 # see http://wiki.opscode.com/display/chef/Workstation+Setup+for+Windows
-# install http://opscode.com/chef/install.msi
-gem install knife-ec2 ruby-wmi windows-api windows-pr
+# install https://s3.amazonaws.com/opscode-full-stack/windows/chef-client-0.10.10-3.msi
+gem install chef knife-ec2
 
 
 === Chef Workstation (Ubuntu) ===

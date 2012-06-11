@@ -29,6 +29,13 @@ policy-elasticsearch
   ]
 }
 
+
+=== Key ===
+
+openssl genrsa -out scalarium.key 2046
+openssl req -new -x509 -sha1 -days 3750 -key scalarium.key -out scalarium.pem
+
+
 === SSL Certificate (via namecheap.com) ===
 
 # generate certificate signing request (csr)
@@ -62,6 +69,13 @@ sudoedit /etc/security/limits.conf
 elasticsearch  -  nofile   64000
 elasticsearch  -  memlock  unlimited 
 --
+
+sudoedit /etc/pam.d/su
+--
+session    required   pam_limits.so
+--
+
+# If elasticsearch still logs an "unknown mlockall error 0" on startup, the preceding setting isn't in effect
 
 
 === Elasticsearch ===
@@ -172,6 +186,17 @@ sudo aptitude update
 sudo aptitude install newrelic-sysmond
 sudo nrsysmond-config --set license_key=93915b5044846b31eec878fee1dac53bf5cc3ce3
 sudo /etc/init.d/newrelic-sysmond start
+
+
+=== Scout ===
+
+sudo aptitude install rubygems
+sudo gem install scout
+echo e4b65861-5f91-49f0-9e0b-b8014ee55ee4 | scout
+crontab -e
+--
+* * * * *  /usr/local/bin/scout e4b65861-5f91-49f0-9e0b-b8014ee55ee4
+--
 
 
 === Play ===
