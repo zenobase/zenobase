@@ -17,12 +17,12 @@
 	var DELAY = 1000; // ms after which we assume changes will be visible
 	
 	app.config(['$routeProvider', function($routeProvider) {
-		$routeProvider.when('/', { template: '/public/home.html' })
-			.when('/buckets/:bucketId/', { template : '/public/dashboard.html', reloadOnSearch : false })
-			.when('/users/:userId', { template : '/public/user.html' })
-			.when('/users/:userId/reset', { template : '/public/reset.html' })
-			.when('/users/:userId/verify', { template : '/public/verify.html' })
-			.otherwise({ template : '/public/404.html' });
+		$routeProvider.when('/', { templateUrl: '/public/home.html' })
+			.when('/buckets/:bucketId/', { templateUrl : '/public/dashboard.html', reloadOnSearch : false })
+			.when('/users/:userId', { templateUrl : '/public/user.html' })
+			.when('/users/:userId/reset', { templateUrl : '/public/reset.html' })
+			.when('/users/:userId/verify', { templateUrl : '/public/verify.html' })
+			.otherwise({ templateUrl : '/public/404.html' });
 	}]);
 	
 	app.controller('MainCtrl', ['$scope', '$route', '$http', '$location', '$timeout', function($scope, $route, $http, $location, $timeout) {
