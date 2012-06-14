@@ -15,7 +15,7 @@
 	var app = angular.module('ZenoModule', ['ngSanitize']);
 
 	var DELAY = 1000; // ms after which we assume changes will be visible
-	
+
 	app.config(['$routeProvider', function($routeProvider) {
 		$routeProvider.when('/', { templateUrl: '/public/home.html' })
 			.when('/buckets/:bucketId/', { templateUrl : '/public/dashboard.html', reloadOnSearch : false })
@@ -24,7 +24,7 @@
 			.when('/users/:userId/verify', { templateUrl : '/public/verify.html' })
 			.otherwise({ templateUrl : '/public/404.html' });
 	}]);
-	
+
 	app.controller('MainCtrl', ['$scope', '$route', '$http', '$location', '$timeout', function($scope, $route, $http, $location, $timeout) {
 		$scope.whoami = function() {
 			$http.get('/who').success(function(response) {
