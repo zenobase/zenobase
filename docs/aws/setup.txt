@@ -254,13 +254,16 @@ mail.pass="Arn+fbdGQrVi9nI0usc+3C7xfEvtapDsF6hmPzhkuLh9"
 mail.from="info@zenobase.com"
 --
 
+wget https://s3.amazonaws.com/zeno-deploy/zenobase-1.0.xxxxx.zip
+
 # if updating
 sudo service play stop
 sudo rm -r /var/play
 
-wget https://s3.amazonaws.com/zeno-deploy/zenobase-1.0.xxxxx.zip
 unzip -q zenobase-*.zip && rm zenobase-*.zip
 sudo mv zenobase-* /var/play
 sudo chmod +x /var/play/start
 sudo chown -R play:nogroup /var/play
 sudo service play start
+
+watch curl -s localhost:9000/status
