@@ -8,6 +8,11 @@
 		<meta property="og:url" content="https://zenobase.com/"/>
 		<meta property="og:description" content="Collect and analyze your activities, or just about anything else."/>
 		<meta name="Description" content="Collect and analyze your activities, or just about anything else."/>
+		<script>
+			if (window.location.href.indexOf('#') < 0) {
+				window.location.replace(window.location.href + '#/');
+			}
+		</script>
 		<link rel="stylesheet" type="text/css" href="/public/css/zeno.min.css"/>
 		<link rel="canonical" href="https://zenobase.com/">
 	</head>
@@ -165,6 +170,11 @@
 		<script src="/public/js/LAB-2.0.3.js"></script>
 		<script>
 			$LAB
+				.wait(function() { // fix for angular.js redirect loop in IE
+					if (window.location.href.indexOf('#') < 0) {
+						window.location.replace(window.location.href + '#/');
+					}
+				})
 				.script("/public/js/jquery-1.7.2.js").wait()
 				.script("/public/js/bootstrap-2.0.4.js")
 				.script("/public/js/angular-1.0.0.js").wait()
