@@ -17,11 +17,11 @@ public class Canonical extends Simple {
 	@Override
 	public Result call(Context context) throws Throwable {
 		return isCanonical(context.request()) ? delegate.call(context) :
-			Results.movedPermanently(baseUri + context.request().path());
+			Results.movedPermanently(baseUri + context.request().uri());
 	}
 
 	private boolean isCanonical(Request request) {
-		String originalUri = request.getHeader("X-Forwarded-Proto");
-		return originalUri == null || originalUri.startsWith(baseUri);
+		String scheme = request.getHeader("X-Forwarded-Proto");
+		return scheme == null || baseUri.equals(scheme + "://" + request.host());
 	}
 }
