@@ -36,6 +36,7 @@ import com.zenobase.controllers.EventController;
 import com.zenobase.controllers.EventListController;
 import com.zenobase.controllers.PasswordResetController;
 import com.zenobase.controllers.QueueController;
+import com.zenobase.controllers.Canonical;
 import com.zenobase.controllers.SecurityContext;
 import com.zenobase.controllers.SecurityController;
 import com.zenobase.controllers.StatusController;
@@ -125,6 +126,8 @@ public class Global extends GlobalSettings {
 				requestStaticInjection(UserController.class);
 				requestStaticInjection(UserListController.class);
 				requestStaticInjection(WhoController.class);
+
+				requestStaticInjection(Canonical.class);
 			}
 
 			private void bindConfiguration() {
