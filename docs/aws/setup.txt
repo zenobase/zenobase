@@ -1,9 +1,3 @@
-=== AWS Account ===
-
-ejain@zenobase.com
-7dsqh3io97
-
-
 === IAM ===
 
 policy-elasticsearch
