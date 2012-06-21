@@ -241,10 +241,10 @@ es.cluster=zeno
 
 mail.smtp.auth=true
 mail.smtp.starttls.enable=true
-mail.smtp.host="email-smtp.us-east-1.amazonaws.com"
+mail.smtp.host="smtp.sendgrid.com"
 mail.smtp.port=587
-mail.user="AKIAISDJQHVFYCGXJE3Q"
-mail.pass="Arn+fbdGQrVi9nI0usc+3C7xfEvtapDsF6hmPzhkuLh9"
+mail.user="zenomail"
+mail.pass="u140pseen2"
 mail.from="info@zenobase.com"
 --
 
