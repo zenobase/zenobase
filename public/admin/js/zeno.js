@@ -5,11 +5,10 @@
 	var adminApp = angular.module('ZenoAdminModule', [ 'ZenoModule' ]);
 	
 	adminApp.config(function($routeProvider) {
-		$routeProvider.when('/', { templateUrl: '/admin/dashboard.html' });
-		$routeProvider.otherwise({ templateUrl : '/404.html' });
+		$routeProvider.when('/', { templateUrl: '/admin/partials/dashboard.html' });
+		$routeProvider.otherwise({ templateUrl : '/partials/404.html' });
 	});
-	
-	
+
 	adminApp.controller('HistoryAdminCtrl', ['$scope', '$http', function($scope, $http) {
 	
 		$scope.offset = 0;
