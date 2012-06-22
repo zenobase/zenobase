@@ -4,6 +4,8 @@ import play.GlobalSettings;
 import play.Logger;
 import play.Play;
 import play.api.PlayException;
+import play.mvc.Http.RequestHeader;
+import play.mvc.Result;
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
@@ -32,11 +34,11 @@ import com.zenobase.commands.UpdateBucketCommand;
 import com.zenobase.controllers.AccountController;
 import com.zenobase.controllers.BucketController;
 import com.zenobase.controllers.BucketListController;
+import com.zenobase.controllers.Canonical;
 import com.zenobase.controllers.EventController;
 import com.zenobase.controllers.EventListController;
 import com.zenobase.controllers.PasswordResetController;
 import com.zenobase.controllers.QueueController;
-import com.zenobase.controllers.Canonical;
 import com.zenobase.controllers.SecurityContext;
 import com.zenobase.controllers.SecurityController;
 import com.zenobase.controllers.StatusController;
@@ -154,5 +156,11 @@ public class Global extends GlobalSettings {
 	@Override
 	public void onStop(Application application) {
 		injector.getInstance(IndexManager.class).close();
+	}
+
+	@Override
+	public Result onHandlerNotFound(RequestHeader request) {
+		Logger.info("not found: " + request.uri());
+		return super.onHandlerNotFound(request);
 	}
 }

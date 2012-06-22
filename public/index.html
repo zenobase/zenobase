@@ -4,16 +4,11 @@
 		<title>Zenobase</title>
 		<meta charset="utf-8"/>
 		<meta property="og:title" content="Zenobase"/>
-		<meta property="og:image" content="http://zenobase.com/public/img/logo.png"/>
+		<meta property="og:image" content="http://zenobase.com/img/logo.png"/>
 		<meta property="og:url" content="https://zenobase.com/"/>
 		<meta property="og:description" content="Collect and analyze your activities, or just about anything else."/>
 		<meta name="Description" content="Collect and analyze your activities, or just about anything else."/>
-		<script>
-			if (window.location.href.indexOf('#') < 0) {
-				window.location.replace(window.location.href + '#/');
-			}
-		</script>
-		<link rel="stylesheet" type="text/css" href="/public/css/zeno.min.css"/>
+		<link rel="stylesheet" type="text/css" href="/css/zeno.min.css"/>
 		<link rel="canonical" href="https://zenobase.com/">
 	</head>
 
@@ -27,7 +22,7 @@
 		</div>
 
 		<header class="container-fluid">
-			<p class="logo pull-left"><a href="#/"><img src="/public/img/logo.png" alt="Zenobase" width="159" height="25"/></a></p>
+			<p class="logo pull-left"><a href="#/"><img src="/img/logo.png" alt="Zenobase" width="159" height="25"/></a></p>
 			<div class="pull-right ng-cloak">
 				<p data-ng-show="user">
 					<i class="icon-user"></i> <a href="#/users/{{user.getName()}}">{{user.getName()}}</a> | <a data-ng-click="signOut()">Sign out</a>
@@ -167,7 +162,7 @@
 			</form>
 		</div>
 
-		<script src="/public/js/LAB-2.0.3.js"></script>
+		<script src="/js/LAB-2.0.3.js"></script>
 		<script>
 			$LAB
 				.wait(function() { // fix for angular.js redirect loop in IE
@@ -175,14 +170,14 @@
 						window.location.replace(window.location.href + '#/');
 					}
 				})
-				.script("/public/js/jquery-1.7.2.js").wait()
-				.script("/public/js/bootstrap-2.0.4.js")
-				.script("/public/js/angular-1.0.0.js").wait()
-				.script("/public/js/angular-sanitize-1.0.0.js")
-				.script("/public/js/iso8601.js")
-				.script("/public/js/humane.js")
+				.script("/js/jquery-1.7.2.js").wait()
+				.script("/js/bootstrap-2.0.4.js")
+				.script("/js/angular-1.0.0.js").wait()
+				.script("/js/angular-sanitize-1.0.0.js")
+				.script("/js/iso8601.js")
+				.script("/js/humane.js")
 				.script("//www.google.com/jsapi").wait()
-				.script("/public/js/zeno.js").wait(function() {
+				.script("/js/zeno.js").wait(function() {
 					angular.bootstrap(document, ['ZenoModule']);
 				})
 				.script("//widget.uservoice.com/82HfNEHGD4R9y8hy97Rrw.js");

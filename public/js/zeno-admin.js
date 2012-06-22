@@ -5,8 +5,8 @@
 	var adminApp = angular.module('ZenoAdminModule', [ 'ZenoModule' ]);
 	
 	adminApp.config(function($routeProvider) {
-		$routeProvider.when('/', { templateUrl: '/public/admin/dashboard.html' });
-		$routeProvider.otherwise({ templateUrl : '/public/404.html' });
+		$routeProvider.when('/', { templateUrl: '/admin/dashboard.html' });
+		$routeProvider.otherwise({ templateUrl : '/404.html' });
 	});
 	
 	

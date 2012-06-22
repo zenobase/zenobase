@@ -7,11 +7,6 @@ GET     /                            com.zenobase.controllers.Assets.at(path="/p
 GET     /admin/                      com.zenobase.controllers.Assets.at(path="/public/admin", file="index.html")
 GET     /status                      com.zenobase.controllers.StatusController.get()
 
-GET     /favicon.ico                 com.zenobase.controllers.Assets.at(path="/public/img", file="favicon.ico")
-GET     /robots.txt                  com.zenobase.controllers.Assets.at(path="/public", file="robots.txt")
-GET     /google2da47afcb7af4a3e.html com.zenobase.controllers.Assets.at(path="/public", file="google-site-verification.html")
-GET     /echo/:message               com.zenobase.controllers.CacheTestController.get(message)
-
 GET     /who                         com.zenobase.controllers.WhoController.who()
 POST    /signin                      com.zenobase.controllers.SecurityController.signIn()
 POST    /signout                     com.zenobase.controllers.SecurityController.signOut()
@@ -42,4 +37,4 @@ GET     /queue/                      com.zenobase.controllers.QueueController.ge
 POST    /queue/                      com.zenobase.controllers.QueueController.post()
 
 # Map static resources from the /public folder to the /assets URL path
-GET     /public/*file                com.zenobase.controllers.Assets.at(path="/public", file)
+GET     /*file                com.zenobase.controllers.Assets.at(path="/public", file)
