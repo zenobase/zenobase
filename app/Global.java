@@ -4,8 +4,6 @@ import play.GlobalSettings;
 import play.Logger;
 import play.Play;
 import play.api.PlayException;
-import play.mvc.Http.RequestHeader;
-import play.mvc.Result;
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
@@ -156,11 +154,5 @@ public class Global extends GlobalSettings {
 	@Override
 	public void onStop(Application application) {
 		injector.getInstance(IndexManager.class).close();
-	}
-
-	@Override
-	public Result onHandlerNotFound(RequestHeader request) {
-		Logger.info("not found: " + request.uri());
-		return super.onHandlerNotFound(request);
 	}
 }
