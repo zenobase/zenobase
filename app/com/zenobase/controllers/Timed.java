@@ -5,6 +5,7 @@ import play.Logger.ALogger;
 import play.mvc.Action.Simple;
 import play.mvc.Http.Context;
 import play.mvc.Result;
+import com.google.common.base.Stopwatch;
 
 public class Timed extends Simple {
 
@@ -12,10 +13,10 @@ public class Timed extends Simple {
 
 	@Override
 	public Result call(Context context) throws Throwable {
-		long t0 = System.nanoTime();
+		Stopwatch timer = new Stopwatch().start();
 		Result result = delegate.call(context);
-		long t1 = System.nanoTime();
-		log.info(String.format("%,dms for %s", (t1 - t0) / (1000 * 1000), context.request().uri()));
+		timer.stop();
+		log.info(String.format("%s for %s", timer, context.request().uri()));
 		return result;
 	}
 }
