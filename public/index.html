@@ -165,15 +165,10 @@
 		<script src="/js/LAB-2.0.3.js"></script>
 		<script>
 			$LAB
-				.wait(function() { // fix for angular.js redirect loop in IE
-					if (window.location.href.indexOf('#') < 0) {
-						window.location.replace(window.location.href + '#/');
-					}
-				})
 				.script("/js/jquery-1.7.2.js").wait()
 				.script("/js/bootstrap-2.0.4.js")
-				.script("/js/angular-1.0.0.js").wait()
-				.script("/js/angular-sanitize-1.0.0.js")
+				.script("/js/angular-1.0.1.js").wait()
+				.script("/js/angular-sanitize-1.0.1.js")
 				.script("/js/iso8601.js")
 				.script("/js/humane.js")
 				.script("//www.google.com/jsapi").wait()
