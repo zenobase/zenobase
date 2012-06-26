@@ -14,7 +14,6 @@ POST    /users/:name                 com.zenobase.controllers.UserController.upd
 POST    /users/                      com.zenobase.controllers.AccountController.open()
 DELETE  /users/:name                 com.zenobase.controllers.AccountController.close(name)
 
-GET     /buckets                     controllers.Default.redirect(to="/buckets/") 
 GET     /buckets/                    com.zenobase.controllers.BucketListController.find(identity ?= null, offset : Int ?= 0, limit : Int ?= java.lang.Integer.MAX_VALUE)
 POST    /buckets/                    com.zenobase.controllers.BucketListController.post()
 

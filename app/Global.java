@@ -4,14 +4,18 @@ import play.GlobalSettings;
 import play.Logger;
 import play.Play;
 import play.api.PlayException;
+import play.api.mvc.Handler;
+import play.mvc.Http.RequestHeader;
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
+import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Singleton;
 import com.google.inject.TypeLiteral;
 import com.google.inject.multibindings.Multibinder;
 import com.google.inject.name.Names;
 
+import com.zenobase.actions.Canonical;
 import com.zenobase.commands.ChangeUserEmailCommand;
 import com.zenobase.commands.ChangeUserPasswordCommand;
 import com.zenobase.commands.ChangeUserVerifiedCommand;
@@ -32,7 +36,6 @@ import com.zenobase.commands.UpdateBucketCommand;
 import com.zenobase.controllers.AccountController;
 import com.zenobase.controllers.BucketController;
 import com.zenobase.controllers.BucketListController;
-import com.zenobase.controllers.Canonical;
 import com.zenobase.controllers.EventController;
 import com.zenobase.controllers.EventListController;
 import com.zenobase.controllers.PasswordResetController;
@@ -55,6 +58,8 @@ import com.zenobase.services.UserRepository;
 
 public class Global extends GlobalSettings {
 
+	@Inject
+	private Canonical canonical;
 	private Injector injector;
 
 	@Override
@@ -84,6 +89,7 @@ public class Global extends GlobalSettings {
 				bind(VerificationMailer.class).in(Singleton.class);
 				bind(PasswordResetMailer.class).in(Singleton.class);
 				bind(SecurityContext.class).in(Singleton.class);
+				bind(Canonical.class).in(Singleton.class);
 
 				Multibinder<CommandParser> parsers = Multibinder.newSetBinder(binder(), CommandParser.class);
 				parsers.addBinding().to(CreateBucketCommand.Parser.class);
@@ -127,7 +133,7 @@ public class Global extends GlobalSettings {
 				requestStaticInjection(UserListController.class);
 				requestStaticInjection(WhoController.class);
 
-				requestStaticInjection(Canonical.class);
+				requestInjection(Global.this);
 			}
 
 			private void bindConfiguration() {
@@ -149,6 +155,11 @@ public class Global extends GlobalSettings {
 		if (users.isEmpty()) {
 			injector.getInstance(CommandReplay.class).replay();
 		}
+	}
+
+	@Override
+	public Handler onRouteRequest(RequestHeader request) {
+		return canonical.test(request) ? super.onRouteRequest(request) : canonical.redirect(request);
 	}
 
 	@Override

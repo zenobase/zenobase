@@ -5,6 +5,7 @@ import javax.inject.Inject;
 import play.mvc.Result;
 import play.mvc.With;
 
+import com.zenobase.actions.Timed;
 import com.zenobase.io.UserPrinter;
 import com.zenobase.models.Identity;
 import com.zenobase.models.User;

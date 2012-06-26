@@ -6,6 +6,7 @@ import play.mvc.BodyParser;
 import play.mvc.Result;
 import play.mvc.With;
 
+import com.zenobase.actions.Timed;
 import com.zenobase.commands.CloseAccountCommandBuilder;
 import com.zenobase.commands.CreateUserCommand;
 import com.zenobase.mail.VerificationMailer;

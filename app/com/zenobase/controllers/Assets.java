@@ -4,8 +4,8 @@ import play.api.mvc.Action;
 import play.api.mvc.AnyContent;
 
 /**
- * Custom asset controller. Delegates to the default asset controller, but lets
- * us do action composition, e.g. {@link Canonical}.
+ * Custom asset controller. Delegates to the default asset controller, but can
+ * be intercepted with GlobalSettings.onRequest.
  */
 public class Assets extends ControllerSupport {
 

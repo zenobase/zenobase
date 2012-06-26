@@ -7,6 +7,7 @@ import play.mvc.BodyParser;
 import play.mvc.Result;
 import play.mvc.With;
 
+import com.zenobase.actions.Timed;
 import com.zenobase.commands.ChangeUserEmailCommand;
 import com.zenobase.commands.ChangeUserPasswordCommand;
 import com.zenobase.commands.ChangeUserVerifiedCommand;
