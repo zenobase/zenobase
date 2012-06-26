@@ -6,7 +6,7 @@ import PlayProject._
 object ApplicationBuild extends Build {
 
     val appName         = "Zenobase"
-    val appVersion      = "1.0." + Platform.currentTime
+    val appVersion      = "SNAPSHOT"
 
     val appDependencies = Seq(
       "javax.mail" % "mail" % "1.4.5",
