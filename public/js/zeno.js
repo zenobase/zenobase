@@ -10,8 +10,7 @@
 			console[method] = console[method] || function() {};	
 		});
 	}(window.console = window.console || {})); 
-	
-	
+
 	var app = angular.module('ZenoModule', ['ngSanitize']);
 
 	var DELAY = 1000; // ms after which we assume changes will be visible
