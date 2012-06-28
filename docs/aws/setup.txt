@@ -24,12 +24,6 @@ policy-elasticsearch
 }
 
 
-=== Key ===
-
-openssl genrsa -out scalarium.key 2046
-openssl req -new -x509 -sha1 -days 3750 -key scalarium.key -out scalarium.pem
-
-
 === SSL Certificate (via namecheap.com) ===
 
 # generate certificate signing request (csr)
