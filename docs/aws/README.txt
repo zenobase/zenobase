@@ -47,24 +47,3 @@ ES_JAVA_OPTS="-server -Dcom.sun.management.jmxremote -javaagent:/spm/spm-monitor
 sudo service elasticsearch restart
 cd ..
 rm -rf spm-client-es-ubuntu-*
-
-
-=== New Relic Agent ===
-
-# download newrelic_agent2.6.0.zip
-sudo unzip -q -d /usr/lib/newrelic newrelic_agent2.6.0.zip
-rm newrelic_agent2.6.0.zip
-sudoedit /usr/lib/newrelic/newrelic.yml
-# set app_name=Play|Elasticsearch
-
-sudoedit /etc/default/elasticsearch
---
-ES_JAVA_OPTS="-server -javaagent:/usr/lib/newrelic/newrelic.jar -Dnewrelic.environment=elasticsearch"
---
-sudo service elasticsearch restart
-
-sudoedit /etc/init/play.conf
---
-env JAVA_OPTS="... -javaagent:/usr/lib/newrelic/newrelic.jar -Dnewrelic.environment=play"
---
-sudo service play restart
