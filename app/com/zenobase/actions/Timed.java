@@ -9,6 +9,7 @@ import play.mvc.Action;
 import play.mvc.Http;
 import play.mvc.Http.Context;
 import play.mvc.Result;
+import play.test.Helpers;
 import com.google.common.base.Stopwatch;
 import com.newrelic.api.agent.NewRelic;
 import com.newrelic.api.agent.Request;
@@ -22,14 +23,13 @@ public class Timed extends Action.Simple {
 	@Override
 	@Trace(dispatcher=true)
 	public Result call(Context context) throws Throwable {
-		NewRelic.setTransactionName("http", context.request().path());
+		// NewRelic.setTransactionName(null, context.request().path());
 		try {
 			Stopwatch timer = new Stopwatch().start();
 			Result result = delegate.call(context);
 			timer.stop();
-			NewRelic.recordResponseTimeMetric("action", timer.elapsedMillis());
-			PlayRequest r = new PlayRequest(context);
-			NewRelic.setRequestAndResponse(r, r);
+			NewRelic.setRequestAndResponse(new PlayRequest(context), new PlayResponse(result));
+			// NewRelic.recordResponseTimeMetric("action", timer.elapsedMillis());
 			log.info(String.format("%s for %s", timer, context.request().uri()));
 			return result;
 		} catch (Throwable t) {
@@ -38,7 +38,7 @@ public class Timed extends Action.Simple {
 		}
 	}
 
-	public static class PlayRequest implements Request, Response {
+	public static class PlayRequest implements Request {
 
 		private final Http.Context context;
 
@@ -47,23 +47,8 @@ public class Timed extends Action.Simple {
 		}
 
 		@Override
-		public int getStatus() throws Exception {
-			return 200;
-		}
-
-		@Override
-		public String getStatusMessage() throws Exception {
-			return null;
-		}
-
-		@Override
-		public void setHeader(String name, String value) {
-
-		}
-
-		@Override
 		public String getRequestURI() {
-			return context.request().uri();
+			return context.request().path();
 		}
 
 		@Override
@@ -89,6 +74,30 @@ public class Timed extends Action.Simple {
 		@Override
 		public Object getAttribute(String name) {
 			return null;
+		}
+	}
+
+	public static class PlayResponse implements Response {
+
+		private final Result result;
+
+		public PlayResponse(Result result) {
+			this.result = result;
+		}
+
+		@Override
+		public int getStatus() throws Exception {
+			return Helpers.status(result);
+		}
+
+		@Override
+		public String getStatusMessage() throws Exception {
+			return null;
+		}
+
+		@Override
+		public void setHeader(String name, String value) {
+
 		}
 	}
 }
