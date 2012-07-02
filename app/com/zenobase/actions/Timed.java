@@ -1,5 +1,6 @@
 package com.zenobase.actions;
 
+import java.util.Collections;
 import java.util.Enumeration;
 
 import play.Logger;
@@ -47,7 +48,7 @@ public class Timed extends Action.Simple {
 
 		@Override
 		public int getStatus() throws Exception {
-			return 0;
+			return 200;
 		}
 
 		@Override
@@ -77,12 +78,12 @@ public class Timed extends Action.Simple {
 
 		@Override
 		public Enumeration getParameterNames() {
-			return null;
+			return Collections.enumeration(context.request().queryString().keySet());
 		}
 
 		@Override
 		public String[] getParameterValues(String name) {
-			return null;
+			return context.request().queryString().get(name);
 		}
 
 		@Override
