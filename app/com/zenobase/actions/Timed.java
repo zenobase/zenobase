@@ -7,12 +7,14 @@ import play.mvc.Http.Context;
 import play.mvc.Result;
 import com.google.common.base.Stopwatch;
 import com.newrelic.api.agent.NewRelic;
+import com.newrelic.api.agent.Trace;
 
 public class Timed extends Action.Simple {
 
 	private final ALogger log = Logger.of("timer");
 
 	@Override
+	@Trace(dispatcher=true)
 	public Result call(Context context) throws Throwable {
 		NewRelic.setTransactionName("play", context.request().path());
 		try {
