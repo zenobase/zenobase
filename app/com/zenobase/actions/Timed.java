@@ -9,7 +9,6 @@ import play.mvc.Action;
 import play.mvc.Http;
 import play.mvc.Http.Context;
 import play.mvc.Result;
-import play.test.Helpers;
 import com.google.common.base.Stopwatch;
 import com.newrelic.api.agent.NewRelic;
 import com.newrelic.api.agent.Request;
@@ -86,12 +85,12 @@ public class Timed extends Action.Simple {
 		}
 
 		@Override
-		public int getStatus() throws Exception {
-			return Helpers.status(result);
+		public int getStatus() {
+			return result != null ? 200 : 500;
 		}
 
 		@Override
-		public String getStatusMessage() throws Exception {
+		public String getStatusMessage() {
 			return null;
 		}
 
