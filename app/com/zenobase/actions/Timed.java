@@ -3,13 +3,10 @@ package com.zenobase.actions;
 import java.util.Collections;
 import java.util.Enumeration;
 
-import play.Logger;
-import play.Logger.ALogger;
 import play.mvc.Action;
 import play.mvc.Http;
 import play.mvc.Http.Context;
 import play.mvc.Result;
-import com.google.common.base.Stopwatch;
 import com.newrelic.api.agent.NewRelic;
 import com.newrelic.api.agent.Request;
 import com.newrelic.api.agent.Response;
@@ -17,19 +14,12 @@ import com.newrelic.api.agent.Trace;
 
 public class Timed extends Action.Simple {
 
-	private final ALogger log = Logger.of("timer");
-
 	@Override
 	@Trace(dispatcher=true)
 	public Result call(Context context) throws Throwable {
-		// NewRelic.setTransactionName(null, context.request().path());
 		try {
-			Stopwatch timer = new Stopwatch().start();
 			Result result = delegate.call(context);
-			timer.stop();
 			NewRelic.setRequestAndResponse(new PlayRequest(context), new PlayResponse(result));
-			// NewRelic.recordResponseTimeMetric("action", timer.elapsedMillis());
-			log.info(String.format("%s for %s", timer, context.request().uri()));
 			return result;
 		} catch (Throwable t) {
 			NewRelic.noticeError(t);
