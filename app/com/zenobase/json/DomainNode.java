@@ -4,7 +4,6 @@ import org.codehaus.jackson.node.ObjectNode;
 import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableList;
 
-
 public class DomainNode {
 
 	public static final LongField VERSION = new LongField("version", false);

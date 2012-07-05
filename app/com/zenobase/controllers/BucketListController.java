@@ -71,7 +71,7 @@ public class BucketListController extends ControllerSupport {
     public static Result post() {
     	Identity principal = auth.getPrincipal(true);
 		CreateBucketForm form = new CreateBucketForm(body());
-		Bucket bucket = new Bucket();
+		Bucket bucket = form.getId() != null ? new Bucket(form.getId()) : new Bucket();
 		bucket.setLabel(form.getLabel());
 		bucket.setDescription(form.getDescription());
 		bucket.addPermission(principal, Permission.ALL);

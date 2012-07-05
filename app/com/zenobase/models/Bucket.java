@@ -41,7 +41,11 @@ public class Bucket extends DomainNode {
 	}
 
 	public Bucket() {
-		setValue(ID, Generator.id());
+		this(Generator.id());
+	}
+
+	public Bucket(String id) {
+		setValue(ID, id);
 		setValue(CREATED, new DateTime(DateTimeZone.UTC));
 	}
 

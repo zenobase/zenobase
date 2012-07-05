@@ -16,6 +16,10 @@ public class CreateBucketForm extends DomainNode {
 		setValue(Bucket.DESCRIPTION, description);
 	}
 
+	public String getId() {
+		return getValue(Bucket.ID);
+	}
+
 	public String getLabel() {
 		return getValue(Bucket.LABEL);
 	}
