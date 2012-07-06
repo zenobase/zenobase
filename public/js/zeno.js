@@ -49,6 +49,7 @@
 			$scope.$broadcast(event);
 		};
 		$scope.signOut = function() {
+			_gaq.push([ '_trackEvent', 'session', 'sign out', $scope.user.getName() ]);
 			$http.post('/signout', { 'username' : $scope.user.getName() }).success(function(response, code) {
 					$scope.alert.clear();
 					$scope.user = null;
@@ -242,6 +243,7 @@
 			};
 		};
 		$scope.signIn = function() {
+			_gaq.push([ '_trackEvent', 'session', 'sign in', $scope.username ]);
 			$http.post('/signin', $scope.data())
 				.success(function(response) {
 					$scope.$parent.user = new User(response);

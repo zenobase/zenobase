@@ -165,6 +165,11 @@
 		<script src="/js/LAB-2.0.3.js"></script>
 		<script>
 			$LAB
+				.script(function() {
+					var _gaq = _gaq || [];
+					_gaq.push(['_setAccount', 'UA-32260422-2']);
+					_gaq.push(['_trackPageview']);
+				})
 				.script("/js/jquery-1.7.2.js").wait()
 				.script("/js/bootstrap-2.0.4.js")
 				.script("/js/angular-1.0.1.js").wait()
@@ -175,6 +180,7 @@
 				.script("/js/zeno.js").wait(function() {
 					angular.bootstrap(document, ['ZenoModule']);
 				})
+				.script("//google-analytics.com/ga.js")
 				.script("//widget.uservoice.com/82HfNEHGD4R9y8hy97Rrw.js");
 		</script>
 
