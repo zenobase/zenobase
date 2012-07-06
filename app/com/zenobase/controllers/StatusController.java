@@ -2,13 +2,12 @@ package com.zenobase.controllers;
 
 import javax.inject.Inject;
 
-import org.codehaus.jackson.node.ObjectNode;
 import play.mvc.Http;
 import play.mvc.Result;
 import play.mvc.With;
 
 import com.zenobase.actions.Timed;
-import com.zenobase.json.Nodes;
+import com.zenobase.models.StatusInfo;
 import com.zenobase.services.CommandRepository;
 import com.zenobase.services.IndexManager;
 
@@ -25,9 +24,6 @@ public class StatusController extends ControllerSupport {
     	if (!Http.Context.current().request().queryString().isEmpty()) {
     		throw new RuntimeException("invalid parameters");
     	}
-		ObjectNode node = Nodes.newObject();
-		node.put("queue", history.size());
-		node.put("status", manager.getCluster().getHealthStatus().toString());
-    	return ok(node);
+    	return ok(new StatusInfo(history.size(), manager.getCluster().getHealthStatus()).toJson());
     }
 }

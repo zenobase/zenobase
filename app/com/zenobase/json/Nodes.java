@@ -6,7 +6,6 @@ import java.io.IOException;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.node.ArrayNode;
-import org.codehaus.jackson.node.JsonNodeFactory;
 import org.codehaus.jackson.node.ObjectNode;
 
 public class Nodes {
@@ -18,11 +17,11 @@ public class Nodes {
 	}
 
 	public static ObjectNode newObject() {
-		return JsonNodeFactory.instance.objectNode();
+		return MAPPER.createObjectNode();
 	}
 
 	public static ArrayNode newArray() {
-		return JsonNodeFactory.instance.arrayNode();
+		return MAPPER.createArrayNode();
 	}
 
 	public static <T extends JsonNode> T copy(T node) {
