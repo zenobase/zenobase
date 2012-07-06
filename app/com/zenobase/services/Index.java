@@ -3,7 +3,6 @@ package com.zenobase.services;
 import java.util.List;
 
 import org.codehaus.jackson.node.ObjectNode;
-import org.elasticsearch.action.admin.cluster.health.ClusterHealthStatus;
 import org.elasticsearch.action.admin.indices.create.CreateIndexResponse;
 import org.elasticsearch.action.get.GetResponse;
 import org.elasticsearch.action.index.IndexRequest.OpType;
@@ -45,7 +44,7 @@ public class Index {
 			.build();
 		CreateIndexResponse response = client.admin().indices().prepareCreate(indexName).setSettings(settings).execute().actionGet();
 		Preconditions.checkState(response.acknowledged(), "Expected acknowledgement of index creation: %s", indexName);
-		Preconditions.checkState(isReady(), "Expected at least one shard in cluster");
+		Preconditions.checkState(new Cluster(client).isReady(), "Expected at least one shard in cluster");
 	}
 
 	public void putMapping(Schema schema) {
@@ -158,9 +157,5 @@ public class Index {
 
 	public void close() {
 		client.admin().indices().prepareClose(indexName).execute().actionGet();
-	}
-
-	private boolean isReady() {
-		return client.admin().cluster().prepareHealth().setWaitForYellowStatus().setTimeout(new TimeValue(30000)).execute().actionGet().getStatus() != ClusterHealthStatus.RED;
 	}
 }

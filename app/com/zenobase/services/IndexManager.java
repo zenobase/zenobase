@@ -5,11 +5,9 @@ import java.io.Closeable;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.elasticsearch.action.admin.cluster.health.ClusterHealthStatus;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.common.settings.ImmutableSettings;
 import org.elasticsearch.common.settings.Settings;
-import org.elasticsearch.common.unit.TimeValue;
 import org.elasticsearch.node.Node;
 import org.elasticsearch.node.NodeBuilder;
 import play.Logger;
@@ -40,28 +38,22 @@ public class IndexManager implements Closeable {
 		}
 		node = NodeBuilder.nodeBuilder().clusterName(clusterName).client(clientOnly).local(local).settings(settings.build()).node();
 		client = node.client();
-		recover();
-	}
-
-	private void recover() {
-		ClusterHealthStatus status = getHealthStatus();
-		if (ClusterHealthStatus.RED.equals(status)) {
-			Logger.info("Recovering...");
-			status = client.admin().cluster().prepareHealth().setWaitForYellowStatus().setTimeout(new TimeValue(30000)).execute().actionGet().getStatus();
+		while (!new Cluster(client).isReady()) {
+			Logger.warn("Waiting for cluster to recover...");
 		}
-	}
-
-	private ClusterHealthStatus getHealthStatus() {
-		return client.admin().cluster().prepareHealth().execute().actionGet().getStatus();
 	}
 
 	public Index getIndex(String indexName) {
 		return new Index(indexName, client);
 	}
 
+	public Cluster getCluster() {
+		return new Cluster(client);
+	}
+
 	@Override
 	public void close() {
-		Logger.info("Closing node: " + getHealthStatus());
+		Logger.info("Closing node...");
 		flush();
 		client.close();
 		node.close();
