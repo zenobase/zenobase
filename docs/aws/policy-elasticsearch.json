@@ -13,9 +13,23 @@
   ],
   "Statement": [
     {
-      "Effect": "Allow",
       "Action": "EC2:Describe*",
-      "Resource": "*"
+      "Effect": "Allow",
+      "Resource": [
+        "*"
+      ]
+    }
+  ],
+  "Statement": [
+    {
+      "Action": [
+        "elasticloadbalancing:DeregisterInstancesFromLoadBalancer",
+        "elasticloadbalancing:RegisterInstancesWithLoadBalancer"
+      ],
+      "Effect": "Allow",
+      "Resource": [
+        "*"
+      ]
     }
   ]
 }
