@@ -451,6 +451,7 @@
 			label : 'My Data'
 		};
 		$scope.create = function() {
+			_gaq.push([ '_trackEvent', 'home', 'create', $scope.template.label ]);
 			$http.post('/buckets/', $scope.template)
 				.success(function(response, status, headers) {
 					var location = headers('Location');
