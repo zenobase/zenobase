@@ -11,6 +11,6 @@ public class LocalNodeFactory extends NodeFactorySupport {
 	public Node createNode(String clusterName) {
 		Logger.info("Starting local node...");
 		ImmutableSettings.Builder settings = createDefaultSettings();
-		return NodeBuilder.nodeBuilder().client(false).local(true).settings(settings.build()).node();
+		return NodeBuilder.nodeBuilder().clusterName(clusterName).client(false).local(true).settings(settings.build()).node();
 	}
 }

@@ -15,7 +15,7 @@ public class ClusterNodeFactory extends NodeFactorySupport {
 	private final String region;
 
 	@Inject
-	public ClusterNodeFactory(@Named("aws.access_key") String accessKey, @Named("aws.secret_key") String secretKey, String region) {
+	public ClusterNodeFactory(@Named("aws.access_key") String accessKey, @Named("aws.secret_key") String secretKey, @Named("aws.region") String region) {
 		this.accessKey = accessKey;
 		this.secretKey = secretKey;
 		this.region = region;
