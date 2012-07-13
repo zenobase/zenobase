@@ -25,7 +25,7 @@ public class CommandReplayTest extends ElasticSearchTestSupport {
 		addCommands(commands);
 		CommandDispatcher dispatcher = Mockito.mock(CommandDispatcher.class);
 
-		new CommandReplay(getClusterName(), parsers, dispatcher).replay(getManager());
+		new CommandReplay(getClusterName(), getNodeFactory(), parsers, dispatcher).replay(getManager());
 
 		InOrder ordered = Mockito.inOrder(dispatcher);
 		for (Command command : commands) {

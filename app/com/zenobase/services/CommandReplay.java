@@ -12,19 +12,21 @@ import com.zenobase.common.Callback;
 public class CommandReplay {
 
 	private final String sourceCluster;
+	private final NodeFactory nodeFactory;
 	private final CommandParserRegistry parsers;
 	private final CommandDispatcher dispatcher;
 
 	@Inject
-	public CommandReplay(@Named("es.replay") String sourceCluster, CommandParserRegistry parsers, CommandDispatcher dispatcher) {
+	public CommandReplay(@Named("es.replay") String sourceCluster, NodeFactory nodeFactory, CommandParserRegistry parsers, CommandDispatcher dispatcher) {
 		this.sourceCluster = sourceCluster;
+		this.nodeFactory = nodeFactory;
 		this.parsers = parsers;
 		this.dispatcher = dispatcher;
 	}
 
 	public void replay() {
 		if (!sourceCluster.isEmpty()) {
-			IndexManager indexManager = new IndexManager(sourceCluster, true);
+			IndexManager indexManager = new IndexManager(nodeFactory, sourceCluster);
 			replay(indexManager);
 			indexManager.close();
 		}
@@ -39,9 +41,5 @@ public class CommandReplay {
 				dispatcher.dispatch(command);
 			}
 		});
-	}
-
-	protected IndexManager open(String clusterName) {
-		return new IndexManager(clusterName, true);
 	}
 }

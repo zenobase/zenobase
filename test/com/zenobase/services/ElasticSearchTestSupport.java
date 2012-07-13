@@ -1,6 +1,5 @@
 package com.zenobase.services;
 
-import org.elasticsearch.common.settings.ImmutableSettings;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -12,14 +11,17 @@ public abstract class ElasticSearchTestSupport {
 	public TemporaryFolder folder = new TemporaryFolder();
 
 	private String clusterName = "test";
+	private NodeFactory nodeFactory;
 	private IndexManager manager;
 
 	@Before
 	public void init() {
-		manager = new IndexManager(clusterName, false, true, ImmutableSettings.settingsBuilder()
-			.put("path.home", folder.getRoot().getAbsolutePath())
-			.put("gateway.type", "none")
-			.put("index.store.type", "memory").build());
+		nodeFactory = new TestNodeFactory(folder.getRoot());
+		manager = new IndexManager(nodeFactory, clusterName);
+	}
+
+	protected NodeFactory getNodeFactory() {
+		return nodeFactory;
 	}
 
 	protected IndexManager getManager() {

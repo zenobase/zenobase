@@ -54,6 +54,8 @@ import com.zenobase.services.CommandDispatcher;
 import com.zenobase.services.CommandReplay;
 import com.zenobase.services.CommandRepository;
 import com.zenobase.services.IndexManager;
+import com.zenobase.services.LocalNodeFactory;
+import com.zenobase.services.NodeFactory;
 import com.zenobase.services.UserRepository;
 
 public class Global extends GlobalSettings {
@@ -73,10 +75,10 @@ public class Global extends GlobalSettings {
 			@Override
 			protected void configure() {
 
-				bind(Boolean.class).annotatedWith(Names.named("es.clientOnly")).toInstance(Play.isProd());
-
 				bindConfiguration();
 
+				// bind(NodeFactory.class).to(Play.isProd() ? ClusterNodeFactory.class : LocalNodeFactory.class);
+				bind(NodeFactory.class).to(LocalNodeFactory.class);
 				bind(IndexManager.class).in(Singleton.class);
 				bind(BucketRepository.class).in(Singleton.class);
 				bind(CommandDispatcher.class).in(Singleton.class);
