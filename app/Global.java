@@ -50,6 +50,7 @@ import com.zenobase.mail.Mailer;
 import com.zenobase.mail.PasswordResetMailer;
 import com.zenobase.mail.VerificationMailer;
 import com.zenobase.services.BucketRepository;
+import com.zenobase.services.ClusterNodeFactory;
 import com.zenobase.services.CommandDispatcher;
 import com.zenobase.services.CommandReplay;
 import com.zenobase.services.CommandRepository;
@@ -77,8 +78,7 @@ public class Global extends GlobalSettings {
 
 				bindConfiguration();
 
-				// bind(NodeFactory.class).to(Play.isProd() ? ClusterNodeFactory.class : LocalNodeFactory.class);
-				bind(NodeFactory.class).to(LocalNodeFactory.class);
+				bind(NodeFactory.class).to(Play.isProd() ? ClusterNodeFactory.class : LocalNodeFactory.class);
 				bind(IndexManager.class).in(Singleton.class);
 				bind(BucketRepository.class).in(Singleton.class);
 				bind(CommandDispatcher.class).in(Singleton.class);
