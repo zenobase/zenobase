@@ -132,21 +132,20 @@
 				<div class="alert alert-error" data-ng-show="message">
 					{{message}}
 				</div>
-				<label for="template">Template</label>
-				<div class="input">
-					<select name="template" data-ng-model="i" data-ng-change="content = getTemplate(i)">
-						<option value="0"></option>
-						<option value="1">Lunch</option>
-						<option value="2">Sleep</option>
-						<option value="3">Movie</option>
-						<option value="4">Hike</option>
-						<option value="5">(Random)</option>
-					</select>
-				</div>
 				<fieldset class="control-group">
-					<label for="label">Content</label>
-					<div class="input">
-						<textarea id="event-label-field" rows="10" class="span4" required data-ng-model="content"></textarea>
+					<label for="field">Field</label>
+					<div class="controls input-append">
+						<select class="input-small" data-ng-model="field" data-ng-change="showField()" data-ng-options="f.name for f in fields">
+							<option value="">...</option>
+						</select>
+						<input type="text" data-ng-model="value">
+						<a class="btn" data-ng-click="addField()" data-ng-disabled="!field || !value">Add</a>
+					</div>
+				</fieldset>
+				<fieldset class="control-group">
+					<label for="event-source">Source</label>
+					<div class="controls">
+						<textarea id="event-source" rows="10" class="input-xlarge" required data-ng-model="content"></textarea>
 					</div>
 				</fieldset>
 			</div>

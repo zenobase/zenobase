@@ -1215,53 +1215,30 @@
 
 		$scope.dialog = $('#create-event-dialog');
 		$scope.params = $routeParams;
-		$scope.templates = [
-			undefined,
-			{
-				tag : [ "lunch", "pizza" ],
-				location : {
-					lat : 47.62,
-					lon : -122.35
-				},
-				rating : 80
-			},
-			{
-				tag : [ "sleep" ]
-			},
-			{
-				tag : [ "movie" ],
-				rating : 40,
-				resource : {
-					title : "Citizen Kane",
-					url : "http://www.imdb.com/title/tt0033467/"
-				}
-			},
-			{
-				tag : [ "hike" ],
-				location : {
-					lat : 60.57,
-					lon : -151.25
-				},
-				distance : {
-					'@value' : 10,
-					unit : 'km'
-				},
-				height : {
-					'@value' : 1500,
-					unit : 'm'
-				}
-			},
-			{
-				random : 1000
-			}
-		];
+		$scope.fields = Field.findAll();
 		$scope.init = function() {
+			$scope.event = {};
 			$scope.message = '';
 			$scope.content = '';
+			$scope.field = null;
+			$scope.value = '';
 			$scope.i = 0;
 		};
+		$scope.showField = function() {
+			// TODO: field-specific input element(s)
+		};
+		$scope.addField = function() {
+			if ($scope.field) {
+				if (!$scope.event[$scope.field.name]) {
+					$scope.event[$scope.field.name] = [];
+				}
+				var value = $scope.field.parse($scope.value);
+				$scope.event[$scope.field.name].push(value);
+				$scope.content = JSON.stringify($scope.event, null, ' ');
+			}
+		};
 		$scope.create = function() {
-			$http.post('/buckets/' + $scope.params.bucketId + '/', $scope.content)
+			$http.post('/buckets/' + $scope.params.bucketId + '/', $scope.event)
 				.success(function(response) {
 					$timeout(function() {
 						$scope.reload();
@@ -1272,23 +1249,20 @@
 					$scope.message = 'Couldn\'t create this event.';
 				});
 		};
-		$scope.getTemplate = function(i) {
-			return JSON.stringify($scope.templates[i], null, ' ');
-		};
 
 		$scope.init();
 		$scope.dialog.on('shown', function () {
 			$scope.$apply($scope.init);
-			$('#event-label-field').select();
 		});
 	}]);
 	
 	/**
 	 * @constructor
 	 */
-	function Field(name, icon, format) {
+	function Field(name, icon, parse, format) {
 		this.name = name;
 		this.icon = icon;
+		this.parse = parse;
 		this.format = format;
 	}
 	
@@ -1304,33 +1278,68 @@
 		Field.FIELDS.push(field); 
 		Field.FIELDS_BY_NAME[field.name] = field; 
 	}
+
+	var Parser = {
+		STRING : function(value) {
+			return '' + value;
+		},
+		NUMERIC : function(value) {
+			var number = +value;
+			if (number != value) {
+				throw new Error("Couldn't parse number: " + value);
+			}
+			return number;
+		},
+		LOCATION : function(value) {
+			var tokens = value.split(',');
+			if (tokens.length != 2) {
+				throw new Error("Couldn't parse coordinates: " + value);
+			}
+			return { 'lat' : +tokens[0], 'lon' : +tokens[1] }; 
+		},
+		UNIT : function(value) {
+			var match = value.match(/^(\d+(?:\.\d+)?) *([a-z]+)$/);
+			if (!match || match.length != 3) {
+				throw new Error("Couldn't parse unit: " + value);
+			}
+			return { '@value' : +match[1], 'unit' : match[2] }; 
+		},
+		RESOURCE : function(value) {
+			var tokens = value.split(' ');
+			var resource = { 'url' : tokens.shift() };
+			if (tokens.length > 0) {
+				resource.title = tokens.join(' ');
+			}
+			return resource;
+		},
+	};
 	
-	Field.register(new Field('tag', 'icon-tag', function(value) { 
+	Field.register(new Field('tag', 'icon-tag', Parser.STRING, function(value) { 
 		return '<span class="nowrap" title="Tag">' +
 			'<i class="' + this.icon + '"></i> ' + Field.encode(value) +
 	  '</span>';
 	}));
 	
-	Field.register(new Field('resource', 'icon-bookmark', function(value) { 
+	Field.register(new Field('resource', 'icon-bookmark', Parser.RESOURCE, function(value) { 
 		return '<span title="Resource">' +
 	  	'<i class="' + this.icon + '"></i>&nbsp;' +
 	  	'<a href="' +  Field.encode(value.url) + '" rel="nofollow">' +  Field.encode(value.title) + '</a>' +
 	  '</span>';
 	}));
 	
-	Field.register(new Field('distance', 'icon-resize-horizontal', function(value) { 
+	Field.register(new Field('distance', 'icon-resize-horizontal', Parser.UNIT, function(value) { 
 		return '<span class="nowrap" title="Distance">' +
 	  	'<i class="' + this.icon + '"></i> ' + Math.round(value['@value']) + value.unit +
 	  '</span>';
 	}));
 	
-	Field.register(new Field('height', 'icon-resize-vertical', function(value) { 
+	Field.register(new Field('height', 'icon-resize-vertical', Parser.UNIT, function(value) { 
 		return '<span class="nowrap" title="Height">' +
 	  	'<i class="' + this.icon + '"></i>' + Math.round(value['@value']) + 'm' +
 	  '</span>';
 	}));
 	
-	Field.register(new Field('location', 'icon-map-marker', function(value) { 
+	Field.register(new Field('location', 'icon-map-marker', Parser.LOCATION, function(value) { 
 		return '<span class="nowrap" title="Location">' +
 			'<i class="' + this.icon + '"></i> ' +
 			'<a href="http://maps.google.com/maps?q=' + 
@@ -1339,20 +1348,20 @@
 		'</span>';
 	}));
 	
-	Field.register(new Field('timestamp', 'icon-calendar', function(value) { 
+	Field.register(new Field('timestamp', 'icon-calendar', Parser.STRING, function(value) { 
 		return '<span class="nowrap">' +
 	  	'<i class="' + this.icon + '" title="Timestamp"></i>' +
 			'<abbr title="' + value + '"> ' + humane.date(new Date(Date.parse(value))) + '</abbr>' +
 	  '</span>';
 	}));
 	
-	Field.register(new Field('duration', 'icon-time', function(value) { 
+	Field.register(new Field('duration', 'icon-time', Parser.UNIT, function(value) { 
 		return '<span class="nowrap">' +
 	  	'<i class="' + this.icon + '" title="Duration"></i> ' + humane.duration(value, false) +
 	  '</span>';
 	}));
 	
-	Field.register(new Field('rating', 'icon-star', function(value) { 
+	Field.register(new Field('rating', 'icon-star', Parser.NUMERIC, function(value) { 
 		var stars = Math.round((value || 0) / 20);
 		var html = '<span class="nowrap" title="Rated ' + stars + '/5">';
 		for (var i = 0; i < 5; ++i) {
@@ -1362,7 +1371,7 @@
 		return html;
 	}));
 	
-	Field.register(new Field('author', 'icon-user', function(value) { 
+	Field.register(new Field('author', 'icon-user', Parser.STRING, function(value) { 
 		return '<span class="nowrap">' +
 	  	'<i class="' + this.icon + '" title="User"></i> ' + User.find(value).getName() +
 	  '</span>';
