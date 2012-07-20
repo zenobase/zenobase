@@ -1335,7 +1335,13 @@
 	
 	Field.register(new Field('height', 'icon-resize-vertical', Parser.UNIT, function(value) { 
 		return '<span class="nowrap" title="Height">' +
-	  	'<i class="' + this.icon + '"></i>' + Math.round(value['@value']) + 'm' +
+	  	'<i class="' + this.icon + '"></i>' + Math.round(value['@value']) + value.unit +
+	  '</span>';
+	}));
+	
+	Field.register(new Field('weight', 'icon-download-alt', Parser.UNIT, function(value) { 
+		return '<span class="nowrap" title="Weight">' +
+	  	'<i class="' + this.icon + '"></i>' + Math.round(value['@value']) + value.unit +
 	  '</span>';
 	}));
 	
