@@ -1225,7 +1225,7 @@
 			$scope.i = 0;
 		};
 		$scope.showField = function() {
-			// TODO: field-specific input element(s)
+			$scope.value = '';
 		};
 		$scope.addField = function() {
 			if ($scope.field) {
