@@ -1,5 +1,6 @@
 package com.zenobase.controllers;
 
+import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.node.ObjectNode;
 import play.mvc.Controller;
 import com.google.inject.Inject;
@@ -15,7 +16,12 @@ public abstract class ControllerSupport extends Controller {
 	protected static final TokenField UNDO = new TokenField("undo");
 
 	protected static ObjectNode body() {
-		return (ObjectNode) request().body().asJson();
+		return body(ObjectNode.class);
+	}
+
+	protected static <T extends JsonNode> T body(Class<T> type) {
+		JsonNode node = request().body().asJson();
+		return type.isInstance(node) ? type.cast(node) : null;
 	}
 
 	protected static ObjectNode receipt(String undoId) {

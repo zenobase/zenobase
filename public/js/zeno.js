@@ -1213,12 +1213,10 @@
 	
 	app.controller('TemplateCtrl', ['$scope', '$http', '$timeout', '$routeParams', function($scope, $http, $timeout, $routeParams) {
 
-		console.log('ctrl');
 		$scope.dialog = $('#create-event-dialog');
 		$scope.params = $routeParams;
 		$scope.fields = Field.findAll();
 		$scope.init = function() {
-			console.log('init');
 			$scope.event = {};
 			$scope.message = '';
 			$scope.content = '';
@@ -1255,6 +1253,48 @@
 				});
 		};
 
+		$scope.init();
+		$scope.dialog.on('shown', function () {
+			// $scope.$apply($scope.init); TODO
+		});
+	}]);
+	
+	
+	app.controller('ImportEventsCtrl', ['$scope', '$http', '$timeout', '$routeParams', function($scope, $http, $timeout, $routeParams) {
+
+		$scope.dialog = $('#import-events-dialog');
+		$scope.params = $routeParams;
+		$scope.init = function() {
+			$scope.events = [];
+		};
+		$scope.isEmpty = function() {
+			return $scope.events.length == 0;
+		};
+		$scope.setFiles = function(files) {
+			$scope.$apply(function(scope) {
+				var reader = new FileReader();
+				reader.onload = function(e) {
+					scope.$apply(function(scope) {
+						scope.events = JSON.parse(e.target.result);
+						console.log('events', $scope.events.length);
+					});
+				}
+				reader.readAsText(files[0]);
+			});
+		};
+		$scope.import = function() {
+			console.log('import', $scope.events);
+			$http.post('/buckets/' + $scope.params.bucketId + '/', { 'events' : $scope.events })
+				.success(function(response) {
+					$timeout(function() {
+						$scope.reload();
+						$scope.dialog.modal('hide');
+					}, DELAY);
+				})
+				.error(function(response) {
+					$scope.message = 'Couldn\'t import events.';
+				});
+		};
 		$scope.init();
 		$scope.dialog.on('shown', function () {
 			// $scope.$apply($scope.init);

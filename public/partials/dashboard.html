@@ -27,6 +27,9 @@
 			<p class="pull-left" style="margin-left: 8px; margin-top: 6px; vertical-align: middle">
 				<a data-toggle="modal" href="#create-event-dialog"><i class="icon-plus" title="Add Event"></i></a>
 			</p>
+			<p class="pull-left" style="margin-left: 8px; margin-top: 6px; vertical-align: middle">
+				<a data-toggle="modal" href="#import-events-dialog"><i class="icon-upload" title="Import Events"></i></a>
+			</p>
 			<ul class="nav nav-pills" style="clear: both; margin-bottom:12px;" data-ng-show="filters">
 				<li class="active" data-ng-repeat="filter in filters">
 					<a data-ng-click="removeFilter(filter)"><i class="icon-white" data-ng-class="getFilterIcon(filter)"></i> {{filter.value}} <i class="icon-remove icon-white"></i></a>
@@ -156,6 +159,27 @@
 			</div>
 			<div class="modal-footer">
 				<button type="submit" class="btn btn-primary" data-ng-disabled="isEmpty()">Create</button>
+				<button type="reset" class="btn" data-dismiss="modal">Cancel</button>
+			</div>
+		</form>
+	</div>
+
+	<div id="import-events-dialog" class="modal hide" data-ng-controller="ImportEventsCtrl">
+		<form name="importEventsForm" data-ng-submit="import()" class="modal-form">
+			<div class="modal-header">
+				<a class="close" data-dismiss="modal">&times;</a>
+				<h3>Import Events</h3>
+			</div>
+			<div class="modal-body">
+				<div class="alert alert-error" data-ng-show="message">
+					{{message}}
+				</div>
+				<div class="controls input-append">
+					<input type="file" required onchange="angular.element(this).scope().setFiles(this.files)"/>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="submit" class="btn btn-primary" data-ng-disabled="isEmpty()">Import</button>
 				<button type="reset" class="btn" data-dismiss="modal">Cancel</button>
 			</div>
 		</form>

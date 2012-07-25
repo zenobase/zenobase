@@ -7,12 +7,15 @@ import org.joda.time.DateTime;
 import play.mvc.BodyParser;
 import play.mvc.Result;
 import play.mvc.With;
+import com.google.common.collect.ImmutableList;
 
 import com.zenobase.actions.Timed;
+import com.zenobase.commands.CompoundCommand;
 import com.zenobase.commands.CreateEventCommand;
 import com.zenobase.commands.RandomEventsCommandBuilder;
 import com.zenobase.common.Generator;
 import com.zenobase.json.IntegerField;
+import com.zenobase.json.ObjectField;
 import com.zenobase.models.Bucket;
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
@@ -25,6 +28,7 @@ import com.zenobase.services.CommandDispatcher;
 public class EventListController extends ControllerSupport {
 
 	static final IntegerField RANDOM = new IntegerField("random");
+	static final ObjectField EVENTS = new ObjectField("events");
 
 	@Inject
 	static BucketRepository buckets;
@@ -69,16 +73,31 @@ public class EventListController extends ControllerSupport {
     		String commandId = dispatcher.dispatch(new RandomEventsCommandBuilder(principal, bucketId).build(random));
             return ok(receipt(commandId));
     	}
-    	else {
-    		Event event = new Event(body);
-			event.setValue(Event.ID, Generator.id());
-			event.setValue(Event.AUTHOR, principal);
-    		if (!event.contains(Event.TIMESTAMP)) {
-    			event.addValue(Event.TIMESTAMP, new DateTime());
+    	ImmutableList<ObjectNode> nodes = EVENTS.getValues(body);
+    	if (!nodes.isEmpty()) {
+    		CompoundCommand cmd = new CompoundCommand(principal, "added events", "removed events");
+    		for (ObjectNode node : nodes) {
+        		cmd.add(newCreateEventCommand(principal, bucketId, node));
     		}
-    		String commandId = dispatcher.dispatch(new CreateEventCommand(principal, bucketId, event));
-            response().setHeader(LOCATION, com.zenobase.controllers.routes.EventController.get(bucket.getId(), event.getId()).toString());
+    		String commandId = dispatcher.dispatch(cmd);
+            return ok(receipt(commandId));
+    	}
+    	else {
+    		CreateEventCommand command = newCreateEventCommand(principal, bucketId, body);
+    		String commandId = dispatcher.dispatch(command);
+            response().setHeader(LOCATION, com.zenobase.controllers.routes.EventController.get(bucket.getId(), command.getEvent().getId()).toString());
             return created(receipt(commandId));
     	}
     }
+
+	private static CreateEventCommand newCreateEventCommand(Identity principal, String bucketId, ObjectNode node) {
+		Event event = new Event(node);
+		event.setValue(Event.ID, Generator.id());
+		event.setValue(Event.AUTHOR, principal);
+		if (!event.contains(Event.TIMESTAMP)) {
+			event.addValue(Event.TIMESTAMP, new DateTime());
+		}
+		return new CreateEventCommand(principal, bucketId, event);
+
+	}
 }
