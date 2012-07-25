@@ -1213,10 +1213,12 @@
 	
 	app.controller('TemplateCtrl', ['$scope', '$http', '$timeout', '$routeParams', function($scope, $http, $timeout, $routeParams) {
 
+		console.log('ctrl');
 		$scope.dialog = $('#create-event-dialog');
 		$scope.params = $routeParams;
 		$scope.fields = Field.findAll();
 		$scope.init = function() {
+			console.log('init');
 			$scope.event = {};
 			$scope.message = '';
 			$scope.content = '';
@@ -1237,6 +1239,9 @@
 				$scope.content = JSON.stringify($scope.event, null, ' ');
 			}
 		};
+		$scope.isEmpty = function() {
+			return $.isEmptyObject($scope.event);
+		};
 		$scope.create = function() {
 			$http.post('/buckets/' + $scope.params.bucketId + '/', $scope.event)
 				.success(function(response) {
@@ -1252,7 +1257,7 @@
 
 		$scope.init();
 		$scope.dialog.on('shown', function () {
-			$scope.$apply($scope.init);
+			// $scope.$apply($scope.init);
 		});
 	}]);
 	
@@ -1361,7 +1366,7 @@
 	  '</span>';
 	}));
 	
-	Field.register(new Field('duration', 'icon-time', Parser.UNIT, function(value) { 
+	Field.register(new Field('duration', 'icon-time', Parser.STRING, function(value) { 
 		return '<span class="nowrap">' +
 	  	'<i class="' + this.icon + '" title="Duration"></i> ' + humane.duration(value, false) +
 	  '</span>';

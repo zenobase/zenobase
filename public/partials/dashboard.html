@@ -132,25 +132,30 @@
 				<div class="alert alert-error" data-ng-show="message">
 					{{message}}
 				</div>
-				<fieldset class="control-group">
-					<label for="field">Field</label>
-					<div class="controls input-append">
-						<select class="input-small" data-ng-model="field" data-ng-change="showField()" data-ng-options="f.name for f in fields">
-							<option value="">...</option>
-						</select>
-						<input type="text" data-ng-model="value">
-						<a class="btn" data-ng-click="addField()" data-ng-disabled="!field || !value">Add</a>
+				<div class="controls input-append">
+					<select class="input-small" data-ng-model="field" data-ng-change="showField()" data-ng-options="f.name for f in fields">
+						<option value="">...</option>
+					</select>
+					<input type="text" data-ng-model="value">
+					<a class="btn" data-ng-click="addField()" data-ng-disabled="!field || !value">Add</a>
+				</div>
+				<div data-ng-show="content" class="tabbable tabs-below">
+					<div class="tab-content">
+						<div id="create-event-preview" class="tab-pane pane-bordered active">
+							<p data-ng-bind-html="event | fields"></p>
+						</div>
+						<div id="create-event-source" class="tab-pane pane-bordered">
+							<pre data-ng-bind-html="event | json"></pre>
+						</div>
 					</div>
-				</fieldset>
-				<fieldset class="control-group">
-					<label for="event-source">Source</label>
-					<div class="controls">
-						<textarea id="event-source" rows="10" class="input-xlarge" required data-ng-model="content"></textarea>
-					</div>
-				</fieldset>
+					<ul class="nav nav-tabs">
+						<li class="active"><a href="#create-event-preview" data-toggle="tab">Preview</a></li>
+						<li><a href="#create-event-source" data-toggle="tab">Source</a></li>
+					</ul>
+				</div>
 			</div>
 			<div class="modal-footer">
-				<button type="submit" class="btn btn-primary" data-ng-disabled="!createEventForm.$valid">Create</button>
+				<button type="submit" class="btn btn-primary" data-ng-disabled="isEmpty()">Create</button>
 				<button type="reset" class="btn" data-dismiss="modal">Cancel</button>
 			</div>
 		</form>
