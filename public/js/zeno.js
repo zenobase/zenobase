@@ -1237,7 +1237,7 @@
 				}
 				var value = $scope.field.parse($scope.value);
 				$scope.event[$scope.field.name].push(value);
-				$scope.content = JSON.stringify($scope.event, null, ' ');
+				$scope.content = JSON.stringify($scope.event, null, '  ');
 			}
 		};
 		$scope.isEmpty = function() {
@@ -1257,7 +1257,7 @@
 		};
 
 		$scope.init();
-		$scope.dialog.on('shown', function () {
+		$scope.dialog.on('shown', function (e) {
 			// $scope.$apply($scope.init); TODO
 		});
 	}]);
@@ -1290,6 +1290,7 @@
 					$timeout(function() {
 						$scope.reload();
 						$scope.dialog.modal('hide');
+						$scope.alert.show('Imported events.', 'alert-success', response.undo);
 					}, DELAY);
 				})
 				.error(function(response) {
