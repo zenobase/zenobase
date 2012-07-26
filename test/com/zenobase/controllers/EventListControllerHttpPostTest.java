@@ -7,6 +7,7 @@ import static org.mockito.Mockito.when;
 import static play.mvc.Http.Status.*;
 import static play.test.Helpers.*;
 
+import org.codehaus.jackson.node.ArrayNode;
 import org.codehaus.jackson.node.ObjectNode;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
@@ -48,6 +49,21 @@ public class EventListControllerHttpPostTest extends EventListControllerTestSupp
 			.hasField(Event.ID)
 			.hasField(Event.TIMESTAMP)
 			.hasValue(Event.AUTHOR, user.asIdentity());
+	}
+
+	@Test
+	public void testCreateMultipleEvents() {
+		String commandId = Generator.id();
+		ArgumentCaptor<CompoundCommand> commandArg = ArgumentCaptor.forClass(CompoundCommand.class);
+		ArrayNode eventsNode = body.putArray(EventListController.EVENTS.getName());
+		Event.TAG.setValue(eventsNode.addObject(), "a");
+		Event.TAG.setValue(eventsNode.addObject(), "b");
+		when(auth.getPrincipal()).thenReturn(user.asIdentity());
+		when(buckets.findBucket(bucket.getId())).thenReturn(bucket);
+		when(dispatcher.dispatch(commandArg.capture())).thenReturn(commandId);
+		Result result = call(bucket, body);
+		assertThat(result).hasStatus(OK).hasContent(EventListController.receipt(commandId));
+		assertThat(commandArg.getValue().getCommands().size()).isEqualTo(2);
 	}
 
 	@Test

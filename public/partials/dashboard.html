@@ -24,11 +24,11 @@
 			<p class="pull-left" style="margin-left: 8px; margin-top: 6px; vertical-align: middle">
 				<a data-ng-click="edit()" title="Edit"><i class="icon-pencil"></i></a>
 			</p>
-			<p class="pull-left" style="margin-left: 8px; margin-top: 6px; vertical-align: middle">
-				<a data-toggle="modal" href="#create-event-dialog"><i class="icon-plus" title="Add Event"></i></a>
+			<p class="pull-left" style="margin-left: 8px; margin-top: 6px; vertical-align: middle" data-ng-show="isImportSupported()">
+				<a data-toggle="modal" href="#import-events-dialog"><i class="icon-upload" title="Import Events"></i></a>
 			</p>
 			<p class="pull-left" style="margin-left: 8px; margin-top: 6px; vertical-align: middle">
-				<a data-toggle="modal" href="#import-events-dialog"><i class="icon-upload" title="Import Events"></i></a>
+				<a data-toggle="modal" href="#create-event-dialog"><i class="icon-plus" title="Add Event"></i></a>
 			</p>
 			<ul class="nav nav-pills" style="clear: both; margin-bottom:12px;" data-ng-show="filters">
 				<li class="active" data-ng-repeat="filter in filters">

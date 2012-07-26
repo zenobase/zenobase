@@ -593,6 +593,9 @@
 			});
 		};
 		$scope.placement = null;
+		$scope.isImportSupported = function() {
+			return typeof FileReader != 'undefined';
+		};
 		$scope.chooseWidget = function(placement) {
 			$scope.placement = placement;
 		};
@@ -1276,14 +1279,12 @@
 				reader.onload = function(e) {
 					scope.$apply(function(scope) {
 						scope.events = JSON.parse(e.target.result);
-						console.log('events', $scope.events.length);
 					});
 				}
 				reader.readAsText(files[0]);
 			});
 		};
 		$scope.import = function() {
-			console.log('import', $scope.events);
 			$http.post('/buckets/' + $scope.params.bucketId + '/', { 'events' : $scope.events })
 				.success(function(response) {
 					$timeout(function() {
@@ -1297,7 +1298,7 @@
 		};
 		$scope.init();
 		$scope.dialog.on('shown', function () {
-			// $scope.$apply($scope.init);
+			$scope.$apply($scope.init);
 		});
 	}]);
 	
