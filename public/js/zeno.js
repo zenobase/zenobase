@@ -1216,7 +1216,8 @@
 	
 	app.controller('TemplateCtrl', ['$scope', '$http', '$timeout', '$routeParams', function($scope, $http, $timeout, $routeParams) {
 
-		$scope.dialog = $('#create-event-dialog');
+		$scope.id = 'create-event-dialog';
+		$scope.dialog = $('#' + $scope.id);
 		$scope.params = $routeParams;
 		$scope.fields = Field.findAll();
 		$scope.init = function() {
@@ -1258,7 +1259,9 @@
 
 		$scope.init();
 		$scope.dialog.on('shown', function (e) {
-			// $scope.$apply($scope.init); TODO
+			if (e.target.id == $scope.id) { // 'shown' also fired for tab selection
+				$scope.$apply($scope.init);
+			};
 		});
 	}]);
 	
