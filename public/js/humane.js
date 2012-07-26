@@ -36,50 +36,40 @@ var humane = (function() {
   };
 
 	var formats = [
-    [60, lang.now],
-    [3600, lang.minute, lang.minutes, 60], // 60 minutes, 1 minute
-    [86400, lang.hour, lang.hours, 3600], // 24 hours, 1 hour
-    [604800, lang.day, lang.days, 86400], // 7 days, 1 day
-    [2628000, lang.week, lang.weeks, 604800], // ~1 month, 1 week
-    [31536000, lang.month, lang.months, 2628000], // 1 year, ~1 month
-    [Infinity, lang.year, lang.years, 31536000] // Infinity, 1 year
+    [ 60, lang.now ],
+    [ 3600, lang.minute, lang.minutes, 60 ], // 60 minutes, 1 minute
+    [ 86400, lang.hour, lang.hours, 3600 ], // 24 hours, 1 hour
+    [ 604800, lang.day, lang.days, 86400 ], // 7 days, 1 day
+    [ 2628000, lang.week, lang.weeks, 604800 ], // ~1 month, 1 week
+    [ 31536000, lang.month, lang.months, 2628000 ], // 1 year, ~1 month
+    [ Infinity, lang.year, lang.years, 31536000 ] // Infinity, 1 year
   ];
 
-	var duration = function(millis, round) {
-		if (round) {
-			return roundedDuration(millis); 
-		}
-		if (millis % 1000) {
-			return millis + ' ' + (millis != 1 ? lang.milliseconds : lang.millisecond);  			
-		}
-		var seconds = millis / 1000;
-		if (seconds % 60) {
-			return seconds + ' ' + (seconds != 1 ? lang.seconds : lang.second);  			
-		}
-		var minutes = seconds / 60;
-		if (minutes % 60) {
-			return minutes + ' ' + (minutes != 1 ? lang.minutes : lang.minute);  
-		}
-		var hours = minutes / 60;
-		if (hours % 24) {
-			return hours + ' ' + (hours != 1 ? lang.hours : lang.hour);  
-		}
-		var days = hours / 24;
-		return days + ' ' + (days != 1 ? lang.days : lang.day);
-	}
+	var duration = function(duration, round) {
+		var seconds = (duration % 60000) / 1000;
+		duration = Math.round(duration / 60000);
+		var minutes = duration % 60;
+		duration = Math.round(duration / 60);
+		var hours = duration % 24;
+		var days = Math.round(duration / 24);
 
-	function roundedDuration(millis) {
-		var seconds = Math.round(Math.abs(millis) / 1000),
-			minutes = Math.round(seconds / 60),
-			hours = Math.round(minutes / 60),
-			days = Math.round(hours / 24),
-			args = seconds < 60 && [lang.now] ||
-				minutes === 1 && [1, lang.minute] ||
-				minutes < 60 && [minutes, lang.minutes] ||
-				hours === 1 && [1, lang.hour] ||
-				hours < 22 && [hours, lang.hours] ||
-				days === 1 && [1, lang.day] || [days, lang.days];
-		return args.join(' ');
+		var args = [];
+		if (days) {
+			args.push(days, 'd'); 
+		}
+		if (hours) {
+			args.push(hours, 'h'); 
+		}
+		if (minutes) {
+			args.push(minutes, 'm'); 
+		}
+		if (seconds) {
+			args.push(seconds, 's'); 
+		}
+		if (round && args.length > 2) {
+			args = args.splice(0, 2);
+		}
+		return args.join('');
 	}
 
   function normalize(val, single) {
