@@ -1077,9 +1077,9 @@
 						height : 100,
 						legend : { position : 'none' },
 						series : [ { color : 'gray' } ],
-						chartArea : { width: '100%', left: 0 },
-						vAxis : { gridlines : { color : '#EEE' }, baselineColor : '#EEE' },
-						hAxis : { baselineColor : 'white', textPosition : 'none' } 
+						chartArea : { width : '100%', left : 20, top : 5 },
+						vAxis : { gridlines : { color : '#EEE' }, baselineColor : '#EEE', textStyle : { fontSize: 10 } },
+						hAxis : { baselineColor : 'white', textPosition : 'none', textStyle : { fontSize: 10 } } 
 					};
 					var chart = new google.visualization.ColumnChart(document.getElementById('timeline-' + $scope.settings.id));
 					chart.draw(data, options);
