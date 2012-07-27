@@ -25,6 +25,27 @@
 						<input name="label" type="text" required min="1" max="20" data-ng-model="settings.label"/>
 					</div>
 				</div>
+				<div class="control-group">
+					<label class="control-label" for="unit">Metric</label>
+					<div class="controls">
+						<input name="metric" type="text" required data-ng-model="settings.metric"/>
+						<p class="help-block">count (default), sum, avg, min or max.</p>
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label" for="valueField">Value Field</label>
+					<div class="controls">
+						<input name="valueField" type="text" required data-ng-model="settings.valueField"/>
+						<p class="help-block">The numeric field on which to gather statistics. Leave blank to show a simple count.</p>
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label" for="unit">Unit</label>
+					<div class="controls">
+						<input name="valueField" type="text" required data-ng-model="settings.unit"/>
+						<p class="help-block">The unit to use for the numeric field.</p>
+					</div>
+				</div>
 			</div>
 			<div class="modal-footer">
 				<button class="btn btn-primary" data-ng-click="save()" data-ng-disabled="!form.$valid">Update</button>

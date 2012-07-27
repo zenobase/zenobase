@@ -3,6 +3,8 @@ package com.zenobase.search;
 import java.util.Collections;
 import java.util.Map;
 
+import javax.measure.unit.Unit;
+
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.node.ArrayNode;
 import org.codehaus.jackson.node.ObjectNode;
@@ -17,6 +19,7 @@ import com.google.common.base.Strings;
 import com.google.common.collect.Maps;
 
 import com.zenobase.common.Intervals;
+import com.zenobase.json.MeasurementField;
 import com.zenobase.json.Nodes;
 import com.zenobase.models.Event;
 
@@ -24,29 +27,35 @@ public class TimelineWidget extends Widget {
 
 	public static final String TYPE = "timeline";
 
-	private final String field;
+	private final String keyField;
+	private final String valueField;
 	private final String interval;
 	private final Interval range;
 	private final DateTimeZone timezone;
+	private final Unit<?> unit;
 
-	public TimelineWidget(String id, String field, String interval, String range, DateTimeZone timezone) {
+	public TimelineWidget(String id, String keyField, String valueField, String interval, String range, DateTimeZone timezone, Unit<?> unit) {
 		super(id);
-		this.field = field;
+		this.keyField = keyField;
+		this.valueField = valueField;
 		this.interval = interval;
 		this.range = !Strings.isNullOrEmpty(range) ? Intervals.valueOf(range) : null;
 		this.timezone = timezone;
+		this.unit = unit;
 	}
 
 	@Override
 	public void configure(SearchSourceBuilder builder) {
 		builder.facet(FacetBuilders.dateHistogramFacet(getId())
-			.field(field).interval(interval)
+			.keyField(keyField).valueField(unit == Unit.ONE ? valueField : valueField + "." + MeasurementField.VALUE_SI.getName())
+			.interval(interval)
 			.preZone(timezone.toString())
 			.preZoneAdjustLargeInterval(true));
 	}
 
 	@Override
 	public JsonNode process(SearchResponse response) {
+		ArrayNode result = Nodes.newArray();
 		DateHistogramFacet facet = response.facets().facet(DateHistogramFacet.class, getId());
 		Map<String, Long> counts = Collections.emptyMap();
 		if (!facet.getEntries().isEmpty()) {
@@ -54,11 +63,26 @@ public class TimelineWidget extends Widget {
 			for (DateHistogramFacet.Entry entry : facet.getEntries()) {
 				String key = getLabel(toDateTime(entry.getTime()));
 				if (range == null || counts.containsKey(key)) {
-					counts.put(key, entry.getCount());
+					ObjectNode entryNode = result.addObject();
+					entryNode.put("label", key);
+					entryNode.put("count", entry.getTotalCount());
+					if (unit != Unit.ONE && entry.getTotalCount() > 0) {
+						addValue(entryNode, "min",  entry.getMin());
+						addValue(entryNode, "max", entry.getMax());
+						addValue(entryNode, "sum", entry.getTotal());
+						addValue(entryNode, "avg", entry.getMean());
+					}
+
 				}
 			}
 		}
-		return toJson(counts);
+		return result;
+	}
+
+	private void addValue(ObjectNode parent, String property, double value) {
+		ObjectNode node = parent.putObject(property);
+		node.put("@value", unit.getStandardUnit().getConverterTo(unit).convert(value));
+		node.put("unit", unit.toString());
 	}
 
 	private Interval getInterval(Iterable<? extends DateHistogramFacet.Entry> entries) {
@@ -91,26 +115,19 @@ public class TimelineWidget extends Widget {
 		return Intervals.toString(time, interval);
 	}
 
-	private JsonNode toJson(Map<String, Long> counts) {
-		ArrayNode result = Nodes.newArray();
-		for (Map.Entry<String, Long> entry : counts.entrySet()) {
-			ObjectNode entryNode = result.addObject();
-			entryNode.put("label", entry.getKey());
-			entryNode.put("count", entry.getValue());
-		}
-		return result;
-	}
-
 	public static WidgetBuilder builder() {
 		return new WidgetBuilder() {
 			@Override
 			public Widget build(WidgetOptions options) {
+				String unit = options.get("unit");
 				return new TimelineWidget(
 					options.get("id"),
-					options.get("field", String.class, Event.TIMESTAMP.getName()),
+					options.get("keyField", String.class, Event.TIMESTAMP.getName()),
+					options.get("valueField", String.class, Event.TIMESTAMP.getName()),
 					options.get("interval", String.class, "month"),
 					options.get("range"),
-					options.get("timezone", DateTimeZone.class, DateTimeZone.UTC));
+					options.get("timezone", DateTimeZone.class, DateTimeZone.UTC),
+					unit != null ? Unit.valueOf(unit) : Unit.ONE);
 			}
 		};
 	}

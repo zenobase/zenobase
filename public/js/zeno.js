@@ -1032,21 +1032,23 @@
 	
 	app.controller('TimelineCtrl', ['$scope', function($scope) {
 	
-		$scope.field = 'timestamp';
+		$scope.keyField = 'timestamp';
 		$scope.init = function() {
 			$scope.times = null;
 		};
 		$scope.params = function() {
 			$scope.interval = Interval.VALUES[1];
 			$scope.range = '';
-			$.each($scope.getFilters($scope.field), function(i, filter) {
+			$.each($scope.getFilters($scope.keyField), function(i, filter) {
 				$scope.interval = Interval.match(filter.value);
 				$scope.range = filter.value;
 			});
 			return $scope.interval && { 
 				id : $scope.settings.id,
 				type : 'timeline',
-				field : $scope.field, 
+				keyField : $scope.keyField, 
+				valueField : $scope.settings.valueField || $scope.keyField,
+				unit : $scope.settings.unit || '',
 				interval : $scope.interval.name,
 				range : $scope.range,
 				timezone : locale.getTimezone()
@@ -1072,7 +1074,10 @@
 					data.addColumn('number', 'Count');
 					data.addColumn({ type : 'string', role : 'tooltip'});
 					$.each($scope.times, function(i, time) {
-						data.addRow([ time.label, time.count, time.label + ': ' + time.count ]);
+						var metric = $scope.settings.metric || 'count';
+						var value = typeof time[metric] == 'object' ? Math.round(time[metric]['@value']) : time[metric];
+						var unit = typeof time[metric] == 'object' ? time[metric]['unit'] : '';
+						data.addRow([ time.label, value, time.label + ': ' + value + unit ]);
 					});
 					var options = {
 						height : 100,
@@ -1082,6 +1087,9 @@
 						vAxis : { gridlines : { color : '#EEE' }, baselineColor : '#EEE', textStyle : { fontSize: 10 } },
 						hAxis : { baselineColor : 'white', textPosition : 'none', textStyle : { fontSize: 10 } },
 					};
+					$('#timeline-' + $scope.settings.id).on('resize', function(e) {
+						console.log('resize', e);
+					});
 					var chart = new google.visualization.ColumnChart(document.getElementById('timeline-' + $scope.settings.id));
 					chart.draw(data, options);
 					google.visualization.events.addListener(chart, 'select', function() {
@@ -1089,7 +1097,7 @@
 						var value = data.getValue(selection[0].row, 0);
 						$scope.interval = $scope.interval.zoomIn();
 						$scope.$apply(function() {
-							$scope.addFilter(new Filter($scope.field, value), true);
+							$scope.addFilter(new Filter($scope.keyField, value), true);
 						});
 					});
 				}});
