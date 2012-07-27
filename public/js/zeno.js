@@ -1083,7 +1083,7 @@
 						height : 100,
 						legend : { position : 'none' },
 						series : [ { color : 'gray' } ],
-						chartArea : { width : '100%', left : 20, top : 5 },
+						chartArea : { width : '100%', height : 90, left : 20, top : 5 },
 						vAxis : { gridlines : { color : '#EEE' }, baselineColor : '#EEE', textStyle : { fontSize: 10 } },
 						hAxis : { baselineColor : 'white', textPosition : 'none', textStyle : { fontSize: 10 } },
 					};

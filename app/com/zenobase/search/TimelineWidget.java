@@ -15,6 +15,7 @@ import org.elasticsearch.search.facet.datehistogram.DateHistogramFacet;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.Interval;
+import com.google.common.base.Objects;
 import com.google.common.base.Strings;
 import com.google.common.collect.Maps;
 
@@ -55,15 +56,14 @@ public class TimelineWidget extends Widget {
 
 	@Override
 	public JsonNode process(SearchResponse response) {
-		ArrayNode result = Nodes.newArray();
 		DateHistogramFacet facet = response.facets().facet(DateHistogramFacet.class, getId());
-		Map<String, Long> counts = Collections.emptyMap();
+		Map<String, ObjectNode> counts = Collections.emptyMap();
 		if (!facet.getEntries().isEmpty()) {
 			counts = getMap(getInterval(facet.getEntries()));
 			for (DateHistogramFacet.Entry entry : facet.getEntries()) {
 				String key = getLabel(toDateTime(entry.getTime()));
 				if (range == null || counts.containsKey(key)) {
-					ObjectNode entryNode = result.addObject();
+					ObjectNode entryNode = Objects.firstNonNull(counts.get(key), Nodes.newObject());
 					entryNode.put("label", key);
 					entryNode.put("count", entry.getTotalCount());
 					if (unit != Unit.ONE && entry.getTotalCount() > 0) {
@@ -72,11 +72,20 @@ public class TimelineWidget extends Widget {
 						addValue(entryNode, "sum", entry.getTotal());
 						addValue(entryNode, "avg", entry.getMean());
 					}
+					counts.put(key, entryNode);
 
 				}
 			}
 		}
-		return result;
+		return toJson(counts.values());
+	}
+
+	private JsonNode toJson(Iterable<ObjectNode> values) {
+		ArrayNode node = Nodes.newArray();
+		for (ObjectNode value : values) {
+			node.add(value);
+		}
+		return node;
 	}
 
 	private void addValue(ObjectNode parent, String property, double value) {
@@ -101,11 +110,11 @@ public class TimelineWidget extends Widget {
 		return new DateTime(time, timezone);
 	}
 
-	private Map<String, Long> getMap(Interval interval) {
-		Map<String, Long> counts = Maps.newTreeMap();
+	private Map<String, ObjectNode> getMap(Interval interval) {
+		Map<String, ObjectNode> counts = Maps.newTreeMap();
 		if (interval != null) {
 			for (DateTime time : Intervals.expand(interval.getStart(), interval.getEnd(), this.interval)) {
-				counts.put(getLabel(time), 0L);
+				counts.put(getLabel(time), Nodes.newObject());
 			}
 		}
 		return counts;
