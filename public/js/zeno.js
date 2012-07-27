@@ -1070,8 +1070,9 @@
 					var data = new google.visualization.DataTable();
 					data.addColumn('string', $scope.interval.name);
 					data.addColumn('number', 'Count');
+					data.addColumn({ type : 'string', role : 'tooltip'});
 					$.each($scope.times, function(i, time) {
-						data.addRow([ time.label, time.count ]);
+						data.addRow([ time.label, time.count, time.label + ': ' + time.count ]);
 					});
 					var options = {
 						height : 100,
@@ -1079,7 +1080,7 @@
 						series : [ { color : 'gray' } ],
 						chartArea : { width : '100%', left : 20, top : 5 },
 						vAxis : { gridlines : { color : '#EEE' }, baselineColor : '#EEE', textStyle : { fontSize: 10 } },
-						hAxis : { baselineColor : 'white', textPosition : 'none', textStyle : { fontSize: 10 } } 
+						hAxis : { baselineColor : 'white', textPosition : 'none', textStyle : { fontSize: 10 } },
 					};
 					var chart = new google.visualization.ColumnChart(document.getElementById('timeline-' + $scope.settings.id));
 					chart.draw(data, options);
