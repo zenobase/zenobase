@@ -525,7 +525,7 @@
 	app.controller('AddWidgetCtrl', ['$scope', '$http', '$route', '$routeParams', '$location', function($scope, $http, $route, $routeParams, $location) {
 	
 		$scope.templates = [
-	  	{ label : 'Timeline', description : 'Timeline with event counts.', type : 'timeline' },
+	  	{ label : 'Timeline', description : 'Timeline with event counts.', type : 'timeline', valueField : 'timestamp', statistic : 'count' },
 	  	{ label : 'Map', description : 'Map with event locations.', type : 'map', singleton : true },
 	  	{ label : 'List', description : 'List with the most recent events.', type : 'list', singleton : true, limit : 5, order : 'timestamp', reverse : false },
 	  	{ label : 'Count', description : 'Counts events for each value in a field.', type : 'count', field : 'tag', order : 'count', reverse : false, limit : 5 },
@@ -1035,7 +1035,6 @@
 		$scope.keyField = 'timestamp';
 		$scope.init = function() {
 			$scope.times = null;
-			$scope.settings.statistic = $scope.settings.statistic || 'count';
 		};
 		$scope.params = function() {
 			$scope.interval = Interval.VALUES[1];
@@ -1075,7 +1074,7 @@
 					data.addColumn('number', 'Count');
 					data.addColumn({ type : 'string', role : 'tooltip'});
 					$.each($scope.times, function(i, time) {
-						var value = time[$scope.settings.statistic];
+						var value = time[$scope.settings.statistic || 'count'];
 						var unit = '';
 						if (typeof value == 'object') {
 							unit = value.unit;
@@ -1108,6 +1107,14 @@
 		$scope.dialogShown = false;
 		$scope.showDialog = function(dialogShown) {
 			$scope.dialogShown = dialogShown;
+		};
+		$scope.getValueFields = function() {
+			var fields = Field.findUnitFields();
+			fields.unshift(new Field($scope.keyField));
+			$scope.findUnitFields = function() {
+				return fields;
+			};
+			return fields;
 		};
 	
 		$scope.init();
@@ -1451,6 +1458,12 @@
 	
 	Field.findAll = function() {
 		return Field.FIELDS;
+	}
+
+	Field.findUnitFields = function() {
+		return $.grep(Field.FIELDS, function(field) {
+			return field.parse === Parser.UNIT;
+		});
 	}
 	
 	app.filter('fields', function() {

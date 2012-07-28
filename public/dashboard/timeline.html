@@ -28,8 +28,8 @@
 				<div class="control-group">
 					<label class="control-label" for="valueField">Value Field</label>
 					<div class="controls">
-						<input name="valueField" type="text" data-ng-model="settings.valueField"/>
-						<p class="help-block">The numeric field on which to gather statistics. Leave blank to show a simple count.</p>
+						<select name="valueField" data-ng-model="settings.valueField" data-ng-options="field.name as field.name for field in getValueFields()"></select>
+						<p class="help-block">The numeric field on which to gather statistics.</p>
 					</div>
 				</div>
 				<div class="control-group">

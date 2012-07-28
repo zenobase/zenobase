@@ -80,6 +80,8 @@ public class BucketController extends ControllerSupport {
 			widget.put("label", "Timeline");
 			widget.put("type", "timeline");
 			widget.put("placement", "top");
+			widget.put("valueField", "timestamp");
+			widget.put("statistic", "count");
 			return widget;
 		}
 
