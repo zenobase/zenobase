@@ -1035,6 +1035,7 @@
 		$scope.keyField = 'timestamp';
 		$scope.init = function() {
 			$scope.times = null;
+			$scope.settings.statistic = $scope.settings.statistic || 'count';
 		};
 		$scope.params = function() {
 			$scope.interval = Interval.VALUES[1];
@@ -1074,9 +1075,12 @@
 					data.addColumn('number', 'Count');
 					data.addColumn({ type : 'string', role : 'tooltip'});
 					$.each($scope.times, function(i, time) {
-						var metric = $scope.settings.metric || 'count';
-						var value = typeof time[metric] == 'object' ? Math.round(time[metric]['@value']) : time[metric];
-						var unit = typeof time[metric] == 'object' ? time[metric]['unit'] : '';
+						var value = time[$scope.settings.statistic];
+						var unit = '';
+						if (typeof value == 'object') {
+							unit = value.unit;
+							value = Math.round(value['@value']);
+						}
 						data.addRow([ time.label, value, time.label + ': ' + value + unit ]);
 					});
 					var options = {

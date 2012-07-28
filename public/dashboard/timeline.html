@@ -26,24 +26,24 @@
 					</div>
 				</div>
 				<div class="control-group">
-					<label class="control-label" for="unit">Metric</label>
+					<label class="control-label" for="valueField">Value Field</label>
 					<div class="controls">
-						<input name="metric" type="text" required data-ng-model="settings.metric"/>
-						<p class="help-block">count (default), sum, avg, min or max.</p>
+						<input name="valueField" type="text" data-ng-model="settings.valueField"/>
+						<p class="help-block">The numeric field on which to gather statistics. Leave blank to show a simple count.</p>
 					</div>
 				</div>
 				<div class="control-group">
-					<label class="control-label" for="valueField">Value Field</label>
+					<label class="control-label" for="statisic">Statistic</label>
 					<div class="controls">
-						<input name="valueField" type="text" required data-ng-model="settings.valueField"/>
-						<p class="help-block">The numeric field on which to gather statistics. Leave blank to show a simple count.</p>
+						<select name="statistic" required data-ng-model="settings.statistic" data-ng-options="value for value in ['count', 'sum', 'avg', 'min', 'max']"></select>
+						<p class="help-block">The statistic to gather for the selected value field.</p>
 					</div>
 				</div>
 				<div class="control-group">
 					<label class="control-label" for="unit">Unit</label>
 					<div class="controls">
-						<input name="valueField" type="text" required data-ng-model="settings.unit"/>
-						<p class="help-block">The unit to use for the numeric field.</p>
+						<input name="unitField" type="text" data-ng-model="settings.unit"/>
+						<p class="help-block">The unit of the value field.</p>
 					</div>
 				</div>
 			</div>
