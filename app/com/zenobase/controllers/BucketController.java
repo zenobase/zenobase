@@ -68,7 +68,7 @@ public class BucketController extends ControllerSupport {
 			widget.put("type", "list");
 			widget.put("placement", "left");
 			widget.put("singleton", true);
-			widget.put("limit", 5);
+			widget.put("limit", 10);
 			widget.put("order", "timestamp");
 			widget.put("reverse", false);
 			return widget;
