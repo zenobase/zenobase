@@ -1083,13 +1083,10 @@
 						height : 100,
 						legend : { position : 'none' },
 						series : [ { color : 'gray' } ],
-						chartArea : { width : '100%', height : 90, left : 20, top : 5 },
-						vAxis : { gridlines : { color : '#EEE' }, baselineColor : '#EEE', textStyle : { fontSize: 10 } },
+						chartArea : { width : '100%', height : 90, left : 25, top : 5 },
+						vAxis : { gridlines : { color : '#EEE', count : 2 }, minorGridlines : { color : '#EEE', count : 1 }, baselineColor : '#EEE', textStyle : { fontSize: 10 } },
 						hAxis : { baselineColor : 'white', textPosition : 'none', textStyle : { fontSize: 10 } },
 					};
-					$('#timeline-' + $scope.settings.id).on('resize', function(e) {
-						console.log('resize', e);
-					});
 					var chart = new google.visualization.ColumnChart(document.getElementById('timeline-' + $scope.settings.id));
 					chart.draw(data, options);
 					google.visualization.events.addListener(chart, 'select', function() {
@@ -1113,6 +1110,7 @@
 		$scope.register($scope);
 		$scope.$on('result', $scope.update);
 		$scope.$on('refresh', $scope.init);
+		$(window).resize($scope.draw);
 	}]);
 	
 	app.controller('MapCtrl', ['$scope', function($scope) {
@@ -1192,7 +1190,7 @@
 			} else {
 				$('#map').html('<i class="none">None</i>');
 			}
-		}
+		};
 		$scope.createFilterControl = function() {
 			var parent = document.createElement('div');
 			parent.style.padding = '5px';
@@ -1209,7 +1207,7 @@
 				});
 			});
 			return parent;
-		}
+		};
 	
 		$scope.dialogShown = false;
 		$scope.showDialog = function(dialogShown) {
