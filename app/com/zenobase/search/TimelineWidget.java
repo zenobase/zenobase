@@ -114,7 +114,11 @@ public class TimelineWidget extends Widget {
 		Map<String, ObjectNode> counts = Maps.newTreeMap();
 		if (interval != null) {
 			for (DateTime time : Intervals.expand(interval.getStart(), interval.getEnd(), this.interval)) {
-				counts.put(getLabel(time), Nodes.newObject());
+				String label = getLabel(time);
+				ObjectNode node = Nodes.newObject();
+				node.put("label", label);
+				node.put("count", 0);
+				counts.put(label, node);
 			}
 		}
 		return counts;
