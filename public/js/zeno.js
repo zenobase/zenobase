@@ -1111,6 +1111,7 @@
 		$scope.$on('result', $scope.update);
 		$scope.$on('refresh', $scope.init);
 		$(window).resize($scope.draw);
+		$('#' + $scope.settings.id + '-tab').on('show', $scope.draw);
 	}]);
 	
 	app.controller('MapCtrl', ['$scope', function($scope) {

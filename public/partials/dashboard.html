@@ -68,7 +68,7 @@
 			<div class="span12">
 				<ul class="nav nav-tabs">
 					<li data-ng-class="$index == 0 && 'active'" data-ng-repeat="settings in getWidgetSettings('top')">
-						<a href="#{{settings.id}}" data-toggle="tab">{{settings.label}} <span class="close close-tab" title="Remove" data-ng-click="removeWidget(settings.id)" data-ng-show="editing">&times;</span></a>
+						<a id="{{settings.id}}-tab" href="#{{settings.id}}" data-toggle="tab">{{settings.label}} <span class="close close-tab" title="Remove" data-ng-click="removeWidget(settings.id)" data-ng-show="editing">&times;</span></a>
 					</li>
 					<li data-ng-show="editing"><a data-ng-click="chooseWidget('top')" title="Add Widget..."><i class="icon-plus-sign"></i></a></li>
 				</ul>
@@ -82,7 +82,7 @@
 			<div class="span6">
 				<ul class="nav nav-tabs">
 					<li data-ng-class="$index == 0 && 'active'" data-ng-repeat="settings in getWidgetSettings('left')">
-						<a href="#{{settings.id}}" data-toggle="tab">{{settings.label}} <span class="close close-tab" title="Remove" data-ng-click="removeWidget(settings.id)" data-ng-show="editing">&times;</span></a>
+						<a id="{{settings.id}}-tab" href="#{{settings.id}}" data-toggle="tab">{{settings.label}} <span class="close close-tab" title="Remove" data-ng-click="removeWidget(settings.id)" data-ng-show="editing">&times;</span></a>
 					</li>
 					<li data-ng-show="editing"><a data-ng-click="chooseWidget('left')" title="Add Widget..."><i class="icon-plus-sign"></i></a></li>
 				</ul>
@@ -93,7 +93,7 @@
 			<div class="span6">
 				<ul class="nav nav-tabs">
 					<li data-ng-class="$index == 0 && 'active'" data-ng-repeat="settings in getWidgetSettings('right')">
-						<a href="#{{settings.id}}" data-toggle="tab">{{settings.label}} <span class="close close-tab" title="Remove" data-ng-click="removeWidget(settings.id)" data-ng-show="editing">&times;</span></a>
+						<a id="{{settings.id}}-tab" href="#{{settings.id}}" data-toggle="tab">{{settings.label}} <span class="close close-tab" title="Remove" data-ng-click="removeWidget(settings.id)" data-ng-show="editing">&times;</span></a>
 					</li>
 					<li data-ng-show="editing"><a data-ng-click="chooseWidget('right')" title="Add Widget..."><i class="icon-plus-sign"></i></a></li>
 				</ul>
