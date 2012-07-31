@@ -988,6 +988,12 @@
 		$scope.showDialog = function(dialogShown) {
 			$scope.dialogShown = dialogShown;
 		};
+		$scope.getTermFields = function() {
+			return Field.findTokenFields();
+		};
+		$scope.getValueFields = function() {
+			return Field.findUnitFields();
+		};
 
 		$scope.init();
 		$scope.register($scope);
@@ -1464,6 +1470,10 @@
 		return $.grep(Field.FIELDS, function(field) {
 			return field.parse === Parser.UNIT;
 		});
+	}
+
+	Field.findTokenFields = function() {
+		return [ Field.find('tag'), Field.find('author') ];
 	}
 	
 	app.filter('fields', function() {
