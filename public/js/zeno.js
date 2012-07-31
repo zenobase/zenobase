@@ -1244,7 +1244,7 @@
 		$scope.id = 'create-event-dialog';
 		$scope.dialog = $('#' + $scope.id);
 		$scope.params = $routeParams;
-		$scope.fields = Field.findAll();
+		$scope.fields = Field.findEditableFields();
 		$scope.init = function() {
 			$scope.event = {};
 			$scope.message = '';
@@ -1452,7 +1452,7 @@
 		return html;
 	}));
 	
-	Field.register(new Field('author', 'icon-user', Parser.STRING, function(value) { 
+	Field.register(new Field('author', 'icon-user', null, function(value) { 
 		return '<span class="nowrap">' +
 	  	'<i class="' + this.icon + '" title="User"></i> ' + User.find(value).getName() +
 	  '</span>';
@@ -1464,6 +1464,12 @@
 	
 	Field.findAll = function() {
 		return Field.FIELDS;
+	}
+
+	Field.findEditableFields = function() {
+		return $.grep(Field.FIELDS, function(field) {
+			return field.parse != null;
+		});
 	}
 
 	Field.findUnitFields = function() {
