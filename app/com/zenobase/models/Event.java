@@ -10,6 +10,7 @@ import com.zenobase.json.DurationField;
 import com.zenobase.json.Field;
 import com.zenobase.json.FrequencyField;
 import com.zenobase.json.IdentityField;
+import com.zenobase.json.IntegerField;
 import com.zenobase.json.LengthField;
 import com.zenobase.json.LocationField;
 import com.zenobase.json.RatingField;
@@ -28,6 +29,7 @@ public class Event extends DomainNode {
 	public static final DateTimeField TIMESTAMP = new DateTimeField("timestamp");
 	public static final DurationField DURATION = new DurationField("duration");
 	public static final FrequencyField FREQUENCY = new FrequencyField("frequency");
+	public static final IntegerField COUNT = new IntegerField("count");
 	public static final LocationField LOCATION = new LocationField("location");
 	public static final TokenField TAG = new TokenField("tag");
 	public static final ResourceField RESOURCE = new ResourceField("resource");
@@ -37,7 +39,7 @@ public class Event extends DomainNode {
 	public static final RatingField RATING = new RatingField("rating");
 
 	private static final ImmutableSet<Field<?>> FIELDS =
-		ImmutableSet.<Field<?>>of(ID, VERSION, AUTHOR, TIMESTAMP, DURATION, FREQUENCY, LOCATION, TAG, RESOURCE, DISTANCE, HEIGHT, WEIGHT, RATING);
+		ImmutableSet.<Field<?>>of(ID, VERSION, AUTHOR, TIMESTAMP, DURATION, FREQUENCY, COUNT, LOCATION, TAG, RESOURCE, DISTANCE, HEIGHT, WEIGHT, RATING);
 
 	public Event() {
 		setValue(ID, Generator.id());

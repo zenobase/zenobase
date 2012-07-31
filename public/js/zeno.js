@@ -1456,6 +1456,12 @@
 	  '</span>';
 	}));
 	
+	Field.register(new Field('count', 'icon-th', Parser.STRING, function(value) { 
+		return '<span class="nowrap">' +
+	  	'<i class="' + this.icon + '" title="Count"></i> ' + value +
+	  '</span>';
+	}));
+	
 	Field.register(new Field('rating', 'icon-star', Parser.NUMERIC, function(value) { 
 		var stars = Math.round((value || 0) / 20);
 		var html = '<span class="nowrap" title="Rated ' + stars + '/5">';
