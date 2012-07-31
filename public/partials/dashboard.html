@@ -148,13 +148,13 @@
 				<div class="alert alert-error" data-ng-show="message">
 					{{message}}
 				</div>
-				<div class="controls input-append">
-					<select class="input-large" data-ng-model="field" data-ng-change="showField()" data-ng-options="f.name for f in fields">
+				<div class="control-group">
+					<label for="field" class="control-label">Field</label>
+					<select name="field" class="input-large" data-ng-model="field" data-ng-options="f.name for f in fields">
 						<option value="">...</option>
 					</select>
-					<input type="text" data-ng-model="value">
-					<a class="btn" data-ng-click="addField()" data-ng-disabled="!field || !value">Add</a>
 				</div>
+				<div data-ng-include="getTemplate(field)" data-ng-show="field"></div>
 				<div id="create-event-preview">
 					<p data-ng-bind-html="event | fields"></p>
 				</div>
@@ -165,6 +165,182 @@
 			</div>
 		</form>
 	</div>
+
+	<script id="/create-tag.html" type="text/ng-template">
+		<div data-ng-controller="CreateTagFieldCtrl">
+			<div class="control-group">
+				<label for="value" class="control-label">Value</label>
+				<input name="value" type="text" data-ng-model="value"/>
+			</div>
+			<div class="control-group">
+				<a class="btn" data-ng-click="addField()" data-ng-disabled="!valid()">Add</a>
+			</div>
+		</div>
+	</script>
+
+	<script id="/create-location.html" type="text/ng-template">
+		<div data-ng-controller="CreateLocationFieldCtrl">
+			<div class="control-group">
+				<label for="lat" class="control-label">Latitude</label>
+				<input name="lat" type="number" min="-90" max="+90" data-ng-model="value.lat"/>
+			</div>
+			<div class="control-group">
+				<label for="lon" class="control-label">Longitude</label>
+				<input name="lon" type="number" min="-180" max="+180" data-ng-model="value.lon"/>
+			</div>
+			<div class="control-group">
+				<a class="btn" data-ng-click="addField()" data-ng-disabled="!valid()">Add</a>
+			</div>
+		</div>
+	</script>
+
+	<script id="/create-timestamp.html" type="text/ng-template">
+		<div data-ng-controller="CreateTimestampFieldCtrl">
+			<div class="control-group">
+				<label for="value" class="control-label">Value</label>
+				<input name="value" type="text" data-ng-model="value"/>
+			</div>
+			<div class="control-group">
+				<a class="btn" data-ng-click="addField()" data-ng-disabled="!valid()">Add</a>
+			</div>
+		</div>
+	</script>
+
+	<script id="/create-duration.html" type="text/ng-template">
+		<div data-ng-controller="CreateDurationFieldCtrl">
+			<div class="control-group">
+				<input name="days" type="number" data-ng-model="days"/> d<br/>
+				<input name="hours" type="number" min="0" max="23" data-ng-model="hours"/> h<br/>
+				<input name="minutes" type="number" min="0" max="59" data-ng-model="minutes"/> min<br/>
+				<input name="seconds" type="number" min="0" max="59" data-ng-model="seconds"/> s
+			</div>
+			<div class="control-group">
+				<a class="btn" data-ng-click="addField()" data-ng-disabled="!valid()">Add</a>
+			</div>
+		</div>
+	</script>
+
+	<script id="/create-resource.html" type="text/ng-template">
+		<div data-ng-controller="CreateResourceFieldCtrl">
+			<div class="control-group">
+				<label for="url" class="control-label">URL</label>
+				<input name="url" type="text" data-ng-model="value.url"/>
+			</div>
+			<div class="control-group">
+				<label for="title" class="control-label">Title</label>
+				<input name="title" type="text" data-ng-model="value.title"/>
+			</div>
+			<div class="control-group">
+				<a class="btn" data-ng-click="addField()" data-ng-disabled="!valid()">Add</a>
+			</div>
+		</div>
+	</script>
+
+	<!-- begin units -->
+	<script id="/create-distance.html" type="text/ng-template">
+		<div data-ng-controller="CreateUnitFieldCtrl">
+			<div class="control-group">
+				<label for="value" class="control-label">Value</label>
+				<input name="value" type="number" min="0" data-ng-model="value['@value']"/>
+			</div>
+			<div class="control-group">
+				<label for="unit" class="control-label">Unit</label>
+				<input name="unit" type="text" data-ng-model="value.unit"/>
+			</div>
+			<div class="control-group">
+				<a class="btn" data-ng-click="addField()" data-ng-disabled="!valid()">Add</a>
+			</div>
+		</div>
+	</script>
+
+	<script id="/create-height.html" type="text/ng-template">
+		<div data-ng-controller="CreateUnitFieldCtrl">
+			<div class="control-group">
+				<label for="value" class="control-label">Value</label>
+				<input name="value" type="number" min="0" data-ng-model="value['@value']"/>
+			</div>
+			<div class="control-group">
+				<label for="unit" class="control-label">Unit</label>
+				<input name="unit" type="text" data-ng-model="value.unit"/>
+			</div>
+			<div class="control-group">
+				<a class="btn" data-ng-click="addField()" data-ng-disabled="!valid()">Add</a>
+			</div>
+		</div>
+	</script>
+
+	<script id="/create-weight.html" type="text/ng-template">
+		<div data-ng-controller="CreateUnitFieldCtrl">
+			<div class="control-group">
+				<label for="value" class="control-label">Value</label>
+				<input name="value" type="number" min="0" data-ng-model="value['@value']"/>
+			</div>
+			<div class="control-group">
+				<label for="unit" class="control-label">Unit</label>
+				<input name="unit" type="text" data-ng-model="value.unit"/>
+			</div>
+			<div class="control-group">
+				<a class="btn" data-ng-click="addField()" data-ng-disabled="!valid()">Add</a>
+			</div>
+		</div>
+	</script>
+
+	<script id="/create-temperature.html" type="text/ng-template">
+		<div data-ng-controller="CreateUnitFieldCtrl">
+			<div class="control-group">
+				<label for="value" class="control-label">Value</label>
+				<input name="value" type="number" min="0" data-ng-model="value['@value']"/>
+			</div>
+			<div class="control-group">
+				<label for="unit" class="control-label">Unit</label>
+				<input name="unit" type="text" data-ng-model="value.unit"/>
+			</div>
+			<div class="control-group">
+				<a class="btn" data-ng-click="addField()" data-ng-disabled="!valid()">Add</a>
+			</div>
+		</div>
+	</script>
+
+	<script id="/create-frequency.html" type="text/ng-template">
+		<div data-ng-controller="CreateUnitFieldCtrl">
+			<div class="control-group">
+				<label for="value" class="control-label">Value</label>
+				<input name="value" type="number" min="0" data-ng-model="value['@value']"/>
+			</div>
+			<div class="control-group">
+				<label for="unit" class="control-label">Unit</label>
+				<input name="unit" type="text" data-ng-model="value.unit"/>
+			</div>
+			<div class="control-group">
+				<a class="btn" data-ng-click="addField()" data-ng-disabled="!valid()">Add</a>
+			</div>
+		</div>
+	</script>
+	<!-- end units -->
+
+	<script id="/create-count.html" type="text/ng-template">
+		<div data-ng-controller="CreateIntegerFieldCtrl">
+			<div class="control-group">
+				<label for="value" class="control-label">Value</label>
+				<input name="value" type="number" min="0" data-ng-model="value"/>
+			</div>
+			<div class="control-group">
+				<a class="btn" data-ng-click="addField()" data-ng-disabled="!valid()">Add</a>
+			</div>
+		</div>
+	</script>
+
+	<script id="/create-rating.html" type="text/ng-template">
+		<div data-ng-controller="CreateIntegerFieldCtrl">
+			<div class="control-group">
+				<label for="value" class="control-label">Value</label>
+				<input name="value" type="number" min="0" max="100" step="20" data-ng-model="value"/>
+			</div>
+			<div class="control-group">
+				<a class="btn" data-ng-click="addField()" data-ng-disabled="!valid()">Add</a>
+			</div>
+		</div>
+	</script>
 
 	<div id="import-events-dialog" class="modal hide" data-ng-controller="ImportEventsCtrl">
 		<form name="importEventsForm" data-ng-submit="import()" class="modal-form">

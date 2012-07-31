@@ -107,7 +107,6 @@
 	function User(data) {
 		$.extend(this, data);
 		User.CACHE[this['@id']] = this;
-		console.log('user', this);
 	}
 	
 	User.prototype.getName = function() {
@@ -1272,13 +1271,9 @@
 		$scope.init = function() {
 			$scope.event = {};
 			$scope.message = '';
-			$scope.content = '';
 			$scope.field = null;
 			$scope.value = '';
 			$scope.i = 0;
-		};
-		$scope.showField = function() {
-			$scope.value = '';
 		};
 		$scope.addField = function() {
 			if ($scope.field) {
@@ -1287,11 +1282,13 @@
 				}
 				var value = $scope.field.parse($scope.value);
 				$scope.event[$scope.field.name].push(value);
-				$scope.content = JSON.stringify($scope.event, null, '  ');
 			}
 		};
 		$scope.isEmpty = function() {
 			return $.isEmptyObject($scope.event);
+		};
+		$scope.getTemplate = function(field) {
+			return field ? '/create-' + field.name + '.html' : null;
 		};
 		$scope.create = function() {
 			$http.post('/buckets/' + $scope.params.bucketId + '/', $scope.event)
@@ -1307,11 +1304,155 @@
 		};
 
 		$scope.init();
-		$scope.dialog.on('shown', function (e) {
-			if (e.target.id == $scope.id) { // 'shown' also fired for tab selection
-				$scope.$apply($scope.init);
-			};
-		});
+		$scope.dialog.on('shown', $scope.init);
+	}]);
+	
+	
+	app.controller('CreateTagFieldCtrl', ['$scope', function($scope) {
+
+		$scope.init = function() {
+			$scope.value = '';
+		};
+		$scope.addField = function() {
+			if (!$scope.event[$scope.field.name]) {
+				$scope.event[$scope.field.name] = [];
+			}
+			var value = $scope.field.parse($scope.value);
+			$scope.event[$scope.field.name].push(value);
+			$scope.init();
+		};
+		$scope.valid = function() {
+			return $scope.value;
+		};
+
+		$scope.init();
+	}]);
+	
+	app.controller('CreateLocationFieldCtrl', ['$scope', function($scope) {
+
+		$scope.init = function() {
+			$scope.value = { lat : 0, lon : 0 };
+			if (navigator.geolocation) {
+				navigator.geolocation.getCurrentPosition(function(position) {
+					$scope.$apply(function() {
+						$scope.value.lat = position.coords.latitude;
+						$scope.value.lon = position.coords.longitude;
+					});
+				});
+			}
+		};
+		$scope.addField = function() {
+			if (!$scope.event[$scope.field.name]) {
+				$scope.event[$scope.field.name] = [];
+			}
+			$scope.event[$scope.field.name].push($scope.value);
+		};
+		$scope.valid = function() {
+			return $scope.value.lat >= -90 && $scope.value.lat <= 90 && 
+				$scope.value.lon >= -180 && $scope.value.lon <= 180;
+		};
+
+		$scope.init();
+	}]);
+	
+
+	app.controller('CreateTimestampFieldCtrl', ['$scope', function($scope) {
+
+		$scope.init = function() {
+			$scope.value = new Date().toISOString();
+		};
+		$scope.addField = function() {
+			console.log($scope.value);
+			if (!$scope.event[$scope.field.name]) {
+				$scope.event[$scope.field.name] = [];
+			}
+			$scope.event[$scope.field.name].push($scope.value);
+		};
+		$scope.valid = function() {
+			return Date.parse($scope.value);
+		};
+
+		$scope.init();
+	}]);
+	
+	app.controller('CreateDurationFieldCtrl', ['$scope', function($scope) {
+
+		$scope.init = function() {
+			$scope.days = $scope.hours = $scope.minutes = $scope.seconds = 0;
+		};
+		$scope.millis = function() {
+			return ((($scope.days * 24 + $scope.hours) * 60 + $scope.minutes) * 60 + $scope.seconds) * 1000;
+		};
+		$scope.addField = function() {
+			if (!$scope.event[$scope.field.name]) {
+				$scope.event[$scope.field.name] = [];
+			}
+			$scope.event[$scope.field.name].push($scope.millis());
+			$scope.init();
+		};
+		$scope.valid = function() {
+			return $scope.millis() > 0;
+		};
+
+		$scope.init();
+	}]);
+	
+	app.controller('CreateResourceFieldCtrl', ['$scope', function($scope) {
+
+		$scope.init = function() {
+			$scope.value = {};
+		};
+		$scope.addField = function() {
+			if (!$scope.event[$scope.field.name]) {
+				$scope.event[$scope.field.name] = [];
+			}
+			$scope.event[$scope.field.name].push($scope.value);
+			$scope.init();
+		};
+		$scope.valid = function() {
+			return $scope.value.url && $scope.value.title;
+		};
+
+		$scope.init();
+	}]);
+	
+	app.controller('CreateUnitFieldCtrl', ['$scope', function($scope) {
+
+		$scope.init = function() {
+			$scope.value = {};
+		};
+		$scope.addField = function() {
+			if (!$scope.event[$scope.field.name]) {
+				$scope.event[$scope.field.name] = [];
+			}
+			$scope.event[$scope.field.name].push($scope.value);
+			$scope.init();
+		};
+		$scope.valid = function() {
+			return $.isNumeric($scope.value['@value']) && $scope.value.unit;
+		};
+
+		$scope.init();
+	}]);
+	
+	app.controller('CreateIntegerFieldCtrl', ['$scope', function($scope) {
+
+		$scope.init = function() {
+			$scope.value = 0;
+		};
+		$scope.addField = function() {
+			if (!$scope.event[$scope.field.name]) {
+				$scope.event[$scope.field.name] = [];
+			}
+			var value = $scope.field.parse($scope.value);
+			$scope.event[$scope.field.name].push(value);
+			$scope.init();
+		};
+		$scope.valid = function() {
+			return /^\d+$/.test($scope.value);
+		};
+
+		$scope.init();
 	}]);
 	
 	
