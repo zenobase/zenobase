@@ -559,19 +559,13 @@
 		};
 		$scope.findTemplates = function() {
 			return $.grep($scope.templates, function(template) {
-				return !template.singleton || !$scope.exists(template.template);
+				return !template.singleton || !$scope.exists(template);
 			});
 		};
 		$scope.exists = function(template) {
-			var i, max;
-			if ($scope.bucket) {
-				for (i = 0, max = $scope.bucket.widgets.length; i < max; ++i) {
-					if ($scope.bucket.widgets[i].template === template) {
-						return true;
-					}
-				}
-			}
-			return false;
+			return $scope.bucket && $.grep($scope.bucket.widgets, function(widget) {
+				return widget.type === template.type;
+			}).length > 0;
 		};
 	}]);
 	
