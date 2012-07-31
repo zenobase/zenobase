@@ -1469,12 +1469,14 @@
 	app.filter('fields', function() {
 		return function(event) {
 			var html = '';
+			var count = 0;
 			$.each(Field.findAll(), function(i, field) {
 				var value = event[field.name];
 				if (value) {
-					if (i > 0) {
+					if (count > 0) {
 						html += ' &nbsp; ';
 					}
+					++count;
 					if ($.isArray(value)) {
 						$.each(value, function(i, value) {
 							if (i > 0) {
