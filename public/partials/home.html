@@ -1,15 +1,14 @@
 <div class="container-fluid">
 
 	<div class="hero-unit" data-ng-controller="HomeCtrl">
-		<h1>Data Happens.</h1>
-		<br/>
-		<p>Collect and analyze <a href="#/buckets/qrs2pf24e2/">your activities</a>, or just about anything else.</p>
+		<h2>Collect and analyze data for activities, measurements, or just about anything else.</h2>
 		<br/>
 		<p><img src="/img/dashboard-screenshot.png" width="505" height="312"/></p>
 		<br/>
 		<p>
-			<a class="btn btn-primary btn-large" data-ng-click="create()" data-ng-hide="user">Enter Data &raquo;</a>
-			<a class="btn btn-primary btn-large" href="#/users/{{user.getName()}}" data-ng-show="user">Your Data &raquo;</a>
+			Explore some <a href="https://zenobase.com/#/buckets/u07qih0a27/">sample data</a>, or 
+			<a data-ng-click="create()" data-ng-hide="user">start collecting your own data&hellip;</a>
+			<a href="#/users/{{user.getName()}}" data-ng-show="user">view your own data&hellip;</a>
 		</p>
 	</div>
 
