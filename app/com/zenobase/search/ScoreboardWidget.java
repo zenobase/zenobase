@@ -48,7 +48,7 @@ public class ScoreboardWidget extends Widget {
 				ObjectNode entryNode = result.addObject();
 				entryNode.put("label", entry.getTerm());
 				entryNode.put("count", entry.getTotalCount());
-				addValue(entryNode, "min",  entry.getMin());
+				addValue(entryNode, "min", entry.getMin());
 				addValue(entryNode, "max", entry.getMax());
 				addValue(entryNode, "sum", entry.getTotal());
 				addValue(entryNode, "avg", entry.getMean());
@@ -59,7 +59,7 @@ public class ScoreboardWidget extends Widget {
 
 	private void addValue(ObjectNode parent, String property, double value) {
 		ObjectNode node = parent.putObject(property);
-		node.put("@value", unit.getStandardUnit().getConverterTo(unit).convert(value));
+		node.put("@value", Math.round(unit.getStandardUnit().getConverterTo(unit).convert(value)));
 		node.put("unit", unit.toString());
 	}
 

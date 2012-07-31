@@ -1398,19 +1398,19 @@
 	
 	Field.register(new Field('distance', 'icon-resize-horizontal', Parser.UNIT, function(value) { 
 		return '<span class="nowrap" title="Distance">' +
-	  	'<i class="' + this.icon + '"></i> ' + Math.round(value['@value']) + value.unit +
+	  	'<i class="' + this.icon + '"></i> ' + value['@value'] + value.unit +
 	  '</span>';
 	}));
 	
 	Field.register(new Field('height', 'icon-resize-vertical', Parser.UNIT, function(value) { 
 		return '<span class="nowrap" title="Height">' +
-	  	'<i class="' + this.icon + '"></i>' + Math.round(value['@value']) + value.unit +
+	  	'<i class="' + this.icon + '"></i>' + value['@value'] + value.unit +
 	  '</span>';
 	}));
 	
 	Field.register(new Field('weight', 'icon-lock', Parser.UNIT, function(value) { 
 		return '<span class="nowrap" title="Weight">' +
-	  	'<i class="' + this.icon + '"></i>' + Math.round(value['@value']) + value.unit +
+	  	'<i class="' + this.icon + '"></i>' + value['@value'] + value.unit +
 	  '</span>';
 	}));
 	

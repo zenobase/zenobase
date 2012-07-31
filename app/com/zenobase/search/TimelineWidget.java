@@ -90,7 +90,7 @@ public class TimelineWidget extends Widget {
 
 	private void addValue(ObjectNode parent, String property, double value) {
 		ObjectNode node = parent.putObject(property);
-		node.put("@value", unit.getStandardUnit().getConverterTo(unit).convert(value));
+		node.put("@value", Math.round(unit.getStandardUnit().getConverterTo(unit).convert(value)));
 		node.put("unit", unit.toString());
 	}
 
