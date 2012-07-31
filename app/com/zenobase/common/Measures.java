@@ -1,6 +1,7 @@
 package com.zenobase.common;
 
 import java.math.BigDecimal;
+import java.math.MathContext;
 import java.util.List;
 
 import javax.measure.DecimalMeasure;
@@ -17,7 +18,7 @@ public class Measures {
 
 	static {
 		UnitFormat.getInstance().label(SI.CELSIUS, "°C");
-		UnitFormat.getInstance().alias(SI.HERTZ.divide(60L), "bpm");
+		UnitFormat.getInstance().label(SI.HERTZ.divide(60L), "bpm");
 	}
 
 	private Measures() {
@@ -25,7 +26,7 @@ public class Measures {
 	}
 
 	public static <Q extends Quantity> DecimalMeasure<Q> toStandard(DecimalMeasure<Q> measure) {
-		return measure.to((Unit<Q>) measure.getUnit().getStandardUnit());
+		return measure.to((Unit<Q>) measure.getUnit().getStandardUnit(), MathContext.DECIMAL32);
 	}
 
 	public static <Q extends Quantity> Iterable<Unit<Q>> getUnits(Dimension dimension, Class<Q> type) {
@@ -45,5 +46,9 @@ public class Measures {
 
 	public static <Q extends Quantity> DecimalMeasure<Q> valueOf(BigDecimal value, String unit) {
 		return DecimalMeasure.valueOf(value, (Unit<Q>) Unit.valueOf(unit));
+	}
+
+	public static double convert(double value, Unit<?> unit) {
+		return Math.round(unit.getStandardUnit().getConverterTo(unit).convert(value));
 	}
 }

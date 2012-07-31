@@ -11,6 +11,7 @@ import org.elasticsearch.search.facet.FacetBuilders;
 import org.elasticsearch.search.facet.termsstats.TermsStatsFacet;
 import org.elasticsearch.search.facet.termsstats.TermsStatsFacet.ComparatorType;
 
+import com.zenobase.common.Measures;
 import com.zenobase.json.MeasurementField;
 import com.zenobase.json.Nodes;
 
@@ -59,7 +60,7 @@ public class ScoreboardWidget extends Widget {
 
 	private void addValue(ObjectNode parent, String property, double value) {
 		ObjectNode node = parent.putObject(property);
-		node.put("@value", Math.round(unit.getStandardUnit().getConverterTo(unit).convert(value)));
+		node.put("@value", Measures.convert(value, unit));
 		node.put("unit", unit.toString());
 	}
 

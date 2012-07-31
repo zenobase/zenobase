@@ -20,6 +20,7 @@ import com.google.common.base.Strings;
 import com.google.common.collect.Maps;
 
 import com.zenobase.common.Intervals;
+import com.zenobase.common.Measures;
 import com.zenobase.json.MeasurementField;
 import com.zenobase.json.Nodes;
 import com.zenobase.models.Event;
@@ -90,7 +91,7 @@ public class TimelineWidget extends Widget {
 
 	private void addValue(ObjectNode parent, String property, double value) {
 		ObjectNode node = parent.putObject(property);
-		node.put("@value", Math.round(unit.getStandardUnit().getConverterTo(unit).convert(value)));
+		node.put("@value", Measures.convert(value, unit));
 		node.put("unit", unit.toString());
 	}
 
