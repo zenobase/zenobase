@@ -2,6 +2,7 @@ package com.zenobase.models;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.regex.Pattern;
 
 import org.codehaus.jackson.node.ObjectNode;
@@ -9,6 +10,7 @@ import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import com.google.common.base.Objects;
 import com.google.common.base.Strings;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
 
@@ -84,8 +86,16 @@ public class Bucket extends DomainNode {
 	}
 
 	public Permission getPermission(Identity principal) {
-		for (Map.Entry<Identity, Permission> entry : getValues(PERMISSIONS)) {
-			if (entry.getKey().equals(principal)) {
+		ImmutableList<Entry<Identity, Permission>> permissions = getValues(PERMISSIONS);
+		if (principal != null) {
+			for (Map.Entry<Identity, Permission> entry : permissions) {
+				if (entry.getKey().equals(principal)) {
+					return entry.getValue();
+				}
+			}
+		}
+		for (Map.Entry<Identity, Permission> entry : permissions) {
+			if (entry.getKey().equals(Identity.PUBLIC)) {
 				return entry.getValue();
 			}
 		}

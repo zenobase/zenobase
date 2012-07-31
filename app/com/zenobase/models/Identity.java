@@ -7,6 +7,8 @@ import com.zenobase.json.Nodes;
 
 public class Identity {
 
+	public static final Identity PUBLIC = new Identity("*");
+
 	private final String id;
 
 	public Identity() {

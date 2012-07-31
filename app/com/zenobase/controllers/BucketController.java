@@ -35,15 +35,12 @@ public class BucketController extends ControllerSupport {
 
 	public static Result get(String bucketId) {
 		Identity principal = auth.getPrincipal();
-		if (principal == null) {
-			return unauthorized();
-		}
 		Bucket bucket = buckets.findBucket(bucketId);
 		if (bucket == null) {
 			return notFound();
 		}
     	if (bucket.getPermission(principal) == Permission.NONE) {
-    		return forbidden();
+    		return principal == null ? unauthorized() : forbidden();
     	}
 		if (bucket.getWidgets().isEmpty()) {
 			setDefaultDashboard(bucket);
@@ -113,7 +110,7 @@ public class BucketController extends ControllerSupport {
 			return badRequest("not valid");
 		}
 		if (!updated.getPrincipals(Permission.ALL).equals(bucket.getPrincipals(Permission.ALL))) {
-			return badRequest("changing the bucket owner is not supported");
+			return badRequest("not allowed to change the bucket owner");
 		}
 		String commandId = dispatcher.dispatch(new UpdateBucketCommand(principal, bucket, updated));
 		return ok(receipt(commandId));

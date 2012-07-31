@@ -38,15 +38,12 @@ public class EventListController extends ControllerSupport {
 
 	public static Result get(String bucketId) {
 		Identity principal = auth.getPrincipal();
-		if (principal == null) {
-			return unauthorized();
-		}
 		Bucket bucket = buckets.findBucket(bucketId);
     	if (bucket == null) {
     		return notFound();
     	}
     	if (bucket.getPermission(principal) == Permission.NONE) {
-    		return forbidden();
+    		return principal == null ? unauthorized() : forbidden();
     	}
     	EventSearch search = new EventSearch()
 			.addWidgets(request().queryString().get("w"))

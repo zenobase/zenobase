@@ -698,9 +698,24 @@
 		$scope.cancel = function() {
 			$scope.editing = false;
 		};
+		$scope.isPublished = function() {
+			return $scope.bucket && $.grep($scope.bucket.permissions, function(permission) {
+				return permission.principal === '*';
+			}).length > 0;
+		};
 	}]);
 	
 	app.controller('BucketFormCtrl', ['$scope', '$http', function($scope, $http) {
+		$scope.publish = function() {
+			if (!$scope.isPublished()) {
+				$scope.bucket.permissions.push({ 'principal' : '*', 'permission' : 'USE' });
+			}
+		};
+		$scope.unpublish = function() {
+			$scope.bucket.permissions = $.grep($scope.bucket.permissions, function(permission) {
+				return permission.principal !== '*';
+			});
+		};
 		$scope.save = function(settings) {
 			$http.post('/buckets/' + $scope.bucketId, $scope.bucket)
 				.success(function (response, status, headers) {
