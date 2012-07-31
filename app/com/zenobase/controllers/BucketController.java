@@ -56,7 +56,7 @@ public class BucketController extends ControllerSupport {
 	private static class DefaultDashboard {
 
 		public List<ObjectNode> widgets(){
-			return ImmutableList.of(timeline(), list(), map());
+			return ImmutableList.of(timeline(), list(), count());
 		}
 
 		private ObjectNode list(){
@@ -83,11 +83,15 @@ public class BucketController extends ControllerSupport {
 			return widget;
 		}
 
-		private ObjectNode map(){
+		private ObjectNode count(){
 			ObjectNode widget = Nodes.newObject();
-			widget.put("id", "default-map");
-			widget.put("label", "Map");
-			widget.put("type", "map");
+			widget.put("id", "default-count");
+			widget.put("label", "Tags");
+			widget.put("type", "count");
+			widget.put("field", "tag");
+			widget.put("order", "count");
+			widget.put("reverse", false);
+			widget.put("limit", 10);
 			widget.put("placement", "right");
 			return widget;
 		}
