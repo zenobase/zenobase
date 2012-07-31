@@ -1239,7 +1239,7 @@
 	}]);
 	
 	
-	app.controller('TemplateCtrl', ['$scope', '$http', '$timeout', '$routeParams', function($scope, $http, $timeout, $routeParams) {
+	app.controller('CreateEventDialogCtrl', ['$scope', '$http', '$timeout', '$routeParams', function($scope, $http, $timeout, $routeParams) {
 
 		$scope.id = 'create-event-dialog';
 		$scope.dialog = $('#' + $scope.id);
