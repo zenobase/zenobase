@@ -59,9 +59,14 @@
 					<div class="control-group">
 						<label class="control-label" for="edit-public"><strong>Permissions</strong></label>
 						<div class="controls">
-							<i class="icon-globe"></i>
-							<a data-ng-click="publish()" data-ng-show="!isPublished()" title="Anyone with a link can view this dashboard.">make public</a> 
-							<a data-ng-click="unpublish()" data-ng-show="isPublished()" title="Only you can see this dashboard.">make private</a> 
+							<span data-ng-show="user.verified">
+								<i class="icon-globe"></i>
+								<a data-ng-click="publish()" data-ng-show="!isPublished()" title="Anyone with a link can view this dashboard.">make public</a> 
+								<a data-ng-click="unpublish()" data-ng-show="isPublished()" title="Only you can see this dashboard.">make private</a> 
+							</span>
+							<span data-ng-hide="user.verified">
+								<i>You can publish this dashboard after signing up and verifying your email address.</i>
+							</span>
 						</div>
 					</div>
 				</fieldset>

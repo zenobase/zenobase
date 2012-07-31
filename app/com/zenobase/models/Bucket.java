@@ -85,6 +85,14 @@ public class Bucket extends DomainNode {
 		return principals.build();
 	}
 
+	public ImmutableSet<Identity> getPrincipals() {
+		ImmutableSet.Builder<Identity> principals = ImmutableSet.builder();
+		for (Map.Entry<Identity, Permission> entry : getValues(PERMISSIONS)) {
+			principals.add(entry.getKey());
+		}
+		return principals.build();
+	}
+
 	public Permission getPermission(Identity principal) {
 		ImmutableList<Entry<Identity, Permission>> permissions = getValues(PERMISSIONS);
 		if (principal != null) {

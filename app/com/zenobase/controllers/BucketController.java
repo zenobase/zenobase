@@ -17,6 +17,7 @@ import com.zenobase.json.Nodes;
 import com.zenobase.models.Bucket;
 import com.zenobase.models.Identity;
 import com.zenobase.models.Permission;
+import com.zenobase.models.User;
 import com.zenobase.services.BucketRepository;
 import com.zenobase.services.CommandDispatcher;
 import com.zenobase.services.UserRepository;
@@ -111,6 +112,12 @@ public class BucketController extends ControllerSupport {
 		}
 		if (!updated.getPrincipals(Permission.ALL).equals(bucket.getPrincipals(Permission.ALL))) {
 			return badRequest("not allowed to change the bucket owner");
+		}
+		if (updated.getPrincipals().size() > 1) {
+			User user = users.find(principal);
+			if (user == null || !user.isVerified()) {
+				return badRequest("not allowed to change permissions");
+			}
 		}
 		String commandId = dispatcher.dispatch(new UpdateBucketCommand(principal, bucket, updated));
 		return ok(receipt(commandId));

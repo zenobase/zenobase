@@ -107,6 +107,7 @@
 	function User(data) {
 		$.extend(this, data);
 		User.CACHE[this['@id']] = this;
+		console.log('user', this);
 	}
 	
 	User.prototype.getName = function() {
