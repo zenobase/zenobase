@@ -1408,7 +1408,7 @@
 	  '</span>';
 	}));
 	
-	Field.register(new Field('weight', 'icon-download-alt', Parser.UNIT, function(value) { 
+	Field.register(new Field('weight', 'icon-lock', Parser.UNIT, function(value) { 
 		return '<span class="nowrap" title="Weight">' +
 	  	'<i class="' + this.icon + '"></i>' + Math.round(value['@value']) + value.unit +
 	  '</span>';
