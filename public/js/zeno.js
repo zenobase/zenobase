@@ -1331,25 +1331,52 @@
 	app.controller('CreateLocationFieldCtrl', ['$scope', function($scope) {
 
 		$scope.init = function() {
-			$scope.value = { lat : 0, lon : 0 };
-			if (navigator.geolocation) {
-				navigator.geolocation.getCurrentPosition(function(position) {
-					$scope.$apply(function() {
-						$scope.value.lat = position.coords.latitude;
-						$scope.value.lon = position.coords.longitude;
+			$scope.setValue(0, 0);
+			google.load("maps", "3.8", { other_params : 'sensor=false', callback : function() {
+				var options = {
+					mapTypeId: google.maps.MapTypeId.TERRAIN,
+					streetViewControl: false,
+					mapTypeControlOptions : {
+						style : google.maps.MapTypeControlStyle.DROPDOWN_MENU
+					}
+				};
+				$scope.map = new google.maps.Map(document.getElementById('create-location-map'), options);
+				$scope.map.setZoom(10);
+				if (navigator.geolocation) {
+					navigator.geolocation.getCurrentPosition(function(position) {
+						$scope.setValue(position.coords.latitude, position.coords.longitude);
+						$scope.addMarker(position.coords.latitude, position.coords.longitude);
 					});
-				});
-			}
+				} else {
+					$scope.addMarker(0, 0);
+				}
+			}});
+		};
+		$scope.addMarker = function(lat, lon) {
+			var latLng = new google.maps.LatLng(lat, lon);
+			var marker = new google.maps.Marker({
+				position : latLng, 
+				map : $scope.map,
+				title : 'Location: ' + latLng,
+				draggable: true
+			});
+			google.maps.event.addListener(marker, 'dragend', function() {
+		    $scope.setValue(marker.getPosition().lat(), marker.getPosition().lng());
+		  });
+			$scope.map.setCenter(latLng);
+		};
+		$scope.valid = function() {
+			return $scope.value.lat >= -90 && $scope.value.lat <= 90 && 
+				$scope.value.lon >= -180 && $scope.value.lon <= 180;
+		};
+		$scope.setValue = function(lat, lon) {
+			$scope.value = { lat : lat, lon : lon };
 		};
 		$scope.addField = function() {
 			if (!$scope.event[$scope.field.name]) {
 				$scope.event[$scope.field.name] = [];
 			}
 			$scope.event[$scope.field.name].push($scope.value);
-		};
-		$scope.valid = function() {
-			return $scope.value.lat >= -90 && $scope.value.lat <= 90 && 
-				$scope.value.lon >= -180 && $scope.value.lon <= 180;
 		};
 
 		$scope.init();
@@ -1362,7 +1389,6 @@
 			$scope.value = new Date().toISOString();
 		};
 		$scope.addField = function() {
-			console.log($scope.value);
 			if (!$scope.event[$scope.field.name]) {
 				$scope.event[$scope.field.name] = [];
 			}

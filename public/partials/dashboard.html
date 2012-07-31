@@ -180,14 +180,7 @@
 
 	<script id="/create-location.html" type="text/ng-template">
 		<div data-ng-controller="CreateLocationFieldCtrl">
-			<div class="control-group">
-				<label for="lat" class="control-label">Latitude</label>
-				<input name="lat" type="number" min="-90" max="+90" data-ng-model="value.lat"/>
-			</div>
-			<div class="control-group">
-				<label for="lon" class="control-label">Longitude</label>
-				<input name="lon" type="number" min="-180" max="+180" data-ng-model="value.lon"/>
-			</div>
+			<div id="create-location-map" class="map"></div>
 			<div class="control-group">
 				<a class="btn" data-ng-click="addField()" data-ng-disabled="!valid()">Add</a>
 			</div>
