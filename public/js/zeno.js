@@ -1450,6 +1450,12 @@
 	  '</span>';
 	}));
 	
+	Field.register(new Field('frequency', 'icon-heart', Parser.UNIT, function(value) { 
+		return '<span class="nowrap">' +
+	  	'<i class="' + this.icon + '" title="Frequency"></i> ' + value['@value'] + value.unit +
+	  '</span>';
+	}));
+	
 	Field.register(new Field('rating', 'icon-star', Parser.NUMERIC, function(value) { 
 		var stars = Math.round((value || 0) / 20);
 		var html = '<span class="nowrap" title="Rated ' + stars + '/5">';

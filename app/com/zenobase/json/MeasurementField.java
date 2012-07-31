@@ -2,7 +2,6 @@ package com.zenobase.json;
 
 import javax.measure.DecimalMeasure;
 import javax.measure.quantity.Quantity;
-import javax.measure.unit.Unit;
 
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.node.ObjectNode;
@@ -34,8 +33,7 @@ public class MeasurementField<Q extends Quantity> extends Field<DecimalMeasure<Q
 	}
 
 	private DecimalMeasure<Q> getDecimalMeasure(ObjectNode node) {
-		return DecimalMeasure.valueOf(VALUE.getValue(node),
-			(Unit<Q>) Unit.valueOf(UNIT.getValue(node)));
+		return Measures.valueOf(VALUE.getValue(node), UNIT.getValue(node));
 	}
 
 	@Override

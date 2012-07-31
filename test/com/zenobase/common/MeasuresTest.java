@@ -5,6 +5,7 @@ import static org.fest.assertions.Assertions.assertThat;
 import javax.measure.DecimalMeasure;
 import javax.measure.quantity.Dimensionless;
 import javax.measure.quantity.Duration;
+import javax.measure.quantity.Frequency;
 import javax.measure.quantity.Length;
 import javax.measure.quantity.Mass;
 import javax.measure.quantity.Temperature;
@@ -23,6 +24,7 @@ public class MeasuresTest {
 		assertThat(Measures.getUnits(Dimension.NONE, Dimensionless.class)).as("dimensionless units").isNotEmpty();
 		assertThat(Measures.getUnits(Dimension.LENGTH.pow(3), Volume.class)).as("volume units").isNotEmpty();
 		assertThat(Measures.getUnits(Dimension.TIME, Duration.class)).as("time units").isNotEmpty();
+		assertThat(Measures.getUnits(Dimension.NONE.divide(Dimension.TIME), Frequency.class)).as("frequency").isNotEmpty();
 	}
 
 	@Test
@@ -34,6 +36,8 @@ public class MeasuresTest {
 		assertThatIsEqualTo("293.15 K", "20 °C");
 		assertThatIsEqualTo("0.001 m³", "1 L");
 		assertThatIsEqualTo("1 m³", "1 m³");
+		assertThatIsEqualTo("1000 Hz", "1 kHz");
+		assertThatIsEqualTo("1 Hz", "60 bpm");
 	}
 
 	private void assertThatIsEqualTo(String expected, String value) {

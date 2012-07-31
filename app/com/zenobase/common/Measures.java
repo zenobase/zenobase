@@ -1,5 +1,6 @@
 package com.zenobase.common;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import javax.measure.DecimalMeasure;
@@ -16,6 +17,7 @@ public class Measures {
 
 	static {
 		UnitFormat.getInstance().label(SI.CELSIUS, "°C");
+		UnitFormat.getInstance().alias(SI.HERTZ.divide(60L), "bpm");
 	}
 
 	private Measures() {
@@ -39,5 +41,9 @@ public class Measures {
 			}
 		}
 		return units;
+	}
+
+	public static <Q extends Quantity> DecimalMeasure<Q> valueOf(BigDecimal value, String unit) {
+		return DecimalMeasure.valueOf(value, (Unit<Q>) Unit.valueOf(unit));
 	}
 }
