@@ -142,19 +142,8 @@
 					<input type="text" data-ng-model="value">
 					<a class="btn" data-ng-click="addField()" data-ng-disabled="!field || !value">Add</a>
 				</div>
-				<div data-ng-show="content" class="tabbable tabs-below">
-					<div class="tab-content">
-						<div id="create-event-preview" class="tab-pane pane-bordered active">
-							<p data-ng-bind-html="event | fields"></p>
-						</div>
-						<div id="create-event-source" class="tab-pane pane-bordered">
-							<pre data-ng-bind-html="event | json"></pre>
-						</div>
-					</div>
-					<ul class="nav nav-tabs">
-						<li class="active"><a href="#create-event-preview" data-toggle="tab">Preview</a></li>
-						<li><a href="#create-event-source" data-toggle="tab">Source</a></li>
-					</ul>
+				<div id="create-event-preview">
+					<p data-ng-bind-html="event | fields"></p>
 				</div>
 			</div>
 			<div class="modal-footer">
