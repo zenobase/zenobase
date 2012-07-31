@@ -1381,7 +1381,7 @@
 			return { 'lat' : +tokens[0], 'lon' : +tokens[1] }; 
 		},
 		UNIT : function(value) {
-			var match = value.match(/^(\d+(?:\.\d+)?) *([a-z]+)$/);
+			var match = value.match(/^(\d+(?:\.\d+)?) *([a-zA-Z]+)$/);
 			if (!match || match.length != 3) {
 				throw new Error("Couldn't parse unit: " + value);
 			}
@@ -1459,6 +1459,12 @@
 	Field.register(new Field('count', 'icon-th', Parser.STRING, function(value) { 
 		return '<span class="nowrap">' +
 	  	'<i class="' + this.icon + '" title="Count"></i> ' + value +
+	  '</span>';
+	}));
+	
+	Field.register(new Field('temperature', 'icon-fire', Parser.UNIT, function(value) { 
+		return '<span class="nowrap">' +
+	  	'<i class="' + this.icon + '" title="Temperature"></i> ' + value['@value'] + value.unit +
 	  '</span>';
 	}));
 	
