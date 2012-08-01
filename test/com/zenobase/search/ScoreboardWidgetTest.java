@@ -51,20 +51,20 @@ public class ScoreboardWidgetTest extends SearchTestSupport {
 		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(4);
 		NodeAssert node = assertThat(result).path(id).hasSize(2);
 		node.path(0).path("label").isEqualTo(e2.getValue(Event.TAG));
-		node.path(0).path("min").path("@value").isEqualTo(10);
+		node.path(0).path("min").path("@value").isEqualTo(10.0);
 		node.path(0).path("min").path("unit").isEqualTo("km");
-		node.path(0).path("max").path("@value").isEqualTo(20);
+		node.path(0).path("max").path("@value").isEqualTo(20.0);
 		node.path(0).path("max").path("unit").isEqualTo("km");
-		node.path(0).path("avg").path("@value").isEqualTo(15);
+		node.path(0).path("avg").path("@value").isEqualTo(15.0);
 		node.path(0).path("avg").path("unit").isEqualTo("km");
-		node.path(0).path("sum").path("@value").isEqualTo(30);
+		node.path(0).path("sum").path("@value").isEqualTo(30.0);
 		node.path(0).path("sum").path("unit").isEqualTo("km");
 		node.path(0).path("count").isEqualTo(2);
 		node.path(1).path("label").isEqualTo(e1.getValue(Event.TAG));
-		node.path(1).path("min").path("@value").isEqualTo(10);
-		node.path(1).path("max").path("@value").isEqualTo(10);
-		node.path(1).path("avg").path("@value").isEqualTo(10);
-		node.path(1).path("sum").path("@value").isEqualTo(10);
+		node.path(1).path("min").path("@value").isEqualTo(10.0);
+		node.path(1).path("max").path("@value").isEqualTo(10.0);
+		node.path(1).path("avg").path("@value").isEqualTo(10.0);
+		node.path(1).path("sum").path("@value").isEqualTo(10.0);
 		node.path(1).path("count").isEqualTo(1);
 	}
 
