@@ -13,6 +13,7 @@ import com.zenobase.json.IdentityField;
 import com.zenobase.json.IntegerField;
 import com.zenobase.json.LengthField;
 import com.zenobase.json.LocationField;
+import com.zenobase.json.PressureField;
 import com.zenobase.json.RatingField;
 import com.zenobase.json.ResourceField;
 import com.zenobase.json.Schema;
@@ -37,11 +38,12 @@ public class Event extends DomainNode {
 	public static final LengthField DISTANCE = new LengthField("distance");
 	public static final LengthField HEIGHT = new LengthField("height");
 	public static final WeightField WEIGHT = new WeightField("weight");
+	public static final PressureField PRESSURE = new PressureField("pressure");
 	public static final TemperatureField TEMPERATURE = new TemperatureField("temperature");
 	public static final RatingField RATING = new RatingField("rating");
 
 	private static final ImmutableSet<Field<?>> FIELDS =
-		ImmutableSet.<Field<?>>of(ID, VERSION, AUTHOR, TIMESTAMP, DURATION, FREQUENCY, COUNT, LOCATION, TAG, RESOURCE, DISTANCE, HEIGHT, WEIGHT, TEMPERATURE, RATING);
+		ImmutableSet.<Field<?>>of(ID, VERSION, AUTHOR, TIMESTAMP, DURATION, FREQUENCY, COUNT, LOCATION, TAG, RESOURCE, DISTANCE, HEIGHT, WEIGHT, PRESSURE, TEMPERATURE, RATING);
 
 	public Event() {
 		setValue(ID, Generator.id());

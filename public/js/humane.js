@@ -55,21 +55,21 @@ var humane = (function() {
 
 		var args = [];
 		if (days) {
-			args.push(days, 'd'); 
+			args.push(days + 'd'); 
 		}
 		if (hours) {
-			args.push(hours, 'h'); 
+			args.push(hours + 'h'); 
 		}
 		if (minutes) {
-			args.push(minutes, 'm'); 
+			args.push(minutes + 'm'); 
 		}
 		if (seconds) {
-			args.push(seconds, 's'); 
+			args.push(seconds + 's'); 
 		}
-		if (round && args.length > 2) {
-			args = args.splice(0, 2);
+		if (round && args.length > 1) {
+			return args[0];
 		}
-		return args.join('');
+		return args.join(' ');
 	}
 
   function normalize(val, single) {

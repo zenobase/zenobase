@@ -1429,12 +1429,9 @@
 		};
 		$scope.setValue = function(latLng) {
 			$scope.value = {
-				lat : $scope.round(latLng.lat()),
-				lon : $scope.round(latLng.lng())
+				lat : latLng.lat(),
+				lon : latLng.lng()
 			};
-		};
-		$scope.round = function(coord) {
-			return Math.round(coord * 1000) / 1000;
 		};
 		$scope.valid = function() {
 			return $scope.value.lat >= -90 && $scope.value.lat <= 90 && 
@@ -1631,19 +1628,25 @@
 	
 	Field.register(new Field('distance', 'icon-resize-horizontal', [ 'mi', 'ft', 'in', 'km', 'm', 'cm', 'mm' ], function(value) { 
 		return '<span class="nowrap" title="Distance">' +
-	  	'<i class="' + this.icon + '"></i> ' + value['@value'] + value.unit +
+	  	'<i class="' + this.icon + '"></i> ' + value['@value'] + ' ' + value.unit +
 	  '</span>';
 	}));
 	
 	Field.register(new Field('height', 'icon-resize-vertical', [ 'mi', 'ft', 'in', 'km', 'm', 'cm', 'mm' ], function(value) { 
 		return '<span class="nowrap" title="Height">' +
-	  	'<i class="' + this.icon + '"></i>' + value['@value'] + value.unit +
+	  	'<i class="' + this.icon + '"></i> ' + value['@value'] + ' ' + value.unit +
 	  '</span>';
 	}));
 	
 	Field.register(new Field('weight', 'icon-lock', [ 'lb', 'oz', 'kg', 'g', 'mg' ], function(value) { 
 		return '<span class="nowrap" title="Weight">' +
-	  	'<i class="' + this.icon + '"></i>' + value['@value'] + value.unit +
+	  	'<i class="' + this.icon + '"></i> ' + value['@value'] + ' ' + value.unit +
+	  '</span>';
+	}));
+	
+	Field.register(new Field('pressure', 'icon-fullscreen', [ 'Pa', 'mmHg', 'inHg', 'psi' ], function(value) { 
+		return '<span class="nowrap" title="Pressure">' +
+	  	'<i class="' + this.icon + '"></i> ' + value['@value'] + ' ' + value.unit +
 	  '</span>';
 	}));
 	
@@ -1652,14 +1655,14 @@
 			'<i class="' + this.icon + '"></i> ' +
 			'<a href="http://maps.google.com/maps?q=' + 
 				Field.encode(value.lat + ',' + value.lon) + '&t=p&z=5">' + 
-				Field.encode(value.lat + ', ' + value.lon) + '</a>' +
+				Field.encode(Math.round(value.lat * 1000) / 1000 + ', ' + Math.round(value.lon * 1000) / 1000) + '</a>' +
 		'</span>';
 	}));
 	
 	Field.register(new Field('timestamp', 'icon-calendar', null, function(value) { 
 		return '<span class="nowrap">' +
-	  	'<i class="' + this.icon + '" title="Timestamp"></i>' +
-			'<abbr title="' + value + '"> ' + humane.date(new Date(Date.parse(value))) + '</abbr>' +
+	  	'<i class="' + this.icon + '" title="Timestamp"></i> ' +
+			'<abbr title="' + value + '">' + humane.date(new Date(Date.parse(value))) + '</abbr>' +
 	  '</span>';
 	}));
 	
@@ -1671,7 +1674,7 @@
 	
 	Field.register(new Field('frequency', 'icon-heart', [ 'bpm', 'Hz' ], function(value) { 
 		return '<span class="nowrap">' +
-	  	'<i class="' + this.icon + '" title="Frequency"></i> ' + value['@value'] + value.unit +
+	  	'<i class="' + this.icon + '" title="Frequency"></i> ' + value['@value'] + ' ' + value.unit +
 	  '</span>';
 	}));
 	
@@ -1683,7 +1686,7 @@
 	
 	Field.register(new Field('temperature', 'icon-fire', [ 'C', 'F', 'K' ], function(value) { 
 		return '<span class="nowrap">' +
-	  	'<i class="' + this.icon + '" title="Temperature"></i> ' + value['@value'] + value.unit +
+	  	'<i class="' + this.icon + '" title="Temperature"></i> ' + value['@value'] + ' ' + value.unit +
 	  '</span>';
 	}));
 	

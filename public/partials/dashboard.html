@@ -278,6 +278,22 @@
 		</div>
 	</script>
 
+	<script id="/create-pressure.html" type="text/ng-template">
+		<div data-ng-controller="CreateUnitFieldCtrl">
+			<div class="control-group">
+				<label for="value" class="control-label">Value</label>
+				<input name="value" type="number" min="0" data-ng-model="value['@value']"/>
+			</div>
+			<div class="control-group">
+				<label for="unit" class="control-label">Unit</label>
+				<select name="unit" data-ng-model="value.unit" data-ng-options="unit for unit in field.units"></select>
+			</div>
+			<div class="control-group">
+				<a class="btn" data-ng-click="addField()" data-ng-disabled="!valid()">Add</a>
+			</div>
+		</div>
+	</script>
+
 	<script id="/create-temperature.html" type="text/ng-template">
 		<div data-ng-controller="CreateUnitFieldCtrl">
 			<div class="control-group">

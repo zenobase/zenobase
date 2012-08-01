@@ -17,11 +17,14 @@ import com.google.common.collect.Lists;
 public class Measures {
 
 	static {
-		UnitFormat.getInstance().label(SI.CELSIUS, "°C");
-		UnitFormat.getInstance().alias(SI.CELSIUS, "C");
-		UnitFormat.getInstance().alias(NonSI.FAHRENHEIT, "F");
+		UnitFormat.getInstance().label(SI.CELSIUS, "C");
+		UnitFormat.getInstance().alias(SI.CELSIUS, "°C");
+		UnitFormat.getInstance().label(NonSI.FAHRENHEIT, "F");
+		UnitFormat.getInstance().alias(NonSI.FAHRENHEIT, "°F");
 		UnitFormat.getInstance().label(SI.HERTZ.divide(60L), "bpm");
 		UnitFormat.getInstance().label(NonSI.OUNCE, "oz");
+		//UnitFormat.getInstance().label(NonSI.POUND_FORCE.divide(NonSI.INCH.pow(2)), "psi");
+		UnitFormat.getInstance().label(SI.PASCAL.times(6894.75729), "psi");
 	}
 
 	private Measures() {
