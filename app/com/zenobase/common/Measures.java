@@ -51,7 +51,7 @@ public class Measures {
 		return DecimalMeasure.valueOf(value, (Unit<Q>) Unit.valueOf(unit));
 	}
 
-	public static long convert(double value, Unit<?> unit) {
-		return Math.round(unit.getStandardUnit().getConverterTo(unit).convert(value));
+	public static double convert(double value, Unit<?> unit) {
+		return Math.round(unit.getStandardUnit().getConverterTo(unit).convert(value) * 100.0) / 100.0;
 	}
 }
