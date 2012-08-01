@@ -1537,10 +1537,10 @@
 	/**
 	 * @constructor
 	 */
-	function Field(name, icon, parse, format) {
+	function Field(name, icon, units, format) {
 		this.name = name;
 		this.icon = icon;
-		this.parse = parse;
+		this.units = units;
 		this.format = format;
 	}
 	
@@ -1557,73 +1557,38 @@
 		Field.FIELDS_BY_NAME[field.name] = field; 
 	}
 
-	var Parser = {
-		STRING : function(value) {
-			return '' + value;
-		},
-		NUMERIC : function(value) {
-			var number = +value;
-			if (number != value) {
-				throw new Error("Couldn't parse number: " + value);
-			}
-			return number;
-		},
-		LOCATION : function(value) {
-			var tokens = value.split(',');
-			if (tokens.length != 2) {
-				throw new Error("Couldn't parse coordinates: " + value);
-			}
-			return { 'lat' : +tokens[0], 'lon' : +tokens[1] }; 
-		},
-		UNIT : function(value) {
-			var match = value.match(/^(\d+(?:\.\d+)?) *([a-zA-Z]+)$/);
-			if (!match || match.length != 3) {
-				throw new Error("Couldn't parse unit: " + value);
-			}
-			return { '@value' : +match[1], 'unit' : match[2] }; 
-		},
-		RESOURCE : function(value) {
-			var tokens = value.split(' ');
-			var resource = { 'url' : tokens.shift() };
-			if (tokens.length > 0) {
-				resource.title = tokens.join(' ');
-			}
-			return resource;
-		},
-	};
-	
-	Field.register(new Field('tag', 'icon-tag', Parser.STRING, function(value) { 
+	Field.register(new Field('tag', 'icon-tag', null, function(value) { 
 		return '<span class="nowrap" title="Tag">' +
 			'<i class="' + this.icon + '"></i> ' + Field.encode(value) +
 	  '</span>';
 	}));
 	
-	Field.register(new Field('resource', 'icon-bookmark', Parser.RESOURCE, function(value) { 
+	Field.register(new Field('resource', 'icon-bookmark', null, function(value) { 
 		return '<span title="Resource">' +
 	  	'<i class="' + this.icon + '"></i>&nbsp;' +
 	  	'<a href="' +  Field.encode(value.url) + '" rel="nofollow">' +  Field.encode(value.title) + '</a>' +
 	  '</span>';
 	}));
 	
-	Field.register(new Field('distance', 'icon-resize-horizontal', Parser.UNIT, function(value) { 
+	Field.register(new Field('distance', 'icon-resize-horizontal', [ 'mi', 'ft', 'in', 'km', 'm', 'cm', 'mm' ], function(value) { 
 		return '<span class="nowrap" title="Distance">' +
 	  	'<i class="' + this.icon + '"></i> ' + value['@value'] + value.unit +
 	  '</span>';
 	}));
 	
-	Field.register(new Field('height', 'icon-resize-vertical', Parser.UNIT, function(value) { 
+	Field.register(new Field('height', 'icon-resize-vertical', [ 'mi', 'ft', 'in', 'km', 'm', 'cm', 'mm' ], function(value) { 
 		return '<span class="nowrap" title="Height">' +
 	  	'<i class="' + this.icon + '"></i>' + value['@value'] + value.unit +
 	  '</span>';
 	}));
 	
-	Field.register(new Field('weight', 'icon-lock', Parser.UNIT, function(value) { 
+	Field.register(new Field('weight', 'icon-lock', [ 'lb', 'oz', 'kg', 'g', 'mg' ], function(value) { 
 		return '<span class="nowrap" title="Weight">' +
 	  	'<i class="' + this.icon + '"></i>' + value['@value'] + value.unit +
 	  '</span>';
 	}));
 	
-	Field.register(new Field('location', 'icon-map-marker', Parser.LOCATION, function(value) { 
+	Field.register(new Field('location', 'icon-map-marker', null, function(value) { 
 		return '<span class="nowrap" title="Location">' +
 			'<i class="' + this.icon + '"></i> ' +
 			'<a href="http://maps.google.com/maps?q=' + 
@@ -1632,38 +1597,38 @@
 		'</span>';
 	}));
 	
-	Field.register(new Field('timestamp', 'icon-calendar', Parser.STRING, function(value) { 
+	Field.register(new Field('timestamp', 'icon-calendar', null, function(value) { 
 		return '<span class="nowrap">' +
 	  	'<i class="' + this.icon + '" title="Timestamp"></i>' +
 			'<abbr title="' + value + '"> ' + humane.date(new Date(Date.parse(value))) + '</abbr>' +
 	  '</span>';
 	}));
 	
-	Field.register(new Field('duration', 'icon-time', Parser.STRING, function(value) { 
+	Field.register(new Field('duration', 'icon-time', null, function(value) { 
 		return '<span class="nowrap">' +
 	  	'<i class="' + this.icon + '" title="Duration"></i> ' + humane.duration(value, false) +
 	  '</span>';
 	}));
 	
-	Field.register(new Field('frequency', 'icon-heart', Parser.UNIT, function(value) { 
+	Field.register(new Field('frequency', 'icon-heart', [ 'bpm', 'Hz' ], function(value) { 
 		return '<span class="nowrap">' +
 	  	'<i class="' + this.icon + '" title="Frequency"></i> ' + value['@value'] + value.unit +
 	  '</span>';
 	}));
 	
-	Field.register(new Field('count', 'icon-th', Parser.STRING, function(value) { 
+	Field.register(new Field('count', 'icon-th', null, function(value) { 
 		return '<span class="nowrap">' +
 	  	'<i class="' + this.icon + '" title="Count"></i> ' + value +
 	  '</span>';
 	}));
 	
-	Field.register(new Field('temperature', 'icon-fire', Parser.UNIT, function(value) { 
+	Field.register(new Field('temperature', 'icon-fire', [ 'C', 'F', 'K' ], function(value) { 
 		return '<span class="nowrap">' +
 	  	'<i class="' + this.icon + '" title="Temperature"></i> ' + value['@value'] + value.unit +
 	  '</span>';
 	}));
 	
-	Field.register(new Field('rating', 'icon-star', Parser.NUMERIC, function(value) { 
+	Field.register(new Field('rating', 'icon-star', null, function(value) { 
 		var stars = Math.round((value || 0) / 20);
 		var html = '<span class="nowrap" title="Rated ' + stars + '/5">';
 		for (var i = 0; i < 5; ++i) {
@@ -1689,13 +1654,13 @@
 
 	Field.findEditableFields = function() {
 		return $.grep(Field.FIELDS, function(field) {
-			return field.parse != null;
+			return field.name !== 'author';
 		});
 	}
 
 	Field.findUnitFields = function() {
 		return $.grep(Field.FIELDS, function(field) {
-			return field.parse === Parser.UNIT;
+			return field.units !== null;
 		});
 	}
 
