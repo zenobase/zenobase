@@ -1315,6 +1315,7 @@
 		$scope.register($scope);
 		$scope.$on('result', $scope.update);
 		$scope.$on('refresh', $scope.init);
+		$('#' + $scope.settings.id + '-tab').on('show', $scope.draw);
 	}]);
 	
 	
