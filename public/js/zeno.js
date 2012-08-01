@@ -1331,46 +1331,58 @@
 	app.controller('CreateLocationFieldCtrl', ['$scope', function($scope) {
 
 		$scope.init = function() {
-			$scope.setValue(0, 0);
 			google.load("maps", "3.8", { other_params : 'sensor=false', callback : function() {
+				var center = new google.maps.LatLng(0, 0);
+				$scope.setValue(center);
 				var options = {
+					center : center,
+					zoom : 2,
 					mapTypeId: google.maps.MapTypeId.TERRAIN,
 					streetViewControl: false,
+					draggableCursor : 'crosshair',
 					mapTypeControlOptions : {
 						style : google.maps.MapTypeControlStyle.DROPDOWN_MENU
 					}
 				};
 				$scope.map = new google.maps.Map(document.getElementById('create-location-map'), options);
-				$scope.map.setZoom(10);
+				$scope.marker = new google.maps.Marker({
+					position : center, 
+					map : $scope.map,
+					title : 'Location',
+					draggable: true
+				});
+				google.maps.event.addListener($scope.map, 'click', function(e) {
+					$scope.moveMarker(e.latLng);
+			  });
+				google.maps.event.addListener($scope.marker, 'dragend', function() {
+			    $scope.setValue($scope.marker.getPosition());
+			  });
 				if (navigator.geolocation) {
 					navigator.geolocation.getCurrentPosition(function(position) {
-						$scope.setValue(position.coords.latitude, position.coords.longitude);
-						$scope.addMarker(position.coords.latitude, position.coords.longitude);
+						var latLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+						$scope.moveMarker(latLng);
+						$scope.map.setCenter(latLng);
+						$scope.map.setZoom(10);
 					});
-				} else {
-					$scope.addMarker(0, 0);
 				}
 			}});
 		};
-		$scope.addMarker = function(lat, lon) {
-			var latLng = new google.maps.LatLng(lat, lon);
-			var marker = new google.maps.Marker({
-				position : latLng, 
-				map : $scope.map,
-				title : 'Location: ' + latLng,
-				draggable: true
-			});
-			google.maps.event.addListener(marker, 'dragend', function() {
-		    $scope.setValue(marker.getPosition().lat(), marker.getPosition().lng());
-		  });
-			$scope.map.setCenter(latLng);
+		$scope.moveMarker = function(latLng) {
+			$scope.setValue(latLng);
+			$scope.marker.setPosition(latLng);
+		};
+		$scope.setValue = function(latLng) {
+			$scope.value = {
+				lat : $scope.round(latLng.lat()),
+				lon : $scope.round(latLng.lng())
+			};
+		};
+		$scope.round = function(coord) {
+			return Math.round(coord * 1000) / 1000;
 		};
 		$scope.valid = function() {
 			return $scope.value.lat >= -90 && $scope.value.lat <= 90 && 
 				$scope.value.lon >= -180 && $scope.value.lon <= 180;
-		};
-		$scope.setValue = function(lat, lon) {
-			$scope.value = { lat : lat, lon : lon };
 		};
 		$scope.addField = function() {
 			if (!$scope.event[$scope.field.name]) {
