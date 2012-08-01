@@ -791,14 +791,6 @@
 		$scope.$on('refresh', $scope.init);
 	}]);
 	
-	app.controller('EventListConfigCtrl', ['$scope', function($scope) {
-		$scope.limit = $scope.settings.limit;
-		$scope.save = function() {
-			$scope.refresh({ offset : 0 }, { limit : $scope.limit });
-			$('#event-list-config-dialog').modal('hide');
-		};
-	}]);
-	
 	app.controller('TermCountCtrl', ['$scope', function($scope) {
 	
 		$scope.init = function() {
@@ -871,7 +863,7 @@
 		$scope.$on('refresh', $scope.init);
 	}]);
 	
-	app.controller('WidgetSettingsCtrl', ['$scope', function($scope) {
+	var WidgetSettingsCtrl = function($scope) {
 		$scope.save = function() {
 			$scope.refresh({ offset : 0 }, $scope.settings);
 			$scope.showDialog(false);
@@ -883,7 +875,14 @@
 		$scope.reset = function() {
 			$scope.settings = angular.copy($scope.$parent.settings);
 		};
+		$scope.getField = function(name) {
+			return Field.find(name);
+		};
 		$scope.reset();
+	};
+	
+	app.controller('WidgetSettingsCtrl', ['$scope', function($scope) {
+		WidgetSettingsCtrl($scope);
 	}]);
 	
 	app.controller('TermGanttCtrl', ['$scope', function($scope) {
@@ -1006,22 +1005,41 @@
 		$scope.filter = function(term) {
 			$scope.addFilter(new Filter($scope.settings.termField, term.label))
 		};
-	
 		$scope.dialogShown = false;
 		$scope.showDialog = function(dialogShown) {
 			$scope.dialogShown = dialogShown;
-		};
-		$scope.getTermFields = function() {
-			return Field.findTokenFields();
-		};
-		$scope.getValueFields = function() {
-			return Field.findUnitFields();
 		};
 
 		$scope.init();
 		$scope.register($scope);
 		$scope.$on('result', $scope.update);
 		$scope.$on('refresh', $scope.init);
+	}]);
+
+	app.controller('ScoreboardSettingsCtrl', ['$scope', function($scope) {
+
+		WidgetSettingsCtrl($scope);
+
+		function isUnitValid() {
+			return $.grep($scope.getUnits(), function(unit) {
+				return unit === $scope.settings.unit;
+			}).length > 0;
+		};
+
+		$scope.getTermFields = function() {
+			return Field.findTokenFields();
+		};
+		$scope.getValueFields = function() {
+			return Field.findUnitFields();
+		};
+		$scope.getUnits = function() {
+			return Field.find($scope.settings.valueField).units;
+		};
+		$scope.$watch('settings.valueField', function() {
+			if (!isUnitValid()) {
+				$scope.settings.unit = null;
+			}
+		});
 	}]);
 	
 	/**
@@ -1137,6 +1155,33 @@
 		$scope.showDialog = function(dialogShown) {
 			$scope.dialogShown = dialogShown;
 		};
+	
+		$scope.init();
+		$scope.register($scope);
+		$scope.$on('result', $scope.update);
+		$scope.$on('refresh', $scope.init);
+		$(window).resize($scope.draw);
+		$('#' + $scope.settings.id + '-tab').on('show', $scope.draw);
+	}]);
+
+	app.controller('TimelineSettingsCtrl', ['$scope', function($scope) {
+
+		WidgetSettingsCtrl($scope);
+
+		function isUnitValid() {
+			if ($scope.settings.valueField === $scope.keyField) {
+				return $scope.settings.unit === null;
+			}
+			return $.grep($scope.getUnits(), function(unit) {
+				return $scope.settings.unit === unit;
+			}).length > 0;
+		};
+		function isStatisticValid() {
+			return $.grep($scope.getStatistics($scope.settings.valueField), function(statistic) {
+				return $scope.settings.statistic === statistic;
+			}).length > 0;
+		};
+
 		$scope.getValueFields = function() {
 			var fields = Field.findUnitFields();
 			fields.unshift(new Field($scope.keyField));
@@ -1145,13 +1190,24 @@
 			};
 			return fields;
 		};
-	
-		$scope.init();
-		$scope.register($scope);
-		$scope.$on('result', $scope.update);
-		$scope.$on('refresh', $scope.init);
-		$(window).resize($scope.draw);
-		$('#' + $scope.settings.id + '-tab').on('show', $scope.draw);
+		$scope.getStatistics = function(field) {
+			return field === $scope.keyField ? [ 'count' ] : [ 'sum', 'avg', 'min', 'max' ];
+		};
+		$scope.getUnits = function() {
+			return Field.find($scope.settings.valueField).units || [];
+		};
+		$scope.valid = function() {
+			return isUnitValid() && isStatisticValid();
+		};
+
+		$scope.$watch('settings.valueField', function() {
+			if (!isUnitValid()) {
+				$scope.settings.unit = null;
+			}
+			if (!isStatisticValid()) {
+				$scope.settings.statistic = $scope.getStatistics($scope.settings.valueField)[0];
+			}
+		});
 	}]);
 	
 	app.controller('MapCtrl', ['$scope', function($scope) {

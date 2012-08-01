@@ -12,7 +12,7 @@
 		</div>
 	</div>
 
-	<div class="modal" data-ng-controller="WidgetSettingsCtrl" data-ng-show="dialogShown">
+	<div class="modal" data-ng-controller="TimelineSettingsCtrl" data-ng-show="dialogShown">
 		<form name="form" class="modal-form">
 			<div class="modal-header">
 				<a class="close" data-ng-click="cancel()">&times;</a>
@@ -35,20 +35,20 @@
 				<div class="control-group">
 					<label class="control-label" for="statisic">Statistic</label>
 					<div class="controls">
-						<select name="statistic" required data-ng-model="settings.statistic" data-ng-options="value for value in ['count', 'sum', 'avg', 'min', 'max']"></select>
+						<select name="statistic" required data-ng-model="settings.statistic" data-ng-options="value for value in getStatistics(settings.valueField)"></select>
 						<p class="help-block">The statistic to gather for the selected value field.</p>
 					</div>
 				</div>
 				<div class="control-group">
 					<label class="control-label" for="unit">Unit</label>
 					<div class="controls">
-						<input name="unitField" type="text" data-ng-model="settings.unit"/>
+						<select name="unit" data-ng-model="settings.unit" data-ng-options="unit for unit in getUnits()"></select>
 						<p class="help-block">The unit of the value field.</p>
 					</div>
 				</div>
 			</div>
 			<div class="modal-footer">
-				<button class="btn btn-primary" data-ng-click="save()" data-ng-disabled="!form.$valid">Update</button>
+				<button class="btn btn-primary" data-ng-click="save()" data-ng-disabled="!form.$valid || !valid()">Update</button>
 				<button class="btn" data-ng-click="cancel()">Cancel</button>
 			</div>
 		</form>

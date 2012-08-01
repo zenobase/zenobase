@@ -36,7 +36,7 @@
 		</div>
 	</div>
 
-	<div class="modal" data-ng-controller="WidgetSettingsCtrl" data-ng-show="dialogShown">
+	<div class="modal" data-ng-controller="ScoreboardSettingsCtrl" data-ng-show="dialogShown">
 		<form name="form" class="modal-form">
 			<div class="modal-header">
 				<a class="close" data-ng-click="cancel()">&times;</a>
@@ -59,21 +59,21 @@
 				<div class="control-group">
 					<label class="control-label" for="termField">Term Field</label>
 					<div class="controls">
-						<select name="termField" data-ng-model="settings.termField" data-ng-options="field.name as field.name for field in getTermFields()"></select>
+						<select name="termField" required data-ng-model="settings.termField" data-ng-options="field.name as field.name for field in getTermFields()"></select>
 						<p class="help-block">The field for which to aggregate statistics.</p>
 					</div>
 				</div>
 				<div class="control-group">
 					<label class="control-label" for="valueField">Value Field</label>
 					<div class="controls">
-						<select name="valueField" data-ng-model="settings.valueField" data-ng-options="field.name as field.name for field in getValueFields()"></select>
+						<select name="valueField" required data-ng-model="settings.valueField" data-ng-options="field.name as field.name for field in getValueFields()"></select>
 						<p class="help-block">The numeric field on which to gather statistics.</p>
 					</div>
 				</div>
 				<div class="control-group">
 					<label class="control-label" for="unit">Unit</label>
 					<div class="controls">
-						<input name="valueField" type="text" required data-ng-model="settings.unit"/>
+						<select name="unit" required data-ng-model="settings.unit" data-ng-options="unit for unit in getUnits()"></select>
 						<p class="help-block">The unit to use.</p>
 					</div>
 				</div>
