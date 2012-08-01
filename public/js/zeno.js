@@ -1373,7 +1373,7 @@
 			if (!$scope.event[$scope.field.name]) {
 				$scope.event[$scope.field.name] = [];
 			}
-			var value = $scope.field.parse($scope.value);
+			var value = $scope.value;
 			$scope.event[$scope.field.name].push(value);
 			$scope.init();
 		};
@@ -1522,6 +1522,9 @@
 			$scope.event[$scope.field.name].push($scope.value);
 			$scope.init();
 		};
+		$scope.getUnits = function() {
+			return $scope.field.units;
+		};
 		$scope.valid = function() {
 			return $.isNumeric($scope.value['@value']) && $scope.value.unit;
 		};
@@ -1538,7 +1541,7 @@
 			if (!$scope.event[$scope.field.name]) {
 				$scope.event[$scope.field.name] = [];
 			}
-			var value = $scope.field.parse($scope.value);
+			var value = $scope.value;
 			$scope.event[$scope.field.name].push(value);
 			$scope.init();
 		};
