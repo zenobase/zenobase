@@ -21,6 +21,7 @@ public class Measures {
 		UnitFormat.getInstance().alias(SI.CELSIUS, "C");
 		UnitFormat.getInstance().alias(NonSI.FAHRENHEIT, "F");
 		UnitFormat.getInstance().label(SI.HERTZ.divide(60L), "bpm");
+		UnitFormat.getInstance().label(NonSI.OUNCE, "oz");
 	}
 
 	private Measures() {

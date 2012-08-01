@@ -32,6 +32,7 @@ public class MeasuresTest {
 		assertThatIsEqualTo("16093.44 m", "10 mi");
 		assertThatIsEqualTo("10000 m", "10 km");
 		assertThatIsEqualTo("68.03886 kg", "150 lb");
+		assertThatIsEqualTo("0.02834952 kg", "1 oz");
 		assertThatIsEqualTo("294.2611111111112 K", "70 °F");
 		assertThatIsEqualTo("293.15 K", "20 °C");
 		assertThatIsEqualTo("0.001 m³", "1 L");
