@@ -42,7 +42,7 @@ public class CommandReplay {
 				try {
 					dispatcher.dispatch(command);
 					++count;
-				} catch (RuntimeException e) {
+				} catch (Error e) {
 					Logger.info("Couldn't replay command: " + command, e);
 				}
 			}
