@@ -24,6 +24,10 @@ public class StatusController extends ControllerSupport {
     	if (!Http.Context.current().request().queryString().isEmpty()) {
     		throw new RuntimeException("invalid parameters");
     	}
-    	return ok(new StatusInfo(history.size(), manager.getCluster().getHealthStatus()).toJson());
+    	return ok(getStatus().toJson());
     }
+
+	private static StatusInfo getStatus() {
+		return new StatusInfo(history.size(), manager.getCluster().getHealthStatus());
+	}
 }
