@@ -1,14 +1,14 @@
 <div class="container-fluid">
 
 	<div class="hero-unit" data-ng-controller="HomeCtrl">
-		<h1>Collect and analyze self-tracking data.</h1>
+		<h1>Collect and analyze<br/> self-tracking data.</h1>
 		<br/>
-		<p><img src="/img/dashboard-screenshot.png" width="505" height="312"/></p>
+		<p><img src="/img/timeline.png"/></p>
 		<br/>
 		<p>
-			Explore some <a href="https://zenobase.com/#/buckets/u07qih0a27/">sample data</a>, or 
-			<a data-ng-click="create()" data-ng-hide="user">start collecting your own data&hellip;</a>
-			<a href="#/users/{{user.getName()}}" data-ng-show="user">view your own data&hellip;</a>
+			Explore <a href="https://zenobase.com/#/buckets/u07qih0a27/">sample data</a>, or 
+			<span data-ng-hide="user"><a data-ng-click="create()">start collecting your own data</a>.</span>
+			<span data-ng-show="user"><a href="#/users/{{user.getName()}}" data-ng-show="user">view your data</a>.</span>
 		</p>
 	</div>
 
