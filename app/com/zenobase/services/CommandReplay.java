@@ -15,6 +15,7 @@ public class CommandReplay {
 	private final NodeFactory nodeFactory;
 	private final CommandParserRegistry parsers;
 	private final CommandDispatcher dispatcher;
+	private int count;
 
 	@Inject
 	public CommandReplay(@Named("es.replay") String sourceCluster, NodeFactory nodeFactory, CommandParserRegistry parsers, CommandDispatcher dispatcher) {
@@ -33,13 +34,15 @@ public class CommandReplay {
 	}
 
 	void replay(IndexManager indexManager) {
-		Logger.info("Replaying commands from " + sourceCluster + "...");
 		CommandRepository repository = new CommandRepository(indexManager, parsers);
+		Logger.info("Replaying " + repository.size() + " commands from " + sourceCluster + "...");
 		repository.findAll(new Callback<Command>() {
 			@Override
 			public void call(Command command) {
+				++count;
 				dispatcher.dispatch(command);
 			}
 		});
+		Logger.info("Replayed: " + count);
 	}
 }
