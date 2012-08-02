@@ -239,7 +239,7 @@
 		});
 	}]);
 	
-	app.controller('AuthFormCtrl', ['$scope', '$http', function($scope, $http) {
+	app.controller('AuthFormCtrl', ['$scope', '$http', '$location', function($scope, $http, $location) {
 
 		$scope.dialog = $('#sign-in-dialog');
 
@@ -262,7 +262,11 @@
 				.success(function(response) {
 					$scope.$parent.user = new User(response);
 					$scope.dialog.modal('hide');
-					$scope.reload();
+					if ($location.url() === '/') {
+						$location.url('/users/' + $scope.username);
+					} else {
+						$scope.reload();
+					}
 				})
 				.error(function(response, code) {
 					if (code === 401) {
