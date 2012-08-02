@@ -1,5 +1,7 @@
 package com.zenobase.services;
 
+import play.Logger;
+import play.Logger.ALogger;
 import com.google.inject.Inject;
 
 import com.zenobase.commands.Command;
@@ -8,6 +10,7 @@ import com.zenobase.commands.CompoundCommand;
 
 public class CommandDispatcher {
 
+	private final ALogger log = Logger.of("dispatch");
 	private final CommandHandlerRegistry handlers;
 	private final CommandRepository repository;
 
@@ -18,7 +21,7 @@ public class CommandDispatcher {
 	}
 
 	public String dispatch(Command command) {
-		// Logger.of("dispatch").info(String.format("%s %s", command.getPrincipal(), command.toString()));
+		log.info(String.format("%s %s", command.getPrincipal(), command.toString()));
 		if (command instanceof CompoundCommand) {
 			dispatch((CompoundCommand) command);
 		}

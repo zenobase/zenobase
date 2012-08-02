@@ -36,13 +36,16 @@ public class CommandReplay {
 	void replay(IndexManager indexManager) {
 		CommandRepository repository = new CommandRepository(indexManager, parsers);
 		Logger.info("Replaying " + repository.size() + " commands from " + sourceCluster + "...");
-		repository.findAll(new Callback<Command>() {
-			@Override
-			public void call(Command command) {
-				dispatcher.dispatch(command);
-				++count;
-			}
-		});
-		Logger.info("Replayed: " + count);
+		try {
+			repository.findAll(new Callback<Command>() {
+				@Override
+				public void call(Command command) {
+					dispatcher.dispatch(command);
+					++count;
+				}
+			});
+		} finally {
+			Logger.info("Replayed: " + count);
+		}
 	}
 }
