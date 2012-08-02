@@ -39,12 +39,8 @@ public class CommandReplay {
 		repository.findAll(new Callback<Command>() {
 			@Override
 			public void call(Command command) {
-				try {
-					dispatcher.dispatch(command);
-					++count;
-				} catch (Error e) {
-					Logger.info("Couldn't replay command: " + command, e);
-				}
+				dispatcher.dispatch(command);
+				++count;
 			}
 		});
 		Logger.info("Replayed: " + count);
