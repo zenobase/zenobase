@@ -10,7 +10,7 @@ import com.zenobase.services.BucketRepository;
 
 public class UpdateBucketCommand extends Command {
 
-	private static final Command.Type TYPE = new Command.Type("update bucket", 1);
+	private static final Command.Type TYPE = new Command.Type("update bucket", 2);
 	private static final ObjectField FROM = new ObjectField("from");
 	private static final ObjectField TO = new ObjectField("to");
 
@@ -36,7 +36,8 @@ public class UpdateBucketCommand extends Command {
 	public Command reverse(Identity principal) {
 		Bucket from = getTo();
 		Bucket to = getFrom();
-		to.setVersion(from.getVersion());
+		from.setVersion(from.getVersion() + 1);
+		to.setVersion(to.getVersion() + 1);
 		return new UpdateBucketCommand(principal, from, to);
 	}
 
@@ -55,7 +56,13 @@ public class UpdateBucketCommand extends Command {
 		@Override
 		public Command parse(ObjectNode node, int version) {
 			switch (version) {
-				case 1: return new UpdateBucketCommand(node);
+				case 1:
+					UpdateBucketCommand command = new UpdateBucketCommand(node);
+					command.getTo().setVersion(command.getFrom().getVersion());
+					command.setType(TYPE);
+					return command;
+				case 2:
+					return new UpdateBucketCommand(node);
 			}
 			return null;
 		}
@@ -73,7 +80,7 @@ public class UpdateBucketCommand extends Command {
 
 		@Override
 		public void executeTyped(UpdateBucketCommand command) {
-			repository.update(command.getTo());
+			repository.update(command.getTo().copy()); // copy to prevent the version number from being incremented
 		}
 	}
 }

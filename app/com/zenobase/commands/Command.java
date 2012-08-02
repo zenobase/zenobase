@@ -49,6 +49,10 @@ public abstract class Command extends DomainNode {
 		return getValue(TYPE);
 	}
 
+	public void setType(Command.Type type) {
+		setValue(TYPE, type);
+	}
+
 	public Identity getPrincipal() {
 		return getValue(PRINCIPAL);
 	}

@@ -5,6 +5,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import org.codehaus.jackson.node.ObjectNode;
+import org.elasticsearch.index.engine.VersionConflictEngineException;
 import play.mvc.BodyParser;
 import play.mvc.Result;
 import play.mvc.With;
@@ -123,8 +124,12 @@ public class BucketController extends ControllerSupport {
 				return badRequest("not allowed to change permissions");
 			}
 		}
-		String commandId = dispatcher.dispatch(new UpdateBucketCommand(principal, bucket, updated));
-		return ok(receipt(commandId));
+		try {
+			String commandId = dispatcher.dispatch(new UpdateBucketCommand(principal, bucket, updated));
+			return ok(receipt(commandId));
+		} catch (VersionConflictEngineException e) {
+			return status(CONFLICT);
+		}
     }
 
     public static Result delete(String bucketId) {
