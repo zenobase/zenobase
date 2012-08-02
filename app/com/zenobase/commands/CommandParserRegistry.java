@@ -7,7 +7,6 @@ import org.codehaus.jackson.node.ObjectNode;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
-import com.google.common.primitives.Ints;
 import com.google.inject.Inject;
 
 public class CommandParserRegistry {
@@ -31,8 +30,7 @@ public class CommandParserRegistry {
 		Preconditions.checkNotNull(type, "Missing type field in %s", node);
 		CommandParser parser = parsers.get(type.getName());
 		Preconditions.checkNotNull(parser, "Missing parser for type '%s'", type.getName());
-		long version = Command.VERSION.getValue(node);
-		Command command = parser.parse(node, Ints.checkedCast(version));
+		Command command = parser.parse(node, type.getVersion());
 		Preconditions.checkNotNull(command, "Missing parser for version %s of type '%s'", type.getVersion(), type.getName());
 		return command;
 	}
