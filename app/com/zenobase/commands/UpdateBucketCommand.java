@@ -1,6 +1,7 @@
 package com.zenobase.commands;
 
 import org.codehaus.jackson.node.ObjectNode;
+import play.Logger;
 import com.google.inject.Inject;
 
 import com.zenobase.json.ObjectField;
@@ -60,6 +61,7 @@ public class UpdateBucketCommand extends Command {
 					UpdateBucketCommand command = new UpdateBucketCommand(node);
 					command.getTo().setVersion(command.getFrom().getVersion());
 					command.setType(TYPE);
+					Logger.info("migrated update command 1->2: " + command.toJson());
 					return command;
 				case 2:
 					return new UpdateBucketCommand(node);
