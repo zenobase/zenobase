@@ -555,6 +555,7 @@
 		$scope.add = function() {
 			var settings = { id : randomID(), placement : $scope.placement };
 			$.extend(settings, $scope.template);
+			delete settings.description;
 			$scope.addWidget(settings);
 			$scope.closeWidgetDialog();
 		};
@@ -579,18 +580,22 @@
 		
 	app.controller('BucketCtrl', ['$scope', '$http', '$route', '$routeParams', '$location', '$timeout', function($scope, $http, $route, $routeParams, $location, $timeout) {
 	
+		function updateEditable() {
+			if ($scope.user) {
+				for (var i = 0; i < $scope.bucket.permissions.length; ++i) {
+					if ($scope.bucket.permissions[i].principal === $scope.user['@id']) {
+						$scope.editable = $scope.bucket.permissions[i].permission === 'ALL';
+						break;
+					}
+				}
+			}
+		} 
+
 		$scope.bucketId = $routeParams.bucketId;
 		$http.get('/buckets/' + $scope.bucketId)
 			.success(function(response) {
 				$scope.bucket = new Bucket(response);
-				if ($scope.user) {
-					for (var i = 0; i < $scope.bucket.permissions.length; ++i) {
-						if ($scope.bucket.permissions[i].principal === $scope.user['@id']) {
-							$scope.editable = $scope.bucket.permissions[i].permission === 'ALL';
-							break;
-						}
-					}
-				}
+				$scope.$watch('user', updateEditable);
 			})
 			.error(function(response, status) {
 				if (status < 500) {
