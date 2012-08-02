@@ -10,12 +10,21 @@
 
 	<div data-ng-show="userInfo">
 
-		<h3 style="margin-bottom: 0.5em">
-			<i class="icon-user middle"></i> {{userId}} 
-			<a data-ng-click="reload()" title="Refresh"><i class="icon-refresh"></i></a>
-			<a data-ng-click="broadcast('edit:user')" title="Edit" data-ng-show="editable()"><i class="icon-pencil"></i></a>
-			<a data-toggle="modal" href="#create-bucket-dialog" data-ng-show="addable()"><i class="icon-plus" title="Add Bucket"></i></a>
-		</h3>
+		<div class="row-fluid" style="margin-bottom: 9px;">
+			<p class="pull-left" style="margin-left: 8px; margin-top: 6px; vertical-align: middle">
+				<i class="icon-user middle"></i>&nbsp;
+			</p>
+			<h3 class="pull-left">{{userId}}</h3>
+			<p class="pull-left" style="margin-left: 8px; margin-top: 6px; vertical-align: middle">
+				<a data-ng-click="reload()" title="Refresh"><i class="icon-refresh"></i></a>
+			</p>
+			<p class="pull-left" style="margin-left: 8px; margin-top: 6px; vertical-align: middle" data-ng-show="editable()">
+				<a data-ng-click="broadcast('edit:user')" title="Edit" data-ng-show="editable()"><i class="icon-pencil"></i></a>
+			</p>
+			<p class="pull-left" style="margin-left: 8px; margin-top: 6px; vertical-align: middle" data-ng-show="addable()">
+				<a data-toggle="modal" href="#create-bucket-dialog" data-ng-show="addable()"><i class="icon-plus" title="Add Bucket"></i></a>
+			</p>
+		</div>
 	
 		<div id="user-edit-dialog" class="alert alert-info" data-ng-controller="UserFormCtrl" data-ng-show="editing">
 			<a class="close" data-ng-click="cancel()">&times;</a>
