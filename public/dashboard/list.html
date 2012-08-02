@@ -6,7 +6,7 @@
 				<td style="line-height: 1.5; border-style: none;">
 					<span data-ng-bind-html="event | fields"></span>
 					&nbsp;
-					<div class="action pull-right">
+					<div class="action pull-right" data-ng-show="editable">
 						<a data-ng-click="remove(event['@id'])"><i class="icon-trash" title="Delete"></i></a>
 					</div>
 				</td>

@@ -21,13 +21,13 @@
 			<p class="pull-left" style="margin-left: 8px; margin-top: 6px; vertical-align: middle">
 				<a data-ng-click="refresh()" title="Refresh"><i class="icon-refresh"></i></a>
 			</p>
-			<p class="pull-left" style="margin-left: 8px; margin-top: 6px; vertical-align: middle">
+			<p class="pull-left" style="margin-left: 8px; margin-top: 6px; vertical-align: middle" data-ng-show="editable">
 				<a data-ng-click="edit()" title="Edit"><i class="icon-pencil"></i></a>
 			</p>
-			<p class="pull-left" style="margin-left: 8px; margin-top: 6px; vertical-align: middle" data-ng-show="isImportSupported()">
+			<p class="pull-left" style="margin-left: 8px; margin-top: 6px; vertical-align: middle" data-ng-show="canImport()">
 				<a data-toggle="modal" href="#import-events-dialog"><i class="icon-upload" title="Import Events"></i></a>
 			</p>
-			<p class="pull-left" style="margin-left: 8px; margin-top: 6px; vertical-align: middle">
+			<p class="pull-left" style="margin-left: 8px; margin-top: 6px; vertical-align: middle" data-ng-show="editable">
 				<a data-toggle="modal" href="#create-event-dialog"><i class="icon-plus" title="Add Event"></i></a>
 			</p>
 			<ul class="nav nav-pills" style="clear: both; margin-bottom:12px;" data-ng-show="filters">

@@ -568,13 +568,25 @@
 			}).length > 0;
 		};
 	}]);
-	
+
+	function Bucket(data) {
+		$.extend(this, data);
+	}
+		
 	app.controller('BucketCtrl', ['$scope', '$http', '$route', '$routeParams', '$location', '$timeout', function($scope, $http, $route, $routeParams, $location, $timeout) {
 	
 		$scope.bucketId = $routeParams.bucketId;
 		$http.get('/buckets/' + $scope.bucketId)
 			.success(function(response) {
-				$scope.bucket = response;
+				$scope.bucket = new Bucket(response);
+				if ($scope.user) {
+					for (var i = 0; i < $scope.bucket.permissions.length; ++i) {
+						if ($scope.bucket.permissions[i].principal === $scope.user['@id']) {
+							$scope.editable = $scope.bucket.permissions[i].permission === 'ALL';
+							break;
+						}
+					}
+				}
 			})
 			.error(function(response, status) {
 				if (status < 500) {
@@ -601,8 +613,8 @@
 			});
 		};
 		$scope.placement = null;
-		$scope.isImportSupported = function() {
-			return typeof FileReader != 'undefined';
+		$scope.canImport = function() {
+			return typeof FileReader != 'undefined' && $scope.editable;
 		};
 		$scope.chooseWidget = function(placement) {
 			$scope.placement = placement;
