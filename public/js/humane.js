@@ -47,11 +47,11 @@ var humane = (function() {
 
 	var duration = function(duration, round) {
 		var seconds = (duration % 60000) / 1000;
-		duration = Math.round(duration / 60000);
+		duration = Math.floor(duration / 60000);
 		var minutes = duration % 60;
-		duration = Math.round(duration / 60);
+		duration = Math.floor(duration / 60);
 		var hours = duration % 24;
-		var days = Math.round(duration / 24);
+		var days = Math.floor(duration / 24);
 
 		var args = [];
 		if (days) {
