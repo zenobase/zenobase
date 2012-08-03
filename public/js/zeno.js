@@ -1146,7 +1146,7 @@
 						var unit = '';
 						if (typeof value == 'object') {
 							unit = value.unit;
-							value = Math.round(value['@value']);
+							value = value['@value'];
 						}
 						data.addRow([ time.label, value, time.label + ': ' + value + unit ]);
 					});
