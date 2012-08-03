@@ -150,7 +150,7 @@
 				</div>
 				<div class="control-group">
 					<label for="field" class="control-label">Field</label>
-					<select name="field" class="input-large" data-ng-model="field" data-ng-options="f.name for f in fields">
+					<select name="field" class="input-large" data-ng-model="field" data-ng-options="f.name for f in fields | orderBy:'name'">
 						<option value="">...</option>
 					</select>
 				</div>
