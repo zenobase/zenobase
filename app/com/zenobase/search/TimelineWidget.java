@@ -51,7 +51,7 @@ public class TimelineWidget extends Widget {
 		builder.facet(FacetBuilders.dateHistogramFacet(getId())
 			.keyField(keyField).valueField(unit == Unit.ONE ? valueField : valueField + "." + MeasurementField.VALUE_SI.getName())
 			.interval(interval)
-			.preZone(timezone.toString())
+			.preZone(timezone.toString().replaceAll("\\+", ""))  // strip '+' as workaround for https://github.com/elasticsearch/elasticsearch/issues/2141
 			.preZoneAdjustLargeInterval(true));
 	}
 
