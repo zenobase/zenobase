@@ -4,8 +4,10 @@
  * Released under MIT license.
  */
 (function (Date, undefined) {
-    var origParse = Date.parse, numericKeys = [ 1, 4, 5, 6, 7, 10, 11 ];
-    Date.parse = function (date) {
+
+		var origParse = Date.parse, numericKeys = [ 1, 4, 5, 6, 7, 10, 11 ];
+
+		Date.parse = function (date) {
         var timestamp, struct, minutesOffset = 0;
 
         // ES5 §15.9.4.2 states that the string should attempt to be parsed as a Date Time String Format string
@@ -38,4 +40,30 @@
 
         return timestamp;
     };
+
+    function pad(n){
+			return n < 10 ? '0' + n : n
+		}
+
+    Date.prototype.getTimezone = function() {
+			var offset = -this.getTimezoneOffset();
+			var result = offset < 0 ? '-' : '+';
+			offset = Math.abs(offset);
+			var hours = offset / 60;
+			var minutes = offset % 60;
+			result += pad(hours);
+			result += pad(minutes);
+			return result;
+		}
+
+    Date.prototype.toTimezoneISOString = function() {
+  		return this.getFullYear() + '-' +
+  			pad(this.getMonth() + 1) + '-' +
+  			pad(this.getDate()) + 'T' +
+  			pad(this.getHours()) + ':' +
+  			pad(this.getMinutes()) + ':' +
+  			pad(this.getSeconds()) + '.000' +
+  			this.getTimezone();
+  	}
+
 }(Date));

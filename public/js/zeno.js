@@ -147,26 +147,7 @@
 		var value = s.substring(pos + 1);
 		return new Filter(field, value);
 	}
-	
-	var locale = {
-			getTimezone : function() {
-				var offset = -new Date().getTimezoneOffset();
-				var result = offset < 0 ? '-' : '+';
-				offset = Math.abs(offset);
-				var hours = offset / 60;
-				var minutes = offset % 60;
-				if (hours < 10) {
-					result += '0';
-				}
-				result += hours;
-				if (minutes < 10) {
-					minutes += '0';
-				}
-				result += minutes;
-				return result;
-			}
-	};
-	
+		
 	app.controller('UserCtrl', ['$scope', '$http', '$routeParams', function($scope, $http, $routeParams) {
 	
 		$scope.userId = $routeParams.userId;
@@ -917,7 +898,7 @@
 				type : 'gantt',
 				termField : $scope.settings.termField, 
 				timeField : $scope.settings.timeField,
-				timezone : locale.getTimezone(),
+				timezone : new Date().getTimezone(),
 				order : $scope.settings.order,
 				limit : $scope.settings.limit
 			};
@@ -1119,7 +1100,7 @@
 				unit : $scope.settings.unit || '',
 				interval : $scope.interval.name,
 				range : $scope.range,
-				timezone : locale.getTimezone()
+				timezone : new Date().getTimezone()
 			};
 		};
 		$scope.refresh = function(options, settings) {
@@ -1477,7 +1458,7 @@
 	app.controller('CreateTimestampFieldCtrl', ['$scope', function($scope) {
 
 		$scope.init = function() {
-			$scope.value = new Date().toISOString();
+			$scope.value = new Date().toTimezoneISOString();
 		};
 		$scope.addField = function() {
 			if (!$scope.event[$scope.field.name]) {
