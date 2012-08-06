@@ -1382,7 +1382,9 @@
 		};
 
 		$scope.init();
-		$scope.dialog.on('shown', $scope.init);
+		$scope.dialog.on('shown', function() {
+			$scope.$apply($scope.init);
+		});
 	}]);
 	
 	
