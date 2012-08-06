@@ -1450,10 +1450,12 @@
 			$scope.marker.setPosition(latLng);
 		};
 		$scope.setValue = function(latLng) {
-			$scope.value = {
-				lat : latLng.lat(),
-				lon : latLng.lng()
-			};
+			$scope.$apply(function() {
+				$scope.value = {
+						lat : latLng.lat(),
+						lon : latLng.lng()
+				};
+			});
 		};
 		$scope.valid = function() {
 			return $scope.value.lat >= -90 && $scope.value.lat <= 90 && 
