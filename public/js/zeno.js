@@ -1333,15 +1333,7 @@
 			$scope.field = null;
 			$scope.value = '';
 			$scope.i = 0;
-		};
-		$scope.addField = function() {
-			if ($scope.field) {
-				if (!$scope.event[$scope.field.name]) {
-					$scope.event[$scope.field.name] = [];
-				}
-				var value = $scope.field.parse($scope.value);
-				$scope.event[$scope.field.name].push(value);
-			}
+			$scope.entries = [];
 		};
 		$scope.isEmpty = function() {
 			return $.isEmptyObject($scope.event);
@@ -1361,11 +1353,39 @@
 					$scope.message = 'Couldn\'t create this event.';
 				});
 		};
+		function flatten(event) {
+			var entries = [];
+			$.each(Field.findAll(), function(i, field) {
+				var value = event[field.name];
+				if (value) {
+					$.each($.isArray(value) ? value : [ value ], function(i, value) {
+						entries.push({ field : field, value : value });
+					});
+				}
+			});
+			return entries;
+		};
+		$scope.remove = function(entry) {
+			var values = $scope.event[entry.field.name];
+			if (values) {
+				values = $.grep(values, function(value) {
+					return value !== entry.value;
+				});
+				if (values.length > 0) {
+					$scope.event[entry.field.name] = values;
+				} else {
+					delete $scope.event[entry.field.name];
+				}
+			}
+		};
 
 		$scope.init();
 		$scope.dialog.on('shown', function() {
 			$scope.$apply($scope.init);
 		});
+		$scope.$watch('event', function(event) {
+			$scope.entries = flatten(event);
+		}, true);
 	}]);
 	
 	
@@ -1744,21 +1764,13 @@
 			$.each(Field.findAll(), function(i, field) {
 				var value = event[field.name];
 				if (value) {
-					if (count > 0) {
-						html += ' &nbsp; ';
-					}
-					++count;
-					if ($.isArray(value)) {
-						$.each(value, function(i, value) {
-							if (i > 0) {
-								html += ' &nbsp; ';
-							}
-							html += field.format(value);
-						});
-					}
-					else {
-							html += field.format(value);
-					}
+					$.each($.isArray(value) ? value : [ value ], function(i, value) {
+						if (count > 0) {
+							html += ' &nbsp; ';
+						}
+						html += field.format(value);
+						++count;
+					});
 				}
 			});
 			return html;

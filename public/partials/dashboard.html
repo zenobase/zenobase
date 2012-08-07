@@ -156,7 +156,10 @@
 				</div>
 				<div data-ng-include="getTemplate(field)" data-ng-show="field"></div>
 				<div id="create-event-preview">
-					<p data-ng-bind-html="event | fields"></p>
+					<span class="editable" data-ng-repeat="entry in entries">
+						<span data-ng-bind-html="entry.value | field:entry.field.name"></span>
+						<a class="action" data-ng-click="remove(entry)"><i class="icon-remove" title="Delete"></i></a>
+					</span>
 				</div>
 			</div>
 			<div class="modal-footer">

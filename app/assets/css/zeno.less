@@ -143,15 +143,24 @@ a.sort {
 	color: #333;
 }
 
-.table > tbody > tr:hover {
+.table > tbody > tr:hover, span.editable:hover {
 	background-color: #f8f8f8;
+}
+
+span.editable {
+  	display: block;
+  	float: left;
+	padding: 8px;
+	margin: 2px;
+	margin-left: 0;
+	.border-radius(5px);
 }
 
 .action {
 	visibility: hidden;
 }
 
-tr:hover > td > .action {
+tr:hover > td > .action, span:hover > .action {
 	visibility: visible;
 }
 
