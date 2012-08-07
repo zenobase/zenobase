@@ -1360,15 +1360,43 @@
 		$scope.$on('refresh', $scope.init);
 		$('#' + $scope.settings.id + '-tab').on('show', $scope.draw);
 	}]);
-	
-	
+
+	function Event(data) {
+		$.extend(true, this, data);
+	}
+
+	Event.prototype.get = function(fields) {
+		var self = this;
+		var entries = [];
+		$.each(fields, function(i, field) {
+			var value = self[field.name];
+			if (value !== undefined) {
+				$.each($.isArray(value) ? value : [ value ], function(i, value) {
+					entries.push({ field : field, value : value });
+				});
+			}
+		});
+		return entries;
+	};
+
+	Event.prototype.add = function(field, value) {
+		var values = this[field.name];
+		if (values === undefined) {
+			values = this[field.name] = [];
+		} else if (!$.isArray(values)) {
+			values = this[field.name] = [ values ];
+			this[field.name] = values;
+		}
+		values.push(value);
+	};
+
 	app.controller('CreateEventDialogCtrl', ['$scope', '$http', '$timeout', '$routeParams', function($scope, $http, $timeout, $routeParams) {
 
 		$scope.params = $routeParams;
 		$scope.fields = Field.findEditableFields();
 		$scope.init = function() {
-			$scope.event = $.extend(true, {}, $scope.selectedEvent);
-			$scope.entries = flatten($scope.event);
+			$scope.event = new Event($scope.selectedEvent);
+			$scope.entries = $scope.event.get($scope.fields);
 			$scope.isNew = $scope.isEmpty();
 			$scope.message = '';
 			$scope.field = Field.find('tag');
@@ -1403,18 +1431,6 @@
 				});
 			}
 		};
-		function flatten(event) {
-			var entries = [];
-			$.each($scope.fields, function(i, field) {
-				var value = event[field.name];
-				if (value) {
-					$.each($.isArray(value) ? value : [ value ], function(i, value) {
-						entries.push({ field : field, value : value });
-					});
-				}
-			});
-			return entries;
-		};
 		$scope.remove = function(entry) {
 			var values = $scope.event[entry.field.name];
 			if (values) {
@@ -1431,7 +1447,7 @@
 
 		$scope.$watch('selectedEvent', $scope.init);
 		$scope.$watch('event', function(event) {
-			$scope.entries = flatten(event);
+			$scope.entries = event.get($scope.fields);
 		}, true);
 	}]);
 	
@@ -1442,11 +1458,7 @@
 			$scope.value = '';
 		};
 		$scope.addField = function() {
-			if (!$scope.event[$scope.field.name]) {
-				$scope.event[$scope.field.name] = [];
-			}
-			var value = $scope.value;
-			$scope.event[$scope.field.name].push(value);
+			$scope.event.add($scope.field, $scope.value);
 			$scope.init();
 		};
 		$scope.valid = function() {
@@ -1512,10 +1524,7 @@
 				$scope.value.lon >= -180 && $scope.value.lon <= 180;
 		};
 		$scope.addField = function() {
-			if (!$scope.event[$scope.field.name]) {
-				$scope.event[$scope.field.name] = [];
-			}
-			$scope.event[$scope.field.name].push($scope.value);
+			$scope.event.add($scope.field, $scope.value);
 		};
 
 		$scope.init();
@@ -1528,10 +1537,7 @@
 			$scope.value = new Date().toTimezoneISOString();
 		};
 		$scope.addField = function() {
-			if (!$scope.event[$scope.field.name]) {
-				$scope.event[$scope.field.name] = [];
-			}
-			$scope.event[$scope.field.name].push($scope.value);
+			$scope.event.add($scope.field, $scope.value);
 		};
 		$scope.valid = function() {
 			return Date.parse($scope.value);
@@ -1549,10 +1555,7 @@
 			return ((($scope.days * 24 + $scope.hours) * 60 + $scope.minutes) * 60 + $scope.seconds) * 1000;
 		};
 		$scope.addField = function() {
-			if (!$scope.event[$scope.field.name]) {
-				$scope.event[$scope.field.name] = [];
-			}
-			$scope.event[$scope.field.name].push($scope.millis());
+			$scope.event.add($scope.field, $scope.millis());
 			$scope.init();
 		};
 		$scope.valid = function() {
@@ -1568,10 +1571,7 @@
 			$scope.value = {};
 		};
 		$scope.addField = function() {
-			if (!$scope.event[$scope.field.name]) {
-				$scope.event[$scope.field.name] = [];
-			}
-			$scope.event[$scope.field.name].push($scope.value);
+			$scope.event.add($scope.field, $scope.value);
 			$scope.init();
 		};
 		$scope.valid = function() {
@@ -1587,10 +1587,7 @@
 			$scope.value = {};
 		};
 		$scope.addField = function() {
-			if (!$scope.event[$scope.field.name]) {
-				$scope.event[$scope.field.name] = [];
-			}
-			$scope.event[$scope.field.name].push($scope.value);
+			$scope.event.add($scope.field, $scope.value);
 			$scope.init();
 		};
 		$scope.getUnits = function() {
@@ -1609,11 +1606,7 @@
 			$scope.value = 0;
 		};
 		$scope.addField = function() {
-			if (!$scope.event[$scope.field.name]) {
-				$scope.event[$scope.field.name] = [];
-			}
-			var value = $scope.value;
-			$scope.event[$scope.field.name].push(value);
+			$scope.event.add($scope.field, $scope.value);
 			$scope.init();
 		};
 		$scope.valid = function() {
