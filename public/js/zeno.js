@@ -631,7 +631,13 @@
 				return $.map(param, function(value, key) { return key + ':' + value }).join(',');
 			});
 			$http.get('/buckets/' + $scope.bucketId + '/?' + $.param({ 'q' : q, 'w' : w }, true))
-				.success(callback)
+				.success(function(response) { 
+					callback(response);
+					if (response.total === 0) {
+						$timeout(function() { $('#add-event-link').tooltip('show'); }, DELAY);
+						
+					}
+				})
 				.error(function(response) { callback({ total : -1 }) });
 		};
 		$scope.refresh = function() {
@@ -1655,45 +1661,45 @@
 	}
 
 	Field.register(new Field('tag', 'icon-tag', null, function(value) { 
-		return '<span class="nowrap" title="Tag">' +
-			'<i class="' + this.icon + '"></i> ' + Field.encode(value) +
+		return '<span class="nowrap">' +
+			'<i class="' + this.icon + '" title="Tag"></i> ' + Field.encode(value) +
 	  '</span>';
 	}));
 	
 	Field.register(new Field('resource', 'icon-bookmark', null, function(value) { 
-		return '<span title="Resource">' +
-	  	'<i class="' + this.icon + '"></i>&nbsp;' +
+		return '<span>' +
+	  	'<i class="' + this.icon + '" title="Resource"></i>&nbsp;' +
 	  	'<a href="' +  Field.encode(value.url) + '" rel="nofollow">' +  Field.encode(value.title) + '</a>' +
 	  '</span>';
 	}));
 	
 	Field.register(new Field('distance', 'icon-resize-horizontal', [ 'mi', 'ft', 'in', 'km', 'm', 'cm', 'mm' ], function(value) { 
-		return '<span class="nowrap" title="Distance">' +
-	  	'<i class="' + this.icon + '"></i> ' + value['@value'] + ' ' + value.unit +
+		return '<span class="nowrap">' +
+	  	'<i class="' + this.icon + '" title="Distance"></i> ' + value['@value'] + ' ' + value.unit +
 	  '</span>';
 	}));
 	
 	Field.register(new Field('height', 'icon-resize-vertical', [ 'mi', 'ft', 'in', 'km', 'm', 'cm', 'mm' ], function(value) { 
-		return '<span class="nowrap" title="Height">' +
-	  	'<i class="' + this.icon + '"></i> ' + value['@value'] + ' ' + value.unit +
+		return '<span class="nowrap">' +
+	  	'<i class="' + this.icon + '" title="Height"></i> ' + value['@value'] + ' ' + value.unit +
 	  '</span>';
 	}));
 	
 	Field.register(new Field('weight', 'icon-lock', [ 'lb', 'oz', 'kg', 'g', 'mg' ], function(value) { 
-		return '<span class="nowrap" title="Weight">' +
-	  	'<i class="' + this.icon + '"></i> ' + value['@value'] + ' ' + value.unit +
+		return '<span class="nowrap">' +
+	  	'<i class="' + this.icon + '" title="Weight"></i> ' + value['@value'] + ' ' + value.unit +
 	  '</span>';
 	}));
 	
 	Field.register(new Field('pressure', 'icon-fullscreen', [ 'Pa', 'mmHg', 'inHg', 'psi' ], function(value) { 
-		return '<span class="nowrap" title="Pressure">' +
-	  	'<i class="' + this.icon + '"></i> ' + value['@value'] + ' ' + value.unit +
+		return '<span class="nowrap">' +
+	  	'<i class="' + this.icon + '" title="Pressure"></i> ' + value['@value'] + ' ' + value.unit +
 	  '</span>';
 	}));
 	
 	Field.register(new Field('location', 'icon-map-marker', null, function(value) { 
-		return '<span class="nowrap" title="Location">' +
-			'<i class="' + this.icon + '"></i> ' +
+		return '<span class="nowrap">' +
+			'<i class="' + this.icon + '" title="Location"></i> ' +
 			'<a href="http://maps.google.com/maps?q=' + 
 				Field.encode(value.lat + ',' + value.lon) + '&t=p&z=5">' + 
 				Field.encode(Math.round(value.lat * 1000) / 1000 + ', ' + Math.round(value.lon * 1000) / 1000) + '</a>' +
@@ -1852,6 +1858,27 @@
 					var text = start === year ?
 						start : start + '&ndash;' + year;
 					element.html(text);
+				};
+			}
+		};
+	});
+
+	app.directive('tooltip', function() {
+		var oldClean = jQuery.cleanData;
+		$.cleanData = function( elems ) {
+			for (var i = 0, elem; (elem = elems[i]) !== undefined; i++) {
+				$(elem).triggerHandler('destroyed');
+			}
+			oldClean(elems);
+		};
+		return {
+			restrict: 'A',
+			compile: function() {
+				return function(scope, element, attrs) {
+					element.tooltip({ placement : 'bottom' });
+					element.bind("destroyed", function(e){
+						element.tooltip('hide');
+					})
 				};
 			}
 		};

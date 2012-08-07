@@ -37,7 +37,7 @@
 
 // Components: Popovers
 @import "bootstrap/modals.less";
-// @import "bootstrap/tooltip.less";
+@import "bootstrap/tooltip.less";
 // @import "bootstrap/popovers.less";
 
 // Components: Misc
@@ -206,4 +206,8 @@ input.ng-invalid.ng-dirty:focus {
 
 #create-location-map img {
   max-width: none;
+}
+
+.tooltip {
+	padding: 4px; /* reduced from the default 5px to prevent a gap between the tooltip and the tooltip arrow */
 }

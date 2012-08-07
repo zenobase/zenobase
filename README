@@ -9,5 +9,5 @@ To refresh the dependencies in Eclipse, open the play console and run:
 js libs
 -------
 
+bootstrap-mtt.js: concatenate modal + tabs + tooltips
 *.gz: gzip -9 *.min.js
-bootstrap.js: concatenate modal + tabs only
