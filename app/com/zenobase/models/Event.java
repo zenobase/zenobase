@@ -13,6 +13,7 @@ import com.zenobase.json.IdentityField;
 import com.zenobase.json.IntegerField;
 import com.zenobase.json.LengthField;
 import com.zenobase.json.LocationField;
+import com.zenobase.json.Nodes;
 import com.zenobase.json.PressureField;
 import com.zenobase.json.RatingField;
 import com.zenobase.json.ResourceField;
@@ -83,6 +84,10 @@ public class Event extends DomainNode {
 				field.prePersist(toJson());
 			}
 		}
+	}
+
+	public Event copy() {
+		return new Event(Nodes.copy(toJson()));
 	}
 
 	public static Schema getSchema() {

@@ -118,6 +118,10 @@ public class BucketRepository {
 		getIndex(bucketId).store(Event.TYPE_NAME, event.getId(), event.toJson(), false);
 	}
 
+	public void update(String bucketId, Event event) {
+		getIndex(bucketId).update(Event.TYPE_NAME, event.getId(), event.toJson(), false);
+	}
+
 	public boolean delete(String bucketId, String eventId) {
 		return getIndex(bucketId).delete(Event.TYPE_NAME, eventId, false);
 	}

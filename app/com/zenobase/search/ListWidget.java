@@ -32,6 +32,7 @@ public class ListWidget extends Widget {
 		builder.from(offset);
 		builder.size(limit);
 		builder.sort(sort, order);
+		builder.version(Boolean.TRUE);
 	}
 
 	@Override
@@ -39,6 +40,7 @@ public class ListWidget extends Widget {
 		ArrayNode eventsNode = Nodes.newArray();
 		for (SearchHit hit : response.hits()) {
 			Event event = new Event(Nodes.read(hit.source()));
+			event.setVersion(hit.version());
 			eventsNode.add(event.toJson());
 		}
 		return eventsNode;

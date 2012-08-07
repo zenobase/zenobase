@@ -7,6 +7,7 @@ import static play.mvc.Http.Status.*;
 import static play.test.Helpers.*;
 
 import org.codehaus.jackson.node.ObjectNode;
+import org.elasticsearch.index.engine.VersionConflictEngineException;
 import org.junit.Before;
 import org.junit.Test;
 import play.mvc.Result;
@@ -40,6 +41,16 @@ public class BucketControllerHttpPostTest extends BucketControllerTestSupport {
 		when(dispatcher.dispatch(any(UpdateBucketCommand.class))).thenReturn(commandId);
 		Result result = call(from.getId(), to.toJson());
 		assertThat(result).hasStatus(OK).hasContent(BucketController.receipt(commandId));
+	}
+
+	@Test
+	@SuppressWarnings("unchecked")
+	public void testConflict() {
+		when(auth.getPrincipal()).thenReturn(user.asIdentity());
+		when(buckets.findBucket(from.getId())).thenReturn(from.copy());
+		when(dispatcher.dispatch(any(UpdateBucketCommand.class))).thenThrow(VersionConflictEngineException.class);
+		Result result = call(from.getId(), to.toJson());
+		assertThat(result).hasStatus(CONFLICT);
 	}
 
 	@Test

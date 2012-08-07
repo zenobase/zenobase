@@ -646,7 +646,10 @@
 		$scope.params = function() {
 			return null;
 		};
-		$scope.remove = function(eventId) {
+		$scope.editEvent = function(event) {
+			$scope.selectedEvent = event;
+		};
+		$scope.removeEvent = function(eventId) {
 			$http({ method : 'DELETE', url : '/buckets/' + $scope.bucketId + '/' + eventId }).success(function(response, status, headers) {
 				$timeout($scope.refresh, DELAY);
 				$scope.alert.show('Deleted an event.', 'alert-success', response.undo);
@@ -1323,16 +1326,15 @@
 	
 	app.controller('CreateEventDialogCtrl', ['$scope', '$http', '$timeout', '$routeParams', function($scope, $http, $timeout, $routeParams) {
 
-		$scope.id = 'create-event-dialog';
-		$scope.dialog = $('#' + $scope.id);
 		$scope.params = $routeParams;
 		$scope.fields = Field.findEditableFields();
 		$scope.init = function() {
-			$scope.event = {};
+			$scope.event = $.extend(true, {}, $scope.selectedEvent);
+			$scope.isNew = $scope.isEmpty();
 			$scope.message = '';
 			$scope.field = Field.find('tag');
 			$scope.value = '';
-			$scope.entries = [];
+			$scope.entries = flatten($scope.event);
 		};
 		$scope.isEmpty = function() {
 			return $.isEmptyObject($scope.event);
@@ -1340,21 +1342,35 @@
 		$scope.getTemplate = function(field) {
 			return field ? '/create-' + field.name + '.html' : null;
 		};
-		$scope.create = function() {
-			$http.post('/buckets/' + $scope.params.bucketId + '/', $scope.event)
+		$scope.save = function() {
+			if ($scope.isNew) {
+				$http.post('/buckets/' + $scope.params.bucketId + '/', $scope.event)
 				.success(function(response) {
 					$timeout(function() {
+						$scope.editEvent(null);
 						$scope.reload();
-						$scope.dialog.modal('hide');
 					}, DELAY);
 				})
 				.error(function(response) {
 					$scope.message = 'Couldn\'t create this event.';
 				});
+			} else {
+				$http.post('/buckets/' + $scope.params.bucketId + '/' + $scope.event['@id'], $scope.event)
+				.success(function(response) {
+					$timeout(function() {
+						$scope.alert.show('Updated an event.', 'alert-success', response.undo);
+						$scope.editEvent(null);
+						$scope.reload();
+					}, DELAY);
+				})
+				.error(function(response) {
+					$scope.message = 'Couldn\'t update this event.';
+				});
+			}
 		};
 		function flatten(event) {
 			var entries = [];
-			$.each(Field.findAll(), function(i, field) {
+			$.each($scope.fields, function(i, field) {
 				var value = event[field.name];
 				if (value) {
 					$.each($.isArray(value) ? value : [ value ], function(i, value) {
@@ -1378,10 +1394,7 @@
 			}
 		};
 
-		$scope.init();
-		$scope.dialog.on('shown', function() {
-			$scope.$apply($scope.init);
-		});
+		$scope.$watch('selectedEvent', $scope.init);
 		$scope.$watch('event', function(event) {
 			$scope.entries = flatten(event);
 		}, true);

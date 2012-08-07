@@ -33,6 +33,7 @@ import com.zenobase.commands.DeleteUserCommand;
 import com.zenobase.commands.RestoreBucketCommand;
 import com.zenobase.commands.SuspendUserCommand;
 import com.zenobase.commands.UpdateBucketCommand;
+import com.zenobase.commands.UpdateEventCommand;
 import com.zenobase.controllers.AccountController;
 import com.zenobase.controllers.BucketController;
 import com.zenobase.controllers.BucketListController;
@@ -98,6 +99,7 @@ public class Global extends GlobalSettings {
 				parsers.addBinding().to(DeleteBucketCommand.Parser.class);
 				parsers.addBinding().to(RestoreBucketCommand.Parser.class);
 				parsers.addBinding().to(UpdateBucketCommand.Parser.class);
+				parsers.addBinding().to(UpdateEventCommand.Parser.class);
 				parsers.addBinding().to(CreateEventCommand.Parser.class);
 				parsers.addBinding().to(DeleteEventCommand.Parser.class);
 				parsers.addBinding().to(CreateUserCommand.Parser.class);
@@ -113,6 +115,7 @@ public class Global extends GlobalSettings {
 				handlers.addBinding().to(DeleteBucketCommand.Handler.class);
 				handlers.addBinding().to(RestoreBucketCommand.Handler.class);
 				handlers.addBinding().to(UpdateBucketCommand.Handler.class);
+				handlers.addBinding().to(UpdateEventCommand.Handler.class);
 				handlers.addBinding().to(CreateEventCommand.Handler.class);
 				handlers.addBinding().to(DeleteEventCommand.Handler.class);
 				handlers.addBinding().to(CreateUserCommand.Handler.class);
