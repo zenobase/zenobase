@@ -619,7 +619,7 @@
 				return widget.settings.id !== settings.id;
 			});
 			var remaining = $scope.getWidgetSettings(settings.placement);
-			if (remaining) {
+			if (remaining.length > 0) {
 				$('#' + remaining[0].id + '-tab').tab('show');
 			}
 		};
