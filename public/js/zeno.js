@@ -47,9 +47,9 @@
 	
 		$scope.alert = new Alert();
 		$scope.undo = function(commandId) {
+			$scope.alert.clear();
 			$http.post('/queue/' , { 'undo' : commandId })
 				.success(function(response, code) {
-					$scope.alert.clear();
 					$timeout(function() { window.location.reload(); }, DELAY);
 				})
 				.error(function(response) {
@@ -63,9 +63,9 @@
 			$scope.$broadcast(event);
 		};
 		$scope.signOut = function() {
+			$scope.alert.clear();
 			_gaq.push([ '_trackEvent', 'session', 'sign out', $scope.user.getName() ]);
 			$http.post('/signout', { 'username' : $scope.user.getName() }).success(function(response, code) {
-					$scope.alert.clear();
 					$scope.user = null;
 					if ($location.url() === '/') {
 						$scope.reload();
@@ -77,6 +77,10 @@
 		$scope.home = function() {
 			$location.url('/');
 		};
+
+		$scope.$on('$routeChangeStart', function(e) {
+			$scope.alert.clear();
+		});
 		$scope.whoami();
 	}]);
 	
@@ -196,6 +200,7 @@
 			return data;
 		};
 		$scope.save = function() {
+			$scope.alert.clear();
 			var data = $scope.data();
 			if (!$.isEmptyObject(data)) { 
 				$http.post('/users/' + $scope.userInfo.name, data)
@@ -284,6 +289,7 @@
 			};
 		};
 		$scope.requestReset = function() {
+			$scope.alert.clear();
 			$http.post('/reset', $scope.data())
 				.success(function(response) {
 					$scope.alert.show('A password reset request has been sent by email. Check your inbox.');
@@ -325,6 +331,7 @@
 			};
 		};
 		$scope.submit = function() {
+			$scope.alert.clear();
 			if ($scope.password !== $scope.retypedPassword) {
 				$scope.message = 'Passwords don\'t match.';
 				return;
@@ -375,6 +382,7 @@
 			$scope.message = '';
 		};
 		$scope.submit = function() {
+			$scope.alert.clear();
 			if ($scope.password !== $scope.retypedPassword) {
 				$scope.message = 'Passwords don\'t match.';
 				return;
@@ -427,6 +435,7 @@
 			});
 		};
 		$scope.remove = function(bucketId) {
+			$scope.alert.clear();
 			$http({ method : 'DELETE', url : '/buckets/' + bucketId })
 				.success(function(response) {
 					$scope.alert.show('Deleted a bucket.', 'alert-success', response.undo);
@@ -450,6 +459,7 @@
 			label : 'My Data'
 		};
 		$scope.create = function() {
+			$scope.alert.clear();
 			_gaq.push([ '_trackEvent', 'home', 'create', $scope.template.label ]);
 			$http.post('/buckets/', $scope.template)
 				.success(function(response, status, headers) {
@@ -474,6 +484,7 @@
 			$scope.message = '';
 		};
 		$scope.create = function() {
+			$scope.alert.clear();
 			$http.post('/buckets/', { label : $scope.label})
 				.success(function(response, status, headers) {
 					var location = headers('Location');
@@ -677,6 +688,7 @@
 			$scope.selectedEvent = event;
 		};
 		$scope.removeEvent = function(eventId) {
+			$scope.alert.clear();
 			$http({ method : 'DELETE', url : '/buckets/' + $scope.bucketId + '/' + eventId }).success(function(response, status, headers) {
 				$timeout($scope.refresh, DELAY);
 				$scope.alert.show('Deleted an event.', 'alert-success', response.undo);
@@ -749,6 +761,7 @@
 			});
 		};
 		$scope.save = function(settings) {
+			$scope.alert.clear();
 			$http.post('/buckets/' + $scope.bucketId, $scope.bucket)
 				.success(function (response, status, headers) {
 					$scope.alert.show('Saved settings.', 'alert-success', response.undo);
@@ -1372,6 +1385,7 @@
 			return field ? '/create-' + field.name + '.html' : null;
 		};
 		$scope.save = function() {
+			$scope.alert.clear();
 			if ($scope.isNew) {
 				$http.post('/buckets/' + $scope.params.bucketId + '/', $scope.event)
 				.success(function(response) {
@@ -1640,6 +1654,7 @@
 			});
 		};
 		$scope.import = function() {
+			$scope.alert.clear();
 			$http.post('/buckets/' + $scope.params.bucketId + '/', { 'events' : $scope.events })
 				.success(function(response) {
 					$timeout(function() {
