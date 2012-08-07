@@ -1417,7 +1417,7 @@
 					$timeout($scope.refresh, DELAY);
 				})
 				.error(function(response) {
-					$scope.message = 'Couldn\'t create this event.';
+					$scope.message = response.message || 'Couldn\'t create this event.';
 				});
 			} else {
 				$http.put('/buckets/' + $scope.params.bucketId + '/' + $scope.event['@id'], $scope.event)
@@ -1427,7 +1427,7 @@
 					$timeout($scope.refresh, DELAY);
 				})
 				.error(function(response) {
-					$scope.message = 'Couldn\'t update this event.';
+					$scope.message = response.message || 'Couldn\'t update this event.';
 				});
 			}
 		};

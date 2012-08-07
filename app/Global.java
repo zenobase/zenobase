@@ -1,3 +1,4 @@
+import org.codehaus.jackson.node.ObjectNode;
 import play.Application;
 import play.Configuration;
 import play.GlobalSettings;
@@ -6,6 +7,9 @@ import play.Play;
 import play.api.PlayException;
 import play.api.mvc.Handler;
 import play.mvc.Http.RequestHeader;
+import play.mvc.Result;
+import play.mvc.Results;
+import com.google.common.base.Throwables;
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Inject;
@@ -47,6 +51,7 @@ import com.zenobase.controllers.StatusController;
 import com.zenobase.controllers.UserController;
 import com.zenobase.controllers.UserListController;
 import com.zenobase.controllers.WhoController;
+import com.zenobase.json.Nodes;
 import com.zenobase.mail.Mailer;
 import com.zenobase.mail.PasswordResetMailer;
 import com.zenobase.mail.VerificationMailer;
@@ -165,6 +170,17 @@ public class Global extends GlobalSettings {
 	@Override
 	public Handler onRouteRequest(RequestHeader request) {
 		return canonical.test(request) ? super.onRouteRequest(request) : canonical.redirect(request);
+	}
+
+	@Override
+	public Result onError(RequestHeader request, Throwable t) {
+		if (request.accepts("application/json")) {
+			ObjectNode node = Nodes.newObject();
+			node.put("message", Throwables.getRootCause(t).getMessage());
+			return Results.internalServerError(node);
+		} else {
+			return super.onError(request, t);
+		}
 	}
 
 	@Override
