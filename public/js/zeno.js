@@ -1131,8 +1131,10 @@
 						if (typeof value == 'object') {
 							unit = value.unit;
 							value = value['@value'];
+						} else {
+							unit = value == 1 ? 'event' : 'events';
 						}
-						data.addRow([ time.label, value, time.label + ': ' + value + unit ]);
+						data.addRow([ time.label, value, time.label + ': ' + value + ' ' + unit ]);
 					});
 					var options = {
 						height : 100,
