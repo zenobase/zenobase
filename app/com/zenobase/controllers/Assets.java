@@ -17,7 +17,7 @@ public class Assets extends ControllerSupport {
 		return controllers.Assets.at(path, stripCacheBuster(file));
 	}
 
-	private static String stripCacheBuster(String file) {
+	static String stripCacheBuster(String file) {
 		return CACHE_BUSTER.matcher(file).replaceAll("");
 	}
 }

@@ -115,6 +115,12 @@ public class BucketRepositoryTest extends ElasticSearchTestSupport {
 		assertThat(repository.findEvent(bucket.getId(), event.getId()).toJson()).isEqualTo(event.toJson());
 		NodeAssert.assertThat(repository.findEvents(bucket.getId(), new EventSearch())).path(EventSearch.TOTAL.getName()).isEqualTo(1);
 
+		// update event
+		event.addValue(Event.TAG, "updated");
+		repository.update(bucket.getId(), event);
+		repository.refresh(bucket.getId());
+		assertThat(repository.findEvent(bucket.getId(), event.getId()).toJson()).isEqualTo(event.toJson());
+
 		// delete event
 		repository.delete(bucket.getId(), event.getId());
 		repository.refresh(bucket.getId());
