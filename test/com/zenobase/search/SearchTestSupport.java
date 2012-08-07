@@ -25,7 +25,6 @@ public class SearchTestSupport extends ElasticSearchTestSupport {
 	protected void addEvent(Event event) {
 		event.prePersist();
 		index.store(Event.TYPE_NAME, event.getId(), event.toJson(), true);
-		event.setValue(Event.VERSION, null);
 	}
 
 	protected void addWidget(String options) {
@@ -37,8 +36,6 @@ public class SearchTestSupport extends ElasticSearchTestSupport {
 	}
 
 	protected ObjectNode execute() {
-		ObjectNode result = search.execute(index);
-		// System.out.println("r:" + result);
-		return result;
+		return search.execute(index);
 	}
 }
