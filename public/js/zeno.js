@@ -588,10 +588,24 @@
 					$scope.message = 'Couldn\'t retrieve this bucket. Try again later or contact support.';
 				}
 			});
-	
+
 		$scope.filters = [];
 		$scope.widgets = [];
-	
+
+		var layout = {};
+		$scope.$watch('bucket.widgets', function() {
+			var l = {};
+			if ($scope.bucket) {
+				$.each($scope.bucket.widgets, function(i, widget) {
+					l[widget.placement] = true;
+				});
+			}
+			layout = l;
+		});
+		$scope.hasWidgets = function(placement) {
+			return layout[placement];
+		};
+
 		$scope.getWidgetSettings = function(placement) {
 			return $scope.bucket && $.grep($scope.bucket.widgets, function(widget) {
 				return widget.placement === placement;
