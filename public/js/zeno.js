@@ -611,13 +611,17 @@
 				return widget.placement === placement;
 			});
 		};
-		$scope.removeWidget = function(id) {
+		$scope.removeWidget = function(settings) {
 			$scope.bucket.widgets = $.grep($scope.bucket.widgets, function(widget) {
-				return widget.id !== id;
+				return widget.id !== settings.id;
 			});
 			$scope.widgets = $.grep($scope.widgets, function(widget) {
-				return widget.settings.id !== id;
+				return widget.settings.id !== settings.id;
 			});
+			var remaining = $scope.getWidgetSettings(settings.placement);
+			if (remaining) {
+				$('#' + remaining[0].id + '-tab').tab('show');
+			}
 		};
 		$scope.placement = null;
 		$scope.canImport = function() {
