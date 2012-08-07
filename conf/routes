@@ -18,14 +18,14 @@ GET     /buckets/                    com.zenobase.controllers.BucketListControll
 POST    /buckets/                    com.zenobase.controllers.BucketListController.post()
 
 GET     /buckets/:bucketId           com.zenobase.controllers.BucketController.get(bucketId)
-POST    /buckets/:bucketId           com.zenobase.controllers.BucketController.update(bucketId)
+PUT     /buckets/:bucketId           com.zenobase.controllers.BucketController.update(bucketId)
 DELETE  /buckets/:bucketId           com.zenobase.controllers.BucketController.delete(bucketId)
 
 GET     /buckets/:bucketId/          com.zenobase.controllers.EventListController.get(bucketId)
 POST    /buckets/:bucketId/          com.zenobase.controllers.EventListController.post(bucketId)
 
 GET     /buckets/:bucketId/:eventId  com.zenobase.controllers.EventController.get(bucketId, eventId)
-POST    /buckets/:bucketId/:eventId  com.zenobase.controllers.EventController.update(bucketId, eventId)
+PUT     /buckets/:bucketId/:eventId  com.zenobase.controllers.EventController.update(bucketId, eventId)
 DELETE  /buckets/:bucketId/:eventId  com.zenobase.controllers.EventController.delete(bucketId, eventId)
 
 GET     /queue/                      com.zenobase.controllers.QueueController.get(offset : Int, limit : Int)

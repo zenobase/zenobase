@@ -50,14 +50,11 @@
 			$scope.alert.clear();
 			$http.post('/queue/' , { 'undo' : commandId })
 				.success(function(response, code) {
-					$timeout(function() { window.location.reload(); }, DELAY);
+					$timeout($route.reload, DELAY);
 				})
 				.error(function(response) {
 					$scope.alert.show('Couldn\'t undo.');
 				});
-		};
-		$scope.reload = function() {
-			$route.reload();
 		};
 		$scope.broadcast = function(event) {
 			$scope.$broadcast(event);
@@ -68,7 +65,7 @@
 			$http.post('/signout', { 'username' : $scope.user.getName() }).success(function(response, code) {
 					$scope.user = null;
 					if ($location.url() === '/') {
-						$scope.reload();
+						$route.reload();
 					} else {
 						$scope.home();
 					}
@@ -206,7 +203,7 @@
 				$http.post('/users/' + $scope.userInfo.name, data)
 					.success(function(response) {
 						$scope.alert.show('Updated user info.', 'alert-success', response.undo);
-						$scope.reload();
+						$scope.editing = false;
 					})
 					.error(function(response) {
 						$scope.message = 'Update failed. Try again later or contact support.';
@@ -225,7 +222,7 @@
 		});
 	}]);
 	
-	app.controller('AuthFormCtrl', ['$scope', '$http', '$location', function($scope, $http, $location) {
+	app.controller('AuthFormCtrl', ['$scope', '$http', '$location', '$route', function($scope, $http, $location, $route) {
 
 		$scope.dialog = $('#sign-in-dialog');
 
@@ -251,7 +248,7 @@
 					if ($location.url() === '/') {
 						$location.url('/users/' + $scope.username);
 					} else {
-						$scope.reload();
+						$route.reload();
 					}
 				})
 				.error(function(response, code) {
@@ -407,7 +404,7 @@
 		$scope.limit = 5;
 		$scope.total = 0;
 		$scope.buckets = null;
-	
+
 		$scope.hasPrev = function() {
 			return $scope.offset > 0;
 		};
@@ -439,7 +436,7 @@
 			$http({ method : 'DELETE', url : '/buckets/' + bucketId })
 				.success(function(response) {
 					$scope.alert.show('Deleted a bucket.', 'alert-success', response.undo);
-					$scope.reload();
+					$scope.refresh({});
 				})
 				.error(function(response) {
 					$scope.alert.show('Couldn\'t delete the bucket.', 'alert-error');
@@ -749,7 +746,7 @@
 		};
 	}]);
 	
-	app.controller('BucketFormCtrl', ['$scope', '$http', function($scope, $http) {
+	app.controller('BucketFormCtrl', ['$scope', '$http', '$route', function($scope, $http, $route) {
 		$scope.publish = function() {
 			if (!$scope.isPublished()) {
 				$scope.bucket.permissions.push({ 'principal' : '*', 'permission' : 'USE' });
@@ -762,7 +759,7 @@
 		};
 		$scope.save = function(settings) {
 			$scope.alert.clear();
-			$http.post('/buckets/' + $scope.bucketId, $scope.bucket)
+			$http.put('/buckets/' + $scope.bucketId, $scope.bucket)
 				.success(function (response, status, headers) {
 					$scope.alert.show('Saved settings.', 'alert-success', response.undo);
 					++$scope.$parent.bucket.version;
@@ -778,8 +775,7 @@
 		};
 		$scope.cancel = function() {
 			$scope.$parent.cancel();
-			$scope.alert.clear();
-			$scope.reload();
+			$route.reload();
 		};
 	}]);
 	
@@ -1389,22 +1385,18 @@
 			if ($scope.isNew) {
 				$http.post('/buckets/' + $scope.params.bucketId + '/', $scope.event)
 				.success(function(response) {
-					$timeout(function() {
-						$scope.editEvent(null);
-						$scope.reload();
-					}, DELAY);
+					$scope.editEvent(null);
+					$timeout($scope.refresh, DELAY);
 				})
 				.error(function(response) {
 					$scope.message = 'Couldn\'t create this event.';
 				});
 			} else {
-				$http.post('/buckets/' + $scope.params.bucketId + '/' + $scope.event['@id'], $scope.event)
+				$http.put('/buckets/' + $scope.params.bucketId + '/' + $scope.event['@id'], $scope.event)
 				.success(function(response) {
-					$timeout(function() {
-						$scope.alert.show('Updated an event.', 'alert-success', response.undo);
-						$scope.editEvent(null);
-						$scope.reload();
-					}, DELAY);
+					$scope.editEvent(null);
+					$scope.alert.show('Updated an event.', 'alert-success', response.undo);
+					$timeout($scope.refresh, DELAY);
 				})
 				.error(function(response) {
 					$scope.message = 'Couldn\'t update this event.';
@@ -1657,11 +1649,9 @@
 			$scope.alert.clear();
 			$http.post('/buckets/' + $scope.params.bucketId + '/', { 'events' : $scope.events })
 				.success(function(response) {
-					$timeout(function() {
-						$scope.reload();
-						$scope.dialog.modal('hide');
-						$scope.alert.show('Imported events.', 'alert-success', response.undo);
-					}, DELAY);
+					$scope.dialog.modal('hide');
+					$scope.alert.show('Imported events.', 'alert-success', response.undo);
+					$timeout($scope.refresh, DELAY);
 				})
 				.error(function(response) {
 					$scope.message = 'Couldn\'t import events.';
