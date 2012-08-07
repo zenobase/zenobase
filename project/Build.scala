@@ -3,6 +3,7 @@ import sbt._
 import Keys._
 import PlayProject._
 
+
 object ApplicationBuild extends Build {
 
     val appName         = "Zenobase"
@@ -21,9 +22,24 @@ object ApplicationBuild extends Build {
       "org.jvnet.mock-javamail" % "mock-javamail" % "1.9" % "test"
     )
 
+    val gzippableAssets = SettingKey[PathFinder]("gzippable-assets", "Defines the files to gzip")
+    val gzipAssets = TaskKey[Seq[File]]("gzip-assets", "gzip all assets")
+    lazy val gzipAssetsSetting = gzipAssets <<= gzipAssetsTask
+    lazy val gzipAssetsTask = (gzippableAssets, streams) map {
+      case (finder: PathFinder, s: TaskStreams) => {
+        finder.get.map { file =>
+          val gzTarget = new File(file.getAbsolutePath + ".gz")
+          IO.gzip(file, gzTarget)
+          s.log.info("Compressed " + file.getName + " " + file.length / 1000 + " k => " + gzTarget.getName + " " + gzTarget.length / 1000 + " k")
+          gzTarget
+        }
+      }
+    }
+
     val main = PlayProject(appName, appVersion, appDependencies, mainLang = JAVA).settings(
       lessEntryPoints <<= baseDirectory(_ / "app" / "assets" / "css" ** "zeno.less"),
-      resolvers += "Sonatype Releases" at "https://oss.sonatype.org/content/repositories/releases/"
+      resolvers += "Sonatype Releases" at "https://oss.sonatype.org/content/repositories/releases/",
+      gzippableAssets <<= (resourceManaged in (ThisProject))(dir => ((dir ** "*.js") +++ (dir ** "*.css"))), gzipAssetsSetting,
+      resourceGenerators in (ThisProject, Compile) <+= gzipAssetsTask
     )
-
 }
