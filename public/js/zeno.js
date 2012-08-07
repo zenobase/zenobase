@@ -1330,9 +1330,8 @@
 		$scope.init = function() {
 			$scope.event = {};
 			$scope.message = '';
-			$scope.field = null;
+			$scope.field = Field.find('tag');
 			$scope.value = '';
-			$scope.i = 0;
 			$scope.entries = [];
 		};
 		$scope.isEmpty = function() {
