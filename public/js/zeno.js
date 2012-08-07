@@ -1330,14 +1330,14 @@
 		$scope.fields = Field.findEditableFields();
 		$scope.init = function() {
 			$scope.event = $.extend(true, {}, $scope.selectedEvent);
+			$scope.entries = flatten($scope.event);
 			$scope.isNew = $scope.isEmpty();
 			$scope.message = '';
 			$scope.field = Field.find('tag');
 			$scope.value = '';
-			$scope.entries = flatten($scope.event);
 		};
 		$scope.isEmpty = function() {
-			return $.isEmptyObject($scope.event);
+			return $.isEmptyObject($scope.entries);
 		};
 		$scope.getTemplate = function(field) {
 			return field ? '/create-' + field.name + '.html' : null;
