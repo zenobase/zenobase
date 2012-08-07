@@ -521,7 +521,7 @@
 		return id;
 	}
 	
-	app.controller('AddWidgetCtrl', ['$scope', '$http', '$route', '$routeParams', '$location', function($scope, $http, $route, $routeParams, $location) {
+	app.controller('AddWidgetCtrl', ['$scope', '$http', '$route', '$routeParams', '$location', '$timeout', function($scope, $http, $route, $routeParams, $location, $timeout) {
 	
 		$scope.templates = [
 	  	{ label : 'Timeline', description : 'Timeline with event counts.', type : 'timeline', valueField : 'timestamp', statistic : 'count' },
@@ -539,6 +539,9 @@
 			delete settings.description;
 			$scope.addWidget(settings);
 			$scope.closeWidgetDialog();
+			$timeout(function() {
+				$('#' + settings.id + '-tab').tab('show');
+			});
 		};
 		$scope.cancel = function() {
 			$scope.closeWidgetDialog();
