@@ -682,7 +682,7 @@
 			return null;
 		};
 		$scope.getExportUrl = function() {
-			var url = '/buckets/' + $scope.bucketId + '/json';
+			var url = '/buckets/' + $scope.bucketId + '/';
 			if ($scope.filters.length > 0) {
 				url += '?' + $.param({ 'q' : $scope.filters }, true);
 			}
