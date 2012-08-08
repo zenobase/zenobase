@@ -74,6 +74,9 @@
 		$scope.home = function() {
 			$location.url('/');
 		};
+		$scope.reload = function() {
+			$route.reload();
+		};
 
 		$scope.$on('$routeChangeStart', function(e) {
 			$scope.alert.clear();

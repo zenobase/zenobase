@@ -41,7 +41,7 @@
 				$scope.commands = response.commands;
 			});
 		};
-	
+
 		$scope.$on('reload', $scope.refresh);
 		$scope.refresh({});
 	}]);
