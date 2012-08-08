@@ -8,7 +8,6 @@ import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.elasticsearch.search.sort.SortOrder;
 import play.Logger;
 import com.google.common.collect.Lists;
-import com.google.common.primitives.Ints;
 import com.google.inject.Inject;
 
 import com.zenobase.commands.Command;
@@ -44,8 +43,16 @@ public class CommandRepository {
 	}
 
 	public void findAll(Callback<Command> callback) {
-		for (ObjectNode hit : index.find(newSearchSource(false).size(Ints.checkedCast(size()))).getElements()) {
-			callback.call(parsers.parse(hit));
+		long count = 0;
+		for (int offset = 0, limit = 10; ; offset += limit) {
+			CommandList commands = findAll(offset, limit, false);
+			for (Command command : commands.getElements()) {
+				callback.call(command);
+				++count;
+			}
+			if (commands.size() == count) {
+				break;
+			}
 		}
 	}
 
