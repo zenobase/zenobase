@@ -184,6 +184,26 @@ public class Global extends GlobalSettings {
 	}
 
 	@Override
+	public Result onHandlerNotFound(RequestHeader request) {
+		if (request.accepts("application/json")) {
+			return Results.notFound();
+		} else {
+			return super.onHandlerNotFound(request);
+		}
+	}
+
+	@Override
+	public Result onBadRequest(RequestHeader request, String error) {
+		if (request.accepts("application/json")) {
+			ObjectNode node = Nodes.newObject();
+			node.put("message", error);
+			return Results.badRequest(node);
+		} else {
+			return super.onBadRequest(request, error);
+		}
+	}
+
+	@Override
 	public void onStop(Application application) {
 		injector.getInstance(IndexManager.class).close();
 	}
