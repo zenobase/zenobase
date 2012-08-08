@@ -1616,6 +1616,22 @@
 		$scope.init();
 	}]);
 	
+	app.controller('CreateNoteFieldCtrl', ['$scope', function($scope) {
+
+		$scope.init = function() {
+			$scope.value = '';
+		};
+		$scope.addField = function() {
+			$scope.event.add($scope.field, $scope.value);
+			$scope.init();
+		};
+		$scope.valid = function() {
+			return $scope.value;
+		};
+
+		$scope.init();
+	}]);
+	
 	
 	app.controller('ImportEventsCtrl', ['$scope', '$http', '$timeout', '$routeParams', function($scope, $http, $timeout, $routeParams) {
 
@@ -1764,6 +1780,12 @@
 		}
 		html += '</span>';
 		return html;
+	}));
+	
+	Field.register(new Field('note', 'icon-align-justify', null, function(value) { 
+		return '<span>' +
+	  	'<i class="' + this.icon + '" title="Note"></i>&nbsp;' + value +
+	  '</span>';
 	}));
 	
 	Field.register(new Field('author', 'icon-user', null, function(value) { 

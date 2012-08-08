@@ -350,6 +350,18 @@
 		</div>
 	</script>
 
+	<script id="/create-note.html" type="text/ng-template">
+		<div data-ng-controller="CreateNoteFieldCtrl">
+			<div class="control-group">
+				<label for="value" class="control-label">Value</label>
+				<textarea name="value" data-ng-model="value"></textarea>
+			</div>
+			<div class="control-group">
+				<a class="btn" data-ng-click="addField()" data-ng-disabled="!valid()">Add</a>
+			</div>
+		</div>
+	</script>
+
 	<div id="import-events-dialog" class="modal hide" data-ng-controller="ImportEventsCtrl">
 		<form name="importEventsForm" data-ng-submit="import()" class="modal-form">
 			<div class="modal-header">
