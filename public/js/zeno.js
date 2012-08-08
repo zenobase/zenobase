@@ -1782,7 +1782,7 @@
 		return html;
 	}));
 	
-	Field.register(new Field('note', 'icon-align-justify', null, function(value) { 
+	Field.register(new Field('note', 'icon-comment', null, function(value) { 
 		return '<span>' +
 	  	'<i class="' + this.icon + '" title="Note"></i>&nbsp;' + value +
 	  '</span>';
