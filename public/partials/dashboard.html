@@ -27,6 +27,9 @@
 			<p class="pull-left" style="margin-left: 8px; margin-top: 6px; vertical-align: middle" data-ng-show="canImport()">
 				<a data-toggle="modal" href="#import-events-dialog" title="Import Events..." data-tooltip><i class="icon-upload"></i></a>
 			</p>
+			<p class="pull-left" style="margin-left: 8px; margin-top: 6px; vertical-align: middle" data-ng-show="total > 0">
+				<a data-toggle="modal" data-ng-href="{{getExportUrl()}}" title="Export Events" data-tooltip><i class="icon-download"></i></a>
+			</p>
 			<p class="pull-left" style="margin-left: 8px; margin-top: 6px; vertical-align: middle" data-ng-show="editable">
 				<a id="add-event-link" title="Add Event..." data-toggle="modal" data-tooltip data-placement="right" data-ng-click="editEvent({})"><i class="icon-plus"></i></a>
 			</p>

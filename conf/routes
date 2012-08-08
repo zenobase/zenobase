@@ -22,6 +22,7 @@ PUT     /buckets/:bucketId           com.zenobase.controllers.BucketController.u
 DELETE  /buckets/:bucketId           com.zenobase.controllers.BucketController.delete(bucketId)
 
 GET     /buckets/:bucketId/          com.zenobase.controllers.EventListController.get(bucketId)
+GET     /buckets/:bucketId/json      com.zenobase.controllers.EventListController.getAll(bucketId)
 POST    /buckets/:bucketId/          com.zenobase.controllers.EventListController.post(bucketId)
 
 GET     /buckets/:bucketId/:eventId  com.zenobase.controllers.EventController.get(bucketId, eventId)

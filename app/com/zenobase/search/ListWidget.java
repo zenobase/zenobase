@@ -19,7 +19,7 @@ public class ListWidget extends Widget {
 	private final String sort;
 	private final SortOrder order;
 
-	private ListWidget(String id, int offset, int limit, String sort, SortOrder order) {
+	public ListWidget(String id, int offset, int limit, String sort, SortOrder order) {
 		super(id);
 		this.offset = offset;
 		this.limit = limit;

@@ -58,7 +58,7 @@ public class EventSearch {
 		return addWidget(widgetBuilders.get(options.get("type")).build(options));
 	}
 
-	private EventSearch addWidget(Widget widget) {
+	public EventSearch addWidget(Widget widget) {
 		widgets.add(widget);
 		return this;
 	}

@@ -681,6 +681,13 @@
 		$scope.params = function() {
 			return null;
 		};
+		$scope.getExportUrl = function() {
+			var url = '/buckets/' + $scope.bucketId + '/json';
+			if ($scope.filters.length > 0) {
+				url += '?' + $.param({ 'q' : $scope.filters }, true);
+			}
+			return url;
+		};
 		$scope.editEvent = function(event) {
 			$scope.selectedEvent = event;
 		};

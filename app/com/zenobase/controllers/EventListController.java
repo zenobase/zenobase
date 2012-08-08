@@ -1,11 +1,22 @@
 package com.zenobase.controllers;
 
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.Arrays;
+
 import javax.inject.Inject;
 
+import org.codehaus.jackson.JsonFactory;
+import org.codehaus.jackson.JsonGenerator;
+import org.codehaus.jackson.JsonNode;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.node.ObjectNode;
+import org.elasticsearch.search.sort.SortOrder;
 import org.joda.time.DateTime;
+import play.Logger;
 import play.mvc.BodyParser;
 import play.mvc.Result;
+import play.mvc.Results.Chunks.Out;
 import play.mvc.With;
 import com.google.common.collect.ImmutableList;
 
@@ -21,6 +32,7 @@ import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
 import com.zenobase.models.Permission;
 import com.zenobase.search.EventSearch;
+import com.zenobase.search.ListWidget;
 import com.zenobase.services.BucketRepository;
 import com.zenobase.services.CommandDispatcher;
 
@@ -49,6 +61,93 @@ public class EventListController extends ControllerSupport {
 			.addWidgets(request().queryString().get("w"))
 			.addFilters(request().queryString().get("q"));
     	return ok(buckets.findEvents(bucketId, search));
+    }
+
+	public static class ChunksOutputStream extends OutputStream {
+
+		private final Out<byte[]> out;
+
+		public ChunksOutputStream(Out<byte[]> out) {
+			this.out = out;
+		}
+
+		@Override
+		public void write(int b) {
+			throw new UnsupportedOperationException();
+		}
+
+		@Override
+		public void write(byte[] b) {
+			out.write(b);
+		}
+
+		@Override
+		public void write(byte[] b, int off, int len) {
+			write(Arrays.copyOfRange(b, off, off + len));
+		}
+	}
+
+	public static Result getAll(final String bucketId) {
+		Logger.info("Downloading " + bucketId + "...");
+		Identity principal = auth.getPrincipal();
+		Bucket bucket = buckets.findBucket(bucketId);
+    	if (bucket == null) {
+    		return notFound();
+    	}
+    	if (bucket.getPermission(principal) == Permission.NONE) {
+    		return principal == null ? unauthorized() : forbidden();
+    	}
+    	final String[] q = request().queryString().get("q");
+    	response().setContentType("application/json");
+    	Chunks<byte[]> chunks = new ByteChunks() {
+			@Override
+			public void onReady(Out<byte[]> out) {
+				try {
+					JsonGenerator generator = new JsonFactory().createJsonGenerator(new ChunksOutputStream(out));
+					generator.setCodec(new ObjectMapper());
+					generator.useDefaultPrettyPrinter();
+					generator.writeStartObject();
+					int offset = 0;
+					int limit = 10;
+					while (true) {
+						ListWidget list = new ListWidget(EVENTS.getName(), offset, limit, Event.TIMESTAMP.getName(), SortOrder.ASC);
+						EventSearch search = new EventSearch()
+							.addFilters(q)
+							.addWidget(list);
+						ObjectNode node = buckets.findEvents(bucketId, search);
+						Integer total = EventSearch.TOTAL.getValue(node);
+						if (offset == 0) {
+							generator.writeNumberField(EventSearch.TOTAL.getName(), EventSearch.TOTAL.getValue(node));
+							if (q != null && q.length > 0) {
+								generator.writeArrayFieldStart("filters");
+								for (String filter : q) {
+									generator.writeString(filter);
+								}
+								generator.writeEndArray();
+							}
+							generator.writeArrayFieldStart(EVENTS.getName());
+						}
+						for (JsonNode event : node.get(EVENTS.getName())) {
+							generator.writeTree(event);
+						}
+						if (total == null || total <= offset + limit) {
+							Logger.info("Done!");
+							break;
+						}
+						offset += limit;
+					}
+					generator.writeEndArray();
+					generator.writeEndObject();
+					generator.close();
+				} catch (IOException e) {
+					throw new RuntimeException(e);
+				} finally {
+					out.close();
+				}
+
+			}
+		};
+    	return ok(chunks);
     }
 
 	@BodyParser.Of(value = BodyParser.Json.class)
