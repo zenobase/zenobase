@@ -7,6 +7,8 @@ import org.fest.assertions.Assertions;
 import org.fest.assertions.Delta;
 import org.fest.assertions.GenericAssert;
 
+import com.zenobase.json.MeasurementField;
+
 public class NodeAssert extends GenericAssert<NodeAssert, JsonNode> {
 
 	private NodeAssert(JsonNode actual) {
@@ -54,6 +56,12 @@ public class NodeAssert extends GenericAssert<NodeAssert, JsonNode> {
 		Assertions.assertThat(actual.isBoolean()).overridingErrorMessage("expected boolean node but found " + actual).isTrue();
 		Assertions.assertThat(actual.getBooleanValue()).as("boolean value").isEqualTo(expected);
 		return this;
+	}
+
+	public void isEqualTo(double expectedValue, String expectedUnit) {
+		Assertions.assertThat(actual.isObject()).overridingErrorMessage("expected object node but found " + actual).isTrue();
+		path(MeasurementField.VALUE.getName()).isEqualTo(expectedValue);
+		path(MeasurementField.UNIT.getName()).isEqualTo(expectedUnit);
 	}
 
 	public NodeAssert path(String fieldName) {
