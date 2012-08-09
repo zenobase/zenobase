@@ -47,7 +47,7 @@ public class UserRepository {
 		List<User> users = Lists.newArrayListWithCapacity(limit);
 		SearchSourceBuilder search = new SearchSourceBuilder()
 			.query(QueryBuilders.matchAllQuery())
-			.sort(User.NAME.getName(), SortOrder.ASC)
+			.sort(User.CREATED.getName(), SortOrder.ASC)
 			.from(offset).size(limit)
 			.version(true);
 		PartialList<ObjectNode> hits = index.find(search);

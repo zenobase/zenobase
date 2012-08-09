@@ -57,27 +57,29 @@
 						<tr>
 							<th>Bucket</th>
 							<th>Owner</th>
+							<th>Created</th>
 							<th style="text-align: right">Size</th>
 							<th></th>
 						</tr>
 					</thead>
 					<tbody>
 						<tr data-ng-repeat="bucket in buckets">
-							<td>
-								<a data-ng-show="isPublished(bucket)" data-ng-href="/#/buckets/{{bucket['@id']}}">{{bucket.label}}</a>
-								<span data-ng-hide="isPublished(bucket)">{{bucket.label}}</span>
-							</td>
+							<td class="id">{{bucket['@id']}}</td>
 							<td><a href="/users/?identity={{getOwner(bucket)}}">{{getOwner(bucket) | username}}</a></td>
-							<td style="text-align: right">{{bucket.size}}</td>
+							<td>{{bucket.created | age}}</td>
+							<td style="text-align: right">
+								<a data-ng-show="isPublished(bucket)" data-ng-href="/#/buckets/{{bucket['@id']}}">{{bucket.size}}</a>
+								<span data-ng-hide="isPublished(bucket)">{{bucket.size}}</span>
+							</td>
 							<td style="text-align: right">
 								<a class="action" data-ng-click="remove(bucket['@id'])" title="Delete" data-tooltip><i class="icon-trash"></i></a>
 							</td>
 						</tr>
 						<tr data-ng-show="buckets == null">
-							<td colspan="4"><i>Loading</i></td>
+							<td colspan="5"><i>Loading</i></td>
 						</tr>
 						<tr data-ng-show="buckets.length == 0">
-							<td colspan="4"><i>None</i></td>
+							<td colspan="5"><i>None</i></td>
 						</tr>
 					</tbody>
 				</table>
@@ -109,12 +111,14 @@
 					<tbody>
 						<tr data-ng-repeat="user in users">
 							<td>
-								<a href="/users/{{user.name}}" data-ng-show="!user.suspended" data-ng-class="user.superuser && 'b'">{{user.name}}</a>
+								<a data-ng-href="/users/{{user.name}}" data-ng-show="!user.suspended" data-ng-class="user.superuser && 'b'">{{user.name}}</a>
 								<span style="color:gray" data-ng-show="user.suspended">{{user.name}}</span>
+								<i class="icon-ok-sign" title="Verified" data-tooltip data-ng-show="user.verified"></i>
 							</td>
 							<td>{{user.created | age}}</td>
 							<td style="text-align: right">
 								<a class="action" data-ng-click="close(user.name)" data-ng-show="!user.suspended && !user.superuser" title="Close Account" data-tooltip><i class="icon-ban-circle"></i></a>
+								<a class="action" data-ng-href="mailto:{{user.email}}" title="Email User" data-tooltip><i class="icon-envelope"></i></a>
 							</td>
 						</tr>
 						<tr data-ng-show="users == null">
