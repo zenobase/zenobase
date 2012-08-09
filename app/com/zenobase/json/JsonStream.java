@@ -19,23 +19,6 @@ public class JsonStream {
 		generator.writeStartObject();
 	}
 
-	public void write(String fieldName, Integer value) throws IOException {
-		if (value != null) {
-			generator.writeNumberField(fieldName, value);
-		}
-	}
-
-	public void write(String fieldName, String[] values) throws IOException {
-		if (values != null && values.length > 0) {
-			generator.writeArrayFieldStart(fieldName);
-			for (String value : values) {
-				generator.writeString(value);
-			}
-			generator.writeEndArray();
-		}
-
-	}
-
 	public void write(JsonNode node) throws IOException {
 		generator.writeTree(node);
 	}

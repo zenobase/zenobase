@@ -8,6 +8,7 @@ import static play.test.Helpers.*;
 import org.codehaus.jackson.node.ObjectNode;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mockito;
 import play.mvc.Result;
 
 import com.zenobase.json.Nodes;
@@ -35,15 +36,24 @@ public class EventListControllerHttpGetTest extends EventListControllerTestSuppo
 		ObjectNode fakeResult = Nodes.newObject();
 		fakeResult.put("test", true);
 		when(buckets.findEvents(bucket.getId(), expected)).thenReturn(fakeResult);
-		Result result = call(bucket, filterExpression, widgetExpression);
+		Result result = call(bucket, String.format("?q=%s&w=%s", filterExpression, widgetExpression));
 		assertThat(result).hasStatus(OK).hasContent(fakeResult);
+	}
+
+	@Test
+	public void testExportEvents() {
+		when(auth.getPrincipal()).thenReturn(user.asIdentity());
+		when(buckets.findBucket(bucket.getId())).thenReturn(bucket);
+		when(buckets.findEvents(Mockito.eq(bucket.getId()), Mockito.any(EventSearch.class))).thenReturn(Nodes.newObject());
+		Result result = call(bucket, "");
+		assertThat(result).hasStatus(OK).hasContentType("application/json");
 	}
 
 	@Test
 	public void testSearchEventsBucketNotFound() {
 		when(auth.getPrincipal()).thenReturn(user.asIdentity());
 		when(buckets.findBucket(bucket.getId())).thenReturn(null);
-		Result result = call(bucket, "", "");
+		Result result = call(bucket, "");
 		assertThat(result).hasStatus(NOT_FOUND);
 	}
 
@@ -51,7 +61,7 @@ public class EventListControllerHttpGetTest extends EventListControllerTestSuppo
 	public void testSearchEventsUnauthorized() {
 		when(auth.getPrincipal()).thenReturn(null);
 		when(buckets.findBucket(bucket.getId())).thenReturn(bucket);
-		Result result = call(bucket, "", "");
+		Result result = call(bucket, "");
 		assertThat(result).hasStatus(UNAUTHORIZED);
 	}
 
@@ -59,11 +69,11 @@ public class EventListControllerHttpGetTest extends EventListControllerTestSuppo
 	public void testSearchEventsForbidden() {
 		when(auth.getPrincipal()).thenReturn(new Identity());
 		when(buckets.findBucket(bucket.getId())).thenReturn(bucket);
-		Result result = call(bucket, "", "");
+		Result result = call(bucket, "");
 		assertThat(result).hasStatus(FORBIDDEN);
 	}
 
-	private static Result call(Bucket bucket, String q, String w) {
-		return callAction(com.zenobase.controllers.routes.ref.EventListController.get(bucket.getId()), fakeRequest(GET, String.format("?q=%s&w=%s", q, w)));
+	private static Result call(Bucket bucket, String query) {
+		return callAction(com.zenobase.controllers.routes.ref.EventListController.get(bucket.getId()), fakeRequest(GET, query));
 	}
 }

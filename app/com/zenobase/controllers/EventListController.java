@@ -1,12 +1,9 @@
 package com.zenobase.controllers;
 
-import java.io.IOException;
 
 import javax.inject.Inject;
 
-import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.node.ObjectNode;
-import org.elasticsearch.search.sort.SortOrder;
 import org.joda.time.DateTime;
 import play.mvc.BodyParser;
 import play.mvc.Result;
@@ -19,15 +16,12 @@ import com.zenobase.commands.CreateEventCommand;
 import com.zenobase.commands.RandomEventsCommandBuilder;
 import com.zenobase.common.Generator;
 import com.zenobase.json.IntegerField;
-import com.zenobase.json.JsonChunks;
-import com.zenobase.json.JsonStream;
 import com.zenobase.json.ObjectField;
 import com.zenobase.models.Bucket;
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
 import com.zenobase.models.Permission;
 import com.zenobase.search.EventSearch;
-import com.zenobase.search.ListWidget;
 import com.zenobase.services.BucketRepository;
 import com.zenobase.services.CommandDispatcher;
 
@@ -58,44 +52,9 @@ public class EventListController extends ControllerSupport {
     		EventSearch search = new EventSearch().addWidgets(widgets).addFilters(filters);
     		return ok(buckets.findEvents(bucketId, search));
     	} else {
-    		return get(bucketId, filters);
+        	response().setContentType("application/json");
+        	return ok(new EventChunks(buckets, bucketId, filters));
     	}
-    }
-
-	public static Result get(final String bucketId, final String[] filters) {
-		Identity principal = auth.getPrincipal();
-		Bucket bucket = buckets.findBucket(bucketId);
-    	if (bucket == null) {
-    		return notFound();
-    	}
-    	if (bucket.getPermission(principal) == Permission.NONE) {
-    		return principal == null ? unauthorized() : forbidden();
-    	}
-    	response().setContentType("application/json");
-    	return ok(new JsonChunks() {
-			@Override
-			public void onReady(JsonStream out) throws IOException {
-				int limit = 100;
-				for (int offset = 0;; offset += limit) {
-					ListWidget list = new ListWidget(EVENTS.getName(), offset, limit, Event.TIMESTAMP.getName(), SortOrder.ASC);
-					EventSearch search = new EventSearch().addFilters(filters).addWidget(list);
-					ObjectNode node = buckets.findEvents(bucketId, search);
-					Integer total = EventSearch.TOTAL.getValue(node);
-					if (offset == 0) {
-						out.write(EventSearch.TOTAL.getName(), EventSearch.TOTAL.getValue(node));
-						out.write("filters", filters);
-						out.writeArrayFieldStart(EVENTS.getName());
-					}
-					for (JsonNode event : node.get(EVENTS.getName())) {
-						out.write(event);
-					}
-					if (total == null || total <= offset + limit) {
-						break;
-					}
-				}
-				out.writeEndArray();
-			}
-		});
     }
 
 	@BodyParser.Of(value = BodyParser.Json.class)
