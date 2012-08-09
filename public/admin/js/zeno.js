@@ -85,11 +85,10 @@
 			});
 		};
 		$scope.getOwner = function(bucket) {
-			for (var i = 0, max = bucket.permissions.length; i < max; ++i) {
-				if (bucket.permissions[i].permission === 'ALL') {
-					return bucket.permissions[i].principal;
-				}
-			}
+			return new Bucket(bucket).getOwner();
+		};
+		$scope.isPublished = function(bucket) {
+			return new Bucket(bucket).isPublished();
 		};
 	
 		$scope.$on('reload', $scope.refresh);

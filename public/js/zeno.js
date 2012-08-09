@@ -572,18 +572,47 @@
 	function Bucket(data) {
 		$.extend(this, data);
 	}
-		
-	app.controller('BucketCtrl', ['$scope', '$http', '$route', '$routeParams', '$location', '$timeout', function($scope, $http, $route, $routeParams, $location, $timeout) {
-	
-		function updateEditable() {
-			if ($scope.user) {
-				for (var i = 0; i < $scope.bucket.permissions.length; ++i) {
-					if ($scope.bucket.permissions[i].principal === $scope.user['@id']) {
-						$scope.editable = $scope.bucket.permissions[i].permission === 'ALL';
-						break;
-					}
-				}
+
+	Bucket.prototype.isPublished = function() {
+		return $.grep(this.permissions, function(permission) {
+			return permission.principal === '*';
+		}).length > 0;
+	};
+
+	Bucket.prototype.publish = function() {
+		if (!this.isPublished()) {
+			this.permissions.push({ 'principal' : '*', 'permission' : 'USE' });
+		}
+	};
+
+	Bucket.prototype.unpublish = function() {
+		this.permissions = $.grep(this.permissions, function(permission) {
+			return permission.principal !== '*';
+		});
+	};
+
+	Bucket.prototype.getOwner = function() {
+		for (var i = 0, max = this.permissions.length; i < max; ++i) {
+			if (this.permissions[i].permission === 'ALL') {
+				return this.permissions[i].principal;
 			}
+		}
+	};
+
+	Bucket.prototype.canEdit = function(principal) {
+		for (var i = 0; i < this.permissions.length; ++i) {
+			if (this.permissions[i].principal === principal) {
+				return this.permissions[i].permission === 'ALL';
+			}
+		}
+	};
+
+	window.Bucket = Bucket;
+
+	app.controller('BucketCtrl', ['$scope', '$http', '$route', '$routeParams', '$location', '$timeout', function($scope, $http, $route, $routeParams, $location, $timeout) {
+
+		function updateEditable() {
+				$scope.editable = $scope.user && $scope.bucket.canEdit($scope.user['@id']);
 		} 
 
 		$scope.bucketId = $routeParams.bucketId;
@@ -749,24 +778,9 @@
 		$scope.cancel = function() {
 			$scope.editing = false;
 		};
-		$scope.isPublished = function() {
-			return $scope.bucket && $.grep($scope.bucket.permissions, function(permission) {
-				return permission.principal === '*';
-			}).length > 0;
-		};
 	}]);
 	
 	app.controller('BucketFormCtrl', ['$scope', '$http', '$route', function($scope, $http, $route) {
-		$scope.publish = function() {
-			if (!$scope.isPublished()) {
-				$scope.bucket.permissions.push({ 'principal' : '*', 'permission' : 'USE' });
-			}
-		};
-		$scope.unpublish = function() {
-			$scope.bucket.permissions = $.grep($scope.bucket.permissions, function(permission) {
-				return permission.principal !== '*';
-			});
-		};
 		$scope.save = function(settings) {
 			$scope.alert.clear();
 			$http.put('/buckets/' + $scope.bucketId, $scope.bucket)

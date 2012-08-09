@@ -64,8 +64,8 @@
 						<div class="controls">
 							<span data-ng-show="user.verified">
 								<i class="icon-globe"></i>
-								<a data-ng-click="publish()" data-ng-show="!isPublished()">make public</a> 
-								<a data-ng-click="unpublish()" data-ng-show="isPublished()">make private</a> 
+								<a data-ng-click="bucket.publish()" data-ng-show="!bucket.isPublished()">make public</a> 
+								<a data-ng-click="bucket.unpublish()" data-ng-show="bucket.isPublished()">make private</a> 
 							</span>
 							<span data-ng-hide="user.verified">
 								<i>You can publish this dashboard after signing up and verifying your email address.</i>
