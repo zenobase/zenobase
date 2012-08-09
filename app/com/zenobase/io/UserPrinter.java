@@ -21,6 +21,8 @@ public class UserPrinter implements Callback<User> {
 	}
 
 	private String toString(User user) {
-		return Joiner.on('\t').join(user.getId(), user.getName(), user.getEmail(), user.getCreated(), "\n");
+		return Joiner.on('\t').join(user.getId(), user.getName(), user.getEmail(),
+			user.isVerified() ? "verified" : "not verified",
+			user.getCreated(), user.isSuspended() ? "suspended" : "active", "\n");
 	}
 }

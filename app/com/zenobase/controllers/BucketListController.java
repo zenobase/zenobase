@@ -60,7 +60,7 @@ public class BucketListController extends ControllerSupport {
     	Chunks<String> chunks = new StringChunks() {
 			@Override
 			public void onReady(final Out<String> out) {
-				buckets.findBuckets(new BucketPrinter(out));
+				buckets.findBuckets(new BucketPrinter(buckets, out));
 		    	out.close();
 			}
 		};
