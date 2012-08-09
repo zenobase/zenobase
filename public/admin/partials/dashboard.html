@@ -64,7 +64,7 @@
 					</thead>
 					<tbody>
 						<tr data-ng-repeat="bucket in buckets">
-							<td class="id">{{bucket['@id']}}</td>
+							<td>{{bucket['@id']}}</td>
 							<td><a href="/users/?identity={{getOwner(bucket)}}">{{getOwner(bucket) | username}}</a></td>
 							<td>{{bucket.created | age}}</td>
 							<td style="text-align: right">
