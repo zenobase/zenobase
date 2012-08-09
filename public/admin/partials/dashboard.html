@@ -29,11 +29,15 @@
 								<a class="action" data-ng-click="undo(command['@id'])" title="Undo" data-tooltip><i class="icon-step-backward"></i></a>
 							</td>
 						</tr>
-						<tr data-ng-hide="commands">
+						<tr data-ng-show="commands == null">
+							<td colspan="2"><i>Loading</i></td>
+						</tr>
+						<tr data-ng-show="commands.length == 0">
 							<td colspan="2"><i>None</i></td>
 						</tr>
 					</tbody>
 				</table>
+
 				<div class="btn-toolbar">
 					<div class="btn-group pull-right" data-ng-show="commands">
 						<button class="btn" title="Previous" data-tooltip data-ng-click="prev()" data-ng-disabled="!hasPrev()"><i class="icon-chevron-left"></i></button>
@@ -66,7 +70,10 @@
 								<a class="action" data-ng-click="remove(bucket['@id'])" title="Delete" data-tooltip><i class="icon-trash"></i></a>
 							</td>
 						</tr>
-						<tr data-ng-hide="buckets">
+						<tr data-ng-show="buckets == null">
+							<td colspan="4"><i>Loading</i></td>
+						</tr>
+						<tr data-ng-show="buckets.length == 0">
 							<td colspan="4"><i>None</i></td>
 						</tr>
 					</tbody>
@@ -107,7 +114,10 @@
 								<a class="action" data-ng-click="close(user.name)" data-ng-show="!user.suspended && !user.superuser" title="Close Account" data-tooltip><i class="icon-ban-circle"></i></a>
 							</td>
 						</tr>
-						<tr data-ng-hide="users">
+						<tr data-ng-show="users == null">
+							<td colspan="3"><i>Loading</i></td>
+						</tr>
+						<tr data-ng-show="users.length == 0">
 							<td colspan="3"><i>None</i></td>
 						</tr>
 					</tbody>
