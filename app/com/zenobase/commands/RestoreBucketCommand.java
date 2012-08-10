@@ -33,7 +33,7 @@ public class RestoreBucketCommand extends Command {
 
 	@Override
 	public String toString() {
-		return String.format("restored bucket '%s'", getBucket());
+		return String.format("restored bucket %s", getBucket().getId());
 	}
 
 	public static class Parser extends CommandParser {

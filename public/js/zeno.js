@@ -1740,7 +1740,7 @@
 	
 	Field.register(new Field('height', 'icon-resize-vertical', [ 'mi', 'ft', 'in', 'km', 'm', 'cm', 'mm' ], function(value) { 
 		return '<span class="nowrap">' +
-	  	'<i class="' + this.icon + '" title="Height"></i> ' + value['@value'] + ' ' + value.unit +
+	  	'<i class="' + this.icon + '" title="Height"></i>' + value['@value'] + ' ' + value.unit +
 	  '</span>';
 	}));
 	

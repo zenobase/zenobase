@@ -40,7 +40,7 @@ public class CreateEventCommand extends Command {
 
 	@Override
 	public String toString() {
-		return String.format("added an event to '%s'", getBucketId());
+		return String.format("added an event to %s", getBucketId());
 	}
 
 	public static class Parser extends CommandParser {

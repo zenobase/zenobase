@@ -1,10 +1,15 @@
-<div class="container-fluid">
+<div class="container-fluid" data-ng-controller="AdminCtrl">
 
 	<div class="row-fluid" style="margin-bottom: 9px;">
 		<h3 class="pull-left">Admin</h3>
 		<p class="pull-left" style="margin-left: 8px; margin-top: 6px; vertical-align: middle">
 			<a data-ng-click="reload()" title="Refresh" data-tooltip><i class="icon-refresh"></i></a>
 		</p>
+		<ul class="nav nav-pills" style="clear: both; margin-bottom:12px;" data-ng-show="filter">
+			<li class="active">
+				<a data-ng-click="setFilter(null)"><i class="icon-white icon-user"></i> <span data-ng-bind="filter | username"></span> <i class="icon-remove icon-white"></i></a>
+			</li>
+		</ul>
 	</div>
 
 	<div class="row-fluid">
@@ -21,7 +26,7 @@
 					<tbody>
 						<tr data-ng-repeat="command in commands">
 							<td>
-								<a href="/users/?identity={{command.principal}}">{{command.principal | username}}</a>
+								<a data-ng-click="setFilter(command.principal)">{{command.principal | username}}</a>
 								<span data-ng-bind-html="command.label"></span>
 								<abbr title="{{command.timestamp}}">{{command.timestamp | age}}</abbr>
 							</td>
@@ -65,7 +70,7 @@
 					<tbody>
 						<tr data-ng-repeat="bucket in buckets">
 							<td>{{bucket['@id']}}</td>
-							<td><a href="/users/?identity={{getOwner(bucket)}}">{{getOwner(bucket) | username}}</a></td>
+							<td><a data-ng-click="setFilter(getOwner(bucket))">{{getOwner(bucket) | username}}</a></td>
 							<td>{{bucket.created | age}}</td>
 							<td style="text-align: right">
 								<a data-ng-show="isPublished(bucket)" data-ng-href="/#/buckets/{{bucket['@id']}}">{{bucket.size}}</a>
@@ -105,27 +110,28 @@
 						<tr>
 							<th>User</th>
 							<th>Signed up</th>
+							<th style="text-align:center">Verified</th>
 							<th></th>
 						</tr>
 					</thead>
 					<tbody>
 						<tr data-ng-repeat="user in users">
 							<td>
-								<a data-ng-href="/users/{{user.name}}" data-ng-show="!user.suspended" data-ng-class="user.superuser && 'b'">{{user.name}}</a>
+								<a data-ng-click="setFilter(user['@id'])" data-ng-show="!user.suspended" data-ng-class="user.superuser && 'b'">{{user.name}}</a>
 								<span style="color:gray" data-ng-show="user.suspended">{{user.name}}</span>
-								<i class="icon-ok-sign" title="Verified" data-tooltip data-ng-show="user.verified"></i>
 							</td>
-							<td>{{user.created | age}}</td>
+							<td data-ng-bind="user.created | age"></td>
+							<td data-ng-bind="user.verified && 'yes' || 'no'" style="text-align:center"></td>
 							<td style="text-align: right">
 								<a class="action" data-ng-click="close(user.name)" data-ng-show="!user.suspended && !user.superuser" title="Close Account" data-tooltip><i class="icon-ban-circle"></i></a>
 								<a class="action" data-ng-href="mailto:{{user.email}}" title="Email User" data-tooltip><i class="icon-envelope"></i></a>
 							</td>
 						</tr>
 						<tr data-ng-show="users == null">
-							<td colspan="3"><i>Loading</i></td>
+							<td colspan="4"><i>Loading</i></td>
 						</tr>
 						<tr data-ng-show="users.length == 0">
-							<td colspan="3"><i>None</i></td>
+							<td colspan="4"><i>None</i></td>
 						</tr>
 					</tbody>
 				</table>

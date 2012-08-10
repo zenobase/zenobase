@@ -43,6 +43,6 @@ public class QueueControllerHttpGetTest extends QueueControllerTestSupport {
 	}
 
 	private Result call(int offset, int limit) {
-		return callAction(com.zenobase.controllers.routes.ref.QueueController.get(offset, limit));
+		return callAction(com.zenobase.controllers.routes.ref.QueueController.get(null, offset, limit));
 	}
 }

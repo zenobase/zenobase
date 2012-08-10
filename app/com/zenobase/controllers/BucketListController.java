@@ -40,7 +40,7 @@ public class BucketListController extends ControllerSupport {
     }
 
     private static Result find(Identity principal, Identity identity, int offset, int limit) {
-    	if (!identity.equals(principal)) {
+    	if (!(identity.equals(principal) || users.isSuperuser(principal))) {
     		return forbidden();
     	}
         return ok(buckets.findBuckets(identity, offset, limit).toJson());

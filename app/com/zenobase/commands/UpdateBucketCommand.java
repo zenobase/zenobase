@@ -43,7 +43,7 @@ public class UpdateBucketCommand extends Command {
 
 	@Override
 	public String toString() {
-		return String.format("updated '%s'", getTo());
+		return String.format("updated bucket %s", getTo().getId());
 	}
 
 	public static class Parser extends CommandParser {

@@ -34,7 +34,7 @@ public class DeleteBucketCommand extends Command {
 
 	@Override
 	public String toString() {
-		return String.format("deleted bucket '%s'", getBucket());
+		return String.format("deleted bucket %s", getBucket().getId());
 	}
 
 	public static class Parser extends CommandParser {

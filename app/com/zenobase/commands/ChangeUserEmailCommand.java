@@ -58,7 +58,7 @@ public class ChangeUserEmailCommand extends Command {
 
 	@Override
 	public String toString() {
-		return String.format("changed email for %s", getUsername());
+		return String.format("changed email for user %s", getUsername());
 	}
 
 	public static class Parser extends CommandParser {

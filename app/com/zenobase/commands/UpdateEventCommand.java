@@ -50,7 +50,7 @@ public class UpdateEventCommand extends Command {
 
 	@Override
 	public String toString() {
-		return String.format("updated event %s", getTo().getId());
+		return String.format("updated event %s in %s", getTo().getId(), getBucketId());
 	}
 
 	public static class Parser extends CommandParser {

@@ -3,6 +3,7 @@ package com.zenobase.services;
 import java.util.List;
 
 import org.codehaus.jackson.node.ObjectNode;
+import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.elasticsearch.search.sort.SortOrder;
@@ -14,6 +15,7 @@ import com.zenobase.commands.Command;
 import com.zenobase.commands.CommandParserRegistry;
 import com.zenobase.common.Callback;
 import com.zenobase.models.CommandList;
+import com.zenobase.models.Identity;
 
 public class CommandRepository {
 
@@ -57,16 +59,31 @@ public class CommandRepository {
 	}
 
 	public CommandList findAll(int offset, int limit, boolean newestFirst) {
+		return find(newSearchSource(newestFirst).from(offset).size(limit), limit);
+	}
+
+	public CommandList find(Identity principal, int offset, int limit, boolean newestFirst) {
+		return find(newSearchSource(principal, newestFirst).from(offset).size(limit), limit);
+	}
+
+	public CommandList find(SearchSourceBuilder search, int limit) {
 		List<Command> commands = Lists.newArrayListWithCapacity(limit);
-		for (ObjectNode hit : index.find(newSearchSource(newestFirst).from(offset).size(limit)).getElements()) {
+		for (ObjectNode hit : index.find(search).getElements()) {
 			commands.add(parsers.parse(hit));
 		}
 		return new CommandList(commands, size());
 	}
 
 	private static SearchSourceBuilder newSearchSource(boolean newestFirst) {
-		return new SearchSourceBuilder()
-			.query(QueryBuilders.matchAllQuery())
+		return newSearchSource(QueryBuilders.matchAllQuery(), newestFirst);
+	}
+
+	private static SearchSourceBuilder newSearchSource(Identity principal, boolean newestFirst) {
+		return newSearchSource(QueryBuilders.termQuery(Command.PRINCIPAL.getName(), principal.getId()), newestFirst);
+	}
+
+	private static SearchSourceBuilder newSearchSource(QueryBuilder query, boolean newestFirst) {
+		return new SearchSourceBuilder().query(query)
 			.sort(Command.TIMESTAMP.getName(), newestFirst ? SortOrder.DESC : SortOrder.ASC);
 	}
 

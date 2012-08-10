@@ -8,6 +8,7 @@ import play.mvc.With;
 
 import com.zenobase.actions.Timed;
 import com.zenobase.commands.Command;
+import com.zenobase.models.CommandList;
 import com.zenobase.models.Identity;
 import com.zenobase.services.CommandDispatcher;
 import com.zenobase.services.CommandRepository;
@@ -25,7 +26,7 @@ public class QueueController extends ControllerSupport {
 	@Inject
 	static UserRepository users;
 
-    public static Result get(int offset, int limit) {
+    public static Result get(String identity, int offset, int limit) {
     	Identity principal = auth.getPrincipal();
     	if (principal == null) {
     		return unauthorized();
@@ -33,7 +34,10 @@ public class QueueController extends ControllerSupport {
     	if (!users.isSuperuser(principal)) {
     		return forbidden();
     	}
-    	return ok(repository.findAll(offset, limit, true).toJson());
+    	CommandList commands = identity != null ?
+    		repository.find(new Identity(identity), offset, limit, true) :
+    		repository.findAll(offset, limit, true);
+    	return ok(commands.toJson());
     }
 
 	@BodyParser.Of(BodyParser.Json.class)

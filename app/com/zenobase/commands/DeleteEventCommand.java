@@ -40,7 +40,7 @@ public class DeleteEventCommand extends Command {
 
 	@Override
 	public String toString() {
-		return String.format("removed an event from '%s'", getBucketId());
+		return String.format("removed an event from %s", getBucketId());
 	}
 
 	public static class Parser extends CommandParser {

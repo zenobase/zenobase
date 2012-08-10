@@ -33,7 +33,7 @@ public class CreateBucketCommand extends Command {
 
 	@Override
 	public String toString() {
-		return String.format("created '%s'", getBucket());
+		return String.format("created bucket %s", getBucket().getId());
 	}
 
 	public static class Parser extends CommandParser {

@@ -39,7 +39,7 @@ public class UserController extends ControllerSupport {
 		if (user == null) {
 			return notFound();
 		}
-		if (!user.is(principal)) {
+		if (!(user.is(principal) || users.isSuperuser(principal))) {
 			return forbidden();
 		}
 		return ok(new UserProfile(user).toJson());

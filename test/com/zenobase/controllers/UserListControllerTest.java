@@ -39,13 +39,22 @@ public class UserListControllerTest {
 	public void testFindUserForIndividual() {
 		when(auth.getPrincipal()).thenReturn(user.asIdentity());
 		when(users.find(user.asIdentity())).thenReturn(user);
-		Result result = call(user.getId(), 0, 1);
+		Result result = call(user.getId(), 0, 1, false);
 		assertThat(result).hasStatus(OK).hasContent(new UserInfo(user).toJson());
 	}
 
 	@Test
+	public void testFindUserDetailForIndividual() {
+		when(auth.getPrincipal()).thenReturn(user.asIdentity());
+		when(users.find(user.asIdentity())).thenReturn(user);
+		when(users.isSuperuser(user.asIdentity())).thenReturn(true);
+		Result result = call(user.getId(), 0, 1, true);
+		assertThat(result).hasStatus(OK).hasContent(user.toJson());
+	}
+
+	@Test
 	public void testFindUserNotFound() {
-		Result result = call(user.getId(), 0, 1);
+		Result result = call(user.getId(), 0, 1, false);
 		assertThat(result).hasStatus(OK).hasContent(user.asIdentity().toJson());
 	}
 
@@ -55,20 +64,20 @@ public class UserListControllerTest {
 		when(auth.getPrincipal()).thenReturn(user.asIdentity());
 		when(users.isSuperuser(user.asIdentity())).thenReturn(true);
 		when(users.find(0, 1)).thenReturn(expected);
-		Result result = call(null, 0, 1);
+		Result result = call(null, 0, 1, true);
 		assertThat(result).hasStatus(OK).hasContent(expected.toJson());
 	}
 
 	@Test
 	public void testFindUsersNotLoggedIn() {
-		Result result = call(null, 0, 1);
+		Result result = call(null, 0, 1, true);
 		assertThat(result).hasStatus(UNAUTHORIZED);
 	}
 
 	@Test
 	public void testFindUsersForbidden() {
 		when(auth.getPrincipal()).thenReturn(user.asIdentity());
-		Result result = call(null, 0, 1);
+		Result result = call(null, 0, 1, true);
 		assertThat(result).hasStatus(FORBIDDEN);
 	}
 
@@ -76,11 +85,11 @@ public class UserListControllerTest {
 	public void testDownloadUsers() {
 		when(auth.getPrincipal()).thenReturn(user.asIdentity());
 		when(users.isSuperuser(user.asIdentity())).thenReturn(true);
-		Result result = call(null, 0, Integer.MAX_VALUE);
+		Result result = call(null, 0, Integer.MAX_VALUE, true);
 		assertThat(result).hasStatus(OK).hasContentType("text/plain");
 	}
 
-	private static Result call(String id, int offset, int limit) {
-		return callAction(com.zenobase.controllers.routes.ref.UserListController.find(id, offset, limit));
+	private static Result call(String id, int offset, int limit, boolean detail) {
+		return callAction(com.zenobase.controllers.routes.ref.UserListController.find(id, offset, limit, detail));
 	}
 }

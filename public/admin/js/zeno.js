@@ -9,6 +9,14 @@
 		$routeProvider.otherwise({ templateUrl : '/partials/404.html' });
 	});
 
+	adminApp.controller('AdminCtrl', ['$scope', '$location', function($scope, $location) {
+		$scope.filter = $location.search()['q'];
+		$scope.setFilter = function(filter) {
+			$scope.filter = filter;
+			$location.search('q', $scope.filter);
+		};
+	}]);
+	
 	adminApp.controller('HistoryAdminCtrl', ['$scope', '$http', function($scope, $http) {
 	
 		$scope.offset = 0;
@@ -29,10 +37,14 @@
 			$scope.refresh({ offset : $scope.offset + $scope.limit });
 		}
 		$scope.params = function() {
-			return {
+			var params = {
 				offset : $scope.offset,
 				limit : $scope.limit
 			};
+			if ($scope.filter) {
+				params.identity = $scope.filter;
+			}
+			return params;
 		}
 		$scope.refresh = function(params) {
 			$http.get('/queue/?' + $.param($.extend($scope.params(), params))).success(function(response) {
@@ -66,10 +78,14 @@
 			$scope.refresh({ offset : $scope.offset + $scope.limit });
 		}
 		$scope.params = function() {
-			return {
-				offset : $scope.offset,
-				limit : $scope.limit
-			};
+			var params = {
+					offset : $scope.offset,
+					limit : $scope.limit
+				};
+				if ($scope.filter) {
+					params.identity = $scope.filter;
+				}
+				return params;
 		}
 		$scope.refresh = function(params) {
 			$http.get('/buckets/?' + $.param($.extend($scope.params(), params))).success(function(response) {
@@ -104,28 +120,35 @@
 	
 		$scope.hasPrev = function() {
 			return $scope.offset > 0;
-		}
+		};
 		$scope.hasNext = function() {
 			return $scope.offset + $scope.limit < $scope.total;
-		}
+		};
 		$scope.prev = function() {
 			$scope.refresh({ offset : $scope.offset - $scope.limit });
-		}
+		};
 		$scope.next = function() {
 			$scope.refresh({ offset : $scope.offset + $scope.limit });
-		}
+		};
 		$scope.params = function() {
 			return {
 				offset : $scope.offset,
 				limit : $scope.limit
 			};
-		}
+		};
 		$scope.refresh = function(params) {
-			$http.get('/users/?' + $.param($.extend($scope.params(), params))).success(function(response) {
-				$.extend($scope, params);
-				$scope.total = response.total;
-				$scope.users = response.users;
-			});
+			if ($scope.filter) {
+				$http.get('/users/?' + $.param({ identity : $scope.filter, detail : 1 })).success(function(response) {
+					$scope.total = 1;
+					$scope.users = [ response ];
+				});
+			} else {
+				$http.get('/users/?' + $.param($.extend($scope.params(), params))).success(function(response) {
+					$.extend($scope, params);
+					$scope.total = response.total;
+					$scope.users = response.users;
+				});
+			}
 		};
 		$scope.close = function(userId) {
 			$http({ method : 'DELETE', url : '/users/' + userId }).success(function(response, code, headers) {

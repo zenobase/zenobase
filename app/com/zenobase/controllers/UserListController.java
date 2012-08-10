@@ -2,6 +2,7 @@ package com.zenobase.controllers;
 
 import javax.inject.Inject;
 
+import play.Logger;
 import play.mvc.Result;
 import play.mvc.With;
 
@@ -18,18 +19,21 @@ public class UserListController extends ControllerSupport {
 	@Inject
 	static UserRepository users;
 
-	public static Result find(String identity, int offset, int limit) {
-		return identity == null ? find(offset, limit) : find(new Identity(identity));
+	public static Result find(String identity, int offset, int limit, boolean detail) {
+		Logger.info("find(" + identity + ")");
+		if (identity == null || detail) {
+	    	Identity principal = auth.getPrincipal();
+	    	if (principal == null) {
+	    		return unauthorized();
+	    	}
+	    	if (!users.isSuperuser(principal)) {
+	    		return forbidden();
+	    	}
+		}
+		return identity == null ? find(offset, limit) : find(new Identity(identity), detail);
     }
 
 	private static Result find(int offset, int limit) {
-    	Identity principal = auth.getPrincipal();
-    	if (principal == null) {
-    		return unauthorized();
-    	}
-    	if (!users.isSuperuser(principal)) {
-    		return forbidden();
-    	}
     	if (limit == Integer.MAX_VALUE) {
     		return findAll();
     	}
@@ -47,8 +51,14 @@ public class UserListController extends ControllerSupport {
         return ok(chunks);
 	}
 
-	private static Result find(Identity identity) {
+	private static Result find(Identity identity, boolean detail) {
 		User user = users.find(identity);
-    	return ok(user != null ? new UserInfo(user).toJson() : identity.toJson());
+		if (user == null) {
+	    	return ok(identity.toJson());
+		} else if (detail) {
+	    	return ok(user.toJson());
+		} else {
+			return ok(new UserInfo(user).toJson());
+		}
     }
 }
