@@ -2,7 +2,6 @@ package com.zenobase.controllers;
 
 import javax.inject.Inject;
 
-import play.Logger;
 import play.mvc.Result;
 import play.mvc.With;
 
@@ -20,7 +19,6 @@ public class UserListController extends ControllerSupport {
 	static UserRepository users;
 
 	public static Result find(String identity, int offset, int limit, boolean detail) {
-		Logger.info("find(" + identity + ")");
 		if (identity == null || detail) {
 	    	Identity principal = auth.getPrincipal();
 	    	if (principal == null) {
