@@ -38,7 +38,7 @@
 			.otherwise({ templateUrl : versioned('/partials/404.html') });
 	}]);
 
-	app.controller('MainCtrl', ['$scope', '$route', '$http', '$location', '$timeout', '$window', function($scope, $route, $http, $location, $timeout, $window) {
+	app.controller('MainCtrl', ['$scope', '$route', '$http', '$location', '$timeout', function($scope, $route, $http, $location, $timeout) {
 		$scope.whoami = function() {
 			$http.get('/who').success(function(response) {
 				$scope.user = response ? new User(response) : null;
@@ -87,7 +87,7 @@
 			$scope.alert.clear();
 		});
 		$scope.$on('$routeChangeSuccess', function() {
-			$window._gaq.push(['_trackPageView', $location.path()]);
+			_gaq.push(['_trackPageView', $location.path()]);
 		});
 		$scope.whoami();
 	}]);
