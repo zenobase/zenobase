@@ -48,6 +48,6 @@ public class EventChunksTest {
 		JsonStream stream = new JsonStream(out);
 		chunks.onReady(stream);
 		stream.close();
-		return Nodes.read(out.toByteArray());
+		return Nodes.readObject(out.toByteArray());
 	}
 }

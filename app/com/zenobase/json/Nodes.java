@@ -24,6 +24,14 @@ public class Nodes {
 		return MAPPER.createArrayNode();
 	}
 
+	public static ArrayNode newArray(Iterable<String> values) {
+		ArrayNode result = newArray();
+		for (String value : values) {
+			result.add(value);
+		}
+		return result;
+	}
+
 	public static <T extends JsonNode> T copy(T node) {
 		try {
 			return (T) MAPPER.readTree(node.traverse());
@@ -32,7 +40,7 @@ public class Nodes {
 		}
 	}
 
-	public static byte[] toByteArray(ObjectNode node) {
+	public static byte[] toByteArray(JsonNode node) {
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		try {
 			MAPPER.writer().writeValue(out, node);
@@ -42,9 +50,17 @@ public class Nodes {
 		return out.toByteArray();
 	}
 
-	public static ObjectNode read(byte[] in) {
+	public static ObjectNode readObject(byte[] in) {
+		return (ObjectNode) read(in);
+	}
+
+	public static ArrayNode readArray(byte[] in) {
+		return (ArrayNode) read(in);
+	}
+
+	private static JsonNode read(byte[] in) {
 		try {
-			return (ObjectNode) MAPPER.readTree(in);
+			return MAPPER.readTree(in);
 		} catch (IOException e) {
 			throw new IllegalArgumentException("Can't read json: '" + new String(in) + "'");
 		}

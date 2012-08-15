@@ -28,6 +28,8 @@ GET     /buckets/:bucketId/:eventId  com.zenobase.controllers.EventController.ge
 PUT     /buckets/:bucketId/:eventId  com.zenobase.controllers.EventController.update(bucketId, eventId)
 DELETE  /buckets/:bucketId/:eventId  com.zenobase.controllers.EventController.delete(bucketId, eventId)
 
+GET     /buckets/:bucketId/tags/     com.zenobase.controllers.TagController.get(bucketId)
+
 GET     /queue/                      com.zenobase.controllers.QueueController.get(identity ?= null, offset : Int, limit : Int)
 POST    /queue/                      com.zenobase.controllers.QueueController.post()
 

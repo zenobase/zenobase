@@ -136,7 +136,7 @@ public class Index {
 	}
 
 	private static ObjectNode read(byte[] source, long version) {
-		ObjectNode node = Nodes.read(source);
+		ObjectNode node = Nodes.readObject(source);
 		if (version > 0) {
 			DomainNode.VERSION.setValue(node, version);
 		}

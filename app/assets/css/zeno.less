@@ -18,7 +18,7 @@
 
 // Components: common
 @import "bootstrap/sprites.less";
-// @import "bootstrap/dropdowns.less";
+@import "bootstrap/dropdowns.less";
 // @import "bootstrap/wells.less";
 // @import "bootstrap/component-animations.less";
 @import "bootstrap/close.less";
@@ -211,3 +211,11 @@ input.ng-invalid.ng-dirty:focus {
 .tooltip {
 	padding: 4px; /* reduced from the default 5px to prevent a gap between the tooltip and the tooltip arrow */
 }
+
+.modal {
+	z-index: 20; /* allows typeahead to show in modal dialog */
+}
+
+.modal-backdrop {
+	z-index: 10; /* allows typeahead to show in modal dialog */
+}​

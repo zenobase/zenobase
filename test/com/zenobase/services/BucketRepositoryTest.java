@@ -114,18 +114,21 @@ public class BucketRepositoryTest extends ElasticSearchTestSupport {
 		assertThat(repository.getSize(bucket.getId())).as("bucket size").isEqualTo(1L);
 		assertThat(repository.findEvent(bucket.getId(), event.getId()).toJson()).isEqualTo(event.toJson());
 		NodeAssert.assertThat(repository.findEvents(bucket.getId(), new EventSearch())).path(EventSearch.TOTAL.getName()).isEqualTo(1);
+		assertThat(repository.terms(bucket.getId(), Event.TAG.getName())).as("tags").containsOnly("test", "demo");
 
 		// update event
 		event.addValue(Event.TAG, "updated");
 		repository.update(bucket.getId(), event);
 		repository.refresh(bucket.getId());
 		assertThat(repository.findEvent(bucket.getId(), event.getId()).toJson()).isEqualTo(event.toJson());
+		assertThat(repository.terms(bucket.getId(), Event.TAG.getName())).as("tags").containsOnly("test", "demo", "updated");
 
 		// delete event
 		repository.delete(bucket.getId(), event.getId());
 		repository.refresh(bucket.getId());
 		assertThat(repository.getSize(bucket.getId())).as("bucket size").isZero();
 		assertThat(repository.findEvent(bucket.getId(), event.getId())).as("event").isNull();
+		assertThat(repository.terms(bucket.getId(), Event.TAG.getName())).as("tags").isEmpty();
 	}
 
 	private static Bucket newBucket(String label, Identity owner) {

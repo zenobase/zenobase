@@ -31,7 +31,7 @@
 				<a data-toggle="modal" data-ng-href="{{getExportUrl()}}" title="Export Events" data-tooltip><i class="icon-download"></i></a>
 			</p>
 			<p class="pull-left" style="margin-left: 8px; margin-top: 6px; vertical-align: middle" data-ng-show="editable">
-				<a id="add-event-link" title="Add Event..." data-toggle="modal" data-tooltip data-placement="right" data-ng-click="editEvent({})"><i class="icon-plus"></i></a>
+				<a id="add-event-link" title="Add Event..." data-toggle="modal" data-tooltip data-ng-click="editEvent({})"><i class="icon-plus"></i></a>
 			</p>
 			<ul class="nav nav-pills" style="clear: both; margin-bottom:12px;" data-ng-show="filters">
 				<li class="active" data-ng-repeat="filter in filters">
@@ -152,7 +152,9 @@
 			</div>
 			<div class="control-group">
 				<label for="field" class="control-label">Field</label>
-				<select name="field" class="input-large" data-ng-model="field" data-ng-options="f.name for f in fields | orderBy:'name'"></select>
+				<select name="field" class="input-large" data-ng-model="field" data-ng-options="f.name for f in fields | orderBy:'name'">
+					<option value=""></option>
+				</select>
 			</div>
 			<div data-ng-include="getTemplate(field)" data-ng-show="field"></div>
 			<div id="create-event-preview">
@@ -172,7 +174,7 @@
 		<div data-ng-controller="CreateTagFieldCtrl">
 			<div class="control-group">
 				<label for="value" class="control-label">Value</label>
-				<input name="value" type="text" data-ng-model="value"/>
+				<input id="tag-autocomplete" name="value" type="text" data-provide="typeahead" data-ng-model="value"/>
 			</div>
 			<div class="control-group">
 				<a class="btn" data-ng-click="addField()" data-ng-disabled="!valid()">Add</a>

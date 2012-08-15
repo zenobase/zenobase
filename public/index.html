@@ -7,9 +7,9 @@
 		<meta property="og:image" content="http://zenobase.com/img/logo.png"/>
 		<meta property="og:url" content="https://zenobase.com/"/>
 		<meta property="og:description" content="Collect and analyze self-tracking data."/>
-		<meta property="version" content="29af5b80"/>
+		<meta property="version" content="29af5b81"/>
 		<meta name="Description" content="Collect and analyze self-tracking data."/>
-		<link rel="stylesheet" type="text/css" href="/css/zeno-bde60717.min.css"/>
+		<link rel="stylesheet" type="text/css" href="/css/zeno-bde60718.min.css"/>
 		<link rel="canonical" href="https://zenobase.com/">
 	</head>
 
@@ -148,12 +148,13 @@
 							<input id="sign-up-password" name="password" type="password" class="large" required data-ng-minlength="8" data-ng-model="password"/>
 						</div>
 						<div class="control-group">
-							<label for="sign-up-password-repeat">Retype Password</label>
+							<label for="sign-up-password-repeat">Password (again...)</label>
 							<input id="sign-up-password-repeat" name="retypedPassword" type="password" class="large" required data-ng-minlength="8" data-ng-model="retypedPassword"/>
 						</div>
 						<div class="control-group">
 							<label for="sign-up-email">Email</label>
 							<input id="sign-up-email" name="email" type="email" class="large" required data-ng-model="email"/>
+							<p class="help-block">We'll email you a confirmation.</p>
 						</div>
 					</div>
 					<div class="modal-footer">
@@ -174,13 +175,13 @@
 					window._gaq.push(['_trackPageview']);
 				})
 				.script("/js/jquery-1.7.2.js").wait()
-				.script("/js/bootstrap-mtt-2.0.4.js")
+				.script("/js/bootstrap-2.0.4-3df509e5.js")
 				.script("/js/angular-1.0.1.js").wait()
 				.script("/js/angular-sanitize-1.0.1.js")
 				.script("/js/iso8601-db64b4df.js")
 				.script("/js/humane-db64b4de.js")
 				.script("//www.google.com/jsapi").wait()
-				.script("/js/zeno-29af5b80.js").wait(function() {
+				.script("/js/zeno-29af5b81.js").wait(function() {
 					angular.bootstrap(document, ['ZenoModule']);
 				})
 				.script("//google-analytics.com/ga.js")

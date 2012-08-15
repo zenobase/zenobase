@@ -5,9 +5,13 @@ import java.util.List;
 import javax.inject.Inject;
 
 import org.codehaus.jackson.node.ObjectNode;
+import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
+import org.elasticsearch.search.facet.FacetBuilders;
+import org.elasticsearch.search.facet.terms.TermsFacet;
+import org.elasticsearch.search.facet.terms.TermsFacet.ComparatorType;
 import org.elasticsearch.search.sort.SortOrder;
 import play.Logger;
 import com.google.common.base.Preconditions;
@@ -133,6 +137,20 @@ public class BucketRepository {
 
 	public ObjectNode findEvents(String bucketId, EventSearch search) {
 		return search.execute(manager.getIndex(bucketId));
+	}
+
+	public List<String> terms(String bucketId, String field) {
+		final int limit = 100;
+		final String facetId = "terms";
+		SearchSourceBuilder search = new SearchSourceBuilder().field(field)
+			.facet(FacetBuilders.termsFacet(facetId).field(field).size(limit).order(ComparatorType.COUNT));
+		SearchResponse response = manager.getIndex(bucketId).search(search);
+		List<String> terms = Lists.newArrayList();
+		TermsFacet facet = response.facets().facet(TermsFacet.class, facetId);
+		for (TermsFacet.Entry entry : facet.entries()) {
+			terms.add(entry.getTerm());
+		}
+		return terms;
 	}
 
 	public long getSize(String bucketId) {

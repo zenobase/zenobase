@@ -694,9 +694,8 @@
 			$http.get('/buckets/' + $scope.bucketId + '/?' + $.param({ 'q' : q, 'w' : w }, true))
 				.success(function(response) { 
 					callback(response);
-					if (response.total === 0) {
-						$timeout(function() { $('#add-event-link').tooltip('show'); }, DELAY);
-						
+					if (response.total === 0 && q.length === 0 && $scope.editable) {
+						$timeout(function() { $scope.editEvent({}); }, DELAY);
 					}
 				})
 				.error(function(response) { callback({ total : -1 }) });
@@ -1423,7 +1422,7 @@
 			$scope.entries = $scope.event.get($scope.fields);
 			$scope.isNew = $scope.isEmpty();
 			$scope.message = '';
-			$scope.field = Field.find('tag');
+			$scope.field = null;
 			$scope.value = '';
 		};
 		$scope.isEmpty = function() {
@@ -1476,12 +1475,15 @@
 	}]);
 	
 	
-	app.controller('CreateTagFieldCtrl', ['$scope', function($scope) {
+	app.controller('CreateTagFieldCtrl', ['$scope', '$http', function($scope, $http) {
+
+		var input = $('#tag-autocomplete');
 
 		$scope.init = function() {
-			$scope.value = '';
+	    $scope.value = '';
 		};
 		$scope.addField = function() {
+			$scope.value = input.val();
 			$scope.event.add($scope.field, $scope.value);
 			$scope.init();
 		};
@@ -1490,8 +1492,13 @@
 		};
 
 		$scope.init();
+		$http.get('/buckets/' + $scope.bucket['@id'] + '/tags/')
+			.success(function(response) {
+				input.typeahead({ source : response });
+			});
 	}]);
-	
+
+
 	app.controller('CreateLocationFieldCtrl', ['$scope', function($scope) {
 
 		$scope.init = function() {

@@ -2,6 +2,7 @@ package com.zenobase.testing;
 
 import static play.test.Helpers.*;
 
+import org.codehaus.jackson.node.ArrayNode;
 import org.codehaus.jackson.node.ObjectNode;
 import org.fest.assertions.Assertions;
 import org.fest.assertions.GenericAssert;
@@ -32,7 +33,13 @@ public class ResultAssert extends GenericAssert<ResultAssert, Result> {
 
 	public ResultAssert hasContent(ObjectNode node) {
 		hasContentType("application/json");
-		NodeAssert.assertThat(Nodes.read(contentAsBytes(actual))).isEqualTo(node);
+		NodeAssert.assertThat(Nodes.readObject(contentAsBytes(actual))).isEqualTo(node);
+		return this;
+	}
+
+	public ResultAssert hasContent(ArrayNode node) {
+		hasContentType("application/json");
+		NodeAssert.assertThat(Nodes.readArray(contentAsBytes(actual))).isEqualTo(node);
 		return this;
 	}
 

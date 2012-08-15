@@ -2,8 +2,12 @@ package com.zenobase.json;
 
 import static com.zenobase.testing.NodeAssert.assertThat;
 
+import java.util.List;
+
+import org.codehaus.jackson.node.ArrayNode;
 import org.codehaus.jackson.node.ObjectNode;
 import org.junit.Test;
+import com.google.common.collect.Lists;
 
 public class NodesTest {
 
@@ -21,18 +25,28 @@ public class NodesTest {
 	}
 
 	@Test
-	public void testRoundTripToBytes() {
+	public void testRoundTripObjectToBytes() {
 
 		ObjectNode node = Nodes.newObject();
 		node.put("name", "Foo");
 
 		byte[] bytes = Nodes.toByteArray(node);
-		assertThat(Nodes.read(bytes)).as("deserialized node").isEqualTo(node);
+		assertThat(Nodes.readObject(bytes)).as("deserialized object node").isEqualTo(node);
+	}
+
+	@Test
+	public void testRoundTripArrayToBytes() {
+
+		List<String> values = Lists.newArrayList("foo", "bar");
+		ArrayNode node = Nodes.newArray(values);
+
+		byte[] bytes = Nodes.toByteArray(node);
+		assertThat(Nodes.readArray(bytes)).as("deserialized array node").isEqualTo(node);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testReadInvalidJson() {
 
-		Nodes.read("{".getBytes());
+		Nodes.readObject("{".getBytes());
 	}
 }
