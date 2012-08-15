@@ -1706,7 +1706,7 @@
 					scope.$apply(function(scope) {
 						scope.events = JSON.parse(e.target.result);
 					});
-				}
+				};
 				reader.readAsText(files[0]);
 			});
 		};
