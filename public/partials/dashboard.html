@@ -141,7 +141,7 @@
 		</form>
 	</div>
 
-	<div id="create-event-dialog" class="modal" data-ng-show="selectedEvent" data-ng-controller="CreateEventDialogCtrl">
+	<div id="edit-event-dialog" class="modal" data-ng-show="selectedEvent" data-ng-controller="EditEventDialogCtrl">
 		<div class="modal-header">
 			<a class="close" data-ng-click="editEvent(null)">&times;</a>
 			<h3>Event</h3>
@@ -158,6 +158,7 @@
 			</div>
 			<div data-ng-include="getTemplate(field)" data-ng-show="field"></div>
 			<div id="create-event-preview">
+				<em data-ng-hide="entries.length > 0">Add one or more fields, then save.</em>
 				<span class="editable" data-ng-repeat="entry in entries">
 					<span data-ng-bind-html="entry.value | field:entry.field.name"></span>
 					<a class="action" data-ng-click="remove(entry)"><i class="icon-remove" title="Delete" data-tooltip></i></a>

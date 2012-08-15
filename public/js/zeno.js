@@ -38,10 +38,13 @@
 			.otherwise({ templateUrl : versioned('/partials/404.html') });
 	}]);
 
-	app.controller('MainCtrl', ['$scope', '$route', '$http', '$location', '$timeout', function($scope, $route, $http, $location, $timeout) {
+	app.controller('MainCtrl', ['$scope', '$route', '$http', '$location', '$timeout', '$window', function($scope, $route, $http, $location, $timeout, $window) {
 		$scope.whoami = function() {
 			$http.get('/who').success(function(response) {
 				$scope.user = response ? new User(response) : null;
+				if ($scope.user) {
+					_gaq.push(['_setCustomVar', 1, 'user type', $scope.user.name ? 'registered' : 'unregistered', 1]);
+				}
 			});
 		};
 	
@@ -55,13 +58,14 @@
 				.error(function(response) {
 					$scope.alert.show('Couldn\'t undo.');
 				});
+			_gaq.push([ '_trackEvent', 'action', 'undo' ]);
+
 		};
 		$scope.broadcast = function(event) {
 			$scope.$broadcast(event);
 		};
 		$scope.signOut = function() {
 			$scope.alert.clear();
-			_gaq.push([ '_trackEvent', 'session', 'sign out', $scope.user.getName() ]);
 			$http.post('/signout', { 'username' : $scope.user.getName() }).success(function(response, code) {
 					$scope.user = null;
 					if ($location.url() === '/') {
@@ -70,6 +74,7 @@
 						$scope.home();
 					}
 			});
+			_gaq.push([ '_trackEvent', 'action', 'sign out' ]);
 		};
 		$scope.home = function() {
 			$location.url('/');
@@ -78,8 +83,11 @@
 			$route.reload();
 		};
 
-		$scope.$on('$routeChangeStart', function(e) {
+		$scope.$on('$routeChangeStart', function() {
 			$scope.alert.clear();
+		});
+		$scope.$on('$routeChangeSuccess', function() {
+			$window._gaq.push(['_trackPageView', $location.path()]);
 		});
 		$scope.whoami();
 	}]);
@@ -181,6 +189,7 @@
 		};
 		$scope.close = function() {
 			if (confirm('Close your account and delete all associated data?')) {
+				_gaq.push([ '_trackEvent', 'action', 'close account' ]);
 				$http({ method : 'DELETE', url : '/users/' + $routeParams.userId }).success(function(response) {
 					$scope.signOut();
 				});
@@ -221,7 +230,9 @@
 		$scope.$on('edit:user', function() {
 			$scope.message = '';
 			$scope.email = $scope.userInfo.email;
-			$scope.editing = true;		
+			$scope.editing = true;
+			_gaq.push([ '_trackEvent', 'action', 'edit user' ]);
+
 		});
 	}]);
 	
@@ -243,7 +254,6 @@
 			};
 		};
 		$scope.signIn = function() {
-			_gaq.push([ '_trackEvent', 'session', 'sign in', $scope.username ]);
 			$http.post('/signin', $scope.data())
 				.success(function(response) {
 					$scope.$parent.user = new User(response);
@@ -270,6 +280,7 @@
 		$scope.dialog.on('shown', function () {
 			$scope.$apply($scope.init);
 			$('#username').select();
+			_gaq.push([ '_trackEvent', 'action', 'sign in' ]);
 		});
 	}]);
 	
@@ -309,6 +320,7 @@
 		$scope.dialog.on('shown', function () {
 			$scope.$apply($scope.init);
 			$('#reset-username').select();
+			_gaq.push([ '_trackEvent', 'action', 'reset password' ]);
 		});
 	}]);
 	
@@ -341,6 +353,7 @@
 					$scope.$parent.user = new User(response);
 					$scope.dialog.modal('hide');
 					$location.url('/users/' + $scope.$parent.user.name);
+					_gaq.push([ '_trackEvent', 'action', 'signed up' ]);
 				})
 				.error(function(response, code) {
 					if (code === 409) {
@@ -355,6 +368,7 @@
 		$scope.dialog.on('shown', function () {
 			$scope.$apply($scope.init);
 			$('#sign-up-username').select();
+			_gaq.push([ '_trackEvent', 'action', 'sign up' ]);
 		});
 	}]);
 	
@@ -444,6 +458,7 @@
 				.error(function(response) {
 					$scope.alert.show('Couldn\'t delete the bucket.', 'alert-error');
 				});
+			_gaq.push([ '_trackEvent', 'action', 'delete bucket' ]);
 		};
 	
 		$scope.$watch('userInfo', function(user) {
@@ -460,7 +475,6 @@
 		};
 		$scope.create = function() {
 			$scope.alert.clear();
-			_gaq.push([ '_trackEvent', 'home', 'create', $scope.template.label ]);
 			$http.post('/buckets/', $scope.template)
 				.success(function(response, status, headers) {
 					var location = headers('Location');
@@ -472,6 +486,7 @@
 				.error(function(response) {
 					$scope.alert.show('Couldn\'t create a new bucket.', 'alert-error');					
 				});
+			_gaq.push([ '_trackEvent', 'action', 'get started' ]);
 		};
 	}]);
 	
@@ -500,6 +515,7 @@
 						$scope.message = 'Couldn\'t create a new bucket. Please try agan later or contact support.';					
 					}
 				});
+			_gaq.push([ '_trackEvent', 'action', 'create bucket' ]);
 		};
 
 		$scope.init();
@@ -691,9 +707,12 @@
 			var w = $.map(params, function(param) {
 				return $.map(param, function(value, key) { return key + ':' + value }).join(',');
 			});
+			var t0 = new Date().getTime();
 			$http.get('/buckets/' + $scope.bucketId + '/?' + $.param({ 'q' : q, 'w' : w }, true))
 				.success(function(response) { 
+					var t1 = new Date().getTime();
 					callback(response);
+					_gaq.push(['_trackTiming', 'action', 'refresh', t1 - t0, null, 100]);
 					if (response.total === 0 && q.length === 0 && $scope.editable) {
 						$timeout(function() { $scope.editEvent({}); }, DELAY);
 					}
@@ -728,6 +747,7 @@
 				$timeout($scope.refresh, DELAY);
 				$scope.alert.show('Deleted an event.', 'alert-success', response.undo);
 			});
+			_gaq.push([ '_trackEvent', 'action', 'delete event' ]);
 		};
 	
 		$scope.$on('$routeUpdate', function() {
@@ -773,6 +793,7 @@
 		$scope.editing = false;
 		$scope.edit = function() {
 			$scope.editing = true;
+			_gaq.push([ '_trackEvent', 'action', 'edit bucket' ]);
 		};
 		$scope.cancel = function() {
 			$scope.editing = false;
@@ -1413,7 +1434,7 @@
 		values.push(value);
 	};
 
-	app.controller('CreateEventDialogCtrl', ['$scope', '$http', '$timeout', '$routeParams', function($scope, $http, $timeout, $routeParams) {
+	app.controller('EditEventDialogCtrl', ['$scope', '$http', '$timeout', '$routeParams', function($scope, $http, $timeout, $routeParams) {
 
 		$scope.params = $routeParams;
 		$scope.fields = Field.findEditableFields();
@@ -1424,6 +1445,8 @@
 			$scope.message = '';
 			$scope.field = null;
 			$scope.value = '';
+			_gaq.push([ '_trackEvent', 'action', $scope.isNew ? 'create event' : 'edit event' ]);
+
 		};
 		$scope.isEmpty = function() {
 			return $.isEmptyObject($scope.entries);
@@ -1492,10 +1515,12 @@
 		};
 
 		$scope.init();
-		$http.get('/buckets/' + $scope.bucket['@id'] + '/tags/')
+		if ($scope.total > 0) {
+			$http.get('/buckets/' + $scope.bucket['@id'] + '/tags/')
 			.success(function(response) {
 				input.typeahead({ source : response });
 			});
+		}
 	}]);
 
 
@@ -1700,6 +1725,7 @@
 		$scope.init();
 		$scope.dialog.on('shown', function () {
 			$scope.$apply($scope.init);
+			_gaq.push([ '_trackEvent', 'action', 'import events' ]);
 		});
 	}]);
 	
