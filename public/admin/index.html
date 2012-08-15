@@ -34,6 +34,9 @@
 		<script src="/js/LAB-2.0.3.js"></script>
 		<script>
 			$LAB
+				.script(function() {
+					window._gaq = [];
+				})
 				.script("/js/jquery-1.7.2.js").wait()
 				.script("/js/bootstrap-2.0.4-3df509e5.js")
 				.script("/js/angular-1.0.1.js").wait()

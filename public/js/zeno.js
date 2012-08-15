@@ -87,7 +87,7 @@
 			$scope.alert.clear();
 		});
 		$scope.$on('$routeChangeSuccess', function() {
-			_gaq.push(['_trackPageView', $location.path()]);
+			_gaq.push(['_trackPageview', $location.path()]);
 		});
 		$scope.whoami();
 	}]);
