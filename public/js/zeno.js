@@ -1710,7 +1710,7 @@
 				reader.readAsText(files[0]);
 			});
 		};
-		$scope.import = function() {
+		$scope.importEvents = function() {
 			$scope.alert.clear();
 			$http.post('/buckets/' + $scope.params.bucketId + '/', { 'events' : $scope.events })
 				.success(function(response) {
