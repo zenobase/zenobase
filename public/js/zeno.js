@@ -712,7 +712,7 @@
 				.success(function(response) { 
 					var t1 = new Date().getTime();
 					callback(response);
-					_gaq.push(['_trackTiming', 'action', 'refresh', t1 - t0, null, 100]);
+					_gaq.push(['_trackTiming', 'action', 'refresh', t1 - t0, $scope.bucketId, 100]);
 					if (response.total === 0 && q.length === 0 && $scope.editable) {
 						$timeout(function() { $scope.editEvent({}); }, DELAY);
 					}
