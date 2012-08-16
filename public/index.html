@@ -9,7 +9,7 @@
 		<meta property="og:description" content="Collect and analyze self-tracking data."/>
 		<meta property="version" content="29af5b84"/>
 		<meta name="Description" content="Collect and analyze self-tracking data."/>
-		<meta name="viewport" content="width = device-width"/>
+		<meta name="viewport" content="width=device-width"/>
 		<meta name="apple-mobile-web-app-capable" content="yes">
 		<meta name="apple-mobile-web-app-status-bar-style" content="black">
 		<link rel="stylesheet" type="text/css" href="/css/zeno-bde60718.min.css"/>
@@ -29,7 +29,7 @@
 			<p class="logo pull-left"><a href="#/"><img src="/img/logo.png" alt="Zenobase" width="159" height="25"/></a></p>
 			<div class="pull-right ng-cloak">
 				<p data-ng-show="user">
-					<i class="icon-user"></i> <a href="#/users/{{user.getName()}}">{{user.getName()}}</a> | <a data-ng-click="signOut()">Sign out</a>
+					<i class="icon-user"></i> <a href="#/users/{{user.getName()}}">{{user.getName()}}</a> | <a href="javascript:false" data-ng-click="signOut()">Sign out</a>
 				</p>
 				<p data-ng-hide="user">
 					<a href="#sign-in-dialog" data-toggle="modal">Sign in</a>
@@ -39,10 +39,10 @@
 
 		<div class="container-fluid ng-cloak">
 			<div class="alert {{alert.level}}">
-				<a class="close" data-ng-click="alert.clear()">&times;</a>
+				<a class="close" href="javascript:false" data-ng-click="alert.clear()">&times;</a>
 				<span data-ng-bind-html="alert.message"></span>
 				<span data-ng-show="alert.undo">
-					<a data-ng-click="undo(alert.undo)">Undo.</a>
+					<a href="javascript:false" data-ng-click="undo(alert.undo)">Undo.</a>
 				</span>
 			</div>
 		</div>
@@ -178,11 +178,11 @@
 					window._gaq.push(['_setSiteSpeedSampleRate', 100]);
 
 				})
-				.script("/js/json3-3.2.3.js")
 				.script("/js/jquery-1.7.2.js").wait()
 				.script("/js/bootstrap-2.0.4-3df509e5.js")
 				.script("/js/angular-1.0.1.js").wait()
 				.script("/js/angular-sanitize-1.0.1.js")
+				.script("/js/json3-3.2.3.js")
 				.script("/js/iso8601-db64b4df.js")
 				.script("/js/humane-db64b4de.js")
 				.script("//www.google.com/jsapi").wait()

@@ -13,7 +13,7 @@
 		</thead>
 		<tbody>
 			<tr data-ng-repeat="term in terms">
-				<td><a data-ng-click="filter(term)" data-ng-bind-html="term.label | field:settings.termField"></a></td>
+				<td><a href="javascript:false" data-ng-click="filter(term)" data-ng-bind-html="term.label | field:settings.termField"></a></td>
 				<td style="text-align: right" data-ng-bind-html="term.count | number"></td>
 				<td style="text-align: right" data-ng-bind-html="term.min | field:settings.valueField"></td>
 				<td style="text-align: right" data-ng-bind-html="term.max | field:settings.valueField"></td>
@@ -32,14 +32,14 @@
 
 	<div class="btn-toolbar">
 		<div class="btn-group" data-ng-show="editing">
-			<button class="btn" title="Settings..." data-tooltip data-ng-click="showDialog(true)"><i class="icon-cog"></i></button>
+			<button class="btn" title="Settings..." data-ng-click="showDialog(true)"><i class="icon-cog"></i></button>
 		</div>
 	</div>
 
 	<div class="modal" data-ng-controller="ScoreboardSettingsCtrl" data-ng-show="dialogShown">
 		<form name="form" class="modal-form">
 			<div class="modal-header">
-				<a class="close" data-ng-click="cancel()">&times;</a>
+				<a class="close" href="javascript:false" data-ng-click="cancel()">&times;</a>
 				<h3>Scoreboard</h3>
 			</div>
 			<div class="modal-body">
