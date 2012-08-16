@@ -219,3 +219,13 @@ input.ng-invalid.ng-dirty:focus {
 .modal-backdrop {
 	z-index: 10; /* allows typeahead to show in modal dialog */
 }​
+
+@media (max-width: 767px) {
+	.hero-unit {
+		padding: 24px;
+	}
+	.hero-unit > h1 { /* downsize to h2 */
+		font-size: 24px;
+		line-height: @baseLineHeight * 2;
+	}
+}
