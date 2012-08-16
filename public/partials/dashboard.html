@@ -19,10 +19,10 @@
 				<span class="badge badge-important" title="Couldn't load any events">0</span>
 			</p>
 			<p class="pull-left" style="margin-left: 8px; margin-top: 6px; vertical-align: middle">
-				<a href="javascript:false" data-ng-click="refresh()" title="Refresh"><i class="icon-refresh"></i></a>
+				<a href="javascript:" data-ng-click="refresh()" title="Refresh"><i class="icon-refresh"></i></a>
 			</p>
 			<p class="pull-left" style="margin-left: 8px; margin-top: 6px; vertical-align: middle" data-ng-show="editable">
-				<a href="javascript:false" data-ng-click="edit()" title="Edit Dashboard..."><i class="icon-pencil"></i></a>
+				<a href="javascript:" data-ng-click="edit()" title="Edit Dashboard..."><i class="icon-pencil"></i></a>
 			</p>
 			<p class="pull-left" style="margin-left: 8px; margin-top: 6px; vertical-align: middle" data-ng-show="canImport()">
 				<a data-toggle="modal" href="#import-events-dialog" title="Import Events..."><i class="icon-upload"></i></a>
@@ -31,11 +31,11 @@
 				<a data-toggle="modal" data-ng-href="{{getExportUrl()}}" title="Export Events"><i class="icon-download"></i></a>
 			</p>
 			<p class="pull-left" style="margin-left: 8px; margin-top: 6px; vertical-align: middle" data-ng-show="editable">
-				<a id="add-event-link" title="Add Event..." data-toggle="modal" href="javascript:false" data-ng-click="editEvent({})"><i class="icon-plus"></i></a>
+				<a id="add-event-link" title="Add Event..." data-toggle="modal" href="javascript:" data-ng-click="editEvent({})"><i class="icon-plus"></i></a>
 			</p>
 			<ul class="nav nav-pills" style="clear: both; margin-bottom:12px;" data-ng-show="filters">
 				<li class="active" data-ng-repeat="filter in filters">
-					<a href="javascript:false" data-ng-click="removeFilter(filter)"><i class="icon-white" data-ng-class="getFilterIcon(filter)"></i> {{filter.value}} <i class="icon-remove icon-white"></i></a>
+					<a href="javascript:" data-ng-click="removeFilter(filter)"><i class="icon-white" data-ng-class="getFilterIcon(filter)"></i> {{filter.value}} <i class="icon-remove icon-white"></i></a>
 				</li>
 			</ul>
 		</div>
@@ -43,7 +43,7 @@
 		<p data-ng-show="bucket.description" data-ng-bind-html="bucket.description" style="margin-bottom: 18px;"></p>
 	
 		<div class="alert alert-block alert-info" data-ng-controller="BucketFormCtrl" data-ng-show="editing">
-			<a class="close" href="javascript:false" data-ng-click="cancel()">&times;</a>
+			<a class="close" href="javascript:" data-ng-click="cancel()">&times;</a>
 			<h3 class="alert-heading">Edit</h3>
 			<form name="dashboardForm">
 				<fieldset>
@@ -64,8 +64,8 @@
 						<div class="controls">
 							<span data-ng-show="user.verified">
 								<i class="icon-globe"></i>
-								<a href="javascript:false" data-ng-click="bucket.publish()" data-ng-show="!bucket.isPublished()">make public</a> 
-								<a href="javascript:false" data-ng-click="bucket.unpublish()" data-ng-show="bucket.isPublished()">make private</a> 
+								<a href="javascript:" data-ng-click="bucket.publish()" data-ng-show="!bucket.isPublished()">make public</a> 
+								<a href="javascript:" data-ng-click="bucket.unpublish()" data-ng-show="bucket.isPublished()">make private</a> 
 							</span>
 							<span data-ng-hide="user.verified">
 								<i>You can publish this dashboard after signing up and verifying your email address.</i>
@@ -84,9 +84,9 @@
 			<div class="span12">
 				<ul class="nav nav-tabs">
 					<li data-ng-class="$index == 0 && 'active'" data-ng-repeat="settings in getWidgetSettings('top')">
-						<a id="{{settings.id}}-tab" href="#{{settings.id}}" data-toggle="tab">{{settings.label}}&nbsp;<span class="close close-tab" title="Remove" href="javascript:false" data-ng-click="removeWidget(settings)" data-ng-show="editing">&times;</span></a>
+						<a id="{{settings.id}}-tab" data-ng-href="#{{settings.id}}" data-toggle="tab">{{settings.label}}&nbsp;<span class="close close-tab" title="Remove" href="javascript:" data-ng-click="removeWidget(settings)" data-ng-show="editing">&times;</span></a>
 					</li>
-					<li data-ng-show="editing"><a href="javascript:false" data-ng-click="chooseWidget('top')" title="Add Widget..."><i class="icon-plus-sign"></i></a></li>
+					<li data-ng-show="editing"><a href="javascript:" data-ng-click="chooseWidget('top')" title="Add Widget..."><i class="icon-plus-sign"></i></a></li>
 				</ul>
 				<div class="tab-content">
 					<div id="{{settings.id}}" class="tab-pane" data-ng-class="$index == 0 && 'active'" data-ng-repeat="settings in getWidgetSettings('top')" data-ng-include="getTemplate(settings.type)"></div>
@@ -98,9 +98,9 @@
 			<div class="span6" data-ng-show="hasWidgets('left') || editing">
 				<ul class="nav nav-tabs">
 					<li data-ng-class="$index == 0 && 'active'" data-ng-repeat="settings in getWidgetSettings('left')">
-						<a id="{{settings.id}}-tab" href="#{{settings.id}}" data-toggle="tab">{{settings.label}}&nbsp;<span class="close close-tab" title="Remove" href="javascript:false" data-ng-click="removeWidget(settings)" data-ng-show="editing">&times;</span></a>
+						<a id="{{settings.id}}-tab" data-ng-href="#{{settings.id}}" data-toggle="tab">{{settings.label}}&nbsp;<span class="close close-tab" title="Remove" href="javascript:" data-ng-click="removeWidget(settings)" data-ng-show="editing">&times;</span></a>
 					</li>
-					<li data-ng-show="editing"><a href="javascript:false" data-ng-click="chooseWidget('left')" title="Add Widget..."><i class="icon-plus-sign"></i></a></li>
+					<li data-ng-show="editing"><a href="javascript:" data-ng-click="chooseWidget('left')" title="Add Widget..."><i class="icon-plus-sign"></i></a></li>
 				</ul>
 				<div class="tab-content">
 					<div id="{{settings.id}}" class="tab-pane" data-ng-class="$index == 0 && 'active'" data-ng-repeat="settings in getWidgetSettings('left')" data-ng-include="getTemplate(settings.type)"></div>
@@ -109,9 +109,9 @@
 			<div class="span6" data-ng-show="hasWidgets('right') || editing">
 				<ul class="nav nav-tabs">
 					<li data-ng-class="$index == 0 && 'active'" data-ng-repeat="settings in getWidgetSettings('right')">
-						<a id="{{settings.id}}-tab" href="#{{settings.id}}" data-toggle="tab">{{settings.label}}&nbsp;<span class="close close-tab" title="Remove" href="javascript:false" data-ng-click="removeWidget(settings)" data-ng-show="editing">&times;</span></a>
+						<a id="{{settings.id}}-tab" data-ng-href="#{{settings.id}}" data-toggle="tab">{{settings.label}}&nbsp;<span class="close close-tab" title="Remove" href="javascript:" data-ng-click="removeWidget(settings)" data-ng-show="editing">&times;</span></a>
 					</li>
-					<li data-ng-show="editing"><a href="javascript:false" data-ng-click="chooseWidget('right')" title="Add Widget..."><i class="icon-plus-sign"></i></a></li>
+					<li data-ng-show="editing"><a href="javascript:" data-ng-click="chooseWidget('right')" title="Add Widget..."><i class="icon-plus-sign"></i></a></li>
 				</ul>
 				<div class="tab-content">
 					<div id="{{settings.id}}" class="tab-pane" data-ng-class="$index == 0 && 'active'" data-ng-repeat="settings in getWidgetSettings('right')" data-ng-include="getTemplate(settings.type)"></div>
@@ -124,7 +124,7 @@
 	<div id="add-widget-dialog" class="modal" data-ng-controller="AddWidgetCtrl" data-ng-show="placement">
 		<form name="addWidgetForm" class="modal-form">
 			<div class="modal-header">
-				<a class="close" href="javascript:false" data-ng-click="cancel()">&times;</a>
+				<a class="close" href="javascript:" data-ng-click="cancel()">&times;</a>
 				<h3>Add Widget</h3>
 			</div>
 			<div class="modal-body">
@@ -143,7 +143,7 @@
 
 	<div id="edit-event-dialog" class="modal" data-ng-show="selectedEvent" data-ng-controller="EditEventDialogCtrl">
 		<div class="modal-header">
-			<a class="close" href="javascript:false" data-ng-click="editEvent(null)">&times;</a>
+			<a class="close" href="javascript:" data-ng-click="editEvent(null)">&times;</a>
 			<h3>Event</h3>
 		</div>
 		<div class="modal-body">
@@ -161,7 +161,7 @@
 				<em data-ng-hide="entries.length > 0">Add one or more fields, then save.</em>
 				<span class="editable" data-ng-repeat="entry in entries">
 					<span data-ng-bind-html="entry.value | field:entry.field.name"></span>
-					<a class="action" href="javascript:false" data-ng-click="remove(entry)"><i class="icon-remove" title="Delete"></i></a>
+					<a class="action" href="javascript:" data-ng-click="remove(entry)"><i class="icon-remove" title="Delete"></i></a>
 				</span>
 			</div>
 		</div>
@@ -178,7 +178,7 @@
 				<input id="tag-autocomplete" name="value" type="text" data-provide="typeahead" data-ng-model="value"/>
 			</div>
 			<div class="control-group">
-				<a class="btn" href="javascript:false" data-ng-click="addField()" data-ng-disabled="!valid()">Add</a>
+				<a class="btn" href="javascript:" data-ng-click="addField()" data-ng-disabled="!valid()">Add</a>
 			</div>
 		</div>
 	</script>
@@ -187,7 +187,7 @@
 		<div data-ng-controller="CreateLocationFieldCtrl">
 			<div id="create-location-map"></div>
 			<div class="control-group">
-				<a class="btn" href="javascript:false" data-ng-click="addField()" data-ng-disabled="!valid()">Add</a>
+				<a class="btn" href="javascript:" data-ng-click="addField()" data-ng-disabled="!valid()">Add</a>
 			</div>
 		</div>
 	</script>
@@ -199,7 +199,7 @@
 				<input name="value" type="text" data-ng-model="value"/>
 			</div>
 			<div class="control-group">
-				<a class="btn" href="javascript:false" data-ng-click="addField()" data-ng-disabled="!valid()">Add</a>
+				<a class="btn" href="javascript:" data-ng-click="addField()" data-ng-disabled="!valid()">Add</a>
 			</div>
 		</div>
 	</script>
@@ -213,7 +213,7 @@
 				<input name="seconds" type="number" min="0" max="59" data-ng-model="seconds"/> s
 			</div>
 			<div class="control-group">
-				<a class="btn" href="javascript:false" data-ng-click="addField()" data-ng-disabled="!valid()">Add</a>
+				<a class="btn" href="javascript:" data-ng-click="addField()" data-ng-disabled="!valid()">Add</a>
 			</div>
 		</div>
 	</script>
@@ -229,7 +229,7 @@
 				<input name="title" type="text" data-ng-model="value.title"/>
 			</div>
 			<div class="control-group">
-				<a class="btn" href="javascript:false" data-ng-click="addField()" data-ng-disabled="!valid()">Add</a>
+				<a class="btn" href="javascript:" data-ng-click="addField()" data-ng-disabled="!valid()">Add</a>
 			</div>
 		</div>
 	</script>
@@ -246,7 +246,7 @@
 				<select name="unit" data-ng-model="value.unit" data-ng-options="unit for unit in field.units"></select>
 			</div>
 			<div class="control-group">
-				<a class="btn" href="javascript:false" data-ng-click="addField()" data-ng-disabled="!valid()">Add</a>
+				<a class="btn" href="javascript:" data-ng-click="addField()" data-ng-disabled="!valid()">Add</a>
 			</div>
 		</div>
 	</script>
@@ -262,7 +262,7 @@
 				<select name="unit" data-ng-model="value.unit" data-ng-options="unit for unit in field.units"></select>
 			</div>
 			<div class="control-group">
-				<a class="btn" href="javascript:false" data-ng-click="addField()" data-ng-disabled="!valid()">Add</a>
+				<a class="btn" href="javascript:" data-ng-click="addField()" data-ng-disabled="!valid()">Add</a>
 			</div>
 		</div>
 	</script>
@@ -278,7 +278,7 @@
 				<select name="unit" data-ng-model="value.unit" data-ng-options="unit for unit in field.units"></select>
 			</div>
 			<div class="control-group">
-				<a class="btn" href="javascript:false" data-ng-click="addField()" data-ng-disabled="!valid()">Add</a>
+				<a class="btn" href="javascript:" data-ng-click="addField()" data-ng-disabled="!valid()">Add</a>
 			</div>
 		</div>
 	</script>
@@ -294,7 +294,7 @@
 				<select name="unit" data-ng-model="value.unit" data-ng-options="unit for unit in field.units"></select>
 			</div>
 			<div class="control-group">
-				<a class="btn" href="javascript:false" data-ng-click="addField()" data-ng-disabled="!valid()">Add</a>
+				<a class="btn" href="javascript:" data-ng-click="addField()" data-ng-disabled="!valid()">Add</a>
 			</div>
 		</div>
 	</script>
@@ -310,7 +310,7 @@
 				<select name="unit" data-ng-model="value.unit" data-ng-options="unit for unit in field.units"></select>
 			</div>
 			<div class="control-group">
-				<a class="btn" href="javascript:false" data-ng-click="addField()" data-ng-disabled="!valid()">Add</a>
+				<a class="btn" href="javascript:" data-ng-click="addField()" data-ng-disabled="!valid()">Add</a>
 			</div>
 		</div>
 	</script>
@@ -326,7 +326,7 @@
 				<select name="unit" data-ng-model="value.unit" data-ng-options="unit for unit in field.units"></select>
 			</div>
 			<div class="control-group">
-				<a class="btn" href="javascript:false" data-ng-click="addField()" data-ng-disabled="!valid()">Add</a>
+				<a class="btn" href="javascript:" data-ng-click="addField()" data-ng-disabled="!valid()">Add</a>
 			</div>
 		</div>
 	</script>
@@ -339,7 +339,7 @@
 				<input name="value" type="number" min="0" data-ng-model="value"/>
 			</div>
 			<div class="control-group">
-				<a class="btn" href="javascript:false" data-ng-click="addField()" data-ng-disabled="!valid()">Add</a>
+				<a class="btn" href="javascript:" data-ng-click="addField()" data-ng-disabled="!valid()">Add</a>
 			</div>
 		</div>
 	</script>
@@ -351,7 +351,7 @@
 				<input name="value" type="number" min="0" max="100" step="20" data-ng-model="value"/>
 			</div>
 			<div class="control-group">
-				<a class="btn" href="javascript:false" data-ng-click="addField()" data-ng-disabled="!valid()">Add</a>
+				<a class="btn" href="javascript:" data-ng-click="addField()" data-ng-disabled="!valid()">Add</a>
 			</div>
 		</div>
 	</script>
@@ -363,7 +363,7 @@
 				<textarea name="value" data-ng-model="value"></textarea>
 			</div>
 			<div class="control-group">
-				<a class="btn" href="javascript:false" data-ng-click="addField()" data-ng-disabled="!valid()">Add</a>
+				<a class="btn" href="javascript:" data-ng-click="addField()" data-ng-disabled="!valid()">Add</a>
 			</div>
 		</div>
 	</script>

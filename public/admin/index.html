@@ -3,7 +3,7 @@
 	<head>
 		<title>Zenobase Admin</title>
 		<meta charset="utf-8"/>
-		<meta property="version" content="29af5b84"/>
+		<meta property="version" content="29af5b85"/>
 		<meta name="viewport" content="width=device-width"/>
 		<meta name="apple-mobile-web-app-capable" content="yes">
 		<meta name="apple-mobile-web-app-status-bar-style" content="black">
@@ -16,7 +16,7 @@
 			<p class="logo pull-left"><a href="#/"><img src="/img/logo.png" alt="Zenobase" width="159" height="25"/></a></p>
 			<div class="pull-right ng-cloak">
 				<p data-ng-show="user.name">
-					<i class="icon-user"></i> <a href="#/users/{{user.getName()}}">{{user.getName()}}</a> | <a href="javascript:false" data-ng-click="signOut()">Sign out</a>
+					<i class="icon-user"></i> <a data-ng-href="#/users/{{user.getName()}}">{{user.getName()}}</a> | <a href="javascript:" data-ng-click="signOut()">Sign out</a>
 				</p>
 				<p data-ng-hide="user">
 					<a href="#sign-in-dialog" data-toggle="modal">Sign in</a>
@@ -48,7 +48,7 @@
 				.script("/js/iso8601-db64b4df.js")
 				.script("/js/humane-db64b4de.js")
 				.script("//www.google.com/jsapi").wait()
-				.script("/js/zeno-29af5b84.js").wait()
+				.script("/js/zeno-29af5b85.js").wait()
 				.script("/admin/js/zeno-c5d0b692.js").wait(function() {
 					angular.bootstrap(document, ['ZenoAdminModule']);
 				});

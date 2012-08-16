@@ -1222,7 +1222,7 @@
 						series : [ { color : 'gray' } ],
 						chartArea : { width : '100%', height : 90, left : 25, top : 5 },
 						vAxis : { gridlines : { color : '#EEE', count : 2 }, minorGridlines : { color : '#EEE', count : 1 }, baselineColor : '#EEE', textStyle : { fontSize: 10 } },
-						hAxis : { baselineColor : 'white', textPosition : 'none', textStyle : { fontSize: 10 } },
+						hAxis : { baselineColor : 'white', textPosition : 'none', textStyle : { fontSize: 10 } }
 					};
 					var chart = new google.visualization.ColumnChart(document.getElementById('timeline-' + $scope.settings.id));
 					chart.draw(data, options);

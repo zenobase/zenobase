@@ -4,18 +4,18 @@
 		<thead>
 			<tr>
 				<th style="text-transform: capitalize">
-					<a href="javascript:false" data-ng-click="setOrder('term')" class="sort">{{settings.field}}
+					<a href="javascript:" data-ng-click="setOrder('term')" class="sort">{{settings.field}}
 					<b data-ng-class="getClasses('term')"></b></a>
 				</th>
 				<th style="text-align: right">
-					<a href="javascript:false" data-ng-click="setOrder('count')" class="sort">Count 
+					<a href="javascript:" data-ng-click="setOrder('count')" class="sort">Count 
 					<b data-ng-class="getClasses('count')"></b></a>
 				</th>
 			</tr>
 		</thead>
 		<tbody>
 			<tr data-ng-repeat="term in terms">
-				<td><a href="javascript:false" data-ng-click="filter(term)" data-ng-bind-html="term.label | field:settings.field"></a></td>
+				<td><a href="javascript:" data-ng-click="filter(term)" data-ng-bind-html="term.label | field:settings.field"></a></td>
 				<td style="text-align: right">{{term.count | number }}</td>
 			</tr>
 		</tbody>
@@ -41,7 +41,7 @@
 	<div class="modal" data-ng-controller="WidgetSettingsCtrl" data-ng-show="dialogShown">
 		<form name="form" class="modal-form">
 			<div class="modal-header">
-				<a class="close" href="javascript:false" data-ng-click="cancel()">&times;</a>
+				<a class="close" href="javascript:" data-ng-click="cancel()">&times;</a>
 				<h3>Term Counts</h3>
 			</div>
 			<div class="modal-body">

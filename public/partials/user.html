@@ -16,10 +16,10 @@
 			</p>
 			<h3 class="pull-left">{{userId}}</h3>
 			<p class="pull-left" style="margin-left: 8px; margin-top: 6px; vertical-align: middle">
-				<a href="javascript:false" data-ng-click="reload()" title="Refresh"><i class="icon-refresh"></i></a>
+				<a href="javascript:" data-ng-click="reload()" title="Refresh"><i class="icon-refresh"></i></a>
 			</p>
 			<p class="pull-left" style="margin-left: 8px; margin-top: 6px; vertical-align: middle" data-ng-show="editable()">
-				<a href="javascript:false" data-ng-click="broadcast('edit:user')" title="Edit..." data-ng-show="editable()"><i class="icon-pencil"></i></a>
+				<a href="javascript:" data-ng-click="broadcast('edit:user')" title="Edit..." data-ng-show="editable()"><i class="icon-pencil"></i></a>
 			</p>
 			<p class="pull-left" style="margin-left: 8px; margin-top: 6px; vertical-align: middle" data-ng-show="addable()">
 				<a data-toggle="modal" href="#create-bucket-dialog" title="Add Bucket..." data-ng-show="addable()"><i class="icon-plus"></i></a>
@@ -27,7 +27,7 @@
 		</div>
 	
 		<div id="user-edit-dialog" class="alert alert-info" data-ng-controller="UserFormCtrl" data-ng-show="editing">
-			<a class="close" href="javascript:false" data-ng-click="cancel()">&times;</a>
+			<a class="close" href="javascript:" data-ng-click="cancel()">&times;</a>
 			<h3 class="alert-heading">Edit</h3>
 			<form name="userForm">
 				<fieldset>
@@ -47,9 +47,9 @@
 				</fieldset>
 			</form>
 			<p>
-				<a href="javascript:false" data-ng-click="save()" class="btn btn-primary" data-ng-disabled="!userForm.$valid">Save</a>
-				<a href="javascript:false" data-ng-click="cancel()" class="btn">Cancel</a>
-				<a href="javascript:false" data-ng-click="close()" class="btn btn-danger pull-right"><i class="icon-trash icon-white"></i> Close Account</a>
+				<a href="javascript:" data-ng-click="save()" class="btn btn-primary" data-ng-disabled="!userForm.$valid">Save</a>
+				<a href="javascript:" data-ng-click="cancel()" class="btn">Cancel</a>
+				<a href="javascript:" data-ng-click="close()" class="btn btn-danger pull-right"><i class="icon-trash icon-white"></i> Close Account</a>
 			</p>
 		</div>
 	
@@ -69,11 +69,11 @@
 							<td colspan="3"><i>Loading...</i></td>
 						</tr>
 						<tr data-ng-repeat="bucket in buckets">
-							<td style="white-space: nowrap"><a href="#/buckets/{{bucket['@id']}}/">{{bucket.label}}</a></td>
+							<td style="white-space: nowrap"><a data-ng-href="#/buckets/{{bucket['@id']}}/">{{bucket.label}}</a></td>
 							<td>{{bucket.description}}</td>
 							<td style="text-align: right">{{bucket.size}}</td>
 							<td style="text-align: right">
-								<a class="action" href="javascript:false" data-ng-click="remove(bucket['@id'])"><i class="icon-trash" title="Delete"></i></a>
+								<a class="action" href="javascript:" data-ng-click="remove(bucket['@id'])"><i class="icon-trash" title="Delete"></i></a>
 							</td>
 						</tr>
 						<tr data-ng-show="buckets.length == 0">
