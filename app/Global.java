@@ -155,7 +155,7 @@ public class Global extends GlobalSettings {
 						String value = conf.getString(key);
 						bind(String.class).annotatedWith(Names.named(key)).toInstance(value);
 					} catch (PlayException e) {
-						Logger.warn("Can't bind property from " + e.description());
+						Logger.info("Can't bind property from " + e.description());
 					}
 				}
 			}
