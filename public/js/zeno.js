@@ -1479,15 +1479,19 @@
 		};
 		$scope.remove = function(entry) {
 			var values = $scope.event[entry.field.name];
-			if (values) {
+			if ($.isArray(values)) {
 				values = $.grep(values, function(value) {
 					return value !== entry.value;
 				});
-				if (values.length > 0) {
+				if (values.length === 1) {
+					$scope.event[entry.field.name] = values[0];					
+				} else if (values.length > 0) {
 					$scope.event[entry.field.name] = values;
 				} else {
 					delete $scope.event[entry.field.name];
 				}
+			} else {
+				delete $scope.event[entry.field.name];				
 			}
 		};
 
