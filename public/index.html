@@ -15,6 +15,9 @@
 		<link rel="stylesheet" type="text/css" href="/css/zeno-bde60718.min.css"/>
 		<link rel="canonical" href="https://zenobase.com/">
 		<link rel="apple-touch-icon" href="/img/icon.png"/>
+		<!--[if lt IE 9]>
+		<script src="/js/html5shiv-3.6.1.js"></script>
+		<![endif]-->
 	</head>
 
 	<body data-ng-controller="MainCtrl">
@@ -26,7 +29,7 @@
 		</div>
 
 		<header class="container-fluid">
-			<p class="logo pull-left"><a href="#/"><img src="/img/logo.png" alt="Zenobase" width="159" height="25"/></a></p>
+			<a href="#/"><img src="/img/logo.png" alt="Zenobase" width="159" height="25"/></a>
 			<div class="pull-right ng-cloak">
 				<p data-ng-show="user">
 					<i class="icon-user"></i> <a data-ng-href="#/users/{{user.getName()}}">{{user.getName()}}</a> | <a href="javascript:" data-ng-click="signOut()">Sign out</a>
