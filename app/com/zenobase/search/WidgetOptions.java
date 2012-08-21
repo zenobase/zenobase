@@ -48,7 +48,7 @@ public class WidgetOptions {
 		WidgetOptions options = new WidgetOptions();
 		for (String option : value.split(",")) {
 			String[] tokens = option.split(":", 2);
-			if (tokens.length == 2 && !tokens[0].isEmpty() && !tokens[1].isEmpty()) {
+			if (tokens.length == 2 && !tokens[0].isEmpty() && !tokens[1].isEmpty() && !"null".equals(tokens[1])) {
 				options.set(tokens[0], tokens[1]);
 			}
 		}

@@ -557,7 +557,8 @@
 	  	{ label : 'Count', description : 'Counts events for each value in a field.', type : 'count', field : 'tag', order : 'count', reverse : false, limit : 5 },
 	  	{ label : 'Date Range', description : 'First and last occurence of each value in a field.', type : 'gantt', termField : 'tag', timeField : 'timestamp', order : 'max', limit : 10 },
 	  	{ label : 'Ratings', description : 'Counts events by their rating.', type : 'histogram' },
-	  	{ label : 'Scoreboard', description : 'Statistics for the values in a field', type : 'scoreboard', termField : 'author', valueField : 'distance', unit : 'km', order : 'total', limit : 10 }                    
+	  	{ label : 'Scoreboard', description : 'Statistics for the values in a field', type : 'scoreboard', termField : 'author', valueField : 'distance', unit : 'km', order : 'total', limit : 10 },                    
+	  	{ label : 'Plot', description : 'Plots values against a timeline.', type : 'plot', valueField : 'timestamp', statistic : 'avg', interval : 'day' }
 	  ];
 		$scope.template = null;
 		$scope.add = function() {
@@ -1118,7 +1119,8 @@
 			return Field.findUnitFields();
 		};
 		$scope.getUnits = function() {
-			return Field.find($scope.settings.valueField).units;
+			var valueField = Field.find($scope.settings.valueField);
+			return valueField ? valueField.units : [];
 		};
 		$scope.$watch('settings.valueField', function() {
 			if (!isUnitValid()) {
@@ -1219,8 +1221,8 @@
 					var options = {
 						height : 100,
 						legend : { position : 'none' },
-						series : [ { color : 'gray' } ],
-						chartArea : { width : '100%', height : 90, left : 25, top : 5 },
+						series : [ { color : '#AAA' } ],
+						chartArea : { width : '100%', height : 90, left : 30, top : 5 },
 						vAxis : { gridlines : { color : '#EEE', count : 2 }, minorGridlines : { color : '#EEE', count : 1 }, baselineColor : '#EEE', textStyle : { fontSize: 10 } },
 						hAxis : { baselineColor : 'white', textPosition : 'none', textStyle : { fontSize: 10 } }
 					};
@@ -1276,6 +1278,139 @@
 				return fields;
 			};
 			return fields;
+		};
+		$scope.getStatistics = function(field) {
+			return field === $scope.keyField ? [ 'count' ] : [ 'sum', 'avg', 'min', 'max' ];
+		};
+		$scope.getUnits = function() {
+			return Field.find($scope.settings.valueField).units || [];
+		};
+		$scope.valid = function() {
+			return isUnitValid() && isStatisticValid();
+		};
+
+		$scope.$watch('settings.valueField', function() {
+			if (!isUnitValid()) {
+				$scope.settings.unit = null;
+			}
+			if (!isStatisticValid()) {
+				$scope.settings.statistic = $scope.getStatistics($scope.settings.valueField)[0];
+			}
+		});
+	}]);
+	
+	app.controller('PlotCtrl', ['$scope', function($scope) {
+	
+		$scope.keyField = 'timestamp';
+
+		$scope.init = function() {
+			$scope.times = null;
+		};
+		$scope.params = function() {
+			return {
+				id : $scope.settings.id,
+				type : 'plot',
+				keyField : $scope.keyField, 
+				valueField : $scope.settings.valueField || $scope.keyField,
+				unit : $scope.settings.unit || '',
+				interval : $scope.settings.interval || 'day',
+				timezone : new Date().getTimezone()
+			};
+		};
+		$scope.refresh = function(options, settings) {
+			$scope.init();
+			$scope.search([ $.extend($scope.params(), options, settings) ], function(result) {
+				$.extend($scope, options)
+				$.extend($scope.settings, settings)
+				$scope.update(null, result);
+			});
+		};
+		$scope.update = function(event, result) {
+			$scope.times = result[$scope.settings.id] || [];
+			$scope.draw();
+		};
+		$scope.draw = function() {
+			if ($scope.times && $scope.times.length) {
+				google.load("visualization", "1", { packages : [ "corechart" ], callback : function() { 
+					var data = new google.visualization.DataTable();
+					data.addColumn('date', 'Time');
+					data.addColumn('number', 'Value');
+					data.addColumn({ type : 'string', role : 'filter'});
+					data.addColumn({ type : 'string', role : 'tooltip'});
+					$.each($scope.times, function(i, time) {
+						var value = time[$scope.settings.statistic || 'count'];
+						var unit = '';
+						if (typeof value == 'object') {
+							unit = value.unit;
+							value = value['@value'];
+						} else {
+							unit = value == 1 ? 'event' : 'events';
+						}
+						data.addRow([ new Date(time.time), value, time.label, time.label + ': ' + value + ' ' + unit ]);
+					});
+					var options = {
+						height : 100,
+						legend : { position : 'none' },
+						series : [ { color : '#058dc7' } ],
+						pointSize : 5,
+						chartArea : { width : '100%', height : 90, left : 30, top : 5 },
+						vAxis : { gridlines : { color : '#EEE', count : 2 }, minorGridlines : { color : '#EEE', count : 1 }, baselineColor : '#EEE', textStyle : { fontSize: 10 } },
+						hAxis : { gridlines : { color : 'transparent', count : 2 }, baselineColor : 'transparent', textPosition : 'none' }
+					};
+					var chart = new google.visualization.AreaChart(document.getElementById('linechart-' + $scope.settings.id));
+					chart.draw(data, options);
+					google.visualization.events.addListener(chart, 'select', function() {
+						var selection = chart.getSelection();
+						var value = data.getValue(selection[0].row, 2);
+						$scope.$apply(function() {
+							$scope.addFilter(new Filter($scope.keyField, value), true);
+						});
+					});
+				}});
+			}
+		}
+	
+		$scope.dialogShown = false;
+		$scope.showDialog = function(dialogShown) {
+			$scope.dialogShown = dialogShown;
+		};
+	
+		$scope.init();
+		$scope.register($scope);
+		$scope.$on('result', $scope.update);
+		$scope.$on('refresh', $scope.init);
+		$(window).resize($scope.draw);
+		$('#' + $scope.settings.id + '-tab').on('show', $scope.draw);
+	}]);
+
+	app.controller('PlotSettingsCtrl', ['$scope', function($scope) {
+
+		WidgetSettingsCtrl($scope);
+
+		function isUnitValid() {
+			if ($scope.settings.valueField === $scope.keyField) {
+				return $scope.settings.unit === null;
+			}
+			return $.grep($scope.getUnits(), function(unit) {
+				return $scope.settings.unit === unit;
+			}).length > 0;
+		};
+		function isStatisticValid() {
+			return $.grep($scope.getStatistics($scope.settings.valueField), function(statistic) {
+				return $scope.settings.statistic === statistic;
+			}).length > 0;
+		};
+
+		$scope.getValueFields = function() {
+			var fields = Field.findUnitFields();
+			fields.unshift(new Field($scope.keyField));
+			$scope.findUnitFields = function() {
+				return fields;
+			};
+			return fields;
+		};
+		$scope.getIntervals = function() {
+			return Interval.VALUES;
 		};
 		$scope.getStatistics = function(field) {
 			return field === $scope.keyField ? [ 'count' ] : [ 'sum', 'avg', 'min', 'max' ];

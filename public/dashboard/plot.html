@@ -1,0 +1,64 @@
+<div data-ng-controller="PlotCtrl">
+
+	<div id="linechart-{{settings.id}}" data-ng-show="times"></div>
+
+	<p data-ng-show="times == null" class="none">Loading...</p>
+
+	<p data-ng-show="times.length == 0" class="none">None</p>
+
+	<div class="btn-toolbar">
+		<div class="btn-group">
+			<button class="btn" title="Settings..." data-ng-click="showDialog(true)" data-ng-show="editing"><i class="icon-cog"></i></button>
+		</div>
+	</div>
+
+	<div class="modal" data-ng-controller="PlotSettingsCtrl" data-ng-show="dialogShown">
+		<form name="form" class="modal-form">
+			<div class="modal-header">
+				<a class="close" href="javascript:" data-ng-click="cancel()">&times;</a>
+				<h3>Timeline</h3>
+			</div>
+			<div class="modal-body">
+				<div class="control-group">
+					<label class="control-label" for="label">Title</label>
+					<div class="controls">
+						<input name="label" type="text" required min="1" max="20" data-ng-model="settings.label"/>
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label" for="valueField">Value Field</label>
+					<div class="controls">
+						<select name="valueField" data-ng-model="settings.valueField" data-ng-options="field.name as field.name for field in getValueFields()"></select>
+						<p class="help-block">The numeric field on which to gather statistics.</p>
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label" for="intervalField">Interval</label>
+					<div class="controls">
+						<select name="intervalField" data-ng-model="settings.interval" data-ng-options="interval.name as interval.name for interval in getIntervals()"></select>
+						<p class="help-block">The interval at which to aggregate the values.</p>
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label" for="statisic">Statistic</label>
+					<div class="controls">
+						<select name="statistic" required data-ng-model="settings.statistic" data-ng-options="value for value in getStatistics(settings.valueField)"></select>
+						<p class="help-block">The statistic to gather for the selected value field.</p>
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label" for="unit">Unit</label>
+					<div class="controls">
+						<select name="unit" data-ng-model="settings.unit" data-ng-options="unit for unit in getUnits()"></select>
+						<p class="help-block">The unit of the value field.</p>
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button class="btn btn-primary" data-ng-click="save()" data-ng-disabled="!form.$valid || !valid()">Update</button>
+				<button class="btn" data-ng-click="cancel()">Cancel</button>
+			</div>
+		</form>
+	</div>
+
+</div>
