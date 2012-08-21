@@ -1851,7 +1851,7 @@
 		};
 		$scope.importEvents = function() {
 			$scope.alert.clear();
-			$http.post('/buckets/' + $scope.params.bucketId + '/', { 'events' : $scope.events })
+			$http.post('/buckets/' + $scope.params.bucketId + '/', $.isArray($scope.events) ? { 'events' : $scope.events } : $scope.events)
 				.success(function(response) {
 					$scope.dialog.modal('hide');
 					$scope.alert.show('Imported events.', 'alert-success', response.undo);
