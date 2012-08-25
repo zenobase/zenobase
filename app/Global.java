@@ -38,6 +38,7 @@ import com.zenobase.commands.RestoreBucketCommand;
 import com.zenobase.commands.SuspendUserCommand;
 import com.zenobase.commands.UpdateBucketCommand;
 import com.zenobase.commands.UpdateEventCommand;
+import com.zenobase.common.Globals;
 import com.zenobase.controllers.AccountController;
 import com.zenobase.controllers.BucketController;
 import com.zenobase.controllers.BucketListController;
@@ -64,6 +65,7 @@ import com.zenobase.services.CommandRepository;
 import com.zenobase.services.IndexManager;
 import com.zenobase.services.LocalNodeFactory;
 import com.zenobase.services.NodeFactory;
+import com.zenobase.services.TestNodeFactory;
 import com.zenobase.services.UserRepository;
 
 public class Global extends GlobalSettings {
@@ -85,7 +87,7 @@ public class Global extends GlobalSettings {
 
 				bindConfiguration();
 
-				bind(NodeFactory.class).to(Play.isProd() ? ClusterNodeFactory.class : LocalNodeFactory.class);
+				bind(NodeFactory.class).to(getNodeFactory());
 				bind(IndexManager.class).in(Singleton.class);
 				bind(BucketRepository.class).in(Singleton.class);
 				bind(CommandDispatcher.class).in(Singleton.class);
@@ -148,6 +150,16 @@ public class Global extends GlobalSettings {
 				requestInjection(Global.this);
 			}
 
+			private Class<? extends NodeFactory> getNodeFactory() {
+				if (Play.isTest()) {
+					return TestNodeFactory.class;
+				} else if (Play.isDev()) {
+					return LocalNodeFactory.class;
+				} else {
+					return ClusterNodeFactory.class;
+				}
+			}
+
 			private void bindConfiguration() {
 				Configuration conf = Play.application().configuration();
 				for (String key : conf.keys()) {
@@ -160,6 +172,8 @@ public class Global extends GlobalSettings {
 				}
 			}
 		});
+
+		Globals.put(Injector.class, injector);
 	}
 
 	private void replay() {

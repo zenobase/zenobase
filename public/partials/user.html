@@ -1,4 +1,4 @@
-<div class="container-fluid" data-ng-controller="UserCtrl">
+<div id="user-view" class="container-fluid" data-ng-controller="UserCtrl">
 
 	<div data-ng-show="message" class="alert alert-block alert-error">
 		{{message}}
@@ -14,12 +14,12 @@
 			<p class="pull-left" style="margin-left: 8px; margin-top: 6px; vertical-align: middle">
 				<i class="icon-user middle"></i>&nbsp;
 			</p>
-			<h3 class="pull-left">{{userId}}</h3>
+			<h3 id="user-title" class="pull-left">{{userId}}</h3>
 			<p class="pull-left" style="margin-left: 8px; margin-top: 6px; vertical-align: middle">
-				<a href="javascript:" data-ng-click="reload()" title="Refresh"><i class="icon-refresh"></i></a>
+				<a id="refresh-buckets-link" href="javascript:" data-ng-click="reload()" title="Refresh"><i class="icon-refresh"></i></a>
 			</p>
 			<p class="pull-left" style="margin-left: 8px; margin-top: 6px; vertical-align: middle" data-ng-show="editable()">
-				<a href="javascript:" data-ng-click="broadcast('edit:user')" title="Edit..." data-ng-show="editable()"><i class="icon-pencil"></i></a>
+				<a id="edit-user-link" href="javascript:" data-ng-click="broadcast('edit:user')" title="Edit..." data-ng-show="editable()"><i class="icon-pencil"></i></a>
 			</p>
 			<p class="pull-left" style="margin-left: 8px; margin-top: 6px; vertical-align: middle" data-ng-show="addable()">
 				<a data-toggle="modal" href="#create-bucket-dialog" title="Add Bucket..." data-ng-show="addable()"><i class="icon-plus"></i></a>
@@ -47,9 +47,9 @@
 				</fieldset>
 			</form>
 			<p>
-				<a href="javascript:" data-ng-click="save()" class="btn btn-primary" data-ng-disabled="!userForm.$valid">Save</a>
-				<a href="javascript:" data-ng-click="cancel()" class="btn">Cancel</a>
-				<a href="javascript:" data-ng-click="close()" class="btn btn-danger pull-right"><i class="icon-trash icon-white"></i> Close Account</a>
+				<button data-ng-click="save()" class="btn btn-primary" data-ng-disabled="!userForm.$valid">Save</button>
+				<button data-ng-click="cancel()" class="btn">Cancel</button>
+				<button id="close-account-button" href="javascript:" data-ng-click="close()" class="btn btn-danger pull-right"><i class="icon-trash icon-white"></i> Close Account</button>
 			</p>
 		</div>
 	
@@ -69,7 +69,7 @@
 							<td colspan="3"><i>Loading...</i></td>
 						</tr>
 						<tr data-ng-repeat="bucket in buckets">
-							<td style="white-space: nowrap"><a data-ng-href="#/buckets/{{bucket['@id']}}/">{{bucket.label}}</a></td>
+							<td style="white-space: nowrap"><a class="bucket-link" data-ng-href="#/buckets/{{bucket['@id']}}/">{{bucket.label}}</a></td>
 							<td>{{bucket.description}}</td>
 							<td style="text-align: right">{{bucket.size}}</td>
 							<td style="text-align: right">
@@ -83,8 +83,8 @@
 				</table>
 				<div class="btn-toolbar">
 					<div class="btn-group pull-right" data-ng-show="buckets">
-						<button class="btn" title="Previous" data-ng-click="prev()" data-ng-disabled="!hasPrev()"><i class="icon-chevron-left"></i></button>
-						<button class="btn" title="Next" data-ng-click="next()" data-ng-disabled="!hasNext()"><i class="icon-chevron-right"></i></button>
+						<button id="prev-buckets-button" class="btn" title="Previous" data-ng-click="prev()" data-ng-disabled="!hasPrev()"><i class="icon-chevron-left"></i></button>
+						<button id="next-buckets-button" class="btn" title="Next" data-ng-click="next()" data-ng-disabled="!hasNext()"><i class="icon-chevron-right"></i></button>
 					</div>
 					<div class="btn-group pull-right" data-ng-show="buckets">
 						<button class="btn disabled zeno-paging"><b>{{offset + 1}}</b> &ndash; <b>{{offset + buckets.length}}</b> of <b>{{total}}</b></button>

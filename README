@@ -9,5 +9,14 @@ To refresh the dependencies in Eclipse, open the play console and run:
 js libs
 -------
 
-bootstrap-mtt.js: concatenate modal + tabs + typeahead
+bootstrap-2.0.x.js: concatenate modal + tabs + typeahead
+
 *.gz: gzip -9 *.min.js
+
+
+Functional Tests
+----------------
+
+From the play console, run:
+  
+  test-only com.zenobase.testing.BrowserTest

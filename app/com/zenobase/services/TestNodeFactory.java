@@ -6,10 +6,16 @@ import org.elasticsearch.common.settings.ImmutableSettings;
 import org.elasticsearch.node.Node;
 import org.elasticsearch.node.NodeBuilder;
 import play.Logger;
+import com.google.common.io.Files;
 
 public class TestNodeFactory extends NodeFactorySupport {
 
 	private final File path;
+
+	public TestNodeFactory() {
+		this.path = Files.createTempDir();
+		this.path.deleteOnExit();
+	}
 
 	public TestNodeFactory(File path) {
 		this.path = path;

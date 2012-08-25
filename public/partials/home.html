@@ -1,4 +1,4 @@
-<div class="container-fluid">
+<div id="home-view" class="container-fluid">
 
 	<div class="hero-unit" data-ng-controller="HomeCtrl">
 		<h1>Collect and analyze<br/> self-tracking data.</h1>
@@ -7,8 +7,8 @@
 		<br/>
 		<p>
 			Explore <a href="https://zenobase.com/#/buckets/u07qih0a27/">sample data</a>, or 
-			<span data-ng-hide="user"><a href="javascript:" data-ng-click="create()">start collecting your own data</a>.</span>
-			<span data-ng-show="user"><a data-ng-href="#/users/{{user.getName()}}" data-ng-show="user">view your data</a>.</span>
+			<span data-ng-hide="user"><a id="new-user-link" href="javascript:" data-ng-click="create()">start collecting your own data</a>.</span>
+			<span data-ng-show="user"><a id="existing-user-link" data-ng-href="#/users/{{user.getName()}}" data-ng-show="user">view your data</a>.</span>
 		</p>
 	</div>
 

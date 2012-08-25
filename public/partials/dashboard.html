@@ -1,10 +1,10 @@
-<div class="container-fluid" data-ng-controller="BucketCtrl">
+<div id="dashboard-view" class="container-fluid" data-ng-controller="BucketCtrl">
 
-	<div data-ng-show="message" class="alert alert-block alert-error">
+	<div id="dashboard-message" data-ng-show="message" class="alert alert-block alert-error">
 		{{message}}
 	</div>
 
-	<div data-ng-hide="bucket || message">
+	<div id="dashboard-loading-message" data-ng-hide="bucket || message">
 		<i class="icon-refresh"></i> Loading...		
 	</div>
 
@@ -152,7 +152,7 @@
 			</div>
 			<div class="control-group">
 				<label for="field" class="control-label">Field</label>
-				<select name="field" class="input-large" data-ng-model="field" data-ng-options="f.name for f in fields | orderBy:'name'">
+				<select id="event-field-select" name="field" class="input-large" data-ng-model="field" data-ng-options="f.name for f in fields | orderBy:'name'">
 					<option value=""></option>
 				</select>
 			</div>
@@ -166,7 +166,7 @@
 			</div>
 		</div>
 		<div class="modal-footer">
-			<button class="btn btn-primary" data-ng-click="save()" data-ng-disabled="isEmpty()">Save</button>
+			<button id="save-event-button" class="btn btn-primary" data-ng-click="save()" data-ng-disabled="isEmpty()">Save</button>
 			<button class="btn" data-ng-click="editEvent(null)">Cancel</button>
 		</div>
 	</div>
@@ -175,10 +175,10 @@
 		<div data-ng-controller="CreateTagFieldCtrl">
 			<div class="control-group">
 				<label for="value" class="control-label">Value</label>
-				<input id="tag-autocomplete" name="value" type="text" data-provide="typeahead" data-ng-model="value"/>
+				<input id="event-tag-field" name="value" type="text" data-provide="typeahead" data-ng-model="value"/>
 			</div>
 			<div class="control-group">
-				<a class="btn" href="javascript:" data-ng-click="addField()" data-ng-disabled="!valid()">Add</a>
+				<button id="add-tag-button" class="btn" href="javascript:" data-ng-click="addField()" data-ng-disabled="!valid()">Add</button>
 			</div>
 		</div>
 	</script>
@@ -187,7 +187,7 @@
 		<div data-ng-controller="CreateLocationFieldCtrl">
 			<div id="create-location-map"></div>
 			<div class="control-group">
-				<a class="btn" href="javascript:" data-ng-click="addField()" data-ng-disabled="!valid()">Add</a>
+				<button class="btn" href="javascript:" data-ng-click="addField()" data-ng-disabled="!valid()">Add</button>
 			</div>
 		</div>
 	</script>
@@ -196,10 +196,10 @@
 		<div data-ng-controller="CreateTimestampFieldCtrl">
 			<div class="control-group">
 				<label for="value" class="control-label">Value</label>
-				<input name="value" type="text" data-ng-model="value"/>
+				<input id="event-timestamp-field" name="value" type="text" data-ng-model="value"/>
 			</div>
 			<div class="control-group">
-				<a class="btn" href="javascript:" data-ng-click="addField()" data-ng-disabled="!valid()">Add</a>
+				<button id="add-timestamp-button" class="btn" href="javascript:" data-ng-click="addField()" data-ng-disabled="!valid()">Add</button>
 			</div>
 		</div>
 	</script>
@@ -213,7 +213,7 @@
 				<input name="seconds" type="number" min="0" max="59" data-ng-model="seconds"/> s
 			</div>
 			<div class="control-group">
-				<a class="btn" href="javascript:" data-ng-click="addField()" data-ng-disabled="!valid()">Add</a>
+				<button class="btn" href="javascript:" data-ng-click="addField()" data-ng-disabled="!valid()">Add</button>
 			</div>
 		</div>
 	</script>
@@ -229,7 +229,7 @@
 				<input name="title" type="text" data-ng-model="value.title"/>
 			</div>
 			<div class="control-group">
-				<a class="btn" href="javascript:" data-ng-click="addField()" data-ng-disabled="!valid()">Add</a>
+				<button class="btn" href="javascript:" data-ng-click="addField()" data-ng-disabled="!valid()">Add</button>
 			</div>
 		</div>
 	</script>
@@ -246,7 +246,7 @@
 				<select name="unit" data-ng-model="value.unit" data-ng-options="unit for unit in field.units"></select>
 			</div>
 			<div class="control-group">
-				<a class="btn" href="javascript:" data-ng-click="addField()" data-ng-disabled="!valid()">Add</a>
+				<button class="btn" href="javascript:" data-ng-click="addField()" data-ng-disabled="!valid()">Add</button>
 			</div>
 		</div>
 	</script>
@@ -262,7 +262,7 @@
 				<select name="unit" data-ng-model="value.unit" data-ng-options="unit for unit in field.units"></select>
 			</div>
 			<div class="control-group">
-				<a class="btn" href="javascript:" data-ng-click="addField()" data-ng-disabled="!valid()">Add</a>
+				<button class="btn" href="javascript:" data-ng-click="addField()" data-ng-disabled="!valid()">Add</button>
 			</div>
 		</div>
 	</script>
@@ -278,7 +278,7 @@
 				<select name="unit" data-ng-model="value.unit" data-ng-options="unit for unit in field.units"></select>
 			</div>
 			<div class="control-group">
-				<a class="btn" href="javascript:" data-ng-click="addField()" data-ng-disabled="!valid()">Add</a>
+				<button class="btn" href="javascript:" data-ng-click="addField()" data-ng-disabled="!valid()">Add</button>
 			</div>
 		</div>
 	</script>
@@ -294,7 +294,7 @@
 				<select name="unit" data-ng-model="value.unit" data-ng-options="unit for unit in field.units"></select>
 			</div>
 			<div class="control-group">
-				<a class="btn" href="javascript:" data-ng-click="addField()" data-ng-disabled="!valid()">Add</a>
+				<button class="btn" href="javascript:" data-ng-click="addField()" data-ng-disabled="!valid()">Add</button>
 			</div>
 		</div>
 	</script>
@@ -310,7 +310,7 @@
 				<select name="unit" data-ng-model="value.unit" data-ng-options="unit for unit in field.units"></select>
 			</div>
 			<div class="control-group">
-				<a class="btn" href="javascript:" data-ng-click="addField()" data-ng-disabled="!valid()">Add</a>
+				<button class="btn" href="javascript:" data-ng-click="addField()" data-ng-disabled="!valid()">Add</button>
 			</div>
 		</div>
 	</script>
@@ -326,7 +326,7 @@
 				<select name="unit" data-ng-model="value.unit" data-ng-options="unit for unit in field.units"></select>
 			</div>
 			<div class="control-group">
-				<a class="btn" href="javascript:" data-ng-click="addField()" data-ng-disabled="!valid()">Add</a>
+				<button class="btn" href="javascript:" data-ng-click="addField()" data-ng-disabled="!valid()">Add</button>
 			</div>
 		</div>
 	</script>
@@ -339,7 +339,7 @@
 				<input name="value" type="number" data-ng-model="value"/>
 			</div>
 			<div class="control-group">
-				<a class="btn" href="javascript:" data-ng-click="addField()" data-ng-disabled="!valid()">Add</a>
+				<button class="btn" href="javascript:" data-ng-click="addField()" data-ng-disabled="!valid()">Add</button>
 			</div>
 		</div>
 	</script>
@@ -351,7 +351,7 @@
 				<input name="value" type="number" min="0" max="100" step="20" data-ng-model="value"/>
 			</div>
 			<div class="control-group">
-				<a class="btn" href="javascript:" data-ng-click="addField()" data-ng-disabled="!valid()">Add</a>
+				<button class="btn" href="javascript:" data-ng-click="addField()" data-ng-disabled="!valid()">Add</button>
 			</div>
 		</div>
 	</script>
@@ -363,7 +363,7 @@
 				<textarea name="value" data-ng-model="value"></textarea>
 			</div>
 			<div class="control-group">
-				<a class="btn" href="javascript:" data-ng-click="addField()" data-ng-disabled="!valid()">Add</a>
+				<button class="btn" href="javascript:" data-ng-click="addField()" data-ng-disabled="!valid()">Add</button>
 			</div>
 		</div>
 	</script>

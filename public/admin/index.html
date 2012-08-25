@@ -19,10 +19,10 @@
 			<a href="#/"><img src="/img/logo.png" alt="Zenobase" width="159" height="25"/></a>
 			<div class="pull-right ng-cloak">
 				<p data-ng-show="user.name">
-					<i class="icon-user"></i> <a data-ng-href="#/users/{{user.getName()}}">{{user.getName()}}</a> | <a href="javascript:" data-ng-click="signOut()">Sign out</a>
+					<i class="icon-user"></i> <a data-ng-href="#/users/{{user.getName()}}">{{user.getName()}}</a> | <a id="sign-out-link" href="javascript:" data-ng-click="signOut()">Sign out</a>
 				</p>
 				<p data-ng-hide="user">
-					<a href="#sign-in-dialog" data-toggle="modal">Sign in</a>
+					<a id="sign-in-link" href="#sign-in-dialog" data-toggle="modal">Sign in</a>
 				</p>
 			</div>
 		</header>

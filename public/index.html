@@ -22,9 +22,9 @@
 
 	<body data-ng-controller="MainCtrl">
 
-		<div class="ng-cloak" data-ng-show="user.getName() == 'guest'">
+		<div id="sign-up-banner" class="ng-cloak" data-ng-show="user.getName() == 'guest'">
 			<div class="alert">
-				<a href="#sign-up-dialog" data-toggle="modal">Sign up</a> to save your data.
+				<a id="sign-up-link" href="#sign-up-dialog" data-toggle="modal">Sign up</a> to save your data.
 			</div>
 		</div>
 
@@ -32,16 +32,16 @@
 			<a href="#/"><img src="/img/logo.png" alt="Zenobase" width="159" height="25"/></a>
 			<div class="pull-right ng-cloak">
 				<p data-ng-show="user">
-					<i class="icon-user"></i> <a data-ng-href="#/users/{{user.getName()}}">{{user.getName()}}</a> | <a href="javascript:" data-ng-click="signOut()">Sign out</a>
+					<i class="icon-user"></i> <a id="user-profile-link" data-ng-href="#/users/{{user.getName()}}">{{user.getName()}}</a> | <a id="sign-out-link" href="javascript:" data-ng-click="signOut()">Sign out</a>
 				</p>
 				<p data-ng-hide="user">
-					<a href="#sign-in-dialog" data-toggle="modal">Sign in</a>
+					<a id="sign-in-link" href="#sign-in-dialog" data-toggle="modal">Sign in</a>
 				</p>
 			</div>
 		</header>
 
 		<div class="container-fluid ng-cloak">
-			<div class="alert {{alert.level}}">
+			<div id="alert-banner" class="alert {{alert.level}}">
 				<a class="close" href="javascript:" data-ng-click="alert.clear()">&times;</a>
 				<span data-ng-bind-html="alert.message"></span>
 				<span data-ng-show="alert.undo">
@@ -142,7 +142,7 @@
 						<h3>Sign up</h3>
 					</div>
 					<div class="modal-body">
-						<div class="alert alert-error" data-ng-show="message">
+						<div id="sign-up-message" class="alert alert-error" data-ng-show="message">
 							{{message}}
 						</div>
 						<div class="control-group">
@@ -164,7 +164,7 @@
 						</div>
 					</div>
 					<div class="modal-footer">
-						<button type="submit" class="btn btn-primary" data-ng-disabled="!signUpForm.$valid">Sign up</button>
+						<button id="sign-up-button" type="submit" class="btn btn-primary" data-ng-disabled="!signUpForm.$valid">Sign up</button>
 						<button type="reset" class="btn" data-dismiss="modal">Cancel</button>
 					</div>
 			</form>

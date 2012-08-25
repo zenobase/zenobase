@@ -1639,7 +1639,7 @@
 	
 	app.controller('CreateTagFieldCtrl', ['$scope', '$http', function($scope, $http) {
 
-		var input = $('#tag-autocomplete');
+		var input = $('#event-tag-field');
 
 		$scope.init = function() {
 	    $scope.value = '';
