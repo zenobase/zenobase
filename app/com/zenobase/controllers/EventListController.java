@@ -15,7 +15,6 @@ import com.zenobase.actions.Timed;
 import com.zenobase.commands.CompoundCommand;
 import com.zenobase.commands.CreateEventCommand;
 import com.zenobase.common.Generator;
-import com.zenobase.json.IntegerField;
 import com.zenobase.json.ObjectField;
 import com.zenobase.models.Bucket;
 import com.zenobase.models.Event;
@@ -28,7 +27,6 @@ import com.zenobase.services.CommandDispatcher;
 @With(Timed.class)
 public class EventListController extends ControllerSupport {
 
-	static final IntegerField RANDOM = new IntegerField("random");
 	static final ObjectField EVENTS = new ObjectField("events");
 
 	@Inject

@@ -5,7 +5,7 @@ import static com.zenobase.testing.ResultAssert.assertThat;
 import static org.fest.assertions.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 import static play.mvc.Http.Status.*;
-import static play.test.Helpers.*;
+import static play.test.Helpers.callAction;
 
 import org.codehaus.jackson.node.ArrayNode;
 import org.codehaus.jackson.node.ObjectNode;
@@ -15,6 +15,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import play.mvc.Result;
+import play.test.Helpers;
 
 import com.zenobase.commands.CompoundCommand;
 import com.zenobase.commands.CreateEventCommand;
@@ -52,7 +53,7 @@ public class EventListControllerHttpPostTest extends EventListControllerTestSupp
 	}
 
 	@Test
-	public void testCreateMultipleEvents() {
+	public void testCreateEvents() {
 		String commandId = Generator.id();
 		ArgumentCaptor<CompoundCommand> commandArg = ArgumentCaptor.forClass(CompoundCommand.class);
 		ArrayNode eventsNode = body.putArray(EventListController.EVENTS.getName());
@@ -87,20 +88,6 @@ public class EventListControllerHttpPostTest extends EventListControllerTestSupp
 	}
 
 	@Test
-	public void testCreateRandomEvents() {
-		String commandId = Generator.id();
-		int eventCount = 10;
-		ArgumentCaptor<CompoundCommand> commandArg = ArgumentCaptor.forClass(CompoundCommand.class);
-		EventListController.RANDOM.setValue(body, eventCount);
-		when(auth.getPrincipal()).thenReturn(user.asIdentity());
-		when(buckets.findBucket(bucket.getId())).thenReturn(bucket);
-		when(dispatcher.dispatch(commandArg.capture())).thenReturn(commandId);
-		Result result = call(bucket, body);
-		assertThat(result).hasStatus(OK).hasContent(EventListController.receipt(commandId));
-		assertThat(commandArg.getValue().getCommands().size()).as("number of commands").isEqualTo(eventCount);
-	}
-
-	@Test
 	public void testCreateEventBucketNotFound() {
 		when(auth.getPrincipal()).thenReturn(user.asIdentity());
 		when(buckets.findBucket(bucket.getId())).thenReturn(null);
@@ -125,6 +112,6 @@ public class EventListControllerHttpPostTest extends EventListControllerTestSupp
 	}
 
 	private static Result call(Bucket bucket, ObjectNode body) {
-		return callAction(com.zenobase.controllers.routes.ref.EventListController.post(bucket.getId()), fakeRequest().withJsonBody(body));
+		return callAction(com.zenobase.controllers.routes.ref.EventListController.post(bucket.getId()), Helpers.fakeRequest().withJsonBody(body));
 	}
 }
