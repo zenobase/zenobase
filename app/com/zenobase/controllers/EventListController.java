@@ -14,7 +14,6 @@ import com.google.common.collect.ImmutableList;
 import com.zenobase.actions.Timed;
 import com.zenobase.commands.CompoundCommand;
 import com.zenobase.commands.CreateEventCommand;
-import com.zenobase.commands.RandomEventsCommandBuilder;
 import com.zenobase.common.Generator;
 import com.zenobase.json.IntegerField;
 import com.zenobase.json.ObjectField;
@@ -64,7 +63,6 @@ public class EventListController extends ControllerSupport {
 		if (principal == null) {
 			return unauthorized();
 		}
-		ObjectNode body = body();
     	Bucket bucket = buckets.findBucket(bucketId);
     	if (bucket == null) {
     		return notFound();
@@ -72,11 +70,7 @@ public class EventListController extends ControllerSupport {
     	if (bucket.getPermission(principal) != Permission.ALL) {
     		return forbidden();
     	}
-    	Integer random = RANDOM.getValue(body);
-    	if (random != null) {
-    		String commandId = dispatcher.dispatch(new RandomEventsCommandBuilder(principal, bucketId).build(random));
-            return ok(receipt(commandId));
-    	}
+    	ObjectNode body = body();
     	ImmutableList<ObjectNode> nodes = EVENTS.getValues(body);
     	if (!nodes.isEmpty()) {
     		CompoundCommand cmd = new CompoundCommand(principal, "added events", "removed events");
