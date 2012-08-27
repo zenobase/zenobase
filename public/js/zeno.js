@@ -844,10 +844,10 @@
 			$scope.refresh({ offset : $scope.offset + $scope.settings.limit });
 		}
 		$scope.params = function() {
-			return { 
+			return {
 				id : $scope.settings.id,
 				type : 'list',
-				offset : $scope.offset, 
+				offset : 0, 
 				limit : $scope.settings.limit,
 				order : $scope.settings.order,
 				reverse : $scope.settings.reverse
