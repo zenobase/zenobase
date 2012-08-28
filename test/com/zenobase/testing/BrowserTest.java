@@ -26,7 +26,6 @@ import com.zenobase.common.Globals;
 import com.zenobase.models.Bucket;
 import com.zenobase.models.Identity;
 import com.zenobase.models.Permission;
-import com.zenobase.models.User;
 import com.zenobase.services.BucketRepository;
 import com.zenobase.services.UserRepository;
 
@@ -35,11 +34,15 @@ public class BrowserTest {
 	private static final int PORT = 9000;
 
 	@Test
-	@Ignore
+	//@Ignore
 	public void testStory() {
 		running(testServer(PORT), FIREFOX, new play.libs.F.Callback<TestBrowser>() {
 			@Override
 			public void invoke(TestBrowser browser) throws Throwable {
+
+				Injector injector = Globals.get(Injector.class);
+				UserRepository users = injector.getInstance(UserRepository.class);
+				BucketRepository buckets = injector.getInstance(BucketRepository.class);
 
 				// open home page
 				browser.goTo("http://localhost:" + PORT);
@@ -124,16 +127,17 @@ public class BrowserTest {
 				browser.goTo(extractUrl(m.getContent().toString()));
 				browser.await().atMost(5, TimeUnit.SECONDS).until("#user-view").isPresent();
 
+				// add & configure widgets
+				// test filtering & paging
+
 				// assert is verified
 				// edit profile -> change email
 				// delete bucket & undo
 				// add bucket
 				// add buckets programmatically
-				Injector injector = Globals.get(Injector.class);
-				UserRepository users = injector.getInstance(UserRepository.class);
-				User user = users.find("jdoe");
-				Identity identity = user.asIdentity();
-				BucketRepository buckets = injector.getInstance(BucketRepository.class);
+				assertThat(users.find("jdoe").isVerified()).as("user is verified").isTrue();
+
+				Identity identity = users.find("jdoe").asIdentity();
 				for (int i = 0; i < 5; ++i) {
 					Bucket b = new Bucket();
 					b.addPermission(identity, Permission.ALL);
@@ -172,7 +176,7 @@ public class BrowserTest {
 				assertThat(browser.findFirst("#sign-out-link")).as("sign out link").isNotDisplayed();
 				assertThat(browser.findFirst("#user-profile-link")).as("user profile link").isNotDisplayed();
 				assertThat(browser.findFirst("#existing-user-link")).as("existing user link").isNotDisplayed();
-				assertThat(injector.getInstance(UserRepository.class).find("jdoe").isSuspended()).as("user is suspended").isTrue();
+				assertThat(users.find("jdoe").isSuspended()).as("user is suspended").isTrue();
 
 				browser.quit();
 			}
