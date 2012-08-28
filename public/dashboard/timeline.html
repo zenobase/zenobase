@@ -1,6 +1,6 @@
-<div data-ng-controller="TimelineCtrl">
+<div id="{{settings.id}}-content" data-ng-controller="TimelineCtrl">
 
-	<div id="timeline-{{settings.id}}" data-ng-show="times"></div>
+	<div id="{{settings.id}}-chart" data-ng-show="times"></div>
 
 	<p data-ng-show="times == null" class="none">Loading...</p>
 

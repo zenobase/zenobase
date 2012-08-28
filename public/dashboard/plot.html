@@ -1,6 +1,6 @@
-<div data-ng-controller="PlotCtrl">
+<div id="{{settings.id}}-content" data-ng-controller="PlotCtrl">
 
-	<div id="linechart-{{settings.id}}" data-ng-show="times"></div>
+	<div id="{{settings.id}}-chart" data-ng-show="times"></div>
 
 	<p data-ng-show="times == null" class="none">Loading...</p>
 

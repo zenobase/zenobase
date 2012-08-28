@@ -572,7 +572,8 @@
 			$scope.chooseWidget(null);
 			$timeout(function() {
 				$('#' + settings.id + '-tab').tab('show');
-			});
+				$('#' + settings.id + '-content').scope().showDialog(true);
+			}, 500);
 		};
 		$scope.findTemplates = function() {
 			return $.grep($scope.templates, function(template) {
@@ -1230,7 +1231,7 @@
 						vAxis : { gridlines : { color : '#EEE', count : 2 }, minorGridlines : { color : '#EEE', count : 1 }, baselineColor : '#EEE', textStyle : { fontSize: 10 } },
 						hAxis : { baselineColor : 'white', textPosition : 'none', textStyle : { fontSize: 10 } }
 					};
-					var chart = new google.visualization.ColumnChart(document.getElementById('timeline-' + $scope.settings.id));
+					var chart = new google.visualization.ColumnChart(document.getElementById($scope.settings.id + '-chart'));
 					chart.draw(data, options);
 					google.visualization.events.addListener(chart, 'select', function() {
 						var selection = chart.getSelection();
@@ -1361,7 +1362,7 @@
 						vAxis : { gridlines : { color : '#EEE', count : 2 }, minorGridlines : { color : '#EEE', count : 1 }, baselineColor : '#EEE', textStyle : { fontSize: 10 } },
 						hAxis : { gridlines : { color : 'transparent', count : 2 }, baselineColor : 'transparent', textPosition : 'none' }
 					};
-					var chart = new google.visualization.AreaChart(document.getElementById('linechart-' + $scope.settings.id));
+					var chart = new google.visualization.AreaChart(document.getElementById($scope.settings.id + '-chart'));
 					chart.draw(data, options);
 					google.visualization.events.addListener(chart, 'select', function() {
 						var selection = chart.getSelection();
