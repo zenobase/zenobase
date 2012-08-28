@@ -9,7 +9,9 @@
 		</thead>
 		<tbody>
 			<tr data-ng-repeat="rating in ratings">
-				<td data-ng-bind-html="rating.from | stars"></td>
+				<td>
+					<a href="javascript:" data-ng-click="filter(rating)" data-ng-bind-html="rating.from | stars"></a>
+				</td>
 				<td style="text-align: right">{{rating.count | number }}</td>
 			</tr>
 			<tr data-ng-hide="ratings">

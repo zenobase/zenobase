@@ -1046,7 +1046,14 @@
 				$scope.update(null, result);
 			});
 		};
-	
+		function toString(value) {
+			return typeof value === 'number' ? '' + value : '';
+		}
+		$scope.filter = function(rating) {
+			$scope.offset = 0;
+			$scope.addFilter(new Filter($scope.field, toString(rating.from) + ',' + toString(rating.to)))
+		};
+
 		$scope.dialogShown = false;
 		$scope.showDialog = function(dialogShown) {
 			$scope.dialogShown = dialogShown;

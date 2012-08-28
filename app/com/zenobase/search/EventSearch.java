@@ -39,6 +39,7 @@ public class EventSearch {
 		.put(Event.TAG.getName(), new TermConstraint())
 		.put(Event.AUTHOR.getName(), new TermConstraint())
 		.put(Event.TIMESTAMP.getName(), new DateTimeRangeConstraint())
+		.put(Event.RATING.getName(), new RangeConstraint())
 		.put(Event.LOCATION.getName(), new BoundingBoxConstraint())
 		.build();
 
