@@ -121,10 +121,10 @@
 
 	</div>
 
-	<div id="add-widget-dialog" class="modal" data-ng-controller="AddWidgetCtrl" data-ng-show="placement">
+	<div id="add-widget-dialog" data-ui-modal="placement" data-ui-modal-open="init()" data-ui-modal-close="chooseWidget(null)" data-ng-controller="AddWidgetCtrl">
 		<form name="addWidgetForm" class="modal-form">
 			<div class="modal-header">
-				<a class="close" href="javascript:" data-ng-click="cancel()">&times;</a>
+				<a class="close" data-dismiss="modal">&times;</a>
 				<h3>Add Widget</h3>
 			</div>
 			<div class="modal-body">
@@ -136,14 +136,14 @@
 			</div>
 			<div class="modal-footer">
 				<button class="btn btn-primary" data-ng-click="add()" data-ng-disabled="!addWidgetForm.$valid">Add</button>
-				<button class="btn" data-ng-click="cancel()">Cancel</button>
+				<button class="btn" data-dismiss="modal">Cancel</button>
 			</div>
 		</form>
 	</div>
 
-	<div id="edit-event-dialog" class="modal" data-ng-show="selectedEvent" data-ng-controller="EditEventDialogCtrl">
+	<div id="edit-event-dialog" data-ui-modal="selectedEvent" data-ui-modal-open="init()" data-ui-modal-close="editEvent(null)" data-ng-controller="EditEventDialogCtrl">
 		<div class="modal-header">
-			<a class="close" href="javascript:" data-ng-click="editEvent(null)">&times;</a>
+			<a class="close" data-dismiss="modal">&times;</a>
 			<h3>Event</h3>
 		</div>
 		<div class="modal-body">
@@ -167,7 +167,7 @@
 		</div>
 		<div class="modal-footer">
 			<button id="save-event-button" class="btn btn-primary" data-ng-click="save()" data-ng-disabled="isEmpty()">Save</button>
-			<button class="btn" data-ng-click="editEvent(null)">Cancel</button>
+			<button class="btn" data-dismiss="modal">Cancel</button>
 		</div>
 	</div>
 

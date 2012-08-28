@@ -36,10 +36,10 @@
 		</div>
 	</div>
 
-	<div class="modal" data-ng-controller="ScoreboardSettingsCtrl" data-ng-show="dialogShown">
+	<div data-ui-modal="dialogShown" data-ui-modal-close="cancel()" data-ng-controller="ScoreboardSettingsCtrl">
 		<form name="form" class="modal-form">
 			<div class="modal-header">
-				<a class="close" href="javascript:" data-ng-click="cancel()">&times;</a>
+				<a class="close" href="javascript:" data-dismiss="modal">&times;</a>
 				<h3>Scoreboard</h3>
 			</div>
 			<div class="modal-body">
@@ -80,7 +80,7 @@
 			</div>
 			<div class="modal-footer">
 				<button class="btn btn-primary" data-ng-click="save()" data-ng-disabled="!form.$valid">Update</button>
-				<button class="btn" data-ng-click="cancel()">Cancel</button>
+				<button class="btn" data-dismiss="modal">Cancel</button>
 			</div>
 		</form>
 	</div>

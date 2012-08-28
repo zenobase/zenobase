@@ -549,7 +549,8 @@
 	}
 	
 	app.controller('AddWidgetCtrl', ['$scope', '$http', '$route', '$routeParams', '$location', '$timeout', function($scope, $http, $route, $routeParams, $location, $timeout) {
-	
+
+		$scope.dialog = $("#add-widget-dialog");
 		$scope.templates = [
 	  	{ label : 'Timeline', description : 'Timeline with event counts.', type : 'timeline', valueField : 'timestamp', statistic : 'count' },
 	  	{ label : 'Map', description : 'Map with event locations.', type : 'map', singleton : true },
@@ -560,19 +561,18 @@
 	  	{ label : 'Scoreboard', description : 'Statistics for the values in a field', type : 'scoreboard', termField : 'author', valueField : 'distance', unit : 'km', order : 'total', limit : 10 },                    
 	  	{ label : 'Plot', description : 'Plots values against a timeline.', type : 'plot', valueField : 'timestamp', statistic : 'avg', interval : 'day' }
 	  ];
-		$scope.template = null;
+		$scope.init = function() {
+			$scope.template = null;
+		};
 		$scope.add = function() {
 			var settings = { id : randomID(), placement : $scope.placement };
 			$.extend(settings, $scope.template);
 			delete settings.description;
 			$scope.addWidget(settings);
-			$scope.closeWidgetDialog();
+			$scope.chooseWidget(null);
 			$timeout(function() {
 				$('#' + settings.id + '-tab').tab('show');
 			});
-		};
-		$scope.cancel = function() {
-			$scope.closeWidgetDialog();
 		};
 		$scope.findTemplates = function() {
 			return $.grep($scope.templates, function(template) {
@@ -686,9 +686,6 @@
 		};
 		$scope.chooseWidget = function(placement) {
 			$scope.placement = placement;
-		};
-		$scope.closeWidgetDialog = function() {
-			$scope.placement = null;
 		};
 		$scope.addWidget = function(settings) {
 			$scope.bucket.widgets.push(settings);
@@ -951,7 +948,7 @@
 	
 	var WidgetSettingsCtrl = function($scope) {
 		$scope.save = function() {
-			$scope.refresh({ offset : 0 }, $scope.settings);
+			$scope.refresh({}, $scope.settings);
 			$scope.showDialog(false);
 		};
 		$scope.cancel = function() {
@@ -1630,7 +1627,7 @@
 			}
 		};
 
-		$scope.$watch('selectedEvent', $scope.init);
+		$scope.init();
 		$scope.$watch('event', function(event) {
 			$scope.entries = event.get($scope.fields);
 		}, true);
@@ -2100,25 +2097,30 @@
 		};
 	});
 
-	app.directive('tooltip', function() {
-		var oldClean = jQuery.cleanData;
-		$.cleanData = function( elems ) {
-			for (var i = 0, elem; (elem = elems[i]) !== undefined; i++) {
-				$(elem).triggerHandler('destroyed');
-			}
-			oldClean(elems);
-		};
+	app.directive('uiModal', function() {
 		return {
 			restrict: 'A',
-			compile: function() {
-				return function(scope, element, attrs) {
-					element.tooltip({ placement : 'bottom' });
-					element.bind("destroyed", function(e){
-						element.tooltip('hide');
-					})
-				};
+			link: function(scope, element, attrs, model) {
+				element.addClass('modal hide');
+				if (attrs.uiModalClose) {
+					element.on('hidden', function() {
+						if (scope[attrs.uiModal]) {
+							scope.$apply(attrs.uiModalClose);
+						}
+					});
+				}
+				scope.$watch(attrs.uiModal, function(value) {
+					if (value) {
+						if (attrs.uiModalOpen) {
+							scope.$eval(attrs.uiModalOpen);
+						}
+						element.modal('show');
+					} else {
+						element.modal('hide');
+					}
+				});
 			}
-		};
+		};		
 	});
 
 }());
