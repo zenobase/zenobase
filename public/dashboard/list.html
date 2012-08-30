@@ -3,12 +3,12 @@
 	<table class="table" data-ng-show="items">
 		<tbody>
 			<tr data-ng-repeat="event in items">
-				<td style="line-height: 1.5; border-style: none;">
+				<td class="event-row" style="line-height: 1.5; border-style: none;">
 					<span data-ng-bind-html="event | fields"></span>
 					&nbsp;
 					<div class="action pull-right" data-ng-show="editable">
-						<a href="javascript:" data-ng-click="editEvent(event)"><i class="icon-pencil" title="Edit"></i></a>
-						<a href="javascript:" data-ng-click="removeEvent(event['@id'])"><i class="icon-trash" title="Delete"></i></a>
+						<a class="event-edit-action" href="javascript:" data-ng-click="editEvent(event)"><i class="icon-pencil" title="Edit"></i></a>
+						<a class="event-delete-action" href="javascript:" data-ng-click="removeEvent(event['@id'])"><i class="icon-trash" title="Delete"></i></a>
 					</div>
 				</td>
 			</tr>

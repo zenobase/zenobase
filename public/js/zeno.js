@@ -1645,7 +1645,7 @@
 	
 	app.controller('CreateTagFieldCtrl', ['$scope', '$http', function($scope, $http) {
 
-		var input = $('#event-tag-field');
+		var input = $('#tag-value-field');
 
 		$scope.init = function() {
 	    $scope.value = '';

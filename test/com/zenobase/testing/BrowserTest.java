@@ -16,6 +16,8 @@ import javax.mail.Message;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.jvnet.mock_javamail.Mailbox;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
 import play.libs.WS;
 import play.test.TestBrowser;
 import com.google.common.collect.Iterables;
@@ -66,33 +68,107 @@ public class BrowserTest {
 				assertThat(browser.findFirst("#dashboard-message")).as("dashboard message").isNotDisplayed();
 				assertThat(browser.findFirst("#dashboard-loading-message")).as("dashboard loading message").isNotDisplayed();
 				assertThat(browser.findFirst("#edit-event-dialog")).as("edit event dialog").isDisplayed();
+				assertThat(buckets.findBuckets(0, 1).size()).as("number of buckets").isEqualTo(1L);
 
 				// add a timestamp to the event
 				browser.findFirst("#event-field-select option", withText("timestamp")).click();
-				assertThat(browser.findFirst("#save-event-button")).as("save event button").isNotEnabled();
-				browser.fill("#event-timestamp-field").with("foo");
+				browser.fill("#timestamp-value-field").with("foo");
 				assertThat(browser.findFirst("#add-timestamp-button")).as("add timestamp button").isNotEnabled();
-				browser.fill("#event-timestamp-field").with("2012-03-31T23:00:00.000-0700");
+				browser.fill("#timestamp-value-field").with("2012-08-04T08:30:00.000-0700");
 				browser.click("#add-timestamp-button");
 				assertThat(browser.findFirst("#save-event-button")).as("save event button").isEnabled();
 
 				// add a tag to the event
 				browser.findFirst("#event-field-select option", withText("tag")).click();
 				assertThat(browser.findFirst("#add-tag-button")).as("add tag button").isNotEnabled();
-				browser.fill("#event-tag-field").with("foo");
+				browser.fill("#tag-value-field").with("hike");
 				assertThat(browser.findFirst("#add-tag-button")).as("add tag button").isEnabled();
 				browser.click("#add-tag-button");
 				assertThat(browser.findFirst("#add-tag-button")).as("add tag button").isNotEnabled();
 
-				// add a second tag to the event
-				assertThat(browser.findFirst("#add-tag-button")).as("add tag button").isNotEnabled();
-				browser.fill("#event-tag-field").with("bar");
-				assertThat(browser.findFirst("#add-tag-button")).as("add tag button").isEnabled();
-				browser.click("#add-tag-button");
-				assertThat(browser.findFirst("#add-tag-button")).as("add tag button").isNotEnabled();
+				// add a location
+				browser.findFirst("#event-field-select option", withText("location")).click();
+				assertThat(browser.findFirst("#add-location-button")).as("add location button").isEnabled();
+				browser.click("#add-location-button");
+
+				// add a distance
+				browser.findFirst("#event-field-select option", withText("distance")).click();
+				assertThat(browser.findFirst("#add-distance-button")).as("add distance button").isNotEnabled();
+				browser.fill("#distance-value-field").with("12.2");
+				assertThat(browser.findFirst("#add-distance-button")).as("add distance button").isNotEnabled();
+				browser.findFirst("#distance-unit-select option", withText("mi")).click();
+				assertThat(browser.findFirst("#add-distance-button")).as("add distance button").isEnabled();
+				browser.click("#add-distance-button");
+				assertThat(browser.findFirst("#add-distance-button")).as("add distance button").isNotEnabled();
+
+				// add a height
+				browser.findFirst("#event-field-select option", withText("height")).click();
+				assertThat(browser.findFirst("#add-height-button")).as("add height button").isNotEnabled();
+				browser.fill("#height-value-field").with("6970");
+				assertThat(browser.findFirst("#add-height-button")).as("add height button").isNotEnabled();
+				browser.findFirst("#height-unit-select option", withText("ft")).click();
+				assertThat(browser.findFirst("#add-height-button")).as("add height button").isEnabled();
+				browser.click("#add-height-button");
+				assertThat(browser.findFirst("#add-height-button")).as("add height button").isNotEnabled();
+
+				// add a resource
+				browser.findFirst("#event-field-select option", withText("resource")).click();
+				assertThat(browser.findFirst("#add-resource-button")).as("add resource button").isNotEnabled();
+				browser.fill("#resource-url-field").with("http://picasaweb.google.com/eric.jain/MountAdamsAugust2012");
+				assertThat(browser.findFirst("#add-resource-button")).as("add resource button").isNotEnabled();
+				browser.fill("#resource-title-field").with("Mount Adams");
+				assertThat(browser.findFirst("#add-resource-button")).as("add resource button").isEnabled();
+				browser.click("#add-resource-button");
+				assertThat(browser.findFirst("#add-resource-button")).as("add resource button").isNotEnabled();
+
+				// add a duration
+				browser.findFirst("#event-field-select option", withText("duration")).click();
+				assertThat(browser.findFirst("#add-duration-button")).as("add duration button").isNotEnabled();
+				browser.fill("#duration-hours-field").with("19");
+				browser.fill("#duration-minutes-field").with("30");
+				assertThat(browser.findFirst("#add-duration-button")).as("add duration button").isEnabled();
+				browser.click("#add-duration-button");
+				assertThat(browser.findFirst("#add-duration-button")).as("add duration button").isNotEnabled();
+
+				// add a note
+				browser.findFirst("#event-field-select option", withText("note")).click();
+				assertThat(browser.findFirst("#add-note-button")).as("add note button").isNotEnabled();
+				browser.fill("#note-value-field").with("nice views");
+				assertThat(browser.findFirst("#add-note-button")).as("add note button").isEnabled();
+				browser.click("#add-note-button");
+				assertThat(browser.findFirst("#add-note-button")).as("add note button").isNotEnabled();
+
+				// add a rating
+				browser.findFirst("#event-field-select option", withText("rating")).click();
+				browser.fill("#rating-value-field").with("80");
+				assertThat(browser.findFirst("#add-rating-button")).as("add rating button").isEnabled();
+				browser.click("#add-rating-button");
 
 				browser.click("#save-event-button");
 				sleep();
+
+				assertThat(browser.findFirst("#event-count").getText()).as("event count").isEqualTo("1");
+
+				WebElement test = browser.getDefaultDriver().findElement(By.id("event-count"));
+				assertThat(test.isDisplayed()).isTrue();
+
+				// WebElement row = browser.getDefaultDriver().findElement(By.className("event-row"));
+				// WebElement action = browser.getDefaultDriver().findElement(By.className("event-delete-action"));
+				// new Actions(browser.getDefaultDriver()).moveToElement(row).click(action).perform();
+				// browser.click("td[id^='event-']");
+				// browser.click("a[id^='edit-event-']");
+
+				// edit event: add another tag, delete a field
+
+				// add benchpress and weather event
+
+				// add events programmatically, refresh
+
+				// import/export
+
+				// add & configure widgets
+
+				// test filtering & paging
 
 				// sign up
 				browser.click("#sign-up-link");
@@ -125,17 +201,14 @@ public class BrowserTest {
 				assertThat(inbox).as("messages").hasSize(1);
 				Message m = Iterables.getOnlyElement(inbox);
 				browser.goTo(extractUrl(m.getContent().toString()));
-				browser.await().atMost(5, TimeUnit.SECONDS).until("#user-view").isPresent();
+				sleep(); // browser.await().atMost(5, TimeUnit.SECONDS).until("#user-view").isPresent();
 
-				// add & configure widgets
-				// test filtering & paging
+				assertThat(users.find("jdoe").isVerified()).as("user is verified").isTrue();
 
-				// assert is verified
 				// edit profile -> change email
 				// delete bucket & undo
 				// add bucket
 				// add buckets programmatically
-				assertThat(users.find("jdoe").isVerified()).as("user is verified").isTrue();
 
 				Identity identity = users.find("jdoe").asIdentity();
 				for (int i = 0; i < 5; ++i) {

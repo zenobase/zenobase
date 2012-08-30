@@ -175,7 +175,7 @@
 		<div data-ng-controller="CreateTagFieldCtrl">
 			<div class="control-group">
 				<label for="value" class="control-label">Value</label>
-				<input id="event-tag-field" name="value" type="text" data-provide="typeahead" data-ng-model="value"/>
+				<input id="tag-value-field" name="value" type="text" data-provide="typeahead" data-ng-model="value"/>
 			</div>
 			<div class="control-group">
 				<button id="add-tag-button" class="btn" href="javascript:" data-ng-click="addField()" data-ng-disabled="!valid()">Add</button>
@@ -187,7 +187,7 @@
 		<div data-ng-controller="CreateLocationFieldCtrl">
 			<div id="create-location-map"></div>
 			<div class="control-group">
-				<button class="btn" href="javascript:" data-ng-click="addField()" data-ng-disabled="!valid()">Add</button>
+				<button id="add-location-button" class="btn" href="javascript:" data-ng-click="addField()" data-ng-disabled="!valid()">Add</button>
 			</div>
 		</div>
 	</script>
@@ -196,7 +196,7 @@
 		<div data-ng-controller="CreateTimestampFieldCtrl">
 			<div class="control-group">
 				<label for="value" class="control-label">Value</label>
-				<input id="event-timestamp-field" name="value" type="text" data-ng-model="value"/>
+				<input id="timestamp-value-field" name="value" type="text" data-ng-model="value"/>
 			</div>
 			<div class="control-group">
 				<button id="add-timestamp-button" class="btn" href="javascript:" data-ng-click="addField()" data-ng-disabled="!valid()">Add</button>
@@ -207,13 +207,13 @@
 	<script id="/create-duration.html" type="text/ng-template">
 		<div data-ng-controller="CreateDurationFieldCtrl">
 			<div class="control-group">
-				<input name="days" type="number" data-ng-model="days"/> d<br/>
-				<input name="hours" type="number" min="0" max="23" data-ng-model="hours"/> h<br/>
-				<input name="minutes" type="number" min="0" max="59" data-ng-model="minutes"/> min<br/>
-				<input name="seconds" type="number" min="0" max="59" data-ng-model="seconds"/> s
+				<input id="duration-days-field" name="days" type="number" data-ng-model="days"/> d<br/>
+				<input id="duration-hours-field" name="hours" type="number" min="0" max="23" data-ng-model="hours"/> h<br/>
+				<input id="duration-minutes-field" name="minutes" type="number" min="0" max="59" data-ng-model="minutes"/> min<br/>
+				<input id="duration-seconds-field" name="seconds" type="number" min="0" max="59" data-ng-model="seconds"/> s
 			</div>
 			<div class="control-group">
-				<button class="btn" href="javascript:" data-ng-click="addField()" data-ng-disabled="!valid()">Add</button>
+				<button id="add-duration-button" class="btn" href="javascript:" data-ng-click="addField()" data-ng-disabled="!valid()">Add</button>
 			</div>
 		</div>
 	</script>
@@ -222,14 +222,14 @@
 		<div data-ng-controller="CreateResourceFieldCtrl">
 			<div class="control-group">
 				<label for="url" class="control-label">URL</label>
-				<input name="url" type="text" data-ng-model="value.url"/>
+				<input id="resource-url-field" name="url" type="text" data-ng-model="value.url"/>
 			</div>
 			<div class="control-group">
 				<label for="title" class="control-label">Title</label>
-				<input name="title" type="text" data-ng-model="value.title"/>
+				<input id="resource-title-field" name="title" type="text" data-ng-model="value.title"/>
 			</div>
 			<div class="control-group">
-				<button class="btn" href="javascript:" data-ng-click="addField()" data-ng-disabled="!valid()">Add</button>
+				<button id="add-resource-button" class="btn" href="javascript:" data-ng-click="addField()" data-ng-disabled="!valid()">Add</button>
 			</div>
 		</div>
 	</script>
@@ -239,14 +239,14 @@
 		<div data-ng-controller="CreateUnitFieldCtrl">
 			<div class="control-group">
 				<label for="value" class="control-label">Value</label>
-				<input name="value" type="number" data-ng-model="value['@value']"/>
+				<input id="distance-value-field" name="value" type="number" data-ng-model="value['@value']"/>
 			</div>
 			<div class="control-group">
 				<label for="unit" class="control-label">Unit</label>
-				<select name="unit" data-ng-model="value.unit" data-ng-options="unit for unit in field.units"></select>
+				<select id="distance-unit-select" name="unit" data-ng-model="value.unit" data-ng-options="unit for unit in field.units"></select>
 			</div>
 			<div class="control-group">
-				<button class="btn" href="javascript:" data-ng-click="addField()" data-ng-disabled="!valid()">Add</button>
+				<button id="add-distance-button" class="btn" href="javascript:" data-ng-click="addField()" data-ng-disabled="!valid()">Add</button>
 			</div>
 		</div>
 	</script>
@@ -255,14 +255,14 @@
 		<div data-ng-controller="CreateUnitFieldCtrl">
 			<div class="control-group">
 				<label for="value" class="control-label">Value</label>
-				<input name="value" type="number" data-ng-model="value['@value']"/>
+				<input id="height-value-field" name="value" type="number" data-ng-model="value['@value']"/>
 			</div>
 			<div class="control-group">
 				<label for="unit" class="control-label">Unit</label>
-				<select name="unit" data-ng-model="value.unit" data-ng-options="unit for unit in field.units"></select>
+				<select id="height-unit-select" name="unit" data-ng-model="value.unit" data-ng-options="unit for unit in field.units"></select>
 			</div>
 			<div class="control-group">
-				<button class="btn" href="javascript:" data-ng-click="addField()" data-ng-disabled="!valid()">Add</button>
+				<button id="add-height-button" class="btn" href="javascript:" data-ng-click="addField()" data-ng-disabled="!valid()">Add</button>
 			</div>
 		</div>
 	</script>
@@ -271,14 +271,14 @@
 		<div data-ng-controller="CreateUnitFieldCtrl">
 			<div class="control-group">
 				<label for="value" class="control-label">Value</label>
-				<input name="value" type="number" data-ng-model="value['@value']"/>
+				<input id="wight-value-field" name="value" type="number" data-ng-model="value['@value']"/>
 			</div>
 			<div class="control-group">
 				<label for="unit" class="control-label">Unit</label>
-				<select name="unit" data-ng-model="value.unit" data-ng-options="unit for unit in field.units"></select>
+				<select id="weight-unit-select" name="unit" data-ng-model="value.unit" data-ng-options="unit for unit in field.units"></select>
 			</div>
 			<div class="control-group">
-				<button class="btn" href="javascript:" data-ng-click="addField()" data-ng-disabled="!valid()">Add</button>
+				<button id="add-weight-button" class="btn" href="javascript:" data-ng-click="addField()" data-ng-disabled="!valid()">Add</button>
 			</div>
 		</div>
 	</script>
@@ -287,14 +287,14 @@
 		<div data-ng-controller="CreateUnitFieldCtrl">
 			<div class="control-group">
 				<label for="value" class="control-label">Value</label>
-				<input name="value" type="number" min="0" data-ng-model="value['@value']"/>
+				<input id="pressure-value-field" name="value" type="number" min="0" data-ng-model="value['@value']"/>
 			</div>
 			<div class="control-group">
 				<label for="unit" class="control-label">Unit</label>
-				<select name="unit" data-ng-model="value.unit" data-ng-options="unit for unit in field.units"></select>
+				<select id="pressure-unit-select" name="unit" data-ng-model="value.unit" data-ng-options="unit for unit in field.units"></select>
 			</div>
 			<div class="control-group">
-				<button class="btn" href="javascript:" data-ng-click="addField()" data-ng-disabled="!valid()">Add</button>
+				<button id="add-pressure-button" class="btn" href="javascript:" data-ng-click="addField()" data-ng-disabled="!valid()">Add</button>
 			</div>
 		</div>
 	</script>
@@ -303,14 +303,14 @@
 		<div data-ng-controller="CreateUnitFieldCtrl">
 			<div class="control-group">
 				<label for="value" class="control-label">Value</label>
-				<input name="value" type="number" data-ng-model="value['@value']"/>
+				<input id="temperature-value-field" name="value" type="number" data-ng-model="value['@value']"/>
 			</div>
 			<div class="control-group">
 				<label for="unit" class="control-label">Unit</label>
-				<select name="unit" data-ng-model="value.unit" data-ng-options="unit for unit in field.units"></select>
+				<select id="temperature-unit-select" name="unit" data-ng-model="value.unit" data-ng-options="unit for unit in field.units"></select>
 			</div>
 			<div class="control-group">
-				<button class="btn" href="javascript:" data-ng-click="addField()" data-ng-disabled="!valid()">Add</button>
+				<button id="add-temperature-button" class="btn" href="javascript:" data-ng-click="addField()" data-ng-disabled="!valid()">Add</button>
 			</div>
 		</div>
 	</script>
@@ -319,14 +319,14 @@
 		<div data-ng-controller="CreateUnitFieldCtrl">
 			<div class="control-group">
 				<label for="value" class="control-label">Value</label>
-				<input name="value" type="number" data-ng-model="value['@value']"/>
+				<input id="frequency-value-field" name="value" type="number" data-ng-model="value['@value']"/>
 			</div>
 			<div class="control-group">
 				<label for="unit" class="control-label">Unit</label>
-				<select name="unit" data-ng-model="value.unit" data-ng-options="unit for unit in field.units"></select>
+				<select id="frequency-unit-select" name="unit" data-ng-model="value.unit" data-ng-options="unit for unit in field.units"></select>
 			</div>
 			<div class="control-group">
-				<button class="btn" href="javascript:" data-ng-click="addField()" data-ng-disabled="!valid()">Add</button>
+				<button id="add-frequency-button" class="btn" href="javascript:" data-ng-click="addField()" data-ng-disabled="!valid()">Add</button>
 			</div>
 		</div>
 	</script>
@@ -336,10 +336,10 @@
 		<div data-ng-controller="CreateIntegerFieldCtrl">
 			<div class="control-group">
 				<label for="value" class="control-label">Value</label>
-				<input name="value" type="number" data-ng-model="value"/>
+				<input id="count-value-field" name="value" type="number" data-ng-model="value"/>
 			</div>
 			<div class="control-group">
-				<button class="btn" href="javascript:" data-ng-click="addField()" data-ng-disabled="!valid()">Add</button>
+				<button id="add-count-button" class="btn" href="javascript:" data-ng-click="addField()" data-ng-disabled="!valid()">Add</button>
 			</div>
 		</div>
 	</script>
@@ -348,10 +348,10 @@
 		<div data-ng-controller="CreateIntegerFieldCtrl">
 			<div class="control-group">
 				<label for="value" class="control-label">Value</label>
-				<input name="value" type="number" min="0" max="100" step="20" data-ng-model="value"/>
+				<input id="rating-value-field" name="value" type="number" min="0" max="100" step="20" data-ng-model="value"/>
 			</div>
 			<div class="control-group">
-				<button class="btn" href="javascript:" data-ng-click="addField()" data-ng-disabled="!valid()">Add</button>
+				<button id="add-rating-button" class="btn" href="javascript:" data-ng-click="addField()" data-ng-disabled="!valid()">Add</button>
 			</div>
 		</div>
 	</script>
@@ -360,10 +360,10 @@
 		<div data-ng-controller="CreateNoteFieldCtrl">
 			<div class="control-group">
 				<label for="value" class="control-label">Value</label>
-				<textarea name="value" data-ng-model="value"></textarea>
+				<textarea id="note-value-field" name="value" data-ng-model="value"></textarea>
 			</div>
 			<div class="control-group">
-				<button class="btn" href="javascript:" data-ng-click="addField()" data-ng-disabled="!valid()">Add</button>
+				<button id="add-note-button" class="btn" href="javascript:" data-ng-click="addField()" data-ng-disabled="!valid()">Add</button>
 			</div>
 		</div>
 	</script>
