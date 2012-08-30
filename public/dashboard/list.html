@@ -2,8 +2,8 @@
 
 	<table class="table" data-ng-show="items">
 		<tbody>
-			<tr data-ng-repeat="event in items">
-				<td class="event-row" style="line-height: 1.5; border-style: none;">
+			<tr class="event-row" data-ng-repeat="event in items">
+				<td style="line-height: 1.5; border-style: none;">
 					<span data-ng-bind-html="event | fields"></span>
 					&nbsp;
 					<div class="action pull-right" data-ng-show="editable">

@@ -1,27 +1,31 @@
 package com.zenobase.testing;
 
 import static org.fest.assertions.Assertions.assertThat;
-import static org.fest.assertions.fluentlenium.FluentLeniumAssertions.assertThat;
-import static org.fluentlenium.core.filter.FilterConstructor.withText;
-import static play.mvc.Http.Status.OK;
 import static play.test.Helpers.*;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.mail.Message;
+import javax.mail.MessagingException;
 
-import org.junit.Ignore;
+import org.junit.After;
+import org.junit.Assume;
+import org.junit.Before;
 import org.junit.Test;
 import org.jvnet.mock_javamail.Mailbox;
 import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import play.libs.WS;
-import play.test.TestBrowser;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.Select;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import com.google.common.collect.Iterables;
-import com.google.common.util.concurrent.Uninterruptibles;
 import com.google.inject.Injector;
 
 import com.zenobase.common.Globals;
@@ -35,128 +39,157 @@ public class BrowserTest {
 
 	private static final int PORT = 9000;
 
+	private WebDriver driver;
+
+	@Before
+	public void setUp() {
+		Assume.assumeNotNull(System.getProperty("play.version"));
+		try {
+			driver = new ChromeDriver();
+		} catch (IllegalStateException e) {
+			Assume.assumeNoException(e);
+		}
+	}
+
 	@Test
-	//@Ignore
-	public void testStory() {
-		running(testServer(PORT), FIREFOX, new play.libs.F.Callback<TestBrowser>() {
+	public void test() {
+		running(testServer(PORT), new Runnable() {
+
 			@Override
-			public void invoke(TestBrowser browser) throws Throwable {
+			public void run() {
 
 				Injector injector = Globals.get(Injector.class);
 				UserRepository users = injector.getInstance(UserRepository.class);
 				BucketRepository buckets = injector.getInstance(BucketRepository.class);
 
+				driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
+				WebDriverWait wait = new WebDriverWait(driver, 5);
+
 				// open home page
-				browser.goTo("http://localhost:" + PORT);
-				assertThat(browser.title()).isEqualTo("Zenobase");
-				browser.await().atMost(5, TimeUnit.SECONDS).until("#home-view").isPresent();
-				assertThat(browser.findFirst("#sign-up-banner")).as("sign up banner").isNotDisplayed();
-				assertThat(browser.findFirst("#alert-banner")).as("alert banner").isNotDisplayed();
-				assertThat(browser.findFirst("#sign-in-link")).as("sign in link").isDisplayed();
-				assertThat(browser.findFirst("#sign-out-link")).as("sign out link").isNotDisplayed();
-				assertThat(browser.findFirst("#user-profile-link")).as("user profile link").isNotDisplayed();
-				assertThat(browser.findFirst("#existing-user-link")).as("existing user link").isNotDisplayed();
+				driver.get("http://localhost:" + PORT);
+				assertThat(driver.getTitle()).isEqualTo("Zenobase");
+				wait.withMessage("home view is displayed").until(ExpectedConditions.visibilityOfElementLocated(By.id("home-view")));
+				assertThat(driver.findElement(By.id("sign-up-banner")).isDisplayed()).as("sign up banner").isFalse();
+				assertThat(driver.findElement(By.id("alert-banner")).isDisplayed()).as("alert banner").isFalse();
+				assertThat(driver.findElement(By.id("sign-in-link")).isDisplayed()).as("sign in link").isTrue();
+				assertThat(driver.findElement(By.id("sign-out-link")).isDisplayed()).as("sign out link").isFalse();
+				assertThat(driver.findElement(By.id("user-profile-link")).isDisplayed()).as("user profile link").isFalse();
+				assertThat(driver.findElement(By.id("existing-user-link")).isDisplayed()).as("existing user link").isFalse();
+				assertThat(buckets.findBuckets(0, 1).size()).as("number of buckets").isEqualTo(0L);
 
 				// follow get started link
-				browser.findFirst("#new-user-link").click();
-				sleep(); // browser.await().atMost(5, TimeUnit.SECONDS).until("#dashboard-view").isPresent();
-				assertThat(browser.findFirst("#sign-up-banner")).as("sign up banner").isDisplayed();
-				assertThat(browser.findFirst("#alert-banner")).as("alert banner").isNotDisplayed();
-				assertThat(browser.findFirst("#sign-in-link")).as("sign in link").isNotDisplayed();
-				assertThat(browser.findFirst("#sign-out-link")).as("sign out link").isDisplayed();
-				assertThat(browser.findFirst("#user-profile-link").getText()).as("user profile link").isEqualTo("guest");
-				assertThat(browser.findFirst("#dashboard-message")).as("dashboard message").isNotDisplayed();
-				assertThat(browser.findFirst("#dashboard-loading-message")).as("dashboard loading message").isNotDisplayed();
-				assertThat(browser.findFirst("#edit-event-dialog")).as("edit event dialog").isDisplayed();
+				driver.findElement(By.id("new-user-link")).click();
+				wait.withMessage("edit event dialog is displayed").until(ExpectedConditions.visibilityOfElementLocated(By.id("edit-event-dialog")));
+				assertThat(driver.findElement(By.id("sign-up-banner")).isDisplayed()).as("sign up banner is displayed").isTrue();
+				assertThat(driver.findElement(By.id("alert-banner")).isDisplayed()).as("alert banner is displayed").isFalse();
+				assertThat(driver.findElement(By.id("sign-in-link")).isDisplayed()).as("sign in link is displayed").isFalse();
+				assertThat(driver.findElement(By.id("sign-out-link")).isDisplayed()).as("sign out link is displayed").isTrue();
+				assertThat(driver.findElement(By.id("user-profile-link")).getText()).as("user profile link text").isEqualTo("guest");
+				assertThat(driver.findElement(By.id("dashboard-message")).isDisplayed()).as("dashboard message is displayed").isFalse();
+				assertThat(driver.findElement(By.id("dashboard-loading-message")).isDisplayed()).as("dashboard loading message is displayed").isFalse();
 				assertThat(buckets.findBuckets(0, 1).size()).as("number of buckets").isEqualTo(1L);
 
 				// add a timestamp to the event
-				browser.findFirst("#event-field-select option", withText("timestamp")).click();
-				browser.fill("#timestamp-value-field").with("foo");
-				assertThat(browser.findFirst("#add-timestamp-button")).as("add timestamp button").isNotEnabled();
-				browser.fill("#timestamp-value-field").with("2012-08-04T08:30:00.000-0700");
-				browser.click("#add-timestamp-button");
-				assertThat(browser.findFirst("#save-event-button")).as("save event button").isEnabled();
+				Select eventFieldSelect = new Select(driver.findElement(By.id("event-field-select")));
+				WebElement saveEventButton = driver.findElement(By.id("save-event-button"));
+				eventFieldSelect.selectByVisibleText("timestamp");
+				WebElement timestampValueField = driver.findElement(By.id("timestamp-value-field"));
+				WebElement addTimestampButton = driver.findElement(By.id("add-timestamp-button"));
+				timestampValueField.clear();
+				timestampValueField.sendKeys("foo");
+				assertThat(addTimestampButton.isEnabled()).as("add timestamp button is enabled").isFalse();
+				timestampValueField.clear();
+				timestampValueField.sendKeys("2012-08-04T08:30:00.000-0700");
+				addTimestampButton.click();
+				assertThat(saveEventButton.isEnabled()).as("save event button is enabled").isTrue();
 
 				// add a tag to the event
-				browser.findFirst("#event-field-select option", withText("tag")).click();
-				assertThat(browser.findFirst("#add-tag-button")).as("add tag button").isNotEnabled();
-				browser.fill("#tag-value-field").with("hike");
-				assertThat(browser.findFirst("#add-tag-button")).as("add tag button").isEnabled();
-				browser.click("#add-tag-button");
-				assertThat(browser.findFirst("#add-tag-button")).as("add tag button").isNotEnabled();
+				eventFieldSelect.selectByVisibleText("tag");
+				WebElement addTagButton = driver.findElement(By.id("add-tag-button"));
+				WebElement tagValueField = driver.findElement(By.id("tag-value-field"));
+				assertThat(addTagButton.isEnabled()).as("add tag button is enabled").isFalse();
+				tagValueField.sendKeys("hike");
+				assertThat(addTagButton.isEnabled()).as("add tag button is enabled").isTrue();
+				addTagButton.click();
+				assertThat(addTagButton.isEnabled()).as("add tag button is enabled").isFalse();
 
 				// add a location
-				browser.findFirst("#event-field-select option", withText("location")).click();
-				assertThat(browser.findFirst("#add-location-button")).as("add location button").isEnabled();
-				browser.click("#add-location-button");
+				eventFieldSelect.selectByVisibleText("location");
+				WebElement addLocationButton = driver.findElement(By.id("add-location-button"));
+				assertThat(addLocationButton.isEnabled()).as("add location button is enabled").isFalse();
+				wait.withMessage("add location button is enabled").until(ExpectedConditions.elementToBeClickable(By.id("add-location-button")));
+				addLocationButton.click();
 
 				// add a distance
-				browser.findFirst("#event-field-select option", withText("distance")).click();
-				assertThat(browser.findFirst("#add-distance-button")).as("add distance button").isNotEnabled();
-				browser.fill("#distance-value-field").with("12.2");
-				assertThat(browser.findFirst("#add-distance-button")).as("add distance button").isNotEnabled();
-				browser.findFirst("#distance-unit-select option", withText("mi")).click();
-				assertThat(browser.findFirst("#add-distance-button")).as("add distance button").isEnabled();
-				browser.click("#add-distance-button");
-				assertThat(browser.findFirst("#add-distance-button")).as("add distance button").isNotEnabled();
+				eventFieldSelect.selectByVisibleText("distance");
+				WebElement addDistanceButton = driver.findElement(By.id("add-distance-button"));
+				assertThat(addDistanceButton.isEnabled()).as("add distance button is enabled").isFalse();
+				driver.findElement(By.id("distance-value-field")).sendKeys("12.2");
+				assertThat(addDistanceButton.isEnabled()).as("add distance button is enabled").isFalse();
+				new Select(driver.findElement(By.id("distance-unit-select"))).selectByVisibleText("mi");
+				assertThat(addDistanceButton.isEnabled()).as("add distance button is enabled").isTrue();
+				addDistanceButton.click();
+				assertThat(addDistanceButton.isEnabled()).as("add distance button is enabled").isFalse();
 
 				// add a height
-				browser.findFirst("#event-field-select option", withText("height")).click();
-				assertThat(browser.findFirst("#add-height-button")).as("add height button").isNotEnabled();
-				browser.fill("#height-value-field").with("6970");
-				assertThat(browser.findFirst("#add-height-button")).as("add height button").isNotEnabled();
-				browser.findFirst("#height-unit-select option", withText("ft")).click();
-				assertThat(browser.findFirst("#add-height-button")).as("add height button").isEnabled();
-				browser.click("#add-height-button");
-				assertThat(browser.findFirst("#add-height-button")).as("add height button").isNotEnabled();
+				eventFieldSelect.selectByVisibleText("height");
+				WebElement addHeightButton = driver.findElement(By.id("add-height-button"));
+				assertThat(addHeightButton.isEnabled()).as("add height button is enabled").isFalse();
+				driver.findElement(By.id("height-value-field")).sendKeys("6970");
+				assertThat(addHeightButton.isEnabled()).as("add height button is enabled").isFalse();
+				new Select(driver.findElement(By.id("height-unit-select"))).selectByVisibleText("ft");
+				assertThat(addHeightButton.isEnabled()).as("add height button is enabled").isTrue();
+				addHeightButton.click();
+				assertThat(addHeightButton.isEnabled()).as("add height button is enabled").isFalse();
 
 				// add a resource
-				browser.findFirst("#event-field-select option", withText("resource")).click();
-				assertThat(browser.findFirst("#add-resource-button")).as("add resource button").isNotEnabled();
-				browser.fill("#resource-url-field").with("http://picasaweb.google.com/eric.jain/MountAdamsAugust2012");
-				assertThat(browser.findFirst("#add-resource-button")).as("add resource button").isNotEnabled();
-				browser.fill("#resource-title-field").with("Mount Adams");
-				assertThat(browser.findFirst("#add-resource-button")).as("add resource button").isEnabled();
-				browser.click("#add-resource-button");
-				assertThat(browser.findFirst("#add-resource-button")).as("add resource button").isNotEnabled();
+				eventFieldSelect.selectByVisibleText("resource");
+				WebElement addResourceButton = driver.findElement(By.id("add-resource-button"));
+				assertThat(addResourceButton.isEnabled()).as("add resource button is enabled").isFalse();
+				driver.findElement(By.id("resource-url-field")).sendKeys("http://picasaweb.google.com/eric.jain/MountAdamsAugust2012");
+				assertThat(addResourceButton.isEnabled()).as("add resource button is enabled").isFalse();
+				driver.findElement(By.id("resource-title-field")).sendKeys("Mount Adams");
+				assertThat(addResourceButton.isEnabled()).as("add resource button is enabled").isTrue();
+				addResourceButton.click();
+				assertThat(addResourceButton.isEnabled()).as("add resource button is enabled").isFalse();
 
 				// add a duration
-				browser.findFirst("#event-field-select option", withText("duration")).click();
-				assertThat(browser.findFirst("#add-duration-button")).as("add duration button").isNotEnabled();
-				browser.fill("#duration-hours-field").with("19");
-				browser.fill("#duration-minutes-field").with("30");
-				assertThat(browser.findFirst("#add-duration-button")).as("add duration button").isEnabled();
-				browser.click("#add-duration-button");
-				assertThat(browser.findFirst("#add-duration-button")).as("add duration button").isNotEnabled();
+				eventFieldSelect.selectByVisibleText("duration");
+				WebElement addDurationButton = driver.findElement(By.id("add-duration-button"));
+				assertThat(addDurationButton.isEnabled()).as("add duration button is enabled").isFalse();
+				driver.findElement(By.id("duration-hours-field")).sendKeys("19");
+				driver.findElement(By.id("duration-minutes-field")).sendKeys("30");
+				assertThat(addDurationButton.isEnabled()).as("add duration button is enabled").isTrue();
+				addDurationButton.click();
+				assertThat(addDurationButton.isEnabled()).as("add duration button is enabled").isFalse();
 
 				// add a note
-				browser.findFirst("#event-field-select option", withText("note")).click();
-				assertThat(browser.findFirst("#add-note-button")).as("add note button").isNotEnabled();
-				browser.fill("#note-value-field").with("nice views");
-				assertThat(browser.findFirst("#add-note-button")).as("add note button").isEnabled();
-				browser.click("#add-note-button");
-				assertThat(browser.findFirst("#add-note-button")).as("add note button").isNotEnabled();
+				eventFieldSelect.selectByVisibleText("note");
+				WebElement addNoteButton = driver.findElement(By.id("add-note-button"));
+				assertThat(addNoteButton.isEnabled()).as("add note button is enabled").isFalse();
+				driver.findElement(By.id("note-value-field")).sendKeys("nice views");
+				assertThat(addNoteButton.isEnabled()).as("add note button is enabled").isTrue();
+				addNoteButton.click();
+				assertThat(addNoteButton.isEnabled()).as("add note button is enabled").isFalse();
 
 				// add a rating
-				browser.findFirst("#event-field-select option", withText("rating")).click();
-				browser.fill("#rating-value-field").with("80");
-				assertThat(browser.findFirst("#add-rating-button")).as("add rating button").isEnabled();
-				browser.click("#add-rating-button");
+				eventFieldSelect.selectByVisibleText("rating");
+				WebElement addRatingButton = driver.findElement(By.id("add-rating-button"));
+				driver.findElement(By.id("rating-value-field")).sendKeys("80");
+				assertThat(addRatingButton.isEnabled()).as("add rating button is enabled").isTrue();
+				addRatingButton.click();
 
-				browser.click("#save-event-button");
-				sleep();
+				saveEventButton.click();
 
-				assertThat(browser.findFirst("#event-count").getText()).as("event count").isEqualTo("1");
+				wait.withMessage("event count").until(ExpectedConditions.textToBePresentInElement(By.id("event-count"), "1"));
+				WebElement row = driver.findElement(By.className("event-row"));
+				WebElement action = driver.findElement(By.className("event-edit-action"));
+				new Actions(driver).moveToElement(row).click(action).perform();
 
-				WebElement test = browser.getDefaultDriver().findElement(By.id("event-count"));
-				assertThat(test.isDisplayed()).isTrue();
+				wait.withMessage("edit event dialog is displayed").until(ExpectedConditions.visibilityOfElementLocated(By.id("edit-event-dialog")));
+				WebElement cancelEventButton = driver.findElement(By.id("cancel-event-button"));
+				cancelEventButton.click();
 
-				// WebElement row = browser.getDefaultDriver().findElement(By.className("event-row"));
-				// WebElement action = browser.getDefaultDriver().findElement(By.className("event-delete-action"));
-				// new Actions(browser.getDefaultDriver()).moveToElement(row).click(action).perform();
-				// browser.click("td[id^='event-']");
-				// browser.click("a[id^='edit-event-']");
 
 				// edit event: add another tag, delete a field
 
@@ -170,45 +203,57 @@ public class BrowserTest {
 
 				// test filtering & paging
 
+
 				// sign up
-				browser.click("#sign-up-link");
-				assertThat(browser.findFirst("#sign-up-dialog")).as("sign up dialog").isDisplayed();
-				assertThat(browser.findFirst("#sign-up-message")).as("sign up message").isNotDisplayed();
-				assertThat(browser.findFirst("#sign-up-button")).as("sign up button").isNotEnabled();
-				browser.fill("#sign-up-username").with("jdoe");
-				assertThat(browser.findFirst("#sign-up-button")).as("sign up button").isNotEnabled();
-				browser.fill("#sign-up-password").with("password123");
-				browser.fill("#sign-up-password-repeat").with("password");
-				assertThat(browser.findFirst("#sign-up-button")).as("sign up button").isNotEnabled();
-				browser.fill("#sign-up-email").with("jdoe@zenobase.com");
-				assertThat(browser.findFirst("#sign-up-button")).as("sign up button").isEnabled();
-				browser.click("#sign-up-button");
-				assertThat(browser.findFirst("#sign-up-dialog")).as("sign up dialog").isDisplayed();
-				assertThat(browser.findFirst("#sign-up-message")).as("sign up message").isDisplayed();
-				browser.fill("#sign-up-password-repeat").with("password123");
-				browser.click("#sign-up-button");
-				sleep();
+				driver.findElement(By.id("sign-up-link")).click();
+				assertThat(driver.findElement(By.id("sign-up-dialog")).isDisplayed()).as("sign up dialog is displayed").isTrue();
+				assertThat(driver.findElement(By.id("sign-up-message")).isDisplayed()).as("sign up message is displayed").isFalse();
+				WebElement signUpButton = driver.findElement(By.id("sign-up-button"));
+				assertThat(signUpButton.isEnabled()).as("sign up button is enabled").isFalse();
+				driver.findElement(By.id("sign-up-username")).sendKeys("jdoe");
+				assertThat(signUpButton.isEnabled()).as("sign up button is enabled").isFalse();
+				driver.findElement(By.id("sign-up-password")).sendKeys("password123");
+				driver.findElement(By.id("sign-up-password-repeat")).sendKeys("password");
+				assertThat(signUpButton.isEnabled()).as("sign up button is enabled").isFalse();
+				driver.findElement(By.id("sign-up-email")).sendKeys("jdoe@zenobase.com");
+				assertThat(signUpButton.isEnabled()).as("sign up button is enabled").isTrue();
+				signUpButton.click();
+				assertThat(driver.findElement(By.id("sign-up-dialog")).isDisplayed()).as("sign up dialog is displayed").isTrue();
+				assertThat(driver.findElement(By.id("sign-up-message")).isDisplayed()).as("sign up message is displayed").isTrue();
+				driver.findElement(By.id("sign-up-password-repeat")).clear();
+				driver.findElement(By.id("sign-up-password-repeat")).sendKeys("password123");
+				signUpButton.click();
 
-				assertThat(browser.findFirst("#user-title").getText()).as("title with user name").isEqualTo("jdoe");
-				assertThat(browser.find(".bucket-link")).as("bucket link").hasSize(1);
-				assertThat(browser.findFirst("#sign-up-banner")).as("sign up banner").isNotDisplayed();
-				assertThat(browser.findFirst("#alert-banner")).as("alert banner").isNotDisplayed();
-				assertThat(browser.findFirst("#sign-in-link")).as("sign in link").isNotDisplayed();
-				assertThat(browser.findFirst("#sign-out-link")).as("sign out link").isDisplayed();
-				assertThat(browser.findFirst("#user-profile-link").getText()).as("user profile link").isEqualTo("jdoe");
+				wait.withMessage("view title equals user name").until(ExpectedConditions.textToBePresentInElement(By.id("user-title"), "jdoe"));
+				assertThat(driver.findElements(By.className("bucket-link"))).as("bucket link").hasSize(1);
+				assertThat(driver.findElement(By.id("sign-up-banner")).isDisplayed()).as("sign up banner is displayed").isFalse();
+				assertThat(driver.findElement(By.id("alert-banner")).isDisplayed()).as("alert banner is displayed").isFalse();
+				assertThat(driver.findElement(By.id("sign-in-link")).isDisplayed()).as("sign in link is displayed").isFalse();
+				assertThat(driver.findElement(By.id("sign-out-link")).isDisplayed()).as("sign out link is displayed").isTrue();
+				assertThat(driver.findElement(By.id("user-profile-link")).getText()).as("user profile link text").isEqualTo("jdoe");
 
-				List<Message> inbox = Mailbox.get("jdoe@zenobase.com");
-				assertThat(inbox).as("messages").hasSize(1);
-				Message m = Iterables.getOnlyElement(inbox);
-				browser.goTo(extractUrl(m.getContent().toString()));
-				sleep(); // browser.await().atMost(5, TimeUnit.SECONDS).until("#user-view").isPresent();
+				try {
+					List<Message> inbox = Mailbox.get("jdoe@zenobase.com");
+					assertThat(inbox).as("messages").hasSize(1);
+					Message m = Iterables.getOnlyElement(inbox);
+					driver.get(extractUrl(m.getContent().toString()));
+					inbox.clear();
+					wait.withMessage("view title equals user name").until(ExpectedConditions.textToBePresentInElement(By.id("user-title"), "jdoe"));
+				} catch (IOException e) {
+					throw new AssertionError(e);
+				} catch (MessagingException e) {
+					throw new AssertionError(e);
+				}
 
 				assertThat(users.find("jdoe").isVerified()).as("user is verified").isTrue();
 
+
 				// edit profile -> change email
+
 				// delete bucket & undo
+
 				// add bucket
-				// add buckets programmatically
+
 
 				Identity identity = users.find("jdoe").asIdentity();
 				for (int i = 0; i < 5; ++i) {
@@ -217,51 +262,57 @@ public class BrowserTest {
 					b.setLabel("Bucket #" + i);
 					buckets.store(b, true);
 				}
+
 				// refresh
-				assertThat(browser.findFirst("#prev-buckets-button")).as("prev buckets button").isNotEnabled();
-				assertThat(browser.findFirst("#next-buckets-button")).as("next buckets button").isNotEnabled();
-				browser.click("#refresh-buckets-link");
-				sleep();
+				WebElement prevBucketsButton = driver.findElement(By.id("prev-buckets-button"));
+				WebElement nextBucketsButton = driver.findElement(By.id("next-buckets-button"));
+				WebElement refreshBucketsLink = driver.findElement(By.id("refresh-buckets-link"));
+				assertThat(prevBucketsButton.isEnabled()).as("prev buckets button is enabled when there is just one bucket").isFalse();
+				assertThat(nextBucketsButton.isEnabled()).as("next buckets button is enabled when there is just one bucket").isFalse();
+				refreshBucketsLink.click();
+
 				// test paging
-				assertThat(browser.findFirst("#prev-buckets-button")).as("prev buckets button").isNotEnabled();
-				assertThat(browser.findFirst("#next-buckets-button")).as("next buckets button").isEnabled();
-				browser.click("#next-buckets-button");
-				sleep();
-				assertThat(browser.findFirst("#prev-buckets-button")).as("prev buckets button").isEnabled();
-				assertThat(browser.findFirst("#next-buckets-button")).as("next buckets button").isNotEnabled();
+				nextBucketsButton = wait.withMessage("next buckets button is enabled before paging").until(ExpectedConditions.elementToBeClickable(By.id("next-buckets-button")));
+				assertThat(driver.findElement(By.id("prev-buckets-button")).isEnabled()).as("prev buckets button is enabled before paging").isFalse();
+				nextBucketsButton.click();
+
+				prevBucketsButton = wait.withMessage("prev buckets button is enabled after paging").until(ExpectedConditions.elementToBeClickable(By.id("prev-buckets-button")));
+				assertThat(driver.findElement(By.id("next-buckets-button")).isEnabled()).as("next buckets button is enabled after paging").isFalse();
+				prevBucketsButton.click();
+
 
 				// log back out
+
 				// access as guest
+
 				// log in
+
 				// publish bucket
+
 				// log out
+
 				// access as guest
+
 				// log back in
 
+
 				// close account
-				browser.executeScript("window.confirm=function(){return true;}");
-				browser.click("#edit-user-link");
-				browser.click("#close-account-button");
-				sleep();
-				assertThat(browser.findFirst("#sign-up-banner")).as("sign up banner").isNotDisplayed();
-				assertThat(browser.findFirst("#alert-banner")).as("alert banner").isNotDisplayed();
-				assertThat(browser.findFirst("#sign-in-link")).as("sign in link").isDisplayed();
-				assertThat(browser.findFirst("#sign-out-link")).as("sign out link").isNotDisplayed();
-				assertThat(browser.findFirst("#user-profile-link")).as("user profile link").isNotDisplayed();
-				assertThat(browser.findFirst("#existing-user-link")).as("existing user link").isNotDisplayed();
+				driver.findElement(By.id("edit-user-link")).click();
+				driver.findElement(By.id("close-account-button")).click();
+				driver.switchTo().alert().accept();
+
+				wait.withMessage("home view is displayed").until(ExpectedConditions.visibilityOfElementLocated(By.id("home-view")));
+				assertThat(driver.findElement(By.id("sign-up-banner")).isDisplayed()).as("sign up banner is displayed").isFalse();
+				assertThat(driver.findElement(By.id("alert-banner")).isDisplayed()).as("alert banner is displayed").isFalse();
+				assertThat(driver.findElement(By.id("sign-in-link")).isDisplayed()).as("sign in link is displayed").isTrue();
+				assertThat(driver.findElement(By.id("sign-out-link")).isDisplayed()).as("sign out link is displayed").isFalse();
+				assertThat(driver.findElement(By.id("user-profile-link")).isDisplayed()).as("user profile link is displayed").isFalse();
+				assertThat(driver.findElement(By.id("existing-user-link")).isDisplayed()).as("existing user link is displayed").isFalse();
 				assertThat(users.find("jdoe").isSuspended()).as("user is suspended").isTrue();
 
-				browser.quit();
+				driver.quit();
 			}
 		});
-	}
-
-	private static void sleep() {
-		sleep(3);
-	}
-
-	private static void sleep(int seconds) {
-		Uninterruptibles.sleepUninterruptibly(seconds, TimeUnit.SECONDS);
 	}
 
 	private static String extractUrl(String message) {
@@ -271,14 +322,8 @@ public class BrowserTest {
 		return matcher.group(0);
 	}
 
-	@Test
-	@Ignore
-	public void testStatus() {
-		running(testServer(PORT), new Runnable() {
-			@Override
-			public void run() {
-				assertThat(WS.url(String.format("http://localhost:%d/status", PORT)).get().get().getStatus()).isEqualTo(OK);
-			}
-		});
+	@After
+	public void tearDown() {
+		Mailbox.clearAll();
 	}
 }
