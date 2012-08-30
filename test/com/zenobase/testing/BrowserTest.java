@@ -1,5 +1,6 @@
 package com.zenobase.testing;
 
+import static com.zenobase.testing.WebElementAssert.assertThat;
 import static org.fest.assertions.Assertions.assertThat;
 import static play.test.Helpers.*;
 
@@ -69,114 +70,114 @@ public class BrowserTest {
 				driver.get("http://localhost:" + PORT);
 				assertThat(driver.getTitle()).isEqualTo("Zenobase");
 				wait.withMessage("home view is displayed").until(ExpectedConditions.visibilityOfElementLocated(By.id("home-view")));
-				assertThat(driver.findElement(By.id("sign-up-banner")).isDisplayed()).as("sign up banner").isFalse();
-				assertThat(driver.findElement(By.id("alert-banner")).isDisplayed()).as("alert banner").isFalse();
-				assertThat(driver.findElement(By.id("sign-in-link")).isDisplayed()).as("sign in link").isTrue();
-				assertThat(driver.findElement(By.id("sign-out-link")).isDisplayed()).as("sign out link").isFalse();
-				assertThat(driver.findElement(By.id("user-profile-link")).isDisplayed()).as("user profile link").isFalse();
-				assertThat(driver.findElement(By.id("existing-user-link")).isDisplayed()).as("existing user link").isFalse();
+				assertThat($("#sign-up-banner")).isNotDisplayed();
+				assertThat($("#alert-banner")).isNotDisplayed();
+				assertThat($("#sign-in-link")).isDisplayed();
+				assertThat($("#sign-out-link")).isNotDisplayed();
+				assertThat($("#user-profile-link")).isNotDisplayed();
+				assertThat($("#existing-user-link")).isNotDisplayed();
 				assertThat(buckets.findBuckets(0, 1).size()).as("number of buckets").isEqualTo(0L);
 
 				// follow get started link
-				driver.findElement(By.id("new-user-link")).click();
+				$("#new-user-link").click();
 				wait.withMessage("edit event dialog is displayed").until(ExpectedConditions.visibilityOfElementLocated(By.id("edit-event-dialog")));
-				assertThat(driver.findElement(By.id("sign-up-banner")).isDisplayed()).as("sign up banner is displayed").isTrue();
-				assertThat(driver.findElement(By.id("alert-banner")).isDisplayed()).as("alert banner is displayed").isFalse();
-				assertThat(driver.findElement(By.id("sign-in-link")).isDisplayed()).as("sign in link is displayed").isFalse();
-				assertThat(driver.findElement(By.id("sign-out-link")).isDisplayed()).as("sign out link is displayed").isTrue();
-				assertThat(driver.findElement(By.id("user-profile-link")).getText()).as("user profile link text").isEqualTo("guest");
-				assertThat(driver.findElement(By.id("dashboard-message")).isDisplayed()).as("dashboard message is displayed").isFalse();
-				assertThat(driver.findElement(By.id("dashboard-loading-message")).isDisplayed()).as("dashboard loading message is displayed").isFalse();
+				assertThat($("#sign-up-banner")).isDisplayed();
+				assertThat($("#alert-banner")).isNotDisplayed();
+				assertThat($("#sign-in-link")).isNotDisplayed();
+				assertThat($("#sign-out-link")).isDisplayed();
+				assertThat($("#user-profile-link")).hasText("guest");
+				assertThat($("#dashboard-message")).isNotDisplayed();
+				assertThat($("#dashboard-loading-message")).isNotDisplayed();
+				assertThat($("#save-event-button")).isNotEnabled();
 				assertThat(buckets.findBuckets(0, 1).size()).as("number of buckets").isEqualTo(1L);
 
 				// add a timestamp to the event
-				Select eventFieldSelect = new Select(driver.findElement(By.id("event-field-select")));
-				WebElement saveEventButton = driver.findElement(By.id("save-event-button"));
+				Select eventFieldSelect = new Select($("#event-field-select"));
+				WebElement saveEventButton = $("#save-event-button");
 				eventFieldSelect.selectByVisibleText("timestamp");
-				WebElement timestampValueField = driver.findElement(By.id("timestamp-value-field"));
-				WebElement addTimestampButton = driver.findElement(By.id("add-timestamp-button"));
+				WebElement timestampValueField = $("#timestamp-value-field");
+				WebElement addTimestampButton = $("#add-timestamp-button");
 				timestampValueField.clear();
 				timestampValueField.sendKeys("foo");
-				assertThat(addTimestampButton.isEnabled()).as("add timestamp button is enabled").isFalse();
+				assertThat(addTimestampButton).isNotEnabled();
 				timestampValueField.clear();
 				timestampValueField.sendKeys("2012-08-04T08:30:00.000-0700");
 				addTimestampButton.click();
-				assertThat(saveEventButton.isEnabled()).as("save event button is enabled").isTrue();
+				assertThat(saveEventButton).isEnabled();
 
 				// add a tag to the event
 				eventFieldSelect.selectByVisibleText("tag");
-				WebElement addTagButton = driver.findElement(By.id("add-tag-button"));
-				WebElement tagValueField = driver.findElement(By.id("tag-value-field"));
-				assertThat(addTagButton.isEnabled()).as("add tag button is enabled").isFalse();
+				WebElement addTagButton = $("#add-tag-button");
+				WebElement tagValueField = $("#tag-value-field");
+				assertThat(addTagButton).isNotEnabled();
 				tagValueField.sendKeys("hike");
-				assertThat(addTagButton.isEnabled()).as("add tag button is enabled").isTrue();
+				assertThat(addTagButton).isEnabled();
 				addTagButton.click();
-				assertThat(addTagButton.isEnabled()).as("add tag button is enabled").isFalse();
+				assertThat(addTagButton).isNotEnabled();
 
 				// add a location
 				eventFieldSelect.selectByVisibleText("location");
-				WebElement addLocationButton = driver.findElement(By.id("add-location-button"));
-				assertThat(addLocationButton.isEnabled()).as("add location button is enabled").isFalse();
+				assertThat($("#add-location-button")).isNotEnabled();
 				wait.withMessage("add location button is enabled").until(ExpectedConditions.elementToBeClickable(By.id("add-location-button")));
-				addLocationButton.click();
+				$("#add-location-button").click();
 
 				// add a distance
 				eventFieldSelect.selectByVisibleText("distance");
-				WebElement addDistanceButton = driver.findElement(By.id("add-distance-button"));
-				assertThat(addDistanceButton.isEnabled()).as("add distance button is enabled").isFalse();
-				driver.findElement(By.id("distance-value-field")).sendKeys("12.2");
-				assertThat(addDistanceButton.isEnabled()).as("add distance button is enabled").isFalse();
-				new Select(driver.findElement(By.id("distance-unit-select"))).selectByVisibleText("mi");
-				assertThat(addDistanceButton.isEnabled()).as("add distance button is enabled").isTrue();
+				WebElement addDistanceButton = $("#add-distance-button");
+				assertThat(addDistanceButton).isNotEnabled();
+				$("#distance-value-field").sendKeys("12.2");
+				assertThat(addDistanceButton).isNotEnabled();
+				new Select($("#distance-unit-select")).selectByVisibleText("mi");
+				assertThat(addDistanceButton).isEnabled();
 				addDistanceButton.click();
-				assertThat(addDistanceButton.isEnabled()).as("add distance button is enabled").isFalse();
+				assertThat(addDistanceButton).isNotEnabled();
 
 				// add a height
 				eventFieldSelect.selectByVisibleText("height");
-				WebElement addHeightButton = driver.findElement(By.id("add-height-button"));
-				assertThat(addHeightButton.isEnabled()).as("add height button is enabled").isFalse();
-				driver.findElement(By.id("height-value-field")).sendKeys("6970");
-				assertThat(addHeightButton.isEnabled()).as("add height button is enabled").isFalse();
-				new Select(driver.findElement(By.id("height-unit-select"))).selectByVisibleText("ft");
-				assertThat(addHeightButton.isEnabled()).as("add height button is enabled").isTrue();
+				WebElement addHeightButton = $("#add-height-button");
+				assertThat(addHeightButton).isNotEnabled();
+				$("#height-value-field").sendKeys("6970");
+				assertThat(addHeightButton).isNotEnabled();
+				new Select($("#height-unit-select")).selectByVisibleText("ft");
+				assertThat(addHeightButton).isEnabled();
 				addHeightButton.click();
-				assertThat(addHeightButton.isEnabled()).as("add height button is enabled").isFalse();
+				assertThat(addHeightButton).isNotEnabled();
 
 				// add a resource
 				eventFieldSelect.selectByVisibleText("resource");
-				WebElement addResourceButton = driver.findElement(By.id("add-resource-button"));
-				assertThat(addResourceButton.isEnabled()).as("add resource button is enabled").isFalse();
-				driver.findElement(By.id("resource-url-field")).sendKeys("http://picasaweb.google.com/eric.jain/MountAdamsAugust2012");
-				assertThat(addResourceButton.isEnabled()).as("add resource button is enabled").isFalse();
-				driver.findElement(By.id("resource-title-field")).sendKeys("Mount Adams");
-				assertThat(addResourceButton.isEnabled()).as("add resource button is enabled").isTrue();
+				WebElement addResourceButton = $("#add-resource-button");
+				assertThat(addResourceButton).isNotEnabled();
+				$("#resource-url-field").sendKeys("http://picasaweb.google.com/eric.jain/MountAdamsAugust2012");
+				assertThat(addResourceButton).isNotEnabled();
+				$("#resource-title-field").sendKeys("Mount Adams");
+				assertThat(addResourceButton).isEnabled();
 				addResourceButton.click();
-				assertThat(addResourceButton.isEnabled()).as("add resource button is enabled").isFalse();
+				assertThat(addResourceButton).isNotEnabled();
 
 				// add a duration
 				eventFieldSelect.selectByVisibleText("duration");
-				WebElement addDurationButton = driver.findElement(By.id("add-duration-button"));
-				assertThat(addDurationButton.isEnabled()).as("add duration button is enabled").isFalse();
-				driver.findElement(By.id("duration-hours-field")).sendKeys("19");
-				driver.findElement(By.id("duration-minutes-field")).sendKeys("30");
-				assertThat(addDurationButton.isEnabled()).as("add duration button is enabled").isTrue();
+				WebElement addDurationButton = $("#add-duration-button");
+				assertThat(addDurationButton).isNotEnabled();
+				$("#duration-hours-field").sendKeys("19");
+				$("#duration-minutes-field").sendKeys("30");
+				assertThat(addDurationButton).isEnabled();
 				addDurationButton.click();
-				assertThat(addDurationButton.isEnabled()).as("add duration button is enabled").isFalse();
+				assertThat(addDurationButton).isNotEnabled();
 
 				// add a note
 				eventFieldSelect.selectByVisibleText("note");
-				WebElement addNoteButton = driver.findElement(By.id("add-note-button"));
-				assertThat(addNoteButton.isEnabled()).as("add note button is enabled").isFalse();
-				driver.findElement(By.id("note-value-field")).sendKeys("nice views");
-				assertThat(addNoteButton.isEnabled()).as("add note button is enabled").isTrue();
+				WebElement addNoteButton = $("#add-note-button");
+				assertThat(addNoteButton).isNotEnabled();
+				$("#note-value-field").sendKeys("nice views");
+				assertThat(addNoteButton).isEnabled();
 				addNoteButton.click();
-				assertThat(addNoteButton.isEnabled()).as("add note button is enabled").isFalse();
+				assertThat(addNoteButton).isNotEnabled();
 
 				// add a rating
 				eventFieldSelect.selectByVisibleText("rating");
-				WebElement addRatingButton = driver.findElement(By.id("add-rating-button"));
-				driver.findElement(By.id("rating-value-field")).sendKeys("80");
-				assertThat(addRatingButton.isEnabled()).as("add rating button is enabled").isTrue();
+				WebElement addRatingButton = $("#add-rating-button");
+				$("#rating-value-field").sendKeys("80");
+				assertThat(addRatingButton).isEnabled();
 				addRatingButton.click();
 
 				saveEventButton.click();
@@ -187,7 +188,7 @@ public class BrowserTest {
 				new Actions(driver).moveToElement(row).click(action).perform();
 
 				wait.withMessage("edit event dialog is displayed").until(ExpectedConditions.visibilityOfElementLocated(By.id("edit-event-dialog")));
-				WebElement cancelEventButton = driver.findElement(By.id("cancel-event-button"));
+				WebElement cancelEventButton = $("#cancel-event-button");
 				cancelEventButton.click();
 
 
@@ -205,32 +206,31 @@ public class BrowserTest {
 
 
 				// sign up
-				driver.findElement(By.id("sign-up-link")).click();
-				assertThat(driver.findElement(By.id("sign-up-dialog")).isDisplayed()).as("sign up dialog is displayed").isTrue();
-				assertThat(driver.findElement(By.id("sign-up-message")).isDisplayed()).as("sign up message is displayed").isFalse();
-				WebElement signUpButton = driver.findElement(By.id("sign-up-button"));
-				assertThat(signUpButton.isEnabled()).as("sign up button is enabled").isFalse();
-				driver.findElement(By.id("sign-up-username")).sendKeys("jdoe");
-				assertThat(signUpButton.isEnabled()).as("sign up button is enabled").isFalse();
-				driver.findElement(By.id("sign-up-password")).sendKeys("password123");
-				driver.findElement(By.id("sign-up-password-repeat")).sendKeys("password");
-				assertThat(signUpButton.isEnabled()).as("sign up button is enabled").isFalse();
-				driver.findElement(By.id("sign-up-email")).sendKeys("jdoe@zenobase.com");
-				assertThat(signUpButton.isEnabled()).as("sign up button is enabled").isTrue();
-				signUpButton.click();
-				assertThat(driver.findElement(By.id("sign-up-dialog")).isDisplayed()).as("sign up dialog is displayed").isTrue();
-				assertThat(driver.findElement(By.id("sign-up-message")).isDisplayed()).as("sign up message is displayed").isTrue();
-				driver.findElement(By.id("sign-up-password-repeat")).clear();
-				driver.findElement(By.id("sign-up-password-repeat")).sendKeys("password123");
-				signUpButton.click();
+				$("#sign-up-link").click();
+				assertThat($("#sign-up-dialog")).isDisplayed();
+				assertThat($("#sign-up-message")).isNotDisplayed();
+				assertThat($("#sign-up-button")).isNotEnabled();
+				$("#sign-up-username").sendKeys("jdoe");
+				assertThat($("#sign-up-button")).isNotEnabled();
+				$("#sign-up-password").sendKeys("password123");
+				assertThat($("#sign-up-button")).isNotEnabled();
+				$("#sign-up-password-repeat").sendKeys("password");
+				assertThat($("#sign-up-button")).isNotEnabled();
+				$("#sign-up-email").sendKeys("jdoe@zenobase.com");
+				assertThat($("#sign-up-button")).isEnabled();
+				$("#sign-up-button").click();
+				assertThat($("#sign-up-dialog")).isDisplayed();
+				assertThat($("#sign-up-message")).isDisplayed();
+				$("#sign-up-password-repeat").sendKeys("123");
+				$("#sign-up-button").click();
 
 				wait.withMessage("view title equals user name").until(ExpectedConditions.textToBePresentInElement(By.id("user-title"), "jdoe"));
 				assertThat(driver.findElements(By.className("bucket-link"))).as("bucket link").hasSize(1);
-				assertThat(driver.findElement(By.id("sign-up-banner")).isDisplayed()).as("sign up banner is displayed").isFalse();
-				assertThat(driver.findElement(By.id("alert-banner")).isDisplayed()).as("alert banner is displayed").isFalse();
-				assertThat(driver.findElement(By.id("sign-in-link")).isDisplayed()).as("sign in link is displayed").isFalse();
-				assertThat(driver.findElement(By.id("sign-out-link")).isDisplayed()).as("sign out link is displayed").isTrue();
-				assertThat(driver.findElement(By.id("user-profile-link")).getText()).as("user profile link text").isEqualTo("jdoe");
+				assertThat($("#sign-up-banner")).isNotDisplayed();
+				assertThat($("#alert-banner")).isNotDisplayed();
+				assertThat($("#sign-in-link")).isNotDisplayed();
+				assertThat($("#sign-out-link")).isDisplayed();
+				assertThat($("#user-profile-link")).hasText("jdoe");
 
 				try {
 					List<Message> inbox = Mailbox.get("jdoe@zenobase.com");
@@ -264,21 +264,18 @@ public class BrowserTest {
 				}
 
 				// refresh
-				WebElement prevBucketsButton = driver.findElement(By.id("prev-buckets-button"));
-				WebElement nextBucketsButton = driver.findElement(By.id("next-buckets-button"));
-				WebElement refreshBucketsLink = driver.findElement(By.id("refresh-buckets-link"));
-				assertThat(prevBucketsButton.isEnabled()).as("prev buckets button is enabled when there is just one bucket").isFalse();
-				assertThat(nextBucketsButton.isEnabled()).as("next buckets button is enabled when there is just one bucket").isFalse();
-				refreshBucketsLink.click();
+				assertThat($("#prev-buckets-button")).isNotEnabled();
+				assertThat($("#next-buckets-button")).isNotEnabled();
+				$("#refresh-buckets-link").click();
 
 				// test paging
-				nextBucketsButton = wait.withMessage("next buckets button is enabled before paging").until(ExpectedConditions.elementToBeClickable(By.id("next-buckets-button")));
-				assertThat(driver.findElement(By.id("prev-buckets-button")).isEnabled()).as("prev buckets button is enabled before paging").isFalse();
-				nextBucketsButton.click();
+				wait.withMessage("next buckets button is enabled before paging").until(ExpectedConditions.elementToBeClickable(By.id("next-buckets-button")));
+				assertThat($("#prev-buckets-button")).isNotEnabled();
+				$("#next-buckets-button").click();
 
-				prevBucketsButton = wait.withMessage("prev buckets button is enabled after paging").until(ExpectedConditions.elementToBeClickable(By.id("prev-buckets-button")));
-				assertThat(driver.findElement(By.id("next-buckets-button")).isEnabled()).as("next buckets button is enabled after paging").isFalse();
-				prevBucketsButton.click();
+				wait.withMessage("prev buckets button is enabled after paging").until(ExpectedConditions.elementToBeClickable(By.id("prev-buckets-button")));
+				assertThat($("#next-buckets-button")).isNotEnabled();
+				$("#prev-buckets-button").click();
 
 
 				// log back out
@@ -297,22 +294,25 @@ public class BrowserTest {
 
 
 				// close account
-				driver.findElement(By.id("edit-user-link")).click();
-				driver.findElement(By.id("close-account-button")).click();
+				$("#edit-user-link").click();
+				$("#close-account-button").click();
 				driver.switchTo().alert().accept();
 
 				wait.withMessage("home view is displayed").until(ExpectedConditions.visibilityOfElementLocated(By.id("home-view")));
-				assertThat(driver.findElement(By.id("sign-up-banner")).isDisplayed()).as("sign up banner is displayed").isFalse();
-				assertThat(driver.findElement(By.id("alert-banner")).isDisplayed()).as("alert banner is displayed").isFalse();
-				assertThat(driver.findElement(By.id("sign-in-link")).isDisplayed()).as("sign in link is displayed").isTrue();
-				assertThat(driver.findElement(By.id("sign-out-link")).isDisplayed()).as("sign out link is displayed").isFalse();
-				assertThat(driver.findElement(By.id("user-profile-link")).isDisplayed()).as("user profile link is displayed").isFalse();
-				assertThat(driver.findElement(By.id("existing-user-link")).isDisplayed()).as("existing user link is displayed").isFalse();
+				assertThat($("#sign-up-banner")).isNotDisplayed();
+				assertThat($("#alert-banner")).isNotDisplayed();
+				assertThat($("#sign-in-link")).isDisplayed();
+				assertThat($("#sign-out-link")).isNotDisplayed();
+				assertThat($("#user-profile-link")).isNotDisplayed();
+				assertThat($("#existing-user-link")).isNotDisplayed();
 				assertThat(users.find("jdoe").isSuspended()).as("user is suspended").isTrue();
 
-				driver.quit();
 			}
 		});
+	}
+
+	protected WebElement $(String selector) {
+		return driver.findElement(By.cssSelector(selector));
 	}
 
 	private static String extractUrl(String message) {
@@ -325,5 +325,6 @@ public class BrowserTest {
 	@After
 	public void tearDown() {
 		Mailbox.clearAll();
+		driver.quit();
 	}
 }
