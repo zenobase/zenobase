@@ -5,6 +5,7 @@ import static org.fest.assertions.Assertions.assertThat;
 import java.util.List;
 import java.util.Properties;
 
+import org.junit.After;
 import org.junit.Test;
 import org.jvnet.mock_javamail.Mailbox;
 import com.google.common.collect.Iterables;
@@ -26,5 +27,10 @@ public class MailerTest {
 		assertThat(m.getFrom()[0].toString()).as("from").isEqualTo(from);
 		assertThat(m.getSubject()).as("subject").isEqualTo(message.getSubject());
 		assertThat(m.getContent()).as("content").isEqualTo(message.getText());
+	}
+
+	@After
+	public void tearDown() {
+		Mailbox.clearAll();
 	}
 }
