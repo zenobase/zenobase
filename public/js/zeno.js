@@ -1674,7 +1674,6 @@
 		$scope.init = function() {
 			google.load("maps", "3.8", { other_params : 'sensor=false', callback : function() {
 				var center = new google.maps.LatLng(0, 0);
-				$scope.setValue(center);
 				var options = {
 					center : center,
 					zoom : 2,
@@ -1686,17 +1685,8 @@
 					}
 				};
 				$scope.map = new google.maps.Map(document.getElementById('create-location-map'), options);
-				$scope.marker = new google.maps.Marker({
-					position : center, 
-					map : $scope.map,
-					title : 'Location',
-					draggable: true
-				});
 				google.maps.event.addListener($scope.map, 'click', function(e) {
 					$scope.moveMarker(e.latLng);
-			  });
-				google.maps.event.addListener($scope.marker, 'dragend', function() {
-			    $scope.setValue($scope.marker.getPosition());
 			  });
 				if (navigator.geolocation) {
 					navigator.geolocation.getCurrentPosition(function(position) {
@@ -1709,8 +1699,20 @@
 			}});
 		};
 		$scope.moveMarker = function(latLng) {
+			if ($scope.marker) {
+				$scope.marker.setPosition(latLng);
+			} else {
+				$scope.marker = new google.maps.Marker({
+					position : latLng,
+					map : $scope.map,
+					title : 'Location',
+					draggable: true
+				});
+				google.maps.event.addListener($scope.marker, 'dragend', function() {
+					$scope.setValue($scope.marker.getPosition());
+				});
+			}
 			$scope.setValue(latLng);
-			$scope.marker.setPosition(latLng);
 		};
 		$scope.setValue = function(latLng) {
 			$scope.$apply(function() {
@@ -1721,7 +1723,7 @@
 			});
 		};
 		$scope.valid = function() {
-			return $scope.value.lat >= -90 && $scope.value.lat <= 90 && 
+			return $scope.value && $scope.value.lat >= -90 && $scope.value.lat <= 90 && 
 				$scope.value.lon >= -180 && $scope.value.lon <= 180;
 		};
 		$scope.addField = function() {
