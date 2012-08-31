@@ -45,7 +45,7 @@
 				<a class="close" href="javascript:" data-ng-click="alert.clear()">&times;</a>
 				<span data-ng-bind-html="alert.message"></span>
 				<span data-ng-show="alert.undo">
-					<a href="javascript:" data-ng-click="undo(alert.undo)">Undo.</a>
+					<a id="undo-link" href="javascript:" data-ng-click="undo(alert.undo)">Undo.</a>
 				</span>
 			</div>
 		</div>
@@ -77,33 +77,23 @@
 						<h3>Sign in</h3>
 					</div>
 					<div class="modal-body">
-						<div class="alert alert-error" data-ng-show="message">
+						<div id="sign-in-message" class="alert alert-error" data-ng-show="message">
 							{{message}}
 						</div>
 						<div class="control-group">
-							<label for="username">Username</label>
-							<input id="username" type="text" class="large" data-ng-model="username" required/>
+							<label for="sign-in-username">Username</label>
+							<input id="sign-in-username" type="text" class="large" data-ng-model="username" required/>
 						</div>
 						<div class="control-group">
-							<label for="password">Password</label>
-							<input id="password" type="password" class="large" data-ng-model="password" required/>
+							<label for="sign-in-password">Password</label>
+							<input id="sign-in-password" type="password" class="large" data-ng-model="password" required/>
 						</div>
-						<!--
-						<div class="control-group">
-							<div class="controls">
-								<label class="checkbox">
-									<input type="checkbox" id="remember" data-ng-model="remember">
-									Remember me
-								</label>
-							</div>
-						</div>
-						-->
 					</div>
 					<div class="modal-footer">
 						<div class="pull-left">
-							<a data-dismiss="modal" href="#reset-password-dialog" data-toggle="modal">Lost password?</a>
+							<a id="reset-password-link" data-dismiss="modal" href="#reset-password-dialog" data-toggle="modal">Lost password?</a>
 						</div>
-						<button type="submit" class="btn btn-primary" data-ng-disabled="!signInForm.$valid">Sign in</button>
+						<button id="sign-in-button" type="submit" class="btn btn-primary" data-ng-disabled="!signInForm.$valid">Sign in</button>
 						<button type="reset" class="btn" data-dismiss="modal">Cancel</button>
 					</div>
 			</form>

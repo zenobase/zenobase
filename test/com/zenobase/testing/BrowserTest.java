@@ -26,6 +26,7 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import com.google.common.collect.Iterables;
+import com.google.common.util.concurrent.Uninterruptibles;
 import com.google.inject.Injector;
 
 import com.zenobase.common.Globals;
@@ -177,16 +178,15 @@ public class BrowserTest {
 				// TODO: add another tag, delete a field
 				$("#cancel-event-button").click();
 
-				// add benchpress and weather event
+				// TODO: add benchpress and weather event
 
-				// add events programmatically, refresh
+				// TODO: add events programmatically, refresh
 
-				// import/export
+				// TODO: import/export
 
-				// add & configure widgets
+				// TODO: add & configure widgets
 
-				// test filtering & paging
-
+				// TODO: test filtering & paging
 
 				// sign up
 				$("#sign-up-link").click();
@@ -214,18 +214,23 @@ public class BrowserTest {
 				assertThat($("#sign-out-link")).isDisplayed();
 				assertThat($("#user-profile-link")).hasText("jdoe");
 
+				// TODO: edit profile -> change email
+
 				// verify email
-				driver.get(getUrl(getMessage("jdoe@zenobase.com")));
+				driver.get(findUrl(readMessage("jdoe@zenobase.com")));
 				wait.withMessage("view title equals user name").until(ExpectedConditions.textToBePresentInElement(By.id("user-title"), "jdoe"));
 				assertThat(users.find("jdoe").isVerified()).as("user is verified").isTrue();
 
-				// edit profile -> change email
+				// delete bucket and undo
+				new Actions(driver).moveToElement($(".bucket-row")).click($(".bucket-delete-action")).perform();
+				wait.withMessage("alert banner").until(ExpectedConditions.visibilityOfElementLocated(By.id("alert-banner")));
+				assertThat(buckets.findBuckets(0, 0).size()).as("number of buckets").isEqualTo(0L);
+				$("#undo-link").click();
+				wait.withMessage("bucket").until(ExpectedConditions.visibilityOfElementLocated(By.className("bucket-row")));
+				assertThat($("#alert-banner")).isNotDisplayed();
+				assertThat(buckets.findBuckets(0, 0).size()).as("number of buckets").isEqualTo(1L);
 
-				// delete bucket & undo
-
-				// add bucket
-
-				// create and browse buckets
+				// generate and browse buckets
 				createBuckets(5, users.find("jdoe").asIdentity(), buckets);
 				assertThat($("#prev-buckets-button")).isNotEnabled();
 				assertThat($("#next-buckets-button")).isNotEnabled();
@@ -237,21 +242,56 @@ public class BrowserTest {
 				assertThat($("#next-buckets-button")).isNotEnabled();
 				$("#prev-buckets-button").click();
 
-				// log back out
+				// create a public bucket
+				$("#add-bucket-action").click();
+				assertThat($("#create-bucket-dialog")).isDisplayed();
+				$("#create-bucket-label").clear();
+				$("#create-bucket-label").sendKeys("Test Data");
+				assertThat($("#create-bucket-button")).isEnabled();
+				$("#create-bucket-button").click();
+				wait.withMessage("edit event dialog is displayed").until(ExpectedConditions.visibilityOfElementLocated(By.id("edit-event-dialog")));
+				new Select($("#event-field-select")).selectByVisibleText("timestamp");
+				$("#add-timestamp-button").click();
+				$("#save-event-button").click();
+				wait.withMessage("edit event dialog is not displayed").until(ExpectedConditions.invisibilityOfElementLocated(By.id("edit-event-dialog")));
+				assertThat($("#bucket-title")).hasText("Test Data");
+				$("#edit-bucket-action").click();
+				$("#edit-bucket-label").clear();
+				$("#edit-bucket-label").sendKeys("Public Data");
+				assertThat($("#publish-bucket-link")).isDisplayed();
+				assertThat($("#unpublish-bucket-link")).isNotDisplayed();
+				$("#publish-bucket-link").click();
+				assertThat($("#publish-bucket-link")).isNotDisplayed();
+				assertThat($("#unpublish-bucket-link")).isDisplayed();
+				assertThat($("#save-bucket-button")).isEnabled();
+				$("#save-bucket-button").click();
+				wait.withMessage("bucket is displayed").until(ExpectedConditions.textToBePresentInElement(By.id("bucket-title"), "Public Data"));
+				String publicBucketUrl = driver.getCurrentUrl();
 
-				// access as guest
+				// access public bucket as guest
+				$("#sign-out-link").click();
+				wait.withMessage("sign in link is displayed").until(ExpectedConditions.visibilityOfElementLocated(By.id("sign-in-link")));
+				driver.get(publicBucketUrl);
+				wait.withMessage("bucket is displayed").until(ExpectedConditions.textToBePresentInElement(By.id("bucket-title"), "Public Data"));
 
-				// log in
-
-				// publish bucket
-
-				// log out
-
-				// access as guest
+				// TODO: try to access private bucket as guest
 
 				// log back in
+				$("#sign-in-link").click();
+				assertThat($("#sign-in-dialog")).isDisplayed();
+				assertThat($("#sign-in-button")).isNotEnabled();
+				$("#sign-in-username").sendKeys("jdoe");
+				assertThat($("#sign-in-button")).isNotEnabled();
+				$("#sign-in-password").sendKeys("password123");
+				assertThat($("#sign-in-button")).isEnabled();
+				$("#sign-in-button").click();
+
+				// TODO: fail, reset password
 
 				// close account
+				wait.withMessage("user profile link is displayed").until(ExpectedConditions.visibilityOfElementLocated(By.id("user-profile-link")));
+				$("#user-profile-link").click();
+				wait.withMessage("user profile is displayed").until(ExpectedConditions.visibilityOfElementLocated(By.id("user-view")));
 				$("#edit-user-link").click();
 				$("#close-account-button").click();
 				driver.switchTo().alert().accept();
@@ -265,17 +305,19 @@ public class BrowserTest {
 				assertThat(users.find("jdoe").isSuspended()).as("user is suspended").isTrue();
 			}
 
-			private String getMessage(String receipient) {
+			private String readMessage(String receipient) {
 				try {
 					return Iterables.getOnlyElement(Mailbox.get("jdoe@zenobase.com")).getContent().toString();
 				} catch (IOException e) {
 					throw new AssertionError(e);
 				} catch (MessagingException e) {
 					throw new AssertionError(e);
+				} finally {
+					Mailbox.clearAll();
 				}
 			}
 
-			private String getUrl(String text) {
+			private String findUrl(String text) {
 				Pattern p = Pattern.compile("http\\S+");
 				Matcher matcher = p.matcher(text);
 				assertThat(matcher.find()).as("contains a link: " + text).isTrue();
@@ -299,6 +341,10 @@ public class BrowserTest {
 
 	protected List<WebElement> find(String selector) {
 		return driver.findElements(By.cssSelector(selector));
+	}
+
+	protected void sleep(int seconds) {
+		Uninterruptibles.sleepUninterruptibly(seconds, TimeUnit.SECONDS);
 	}
 
 	@After

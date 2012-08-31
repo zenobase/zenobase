@@ -376,6 +376,7 @@
 		$http.post('/users/' + $routeParams.userId, { 'key' : $location.search()['key'], 'verified' : true })
 			.success(function(response) {
 				$scope.alert.show('Your email address has been verified.', 'alert-success');
+				$scope.whoami();
 				$location.url('/users/' + $routeParams.userId);
 			})
 			.error(function(response) {

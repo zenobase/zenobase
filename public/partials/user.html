@@ -22,7 +22,7 @@
 				<a id="edit-user-link" href="javascript:" data-ng-click="broadcast('edit:user')" title="Edit..." data-ng-show="editable()"><i class="icon-pencil"></i></a>
 			</p>
 			<p class="pull-left" style="margin-left: 8px; margin-top: 6px; vertical-align: middle" data-ng-show="addable()">
-				<a data-toggle="modal" href="#create-bucket-dialog" title="Add Bucket..." data-ng-show="addable()"><i class="icon-plus"></i></a>
+				<a id="add-bucket-action" data-toggle="modal" href="#create-bucket-dialog" title="Add Bucket..." data-ng-show="addable()"><i class="icon-plus"></i></a>
 			</p>
 		</div>
 	
@@ -68,12 +68,12 @@
 						<tr data-ng-show="buckets == null">
 							<td colspan="3"><i>Loading...</i></td>
 						</tr>
-						<tr data-ng-repeat="bucket in buckets">
+						<tr class="bucket-row" data-ng-repeat="bucket in buckets">
 							<td style="white-space: nowrap"><a class="bucket-link" data-ng-href="#/buckets/{{bucket['@id']}}/">{{bucket.label}}</a></td>
 							<td>{{bucket.description}}</td>
 							<td style="text-align: right">{{bucket.size}}</td>
 							<td style="text-align: right">
-								<a class="action" href="javascript:" data-ng-click="remove(bucket['@id'])"><i class="icon-trash" title="Delete"></i></a>
+								<a class="action bucket-delete-action" href="javascript:" data-ng-click="remove(bucket['@id'])"><i class="icon-trash" title="Delete"></i></a>
 							</td>
 						</tr>
 						<tr data-ng-show="buckets.length == 0">
@@ -94,19 +94,19 @@
 					<form name="createBucketForm" data-ng-submit="create()" class="modal-form">
 						<div class="modal-header">
 							<a class="close" data-dismiss="modal">&times;</a>
-							<h3>Add Bucket</h3>
+							<h3>Create Bucket</h3>
 						</div>
 						<div class="modal-body">
-							<div class="alert alert-error" data-ng-show="message">
+							<div id="create-bucket-message" class="alert alert-error" data-ng-show="message">
 								{{message}}
 							</div>
 							<div class="control-group" data-ng-class="createBucketForm.label.$valid && 'success' || 'error'">
 								<label for="template">Label</label>
-								<input id="bucket-label-field" name="label" type="text" class="xlarge" required data-ng-minlength="1" data-ng-maxlength="20" data-ng-pattern="/^[a-zA-Z0-9-_ ]+$/" data-ng-model="label"/>
+								<input id="create-bucket-label" name="label" type="text" class="xlarge" required data-ng-minlength="1" data-ng-maxlength="20" data-ng-pattern="/^[a-zA-Z0-9-_ ]+$/" data-ng-model="label"/>
 							</div>
 						</div>
 						<div class="modal-footer">
-							<button type="submit" class="btn btn-primary" data-ng-disabled="!createBucketForm.$valid">Create</button>
+							<button id="create-bucket-button" type="submit" class="btn btn-primary" data-ng-disabled="!createBucketForm.$valid">Create</button>
 							<button type="reset" class="btn" data-dismiss="modal">Cancel</button>
 						</div>
 					</form>
