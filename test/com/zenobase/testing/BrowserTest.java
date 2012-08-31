@@ -10,7 +10,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.mail.Message;
 import javax.mail.MessagingException;
 
 import org.junit.After;
@@ -41,12 +40,15 @@ public class BrowserTest {
 	private static final int PORT = 9000;
 
 	private WebDriver driver;
+	private WebDriverWait wait;
 
 	@Before
 	public void setUp() {
 		Assume.assumeNotNull(System.getProperty("play.version"));
 		try {
 			driver = new ChromeDriver();
+			driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
+			wait = new WebDriverWait(driver, 5);
 		} catch (IllegalStateException e) {
 			Assume.assumeNoException(e);
 		}
@@ -63,10 +65,7 @@ public class BrowserTest {
 				UserRepository users = injector.getInstance(UserRepository.class);
 				BucketRepository buckets = injector.getInstance(BucketRepository.class);
 
-				driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
-				WebDriverWait wait = new WebDriverWait(driver, 5);
-
-				// open home page
+				// home
 				driver.get("http://localhost:" + PORT);
 				assertThat(driver.getTitle()).isEqualTo("Zenobase");
 				wait.withMessage("home view is displayed").until(ExpectedConditions.visibilityOfElementLocated(By.id("home-view")));
@@ -92,107 +91,91 @@ public class BrowserTest {
 				assertThat(buckets.findBuckets(0, 1).size()).as("number of buckets").isEqualTo(1L);
 
 				// add a timestamp to the event
-				Select eventFieldSelect = new Select($("#event-field-select"));
-				WebElement saveEventButton = $("#save-event-button");
-				eventFieldSelect.selectByVisibleText("timestamp");
-				WebElement timestampValueField = $("#timestamp-value-field");
-				WebElement addTimestampButton = $("#add-timestamp-button");
-				timestampValueField.clear();
-				timestampValueField.sendKeys("foo");
-				assertThat(addTimestampButton).isNotEnabled();
-				timestampValueField.clear();
-				timestampValueField.sendKeys("2012-08-04T08:30:00.000-0700");
-				addTimestampButton.click();
-				assertThat(saveEventButton).isEnabled();
+				new Select($("#event-field-select")).selectByVisibleText("timestamp");
+				$("#timestamp-value-field").clear();
+				$("#timestamp-value-field").sendKeys("foo");
+				assertThat($("#add-timestamp-button")).isNotEnabled();
+				$("#timestamp-value-field").clear();
+				$("#timestamp-value-field").sendKeys("2012-08-04T08:30:00.000-0700");
+				$("#add-timestamp-button").click();
+				assertThat($("#save-event-button")).isEnabled();
 
 				// add a tag to the event
-				eventFieldSelect.selectByVisibleText("tag");
-				WebElement addTagButton = $("#add-tag-button");
-				WebElement tagValueField = $("#tag-value-field");
-				assertThat(addTagButton).isNotEnabled();
-				tagValueField.sendKeys("hike");
-				assertThat(addTagButton).isEnabled();
-				addTagButton.click();
-				assertThat(addTagButton).isNotEnabled();
+				new Select($("#event-field-select")).selectByVisibleText("tag");
+				assertThat($("#add-tag-button")).isNotEnabled();
+				$("#tag-value-field").sendKeys("hike");
+				assertThat($("#add-tag-button")).isEnabled();
+				$("#add-tag-button").click();
+				assertThat($("#add-tag-button")).isNotEnabled();
 
 				// add a location
-				eventFieldSelect.selectByVisibleText("location");
+				new Select($("#event-field-select")).selectByVisibleText("location");
 				assertThat($("#add-location-button")).isNotEnabled();
 				wait.withMessage("add location button is enabled").until(ExpectedConditions.elementToBeClickable(By.id("add-location-button")));
 				$("#add-location-button").click();
 
 				// add a distance
-				eventFieldSelect.selectByVisibleText("distance");
-				WebElement addDistanceButton = $("#add-distance-button");
-				assertThat(addDistanceButton).isNotEnabled();
+				new Select($("#event-field-select")).selectByVisibleText("distance");
+				assertThat($("#add-distance-button")).isNotEnabled();
 				$("#distance-value-field").sendKeys("12.2");
-				assertThat(addDistanceButton).isNotEnabled();
+				assertThat($("#add-distance-button")).isNotEnabled();
 				new Select($("#distance-unit-select")).selectByVisibleText("mi");
-				assertThat(addDistanceButton).isEnabled();
-				addDistanceButton.click();
-				assertThat(addDistanceButton).isNotEnabled();
+				assertThat($("#add-distance-button")).isEnabled();
+				$("#add-distance-button").click();
+				assertThat($("#add-distance-button")).isNotEnabled();
 
 				// add a height
-				eventFieldSelect.selectByVisibleText("height");
-				WebElement addHeightButton = $("#add-height-button");
-				assertThat(addHeightButton).isNotEnabled();
+				new Select($("#event-field-select")).selectByVisibleText("height");
+				assertThat($("#add-height-button")).isNotEnabled();
 				$("#height-value-field").sendKeys("6970");
-				assertThat(addHeightButton).isNotEnabled();
+				assertThat($("#add-height-button")).isNotEnabled();
 				new Select($("#height-unit-select")).selectByVisibleText("ft");
-				assertThat(addHeightButton).isEnabled();
-				addHeightButton.click();
-				assertThat(addHeightButton).isNotEnabled();
+				assertThat($("#add-height-button")).isEnabled();
+				$("#add-height-button").click();
+				assertThat($("#add-height-button")).isNotEnabled();
 
 				// add a resource
-				eventFieldSelect.selectByVisibleText("resource");
-				WebElement addResourceButton = $("#add-resource-button");
-				assertThat(addResourceButton).isNotEnabled();
+				new Select($("#event-field-select")).selectByVisibleText("resource");
+				assertThat($("#add-resource-button")).isNotEnabled();
 				$("#resource-url-field").sendKeys("http://picasaweb.google.com/eric.jain/MountAdamsAugust2012");
-				assertThat(addResourceButton).isNotEnabled();
+				assertThat($("#add-resource-button")).isNotEnabled();
 				$("#resource-title-field").sendKeys("Mount Adams");
-				assertThat(addResourceButton).isEnabled();
-				addResourceButton.click();
-				assertThat(addResourceButton).isNotEnabled();
+				assertThat($("#add-resource-button")).isEnabled();
+				$("#add-resource-button").click();
+				assertThat($("#add-resource-button")).isNotEnabled();
 
 				// add a duration
-				eventFieldSelect.selectByVisibleText("duration");
-				WebElement addDurationButton = $("#add-duration-button");
-				assertThat(addDurationButton).isNotEnabled();
+				new Select($("#event-field-select")).selectByVisibleText("duration");
+				assertThat($("#add-duration-button")).isNotEnabled();
 				$("#duration-hours-field").sendKeys("19");
 				$("#duration-minutes-field").sendKeys("30");
-				assertThat(addDurationButton).isEnabled();
-				addDurationButton.click();
-				assertThat(addDurationButton).isNotEnabled();
+				assertThat($("#add-duration-button")).isEnabled();
+				$("#add-duration-button").click();
+				assertThat($("#add-duration-button")).isNotEnabled();
 
 				// add a note
-				eventFieldSelect.selectByVisibleText("note");
-				WebElement addNoteButton = $("#add-note-button");
-				assertThat(addNoteButton).isNotEnabled();
+				new Select($("#event-field-select")).selectByVisibleText("note");
+				assertThat($("#add-note-button")).isNotEnabled();
 				$("#note-value-field").sendKeys("nice views");
-				assertThat(addNoteButton).isEnabled();
-				addNoteButton.click();
-				assertThat(addNoteButton).isNotEnabled();
+				assertThat($("#add-note-button")).isEnabled();
+				$("#add-note-button").click();
+				assertThat($("#add-note-button")).isNotEnabled();
 
 				// add a rating
-				eventFieldSelect.selectByVisibleText("rating");
-				WebElement addRatingButton = $("#add-rating-button");
+				new Select($("#event-field-select")).selectByVisibleText("rating");
 				$("#rating-value-field").sendKeys("80");
-				assertThat(addRatingButton).isEnabled();
-				addRatingButton.click();
+				assertThat($("#add-rating-button")).isEnabled();
+				$("#add-rating-button").click();
 
-				saveEventButton.click();
+				$("#save-event-button").click();
 
 				wait.withMessage("event count").until(ExpectedConditions.textToBePresentInElement(By.id("event-count"), "1"));
-				WebElement row = driver.findElement(By.className("event-row"));
-				WebElement action = driver.findElement(By.className("event-edit-action"));
-				new Actions(driver).moveToElement(row).click(action).perform();
 
+				// edit event
+				new Actions(driver).moveToElement($(".event-row")).click($(".event-edit-action")).perform();
 				wait.withMessage("edit event dialog is displayed").until(ExpectedConditions.visibilityOfElementLocated(By.id("edit-event-dialog")));
-				WebElement cancelEventButton = $("#cancel-event-button");
-				cancelEventButton.click();
-
-
-				// edit event: add another tag, delete a field
+				// TODO: add another tag, delete a field
+				$("#cancel-event-button").click();
 
 				// add benchpress and weather event
 
@@ -223,30 +206,18 @@ public class BrowserTest {
 				assertThat($("#sign-up-message")).isDisplayed();
 				$("#sign-up-password-repeat").sendKeys("123");
 				$("#sign-up-button").click();
-
 				wait.withMessage("view title equals user name").until(ExpectedConditions.textToBePresentInElement(By.id("user-title"), "jdoe"));
-				assertThat(driver.findElements(By.className("bucket-link"))).as("bucket link").hasSize(1);
+				assertThat(find(".bucket-link")).as("bucket links").hasSize(1);
 				assertThat($("#sign-up-banner")).isNotDisplayed();
 				assertThat($("#alert-banner")).isNotDisplayed();
 				assertThat($("#sign-in-link")).isNotDisplayed();
 				assertThat($("#sign-out-link")).isDisplayed();
 				assertThat($("#user-profile-link")).hasText("jdoe");
 
-				try {
-					List<Message> inbox = Mailbox.get("jdoe@zenobase.com");
-					assertThat(inbox).as("messages").hasSize(1);
-					Message m = Iterables.getOnlyElement(inbox);
-					driver.get(extractUrl(m.getContent().toString()));
-					inbox.clear();
-					wait.withMessage("view title equals user name").until(ExpectedConditions.textToBePresentInElement(By.id("user-title"), "jdoe"));
-				} catch (IOException e) {
-					throw new AssertionError(e);
-				} catch (MessagingException e) {
-					throw new AssertionError(e);
-				}
-
+				// verify email
+				driver.get(getUrl(getMessage("jdoe@zenobase.com")));
+				wait.withMessage("view title equals user name").until(ExpectedConditions.textToBePresentInElement(By.id("user-title"), "jdoe"));
 				assertThat(users.find("jdoe").isVerified()).as("user is verified").isTrue();
-
 
 				// edit profile -> change email
 
@@ -254,29 +225,17 @@ public class BrowserTest {
 
 				// add bucket
 
-
-				Identity identity = users.find("jdoe").asIdentity();
-				for (int i = 0; i < 5; ++i) {
-					Bucket b = new Bucket();
-					b.addPermission(identity, Permission.ALL);
-					b.setLabel("Bucket #" + i);
-					buckets.store(b, true);
-				}
-
-				// refresh
+				// create and browse buckets
+				createBuckets(5, users.find("jdoe").asIdentity(), buckets);
 				assertThat($("#prev-buckets-button")).isNotEnabled();
 				assertThat($("#next-buckets-button")).isNotEnabled();
 				$("#refresh-buckets-link").click();
-
-				// test paging
 				wait.withMessage("next buckets button is enabled before paging").until(ExpectedConditions.elementToBeClickable(By.id("next-buckets-button")));
 				assertThat($("#prev-buckets-button")).isNotEnabled();
 				$("#next-buckets-button").click();
-
 				wait.withMessage("prev buckets button is enabled after paging").until(ExpectedConditions.elementToBeClickable(By.id("prev-buckets-button")));
 				assertThat($("#next-buckets-button")).isNotEnabled();
 				$("#prev-buckets-button").click();
-
 
 				// log back out
 
@@ -292,12 +251,10 @@ public class BrowserTest {
 
 				// log back in
 
-
 				// close account
 				$("#edit-user-link").click();
 				$("#close-account-button").click();
 				driver.switchTo().alert().accept();
-
 				wait.withMessage("home view is displayed").until(ExpectedConditions.visibilityOfElementLocated(By.id("home-view")));
 				assertThat($("#sign-up-banner")).isNotDisplayed();
 				assertThat($("#alert-banner")).isNotDisplayed();
@@ -306,7 +263,32 @@ public class BrowserTest {
 				assertThat($("#user-profile-link")).isNotDisplayed();
 				assertThat($("#existing-user-link")).isNotDisplayed();
 				assertThat(users.find("jdoe").isSuspended()).as("user is suspended").isTrue();
+			}
 
+			private String getMessage(String receipient) {
+				try {
+					return Iterables.getOnlyElement(Mailbox.get("jdoe@zenobase.com")).getContent().toString();
+				} catch (IOException e) {
+					throw new AssertionError(e);
+				} catch (MessagingException e) {
+					throw new AssertionError(e);
+				}
+			}
+
+			private String getUrl(String text) {
+				Pattern p = Pattern.compile("http\\S+");
+				Matcher matcher = p.matcher(text);
+				assertThat(matcher.find()).as("contains a link: " + text).isTrue();
+				return matcher.group(0);
+			}
+
+			private void createBuckets(int num, Identity owner, BucketRepository buckets) {
+				for (int i = 0; i < num; ++i) {
+					Bucket b = new Bucket();
+					b.addPermission(owner, Permission.ALL);
+					b.setLabel("Bucket #" + i);
+					buckets.store(b, true);
+				}
 			}
 		});
 	}
@@ -315,11 +297,8 @@ public class BrowserTest {
 		return driver.findElement(By.cssSelector(selector));
 	}
 
-	private static String extractUrl(String message) {
-		Pattern p = Pattern.compile("http\\S+");
-		Matcher matcher = p.matcher(message);
-		assertThat(matcher.find()).as("contains a link: " + message).isTrue();
-		return matcher.group(0);
+	protected List<WebElement> find(String selector) {
+		return driver.findElements(By.cssSelector(selector));
 	}
 
 	@After
