@@ -1171,8 +1171,9 @@
 	};
 	
 	app.controller('TimelineCtrl', ['$scope', function($scope) {
-	
+
 		$scope.keyField = 'timestamp';
+
 		$scope.init = function() {
 			$scope.times = null;
 		};
@@ -1233,7 +1234,8 @@
 						hAxis : { baselineColor : 'white', textPosition : 'none', textStyle : { fontSize: 10 } },
 						bar : { groupWidth : 20 }
 					};
-					var chart = new google.visualization.ColumnChart(document.getElementById($scope.settings.id + '-chart'));
+					var element = document.getElementById($scope.settings.id + '-chart');
+					var chart = new google.visualization.ColumnChart(element);
 					chart.draw(data, options);
 					google.visualization.events.addListener(chart, 'select', function() {
 						var selection = chart.getSelection();
@@ -1256,7 +1258,10 @@
 		$scope.register($scope);
 		$scope.$on('result', $scope.update);
 		$scope.$on('refresh', $scope.init);
-		$(window).resize($scope.draw);
+		$(window).on('resize', $scope.draw);
+		$scope.$on('$destroy', function(e) {
+			$(window).off('resize', $scope.draw);
+		});
 		$('#' + $scope.settings.id + '-tab').on('show', $scope.draw);
 	}]);
 
@@ -1364,7 +1369,8 @@
 						vAxis : { gridlines : { color : '#EEE', count : 2 }, minorGridlines : { color : '#EEE', count : 1 }, baselineColor : '#EEE', textStyle : { fontSize: 10 } },
 						hAxis : { gridlines : { color : 'transparent', count : 2 }, baselineColor : 'transparent', textPosition : 'none' }
 					};
-					var chart = new google.visualization.AreaChart(document.getElementById($scope.settings.id + '-chart'));
+					var element = document.getElementById($scope.settings.id + '-chart');
+					var chart = new google.visualization.AreaChart(element);
 					chart.draw(data, options);
 					google.visualization.events.addListener(chart, 'select', function() {
 						var selection = chart.getSelection();
@@ -1386,7 +1392,10 @@
 		$scope.register($scope);
 		$scope.$on('result', $scope.update);
 		$scope.$on('refresh', $scope.init);
-		$(window).resize($scope.draw);
+		$(window).on('resize', $scope.draw);
+		$scope.$on('$destroy', function(e) {
+			$(window).off('resize', $scope.draw);
+		});
 		$('#' + $scope.settings.id + '-tab').on('show', $scope.draw);
 	}]);
 
