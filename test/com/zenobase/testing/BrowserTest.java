@@ -95,6 +95,7 @@ public class BrowserTest {
 				assertThat($("#dashboard-loading-message")).isNotDisplayed();
 				assertThat($("#save-event-button")).isNotEnabled();
 				assertThat(buckets.findBuckets(0, 1).size()).as("number of buckets").isEqualTo(1L);
+				String privateBucketUrl = driver.getCurrentUrl();
 
 				// add a timestamp to the event
 				new Select($("#event-field-select")).selectByVisibleText("timestamp");
@@ -273,17 +274,17 @@ public class BrowserTest {
 				wait.withMessage("bucket is displayed").until(ExpectedConditions.textToBePresentInElement(By.id("bucket-title"), "Public Data"));
 				String publicBucketUrl = driver.getCurrentUrl();
 
-				// access public bucket as guest
+				// access public bucket after signing out
 				$("#sign-out-link").click();
 				wait.withMessage("sign in link is displayed").until(ExpectedConditions.visibilityOfElementLocated(By.id("sign-in-link")));
 				driver.get(publicBucketUrl);
 				wait.withMessage("bucket is displayed").until(ExpectedConditions.textToBePresentInElement(By.id("bucket-title"), "Public Data"));
 
-				// TODO: try to access private bucket as guest
+				// try to access private bucket after signing out
+				driver.get(privateBucketUrl);
+				wait.withMessage("sign in dialog is displayed").until(ExpectedConditions.visibilityOfElementLocated(By.id("sign-in-dialog")));
 
 				// try to log back in, reset password
-				$("#sign-in-link").click();
-				assertThat($("#sign-in-dialog")).isDisplayed();
 				assertThat($("#sign-in-button")).isNotEnabled();
 				$("#sign-in-username").sendKeys("jdoe");
 				assertThat($("#sign-in-button")).isNotEnabled();
