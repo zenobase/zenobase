@@ -91,7 +91,7 @@
 					</div>
 					<div class="modal-footer">
 						<div class="pull-left">
-							<a id="reset-password-link" data-dismiss="modal" href="#reset-password-dialog" data-toggle="modal">Lost password?</a>
+							<a id="password-reset-request-link" data-dismiss="modal" href="#password-reset-request-dialog" data-toggle="modal">Lost password?</a>
 						</div>
 						<button id="sign-in-button" type="submit" class="btn btn-primary" data-ng-disabled="!signInForm.$valid">Sign in</button>
 						<button type="reset" class="btn" data-dismiss="modal">Cancel</button>
@@ -99,27 +99,27 @@
 			</form>
 		</div>
 
-		<div id="reset-password-dialog" class="modal hide" data-ng-controller="ResetPasswordFormCtrl">
-			<form name="resetPasswordForm" novalidate data-ng-submit="requestReset()" class="modal-form">
+		<div id="password-reset-request-dialog" class="modal hide" data-ng-controller="PasswordResetRequestFormCtrl">
+			<form name="passwordResetRequestForm" novalidate data-ng-submit="requestReset()" class="modal-form">
 					<div class="modal-header">
 						<a class="close" data-dismiss="modal">&times;</a>
 						<h3>Reset Password</h3>
 					</div>
 					<div class="modal-body">
-						<div class="alert alert-error" data-ng-show="message">
+						<div id="password-reset-request-message" class="alert alert-error" data-ng-show="message">
 							{{message}}
 						</div>
 						<div class="control-group">
-							<label for="username">Username</label>
-							<input id="reset-username" type="text" class="large" data-ng-model="username" required/>
+							<label for="password-reset-request-username">Username</label>
+							<input id="password-reset-request-username" type="text" class="large" data-ng-model="username" required/>
 						</div>
 						<div class="control-group">
-							<label for="reset-email">Email</label>
-							<input id="reset-email" type="email" class="large" data-ng-model="email" required/>
+							<label for="password-reset-request-email">Email</label>
+							<input id="password-reset-request-email" type="email" class="large" data-ng-model="email" required/>
 						</div>
 					</div>
 					<div class="modal-footer">
-						<button type="submit" class="btn btn-primary" data-ng-disabled="!resetPasswordForm.$valid">Reset</button>
+						<button id="password-reset-request-button" type="submit" class="btn btn-primary" data-ng-disabled="!passwordResetRequestForm.$valid">Reset</button>
 						<button type="reset" class="btn" data-dismiss="modal">Cancel</button>
 					</div>
 			</form>
@@ -144,8 +144,8 @@
 							<input id="sign-up-password" name="password" type="password" class="large" required data-ng-minlength="8" data-ng-model="password"/>
 						</div>
 						<div class="control-group">
-							<label for="sign-up-password-repeat">Password (again...)</label>
-							<input id="sign-up-password-repeat" name="retypedPassword" type="password" class="large" required data-ng-minlength="8" data-ng-model="retypedPassword"/>
+							<label for="sign-up-password-confirm">Confirm Password</label>
+							<input id="sign-up-password-confirm" name="retypedPassword" type="password" class="large" required data-ng-minlength="8" data-ng-model="passwordConfirmed"/>
 						</div>
 						<div class="control-group">
 							<label for="sign-up-email">Email</label>

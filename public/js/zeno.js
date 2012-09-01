@@ -284,9 +284,9 @@
 		});
 	}]);
 	
-	app.controller('ResetPasswordFormCtrl', ['$scope', '$http', function($scope, $http) {
+	app.controller('PasswordResetRequestFormCtrl', ['$scope', '$http', function($scope, $http) {
 
-		$scope.dialog = $('#reset-password-dialog');
+		$scope.dialog = $('#password-reset-request-dialog');
 
 		$scope.init = function() {
 			$scope.username = '';
@@ -331,7 +331,7 @@
 		$scope.init = function() {
 			$scope.username = '';
 			$scope.password = '';
-			$scope.retypedPassword = '';
+			$scope.passwordConfirmed = '';
 			$scope.email = '';
 			$scope.message = '';
 		};
@@ -344,7 +344,7 @@
 		};
 		$scope.submit = function() {
 			$scope.alert.clear();
-			if ($scope.password !== $scope.retypedPassword) {
+			if ($scope.password !== $scope.passwordConfirmed) {
 				$scope.message = 'Passwords don\'t match.';
 				return;
 			}
@@ -385,7 +385,7 @@
 			});
 	}]);
 	
-	app.controller('ResetPasswordCtrl', ['$scope', '$http', '$location', '$routeParams', function($scope, $http, $location, $routeParams) {
+	app.controller('PasswordResetFormCtrl', ['$scope', '$http', '$location', '$routeParams', function($scope, $http, $location, $routeParams) {
 
 		var userId = $routeParams.userId;
 		var key = $location.search()['key'];
@@ -393,12 +393,12 @@
 
 		$scope.init = function() {
 			$scope.password = '';
-			$scope.retypedPassword = '';
+			$scope.passwordConfirmed = '';
 			$scope.message = '';
 		};
 		$scope.submit = function() {
 			$scope.alert.clear();
-			if ($scope.password !== $scope.retypedPassword) {
+			if ($scope.password !== $scope.passwordConfirmed) {
 				$scope.message = 'Passwords don\'t match.';
 				return;
 			}

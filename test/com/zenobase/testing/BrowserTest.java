@@ -10,6 +10,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.inject.Inject;
 import javax.mail.MessagingException;
 
 import org.junit.After;
@@ -59,12 +60,16 @@ public class BrowserTest {
 	public void test() {
 		running(testServer(PORT), new Runnable() {
 
+			@Inject
+			UserRepository users;
+
+			@Inject
+			BucketRepository buckets;
+
 			@Override
 			public void run() {
 
-				Injector injector = Globals.get(Injector.class);
-				UserRepository users = injector.getInstance(UserRepository.class);
-				BucketRepository buckets = injector.getInstance(BucketRepository.class);
+				Globals.get(Injector.class).injectMembers(this);
 
 				// home
 				driver.get("http://localhost:" + PORT);
@@ -197,14 +202,14 @@ public class BrowserTest {
 				assertThat($("#sign-up-button")).isNotEnabled();
 				$("#sign-up-password").sendKeys("password123");
 				assertThat($("#sign-up-button")).isNotEnabled();
-				$("#sign-up-password-repeat").sendKeys("password");
+				$("#sign-up-password-confirm").sendKeys("password");
 				assertThat($("#sign-up-button")).isNotEnabled();
 				$("#sign-up-email").sendKeys("jdoe@zenobase.com");
 				assertThat($("#sign-up-button")).isEnabled();
 				$("#sign-up-button").click();
 				assertThat($("#sign-up-dialog")).isDisplayed();
 				assertThat($("#sign-up-message")).isDisplayed();
-				$("#sign-up-password-repeat").sendKeys("123");
+				$("#sign-up-password-confirm").sendKeys("123");
 				$("#sign-up-button").click();
 				wait.withMessage("view title equals user name").until(ExpectedConditions.textToBePresentInElement(By.id("user-title"), "jdoe"));
 				assertThat(find(".bucket-link")).as("bucket links").hasSize(1);
@@ -276,17 +281,42 @@ public class BrowserTest {
 
 				// TODO: try to access private bucket as guest
 
-				// log back in
+				// try to log back in, reset password
 				$("#sign-in-link").click();
 				assertThat($("#sign-in-dialog")).isDisplayed();
 				assertThat($("#sign-in-button")).isNotEnabled();
 				$("#sign-in-username").sendKeys("jdoe");
 				assertThat($("#sign-in-button")).isNotEnabled();
-				$("#sign-in-password").sendKeys("password123");
+				$("#sign-in-password").sendKeys("????????");
 				assertThat($("#sign-in-button")).isEnabled();
 				$("#sign-in-button").click();
-
-				// TODO: fail, reset password
+				wait.withMessage("sign in message is displayed").until(ExpectedConditions.visibilityOfElementLocated(By.id("sign-in-message")));
+				$("#password-reset-request-link").click();
+				assertThat($("#password-reset-request-dialog")).isDisplayed();
+				assertThat($("#password-reset-request-button")).isNotEnabled();
+				$("#password-reset-request-username").sendKeys("jdoe");
+				assertThat($("#password-reset-request-button")).isNotEnabled();
+				$("#password-reset-request-email").sendKeys("foo@bar.baz");
+				assertThat($("#password-reset-request-button")).isEnabled();
+				$("#password-reset-request-button").click();
+				wait.withMessage("password reset request message is displayed").until(ExpectedConditions.visibilityOfElementLocated(By.id("password-reset-request-message")));
+				assertThat($("#password-reset-request-dialog")).isDisplayed();
+				$("#password-reset-request-email").clear();
+				$("#password-reset-request-email").sendKeys("jdoe@zenobase.com");
+				$("#password-reset-request-button").click();
+				wait.withMessage("password reset confirmation is displayed").until(ExpectedConditions.visibilityOfElementLocated(By.id("home-view")));
+				assertThat(driver.getCurrentUrl()).as("page URL").endsWith("/#/");
+				driver.get(findUrl(readMessage("jdoe@zenobase.com")));
+				wait.withMessage("password reset view is displayed").until(ExpectedConditions.visibilityOfElementLocated(By.id("password-reset-view")));
+				assertThat($("#password-reset-button")).isNotEnabled();
+				$("#password-reset-password").sendKeys("password123");
+				assertThat($("#password-reset-button")).isNotEnabled();
+				$("#password-reset-password-confirm").sendKeys("password");
+				assertThat($("#password-reset-button")).isEnabled();
+				$("#password-reset-button").click();
+				assertThat($("#password-reset-message")).isDisplayed(); // passwords don't match
+				$("#password-reset-password-confirm").sendKeys("123");
+				$("#password-reset-button").click();
 
 				// close account
 				wait.withMessage("user profile link is displayed").until(ExpectedConditions.visibilityOfElementLocated(By.id("user-profile-link")));
