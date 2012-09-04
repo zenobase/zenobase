@@ -2,6 +2,8 @@ import scala.compat.Platform
 import sbt._
 import Keys._
 import PlayProject._
+import com.google.javascript.jscomp.CompilerOptions
+import com.google.javascript.jscomp.CompilationLevel
 
 
 object ApplicationBuild extends Build {
@@ -36,10 +38,16 @@ object ApplicationBuild extends Build {
       }
     }
 
+	val defaultOptions = new CompilerOptions()
+	CompilationLevel.SIMPLE_OPTIMIZATIONS.setOptionsForCompilationLevel(defaultOptions)
+	defaultOptions.setProcessCommonJSModules(false)
+    
     val main = PlayProject(appName, appVersion, appDependencies, mainLang = JAVA).settings(
-      lessEntryPoints <<= baseDirectory(_ / "app" / "assets" / "css" ** "zeno.less"),
+      closureCompilerSettings(defaultOptions) ++
+      Seq(lessEntryPoints <<= baseDirectory(_ / "app" / "assets" / "css" ** "zeno.less"),
+      javascriptEntryPoints <<= baseDirectory(_ / "app" / "assets" / "js" ** "zeno.js"),
       resolvers += "Sonatype Releases" at "https://oss.sonatype.org/content/repositories/releases/",
       gzippableAssets <<= (resourceManaged in (ThisProject))(dir => ((dir ** "*.js") +++ (dir ** "*.css"))), gzipAssetsSetting,
-      resourceGenerators in (ThisProject, Compile) <+= gzipAssetsTask
+      resourceGenerators in (ThisProject, Compile) <+= gzipAssetsTask) : _*
     )
 }

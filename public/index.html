@@ -16,7 +16,7 @@
 		<link rel="canonical" href="https://zenobase.com/">
 		<link rel="apple-touch-icon" href="/img/icon.png"/>
 		<!--[if lt IE 9]>
-		<script src="/js/html5shiv-3.6.1.js"></script>
+		<script src="/js/html5shiv-3.6.1.min.js"></script>
 		<![endif]-->
 	</head>
 
@@ -160,7 +160,7 @@
 			</form>
 		</div>
 
-		<script src="/js/LAB-2.0.3.js"></script>
+		<script src="/js/LAB-2.0.3.min.js"></script>
 		<script>
 			$LAB
 				.script(function() {
@@ -169,15 +169,13 @@
 					window._gaq.push(['_setSiteSpeedSampleRate', 100]);
 
 				})
-				.script("/js/jquery-1.7.2.js").wait()
-				.script("/js/bootstrap-2.0.4-3df509e5.js")
-				.script("/js/angular-1.0.1.js").wait()
-				.script("/js/angular-sanitize-1.0.1.js")
-				.script("/js/json3-3.2.3.js")
-				.script("/js/iso8601-f660e6f1.js")
-				.script("/js/humane-db64b4de.js")
+				.script("/js/jquery-1.8.1.min.js").wait()
+				.script("/js/bootstrap-2.0.4.min.js")
+				.script("/js/angular-1.0.1.min.js").wait()
+				.script("/js/angular-sanitize-1.0.1.min.js")
+				.script("/js/json3-3.2.3.min.js")
 				.script("//www.google.com/jsapi").wait()
-				.script("/js/zeno-29af5b88.js").wait(function() {
+				.script("/js/zeno-29af5b88.min.js").wait(function() {
 					angular.bootstrap(document, ['ZenoModule']);
 				})
 				.script("//google-analytics.com/ga.js")

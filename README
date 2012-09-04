@@ -3,7 +3,7 @@ Developer Guide
 
 To refresh the dependencies in Eclipse, open the play console and run:
 
-  eclipsify with-source=true
+  eclipse with-source=true
 
 
 js libs
