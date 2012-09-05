@@ -44,8 +44,8 @@ object ApplicationBuild extends Build {
     
     val main = PlayProject(appName, appVersion, appDependencies, mainLang = JAVA).settings(
       closureCompilerSettings(defaultOptions) ++
-      Seq(lessEntryPoints <<= baseDirectory(_ / "app" / "assets" / "css" ** "zeno.less"),
-      javascriptEntryPoints <<= baseDirectory(_ / "app" / "assets" / "js" ** "zeno.js"),
+      Seq(lessEntryPoints <<= baseDirectory(_ / "app" / "assets" / "css" / "zeno.less"),
+      javascriptEntryPoints <<= baseDirectory(_ / "app" / "assets" / "js" / "zeno.js"),
       resolvers += "Sonatype Releases" at "https://oss.sonatype.org/content/repositories/releases/",
       gzippableAssets <<= (resourceManaged in (ThisProject))(dir => ((dir ** "*.js") +++ (dir ** "*.css"))), gzipAssetsSetting,
       resourceGenerators in (ThisProject, Compile) <+= gzipAssetsTask) : _*
