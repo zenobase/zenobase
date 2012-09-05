@@ -84,7 +84,7 @@
 			<div class="span12">
 				<ul class="nav nav-tabs">
 					<li data-ng-class="$index == 0 && 'active'" data-ng-repeat="settings in getWidgetSettings('top')">
-						<a id="{{settings.id}}-tab" data-ng-href="#{{settings.id}}" data-toggle="tab">{{settings.label}}&nbsp;<span class="close close-tab" title="Remove" href="javascript:" data-ng-click="removeWidget(settings)" data-ng-show="editing">&times;</span></a>
+						<a id="{{settings.id}}-tab" data-ng-href="#{{settings.id}}" data-toggle="tab">{{settings.label}}&nbsp;<span class="close close-tab" title="Remove" data-ng-click="removeWidget(settings)" data-ng-show="editing">&times;</span></a>
 					</li>
 					<li data-ng-show="editing"><a href="javascript:" data-ng-click="chooseWidget('top')" title="Add Widget..."><i class="icon-plus-sign"></i></a></li>
 				</ul>
@@ -98,7 +98,7 @@
 			<div class="span6" data-ng-show="hasWidgets('left') || editing">
 				<ul class="nav nav-tabs">
 					<li data-ng-class="$index == 0 && 'active'" data-ng-repeat="settings in getWidgetSettings('left')">
-						<a id="{{settings.id}}-tab" data-ng-href="#{{settings.id}}" data-toggle="tab">{{settings.label}}&nbsp;<span class="close close-tab" title="Remove" href="javascript:" data-ng-click="removeWidget(settings)" data-ng-show="editing">&times;</span></a>
+						<a id="{{settings.id}}-tab" data-ng-href="#{{settings.id}}" data-toggle="tab">{{settings.label}}&nbsp;<span class="close close-tab" title="Remove" data-ng-click="removeWidget(settings)" data-ng-show="editing">&times;</span></a>
 					</li>
 					<li data-ng-show="editing"><a href="javascript:" data-ng-click="chooseWidget('left')" title="Add Widget..."><i class="icon-plus-sign"></i></a></li>
 				</ul>
@@ -109,7 +109,7 @@
 			<div class="span6" data-ng-show="hasWidgets('right') || editing">
 				<ul class="nav nav-tabs">
 					<li data-ng-class="$index == 0 && 'active'" data-ng-repeat="settings in getWidgetSettings('right')">
-						<a id="{{settings.id}}-tab" data-ng-href="#{{settings.id}}" data-toggle="tab">{{settings.label}}&nbsp;<span class="close close-tab" title="Remove" href="javascript:" data-ng-click="removeWidget(settings)" data-ng-show="editing">&times;</span></a>
+						<a id="{{settings.id}}-tab" data-ng-href="#{{settings.id}}" data-toggle="tab">{{settings.label}}&nbsp;<span class="close close-tab" title="Remove" data-ng-click="removeWidget(settings)" data-ng-show="editing">&times;</span></a>
 					</li>
 					<li data-ng-show="editing"><a href="javascript:" data-ng-click="chooseWidget('right')" title="Add Widget..."><i class="icon-plus-sign"></i></a></li>
 				</ul>
