@@ -32,6 +32,7 @@ public class CountWidgetTest extends SearchTestSupport {
 		event.setValue(Event.TAG, tag);
 		return event;
 	}
+
 	@Test
 	public void testDefault() {
 
