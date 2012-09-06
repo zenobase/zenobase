@@ -123,6 +123,7 @@ public class BucketRepository {
 	}
 
 	public void update(String bucketId, Event event) {
+		event.prePersist();
 		getIndex(bucketId).update(Event.TYPE_NAME, event.getId(), event.toJson(), false);
 	}
 
