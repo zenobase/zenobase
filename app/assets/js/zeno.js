@@ -1606,6 +1606,9 @@
 			return field ? '/create-' + field.name + '.html' : null;
 		};
 		$scope.save = function() {
+			if (!$scope.event['timestamp']) {
+				$scope.event.add(Field.find('timestamp'), new Date().toTimezoneISOString());
+			}
 			$scope.alert.clear();
 			if ($scope.isNew) {
 				$http.post('/buckets/' + $scope.params.bucketId + '/', $scope.event)
