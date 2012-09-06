@@ -15,7 +15,7 @@ var humane = (function() {
 
 	var lang = {
     ago: 'ago',
-    from: '',
+    from: 'from now',
     now: 'just now',
     millisecond: 'millisecond',
     milliseconds: 'milliseconds',
