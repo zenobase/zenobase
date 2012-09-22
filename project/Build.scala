@@ -29,12 +29,15 @@ object ApplicationBuild extends Build {
     lazy val gzipAssetsSetting = gzipAssets <<= gzipAssetsTask
     lazy val gzipAssetsTask = (gzippableAssets, streams) map {
       case (finder: PathFinder, s: TaskStreams) => {
-        finder.get.map { file =>
+        var count = 0
+        var files = finder.get.map { file =>
           val gzTarget = new File(file.getAbsolutePath + ".gz")
           IO.gzip(file, gzTarget)
-          s.log.info("Compressed " + file.getName + " " + file.length / 1000 + " k => " + gzTarget.getName + " " + gzTarget.length / 1000 + " k")
+          count += 1;
           gzTarget
         }
+        s.log.info("Compressed " + count + " asset(s)")
+        files
       }
     }
 
@@ -43,11 +46,12 @@ object ApplicationBuild extends Build {
 	defaultOptions.setProcessCommonJSModules(false)
     
     val main = PlayProject(appName, appVersion, appDependencies, mainLang = JAVA).settings(
-      closureCompilerSettings(defaultOptions) ++
-      Seq(lessEntryPoints <<= baseDirectory(_ / "app" / "assets" / "css" / "zeno.less"),
-      javascriptEntryPoints <<= baseDirectory(_ / "app" / "assets" / "js" / "zeno.js"),
-      resolvers += "Sonatype Releases" at "https://oss.sonatype.org/content/repositories/releases/",
-      gzippableAssets <<= (resourceManaged in (ThisProject))(dir => ((dir ** "*.js") +++ (dir ** "*.css"))), gzipAssetsSetting,
-      resourceGenerators in (ThisProject, Compile) <+= gzipAssetsTask) : _*
+      closureCompilerSettings(defaultOptions) ++ Seq(
+        lessEntryPoints <<= baseDirectory(_ / "app" / "assets" / "css" / "zeno.less"),
+        javascriptEntryPoints <<= baseDirectory(_ / "app" / "assets" / "js" / "zeno.js"),
+        resolvers += "Sonatype Releases" at "https://oss.sonatype.org/content/repositories/releases/",
+        gzippableAssets <<= (resourceManaged in ThisProject)(dir => ((dir ** "*.js") +++ (dir ** "*.css"))), gzipAssetsSetting,
+        resourceGenerators in Compile <+= gzipAssetsTask
+      ) : _*
     )
 }
