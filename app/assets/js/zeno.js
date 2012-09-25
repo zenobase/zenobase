@@ -1854,6 +1854,29 @@
 		$scope.init();
 	}]);
 	
+	app.controller('CreateRatingFieldCtrl', ['$scope', function($scope) {
+
+		$scope.init = function() {
+			$scope.stars = 0;
+			$scope.highlighted = 0;
+		};
+		$scope.highlight = function(stars) {
+			$scope.highlighted = stars;
+		};
+		$scope.set = function(stars) {
+			$scope.stars = stars;
+		};
+		$scope.get = function() {
+			return $scope.highlighted || $scope.stars;
+		};
+		$scope.addField = function() {
+			$scope.event.add($scope.field, $scope.stars * 20);
+			$scope.init();
+		};
+
+		$scope.init();
+	}]);
+	
 	app.controller('CreateNoteFieldCtrl', ['$scope', function($scope) {
 
 		$scope.init = function() {

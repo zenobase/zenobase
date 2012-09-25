@@ -172,8 +172,7 @@ public class BrowserTest {
 
 				// add a rating
 				new Select($("#event-field-select")).selectByVisibleText("rating");
-				$("#rating-value-field").sendKeys("80");
-				assertThat($("#add-rating-button")).isEnabled();
+				$("#rating-4-star").click();
 				$("#add-rating-button").click();
 
 				$("#save-event-button").click();

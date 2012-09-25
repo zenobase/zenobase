@@ -346,13 +346,12 @@
 	</script>
 
 	<script id="/create-rating.html" type="text/ng-template">
-		<div data-ng-controller="CreateIntegerFieldCtrl">
+		<div data-ng-controller="CreateRatingFieldCtrl">
 			<div class="control-group">
-				<label for="value" class="control-label">Value</label>
-				<input id="rating-value-field" name="value" type="number" min="0" max="100" step="20" data-ng-model="value"/>
+				<span class="nowrap" style="cursor:pointer"><i id="rating-{{i}}-star" title="Rate {{i}}/5" data-ng-class="get() >= i && 'icon-star' || 'icon-star-empty'" data-ng-mouseenter="highlight(i)" data-ng-mouseleave="highlight(0)" data-ng-click="set(i)" data-ng-repeat="i in [ 1, 2, 3, 4, 5 ]"></i></span>
 			</div>
 			<div class="control-group">
-				<button id="add-rating-button" class="btn" href="javascript:" data-ng-click="addField()" data-ng-disabled="!valid()">Add</button>
+				<button id="add-rating-button" class="btn" href="javascript:" data-ng-click="addField()">Add</button>
 			</div>
 		</div>
 	</script>
