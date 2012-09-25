@@ -29,12 +29,12 @@ public class BucketListControllerHttpPostTest extends BucketListControllerTestSu
 		when(auth.getPrincipal(true)).thenReturn(user.asIdentity());
 		when(dispatcher.dispatch(arg.capture())).thenReturn(commandId);
 		Result result = call(new CreateBucketForm(label, description).toJson());
+		assertThat(result).hasStatus(CREATED).hasContent(BucketListController.receipt(commandId));
 		Bucket bucket = arg.getValue().getBucket();
 		assertThat(bucket.getLabel()).isEqualTo(label);
 		assertThat(bucket.getDescription()).isEqualTo(description);
 		assertThat(bucket.getPermission(user.asIdentity())).isEqualTo(Permission.ALL);
 		assertThat(Helpers.redirectLocation(result)).isEqualTo(com.zenobase.controllers.routes.BucketController.get(bucket.getId()).toString());
-		assertThat(result).hasStatus(CREATED).hasContent(BucketListController.receipt(commandId));
 	}
 
 	@Test
