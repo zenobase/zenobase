@@ -1749,14 +1749,36 @@
 
 	app.controller('CreateTimestampFieldCtrl', ['$scope', function($scope) {
 
+		$scope.timezones = [
+			'-1200', '-1100', '-1000', '-0930', '-0900', '-0800', '-0700', '-0600','-0500', '-0430', '-0400', '-0300', '-0200', '-0100',
+			'+0000', '+0100', '+0200', '+0300', '+0400', '+0430', '+0500', '+0530', '+0545', '+0600', '+0630', '+0700', '+0800', '+0845', '+0900', '+0930', '+1000', '+1100', '+1130', '+1200', '+1245', '+1300', '+1400'
+		];
+
+		function getValue() {
+			var day = (typeof $scope.date === 'object') ? toLocalDate($scope.date).toDateISOString() : $scope.date;
+			return day + 'T' + $scope.time + '.000' + $scope.timezone;
+		}
+		function toLocalDate(date) {
+			return new Date(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate());
+		}
+		function toUTCDate(date) {
+			return new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+		}
+		$scope.formatTimezone = function(value) {
+			return value.substring(0, 3) + ':' + value.substring(3);
+		};
 		$scope.init = function() {
-			$scope.value = new Date().toTimezoneISOString();
+			var date = new Date();
+			date.setSeconds(0);
+			$scope.date = toUTCDate(date);
+			$scope.time = date.toTimeISOString();
+			$scope.timezone = date.getTimezone();
 		};
 		$scope.addField = function() {
-			$scope.event.add($scope.field, $scope.value);
+			$scope.event.add($scope.field, getValue());
 		};
 		$scope.valid = function() {
-			return Date.parse($scope.value);
+			return Date.parse(getValue());
 		};
 
 		$scope.init();
@@ -2145,6 +2167,55 @@
 				});
 			}
 		};		
+	});
+
+	app.directive('uiDatepicker', function(){
+		return {
+			require: '?ngModel',
+			restrict: 'A',
+			link: function($scope, element, attrs, controller) {
+				var updateModel = function(event) {
+					element.datepicker('hide');
+					element.blur();
+					return $scope.$apply(function() {
+						return controller.$setViewValue(event.date);
+					});
+				};
+				if (controller != null) {
+					controller.$render = function() {
+						element.datepicker().data().datepicker.date = controller.$viewValue;
+						element.datepicker('setValue');
+						element.datepicker('update');
+						return controller.$viewValue;
+					};
+				}
+				var options = {
+					format : 'yyyy-mm-dd',
+					weekStart : 1
+				};
+				return element.datepicker(options).on('changeDate', updateModel);
+			}
+		};
+	});
+
+	app.directive('uiTimepicker', function(){
+		return {
+			require: '?ngModel',
+			restrict: 'A',
+			link: function($scope, element, attrs, controller) {
+				var updateModel = function() {
+					return $scope.$apply(function() {
+						return controller.$setViewValue(element.val());
+					});
+				};
+				var options = { 
+					show24Hours : true, 
+					showSeconds : true,
+					spinnerImage : ''
+				};
+				element.timeEntry(options).change(updateModel);
+			}
+		};
 	});
 
 }());

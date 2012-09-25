@@ -195,8 +195,9 @@
 	<script id="/create-timestamp.html" type="text/ng-template">
 		<div data-ng-controller="CreateTimestampFieldCtrl">
 			<div class="control-group">
-				<label for="value" class="control-label">Value</label>
-				<input id="timestamp-value-field" name="value" type="text" data-ng-model="value"/>
+				<input id="timestamp-date-field" class="input-small" type="text" data-ui-datepicker data-ng-model="date"/>
+				<input id="timestamp-time-field" class="input-small" type="text" data-ui-timepicker data-ng-model="time"/>
+				<select id="timestamp-timezone-select" class="input-small" data-ng-model="timezone" data-ng-options="formatTimezone(timezone) for timezone in timezones"></select>
 			</div>
 			<div class="control-group">
 				<button id="add-timestamp-button" class="btn" href="javascript:" data-ng-click="addField()" data-ng-disabled="!valid()">Add</button>

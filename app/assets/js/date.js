@@ -57,13 +57,21 @@
 		}
 
     Date.prototype.toTimezoneISOString = function() {
+  		return this.toDateISOString() + 'T' +
+  			this.toTimeISOString() + '.000'  +
+  			this.getTimezone();
+  	}
+
+    Date.prototype.toDateISOString = function() {
   		return this.getFullYear() + '-' +
   			pad(this.getMonth() + 1) + '-' +
-  			pad(this.getDate()) + 'T' +
-  			pad(this.getHours()) + ':' +
+  			pad(this.getDate());
+  	}
+
+    Date.prototype.toTimeISOString = function() {
+  		return pad(this.getHours()) + ':' +
   			pad(this.getMinutes()) + ':' +
-  			pad(this.getSeconds()) + '.000' +
-  			this.getTimezone();
+  			pad(this.getSeconds());
   	}
 
 }(Date));

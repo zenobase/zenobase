@@ -99,11 +99,13 @@ public class BrowserTest {
 
 				// add a timestamp to the event
 				new Select($("#event-field-select")).selectByVisibleText("timestamp");
-				$("#timestamp-value-field").clear();
-				$("#timestamp-value-field").sendKeys("foo");
-				assertThat($("#add-timestamp-button")).isNotEnabled();
-				$("#timestamp-value-field").clear();
-				$("#timestamp-value-field").sendKeys("2012-08-04T08:30:00.000-0700");
+				$("#timestamp-date-field").clear();
+				$("#timestamp-date-field").sendKeys("2012-08-04");
+				$("#timestamp-time-field").click();
+				$("#timestamp-time-field").sendKeys("08");
+				$("#timestamp-time-field").sendKeys("\t");
+				$("#timestamp-time-field").sendKeys("30");
+				new Select($("#timestamp-timezone-select")).selectByVisibleText("-07:00");
 				$("#add-timestamp-button").click();
 				assertThat($("#save-event-button")).isEnabled();
 
@@ -381,6 +383,8 @@ public class BrowserTest {
 	@After
 	public void tearDown() {
 		Mailbox.clearAll();
-		driver.quit();
+		if (driver != null) {
+			driver.quit();
+		}
 	}
 }
