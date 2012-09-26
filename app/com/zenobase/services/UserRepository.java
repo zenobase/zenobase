@@ -12,6 +12,7 @@ import org.elasticsearch.search.sort.SortOrder;
 import play.Logger;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
+import com.google.common.primitives.Ints;
 
 import com.zenobase.common.Callback;
 import com.zenobase.common.PartialList;
@@ -103,6 +104,10 @@ public class UserRepository {
 
 	public boolean delete(User user) {
 		return index.delete(User.TYPE_NAME, user.getName(), true);
+	}
+
+	public int count() {
+		return Ints.checkedCast(index.count());
 	}
 
 	public boolean isEmpty() {

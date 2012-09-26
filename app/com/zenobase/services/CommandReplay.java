@@ -8,6 +8,7 @@ import com.google.inject.Inject;
 import com.zenobase.commands.Command;
 import com.zenobase.commands.CommandParserRegistry;
 import com.zenobase.common.Callback;
+import com.zenobase.common.StringBloomFilter;
 
 public class CommandReplay {
 
@@ -15,7 +16,7 @@ public class CommandReplay {
 	private final NodeFactory nodeFactory;
 	private final CommandParserRegistry parsers;
 	private final CommandDispatcher dispatcher;
-	private int count;
+	private int count, replayed;
 
 	@Inject
 	public CommandReplay(@Named("es.replay") String sourceCluster, NodeFactory nodeFactory, CommandParserRegistry parsers, CommandDispatcher dispatcher) {
@@ -33,19 +34,23 @@ public class CommandReplay {
 		}
 	}
 
-	void replay(IndexManager indexManager) {
+	void replay(final IndexManager indexManager) {
 		CommandRepository repository = new CommandRepository(indexManager, parsers);
 		Logger.info("Replaying " + repository.size() + " commands from " + sourceCluster + "...");
+		final StringBloomFilter identities = new IdentitiesFilterBuilder(new UserRepository(indexManager)).build();
 		try {
 			repository.findAll(new Callback<Command>() {
 				@Override
 				public void call(Command command) {
-					dispatcher.dispatch(command);
+					if (identities.mightContain(command.getPrincipal().getId())) {
+						dispatcher.dispatch(command);
+						++replayed;
+					}
 					++count;
 				}
 			});
 		} finally {
-			Logger.info("Replayed: " + count);
+			Logger.info("Replayed " + replayed + "/" + count);
 		}
 	}
 }
