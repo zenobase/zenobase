@@ -10,7 +10,7 @@
 		</thead>
 		<tbody>
 			<tr data-ng-repeat="term in terms">
-				<td><i class="icon-tag"></i> <a href="javascript:" data-ng-click="filter(term)">{{term.label}}</a></td>
+				<td><a href="javascript:" data-ng-click="filter(term)" data-ng-bind-html="term.label | field:settings.termField"></a></td>
 				<td style="text-align: right"><abbr title="{{term.last}}">{{term.last | age}}</abbr></td>
 				<td style="text-align: right">{{term.freq  | duration}}</td>
 			</tr>
@@ -27,7 +27,7 @@
 		</div>
 	</div>
 
-	<div data-ui-modal="dialogShown" data-ui-modal-close="cancel()" data-ng-controller="WidgetSettingsCtrl">
+	<div data-ui-modal="dialogShown" data-ui-modal-close="cancel()" data-ng-controller="TermGanttSettingsCtrl">
 		<form name="form" class="modal-form">
 			<div class="modal-header">
 				<a class="close" href="javascript:" data-dismiss="modal">&times;</a>
@@ -38,6 +38,13 @@
 					<label class="control-label" for="label">Title</label>
 					<div class="controls">
 						<input name="label" type="text" required min="1" max="20" data-ng-model="settings.label"/>
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label" for="termField">Term Field</label>
+					<div class="controls">
+						<select name="termField" required data-ng-model="settings.termField" data-ng-options="field.name as field.name for field in getTermFields()"></select>
+						<p class="help-block">The field on which to aggregate.</p>
 					</div>
 				</div>
 			</div>

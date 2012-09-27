@@ -969,6 +969,15 @@
 	app.controller('WidgetSettingsCtrl', ['$scope', function($scope) {
 		WidgetSettingsCtrl($scope);
 	}]);
+
+	app.controller('TermCountSettingsCtrl', ['$scope', function($scope) {
+
+		WidgetSettingsCtrl($scope);
+
+		$scope.getFields = function() {
+			return Field.findTokenFields();
+		};
+	}]);
 	
 	app.controller('TermGanttCtrl', ['$scope', function($scope) {
 	
@@ -1015,6 +1024,15 @@
 		$scope.register($scope);
 		$scope.$on('result', $scope.update);
 		$scope.$on('refresh', $scope.init);
+	}]);
+
+	app.controller('TermGanttSettingsCtrl', ['$scope', function($scope) {
+
+		WidgetSettingsCtrl($scope);
+
+		$scope.getTermFields = function() {
+			return Field.findTokenFields();
+		};
 	}]);
 	
 	app.controller('RatingCountCtrl', ['$scope', function($scope) {
