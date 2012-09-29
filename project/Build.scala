@@ -19,6 +19,7 @@ object ApplicationBuild extends Build {
       "com.google.inject.extensions" % "guice-multibindings" % "3.0",
       "org.elasticsearch" % "elasticsearch" % "0.19.8",
       "org.elasticsearch" % "elasticsearch-cloud-aws" % "1.8.0",
+      "org.jsoup" % "jsoup" % "1.7.1",
       "org.seleniumhq.selenium" % "selenium-chrome-driver" % "2.25.0" % "test",
       "org.mockito" % "mockito-all" % "1.9.0" % "test",
       "org.jvnet.mock-javamail" % "mock-javamail" % "1.9" % "test"
