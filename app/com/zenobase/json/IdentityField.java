@@ -6,7 +6,6 @@ import org.codehaus.jackson.node.TextNode;
 
 import com.zenobase.models.Identity;
 
-
 public class IdentityField extends Field<Identity> {
 
 	public IdentityField(String name) {
