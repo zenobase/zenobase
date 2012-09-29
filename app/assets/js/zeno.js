@@ -1821,7 +1821,7 @@
 		$scope.init();
 	}]);
 	
-	app.controller('CreateResourceFieldCtrl', ['$scope', function($scope) {
+	app.controller('CreateResourceFieldCtrl', ['$scope', '$http', function($scope, $http) {
 
 		$scope.init = function() {
 			$scope.value = {};
@@ -1830,10 +1830,21 @@
 			$scope.event.add($scope.field, $scope.value);
 			$scope.init();
 		};
+		$scope.prefillTitle = function() {
+			$http.get('/og?' + $.param({ url : $scope.value.url })).success(function(response) {
+				$scope.value.title = response.title;
+			});
+		};
 		$scope.valid = function() {
 			return $scope.value.url && $scope.value.title;
 		};
-
+		$scope.change = function(e) {
+		};
+		$scope.$watch('value.url', function(url) {
+			if (url && !$scope.value.title) {
+				$scope.prefillTitle(); 
+			}
+		});
 		$scope.init();
 	}]);
 	
@@ -2210,7 +2221,7 @@
 		};		
 	});
 
-	app.directive('uiDatepicker', function(){
+	app.directive('uiDatepicker', function() {
 		return {
 			require: '?ngModel',
 			restrict: 'A',
@@ -2239,7 +2250,7 @@
 		};
 	});
 
-	app.directive('uiTimepicker', function(){
+	app.directive('uiTimepicker', function() {
 		return {
 			require: '?ngModel',
 			restrict: 'A',
@@ -2258,5 +2269,23 @@
 			}
 		};
 	});
+
+	app.directive('uiDefer', ['$timeout', function($timeout) {
+		return {
+			require: 'ngModel',
+			link: function($scope, $element, $attrs, modelCtrl) {
+				var $setViewValue = modelCtrl.$setViewValue;
+				var bufferedValue;
+				modelCtrl.$setViewValue = function(value) {
+					bufferedValue = value;
+				}
+				$element.bind('change', function() {
+					$timeout(function() {
+						$setViewValue.call(modelCtrl, bufferedValue);
+					});
+				});
+			}
+		}
+	}]);
 
 }());
