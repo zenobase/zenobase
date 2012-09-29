@@ -147,9 +147,8 @@ public class BrowserTest {
 				new Select($("#event-field-select")).selectByVisibleText("resource");
 				assertThat($("#add-resource-button")).isNotEnabled();
 				$("#resource-url-field").sendKeys("http://picasaweb.google.com/eric.jain/MountAdamsAugust2012");
-				assertThat($("#add-resource-button")).isNotEnabled();
-				$("#resource-title-field").sendKeys("Mount Adams");
-				assertThat($("#add-resource-button")).isEnabled();
+				$("#resource-title-field").click();
+				wait.withMessage("title is auto-filled").until(ExpectedConditions.elementToBeClickable(By.id("add-resource-button")));
 				$("#add-resource-button").click();
 				assertThat($("#add-resource-button")).isNotEnabled();
 
