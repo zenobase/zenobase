@@ -17,8 +17,8 @@ object ApplicationBuild extends Build {
       "com.google.guava" % "guava-testlib" % "12.0.1" % "test",
       "com.google.inject" % "guice" % "3.0",
       "com.google.inject.extensions" % "guice-multibindings" % "3.0",
-      "org.elasticsearch" % "elasticsearch" % "0.19.8",
-      "org.elasticsearch" % "elasticsearch-cloud-aws" % "1.8.0",
+      "org.elasticsearch" % "elasticsearch" % "0.19.10",
+      "org.elasticsearch" % "elasticsearch-cloud-aws" % "1.9.0",
       "org.jsoup" % "jsoup" % "1.7.1",
       "org.seleniumhq.selenium" % "selenium-chrome-driver" % "2.25.0" % "test",
       "org.mockito" % "mockito-all" % "1.9.0" % "test",
@@ -50,7 +50,7 @@ object ApplicationBuild extends Build {
       closureCompilerSettings(defaultOptions) ++ Seq(
         lessEntryPoints <<= baseDirectory(_ / "app" / "assets" / "css" / "zeno.less"),
         javascriptEntryPoints <<= baseDirectory(_ / "app" / "assets" / "js" / "zeno.js"),
-        resolvers += "Sonatype Releases" at "https://oss.sonatype.org/content/repositories/releases/",
+        resolvers += "Sonatype Releases" at "https://oss.sonatype.org/content/repositories/releases/"
         gzippableAssets <<= (resourceManaged in ThisProject)(dir => ((dir ** "*.js") +++ (dir ** "*.css"))), gzipAssetsSetting,
         resourceGenerators in Compile <+= gzipAssetsTask
       ) : _*
