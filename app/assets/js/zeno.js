@@ -1703,7 +1703,7 @@
 	app.controller('CreateLocationFieldCtrl', ['$scope', function($scope) {
 
 		$scope.init = function() {
-			google.load("maps", "3.8", { other_params : 'sensor=false', callback : function() {
+			google.load("maps", "3.9", { other_params : 'sensor=false', callback : function() {
 				var center = new google.maps.LatLng(0, 0);
 				var options = {
 					center : center,
