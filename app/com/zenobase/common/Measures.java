@@ -25,6 +25,7 @@ public class Measures {
 		UnitFormat.getInstance().label(NonSI.OUNCE, "oz");
 		//UnitFormat.getInstance().label(NonSI.POUND_FORCE.divide(NonSI.INCH.pow(2)), "psi");
 		UnitFormat.getInstance().label(SI.PASCAL.times(6894.75729), "psi");
+		UnitFormat.getInstance().alias(NonSI.KILOMETERS_PER_HOUR, "kmh");
 	}
 
 	private Measures() {

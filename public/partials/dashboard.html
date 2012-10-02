@@ -331,6 +331,22 @@
 			</div>
 		</div>
 	</script>
+
+	<script id="/create-velocity.html" type="text/ng-template">
+		<div data-ng-controller="CreateUnitFieldCtrl">
+			<div class="control-group">
+				<label for="value" class="control-label">Value</label>
+				<input id="velocity-value-field" name="value" type="number" data-ng-model="value['@value']"/>
+			</div>
+			<div class="control-group">
+				<label for="unit" class="control-label">Unit</label>
+				<select id="velocity-unit-select" name="unit" data-ng-model="value.unit" data-ng-options="unit for unit in field.units"></select>
+			</div>
+			<div class="control-group">
+				<button id="add-velocity-button" class="btn" href="javascript:" data-ng-click="addField()" data-ng-disabled="!valid()">Add</button>
+			</div>
+		</div>
+	</script>
 	<!-- end units -->
 
 	<script id="/create-count.html" type="text/ng-template">

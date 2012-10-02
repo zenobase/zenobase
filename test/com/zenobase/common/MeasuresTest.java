@@ -71,6 +71,14 @@ public class MeasuresTest {
 		assertThatIsEqualTo("6894.757 Pa", "1 psi");
 	}
 
+	@Test
+	public void testSpeed() {
+		assertThatIsEqualTo("0.2777778 m/s", "1 kmh");
+		assertThatIsEqualTo("0.44704 m/s", "1 mph");
+		assertThatIsEqualTo("0.5144444 m/s", "1 kn");
+		assertThatIsEqualTo("331.6 m/s", "1 Mach");
+	}
+
 	private static void assertThatIsEqualTo(String expected, String value) {
 		assertThat(Measures.toStandard(DecimalMeasure.valueOf(value))).isEqualTo(DecimalMeasure.valueOf(expected));
 	}

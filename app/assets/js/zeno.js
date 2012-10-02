@@ -2039,6 +2039,12 @@
 	  '</span>';
 	}));
 	
+	Field.register(new Field('velocity', 'icon-road', [ 'm/s', 'mph', 'kmh', 'kn', 'Mach' ], function(value) { 
+		return '<span class="nowrap">' +
+	  	'<i class="' + this.icon + '" title="Velocity"></i> ' + value['@value'] + ' ' + value.unit +
+	  '</span>';
+	}));
+	
 	Field.register(new Field('duration', 'icon-time', null, function(value) { 
 		return '<span class="nowrap">' +
 	  	'<i class="' + this.icon + '" title="Duration"></i> ' + humane.duration(value, false) +

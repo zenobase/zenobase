@@ -22,6 +22,7 @@ import com.zenobase.json.SchemaBuilder;
 import com.zenobase.json.TemperatureField;
 import com.zenobase.json.TextField;
 import com.zenobase.json.TokenField;
+import com.zenobase.json.VelocityField;
 import com.zenobase.json.WeightField;
 
 public class Event extends DomainNode {
@@ -33,6 +34,7 @@ public class Event extends DomainNode {
 	public static final DateTimeField TIMESTAMP = new DateTimeField("timestamp");
 	public static final DurationField DURATION = new DurationField("duration");
 	public static final FrequencyField FREQUENCY = new FrequencyField("frequency");
+	public static final VelocityField VELOCITY = new VelocityField("velocity");
 	public static final IntegerField COUNT = new IntegerField("count");
 	public static final LocationField LOCATION = new LocationField("location");
 	public static final TokenField TAG = new TokenField("tag");
@@ -46,7 +48,7 @@ public class Event extends DomainNode {
 	public static final TextField NOTE = new TextField("note");
 
 	private static final ImmutableSet<Field<?>> FIELDS =
-		ImmutableSet.<Field<?>>of(ID, VERSION, AUTHOR, TIMESTAMP, DURATION, FREQUENCY, COUNT, LOCATION, TAG, RESOURCE, DISTANCE, HEIGHT, WEIGHT, PRESSURE, TEMPERATURE, RATING, NOTE);
+		ImmutableSet.<Field<?>>of(ID, VERSION, AUTHOR, TIMESTAMP, DURATION, FREQUENCY, VELOCITY, COUNT, LOCATION, TAG, RESOURCE, DISTANCE, HEIGHT, WEIGHT, PRESSURE, TEMPERATURE, RATING, NOTE);
 
 	public Event() {
 		setValue(ID, Generator.id());
