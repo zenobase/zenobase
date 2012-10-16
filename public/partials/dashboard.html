@@ -43,14 +43,9 @@
 				<a id="add-event-action" title="Add Event..." href="javascript:" data-ng-click="editEvent({})"><i class="icon-plus"></i></a>
 			</p>
 			<p id="bucket-permissions" class="pull-right" data-ng-show="editable">
-				<span data-ng-show="!bucket.isPublished()"><i class="icon-lock"></i>
-					<span data-ng-hide="editing">private</span>
-					<a id="permissions-dialog-link-private" title="Edit Permissions..." href="javascript:" data-ng-click="showPermissionsDialog(true)" data-ng-show="editing">private</a>
-				</span>
-				<span data-ng-show="bucket.isPublished()"><i class="icon-globe"></i>
-					<span data-ng-hide="editing">public</span>
-					<a id="permissions-dialog-link-public" title="Edit Permissions..." href="javascript:" data-ng-click="showPermissionsDialog(true)" data-ng-show="editing">public</a>
-				</span>
+				<span id="bucket-private-label" data-ng-show="!bucket.isPublished()"><i class="icon-lock"></i> private</span>
+				<span id="bucket-public-label" data-ng-show="bucket.isPublished()"><i class="icon-globe"></i> public</span>
+				<span data-ng-show="editing">[ <a id="permissions-dialog-link" href="javascript:" data-ng-click="showPermissionsDialog(true)">Change...</a> ]</span>
 			</p>
 			<ul class="nav nav-pills" style="clear: both; margin-bottom:12px;" data-ng-show="filters">
 				<li class="active" data-ng-repeat="filter in filters">
@@ -112,21 +107,23 @@
 			<div class="modal-body">
 				<div class="control-group">
 					<div class="controls">
-						<p data-ng-repeat="p in bucket.permissions">
-							<span data-ng-show="p.principal == '*'">
-								<i class="icon-globe"></i> public ({{p.permission}}) <a href="javascript:" data-ng-click="bucket.unpublish()">&times;</a>
+						<p style="clear:both" data-ng-repeat="p in bucket.permissions">
+							<span class="editable" data-ng-show="p.principal == '*'">
+								<i class="icon-globe"></i> public ({{p.permission}}) <a href="javascript:" data-ng-click="bucket.unpublish()"><i class="icon-remove" title="Delete"></i></a>
 							</span>
-							<span data-ng-show="p.principal != '*'">
+							<span class="editable" data-ng-show="p.principal != '*'">
 								<i class="icon-user"></i> {{p.principal | username}} ({{p.permission}})
 							</span>
 						</p>
-						<hr/>
-						<span data-ng-show="user.verified">
-							<strong>Add:</strong> <a id="publish-link" href="javascript:" data-ng-click="bucket.publish()">public</a>
-						</span>
-						<span data-ng-hide="user.verified">
-							<i>You can make this dashboard public after signing up and verifying your email address.</i>
-						</span>
+						<p style="clear:both">
+							<hr/>
+							<span data-ng-show="user.verified && !bucket.isPublished()">
+								<strong>Add:</strong> <a id="publish-link" href="javascript:" data-ng-click="bucket.publish()">public</a>
+							</span>
+							<span data-ng-hide="user.verified">
+								<i>You can make this dashboard public after signing up and verifying your email address.</i>
+							</span>
+						</p>
 					</div>
 				</div>
 			</div>
