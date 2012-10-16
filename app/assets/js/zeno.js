@@ -798,6 +798,10 @@
 		$scope.cancel = function() {
 			$scope.editing = false;
 		};
+
+		$scope.showPermissionsDialog = function(b) {
+			$scope.permissionsDialog = b;
+		};
 	}]);
 	
 	app.controller('BucketFormCtrl', ['$scope', '$http', '$route', function($scope, $http, $route) {
@@ -1603,6 +1607,21 @@
 		values.push(value);
 	};
 
+	app.controller('PermissionsDialogCtrl', ['$scope', '$http', '$timeout', function($scope, $http, $timeout) {
+
+		$scope.init = function() {
+			_gaq.push([ '_trackEvent', 'action', 'edit permissions' ]);
+			$scope.bucket = angular.copy($scope.$parent.bucket);
+		};
+		$scope.update = function() {
+			$scope.$parent.bucket = $scope.bucket;
+			$scope.showPermissionsDialog(false);
+		};
+		$scope.cancel = function() {
+			$scope.showPermissionsDialog(false);			
+		};
+	}]);
+
 	app.controller('EditEventDialogCtrl', ['$scope', '$http', '$timeout', '$routeParams', function($scope, $http, $timeout, $routeParams) {
 
 		$scope.params = $routeParams;
@@ -2011,7 +2030,7 @@
 	  '</span>';
 	}));
 	
-	Field.register(new Field('weight', 'icon-lock', [ 'lb', 'oz', 'kg', 'g', 'mg' ], function(value) { 
+	Field.register(new Field('weight', 'icon-magnet', [ 'lb', 'oz', 'kg', 'g', 'mg' ], function(value) { 
 		return '<span class="nowrap">' +
 	  	'<i class="' + this.icon + '" title="Weight"></i> ' + value['@value'] + ' ' + value.unit +
 	  '</span>';

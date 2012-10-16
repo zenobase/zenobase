@@ -7,11 +7,20 @@
 	<div id="dashboard-loading-message" data-ng-hide="bucket || message">
 		<i class="icon-refresh"></i> Loading...		
 	</div>
+	
+	<div class="alert alert-block alert-info" data-ng-controller="BucketFormCtrl" data-ng-show="editing">
+		<a class="close" href="javascript:" data-ng-click="cancel()">&times;</a>
+		<p>
+			<button id="save-bucket-button" data-ng-click="save()" class="btn btn-primary">Save</button>
+			<button data-ng-click="cancel()" class="btn">Cancel</button>
+		</p>
+	</div>
 
 	<div data-ng-show="bucket">
 	
 		<div class="row-fluid" style="margin-bottom: 9px;">
-			<h3 id="bucket-title" class="pull-left">{{bucket.label}}</h3>
+			<h3 id="bucket-title" class="pull-left" data-ng-hide="editing">{{bucket.label}}</h3>
+			<input id="edit-bucket-label" type="text" class="input-large pull-left" required data-ng-minlength="1" data-ng-maxlength="20" data-ng-pattern="/^[a-zA-Z0-9-_ ]+$/" data-ng-model="bucket.label" data-ng-show="editing"/>
 			<p class="pull-left" style="margin-left: 9px; margin-top: 5px; vertical-align: middle" data-ng-show="total >= 0">
 				<span id="event-count" class="badge badge-success" title="Events">{{total}}</span>
 			</p>
@@ -21,17 +30,27 @@
 			<p class="pull-left" style="margin-left: 8px; margin-top: 6px; vertical-align: middle">
 				<a href="javascript:" data-ng-click="refresh()" title="Refresh"><i class="icon-refresh"></i></a>
 			</p>
-			<p class="pull-left" style="margin-left: 8px; margin-top: 6px; vertical-align: middle" data-ng-show="editable">
+			<p class="pull-left" style="margin-left: 8px; margin-top: 6px; vertical-align: middle" data-ng-show="editable && !editing">
 				<a id="edit-bucket-action" href="javascript:" data-ng-click="edit()" title="Edit Dashboard..."><i class="icon-pencil"></i></a>
 			</p>
 			<p class="pull-left" style="margin-left: 8px; margin-top: 6px; vertical-align: middle" data-ng-show="canImport()">
 				<a data-toggle="modal" href="#import-events-dialog" title="Import Events..."><i class="icon-upload"></i></a>
 			</p>
 			<p class="pull-left" style="margin-left: 8px; margin-top: 6px; vertical-align: middle" data-ng-show="total > 0">
-				<a data-toggle="modal" data-ng-href="{{getExportUrl()}}" title="Export Events"><i class="icon-download"></i></a>
+				<a data-ng-href="{{getExportUrl()}}" title="Export Events"><i class="icon-download"></i></a>
 			</p>
 			<p class="pull-left" style="margin-left: 8px; margin-top: 6px; vertical-align: middle" data-ng-show="editable">
-				<a id="add-event-action" title="Add Event..." data-toggle="modal" href="javascript:" data-ng-click="editEvent({})"><i class="icon-plus"></i></a>
+				<a id="add-event-action" title="Add Event..." href="javascript:" data-ng-click="editEvent({})"><i class="icon-plus"></i></a>
+			</p>
+			<p id="bucket-permissions" class="pull-right" data-ng-show="editable">
+				<span data-ng-show="!bucket.isPublished()"><i class="icon-lock"></i>
+					<span data-ng-hide="editing">private</span>
+					<a id="permissions-dialog-link-private" title="Edit Permissions..." href="javascript:" data-ng-click="showPermissionsDialog(true)" data-ng-show="editing">private</a>
+				</span>
+				<span data-ng-show="bucket.isPublished()"><i class="icon-globe"></i>
+					<span data-ng-hide="editing">public</span>
+					<a id="permissions-dialog-link-public" title="Edit Permissions..." href="javascript:" data-ng-click="showPermissionsDialog(true)" data-ng-show="editing">public</a>
+				</span>
 			</p>
 			<ul class="nav nav-pills" style="clear: both; margin-bottom:12px;" data-ng-show="filters">
 				<li class="active" data-ng-repeat="filter in filters">
@@ -40,46 +59,9 @@
 			</ul>
 		</div>
 
-		<p data-ng-show="bucket.description" data-ng-bind-html="bucket.description" style="margin-bottom: 18px;"></p>
-	
-		<div class="alert alert-block alert-info" data-ng-controller="BucketFormCtrl" data-ng-show="editing">
-			<a class="close" href="javascript:" data-ng-click="cancel()">&times;</a>
-			<h3 class="alert-heading">Edit</h3>
-			<form name="dashboardForm">
-				<fieldset>
-					<div class="control-group">
-						<label class="control-label" for="edit-label"><strong>Title</strong></label>
-						<div class="controls">
-							<input id="edit-bucket-label" type="text" class="input-large" required data-ng-minlength="1" data-ng-maxlength="20" data-ng-pattern="/^[a-zA-Z0-9-_ ]+$/" data-ng-model="bucket.label">
-						</div>
-					</div>
-					<div class="control-group">
-						<label class="control-label" for="edit-description"><strong>Description</strong></label>
-						<div class="controls">
-							<textarea id="edit-bucket-description" class="input-xxlarge" rows="3" data-ng-model="bucket.description"></textarea>
-						</div>
-					</div>
-					<div class="control-group">
-						<label class="control-label" for="edit-public"><strong>Permissions</strong></label>
-						<div class="controls">
-							<span data-ng-show="user.verified">
-								<i class="icon-globe"></i>
-								<a id="publish-bucket-link" href="javascript:" data-ng-click="bucket.publish()" data-ng-show="!bucket.isPublished()">make public</a> 
-								<a id="unpublish-bucket-link" href="javascript:" data-ng-click="bucket.unpublish()" data-ng-show="bucket.isPublished()">make private</a> 
-							</span>
-							<span data-ng-hide="user.verified">
-								<i>You can publish this dashboard after signing up and verifying your email address.</i>
-							</span>
-						</div>
-					</div>
-				</fieldset>
-			</form>
-			<p>
-				<button id="save-bucket-button" data-ng-click="save()" class="btn btn-primary" data-ng-disabled="!dashboardForm.$valid">Save</button>
-				<button data-ng-click="cancel()" class="btn">Cancel</button>
-			</p>
-		</div>
-	
+		<p data-ng-show="bucket.description && !editing" data-ng-bind-html="bucket.description" style="margin-bottom: 18px;"></p>
+		<textarea id="edit-bucket-description" class="input-xxlarge" rows="2" placeholder="Description..." data-ng-show="editing" data-ng-model="bucket.description" style="margin-bottom: 18px;"></textarea>
+
 		<div class="row-fluid" data-ng-show="hasWidgets('top') || editing">
 			<div class="span12">
 				<ul class="nav nav-tabs">
@@ -119,6 +101,40 @@
 			</div>
 		</div>
 
+	</div>
+
+	<div id="permissions-dialog" data-ui-modal="permissionsDialog" data-ui-modal-open="init()" data-ui-modal-close="showPermissionsDialog(false)" data-ng-controller="PermissionsDialogCtrl">
+		<form class="modal-form">
+			<div class="modal-header">
+				<a class="close" data-dismiss="modal">&times;</a>
+				<h3>Permissions</h3>
+			</div>
+			<div class="modal-body">
+				<div class="control-group">
+					<div class="controls">
+						<p data-ng-repeat="p in bucket.permissions">
+							<span data-ng-show="p.principal == '*'">
+								<i class="icon-globe"></i> public ({{p.permission}}) <a href="javascript:" data-ng-click="bucket.unpublish()">&times;</a>
+							</span>
+							<span data-ng-show="p.principal != '*'">
+								<i class="icon-user"></i> {{p.principal | username}} ({{p.permission}})
+							</span>
+						</p>
+						<hr/>
+						<span data-ng-show="user.verified">
+							<strong>Add:</strong> <a id="publish-link" href="javascript:" data-ng-click="bucket.publish()">public</a>
+						</span>
+						<span data-ng-hide="user.verified">
+							<i>You can make this dashboard public after signing up and verifying your email address.</i>
+						</span>
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button id="update-permissions-button" class="btn btn-primary" data-ng-click="update()">Update</button>
+				<button class="btn" data-dismiss="modal">Cancel</button>
+			</div>
+		</form>
 	</div>
 
 	<div id="add-widget-dialog" data-ui-modal="placement" data-ui-modal-open="init()" data-ui-modal-close="chooseWidget(null)" data-ng-controller="AddWidgetCtrl">
