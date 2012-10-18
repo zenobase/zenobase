@@ -19,7 +19,9 @@ object ApplicationBuild extends Build {
       "com.google.inject.extensions" % "guice-multibindings" % "3.0",
       "org.elasticsearch" % "elasticsearch" % "0.19.10",
       "org.elasticsearch" % "elasticsearch-cloud-aws" % "1.9.0",
+      "org.jscience" % "jscience" % "4.3.1",
       "org.jsoup" % "jsoup" % "1.7.1",
+      "newrelic.java-agent" % "newrelic-api" % "2.9.0",
       "org.seleniumhq.selenium" % "selenium-chrome-driver" % "2.25.0" % "test",
       "org.mockito" % "mockito-all" % "1.9.0" % "test",
       "org.jvnet.mock-javamail" % "mock-javamail" % "1.9" % "test"
@@ -51,6 +53,7 @@ object ApplicationBuild extends Build {
         lessEntryPoints <<= baseDirectory(_ / "app" / "assets" / "css" / "zeno.less"),
         javascriptEntryPoints <<= baseDirectory(_ / "app" / "assets" / "js" / "zeno.js"),
         resolvers += "Sonatype Releases" at "https://oss.sonatype.org/content/repositories/releases/",
+		resolvers += "New Relic" at "http://download.newrelic.com/",
         gzippableAssets <<= (resourceManaged in ThisProject)(dir => ((dir ** "*.js") +++ (dir ** "*.css"))), gzipAssetsSetting,
         resourceGenerators in Compile <+= gzipAssetsTask
       ) : _*
