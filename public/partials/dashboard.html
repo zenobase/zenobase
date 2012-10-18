@@ -285,7 +285,7 @@
 		<div data-ng-controller="CreateUnitFieldCtrl">
 			<div class="control-group">
 				<label for="value" class="control-label">Value</label>
-				<input id="wight-value-field" name="value" type="number" data-ng-model="value['@value']"/>
+				<input id="weight-value-field" name="value" type="number" data-ng-model="value['@value']"/>
 			</div>
 			<div class="control-group">
 				<label for="unit" class="control-label">Unit</label>
@@ -293,6 +293,22 @@
 			</div>
 			<div class="control-group">
 				<button id="add-weight-button" class="btn" href="javascript:" data-ng-click="addField()" data-ng-disabled="!valid()">Add</button>
+			</div>
+		</div>
+	</script>
+
+	<script id="/create-volume.html" type="text/ng-template">
+		<div data-ng-controller="CreateUnitFieldCtrl">
+			<div class="control-group">
+				<label for="value" class="control-label">Value</label>
+				<input id="volume-value-field" name="value" type="number" data-ng-model="value['@value']"/>
+			</div>
+			<div class="control-group">
+				<label for="unit" class="control-label">Unit</label>
+				<select id="volume-unit-select" name="unit" data-ng-model="value.unit" data-ng-options="unit for unit in field.units"></select>
+			</div>
+			<div class="control-group">
+				<button id="add-volume-button" class="btn" href="javascript:" data-ng-click="addField()" data-ng-disabled="!valid()">Add</button>
 			</div>
 		</div>
 	</script>

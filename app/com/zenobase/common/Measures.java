@@ -23,9 +23,14 @@ public class Measures {
 		UnitFormat.getInstance().alias(NonSI.FAHRENHEIT, "°F");
 		UnitFormat.getInstance().label(SI.HERTZ.divide(60L), "bpm");
 		UnitFormat.getInstance().label(NonSI.OUNCE, "oz");
-		//UnitFormat.getInstance().label(NonSI.POUND_FORCE.divide(NonSI.INCH.pow(2)), "psi");
+		// TODO: UnitFormat.getInstance().label(NonSI.POUND_FORCE.divide(NonSI.INCH.pow(2)), "psi");
 		UnitFormat.getInstance().label(SI.PASCAL.times(6894.75729), "psi");
 		UnitFormat.getInstance().alias(NonSI.KILOMETERS_PER_HOUR, "kmh");
+		UnitFormat.getInstance().label(SI.CUBIC_METRE, "cu_m");
+		UnitFormat.getInstance().label(NonSI.OUNCE_LIQUID_US, "fl_oz");
+		UnitFormat.getInstance().label(NonSI.OUNCE_LIQUID_US.times(8), "cups");
+		UnitFormat.getInstance().label(NonSI.OUNCE_LIQUID_US.times(16), "pt");
+		UnitFormat.getInstance().label(NonSI.OUNCE_LIQUID_US.times(32), "qt");
 	}
 
 	private Measures() {

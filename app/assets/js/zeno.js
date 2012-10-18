@@ -88,6 +88,7 @@
 		});
 		$scope.$on('$routeChangeSuccess', function() {
 			_gaq.push(['_trackPageview', $location.path()]);
+			_gaq.push([ '_trackEvent', 'page', $location.path() ]);
 		});
 		$scope.whoami();
 	}]);
@@ -223,6 +224,7 @@
 			} else {
 				$scope.cancel();
 			}
+			_gaq.push([ '_trackEvent', 'action', 'save user' ]);
 		};
 		$scope.cancel = function() {
 			$scope.editing = false;
@@ -231,8 +233,7 @@
 			$scope.message = '';
 			$scope.email = $scope.userInfo.email;
 			$scope.editing = true;
-			_gaq.push([ '_trackEvent', 'action', 'edit user' ]);
-
+			_gaq.push([ '_trackEvent', 'dialog', 'edit user' ]);
 		});
 	}]);
 	
@@ -271,6 +272,7 @@
 						$scope.message = 'Unable to sign in, please try again later or contact support.';
 					}
 				});
+			_gaq.push([ '_trackEvent', 'action', 'sign in' ]);
 		}
 
 		$scope.init();
@@ -280,7 +282,7 @@
 		$scope.dialog.on('shown', function () {
 			$scope.$apply($scope.init);
 			$('#username').select();
-			_gaq.push([ '_trackEvent', 'action', 'sign in' ]);
+			_gaq.push([ '_trackEvent', 'dialog', 'sign in' ]);
 		});
 	}]);
 	
@@ -314,13 +316,14 @@
 						$scope.message = 'Unable to reset your password, please try again later or contact support.';
 					}
 				});
+			_gaq.push([ '_trackEvent', 'action', 'password reset' ]);
 		};
 
 		$scope.init();
 		$scope.dialog.on('shown', function () {
 			$scope.$apply($scope.init);
 			$('#reset-username').select();
-			_gaq.push([ '_trackEvent', 'action', 'reset password' ]);
+			_gaq.push([ '_trackEvent', 'dialog', 'password reset' ]);
 		});
 	}]);
 	
@@ -353,7 +356,6 @@
 					$scope.$parent.user = new User(response);
 					$scope.dialog.modal('hide');
 					$location.url('/users/' + $scope.$parent.user.name);
-					_gaq.push([ '_trackEvent', 'action', 'signed up' ]);
 				})
 				.error(function(response, code) {
 					if (code === 409) {
@@ -362,13 +364,14 @@
 						$scope.message = 'Unable to sign up, please try again later or contact support.';
 					}
 				});
+			_gaq.push([ '_trackEvent', 'action', 'sign up' ]);
 		};
 
 		$scope.init();
 		$scope.dialog.on('shown', function () {
 			$scope.$apply($scope.init);
 			$('#sign-up-username').select();
-			_gaq.push([ '_trackEvent', 'action', 'sign up' ]);
+			_gaq.push([ '_trackEvent', 'dialog', 'sign up' ]);
 		});
 	}]);
 	
@@ -523,6 +526,7 @@
 		$scope.dialog.on('shown', function () {
 			$scope.$apply($scope.init);
 			$('#bucket-label-field').select();
+			_gaq.push([ '_trackEvent', 'dialog', 'create bucket' ]);
 		});
 	}]);
 	
@@ -793,7 +797,7 @@
 		$scope.editing = false;
 		$scope.edit = function() {
 			$scope.editing = true;
-			_gaq.push([ '_trackEvent', 'action', 'edit bucket' ]);
+			_gaq.push([ '_trackEvent', 'dialog', 'edit bucket' ]);
 		};
 		$scope.cancel = function() {
 			$scope.editing = false;
@@ -820,6 +824,7 @@
 						$scope.alert.show('Couldn\'t save this bucket. Try again later or contact support.', 'alert-error');						
 					}
 				});
+			_gaq.push([ '_trackEvent', 'action', 'save bucket' ]);
 		};
 		$scope.cancel = function() {
 			$scope.$parent.cancel();
@@ -1610,12 +1615,13 @@
 	app.controller('PermissionsDialogCtrl', ['$scope', '$http', '$timeout', function($scope, $http, $timeout) {
 
 		$scope.init = function() {
-			_gaq.push([ '_trackEvent', 'action', 'edit permissions' ]);
+			_gaq.push([ '_trackEvent', 'dialog', 'edit permissions' ]);
 			$scope.bucket = angular.copy($scope.$parent.bucket);
 		};
 		$scope.update = function() {
 			$scope.$parent.bucket = $scope.bucket;
 			$scope.showPermissionsDialog(false);
+			_gaq.push([ '_trackEvent', 'action', 'update permissions' ]);
 		};
 		$scope.cancel = function() {
 			$scope.showPermissionsDialog(false);			
@@ -1633,7 +1639,7 @@
 			$scope.message = '';
 			$scope.field = null;
 			$scope.value = '';
-			_gaq.push([ '_trackEvent', 'action', $scope.isNew ? 'create event' : 'edit event' ]);
+			_gaq.push([ '_trackEvent', 'dialog', $scope.isNew ? 'create event' : 'edit event' ]);
 
 		};
 		$scope.isEmpty = function() {
@@ -1667,6 +1673,7 @@
 					$scope.message = response.message || 'Couldn\'t update this event.';
 				});
 			}
+			_gaq.push([ '_trackEvent', 'action', 'save event' ]);
 		};
 		$scope.remove = function(entry) {
 			var values = $scope.event[entry.field.name];
@@ -1974,11 +1981,12 @@
 				.error(function(response) {
 					$scope.message = 'Couldn\'t import events.';
 				});
+			_gaq.push([ '_trackEvent', 'action', 'import events' ]);
 		};
 		$scope.init();
 		$scope.dialog.on('shown', function () {
 			$scope.$apply($scope.init);
-			_gaq.push([ '_trackEvent', 'action', 'import events' ]);
+			_gaq.push([ '_trackEvent', 'dialog', 'import events' ]);
 		});
 	}]);
 	
@@ -2033,6 +2041,12 @@
 	Field.register(new Field('weight', 'icon-magnet', [ 'lb', 'oz', 'kg', 'g', 'mg' ], function(value) { 
 		return '<span class="nowrap">' +
 	  	'<i class="' + this.icon + '" title="Weight"></i> ' + value['@value'] + ' ' + value.unit +
+	  '</span>';
+	}));
+	
+	Field.register(new Field('volume', 'icon-tint', [ 'L', 'dL', 'cL', 'mL', 'gal', 'qt', 'pt', 'cups', 'fl_oz', 'cu_m' ], function(value) { 
+		return '<span class="nowrap">' +
+	  	'<i class="' + this.icon + '" title="Volume"></i> ' + value['@value'] + ' ' + value.unit +
 	  '</span>';
 	}));
 	
