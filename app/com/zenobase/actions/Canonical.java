@@ -12,7 +12,7 @@ public class Canonical {
 	private String baseUri;
 
 	public Handler redirect(RequestHeader request) {
-		Logger.info("redirect from " + request.host());
+		Logger.info("redirect " + request.host() + request.uri() + " for " + request.getHeader("User-Agent"));
 		return controllers.Default.redirect(baseUri + request.uri());
 	}
 
