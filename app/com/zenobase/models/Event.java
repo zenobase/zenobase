@@ -4,6 +4,8 @@ import org.codehaus.jackson.node.ObjectNode;
 import com.google.common.collect.ImmutableSet;
 
 import com.zenobase.common.Generator;
+import com.zenobase.json.BitsField;
+import com.zenobase.json.ConcentrationField;
 import com.zenobase.json.DateTimeField;
 import com.zenobase.json.DomainNode;
 import com.zenobase.json.DurationField;
@@ -36,6 +38,7 @@ public class Event extends DomainNode {
 	public static final DurationField DURATION = new DurationField("duration");
 	public static final FrequencyField FREQUENCY = new FrequencyField("frequency");
 	public static final VelocityField VELOCITY = new VelocityField("velocity");
+	public static final BitsField BITS = new BitsField("bits");
 	public static final IntegerField COUNT = new IntegerField("count");
 	public static final LocationField LOCATION = new LocationField("location");
 	public static final TokenField TAG = new TokenField("tag");
@@ -44,13 +47,14 @@ public class Event extends DomainNode {
 	public static final LengthField HEIGHT = new LengthField("height");
 	public static final WeightField WEIGHT = new WeightField("weight");
 	public static final VolumeField VOLUME = new VolumeField("volume");
+	public static final ConcentrationField CONCENTRATION = new ConcentrationField("concentration");
 	public static final PressureField PRESSURE = new PressureField("pressure");
 	public static final TemperatureField TEMPERATURE = new TemperatureField("temperature");
 	public static final RatingField RATING = new RatingField("rating");
 	public static final TextField NOTE = new TextField("note");
 
 	private static final ImmutableSet<Field<?>> FIELDS =
-		ImmutableSet.<Field<?>>of(ID, VERSION, AUTHOR, TIMESTAMP, DURATION, FREQUENCY, VELOCITY, COUNT, LOCATION, TAG, RESOURCE, DISTANCE, HEIGHT, WEIGHT, VOLUME, PRESSURE, TEMPERATURE, RATING, NOTE);
+		ImmutableSet.<Field<?>>of(ID, VERSION, AUTHOR, TIMESTAMP, DURATION, FREQUENCY, VELOCITY, BITS, COUNT, LOCATION, TAG, RESOURCE, DISTANCE, HEIGHT, WEIGHT, VOLUME, CONCENTRATION, PRESSURE, TEMPERATURE, RATING, NOTE);
 
 	public Event() {
 		setValue(ID, Generator.id());

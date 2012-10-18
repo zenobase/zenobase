@@ -2044,9 +2044,15 @@
 	  '</span>';
 	}));
 	
-	Field.register(new Field('volume', 'icon-tint', [ 'L', 'dL', 'cL', 'mL', 'gal', 'qt', 'pt', 'cups', 'fl_oz', 'cu_m' ], function(value) { 
+	Field.register(new Field('volume', 'icon-tint', [ 'L', 'dL', 'cL', 'mL', 'gal', 'qt', 'pt', 'cups', 'fl_oz' ], function(value) { 
 		return '<span class="nowrap">' +
 	  	'<i class="' + this.icon + '" title="Volume"></i> ' + value['@value'] + ' ' + value.unit +
+	  '</span>';
+	}));
+	
+	Field.register(new Field('concentration', 'icon-tint', [ 'g/L', 'mg/L', 'ug/L', 'ng/L', 'g/dL', 'mg/dL', 'ug/dL', 'ng/dL' ], function(value) { 
+		return '<span class="nowrap">' +
+	  	'<i class="' + this.icon + '" title="Concentration"></i> ' + value['@value'] + ' ' + value.unit +
 	  '</span>';
 	}));
 	
@@ -2087,6 +2093,12 @@
 	Field.register(new Field('frequency', 'icon-heart', [ 'bpm', 'Hz' ], function(value) { 
 		return '<span class="nowrap">' +
 	  	'<i class="' + this.icon + '" title="Frequency"></i> ' + value['@value'] + ' ' + value.unit +
+	  '</span>';
+	}));
+	
+	Field.register(new Field('bits', 'icon-hdd', [ 'bit', 'B', 'KB', 'MB', 'GB', 'TB', 'PB', 'KiB', 'MiB', 'GiB', 'TiB', 'PiB' ], function(value) { 
+		return '<span class="nowrap">' +
+	  	'<i class="' + this.icon + '" title="Bits"></i> ' + value['@value'] + ' ' + value.unit +
 	  '</span>';
 	}));
 	

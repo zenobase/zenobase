@@ -17,20 +17,38 @@ import com.google.common.collect.Lists;
 public class Measures {
 
 	static {
+
 		UnitFormat.getInstance().label(SI.CELSIUS, "C");
 		UnitFormat.getInstance().alias(SI.CELSIUS, "°C");
 		UnitFormat.getInstance().label(NonSI.FAHRENHEIT, "F");
 		UnitFormat.getInstance().alias(NonSI.FAHRENHEIT, "°F");
+
 		UnitFormat.getInstance().label(SI.HERTZ.divide(60L), "bpm");
+
 		UnitFormat.getInstance().label(NonSI.OUNCE, "oz");
-		// TODO: UnitFormat.getInstance().label(NonSI.POUND_FORCE.divide(NonSI.INCH.pow(2)), "psi");
+
 		UnitFormat.getInstance().label(SI.PASCAL.times(6894.75729), "psi");
+
 		UnitFormat.getInstance().alias(NonSI.KILOMETERS_PER_HOUR, "kmh");
-		UnitFormat.getInstance().label(SI.CUBIC_METRE, "cu_m");
+
 		UnitFormat.getInstance().label(NonSI.OUNCE_LIQUID_US, "fl_oz");
 		UnitFormat.getInstance().label(NonSI.OUNCE_LIQUID_US.times(8), "cups");
 		UnitFormat.getInstance().label(NonSI.OUNCE_LIQUID_US.times(16), "pt");
 		UnitFormat.getInstance().label(NonSI.OUNCE_LIQUID_US.times(32), "qt");
+
+		UnitFormat.getInstance().label(SI.MICRO(SI.GRAM), "ug");
+
+		UnitFormat.getInstance().label(SI.BIT.times(8), "B");
+		UnitFormat.getInstance().label(SI.KILO(SI.BIT.times(8)), "KB");
+		UnitFormat.getInstance().label(SI.MEGA(SI.BIT.times(8)), "MB");
+		UnitFormat.getInstance().label(SI.GIGA(SI.BIT.times(8)), "GB");
+		UnitFormat.getInstance().label(SI.TERA(SI.BIT.times(8)), "TB");
+		UnitFormat.getInstance().label(SI.PETA(SI.BIT.times(8)), "PB");
+		UnitFormat.getInstance().label(SI.BIT.times(8L * 1024), "KiB");
+		UnitFormat.getInstance().label(SI.BIT.times(8L * 1024 * 1024), "MiB");
+		UnitFormat.getInstance().label(SI.BIT.times(8L * 1024 * 1024 * 1024), "GiB");
+		UnitFormat.getInstance().label(SI.BIT.times(8L * 1024 * 1024 * 1024 * 1024), "TiB");
+		UnitFormat.getInstance().label(SI.BIT.times(8L * 1024 * 1024 * 1024 * 1024 * 1024), "PiB");
 	}
 
 	private Measures() {

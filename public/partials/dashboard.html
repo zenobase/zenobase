@@ -313,6 +313,22 @@
 		</div>
 	</script>
 
+	<script id="/create-concentration.html" type="text/ng-template">
+		<div data-ng-controller="CreateUnitFieldCtrl">
+			<div class="control-group">
+				<label for="value" class="control-label">Value</label>
+				<input id="concentration-value-field" name="value" type="number" data-ng-model="value['@value']"/>
+			</div>
+			<div class="control-group">
+				<label for="unit" class="control-label">Unit</label>
+				<select id="concentration-unit-select" name="unit" data-ng-model="value.unit" data-ng-options="unit for unit in field.units"></select>
+			</div>
+			<div class="control-group">
+				<button id="add-concentration-button" class="btn" href="javascript:" data-ng-click="addField()" data-ng-disabled="!valid()">Add</button>
+			</div>
+		</div>
+	</script>
+
 	<script id="/create-pressure.html" type="text/ng-template">
 		<div data-ng-controller="CreateUnitFieldCtrl">
 			<div class="control-group">
@@ -376,6 +392,23 @@
 			</div>
 		</div>
 	</script>
+
+	<script id="/create-bits.html" type="text/ng-template">
+		<div data-ng-controller="CreateUnitFieldCtrl">
+			<div class="control-group">
+				<label for="value" class="control-label">Value</label>
+				<input id="bits-value-field" name="value" type="number" data-ng-model="value['@value']"/>
+			</div>
+			<div class="control-group">
+				<label for="unit" class="control-label">Unit</label>
+				<select id="bits-unit-select" name="unit" data-ng-model="value.unit" data-ng-options="unit for unit in field.units"></select>
+			</div>
+			<div class="control-group">
+				<button id="add-bits-button" class="btn" href="javascript:" data-ng-click="addField()" data-ng-disabled="!valid()">Add</button>
+			</div>
+		</div>
+	</script>
+
 	<!-- end units -->
 
 	<script id="/create-count.html" type="text/ng-template">
