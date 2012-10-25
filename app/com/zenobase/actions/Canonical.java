@@ -1,6 +1,4 @@
 package com.zenobase.actions;
-import java.util.Map;
-
 import play.Logger;
 import play.api.mvc.Handler;
 import play.mvc.Http.RequestHeader;
@@ -13,21 +11,18 @@ public class Canonical {
 	@Named("hostname")
 	private String baseUri;
 
+	@Inject
+	@Named("api.hostname")
+	private String apiUri;
+
 	public Handler redirect(RequestHeader request) {
 		Logger.info("redirect " + request.host() + request.uri());
 		return controllers.Default.redirect(baseUri + request.uri());
 	}
 
 	public boolean test(RequestHeader request) {
-		if ("ELBLatencyCheck-1.0".equals(request.getHeader("User-Agent"))) {
-			Logger.info("status check:");
-			for (Map.Entry<String, String[]> entry : request.headers().entrySet()) {
-				for (String value : entry.getValue()) {
-					Logger.info("[http] " + entry.getKey() + ": " + value);
-				}
-			}
-		}
 		String scheme = request.getHeader("X-Forwarded-Proto");
-		return scheme == null || baseUri.equals(scheme + "://" + request.host());
+		String uri = scheme != null ? scheme + "://" + request.host() : null;
+		return uri == null || baseUri.equals(uri) || apiUri.equals(uri);
 	}
 }
