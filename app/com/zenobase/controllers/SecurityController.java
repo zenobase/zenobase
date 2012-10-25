@@ -1,5 +1,6 @@
 package com.zenobase.controllers;
 
+import org.codehaus.jackson.node.ObjectNode;
 import play.mvc.BodyParser;
 import play.mvc.Result;
 import play.mvc.With;
@@ -16,6 +17,9 @@ public class SecurityController extends ControllerSupport {
 	@Inject
 	static UserRepository users;
 
+	@Inject
+	static SecurityContext security;
+
 	@BodyParser.Of(BodyParser.Json.class)
 	public static Result signIn() {
 		SignInForm form = new SignInForm(body());
@@ -30,7 +34,9 @@ public class SecurityController extends ControllerSupport {
 			return unauthorized("user suspended");
 		}
 		auth.setPrincipal(user.asIdentity(), form.isRemember());
-		return ok(new UserInfo(user).toJson());
+		ObjectNode result = new UserInfo(user).toJson();
+		result.put("hash", security.sign(user.getId()));
+		return ok(result);
 	}
 
 	public static Result signOut() {

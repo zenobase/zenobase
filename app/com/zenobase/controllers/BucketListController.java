@@ -43,6 +43,9 @@ public class BucketListController extends ControllerSupport {
     	if (!(identity.equals(principal) || users.isSuperuser(principal))) {
     		return forbidden();
     	}
+    	if (limit > 100) {
+    		return badRequest("limit max 100");
+    	}
         return ok(buckets.findBuckets(identity, offset, limit).toJson());
     }
 
@@ -52,6 +55,9 @@ public class BucketListController extends ControllerSupport {
     	}
     	if (limit == Integer.MAX_VALUE) {
     		return findAll();
+    	}
+    	if (limit > 100) {
+    		return badRequest("limit max 100");
     	}
         return ok(buckets.findBuckets(offset, limit).toJson());
     }

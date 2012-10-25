@@ -45,9 +45,17 @@ public class SecurityControllerTest {
 		SignInForm form = new SignInForm(user.getName(), password, true);
 		when(users.find(user.getName())).thenReturn(user);
 		Result result = call(form.toJson());
-		assertThat(result).hasStatus(OK).hasContent(new UserInfo(user).toJson());
+		ObjectNode expected = new UserInfo(user).toJson();
+		expected.put("hash", auth.sign(user.getId()));
+		assertThat(result).hasStatus(OK).hasContent(expected);
 		assertThat(cookie(result)).as("auth cookie").isNotNull();
 		assertThat(auth.getPrincipal(cookie(result))).isEqualTo(user.asIdentity());
+	}
+
+	@Test
+	public void testSignInWithAuthHeader() {
+		String header = "zeno id=\"" + user.getId() + "\", hash=\"" + auth.sign(user.getId()) + "\"";
+		assertThat(auth.getPrincipal(header)).isEqualTo(user.asIdentity());
 	}
 
 	@Test

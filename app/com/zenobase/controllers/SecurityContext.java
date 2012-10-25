@@ -1,5 +1,8 @@
 package com.zenobase.controllers;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -13,6 +16,7 @@ public class SecurityContext {
 
 	static final String TOKEN_NAME = "token";
 	private static final char TOKEN_SEPARATOR = '-';
+	private static final Pattern AUTHORIZATION_PATTERN = Pattern.compile("zeno id=\"([^\"]+)\", hash=\"([^\"]+)\"");
 
 	private final byte[] key;
 
@@ -31,20 +35,37 @@ public class SecurityContext {
 	}
 
 	public Identity getPrincipal() {
-		return getPrincipal(context().request().cookies().get(TOKEN_NAME));
+		String header = context().request().getHeader("Authorization");
+		return header != null ?
+			getPrincipal(header) :
+			getPrincipal(context().request().cookies().get(TOKEN_NAME));
 	}
 
 	Identity getPrincipal(Http.Cookie cookie) {
 		if (cookie != null) {
 			int p = cookie.value().indexOf(TOKEN_SEPARATOR);
 			if (p > 0 && p < cookie.value().length() - 1) {
-				String sign = cookie.value().substring(0, p);
-				String principal = cookie.value().substring(p + 1);
-				if (sign(principal).equals(sign)) {
-					return new Identity(principal);
+				String id = cookie.value().substring(p + 1);
+				String hash = cookie.value().substring(0, p);
+				if (sign(id).equals(hash)) {
+					return new Identity(id);
 				}
 			}
 			unsetPrincipal();
+		}
+		return null;
+	}
+
+	Identity getPrincipal(String header) {
+		if (header != null) {
+			Matcher m = AUTHORIZATION_PATTERN.matcher(header);
+			if (m.matches()) {
+				String id = m.group(1);
+				String hash = m.group(2);
+				if (sign(id).equals(hash)) {
+					return new Identity(id);
+				}
+			}
 		}
 		return null;
 	}
@@ -61,7 +82,7 @@ public class SecurityContext {
 		context().response().discardCookies(TOKEN_NAME);
 	}
 
-	private String sign(String content) {
+	public String sign(String content) {
 		return Crypto.sign(content, key);
 	}
 
