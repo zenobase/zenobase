@@ -20,3 +20,7 @@ Functional Tests
 From the play console, run:
   
   test-only com.zenobase.testing.BrowserTest
+
+To skip the functional tests, set:
+
+  -Dwebdriver.enabled=false
