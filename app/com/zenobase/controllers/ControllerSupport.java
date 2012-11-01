@@ -21,7 +21,8 @@ public abstract class ControllerSupport extends Controller {
 	protected static final TokenField UNDO = new TokenField("undo");
 
 	protected static ObjectNode body() {
-		return body(ObjectNode.class);
+		ObjectNode node = body(ObjectNode.class);
+		return node != null ? node : Nodes.newObject();
 	}
 
 	protected static <T extends JsonNode> T body(Class<T> type) {

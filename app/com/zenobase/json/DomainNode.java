@@ -2,6 +2,7 @@ package com.zenobase.json;
 
 import org.codehaus.jackson.node.ObjectNode;
 import com.google.common.base.Objects;
+import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 
 public class DomainNode {
@@ -11,6 +12,7 @@ public class DomainNode {
 	private final ObjectNode node;
 
 	public DomainNode(ObjectNode node) {
+		Preconditions.checkNotNull(node);
 		this.node = node;
 	}
 
