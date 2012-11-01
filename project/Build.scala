@@ -54,9 +54,9 @@ object ApplicationBuild extends Build {
         requireJsSupport := false,
         javascriptEntryPoints <<= baseDirectory(_ / "app" / "assets" / "js" / "zeno.js"),
         resolvers += "Sonatype Releases" at "https://oss.sonatype.org/content/repositories/releases/",
-		resolvers += "New Relic" at "http://download.newrelic.com/"
-        // gzippableAssets <<= (resourceManaged in ThisProject)(dir => ((dir ** "*.js") +++ (dir ** "*.css"))), gzipAssetsSetting,
-        // resourceGenerators in Compile <+= gzipAssetsTask
+		resolvers += "New Relic" at "http://download.newrelic.com/",
+        gzippableAssets <<= (resourceManaged in ThisProject)(dir => ((dir ** "*.js") +++ (dir ** "*.css"))), gzipAssetsSetting,
+        resourceGenerators in Compile <+= gzipAssetsTask
       ) : _*
     )
 }
