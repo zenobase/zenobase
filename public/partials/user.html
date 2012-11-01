@@ -10,19 +10,12 @@
 
 	<div data-ng-show="userInfo">
 
-		<div class="row-fluid" style="margin-bottom: 9px;">
-			<p class="pull-left" style="margin-left: 8px; margin-top: 6px; vertical-align: middle">
-				<i class="icon-user middle"></i>&nbsp;
-			</p>
-			<h3 id="user-title" class="pull-left">{{userId}}</h3>
-			<p class="pull-left" style="margin-left: 8px; margin-top: 6px; vertical-align: middle">
-				<a id="refresh-buckets-link" href="javascript:" data-ng-click="reload()" title="Refresh"><i class="icon-refresh"></i></a>
-			</p>
-			<p class="pull-left" style="margin-left: 8px; margin-top: 6px; vertical-align: middle" data-ng-show="editable()">
-				<a id="edit-user-link" href="javascript:" data-ng-click="broadcast('edit:user')" title="Edit..." data-ng-show="editable()"><i class="icon-pencil"></i></a>
-			</p>
-			<p class="pull-left" style="margin-left: 8px; margin-top: 6px; vertical-align: middle" data-ng-show="addable()">
-				<a id="add-bucket-action" data-toggle="modal" href="#create-bucket-dialog" title="Add Bucket..." data-ng-show="addable()"><i class="icon-plus"></i></a>
+		<div class="row-fluid page-titlebar">
+			<p class="pull-left page-title">
+				<span id="user-title" class="page-title-text">{{userId}}</span>
+				<a id="refresh-buckets-link" class="page-title-decoration" href="javascript:" data-ng-click="reload()" title="Refresh"><i class="icon-refresh"></i></a>
+				<a id="edit-user-link" class="page-title-decoration" href="javascript:" data-ng-click="broadcast('edit:user')" title="Edit..." data-ng-show="editable()"><i class="icon-pencil"></i></a>
+				<a id="add-bucket-action" class="page-title-decoration" data-toggle="modal" href="#create-bucket-dialog" title="Add Bucket..." data-ng-show="addable()"><i class="icon-plus"></i></a>
 			</p>
 		</div>
 	

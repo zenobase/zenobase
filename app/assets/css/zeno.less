@@ -42,6 +42,7 @@
 
 // Components: Misc
 @import "bootstrap/thumbnails.less";
+// @import "bootstrap/media.less";
 @import "bootstrap/labels-badges.less";
 // @import "bootstrap/progress-bars.less";
 // @import "bootstrap/accordion.less";
@@ -59,7 +60,7 @@
 // @import "bootstrap/responsive-navbar.less";
 
 // Extensions
-@import "bootstrap/datepicker.less";
+@import "datepicker.less";
 
 
 .btn-group > button.zeno-paging {
@@ -111,6 +112,29 @@ footer {
 	color: #999;
 	margin-top: 18px;
 	padding-bottom: 18px;
+}
+
+.page-titlebar {
+	margin-bottom: 9px;
+}
+
+.page-titlebar > .nav {
+	clear: both;
+}
+
+.page-title {
+	line-height: 27px
+}
+
+.page-title > .page-title-decoration {
+	vertical-align: middle;
+	margin-left: 4px;
+}
+
+.page-title > .page-title-text {
+	vertical-align: middle;
+	font-size: 18px;
+	font-weight: bold;
 }
 
 .footer-link {

@@ -1,11 +1,11 @@
 <div class="container-fluid" data-ng-controller="AdminCtrl">
 
-	<div class="row-fluid" style="margin-bottom: 9px;">
-		<h3 class="pull-left">Admin</h3>
-		<p class="pull-left" style="margin-left: 8px; margin-top: 6px; vertical-align: middle">
+	<div class="row-fluid page-titlebar">
+		<p class="pull-left page-title">
+			<span class="page-title-text">Admin</span>
 			<a href="javascript:" data-ng-click="reload()" title="Refresh"><i class="icon-refresh"></i></a>
 		</p>
-		<ul class="nav nav-pills" style="clear: both; margin-bottom:12px;" data-ng-show="filter">
+		<ul class="nav nav-pills" data-ng-show="filter">
 			<li class="active">
 				<a href="javascript:" data-ng-click="setFilter(null)"><i class="icon-white icon-user"></i> <span data-ng-bind="filter | username"></span> <i class="icon-remove icon-white"></i></a>
 			</li>
