@@ -79,7 +79,7 @@ public class UserController extends ControllerSupport {
     	}
 		String commandId = dispatcher.dispatch(new ChangeUserEmailCommand(principal, user.getName(), user.getEmail(), email, user.isVerified(), user.isVerified() && user.getEmail().equals(email)));
 		mailer.send(user.getName(), email);
-		return ok(receipt(commandId));
+		return success(commandId);
 	}
 
 	private static Result updatePassword(UpdateUserForm form, User user) {

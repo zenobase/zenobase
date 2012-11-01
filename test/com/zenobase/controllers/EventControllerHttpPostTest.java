@@ -43,7 +43,7 @@ public class EventControllerHttpPostTest extends EventControllerTestSupport {
 		when(buckets.findEvent(bucket.getId(), from.getId())).thenReturn(from.copy());
 		when(dispatcher.dispatch(any(UpdateEventCommand.class))).thenReturn(commandId);
 		Result result = call(bucket.getId(), from.getId(), to.toJson());
-		assertThat(result).hasStatus(OK).hasContent(BucketController.receipt(commandId));
+		assertThat(result).hasStatus(OK).hasContent(BucketController.content(null, commandId));
 	}
 
 	@Test

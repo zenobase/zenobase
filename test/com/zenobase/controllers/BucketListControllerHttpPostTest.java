@@ -29,7 +29,7 @@ public class BucketListControllerHttpPostTest extends BucketListControllerTestSu
 		when(auth.getPrincipal(true)).thenReturn(user.asIdentity());
 		when(dispatcher.dispatch(arg.capture())).thenReturn(commandId);
 		Result result = call(new CreateBucketForm(label, description).toJson());
-		assertThat(result).hasStatus(CREATED).hasContent(BucketListController.receipt(commandId));
+		assertThat(result).hasStatus(CREATED).hasContent(BucketListController.content(null, commandId));
 		Bucket bucket = arg.getValue().getBucket();
 		assertThat(bucket.getLabel()).isEqualTo(label);
 		assertThat(bucket.getDescription()).isEqualTo(description);

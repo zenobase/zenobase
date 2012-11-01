@@ -58,6 +58,6 @@ public class QueueController extends ControllerSupport {
 			return forbidden();
 		}
     	String undoId = dispatcher.dispatch(command.reverse(principal));
-        return created(receipt(undoId));
+        return created(undoId);
     }
 }

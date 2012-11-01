@@ -35,7 +35,7 @@ public class BucketControllerHttpDeleteTest extends BucketControllerTestSupport 
 		when(buckets.findBucket(bucket.getId())).thenReturn(bucket.copy());
 		when(dispatcher.dispatch(any(DeleteBucketCommand.class))).thenReturn(commandId);
 		Result result = call(bucket.getId());
-		assertThat(result).hasStatus(OK).hasContent(BucketController.receipt(commandId));
+		assertThat(result).hasStatus(OK).hasContent(BucketController.content(null, commandId));
 	}
 
 	@Test
@@ -47,7 +47,7 @@ public class BucketControllerHttpDeleteTest extends BucketControllerTestSupport 
 		when(buckets.findBucket(bucket.getId())).thenReturn(bucket.copy());
 		when(dispatcher.dispatch(any(DeleteBucketCommand.class))).thenReturn(commandId);
 		Result result = call(bucket.getId());
-		assertThat(result).hasStatus(OK).hasContent(BucketController.receipt(commandId));
+		assertThat(result).hasStatus(OK).hasContent(BucketController.content(null, commandId));
 	}
 
 	@Test

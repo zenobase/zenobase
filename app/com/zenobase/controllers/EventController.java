@@ -66,9 +66,9 @@ public class EventController extends ControllerSupport {
 		updated.setValue(Event.AUTHOR, principal);
 		try {
 			String commandId = dispatcher.dispatch(new UpdateEventCommand(principal, bucketId, event, updated));
-			return ok(receipt(commandId));
+			return success(commandId);
 		} catch (VersionConflictEngineException e) {
-			return status(CONFLICT);
+			return conflict("event is stale");
 		}
     }
 
@@ -89,6 +89,6 @@ public class EventController extends ControllerSupport {
     		return notFound();
     	}
     	String commandId = dispatcher.dispatch(new DeleteEventCommand(principal, bucketId, event));
-    	return ok(receipt(commandId));
+    	return success(commandId);
     }
 }

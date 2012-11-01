@@ -21,20 +21,20 @@ public class OpenGraphController extends ControllerSupport {
 			return get("http://" + url);
 		}
 		if (!isValid(url)) {
-			return badRequest(notification("Invalid URL: " + url));
+			return badRequest("Invalid URL: " + url);
 		}
 		return async(WS.url(url).get().map(new F.Function<WS.Response, Result>() {
 			@Override
 			public Result apply(WS.Response response) {
 				if (response.getStatus() != OK) {
-					return badRequest(notification("Couldn't retrieve resource: " + url));
+					return badRequest("Couldn't retrieve resource: " + url);
 				}
 				try {
 					return ok(OpenGraph.parse(url, response.getBodyAsStream()).toJson());
 				} catch (IOException e) {
 					String message = "Couldn't parse resource: " + url;
 					Logger.warn(message);
-					return badRequest(notification(message));
+					return badRequest(message);
 				}
 			}
 		}));

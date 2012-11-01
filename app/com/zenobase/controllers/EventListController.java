@@ -76,13 +76,13 @@ public class EventListController extends ControllerSupport {
         		cmd.add(newCreateEventCommand(principal, bucketId, node));
     		}
     		String commandId = dispatcher.dispatch(cmd);
-            return ok(receipt(commandId));
+            return success(commandId);
     	}
     	else {
     		CreateEventCommand command = newCreateEventCommand(principal, bucketId, body);
     		String commandId = dispatcher.dispatch(command);
             response().setHeader(LOCATION, com.zenobase.controllers.routes.EventController.get(bucket.getId(), command.getEvent().getId()).toString());
-            return created(receipt(commandId));
+            return created(commandId);
     	}
     }
 

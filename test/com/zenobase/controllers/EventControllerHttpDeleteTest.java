@@ -39,7 +39,7 @@ public class EventControllerHttpDeleteTest extends EventControllerTestSupport {
 		String commandId = Generator.id();
 		when(dispatcher.dispatch(any(DeleteEventCommand.class))).thenReturn(commandId);
 		Result result = call(bucket, event);
-		assertThat(result).hasStatus(OK).hasContent(EventController.receipt(commandId));
+		assertThat(result).hasStatus(OK).hasContent(EventController.content(null, commandId));
 	}
 
 	@Test

@@ -8,6 +8,7 @@ import play.mvc.With;
 
 import com.zenobase.actions.Timed;
 import com.zenobase.commands.CloseAccountCommandBuilder;
+import com.zenobase.commands.Command;
 import com.zenobase.commands.CreateUserCommand;
 import com.zenobase.mail.VerificationMailer;
 import com.zenobase.models.Identity;
@@ -39,7 +40,7 @@ public class AccountController extends ControllerSupport {
 			return badRequest("invalid request body");
 		}
 		if (users.exists(form.getUsername())) {
-			return status(CONFLICT, "user exists");
+			return conflict("user exists");
 		}
 		Identity principal = auth.getPrincipal(true);
 		final User user = new User(principal.getId(), form.getUsername());
@@ -63,7 +64,8 @@ public class AccountController extends ControllerSupport {
 		if (!user.is(principal) && !users.isSuperuser(principal)) {
 			return forbidden();
 		}
-		String commandId = dispatcher.dispatch(new CloseAccountCommandBuilder(principal, buckets, user).build());
-		return ok(receipt(commandId));
+		Command command = new CloseAccountCommandBuilder(principal, buckets, user).build();
+		String commandId = dispatcher.dispatch(command);
+		return success(commandId);
 	}
 }

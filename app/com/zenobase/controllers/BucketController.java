@@ -113,22 +113,22 @@ public class BucketController extends ControllerSupport {
     	}
     	Bucket updated = new Bucket(body());
 		if (!updated.valid()) {
-			return badRequest("not valid");
+			return badRequest("bucket not valid");
 		}
 		if (!updated.getPrincipals(Permission.ALL).equals(bucket.getPrincipals(Permission.ALL))) {
-			return badRequest("not allowed to change the bucket owner");
+			return badRequest("bucket owner can't change");
 		}
 		if (updated.getPrincipals().size() > 1) {
 			User user = users.find(principal);
 			if (user == null || !user.isVerified()) {
-				return badRequest("not allowed to change permissions");
+				return forbidden("not permitted to change permissions on this bucket");
 			}
 		}
 		try {
 			String commandId = dispatcher.dispatch(new UpdateBucketCommand(principal, bucket, updated));
-			return ok(receipt(commandId));
+			return success(commandId);
 		} catch (VersionConflictEngineException e) {
-			return status(CONFLICT);
+			return conflict("bucket is stale");
 		}
     }
 
@@ -145,6 +145,6 @@ public class BucketController extends ControllerSupport {
     		return forbidden();
     	}
     	String commandId = dispatcher.dispatch(new DeleteBucketCommand(principal, bucket));
-    	return ok(receipt(commandId));
+    	return success(commandId);
     }
 }

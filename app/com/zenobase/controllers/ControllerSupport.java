@@ -29,15 +29,54 @@ public abstract class ControllerSupport extends Controller {
 		return type.isInstance(node) ? type.cast(node) : null;
 	}
 
-	public static ObjectNode notification(String message) {
-		ObjectNode node = Nodes.newObject();
-		node.put("message", message);
-		return node;
+	public static Status success(String undoId) {
+		return result(OK, null, undoId);
 	}
 
-	protected static ObjectNode receipt(String undoId) {
-    	ObjectNode node = Nodes.newObject();
-    	UNDO.setValue(node, undoId);
+	public static Status created(String undoId) {
+		return result(CREATED, null, undoId);
+	}
+
+	public static Status badRequest(String message) {
+		return result(BAD_REQUEST, message);
+	}
+
+	public static Status unauthorized(String message) {
+		return result(UNAUTHORIZED, message);
+	}
+
+	public static Status forbidden(String message) {
+		return result(FORBIDDEN, message);
+	}
+
+	public static Status notFound(String message) {
+		return result(NOT_FOUND, message);
+	}
+
+	public static Status conflict(String message) {
+		return result(CONFLICT, message);
+	}
+
+	public static Status internalServerError(String message) {
+		return result(INTERNAL_SERVER_ERROR, message);
+	}
+
+	private static Status result(int status, String message) {
+		return result(status, message, null);
+	}
+
+	private static Status result(int status, String message, String undoId) {
+		return status(status, content(message, undoId));
+	}
+
+	protected static ObjectNode content(String message, String undoId) {
+		ObjectNode node = Nodes.newObject();
+		if (message != null) {
+			MESSAGE.setValue(node, message);
+		}
+		if (undoId != null) {
+	    	UNDO.setValue(node, undoId);
+		}
 		return node;
 	}
 }

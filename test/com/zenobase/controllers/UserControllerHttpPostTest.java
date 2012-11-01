@@ -28,7 +28,7 @@ public class UserControllerHttpPostTest extends UserControllerTestSupport {
 		when(users.find(user.getName())).thenReturn(user);
 		when(dispatcher.dispatch(any(ChangeUserEmailCommand.class))).thenReturn(commandId);
 		Result result = call(user.getName(), new UpdateUserForm("jdoe@zenobase.com").toJson());
-		assertThat(result).hasStatus(OK).hasContent(UserController.receipt(commandId));
+		assertThat(result).hasStatus(OK).hasContent(UserController.content(null, commandId));
 	}
 
 	@Test

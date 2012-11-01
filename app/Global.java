@@ -1,4 +1,3 @@
-import org.codehaus.jackson.node.ObjectNode;
 import play.Application;
 import play.Configuration;
 import play.GlobalSettings;
@@ -8,7 +7,6 @@ import play.api.PlayException;
 import play.api.mvc.Handler;
 import play.mvc.Http.RequestHeader;
 import play.mvc.Result;
-import play.mvc.Results;
 import com.google.common.base.Throwables;
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
@@ -42,6 +40,7 @@ import com.zenobase.common.Globals;
 import com.zenobase.controllers.AccountController;
 import com.zenobase.controllers.BucketController;
 import com.zenobase.controllers.BucketListController;
+import com.zenobase.controllers.ControllerSupport;
 import com.zenobase.controllers.EventController;
 import com.zenobase.controllers.EventListController;
 import com.zenobase.controllers.PasswordResetController;
@@ -53,7 +52,6 @@ import com.zenobase.controllers.TagController;
 import com.zenobase.controllers.UserController;
 import com.zenobase.controllers.UserListController;
 import com.zenobase.controllers.WhoController;
-import com.zenobase.json.Nodes;
 import com.zenobase.mail.Mailer;
 import com.zenobase.mail.PasswordResetMailer;
 import com.zenobase.mail.VerificationMailer;
@@ -190,33 +188,27 @@ public class Global extends GlobalSettings {
 
 	@Override
 	public Result onError(RequestHeader request, Throwable t) {
-		if (request.accepts("application/json")) {
-			ObjectNode node = Nodes.newObject();
-			node.put("message", Throwables.getRootCause(t).getMessage());
-			return Results.internalServerError(node);
-		} else {
-			return super.onError(request, t);
-		}
+		return isProgrammatic(request)
+			? ControllerSupport.internalServerError(Throwables.getRootCause(t).getMessage())
+			: super.onError(request, t);
 	}
 
 	@Override
 	public Result onHandlerNotFound(RequestHeader request) {
-		if (request.accepts("application/json")) {
-			return Results.notFound();
-		} else {
-			return super.onHandlerNotFound(request);
-		}
+		return isProgrammatic(request)
+			? ControllerSupport.notFound()
+			: super.onHandlerNotFound(request);
 	}
 
 	@Override
 	public Result onBadRequest(RequestHeader request, String error) {
-		if (request.accepts("application/json")) {
-			ObjectNode node = Nodes.newObject();
-			node.put("message", error);
-			return Results.badRequest(node);
-		} else {
-			return super.onBadRequest(request, error);
-		}
+		return isProgrammatic(request)
+			? ControllerSupport.badRequest(error)
+			: super.onBadRequest(request, error);
+	}
+
+	private boolean isProgrammatic(RequestHeader request) {
+		return request.accepts("application/json");
 	}
 
 	@Override

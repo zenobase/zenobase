@@ -45,7 +45,7 @@ public class EventListControllerHttpPostTest extends EventListControllerTestSupp
 		when(buckets.findBucket(bucket.getId())).thenReturn(bucket);
 		when(dispatcher.dispatch(commandArg.capture())).thenReturn(commandId);
 		Result result = call(bucket, body);
-		assertThat(result).hasStatus(CREATED).hasContent(EventListController.receipt(commandId));
+		assertThat(result).hasStatus(CREATED).hasContent(EventListController.content(null, commandId));
 		assertThat(commandArg.getValue().getEvent())
 			.hasField(Event.ID)
 			.hasField(Event.TIMESTAMP)
@@ -63,7 +63,7 @@ public class EventListControllerHttpPostTest extends EventListControllerTestSupp
 		when(buckets.findBucket(bucket.getId())).thenReturn(bucket);
 		when(dispatcher.dispatch(commandArg.capture())).thenReturn(commandId);
 		Result result = call(bucket, body);
-		assertThat(result).hasStatus(OK).hasContent(EventListController.receipt(commandId));
+		assertThat(result).hasStatus(OK).hasContent(EventListController.content(null, commandId));
 		assertThat(commandArg.getValue().getCommands().size()).isEqualTo(2);
 	}
 
@@ -79,7 +79,7 @@ public class EventListControllerHttpPostTest extends EventListControllerTestSupp
 		when(buckets.findBucket(bucket.getId())).thenReturn(bucket);
 		when(dispatcher.dispatch(commandArg.capture())).thenReturn(commandId);
 		Result result = call(bucket, body);
-		assertThat(result).hasStatus(CREATED).hasContent(EventListController.receipt(commandId));
+		assertThat(result).hasStatus(CREATED).hasContent(EventListController.content(null, commandId));
 		assertThat(commandArg.getValue().getEvent())
 			.hasField(Event.ID)
 			.hasValue(Event.TIMESTAMP, now)
