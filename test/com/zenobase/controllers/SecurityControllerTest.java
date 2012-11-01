@@ -114,7 +114,8 @@ public class SecurityControllerTest {
 	}
 
 	private static Result call(ObjectNode body) {
-		return callAction(com.zenobase.controllers.routes.ref.SecurityController.signIn(), fakeRequest().withJsonBody(body));
+		return callAction(com.zenobase.controllers.routes.ref.SecurityController.signIn(),
+			body != null ? fakeRequest().withJsonBody(body) : fakeRequest());
 	}
 
 	private static Result call() {
