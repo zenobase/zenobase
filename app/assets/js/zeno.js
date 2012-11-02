@@ -418,6 +418,19 @@
 
 		$scope.init();
 	}]);
+
+	app.controller('TwitterCtrl', ['$scope', '$http', function($scope, $http) {
+
+		$scope.username = 'zenobase';
+		$scope.tweet = null;
+
+		$http.jsonp('https://api.twitter.com/1/statuses/user_timeline.json?screen_name=' + $scope.username + '&callback=JSON_CALLBACK&count=1&trim_user=true&exclude_replies=true')
+			.success(function(data, status, headers, config) {
+				if (data.length) {
+					$scope.tweet = data[0];
+				}
+			});
+	}]);
 	
 	app.controller('BucketListCtrl', ['$scope', '$http', function($scope, $http) {
 	

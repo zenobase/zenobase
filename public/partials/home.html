@@ -10,6 +10,17 @@
 			<span data-ng-hide="user"><a id="new-user-link" href="javascript:" data-ng-click="create()">start collecting your own data</a>.</span>
 			<span data-ng-show="user"><a id="existing-user-link" data-ng-href="#/users/{{user.getName()}}" data-ng-show="user">view your data</a>.</span>
 		</p>
+
+		<p id="tweet" data-ng-controller="TwitterCtrl" data-ng-show="tweet">
+			<small>
+				<span class="badge badge-info"> 
+					{{tweet.created_at | age}}
+				</span>
+				&nbsp;
+				<span data-ng-bind-html="tweet.text | linky"></span>
+				<a data-ng-href="http://twitter.com/{{username}}/statuses/{{tweet.id_str}}">&raquo;</a>
+			</small>
+		</p>
 	</div>
 
 </div>
