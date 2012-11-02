@@ -122,6 +122,14 @@ public class MeasuresTest {
 		assertThatIsEqualTo("9.007199E+15 bit", "1 PiB");
 	}
 
+	@Test
+	public void testEnergy() {
+		assertThatIsEqualTo("1 J", "1 J");
+		assertThatIsEqualTo("1000 J", "1 kJ");
+		assertThatIsEqualTo("4.184000 J", "1 cal");
+		assertThatIsEqualTo("4184.000 J", "1 kcal");
+	}
+
 	private static void assertThatIsEqualTo(String expected, String value) {
 		assertThat(Measures.toStandard(DecimalMeasure.valueOf(value))).isEqualTo(DecimalMeasure.valueOf(expected));
 	}

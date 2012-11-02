@@ -49,6 +49,9 @@ public class Measures {
 		UnitFormat.getInstance().label(SI.BIT.times(8L * 1024 * 1024 * 1024), "GiB");
 		UnitFormat.getInstance().label(SI.BIT.times(8L * 1024 * 1024 * 1024 * 1024), "TiB");
 		UnitFormat.getInstance().label(SI.BIT.times(8L * 1024 * 1024 * 1024 * 1024 * 1024), "PiB");
+
+		UnitFormat.getInstance().label(SI.JOULE.divide(0.239005736), "cal");
+		UnitFormat.getInstance().label(SI.JOULE.divide(0.000239005736), "kcal");
 	}
 
 	private Measures() {

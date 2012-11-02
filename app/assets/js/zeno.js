@@ -2123,6 +2123,12 @@
 	  '</span>';
 	}));
 	
+	Field.register(new Field('energy', 'icon-fire', [ 'J', 'kJ', 'cal', 'kcal' ], function(value) { 
+		return '<span class="nowrap">' +
+	  	'<i class="' + this.icon + '" title="Energy"></i> ' + value['@value'] + ' ' + value.unit +
+	  '</span>';
+	}));
+	
 	Field.register(new Field('temperature', 'icon-fire', [ 'C', 'F', 'K' ], function(value) { 
 		return '<span class="nowrap">' +
 	  	'<i class="' + this.icon + '" title="Temperature"></i> ' + value['@value'] + ' ' + value.unit +
