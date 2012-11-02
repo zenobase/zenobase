@@ -142,7 +142,7 @@
 		</form>
 	</div>
 
-	<div id="edit-event-dialog" data-ui-modal="selectedEvent" data-ui-modal-open="init()" data-ui-modal-close="editEvent(null)" data-ng-controller="EditEventDialogCtrl">
+	<div id="edit-event-dialog" data-ui-modal="selectedEvent" data-ui-modal-open="init()" data-ui-modal-close="editEvent(null)" data-keyboard="false" data-backdrop="static" data-ng-controller="EditEventDialogCtrl">
 		<div class="modal-header">
 			<a class="close" data-dismiss="modal">&times;</a>
 			<h4>Event</h4>
@@ -157,7 +157,7 @@
 					<option value=""></option>
 				</select>
 			</div>
-			<div data-ng-include="getTemplate(field)" data-ng-show="field"></div>
+			<div class="well well-small" data-ng-include="getTemplate(field)" data-ng-show="field"></div>
 			<div id="create-event-preview">
 				<em data-ng-hide="entries.length > 0">Add one or more fields, then save.</em>
 				<span class="editable" data-ng-repeat="entry in entries">
@@ -173,29 +173,30 @@
 	</div>
 
 	<script id="/create-tag.html" type="text/ng-template">
+		<button class="close" data-ng-click="reset()">&times;</button>
 		<div data-ng-controller="CreateTagFieldCtrl">
 			<div class="control-group">
 				<label for="value" class="control-label">Value</label>
 				<input id="tag-value-field" name="value" type="text" data-provide="typeahead" data-ng-model="value"/>
 			</div>
 			<div class="control-group">
-				<button id="add-tag-button" class="btn btn-primary" href="javascript:" data-ng-click="addField()" data-ng-disabled="!valid()">Add</button>
-				<button class="btn" href="javascript:" data-ng-click="reset()">Don't Add</button>
+				<button id="add-tag-button" class="btn" data-ng-click="addField()" data-ng-disabled="!valid()">Add</button>
 			</div>
 		</div>
 	</script>
 
 	<script id="/create-location.html" type="text/ng-template">
+		<button class="close" data-ng-click="reset()">&times;</button>
 		<div data-ng-controller="CreateLocationFieldCtrl">
 			<div id="create-location-map"></div>
 			<div class="control-group">
-				<button id="add-location-button" class="btn btn-primary" href="javascript:" data-ng-click="addField()" data-ng-disabled="!valid()">Add</button>
-				<button class="btn" href="javascript:" data-ng-click="reset()">Don't Add</button>
+				<button id="add-location-button" class="btn" data-ng-click="addField()" data-ng-disabled="!valid()">Add</button>
 			</div>
 		</div>
 	</script>
 
 	<script id="/create-timestamp.html" type="text/ng-template">
+		<button class="close" data-ng-click="reset()">&times;</button>
 		<div data-ng-controller="CreateTimestampFieldCtrl">
 			<div class="control-group">
 				<input id="timestamp-date-field" class="input-small" type="text" data-ui-datepicker data-ng-model="date"/>
@@ -203,13 +204,13 @@
 				<select id="timestamp-timezone-select" class="input-small" data-ng-model="timezone" data-ng-options="formatTimezone(timezone) for timezone in timezones"></select>
 			</div>
 			<div class="control-group">
-				<button id="add-timestamp-button" class="btn btn-primary" href="javascript:" data-ng-click="addField()" data-ng-disabled="!valid()">Add</button>
-				<button class="btn" href="javascript:" data-ng-click="reset()">Don't Add</button>
+				<button id="add-timestamp-button" class="btn" data-ng-click="addField()" data-ng-disabled="!valid()">Add</button>
 			</div>
 		</div>
 	</script>
 
 	<script id="/create-duration.html" type="text/ng-template">
+		<button class="close" data-ng-click="reset()">&times;</button>
 		<div data-ng-controller="CreateDurationFieldCtrl">
 			<div class="control-group">
 				<input id="duration-days-field" name="days" type="number" data-ng-model="days"/> d<br/>
@@ -218,13 +219,13 @@
 				<input id="duration-seconds-field" name="seconds" type="number" min="0" max="59" data-ng-model="seconds"/> s
 			</div>
 			<div class="control-group">
-				<button id="add-duration-button" class="btn btn-primary" href="javascript:" data-ng-click="addField()" data-ng-disabled="!valid()">Add</button>
-				<button class="btn" href="javascript:" data-ng-click="reset()">Don't Add</button>
+				<button id="add-duration-button" class="btn" data-ng-click="addField()" data-ng-disabled="!valid()">Add</button>
 			</div>
 		</div>
 	</script>
 
 	<script id="/create-resource.html" type="text/ng-template">
+		<button class="close" data-ng-click="reset()">&times;</button>
 		<div data-ng-controller="CreateResourceFieldCtrl">
 			<div class="control-group">
 				<label for="url" class="control-label">URL</label>
@@ -235,14 +236,14 @@
 				<input id="resource-title-field" name="title" type="text" data-ng-model="value.title"/>
 			</div>
 			<div class="control-group">
-				<button id="add-resource-button" class="btn btn-primary" href="javascript:" data-ng-click="addField()" data-ng-disabled="!valid()">Add</button>
-				<button class="btn" href="javascript:" data-ng-click="reset()">Don't Add</button>
+				<button id="add-resource-button" class="btn" data-ng-click="addField()" data-ng-disabled="!valid()">Add</button>
 			</div>
 		</div>
 	</script>
 
 	<!-- begin units -->
 	<script id="/create-distance.html" type="text/ng-template">
+		<button class="close" data-ng-click="reset()">&times;</button>
 		<div data-ng-controller="CreateUnitFieldCtrl">
 			<div class="control-group">
 				<label for="value" class="control-label">Value</label>
@@ -253,13 +254,13 @@
 				<select id="distance-unit-select" name="unit" data-ng-model="value.unit" data-ng-options="unit for unit in field.units"></select>
 			</div>
 			<div class="control-group">
-				<button id="add-distance-button" class="btn btn-primary" href="javascript:" data-ng-click="addField()" data-ng-disabled="!valid()">Add</button>
-				<button class="btn" href="javascript:" data-ng-click="reset()">Don't Add</button>
+				<button id="add-distance-button" class="btn" data-ng-click="addField()" data-ng-disabled="!valid()">Add</button>
 			</div>
 		</div>
 	</script>
 
 	<script id="/create-height.html" type="text/ng-template">
+		<button class="close" data-ng-click="reset()">&times;</button>
 		<div data-ng-controller="CreateUnitFieldCtrl">
 			<div class="control-group">
 				<label for="value" class="control-label">Value</label>
@@ -270,13 +271,13 @@
 				<select id="height-unit-select" name="unit" data-ng-model="value.unit" data-ng-options="unit for unit in field.units"></select>
 			</div>
 			<div class="control-group">
-				<button id="add-height-button" class="btn btn-primary" href="javascript:" data-ng-click="addField()" data-ng-disabled="!valid()">Add</button>
-				<button class="btn" href="javascript:" data-ng-click="reset()">Don't Add</button>
+				<button id="add-height-button" class="btn" data-ng-click="addField()" data-ng-disabled="!valid()">Add</button>
 			</div>
 		</div>
 	</script>
 
 	<script id="/create-weight.html" type="text/ng-template">
+		<button class="close" data-ng-click="reset()">&times;</button>
 		<div data-ng-controller="CreateUnitFieldCtrl">
 			<div class="control-group">
 				<label for="value" class="control-label">Value</label>
@@ -287,13 +288,13 @@
 				<select id="weight-unit-select" name="unit" data-ng-model="value.unit" data-ng-options="unit for unit in field.units"></select>
 			</div>
 			<div class="control-group">
-				<button id="add-weight-button" class="btn btn-primary" href="javascript:" data-ng-click="addField()" data-ng-disabled="!valid()">Add</button>
-				<button class="btn" href="javascript:" data-ng-click="reset()">Don't Add</button>
+				<button id="add-weight-button" class="btn" data-ng-click="addField()" data-ng-disabled="!valid()">Add</button>
 			</div>
 		</div>
 	</script>
 
 	<script id="/create-volume.html" type="text/ng-template">
+		<button class="close" data-ng-click="reset()">&times;</button>
 		<div data-ng-controller="CreateUnitFieldCtrl">
 			<div class="control-group">
 				<label for="value" class="control-label">Value</label>
@@ -304,13 +305,13 @@
 				<select id="volume-unit-select" name="unit" data-ng-model="value.unit" data-ng-options="unit for unit in field.units"></select>
 			</div>
 			<div class="control-group">
-				<button id="add-volume-button" class="btn btn-primary" href="javascript:" data-ng-click="addField()" data-ng-disabled="!valid()">Add</button>
-				<button class="btn" href="javascript:" data-ng-click="reset()">Don't Add</button>
+				<button id="add-volume-button" class="btn" data-ng-click="addField()" data-ng-disabled="!valid()">Add</button>
 			</div>
 		</div>
 	</script>
 
 	<script id="/create-concentration.html" type="text/ng-template">
+		<button class="close" data-ng-click="reset()">&times;</button>
 		<div data-ng-controller="CreateUnitFieldCtrl">
 			<div class="control-group">
 				<label for="value" class="control-label">Value</label>
@@ -321,13 +322,13 @@
 				<select id="concentration-unit-select" name="unit" data-ng-model="value.unit" data-ng-options="unit for unit in field.units"></select>
 			</div>
 			<div class="control-group">
-				<button id="add-concentration-button" class="btn btn-primary" href="javascript:" data-ng-click="addField()" data-ng-disabled="!valid()">Add</button>
-				<button class="btn" href="javascript:" data-ng-click="reset()">Don't Add</button>
+				<button id="add-concentration-button" class="btn" data-ng-click="addField()" data-ng-disabled="!valid()">Add</button>
 			</div>
 		</div>
 	</script>
 
 	<script id="/create-pressure.html" type="text/ng-template">
+		<button class="close" data-ng-click="reset()">&times;</button>
 		<div data-ng-controller="CreateUnitFieldCtrl">
 			<div class="control-group">
 				<label for="value" class="control-label">Value</label>
@@ -338,13 +339,13 @@
 				<select id="pressure-unit-select" name="unit" data-ng-model="value.unit" data-ng-options="unit for unit in field.units"></select>
 			</div>
 			<div class="control-group">
-				<button id="add-pressure-button" class="btn btn-primary" href="javascript:" data-ng-click="addField()" data-ng-disabled="!valid()">Add</button>
-				<button class="btn" href="javascript:" data-ng-click="reset()">Don't Add</button>
+				<button id="add-pressure-button" class="btn" data-ng-click="addField()" data-ng-disabled="!valid()">Add</button>
 			</div>
 		</div>
 	</script>
 
 	<script id="/create-temperature.html" type="text/ng-template">
+		<button class="close" data-ng-click="reset()">&times;</button>
 		<div data-ng-controller="CreateUnitFieldCtrl">
 			<div class="control-group">
 				<label for="value" class="control-label">Value</label>
@@ -355,13 +356,13 @@
 				<select id="temperature-unit-select" name="unit" data-ng-model="value.unit" data-ng-options="unit for unit in field.units"></select>
 			</div>
 			<div class="control-group">
-				<button id="add-temperature-button" class="btn btn-primary" href="javascript:" data-ng-click="addField()" data-ng-disabled="!valid()">Add</button>
-				<button class="btn" href="javascript:" data-ng-click="reset()">Don't Add</button>
+				<button id="add-temperature-button" class="btn" data-ng-click="addField()" data-ng-disabled="!valid()">Add</button>
 			</div>
 		</div>
 	</script>
 
 	<script id="/create-frequency.html" type="text/ng-template">
+		<button class="close" data-ng-click="reset()">&times;</button>
 		<div data-ng-controller="CreateUnitFieldCtrl">
 			<div class="control-group">
 				<label for="value" class="control-label">Value</label>
@@ -372,13 +373,13 @@
 				<select id="frequency-unit-select" name="unit" data-ng-model="value.unit" data-ng-options="unit for unit in field.units"></select>
 			</div>
 			<div class="control-group">
-				<button id="add-frequency-button" class="btn btn-primary" href="javascript:" data-ng-click="addField()" data-ng-disabled="!valid()">Add</button>
-				<button class="btn" href="javascript:" data-ng-click="reset()">Don't Add</button>
+				<button id="add-frequency-button" class="btn" data-ng-click="addField()" data-ng-disabled="!valid()">Add</button>
 			</div>
 		</div>
 	</script>
 
 	<script id="/create-velocity.html" type="text/ng-template">
+		<button class="close" data-ng-click="reset()">&times;</button>
 		<div data-ng-controller="CreateUnitFieldCtrl">
 			<div class="control-group">
 				<label for="value" class="control-label">Value</label>
@@ -389,13 +390,13 @@
 				<select id="velocity-unit-select" name="unit" data-ng-model="value.unit" data-ng-options="unit for unit in field.units"></select>
 			</div>
 			<div class="control-group">
-				<button id="add-velocity-button" class="btn btn-primary" href="javascript:" data-ng-click="addField()" data-ng-disabled="!valid()">Add</button>
-				<button class="btn" href="javascript:" data-ng-click="reset()">Don't Add</button>
+				<button id="add-velocity-button" class="btn" data-ng-click="addField()" data-ng-disabled="!valid()">Add</button>
 			</div>
 		</div>
 	</script>
 
 	<script id="/create-bits.html" type="text/ng-template">
+		<button class="close" data-ng-click="reset()">&times;</button>
 		<div data-ng-controller="CreateUnitFieldCtrl">
 			<div class="control-group">
 				<label for="value" class="control-label">Value</label>
@@ -406,8 +407,7 @@
 				<select id="bits-unit-select" name="unit" data-ng-model="value.unit" data-ng-options="unit for unit in field.units"></select>
 			</div>
 			<div class="control-group">
-				<button id="add-bits-button" class="btn btn-primary" href="javascript:" data-ng-click="addField()" data-ng-disabled="!valid()">Add</button>
-				<button class="btn" href="javascript:" data-ng-click="reset()">Don't Add</button>
+				<button id="add-bits-button" class="btn" data-ng-click="addField()" data-ng-disabled="!valid()">Add</button>
 			</div>
 		</div>
 	</script>
@@ -415,39 +415,39 @@
 	<!-- end units -->
 
 	<script id="/create-count.html" type="text/ng-template">
+		<button class="close" data-ng-click="reset()">&times;</button>
 		<div data-ng-controller="CreateIntegerFieldCtrl">
 			<div class="control-group">
 				<label for="value" class="control-label">Value</label>
 				<input id="count-value-field" name="value" type="number" data-ng-model="value"/>
 			</div>
 			<div class="control-group">
-				<button id="add-count-button" class="btn btn-primary" href="javascript:" data-ng-click="addField()" data-ng-disabled="!valid()">Add</button>
-				<button class="btn" href="javascript:" data-ng-click="reset()">Don't Add</button>
+				<button id="add-count-button" class="btn" data-ng-click="addField()" data-ng-disabled="!valid()">Add</button>
 			</div>
 		</div>
 	</script>
 
 	<script id="/create-rating.html" type="text/ng-template">
+		<button class="close" data-ng-click="reset()">&times;</button>
 		<div data-ng-controller="CreateRatingFieldCtrl">
 			<div class="control-group">
 				<span class="nowrap" style="cursor:pointer"><i id="rating-{{i}}-star" title="Rate {{i}}/5" data-ng-class="get() >= i && 'icon-star' || 'icon-star-empty'" data-ng-mouseenter="highlight(i)" data-ng-mouseleave="highlight(0)" data-ng-click="set(i)" data-ng-repeat="i in [ 1, 2, 3, 4, 5 ]"></i></span>
 			</div>
 			<div class="control-group">
-				<button id="add-rating-button" class="btn btn-primary" href="javascript:" data-ng-click="addField()">Add</button>
-				<button class="btn" href="javascript:" data-ng-click="reset()">Don't Add</button>
+				<button id="add-rating-button" class="btn" data-ng-click="addField()">Add</button>
 			</div>
 		</div>
 	</script>
 
 	<script id="/create-note.html" type="text/ng-template">
+		<button class="close" data-ng-click="reset()">&times;</button>
 		<div data-ng-controller="CreateNoteFieldCtrl">
 			<div class="control-group">
 				<label for="value" class="control-label">Value</label>
 				<textarea id="note-value-field" name="value" data-ng-model="value"></textarea>
 			</div>
 			<div class="control-group">
-				<button id="add-note-button" class="btn btn-primary" href="javascript:" data-ng-click="addField()" data-ng-disabled="!valid()">Add</button>
-				<button class="btn" href="javascript:" data-ng-click="reset()">Don't Add</button>
+				<button id="add-note-button" class="btn" data-ng-click="addField()" data-ng-disabled="!valid()">Add</button>
 			</div>
 		</div>
 	</script>
