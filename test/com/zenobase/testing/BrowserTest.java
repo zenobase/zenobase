@@ -99,6 +99,7 @@ public class BrowserTest {
 
 				// add a timestamp to the event
 				new Select($("#event-field-select")).selectByVisibleText("timestamp");
+				assertThat($("#save-event-button")).isNotEnabled();
 				$("#timestamp-date-field").clear();
 				$("#timestamp-date-field").sendKeys("2012-08-04");
 				$("#timestamp-time-field").click();
@@ -111,11 +112,12 @@ public class BrowserTest {
 
 				// add a tag to the event
 				new Select($("#event-field-select")).selectByVisibleText("tag");
+				assertThat($("#save-event-button")).isNotEnabled();
 				assertThat($("#add-tag-button")).isNotEnabled();
 				$("#tag-value-field").sendKeys("hike");
 				assertThat($("#add-tag-button")).isEnabled();
 				$("#add-tag-button").click();
-				assertThat($("#add-tag-button")).isNotEnabled();
+				assertThat($("#save-event-button")).isEnabled();
 
 				// add a location
 				new Select($("#event-field-select")).selectByVisibleText("location");
@@ -131,7 +133,7 @@ public class BrowserTest {
 				new Select($("#distance-unit-select")).selectByVisibleText("mi");
 				assertThat($("#add-distance-button")).isEnabled();
 				$("#add-distance-button").click();
-				assertThat($("#add-distance-button")).isNotEnabled();
+				assertThat($("#save-event-button")).isEnabled();
 
 				// add a height
 				new Select($("#event-field-select")).selectByVisibleText("height");
@@ -141,7 +143,7 @@ public class BrowserTest {
 				new Select($("#height-unit-select")).selectByVisibleText("ft");
 				assertThat($("#add-height-button")).isEnabled();
 				$("#add-height-button").click();
-				assertThat($("#add-height-button")).isNotEnabled();
+				assertThat($("#save-event-button")).isEnabled();
 
 				// add a resource
 				new Select($("#event-field-select")).selectByVisibleText("resource");
@@ -150,7 +152,7 @@ public class BrowserTest {
 				$("#resource-title-field").click();
 				wait.withMessage("title is auto-filled").until(ExpectedConditions.elementToBeClickable(By.id("add-resource-button")));
 				$("#add-resource-button").click();
-				assertThat($("#add-resource-button")).isNotEnabled();
+				assertThat($("#save-event-button")).isEnabled();
 
 				// add a duration
 				new Select($("#event-field-select")).selectByVisibleText("duration");
@@ -159,7 +161,7 @@ public class BrowserTest {
 				$("#duration-minutes-field").sendKeys("30");
 				assertThat($("#add-duration-button")).isEnabled();
 				$("#add-duration-button").click();
-				assertThat($("#add-duration-button")).isNotEnabled();
+				assertThat($("#save-event-button")).isEnabled();
 
 				// add a note
 				new Select($("#event-field-select")).selectByVisibleText("note");
@@ -167,12 +169,13 @@ public class BrowserTest {
 				$("#note-value-field").sendKeys("nice views");
 				assertThat($("#add-note-button")).isEnabled();
 				$("#add-note-button").click();
-				assertThat($("#add-note-button")).isNotEnabled();
+				assertThat($("#save-event-button")).isEnabled();
 
 				// add a rating
 				new Select($("#event-field-select")).selectByVisibleText("rating");
 				$("#rating-4-star").click();
 				$("#add-rating-button").click();
+				assertThat($("#save-event-button")).isEnabled();
 
 				$("#save-event-button").click();
 

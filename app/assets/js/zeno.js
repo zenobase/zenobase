@@ -1648,15 +1648,12 @@
 		$scope.init = function() {
 			$scope.event = new Event($scope.selectedEvent);
 			$scope.entries = $scope.event.get($scope.fields);
-			$scope.isNew = $scope.isEmpty();
+			$scope.isNew = $.isEmptyObject($scope.entries);
 			$scope.message = '';
 			$scope.field = null;
 			$scope.value = '';
 			_gaq.push([ '_trackEvent', 'dialog', $scope.isNew ? 'create event' : 'edit event' ]);
 
-		};
-		$scope.isEmpty = function() {
-			return $.isEmptyObject($scope.entries);
 		};
 		$scope.getTemplate = function(field) {
 			return field ? '/create-' + field.name + '.html' : null;
@@ -1705,6 +1702,9 @@
 				delete $scope.event[entry.field.name];				
 			}
 		};
+		$scope.reset = function() {
+			$scope.field = null;
+		};
 
 		$scope.init();
 		$scope.$watch('event', function(event) {
@@ -1723,7 +1723,7 @@
 		$scope.addField = function() {
 			$scope.value = input.val();
 			$scope.event.add($scope.field, $scope.value);
-			$scope.init();
+			$scope.reset();
 		};
 		$scope.valid = function() {
 			return $scope.value;
@@ -1798,6 +1798,7 @@
 		};
 		$scope.addField = function() {
 			$scope.event.add($scope.field, $scope.value);
+			$scope.reset();
 		};
 
 		$scope.init();
@@ -1833,6 +1834,7 @@
 		};
 		$scope.addField = function() {
 			$scope.event.add($scope.field, getValue());
+			$scope.reset();
 		};
 		$scope.valid = function() {
 			return Date.parse(getValue());
@@ -1851,7 +1853,7 @@
 		};
 		$scope.addField = function() {
 			$scope.event.add($scope.field, $scope.millis());
-			$scope.init();
+			$scope.reset();
 		};
 		$scope.valid = function() {
 			return $scope.millis() > 0;
@@ -1867,7 +1869,7 @@
 		};
 		$scope.addField = function() {
 			$scope.event.add($scope.field, $scope.value);
-			$scope.init();
+			$scope.reset();
 		};
 		$scope.prefillTitle = function() {
 			$http.get('/og?' + $.param({ url : $scope.value.url })).success(function(response) {
@@ -1894,7 +1896,7 @@
 		};
 		$scope.addField = function() {
 			$scope.event.add($scope.field, $scope.value);
-			$scope.init();
+			$scope.reset();
 		};
 		$scope.getUnits = function() {
 			return $scope.field.units;
@@ -1913,7 +1915,7 @@
 		};
 		$scope.addField = function() {
 			$scope.event.add($scope.field, $scope.value);
-			$scope.init();
+			$scope.reset();
 		};
 		$scope.valid = function() {
 			return /^\d+$/.test($scope.value);
@@ -1939,7 +1941,7 @@
 		};
 		$scope.addField = function() {
 			$scope.event.add($scope.field, $scope.stars * 20);
-			$scope.init();
+			$scope.reset();
 		};
 
 		$scope.init();
@@ -1952,7 +1954,7 @@
 		};
 		$scope.addField = function() {
 			$scope.event.add($scope.field, $scope.value);
-			$scope.init();
+			$scope.reset();
 		};
 		$scope.valid = function() {
 			return $scope.value;
