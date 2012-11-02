@@ -14,8 +14,8 @@
 		<p id="tweet" data-ng-controller="TwitterCtrl" data-ng-show="tweet">
 			<small>
 				<i class="icon-comment"></i> <span data-ng-bind-html="tweet.text.replace(' #quantifiedself', '') | linky"></span> &nbsp;
-				<i class="icon-calendar"></i> <span data-ng-bind="tweet.created_at | age"></span> 
-				<a data-ng-href="http://twitter.com/{{username}}/statuses/{{tweet.id_str}}">&raquo;</a>
+				<i class="icon-calendar"></i> <span data-ng-bind="tweet.created_at | age"></span> &nbsp;
+				<a data-ng-href="http://twitter.com/{{username}}">Updates &raquo;</a>
 			</small>
 		</p>
 	</div>
