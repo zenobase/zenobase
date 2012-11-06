@@ -78,7 +78,15 @@ public class Measures {
 	}
 
 	public static <Q extends Quantity> DecimalMeasure<Q> valueOf(BigDecimal value, String unit) {
-		return DecimalMeasure.valueOf(value, (Unit<Q>) Unit.valueOf(unit));
+		Unit<Q> u = valueOf(unit);
+		return DecimalMeasure.valueOf(value, u);
+	}
+
+	/**
+	 * Obtain units from here to ensure the static initializers have registered any custom units.
+	 */
+	public static <Q extends Quantity> Unit<Q> valueOf(String unit) {
+		return (Unit<Q>) Unit.valueOf(unit);
 	}
 
 	public static double convert(double value, Unit<?> unit) {

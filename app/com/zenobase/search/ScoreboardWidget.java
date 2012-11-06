@@ -72,7 +72,7 @@ public class ScoreboardWidget extends Widget {
 					options.get("id"),
 					options.get("termField"),
 					options.get("valueField"),
-					Unit.valueOf(options.get("unit")),
+					Measures.valueOf(options.get("unit")),
 					ComparatorType.valueOf(options.get("order", String.class, "term").toUpperCase()),
 					options.get("limit", Integer.class, 10));
 			}

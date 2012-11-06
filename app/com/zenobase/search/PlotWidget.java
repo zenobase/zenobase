@@ -107,7 +107,7 @@ public class PlotWidget extends Widget {
 					options.get("valueField", String.class, Event.TIMESTAMP.getName()),
 					options.get("interval", String.class, "month"),
 					options.get("timezone", DateTimeZone.class, DateTimeZone.UTC),
-					unit != null ? Unit.valueOf(unit) : Unit.ONE);
+					unit != null ? Measures.valueOf(unit) : Unit.ONE);
 			}
 		};
 	}
