@@ -79,7 +79,7 @@ public class SecurityContext {
 	}
 
 	public void unsetPrincipal() {
-		context().response().discardCookies(TOKEN_NAME);
+		context().response().discardCookie(TOKEN_NAME);
 	}
 
 	public String sign(String content) {
