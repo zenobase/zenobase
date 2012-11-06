@@ -23,33 +23,36 @@ public class OpenGraphController extends ControllerSupport {
 		if (!isValid(url)) {
 			return badRequest("Invalid URL: " + url);
 		}
-		return async(WS.url(url).get().map(new F.Function<WS.Response, Result>() {
-			@Override
-			public Result apply(WS.Response response) {
-				if (response.getStatus() != OK) {
-					return badRequest("Couldn't retrieve resource: " + url);
+		return async(WS.url(url).get()
+			.map(new F.Function<WS.Response, Result>() {
+				@Override
+				public Result apply(WS.Response response) {
+					if (response.getStatus() != OK) {
+						return badRequest("Couldn't retrieve resource: " + url);
+					}
+					try {
+						return ok(OpenGraph.parse(url, response.getBodyAsStream()).toJson());
+					} catch (IOException e) {
+						String message = "Couldn't parse resource: " + url;
+						Logger.warn(message);
+						return badRequest(message);
+					}
 				}
-				try {
-					return ok(OpenGraph.parse(url, response.getBodyAsStream()).toJson());
-				} catch (IOException e) {
-					String message = "Couldn't parse resource: " + url;
+			})
+			.recover(new F.Function<Throwable, Result>() {
+				@Override
+				public Result apply(Throwable t) {
+					String message = "Couldn't retrieve resource: " + url;
 					Logger.warn(message);
 					return badRequest(message);
 				}
 			}
-		}).recover(new F.Function<Throwable, Result>() {
-			@Override
-			public Result apply(Throwable t) {
-				String message = "Couldn't retrieve resource: " + url;
-				Logger.warn(message);
-				return badRequest(message);
-			}
-		}));
+		));
 	}
 
 	private static boolean isValid(String url) {
 		try {
-			new URL(url);
+			new URL(url); // TODO: URI.parse(url)
 		} catch (MalformedURLException e) {
 			return false;
 		}
