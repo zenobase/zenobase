@@ -1535,7 +1535,7 @@
 		};
 		$scope.draw = function() {
 			if ($scope.points.length) {
-				google.load("maps", "3.9", { other_params : 'sensor=false', callback : function() {
+				google.load("maps", "3.10", { other_params : 'sensor=false', callback : function() {
 					var options = {
 						mapTypeId: google.maps.MapTypeId.TERRAIN,
 						streetViewControl: false,
@@ -1742,7 +1742,7 @@
 	app.controller('CreateLocationFieldCtrl', ['$scope', function($scope) {
 
 		$scope.init = function() {
-			google.load("maps", "3.9", { other_params : 'sensor=false', callback : function() {
+			google.load("maps", "3.10", { other_params : 'sensor=false', callback : function() {
 				var center = new google.maps.LatLng(0, 0);
 				var options = {
 					center : center,
