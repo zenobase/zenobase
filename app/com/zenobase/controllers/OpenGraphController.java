@@ -37,6 +37,13 @@ public class OpenGraphController extends ControllerSupport {
 					return badRequest(message);
 				}
 			}
+		}).recover(new F.Function<Throwable, Result>() {
+			@Override
+			public Result apply(Throwable t) {
+				String message = "Couldn't retrieve resource: " + url;
+				Logger.warn(message);
+				return badRequest(message);
+			}
 		}));
 	}
 
