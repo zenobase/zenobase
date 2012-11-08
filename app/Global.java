@@ -140,7 +140,7 @@ public class Global extends GlobalSettings {
 				requestStaticInjection(PasswordResetController.class);
 				requestStaticInjection(QueueController.class);
 				requestStaticInjection(SecurityController.class);
-				requestStaticInjection(StatusController.class);
+				bind(StatusController.class);
 				requestStaticInjection(UserController.class);
 				requestStaticInjection(UserListController.class);
 				requestStaticInjection(WhoController.class);
@@ -172,6 +172,11 @@ public class Global extends GlobalSettings {
 		});
 
 		Globals.put(Injector.class, injector);
+	}
+
+	@Override
+	public <A> A getControllerInstance(Class<A> controllerClass) {
+		return injector.getInstance(controllerClass);
 	}
 
 	private void replay() {

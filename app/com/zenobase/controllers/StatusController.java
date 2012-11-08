@@ -2,6 +2,7 @@ package com.zenobase.controllers;
 
 import javax.inject.Inject;
 
+import play.Logger;
 import play.mvc.Http;
 import play.mvc.Result;
 import play.mvc.With;
@@ -14,20 +15,24 @@ import com.zenobase.services.IndexManager;
 @With(Timed.class)
 public class StatusController extends ControllerSupport {
 
-	@Inject
-	static IndexManager manager;
+	private final IndexManager manager;
+	private final CommandRepository history;
 
 	@Inject
-	static CommandRepository history;
+	public StatusController(IndexManager manager, CommandRepository history) {
+		Logger.info("init status");
+		this.manager = manager;
+		this.history = history;
+	}
 
-	public static Result get() {
+	public Result get() {
     	if (!Http.Context.current().request().queryString().isEmpty()) {
     		throw new RuntimeException("invalid parameters");
     	}
     	return ok(getStatus().toJson());
     }
 
-	private static StatusInfo getStatus() {
+	private StatusInfo getStatus() {
 		return new StatusInfo(history.size(), manager.getCluster().getHealthStatus());
 	}
 }
