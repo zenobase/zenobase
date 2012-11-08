@@ -2,7 +2,6 @@ package com.zenobase.controllers;
 
 import javax.inject.Inject;
 
-import play.Logger;
 import play.mvc.Http;
 import play.mvc.Result;
 import play.mvc.With;
@@ -20,7 +19,6 @@ public class StatusController extends ControllerSupport {
 
 	@Inject
 	public StatusController(IndexManager manager, CommandRepository history) {
-		Logger.info("init status");
 		this.manager = manager;
 		this.history = history;
 	}
