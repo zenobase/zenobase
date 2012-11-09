@@ -16,6 +16,7 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Module;
+import com.google.inject.Singleton;
 
 import com.zenobase.models.StatusInfo;
 import com.zenobase.services.Cluster;
@@ -36,7 +37,7 @@ public class StatusControllerTest extends WithApplication {
 				bind(SecurityContext.class).toInstance(mock(SecurityContext.class));
 				bind(IndexManager.class).toInstance(manager);
 				bind(CommandRepository.class).toInstance(history);
-				bind(StatusController.class);
+				bind(StatusController.class).in(Singleton.class);
 			}
 		});
 	}

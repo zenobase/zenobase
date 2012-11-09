@@ -140,7 +140,7 @@ public class Global extends GlobalSettings {
 				requestStaticInjection(PasswordResetController.class);
 				requestStaticInjection(QueueController.class);
 				requestStaticInjection(SecurityController.class);
-				bind(StatusController.class);
+				bind(StatusController.class).in(Singleton.class);
 				requestStaticInjection(UserController.class);
 				requestStaticInjection(UserListController.class);
 				requestStaticInjection(WhoController.class);
