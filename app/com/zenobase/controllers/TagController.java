@@ -12,19 +12,20 @@ import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
 import com.zenobase.models.Permission;
 import com.zenobase.services.BucketRepository;
-import com.zenobase.services.UserRepository;
 
 @With(Timed.class)
 public class TagController extends ControllerSupport {
 
-	@Inject
-	static BucketRepository buckets;
+	private final BucketRepository buckets;
 
 	@Inject
-	static UserRepository users;
+	public TagController(SecurityContext security, BucketRepository buckets) {
+		super(security);
+		this.buckets = buckets;
+	}
 
-	public static Result get(String bucketId) {
-		Identity principal = auth.getPrincipal();
+	public Result get(String bucketId) {
+		Identity principal = getSecurityContext().getPrincipal();
 		Bucket bucket = buckets.findBucket(bucketId);
 		if (bucket == null) {
 			return notFound();

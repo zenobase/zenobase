@@ -19,17 +19,22 @@ import com.zenobase.services.UserRepository;
 @With(Timed.class)
 public class BucketListController extends ControllerSupport {
 
-	@Inject
-	static CommandDispatcher dispatcher;
+	private final CommandDispatcher dispatcher;
+	private final BucketRepository buckets;
+	private final UserRepository users;
 
 	@Inject
-	static BucketRepository buckets;
+    public BucketListController(SecurityContext security, CommandDispatcher dispatcher,
+    	BucketRepository buckets, UserRepository users) {
 
-	@Inject
-	static UserRepository users;
+		super(security);
+		this.dispatcher = dispatcher;
+		this.buckets = buckets;
+		this.users = users;
+	}
 
-    public static Result find(String identity, int offset, int limit) {
-    	Identity principal = auth.getPrincipal();
+	public Result find(String identity, int offset, int limit) {
+    	Identity principal = getSecurityContext().getPrincipal();
     	if (principal == null) {
     		return unauthorized();
     	}
@@ -39,7 +44,7 @@ public class BucketListController extends ControllerSupport {
         return find(principal, offset, limit);
     }
 
-    private static Result find(Identity principal, Identity identity, int offset, int limit) {
+    private Result find(Identity principal, Identity identity, int offset, int limit) {
     	if (!(identity.equals(principal) || users.isSuperuser(principal))) {
     		return forbidden();
     	}
@@ -49,7 +54,7 @@ public class BucketListController extends ControllerSupport {
         return ok(buckets.findBuckets(identity, offset, limit).toJson());
     }
 
-    private static Result find(Identity principal, int offset, int limit) {
+    private Result find(Identity principal, int offset, int limit) {
     	if (!users.isSuperuser(principal)) {
     		return forbidden();
     	}
@@ -62,7 +67,7 @@ public class BucketListController extends ControllerSupport {
         return ok(buckets.findBuckets(offset, limit).toJson());
     }
 
-    private static Result findAll() {
+    private Result findAll() {
     	Chunks<String> chunks = new StringChunks() {
 			@Override
 			public void onReady(final Out<String> out) {
@@ -74,8 +79,8 @@ public class BucketListController extends ControllerSupport {
 	}
 
     @BodyParser.Of(BodyParser.Json.class)
-    public static Result post() {
-    	Identity principal = auth.getPrincipal(true);
+    public Result post() {
+    	Identity principal = getSecurityContext().getPrincipal(true);
 		CreateBucketForm form = new CreateBucketForm(body());
 		Bucket bucket = form.getId() != null ? new Bucket(form.getId()) : new Bucket();
 		bucket.setLabel(form.getLabel());

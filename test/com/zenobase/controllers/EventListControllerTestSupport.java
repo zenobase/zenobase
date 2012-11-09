@@ -4,14 +4,14 @@ import static org.mockito.Mockito.mock;
 
 import org.junit.Before;
 import com.google.inject.AbstractModule;
-import com.google.inject.Guice;
+import com.google.inject.Singleton;
 
 import com.zenobase.models.Bucket;
 import com.zenobase.models.User;
 import com.zenobase.services.BucketRepository;
 import com.zenobase.services.CommandDispatcher;
 
-public abstract class EventListControllerTestSupport {
+public abstract class EventListControllerTestSupport extends ControllerTestSupport {
 
 	protected final SecurityContext auth = mock(SecurityContext.class);
 	protected final BucketRepository buckets = mock(BucketRepository.class);
@@ -21,13 +21,13 @@ public abstract class EventListControllerTestSupport {
 
 	@Before
 	public void setUp() {
-		Guice.createInjector(new AbstractModule() {
+		start(new AbstractModule() {
 			@Override
 			protected void configure() {
 				bind(SecurityContext.class).toInstance(auth);
 				bind(BucketRepository.class).toInstance(buckets);
 				bind(CommandDispatcher.class).toInstance(dispatcher);
-				requestStaticInjection(EventListController.class);
+				bind(EventListController.class).in(Singleton.class);
 			}
 		});
 	}

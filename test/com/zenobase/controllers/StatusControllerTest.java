@@ -8,14 +8,8 @@ import static play.test.Helpers.*;
 import org.elasticsearch.action.admin.cluster.health.ClusterHealthStatus;
 import org.junit.Before;
 import org.junit.Test;
-import play.GlobalSettings;
 import play.mvc.Result;
-import play.test.Helpers;
-import play.test.WithApplication;
 import com.google.inject.AbstractModule;
-import com.google.inject.Guice;
-import com.google.inject.Injector;
-import com.google.inject.Module;
 import com.google.inject.Singleton;
 
 import com.zenobase.models.StatusInfo;
@@ -23,7 +17,7 @@ import com.zenobase.services.Cluster;
 import com.zenobase.services.CommandRepository;
 import com.zenobase.services.IndexManager;
 
-public class StatusControllerTest extends WithApplication {
+public class StatusControllerTest extends ControllerTestSupport {
 
 	private final IndexManager manager = mock(IndexManager.class);
 	private final Cluster cluster = mock(Cluster.class);
@@ -40,16 +34,6 @@ public class StatusControllerTest extends WithApplication {
 				bind(StatusController.class).in(Singleton.class);
 			}
 		});
-	}
-
-	protected void start(final Module module) {
-		start(Helpers.fakeApplication(new GlobalSettings() {
-			Injector injector = Guice.createInjector(module);
-			@Override
-			public <A> A getControllerInstance(Class<A> controllerClass) {
-				return injector.getInstance(controllerClass);
-			}
-		}));
 	}
 
 	@Test

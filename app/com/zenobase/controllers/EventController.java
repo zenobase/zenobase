@@ -20,14 +20,18 @@ import com.zenobase.services.CommandDispatcher;
 @With(Timed.class)
 public class EventController extends ControllerSupport {
 
-	@Inject
-	static BucketRepository buckets;
+	private final BucketRepository buckets;
+	private final CommandDispatcher dispatcher;
 
 	@Inject
-	static CommandDispatcher dispatcher;
+    public EventController(SecurityContext security, BucketRepository buckets, CommandDispatcher dispatcher) {
+		super(security);
+		this.buckets = buckets;
+		this.dispatcher = dispatcher;
+	}
 
-    public static Result get(String bucketId, String eventId) {
-    	Identity principal = auth.getPrincipal();
+	public Result get(String bucketId, String eventId) {
+    	Identity principal = getSecurityContext().getPrincipal();
     	if (principal == null) {
     		return unauthorized();
     	}
@@ -46,8 +50,8 @@ public class EventController extends ControllerSupport {
     }
 
 	@BodyParser.Of(BodyParser.Json.class)
-	public static Result update(String bucketId, String eventId) {
-		Identity principal = auth.getPrincipal();
+	public Result update(String bucketId, String eventId) {
+		Identity principal = getSecurityContext().getPrincipal();
 		if (principal == null) {
 			return unauthorized();
 		}
@@ -72,8 +76,8 @@ public class EventController extends ControllerSupport {
 		}
     }
 
-    public static Result delete(String bucketId, String eventId) {
-    	Identity principal = auth.getPrincipal();
+    public Result delete(String bucketId, String eventId) {
+    	Identity principal = getSecurityContext().getPrincipal();
 		if (principal == null) {
 			return unauthorized();
 		}

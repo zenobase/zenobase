@@ -21,17 +21,22 @@ import com.zenobase.services.UserRepository;
 @With(Timed.class)
 public class UserController extends ControllerSupport {
 
-	@Inject
-	static UserRepository users;
+	private final UserRepository users;
+	private final CommandDispatcher dispatcher;
+	private final VerificationMailer mailer;
 
 	@Inject
-	static CommandDispatcher dispatcher;
+	public UserController(SecurityContext security, UserRepository users,
+		CommandDispatcher dispatcher, VerificationMailer mailer) {
 
-	@Inject
-	static VerificationMailer mailer;
+		super(security);
+		this.users = users;
+		this.dispatcher = dispatcher;
+		this.mailer = mailer;
+	}
 
-	public static Result get(String name) {
-		Identity principal = auth.getPrincipal();
+	public Result get(String name) {
+		Identity principal = getSecurityContext().getPrincipal();
 		if (principal == null) {
 			return unauthorized();
 		}
@@ -46,7 +51,7 @@ public class UserController extends ControllerSupport {
 	}
 
 	@BodyParser.Of(BodyParser.Json.class)
-	public static Result update(String username) {
+	public Result update(String username) {
 		ObjectNode body = body();
 		User user = users.find(username);
     	if (user == null) {
@@ -65,8 +70,8 @@ public class UserController extends ControllerSupport {
     	return badRequest("invalid update request");
 	}
 
-	private static Result updateEmail(UpdateUserForm form, User user) {
-		Identity principal = auth.getPrincipal();
+	private Result updateEmail(UpdateUserForm form, User user) {
+		Identity principal = getSecurityContext().getPrincipal();
     	if (principal == null) {
     		return unauthorized();
     	}
@@ -82,7 +87,7 @@ public class UserController extends ControllerSupport {
 		return success(commandId);
 	}
 
-	private static Result updatePassword(UpdateUserForm form, User user) {
+	private Result updatePassword(UpdateUserForm form, User user) {
     	String key = form.getKey();
     	if (key == null) {
     		return badRequest("missing key field");
@@ -99,11 +104,11 @@ public class UserController extends ControllerSupport {
 			return badRequest("invalid key");
 		}
 		dispatcher.dispatch(new ChangeUserPasswordCommand(user.asIdentity(), user.getName(), user.getHashedPassword(), User.getHashedPassword(password)));
-		auth.setPrincipal(user.asIdentity(), true);
+		getSecurityContext().setPrincipal(user.asIdentity(), true);
 		return noContent();
 	}
 
-	private static Result updateVerified(UpdateUserForm form, User user) {
+	private Result updateVerified(UpdateUserForm form, User user) {
 		if (user.isVerified()) {
 			return badRequest("already verified");
 		}

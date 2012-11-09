@@ -17,17 +17,22 @@ import com.zenobase.services.UserRepository;
 @With(Timed.class)
 public class QueueController extends ControllerSupport {
 
-	@Inject
-	static CommandDispatcher dispatcher;
+	private final CommandDispatcher dispatcher;
+	private final CommandRepository repository;
+	private final UserRepository users;
 
 	@Inject
-	static CommandRepository repository;
+    public QueueController(SecurityContext security, CommandDispatcher dispatcher,
+    	CommandRepository repository, UserRepository users) {
 
-	@Inject
-	static UserRepository users;
+		super(security);
+		this.dispatcher = dispatcher;
+		this.repository = repository;
+		this.users = users;
+	}
 
-    public static Result get(String identity, int offset, int limit) {
-    	Identity principal = auth.getPrincipal();
+	public Result get(String identity, int offset, int limit) {
+    	Identity principal = getSecurityContext().getPrincipal();
     	if (principal == null) {
     		return unauthorized();
     	}
@@ -41,12 +46,12 @@ public class QueueController extends ControllerSupport {
     }
 
 	@BodyParser.Of(BodyParser.Json.class)
-    public static Result post() {
+    public Result post() {
     	UndoForm form = new UndoForm(body());
 		if (!form.valid()) {
 			return badRequest("missing command");
 		}
-		Identity principal = auth.getPrincipal();
+		Identity principal = getSecurityContext().getPrincipal();
     	if (principal == null) {
     		return unauthorized();
     	}

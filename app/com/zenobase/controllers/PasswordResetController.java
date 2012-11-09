@@ -18,15 +18,18 @@ public class PasswordResetController extends ControllerSupport {
 
 	static final TokenField USERNAME = new TokenField("username");
 
-	@Inject
-	static UserRepository users;
+	private final UserRepository users;
+	private final PasswordResetMailer resetMailer;
 
 	@Inject
-	static PasswordResetMailer resetMailer;
-
+	public PasswordResetController(SecurityContext security, UserRepository users, PasswordResetMailer resetMailer) {
+		super(security);
+		this.users = users;
+		this.resetMailer = resetMailer;
+	}
 
 	@BodyParser.Of(BodyParser.Json.class)
-	public static Result requestReset() {
+	public Result requestReset() {
 		ObjectNode body = body();
 		String username = USERNAME.getValue(body);
 		if (username == null) {

@@ -10,14 +10,14 @@ import org.junit.Test;
 import play.mvc.Result;
 import com.google.common.collect.ImmutableList;
 import com.google.inject.AbstractModule;
-import com.google.inject.Guice;
+import com.google.inject.Singleton;
 
 import com.zenobase.models.User;
 import com.zenobase.models.UserInfo;
 import com.zenobase.models.UserList;
 import com.zenobase.services.UserRepository;
 
-public class UserListControllerTest {
+public class UserListControllerTest extends ControllerTestSupport {
 
 	private final SecurityContext auth = mock(SecurityContext.class);
 	private final UserRepository users = mock(UserRepository.class);
@@ -25,12 +25,12 @@ public class UserListControllerTest {
 
 	@Before
 	public void setUp() {
-		Guice.createInjector(new AbstractModule() {
+		start(new AbstractModule() {
 			@Override
 			protected void configure() {
 				bind(SecurityContext.class).toInstance(auth);
 				bind(UserRepository.class).toInstance(users);
-				requestStaticInjection(UserListController.class);
+				bind(UserListController.class).in(Singleton.class);
 			}
 		});
 	}

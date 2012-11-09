@@ -26,17 +26,22 @@ import com.zenobase.services.UserRepository;
 @With(Timed.class)
 public class BucketController extends ControllerSupport {
 
-	@Inject
-	static CommandDispatcher dispatcher;
+	private final CommandDispatcher dispatcher;
+	private final BucketRepository buckets;
+	private final UserRepository users;
 
 	@Inject
-	static BucketRepository buckets;
+	public BucketController(SecurityContext security, CommandDispatcher dispatcher,
+		BucketRepository buckets, UserRepository users) {
 
-	@Inject
-	static UserRepository users;
+		super(security);
+		this.dispatcher = dispatcher;
+		this.buckets = buckets;
+		this.users = users;
+	}
 
-	public static Result get(String bucketId) {
-		Identity principal = auth.getPrincipal();
+	public Result get(String bucketId) {
+		Identity principal = getSecurityContext().getPrincipal();
 		Bucket bucket = buckets.findBucket(bucketId);
 		if (bucket == null) {
 			return notFound();
@@ -99,8 +104,8 @@ public class BucketController extends ControllerSupport {
 	}
 
 	@BodyParser.Of(BodyParser.Json.class)
-	public static Result update(String bucketId) {
-		Identity principal = auth.getPrincipal();
+	public Result update(String bucketId) {
+		Identity principal = getSecurityContext().getPrincipal();
 		if (principal == null) {
 			return unauthorized();
 		}
@@ -132,8 +137,8 @@ public class BucketController extends ControllerSupport {
 		}
     }
 
-    public static Result delete(String bucketId) {
-    	Identity principal = auth.getPrincipal();
+    public Result delete(String bucketId) {
+    	Identity principal = getSecurityContext().getPrincipal();
 		if (principal == null) {
 			return unauthorized();
 		}

@@ -1,7 +1,6 @@
 package com.zenobase.controllers;
 
 import static com.zenobase.testing.ResultAssert.assertThat;
-
 import static org.mockito.Mockito.*;
 import static play.mvc.Http.Status.*;
 import static play.test.Helpers.*;
@@ -11,14 +10,14 @@ import org.junit.Before;
 import org.junit.Test;
 import play.mvc.Result;
 import com.google.inject.AbstractModule;
-import com.google.inject.Guice;
+import com.google.inject.Singleton;
 
 import com.zenobase.json.Nodes;
 import com.zenobase.mail.PasswordResetMailer;
 import com.zenobase.models.User;
 import com.zenobase.services.UserRepository;
 
-public class PasswordResetControllerTest {
+public class PasswordResetControllerTest extends ControllerTestSupport {
 
 	private final SecurityContext auth = mock(SecurityContext.class);
 	private final UserRepository users = mock(UserRepository.class);
@@ -27,13 +26,13 @@ public class PasswordResetControllerTest {
 
 	@Before
 	public void setUp() {
-		Guice.createInjector(new AbstractModule() {
+		start(new AbstractModule() {
 			@Override
 			protected void configure() {
 				bind(SecurityContext.class).toInstance(auth);
 				bind(UserRepository.class).toInstance(users);
 				bind(PasswordResetMailer.class).toInstance(mailer);
-				requestStaticInjection(PasswordResetController.class);
+				bind(PasswordResetController.class).in(Singleton.class);
 			}
 		});
 	}

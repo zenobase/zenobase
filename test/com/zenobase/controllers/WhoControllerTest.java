@@ -1,7 +1,6 @@
 package com.zenobase.controllers;
 
 import static com.zenobase.testing.ResultAssert.assertThat;
-
 import static org.mockito.Mockito.*;
 import static play.mvc.Http.Status.*;
 import static play.test.Helpers.*;
@@ -10,13 +9,13 @@ import org.junit.Before;
 import org.junit.Test;
 import play.mvc.Result;
 import com.google.inject.AbstractModule;
-import com.google.inject.Guice;
+import com.google.inject.Singleton;
 
 import com.zenobase.models.User;
 import com.zenobase.models.UserInfo;
 import com.zenobase.services.UserRepository;
 
-public class WhoControllerTest {
+public class WhoControllerTest extends ControllerTestSupport {
 
 	private final SecurityContext auth = mock(SecurityContext.class);
 	private final UserRepository users = mock(UserRepository.class);
@@ -24,12 +23,12 @@ public class WhoControllerTest {
 
 	@Before
 	public void setUp() {
-		Guice.createInjector(new AbstractModule() {
+		start(new AbstractModule() {
 			@Override
 			protected void configure() {
 				bind(SecurityContext.class).toInstance(auth);
 				bind(UserRepository.class).toInstance(users);
-				requestStaticInjection(WhoController.class);
+				bind(WhoController.class).in(Singleton.class);
 			}
 		});
 	}

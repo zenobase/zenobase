@@ -14,14 +14,16 @@ import com.zenobase.services.UserRepository;
 @With(Timed.class)
 public class SecurityController extends ControllerSupport {
 
-	@Inject
-	static UserRepository users;
+	private final UserRepository users;
 
 	@Inject
-	static SecurityContext security;
+	public SecurityController(SecurityContext security, UserRepository users) {
+		super(security);
+		this.users = users;
+	}
 
 	@BodyParser.Of(BodyParser.Json.class)
-	public static Result signIn() {
+	public Result signIn() {
 		SignInForm form = new SignInForm(body());
 		if (!form.valid()) {
 			return badRequest("invalid request body");
@@ -33,14 +35,14 @@ public class SecurityController extends ControllerSupport {
 		if (user.isSuspended()) {
 			return unauthorized("user suspended");
 		}
-		auth.setPrincipal(user.asIdentity(), form.isRemember());
+		getSecurityContext().setPrincipal(user.asIdentity(), form.isRemember());
 		ObjectNode result = new UserInfo(user).toJson();
-		result.put("hash", security.sign(user.getId()));
+		result.put("hash", getSecurityContext().sign(user.getId()));
 		return ok(result);
 	}
 
-	public static Result signOut() {
-		auth.unsetPrincipal();
+	public Result signOut() {
+		getSecurityContext().unsetPrincipal();
 		return noContent();
 	}
 }

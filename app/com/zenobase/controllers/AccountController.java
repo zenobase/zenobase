@@ -21,20 +21,24 @@ import com.zenobase.services.UserRepository;
 @With(Timed.class)
 public class AccountController extends ControllerSupport {
 
-	@Inject
-	static BucketRepository buckets;
+	private final BucketRepository buckets;
+	private final UserRepository users;
+	private final CommandDispatcher dispatcher;
+	private final VerificationMailer mailer;
 
 	@Inject
-	static UserRepository users;
+	public AccountController(SecurityContext security, BucketRepository buckets,
+		UserRepository users, CommandDispatcher dispatcher, VerificationMailer mailer) {
 
-	@Inject
-	static CommandDispatcher dispatcher;
-
-	@Inject
-	static VerificationMailer mailer;
+		super(security);
+		this.buckets = buckets;
+		this.users = users;
+		this.dispatcher = dispatcher;
+		this.mailer = mailer;
+	}
 
 	@BodyParser.Of(BodyParser.Json.class)
-	public static Result open() {
+	public Result open() {
 		SignUpForm form = new SignUpForm(body());
 		if (!form.valid()) {
 			return badRequest("invalid request body");
@@ -42,7 +46,7 @@ public class AccountController extends ControllerSupport {
 		if (users.exists(form.getUsername())) {
 			return conflict("user exists");
 		}
-		Identity principal = auth.getPrincipal(true);
+		Identity principal = getSecurityContext().getPrincipal(true);
 		final User user = new User(principal.getId(), form.getUsername());
 		user.setEmail(form.getEmail());
 		user.setHashedPassword(User.getHashedPassword(form.getPassword()));
@@ -52,8 +56,8 @@ public class AccountController extends ControllerSupport {
 		return created(new UserInfo(user).toJson());
 	}
 
-	public static Result close(String name) {
-		Identity principal = auth.getPrincipal();
+	public Result close(String name) {
+		Identity principal = getSecurityContext().getPrincipal();
 		if (principal == null) {
 			return unauthorized();
 		}

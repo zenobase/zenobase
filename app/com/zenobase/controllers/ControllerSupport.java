@@ -4,7 +4,6 @@ import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.node.ObjectNode;
 import play.mvc.Controller;
 import play.mvc.With;
-import com.google.inject.Inject;
 
 import com.zenobase.actions.NoCache;
 import com.zenobase.json.Nodes;
@@ -14,11 +13,18 @@ import com.zenobase.json.TokenField;
 @With(NoCache.class)
 public abstract class ControllerSupport extends Controller {
 
-	@Inject
-	static SecurityContext auth;
-
 	protected static final TextField MESSAGE = new TextField("message");
 	protected static final TokenField UNDO = new TokenField("undo");
+
+	private final SecurityContext security;
+
+	protected ControllerSupport(SecurityContext security) {
+		this.security = security;
+	}
+
+	protected SecurityContext getSecurityContext() {
+		return security;
+	}
 
 	protected static ObjectNode body() {
 		ObjectNode node = body(ObjectNode.class);

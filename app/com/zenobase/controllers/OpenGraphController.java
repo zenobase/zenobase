@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import javax.inject.Inject;
+
 import play.Logger;
 import play.libs.F;
 import play.libs.WS;
@@ -16,7 +18,12 @@ import com.zenobase.io.OpenGraph;
 @With(Timed.class)
 public class OpenGraphController extends ControllerSupport {
 
-	public static Result get(final String url) {
+	@Inject
+	public OpenGraphController(SecurityContext security) {
+		super(security);
+	}
+
+	public Result get(final String url) {
 		if (!url.startsWith("http")) {
 			return get("http://" + url);
 		}

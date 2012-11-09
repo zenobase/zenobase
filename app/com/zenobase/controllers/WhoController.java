@@ -11,11 +11,16 @@ import com.zenobase.services.UserRepository;
 
 public class WhoController extends ControllerSupport {
 
-	@Inject
-	static UserRepository users;
+	private final UserRepository users;
 
-	public static Result who() {
-		Identity principal = auth.getPrincipal();
+	@Inject
+	public WhoController(SecurityContext security, UserRepository users) {
+		super(security);
+		this.users = users;
+	}
+
+	public Result who() {
+		Identity principal = getSecurityContext().getPrincipal();
 		if (principal != null) {
 			User user = users.find(principal);
 			return ok(user != null ? new UserInfo(user).toJson() : principal.toJson());

@@ -29,14 +29,18 @@ public class EventListController extends ControllerSupport {
 
 	static final ObjectField EVENTS = new ObjectField("events");
 
-	@Inject
-	static BucketRepository buckets;
+	private final BucketRepository buckets;
+	private final CommandDispatcher dispatcher;
 
 	@Inject
-	static CommandDispatcher dispatcher;
+	public EventListController(SecurityContext security, BucketRepository buckets, CommandDispatcher dispatcher) {
+		super(security);
+		this.buckets = buckets;
+		this.dispatcher = dispatcher;
+	}
 
-	public static Result get(String bucketId) {
-		Identity principal = auth.getPrincipal();
+	public Result get(String bucketId) {
+		Identity principal = getSecurityContext().getPrincipal();
 		Bucket bucket = buckets.findBucket(bucketId);
     	if (bucket == null) {
     		return notFound();
@@ -56,8 +60,8 @@ public class EventListController extends ControllerSupport {
     }
 
 	@BodyParser.Of(value = BodyParser.Json.class)
-	public static Result post(String bucketId) {
-		Identity principal = auth.getPrincipal();
+	public Result post(String bucketId) {
+		Identity principal = getSecurityContext().getPrincipal();
 		if (principal == null) {
 			return unauthorized();
 		}

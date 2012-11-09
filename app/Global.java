@@ -131,19 +131,19 @@ public class Global extends GlobalSettings {
 				handlers.addBinding().to(ChangeUserVerifiedCommand.Handler.class);
 				handlers.addBinding().to(ChangeUserPasswordCommand.Handler.class);
 
-				requestStaticInjection(AccountController.class);
-				requestStaticInjection(BucketController.class);
-				requestStaticInjection(BucketListController.class);
-				requestStaticInjection(EventController.class);
-				requestStaticInjection(EventListController.class);
-				requestStaticInjection(TagController.class);
-				requestStaticInjection(PasswordResetController.class);
-				requestStaticInjection(QueueController.class);
-				requestStaticInjection(SecurityController.class);
+				bind(AccountController.class).in(Singleton.class);
+				bind(BucketController.class).in(Singleton.class);
+				bind(BucketListController.class).in(Singleton.class);
+				bind(EventController.class).in(Singleton.class);
+				bind(EventListController.class).in(Singleton.class);
+				bind(TagController.class).in(Singleton.class);
+				bind(PasswordResetController.class).in(Singleton.class);
+				bind(QueueController.class).in(Singleton.class);
+				bind(SecurityController.class).in(Singleton.class);
 				bind(StatusController.class).in(Singleton.class);
-				requestStaticInjection(UserController.class);
-				requestStaticInjection(UserListController.class);
-				requestStaticInjection(WhoController.class);
+				bind(UserController.class).in(Singleton.class);
+				bind(UserListController.class).in(Singleton.class);
+				bind(WhoController.class).in(Singleton.class);
 
 				requestInjection(Global.this);
 			}

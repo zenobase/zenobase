@@ -13,7 +13,7 @@ import play.mvc.Result;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.inject.AbstractModule;
-import com.google.inject.Guice;
+import com.google.inject.Singleton;
 
 import com.zenobase.json.Nodes;
 import com.zenobase.models.Bucket;
@@ -24,7 +24,7 @@ import com.zenobase.models.User;
 import com.zenobase.services.BucketRepository;
 import com.zenobase.services.UserRepository;
 
-public class TagControllerTest {
+public class TagControllerTest extends ControllerTestSupport {
 
 	private final SecurityContext auth = mock(SecurityContext.class);
 	private final BucketRepository buckets = mock(BucketRepository.class);
@@ -34,13 +34,13 @@ public class TagControllerTest {
 
 	@Before
 	public void setUp() {
-		Guice.createInjector(new AbstractModule() {
+		start(new AbstractModule() {
 			@Override
 			protected void configure() {
 				bind(SecurityContext.class).toInstance(auth);
 				bind(BucketRepository.class).toInstance(buckets);
 				bind(UserRepository.class).toInstance(users);
-				requestStaticInjection(TagController.class);
+				bind(TagController.class).in(Singleton.class);
 			}
 		});
 		bucket.addPermission(user.asIdentity(), Permission.ALL);

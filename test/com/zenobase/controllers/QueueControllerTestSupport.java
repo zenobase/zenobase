@@ -4,14 +4,14 @@ import static org.mockito.Mockito.mock;
 
 import org.junit.Before;
 import com.google.inject.AbstractModule;
-import com.google.inject.Guice;
+import com.google.inject.Singleton;
 
 import com.zenobase.models.Identity;
 import com.zenobase.services.CommandDispatcher;
 import com.zenobase.services.CommandRepository;
 import com.zenobase.services.UserRepository;
 
-public abstract class QueueControllerTestSupport {
+public abstract class QueueControllerTestSupport extends ControllerTestSupport {
 
 	protected final SecurityContext auth = mock(SecurityContext.class);
 	protected final CommandRepository commands = mock(CommandRepository.class);
@@ -21,14 +21,14 @@ public abstract class QueueControllerTestSupport {
 
 	@Before
 	public void setUp() {
-		Guice.createInjector(new AbstractModule() {
+		start(new AbstractModule() {
 			@Override
 			protected void configure() {
 				bind(SecurityContext.class).toInstance(auth);
 				bind(CommandRepository.class).toInstance(commands);
 				bind(UserRepository.class).toInstance(users);
 				bind(CommandDispatcher.class).toInstance(dispatcher);
-				requestStaticInjection(QueueController.class);
+				bind(QueueController.class).in(Singleton.class);
 			}
 		});
 	}

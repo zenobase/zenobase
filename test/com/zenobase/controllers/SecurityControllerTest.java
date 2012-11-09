@@ -13,13 +13,13 @@ import play.mvc.Http.Cookie;
 import play.mvc.Result;
 import play.test.Helpers;
 import com.google.inject.AbstractModule;
-import com.google.inject.Guice;
+import com.google.inject.Singleton;
 
 import com.zenobase.models.User;
 import com.zenobase.models.UserInfo;
 import com.zenobase.services.UserRepository;
 
-public class SecurityControllerTest {
+public class SecurityControllerTest extends ControllerTestSupport {
 
 	private final SecurityContext auth = new SecurityContext("secret");
 	private final UserRepository users = mock(UserRepository.class);
@@ -28,12 +28,12 @@ public class SecurityControllerTest {
 
 	@Before
 	public void setUp() {
-		Guice.createInjector(new AbstractModule() {
+		start(new AbstractModule() {
 			@Override
 			protected void configure() {
 				bind(SecurityContext.class).toInstance(auth);
 				bind(UserRepository.class).toInstance(users);
-				requestStaticInjection(SecurityController.class);
+				bind(SecurityController.class).in(Singleton.class);
 			}
 		});
 		user.setPassword(password);
