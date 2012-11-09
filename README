@@ -9,9 +9,7 @@ To refresh the dependencies in Eclipse, open the play console and run:
 js libs
 -------
 
-bootstrap-2.0.x.js: concatenate modal + tabs + typeahead
-
-*.gz: gzip -9 *.min.js
+bootstrap-2.2.x.js: concatenate modal + tabs + typeahead
 
 
 Functional Tests
