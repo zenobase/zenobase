@@ -5,7 +5,6 @@ import PlayProject._
 import com.google.javascript.jscomp.CompilerOptions
 import com.google.javascript.jscomp.CompilationLevel
 
-
 object ApplicationBuild extends Build {
 
     val appName         = "Zenobase"
@@ -29,7 +28,7 @@ object ApplicationBuild extends Build {
 
     val gzippableAssets = SettingKey[PathFinder]("gzippable-assets", "Defines the files to gzip")
     val gzipAssets = TaskKey[Seq[File]]("gzip-assets", "gzip all assets")
-    lazy val gzipAssetsSetting = gzipAssets <<= gzipAssetsTask
+    lazy val gzipAssetsSetting = gzipAssets <<= gzipAssetsTask dependsOn (copyResources in Compile)
     lazy val gzipAssetsTask = (gzippableAssets, streams) map {
       case (finder: PathFinder, s: TaskStreams) => {
         var count = 0
@@ -47,7 +46,7 @@ object ApplicationBuild extends Build {
 	val defaultOptions = new CompilerOptions()
 	CompilationLevel.SIMPLE_OPTIMIZATIONS.setOptionsForCompilationLevel(defaultOptions)
 	defaultOptions.setProcessCommonJSModules(false)
-    
+
     val main = PlayProject(appName, appVersion, appDependencies, mainLang = JAVA).settings(
       closureCompilerSettings(defaultOptions) ++ Seq(
         lessEntryPoints <<= baseDirectory(_ / "app" / "assets" / "css" / "zeno.less"),
@@ -55,8 +54,9 @@ object ApplicationBuild extends Build {
         javascriptEntryPoints <<= baseDirectory(_ / "app" / "assets" / "js" / "zeno.js"),
         resolvers += "Sonatype Releases" at "https://oss.sonatype.org/content/repositories/releases/",
 		resolvers += "New Relic" at "http://download.newrelic.com/",
-        gzippableAssets <<= (resourceManaged in ThisProject)(dir => ((dir ** "*.js") +++ (dir ** "*.css"))), gzipAssetsSetting,
-        resourceGenerators in Compile <+= gzipAssetsTask
+        gzippableAssets <<= (classDirectory in Compile)(dir => (dir ** ("*.js" || "*.css" || "*.html"))),
+        gzipAssetsSetting,
+        playPackageEverything <<= playPackageEverything dependsOn gzipAssets
       ) : _*
     )
 }
