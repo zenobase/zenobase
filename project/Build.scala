@@ -20,7 +20,7 @@ object ApplicationBuild extends Build {
       "org.elasticsearch" % "elasticsearch-cloud-aws" % "1.9.0",
       "org.jscience" % "jscience" % "4.3.1",
       "org.jsoup" % "jsoup" % "1.7.1",
-      "newrelic.java-agent" % "newrelic-api" % "2.10.0",
+      "newrelic.java-agent" % "newrelic-api" % "2.10.1",
       "org.seleniumhq.selenium" % "selenium-chrome-driver" % "2.26.0" % "test",
       "org.mockito" % "mockito-all" % "1.9.0" % "test",
       "org.jvnet.mock-javamail" % "mock-javamail" % "1.9" % "test"
