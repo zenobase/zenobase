@@ -1495,7 +1495,8 @@
 		$scope.init = function() {
 			$scope.points = null;
 			$scope.map = null;
-			$scope.markerColor = 'white';
+			$scope.settings.markerColor = $scope.settings.markerColor || 'red';
+			$scope.settings.factor = $scope.settings.factor || 10;
 		};
 		$scope.params = function() {
 			return { 
@@ -1530,7 +1531,7 @@
 							style : google.maps.MapTypeControlStyle.DROPDOWN_MENU
 						}
 					};
-					$scope.map = new google.maps.Map(document.getElementById('map'), options);
+					$scope.map = new google.maps.Map(document.getElementById($scope.settings.id + '-map'), options);
 
 					var bounds = new google.maps.LatLngBounds();
 					$.each($scope.points, function(i, point) {
@@ -1542,9 +1543,9 @@
 							icon: {
 						    path: google.maps.SymbolPath.CIRCLE,
 						    fillOpacity: 0.5,
-						    fillColor: $scope.markerColor,
+						    fillColor: $scope.settings.markerColor,
 						    strokeOpacity: 1.0,
-						    strokeColor: $scope.markerColor,
+						    strokeColor: $scope.settings.markerColor,
 						    strokeWeight: 1.0,
 						    scale: 10 + (5 * Math.log(point.count))
 						  }
@@ -1570,7 +1571,7 @@
 				  $scope.map.controls[google.maps.ControlPosition.TOP_RIGHT].push($scope.createFilterControl());
 				}});
 			} else {
-				$('#map').html('<i class="none">None</i>');
+				$('#' + $scope.settings.id + 'map').html('<i class="none">None</i>');
 			}
 		};
 		$scope.createFilterControl = function() {
@@ -1601,6 +1602,13 @@
 		$scope.$on('result', $scope.update);
 		$scope.$on('refresh', $scope.init);
 		$('#' + $scope.settings.id + '-tab').on('show', $scope.draw);
+	}]);
+
+	app.controller('MapSettingsCtrl', ['$scope', function($scope) {
+		WidgetSettingsCtrl($scope);
+		$scope.getColors = function() {
+			return [ 'white', 'black', 'red', 'green', 'blue', 'yellow' ];
+		};
 	}]);
 
 	function Event(data) {

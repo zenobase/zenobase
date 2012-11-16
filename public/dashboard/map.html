@@ -1,6 +1,6 @@
 <div id="{{settings.id}}-content" data-ng-controller="MapCtrl">
 
-	<div id="map" style="height: 350px" data-ng-show="points"></div>
+	<div id="{{settings.id}}-map" style="height: 350px" data-ng-show="points"></div>
 
 	<p data-ng-show="points == null" class="none">Loading...</p>
 
@@ -12,7 +12,7 @@
 		</div>
 	</div>
 
-	<div data-ui-modal="dialogShown" data-ui-modal-close="cancel()" data-ng-controller="WidgetSettingsCtrl">
+	<div data-ui-modal="dialogShown" data-ui-modal-close="cancel()" data-ng-controller="MapSettingsCtrl">
 		<form name="form" class="modal-form">
 			<div class="modal-header">
 				<a class="close" href="javascript:" data-dismiss="modal">&times;</a>
@@ -23,6 +23,13 @@
 					<label class="control-label" for="label">Title</label>
 					<div class="controls">
 						<input name="label" type="text" required min="1" max="20" data-ng-model="settings.label"/>
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label" for="unit">Color</label>
+					<div class="controls">
+						<select name="color" data-ng-model="settings.markerColor" data-ng-options="color for color in getColors()"></select>
+						<p class="help-block">The marker color.</p>
 					</div>
 				</div>
 				<div class="control-group">
