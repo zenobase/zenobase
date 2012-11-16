@@ -1496,19 +1496,19 @@
 			$scope.points = null;
 			$scope.map = null;
 			$scope.settings.markerColor = $scope.settings.markerColor || 'red';
-			$scope.settings.factor = $scope.settings.factor || 10;
+			$scope.settings.factor = 'factor' in $scope.settings ? $scope.settings.factor : 0.2;
 		};
 		$scope.params = function() {
 			return { 
 				id : $scope.settings.id,
 				type : 'map',
 				field : 'location', 
-				factor : $scope.settings.factor || 10
+				factor : $scope.settings.factor
 			};
 		};
 		$scope.refresh = function(options, settings) {
 			$scope.init();
-			$scope.search([ $.extend($scope.params(), options, settings) ], function(result) {
+			$scope.search([ $.extend($scope.params(), settings) ], function(result) {
 				$.extend($scope, options)
 				$.extend($scope.settings, settings)
 				$scope.update(null, result);

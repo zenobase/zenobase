@@ -29,14 +29,14 @@
 					<label class="control-label" for="unit">Color</label>
 					<div class="controls">
 						<select name="color" data-ng-model="settings.markerColor" data-ng-options="color for color in getColors()"></select>
-						<p class="help-block">The marker color.</p>
+						<p class="help-block">The cluster color.</p>
 					</div>
 				</div>
 				<div class="control-group">
 					<label class="control-label" for="factor">Factor</label>
 					<div class="controls">
-						<input name="factor" type="number" required min="1" max="100" data-ng-model="settings.factor"/>
-						<p class="help-block">Controls how much points are clustered together: Higher values equal more clusters.</p>
+						<input name="factor" type="number" required min="0.0" max="1.0" step="0.1" data-ng-model="settings.factor"/>
+						<p class="help-block">Controls the clustering, from 0.0 (show each point) to 1.0 (one big cluster).</p>
 					</div>
 				</div>
 			</div>

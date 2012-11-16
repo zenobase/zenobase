@@ -17,9 +17,9 @@ public class MapWidget extends Widget {
 	public static final String TYPE = "map";
 
 	private final String field;
-	private final int factor;
+	private final double factor;
 
-	private MapWidget(String id, String field, int factor) {
+	private MapWidget(String id, String field, double factor) {
 		super(id);
 		this.field = field;
 		this.factor = factor;
@@ -56,7 +56,7 @@ public class MapWidget extends Widget {
 				return new MapWidget(
 					options.get("id"),
 					options.get("field", String.class, Event.LOCATION.getName()),
-					options.get("factor", Integer.class, 10));
+					options.get("factor", Double.class, 0.2));
 			}
 		};
 	}
