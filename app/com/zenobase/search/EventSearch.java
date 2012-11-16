@@ -33,6 +33,7 @@ public class EventSearch {
 		.put(TimelineWidget.TYPE, TimelineWidget.builder())
 		.put(PlotWidget.TYPE, PlotWidget.builder())
 		.put(ScoreboardWidget.TYPE, ScoreboardWidget.builder())
+		.put(MapWidget.TYPE, MapWidget.builder())
 		.build();
 
 	private final ImmutableMultimap<String, Constraint> constraintBuilders = ImmutableMultimap.<String, Constraint>builder()

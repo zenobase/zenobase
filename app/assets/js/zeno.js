@@ -1495,43 +1495,30 @@
 		$scope.init = function() {
 			$scope.points = null;
 			$scope.map = null;
+			$scope.markerColor = 'white';
+		};
+		$scope.params = function() {
+			return { 
+				id : $scope.settings.id,
+				type : 'map',
+				field : 'location', 
+				factor : $scope.settings.factor || 10
+			};
 		};
 		$scope.refresh = function(options, settings) {
 			$scope.init();
-			$.extend($scope, options)
-			$.extend($scope.settings, settings)
-			$scope.$parent.refresh();
+			$scope.search([ $.extend($scope.params(), options, settings) ], function(result) {
+				$.extend($scope, options)
+				$.extend($scope.settings, settings)
+				$scope.update(null, result);
+			});
 		};
 		$scope.update = function(event, result) {
-			var points = [ ];
-			$scope.events = $.each($scope.getEvents(result), function(i, event) {
-				var location = event[$scope.field];
-				if ($.isArray(location)) {
-					$.each(location, function(i, l) {
-						points.push(l);
-					});
-				} else if (location) {
-					points.push(location);
-				}
-			});
-			$scope.points = points;
+			$scope.points = result[$scope.settings.id] || [];
 			$scope.draw();
 		};
 		$scope.filterBounds = function() {
-			$scope.addFilter(new Filter($scope.field, $scope.map.getBounds().toUrlValue(2)), true);
-		};
-		$scope.getEvents = function(result) {
-			for (var key in result) {
-				var value = result[key];
-				if ($.isArray(value)) {
-					for (var i = 0, max = value.length; i < max; ++i) {
-						if (value[i][$scope.field]) {
-							return value;
-						}
-					}
-				}
-			}
-			return [];
+			$scope.addFilter(new Filter($scope.field, $scope.map.getBounds().toUrlValue(3)), true);
 		};
 		$scope.draw = function() {
 			if ($scope.points.length) {
@@ -1544,22 +1531,42 @@
 						}
 					};
 					$scope.map = new google.maps.Map(document.getElementById('map'), options);
+
 					var bounds = new google.maps.LatLngBounds();
 					$.each($scope.points, function(i, point) {
 						var latLng = new google.maps.LatLng(point.lat, point.lon);
 						var marker = new google.maps.Marker({
 							position : latLng, 
 							map : $scope.map,
-							title : 'Event: ' + latLng
+							title : point.count > 1 ? point.count + ' events' : '1 event',
+							icon: {
+						    path: google.maps.SymbolPath.CIRCLE,
+						    fillOpacity: 0.5,
+						    fillColor: $scope.markerColor,
+						    strokeOpacity: 1.0,
+						    strokeColor: $scope.markerColor,
+						    strokeWeight: 1.0,
+						    scale: 10 + (5 * Math.log(point.count))
+						  }
 						});
-						bounds.extend(latLng);
+						if (point.count === 1) {
+							point.lat_min = point.lat;
+							point.lat_max = point.lat;
+							point.lon_min = point.lon;
+							point.lon_max = point.lon;							
+						}
+						var sw = new google.maps.LatLng(point.lat_min - 0.001, point.lon_min - 0.001);
+						var ne = new google.maps.LatLng(point.lat_max + 0.001, point.lon_max + 0.001);
+						var filterBounds = new google.maps.LatLngBounds(sw, ne);
+						google.maps.event.addListener(marker, 'click', function() {
+							$scope.$apply(function() {
+								$scope.addFilter(new Filter($scope.field, filterBounds.toUrlValue(3)), true);
+							});
+						});
+						bounds.extend(sw);
+						bounds.extend(ne);
 					});
-					if (bounds.getNorthEast().equals(bounds.getSouthWest())) {
-						$scope.map.setCenter(bounds.getCenter());
-						$scope.map.setZoom(2);
-					} else {
-						$scope.map.fitBounds(bounds);
-					}
+					$scope.map.fitBounds(bounds);
 				  $scope.map.controls[google.maps.ControlPosition.TOP_RIGHT].push($scope.createFilterControl());
 				}});
 			} else {
