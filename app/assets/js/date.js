@@ -49,7 +49,7 @@
 			var offset = -this.getTimezoneOffset();
 			var result = offset < 0 ? '-' : '+';
 			offset = Math.abs(offset);
-			var hours = offset / 60;
+			var hours = Math.floor(offset / 60);
 			var minutes = offset % 60;
 			result += pad(hours);
 			result += pad(minutes);
