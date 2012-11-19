@@ -1,7 +1,6 @@
-import scala.compat.Platform
 import sbt._
 import Keys._
-import PlayProject._
+import play.Project._
 import com.google.javascript.jscomp.CompilerOptions
 import com.google.javascript.jscomp.CompilationLevel
 
@@ -11,6 +10,7 @@ object ApplicationBuild extends Build {
     val appVersion      = "SNAPSHOT"
 
     val appDependencies = Seq(
+			javaCore,
       "javax.mail" % "mail" % "1.4.5",
       "com.google.guava" % "guava" % "12.0.1",
       "com.google.guava" % "guava-testlib" % "12.0.1" % "test",
@@ -47,10 +47,10 @@ object ApplicationBuild extends Build {
 	CompilationLevel.SIMPLE_OPTIMIZATIONS.setOptionsForCompilationLevel(defaultOptions)
 	defaultOptions.setProcessCommonJSModules(false)
 
-    val main = PlayProject(appName, appVersion, appDependencies, mainLang = JAVA).settings(
+    val main = play.Project(appName, appVersion, appDependencies).settings(
       closureCompilerSettings(defaultOptions) ++ Seq(
         lessEntryPoints <<= baseDirectory(_ / "app" / "assets" / "css" / "zeno.less"),
-        requireJsSupport := false,
+        //requireJs += "zeno.js",
         javascriptEntryPoints <<= baseDirectory(_ / "app" / "assets" / "js" / "zeno.js"),
         resolvers += "Sonatype Releases" at "https://oss.sonatype.org/content/repositories/releases/",
 		resolvers += "New Relic" at "http://download.newrelic.com/",
