@@ -48,15 +48,15 @@ object ApplicationBuild extends Build {
 	defaultOptions.setProcessCommonJSModules(false)
 
     val main = play.Project(appName, appVersion, appDependencies).settings(
-      //closureCompilerSettings(defaultOptions) ++ Seq(
+      closureCompilerSettings(defaultOptions) ++ Seq(
         lessEntryPoints <<= baseDirectory(_ / "app" / "assets" / "css" / "zeno.less"),
-        requireJs += "main.js",
-        //javascriptEntryPoints <<= baseDirectory(_ / "app" / "assets" / "js" / "zeno.js"),
+        // requireJs += "main.js",
+        javascriptEntryPoints <<= baseDirectory(_ / "app" / "assets" / "js" / "zeno.js"),
         resolvers += "Sonatype Releases" at "https://oss.sonatype.org/content/repositories/releases/",
 		resolvers += "New Relic" at "http://download.newrelic.com/",
         gzippableAssets <<= (classDirectory in Compile)(dir => (dir ** ("*.js" || "*.css" || "*.html"))),
         gzipAssetsSetting,
         playPackageEverything <<= playPackageEverything dependsOn gzipAssets
-      //) : _*
+      ) : _*
     )
 }
