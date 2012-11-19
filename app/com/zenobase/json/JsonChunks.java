@@ -2,14 +2,14 @@ package com.zenobase.json;
 
 import java.io.IOException;
 
-import play.mvc.Results.ByteChunks;
+import play.mvc.Results;
 
 import com.zenobase.io.ChunksOutputStream;
 
-public abstract class JsonChunks extends ByteChunks {
+public abstract class JsonChunks extends Results.ByteChunks {
 
 	@Override
-	public void onReady(Out<byte[]> out) {
+	public void onReady(Results.Chunks.Out<byte[]> out) {
 		try {
 			JsonStream stream = new JsonStream(new ChunksOutputStream(out));
 			onReady(stream);
