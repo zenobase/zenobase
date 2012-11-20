@@ -1,8 +1,7 @@
 package com.zenobase.controllers;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
+import java.net.URI;
 
 import javax.inject.Inject;
 
@@ -59,8 +58,8 @@ public class OpenGraphController extends ControllerSupport {
 
 	private static boolean isValid(String url) {
 		try {
-			new URL(url); // TODO: URI.parse(url)
-		} catch (MalformedURLException e) {
+			URI.create(url);
+		} catch (IllegalArgumentException e) {
 			return false;
 		}
 		return true;
