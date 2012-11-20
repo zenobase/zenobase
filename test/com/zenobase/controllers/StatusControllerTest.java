@@ -5,6 +5,7 @@ import static org.mockito.Mockito.*;
 import static play.mvc.Http.Status.OK;
 import static play.test.Helpers.*;
 
+import org.elasticsearch.action.admin.cluster.health.ClusterHealthResponse;
 import org.elasticsearch.action.admin.cluster.health.ClusterHealthStatus;
 import org.junit.Before;
 import org.junit.Test;
@@ -38,10 +39,13 @@ public class StatusControllerTest extends ControllerTestSupport {
 
 	@Test
 	public void test() {
-		StatusInfo expected = new StatusInfo(Long.MAX_VALUE, ClusterHealthStatus.GREEN); // need to use a non-integer value for correct round-tripping
+		ClusterHealthResponse health = mock(ClusterHealthResponse.class);
+		StatusInfo expected = new StatusInfo(Long.MAX_VALUE, ClusterHealthStatus.GREEN, 2); // need to use a non-integer value for correct round-tripping
+		when(health.getStatus()).thenReturn(expected.getHealth());
+		when(health.getNumberOfNodes()).thenReturn(expected.getNodes());
 		when(manager.getCluster()).thenReturn(cluster);
 		when(history.size()).thenReturn(expected.getCount());
-		when(cluster.getHealthStatus()).thenReturn(expected.getHealth());
+		when(cluster.getHealth()).thenReturn(health);
 		Result result = call();
 		assertThat(result).hasStatus(OK).hasContent(expected.toJson());
 	}

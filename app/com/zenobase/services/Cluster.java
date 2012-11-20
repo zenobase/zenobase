@@ -1,5 +1,6 @@
 package com.zenobase.services;
 
+import org.elasticsearch.action.admin.cluster.health.ClusterHealthResponse;
 import org.elasticsearch.action.admin.cluster.health.ClusterHealthStatus;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.common.unit.TimeValue;
@@ -12,8 +13,8 @@ public class Cluster {
 		this.client = client;
 	}
 
-	public ClusterHealthStatus getHealthStatus() {
-		return client.admin().cluster().prepareHealth().execute().actionGet().getStatus();
+	public ClusterHealthResponse getHealth() {
+		return client.admin().cluster().prepareHealth().execute().actionGet();
 	}
 
 	public boolean isReady() {

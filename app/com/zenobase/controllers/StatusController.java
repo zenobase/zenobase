@@ -2,6 +2,7 @@ package com.zenobase.controllers;
 
 import javax.inject.Inject;
 
+import org.elasticsearch.action.admin.cluster.health.ClusterHealthResponse;
 import play.mvc.Http;
 import play.mvc.Result;
 import play.mvc.With;
@@ -32,6 +33,7 @@ public class StatusController extends ControllerSupport {
     }
 
 	private StatusInfo getStatus() {
-		return new StatusInfo(history.size(), manager.getCluster().getHealthStatus());
+		ClusterHealthResponse health = manager.getCluster().getHealth();
+		return new StatusInfo(history.size(), health.getStatus(), health.getNumberOfNodes());
 	}
 }
