@@ -1523,7 +1523,7 @@
 		};
 		$scope.draw = function() {
 			if ($scope.points.length) {
-				google.load("maps", "3.10", { other_params : 'sensor=false', callback : function() {
+				google.load("maps", "3.10", { other_params : 'libraries=places&sensor=false', callback : function() {
 					var options = {
 						mapTypeId: google.maps.MapTypeId.TERRAIN,
 						streetViewControl: false,
@@ -1757,7 +1757,7 @@
 	app.controller('CreateLocationFieldCtrl', ['$scope', function($scope) {
 
 		$scope.init = function() {
-			google.load("maps", "3.10", { other_params : 'sensor=false', callback : function() {
+			google.load("maps", "3.10", { other_params : 'libraries=places&sensor=false', callback : function() {
 				var center = new google.maps.LatLng(0, 0);
 				var options = {
 					center : center,
@@ -1773,6 +1773,23 @@
 				google.maps.event.addListener($scope.map, 'click', function(e) {
 					$scope.moveMarker(e.latLng);
 			  });
+				var input = document.getElementById('location-search-field');
+		  	console.log('?', input, google.maps);
+				var autocomplete = new google.maps.places.Autocomplete(input);
+				autocomplete.bindTo('bounds', $scope.map);
+			  google.maps.event.addListener(autocomplete, 'place_changed', function() {
+			  	var place = autocomplete.getPlace();
+			  	if (place.geometry) {
+			  		if (place.geometry.viewport) {
+			  			$scope.map.fitBounds(place.geometry.viewport);
+			  		}
+			  		if (place.geometry.location) {
+							$scope.moveMarker(place.geometry.location);
+			  			$scope.map.setCenter(place.geometry.location);
+			  		}
+			  	}
+			  });
+
 				if (navigator.geolocation) {
 					navigator.geolocation.getCurrentPosition(function(position) {
 						var latLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);

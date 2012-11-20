@@ -188,6 +188,9 @@
 	<script id="/create-location.html" type="text/ng-template">
 		<button class="close" data-ng-click="reset()">&times;</button>
 		<div data-ng-controller="CreateLocationFieldCtrl">
+			<div class="control-group">
+				<input id="location-search-field" name="location" type="text" class="search-query"/>
+			</div>
 			<div id="create-location-map"></div>
 			<div class="control-group">
 				<button id="add-location-button" class="btn" data-ng-click="addField()" data-ng-disabled="!valid()">Add</button>
