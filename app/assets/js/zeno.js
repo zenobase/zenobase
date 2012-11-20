@@ -1489,7 +1489,7 @@
 	}]);
 	
 	app.controller('MapCtrl', ['$scope', function($scope) {
-	
+
 		$scope.field = 'location';
 	
 		$scope.init = function() {
@@ -1534,6 +1534,13 @@
 					$scope.map = new google.maps.Map(document.getElementById($scope.settings.id + '-map'), options);
 
 					var bounds = new google.maps.LatLngBounds();
+					$.each($scope.getFilters($scope.field), function(i, filter) {
+						var c = filter.value.split(',');
+						var sw = new google.maps.LatLng(c[0], c[1]);
+						var ne = new google.maps.LatLng(c[2], c[3]);
+						bounds = new google.maps.LatLngBounds(sw, ne);
+					});
+					var filtered = !bounds.isEmpty();
 					$.each($scope.points, function(i, point) {
 						var latLng = new google.maps.LatLng(point.lat, point.lon);
 						var marker = new google.maps.Marker({
@@ -1564,10 +1571,50 @@
 								$scope.addFilter(new Filter($scope.field, filterBounds.toUrlValue(3)), true);
 							});
 						});
-						bounds.extend(sw);
-						bounds.extend(ne);
+						if (point.count > 1) {
+							var filterRectangle = new google.maps.Rectangle({
+								bounds : filterBounds,
+								strokeWeight : 1,
+								fillOpacity : 0,
+								clickable : false,
+								visible : false,
+								map : $scope.map							
+							});
+							google.maps.event.addListener(marker, 'mouseover', function() {
+								filterRectangle.setVisible(true);
+							});
+							google.maps.event.addListener(marker, 'mouseout', function() {
+								filterRectangle.setVisible(false);
+							});
+						}
+						if (!filtered) {
+							bounds.extend(sw);
+							bounds.extend(ne);
+						}
 					});
 					$scope.map.fitBounds(bounds);
+					if (filtered) {
+						var world = [
+							new google.maps.LatLng(-90, -180),
+							new google.maps.LatLng(90, -180),
+							new google.maps.LatLng(90, 0),
+							new google.maps.LatLng(90, 180),
+							new google.maps.LatLng(-90, 180),
+							new google.maps.LatLng(-90, 0)
+						];
+						var area = [
+							bounds.getSouthWest(),
+							new google.maps.LatLng(bounds.getSouthWest().lat(), bounds.getNorthEast().lng()),
+							bounds.getNorthEast(),
+							new google.maps.LatLng(bounds.getNorthEast().lat(), bounds.getSouthWest().lng())
+						];
+						new google.maps.Polygon({
+							paths : [ world, area ],
+							strokeWeight: 0,
+							clickable : false,
+							map : $scope.map							
+						});
+					}
 				  $scope.map.controls[google.maps.ControlPosition.TOP_RIGHT].push($scope.createFilterControl());
 				}});
 			} else {
