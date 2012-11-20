@@ -1,9 +1,9 @@
 Developer Guide
 ===============
 
-To refresh the dependencies in Eclipse, open the play console and run:
+To refresh the dependencies in Eclipse, run:
 
-  eclipse with-source=true
+  play "eclipse with-source=true"
 
 
 js libs
@@ -15,10 +15,10 @@ bootstrap-2.2.x.js: concatenate modal + tabs + typeahead
 Functional Tests
 ----------------
 
-From the play console, run:
+To run the functional test only, run:
   
-  test-only com.zenobase.testing.BrowserTest
+  play "test-only com.zenobase.testing.BrowserTest"
 
-To skip the functional tests, set:
+To run all tests except the functional test:
 
-  -Dwebdriver.enabled=false
+  play -Dwebdriver.enabled=false test
