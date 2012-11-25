@@ -1821,7 +1821,6 @@
 					$scope.moveMarker(e.latLng);
 			  });
 				var input = document.getElementById('location-search-field');
-		  	console.log('?', input, google.maps);
 				var autocomplete = new google.maps.places.Autocomplete(input);
 				autocomplete.bindTo('bounds', $scope.map);
 			  google.maps.event.addListener(autocomplete, 'place_changed', function() {
