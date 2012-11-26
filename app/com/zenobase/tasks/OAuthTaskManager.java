@@ -8,10 +8,9 @@ import org.scribe.model.Response;
 import org.scribe.model.Verifier;
 import org.scribe.oauth.OAuthService;
 
-import com.zenobase.commands.Command;
 import com.zenobase.json.Nodes;
 
-public abstract class OAuthTaskManager<T extends OAuthTask> {
+public abstract class OAuthTaskManager<T extends OAuthTask> extends TaskManager<T> {
 
 	private final Class<? extends Api> apiClass;
 	private final String apiKey;
@@ -36,8 +35,6 @@ public abstract class OAuthTaskManager<T extends OAuthTask> {
 	public final void setToken(OAuthTask task, String verifier) {
 		task.setToken(getService(task).getAccessToken(task.getToken(), new Verifier(verifier)));
 	}
-
-	public abstract Command execute(T task);
 
 	protected final OAuthService getService(OAuthTask task) {
 		ServiceBuilder builder = new ServiceBuilder()

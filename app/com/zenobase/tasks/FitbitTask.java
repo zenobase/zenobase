@@ -2,9 +2,11 @@ package com.zenobase.tasks;
 
 import org.scribe.model.Token;
 
+import com.zenobase.json.TokenField;
+
 public class FitbitTask extends OAuthTask {
 
-	private String marker;
+	private static final TokenField MARKER = new TokenField("marker");
 
 	public FitbitTask() {
 
@@ -12,14 +14,14 @@ public class FitbitTask extends OAuthTask {
 
 	public FitbitTask(String id, Token accessToken, String marker) {
 		super(id, accessToken);
-		this.marker = marker;
+		setMarker(marker);
 	}
 
 	public String getMarker() {
-		return marker;
+		return getValue(MARKER);
 	}
 
 	public void setMarker(String marker) {
-		this.marker = marker;
+		setValue(MARKER, marker);
 	}
 }

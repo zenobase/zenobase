@@ -3,9 +3,11 @@ package com.zenobase.tasks;
 import org.joda.time.DateTime;
 import org.scribe.model.Token;
 
+import com.zenobase.json.DateTimeField;
+
 public class FoursquareTask extends OAuthTask {
 
-	private DateTime marker;
+	private static final DateTimeField MARKER = new DateTimeField("marker");
 
 	public FoursquareTask() {
 		setToken(Token.empty());
@@ -13,14 +15,14 @@ public class FoursquareTask extends OAuthTask {
 
 	public FoursquareTask(String id, Token accessToken, DateTime marker) {
 		super(id, accessToken);
-		this.marker = marker;
+		setMarker(marker);
 	}
 
 	public DateTime getMarker() {
-		return marker;
+		return getValue(MARKER);
 	}
 
 	public void setMarker(DateTime marker) {
-		this.marker = marker;
+		setValue(MARKER, marker);
 	}
 }

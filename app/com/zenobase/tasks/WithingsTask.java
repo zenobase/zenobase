@@ -2,10 +2,13 @@ package com.zenobase.tasks;
 
 import org.scribe.model.Token;
 
+import com.zenobase.json.IntegerField;
+import com.zenobase.json.TokenField;
+
 public class WithingsTask extends OAuthTask {
 
-	private int userId;
-	private String marker;
+	private static final IntegerField USER_ID = new IntegerField("userId");
+	private static final TokenField MARKER = new TokenField("marker");
 
 	public WithingsTask() {
 
@@ -13,23 +16,23 @@ public class WithingsTask extends OAuthTask {
 
 	public WithingsTask(String id, Token token, int userId, String marker) {
 		super(id, token);
-		this.userId = userId;
-		this.marker = marker;
+		setUserId(userId);
+		setMarker(marker);
 	}
 
 	public int getUserId() {
-		return userId;
+		return getValue(USER_ID);
 	}
 
 	public void setUserId(int userId) {
-		this.userId = userId;
+		setValue(USER_ID, userId);
 	}
 
 	public String getMarker() {
-		return marker;
+		return getValue(MARKER);
 	}
 
 	public void setMarker(String marker) {
-		this.marker = marker;
+		setValue(MARKER, marker);
 	}
 }
