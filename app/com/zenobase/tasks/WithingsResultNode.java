@@ -52,7 +52,7 @@ class WithingsResultNode {
 		return BigDecimal.valueOf(value, -scale);
 	}
 
-	public String getMarker() {
-		return node.path("body").path("updatetime").asText();
+	public Long getMarker() {
+		return node.path("body").path("updatetime").getLongValue();
 	}
 }

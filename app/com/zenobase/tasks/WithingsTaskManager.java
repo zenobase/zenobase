@@ -1,16 +1,16 @@
 package com.zenobase.tasks;
 
-import java.util.List;
-
 import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.codehaus.jackson.node.ObjectNode;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.scribe.builder.ServiceBuilder;
 import org.scribe.model.OAuthRequest;
-import org.scribe.model.Response;
 import org.scribe.model.SignatureType;
 import org.scribe.model.Verb;
+import play.Logger;
 import com.google.common.base.Preconditions;
 
 import com.zenobase.commands.Command;
@@ -53,17 +53,14 @@ public class WithingsTaskManager extends OAuthTaskManager {
 	private Command execute(WithingsTask task) {
 		OAuthRequest request = createRequest(task);
 		getService(task).signRequest(task.getToken(), request);
-		Response response = request.send();
-		for (Event event : process(task, response)) {
-			System.out.println("event: " + event.toJson());
-		}
-
-		CompoundCommand command = new CompoundCommand(task.getPrincipal(), "imported events from Withings", "dropped events from Withings");
+		WithingsResultNode result = new WithingsResultNode(parseObject(request.send()));
+		CompoundCommand command = new CompoundCommand(task.getPrincipal(), "imported events from withings", "dropped events from withings");
 		WithingsTask to = task.copy();
-		// TODO to.setMarker();
+		to.setUpdated(new DateTime(DateTimeZone.UTC));
+		to.setMarker(result.getMarker());
 		command.add(new UpdateTaskCommand(task.getPrincipal(), task.getBucketId(), task, to));
-		for (Event event : process(task, response)) {
-			System.out.println("event: " + event.toJson());
+		for (Event event : result.getEvents()) {
+			Logger.info("importing event: " + event.toJson());
 			command.add(new CreateEventCommand(task.getPrincipal(), task.getBucketId(), event));
 		}
 		return command;
@@ -75,16 +72,9 @@ public class WithingsTaskManager extends OAuthTaskManager {
 		request.addQuerystringParameter("action", "getmeas");
 		request.addQuerystringParameter("devtype", "1"); // weight scale data
 		if (task.getMarker() != null) {
-			request.addQuerystringParameter("lastupdate", task.getMarker());
+			request.addQuerystringParameter("lastupdate", task.getMarker().toString());
 		}
 		return request;
-	}
-
-	public static List<Event> process(WithingsTask task, Response response) {
-		WithingsResultNode result = new WithingsResultNode(parseObject(response));
-		task.setMarker(result.getMarker());
-		System.out.println("marker: " + task.getMarker());
-		return result.getEvents();
 	}
 
 	@Override

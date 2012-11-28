@@ -32,6 +32,6 @@ public class WithingsTest extends TaskTestSupport {
 	@Test
 	public void testExisting() {
 		TaskManager manager = new WithingsTaskManager(apiKey, apiSecret, callbackUrl);
-		manager.execute(new WithingsTask(Generator.id(), Task.State.READY, bucketId, principal, getToken(), 1317928, "1353555281"));
+		manager.execute(new WithingsTask(Generator.id(), Task.State.READY, bucketId, principal, getToken(), 1317928, 1353555281L));
 	}
 }

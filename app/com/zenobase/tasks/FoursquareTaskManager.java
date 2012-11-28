@@ -9,6 +9,7 @@ import org.joda.time.DateTimeZone;
 import org.scribe.builder.api.Foursquare2Api;
 import org.scribe.model.OAuthRequest;
 import org.scribe.model.Verb;
+import play.Logger;
 import com.google.common.base.Preconditions;
 
 import com.zenobase.commands.Command;
@@ -70,6 +71,7 @@ public class FoursquareTaskManager extends OAuthTaskManager {
 		to.setMarker(beforeTimestamp);
 		command.add(new UpdateTaskCommand(task.getPrincipal(), task.getBucketId(), task, to));
 		for (Event event : result.getEvents()) {
+			Logger.info("importing event: " + event.toJson());
 			command.add(new CreateEventCommand(task.getPrincipal(), task.getBucketId(), event));
 		}
 		return command;
