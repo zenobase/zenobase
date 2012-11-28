@@ -10,7 +10,7 @@ import com.zenobase.models.Identity;
 
 public class WithingsTask extends OAuthTask {
 
-	public static final String TYPE = "dummy";
+	public static final String TYPE = "withings";
 
 	private static final IntegerField USER_ID = new IntegerField("userId");
 	private static final TokenField MARKER = new TokenField("marker");
@@ -23,8 +23,8 @@ public class WithingsTask extends OAuthTask {
 		super(TYPE, bucketId, principal);
 	}
 
-	public WithingsTask(String id, String bucketId, Identity principal, Token token, int userId, String marker) {
-		super(id, TYPE, bucketId, principal, token);
+	public WithingsTask(String id, Task.State state, String bucketId, Identity principal, Token token, int userId, String marker) {
+		super(id, TYPE, state, bucketId, principal, token);
 		setUserId(userId);
 		setMarker(marker);
 	}

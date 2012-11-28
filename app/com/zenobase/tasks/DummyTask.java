@@ -1,7 +1,6 @@
 package com.zenobase.tasks;
 
 import org.codehaus.jackson.node.ObjectNode;
-import com.google.common.base.Objects;
 
 import com.zenobase.json.Nodes;
 import com.zenobase.json.TokenField;
@@ -10,8 +9,7 @@ import com.zenobase.models.Identity;
 public class DummyTask extends Task {
 
 	public static final String TYPE = "dummy";
-
-	private static final TokenField TAG = new TokenField("tag");
+	public static final TokenField TAG = new TokenField("tag");
 
 	public DummyTask(ObjectNode node) {
 		super(node);
@@ -23,10 +21,11 @@ public class DummyTask extends Task {
 	}
 
 	public String getTag() {
-		return Objects.firstNonNull(getConfigValue(TAG), TYPE);
+		return getConfigValue(TAG);
 	}
 
 	public void setTag(String tag) {
+		setState(tag != null ? State.READY : State.SUSPENDED);
 		setConfigValue(TAG, tag);
 	}
 

@@ -161,7 +161,8 @@
 							<th>Owner</th>
 							<th>Bucket</th>
 							<th>Created</th>
-							<th>Modified</th>
+							<th>Updated</th>
+							<th>State</th>
 							<th></th>
 						</tr>
 					</thead>
@@ -172,20 +173,17 @@
 							<td><a href="javascript:" data-ng-click="setFilter(task.principal)">{{task.principal | username}}</a></td>
 							<td>{{task.bucket}}</td>
 							<td>{{task.created | age}}</td>
-							<td>{{task.modified | age}}</td>
+							<td>{{task.updated | age}}</td>
+							<td>{{task.state}}</td>
 							<td style="text-align: right">
-							<!--
-								<a class="action" href="javascript:" data-ng-click="suspend(bucket['@id'])" title="Suspend"><i class="icon-pause"></i></a>
-								<a class="action" href="javascript:" data-ng-click="resume(bucket['@id'])" title="Resume"><i class="icon-play"></i></a>\
-							-->
-								<a class="action" href="javascript:" data-ng-click="remove(bucket['@id'])" title="Delete"><i class="icon-trash"></i></a>
+								<a class="action" href="javascript:" data-ng-click="remove(task['@id'])" title="Delete"><i class="icon-trash"></i></a>
 							</td>
 						</tr>
 						<tr data-ng-show="tasks == null">
-							<td colspan="7"><i>Loading</i></td>
+							<td colspan="8"><i>Loading</i></td>
 						</tr>
 						<tr data-ng-show="tasks.length == 0">
-							<td colspan="7"><i>None</i></td>
+							<td colspan="8"><i>None</i></td>
 						</tr>
 					</tbody>
 				</table>

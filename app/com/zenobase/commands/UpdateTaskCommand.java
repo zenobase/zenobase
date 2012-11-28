@@ -29,15 +29,15 @@ public class UpdateTaskCommand extends Command {
 		setParameter(TO, to.toJson());
 	}
 
-	private String getTaskId() {
+	public String getTaskId() {
 		return getParameter(TASK);
 	}
 
-	private Task getFrom() {
+	public Task getFrom() {
 		return new Task(getParameter(FROM));
 	}
 
-	private Task getTo() {
+	public Task getTo() {
 		return new Task(getParameter(TO));
 	}
 

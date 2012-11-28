@@ -23,8 +23,8 @@ public class FoursquareTask extends OAuthTask {
 		setToken(Token.empty());
 	}
 
-	public FoursquareTask(String id, String bucketId, Identity principal, Token accessToken, DateTime marker) {
-		super(id, TYPE, bucketId, principal, accessToken);
+	public FoursquareTask(String id, Task.State state, String bucketId, Identity principal, Token accessToken, DateTime marker) {
+		super(id, TYPE, state, bucketId, principal, accessToken);
 		setMarker(marker);
 	}
 

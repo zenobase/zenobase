@@ -2,29 +2,33 @@ package com.zenobase.tasks;
 
 import java.util.Scanner;
 
+import org.codehaus.jackson.node.ObjectNode;
 import org.joda.time.DateTime;
 import org.junit.Ignore;
 import org.junit.Test;
 
 import com.zenobase.common.Generator;
+import com.zenobase.json.Nodes;
 
 public class FoursquareTest extends TaskTestSupport {
 
 	@Test
 	@Ignore
-	public void testNoToken() {
-		FoursquareTaskManager manager = new FoursquareTaskManager(apiKey, apiSecret, callbackUrl);
-		FoursquareTask task = new FoursquareTask(bucketId, principal);
-		System.out.println(manager.getAuthorizationUrl(task));
-		System.out.print("verifier=");
-		Scanner scanner = new Scanner(System.in); // ?code=xxx
-		manager.setToken(task, scanner.nextLine());
+	public void testNew() {
+		TaskManager manager = new FoursquareTaskManager(apiKey, apiSecret, callbackUrl);
+		Task task = manager.newTask(bucketId, principal);
+		System.out.println(manager.getConfigureUrl(task));
+		ObjectNode config = Nodes.newObject();
+		Scanner scanner = new Scanner(System.in);
+		System.out.print("code=");
+		config.put("code", scanner.nextLine());
+		task = getTo(manager.configure(task, config));
 		manager.execute(task);
 	}
 
 	@Test
-	public void testHasToken() {
+	public void testExisting() {
 		FoursquareTaskManager manager = new FoursquareTaskManager(apiKey, apiSecret, callbackUrl);
-		manager.execute(new FoursquareTask(Generator.id(), bucketId, principal, getToken(), new DateTime().minusDays(7)));
+		manager.execute(new FoursquareTask(Generator.id(), Task.State.READY, bucketId, principal, getToken(), new DateTime().minusDays(7)));
 	}
 }

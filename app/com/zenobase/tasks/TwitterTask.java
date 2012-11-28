@@ -18,8 +18,8 @@ public class TwitterTask extends OAuthTask {
 		super(TYPE, bucketId, principal);
 	}
 
-	public TwitterTask(String id, String bucketId, Identity principal, Token accessToken) {
-		super(id, TYPE, bucketId, principal, accessToken);
+	public TwitterTask(String id, Task.State state, String bucketId, Identity principal, Token accessToken) {
+		super(id, TYPE, state, bucketId, principal, accessToken);
 	}
 
 	@Override

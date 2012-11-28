@@ -16,19 +16,25 @@ import com.zenobase.services.CommandDispatcher;
 import com.zenobase.services.TaskRepository;
 import com.zenobase.services.UserRepository;
 import com.zenobase.tasks.Task;
+import com.zenobase.tasks.TaskManager;
+import com.zenobase.tasks.TaskManagerRegistry;
 
 @With(Timed.class)
 public class TaskListController extends ControllerSupport {
 
 	private final CommandDispatcher dispatcher;
+	private final TaskManagerRegistry registry;
 	private final TaskRepository tasks;
 	private final BucketRepository buckets;
 	private final UserRepository users;
 
 	@Inject
-	public TaskListController(SecurityContext security, CommandDispatcher dispatcher, TaskRepository tasks, BucketRepository buckets, UserRepository users) {
+	public TaskListController(SecurityContext security, CommandDispatcher dispatcher,
+		TaskManagerRegistry registry, TaskRepository tasks, BucketRepository buckets, UserRepository users) {
+
 		super(security);
 		this.dispatcher = dispatcher;
+		this.registry = registry;
 		this.tasks = tasks;
 		this.buckets = buckets;
 		this.users = users;
@@ -75,7 +81,11 @@ public class TaskListController extends ControllerSupport {
 		if (bucket.getPermission(principal) != Permission.ALL) {
 			return forbidden();
 		}
-		Task task = new Task(form.getBucketId(), form.getType(), principal);
+    	TaskManager manager = registry.find(form.getType());
+		if (manager == null) {
+			return badRequest("unknown task type");
+		}
+    	Task task = manager.newTask(form.getBucketId(), principal);
     	String commandId = dispatcher.dispatch(new CreateTaskCommand(principal, task));
         // TODO getConfigureUrl
     	response().setHeader(LOCATION, com.zenobase.controllers.routes.TaskController.get(task.getId()).toString());

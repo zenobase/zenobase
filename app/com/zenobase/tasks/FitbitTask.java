@@ -21,8 +21,8 @@ public class FitbitTask extends OAuthTask {
 		super(TYPE, bucketId, principal);
 	}
 
-	public FitbitTask(String id, String bucketId, Identity principal, Token accessToken, String marker) {
-		super(id, TYPE, bucketId, principal, accessToken);
+	public FitbitTask(String id, Task.State state, String bucketId, Identity principal, Token accessToken, String marker) {
+		super(id, TYPE, state, bucketId, principal, accessToken);
 		setMarker(marker);
 	}
 

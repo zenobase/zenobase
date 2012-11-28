@@ -21,11 +21,13 @@
 		<table class="table">
 			<thead>
 				<tr>
-					<th style="width: 0px"></th>
 					<th style="width: 0px">Task</th>
+					<th style="width: 0px">Type</th>
 					<th style="width: 0px">Bucket</th>
 					<th style="width: 0px">Owner</th>
-					<th style="width: 0px">Latest</th>
+					<th style="width: 0px">Created</th>
+					<th style="width: 0px">Updated</th>
+					<th style="width: 0px">State</th>
 					<th style="width: 0px"></th>
 				</tr>
 			</thead>
@@ -38,9 +40,11 @@
 					<td>{{task.type}}</td>
 					<td>{{task.bucket}}</td>
 					<td>{{task.principal | username}}</td>
-					<td>{{task.modified | age}}</td>
+					<td>{{task.created | age}}</td>
+					<td>{{task.updated | age}}</td>
+					<td>{{task.state}}</td>
 					<td style="text-align: right">
-						<a class="action task-run-action" href="javascript:" data-ng-click="run(task['@id'])"><i class="icon-play" title="Run"></i></a>
+						<a class="action task-run-action" href="javascript:" data-ng-click="run(task['@id'])" data-ng-show="task.state == 'READY'"><i class="icon-play" title="Run"></i></a>
 						<a class="action task-delete-action" href="javascript:" data-ng-click="remove(task['@id'])"><i class="icon-trash" title="Delete"></i></a>
 					</td>
 				</tr>
@@ -58,7 +62,7 @@
 				</div>
 				<div class="modal-body">
 					<div class="control-group">
-						<label class="control-label" for="task-type"><strong>Email</strong></label>
+						<label class="control-label" for="task-type"><strong>Type</strong></label>
 						<div class="controls">
 							<select name="type" data-ng-model="type" data-ng-options="type for type in types" required></select>
 							<p class="help-block">The task type.</p>

@@ -1,7 +1,5 @@
 package com.zenobase.json;
 
-import com.zenobase.json.EnumField;
-
 import org.junit.Test;
 
 public class EnumFieldTest extends FieldTestSupport {
@@ -12,6 +10,6 @@ public class EnumFieldTest extends FieldTestSupport {
 
 	@Test
 	public void test() {
-		roundtrip(new EnumField<Option>(FIELD_NAME, Option.class), Option.A);
+		roundtrip(EnumField.newInstance(FIELD_NAME, Option.class), Option.A);
 	}
 }

@@ -54,6 +54,13 @@ public class TaskController extends ControllerSupport {
     	if (bucket.getPermission(principal) != Permission.ALL) {
     		return forbidden();
     	}
+    	if (task.getState() == Task.State.SUSPENDED) {
+    		TaskManager manager = registry.find(task.getType());
+    		String url = manager.getConfigureUrl(task);
+    		if (url != null) {
+    			return redirect(url);
+    		}
+    	}
     	return ok(task.toJson());
     }
 
@@ -77,7 +84,7 @@ public class TaskController extends ControllerSupport {
     	TaskManager manager = registry.find(task.getType());
     	Command command = manager.configure(task, body());
     	if (command == null) {
-    		return noContent();
+    		return badRequest();
     	}
 		String commandId = dispatcher.dispatch(command);
 		return success(commandId);
@@ -99,6 +106,9 @@ public class TaskController extends ControllerSupport {
     	if (bucket.getPermission(principal) != Permission.ALL) {
     		return forbidden();
     	}
+		if (task.getState() != Task.State.READY) {
+			return badRequest("task is not ready");
+		}
     	TaskManager manager = registry.find(task.getType());
     	Command command = manager.execute(task);
     	if (command != null) {

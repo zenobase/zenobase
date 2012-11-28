@@ -5,12 +5,15 @@ import org.codehaus.jackson.node.ObjectNode;
 import org.scribe.builder.ServiceBuilder;
 import org.scribe.builder.api.Api;
 import org.scribe.model.Response;
+import org.scribe.model.Token;
 import org.scribe.model.Verifier;
 import org.scribe.oauth.OAuthService;
+import com.google.common.base.Preconditions;
 
 import com.zenobase.commands.Command;
 import com.zenobase.commands.UpdateTaskCommand;
 import com.zenobase.json.Nodes;
+import com.zenobase.models.Identity;
 
 public abstract class OAuthTaskManager extends TaskManager {
 
@@ -27,27 +30,36 @@ public abstract class OAuthTaskManager extends TaskManager {
 	}
 
 	@Override
+	public Task newTask(String bucketId, Identity principal) {
+		OAuthTask task = new OAuthTask(getType(), bucketId, principal);
+		task.setToken(getService(task).getRequestToken());
+		return task;
+	}
+
+	@Override
 	public String getConfigureUrl(Task task) {
 		return getConfigureUrl(new OAuthTask(task.toJson()));
 	}
 
-	public final String getAuthorizationUrl(OAuthTask task) {
-		OAuthService service = getService(task);
-		if (task.getToken() == null) {
-			task.setToken(service.getRequestToken());
-		}
-		return service.getAuthorizationUrl(task.getToken());
+	private String getConfigureUrl(OAuthTask task) {
+		return getService(task).getAuthorizationUrl(task.getToken());
 	}
 
 	@Override
 	public Command configure(Task task, ObjectNode config) {
 		OAuthTask to = new OAuthTask(task.copy().toJson());
-		setToken(to, config.get("oauth_verifier").getTextValue());
+		String token = config.get("oauth_token").getTextValue();
+		String verifier = config.get("oauth_verifier").getTextValue();
+		Preconditions.checkState(to.getToken().getToken().equals(token),
+			"Token matches in task %s, expected %s, got %s",
+			task.getId(), to.getToken().getToken(), token);
+		to.setToken(getAccessToken(to, verifier));
+		to.setState(Task.State.READY);
 		return new UpdateTaskCommand(task.getPrincipal(), task.getBucketId(), task, to);
 	}
 
-	public final void setToken(OAuthTask task, String verifier) {
-		task.setToken(getService(task).getAccessToken(task.getToken(), new Verifier(verifier)));
+	public final Token getAccessToken(OAuthTask task, String verifier) {
+		return getService(task).getAccessToken(task.getToken(), new Verifier(verifier));
 	}
 
 	protected final OAuthService getService(OAuthTask task) {

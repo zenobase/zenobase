@@ -2,28 +2,34 @@ package com.zenobase.tasks;
 
 import java.util.Scanner;
 
+import org.codehaus.jackson.node.ObjectNode;
 import org.junit.Ignore;
 import org.junit.Test;
 
 import com.zenobase.common.Generator;
+import com.zenobase.json.Nodes;
 
 public class TwitterTest extends TaskTestSupport {
 
 	@Test
 	@Ignore
-	public void testNoToken() {
-		TwitterTaskManager manager = new TwitterTaskManager(apiKey, apiSecret, callbackUrl);
-		TwitterTask task = new TwitterTask(bucketId, principal);
-		System.out.println(manager.getAuthorizationUrl(task));
-		System.out.print("verifier=");
+	public void testNew() {
+		TaskManager manager = new TwitterTaskManager(apiKey, apiSecret, callbackUrl);
+		Task task = manager.newTask(bucketId, principal);
+		System.out.println(manager.getConfigureUrl(task));
+		ObjectNode config = Nodes.newObject();
 		Scanner scanner = new Scanner(System.in);
-		manager.setToken(task, scanner.nextLine()); // ?oauth_token=xxx&oauth_verifier=xxx
+		System.out.print("oauth_token=");
+		config.put("oauth_token", scanner.nextLine());
+		System.out.print("oauth_verifier=");
+		config.put("oauth_verifier", scanner.nextLine());
+		task = getTo(manager.configure(task, config));
 		manager.execute(task);
 	}
 
 	@Test
-	public void testHasToken() {
-		TwitterTaskManager manager = new TwitterTaskManager(apiKey, apiSecret, callbackUrl);
-		manager.execute(new TwitterTask(Generator.id(), bucketId, principal, getToken()));
+	public void testExisting() {
+		TaskManager manager = new TwitterTaskManager(apiKey, apiSecret, callbackUrl);
+		manager.execute(new TwitterTask(Generator.id(), Task.State.READY, bucketId, principal, getToken()));
 	}
 }

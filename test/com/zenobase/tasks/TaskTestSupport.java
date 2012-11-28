@@ -4,6 +4,8 @@ import org.junit.Assume;
 import org.junit.Before;
 import org.scribe.model.Token;
 
+import com.zenobase.commands.Command;
+import com.zenobase.commands.UpdateTaskCommand;
 import com.zenobase.common.Generator;
 import com.zenobase.models.Identity;
 
@@ -13,7 +15,7 @@ public class TaskTestSupport {
 	protected final String bucketId = Generator.id();
 	protected final String apiKey = System.getProperty("oauth.apiKey");
 	protected final String apiSecret = System.getProperty("oauth.apiSecret");
-	protected final String callbackUrl = "https://zenobase.com/tasks/";
+	protected final String callbackUrl = "https://zenobase.com";
 
 	@Before
 	public void setUp() {
@@ -26,5 +28,9 @@ public class TaskTestSupport {
 		String secret = System.getProperty("oauth.secret", "");
 		Assume.assumeNotNull(token);
 		return new Token(token, secret);
+	}
+
+	protected Task getTo(Command command) {
+		return ((UpdateTaskCommand) command).getTo();
 	}
 }

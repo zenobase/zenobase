@@ -12,6 +12,7 @@ import com.google.inject.name.Named;
 import com.zenobase.commands.Command;
 import com.zenobase.commands.UpdateTaskCommand;
 import com.zenobase.models.Event;
+import com.zenobase.models.Identity;
 
 public class FoursquareTaskManager extends OAuthTaskManager {
 
@@ -25,9 +26,16 @@ public class FoursquareTaskManager extends OAuthTaskManager {
 	}
 
 	@Override
+	public Task newTask(String bucketId, Identity principal) {
+		return new FoursquareTask(bucketId, principal);
+	}
+
+	@Override
 	public Command configure(Task task, ObjectNode config) {
 		OAuthTask to = new OAuthTask(task.copy().toJson());
-		setToken(to, config.get("code").getTextValue());
+		String verifier = config.get("code").getTextValue();
+		to.setToken(getAccessToken(to, verifier));
+		to.setState(Task.State.READY);
 		return new UpdateTaskCommand(task.getPrincipal(), task.getBucketId(), task, to);
 	}
 

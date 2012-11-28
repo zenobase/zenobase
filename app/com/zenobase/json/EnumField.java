@@ -6,7 +6,11 @@ import org.codehaus.jackson.node.TextNode;
 
 public class EnumField<E extends Enum<E>> extends Field<E> {
 
-	public EnumField(String name, Class<E> type) {
+	public static <T extends Enum<T>> EnumField<T> newInstance(String name, Class<T> type) {
+		return new EnumField<T>(name, type);
+	}
+
+	private EnumField(String name, Class<E> type) {
 		super(name, type, "string");
 	}
 

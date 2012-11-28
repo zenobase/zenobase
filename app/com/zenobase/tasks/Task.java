@@ -7,6 +7,7 @@ import org.joda.time.DateTimeZone;
 import com.zenobase.common.Generator;
 import com.zenobase.json.DateTimeField;
 import com.zenobase.json.DomainNode;
+import com.zenobase.json.EnumField;
 import com.zenobase.json.Field;
 import com.zenobase.json.IdentityField;
 import com.zenobase.json.Nodes;
@@ -22,10 +23,11 @@ public class Task extends DomainNode {
 
 	public static final TokenField ID = new TokenField("@id", false);
 	public static final TokenField TYPE = new TokenField("type");
+	public static final EnumField<State> STATE = EnumField.newInstance("state", State.class);
 	public static final TokenField BUCKET = new TokenField("bucket");
 	public static final IdentityField PRINCIPAL = new IdentityField("principal");
 	public static final DateTimeField CREATED = new DateTimeField("created");
-	public static final DateTimeField MODIFIED = new DateTimeField("modified");
+	public static final DateTimeField UPDATED = new DateTimeField("updated");
 	public static final ObjectField CONFIG = new ObjectField("config");
 
 	public Task(ObjectNode node) {
@@ -33,17 +35,18 @@ public class Task extends DomainNode {
 	}
 
 	public Task(String bucketId, String type, Identity principal) {
-		this(Generator.id(), type, bucketId, principal);
+		this(Generator.id(), type, State.SUSPENDED, bucketId, principal);
 	}
 
-	public Task(String id, String type, String bucketId, Identity principal) {
+	public Task(String id, String type, State state, String bucketId, Identity principal) {
 		setValue(ID, id);
 		setValue(TYPE, type);
+		setValue(STATE, state);
 		setValue(BUCKET, bucketId);
 		setValue(PRINCIPAL, principal);
 		DateTime timestamp = new DateTime(DateTimeZone.UTC);
 		setValue(CREATED, timestamp);
-		setValue(MODIFIED, timestamp);
+		setValue(UPDATED, timestamp);
 		setValue(CONFIG, Nodes.newObject());
 	}
 
@@ -59,6 +62,14 @@ public class Task extends DomainNode {
 		return getValue(BUCKET);
 	}
 
+	public State getState() {
+		return getValue(STATE);
+	}
+
+	public void setState(State state) {
+		setValue(STATE, state);
+	}
+
 	public Identity getPrincipal() {
 		return getValue(PRINCIPAL);
 	}
@@ -67,12 +78,12 @@ public class Task extends DomainNode {
 		return getValue(CREATED);
 	}
 
-	public DateTime getModified() {
-		return getValue(MODIFIED);
+	public DateTime getUpdated() {
+		return getValue(UPDATED);
 	}
 
-	public void setModified(DateTime modified) {
-		setValue(MODIFIED, modified);
+	public void setUpdated(DateTime updated) {
+		setValue(UPDATED, updated);
 	}
 
 	public <T> T getConfigValue(Field<T> field) {
@@ -89,9 +100,14 @@ public class Task extends DomainNode {
 
 	public static Schema getSchema() {
 		return new SchemaBuilder(TYPE_NAME)
-			.add(VERSION).add(ID).add(TYPE)
+			.add(VERSION).add(ID).add(TYPE).add(STATE)
 			.add(BUCKET).add(PRINCIPAL)
-			.add(CREATED).add(MODIFIED)
+			.add(CREATED).add(UPDATED)
 			.add(CONFIG).build();
+	}
+
+	public enum State {
+		READY,
+		SUSPENDED
 	}
 }

@@ -8,6 +8,7 @@ import org.scribe.model.OAuthRequest;
 import org.scribe.model.Response;
 import org.scribe.model.SignatureType;
 import org.scribe.model.Verb;
+import com.google.common.base.Preconditions;
 import com.google.inject.name.Named;
 
 import com.zenobase.commands.Command;
@@ -30,8 +31,14 @@ public class WithingsTaskManager extends OAuthTaskManager {
 	@Override
 	public Command configure(Task task, ObjectNode config) {
 		WithingsTask to = new WithingsTask(task.copy().toJson());
+		String token = config.get("oauth_token").getTextValue();
+		String verifier = config.get("oauth_verifier").getTextValue();
+		Preconditions.checkState(to.getToken().getToken().equals(token),
+			"Token matches in task %s, expected %s, got %s",
+			task.getId(), to.getToken().getToken(), token);
 		to.setUserId(config.get("userid").asInt());
-		setToken(to, config.get("oauth_verifier").getTextValue());
+		to.setToken(getAccessToken(to, verifier));
+		to.setState(Task.State.READY);
 		return new UpdateTaskCommand(task.getPrincipal(), task.getBucketId(), task, to);
 	}
 
