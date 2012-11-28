@@ -13,7 +13,7 @@ public class FitbitTest extends TaskTestSupport {
 	@Ignore
 	public void testNoToken() {
 		FitbitTaskManager manager = new FitbitTaskManager(apiKey, apiSecret, callbackUrl);
-		FitbitTask task = new FitbitTask();
+		FitbitTask task = new FitbitTask(bucketId, principal);
 		System.out.println(manager.getAuthorizationUrl(task));
 		System.out.print("verifier=");
 		Scanner scanner = new Scanner(System.in);
@@ -24,6 +24,6 @@ public class FitbitTest extends TaskTestSupport {
 	@Test
 	public void testHasToken() {
 		FitbitTaskManager manager = new FitbitTaskManager(apiKey, apiSecret, callbackUrl);
-		manager.execute(new FitbitTask(Generator.id(), getToken(), "1353555281"));
+		manager.execute(new FitbitTask(Generator.id(), bucketId, principal, getToken(), "1353555281"));
 	}
 }

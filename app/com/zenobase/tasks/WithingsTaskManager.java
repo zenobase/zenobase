@@ -2,30 +2,61 @@ package com.zenobase.tasks;
 
 import java.util.List;
 
+import org.codehaus.jackson.node.ObjectNode;
 import org.scribe.builder.ServiceBuilder;
 import org.scribe.model.OAuthRequest;
 import org.scribe.model.Response;
 import org.scribe.model.SignatureType;
 import org.scribe.model.Verb;
+import com.google.inject.name.Named;
 
 import com.zenobase.commands.Command;
+import com.zenobase.commands.CompoundCommand;
+import com.zenobase.commands.CreateEventCommand;
+import com.zenobase.commands.UpdateTaskCommand;
 import com.zenobase.models.Event;
 
-public class WithingsTaskManager extends OAuthTaskManager<WithingsTask> {
+public class WithingsTaskManager extends OAuthTaskManager {
 
-	public WithingsTaskManager(String apiKey, String apiSecret, String callbackUrl) {
+	public WithingsTaskManager(@Named("withings.api.key") String apiKey, @Named("withings.api.secret") String apiSecret, @Named("oauth.callback") String callbackUrl) {
 		super(WithingsApi.class, apiKey, apiSecret, callbackUrl);
 	}
 
 	@Override
-	public Command execute(WithingsTask task) {
+	public String getType() {
+		return WithingsTask.TYPE;
+	}
+
+	@Override
+	public Command configure(Task task, ObjectNode config) {
+		WithingsTask to = new WithingsTask(task.copy().toJson());
+		to.setUserId(config.get("userid").asInt());
+		setToken(to, config.get("oauth_verifier").getTextValue());
+		return new UpdateTaskCommand(task.getPrincipal(), task.getBucketId(), task, to);
+	}
+
+	@Override
+	public Command execute(Task task) {
+		return execute(new WithingsTask(task.toJson()));
+	}
+
+	private Command execute(WithingsTask task) {
 		OAuthRequest request = createRequest(task);
 		getService(task).signRequest(task.getToken(), request);
 		Response response = request.send();
 		for (Event event : process(task, response)) {
 			System.out.println("event: " + event.toJson());
 		}
-		return null; // TODO
+
+		CompoundCommand command = new CompoundCommand(task.getPrincipal(), "imported events from Withings", "dropped events from Withings");
+		WithingsTask to = task.copy();
+		// TODO to.setMarker();
+		command.add(new UpdateTaskCommand(task.getPrincipal(), task.getBucketId(), task, to));
+		for (Event event : process(task, response)) {
+			System.out.println("event: " + event.toJson());
+			command.add(new CreateEventCommand(task.getPrincipal(), task.getBucketId(), event));
+		}
+		return command;
 	}
 
 	private static OAuthRequest createRequest(WithingsTask task) {

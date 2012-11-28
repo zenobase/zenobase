@@ -8,18 +8,28 @@ import org.scribe.model.OAuthRequest;
 import org.scribe.model.Response;
 import org.scribe.model.Verb;
 import org.scribe.oauth.OAuthService;
+import com.google.inject.name.Named;
 
 import com.zenobase.commands.Command;
 import com.zenobase.models.Event;
 
-public class FitbitTaskManager extends OAuthTaskManager<FitbitTask> {
+public class FitbitTaskManager extends OAuthTaskManager {
 
-	public FitbitTaskManager(String apiKey, String apiSecret, String callbackUrl) {
+	public FitbitTaskManager(@Named("fitbit.api.key") String apiKey, @Named("fitbit.api.secret") String apiSecret, @Named("oauth.callback") String callbackUrl) {
 		super(FitbitApi.class, apiKey, apiSecret, callbackUrl);
 	}
 
 	@Override
-	public Command execute(FitbitTask task) {
+	public String getType() {
+		return FitbitTask.TYPE;
+	}
+
+	@Override
+	public Command execute(Task task) {
+		return execute(new FitbitTask(task.toJson()));
+	}
+
+	private Command execute(FitbitTask task) {
 
 		OAuthService service = getService(task);
 		List<Event> events = Lists.newArrayList();

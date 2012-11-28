@@ -28,14 +28,17 @@ import com.zenobase.commands.CommandParserRegistry;
 import com.zenobase.commands.CompoundCommand;
 import com.zenobase.commands.CreateBucketCommand;
 import com.zenobase.commands.CreateEventCommand;
+import com.zenobase.commands.CreateTaskCommand;
 import com.zenobase.commands.CreateUserCommand;
 import com.zenobase.commands.DeleteBucketCommand;
 import com.zenobase.commands.DeleteEventCommand;
+import com.zenobase.commands.DeleteTaskCommand;
 import com.zenobase.commands.DeleteUserCommand;
 import com.zenobase.commands.RestoreBucketCommand;
 import com.zenobase.commands.SuspendUserCommand;
 import com.zenobase.commands.UpdateBucketCommand;
 import com.zenobase.commands.UpdateEventCommand;
+import com.zenobase.commands.UpdateTaskCommand;
 import com.zenobase.common.Globals;
 import com.zenobase.controllers.AccountController;
 import com.zenobase.controllers.BucketController;
@@ -49,6 +52,8 @@ import com.zenobase.controllers.SecurityContext;
 import com.zenobase.controllers.SecurityController;
 import com.zenobase.controllers.StatusController;
 import com.zenobase.controllers.TagController;
+import com.zenobase.controllers.TaskController;
+import com.zenobase.controllers.TaskListController;
 import com.zenobase.controllers.UserController;
 import com.zenobase.controllers.UserListController;
 import com.zenobase.controllers.WhoController;
@@ -63,8 +68,15 @@ import com.zenobase.services.CommandRepository;
 import com.zenobase.services.IndexManager;
 import com.zenobase.services.LocalNodeFactory;
 import com.zenobase.services.NodeFactory;
+import com.zenobase.services.TaskRepository;
 import com.zenobase.services.TestNodeFactory;
 import com.zenobase.services.UserRepository;
+import com.zenobase.tasks.DummyTaskManager;
+import com.zenobase.tasks.FitbitTaskManager;
+import com.zenobase.tasks.FoursquareTaskManager;
+import com.zenobase.tasks.TaskManager;
+import com.zenobase.tasks.TwitterTaskManager;
+import com.zenobase.tasks.WithingsTaskManager;
 
 public class Global extends GlobalSettings {
 
@@ -99,6 +111,7 @@ public class Global extends GlobalSettings {
 				bind(PasswordResetMailer.class).in(Singleton.class);
 				bind(SecurityContext.class).in(Singleton.class);
 				bind(Canonical.class).in(Singleton.class);
+				bind(TaskRepository.class).in(Singleton.class);
 
 				Multibinder<CommandParser> parsers = Multibinder.newSetBinder(binder(), CommandParser.class);
 				parsers.addBinding().to(CreateBucketCommand.Parser.class);
@@ -114,6 +127,9 @@ public class Global extends GlobalSettings {
 				parsers.addBinding().to(SuspendUserCommand.Parser.class);
 				parsers.addBinding().to(ChangeUserPasswordCommand.Parser.class);
 				parsers.addBinding().to(ChangeUserVerifiedCommand.Parser.class);
+				parsers.addBinding().to(CreateTaskCommand.Parser.class);
+				parsers.addBinding().to(UpdateTaskCommand.Parser.class);
+				parsers.addBinding().to(DeleteTaskCommand.Parser.class);
 				parsers.addBinding().to(CompoundCommand.Parser.class);
 
 				Multibinder<CommandHandler<?>> handlers = Multibinder.newSetBinder(binder(), new TypeLiteral<CommandHandler<?>>() {});
@@ -130,6 +146,32 @@ public class Global extends GlobalSettings {
 				handlers.addBinding().to(SuspendUserCommand.Handler.class);
 				handlers.addBinding().to(ChangeUserVerifiedCommand.Handler.class);
 				handlers.addBinding().to(ChangeUserPasswordCommand.Handler.class);
+				handlers.addBinding().to(CreateTaskCommand.Handler.class);
+				handlers.addBinding().to(UpdateTaskCommand.Handler.class);
+				handlers.addBinding().to(DeleteTaskCommand.Handler.class);
+
+				Multibinder<TaskManager> managers = Multibinder.newSetBinder(binder(), new TypeLiteral<TaskManager>() {});
+				managers.addBinding().to(DummyTaskManager.class);
+				if (isConfigured("fitbit")) {
+					managers.addBinding().to(FitbitTaskManager.class);
+				} else {
+					Logger.warn("Fitbit is not configured");
+				}
+				if (isConfigured("foursquare")) {
+					managers.addBinding().to(FoursquareTaskManager.class);
+				} else {
+					Logger.warn("Foursquare is not configured");
+				}
+				if (isConfigured("twitter")) {
+					managers.addBinding().to(TwitterTaskManager.class);
+				} else {
+					Logger.warn("Twitter is not configured");
+				}
+				if (isConfigured("withings")) {
+					managers.addBinding().to(WithingsTaskManager.class);
+				} else {
+					Logger.warn("Withings is not configured");
+				}
 
 				bind(AccountController.class).in(Singleton.class);
 				bind(BucketController.class).in(Singleton.class);
@@ -144,8 +186,14 @@ public class Global extends GlobalSettings {
 				bind(UserController.class).in(Singleton.class);
 				bind(UserListController.class).in(Singleton.class);
 				bind(WhoController.class).in(Singleton.class);
+				bind(TaskController.class).in(Singleton.class);
+				bind(TaskListController.class).in(Singleton.class);
 
 				requestInjection(Global.this);
+			}
+
+			private boolean isConfigured(String key) {
+				return Play.application().configuration().getConfig(key) != null;
 			}
 
 			private Class<? extends NodeFactory> getNodeFactory() {
@@ -163,7 +211,7 @@ public class Global extends GlobalSettings {
 				for (String key : conf.keys()) {
 					try {
 						String value = conf.getString(key);
-						bind(String.class).annotatedWith(Names.named(key)).toInstance(value);
+						bindConstant().annotatedWith(Names.named(key)).to(value);
 					} catch (PlayException e) {
 						Logger.info("Can't bind property from " + e.description);
 					}

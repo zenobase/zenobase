@@ -31,10 +31,12 @@
 
 	app.config(['$routeProvider', function($routeProvider) {
 		$routeProvider.when('/', { templateUrl: versioned('/partials/home.html') })
+			.when('/buckets/:bucketId/tasks', { templateUrl : versioned('/partials/tasks.html') })
 			.when('/buckets/:bucketId/', { templateUrl : versioned('/partials/dashboard.html'), reloadOnSearch : false })
 			.when('/users/:userId', { templateUrl : versioned('/partials/user.html') })
 			.when('/users/:userId/reset', { templateUrl : versioned('/partials/reset.html') })
 			.when('/users/:userId/verify', { templateUrl : versioned('/partials/verify.html') })
+			.when('/tasks/:taskId', { templateUrl : versioned('/partials/task.html') })
 			.otherwise({ templateUrl : versioned('/partials/404.html') });
 	}]);
 
@@ -2081,6 +2083,109 @@
 			$scope.$apply($scope.init);
 			_gaq.push([ '_trackEvent', 'dialog', 'import events' ]);
 		});
+	}]);
+
+	app.controller('TaskListCtrl', ['$scope', '$http', '$routeParams', '$timeout', function($scope, $http, $routeParams, $timeout) {
+		
+		$scope.bucketId = $routeParams.bucketId;
+		$scope.tasks = null;
+
+		$scope.dialogShown = false;
+		$scope.showDialog = function(dialogShown) {
+			$scope.dialogShown = dialogShown;
+		};
+
+		$scope.refresh = function() {
+			$http.get('/tasks/?bucketId=' + $scope.bucketId)
+			.success(function(response) {
+				$scope.tasks = response.tasks;
+			})
+			.error(function(response, status) {
+				if (status < 500) {
+					$scope.message = 'Can\'t retrieve this user.';
+				} else {
+					$scope.message = 'Couldn\'t retrieve this user. Try again later or contact support.';
+				}
+			});
+		};
+
+		$scope.run = function(taskId) {
+			$http.post('/runs/', { 'task' : taskId })
+			.success(function(response) {
+				$scope.message = 'Completed.';
+			})
+			.error(function(response, status) {
+				if (status < 500) {
+					$scope.message = 'Can\'t run this task.';
+				} else {
+					$scope.message = 'Couldn\'t run this task. Try again later or contact support.';
+				}
+			});
+		};
+
+		$scope.remove = function(taskId) {
+			$scope.alert.clear();
+			$http({ method : 'DELETE', url : '/tasks/' + taskId })
+				.success(function(response) {
+					$scope.alert.show('Deleted a task.', 'alert-success', response.undo);
+					$timeout($scope.refresh, DELAY);
+				})
+				.error(function(response) {
+					$scope.alert.show('Couldn\'t delete the task.', 'alert-error');
+				});
+			_gaq.push([ '_trackEvent', 'action', 'delete task' ]);
+		};
+
+		$scope.refresh();
+	}]);
+	
+	app.controller('CreateTaskDialogCtrl', ['$scope', '$http', '$timeout', function($scope, $http, $timeout) {
+	
+		$scope.types = [ 'dummy', 'foursquare', 'fitbit', 'twitter', 'withings' ];
+
+		$scope.init = function() {
+			$scope.message = '';
+			$scope.type = $scope.types[0];
+			_gaq.push([ '_trackEvent', 'dialog', 'create task' ]);
+		};
+
+		$scope.create = function() {
+			$scope.alert.clear();
+			$http.post('/tasks/', { 'type' : $scope.type, 'bucket' : $scope.bucketId })
+				.success(function(response) {
+					$scope.alert.show('Created task.', 'alert-success', response.undo);
+					$scope.cancel();
+					$timeout($scope.refresh, DELAY);
+				})
+				.error(function(response) {
+					$scope.message = 'Couldn\'t create task. Try again later or contact support.';
+				});
+			_gaq.push([ '_trackEvent', 'action', 'create task' ]);
+		};
+
+		$scope.cancel = function() {
+			$scope.showDialog(false);
+		};
+	}]);
+
+	app.controller('TaskCtrl', ['$scope', '$http', '$routeParams', '$location', function($scope, $http, $routeParams, $location) {
+		
+		$scope.bucketId = $routeParams.bucketId;
+		$scope.taskId = $routeParams.bucketId;
+
+		$scope.refresh = function() {
+			$http.post('/tasks/' + $scope.taskId, $location.search())
+			.success(function(response) {
+				location.path('/buckets/' + $scope.bucketId + '/tasks/');
+			})
+			.error(function(response, status) {
+				if (status < 500) {
+					$scope.message = 'Can\'t update this task.';
+				} else {
+					$scope.message = 'Couldn\'t update this task. Try again later or contact support.';
+				}
+			});
+		};
 	}]);
 	
 	/**

@@ -1,11 +1,43 @@
 package com.zenobase.tasks;
 
-import com.zenobase.commands.Command;
+import org.codehaus.jackson.node.ObjectNode;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 
-public class DummyTaskManager extends TaskManager<DummyTask> {
+import com.zenobase.commands.Command;
+import com.zenobase.commands.CompoundCommand;
+import com.zenobase.commands.CreateEventCommand;
+import com.zenobase.commands.UpdateTaskCommand;
+import com.zenobase.models.Event;
+
+public class DummyTaskManager extends TaskManager {
 
 	@Override
-	public Command execute(DummyTask task) {
-		return null; // TODO
+	public String getType() {
+		return DummyTask.TYPE;
+	}
+
+	@Override
+	public Command configure(Task task, ObjectNode config) {
+		DummyTask to = new DummyTask(task.copy().toJson());
+		to.setTag(config.get("tag").getTextValue());
+		return new UpdateTaskCommand(task.getPrincipal(), task.getBucketId(), task, to);
+	}
+
+	@Override
+	public Command execute(Task task) {
+		return execute(new DummyTask(task.toJson()));
+	}
+
+	private Command execute(DummyTask task) {
+		CompoundCommand command = new CompoundCommand(task.getPrincipal(), "created a dummy event", "removed a dummy event");
+		Event event = new Event();
+		event.setValue(Event.TIMESTAMP, new DateTime(DateTimeZone.UTC));
+		event.setValue(Event.TAG, task.getTag());
+		DummyTask to = task.copy();
+		to.setLatest(new DateTime(DateTimeZone.UTC));
+		command.add(new UpdateTaskCommand(task.getPrincipal(), task.getBucketId(), task, to));
+		command.add(new CreateEventCommand(task.getPrincipal(), task.getBucketId(), event));
+		return command;
 	}
 }

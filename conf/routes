@@ -34,4 +34,14 @@ GET     /og                          @com.zenobase.controllers.OpenGraphControll
 GET     /queue/                      @com.zenobase.controllers.QueueController.get(identity ?= null, offset : Int, limit : Int)
 POST    /queue/                      @com.zenobase.controllers.QueueController.post()
 
+GET     /tasks/                      @com.zenobase.controllers.TaskListController.find(bucketId ?= null, offset : Int  ?= 0, limit : Int ?= 10)
+POST    /tasks/                      @com.zenobase.controllers.TaskListController.post()
+
+GET     /tasks/:taskId               @com.zenobase.controllers.TaskController.get(taskId)
+POST    /tasks/:taskId               @com.zenobase.controllers.TaskController.update(taskId)
+DELETE  /tasks/:taskId               @com.zenobase.controllers.TaskController.delete(taskId)
+
+POST    /tasks/:taskId/run           @com.zenobase.controllers.TaskController.run(taskId)
+
+
 GET     /*file                       com.zenobase.controllers.Assets.at(path="/public", file)

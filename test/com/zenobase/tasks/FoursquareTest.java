@@ -14,7 +14,7 @@ public class FoursquareTest extends TaskTestSupport {
 	@Ignore
 	public void testNoToken() {
 		FoursquareTaskManager manager = new FoursquareTaskManager(apiKey, apiSecret, callbackUrl);
-		FoursquareTask task = new FoursquareTask();
+		FoursquareTask task = new FoursquareTask(bucketId, principal);
 		System.out.println(manager.getAuthorizationUrl(task));
 		System.out.print("verifier=");
 		Scanner scanner = new Scanner(System.in); // ?code=xxx
@@ -25,6 +25,6 @@ public class FoursquareTest extends TaskTestSupport {
 	@Test
 	public void testHasToken() {
 		FoursquareTaskManager manager = new FoursquareTaskManager(apiKey, apiSecret, callbackUrl);
-		manager.execute(new FoursquareTask(Generator.id(), getToken(), new DateTime().minusDays(7)));
+		manager.execute(new FoursquareTask(Generator.id(), bucketId, principal, getToken(), new DateTime().minusDays(7)));
 	}
 }

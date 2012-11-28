@@ -13,7 +13,7 @@ public class WithingsTest extends TaskTestSupport {
 	@Ignore
 	public void testNoToken() {
 		WithingsTaskManager manager = new WithingsTaskManager(apiKey, apiSecret, callbackUrl);
-		WithingsTask task = new WithingsTask();
+		WithingsTask task = new WithingsTask(bucketId, principal);
 		System.out.println(manager.getAuthorizationUrl(task));
 		System.out.print("verifier=");
 		Scanner scanner = new Scanner(System.in);
@@ -25,6 +25,6 @@ public class WithingsTest extends TaskTestSupport {
 	@Test
 	public void testHasToken() {
 		WithingsTaskManager manager = new WithingsTaskManager(apiKey, apiSecret, callbackUrl);
-		manager.execute(new WithingsTask(Generator.id(), getToken(), 1317928, "1353555281"));
+		manager.execute(new WithingsTask(Generator.id(), bucketId, principal, getToken(), 1317928, "1353555281"));
 	}
 }

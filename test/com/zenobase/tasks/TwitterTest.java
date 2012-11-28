@@ -13,7 +13,7 @@ public class TwitterTest extends TaskTestSupport {
 	@Ignore
 	public void testNoToken() {
 		TwitterTaskManager manager = new TwitterTaskManager(apiKey, apiSecret, callbackUrl);
-		TwitterTask task = new TwitterTask();
+		TwitterTask task = new TwitterTask(bucketId, principal);
 		System.out.println(manager.getAuthorizationUrl(task));
 		System.out.print("verifier=");
 		Scanner scanner = new Scanner(System.in);
@@ -24,6 +24,6 @@ public class TwitterTest extends TaskTestSupport {
 	@Test
 	public void testHasToken() {
 		TwitterTaskManager manager = new TwitterTaskManager(apiKey, apiSecret, callbackUrl);
-		manager.execute(new TwitterTask(Generator.id(), getToken()));
+		manager.execute(new TwitterTask(Generator.id(), bucketId, principal, getToken()));
 	}
 }

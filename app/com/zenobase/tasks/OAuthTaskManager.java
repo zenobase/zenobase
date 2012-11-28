@@ -8,9 +8,11 @@ import org.scribe.model.Response;
 import org.scribe.model.Verifier;
 import org.scribe.oauth.OAuthService;
 
+import com.zenobase.commands.Command;
+import com.zenobase.commands.UpdateTaskCommand;
 import com.zenobase.json.Nodes;
 
-public abstract class OAuthTaskManager<T extends OAuthTask> extends TaskManager<T> {
+public abstract class OAuthTaskManager extends TaskManager {
 
 	private final Class<? extends Api> apiClass;
 	private final String apiKey;
@@ -30,6 +32,13 @@ public abstract class OAuthTaskManager<T extends OAuthTask> extends TaskManager<
 			task.setToken(service.getRequestToken());
 		}
 		return service.getAuthorizationUrl(task.getToken());
+	}
+
+	@Override
+	public Command configure(Task task, ObjectNode config) {
+		OAuthTask to = new OAuthTask(task.copy().toJson());
+		setToken(to, config.get("oauth_verifier").getTextValue());
+		return new UpdateTaskCommand(task.getPrincipal(), task.getBucketId(), task, to);
 	}
 
 	public final void setToken(OAuthTask task, String verifier) {

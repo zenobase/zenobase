@@ -3,23 +3,27 @@ package com.zenobase.tasks;
 import org.codehaus.jackson.node.ObjectNode;
 import org.scribe.model.Token;
 
-import com.zenobase.common.Generator;
 import com.zenobase.json.Nodes;
 import com.zenobase.json.ObjectField;
 import com.zenobase.json.TokenField;
+import com.zenobase.models.Identity;
 
-public abstract class OAuthTask extends Task {
+public class OAuthTask extends Task {
 
 	private static final ObjectField TOKEN = new ObjectField("token");
 	private static final TokenField VALUE = new TokenField("@value");
 	private static final TokenField SECRET = new TokenField("secret");
 
-	protected OAuthTask() {
-		super(Generator.id());
+	protected OAuthTask(ObjectNode node) {
+		super(node);
 	}
 
-	protected OAuthTask(String id, Token token) {
-		super(id);
+	protected OAuthTask(String type, String bucketId, Identity principal) {
+		super(type, bucketId, principal);
+	}
+
+	protected OAuthTask(String id, String type, String bucketId, Identity principal, Token token) {
+		super(id, type, bucketId, principal);
 		setToken(token);
 	}
 

@@ -1,0 +1,83 @@
+package com.zenobase.controllers;
+
+import javax.inject.Inject;
+
+import play.mvc.BodyParser;
+import play.mvc.Result;
+import play.mvc.With;
+
+import com.zenobase.actions.Timed;
+import com.zenobase.commands.CreateTaskCommand;
+import com.zenobase.models.Bucket;
+import com.zenobase.models.Identity;
+import com.zenobase.models.Permission;
+import com.zenobase.services.BucketRepository;
+import com.zenobase.services.CommandDispatcher;
+import com.zenobase.services.TaskRepository;
+import com.zenobase.services.UserRepository;
+import com.zenobase.tasks.Task;
+
+@With(Timed.class)
+public class TaskListController extends ControllerSupport {
+
+	private final CommandDispatcher dispatcher;
+	private final TaskRepository tasks;
+	private final BucketRepository buckets;
+	private final UserRepository users;
+
+	@Inject
+	public TaskListController(SecurityContext security, CommandDispatcher dispatcher, TaskRepository tasks, BucketRepository buckets, UserRepository users) {
+		super(security);
+		this.dispatcher = dispatcher;
+		this.tasks = tasks;
+		this.buckets = buckets;
+		this.users = users;
+	}
+
+	public Result find(String bucketId, int offset, int limit) {
+		if (limit > 100) {
+			return badRequest("limit can't be more than 100");
+		}
+		Identity principal = getSecurityContext().getPrincipal();
+		if (bucketId == null) {
+	    	if (principal == null) {
+	    		return unauthorized();
+	    	}
+	    	if (!users.isSuperuser(principal)) {
+	    		return forbidden();
+	    	}
+		} else {
+			Bucket bucket = buckets.findBucket(bucketId);
+			if (bucket == null) {
+				return badRequest("bucket not found");
+			}
+			if (bucket.getPermission(principal) != Permission.ALL) {
+				return forbidden();
+			}
+		}
+		return ok(tasks.findTasks(bucketId, offset, limit).toJson());
+    }
+
+    @BodyParser.Of(BodyParser.Json.class)
+    public Result post() {
+    	Identity principal = getSecurityContext().getPrincipal(true);
+    	if (principal == null) {
+    		return unauthorized();
+    	}
+		CreateTaskForm form = new CreateTaskForm(body());
+		if (!form.valid()) {
+			return badRequest();
+		}
+		Bucket bucket = buckets.findBucket(form.getBucketId());
+		if (bucket == null) {
+			return badRequest("bucket not found");
+		}
+		if (bucket.getPermission(principal) != Permission.ALL) {
+			return forbidden();
+		}
+		Task task = new Task(form.getBucketId(), form.getType(), principal);
+    	String commandId = dispatcher.dispatch(new CreateTaskCommand(principal, task));
+        response().setHeader(LOCATION, com.zenobase.controllers.routes.TaskController.get(task.getId()).toString());
+        return created(commandId);
+    }
+}
