@@ -25,7 +25,7 @@ public class DummyTask extends Task {
 	}
 
 	public void setTag(String tag) {
-		setState(tag != null ? State.READY : State.SUSPENDED);
+		setState(tag != null ? State.READY : State.UNAUTHORIZED);
 		setConfigValue(TAG, tag);
 	}
 

@@ -21,16 +21,18 @@ public class DummyTaskManager extends TaskManager {
 
 	@Override
 	public Task newTask(String bucketId, Identity principal) {
-		return new DummyTask(bucketId, principal, null);
+		Task task = new DummyTask(bucketId, principal, null);
+		task.setState(Task.State.UNAUTHORIZED);
+		return task;
 	}
 
 	@Override
-	public String getConfigureUrl(Task task) {
-		return null;
+	public String getAuthorizationUrl(Task task) {
+		return String.format("http://localhost:9000/#/buckets/%s/tasks/%s/auth/?tag=%s", task.getBucketId(), task.getId(), "test");
 	}
 
 	@Override
-	public Command configure(Task task, ObjectNode config) {
+	public Command authorize(Task task, ObjectNode config) {
 		String tag = DummyTask.TAG.getValue(config);
 		if (tag == null) {
 			return null;

@@ -11,9 +11,13 @@ public abstract class TaskManager {
 
 	public abstract Task newTask(String bucketId, Identity principal);
 
-	public abstract String getConfigureUrl(Task task);
+	public String getAuthorizationUrl(Task task) {
+		throw new UnsupportedOperationException();
+	}
 
-	public abstract Command configure(Task task, ObjectNode config);
+	public Command authorize(Task task, ObjectNode config) {
+		throw new UnsupportedOperationException();
+	}
 
 	public abstract Command execute(Task task);
 }

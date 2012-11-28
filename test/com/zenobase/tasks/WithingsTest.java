@@ -16,7 +16,7 @@ public class WithingsTest extends TaskTestSupport {
 	public void testNew() {
 		TaskManager manager = new WithingsTaskManager(apiKey, apiSecret, callbackUrl);
 		Task task = manager.newTask(bucketId, principal);
-		System.out.println(manager.getConfigureUrl(task));
+		System.out.println(manager.getAuthorizationUrl(task));
 		ObjectNode config = Nodes.newObject();
 		Scanner scanner = new Scanner(System.in);
 		System.out.print("oauth_token=");
@@ -25,7 +25,7 @@ public class WithingsTest extends TaskTestSupport {
 		config.put("oauth_verifier", scanner.nextLine());
 		System.out.print("userid=");
 		config.put("userid", scanner.nextLine());
-		task = getTo(manager.configure(task, config));
+		task = getTo(manager.authorize(task, config));
 		manager.execute(task);
 	}
 

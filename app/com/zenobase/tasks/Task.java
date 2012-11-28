@@ -34,8 +34,8 @@ public class Task extends DomainNode {
 		super(node);
 	}
 
-	public Task(String bucketId, String type, Identity principal) {
-		this(Generator.id(), type, State.SUSPENDED, bucketId, principal);
+	public Task(String type, String bucketId, Identity principal) {
+		this(Generator.id(), type, State.READY, bucketId, principal);
 	}
 
 	public Task(String id, String type, State state, String bucketId, Identity principal) {
@@ -47,7 +47,6 @@ public class Task extends DomainNode {
 		DateTime timestamp = new DateTime(DateTimeZone.UTC);
 		setValue(CREATED, timestamp);
 		setValue(UPDATED, timestamp);
-		setValue(CONFIG, Nodes.newObject());
 	}
 
 	public String getId() {
@@ -87,11 +86,17 @@ public class Task extends DomainNode {
 	}
 
 	public <T> T getConfigValue(Field<T> field) {
-		return field.getValue(getValue(CONFIG));
+		ObjectNode config = getValue(CONFIG);
+		return config != null ? field.getValue(config) : null;
 	}
 
 	public <T> void setConfigValue(Field<T> field, T value) {
-		field.setValue(getValue(CONFIG), value);
+		ObjectNode config = getValue(CONFIG);
+		if (config == null) {
+			config = Nodes.newObject();
+			setValue(CONFIG, config);
+		}
+		field.setValue(config, value);
 	}
 
 	public Task copy() {
@@ -107,7 +112,7 @@ public class Task extends DomainNode {
 	}
 
 	public enum State {
-		READY,
-		SUSPENDED
+		UNAUTHORIZED,
+		READY
 	}
 }

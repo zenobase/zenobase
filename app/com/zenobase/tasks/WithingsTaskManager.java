@@ -29,7 +29,7 @@ public class WithingsTaskManager extends OAuthTaskManager {
 	}
 
 	@Override
-	public Command configure(Task task, ObjectNode config) {
+	public Command authorize(Task task, ObjectNode config) {
 		WithingsTask to = new WithingsTask(task.copy().toJson());
 		String token = config.get("oauth_token").getTextValue();
 		String verifier = config.get("oauth_verifier").getTextValue();

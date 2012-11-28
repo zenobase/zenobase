@@ -54,18 +54,11 @@ public class TaskController extends ControllerSupport {
     	if (bucket.getPermission(principal) != Permission.ALL) {
     		return forbidden();
     	}
-    	if (task.getState() == Task.State.SUSPENDED) {
-    		TaskManager manager = registry.find(task.getType());
-    		String url = manager.getConfigureUrl(task);
-    		if (url != null) {
-    			return redirect(url);
-    		}
-    	}
     	return ok(task.toJson());
     }
 
     @BodyParser.Of(BodyParser.Json.class)
-	public Result update(String taskId) {
+	public Result auth(String taskId) {
 		Identity principal = getSecurityContext().getPrincipal();
 		if (principal == null) {
 			return unauthorized();
@@ -82,7 +75,16 @@ public class TaskController extends ControllerSupport {
     		return forbidden();
     	}
     	TaskManager manager = registry.find(task.getType());
-    	Command command = manager.configure(task, body());
+
+    	if (body().size() == 0) {
+        	String authorizationUrl = manager.getAuthorizationUrl(task);
+    		if (authorizationUrl == null) {
+    			return badRequest();
+    		}
+    		return redirect(authorizationUrl);
+    	}
+
+    	Command command = manager.authorize(task, body());
     	if (command == null) {
     		return badRequest();
     	}
@@ -115,7 +117,7 @@ public class TaskController extends ControllerSupport {
     		String commandId = dispatcher.dispatch(command);
     		return success(commandId);
     	}
-    	return noContent();
+    	return status(ACCEPTED);
     }
 
     public Result delete(String taskId) {

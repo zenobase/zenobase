@@ -33,7 +33,7 @@
 		$routeProvider.when('/', { templateUrl: versioned('/partials/home.html') })
 			.when('/buckets/:bucketId/', { templateUrl : versioned('/partials/dashboard.html'), reloadOnSearch : false })
 			.when('/buckets/:bucketId/tasks/', { templateUrl : versioned('/partials/tasks.html') })
-			.when('/buckets/:bucketId/tasks/:taskId', { templateUrl : versioned('/partials/task.html') })
+			.when('/buckets/:bucketId/tasks/:taskId/auth', { templateUrl : versioned('/partials/task-auth.html') })
 			.when('/users/:userId', { templateUrl : versioned('/partials/user.html') })
 			.when('/users/:userId/reset', { templateUrl : versioned('/partials/reset.html') })
 			.when('/users/:userId/verify', { templateUrl : versioned('/partials/verify.html') })
@@ -2169,15 +2169,17 @@
 		};
 	}]);
 
-	app.controller('TaskCtrl', ['$scope', '$http', '$routeParams', '$location', function($scope, $http, $routeParams, $location) {
+	app.controller('TaskAuthCtrl', ['$scope', '$http', '$routeParams', '$location', '$timeout', function($scope, $http, $routeParams, $location, $timeout) {
 		
 		$scope.bucketId = $routeParams.bucketId;
 		$scope.taskId = $routeParams.taskId;
 
 		$scope.refresh = function() {
-			$http.post('/tasks/' + $scope.taskId, $location.search())
+			$http.post('/tasks/' + $scope.taskId + '/auth', $location.search())
 			.success(function(response) {
-				$location.url('/buckets/' + $scope.bucketId + '/tasks/');
+				$timeout(function() {
+					$location.url('/buckets/' + $scope.bucketId + '/tasks/');
+				}, DELAY);
 			})
 			.error(function(response, status) {
 				if (status < 500) {

@@ -31,7 +31,7 @@ public class FoursquareTaskManager extends OAuthTaskManager {
 	}
 
 	@Override
-	public Command configure(Task task, ObjectNode config) {
+	public Command authorize(Task task, ObjectNode config) {
 		OAuthTask to = new OAuthTask(task.copy().toJson());
 		String verifier = config.get("code").getTextValue();
 		to.setToken(getAccessToken(to, verifier));

@@ -17,12 +17,12 @@ public class FoursquareTest extends TaskTestSupport {
 	public void testNew() {
 		TaskManager manager = new FoursquareTaskManager(apiKey, apiSecret, callbackUrl);
 		Task task = manager.newTask(bucketId, principal);
-		System.out.println(manager.getConfigureUrl(task));
+		System.out.println(manager.getAuthorizationUrl(task));
 		ObjectNode config = Nodes.newObject();
 		Scanner scanner = new Scanner(System.in);
 		System.out.print("code=");
 		config.put("code", scanner.nextLine());
-		task = getTo(manager.configure(task, config));
+		task = getTo(manager.authorize(task, config));
 		manager.execute(task);
 	}
 

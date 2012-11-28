@@ -87,7 +87,6 @@ public class TaskListController extends ControllerSupport {
 		}
     	Task task = manager.newTask(form.getBucketId(), principal);
     	String commandId = dispatcher.dispatch(new CreateTaskCommand(principal, task));
-        // TODO getConfigureUrl
     	response().setHeader(LOCATION, com.zenobase.controllers.routes.TaskController.get(task.getId()).toString());
         return created(commandId);
     }

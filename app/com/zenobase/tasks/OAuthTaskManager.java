@@ -14,6 +14,7 @@ import com.zenobase.commands.Command;
 import com.zenobase.commands.UpdateTaskCommand;
 import com.zenobase.json.Nodes;
 import com.zenobase.models.Identity;
+import com.zenobase.tasks.Task.State;
 
 public abstract class OAuthTaskManager extends TaskManager {
 
@@ -32,21 +33,22 @@ public abstract class OAuthTaskManager extends TaskManager {
 	@Override
 	public Task newTask(String bucketId, Identity principal) {
 		OAuthTask task = new OAuthTask(getType(), bucketId, principal);
+		task.setState(State.UNAUTHORIZED);
 		task.setToken(getService(task).getRequestToken());
 		return task;
 	}
 
 	@Override
-	public String getConfigureUrl(Task task) {
-		return getConfigureUrl(new OAuthTask(task.toJson()));
+	public String getAuthorizationUrl(Task task) {
+		return getAuthorizationUrl(new OAuthTask(task.toJson()));
 	}
 
-	private String getConfigureUrl(OAuthTask task) {
+	private String getAuthorizationUrl(OAuthTask task) {
 		return getService(task).getAuthorizationUrl(task.getToken());
 	}
 
 	@Override
-	public Command configure(Task task, ObjectNode config) {
+	public Command authorize(Task task, ObjectNode config) {
 		OAuthTask to = new OAuthTask(task.copy().toJson());
 		String token = config.get("oauth_token").getTextValue();
 		String verifier = config.get("oauth_verifier").getTextValue();
@@ -58,7 +60,7 @@ public abstract class OAuthTaskManager extends TaskManager {
 		return new UpdateTaskCommand(task.getPrincipal(), task.getBucketId(), task, to);
 	}
 
-	public final Token getAccessToken(OAuthTask task, String verifier) {
+	protected final Token getAccessToken(OAuthTask task, String verifier) {
 		return getService(task).getAccessToken(task.getToken(), new Verifier(verifier));
 	}
 

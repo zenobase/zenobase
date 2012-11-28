@@ -16,14 +16,14 @@ public class FitbitTest extends TaskTestSupport {
 	public void testNew() {
 		TaskManager manager = new FitbitTaskManager(apiKey, apiSecret, callbackUrl);
 		Task task = manager.newTask(bucketId, principal);
-		System.out.println(manager.getConfigureUrl(task));
+		System.out.println(manager.getAuthorizationUrl(task));
 		ObjectNode config = Nodes.newObject();
 		Scanner scanner = new Scanner(System.in);
 		System.out.print("oauth_token=");
 		config.put("oauth_token", scanner.nextLine());
 		System.out.print("oauth_verifier=");
 		config.put("oauth_verifier", scanner.nextLine());
-		task = getTo(manager.configure(task, config));
+		task = getTo(manager.authorize(task, config));
 		manager.execute(task);
 	}
 

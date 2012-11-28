@@ -33,7 +33,7 @@
 			</thead>
 			<tbody>
 				<tr data-ng-show="tasks == null">
-					<td colspan="6"><i>Loading...</i></td>
+					<td colspan="8"><i>Loading...</i></td>
 				</tr>
 				<tr class="task-row" data-ng-repeat="task in tasks">
 					<td>{{task['@id']}}</td>
@@ -42,14 +42,14 @@
 					<td>{{task.principal | username}}</td>
 					<td>{{task.created | age}}</td>
 					<td>{{task.updated | age}}</td>
-					<td>{{task.state}}</td>
+					<td>{{task.state}} <a href="/tasks/{{task['@id']}}/auth" data-ng-show="task.state == 'UNAUTHORIZED'">authorize</a></td>
 					<td style="text-align: right">
 						<a class="action task-run-action" href="javascript:" data-ng-click="run(task['@id'])" data-ng-show="task.state == 'READY'"><i class="icon-play" title="Run"></i></a>
 						<a class="action task-delete-action" href="javascript:" data-ng-click="remove(task['@id'])"><i class="icon-trash" title="Delete"></i></a>
 					</td>
 				</tr>
 				<tr data-ng-show="tasks.length == 0">
-					<td colspan="6"><i>None</i></td>
+					<td colspan="8"><i>None</i></td>
 				</tr>
 			</tbody>
 		</table>
