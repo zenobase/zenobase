@@ -15,7 +15,7 @@ import com.zenobase.models.Event;
 
 public class FitbitTaskManager extends OAuthTaskManager {
 
-	public FitbitTaskManager(@Named("fitbit.api.key") String apiKey, @Named("fitbit.api.secret") String apiSecret, @Named("oauth.callback") String callbackUrl) {
+	public FitbitTaskManager(@Named("fitbit.api.key") String apiKey, @Named("fitbit.api.secret") String apiSecret, @Named("hostname") String callbackUrl) {
 		super(FitbitApi.class, apiKey, apiSecret, callbackUrl);
 	}
 

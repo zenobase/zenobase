@@ -30,8 +30,9 @@
 					<td colspan="2"><i>Loading...</i></td>
 				</tr>
 				<tr class="task-row" data-ng-repeat="task in tasks">
-					<td>{{task.type}}</td>
+					<td>{{task['@id']}}:{{task.type}}</td>
 					<td style="text-align: right">
+						<a class="action task-run-action" href="javascript:" data-ng-click="run(task['@id'])"><i class="icon-play" title="Run"></i></a>
 						<a class="action task-delete-action" href="javascript:" data-ng-click="remove(task['@id'])"><i class="icon-trash" title="Delete"></i></a>
 					</td>
 				</tr>

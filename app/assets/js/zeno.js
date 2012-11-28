@@ -31,12 +31,12 @@
 
 	app.config(['$routeProvider', function($routeProvider) {
 		$routeProvider.when('/', { templateUrl: versioned('/partials/home.html') })
-			.when('/buckets/:bucketId/tasks', { templateUrl : versioned('/partials/tasks.html') })
 			.when('/buckets/:bucketId/', { templateUrl : versioned('/partials/dashboard.html'), reloadOnSearch : false })
+			.when('/buckets/:bucketId/tasks/', { templateUrl : versioned('/partials/tasks.html') })
+			.when('/buckets/:bucketId/tasks/:taskId', { templateUrl : versioned('/partials/task.html') })
 			.when('/users/:userId', { templateUrl : versioned('/partials/user.html') })
 			.when('/users/:userId/reset', { templateUrl : versioned('/partials/reset.html') })
 			.when('/users/:userId/verify', { templateUrl : versioned('/partials/verify.html') })
-			.when('/tasks/:taskId', { templateUrl : versioned('/partials/task.html') })
 			.otherwise({ templateUrl : versioned('/partials/404.html') });
 	}]);
 
@@ -2110,9 +2110,10 @@
 		};
 
 		$scope.run = function(taskId) {
-			$http.post('/runs/', { 'task' : taskId })
+			$http.post('/tasks/' + taskId + '/run')
 			.success(function(response) {
-				$scope.message = 'Completed.';
+				$scope.alert.show('Task completed.', 'alert-success', response.undo);
+				$timeout($scope.refresh, DELAY);
 			})
 			.error(function(response, status) {
 				if (status < 500) {
@@ -2171,12 +2172,12 @@
 	app.controller('TaskCtrl', ['$scope', '$http', '$routeParams', '$location', function($scope, $http, $routeParams, $location) {
 		
 		$scope.bucketId = $routeParams.bucketId;
-		$scope.taskId = $routeParams.bucketId;
+		$scope.taskId = $routeParams.taskId;
 
 		$scope.refresh = function() {
 			$http.post('/tasks/' + $scope.taskId, $location.search())
 			.success(function(response) {
-				location.path('/buckets/' + $scope.bucketId + '/tasks/');
+				$location.url('/buckets/' + $scope.bucketId + '/tasks/');
 			})
 			.error(function(response, status) {
 				if (status < 500) {
@@ -2186,6 +2187,8 @@
 				}
 			});
 		};
+
+		$scope.refresh();
 	}]);
 	
 	/**

@@ -18,7 +18,7 @@ import com.zenobase.models.Event;
 
 public class WithingsTaskManager extends OAuthTaskManager {
 
-	public WithingsTaskManager(@Named("withings.api.key") String apiKey, @Named("withings.api.secret") String apiSecret, @Named("oauth.callback") String callbackUrl) {
+	public WithingsTaskManager(@Named("withings.api.key") String apiKey, @Named("withings.api.secret") String apiSecret, @Named("hostname") String callbackUrl) {
 		super(WithingsApi.class, apiKey, apiSecret, callbackUrl);
 	}
 

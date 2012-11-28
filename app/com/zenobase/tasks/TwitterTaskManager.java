@@ -14,7 +14,7 @@ import com.zenobase.commands.Command;
 public class TwitterTaskManager extends OAuthTaskManager {
 
 	@Inject
-	public TwitterTaskManager(@Named("twitter.api.key") String apiKey, @Named("twitter.api.secret") String apiSecret, @Named("oauth.callback") String callbackUrl) {
+	public TwitterTaskManager(@Named("twitter.api.key") String apiKey, @Named("twitter.api.secret") String apiSecret, @Named("hostname") String callbackUrl) {
 		super(TwitterApi.class, apiKey, apiSecret, callbackUrl);
 	}
 

@@ -15,7 +15,7 @@ import com.zenobase.models.Event;
 
 public class FoursquareTaskManager extends OAuthTaskManager {
 
-	public FoursquareTaskManager(@Named("fourquare.api.key") String apiKey, @Named("foursquare.api.secret") String apiSecret, @Named("oauth.callback") String callbackUrl) {
+	public FoursquareTaskManager(@Named("fourquare.api.key") String apiKey, @Named("foursquare.api.secret") String apiSecret, @Named("hostname") String callbackUrl) {
 		super(Foursquare2Api.class, apiKey, apiSecret, callbackUrl);
 	}
 

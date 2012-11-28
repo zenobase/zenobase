@@ -2,6 +2,7 @@ package com.zenobase.tasks;
 
 import org.codehaus.jackson.node.ObjectNode;
 import org.joda.time.DateTime;
+import com.google.common.base.Objects;
 
 import com.zenobase.json.DateTimeField;
 import com.zenobase.json.Nodes;
@@ -25,7 +26,7 @@ public class DummyTask extends Task {
 	}
 
 	public String getTag() {
-		return getConfigValue(TAG);
+		return Objects.firstNonNull(getConfigValue(TAG), TYPE);
 	}
 
 	public void setTag(String tag) {

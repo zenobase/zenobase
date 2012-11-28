@@ -32,6 +32,7 @@ public class DummyTaskManager extends TaskManager {
 	private Command execute(DummyTask task) {
 		CompoundCommand command = new CompoundCommand(task.getPrincipal(), "created a dummy event", "removed a dummy event");
 		Event event = new Event();
+		event.setValue(Event.AUTHOR, task.getPrincipal());
 		event.setValue(Event.TIMESTAMP, new DateTime(DateTimeZone.UTC));
 		event.setValue(Event.TAG, task.getTag());
 		DummyTask to = task.copy();

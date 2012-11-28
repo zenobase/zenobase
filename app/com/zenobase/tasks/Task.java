@@ -44,6 +44,7 @@ public class Task extends DomainNode {
 		DateTime timestamp = new DateTime(DateTimeZone.UTC);
 		setValue(CREATED, timestamp);
 		setValue(MODIFIED, timestamp);
+		setValue(CONFIG, Nodes.newObject());
 	}
 
 	public String getId() {
