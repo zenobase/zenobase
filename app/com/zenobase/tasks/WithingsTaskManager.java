@@ -2,6 +2,9 @@ package com.zenobase.tasks;
 
 import java.util.List;
 
+import javax.inject.Inject;
+import javax.inject.Named;
+
 import org.codehaus.jackson.node.ObjectNode;
 import org.scribe.builder.ServiceBuilder;
 import org.scribe.model.OAuthRequest;
@@ -9,7 +12,6 @@ import org.scribe.model.Response;
 import org.scribe.model.SignatureType;
 import org.scribe.model.Verb;
 import com.google.common.base.Preconditions;
-import com.google.inject.name.Named;
 
 import com.zenobase.commands.Command;
 import com.zenobase.commands.CompoundCommand;
@@ -19,7 +21,8 @@ import com.zenobase.models.Event;
 
 public class WithingsTaskManager extends OAuthTaskManager {
 
-	public WithingsTaskManager(@Named("withings.api.key") String apiKey, @Named("withings.api.secret") String apiSecret, @Named("hostname") String callbackUrl) {
+	@Inject
+	public WithingsTaskManager(@Named("withings.api.key") String apiKey, @Named("withings.api.secret") String apiSecret, @Named("oauth.hostname") String callbackUrl) {
 		super(WithingsApi.class, apiKey, apiSecret, callbackUrl);
 	}
 

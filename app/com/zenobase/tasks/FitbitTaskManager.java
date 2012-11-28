@@ -2,20 +2,23 @@ package com.zenobase.tasks;
 
 import java.util.List;
 
+import javax.inject.Inject;
+import javax.inject.Named;
+
 import org.elasticsearch.common.collect.Lists;
 import org.joda.time.LocalDate;
 import org.scribe.model.OAuthRequest;
 import org.scribe.model.Response;
 import org.scribe.model.Verb;
 import org.scribe.oauth.OAuthService;
-import com.google.inject.name.Named;
 
 import com.zenobase.commands.Command;
 import com.zenobase.models.Event;
 
 public class FitbitTaskManager extends OAuthTaskManager {
 
-	public FitbitTaskManager(@Named("fitbit.api.key") String apiKey, @Named("fitbit.api.secret") String apiSecret, @Named("hostname") String callbackUrl) {
+	@Inject
+	public FitbitTaskManager(@Named("fitbit.api.key") String apiKey, @Named("fitbit.api.secret") String apiSecret, @Named("oauth.hostname") String callbackUrl) {
 		super(FitbitApi.class, apiKey, apiSecret, callbackUrl);
 	}
 

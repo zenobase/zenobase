@@ -28,7 +28,7 @@ public class OAuthTask extends Task {
 	}
 
 	public Token getToken() {
-		ObjectNode node = getValue(TOKEN);
+		ObjectNode node = getConfigValue(TOKEN);
 		return new Token(VALUE.getValue(node), SECRET.getValue(node));
 	}
 
@@ -36,6 +36,6 @@ public class OAuthTask extends Task {
 		ObjectNode node = Nodes.newObject();
 		VALUE.setValue(node, token.getToken());
 		SECRET.setValue(node, token.getSecret());
-		setValue(TOKEN, node);
+		setConfigValue(TOKEN, node);
 	}
 }

@@ -69,7 +69,7 @@ public abstract class OAuthTaskManager extends TaskManager {
 			.provider(apiClass)
 			.apiKey(apiKey)
 			.apiSecret(apiSecret)
-			.callback(callbackUrl + "/#/buckets/" + task.getBucketId() + "/tasks/" + task.getId());
+			.callback(String.format("%s/#/buckets/%s/tasks/%s/auth", callbackUrl, task.getBucketId(), task.getId()));
 		configure(builder);
 		return builder.build();
 	}

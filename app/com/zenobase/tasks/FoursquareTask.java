@@ -29,11 +29,11 @@ public class FoursquareTask extends OAuthTask {
 	}
 
 	public DateTime getMarker() {
-		return getValue(MARKER);
+		return getConfigValue(MARKER);
 	}
 
 	public void setMarker(DateTime marker) {
-		setValue(MARKER, marker);
+		setConfigValue(MARKER, marker);
 	}
 
 	@Override
