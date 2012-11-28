@@ -49,14 +49,14 @@ public class TaskRepository {
 		return node != null ? new Task(node) : null;
 	}
 
-	public TaskList findTasks(String bucketId, int offset, int limit) {
-		return findTasks(queryFor(bucketId), offset, limit);
+	public TaskList findTasks(String field, String value, int offset, int limit) {
+		return findTasks(queryFor(field, value), offset, limit);
 	}
 
-	private static QueryBuilder queryFor(String bucketId) {
-		return bucketId == null
+	private static QueryBuilder queryFor(String field, String value) {
+		return value == null
 			? QueryBuilders.matchAllQuery()
-			: QueryBuilders.termQuery(Task.BUCKET.getName(), bucketId);
+			: QueryBuilders.termQuery(field, value);
 	}
 
 	private TaskList findTasks(QueryBuilder query, int offset, int limit) {

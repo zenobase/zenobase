@@ -34,12 +34,12 @@ public class TaskListController extends ControllerSupport {
 		this.users = users;
 	}
 
-	public Result find(String bucketId, int offset, int limit) {
+	public Result find(String field, String value, int offset, int limit) {
 		if (limit > 100) {
 			return badRequest("limit can't be more than 100");
 		}
 		Identity principal = getSecurityContext().getPrincipal();
-		if (bucketId == null) {
+		if (!Task.BUCKET.equals(field)) {
 	    	if (principal == null) {
 	    		return unauthorized();
 	    	}
@@ -47,7 +47,7 @@ public class TaskListController extends ControllerSupport {
 	    		return forbidden();
 	    	}
 		} else {
-			Bucket bucket = buckets.findBucket(bucketId);
+			Bucket bucket = buckets.findBucket(value);
 			if (bucket == null) {
 				return badRequest("bucket not found");
 			}
@@ -55,7 +55,7 @@ public class TaskListController extends ControllerSupport {
 				return forbidden();
 			}
 		}
-		return ok(tasks.findTasks(bucketId, offset, limit).toJson());
+		return ok(tasks.findTasks(field, value, offset, limit).toJson());
     }
 
     @BodyParser.Of(BodyParser.Json.class)
@@ -77,7 +77,8 @@ public class TaskListController extends ControllerSupport {
 		}
 		Task task = new Task(form.getBucketId(), form.getType(), principal);
     	String commandId = dispatcher.dispatch(new CreateTaskCommand(principal, task));
-        response().setHeader(LOCATION, com.zenobase.controllers.routes.TaskController.get(task.getId()).toString());
+        // TODO getConfigureUrl
+    	response().setHeader(LOCATION, com.zenobase.controllers.routes.TaskController.get(task.getId()).toString());
         return created(commandId);
     }
 }

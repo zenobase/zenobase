@@ -18,6 +18,11 @@ public class DummyTaskManager extends TaskManager {
 	}
 
 	@Override
+	public String getConfigureUrl(Task task) {
+		return null;
+	}
+
+	@Override
 	public Command configure(Task task, ObjectNode config) {
 		DummyTask to = new DummyTask(task.copy().toJson());
 		to.setTag(config.get("tag").getTextValue());
@@ -36,7 +41,7 @@ public class DummyTaskManager extends TaskManager {
 		event.setValue(Event.TIMESTAMP, new DateTime(DateTimeZone.UTC));
 		event.setValue(Event.TAG, task.getTag());
 		DummyTask to = task.copy();
-		to.setLatest(new DateTime(DateTimeZone.UTC));
+		to.setModified(new DateTime(DateTimeZone.UTC));
 		command.add(new UpdateTaskCommand(task.getPrincipal(), task.getBucketId(), task, to));
 		command.add(new CreateEventCommand(task.getPrincipal(), task.getBucketId(), event));
 		return command;

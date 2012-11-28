@@ -160,5 +160,53 @@
 		$scope.$on('reload', $scope.refresh);
 		$scope.refresh({});
 	}]);
+	
+	adminApp.controller('TaskListAdminCtrl', ['$scope', '$http', function($scope, $http) {
+	
+		$scope.offset = 0;
+		$scope.limit = 10;
+		$scope.total = 0;
+		$scope.tasks = null;
+	
+		$scope.hasPrev = function() {
+			return $scope.offset > 0;
+		}
+		$scope.hasNext = function() {
+			return $scope.offset + $scope.limit < $scope.total;
+		}
+		$scope.prev = function() {
+			$scope.refresh({ offset : $scope.offset - $scope.limit });
+		}
+		$scope.next = function() {
+			$scope.refresh({ offset : $scope.offset + $scope.limit });
+		}
+		$scope.params = function() {
+			var params = {
+					offset : $scope.offset,
+					limit : $scope.limit
+				};
+				if ($scope.filter) {
+					params.field = 'principal';
+					params.value = $scope.filter;
+				}
+				return params;
+		}
+		$scope.refresh = function(params) {
+			$http.get('/tasks/?' + $.param($.extend($scope.params(), params))).success(function(response) {
+				$.extend($scope, params);
+				$scope.total = response.total;
+				$scope.tasks = response.tasks;
+			});
+		};
+		$scope.remove = function(taskId) {
+			$http({ method : 'DELETE', url : '/tasks/' + taskId }).success(function(response, code, headers) {
+				$scope.alert.show('Deleted a task.', 'alert-success', response.undo);
+				$scope.reload();
+			});
+		};
+	
+		$scope.$on('reload', $scope.refresh);
+		$scope.refresh({});
+	}]);
 
 }());

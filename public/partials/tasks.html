@@ -21,23 +21,31 @@
 		<table class="table">
 			<thead>
 				<tr>
+					<th style="width: 0px"></th>
 					<th style="width: 0px">Task</th>
+					<th style="width: 0px">Bucket</th>
+					<th style="width: 0px">Owner</th>
+					<th style="width: 0px">Latest</th>
 					<th style="width: 0px"></th>
 				</tr>
 			</thead>
 			<tbody>
 				<tr data-ng-show="tasks == null">
-					<td colspan="2"><i>Loading...</i></td>
+					<td colspan="6"><i>Loading...</i></td>
 				</tr>
 				<tr class="task-row" data-ng-repeat="task in tasks">
-					<td>{{task['@id']}}:{{task.type}}</td>
+					<td>{{task['@id']}}</td>
+					<td>{{task.type}}</td>
+					<td>{{task.bucket}}</td>
+					<td>{{task.principal | username}}</td>
+					<td>{{task.modified | age}}</td>
 					<td style="text-align: right">
 						<a class="action task-run-action" href="javascript:" data-ng-click="run(task['@id'])"><i class="icon-play" title="Run"></i></a>
 						<a class="action task-delete-action" href="javascript:" data-ng-click="remove(task['@id'])"><i class="icon-trash" title="Delete"></i></a>
 					</td>
 				</tr>
 				<tr data-ng-show="tasks.length == 0">
-					<td colspan="3"><i>None</i></td>
+					<td colspan="6"><i>None</i></td>
 				</tr>
 			</tbody>
 		</table>

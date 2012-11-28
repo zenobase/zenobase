@@ -71,6 +71,10 @@ public class Task extends DomainNode {
 		return getValue(MODIFIED);
 	}
 
+	public void setModified(DateTime modified) {
+		setValue(MODIFIED, modified);
+	}
+
 	public <T> T getConfigValue(Field<T> field) {
 		return field.getValue(getValue(CONFIG));
 	}

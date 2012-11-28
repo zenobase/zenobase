@@ -8,6 +8,8 @@ public abstract class TaskManager {
 
 	public abstract String getType();
 
+	public abstract String getConfigureUrl(Task task);
+
 	public abstract Command configure(Task task, ObjectNode config);
 
 	public abstract Command execute(Task task);

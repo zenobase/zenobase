@@ -26,6 +26,11 @@ public abstract class OAuthTaskManager extends TaskManager {
 		this.callbackUrl = callbackUrl;
 	}
 
+	@Override
+	public String getConfigureUrl(Task task) {
+		return getConfigureUrl(new OAuthTask(task.toJson()));
+	}
+
 	public final String getAuthorizationUrl(OAuthTask task) {
 		OAuthService service = getService(task);
 		if (task.getToken() == null) {

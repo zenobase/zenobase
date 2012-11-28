@@ -2096,7 +2096,7 @@
 		};
 
 		$scope.refresh = function() {
-			$http.get('/tasks/?bucketId=' + $scope.bucketId)
+			$http.get('/tasks/?field=bucket&value=' + $scope.bucketId)
 			.success(function(response) {
 				$scope.tasks = response.tasks;
 			})
