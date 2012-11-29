@@ -37,6 +37,7 @@ public class Measures {
 		UnitFormat.getInstance().label(NonSI.OUNCE_LIQUID_US.times(32), "qt");
 
 		UnitFormat.getInstance().label(SI.MICRO(SI.GRAM), "ug");
+		UnitFormat.getInstance().label(NonSI.POUND.times(14), "st");
 
 		UnitFormat.getInstance().label(SI.BIT.times(8), "B");
 		UnitFormat.getInstance().label(SI.KILO(SI.BIT.times(8)), "KB");

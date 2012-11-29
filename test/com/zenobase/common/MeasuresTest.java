@@ -43,6 +43,7 @@ public class MeasuresTest {
 		assertThatIsEqualTo("1 kg", "1 kg");
 		assertThatIsEqualTo("0.4535924 kg", "1 lb");
 		assertThatIsEqualTo("0.02834952 kg", "1 oz");
+		assertThatIsEqualTo("6.350294 kg", "1 st");
 		assertThatIsEqualTo("0.001 kg", "1 g");
 		assertThatIsEqualTo("0.000001 kg", "1 mg");
 	}
