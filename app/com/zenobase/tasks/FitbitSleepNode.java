@@ -10,15 +10,18 @@ import org.joda.time.Duration;
 import org.joda.time.LocalDateTime;
 
 import com.zenobase.models.Event;
+import com.zenobase.models.Identity;
 import com.zenobase.models.Rating;
 
 class FitbitSleepNode {
 
 	private final ObjectNode node;
+	private final Identity author;
 	private final DateTimeZone timezone;
 
-	public FitbitSleepNode(ObjectNode node, DateTimeZone timezone) {
+	public FitbitSleepNode(ObjectNode node, Identity author, DateTimeZone timezone) {
 		this.node = node;
+		this.author = author;
 		this.timezone = timezone;
 	}
 
@@ -26,10 +29,11 @@ class FitbitSleepNode {
 		List<Event> events = Lists.newArrayList();
 		for (JsonNode item : node.path("sleep")) {
 			Event event = new Event();
-			event.addValue(Event.TAG, "sleep");
-			event.addValue(Event.TIMESTAMP, LocalDateTime.parse(item.path("startTime").getTextValue()).toDateTime(timezone));
-			event.addValue(Event.DURATION, Duration.millis(item.path("duration").getLongValue()));
-			event.addValue(Event.RATING, Rating.valueOf(item.path("efficiency").getIntValue()));
+			event.setValue(Event.TAG, "sleep");
+			event.setValue(Event.AUTHOR, author);
+			event.setValue(Event.TIMESTAMP, LocalDateTime.parse(item.path("startTime").getTextValue()).toDateTime(timezone));
+			event.setValue(Event.DURATION, Duration.millis(item.path("duration").getLongValue()));
+			event.setValue(Event.RATING, Rating.valueOf(item.path("efficiency").getIntValue()));
 			events.add(event);
 		}
 		return events;

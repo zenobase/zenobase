@@ -53,14 +53,14 @@ public class WithingsTaskManager extends OAuthTaskManager {
 	private Command execute(WithingsTask task) {
 		OAuthRequest request = createRequest(task);
 		getService(task).signRequest(task.getToken(), request);
-		WithingsResultNode result = new WithingsResultNode(parseObject(request.send()));
-		CompoundCommand command = new CompoundCommand(task.getPrincipal(), "imported events from withings", "dropped events from withings");
+		WithingsResultNode result = new WithingsResultNode(task.getPrincipal(), parseObject(request.send()));
+		CompoundCommand command = new CompoundCommand(task.getPrincipal(), "imported events from withings", "removed events imported from withings");
 		WithingsTask to = task.copy();
 		to.setUpdated(new DateTime(DateTimeZone.UTC));
 		to.setMarker(result.getMarker());
 		command.add(new UpdateTaskCommand(task.getPrincipal(), task.getBucketId(), task, to));
 		for (Event event : result.getEvents()) {
-			Logger.info("importing event: " + event.toJson());
+			Logger.info("import: " + event.toJson());
 			command.add(new CreateEventCommand(task.getPrincipal(), task.getBucketId(), event));
 		}
 		return command;

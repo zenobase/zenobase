@@ -65,13 +65,13 @@ public class FoursquareTaskManager extends OAuthTaskManager {
 		}
 		request.addQuerystringParameter("beforeTimestamp", Long.toString(beforeTimestamp.getMillis() / 1000));
 		request.addQuerystringParameter("limit", "100");
-		FoursquareCheckinsNode result = new FoursquareCheckinsNode(parseObject(request.send()));
+		FoursquareCheckinsNode result = new FoursquareCheckinsNode(parseObject(request.send()), task.getPrincipal());
 		FoursquareTask to = task.copy();
 		to.setUpdated(new DateTime(DateTimeZone.UTC));
 		to.setMarker(beforeTimestamp);
 		command.add(new UpdateTaskCommand(task.getPrincipal(), task.getBucketId(), task, to));
 		for (Event event : result.getEvents()) {
-			Logger.info("importing event: " + event.toJson());
+			Logger.info("import: " + event.toJson());
 			command.add(new CreateEventCommand(task.getPrincipal(), task.getBucketId(), event));
 		}
 		return command;

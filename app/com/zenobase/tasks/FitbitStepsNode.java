@@ -1,41 +1,76 @@
 package com.zenobase.tasks;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import javax.measure.DecimalMeasure;
+import javax.measure.quantity.Energy;
 import javax.measure.quantity.Length;
 import javax.measure.unit.Unit;
 
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.node.ObjectNode;
 import org.elasticsearch.common.collect.Lists;
+import org.joda.time.DateTime;
 
+import com.zenobase.common.Measures;
 import com.zenobase.models.Event;
+import com.zenobase.models.Identity;
 
 class FitbitStepsNode {
 
 	private final ObjectNode node;
+	private final Identity author;
+	private final DateTime timestamp;
 	private final Unit<Length> distanceUnit, heightUnit;
 
-	public FitbitStepsNode(ObjectNode node, Unit<Length> distanceUnit, Unit<Length> heightUnit) {
+	public FitbitStepsNode(ObjectNode node, Identity author, DateTime timestamp, Unit<Length> distanceUnit, Unit<Length> heightUnit) {
 		this.node = node;
+		this.author = author;
+		this.timestamp = timestamp;
 		this.distanceUnit = distanceUnit;
 		this.heightUnit = heightUnit;
 	}
 
 	public List<Event> getEvents() {
 		List<Event> events = Lists.newArrayList();
-		Event event = new Event();
+		int steps = getSteps();
+		if (steps > 0) {
+			Event event = new Event();
+			event.setValue(Event.COUNT, steps);
+			event.setValue(Event.DISTANCE, getDistance());
+			event.setValue(Event.TIMESTAMP, timestamp);
+			event.setValue(Event.AUTHOR, author);
+			event.setValue(Event.TAG, "steps");
+			event.setValue(Event.HEIGHT, getElevation());
+			event.setValue(Event.ENERGY, getCalories());
+			events.add(event);
+		}
+		return events;
+	}
+
+	private int getSteps() {
+		return node.path("summary").path("steps").getIntValue();
+	}
+
+	private DecimalMeasure<Length> getDistance() {
 		for (JsonNode distance : node.path("summary").path("distances")) {
 			if ("total".equals(distance.path("activity").getTextValue())) {
-				event.addValue(Event.DISTANCE, DecimalMeasure.valueOf(distance.path("distance").getDecimalValue(), distanceUnit));
+				BigDecimal value = distance.path("distance").getDecimalValue();
+				return DecimalMeasure.valueOf(value, distanceUnit);
 			}
 		}
-		event.addValue(Event.TAG, "steps");
-		event.addValue(Event.COUNT, node.path("summary").path("steps").getIntValue());
-		event.addValue(Event.HEIGHT, DecimalMeasure.valueOf(node.path("summary").path("elevation").getDecimalValue(), heightUnit));
-		// event.addValue(Event.ENERGY, Measures.valueOf(result.path("summary").path("activityCalories").getDecimalValue(), "cal"));
-		events.add(event);
-		return events;
+		return null;
+	}
+
+	private DecimalMeasure<Length> getElevation() {
+		BigDecimal value = node.path("summary").path("elevation").getDecimalValue();
+		return DecimalMeasure.valueOf(value, heightUnit);
+	}
+
+	private DecimalMeasure<Energy> getCalories() {
+		BigDecimal value = node.path("summary").path("activityCalories").getDecimalValue();
+		Unit<Energy> unit = Measures.valueOf("cal");
+		return DecimalMeasure.valueOf(value, unit);
 	}
 }

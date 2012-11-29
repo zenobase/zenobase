@@ -1,17 +1,18 @@
 package com.zenobase.tasks;
 
 import org.codehaus.jackson.node.ObjectNode;
+import org.joda.time.LocalDate;
 import org.scribe.model.Token;
 
+import com.zenobase.json.LocalDateField;
 import com.zenobase.json.Nodes;
-import com.zenobase.json.TokenField;
 import com.zenobase.models.Identity;
 
 public class FitbitTask extends OAuthTask {
 
 	public static final String TYPE = "fitbit";
 
-	private static final TokenField MARKER = new TokenField("marker");
+	private static final LocalDateField MARKER = new LocalDateField("marker");
 
 	public FitbitTask(ObjectNode node) {
 		super(node);
@@ -21,17 +22,17 @@ public class FitbitTask extends OAuthTask {
 		super(TYPE, bucketId, principal);
 	}
 
-	public FitbitTask(String id, Task.State state, String bucketId, Identity principal, Token accessToken, String marker) {
+	public FitbitTask(String id, Task.State state, String bucketId, Identity principal, Token accessToken, LocalDate marker) {
 		super(id, TYPE, state, bucketId, principal, accessToken);
 		setMarker(marker);
 	}
 
-	public String getMarker() {
-		return getValue(MARKER);
+	public LocalDate getMarker() {
+		return getConfigValue(MARKER);
 	}
 
-	public void setMarker(String marker) {
-		setValue(MARKER, marker);
+	public void setMarker(LocalDate marker) {
+		setConfigValue(MARKER, marker);
 	}
 
 	@Override

@@ -3,6 +3,7 @@ package com.zenobase.tasks;
 import java.util.Scanner;
 
 import org.codehaus.jackson.node.ObjectNode;
+import org.joda.time.LocalDate;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -30,6 +31,6 @@ public class FitbitTest extends TaskTestSupport {
 	@Test
 	public void testExisting() {
 		TaskManager manager = new FitbitTaskManager(apiKey, apiSecret, callbackUrl);
-		manager.execute(new FitbitTask(Generator.id(), Task.State.READY, bucketId, principal, getToken(), "1353555281"));
+		manager.execute(new FitbitTask(Generator.id(), Task.State.READY, bucketId, principal, getToken(), LocalDate.now().minusWeeks(1)));
 	}
 }

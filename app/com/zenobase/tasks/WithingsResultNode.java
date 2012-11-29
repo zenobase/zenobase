@@ -15,12 +15,15 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 
 import com.zenobase.models.Event;
+import com.zenobase.models.Identity;
 
 class WithingsResultNode {
 
+	private final Identity author;
 	private final ObjectNode node;
 
-	public WithingsResultNode(ObjectNode node) {
+	public WithingsResultNode(Identity author, ObjectNode node) {
+		this.author = author;
 		this.node = node;
 		Preconditions.checkState(node.get("status").getIntValue() == 0);
 	}
@@ -33,14 +36,15 @@ class WithingsResultNode {
 		return events;
 	}
 
-	private static void addEvents(ObjectNode node, List<Event> events) {
+	private void addEvents(ObjectNode node, List<Event> events) {
 		for (JsonNode measure : node.path("measures")) {
 			switch (measure.path("type").getIntValue()) {
 				case 1: // weight
 					Event event = new Event();
 					event.addValue(Event.TAG, "body");
-					event.addValue(Event.TIMESTAMP, new DateTime(node.path("date").getLongValue() * 1000, DateTimeZone.UTC));
 					event.addValue(Event.WEIGHT, new DecimalMeasure<Mass>(getBigDecimal((ObjectNode) measure), SI.KILOGRAM));
+					event.addValue(Event.TIMESTAMP, new DateTime(node.path("date").getLongValue() * 1000, DateTimeZone.UTC));
+					event.setValue(Event.AUTHOR, author);
 					events.add(event);
 			}
 		}
