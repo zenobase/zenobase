@@ -10,7 +10,6 @@ import org.scribe.builder.ServiceBuilder;
 import org.scribe.model.OAuthRequest;
 import org.scribe.model.SignatureType;
 import org.scribe.model.Verb;
-import play.Logger;
 import com.google.common.base.Preconditions;
 
 import com.zenobase.commands.Command;
@@ -42,7 +41,7 @@ public class WithingsTaskManager extends OAuthTaskManager {
 		to.setUserId(config.get("userid").asInt());
 		to.setToken(getAccessToken(to, verifier));
 		to.setState(Task.State.READY);
-		return new UpdateTaskCommand(task.getPrincipal(), task.getBucketId(), task, to);
+		return new UpdateTaskCommand(task.getPrincipal(), task, to);
 	}
 
 	@Override
@@ -53,17 +52,7 @@ public class WithingsTaskManager extends OAuthTaskManager {
 	private Command execute(WithingsTask task) {
 		OAuthRequest request = createRequest(task);
 		getService(task).signRequest(task.getToken(), request);
-		WithingsResultNode result = new WithingsResultNode(task.getPrincipal(), parseObject(request.send()));
-		CompoundCommand command = new CompoundCommand(task.getPrincipal(), "imported events from withings", "removed events imported from withings");
-		WithingsTask to = task.copy();
-		to.setUpdated(new DateTime(DateTimeZone.UTC));
-		to.setMarker(result.getMarker());
-		command.add(new UpdateTaskCommand(task.getPrincipal(), task.getBucketId(), task, to));
-		for (Event event : result.getEvents()) {
-			Logger.info("import: " + event.toJson());
-			command.add(new CreateEventCommand(task.getPrincipal(), task.getBucketId(), event));
-		}
-		return command;
+		return createCommand(task, new WithingsResultNode(task.getPrincipal(), parseObject(request.send())));
 	}
 
 	private static OAuthRequest createRequest(WithingsTask task) {
@@ -75,6 +64,18 @@ public class WithingsTaskManager extends OAuthTaskManager {
 			request.addQuerystringParameter("lastupdate", task.getMarker().toString());
 		}
 		return request;
+	}
+
+	private static Command createCommand(WithingsTask task, WithingsResultNode result) {
+		CompoundCommand command = new CompoundCommand(task.getPrincipal(), "imported events from withings", "removed events imported from withings");
+		WithingsTask to = task.copy();
+		to.setUpdated(new DateTime(DateTimeZone.UTC));
+		to.setMarker(result.getMarker());
+		command.add(new UpdateTaskCommand(task.getPrincipal(), task, to));
+		for (Event event : result.getEvents()) {
+			command.add(new CreateEventCommand(task.getPrincipal(), task.getBucketId(), event));
+		}
+		return command;
 	}
 
 	@Override

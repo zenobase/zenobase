@@ -5,7 +5,6 @@ import com.google.inject.Inject;
 
 import com.zenobase.json.DomainNode;
 import com.zenobase.json.ObjectField;
-import com.zenobase.json.TokenField;
 import com.zenobase.models.Identity;
 import com.zenobase.services.TaskRepository;
 import com.zenobase.tasks.Task;
@@ -13,8 +12,6 @@ import com.zenobase.tasks.Task;
 public class UpdateTaskCommand extends Command {
 
 	private static final Command.Type TYPE = new Command.Type("update task", 1);
-	private static final TokenField TASK = new TokenField("task");
-	// TODO: store changed fields (incl version) only
 	private static final ObjectField FROM = new ObjectField("from");
 	private static final ObjectField TO = new ObjectField("to");
 
@@ -22,15 +19,10 @@ public class UpdateTaskCommand extends Command {
 		super(node);
 	}
 
-	public UpdateTaskCommand(Identity principal, String bucketId, DomainNode from, DomainNode to) {
+	public UpdateTaskCommand(Identity principal, DomainNode from, DomainNode to) {
 		super(TYPE, principal);
-		setParameter(TASK, bucketId);
 		setParameter(FROM, from.toJson());
 		setParameter(TO, to.toJson());
-	}
-
-	public String getTaskId() {
-		return getParameter(TASK);
 	}
 
 	public Task getFrom() {
@@ -47,12 +39,12 @@ public class UpdateTaskCommand extends Command {
 		Task to = getFrom();
 		from.setVersion(from.getVersion() + 1);
 		to.setVersion(to.getVersion() + 1);
-		return new UpdateTaskCommand(principal, getTaskId(), from, to);
+		return new UpdateTaskCommand(principal, from, to);
 	}
 
 	@Override
 	public String toString() {
-		return String.format("updated task %s", getTaskId());
+		return String.format("updated task %s", getFrom().getId());
 	}
 
 	public static class Parser extends CommandParser {

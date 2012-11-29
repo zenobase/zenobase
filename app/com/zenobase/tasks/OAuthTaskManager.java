@@ -57,7 +57,7 @@ public abstract class OAuthTaskManager extends TaskManager {
 			task.getId(), to.getToken().getToken(), token);
 		to.setToken(getAccessToken(to, verifier));
 		to.setState(Task.State.READY);
-		return new UpdateTaskCommand(task.getPrincipal(), task.getBucketId(), task, to);
+		return new UpdateTaskCommand(task.getPrincipal(), task, to);
 	}
 
 	protected final Token getAccessToken(OAuthTask task, String verifier) {

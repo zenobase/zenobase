@@ -40,7 +40,7 @@ public class DummyTaskManager extends TaskManager {
 		DummyTask to = new DummyTask(task.copy().toJson());
 		to.setTag(tag);
 		to.setState(Task.State.READY);
-		return new UpdateTaskCommand(task.getPrincipal(), task.getBucketId(), task, to);
+		return new UpdateTaskCommand(task.getPrincipal(), task, to);
 	}
 
 	@Override
@@ -57,7 +57,7 @@ public class DummyTaskManager extends TaskManager {
 		event.setValue(Event.TAG, task.getTag());
 		DummyTask to = task.copy();
 		to.setUpdated(new DateTime(DateTimeZone.UTC));
-		command.add(new UpdateTaskCommand(task.getPrincipal(), task.getBucketId(), task, to));
+		command.add(new UpdateTaskCommand(task.getPrincipal(), task, to));
 		command.add(new CreateEventCommand(task.getPrincipal(), task.getBucketId(), event));
 		return command;
 	}

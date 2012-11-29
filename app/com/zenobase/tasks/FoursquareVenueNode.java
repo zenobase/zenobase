@@ -13,6 +13,8 @@ import com.zenobase.models.Resource;
 
 class FoursquareVenueNode {
 
+	private static final String DEFAULT_URL = "http://foursquare.com/";
+
 	private final ObjectNode node;
 
 	public FoursquareVenueNode(ObjectNode node) {
@@ -21,13 +23,17 @@ class FoursquareVenueNode {
 
 	public Resource getResource() {
 		String title = node.get("name").getTextValue();
-		String url = Objects.firstNonNull(node.path("url").getTextValue(), "http://foursquare.com/"); // TODO link to query?
+		String url = Objects.firstNonNull(node.path("url").getTextValue(), DEFAULT_URL);
 		return new Resource(title, url);
 	}
 
 	public Location getLocation() {
-		BigDecimal lat = node.path("location").path("lat").getDecimalValue();
-		BigDecimal lon = node.path("location").path("lng").getDecimalValue();
+		return getLocation(node.path("location"));
+	}
+
+	private static Location getLocation(JsonNode node) {
+		BigDecimal lat = node.path("lat").getDecimalValue();
+		BigDecimal lon = node.path("lng").getDecimalValue();
 		return new Location(lat, lon);
 	}
 

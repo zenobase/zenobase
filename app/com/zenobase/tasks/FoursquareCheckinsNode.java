@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.node.ObjectNode;
-import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 
 import com.zenobase.models.Event;
@@ -18,8 +17,14 @@ class FoursquareCheckinsNode {
 	public FoursquareCheckinsNode(ObjectNode node, Identity author) {
 		this.node = node;
 		this.author = author;
-		Preconditions.checkState(node.path("meta").path("code").getIntValue() == 200);
-		Preconditions.checkState(node.path("response").path("checkins").path("items").getIntValue() <= 100); // TODO loop if necessary
+	}
+
+	public int getStatus() {
+		return node.path("meta").path("code").getIntValue();
+	}
+
+	public int getCount() {
+		return node.path("response").path("checkins").path("count").getIntValue();
 	}
 
 	public List<Event> getEvents() {

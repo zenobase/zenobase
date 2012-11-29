@@ -13,7 +13,6 @@ import org.scribe.model.OAuthRequest;
 import org.scribe.model.Response;
 import org.scribe.model.Verb;
 import org.scribe.oauth.OAuthService;
-import play.Logger;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 
@@ -79,10 +78,9 @@ public class FitbitTaskManager extends OAuthTaskManager {
 		FitbitTask to = task.copy();
 		to.setUpdated(new DateTime(DateTimeZone.UTC));
 		to.setMarker(lastDate);
-		command.add(new UpdateTaskCommand(task.getPrincipal(), task.getBucketId(), task, to));
+		command.add(new UpdateTaskCommand(task.getPrincipal(), task, to));
 
 		for (Event event : events) {
-			Logger.info("import: " + event.toJson());
 			command.add(new CreateEventCommand(task.getPrincipal(), task.getBucketId(), event));
 		}
 
