@@ -16,8 +16,11 @@ import com.google.common.collect.Lists;
 
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
+import com.zenobase.models.Resource;
 
 class WithingsResultNode {
+
+	private static final Resource SOURCE = new Resource("Withings", "http://withings.com/");
 
 	private final Identity author;
 	private final ObjectNode node;
@@ -41,10 +44,11 @@ class WithingsResultNode {
 			switch (measure.path("type").getIntValue()) {
 				case 1: // weight
 					Event event = new Event();
-					event.addValue(Event.TAG, "body");
-					event.addValue(Event.WEIGHT, new DecimalMeasure<Mass>(getBigDecimal((ObjectNode) measure), SI.KILOGRAM));
-					event.addValue(Event.TIMESTAMP, new DateTime(node.path("date").getLongValue() * 1000, DateTimeZone.UTC));
+					event.setValue(Event.TAG, "body");
+					event.setValue(Event.WEIGHT, new DecimalMeasure<Mass>(getBigDecimal((ObjectNode) measure), SI.KILOGRAM));
+					event.setValue(Event.TIMESTAMP, new DateTime(node.path("date").getLongValue() * 1000, DateTimeZone.UTC));
 					event.setValue(Event.AUTHOR, author);
+					event.setValue(Event.SOURCE, SOURCE);
 					events.add(event);
 			}
 		}

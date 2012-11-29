@@ -35,6 +35,7 @@ public class Event extends DomainNode {
 
 	public static final TokenField ID = new TokenField("@id", false);
 	public static final IdentityField AUTHOR = new IdentityField("author");
+	public static final ResourceField SOURCE = new ResourceField("source");
 	public static final DateTimeField TIMESTAMP = new DateTimeField("timestamp");
 	public static final DurationField DURATION = new DurationField("duration");
 	public static final FrequencyField FREQUENCY = new FrequencyField("frequency");
@@ -56,7 +57,7 @@ public class Event extends DomainNode {
 	public static final TextField NOTE = new TextField("note");
 
 	private static final ImmutableSet<Field<?>> FIELDS =
-		ImmutableSet.<Field<?>>of(ID, VERSION, AUTHOR, TIMESTAMP, DURATION, FREQUENCY, VELOCITY, BITS, COUNT, LOCATION, TAG, RESOURCE, DISTANCE, HEIGHT, WEIGHT, VOLUME, CONCENTRATION, PRESSURE, ENERGY, TEMPERATURE, RATING, NOTE);
+		ImmutableSet.<Field<?>>of(ID, VERSION, AUTHOR, SOURCE, TIMESTAMP, DURATION, FREQUENCY, VELOCITY, BITS, COUNT, LOCATION, TAG, RESOURCE, DISTANCE, HEIGHT, WEIGHT, VOLUME, CONCENTRATION, PRESSURE, ENERGY, TEMPERATURE, RATING, NOTE);
 
 	public Event() {
 		setValue(ID, Generator.id());

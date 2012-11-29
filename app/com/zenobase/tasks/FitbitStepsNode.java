@@ -16,8 +16,11 @@ import org.joda.time.DateTime;
 import com.zenobase.common.Measures;
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
+import com.zenobase.models.Resource;
 
 class FitbitStepsNode {
+
+	private static final Resource SOURCE = new Resource("Fitbit", "http://fitbit.com/");
 
 	private final ObjectNode node;
 	private final Identity author;
@@ -39,11 +42,12 @@ class FitbitStepsNode {
 			Event event = new Event();
 			event.setValue(Event.COUNT, steps);
 			event.setValue(Event.DISTANCE, getDistance());
-			event.setValue(Event.TIMESTAMP, timestamp);
-			event.setValue(Event.AUTHOR, author);
 			event.setValue(Event.TAG, "steps");
 			event.setValue(Event.HEIGHT, getElevation());
 			event.setValue(Event.ENERGY, getCalories());
+			event.setValue(Event.TIMESTAMP, timestamp);
+			event.setValue(Event.AUTHOR, author);
+			event.setValue(Event.SOURCE, SOURCE);
 			events.add(event);
 		}
 		return events;

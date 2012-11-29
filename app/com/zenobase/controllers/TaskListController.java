@@ -45,7 +45,7 @@ public class TaskListController extends ControllerSupport {
 			return badRequest("limit can't be more than 100");
 		}
 		Identity principal = getSecurityContext().getPrincipal();
-		if (!Task.BUCKET.equals(field)) {
+		if (!Task.BUCKET.getName().equals(field)) {
 	    	if (principal == null) {
 	    		return unauthorized();
 	    	}

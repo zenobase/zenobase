@@ -6,8 +6,11 @@ import org.joda.time.DateTimeZone;
 
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
+import com.zenobase.models.Resource;
 
 class FoursquareCheckinNode {
+
+	private static final Resource SOURCE = new Resource("Foursquare", "http://foursquare.com/");
 
 	private final ObjectNode node;
 	private final Identity author;
@@ -23,6 +26,7 @@ class FoursquareCheckinNode {
 		int offset = node.get("timeZoneOffset").getIntValue() * 60 * 1000;
 		event.setValue(Event.TIMESTAMP, new DateTime(time, DateTimeZone.forOffsetMillis(offset)));
 		event.setValue(Event.AUTHOR, author);
+		event.setValue(Event.SOURCE, SOURCE);
 		FoursquareVenueNode venue = getVenue();
 		event.setValue(Event.RESOURCE, venue.getResource());
 		event.setValue(Event.LOCATION, venue.getLocation());

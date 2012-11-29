@@ -11,8 +11,11 @@ import com.zenobase.commands.CreateEventCommand;
 import com.zenobase.commands.UpdateTaskCommand;
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
+import com.zenobase.models.Resource;
 
 public class DummyTaskManager extends TaskManager {
+
+	private static final Resource SOURCE = new Resource("Zenobase", "http://zenobase.com/");
 
 	@Override
 	public String getType() {
@@ -53,6 +56,7 @@ public class DummyTaskManager extends TaskManager {
 		CompoundCommand command = new CompoundCommand(task.getPrincipal(), "created a dummy event", "removed a dummy event");
 		Event event = new Event();
 		event.setValue(Event.AUTHOR, task.getPrincipal());
+		event.setValue(Event.SOURCE, SOURCE);
 		event.setValue(Event.TIMESTAMP, new DateTime(DateTimeZone.UTC));
 		event.setValue(Event.TAG, task.getTag());
 		DummyTask to = task.copy();

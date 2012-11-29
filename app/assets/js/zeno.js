@@ -2102,9 +2102,9 @@
 			})
 			.error(function(response, status) {
 				if (status < 500) {
-					$scope.message = 'Can\'t retrieve this user.';
+					$scope.message = 'Can\'t retrieve any tasks.';
 				} else {
-					$scope.message = 'Couldn\'t retrieve this user. Try again later or contact support.';
+					$scope.message = 'Couldn\'t retrieve any tasks. Try again later or contact support.';
 				}
 			});
 		};
@@ -2345,6 +2345,12 @@
 	  '</span>';
 	}));
 	
+	Field.register(new Field('source', 'icon-share-alt', null, function(value) { 
+		return '<span class="nowrap">' +
+		'<i class="' + this.icon + '" title="User"></i> <a href="' +  Field.encode(value.url) + '" rel="nofollow">' +  Field.encode(value.title) + '</a>' +
+	  '</span>';
+	}));
+	
 	Field.find = function(name) {
 		return Field.FIELDS_BY_NAME[name];
 	}
@@ -2355,7 +2361,7 @@
 
 	Field.findEditableFields = function() {
 		return $.grep(Field.FIELDS, function(field) {
-			return field.name !== 'author';
+			return field.name !== 'author' & field.name !== 'source';
 		});
 	}
 
