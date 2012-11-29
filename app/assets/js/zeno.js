@@ -2241,7 +2241,7 @@
 	  '</span>';
 	}));
 	
-	Field.register(new Field('weight', 'icon-magnet', [ 'lb', 'oz', 'kg', 'g', 'mg' ], function(value) { 
+	Field.register(new Field('weight', 'icon-leaf', [ 'lb', 'oz', 'kg', 'g', 'mg' ], function(value) { 
 		return '<span class="nowrap">' +
 	  	'<i class="' + this.icon + '" title="Weight"></i> ' + value['@value'] + ' ' + value.unit +
 	  '</span>';
