@@ -26,15 +26,13 @@ public abstract class UpdateCommandSupport extends Command {
 		super(node);
 	}
 
-	protected UpdateCommandSupport(Command.Type type, Identity principal) {
+	protected UpdateCommandSupport(Command.Type type, Identity principal, String objectId, Iterable<Change> patches) {
 		super(type, principal);
-	}
-
-	protected UpdateCommandSupport(Command.Type type, Identity principal, String taskId, Iterable<Change> patches) {
-		super(type, principal);
-		setParameter(OBJECT_ID, taskId);
+		setParameter(OBJECT_ID, objectId);
 		addParameters(CHANGES, patches);
 	}
+
+	protected abstract Command newInstance(Identity principal, String objectId, Iterable<Change> patches);
 
 	protected String getObjectId() {
 		return getParameter(OBJECT_ID);
@@ -46,7 +44,7 @@ public abstract class UpdateCommandSupport extends Command {
 
 	@Override
 	public Command reverse(Identity principal) {
-		return new UpdateTaskCommand(principal, getObjectId(), Iterables.transform(Lists.reverse(getChanges()), new Function<Change, Change>() {
+		return newInstance(principal, getObjectId(), Iterables.transform(Lists.reverse(getChanges()), new Function<Change, Change>() {
 			@Override
 			public Change apply(Change change) {
 				return change.reverse();

@@ -16,8 +16,13 @@ public class UpdateTaskCommand extends UpdateCommandSupport {
 		super(node);
 	}
 
-	public UpdateTaskCommand(Identity principal, String taskId, Iterable<Change> patches) {
+	private UpdateTaskCommand(Identity principal, String taskId, Iterable<Change> patches) {
 		super(TYPE, principal, taskId, patches);
+	}
+
+	@Override
+	protected Command newInstance(Identity principal, String objectId, Iterable<Change> patches) {
+		return new UpdateTaskCommand(principal, objectId, patches);
 	}
 
 	public Task apply(Task task) {
