@@ -16,18 +16,18 @@ public class UpdateTaskCommand extends UpdateCommandSupport {
 		super(node);
 	}
 
-	private UpdateTaskCommand(Identity principal, String taskId, Iterable<Change> patches) {
+	private UpdateTaskCommand(Identity principal, String taskId, Iterable<UpdateCommandSupport.Change> patches) {
 		super(TYPE, principal, taskId, patches);
 	}
 
 	@Override
-	protected Command newInstance(Identity principal, String objectId, Iterable<Change> patches) {
+	protected Command newInstance(Identity principal, String objectId, Iterable<UpdateCommandSupport.Change> patches) {
 		return new UpdateTaskCommand(principal, objectId, patches);
 	}
 
 	public Task apply(Task task) {
 		Task changed = task.copy();
-		for (Change change : getChanges()) {
+		for (UpdateCommandSupport.Change change : getChanges()) {
 			change.apply(changed.toJson().with(Task.CONFIG.getName()));
 		}
 		return changed;
