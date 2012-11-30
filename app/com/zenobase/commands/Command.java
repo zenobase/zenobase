@@ -77,6 +77,10 @@ public abstract class Command extends DomainNode {
 		field.addValue(getValue(PARAMETERS), value);
 	}
 
+	protected <T> void addParameters(Field<T> field, Iterable<T> values) {
+		field.addValues(getValue(PARAMETERS), values);
+	}
+
 	public abstract Command reverse(Identity principal);
 
 	@Override

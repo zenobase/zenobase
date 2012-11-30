@@ -1,6 +1,7 @@
 package com.zenobase.json;
 
 import org.codehaus.jackson.JsonNode;
+import org.codehaus.jackson.node.NullNode;
 import org.codehaus.jackson.node.ObjectNode;
 import org.codehaus.jackson.node.TextNode;
 
@@ -20,8 +21,8 @@ public class EnumField<E extends Enum<E>> extends Field<E> {
 	}
 
 	@Override
-	protected JsonNode toJson(E value) {
-		return new TextNode(value.toString());
+	public JsonNode toJson(E value) {
+		return value != null ? new TextNode(value.toString()) : NullNode.getInstance();
 	}
 
 	@Override

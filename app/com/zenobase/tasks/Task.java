@@ -41,12 +41,12 @@ public class Task extends DomainNode {
 	public Task(String id, String type, State state, String bucketId, Identity principal) {
 		setValue(ID, id);
 		setValue(TYPE, type);
-		setValue(STATE, state);
 		setValue(BUCKET, bucketId);
 		setValue(PRINCIPAL, principal);
 		DateTime timestamp = new DateTime(DateTimeZone.UTC);
 		setValue(CREATED, timestamp);
-		setValue(UPDATED, timestamp);
+		setState(state);
+		setUpdated(timestamp);
 	}
 
 	public String getId() {
@@ -61,14 +61,6 @@ public class Task extends DomainNode {
 		return getValue(BUCKET);
 	}
 
-	public State getState() {
-		return getValue(STATE);
-	}
-
-	public void setState(State state) {
-		setValue(STATE, state);
-	}
-
 	public Identity getPrincipal() {
 		return getValue(PRINCIPAL);
 	}
@@ -77,12 +69,20 @@ public class Task extends DomainNode {
 		return getValue(CREATED);
 	}
 
+	public State getState() {
+		return getConfigValue(STATE);
+	}
+
+	public void setState(State state) {
+		setConfigValue(STATE, state);
+	}
+
 	public DateTime getUpdated() {
-		return getValue(UPDATED);
+		return getConfigValue(UPDATED);
 	}
 
 	public void setUpdated(DateTime updated) {
-		setValue(UPDATED, updated);
+		setConfigValue(UPDATED, updated);
 	}
 
 	public <T> T getConfigValue(Field<T> field) {
@@ -100,7 +100,7 @@ public class Task extends DomainNode {
 	}
 
 	public Task copy() {
-		return new Task(Nodes.copy(toJson()));
+		return copy(getClass());
 	}
 
 	public static Schema getSchema() {

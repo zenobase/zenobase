@@ -30,7 +30,7 @@ public class TaskTestSupport {
 		return new Token(token, secret);
 	}
 
-	protected Task getTo(Command command) {
-		return ((UpdateTaskCommand) command).getTo();
+	protected Task apply(Command command, Task task) {
+		return ((UpdateTaskCommand) command).apply(task);
 	}
 }

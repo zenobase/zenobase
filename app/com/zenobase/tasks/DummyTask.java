@@ -2,7 +2,6 @@ package com.zenobase.tasks;
 
 import org.codehaus.jackson.node.ObjectNode;
 
-import com.zenobase.json.Nodes;
 import com.zenobase.json.TokenField;
 import com.zenobase.models.Identity;
 
@@ -31,6 +30,6 @@ public class DummyTask extends Task {
 
 	@Override
 	public DummyTask copy() {
-		return new DummyTask(Nodes.copy(toJson()));
+		return copy(getClass());
 	}
 }

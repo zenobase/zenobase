@@ -9,7 +9,6 @@ import javax.measure.quantity.Length;
 import javax.measure.unit.Unit;
 
 import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.node.ObjectNode;
 import org.elasticsearch.common.collect.Lists;
 import org.joda.time.DateTime;
 
@@ -18,16 +17,16 @@ import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
 import com.zenobase.models.Resource;
 
-class FitbitStepsNode {
+class FitbitActivitiesResult {
 
 	private static final Resource SOURCE = new Resource("Fitbit", "http://fitbit.com/");
 
-	private final ObjectNode node;
+	private final JsonNode node;
 	private final Identity author;
 	private final DateTime timestamp;
 	private final Unit<Length> distanceUnit, heightUnit;
 
-	public FitbitStepsNode(ObjectNode node, Identity author, DateTime timestamp, Unit<Length> distanceUnit, Unit<Length> heightUnit) {
+	public FitbitActivitiesResult(JsonNode node, Identity author, DateTime timestamp, Unit<Length> distanceUnit, Unit<Length> heightUnit) {
 		this.node = node;
 		this.author = author;
 		this.timestamp = timestamp;

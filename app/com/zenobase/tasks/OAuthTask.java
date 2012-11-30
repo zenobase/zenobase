@@ -1,18 +1,18 @@
 package com.zenobase.tasks;
 
+import org.codehaus.jackson.JsonNode;
+import org.codehaus.jackson.node.NullNode;
 import org.codehaus.jackson.node.ObjectNode;
 import org.scribe.model.Token;
 
+import com.zenobase.json.Field;
 import com.zenobase.json.Nodes;
-import com.zenobase.json.ObjectField;
 import com.zenobase.json.TokenField;
 import com.zenobase.models.Identity;
 
 public class OAuthTask extends Task {
 
-	private static final ObjectField TOKEN = new ObjectField("token");
-	private static final TokenField VALUE = new TokenField("@value");
-	private static final TokenField SECRET = new TokenField("secret");
+	public static final OAuthTokenField TOKEN = new OAuthTokenField("token");
 
 	protected OAuthTask(ObjectNode node) {
 		super(node);
@@ -28,14 +28,39 @@ public class OAuthTask extends Task {
 	}
 
 	public Token getToken() {
-		ObjectNode node = getConfigValue(TOKEN);
-		return new Token(VALUE.getValue(node), SECRET.getValue(node));
+		return getConfigValue(TOKEN);
 	}
 
 	public void setToken(Token token) {
-		ObjectNode node = Nodes.newObject();
-		VALUE.setValue(node, token.getToken());
-		SECRET.setValue(node, token.getSecret());
-		setConfigValue(TOKEN, node);
+		setConfigValue(TOKEN, token);
+	}
+
+	private static class OAuthTokenField extends Field<Token> {
+
+		private static final TokenField VALUE = new TokenField("@value");
+		private static final TokenField SECRET = new TokenField("secret");
+
+		public OAuthTokenField(String name) {
+			super(name, Token.class, "object");
+		}
+
+		@Override
+		protected Token getValue(JsonNode node) {
+			return new Token(VALUE.getValue((ObjectNode) node), SECRET.getValue((ObjectNode) node));
+		}
+
+		@Override
+		public JsonNode toJson(Token value) {
+			return value != null ?
+				toJson(value.getToken(), value.getSecret()) :
+				NullNode.getInstance();
+		}
+
+		private JsonNode toJson(String token, String secret) {
+			ObjectNode node = Nodes.newObject();
+			VALUE.setValue(node, token);
+			SECRET.setValue(node, secret);
+			return node;
+		}
 	}
 }

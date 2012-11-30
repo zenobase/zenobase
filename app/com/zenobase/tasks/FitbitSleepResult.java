@@ -3,7 +3,6 @@ package com.zenobase.tasks;
 import java.util.List;
 
 import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.node.ObjectNode;
 import org.elasticsearch.common.collect.Lists;
 import org.joda.time.DateTimeZone;
 import org.joda.time.Duration;
@@ -13,13 +12,13 @@ import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
 import com.zenobase.models.Rating;
 
-class FitbitSleepNode {
+class FitbitSleepResult {
 
-	private final ObjectNode node;
+	private final JsonNode node;
 	private final Identity author;
 	private final DateTimeZone timezone;
 
-	public FitbitSleepNode(ObjectNode node, Identity author, DateTimeZone timezone) {
+	public FitbitSleepResult(JsonNode node, Identity author, DateTimeZone timezone) {
 		this.node = node;
 		this.author = author;
 		this.timezone = timezone;

@@ -3,7 +3,6 @@ package com.zenobase.tasks;
 import org.codehaus.jackson.node.ObjectNode;
 import org.scribe.model.Token;
 
-import com.zenobase.json.Nodes;
 import com.zenobase.models.Identity;
 
 public class TwitterTask extends OAuthTask {
@@ -24,6 +23,6 @@ public class TwitterTask extends OAuthTask {
 
 	@Override
 	public TwitterTask copy() {
-		return new TwitterTask(Nodes.copy(toJson()));
+		return copy(getClass());
 	}
 }

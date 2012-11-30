@@ -5,14 +5,14 @@ import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
 import javax.measure.unit.Unit;
 
-import org.codehaus.jackson.node.ObjectNode;
+import org.codehaus.jackson.JsonNode;
 import org.joda.time.DateTimeZone;
 
-class FitbitProfileNode {
+class FitbitProfileResult {
 
-	private final ObjectNode node;
+	private final JsonNode node;
 
-	public FitbitProfileNode(ObjectNode node) {
+	public FitbitProfileResult(JsonNode node) {
 		this.node = node;
 	}
 

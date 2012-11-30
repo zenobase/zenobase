@@ -2,6 +2,7 @@ package com.zenobase.json;
 
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.node.ObjectNode;
+import com.google.common.base.Preconditions;
 
 import com.zenobase.commands.Command;
 
@@ -28,7 +29,8 @@ public class CommandTypeField extends Field<Command.Type> {
 	}
 
 	@Override
-	protected JsonNode toJson(Command.Type value) {
+	public JsonNode toJson(Command.Type value) {
+		Preconditions.checkNotNull(value);
 		ObjectNode node = Nodes.newObject();
 		NAME.setValue(node, value.getName());
 		VERSION.setValue(node, value.getVersion());

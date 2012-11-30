@@ -40,7 +40,7 @@ public abstract class OAuthTaskManager extends TaskManager {
 
 	@Override
 	public String getAuthorizationUrl(Task task) {
-		return getAuthorizationUrl(new OAuthTask(task.toJson()));
+		return getAuthorizationUrl(task.as(OAuthTask.class));
 	}
 
 	private String getAuthorizationUrl(OAuthTask task) {
@@ -49,15 +49,19 @@ public abstract class OAuthTaskManager extends TaskManager {
 
 	@Override
 	public Command authorize(Task task, ObjectNode config) {
-		OAuthTask to = new OAuthTask(task.copy().toJson());
+		return authorize(task.as(OAuthTask.class), config);
+	}
+
+	private Command authorize(OAuthTask task, ObjectNode config) {
 		String token = config.get("oauth_token").getTextValue();
 		String verifier = config.get("oauth_verifier").getTextValue();
-		Preconditions.checkState(to.getToken().getToken().equals(token),
+		Preconditions.checkState(task.getToken().getToken().equals(token),
 			"Token matches in task %s, expected %s, got %s",
-			task.getId(), to.getToken().getToken(), token);
-		to.setToken(getAccessToken(to, verifier));
-		to.setState(Task.State.READY);
-		return new UpdateTaskCommand(task.getPrincipal(), task, to);
+			task.getId(), task.getToken().getToken(), token);
+		return UpdateTaskCommand.builder(task)
+			.set(Task.STATE, task.getState(), Task.State.READY)
+			.set(OAuthTask.TOKEN, task.getToken(), getAccessToken(task, verifier))
+			.build();
 	}
 
 	protected final Token getAccessToken(OAuthTask task, String verifier) {
@@ -79,12 +83,12 @@ public abstract class OAuthTaskManager extends TaskManager {
 	}
 
 	protected static ObjectNode parseObject(Response response) {
-		System.out.println("parse: " + response.getBody());
+		// System.out.println("parse: " + response.getBody());
 		return Nodes.readObject(response.getBody().getBytes());
 	}
 
 	protected static ArrayNode parseArray(Response response) {
-		System.out.println("parse: " + response.getBody());
+		// System.out.println("parse: " + response.getBody());
 		return Nodes.readArray(response.getBody().getBytes());
 	}
 }

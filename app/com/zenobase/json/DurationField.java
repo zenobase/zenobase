@@ -2,6 +2,7 @@ package com.zenobase.json;
 
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.node.LongNode;
+import org.codehaus.jackson.node.NullNode;
 import org.joda.time.Duration;
 
 public class DurationField extends Field<Duration> {
@@ -16,7 +17,7 @@ public class DurationField extends Field<Duration> {
 	}
 
 	@Override
-	protected JsonNode toJson(Duration value) {
-		return new LongNode(value.getMillis());
+	public JsonNode toJson(Duration value) {
+		return value != null ? new LongNode(value.getMillis()) : NullNode.getInstance();
 	}
 }

@@ -40,15 +40,15 @@ public class DummyTaskManager extends TaskManager {
 		if (tag == null) {
 			return null;
 		}
-		DummyTask to = new DummyTask(task.copy().toJson());
-		to.setTag(tag);
-		to.setState(Task.State.READY);
-		return new UpdateTaskCommand(task.getPrincipal(), task, to);
+		return UpdateTaskCommand.builder(task)
+			.set(Task.STATE, task.getState(), Task.State.READY)
+			.set(DummyTask.TAG, null, tag)
+			.build();
 	}
 
 	@Override
 	public Command execute(Task task) {
-		return execute(new DummyTask(task.toJson()));
+		return execute(task.as(DummyTask.class));
 	}
 
 	private Command execute(DummyTask task) {
@@ -59,9 +59,7 @@ public class DummyTaskManager extends TaskManager {
 		event.setValue(Event.SOURCE, SOURCE);
 		event.setValue(Event.TIMESTAMP, new DateTime(DateTimeZone.UTC));
 		event.setValue(Event.TAG, task.getTag());
-		DummyTask to = task.copy();
-		to.setUpdated(new DateTime(DateTimeZone.UTC));
-		command.add(new UpdateTaskCommand(task.getPrincipal(), task, to));
+		command.add(UpdateTaskCommand.builder(task).set(Task.UPDATED, task.getUpdated(), new DateTime(DateTimeZone.UTC)).build());
 		command.add(new CreateEventCommand(task.getPrincipal(), task.getBucketId(), event));
 		return command;
 	}

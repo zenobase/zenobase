@@ -1,6 +1,7 @@
 package com.zenobase.json;
 
 import org.codehaus.jackson.JsonNode;
+import org.codehaus.jackson.node.NullNode;
 import org.codehaus.jackson.node.ObjectNode;
 import org.codehaus.jackson.node.TextNode;
 
@@ -23,8 +24,8 @@ public class TokenField extends Field<String> {
 	}
 
 	@Override
-	protected JsonNode toJson(String value) {
-		return new TextNode(value);
+	public JsonNode toJson(String value) {
+		return value != null ? new TextNode(value) : NullNode.getInstance();
 	}
 
 	@Override

@@ -32,21 +32,26 @@ public class WithingsTaskManager extends OAuthTaskManager {
 
 	@Override
 	public Command authorize(Task task, ObjectNode config) {
-		WithingsTask to = new WithingsTask(task.copy().toJson());
+		return authorize(task.as(WithingsTask.class), config);
+	}
+
+	private Command authorize(WithingsTask task, ObjectNode config) {
 		String token = config.get("oauth_token").getTextValue();
 		String verifier = config.get("oauth_verifier").getTextValue();
-		Preconditions.checkState(to.getToken().getToken().equals(token),
+		int userId = config.get("userid").asInt();
+		Preconditions.checkState(task.getToken().getToken().equals(token),
 			"Token matches in task %s, expected %s, got %s",
-			task.getId(), to.getToken().getToken(), token);
-		to.setUserId(config.get("userid").asInt());
-		to.setToken(getAccessToken(to, verifier));
-		to.setState(Task.State.READY);
-		return new UpdateTaskCommand(task.getPrincipal(), task, to);
+			task.getId(), task.getToken().getToken(), token);
+		return UpdateTaskCommand.builder(task)
+			.set(Task.STATE, task.getState(), Task.State.READY)
+			.set(OAuthTask.TOKEN, task.getToken(), getAccessToken(task, verifier))
+			.set(WithingsTask.USER_ID, task.getUserId(), userId)
+			.build();
 	}
 
 	@Override
 	public Command execute(Task task) {
-		return execute(new WithingsTask(task.toJson()));
+		return execute(task.as(WithingsTask.class));
 	}
 
 	private Command execute(WithingsTask task) {
@@ -57,7 +62,7 @@ public class WithingsTaskManager extends OAuthTaskManager {
 
 	private static OAuthRequest createRequest(WithingsTask task) {
 		OAuthRequest request = new OAuthRequest(Verb.GET, "http://wbsapi.withings.net/measure");
-		request.addQuerystringParameter("userid", Integer.toString(task.getUserId()));
+		request.addQuerystringParameter("userid", task.getUserId().toString());
 		request.addQuerystringParameter("action", "getmeas");
 		request.addQuerystringParameter("devtype", "1"); // weight scale data
 		if (task.getMarker() != null) {
@@ -68,11 +73,12 @@ public class WithingsTaskManager extends OAuthTaskManager {
 
 	private static Command createCommand(WithingsTask task, WithingsResultNode result) {
 		CompoundCommand command = new CompoundCommand(task.getPrincipal(), "imported events from withings", "removed events imported from withings");
-		WithingsTask to = task.copy();
-		to.setUpdated(new DateTime(DateTimeZone.UTC));
-		to.setMarker(result.getMarker());
-		command.add(new UpdateTaskCommand(task.getPrincipal(), task, to));
+		command.add(UpdateTaskCommand.builder(task)
+			.set(Task.UPDATED, task.getUpdated(), new DateTime(DateTimeZone.UTC))
+			.set(WithingsTask.MARKER, task.getMarker(), result.getMarker())
+			.build());
 		for (Event event : result.getEvents()) {
+			// System.out.println("[event] " + event);
 			command.add(new CreateEventCommand(task.getPrincipal(), task.getBucketId(), event));
 		}
 		return command;

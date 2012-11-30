@@ -7,7 +7,6 @@ import org.joda.time.DateTime;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import com.zenobase.commands.Command;
 import com.zenobase.common.Generator;
 import com.zenobase.json.Nodes;
 
@@ -23,14 +22,13 @@ public class FoursquareTest extends TaskTestSupport {
 		Scanner scanner = new Scanner(System.in);
 		System.out.print("code=");
 		config.put("code", scanner.nextLine());
-		task = getTo(manager.authorize(task, config));
+		task = apply(manager.authorize(task, config), task);
 		manager.execute(task);
 	}
 
 	@Test
 	public void testExisting() {
 		FoursquareTaskManager manager = new FoursquareTaskManager(apiKey, apiSecret, callbackUrl);
-		Command command = manager.execute(new FoursquareTask(Generator.id(), Task.State.READY, bucketId, principal, getToken(), new DateTime().minusWeeks(1)));
-		System.out.println(command.toJson());
+		manager.execute(new FoursquareTask(Generator.id(), Task.State.READY, bucketId, principal, getToken(), new DateTime().minusWeeks(1)));
 	}
 }

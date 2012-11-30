@@ -1,6 +1,7 @@
 package com.zenobase.json;
 
 import org.codehaus.jackson.JsonNode;
+import org.codehaus.jackson.node.NullNode;
 import org.codehaus.jackson.node.ObjectNode;
 import org.codehaus.jackson.node.TextNode;
 import org.joda.time.DateTime;
@@ -21,8 +22,8 @@ public class DateTimeField extends Field<DateTime> {
 	}
 
 	@Override
-	protected JsonNode toJson(DateTime value) {
-		return new TextNode(value.toString());
+	public JsonNode toJson(DateTime value) {
+		return value != null ? new TextNode(value.toString()) : NullNode.getInstance();
 	}
 
 	@Override

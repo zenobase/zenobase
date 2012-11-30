@@ -23,7 +23,7 @@ public class TwitterTest extends TaskTestSupport {
 		config.put("oauth_token", scanner.nextLine());
 		System.out.print("oauth_verifier=");
 		config.put("oauth_verifier", scanner.nextLine());
-		task = getTo(manager.authorize(task, config));
+		task = apply(manager.authorize(task, config), task);
 		manager.execute(task);
 	}
 

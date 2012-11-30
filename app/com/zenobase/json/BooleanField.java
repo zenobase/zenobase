@@ -2,6 +2,7 @@ package com.zenobase.json;
 
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.node.BooleanNode;
+import org.codehaus.jackson.node.NullNode;
 
 public class BooleanField extends Field<Boolean> {
 
@@ -15,7 +16,7 @@ public class BooleanField extends Field<Boolean> {
 	}
 
 	@Override
-	protected JsonNode toJson(Boolean value) {
-		return BooleanNode.valueOf(value);
+	public JsonNode toJson(Boolean value) {
+		return value != null ? BooleanNode.valueOf(value) : NullNode.getInstance();
 	}
 }

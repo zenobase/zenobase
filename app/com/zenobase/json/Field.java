@@ -126,7 +126,7 @@ public abstract class Field<T> {
 		}
 	}
 
-	protected abstract JsonNode toJson(T value);
+	public abstract JsonNode toJson(T value);
 
 	public void configureSchema(ObjectNode schema) {
 		schema.put("type", schemaType);

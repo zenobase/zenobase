@@ -1,6 +1,7 @@
 package com.zenobase.json;
 
 import org.codehaus.jackson.JsonNode;
+import org.codehaus.jackson.node.NullNode;
 import org.codehaus.jackson.node.ObjectNode;
 import org.codehaus.jackson.node.TextNode;
 
@@ -18,8 +19,8 @@ public class IdentityField extends Field<Identity> {
 	}
 
 	@Override
-	protected JsonNode toJson(Identity value) {
-		return new TextNode(value.getId());
+	public JsonNode toJson(Identity value) {
+		return value != null ? new TextNode(value.getId()) : NullNode.getInstance();
 	}
 
 	@Override

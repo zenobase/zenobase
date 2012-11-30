@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.node.DecimalNode;
+import org.codehaus.jackson.node.NullNode;
 
 public class DecimalField extends Field<BigDecimal> {
 
@@ -17,7 +18,7 @@ public class DecimalField extends Field<BigDecimal> {
 	}
 
 	@Override
-	protected JsonNode toJson(BigDecimal value) {
-		return new DecimalNode(value);
+	public JsonNode toJson(BigDecimal value) {
+		return value != null ? new DecimalNode(value) : NullNode.getInstance();
 	}
 }

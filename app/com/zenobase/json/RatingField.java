@@ -2,6 +2,7 @@ package com.zenobase.json;
 
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.node.IntNode;
+import org.codehaus.jackson.node.NullNode;
 import org.codehaus.jackson.node.ObjectNode;
 
 import com.zenobase.models.Rating;
@@ -18,8 +19,8 @@ public class RatingField extends Field<Rating> {
 	}
 
 	@Override
-	protected JsonNode toJson(Rating value) {
-		return new IntNode(value.getValue());
+	public JsonNode toJson(Rating value) {
+		return value != null ? new IntNode(value.getValue()) : NullNode.getInstance();
 	}
 
 	@Override

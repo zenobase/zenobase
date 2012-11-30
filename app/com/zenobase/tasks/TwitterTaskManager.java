@@ -25,7 +25,7 @@ public class TwitterTaskManager extends OAuthTaskManager {
 
 	@Override
 	public Command execute(Task task) {
-		return execute(new TwitterTask(task.toJson()));
+		return execute(task.as(TwitterTask.class));
 	}
 
 	private Command execute(TwitterTask task) {

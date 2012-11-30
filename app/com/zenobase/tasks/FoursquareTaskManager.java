@@ -10,6 +10,7 @@ import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.scribe.builder.api.Foursquare2Api;
 import org.scribe.model.OAuthRequest;
+import org.scribe.model.Token;
 import org.scribe.model.Verb;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
@@ -46,16 +47,21 @@ public class FoursquareTaskManager extends OAuthTaskManager {
 
 	@Override
 	public Command authorize(Task task, ObjectNode config) {
-		OAuthTask to = new OAuthTask(task.copy().toJson());
+		return authorize(task.as(OAuthTask.class), config);
+	}
+
+	private Command authorize(OAuthTask task, ObjectNode config) {
 		String verifier = config.get("code").getTextValue();
-		to.setToken(getAccessToken(to, verifier));
-		to.setState(Task.State.READY);
-		return new UpdateTaskCommand(task.getPrincipal(), task, to);
+		Token token = getAccessToken(task, verifier);
+		return UpdateTaskCommand.builder(task)
+			.set(OAuthTask.TOKEN, task.getToken(), token)
+			.set(Task.STATE, task.getState(), Task.State.READY)
+			.build();
 	}
 
 	@Override
 	public Command execute(Task task) {
-		return execute(new FoursquareTask(task.toJson()));
+		return execute(task.as(FoursquareTask.class));
 	}
 
 	private Command execute(FoursquareTask task) {
@@ -76,9 +82,11 @@ public class FoursquareTaskManager extends OAuthTaskManager {
 		request.addQuerystringParameter("beforeTimestamp", format(marker));
 		request.addQuerystringParameter("offset", Integer.toString(offset));
 		request.addQuerystringParameter("limit", Integer.toString(LIMIT));
-		FoursquareCheckinsNode result = new FoursquareCheckinsNode(parseObject(request.send()), task.getPrincipal());
+		FoursquareResult result = new FoursquareResult(parseObject(request.send()), task.getPrincipal());
 		Preconditions.checkState(result.getStatus() == 200);
-		return events.addAll(result.getEvents()) && result.getCount() > offset + LIMIT;
+		List<Event> found = result.getEvents();
+		events.addAll(found);
+		return found.size() > LIMIT && result.getTotal() > offset + LIMIT;
 	}
 
 	private static String format(DateTime time) {
@@ -87,11 +95,11 @@ public class FoursquareTaskManager extends OAuthTaskManager {
 
 	private Command createCommand(FoursquareTask task, DateTime marker, List<Event> events) {
 		CompoundCommand command = new CompoundCommand(task.getPrincipal(), "imported events from foursquare", "removed events imported from foursquare");
-		FoursquareTask to = task.copy();
-		to.setUpdated(new DateTime(DateTimeZone.UTC));
-		to.setMarker(marker);
-		command.add(new UpdateTaskCommand(task.getPrincipal(), task, to));
+		command.add(UpdateTaskCommand.builder(task)
+			.set(Task.UPDATED, task.getUpdated(), new DateTime(DateTimeZone.UTC))
+			.set(FoursquareTask.MARKER, task.getMarker(), marker).build());
 		for (Event event : events) {
+			// System.out.println("[event] " + event);
 			command.add(new CreateEventCommand(task.getPrincipal(), task.getBucketId(), event));
 		}
 		return command;

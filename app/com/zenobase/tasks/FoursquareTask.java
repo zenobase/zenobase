@@ -5,14 +5,13 @@ import org.joda.time.DateTime;
 import org.scribe.model.Token;
 
 import com.zenobase.json.DateTimeField;
-import com.zenobase.json.Nodes;
 import com.zenobase.models.Identity;
 
 public class FoursquareTask extends OAuthTask {
 
 	public static final String TYPE = "foursquare";
 
-	private static final DateTimeField MARKER = new DateTimeField("marker");
+	public static final DateTimeField MARKER = new DateTimeField("marker");
 
 	public FoursquareTask(ObjectNode node) {
 		super(node);
@@ -20,24 +19,20 @@ public class FoursquareTask extends OAuthTask {
 
 	public FoursquareTask(String bucketId, Identity principal) {
 		super(TYPE, bucketId, principal);
-		setToken(Token.empty());
+		setConfigValue(TOKEN, Token.empty());
 	}
 
 	public FoursquareTask(String id, Task.State state, String bucketId, Identity principal, Token accessToken, DateTime marker) {
 		super(id, TYPE, state, bucketId, principal, accessToken);
-		setMarker(marker);
+		setConfigValue(MARKER, marker);
 	}
 
 	public DateTime getMarker() {
 		return getConfigValue(MARKER);
 	}
 
-	public void setMarker(DateTime marker) {
-		setConfigValue(MARKER, marker);
-	}
-
 	@Override
 	public FoursquareTask copy() {
-		return new FoursquareTask(Nodes.copy(toJson()));
+		return copy(getClass());
 	}
 }

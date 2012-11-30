@@ -2,6 +2,7 @@ package com.zenobase.json;
 
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.node.IntNode;
+import org.codehaus.jackson.node.NullNode;
 import org.codehaus.jackson.node.ObjectNode;
 
 public class IntegerField extends Field<Integer> {
@@ -23,8 +24,8 @@ public class IntegerField extends Field<Integer> {
 	}
 
 	@Override
-	protected JsonNode toJson(Integer value) {
-		return new IntNode(value);
+	public JsonNode toJson(Integer value) {
+		return value != null ? new IntNode(value) : NullNode.getInstance();
 	}
 
 	@Override

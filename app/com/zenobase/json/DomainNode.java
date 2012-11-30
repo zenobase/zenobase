@@ -1,5 +1,7 @@
 package com.zenobase.json;
 
+import java.lang.reflect.InvocationTargetException;
+
 import org.codehaus.jackson.node.ObjectNode;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
@@ -65,6 +67,11 @@ public class DomainNode {
 	}
 
 	@Override
+	public String toString() {
+		return toJson().toString();
+	}
+
+	@Override
 	public boolean equals(Object that) {
 		return that instanceof DomainNode &&
 			equals((DomainNode) that);
@@ -77,5 +84,27 @@ public class DomainNode {
 	@Override
 	public int hashCode() {
 		return node.hashCode();
+	}
+
+	protected <T extends DomainNode> T copy(Class<T> type) {
+		return as(type, Nodes.copy(node));
+	}
+
+	public <T extends DomainNode> T as(Class<T> type) {
+		return as(type, node);
+	}
+
+	private static <T extends DomainNode> T as(Class<T> type, ObjectNode node) {
+		try {
+			return type.getConstructor(ObjectNode.class).newInstance(node);
+		} catch (InstantiationException e) {
+			throw new AssertionError(e);
+		} catch (IllegalAccessException e) {
+			throw new AssertionError(e);
+		} catch (InvocationTargetException e) {
+			throw new AssertionError(e);
+		} catch (NoSuchMethodException e) {
+			throw new AssertionError(e);
+		}
 	}
 }

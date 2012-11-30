@@ -1,6 +1,7 @@
 package com.zenobase.json;
 
 import org.codehaus.jackson.JsonNode;
+import org.codehaus.jackson.node.NullNode;
 import org.codehaus.jackson.node.ObjectNode;
 import org.codehaus.jackson.node.TextNode;
 import org.joda.time.LocalDate;
@@ -17,8 +18,8 @@ public class LocalDateField extends Field<LocalDate> {
 	}
 
 	@Override
-	protected JsonNode toJson(LocalDate value) {
-		return new TextNode(value.toString());
+	public JsonNode toJson(LocalDate value) {
+		return value != null ? new TextNode(value.toString()) : NullNode.getInstance();
 	}
 
 	@Override

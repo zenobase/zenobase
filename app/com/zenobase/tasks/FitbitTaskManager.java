@@ -36,7 +36,7 @@ public class FitbitTaskManager extends OAuthTaskManager {
 
 	@Override
 	public Command execute(Task task) {
-		return execute(new FitbitTask(task.toJson()));
+		return execute(task.as(FitbitTask.class));
 	}
 
 	private Command execute(FitbitTask task) {
@@ -55,7 +55,7 @@ public class FitbitTaskManager extends OAuthTaskManager {
 		service.signRequest(task.getToken(), profileRequest);
 		Response profileResponse = profileRequest.send();
 		Preconditions.checkState(profileResponse.isSuccessful());
-		FitbitProfileNode profile = new FitbitProfileNode(parseObject(profileResponse));
+		FitbitProfileResult profile = new FitbitProfileResult(parseObject(profileResponse));
 
 		for (LocalDate date = fromDate.plusDays(1); !date.isAfter(lastDate); date = date.plusDays(1)) {
 
@@ -63,24 +63,23 @@ public class FitbitTaskManager extends OAuthTaskManager {
 			service.signRequest(task.getToken(), sleepRequest);
 			Response sleepResponse = sleepRequest.send();
 			Preconditions.checkState(sleepResponse.isSuccessful());
-			events.addAll(new FitbitSleepNode(parseObject(sleepResponse), task.getPrincipal(), profile.getTimezone()).getEvents());
+			events.addAll(new FitbitSleepResult(parseObject(sleepResponse), task.getPrincipal(), profile.getTimezone()).getEvents());
 
-			// intraday: "https://api.fitbit.com/1/user/-/activities/calories/date/" + date + "/" + date + ".json"
 			OAuthRequest activitiesRequest = new OAuthRequest(Verb.GET, "https://api.fitbit.com/1/user/-/activities/date/" + date + ".json");
 			activitiesRequest.addHeader("Accept-Language", profile.getDistanceLocale());
 			service.signRequest(task.getToken(), activitiesRequest);
-			Response stepsResponse = activitiesRequest.send();
-			Preconditions.checkState(stepsResponse.isSuccessful());
-			events.addAll(new FitbitStepsNode(parseObject(stepsResponse), task.getPrincipal(), date.toDateTimeAtStartOfDay(profile.getTimezone()), profile.getDistanceUnit(), profile.getHeightUnit()).getEvents());
+			Response activitiesResponse = activitiesRequest.send();
+			Preconditions.checkState(activitiesResponse.isSuccessful());
+			events.addAll(new FitbitActivitiesResult(parseObject(activitiesResponse), task.getPrincipal(), date.toDateTimeAtStartOfDay(profile.getTimezone()), profile.getDistanceUnit(), profile.getHeightUnit()).getEvents());
 		}
 
 		CompoundCommand command = new CompoundCommand(task.getPrincipal(), "imported events from fitbit", "removed events imported from fitbit");
-		FitbitTask to = task.copy();
-		to.setUpdated(new DateTime(DateTimeZone.UTC));
-		to.setMarker(lastDate);
-		command.add(new UpdateTaskCommand(task.getPrincipal(), task, to));
-
+		command.add(UpdateTaskCommand.builder(task)
+			.set(Task.UPDATED, task.getUpdated(), new DateTime(DateTimeZone.UTC))
+			.set(FitbitTask.MARKER, task.getMarker(), lastDate)
+			.build());
 		for (Event event : events) {
+			// System.out.println("[event] " + event);
 			command.add(new CreateEventCommand(task.getPrincipal(), task.getBucketId(), event));
 		}
 

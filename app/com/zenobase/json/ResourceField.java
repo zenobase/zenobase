@@ -1,6 +1,7 @@
 package com.zenobase.json;
 
 import org.codehaus.jackson.JsonNode;
+import org.codehaus.jackson.node.NullNode;
 import org.codehaus.jackson.node.ObjectNode;
 
 import com.zenobase.models.Resource;
@@ -28,10 +29,16 @@ public class ResourceField extends Field<Resource> {
 	}
 
 	@Override
-	protected JsonNode toJson(Resource value) {
+	public JsonNode toJson(Resource value) {
+		return value != null
+			? toJson(value.getTitle(), value.getUrl())
+			: NullNode.getInstance();
+	}
+
+	private static JsonNode toJson(String title, String url) {
 		ObjectNode node = Nodes.newObject();
-		TITLE.setValue(node, value.getTitle());
-		URL.setValue(node, value.getUrl());
+		TITLE.setValue(node, title);
+		URL.setValue(node, url);
 		return node;
 	}
 }

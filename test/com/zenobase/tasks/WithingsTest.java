@@ -25,7 +25,7 @@ public class WithingsTest extends TaskTestSupport {
 		config.put("oauth_verifier", scanner.nextLine());
 		System.out.print("userid=");
 		config.put("userid", scanner.nextLine());
-		task = getTo(manager.authorize(task, config));
+		task = apply(manager.authorize(task, config), task);
 		manager.execute(task);
 	}
 

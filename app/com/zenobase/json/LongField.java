@@ -2,6 +2,7 @@ package com.zenobase.json;
 
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.node.LongNode;
+import org.codehaus.jackson.node.NullNode;
 import org.codehaus.jackson.node.ObjectNode;
 
 public class LongField extends Field<Long> {
@@ -23,8 +24,8 @@ public class LongField extends Field<Long> {
 	}
 
 	@Override
-	protected JsonNode toJson(Long value) {
-		return new LongNode(value);
+	public JsonNode toJson(Long value) {
+		return value != null ? new LongNode(value) : NullNode.getInstance();
 	}
 
 	@Override

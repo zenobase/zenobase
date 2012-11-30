@@ -36,7 +36,7 @@ public class Nodes {
 		try {
 			return (T) MAPPER.readTree(node.traverse());
 		} catch (IOException e) {
-			throw new AssertionError();
+			throw new AssertionError(e);
 		}
 	}
 
@@ -45,7 +45,7 @@ public class Nodes {
 		try {
 			MAPPER.writer().writeValue(out, node);
 		} catch (IOException e) {
-			throw new AssertionError();
+			throw new AssertionError(e);
 		}
 		return out.toByteArray();
 	}

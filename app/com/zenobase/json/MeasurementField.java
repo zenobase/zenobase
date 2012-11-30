@@ -1,9 +1,13 @@
 package com.zenobase.json;
 
+import java.math.BigDecimal;
+
 import javax.measure.DecimalMeasure;
 import javax.measure.quantity.Quantity;
+import javax.measure.unit.Unit;
 
 import org.codehaus.jackson.JsonNode;
+import org.codehaus.jackson.node.NullNode;
 import org.codehaus.jackson.node.ObjectNode;
 
 import com.zenobase.common.Measures;
@@ -37,10 +41,16 @@ public class MeasurementField<Q extends Quantity> extends Field<DecimalMeasure<Q
 	}
 
 	@Override
-	protected JsonNode toJson(DecimalMeasure<Q> value) {
+	public JsonNode toJson(DecimalMeasure<Q> value) {
+		return value != null
+			? toJson(value.getValue(), value.getUnit())
+			: NullNode.getInstance();
+	}
+
+	private static JsonNode toJson(BigDecimal value, Unit<?> unit) {
 		ObjectNode node = Nodes.newObject();
-		VALUE.setValue(node, value.getValue());
-		UNIT.setValue(node, value.getUnit().toString());
+		VALUE.setValue(node, value);
+		UNIT.setValue(node, unit.toString());
 		return node;
 	}
 

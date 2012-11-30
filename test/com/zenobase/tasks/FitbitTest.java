@@ -24,13 +24,13 @@ public class FitbitTest extends TaskTestSupport {
 		config.put("oauth_token", scanner.nextLine());
 		System.out.print("oauth_verifier=");
 		config.put("oauth_verifier", scanner.nextLine());
-		task = getTo(manager.authorize(task, config));
+		task = apply(manager.authorize(task, config), task);
 		manager.execute(task);
 	}
 
 	@Test
 	public void testExisting() {
 		TaskManager manager = new FitbitTaskManager(apiKey, apiSecret, callbackUrl);
-		manager.execute(new FitbitTask(Generator.id(), Task.State.READY, bucketId, principal, getToken(), LocalDate.now().minusWeeks(1)));
+		manager.execute(new FitbitTask(Generator.id(), Task.State.READY, bucketId, principal, getToken(), LocalDate.now().minusDays(3)));
 	}
 }

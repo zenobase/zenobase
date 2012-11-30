@@ -4,6 +4,7 @@ import java.util.Map;
 
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.node.ObjectNode;
+import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 
@@ -50,7 +51,8 @@ public abstract class MapField<K, V> extends Field<Map.Entry<K, V>> {
 	}
 
 	@Override
-	protected JsonNode toJson(Map.Entry<K, V> entry) {
+	public JsonNode toJson(Map.Entry<K, V> entry) {
+		Preconditions.checkNotNull(entry);
 		ObjectNode node = Nodes.newObject();
 		keyField.setValue(node, entry.getKey());
 		valueField.setValue(node, entry.getValue());

@@ -4,12 +4,10 @@ import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.node.NullNode;
 import org.codehaus.jackson.node.ObjectNode;
 
-import com.zenobase.models.Resource;
+public class JsonField extends Field<JsonNode> {
 
-public class ObjectField extends Field<ObjectNode> {
-
-	public ObjectField(String name) {
-		super(name, Resource.class, "object");
+	public JsonField(String name) {
+		super(name, JsonNode.class, "object");
 	}
 
 	@Override
@@ -19,12 +17,12 @@ public class ObjectField extends Field<ObjectNode> {
 	}
 
 	@Override
-	protected ObjectNode getValue(JsonNode node) {
-		return (ObjectNode) node;
+	protected JsonNode getValue(JsonNode node) {
+		return node;
 	}
 
 	@Override
-	public JsonNode toJson(ObjectNode value) {
+	public JsonNode toJson(JsonNode value) {
 		return value != null ? value : NullNode.getInstance();
 	}
 }
