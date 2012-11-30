@@ -57,7 +57,7 @@ public class WithingsTaskManager extends OAuthTaskManager {
 	private Command execute(WithingsTask task) {
 		OAuthRequest request = createRequest(task);
 		getService(task).signRequest(task.getToken(), request);
-		return createCommand(task, new WithingsResultNode(task.getPrincipal(), parseObject(request.send())));
+		return createCommand(task, new WithingsResult(task.getPrincipal(), parseObject(request.send())));
 	}
 
 	private static OAuthRequest createRequest(WithingsTask task) {
@@ -71,7 +71,7 @@ public class WithingsTaskManager extends OAuthTaskManager {
 		return request;
 	}
 
-	private static Command createCommand(WithingsTask task, WithingsResultNode result) {
+	private static Command createCommand(WithingsTask task, WithingsResult result) {
 		CompoundCommand command = new CompoundCommand(task.getPrincipal(), "imported events from withings", "removed events imported from withings");
 		command.add(UpdateTaskCommand.builder(task)
 			.set(Task.UPDATED, task.getUpdated(), new DateTime(DateTimeZone.UTC))

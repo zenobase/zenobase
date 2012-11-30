@@ -18,14 +18,14 @@ import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
 import com.zenobase.models.Resource;
 
-class WithingsResultNode {
+class WithingsResult {
 
 	private static final Resource SOURCE = new Resource("Withings", "http://withings.com/");
 
 	private final Identity author;
 	private final ObjectNode node;
 
-	public WithingsResultNode(Identity author, ObjectNode node) {
+	public WithingsResult(Identity author, ObjectNode node) {
 		this.author = author;
 		this.node = node;
 		Preconditions.checkState(node.get("status").getIntValue() == 0);
