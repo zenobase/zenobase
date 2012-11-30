@@ -26,7 +26,7 @@ public abstract class UpdateCommandSupport extends Command {
 		super(node);
 	}
 
-	protected UpdateCommandSupport(Type type, Identity principal) {
+	protected UpdateCommandSupport(Command.Type type, Identity principal) {
 		super(type, principal);
 	}
 
