@@ -60,7 +60,11 @@ public class Event extends DomainNode {
 		ImmutableSet.<Field<?>>of(ID, VERSION, AUTHOR, SOURCE, TIMESTAMP, DURATION, FREQUENCY, VELOCITY, BITS, COUNT, LOCATION, TAG, RESOURCE, DISTANCE, HEIGHT, WEIGHT, VOLUME, CONCENTRATION, PRESSURE, ENERGY, TEMPERATURE, RATING, NOTE);
 
 	public Event() {
-		setValue(ID, Generator.id());
+		this(Generator.id());
+	}
+
+	public Event(String id) {
+		setValue(ID, id);
 	}
 
 	public Event(ObjectNode node) {

@@ -5,7 +5,9 @@ import java.util.List;
 
 import javax.measure.DecimalMeasure;
 import javax.measure.quantity.Mass;
+import javax.measure.quantity.Quantity;
 import javax.measure.unit.SI;
+import javax.measure.unit.Unit;
 
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.node.ObjectNode;
@@ -20,8 +22,11 @@ import com.zenobase.models.Resource;
 
 class WithingsResult {
 
-	private static final Resource SOURCE = new Resource("Withings", "http://withings.com/");
+	public static final Resource SOURCE = new Resource("Withings", "http://withings.com/");
 
+	private final String tag = "body";
+	private final Unit<Mass> unit = SI.KILOGRAM;
+	private final DateTimeZone timezone = DateTimeZone.UTC;
 	private final Identity author;
 	private final ObjectNode node;
 
@@ -31,22 +36,26 @@ class WithingsResult {
 		Preconditions.checkState(node.get("status").getIntValue() == 0);
 	}
 
+	public Long getMarker() {
+		return node.path(tag).path("updatetime").getLongValue();
+	}
+
 	public List<Event> getEvents() {
 		List<Event> events = Lists.newArrayList();
-		for (JsonNode group : node.path("body").path("measuregrps")) {
-			addEvents((ObjectNode) group, events);
+		for (JsonNode group : node.path(tag).path("measuregrps")) {
+			addEvents(group, events);
 		}
 		return events;
 	}
 
-	private void addEvents(ObjectNode node, List<Event> events) {
+	private void addEvents(JsonNode node, List<Event> events) {
 		for (JsonNode measure : node.path("measures")) {
 			switch (measure.path("type").getIntValue()) {
 				case 1: // weight
 					Event event = new Event();
-					event.setValue(Event.TAG, "body");
-					event.setValue(Event.WEIGHT, new DecimalMeasure<Mass>(getBigDecimal((ObjectNode) measure), SI.KILOGRAM));
-					event.setValue(Event.TIMESTAMP, new DateTime(node.path("date").getLongValue() * 1000, DateTimeZone.UTC));
+					event.setValue(Event.TAG, tag);
+					event.setValue(Event.WEIGHT, getDecimalMeasure(measure, unit));
+					event.setValue(Event.TIMESTAMP, getDateTime(node, timezone));
 					event.setValue(Event.AUTHOR, author);
 					event.setValue(Event.SOURCE, SOURCE);
 					events.add(event);
@@ -54,13 +63,18 @@ class WithingsResult {
 		}
 	}
 
-	private static BigDecimal getBigDecimal(ObjectNode node) {
-		int value = node.path("value").getIntValue();
-		int scale = node.path("unit").getIntValue();
-		return BigDecimal.valueOf(value, -scale);
+	private static <T extends Quantity> DecimalMeasure<T> getDecimalMeasure(JsonNode measure, Unit<T> unit) {
+		BigDecimal value = getBigDecimal(measure);
+		return value != null ? new DecimalMeasure<T>(value, unit) : null;
 	}
 
-	public Long getMarker() {
-		return node.path("body").path("updatetime").getLongValue();
+	private static BigDecimal getBigDecimal(JsonNode node) {
+		int value = node.path("value").getIntValue();
+		int scale = node.path("unit").getIntValue();
+		return value != 0 ? BigDecimal.valueOf(value, -scale) : null;
+	}
+
+	private static DateTime getDateTime(JsonNode node, DateTimeZone timezone) {
+		return new DateTime(node.path("date").getLongValue() * 1000, timezone);
 	}
 }
