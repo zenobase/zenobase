@@ -6,7 +6,6 @@ import org.codehaus.jackson.node.ObjectNode;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import com.zenobase.common.Generator;
 import com.zenobase.json.Nodes;
 
 public class TwitterTest extends TaskTestSupport {
@@ -30,6 +29,6 @@ public class TwitterTest extends TaskTestSupport {
 	@Test
 	public void testExisting() {
 		TaskManager manager = new TwitterTaskManager(apiKey, apiSecret, callbackUrl);
-		manager.execute(new TwitterTask(Generator.id(), Task.State.READY, bucketId, principal, getToken()));
+		manager.execute(new TwitterTask(bucketId, principal, getToken()));
 	}
 }

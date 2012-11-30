@@ -4,6 +4,7 @@ import org.codehaus.jackson.node.ObjectNode;
 import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
 
+import com.zenobase.json.Field;
 import com.zenobase.models.Identity;
 import com.zenobase.services.TaskRepository;
 import com.zenobase.tasks.Task;
@@ -16,19 +17,19 @@ public class UpdateTaskCommand extends UpdateCommandSupport {
 		super(node);
 	}
 
-	private UpdateTaskCommand(Identity principal, String taskId, Iterable<UpdateCommandSupport.Change> patches) {
-		super(TYPE, principal, taskId, patches);
+	private UpdateTaskCommand(Identity principal, String taskId, String field, Iterable<UpdateCommandSupport.Change> patches) {
+		super(TYPE, principal, taskId, field, patches);
 	}
 
 	@Override
-	protected Command newInstance(Identity principal, String objectId, Iterable<UpdateCommandSupport.Change> patches) {
-		return new UpdateTaskCommand(principal, objectId, patches);
+	protected Command newInstance(Identity principal, String objectId, String field, Iterable<UpdateCommandSupport.Change> patches) {
+		return new UpdateTaskCommand(principal, objectId, field, patches);
 	}
 
 	public Task apply(Task task) {
 		Task changed = task.copy();
 		for (UpdateCommandSupport.Change change : getChanges()) {
-			change.apply(changed.toJson().with(Task.CONFIG.getName()));
+			change.apply(changed.toJson().with(Task.SETTINGS.getName()));
 		}
 		return changed;
 	}
@@ -39,10 +40,14 @@ public class UpdateTaskCommand extends UpdateCommandSupport {
 	}
 
 	public static Builder<UpdateTaskCommand> builder(final Task task) {
+		return builder(task, null);
+	}
+
+	public static Builder<UpdateTaskCommand> builder(final Task task, final Field<?> field) {
 		return new Builder<UpdateTaskCommand>() {
 			@Override
 			public UpdateTaskCommand build() {
-				return new UpdateTaskCommand(task.getPrincipal(), task.getId(), getPatches());
+				return new UpdateTaskCommand(task.getPrincipal(), task.getId(), field != null ? field.getName() : null, getPatches());
 			}
 		};
 	}

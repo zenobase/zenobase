@@ -36,8 +36,8 @@ class WithingsResult {
 		Preconditions.checkState(node.get("status").getIntValue() == 0);
 	}
 
-	public Long getMarker() {
-		return node.path(tag).path("updatetime").getLongValue();
+	public String getMarker() {
+		return node.path(tag).path("updatetime").asText();
 	}
 
 	public List<Event> getEvents() {

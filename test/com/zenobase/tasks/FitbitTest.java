@@ -7,7 +7,6 @@ import org.joda.time.LocalDate;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import com.zenobase.common.Generator;
 import com.zenobase.json.Nodes;
 
 public class FitbitTest extends TaskTestSupport {
@@ -31,6 +30,6 @@ public class FitbitTest extends TaskTestSupport {
 	@Test
 	public void testExisting() {
 		TaskManager manager = new FitbitTaskManager(apiKey, apiSecret, callbackUrl);
-		manager.execute(new FitbitTask(Generator.id(), Task.State.READY, bucketId, principal, getToken(), LocalDate.now().minusDays(3)));
+		manager.execute(new FitbitTask(bucketId, principal, getToken(), LocalDate.now().minusDays(3).toString()));
 	}
 }

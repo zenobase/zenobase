@@ -7,7 +7,6 @@ import org.joda.time.DateTime;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import com.zenobase.common.Generator;
 import com.zenobase.json.Nodes;
 
 public class FoursquareTest extends TaskTestSupport {
@@ -29,6 +28,6 @@ public class FoursquareTest extends TaskTestSupport {
 	@Test
 	public void testExisting() {
 		FoursquareTaskManager manager = new FoursquareTaskManager(apiKey, apiSecret, callbackUrl);
-		manager.execute(new FoursquareTask(Generator.id(), Task.State.READY, bucketId, principal, getToken(), new DateTime().minusDays(1)));
+		manager.execute(new FoursquareTask(bucketId, principal, getToken(), FoursquareTaskManager.formatMarker(DateTime.now().minusDays(1))));
 	}
 }

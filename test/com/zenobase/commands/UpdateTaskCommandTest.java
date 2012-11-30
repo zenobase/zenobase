@@ -9,7 +9,6 @@ import com.zenobase.common.Generator;
 import com.zenobase.models.Identity;
 import com.zenobase.services.TaskRepository;
 import com.zenobase.tasks.Task;
-import com.zenobase.tasks.Task.State;
 
 public class UpdateTaskCommandTest {
 
@@ -22,15 +21,15 @@ public class UpdateTaskCommandTest {
 	public void test() {
 
 		Task from = new Task("do nothing", Generator.id(), principal);
-		from.setUpdated(DateTime.now().minusDays(1));
+		from.setCompleted(DateTime.now().minusDays(1));
 
 		Task to = from.copy();
-		to.setUpdated(DateTime.now());
-		to.setState(State.READY);
+		to.setCompleted(DateTime.now());
+		to.setEnabled(true);
 
 		Command command = UpdateTaskCommand.builder(from)
-			.set(Task.UPDATED, from.getUpdated(), to.getUpdated())
-			.set(Task.STATE, from.getState(), to.getState())
+			.set(Task.COMPLETED, from.getCompleted(), to.getCompleted())
+			.set(Task.ENABLED, from.isEnabled(), to.isEnabled())
 			.build();
 		when(tasks.findTask(from.getId())).thenReturn(from.copy());
 		registry.execute(command);

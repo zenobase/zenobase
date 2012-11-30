@@ -14,7 +14,6 @@ import com.zenobase.commands.Command;
 import com.zenobase.commands.UpdateTaskCommand;
 import com.zenobase.json.Nodes;
 import com.zenobase.models.Identity;
-import com.zenobase.tasks.Task.State;
 
 public abstract class OAuthTaskManager extends TaskManager {
 
@@ -33,7 +32,6 @@ public abstract class OAuthTaskManager extends TaskManager {
 	@Override
 	public Task newTask(String bucketId, Identity principal) {
 		OAuthTask task = new OAuthTask(getType(), bucketId, principal);
-		task.setState(State.UNAUTHORIZED);
 		task.setToken(getService(task).getRequestToken());
 		return task;
 	}
@@ -49,6 +47,7 @@ public abstract class OAuthTaskManager extends TaskManager {
 
 	@Override
 	public Command authorize(Task task, ObjectNode config) {
+		Preconditions.checkState(!task.isEnabled(), "Task is already enabled: %s", task.getId());
 		return authorize(task.as(OAuthTask.class), config);
 	}
 
@@ -59,8 +58,8 @@ public abstract class OAuthTaskManager extends TaskManager {
 			"Token matches in task %s, expected %s, got %s",
 			task.getId(), task.getToken().getToken(), token);
 		return UpdateTaskCommand.builder(task)
-			.set(Task.STATE, task.getState(), Task.State.READY)
-			.set(OAuthTask.TOKEN, task.getToken(), getAccessToken(task, verifier))
+			.set(Task.ENABLED, task.isEnabled(), true)
+			.set(OAuthTask.TOKEN, task.getToken(), getAccessToken(task, verifier)) // TODO Task.CREDENTIALS
 			.build();
 	}
 

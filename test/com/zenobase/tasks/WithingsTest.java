@@ -6,7 +6,6 @@ import org.codehaus.jackson.node.ObjectNode;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import com.zenobase.common.Generator;
 import com.zenobase.json.Nodes;
 
 public class WithingsTest extends TaskTestSupport {
@@ -32,6 +31,6 @@ public class WithingsTest extends TaskTestSupport {
 	@Test
 	public void testExisting() {
 		TaskManager manager = new WithingsTaskManager(apiKey, apiSecret, callbackUrl);
-		manager.execute(new WithingsTask(Generator.id(), Task.State.READY, bucketId, principal, getToken(), 1317928, 1353555281L));
+		manager.execute(new WithingsTask(bucketId, principal, getToken(), 1317928, "1353555281"));
 	}
 }

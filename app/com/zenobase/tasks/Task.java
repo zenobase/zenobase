@@ -5,12 +5,12 @@ import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 
 import com.zenobase.common.Generator;
+import com.zenobase.json.BooleanField;
 import com.zenobase.json.DateTimeField;
 import com.zenobase.json.DomainNode;
 import com.zenobase.json.EnumField;
 import com.zenobase.json.Field;
 import com.zenobase.json.IdentityField;
-import com.zenobase.json.Nodes;
 import com.zenobase.json.ObjectField;
 import com.zenobase.json.Schema;
 import com.zenobase.json.SchemaBuilder;
@@ -23,30 +23,29 @@ public class Task extends DomainNode {
 
 	public static final TokenField ID = new TokenField("@id", false);
 	public static final TokenField TYPE = new TokenField("type");
-	public static final EnumField<State> STATE = EnumField.newInstance("state", State.class);
 	public static final TokenField BUCKET = new TokenField("bucket");
 	public static final IdentityField PRINCIPAL = new IdentityField("principal");
 	public static final DateTimeField CREATED = new DateTimeField("created");
-	public static final DateTimeField UPDATED = new DateTimeField("updated");
-	public static final ObjectField CONFIG = new ObjectField("config");
+	public static final BooleanField ENABLED = new BooleanField("enabled");
+
+	public static final ObjectField CREDENTIALS = new ObjectField("credentials");
+	public static final ObjectField SETTINGS = new ObjectField("settings");
+
+	public static final DateTimeField COMPLETED = new DateTimeField("completed");
+	public static final EnumField<Status> STATUS = EnumField.newInstance("status", Status.class);
+	public static final TokenField MARKER = new TokenField("marker");
 
 	public Task(ObjectNode node) {
 		super(node);
 	}
 
 	public Task(String type, String bucketId, Identity principal) {
-		this(Generator.id(), type, State.READY, bucketId, principal);
-	}
-
-	public Task(String id, String type, State state, String bucketId, Identity principal) {
-		setValue(ID, id);
+		setValue(ID, Generator.id());
 		setValue(TYPE, type);
 		setValue(BUCKET, bucketId);
 		setValue(PRINCIPAL, principal);
-		DateTime timestamp = new DateTime(DateTimeZone.UTC);
-		setValue(CREATED, timestamp);
-		setState(state);
-		setUpdated(timestamp);
+		setValue(CREATED, new DateTime(DateTimeZone.UTC));
+		setValue(ENABLED, true);
 	}
 
 	public String getId() {
@@ -69,34 +68,52 @@ public class Task extends DomainNode {
 		return getValue(CREATED);
 	}
 
-	public State getState() {
-		return getConfigValue(STATE);
+	public boolean isEnabled() {
+		return getValue(ENABLED);
 	}
 
-	public void setState(State state) {
-		setConfigValue(STATE, state);
+	public void setEnabled(boolean enabled) {
+		setValue(ENABLED, enabled ? Boolean.TRUE : null);
 	}
 
-	public DateTime getUpdated() {
-		return getConfigValue(UPDATED);
+	public DateTime getCompleted() {
+		return getValue(COMPLETED);
 	}
 
-	public void setUpdated(DateTime updated) {
-		setConfigValue(UPDATED, updated);
+	public void setCompleted(DateTime completed) {
+		setValue(COMPLETED, completed);
 	}
 
-	public <T> T getConfigValue(Field<T> field) {
-		ObjectNode config = getValue(CONFIG);
-		return config != null ? field.getValue(config) : null;
+	public Status getStatus() {
+		return getValue(STATUS);
 	}
 
-	public <T> void setConfigValue(Field<T> field, T value) {
-		ObjectNode config = getValue(CONFIG);
-		if (config == null) {
-			config = Nodes.newObject();
-			setValue(CONFIG, config);
-		}
-		field.setValue(config, value);
+	public void setStatus(Status status) {
+		setValue(STATUS, status);
+	}
+
+	public String getMarker() {
+		return getValue(MARKER);
+	}
+
+	public void setMarker(String marker) {
+		setValue(MARKER, marker);
+	}
+
+	protected <T> T getCredential(Field<T> field) {
+		return getValue(CREDENTIALS, field);
+	}
+
+	protected <T> void setCredential(Field<T> field, T value) {
+		setValue(CREDENTIALS, field, value);
+	}
+
+	protected <T> T getSetting(Field<T> field) {
+		return getValue(SETTINGS, field);
+	}
+
+	protected <T> void setSetting(Field<T> field, T value) {
+		setValue(SETTINGS, field, value);
 	}
 
 	public Task copy() {
@@ -105,14 +122,13 @@ public class Task extends DomainNode {
 
 	public static Schema getSchema() {
 		return new SchemaBuilder(TYPE_NAME)
-			.add(VERSION).add(ID).add(TYPE).add(STATE)
-			.add(BUCKET).add(PRINCIPAL)
-			.add(CREATED).add(UPDATED)
-			.add(CONFIG).build();
+			.add(VERSION).add(ID).add(TYPE).add(BUCKET).add(PRINCIPAL).add(CREATED)
+			.add(COMPLETED).add(STATUS).add(MARKER)
+			.add(CREDENTIALS).add(SETTINGS).build();
 	}
 
-	public enum State {
-		UNAUTHORIZED,
-		READY
+	public enum Status {
+		SUCCESS,
+		FAILED
 	}
 }

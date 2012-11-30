@@ -20,22 +20,28 @@ import com.zenobase.models.Identity;
 public abstract class UpdateCommandSupport extends Command {
 
 	private static final TokenField OBJECT_ID = new TokenField("object");
+	private static final TokenField FIELD = new TokenField("field");
 	private static final ChangeField CHANGES = new ChangeField("changes");
 
 	protected UpdateCommandSupport(ObjectNode node) {
 		super(node);
 	}
 
-	protected UpdateCommandSupport(Command.Type type, Identity principal, String objectId, Iterable<Change> patches) {
+	protected UpdateCommandSupport(Command.Type type, Identity principal, String objectId, String field, Iterable<Change> patches) {
 		super(type, principal);
 		setParameter(OBJECT_ID, objectId);
+		setParameter(FIELD, field);
 		addParameters(CHANGES, patches);
 	}
 
-	protected abstract Command newInstance(Identity principal, String objectId, Iterable<Change> patches);
+	protected abstract Command newInstance(Identity principal, String objectId, String field, Iterable<Change> patches);
 
 	protected String getObjectId() {
 		return getParameter(OBJECT_ID);
+	}
+
+	protected String getField() {
+		return getValue(FIELD);
 	}
 
 	protected ImmutableList<Change> getChanges() {
@@ -44,7 +50,7 @@ public abstract class UpdateCommandSupport extends Command {
 
 	@Override
 	public Command reverse(Identity principal) {
-		return newInstance(principal, getObjectId(), Iterables.transform(Lists.reverse(getChanges()), new Function<Change, Change>() {
+		return newInstance(principal, getObjectId(), getField(), Iterables.transform(Lists.reverse(getChanges()), new Function<Change, Change>() {
 			@Override
 			public Change apply(Change change) {
 				return change.reverse();

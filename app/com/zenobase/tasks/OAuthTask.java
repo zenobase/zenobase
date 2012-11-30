@@ -18,21 +18,21 @@ public class OAuthTask extends Task {
 		super(node);
 	}
 
-	protected OAuthTask(String type, String bucketId, Identity principal) {
+	public OAuthTask(String type, String bucketId, Identity principal) {
 		super(type, bucketId, principal);
 	}
 
-	protected OAuthTask(String id, String type, Task.State state, String bucketId, Identity principal, Token token) {
-		super(id, type, state, bucketId, principal);
+	protected OAuthTask(String type, String bucketId, Identity principal, Token token) {
+		super(type, bucketId, principal);
 		setToken(token);
 	}
 
 	public Token getToken() {
-		return getConfigValue(TOKEN);
+		return getCredential(TOKEN);
 	}
 
 	public void setToken(Token token) {
-		setConfigValue(TOKEN, token);
+		setCredential(TOKEN, token);
 	}
 
 	private static class OAuthTokenField extends Field<Token> {

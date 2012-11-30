@@ -20,12 +20,11 @@ public class DummyTask extends Task {
 	}
 
 	public String getTag() {
-		return getConfigValue(TAG);
+		return getSetting(TAG);
 	}
 
 	public void setTag(String tag) {
-		setState(tag != null ? State.READY : State.UNAUTHORIZED);
-		setConfigValue(TAG, tag);
+		setSetting(TAG, tag);
 	}
 
 	@Override

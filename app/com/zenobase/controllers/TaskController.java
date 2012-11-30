@@ -108,8 +108,8 @@ public class TaskController extends ControllerSupport {
     	if (bucket.getPermission(principal) != Permission.ALL) {
     		return forbidden();
     	}
-		if (task.getState() != Task.State.READY) {
-			return badRequest("task is not ready");
+		if (!task.isEnabled()) {
+			return badRequest("task is not enabled");
 		}
     	TaskManager manager = registry.find(task.getType());
     	Command command = manager.execute(task);

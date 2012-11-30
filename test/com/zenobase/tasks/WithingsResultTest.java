@@ -17,7 +17,7 @@ public class WithingsResultTest extends ResultTestSupport {
 	@Test
 	public void test() {
 		WithingsResult result = new WithingsResult(TESTER, readObject("WithingsResultTest.json"));
-		assertThat(result.getMarker()).as("marker").isEqualTo(1353615011L);
+		assertThat(result.getMarker()).as("marker").isEqualTo("1353615011");
 		List<Event> events = result.getEvents();
 		assertThat(events).as("events").hasSize(2);
 		Event expected = new Event(events.get(0).getId());

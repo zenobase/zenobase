@@ -13,7 +13,6 @@ import org.scribe.model.OAuthRequest;
 import org.scribe.model.Response;
 import org.scribe.model.Verb;
 import org.scribe.oauth.OAuthService;
-import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 
 import com.zenobase.commands.Command;
@@ -36,6 +35,7 @@ public class FitbitTaskManager extends OAuthTaskManager {
 
 	@Override
 	public Command execute(Task task) {
+		Preconditions.checkState(task.isEnabled(), "Task is not enabled: %s", task.getId());
 		return execute(task.as(FitbitTask.class));
 	}
 
@@ -49,7 +49,7 @@ public class FitbitTaskManager extends OAuthTaskManager {
 		Response devicesResponse = devicesRequest.send();
 		Preconditions.checkState(devicesResponse.isSuccessful());
 		LocalDate lastDate = new FitbitDevicesResult(parseArray(devicesResponse)).getLastDate();
-		LocalDate fromDate = Objects.firstNonNull(task.getMarker(), LocalDate.now().minusMonths(1));
+		LocalDate fromDate = task.getMarker() != null ? LocalDate.parse(task.getMarker()) : LocalDate.now().minusMonths(1);
 
 		OAuthRequest profileRequest = new OAuthRequest(Verb.GET, "https://api.fitbit.com/1/user/-/profile.json");
 		service.signRequest(task.getToken(), profileRequest);
@@ -75,8 +75,9 @@ public class FitbitTaskManager extends OAuthTaskManager {
 
 		CompoundCommand command = new CompoundCommand(task.getPrincipal(), "imported events from fitbit", "removed events imported from fitbit");
 		command.add(UpdateTaskCommand.builder(task)
-			.set(Task.UPDATED, task.getUpdated(), new DateTime(DateTimeZone.UTC))
-			.set(FitbitTask.MARKER, task.getMarker(), lastDate)
+			.set(Task.COMPLETED, task.getCompleted(), new DateTime(DateTimeZone.UTC))
+			.set(Task.STATUS, task.getStatus(), Task.Status.SUCCESS)
+			.set(Task.MARKER, task.getMarker(), lastDate.toString())
 			.build());
 		for (Event event : events) {
 			// System.out.println("[event] " + event);

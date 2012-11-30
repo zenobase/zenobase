@@ -32,6 +32,7 @@ public class WithingsTaskManager extends OAuthTaskManager {
 
 	@Override
 	public Command authorize(Task task, ObjectNode config) {
+		Preconditions.checkState(!task.isEnabled(), "Task is already enabled: %s", task.getId());
 		return authorize(task.as(WithingsTask.class), config);
 	}
 
@@ -43,14 +44,15 @@ public class WithingsTaskManager extends OAuthTaskManager {
 			"Token matches in task %s, expected %s, got %s",
 			task.getId(), task.getToken().getToken(), token);
 		return UpdateTaskCommand.builder(task)
-			.set(Task.STATE, task.getState(), Task.State.READY)
-			.set(OAuthTask.TOKEN, task.getToken(), getAccessToken(task, verifier))
-			.set(WithingsTask.USER_ID, task.getUserId(), userId)
+			.set(Task.ENABLED, task.isEnabled(), true)
+			.set(OAuthTask.TOKEN, task.getToken(), getAccessToken(task, verifier)) // TODO CREDENTIALS
+			.set(WithingsTask.USER_ID, task.getUserId(), userId) // TODO CREDENTIALS
 			.build();
 	}
 
 	@Override
 	public Command execute(Task task) {
+		Preconditions.checkState(task.isEnabled(), "Task is not enabled: %s", task.getId());
 		return execute(task.as(WithingsTask.class));
 	}
 
@@ -74,8 +76,9 @@ public class WithingsTaskManager extends OAuthTaskManager {
 	private static Command createCommand(WithingsTask task, WithingsResult result) {
 		CompoundCommand command = new CompoundCommand(task.getPrincipal(), "imported events from withings", "removed events imported from withings");
 		command.add(UpdateTaskCommand.builder(task)
-			.set(Task.UPDATED, task.getUpdated(), new DateTime(DateTimeZone.UTC))
-			.set(WithingsTask.MARKER, task.getMarker(), result.getMarker())
+			.set(Task.COMPLETED, task.getCompleted(), new DateTime(DateTimeZone.UTC))
+			.set(Task.STATUS, task.getStatus(), Task.Status.SUCCESS)
+			.set(Task.MARKER, task.getMarker(), result.getMarker())
 			.build());
 		for (Event event : result.getEvents()) {
 			// System.out.println("[event] " + event);

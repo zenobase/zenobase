@@ -62,6 +62,20 @@ public class DomainNode {
 		return node.has(field.getName());
 	}
 
+	protected <T> T getValue(ObjectField parent, Field<T> child) {
+		ObjectNode node = getValue(parent);
+		return node != null ? child.getValue(node) : null;
+	}
+
+	public <T> void setValue(ObjectField parent, Field<T> child, T value) {
+		ObjectNode node = getValue(parent);
+		if (node == null) {
+			node = Nodes.newObject();
+			setValue(parent, node);
+		}
+		child.setValue(node, value);
+	}
+
 	public ObjectNode toJson() {
 		return node;
 	}
