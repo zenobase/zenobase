@@ -72,7 +72,7 @@ public abstract class UpdateCommandSupport extends Command {
 		public abstract T build();
 	}
 
-	protected static class Change extends DomainNode {
+	public static class Change extends DomainNode {
 
 		private static final TokenField FIELD = new TokenField("field");
 		private static final JsonField FROM = new JsonField("from");
