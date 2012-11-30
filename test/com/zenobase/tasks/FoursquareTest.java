@@ -29,6 +29,6 @@ public class FoursquareTest extends TaskTestSupport {
 	@Test
 	public void testExisting() {
 		FoursquareTaskManager manager = new FoursquareTaskManager(apiKey, apiSecret, callbackUrl);
-		manager.execute(new FoursquareTask(Generator.id(), Task.State.READY, bucketId, principal, getToken(), new DateTime().minusWeeks(1)));
+		manager.execute(new FoursquareTask(Generator.id(), Task.State.READY, bucketId, principal, getToken(), new DateTime().minusDays(1)));
 	}
 }

@@ -5,11 +5,11 @@ import org.codehaus.jackson.node.ArrayNode;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
 
-class FitbitDevicesNode {
+class FitbitDevicesResult {
 
 	private final ArrayNode node;
 
-	public FitbitDevicesNode(ArrayNode node) {
+	public FitbitDevicesResult(ArrayNode node) {
 		this.node = node;
 	}
 

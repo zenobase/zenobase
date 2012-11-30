@@ -7,7 +7,6 @@ import org.codehaus.jackson.JsonNode;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import com.google.common.base.Objects;
-import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 
 import com.zenobase.models.Event;
@@ -17,12 +16,14 @@ import com.zenobase.models.Resource;
 
 class FoursquareResult {
 
-	private final JsonNode node;
-	private final Identity author;
+	public static final Resource SOURCE = new Resource("Foursquare", "http://foursquare.com/");
 
-	public FoursquareResult(JsonNode node, Identity author) {
-		this.node = node;
+	private final Identity author;
+	private final JsonNode node;
+
+	public FoursquareResult(Identity author, JsonNode node) {
 		this.author = author;
+		this.node = node;
 	}
 
 	public int getStatus() {
@@ -46,8 +47,6 @@ class FoursquareResult {
 	}
 
 	static class Checkin {
-
-		private static final Resource SOURCE = new Resource("Foursquare", "http://foursquare.com/");
 
 		private final JsonNode node;
 		private final Identity author;
@@ -80,8 +79,6 @@ class FoursquareResult {
 
 	static class Venue {
 
-		private static final String DEFAULT_URL = "http://foursquare.com/";
-
 		private final JsonNode node;
 
 		public Venue(JsonNode node) {
@@ -90,8 +87,8 @@ class FoursquareResult {
 
 		public Resource getResource() {
 			String title = node.get("name").getTextValue();
-			String url = Objects.firstNonNull(node.path("url").getTextValue(), DEFAULT_URL);
-			return !Strings.isNullOrEmpty(title) ? new Resource(title, url) : null;
+			String url = Objects.firstNonNull(node.path("url").getTextValue(), SOURCE.getUrl());
+			return title != null ? new Resource(title, url) : null;
 		}
 
 		public Location getLocation() {

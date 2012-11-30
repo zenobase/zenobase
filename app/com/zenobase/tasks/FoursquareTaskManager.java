@@ -82,7 +82,7 @@ public class FoursquareTaskManager extends OAuthTaskManager {
 		request.addQuerystringParameter("beforeTimestamp", format(marker));
 		request.addQuerystringParameter("offset", Integer.toString(offset));
 		request.addQuerystringParameter("limit", Integer.toString(LIMIT));
-		FoursquareResult result = new FoursquareResult(parseObject(request.send()), task.getPrincipal());
+		FoursquareResult result = new FoursquareResult(task.getPrincipal(), parseObject(request.send()));
 		Preconditions.checkState(result.getStatus() == 200);
 		List<Event> found = result.getEvents();
 		events.addAll(found);

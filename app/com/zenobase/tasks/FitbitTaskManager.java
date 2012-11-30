@@ -48,7 +48,7 @@ public class FitbitTaskManager extends OAuthTaskManager {
 		service.signRequest(task.getToken(), devicesRequest);
 		Response devicesResponse = devicesRequest.send();
 		Preconditions.checkState(devicesResponse.isSuccessful());
-		LocalDate lastDate = new FitbitDevicesNode(parseArray(devicesResponse)).getLastDate();
+		LocalDate lastDate = new FitbitDevicesResult(parseArray(devicesResponse)).getLastDate();
 		LocalDate fromDate = Objects.firstNonNull(task.getMarker(), LocalDate.now().minusMonths(1));
 
 		OAuthRequest profileRequest = new OAuthRequest(Verb.GET, "https://api.fitbit.com/1/user/-/profile.json");

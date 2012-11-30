@@ -2,27 +2,20 @@ package com.zenobase.tasks;
 
 import static org.fest.assertions.Assertions.assertThat;
 
-import java.io.IOException;
 import java.util.List;
 
 import javax.measure.DecimalMeasure;
 import javax.measure.quantity.Mass;
 
-import org.codehaus.jackson.node.ObjectNode;
 import org.joda.time.DateTime;
 import org.junit.Test;
-import com.google.common.io.ByteStreams;
 
-import com.zenobase.json.Nodes;
 import com.zenobase.models.Event;
-import com.zenobase.models.Identity;
 
-public class WithingsResultTest {
-
-	private static final Identity TESTER = new Identity();
+public class WithingsResultTest extends ResultTestSupport {
 
 	@Test
-	public void test() throws IOException {
+	public void test() {
 		WithingsResult result = new WithingsResult(TESTER, readObject("WithingsResultTest.json"));
 		assertThat(result.getMarker()).as("marker").isEqualTo(1353615011L);
 		List<Event> events = result.getEvents();
@@ -34,13 +27,5 @@ public class WithingsResultTest {
 		expected.setValue(Event.AUTHOR, TESTER);
 		expected.setValue(Event.SOURCE, WithingsResult.SOURCE);
 		assertThat(events.get(0)).as("first event").isEqualTo(expected);
-	}
-
-	private ObjectNode readObject(String filename) {
-		try {
-			return Nodes.readObject(ByteStreams.toByteArray(getClass().getResourceAsStream(filename)));
-		} catch (IOException e) {
-			throw new AssertionError(e);
-		}
 	}
 }

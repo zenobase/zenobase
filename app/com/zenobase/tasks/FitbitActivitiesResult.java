@@ -19,8 +19,10 @@ import com.zenobase.models.Resource;
 
 class FitbitActivitiesResult {
 
-	private static final Resource SOURCE = new Resource("Fitbit", "http://fitbit.com/");
 
+	public static final Resource SOURCE = new Resource("Fitbit", "http://fitbit.com/");
+
+	private final String tag = "steps";
 	private final JsonNode node;
 	private final Identity author;
 	private final DateTime timestamp;
@@ -39,9 +41,9 @@ class FitbitActivitiesResult {
 		int steps = getSteps();
 		if (steps > 0) {
 			Event event = new Event();
+			event.setValue(Event.TAG, tag);
 			event.setValue(Event.COUNT, steps);
 			event.setValue(Event.DISTANCE, getDistance());
-			event.setValue(Event.TAG, "steps");
 			event.setValue(Event.HEIGHT, getElevation());
 			event.setValue(Event.ENERGY, getCalories());
 			event.setValue(Event.TIMESTAMP, timestamp);
@@ -53,14 +55,14 @@ class FitbitActivitiesResult {
 	}
 
 	private int getSteps() {
-		return node.path("summary").path("steps").getIntValue();
+		return node.path("summary").path(tag).getIntValue();
 	}
 
 	private DecimalMeasure<Length> getDistance() {
 		for (JsonNode distance : node.path("summary").path("distances")) {
 			if ("total".equals(distance.path("activity").getTextValue())) {
 				BigDecimal value = distance.path("distance").getDecimalValue();
-				return DecimalMeasure.valueOf(value, distanceUnit);
+				return value != null ? DecimalMeasure.valueOf(value, distanceUnit) : null;
 			}
 		}
 		return null;
@@ -68,12 +70,12 @@ class FitbitActivitiesResult {
 
 	private DecimalMeasure<Length> getElevation() {
 		BigDecimal value = node.path("summary").path("elevation").getDecimalValue();
-		return DecimalMeasure.valueOf(value, heightUnit);
+		return value != null ? DecimalMeasure.valueOf(value, heightUnit) : null;
 	}
 
 	private DecimalMeasure<Energy> getCalories() {
 		BigDecimal value = node.path("summary").path("activityCalories").getDecimalValue();
 		Unit<Energy> unit = Measures.valueOf("cal");
-		return DecimalMeasure.valueOf(value, unit);
+		return value != null ? DecimalMeasure.valueOf(value, unit) : null;
 	}
 }
