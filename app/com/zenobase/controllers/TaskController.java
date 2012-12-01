@@ -73,6 +73,9 @@ public class TaskController extends ControllerSupport {
     		return forbidden();
     	}
     	TaskManager manager = registry.find(task.getType());
+    	if (manager == null) {
+    		return internalServerError("unsupported task type: " + task.getType());
+    	}
     	ObjectNode body = body();
     	if (body == null || body.size() > 1) {
     		return badRequest();
@@ -93,27 +96,6 @@ public class TaskController extends ControllerSupport {
     	return success(commandId);
     }
 
-	public Result auth(String taskId) {
-		Identity principal = getSecurityContext().getPrincipal();
-		if (principal == null) {
-			return unauthorized();
-		}
-		Task task = tasks.findTask(taskId);
-		if (task == null) {
-			return notFound();
-		}
-    	if (!task.getPrincipal().equals(principal)) {
-    		return forbidden();
-    	}
-    	TaskManager manager = registry.find(task.getType());
-
-    	String authorizationUrl = manager.getAuthorizationUrl(task);
-		if (authorizationUrl == null) {
-			return badRequest();
-		}
-		return redirect(authorizationUrl);
-    }
-
 	public Result run(String taskId) {
 		Identity principal = getSecurityContext().getPrincipal();
 		if (principal == null) {
@@ -130,10 +112,18 @@ public class TaskController extends ControllerSupport {
     	if (bucket.getPermission(principal) != Permission.ALL) {
     		return forbidden();
     	}
-		if (!task.isEnabled()) {
-			return badRequest("task is not enabled");
-		}
     	TaskManager manager = registry.find(task.getType());
+    	if (manager == null) {
+    		return internalServerError("unsupported task type: " + task.getType());
+    	}
+    	if (!task.isEnabled()) {
+        	String authorizationUrl = manager.getAuthorizationUrl(task);
+    		if (authorizationUrl == null) {
+    			return badRequest();
+    		}
+    		response().setHeader(LOCATION, authorizationUrl);
+    		return conflict("missing credentials");
+    	}
     	Command command = manager.execute(task);
     	if (command != null) {
     		String commandId = dispatcher.dispatch(command);

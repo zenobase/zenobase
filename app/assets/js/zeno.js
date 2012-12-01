@@ -2045,38 +2045,40 @@
 		};
 	}]);
 
-	app.controller('TaskListCtrl', ['$scope', '$http', '$routeParams', '$timeout', function($scope, $http, $routeParams, $timeout) {
+	app.controller('TaskListCtrl', ['$scope', '$http', '$routeParams', '$timeout', '$window', function($scope, $http, $routeParams, $timeout, $window) {
 		
 		$scope.bucketId = $routeParams.bucketId;
 		$scope.tasks = null;
 
 		$scope.refresh = function() {
 			$http.get('/tasks/?field=principal&value=' + $scope.userInfo['@id'])
-			.success(function(response) {
-				$scope.tasks = response.tasks;
-			})
-			.error(function(response, status) {
-				if (status < 500) {
-					$scope.message = 'Can\'t retrieve any tasks.';
-				} else {
-					$scope.message = 'Couldn\'t retrieve any tasks. Try again later or contact support.';
-				}
-			});
+				.success(function(response) {
+					$scope.tasks = response.tasks;
+				})
+				.error(function(response, status) {
+					if (status < 500) {
+						$scope.message = 'Can\'t retrieve any tasks.';
+					} else {
+						$scope.message = 'Couldn\'t retrieve any tasks. Try again later or contact support.';
+					}
+				});
 		};
 
 		$scope.run = function(taskId) {
 			$http.post('/tasks/' + taskId + '/run')
-			.success(function(response) {
-				$scope.alert.show('Task completed.', 'alert-success', response.undo);
-				$timeout($scope.refresh, DELAY);
-			})
-			.error(function(response, status) {
-				if (status < 500) {
-					$scope.message = 'Can\'t run this task.';
-				} else {
-					$scope.message = 'Couldn\'t run this task. Try again later or contact support.';
-				}
-			});
+				.success(function(response) {
+					$scope.alert.show('Task completed.', 'alert-success', response.undo);
+					$timeout($scope.refresh, DELAY);
+				})
+				.error(function(response, code, headers) {
+					if (code == 409) {
+						$window.location = headers('Location');
+					} else if (code < 500) {
+						$scope.message = 'Can\'t run this task.';
+					} else {
+						$scope.message = 'Couldn\'t run this task. Try again later or contact support.';
+					}
+				});
 		};
 
 		$scope.remove = function(taskId) {
@@ -2126,18 +2128,18 @@
 		$scope.taskId = $routeParams.taskId;
 
 		$http.post('/tasks/' + $scope.taskId, { 'credentials' : $location.search() })
-		.success(function(response) {
-			$timeout(function() {
-				$location.url('/buckets/' + $scope.bucketId);
-			}, DELAY);
-		})
-		.error(function(response, status) {
-			if (status < 500) {
-				$scope.message = 'Can\'t update this task.';
-			} else {
-				$scope.message = 'Couldn\'t update this task. Try again later or contact support.';
-			}
-		});
+			.success(function(response) {
+				$timeout(function() {
+					$location.url('/buckets/' + $scope.bucketId);
+				}, DELAY);
+			})
+			.error(function(response, status) {
+				if (status < 500) {
+					$scope.message = 'Can\'t update this task.';
+				} else {
+					$scope.message = 'Couldn\'t update this task. Try again later or contact support.';
+				}
+			});
 	}]);
 	
 	/**

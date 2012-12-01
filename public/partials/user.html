@@ -128,10 +128,9 @@
 								<span data-ng-show="task.status == 'SUCCESS'">ran</span>
 								<span data-ng-show="task.status == 'FAILED'">failed</span>
 								<span data-ng-show="task.enabled">{{task.completed | age}}</span>
-								<a href="/tasks/{{task['@id']}}/auth" data-ng-hide="task.enabled">missing credentials</a>
 							</td>
 							<td style="text-align: right">
-								<a class="action task-run-action" href="javascript:" data-ng-click="run(task['@id'])" data-ng-show="task.enabled"><i class="icon-repeat" title="Run"></i></a>
+								<a class="action task-run-action" href="javascript:" data-ng-click="run(task['@id'])"><i class="icon-repeat" title="Run"></i></a>
 								<a class="action task-delete-action" href="javascript:" data-ng-click="remove(task['@id'])"><i class="icon-trash" title="Delete"></i></a>
 							</td>
 						</tr>
