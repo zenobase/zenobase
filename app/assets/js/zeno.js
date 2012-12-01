@@ -2125,23 +2125,19 @@
 		$scope.bucketId = $routeParams.bucketId;
 		$scope.taskId = $routeParams.taskId;
 
-		$scope.refresh = function() {
-			$http.post('/tasks/' + $scope.taskId + '/auth', $location.search())
-			.success(function(response) {
-				$timeout(function() {
-					$location.url('/buckets/' + $scope.bucketId);
-				}, DELAY);
-			})
-			.error(function(response, status) {
-				if (status < 500) {
-					$scope.message = 'Can\'t update this task.';
-				} else {
-					$scope.message = 'Couldn\'t update this task. Try again later or contact support.';
-				}
-			});
-		};
-
-		$scope.refresh();
+		$http.post('/tasks/' + $scope.taskId, { 'credentials' : $location.search() })
+		.success(function(response) {
+			$timeout(function() {
+				$location.url('/buckets/' + $scope.bucketId);
+			}, DELAY);
+		})
+		.error(function(response, status) {
+			if (status < 500) {
+				$scope.message = 'Can\'t update this task.';
+			} else {
+				$scope.message = 'Couldn\'t update this task. Try again later or contact support.';
+			}
+		});
 	}]);
 	
 	/**

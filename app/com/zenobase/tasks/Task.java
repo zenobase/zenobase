@@ -108,6 +108,10 @@ public class Task extends DomainNode {
 		setValue(CREDENTIALS, field, value);
 	}
 
+	public ObjectNode getSettings() {
+		return getValue(SETTINGS);
+	}
+
 	protected <T> T getSetting(Field<T> field) {
 		return getValue(SETTINGS, field);
 	}
