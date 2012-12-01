@@ -50,6 +50,7 @@ public class TaskRepository {
 	}
 
 	public TaskList findTasks(String field, String value, int offset, int limit) {
+		Logger.info(String.format("find(%s, %s)", field, value));
 		return findTasks(queryFor(field, value), offset, limit);
 	}
 

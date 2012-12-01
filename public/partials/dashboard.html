@@ -29,6 +29,7 @@
 				<a class="page-title-decoration" href="#import-events-dialog" title="Import Events..." data-toggle="modal" data-ng-show="canImport()"><i class="icon-upload"></i></a>
 				<a class="page-title-decoration" data-ng-href="{{getExportUrl()}}" title="Export Events" data-ng-show="total > 0"><i class="icon-download"></i></a>
 				<a id="add-event-action" class="page-title-decoration" title="Add Event..." href="javascript:" data-ng-click="editEvent({})" data-ng-show="editable"><i class="icon-plus"></i></a>
+				<a id="create-task-action" class="page-title-decoration" title="Connect..." href="javascript:" data-ng-click="showTaskDialog(true)" data-ng-show="editable"><i class="icon-share"></i></a>
 			</p>
 			<p id="bucket-permissions" class="pull-right" data-ng-show="editable">
 				<span id="bucket-private-label" data-ng-show="!bucket.isPublished()"><i class="icon-lock"></i> private</span>
@@ -129,15 +130,47 @@
 				<h4>Add Widget</h4>
 			</div>
 			<div class="modal-body">
-				<label for="template" class="control-label">Type</label>
-				<div class="controls">
-					<select name="template" data-ng-model="template" data-ng-options="t.label for t in findTemplates()" required></select>
-					<p class="help-block">{{template.description}}</p>
+				<div class="alert alert-error" data-ng-show="message">
+					{{message}}
+				</div>
+				<div class="control-group">
+					<label for="template" class="control-label">Type</label>
+					<div class="controls">
+						<select name="template" data-ng-model="template" data-ng-options="t.label for t in findTemplates()" required></select>
+						<p class="help-block">{{template.description}}</p>
+					</div>
 				</div>
 			</div>
 			<div class="modal-footer">
 				<button class="btn btn-primary" data-ng-click="add()" data-ng-disabled="!addWidgetForm.$valid">Add</button>
 				<button class="btn" data-dismiss="modal">Cancel</button>
+			</div>
+		</form>
+	</div>
+		
+	<div id="create-task-dialog" data-ui-modal="taskDialog" data-ui-modal-open="init()" data-ui-modal-close="cancel()" data-ng-controller="CreateTaskDialogCtrl">
+		<form class="modal-form">
+			<div class="alert alert-error" data-ng-show="message">
+				{{message}}
+			</div>
+			<div class="control-group">
+				<div class="modal-header">
+					<a class="close" href="javascript:" data-ng-click="cancel()">&times;</a>
+					<h4 class="alert-heading">Task</h4>
+				</div>
+				<div class="modal-body">
+					<div class="control-group">
+						<label class="control-label" for="task-type"><strong>Type</strong></label>
+						<div class="controls">
+							<select name="type" data-ng-model="type" data-ng-options="type for type in types" required></select>
+							<p class="help-block">The task type.</p>
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button data-ng-click="create()" class="btn btn-primary">Save</button>
+					<button data-ng-click="cancel()" class="btn">Cancel</button>
+				</div>
 			</div>
 		</form>
 	</div>

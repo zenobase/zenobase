@@ -45,21 +45,11 @@ public class TaskListController extends ControllerSupport {
 			return badRequest("limit can't be more than 100");
 		}
 		Identity principal = getSecurityContext().getPrincipal();
-		if (!Task.BUCKET.getName().equals(field)) {
-	    	if (principal == null) {
-	    		return unauthorized();
-	    	}
-	    	if (!users.isSuperuser(principal)) {
-	    		return forbidden();
-	    	}
-		} else {
-			Bucket bucket = buckets.findBucket(value);
-			if (bucket == null) {
-				return badRequest("bucket not found");
-			}
-			if (bucket.getPermission(principal) != Permission.ALL) {
-				return forbidden();
-			}
+    	if (principal == null) {
+    		return unauthorized();
+    	}
+		if (!Task.PRINCIPAL.getName().equals(field) && !principal.getId().equals(value) && !users.isSuperuser(principal)) {
+    		return forbidden();
 		}
 		return ok(tasks.findTasks(field, value, offset, limit).toJson());
     }

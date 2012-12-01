@@ -18,7 +18,9 @@ public class TaskList extends PartialList<Task> {
     	TOTAL.setValue(resultNode, Ints.checkedCast(size()));
     	ArrayNode tasksNode = resultNode.putArray("tasks");
     	for (Task task : getElements()) {
-    		tasksNode.add(task.toJson());
+    		ObjectNode node = task.toJson();
+    		node.remove(Task.CREDENTIALS.getName());
+    		tasksNode.add(node);
     	}
 		return resultNode;
 	}

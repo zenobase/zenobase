@@ -32,7 +32,6 @@
 	app.config(['$routeProvider', function($routeProvider) {
 		$routeProvider.when('/', { templateUrl: versioned('/partials/home.html') })
 			.when('/buckets/:bucketId/', { templateUrl : versioned('/partials/dashboard.html'), reloadOnSearch : false })
-			.when('/buckets/:bucketId/tasks/', { templateUrl : versioned('/partials/tasks.html') })
 			.when('/buckets/:bucketId/tasks/:taskId/auth', { templateUrl : versioned('/partials/task-auth.html') })
 			.when('/users/:userId', { templateUrl : versioned('/partials/user.html') })
 			.when('/users/:userId/reset', { templateUrl : versioned('/partials/reset.html') })
@@ -818,8 +817,12 @@
 			$scope.editing = false;
 		};
 
-		$scope.showPermissionsDialog = function(b) {
-			$scope.permissionsDialog = b;
+		$scope.showPermissionsDialog = function(show) {
+			$scope.permissionsDialog = show;
+		};
+
+		$scope.showTaskDialog = function(show) {
+			$scope.taskDialog = show;
 		};
 	}]);
 	
@@ -2090,13 +2093,8 @@
 		$scope.bucketId = $routeParams.bucketId;
 		$scope.tasks = null;
 
-		$scope.dialogShown = false;
-		$scope.showDialog = function(dialogShown) {
-			$scope.dialogShown = dialogShown;
-		};
-
 		$scope.refresh = function() {
-			$http.get('/tasks/?field=bucket&value=' + $scope.bucketId)
+			$http.get('/tasks/?field=principal&value=' + $scope.userInfo['@id'])
 			.success(function(response) {
 				$scope.tasks = response.tasks;
 			})
@@ -2165,7 +2163,7 @@
 		};
 
 		$scope.cancel = function() {
-			$scope.showDialog(false);
+			$scope.showTaskDialog(false);
 		};
 	}]);
 
@@ -2178,7 +2176,7 @@
 			$http.post('/tasks/' + $scope.taskId + '/auth', $location.search())
 			.success(function(response) {
 				$timeout(function() {
-					$location.url('/buckets/' + $scope.bucketId + '/tasks/');
+					$location.url('/buckets/' + $scope.bucketId);
 				}, DELAY);
 			})
 			.error(function(response, status) {
@@ -2345,9 +2343,9 @@
 	  '</span>';
 	}));
 	
-	Field.register(new Field('source', 'icon-share-alt', null, function(value) { 
+	Field.register(new Field('source', 'icon-share', null, function(value) { 
 		return '<span class="nowrap">' +
-		'<i class="' + this.icon + '" title="User"></i> <a href="' +  Field.encode(value.url) + '" rel="nofollow">' +  Field.encode(value.title) + '</a>' +
+		'<i class="' + this.icon + '" title="Source"></i> <a href="' +  Field.encode(value.url) + '" rel="nofollow">' +  Field.encode(value.title) + '</a>' +
 	  '</span>';
 	}));
 	
