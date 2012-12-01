@@ -63,6 +63,7 @@ class FoursquareResult {
 			event.setValue(Event.TIMESTAMP, new DateTime(time, DateTimeZone.forOffsetMillis(offset)));
 			event.setValue(Event.AUTHOR, author);
 			event.setValue(Event.SOURCE, SOURCE);
+			event.setValue(Event.NOTE, node.path("shout").getTextValue());
 			Venue venue = getVenue();
 			event.setValue(Event.RESOURCE, venue.getResource());
 			event.setValue(Event.LOCATION, venue.getLocation());
