@@ -161,8 +161,8 @@
 							<th>Owner</th>
 							<th>Bucket</th>
 							<th>Created</th>
-							<th>Updated</th>
-							<th>State</th>
+							<th>Completed</th>
+							<th>Status</th>
 							<th></th>
 						</tr>
 					</thead>
@@ -173,8 +173,8 @@
 							<td><a href="javascript:" data-ng-click="setFilter(task.principal)">{{task.principal | username}}</a></td>
 							<td>{{task.bucket}}</td>
 							<td>{{task.created | age}}</td>
-							<td>{{task.updated | age}}</td>
-							<td>{{task.state}}</td>
+							<td>{{task.completed | age}}</td>
+							<td>{{task.status}}</td>
 							<td style="text-align: right">
 								<a class="action" href="javascript:" data-ng-click="remove(task['@id'])" title="Delete"><i class="icon-trash"></i></a>
 							</td>

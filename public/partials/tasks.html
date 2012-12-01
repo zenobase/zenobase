@@ -26,8 +26,8 @@
 					<th style="width: 0px">Bucket</th>
 					<th style="width: 0px">Owner</th>
 					<th style="width: 0px">Created</th>
-					<th style="width: 0px">Updated</th>
-					<th style="width: 0px">State</th>
+					<th style="width: 0px">Completed</th>
+					<th style="width: 0px">Status</th>
 					<th style="width: 0px"></th>
 				</tr>
 			</thead>
@@ -41,10 +41,10 @@
 					<td>{{task.bucket}}</td>
 					<td>{{task.principal | username}}</td>
 					<td>{{task.created | age}}</td>
-					<td>{{task.updated | age}}</td>
-					<td>{{task.state}} <a href="/tasks/{{task['@id']}}/auth" data-ng-show="task.state == 'UNAUTHORIZED'">authorize</a></td>
+					<td>{{task.completed | age}}</td>
+					<td>{{task.status}} <a href="/tasks/{{task['@id']}}/auth" data-ng-hide="task.enabled">authorize</a></td>
 					<td style="text-align: right">
-						<a class="action task-run-action" href="javascript:" data-ng-click="run(task['@id'])" data-ng-show="task.state == 'READY'"><i class="icon-play" title="Run"></i></a>
+						<a class="action task-run-action" href="javascript:" data-ng-click="run(task['@id'])" data-ng-show="task.enabled"><i class="icon-play" title="Run"></i></a>
 						<a class="action task-delete-action" href="javascript:" data-ng-click="remove(task['@id'])"><i class="icon-trash" title="Delete"></i></a>
 					</td>
 				</tr>

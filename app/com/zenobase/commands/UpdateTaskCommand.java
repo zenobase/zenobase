@@ -1,10 +1,11 @@
 package com.zenobase.commands;
 
+
 import org.codehaus.jackson.node.ObjectNode;
 import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
 
-import com.zenobase.json.Field;
+import com.zenobase.json.JsonPatch;
 import com.zenobase.models.Identity;
 import com.zenobase.services.TaskRepository;
 import com.zenobase.tasks.Task;
@@ -17,21 +18,17 @@ public class UpdateTaskCommand extends UpdateCommandSupport {
 		super(node);
 	}
 
-	private UpdateTaskCommand(Identity principal, String taskId, String field, Iterable<UpdateCommandSupport.Change> patches) {
-		super(TYPE, principal, taskId, field, patches);
+	private UpdateTaskCommand(Identity principal, String taskId, ObjectNode from, ObjectNode to) {
+		super(TYPE, principal, taskId, from, to);
 	}
 
 	@Override
-	protected Command newInstance(Identity principal, String objectId, String field, Iterable<UpdateCommandSupport.Change> patches) {
-		return new UpdateTaskCommand(principal, objectId, field, patches);
+	protected Command newInstance(Identity principal, String objectId, ObjectNode from, ObjectNode to) {
+		return new UpdateTaskCommand(principal, objectId, from, to);
 	}
 
 	public Task apply(Task task) {
-		Task changed = task.copy();
-		for (UpdateCommandSupport.Change change : getChanges()) {
-			change.apply(changed.toJson().with(Task.SETTINGS.getName()));
-		}
-		return changed;
+		return new Task(new JsonPatch(getFrom(), getTo()).apply(task.toJson()));
 	}
 
 	@Override
@@ -39,15 +36,11 @@ public class UpdateTaskCommand extends UpdateCommandSupport {
 		return String.format("updated task %s", getObjectId());
 	}
 
-	public static Builder<UpdateTaskCommand> builder(final Task task) {
-		return builder(task, null);
-	}
-
-	public static Builder<UpdateTaskCommand> builder(final Task task, final Field<?> field) {
-		return new Builder<UpdateTaskCommand>() {
+	public static Builder builder(final Task task) {
+		return new Builder() {
 			@Override
 			public UpdateTaskCommand build() {
-				return new UpdateTaskCommand(task.getPrincipal(), task.getId(), field != null ? field.getName() : null, getPatches());
+				return new UpdateTaskCommand(task.getPrincipal(), task.getId(), getFrom(), getTo());
 			}
 		};
 	}

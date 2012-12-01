@@ -19,6 +19,7 @@ public class WithingsTask extends OAuthTask {
 		super(TYPE, bucketId, principal, token);
 		setCredential(USER_ID, userId);
 		setMarker(marker);
+		setEnabled(true);
 	}
 
 	public Integer getUserId() {

@@ -53,7 +53,8 @@ public class FoursquareTaskManager extends OAuthTaskManager {
 		Token token = getAccessToken(task, verifier);
 		return UpdateTaskCommand.builder(task)
 			.set(Task.ENABLED, task.isEnabled(), true)
-			.set(OAuthTask.TOKEN, task.getToken(), token) // TODO CREDENTIALS
+			.with(Task.CREDENTIALS)
+			.set(OAuthTask.TOKEN, task.getToken(), token)
 			.build();
 	}
 
@@ -88,7 +89,7 @@ public class FoursquareTaskManager extends OAuthTaskManager {
 		Preconditions.checkState(result.getStatus() == 200);
 		List<Event> found = result.getEvents();
 		events.addAll(found);
-		return found.size() > LIMIT && result.getTotal() > offset + LIMIT;
+		return found.size() == LIMIT && result.getTotal() > offset + LIMIT;
 	}
 
 	private Command createCommand(FoursquareTask task, String marker, List<Event> events) {

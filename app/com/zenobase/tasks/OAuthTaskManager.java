@@ -59,7 +59,8 @@ public abstract class OAuthTaskManager extends TaskManager {
 			task.getId(), task.getToken().getToken(), token);
 		return UpdateTaskCommand.builder(task)
 			.set(Task.ENABLED, task.isEnabled(), true)
-			.set(OAuthTask.TOKEN, task.getToken(), getAccessToken(task, verifier)) // TODO Task.CREDENTIALS
+			.with(Task.CREDENTIALS)
+			.set(OAuthTask.TOKEN, task.getToken(), getAccessToken(task, verifier))
 			.build();
 	}
 

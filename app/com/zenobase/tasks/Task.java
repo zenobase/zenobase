@@ -45,7 +45,7 @@ public class Task extends DomainNode {
 		setValue(BUCKET, bucketId);
 		setValue(PRINCIPAL, principal);
 		setValue(CREATED, new DateTime(DateTimeZone.UTC));
-		setValue(ENABLED, true);
+		setValue(ENABLED, Boolean.FALSE);
 	}
 
 	public String getId() {
@@ -122,7 +122,7 @@ public class Task extends DomainNode {
 
 	public static Schema getSchema() {
 		return new SchemaBuilder(TYPE_NAME)
-			.add(VERSION).add(ID).add(TYPE).add(BUCKET).add(PRINCIPAL).add(CREATED)
+			.add(VERSION).add(ID).add(TYPE).add(BUCKET).add(PRINCIPAL).add(CREATED).add(ENABLED)
 			.add(COMPLETED).add(STATUS).add(MARKER)
 			.add(CREDENTIALS).add(SETTINGS).build();
 	}

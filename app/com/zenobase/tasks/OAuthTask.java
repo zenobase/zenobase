@@ -14,7 +14,7 @@ public class OAuthTask extends Task {
 
 	public static final OAuthTokenField TOKEN = new OAuthTokenField("token");
 
-	protected OAuthTask(ObjectNode node) {
+	public OAuthTask(ObjectNode node) {
 		super(node);
 	}
 
@@ -25,6 +25,7 @@ public class OAuthTask extends Task {
 	protected OAuthTask(String type, String bucketId, Identity principal, Token token) {
 		super(type, bucketId, principal);
 		setToken(token);
+		setEnabled(true);
 	}
 
 	public Token getToken() {
