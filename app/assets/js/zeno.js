@@ -591,7 +591,7 @@
 			$scope.chooseWidget(null);
 			$timeout(function() {
 				$('#' + settings.id + '-tab').tab('show');
-				$('#' + settings.id + '-content').scope().showDialog(true);
+				$('#' + settings.id + '-content').scope().openDialog(settings.type + '-widget-dialog');
 			}, 500);
 		};
 		$scope.findTemplates = function() {
@@ -816,7 +816,6 @@
 		$scope.cancel = function() {
 			$scope.editing = false;
 		};
-
 		$scope.openDialog = function(dialog) {
 			$scope.dialog = dialog;
 		};
@@ -891,11 +890,6 @@
 			$scope.items = result[$scope.settings.id] || [];
 		};
 	
-		$scope.dialogShown = false;
-		$scope.showDialog = function(dialogShown) {
-			$scope.dialogShown = dialogShown;
-		};
-	
 		$scope.init();
 		$scope.register($scope);
 		$scope.$on('result', $scope.update);
@@ -963,11 +957,6 @@
 			$scope.addFilter(new Filter($scope.settings.field, term.label))
 		};
 	
-		$scope.dialogShown = false;
-		$scope.showDialog = function(dialogShown) {
-			$scope.dialogShown = dialogShown;
-		};
-	
 		$scope.init();
 		$scope.register($scope);
 		$scope.$on('result', $scope.update);
@@ -975,21 +964,16 @@
 	}]);
 	
 	var WidgetSettingsCtrl = function($scope) {
+		$scope.init = function() {
+			$scope.settings = angular.copy($scope.$parent.settings);
+		};
 		$scope.save = function() {
 			$scope.refresh({}, $scope.settings);
-			$scope.showDialog(false);
-		};
-		$scope.cancel = function() {
-			$scope.showDialog(false);
-			$scope.reset();
-		};
-		$scope.reset = function() {
-			$scope.settings = angular.copy($scope.$parent.settings);
+			$scope.closeDialog();
 		};
 		$scope.getField = function(name) {
 			return Field.find(name);
 		};
-		$scope.reset();
 	};
 	
 	app.controller('WidgetSettingsCtrl', ['$scope', function($scope) {
@@ -1039,11 +1023,6 @@
 		};
 		$scope.filter = function(term) {
 			$scope.addFilter(new Filter($scope.settings.termField, term.label))
-		};
-	
-		$scope.dialogShown = false;
-		$scope.showDialog = function(dialogShown) {
-			$scope.dialogShown = dialogShown;
 		};
 
 		$scope.init();
@@ -1100,11 +1079,6 @@
 			$scope.addFilter(new Filter($scope.field, toString(rating.from) + ',' + toString(rating.to)))
 		};
 
-		$scope.dialogShown = false;
-		$scope.showDialog = function(dialogShown) {
-			$scope.dialogShown = dialogShown;
-		};
-	
 		$scope.init();
 		$scope.register($scope);
 		$scope.$on('result', $scope.update);
@@ -1140,10 +1114,6 @@
 		};
 		$scope.filter = function(term) {
 			$scope.addFilter(new Filter($scope.settings.termField, term.label))
-		};
-		$scope.dialogShown = false;
-		$scope.showDialog = function(dialogShown) {
-			$scope.dialogShown = dialogShown;
 		};
 
 		$scope.init();
@@ -1293,11 +1263,6 @@
 			}
 		}
 	
-		$scope.dialogShown = false;
-		$scope.showDialog = function(dialogShown) {
-			$scope.dialogShown = dialogShown;
-		};
-	
 		$scope.init();
 		$scope.register($scope);
 		$scope.$on('result', $scope.update);
@@ -1426,11 +1391,6 @@
 				}});
 			}
 		}
-	
-		$scope.dialogShown = false;
-		$scope.showDialog = function(dialogShown) {
-			$scope.dialogShown = dialogShown;
-		};
 	
 		$scope.init();
 		$scope.register($scope);
@@ -1642,11 +1602,6 @@
 			});
 			return parent;
 		};
-	
-		$scope.dialogShown = false;
-		$scope.showDialog = function(dialogShown) {
-			$scope.dialogShown = dialogShown;
-		};
 
 		$scope.init();
 		$scope.register($scope);
@@ -1656,7 +1611,9 @@
 	}]);
 
 	app.controller('MapSettingsCtrl', ['$scope', function($scope) {
+
 		WidgetSettingsCtrl($scope);
+
 		$scope.getColors = function() {
 			return [ 'white', 'black', 'red', 'green', 'blue', 'yellow' ];
 		};
@@ -1694,8 +1651,8 @@
 	app.controller('PermissionsDialogCtrl', ['$scope', '$http', '$timeout', function($scope, $http, $timeout) {
 
 		$scope.init = function() {
-			_gaq.push([ '_trackEvent', 'dialog', 'edit permissions' ]);
 			$scope.bucket = angular.copy($scope.$parent.bucket);
+			_gaq.push([ '_trackEvent', 'dialog', 'edit permissions' ]);
 		};
 		$scope.update = function() {
 			$scope.$parent.bucket = $scope.bucket;
@@ -2462,7 +2419,9 @@
 				element.addClass('modal hide');
 				if (attrs.uiModalClose) {
 					element.on('hidden', function() {
-						scope.$apply(attrs.uiModalClose);
+						if (scope.$eval(attrs.uiModal)) {
+							scope.$apply(attrs.uiModalClose);
+						}
 					});
 				}
 				scope.$watch(attrs.uiModal, function(value) {

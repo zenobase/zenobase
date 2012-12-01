@@ -8,11 +8,11 @@
 
 	<div class="btn-toolbar">
 		<div class="btn-group" data-ng-show="editing">
-			<button class="btn" title="Settings..." data-ng-click="showDialog(true)"><i class="icon-cog"></i> Settings...</button>
+			<button class="btn" title="Settings..." data-ng-click="openDialog('map-widget-dialog')"><i class="icon-cog"></i> Settings...</button>
 		</div>
 	</div>
 
-	<div data-ui-modal="dialogShown" data-ui-modal-close="cancel()" data-ng-controller="MapSettingsCtrl">
+	<div data-ui-modal="dialog == 'map-widget-dialog'" data-ui-modal-open="init()" data-ui-modal-close="closeDialog()" data-ng-controller="MapSettingsCtrl">
 		<form name="form" class="modal-form">
 			<div class="modal-header">
 				<a class="close" href="javascript:" data-dismiss="modal">&times;</a>
