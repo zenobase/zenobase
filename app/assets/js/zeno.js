@@ -732,7 +732,7 @@
 					callback(response);
 					_gaq.push(['_trackTiming', 'action', 'refresh', t1 - t0, $scope.bucketId, 100]);
 					if (response.total === 0 && q.length === 0 && $scope.editable) {
-						$timeout(function() { $scope.showGettingStartedDialog(true); }, DELAY);
+						$timeout(function() { $scope.openDialog('getting-started-dialog'); }, DELAY);
 					}
 				})
 				.error(function(response) { callback({ total : -1 }) });
@@ -817,17 +817,11 @@
 			$scope.editing = false;
 		};
 
-		$scope.showPermissionsDialog = function(show) {
-			$scope.permissionsDialog = show;
+		$scope.openDialog = function(dialog) {
+			$scope.dialog = dialog;
 		};
-		$scope.showTaskDialog = function(show) {
-			$scope.taskDialog = show;
-		};
-		$scope.showImportDialog = function(show) {
-			$scope.importDialog = show;
-		};
-		$scope.showGettingStartedDialog = function(show) {
-			$scope.gettingStartedDialog = show;
+		$scope.closeDialog = function() {
+			$scope.dialog = null;
 		};
 	}]);
 	
@@ -1705,11 +1699,8 @@
 		};
 		$scope.update = function() {
 			$scope.$parent.bucket = $scope.bucket;
-			$scope.showPermissionsDialog(false);
+			$scope.closeDialog();
 			_gaq.push([ '_trackEvent', 'action', 'update permissions' ]);
-		};
-		$scope.cancel = function() {
-			$scope.showPermissionsDialog(false);			
 		};
 	}]);
 
@@ -2081,15 +2072,12 @@
 				.success(function(response) {
 					$scope.alert.show('Imported events.', 'alert-success', response.undo);
 					$timeout($scope.refresh, DELAY);
-					$scope.cancel();
+					$scope.closeDialog();
 				})
 				.error(function(response) {
 					$scope.message = 'Couldn\'t import events.';
 				});
 			_gaq.push([ '_trackEvent', 'action', 'import events' ]);
-		};
-		$scope.cancel = function() {
-			$scope.showImportDialog(false);
 		};
 	}]);
 	
@@ -2097,9 +2085,6 @@
 
 		$scope.init = function() {
 			_gaq.push([ '_trackEvent', 'dialog', 'getting started' ]);
-		};
-		$scope.cancel = function() {
-			$scope.showGettingStartedDialog(false);
 		};
 	}]);
 
@@ -2168,17 +2153,13 @@
 			$http.post('/tasks/', { 'type' : $scope.type, 'bucket' : $scope.bucketId })
 				.success(function(response) {
 					$scope.alert.show('Created task.', 'alert-success', response.undo);
-					$scope.cancel();
+					$scope.closeDialog();
 					$timeout($scope.refresh, DELAY);
 				})
 				.error(function(response) {
 					$scope.message = 'Couldn\'t create task. Try again later or contact support.';
 				});
 			_gaq.push([ '_trackEvent', 'action', 'create task' ]);
-		};
-
-		$scope.cancel = function() {
-			$scope.showTaskDialog(false);
 		};
 	}]);
 
@@ -2481,9 +2462,7 @@
 				element.addClass('modal hide');
 				if (attrs.uiModalClose) {
 					element.on('hidden', function() {
-						if (scope[attrs.uiModal]) {
-							scope.$apply(attrs.uiModalClose);
-						}
+						scope.$apply(attrs.uiModalClose);
 					});
 				}
 				scope.$watch(attrs.uiModal, function(value) {
