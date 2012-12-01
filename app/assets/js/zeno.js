@@ -824,6 +824,10 @@
 		$scope.showTaskDialog = function(show) {
 			$scope.taskDialog = show;
 		};
+
+		$scope.showImportDialog = function(show) {
+			$scope.importDialog = show;
+		};
 	}]);
 	
 	app.controller('BucketFormCtrl', ['$scope', '$http', '$route', function($scope, $http, $route) {
@@ -2047,15 +2051,17 @@
 	}]);
 	
 	
-	app.controller('ImportEventsCtrl', ['$scope', '$http', '$timeout', '$routeParams', function($scope, $http, $timeout, $routeParams) {
+	app.controller('ImportDialogCtrl', ['$scope', '$http', '$timeout', '$routeParams', function($scope, $http, $timeout, $routeParams) {
 
-		$scope.dialog = $('#import-events-dialog');
-		$scope.params = $routeParams;
+		$scope.bucketId = $routeParams.bucketId;
+
 		$scope.init = function() {
+			$scope.message = '';
 			$scope.events = [];
+			_gaq.push([ '_trackEvent', 'dialog', 'import events' ]);
 		};
 		$scope.isEmpty = function() {
-			return $scope.events.length == 0;
+			return !$scope.events || $scope.events.length == 0;
 		};
 		$scope.setFiles = function(files) {
 			$scope.$apply(function(scope) {
@@ -2068,24 +2074,22 @@
 				reader.readAsText(files[0]);
 			});
 		};
-		$scope.importEvents = function() {
+		$scope.submit = function() {
 			$scope.alert.clear();
-			$http.post('/buckets/' + $scope.params.bucketId + '/', $.isArray($scope.events) ? { 'events' : $scope.events } : $scope.events)
+			$http.post('/buckets/' + $scope.bucketId + '/', $.isArray($scope.events) ? { 'events' : $scope.events } : $scope.events)
 				.success(function(response) {
-					$scope.dialog.modal('hide');
 					$scope.alert.show('Imported events.', 'alert-success', response.undo);
 					$timeout($scope.refresh, DELAY);
+					$scope.cancel();
 				})
 				.error(function(response) {
 					$scope.message = 'Couldn\'t import events.';
 				});
 			_gaq.push([ '_trackEvent', 'action', 'import events' ]);
 		};
-		$scope.init();
-		$scope.dialog.on('shown', function () {
-			$scope.$apply($scope.init);
-			_gaq.push([ '_trackEvent', 'dialog', 'import events' ]);
-		});
+		$scope.cancel = function() {
+			$scope.showImportDialog(false);
+		};
 	}]);
 
 	app.controller('TaskListCtrl', ['$scope', '$http', '$routeParams', '$timeout', function($scope, $http, $routeParams, $timeout) {

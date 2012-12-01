@@ -26,7 +26,7 @@
 				<span class="badge badge-important page-title-decoration" title="Couldn't load any events" data-ng-show="total < 0">0</span>
 				<a href="javascript:" class="page-title-decoration" data-ng-click="refresh()" title="Refresh"><i class="icon-refresh"></i></a>
 				<a id="edit-bucket-action" class="page-title-decoration" href="javascript:" title="Edit Dashboard..." data-ng-click="edit()" data-ng-show="editable && !editing"><i class="icon-pencil"></i></a>
-				<a class="page-title-decoration" href="#import-events-dialog" title="Import Events..." data-toggle="modal" data-ng-show="canImport()"><i class="icon-upload"></i></a>
+				<a class="page-title-decoration" title="Import Events..." href="javascript:" data-ng-click="showImportDialog(true)" data-ng-show="canImport()"><i class="icon-upload"></i></a>
 				<a class="page-title-decoration" data-ng-href="{{getExportUrl()}}" title="Export Events" data-ng-show="total > 0"><i class="icon-download"></i></a>
 				<a id="add-event-action" class="page-title-decoration" title="Add Event..." href="javascript:" data-ng-click="editEvent({})" data-ng-show="editable"><i class="icon-plus"></i></a>
 				<a id="create-task-action" class="page-title-decoration" title="Connect..." href="javascript:" data-ng-click="showTaskDialog(true)" data-ng-show="editable"><i class="icon-share"></i></a>
@@ -505,8 +505,8 @@
 		</div>
 	</script>
 
-	<div id="import-events-dialog" class="modal hide" data-ng-controller="ImportEventsCtrl">
-		<form name="importEventsForm" data-ng-submit="importEvents()" class="modal-form">
+	<div id="import-dialog" data-ui-modal="importDialog" data-ui-modal-open="init()" data-ui-modal-close="cancel()" data-ng-controller="ImportDialogCtrl">
+		<form data-ng-submit="submit()" class="modal-form">
 			<div class="modal-header">
 				<a class="close" data-dismiss="modal">&times;</a>
 				<h4>Import Events</h4>
