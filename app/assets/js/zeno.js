@@ -732,7 +732,7 @@
 					callback(response);
 					_gaq.push(['_trackTiming', 'action', 'refresh', t1 - t0, $scope.bucketId, 100]);
 					if (response.total === 0 && q.length === 0 && $scope.editable) {
-						$timeout(function() { $scope.editEvent({}); }, DELAY);
+						$timeout(function() { $scope.showGettingStartedDialog(true); }, DELAY);
 					}
 				})
 				.error(function(response) { callback({ total : -1 }) });
@@ -820,13 +820,14 @@
 		$scope.showPermissionsDialog = function(show) {
 			$scope.permissionsDialog = show;
 		};
-
 		$scope.showTaskDialog = function(show) {
 			$scope.taskDialog = show;
 		};
-
 		$scope.showImportDialog = function(show) {
 			$scope.importDialog = show;
+		};
+		$scope.showGettingStartedDialog = function(show) {
+			$scope.gettingStartedDialog = show;
 		};
 	}]);
 	
@@ -2089,6 +2090,16 @@
 		};
 		$scope.cancel = function() {
 			$scope.showImportDialog(false);
+		};
+	}]);
+	
+	app.controller('GettingStartedDialogCtrl', ['$scope', function($scope) {
+
+		$scope.init = function() {
+			_gaq.push([ '_trackEvent', 'dialog', 'getting started' ]);
+		};
+		$scope.cancel = function() {
+			$scope.showGettingStartedDialog(false);
 		};
 	}]);
 

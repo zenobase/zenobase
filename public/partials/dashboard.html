@@ -105,7 +105,7 @@
 							</span>
 						</p>
 						<p style="clear:both">
-							<hr/>
+							<hr>
 							<span data-ng-show="user.verified && !bucket.isPublished()">
 								<strong>Add:</strong> <a id="publish-link" href="javascript:" data-ng-click="bucket.publish()">public</a>
 							</span>
@@ -153,24 +153,22 @@
 			<div class="alert alert-error" data-ng-show="message">
 				{{message}}
 			</div>
-			<div class="control-group">
-				<div class="modal-header">
-					<a class="close" href="javascript:" data-ng-click="cancel()">&times;</a>
-					<h4 class="alert-heading">Task</h4>
-				</div>
-				<div class="modal-body">
-					<div class="control-group">
-						<label class="control-label" for="task-type"><strong>Type</strong></label>
-						<div class="controls">
-							<select name="type" data-ng-model="type" data-ng-options="type for type in types" required></select>
-							<p class="help-block">The task type.</p>
-						</div>
+			<div class="modal-header">
+				<a class="close" href="javascript:" data-ng-click="cancel()">&times;</a>
+				<h4 class="alert-heading">Task</h4>
+			</div>
+			<div class="modal-body">
+				<div class="control-group">
+					<label class="control-label" for="task-type"><strong>Type</strong></label>
+					<div class="controls">
+						<select name="type" data-ng-model="type" data-ng-options="type for type in types" required></select>
+						<p class="help-block">The task type.</p>
 					</div>
 				</div>
-				<div class="modal-footer">
-					<button data-ng-click="create()" class="btn btn-primary">Save</button>
-					<button data-ng-click="cancel()" class="btn">Cancel</button>
-				</div>
+			</div>
+			<div class="modal-footer">
+				<button data-ng-click="create()" class="btn btn-primary">Save</button>
+				<button data-ng-click="cancel()" class="btn">Cancel</button>
 			</div>
 		</form>
 	</div>
@@ -524,6 +522,19 @@
 				<button type="reset" class="btn" data-dismiss="modal">Cancel</button>
 			</div>
 		</form>
+	</div>
+
+	<div id="getting-started-dialog" data-ui-modal="gettingStartedDialog" data-ui-modal-open="init()" data-ui-modal-close="cancel()" data-ng-controller="GettingStartedDialogCtrl">
+		<div class="modal-body">
+			<ul class="nav nav-tabs nav-stacked">
+				<li><a href="javascript:" data-ng-click="cancel(); editEvent({})"><i class="icon-plus"></i> <strong>Add</strong> a single event</a></li>
+				<li><a href="javascript:" data-ng-click="cancel(); showImportDialog(true)"><i class="icon-upload"></i> <strong>Import</strong> events from a file</a></li>
+				<li><a href="javascript:" data-ng-click="cancel(); showTaskDialog(true)"><i class="icon-share"></i> <strong>Connect</strong> to an external service</a></li>
+			</ul>
+		</div>
+		<div class="modal-footer">
+			<button type="reset" class="btn" data-dismiss="modal">Cancel</button>
+		</div>
 	</div>
 
 </div>
