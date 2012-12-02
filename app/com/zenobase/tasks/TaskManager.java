@@ -11,10 +11,6 @@ public abstract class TaskManager {
 
 	public abstract Task newTask(String bucketId, Identity principal);
 
-	public String getAuthorizationUrl(Task task) {
-		throw new UnsupportedOperationException();
-	}
-
 	public Command authorize(Task task, ObjectNode config) {
 		throw new UnsupportedOperationException();
 	}

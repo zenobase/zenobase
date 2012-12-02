@@ -33,16 +33,8 @@ public abstract class OAuthTaskManager extends TaskManager {
 	public Task newTask(String bucketId, Identity principal) {
 		OAuthTask task = new OAuthTask(getType(), bucketId, principal);
 		task.setToken(getService(task).getRequestToken());
+		task.setAuthorizationUrl(getService(task).getAuthorizationUrl(task.getToken()));
 		return task;
-	}
-
-	@Override
-	public String getAuthorizationUrl(Task task) {
-		return getAuthorizationUrl(task.as(OAuthTask.class));
-	}
-
-	private String getAuthorizationUrl(OAuthTask task) {
-		return getService(task).getAuthorizationUrl(task.getToken());
 	}
 
 	@Override
@@ -58,7 +50,7 @@ public abstract class OAuthTaskManager extends TaskManager {
 			"Token matches in task %s, expected %s, got %s",
 			task.getId(), task.getToken().getToken(), token);
 		return UpdateTaskCommand.builder(task)
-			.set(Task.ENABLED, task.isEnabled(), true)
+			.set(Task.AUTHORIZATION_URL, task.getAuthorizationUrl(), null)
 			.with(Task.CREDENTIALS)
 			.set(OAuthTask.TOKEN, task.getToken(), getAccessToken(task, verifier))
 			.build();

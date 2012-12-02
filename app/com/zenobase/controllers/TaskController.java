@@ -3,9 +3,13 @@ package com.zenobase.controllers;
 import javax.inject.Inject;
 
 import org.codehaus.jackson.node.ObjectNode;
+import org.joda.time.DateTime;
+import org.joda.time.Minutes;
+import play.Logger;
 import play.mvc.BodyParser;
 import play.mvc.Result;
 import play.mvc.With;
+import com.google.common.base.Objects;
 
 import com.zenobase.actions.Timed;
 import com.zenobase.commands.Command;
@@ -49,14 +53,52 @@ public class TaskController extends ControllerSupport {
 		if (task == null) {
 			return notFound();
 		}
+		if (!task.getPrincipal().equals(principal)) {
+			return forbidden();
+		}
+		if (isStale(task)) {
+			refresh(task);
+		}
+    	return ok(task.toJson());
+    }
+
+	private void refresh(Task task) {
+		Logger.info("Refreshing: " + task.getId());
 		Bucket bucket = buckets.findBucket(task.getBucketId());
 		if (bucket == null) {
+			task.setStatus(Task.Status.FAILED);
+			return;
+		}
+    	if (bucket.getPermission(task.getPrincipal()) != Permission.ALL) {
+			task.setStatus(Task.Status.FAILED);
+			return;
+    	}
+    	TaskManager manager = registry.find(task.getType());
+    	if (manager == null) {
+			task.setStatus(Task.Status.FAILED);
+			return;
+    	}
+    	Command command = manager.execute(task);
+    	if (command != null) {
+    		dispatcher.dispatch(command);
+    	}
+	}
+
+	private boolean isStale(Task task) {
+		DateTime completed = Objects.firstNonNull(task.getCompleted(), new DateTime(0L));
+		return task.isEnabled() && Minutes.minutesBetween(completed, DateTime.now()).isGreaterThan(Minutes.ONE);
+	}
+
+	public Result run(String taskId) {
+		Identity principal = getSecurityContext().getPrincipal();
+		if (principal == null) {
+			return unauthorized();
+		}
+		Task task = tasks.findTask(taskId);
+		if (task == null) {
 			return notFound();
 		}
-    	if (bucket.getPermission(principal) != Permission.ALL) {
-    		return forbidden();
-    	}
-    	return ok(task.toJson());
+    	return status(ACCEPTED);
     }
 
     @BodyParser.Of(BodyParser.Json.class)
@@ -96,42 +138,6 @@ public class TaskController extends ControllerSupport {
     	return success(commandId);
     }
 
-	public Result run(String taskId) {
-		Identity principal = getSecurityContext().getPrincipal();
-		if (principal == null) {
-			return unauthorized();
-		}
-		Task task = tasks.findTask(taskId);
-		if (task == null) {
-			return notFound();
-		}
-		Bucket bucket = buckets.findBucket(task.getBucketId());
-		if (bucket == null) {
-			return notFound();
-		}
-    	if (bucket.getPermission(principal) != Permission.ALL) {
-    		return forbidden();
-    	}
-    	TaskManager manager = registry.find(task.getType());
-    	if (manager == null) {
-    		return internalServerError("unsupported task type: " + task.getType());
-    	}
-    	if (!task.isEnabled()) {
-        	String authorizationUrl = manager.getAuthorizationUrl(task);
-    		if (authorizationUrl == null) {
-    			return badRequest();
-    		}
-    		response().setHeader(LOCATION, authorizationUrl);
-    		return conflict("missing credentials");
-    	}
-    	Command command = manager.execute(task);
-    	if (command != null) {
-    		String commandId = dispatcher.dispatch(command);
-    		return success(commandId);
-    	}
-    	return status(ACCEPTED);
-    }
-
     public Result delete(String taskId) {
     	Identity principal = getSecurityContext().getPrincipal();
 		if (principal == null) {
@@ -142,10 +148,7 @@ public class TaskController extends ControllerSupport {
 			return notFound();
 		}
     	Bucket bucket = buckets.findBucket(task.getBucketId());
-    	if (bucket == null) {
-    		return notFound();
-    	}
-    	if (bucket.getPermission(principal) != Permission.ALL) {
+    	if (bucket != null && bucket.getPermission(principal) != Permission.ALL) {
     		return forbidden();
     	}
     	String commandId = dispatcher.dispatch(new DeleteTaskCommand(principal, task));

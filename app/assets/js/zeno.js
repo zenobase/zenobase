@@ -499,6 +499,7 @@
 					console.assert(status === 201, status);
 					console.assert(location, 'missing location header');
 					$location.url(location);
+					// TODO trigger getting started dialog
 					$scope.whoami();
 				})
 				.error(function(response) {
@@ -731,9 +732,6 @@
 					var t1 = new Date().getTime();
 					callback(response);
 					_gaq.push(['_trackTiming', 'action', 'refresh', t1 - t0, $scope.bucketId, 100]);
-					if (response.total === 0 && q.length === 0 && $scope.editable) {
-						$timeout(function() { $scope.openDialog('getting-started-dialog'); }, DELAY);
-					}
 				})
 				.error(function(response) { callback({ total : -1 }) });
 		};
@@ -2045,7 +2043,30 @@
 		};
 	}]);
 
-	app.controller('TaskListCtrl', ['$scope', '$http', '$routeParams', '$timeout', '$window', function($scope, $http, $routeParams, $timeout, $window) {
+	app.service('tasks', [ '$http', '$timeout', function($http, $timeout) {
+		this.refresh = function($scope, taskId, callback) {
+			$http.get('/tasks/' + taskId)
+				.success(function(response) {
+					if (response.authorizationUrl) {
+						$scope.alert.show('Task requires <a href="' + response.authorizationUrl + '">authorization</a>.', 'alert-block');
+					} else if (response.status == 'FAILED') {
+						$scope.alert.show('Couldn\'t refresh task.', 'alert-error');
+					}
+					if (callback) {
+						$timeout(callback, DELAY);
+					}
+				})
+				.error(function(response, code) {
+					if (code < 500) {
+						$scope.alert.show('Couldn\'t refresh task.', 'alert-error');
+					} else {
+						$scope.alert.show('Couldn\'t refresh task. Try again later or contact support.', 'alert-error');
+					}
+				});		
+		};
+	}]);
+
+	app.controller('TaskListCtrl', ['$scope', '$http', '$routeParams', '$timeout', 'tasks', function($scope, $http, $routeParams, $timeout, tasks) {
 		
 		$scope.bucketId = $routeParams.bucketId;
 		$scope.tasks = null;
@@ -2063,24 +2084,9 @@
 					}
 				});
 		};
-
-		$scope.run = function(taskId) {
-			$http.post('/tasks/' + taskId + '/run')
-				.success(function(response) {
-					$scope.alert.show('Task completed.', 'alert-success', response.undo);
-					$timeout($scope.refresh, DELAY);
-				})
-				.error(function(response, code, headers) {
-					if (code == 409) {
-						$window.location = headers('Location');
-					} else if (code < 500) {
-						$scope.message = 'Can\'t run this task.';
-					} else {
-						$scope.message = 'Couldn\'t run this task. Try again later or contact support.';
-					}
-				});
+		$scope.refreshTask = function(taskId) {
+			tasks.refresh($scope, taskId, $scope.refresh);
 		};
-
 		$scope.remove = function(taskId) {
 			$scope.alert.clear();
 			$http({ method : 'DELETE', url : '/tasks/' + taskId })
@@ -2089,7 +2095,11 @@
 					$timeout($scope.refresh, DELAY);
 				})
 				.error(function(response) {
-					$scope.alert.show('Couldn\'t delete the task.', 'alert-error');
+					if (status < 500) {
+						$scope.message = 'Can\'t delete this task.';
+					} else {
+						$scope.message = 'Couldn\'t delete this task. Try again later or contact support.';
+					}
 				});
 			_gaq.push([ '_trackEvent', 'action', 'delete task' ]);
 		};
@@ -2097,7 +2107,7 @@
 		$scope.refresh();
 	}]);
 	
-	app.controller('CreateTaskDialogCtrl', ['$scope', '$http', '$timeout', function($scope, $http, $timeout) {
+	app.controller('CreateTaskDialogCtrl', ['$scope', '$http', 'tasks', function($scope, $http, tasks) {
 	
 		$scope.types = [ 'dummy', 'foursquare', 'fitbit', 'twitter', 'withings' ];
 
@@ -2110,10 +2120,15 @@
 		$scope.create = function() {
 			$scope.alert.clear();
 			$http.post('/tasks/', { 'type' : $scope.type, 'bucket' : $scope.bucketId })
-				.success(function(response) {
-					$scope.alert.show('Created task.', 'alert-success', response.undo);
-					$scope.closeDialog();
-					$timeout($scope.refresh, DELAY);
+				.success(function(response, code, headers) {
+					var location = headers('Location');
+					console.assert(code === 201, status);
+					console.assert(location, 'missing location header');
+					var taskId = location.replace(/.+\//, '');
+					tasks.refresh($scope, taskId, function() {
+						$scope.closeDialog();
+						$scope.refresh();
+					})
 				})
 				.error(function(response) {
 					$scope.message = 'Couldn\'t create task. Try again later or contact support.';
@@ -2122,26 +2137,27 @@
 		};
 	}]);
 
-	app.controller('TaskAuthCtrl', ['$scope', '$http', '$routeParams', '$location', '$timeout', function($scope, $http, $routeParams, $location, $timeout) {
+	app.controller('TaskAuthCtrl', ['$scope', '$http', '$routeParams', '$location', 'tasks', function($scope, $http, $routeParams, $location, tasks) {
 		
 		$scope.bucketId = $routeParams.bucketId;
 		$scope.taskId = $routeParams.taskId;
 
 		$http.post('/tasks/' + $scope.taskId, { 'credentials' : $location.search() })
 			.success(function(response) {
-				$timeout(function() {
+				tasks.refresh($scope, $scope.taskId, function() {
+					$scope.alert.show('Task is authorized.', 'alert-success');
 					$location.url('/buckets/' + $scope.bucketId);
-				}, DELAY);
+				});
 			})
 			.error(function(response, status) {
 				if (status < 500) {
-					$scope.message = 'Can\'t update this task.';
+					$scope.message = 'Can\'t authorize this task.';
 				} else {
-					$scope.message = 'Couldn\'t update this task. Try again later or contact support.';
+					$scope.message = 'Couldn\'t authorize this task. Try again later or contact support.';
 				}
 			});
 	}]);
-	
+
 	/**
 	 * @constructor
 	 */

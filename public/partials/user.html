@@ -125,12 +125,17 @@
 							<td>{{task.type}}</td>
 							<td style="white-space: nowrap"><a data-ng-href="#/buckets/{{task.bucket}}/">{{task.bucket}}</a></td>
 							<td>
-								<span data-ng-show="task.status == 'SUCCESS'">ran</span>
-								<span data-ng-show="task.status == 'FAILED'">failed</span>
-								<span data-ng-show="task.enabled">{{task.completed | age}}</span>
+								<span data-ng-show="task.status">
+									<span data-ng-show="task.status == 'SUCCESS'">ran</span>
+									<span data-ng-show="task.status == 'FAILED'">failed</span>
+									{{task.completed | age}}
+								</span>
+								<span data-ng-show="task.authorizationUrl">
+									<a data-ng-href="{{task.authorizationUrl}}">requires authentication</a>
+								</span>
 							</td>
 							<td style="text-align: right">
-								<a class="action task-run-action" href="javascript:" data-ng-click="run(task['@id'])"><i class="icon-repeat" title="Run"></i></a>
+								<a class="action task-run-action" href="javascript:" data-ng-click="refreshTask(task['@id'])"><i class="icon-refresh" title="Refresh"></i></a>
 								<a class="action task-delete-action" href="javascript:" data-ng-click="remove(task['@id'])"><i class="icon-trash" title="Delete"></i></a>
 							</td>
 						</tr>

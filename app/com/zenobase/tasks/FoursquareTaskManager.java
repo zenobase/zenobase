@@ -39,7 +39,9 @@ public class FoursquareTaskManager extends OAuthTaskManager {
 
 	@Override
 	public Task newTask(String bucketId, Identity principal) {
-		return new FoursquareTask(bucketId, principal);
+		FoursquareTask task = new FoursquareTask(bucketId, principal);
+		task.setAuthorizationUrl(getService(task).getAuthorizationUrl(task.getToken()));
+		return task;
 	}
 
 	@Override
@@ -52,7 +54,7 @@ public class FoursquareTaskManager extends OAuthTaskManager {
 		String verifier = config.get("code").getTextValue();
 		Token token = getAccessToken(task, verifier);
 		return UpdateTaskCommand.builder(task)
-			.set(Task.ENABLED, task.isEnabled(), true)
+			.set(Task.AUTHORIZATION_URL, task.getAuthorizationUrl(), null)
 			.with(Task.CREDENTIALS)
 			.set(OAuthTask.TOKEN, task.getToken(), token)
 			.build();

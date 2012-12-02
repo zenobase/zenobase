@@ -16,7 +16,7 @@ public class FitbitTest extends TaskTestSupport {
 	public void testNew() {
 		TaskManager manager = new FitbitTaskManager(apiKey, apiSecret, callbackUrl);
 		Task task = manager.newTask(bucketId, principal);
-		System.out.println(manager.getAuthorizationUrl(task));
+		System.out.println(task.getAuthorizationUrl());
 		ObjectNode config = Nodes.newObject();
 		Scanner scanner = new Scanner(System.in);
 		System.out.print("oauth_token=");

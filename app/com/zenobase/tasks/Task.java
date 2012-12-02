@@ -5,7 +5,6 @@ import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 
 import com.zenobase.common.Generator;
-import com.zenobase.json.BooleanField;
 import com.zenobase.json.DateTimeField;
 import com.zenobase.json.DomainNode;
 import com.zenobase.json.EnumField;
@@ -26,7 +25,7 @@ public class Task extends DomainNode {
 	public static final TokenField BUCKET = new TokenField("bucket");
 	public static final IdentityField PRINCIPAL = new IdentityField("principal");
 	public static final DateTimeField CREATED = new DateTimeField("created");
-	public static final BooleanField ENABLED = new BooleanField("enabled");
+	public static final TokenField AUTHORIZATION_URL = new TokenField("authorizationUrl");
 
 	public static final ObjectField CREDENTIALS = new ObjectField("credentials");
 	public static final ObjectField SETTINGS = new ObjectField("settings");
@@ -34,6 +33,7 @@ public class Task extends DomainNode {
 	public static final DateTimeField COMPLETED = new DateTimeField("completed");
 	public static final EnumField<Status> STATUS = EnumField.newInstance("status", Status.class);
 	public static final TokenField MARKER = new TokenField("marker");
+	public static final TokenField UNDO = new TokenField("undo");
 
 	public Task(ObjectNode node) {
 		super(node);
@@ -45,7 +45,6 @@ public class Task extends DomainNode {
 		setValue(BUCKET, bucketId);
 		setValue(PRINCIPAL, principal);
 		setValue(CREATED, new DateTime(DateTimeZone.UTC));
-		setValue(ENABLED, Boolean.FALSE);
 	}
 
 	public String getId() {
@@ -69,11 +68,15 @@ public class Task extends DomainNode {
 	}
 
 	public boolean isEnabled() {
-		return getValue(ENABLED);
+		return getValue(AUTHORIZATION_URL) == null;
 	}
 
-	public void setEnabled(boolean enabled) {
-		setValue(ENABLED, enabled ? Boolean.TRUE : null);
+	public String getAuthorizationUrl() {
+		return getValue(AUTHORIZATION_URL);
+	}
+
+	public void setAuthorizationUrl(String authorizationUrl) {
+		setValue(AUTHORIZATION_URL, authorizationUrl);
 	}
 
 	public DateTime getCompleted() {
@@ -126,7 +129,7 @@ public class Task extends DomainNode {
 
 	public static Schema getSchema() {
 		return new SchemaBuilder(TYPE_NAME)
-			.add(VERSION).add(ID).add(TYPE).add(BUCKET).add(PRINCIPAL).add(CREATED).add(ENABLED)
+			.add(VERSION).add(ID).add(TYPE).add(BUCKET).add(PRINCIPAL).add(CREATED).add(AUTHORIZATION_URL)
 			.add(COMPLETED).add(STATUS).add(MARKER)
 			.add(CREDENTIALS).add(SETTINGS).build();
 	}

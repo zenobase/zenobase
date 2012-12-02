@@ -41,7 +41,4 @@ GET     /tasks/:taskId               @com.zenobase.controllers.TaskController.ge
 POST    /tasks/:taskId               @com.zenobase.controllers.TaskController.update(taskId)
 DELETE  /tasks/:taskId               @com.zenobase.controllers.TaskController.delete(taskId)
 
-POST    /tasks/:taskId/run           @com.zenobase.controllers.TaskController.run(taskId)
-
-
 GET     /*file                       com.zenobase.controllers.Assets.at(path="/public", file)

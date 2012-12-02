@@ -25,11 +25,9 @@ public class UpdateTaskCommandTest {
 
 		Task to = from.copy();
 		to.setCompleted(DateTime.now());
-		to.setEnabled(true);
 
 		Command command = UpdateTaskCommand.builder(from)
 			.set(Task.COMPLETED, from.getCompleted(), to.getCompleted())
-			.set(Task.ENABLED, from.isEnabled(), to.isEnabled())
 			.build();
 		when(tasks.findTask(from.getId())).thenReturn(from.copy());
 		registry.execute(command);

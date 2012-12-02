@@ -44,7 +44,7 @@ public class WithingsTaskManager extends OAuthTaskManager {
 			"Token matches in task %s, expected %s, got %s",
 			task.getId(), task.getToken().getToken(), token);
 		return UpdateTaskCommand.builder(task)
-			.set(Task.ENABLED, task.isEnabled(), true)
+			.set(Task.AUTHORIZATION_URL, task.getAuthorizationUrl(), null)
 			.with(Task.CREDENTIALS)
 			.set(OAuthTask.TOKEN, task.getToken(), getAccessToken(task, verifier))
 			.set(WithingsTask.USER_ID, task.getUserId(), userId)

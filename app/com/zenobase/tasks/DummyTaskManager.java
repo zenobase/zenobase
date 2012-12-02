@@ -24,7 +24,6 @@ public class DummyTaskManager extends TaskManager {
 	@Override
 	public Task newTask(String bucketId, Identity principal) {
 		DummyTask task = new DummyTask(bucketId, principal, null);
-		task.setEnabled(true);
 		task.setTag("test"); // TODO read from settings
 		return task;
 	}

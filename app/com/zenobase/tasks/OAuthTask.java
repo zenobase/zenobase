@@ -25,7 +25,6 @@ public class OAuthTask extends Task {
 	protected OAuthTask(String type, String bucketId, Identity principal, Token token) {
 		super(type, bucketId, principal);
 		setToken(token);
-		setEnabled(true);
 	}
 
 	public Token getToken() {
