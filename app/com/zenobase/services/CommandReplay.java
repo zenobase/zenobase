@@ -1,8 +1,11 @@
 package com.zenobase.services;
 
+import java.util.concurrent.TimeUnit;
+
 import javax.inject.Named;
 
 import play.Logger;
+import com.google.common.base.Stopwatch;
 import com.google.inject.Inject;
 
 import com.zenobase.commands.Command;
@@ -38,6 +41,7 @@ public class CommandReplay {
 		CommandRepository repository = new CommandRepository(indexManager, parsers);
 		Logger.info("Replaying " + repository.size() + " commands from " + sourceCluster + "...");
 		final StringBloomFilter identities = new IdentitiesFilterBuilder(new UserRepository(indexManager)).build();
+		Stopwatch timer = new Stopwatch().start();
 		try {
 			repository.findAll(new Callback<Command>() {
 				@Override
@@ -50,7 +54,8 @@ public class CommandReplay {
 				}
 			});
 		} finally {
-			Logger.info("Replayed " + replayed + "/" + count);
+			timer.stop();
+			Logger.warn("Replayed " + replayed + "/" + count + " in " + timer.elapsedTime(TimeUnit.SECONDS) + " s");
 		}
 	}
 }
