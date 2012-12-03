@@ -83,8 +83,14 @@
 		$scope.reload = function() {
 			$route.reload();
 		};
+		$scope.openDialog = function(dialog) {
+			$scope.dialog = dialog;
+		};
+		$scope.closeDialog = function() {
+			$scope.dialog = null;
+		};
 
-		$scope.$on('$routeChangeStart', function() {
+		$scope.$on('$routeChangeStart', function(x, y) {
 			$scope.alert.clear();
 		});
 		$scope.$on('$routeChangeSuccess', function() {
@@ -499,8 +505,8 @@
 					console.assert(status === 201, status);
 					console.assert(location, 'missing location header');
 					$location.url(location);
-					// TODO trigger getting started dialog
 					$scope.whoami();
+					$scope.openDialog('getting-started-dialog');					
 				})
 				.error(function(response) {
 					$scope.alert.show('Couldn\'t create a new bucket.', 'alert-error');					
@@ -813,12 +819,6 @@
 		};
 		$scope.cancel = function() {
 			$scope.editing = false;
-		};
-		$scope.openDialog = function(dialog) {
-			$scope.dialog = dialog;
-		};
-		$scope.closeDialog = function() {
-			$scope.dialog = null;
 		};
 	}]);
 	
