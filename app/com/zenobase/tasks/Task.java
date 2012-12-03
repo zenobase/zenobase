@@ -127,6 +127,15 @@ public class Task extends DomainNode {
 		return copy(getClass());
 	}
 
+	/**
+	 * Create a copy of this task with sensitive fields cleared.
+	 */
+	public Task sanitized() {
+		Task sanitized = copy();
+		sanitized.setValue(CREDENTIALS, null);
+		return sanitized;
+	}
+
 	public static Schema getSchema() {
 		return new SchemaBuilder(TYPE_NAME)
 			.add(VERSION).add(ID).add(TYPE).add(BUCKET).add(PRINCIPAL).add(CREATED).add(AUTHORIZATION_URL)

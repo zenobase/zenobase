@@ -59,7 +59,7 @@ public class TaskController extends ControllerSupport {
 		if (isStale(task)) {
 			refresh(task);
 		}
-    	return ok(task.toJson());
+    	return ok(task.sanitized().toJson());
     }
 
 	private void refresh(Task task) {
