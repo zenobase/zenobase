@@ -2102,9 +2102,9 @@
 	app.controller('CreateTaskDialogController', ['$scope', '$http', 'tasks', function($scope, $http, tasks) {
 	
 		$scope.types = [ 
-			{ 'id' : 'fitbit', 'description' : 'Creates events for daily Fitbit step counts.' }
+			{ 'id' : 'fitbit', 'description' : 'Creates events for daily Fitbit step counts.' },
 			{ 'id' : 'foursquare', 'description' : 'Creates events for Foursuare check-ins.' },
-			{ 'id' : 'withings', 'description' : 'Creates events for Withings weight measurements.' }
+			{ 'id' : 'withings', 'description' : 'Creates events for Withings weight measurements.' },
 			{ 'id' : 'demo', 'description' : 'Creates events with a custom tag.' }
 		];
 
