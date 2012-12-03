@@ -85,6 +85,10 @@ public class BrowserTest {
 
 				// follow get started link
 				$("#new-user-link").click();
+				wait.withMessage("getting started dialog is displayed").until(ExpectedConditions.visibilityOfElementLocated(By.id("getting-started-dialog")));
+				$("#getting-started-add-event-link").click();
+
+				// start creating a single event
 				wait.withMessage("edit event dialog is displayed").until(ExpectedConditions.visibilityOfElementLocated(By.id("edit-event-dialog")));
 				assertThat($("#sign-up-banner")).isDisplayed();
 				assertThat($("#alert-banner")).isNotDisplayed();
@@ -258,7 +262,8 @@ public class BrowserTest {
 				$("#create-bucket-label").sendKeys("Test Data");
 				assertThat($("#create-bucket-button")).isEnabled();
 				$("#create-bucket-button").click();
-				wait.withMessage("edit event dialog is displayed").until(ExpectedConditions.visibilityOfElementLocated(By.id("edit-event-dialog")));
+				wait.withMessage("add event action").until(ExpectedConditions.visibilityOfElementLocated(By.id("add-event-action")));
+				$("#add-event-action").click();
 				new Select($("#event-field-select")).selectByVisibleText("timestamp");
 				$("#add-timestamp-button").click();
 				$("#save-event-button").click();
