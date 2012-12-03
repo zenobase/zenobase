@@ -1,11 +1,11 @@
 package com.zenobase.tasks;
 
 import java.math.BigDecimal;
+import java.math.MathContext;
 import java.util.List;
 
 import javax.measure.DecimalMeasure;
 import javax.measure.quantity.Mass;
-import javax.measure.quantity.Quantity;
 import javax.measure.unit.SI;
 import javax.measure.unit.Unit;
 
@@ -13,7 +13,7 @@ import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.node.ObjectNode;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
-import com.google.common.base.Preconditions;
+import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 
 import com.zenobase.models.Event;
@@ -24,25 +24,30 @@ class WithingsResult {
 
 	public static final Resource SOURCE = new Resource("Withings", "http://withings.com/");
 
-	private final String tag = "body";
-	private final Unit<Mass> unit = SI.KILOGRAM;
-	private final DateTimeZone timezone = DateTimeZone.UTC;
-	private final Identity author;
 	private final ObjectNode node;
+	private final Identity author;
+	private final String tag;
+	private final Unit<Mass> unit;
+	private final DateTimeZone timezone = DateTimeZone.UTC;
 
-	public WithingsResult(Identity author, ObjectNode node) {
-		this.author = author;
+	public WithingsResult(ObjectNode node, Identity author, String tag, Unit<Mass> unit) {
 		this.node = node;
-		Preconditions.checkState(node.get("status").getIntValue() == 0);
+		this.author = author;
+		this.tag = tag;
+		this.unit = unit;
+	}
+
+	public int getStatus() {
+		return node.path("status").isInt() ? node.path("status").getIntValue() : -1;
 	}
 
 	public String getMarker() {
-		return node.path(tag).path("updatetime").asText();
+		return Strings.emptyToNull(node.path("body").path("updatetime").asText());
 	}
 
 	public List<Event> getEvents() {
 		List<Event> events = Lists.newArrayList();
-		for (JsonNode group : node.path(tag).path("measuregrps")) {
+		for (JsonNode group : node.path("body").path("measuregrps")) {
 			addEvents(group, events);
 		}
 		return events;
@@ -63,9 +68,9 @@ class WithingsResult {
 		}
 	}
 
-	private static <T extends Quantity> DecimalMeasure<T> getDecimalMeasure(JsonNode measure, Unit<T> unit) {
+	private static DecimalMeasure<Mass> getDecimalMeasure(JsonNode measure, Unit<Mass> unit) {
 		BigDecimal value = getBigDecimal(measure);
-		return value != null ? new DecimalMeasure<T>(value, unit) : null;
+		return value != null ? new DecimalMeasure<Mass>(value, SI.KILOGRAM).to(unit, new MathContext(5)) : null;
 	}
 
 	private static BigDecimal getBigDecimal(JsonNode node) {

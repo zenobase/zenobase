@@ -15,7 +15,7 @@ public class FitbitTest extends TaskTestSupport {
 	@Ignore
 	public void testNew() {
 		TaskManager manager = new FitbitTaskManager(apiKey, apiSecret, callbackUrl);
-		Task task = manager.newTask(bucketId, principal);
+		Task task = manager.newTask(bucketId, principal, Nodes.newObject());
 		System.out.println(task.getAuthorizationUrl());
 		ObjectNode config = Nodes.newObject();
 		Scanner scanner = new Scanner(System.in);
@@ -30,6 +30,6 @@ public class FitbitTest extends TaskTestSupport {
 	@Test
 	public void testExisting() {
 		TaskManager manager = new FitbitTaskManager(apiKey, apiSecret, callbackUrl);
-		manager.execute(new FitbitTask(bucketId, principal, getToken(), LocalDate.now().minusDays(3).toString()));
+		manager.execute(new FitbitTask(bucketId, principal, getToken(), LocalDate.now().minusDays(3).toString(), "steps"));
 	}
 }

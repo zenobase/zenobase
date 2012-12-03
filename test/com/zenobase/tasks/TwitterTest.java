@@ -14,7 +14,7 @@ public class TwitterTest extends TaskTestSupport {
 	@Ignore
 	public void testNew() {
 		TaskManager manager = new TwitterTaskManager(apiKey, apiSecret, callbackUrl);
-		Task task = manager.newTask(bucketId, principal);
+		Task task = manager.newTask(bucketId, principal, Nodes.newObject());
 		System.out.println(task.getAuthorizationUrl());
 		ObjectNode config = Nodes.newObject();
 		Scanner scanner = new Scanner(System.in);

@@ -14,7 +14,7 @@
 	var app = angular.module('ZenoModule', ['ngSanitize']);
 
 	app.service('delay', ['$timeout', function($timeout) {
-		return function(callback) {
+		this.soon = function(callback) {
 			$timeout(callback, 1000);  // ms after which we assume changes will be visible
 		};
 	}]);
@@ -61,7 +61,7 @@
 			$scope.alert.clear();
 			$http.post('/queue/' , { 'undo' : commandId })
 				.success(function(response, code) {
-					delay($route.reload);
+					delay.soon($route.reload);
 				})
 				.error(function(response) {
 					$scope.alert.show('Couldn\'t undo.');
@@ -760,7 +760,7 @@
 		$scope.removeEvent = function(eventId) {
 			$scope.alert.clear();
 			$http({ method : 'DELETE', url : '/buckets/' + $scope.bucketId + '/' + eventId }).success(function(response, status, headers) {
-				delay($scope.refresh);
+				delay.soon($scope.refresh);
 				$scope.alert.show('Deleted an event.', 'alert-success', response.undo);
 			});
 			_gaq.push([ '_trackEvent', 'action', 'delete event' ]);
@@ -1679,7 +1679,7 @@
 				$http.post('/buckets/' + $scope.params.bucketId + '/', $scope.event)
 				.success(function(response) {
 					$scope.editEvent(null);
-					delay($scope.refresh);
+					delay.soon($scope.refresh);
 				})
 				.error(function(response) {
 					$scope.message = response.message || 'Couldn\'t create this event.';
@@ -1689,7 +1689,7 @@
 				.success(function(response) {
 					$scope.editEvent(null);
 					$scope.alert.show('Updated an event.', 'alert-success', response.undo);
-					delay($scope.refresh);
+					delay.soon($scope.refresh);
 				})
 				.error(function(response) {
 					$scope.message = response.message || 'Couldn\'t update this event.';
@@ -2020,7 +2020,7 @@
 			$http.post('/buckets/' + $scope.bucketId + '/', $.isArray($scope.events) ? { 'events' : $scope.events } : $scope.events)
 				.success(function(response) {
 					$scope.alert.show('Imported events.', 'alert-success', response.undo);
-					delay($scope.refresh);
+					delay.soon($scope.refresh);
 					$scope.closeDialog();
 				})
 				.error(function(response) {
@@ -2040,7 +2040,7 @@
 						$scope.alert.show('Couldn\'t refresh task.', 'alert-error');
 					}
 					if (callback) {
-						delay(callback);
+						delay.soon(callback);
 					}
 				})
 				.error(function(response, code) {
@@ -2079,7 +2079,7 @@
 			$http({ method : 'DELETE', url : '/tasks/' + taskId })
 				.success(function(response) {
 					$scope.alert.show('Deleted a task.', 'alert-success', response.undo);
-					delay($scope.refresh);
+					delay.soon($scope.refresh);
 				})
 				.error(function(response) {
 					if (status < 500) {
@@ -2101,17 +2101,32 @@
 	
 	app.controller('CreateTaskDialogController', ['$scope', '$http', 'tasks', function($scope, $http, tasks) {
 	
-		$scope.types = [ 'dummy', 'foursquare', 'fitbit', 'twitter', 'withings' ];
+		$scope.types = [ 
+			{ 'id' : 'dummy', 'description' : 'Generates events for testing.' },
+			{ 'id' : 'fitbit', 'description' : 'Generates events with daily summary data, incl number of steps.' },
+			{ 'id' : 'foursquare', 'description' : 'Retrieves checkins from Foursquare.' },
+			{ 'id' : 'withings', 'description' : 'Retrieves weight measurements from Withings.' }
+		];
 
 		$scope.init = function() {
 			$scope.message = '';
 			$scope.type = $scope.types[0];
+			$scope.settings = { foo : 42 };
 			_gaq.push([ '_trackEvent', 'dialog', 'create task' ]);
 		};
-
+		$scope.getTemplate = function(type) {
+			return type ? '/' + type.id + '-settings.html' : null;
+		};
+		$scope.data = function() {
+			return {
+				type : $scope.type.id,
+				bucket : $scope.bucketId,
+				settings : $scope.settings
+			};
+		};
 		$scope.create = function() {
 			$scope.alert.clear();
-			$http.post('/tasks/', { 'type' : $scope.type, 'bucket' : $scope.bucketId })
+			$http.post('/tasks/', $scope.data())
 				.success(function(response, code, headers) {
 					var location = headers('Location');
 					console.assert(code === 201, status);
@@ -2127,6 +2142,43 @@
 				});
 			_gaq.push([ '_trackEvent', 'action', 'create task' ]);
 		};
+	}]);
+	
+	app.controller('DummySettingsController', ['$scope', function($scope) {
+
+		$scope.init = function() {
+			$scope.settings = $scope.$parent.$parent.settings = {
+					tag : 'demo'
+			};
+		};
+
+		$scope.init();
+	}]);
+	
+	app.controller('FitbitSettingsController', ['$scope', function($scope) {
+
+		$scope.init = function() {
+			$scope.settings = $scope.$parent.$parent.settings = {
+					tag : 'steps'
+			};
+		};
+
+		$scope.init();
+	}]);
+	
+	app.controller('WithingsSettingsController', ['$scope', function($scope) {
+
+		$scope.init = function() {
+			$scope.settings = $scope.$parent.$parent.settings = {
+					tag : 'body',
+					unit : 'lb'
+			};
+		};
+		$scope.getUnits = function() {
+			return Field.find('weight').units;
+		};
+
+		$scope.init();
 	}]);
 
 	app.controller('TaskAuthorizationController', ['$scope', '$http', '$routeParams', '$location', 'tasks', function($scope, $http, $routeParams, $location, tasks) {

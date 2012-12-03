@@ -38,7 +38,8 @@ public class FoursquareTaskManager extends OAuthTaskManager {
 	}
 
 	@Override
-	public Task newTask(String bucketId, Identity principal) {
+	public FoursquareTask newTask(String bucketId, Identity principal, ObjectNode settings) {
+		Preconditions.checkArgument(settings.size() == 0, "Expected no settings but got: %s", settings);
 		FoursquareTask task = new FoursquareTask(bucketId, principal);
 		task.setAuthorizationUrl(getService(task).getAuthorizationUrl(task.getToken()));
 		return task;
@@ -88,14 +89,14 @@ public class FoursquareTaskManager extends OAuthTaskManager {
 		request.addQuerystringParameter("offset", Integer.toString(offset));
 		request.addQuerystringParameter("limit", Integer.toString(LIMIT));
 		FoursquareResult result = new FoursquareResult(task.getPrincipal(), parseObject(request.send()));
-		Preconditions.checkState(result.getStatus() == 200);
+		Preconditions.checkState(result.getStatus() == 200, "Expected status <200> but got <%s> for task <%s>", result.getStatus(), task.getId());
 		List<Event> found = result.getEvents();
 		events.addAll(found);
 		return found.size() == LIMIT && result.getTotal() > offset + LIMIT;
 	}
 
 	private Command createCommand(FoursquareTask task, String marker, List<Event> events) {
-		CompoundCommand command = new CompoundCommand(task.getPrincipal(), "imported events from foursquare", "removed events imported from foursquare");
+		CompoundCommand command = new CompoundCommand(task.getPrincipal(), "ran foursquare task", "reverted foursquare task");
 		command.add(UpdateTaskCommand.builder(task)
 			.set(Task.COMPLETED, task.getCompleted(), new DateTime(DateTimeZone.UTC))
 			.set(Task.STATUS, task.getStatus(), Task.Status.SUCCESS)

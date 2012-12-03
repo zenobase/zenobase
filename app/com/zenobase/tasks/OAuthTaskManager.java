@@ -30,7 +30,7 @@ public abstract class OAuthTaskManager extends TaskManager {
 	}
 
 	@Override
-	public Task newTask(String bucketId, Identity principal) {
+	public OAuthTask newTask(String bucketId, Identity principal, ObjectNode settings) {
 		OAuthTask task = new OAuthTask(getType(), bucketId, principal);
 		task.setToken(getService(task).getRequestToken());
 		task.setAuthorizationUrl(getService(task).getAuthorizationUrl(task.getToken()));

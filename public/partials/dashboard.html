@@ -147,31 +147,66 @@
 			</div>
 		</form>
 	</div>
-		
+	
 	<div id="create-task-dialog" data-ui-modal="dialog == 'task-dialog'" data-ui-modal-open="init()" data-ui-modal-close="closeDialog()" data-ng-controller="CreateTaskDialogController">
-		<form class="modal-form">
-			<div class="alert alert-error" data-ng-show="message">
-				{{message}}
-			</div>
+		<form name="createTaskForm" class="modal-form">
 			<div class="modal-header">
 				<a class="close" data-dismiss="modal">&times;</a>
-				<h4 class="alert-heading">Task</h4>
+				<h4 class="alert-heading">Create Task</h4>
 			</div>
 			<div class="modal-body">
+				<div class="alert alert-error" data-ng-show="message">
+					{{message}}
+				</div>
 				<div class="control-group">
-					<label class="control-label" for="task-type"><strong>Type</strong></label>
+					<label class="control-label" for="task-type">Type</label>
 					<div class="controls">
-						<select name="type" data-ng-model="type" data-ng-options="type for type in types" required></select>
-						<p class="help-block">The task type.</p>
+						<select name="type" data-ng-model="type" data-ng-options="type.id for type in types" required></select>
+						<p class="help-block">{{type.description}}</p>
 					</div>
 				</div>
+				<div data-ng-include="getTemplate(type)" data-ng-show="type"></div>
 			</div>
 			<div class="modal-footer">
-				<button class="btn btn-primary" data-ng-click="create()">Save</button>
+				<button class="btn btn-primary" data-ng-click="create()" data-ng-disabled="!createTaskForm.$valid">Save</button>
 				<button class="btn" data-dismiss="modal">Cancel</button>
 			</div>
 		</form>
 	</div>
+
+	<script id="/dummy-settings.html" type="text/ng-template">
+		<div data-ng-controller="DummySettingsController">
+			<div class="control-group">
+				<label for="tag" class="control-label">Tag</label>
+				<input name="tag" type="text" required data-ng-model="settings.tag"/>
+			</div>
+		</div>
+	</script>
+
+	<script id="/fitbit-settings.html" type="text/ng-template">
+		<div data-ng-controller="FitbitSettingsController">
+			<div class="control-group">
+				<label for="tag" class="control-label">Tag</label>
+				<input name="tag" type="text" required data-ng-model="settings.tag"/>
+			</div>
+		</div>
+	</script>
+
+	<script id="/foursquare-settings.html" type="text/ng-template">
+	</script>
+
+	<script id="/withings-settings.html" type="text/ng-template">
+		<div data-ng-controller="WithingsSettingsController">
+			<div class="control-group">
+				<label for="tag" class="control-label">Tag</label>
+				<input name="tag" type="text" required data-ng-model="settings.tag"/>
+			</div>
+			<div class="control-group">
+				<label for="unit" class="control-label">Unit</label>
+				<select name="unit" data-ng-model="settings.unit" data-ng-options="unit for unit in getUnits()" required></select>
+			</div>
+		</div>	
+	</script>
 
 	<div id="edit-event-dialog" data-ui-modal="selectedEvent" data-ui-modal-open="init()" data-ui-modal-close="editEvent(null)" data-keyboard="false" data-backdrop="static" data-ng-controller="EventDialogController">
 		<div class="modal-header">

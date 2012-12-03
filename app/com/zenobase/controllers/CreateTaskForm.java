@@ -19,6 +19,10 @@ public class CreateTaskForm extends DomainNode {
 		return getValue(Task.BUCKET);
 	}
 
+	public ObjectNode getSettings() {
+		return getValue(Task.SETTINGS);
+	}
+
 	public boolean valid() {
 		return getType() != null && getBucketId() != null;
 	}

@@ -14,9 +14,8 @@ public class DummyTask extends Task {
 		super(node);
 	}
 
-	public DummyTask(String bucketId, Identity principal, String tag) {
+	public DummyTask(String bucketId, Identity principal) {
 		super(TYPE, bucketId, principal);
-		setTag(tag);
 	}
 
 	public String getTag() {

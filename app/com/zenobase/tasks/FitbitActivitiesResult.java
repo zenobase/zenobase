@@ -22,14 +22,15 @@ class FitbitActivitiesResult {
 
 	public static final Resource SOURCE = new Resource("Fitbit", "http://fitbit.com/");
 
-	private final String tag = "steps";
 	private final JsonNode node;
+	private final String tag;
 	private final Identity author;
 	private final DateTime timestamp;
 	private final Unit<Length> distanceUnit, heightUnit;
 
-	public FitbitActivitiesResult(JsonNode node, Identity author, DateTime timestamp, Unit<Length> distanceUnit, Unit<Length> heightUnit) {
+	public FitbitActivitiesResult(JsonNode node, String tag, Identity author, DateTime timestamp, Unit<Length> distanceUnit, Unit<Length> heightUnit) {
 		this.node = node;
+		this.tag = tag;
 		this.author = author;
 		this.timestamp = timestamp;
 		this.distanceUnit = distanceUnit;

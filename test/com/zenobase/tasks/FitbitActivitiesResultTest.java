@@ -17,11 +17,12 @@ import com.zenobase.models.Event;
 
 public class FitbitActivitiesResultTest extends ResultTestSupport {
 
+	private static final String TAG = "steps";
 	private static final DateTime TIMESTAMP = DateTime.now();
 
 	@Test
 	public void test() {
-		FitbitActivitiesResult result = new FitbitActivitiesResult(readObject("FitbitActivitiesResultTest.json"), TESTER, TIMESTAMP, NonSI.MILE, NonSI.FOOT);
+		FitbitActivitiesResult result = new FitbitActivitiesResult(readObject("FitbitActivitiesResultTest.json"), TAG, TESTER, TIMESTAMP, NonSI.MILE, NonSI.FOOT);
 		List<Event> events = result.getEvents();
 		assertThat(events).as("events").hasSize(1);
 		Event expected = new Event(events.get(0).getId());
@@ -38,7 +39,7 @@ public class FitbitActivitiesResultTest extends ResultTestSupport {
 
 	@Test
 	public void testEmpty() {
-		FitbitActivitiesResult result = new FitbitActivitiesResult(Nodes.newObject(), TESTER, TIMESTAMP, NonSI.MILE, NonSI.FOOT);
+		FitbitActivitiesResult result = new FitbitActivitiesResult(Nodes.newObject(), TAG, TESTER, TIMESTAMP, NonSI.MILE, NonSI.FOOT);
 		List<Event> events = result.getEvents();
 		assertThat(events).as("events").isEmpty();
 	}

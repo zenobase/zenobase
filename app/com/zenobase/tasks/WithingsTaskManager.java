@@ -2,6 +2,7 @@ package com.zenobase.tasks;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.measure.quantity.Mass;
 
 import org.codehaus.jackson.node.ObjectNode;
 import org.joda.time.DateTime;
@@ -10,13 +11,16 @@ import org.scribe.builder.ServiceBuilder;
 import org.scribe.model.OAuthRequest;
 import org.scribe.model.SignatureType;
 import org.scribe.model.Verb;
+import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 
 import com.zenobase.commands.Command;
 import com.zenobase.commands.CompoundCommand;
 import com.zenobase.commands.CreateEventCommand;
 import com.zenobase.commands.UpdateTaskCommand;
+import com.zenobase.common.Measures;
 import com.zenobase.models.Event;
+import com.zenobase.models.Identity;
 
 public class WithingsTaskManager extends OAuthTaskManager {
 
@@ -28,6 +32,14 @@ public class WithingsTaskManager extends OAuthTaskManager {
 	@Override
 	public String getType() {
 		return WithingsTask.TYPE;
+	}
+
+	@Override
+	public WithingsTask newTask(String bucketId, Identity principal, ObjectNode settings) {
+		WithingsTask task = super.newTask(bucketId, principal, settings).as(WithingsTask.class);
+		task.setTag(Objects.firstNonNull(settings.path("tag").getTextValue(), "steps"));
+		task.setUnit(Measures.<Mass>valueOf(Objects.firstNonNull(settings.path("unit").getTextValue(), "kg")));
+		return task;
 	}
 
 	@Override
@@ -60,7 +72,9 @@ public class WithingsTaskManager extends OAuthTaskManager {
 	private Command execute(WithingsTask task) {
 		OAuthRequest request = createRequest(task);
 		getService(task).signRequest(task.getToken(), request);
-		return createCommand(task, new WithingsResult(task.getPrincipal(), parseObject(request.send())));
+		WithingsResult result = new WithingsResult(parseObject(request.send()), task.getPrincipal(), task.getTag(), task.getUnit());
+		Preconditions.checkState(result.getStatus() == 0, "Expected status <0> but got <%s> for task <%s>", result.getStatus(), task.getId());
+		return createCommand(task, result);
 	}
 
 	private static OAuthRequest createRequest(WithingsTask task) {
@@ -75,7 +89,7 @@ public class WithingsTaskManager extends OAuthTaskManager {
 	}
 
 	private static Command createCommand(WithingsTask task, WithingsResult result) {
-		CompoundCommand command = new CompoundCommand(task.getPrincipal(), "imported events from withings", "removed events imported from withings");
+		CompoundCommand command = new CompoundCommand(task.getPrincipal(), "ran withings task", "reverted withings task");
 		command.add(UpdateTaskCommand.builder(task)
 			.set(Task.COMPLETED, task.getCompleted(), new DateTime(DateTimeZone.UTC))
 			.set(Task.STATUS, task.getStatus(), Task.Status.SUCCESS)

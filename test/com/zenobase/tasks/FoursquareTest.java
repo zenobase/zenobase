@@ -15,7 +15,7 @@ public class FoursquareTest extends TaskTestSupport {
 	@Ignore
 	public void testNew() {
 		TaskManager manager = new FoursquareTaskManager(apiKey, apiSecret, callbackUrl);
-		Task task = manager.newTask(bucketId, principal);
+		Task task = manager.newTask(bucketId, principal, Nodes.newObject());
 		System.out.println(task.getAuthorizationUrl());
 		ObjectNode config = Nodes.newObject();
 		Scanner scanner = new Scanner(System.in);

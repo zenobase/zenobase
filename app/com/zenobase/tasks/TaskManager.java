@@ -9,7 +9,7 @@ public abstract class TaskManager {
 
 	public abstract String getType();
 
-	public abstract Task newTask(String bucketId, Identity principal);
+	public abstract Task newTask(String bucketId, Identity principal, ObjectNode settings);
 
 	public Command authorize(Task task, ObjectNode config) {
 		throw new UnsupportedOperationException();

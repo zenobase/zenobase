@@ -1,7 +1,9 @@
 package com.zenobase.tasks;
 
+import org.codehaus.jackson.node.ObjectNode;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
+import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 
 import com.zenobase.commands.Command;
@@ -22,9 +24,9 @@ public class DummyTaskManager extends TaskManager {
 	}
 
 	@Override
-	public Task newTask(String bucketId, Identity principal) {
-		DummyTask task = new DummyTask(bucketId, principal, null);
-		task.setTag("test"); // TODO read from settings
+	public DummyTask newTask(String bucketId, Identity principal, ObjectNode settings) {
+		DummyTask task = new DummyTask(bucketId, principal);
+		task.setTag(Objects.firstNonNull(settings.path("tag").getTextValue(), "test"));
 		return task;
 	}
 
@@ -35,7 +37,7 @@ public class DummyTaskManager extends TaskManager {
 
 	private Command execute(DummyTask task) {
 		Preconditions.checkState(task.isEnabled(), "Task is not enabled: %s", task.getId());
-		CompoundCommand command = new CompoundCommand(task.getPrincipal(), "created a dummy event", "removed a dummy event");
+		CompoundCommand command = new CompoundCommand(task.getPrincipal(), "ran dummy task", "reverted dummy task");
 		Event event = new Event();
 		event.setValue(Event.AUTHOR, task.getPrincipal());
 		event.setValue(Event.SOURCE, SOURCE);

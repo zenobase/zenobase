@@ -75,7 +75,7 @@ public class TaskListController extends ControllerSupport {
 		if (manager == null) {
 			return badRequest("unknown task type");
 		}
-    	Task task = manager.newTask(form.getBucketId(), principal);
+    	Task task = manager.newTask(form.getBucketId(), principal, form.getSettings());
     	String commandId = dispatcher.dispatch(new CreateTaskCommand(principal, task));
     	response().setHeader(LOCATION, com.zenobase.controllers.routes.TaskController.get(task.getId()).toString());
         return created(commandId);
