@@ -1,4 +1,4 @@
-<div id="{{settings.id}}-content" data-ng-controller="EventListCtrl">
+<div id="{{settings.id}}-content" data-ng-controller="ListWidgetController">
 
 	<table class="table" data-ng-show="items">
 		<tbody>
@@ -32,7 +32,7 @@
 		</div>
 	</div>
 
-	<div data-ui-modal="dialog == 'list-widget-dialog'" data-ui-modal-open="init()" data-ui-modal-close="closeDialog()" data-ng-controller="WidgetSettingsCtrl">
+	<div data-ui-modal="dialog == 'list-widget-dialog'" data-ui-modal-open="init()" data-ui-modal-close="closeDialog()" data-ng-controller="WidgetDialogController">
 		<form name="form" class="modal-form">
 			<div class="modal-header">
 				<a class="close" href="javascript:" data-dismiss="modal">&times;</a>

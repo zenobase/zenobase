@@ -1,4 +1,4 @@
-<div id="{{settings.id}}-content" data-ng-controller="ScoreboardCtrl">
+<div id="{{settings.id}}-content" data-ng-controller="ScoreboardWidgetController">
 
 	<table class="table" data-ng-show="terms">
 		<thead>
@@ -36,7 +36,7 @@
 		</div>
 	</div>
 
-	<div data-ui-modal="dialog == 'scoreboard-widget-dialog'" data-ui-modal-open="init()" data-ui-modal-close="closeDialog()" data-ng-controller="ScoreboardSettingsCtrl">
+	<div data-ui-modal="dialog == 'scoreboard-widget-dialog'" data-ui-modal-open="init()" data-ui-modal-close="closeDialog()" data-ng-controller="ScoreboardWidgetDialogController">
 		<form name="form" class="modal-form">
 			<div class="modal-header">
 				<a class="close" href="javascript:" data-dismiss="modal">&times;</a>

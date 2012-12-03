@@ -1,4 +1,4 @@
-<div id="{{settings.id}}-content" data-ng-controller="TimelineCtrl">
+<div id="{{settings.id}}-content" data-ng-controller="TimelineWidgetController">
 
 	<div id="{{settings.id}}-chart" data-ng-show="times"></div>
 
@@ -12,7 +12,7 @@
 		</div>
 	</div>
 
-	<div data-ui-modal="dialog == 'timeline-widget-dialog'" data-ui-modal-open="init()" data-ui-modal-close="closeDialog()" data-ng-controller="TimelineSettingsCtrl">
+	<div data-ui-modal="dialog == 'timeline-widget-dialog'" data-ui-modal-open="init()" data-ui-modal-close="closeDialog()" data-ng-controller="TimelineWidgetDialogController">
 		<form name="form" class="modal-form">
 			<div class="modal-header">
 				<a class="close" href="javascript:" data-dismiss="modal">&times;</a>

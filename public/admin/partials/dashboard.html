@@ -1,4 +1,4 @@
-<div class="container-fluid" data-ng-controller="AdminCtrl">
+<div class="container-fluid" data-ng-controller="admin.DashboardController">
 
 	<div class="row-fluid page-titlebar">
 		<p class="pull-left page-title">
@@ -23,7 +23,7 @@
     	
 		<div class="tab-content">
 
-			<div id="widget-history" data-ng-controller="HistoryAdminCtrl" class="tab-pane active">
+			<div id="widget-history" data-ng-controller="admin.QueueController" class="tab-pane active">
 				<table class="table">
 					<thead>
 						<tr>
@@ -61,7 +61,7 @@
 				</div>
 			</div>
 		
-			<div id="widget-buckets" data-ng-controller="BucketListAdminCtrl" class="tab-pane">
+			<div id="widget-buckets" data-ng-controller="admin.BucketListController" class="tab-pane">
 				<table class="table">
 					<thead>
 						<tr>
@@ -107,7 +107,7 @@
 				</div>
 			</div>
 		
-			<div id="widget-users" data-ng-controller="UserListAdminCtrl" class="tab-pane">
+			<div id="widget-users" data-ng-controller="admin.UserListController" class="tab-pane">
 				<table class="table">
 					<thead>
 						<tr>
@@ -152,7 +152,7 @@
 				</div>
 			</div>
 		
-			<div id="widget-tasks" data-ng-controller="TaskListAdminCtrl" class="tab-pane">
+			<div id="widget-tasks" data-ng-controller="admin.TaskListController" class="tab-pane">
 				<table class="table">
 					<thead>
 						<tr>

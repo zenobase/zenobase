@@ -1,4 +1,4 @@
-<div id="user-view" class="container-fluid" data-ng-controller="UserCtrl">
+<div id="user-view" class="container-fluid" data-ng-controller="UserController">
 
 	<div data-ng-show="message" class="alert alert-block alert-error">
 		{{message}}
@@ -19,7 +19,7 @@
 			</p>
 		</div>
 	
-		<div id="user-edit-dialog" class="alert alert-info" data-ng-controller="UserFormCtrl" data-ng-show="editing">
+		<div id="user-edit-dialog" class="alert alert-info" data-ng-controller="UserFormController" data-ng-show="editing">
 			<a class="close" href="javascript:" data-ng-click="cancel()">&times;</a>
 			<h4 class="alert-heading">Edit</h4>
 			<form name="userForm">
@@ -48,7 +48,7 @@
 	
 		<div class="row-fluid">
 
-			<div class="span6" data-ng-controller="BucketListCtrl">
+			<div class="span6" data-ng-controller="BucketListController">
 				<table class="table">
 					<thead>
 						<tr>
@@ -62,6 +62,9 @@
 						<tr data-ng-show="buckets == null">
 							<td colspan="3"><i>Loading...</i></td>
 						</tr>
+						<tr data-ng-show="buckets.length == 0">
+							<td colspan="3"><i>None</i></td>
+						</tr>
 						<tr class="bucket-row" data-ng-repeat="bucket in buckets">
 							<td style="white-space: nowrap"><a class="bucket-link" data-ng-href="#/buckets/{{bucket['@id']}}/">{{bucket.label}}</a></td>
 							<td>{{bucket.description}}</td>
@@ -69,9 +72,6 @@
 							<td style="text-align: right">
 								<a class="action bucket-delete-action" href="javascript:" data-ng-click="remove(bucket['@id'])"><i class="icon-trash" title="Delete"></i></a>
 							</td>
-						</tr>
-						<tr data-ng-show="buckets.length == 0">
-							<td colspan="3"><i>None</i></td>
 						</tr>
 					</tbody>
 				</table>
@@ -84,7 +84,7 @@
 						<button class="btn disabled zeno-paging"><b>{{offset + 1}}</b> &ndash; <b>{{offset + buckets.length}}</b> of <b>{{total}}</b></button>
 					</div>
 				</div>
-				<div id="create-bucket-dialog" class="modal hide" data-ng-controller="CreateBucketDialogCtrl">
+				<div id="create-bucket-dialog" class="modal hide" data-ng-controller="CreateBucketDialogController">
 					<form name="createBucketForm" data-ng-submit="create()" class="modal-form">
 						<div class="modal-header">
 							<a class="close" data-dismiss="modal">&times;</a>
@@ -107,7 +107,7 @@
 				</div>
 			</div>
 
-			<div class="span6" data-ng-controller="TaskListCtrl">
+			<div class="span6" data-ng-controller="TaskListController">
 				<table class="table">
 					<thead>
 						<tr>
@@ -120,6 +120,9 @@
 					<tbody>
 						<tr data-ng-show="tasks == null">
 							<td colspan="8"><i>Loading...</i></td>
+						</tr>
+						<tr data-ng-show="tasks.length == 0">
+							<td colspan="8"><i>None</i></td>
 						</tr>
 						<tr class="task-row" data-ng-repeat="task in tasks">
 							<td>{{task.type}}</td>
@@ -138,9 +141,6 @@
 								<a class="action task-run-action" href="javascript:" data-ng-click="refreshTask(task['@id'])"><i class="icon-refresh" title="Refresh"></i></a>
 								<a class="action task-delete-action" href="javascript:" data-ng-click="remove(task['@id'])"><i class="icon-trash" title="Delete"></i></a>
 							</td>
-						</tr>
-						<tr data-ng-show="tasks.length == 0">
-							<td colspan="8"><i>None</i></td>
 						</tr>
 					</tbody>
 				</table>

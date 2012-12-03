@@ -1,4 +1,4 @@
-<div id="{{settings.id}}-content" data-ng-controller="RatingCountCtrl">
+<div id="{{settings.id}}-content" data-ng-controller="RatingWidgetController">
 
 	<table class="table" data-ng-show="ratings">
 		<thead>
@@ -30,7 +30,7 @@
 		</div>
 	</div>
 
-	<div data-ui-modal="dialog == 'histogram-widget-dialog'" data-ui-modal-open="init()" data-ui-modal-close="closeDialog()" data-ng-controller="WidgetSettingsCtrl">
+	<div data-ui-modal="dialog == 'histogram-widget-dialog'" data-ui-modal-open="init()" data-ui-modal-close="closeDialog()" data-ng-controller="WidgetDialogController">
 		<form name="form" class="modal-form">
 			<div class="modal-header">
 				<a class="close" href="javascript:" data-dismiss="modal">&times;</a>

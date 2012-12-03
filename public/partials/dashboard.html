@@ -1,4 +1,4 @@
-<div id="dashboard-view" class="container-fluid" data-ng-controller="BucketCtrl">
+<div id="dashboard-view" class="container-fluid" data-ng-controller="DashboardController">
 
 	<div id="dashboard-message" data-ng-show="message" class="alert alert-block alert-error">
 		{{message}}
@@ -8,7 +8,7 @@
 		<i class="icon-refresh"></i> Loading...		
 	</div>
 	
-	<div class="alert alert-block alert-info" data-ng-controller="BucketFormCtrl" data-ng-show="editing">
+	<div class="alert alert-block alert-info" data-ng-controller="EditBucketController" data-ng-show="editing">
 		<a class="close" href="javascript:" data-ng-click="cancel()">&times;</a>
 		<p>
 			<button id="save-bucket-button" data-ng-click="save()" class="btn btn-primary">Save</button>
@@ -87,7 +87,7 @@
 
 	</div>
 
-	<div id="permissions-dialog" data-ui-modal="dialog == 'permissions-dialog'" data-ui-modal-open="init()" data-ui-modal-close="closeDialog()" data-ng-controller="PermissionsDialogCtrl">
+	<div id="permissions-dialog" data-ui-modal="dialog == 'permissions-dialog'" data-ui-modal-open="init()" data-ui-modal-close="closeDialog()" data-ng-controller="PermissionsDialogController">
 		<form class="modal-form">
 			<div class="modal-header">
 				<a class="close" data-dismiss="modal">&times;</a>
@@ -123,7 +123,7 @@
 		</form>
 	</div>
 
-	<div id="add-widget-dialog" data-ui-modal="placement" data-ui-modal-open="init()" data-ui-modal-close="chooseWidget(null)" data-ng-controller="AddWidgetCtrl">
+	<div id="add-widget-dialog" data-ui-modal="placement" data-ui-modal-open="init()" data-ui-modal-close="chooseWidget(null)" data-ng-controller="AddWidgetController">
 		<form name="addWidgetForm" class="modal-form">
 			<div class="modal-header">
 				<a class="close" data-dismiss="modal">&times;</a>
@@ -148,7 +148,7 @@
 		</form>
 	</div>
 		
-	<div id="create-task-dialog" data-ui-modal="dialog == 'task-dialog'" data-ui-modal-open="init()" data-ui-modal-close="closeDialog()" data-ng-controller="CreateTaskDialogCtrl">
+	<div id="create-task-dialog" data-ui-modal="dialog == 'task-dialog'" data-ui-modal-open="init()" data-ui-modal-close="closeDialog()" data-ng-controller="CreateTaskDialogController">
 		<form class="modal-form">
 			<div class="alert alert-error" data-ng-show="message">
 				{{message}}
@@ -173,7 +173,7 @@
 		</form>
 	</div>
 
-	<div id="edit-event-dialog" data-ui-modal="selectedEvent" data-ui-modal-open="init()" data-ui-modal-close="editEvent(null)" data-keyboard="false" data-backdrop="static" data-ng-controller="EditEventDialogCtrl">
+	<div id="edit-event-dialog" data-ui-modal="selectedEvent" data-ui-modal-open="init()" data-ui-modal-close="editEvent(null)" data-keyboard="false" data-backdrop="static" data-ng-controller="EventDialogController">
 		<div class="modal-header">
 			<a class="close" data-dismiss="modal">&times;</a>
 			<h4>Event</h4>
@@ -205,7 +205,7 @@
 
 	<script id="/create-tag.html" type="text/ng-template">
 		<button class="close" data-ng-click="reset()">&times;</button>
-		<div data-ng-controller="CreateTagFieldCtrl">
+		<div data-ng-controller="CreateTagFieldController">
 			<div class="control-group">
 				<label for="value" class="control-label">Value</label>
 				<input id="tag-value-field" name="value" type="text" data-provide="typeahead" data-ng-model="value"/>
@@ -218,7 +218,7 @@
 
 	<script id="/create-location.html" type="text/ng-template">
 		<button class="close" data-ng-click="reset()">&times;</button>
-		<div data-ng-controller="CreateLocationFieldCtrl">
+		<div data-ng-controller="CreateLocationFieldController">
 			<div class="control-group">
 				<input id="location-search-field" name="location" type="text" class="search-query"/>
 			</div>
@@ -231,7 +231,7 @@
 
 	<script id="/create-timestamp.html" type="text/ng-template">
 		<button class="close" data-ng-click="reset()">&times;</button>
-		<div data-ng-controller="CreateTimestampFieldCtrl">
+		<div data-ng-controller="CreateTimestampFieldController">
 			<div class="control-group">
 				<input id="timestamp-date-field" class="input-small" type="text" data-ui-datepicker data-ng-model="date"/>
 				<input id="timestamp-time-field" class="input-small" type="text" data-ui-timepicker data-ng-model="time"/>
@@ -245,7 +245,7 @@
 
 	<script id="/create-duration.html" type="text/ng-template">
 		<button class="close" data-ng-click="reset()">&times;</button>
-		<div data-ng-controller="CreateDurationFieldCtrl">
+		<div data-ng-controller="CreateDurationFieldController">
 			<div class="control-group">
 				<input id="duration-days-field" name="days" type="number" data-ng-model="days"/> d<br/>
 				<input id="duration-hours-field" name="hours" type="number" min="0" max="23" data-ng-model="hours"/> h<br/>
@@ -260,7 +260,7 @@
 
 	<script id="/create-resource.html" type="text/ng-template">
 		<button class="close" data-ng-click="reset()">&times;</button>
-		<div data-ng-controller="CreateResourceFieldCtrl">
+		<div data-ng-controller="CreateResourceFieldController">
 			<div class="control-group">
 				<label for="url" class="control-label">URL</label>
 				<input id="resource-url-field" name="url" type="text" data-ng-model="value.url" data-ui-defer/>
@@ -278,7 +278,7 @@
 	<!-- begin units -->
 	<script id="/create-distance.html" type="text/ng-template">
 		<button class="close" data-ng-click="reset()">&times;</button>
-		<div data-ng-controller="CreateUnitFieldCtrl">
+		<div data-ng-controller="CreateUnitFieldController">
 			<div class="control-group">
 				<label for="value" class="control-label">Value</label>
 				<input id="distance-value-field" name="value" type="number" data-ng-model="value['@value']"/>
@@ -295,7 +295,7 @@
 
 	<script id="/create-height.html" type="text/ng-template">
 		<button class="close" data-ng-click="reset()">&times;</button>
-		<div data-ng-controller="CreateUnitFieldCtrl">
+		<div data-ng-controller="CreateUnitFieldController">
 			<div class="control-group">
 				<label for="value" class="control-label">Value</label>
 				<input id="height-value-field" name="value" type="number" data-ng-model="value['@value']"/>
@@ -312,7 +312,7 @@
 
 	<script id="/create-weight.html" type="text/ng-template">
 		<button class="close" data-ng-click="reset()">&times;</button>
-		<div data-ng-controller="CreateUnitFieldCtrl">
+		<div data-ng-controller="CreateUnitFieldController">
 			<div class="control-group">
 				<label for="value" class="control-label">Value</label>
 				<input id="weight-value-field" name="value" type="number" data-ng-model="value['@value']"/>
@@ -329,7 +329,7 @@
 
 	<script id="/create-volume.html" type="text/ng-template">
 		<button class="close" data-ng-click="reset()">&times;</button>
-		<div data-ng-controller="CreateUnitFieldCtrl">
+		<div data-ng-controller="CreateUnitFieldController">
 			<div class="control-group">
 				<label for="value" class="control-label">Value</label>
 				<input id="volume-value-field" name="value" type="number" data-ng-model="value['@value']"/>
@@ -346,7 +346,7 @@
 
 	<script id="/create-concentration.html" type="text/ng-template">
 		<button class="close" data-ng-click="reset()">&times;</button>
-		<div data-ng-controller="CreateUnitFieldCtrl">
+		<div data-ng-controller="CreateUnitFieldController">
 			<div class="control-group">
 				<label for="value" class="control-label">Value</label>
 				<input id="concentration-value-field" name="value" type="number" data-ng-model="value['@value']"/>
@@ -363,7 +363,7 @@
 
 	<script id="/create-pressure.html" type="text/ng-template">
 		<button class="close" data-ng-click="reset()">&times;</button>
-		<div data-ng-controller="CreateUnitFieldCtrl">
+		<div data-ng-controller="CreateUnitFieldController">
 			<div class="control-group">
 				<label for="value" class="control-label">Value</label>
 				<input id="pressure-value-field" name="value" type="number" min="0" data-ng-model="value['@value']"/>
@@ -380,7 +380,7 @@
 
 	<script id="/create-energy.html" type="text/ng-template">
 		<button class="close" data-ng-click="reset()">&times;</button>
-		<div data-ng-controller="CreateUnitFieldCtrl">
+		<div data-ng-controller="CreateUnitFieldController">
 			<div class="control-group">
 				<label for="value" class="control-label">Value</label>
 				<input id="energy-value-field" name="value" type="number" data-ng-model="value['@value']"/>
@@ -397,7 +397,7 @@
 
 	<script id="/create-temperature.html" type="text/ng-template">
 		<button class="close" data-ng-click="reset()">&times;</button>
-		<div data-ng-controller="CreateUnitFieldCtrl">
+		<div data-ng-controller="CreateUnitFieldController">
 			<div class="control-group">
 				<label for="value" class="control-label">Value</label>
 				<input id="temperature-value-field" name="value" type="number" data-ng-model="value['@value']"/>
@@ -414,7 +414,7 @@
 
 	<script id="/create-frequency.html" type="text/ng-template">
 		<button class="close" data-ng-click="reset()">&times;</button>
-		<div data-ng-controller="CreateUnitFieldCtrl">
+		<div data-ng-controller="CreateUnitFieldController">
 			<div class="control-group">
 				<label for="value" class="control-label">Value</label>
 				<input id="frequency-value-field" name="value" type="number" data-ng-model="value['@value']"/>
@@ -431,7 +431,7 @@
 
 	<script id="/create-velocity.html" type="text/ng-template">
 		<button class="close" data-ng-click="reset()">&times;</button>
-		<div data-ng-controller="CreateUnitFieldCtrl">
+		<div data-ng-controller="CreateUnitFieldController">
 			<div class="control-group">
 				<label for="value" class="control-label">Value</label>
 				<input id="velocity-value-field" name="value" type="number" data-ng-model="value['@value']"/>
@@ -448,7 +448,7 @@
 
 	<script id="/create-bits.html" type="text/ng-template">
 		<button class="close" data-ng-click="reset()">&times;</button>
-		<div data-ng-controller="CreateUnitFieldCtrl">
+		<div data-ng-controller="CreateUnitFieldController">
 			<div class="control-group">
 				<label for="value" class="control-label">Value</label>
 				<input id="bits-value-field" name="value" type="number" data-ng-model="value['@value']"/>
@@ -467,7 +467,7 @@
 
 	<script id="/create-count.html" type="text/ng-template">
 		<button class="close" data-ng-click="reset()">&times;</button>
-		<div data-ng-controller="CreateIntegerFieldCtrl">
+		<div data-ng-controller="CreateIntegerFieldController">
 			<div class="control-group">
 				<label for="value" class="control-label">Value</label>
 				<input id="count-value-field" name="value" type="number" data-ng-model="value"/>
@@ -480,7 +480,7 @@
 
 	<script id="/create-rating.html" type="text/ng-template">
 		<button class="close" data-ng-click="reset()">&times;</button>
-		<div data-ng-controller="CreateRatingFieldCtrl">
+		<div data-ng-controller="CreateRatingFieldController">
 			<div class="control-group">
 				<span class="nowrap" style="cursor:pointer"><i id="rating-{{i}}-star" title="Rate {{i}}/5" data-ng-class="get() >= i && 'icon-star' || 'icon-star-empty'" data-ng-mouseenter="highlight(i)" data-ng-mouseleave="highlight(0)" data-ng-click="set(i)" data-ng-repeat="i in [ 1, 2, 3, 4, 5 ]"></i></span>
 			</div>
@@ -492,7 +492,7 @@
 
 	<script id="/create-note.html" type="text/ng-template">
 		<button class="close" data-ng-click="reset()">&times;</button>
-		<div data-ng-controller="CreateNoteFieldCtrl">
+		<div data-ng-controller="CreateNoteFieldController">
 			<div class="control-group">
 				<label for="value" class="control-label">Value</label>
 				<textarea id="note-value-field" name="value" data-ng-model="value"></textarea>
@@ -503,7 +503,7 @@
 		</div>
 	</script>
 
-	<div id="import-dialog" data-ui-modal="dialog == 'import-dialog'" data-ui-modal-open="init()" data-ui-modal-close="closeDialog()" data-ng-controller="ImportDialogCtrl">
+	<div id="import-dialog" data-ui-modal="dialog == 'import-dialog'" data-ui-modal-open="init()" data-ui-modal-close="closeDialog()" data-ng-controller="ImportDialogController">
 		<form data-ng-submit="submit()" class="modal-form">
 			<div class="modal-header">
 				<a class="close" data-dismiss="modal">&times;</a>
@@ -524,16 +524,16 @@
 		</form>
 	</div>
 
-	<div id="getting-started-dialog" data-ui-modal="dialog == 'getting-started-dialog'" data-ui-modal-open="init()" data-ui-modal-close="closeDialog()" data-ng-controller="GettingStartedDialogCtrl">
+	<div id="getting-started-dialog" data-ui-modal="dialog == 'getting-started-dialog'" data-ui-modal-open="init()" data-ui-modal-close="closeDialog()">
 		<div class="modal-body">
 			<ul class="nav nav-tabs nav-stacked">
-				<li><a href="javascript:" data-ng-click="closeDialog(); editEvent({})"><i class="icon-plus"></i> <strong>Add</strong> a single event</a></li>
+				<li><a href="javascript:" id="getting-started-add-event-link" data-ng-click="closeDialog(); editEvent({})"><i class="icon-plus"></i> <strong>Add</strong> a single event</a></li>
 				<li><a href="javascript:" data-ng-click="openDialog('import-dialog')"><i class="icon-upload"></i> <strong>Import</strong> events from a file</a></li>
 				<li><a href="javascript:" data-ng-click="openDialog('task-dialog')"><i class="icon-share"></i> <strong>Connect</strong> to an external service</a></li>
 			</ul>
 		</div>
 		<div class="modal-footer">
-			<button type="reset" class="btn" data-dismiss="modal">Cancel</button>
+			<button class="btn" data-dismiss="modal">Cancel</button>
 		</div>
 	</div>
 

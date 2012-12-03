@@ -13,10 +13,10 @@
 		<![endif]-->
 	</head>
 
-	<body data-ng-controller="MainCtrl">
+	<body data-ng-controller="ApplicationController">
 
 		<header class="container-fluid">
-			<a href="#/"><img src="/img/logo.png" alt="Zenobase" width="159" height="25"/></a>
+			<a href="/#/"><img src="/img/logo.png" alt="Zenobase" width="159" height="25"/></a>
 			<div class="pull-right ng-cloak">
 				<p data-ng-show="user.name">
 					<i class="icon-user"></i> <a data-ng-href="#/users/{{user.getName()}}">{{user.getName()}}</a> | <a id="sign-out-link" href="javascript:" data-ng-click="signOut()">Sign out</a>

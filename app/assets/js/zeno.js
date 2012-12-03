@@ -35,11 +35,11 @@
 			.when('/buckets/:bucketId/tasks/:taskId/auth', { templateUrl : versioned('/partials/task-auth.html') })
 			.when('/users/:userId', { templateUrl : versioned('/partials/user.html') })
 			.when('/users/:userId/reset', { templateUrl : versioned('/partials/reset.html') })
-			.when('/users/:userId/verify', { templateUrl : versioned('/partials/verify.html') })
+			.when('/users/:userId/verify', { templateUrl : versioned('/partials/verification.html') })
 			.otherwise({ templateUrl : versioned('/partials/404.html') });
 	}]);
 
-	app.controller('MainCtrl', ['$scope', '$route', '$http', '$location', '$timeout', function($scope, $route, $http, $location, $timeout) {
+	app.controller('ApplicationController', ['$scope', '$route', '$http', '$location', '$timeout', function($scope, $route, $http, $location, $timeout) {
 		$scope.whoami = function() {
 			$http.get('/who').success(function(response) {
 				$scope.user = response ? new User(response) : null;
@@ -168,7 +168,7 @@
 		return new Filter(field, value);
 	}
 		
-	app.controller('UserCtrl', ['$scope', '$http', '$routeParams', function($scope, $http, $routeParams) {
+	app.controller('UserController', ['$scope', '$http', '$routeParams', function($scope, $http, $routeParams) {
 	
 		$scope.userId = $routeParams.userId;
 		$scope.userInfo = null;
@@ -205,7 +205,7 @@
 		};
 	}]);
 	
-	app.controller('UserFormCtrl', ['$scope', '$http', function($scope, $http) {
+	app.controller('UserFormController', ['$scope', '$http', function($scope, $http) {
 	
 		$scope.editing = false;
 
@@ -244,7 +244,7 @@
 		});
 	}]);
 	
-	app.controller('AuthFormCtrl', ['$scope', '$http', '$location', '$route', function($scope, $http, $location, $route) {
+	app.controller('SignInDialogController', ['$scope', '$http', '$location', '$route', function($scope, $http, $location, $route) {
 
 		$scope.dialog = $('#sign-in-dialog');
 
@@ -293,7 +293,7 @@
 		});
 	}]);
 	
-	app.controller('PasswordResetRequestFormCtrl', ['$scope', '$http', function($scope, $http) {
+	app.controller('PasswordResetDialogController', ['$scope', '$http', function($scope, $http) {
 
 		$scope.dialog = $('#password-reset-request-dialog');
 
@@ -334,7 +334,7 @@
 		});
 	}]);
 	
-	app.controller('SignUpFormCtrl', ['$scope', '$http', '$location', function($scope, $http, $location) {
+	app.controller('SignUpDialogController', ['$scope', '$http', '$location', function($scope, $http, $location) {
 
 		$scope.dialog = $('#sign-up-dialog');
 
@@ -382,7 +382,7 @@
 		});
 	}]);
 	
-	app.controller('VerifyCtrl', ['$scope', '$http', '$location', '$routeParams', function($scope, $http, $location, $routeParams) {
+	app.controller('UserVerificationController', ['$scope', '$http', '$location', '$routeParams', function($scope, $http, $location, $routeParams) {
 		$http.post('/users/' + $routeParams.userId, { 'key' : $location.search()['key'], 'verified' : true })
 			.success(function(response) {
 				$scope.alert.show('Your email address has been verified.', 'alert-success');
@@ -395,7 +395,7 @@
 			});
 	}]);
 	
-	app.controller('PasswordResetFormCtrl', ['$scope', '$http', '$location', '$routeParams', function($scope, $http, $location, $routeParams) {
+	app.controller('PasswordResetController', ['$scope', '$http', '$location', '$routeParams', function($scope, $http, $location, $routeParams) {
 
 		var userId = $routeParams.userId;
 		var key = $location.search()['key'];
@@ -425,21 +425,8 @@
 
 		$scope.init();
 	}]);
-
-	app.controller('TwitterCtrl', ['$scope', '$http', function($scope, $http) {
-
-		$scope.username = 'zenobase';
-		$scope.tweet = null;
-
-		$http.jsonp('https://api.twitter.com/1/statuses/user_timeline.json?screen_name=' + $scope.username + '&callback=JSON_CALLBACK&count=1&trim_user=true&exclude_replies=true')
-			.success(function(data, status, headers, config) {
-				if (data.length) {
-					$scope.tweet = data[0];
-				}
-			});
-	}]);
 	
-	app.controller('BucketListCtrl', ['$scope', '$http', function($scope, $http) {
+	app.controller('BucketListController', ['$scope', '$http', function($scope, $http) {
 	
 		$scope.offset = 0;
 		$scope.limit = 5;
@@ -493,7 +480,7 @@
 		$scope.$on('reload', $scope.refresh);
 	}]);
 	
-	app.controller('HomeCtrl', ['$scope', '$http', '$location', function($scope, $http, $location) {
+	app.controller('HomeController', ['$scope', '$http', '$location', function($scope, $http, $location) {
 		$scope.template = {
 			label : 'My Data'
 		};
@@ -514,8 +501,21 @@
 			_gaq.push([ '_trackEvent', 'action', 'get started' ]);
 		};
 	}]);
-	
-	app.controller('CreateBucketDialogCtrl', ['$scope', '$http', '$location', function($scope, $http, $location) {
+
+	app.controller('LatestTweetController', ['$scope', '$http', function($scope, $http) {
+
+		$scope.username = 'zenobase';
+		$scope.tweet = null;
+
+		$http.jsonp('https://api.twitter.com/1/statuses/user_timeline.json?screen_name=' + $scope.username + '&callback=JSON_CALLBACK&count=1&trim_user=true&exclude_replies=true')
+			.success(function(data, status, headers, config) {
+				if (data.length) {
+					$scope.tweet = data[0];
+				}
+			});
+	}]);
+
+	app.controller('CreateBucketDialogController', ['$scope', '$http', '$location', function($scope, $http, $location) {
 
 		$scope.dialog = $('#create-bucket-dialog');
 
@@ -574,7 +574,7 @@
 		return id;
 	}
 	
-	app.controller('AddWidgetCtrl', ['$scope', '$http', '$route', '$routeParams', '$location', '$timeout', function($scope, $http, $route, $routeParams, $location, $timeout) {
+	app.controller('AddWidgetController', ['$scope', '$http', '$route', '$routeParams', '$location', '$timeout', function($scope, $http, $route, $routeParams, $location, $timeout) {
 
 		$scope.dialog = $("#add-widget-dialog");
 		$scope.templates = [
@@ -653,7 +653,7 @@
 
 	window.Bucket = Bucket;
 
-	app.controller('BucketCtrl', ['$scope', '$http', '$route', '$routeParams', '$location', '$timeout', function($scope, $http, $route, $routeParams, $location, $timeout) {
+	app.controller('DashboardController', ['$scope', '$http', '$route', '$routeParams', '$location', '$timeout', function($scope, $http, $route, $routeParams, $location, $timeout) {
 
 		function updateEditable() {
 				$scope.editable = $scope.user && $scope.bucket.canEdit($scope.user['@id']);
@@ -822,7 +822,7 @@
 		};
 	}]);
 	
-	app.controller('BucketFormCtrl', ['$scope', '$http', '$route', function($scope, $http, $route) {
+	app.controller('EditBucketController', ['$scope', '$http', '$route', function($scope, $http, $route) {
 		$scope.save = function(settings) {
 			$scope.alert.clear();
 			$http.put('/buckets/' + $scope.bucketId, $scope.bucket)
@@ -846,7 +846,7 @@
 		};
 	}]);
 	
-	app.controller('EventListCtrl', ['$scope', function($scope) {
+	app.controller('ListWidgetController', ['$scope', function($scope) {
 	
 		$scope.init = function() {
 			$scope.offset = 0;
@@ -894,7 +894,24 @@
 		$scope.$on('refresh', $scope.init);
 	}]);
 	
-	app.controller('TermCountCtrl', ['$scope', function($scope) {
+	var WidgetDialogController = function($scope) {
+		$scope.init = function() {
+			$scope.settings = angular.copy($scope.$parent.settings);
+		};
+		$scope.save = function() {
+			$scope.refresh({}, $scope.settings);
+			$scope.closeDialog();
+		};
+		$scope.getField = function(name) {
+			return Field.find(name);
+		};
+	};
+	
+	app.controller('WidgetDialogController', ['$scope', function($scope) {
+		WidgetDialogController($scope);
+	}]);
+	
+	app.controller('CountWidgetController', ['$scope', function($scope) {
 	
 		$scope.init = function() {
 			$scope.offset = 0;
@@ -960,34 +977,17 @@
 		$scope.$on('result', $scope.update);
 		$scope.$on('refresh', $scope.init);
 	}]);
-	
-	var WidgetSettingsCtrl = function($scope) {
-		$scope.init = function() {
-			$scope.settings = angular.copy($scope.$parent.settings);
-		};
-		$scope.save = function() {
-			$scope.refresh({}, $scope.settings);
-			$scope.closeDialog();
-		};
-		$scope.getField = function(name) {
-			return Field.find(name);
-		};
-	};
-	
-	app.controller('WidgetSettingsCtrl', ['$scope', function($scope) {
-		WidgetSettingsCtrl($scope);
-	}]);
 
-	app.controller('TermCountSettingsCtrl', ['$scope', function($scope) {
+	app.controller('CountWidgetDialogController', ['$scope', function($scope) {
 
-		WidgetSettingsCtrl($scope);
+		WidgetDialogController($scope);
 
 		$scope.getFields = function() {
 			return Field.findTokenFields();
 		};
 	}]);
 	
-	app.controller('TermGanttCtrl', ['$scope', function($scope) {
+	app.controller('GanttWidgetController', ['$scope', function($scope) {
 	
 		$scope.init = function() {
 			$scope.terms = null;
@@ -1029,16 +1029,16 @@
 		$scope.$on('refresh', $scope.init);
 	}]);
 
-	app.controller('TermGanttSettingsCtrl', ['$scope', function($scope) {
+	app.controller('GanttWidgetDialogController', ['$scope', function($scope) {
 
-		WidgetSettingsCtrl($scope);
+		WidgetDialogController($scope);
 
 		$scope.getTermFields = function() {
 			return Field.findTokenFields();
 		};
 	}]);
 	
-	app.controller('RatingCountCtrl', ['$scope', function($scope) {
+	app.controller('RatingWidgetController', ['$scope', function($scope) {
 	
 		$scope.field = 'rating';
 		$scope.from = 10;
@@ -1083,7 +1083,7 @@
 		$scope.$on('refresh', $scope.init);
 	}]);
 	
-	app.controller('ScoreboardCtrl', ['$scope', function($scope) {
+	app.controller('ScoreboardWidgetController', ['$scope', function($scope) {
 	
 		$scope.init = function() {
 			$scope.terms = null;
@@ -1120,9 +1120,9 @@
 		$scope.$on('refresh', $scope.init);
 	}]);
 
-	app.controller('ScoreboardSettingsCtrl', ['$scope', function($scope) {
+	app.controller('ScoreboardWidgetDialogController', ['$scope', function($scope) {
 
-		WidgetSettingsCtrl($scope);
+		WidgetDialogController($scope);
 
 		function isUnitValid() {
 			return $.grep($scope.getUnits(), function(unit) {
@@ -1182,7 +1182,7 @@
 		}
 	};
 	
-	app.controller('TimelineCtrl', ['$scope', function($scope) {
+	app.controller('TimelineWidgetController', ['$scope', function($scope) {
 
 		$scope.keyField = 'timestamp';
 
@@ -1272,9 +1272,9 @@
 		$('#' + $scope.settings.id + '-tab').on('show', $scope.draw);
 	}]);
 
-	app.controller('TimelineSettingsCtrl', ['$scope', function($scope) {
+	app.controller('TimelineWidgetDialogController', ['$scope', function($scope) {
 
-		WidgetSettingsCtrl($scope);
+		WidgetDialogController($scope);
 
 		function isUnitValid() {
 			if ($scope.settings.valueField === $scope.keyField) {
@@ -1318,7 +1318,7 @@
 		});
 	}]);
 	
-	app.controller('PlotCtrl', ['$scope', function($scope) {
+	app.controller('PlotWidgetController', ['$scope', function($scope) {
 	
 		$scope.keyField = 'timestamp';
 
@@ -1401,9 +1401,9 @@
 		$('#' + $scope.settings.id + '-tab').on('show', $scope.draw);
 	}]);
 
-	app.controller('PlotSettingsCtrl', ['$scope', function($scope) {
+	app.controller('PlotWidgetDialogController', ['$scope', function($scope) {
 
-		WidgetSettingsCtrl($scope);
+		WidgetDialogController($scope);
 
 		function isUnitValid() {
 			if ($scope.settings.valueField === $scope.keyField) {
@@ -1450,7 +1450,7 @@
 		});
 	}]);
 	
-	app.controller('MapCtrl', ['$scope', function($scope) {
+	app.controller('MapWidgetController', ['$scope', function($scope) {
 
 		$scope.field = 'location';
 	
@@ -1608,9 +1608,9 @@
 		$('#' + $scope.settings.id + '-tab').on('show', $scope.draw);
 	}]);
 
-	app.controller('MapSettingsCtrl', ['$scope', function($scope) {
+	app.controller('MapWidgetDialogController', ['$scope', function($scope) {
 
-		WidgetSettingsCtrl($scope);
+		WidgetDialogController($scope);
 
 		$scope.getColors = function() {
 			return [ 'white', 'black', 'red', 'green', 'blue', 'yellow' ];
@@ -1646,7 +1646,7 @@
 		values.push(value);
 	};
 
-	app.controller('PermissionsDialogCtrl', ['$scope', '$http', '$timeout', function($scope, $http, $timeout) {
+	app.controller('PermissionsDialogController', ['$scope', '$http', '$timeout', function($scope, $http, $timeout) {
 
 		$scope.init = function() {
 			$scope.bucket = angular.copy($scope.$parent.bucket);
@@ -1659,7 +1659,7 @@
 		};
 	}]);
 
-	app.controller('EditEventDialogCtrl', ['$scope', '$http', '$timeout', '$routeParams', function($scope, $http, $timeout, $routeParams) {
+	app.controller('EventDialogController', ['$scope', '$http', '$timeout', '$routeParams', function($scope, $http, $timeout, $routeParams) {
 
 		$scope.params = $routeParams;
 		$scope.fields = Field.findEditableFields();
@@ -1731,7 +1731,7 @@
 	}]);
 	
 	
-	app.controller('CreateTagFieldCtrl', ['$scope', '$http', function($scope, $http) {
+	app.controller('CreateTagFieldController', ['$scope', '$http', function($scope, $http) {
 
 		var input = $('#tag-value-field');
 
@@ -1757,7 +1757,7 @@
 	}]);
 
 
-	app.controller('CreateLocationFieldCtrl', ['$scope', function($scope) {
+	app.controller('CreateLocationFieldController', ['$scope', function($scope) {
 
 		$scope.init = function() {
 			google.load("maps", "3.10", { other_params : 'libraries=places&sensor=false', callback : function() {
@@ -1839,7 +1839,7 @@
 	}]);
 	
 
-	app.controller('CreateTimestampFieldCtrl', ['$scope', function($scope) {
+	app.controller('CreateTimestampFieldController', ['$scope', function($scope) {
 
 		$scope.timezones = [
 			'-1200', '-1100', '-1000', '-0930', '-0900', '-0800', '-0700', '-0600','-0500', '-0430', '-0400', '-0300', '-0200', '-0100',
@@ -1877,7 +1877,7 @@
 		$scope.init();
 	}]);
 	
-	app.controller('CreateDurationFieldCtrl', ['$scope', function($scope) {
+	app.controller('CreateDurationFieldController', ['$scope', function($scope) {
 
 		$scope.init = function() {
 			$scope.days = $scope.hours = $scope.minutes = $scope.seconds = 0;
@@ -1896,7 +1896,7 @@
 		$scope.init();
 	}]);
 	
-	app.controller('CreateResourceFieldCtrl', ['$scope', '$http', function($scope, $http) {
+	app.controller('CreateResourceFieldController', ['$scope', '$http', function($scope, $http) {
 
 		$scope.init = function() {
 			$scope.value = {};
@@ -1923,7 +1923,7 @@
 		$scope.init();
 	}]);
 	
-	app.controller('CreateUnitFieldCtrl', ['$scope', function($scope) {
+	app.controller('CreateUnitFieldController', ['$scope', function($scope) {
 
 		$scope.init = function() {
 			$scope.value = {};
@@ -1942,7 +1942,7 @@
 		$scope.init();
 	}]);
 	
-	app.controller('CreateIntegerFieldCtrl', ['$scope', function($scope) {
+	app.controller('CreateIntegerFieldController', ['$scope', function($scope) {
 
 		$scope.init = function() {
 			$scope.value = 0;
@@ -1958,7 +1958,7 @@
 		$scope.init();
 	}]);
 	
-	app.controller('CreateRatingFieldCtrl', ['$scope', function($scope) {
+	app.controller('CreateRatingFieldController', ['$scope', function($scope) {
 
 		$scope.init = function() {
 			$scope.stars = 0;
@@ -1981,7 +1981,7 @@
 		$scope.init();
 	}]);
 	
-	app.controller('CreateNoteFieldCtrl', ['$scope', function($scope) {
+	app.controller('CreateNoteFieldController', ['$scope', function($scope) {
 
 		$scope.init = function() {
 			$scope.value = '';
@@ -1998,7 +1998,7 @@
 	}]);
 	
 	
-	app.controller('ImportDialogCtrl', ['$scope', '$http', '$timeout', '$routeParams', function($scope, $http, $timeout, $routeParams) {
+	app.controller('ImportDialogController', ['$scope', '$http', '$timeout', '$routeParams', function($scope, $http, $timeout, $routeParams) {
 
 		$scope.bucketId = $routeParams.bucketId;
 
@@ -2035,13 +2035,6 @@
 			_gaq.push([ '_trackEvent', 'action', 'import events' ]);
 		};
 	}]);
-	
-	app.controller('GettingStartedDialogCtrl', ['$scope', function($scope) {
-
-		$scope.init = function() {
-			_gaq.push([ '_trackEvent', 'dialog', 'getting started' ]);
-		};
-	}]);
 
 	app.service('tasks', [ '$http', '$timeout', function($http, $timeout) {
 		this.refresh = function($scope, taskId, callback) {
@@ -2066,7 +2059,7 @@
 		};
 	}]);
 
-	app.controller('TaskListCtrl', ['$scope', '$http', '$routeParams', '$timeout', 'tasks', function($scope, $http, $routeParams, $timeout, tasks) {
+	app.controller('TaskListController', ['$scope', '$http', '$routeParams', '$timeout', 'tasks', function($scope, $http, $routeParams, $timeout, tasks) {
 		
 		$scope.bucketId = $routeParams.bucketId;
 		$scope.tasks = null;
@@ -2104,10 +2097,15 @@
 			_gaq.push([ '_trackEvent', 'action', 'delete task' ]);
 		};
 
-		$scope.refresh();
+		$scope.$watch('userInfo', function(user) {
+			if (user) {
+				$scope.refresh({});
+			}
+		});
+		$scope.$on('reload', $scope.refresh);
 	}]);
 	
-	app.controller('CreateTaskDialogCtrl', ['$scope', '$http', 'tasks', function($scope, $http, tasks) {
+	app.controller('CreateTaskDialogController', ['$scope', '$http', 'tasks', function($scope, $http, tasks) {
 	
 		$scope.types = [ 'dummy', 'foursquare', 'fitbit', 'twitter', 'withings' ];
 
@@ -2137,7 +2135,7 @@
 		};
 	}]);
 
-	app.controller('TaskAuthCtrl', ['$scope', '$http', '$routeParams', '$location', 'tasks', function($scope, $http, $routeParams, $location, tasks) {
+	app.controller('TaskAuthorizationController', ['$scope', '$http', '$routeParams', '$location', 'tasks', function($scope, $http, $routeParams, $location, tasks) {
 		
 		$scope.bucketId = $routeParams.bucketId;
 		$scope.taskId = $routeParams.taskId;

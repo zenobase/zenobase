@@ -1,4 +1,4 @@
-<div id="{{settings.id}}-content" data-ng-controller="MapCtrl">
+<div id="{{settings.id}}-content" data-ng-controller="MapWidgetController">
 
 	<div id="{{settings.id}}-map" style="height: 350px" data-ng-show="points"></div>
 
@@ -12,7 +12,7 @@
 		</div>
 	</div>
 
-	<div data-ui-modal="dialog == 'map-widget-dialog'" data-ui-modal-open="init()" data-ui-modal-close="closeDialog()" data-ng-controller="MapSettingsCtrl">
+	<div data-ui-modal="dialog == 'map-widget-dialog'" data-ui-modal-open="init()" data-ui-modal-close="closeDialog()" data-ng-controller="MapWidgetDialogController">
 		<form name="form" class="modal-form">
 			<div class="modal-header">
 				<a class="close" href="javascript:" data-dismiss="modal">&times;</a>

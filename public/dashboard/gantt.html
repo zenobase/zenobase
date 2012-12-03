@@ -1,4 +1,4 @@
-<div id="{{settings.id}}-content" data-ng-controller="TermGanttCtrl">
+<div id="{{settings.id}}-content" data-ng-controller="GanttWidgetController">
 
 	<table class="table" data-ng-show="terms">
 		<thead>
@@ -27,7 +27,7 @@
 		</div>
 	</div>
 
-	<div data-ui-modal="dialog == 'gantt-widget-dialog'" data-ui-modal-open="init()" data-ui-modal-close="closeDialog()" data-ng-controller="TermGanttSettingsCtrl">
+	<div data-ui-modal="dialog == 'gantt-widget-dialog'" data-ui-modal-open="init()" data-ui-modal-close="closeDialog()" data-ng-controller="GanttWidgetDialogController">
 		<form name="form" class="modal-form">
 			<div class="modal-header">
 				<a class="close" href="javascript:" data-dismiss="modal">&times;</a>

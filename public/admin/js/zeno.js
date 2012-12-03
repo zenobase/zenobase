@@ -2,14 +2,14 @@
 	
 	'use strict';
 	
-	var adminApp = angular.module('ZenoAdminModule', [ 'ZenoModule' ]);
+	var app = angular.module('ZenoAdminModule', [ 'ZenoModule' ]);
 	
-	adminApp.config(function($routeProvider) {
+	app.config(function($routeProvider) {
 		$routeProvider.when('/', { templateUrl: '/admin/partials/dashboard.html' });
 		$routeProvider.otherwise({ templateUrl : '/partials/404.html' });
 	});
 
-	adminApp.controller('AdminCtrl', ['$scope', '$location', function($scope, $location) {
+	app.controller('admin.DashboardController', ['$scope', '$location', function($scope, $location) {
 		$scope.filter = $location.search()['q'];
 		$scope.setFilter = function(filter) {
 			$scope.filter = filter;
@@ -17,7 +17,7 @@
 		};
 	}]);
 	
-	adminApp.controller('HistoryAdminCtrl', ['$scope', '$http', function($scope, $http) {
+	app.controller('admin.QueueController', ['$scope', '$http', function($scope, $http) {
 	
 		$scope.offset = 0;
 		$scope.limit = 10;
@@ -58,7 +58,7 @@
 		$scope.refresh({});
 	}]);
 	
-	adminApp.controller('BucketListAdminCtrl', ['$scope', '$http', function($scope, $http) {
+	app.controller('admin.BucketListController', ['$scope', '$http', function($scope, $http) {
 	
 		$scope.offset = 0;
 		$scope.limit = 10;
@@ -111,7 +111,7 @@
 		$scope.refresh({});
 	}]);
 	
-	adminApp.controller('UserListAdminCtrl', ['$scope', '$http', function($scope, $http) {
+	app.controller('admin.UserListController', ['$scope', '$http', function($scope, $http) {
 	
 		$scope.offset = 0;
 		$scope.limit = 10;
@@ -161,7 +161,7 @@
 		$scope.refresh({});
 	}]);
 	
-	adminApp.controller('TaskListAdminCtrl', ['$scope', '$http', function($scope, $http) {
+	app.controller('admin.TaskListController', ['$scope', '$http', function($scope, $http) {
 	
 		$scope.offset = 0;
 		$scope.limit = 10;
