@@ -10,7 +10,7 @@
 		<tbody>
 			<tr data-ng-repeat="rating in ratings">
 				<td>
-					<a href="javascript:" data-ng-click="filter(rating)" data-ng-bind-html="rating.from | stars"></a>
+					<a data-ng-click="filter(rating)" data-ng-bind-html="rating.from | stars"></a>
 				</td>
 				<td style="text-align: right">{{rating.count | number }}</td>
 			</tr>
@@ -33,7 +33,7 @@
 	<div data-ui-modal="dialog == 'histogram-widget-dialog'" data-ui-modal-open="init()" data-ui-modal-close="closeDialog()" data-ng-controller="WidgetDialogController">
 		<form name="form" class="modal-form">
 			<div class="modal-header">
-				<a class="close" href="javascript:" data-dismiss="modal">&times;</a>
+				<a class="close" data-dismiss="modal">&times;</a>
 				<h4>Ratings Widget</h4>
 			</div>
 			<div class="modal-body">

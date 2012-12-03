@@ -4,18 +4,18 @@
 		<thead>
 			<tr>
 				<th style="text-transform: capitalize">
-					<a href="javascript:" data-ng-click="setOrder('term')" class="sort">{{settings.field}}
+					<a data-ng-click="setOrder('term')" class="sort">{{settings.field}}
 					<b data-ng-class="getClasses('term')"></b></a>
 				</th>
 				<th style="text-align: right">
-					<a href="javascript:" data-ng-click="setOrder('count')" class="sort">Count 
+					<a data-ng-click="setOrder('count')" class="sort">Count 
 					<b data-ng-class="getClasses('count')"></b></a>
 				</th>
 			</tr>
 		</thead>
 		<tbody>
 			<tr data-ng-repeat="term in terms">
-				<td><a href="javascript:" data-ng-click="filter(term)" data-ng-bind-html="term.label | field:settings.field"></a></td>
+				<td><a data-ng-click="filter(term)" data-ng-bind-html="term.label | field:settings.field"></a></td>
 				<td style="text-align: right">{{term.count | number }}</td>
 			</tr>
 		</tbody>
@@ -41,7 +41,7 @@
 	<div data-ui-modal="dialog == 'count-widget-dialog'" data-ui-modal-open="init()" data-ui-modal-close="closeDialog()" data-ng-controller="CountWidgetDialogController">
 		<form name="form" class="modal-form">
 			<div class="modal-header">
-				<a class="close" href="javascript:" data-dismiss="modal">&times;</a>
+				<a class="close" data-dismiss="modal">&times;</a>
 				<h4>Count Widget</h4>
 			</div>
 			<div class="modal-body">

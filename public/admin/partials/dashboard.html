@@ -3,11 +3,11 @@
 	<div class="row-fluid page-titlebar">
 		<p class="pull-left page-title">
 			<span class="page-title-text">Admin</span>
-			<a href="javascript:" class="page-title-decoration" data-ng-click="reload()" title="Refresh"><i class="icon-refresh"></i></a>
+			<a class="page-title-decoration" data-ng-click="reload()" title="Refresh"><i class="icon-refresh"></i></a>
 		</p>
 		<ul class="nav nav-pills" data-ng-show="filter">
 			<li class="active">
-				<a href="javascript:" data-ng-click="setFilter(null)"><i class="icon-white icon-user"></i> <span data-ng-bind="filter | username"></span> <i class="icon-remove icon-white"></i></a>
+				<a data-ng-click="setFilter(null)"><i class="icon-white icon-user"></i> <span data-ng-bind="filter | username"></span> <i class="icon-remove icon-white"></i></a>
 			</li>
 		</ul>
 	</div>
@@ -34,12 +34,12 @@
 					<tbody>
 						<tr data-ng-repeat="command in commands">
 							<td>
-								<a href="javascript:" data-ng-click="setFilter(command.principal)">{{command.principal | username}}</a>
+								<a data-ng-click="setFilter(command.principal)">{{command.principal | username}}</a>
 								<span data-ng-bind-html="command.label"></span>
 								<abbr title="{{command.timestamp}}">{{command.timestamp | age}}</abbr>
 							</td>
 							<td style="text-align: right">
-								<a class="action" href="javascript:" data-ng-click="undo(command['@id'])" title="Undo"><i class="icon-step-backward"></i></a>
+								<a class="action" data-ng-click="undo(command['@id'])" title="Undo"><i class="icon-step-backward"></i></a>
 							</td>
 						</tr>
 						<tr data-ng-show="commands == null">
@@ -75,14 +75,14 @@
 					<tbody>
 						<tr data-ng-repeat="bucket in buckets">
 							<td>{{bucket['@id']}}</td>
-							<td><a href="javascript:" data-ng-click="setFilter(getOwner(bucket))">{{getOwner(bucket) | username}}</a></td>
+							<td><a data-ng-click="setFilter(getOwner(bucket))">{{getOwner(bucket) | username}}</a></td>
 							<td>{{bucket.created | age}}</td>
 							<td style="text-align: right">
 								<a data-ng-show="isPublished(bucket)" data-ng-href="/#/buckets/{{bucket['@id']}}">{{bucket.size}}</a>
 								<span data-ng-hide="isPublished(bucket)">{{bucket.size}}</span>
 							</td>
 							<td style="text-align: right">
-								<a class="action" href="javascript:" data-ng-click="remove(bucket['@id'])" title="Delete"><i class="icon-trash"></i></a>
+								<a class="action" data-ng-click="remove(bucket['@id'])" title="Delete"><i class="icon-trash"></i></a>
 							</td>
 						</tr>
 						<tr data-ng-show="buckets == null">
@@ -120,13 +120,13 @@
 					<tbody>
 						<tr data-ng-repeat="user in users">
 							<td>
-								<a href="javascript:" data-ng-click="setFilter(user['@id'])" data-ng-show="!user.suspended" data-ng-class="user.superuser && 'b'">{{user.name}}</a>
+								<a data-ng-click="setFilter(user['@id'])" data-ng-show="!user.suspended" data-ng-class="user.superuser && 'b'">{{user.name}}</a>
 								<span style="color:gray" data-ng-show="user.suspended">{{user.name}}</span>
 							</td>
 							<td data-ng-bind="user.created | age"></td>
 							<td data-ng-bind="user.verified && 'yes' || 'no'" style="text-align:center"></td>
 							<td style="text-align: right">
-								<a class="action" href="javascript:" data-ng-click="close(user.name)" data-ng-show="!user.suspended && !user.superuser" title="Close Account"><i class="icon-ban-circle"></i></a>
+								<a class="action" data-ng-click="close(user.name)" data-ng-show="!user.suspended && !user.superuser" title="Close Account"><i class="icon-ban-circle"></i></a>
 								<a class="action" data-ng-href="mailto:{{user.email}}" title="Email User"><i class="icon-envelope"></i></a>
 							</td>
 						</tr>
@@ -170,13 +170,13 @@
 						<tr data-ng-repeat="task in tasks">
 							<td>{{task['@id']}}</td>
 							<td>{{task.type}}</td>
-							<td><a href="javascript:" data-ng-click="setFilter(task.principal)">{{task.principal | username}}</a></td>
+							<td><a data-ng-click="setFilter(task.principal)">{{task.principal | username}}</a></td>
 							<td>{{task.bucket}}</td>
 							<td>{{task.created | age}}</td>
 							<td>{{task.completed | age}}</td>
 							<td>{{task.status}}</td>
 							<td style="text-align: right">
-								<a class="action" href="javascript:" data-ng-click="remove(task['@id'])" title="Delete"><i class="icon-trash"></i></a>
+								<a class="action" data-ng-click="remove(task['@id'])" title="Delete"><i class="icon-trash"></i></a>
 							</td>
 						</tr>
 						<tr data-ng-show="tasks == null">

@@ -13,7 +13,7 @@
 		</thead>
 		<tbody>
 			<tr data-ng-repeat="term in terms">
-				<td><a href="javascript:" data-ng-click="filter(term)" data-ng-bind-html="term.label | field:settings.termField"></a></td>
+				<td><a data-ng-click="filter(term)" data-ng-bind-html="term.label | field:settings.termField"></a></td>
 				<td style="text-align: right" data-ng-bind-html="term.count | number"></td>
 				<td style="text-align: right" data-ng-bind-html="term.min | field:settings.valueField"></td>
 				<td style="text-align: right" data-ng-bind-html="term.max | field:settings.valueField"></td>
@@ -39,7 +39,7 @@
 	<div data-ui-modal="dialog == 'scoreboard-widget-dialog'" data-ui-modal-open="init()" data-ui-modal-close="closeDialog()" data-ng-controller="ScoreboardWidgetDialogController">
 		<form name="form" class="modal-form">
 			<div class="modal-header">
-				<a class="close" href="javascript:" data-dismiss="modal">&times;</a>
+				<a class="close" data-dismiss="modal">&times;</a>
 				<h4>Scoreboard Widget</h4>
 			</div>
 			<div class="modal-body">

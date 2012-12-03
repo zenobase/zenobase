@@ -7,8 +7,8 @@
 					<span data-ng-bind-html="event | fields"></span>
 					&nbsp;
 					<div class="action pull-right" data-ng-show="editable">
-						<a class="event-edit-action" href="javascript:" data-ng-click="editEvent(event)"><i class="icon-pencil" title="Edit"></i></a>
-						<a class="event-delete-action" href="javascript:" data-ng-click="removeEvent(event['@id'])"><i class="icon-trash" title="Delete"></i></a>
+						<a class="event-edit-action" data-ng-click="editEvent(event)"><i class="icon-pencil" title="Edit"></i></a>
+						<a class="event-delete-action" data-ng-click="removeEvent(event['@id'])"><i class="icon-trash" title="Delete"></i></a>
 					</div>
 				</td>
 			</tr>
@@ -35,7 +35,7 @@
 	<div data-ui-modal="dialog == 'list-widget-dialog'" data-ui-modal-open="init()" data-ui-modal-close="closeDialog()" data-ng-controller="WidgetDialogController">
 		<form name="form" class="modal-form">
 			<div class="modal-header">
-				<a class="close" href="javascript:" data-dismiss="modal">&times;</a>
+				<a class="close" data-dismiss="modal">&times;</a>
 				<h4>List Widget</h4>
 			</div>
 			<div class="modal-body">
