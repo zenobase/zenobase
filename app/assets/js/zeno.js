@@ -502,19 +502,6 @@
 		};
 	}]);
 
-	app.controller('LatestTweetController', ['$scope', '$http', function($scope, $http) {
-
-		$scope.username = 'zenobase';
-		$scope.tweet = null;
-
-		$http.jsonp('https://api.twitter.com/1/statuses/user_timeline.json?screen_name=' + $scope.username + '&callback=JSON_CALLBACK&count=1&trim_user=true&exclude_replies=true')
-			.success(function(data, status, headers, config) {
-				if (data.length) {
-					$scope.tweet = data[0];
-				}
-			});
-	}]);
-
 	app.controller('CreateBucketDialogController', ['$scope', '$http', '$location', function($scope, $http, $location) {
 
 		$scope.dialog = $('#create-bucket-dialog');
@@ -2407,6 +2394,32 @@
 			}
 		}];
 		$httpProvider.responseInterceptors.push(interceptor);
+	}]);
+
+	app.directive('uiTweet', ['$http', '$interpolate', function($http, $interpolate) {
+		return {
+			restrict: 'A',
+			compile: function() {
+				return function(scope, element, attrs) {
+					var template = $interpolate(
+						'<small>' +
+						'  <i class="icon-comment"></i> {{text | linky}} &nbsp; ' +
+						'  <i class="icon-calendar"></i> {{created | age}} &nbsp; ' +
+						'  <a href="http://twitter.com/{{username}}">Updates &raquo;</a>' +
+						'</small>');
+					$http.jsonp('https://api.twitter.com/1/statuses/user_timeline.json?screen_name=' + attrs.username + '&callback=JSON_CALLBACK&count=1&trim_user=true&exclude_replies=true')
+						.success(function(data, status, headers, config) {
+							if (data.length) {
+								element.html(template({
+									'text' : data[0].text.replace(' #quantifiedself', ''),
+									'created' : data[0].created_at,
+									'username' :  attrs.username
+								}));
+							}
+						});
+				};
+			}
+		};
 	}]);
 	
 	app.directive('copyrightYear', function() {

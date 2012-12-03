@@ -10,14 +10,7 @@
 			<span data-ng-hide="user"><a id="new-user-link" data-ng-click="create()">start collecting your own data</a>.</span>
 			<span data-ng-show="user"><a id="existing-user-link" data-ng-href="#/users/{{user.getName()}}" data-ng-show="user">view your data</a>.</span>
 		</p>
-
-		<p id="tweet" data-ng-controller="LatestTweetController" data-ng-show="tweet">
-			<small>
-				<i class="icon-comment"></i> <span data-ng-bind-html="tweet.text.replace(' #quantifiedself', '') | linky"></span> &nbsp;
-				<i class="icon-calendar"></i> <span data-ng-bind="tweet.created_at | age"></span> &nbsp;
-				<a data-ng-href="http://twitter.com/{{username}}">Updates &raquo;</a>
-			</small>
-		</p>
+		<p id="tweet" data-ui-tweet data-username="zenobase"/>
 	</div>
 
 </div>
