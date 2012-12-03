@@ -139,6 +139,7 @@
 							</td>
 							<td style="text-align: right">
 								<a class="action task-run-action" data-ng-click="refreshTask(task['@id'])"><i class="icon-refresh" title="Refresh"></i></a>
+								<a class="action task-undo-action" data-ng-click="undo(task.undo)" data-ng-show="task.undo" title="Undo"><i class="icon-step-backward"></i></a>
 								<a class="action task-delete-action" data-ng-click="remove(task['@id'])"><i class="icon-trash" title="Delete"></i></a>
 							</td>
 						</tr>

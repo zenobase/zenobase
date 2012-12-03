@@ -46,6 +46,7 @@ public class DummyTaskManager extends TaskManager {
 		command.add(UpdateTaskCommand.builder(task)
 			.set(Task.COMPLETED, task.getCompleted(), new DateTime(DateTimeZone.UTC))
 			.set(Task.STATUS, task.getStatus(), Task.Status.SUCCESS)
+			.set(Task.UNDO, task.getUndoId(), command.getId())
 			.build());
 		command.add(new CreateEventCommand(task.getPrincipal(), task.getBucketId(), event));
 		return command;

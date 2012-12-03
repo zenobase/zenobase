@@ -101,6 +101,7 @@ public class FoursquareTaskManager extends OAuthTaskManager {
 			.set(Task.COMPLETED, task.getCompleted(), new DateTime(DateTimeZone.UTC))
 			.set(Task.STATUS, task.getStatus(), Task.Status.SUCCESS)
 			.set(Task.MARKER, task.getMarker(), marker)
+			.set(Task.UNDO, task.getUndoId(), command.getId())
 			.build());
 		for (Event event : events) {
 			// System.out.println("[event] " + event);

@@ -94,6 +94,7 @@ public class WithingsTaskManager extends OAuthTaskManager {
 			.set(Task.COMPLETED, task.getCompleted(), new DateTime(DateTimeZone.UTC))
 			.set(Task.STATUS, task.getStatus(), Task.Status.SUCCESS)
 			.set(Task.MARKER, task.getMarker(), result.getMarker())
+			.set(Task.UNDO, task.getUndoId(), command.getId())
 			.build());
 		for (Event event : result.getEvents()) {
 			// System.out.println("[event] " + event);

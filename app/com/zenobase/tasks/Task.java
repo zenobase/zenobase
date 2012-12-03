@@ -103,6 +103,14 @@ public class Task extends DomainNode {
 		setValue(MARKER, marker);
 	}
 
+	public String getUndoId() {
+		return getValue(UNDO);
+	}
+
+	public void setUndoId(String undoId) {
+		setValue(UNDO, undoId);
+	}
+
 	protected <T> T getCredential(Field<T> field) {
 		return getValue(CREDENTIALS, field);
 	}
@@ -139,7 +147,7 @@ public class Task extends DomainNode {
 	public static Schema getSchema() {
 		return new SchemaBuilder(TYPE_NAME)
 			.add(VERSION).add(ID).add(TYPE).add(BUCKET).add(PRINCIPAL).add(CREATED).add(AUTHORIZATION_URL)
-			.add(COMPLETED).add(STATUS).add(MARKER)
+			.add(COMPLETED).add(STATUS).add(MARKER).add(UNDO)
 			.add(CREDENTIALS).add(SETTINGS).build();
 	}
 
