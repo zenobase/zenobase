@@ -15,28 +15,32 @@
 
 	var DELAY = 1000; // ms after which we assume changes will be visible
 
-	var VERSION = function() {
-		var meta = document.getElementsByTagName('meta');
-		for (var i = 0; i < meta.length; ++i) {
-			if (meta[i].getAttribute('property') == 'version') {
-				return meta[i].content;
+	var cacheBuster = function() {
+		var version = function() {
+			var meta = document.getElementsByTagName('meta');
+			for (var i = 0; i < meta.length; ++i) {
+				if (meta[i].getAttribute('property') == 'version') {
+					return meta[i].content;
+				}
+			}
+			throw new Error("missing version");
+		}();
+		return {
+			rewrite : function(path) {
+				return path.replace(/\.(.+)$/, '-' + version + '.$1');
 			}
 		}
-		throw new Error("missing version");
 	}();
-
-	var versioned = function(path) {
-		return path.replace(/\.(.+)$/, '-' + VERSION + '.$1');
-	};
+		
 
 	app.config(['$routeProvider', function($routeProvider) {
-		$routeProvider.when('/', { templateUrl: versioned('/partials/home.html') })
-			.when('/buckets/:bucketId/', { templateUrl : versioned('/partials/dashboard.html'), reloadOnSearch : false })
-			.when('/buckets/:bucketId/tasks/:taskId/auth', { templateUrl : versioned('/partials/task-auth.html') })
-			.when('/users/:userId', { templateUrl : versioned('/partials/user.html') })
-			.when('/users/:userId/reset', { templateUrl : versioned('/partials/reset.html') })
-			.when('/users/:userId/verify', { templateUrl : versioned('/partials/verification.html') })
-			.otherwise({ templateUrl : versioned('/partials/404.html') });
+		$routeProvider.when('/', { templateUrl: cacheBuster.rewrite('/partials/home.html') })
+			.when('/buckets/:bucketId/', { templateUrl : cacheBuster.rewrite('/partials/dashboard.html'), reloadOnSearch : false })
+			.when('/buckets/:bucketId/tasks/:taskId/auth', { templateUrl : cacheBuster.rewrite('/partials/task-auth.html') })
+			.when('/users/:userId', { templateUrl : cacheBuster.rewrite('/partials/user.html') })
+			.when('/users/:userId/reset', { templateUrl : cacheBuster.rewrite('/partials/reset.html') })
+			.when('/users/:userId/verify', { templateUrl : cacheBuster.rewrite('/partials/verification.html') })
+			.otherwise({ templateUrl : cacheBuster.rewrite('/partials/404.html') });
 	}]);
 
 	app.controller('ApplicationController', ['$scope', '$route', '$http', '$location', '$timeout', function($scope, $route, $http, $location, $timeout) {
@@ -705,7 +709,7 @@
 			$scope.bucket.widgets.push(settings);
 		};
 		$scope.getTemplate = function(type) {
-			return versioned('/dashboard/' + type + '.html');
+			return cacheBuster.rewrite('/dashboard/' + type + '.html');
 		};
 		$scope.register = function(widget) {
 			$scope.widgets.push(widget);
