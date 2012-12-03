@@ -13,9 +13,13 @@
 
 	var app = angular.module('ZenoModule', ['ngSanitize']);
 
-	var DELAY = 1000; // ms after which we assume changes will be visible
+	app.service('delay', ['$timeout', function($timeout) {
+		return function(callback) {
+			$timeout(callback, 1000);  // ms after which we assume changes will be visible
+		};
+	}]);
 
-	var cacheBuster = function() {
+	var cacheBuster = function() { // TODO: should inject this?
 		var version = function() {
 			var meta = document.getElementsByTagName('meta');
 			for (var i = 0; i < meta.length; ++i) {
@@ -31,7 +35,6 @@
 			}
 		}
 	}();
-		
 
 	app.config(['$routeProvider', function($routeProvider) {
 		$routeProvider.when('/', { templateUrl: cacheBuster.rewrite('/partials/home.html') })
@@ -43,7 +46,7 @@
 			.otherwise({ templateUrl : cacheBuster.rewrite('/partials/404.html') });
 	}]);
 
-	app.controller('ApplicationController', ['$scope', '$route', '$http', '$location', '$timeout', function($scope, $route, $http, $location, $timeout) {
+	app.controller('ApplicationController', ['$scope', '$route', '$http', '$location', 'delay', function($scope, $route, $http, $location, delay) {
 		$scope.whoami = function() {
 			$http.get('/who').success(function(response) {
 				$scope.user = response ? new User(response) : null;
@@ -58,7 +61,7 @@
 			$scope.alert.clear();
 			$http.post('/queue/' , { 'undo' : commandId })
 				.success(function(response, code) {
-					$timeout($route.reload, DELAY);
+					delay($route.reload);
 				})
 				.error(function(response) {
 					$scope.alert.show('Couldn\'t undo.');
@@ -644,7 +647,7 @@
 
 	window.Bucket = Bucket;
 
-	app.controller('DashboardController', ['$scope', '$http', '$route', '$routeParams', '$location', '$timeout', function($scope, $http, $route, $routeParams, $location, $timeout) {
+	app.controller('DashboardController', ['$scope', '$http', '$route', '$routeParams', '$location', 'delay', function($scope, $http, $route, $routeParams, $location, delay) {
 
 		function updateEditable() {
 				$scope.editable = $scope.user && $scope.bucket.canEdit($scope.user['@id']);
@@ -757,7 +760,7 @@
 		$scope.removeEvent = function(eventId) {
 			$scope.alert.clear();
 			$http({ method : 'DELETE', url : '/buckets/' + $scope.bucketId + '/' + eventId }).success(function(response, status, headers) {
-				$timeout($scope.refresh, DELAY);
+				delay($scope.refresh);
 				$scope.alert.show('Deleted an event.', 'alert-success', response.undo);
 			});
 			_gaq.push([ '_trackEvent', 'action', 'delete event' ]);
@@ -1637,7 +1640,7 @@
 		values.push(value);
 	};
 
-	app.controller('PermissionsDialogController', ['$scope', '$http', '$timeout', function($scope, $http, $timeout) {
+	app.controller('PermissionsDialogController', ['$scope', '$http', function($scope, $http) {
 
 		$scope.init = function() {
 			$scope.bucket = angular.copy($scope.$parent.bucket);
@@ -1650,7 +1653,7 @@
 		};
 	}]);
 
-	app.controller('EventDialogController', ['$scope', '$http', '$timeout', '$routeParams', function($scope, $http, $timeout, $routeParams) {
+	app.controller('EventDialogController', ['$scope', '$http', '$routeParams', 'delay', function($scope, $http, $routeParams, delay) {
 
 		$scope.params = $routeParams;
 		$scope.fields = Field.findEditableFields();
@@ -1676,7 +1679,7 @@
 				$http.post('/buckets/' + $scope.params.bucketId + '/', $scope.event)
 				.success(function(response) {
 					$scope.editEvent(null);
-					$timeout($scope.refresh, DELAY);
+					delay($scope.refresh);
 				})
 				.error(function(response) {
 					$scope.message = response.message || 'Couldn\'t create this event.';
@@ -1686,7 +1689,7 @@
 				.success(function(response) {
 					$scope.editEvent(null);
 					$scope.alert.show('Updated an event.', 'alert-success', response.undo);
-					$timeout($scope.refresh, DELAY);
+					delay($scope.refresh);
 				})
 				.error(function(response) {
 					$scope.message = response.message || 'Couldn\'t update this event.';
@@ -1989,7 +1992,7 @@
 	}]);
 	
 	
-	app.controller('ImportDialogController', ['$scope', '$http', '$timeout', '$routeParams', function($scope, $http, $timeout, $routeParams) {
+	app.controller('ImportDialogController', ['$scope', '$http', '$routeParams', 'delay', function($scope, $http, $routeParams, delay) {
 
 		$scope.bucketId = $routeParams.bucketId;
 
@@ -2017,7 +2020,7 @@
 			$http.post('/buckets/' + $scope.bucketId + '/', $.isArray($scope.events) ? { 'events' : $scope.events } : $scope.events)
 				.success(function(response) {
 					$scope.alert.show('Imported events.', 'alert-success', response.undo);
-					$timeout($scope.refresh, DELAY);
+					delay($scope.refresh);
 					$scope.closeDialog();
 				})
 				.error(function(response) {
@@ -2027,7 +2030,7 @@
 		};
 	}]);
 
-	app.service('tasks', [ '$http', '$timeout', function($http, $timeout) {
+	app.service('tasks', [ '$http', 'delay', function($http, delay) {
 		this.refresh = function($scope, taskId, callback) {
 			$http.get('/tasks/' + taskId)
 				.success(function(response) {
@@ -2037,7 +2040,7 @@
 						$scope.alert.show('Couldn\'t refresh task.', 'alert-error');
 					}
 					if (callback) {
-						$timeout(callback, DELAY);
+						delay(callback);
 					}
 				})
 				.error(function(response, code) {
@@ -2050,7 +2053,7 @@
 		};
 	}]);
 
-	app.controller('TaskListController', ['$scope', '$http', '$routeParams', '$timeout', 'tasks', function($scope, $http, $routeParams, $timeout, tasks) {
+	app.controller('TaskListController', ['$scope', '$http', '$routeParams', 'delay', 'tasks', function($scope, $http, $routeParams, delay, tasks) {
 		
 		$scope.bucketId = $routeParams.bucketId;
 		$scope.tasks = null;
@@ -2076,7 +2079,7 @@
 			$http({ method : 'DELETE', url : '/tasks/' + taskId })
 				.success(function(response) {
 					$scope.alert.show('Deleted a task.', 'alert-success', response.undo);
-					$timeout($scope.refresh, DELAY);
+					delay($scope.refresh);
 				})
 				.error(function(response) {
 					if (status < 500) {
