@@ -39,7 +39,7 @@
 	app.config(['$routeProvider', function($routeProvider) {
 		$routeProvider.when('/', { templateUrl: cacheBuster.rewrite('/partials/home.html') })
 			.when('/buckets/:bucketId/', { templateUrl : cacheBuster.rewrite('/partials/dashboard.html'), reloadOnSearch : false })
-			.when('/buckets/:bucketId/tasks/:taskId/auth', { templateUrl : cacheBuster.rewrite('/partials/task-auth.html') })
+			.when('/tasks/:taskId', { templateUrl : cacheBuster.rewrite('/partials/task.html') })
 			.when('/users/:userId', { templateUrl : cacheBuster.rewrite('/partials/user.html') })
 			.when('/users/:userId/reset', { templateUrl : cacheBuster.rewrite('/partials/reset.html') })
 			.when('/users/:userId/verify', { templateUrl : cacheBuster.rewrite('/partials/verification.html') })
@@ -2040,7 +2040,9 @@
 						$scope.alert.show('Couldn\'t refresh task.', 'alert-error');
 					}
 					if (callback) {
-						delay.soon(callback);
+						delay.soon(function() {
+							callback(response);
+						});
 					}
 				})
 				.error(function(response, code) {
@@ -2103,7 +2105,7 @@
 	
 		$scope.types = [ 
 			{ 'id' : 'fitbit', 'description' : 'Creates events for daily Fitbit step counts.' },
-			{ 'id' : 'foursquare', 'description' : 'Creates events for Foursuare check-ins.' },
+			{ 'id' : 'foursquare', 'description' : 'Creates events for Foursquare check-ins.' },
 			{ 'id' : 'withings', 'description' : 'Creates events for Withings weight measurements.' },
 			{ 'id' : 'demo', 'description' : 'Creates events with a custom tag.' }
 		];
@@ -2155,6 +2157,15 @@
 		$scope.init();
 	}]);
 	
+	app.controller('FoursquareSettingsController', ['$scope', function($scope) {
+
+		$scope.init = function() {
+			$scope.settings = $scope.$parent.$parent.settings = { };
+		};
+
+		$scope.init();
+	}]);
+	
 	app.controller('WithingsSettingsController', ['$scope', function($scope) {
 
 		$scope.init = function() {
@@ -2183,14 +2194,13 @@
 
 	app.controller('TaskAuthorizationController', ['$scope', '$http', '$routeParams', '$location', 'tasks', function($scope, $http, $routeParams, $location, tasks) {
 		
-		$scope.bucketId = $routeParams.bucketId;
 		$scope.taskId = $routeParams.taskId;
 
 		$http.post('/tasks/' + $scope.taskId, { 'credentials' : $location.search() })
 			.success(function(response) {
-				tasks.refresh($scope, $scope.taskId, function() {
+				tasks.refresh($scope, $scope.taskId, function(task) {
 					$scope.alert.show('Task is authorized.', 'alert-success');
-					$location.url('/buckets/' + $scope.bucketId);
+					$location.url('/buckets/' + task.bucket);
 				});
 			})
 			.error(function(response, status) {
