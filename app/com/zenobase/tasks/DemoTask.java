@@ -5,16 +5,16 @@ import org.codehaus.jackson.node.ObjectNode;
 import com.zenobase.json.TokenField;
 import com.zenobase.models.Identity;
 
-public class DummyTask extends Task {
+public class DemoTask extends Task {
 
-	public static final String TYPE = "dummy";
+	public static final String TYPE = "demo";
 	public static final TokenField TAG = new TokenField("tag");
 
-	public DummyTask(ObjectNode node) {
+	public DemoTask(ObjectNode node) {
 		super(node);
 	}
 
-	public DummyTask(String bucketId, Identity principal) {
+	public DemoTask(String bucketId, Identity principal) {
 		super(TYPE, bucketId, principal);
 	}
 
@@ -27,7 +27,7 @@ public class DummyTask extends Task {
 	}
 
 	@Override
-	public DummyTask copy() {
+	public DemoTask copy() {
 		return copy(getClass());
 	}
 }

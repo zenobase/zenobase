@@ -2102,10 +2102,10 @@
 	app.controller('CreateTaskDialogController', ['$scope', '$http', 'tasks', function($scope, $http, tasks) {
 	
 		$scope.types = [ 
-			{ 'id' : 'dummy', 'description' : 'Generates events for testing.' },
-			{ 'id' : 'fitbit', 'description' : 'Generates events with daily summary data, incl number of steps.' },
-			{ 'id' : 'foursquare', 'description' : 'Retrieves checkins from Foursquare.' },
-			{ 'id' : 'withings', 'description' : 'Retrieves weight measurements from Withings.' }
+			{ 'id' : 'fitbit', 'description' : 'Creates events for daily Fitbit step counts.' }
+			{ 'id' : 'foursquare', 'description' : 'Creates events for Foursuare check-ins.' },
+			{ 'id' : 'withings', 'description' : 'Creates events for Withings weight measurements.' }
+			{ 'id' : 'demo', 'description' : 'Creates events with a custom tag.' }
 		];
 
 		$scope.init = function() {
@@ -2144,17 +2144,6 @@
 		};
 	}]);
 	
-	app.controller('DummySettingsController', ['$scope', function($scope) {
-
-		$scope.init = function() {
-			$scope.settings = $scope.$parent.$parent.settings = {
-					tag : 'demo'
-			};
-		};
-
-		$scope.init();
-	}]);
-	
 	app.controller('FitbitSettingsController', ['$scope', function($scope) {
 
 		$scope.init = function() {
@@ -2176,6 +2165,17 @@
 		};
 		$scope.getUnits = function() {
 			return Field.find('weight').units;
+		};
+
+		$scope.init();
+	}]);
+	
+	app.controller('DemoSettingsController', ['$scope', function($scope) {
+
+		$scope.init = function() {
+			$scope.settings = $scope.$parent.$parent.settings = {
+					tag : 'demo'
+			};
 		};
 
 		$scope.init();

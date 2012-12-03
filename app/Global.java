@@ -71,7 +71,7 @@ import com.zenobase.services.NodeFactory;
 import com.zenobase.services.TaskRepository;
 import com.zenobase.services.TestNodeFactory;
 import com.zenobase.services.UserRepository;
-import com.zenobase.tasks.DummyTaskManager;
+import com.zenobase.tasks.DemoTaskManager;
 import com.zenobase.tasks.FitbitTaskManager;
 import com.zenobase.tasks.FoursquareTaskManager;
 import com.zenobase.tasks.TaskManager;
@@ -151,7 +151,7 @@ public class Global extends GlobalSettings {
 				handlers.addBinding().to(DeleteTaskCommand.Handler.class);
 
 				Multibinder<TaskManager> managers = Multibinder.newSetBinder(binder(), new TypeLiteral<TaskManager>() {});
-				managers.addBinding().to(DummyTaskManager.class);
+				managers.addBinding().to(DemoTaskManager.class);
 				if (isConfigured("fitbit")) {
 					managers.addBinding().to(FitbitTaskManager.class);
 				} else {

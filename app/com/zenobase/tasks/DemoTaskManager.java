@@ -14,30 +14,30 @@ import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
 import com.zenobase.models.Resource;
 
-public class DummyTaskManager extends TaskManager {
+public class DemoTaskManager extends TaskManager {
 
 	private static final Resource SOURCE = new Resource("Zenobase", "http://zenobase.com/");
 
 	@Override
 	public String getType() {
-		return DummyTask.TYPE;
+		return DemoTask.TYPE;
 	}
 
 	@Override
-	public DummyTask newTask(String bucketId, Identity principal, ObjectNode settings) {
-		DummyTask task = new DummyTask(bucketId, principal);
+	public DemoTask newTask(String bucketId, Identity principal, ObjectNode settings) {
+		DemoTask task = new DemoTask(bucketId, principal);
 		task.setTag(Objects.firstNonNull(settings.path("tag").getTextValue(), "test"));
 		return task;
 	}
 
 	@Override
 	public Command execute(Task task) {
-		return execute(task.as(DummyTask.class));
+		return execute(task.as(DemoTask.class));
 	}
 
-	private Command execute(DummyTask task) {
+	private Command execute(DemoTask task) {
 		Preconditions.checkState(task.isEnabled(), "Task is not enabled: %s", task.getId());
-		CompoundCommand command = new CompoundCommand(task.getPrincipal(), "ran dummy task", "reverted dummy task");
+		CompoundCommand command = new CompoundCommand(task.getPrincipal(), "ran demo task", "reverted demo task");
 		Event event = new Event();
 		event.setValue(Event.AUTHOR, task.getPrincipal());
 		event.setValue(Event.SOURCE, SOURCE);
