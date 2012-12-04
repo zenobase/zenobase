@@ -51,7 +51,7 @@ public class TimelineWidget extends Widget {
 		builder.facet(FacetBuilders.dateHistogramFacet(getId())
 			.keyField(keyField).valueField(unit == Unit.ONE ? valueField : valueField + "." + MeasurementField.VALUE_SI.getName())
 			.interval(interval)
-			.preZone(timezone.toString().replaceAll("\\+", ""))  // strip '+' as workaround for https://github.com/elasticsearch/elasticsearch/issues/2141
+			.preZone(timezone.toString())
 			.preZoneAdjustLargeInterval(true));
 	}
 
@@ -67,7 +67,7 @@ public class TimelineWidget extends Widget {
 					ObjectNode entryNode = Objects.firstNonNull(counts.get(key), Nodes.newObject());
 					entryNode.put("label", key);
 					entryNode.put("count", entry.getTotalCount());
-					if (unit != Unit.ONE && entry.getTotalCount() > 0) {
+					if (!keyField.equals(valueField) && entry.getTotalCount() > 0) {
 						addValue(entryNode, "min",  entry.getMin());
 						addValue(entryNode, "max", entry.getMax());
 						addValue(entryNode, "sum", entry.getTotal());
@@ -90,9 +90,13 @@ public class TimelineWidget extends Widget {
 	}
 
 	private void addValue(ObjectNode parent, String property, double value) {
-		ObjectNode node = parent.putObject(property);
-		node.put("@value", Measures.convert(value, unit));
-		node.put("unit", unit.toString());
+		if (unit != Unit.ONE) {
+			ObjectNode node = parent.putObject(property);
+			node.put("@value", Measures.convert(value, unit));
+			node.put("unit", unit.toString());
+		} else {
+			parent.put(property, value);
+		}
 	}
 
 	private Interval getInterval(Iterable<? extends DateHistogramFacet.Entry> entries) {

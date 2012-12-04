@@ -37,7 +37,7 @@ public class ScoreboardWidget extends Widget {
 	@Override
 	public void configure(SearchSourceBuilder builder) {
 		builder.facet(FacetBuilders.termsStatsFacet(getId())
-			.keyField(termField).valueField(valueField + "." + MeasurementField.VALUE_SI.getName()).order(order).size(limit));
+			.keyField(termField).valueField(unit == Unit.ONE ? valueField : valueField + "." + MeasurementField.VALUE_SI.getName()).order(order).size(limit));
 	}
 
 	@Override
@@ -59,20 +59,25 @@ public class ScoreboardWidget extends Widget {
 	}
 
 	private void addValue(ObjectNode parent, String property, double value) {
-		ObjectNode node = parent.putObject(property);
-		node.put("@value", Measures.convert(value, unit));
-		node.put("unit", unit.toString());
+		if (unit != Unit.ONE) {
+			ObjectNode node = parent.putObject(property);
+			node.put("@value", Measures.convert(value, unit));
+			node.put("unit", unit.toString());
+		} else {
+			parent.put(property, value);
+		}
 	}
 
 	public static WidgetBuilder builder() {
 		return new WidgetBuilder() {
 			@Override
 			public Widget build(WidgetOptions options) {
+				String unit = options.get("unit");
 				return new ScoreboardWidget(
 					options.get("id"),
 					options.get("termField"),
 					options.get("valueField"),
-					Measures.valueOf(options.get("unit")),
+					unit != null ? Measures.valueOf(unit) : Unit.ONE,
 					ComparatorType.valueOf(options.get("order", String.class, "term").toUpperCase()),
 					options.get("limit", Integer.class, 10));
 			}

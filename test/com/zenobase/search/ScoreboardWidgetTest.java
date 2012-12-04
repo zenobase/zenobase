@@ -25,21 +25,22 @@ public class ScoreboardWidgetTest extends SearchTestSupport {
 	@Override
 	public void setUp() {
 		super.setUp();
-		e1 = newEvent("walk", new DecimalMeasure<Length>(new BigDecimal(10), SI.KILOMETER));
-		e2 = newEvent("hike", new DecimalMeasure<Length>(new BigDecimal(10000), SI.METER));
-		e3 = newEvent("hike", new DecimalMeasure<Length>(new BigDecimal(20), SI.KILOMETER));
-		e4 = newEvent("climb", null);
+		e1 = newEvent("walk", new DecimalMeasure<Length>(new BigDecimal(10), SI.KILOMETER), 2500);
+		e2 = newEvent("hike", new DecimalMeasure<Length>(new BigDecimal(10000), SI.METER), 2500);
+		e3 = newEvent("hike", new DecimalMeasure<Length>(new BigDecimal(20), SI.KILOMETER), 7500);
+		e4 = newEvent("climb", null, null);
 	}
 
-	private static Event newEvent(String tag, DecimalMeasure<Length> distance) {
+	private static Event newEvent(String tag, DecimalMeasure<Length> distance, Integer count) {
 		Event event = new Event();
 		event.setValue(Event.TAG, tag);
 		event.setValue(Event.DISTANCE, distance);
+		event.setValue(Event.COUNT, count);
 		return event;
 	}
 
 	@Test
-	public void testDefault() {
+	public void testDefaultWithMeasureField() {
 
 		addEvent(e1);
 		addEvent(e2);
@@ -66,6 +67,32 @@ public class ScoreboardWidgetTest extends SearchTestSupport {
 		node.path(1).path("avg").path("@value").isEqualTo(10.0);
 		node.path(1).path("sum").path("@value").isEqualTo(10.0);
 		node.path(1).path("count").isEqualTo(1);
+	}
+
+	@Test
+	public void testDefaultWithNumericField() {
+
+		addEvent(e1);
+		addEvent(e2);
+		addEvent(e3);
+		addEvent(e4);
+		addWidget(String.format("id:%s,type:%s,termField:%s,valueField:%s", id, ScoreboardWidget.TYPE, Event.TAG, Event.COUNT));
+
+		ObjectNode result = execute();
+		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(4);
+		NodeAssert node = assertThat(result).path(id).hasSize(2);
+		node.path(0).path("label").isEqualTo(e2.getValue(Event.TAG));
+		node.path(0).path("count").isEqualTo(2);
+		node.path(0).path("min").isEqualTo(2500.0);
+		node.path(0).path("max").isEqualTo(7500.0);
+		node.path(0).path("avg").isEqualTo(5000.0);
+		node.path(0).path("sum").isEqualTo(10000.0);
+		node.path(1).path("label").isEqualTo(e1.getValue(Event.TAG));
+		node.path(1).path("count").isEqualTo(1);
+		node.path(1).path("min").isEqualTo(2500.0);
+		node.path(1).path("max").isEqualTo(2500.0);
+		node.path(1).path("avg").isEqualTo(2500.0);
+		node.path(1).path("sum").isEqualTo(2500.0);
 	}
 
 	@Test

@@ -977,7 +977,7 @@
 		WidgetDialogController($scope);
 
 		$scope.getFields = function() {
-			return Field.findTokenFields();
+			return Field.findByType('text');
 		};
 	}]);
 	
@@ -1028,7 +1028,7 @@
 		WidgetDialogController($scope);
 
 		$scope.getTermFields = function() {
-			return Field.findTokenFields();
+			return Field.findByType('text');
 		};
 	}]);
 	
@@ -1119,16 +1119,17 @@
 		WidgetDialogController($scope);
 
 		function isUnitValid() {
-			return $.grep($scope.getUnits(), function(unit) {
-				return unit === $scope.settings.unit;
-			}).length > 0;
+			var units = $scope.getUnits();
+			return units.length === 0
+				? $scope.settings.unit === null
+				: $.inArray($scope.settings.unit, units) != -1;
 		};
 
 		$scope.getTermFields = function() {
-			return Field.findTokenFields();
+			return Field.findByType('text');
 		};
 		$scope.getValueFields = function() {
-			return Field.findUnitFields();
+			return Field.findByType('numeric');
 		};
 		$scope.getUnits = function() {
 			var valueField = Field.find($scope.settings.valueField);
@@ -1215,21 +1216,15 @@
 		};
 		$scope.draw = function() {
 			if ($scope.times && $scope.times.length) {
-				google.load("visualization", "1", { packages : [ "corechart" ], callback : function() { 
+				google.load("visualization", "1", { packages : [ "corechart" ], callback : function() {
+					var field = Field.find($scope.settings.valueField);
 					var data = new google.visualization.DataTable();
 					data.addColumn('string', $scope.interval.name);
 					data.addColumn('number', 'Count');
 					data.addColumn({ type : 'string', role : 'tooltip'});
 					$.each($scope.times, function(i, time) {
 						var value = time[$scope.settings.statistic || 'count'];
-						var unit = '';
-						if (typeof value == 'object') {
-							unit = value.unit;
-							value = value['@value'];
-						} else {
-							unit = value == 1 ? 'event' : 'events';
-						}
-						data.addRow([ time.label, value, time.label + ': ' + value + ' ' + unit ]);
+						data.addRow([ time.label, field.toNumber(value), time.label + ': ' + field.toText(value) ]);
 					});
 					var options = {
 						height : 100,
@@ -1271,12 +1266,10 @@
 		WidgetDialogController($scope);
 
 		function isUnitValid() {
-			if ($scope.settings.valueField === $scope.keyField) {
-				return $scope.settings.unit === null;
-			}
-			return $.grep($scope.getUnits(), function(unit) {
-				return $scope.settings.unit === unit;
-			}).length > 0;
+			var units = $scope.getUnits();
+			return units.length === 0
+				? $scope.settings.unit === null
+				: $.inArray($scope.settings.unit, units) != -1;
 		};
 		function isStatisticValid() {
 			return $.grep($scope.getStatistics($scope.settings.valueField), function(statistic) {
@@ -1285,11 +1278,8 @@
 		};
 
 		$scope.getValueFields = function() {
-			var fields = Field.findUnitFields();
-			fields.unshift(new Field($scope.keyField));
-			$scope.findUnitFields = function() {
-				return fields;
-			};
+			var fields = Field.findByType('numeric');
+			fields.unshift(Field.find($scope.keyField));
 			return fields;
 		};
 		$scope.getStatistics = function(field) {
@@ -1345,6 +1335,7 @@
 		$scope.draw = function() {
 			if ($scope.times && $scope.times.length) {
 				google.load("visualization", "1", { packages : [ "corechart" ], callback : function() { 
+					var field = Field.find($scope.settings.valueField);
 					var data = new google.visualization.DataTable();
 					data.addColumn('date', 'Time');
 					data.addColumn('number', 'Value');
@@ -1352,14 +1343,7 @@
 					data.addColumn({ type : 'string', role : 'tooltip'});
 					$.each($scope.times, function(i, time) {
 						var value = time[$scope.settings.statistic || 'count'];
-						var unit = '';
-						if (typeof value == 'object') {
-							unit = value.unit;
-							value = value['@value'];
-						} else {
-							unit = value == 1 ? 'event' : 'events';
-						}
-						data.addRow([ new Date(time.time), value, time.label, time.label + ': ' + value + ' ' + unit ]);
+						data.addRow([ new Date(time.time), field.toNumber(value), time.label, time.label + ': ' + field.toText(value) ]);
 					});
 					var options = {
 						height : 100,
@@ -1400,12 +1384,10 @@
 		WidgetDialogController($scope);
 
 		function isUnitValid() {
-			if ($scope.settings.valueField === $scope.keyField) {
-				return $scope.settings.unit === null;
-			}
-			return $.grep($scope.getUnits(), function(unit) {
-				return $scope.settings.unit === unit;
-			}).length > 0;
+			var units = $scope.getUnits();
+			return units.length === 0
+				? $scope.settings.unit === null
+				: $.inArray($scope.settings.unit, units) != -1;
 		};
 		function isStatisticValid() {
 			return $.grep($scope.getStatistics($scope.settings.valueField), function(statistic) {
@@ -1414,11 +1396,8 @@
 		};
 
 		$scope.getValueFields = function() {
-			var fields = Field.findUnitFields();
-			fields.unshift(new Field($scope.keyField));
-			$scope.findUnitFields = function() {
-				return fields;
-			};
+			var fields = Field.findByType('numeric');
+			fields.unshift(Field.find($scope.keyField));
 			return fields;
 		};
 		$scope.getIntervals = function() {
@@ -1656,7 +1635,7 @@
 	app.controller('EventDialogController', ['$scope', '$http', '$routeParams', 'delay', function($scope, $http, $routeParams, delay) {
 
 		$scope.params = $routeParams;
-		$scope.fields = Field.findEditableFields();
+		$scope.fields = Field.findEditable();
 		$scope.init = function() {
 			$scope.event = new Event($scope.selectedEvent);
 			$scope.entries = $scope.event.get($scope.fields);
@@ -2215,160 +2194,347 @@
 	/**
 	 * @constructor
 	 */
-	function Field(name, icon, units, format) {
+	function Field(name, icon, type, units, readOnly, toText, toHtml) {
 		this.name = name;
 		this.icon = icon;
+		this.type = type;
 		this.units = units;
-		this.format = format;
+		this.readOnly = readOnly;
+		this.toText = toText;
+		this.toHtml = toHtml;
 	}
 	
+	Field.prototype.toNumber = function(value) {
+		if (typeof value === 'number') {
+			return value;
+		}
+		if (typeof value === 'object' && value.hasOwnProperty('@value')) {
+			return value['@value'];
+		}
+		return undefined;
+	};
+
 	Field.FIELDS = [];
 	Field.FIELDS_BY_NAME = {};
 	
-	
 	Field.encode = function(value) {
 		return $('<div />').text(value).html();
-	}
+	};
 	
-	Field.register = function(field) {
+	Field.register = function(fieldOptions) {
+		console.assert(fieldOptions.name, "missing <name>");
+		var field = new Field(
+			fieldOptions.name, 
+			fieldOptions.icon || '', 
+			fieldOptions.type || 'numeric',
+			fieldOptions.units || [], 
+			fieldOptions.readOnly == true, 
+			fieldOptions.toText || function(value) { return value; }, 
+			fieldOptions.toHtml || function(value) { return value; }
+		);
 		Field.FIELDS.push(field); 
 		Field.FIELDS_BY_NAME[field.name] = field; 
-	}
+	};
 
-	Field.register(new Field('tag', 'icon-tag', null, function(value) { 
-		return '<span class="nowrap">' +
-			'<i class="' + this.icon + '" title="Tag"></i> ' + Field.encode(value) +
-	  '</span>';
-	}));
-	
-	Field.register(new Field('resource', 'icon-bookmark', null, function(value) { 
-		return '<span>' +
-	  	'<i class="' + this.icon + '" title="Resource"></i>&nbsp;' +
-	  	'<a href="' +  Field.encode(value.url) + '" rel="nofollow">' +  Field.encode(value.title) + '</a>' +
-	  '</span>';
-	}));
-	
-	Field.register(new Field('distance', 'icon-resize-horizontal', [ 'mi', 'ft', 'in', 'km', 'm', 'cm', 'mm' ], function(value) { 
-		return '<span class="nowrap">' +
-	  	'<i class="' + this.icon + '" title="Distance"></i> ' + value['@value'] + ' ' + value.unit +
-	  '</span>';
-	}));
-	
-	Field.register(new Field('height', 'icon-resize-vertical', [ 'mi', 'ft', 'in', 'km', 'm', 'cm', 'mm' ], function(value) { 
-		return '<span class="nowrap">' +
-	  	'<i class="' + this.icon + '" title="Height"></i>' + value['@value'] + ' ' + value.unit +
-	  '</span>';
-	}));
-	
-	Field.register(new Field('weight', 'icon-leaf', [ 'lb', 'oz', 'kg', 'g', 'mg', 'st' ], function(value) { 
-		return '<span class="nowrap">' +
-	  	'<i class="' + this.icon + '" title="Weight"></i> ' + value['@value'] + ' ' + value.unit +
-	  '</span>';
-	}));
-	
-	Field.register(new Field('volume', 'icon-tint', [ 'L', 'dL', 'cL', 'mL', 'gal', 'qt', 'pt', 'cups', 'fl_oz' ], function(value) { 
-		return '<span class="nowrap">' +
-	  	'<i class="' + this.icon + '" title="Volume"></i> ' + value['@value'] + ' ' + value.unit +
-	  '</span>';
-	}));
-	
-	Field.register(new Field('concentration', 'icon-tint', [ 'g/L', 'mg/L', 'ug/L', 'ng/L', 'g/dL', 'mg/dL', 'ug/dL', 'ng/dL' ], function(value) { 
-		return '<span class="nowrap">' +
-	  	'<i class="' + this.icon + '" title="Concentration"></i> ' + value['@value'] + ' ' + value.unit +
-	  '</span>';
-	}));
-	
-	Field.register(new Field('pressure', 'icon-fullscreen', [ 'Pa', 'mmHg', 'inHg', 'psi' ], function(value) { 
-		return '<span class="nowrap">' +
-	  	'<i class="' + this.icon + '" title="Pressure"></i> ' + value['@value'] + ' ' + value.unit +
-	  '</span>';
-	}));
-	
-	Field.register(new Field('location', 'icon-map-marker', null, function(value) { 
-		return '<span class="nowrap">' +
-			'<i class="' + this.icon + '" title="Location"></i> ' +
-			'<a href="http://maps.google.com/maps?q=' + 
-				Field.encode(value.lat + ',' + value.lon) + '&t=p&z=5">' + 
-				Field.encode(Math.round(value.lat * 1000) / 1000 + ', ' + Math.round(value.lon * 1000) / 1000) + '</a>' +
-		'</span>';
-	}));
-	
-	Field.register(new Field('timestamp', 'icon-calendar', null, function(value) { 
-		return '<span class="nowrap">' +
-	  	'<i class="' + this.icon + '" title="Timestamp"></i> ' +
-			'<abbr title="' + value + '">' + humane.date(new Date(Date.parse(value))) + '</abbr>' +
-	  '</span>';
-	}));
-	
-	Field.register(new Field('velocity', 'icon-road', [ 'm/s', 'mph', 'kmh', 'kn', 'Mach' ], function(value) { 
-		return '<span class="nowrap">' +
-	  	'<i class="' + this.icon + '" title="Velocity"></i> ' + value['@value'] + ' ' + value.unit +
-	  '</span>';
-	}));
-	
-	Field.register(new Field('duration', 'icon-time', null, function(value) { 
-		return '<span class="nowrap">' +
-	  	'<i class="' + this.icon + '" title="Duration"></i> ' + humane.duration(value, false) +
-	  '</span>';
-	}));
-	
-	Field.register(new Field('frequency', 'icon-heart', [ 'bpm', 'Hz' ], function(value) { 
-		return '<span class="nowrap">' +
-	  	'<i class="' + this.icon + '" title="Frequency"></i> ' + value['@value'] + ' ' + value.unit +
-	  '</span>';
-	}));
-	
-	Field.register(new Field('bits', 'icon-hdd', [ 'bit', 'B', 'KB', 'MB', 'GB', 'TB', 'PB', 'KiB', 'MiB', 'GiB', 'TiB', 'PiB' ], function(value) { 
-		return '<span class="nowrap">' +
-	  	'<i class="' + this.icon + '" title="Bits"></i> ' + value['@value'] + ' ' + value.unit +
-	  '</span>';
-	}));
-	
-	Field.register(new Field('count', 'icon-th', null, function(value) { 
-		return '<span class="nowrap">' +
-	  	'<i class="' + this.icon + '" title="Count"></i> ' + value +
-	  '</span>';
-	}));
-	
-	Field.register(new Field('energy', 'icon-fire', [ 'J', 'kJ', 'cal', 'kcal' ], function(value) { 
-		return '<span class="nowrap">' +
-	  	'<i class="' + this.icon + '" title="Energy"></i> ' + value['@value'] + ' ' + value.unit +
-	  '</span>';
-	}));
-	
-	Field.register(new Field('temperature', 'icon-fire', [ 'C', 'F', 'K' ], function(value) { 
-		return '<span class="nowrap">' +
-	  	'<i class="' + this.icon + '" title="Temperature"></i> ' + value['@value'] + ' ' + value.unit +
-	  '</span>';
-	}));
-	
-	Field.register(new Field('rating', 'icon-star', null, function(value) { 
-		var stars = Math.round((value || 0) / 20);
-		var html = '<span class="nowrap" title="Rated ' + stars + '/5">';
-		for (var i = 0; i < 5; ++i) {
-			html += '<i class="' + (stars > i ? 'icon-star' : 'icon-star-empty') + '"></i>';
+	Field.register({
+		name : 'tag',
+		icon : 'icon-tag',
+		type : 'text',
+		toHtml : function(value) {
+			return '<span class="nowrap">' +
+				'<i class="' + this.icon + '" title="Tag"></i> ' + Field.encode(value) +
+			'</span>';
 		}
-		html += '</span>';
-		return html;
-	}));
-	
-	Field.register(new Field('note', 'icon-comment', null, function(value) { 
-		return '<span>' +
-	  	'<i class="' + this.icon + '" title="Note"></i>&nbsp;' + value +
-	  '</span>';
-	}));
-	
-	Field.register(new Field('author', 'icon-user', null, function(value) { 
-		return '<span class="nowrap">' +
-	  	'<i class="' + this.icon + '" title="User"></i> ' + User.find(value).getName() +
-	  '</span>';
-	}));
-	
-	Field.register(new Field('source', 'icon-share', null, function(value) { 
-		return '<span class="nowrap">' +
-		'<i class="' + this.icon + '" title="Source"></i> <a href="' +  Field.encode(value.url) + '" rel="nofollow">' +  Field.encode(value.title) + '</a>' +
-	  '</span>';
-	}));
+	});
+
+	Field.register({
+		name : 'resource',
+		icon : 'icon-bookmark',
+		type : 'object',
+		toHtml : function(value) {
+			return '<span>' +
+		  	'<i class="' + this.icon + '" title="Resource"></i>&nbsp;' +
+		  	'<a href="' +  Field.encode(value.url) + '" rel="nofollow">' +  Field.encode(value.title) + '</a>' +
+		  '</span>';
+		}
+	});
+
+	Field.register({
+		name : 'distance',
+		icon : 'icon-resize-horizontal',
+		type : 'numeric',
+		units : [ 'mi', 'ft', 'in', 'km', 'm', 'cm', 'mm' ],
+		toText : function(value) {
+			return typeof value === 'object' ? value['@value'] + ' ' + value.unit : '';
+		},
+		toHtml : function(value) {
+			return '<span class="nowrap">' +
+		  	'<i class="' + this.icon + '" title="Distance"></i> ' + this.toText(value) +
+		  '</span>';
+		}
+	});
+
+	Field.register({
+		name : 'height',
+		icon : 'icon-resize-vertical',
+		type : 'numeric',
+		units : [ 'mi', 'ft', 'in', 'km', 'm', 'cm', 'mm' ],
+		toText : function(value) {
+			return typeof value === 'object' ? value['@value'] + ' ' + value.unit : '';
+		},
+		toHtml : function(value) {
+			return '<span class="nowrap">' +
+		  	'<i class="' + this.icon + '" title="Height"></i> ' + this.toText(value) +
+		  '</span>';
+		}
+	});
+
+	Field.register({
+		name : 'weight',
+		icon : 'icon-leaf',
+		type : 'numeric',
+		units : [ 'lb', 'oz', 'kg', 'g', 'mg', 'st' ],
+		toText : function(value) {
+			return typeof value === 'object' ? value['@value'] + ' ' + value.unit : '';
+		},
+		toHtml : function(value) {
+			return '<span class="nowrap">' +
+		  	'<i class="' + this.icon + '" title="Weight"></i> ' + this.toText(value) +
+		  '</span>';
+		}
+	});
+
+	Field.register({
+		name : 'volume',
+		icon : 'icon-tint',
+		type : 'numeric',
+		units : [ 'L', 'dL', 'cL', 'mL', 'gal', 'qt', 'pt', 'cups', 'fl_oz' ],
+		toText : function(value) {
+			return typeof value === 'object' ? value['@value'] + ' ' + value.unit : '';
+		},
+		toHtml : function(value) {
+			return '<span class="nowrap">' +
+		  	'<i class="' + this.icon + '" title="Volume"></i> ' + this.toText(value) +
+		  '</span>';
+		}
+	});
+
+	Field.register({
+		name : 'concentration',
+		icon : 'icon-tint',
+		type : 'numeric',
+		units : [ 'g/L', 'mg/L', 'ug/L', 'ng/L', 'g/dL', 'mg/dL', 'ug/dL', 'ng/dL' ],
+		toText : function(value) {
+			return typeof value === 'object' ? value['@value'] + ' ' + value.unit : '';
+		},
+		toHtml : function(value) {
+			return '<span class="nowrap">' +
+		  	'<i class="' + this.icon + '" title="Volume"></i> ' + this.toText(value) +
+		  '</span>';
+		}
+	});
+
+	Field.register({
+		name : 'pressure',
+		icon : 'icon-fullscreen',
+		type : 'numeric',
+		units : [ 'Pa', 'mmHg', 'inHg', 'psi' ],
+		toText : function(value) {
+			return typeof value === 'object' ? value['@value'] + ' ' + value.unit : '';
+		},
+		toHtml : function(value) {
+			return '<span class="nowrap">' +
+		  	'<i class="' + this.icon + '" title="Pressure"></i> ' + this.toText(value) +
+		  '</span>';
+		}
+	});
+
+	Field.register({
+		name : 'location',
+		icon : 'icon-map-marker',
+		type : 'object',
+		toText : function(value) {
+			return typeof value === 'object' ? Field.encode(Math.round(value.lat * 1000) / 1000 + ', ' + Math.round(value.lon * 1000) / 1000) : '';
+		},
+		toHtml : function(value) {
+			return '<span class="nowrap">' +
+				'<i class="' + this.icon + '" title="Location"></i> ' +
+				'<a href="http://maps.google.com/maps?q=' + Field.encode(value.lat + ',' + value.lon) + '&t=p&z=5">' + this.toText(value) + '</a>' +
+			'</span>';
+		}
+	});
+
+	Field.register({
+		name : 'timestamp',
+		icon : 'icon-calendar',
+		type : 'object',
+		toHtml : function(value) {
+			return '<span class="nowrap">' +
+		  	'<i class="' + this.icon + '" title="Timestamp"></i> ' +
+				'<abbr title="' + value + '">' + humane.date(new Date(Date.parse(value))) + '</abbr>' +
+		  '</span>';
+		}
+	});
+
+	Field.register({
+		name : 'velocity',
+		icon : 'icon-road',
+		type : 'numeric',
+		units : [ 'm/s', 'mph', 'kmh', 'kn', 'Mach' ],
+		toText : function(value) {
+			return typeof value === 'object' ? value['@value'] + ' ' + value.unit : '';
+		},
+		toHtml : function(value) {
+			return '<span class="nowrap">' +
+		  	'<i class="' + this.icon + '" title="Velocity"></i> ' + this.toText(value) +
+		  '</span>';
+		}
+	});
+
+	Field.register({
+		name : 'duration',
+		icon : 'icon-time',
+		type : 'numeric',
+		toText : function(value) {
+			return humane.duration(value, false);
+		},
+		toHtml : function(value) {
+			return '<span class="nowrap">' +
+		  	'<i class="' + this.icon + '" title="Duration"></i> ' + this.toText(value) +
+		  '</span>';
+		}
+	});
+
+	Field.register({
+		name : 'frequency',
+		icon : 'icon-heart',
+		type : 'numeric',
+		units : [ 'bpm', 'Hz' ],
+		toText : function(value) {
+			return typeof value === 'object' ? value['@value'] + ' ' + value.unit : '';
+		},
+		toHtml : function(value) {
+			return '<span class="nowrap">' +
+		  	'<i class="' + this.icon + '" title="Frequency"></i> ' + this.toText(value) +
+		  '</span>';
+		}
+	});
+
+	Field.register({
+		name : 'bits',
+		icon : 'icon-hdd',
+		type : 'numeric',
+		units : [ 'bit', 'B', 'KB', 'MB', 'GB', 'TB', 'PB', 'KiB', 'MiB', 'GiB', 'TiB', 'PiB' ],
+		toText : function(value) {
+			return typeof value === 'object' ? value['@value'] + ' ' + value.unit : '';
+		},
+		toHtml : function(value) {
+			return '<span class="nowrap">' +
+		  	'<i class="' + this.icon + '" title="Bits"></i> ' + this.toText(value) +
+		  '</span>';
+		}
+	});
+
+	Field.register({
+		name : 'count',
+		icon : 'icon-th',
+		type : 'numeric',
+		toHtml : function(value) {
+			return '<span class="nowrap">' +
+		  	'<i class="' + this.icon + '" title="Count"></i> ' + value +
+		  '</span>';
+		}
+	});
+
+	Field.register({
+		name : 'energy',
+		icon : 'icon-fire',
+		type : 'numeric',
+		units : [ 'J', 'kJ', 'cal', 'kcal' ],
+		toText : function(value) {
+			return typeof value === 'object' ? value['@value'] + ' ' + value.unit : '';
+		},
+		toHtml : function(value) {
+			return '<span class="nowrap">' +
+		  	'<i class="' + this.icon + '" title="Energy"></i> ' + this.toText(value) +
+		  '</span>';
+		}
+	});
+
+	Field.register({
+		name : 'temperature',
+		icon : 'icon-fire',
+		type : 'numeric',
+		units : [ 'C', 'F', 'K' ],
+		toText : function(value) {
+			return typeof value === 'object' ? value['@value'] + ' ' + value.unit : '';
+		},
+		toHtml : function(value) {
+			return '<span class="nowrap">' +
+		  	'<i class="' + this.icon + '" title="Temperature"></i> ' + this.toText(value) +
+		  '</span>';
+		}
+	});
+
+	Field.register({
+		name : 'rating',
+		icon : 'icon-star',
+		type : 'numeric',
+		toText : function(value) {
+			var stars = Math.round((value || 0) / 20);
+			return stars + '/5';
+		},
+		toHtml : function(value) {
+			var stars = Math.round((value || 0) / 20);
+			var html = '<span class="nowrap" title="' + this.toText(value) + '">';
+			for (var i = 0; i < 5; ++i) {
+				html += '<i class="' + (stars > i ? 'icon-star' : 'icon-star-empty') + '"></i>';
+			}
+			html += '</span>';
+			return html;
+		}
+	});
+
+	Field.register({
+		name : 'note',
+		icon : 'icon-comment',
+		type : 'object',
+		toHtml : function(value) {
+			return '<span>' +
+		  	'<i class="' + this.icon + '" title="Note"></i>&nbsp;' + Field.encode(value) +
+		  '</span>';
+		}
+	});
+
+	Field.register({
+		name : 'author',
+		icon : 'icon-user',
+		type : 'text',
+		readOnly : true,
+		toText : function(value) {
+			return User.find(value).getName();
+		},
+		toHtml : function(value) {
+			return '<span class="nowrap">' +
+		  	'<i class="' + this.icon + '" title="User"></i> ' + this.toText(value) +
+		  '</span>';
+		}
+	});
+
+	Field.register({
+		name : 'source',
+		icon : 'icon-share',
+		type : 'object',
+		readOnly : true,
+		toText : function(value) {
+			return value.title;
+		},
+		toHtml : function(value) {
+			return '<span class="nowrap">' +
+				'<i class="' + this.icon + '" title="Source"></i> <a href="' +  Field.encode(value.url) + '" rel="nofollow">' +  Field.encode(value.title) + '</a>' +
+			 '</span>';
+		}
+	});
 	
 	Field.find = function(name) {
 		return Field.FIELDS_BY_NAME[name];
@@ -2378,22 +2544,18 @@
 		return Field.FIELDS;
 	}
 
-	Field.findEditableFields = function() {
+	Field.findEditable = function() {
 		return $.grep(Field.FIELDS, function(field) {
-			return field.name !== 'author' & field.name !== 'source';
+			return !field.readOnly;
 		});
 	}
 
-	Field.findUnitFields = function() {
+	Field.findByType = function(type) {
 		return $.grep(Field.FIELDS, function(field) {
-			return field.units !== null;
+			return field.type === type;
 		});
 	}
 
-	Field.findTokenFields = function() {
-		return [ Field.find('tag'), Field.find('author') ];
-	}
-	
 	app.filter('fields', function() {
 		return function(event) {
 			var html = '';
@@ -2405,7 +2567,7 @@
 						if (count > 0) {
 							html += ' &nbsp; ';
 						}
-						html += field.format(value);
+						html += field.toHtml(value);
 						++count;
 					});
 				}
@@ -2418,7 +2580,7 @@
 		return function(value, fieldName) {
 			var field = Field.find(fieldName);
 			console.assert(field, "Don't know how to format field: " + fieldName)
-			return field.format(value);
+			return field.toHtml(value);
 		}
 	});
 	
@@ -2437,7 +2599,7 @@
 	app.filter('stars', function() {
 		var field = Field.find('rating');
 		return function(rating) {
-			return field.format(rating);
+			return field.toHtml(rating);
 		}
 	});
 	

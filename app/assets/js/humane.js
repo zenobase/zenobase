@@ -46,7 +46,7 @@ var humane = (function() {
   ];
 
 	var duration = function(duration, round) {
-		var seconds = (duration % 60000) / 1000;
+		var seconds = Math.round((duration % 60000) / 1000);
 		duration = Math.floor(duration / 60000);
 		var minutes = duration % 60;
 		duration = Math.floor(duration / 60);

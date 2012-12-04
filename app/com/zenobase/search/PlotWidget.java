@@ -45,7 +45,7 @@ public class PlotWidget extends Widget {
 		builder.facet(FacetBuilders.dateHistogramFacet(getId())
 			.keyField(keyField).valueField(unit == Unit.ONE ? valueField : valueField + "." + MeasurementField.VALUE_SI.getName())
 			.interval(interval)
-			.preZone(timezone.toString().replaceAll("\\+", ""))  // strip '+' as workaround for https://github.com/elasticsearch/elasticsearch/issues/2141
+			.preZone(timezone.toString())
 			.preZoneAdjustLargeInterval(true));
 	}
 
@@ -61,7 +61,7 @@ public class PlotWidget extends Widget {
 					entryNode.put("label", key);
 					entryNode.put("time", entry.getTime());
 					entryNode.put("count", entry.getTotalCount());
-					if (unit != Unit.ONE) {
+					if (!keyField.equals(valueField)) {
 						addValue(entryNode, "min",  entry.getMin());
 						addValue(entryNode, "max", entry.getMax());
 						addValue(entryNode, "sum", entry.getTotal());
@@ -83,9 +83,13 @@ public class PlotWidget extends Widget {
 	}
 
 	private void addValue(ObjectNode parent, String property, double value) {
-		ObjectNode node = parent.putObject(property);
-		node.put("@value", Measures.convert(value, unit));
-		node.put("unit", unit.toString());
+		if (unit != Unit.ONE) {
+			ObjectNode node = parent.putObject(property);
+			node.put("@value", Measures.convert(value, unit));
+			node.put("unit", unit.toString());
+		} else {
+			parent.put(property, value);
+		}
 	}
 
 	private DateTime toDateTime(long time) {
