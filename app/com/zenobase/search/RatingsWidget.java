@@ -14,7 +14,7 @@ import com.zenobase.json.Nodes;
 
 public class RatingsWidget extends Widget {
 
-	public static final String TYPE = "ratings";
+	public static final String TYPE = "histogram";
 
 	private final String field;
 	private final double from, to, step;

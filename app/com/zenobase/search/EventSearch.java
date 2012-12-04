@@ -9,6 +9,7 @@ import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
+import play.Logger;
 import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMultimap;
@@ -59,7 +60,13 @@ public class EventSearch {
 
 	public EventSearch addWidget(String widget) {
 		WidgetOptions options = WidgetOptions.parse(widget);
-		return addWidget(widgetBuilders.get(options.get("type")).build(options));
+		String type = options.get("type");
+		WidgetBuilder builder = widgetBuilders.get(type);
+		if (builder == null) {
+			Logger.warn("Widget builder not registered: " + type);
+			return this;
+		}
+		return addWidget(builder.build(options));
 	}
 
 	public EventSearch addWidget(Widget widget) {

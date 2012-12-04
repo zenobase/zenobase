@@ -578,6 +578,7 @@
 	  	{ label : 'Count', description : 'Counts events for each value in a field.', type : 'count', field : 'tag', order : 'count', reverse : false, limit : 5 },
 	  	{ label : 'Date Range', description : 'First and last occurence of each value in a field.', type : 'gantt', termField : 'tag', timeField : 'timestamp', order : 'max', limit : 10 },
 	  	{ label : 'Ratings', description : 'Counts events by their rating.', type : 'histogram' },
+	  	{ label : 'Histogram', description : 'Counts events by the interval that contains a value of a field.', type : 'intervals', field : 'distance', interval : 10, unit : 'km' },
 	  	{ label : 'Scoreboard', description : 'Statistics for the values in a field', type : 'scoreboard', termField : 'author', valueField : 'distance', unit : 'km', order : 'total', limit : 10 },                    
 	  	{ label : 'Plot', description : 'Plots values against a timeline.', type : 'plot', valueField : 'timestamp', statistic : 'avg', interval : 'day' }
 	  ];
@@ -1042,7 +1043,7 @@
 		$scope.params = function() {
 			return { 
 				id : $scope.settings.id,
-				type : 'ratings',
+				type : 'histogram',
 				field : $scope.field
 			};
 		};
@@ -1071,6 +1072,63 @@
 		$scope.$on('refresh', $scope.init);
 	}]);
 	
+	app.controller('HistogramWidgetController', ['$scope', function($scope) {
+	
+		$scope.init = function() {
+			$scope.intervals = null;
+		};
+		$scope.params = function() {
+			return { 
+				id : $scope.settings.id,
+				type : 'intervals',
+				field : $scope.settings.field, 
+				interval : $scope.settings.interval,
+				unit : $scope.settings.unit
+			};
+		};
+		$scope.refresh = function(options, settings) {
+			$scope.init();
+			$scope.search([ $.extend($scope.params(), options, settings) ], function(result) {
+				$.extend($scope, options)
+				$.extend($scope.settings, settings)
+				$scope.update(null, result);
+			});
+		};
+		$scope.update = function(event, result) {
+			$scope.intervals = result[$scope.settings.id] || [];
+		};
+
+		$scope.init();
+		$scope.register($scope);
+		$scope.$on('result', $scope.update);
+		$scope.$on('refresh', $scope.init);
+	}]);
+
+	app.controller('HistogramWidgetDialogController', ['$scope', function($scope) {
+
+		WidgetDialogController($scope);
+
+		function isUnitValid() {
+			var units = $scope.getUnits();
+			return units.length === 0
+				? $scope.settings.unit === null
+				: $.inArray($scope.settings.unit, units) != -1;
+		};
+
+		$scope.getFields = function() {
+			return Field.findByType('numeric');
+		};
+		$scope.getUnits = function() {
+			var f = Field.find($scope.settings.field);
+			return f ? f.units : [];
+		};
+		$scope.$watch('settings.field', function() {
+			if (!isUnitValid()) {
+				$scope.settings.unit = null;
+			}
+		});
+	}]);
+
 	app.controller('ScoreboardWidgetController', ['$scope', function($scope) {
 	
 		$scope.init = function() {
