@@ -1032,12 +1032,9 @@
 		};
 	}]);
 	
-	app.controller('RatingWidgetController', ['$scope', function($scope) {
+	app.controller('RatingsWidgetController', ['$scope', function($scope) {
 	
 		$scope.field = 'rating';
-		$scope.from = 10;
-		$scope.to = 90;
-		$scope.step = 20;
 
 		$scope.init = function() {
 			$scope.ratings = null;
@@ -1045,11 +1042,8 @@
 		$scope.params = function() {
 			return { 
 				id : $scope.settings.id,
-				type : 'histogram',
-				field : $scope.field, 
-				from : $scope.from,
-				to : $scope.to,
-				step : $scope.step
+				type : 'ratings',
+				field : $scope.field
 			};
 		};
 		$scope.update = function(event, result) {

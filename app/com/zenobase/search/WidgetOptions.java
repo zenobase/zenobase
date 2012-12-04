@@ -25,6 +25,9 @@ public class WidgetOptions {
 		if (type.equals(Integer.class)) {
 			return (T) Integer.valueOf(value);
 		}
+		if (type.equals(Long.class)) {
+			return (T) Long.valueOf(value);
+		}
 		if (type.equals(Double.class)) {
 			return (T) Double.valueOf(value);
 		}

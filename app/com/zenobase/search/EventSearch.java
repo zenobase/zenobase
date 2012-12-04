@@ -29,6 +29,7 @@ public class EventSearch {
 		.put(ListWidget.TYPE, ListWidget.builder())
 		.put(CountWidget.TYPE, CountWidget.builder())
 		.put(GanttWidget.TYPE, GanttWidget.builder())
+		.put(RatingsWidget.TYPE, RatingsWidget.builder())
 		.put(HistogramWidget.TYPE, HistogramWidget.builder())
 		.put(TimelineWidget.TYPE, TimelineWidget.builder())
 		.put(PlotWidget.TYPE, PlotWidget.builder())
