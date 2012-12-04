@@ -53,7 +53,8 @@ public class HistogramWidget extends Widget {
 		for (HistogramFacet.Entry entry : Lists.reverse(facet.entries())) {
 			ObjectNode entryNode = result.addObject();
 			entryNode.put("count", entry.getCount());
-			addValue(entryNode, "value", entry.getKey());
+			addValue(entryNode, "from", entry.getKey());
+			addValue(entryNode, "to", entry.getKey() + getStandardInterval());
 		}
 		return result;
 	}

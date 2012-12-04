@@ -1,24 +1,6 @@
 <div id="{{settings.id}}-content" data-ng-controller="HistogramWidgetController">
 
-	<table class="table" data-ng-show="intervals">
-		<thead>
-			<tr>
-				<th>Interval</th>
-				<th style="text-align: right">Count</th>
-			</tr>
-		</thead>
-		<tbody>
-			<tr data-ng-repeat="interval in intervals">
-				<td>
-					<span data-ng-bind-html="interval.value | field:settings.field"></span>
-				</td>
-				<td style="text-align: right">{{interval.count | number }}</td>
-			</tr>
-			<tr data-ng-hide="intervals">
-				<td colspan="2"><i>None</i></td>
-			</tr>
-		</tbody>
-	</table>
+	<div id="{{settings.id}}-chart" data-ng-show="intervals"></div>
 
 	<p data-ng-show="intervals == null" class="none">Loading...</p>
 

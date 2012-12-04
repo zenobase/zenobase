@@ -1097,11 +1097,43 @@
 		$scope.update = function(event, result) {
 			$scope.intervals = result[$scope.settings.id] || [];
 		};
+		$scope.draw = function() {
+			if ($scope.intervals && $scope.intervals.length) {
+				google.load("visualization", "1", { packages : [ "corechart" ], callback : function() { 
+					var field = Field.find($scope.settings.field);
+					var data = new google.visualization.DataTable();
+					data.addColumn('string', 'Interval');
+					data.addColumn('number', 'Value');
+					data.addColumn({ type : 'string', role : 'tooltip'});
+					$.each($scope.intervals, function(i, interval) {
+						var label = field.toText(interval.from) + ' - ' + field.toText(interval.to);
+						data.addRow([ label, interval.count, 'Count: ' + interval.count ]);
+					});
+					var options = {
+						legend : { position : 'none' },
+						series : [ { color : '#058dc7' } ],
+						chartArea : { top : 0 },
+						fontSize : 14,
+						height : 28 * $scope.intervals.length,
+						vAxis : { baselineColor : 'transparent' },
+						hAxis : { baselineColor : 'transparent', minValue : 0, textStyle : { fontSize: 10 } }
+					};
+					var element = document.getElementById($scope.settings.id + '-chart');
+					var chart = new google.visualization.BarChart(element);
+					chart.draw(data, options);
+				}});
+			}
+		}
 
 		$scope.init();
 		$scope.register($scope);
 		$scope.$on('result', $scope.update);
 		$scope.$on('refresh', $scope.init);
+		$(window).on('resize', $scope.draw);
+		$scope.$on('$destroy', function(e) {
+			$(window).off('resize', $scope.draw);
+		});
+		$('#' + $scope.settings.id + '-tab').on('show', $scope.draw);
 	}]);
 
 	app.controller('HistogramWidgetDialogController', ['$scope', function($scope) {

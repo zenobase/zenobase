@@ -52,9 +52,11 @@ public class HistogramWidgetTest extends SearchTestSupport {
 		ObjectNode result = execute();
 		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(4);
 		NodeAssert node = assertThat(result).path(id).hasSize(2);
-		node.path(0).path("value").isEqualTo(7000);
+		node.path(0).path("from").isEqualTo(7000);
+		node.path(0).path("to").isEqualTo(8000);
 		node.path(0).path("count").isEqualTo(1);
-		node.path(1).path("value").isEqualTo(2000);
+		node.path(1).path("from").isEqualTo(2000);
+		node.path(1).path("to").isEqualTo(3000);
 		node.path(1).path("count").isEqualTo(2);
 	}
 
@@ -70,11 +72,15 @@ public class HistogramWidgetTest extends SearchTestSupport {
 		ObjectNode result = execute();
 		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(4);
 		NodeAssert node = assertThat(result).path(id).hasSize(2);
-		node.path(0).path("value").path("@value").isEqualTo(20.0);
-		node.path(0).path("value").path("unit").isEqualTo("km");
+		node.path(0).path("from").path("@value").isEqualTo(20.0);
+		node.path(0).path("from").path("unit").isEqualTo("km");
+		node.path(0).path("to").path("@value").isEqualTo(25.0);
+		node.path(0).path("to").path("unit").isEqualTo("km");
 		node.path(0).path("count").isEqualTo(1);
-		node.path(1).path("value").path("@value").isEqualTo(10.0);
-		node.path(1).path("value").path("unit").isEqualTo("km");
+		node.path(1).path("from").path("@value").isEqualTo(10.0);
+		node.path(1).path("from").path("unit").isEqualTo("km");
+		node.path(1).path("to").path("@value").isEqualTo(15.0);
+		node.path(1).path("to").path("unit").isEqualTo("km");
 		node.path(1).path("count").isEqualTo(2);
 	}
 
@@ -90,11 +96,15 @@ public class HistogramWidgetTest extends SearchTestSupport {
 		ObjectNode result = execute();
 		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(4);
 		NodeAssert node = assertThat(result).path(id).hasSize(2);
-		node.path(0).path("value").path("@value").isEqualTo(10.0);
-		node.path(0).path("value").path("unit").isEqualTo("mi");
+		node.path(0).path("from").path("@value").isEqualTo(10.0);
+		node.path(0).path("from").path("unit").isEqualTo("mi");
+		node.path(0).path("to").path("@value").isEqualTo(15.0);
+		node.path(0).path("to").path("unit").isEqualTo("mi");
 		node.path(0).path("count").isEqualTo(1);
-		node.path(1).path("value").path("@value").isEqualTo(5.0);
-		node.path(1).path("value").path("unit").isEqualTo("mi");
+		node.path(1).path("from").path("@value").isEqualTo(5.0);
+		node.path(1).path("from").path("unit").isEqualTo("mi");
+		node.path(1).path("to").path("@value").isEqualTo(10.0);
+		node.path(1).path("to").path("unit").isEqualTo("mi");
 		node.path(1).path("count").isEqualTo(2);
 	}
 
