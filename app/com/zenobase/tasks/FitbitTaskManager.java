@@ -7,7 +7,6 @@ import javax.inject.Named;
 
 import org.codehaus.jackson.node.ObjectNode;
 import org.joda.time.LocalDate;
-import org.joda.time.Period;
 import org.scribe.model.OAuthRequest;
 import org.scribe.model.Response;
 import org.scribe.model.Verb;
@@ -51,20 +50,16 @@ public class FitbitTaskManager extends FitbitTaskManagerSupport {
 		OAuthService service = getService(task);
 		LocalDate lastDate = getLastDate(task, service);
 		LocalDate fromDate = getFromDate(task);
+		FitbitProfileResult profile = getProfile(task, service);
 
-		if (new Period(lastDate, fromDate).getDays() > 0) {
-
-			FitbitProfileResult profile = getProfile(task, service);
-
-			for (LocalDate date = fromDate; !date.isAfter(lastDate); date = date.plusDays(1)) {
-				OAuthRequest request = new OAuthRequest(Verb.GET, "https://api.fitbit.com/1/user/-/activities/date/" + date + ".json");
-				request.addHeader("Accept-Language", profile.getDistanceLocale());
-				service.signRequest(task.getToken(), request);
-				Response response = request.send();
-				Preconditions.checkState(response.isSuccessful(), "Failed to get activities on <%s> for task <%s>", date, task.getId());
-				events.addAll(new FitbitActivitiesResult(parseObject(response), task.getTag(), task.getPrincipal(),
-					date.toDateTimeAtStartOfDay(profile.getTimezone()), profile.getDistanceUnit(), profile.getHeightUnit()).getEvents());
-			}
+		for (LocalDate date = fromDate; !date.isAfter(lastDate); date = date.plusDays(1)) {
+			OAuthRequest request = new OAuthRequest(Verb.GET, "https://api.fitbit.com/1/user/-/activities/date/" + date + ".json");
+			request.addHeader("Accept-Language", profile.getDistanceLocale());
+			service.signRequest(task.getToken(), request);
+			Response response = request.send();
+			Preconditions.checkState(response.isSuccessful(), "Failed to get activities on <%s> for task <%s>", date, task.getId());
+			events.addAll(new FitbitActivitiesResult(parseObject(response), task.getTag(), task.getPrincipal(),
+				date.toDateTimeAtStartOfDay(profile.getTimezone()), profile.getDistanceUnit(), profile.getHeightUnit()).getEvents());
 		}
 
 		return createCommand(task, events, lastDate);
