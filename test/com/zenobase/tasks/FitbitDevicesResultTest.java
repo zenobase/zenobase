@@ -12,7 +12,7 @@ public class FitbitDevicesResultTest extends ResultTestSupport {
 	@Test
 	public void test() {
 		FitbitDevicesResult result = new FitbitDevicesResult(readArray("FitbitDevicesResultTest.json"));
-		assertThat(result.getLastDate()).as("last sync time").isEqualTo(LocalDate.parse("2012-11-29"));
+		assertThat(result.getLastDate()).as("last sync time").isEqualTo(LocalDate.parse("2012-11-30"));
 	}
 
 	@Test
