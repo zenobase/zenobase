@@ -21,7 +21,7 @@ public class FitbitSleepResultTest extends ResultTestSupport {
 		List<Event> events = result.getEvents();
 		assertThat(events).as("events").hasSize(1);
 		Event expected = new Event(events.get(0).getId());
-		expected.setValue(Event.TAG, "sleep");
+		expected.setValue(Event.TAG, "sleeping");
 		expected.setValue(Event.TIMESTAMP, DateTime.parse("2012-11-28T00:58:00.000-08:00"));
 		expected.setValue(Event.DURATION, new Duration(28200000));
 		expected.setValue(Event.RATING, Rating.valueOf(100));

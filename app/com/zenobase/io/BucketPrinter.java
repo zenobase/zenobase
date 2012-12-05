@@ -1,9 +1,9 @@
 package com.zenobase.io;
 
-import org.elasticsearch.common.collect.Iterables;
 import play.mvc.Results.Chunks;
 import play.mvc.Results.Chunks.Out;
 import com.google.common.base.Joiner;
+import com.google.common.collect.Iterables;
 
 import com.zenobase.common.Callback;
 import com.zenobase.models.Bucket;

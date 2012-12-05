@@ -3,12 +3,12 @@ package com.zenobase.tasks;
 import java.util.List;
 
 import org.codehaus.jackson.JsonNode;
-import org.elasticsearch.common.collect.Lists;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.Duration;
 import org.joda.time.LocalDateTime;
 import com.google.common.base.Preconditions;
+import com.google.common.collect.Lists;
 
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
@@ -20,7 +20,7 @@ class FitbitSleepResult {
 
 	public static final Resource SOURCE = new Resource("Fitbit", "http://fitbit.com/");
 
-	private final String tag = "sleep";
+	private final String tag = "sleeping";
 	private final JsonNode node;
 	private final Identity author;
 	private final DateTimeZone timezone;
@@ -33,7 +33,7 @@ class FitbitSleepResult {
 
 	public List<Event> getEvents() {
 		List<Event> events = Lists.newArrayList();
-		for (JsonNode item : node.path(tag)) {
+		for (JsonNode item : node.path("sleep")) {
 			Event event = new Event();
 			event.setValue(Event.TAG, tag);
 			event.setValue(Event.TIMESTAMP, getDateTime(item, timezone));

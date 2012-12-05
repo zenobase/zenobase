@@ -16,7 +16,7 @@ class FitbitDevicesResult {
 	public LocalDate getLastDate() {
 		for (JsonNode device : node) {
 			if ("TRACKER".equals(device.path("type").getTextValue())) {
-				return LocalDateTime.parse(device.path("lastSyncTime").getTextValue()).toLocalDate().minusDays(1);
+				return LocalDateTime.parse(device.path("lastSyncTime").getTextValue()).toLocalDate();
 			}
 		}
 		return null;

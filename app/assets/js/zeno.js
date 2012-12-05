@@ -1097,6 +1097,7 @@
 		};
 		$scope.update = function(event, result) {
 			$scope.intervals = result[$scope.settings.id] || [];
+			$scope.draw();
 		};
 		$scope.draw = function() {
 			if ($scope.intervals && $scope.intervals.length) {
@@ -2246,6 +2247,7 @@
 	
 		$scope.types = [ 
 			{ 'id' : 'fitbit', 'description' : 'Creates events for daily Fitbit step counts.' },
+			{ 'id' : 'fitbit-highres', 'description' : 'Creates events from Fitbit data for each period of time spent moving, sitting or sleeping.' },
 			{ 'id' : 'foursquare', 'description' : 'Creates events for Foursquare check-ins.' },
 			{ 'id' : 'withings', 'description' : 'Creates events for Withings weight measurements.' },
 			{ 'id' : 'demo', 'description' : 'Creates events with a custom tag.' }
@@ -2293,6 +2295,15 @@
 			$scope.settings = $scope.$parent.$parent.settings = {
 					tag : 'steps'
 			};
+		};
+
+		$scope.init();
+	}]);
+	
+	app.controller('FitbitHighResSettingsController', ['$scope', function($scope) {
+
+		$scope.init = function() {
+			$scope.settings = $scope.$parent.$parent.settings = { };
 		};
 
 		$scope.init();

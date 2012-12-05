@@ -34,11 +34,11 @@ import com.zenobase.commands.DeleteBucketCommand;
 import com.zenobase.commands.DeleteEventCommand;
 import com.zenobase.commands.DeleteTaskCommand;
 import com.zenobase.commands.DeleteUserCommand;
-import com.zenobase.commands.UpdateTaskCommand;
 import com.zenobase.commands.RestoreBucketCommand;
 import com.zenobase.commands.SuspendUserCommand;
 import com.zenobase.commands.UpdateBucketCommand;
 import com.zenobase.commands.UpdateEventCommand;
+import com.zenobase.commands.UpdateTaskCommand;
 import com.zenobase.common.Globals;
 import com.zenobase.controllers.AccountController;
 import com.zenobase.controllers.BucketController;
@@ -72,6 +72,7 @@ import com.zenobase.services.TaskRepository;
 import com.zenobase.services.TestNodeFactory;
 import com.zenobase.services.UserRepository;
 import com.zenobase.tasks.DemoTaskManager;
+import com.zenobase.tasks.FitbitHighResTaskManager;
 import com.zenobase.tasks.FitbitTaskManager;
 import com.zenobase.tasks.FoursquareTaskManager;
 import com.zenobase.tasks.TaskManager;
@@ -154,6 +155,7 @@ public class Global extends GlobalSettings {
 				managers.addBinding().to(DemoTaskManager.class);
 				if (isConfigured("fitbit")) {
 					managers.addBinding().to(FitbitTaskManager.class);
+					managers.addBinding().to(FitbitHighResTaskManager.class);
 				} else {
 					Logger.warn("Fitbit is not configured");
 				}

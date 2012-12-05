@@ -9,8 +9,8 @@ import javax.measure.quantity.Length;
 import javax.measure.unit.Unit;
 
 import org.codehaus.jackson.JsonNode;
-import org.elasticsearch.common.collect.Lists;
 import org.joda.time.DateTime;
+import com.google.common.collect.Lists;
 
 import com.zenobase.common.Measures;
 import com.zenobase.models.Event;

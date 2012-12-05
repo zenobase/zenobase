@@ -1,0 +1,75 @@
+package com.zenobase.tasks;
+
+import java.util.List;
+
+import javax.inject.Inject;
+import javax.inject.Named;
+
+import org.joda.time.Interval;
+import org.joda.time.LocalDate;
+import org.joda.time.Period;
+import org.scribe.model.OAuthRequest;
+import org.scribe.model.Response;
+import org.scribe.model.Verb;
+import org.scribe.oauth.OAuthService;
+import com.google.common.base.Preconditions;
+import com.google.common.collect.Lists;
+
+import com.zenobase.commands.Command;
+import com.zenobase.models.Event;
+
+public class FitbitHighResTaskManager extends FitbitTaskManagerSupport {
+
+	@Inject
+	public FitbitHighResTaskManager(@Named("fitbit.api.key") String apiKey, @Named("fitbit.api.secret") String apiSecret, @Named("oauth.hostname") String callbackUrl) {
+		super(FitbitApi.class, apiKey, apiSecret, callbackUrl);
+	}
+
+	@Override
+	public String getType() {
+		return FitbitHighResTask.TYPE;
+	}
+
+	@Override
+	public Command execute(Task task) {
+		Preconditions.checkState(task.isEnabled(), "Task is not enabled: %s", task.getId());
+		return execute(task.as(FitbitHighResTask.class));
+	}
+
+	private Command execute(FitbitHighResTask task) {
+
+		List<Event> events = Lists.newArrayList();
+		OAuthService service = getService(task);
+		LocalDate lastDate = getLastDate(task, service);
+		LocalDate fromDate = getFromDate(task);
+
+		if (new Period(lastDate, fromDate).getDays() > 0) {
+
+			FitbitProfileResult profile = getProfile(task, service);
+			List<Interval> sleeping = Lists.newArrayList();
+
+			for (LocalDate date = fromDate; !date.isAfter(lastDate); date = date.plusDays(1)) {
+				OAuthRequest sleepRequest = new OAuthRequest(Verb.GET, "https://api.fitbit.com/1/user/-/sleep/date/" + date + ".json");
+				service.signRequest(task.getToken(), sleepRequest);
+				Response sleepResponse = sleepRequest.send();
+				Preconditions.checkState(sleepResponse.isSuccessful(), "Failed to get sleep for task <%s>", task.getId());
+				for (Event event : new FitbitSleepResult(parseObject(sleepResponse), task.getPrincipal(), profile.getTimezone()).getEvents()) {
+					if (date.isBefore(lastDate)) {
+						events.add(event);
+					}
+					sleeping.add(new Interval(event.getValue(Event.TIMESTAMP), event.getValue(Event.DURATION)));
+				}
+			}
+
+			for (LocalDate date = fromDate; date.isBefore(lastDate); date = date.plusDays(1)) {
+				OAuthRequest caloriesRequest = new OAuthRequest(Verb.GET, "https://api.fitbit.com/1/user/-/activities/calories/date/" + date + "/" + date + ".json");
+				service.signRequest(task.getToken(), caloriesRequest);
+				Response caloriesResponse = caloriesRequest.send();
+				Preconditions.checkState(caloriesResponse.isSuccessful(), "Failed to get calories on <%s> for task <%s>", date, task.getId());
+				events.addAll(new FitbitHighResResult(parseObject(caloriesResponse), task.getPrincipal(), date, profile.getTimezone(), sleeping).getEvents());
+			}
+		}
+
+		return createCommand(task, events, lastDate);
+	}
+}

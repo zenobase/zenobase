@@ -28,8 +28,15 @@ public class FitbitTest extends TaskTestSupport {
 	}
 
 	@Test
+	@Ignore
 	public void testExisting() {
 		TaskManager manager = new FitbitTaskManager(apiKey, apiSecret, callbackUrl);
-		manager.execute(new FitbitTask(bucketId, principal, getToken(), LocalDate.now().minusDays(3).toString(), "steps"));
+		manager.execute(new FitbitTask(bucketId, principal, getToken(), LocalDate.now().minusDays(2).toString(), "steps"));
+	}
+
+	@Test
+	public void testHighRes() {
+		TaskManager manager = new FitbitHighResTaskManager(apiKey, apiSecret, callbackUrl);
+		manager.execute(new FitbitHighResTask(bucketId, principal, getToken(), LocalDate.now().minusDays(2).toString()));
 	}
 }
