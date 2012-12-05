@@ -42,9 +42,9 @@ public class CalendarCountWidgetTest extends SearchTestSupport {
 		ObjectNode result = execute();
 		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(3);
 		NodeAssert node = assertThat(result).path(id).hasSize(24);
-		node.path(7).path("label").isEqualTo("07:00");
+		node.path(7).path("label").isEqualTo("07");
 		node.path(7).path("count").isEqualTo(1);
-		node.path(15).path("label").isEqualTo("15:00");
+		node.path(15).path("label").isEqualTo("15");
 		node.path(15).path("count").isEqualTo(2);
 	}
 
