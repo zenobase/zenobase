@@ -2496,7 +2496,7 @@
 		name : 'concentration',
 		icon : 'icon-tint',
 		type : 'numeric',
-		units : [ 'g/L', 'mg/L', 'ug/L', 'ng/L', 'g/dL', 'mg/dL', 'ug/dL', 'ng/dL' ],
+		units : [ 'g/L', 'mg/L', 'ug/L', 'ng/L', 'g/dL', 'mg/dL', 'ug/dL', 'ng/dL', 'g/mL', 'mg/mL', 'ug/mL', 'ng/mL' ],
 		toText : function(value) {
 			return typeof value === 'object' ? value['@value'] + ' ' + value.unit : '';
 		},
