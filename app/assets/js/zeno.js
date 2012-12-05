@@ -573,7 +573,7 @@
 		$scope.dialog = $("#add-widget-dialog");
 		$scope.templates = [
 	  	{ label : 'Timeline', description : 'Timeline with event counts.', type : 'timeline', valueField : 'timestamp', statistic : 'count' },
-	  	{ label : 'Calendar Count', description : 'Counts events by hour of day, day of week etc.', type : 'calendar-count', interval : 'dayOfWeek' },
+	  	{ label : 'Calendar Count', description : 'Counts events by hour of day, day of week etc.', type : 'calendar-count', interval : 'day_of_week' },
 	  	{ label : 'Map', description : 'Map with event locations.', type : 'map', singleton : true },
 	  	{ label : 'List', description : 'List with the most recent events.', type : 'list', singleton : true, limit : 5, order : 'timestamp', reverse : false },
 	  	{ label : 'Count', description : 'Counts events for each value in a field.', type : 'count', field : 'tag', order : 'count', reverse : false, limit : 5 },
@@ -1458,9 +1458,9 @@
 		WidgetDialogController($scope);
 
 		$scope.intervals = [
-			{ id : 'hourOfDay', label : 'hour of day' },
-			{ id : 'dayOfWeek', label : 'day of week' },
-			{ id : 'monthOfYear', label : 'month of year' }
+			{ id : 'hour_of_day', label : 'hour of day' },
+			{ id : 'day_of_week', label : 'day of week' },
+			{ id : 'month_of_year', label : 'month of year' }
 		];
 	}]);
 	

@@ -37,7 +37,7 @@ public class CalendarCountWidgetTest extends SearchTestSupport {
 		addEvent(e1);
 		addEvent(e2);
 		addEvent(e3);
-		addWidget(String.format("id:%s,type:%s,field:%s,interval:%s,timezoneOffset:%d", id, CalendarCountWidget.TYPE, Event.TIMESTAMP, "hourOfDay", -480));
+		addWidget(String.format("id:%s,type:%s,field:%s,interval:%s,timezoneOffset:%d", id, CalendarCountWidget.TYPE, Event.TIMESTAMP, "hour_of_day", -480));
 
 		ObjectNode result = execute();
 		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(3);
@@ -54,7 +54,7 @@ public class CalendarCountWidgetTest extends SearchTestSupport {
 		addEvent(e1);
 		addEvent(e2);
 		addEvent(e3);
-		addWidget(String.format("id:%s,type:%s,field:%s,interval:%s,timezoneOffset:%d", id, CalendarCountWidget.TYPE, Event.TIMESTAMP, "dayOfWeek", -480));
+		addWidget(String.format("id:%s,type:%s,field:%s,interval:%s,timezoneOffset:%d", id, CalendarCountWidget.TYPE, Event.TIMESTAMP, "day_of_week", -480));
 
 		ObjectNode result = execute();
 		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(3);
@@ -73,7 +73,7 @@ public class CalendarCountWidgetTest extends SearchTestSupport {
 		addEvent(e1);
 		addEvent(e2);
 		addEvent(e3);
-		addWidget(String.format("id:%s,type:%s,field:%s,interval:%s,timezoneOffset:%d", id, CalendarCountWidget.TYPE, Event.TIMESTAMP, "monthOfYear", -480));
+		addWidget(String.format("id:%s,type:%s,field:%s,interval:%s,timezoneOffset:%d", id, CalendarCountWidget.TYPE, Event.TIMESTAMP, "month_of_year", -480));
 
 		ObjectNode result = execute();
 		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(3);

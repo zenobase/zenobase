@@ -12,7 +12,6 @@ import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.elasticsearch.search.facet.FacetBuilders;
 import org.elasticsearch.search.facet.terms.TermsFacet;
 import org.elasticsearch.search.facet.terms.TermsFacetBuilder;
-import org.joda.time.LocalTime;
 import org.joda.time.Minutes;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
@@ -23,12 +22,11 @@ public class CalendarCountWidget extends Widget {
 
 	public static final String TYPE = "calendar-count";
 
-	private final DateFormatSymbols format = new DateFormatSymbols(Locale.US);
 	private final String field;
-	private final String interval; // hourOfDay, dayOfWeek or monthOfYear
+	private final Interval interval;
 	private final Minutes timezoneOffset;
 
-	private CalendarCountWidget(String id, String field, String interval, Minutes timezoneOffset) {
+	private CalendarCountWidget(String id, String field, Interval interval, Minutes timezoneOffset) {
 		super(id);
 		Preconditions.checkNotNull(field);
 		Preconditions.checkNotNull(interval);
@@ -39,64 +37,77 @@ public class CalendarCountWidget extends Widget {
 
 	@Override
 	public void configure(SearchSourceBuilder builder) {
-		String script = String.format("d=doc['%s'].date;d.addMinutes(%d);return d.%s", field, timezoneOffset.getMinutes(), interval) ;
-		TermsFacetBuilder facet = FacetBuilders.termsFacet(getId()).scriptField(script).size(31);
+		TermsFacetBuilder facet = FacetBuilders.termsFacet(getId()).size(31)
+			.lang("js").scriptField(interval.script(field, timezoneOffset));
 		builder.facet(facet);
 	}
 
 	@Override
 	public JsonNode process(SearchResponse response) {
 		TermsFacet terms = response.facets().facet(TermsFacet.class, getId());
-		Map<Integer, Integer> result = newIntervalMap();
+		Map<Integer, Integer> result = interval.emptyMap();
 		for (TermsFacet.Entry entry : terms.entries()) {
 			result.put(Integer.valueOf(entry.getTerm()), entry.getCount());
 		}
 		return toJson(result);
 	}
 
-	private Map<Integer, Integer> newIntervalMap() {
-		if ("hourOfDay".equals(interval)) {
-			return newIntervalMap(0, 24);
-		}
-		if ("dayOfWeek".equals(interval)) {
-			return newIntervalMap(1, 7);
-		}
-		if ("monthOfYear".equals(interval)) {
-			return newIntervalMap(1, 12);
-		}
-		throw new IllegalArgumentException("Invalid interval: " + interval);
-	}
-
-	private Map<Integer, Integer> newIntervalMap(int from, int size) {
-		Map<Integer, Integer> map = Maps.newTreeMap();
-		for (int i = from; i < from + size; ++i) {
-			map.put(i, 0);
-		}
-		return map;
-	}
-
 	private JsonNode toJson(Map<Integer, Integer> map) {
 		ArrayNode node = Nodes.newArray();
 		for (Map.Entry<Integer, Integer> entry : map.entrySet()) {
 			ObjectNode entryNode = Nodes.newObject();
-			entryNode.put("label", getLabel(entry.getKey()));
+			entryNode.put("label", interval.getLabel(entry.getKey()));
 			entryNode.put("count", entry.getValue());
 			node.add(entryNode);
 		}
 		return node;
 	}
 
-	private String getLabel(int i) {
-		if ("hourOfDay".equals(interval)) {
-			return new LocalTime(i, 0).toString("HH:mm");
+	private enum Interval {
+
+		HOUR_OF_DAY("getHourOfDay()", 0, 24) {
+			@Override
+			public String getLabel(int i) {
+				return String.format("%02d", i);
+			}
+		},
+		DAY_OF_WEEK("getDayOfWeek()", 1, 7) {
+			@Override
+			public String getLabel(int i) {
+				return format.getShortWeekdays()[i < 7 ? i + 1 : 1];
+			}
+		},
+		MONTH_OF_YEAR("getMonthOfYear()", 1, 12) {
+			@Override
+			public String getLabel(int i) {
+				return format.getShortMonths()[i - 1];
+			}
+		};
+
+		private static final DateFormatSymbols format = new DateFormatSymbols(Locale.US);
+
+		private final String method;
+		private final int offset, size;
+
+		private Interval(String method, int offset, int size) {
+			this.method = method;
+			this.offset = offset;
+			this.size = size;
 		}
-		if ("dayOfWeek".equals(interval)) {
-			return format.getShortWeekdays()[i < 7 ? i + 1 : 1];
+
+		public Map<Integer, Integer> emptyMap() {
+			Map<Integer, Integer> map = Maps.newTreeMap();
+			for (int i = offset; i < offset + size; ++i) {
+				map.put(i, 0);
+			}
+			return map;
 		}
-		if ("monthOfYear".equals(interval)) {
-			return format.getShortMonths()[i - 1];
+
+		public String script(String field, Minutes timezoneOffset) {
+			return String.format("t=doc['%s'].date;t.addMinutes(%d);v=t.%s;v", field, timezoneOffset.getMinutes(), method);
 		}
-		throw new IllegalArgumentException("Invalid interval: " + interval);
+
+		public abstract String getLabel(int i);
 	}
 
 	public static WidgetBuilder builder() {
@@ -106,7 +117,7 @@ public class CalendarCountWidget extends Widget {
 				return new CalendarCountWidget(
 					options.get("id"),
 					options.get("field"),
-					options.get("interval"),
+					Interval.valueOf(options.get("interval").toUpperCase()),
 					Minutes.minutes(options.get("timezoneOffset", Integer.class, 0)));
 			}
 		};
