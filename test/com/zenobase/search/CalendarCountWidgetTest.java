@@ -42,10 +42,10 @@ public class CalendarCountWidgetTest extends SearchTestSupport {
 		ObjectNode result = execute();
 		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(3);
 		NodeAssert node = assertThat(result).path(id).hasSize(24);
-		node.path(6).path("label").isEqualTo(7);
-		node.path(6).path("count").isEqualTo(1);
-		node.path(14).path("label").isEqualTo(15);
-		node.path(14).path("count").isEqualTo(2);
+		node.path(7).path("label").isEqualTo("07:00");
+		node.path(7).path("count").isEqualTo(1);
+		node.path(15).path("label").isEqualTo("15:00");
+		node.path(15).path("count").isEqualTo(2);
 	}
 
 	@Test
@@ -59,11 +59,11 @@ public class CalendarCountWidgetTest extends SearchTestSupport {
 		ObjectNode result = execute();
 		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(3);
 		NodeAssert node = assertThat(result).path(id).hasSize(7);
-		node.path(1).path("label").isEqualTo(2);
+		node.path(1).path("label").isEqualTo("Tue");
 		node.path(1).path("count").isEqualTo(1);
-		node.path(4).path("label").isEqualTo(5);
+		node.path(4).path("label").isEqualTo("Fri");
 		node.path(4).path("count").isEqualTo(1);
-		node.path(6).path("label").isEqualTo(7);
+		node.path(6).path("label").isEqualTo("Sun");
 		node.path(6).path("count").isEqualTo(1);
 	}
 
@@ -78,9 +78,9 @@ public class CalendarCountWidgetTest extends SearchTestSupport {
 		ObjectNode result = execute();
 		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(3);
 		NodeAssert node = assertThat(result).path(id).hasSize(12);
-		node.path(10).path("label").isEqualTo(11);
+		node.path(10).path("label").isEqualTo("Nov");
 		node.path(10).path("count").isEqualTo(1);
-		node.path(11).path("label").isEqualTo(12);
+		node.path(11).path("label").isEqualTo("Dec");
 		node.path(11).path("count").isEqualTo(2);
 	}
 }

@@ -1112,12 +1112,12 @@
 					});
 					var options = {
 						legend : { position : 'none' },
-						series : [ { color : '#058dc7' } ],
+						series : [ { color : '#AAA' } ],
 						chartArea : { top : 0 },
 						fontSize : 14,
 						height : 28 * $scope.intervals.length,
 						vAxis : { baselineColor : 'transparent' },
-						hAxis : { baselineColor : 'transparent', minValue : 0, textStyle : { fontSize: 10 } }
+						hAxis : { baselineColor : 'transparent', minValue : 0, textStyle : { fontSize: 12 }, gridlines : { color : '#EEE' } }
 					};
 					var element = document.getElementById($scope.settings.id + '-chart');
 					var chart = new google.visualization.BarChart(element);
@@ -1424,16 +1424,16 @@
 					data.addColumn({ type : 'string', role : 'tooltip'});
 					$.each($scope.times, function(i, time) {
 						var value = time[$scope.settings.statistic || 'count'];
-						data.addRow([ "" + time.label, time.count, time.label + ': ' + time.count ]);
+						data.addRow([ time.label, time.count, time.label + ': ' + time.count ]);
 					});
 					var options = {
 						height : 100,
+						fontSize: 14,
 						legend : { position : 'none' },
 						series : [ { color : '#AAA' } ],
-						chartArea : { width : '100%', height : 90, left : 30, top : 5 },
-						vAxis : { gridlines : { color : '#EEE', count : 2 }, minorGridlines : { color : '#EEE', count : 1 }, baselineColor : '#EEE', textStyle : { fontSize: 10 } },
-						hAxis : { baselineColor : 'white', textPosition : 'none', textStyle : { fontSize: 10 } },
-						bar : { groupWidth : 20 }
+						chartArea : { top : 5 },
+						vAxis : { baselineColor : 'transparent', textStyle : { fontSize: 12 }, minValue : 0, gridlines : { color : '#EEE' } },
+						hAxis : { baselineColor : 'transparent', textStyle : { fontSize: 14 } }
 					};
 					var element = document.getElementById($scope.settings.id + '-chart');
 					var chart = new google.visualization.ColumnChart(element);
