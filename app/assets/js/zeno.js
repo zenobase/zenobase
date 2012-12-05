@@ -573,6 +573,7 @@
 		$scope.dialog = $("#add-widget-dialog");
 		$scope.templates = [
 	  	{ label : 'Timeline', description : 'Timeline with event counts.', type : 'timeline', valueField : 'timestamp', statistic : 'count' },
+	  	{ label : 'Calendar Count', description : 'Counts events by hour of day, day of week etc.', type : 'calendar-count', interval : 'dayOfWeek' },
 	  	{ label : 'Map', description : 'Map with event locations.', type : 'map', singleton : true },
 	  	{ label : 'List', description : 'List with the most recent events.', type : 'list', singleton : true, limit : 5, order : 'timestamp', reverse : false },
 	  	{ label : 'Count', description : 'Counts events for each value in a field.', type : 'count', field : 'tag', order : 'count', reverse : false, limit : 5 },
@@ -1384,6 +1385,83 @@
 				$scope.settings.statistic = $scope.getStatistics($scope.settings.valueField)[0];
 			}
 		});
+	}]);
+	
+	app.controller('CalendarCountWidgetController', ['$scope', function($scope) {
+
+		$scope.field = 'timestamp';
+
+		$scope.init = function() {
+			$scope.times = null;
+		};
+		$scope.params = function() {
+			return { 
+				id : $scope.settings.id,
+				type : 'calendar-count',
+				field : $scope.field, 
+				interval : $scope.settings.interval,
+				timezoneOffset : -new Date().getTimezoneOffset()
+			};
+		};
+		$scope.refresh = function(options, settings) {
+			$scope.init();
+			$scope.search([ $.extend($scope.params(), options, settings) ], function(result) {
+				$.extend($scope, options)
+				$.extend($scope.settings, settings)
+				$scope.update(null, result);
+			});
+		};
+		$scope.update = function(event, result) {
+			$scope.times = result[$scope.settings.id] || [];
+			$scope.draw();
+		};
+		$scope.draw = function() {
+			if ($scope.times && $scope.times.length) {
+				google.load("visualization", "1", { packages : [ "corechart" ], callback : function() {
+					var data = new google.visualization.DataTable();
+					data.addColumn('string', $scope.interval);
+					data.addColumn('number', 'count');
+					data.addColumn({ type : 'string', role : 'tooltip'});
+					$.each($scope.times, function(i, time) {
+						var value = time[$scope.settings.statistic || 'count'];
+						data.addRow([ "" + time.label, time.count, time.label + ': ' + time.count ]);
+					});
+					var options = {
+						height : 100,
+						legend : { position : 'none' },
+						series : [ { color : '#AAA' } ],
+						chartArea : { width : '100%', height : 90, left : 30, top : 5 },
+						vAxis : { gridlines : { color : '#EEE', count : 2 }, minorGridlines : { color : '#EEE', count : 1 }, baselineColor : '#EEE', textStyle : { fontSize: 10 } },
+						hAxis : { baselineColor : 'white', textPosition : 'none', textStyle : { fontSize: 10 } },
+						bar : { groupWidth : 20 }
+					};
+					var element = document.getElementById($scope.settings.id + '-chart');
+					var chart = new google.visualization.ColumnChart(element);
+					chart.draw(data, options);
+				}});
+			}
+		}
+	
+		$scope.init();
+		$scope.register($scope);
+		$scope.$on('result', $scope.update);
+		$scope.$on('refresh', $scope.init);
+		$(window).on('resize', $scope.draw);
+		$scope.$on('$destroy', function(e) {
+			$(window).off('resize', $scope.draw);
+		});
+		$('#' + $scope.settings.id + '-tab').on('show', $scope.draw);
+	}]);
+
+	app.controller('CalendarCountWidgetDialogController', ['$scope', function($scope) {
+
+		WidgetDialogController($scope);
+
+		$scope.intervals = [
+			{ id : 'hourOfDay', label : 'hour of day' },
+			{ id : 'dayOfWeek', label : 'day of week' },
+			{ id : 'monthOfYear', label : 'month of year' }
+		];
 	}]);
 	
 	app.controller('PlotWidgetController', ['$scope', function($scope) {
