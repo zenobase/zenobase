@@ -14,6 +14,7 @@ import com.google.inject.Inject;
 import com.zenobase.commands.Command;
 import com.zenobase.commands.CommandParserRegistry;
 import com.zenobase.common.Callback;
+import com.zenobase.common.PartialList;
 import com.zenobase.models.CommandList;
 import com.zenobase.models.Identity;
 
@@ -68,10 +69,11 @@ public class CommandRepository {
 
 	public CommandList find(SearchSourceBuilder search, int limit) {
 		List<Command> commands = Lists.newArrayListWithCapacity(limit);
-		for (ObjectNode hit : index.find(search).getElements()) {
+		PartialList<ObjectNode> hits = index.find(search);
+		for (ObjectNode hit : hits.getElements()) {
 			commands.add(parsers.parse(hit));
 		}
-		return new CommandList(commands, size());
+		return new CommandList(commands, hits.size());
 	}
 
 	private static SearchSourceBuilder newSearchSource(boolean newestFirst) {
