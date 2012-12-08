@@ -48,11 +48,11 @@ public class FitbitTaskManager extends FitbitTaskManagerSupport {
 
 		List<Event> events = Lists.newArrayList();
 		OAuthService service = getService(task);
-		LocalDate lastDate = getLastDate(task, service);
+		LocalDate syncDate = getLastDate(task, service);
 		LocalDate fromDate = getFromDate(task);
 		FitbitProfileResult profile = getProfile(task, service);
 
-		for (LocalDate date = fromDate; !date.isAfter(lastDate); date = date.plusDays(1)) {
+		for (LocalDate date = fromDate; date.isBefore(syncDate); date = date.plusDays(1)) {
 			OAuthRequest request = new OAuthRequest(Verb.GET, "https://api.fitbit.com/1/user/-/activities/date/" + date + ".json");
 			request.addHeader("Accept-Language", profile.getDistanceLocale());
 			service.signRequest(task.getToken(), request);
@@ -62,6 +62,6 @@ public class FitbitTaskManager extends FitbitTaskManagerSupport {
 				date.toDateTimeAtStartOfDay(profile.getTimezone()), profile.getDistanceUnit(), profile.getHeightUnit()).getEvents());
 		}
 
-		return createCommand(task, events, lastDate);
+		return createCommand(task, events, syncDate);
 	}
 }

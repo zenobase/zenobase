@@ -39,25 +39,25 @@ public class FitbitHighResTaskManager extends FitbitTaskManagerSupport {
 
 		List<Event> events = Lists.newArrayList();
 		OAuthService service = getService(task);
-		LocalDate lastDate = getLastDate(task, service);
+		LocalDate syncDate = getLastDate(task, service);
 		LocalDate fromDate = getFromDate(task);
 		FitbitProfileResult profile = getProfile(task, service);
 		List<Interval> sleeping = Lists.newArrayList();
 
-		for (LocalDate date = fromDate; !date.isAfter(lastDate); date = date.plusDays(1)) {
+		for (LocalDate date = fromDate; !date.isAfter(syncDate); date = date.plusDays(1)) {
 			OAuthRequest sleepRequest = new OAuthRequest(Verb.GET, "https://api.fitbit.com/1/user/-/sleep/date/" + date + ".json");
 			service.signRequest(task.getToken(), sleepRequest);
 			Response sleepResponse = sleepRequest.send();
 			Preconditions.checkState(sleepResponse.isSuccessful(), "Failed to get sleep for task <%s>", task.getId());
 			for (Event event : new FitbitSleepResult(parseObject(sleepResponse), task.getPrincipal(), profile.getTimezone()).getEvents()) {
-				if (date.isBefore(lastDate)) {
+				if (date.isBefore(syncDate)) {
 					events.add(event);
 				}
 				sleeping.add(new Interval(event.getValue(Event.TIMESTAMP), event.getValue(Event.DURATION)));
 			}
 		}
 
-		for (LocalDate date = fromDate; date.isBefore(lastDate); date = date.plusDays(1)) {
+		for (LocalDate date = fromDate; date.isBefore(syncDate); date = date.plusDays(1)) {
 			OAuthRequest caloriesRequest = new OAuthRequest(Verb.GET, "https://api.fitbit.com/1/user/-/activities/calories/date/" + date + "/" + date + ".json");
 			service.signRequest(task.getToken(), caloriesRequest);
 			Response caloriesResponse = caloriesRequest.send();
@@ -65,6 +65,6 @@ public class FitbitHighResTaskManager extends FitbitTaskManagerSupport {
 			events.addAll(new FitbitHighResResult(parseObject(caloriesResponse), task.getPrincipal(), date, profile.getTimezone(), sleeping).getEvents());
 		}
 
-		return createCommand(task, events, lastDate);
+		return createCommand(task, events, syncDate);
 	}
 }
