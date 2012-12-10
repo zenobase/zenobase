@@ -23,6 +23,23 @@
 		return moment;
 	});
 
+	app.factory('tracker', function() {
+		return {
+			event : function(category, action) {
+				_gaq.push([ '_trackEvent', category, action ]);
+			},
+			timing : function(category, action, time, label) {
+				_gaq.push([ '_trackTiming', category, action, time, label, 100 ]);				
+			},
+			pageview : function(url) {
+				_gaq.push([ '_trackPageview', url ]);
+			},
+			variable : function(index, name, value, scope) {
+				_gaq.push([ '_setCustomVar', index, name, value, scope ]);
+			}
+		};
+	});
+
 	app.constant('timezoneOffset', moment().format('ZZ'));
 
 	// TODO should inject this, but can't inject into config...
@@ -76,16 +93,16 @@
 			.otherwise({ templateUrl : cacheBuster.rewrite('/partials/404.html') });
 	}]);
 
-	app.controller('ApplicationController', ['$scope', '$route', '$http', '$location', 'delay', function($scope, $route, $http, $location, delay) {
+	app.controller('ApplicationController', ['$scope', '$route', '$http', '$location', 'tracker', 'delay', function($scope, $route, $http, $location, tracker, delay) {
 		$scope.whoami = function() {
 			$http.get('/who').success(function(response) {
 				$scope.user = response ? new User(response) : null;
 				if ($scope.user) {
-					_gaq.push(['_setCustomVar', 1, 'user type', $scope.user.name ? 'registered' : 'unregistered', 1]);
+					tracker.variable(1, 'user type', $scope.user.name ? 'registered' : 'unregistered', 1);
 				}
 			});
 		};
-	
+
 		$scope.alert = new Alert();
 		$scope.undo = function(commandId) {
 			$scope.alert.clear();
@@ -96,7 +113,7 @@
 				.error(function(response) {
 					$scope.alert.show('Couldn\'t undo.');
 				});
-			_gaq.push([ '_trackEvent', 'action', 'undo' ]);
+			tracker.event('action', 'undo');
 
 		};
 		$scope.broadcast = function(event) {
@@ -112,7 +129,7 @@
 						$scope.home();
 					}
 			});
-			_gaq.push([ '_trackEvent', 'action', 'sign out' ]);
+			tracker.event('action', 'sign out');
 		};
 		$scope.home = function() {
 			$location.url('/');
@@ -131,8 +148,8 @@
 			$scope.alert.clear();
 		});
 		$scope.$on('$routeChangeSuccess', function() {
-			_gaq.push(['_trackPageview', $location.path()]);
-			_gaq.push([ '_trackEvent', 'page', $location.path() ]);
+			tracker.pageview($location.path());
+			tracker.event('page', $location.path());
 		});
 		$scope.whoami();
 	}]);
@@ -205,7 +222,7 @@
 		return new Filter(field, value);
 	}
 		
-	app.controller('UserController', ['$scope', '$http', '$routeParams', function($scope, $http, $routeParams) {
+	app.controller('UserController', ['$scope', '$http', '$routeParams', 'tracker', function($scope, $http, $routeParams, tracker) {
 	
 		$scope.userId = $routeParams.userId;
 		$scope.userInfo = null;
@@ -234,7 +251,7 @@
 		};
 		$scope.close = function() {
 			if (confirm('Close your account and delete all associated data?')) {
-				_gaq.push([ '_trackEvent', 'action', 'close account' ]);
+				tracker.event('action', 'close account');
 				$http({ method : 'DELETE', url : '/users/' + $routeParams.userId }).success(function(response) {
 					$scope.signOut();
 				});
@@ -242,7 +259,7 @@
 		};
 	}]);
 	
-	app.controller('UserFormController', ['$scope', '$http', function($scope, $http) {
+	app.controller('UserFormController', ['$scope', '$http', 'tracker', function($scope, $http, tracker) {
 	
 		$scope.editing = false;
 
@@ -268,7 +285,7 @@
 			} else {
 				$scope.cancel();
 			}
-			_gaq.push([ '_trackEvent', 'action', 'save user' ]);
+			tracker.event('action', 'save user');
 		};
 		$scope.cancel = function() {
 			$scope.editing = false;
@@ -277,11 +294,11 @@
 			$scope.message = '';
 			$scope.email = $scope.userInfo.email;
 			$scope.editing = true;
-			_gaq.push([ '_trackEvent', 'dialog', 'edit user' ]);
+			tracker.event('dialog', 'edit user');
 		});
 	}]);
 	
-	app.controller('SignInDialogController', ['$scope', '$http', '$location', '$route', function($scope, $http, $location, $route) {
+	app.controller('SignInDialogController', ['$scope', '$http', '$location', '$route', 'tracker', function($scope, $http, $location, $route, tracker) {
 
 		$scope.dialog = $('#sign-in-dialog');
 
@@ -316,7 +333,7 @@
 						$scope.message = 'Unable to sign in, please try again later or contact support.';
 					}
 				});
-			_gaq.push([ '_trackEvent', 'action', 'sign in' ]);
+			tracker.event('action', 'sign in');
 		}
 
 		$scope.init();
@@ -326,11 +343,11 @@
 		$scope.dialog.on('shown', function () {
 			$scope.$apply($scope.init);
 			$('#username').select();
-			_gaq.push([ '_trackEvent', 'dialog', 'sign in' ]);
+			tracker.event('dialog', 'sign in');
 		});
 	}]);
-	
-	app.controller('PasswordResetDialogController', ['$scope', '$http', function($scope, $http) {
+
+	app.controller('PasswordResetDialogController', ['$scope', '$http', 'tracker', function($scope, $http, tracker) {
 
 		$scope.dialog = $('#password-reset-request-dialog');
 
@@ -360,18 +377,18 @@
 						$scope.message = 'Unable to reset your password, please try again later or contact support.';
 					}
 				});
-			_gaq.push([ '_trackEvent', 'action', 'password reset' ]);
+			tracker.event('action', 'password reset');
 		};
 
 		$scope.init();
 		$scope.dialog.on('shown', function () {
 			$scope.$apply($scope.init);
 			$('#reset-username').select();
-			_gaq.push([ '_trackEvent', 'dialog', 'password reset' ]);
+			tracker.event('dialog', 'password reset');
 		});
 	}]);
-	
-	app.controller('SignUpDialogController', ['$scope', '$http', '$location', function($scope, $http, $location) {
+
+	app.controller('SignUpDialogController', ['$scope', '$http', '$location', 'tracker', function($scope, $http, $location, tracker) {
 
 		$scope.dialog = $('#sign-up-dialog');
 
@@ -408,14 +425,14 @@
 						$scope.message = 'Unable to sign up, please try again later or contact support.';
 					}
 				});
-			_gaq.push([ '_trackEvent', 'action', 'sign up' ]);
+			tracker.event('action', 'sign up');
 		};
 
 		$scope.init();
 		$scope.dialog.on('shown', function () {
 			$scope.$apply($scope.init);
 			$('#sign-up-username').select();
-			_gaq.push([ '_trackEvent', 'dialog', 'sign up' ]);
+			tracker.event('dialog', 'sign up');
 		});
 	}]);
 	
@@ -463,7 +480,7 @@
 		$scope.init();
 	}]);
 	
-	app.controller('BucketListController', ['$scope', '$http', function($scope, $http) {
+	app.controller('BucketListController', ['$scope', '$http', 'tracker', function($scope, $http, tracker) {
 	
 		$scope.offset = 0;
 		$scope.limit = 5;
@@ -506,7 +523,7 @@
 				.error(function(response) {
 					$scope.alert.show('Couldn\'t delete the bucket.', 'alert-error');
 				});
-			_gaq.push([ '_trackEvent', 'action', 'delete bucket' ]);
+			tracker.event('action', 'delete bucket');
 		};
 	
 		$scope.$watch('userInfo', function(user) {
@@ -517,7 +534,7 @@
 		$scope.$on('reload', $scope.refresh);
 	}]);
 	
-	app.controller('HomeController', ['$scope', '$http', '$location', function($scope, $http, $location) {
+	app.controller('HomeController', ['$scope', '$http', '$location', 'tracker', function($scope, $http, $location, tracker) {
 		$scope.template = {
 			label : 'My Data'
 		};
@@ -535,11 +552,11 @@
 				.error(function(response) {
 					$scope.alert.show('Couldn\'t create a new bucket.', 'alert-error');					
 				});
-			_gaq.push([ '_trackEvent', 'action', 'get started' ]);
+			tracker.event('action', 'get started');
 		};
 	}]);
 
-	app.controller('CreateBucketDialogController', ['$scope', '$http', '$location', function($scope, $http, $location) {
+	app.controller('CreateBucketDialogController', ['$scope', '$http', '$location', 'tracker', function($scope, $http, $location, tracker) {
 
 		$scope.dialog = $('#create-bucket-dialog');
 
@@ -564,14 +581,14 @@
 						$scope.message = 'Couldn\'t create a new bucket. Please try agan later or contact support.';					
 					}
 				});
-			_gaq.push([ '_trackEvent', 'action', 'create bucket' ]);
+			tracker.event('action', 'create bucket');
 		};
 
 		$scope.init();
 		$scope.dialog.on('shown', function () {
 			$scope.$apply($scope.init);
 			$('#bucket-label-field').select();
-			_gaq.push([ '_trackEvent', 'dialog', 'create bucket' ]);
+			tracker.event('dialog', 'create bucket');
 		});
 	}]);
 	
@@ -585,7 +602,7 @@
 	WidgetParams.prototype.add = function(params) {
 		this.params.push();
 	}; 
-	
+
 	function randomID() {
 		var len = 5;
 		var chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -597,7 +614,7 @@
 		}
 		return id;
 	}
-	
+
 	app.controller('AddWidgetController', ['$scope', '$http', '$route', '$routeParams', '$location', '$timeout', function($scope, $http, $route, $routeParams, $location, $timeout) {
 
 		$scope.dialog = $("#add-widget-dialog");
@@ -682,7 +699,7 @@
 		return Bucket;
 	});
 
-	app.controller('DashboardController', ['$scope', '$http', '$route', '$routeParams', '$location', 'Bucket', 'delay', function($scope, $http, $route, $routeParams, $location, Bucket, delay) {
+	app.controller('DashboardController', ['$scope', '$http', '$route', '$routeParams', '$location', 'Bucket', 'tracker', 'delay', function($scope, $http, $route, $routeParams, $location, Bucket, tracker, delay) {
 
 		function updateEditable() {
 				$scope.editable = $scope.user && $scope.bucket.canEdit($scope.user['@id']);
@@ -766,7 +783,7 @@
 				.success(function(response) { 
 					var t1 = new Date().getTime();
 					callback(response);
-					_gaq.push(['_trackTiming', 'action', 'refresh', t1 - t0, $scope.bucketId, 100]);
+					tracker.timing('action', 'refresh', t1 - t0, $scope.bucketId);
 				})
 				.error(function(response) { callback({ total : -1 }) });
 		};
@@ -798,7 +815,7 @@
 				delay($scope.refresh);
 				$scope.alert.show('Deleted an event.', 'alert-success', response.undo);
 			});
-			_gaq.push([ '_trackEvent', 'action', 'delete event' ]);
+			tracker.event('action', 'delete event');
 		};
 	
 		$scope.$on('$routeUpdate', function() {
@@ -844,14 +861,14 @@
 		$scope.editing = false;
 		$scope.edit = function() {
 			$scope.editing = true;
-			_gaq.push([ '_trackEvent', 'dialog', 'edit bucket' ]);
+			tracker.event('dialog', 'edit bucket');
 		};
 		$scope.cancel = function() {
 			$scope.editing = false;
 		};
 	}]);
 	
-	app.controller('EditBucketController', ['$scope', '$http', '$route', function($scope, $http, $route) {
+	app.controller('EditBucketController', ['$scope', '$http', '$route', 'tracker', function($scope, $http, $route, tracker) {
 		$scope.save = function(settings) {
 			$scope.alert.clear();
 			$http.put('/buckets/' + $scope.bucketId, $scope.bucket)
@@ -867,7 +884,7 @@
 						$scope.alert.show('Couldn\'t save this bucket. Try again later or contact support.', 'alert-error');						
 					}
 				});
-			_gaq.push([ '_trackEvent', 'action', 'save bucket' ]);
+			tracker.event('action', 'save bucket');
 		};
 		$scope.cancel = function() {
 			$scope.$parent.cancel();
@@ -1788,16 +1805,16 @@
 		};
 	}]);
 
-	app.controller('PermissionsDialogController', ['$scope', '$http', function($scope, $http) {
+	app.controller('PermissionsDialogController', ['$scope', '$http', 'tracker', function($scope, $http, tracker) {
 
 		$scope.init = function() {
 			$scope.bucket = angular.copy($scope.$parent.bucket);
-			_gaq.push([ '_trackEvent', 'dialog', 'edit permissions' ]);
+			tracker.event('dialog', 'edit permissions');
 		};
 		$scope.update = function() {
 			$scope.$parent.bucket = $scope.bucket;
 			$scope.closeDialog();
-			_gaq.push([ '_trackEvent', 'action', 'update permissions' ]);
+			tracker.event('action', 'update permissions');
 		};
 	}]);
 
@@ -1835,7 +1852,7 @@
 		return Event;
 	});
 
-	app.controller('EventDialogController', ['$scope', '$http', '$routeParams', 'Event', 'delay', 'moment', function($scope, $http, $routeParams, Event, delay, moment) {
+	app.controller('EventDialogController', ['$scope', '$http', '$routeParams', 'Event', 'tracker', 'delay', 'moment', function($scope, $http, $routeParams, Event, tracker, delay, moment) {
 
 		$scope.params = $routeParams;
 		$scope.fields = Field.findEditable();
@@ -1846,7 +1863,7 @@
 			$scope.message = '';
 			$scope.field = null;
 			$scope.value = '';
-			_gaq.push([ '_trackEvent', 'dialog', $scope.isNew ? 'create event' : 'edit event' ]);
+			tracker.event('dialog', $scope.isNew ? 'create event' : 'edit event');
 
 		};
 		$scope.getTemplate = function(field) {
@@ -1877,7 +1894,7 @@
 					$scope.message = response.message || 'Couldn\'t update this event.';
 				});
 			}
-			_gaq.push([ '_trackEvent', 'action', 'save event' ]);
+			tracker.event('action', 'save event');
 		};
 		$scope.remove = function(entry) {
 			var values = $scope.event[entry.field.name];
@@ -1906,7 +1923,6 @@
 		}, true);
 	}]);
 	
-	
 	app.controller('CreateTagFieldController', ['$scope', '$http', function($scope, $http) {
 
 		var input = $('#tag-value-field');
@@ -1931,7 +1947,6 @@
 			});
 		}
 	}]);
-
 
 	app.controller('CreateLocationFieldController', ['$scope', function($scope) {
 
@@ -2175,14 +2190,14 @@
 	}]);
 	
 	
-	app.controller('ImportDialogController', ['$scope', '$http', '$routeParams', 'delay', function($scope, $http, $routeParams, delay) {
+	app.controller('ImportDialogController', ['$scope', '$http', '$routeParams', 'tracker', 'delay', function($scope, $http, $routeParams, tracker, delay) {
 
 		$scope.bucketId = $routeParams.bucketId;
 
 		$scope.init = function() {
 			$scope.message = '';
 			$scope.events = [];
-			_gaq.push([ '_trackEvent', 'dialog', 'import events' ]);
+			tracker.event('dialog', 'import events');
 		};
 		$scope.isEmpty = function() {
 			return !$scope.events || $scope.events.length == 0;
@@ -2209,7 +2224,7 @@
 				.error(function(response) {
 					$scope.message = 'Couldn\'t import events.';
 				});
-			_gaq.push([ '_trackEvent', 'action', 'import events' ]);
+			tracker.event('action', 'import events');
 		};
 	}]);
 
@@ -2238,7 +2253,7 @@
 		};
 	}]);
 
-	app.controller('TaskListController', ['$scope', '$http', '$routeParams', 'delay', 'tasks', function($scope, $http, $routeParams, delay, tasks) {
+	app.controller('TaskListController', ['$scope', '$http', '$routeParams', 'tracker', 'delay', 'tasks', function($scope, $http, $routeParams, tracker, delay, tasks) {
 		
 		$scope.bucketId = $routeParams.bucketId;
 		$scope.tasks = null;
@@ -2273,7 +2288,7 @@
 						$scope.message = 'Couldn\'t delete this task. Try again later or contact support.';
 					}
 				});
-			_gaq.push([ '_trackEvent', 'action', 'delete task' ]);
+			tracker.event('action', 'delete task');
 		};
 
 		$scope.$watch('userInfo', function(user) {
@@ -2284,7 +2299,7 @@
 		$scope.$on('reload', $scope.refresh);
 	}]);
 	
-	app.controller('CreateTaskDialogController', ['$scope', '$http', 'tasks', function($scope, $http, tasks) {
+	app.controller('CreateTaskDialogController', ['$scope', '$http', 'tracker', 'tasks', function($scope, $http, tracker, tasks) {
 	
 		$scope.types = [ 
 			{ 'id' : 'fitbit', 'description' : 'Creates events for daily Fitbit step counts.' },
@@ -2298,7 +2313,7 @@
 			$scope.message = '';
 			$scope.type = $scope.types[0];
 			$scope.settings = { foo : 42 };
-			_gaq.push([ '_trackEvent', 'dialog', 'create task' ]);
+			tracker.event('dialog', 'create task');
 		};
 		$scope.getTemplate = function(type) {
 			return type ? '/' + type.id + '-settings.html' : null;
@@ -2326,7 +2341,7 @@
 				.error(function(response) {
 					$scope.message = 'Couldn\'t create task. Try again later or contact support.';
 				});
-			_gaq.push([ '_trackEvent', 'action', 'create task' ]);
+			tracker.event('action', 'create task');
 		};
 	}]);
 	
