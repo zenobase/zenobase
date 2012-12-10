@@ -20,6 +20,26 @@
 	}]);
 
 	app.factory('moment', function() {
+		// TODO obsolete with https://github.com/timrwood/moment/issues/463?
+		moment.duration.fn.countdown = function(precision) {
+			var args = [];
+			if (this.days()) {
+				args.push(this.days() + 'd'); 
+			}
+			if (this.hours()) {
+				args.push(this.hours() + 'h'); 
+			}
+			if (this.minutes()) {
+				args.push(this.minutes() + 'm'); 
+			}
+			if (this.seconds()) {
+				args.push(this.seconds() + 's'); 
+			}
+			if (precision > 0 && args.length > 1) {
+				args = args.slice(0, precision);
+			}
+			return args.join(' ');			
+		}
 		return moment;
 	});
 
@@ -59,28 +79,6 @@
 			}
 		}
 	}();
-
-	// TODO use moment.duration(millis).countdown() [https://github.com/timrwood/moment/issues/463]
-	function formatDuration(millis, round) {
-		var d = moment.duration(millis);
-		var args = [];
-		if (d.days()) {
-			args.push(d.days() + 'd'); 
-		}
-		if (d.hours()) {
-			args.push(d.hours() + 'h'); 
-		}
-		if (d.minutes()) {
-			args.push(d.minutes() + 'm'); 
-		}
-		if (d.seconds()) {
-			args.push(d.seconds() + 's'); 
-		}
-		if (round && args.length > 1) {
-			return args[0];
-		}
-		return args.join(' ');
-	}
 
 	app.config(['$routeProvider', function($routeProvider) {
 		$routeProvider.when('/', { templateUrl: cacheBuster.rewrite('/partials/home.html') })
@@ -2429,7 +2427,7 @@
 			});
 	}]);
 
-	app.factory('Field', ['User', function(User) {
+	app.factory('Field', ['User', 'moment', function(User, moment) {
 
 		var fields = [];
 		var fieldsByName = {};
@@ -2653,7 +2651,7 @@
 			icon : 'icon-time',
 			type : 'numeric',
 			toText : function(value) {
-				return formatDuration(value, false);
+				return moment.duration(value).countdown();
 			},
 			toHtml : function(value) {
 				return '<span class="nowrap">' +
@@ -2830,11 +2828,11 @@
 		}
 	}]);
 
-	app.filter('duration', function() {
+	app.filter('duration', ['moment', function(moment) {
 		return function(millis) {
-			return formatDuration(millis, true);
+			return moment.duration(millis).countdown(1);
 		}
-	});
+	}]);
 
 	app.filter('stars', ['Field', function(Field) {
 		var field = Field.find('rating');
