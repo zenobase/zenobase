@@ -9,7 +9,7 @@ To refresh the dependencies in Eclipse, run:
 js libs
 -------
 
-bootstrap-2.2.x.js: concatenate modal + tabs + typeahead
+bootstrap-2.2.x.js: concatenate modal + tabs + typeahead + bootstrap-datepicker
 
 
 Functional Tests
