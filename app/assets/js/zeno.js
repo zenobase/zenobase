@@ -15,7 +15,7 @@
 
 	app.factory('delay', ['$timeout', function($timeout) {
 		return function(callback) {
-			$timeout(callback, 1000);  // ms after which we assume changes will be visible
+			$timeout(callback, 1000);
 		};
 	}]);
 
@@ -60,8 +60,7 @@
 		}
 	}();
 
-	// TODO replace with moment.duration(millis).countdown(),
-	// see https://github.com/timrwood/moment/issues/463
+	// TODO use moment.duration(millis).countdown() [https://github.com/timrwood/moment/issues/463]
 	function formatDuration(millis, round) {
 		var d = moment.duration(millis);
 		var args = [];
@@ -93,7 +92,10 @@
 			.otherwise({ templateUrl : cacheBuster.rewrite('/partials/404.html') });
 	}]);
 
-	app.controller('ApplicationController', ['$scope', '$route', '$http', '$location', 'tracker', 'delay', function($scope, $route, $http, $location, tracker, delay) {
+	app.controller('ApplicationController', ['$scope', '$route', '$http', '$location', 'Alert', 'User', 'tracker', 'delay', function($scope, $route, $http, $location, Alert, User, tracker, delay) {
+
+		$scope.alert = new Alert();
+
 		$scope.whoami = function() {
 			$http.get('/who').success(function(response) {
 				$scope.user = response ? new User(response) : null;
@@ -102,8 +104,6 @@
 				}
 			});
 		};
-
-		$scope.alert = new Alert();
 		$scope.undo = function(commandId) {
 			$scope.alert.clear();
 			$http.post('/queue/' , { 'undo' : commandId })
@@ -153,76 +153,82 @@
 		});
 		$scope.whoami();
 	}]);
-	
-	/**
-	 * @constructor
-	 */
-	function Alert() {
-		this.clear();
-	}
-	
-	Alert.prototype.show = function(message, level, undo) {
-		this.message = message;
-		this.level = level;
-		this.undo = undo;
-	};
-	
-	Alert.prototype.clear = function() {
-		this.message = '';
-		this.level = 'hide';
-		this.undo = '';
-	};
 
-	User.CACHE = {};
-	
-	/**
-	 * @constructor
-	 */
-	function User(data) {
-		$.extend(this, data);
-		User.CACHE[this['@id']] = this;
-	}
-	
-	User.prototype.getName = function() {
-		return this.name || 'guest';
-	};
-	
-	User.find = function(identity) {
-		if (User.CACHE[identity]) {
-			return User.CACHE[identity];
+	app.factory('Alert', function() {
+
+		var Alert = function() {
+			this.clear();
 		}
-		var user;
-		$.ajax('/users/?identity=' + identity, { async : false, success : function(response) {
-			user = new User(response);
-		}});
-		return user;
-	};
-	
-	/**
-	 * @constructor
-	 */
-	function Filter(field, value) {
-		this.field = field;
-		this.value = value;
-	}
-	
-	Filter.SEPARATOR = ':';
-	
-	Filter.prototype.toString = function() {
-		return this.field + Filter.SEPARATOR + this.value;
-	};
-	
-	Filter.parse = function(s) {
-		var pos = s.indexOf(Filter.SEPARATOR);
-		if (pos < 1 || pos > s.length - 1) {
-			throw "Can't parse filter: " + s;
-		}
-		var field = s.substring(0, pos);
-		var value = s.substring(pos + 1);
-		return new Filter(field, value);
-	}
 		
-	app.controller('UserController', ['$scope', '$http', '$routeParams', 'tracker', function($scope, $http, $routeParams, tracker) {
+		Alert.prototype.show = function(message, level, undo) {
+			this.message = message;
+			this.level = level;
+			this.undo = undo;
+		};
+		
+		Alert.prototype.clear = function() {
+			this.message = '';
+			this.level = 'hide';
+			this.undo = '';
+		};
+
+		return Alert;
+	});
+
+	app.factory('User', [ '$http', '$cacheFactory', function($http, $cacheFactory) {
+
+		var cache = $cacheFactory('User', { capacity : 100 });
+
+		var User = function(data) {
+			$.extend(this, data);
+			cache.put(this['@id'], this);
+		}
+
+		User.prototype.getName = function() {
+			return this.name || 'guest';
+		};
+
+		User.find = function(identity) {
+			var user = cache.get(identity);
+			if (!user) {
+				$.ajax('/users/?identity=' + identity, { async : false, success : function(response) {
+					user = new User(response);
+					cache.put(user['@id'], user);
+				}});
+			}
+			return user;
+		};
+
+		return User;
+	}]);
+
+	app.factory('Filter', function() {
+
+		var separator = ':';
+
+		var Filter = function(field, value) {
+			this.field = field;
+			this.value = value;
+		}
+
+		Filter.prototype.toString = function() {
+			return this.field + separator + this.value;
+		};
+
+		Filter.parse = function(s) {
+			var pos = s.indexOf(separator);
+			if (pos < 1 || pos > s.length - 1) {
+				throw "Can't parse filter: " + s;
+			}
+			var field = s.substring(0, pos);
+			var value = s.substring(pos + 1);
+			return new Filter(field, value);
+		}
+
+		return Filter;
+	});
+
+	app.controller('UserController', ['$scope', '$http', '$routeParams', 'User', 'tracker', function($scope, $http, $routeParams, User, tracker) {
 	
 		$scope.userId = $routeParams.userId;
 		$scope.userInfo = null;
@@ -298,7 +304,7 @@
 		});
 	}]);
 	
-	app.controller('SignInDialogController', ['$scope', '$http', '$location', '$route', 'tracker', function($scope, $http, $location, $route, tracker) {
+	app.controller('SignInDialogController', ['$scope', '$http', '$location', '$route', 'User', 'tracker', function($scope, $http, $location, $route, User, tracker) {
 
 		$scope.dialog = $('#sign-in-dialog');
 
@@ -388,7 +394,7 @@
 		});
 	}]);
 
-	app.controller('SignUpDialogController', ['$scope', '$http', '$location', 'tracker', function($scope, $http, $location, tracker) {
+	app.controller('SignUpDialogController', ['$scope', '$http', '$location', 'User', 'tracker', function($scope, $http, $location, User, tracker) {
 
 		$scope.dialog = $('#sign-up-dialog');
 
@@ -699,7 +705,7 @@
 		return Bucket;
 	});
 
-	app.controller('DashboardController', ['$scope', '$http', '$route', '$routeParams', '$location', 'Bucket', 'tracker', 'delay', function($scope, $http, $route, $routeParams, $location, Bucket, tracker, delay) {
+	app.controller('DashboardController', ['$scope', '$http', '$route', '$routeParams', '$location', 'Bucket', 'Field', 'Filter', 'tracker', 'delay', function($scope, $http, $route, $routeParams, $location, Bucket, Field, Filter, tracker, delay) {
 
 		function updateEditable() {
 				$scope.editable = $scope.user && $scope.bucket.canEdit($scope.user['@id']);
@@ -830,13 +836,14 @@
 				return filter.field === field;
 			});
 		};
-		$scope.containsFilter = function(filter) {
+		function containsFilter(filter) {
 			return $.grep($scope.filters, function(f) {
 				return angular.equals(f, filter);
 			}).length > 0;
 		};
-		$scope.addFilter = function(filter, replace) {
-			if ($scope.containsFilter(filter)) {
+		$scope.addFilter = function(field, value, replace) {
+			var filter = new Filter(field, value);
+			if (containsFilter(filter)) {
 				return;
 			}
 			if (replace) {
@@ -939,22 +946,24 @@
 		$scope.$on('result', $scope.update);
 		$scope.$on('refresh', $scope.init);
 	}]);
-	
-	var WidgetDialogController = function($scope) {
-		$scope.init = function() {
-			$scope.settings = angular.copy($scope.$parent.settings);
+
+	app.factory('WidgetDialogControllerSupport', ['Field', function(Field) {
+		return function($scope) {
+			$scope.init = function() {
+				$scope.settings = angular.copy($scope.$parent.settings);
+			};
+			$scope.save = function() {
+				$scope.refresh({}, $scope.settings);
+				$scope.closeDialog();
+			};
+			$scope.getField = function(name) {
+				return Field.find(name);
+			};
 		};
-		$scope.save = function() {
-			$scope.refresh({}, $scope.settings);
-			$scope.closeDialog();
-		};
-		$scope.getField = function(name) {
-			return Field.find(name);
-		};
-	};
-	
-	app.controller('WidgetDialogController', ['$scope', function($scope) {
-		WidgetDialogController($scope);
+	}]);
+
+	app.controller('WidgetDialogController', ['$scope', 'WidgetDialogControllerSupport', function($scope, WidgetDialogControllerSupport) {
+		WidgetDialogControllerSupport($scope);
 	}]);
 	
 	app.controller('CountWidgetController', ['$scope', function($scope) {
@@ -1015,7 +1024,7 @@
 		};
 		$scope.filter = function(term) {
 			$scope.offset = 0;
-			$scope.addFilter(new Filter($scope.settings.field, term.label))
+			$scope.addFilter($scope.settings.field, term.label)
 		};
 	
 		$scope.init();
@@ -1024,15 +1033,15 @@
 		$scope.$on('refresh', $scope.init);
 	}]);
 
-	app.controller('CountWidgetDialogController', ['$scope', function($scope) {
+	app.controller('CountWidgetDialogController', ['$scope', 'WidgetDialogControllerSupport', 'Field', function($scope, WidgetDialogControllerSupport, Field) {
 
-		WidgetDialogController($scope);
+		WidgetDialogControllerSupport($scope);
 
 		$scope.getFields = function() {
 			return Field.findByType('text');
 		};
 	}]);
-	
+
 	app.controller('GanttWidgetController', ['$scope', 'timezoneOffset', function($scope, timezoneOffset) {
 	
 		$scope.init = function() {
@@ -1066,7 +1075,7 @@
 			}
 		};
 		$scope.filter = function(term) {
-			$scope.addFilter(new Filter($scope.settings.termField, term.label))
+			$scope.addFilter($scope.settings.termField, term.label)
 		};
 
 		$scope.init();
@@ -1075,9 +1084,9 @@
 		$scope.$on('refresh', $scope.init);
 	}]);
 
-	app.controller('GanttWidgetDialogController', ['$scope', function($scope) {
+	app.controller('GanttWidgetDialogController', ['$scope', 'WidgetDialogControllerSupport', 'Field', function($scope, WidgetDialogControllerSupport, Field) {
 
-		WidgetDialogController($scope);
+		WidgetDialogControllerSupport($scope);
 
 		$scope.getTermFields = function() {
 			return Field.findByType('text');
@@ -1114,7 +1123,7 @@
 		}
 		$scope.filter = function(rating) {
 			$scope.offset = 0;
-			$scope.addFilter(new Filter($scope.field, toString(rating.from) + ',' + toString(rating.to)))
+			$scope.addFilter($scope.field, toString(rating.from) + ',' + toString(rating.to));
 		};
 
 		$scope.init();
@@ -1122,8 +1131,8 @@
 		$scope.$on('result', $scope.update);
 		$scope.$on('refresh', $scope.init);
 	}]);
-	
-	app.controller('HistogramWidgetController', ['$scope', function($scope) {
+
+	app.controller('HistogramWidgetController', ['$scope', 'Field', function($scope, Field) {
 	
 		$scope.init = function() {
 			$scope.intervals = null;
@@ -1188,9 +1197,9 @@
 		$('#' + $scope.settings.id + '-tab').on('show', $scope.draw);
 	}]);
 
-	app.controller('HistogramWidgetDialogController', ['$scope', function($scope) {
+	app.controller('HistogramWidgetDialogController', ['$scope', 'WidgetDialogControllerSupport', 'Field', function($scope, WidgetDialogControllerSupport, Field) {
 
-		WidgetDialogController($scope);
+		WidgetDialogControllerSupport($scope);
 
 		function isUnitValid() {
 			var units = $scope.getUnits();
@@ -1241,7 +1250,7 @@
 			$scope.terms = result[$scope.settings.id] || [];
 		};
 		$scope.filter = function(term) {
-			$scope.addFilter(new Filter($scope.settings.termField, term.label))
+			$scope.addFilter($scope.settings.termField, term.label)
 		};
 
 		$scope.init();
@@ -1250,9 +1259,9 @@
 		$scope.$on('refresh', $scope.init);
 	}]);
 
-	app.controller('ScoreboardWidgetDialogController', ['$scope', function($scope) {
+	app.controller('ScoreboardWidgetDialogController', ['$scope', 'WidgetDialogControllerSupport', 'Field', function($scope, WidgetDialogControllerSupport, Field) {
 
-		WidgetDialogController($scope);
+		WidgetDialogControllerSupport($scope);
 
 		function isUnitValid() {
 			var units = $scope.getUnits();
@@ -1314,8 +1323,8 @@
 
 		return Interval;
 	});
-	
-	app.controller('TimelineWidgetController', ['$scope', 'Interval', 'timezoneOffset', function($scope, Interval, timezoneOffset) {
+
+	app.controller('TimelineWidgetController', ['$scope', 'Field', 'Interval', 'timezoneOffset', function($scope, Field, Interval, timezoneOffset) {
 
 		$scope.keyField = 'timestamp';
 
@@ -1381,13 +1390,13 @@
 						var value = data.getValue(selection[0].row, 0);
 						$scope.interval = $scope.interval.zoomIn();
 						$scope.$apply(function() {
-							$scope.addFilter(new Filter($scope.keyField, value), true);
+							$scope.addFilter($scope.keyField, value, true);
 						});
 					});
 				}});
 			}
 		}
-	
+
 		$scope.init();
 		$scope.register($scope);
 		$scope.$on('result', $scope.update);
@@ -1399,9 +1408,9 @@
 		$('#' + $scope.settings.id + '-tab').on('show', $scope.draw);
 	}]);
 
-	app.controller('TimelineWidgetDialogController', ['$scope', function($scope) {
+	app.controller('TimelineWidgetDialogController', ['$scope', 'WidgetDialogControllerSupport', 'Field', function($scope, WidgetDialogControllerSupport, Field) {
 
-		WidgetDialogController($scope);
+		WidgetDialogControllerSupport($scope);
 
 		function isUnitValid() {
 			var units = $scope.getUnits();
@@ -1439,7 +1448,7 @@
 			}
 		});
 	}]);
-	
+
 	app.controller('CalendarCountWidgetController', ['$scope', function($scope) {
 
 		$scope.field = 'timestamp';
@@ -1506,9 +1515,9 @@
 		$('#' + $scope.settings.id + '-tab').on('show', $scope.draw);
 	}]);
 
-	app.controller('CalendarCountWidgetDialogController', ['$scope', function($scope) {
+	app.controller('CalendarCountWidgetDialogController', ['$scope', 'WidgetDialogControllerSupport', function($scope, WidgetDialogControllerSupport) {
 
-		WidgetDialogController($scope);
+		WidgetDialogControllerSupport($scope);
 
 		$scope.intervals = [
 			{ id : 'hour_of_day', label : 'hour of day' },
@@ -1517,7 +1526,7 @@
 		];
 	}]);
 	
-	app.controller('PlotWidgetController', ['$scope', 'timezoneOffset', function($scope, timezoneOffset) {
+	app.controller('PlotWidgetController', ['$scope', 'Field', 'timezoneOffset', function($scope, Field, timezoneOffset) {
 	
 		$scope.keyField = 'timestamp';
 
@@ -1576,7 +1585,7 @@
 						var selection = chart.getSelection();
 						var value = data.getValue(selection[0].row, 2);
 						$scope.$apply(function() {
-							$scope.addFilter(new Filter($scope.keyField, value), true);
+							$scope.addFilter($scope.keyField, value, true);
 						});
 					});
 				}});
@@ -1594,9 +1603,9 @@
 		$('#' + $scope.settings.id + '-tab').on('show', $scope.draw);
 	}]);
 
-	app.controller('PlotWidgetDialogController', ['$scope', function($scope) {
+	app.controller('PlotWidgetDialogController', ['$scope', 'WidgetDialogControllerSupport', 'Field', 'Interval', function($scope, WidgetDialogControllerSupport, Field, Interval) {
 
-		WidgetDialogController($scope);
+		WidgetDialogControllerSupport($scope);
 
 		function isUnitValid() {
 			var units = $scope.getUnits();
@@ -1637,7 +1646,7 @@
 			}
 		});
 	}]);
-	
+
 	app.controller('MapWidgetController', ['$scope', function($scope) {
 
 		$scope.field = 'location';
@@ -1669,7 +1678,7 @@
 			$scope.draw();
 		};
 		$scope.filterBounds = function() {
-			$scope.addFilter(new Filter($scope.field, $scope.map.getBounds().toUrlValue(3)), true);
+			$scope.addFilter($scope.field, $scope.map.getBounds().toUrlValue(3), true);
 		};
 		$scope.draw = function() {
 			if ($scope.points.length) {
@@ -1718,7 +1727,7 @@
 						var filterBounds = new google.maps.LatLngBounds(sw, ne);
 						google.maps.event.addListener(marker, 'click', function() {
 							$scope.$apply(function() {
-								$scope.addFilter(new Filter($scope.field, filterBounds.toUrlValue(3)), true);
+								$scope.addFilter($scope.field, filterBounds.toUrlValue(3), true);
 							});
 						});
 						if (point.count > 1) {
@@ -1728,7 +1737,7 @@
 								fillOpacity : 0,
 								clickable : false,
 								visible : false,
-								map : $scope.map							
+								map : $scope.map
 							});
 							google.maps.event.addListener(marker, 'mouseover', function() {
 								filterRectangle.setVisible(true);
@@ -1796,9 +1805,9 @@
 		$('#' + $scope.settings.id + '-tab').on('show', $scope.draw);
 	}]);
 
-	app.controller('MapWidgetDialogController', ['$scope', function($scope) {
+	app.controller('MapWidgetDialogController', ['$scope', 'WidgetDialogControllerSupport', function($scope, WidgetDialogControllerSupport) {
 
-		WidgetDialogController($scope);
+		WidgetDialogControllerSupport($scope);
 
 		$scope.getColors = function() {
 			return [ 'white', 'black', 'red', 'green', 'blue', 'yellow' ];
@@ -1852,7 +1861,7 @@
 		return Event;
 	});
 
-	app.controller('EventDialogController', ['$scope', '$http', '$routeParams', 'Event', 'tracker', 'delay', 'moment', function($scope, $http, $routeParams, Event, tracker, delay, moment) {
+	app.controller('EventDialogController', ['$scope', '$http', '$routeParams', 'Event', 'Field', 'tracker', 'delay', 'moment', function($scope, $http, $routeParams, Event, Field, tracker, delay, moment) {
 
 		$scope.params = $routeParams;
 		$scope.fields = Field.findEditable();
@@ -1922,7 +1931,7 @@
 			$scope.entries = event.get($scope.fields);
 		}, true);
 	}]);
-	
+
 	app.controller('CreateTagFieldController', ['$scope', '$http', function($scope, $http) {
 
 		var input = $('#tag-value-field');
@@ -2298,7 +2307,7 @@
 		});
 		$scope.$on('reload', $scope.refresh);
 	}]);
-	
+
 	app.controller('CreateTaskDialogController', ['$scope', '$http', 'tracker', 'tasks', function($scope, $http, tracker, tasks) {
 	
 		$scope.types = [ 
@@ -2344,7 +2353,7 @@
 			tracker.event('action', 'create task');
 		};
 	}]);
-	
+
 	app.controller('FitbitSettingsController', ['$scope', function($scope) {
 
 		$scope.init = function() {
@@ -2355,7 +2364,7 @@
 
 		$scope.init();
 	}]);
-	
+
 	app.controller('FitbitHighResSettingsController', ['$scope', function($scope) {
 
 		$scope.init = function() {
@@ -2364,7 +2373,7 @@
 
 		$scope.init();
 	}]);
-	
+
 	app.controller('FoursquareSettingsController', ['$scope', function($scope) {
 
 		$scope.init = function() {
@@ -2373,8 +2382,8 @@
 
 		$scope.init();
 	}]);
-	
-	app.controller('WithingsSettingsController', ['$scope', function($scope) {
+
+	app.controller('WithingsSettingsController', ['$scope', 'Field', function($scope, Field) {
 
 		$scope.init = function() {
 			$scope.settings = $scope.$parent.$parent.settings = {
@@ -2388,7 +2397,7 @@
 
 		$scope.init();
 	}]);
-	
+
 	app.controller('DemoSettingsController', ['$scope', function($scope) {
 
 		$scope.init = function() {
@@ -2420,372 +2429,374 @@
 			});
 	}]);
 
-	/**
-	 * @constructor
-	 */
-	function Field(name, icon, type, units, readOnly, toText, toHtml) {
-		this.name = name;
-		this.icon = icon;
-		this.type = type;
-		this.units = units;
-		this.readOnly = readOnly;
-		this.toText = toText;
-		this.toHtml = toHtml;
-	}
-	
-	Field.prototype.toNumber = function(value) {
-		if (typeof value === 'number') {
-			return value;
-		}
-		if (typeof value === 'object' && value.hasOwnProperty('@value')) {
-			return value['@value'];
-		}
-		return undefined;
-	};
+	app.factory('Field', ['User', function(User) {
 
-	Field.FIELDS = [];
-	Field.FIELDS_BY_NAME = {};
-	
-	Field.encode = function(value) {
-		return $('<div />').text(value).html();
-	};
-	
-	Field.register = function(fieldOptions) {
-		console.assert(fieldOptions.name, "missing <name>");
-		var field = new Field(
-			fieldOptions.name, 
-			fieldOptions.icon || '', 
-			fieldOptions.type || 'numeric',
-			fieldOptions.units || [], 
-			fieldOptions.readOnly == true, 
-			fieldOptions.toText || function(value) { return value; }, 
-			fieldOptions.toHtml || function(value) { return value; }
-		);
-		Field.FIELDS.push(field); 
-		Field.FIELDS_BY_NAME[field.name] = field; 
-	};
+		var fields = [];
+		var fieldsByName = {};
 
-	Field.register({
-		name : 'tag',
-		icon : 'icon-tag',
-		type : 'text',
-		toHtml : function(value) {
-			return '<span class="nowrap">' +
-				'<i class="' + this.icon + '" title="Tag"></i> ' + Field.encode(value) +
-			'</span>';
+		var Field = function(name, icon, type, units, readOnly, toText, toHtml) {
+			this.name = name;
+			this.icon = icon;
+			this.type = type;
+			this.units = units;
+			this.readOnly = readOnly;
+			this.toText = toText;
+			this.toHtml = toHtml;
 		}
-	});
 
-	Field.register({
-		name : 'resource',
-		icon : 'icon-bookmark',
-		type : 'object',
-		toHtml : function(value) {
-			return '<span>' +
-		  	'<i class="' + this.icon + '" title="Resource"></i>&nbsp;' +
-		  	'<a href="' +  Field.encode(value.url) + '" rel="nofollow">' +  Field.encode(value.title) + '</a>' +
-		  '</span>';
-		}
-	});
-
-	Field.register({
-		name : 'distance',
-		icon : 'icon-resize-horizontal',
-		type : 'numeric',
-		units : [ 'mi', 'ft', 'in', 'km', 'm', 'cm', 'mm' ],
-		toText : function(value) {
-			return typeof value === 'object' ? value['@value'] + ' ' + value.unit : '';
-		},
-		toHtml : function(value) {
-			return '<span class="nowrap">' +
-		  	'<i class="' + this.icon + '" title="Distance"></i> ' + this.toText(value) +
-		  '</span>';
-		}
-	});
-
-	Field.register({
-		name : 'height',
-		icon : 'icon-resize-vertical',
-		type : 'numeric',
-		units : [ 'mi', 'ft', 'in', 'km', 'm', 'cm', 'mm' ],
-		toText : function(value) {
-			return typeof value === 'object' ? value['@value'] + ' ' + value.unit : '';
-		},
-		toHtml : function(value) {
-			return '<span class="nowrap">' +
-		  	'<i class="' + this.icon + '" title="Height"></i> ' + this.toText(value) +
-		  '</span>';
-		}
-	});
-
-	Field.register({
-		name : 'weight',
-		icon : 'icon-leaf',
-		type : 'numeric',
-		units : [ 'lb', 'oz', 'kg', 'g', 'mg', 'st' ],
-		toText : function(value) {
-			return typeof value === 'object' ? value['@value'] + ' ' + value.unit : '';
-		},
-		toHtml : function(value) {
-			return '<span class="nowrap">' +
-		  	'<i class="' + this.icon + '" title="Weight"></i> ' + this.toText(value) +
-		  '</span>';
-		}
-	});
-
-	Field.register({
-		name : 'volume',
-		icon : 'icon-tint',
-		type : 'numeric',
-		units : [ 'L', 'dL', 'cL', 'mL', 'gal', 'qt', 'pt', 'cups', 'fl_oz' ],
-		toText : function(value) {
-			return typeof value === 'object' ? value['@value'] + ' ' + value.unit : '';
-		},
-		toHtml : function(value) {
-			return '<span class="nowrap">' +
-		  	'<i class="' + this.icon + '" title="Volume"></i> ' + this.toText(value) +
-		  '</span>';
-		}
-	});
-
-	Field.register({
-		name : 'concentration',
-		icon : 'icon-tint',
-		type : 'numeric',
-		units : [ 'g/L', 'mg/L', 'ug/L', 'ng/L', 'g/dL', 'mg/dL', 'ug/dL', 'ng/dL', 'g/mL', 'mg/mL', 'ug/mL', 'ng/mL' ],
-		toText : function(value) {
-			return typeof value === 'object' ? value['@value'] + ' ' + value.unit : '';
-		},
-		toHtml : function(value) {
-			return '<span class="nowrap">' +
-		  	'<i class="' + this.icon + '" title="Volume"></i> ' + this.toText(value) +
-		  '</span>';
-		}
-	});
-
-	Field.register({
-		name : 'pressure',
-		icon : 'icon-fullscreen',
-		type : 'numeric',
-		units : [ 'Pa', 'mmHg', 'inHg', 'psi' ],
-		toText : function(value) {
-			return typeof value === 'object' ? value['@value'] + ' ' + value.unit : '';
-		},
-		toHtml : function(value) {
-			return '<span class="nowrap">' +
-		  	'<i class="' + this.icon + '" title="Pressure"></i> ' + this.toText(value) +
-		  '</span>';
-		}
-	});
-
-	Field.register({
-		name : 'location',
-		icon : 'icon-map-marker',
-		type : 'object',
-		toText : function(value) {
-			return typeof value === 'object' ? Field.encode(Math.round(value.lat * 1000) / 1000 + ', ' + Math.round(value.lon * 1000) / 1000) : '';
-		},
-		toHtml : function(value) {
-			return '<span class="nowrap">' +
-				'<i class="' + this.icon + '" title="Location"></i> ' +
-				'<a href="http://maps.google.com/maps?q=' + Field.encode(value.lat + ',' + value.lon) + '&t=p&z=5">' + this.toText(value) + '</a>' +
-			'</span>';
-		}
-	});
-
-	Field.register({
-		name : 'timestamp',
-		icon : 'icon-calendar',
-		type : 'object',
-		toHtml : function(value) {
-			return '<span class="nowrap">' +
-		  	'<i class="' + this.icon + '" title="Timestamp"></i> ' +
-				'<abbr title="' + value + '">' + moment(value).fromNow() + '</abbr>' +
-		  '</span>';
-		}
-	});
-
-	Field.register({
-		name : 'velocity',
-		icon : 'icon-road',
-		type : 'numeric',
-		units : [ 'm/s', 'mph', 'kmh', 'kn', 'Mach' ],
-		toText : function(value) {
-			return typeof value === 'object' ? value['@value'] + ' ' + value.unit : '';
-		},
-		toHtml : function(value) {
-			return '<span class="nowrap">' +
-		  	'<i class="' + this.icon + '" title="Velocity"></i> ' + this.toText(value) +
-		  '</span>';
-		}
-	});
-
-	Field.register({
-		name : 'duration',
-		icon : 'icon-time',
-		type : 'numeric',
-		toText : function(value) {
-			return formatDuration(value, false);
-		},
-		toHtml : function(value) {
-			return '<span class="nowrap">' +
-		  	'<i class="' + this.icon + '" title="Duration"></i> ' + this.toText(value) +
-		  '</span>';
-		}
-	});
-
-	Field.register({
-		name : 'frequency',
-		icon : 'icon-heart',
-		type : 'numeric',
-		units : [ 'bpm', 'Hz' ],
-		toText : function(value) {
-			return typeof value === 'object' ? value['@value'] + ' ' + value.unit : '';
-		},
-		toHtml : function(value) {
-			return '<span class="nowrap">' +
-		  	'<i class="' + this.icon + '" title="Frequency"></i> ' + this.toText(value) +
-		  '</span>';
-		}
-	});
-
-	Field.register({
-		name : 'bits',
-		icon : 'icon-hdd',
-		type : 'numeric',
-		units : [ 'bit', 'B', 'KB', 'MB', 'GB', 'TB', 'PB', 'KiB', 'MiB', 'GiB', 'TiB', 'PiB' ],
-		toText : function(value) {
-			return typeof value === 'object' ? value['@value'] + ' ' + value.unit : '';
-		},
-		toHtml : function(value) {
-			return '<span class="nowrap">' +
-		  	'<i class="' + this.icon + '" title="Bits"></i> ' + this.toText(value) +
-		  '</span>';
-		}
-	});
-
-	Field.register({
-		name : 'count',
-		icon : 'icon-th',
-		type : 'numeric',
-		toHtml : function(value) {
-			return '<span class="nowrap">' +
-		  	'<i class="' + this.icon + '" title="Count"></i> ' + value +
-		  '</span>';
-		}
-	});
-
-	Field.register({
-		name : 'energy',
-		icon : 'icon-fire',
-		type : 'numeric',
-		units : [ 'J', 'kJ', 'cal', 'kcal' ],
-		toText : function(value) {
-			return typeof value === 'object' ? value['@value'] + ' ' + value.unit : '';
-		},
-		toHtml : function(value) {
-			return '<span class="nowrap">' +
-		  	'<i class="' + this.icon + '" title="Energy"></i> ' + this.toText(value) +
-		  '</span>';
-		}
-	});
-
-	Field.register({
-		name : 'temperature',
-		icon : 'icon-fire',
-		type : 'numeric',
-		units : [ 'C', 'F', 'K' ],
-		toText : function(value) {
-			return typeof value === 'object' ? value['@value'] + ' ' + value.unit : '';
-		},
-		toHtml : function(value) {
-			return '<span class="nowrap">' +
-		  	'<i class="' + this.icon + '" title="Temperature"></i> ' + this.toText(value) +
-		  '</span>';
-		}
-	});
-
-	Field.register({
-		name : 'rating',
-		icon : 'icon-star',
-		type : 'numeric',
-		toText : function(value) {
-			var stars = Math.round((value || 0) / 20);
-			return stars + '/5';
-		},
-		toHtml : function(value) {
-			var stars = Math.round((value || 0) / 20);
-			var html = '<span class="nowrap" title="' + this.toText(value) + '">';
-			for (var i = 0; i < 5; ++i) {
-				html += '<i class="' + (stars > i ? 'icon-star' : 'icon-star-empty') + '"></i>';
+		Field.prototype.toNumber = function(value) {
+			if (typeof value === 'number') {
+				return value;
 			}
-			html += '</span>';
-			return html;
+			if (typeof value === 'object' && value.hasOwnProperty('@value')) {
+				return value['@value'];
+			}
+			return undefined;
+		};
+		
+		Field.find = function(name) {
+			return fieldsByName[name];
 		}
-	});
-
-	Field.register({
-		name : 'note',
-		icon : 'icon-comment',
-		type : 'object',
-		toHtml : function(value) {
-			return '<span>' +
-		  	'<i class="' + this.icon + '" title="Note"></i>&nbsp;' + Field.encode(value) +
-		  '</span>';
+		
+		Field.findAll = function() {
+			return fields;
 		}
-	});
 
-	Field.register({
-		name : 'author',
-		icon : 'icon-user',
-		type : 'text',
-		readOnly : true,
-		toText : function(value) {
-			return User.find(value).getName();
-		},
-		toHtml : function(value) {
-			return '<span class="nowrap">' +
-		  	'<i class="' + this.icon + '" title="User"></i> ' + this.toText(value) +
-		  '</span>';
+		Field.findEditable = function() {
+			return $.grep(fields, function(field) {
+				return !field.readOnly;
+			});
 		}
-	});
 
-	Field.register({
-		name : 'source',
-		icon : 'icon-share',
-		type : 'object',
-		readOnly : true,
-		toText : function(value) {
-			return value.title;
-		},
-		toHtml : function(value) {
-			return '<span class="nowrap">' +
-				'<i class="' + this.icon + '" title="Source"></i> <a href="' +  Field.encode(value.url) + '" rel="nofollow">' +  Field.encode(value.title) + '</a>' +
-			 '</span>';
+		Field.findByType = function(type) {
+			return $.grep(fields, function(field) {
+				return field.type === type;
+			});
 		}
-	});
-	
-	Field.find = function(name) {
-		return Field.FIELDS_BY_NAME[name];
-	}
-	
-	Field.findAll = function() {
-		return Field.FIELDS;
-	}
 
-	Field.findEditable = function() {
-		return $.grep(Field.FIELDS, function(field) {
-			return !field.readOnly;
+		function encode(value) {
+			return $('<div />').text(value).html();
+		};
+
+		function register(fieldOptions) {
+			console.assert(fieldOptions.name, "missing <name>");
+			var field = new Field(
+				fieldOptions.name, 
+				fieldOptions.icon || '', 
+				fieldOptions.type || 'numeric',
+				fieldOptions.units || [], 
+				fieldOptions.readOnly == true, 
+				fieldOptions.toText || function(value) { return value; }, 
+				fieldOptions.toHtml || function(value) { return value; }
+			);
+			fields.push(field); 
+			fieldsByName[field.name] = field; 
+		};
+
+		register({
+			name : 'tag',
+			icon : 'icon-tag',
+			type : 'text',
+			toHtml : function(value) {
+				return '<span class="nowrap">' +
+					'<i class="' + this.icon + '" title="Tag"></i> ' + encode(value) +
+				'</span>';
+			}
 		});
-	}
 
-	Field.findByType = function(type) {
-		return $.grep(Field.FIELDS, function(field) {
-			return field.type === type;
+		register({
+			name : 'resource',
+			icon : 'icon-bookmark',
+			type : 'object',
+			toHtml : function(value) {
+				return '<span>' +
+			  	'<i class="' + this.icon + '" title="Resource"></i>&nbsp;' +
+			  	'<a href="' +  encode(value.url) + '" rel="nofollow">' +  encode(value.title) + '</a>' +
+			  '</span>';
+			}
 		});
-	}
 
-	app.filter('fields', function() {
+		register({
+			name : 'distance',
+			icon : 'icon-resize-horizontal',
+			type : 'numeric',
+			units : [ 'mi', 'ft', 'in', 'km', 'm', 'cm', 'mm' ],
+			toText : function(value) {
+				return typeof value === 'object' ? value['@value'] + ' ' + value.unit : '';
+			},
+			toHtml : function(value) {
+				return '<span class="nowrap">' +
+			  	'<i class="' + this.icon + '" title="Distance"></i> ' + this.toText(value) +
+			  '</span>';
+			}
+		});
+
+		register({
+			name : 'height',
+			icon : 'icon-resize-vertical',
+			type : 'numeric',
+			units : [ 'mi', 'ft', 'in', 'km', 'm', 'cm', 'mm' ],
+			toText : function(value) {
+				return typeof value === 'object' ? value['@value'] + ' ' + value.unit : '';
+			},
+			toHtml : function(value) {
+				return '<span class="nowrap">' +
+			  	'<i class="' + this.icon + '" title="Height"></i> ' + this.toText(value) +
+			  '</span>';
+			}
+		});
+
+		register({
+			name : 'weight',
+			icon : 'icon-leaf',
+			type : 'numeric',
+			units : [ 'lb', 'oz', 'kg', 'g', 'mg', 'st' ],
+			toText : function(value) {
+				return typeof value === 'object' ? value['@value'] + ' ' + value.unit : '';
+			},
+			toHtml : function(value) {
+				return '<span class="nowrap">' +
+			  	'<i class="' + this.icon + '" title="Weight"></i> ' + this.toText(value) +
+			  '</span>';
+			}
+		});
+
+		register({
+			name : 'volume',
+			icon : 'icon-tint',
+			type : 'numeric',
+			units : [ 'L', 'dL', 'cL', 'mL', 'gal', 'qt', 'pt', 'cups', 'fl_oz' ],
+			toText : function(value) {
+				return typeof value === 'object' ? value['@value'] + ' ' + value.unit : '';
+			},
+			toHtml : function(value) {
+				return '<span class="nowrap">' +
+			  	'<i class="' + this.icon + '" title="Volume"></i> ' + this.toText(value) +
+			  '</span>';
+			}
+		});
+
+		register({
+			name : 'concentration',
+			icon : 'icon-tint',
+			type : 'numeric',
+			units : [ 'g/L', 'mg/L', 'ug/L', 'ng/L', 'g/dL', 'mg/dL', 'ug/dL', 'ng/dL', 'g/mL', 'mg/mL', 'ug/mL', 'ng/mL' ],
+			toText : function(value) {
+				return typeof value === 'object' ? value['@value'] + ' ' + value.unit : '';
+			},
+			toHtml : function(value) {
+				return '<span class="nowrap">' +
+			  	'<i class="' + this.icon + '" title="Volume"></i> ' + this.toText(value) +
+			  '</span>';
+			}
+		});
+
+		register({
+			name : 'pressure',
+			icon : 'icon-fullscreen',
+			type : 'numeric',
+			units : [ 'Pa', 'mmHg', 'inHg', 'psi' ],
+			toText : function(value) {
+				return typeof value === 'object' ? value['@value'] + ' ' + value.unit : '';
+			},
+			toHtml : function(value) {
+				return '<span class="nowrap">' +
+			  	'<i class="' + this.icon + '" title="Pressure"></i> ' + this.toText(value) +
+			  '</span>';
+			}
+		});
+
+		register({
+			name : 'location',
+			icon : 'icon-map-marker',
+			type : 'object',
+			toText : function(value) {
+				return typeof value === 'object' ? encode(Math.round(value.lat * 1000) / 1000 + ', ' + Math.round(value.lon * 1000) / 1000) : '';
+			},
+			toHtml : function(value) {
+				return '<span class="nowrap">' +
+					'<i class="' + this.icon + '" title="Location"></i> ' +
+					'<a href="http://maps.google.com/maps?q=' + encode(value.lat + ',' + value.lon) + '&t=p&z=5">' + this.toText(value) + '</a>' +
+				'</span>';
+			}
+		});
+
+		register({
+			name : 'timestamp',
+			icon : 'icon-calendar',
+			type : 'object',
+			toHtml : function(value) {
+				return '<span class="nowrap">' +
+			  	'<i class="' + this.icon + '" title="Timestamp"></i> ' +
+					'<abbr title="' + value + '">' + moment(value).fromNow() + '</abbr>' +
+			  '</span>';
+			}
+		});
+
+		register({
+			name : 'velocity',
+			icon : 'icon-road',
+			type : 'numeric',
+			units : [ 'm/s', 'mph', 'kmh', 'kn', 'Mach' ],
+			toText : function(value) {
+				return typeof value === 'object' ? value['@value'] + ' ' + value.unit : '';
+			},
+			toHtml : function(value) {
+				return '<span class="nowrap">' +
+			  	'<i class="' + this.icon + '" title="Velocity"></i> ' + this.toText(value) +
+			  '</span>';
+			}
+		});
+
+		register({
+			name : 'duration',
+			icon : 'icon-time',
+			type : 'numeric',
+			toText : function(value) {
+				return formatDuration(value, false);
+			},
+			toHtml : function(value) {
+				return '<span class="nowrap">' +
+			  	'<i class="' + this.icon + '" title="Duration"></i> ' + this.toText(value) +
+			  '</span>';
+			}
+		});
+
+		register({
+			name : 'frequency',
+			icon : 'icon-heart',
+			type : 'numeric',
+			units : [ 'bpm', 'Hz' ],
+			toText : function(value) {
+				return typeof value === 'object' ? value['@value'] + ' ' + value.unit : '';
+			},
+			toHtml : function(value) {
+				return '<span class="nowrap">' +
+			  	'<i class="' + this.icon + '" title="Frequency"></i> ' + this.toText(value) +
+			  '</span>';
+			}
+		});
+
+		register({
+			name : 'bits',
+			icon : 'icon-hdd',
+			type : 'numeric',
+			units : [ 'bit', 'B', 'KB', 'MB', 'GB', 'TB', 'PB', 'KiB', 'MiB', 'GiB', 'TiB', 'PiB' ],
+			toText : function(value) {
+				return typeof value === 'object' ? value['@value'] + ' ' + value.unit : '';
+			},
+			toHtml : function(value) {
+				return '<span class="nowrap">' +
+			  	'<i class="' + this.icon + '" title="Bits"></i> ' + this.toText(value) +
+			  '</span>';
+			}
+		});
+
+		register({
+			name : 'count',
+			icon : 'icon-th',
+			type : 'numeric',
+			toHtml : function(value) {
+				return '<span class="nowrap">' +
+			  	'<i class="' + this.icon + '" title="Count"></i> ' + value +
+			  '</span>';
+			}
+		});
+
+		register({
+			name : 'energy',
+			icon : 'icon-fire',
+			type : 'numeric',
+			units : [ 'J', 'kJ', 'cal', 'kcal' ],
+			toText : function(value) {
+				return typeof value === 'object' ? value['@value'] + ' ' + value.unit : '';
+			},
+			toHtml : function(value) {
+				return '<span class="nowrap">' +
+			  	'<i class="' + this.icon + '" title="Energy"></i> ' + this.toText(value) +
+			  '</span>';
+			}
+		});
+
+		register({
+			name : 'temperature',
+			icon : 'icon-fire',
+			type : 'numeric',
+			units : [ 'C', 'F', 'K' ],
+			toText : function(value) {
+				return typeof value === 'object' ? value['@value'] + ' ' + value.unit : '';
+			},
+			toHtml : function(value) {
+				return '<span class="nowrap">' +
+			  	'<i class="' + this.icon + '" title="Temperature"></i> ' + this.toText(value) +
+			  '</span>';
+			}
+		});
+
+		register({
+			name : 'rating',
+			icon : 'icon-star',
+			type : 'numeric',
+			toText : function(value) {
+				var stars = Math.round((value || 0) / 20);
+				return stars + '/5';
+			},
+			toHtml : function(value) {
+				var stars = Math.round((value || 0) / 20);
+				var html = '<span class="nowrap" title="' + this.toText(value) + '">';
+				for (var i = 0; i < 5; ++i) {
+					html += '<i class="' + (stars > i ? 'icon-star' : 'icon-star-empty') + '"></i>';
+				}
+				html += '</span>';
+				return html;
+			}
+		});
+
+		register({
+			name : 'note',
+			icon : 'icon-comment',
+			type : 'object',
+			toHtml : function(value) {
+				return '<span>' +
+			  	'<i class="' + this.icon + '" title="Note"></i>&nbsp;' + encode(value) +
+			  '</span>';
+			}
+		});
+
+		register({
+			name : 'author',
+			icon : 'icon-user',
+			type : 'text',
+			readOnly : true,
+			toText : function(value) {
+				return User.find(value).getName();
+			},
+			toHtml : function(value) {
+				return '<span class="nowrap">' +
+			  	'<i class="' + this.icon + '" title="User"></i> ' + this.toText(value) +
+			  '</span>';
+			}
+		});
+
+		register({
+			name : 'source',
+			icon : 'icon-share',
+			type : 'object',
+			readOnly : true,
+			toText : function(value) {
+				return value.title;
+			},
+			toHtml : function(value) {
+				return '<span class="nowrap">' +
+					'<i class="' + this.icon + '" title="Source"></i> <a href="' +  encode(value.url) + '" rel="nofollow">' +  encode(value.title) + '</a>' +
+				 '</span>';
+			}
+		});
+
+		return Field;
+	}]);
+
+	app.filter('fields', ['Field', function(Field) {
 		return function(event) {
 			var html = '';
 			var count = 0;
@@ -2803,40 +2814,40 @@
 			});
 			return html;
 		}
-	});
-	
-	app.filter('field', function() {
+	}]);
+
+	app.filter('field', ['Field', function(Field) {
 		return function(value, fieldName) {
 			var field = Field.find(fieldName);
 			console.assert(field, "Don't know how to format field: " + fieldName)
 			return field.toHtml(value);
 		}
-	});
-	
+	}]);
+
 	app.filter('age', [ 'moment', function(moment) {
 		return function(date) {
 			return moment(date).fromNow();
 		}
 	}]);
-	
+
 	app.filter('duration', function() {
 		return function(millis) {
 			return formatDuration(millis, true);
 		}
 	});
-	
-	app.filter('stars', function() {
+
+	app.filter('stars', ['Field', function(Field) {
 		var field = Field.find('rating');
 		return function(rating) {
 			return field.toHtml(rating);
 		}
-	});
-	
-	app.filter('username', function() {
+	}]);
+
+	app.filter('username', ['User', function(User) {
 		return function(identity) {
 			return User.find(identity).getName();
 		}
-	});
+	}]);
 	
 	app.config(['$httpProvider', function($httpProvider) {
 		var interceptor = ['$rootScope', '$q', function(scope, $q) {
