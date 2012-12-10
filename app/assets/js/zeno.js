@@ -155,7 +155,7 @@
 		this.level = 'hide';
 		this.undo = '';
 	};
-	
+
 	User.CACHE = {};
 	
 	/**
@@ -639,47 +639,50 @@
 		};
 	}]);
 
-	function Bucket(data) {
-		$.extend(this, data);
-	}
+	app.factory('Bucket', function() {
 
-	Bucket.prototype.isPublished = function() {
-		return $.grep(this.permissions, function(permission) {
-			return permission.principal === '*';
-		}).length > 0;
-	};
-
-	Bucket.prototype.publish = function() {
-		if (!this.isPublished()) {
-			this.permissions.push({ 'principal' : '*', 'permission' : 'USE' });
+		var Bucket = function(data) {
+			$.extend(this, data);
 		}
-	};
 
-	Bucket.prototype.unpublish = function() {
-		this.permissions = $.grep(this.permissions, function(permission) {
-			return permission.principal !== '*';
-		});
-	};
+		Bucket.prototype.isPublished = function() {
+			return $.grep(this.permissions, function(permission) {
+				return permission.principal === '*';
+			}).length > 0;
+		};
 
-	Bucket.prototype.getOwner = function() {
-		for (var i = 0, max = this.permissions.length; i < max; ++i) {
-			if (this.permissions[i].permission === 'ALL') {
-				return this.permissions[i].principal;
+		Bucket.prototype.publish = function() {
+			if (!this.isPublished()) {
+				this.permissions.push({ 'principal' : '*', 'permission' : 'USE' });
 			}
-		}
-	};
+		};
 
-	Bucket.prototype.canEdit = function(principal) {
-		for (var i = 0; i < this.permissions.length; ++i) {
-			if (this.permissions[i].principal === principal) {
-				return this.permissions[i].permission === 'ALL';
+		Bucket.prototype.unpublish = function() {
+			this.permissions = $.grep(this.permissions, function(permission) {
+				return permission.principal !== '*';
+			});
+		};
+
+		Bucket.prototype.getOwner = function() {
+			for (var i = 0, max = this.permissions.length; i < max; ++i) {
+				if (this.permissions[i].permission === 'ALL') {
+					return this.permissions[i].principal;
+				}
 			}
-		}
-	};
+		};
 
-	window.Bucket = Bucket;
+		Bucket.prototype.canEdit = function(principal) {
+			for (var i = 0; i < this.permissions.length; ++i) {
+				if (this.permissions[i].principal === principal) {
+					return this.permissions[i].permission === 'ALL';
+				}
+			}
+		};
 
-	app.controller('DashboardController', ['$scope', '$http', '$route', '$routeParams', '$location', 'delay', function($scope, $http, $route, $routeParams, $location, delay) {
+		return Bucket;
+	});
+
+	app.controller('DashboardController', ['$scope', '$http', '$route', '$routeParams', '$location', 'Bucket', 'delay', function($scope, $http, $route, $routeParams, $location, Bucket, delay) {
 
 		function updateEditable() {
 				$scope.editable = $scope.user && $scope.bucket.canEdit($scope.user['@id']);
@@ -1257,43 +1260,45 @@
 			}
 		});
 	}]);
-	
-	/**
-	 * @constructor
-	 */
-	function Interval(name, pattern) {
-		this.name = name;
-		this.pattern = pattern;
-	}
-	
-	Interval.prototype.zoomIn = function() {
-		var i, max;
-		for (i = 0, max = Interval.VALUES.length; i < max; ++i) {
-			if (Interval.VALUES[i].pattern > this.pattern) {
-				return Interval.VALUES[i];
-			}
+
+	app.factory('Interval', function() {
+
+		var Interval = function(name, pattern) {
+			this.name = name;
+			this.pattern = pattern;
 		}
-	};
-	
-	Interval.VALUES = [
-		new Interval('year', 0),
-		new Interval('month', 10), 
-		new Interval('day', 13), 
-		new Interval('hour', 16), 
-		new Interval('minute', 18),
-		new Interval('second', 21)
-	];
-	
-	Interval.match = function(value) {
-		var i, max;
-		for (i = 0, max = Interval.VALUES.length; i < max; ++i) {
-			if (Interval.VALUES[i].pattern === value.length) {
-				return Interval.VALUES[i];
+
+		Interval.prototype.zoomIn = function() {
+			var i, max;
+			for (i = 0, max = Interval.VALUES.length; i < max; ++i) {
+				if (Interval.VALUES[i].pattern > this.pattern) {
+					return Interval.VALUES[i];
+				}
 			}
-		}
-	};
+		};
+
+		Interval.VALUES = [
+			new Interval('year', 0),
+			new Interval('month', 10), 
+			new Interval('day', 13), 
+			new Interval('hour', 16), 
+			new Interval('minute', 18),
+			new Interval('second', 21)
+		];
+
+		Interval.match = function(value) {
+			var i, max;
+			for (i = 0, max = Interval.VALUES.length; i < max; ++i) {
+				if (Interval.VALUES[i].pattern === value.length) {
+					return Interval.VALUES[i];
+				}
+			}
+		};
+
+		return Interval;
+	});
 	
-	app.controller('TimelineWidgetController', ['$scope', 'timezoneOffset', function($scope, timezoneOffset) {
+	app.controller('TimelineWidgetController', ['$scope', 'Interval', 'timezoneOffset', function($scope, Interval, timezoneOffset) {
 
 		$scope.keyField = 'timestamp';
 
@@ -1783,35 +1788,6 @@
 		};
 	}]);
 
-	function Event(data) {
-		$.extend(true, this, data);
-	}
-
-	Event.prototype.get = function(fields) {
-		var self = this;
-		var entries = [];
-		$.each(fields, function(i, field) {
-			var value = self[field.name];
-			if (value !== undefined) {
-				$.each($.isArray(value) ? value : [ value ], function(i, value) {
-					entries.push({ field : field, value : value });
-				});
-			}
-		});
-		return entries;
-	};
-
-	Event.prototype.add = function(field, value) {
-		var values = this[field.name];
-		if (values === undefined) {
-			values = this[field.name] = [];
-		} else if (!$.isArray(values)) {
-			values = this[field.name] = [ values ];
-			this[field.name] = values;
-		}
-		values.push(value);
-	};
-
 	app.controller('PermissionsDialogController', ['$scope', '$http', function($scope, $http) {
 
 		$scope.init = function() {
@@ -1825,7 +1801,41 @@
 		};
 	}]);
 
-	app.controller('EventDialogController', ['$scope', '$http', '$routeParams', 'delay', 'moment', function($scope, $http, $routeParams, delay, moment) {
+	app.factory('Event', function() {
+
+		var Event = function(data) {
+			$.extend(true, this, data);
+		}
+
+		Event.prototype.get = function(fields) {
+			var self = this;
+			var entries = [];
+			$.each(fields, function(i, field) {
+				var value = self[field.name];
+				if (value !== undefined) {
+					$.each($.isArray(value) ? value : [ value ], function(i, value) {
+						entries.push({ field : field, value : value });
+					});
+				}
+			});
+			return entries;
+		};
+
+		Event.prototype.add = function(field, value) {
+			var values = this[field.name];
+			if (values === undefined) {
+				values = this[field.name] = [];
+			} else if (!$.isArray(values)) {
+				values = this[field.name] = [ values ];
+				this[field.name] = values;
+			}
+			values.push(value);
+		};
+
+		return Event;
+	});
+
+	app.controller('EventDialogController', ['$scope', '$http', '$routeParams', 'Event', 'delay', 'moment', function($scope, $http, $routeParams, Event, delay, moment) {
 
 		$scope.params = $routeParams;
 		$scope.fields = Field.findEditable();
