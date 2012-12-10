@@ -545,7 +545,6 @@
 			$scope.message = '';
 			console.log();
 			tracker.event('dialog', 'create bucket');
-			// $('#bucket-label-field').select();
 		};
 		$scope.create = function() {
 			$scope.alert.clear();
@@ -567,31 +566,24 @@
 			tracker.event('action', 'create bucket');
 		};
 	}]);
-	
-	/**
-	 * @constructor
-	 */
-	function WidgetParams() {
-		this.params = [];
-	}
-	
-	WidgetParams.prototype.add = function(params) {
-		this.params.push();
-	}; 
 
-	function randomID() {
-		var len = 5;
-		var chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-		var id = '';
-		var pos;
-		for (var i = 0; i < len; ++i) {
-			pos = Math.floor(Math.random() * chars.length);
-			id += chars.substring(pos, pos + 1);
-		}
-		return id;
-	}
+	app.factory('random', function() {
+		return {
+			id : function id() {
+				var len = 5;
+				var chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+				var id = '';
+				var pos;
+				for (var i = 0; i < len; ++i) {
+					pos = Math.floor(Math.random() * chars.length);
+					id += chars.substring(pos, pos + 1);
+				}
+				return id;
+			}
+		};
+	});
 
-	app.controller('AddWidgetController', ['$scope', '$http', '$route', '$routeParams', '$location', '$timeout', function($scope, $http, $route, $routeParams, $location, $timeout) {
+	app.controller('AddWidgetController', ['$scope', '$http', '$route', '$routeParams', '$location', '$timeout', 'random', function($scope, $http, $route, $routeParams, $location, $timeout, random) {
 
 		$scope.dialog = $("#add-widget-dialog");
 		$scope.templates = [
@@ -610,7 +602,7 @@
 			$scope.template = null;
 		};
 		$scope.add = function() {
-			var settings = { id : randomID(), placement : $scope.placement };
+			var settings = { id : random.id(), placement : $scope.placement };
 			$.extend(settings, $scope.template);
 			delete settings.description;
 			$scope.addWidget(settings);
