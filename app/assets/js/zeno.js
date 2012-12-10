@@ -137,6 +137,7 @@
 		};
 		$scope.openDialog = function(dialog) {
 			$scope.dialog = dialog;
+			$scope.$broadcast('dialog:' + dialog);
 		};
 		$scope.closeDialog = function() {
 			$scope.dialog = null;
@@ -304,13 +305,12 @@
 	
 	app.controller('SignInDialogController', ['$scope', '$http', '$location', '$route', 'User', 'tracker', function($scope, $http, $location, $route, User, tracker) {
 
-		$scope.dialog = $('#sign-in-dialog');
-
 		$scope.init = function() {
 			$scope.username = '';
 			$scope.password = '';
 			$scope.remember = true;
 			$scope.message = '';
+			tracker.event('dialog', 'sign in');
 		};
 		$scope.data = function() {
 			return {
@@ -323,7 +323,7 @@
 			$http.post('/signin', $scope.data())
 				.success(function(response) {
 					$scope.$parent.user = new User(response);
-					$scope.dialog.modal('hide');
+					$scope.closeDialog();
 					if ($location.url() === '/') {
 						$location.url('/users/' + $scope.username);
 					} else {
@@ -340,25 +340,18 @@
 			tracker.event('action', 'sign in');
 		}
 
-		$scope.init();
 		$scope.$on('event:unauthorized', function() {
-			$scope.dialog.modal('show');
-		});
-		$scope.dialog.on('shown', function () {
-			$scope.$apply($scope.init);
-			$('#username').select();
-			tracker.event('dialog', 'sign in');
+			$scope.openDialog('sign-in-dialog');
 		});
 	}]);
 
-	app.controller('PasswordResetDialogController', ['$scope', '$http', 'tracker', function($scope, $http, tracker) {
-
-		$scope.dialog = $('#password-reset-request-dialog');
+	app.controller('LostPasswordDialogController', ['$scope', '$http', 'tracker', function($scope, $http, tracker) {
 
 		$scope.init = function() {
 			$scope.username = '';
 			$scope.email = '';
 			$scope.message = '';
+			tracker.event('dialog', 'password reset');
 		};
 		$scope.data = function() {
 			return {
@@ -366,12 +359,12 @@
 				email : $scope.email
 			};
 		};
-		$scope.requestReset = function() {
+		$scope.submit = function() {
 			$scope.alert.clear();
 			$http.post('/reset', $scope.data())
 				.success(function(response) {
 					$scope.alert.show('A password reset request has been sent by email. Check your inbox.');
-					$scope.dialog.modal('hide');
+					$scope.closeDialog();
 					$scope.home();
 				})
 				.error(function(response, code) {
@@ -383,18 +376,9 @@
 				});
 			tracker.event('action', 'password reset');
 		};
-
-		$scope.init();
-		$scope.dialog.on('shown', function () {
-			$scope.$apply($scope.init);
-			$('#reset-username').select();
-			tracker.event('dialog', 'password reset');
-		});
 	}]);
 
 	app.controller('SignUpDialogController', ['$scope', '$http', '$location', 'User', 'tracker', function($scope, $http, $location, User, tracker) {
-
-		$scope.dialog = $('#sign-up-dialog');
 
 		$scope.init = function() {
 			$scope.username = '';
@@ -402,6 +386,7 @@
 			$scope.passwordConfirmed = '';
 			$scope.email = '';
 			$scope.message = '';
+			tracker.event('dialog', 'sign up');
 		};
 		$scope.data = function() {
 			return {
@@ -419,7 +404,7 @@
 			$http.post('/users/', $scope.data())
 				.success(function(response, code) {
 					$scope.$parent.user = new User(response);
-					$scope.dialog.modal('hide');
+					$scope.closeDialog();
 					$location.url('/users/' + $scope.$parent.user.name);
 				})
 				.error(function(response, code) {
@@ -431,15 +416,8 @@
 				});
 			tracker.event('action', 'sign up');
 		};
-
-		$scope.init();
-		$scope.dialog.on('shown', function () {
-			$scope.$apply($scope.init);
-			$('#sign-up-username').select();
-			tracker.event('dialog', 'sign up');
-		});
 	}]);
-	
+
 	app.controller('UserVerificationController', ['$scope', '$http', '$location', '$routeParams', function($scope, $http, $location, $routeParams) {
 		$http.post('/users/' + $routeParams.userId, { 'key' : $location.search()['key'], 'verified' : true })
 			.success(function(response) {
@@ -562,11 +540,12 @@
 
 	app.controller('CreateBucketDialogController', ['$scope', '$http', '$location', 'tracker', function($scope, $http, $location, tracker) {
 
-		$scope.dialog = $('#create-bucket-dialog');
-
 		$scope.init = function() {
 			$scope.label = 'My Data';
 			$scope.message = '';
+			console.log();
+			tracker.event('dialog', 'create bucket');
+			// $('#bucket-label-field').select();
 		};
 		$scope.create = function() {
 			$scope.alert.clear();
@@ -575,7 +554,7 @@
 					var location = headers('Location');
 					console.assert(status === 201, status);
 					console.assert(location, 'missing location header');
-					$scope.dialog.modal('hide');
+					$scope.closeDialog();
 					$location.url(location);
 				})
 				.error(function(response, status) {
@@ -587,13 +566,6 @@
 				});
 			tracker.event('action', 'create bucket');
 		};
-
-		$scope.init();
-		$scope.dialog.on('shown', function () {
-			$scope.$apply($scope.init);
-			$('#bucket-label-field').select();
-			tracker.event('dialog', 'create bucket');
-		});
 	}]);
 	
 	/**
@@ -2890,7 +2862,7 @@
 			}
 		};
 	}]);
-	
+
 	app.directive('uiCopyrightYear', function() {
 		return {
 			restrict: 'A',
@@ -2902,6 +2874,19 @@
 						start : start + '&ndash;' + year;
 					element.html(text);
 				};
+			}
+		};
+	});
+
+	app.directive('uiFocusOn', function() {
+		return {
+			restrict: 'A',
+			link: function(scope, element, attrs) {
+				scope.$on(attrs.uiFocusOn, function() {
+					setTimeout(function() {
+						element.select();
+					}, 0);
+				});
 			}
 		};
 	});

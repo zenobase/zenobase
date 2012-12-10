@@ -15,7 +15,7 @@
 				<span id="user-title" class="page-title-text">{{userId}}</span>
 				<a id="refresh-buckets-link" class="page-title-decoration" data-ng-click="reload()" title="Refresh"><i class="icon-refresh"></i></a>
 				<a id="edit-user-link" class="page-title-decoration" data-ng-click="broadcast('edit:user')" title="Edit..." data-ng-show="editable()"><i class="icon-pencil"></i></a>
-				<a id="add-bucket-action" class="page-title-decoration" data-toggle="modal" href="#create-bucket-dialog" title="Add Bucket..." data-ng-show="addable()"><i class="icon-plus"></i></a>
+				<a id="add-bucket-action" class="page-title-decoration" data-ng-click="openDialog('create-bucket-dialog')" title="Add Bucket..." data-ng-show="addable()"><i class="icon-plus"></i></a>
 			</p>
 		</div>
 	
@@ -45,7 +45,29 @@
 				<button id="close-account-button" data-ng-click="close()" class="btn btn-danger pull-right"><i class="icon-trash icon-white"></i> Close Account</button>
 			</p>
 		</div>
-	
+
+		<div id="create-bucket-dialog" data-ui-modal="dialog == 'create-bucket-dialog'" data-ui-modal-open="init()" data-ui-modal-close="closeDialog()" data-ng-controller="CreateBucketDialogController">
+			<form name="createBucketForm" data-ng-submit="create()" class="modal-form">
+				<div class="modal-header">
+					<a class="close" data-dismiss="modal">&times;</a>
+					<h4>Create Bucket</h4>
+				</div>
+				<div class="modal-body">
+					<div id="create-bucket-message" class="alert alert-error" data-ng-show="message">
+						{{message}}
+					</div>
+					<div class="control-group" data-ng-class="createBucketForm.label.$valid && 'success' || 'error'">
+						<label for="template">Label</label>
+						<input id="create-bucket-label" name="label" type="text" class="xlarge" required data-ui-focus-on="dialog:create-bucket-dialog" data-ng-minlength="1" data-ng-maxlength="20" data-ng-pattern="/^[a-zA-Z0-9-_ ]+$/" data-ng-model="label"/>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button id="create-bucket-button" type="submit" class="btn btn-primary" data-ng-disabled="!createBucketForm.$valid">Create</button>
+					<button type="reset" class="btn" data-dismiss="modal">Cancel</button>
+				</div>
+			</form>
+		</div>
+
 		<div class="row-fluid">
 
 			<div class="span6" data-ng-controller="BucketListController">
@@ -83,27 +105,6 @@
 					<div class="btn-group pull-right" data-ng-show="buckets">
 						<button class="btn disabled zeno-paging"><b>{{offset + 1}}</b> &ndash; <b>{{offset + buckets.length}}</b> of <b>{{total}}</b></button>
 					</div>
-				</div>
-				<div id="create-bucket-dialog" class="modal hide" data-ng-controller="CreateBucketDialogController">
-					<form name="createBucketForm" data-ng-submit="create()" class="modal-form">
-						<div class="modal-header">
-							<a class="close" data-dismiss="modal">&times;</a>
-							<h4>Create Bucket</h4>
-						</div>
-						<div class="modal-body">
-							<div id="create-bucket-message" class="alert alert-error" data-ng-show="message">
-								{{message}}
-							</div>
-							<div class="control-group" data-ng-class="createBucketForm.label.$valid && 'success' || 'error'">
-								<label for="template">Label</label>
-								<input id="create-bucket-label" name="label" type="text" class="xlarge" required data-ng-minlength="1" data-ng-maxlength="20" data-ng-pattern="/^[a-zA-Z0-9-_ ]+$/" data-ng-model="label"/>
-							</div>
-						</div>
-						<div class="modal-footer">
-							<button id="create-bucket-button" type="submit" class="btn btn-primary" data-ng-disabled="!createBucketForm.$valid">Create</button>
-							<button type="reset" class="btn" data-dismiss="modal">Cancel</button>
-						</div>
-					</form>
 				</div>
 			</div>
 

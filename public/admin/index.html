@@ -22,7 +22,7 @@
 					<i class="icon-user"></i> <a data-ng-href="#/users/{{user.getName()}}">{{user.getName()}}</a> | <a id="sign-out-link" data-ng-click="signOut()">Sign out</a>
 				</p>
 				<p data-ng-hide="user">
-					<a id="sign-in-link" href="#sign-in-dialog" data-toggle="modal">Sign in</a>
+					<a id="sign-in-link" data-ng-click="openDialog('sign-in-dialog')">Sign in</a>
 				</p>
 			</div>
 		</header>
