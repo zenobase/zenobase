@@ -13,13 +13,21 @@
 
 	var app = angular.module('ZenoModule', ['ngSanitize']);
 
-	app.service('delay', ['$timeout', function($timeout) {
-		this.soon = function(callback) {
+	app.factory('delay', ['$timeout', function($timeout) {
+		return function(callback) {
 			$timeout(callback, 1000);  // ms after which we assume changes will be visible
 		};
 	}]);
 
-	var cacheBuster = function() { // TODO: should inject this?
+	app.factory('moment', function() {
+		console.log('fn', moment.fn);
+		return moment;
+	});
+
+	app.constant('timezoneOffset', moment().format('ZZ'));
+
+	// TODO should inject this, but can't inject into config...
+	var cacheBuster = function() {
 		var version = function() {
 			var meta = document.getElementsByTagName('meta');
 			for (var i = 0; i < meta.length; ++i) {
@@ -35,6 +43,30 @@
 			}
 		}
 	}();
+
+	// TODO replace with moment.duration(millis).countdown(),
+	// see https://github.com/timrwood/moment/issues/463
+	function formatDuration(millis, round) {
+		var d = moment.duration(millis);
+		console.log('d', d);
+		var args = [];
+		if (d.days()) {
+			args.push(d.days() + 'd'); 
+		}
+		if (d.hours()) {
+			args.push(d.hours() + 'h'); 
+		}
+		if (d.minutes()) {
+			args.push(d.minutes() + 'm'); 
+		}
+		if (d.seconds()) {
+			args.push(d.seconds() + 's'); 
+		}
+		if (round && args.length > 1) {
+			return args[0];
+		}
+		return args.join(' ');
+	}
 
 	app.config(['$routeProvider', function($routeProvider) {
 		$routeProvider.when('/', { templateUrl: cacheBuster.rewrite('/partials/home.html') })
@@ -61,7 +93,7 @@
 			$scope.alert.clear();
 			$http.post('/queue/' , { 'undo' : commandId })
 				.success(function(response, code) {
-					delay.soon($route.reload);
+					delay($route.reload);
 				})
 				.error(function(response) {
 					$scope.alert.show('Couldn\'t undo.');
@@ -762,7 +794,7 @@
 		$scope.removeEvent = function(eventId) {
 			$scope.alert.clear();
 			$http({ method : 'DELETE', url : '/buckets/' + $scope.bucketId + '/' + eventId }).success(function(response, status, headers) {
-				delay.soon($scope.refresh);
+				delay($scope.refresh);
 				$scope.alert.show('Deleted an event.', 'alert-success', response.undo);
 			});
 			_gaq.push([ '_trackEvent', 'action', 'delete event' ]);
@@ -983,7 +1015,7 @@
 		};
 	}]);
 	
-	app.controller('GanttWidgetController', ['$scope', function($scope) {
+	app.controller('GanttWidgetController', ['$scope', 'timezoneOffset', function($scope, timezoneOffset) {
 	
 		$scope.init = function() {
 			$scope.terms = null;
@@ -994,7 +1026,7 @@
 				type : 'gantt',
 				termField : $scope.settings.termField, 
 				timeField : $scope.settings.timeField,
-				timezone : new Date().getTimezone(),
+				timezone : timezoneOffset,
 				order : $scope.settings.order,
 				limit : $scope.settings.limit
 			};
@@ -1263,7 +1295,7 @@
 		}
 	};
 	
-	app.controller('TimelineWidgetController', ['$scope', function($scope) {
+	app.controller('TimelineWidgetController', ['$scope', 'timezoneOffset', function($scope, timezoneOffset) {
 
 		$scope.keyField = 'timestamp';
 
@@ -1285,7 +1317,7 @@
 				unit : $scope.settings.unit || '',
 				interval : $scope.interval.name,
 				range : $scope.range,
-				timezone : new Date().getTimezone()
+				timezone : timezoneOffset
 			};
 		};
 		$scope.refresh = function(options, settings) {
@@ -1465,7 +1497,7 @@
 		];
 	}]);
 	
-	app.controller('PlotWidgetController', ['$scope', function($scope) {
+	app.controller('PlotWidgetController', ['$scope', 'timezoneOffset', function($scope, timezoneOffset) {
 	
 		$scope.keyField = 'timestamp';
 
@@ -1480,7 +1512,7 @@
 				valueField : $scope.settings.valueField || $scope.keyField,
 				unit : $scope.settings.unit || '',
 				interval : $scope.settings.interval || 'day',
-				timezone : new Date().getTimezone()
+				timezone : timezoneOffset
 			};
 		};
 		$scope.refresh = function(options, settings) {
@@ -1795,7 +1827,7 @@
 		};
 	}]);
 
-	app.controller('EventDialogController', ['$scope', '$http', '$routeParams', 'delay', function($scope, $http, $routeParams, delay) {
+	app.controller('EventDialogController', ['$scope', '$http', '$routeParams', 'delay', 'moment', function($scope, $http, $routeParams, delay, moment) {
 
 		$scope.params = $routeParams;
 		$scope.fields = Field.findEditable();
@@ -1814,14 +1846,14 @@
 		};
 		$scope.save = function() {
 			if (!$scope.event['timestamp']) {
-				$scope.event.add(Field.find('timestamp'), new Date().toTimezoneISOString());
+				$scope.event.add(Field.find('timestamp'), moment().format('YYYY-MM-DDTHH:mm:ss.000ZZ'));
 			}
 			$scope.alert.clear();
 			if ($scope.isNew) {
 				$http.post('/buckets/' + $scope.params.bucketId + '/', $scope.event)
 				.success(function(response) {
 					$scope.editEvent(null);
-					delay.soon($scope.refresh);
+					delay($scope.refresh);
 				})
 				.error(function(response) {
 					$scope.message = response.message || 'Couldn\'t create this event.';
@@ -1831,7 +1863,7 @@
 				.success(function(response) {
 					$scope.editEvent(null);
 					$scope.alert.show('Updated an event.', 'alert-success', response.undo);
-					delay.soon($scope.refresh);
+					delay($scope.refresh);
 				})
 				.error(function(response) {
 					$scope.message = response.message || 'Couldn\'t update this event.';
@@ -1975,39 +2007,40 @@
 	}]);
 	
 
-	app.controller('CreateTimestampFieldController', ['$scope', function($scope) {
+	app.controller('CreateTimestampFieldController', ['$scope', 'timezoneOffset', 'moment', function($scope, timezoneOffset, moment) {
 
-		$scope.timezones = [
+		$scope.timezoneOffsets = [
 			'-1200', '-1100', '-1000', '-0930', '-0900', '-0800', '-0700', '-0600','-0500', '-0430', '-0400', '-0300', '-0200', '-0100',
 			'+0000', '+0100', '+0200', '+0300', '+0400', '+0430', '+0500', '+0530', '+0545', '+0600', '+0630', '+0700', '+0800', '+0845', '+0900', '+0930', '+1000', '+1100', '+1130', '+1200', '+1245', '+1300', '+1400'
 		];
 
 		function getValue() {
-			var day = (typeof $scope.date === 'object') ? toLocalDate($scope.date).toDateISOString() : $scope.date;
-			return day + 'T' + $scope.time + '.000' + $scope.timezone;
+			var day = (typeof $scope.date === 'object') ? moment(local($scope.date)).format('YYYY-MM-DD') : $scope.date;
+			return day + 'T' + $scope.time + '.000' + $scope.timezoneOffset;
 		}
-		function toLocalDate(date) {
+		function local(date) {
 			return new Date(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate());
 		}
-		function toUTCDate(date) {
+		function utc(date) {
 			return new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
 		}
-		$scope.formatTimezone = function(value) {
+
+		$scope.formatTimezoneOffset = function(value) {
 			return value.substring(0, 3) + ':' + value.substring(3);
 		};
 		$scope.init = function() {
 			var date = new Date();
 			date.setSeconds(0);
-			$scope.date = toUTCDate(date);
-			$scope.time = date.toTimeISOString();
-			$scope.timezone = date.getTimezone();
+			$scope.date = utc(date);
+			$scope.time = moment().format('HH:mm:ss');
+			$scope.timezoneOffset = timezoneOffset;
 		};
 		$scope.addField = function() {
 			$scope.event.add($scope.field, getValue());
 			$scope.reset();
 		};
 		$scope.valid = function() {
-			return Date.parse(getValue());
+			return moment(getValue()).isValid();
 		};
 
 		$scope.init();
@@ -2162,7 +2195,7 @@
 			$http.post('/buckets/' + $scope.bucketId + '/', $.isArray($scope.events) ? { 'events' : $scope.events } : $scope.events)
 				.success(function(response) {
 					$scope.alert.show('Imported events.', 'alert-success', response.undo);
-					delay.soon($scope.refresh);
+					delay($scope.refresh);
 					$scope.closeDialog();
 				})
 				.error(function(response) {
@@ -2182,7 +2215,7 @@
 						$scope.alert.show('Couldn\'t refresh task.', 'alert-error');
 					}
 					if (callback) {
-						delay.soon(function() {
+						delay(function() {
 							callback(response);
 						});
 					}
@@ -2223,7 +2256,7 @@
 			$http({ method : 'DELETE', url : '/tasks/' + taskId })
 				.success(function(response) {
 					$scope.alert.show('Deleted a task.', 'alert-success', response.undo);
-					delay.soon($scope.refresh);
+					delay($scope.refresh);
 				})
 				.error(function(response) {
 					if (status < 500) {
@@ -2544,7 +2577,7 @@
 		toHtml : function(value) {
 			return '<span class="nowrap">' +
 		  	'<i class="' + this.icon + '" title="Timestamp"></i> ' +
-				'<abbr title="' + value + '">' + humane.date(new Date(Date.parse(value))) + '</abbr>' +
+				'<abbr title="' + value + '">' + moment(value).fromNow() + '</abbr>' +
 		  '</span>';
 		}
 	});
@@ -2569,7 +2602,7 @@
 		icon : 'icon-time',
 		type : 'numeric',
 		toText : function(value) {
-			return humane.duration(value, false);
+			return formatDuration(value, false);
 		},
 		toHtml : function(value) {
 			return '<span class="nowrap">' +
@@ -2757,15 +2790,15 @@
 		}
 	});
 	
-	app.filter('age', function() {
+	app.filter('age', [ 'moment', function(moment) {
 		return function(date) {
-			return humane.date(new Date(Date.parse(date)));
+			return moment(date).fromNow();
 		}
-	});
+	}]);
 	
 	app.filter('duration', function() {
 		return function(millis) {
-			return humane.duration(millis, true);
+			return formatDuration(millis, true);
 		}
 	});
 	

@@ -110,7 +110,7 @@ public class BrowserTest {
 				$("#timestamp-time-field").sendKeys("08");
 				$("#timestamp-time-field").sendKeys("\t");
 				$("#timestamp-time-field").sendKeys("30");
-				new Select($("#timestamp-timezone-select")).selectByVisibleText("-07:00");
+				new Select($("#timestamp-timezone-offset-select")).selectByVisibleText("-07:00");
 				$("#add-timestamp-button").click();
 				assertThat($("#save-event-button")).isEnabled();
 

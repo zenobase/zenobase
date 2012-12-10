@@ -277,7 +277,7 @@
 			<div class="control-group">
 				<input id="timestamp-date-field" class="input-small" type="text" data-ui-datepicker data-ng-model="date"/>
 				<input id="timestamp-time-field" class="input-small" type="text" data-ui-timepicker data-ng-model="time"/>
-				<select id="timestamp-timezone-select" class="input-small" data-ng-model="timezone" data-ng-options="formatTimezone(timezone) for timezone in timezones"></select>
+				<select id="timestamp-timezone-offset-select" class="input-small" data-ng-model="timezoneOffset" data-ng-options="formatTimezoneOffset(timezoneOffset) for timezoneOffset in timezoneOffsets"></select>
 			</div>
 			<div class="control-group">
 				<button id="add-timestamp-button" class="btn" data-ng-click="addField()" data-ng-disabled="!valid()">Add</button>
