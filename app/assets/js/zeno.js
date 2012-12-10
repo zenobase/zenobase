@@ -20,7 +20,6 @@
 	}]);
 
 	app.factory('moment', function() {
-		console.log('fn', moment.fn);
 		return moment;
 	});
 
@@ -48,7 +47,6 @@
 	// see https://github.com/timrwood/moment/issues/463
 	function formatDuration(millis, round) {
 		var d = moment.duration(millis);
-		console.log('d', d);
 		var args = [];
 		if (d.days()) {
 			args.push(d.days() + 'd'); 
