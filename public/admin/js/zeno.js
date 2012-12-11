@@ -58,7 +58,7 @@
 		$scope.refresh({});
 	}]);
 	
-	app.controller('admin.BucketListController', ['$scope', '$http', function($scope, $http) {
+	app.controller('admin.BucketListController', ['$scope', '$http', 'Bucket', function($scope, $http, Bucket) {
 	
 		$scope.offset = 0;
 		$scope.limit = 10;
