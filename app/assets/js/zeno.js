@@ -543,7 +543,6 @@
 		$scope.init = function() {
 			$scope.label = 'My Data';
 			$scope.message = '';
-			console.log();
 			tracker.event('dialog', 'create bucket');
 		};
 		$scope.create = function() {
@@ -2615,7 +2614,7 @@
 			icon : 'icon-time',
 			type : 'numeric',
 			toText : function(value) {
-				return moment.duration(value).countdown();
+				return value != null ? moment.duration(value).countdown() : value;
 			},
 			toHtml : function(value) {
 				return '<span class="nowrap">' +
