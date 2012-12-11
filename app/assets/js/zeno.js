@@ -20,7 +20,16 @@
 	}]);
 
 	app.factory('moment', function() {
-		// TODO obsolete with https://github.com/timrwood/moment/issues/463?
+
+		// TODO see https://github.com/timrwood/moment/issues/537
+		moment.fn.fromNowOrNow = function (a) {
+			if (Math.abs(moment().diff(this)) < 45000) {
+				return 'just now';
+			}
+			return this.fromNow(a);
+		}
+
+		// TODO see https://github.com/timrwood/moment/issues/463
 		moment.duration.fn.countdown = function(precision) {
 			var args = [];
 			if (this.days()) {
@@ -40,6 +49,7 @@
 			}
 			return args.join(' ');			
 		}
+
 		return moment;
 	});
 
@@ -2589,7 +2599,7 @@
 			toHtml : function(value) {
 				return '<span class="nowrap">' +
 			  	'<i class="' + this.icon + '" title="Timestamp"></i> ' +
-					'<abbr title="' + value + '">' + moment(value).fromNow() + '</abbr>' +
+					'<abbr title="' + value + '">' + moment(value).fromNowOrNow() + '</abbr>' +
 			  '</span>';
 			}
 		});
@@ -2787,7 +2797,7 @@
 
 	app.filter('age', [ 'moment', function(moment) {
 		return function(date) {
-			return moment(date).fromNow();
+			return moment(date).fromNowOrNow();
 		}
 	}]);
 
