@@ -64,7 +64,7 @@ public class ScoreboardWidget extends Widget {
 			node.put("@value", Measures.convert(value, unit));
 			node.put("unit", unit.toString());
 		} else {
-			parent.put(property, value);
+			parent.put(property, Measures.round(value));
 		}
 	}
 

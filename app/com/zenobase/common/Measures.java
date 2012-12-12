@@ -2,6 +2,7 @@ package com.zenobase.common;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
+import java.math.RoundingMode;
 import java.util.List;
 
 import javax.measure.DecimalMeasure;
@@ -90,7 +91,11 @@ public class Measures {
 		return (Unit<Q>) Unit.valueOf(unit);
 	}
 
-	public static double convert(double value, Unit<?> unit) {
-		return Math.round(unit.getStandardUnit().getConverterTo(unit).convert(value) * 100.0) / 100.0;
+	public static BigDecimal convert(double value, Unit<?> unit) {
+		return round(unit.getStandardUnit().getConverterTo(unit).convert(value));
+	}
+
+	public static BigDecimal round(double value) {
+		return new BigDecimal(value).setScale(2, RoundingMode.HALF_UP);
 	}
 }

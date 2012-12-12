@@ -52,11 +52,11 @@ public class HistogramWidgetTest extends SearchTestSupport {
 		ObjectNode result = execute();
 		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(4);
 		NodeAssert node = assertThat(result).path(id).hasSize(2);
-		node.path(0).path("from").isEqualTo(7000);
-		node.path(0).path("to").isEqualTo(8000);
+		node.path(0).path("from").isEqualTo(7000.0);
+		node.path(0).path("to").isEqualTo(8000.0);
 		node.path(0).path("count").isEqualTo(1);
-		node.path(1).path("from").isEqualTo(2000);
-		node.path(1).path("to").isEqualTo(3000);
+		node.path(1).path("from").isEqualTo(2000.0);
+		node.path(1).path("to").isEqualTo(3000.0);
 		node.path(1).path("count").isEqualTo(2);
 	}
 
