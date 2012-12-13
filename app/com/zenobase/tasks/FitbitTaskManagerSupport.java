@@ -45,7 +45,7 @@ public abstract class FitbitTaskManagerSupport extends OAuthTaskManager {
 	}
 
 	protected CompoundCommand createCommand(Task task, List<Event> events, LocalDate lastDate) {
-		CompoundCommand command = new CompoundCommand(task.getPrincipal(), "ran fitbit-highres task", "reverted fitbit-highres task");
+		CompoundCommand command = new CompoundCommand(task.getPrincipal(), "ran " + getType() + " task", "reverted " + getType() + " task");
 		command.add(UpdateTaskCommand.builder(task)
 			.set(Task.COMPLETED, task.getCompleted(), new DateTime(DateTimeZone.UTC))
 			.set(Task.STATUS, task.getStatus(), Task.Status.SUCCESS)
