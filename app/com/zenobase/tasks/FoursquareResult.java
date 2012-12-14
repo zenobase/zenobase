@@ -87,7 +87,7 @@ class FoursquareResult {
 		}
 
 		public Resource getResource() {
-			String title = node.get("name").getTextValue();
+			String title = node.path("name").getTextValue();
 			String url = Objects.firstNonNull(node.path("url").getTextValue(), SOURCE.getUrl());
 			return title != null ? new Resource(title, url) : null;
 		}
