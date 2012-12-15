@@ -694,7 +694,7 @@
 		$scope.$on('reload', $scope.refresh);
 	}]);
 
-	app.controller('AuthorizationListController', ['$scope', '$http', function($scope, $http) {
+	app.controller('AuthorizationListController', ['$scope', '$http', 'delay', function($scope, $http, delay) {
 
 		$scope.offset = 0;
 		$scope.limit = 10;
@@ -732,7 +732,7 @@
 		$scope.remove = function(authId) {
 			$http({ method : 'DELETE', url : '/authorizations/' + authId }).success(function(response, code, headers) {
 				$scope.alert.show('Revoked an authorization.', 'alert-success', response.undo);
-				$scope.reload();
+				delay($scope.refresh);
 			});
 		};
 
