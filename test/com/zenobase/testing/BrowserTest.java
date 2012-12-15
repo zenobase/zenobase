@@ -244,7 +244,7 @@ public class BrowserTest {
 				assertThat(buckets.findBuckets(0, 0).size()).as("number of buckets").isEqualTo(1L);
 
 				// generate and browse buckets
-				createBuckets(5, users.find("jdoe").asIdentity(), buckets);
+				createBuckets(10, users.find("jdoe").asIdentity(), buckets);
 				assertThat($("#prev-buckets-button")).isNotEnabled();
 				assertThat($("#next-buckets-button")).isNotEnabled();
 				$("#refresh-buckets-link").click();
