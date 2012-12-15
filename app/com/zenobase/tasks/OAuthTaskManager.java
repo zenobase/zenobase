@@ -8,6 +8,7 @@ import org.scribe.model.Response;
 import org.scribe.model.Token;
 import org.scribe.model.Verifier;
 import org.scribe.oauth.OAuthService;
+import play.Logger;
 import com.google.common.base.Preconditions;
 
 import com.zenobase.commands.Command;
@@ -46,6 +47,11 @@ public abstract class OAuthTaskManager extends TaskManager {
 	private Command authorize(OAuthTask task, ObjectNode config) {
 		String token = config.get("oauth_token").getTextValue();
 		String verifier = config.get("oauth_verifier").getTextValue();
+		if (token == null || verifier == null) {
+			Logger.warn(String.format("Couldn't authorize %s task <%s>: %s",
+				task.getType(), task.getId(), config));
+			return null;
+		}
 		Preconditions.checkState(task.getToken().getToken().equals(token),
 			"Token matches in task %s, expected %s, got %s",
 			task.getId(), task.getToken().getToken(), token);

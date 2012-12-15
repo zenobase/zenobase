@@ -12,6 +12,7 @@ import org.scribe.builder.api.Foursquare2Api;
 import org.scribe.model.OAuthRequest;
 import org.scribe.model.Token;
 import org.scribe.model.Verb;
+import play.Logger;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 
@@ -52,8 +53,13 @@ public class FoursquareTaskManager extends OAuthTaskManager {
 	}
 
 	private Command authorize(OAuthTask task, ObjectNode config) {
-		String verifier = config.get("code").getTextValue();
-		Token token = getAccessToken(task, verifier);
+		String code = config.get("code").getTextValue();
+		if (code == null) {
+			Logger.warn(String.format("Couldn't authorize %s task <%s>: %s",
+				task.getType(), task.getId(), config));
+			return null;
+		}
+		Token token = getAccessToken(task, code);
 		return UpdateTaskCommand.builder(task)
 			.set(Task.AUTHORIZATION_URL, task.getAuthorizationUrl(), null)
 			.with(Task.CREDENTIALS)
