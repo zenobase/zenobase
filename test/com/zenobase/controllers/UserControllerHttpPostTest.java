@@ -14,17 +14,19 @@ import play.mvc.Result;
 import com.zenobase.commands.ChangeUserEmailCommand;
 import com.zenobase.commands.ChangeUserPasswordCommand;
 import com.zenobase.commands.ChangeUserVerifiedCommand;
+import com.zenobase.commands.CreateAuthorizationCommand;
 import com.zenobase.common.Generator;
 import com.zenobase.json.Nodes;
 import com.zenobase.models.Identity;
 import com.zenobase.models.User;
+import com.zenobase.oauth.Authorization;
 
 public class UserControllerHttpPostTest extends UserControllerTestSupport {
 
 	@Test
 	public void testUpdateEmail() {
 		String commandId = Generator.id();
-		when(auth.getPrincipal()).thenReturn(user.asIdentity());
+		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
 		when(users.find(user.getName())).thenReturn(user);
 		when(dispatcher.dispatch(any(ChangeUserEmailCommand.class))).thenReturn(commandId);
 		Result result = call(user.getName(), new UpdateUserForm("jdoe@zenobase.com").toJson());
@@ -33,7 +35,7 @@ public class UserControllerHttpPostTest extends UserControllerTestSupport {
 
 	@Test
 	public void testUpdateUserNotFound() {
-		when(auth.getPrincipal()).thenReturn(user.asIdentity());
+		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
 		Result result = call(user.getName(), new UpdateUserForm("jdoe@zenobase.com").toJson());
 		assertThat(result).hasStatus(NOT_FOUND);
 		verifyZeroInteractions(dispatcher, mailer);
@@ -49,7 +51,7 @@ public class UserControllerHttpPostTest extends UserControllerTestSupport {
 
 	@Test
 	public void testUpdateEmailDifferentUser() {
-		when(auth.getPrincipal()).thenReturn(new Identity());
+		when(auth.current()).thenReturn(new Authorization(new Identity()));
 		when(users.find(user.getName())).thenReturn(user);
 		Result result = call(user.getName(), new UpdateUserForm("jdoe@zenobase.com").toJson());
 		assertThat(result).hasStatus(FORBIDDEN);
@@ -58,7 +60,7 @@ public class UserControllerHttpPostTest extends UserControllerTestSupport {
 
 	@Test
 	public void testUpdateEmailWithInvalidAddress() {
-		when(auth.getPrincipal()).thenReturn(user.asIdentity());
+		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
 		when(users.find(user.getName())).thenReturn(user);
 		Result result = call(user.getName(), new UpdateUserForm("jdoe").toJson());
 		assertThat(result).hasStatus(BAD_REQUEST);
@@ -71,10 +73,10 @@ public class UserControllerHttpPostTest extends UserControllerTestSupport {
 		String commandId = Generator.id();
 		when(users.find(user.getName())).thenReturn(user);
 		when(dispatcher.dispatch(Matchers.any(ChangeUserPasswordCommand.class))).thenReturn(commandId);
+		when(dispatcher.dispatch(Matchers.any(CreateAuthorizationCommand.class))).thenReturn(commandId);
 		PasswordResetKey key = new PasswordResetKey(user);
 		Result result = call(user.getName(), new UpdateUserForm("newpassword",  key.getKey(), key.getExpirationToken()).toJson());
-		assertThat(result).hasStatus(NO_CONTENT);
-		verify(auth).setPrincipal(user.asIdentity(), true);
+		assertThat(result).hasStatus(OK).asNode().path("access_code").isNotNull();
 	}
 
 	@Test
@@ -122,7 +124,7 @@ public class UserControllerHttpPostTest extends UserControllerTestSupport {
 	@Test
 	public void testUpdateVerified() {
 		user.setEmail("jdoe@zenobase.com");
-		when(auth.getPrincipal()).thenReturn(user.asIdentity());
+		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
 		when(users.find(user.getName())).thenReturn(user);
 		EmailVerificationKey key = new EmailVerificationKey(user.getName(), user.getEmail());
 		Result result = call(user.getName(), new UpdateUserForm(Boolean.TRUE, key.getKey()).toJson());
@@ -134,7 +136,7 @@ public class UserControllerHttpPostTest extends UserControllerTestSupport {
 	public void testUpdateVerifiedWhenAlreadyVerified() {
 		user.setEmail("jdoe@zenobase.com");
 		user.setVerified(true);
-		when(auth.getPrincipal()).thenReturn(user.asIdentity());
+		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
 		when(users.find(user.getName())).thenReturn(user);
 		EmailVerificationKey key = new EmailVerificationKey(user.getName(), user.getEmail());
 		Result result = call(user.getName(), new UpdateUserForm(Boolean.TRUE, key.getKey()).toJson());
@@ -145,7 +147,7 @@ public class UserControllerHttpPostTest extends UserControllerTestSupport {
 	@Test
 	public void testUpdateVerifiedWithoutKey() {
 		user.setEmail("jdoe@zenobase.com");
-		when(auth.getPrincipal()).thenReturn(user.asIdentity());
+		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
 		when(users.find(user.getName())).thenReturn(user);
 		Result result = call(user.getName(), new UpdateUserForm(Boolean.TRUE, null).toJson());
 		assertThat(result).hasStatus(BAD_REQUEST);
@@ -155,7 +157,7 @@ public class UserControllerHttpPostTest extends UserControllerTestSupport {
 	@Test
 	public void testUpdateVerifiedWithInvalidKey() {
 		user.setEmail("jdoe@zenobase.com");
-		when(auth.getPrincipal()).thenReturn(user.asIdentity());
+		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
 		when(users.find(user.getName())).thenReturn(user);
 		EmailVerificationKey key = new EmailVerificationKey(user.getName(), "jdoe@zenobase.org");
 		Result result = call(user.getName(), new UpdateUserForm(Boolean.TRUE, key.getKey()).toJson());
@@ -165,7 +167,7 @@ public class UserControllerHttpPostTest extends UserControllerTestSupport {
 
 	@Test
 	public void testUpdateNothing() {
-		when(auth.getPrincipal()).thenReturn(user.asIdentity());
+		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
 		when(users.find(user.getName())).thenReturn(user);
 		Result result = call(user.getName(), new UpdateUserForm(Nodes.newObject()).toJson());
 		assertThat(result).hasStatus(BAD_REQUEST);

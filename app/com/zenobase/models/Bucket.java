@@ -24,6 +24,7 @@ import com.zenobase.json.Schema;
 import com.zenobase.json.SchemaBuilder;
 import com.zenobase.json.TextField;
 import com.zenobase.json.TokenField;
+import com.zenobase.oauth.Authorization;
 
 public class Bucket extends DomainNode {
 
@@ -93,21 +94,21 @@ public class Bucket extends DomainNode {
 		return principals.build();
 	}
 
-	public Permission getPermission(Identity principal) {
+	public boolean isPermitted(Authorization auth, Permission permission) {
 		ImmutableList<Entry<Identity, Permission>> permissions = getValues(PERMISSIONS);
-		if (principal != null) {
+		if (auth != null && (auth.getScope() == null || auth.getScope().equals(getId()))) {
 			for (Map.Entry<Identity, Permission> entry : permissions) {
-				if (entry.getKey().equals(principal)) {
-					return entry.getValue();
+				if (entry.getKey().equals(auth.getPrincipal())) {
+					return entry.getValue().implies(permission);
 				}
 			}
 		}
 		for (Map.Entry<Identity, Permission> entry : permissions) {
 			if (entry.getKey().equals(Identity.PUBLIC)) {
-				return entry.getValue();
+				return entry.getValue().implies(permission);
 			}
 		}
-		return Permission.NONE;
+		return false;
 	}
 
 	public void addPermission(Identity principal, Permission permission) {

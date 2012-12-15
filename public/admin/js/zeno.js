@@ -1,9 +1,9 @@
 (function() {
-	
+
 	'use strict';
-	
+
 	var app = angular.module('ZenoAdminModule', [ 'ZenoModule' ]);
-	
+
 	app.config(function($routeProvider) {
 		$routeProvider.when('/', { templateUrl: '/admin/partials/dashboard.html' });
 		$routeProvider.otherwise({ templateUrl : '/partials/404.html' });
@@ -16,14 +16,14 @@
 			$location.search('q', $scope.filter);
 		};
 	}]);
-	
-	app.controller('admin.QueueController', ['$scope', '$http', function($scope, $http) {
+
+	app.controller('admin.QueueController', ['$scope', '$http', 'delay', function($scope, $http, delay) {
 	
 		$scope.offset = 0;
 		$scope.limit = 10;
 		$scope.total = 0;
 		$scope.commands = null;
-	
+
 		$scope.hasPrev = function() {
 			return $scope.offset > 0;
 		}
@@ -53,18 +53,22 @@
 				$scope.commands = response.commands;
 			});
 		};
+		$scope.undo = function(commandId) {
+			$scope.$parent.undo(commandId);
+			delay($scope.reload);
+		};
 
 		$scope.$on('reload', $scope.refresh);
 		$scope.refresh({});
 	}]);
-	
-	app.controller('admin.BucketListController', ['$scope', '$http', 'Bucket', function($scope, $http, Bucket) {
-	
+
+	app.controller('admin.BucketListController', ['$scope', '$http', 'Bucket', 'delay', function($scope, $http, Bucket, delay) {
+
 		$scope.offset = 0;
 		$scope.limit = 10;
 		$scope.total = 0;
 		$scope.buckets = null;
-	
+
 		$scope.hasPrev = function() {
 			return $scope.offset > 0;
 		}
@@ -96,8 +100,7 @@
 		};
 		$scope.remove = function(bucketId) {
 			$http({ method : 'DELETE', url : '/buckets/' + bucketId }).success(function(response, code, headers) {
-				$scope.alert.show('Deleted a bucket.', 'alert-success', response.undo);
-				$scope.reload();
+				delay($scope.reload);
 			});
 		};
 		$scope.getOwner = function(bucket) {
@@ -106,18 +109,18 @@
 		$scope.isPublished = function(bucket) {
 			return new Bucket(bucket).isPublished();
 		};
-	
+
 		$scope.$on('reload', $scope.refresh);
 		$scope.refresh({});
 	}]);
-	
-	app.controller('admin.UserListController', ['$scope', '$http', function($scope, $http) {
-	
+
+	app.controller('admin.UserListController', ['$scope', '$http', 'delay', function($scope, $http, delay) {
+
 		$scope.offset = 0;
 		$scope.limit = 10;
 		$scope.total = 0;
 		$scope.users = null;
-	
+
 		$scope.hasPrev = function() {
 			return $scope.offset > 0;
 		};
@@ -152,22 +155,72 @@
 		};
 		$scope.close = function(userId) {
 			$http({ method : 'DELETE', url : '/users/' + userId }).success(function(response, code, headers) {
-				$scope.alert.show('Closed account of ' + userId + '.', 'alert-success', response.undo);
-				$scope.reload();
+				delay($scope.reload);
 			});
 		};
-	
+
 		$scope.$on('reload', $scope.refresh);
 		$scope.refresh({});
 	}]);
-	
-	app.controller('admin.TaskListController', ['$scope', '$http', function($scope, $http) {
-	
+
+	app.controller('admin.AuthorizationListController', ['$scope', '$http', 'delay', function($scope, $http, delay) {
+
+		$scope.offset = 0;
+		$scope.limit = 5;
+		$scope.total = 0;
+		$scope.authorizations = null;
+
+		$scope.hasPrev = function() {
+			return $scope.offset > 0;
+		};
+		$scope.hasNext = function() {
+			return $scope.offset + $scope.limit < $scope.total;
+		};
+		$scope.prev = function() {
+			$scope.refresh({ offset : $scope.offset - $scope.limit });
+		};
+		$scope.next = function() {
+			$scope.refresh({ offset : $scope.offset + $scope.limit });
+		};
+		$scope.params = function() {
+			return {
+				offset : $scope.offset,
+				limit : $scope.limit
+			};
+		};
+		$scope.refresh = function(params) {
+			if ($scope.filter) {
+				$http.get('/authorizations/?' + $.param($.extend($scope.params(), params, { 'field' : 'principal', 'value' : $scope.filter }))).success(function(response) {
+					$.extend($scope, params);
+					$scope.total = response.total;
+					$scope.authorizations = response.authorizations;
+				});
+			} else {
+				$http.get('/authorizations/?' + $.param($.extend($scope.params(), params))).success(function(response) {
+					$.extend($scope, params);
+					$scope.total = response.total;
+					$scope.authorizations = response.authorizations;
+				});
+			}
+		};
+		$scope.remove = function(authId) {
+			$http({ method : 'DELETE', url : '/authorizations/' + authId })
+				.success(function(response, code, headers) {
+					delay($scope.reload);
+				});
+		};
+
+		$scope.$on('reload', $scope.refresh);
+		$scope.refresh({});
+	}]);
+
+	app.controller('admin.TaskListController', ['$scope', '$http', 'delay', function($scope, $http, delay) {
+
 		$scope.offset = 0;
 		$scope.limit = 10;
 		$scope.total = 0;
 		$scope.tasks = null;
-	
+
 		$scope.hasPrev = function() {
 			return $scope.offset > 0;
 		}
@@ -200,11 +253,10 @@
 		};
 		$scope.remove = function(taskId) {
 			$http({ method : 'DELETE', url : '/tasks/' + taskId }).success(function(response, code, headers) {
-				$scope.alert.show('Deleted a task.', 'alert-success', response.undo);
-				$scope.reload();
+				delay($scope.reload);
 			});
 		};
-	
+
 		$scope.$on('reload', $scope.refresh);
 		$scope.refresh({});
 	}]);

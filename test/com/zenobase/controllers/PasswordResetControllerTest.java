@@ -19,7 +19,7 @@ import com.zenobase.services.UserRepository;
 
 public class PasswordResetControllerTest extends ControllerTestSupport {
 
-	private final SecurityContext auth = mock(SecurityContext.class);
+	private final AuthorizationContext auth = mock(AuthorizationContext.class);
 	private final UserRepository users = mock(UserRepository.class);
 	private final PasswordResetMailer mailer = mock(PasswordResetMailer.class);
 	private final User user = new User("tester");
@@ -29,7 +29,7 @@ public class PasswordResetControllerTest extends ControllerTestSupport {
 		start(new AbstractModule() {
 			@Override
 			protected void configure() {
-				bind(SecurityContext.class).toInstance(auth);
+				bind(AuthorizationContext.class).toInstance(auth);
 				bind(UserRepository.class).toInstance(users);
 				bind(PasswordResetMailer.class).toInstance(mailer);
 				bind(PasswordResetController.class).in(Singleton.class);

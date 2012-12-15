@@ -17,6 +17,7 @@ import com.zenobase.common.Generator;
 import com.zenobase.models.Bucket;
 import com.zenobase.models.Identity;
 import com.zenobase.models.Permission;
+import com.zenobase.oauth.Authorization;
 
 public class BucketControllerHttpPostTest extends BucketControllerTestSupport {
 
@@ -36,7 +37,7 @@ public class BucketControllerHttpPostTest extends BucketControllerTestSupport {
 	@Test
 	public void testUpdateBucket() {
 		String commandId = Generator.id();
-		when(auth.getPrincipal()).thenReturn(user.asIdentity());
+		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
 		when(buckets.findBucket(from.getId())).thenReturn(from.copy());
 		when(dispatcher.dispatch(any(UpdateBucketCommand.class))).thenReturn(commandId);
 		Result result = call(from.getId(), to.toJson());
@@ -46,7 +47,7 @@ public class BucketControllerHttpPostTest extends BucketControllerTestSupport {
 	@Test
 	@SuppressWarnings("unchecked")
 	public void testConflict() {
-		when(auth.getPrincipal()).thenReturn(user.asIdentity());
+		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
 		when(buckets.findBucket(from.getId())).thenReturn(from.copy());
 		when(dispatcher.dispatch(any(UpdateBucketCommand.class))).thenThrow(VersionConflictEngineException.class);
 		Result result = call(from.getId(), to.toJson());
@@ -56,7 +57,7 @@ public class BucketControllerHttpPostTest extends BucketControllerTestSupport {
 	@Test
 	public void testUpdateBucketInvalidLabel() {
 		to.setLabel("");
-		when(auth.getPrincipal()).thenReturn(user.asIdentity());
+		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
 		when(buckets.findBucket(from.getId())).thenReturn(from.copy());
 		Result result = call(from.getId(), to.toJson());
 		assertThat(result).hasStatus(BAD_REQUEST);
@@ -66,7 +67,7 @@ public class BucketControllerHttpPostTest extends BucketControllerTestSupport {
 	@Test
 	public void testUpdateBucketAddOwner() {
 		to.addPermission(new Identity(), Permission.ALL);
-		when(auth.getPrincipal()).thenReturn(user.asIdentity());
+		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
 		when(buckets.findBucket(from.getId())).thenReturn(from.copy());
 		Result result = call(from.getId(), to.toJson());
 		assertThat(result).hasStatus(BAD_REQUEST);
@@ -75,7 +76,7 @@ public class BucketControllerHttpPostTest extends BucketControllerTestSupport {
 
 	@Test
 	public void testUpdateBucketNotFound() {
-		when(auth.getPrincipal()).thenReturn(user.asIdentity());
+		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
 		Result result = call(from.getId(), to.toJson());
 		assertThat(result).hasStatus(NOT_FOUND);
 		verifyZeroInteractions(dispatcher);
@@ -91,7 +92,7 @@ public class BucketControllerHttpPostTest extends BucketControllerTestSupport {
 
 	@Test
 	public void testUpdateBucketForbidden() {
-		when(auth.getPrincipal()).thenReturn(new Identity());
+		when(auth.current()).thenReturn(new Authorization(new Identity()));
 		when(buckets.findBucket(from.getId())).thenReturn(from.copy());
 		Result result = call(from.getId(), to.toJson());
 		assertThat(result).hasStatus(FORBIDDEN);

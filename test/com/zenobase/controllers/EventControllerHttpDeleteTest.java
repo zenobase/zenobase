@@ -16,6 +16,7 @@ import com.zenobase.models.Bucket;
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
 import com.zenobase.models.Permission;
+import com.zenobase.oauth.Authorization;
 
 public class EventControllerHttpDeleteTest extends EventControllerTestSupport {
 
@@ -33,7 +34,7 @@ public class EventControllerHttpDeleteTest extends EventControllerTestSupport {
 
 	@Test
 	public void testDeleteEvent() {
-		when(auth.getPrincipal()).thenReturn(user.asIdentity());
+		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
 		when(buckets.findBucket(bucket.getId())).thenReturn(bucket);
 		when(buckets.findEvent(bucket.getId(), event.getId())).thenReturn(event);
 		String commandId = Generator.id();
@@ -44,7 +45,7 @@ public class EventControllerHttpDeleteTest extends EventControllerTestSupport {
 
 	@Test
 	public void testDeleteEventBucketNotFound() {
-		when(auth.getPrincipal()).thenReturn(user.asIdentity());
+		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
 		when(buckets.findBucket(bucket.getId())).thenReturn(null);
 		Result result = call(bucket, event);
 		assertThat(result).hasStatus(NOT_FOUND);
@@ -53,7 +54,7 @@ public class EventControllerHttpDeleteTest extends EventControllerTestSupport {
 
 	@Test
 	public void testDeleteEventNotFound() {
-		when(auth.getPrincipal()).thenReturn(user.asIdentity());
+		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
 		when(buckets.findBucket(bucket.getId())).thenReturn(bucket);
 		when(buckets.findEvent(bucket.getId(), event.getId())).thenReturn(null);
 		Result result = call(bucket, event);
@@ -63,7 +64,7 @@ public class EventControllerHttpDeleteTest extends EventControllerTestSupport {
 
 	@Test
 	public void testDeleteEventUnauthorized() {
-		when(auth.getPrincipal()).thenReturn(null);
+		when(auth.current()).thenReturn(null);
 		when(buckets.findBucket(bucket.getId())).thenReturn(bucket);
 		when(buckets.findEvent(bucket.getId(), event.getId())).thenReturn(event);
 		Result result = call(bucket, event);
@@ -73,7 +74,7 @@ public class EventControllerHttpDeleteTest extends EventControllerTestSupport {
 
 	@Test
 	public void testDeleteEventForbidden() {
-		when(auth.getPrincipal()).thenReturn(friend);
+		when(auth.current()).thenReturn(new Authorization(friend));
 		when(buckets.findBucket(bucket.getId())).thenReturn(bucket);
 		when(buckets.findEvent(bucket.getId(), event.getId())).thenReturn(event);
 		Result result = call(bucket, event);

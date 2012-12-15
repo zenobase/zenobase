@@ -13,7 +13,7 @@ import com.zenobase.services.CommandDispatcher;
 
 public abstract class EventControllerTestSupport extends ControllerTestSupport {
 
-	protected final SecurityContext auth = mock(SecurityContext.class);
+	protected final AuthorizationContext auth = mock(AuthorizationContext.class);
 	protected final BucketRepository buckets = mock(BucketRepository.class);
 	protected final CommandDispatcher dispatcher = mock(CommandDispatcher.class);
 	protected final User user = new User("tester");
@@ -24,7 +24,7 @@ public abstract class EventControllerTestSupport extends ControllerTestSupport {
 		start(new AbstractModule() {
 			@Override
 			protected void configure() {
-				bind(SecurityContext.class).toInstance(auth);
+				bind(AuthorizationContext.class).toInstance(auth);
 				bind(BucketRepository.class).toInstance(buckets);
 				bind(CommandDispatcher.class).toInstance(dispatcher);
 				bind(EventController.class).in(Singleton.class);

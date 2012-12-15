@@ -10,6 +10,7 @@ import com.zenobase.io.UserPrinter;
 import com.zenobase.models.Identity;
 import com.zenobase.models.User;
 import com.zenobase.models.UserInfo;
+import com.zenobase.oauth.Authorization;
 import com.zenobase.services.UserRepository;
 
 @With(Timed.class)
@@ -18,18 +19,18 @@ public class UserListController extends ControllerSupport {
 	private final UserRepository users;
 
 	@Inject
-	public UserListController(SecurityContext security, UserRepository users) {
+	public UserListController(AuthorizationContext security, UserRepository users) {
 		super(security);
 		this.users = users;
 	}
 
 	public Result find(String identity, int offset, int limit, boolean detail) {
 		if (identity == null || detail) {
-	    	Identity principal = getSecurityContext().getPrincipal();
-	    	if (principal == null) {
+	    	Authorization auth = getCurrentAuthorization();
+	    	if (auth == null || auth.getScope() != null) {
 	    		return unauthorized();
 	    	}
-	    	if (!users.isSuperuser(principal)) {
+	    	if (!users.isSuperuser(auth.getPrincipal())) {
 	    		return forbidden();
 	    	}
 		}

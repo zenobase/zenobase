@@ -9,6 +9,7 @@ import com.zenobase.actions.NoCache;
 import com.zenobase.json.Nodes;
 import com.zenobase.json.TextField;
 import com.zenobase.json.TokenField;
+import com.zenobase.oauth.Authorization;
 
 @With(NoCache.class)
 public abstract class ControllerSupport extends Controller {
@@ -16,14 +17,14 @@ public abstract class ControllerSupport extends Controller {
 	protected static final TextField MESSAGE = new TextField("message");
 	protected static final TokenField UNDO = new TokenField("undo");
 
-	private final SecurityContext security;
+	private final AuthorizationContext authContext;
 
-	protected ControllerSupport(SecurityContext security) {
-		this.security = security;
+	protected ControllerSupport(AuthorizationContext authContext) {
+		this.authContext = authContext;
 	}
 
-	protected SecurityContext getSecurityContext() {
-		return security;
+	protected Authorization getCurrentAuthorization() {
+		return authContext.current();
 	}
 
 	protected static ObjectNode body() {

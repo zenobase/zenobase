@@ -13,7 +13,7 @@ import com.zenobase.services.UserRepository;
 
 public abstract class UserControllerTestSupport extends ControllerTestSupport {
 
-	protected final SecurityContext auth = mock(SecurityContext.class);
+	protected final AuthorizationContext auth = mock(AuthorizationContext.class);
 	protected final UserRepository users = mock(UserRepository.class);
 	protected final CommandDispatcher dispatcher = mock(CommandDispatcher.class);
 	protected final VerificationMailer mailer = mock(VerificationMailer.class);
@@ -24,7 +24,7 @@ public abstract class UserControllerTestSupport extends ControllerTestSupport {
 		start(new AbstractModule() {
 			@Override
 			protected void configure() {
-				bind(SecurityContext.class).toInstance(auth);
+				bind(AuthorizationContext.class).toInstance(auth);
 				bind(UserRepository.class).toInstance(users);
 				bind(CommandDispatcher.class).toInstance(dispatcher);
 				bind(VerificationMailer.class).toInstance(mailer);

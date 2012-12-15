@@ -1,7 +1,6 @@
 package com.zenobase.controllers;
 
 import static com.zenobase.testing.ResultAssert.assertThat;
-
 import static org.fest.assertions.Assertions.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
@@ -17,13 +16,14 @@ import com.zenobase.commands.CreateUserCommand;
 import com.zenobase.common.Generator;
 import com.zenobase.models.User;
 import com.zenobase.models.UserInfo;
+import com.zenobase.oauth.Authorization;
 
 public class AccountControllerOpenAccountTest extends AccountControllerTestSupport {
 
 	@Test
 	public void testSignUp() {
 		when(users.exists(user.getName())).thenReturn(false);
-		when(auth.getPrincipal(true)).thenReturn(user.asIdentity());
+		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
 		SignUpForm form = new SignUpForm(user.getName(), password, user.getEmail());
 		Result result = call(form.toJson());
 		assertThat(result).hasStatus(CREATED).hasContent(new UserInfo(user).toJson());
@@ -41,7 +41,7 @@ public class AccountControllerOpenAccountTest extends AccountControllerTestSuppo
 	public void testSignUpExistingUser() {
 		String commandId = Generator.id();
 		when(users.exists(user.getName())).thenReturn(true);
-		when(auth.getPrincipal(true)).thenReturn(user.asIdentity());
+		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
 		when(dispatcher.dispatch(any(CreateUserCommand.class))).thenReturn(commandId);
 		SignUpForm form = new SignUpForm(user.getName(), password, user.getEmail());
 		Result result = call(form.toJson());
@@ -53,7 +53,7 @@ public class AccountControllerOpenAccountTest extends AccountControllerTestSuppo
 	public void testSignUpGuest() {
 		String username = "guest";
 		when(users.exists(username)).thenReturn(false);
-		when(auth.getPrincipal(true)).thenReturn(user.asIdentity());
+		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
 		SignUpForm form = new SignUpForm(username, password, user.getEmail());
 		Result result = call(form.toJson());
 		assertThat(result).hasStatus(BAD_REQUEST);
@@ -63,10 +63,20 @@ public class AccountControllerOpenAccountTest extends AccountControllerTestSuppo
 	@Test
 	public void testSignUpWithInvalidData() {
 		when(users.exists(user.getName())).thenReturn(false);
-		when(auth.getPrincipal(true)).thenReturn(user.asIdentity());
+		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
 		SignUpForm form = new SignUpForm(user.getName(), password, "x");
 		Result result = call(form.toJson());
 		assertThat(result).hasStatus(BAD_REQUEST);
+		verifyZeroInteractions(dispatcher, mailer);
+	}
+
+	@Test
+	public void testSignUpUnauthorized() {
+		when(users.exists(user.getName())).thenReturn(false);
+		when(auth.current()).thenReturn(null);
+		SignUpForm form = new SignUpForm(user.getName(), password, user.getEmail());
+		Result result = call(form.toJson());
+		assertThat(result).hasStatus(UNAUTHORIZED);
 		verifyZeroInteractions(dispatcher, mailer);
 	}
 

@@ -5,5 +5,9 @@ public enum Permission {
 	NONE,
 	USE,
 	CONTRIBUTE,
-	ALL
+	ALL;
+
+	public boolean implies(Permission other) {
+		return other.ordinal() <= ordinal();
+	}
 }

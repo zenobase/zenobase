@@ -10,12 +10,13 @@ import play.mvc.Result;
 
 import com.zenobase.models.Identity;
 import com.zenobase.models.UserProfile;
+import com.zenobase.oauth.Authorization;
 
 public class UserControllerHttpGetTest extends UserControllerTestSupport {
 
 	@Test
 	public void testGetUser() {
-		when(auth.getPrincipal()).thenReturn(user.asIdentity());
+		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
 		when(users.find(user.getName())).thenReturn(user);
 		Result result = call(user.getName());
 		assertThat(result).hasStatus(OK).hasContent(new UserProfile(user).toJson());
@@ -23,7 +24,7 @@ public class UserControllerHttpGetTest extends UserControllerTestSupport {
 
 	@Test
 	public void testGetUserNotFound() {
-		when(auth.getPrincipal()).thenReturn(user.asIdentity());
+		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
 		Result result = call(user.getName());
 		assertThat(result).hasStatus(NOT_FOUND);
 	}
@@ -37,7 +38,7 @@ public class UserControllerHttpGetTest extends UserControllerTestSupport {
 
 	@Test
 	public void testGetUserForbidden() {
-		when(auth.getPrincipal()).thenReturn(new Identity());
+		when(auth.current()).thenReturn(new Authorization(new Identity()));
 		when(users.find(user.getName())).thenReturn(user);
 		Result result = call(user.getName());
 		assertThat(result).hasStatus(FORBIDDEN);

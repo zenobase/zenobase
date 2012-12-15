@@ -17,6 +17,7 @@ import com.zenobase.commands.TestCommand;
 import com.zenobase.common.Generator;
 import com.zenobase.json.Nodes;
 import com.zenobase.models.Identity;
+import com.zenobase.oauth.Authorization;
 
 public class QueueControllerHttpPostTest extends QueueControllerTestSupport {
 
@@ -25,7 +26,7 @@ public class QueueControllerHttpPostTest extends QueueControllerTestSupport {
 	@Test
 	public void testUndo() {
 		ArgumentCaptor<TestCommand> commandArg = ArgumentCaptor.forClass(TestCommand.class);
-		when(auth.getPrincipal()).thenReturn(principal);
+		when(auth.current()).thenReturn(new Authorization(principal));
 		when(commands.find(command.getId())).thenReturn(command);
 		when(dispatcher.dispatch(commandArg.capture())).thenReturn(command.getId());
 		Result result = call(new UndoForm(command.getId()).toJson());
@@ -36,7 +37,7 @@ public class QueueControllerHttpPostTest extends QueueControllerTestSupport {
 	@Test
 	public void testUndoAsSuperuser() {
 		Identity superuser = new Identity();
-		when(auth.getPrincipal()).thenReturn(superuser);
+		when(auth.current()).thenReturn(new Authorization(superuser));
 		when(commands.find(command.getId())).thenReturn(command);
 		when(dispatcher.dispatch(any(TestCommand.class))).thenReturn(command.getId());
 		when(users.isSuperuser(superuser)).thenReturn(true);
@@ -46,7 +47,7 @@ public class QueueControllerHttpPostTest extends QueueControllerTestSupport {
 
 	@Test
 	public void testUndoUnauthorized() {
-		when(auth.getPrincipal()).thenReturn(null);
+		when(auth.current()).thenReturn(null);
 		Result result = call(new UndoForm(command.getId()).toJson());
 		assertThat(result).hasStatus(UNAUTHORIZED);
 		verifyZeroInteractions(dispatcher);
@@ -54,7 +55,7 @@ public class QueueControllerHttpPostTest extends QueueControllerTestSupport {
 
 	@Test
 	public void testUndoFormNotValid() {
-		when(auth.getPrincipal()).thenReturn(null);
+		when(auth.current()).thenReturn(null);
 		Result result = call(Nodes.newObject());
 		assertThat(result).hasStatus(BAD_REQUEST);
 		verifyZeroInteractions(dispatcher);
@@ -62,7 +63,7 @@ public class QueueControllerHttpPostTest extends QueueControllerTestSupport {
 
 	@Test
 	public void testUndoNotFound() {
-		when(auth.getPrincipal()).thenReturn(principal);
+		when(auth.current()).thenReturn(new Authorization(principal));
 		when(commands.find(command.getId())).thenReturn(null);
 		Result result = call(new UndoForm(Generator.id()).toJson());
 		assertThat(result).hasStatus(NOT_FOUND);
@@ -71,7 +72,7 @@ public class QueueControllerHttpPostTest extends QueueControllerTestSupport {
 
 	@Test
 	public void testUndoForbidden() {
-		when(auth.getPrincipal()).thenReturn(new Identity());
+		when(auth.current()).thenReturn(new Authorization(new Identity()));
 		when(commands.find(command.getId())).thenReturn(command);
 		Result result = call(new UndoForm(command.getId()).toJson());
 		assertThat(result).hasStatus(FORBIDDEN);

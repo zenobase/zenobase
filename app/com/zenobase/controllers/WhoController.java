@@ -4,9 +4,9 @@ import javax.inject.Inject;
 
 import play.mvc.Result;
 
-import com.zenobase.models.Identity;
 import com.zenobase.models.User;
 import com.zenobase.models.UserInfo;
+import com.zenobase.oauth.Authorization;
 import com.zenobase.services.UserRepository;
 
 public class WhoController extends ControllerSupport {
@@ -14,17 +14,24 @@ public class WhoController extends ControllerSupport {
 	private final UserRepository users;
 
 	@Inject
-	public WhoController(SecurityContext security, UserRepository users) {
+	public WhoController(AuthorizationContext security, UserRepository users) {
 		super(security);
 		this.users = users;
 	}
 
 	public Result who() {
-		Identity principal = getSecurityContext().getPrincipal();
-		if (principal != null) {
-			User user = users.find(principal);
-			return ok(user != null ? new UserInfo(user).toJson() : principal.toJson());
+		Authorization auth = getCurrentAuthorization();
+		if (auth != null) {
+			User user = users.find(auth.getPrincipal());
+			return ok(user != null ? new UserInfo(user).toJson() : auth.getPrincipal().toJson());
 		}
+		removeCookie("token"); // TODO remove end of 2013
     	return noContent();
     }
+
+	private static void removeCookie(String cookieName) {
+		if (ctx().request().cookie(cookieName) != null) {
+			ctx().response().discardCookie(cookieName);
+		}
+	}
 }

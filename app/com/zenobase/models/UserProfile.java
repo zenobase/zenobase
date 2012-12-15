@@ -11,6 +11,7 @@ public class UserProfile extends DomainNode {
 	private static final TokenField NAME = new TokenField("name", false);
 	private static final DateTimeField CREATED = new DateTimeField("created");
 	private static final TokenField EMAIL = new TokenField("email");
+	private static final TokenField SECRET = new TokenField("secret");
 	private static final BooleanField VERIFIED = new BooleanField("verified");
 	private static final BooleanField SUSPENDED = new BooleanField("suspended");
 	private static final BooleanField SUPERUSER = new BooleanField("superuser");
@@ -20,6 +21,7 @@ public class UserProfile extends DomainNode {
 		setValue(NAME, user.getName());
 		setValue(CREATED, user.getCreated());
 		setValue(EMAIL, user.getEmail());
+		setValue(SECRET, user.getHashedPassword());
 		setValue(VERIFIED, user.isVerified());
 		setValue(SUSPENDED, user.isSuspended());
 		setValue(SUPERUSER, user.isSuperuser());

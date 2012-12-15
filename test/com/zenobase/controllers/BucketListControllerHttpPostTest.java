@@ -17,6 +17,7 @@ import com.zenobase.common.Generator;
 import com.zenobase.json.Nodes;
 import com.zenobase.models.Bucket;
 import com.zenobase.models.Permission;
+import com.zenobase.oauth.Authorization;
 
 public class BucketListControllerHttpPostTest extends BucketListControllerTestSupport {
 
@@ -26,22 +27,30 @@ public class BucketListControllerHttpPostTest extends BucketListControllerTestSu
 		String commandId = Generator.id();
 		String label = "test";
 		String description = "just testing";
-		when(auth.getPrincipal(true)).thenReturn(user.asIdentity());
+		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
 		when(dispatcher.dispatch(arg.capture())).thenReturn(commandId);
 		Result result = call(new CreateBucketForm(label, description).toJson());
 		assertThat(result).hasStatus(CREATED).hasContent(BucketListController.content(null, commandId));
 		Bucket bucket = arg.getValue().getBucket();
 		assertThat(bucket.getLabel()).isEqualTo(label);
 		assertThat(bucket.getDescription()).isEqualTo(description);
-		assertThat(bucket.getPermission(user.asIdentity())).isEqualTo(Permission.ALL);
+		assertThat(bucket.isPermitted(new Authorization(user.asIdentity()), Permission.ALL)).isTrue();
 		assertThat(Helpers.redirectLocation(result)).isEqualTo(com.zenobase.controllers.routes.BucketController.get(bucket.getId()).toString());
 	}
 
 	@Test
 	public void testCreateBucketWithoutLabel() {
-		when(auth.getPrincipal(true)).thenReturn(user.asIdentity());
+		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
 		Result result = call(Nodes.newObject());
 		assertThat(result).hasStatus(BAD_REQUEST);
+		verifyZeroInteractions(dispatcher);
+	}
+
+	@Test
+	public void testCreateBucketUnauthorized() {
+		when(auth.current()).thenReturn(null);
+		Result result = call(Nodes.newObject());
+		assertThat(result).hasStatus(UNAUTHORIZED);
 		verifyZeroInteractions(dispatcher);
 	}
 

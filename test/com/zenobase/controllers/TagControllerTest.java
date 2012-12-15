@@ -21,12 +21,13 @@ import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
 import com.zenobase.models.Permission;
 import com.zenobase.models.User;
+import com.zenobase.oauth.Authorization;
 import com.zenobase.services.BucketRepository;
 import com.zenobase.services.UserRepository;
 
 public class TagControllerTest extends ControllerTestSupport {
 
-	private final SecurityContext auth = mock(SecurityContext.class);
+	private final AuthorizationContext auth = mock(AuthorizationContext.class);
 	private final BucketRepository buckets = mock(BucketRepository.class);
 	private final UserRepository users = mock(UserRepository.class);
 	private final User user = new User("tester");
@@ -37,7 +38,7 @@ public class TagControllerTest extends ControllerTestSupport {
 		start(new AbstractModule() {
 			@Override
 			protected void configure() {
-				bind(SecurityContext.class).toInstance(auth);
+				bind(AuthorizationContext.class).toInstance(auth);
 				bind(BucketRepository.class).toInstance(buckets);
 				bind(UserRepository.class).toInstance(users);
 				bind(TagController.class).in(Singleton.class);
@@ -50,7 +51,7 @@ public class TagControllerTest extends ControllerTestSupport {
 	public void testGetTags() {
 		List<String> tags = Lists.newArrayList("foo", "bar");
 		bucket.setWidgets(ImmutableList.of(Nodes.newObject()));
-		when(auth.getPrincipal()).thenReturn(user.asIdentity());
+		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
 		when(buckets.findBucket(bucket.getId())).thenReturn(bucket);
 		when(buckets.terms(bucket.getId(), Event.TAG.getName())).thenReturn(tags);
 		Result result = call(bucket.getId());
@@ -59,14 +60,14 @@ public class TagControllerTest extends ControllerTestSupport {
 
 	@Test
 	public void testGetBucketNotFound() {
-		when(auth.getPrincipal()).thenReturn(user.asIdentity());
+		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
 		Result result = call(bucket.getId());
 		assertThat(result).hasStatus(NOT_FOUND);
 	}
 
 	@Test
 	public void testGetBucketUnauthorized() {
-		when(auth.getPrincipal()).thenReturn(null);
+		when(auth.current()).thenReturn(null);
 		when(buckets.findBucket(bucket.getId())).thenReturn(bucket.copy());
 		Result result = call(bucket.getId());
 		assertThat(result).hasStatus(UNAUTHORIZED);
@@ -74,7 +75,7 @@ public class TagControllerTest extends ControllerTestSupport {
 
 	@Test
 	public void testGetBucketForbidden() {
-		when(auth.getPrincipal()).thenReturn(new Identity());
+		when(auth.current()).thenReturn(new Authorization(new Identity()));
 		when(buckets.findBucket(bucket.getId())).thenReturn(bucket.copy());
 		Result result = call(bucket.getId());
 		assertThat(result).hasStatus(FORBIDDEN);

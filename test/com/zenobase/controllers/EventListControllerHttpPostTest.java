@@ -25,6 +25,7 @@ import com.zenobase.models.Bucket;
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
 import com.zenobase.models.Permission;
+import com.zenobase.oauth.Authorization;
 
 public class EventListControllerHttpPostTest extends EventListControllerTestSupport {
 
@@ -41,7 +42,7 @@ public class EventListControllerHttpPostTest extends EventListControllerTestSupp
 	public void testCreateEvent() {
 		String commandId = Generator.id();
 		ArgumentCaptor<CreateEventCommand> commandArg = ArgumentCaptor.forClass(CreateEventCommand.class);
-		when(auth.getPrincipal()).thenReturn(user.asIdentity());
+		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
 		when(buckets.findBucket(bucket.getId())).thenReturn(bucket);
 		when(dispatcher.dispatch(commandArg.capture())).thenReturn(commandId);
 		Result result = call(bucket, body);
@@ -59,7 +60,7 @@ public class EventListControllerHttpPostTest extends EventListControllerTestSupp
 		ArrayNode eventsNode = body.putArray(EventListController.EVENTS.getName());
 		Event.TAG.setValue(eventsNode.addObject(), "a");
 		Event.TAG.setValue(eventsNode.addObject(), "b");
-		when(auth.getPrincipal()).thenReturn(user.asIdentity());
+		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
 		when(buckets.findBucket(bucket.getId())).thenReturn(bucket);
 		when(dispatcher.dispatch(commandArg.capture())).thenReturn(commandId);
 		Result result = call(bucket, body);
@@ -75,7 +76,7 @@ public class EventListControllerHttpPostTest extends EventListControllerTestSupp
 		ArgumentCaptor<CreateEventCommand> commandArg = ArgumentCaptor.forClass(CreateEventCommand.class);
 		Event.TIMESTAMP.setValue(body, now);
 		Event.TAG.setValue(body, tag);
-		when(auth.getPrincipal()).thenReturn(user.asIdentity());
+		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
 		when(buckets.findBucket(bucket.getId())).thenReturn(bucket);
 		when(dispatcher.dispatch(commandArg.capture())).thenReturn(commandId);
 		Result result = call(bucket, body);
@@ -89,7 +90,7 @@ public class EventListControllerHttpPostTest extends EventListControllerTestSupp
 
 	@Test
 	public void testCreateEventBucketNotFound() {
-		when(auth.getPrincipal()).thenReturn(user.asIdentity());
+		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
 		when(buckets.findBucket(bucket.getId())).thenReturn(null);
 		Result result = call(bucket, body);
 		assertThat(result).hasStatus(NOT_FOUND);
@@ -97,7 +98,7 @@ public class EventListControllerHttpPostTest extends EventListControllerTestSupp
 
 	@Test
 	public void testCreateEventUnauthorized() {
-		when(auth.getPrincipal()).thenReturn(null);
+		when(auth.current()).thenReturn(null);
 		when(buckets.findBucket(bucket.getId())).thenReturn(bucket);
 		Result result = call(bucket, body);
 		assertThat(result).hasStatus(UNAUTHORIZED);
@@ -105,7 +106,7 @@ public class EventListControllerHttpPostTest extends EventListControllerTestSupp
 
 	@Test
 	public void testCreateEventForbidden() {
-		when(auth.getPrincipal()).thenReturn(new Identity());
+		when(auth.current()).thenReturn(new Authorization(new Identity()));
 		when(buckets.findBucket(bucket.getId())).thenReturn(bucket);
 		Result result = call(bucket, body);
 		assertThat(result).hasStatus(FORBIDDEN);

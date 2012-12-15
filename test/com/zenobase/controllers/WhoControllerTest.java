@@ -13,11 +13,12 @@ import com.google.inject.Singleton;
 
 import com.zenobase.models.User;
 import com.zenobase.models.UserInfo;
+import com.zenobase.oauth.Authorization;
 import com.zenobase.services.UserRepository;
 
 public class WhoControllerTest extends ControllerTestSupport {
 
-	private final SecurityContext auth = mock(SecurityContext.class);
+	private final AuthorizationContext auth = mock(AuthorizationContext.class);
 	private final UserRepository users = mock(UserRepository.class);
 	private final User user = new User("tester");
 
@@ -26,7 +27,7 @@ public class WhoControllerTest extends ControllerTestSupport {
 		start(new AbstractModule() {
 			@Override
 			protected void configure() {
-				bind(SecurityContext.class).toInstance(auth);
+				bind(AuthorizationContext.class).toInstance(auth);
 				bind(UserRepository.class).toInstance(users);
 				bind(WhoController.class).in(Singleton.class);
 			}
@@ -35,14 +36,14 @@ public class WhoControllerTest extends ControllerTestSupport {
 
 	@Test
 	public void testUnknown() {
-		when(auth.getPrincipal()).thenReturn(null);
+		when(auth.current()).thenReturn(null);
 		Result result = call();
 		assertThat(result).hasStatus(NO_CONTENT).isEmpty();
 	}
 
 	@Test
 	public void testGuest() {
-		when(auth.getPrincipal()).thenReturn(user.asIdentity());
+		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
 		when(users.find(user.asIdentity())).thenReturn(null);
 		Result result = call();
 		assertThat(result).hasStatus(OK).hasContent(user.asIdentity().toJson());
@@ -50,7 +51,7 @@ public class WhoControllerTest extends ControllerTestSupport {
 
 	@Test
 	public void testUser() {
-		when(auth.getPrincipal()).thenReturn(user.asIdentity());
+		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
 		when(users.find(user.asIdentity())).thenReturn(user);
 		Result result = call();
 		assertThat(result).hasStatus(OK).hasContent(new UserInfo(user).toJson());

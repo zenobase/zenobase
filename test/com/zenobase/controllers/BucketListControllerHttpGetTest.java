@@ -12,13 +12,14 @@ import com.google.common.collect.ImmutableList;
 import com.zenobase.models.Bucket;
 import com.zenobase.models.BucketList;
 import com.zenobase.models.Identity;
+import com.zenobase.oauth.Authorization;
 
 public class BucketListControllerHttpGetTest extends BucketListControllerTestSupport {
 
 	@Test
 	public void testGetBucketList() {
 		BucketList list = new BucketList(ImmutableList.<Bucket>of(), 0, buckets);
-		when(auth.getPrincipal()).thenReturn(user.asIdentity());
+		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
 		when(buckets.findBuckets(user.asIdentity(), 0, 10)).thenReturn(list);
 		Result result = call(user.getId(), 0, 10);
 		assertThat(result).hasStatus(OK).hasContent(list.toJson());
@@ -26,14 +27,14 @@ public class BucketListControllerHttpGetTest extends BucketListControllerTestSup
 
 	@Test
 	public void testGetBucketListNotSignedIn() {
-		when(auth.getPrincipal()).thenReturn(null);
+		when(auth.current()).thenReturn(null);
 		Result result = call(user.getId(), 0, 10);
 		assertThat(result).hasStatus(UNAUTHORIZED);
 	}
 
 	@Test
 	public void testGetBucketListForbidden() {
-		when(auth.getPrincipal()).thenReturn(new Identity());
+		when(auth.current()).thenReturn(new Authorization(new Identity()));
 		Result result = call(user.getId(), 0, 10);
 		assertThat(result).hasStatus(FORBIDDEN);
 	}
@@ -41,7 +42,7 @@ public class BucketListControllerHttpGetTest extends BucketListControllerTestSup
 	@Test
 	public void testGetCompleteBucketListSignedInAsAdmin() {
 		BucketList list = new BucketList(ImmutableList.<Bucket>of(), 0, buckets);
-		when(auth.getPrincipal()).thenReturn(user.asIdentity());
+		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
 		when(users.isSuperuser(user.asIdentity())).thenReturn(true);
 		when(buckets.findBuckets(0, 10)).thenReturn(list);
 		Result result = call(null, 0, 10);
@@ -50,7 +51,7 @@ public class BucketListControllerHttpGetTest extends BucketListControllerTestSup
 
 	@Test
 	public void testDownloadCompleteBucketListAsAdmin() {
-		when(auth.getPrincipal()).thenReturn(user.asIdentity());
+		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
 		when(users.isSuperuser(user.asIdentity())).thenReturn(true);
 		Result result = call(null, 0, Integer.MAX_VALUE);
 		assertThat(result).hasStatus(OK).hasContentType("text/plain");
@@ -58,7 +59,7 @@ public class BucketListControllerHttpGetTest extends BucketListControllerTestSup
 
 	@Test
 	public void testGetCompleteBucketLisForbidden() {
-		when(auth.getPrincipal()).thenReturn(user.asIdentity());
+		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
 		Result result = call(null, 0, 10);
 		assertThat(result).hasStatus(FORBIDDEN);
 	}

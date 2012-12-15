@@ -12,8 +12,8 @@ import com.zenobase.commands.DeleteEventCommand;
 import com.zenobase.commands.UpdateEventCommand;
 import com.zenobase.models.Bucket;
 import com.zenobase.models.Event;
-import com.zenobase.models.Identity;
 import com.zenobase.models.Permission;
+import com.zenobase.oauth.Authorization;
 import com.zenobase.services.BucketRepository;
 import com.zenobase.services.CommandDispatcher;
 
@@ -24,22 +24,22 @@ public class EventController extends ControllerSupport {
 	private final CommandDispatcher dispatcher;
 
 	@Inject
-    public EventController(SecurityContext security, BucketRepository buckets, CommandDispatcher dispatcher) {
+    public EventController(AuthorizationContext security, BucketRepository buckets, CommandDispatcher dispatcher) {
 		super(security);
 		this.buckets = buckets;
 		this.dispatcher = dispatcher;
 	}
 
 	public Result get(String bucketId, String eventId) {
-    	Identity principal = getSecurityContext().getPrincipal();
-    	if (principal == null) {
+    	Authorization auth = getCurrentAuthorization();
+    	if (auth == null) {
     		return unauthorized();
     	}
 		Bucket bucket = buckets.findBucket(bucketId);
     	if (bucket == null) {
     		return notFound();
     	}
-    	if (bucket.getPermission(principal) == Permission.NONE) {
+    	if (!bucket.isPermitted(auth, Permission.USE)) {
     		return forbidden();
     	}
     	Event event = buckets.findEvent(bucketId, eventId);
@@ -51,15 +51,15 @@ public class EventController extends ControllerSupport {
 
 	@BodyParser.Of(BodyParser.Json.class)
 	public Result update(String bucketId, String eventId) {
-		Identity principal = getSecurityContext().getPrincipal();
-		if (principal == null) {
+		Authorization auth = getCurrentAuthorization();
+		if (auth == null) {
 			return unauthorized();
 		}
     	Bucket bucket = buckets.findBucket(bucketId);
     	if (bucket == null) {
     		return notFound("bucket not found");
     	}
-    	if (bucket.getPermission(principal) != Permission.ALL) {
+    	if (!bucket.isPermitted(auth, Permission.ALL)) {
     		return forbidden();
     	}
     	Event event = buckets.findEvent(bucketId, eventId);
@@ -67,9 +67,9 @@ public class EventController extends ControllerSupport {
     		return notFound("event not found");
     	}
     	Event updated = new Event(body());
-		updated.setValue(Event.AUTHOR, principal);
+		updated.setValue(Event.AUTHOR, auth.getPrincipal());
 		try {
-			String commandId = dispatcher.dispatch(new UpdateEventCommand(principal, bucketId, event, updated));
+			String commandId = dispatcher.dispatch(new UpdateEventCommand(auth.getPrincipal(), bucketId, event, updated));
 			return success(commandId);
 		} catch (VersionConflictEngineException e) {
 			return conflict("event is stale");
@@ -77,22 +77,22 @@ public class EventController extends ControllerSupport {
     }
 
     public Result delete(String bucketId, String eventId) {
-    	Identity principal = getSecurityContext().getPrincipal();
-		if (principal == null) {
+    	Authorization auth = getCurrentAuthorization();
+		if (auth == null) {
 			return unauthorized();
 		}
     	Bucket bucket = buckets.findBucket(bucketId);
     	if (bucket == null) {
     		return notFound();
     	}
-    	if (bucket.getPermission(principal) != Permission.ALL) {
+    	if (!bucket.isPermitted(auth, Permission.ALL)) {
     		return forbidden();
     	}
     	Event event = buckets.findEvent(bucket.getId(), eventId);
     	if (event == null) {
     		return notFound();
     	}
-    	String commandId = dispatcher.dispatch(new DeleteEventCommand(principal, bucketId, event));
+    	String commandId = dispatcher.dispatch(new DeleteEventCommand(auth.getPrincipal(), bucketId, event));
     	return success(commandId);
     }
 }

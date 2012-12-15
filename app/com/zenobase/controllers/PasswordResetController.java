@@ -22,7 +22,7 @@ public class PasswordResetController extends ControllerSupport {
 	private final PasswordResetMailer resetMailer;
 
 	@Inject
-	public PasswordResetController(SecurityContext security, UserRepository users, PasswordResetMailer resetMailer) {
+	public PasswordResetController(AuthorizationContext security, UserRepository users, PasswordResetMailer resetMailer) {
 		super(security);
 		this.users = users;
 		this.resetMailer = resetMailer;

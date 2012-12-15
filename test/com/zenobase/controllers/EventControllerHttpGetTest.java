@@ -13,6 +13,7 @@ import com.zenobase.models.Bucket;
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
 import com.zenobase.models.Permission;
+import com.zenobase.oauth.Authorization;
 
 public class EventControllerHttpGetTest extends EventControllerTestSupport {
 
@@ -28,7 +29,7 @@ public class EventControllerHttpGetTest extends EventControllerTestSupport {
 
 	@Test
 	public void testGetEvent() {
-		when(auth.getPrincipal()).thenReturn(user.asIdentity());
+		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
 		when(buckets.findBucket(bucket.getId())).thenReturn(bucket);
 		when(buckets.findEvent(bucket.getId(), event.getId())).thenReturn(event);
 		Result result = call(bucket, event);
@@ -37,7 +38,7 @@ public class EventControllerHttpGetTest extends EventControllerTestSupport {
 
 	@Test
 	public void testGetEventBucketNotFound() {
-		when(auth.getPrincipal()).thenReturn(user.asIdentity());
+		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
 		when(buckets.findBucket(bucket.getId())).thenReturn(null);
 		Result result = call(bucket, event);
 		assertThat(result).hasStatus(NOT_FOUND);
@@ -45,7 +46,7 @@ public class EventControllerHttpGetTest extends EventControllerTestSupport {
 
 	@Test
 	public void testGetEventNotFound() {
-		when(auth.getPrincipal()).thenReturn(user.asIdentity());
+		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
 		when(buckets.findBucket(bucket.getId())).thenReturn(bucket);
 		when(buckets.findEvent(bucket.getId(), event.getId())).thenReturn(null);
 		Result result = call(bucket, event);
@@ -54,7 +55,7 @@ public class EventControllerHttpGetTest extends EventControllerTestSupport {
 
 	@Test
 	public void testGetEventUnauthorized() {
-		when(auth.getPrincipal()).thenReturn(null);
+		when(auth.current()).thenReturn(null);
 		when(buckets.findBucket(bucket.getId())).thenReturn(bucket);
 		when(buckets.findEvent(bucket.getId(), event.getId())).thenReturn(event);
 		Result result = call(bucket, event);
@@ -63,7 +64,7 @@ public class EventControllerHttpGetTest extends EventControllerTestSupport {
 
 	@Test
 	public void testGetEventForbidden() {
-		when(auth.getPrincipal()).thenReturn(new Identity());
+		when(auth.current()).thenReturn(new Authorization(new Identity()));
 		when(buckets.findBucket(bucket.getId())).thenReturn(bucket);
 		when(buckets.findEvent(bucket.getId(), event.getId())).thenReturn(event);
 		Result result = call(bucket, event);

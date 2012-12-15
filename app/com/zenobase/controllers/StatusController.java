@@ -19,7 +19,7 @@ public class StatusController extends ControllerSupport {
 	private final CommandRepository history;
 
 	@Inject
-	public StatusController(SecurityContext security, IndexManager manager, CommandRepository history) {
+	public StatusController(AuthorizationContext security, IndexManager manager, CommandRepository history) {
 		super(security);
 		this.manager = manager;
 		this.history = history;

@@ -29,7 +29,7 @@ public class StatusControllerTest extends ControllerTestSupport {
 		start(new AbstractModule() {
 			@Override
 			protected void configure() {
-				bind(SecurityContext.class).toInstance(mock(SecurityContext.class));
+				bind(AuthorizationContext.class).toInstance(mock(AuthorizationContext.class));
 				bind(IndexManager.class).toInstance(manager);
 				bind(CommandRepository.class).toInstance(history);
 				bind(StatusController.class).in(Singleton.class);

@@ -11,9 +11,9 @@ import com.zenobase.commands.CloseAccountCommandBuilder;
 import com.zenobase.commands.Command;
 import com.zenobase.commands.CreateUserCommand;
 import com.zenobase.mail.VerificationMailer;
-import com.zenobase.models.Identity;
 import com.zenobase.models.User;
 import com.zenobase.models.UserInfo;
+import com.zenobase.oauth.Authorization;
 import com.zenobase.services.BucketRepository;
 import com.zenobase.services.CommandDispatcher;
 import com.zenobase.services.UserRepository;
@@ -27,7 +27,7 @@ public class AccountController extends ControllerSupport {
 	private final VerificationMailer mailer;
 
 	@Inject
-	public AccountController(SecurityContext security, BucketRepository buckets,
+	public AccountController(AuthorizationContext security, BucketRepository buckets,
 		UserRepository users, CommandDispatcher dispatcher, VerificationMailer mailer) {
 
 		super(security);
@@ -46,29 +46,32 @@ public class AccountController extends ControllerSupport {
 		if (users.exists(form.getUsername())) {
 			return conflict("user exists");
 		}
-		Identity principal = getSecurityContext().getPrincipal(true);
-		final User user = new User(principal.getId(), form.getUsername());
+		Authorization auth = getCurrentAuthorization();
+		if (auth == null || auth.getScope() != null) {
+			return unauthorized();
+		}
+		final User user = new User(auth.getPrincipal().getId(), form.getUsername());
 		user.setEmail(form.getEmail());
 		user.setHashedPassword(User.getHashedPassword(form.getPassword()));
 		user.setSuperuser(users.isEmpty());
-		dispatcher.dispatch(new CreateUserCommand(principal, user));
+		dispatcher.dispatch(new CreateUserCommand(auth.getPrincipal(), user));
 		mailer.send(user);
 		return created(new UserInfo(user).toJson());
 	}
 
 	public Result close(String name) {
-		Identity principal = getSecurityContext().getPrincipal();
-		if (principal == null) {
+		Authorization auth = getCurrentAuthorization();
+		if (auth == null) {
 			return unauthorized();
 		}
 		User user = users.find(name);
 		if (user == null) {
 			return notFound();
 		}
-		if (!user.is(principal) && !users.isSuperuser(principal)) {
+		if (auth.getScope() != null || !user.is(auth.getPrincipal()) && !users.isSuperuser(auth.getPrincipal())) {
 			return forbidden();
 		}
-		Command command = new CloseAccountCommandBuilder(principal, buckets, user).build();
+		Command command = new CloseAccountCommandBuilder(auth.getPrincipal(), buckets, user).build();
 		String commandId = dispatcher.dispatch(command);
 		return success(commandId);
 	}

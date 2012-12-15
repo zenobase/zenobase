@@ -11,10 +11,12 @@ import com.zenobase.actions.Timed;
 import com.zenobase.commands.ChangeUserEmailCommand;
 import com.zenobase.commands.ChangeUserPasswordCommand;
 import com.zenobase.commands.ChangeUserVerifiedCommand;
+import com.zenobase.commands.CreateAuthorizationCommand;
+import com.zenobase.json.Nodes;
 import com.zenobase.mail.VerificationMailer;
-import com.zenobase.models.Identity;
 import com.zenobase.models.User;
 import com.zenobase.models.UserProfile;
+import com.zenobase.oauth.Authorization;
 import com.zenobase.services.CommandDispatcher;
 import com.zenobase.services.UserRepository;
 
@@ -26,7 +28,7 @@ public class UserController extends ControllerSupport {
 	private final VerificationMailer mailer;
 
 	@Inject
-	public UserController(SecurityContext security, UserRepository users,
+	public UserController(AuthorizationContext security, UserRepository users,
 		CommandDispatcher dispatcher, VerificationMailer mailer) {
 
 		super(security);
@@ -36,15 +38,15 @@ public class UserController extends ControllerSupport {
 	}
 
 	public Result get(String name) {
-		Identity principal = getSecurityContext().getPrincipal();
-		if (principal == null) {
+		Authorization auth = getCurrentAuthorization();
+		if (auth == null) {
 			return unauthorized();
 		}
 		User user = users.find(name);
 		if (user == null) {
 			return notFound();
 		}
-		if (!(user.is(principal) || users.isSuperuser(principal))) {
+		if (auth.getScope() != null || !(user.is(auth.getPrincipal()) || users.isSuperuser(auth.getPrincipal()))) {
 			return forbidden();
 		}
 		return ok(new UserProfile(user).toJson());
@@ -71,18 +73,18 @@ public class UserController extends ControllerSupport {
 	}
 
 	private Result updateEmail(UpdateUserForm form, User user) {
-		Identity principal = getSecurityContext().getPrincipal();
-    	if (principal == null) {
+		Authorization auth = getCurrentAuthorization();
+    	if (auth == null) {
     		return unauthorized();
     	}
-    	if (!user.is(principal) && !users.isSuperuser(principal)) {
+    	if (auth.getScope() != null || !user.is(auth.getPrincipal()) && !users.isSuperuser(auth.getPrincipal())) {
     		return forbidden();
     	}
 		String email = form.getEmail();
     	if (!SignUpForm.isValidEmail(email)) {
     		return badRequest("invalid email address");
     	}
-		String commandId = dispatcher.dispatch(new ChangeUserEmailCommand(principal, user.getName(), user.getEmail(), email, user.isVerified(), user.isVerified() && user.getEmail().equals(email)));
+		String commandId = dispatcher.dispatch(new ChangeUserEmailCommand(auth.getPrincipal(), user.getName(), user.getEmail(), email, user.isVerified(), user.isVerified() && user.getEmail().equals(email)));
 		mailer.send(user.getName(), email);
 		return success(commandId);
 	}
@@ -103,9 +105,12 @@ public class UserController extends ControllerSupport {
 		if (!new PasswordResetKey(user, expires).validate(key)) {
 			return badRequest("invalid key");
 		}
+		Authorization auth = new Authorization(user.asIdentity(), null, null);
 		dispatcher.dispatch(new ChangeUserPasswordCommand(user.asIdentity(), user.getName(), user.getHashedPassword(), User.getHashedPassword(password)));
-		getSecurityContext().setPrincipal(user.asIdentity(), true);
-		return noContent();
+		dispatcher.dispatch(new CreateAuthorizationCommand(user.asIdentity(), auth));
+		ObjectNode result = Nodes.newObject();
+		result.put("access_token", auth.getId());
+		return ok(result);
 	}
 
 	private Result updateVerified(UpdateUserForm form, User user) {

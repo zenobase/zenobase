@@ -15,6 +15,7 @@ import com.zenobase.json.Schema;
 import com.zenobase.json.SchemaBuilder;
 import com.zenobase.json.TokenField;
 import com.zenobase.models.Identity;
+import com.zenobase.oauth.Authorization;
 
 public class Task extends DomainNode {
 
@@ -129,6 +130,11 @@ public class Task extends DomainNode {
 
 	protected <T> void setSetting(Field<T> field, T value) {
 		setValue(SETTINGS, field, value);
+	}
+
+	public boolean isPermitted(Authorization auth) {
+		return auth.getScope() == null
+			&& getPrincipal().equals(auth.getPrincipal());
 	}
 
 	public Task copy() {

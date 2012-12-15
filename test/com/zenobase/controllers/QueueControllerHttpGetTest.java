@@ -13,13 +13,14 @@ import com.zenobase.commands.Command;
 import com.zenobase.commands.TestCommand;
 import com.zenobase.models.CommandList;
 import com.zenobase.models.Identity;
+import com.zenobase.oauth.Authorization;
 
 public class QueueControllerHttpGetTest extends QueueControllerTestSupport {
 
 	@Test
 	public void testGet() {
 		CommandList history = new CommandList(Lists.<Command>newArrayList(new TestCommand(principal, "do it"), new TestCommand(principal, "do it again")), 10);
-		when(auth.getPrincipal()).thenReturn(principal);
+		when(auth.current()).thenReturn(new Authorization(principal));
 		when(users.isSuperuser(principal)).thenReturn(true);
 		when(commands.size()).thenReturn(history.size());
 		when(commands.findAll(0, 2, true)).thenReturn(history);
@@ -30,7 +31,7 @@ public class QueueControllerHttpGetTest extends QueueControllerTestSupport {
 	@Test
 	public void testFilteredGet() {
 		CommandList history = new CommandList(Lists.<Command>newArrayList(new TestCommand(principal, "do it"), new TestCommand(principal, "do it again")), 10);
-		when(auth.getPrincipal()).thenReturn(principal);
+		when(auth.current()).thenReturn(new Authorization(principal));
 		when(users.isSuperuser(principal)).thenReturn(true);
 		when(commands.size()).thenReturn(history.size());
 		when(commands.findAll(0, 2, true)).thenReturn(history);
@@ -41,14 +42,14 @@ public class QueueControllerHttpGetTest extends QueueControllerTestSupport {
 
 	@Test
 	public void testGetUnauthorized() {
-		when(auth.getPrincipal()).thenReturn(null);
+		when(auth.current()).thenReturn(null);
 		Result result = call(null, 0, 1);
 		assertThat(result).hasStatus(UNAUTHORIZED);
 	}
 
 	@Test
 	public void testGetForbidden() {
-		when(auth.getPrincipal()).thenReturn(new Identity());
+		when(auth.current()).thenReturn(new Authorization(new Identity()));
 		when(users.isSuperuser(principal)).thenReturn(false);
 		Result result = call(null, 0, 1);
 		assertThat(result).hasStatus(FORBIDDEN);

@@ -26,10 +26,12 @@ import com.zenobase.commands.CommandHandlerRegistry;
 import com.zenobase.commands.CommandParser;
 import com.zenobase.commands.CommandParserRegistry;
 import com.zenobase.commands.CompoundCommand;
+import com.zenobase.commands.CreateAuthorizationCommand;
 import com.zenobase.commands.CreateBucketCommand;
 import com.zenobase.commands.CreateEventCommand;
 import com.zenobase.commands.CreateTaskCommand;
 import com.zenobase.commands.CreateUserCommand;
+import com.zenobase.commands.DeleteAuthorizationCommand;
 import com.zenobase.commands.DeleteBucketCommand;
 import com.zenobase.commands.DeleteEventCommand;
 import com.zenobase.commands.DeleteTaskCommand;
@@ -41,15 +43,17 @@ import com.zenobase.commands.UpdateEventCommand;
 import com.zenobase.commands.UpdateTaskCommand;
 import com.zenobase.common.Globals;
 import com.zenobase.controllers.AccountController;
+import com.zenobase.controllers.AuthorizationContext;
+import com.zenobase.controllers.AuthorizationController;
+import com.zenobase.controllers.AuthorizationListController;
 import com.zenobase.controllers.BucketController;
 import com.zenobase.controllers.BucketListController;
 import com.zenobase.controllers.ControllerSupport;
 import com.zenobase.controllers.EventController;
 import com.zenobase.controllers.EventListController;
+import com.zenobase.controllers.OAuthController;
 import com.zenobase.controllers.PasswordResetController;
 import com.zenobase.controllers.QueueController;
-import com.zenobase.controllers.SecurityContext;
-import com.zenobase.controllers.SecurityController;
 import com.zenobase.controllers.StatusController;
 import com.zenobase.controllers.TagController;
 import com.zenobase.controllers.TaskController;
@@ -60,6 +64,7 @@ import com.zenobase.controllers.WhoController;
 import com.zenobase.mail.Mailer;
 import com.zenobase.mail.PasswordResetMailer;
 import com.zenobase.mail.VerificationMailer;
+import com.zenobase.services.AuthorizationRepository;
 import com.zenobase.services.BucketRepository;
 import com.zenobase.services.ClusterNodeFactory;
 import com.zenobase.services.CommandDispatcher;
@@ -110,9 +115,10 @@ public class Global extends GlobalSettings {
 				bind(Mailer.class).in(Singleton.class);
 				bind(VerificationMailer.class).in(Singleton.class);
 				bind(PasswordResetMailer.class).in(Singleton.class);
-				bind(SecurityContext.class).in(Singleton.class);
+				bind(AuthorizationContext.class).in(Singleton.class);
 				bind(Canonical.class).in(Singleton.class);
 				bind(TaskRepository.class).in(Singleton.class);
+				bind(AuthorizationRepository.class).in(Singleton.class);
 
 				Multibinder<CommandParser> parsers = Multibinder.newSetBinder(binder(), CommandParser.class);
 				parsers.addBinding().to(CreateBucketCommand.Parser.class);
@@ -132,6 +138,8 @@ public class Global extends GlobalSettings {
 				parsers.addBinding().to(UpdateTaskCommand.Parser.class);
 				parsers.addBinding().to(DeleteTaskCommand.Parser.class);
 				parsers.addBinding().to(CompoundCommand.Parser.class);
+				parsers.addBinding().to(CreateAuthorizationCommand.Parser.class);
+				parsers.addBinding().to(DeleteAuthorizationCommand.Parser.class);
 
 				Multibinder<CommandHandler<?>> handlers = Multibinder.newSetBinder(binder(), new TypeLiteral<CommandHandler<?>>() {});
 				handlers.addBinding().to(CreateBucketCommand.Handler.class);
@@ -150,6 +158,8 @@ public class Global extends GlobalSettings {
 				handlers.addBinding().to(CreateTaskCommand.Handler.class);
 				handlers.addBinding().to(UpdateTaskCommand.Handler.class);
 				handlers.addBinding().to(DeleteTaskCommand.Handler.class);
+				handlers.addBinding().to(CreateAuthorizationCommand.Handler.class);
+				handlers.addBinding().to(DeleteAuthorizationCommand.Handler.class);
 
 				Multibinder<TaskManager> managers = Multibinder.newSetBinder(binder(), new TypeLiteral<TaskManager>() {});
 				managers.addBinding().to(DemoTaskManager.class);
@@ -183,13 +193,15 @@ public class Global extends GlobalSettings {
 				bind(TagController.class).in(Singleton.class);
 				bind(PasswordResetController.class).in(Singleton.class);
 				bind(QueueController.class).in(Singleton.class);
-				bind(SecurityController.class).in(Singleton.class);
 				bind(StatusController.class).in(Singleton.class);
 				bind(UserController.class).in(Singleton.class);
 				bind(UserListController.class).in(Singleton.class);
 				bind(WhoController.class).in(Singleton.class);
 				bind(TaskController.class).in(Singleton.class);
 				bind(TaskListController.class).in(Singleton.class);
+				bind(OAuthController.class).in(Singleton.class);
+				bind(AuthorizationController.class).in(Singleton.class);
+				bind(AuthorizationListController.class).in(Singleton.class);
 
 				requestInjection(Global.this);
 			}

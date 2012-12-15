@@ -16,9 +16,9 @@ import com.zenobase.commands.DeleteBucketCommand;
 import com.zenobase.commands.UpdateBucketCommand;
 import com.zenobase.json.Nodes;
 import com.zenobase.models.Bucket;
-import com.zenobase.models.Identity;
 import com.zenobase.models.Permission;
 import com.zenobase.models.User;
+import com.zenobase.oauth.Authorization;
 import com.zenobase.services.BucketRepository;
 import com.zenobase.services.CommandDispatcher;
 import com.zenobase.services.UserRepository;
@@ -31,7 +31,7 @@ public class BucketController extends ControllerSupport {
 	private final UserRepository users;
 
 	@Inject
-	public BucketController(SecurityContext security, CommandDispatcher dispatcher,
+	public BucketController(AuthorizationContext security, CommandDispatcher dispatcher,
 		BucketRepository buckets, UserRepository users) {
 
 		super(security);
@@ -41,13 +41,13 @@ public class BucketController extends ControllerSupport {
 	}
 
 	public Result get(String bucketId) {
-		Identity principal = getSecurityContext().getPrincipal();
+		Authorization auth = getCurrentAuthorization();
 		Bucket bucket = buckets.findBucket(bucketId);
 		if (bucket == null) {
 			return notFound();
 		}
-    	if (bucket.getPermission(principal) == Permission.NONE) {
-    		return principal == null ? unauthorized() : forbidden();
+    	if (!bucket.isPermitted(auth, Permission.USE)) {
+    		return auth == null ? unauthorized() : forbidden();
     	}
 		if (bucket.getWidgets().isEmpty()) {
 			setDefaultDashboard(bucket);
@@ -105,15 +105,15 @@ public class BucketController extends ControllerSupport {
 
 	@BodyParser.Of(BodyParser.Json.class)
 	public Result update(String bucketId) {
-		Identity principal = getSecurityContext().getPrincipal();
-		if (principal == null) {
+		Authorization auth = getCurrentAuthorization();
+		if (auth == null) {
 			return unauthorized();
 		}
     	Bucket bucket = buckets.findBucket(bucketId);
     	if (bucket == null) {
     		return notFound("bucket not found");
     	}
-    	if (bucket.getPermission(principal) != Permission.ALL) {
+    	if (!bucket.isPermitted(auth, Permission.ALL)) {
     		return forbidden();
     	}
     	Bucket updated = new Bucket(body());
@@ -124,13 +124,13 @@ public class BucketController extends ControllerSupport {
 			return badRequest("bucket owner can't change");
 		}
 		if (updated.getPrincipals().size() > 1) {
-			User user = users.find(principal);
+			User user = users.find(auth.getPrincipal());
 			if (user == null || !user.isVerified()) {
 				return forbidden("not permitted to change permissions on this bucket");
 			}
 		}
 		try {
-			String commandId = dispatcher.dispatch(new UpdateBucketCommand(principal, bucket, updated));
+			String commandId = dispatcher.dispatch(new UpdateBucketCommand(auth.getPrincipal(), bucket, updated));
 			return success(commandId);
 		} catch (VersionConflictEngineException e) {
 			return conflict("bucket is stale");
@@ -138,18 +138,18 @@ public class BucketController extends ControllerSupport {
     }
 
     public Result delete(String bucketId) {
-    	Identity principal = getSecurityContext().getPrincipal();
-		if (principal == null) {
+    	Authorization auth = getCurrentAuthorization();
+		if (auth == null) {
 			return unauthorized();
 		}
     	Bucket bucket = buckets.findBucket(bucketId);
     	if (bucket == null) {
     		return notFound();
     	}
-    	if (bucket.getPermission(principal) != Permission.ALL && !users.isSuperuser(principal)) {
+    	if (!bucket.isPermitted(auth, Permission.ALL) && !users.isSuperuser(auth.getPrincipal())) {
     		return forbidden();
     	}
-    	String commandId = dispatcher.dispatch(new DeleteBucketCommand(principal, bucket));
+    	String commandId = dispatcher.dispatch(new DeleteBucketCommand(auth.getPrincipal(), bucket));
     	return success(commandId);
     }
 }

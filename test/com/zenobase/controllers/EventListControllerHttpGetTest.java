@@ -15,6 +15,7 @@ import com.zenobase.json.Nodes;
 import com.zenobase.models.Bucket;
 import com.zenobase.models.Identity;
 import com.zenobase.models.Permission;
+import com.zenobase.oauth.Authorization;
 import com.zenobase.search.EventSearch;
 
 public class EventListControllerHttpGetTest extends EventListControllerTestSupport {
@@ -31,7 +32,7 @@ public class EventListControllerHttpGetTest extends EventListControllerTestSuppo
 		String filterExpression = "tag:value";
 		String widgetExpression = "id:xyz,type:list";
 		EventSearch expected = new EventSearch().addFilter(filterExpression).addWidget(widgetExpression);
-		when(auth.getPrincipal()).thenReturn(user.asIdentity());
+		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
 		when(buckets.findBucket(bucket.getId())).thenReturn(bucket);
 		ObjectNode fakeResult = Nodes.newObject();
 		fakeResult.put("test", true);
@@ -42,7 +43,7 @@ public class EventListControllerHttpGetTest extends EventListControllerTestSuppo
 
 	@Test
 	public void testExportEvents() {
-		when(auth.getPrincipal()).thenReturn(user.asIdentity());
+		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
 		when(buckets.findBucket(bucket.getId())).thenReturn(bucket);
 		when(buckets.findEvents(Mockito.eq(bucket.getId()), Mockito.any(EventSearch.class))).thenReturn(Nodes.newObject());
 		Result result = call(bucket, "");
@@ -51,7 +52,7 @@ public class EventListControllerHttpGetTest extends EventListControllerTestSuppo
 
 	@Test
 	public void testSearchEventsBucketNotFound() {
-		when(auth.getPrincipal()).thenReturn(user.asIdentity());
+		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
 		when(buckets.findBucket(bucket.getId())).thenReturn(null);
 		Result result = call(bucket, "");
 		assertThat(result).hasStatus(NOT_FOUND);
@@ -59,7 +60,7 @@ public class EventListControllerHttpGetTest extends EventListControllerTestSuppo
 
 	@Test
 	public void testSearchEventsUnauthorized() {
-		when(auth.getPrincipal()).thenReturn(null);
+		when(auth.current()).thenReturn(null);
 		when(buckets.findBucket(bucket.getId())).thenReturn(bucket);
 		Result result = call(bucket, "");
 		assertThat(result).hasStatus(UNAUTHORIZED);
@@ -67,7 +68,7 @@ public class EventListControllerHttpGetTest extends EventListControllerTestSuppo
 
 	@Test
 	public void testSearchEventsForbidden() {
-		when(auth.getPrincipal()).thenReturn(new Identity());
+		when(auth.current()).thenReturn(new Authorization(new Identity()));
 		when(buckets.findBucket(bucket.getId())).thenReturn(bucket);
 		Result result = call(bucket, "");
 		assertThat(result).hasStatus(FORBIDDEN);

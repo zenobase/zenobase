@@ -18,6 +18,7 @@ import com.zenobase.json.Schema;
 import com.zenobase.json.SchemaBuilder;
 import com.zenobase.json.TokenField;
 import com.zenobase.models.Identity;
+import com.zenobase.oauth.Authorization;
 
 public abstract class Command extends DomainNode {
 
@@ -82,6 +83,11 @@ public abstract class Command extends DomainNode {
 	}
 
 	public abstract Command reverse(Identity principal);
+
+	public boolean isPermitted(Authorization auth) {
+		return auth.getScope() == null
+			&& getPrincipal().equals(auth.getPrincipal());
+	}
 
 	@Override
 	public boolean equals(Object that) {

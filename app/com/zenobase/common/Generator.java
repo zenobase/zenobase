@@ -12,6 +12,6 @@ public class Generator {
 	}
 
 	public static String id() {
-		return String.format("%10s", new BigInteger(50, rand).toString(32)).replace(' ', '0');
+		return String.format("%10s", new BigInteger(50, rand).toString(32)).replace(' ', '0'); // TODO use 100bits (%20s)?
 	}
 }

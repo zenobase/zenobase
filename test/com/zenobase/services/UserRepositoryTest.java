@@ -10,7 +10,6 @@ import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
-import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 
 import com.zenobase.common.Callback;
@@ -26,7 +25,7 @@ public class UserRepositoryTest extends ElasticSearchTestSupport {
 	}
 
 	@Test
-	public void testCrudUser() {
+	public void testCreateReadUpdateDelete() {
 
 		// create user
 		User user = new User("tester");
@@ -59,35 +58,26 @@ public class UserRepositoryTest extends ElasticSearchTestSupport {
 	}
 
 	@Test
-	public void testFindUsers() {
-
-		List<User> users = newUserList(20);
-		for (User user : users) {
-			repository.store(user);
-		}
-
+	public void testFindAll() {
+		List<User> users = fill(20);
 		assertThat(repository.find(0, 10)).hasSize(users.size()).isEqualTo(users.subList(0, 10));
 		assertThat(repository.find(10, 10)).hasSize(users.size()).isEqualTo(users.subList(10, 20));
 	}
 
 	@Test
-	public void testScrollUsers() {
-
-		List<User> users = newUserList(15); // large enough to require scrolling
-		for (User user : users) {
-			repository.store(user);
-		}
-
+	public void testFindWithCallback() {
+		List<User> users = fill(15); // large enough to require scrolling
 		Callback<User> callback = mock(Callback.class);
 		repository.find(callback);
 		verify(callback, times(users.size())).call(any(User.class));
 	}
 
-	private static List<User> newUserList(int size) {
-		Preconditions.checkArgument(size < 1000);
+	private List<User> fill(int size) {
 		List<User> users = Lists.newArrayListWithCapacity(size);
 		for (int i = 0; i < size; ++i) {
-			users.add(new User(String.format("user%03d", i + 1)));
+			User user = new User(String.format("user%03d", i + 1));
+			users.add(user);
+			repository.store(user);
 		}
 		return users;
 	}

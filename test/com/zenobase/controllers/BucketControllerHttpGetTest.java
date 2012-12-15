@@ -14,6 +14,7 @@ import com.zenobase.json.Nodes;
 import com.zenobase.models.Bucket;
 import com.zenobase.models.Identity;
 import com.zenobase.models.Permission;
+import com.zenobase.oauth.Authorization;
 
 public class BucketControllerHttpGetTest extends BucketControllerTestSupport {
 
@@ -29,7 +30,7 @@ public class BucketControllerHttpGetTest extends BucketControllerTestSupport {
 	@Test
 	public void testGetBucketWithDashboard() {
 		bucket.setWidgets(ImmutableList.of(Nodes.newObject()));
-		when(auth.getPrincipal()).thenReturn(user.asIdentity());
+		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
 		when(buckets.findBucket(bucket.getId())).thenReturn(bucket.copy());
 		Result result = call(bucket.getId());
 		assertThat(result).hasStatus(OK).hasContent(bucket.toJson());
@@ -37,7 +38,7 @@ public class BucketControllerHttpGetTest extends BucketControllerTestSupport {
 
 	@Test
 	public void testGetBucketWithDefaultDashboard() {
-		when(auth.getPrincipal()).thenReturn(user.asIdentity());
+		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
 		when(buckets.findBucket(bucket.getId())).thenReturn(bucket.copy());
 		Result result = call(bucket.getId());
 		BucketController.setDefaultDashboard(bucket);
@@ -46,14 +47,14 @@ public class BucketControllerHttpGetTest extends BucketControllerTestSupport {
 
 	@Test
 	public void testGetBucketNotFound() {
-		when(auth.getPrincipal()).thenReturn(user.asIdentity());
+		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
 		Result result = call(bucket.getId());
 		assertThat(result).hasStatus(NOT_FOUND);
 	}
 
 	@Test
 	public void testGetBucketUnauthorized() {
-		when(auth.getPrincipal()).thenReturn(null);
+		when(auth.current()).thenReturn(null);
 		when(buckets.findBucket(bucket.getId())).thenReturn(bucket.copy());
 		Result result = call(bucket.getId());
 		assertThat(result).hasStatus(UNAUTHORIZED);
@@ -61,7 +62,7 @@ public class BucketControllerHttpGetTest extends BucketControllerTestSupport {
 
 	@Test
 	public void testGetBucketForbidden() {
-		when(auth.getPrincipal()).thenReturn(new Identity());
+		when(auth.current()).thenReturn(new Authorization(new Identity()));
 		when(buckets.findBucket(bucket.getId())).thenReturn(bucket.copy());
 		Result result = call(bucket.getId());
 		assertThat(result).hasStatus(FORBIDDEN);

@@ -15,6 +15,7 @@ import com.zenobase.common.Generator;
 import com.zenobase.models.Bucket;
 import com.zenobase.models.Identity;
 import com.zenobase.models.Permission;
+import com.zenobase.oauth.Authorization;
 
 public class BucketControllerHttpDeleteTest extends BucketControllerTestSupport {
 
@@ -31,7 +32,7 @@ public class BucketControllerHttpDeleteTest extends BucketControllerTestSupport 
 	@Test
 	public void testDeleteBucket() {
 		String commandId = Generator.id();
-		when(auth.getPrincipal()).thenReturn(user.asIdentity());
+		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
 		when(buckets.findBucket(bucket.getId())).thenReturn(bucket.copy());
 		when(dispatcher.dispatch(any(DeleteBucketCommand.class))).thenReturn(commandId);
 		Result result = call(bucket.getId());
@@ -42,7 +43,7 @@ public class BucketControllerHttpDeleteTest extends BucketControllerTestSupport 
 	public void testDeleteBucketSignedInAsSuperuser() {
 		String commandId = Generator.id();
 		Identity superuser = new Identity();
-		when(auth.getPrincipal()).thenReturn(superuser);
+		when(auth.current()).thenReturn(new Authorization(superuser));
 		when(users.isSuperuser(superuser)).thenReturn(true);
 		when(buckets.findBucket(bucket.getId())).thenReturn(bucket.copy());
 		when(dispatcher.dispatch(any(DeleteBucketCommand.class))).thenReturn(commandId);
@@ -52,7 +53,7 @@ public class BucketControllerHttpDeleteTest extends BucketControllerTestSupport 
 
 	@Test
 	public void testDeleteBucketNotFound() {
-		when(auth.getPrincipal()).thenReturn(user.asIdentity());
+		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
 		Result result = call(bucket.getId());
 		assertThat(result).hasStatus(NOT_FOUND);
 		verifyZeroInteractions(dispatcher);
@@ -68,7 +69,7 @@ public class BucketControllerHttpDeleteTest extends BucketControllerTestSupport 
 
 	@Test
 	public void testDeleteBucketNotPermitted() {
-		when(auth.getPrincipal()).thenReturn(new Identity());
+		when(auth.current()).thenReturn(new Authorization(new Identity()));
 		when(buckets.findBucket(bucket.getId())).thenReturn(bucket.copy());
 		Result result = call(bucket.getId());
 		assertThat(result).hasStatus(FORBIDDEN);

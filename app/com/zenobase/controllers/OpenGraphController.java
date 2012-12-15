@@ -18,7 +18,7 @@ import com.zenobase.io.OpenGraph;
 public class OpenGraphController extends ControllerSupport {
 
 	@Inject
-	public OpenGraphController(SecurityContext security) {
+	public OpenGraphController(AuthorizationContext security) {
 		super(security);
 	}
 

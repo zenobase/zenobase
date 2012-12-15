@@ -16,8 +16,8 @@ import com.zenobase.commands.Command;
 import com.zenobase.commands.DeleteTaskCommand;
 import com.zenobase.commands.UpdateTaskCommand;
 import com.zenobase.models.Bucket;
-import com.zenobase.models.Identity;
 import com.zenobase.models.Permission;
+import com.zenobase.oauth.Authorization;
 import com.zenobase.services.BucketRepository;
 import com.zenobase.services.CommandDispatcher;
 import com.zenobase.services.TaskRepository;
@@ -34,7 +34,7 @@ public class TaskController extends ControllerSupport {
 	private final BucketRepository buckets;
 
 	@Inject
-	public TaskController(SecurityContext security, CommandDispatcher dispatcher,
+	public TaskController(AuthorizationContext security, CommandDispatcher dispatcher,
 		TaskManagerRegistry registry, TaskRepository tasks, BucketRepository buckets) {
 
 		super(security);
@@ -45,15 +45,15 @@ public class TaskController extends ControllerSupport {
 	}
 
 	public Result get(String taskId) {
-		Identity principal = getSecurityContext().getPrincipal();
-		if (principal == null) {
+		Authorization auth = getCurrentAuthorization();
+		if (auth == null) {
 			return unauthorized();
 		}
 		Task task = tasks.findTask(taskId);
 		if (task == null) {
 			return notFound();
 		}
-		if (!task.getPrincipal().equals(principal)) {
+		if (!task.isPermitted(auth)) {
 			return forbidden();
 		}
 		if (isStale(task)) {
@@ -62,6 +62,11 @@ public class TaskController extends ControllerSupport {
     	return ok(task.sanitized().toJson());
     }
 
+	private boolean isStale(Task task) {
+		DateTime completed = Objects.firstNonNull(task.getCompleted(), new DateTime(0L));
+		return task.isEnabled() && Minutes.minutesBetween(completed, DateTime.now()).isGreaterThan(Minutes.ONE);
+	}
+
 	private void refresh(Task task) {
 		Logger.info("Refreshing: " + task.getId());
 		Bucket bucket = buckets.findBucket(task.getBucketId());
@@ -69,7 +74,7 @@ public class TaskController extends ControllerSupport {
 			task.setStatus(Task.Status.FAILED);
 			return;
 		}
-    	if (bucket.getPermission(task.getPrincipal()) != Permission.ALL) {
+    	if (!bucket.isPermitted(new Authorization(task.getPrincipal()), Permission.ALL)) {
 			task.setStatus(Task.Status.FAILED);
 			return;
     	}
@@ -84,34 +89,17 @@ public class TaskController extends ControllerSupport {
     	}
 	}
 
-	private boolean isStale(Task task) {
-		DateTime completed = Objects.firstNonNull(task.getCompleted(), new DateTime(0L));
-		return task.isEnabled() && Minutes.minutesBetween(completed, DateTime.now()).isGreaterThan(Minutes.ONE);
-	}
-
-	public Result run(String taskId) {
-		Identity principal = getSecurityContext().getPrincipal();
-		if (principal == null) {
-			return unauthorized();
-		}
-		Task task = tasks.findTask(taskId);
-		if (task == null) {
-			return notFound();
-		}
-    	return status(ACCEPTED);
-    }
-
     @BodyParser.Of(BodyParser.Json.class)
 	public Result update(String taskId) {
-		Identity principal = getSecurityContext().getPrincipal();
-		if (principal == null) {
+		Authorization auth = getCurrentAuthorization();
+		if (auth == null) {
 			return unauthorized();
 		}
 		Task task = tasks.findTask(taskId);
 		if (task == null) {
 			return notFound();
 		}
-    	if (!task.getPrincipal().equals(principal)) {
+    	if (!task.isPermitted(auth)) {
     		return forbidden();
     	}
     	TaskManager manager = registry.find(task.getType());
@@ -139,8 +127,8 @@ public class TaskController extends ControllerSupport {
     }
 
     public Result delete(String taskId) {
-    	Identity principal = getSecurityContext().getPrincipal();
-		if (principal == null) {
+		Authorization auth = getCurrentAuthorization();
+		if (auth == null) {
 			return unauthorized();
 		}
 		Task task = tasks.findTask(taskId);
@@ -148,10 +136,10 @@ public class TaskController extends ControllerSupport {
 			return notFound();
 		}
     	Bucket bucket = buckets.findBucket(task.getBucketId());
-    	if (bucket != null && bucket.getPermission(principal) != Permission.ALL) {
+    	if (bucket != null && !bucket.isPermitted(auth, Permission.ALL)) {
     		return forbidden();
     	}
-    	String commandId = dispatcher.dispatch(new DeleteTaskCommand(principal, task));
+    	String commandId = dispatcher.dispatch(new DeleteTaskCommand(auth.getPrincipal(), task));
     	return success(commandId);
     }
 }

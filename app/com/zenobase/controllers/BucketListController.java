@@ -12,6 +12,7 @@ import com.zenobase.io.BucketPrinter;
 import com.zenobase.models.Bucket;
 import com.zenobase.models.Identity;
 import com.zenobase.models.Permission;
+import com.zenobase.oauth.Authorization;
 import com.zenobase.services.BucketRepository;
 import com.zenobase.services.CommandDispatcher;
 import com.zenobase.services.UserRepository;
@@ -24,7 +25,7 @@ public class BucketListController extends ControllerSupport {
 	private final UserRepository users;
 
 	@Inject
-    public BucketListController(SecurityContext security, CommandDispatcher dispatcher,
+    public BucketListController(AuthorizationContext security, CommandDispatcher dispatcher,
     	BucketRepository buckets, UserRepository users) {
 
 		super(security);
@@ -34,14 +35,14 @@ public class BucketListController extends ControllerSupport {
 	}
 
 	public Result find(String identity, int offset, int limit) {
-    	Identity principal = getSecurityContext().getPrincipal();
-    	if (principal == null) {
+    	Authorization auth = getCurrentAuthorization();
+    	if (auth == null || auth.getScope() != null) {
     		return unauthorized();
     	}
     	if (identity != null) {
-    		return find(principal, new Identity(identity), offset, limit);
+    		return find(auth.getPrincipal(), new Identity(identity), offset, limit);
     	}
-        return find(principal, offset, limit);
+        return find(auth.getPrincipal(), offset, limit);
     }
 
     private Result find(Identity principal, Identity identity, int offset, int limit) {
@@ -80,16 +81,19 @@ public class BucketListController extends ControllerSupport {
 
     @BodyParser.Of(BodyParser.Json.class)
     public Result post() {
-    	Identity principal = getSecurityContext().getPrincipal(true);
+    	Authorization auth = getCurrentAuthorization();
+    	if (auth == null || auth.getScope() != null) {
+    		return unauthorized();
+    	}
 		CreateBucketForm form = new CreateBucketForm(body());
 		Bucket bucket = form.getId() != null ? new Bucket(form.getId()) : new Bucket();
 		bucket.setLabel(form.getLabel());
 		bucket.setDescription(form.getDescription());
-		bucket.addPermission(principal, Permission.ALL);
+		bucket.addPermission(auth.getPrincipal(), Permission.ALL);
 		if (!bucket.valid()) {
 			return badRequest("not valid");
 		}
-    	String commandId = dispatcher.dispatch(new CreateBucketCommand(principal, bucket));
+    	String commandId = dispatcher.dispatch(new CreateBucketCommand(auth.getPrincipal(), bucket));
         response().setHeader(LOCATION, com.zenobase.controllers.routes.BucketController.get(bucket.getId()).toString());
         return created(commandId);
     }

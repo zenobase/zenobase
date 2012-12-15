@@ -19,6 +19,21 @@
 		};
 	}]);
 
+	app.factory('localStorage', ['$window', function($window) {
+		var store = {};
+		return $window.localStorage || {
+			getItem : function(key) {
+				return store[key];
+			},
+			setItem : function(key, value) {
+				store[key] = value;
+			},
+			removeItem : function(key) {
+				delete store[key];				
+			}
+		};
+	}]);
+
 	app.factory('moment', function() {
 
 		// TODO see https://github.com/timrwood/moment/issues/537
@@ -52,6 +67,29 @@
 
 		return moment;
 	});
+
+	app.factory('token', ['$http', 'localStorage', function($http, localStorage) {
+		var key = 'access_token';
+		var get = function() {
+			return localStorage.getItem(key);
+		};
+		var set = function(token) {
+			if (token) {
+				localStorage.setItem(key, token)
+			} else {
+				localStorage.removeItem(key);				
+			}
+			configure(token);
+		};
+		var configure = function(token) {
+			$http.defaults.headers.common["Authorization"] = token ? "Bearer " + token : null;
+		};
+		configure(get());
+		return {
+			get : get,
+			set : set
+		}
+	}]);
 
 	app.factory('tracker', function() {
 		return {
@@ -97,10 +135,11 @@
 			.when('/users/:userId', { templateUrl : cacheBuster.rewrite('/partials/user.html') })
 			.when('/users/:userId/reset', { templateUrl : cacheBuster.rewrite('/partials/reset.html') })
 			.when('/users/:userId/verify', { templateUrl : cacheBuster.rewrite('/partials/verification.html') })
+			.when('/oauth/authorize', { templateUrl : cacheBuster.rewrite('/partials/oauth.html') })
 			.otherwise({ templateUrl : cacheBuster.rewrite('/partials/404.html') });
 	}]);
 
-	app.controller('ApplicationController', ['$scope', '$route', '$http', '$location', 'Alert', 'User', 'tracker', 'delay', function($scope, $route, $http, $location, Alert, User, tracker, delay) {
+	app.controller('ApplicationController', ['$scope', '$route', '$http', '$location', 'Alert', 'User', 'token', 'tracker', 'delay', function($scope, $route, $http, $location, Alert, User, token, tracker, delay) {
 
 		$scope.alert = new Alert();
 
@@ -128,8 +167,11 @@
 			$scope.$broadcast(event);
 		};
 		$scope.signOut = function() {
+			console.assert(token.get(), 'missing token');
 			$scope.alert.clear();
-			$http.post('/signout', { 'username' : $scope.user.getName() }).success(function(response, code) {
+			$http({ method : 'DELETE', url : '/authorizations/' + token.get() })
+				.success(function(response, code) {
+					token.set(null);
 					$scope.user = null;
 					if ($location.url() === '/') {
 						$route.reload();
@@ -313,7 +355,7 @@
 		});
 	}]);
 	
-	app.controller('SignInDialogController', ['$scope', '$http', '$location', '$route', 'User', 'tracker', function($scope, $http, $location, $route, User, tracker) {
+	app.controller('SignInDialogController', ['$scope', '$http', '$location', '$route', 'User', 'token', 'tracker', function($scope, $http, $location, $route, User, token, tracker) {
 
 		$scope.init = function() {
 			$scope.username = '';
@@ -324,24 +366,26 @@
 		};
 		$scope.data = function() {
 			return {
-				username : $scope.username,
-				password : $scope.password,
-				remember : $scope.remember
+				'grant_type' : 'password',
+				'username' : $scope.username,
+				'password' : $scope.password
 			};
 		};
 		$scope.signIn = function() {
-			$http.post('/signin', $scope.data())
+			$http.post('/oauth/token', $scope.data())
 				.success(function(response) {
-					$scope.$parent.user = new User(response);
+					console.assert(response.access_token, 'missing token in sign in response');
+					token.set(response.access_token);
 					$scope.closeDialog();
 					if ($location.url() === '/') {
+						$scope.whoami();
 						$location.url('/users/' + $scope.username);
 					} else {
 						$route.reload();
 					}
 				})
 				.error(function(response, code) {
-					if (code === 401) {
+					if (code < 500) {
 						$scope.message = 'The username or password you entered is incorrect.';
 					} else {
 						$scope.message = 'Unable to sign in, please try again later or contact support.';
@@ -441,7 +485,7 @@
 			});
 	}]);
 	
-	app.controller('PasswordResetController', ['$scope', '$http', '$location', '$routeParams', function($scope, $http, $location, $routeParams) {
+	app.controller('PasswordResetController', ['$scope', '$http', '$location', '$routeParams', 'token', function($scope, $http, $location, $routeParams, token) {
 
 		var userId = $routeParams.userId;
 		var key = $location.search()['key'];
@@ -460,6 +504,8 @@
 			}
 			$http.post('/users/' + userId, { 'key' : key, 'expires' : expires, 'password' : $scope.password })
 				.success(function(response) {
+					console.assert(response.access_token, 'missing access_token in password reset response');
+					token.set(response.access_token);
 					$scope.alert.show('Your password has been changed.', 'alert-success');
 					$location.url('/users/' + userId);
 					$scope.whoami();
@@ -472,10 +518,51 @@
 		$scope.init();
 	}]);
 	
+	app.controller('OAuthController', ['$scope', '$http', '$window', function($scope, $http, $window) {
+
+		var init = function() {
+			$scope.bucket = null;
+			$http.get('/buckets/', { 'identity' : $scope.userInfo['@id'], 'offset' : 0, 'limit' : 25 })
+				.success(function(response) {
+					$scope.buckets = response.buckets;
+					// TODO add 'new bucket' option
+				})
+				.error(function(response) {
+					$scope.message = 'Could not list buckets';
+				});		
+		};
+		var url = function(base, params) {
+			var separator = redirectUri.endsWith('?') || redirectUri.endsWith('#') ? '' : '#';
+			return base + separator + $.param(params);
+		};
+
+		$scope.allow = function() {
+			$scope.message = null;
+			var data = $location.search();
+			data.scope = $scope.bucket;
+			$http.post('/oauth/authorize', data)
+				.success(function(response) {
+					console.assert(response.access_token, 'missing access_token in authorize response');
+					$window.location(redirectUri + '?access_token=' + response.access_token);
+				})
+				.error(function(response) {
+					if (response.error && response.error != 'invalid_redirect_uri') {
+						$window.location(url(redirectUri, { 'error' : response.error, 'error_message' : response.error_message }));
+					}
+					$scope.message = 'Could not authorize.';
+				});
+		};
+		$scope.deny = function(errorCode) {
+			$window.location(url($location.search()['redirect_uri'], { 'error' : errorCode }));
+		};
+
+		$scope.init();
+	}]);
+
 	app.controller('BucketListController', ['$scope', '$http', 'tracker', function($scope, $http, tracker) {
 	
 		$scope.offset = 0;
-		$scope.limit = 5;
+		$scope.limit = 10;
 		$scope.total = 0;
 		$scope.buckets = null;
 
@@ -517,7 +604,7 @@
 				});
 			tracker.event('action', 'delete bucket');
 		};
-	
+
 		$scope.$watch('userInfo', function(user) {
 			if (user) {
 				$scope.refresh({});
@@ -525,24 +612,154 @@
 		});
 		$scope.$on('reload', $scope.refresh);
 	}]);
-	
-	app.controller('HomeController', ['$scope', '$http', '$location', 'tracker', function($scope, $http, $location, tracker) {
-		$scope.template = {
-			label : 'My Data'
+
+	app.controller('TaskListController', ['$scope', '$http', 'tracker', 'delay', 'tasks', function($scope, $http, tracker, delay, tasks) {
+
+		$scope.offset = 0;
+		$scope.limit = 10;
+		$scope.total = 0;
+		$scope.tasks = null;
+
+		$scope.hasPrev = function() {
+			return $scope.offset > 0;
 		};
-		$scope.create = function() {
+		$scope.hasNext = function() {
+			return $scope.offset + $scope.limit < $scope.total;
+		};
+		$scope.prev = function() {
+			$scope.refresh({ offset : $scope.offset - $scope.limit });
+		};
+		$scope.next = function() {
+			$scope.refresh({ offset : $scope.offset + $scope.limit });
+		};
+		$scope.params = function() {
+			return {
+				field : 'principal',
+				value : $scope.userInfo['@id'],
+				offset : $scope.offset,
+				limit : $scope.limit
+			};
+		};
+		$scope.refresh = function(params) {
+			$http.get('/tasks/?' + $.param($.extend($scope.params(), params)))
+				.success(function(response) {
+					$.extend($scope, params);
+					$scope.total = response.total;
+					$scope.tasks = response.tasks;
+				})
+				.error(function(response, status) {
+					if (status < 500) {
+						$scope.message = 'Can\'t retrieve any tasks.';
+					} else {
+						$scope.message = 'Couldn\'t retrieve any tasks. Try again later or contact support.';
+					}
+				});
+		};
+		$scope.refreshTask = function(taskId) {
+			tasks.refresh($scope, taskId, $scope.refresh);
+		};
+		$scope.remove = function(taskId) {
 			$scope.alert.clear();
-			$http.post('/buckets/', $scope.template)
+			$http({ method : 'DELETE', url : '/tasks/' + taskId })
+				.success(function(response) {
+					$scope.alert.show('Deleted a task.', 'alert-success', response.undo);
+					delay($scope.refresh);
+				})
+				.error(function(response) {
+					if (status < 500) {
+						$scope.message = 'Can\'t delete this task.';
+					} else {
+						$scope.message = 'Couldn\'t delete this task. Try again later or contact support.';
+					}
+				});
+			tracker.event('action', 'delete task');
+		};
+
+		$scope.$watch('userInfo', function(user) {
+			if (user) {
+				$scope.refresh({});
+			}
+		});
+		$scope.$on('reload', $scope.refresh);
+	}]);
+
+	app.controller('AuthorizationListController', ['$scope', '$http', function($scope, $http) {
+
+		$scope.offset = 0;
+		$scope.limit = 10;
+		$scope.total = 0;
+		$scope.authorizations = null;
+
+		$scope.hasPrev = function() {
+			return $scope.offset > 0;
+		};
+		$scope.hasNext = function() {
+			return $scope.offset + $scope.limit < $scope.total;
+		};
+		$scope.prev = function() {
+			$scope.refresh({ offset : $scope.offset - $scope.limit });
+		};
+		$scope.next = function() {
+			$scope.refresh({ offset : $scope.offset + $scope.limit });
+		};
+		$scope.params = function() {
+			return {
+				field : 'principal',
+				value : $scope.userInfo['@id'],
+				client_only : true,
+				offset : $scope.offset,
+				limit : $scope.limit
+			};
+		};
+		$scope.refresh = function(params) {
+			$http.get('/authorizations/?' + $.param($.extend($scope.params(), params))).success(function(response) {
+				$.extend($scope, params);
+				$scope.total = response.total;
+				$scope.authorizations = response.authorizations;
+			});
+		};
+		$scope.remove = function(authId) {
+			$http({ method : 'DELETE', url : '/authorizations/' + authId }).success(function(response, code, headers) {
+				$scope.alert.show('Revoked an authorization.', 'alert-success', response.undo);
+				$scope.reload();
+			});
+		};
+
+		$scope.$watch('userInfo', function(user) {
+			if (user) {
+				$scope.refresh({});
+			}
+		});
+		$scope.$on('reload', $scope.refresh);
+	}]);
+
+	app.controller('HomeController', ['$scope', '$http', '$location', 'token', 'tracker', function($scope, $http, $location, token, tracker) {
+
+		var createBucket = function() {
+			$http.post('/buckets/', { label : 'My Data' })
 				.success(function(response, status, headers) {
 					var location = headers('Location');
 					console.assert(status === 201, status);
 					console.assert(location, 'missing location header');
 					$location.url(location);
-					$scope.whoami();
 					$scope.openDialog('getting-started-dialog');					
 				})
 				.error(function(response) {
 					$scope.alert.show('Couldn\'t create a new bucket.', 'alert-error');					
+				});			
+		};
+
+		$scope.start = function() {
+			$scope.alert.clear();
+			$http.post('/oauth/token', { 'grant_type' : 'client_credentials' })
+				.success(function(response) {
+					console.assert(response.access_token, 'missing access_token in getting started response');
+					token.set(response.access_token);
+					$scope.whoami();
+					createBucket();
+				})
+				.error(function(response, status) {
+					$scope.alert.show('Couldn\'t create a guest account at this moment.', 'alert-error');										
 				});
 			tracker.event('action', 'get started');
 		};
@@ -2231,52 +2448,6 @@
 					}
 				});		
 		};
-	}]);
-
-	app.controller('TaskListController', ['$scope', '$http', '$routeParams', 'tracker', 'delay', 'tasks', function($scope, $http, $routeParams, tracker, delay, tasks) {
-		
-		$scope.bucketId = $routeParams.bucketId;
-		$scope.tasks = null;
-
-		$scope.refresh = function() {
-			$http.get('/tasks/?field=principal&value=' + $scope.userInfo['@id'])
-				.success(function(response) {
-					$scope.tasks = response.tasks;
-				})
-				.error(function(response, status) {
-					if (status < 500) {
-						$scope.message = 'Can\'t retrieve any tasks.';
-					} else {
-						$scope.message = 'Couldn\'t retrieve any tasks. Try again later or contact support.';
-					}
-				});
-		};
-		$scope.refreshTask = function(taskId) {
-			tasks.refresh($scope, taskId, $scope.refresh);
-		};
-		$scope.remove = function(taskId) {
-			$scope.alert.clear();
-			$http({ method : 'DELETE', url : '/tasks/' + taskId })
-				.success(function(response) {
-					$scope.alert.show('Deleted a task.', 'alert-success', response.undo);
-					delay($scope.refresh);
-				})
-				.error(function(response) {
-					if (status < 500) {
-						$scope.message = 'Can\'t delete this task.';
-					} else {
-						$scope.message = 'Couldn\'t delete this task. Try again later or contact support.';
-					}
-				});
-			tracker.event('action', 'delete task');
-		};
-
-		$scope.$watch('userInfo', function(user) {
-			if (user) {
-				$scope.refresh({});
-			}
-		});
-		$scope.$on('reload', $scope.refresh);
 	}]);
 
 	app.controller('CreateTaskDialogController', ['$scope', '$http', 'tracker', 'tasks', function($scope, $http, tracker, tasks) {

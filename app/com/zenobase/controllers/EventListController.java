@@ -20,6 +20,7 @@ import com.zenobase.models.Bucket;
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
 import com.zenobase.models.Permission;
+import com.zenobase.oauth.Authorization;
 import com.zenobase.search.EventSearch;
 import com.zenobase.services.BucketRepository;
 import com.zenobase.services.CommandDispatcher;
@@ -33,20 +34,20 @@ public class EventListController extends ControllerSupport {
 	private final CommandDispatcher dispatcher;
 
 	@Inject
-	public EventListController(SecurityContext security, BucketRepository buckets, CommandDispatcher dispatcher) {
+	public EventListController(AuthorizationContext security, BucketRepository buckets, CommandDispatcher dispatcher) {
 		super(security);
 		this.buckets = buckets;
 		this.dispatcher = dispatcher;
 	}
 
 	public Result get(String bucketId) {
-		Identity principal = getSecurityContext().getPrincipal();
+		Authorization auth = getCurrentAuthorization();
 		Bucket bucket = buckets.findBucket(bucketId);
     	if (bucket == null) {
     		return notFound();
     	}
-    	if (bucket.getPermission(principal) == Permission.NONE) {
-    		return principal == null ? unauthorized() : forbidden();
+    	if (!bucket.isPermitted(auth, Permission.USE)) {
+    		return auth == null ? unauthorized() : forbidden();
     	}
     	String[] widgets = request().queryString().get("w");
     	String[] filters = request().queryString().get("q");
@@ -61,29 +62,29 @@ public class EventListController extends ControllerSupport {
 
 	@BodyParser.Of(value = BodyParser.Json.class)
 	public Result post(String bucketId) {
-		Identity principal = getSecurityContext().getPrincipal();
-		if (principal == null) {
+		Authorization auth = getCurrentAuthorization();
+		if (auth == null) {
 			return unauthorized();
 		}
     	Bucket bucket = buckets.findBucket(bucketId);
     	if (bucket == null) {
     		return notFound();
     	}
-    	if (bucket.getPermission(principal) != Permission.ALL) {
+    	if (!bucket.isPermitted(auth, Permission.ALL)) {
     		return forbidden();
     	}
     	ObjectNode body = body();
     	ImmutableList<ObjectNode> nodes = EVENTS.getValues(body);
     	if (!nodes.isEmpty()) {
-    		CompoundCommand cmd = new CompoundCommand(principal, "added events", "removed events");
+    		CompoundCommand cmd = new CompoundCommand(auth.getPrincipal(), "added events", "removed events");
     		for (ObjectNode node : nodes) {
-        		cmd.add(newCreateEventCommand(principal, bucketId, node));
+        		cmd.add(newCreateEventCommand(auth.getPrincipal(), bucketId, node));
     		}
     		String commandId = dispatcher.dispatch(cmd);
             return success(commandId);
     	}
     	else {
-    		CreateEventCommand command = newCreateEventCommand(principal, bucketId, body);
+    		CreateEventCommand command = newCreateEventCommand(auth.getPrincipal(), bucketId, body);
     		String commandId = dispatcher.dispatch(command);
             response().setHeader(LOCATION, com.zenobase.controllers.routes.EventController.get(bucket.getId(), command.getEvent().getId()).toString());
             return created(commandId);

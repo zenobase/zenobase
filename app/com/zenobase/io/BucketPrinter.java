@@ -9,6 +9,7 @@ import com.zenobase.common.Callback;
 import com.zenobase.models.Bucket;
 import com.zenobase.models.Identity;
 import com.zenobase.models.Permission;
+import com.zenobase.oauth.Authorization;
 import com.zenobase.services.BucketRepository;
 
 public class BucketPrinter implements Callback<Bucket> {
@@ -29,7 +30,7 @@ public class BucketPrinter implements Callback<Bucket> {
 	private String toString(Bucket bucket) {
 		return Joiner.on('\t').join(bucket.getId(),
 			Iterables.getOnlyElement(bucket.getPrincipals(Permission.ALL)),
-			bucket.getPermission(Identity.PUBLIC) != Permission.NONE ? "published" : "unpublished",
+			bucket.isPermitted(new Authorization(Identity.PUBLIC), Permission.USE) ? "published" : "unpublished",
 			bucket.getCreated(), buckets.getSize(bucket.getId()), "\n");
 	}
 }

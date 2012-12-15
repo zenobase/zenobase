@@ -13,7 +13,7 @@ import com.zenobase.services.UserRepository;
 
 public abstract class BucketControllerTestSupport extends ControllerTestSupport {
 
-	protected final SecurityContext auth = mock(SecurityContext.class);
+	protected final AuthorizationContext auth = mock(AuthorizationContext.class);
 	protected final BucketRepository buckets = mock(BucketRepository.class);
 	protected final UserRepository users = mock(UserRepository.class);
 	protected final CommandDispatcher dispatcher = mock(CommandDispatcher.class);
@@ -24,7 +24,7 @@ public abstract class BucketControllerTestSupport extends ControllerTestSupport 
 		start(new AbstractModule() {
 			@Override
 			protected void configure() {
-				bind(SecurityContext.class).toInstance(auth);
+				bind(AuthorizationContext.class).toInstance(auth);
 				bind(BucketRepository.class).toInstance(buckets);
 				bind(UserRepository.class).toInstance(users);
 				bind(CommandDispatcher.class).toInstance(dispatcher);

@@ -9,8 +9,8 @@ import play.mvc.With;
 import com.zenobase.actions.Timed;
 import com.zenobase.commands.CreateTaskCommand;
 import com.zenobase.models.Bucket;
-import com.zenobase.models.Identity;
 import com.zenobase.models.Permission;
+import com.zenobase.oauth.Authorization;
 import com.zenobase.services.BucketRepository;
 import com.zenobase.services.CommandDispatcher;
 import com.zenobase.services.TaskRepository;
@@ -29,7 +29,7 @@ public class TaskListController extends ControllerSupport {
 	private final UserRepository users;
 
 	@Inject
-	public TaskListController(SecurityContext security, CommandDispatcher dispatcher,
+	public TaskListController(AuthorizationContext security, CommandDispatcher dispatcher,
 		TaskManagerRegistry registry, TaskRepository tasks, BucketRepository buckets, UserRepository users) {
 
 		super(security);
@@ -44,11 +44,11 @@ public class TaskListController extends ControllerSupport {
 		if (limit > 100) {
 			return badRequest("limit can't be more than 100");
 		}
-		Identity principal = getSecurityContext().getPrincipal();
-    	if (principal == null) {
+		Authorization auth = getCurrentAuthorization();
+    	if (auth == null) {
     		return unauthorized();
     	}
-		if (!Task.PRINCIPAL.getName().equals(field) && !principal.getId().equals(value) && !users.isSuperuser(principal)) {
+		if (auth.getScope() != null || !Task.PRINCIPAL.getName().equals(field) && !auth.getPrincipal().getId().equals(value) && !users.isSuperuser(auth.getPrincipal())) {
     		return forbidden();
 		}
 		return ok(tasks.findTasks(field, value, offset, limit).toJson());
@@ -56,8 +56,8 @@ public class TaskListController extends ControllerSupport {
 
     @BodyParser.Of(BodyParser.Json.class)
     public Result post() {
-    	Identity principal = getSecurityContext().getPrincipal(true);
-    	if (principal == null) {
+		Authorization auth = getCurrentAuthorization();
+    	if (auth == null) {
     		return unauthorized();
     	}
 		CreateTaskForm form = new CreateTaskForm(body());
@@ -68,15 +68,15 @@ public class TaskListController extends ControllerSupport {
 		if (bucket == null) {
 			return badRequest("bucket not found");
 		}
-		if (bucket.getPermission(principal) != Permission.ALL) {
+		if (!bucket.isPermitted(auth, Permission.ALL)) {
 			return forbidden();
 		}
     	TaskManager manager = registry.find(form.getType());
 		if (manager == null) {
 			return badRequest("unknown task type");
 		}
-    	Task task = manager.newTask(form.getBucketId(), principal, form.getSettings());
-    	String commandId = dispatcher.dispatch(new CreateTaskCommand(principal, task));
+    	Task task = manager.newTask(form.getBucketId(), auth.getPrincipal(), form.getSettings());
+    	String commandId = dispatcher.dispatch(new CreateTaskCommand(auth.getPrincipal(), task));
     	response().setHeader(LOCATION, com.zenobase.controllers.routes.TaskController.get(task.getId()).toString());
         return created(commandId);
     }

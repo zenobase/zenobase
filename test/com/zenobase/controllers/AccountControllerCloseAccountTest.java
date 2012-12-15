@@ -12,13 +12,14 @@ import play.mvc.Result;
 import com.zenobase.commands.Command;
 import com.zenobase.common.Generator;
 import com.zenobase.models.Identity;
+import com.zenobase.oauth.Authorization;
 
 public class AccountControllerCloseAccountTest extends AccountControllerTestSupport {
 
 	@Test
 	public void testCloseAccount() {
 		String commandId = Generator.id();
-		when(auth.getPrincipal()).thenReturn(user.asIdentity());
+		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
 		when(users.find(user.getName())).thenReturn(user);
 		when(dispatcher.dispatch(any(Command.class))).thenReturn(commandId);
 		Result result = call(user.getName());
@@ -35,7 +36,7 @@ public class AccountControllerCloseAccountTest extends AccountControllerTestSupp
 
 	@Test
 	public void testCloseAccountNotFound() {
-		when(auth.getPrincipal()).thenReturn(user.asIdentity());
+		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
 		Result result = call(user.getName());
 		assertThat(result).hasStatus(NOT_FOUND);
 		verifyZeroInteractions(dispatcher);
@@ -43,7 +44,7 @@ public class AccountControllerCloseAccountTest extends AccountControllerTestSupp
 
 	@Test
 	public void testCloseAccountForbidden() {
-		when(auth.getPrincipal()).thenReturn(new Identity());
+		when(auth.current()).thenReturn(new Authorization(new Identity()));
 		when(users.find(user.getName())).thenReturn(user);
 		Result result = call(user.getName());
 		assertThat(result).hasStatus(FORBIDDEN);
@@ -54,7 +55,7 @@ public class AccountControllerCloseAccountTest extends AccountControllerTestSupp
 	public void testCloseAccountSignedInAsSuperuser() {
 		Identity superuser = new Identity();
 		String commandId = Generator.id();
-		when(auth.getPrincipal()).thenReturn(superuser);
+		when(auth.current()).thenReturn(new Authorization(superuser));
 		when(users.find(user.getName())).thenReturn(user);
 		when(users.isSuperuser(superuser)).thenReturn(true);
 		when(dispatcher.dispatch(any(Command.class))).thenReturn(commandId);

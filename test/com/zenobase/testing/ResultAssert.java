@@ -49,6 +49,11 @@ public class ResultAssert extends GenericAssert<ResultAssert, Result> {
 		return this;
 	}
 
+	public NodeAssert asNode() {
+		hasContentType("application/json");
+		return NodeAssert.assertThat(Nodes.readObject(contentAsBytes(actual)));
+	}
+
 	public ResultAssert isEmpty() {
 		hasContentType(null);
 		Assertions.assertThat(Helpers.contentAsBytes(actual).length).as("content length").isZero();

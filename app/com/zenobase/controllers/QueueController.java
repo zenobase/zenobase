@@ -10,6 +10,7 @@ import com.zenobase.actions.Timed;
 import com.zenobase.commands.Command;
 import com.zenobase.models.CommandList;
 import com.zenobase.models.Identity;
+import com.zenobase.oauth.Authorization;
 import com.zenobase.services.CommandDispatcher;
 import com.zenobase.services.CommandRepository;
 import com.zenobase.services.UserRepository;
@@ -22,7 +23,7 @@ public class QueueController extends ControllerSupport {
 	private final UserRepository users;
 
 	@Inject
-    public QueueController(SecurityContext security, CommandDispatcher dispatcher,
+    public QueueController(AuthorizationContext security, CommandDispatcher dispatcher,
     	CommandRepository repository, UserRepository users) {
 
 		super(security);
@@ -32,11 +33,11 @@ public class QueueController extends ControllerSupport {
 	}
 
 	public Result get(String identity, int offset, int limit) {
-    	Identity principal = getSecurityContext().getPrincipal();
-    	if (principal == null) {
+    	Authorization auth = getCurrentAuthorization();
+    	if (auth == null || auth.getScope() != null) {
     		return unauthorized();
     	}
-    	if (!users.isSuperuser(principal)) {
+    	if (!users.isSuperuser(auth.getPrincipal())) {
     		return forbidden();
     	}
     	CommandList commands = identity != null ?
@@ -51,18 +52,18 @@ public class QueueController extends ControllerSupport {
 		if (!form.valid()) {
 			return badRequest("missing command");
 		}
-		Identity principal = getSecurityContext().getPrincipal();
-    	if (principal == null) {
+		Authorization auth = getCurrentAuthorization();
+    	if (auth == null) {
     		return unauthorized();
     	}
     	Command command = repository.find(form.getCommandId());
     	if (command == null) {
     		return notFound("command not found");
     	}
-		if (!principal.equals(command.getPrincipal()) && !users.isSuperuser(principal)) {
+		if (!command.isPermitted(auth) && !users.isSuperuser(auth.getPrincipal())) {
 			return forbidden();
 		}
-    	String undoId = dispatcher.dispatch(command.reverse(principal));
+    	String undoId = dispatcher.dispatch(command.reverse(auth.getPrincipal()));
         return created(undoId);
     }
 }
