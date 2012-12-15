@@ -73,56 +73,56 @@
 
 		<div id="sign-in-dialog" class="hide" data-ui-modal="dialog == 'sign-in-dialog'" data-ui-modal-open="init()" data-ui-modal-close="closeDialog()" data-ng-controller="SignInDialogController">
 			<form name="signInForm" novalidate data-ng-submit="signIn()" class="modal-form">
-					<div class="modal-header">
-						<a class="close" data-dismiss="modal">&times;</a>
-						<h4>Sign in</h4>
+				<div class="modal-header">
+					<a class="close" data-dismiss="modal">&times;</a>
+					<h4>Sign in</h4>
+				</div>
+				<div class="modal-body">
+					<div id="sign-in-message" class="alert alert-error" data-ng-show="message">
+						{{message}}
 					</div>
-					<div class="modal-body">
-						<div id="sign-in-message" class="alert alert-error" data-ng-show="message">
-							{{message}}
-						</div>
-						<div class="control-group">
-							<label for="sign-in-username">Username</label>
-							<input id="sign-in-username" type="text" class="large" data-ng-model="username" data-ui-focus-on="dialog:sign-in-dialog" required/>
-						</div>
-						<div class="control-group">
-							<label for="sign-in-password">Password</label>
-							<input id="sign-in-password" type="password" class="large" data-ng-model="password" required/>
-						</div>
+					<div class="control-group">
+						<label for="sign-in-username">Username</label>
+						<input id="sign-in-username" type="text" class="large" data-ng-model="username" data-ui-focus-on="dialog:sign-in-dialog" required/>
 					</div>
-					<div class="modal-footer">
-						<div class="pull-left">
-							<a id="lost-password-link" data-ng-click="openDialog('lost-password-dialog')">Lost password?</a>
-						</div>
-						<button id="sign-in-button" type="submit" class="btn btn-primary" data-ng-disabled="!signInForm.$valid">Sign in</button>
-						<button type="reset" class="btn" data-dismiss="modal">Cancel</button>
+					<div class="control-group">
+						<label for="sign-in-password">Password</label>
+						<input id="sign-in-password" type="password" class="large" data-ng-model="password" required/>
 					</div>
+				</div>
+				<div class="modal-footer">
+					<div class="pull-left">
+						<a id="lost-password-link" data-ng-click="openDialog('lost-password-dialog')">Lost password?</a>
+					</div>
+					<button id="sign-in-button" type="submit" class="btn btn-primary" data-ng-disabled="!signInForm.$valid">Sign in</button>
+					<button type="reset" class="btn" data-dismiss="modal">Cancel</button>
+				</div>
 			</form>
 		</div>
 
 		<div id="lost-password-dialog" class="hide" data-ui-modal="dialog == 'lost-password-dialog'" data-ui-modal-open="init()" data-ui-modal-close="closeDialog()" data-ng-controller="LostPasswordDialogController">
 			<form name="lostPasswordForm" novalidate data-ng-submit="submit()" class="modal-form">
-					<div class="modal-header">
-						<a class="close" data-dismiss="modal">&times;</a>
-						<h4>Reset Password</h4>
+				<div class="modal-header">
+					<a class="close" data-dismiss="modal">&times;</a>
+					<h4>Reset Password</h4>
+				</div>
+				<div class="modal-body">
+					<div id="lost-password-message" class="alert alert-error" data-ng-show="message">
+						{{message}}
 					</div>
-					<div class="modal-body">
-						<div id="lost-password-message" class="alert alert-error" data-ng-show="message">
-							{{message}}
-						</div>
-						<div class="control-group">
-							<label for="lost-password-username">Username</label>
-							<input id="lost-password-username" type="text" class="large" data-ng-model="username" data-ui-focus-on="dialog:password-reset-request" required/>
-						</div>
-						<div class="control-group">
-							<label for="lost-password-email">Email</label>
-							<input id="lost-password-email" type="email" class="large" data-ng-model="email" required/>
-						</div>
+					<div class="control-group">
+						<label for="lost-password-username">Username</label>
+						<input id="lost-password-username" type="text" class="large" data-ng-model="username" data-ui-focus-on="dialog:password-reset-request" required/>
 					</div>
-					<div class="modal-footer">
-						<button id="lost-password-button" type="submit" class="btn btn-primary" data-ng-disabled="!lostPasswordForm.$valid">Reset</button>
-						<button type="reset" class="btn" data-dismiss="modal">Cancel</button>
+					<div class="control-group">
+						<label for="lost-password-email">Email</label>
+						<input id="lost-password-email" type="email" class="large" data-ng-model="email" required/>
 					</div>
+				</div>
+				<div class="modal-footer">
+					<button id="lost-password-button" type="submit" class="btn btn-primary" data-ng-disabled="!lostPasswordForm.$valid">Reset</button>
+					<button type="reset" class="btn" data-dismiss="modal">Cancel</button>
+				</div>
 			</form>
 		</div>
 
