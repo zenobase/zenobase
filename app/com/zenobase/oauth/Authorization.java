@@ -33,7 +33,7 @@ public class Authorization extends DomainNode {
 	}
 
 	public Authorization(Identity principal, Identity client, String scope) {
-		setValue(ID, Generator.id());
+		setValue(ID, Generator.longId());
 		setValue(CREATED, new DateTime(DateTimeZone.UTC));
 		setValue(PRINCIPAL, principal);
 		setValue(CLIENT, client);

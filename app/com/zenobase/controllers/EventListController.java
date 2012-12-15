@@ -6,6 +6,7 @@ import javax.inject.Inject;
 import org.codehaus.jackson.node.ObjectNode;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
+import play.Logger;
 import play.mvc.BodyParser;
 import play.mvc.Result;
 import play.mvc.With;
@@ -98,6 +99,7 @@ public class EventListController extends ControllerSupport {
 		if (!event.contains(Event.TIMESTAMP)) {
 			event.addValue(Event.TIMESTAMP, new DateTime(DateTimeZone.UTC));
 		}
+		Logger.info("e:" + event);
 		return new CreateEventCommand(principal, bucketId, event);
 
 	}

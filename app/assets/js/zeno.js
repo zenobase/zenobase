@@ -518,24 +518,34 @@
 		$scope.init();
 	}]);
 	
-	app.controller('OAuthController', ['$scope', '$http', '$window', function($scope, $http, $window) {
+	app.controller('OAuthController', ['$scope', '$http', '$location', '$window', function($scope, $http, $location, $window) {
 
 		var init = function() {
 			$scope.bucket = null;
-			$http.get('/buckets/', { 'identity' : $scope.userInfo['@id'], 'offset' : 0, 'limit' : 25 })
+			$scope.client = $location.search()['client_id']
+			$scope.redirectUri = $location.search()['redirect_uri'];
+			if (!$scope.client) {
+				$scope.deny('invalid_request', 'client_id is missing');
+			}
+			if (!$scope.redirectUri) {
+				$scope.message = 'Redirect URI is missing.';
+			}
+			$http.get('/buckets/?' + $.param({ 'identity' : $scope.user['@id'], 'offset' : 0, 'limit' : 25 }))
 				.success(function(response) {
 					$scope.buckets = response.buckets;
-					// TODO add 'new bucket' option
 				})
 				.error(function(response) {
 					$scope.message = 'Could not list buckets';
 				});		
 		};
-		var url = function(base, params) {
-			var separator = redirectUri.endsWith('?') || redirectUri.endsWith('#') ? '' : '#';
-			return base + separator + $.param(params);
+		var getRedirectUri = function(params) {
+			return [ $scope.redirectUri, $.param(params) ]
+				.join(/[?#]$/.test($scope.redirectUri) ? '' : '#');
 		};
 
+		$scope.valid = function() {
+			return $scope.client && $scope.redirectUri && $scope.bucket;
+		};
 		$scope.allow = function() {
 			$scope.message = null;
 			var data = $location.search();
@@ -543,20 +553,21 @@
 			$http.post('/oauth/authorize', data)
 				.success(function(response) {
 					console.assert(response.access_token, 'missing access_token in authorize response');
-					$window.location(redirectUri + '?access_token=' + response.access_token);
+					console.assert(response.scope, 'missing scope in authorize response');
+					$window.location = getRedirectUri(response);
 				})
 				.error(function(response) {
 					if (response.error && response.error != 'invalid_redirect_uri') {
-						$window.location(url(redirectUri, { 'error' : response.error, 'error_message' : response.error_message }));
+						$scope.deny(response.error, response.error_message);
 					}
-					$scope.message = 'Could not authorize.';
+					$scope.message = 'Redirect URI is not valid.';
 				});
 		};
-		$scope.deny = function(errorCode) {
-			$window.location(url($location.search()['redirect_uri'], { 'error' : errorCode }));
+		$scope.deny = function(code, message) {
+			$window.location = getRedirectUri({ 'error' : code, 'error_message' : message });
 		};
 
-		$scope.init();
+		$scope.$watch('user', init);
 	}]);
 
 	app.controller('BucketListController', ['$scope', '$http', 'tracker', function($scope, $http, tracker) {
