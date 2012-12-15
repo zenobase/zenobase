@@ -166,7 +166,7 @@
 	app.controller('admin.AuthorizationListController', ['$scope', '$http', 'delay', function($scope, $http, delay) {
 
 		$scope.offset = 0;
-		$scope.limit = 5;
+		$scope.limit = 10;
 		$scope.total = 0;
 		$scope.authorizations = null;
 
