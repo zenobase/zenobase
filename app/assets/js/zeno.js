@@ -372,7 +372,9 @@
 			};
 		};
 		$scope.signIn = function() {
-			$http.post('/oauth/token', $scope.data())
+			$http({ method: 'POST', url: '/oauth/token', data: $.param($scope.data()),
+				headers: { 'Content-Type' : 'application/x-www-form-urlencoded' }
+			})
 				.success(function(response) {
 					console.assert(response.access_token, 'missing token in sign in response');
 					token.set(response.access_token);
@@ -767,7 +769,9 @@
 
 		$scope.start = function() {
 			$scope.alert.clear();
-			$http.post('/oauth/token', { 'grant_type' : 'client_credentials' })
+			$http({ method: 'POST', url: '/oauth/token', data: 'grant_type=client_credentials',
+				headers: { 'Content-Type' : 'application/x-www-form-urlencoded' }
+			})
 				.success(function(response) {
 					console.assert(response.access_token, 'missing access_token in getting started response');
 					token.set(response.access_token);

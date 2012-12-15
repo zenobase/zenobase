@@ -5,6 +5,7 @@ import java.net.URI;
 import javax.inject.Inject;
 
 import org.codehaus.jackson.node.ObjectNode;
+import play.data.Form;
 import play.mvc.BodyParser;
 import play.mvc.Result;
 import play.mvc.With;
@@ -82,16 +83,15 @@ public class OAuthController extends ControllerSupport {
     	return uri.getHost().endsWith(domain);
 	}
 
-    @BodyParser.Of(BodyParser.Json.class)
     public Result token() {
-        return token(new TokenForm(body()));
+    	return token(Form.form(TokenForm.class).bindFromRequest().get());
     }
 
     private Result token(TokenForm form) {
-    	if (GRANT_TYPE_CLIENT_CREDENTIALS.equals(form.getGrantType())) {
+    	if (GRANT_TYPE_CLIENT_CREDENTIALS.equals(form.getGrant_type())) {
             return grant(new Identity(), null, null);
     	}
-    	if (GRANT_TYPE_PASSWORD.equals(form.getGrantType())) {
+    	if (GRANT_TYPE_PASSWORD.equals(form.getGrant_type())) {
     		if (form.getUsername() == null) {
     			return deny(INVALID_REQUEST, "username is required");
     		}
@@ -107,7 +107,7 @@ public class OAuthController extends ControllerSupport {
     		}
     		return grant(user.asIdentity(), null, null);
     	}
-		return deny(UNSUPPORTED_GRANT_TYPE, String.format("grant_type must be '%s'", GRANT_TYPE_PASSWORD));
+		return deny(UNSUPPORTED_GRANT_TYPE, String.format("grant_type must be '%s', got %s", GRANT_TYPE_PASSWORD, form.getGrant_type()));
     }
 
     private Result deny(String errorCode, String errorDescription) {
@@ -122,7 +122,9 @@ public class OAuthController extends ControllerSupport {
     	dispatcher.dispatch(new CreateAuthorizationCommand(principal, auth));
     	ObjectNode result = Nodes.newObject();
     	result.put("access_token", auth.getId());
-    	result.put("scope", scope);
+    	if (scope != null) {
+    		result.put("scope", scope);
+    	}
     	return ok(result);
     }
 }
