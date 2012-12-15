@@ -557,10 +557,15 @@
 					$window.location = getRedirectUri(response);
 				})
 				.error(function(response) {
-					if (response.error && response.error != 'invalid_redirect_uri') {
-						$scope.deny(response.error, response.error_message);
+					if (response.error) {
+						if (response.error == 'invalid_redirect_uri') {
+							$scope.message = 'Redirect URI is not valid.';
+						} else {
+							$scope.deny(response.error, response.error_message);
+						}
+					} else {
+						$scope.deny('server_error');
 					}
-					$scope.message = 'Redirect URI is not valid.';
 				});
 		};
 		$scope.deny = function(code, message) {
