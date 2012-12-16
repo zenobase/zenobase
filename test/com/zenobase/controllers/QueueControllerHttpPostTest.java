@@ -30,7 +30,7 @@ public class QueueControllerHttpPostTest extends QueueControllerTestSupport {
 		when(commands.find(command.getId())).thenReturn(command);
 		when(dispatcher.dispatch(commandArg.capture())).thenReturn(command.getId());
 		Result result = call(new UndoForm(command.getId()).toJson());
-		assertThat(result).hasStatus(CREATED).hasContent(QueueController.content(null, command.getId()));
+		assertThat(result).hasStatus(NO_CONTENT).hasHeader(COMMAND_ID, command.getId()).isEmpty();
 		assertThat(commandArg.getValue().getTag()).isEqualTo("gnitset");
 	}
 
@@ -42,7 +42,7 @@ public class QueueControllerHttpPostTest extends QueueControllerTestSupport {
 		when(dispatcher.dispatch(any(TestCommand.class))).thenReturn(command.getId());
 		when(users.isSuperuser(superuser)).thenReturn(true);
 		Result result = call(new UndoForm(command.getId()).toJson());
-		assertThat(result).hasStatus(CREATED).hasContent(QueueController.content(null, command.getId()));
+		assertThat(result).hasStatus(NO_CONTENT).hasHeader(COMMAND_ID, command.getId()).isEmpty();
 	}
 
 	@Test

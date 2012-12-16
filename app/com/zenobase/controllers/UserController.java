@@ -11,6 +11,7 @@ import com.zenobase.actions.Timed;
 import com.zenobase.commands.ChangeUserEmailCommand;
 import com.zenobase.commands.ChangeUserPasswordCommand;
 import com.zenobase.commands.ChangeUserVerifiedCommand;
+import com.zenobase.commands.CompoundCommand;
 import com.zenobase.commands.CreateAuthorizationCommand;
 import com.zenobase.json.Nodes;
 import com.zenobase.mail.VerificationMailer;
@@ -86,7 +87,8 @@ public class UserController extends ControllerSupport {
     	}
 		String commandId = dispatcher.dispatch(new ChangeUserEmailCommand(auth.getPrincipal(), user.getName(), user.getEmail(), email, user.isVerified(), user.isVerified() && user.getEmail().equals(email)));
 		mailer.send(user.getName(), email);
-		return success(commandId);
+		response().setHeader(COMMAND_ID, commandId);
+		return noContent();
 	}
 
 	private Result updatePassword(UpdateUserForm form, User user) {
@@ -106,11 +108,12 @@ public class UserController extends ControllerSupport {
 			return badRequest("invalid key");
 		}
 		Authorization auth = new Authorization(user.asIdentity(), null, null);
-		dispatcher.dispatch(new ChangeUserPasswordCommand(user.asIdentity(), user.getName(), user.getHashedPassword(), User.getHashedPassword(password)));
-		dispatcher.dispatch(new CreateAuthorizationCommand(user.asIdentity(), auth));
-		ObjectNode result = Nodes.newObject();
-		result.put("access_token", auth.getId());
-		return ok(result);
+		CompoundCommand command = new CompoundCommand(user.asIdentity(), "updated password", "reverted password");
+		command.add(new ChangeUserPasswordCommand(user.asIdentity(), user.getName(), user.getHashedPassword(), User.getHashedPassword(password)));
+		command.add(new CreateAuthorizationCommand(user.asIdentity(), auth));
+		String commandId = dispatcher.dispatch(command);
+		response().setHeader(COMMAND_ID, commandId);
+		return ok(Nodes.newObject("access_token", auth.getId()));
 	}
 
 	private Result updateVerified(UpdateUserForm form, User user) {
@@ -124,7 +127,8 @@ public class UserController extends ControllerSupport {
 		if (!new EmailVerificationKey(user.getName(), user.getEmail()).validate(key)) {
 			return badRequest("invalid key");
 		}
-		dispatcher.dispatch(new ChangeUserVerifiedCommand(user.asIdentity(), user.getName(), true));
+		String commandId = dispatcher.dispatch(new ChangeUserVerifiedCommand(user.asIdentity(), user.getName(), true));
+		response().setHeader(COMMAND_ID, commandId);
 		return noContent();
 	}
 }

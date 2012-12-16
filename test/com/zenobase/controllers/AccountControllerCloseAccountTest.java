@@ -23,7 +23,7 @@ public class AccountControllerCloseAccountTest extends AccountControllerTestSupp
 		when(users.find(user.getName())).thenReturn(user);
 		when(dispatcher.dispatch(any(Command.class))).thenReturn(commandId);
 		Result result = call(user.getName());
-		assertThat(result).hasStatus(OK).hasContent(AccountController.content(null, commandId));
+		assertThat(result).hasStatus(NO_CONTENT).hasHeader(COMMAND_ID, commandId).isEmpty();
 	}
 
 	@Test
@@ -60,7 +60,7 @@ public class AccountControllerCloseAccountTest extends AccountControllerTestSupp
 		when(users.isSuperuser(superuser)).thenReturn(true);
 		when(dispatcher.dispatch(any(Command.class))).thenReturn(commandId);
 		Result result = call(user.getName());
-		assertThat(result).hasStatus(OK).hasContent(AccountController.content(null, commandId));
+		assertThat(result).hasStatus(NO_CONTENT).hasHeader(COMMAND_ID, commandId).isEmpty();
 	}
 
 	private Result call(String username) {

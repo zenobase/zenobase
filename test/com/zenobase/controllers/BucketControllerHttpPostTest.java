@@ -41,7 +41,7 @@ public class BucketControllerHttpPostTest extends BucketControllerTestSupport {
 		when(buckets.findBucket(from.getId())).thenReturn(from.copy());
 		when(dispatcher.dispatch(any(UpdateBucketCommand.class))).thenReturn(commandId);
 		Result result = call(from.getId(), to.toJson());
-		assertThat(result).hasStatus(OK).hasContent(BucketController.content(null, commandId));
+		assertThat(result).hasStatus(NO_CONTENT).hasHeader(COMMAND_ID, commandId).isEmpty();
 	}
 
 	@Test

@@ -7,7 +7,7 @@ import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Module;
 
-public class ControllerTestSupport extends WithApplication {
+public class ControllerTestSupport extends WithApplication implements CustomHeaders {
 
 	protected void start(final Module module) {
 		start(Helpers.fakeApplication(new GlobalSettings() {

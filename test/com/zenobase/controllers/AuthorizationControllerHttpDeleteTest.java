@@ -25,7 +25,7 @@ public class AuthorizationControllerHttpDeleteTest extends AuthorizationControll
 		when(authorizations.find(authorization.getId())).thenReturn(authorization.copy());
 		when(dispatcher.dispatch(any(DeleteAuthorizationCommand.class))).thenReturn(commandId);
 		Result result = call(authorization.getId());
-		assertThat(result).hasStatus(OK).hasContent(AuthorizationController.content(null, commandId));
+		assertThat(result).hasStatus(NO_CONTENT).hasHeader(COMMAND_ID, commandId).isEmpty();
 	}
 
 	@Test
@@ -37,7 +37,7 @@ public class AuthorizationControllerHttpDeleteTest extends AuthorizationControll
 		when(users.isSuperuser(superuser)).thenReturn(true);
 		when(dispatcher.dispatch(any(DeleteAuthorizationCommand.class))).thenReturn(commandId);
 		Result result = call(authorization.getId());
-		assertThat(result).hasStatus(OK).hasContent(AuthorizationController.content(null, commandId));
+		assertThat(result).hasStatus(NO_CONTENT).hasHeader(COMMAND_ID, commandId).isEmpty();
 	}
 
 	@Test

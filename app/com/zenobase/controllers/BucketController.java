@@ -131,7 +131,8 @@ public class BucketController extends ControllerSupport {
 		}
 		try {
 			String commandId = dispatcher.dispatch(new UpdateBucketCommand(auth.getPrincipal(), bucket, updated));
-			return success(commandId);
+    		response().setHeader(COMMAND_ID, commandId);
+			return noContent();
 		} catch (VersionConflictEngineException e) {
 			return conflict("bucket is stale");
 		}
@@ -150,6 +151,7 @@ public class BucketController extends ControllerSupport {
     		return forbidden();
     	}
     	String commandId = dispatcher.dispatch(new DeleteBucketCommand(auth.getPrincipal(), bucket));
-    	return success(commandId);
+		response().setHeader(COMMAND_ID, commandId);
+    	return noContent();
     }
 }

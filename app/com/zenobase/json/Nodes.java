@@ -7,6 +7,7 @@ import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.node.ArrayNode;
 import org.codehaus.jackson.node.ObjectNode;
+import com.google.common.base.Preconditions;
 
 public class Nodes {
 
@@ -18,6 +19,14 @@ public class Nodes {
 
 	public static ObjectNode newObject() {
 		return MAPPER.createObjectNode();
+	}
+
+	public static ObjectNode newObject(String fieldName, String value) {
+		Preconditions.checkNotNull(fieldName);
+		Preconditions.checkNotNull(value);
+		ObjectNode node = newObject();
+		node.put(fieldName, value);
+		return node;
 	}
 
 	public static ArrayNode newArray() {

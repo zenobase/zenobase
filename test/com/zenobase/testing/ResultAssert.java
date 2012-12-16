@@ -26,6 +26,11 @@ public class ResultAssert extends GenericAssert<ResultAssert, Result> {
 		return this;
 	}
 
+	public ResultAssert hasHeader(String name, String value) {
+		Assertions.assertThat(header(name, actual)).isEqualTo(value);
+		return this;
+	}
+
 	public ResultAssert hasContentType(String contentType) {
 		Assertions.assertThat(Helpers.contentType(actual)).as("content type").isEqualTo(contentType);
 		return this;

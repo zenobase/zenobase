@@ -25,6 +25,13 @@ public class NodesTest {
 	}
 
 	@Test
+	public void testNewObject() {
+
+		ObjectNode node = Nodes.newObject("name", "Foo");
+		assertThat(node).path("name").isEqualTo("Foo");
+	}
+
+	@Test
 	public void testRoundTripObjectToBytes() {
 
 		ObjectNode node = Nodes.newObject();

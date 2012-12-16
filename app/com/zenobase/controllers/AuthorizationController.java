@@ -55,6 +55,7 @@ public class AuthorizationController extends ControllerSupport {
     		return forbidden();
     	}
     	String commandId = dispatcher.dispatch(new DeleteAuthorizationCommand(auth.getPrincipal(), authorization));
-    	return success(commandId);
+		response().setHeader(COMMAND_ID, commandId);
+    	return noContent();
     }
 }

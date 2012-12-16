@@ -12,9 +12,8 @@ import org.mockito.Matchers;
 import play.mvc.Result;
 
 import com.zenobase.commands.ChangeUserEmailCommand;
-import com.zenobase.commands.ChangeUserPasswordCommand;
 import com.zenobase.commands.ChangeUserVerifiedCommand;
-import com.zenobase.commands.CreateAuthorizationCommand;
+import com.zenobase.commands.CompoundCommand;
 import com.zenobase.common.Generator;
 import com.zenobase.json.Nodes;
 import com.zenobase.models.Identity;
@@ -30,7 +29,7 @@ public class UserControllerHttpPostTest extends UserControllerTestSupport {
 		when(users.find(user.getName())).thenReturn(user);
 		when(dispatcher.dispatch(any(ChangeUserEmailCommand.class))).thenReturn(commandId);
 		Result result = call(user.getName(), new UpdateUserForm("jdoe@zenobase.com").toJson());
-		assertThat(result).hasStatus(OK).hasContent(UserController.content(null, commandId));
+		assertThat(result).hasStatus(NO_CONTENT).hasHeader(COMMAND_ID, commandId).isEmpty();
 	}
 
 	@Test
@@ -72,11 +71,10 @@ public class UserControllerHttpPostTest extends UserControllerTestSupport {
 		user.setPassword("secret123");
 		String commandId = Generator.id();
 		when(users.find(user.getName())).thenReturn(user);
-		when(dispatcher.dispatch(Matchers.any(ChangeUserPasswordCommand.class))).thenReturn(commandId);
-		when(dispatcher.dispatch(Matchers.any(CreateAuthorizationCommand.class))).thenReturn(commandId);
+		when(dispatcher.dispatch(Matchers.any(CompoundCommand.class))).thenReturn(commandId);
 		PasswordResetKey key = new PasswordResetKey(user);
 		Result result = call(user.getName(), new UpdateUserForm("newpassword",  key.getKey(), key.getExpirationToken()).toJson());
-		assertThat(result).hasStatus(OK).asNode().path("access_code").isNotNull();
+		assertThat(result).hasStatus(OK).hasHeader(COMMAND_ID, commandId).asNode().path("access_code").isNotNull();
 	}
 
 	@Test

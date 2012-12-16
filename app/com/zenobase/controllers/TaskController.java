@@ -123,7 +123,8 @@ public class TaskController extends ControllerSupport {
     		return badRequest();
     	}
     	String commandId = dispatcher.dispatch(command);
-    	return success(commandId);
+		response().setHeader(COMMAND_ID, commandId);
+    	return noContent();
     }
 
     public Result delete(String taskId) {
@@ -140,6 +141,7 @@ public class TaskController extends ControllerSupport {
     		return forbidden();
     	}
     	String commandId = dispatcher.dispatch(new DeleteTaskCommand(auth.getPrincipal(), task));
-    	return success(commandId);
+		response().setHeader(COMMAND_ID, commandId);
+    	return noContent();
     }
 }

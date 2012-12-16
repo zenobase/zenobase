@@ -63,7 +63,8 @@ public class QueueController extends ControllerSupport {
 		if (!command.isPermitted(auth) && !users.isSuperuser(auth.getPrincipal())) {
 			return forbidden();
 		}
-    	String undoId = dispatcher.dispatch(command.reverse(auth.getPrincipal()));
-        return created(undoId);
+    	String commandId = dispatcher.dispatch(command.reverse(auth.getPrincipal()));
+		response().setHeader(COMMAND_ID, commandId);
+        return noContent();
     }
 }

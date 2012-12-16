@@ -154,7 +154,7 @@
 		$scope.undo = function(commandId) {
 			$scope.alert.clear();
 			$http.post('/queue/' , { 'undo' : commandId })
-				.success(function(response, code) {
+				.success(function(response, status) {
 					delay($route.reload);
 				})
 				.error(function(response) {
@@ -170,7 +170,7 @@
 			console.assert(token.get(), 'missing token');
 			$scope.alert.clear();
 			$http({ method : 'DELETE', url : '/authorizations/' + token.get() })
-				.success(function(response, code) {
+				.success(function(response) {
 					token.set(null);
 					$scope.user = null;
 					if ($location.url() === '/') {
@@ -309,9 +309,17 @@
 		$scope.close = function() {
 			if (confirm('Close your account and delete all associated data?')) {
 				tracker.event('action', 'close account');
-				$http({ method : 'DELETE', url : '/users/' + $routeParams.userId }).success(function(response) {
-					$scope.signOut();
-				});
+				$http({ method : 'DELETE', url : '/users/' + $routeParams.userId })
+					.success(function() {
+						$scope.signOut();
+					})
+					.error(function(response, status) {
+						if (status < 500) {
+							$scope.message = 'Can\'t close this account.';
+						} else {
+							$scope.message = 'Couldn\'t close this account. Try again later or contact support.';
+						}
+					});
 			}
 		};
 	}]);
@@ -332,12 +340,16 @@
 			var data = $scope.data();
 			if (!$.isEmptyObject(data)) { 
 				$http.post('/users/' + $scope.userInfo.name, data)
-					.success(function(response) {
-						$scope.alert.show('Updated user info.', 'alert-success', response.undo);
+					.success(function(response, status, headers) {
+						$scope.alert.show('Updated user info.', 'alert-success', headers('X-Command-ID'));
 						$scope.editing = false;
 					})
-					.error(function(response) {
-						$scope.message = 'Update failed. Try again later or contact support.';
+					.error(function(response, status) {
+						if (status < 500) {
+							$scope.message = 'Can\'t save these changes.';
+						} else {
+							$scope.message = 'Couldn\'t save these changes. Try again later or contact support.';
+						}
 					});
 			} else {
 				$scope.cancel();
@@ -386,8 +398,8 @@
 						$route.reload();
 					}
 				})
-				.error(function(response, code) {
-					if (code < 500) {
+				.error(function(response, status) {
+					if (status < 500) {
 						$scope.message = 'The username or password you entered is incorrect.';
 					} else {
 						$scope.message = 'Unable to sign in, please try again later or contact support.';
@@ -418,13 +430,13 @@
 		$scope.submit = function() {
 			$scope.alert.clear();
 			$http.post('/reset', $scope.data())
-				.success(function(response) {
+				.success(function() {
 					$scope.alert.show('A password reset request has been sent by email. Check your inbox.');
 					$scope.closeDialog();
 					$scope.home();
 				})
-				.error(function(response, code) {
-					if (code === 400) {
+				.error(function(response, status) {
+					if (status === 400) {
 						$scope.message = 'The username and email address you entered don\'t match our records.';
 					} else {
 						$scope.message = 'Unable to reset your password, please try again later or contact support.';
@@ -458,13 +470,13 @@
 				return;
 			}
 			$http.post('/users/', $scope.data())
-				.success(function(response, code) {
+				.success(function(response) {
 					$scope.$parent.user = new User(response);
 					$scope.closeDialog();
 					$location.url('/users/' + $scope.$parent.user.name);
 				})
-				.error(function(response, code) {
-					if (code === 409) {
+				.error(function(response, status) {
+					if (status === 409) {
 						$scope.message = 'The chosen username is not available.';
 					} else {
 						$scope.message = 'Unable to sign up, please try again later or contact support.';
@@ -476,12 +488,12 @@
 
 	app.controller('UserVerificationController', ['$scope', '$http', '$location', '$routeParams', function($scope, $http, $location, $routeParams) {
 		$http.post('/users/' + $routeParams.userId, { 'key' : $location.search()['key'], 'verified' : true })
-			.success(function(response) {
+			.success(function() {
 				$scope.alert.show('Your email address has been verified.', 'alert-success');
 				$scope.whoami();
 				$location.url('/users/' + $routeParams.userId);
 			})
-			.error(function(response) {
+			.error(function() {
 				$scope.alert.show('Your email address could not be verified.', 'alert-error');
 				$location.url('/users/' + $routeParams.userId);
 			});
@@ -512,8 +524,12 @@
 					$location.url('/users/' + userId);
 					$scope.whoami();
 				})
-				.error(function(response) {
-					$scope.alert.show('Your password could not be changed.', 'alert-error');
+				.error(function(response, status) {
+					if (status < 500) {
+						$scope.alert.show('Your password can\'t be changed.', 'alert-error');
+					} else {
+						$scope.alert.show('Your password could not be changed. Try again later or contact support.', 'alert-error');
+					}
 				});		
 		};
 
@@ -536,8 +552,12 @@
 				.success(function(response) {
 					$scope.buckets = response.buckets;
 				})
-				.error(function(response) {
-					$scope.message = 'Could not list buckets';
+				.error(function(response, status) {
+					if (status < 500) {
+						$scope.message = 'Can\'t list buckets.';
+					} else {
+						$scope.message = 'Could not list buckets. Try again later or contact support.';
+					}
 				});		
 		};
 		var getRedirectUri = function(params) {
@@ -604,21 +624,26 @@
 			};
 		};
 		$scope.refresh = function(params) {
-			$http.get('/buckets/?' + $.param($.extend($scope.params(), params))).success(function(response) {
-				$.extend($scope, params);
-				$scope.total = response.total;
-				$scope.buckets = response.buckets;
-			});
+			$http.get('/buckets/?' + $.param($.extend($scope.params(), params)))
+				.success(function(response) {
+					$.extend($scope, params);
+					$scope.total = response.total;
+					$scope.buckets = response.buckets;
+				});
 		};
 		$scope.remove = function(bucketId) {
 			$scope.alert.clear();
 			$http({ method : 'DELETE', url : '/buckets/' + bucketId })
-				.success(function(response) {
-					$scope.alert.show('Deleted a bucket.', 'alert-success', response.undo);
+				.success(function(response, status, headers) {
+					$scope.alert.show('Deleted a bucket.', 'alert-success', headers('X-Command-ID'));
 					$scope.refresh({});
 				})
-				.error(function(response) {
-					$scope.alert.show('Couldn\'t delete the bucket.', 'alert-error');
+				.error(function(response, status) {
+					if (status < 500) {
+						$scope.alert.show('Can\'t delete the bucket.', 'alert-error');
+					} else {
+						$scope.alert.show('Couldn\'t delete the bucket. Try again later or contact support.', 'alert-error');
+					}
 				});
 			tracker.event('action', 'delete bucket');
 		};
@@ -679,15 +704,15 @@
 		$scope.remove = function(taskId) {
 			$scope.alert.clear();
 			$http({ method : 'DELETE', url : '/tasks/' + taskId })
-				.success(function(response) {
-					$scope.alert.show('Deleted a task.', 'alert-success', response.undo);
+				.success(function(response, status, headers) {
+					$scope.alert.show('Deleted a task.', 'alert-success', headers('X-Command-ID'));
 					delay($scope.refresh);
 				})
-				.error(function(response) {
+				.error(function(response, status) {
 					if (status < 500) {
-						$scope.message = 'Can\'t delete this task.';
+						$scope.message = 'Can\'t delete the task.';
 					} else {
-						$scope.message = 'Couldn\'t delete this task. Try again later or contact support.';
+						$scope.message = 'Couldn\'t delete the task. Try again later or contact support.';
 					}
 				});
 			tracker.event('action', 'delete task');
@@ -730,17 +755,26 @@
 			};
 		};
 		$scope.refresh = function(params) {
-			$http.get('/authorizations/?' + $.param($.extend($scope.params(), params))).success(function(response) {
-				$.extend($scope, params);
-				$scope.total = response.total;
-				$scope.authorizations = response.authorizations;
-			});
+			$http.get('/authorizations/?' + $.param($.extend($scope.params(), params)))
+				.success(function(response) {
+					$.extend($scope, params);
+					$scope.total = response.total;
+					$scope.authorizations = response.authorizations;
+				});
 		};
 		$scope.remove = function(authId) {
-			$http({ method : 'DELETE', url : '/authorizations/' + authId }).success(function(response, code, headers) {
-				$scope.alert.show('Revoked an authorization.', 'alert-success', response.undo);
-				delay($scope.refresh);
-			});
+			$http({ method : 'DELETE', url : '/authorizations/' + authId })
+				.success(function(response, status, headers) {
+					$scope.alert.show('Revoked an authorization.', 'alert-success', headers('X-Command-ID'));
+					delay($scope.refresh);
+				})
+				.error(function(response, status) {
+					if (status < 500) {
+						$scope.alert.show('Can\'t revoke the authorization.', 'alert-error');
+					} else {
+						$scope.alert.show('Couldn\'t revoke the authorization. Try again later or contact support.', 'alert-error');
+					}
+				});
 		};
 
 		$scope.$watch('userInfo', function(user) {
@@ -762,8 +796,12 @@
 					$location.url(location);
 					$scope.openDialog('getting-started-dialog');					
 				})
-				.error(function(response) {
-					$scope.alert.show('Couldn\'t create a new bucket.', 'alert-error');					
+				.error(function(response, status) {
+					if (status < 500) {
+						$scope.alert.show('Can\'t create a new bucket.', 'alert-error');
+					} else {
+						$scope.alert.show('Couldn\'t create a new bucket. Try again later or contact support.', 'alert-error');
+					}
 				});			
 		};
 
@@ -779,7 +817,11 @@
 					createBucket();
 				})
 				.error(function(response, status) {
-					$scope.alert.show('Couldn\'t create a guest account at this moment.', 'alert-error');										
+					if (status < 500) {
+						$scope.alert.show('Can\'t create a guest account.', 'alert-error');
+					} else {
+						$scope.alert.show('Couldn\'t create a guest account. Try again later or contact support.', 'alert-error');
+					}
 				});
 			tracker.event('action', 'get started');
 		};
@@ -1025,10 +1067,18 @@
 		};
 		$scope.removeEvent = function(eventId) {
 			$scope.alert.clear();
-			$http({ method : 'DELETE', url : '/buckets/' + $scope.bucketId + '/' + eventId }).success(function(response, status, headers) {
-				delay($scope.refresh);
-				$scope.alert.show('Deleted an event.', 'alert-success', response.undo);
-			});
+			$http({ method : 'DELETE', url : '/buckets/' + $scope.bucketId + '/' + eventId })
+				.success(function(response, status, headers) {
+					delay($scope.refresh);
+					$scope.alert.show('Deleted an event.', 'alert-success', headers('X-Command-ID'));
+				})
+				.error(function(response, status) {
+					if (status < 500) {
+						$scope.alert.show('Can\'t delete the event.', 'alert-error');
+					} else {
+						$scope.alert.show('Couldn\'t delete the event. Try again later or contact support.', 'alert-error');
+					}
+				});
 			tracker.event('action', 'delete event');
 		};
 	
@@ -1088,7 +1138,7 @@
 			$scope.alert.clear();
 			$http.put('/buckets/' + $scope.bucketId, $scope.bucket)
 				.success(function (response, status, headers) {
-					$scope.alert.show('Saved settings.', 'alert-success', response.undo);
+					$scope.alert.show('Saved settings.', 'alert-success', headers('X-Command-ID'));
 					++$scope.$parent.bucket.version;
 					$scope.$parent.cancel();
 				})
@@ -2093,23 +2143,23 @@
 			$scope.alert.clear();
 			if ($scope.isNew) {
 				$http.post('/buckets/' + $scope.params.bucketId + '/', $scope.event)
-				.success(function(response) {
-					$scope.editEvent(null);
-					delay($scope.refresh);
-				})
-				.error(function(response) {
-					$scope.message = response.message || 'Couldn\'t create this event.';
-				});
+					.success(function(response) {
+						$scope.editEvent(null);
+						delay($scope.refresh);
+					})
+					.error(function(response) {
+						$scope.message = response.message || 'Couldn\'t create this event.';
+					});
 			} else {
 				$http.put('/buckets/' + $scope.params.bucketId + '/' + $scope.event['@id'], $scope.event)
-				.success(function(response) {
-					$scope.editEvent(null);
-					$scope.alert.show('Updated an event.', 'alert-success', response.undo);
-					delay($scope.refresh);
-				})
-				.error(function(response) {
-					$scope.message = response.message || 'Couldn\'t update this event.';
-				});
+					.success(function(response, status, headers) {
+						$scope.editEvent(null);
+						$scope.alert.show('Updated an event.', 'alert-success', headers('X-Command-ID'));
+						delay($scope.refresh);
+					})
+					.error(function(response) {
+						$scope.message = response.message || 'Couldn\'t update this event.';
+					});
 			}
 			tracker.event('action', 'save event');
 		};
@@ -2315,9 +2365,10 @@
 			$scope.reset();
 		};
 		$scope.prefillTitle = function() {
-			$http.get('/og?' + $.param({ url : $scope.value.url })).success(function(response) {
-				$scope.value.title = response.title;
-			});
+			$http.get('/og?' + $.param({ url : $scope.value.url }))
+				.success(function(response) {
+					$scope.value.title = response.title;
+				});
 		};
 		$scope.valid = function() {
 			return $scope.value.url && $scope.value.title;
@@ -2433,8 +2484,8 @@
 		$scope.submit = function() {
 			$scope.alert.clear();
 			$http.post('/buckets/' + $scope.bucketId + '/', $.isArray($scope.events) ? { 'events' : $scope.events } : $scope.events)
-				.success(function(response) {
-					$scope.alert.show('Imported events.', 'alert-success', response.undo);
+				.success(function(response, status, headers) {
+					$scope.alert.show('Imported events.', 'alert-success', headers('X-Command-ID'));
 					delay($scope.refresh);
 					$scope.closeDialog();
 				})
@@ -2460,8 +2511,8 @@
 						});
 					}
 				})
-				.error(function(response, code) {
-					if (code < 500) {
+				.error(function(response, status) {
+					if (status < 500) {
 						$scope.alert.show('Couldn\'t refresh task.', 'alert-error');
 					} else {
 						$scope.alert.show('Couldn\'t refresh task. Try again later or contact support.', 'alert-error');
@@ -2499,9 +2550,9 @@
 		$scope.create = function() {
 			$scope.alert.clear();
 			$http.post('/tasks/', $scope.data())
-				.success(function(response, code, headers) {
+				.success(function(response, status, headers) {
 					var location = headers('Location');
-					console.assert(code === 201, status);
+					console.assert(status === 201, status);
 					console.assert(location, 'missing location header');
 					var taskId = location.replace(/.+\//, '');
 					tasks.refresh($scope, taskId, function() {
@@ -3041,7 +3092,7 @@
 						'  <a href="http://twitter.com/{{username}}">Updates &raquo;</a>' +
 						'</small>');
 					$http.jsonp('https://api.twitter.com/1/statuses/user_timeline.json?screen_name=' + attrs.username + '&callback=JSON_CALLBACK&count=1&trim_user=true&exclude_replies=true')
-						.success(function(data, status, headers, config) {
+						.success(function(data) {
 							if (data.length) {
 								element.html(template({
 									'text' : data[0].text.replace(' #quantifiedself', ''),

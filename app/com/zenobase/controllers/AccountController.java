@@ -73,6 +73,7 @@ public class AccountController extends ControllerSupport {
 		}
 		Command command = new CloseAccountCommandBuilder(auth.getPrincipal(), buckets, user).build();
 		String commandId = dispatcher.dispatch(command);
-		return success(commandId);
+		response().setHeader(COMMAND_ID, commandId);
+		return noContent();
 	}
 }

@@ -76,18 +76,20 @@ public class EventListController extends ControllerSupport {
     	ObjectNode body = body();
     	ImmutableList<ObjectNode> nodes = EVENTS.getValues(body);
     	if (!nodes.isEmpty()) {
-    		CompoundCommand cmd = new CompoundCommand(auth.getPrincipal(), "added events", "removed events");
+    		CompoundCommand command = new CompoundCommand(auth.getPrincipal(), "added events", "removed events");
     		for (ObjectNode node : nodes) {
-        		cmd.add(newCreateEventCommand(auth.getPrincipal(), bucketId, node));
+        		command.add(newCreateEventCommand(auth.getPrincipal(), bucketId, node));
     		}
-    		String commandId = dispatcher.dispatch(cmd);
-            return success(commandId);
+    		String commandId = dispatcher.dispatch(command);
+    		response().setHeader(COMMAND_ID, commandId);
+            return noContent();
     	}
     	else {
     		CreateEventCommand command = newCreateEventCommand(auth.getPrincipal(), bucketId, body);
     		String commandId = dispatcher.dispatch(command);
             response().setHeader(LOCATION, com.zenobase.controllers.routes.EventController.get(bucket.getId(), command.getEvent().getId()).toString());
-            return created(commandId);
+    		response().setHeader(COMMAND_ID, commandId);
+            return created(command.getEvent().toJson());
     	}
     }
 

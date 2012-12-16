@@ -7,15 +7,10 @@ import play.mvc.With;
 
 import com.zenobase.actions.NoCache;
 import com.zenobase.json.Nodes;
-import com.zenobase.json.TextField;
-import com.zenobase.json.TokenField;
 import com.zenobase.oauth.Authorization;
 
 @With(NoCache.class)
-public abstract class ControllerSupport extends Controller {
-
-	protected static final TextField MESSAGE = new TextField("message");
-	protected static final TokenField UNDO = new TokenField("undo");
+public abstract class ControllerSupport extends Controller implements CustomHeaders {
 
 	private final AuthorizationContext authContext;
 
@@ -35,14 +30,6 @@ public abstract class ControllerSupport extends Controller {
 	protected static <T extends JsonNode> T body(Class<T> type) {
 		JsonNode node = request().body().asJson();
 		return type.isInstance(node) ? type.cast(node) : null;
-	}
-
-	public static Status success(String undoId) {
-		return result(OK, null, undoId);
-	}
-
-	public static Status created(String undoId) {
-		return result(CREATED, null, undoId);
 	}
 
 	public static Status badRequest(String message) {
@@ -70,21 +57,6 @@ public abstract class ControllerSupport extends Controller {
 	}
 
 	private static Status result(int status, String message) {
-		return result(status, message, null);
-	}
-
-	private static Status result(int status, String message, String undoId) {
-		return status(status, content(message, undoId));
-	}
-
-	protected static ObjectNode content(String message, String undoId) {
-		ObjectNode node = Nodes.newObject();
-		if (message != null) {
-			MESSAGE.setValue(node, message);
-		}
-		if (undoId != null) {
-	    	UNDO.setValue(node, undoId);
-		}
-		return node;
+		return status(status, Nodes.newObject("message", message));
 	}
 }

@@ -1,6 +1,5 @@
 package com.zenobase.controllers;
 
-import static com.zenobase.testing.EventAssert.assertThat;
 import static com.zenobase.testing.ResultAssert.assertThat;
 import static org.fest.assertions.Assertions.assertThat;
 import static org.mockito.Mockito.when;
@@ -46,11 +45,12 @@ public class EventListControllerHttpPostTest extends EventListControllerTestSupp
 		when(buckets.findBucket(bucket.getId())).thenReturn(bucket);
 		when(dispatcher.dispatch(commandArg.capture())).thenReturn(commandId);
 		Result result = call(bucket, body);
-		assertThat(result).hasStatus(CREATED).hasContent(EventListController.content(null, commandId));
-		assertThat(commandArg.getValue().getEvent())
-			.hasField(Event.ID)
-			.hasField(Event.TIMESTAMP)
-			.hasValue(Event.AUTHOR, user.asIdentity());
+		assertThat(result).hasStatus(CREATED).hasHeader(COMMAND_ID, commandId);
+		Event event = commandArg.getValue().getEvent();
+		assertThat(result).hasContent(event.toJson());
+		assertThat(event.getValue(Event.ID)).isNotNull();
+		assertThat(event.getValue(Event.TIMESTAMP)).isNotNull();
+		assertThat(event.getValue(Event.AUTHOR)).isEqualTo(user.asIdentity());
 	}
 
 	@Test
@@ -64,7 +64,7 @@ public class EventListControllerHttpPostTest extends EventListControllerTestSupp
 		when(buckets.findBucket(bucket.getId())).thenReturn(bucket);
 		when(dispatcher.dispatch(commandArg.capture())).thenReturn(commandId);
 		Result result = call(bucket, body);
-		assertThat(result).hasStatus(OK).hasContent(EventListController.content(null, commandId));
+		assertThat(result).hasStatus(NO_CONTENT).hasHeader(COMMAND_ID, commandId).isEmpty();
 		assertThat(commandArg.getValue().getCommands().size()).isEqualTo(2);
 	}
 
@@ -80,12 +80,13 @@ public class EventListControllerHttpPostTest extends EventListControllerTestSupp
 		when(buckets.findBucket(bucket.getId())).thenReturn(bucket);
 		when(dispatcher.dispatch(commandArg.capture())).thenReturn(commandId);
 		Result result = call(bucket, body);
-		assertThat(result).hasStatus(CREATED).hasContent(EventListController.content(null, commandId));
-		assertThat(commandArg.getValue().getEvent())
-			.hasField(Event.ID)
-			.hasValue(Event.TIMESTAMP, now)
-			.hasValue(Event.AUTHOR, user.asIdentity())
-			.hasValue(Event.TAG, tag);
+		assertThat(result).hasStatus(CREATED).hasHeader(COMMAND_ID, commandId);
+		Event event = commandArg.getValue().getEvent();
+		assertThat(result).hasContent(event.toJson());
+		assertThat(event.getValue(Event.ID)).isNotNull();
+		assertThat(event.getValue(Event.TIMESTAMP)).isEqualTo(now);
+		assertThat(event.getValue(Event.AUTHOR)).isEqualTo(user.asIdentity());
+		assertThat(event.getValue(Event.TAG)).isEqualTo(tag);
 	}
 
 	@Test
