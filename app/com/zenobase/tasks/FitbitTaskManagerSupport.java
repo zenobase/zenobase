@@ -28,7 +28,7 @@ public abstract class FitbitTaskManagerSupport extends OAuthTaskManager {
 		OAuthRequest request = new OAuthRequest(Verb.GET, "https://api.fitbit.com/1/user/-/devices.json");
 		service.signRequest(task.getToken(), request);
 		Response response = request.send();
-		Preconditions.checkState(response.isSuccessful(), "Failed to get devices for task <%s>", task.getId());
+		Preconditions.checkState(response.isSuccessful(), "Failed to get devices for task <%s>: %s", task.getId(), response.getBody());
 		return new FitbitDevicesResult(parseArray(response)).getLastDate();
 	}
 
@@ -40,7 +40,7 @@ public abstract class FitbitTaskManagerSupport extends OAuthTaskManager {
 		OAuthRequest request = new OAuthRequest(Verb.GET, "https://api.fitbit.com/1/user/-/profile.json");
 		service.signRequest(task.getToken(), request);
 		Response response = request.send();
-		Preconditions.checkState(response.isSuccessful(), "Failed to get profile for task <%s>", task.getId());
+		Preconditions.checkState(response.isSuccessful(), "Failed to get profile for task <%s>: %s", task.getId(), response.getBody());
 		return new FitbitProfileResult(parseObject(response));
 	}
 

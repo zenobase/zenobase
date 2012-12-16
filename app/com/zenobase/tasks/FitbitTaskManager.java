@@ -57,7 +57,7 @@ public class FitbitTaskManager extends FitbitTaskManagerSupport {
 			request.addHeader("Accept-Language", profile.getDistanceLocale());
 			service.signRequest(task.getToken(), request);
 			Response response = request.send();
-			Preconditions.checkState(response.isSuccessful(), "Failed to get activities on <%s> for task <%s>", date, task.getId());
+			Preconditions.checkState(response.isSuccessful(), "Failed to get activities on <%s> for task <%s>: %s", date, task.getId(), response.getBody());
 			events.addAll(new FitbitActivitiesResult(parseObject(response), task.getTag(), task.getPrincipal(),
 				date.toDateTimeAtStartOfDay(profile.getTimezone()), profile.getDistanceUnit(), profile.getHeightUnit()).getEvents());
 		}
