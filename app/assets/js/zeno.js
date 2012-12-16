@@ -3039,7 +3039,7 @@
 
 	app.filter('age', [ 'moment', function(moment) {
 		return function(date) {
-			return moment(date).fromNowOrNow();
+			return date ? moment(date).fromNowOrNow() : '';
 		}
 	}]);
 
