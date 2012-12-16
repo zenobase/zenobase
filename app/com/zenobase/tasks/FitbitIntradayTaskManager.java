@@ -17,25 +17,25 @@ import com.google.common.collect.Lists;
 import com.zenobase.commands.Command;
 import com.zenobase.models.Event;
 
-public class FitbitHighResTaskManager extends FitbitTaskManagerSupport {
+public class FitbitIntradayTaskManager extends FitbitTaskManagerSupport {
 
 	@Inject
-	public FitbitHighResTaskManager(@Named("fitbit.api.key") String apiKey, @Named("fitbit.api.secret") String apiSecret, @Named("oauth.hostname") String callbackUrl) {
+	public FitbitIntradayTaskManager(@Named("fitbit.api.key") String apiKey, @Named("fitbit.api.secret") String apiSecret, @Named("oauth.hostname") String callbackUrl) {
 		super(FitbitApi.class, apiKey, apiSecret, callbackUrl);
 	}
 
 	@Override
 	public String getType() {
-		return FitbitHighResTask.TYPE;
+		return FitbitIntradayTask.TYPE;
 	}
 
 	@Override
 	public Command execute(Task task) {
 		Preconditions.checkState(task.isEnabled(), "Task is not enabled: %s", task.getId());
-		return execute(task.as(FitbitHighResTask.class));
+		return execute(task.as(FitbitIntradayTask.class));
 	}
 
-	private Command execute(FitbitHighResTask task) {
+	private Command execute(FitbitIntradayTask task) {
 
 		List<Event> events = Lists.newArrayList();
 		OAuthService service = getService(task);
@@ -62,7 +62,7 @@ public class FitbitHighResTaskManager extends FitbitTaskManagerSupport {
 			service.signRequest(task.getToken(), caloriesRequest);
 			Response caloriesResponse = caloriesRequest.send();
 			Preconditions.checkState(caloriesResponse.isSuccessful(), "Failed to get calories on <%s> for task <%s>", date, task.getId());
-			events.addAll(new FitbitHighResResult(parseObject(caloriesResponse), task.getPrincipal(), date, profile.getTimezone(), sleeping).getEvents());
+			events.addAll(new FitbitIntradayResult(parseObject(caloriesResponse), task.getPrincipal(), date, profile.getTimezone(), sleeping).getEvents());
 		}
 
 		return createCommand(task, events, syncDate);

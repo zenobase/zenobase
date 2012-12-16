@@ -15,7 +15,7 @@ import com.google.common.collect.Lists;
 import com.zenobase.json.Nodes;
 import com.zenobase.models.Event;
 
-public class FitbitHighResResultTest extends ResultTestSupport {
+public class FitbitIntradayResultTest extends ResultTestSupport {
 
 	private static final DateTimeZone TIMEZONE = DateTimeZone.forOffsetHours(-8);
 	private static final LocalDate DATE = LocalDate.parse("2012-12-03");
@@ -26,7 +26,7 @@ public class FitbitHighResResultTest extends ResultTestSupport {
 			new Interval(DateTime.parse("2012-12-03T00:30:05.000-08:00"), DateTime.parse("2012-12-03T08:25:00.000-08:00")),
 			new Interval(DateTime.parse("2012-12-03T23:00:00.000-08:00"), DateTime.parse("2012-12-04T08:00:00.000-08:00"))
 		);
-		FitbitHighResResult result = new FitbitHighResResult(readObject("FitbitHighResResultTest.json"), TESTER, DATE, TIMEZONE, ignore);
+		FitbitIntradayResult result = new FitbitIntradayResult(readObject("FitbitIntradayResultTest.json"), TESTER, DATE, TIMEZONE, ignore);
 		List<Event> events = result.getEvents();
 		assertThat(events).as("events").hasSize(82);
 		Event first = new Event(events.get(0).getId());
@@ -46,7 +46,7 @@ public class FitbitHighResResultTest extends ResultTestSupport {
 
 	@Test
 	public void testEmpty() {
-		FitbitHighResResult result = new FitbitHighResResult(Nodes.newObject(), TESTER, DATE, TIMEZONE, Lists.<Interval>newArrayList());
+		FitbitIntradayResult result = new FitbitIntradayResult(Nodes.newObject(), TESTER, DATE, TIMEZONE, Lists.<Interval>newArrayList());
 		List<Event> events = result.getEvents();
 		assertThat(events).as("events").isEmpty();
 	}

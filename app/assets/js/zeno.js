@@ -2525,7 +2525,7 @@
 	
 		$scope.types = [ 
 			{ 'id' : 'fitbit', 'description' : 'Creates events for daily Fitbit step counts.' },
-			// { 'id' : 'fitbit-highres', 'description' : 'Creates events from Fitbit data for each period of time spent moving, sitting or sleeping.' },
+			{ 'id' : 'fitbit-intraday', 'description' : 'Creates events from Fitbit data for each period of time spent moving, sitting or sleeping.' },
 			{ 'id' : 'foursquare', 'description' : 'Creates events for Foursquare check-ins.' },
 			{ 'id' : 'withings', 'description' : 'Creates events for Withings weight measurements.' },
 			{ 'id' : 'demo', 'description' : 'Creates events with a custom tag.' }
@@ -2578,7 +2578,7 @@
 		$scope.init();
 	}]);
 
-	app.controller('FitbitHighResSettingsController', ['$scope', function($scope) {
+	app.controller('FitbitIntradaySettingsController', ['$scope', function($scope) {
 
 		$scope.init = function() {
 			$scope.settings = $scope.$parent.$parent.settings = { };

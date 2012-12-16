@@ -35,8 +35,8 @@ public class FitbitTest extends TaskTestSupport {
 	}
 
 	@Test
-	public void testHighRes() {
-		TaskManager manager = new FitbitHighResTaskManager(apiKey, apiSecret, callbackUrl);
-		manager.execute(new FitbitHighResTask(bucketId, principal, getToken(), LocalDate.now().minusDays(2).toString()));
+	public void testIntraday() {
+		TaskManager manager = new FitbitIntradayTaskManager(apiKey, apiSecret, callbackUrl);
+		manager.execute(new FitbitIntradayTask(bucketId, principal, getToken(), LocalDate.now().minusDays(2).toString()));
 	}
 }

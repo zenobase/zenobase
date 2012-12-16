@@ -15,7 +15,7 @@ import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
 import com.zenobase.models.Resource;
 
-class FitbitHighResResult {
+class FitbitIntradayResult {
 
 	public static final Resource SOURCE = new Resource("Fitbit", "http://fitbit.com/");
 
@@ -26,7 +26,7 @@ class FitbitHighResResult {
 	private final List<Interval> ignore;
 	private final int threshold = 1;
 
-	public FitbitHighResResult(JsonNode node, Identity author, LocalDate date, DateTimeZone timezone, List<Interval> ignore) {
+	public FitbitIntradayResult(JsonNode node, Identity author, LocalDate date, DateTimeZone timezone, List<Interval> ignore) {
 		this.node = node;
 		this.author = author;
 		this.date = date;

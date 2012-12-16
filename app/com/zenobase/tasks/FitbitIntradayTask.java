@@ -5,21 +5,21 @@ import org.scribe.model.Token;
 
 import com.zenobase.models.Identity;
 
-public class FitbitHighResTask extends OAuthTask {
+public class FitbitIntradayTask extends OAuthTask {
 
-	public static final String TYPE = "fitbit-highres";
+	public static final String TYPE = "fitbit-intraday";
 
-	public FitbitHighResTask(ObjectNode node) {
+	public FitbitIntradayTask(ObjectNode node) {
 		super(node);
 	}
 
-	FitbitHighResTask(String bucketId, Identity principal, Token accessToken, String marker) {
+	FitbitIntradayTask(String bucketId, Identity principal, Token accessToken, String marker) {
 		super(TYPE, bucketId, principal, accessToken);
 		setMarker(marker);
 	}
 
 	@Override
-	public FitbitHighResTask copy() {
+	public FitbitIntradayTask copy() {
 		return copy(getClass());
 	}
 }

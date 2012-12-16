@@ -77,7 +77,7 @@ import com.zenobase.services.TaskRepository;
 import com.zenobase.services.TestNodeFactory;
 import com.zenobase.services.UserRepository;
 import com.zenobase.tasks.DemoTaskManager;
-import com.zenobase.tasks.FitbitHighResTaskManager;
+import com.zenobase.tasks.FitbitIntradayTaskManager;
 import com.zenobase.tasks.FitbitTaskManager;
 import com.zenobase.tasks.FoursquareTaskManager;
 import com.zenobase.tasks.TaskManager;
@@ -165,7 +165,7 @@ public class Global extends GlobalSettings {
 				managers.addBinding().to(DemoTaskManager.class);
 				if (isConfigured("fitbit")) {
 					managers.addBinding().to(FitbitTaskManager.class);
-					managers.addBinding().to(FitbitHighResTaskManager.class);
+					managers.addBinding().to(FitbitIntradayTaskManager.class);
 				} else {
 					Logger.warn("Fitbit is not configured");
 				}
