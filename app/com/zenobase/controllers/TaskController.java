@@ -16,7 +16,7 @@ import com.zenobase.commands.Command;
 import com.zenobase.commands.DeleteTaskCommand;
 import com.zenobase.commands.UpdateTaskCommand;
 import com.zenobase.models.Bucket;
-import com.zenobase.models.Permission;
+import com.zenobase.models.Role;
 import com.zenobase.oauth.Authorization;
 import com.zenobase.services.BucketRepository;
 import com.zenobase.services.CommandDispatcher;
@@ -74,7 +74,7 @@ public class TaskController extends ControllerSupport {
 			task.setStatus(Task.Status.FAILED);
 			return;
 		}
-    	if (!bucket.isPermitted(new Authorization(task.getPrincipal()), Permission.ALL)) {
+    	if (!bucket.hasRole(new Authorization(task.getPrincipal()), Role.OWNER)) {
 			task.setStatus(Task.Status.FAILED);
 			return;
     	}
@@ -137,7 +137,7 @@ public class TaskController extends ControllerSupport {
 			return notFound();
 		}
     	Bucket bucket = buckets.findBucket(task.getBucketId());
-    	if (bucket != null && !bucket.isPermitted(auth, Permission.ALL)) {
+    	if (bucket != null && !bucket.hasRole(auth, Role.OWNER)) {
     		return forbidden();
     	}
     	String commandId = dispatcher.dispatch(new DeleteTaskCommand(auth.getPrincipal(), task));

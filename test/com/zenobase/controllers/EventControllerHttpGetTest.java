@@ -12,7 +12,7 @@ import play.mvc.Result;
 import com.zenobase.models.Bucket;
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
-import com.zenobase.models.Permission;
+import com.zenobase.models.Role;
 import com.zenobase.oauth.Authorization;
 
 public class EventControllerHttpGetTest extends EventControllerTestSupport {
@@ -23,7 +23,7 @@ public class EventControllerHttpGetTest extends EventControllerTestSupport {
 	@Override
 	public void setUp() {
 		super.setUp();
-		bucket.addPermission(user.asIdentity(), Permission.ALL);
+		bucket.addRole(user.asIdentity(), Role.OWNER);
 		event.setValue(Event.AUTHOR, user.asIdentity());
 	}
 

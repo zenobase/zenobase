@@ -15,7 +15,7 @@ import com.zenobase.common.Generator;
 import com.zenobase.models.Bucket;
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
-import com.zenobase.models.Permission;
+import com.zenobase.models.Role;
 import com.zenobase.oauth.Authorization;
 
 public class EventControllerHttpDeleteTest extends EventControllerTestSupport {
@@ -27,8 +27,8 @@ public class EventControllerHttpDeleteTest extends EventControllerTestSupport {
 	@Override
 	public void setUp() {
 		super.setUp();
-		bucket.addPermission(user.asIdentity(), Permission.ALL);
-		bucket.addPermission(friend, Permission.CONTRIBUTE);
+		bucket.addRole(user.asIdentity(), Role.OWNER);
+		bucket.addRole(friend, Role.CONTRIBUTOR);
 		event.setValue(Event.AUTHOR, user.asIdentity());
 	}
 

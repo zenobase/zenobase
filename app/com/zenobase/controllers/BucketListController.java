@@ -11,7 +11,7 @@ import com.zenobase.commands.CreateBucketCommand;
 import com.zenobase.io.BucketPrinter;
 import com.zenobase.models.Bucket;
 import com.zenobase.models.Identity;
-import com.zenobase.models.Permission;
+import com.zenobase.models.Role;
 import com.zenobase.oauth.Authorization;
 import com.zenobase.services.BucketRepository;
 import com.zenobase.services.CommandDispatcher;
@@ -89,7 +89,7 @@ public class BucketListController extends ControllerSupport {
 		Bucket bucket = form.getId() != null ? new Bucket(form.getId()) : new Bucket();
 		bucket.setLabel(form.getLabel());
 		bucket.setDescription(form.getDescription());
-		bucket.addPermission(auth.getPrincipal(), Permission.ALL);
+		bucket.addRole(auth.getPrincipal(), Role.OWNER);
 		if (!bucket.valid()) {
 			return badRequest("not valid");
 		}

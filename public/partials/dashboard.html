@@ -31,10 +31,10 @@
 				<a id="add-event-action" class="page-title-decoration" title="Add Event..." data-ng-click="editEvent({})" data-ng-show="editable"><i class="icon-plus"></i></a>
 				<a id="create-task-action" class="page-title-decoration" title="Connect..." data-ng-click="openDialog('task-dialog')" data-ng-show="editable"><i class="icon-share"></i></a>
 			</p>
-			<p id="bucket-permissions" class="pull-right" data-ng-show="editable">
+			<p id="bucket-roles" class="pull-right" data-ng-show="editable">
 				<span id="bucket-private-label" data-ng-show="!bucket.isPublished()"><i class="icon-lock"></i> private</span>
 				<span id="bucket-public-label" data-ng-show="bucket.isPublished()"><i class="icon-globe"></i> public</span>
-				<span data-ng-show="editing">[ <a id="permissions-dialog-link" data-ng-click="openDialog('permissions-dialog')">Change...</a> ]</span>
+				<span data-ng-show="editing">[ <a id="roles-dialog-link" data-ng-click="openDialog('roles-dialog')">Change...</a> ]</span>
 			</p>
 			<ul class="nav nav-pills" data-ng-show="filters">
 				<li class="active" data-ng-repeat="filter in filters">
@@ -87,21 +87,21 @@
 
 	</div>
 
-	<div id="permissions-dialog" data-ui-modal="dialog == 'permissions-dialog'" data-ui-modal-open="init()" data-ui-modal-close="closeDialog()" data-ng-controller="PermissionsDialogController">
+	<div id="roles-dialog" data-ui-modal="dialog == 'roles-dialog'" data-ui-modal-open="init()" data-ui-modal-close="closeDialog()" data-ng-controller="RolesDialogController">
 		<form class="modal-form">
 			<div class="modal-header">
 				<a class="close" data-dismiss="modal">&times;</a>
-				<h4>Permissions</h4>
+				<h4>Roles</h4>
 			</div>
 			<div class="modal-body">
 				<div class="control-group">
 					<div class="controls">
-						<p style="clear:both" data-ng-repeat="p in bucket.permissions">
-							<span class="editable" data-ng-show="p.principal == '*'">
-								<i class="icon-globe"></i> public ({{p.permission}}) <a data-ng-click="bucket.unpublish()"><i class="icon-remove" title="Delete"></i></a>
+						<p style="clear:both" data-ng-repeat="role in bucket.roles">
+							<span class="editable" data-ng-show="role.principal == '*'">
+								<i class="icon-globe"></i> public<a data-ng-click="bucket.unpublish()"><i class="icon-remove" title="Delete"></i></a>
 							</span>
-							<span class="editable" data-ng-show="p.principal != '*'">
-								<i class="icon-user"></i> {{p.principal | username}} ({{p.permission}})
+							<span class="editable" data-ng-show="role.principal != '*'">
+								<i class="icon-user"></i> {{role.principal | username}} ({{role.role}})
 							</span>
 						</p>
 						<p style="clear:both">
@@ -117,7 +117,7 @@
 				</div>
 			</div>
 			<div class="modal-footer">
-				<button id="update-permissions-button" class="btn btn-primary" data-ng-click="update()">Update</button>
+				<button id="update-roles-button" class="btn btn-primary" data-ng-click="update()">Update</button>
 				<button class="btn" data-dismiss="modal">Cancel</button>
 			</div>
 		</form>

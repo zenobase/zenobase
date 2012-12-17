@@ -12,7 +12,7 @@ import com.zenobase.commands.DeleteEventCommand;
 import com.zenobase.commands.UpdateEventCommand;
 import com.zenobase.models.Bucket;
 import com.zenobase.models.Event;
-import com.zenobase.models.Permission;
+import com.zenobase.models.Role;
 import com.zenobase.oauth.Authorization;
 import com.zenobase.services.BucketRepository;
 import com.zenobase.services.CommandDispatcher;
@@ -39,7 +39,7 @@ public class EventController extends ControllerSupport {
     	if (bucket == null) {
     		return notFound();
     	}
-    	if (!bucket.isPermitted(auth, Permission.USE)) {
+    	if (!bucket.hasRole(auth, Role.VIEWER)) {
     		return forbidden();
     	}
     	Event event = buckets.findEvent(bucketId, eventId);
@@ -59,7 +59,7 @@ public class EventController extends ControllerSupport {
     	if (bucket == null) {
     		return notFound("bucket not found");
     	}
-    	if (!bucket.isPermitted(auth, Permission.ALL)) {
+    	if (!bucket.hasRole(auth, Role.OWNER)) {
     		return forbidden();
     	}
     	Event event = buckets.findEvent(bucketId, eventId);
@@ -86,7 +86,7 @@ public class EventController extends ControllerSupport {
     	if (bucket == null) {
     		return notFound();
     	}
-    	if (!bucket.isPermitted(auth, Permission.ALL)) {
+    	if (!bucket.hasRole(auth, Role.OWNER)) {
     		return forbidden();
     	}
     	Event event = buckets.findEvent(bucket.getId(), eventId);

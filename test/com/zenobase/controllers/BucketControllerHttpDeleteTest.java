@@ -14,7 +14,7 @@ import com.zenobase.commands.DeleteBucketCommand;
 import com.zenobase.common.Generator;
 import com.zenobase.models.Bucket;
 import com.zenobase.models.Identity;
-import com.zenobase.models.Permission;
+import com.zenobase.models.Role;
 import com.zenobase.oauth.Authorization;
 
 public class BucketControllerHttpDeleteTest extends BucketControllerTestSupport {
@@ -26,7 +26,7 @@ public class BucketControllerHttpDeleteTest extends BucketControllerTestSupport 
 	public void setUp() {
 		super.setUp();
 		bucket.setLabel("Obsolete Bucket");
-		bucket.addPermission(user.asIdentity(), Permission.ALL);
+		bucket.addRole(user.asIdentity(), Role.OWNER);
 	}
 
 	@Test

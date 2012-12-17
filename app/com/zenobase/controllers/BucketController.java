@@ -16,7 +16,7 @@ import com.zenobase.commands.DeleteBucketCommand;
 import com.zenobase.commands.UpdateBucketCommand;
 import com.zenobase.json.Nodes;
 import com.zenobase.models.Bucket;
-import com.zenobase.models.Permission;
+import com.zenobase.models.Role;
 import com.zenobase.models.User;
 import com.zenobase.oauth.Authorization;
 import com.zenobase.services.BucketRepository;
@@ -46,7 +46,7 @@ public class BucketController extends ControllerSupport {
 		if (bucket == null) {
 			return notFound();
 		}
-    	if (!bucket.isPermitted(auth, Permission.USE)) {
+    	if (!bucket.hasRole(auth, Role.VIEWER)) {
     		return auth == null ? unauthorized() : forbidden();
     	}
 		if (bucket.getWidgets().isEmpty()) {
@@ -113,20 +113,20 @@ public class BucketController extends ControllerSupport {
     	if (bucket == null) {
     		return notFound("bucket not found");
     	}
-    	if (!bucket.isPermitted(auth, Permission.ALL)) {
+    	if (!bucket.hasRole(auth, Role.OWNER)) {
     		return forbidden();
     	}
     	Bucket updated = new Bucket(body());
 		if (!updated.valid()) {
 			return badRequest("bucket not valid");
 		}
-		if (!updated.getPrincipals(Permission.ALL).equals(bucket.getPrincipals(Permission.ALL))) {
+		if (!updated.getPrincipals(Role.OWNER).equals(bucket.getPrincipals(Role.OWNER))) {
 			return badRequest("bucket owner can't change");
 		}
 		if (updated.getPrincipals().size() > 1) {
 			User user = users.find(auth.getPrincipal());
 			if (user == null || !user.isVerified()) {
-				return forbidden("not permitted to change permissions on this bucket");
+				return forbidden("not permitted to add or remove roles");
 			}
 		}
 		try {
@@ -147,7 +147,7 @@ public class BucketController extends ControllerSupport {
     	if (bucket == null) {
     		return notFound();
     	}
-    	if (!bucket.isPermitted(auth, Permission.ALL) && !users.isSuperuser(auth.getPrincipal())) {
+    	if (!bucket.hasRole(auth, Role.OWNER) && !users.isSuperuser(auth.getPrincipal())) {
     		return forbidden();
     	}
     	String commandId = dispatcher.dispatch(new DeleteBucketCommand(auth.getPrincipal(), bucket));

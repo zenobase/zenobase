@@ -17,7 +17,7 @@ import com.zenobase.common.Generator;
 import com.zenobase.models.Bucket;
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
-import com.zenobase.models.Permission;
+import com.zenobase.models.Role;
 import com.zenobase.oauth.Authorization;
 
 public class EventControllerHttpPostTest extends EventControllerTestSupport {
@@ -29,7 +29,7 @@ public class EventControllerHttpPostTest extends EventControllerTestSupport {
 	@Override
 	public void setUp() {
 		super.setUp();
-		bucket.addPermission(user.asIdentity(), Permission.ALL);
+		bucket.addRole(user.asIdentity(), Role.OWNER);
 		from = new Event();
 		from.setValue(Event.TAG, "foo");
 		to = from.copy();

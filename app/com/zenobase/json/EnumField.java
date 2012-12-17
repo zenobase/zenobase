@@ -22,7 +22,7 @@ public class EnumField<E extends Enum<E>> extends Field<E> {
 
 	@Override
 	public JsonNode toJson(E value) {
-		return value != null ? new TextNode(value.toString()) : NullNode.getInstance();
+		return value != null ? new TextNode(value.toString().toLowerCase()) : NullNode.getInstance();
 	}
 
 	@Override

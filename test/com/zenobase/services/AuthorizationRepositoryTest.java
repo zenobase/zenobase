@@ -5,10 +5,12 @@ import static com.zenobase.testing.PartialListAssert.assertThat;
 import static org.fest.assertions.Assertions.assertThat;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import org.junit.Before;
 import org.junit.Test;
 import com.google.common.collect.Lists;
+import com.google.common.util.concurrent.Uninterruptibles;
 
 import com.zenobase.common.Generator;
 import com.zenobase.models.Identity;
@@ -65,6 +67,7 @@ public class AuthorizationRepositoryTest extends ElasticSearchTestSupport {
 		for (int i = 0; i < size; ++i) {
 			Authorization authorization = new Authorization(principal, i % 2 == 0 ? new Identity() : null, Generator.id());
 			authorizations.add(authorization);
+			Uninterruptibles.sleepUninterruptibly(5, TimeUnit.MILLISECONDS); // tasks will be returned in order of creation time
 			repository.store(authorization);
 		}
 		return Lists.reverse(authorizations);

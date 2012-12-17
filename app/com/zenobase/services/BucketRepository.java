@@ -19,7 +19,7 @@ import com.google.common.collect.Lists;
 
 import com.zenobase.common.Callback;
 import com.zenobase.common.PartialList;
-import com.zenobase.json.PermissionField;
+import com.zenobase.json.RolesField;
 import com.zenobase.models.Bucket;
 import com.zenobase.models.BucketList;
 import com.zenobase.models.Event;
@@ -84,8 +84,8 @@ public class BucketRepository {
 	}
 
 	private static QueryBuilder queryFor(Identity identity) {
-		return QueryBuilders.nestedQuery(Bucket.PERMISSIONS.getName(),
-			QueryBuilders.termQuery(PermissionField.PRINCIPAL.getName(), identity.getId()));
+		return QueryBuilders.nestedQuery(Bucket.ROLES.getName(),
+			QueryBuilders.termQuery(RolesField.PRINCIPAL.getName(), identity.getId()));
 	}
 
 	private BucketList findBuckets(QueryBuilder query, int offset, int limit) {

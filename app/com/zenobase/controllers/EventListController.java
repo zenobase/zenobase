@@ -19,7 +19,7 @@ import com.zenobase.json.ObjectField;
 import com.zenobase.models.Bucket;
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
-import com.zenobase.models.Permission;
+import com.zenobase.models.Role;
 import com.zenobase.oauth.Authorization;
 import com.zenobase.search.EventSearch;
 import com.zenobase.services.BucketRepository;
@@ -46,7 +46,7 @@ public class EventListController extends ControllerSupport {
     	if (bucket == null) {
     		return notFound();
     	}
-    	if (!bucket.isPermitted(auth, Permission.USE)) {
+    	if (!bucket.hasRole(auth, Role.VIEWER)) {
     		return auth == null ? unauthorized() : forbidden();
     	}
     	String[] widgets = request().queryString().get("w");
@@ -70,7 +70,7 @@ public class EventListController extends ControllerSupport {
     	if (bucket == null) {
     		return notFound();
     	}
-    	if (!bucket.isPermitted(auth, Permission.ALL)) {
+    	if (!bucket.hasRole(auth, Role.OWNER)) {
     		return forbidden();
     	}
     	ObjectNode body = body();

@@ -9,7 +9,7 @@ import play.mvc.With;
 import com.zenobase.actions.Timed;
 import com.zenobase.commands.CreateTaskCommand;
 import com.zenobase.models.Bucket;
-import com.zenobase.models.Permission;
+import com.zenobase.models.Role;
 import com.zenobase.oauth.Authorization;
 import com.zenobase.services.BucketRepository;
 import com.zenobase.services.CommandDispatcher;
@@ -68,7 +68,7 @@ public class TaskListController extends ControllerSupport {
 		if (bucket == null) {
 			return badRequest("bucket not found");
 		}
-		if (!bucket.isPermitted(auth, Permission.ALL)) {
+		if (!bucket.hasRole(auth, Role.OWNER)) {
 			return forbidden();
 		}
     	TaskManager manager = registry.find(form.getType());

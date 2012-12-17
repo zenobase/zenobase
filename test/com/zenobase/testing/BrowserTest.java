@@ -33,7 +33,7 @@ import com.google.inject.Injector;
 import com.zenobase.common.Globals;
 import com.zenobase.models.Bucket;
 import com.zenobase.models.Identity;
-import com.zenobase.models.Permission;
+import com.zenobase.models.Role;
 import com.zenobase.services.BucketRepository;
 import com.zenobase.services.UserRepository;
 
@@ -274,12 +274,12 @@ public class BrowserTest {
 				$("#edit-bucket-label").sendKeys("Public Data");
 				assertThat($("#bucket-private-label")).isDisplayed();
 				assertThat($("#bucket-public-label")).isNotDisplayed();
-				assertThat($("#permissions-dialog-link")).isDisplayed();
-				$("#permissions-dialog-link").click();
-				assertThat($("#permissions-dialog")).isDisplayed();
+				assertThat($("#roles-dialog-link")).isDisplayed();
+				$("#roles-dialog-link").click();
+				assertThat($("#roles-dialog")).isDisplayed();
 				$("#publish-link").click();
-				$("#update-permissions-button").click();
-				assertThat($("#permissions-dialog")).isNotDisplayed();
+				$("#update-roles-button").click();
+				assertThat($("#roles-dialog")).isNotDisplayed();
 				assertThat($("#bucket-private-label")).isNotDisplayed();
 				assertThat($("#bucket-public-label")).isDisplayed();
 				assertThat($("#save-bucket-button")).isEnabled();
@@ -371,7 +371,7 @@ public class BrowserTest {
 			private void createBuckets(int num, Identity owner, BucketRepository buckets) {
 				for (int i = 0; i < num; ++i) {
 					Bucket b = new Bucket();
-					b.addPermission(owner, Permission.ALL);
+					b.addRole(owner, Role.OWNER);
 					b.setLabel("Bucket #" + i);
 					buckets.store(b, true);
 				}

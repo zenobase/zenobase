@@ -23,7 +23,7 @@ import com.zenobase.json.Nodes;
 import com.zenobase.models.Bucket;
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
-import com.zenobase.models.Permission;
+import com.zenobase.models.Role;
 import com.zenobase.search.EventSearch;
 import com.zenobase.testing.NodeAssert;
 
@@ -134,7 +134,7 @@ public class BucketRepositoryTest extends ElasticSearchTestSupport {
 	private static Bucket newBucket(String label, Identity owner) {
 		Bucket bucket = new Bucket();
 		bucket.setLabel(label);
-		bucket.addPermission(owner, Permission.ALL);
+		bucket.addRole(owner, Role.OWNER);
 		return bucket;
 	}
 

@@ -1,13 +1,16 @@
 package com.zenobase.commands;
 
+import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.node.ObjectNode;
 import play.Logger;
 import com.google.inject.Inject;
 
 import com.zenobase.json.Nodes;
 import com.zenobase.json.ObjectField;
+import com.zenobase.json.RolesField;
 import com.zenobase.models.Bucket;
 import com.zenobase.models.Identity;
+import com.zenobase.models.Role;
 import com.zenobase.services.BucketRepository;
 
 public class UpdateBucketCommand extends Command {
@@ -71,6 +74,23 @@ public class UpdateBucketCommand extends Command {
 	}
 
 	public static void migrate(Bucket bucket) {
+		for (JsonNode i : bucket.toJson().path("permissions")) {
+			ObjectNode node = (ObjectNode) i;
+			Role role = null;
+			String permission = node.get("permission").getTextValue();
+			if ("all".equalsIgnoreCase(permission)) {
+				role = Role.OWNER;
+			} else if ("use".equalsIgnoreCase(permission)) {
+				role = Role.VIEWER;
+			} else if ("contribute".equalsIgnoreCase(permission)) {
+				role = Role.CONTRIBUTOR;
+			} else {
+				throw new AssertionError("unexpected permission: " + permission);
+			}
+			Logger.info("migrated permissions:\n>" + bucket.toJson().path("permissions") + "\n<" + bucket.toJson().path("roles"));
+			bucket.addRole(RolesField.PRINCIPAL.getValue(node), role);
+			bucket.toJson().remove("permissions");
+		}
 		for (ObjectNode widget : bucket.getWidgets()) {
 			ObjectNode original = Nodes.copy(widget);
 			widget.remove("description");

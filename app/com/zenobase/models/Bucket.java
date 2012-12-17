@@ -19,7 +19,7 @@ import com.zenobase.json.DateTimeField;
 import com.zenobase.json.DomainNode;
 import com.zenobase.json.Nodes;
 import com.zenobase.json.ObjectField;
-import com.zenobase.json.PermissionField;
+import com.zenobase.json.RolesField;
 import com.zenobase.json.Schema;
 import com.zenobase.json.SchemaBuilder;
 import com.zenobase.json.TextField;
@@ -36,7 +36,7 @@ public class Bucket extends DomainNode {
 	public static final TextField LABEL = new TextField("label");
 	public static final TextField DESCRIPTION = new TextField("description");
 	public static final DateTimeField CREATED = new DateTimeField("created");
-	public static final PermissionField PERMISSIONS = new PermissionField("permissions");
+	public static final RolesField ROLES = new RolesField("roles");
 	public static final ObjectField WIDGETS = new ObjectField("widgets");
 
 	public Bucket(ObjectNode node) {
@@ -76,10 +76,10 @@ public class Bucket extends DomainNode {
 		return getValue(CREATED);
 	}
 
-	public ImmutableSet<Identity> getPrincipals(Permission permission) {
+	public ImmutableSet<Identity> getPrincipals(Role role) {
 		ImmutableSet.Builder<Identity> principals = ImmutableSet.builder();
-		for (Map.Entry<Identity, Permission> entry : getValues(PERMISSIONS)) {
-			if (entry.getValue() == permission) {
+		for (Map.Entry<Identity, Role> entry : getValues(ROLES)) {
+			if (entry.getValue() == role) {
 				principals.add(entry.getKey());
 			}
 		}
@@ -88,31 +88,31 @@ public class Bucket extends DomainNode {
 
 	public ImmutableSet<Identity> getPrincipals() {
 		ImmutableSet.Builder<Identity> principals = ImmutableSet.builder();
-		for (Map.Entry<Identity, Permission> entry : getValues(PERMISSIONS)) {
+		for (Map.Entry<Identity, Role> entry : getValues(ROLES)) {
 			principals.add(entry.getKey());
 		}
 		return principals.build();
 	}
 
-	public boolean isPermitted(Authorization auth, Permission permission) {
-		ImmutableList<Entry<Identity, Permission>> permissions = getValues(PERMISSIONS);
+	public boolean hasRole(Authorization auth, Role role) {
+		ImmutableList<Entry<Identity, Role>> roles = getValues(ROLES);
 		if (auth != null && (auth.getScope() == null || auth.getScope().equals(getId()))) {
-			for (Map.Entry<Identity, Permission> entry : permissions) {
+			for (Map.Entry<Identity, Role> entry : roles) {
 				if (entry.getKey().equals(auth.getPrincipal())) {
-					return entry.getValue().implies(permission);
+					return entry.getValue().implies(role);
 				}
 			}
 		}
-		for (Map.Entry<Identity, Permission> entry : permissions) {
+		for (Map.Entry<Identity, Role> entry : roles) {
 			if (entry.getKey().equals(Identity.PUBLIC)) {
-				return entry.getValue().implies(permission);
+				return entry.getValue().implies(role);
 			}
 		}
 		return false;
 	}
 
-	public void addPermission(Identity principal, Permission permission) {
-		addValue(PERMISSIONS, Maps.immutableEntry(principal, permission));
+	public void addRole(Identity principal, Role role) {
+		addValue(ROLES, Maps.immutableEntry(principal, role));
 	}
 
 	public List<ObjectNode> getWidgets() {
@@ -126,7 +126,7 @@ public class Bucket extends DomainNode {
 	public static Schema getSchema() {
 		return new SchemaBuilder(TYPE_NAME).add(VERSION)
 			.add(ID).add(LABEL).add(DESCRIPTION).add(CREATED)
-			.add(PERMISSIONS).add(WIDGETS).build();
+			.add(ROLES).add(WIDGETS).build();
 	}
 
 	public Bucket copy() {
@@ -136,7 +136,7 @@ public class Bucket extends DomainNode {
 	public boolean valid() {
 		return !Strings.isNullOrEmpty(getLabel()) &&
 			LABEL_PATTERN.matcher(getLabel().trim()).matches() &&
-			!getPrincipals(Permission.ALL).isEmpty();
+			!getPrincipals(Role.OWNER).isEmpty();
 	}
 
 	@Override

@@ -19,7 +19,7 @@ import com.zenobase.json.Nodes;
 import com.zenobase.models.Bucket;
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
-import com.zenobase.models.Permission;
+import com.zenobase.models.Role;
 import com.zenobase.models.User;
 import com.zenobase.oauth.Authorization;
 import com.zenobase.services.BucketRepository;
@@ -44,7 +44,7 @@ public class TagControllerTest extends ControllerTestSupport {
 				bind(TagController.class).in(Singleton.class);
 			}
 		});
-		bucket.addPermission(user.asIdentity(), Permission.ALL);
+		bucket.addRole(user.asIdentity(), Role.OWNER);
 	}
 
 	@Test

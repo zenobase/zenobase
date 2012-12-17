@@ -9,7 +9,7 @@ import com.zenobase.actions.Timed;
 import com.zenobase.json.Nodes;
 import com.zenobase.models.Bucket;
 import com.zenobase.models.Event;
-import com.zenobase.models.Permission;
+import com.zenobase.models.Role;
 import com.zenobase.oauth.Authorization;
 import com.zenobase.services.BucketRepository;
 
@@ -30,7 +30,7 @@ public class TagController extends ControllerSupport {
 		if (bucket == null) {
 			return notFound();
 		}
-    	if (!bucket.isPermitted(auth, Permission.USE)) {
+    	if (!bucket.hasRole(auth, Role.VIEWER)) {
     		return auth == null ? unauthorized() : forbidden();
     	}
     	return ok(Nodes.newArray(buckets.terms(bucketId, Event.TAG.getName())));

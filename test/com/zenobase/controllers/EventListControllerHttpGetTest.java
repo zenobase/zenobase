@@ -14,7 +14,7 @@ import play.mvc.Result;
 import com.zenobase.json.Nodes;
 import com.zenobase.models.Bucket;
 import com.zenobase.models.Identity;
-import com.zenobase.models.Permission;
+import com.zenobase.models.Role;
 import com.zenobase.oauth.Authorization;
 import com.zenobase.search.EventSearch;
 
@@ -24,7 +24,7 @@ public class EventListControllerHttpGetTest extends EventListControllerTestSuppo
 	@Override
 	public void setUp() {
 		super.setUp();
-		bucket.addPermission(user.asIdentity(), Permission.ALL);
+		bucket.addRole(user.asIdentity(), Role.OWNER);
 	}
 
 	@Test

@@ -16,7 +16,7 @@ import com.zenobase.commands.CreateBucketCommand;
 import com.zenobase.common.Generator;
 import com.zenobase.json.Nodes;
 import com.zenobase.models.Bucket;
-import com.zenobase.models.Permission;
+import com.zenobase.models.Role;
 import com.zenobase.oauth.Authorization;
 
 public class BucketListControllerHttpPostTest extends BucketListControllerTestSupport {
@@ -35,7 +35,7 @@ public class BucketListControllerHttpPostTest extends BucketListControllerTestSu
 		assertThat(result).hasContent(bucket.toJson());
 		assertThat(bucket.getLabel()).isEqualTo(label);
 		assertThat(bucket.getDescription()).isEqualTo(description);
-		assertThat(bucket.isPermitted(new Authorization(user.asIdentity()), Permission.ALL)).isTrue();
+		assertThat(bucket.hasRole(new Authorization(user.asIdentity()), Role.OWNER)).isTrue();
 		assertThat(Helpers.redirectLocation(result)).isEqualTo(com.zenobase.controllers.routes.BucketController.get(bucket.getId()).toString());
 	}
 

@@ -16,7 +16,7 @@ import com.zenobase.commands.UpdateBucketCommand;
 import com.zenobase.common.Generator;
 import com.zenobase.models.Bucket;
 import com.zenobase.models.Identity;
-import com.zenobase.models.Permission;
+import com.zenobase.models.Role;
 import com.zenobase.oauth.Authorization;
 
 public class BucketControllerHttpPostTest extends BucketControllerTestSupport {
@@ -29,7 +29,7 @@ public class BucketControllerHttpPostTest extends BucketControllerTestSupport {
 		super.setUp();
 		from = new Bucket();
 		from.setLabel("Test Bucket");
-		from.addPermission(user.asIdentity(), Permission.ALL);
+		from.addRole(user.asIdentity(), Role.OWNER);
 		to = from.copy();
 		to.setLabel("Real Bucket");
 	}
@@ -66,7 +66,7 @@ public class BucketControllerHttpPostTest extends BucketControllerTestSupport {
 
 	@Test
 	public void testUpdateBucketAddOwner() {
-		to.addPermission(new Identity(), Permission.ALL);
+		to.addRole(new Identity(), Role.OWNER);
 		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
 		when(buckets.findBucket(from.getId())).thenReturn(from.copy());
 		Result result = call(from.getId(), to.toJson());

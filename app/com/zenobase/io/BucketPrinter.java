@@ -8,7 +8,7 @@ import com.google.common.collect.Iterables;
 import com.zenobase.common.Callback;
 import com.zenobase.models.Bucket;
 import com.zenobase.models.Identity;
-import com.zenobase.models.Permission;
+import com.zenobase.models.Role;
 import com.zenobase.oauth.Authorization;
 import com.zenobase.services.BucketRepository;
 
@@ -29,8 +29,8 @@ public class BucketPrinter implements Callback<Bucket> {
 
 	private String toString(Bucket bucket) {
 		return Joiner.on('\t').join(bucket.getId(),
-			Iterables.getOnlyElement(bucket.getPrincipals(Permission.ALL)),
-			bucket.isPermitted(new Authorization(Identity.PUBLIC), Permission.USE) ? "published" : "unpublished",
+			Iterables.getOnlyElement(bucket.getPrincipals(Role.OWNER)),
+			bucket.hasRole(new Authorization(Identity.PUBLIC), Role.VIEWER) ? "published" : "unpublished",
 			bucket.getCreated(), buckets.getSize(bucket.getId()), "\n");
 	}
 }

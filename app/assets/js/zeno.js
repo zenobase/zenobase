@@ -975,35 +975,35 @@
 		}
 
 		Bucket.prototype.isPublished = function() {
-			return $.grep(this.permissions, function(permission) {
-				return permission.principal === '*';
+			return $.grep(this.roles, function(role) {
+				return role.principal === '*';
 			}).length > 0;
 		};
 
 		Bucket.prototype.publish = function() {
 			if (!this.isPublished()) {
-				this.permissions.push({ 'principal' : '*', 'permission' : 'USE' });
+				this.roles.push({ 'principal' : '*', 'role' : 'viewer' });
 			}
 		};
 
 		Bucket.prototype.unpublish = function() {
-			this.permissions = $.grep(this.permissions, function(permission) {
-				return permission.principal !== '*';
+			this.roles = $.grep(this.roles, function(role) {
+				return role.principal !== '*';
 			});
 		};
 
 		Bucket.prototype.getOwner = function() {
-			for (var i = 0, max = this.permissions.length; i < max; ++i) {
-				if (this.permissions[i].permission === 'ALL') {
-					return this.permissions[i].principal;
+			for (var i = 0, max = this.roles.length; i < max; ++i) {
+				if (this.roles[i].role === 'owner') {
+					return this.roles[i].principal;
 				}
 			}
 		};
 
 		Bucket.prototype.canEdit = function(principal) {
-			for (var i = 0; i < this.permissions.length; ++i) {
-				if (this.permissions[i].principal === principal) {
-					return this.permissions[i].permission === 'ALL';
+			for (var i = 0; i < this.roles.length; ++i) {
+				if (this.roles[i].principal === principal) {
+					return this.roles[i].role === 'owner' || this.roles[i].role === 'contributor';
 				}
 			}
 		};
@@ -2124,16 +2124,16 @@
 		};
 	}]);
 
-	app.controller('PermissionsDialogController', ['$scope', '$http', 'tracker', function($scope, $http, tracker) {
+	app.controller('RolesDialogController', ['$scope', '$http', 'tracker', function($scope, $http, tracker) {
 
 		$scope.init = function() {
 			$scope.bucket = angular.copy($scope.$parent.bucket);
-			tracker.event('dialog', 'edit permissions');
+			tracker.event('dialog', 'edit roles');
 		};
 		$scope.update = function() {
 			$scope.$parent.bucket = $scope.bucket;
 			$scope.closeDialog();
-			tracker.event('action', 'update permissions');
+			tracker.event('action', 'update roles');
 		};
 	}]);
 

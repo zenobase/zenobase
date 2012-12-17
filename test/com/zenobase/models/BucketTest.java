@@ -22,39 +22,39 @@ public class BucketTest {
 	}
 
 	@Test
-	public void testPermissions() {
+	public void testRoles() {
 
 		Identity owner = new Identity();
 		Identity friend = new Identity();
 		Identity other = new Identity();
 		Bucket bucket = new Bucket();
 
-		bucket.addPermission(owner, Permission.ALL);
-		bucket.addPermission(friend, Permission.CONTRIBUTE);
-		assertThat(bucket.isPermitted(new Authorization(owner), Permission.ALL))
+		bucket.addRole(owner, Role.OWNER);
+		bucket.addRole(friend, Role.CONTRIBUTOR);
+		assertThat(bucket.hasRole(new Authorization(owner), Role.OWNER))
 			.as("owner has full access to the bucket").isTrue();
-		assertThat(bucket.isPermitted(new Authorization(owner, other, bucket.getId()), Permission.ALL))
+		assertThat(bucket.hasRole(new Authorization(owner, other, bucket.getId()), Role.OWNER))
 			.as("other has full access to the bucket on behalf of the owner").isTrue();
-		assertThat(bucket.isPermitted(new Authorization(owner, other, Generator.id()), Permission.ALL))
+		assertThat(bucket.hasRole(new Authorization(owner, other, Generator.id()), Role.OWNER))
 			.as("other does not have full access to this bucket on behalf of the owner").isFalse();
-		assertThat(bucket.isPermitted(new Authorization(friend), Permission.CONTRIBUTE))
+		assertThat(bucket.hasRole(new Authorization(friend), Role.CONTRIBUTOR))
 			.as("friend can contribute to the bucket").isTrue();
-		assertThat(bucket.isPermitted(new Authorization(friend), Permission.USE))
+		assertThat(bucket.hasRole(new Authorization(friend), Role.VIEWER))
 			.as("friend can use the bucket").isTrue();
-		assertThat(bucket.isPermitted(new Authorization(friend), Permission.ALL))
+		assertThat(bucket.hasRole(new Authorization(friend), Role.OWNER))
 			.as("friend does not have full access to the bucket").isFalse();
-		assertThat(bucket.isPermitted(new Authorization(other), Permission.USE))
+		assertThat(bucket.hasRole(new Authorization(other), Role.VIEWER))
 			.as("other can not use the bucket").isFalse();
 
-		bucket.addPermission(Identity.PUBLIC, Permission.USE);
-		assertThat(bucket.isPermitted(new Authorization(other), Permission.USE))
+		bucket.addRole(Identity.PUBLIC, Role.VIEWER);
+		assertThat(bucket.hasRole(new Authorization(other), Role.VIEWER))
 			.as("other can use the bucket after it was made public").isTrue();
 
-		assertThat(bucket.getPrincipals(Permission.ALL))
+		assertThat(bucket.getPrincipals(Role.OWNER))
 			.as("principals with full access to the bucket").containsOnly(owner);
-		assertThat(bucket.getPrincipals(Permission.CONTRIBUTE))
+		assertThat(bucket.getPrincipals(Role.CONTRIBUTOR))
 			.as("principals who can contribute to the bucket").containsOnly(friend);
-		assertThat(bucket.getPrincipals(Permission.USE))
+		assertThat(bucket.getPrincipals(Role.VIEWER))
 			.as("principals who can use the bucket").containsOnly(Identity.PUBLIC);
 		assertThat(bucket.getPrincipals())
 			.as("principals who can access the bucket").containsOnly(owner, friend, Identity.PUBLIC);
