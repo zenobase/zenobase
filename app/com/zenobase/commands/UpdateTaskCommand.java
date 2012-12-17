@@ -67,9 +67,11 @@ public class UpdateTaskCommand extends UpdateCommandSupport {
 		}
 
 		private static void rewriteStatus(ObjectNode node) {
-			Task.Status status = Task.STATUS.getValue(node);
-			if (status != null) {
-				Task.STATUS.setValue(node, status);
+			if (node != null) {
+				Task.Status status = Task.STATUS.getValue(node);
+				if (status != null) {
+					Task.STATUS.setValue(node, status);
+				}
 			}
 		}
 	}

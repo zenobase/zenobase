@@ -87,8 +87,8 @@ public class UpdateBucketCommand extends Command {
 			} else {
 				throw new AssertionError("unexpected permission: " + permission);
 			}
-			Logger.info("migrated permissions:\n>" + bucket.toJson().path("permissions") + "\n<" + bucket.toJson().path("roles"));
 			bucket.addRole(RolesField.PRINCIPAL.getValue(node), role);
+			Logger.info("migrated permissions from " + bucket.toJson().path("permissions") + " to " + bucket.toJson().path("roles"));
 			bucket.toJson().remove("permissions");
 		}
 		for (ObjectNode widget : bucket.getWidgets()) {
@@ -118,7 +118,7 @@ public class UpdateBucketCommand extends Command {
 				rename(widget, "termField", "key_field");
 				rename(widget, "valueField", "value_field");
 			}
-			Logger.info("migrated widget:\n>" + original + "\n<" + widget);
+			Logger.info("migrated widget from " + original + " to " + widget);
 		}
 	}
 
