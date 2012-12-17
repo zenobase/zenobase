@@ -16,14 +16,14 @@ import com.zenobase.services.CommandRepository;
 import com.zenobase.services.UserRepository;
 
 @With(Timed.class)
-public class QueueController extends ControllerSupport {
+public class JournalController extends ControllerSupport {
 
 	private final CommandDispatcher dispatcher;
 	private final CommandRepository repository;
 	private final UserRepository users;
 
 	@Inject
-    public QueueController(AuthorizationContext security, CommandDispatcher dispatcher,
+    public JournalController(AuthorizationContext security, CommandDispatcher dispatcher,
     	CommandRepository repository, UserRepository users) {
 
 		super(security);

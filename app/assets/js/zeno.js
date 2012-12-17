@@ -153,7 +153,7 @@
 		};
 		$scope.undo = function(commandId) {
 			$scope.alert.clear();
-			$http.post('/queue/' , { 'undo' : commandId })
+			$http.post('/journal/' , { 'undo' : commandId })
 				.success(function(response, status) {
 					delay($route.reload);
 				})

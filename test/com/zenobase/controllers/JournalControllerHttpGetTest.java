@@ -15,7 +15,7 @@ import com.zenobase.models.CommandList;
 import com.zenobase.models.Identity;
 import com.zenobase.oauth.Authorization;
 
-public class QueueControllerHttpGetTest extends QueueControllerTestSupport {
+public class JournalControllerHttpGetTest extends JournalControllerTestSupport {
 
 	@Test
 	public void testGet() {
@@ -56,6 +56,6 @@ public class QueueControllerHttpGetTest extends QueueControllerTestSupport {
 	}
 
 	private Result call(String identity, int offset, int limit) {
-		return callAction(com.zenobase.controllers.routes.ref.QueueController.get(identity, offset, limit));
+		return callAction(com.zenobase.controllers.routes.ref.JournalController.get(identity, offset, limit));
 	}
 }

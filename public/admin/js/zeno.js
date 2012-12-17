@@ -47,7 +47,7 @@
 			return params;
 		}
 		$scope.refresh = function(params) {
-			$http.get('/queue/?' + $.param($.extend($scope.params(), params))).success(function(response) {
+			$http.get('/journal/?' + $.param($.extend($scope.params(), params))).success(function(response) {
 				$.extend($scope, params);
 				$scope.total = response.total;
 				$scope.commands = response.commands;

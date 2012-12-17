@@ -53,7 +53,7 @@ import com.zenobase.controllers.EventController;
 import com.zenobase.controllers.EventListController;
 import com.zenobase.controllers.OAuthController;
 import com.zenobase.controllers.PasswordResetController;
-import com.zenobase.controllers.QueueController;
+import com.zenobase.controllers.JournalController;
 import com.zenobase.controllers.StatusController;
 import com.zenobase.controllers.TagController;
 import com.zenobase.controllers.TaskController;
@@ -192,7 +192,7 @@ public class Global extends GlobalSettings {
 				bind(EventListController.class).in(Singleton.class);
 				bind(TagController.class).in(Singleton.class);
 				bind(PasswordResetController.class).in(Singleton.class);
-				bind(QueueController.class).in(Singleton.class);
+				bind(JournalController.class).in(Singleton.class);
 				bind(StatusController.class).in(Singleton.class);
 				bind(UserController.class).in(Singleton.class);
 				bind(UserListController.class).in(Singleton.class);

@@ -19,7 +19,7 @@ import com.zenobase.json.Nodes;
 import com.zenobase.models.Identity;
 import com.zenobase.oauth.Authorization;
 
-public class QueueControllerHttpPostTest extends QueueControllerTestSupport {
+public class JournalControllerHttpPostTest extends JournalControllerTestSupport {
 
 	private final Command command = new TestCommand(principal, "testing");
 
@@ -80,6 +80,6 @@ public class QueueControllerHttpPostTest extends QueueControllerTestSupport {
 	}
 
 	private Result call(ObjectNode body) {
-		return callAction(com.zenobase.controllers.routes.ref.QueueController.post(), fakeRequest().withJsonBody(body));
+		return callAction(com.zenobase.controllers.routes.ref.JournalController.post(), fakeRequest().withJsonBody(body));
 	}
 }

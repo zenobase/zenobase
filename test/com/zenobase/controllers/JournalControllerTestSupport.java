@@ -11,7 +11,7 @@ import com.zenobase.services.CommandDispatcher;
 import com.zenobase.services.CommandRepository;
 import com.zenobase.services.UserRepository;
 
-public abstract class QueueControllerTestSupport extends ControllerTestSupport {
+public abstract class JournalControllerTestSupport extends ControllerTestSupport {
 
 	protected final AuthorizationContext auth = mock(AuthorizationContext.class);
 	protected final CommandRepository commands = mock(CommandRepository.class);
@@ -28,7 +28,7 @@ public abstract class QueueControllerTestSupport extends ControllerTestSupport {
 				bind(CommandRepository.class).toInstance(commands);
 				bind(UserRepository.class).toInstance(users);
 				bind(CommandDispatcher.class).toInstance(dispatcher);
-				bind(QueueController.class).in(Singleton.class);
+				bind(JournalController.class).in(Singleton.class);
 			}
 		});
 	}

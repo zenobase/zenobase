@@ -20,7 +20,7 @@ import com.zenobase.models.Identity;
 
 public class CommandRepository {
 
-	static final String INDEX_NAME = "queue";
+	static final String INDEX_NAME = "journal";
 
 	private final Index index;
 	private final CommandParserRegistry parsers;
@@ -30,7 +30,7 @@ public class CommandRepository {
 		this.parsers = parsers;
 		this.index = manager.getIndex(INDEX_NAME);
 		if (!index.exists()) {
-			Logger.info("Creating queue index...");
+			Logger.info("Creating journal...");
 			index.create(2);
 			index.putMapping(Command.getSchema());
 		}
