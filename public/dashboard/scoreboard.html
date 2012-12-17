@@ -3,7 +3,7 @@
 	<table class="table" data-ng-show="terms">
 		<thead>
 			<tr>
-				<th style="text-transform: capitalize">{{settings.termField}}</th>
+				<th style="text-transform: capitalize">{{settings.key_field}}</th>
 				<th style="text-align: right">Count</th>
 				<th style="text-align: right">Min</th>
 				<th style="text-align: right">Max</th>
@@ -13,12 +13,12 @@
 		</thead>
 		<tbody>
 			<tr data-ng-repeat="term in terms">
-				<td><a data-ng-click="filter(term)" data-ng-bind-html="term.label | field:settings.termField"></a></td>
+				<td><a data-ng-click="filter(term)" data-ng-bind-html="term.label | field:settings.key_field"></a></td>
 				<td style="text-align: right" data-ng-bind-html="term.count | number"></td>
-				<td style="text-align: right" data-ng-bind-html="term.min | field:settings.valueField"></td>
-				<td style="text-align: right" data-ng-bind-html="term.max | field:settings.valueField"></td>
-				<td style="text-align: right" data-ng-bind-html="term.sum | field:settings.valueField"></td>
-				<td style="text-align: right" data-ng-bind-html="term.avg | field:settings.valueField"></td>
+				<td style="text-align: right" data-ng-bind-html="term.min | field:settings.value_field"></td>
+				<td style="text-align: right" data-ng-bind-html="term.max | field:settings.value_field"></td>
+				<td style="text-align: right" data-ng-bind-html="term.sum | field:settings.value_field"></td>
+				<td style="text-align: right" data-ng-bind-html="term.avg | field:settings.value_field"></td>
 			</tr>
 			<tr data-ng-hide="terms">
 				<td colspan="6"><i>None</i></td>
@@ -32,11 +32,11 @@
 
 	<div class="btn-toolbar">
 		<div class="btn-group" data-ng-show="editing">
-			<button class="btn" title="Settings..." data-ng-click="openDialog('scoreboard-widget-dialog')"><i class="icon-cog"></i> Settings...</button>
+			<button class="btn" title="Settings..." data-ng-click="openDialog(settings.id + '-dialog')"><i class="icon-cog"></i> Settings...</button>
 		</div>
 	</div>
 
-	<div data-ui-modal="dialog == 'scoreboard-widget-dialog'" data-ui-modal-open="init()" data-ui-modal-close="closeDialog()" data-ng-controller="ScoreboardWidgetDialogController">
+	<div data-ui-modal="dialog == settings.id + '-dialog'" data-ui-modal-open="init()" data-ui-modal-close="closeDialog()" data-ng-controller="ScoreboardWidgetDialogController">
 		<form name="form" class="modal-form">
 			<div class="modal-header">
 				<a class="close" data-dismiss="modal">&times;</a>
@@ -57,16 +57,16 @@
 					</div>
 				</div>
 				<div class="control-group">
-					<label class="control-label" for="termField">Term Field</label>
+					<label class="control-label" for="keyField">Key Field</label>
 					<div class="controls">
-						<select name="termField" required data-ng-model="settings.termField" data-ng-options="field.name as field.name for field in getTermFields()"></select>
+						<select name="keyField" required data-ng-model="settings.key_field" data-ng-options="field.name as field.name for field in getKeyFields()"></select>
 						<p class="help-block">The field on which to aggregate.</p>
 					</div>
 				</div>
 				<div class="control-group">
 					<label class="control-label" for="valueField">Value Field</label>
 					<div class="controls">
-						<select name="valueField" required data-ng-model="settings.valueField" data-ng-options="field.name as field.name for field in getValueFields()"></select>
+						<select name="valueField" required data-ng-model="settings.value_field" data-ng-options="field.name as field.name for field in getValueFields()"></select>
 						<p class="help-block">The numeric field on which to gather statistics.</p>
 					</div>
 				</div>

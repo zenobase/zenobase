@@ -18,7 +18,7 @@ import com.zenobase.json.Nodes;
 
 public class HistogramWidget extends Widget {
 
-	public static final String TYPE = "intervals";
+	public static final String TYPE = "histogram";
 
 	private final String field;
 	private final long interval;

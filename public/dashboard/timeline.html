@@ -8,11 +8,11 @@
 
 	<div class="btn-toolbar">
 		<div class="btn-group">
-			<button class="btn" title="Settings..." data-ng-click="openDialog('timeline-widget-dialog')" data-ng-show="editing"><i class="icon-cog"></i> Settings...</button>
+			<button class="btn" title="Settings..." data-ng-click="openDialog(settings.id + '-dialog')" data-ng-show="editing"><i class="icon-cog"></i> Settings...</button>
 		</div>
 	</div>
 
-	<div data-ui-modal="dialog == 'timeline-widget-dialog'" data-ui-modal-open="init()" data-ui-modal-close="closeDialog()" data-ng-controller="TimelineWidgetDialogController">
+	<div data-ui-modal="dialog == settings.id + '-dialog'" data-ui-modal-open="init()" data-ui-modal-close="closeDialog()" data-ng-controller="TimelineWidgetDialogController">
 		<form name="form" class="modal-form">
 			<div class="modal-header">
 				<a class="close" data-dismiss="modal">&times;</a>
@@ -26,16 +26,16 @@
 					</div>
 				</div>
 				<div class="control-group">
-					<label class="control-label" for="valueField">Value Field</label>
+					<label class="control-label" for="field">Field</label>
 					<div class="controls">
-						<select name="valueField" data-ng-model="settings.valueField" data-ng-options="field.name as field.name for field in getValueFields()"></select>
-						<p class="help-block">The numeric field on which to gather statistics.</p>
+						<select name="field" data-ng-model="settings.field" data-ng-options="field.name as field.name for field in getFields()"></select>
+						<p class="help-block">The field on which to gather statistics.</p>
 					</div>
 				</div>
 				<div class="control-group">
 					<label class="control-label" for="statisic">Statistic</label>
 					<div class="controls">
-						<select name="statistic" required data-ng-model="settings.statistic" data-ng-options="value for value in getStatistics(settings.valueField)"></select>
+						<select name="statistic" required data-ng-model="settings.statistic" data-ng-options="value for value in getStatistics(settings.field)"></select>
 						<p class="help-block">The statistic to gather for the selected value field.</p>
 					</div>
 				</div>

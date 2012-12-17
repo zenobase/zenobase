@@ -67,7 +67,7 @@ public class BucketController extends ControllerSupport {
 
 		private ObjectNode list(){
 			ObjectNode widget = Nodes.newObject();
-			widget.put("id", "default-list");
+			widget.put("id", "events");
 			widget.put("label", "Latest");
 			widget.put("type", "list");
 			widget.put("placement", "left");
@@ -80,18 +80,18 @@ public class BucketController extends ControllerSupport {
 
 		private ObjectNode timeline(){
 			ObjectNode widget = Nodes.newObject();
-			widget.put("id", "default-timeline");
+			widget.put("id", "timeline");
 			widget.put("label", "Timeline");
 			widget.put("type", "timeline");
 			widget.put("placement", "top");
-			widget.put("valueField", "timestamp");
+			widget.put("field", "timestamp");
 			widget.put("statistic", "count");
 			return widget;
 		}
 
 		private ObjectNode count(){
 			ObjectNode widget = Nodes.newObject();
-			widget.put("id", "default-count");
+			widget.put("id", "tags");
 			widget.put("label", "Tags");
 			widget.put("type", "count");
 			widget.put("field", "tag");

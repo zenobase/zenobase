@@ -41,29 +41,59 @@ public class RatingsWidgetTest extends SearchTestSupport {
 		addEvent(e3);
 		addEvent(e4);
 		addEvent(e5);
-		addWidget(String.format("id:%s,type:%s,field:%s", id, RatingsWidget.TYPE, Event.RATING));
+		addWidget(String.format("id:%s,type:%s", id, RatingsWidget.TYPE));
 
 		ObjectNode result = execute();
 		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(5);
 		NodeAssert node = assertThat(result).path(id).hasSize(4);
-		node.path(0).path("from").isEqualTo(90.0);
-		node.path(0).path("to").isMissingNode();
+		node.path(0).path("from").isEqualTo(90);
+		node.path(0).path("to").isEqualTo(100);
 		node.path(0).path("count").isEqualTo(1);
-		node.path(1).path("from").isEqualTo(50.0);
-		node.path(1).path("to").isEqualTo(70.0);
+		node.path(1).path("from").isEqualTo(50);
+		node.path(1).path("to").isEqualTo(70);
 		node.path(1).path("count").isEqualTo(1);
-		node.path(2).path("from").isEqualTo(10.0);
-		node.path(2).path("to").isEqualTo(30.0);
+		node.path(2).path("from").isEqualTo(10);
+		node.path(2).path("to").isEqualTo(30);
 		node.path(2).path("count").isEqualTo(2);
-		node.path(3).path("from").isMissingNode();
-		node.path(3).path("to").isEqualTo(10.0);
+		node.path(3).path("from").isEqualTo(0);
+		node.path(3).path("to").isEqualTo(10);
 		node.path(3).path("count").isEqualTo(1);
+	}
+
+	@Test
+	public void testWithScaleZeroToTen() {
+
+		addEvent(e1);
+		addEvent(e2);
+		addEvent(e3);
+		addEvent(e4);
+		addEvent(e5);
+		addWidget(String.format("id:%s,type:%s,scale:%d", id, RatingsWidget.TYPE, 10));
+
+		ObjectNode result = execute();
+		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(5);
+		NodeAssert node = assertThat(result).path(id).hasSize(5);
+		node.path(0).path("from").isEqualTo(95);
+		node.path(0).path("to").isEqualTo(100);
+		node.path(0).path("count").isEqualTo(1);
+		node.path(1).path("from").isEqualTo(45);
+		node.path(1).path("to").isEqualTo(55);
+		node.path(1).path("count").isEqualTo(1);
+		node.path(2).path("from").isEqualTo(15);
+		node.path(2).path("to").isEqualTo(25);
+		node.path(2).path("count").isEqualTo(1);
+		node.path(3).path("from").isEqualTo(5);
+		node.path(3).path("to").isEqualTo(15);
+		node.path(3).path("count").isEqualTo(1);
+		node.path(4).path("from").isEqualTo(0);
+		node.path(4).path("to").isEqualTo(5);
+		node.path(4).path("count").isEqualTo(1);
 	}
 
 	@Test
 	public void testEmpty() {
 
-		addWidget(String.format("id:%s,type:%s,field:%s", id, RatingsWidget.TYPE, Event.RATING));
+		addWidget(String.format("id:%s,type:%s", id, RatingsWidget.TYPE));
 
 		ObjectNode result = execute();
 		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(0);

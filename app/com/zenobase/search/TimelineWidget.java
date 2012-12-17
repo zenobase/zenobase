@@ -140,8 +140,8 @@ public class TimelineWidget extends Widget {
 				String unit = options.get("unit");
 				return new TimelineWidget(
 					options.get("id"),
-					options.get("keyField", String.class, Event.TIMESTAMP.getName()),
-					options.get("valueField", String.class, Event.TIMESTAMP.getName()),
+					Event.TIMESTAMP.getName(),
+					options.get("field", String.class, Event.TIMESTAMP.getName()),
 					options.get("interval", String.class, "month"),
 					options.get("range"),
 					options.get("timezone", DateTimeZone.class, DateTimeZone.UTC),

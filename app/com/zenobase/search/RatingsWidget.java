@@ -11,20 +11,22 @@ import org.elasticsearch.search.facet.range.RangeFacetBuilder;
 import com.google.common.collect.Lists;
 
 import com.zenobase.json.Nodes;
+import com.zenobase.models.Event;
+import com.zenobase.models.Rating;
 
 public class RatingsWidget extends Widget {
 
-	public static final String TYPE = "histogram";
+	public static final String TYPE = "ratings";
 
 	private final String field;
 	private final double from, to, step;
 
-	public RatingsWidget(String id, String field, double from, double to, double step) {
+	public RatingsWidget(String id, String field, int scale) {
 		super(id);
 		this.field = field;
-		this.from = from;
-		this.to = to;
-		this.step = step;
+		step = Rating.MAX_VALUE / scale;
+		from = step / 2;
+		to = Rating.MAX_VALUE - from;
 	}
 
 	@Override
@@ -45,11 +47,15 @@ public class RatingsWidget extends Widget {
 		for (RangeFacet.Entry entry : Lists.reverse(ratings.entries())) {
 			if (entry.getCount() > 0L) {
 				ObjectNode entryNode = result.addObject();
-				if (!Double.isInfinite(entry.getFrom())) {
-					entryNode.put("from", entry.getFrom());
+				if (Double.isInfinite(entry.getFrom())) {
+					entryNode.put("from", 0);
+				} else {
+					entryNode.put("from", (int) entry.getFrom());
 				}
-				if (!Double.isInfinite(entry.getTo())) {
-					entryNode.put("to", entry.getTo());
+				if (Double.isInfinite(entry.getTo())) {
+					entryNode.put("to", 100);
+				} else {
+					entryNode.put("to", (int) entry.getTo());
 				}
 				entryNode.put("count", entry.getCount());
 			}
@@ -63,10 +69,8 @@ public class RatingsWidget extends Widget {
 			public Widget build(WidgetOptions options) {
 				return new RatingsWidget(
 					options.get("id"),
-					options.get("field"),
-					options.get("from", Double.class, 10.0),
-					options.get("to", Double.class, 90.0),
-					options.get("step", Double.class, 20.0));
+					Event.RATING.getName(),
+					options.get("scale", Integer.class, 5));
 			}
 		};
 	}

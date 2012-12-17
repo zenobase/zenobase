@@ -12,33 +12,33 @@ import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.elasticsearch.search.facet.FacetBuilders;
 import org.elasticsearch.search.facet.terms.TermsFacet;
 import org.elasticsearch.search.facet.terms.TermsFacetBuilder;
-import org.joda.time.Minutes;
+import org.joda.time.DateTimeZone;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
 
 import com.zenobase.json.Nodes;
 
-public class CalendarCountWidget extends Widget {
+public class TimeHistogramWidget extends Widget {
 
-	public static final String TYPE = "calendar-count";
+	public static final String TYPE = "time_histogram";
 
 	private final String field;
 	private final Interval interval;
-	private final Minutes timezoneOffset;
+	private final DateTimeZone timezone;
 
-	private CalendarCountWidget(String id, String field, Interval interval, Minutes timezoneOffset) {
+	private TimeHistogramWidget(String id, String field, Interval interval, DateTimeZone timezone) {
 		super(id);
 		Preconditions.checkNotNull(field);
 		Preconditions.checkNotNull(interval);
 		this.field = field;
 		this.interval = interval;
-		this.timezoneOffset = timezoneOffset;
+		this.timezone = timezone;
 	}
 
 	@Override
 	public void configure(SearchSourceBuilder builder) {
 		TermsFacetBuilder facet = FacetBuilders.termsFacet(getId()).size(31)
-			.lang("js").scriptField(interval.script(field, timezoneOffset));
+			.lang("js").scriptField(interval.script(field, timezone));
 		builder.facet(facet);
 	}
 
@@ -103,8 +103,8 @@ public class CalendarCountWidget extends Widget {
 			return map;
 		}
 
-		public String script(String field, Minutes timezoneOffset) {
-			return String.format("t=doc['%s'].date;t.addMinutes(%d);v=t.%s;v", field, timezoneOffset.getMinutes(), method);
+		public String script(String field, DateTimeZone timezone) {
+			return String.format("t=doc['%s'].date;t.addMillis(%d);v=t.%s;v", field, timezone.getOffset(0), method);
 		}
 
 		public abstract String getLabel(int i);
@@ -114,11 +114,11 @@ public class CalendarCountWidget extends Widget {
 		return new WidgetBuilder() {
 			@Override
 			public Widget build(WidgetOptions options) {
-				return new CalendarCountWidget(
+				return new TimeHistogramWidget(
 					options.get("id"),
 					options.get("field"),
 					Interval.valueOf(options.get("interval").toUpperCase()),
-					Minutes.minutes(options.get("timezoneOffset", Integer.class, 0)));
+					options.get("timezone", DateTimeZone.class, DateTimeZone.UTC));
 			}
 		};
 	}

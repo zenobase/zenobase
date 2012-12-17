@@ -10,7 +10,7 @@ import com.zenobase.services.BucketRepository;
 
 public class CreateBucketCommand extends Command {
 
-	private static final Command.Type TYPE = new Command.Type("create bucket", 1);
+	private static final Command.Type TYPE = new Command.Type("create bucket", 2);
 	private static final ObjectField BUCKET = new ObjectField("bucket");
 
 	private CreateBucketCommand(ObjectNode node) {
@@ -46,7 +46,11 @@ public class CreateBucketCommand extends Command {
 		@Override
 		public Command parse(ObjectNode node, int version) {
 			switch (version) {
-				case 1: return new CreateBucketCommand(node);
+				case 1:
+					CreateBucketCommand command = new CreateBucketCommand(node);
+					UpdateBucketCommand.migrate(command.getBucket());
+					return command;
+				case 2: return new CreateBucketCommand(node);
 			}
 			return null;
 		}

@@ -8,11 +8,11 @@
 
 	<div class="btn-toolbar">
 		<div class="btn-group" data-ng-show="editing">
-			<button class="btn" title="Settings..." data-ng-click="openDialog('map-widget-dialog')"><i class="icon-cog"></i> Settings...</button>
+			<button class="btn" title="Settings..." data-ng-click="openDialog(settings.id + '-dialog')"><i class="icon-cog"></i> Settings...</button>
 		</div>
 	</div>
 
-	<div data-ui-modal="dialog == 'map-widget-dialog'" data-ui-modal-open="init()" data-ui-modal-close="closeDialog()" data-ng-controller="MapWidgetDialogController">
+	<div data-ui-modal="dialog == settings.id + '-dialog'" data-ui-modal-open="init()" data-ui-modal-close="closeDialog()" data-ng-controller="MapWidgetDialogController">
 		<form name="form" class="modal-form">
 			<div class="modal-header">
 				<a class="close" data-dismiss="modal">&times;</a>
@@ -28,7 +28,7 @@
 				<div class="control-group">
 					<label class="control-label" for="unit">Color</label>
 					<div class="controls">
-						<select name="color" data-ng-model="settings.markerColor" data-ng-options="color for color in getColors()"></select>
+						<select name="color" data-ng-model="settings.marker_color" data-ng-options="color for color in getColors()"></select>
 						<p class="help-block">The cluster color.</p>
 					</div>
 				</div>

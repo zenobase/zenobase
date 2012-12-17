@@ -1,46 +1,49 @@
-<div id="{{settings.id}}-content" data-ng-controller="RatingsWidgetController">
+<div id="{{settings.id}}-content" data-ng-controller="HistogramWidgetController">
 
-	<table class="table" data-ng-show="ratings">
-		<thead>
-			<tr>
-				<th>Rating</th>
-				<th style="text-align: right">Count</th>
-			</tr>
-		</thead>
-		<tbody>
-			<tr data-ng-repeat="rating in ratings">
-				<td>
-					<a data-ng-click="filter(rating)" data-ng-bind-html="rating.from | stars"></a>
-				</td>
-				<td style="text-align: right">{{rating.count | number }}</td>
-			</tr>
-			<tr data-ng-hide="ratings">
-				<td colspan="2"><i>None</i></td>
-			</tr>
-		</tbody>
-	</table>
+	<div id="{{settings.id}}-chart" data-ng-show="intervals"></div>
 
-	<p data-ng-show="ratings == null" class="none">Loading...</p>
+	<p data-ng-show="intervals == null" class="none">Loading...</p>
 
-	<p data-ng-show="ratings.length == 0" class="none">None</p>
+	<p data-ng-show="intervals.length == 0" class="none">None</p>
 
 	<div class="btn-toolbar">
 		<div class="btn-group" data-ng-show="editing">
-			<button class="btn" title="Settings..." data-ng-click="openDialog('histogram-widget-dialog')"><i class="icon-cog"></i> Settings...</button>
+			<button class="btn" title="Settings..." data-ng-click="openDialog(settings.id + '-dialog')"><i class="icon-cog"></i> Settings...</button>
 		</div>
 	</div>
 
-	<div data-ui-modal="dialog == 'histogram-widget-dialog'" data-ui-modal-open="init()" data-ui-modal-close="closeDialog()" data-ng-controller="WidgetDialogController">
+	<div data-ui-modal="dialog == settings.id + '-dialog'" data-ui-modal-open="init()" data-ui-modal-close="closeDialog()" data-ng-controller="HistogramWidgetDialogController">
 		<form name="form" class="modal-form">
 			<div class="modal-header">
 				<a class="close" data-dismiss="modal">&times;</a>
-				<h4>Ratings Widget</h4>
+				<h4>Histogram Widget</h4>
 			</div>
 			<div class="modal-body">
 				<div class="control-group">
 					<label class="control-label" for="label">Title</label>
 					<div class="controls">
 						<input name="label" type="text" required min="1" max="20" data-ng-model="settings.label"/>
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label" for="field">Field</label>
+					<div class="controls">
+						<select name="field" required data-ng-model="settings.field" data-ng-options="field.name as field.name for field in getFields()"></select>
+						<p class="help-block">The numeric field on which to gather statistics.</p>
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label" for="interval">Interval</label>
+					<div class="controls">
+						<input name="interval" type="number" required min="1" data-ng-model="settings.interval"/>
+						<p class="help-block">The size of each interval in the histogram.</p>
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label" for="unit">Unit</label>
+					<div class="controls">
+						<select name="unit" data-ng-model="settings.unit" data-ng-options="unit for unit in getUnits()"></select>
+						<p class="help-block">The unit to use.</p>
 					</div>
 				</div>
 			</div>

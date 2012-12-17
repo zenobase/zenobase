@@ -43,7 +43,7 @@ public class GanttWidgetTest extends SearchTestSupport {
 		addEvent(e3);
 		addEvent(e4);
 		addEvent(e5);
-		addWidget(String.format("id:%s,type:%s,termField:%s,timeField:%s", id, GanttWidget.TYPE, Event.TAG, Event.TIMESTAMP));
+		addWidget(String.format("id:%s,type:%s,field:%s", id, GanttWidget.TYPE, Event.TAG));
 
 		ObjectNode result = execute();
 		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(5);
@@ -61,7 +61,7 @@ public class GanttWidgetTest extends SearchTestSupport {
 	@Test
 	public void testEmpty() {
 
-		addWidget(String.format("id:%s,type:%s,termField:%s,timeField:%s", id, GanttWidget.TYPE, Event.TAG, Event.TIMESTAMP));
+		addWidget(String.format("id:%s,type:%s,field:%s", id, GanttWidget.TYPE, Event.TAG));
 
 		ObjectNode result = execute();
 		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(0);

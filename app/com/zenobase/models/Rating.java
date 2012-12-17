@@ -4,11 +4,14 @@ import com.google.common.base.Preconditions;
 
 public class Rating implements Comparable<Rating> {
 
+	public static final int MIN_VALUE = 0;
+	public static final int MAX_VALUE = 100;
+
 	private final int value;
 
 	private Rating(int value) {
-		Preconditions.checkArgument(value >= 0 && value <= 100,
-			"Expected a rating between 0 and 100: %s", value);
+		Preconditions.checkArgument(value >= MIN_VALUE && value <= MAX_VALUE,
+			"Expected a rating between %s and %s: %s", MIN_VALUE, MAX_VALUE, value);
 		this.value = value;
 	}
 

@@ -82,7 +82,7 @@
 			configure(token);
 		};
 		var configure = function(token) {
-			$http.defaults.headers.common["Authorization"] = token ? "Bearer " + token : null;
+			$http.defaults.headers.common['Authorization'] = token ? 'Bearer ' + token : null;
 		};
 		configure(get());
 		return {
@@ -108,7 +108,7 @@
 		};
 	});
 
-	app.constant('timezoneOffset', moment().format('ZZ'));
+	app.constant('timezone', moment().format('ZZ'));
 
 	// TODO should inject this, but can't inject into config...
 	var cacheBuster = function() {
@@ -119,7 +119,7 @@
 					return meta[i].content;
 				}
 			}
-			throw new Error("missing version");
+			throw new Error('missing version');
 		}();
 		return {
 			rewrite : function(path) {
@@ -269,7 +269,7 @@
 		Filter.parse = function(s) {
 			var pos = s.indexOf(separator);
 			if (pos < 1 || pos > s.length - 1) {
-				throw "Can't parse filter: " + s;
+				throw 'Can\'t parse filter: ' + s;
 			}
 			var field = s.substring(0, pos);
 			var value = s.substring(pos + 1);
@@ -873,31 +873,87 @@
 
 	app.controller('AddWidgetController', ['$scope', '$http', '$route', '$routeParams', '$location', '$timeout', 'random', function($scope, $http, $route, $routeParams, $location, $timeout, random) {
 
-		$scope.dialog = $("#add-widget-dialog");
+		$scope.dialog = $('#add-widget-dialog');
 		$scope.templates = [
-	  	{ label : 'Timeline', description : 'Timeline with event counts.', type : 'timeline', valueField : 'timestamp', statistic : 'count' },
-	  	{ label : 'Calendar Count', description : 'Counts events by hour of day, day of week etc.', type : 'calendar-count', interval : 'day_of_week' },
-	  	{ label : 'Map', description : 'Map with event locations.', type : 'map', singleton : true },
-	  	{ label : 'List', description : 'List with the most recent events.', type : 'list', singleton : true, limit : 5, order : 'timestamp', reverse : false },
-	  	{ label : 'Count', description : 'Counts events for each value in a field.', type : 'count', field : 'tag', order : 'count', reverse : false, limit : 5 },
-	  	{ label : 'Date Range', description : 'First and last occurence of each value in a field.', type : 'gantt', termField : 'tag', timeField : 'timestamp', order : 'max', limit : 10 },
-	  	{ label : 'Ratings', description : 'Counts events by their rating.', type : 'histogram' },
-	  	{ label : 'Histogram', description : 'Counts events by the interval that contains a value of a field.', type : 'intervals', field : 'distance', interval : 10, unit : 'km' },
-	  	{ label : 'Scoreboard', description : 'Statistics for the values in a field', type : 'scoreboard', termField : 'author', valueField : 'distance', unit : 'km', order : 'total', limit : 10 },                    
-	  	{ label : 'Plot', description : 'Plots values against a timeline.', type : 'plot', valueField : 'timestamp', statistic : 'avg', interval : 'day' }
+      {
+      	type : 'timeline',
+      	label : 'Timeline',
+      	description : 'Counts or aggregates values on a timeline.',
+      	settings : { field : 'timestamp', statistic : 'count' }
+      },
+      {
+      	type : 'list',
+      	label : 'List', 
+      	description : 'Lists events.',
+      	settings : { limit : 10, order : 'timestamp', reverse : false },
+      	singleton : true
+      },
+      {
+      	type : 'count',
+      	label : 'Count', 
+      	description : 'Counts events by tag or author.',
+      	settings : { field : 'tag', order : 'count', reverse : false, limit : 5 }
+      },
+      {
+      	type : 'map',
+      	label : 'Map', 
+      	description : 'Maps event locations.',
+      	settings : {},
+      	singleton : true
+      },
+      {
+      	type : 'plot',
+      	label : 'Plot', 
+      	description : 'Plots values from a field on a timeline.',
+      	settings : { field : 'timestamp', statistic : 'avg', interval : 'day' }
+      },
+      {
+      	type : 'ratings',
+      	label : 'Ratings',
+    		description : 'Counts events by their rating.',
+      	settings : {}
+      },
+      {
+      	type : 'histogram',
+      	label : 'Histogram', 
+      	description : 'Histogram of values in a field.',
+      	settings : { field : 'distance', interval : 10, unit : 'mi' }
+      },
+      {
+      	type : 'scoreboard',
+      	label : 'Scoreboard', 
+      	description : 'Statistics for the values in a field',
+      	settings : { key_field : 'author', value_field : 'distance', unit : 'mi', order : 'total', limit : 10 }
+      },                    
+	  	{
+      	type : 'gantt',
+      	label : 'Time Range', 
+      	description : 'Gives the time of the first and last occurence of each value in a field.',
+      	settings : { field : 'tag', order : 'max', limit : 10 }
+      },
+	  	{
+      	type : 'time_histogram',
+      	label : 'Time Histogram', 
+      	description : 'Counts events by month of year, day of week, or hour of day.',
+      	settings : { interval : 'day_of_week' }
+      }
 	  ];
 		$scope.init = function() {
 			$scope.template = null;
 		};
 		$scope.add = function() {
-			var settings = { id : random.id(), placement : $scope.placement };
-			$.extend(settings, $scope.template);
-			delete settings.description;
+			var settings = {
+				'id' : random.id(),
+				'type' : $scope.template.type,
+				'label' : $scope.template.label,
+				'placement' : $scope.placement
+			};
+			$.extend(true, settings, $scope.template.settings);
 			$scope.addWidget(settings);
 			$scope.chooseWidget(null);
 			$timeout(function() {
 				$('#' + settings.id + '-tab').tab('show');
-				$('#' + settings.id + '-content').scope().openDialog(settings.type + '-widget-dialog');
+				$scope.openDialog(settings.id + '-dialog');
 			}, 500);
 		};
 		$scope.findTemplates = function() {
@@ -1300,7 +1356,7 @@
 		};
 	}]);
 
-	app.controller('GanttWidgetController', ['$scope', 'timezoneOffset', function($scope, timezoneOffset) {
+	app.controller('GanttWidgetController', ['$scope', 'timezone', function($scope, timezone) {
 	
 		$scope.init = function() {
 			$scope.terms = null;
@@ -1309,9 +1365,8 @@
 			return { 
 				id : $scope.settings.id,
 				type : 'gantt',
-				termField : $scope.settings.termField, 
-				timeField : $scope.settings.timeField,
-				timezone : timezoneOffset,
+				field : $scope.settings.field, 
+				timezone : timezone,
 				order : $scope.settings.order,
 				limit : $scope.settings.limit
 			};
@@ -1333,7 +1388,7 @@
 			}
 		};
 		$scope.filter = function(term) {
-			$scope.addFilter($scope.settings.termField, term.label)
+			$scope.addFilter('timestamp', term.label)
 		};
 
 		$scope.init();
@@ -1346,7 +1401,7 @@
 
 		WidgetDialogControllerSupport($scope);
 
-		$scope.getTermFields = function() {
+		$scope.getFields = function() {
 			return Field.findByType('text');
 		};
 	}]);
@@ -1361,8 +1416,7 @@
 		$scope.params = function() {
 			return { 
 				id : $scope.settings.id,
-				type : 'histogram',
-				field : $scope.field
+				type : 'ratings'
 			};
 		};
 		$scope.update = function(event, result) {
@@ -1398,7 +1452,7 @@
 		$scope.params = function() {
 			return { 
 				id : $scope.settings.id,
-				type : 'intervals',
+				type : 'histogram',
 				field : $scope.settings.field, 
 				interval : $scope.settings.interval,
 				unit : $scope.settings.unit
@@ -1418,7 +1472,7 @@
 		};
 		$scope.draw = function() {
 			if ($scope.intervals && $scope.intervals.length) {
-				google.load("visualization", "1", { packages : [ "corechart" ], callback : function() { 
+				google.load('visualization', '1', { packages : [ 'corechart' ], callback : function() { 
 					var field = Field.find($scope.settings.field);
 					var data = new google.visualization.DataTable();
 					data.addColumn('string', 'Interval');
@@ -1489,8 +1543,8 @@
 			return { 
 				id : $scope.settings.id,
 				type : 'scoreboard',
-				termField : $scope.settings.termField, 
-				valueField : $scope.settings.valueField,
+				key_field : $scope.settings.key_field, 
+				value_field : $scope.settings.value_field,
 				unit : $scope.settings.unit,
 				order : $scope.settings.order,
 				limit : $scope.settings.limit
@@ -1508,7 +1562,7 @@
 			$scope.terms = result[$scope.settings.id] || [];
 		};
 		$scope.filter = function(term) {
-			$scope.addFilter($scope.settings.termField, term.label)
+			$scope.addFilter($scope.settings.term_field, term.label)
 		};
 
 		$scope.init();
@@ -1528,17 +1582,17 @@
 				: $.inArray($scope.settings.unit, units) != -1;
 		};
 
-		$scope.getTermFields = function() {
+		$scope.getKeyFields = function() {
 			return Field.findByType('text');
 		};
 		$scope.getValueFields = function() {
 			return Field.findByType('numeric');
 		};
 		$scope.getUnits = function() {
-			var valueField = Field.find($scope.settings.valueField);
+			var valueField = Field.find($scope.settings.value_field);
 			return valueField ? valueField.units : [];
 		};
-		$scope.$watch('settings.valueField', function() {
+		$scope.$watch('settings.value_field', function() {
 			if (!isUnitValid()) {
 				$scope.settings.unit = null;
 			}
@@ -1582,7 +1636,7 @@
 		return Interval;
 	});
 
-	app.controller('TimelineWidgetController', ['$scope', 'Field', 'Interval', 'timezoneOffset', function($scope, Field, Interval, timezoneOffset) {
+	app.controller('TimelineWidgetController', ['$scope', 'Field', 'Interval', 'timezone', function($scope, Field, Interval, timezone) {
 
 		$scope.keyField = 'timestamp';
 
@@ -1599,12 +1653,11 @@
 			return $scope.interval && { 
 				id : $scope.settings.id,
 				type : 'timeline',
-				keyField : $scope.keyField, 
-				valueField : $scope.settings.valueField || $scope.keyField,
+				field : $scope.settings.field,
 				unit : $scope.settings.unit || '',
 				interval : $scope.interval.name,
 				range : $scope.range,
-				timezone : timezoneOffset
+				timezone : timezone
 			};
 		};
 		$scope.refresh = function(options, settings) {
@@ -1621,8 +1674,8 @@
 		};
 		$scope.draw = function() {
 			if ($scope.times && $scope.times.length) {
-				google.load("visualization", "1", { packages : [ "corechart" ], callback : function() {
-					var field = Field.find($scope.settings.valueField);
+				google.load('visualization', '1', { packages : [ 'corechart' ], callback : function() {
+					var field = Field.find($scope.settings.field);
 					var data = new google.visualization.DataTable();
 					data.addColumn('string', $scope.interval.name);
 					data.addColumn('number', 'Count');
@@ -1677,12 +1730,12 @@
 				: $.inArray($scope.settings.unit, units) != -1;
 		};
 		function isStatisticValid() {
-			return $.grep($scope.getStatistics($scope.settings.valueField), function(statistic) {
+			return $.grep($scope.getStatistics($scope.settings.field), function(statistic) {
 				return $scope.settings.statistic === statistic;
 			}).length > 0;
 		};
 
-		$scope.getValueFields = function() {
+		$scope.getFields = function() {
 			var fields = Field.findByType('numeric');
 			fields.unshift(Field.find($scope.keyField));
 			return fields;
@@ -1691,23 +1744,23 @@
 			return field === $scope.keyField ? [ 'count' ] : [ 'sum', 'avg', 'min', 'max' ];
 		};
 		$scope.getUnits = function() {
-			return Field.find($scope.settings.valueField).units || [];
+			return Field.find($scope.settings.field).units || [];
 		};
 		$scope.valid = function() {
 			return isUnitValid() && isStatisticValid();
 		};
 
-		$scope.$watch('settings.valueField', function() {
+		$scope.$watch('settings.field', function() {
 			if (!isUnitValid()) {
 				$scope.settings.unit = null;
 			}
 			if (!isStatisticValid()) {
-				$scope.settings.statistic = $scope.getStatistics($scope.settings.valueField)[0];
+				$scope.settings.statistic = $scope.getStatistics($scope.settings.field)[0];
 			}
 		});
 	}]);
 
-	app.controller('CalendarCountWidgetController', ['$scope', function($scope) {
+	app.controller('TimeHistogramWidgetController', ['$scope', 'timezone', function($scope, timezone) {
 
 		$scope.field = 'timestamp';
 
@@ -1717,10 +1770,10 @@
 		$scope.params = function() {
 			return { 
 				id : $scope.settings.id,
-				type : 'calendar-count',
-				field : $scope.field, 
+				type : 'time_histogram',
+				field : $scope.field,
 				interval : $scope.settings.interval,
-				timezoneOffset : -new Date().getTimezoneOffset()
+				timezone : timezone
 			};
 		};
 		$scope.refresh = function(options, settings) {
@@ -1737,7 +1790,7 @@
 		};
 		$scope.draw = function() {
 			if ($scope.times && $scope.times.length) {
-				google.load("visualization", "1", { packages : [ "corechart" ], callback : function() {
+				google.load('visualization', '1', { packages : [ 'corechart' ], callback : function() {
 					var data = new google.visualization.DataTable();
 					data.addColumn('string', $scope.interval);
 					data.addColumn('number', 'count');
@@ -1773,7 +1826,7 @@
 		$('#' + $scope.settings.id + '-tab').on('show', $scope.draw);
 	}]);
 
-	app.controller('CalendarCountWidgetDialogController', ['$scope', 'WidgetDialogControllerSupport', function($scope, WidgetDialogControllerSupport) {
+	app.controller('TimeHistogramWidgetDialogController', ['$scope', 'WidgetDialogControllerSupport', function($scope, WidgetDialogControllerSupport) {
 
 		WidgetDialogControllerSupport($scope);
 
@@ -1784,7 +1837,7 @@
 		];
 	}]);
 	
-	app.controller('PlotWidgetController', ['$scope', 'Field', 'timezoneOffset', function($scope, Field, timezoneOffset) {
+	app.controller('PlotWidgetController', ['$scope', 'Field', 'timezone', function($scope, Field, timezone) {
 	
 		$scope.keyField = 'timestamp';
 
@@ -1795,11 +1848,10 @@
 			return {
 				id : $scope.settings.id,
 				type : 'plot',
-				keyField : $scope.keyField, 
-				valueField : $scope.settings.valueField || $scope.keyField,
+				field : $scope.settings.field,
 				unit : $scope.settings.unit || '',
 				interval : $scope.settings.interval || 'day',
-				timezone : timezoneOffset
+				timezone : timezone
 			};
 		};
 		$scope.refresh = function(options, settings) {
@@ -1816,8 +1868,8 @@
 		};
 		$scope.draw = function() {
 			if ($scope.times && $scope.times.length) {
-				google.load("visualization", "1", { packages : [ "corechart" ], callback : function() { 
-					var field = Field.find($scope.settings.valueField);
+				google.load('visualization', '1', { packages : [ 'corechart' ], callback : function() { 
+					var field = Field.find($scope.settings.field);
 					var data = new google.visualization.DataTable();
 					data.addColumn('date', 'Time');
 					data.addColumn('number', 'Value');
@@ -1872,12 +1924,12 @@
 				: $.inArray($scope.settings.unit, units) != -1;
 		};
 		function isStatisticValid() {
-			return $.grep($scope.getStatistics($scope.settings.valueField), function(statistic) {
+			return $.grep($scope.getStatistics($scope.settings.field), function(statistic) {
 				return $scope.settings.statistic === statistic;
 			}).length > 0;
 		};
 
-		$scope.getValueFields = function() {
+		$scope.getFields = function() {
 			var fields = Field.findByType('numeric');
 			fields.unshift(Field.find($scope.keyField));
 			return fields;
@@ -1889,18 +1941,18 @@
 			return field === $scope.keyField ? [ 'count' ] : [ 'sum', 'avg', 'min', 'max' ];
 		};
 		$scope.getUnits = function() {
-			return Field.find($scope.settings.valueField).units || [];
+			return Field.find($scope.settings.field).units || [];
 		};
 		$scope.valid = function() {
 			return isUnitValid() && isStatisticValid();
 		};
 
-		$scope.$watch('settings.valueField', function() {
+		$scope.$watch('settings.field', function() {
 			if (!isUnitValid()) {
 				$scope.settings.unit = null;
 			}
 			if (!isStatisticValid()) {
-				$scope.settings.statistic = $scope.getStatistics($scope.settings.valueField)[0];
+				$scope.settings.statistic = $scope.getStatistics($scope.settings.field)[0];
 			}
 		});
 	}]);
@@ -1912,7 +1964,7 @@
 		$scope.init = function() {
 			$scope.points = null;
 			$scope.map = null;
-			$scope.settings.markerColor = $scope.settings.markerColor || 'red';
+			$scope.settings.marker_color = $scope.settings.marker_color || 'red';
 			$scope.settings.factor = 'factor' in $scope.settings ? $scope.settings.factor : 0.2;
 		};
 		$scope.params = function() {
@@ -1940,7 +1992,7 @@
 		};
 		$scope.draw = function() {
 			if ($scope.points.length) {
-				google.load("maps", "3.10", { other_params : 'libraries=places&sensor=false', callback : function() {
+				google.load('maps', '3.10', { other_params : 'libraries=places&sensor=false', callback : function() {
 					var options = {
 						mapTypeId: google.maps.MapTypeId.TERRAIN,
 						streetViewControl: false,
@@ -1967,9 +2019,9 @@
 							icon: {
 						    path: google.maps.SymbolPath.CIRCLE,
 						    fillOpacity: 0.5,
-						    fillColor: $scope.settings.markerColor,
+						    fillColor: $scope.settings['marker_color'],
 						    strokeOpacity: 1.0,
-						    strokeColor: $scope.settings.markerColor,
+						    strokeColor: $scope.settings['marker_color'],
 						    strokeWeight: 1.0,
 						    scale: 10 + (5 * Math.log(point.count))
 						  }
@@ -2218,7 +2270,7 @@
 	app.controller('CreateLocationFieldController', ['$scope', function($scope) {
 
 		$scope.init = function() {
-			google.load("maps", "3.10", { other_params : 'libraries=places&sensor=false', callback : function() {
+			google.load('maps', '3.10', { other_params : 'libraries=places&sensor=false', callback : function() {
 				var center = new google.maps.LatLng(0, 0);
 				var options = {
 					center : center,
@@ -2297,16 +2349,16 @@
 	}]);
 	
 
-	app.controller('CreateTimestampFieldController', ['$scope', 'timezoneOffset', 'moment', function($scope, timezoneOffset, moment) {
+	app.controller('CreateTimestampFieldController', ['$scope', 'timezone', 'moment', function($scope, timezone, moment) {
 
-		$scope.timezoneOffsets = [
+		$scope.timezones = [
 			'-1200', '-1100', '-1000', '-0930', '-0900', '-0800', '-0700', '-0600','-0500', '-0430', '-0400', '-0300', '-0200', '-0100',
 			'+0000', '+0100', '+0200', '+0300', '+0400', '+0430', '+0500', '+0530', '+0545', '+0600', '+0630', '+0700', '+0800', '+0845', '+0900', '+0930', '+1000', '+1100', '+1130', '+1200', '+1245', '+1300', '+1400'
 		];
 
 		function getValue() {
 			var day = (typeof $scope.date === 'object') ? moment(local($scope.date)).format('YYYY-MM-DD') : $scope.date;
-			return day + 'T' + $scope.time + '.000' + $scope.timezoneOffset;
+			return day + 'T' + $scope.time + '.000' + $scope.timezone;
 		}
 		function local(date) {
 			return new Date(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate());
@@ -2323,7 +2375,7 @@
 			date.setSeconds(0);
 			$scope.date = utc(date);
 			$scope.time = moment().format('HH:mm:ss');
-			$scope.timezoneOffset = timezoneOffset;
+			$scope.timezone = timezone;
 		};
 		$scope.addField = function() {
 			$scope.event.add($scope.field, getValue());
@@ -2335,7 +2387,7 @@
 
 		$scope.init();
 	}]);
-	
+
 	app.controller('CreateDurationFieldController', ['$scope', function($scope) {
 
 		$scope.init = function() {
@@ -2692,7 +2744,7 @@
 		};
 
 		function register(fieldOptions) {
-			console.assert(fieldOptions.name, "missing <name>");
+			console.assert(fieldOptions.name, 'missing <name>');
 			var field = new Field(
 				fieldOptions.name, 
 				fieldOptions.icon || '', 
@@ -3032,7 +3084,7 @@
 	app.filter('field', ['Field', function(Field) {
 		return function(value, fieldName) {
 			var field = Field.find(fieldName);
-			console.assert(field, "Don't know how to format field: " + fieldName)
+			console.assert(field, 'Don\'t know how to format field: ' + fieldName)
 			return field.toHtml(value);
 		}
 	}]);

@@ -75,8 +75,8 @@ public class ScoreboardWidget extends Widget {
 				String unit = options.get("unit");
 				return new ScoreboardWidget(
 					options.get("id"),
-					options.get("termField"),
-					options.get("valueField"),
+					options.get("key_field"),
+					options.get("value_field"),
 					unit != null ? Measures.valueOf(unit) : Unit.ONE,
 					ComparatorType.valueOf(options.get("order", String.class, "term").toUpperCase()),
 					options.get("limit", Integer.class, 10));

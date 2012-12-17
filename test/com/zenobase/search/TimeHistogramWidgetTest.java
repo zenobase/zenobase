@@ -4,6 +4,7 @@ import static com.zenobase.testing.NodeAssert.assertThat;
 
 import org.codehaus.jackson.node.ObjectNode;
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -11,9 +12,10 @@ import com.zenobase.common.Generator;
 import com.zenobase.models.Event;
 import com.zenobase.testing.NodeAssert;
 
-public class CalendarCountWidgetTest extends SearchTestSupport {
+public class TimeHistogramWidgetTest extends SearchTestSupport {
 
 	private String id = Generator.id();
+	private DateTimeZone timezone = DateTimeZone.forOffsetHours(-8);
 	private Event e1, e2, e3;
 
 	@Before
@@ -37,7 +39,7 @@ public class CalendarCountWidgetTest extends SearchTestSupport {
 		addEvent(e1);
 		addEvent(e2);
 		addEvent(e3);
-		addWidget(String.format("id:%s,type:%s,field:%s,interval:%s,timezoneOffset:%d", id, CalendarCountWidget.TYPE, Event.TIMESTAMP, "hour_of_day", -480));
+		addWidget(String.format("id:%s,type:%s,field:%s,interval:%s,timezone:%s", id, TimeHistogramWidget.TYPE, Event.TIMESTAMP, "hour_of_day", timezone));
 
 		ObjectNode result = execute();
 		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(3);
@@ -54,7 +56,7 @@ public class CalendarCountWidgetTest extends SearchTestSupport {
 		addEvent(e1);
 		addEvent(e2);
 		addEvent(e3);
-		addWidget(String.format("id:%s,type:%s,field:%s,interval:%s,timezoneOffset:%d", id, CalendarCountWidget.TYPE, Event.TIMESTAMP, "day_of_week", -480));
+		addWidget(String.format("id:%s,type:%s,field:%s,interval:%s,timezone:%s", id, TimeHistogramWidget.TYPE, Event.TIMESTAMP, "day_of_week", timezone));
 
 		ObjectNode result = execute();
 		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(3);
@@ -73,7 +75,7 @@ public class CalendarCountWidgetTest extends SearchTestSupport {
 		addEvent(e1);
 		addEvent(e2);
 		addEvent(e3);
-		addWidget(String.format("id:%s,type:%s,field:%s,interval:%s,timezoneOffset:%d", id, CalendarCountWidget.TYPE, Event.TIMESTAMP, "month_of_year", -480));
+		addWidget(String.format("id:%s,type:%s,field:%s,interval:%s,timezone:%s", id, TimeHistogramWidget.TYPE, Event.TIMESTAMP, "month_of_year", timezone));
 
 		ObjectNode result = execute();
 		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(3);

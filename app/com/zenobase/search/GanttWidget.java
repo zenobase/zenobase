@@ -15,6 +15,7 @@ import com.zenobase.json.DateTimeField;
 import com.zenobase.json.LongField;
 import com.zenobase.json.Nodes;
 import com.zenobase.json.TokenField;
+import com.zenobase.models.Event;
 
 public class GanttWidget extends Widget {
 
@@ -25,16 +26,16 @@ public class GanttWidget extends Widget {
 	private static final DateTimeField FIRST = new DateTimeField("first");
 	private static final DateTimeField LAST = new DateTimeField("last");
 
-	private final String termField;
-	private final String timeField;
+	private final String keyField;
+	private final String valueField;
 	private final ComparatorType order;
 	private final int limit;
 	private final DateTimeZone timezone;
 
-	private GanttWidget(String id, String termField, String timeField, ComparatorType order, int limit, DateTimeZone timezone) {
+	private GanttWidget(String id, String keyField, String valueField, ComparatorType order, int limit, DateTimeZone timezone) {
 		super(id);
-		this.termField = termField;
-		this.timeField = timeField;
+		this.keyField = keyField;
+		this.valueField = valueField;
 		this.order = order;
 		this.limit = limit;
 		this.timezone = timezone;
@@ -43,7 +44,7 @@ public class GanttWidget extends Widget {
 	@Override
 	public void configure(SearchSourceBuilder builder) {
 		builder.facet(FacetBuilders.termsStatsFacet(getId())
-			.keyField(termField).valueField(timeField).order(order).size(limit));
+			.keyField(keyField).valueField(valueField).order(order).size(limit));
 	}
 
 	@Override
@@ -73,8 +74,8 @@ public class GanttWidget extends Widget {
 			public Widget build(WidgetOptions options) {
 				return new GanttWidget(
 					options.get("id"),
-					options.get("termField"),
-					options.get("timeField"),
+					options.get("field"),
+					Event.TIMESTAMP.getName(),
 					ComparatorType.valueOf(options.get("order", String.class, "term").toUpperCase()),
 					options.get("limit", Integer.class, 10),
 					options.get("timezone", DateTimeZone.class, DateTimeZone.UTC));
