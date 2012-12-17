@@ -38,7 +38,7 @@ public class CommandReplay {
 	}
 
 	void replay(final IndexManager indexManager) {
-		CommandRepository repository = new CommandRepository(indexManager, parsers);
+		CommandRepository repository = new CommandRepository("queue", indexManager, parsers); // TODO revert to default name after next migration
 		Logger.info("Replaying " + repository.size() + " commands from " + sourceCluster + "...");
 		final StringBloomFilter identities = new IdentitiesFilterBuilder(new UserRepository(indexManager)).build();
 		Stopwatch timer = new Stopwatch().start();

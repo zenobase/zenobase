@@ -20,15 +20,19 @@ import com.zenobase.models.Identity;
 
 public class CommandRepository {
 
-	static final String INDEX_NAME = "journal";
+	private static final String INDEX_NAME = "journal";
 
 	private final Index index;
 	private final CommandParserRegistry parsers;
 
 	@Inject
 	public CommandRepository(IndexManager manager, CommandParserRegistry parsers) {
+		this(INDEX_NAME, manager, parsers);
+	}
+
+	public CommandRepository(String indexName, IndexManager manager, CommandParserRegistry parsers) {
 		this.parsers = parsers;
-		this.index = manager.getIndex(INDEX_NAME);
+		this.index = manager.getIndex(indexName);
 		if (!index.exists()) {
 			Logger.info("Creating journal...");
 			index.create(2);
