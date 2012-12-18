@@ -4,10 +4,12 @@ import javax.inject.Inject;
 
 import play.mvc.Result;
 import play.mvc.With;
+import com.google.common.base.Strings;
 
 import com.zenobase.actions.Timed;
 import com.zenobase.models.Identity;
 import com.zenobase.oauth.Authorization;
+import com.zenobase.search.QueryConstraint;
 import com.zenobase.services.AuthorizationRepository;
 import com.zenobase.services.UserRepository;
 
@@ -24,21 +26,36 @@ public class AuthorizationListController extends ControllerSupport {
 		this.users = users;
 	}
 
-	public Result find(String field, String value, boolean clientOnly, int offset, int limit) {
+	public Result find(String query, boolean clientOnly, int offset, int limit) {
 		if (limit > 100) {
 			return badRequest("limit can't be more than 100");
 		}
 		Authorization auth = getCurrentAuthorization();
-    	if (auth == null || auth.getScope() != null) {
+    	if (auth == null) {
     		return unauthorized();
     	}
-		if (!isConstrainedToPrincipal(field, value, auth.getPrincipal()) && !users.isSuperuser(auth.getPrincipal())) {
+    	if (auth.getScope() != null) {
+    		return forbidden();
+    	}
+		QueryConstraint constraint = null;
+		if (!Strings.isNullOrEmpty(query)) {
+			try {
+				constraint = QueryConstraint.parse(query);
+			} catch (IllegalArgumentException e) {
+				return badRequest("query is malformed");
+			}
+		}
+		if (constraint == null || !isConstrainedToPrincipal(constraint, auth.getPrincipal())) {
+			if (users.isSuperuser(auth.getPrincipal())) {
+				return ok(authorizations.find(offset, limit).toJson());
+			}
 			return forbidden();
 		}
-		return ok(authorizations.find(field, value, clientOnly, offset, limit).toJson());
+		return ok(authorizations.find(constraint.getField(), constraint.getValue(), clientOnly, offset, limit).toJson());
     }
 
-	private boolean isConstrainedToPrincipal(String field, String value, Identity principal) {
-		return Authorization.PRINCIPAL.getName().equals(field) && principal.getId().equals(value);
+	private static boolean isConstrainedToPrincipal(QueryConstraint constraint, Identity principal) {
+		return Authorization.PRINCIPAL.getName().equals(constraint.getField())
+			&& principal.getId().equals(constraint.getValue());
 	}
 }

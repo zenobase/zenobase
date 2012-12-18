@@ -46,14 +46,16 @@ public class AuthorizationRepository {
 		return node != null ? new Authorization(node) : null;
 	}
 
+	public AuthorizationList find(int offset, int limit) {
+		return find(QueryBuilders.matchAllQuery(), offset, limit);
+	}
+
 	public AuthorizationList find(String field, String value, boolean clientOnly, int offset, int limit) {
 		return find(queryFor(field, value, clientOnly), offset, limit);
 	}
 
 	private static QueryBuilder queryFor(String field, String value, boolean clientOnly) {
-		QueryBuilder query = value == null
-			? QueryBuilders.matchAllQuery()
-			: QueryBuilders.termQuery(field, value);
+		QueryBuilder query = QueryBuilders.termQuery(field, value);
 		if (clientOnly) {
 			query = QueryBuilders.filteredQuery(query, FilterBuilders.existsFilter(Authorization.CLIENT.getName()));
 		}

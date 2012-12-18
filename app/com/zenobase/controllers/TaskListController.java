@@ -71,7 +71,7 @@ public class TaskListController extends ControllerSupport {
 		return ok(tasks.findTasks(constraint.getField(), constraint.getValue(), offset, limit).toJson());
     }
 
-	private boolean isConstrainedToPrincipal(QueryConstraint constraint, Identity principal) {
+	private static boolean isConstrainedToPrincipal(QueryConstraint constraint, Identity principal) {
 		return Task.PRINCIPAL.getName().equals(constraint.getField())
 			&& principal.getId().equals(constraint.getValue());
 	}

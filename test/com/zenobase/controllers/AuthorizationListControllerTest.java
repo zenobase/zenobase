@@ -47,14 +47,14 @@ public class AuthorizationListControllerTest extends ControllerTestSupport {
 		AuthorizationList list = new AuthorizationList(ImmutableList.<Authorization>of(), 0);
 		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
 		when(authorizations.find(Authorization.PRINCIPAL.getName(), user.asIdentity().toString(), false, 0, 10)).thenReturn(list);
-		Result result = call(Authorization.PRINCIPAL.getName(), user.asIdentity().toString(), false, 0, 10);
+		Result result = call(Authorization.PRINCIPAL.getName() + ":" + user.asIdentity(), false, 0, 10);
 		assertThat(result).hasStatus(OK).hasContent(list.toJson());
 	}
 
 	@Test
 	public void testFindByOtherPrincipal() {
 		when(auth.current()).thenReturn(new Authorization(new Identity()));
-		Result result = call(Authorization.PRINCIPAL.getName(), user.asIdentity().toString(), false, 0, 10);
+		Result result = call(Authorization.PRINCIPAL.getName() + ":" + user.asIdentity(), false, 0, 10);
 		assertThat(result).hasStatus(FORBIDDEN);
 	}
 
@@ -63,33 +63,33 @@ public class AuthorizationListControllerTest extends ControllerTestSupport {
 		AuthorizationList list = new AuthorizationList(ImmutableList.<Authorization>of(), 0);
 		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
 		when(users.isSuperuser(user.asIdentity())).thenReturn(true);
-		when(authorizations.find(null, null, false, 0, 10)).thenReturn(list);
-		Result result = call(null, null, false, 0, 10);
+		when(authorizations.find(0, 10)).thenReturn(list);
+		Result result = call(null, false, 0, 10);
 		assertThat(result).hasStatus(OK).hasContent(list.toJson());
 	}
 
 	@Test
 	public void testFindAll() {
 		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
-		Result result = call(null, null, false, 0, 10);
+		Result result = call(null, false, 0, 10);
 		assertThat(result).hasStatus(FORBIDDEN);
 	}
 
 	@Test
 	public void testUnauthorized() {
 		when(auth.current()).thenReturn(null);
-		Result result = call(Authorization.PRINCIPAL.getName(), user.asIdentity().toString(), false, 0, 10);
+		Result result = call(Authorization.PRINCIPAL.getName() + ":" + user.asIdentity(), false, 0, 10);
 		assertThat(result).hasStatus(UNAUTHORIZED);
 	}
 
 	@Test
 	public void testBadLimit() {
 		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
-		Result result = call(Authorization.PRINCIPAL.getName(), user.asIdentity().toString(), false, 0, Integer.MAX_VALUE);
+		Result result = call(Authorization.PRINCIPAL.getName() + ":" + user.asIdentity(), false, 0, Integer.MAX_VALUE);
 		assertThat(result).hasStatus(BAD_REQUEST);
 	}
 
-	private static Result call(String field, String value, boolean clientOnly, int offset, int limit) {
-		return callAction(com.zenobase.controllers.routes.ref.AuthorizationListController.find(field, value, clientOnly, offset, limit));
+	private static Result call(String query, boolean clientOnly, int offset, int limit) {
+		return callAction(com.zenobase.controllers.routes.ref.AuthorizationListController.find(query, clientOnly, offset, limit));
 	}
 }

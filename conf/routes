@@ -42,7 +42,7 @@ DELETE  /tasks/:taskId               @com.zenobase.controllers.TaskController.de
 POST    /oauth/authorize             @com.zenobase.controllers.OAuthController.authorize()
 POST    /oauth/token                 @com.zenobase.controllers.OAuthController.token()
 
-GET     /authorizations/             @com.zenobase.controllers.AuthorizationListController.find(field ?= null, value ?= null, client_only : Boolean ?= false, offset : Int  ?= 0, limit : Int ?= 10)
+GET     /authorizations/             @com.zenobase.controllers.AuthorizationListController.find(q ?= null, client_only : Boolean ?= false, offset : Int  ?= 0, limit : Int ?= 10)
 
 GET     /authorizations/:authId      @com.zenobase.controllers.AuthorizationController.get(authId)
 DELETE  /authorizations/:authId      @com.zenobase.controllers.AuthorizationController.delete(authId)

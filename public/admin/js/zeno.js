@@ -183,25 +183,22 @@
 			$scope.refresh({ offset : $scope.offset + $scope.limit });
 		};
 		$scope.params = function() {
-			return {
+			var params = {
 				offset : $scope.offset,
 				limit : $scope.limit
 			};
+			if ($scope.filter) {
+				params.q = 'principal:' + $scope.filter;
+			}
+			return params;
 		};
 		$scope.refresh = function(params) {
-			if ($scope.filter) {
-				$http.get('/authorizations/?' + $.param($.extend($scope.params(), params, { 'field' : 'principal', 'value' : $scope.filter }))).success(function(response) {
+			$http.get('/authorizations/?' + $.param($.extend($scope.params(), params)))
+				.success(function(response) {
 					$.extend($scope, params);
 					$scope.total = response.total;
 					$scope.authorizations = response.authorizations;
 				});
-			} else {
-				$http.get('/authorizations/?' + $.param($.extend($scope.params(), params))).success(function(response) {
-					$.extend($scope, params);
-					$scope.total = response.total;
-					$scope.authorizations = response.authorizations;
-				});
-			}
 		};
 		$scope.remove = function(authId) {
 			$http({ method : 'DELETE', url : '/authorizations/' + authId })
