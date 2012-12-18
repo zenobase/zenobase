@@ -1,6 +1,10 @@
 package com.zenobase.json;
 
+import org.codehaus.jackson.node.NullNode;
+import org.fest.assertions.Assertions;
 import org.junit.Test;
+
+import com.zenobase.testing.NodeAssert;
 
 public class EnumFieldTest extends FieldTestSupport {
 
@@ -8,8 +12,16 @@ public class EnumFieldTest extends FieldTestSupport {
 		A, B, C
 	}
 
+	private EnumField<Option> field = EnumField.newInstance(FIELD_NAME, Option.class);
+
 	@Test
 	public void test() {
-		roundtrip(EnumField.newInstance(FIELD_NAME, Option.class), Option.A);
+		roundtrip(field, Option.A);
+	}
+
+	@Test
+	public void testNull() {
+		Assertions.assertThat(field.getValue(NullNode.getInstance())).isNull();
+		NodeAssert.assertThat(field.toJson(null)).isEqualTo(NullNode.getInstance());
 	}
 }
