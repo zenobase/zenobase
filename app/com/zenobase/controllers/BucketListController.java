@@ -5,6 +5,7 @@ import javax.inject.Inject;
 import play.mvc.BodyParser;
 import play.mvc.Result;
 import play.mvc.With;
+import com.google.common.base.Strings;
 
 import com.zenobase.actions.Timed;
 import com.zenobase.commands.CreateBucketCommand;
@@ -13,6 +14,7 @@ import com.zenobase.models.Bucket;
 import com.zenobase.models.Identity;
 import com.zenobase.models.Role;
 import com.zenobase.oauth.Authorization;
+import com.zenobase.search.QueryConstraint;
 import com.zenobase.services.BucketRepository;
 import com.zenobase.services.CommandDispatcher;
 import com.zenobase.services.UserRepository;
@@ -34,13 +36,22 @@ public class BucketListController extends ControllerSupport {
 		this.users = users;
 	}
 
-	public Result find(String identity, int offset, int limit) {
+	public Result find(String query, int offset, int limit) {
     	Authorization auth = getCurrentAuthorization();
     	if (auth == null || auth.getScope() != null) {
     		return unauthorized();
     	}
-    	if (identity != null) {
-    		return find(auth.getPrincipal(), new Identity(identity), offset, limit);
+    	if (!Strings.isNullOrEmpty(query)) {
+    		QueryConstraint c;
+			try {
+				c = QueryConstraint.parse(query);
+			} catch (IllegalArgumentException e) {
+    			return badRequest("query is malformed");
+			}
+    		if (!"roles.principal".equals(c.getField())) {
+    			return badRequest("unsupported query field");
+    		}
+    		return find(auth.getPrincipal(), new Identity(c.getValue()), offset, limit);
     	}
         return find(auth.getPrincipal(), offset, limit);
     }

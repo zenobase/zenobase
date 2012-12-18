@@ -21,21 +21,29 @@ public class BucketListControllerHttpGetTest extends BucketListControllerTestSup
 		BucketList list = new BucketList(ImmutableList.<Bucket>of(), 0, buckets);
 		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
 		when(buckets.findBuckets(user.asIdentity(), 0, 10)).thenReturn(list);
-		Result result = call(user.getId(), 0, 10);
+		Result result = call("roles.principal:" + user.getId(), 0, 10);
 		assertThat(result).hasStatus(OK).hasContent(list.toJson());
+	}
+
+	@Test
+	public void testGetBucketBadQuery() {
+		when(auth.current()).thenReturn(null);
+		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
+		Result result = call("foo:bar", 0, 10);
+		assertThat(result).hasStatus(BAD_REQUEST);
 	}
 
 	@Test
 	public void testGetBucketListNotSignedIn() {
 		when(auth.current()).thenReturn(null);
-		Result result = call(user.getId(), 0, 10);
+		Result result = call("roles.principal:" + user.getId(), 0, 10);
 		assertThat(result).hasStatus(UNAUTHORIZED);
 	}
 
 	@Test
 	public void testGetBucketListForbidden() {
 		when(auth.current()).thenReturn(new Authorization(new Identity()));
-		Result result = call(user.getId(), 0, 10);
+		Result result = call("roles.principal:" + user.getId(), 0, 10);
 		assertThat(result).hasStatus(FORBIDDEN);
 	}
 

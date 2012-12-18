@@ -87,7 +87,7 @@
 					limit : $scope.limit
 				};
 				if ($scope.filter) {
-					params.identity = $scope.filter;
+					params.q = 'roles.principal:' + $scope.filter;
 				}
 				return params;
 		}

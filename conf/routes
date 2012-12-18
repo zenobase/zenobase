@@ -12,7 +12,7 @@ POST    /users/:name                 @com.zenobase.controllers.UserController.up
 POST    /users/                      @com.zenobase.controllers.AccountController.open()
 DELETE  /users/:name                 @com.zenobase.controllers.AccountController.close(name)
 
-GET     /buckets/                    @com.zenobase.controllers.BucketListController.find(identity ?= null, offset : Int ?= 0, limit : Int ?= java.lang.Integer.MAX_VALUE)
+GET     /buckets/                    @com.zenobase.controllers.BucketListController.find(q ?= null, offset : Int ?= 0, limit : Int ?= java.lang.Integer.MAX_VALUE)
 POST    /buckets/                    @com.zenobase.controllers.BucketListController.post()
 
 GET     /buckets/:bucketId           @com.zenobase.controllers.BucketController.get(bucketId)
