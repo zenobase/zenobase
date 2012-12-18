@@ -677,8 +677,7 @@
 		};
 		$scope.params = function() {
 			return {
-				field : 'principal',
-				value : $scope.userInfo['@id'],
+				q : 'principal:' + $scope.userInfo['@id'],
 				offset : $scope.offset,
 				limit : $scope.limit
 			};

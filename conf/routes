@@ -32,7 +32,7 @@ GET     /og                          @com.zenobase.controllers.OpenGraphControll
 GET     /journal/                    @com.zenobase.controllers.JournalController.get(identity ?= null, offset : Int, limit : Int)
 POST    /journal/                    @com.zenobase.controllers.JournalController.post()
 
-GET     /tasks/                      @com.zenobase.controllers.TaskListController.find(field ?= null, value ?= null, offset : Int  ?= 0, limit : Int ?= 10)
+GET     /tasks/                      @com.zenobase.controllers.TaskListController.find(q ?= null, offset : Int  ?= 0, limit : Int ?= 10)
 POST    /tasks/                      @com.zenobase.controllers.TaskListController.post()
 
 GET     /tasks/:taskId               @com.zenobase.controllers.TaskController.get(taskId)

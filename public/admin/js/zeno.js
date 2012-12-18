@@ -239,8 +239,7 @@
 					limit : $scope.limit
 				};
 				if ($scope.filter) {
-					params.field = 'principal';
-					params.value = $scope.filter;
+					params.q = 'principal:' + $scope.filter;
 				}
 				return params;
 		}

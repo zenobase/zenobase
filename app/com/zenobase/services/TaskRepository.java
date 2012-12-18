@@ -50,13 +50,11 @@ public class TaskRepository {
 	}
 
 	public TaskList findTasks(String field, String value, int offset, int limit) {
-		return findTasks(queryFor(field, value), offset, limit);
+		return findTasks(QueryBuilders.termQuery(field, value), offset, limit);
 	}
 
-	private static QueryBuilder queryFor(String field, String value) {
-		return value == null
-			? QueryBuilders.matchAllQuery()
-			: QueryBuilders.termQuery(field, value);
+	public TaskList findTasks(int offset, int limit) {
+		return findTasks(QueryBuilders.matchAllQuery(), offset, limit);
 	}
 
 	private TaskList findTasks(QueryBuilder query, int offset, int limit) {
