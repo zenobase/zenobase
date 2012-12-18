@@ -55,24 +55,9 @@ public class UpdateTaskCommand extends UpdateCommandSupport {
 		@Override
 		public Command parse(ObjectNode node, int version) {
 			switch (version) {
-				case 1:
-					UpdateTaskCommand command = new UpdateTaskCommand(node);
-					rewriteStatus(command.getFrom());
-					rewriteStatus(command.getTo());
-					return command;
-				case 2:
-					return new UpdateTaskCommand(node);
+				case 2: return new UpdateTaskCommand(node);
 			}
 			return null;
-		}
-
-		private static void rewriteStatus(ObjectNode node) {
-			if (node != null) {
-				Task.Status status = Task.STATUS.getValue(node);
-				if (status != null) {
-					Task.STATUS.setValue(node, status);
-				}
-			}
 		}
 	}
 

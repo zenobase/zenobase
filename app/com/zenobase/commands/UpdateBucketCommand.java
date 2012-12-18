@@ -1,16 +1,11 @@
 package com.zenobase.commands;
 
-import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.node.ObjectNode;
-import play.Logger;
 import com.google.inject.Inject;
 
-import com.zenobase.json.Nodes;
 import com.zenobase.json.ObjectField;
-import com.zenobase.json.RolesField;
 import com.zenobase.models.Bucket;
 import com.zenobase.models.Identity;
-import com.zenobase.models.Role;
 import com.zenobase.services.BucketRepository;
 
 public class UpdateBucketCommand extends Command {
@@ -61,70 +56,10 @@ public class UpdateBucketCommand extends Command {
 		@Override
 		public Command parse(ObjectNode node, int version) {
 			switch (version) {
-				case 2:
-					UpdateBucketCommand command = new UpdateBucketCommand(node);
-					migrate(command.getFrom());
-					migrate(command.getTo());
-					return command;
-				case 3:
-					return new UpdateBucketCommand(node);
+				case 3: return new UpdateBucketCommand(node);
 			}
 			return null;
 		}
-	}
-
-	public static void migrate(Bucket bucket) {
-		for (JsonNode i : bucket.toJson().path("permissions")) {
-			ObjectNode node = (ObjectNode) i;
-			Role role = null;
-			String permission = node.get("permission").getTextValue();
-			if ("all".equalsIgnoreCase(permission)) {
-				role = Role.OWNER;
-			} else if ("use".equalsIgnoreCase(permission)) {
-				role = Role.VIEWER;
-			} else if ("contribute".equalsIgnoreCase(permission)) {
-				role = Role.CONTRIBUTOR;
-			} else {
-				throw new AssertionError("unexpected permission: " + permission);
-			}
-			bucket.addRole(RolesField.PRINCIPAL.getValue(node), role);
-			Logger.info("migrated permissions from " + bucket.toJson().path("permissions") + " to " + bucket.toJson().path("roles"));
-			bucket.toJson().remove("permissions");
-		}
-		for (ObjectNode widget : bucket.getWidgets()) {
-			ObjectNode original = Nodes.copy(widget);
-			widget.remove("description");
-			widget.remove("singleton");
-			String type = widget.get("type").getTextValue();
-			if ("histogram".equals(type)) {
-				widget.put("type", "ratings");
-				widget.remove("field");
-				widget.remove("from");
-				widget.remove("to");
-				widget.remove("step");
-			} else if ("intervals".equals(type)) {
-				widget.put("type", "histogram");
-			} else if ("calendar-count".equals(type)) {
-				widget.put("type", "time_histogram");
-			} else if ("map".equals(type)) {
-				rename(widget, "markerColor", "marker_color");
-			} else if ("gantt".equals(type)) {
-				rename(widget, "termField", "field");
-				widget.remove("valueField");
-			} else if ("plot".equals(type) || "timeline".equals(type)) {
-				widget.remove("keyField");
-				rename(widget, "valueField", "field");
-			} else if ("scoreboard".equals(type)) {
-				rename(widget, "termField", "key_field");
-				rename(widget, "valueField", "value_field");
-			}
-			Logger.info("migrated widget from " + original + " to " + widget);
-		}
-	}
-
-	private static void rename(ObjectNode node, String from, String to) {
-		node.put(to, node.get(from));
-		node.remove(from);
 	}
 
 	public static class Handler extends CommandHandler<UpdateBucketCommand> {

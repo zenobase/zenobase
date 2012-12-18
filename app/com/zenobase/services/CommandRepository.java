@@ -27,14 +27,10 @@ public class CommandRepository {
 
 	@Inject
 	public CommandRepository(IndexManager manager, CommandParserRegistry parsers) {
-		this(INDEX_NAME, manager, parsers);
-	}
-
-	public CommandRepository(String indexName, IndexManager manager, CommandParserRegistry parsers) {
 		this.parsers = parsers;
-		this.index = manager.getIndex(indexName);
+		this.index = manager.getIndex(INDEX_NAME);
 		if (!index.exists()) {
-			Logger.info("Creating journal...");
+			Logger.info("Creating journal index...");
 			index.create(2);
 			index.putMapping(Command.getSchema());
 		}
