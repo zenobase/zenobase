@@ -9,14 +9,14 @@ import org.junit.Test;
 import com.zenobase.common.Generator;
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
-import com.zenobase.services.BucketRepository;
+import com.zenobase.services.EventRepository;
 
 public class CreateAndDeleteEventCommandTest {
 
-	private final BucketRepository buckets = mock(BucketRepository.class);
+	private final EventRepository events = mock(EventRepository.class);
 	private final CommandHandlerRegistry registry = CommandHandlerRegistry.containing(
-		new CreateEventCommand.Handler(buckets),
-		new DeleteEventCommand.Handler(buckets));
+		new CreateEventCommand.Handler(events),
+		new DeleteEventCommand.Handler(events));
 
 	@Test
 	public void test() {
@@ -28,17 +28,17 @@ public class CreateAndDeleteEventCommandTest {
 
 		Command command = new CreateEventCommand(principal, bucketId, event);
 		registry.execute(command);
-		verify(buckets).add(bucketId, event);
-		reset(buckets);
+		verify(events).add(bucketId, event);
+		reset(events);
 
 		Command undo = command.reverse(principal);
 		registry.execute(undo);
-		verify(buckets).delete(bucketId, event.getId());
-		reset(buckets);
+		verify(events).delete(bucketId, event.getId());
+		reset(events);
 
 		Command redo = undo.reverse(principal);
 		registry.execute(redo);
-		verify(buckets).add(bucketId, event);
-		reset(buckets);
+		verify(events).add(bucketId, event);
+		reset(events);
 	}
 }

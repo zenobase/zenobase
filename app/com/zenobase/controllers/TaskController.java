@@ -69,7 +69,7 @@ public class TaskController extends ControllerSupport {
 
 	private void refresh(Task task) {
 		Logger.info("Refreshing: " + task.getId());
-		Bucket bucket = buckets.findBucket(task.getBucketId());
+		Bucket bucket = buckets.find(task.getBucketId());
 		if (bucket == null) {
 			task.setStatus(Task.Status.FAILED);
 			return;
@@ -136,7 +136,7 @@ public class TaskController extends ControllerSupport {
 		if (task == null) {
 			return notFound();
 		}
-    	Bucket bucket = buckets.findBucket(task.getBucketId());
+    	Bucket bucket = buckets.find(task.getBucketId());
     	if (bucket != null && !bucket.hasRole(auth, Role.OWNER)) {
     		return forbidden();
     	}

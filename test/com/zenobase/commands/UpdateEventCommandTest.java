@@ -7,13 +7,13 @@ import org.junit.Test;
 import com.zenobase.common.Generator;
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
-import com.zenobase.services.BucketRepository;
+import com.zenobase.services.EventRepository;
 
 public class UpdateEventCommandTest {
 
-	private final BucketRepository buckets = mock(BucketRepository.class);
+	private final EventRepository events = mock(EventRepository.class);
 	private final CommandHandlerRegistry registry = CommandHandlerRegistry.containing(
-		new UpdateEventCommand.Handler(buckets));
+		new UpdateEventCommand.Handler(events));
 
 	@Test
 	public void test() {
@@ -28,17 +28,17 @@ public class UpdateEventCommandTest {
 
 		Command command = new UpdateEventCommand(principal, bucketId, from, to);
 		registry.execute(command);
-		verify(buckets).update(bucketId, to);
-		reset(buckets);
+		verify(events).update(bucketId, to);
+		reset(events);
 
 		Command undo = command.reverse(principal);
 		registry.execute(undo);
-		verify(buckets).update(bucketId, from);
-		reset(buckets);
+		verify(events).update(bucketId, from);
+		reset(events);
 
 		Command redo = undo.reverse(principal);
 		registry.execute(redo);
-		verify(buckets).update(bucketId, to);
-		reset(buckets);
+		verify(events).update(bucketId, to);
+		reset(events);
 	}
 }

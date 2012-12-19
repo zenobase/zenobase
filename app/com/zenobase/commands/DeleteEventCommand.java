@@ -7,7 +7,7 @@ import com.zenobase.json.ObjectField;
 import com.zenobase.json.TokenField;
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
-import com.zenobase.services.BucketRepository;
+import com.zenobase.services.EventRepository;
 
 public class DeleteEventCommand extends Command {
 
@@ -61,10 +61,10 @@ public class DeleteEventCommand extends Command {
 
 	public static class Handler extends CommandHandler<DeleteEventCommand> {
 
-		private final BucketRepository repository;
+		private final EventRepository repository;
 
 		@Inject
-		public Handler(BucketRepository repository) {
+		public Handler(EventRepository repository) {
 			super(DeleteEventCommand.class);
 			this.repository = repository;
 		}

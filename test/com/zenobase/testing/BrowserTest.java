@@ -81,7 +81,7 @@ public class BrowserTest {
 				assertThat($("#sign-out-link")).isNotDisplayed();
 				assertThat($("#user-profile-link")).isNotDisplayed();
 				assertThat($("#existing-user-link")).isNotDisplayed();
-				assertThat(buckets.findBuckets(0, 1).size()).as("number of buckets").isEqualTo(0L);
+				assertThat(buckets.findAll(0, 1).size()).as("number of buckets").isEqualTo(0L);
 
 				// follow get started link
 				$("#new-user-link").click();
@@ -98,7 +98,7 @@ public class BrowserTest {
 				assertThat($("#dashboard-message")).isNotDisplayed();
 				assertThat($("#dashboard-loading-message")).isNotDisplayed();
 				assertThat($("#save-event-button")).isNotEnabled();
-				assertThat(buckets.findBuckets(0, 1).size()).as("number of buckets").isEqualTo(1L);
+				assertThat(buckets.findAll(0, 1).size()).as("number of buckets").isEqualTo(1L);
 				String privateBucketUrl = driver.getCurrentUrl();
 
 				// add a timestamp to the event
@@ -237,11 +237,11 @@ public class BrowserTest {
 				// delete bucket and undo
 				new Actions(driver).moveToElement($(".bucket-row")).click($(".bucket-delete-action")).perform();
 				wait.withMessage("alert banner").until(ExpectedConditions.visibilityOfElementLocated(By.id("alert-banner")));
-				assertThat(buckets.findBuckets(0, 0).size()).as("number of buckets").isEqualTo(0L);
+				assertThat(buckets.findAll(0, 0).size()).as("number of buckets").isEqualTo(0L);
 				$("#undo-link").click();
 				wait.withMessage("bucket").until(ExpectedConditions.visibilityOfElementLocated(By.className("bucket-row")));
 				assertThat($("#alert-banner")).isNotDisplayed();
-				assertThat(buckets.findBuckets(0, 0).size()).as("number of buckets").isEqualTo(1L);
+				assertThat(buckets.findAll(0, 0).size()).as("number of buckets").isEqualTo(1L);
 
 				// generate and browse buckets
 				createBuckets(10, users.find("jdoe").asIdentity(), buckets);

@@ -35,8 +35,8 @@ public class EventControllerHttpDeleteTest extends EventControllerTestSupport {
 	@Test
 	public void testDeleteEvent() {
 		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
-		when(buckets.findBucket(bucket.getId())).thenReturn(bucket);
-		when(buckets.findEvent(bucket.getId(), event.getId())).thenReturn(event);
+		when(buckets.find(bucket.getId())).thenReturn(bucket);
+		when(events.find(bucket.getId(), event.getId())).thenReturn(event);
 		String commandId = Generator.id();
 		when(dispatcher.dispatch(any(DeleteEventCommand.class))).thenReturn(commandId);
 		Result result = call(bucket, event);
@@ -46,7 +46,7 @@ public class EventControllerHttpDeleteTest extends EventControllerTestSupport {
 	@Test
 	public void testDeleteEventBucketNotFound() {
 		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
-		when(buckets.findBucket(bucket.getId())).thenReturn(null);
+		when(buckets.find(bucket.getId())).thenReturn(null);
 		Result result = call(bucket, event);
 		assertThat(result).hasStatus(NOT_FOUND);
 		verifyZeroInteractions(dispatcher);
@@ -55,8 +55,8 @@ public class EventControllerHttpDeleteTest extends EventControllerTestSupport {
 	@Test
 	public void testDeleteEventNotFound() {
 		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
-		when(buckets.findBucket(bucket.getId())).thenReturn(bucket);
-		when(buckets.findEvent(bucket.getId(), event.getId())).thenReturn(null);
+		when(buckets.find(bucket.getId())).thenReturn(bucket);
+		when(events.find(bucket.getId(), event.getId())).thenReturn(null);
 		Result result = call(bucket, event);
 		assertThat(result).hasStatus(NOT_FOUND);
 		verifyZeroInteractions(dispatcher);
@@ -65,8 +65,8 @@ public class EventControllerHttpDeleteTest extends EventControllerTestSupport {
 	@Test
 	public void testDeleteEventUnauthorized() {
 		when(auth.current()).thenReturn(null);
-		when(buckets.findBucket(bucket.getId())).thenReturn(bucket);
-		when(buckets.findEvent(bucket.getId(), event.getId())).thenReturn(event);
+		when(buckets.find(bucket.getId())).thenReturn(bucket);
+		when(events.find(bucket.getId(), event.getId())).thenReturn(event);
 		Result result = call(bucket, event);
 		assertThat(result).hasStatus(UNAUTHORIZED);
 		verifyZeroInteractions(dispatcher);
@@ -75,8 +75,8 @@ public class EventControllerHttpDeleteTest extends EventControllerTestSupport {
 	@Test
 	public void testDeleteEventForbidden() {
 		when(auth.current()).thenReturn(new Authorization(friend));
-		when(buckets.findBucket(bucket.getId())).thenReturn(bucket);
-		when(buckets.findEvent(bucket.getId(), event.getId())).thenReturn(event);
+		when(buckets.find(bucket.getId())).thenReturn(bucket);
+		when(events.find(bucket.getId(), event.getId())).thenReturn(event);
 		Result result = call(bucket, event);
 		assertThat(result).hasStatus(FORBIDDEN);
 		verifyZeroInteractions(dispatcher);

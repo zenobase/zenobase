@@ -24,6 +24,7 @@ import com.zenobase.oauth.Authorization;
 import com.zenobase.search.EventSearch;
 import com.zenobase.services.BucketRepository;
 import com.zenobase.services.CommandDispatcher;
+import com.zenobase.services.EventRepository;
 
 @With(Timed.class)
 public class EventListController extends ControllerSupport {
@@ -31,18 +32,20 @@ public class EventListController extends ControllerSupport {
 	static final ObjectField EVENTS = new ObjectField("events");
 
 	private final BucketRepository buckets;
+	private final EventRepository events;
 	private final CommandDispatcher dispatcher;
 
 	@Inject
-	public EventListController(AuthorizationContext security, BucketRepository buckets, CommandDispatcher dispatcher) {
+	public EventListController(AuthorizationContext security, BucketRepository buckets, EventRepository events, CommandDispatcher dispatcher) {
 		super(security);
 		this.buckets = buckets;
+		this.events = events;
 		this.dispatcher = dispatcher;
 	}
 
 	public Result get(String bucketId) {
 		Authorization auth = getCurrentAuthorization();
-		Bucket bucket = buckets.findBucket(bucketId);
+		Bucket bucket = buckets.find(bucketId);
     	if (bucket == null) {
     		return notFound();
     	}
@@ -53,10 +56,10 @@ public class EventListController extends ControllerSupport {
     	String[] filters = request().queryString().get("q");
     	if (widgets != null) {
     		EventSearch search = new EventSearch().addWidgets(widgets).addFilters(filters);
-    		return ok(buckets.findEvents(bucketId, search));
+    		return ok(events.find(bucketId, search));
     	} else {
         	response().setContentType("application/json");
-        	return ok(new EventChunks(buckets, bucketId, filters));
+        	return ok(new EventChunks(events, bucketId, filters));
     	}
     }
 
@@ -66,7 +69,7 @@ public class EventListController extends ControllerSupport {
 		if (auth == null) {
 			return unauthorized();
 		}
-    	Bucket bucket = buckets.findBucket(bucketId);
+    	Bucket bucket = buckets.find(bucketId);
     	if (bucket == null) {
     		return notFound();
     	}

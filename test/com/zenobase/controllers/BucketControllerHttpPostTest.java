@@ -38,7 +38,7 @@ public class BucketControllerHttpPostTest extends BucketControllerTestSupport {
 	public void testUpdateBucket() {
 		String commandId = Generator.id();
 		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
-		when(buckets.findBucket(from.getId())).thenReturn(from.copy());
+		when(buckets.find(from.getId())).thenReturn(from.copy());
 		when(dispatcher.dispatch(any(UpdateBucketCommand.class))).thenReturn(commandId);
 		Result result = call(from.getId(), to.toJson());
 		assertThat(result).hasStatus(NO_CONTENT).hasHeader(COMMAND_ID, commandId).isEmpty();
@@ -48,7 +48,7 @@ public class BucketControllerHttpPostTest extends BucketControllerTestSupport {
 	@SuppressWarnings("unchecked")
 	public void testConflict() {
 		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
-		when(buckets.findBucket(from.getId())).thenReturn(from.copy());
+		when(buckets.find(from.getId())).thenReturn(from.copy());
 		when(dispatcher.dispatch(any(UpdateBucketCommand.class))).thenThrow(VersionConflictEngineException.class);
 		Result result = call(from.getId(), to.toJson());
 		assertThat(result).hasStatus(CONFLICT);
@@ -58,7 +58,7 @@ public class BucketControllerHttpPostTest extends BucketControllerTestSupport {
 	public void testUpdateBucketInvalidLabel() {
 		to.setLabel("");
 		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
-		when(buckets.findBucket(from.getId())).thenReturn(from.copy());
+		when(buckets.find(from.getId())).thenReturn(from.copy());
 		Result result = call(from.getId(), to.toJson());
 		assertThat(result).hasStatus(BAD_REQUEST);
 		verifyZeroInteractions(dispatcher);
@@ -68,7 +68,7 @@ public class BucketControllerHttpPostTest extends BucketControllerTestSupport {
 	public void testUpdateBucketAddOwner() {
 		to.addRole(new Identity(), Role.OWNER);
 		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
-		when(buckets.findBucket(from.getId())).thenReturn(from.copy());
+		when(buckets.find(from.getId())).thenReturn(from.copy());
 		Result result = call(from.getId(), to.toJson());
 		assertThat(result).hasStatus(BAD_REQUEST);
 		verifyZeroInteractions(dispatcher);
@@ -84,7 +84,7 @@ public class BucketControllerHttpPostTest extends BucketControllerTestSupport {
 
 	@Test
 	public void testUpdateBucketUnauthorized() {
-		when(buckets.findBucket(from.getId())).thenReturn(from.copy());
+		when(buckets.find(from.getId())).thenReturn(from.copy());
 		Result result = call(from.getId(), to.toJson());
 		assertThat(result).hasStatus(UNAUTHORIZED);
 		verifyZeroInteractions(dispatcher);
@@ -93,7 +93,7 @@ public class BucketControllerHttpPostTest extends BucketControllerTestSupport {
 	@Test
 	public void testUpdateBucketForbidden() {
 		when(auth.current()).thenReturn(new Authorization(new Identity()));
-		when(buckets.findBucket(from.getId())).thenReturn(from.copy());
+		when(buckets.find(from.getId())).thenReturn(from.copy());
 		Result result = call(from.getId(), to.toJson());
 		assertThat(result).hasStatus(FORBIDDEN);
 		verifyZeroInteractions(dispatcher);

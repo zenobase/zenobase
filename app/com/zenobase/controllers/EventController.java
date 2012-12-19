@@ -16,17 +16,20 @@ import com.zenobase.models.Role;
 import com.zenobase.oauth.Authorization;
 import com.zenobase.services.BucketRepository;
 import com.zenobase.services.CommandDispatcher;
+import com.zenobase.services.EventRepository;
 
 @With(Timed.class)
 public class EventController extends ControllerSupport {
 
 	private final BucketRepository buckets;
+	private final EventRepository events;
 	private final CommandDispatcher dispatcher;
 
 	@Inject
-    public EventController(AuthorizationContext security, BucketRepository buckets, CommandDispatcher dispatcher) {
+    public EventController(AuthorizationContext security, BucketRepository buckets, EventRepository events, CommandDispatcher dispatcher) {
 		super(security);
 		this.buckets = buckets;
+		this.events = events;
 		this.dispatcher = dispatcher;
 	}
 
@@ -35,14 +38,14 @@ public class EventController extends ControllerSupport {
     	if (auth == null) {
     		return unauthorized();
     	}
-		Bucket bucket = buckets.findBucket(bucketId);
+		Bucket bucket = buckets.find(bucketId);
     	if (bucket == null) {
     		return notFound();
     	}
     	if (!bucket.hasRole(auth, Role.VIEWER)) {
     		return forbidden();
     	}
-    	Event event = buckets.findEvent(bucketId, eventId);
+    	Event event = events.find(bucketId, eventId);
     	if (event == null) {
     		return notFound();
     	}
@@ -55,14 +58,14 @@ public class EventController extends ControllerSupport {
 		if (auth == null) {
 			return unauthorized();
 		}
-    	Bucket bucket = buckets.findBucket(bucketId);
+    	Bucket bucket = buckets.find(bucketId);
     	if (bucket == null) {
     		return notFound("bucket not found");
     	}
     	if (!bucket.hasRole(auth, Role.OWNER)) {
     		return forbidden();
     	}
-    	Event event = buckets.findEvent(bucketId, eventId);
+    	Event event = events.find(bucketId, eventId);
     	if (event == null) {
     		return notFound("event not found");
     	}
@@ -82,14 +85,14 @@ public class EventController extends ControllerSupport {
 		if (auth == null) {
 			return unauthorized();
 		}
-    	Bucket bucket = buckets.findBucket(bucketId);
+    	Bucket bucket = buckets.find(bucketId);
     	if (bucket == null) {
     		return notFound();
     	}
     	if (!bucket.hasRole(auth, Role.OWNER)) {
     		return forbidden();
     	}
-    	Event event = buckets.findEvent(bucket.getId(), eventId);
+    	Event event = events.find(bucket.getId(), eventId);
     	if (event == null) {
     		return notFound();
     	}

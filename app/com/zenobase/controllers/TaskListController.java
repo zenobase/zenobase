@@ -86,7 +86,7 @@ public class TaskListController extends ControllerSupport {
 		if (!form.valid()) {
 			return badRequest();
 		}
-		Bucket bucket = buckets.findBucket(form.getBucketId());
+		Bucket bucket = buckets.find(form.getBucketId());
 		if (bucket == null) {
 			return badRequest("bucket not found");
 		}

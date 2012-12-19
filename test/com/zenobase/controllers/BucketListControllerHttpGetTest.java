@@ -18,7 +18,7 @@ public class BucketListControllerHttpGetTest extends BucketListControllerTestSup
 
 	@Test
 	public void testGetBucketList() {
-		BucketList list = new BucketList(ImmutableList.<Bucket>of(), 0, buckets);
+		BucketList list = new BucketList(ImmutableList.<Bucket>of(), 0, events);
 		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
 		when(buckets.findBuckets(user.asIdentity(), 0, 10)).thenReturn(list);
 		Result result = call("roles.principal:" + user.getId(), 0, 10);
@@ -49,10 +49,10 @@ public class BucketListControllerHttpGetTest extends BucketListControllerTestSup
 
 	@Test
 	public void testGetCompleteBucketListSignedInAsAdmin() {
-		BucketList list = new BucketList(ImmutableList.<Bucket>of(), 0, buckets);
+		BucketList list = new BucketList(ImmutableList.<Bucket>of(), 0, events);
 		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
 		when(users.isSuperuser(user.asIdentity())).thenReturn(true);
-		when(buckets.findBuckets(0, 10)).thenReturn(list);
+		when(buckets.findAll(0, 10)).thenReturn(list);
 		Result result = call(null, 0, 10);
 		assertThat(result).hasStatus(OK).hasContent(list.toJson());
 	}

@@ -33,7 +33,7 @@ public class BucketControllerHttpDeleteTest extends BucketControllerTestSupport 
 	public void testDeleteBucket() {
 		String commandId = Generator.id();
 		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
-		when(buckets.findBucket(bucket.getId())).thenReturn(bucket.copy());
+		when(buckets.find(bucket.getId())).thenReturn(bucket.copy());
 		when(dispatcher.dispatch(any(DeleteBucketCommand.class))).thenReturn(commandId);
 		Result result = call(bucket.getId());
 		assertThat(result).hasStatus(NO_CONTENT).hasHeader(COMMAND_ID, commandId).isEmpty();
@@ -45,7 +45,7 @@ public class BucketControllerHttpDeleteTest extends BucketControllerTestSupport 
 		Identity superuser = new Identity();
 		when(auth.current()).thenReturn(new Authorization(superuser));
 		when(users.isSuperuser(superuser)).thenReturn(true);
-		when(buckets.findBucket(bucket.getId())).thenReturn(bucket.copy());
+		when(buckets.find(bucket.getId())).thenReturn(bucket.copy());
 		when(dispatcher.dispatch(any(DeleteBucketCommand.class))).thenReturn(commandId);
 		Result result = call(bucket.getId());
 		assertThat(result).hasStatus(NO_CONTENT).hasHeader(COMMAND_ID, commandId).isEmpty();
@@ -61,7 +61,7 @@ public class BucketControllerHttpDeleteTest extends BucketControllerTestSupport 
 
 	@Test
 	public void testDeleteBucketNotSignedIn() {
-		when(buckets.findBucket(bucket.getId())).thenReturn(bucket.copy());
+		when(buckets.find(bucket.getId())).thenReturn(bucket.copy());
 		Result result = call(bucket.getId());
 		assertThat(result).hasStatus(UNAUTHORIZED);
 		verifyZeroInteractions(dispatcher);
@@ -70,7 +70,7 @@ public class BucketControllerHttpDeleteTest extends BucketControllerTestSupport 
 	@Test
 	public void testDeleteBucketNotPermitted() {
 		when(auth.current()).thenReturn(new Authorization(new Identity()));
-		when(buckets.findBucket(bucket.getId())).thenReturn(bucket.copy());
+		when(buckets.find(bucket.getId())).thenReturn(bucket.copy());
 		Result result = call(bucket.getId());
 		assertThat(result).hasStatus(FORBIDDEN);
 		verifyZeroInteractions(dispatcher);

@@ -40,8 +40,8 @@ public class EventControllerHttpPostTest extends EventControllerTestSupport {
 	public void testUpdateEvent() {
 		String commandId = Generator.id();
 		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
-		when(buckets.findBucket(bucket.getId())).thenReturn(bucket);
-		when(buckets.findEvent(bucket.getId(), from.getId())).thenReturn(from.copy());
+		when(buckets.find(bucket.getId())).thenReturn(bucket);
+		when(events.find(bucket.getId(), from.getId())).thenReturn(from.copy());
 		when(dispatcher.dispatch(any(UpdateEventCommand.class))).thenReturn(commandId);
 		Result result = call(bucket.getId(), from.getId(), to.toJson());
 		assertThat(result).hasStatus(NO_CONTENT).hasHeader(COMMAND_ID, commandId).isEmpty();
@@ -51,8 +51,8 @@ public class EventControllerHttpPostTest extends EventControllerTestSupport {
 	@SuppressWarnings("unchecked")
 	public void testConflict() {
 		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
-		when(buckets.findBucket(bucket.getId())).thenReturn(bucket);
-		when(buckets.findEvent(bucket.getId(), from.getId())).thenReturn(from.copy());
+		when(buckets.find(bucket.getId())).thenReturn(bucket);
+		when(events.find(bucket.getId(), from.getId())).thenReturn(from.copy());
 		when(dispatcher.dispatch(any(UpdateEventCommand.class))).thenThrow(VersionConflictEngineException.class);
 		Result result = call(bucket.getId(), from.getId(), to.toJson());
 		assertThat(result).hasStatus(CONFLICT);
@@ -69,7 +69,7 @@ public class EventControllerHttpPostTest extends EventControllerTestSupport {
 	@Test
 	public void testUpdateEventNotFound() {
 		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
-		when(buckets.findBucket(bucket.getId())).thenReturn(bucket);
+		when(buckets.find(bucket.getId())).thenReturn(bucket);
 		Result result = call(bucket.getId(), from.getId(), to.toJson());
 		assertThat(result).hasStatus(NOT_FOUND);
 		verifyZeroInteractions(dispatcher);
@@ -77,7 +77,7 @@ public class EventControllerHttpPostTest extends EventControllerTestSupport {
 
 	@Test
 	public void testUpdateBucketUnauthorized() {
-		when(buckets.findBucket(bucket.getId())).thenReturn(bucket);
+		when(buckets.find(bucket.getId())).thenReturn(bucket);
 		Result result = call(bucket.getId(), from.getId(), to.toJson());
 		assertThat(result).hasStatus(UNAUTHORIZED);
 		verifyZeroInteractions(dispatcher);
@@ -86,7 +86,7 @@ public class EventControllerHttpPostTest extends EventControllerTestSupport {
 	@Test
 	public void testUpdateBucketForbidden() {
 		when(auth.current()).thenReturn(new Authorization(new Identity()));
-		when(buckets.findBucket(bucket.getId())).thenReturn(bucket);
+		when(buckets.find(bucket.getId())).thenReturn(bucket);
 		Result result = call(bucket.getId(), from.getId(), to.toJson());
 		assertThat(result).hasStatus(FORBIDDEN);
 		verifyZeroInteractions(dispatcher);

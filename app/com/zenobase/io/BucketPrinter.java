@@ -10,16 +10,16 @@ import com.zenobase.models.Bucket;
 import com.zenobase.models.Identity;
 import com.zenobase.models.Role;
 import com.zenobase.oauth.Authorization;
-import com.zenobase.services.BucketRepository;
+import com.zenobase.services.EventRepository;
 
 public class BucketPrinter implements Callback<Bucket> {
 
-	private final BucketRepository buckets;
+	private final EventRepository events;
 	private final Chunks.Out<String> out;
 
-	public BucketPrinter(BucketRepository buckets, Out<String> out) {
+	public BucketPrinter(EventRepository events, Out<String> out) {
 		this.out = out;
-		this.buckets = buckets;
+		this.events = events;
 	}
 
 	@Override
@@ -31,6 +31,6 @@ public class BucketPrinter implements Callback<Bucket> {
 		return Joiner.on('\t').join(bucket.getId(),
 			Iterables.getOnlyElement(bucket.getPrincipals(Role.OWNER)),
 			bucket.hasRole(new Authorization(Identity.PUBLIC), Role.VIEWER) ? "published" : "unpublished",
-			bucket.getCreated(), buckets.getSize(bucket.getId()), "\n");
+			bucket.getCreated(), events.getSize(bucket.getId()), "\n");
 	}
 }

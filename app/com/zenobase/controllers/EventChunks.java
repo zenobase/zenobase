@@ -11,18 +11,18 @@ import com.zenobase.json.JsonStream;
 import com.zenobase.models.Event;
 import com.zenobase.search.EventSearch;
 import com.zenobase.search.ListWidget;
-import com.zenobase.services.BucketRepository;
+import com.zenobase.services.EventRepository;
 
 final class EventChunks extends JsonChunks {
 
 	private static final int LIMIT = 100;
 
-	private final BucketRepository buckets;
+	private final EventRepository events;
 	private final String bucketId;
 	private final String[] filters;
 
-	public EventChunks(BucketRepository buckets, String bucketId, String[] filters) {
-		this.buckets = buckets;
+	public EventChunks(EventRepository events, String bucketId, String[] filters) {
+		this.events = events;
 		this.bucketId = bucketId;
 		this.filters = filters;
 	}
@@ -43,7 +43,7 @@ final class EventChunks extends JsonChunks {
 	}
 
 	private ObjectNode search(int offset) {
-		return buckets.findEvents(bucketId, createSearch(filters, offset));
+		return events.find(bucketId, createSearch(filters, offset));
 	}
 
 	private static EventSearch createSearch(String[] filters, int offset) {

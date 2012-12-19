@@ -7,15 +7,15 @@ import com.google.common.primitives.Ints;
 import com.zenobase.common.PartialList;
 import com.zenobase.json.LongField;
 import com.zenobase.json.Nodes;
-import com.zenobase.services.BucketRepository;
+import com.zenobase.services.EventRepository;
 
 public class BucketList extends PartialList<Bucket> {
 
 	private static final LongField SIZE = new LongField("size");
 
-	private final BucketRepository repository;
+	private final EventRepository repository;
 
-	public BucketList(Iterable<Bucket> elements, long size, BucketRepository repository) {
+	public BucketList(Iterable<Bucket> elements, long size, EventRepository repository) {
 		super(elements, size);
 		this.repository = repository;
 	}

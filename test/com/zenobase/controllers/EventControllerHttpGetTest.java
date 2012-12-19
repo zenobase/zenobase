@@ -30,8 +30,8 @@ public class EventControllerHttpGetTest extends EventControllerTestSupport {
 	@Test
 	public void testGetEvent() {
 		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
-		when(buckets.findBucket(bucket.getId())).thenReturn(bucket);
-		when(buckets.findEvent(bucket.getId(), event.getId())).thenReturn(event);
+		when(buckets.find(bucket.getId())).thenReturn(bucket);
+		when(events.find(bucket.getId(), event.getId())).thenReturn(event);
 		Result result = call(bucket, event);
 		assertThat(result).hasStatus(OK).hasContent(event.toJson());
 	}
@@ -39,7 +39,7 @@ public class EventControllerHttpGetTest extends EventControllerTestSupport {
 	@Test
 	public void testGetEventBucketNotFound() {
 		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
-		when(buckets.findBucket(bucket.getId())).thenReturn(null);
+		when(buckets.find(bucket.getId())).thenReturn(null);
 		Result result = call(bucket, event);
 		assertThat(result).hasStatus(NOT_FOUND);
 	}
@@ -47,8 +47,8 @@ public class EventControllerHttpGetTest extends EventControllerTestSupport {
 	@Test
 	public void testGetEventNotFound() {
 		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
-		when(buckets.findBucket(bucket.getId())).thenReturn(bucket);
-		when(buckets.findEvent(bucket.getId(), event.getId())).thenReturn(null);
+		when(buckets.find(bucket.getId())).thenReturn(bucket);
+		when(events.find(bucket.getId(), event.getId())).thenReturn(null);
 		Result result = call(bucket, event);
 		assertThat(result).hasStatus(NOT_FOUND);
 	}
@@ -56,8 +56,8 @@ public class EventControllerHttpGetTest extends EventControllerTestSupport {
 	@Test
 	public void testGetEventUnauthorized() {
 		when(auth.current()).thenReturn(null);
-		when(buckets.findBucket(bucket.getId())).thenReturn(bucket);
-		when(buckets.findEvent(bucket.getId(), event.getId())).thenReturn(event);
+		when(buckets.find(bucket.getId())).thenReturn(bucket);
+		when(events.find(bucket.getId(), event.getId())).thenReturn(event);
 		Result result = call(bucket, event);
 		assertThat(result).hasStatus(UNAUTHORIZED);
 	}
@@ -65,8 +65,8 @@ public class EventControllerHttpGetTest extends EventControllerTestSupport {
 	@Test
 	public void testGetEventForbidden() {
 		when(auth.current()).thenReturn(new Authorization(new Identity()));
-		when(buckets.findBucket(bucket.getId())).thenReturn(bucket);
-		when(buckets.findEvent(bucket.getId(), event.getId())).thenReturn(event);
+		when(buckets.find(bucket.getId())).thenReturn(bucket);
+		when(events.find(bucket.getId(), event.getId())).thenReturn(event);
 		Result result = call(bucket, event);
 		assertThat(result).hasStatus(FORBIDDEN);
 	}

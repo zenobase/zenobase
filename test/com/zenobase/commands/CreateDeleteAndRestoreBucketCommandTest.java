@@ -30,7 +30,7 @@ public class CreateDeleteAndRestoreBucketCommandTest {
 
 		Command undo = command.reverse(principal);
 		registry.execute(undo);
-		verify(buckets).deleteBucket(bucket.getId());
+		verify(buckets).delete(bucket.getId());
 		reset(buckets);
 
 		Command redo = undo.reverse(principal);
@@ -40,7 +40,7 @@ public class CreateDeleteAndRestoreBucketCommandTest {
 
 		Command unredo = redo.reverse(principal);
 		registry.execute(unredo);
-		verify(buckets).deleteBucket(bucket.getId());
+		verify(buckets).delete(bucket.getId());
 		reset(buckets);
 	}
 }

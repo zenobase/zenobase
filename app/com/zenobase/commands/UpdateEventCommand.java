@@ -7,7 +7,7 @@ import com.zenobase.json.ObjectField;
 import com.zenobase.json.TokenField;
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
-import com.zenobase.services.BucketRepository;
+import com.zenobase.services.EventRepository;
 
 public class UpdateEventCommand extends Command {
 
@@ -72,10 +72,10 @@ public class UpdateEventCommand extends Command {
 
 	public static class Handler extends CommandHandler<UpdateEventCommand> {
 
-		private final BucketRepository repository;
+		private final EventRepository repository;
 
 		@Inject
-		public Handler(BucketRepository repository) {
+		public Handler(EventRepository repository) {
 			super(UpdateEventCommand.class);
 			this.repository = repository;
 		}

@@ -31,7 +31,7 @@ public class BucketControllerHttpGetTest extends BucketControllerTestSupport {
 	public void testGetBucketWithDashboard() {
 		bucket.setWidgets(ImmutableList.of(Nodes.newObject()));
 		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
-		when(buckets.findBucket(bucket.getId())).thenReturn(bucket.copy());
+		when(buckets.find(bucket.getId())).thenReturn(bucket.copy());
 		Result result = call(bucket.getId());
 		assertThat(result).hasStatus(OK).hasContent(bucket.toJson());
 	}
@@ -39,7 +39,7 @@ public class BucketControllerHttpGetTest extends BucketControllerTestSupport {
 	@Test
 	public void testGetBucketWithDefaultDashboard() {
 		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
-		when(buckets.findBucket(bucket.getId())).thenReturn(bucket.copy());
+		when(buckets.find(bucket.getId())).thenReturn(bucket.copy());
 		Result result = call(bucket.getId());
 		BucketController.setDefaultDashboard(bucket);
 		assertThat(result).hasStatus(OK).hasContent(bucket.toJson());
@@ -55,7 +55,7 @@ public class BucketControllerHttpGetTest extends BucketControllerTestSupport {
 	@Test
 	public void testGetBucketUnauthorized() {
 		when(auth.current()).thenReturn(null);
-		when(buckets.findBucket(bucket.getId())).thenReturn(bucket.copy());
+		when(buckets.find(bucket.getId())).thenReturn(bucket.copy());
 		Result result = call(bucket.getId());
 		assertThat(result).hasStatus(UNAUTHORIZED);
 	}
@@ -63,7 +63,7 @@ public class BucketControllerHttpGetTest extends BucketControllerTestSupport {
 	@Test
 	public void testGetBucketForbidden() {
 		when(auth.current()).thenReturn(new Authorization(new Identity()));
-		when(buckets.findBucket(bucket.getId())).thenReturn(bucket.copy());
+		when(buckets.find(bucket.getId())).thenReturn(bucket.copy());
 		Result result = call(bucket.getId());
 		assertThat(result).hasStatus(FORBIDDEN);
 	}

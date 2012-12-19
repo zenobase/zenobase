@@ -42,7 +42,7 @@ public class EventListControllerHttpPostTest extends EventListControllerTestSupp
 		String commandId = Generator.id();
 		ArgumentCaptor<CreateEventCommand> commandArg = ArgumentCaptor.forClass(CreateEventCommand.class);
 		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
-		when(buckets.findBucket(bucket.getId())).thenReturn(bucket);
+		when(buckets.find(bucket.getId())).thenReturn(bucket);
 		when(dispatcher.dispatch(commandArg.capture())).thenReturn(commandId);
 		Result result = call(bucket, body);
 		assertThat(result).hasStatus(CREATED).hasHeader(COMMAND_ID, commandId);
@@ -61,7 +61,7 @@ public class EventListControllerHttpPostTest extends EventListControllerTestSupp
 		Event.TAG.setValue(eventsNode.addObject(), "a");
 		Event.TAG.setValue(eventsNode.addObject(), "b");
 		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
-		when(buckets.findBucket(bucket.getId())).thenReturn(bucket);
+		when(buckets.find(bucket.getId())).thenReturn(bucket);
 		when(dispatcher.dispatch(commandArg.capture())).thenReturn(commandId);
 		Result result = call(bucket, body);
 		assertThat(result).hasStatus(NO_CONTENT).hasHeader(COMMAND_ID, commandId).isEmpty();
@@ -77,7 +77,7 @@ public class EventListControllerHttpPostTest extends EventListControllerTestSupp
 		Event.TIMESTAMP.setValue(body, now);
 		Event.TAG.setValue(body, tag);
 		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
-		when(buckets.findBucket(bucket.getId())).thenReturn(bucket);
+		when(buckets.find(bucket.getId())).thenReturn(bucket);
 		when(dispatcher.dispatch(commandArg.capture())).thenReturn(commandId);
 		Result result = call(bucket, body);
 		assertThat(result).hasStatus(CREATED).hasHeader(COMMAND_ID, commandId);
@@ -92,7 +92,7 @@ public class EventListControllerHttpPostTest extends EventListControllerTestSupp
 	@Test
 	public void testCreateEventBucketNotFound() {
 		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
-		when(buckets.findBucket(bucket.getId())).thenReturn(null);
+		when(buckets.find(bucket.getId())).thenReturn(null);
 		Result result = call(bucket, body);
 		assertThat(result).hasStatus(NOT_FOUND);
 	}
@@ -100,7 +100,7 @@ public class EventListControllerHttpPostTest extends EventListControllerTestSupp
 	@Test
 	public void testCreateEventUnauthorized() {
 		when(auth.current()).thenReturn(null);
-		when(buckets.findBucket(bucket.getId())).thenReturn(bucket);
+		when(buckets.find(bucket.getId())).thenReturn(bucket);
 		Result result = call(bucket, body);
 		assertThat(result).hasStatus(UNAUTHORIZED);
 	}
@@ -108,7 +108,7 @@ public class EventListControllerHttpPostTest extends EventListControllerTestSupp
 	@Test
 	public void testCreateEventForbidden() {
 		when(auth.current()).thenReturn(new Authorization(new Identity()));
-		when(buckets.findBucket(bucket.getId())).thenReturn(bucket);
+		when(buckets.find(bucket.getId())).thenReturn(bucket);
 		Result result = call(bucket, body);
 		assertThat(result).hasStatus(FORBIDDEN);
 	}

@@ -14,7 +14,7 @@ import com.zenobase.common.Generator;
 import com.zenobase.json.JsonStream;
 import com.zenobase.json.Nodes;
 import com.zenobase.search.EventSearch;
-import com.zenobase.services.BucketRepository;
+import com.zenobase.services.EventRepository;
 
 public class EventChunksTest {
 
@@ -23,11 +23,11 @@ public class EventChunksTest {
 
 		final int total = 102;
 		final String bucketId = Generator.id();
-		final BucketRepository buckets = mock(BucketRepository.class);
-		when(buckets.findEvents(eq(bucketId), any(EventSearch.class)))
+		final EventRepository events = mock(EventRepository.class);
+		when(events.find(eq(bucketId), any(EventSearch.class)))
 			.thenReturn(fakeResult(total, 100), fakeResult(total, 2));
 
-		ObjectNode result = onReady(new EventChunks(buckets, bucketId, null));
+		ObjectNode result = onReady(new EventChunks(events, bucketId, null));
 
 		assertThat(result).path(EventListController.EVENTS.getName()).hasSize(total);
 	}

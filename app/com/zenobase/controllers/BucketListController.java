@@ -17,6 +17,7 @@ import com.zenobase.oauth.Authorization;
 import com.zenobase.search.QueryConstraint;
 import com.zenobase.services.BucketRepository;
 import com.zenobase.services.CommandDispatcher;
+import com.zenobase.services.EventRepository;
 import com.zenobase.services.UserRepository;
 
 @With(Timed.class)
@@ -24,15 +25,17 @@ public class BucketListController extends ControllerSupport {
 
 	private final CommandDispatcher dispatcher;
 	private final BucketRepository buckets;
+	private final EventRepository events;
 	private final UserRepository users;
 
 	@Inject
     public BucketListController(AuthorizationContext security, CommandDispatcher dispatcher,
-    	BucketRepository buckets, UserRepository users) {
+    	BucketRepository buckets, EventRepository events, UserRepository users) {
 
 		super(security);
 		this.dispatcher = dispatcher;
 		this.buckets = buckets;
+		this.events = events;
 		this.users = users;
 	}
 
@@ -76,14 +79,14 @@ public class BucketListController extends ControllerSupport {
     	if (limit > 100) {
     		return badRequest("limit max 100");
     	}
-        return ok(buckets.findBuckets(offset, limit).toJson());
+        return ok(buckets.findAll(offset, limit).toJson());
     }
 
     private Result findAll() {
     	Chunks<String> chunks = new StringChunks() {
 			@Override
 			public void onReady(final Out<String> out) {
-				buckets.findBuckets(new BucketPrinter(buckets, out));
+				buckets.findAll(new BucketPrinter(events, out));
 		    	out.close();
 			}
 		};

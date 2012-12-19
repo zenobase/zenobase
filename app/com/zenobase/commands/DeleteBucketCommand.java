@@ -65,7 +65,7 @@ public class DeleteBucketCommand extends Command {
 
 		@Override
 		public void executeTyped(DeleteBucketCommand command) {
-			if (!repository.deleteBucket(command.getBucket().getId())) {
+			if (!repository.delete(command.getBucket().getId())) {
 				Logger.warn("Tried to delete nonexistent bucket: " + command.getBucket().getId());
 			}
 		}

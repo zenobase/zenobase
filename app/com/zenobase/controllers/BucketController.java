@@ -42,7 +42,7 @@ public class BucketController extends ControllerSupport {
 
 	public Result get(String bucketId) {
 		Authorization auth = getCurrentAuthorization();
-		Bucket bucket = buckets.findBucket(bucketId);
+		Bucket bucket = buckets.find(bucketId);
 		if (bucket == null) {
 			return notFound();
 		}
@@ -109,7 +109,7 @@ public class BucketController extends ControllerSupport {
 		if (auth == null) {
 			return unauthorized();
 		}
-    	Bucket bucket = buckets.findBucket(bucketId);
+    	Bucket bucket = buckets.find(bucketId);
     	if (bucket == null) {
     		return notFound("bucket not found");
     	}
@@ -143,7 +143,7 @@ public class BucketController extends ControllerSupport {
 		if (auth == null) {
 			return unauthorized();
 		}
-    	Bucket bucket = buckets.findBucket(bucketId);
+    	Bucket bucket = buckets.find(bucketId);
     	if (bucket == null) {
     		return notFound();
     	}
