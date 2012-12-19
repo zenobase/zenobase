@@ -11,6 +11,7 @@ import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.elasticsearch.search.sort.SortOrder;
 import play.Logger;
+import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 
 import com.zenobase.common.PartialList;
@@ -51,6 +52,8 @@ public class AuthorizationRepository {
 	}
 
 	public AuthorizationList find(String field, String value, boolean clientOnly, int offset, int limit) {
+		Preconditions.checkNotNull(field);
+		Preconditions.checkNotNull(value);
 		return find(queryFor(field, value, clientOnly), offset, limit);
 	}
 
