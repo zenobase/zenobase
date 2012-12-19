@@ -29,7 +29,7 @@ DELETE  /buckets/:bucketId/:eventId  @com.zenobase.controllers.EventController.d
 GET     /buckets/:bucketId/tags/     @com.zenobase.controllers.TagController.get(bucketId)
 GET     /og                          @com.zenobase.controllers.OpenGraphController.get(url)
 
-GET     /journal/                    @com.zenobase.controllers.JournalController.get(identity ?= null, offset : Int, limit : Int)
+GET     /journal/                    @com.zenobase.controllers.JournalController.get(q ?= null, offset : Int, limit : Int)
 POST    /journal/                    @com.zenobase.controllers.JournalController.post()
 
 GET     /tasks/                      @com.zenobase.controllers.TaskListController.find(q ?= null, offset : Int  ?= 0, limit : Int ?= 10)

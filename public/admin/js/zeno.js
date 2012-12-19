@@ -42,7 +42,7 @@
 				limit : $scope.limit
 			};
 			if ($scope.filter) {
-				params.identity = $scope.filter;
+				params.q = 'principal:' + $scope.filter;
 			}
 			return params;
 		}

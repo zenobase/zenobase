@@ -35,8 +35,8 @@ public class JournalControllerHttpGetTest extends JournalControllerTestSupport {
 		when(users.isSuperuser(principal)).thenReturn(true);
 		when(commands.size()).thenReturn(history.size());
 		when(commands.findAll(0, 2, true)).thenReturn(history);
-		when(commands.find(principal, 0, 2, true)).thenReturn(history);
-		Result result = call(principal.getId(), 0, 2);
+		when(commands.find(Command.PRINCIPAL.getName(), principal.getId(), 0, 2, true)).thenReturn(history);
+		Result result = call(Command.PRINCIPAL.getName() + ":" + principal.getId(), 0, 2);
 		assertThat(result).hasStatus(OK).hasContent(history.toJson());
 	}
 
@@ -55,7 +55,7 @@ public class JournalControllerHttpGetTest extends JournalControllerTestSupport {
 		assertThat(result).hasStatus(FORBIDDEN);
 	}
 
-	private Result call(String identity, int offset, int limit) {
-		return callAction(com.zenobase.controllers.routes.ref.JournalController.get(identity, offset, limit));
+	private Result call(String query, int offset, int limit) {
+		return callAction(com.zenobase.controllers.routes.ref.JournalController.get(query, offset, limit));
 	}
 }

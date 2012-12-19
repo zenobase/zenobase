@@ -16,7 +16,6 @@ import com.zenobase.commands.CommandParserRegistry;
 import com.zenobase.common.Callback;
 import com.zenobase.common.PartialList;
 import com.zenobase.models.CommandList;
-import com.zenobase.models.Identity;
 
 public class CommandRepository {
 
@@ -63,8 +62,8 @@ public class CommandRepository {
 		return find(newSearchSource(newestFirst).from(offset).size(limit), limit);
 	}
 
-	public CommandList find(Identity principal, int offset, int limit, boolean newestFirst) {
-		return find(newSearchSource(principal, newestFirst).from(offset).size(limit), limit);
+	public CommandList find(String field, String value, int offset, int limit, boolean newestFirst) {
+		return find(newSearchSource(field, value, newestFirst).from(offset).size(limit), limit);
 	}
 
 	public CommandList find(SearchSourceBuilder search, int limit) {
@@ -80,8 +79,8 @@ public class CommandRepository {
 		return newSearchSource(QueryBuilders.matchAllQuery(), newestFirst);
 	}
 
-	private static SearchSourceBuilder newSearchSource(Identity principal, boolean newestFirst) {
-		return newSearchSource(QueryBuilders.termQuery(Command.PRINCIPAL.getName(), principal.getId()), newestFirst);
+	private static SearchSourceBuilder newSearchSource(String field, String value, boolean newestFirst) {
+		return newSearchSource(QueryBuilders.termQuery(field, value), newestFirst);
 	}
 
 	private static SearchSourceBuilder newSearchSource(QueryBuilder query, boolean newestFirst) {

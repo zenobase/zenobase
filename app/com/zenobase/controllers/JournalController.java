@@ -5,12 +5,13 @@ import javax.inject.Inject;
 import play.mvc.BodyParser;
 import play.mvc.Result;
 import play.mvc.With;
+import com.google.common.base.Strings;
 
 import com.zenobase.actions.Timed;
 import com.zenobase.commands.Command;
-import com.zenobase.models.CommandList;
 import com.zenobase.models.Identity;
 import com.zenobase.oauth.Authorization;
+import com.zenobase.search.QueryConstraint;
 import com.zenobase.services.CommandDispatcher;
 import com.zenobase.services.CommandRepository;
 import com.zenobase.services.UserRepository;
@@ -32,19 +33,38 @@ public class JournalController extends ControllerSupport {
 		this.users = users;
 	}
 
-	public Result get(String identity, int offset, int limit) {
+	public Result get(String query, int offset, int limit) {
     	Authorization auth = getCurrentAuthorization();
-    	if (auth == null || auth.getScope() != null) {
+    	if (auth == null) {
     		return unauthorized();
+    	}
+    	if (auth.getScope() != null) {
+    		return forbidden();
     	}
     	if (!users.isSuperuser(auth.getPrincipal())) {
     		return forbidden();
     	}
-    	CommandList commands = identity != null ?
-    		repository.find(new Identity(identity), offset, limit, true) :
-    		repository.findAll(offset, limit, true);
-    	return ok(commands.toJson());
+		QueryConstraint constraint = null;
+		if (!Strings.isNullOrEmpty(query)) {
+			try {
+				constraint = QueryConstraint.parse(query);
+			} catch (IllegalArgumentException e) {
+				return badRequest("query is malformed");
+			}
+		}
+		if (constraint == null || !isConstrainedToPrincipal(constraint, auth.getPrincipal())) {
+			if (users.isSuperuser(auth.getPrincipal())) {
+		    	return ok(repository.findAll(offset, limit, true).toJson());
+			}
+			return forbidden();
+		}
+    	return ok(repository.find(constraint.getField(), constraint.getValue(), offset, limit, true).toJson());
     }
+
+	private static boolean isConstrainedToPrincipal(QueryConstraint constraint, Identity principal) {
+		return Command.PRINCIPAL.getName().equals(constraint.getField())
+			&& principal.getId().equals(constraint.getValue());
+	}
 
 	@BodyParser.Of(BodyParser.Json.class)
     public Result post() {
