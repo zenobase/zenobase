@@ -23,7 +23,7 @@ public class BucketListControllerHttpGetTest extends BucketListControllerTestSup
 		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
 		when(buckets.find(user.asIdentity(), 0, 10)).thenReturn(list);
 		Result result = call("roles.principal:" + user.getId(), 0, 10);
-		assertThat(result).hasStatus(OK).hasContent(BucketList.toJson(list, null));
+		assertThat(result).hasStatus(OK).hasContent(BucketList.toJson(list, events));
 	}
 
 	@Test
@@ -55,7 +55,7 @@ public class BucketListControllerHttpGetTest extends BucketListControllerTestSup
 		when(users.isSuperuser(user.asIdentity())).thenReturn(true);
 		when(buckets.find(0, 10)).thenReturn(list);
 		Result result = call(null, 0, 10);
-		assertThat(result).hasStatus(OK).hasContent(BucketList.toJson(list, null));
+		assertThat(result).hasStatus(OK).hasContent(BucketList.toJson(list, events));
 	}
 
 	@Test
