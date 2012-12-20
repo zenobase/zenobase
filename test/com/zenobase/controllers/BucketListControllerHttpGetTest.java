@@ -7,8 +7,9 @@ import static play.test.Helpers.callAction;
 
 import org.junit.Test;
 import play.mvc.Result;
-import com.google.common.collect.ImmutableList;
 
+import com.zenobase.common.DefaultPartialList;
+import com.zenobase.common.PartialList;
 import com.zenobase.models.Bucket;
 import com.zenobase.models.BucketList;
 import com.zenobase.models.Identity;
@@ -18,11 +19,11 @@ public class BucketListControllerHttpGetTest extends BucketListControllerTestSup
 
 	@Test
 	public void testGetBucketList() {
-		BucketList list = new BucketList(ImmutableList.<Bucket>of(), 0, events);
+		PartialList<Bucket> list = new DefaultPartialList<Bucket>();
 		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
-		when(buckets.findBuckets(user.asIdentity(), 0, 10)).thenReturn(list);
+		when(buckets.find(user.asIdentity(), 0, 10)).thenReturn(list);
 		Result result = call("roles.principal:" + user.getId(), 0, 10);
-		assertThat(result).hasStatus(OK).hasContent(list.toJson());
+		assertThat(result).hasStatus(OK).hasContent(BucketList.toJson(list, null));
 	}
 
 	@Test
@@ -49,12 +50,12 @@ public class BucketListControllerHttpGetTest extends BucketListControllerTestSup
 
 	@Test
 	public void testGetCompleteBucketListSignedInAsAdmin() {
-		BucketList list = new BucketList(ImmutableList.<Bucket>of(), 0, events);
+		PartialList<Bucket> list = new DefaultPartialList<Bucket>();
 		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
 		when(users.isSuperuser(user.asIdentity())).thenReturn(true);
-		when(buckets.findAll(0, 10)).thenReturn(list);
+		when(buckets.find(0, 10)).thenReturn(list);
 		Result result = call(null, 0, 10);
-		assertThat(result).hasStatus(OK).hasContent(list.toJson());
+		assertThat(result).hasStatus(OK).hasContent(BucketList.toJson(list, null));
 	}
 
 	@Test

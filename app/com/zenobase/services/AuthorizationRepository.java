@@ -1,7 +1,5 @@
 package com.zenobase.services;
 
-import java.util.List;
-
 import javax.inject.Inject;
 
 import org.codehaus.jackson.node.ObjectNode;
@@ -12,7 +10,6 @@ import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.elasticsearch.search.sort.SortOrder;
 import play.Logger;
 import com.google.common.base.Preconditions;
-import com.google.common.collect.Lists;
 
 import com.zenobase.common.PartialList;
 import com.zenobase.oauth.Authorization;
@@ -47,17 +44,17 @@ public class AuthorizationRepository {
 		return node != null ? new Authorization(node) : null;
 	}
 
-	public AuthorizationList find(int offset, int limit) {
+	public PartialList<Authorization> find(int offset, int limit) {
 		return find(QueryBuilders.matchAllQuery(), offset, limit);
 	}
 
-	public AuthorizationList find(String field, String value, boolean clientOnly, int offset, int limit) {
+	public PartialList<Authorization> find(String field, String value, boolean clientOnly, int offset, int limit) {
 		Preconditions.checkNotNull(field);
 		Preconditions.checkNotNull(value);
-		return find(queryFor(field, value, clientOnly), offset, limit);
+		return find(restrict(field, value, clientOnly), offset, limit);
 	}
 
-	private static QueryBuilder queryFor(String field, String value, boolean clientOnly) {
+	private static QueryBuilder restrict(String field, String value, boolean clientOnly) {
 		QueryBuilder query = QueryBuilders.termQuery(field, value);
 		if (clientOnly) {
 			query = QueryBuilders.filteredQuery(query, FilterBuilders.existsFilter(Authorization.CLIENT.getName()));
@@ -66,14 +63,9 @@ public class AuthorizationRepository {
 	}
 
 	private AuthorizationList find(QueryBuilder query, int offset, int limit) {
-		List<Authorization> authorizations = Lists.newArrayListWithCapacity(limit);
 		SearchSourceBuilder search = new SearchSourceBuilder()
 			.query(query).version(true).from(offset).size(limit)
 			.sort(Authorization.CREATED.getName(), SortOrder.DESC);
-		PartialList<ObjectNode> hits = index.find(search);
-		for (ObjectNode hit : hits.getElements()) {
-			authorizations.add(new Authorization(hit));
-		}
-		return new AuthorizationList(authorizations, hits.size());
+		return new AuthorizationList(index.find(search));
 	}
 }

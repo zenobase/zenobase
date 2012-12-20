@@ -5,20 +5,26 @@ import org.codehaus.jackson.node.ObjectNode;
 import com.google.common.primitives.Ints;
 
 import com.zenobase.common.PartialList;
+import com.zenobase.json.LazyList;
 import com.zenobase.json.Nodes;
 
-public class AuthorizationList extends PartialList<Authorization> {
+public class AuthorizationList extends LazyList<Authorization> {
 
-	public AuthorizationList(Iterable<Authorization> elements, long size) {
-		super(elements, size);
+	public AuthorizationList(PartialList<ObjectNode> nodes) {
+		super(nodes);
 	}
 
-	public ObjectNode toJson() {
+	@Override
+	protected Authorization toObject(ObjectNode node) {
+		return new Authorization(node);
+	}
+
+	public static ObjectNode toJson(PartialList<Authorization> authorizations) {
     	ObjectNode resultNode = Nodes.newObject();
-    	TOTAL.setValue(resultNode, Ints.checkedCast(size()));
+    	TOTAL.setValue(resultNode, Ints.checkedCast(authorizations.getTotal()));
     	ArrayNode usersNode = resultNode.putArray("authorizations");
-    	for (Authorization auth : getElements()) {
-    		usersNode.add(auth.toJson());
+    	for (Authorization authorization : authorizations) {
+    		usersNode.add(authorization.toJson());
     	}
 		return resultNode;
 	}

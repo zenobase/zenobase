@@ -60,8 +60,8 @@ public class UserRepositoryTest extends ElasticSearchTestSupport {
 	@Test
 	public void testFindAll() {
 		List<User> users = fill(20);
-		assertThat(repository.find(0, 10)).hasSize(users.size()).isEqualTo(users.subList(0, 10));
-		assertThat(repository.find(10, 10)).hasSize(users.size()).isEqualTo(users.subList(10, 20));
+		assertThat(repository.find(0, 10)).hasTotal(users.size()).isEqualTo(users.subList(0, 10));
+		assertThat(repository.find(10, 10)).hasTotal(users.size()).isEqualTo(users.subList(10, 20));
 	}
 
 	@Test

@@ -7,10 +7,12 @@ import static play.test.Helpers.callAction;
 
 import org.junit.Test;
 import play.mvc.Result;
-import com.google.common.collect.Lists;
+import com.google.common.collect.ImmutableList;
 
 import com.zenobase.commands.Command;
 import com.zenobase.commands.TestCommand;
+import com.zenobase.common.DefaultPartialList;
+import com.zenobase.common.PartialList;
 import com.zenobase.models.CommandList;
 import com.zenobase.models.Identity;
 import com.zenobase.oauth.Authorization;
@@ -19,25 +21,25 @@ public class JournalControllerHttpGetTest extends JournalControllerTestSupport {
 
 	@Test
 	public void testGet() {
-		CommandList history = new CommandList(Lists.<Command>newArrayList(new TestCommand(principal, "do it"), new TestCommand(principal, "do it again")), 10);
+		PartialList<Command> history = DefaultPartialList.of(ImmutableList.<Command>of(new TestCommand(principal, "do it"), new TestCommand(principal, "do it again")), 10);
 		when(auth.current()).thenReturn(new Authorization(principal));
 		when(users.isSuperuser(principal)).thenReturn(true);
-		when(commands.size()).thenReturn(history.size());
-		when(commands.findAll(0, 2, true)).thenReturn(history);
+		when(commands.size()).thenReturn(history.getTotal());
+		when(commands.find(0, 2, true)).thenReturn(history);
 		Result result = call(null, 0, 2);
-		assertThat(result).hasStatus(OK).hasContent(history.toJson());
+		assertThat(result).hasStatus(OK).hasContent(CommandList.toJson(history));
 	}
 
 	@Test
 	public void testFilteredGet() {
-		CommandList history = new CommandList(Lists.<Command>newArrayList(new TestCommand(principal, "do it"), new TestCommand(principal, "do it again")), 10);
+		PartialList<Command> history = DefaultPartialList.of(ImmutableList.<Command>of(new TestCommand(principal, "do it"), new TestCommand(principal, "do it again")), 10);
 		when(auth.current()).thenReturn(new Authorization(principal));
 		when(users.isSuperuser(principal)).thenReturn(true);
-		when(commands.size()).thenReturn(history.size());
-		when(commands.findAll(0, 2, true)).thenReturn(history);
+		when(commands.size()).thenReturn(history.getTotal());
+		when(commands.find(0, 2, true)).thenReturn(history);
 		when(commands.find(Command.PRINCIPAL.getName(), principal.getId(), 0, 2, true)).thenReturn(history);
 		Result result = call(Command.PRINCIPAL.getName() + ":" + principal.getId(), 0, 2);
-		assertThat(result).hasStatus(OK).hasContent(history.toJson());
+		assertThat(result).hasStatus(OK).hasContent(CommandList.toJson(history));
 	}
 
 	@Test

@@ -12,6 +12,7 @@ import com.zenobase.commands.CreateBucketCommand;
 import com.zenobase.io.BucketPrinter;
 import com.zenobase.models.Bucket;
 import com.zenobase.models.Identity;
+import com.zenobase.models.BucketList;
 import com.zenobase.models.Role;
 import com.zenobase.oauth.Authorization;
 import com.zenobase.search.QueryConstraint;
@@ -66,7 +67,7 @@ public class BucketListController extends ControllerSupport {
     	if (limit > 100) {
     		return badRequest("limit max 100");
     	}
-        return ok(buckets.findBuckets(identity, offset, limit).toJson());
+        return ok(BucketList.toJson(buckets.find(identity, offset, limit), events));
     }
 
     private Result find(Identity principal, int offset, int limit) {
@@ -79,7 +80,7 @@ public class BucketListController extends ControllerSupport {
     	if (limit > 100) {
     		return badRequest("limit max 100");
     	}
-        return ok(buckets.findAll(offset, limit).toJson());
+        return ok(BucketList.toJson(buckets.find(offset, limit), events));
     }
 
     private Result findAll() {

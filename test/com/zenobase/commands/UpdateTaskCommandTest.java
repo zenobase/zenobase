@@ -29,19 +29,19 @@ public class UpdateTaskCommandTest {
 		Command command = UpdateTaskCommand.builder(from)
 			.set(Task.COMPLETED, from.getCompleted(), to.getCompleted())
 			.build();
-		when(tasks.findTask(from.getId())).thenReturn(from.copy());
+		when(tasks.find(from.getId())).thenReturn(from.copy());
 		registry.execute(command);
 		verify(tasks).update(to);
 		reset(tasks);
 
 		Command undo = command.reverse(principal);
-		when(tasks.findTask(from.getId())).thenReturn(to.copy());
+		when(tasks.find(from.getId())).thenReturn(to.copy());
 		registry.execute(undo);
 		verify(tasks).update(from);
 		reset(tasks);
 
 		Command redo = undo.reverse(principal);
-		when(tasks.findTask(from.getId())).thenReturn(from.copy());
+		when(tasks.find(from.getId())).thenReturn(from.copy());
 		registry.execute(redo);
 		verify(tasks).update(to);
 		reset(tasks);

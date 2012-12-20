@@ -71,9 +71,9 @@ public class BucketRepositoryTest extends ElasticSearchTestSupport {
 			repository.store(bucket, true);
 		}
 
-		assertThat(repository.findAll(0, 10)).hasSize(buckets.size()).isEqualTo(buckets.subList(0, 10));
-		assertThat(repository.findBuckets(me, 0, 10)).hasSize(buckets.size() / 2);
-		assertThat(repository.findBuckets(you, 0, 10)).hasSize(buckets.size() / 2);
+		assertThat(repository.find(0, 10)).hasTotal(buckets.size()).isEqualTo(buckets.subList(0, 10));
+		assertThat(repository.find(me, 0, 10)).hasTotal(buckets.size() / 2);
+		assertThat(repository.find(you, 0, 10)).hasTotal(buckets.size() / 2);
 	}
 
 	@Test

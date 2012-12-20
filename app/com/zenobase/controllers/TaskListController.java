@@ -19,6 +19,7 @@ import com.zenobase.services.CommandDispatcher;
 import com.zenobase.services.TaskRepository;
 import com.zenobase.services.UserRepository;
 import com.zenobase.tasks.Task;
+import com.zenobase.tasks.TaskList;
 import com.zenobase.tasks.TaskManager;
 import com.zenobase.tasks.TaskManagerRegistry;
 
@@ -64,11 +65,11 @@ public class TaskListController extends ControllerSupport {
 		}
 		if (constraint == null || !isConstrainedToPrincipal(constraint, auth.getPrincipal())) {
     		if (users.isSuperuser(auth.getPrincipal())) {
-    			return ok(tasks.findTasks(offset, limit).toJson());
+    			return ok(TaskList.toJson(tasks.find(offset, limit)));
     		}
 			return forbidden();
 		}
-		return ok(tasks.findTasks(constraint.getField(), constraint.getValue(), offset, limit).toJson());
+		return ok(TaskList.toJson(tasks.find(constraint.getField(), constraint.getValue(), offset, limit)));
     }
 
 	private static boolean isConstrainedToPrincipal(QueryConstraint constraint, Identity principal) {

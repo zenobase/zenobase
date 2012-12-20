@@ -8,10 +8,11 @@ import static play.test.Helpers.callAction;
 import org.junit.Before;
 import org.junit.Test;
 import play.mvc.Result;
-import com.google.common.collect.ImmutableList;
 import com.google.inject.AbstractModule;
 import com.google.inject.Singleton;
 
+import com.zenobase.common.DefaultPartialList;
+import com.zenobase.common.PartialList;
 import com.zenobase.models.User;
 import com.zenobase.models.UserInfo;
 import com.zenobase.models.UserList;
@@ -61,12 +62,12 @@ public class UserListControllerTest extends ControllerTestSupport {
 
 	@Test
 	public void testFindUsersPaged() {
-		UserList expected = new UserList(ImmutableList.<User>of(), 0);
+		PartialList<User> expected = new DefaultPartialList<User>();
 		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
 		when(users.isSuperuser(user.asIdentity())).thenReturn(true);
 		when(users.find(0, 1)).thenReturn(expected);
 		Result result = call(null, 0, 1, true);
-		assertThat(result).hasStatus(OK).hasContent(expected.toJson());
+		assertThat(result).hasStatus(OK).hasContent(UserList.toJson(expected));
 	}
 
 	@Test

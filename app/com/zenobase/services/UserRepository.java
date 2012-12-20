@@ -1,7 +1,5 @@
 package com.zenobase.services;
 
-import java.util.List;
-
 import javax.inject.Inject;
 
 import org.codehaus.jackson.node.ObjectNode;
@@ -11,11 +9,10 @@ import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.elasticsearch.search.sort.SortOrder;
 import play.Logger;
 import com.google.common.base.Preconditions;
-import com.google.common.collect.Lists;
-import com.google.common.primitives.Ints;
 
 import com.zenobase.common.Callback;
 import com.zenobase.common.PartialList;
+import com.zenobase.common.DefaultPartialList;
 import com.zenobase.models.Identity;
 import com.zenobase.models.User;
 import com.zenobase.models.UserList;
@@ -37,25 +34,20 @@ public class UserRepository {
 	}
 
 	public User find(Identity identity) {
-		PartialList<ObjectNode> hits = index.find(identityEquals(identity));
+		DefaultPartialList<ObjectNode> hits = index.find(restrict(identity));
 		Preconditions.checkState(hits.size() <= 1,
 			"Expected 0..1 hits for identity '%s' but got %s", identity, hits.size());
 		return hits.size() > 0L ?
-			new User(hits.getElements().get(0)) : null;
+			new User(hits.get(0)) : null;
 	}
 
-	public UserList find(int offset, int limit) {
-		List<User> users = Lists.newArrayListWithCapacity(limit);
+	public PartialList<User> find(int offset, int limit) {
 		SearchSourceBuilder search = new SearchSourceBuilder()
 			.query(QueryBuilders.matchAllQuery())
 			.sort(User.NAME.getName(), SortOrder.ASC)
 			.from(offset).size(limit)
 			.version(true);
-		PartialList<ObjectNode> hits = index.find(search);
-		for (ObjectNode hit : hits.getElements()) {
-			users.add(new User(hit));
-		}
-		return new UserList(users, hits.size());
+		return new UserList(index.find(search));
 	}
 
 	public void find(final Callback<User> callback) {
@@ -67,12 +59,12 @@ public class UserRepository {
 		}, 10);
 	}
 
-	private QueryBuilder identityEquals(Identity identity) {
+	private static QueryBuilder restrict(Identity identity) {
 		return QueryBuilders.termQuery(User.ID.getName(), identity.getId());
 	}
 
-	private QueryBuilder isSuperuser() {
-		return QueryBuilders.termQuery(User.SUPERUSER.getName(), true);
+	private static QueryBuilder restrict(String field, boolean value) {
+		return QueryBuilders.termQuery(field, value);
 	}
 
 	public User find(String name) {
@@ -86,9 +78,9 @@ public class UserRepository {
 
 	public boolean isSuperuser(Identity identity) {
 		QueryBuilder query = QueryBuilders.boolQuery()
-			.must(identityEquals(identity))
-			.must(isSuperuser());
-		PartialList<ObjectNode> hits = index.find(query);
+			.must(restrict(identity))
+			.must(restrict(User.SUPERUSER.getName(), true));
+		DefaultPartialList<ObjectNode> hits = index.find(query);
 		Preconditions.checkState(hits.size() <= 1,
 			"Expected 0..1 hits for identity '%s' but got %s", identity, hits.size());
 		return hits.size() > 0L;
@@ -106,11 +98,11 @@ public class UserRepository {
 		return index.delete(User.TYPE_NAME, user.getName(), true);
 	}
 
-	public int count() {
-		return Ints.checkedCast(index.count());
+	public long size() {
+		return index.count();
 	}
 
 	public boolean isEmpty() {
-		return index.count() == 0L;
+		return size() == 0L;
 	}
 }

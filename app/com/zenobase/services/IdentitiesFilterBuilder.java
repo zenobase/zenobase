@@ -1,6 +1,8 @@
 package com.zenobase.services;
 
 
+import com.google.common.primitives.Ints;
+
 import com.zenobase.common.Callback;
 import com.zenobase.common.StringBloomFilter;
 import com.zenobase.models.User;
@@ -17,7 +19,7 @@ public class IdentitiesFilterBuilder {
 	}
 
 	public StringBloomFilter build() {
-		final StringBloomFilter filter = new StringBloomFilter(users.count());
+		final StringBloomFilter filter = new StringBloomFilter(Ints.checkedCast(users.size()));
 		users.find(new Callback<User>() {
 			@Override
 			public void call(User user) {

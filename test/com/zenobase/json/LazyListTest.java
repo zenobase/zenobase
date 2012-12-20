@@ -1,0 +1,56 @@
+package com.zenobase.json;
+
+import static com.zenobase.testing.PartialListAssert.assertThat;
+
+import java.util.List;
+
+import org.codehaus.jackson.node.ObjectNode;
+import org.junit.Test;
+import com.google.common.base.Function;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Iterables;
+
+import com.zenobase.common.DefaultPartialList;
+import com.zenobase.common.PartialList;
+
+public class LazyListTest {
+
+	@Test
+	public void test() {
+		PartialList<Thneed> expected = DefaultPartialList.of(ImmutableList.of(new Thneed("alpha"), new Thneed("beta")), 42L);
+		LazyList<Thneed> actual = new TestableList(new NodeList(Iterables.transform(expected, TO_JSON), expected.getTotal()));
+		assertThat(actual).hasTotal(expected.getTotal()).isEqualTo((List<?>) expected);
+	}
+
+	private static Function<DomainNode, ObjectNode> TO_JSON = new Function<DomainNode, ObjectNode>() {
+		@Override
+		public ObjectNode apply(DomainNode object) {
+			return object.toJson();
+		}
+	};
+
+	private static class TestableList extends LazyList<Thneed> {
+
+		public TestableList(PartialList<ObjectNode> nodes) {
+			super(nodes);
+		}
+
+		@Override
+		protected Thneed toObject(ObjectNode node) {
+			return new Thneed(node);
+		}
+	}
+
+	private static class Thneed extends DomainNode {
+
+		private static final TokenField LABEL = new TokenField("label");
+
+		public Thneed(String label) {
+			setValue(LABEL, label);
+		}
+
+		public Thneed(ObjectNode node) {
+			super(node);
+		}
+	}
+}

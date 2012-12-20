@@ -8,10 +8,11 @@ import static play.test.Helpers.callAction;
 import org.junit.Before;
 import org.junit.Test;
 import play.mvc.Result;
-import com.google.common.collect.ImmutableList;
 import com.google.inject.AbstractModule;
 import com.google.inject.Singleton;
 
+import com.zenobase.common.DefaultPartialList;
+import com.zenobase.common.PartialList;
 import com.zenobase.models.Identity;
 import com.zenobase.models.User;
 import com.zenobase.oauth.Authorization;
@@ -44,11 +45,11 @@ public class AuthorizationListControllerTest extends ControllerTestSupport {
 
 	@Test
 	public void testFindByPrincipal() {
-		AuthorizationList list = new AuthorizationList(ImmutableList.<Authorization>of(), 0);
+		PartialList<Authorization> list = new DefaultPartialList<Authorization>();
 		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
 		when(authorizations.find(Authorization.PRINCIPAL.getName(), user.asIdentity().toString(), false, 0, 10)).thenReturn(list);
 		Result result = call(Authorization.PRINCIPAL.getName() + ":" + user.asIdentity(), false, 0, 10);
-		assertThat(result).hasStatus(OK).hasContent(list.toJson());
+		assertThat(result).hasStatus(OK).hasContent(AuthorizationList.toJson(list));
 	}
 
 	@Test
@@ -60,12 +61,12 @@ public class AuthorizationListControllerTest extends ControllerTestSupport {
 
 	@Test
 	public void testFindAllAsSuperuser() {
-		AuthorizationList list = new AuthorizationList(ImmutableList.<Authorization>of(), 0);
+		PartialList<Authorization> list = new DefaultPartialList<Authorization>();
 		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
 		when(users.isSuperuser(user.asIdentity())).thenReturn(true);
 		when(authorizations.find(0, 10)).thenReturn(list);
 		Result result = call(null, false, 0, 10);
-		assertThat(result).hasStatus(OK).hasContent(list.toJson());
+		assertThat(result).hasStatus(OK).hasContent(AuthorizationList.toJson(list));
 	}
 
 	@Test

@@ -1,7 +1,5 @@
 package com.zenobase.services;
 
-import java.util.List;
-
 import javax.inject.Inject;
 
 import org.codehaus.jackson.node.ObjectNode;
@@ -11,7 +9,6 @@ import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.elasticsearch.search.sort.SortOrder;
 import play.Logger;
 import com.google.common.base.Preconditions;
-import com.google.common.collect.Lists;
 
 import com.zenobase.common.Callback;
 import com.zenobase.common.PartialList;
@@ -21,7 +18,7 @@ import com.zenobase.models.BucketList;
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
 
-public class BucketRepository {
+public class BucketRepository extends RepositorySupport<Bucket> {
 
 	static final String INDEX_NAME = "buckets";
 
@@ -67,48 +64,40 @@ public class BucketRepository {
 
 	public Bucket find(String bucketId) {
 		ObjectNode node = index.get(Bucket.TYPE_NAME, bucketId);
-		return node != null ? new Bucket(node) : null;
+		return node != null ? toObject(node) : null;
 	}
 
-	public BucketList findAll(int offset, int limit) {
+	public PartialList<Bucket> find(int offset, int limit) {
 		return find(QueryBuilders.matchAllQuery(), offset, limit);
 	}
 
-	public BucketList findBuckets(Identity identity, int offset, int limit) {
-		return find(queryFor(identity), offset, limit);
+	public PartialList<Bucket> find(Identity identity, int offset, int limit) {
+		return find(restrict(identity), offset, limit);
 	}
 
-	private static QueryBuilder queryFor(Identity identity) {
+	private static QueryBuilder restrict(Identity identity) {
 		return QueryBuilders.nestedQuery(Bucket.ROLES.getName(),
 			QueryBuilders.termQuery(RolesField.PRINCIPAL.getName(), identity.getId()));
 	}
 
-	private BucketList find(QueryBuilder query, int offset, int limit) {
-		List<Bucket> buckets = Lists.newArrayListWithCapacity(limit);
+	private PartialList<Bucket> find(QueryBuilder query, int offset, int limit) {
 		SearchSourceBuilder search = new SearchSourceBuilder()
 			.query(query).version(true).from(offset).size(limit)
 			.sort(Bucket.CREATED.getName(), SortOrder.DESC);
-		PartialList<ObjectNode> hits = index.find(search);
-		for (ObjectNode hit : hits.getElements()) {
-			buckets.add(new Bucket(hit));
-		}
-		return new BucketList(buckets, hits.size(), new EventRepository(manager));
+		return new BucketList(index.find(search));
 	}
 
-	public void findAll(final Callback<Bucket> callback) {
-		find(QueryBuilders.matchAllQuery(), callback);
+	public void find(Identity identity, final Callback<Bucket> callback) {
+		find(restrict(identity), callback);
 	}
 
-	public void findBuckets(Identity identity, final Callback<Bucket> callback) {
-		find(queryFor(identity), callback);
+	@Override
+	protected Index getIndex() {
+		return index;
 	}
 
-	private void find(QueryBuilder query, final Callback<Bucket> callback) {
-		index.find(query, new Callback<ObjectNode>() {
-			@Override
-			public void call(ObjectNode node) {
-				callback.call(new Bucket(node));
-			}
-		}, 10);
+	@Override
+	protected Bucket toObject(ObjectNode node) {
+		return new Bucket(node);
 	}
 }

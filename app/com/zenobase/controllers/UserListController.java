@@ -10,6 +10,7 @@ import com.zenobase.io.UserPrinter;
 import com.zenobase.models.Identity;
 import com.zenobase.models.User;
 import com.zenobase.models.UserInfo;
+import com.zenobase.models.UserList;
 import com.zenobase.oauth.Authorization;
 import com.zenobase.services.UserRepository;
 
@@ -41,7 +42,7 @@ public class UserListController extends ControllerSupport {
     	if (limit == Integer.MAX_VALUE) {
     		return findAll();
     	}
-        return ok(users.find(offset, limit).toJson());
+        return ok(UserList.toJson(users.find(offset, limit)));
 	}
 
 	private Result findAll() {

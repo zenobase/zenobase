@@ -10,6 +10,7 @@ import com.google.common.base.Strings;
 import com.zenobase.actions.Timed;
 import com.zenobase.commands.Command;
 import com.zenobase.models.Identity;
+import com.zenobase.models.CommandList;
 import com.zenobase.oauth.Authorization;
 import com.zenobase.search.QueryConstraint;
 import com.zenobase.services.CommandDispatcher;
@@ -54,11 +55,11 @@ public class JournalController extends ControllerSupport {
 		}
 		if (constraint == null || !isConstrainedToPrincipal(constraint, auth.getPrincipal())) {
 			if (users.isSuperuser(auth.getPrincipal())) {
-		    	return ok(repository.findAll(offset, limit, true).toJson());
+		    	return ok(CommandList.toJson(repository.find(offset, limit, true)));
 			}
 			return forbidden();
 		}
-    	return ok(repository.find(constraint.getField(), constraint.getValue(), offset, limit, true).toJson());
+    	return ok(CommandList.toJson(repository.find(constraint.getField(), constraint.getValue(), offset, limit, true)));
     }
 
 	private static boolean isConstrainedToPrincipal(QueryConstraint constraint, Identity principal) {

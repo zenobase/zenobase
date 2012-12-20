@@ -49,7 +49,7 @@ public class TaskController extends ControllerSupport {
 		if (auth == null) {
 			return unauthorized();
 		}
-		Task task = tasks.findTask(taskId);
+		Task task = tasks.find(taskId);
 		if (task == null) {
 			return notFound();
 		}
@@ -95,7 +95,7 @@ public class TaskController extends ControllerSupport {
 		if (auth == null) {
 			return unauthorized();
 		}
-		Task task = tasks.findTask(taskId);
+		Task task = tasks.find(taskId);
 		if (task == null) {
 			return notFound();
 		}
@@ -132,7 +132,7 @@ public class TaskController extends ControllerSupport {
 		if (auth == null) {
 			return unauthorized();
 		}
-		Task task = tasks.findTask(taskId);
+		Task task = tasks.find(taskId);
 		if (task == null) {
 			return notFound();
 		}

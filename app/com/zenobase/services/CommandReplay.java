@@ -43,7 +43,7 @@ public class CommandReplay {
 		final StringBloomFilter identities = new IdentitiesFilterBuilder(new UserRepository(indexManager)).build();
 		Stopwatch timer = new Stopwatch().start();
 		try {
-			repository.findAll(new Callback<Command>() {
+			repository.find(new Callback<Command>() {
 				@Override
 				public void call(Command command) {
 					if (identities.mightContain(command.getPrincipal().getId())) {

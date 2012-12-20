@@ -9,6 +9,7 @@ import com.google.common.base.Strings;
 import com.zenobase.actions.Timed;
 import com.zenobase.models.Identity;
 import com.zenobase.oauth.Authorization;
+import com.zenobase.oauth.AuthorizationList;
 import com.zenobase.search.QueryConstraint;
 import com.zenobase.services.AuthorizationRepository;
 import com.zenobase.services.UserRepository;
@@ -47,11 +48,11 @@ public class AuthorizationListController extends ControllerSupport {
 		}
 		if (constraint == null || !isConstrainedToPrincipal(constraint, auth.getPrincipal())) {
 			if (users.isSuperuser(auth.getPrincipal())) {
-				return ok(authorizations.find(offset, limit).toJson());
+				return ok(AuthorizationList.toJson(authorizations.find(offset, limit)));
 			}
 			return forbidden();
 		}
-		return ok(authorizations.find(constraint.getField(), constraint.getValue(), clientOnly, offset, limit).toJson());
+		return ok(AuthorizationList.toJson(authorizations.find(constraint.getField(), constraint.getValue(), clientOnly, offset, limit)));
     }
 
 	private static boolean isConstrainedToPrincipal(QueryConstraint constraint, Identity principal) {

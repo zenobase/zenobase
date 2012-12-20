@@ -1,14 +1,11 @@
 package com.zenobase.services;
 
-import java.util.List;
-
 import org.codehaus.jackson.node.ObjectNode;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.elasticsearch.search.sort.SortOrder;
 import play.Logger;
-import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 
 import com.zenobase.commands.Command;
@@ -41,39 +38,38 @@ public class CommandRepository {
 
 	public Command find(String id) {
 		ObjectNode node = index.get(Command.TYPE_NAME, id);
-		return node != null ? parsers.parse(node) : null;
+		return node != null ? toObject(node) : null;
 	}
 
-	public void findAll(Callback<Command> callback) {
+	public void find(Callback<Command> callback) {
 		long count = 0;
 		for (int offset = 0, limit = 10; ; offset += limit) {
-			CommandList commands = findAll(offset, limit, false);
-			for (Command command : commands.getElements()) {
+			PartialList<Command> commands = find(offset, limit, false);
+			for (Command command : commands) {
 				callback.call(command);
 				++count;
 			}
-			if (commands.size() == count) {
+			if (commands.getTotal() == count) {
 				break;
 			}
 		}
 	}
 
-	public CommandList findAll(int offset, int limit, boolean newestFirst) {
+	public PartialList<Command> find(int offset, int limit, boolean newestFirst) {
 		return find(newSearchSource(newestFirst).from(offset).size(limit), limit);
 	}
 
-	public CommandList find(String field, String value, int offset, int limit, boolean newestFirst) {
+	public PartialList<Command> find(String field, String value, int offset, int limit, boolean newestFirst) {
 		return find(newSearchSource(field, value, newestFirst).from(offset).size(limit), limit);
 	}
 
-	public CommandList find(SearchSourceBuilder search, int limit) {
-		List<Command> commands = Lists.newArrayListWithCapacity(limit);
-		PartialList<ObjectNode> hits = index.find(search);
-		for (ObjectNode hit : hits.getElements()) {
-			commands.add(parsers.parse(hit));
-		}
-		return new CommandList(commands, hits.size());
+	private CommandList find(SearchSourceBuilder search, int limit) {
+		return new CommandList(index.find(search), parsers);
 	}
+
+	private Command toObject(ObjectNode node) {
+    	return parsers.parse(node);
+    }
 
 	private static SearchSourceBuilder newSearchSource(boolean newestFirst) {
 		return newSearchSource(QueryBuilders.matchAllQuery(), newestFirst);

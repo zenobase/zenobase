@@ -5,19 +5,25 @@ import org.codehaus.jackson.node.ObjectNode;
 import com.google.common.primitives.Ints;
 
 import com.zenobase.common.PartialList;
+import com.zenobase.json.LazyList;
 import com.zenobase.json.Nodes;
 
-public class UserList extends PartialList<User> {
+public class UserList extends LazyList<User> {
 
-	public UserList(Iterable<User> elements, long size) {
-		super(elements, size);
+	public UserList(PartialList<ObjectNode> nodes) {
+		super(nodes);
 	}
 
-	public ObjectNode toJson() {
+	@Override
+	protected User toObject(ObjectNode node) {
+		return new User(node);
+	}
+
+	public static ObjectNode toJson(PartialList<User> users) {
     	ObjectNode resultNode = Nodes.newObject();
-    	TOTAL.setValue(resultNode, Ints.checkedCast(size()));
+    	TOTAL.setValue(resultNode, Ints.checkedCast(users.getTotal()));
     	ArrayNode usersNode = resultNode.putArray("users");
-    	for (User user : getElements()) {
+    	for (User user : users) {
     		usersNode.add(new UserProfile(user).toJson());
     	}
 		return resultNode;

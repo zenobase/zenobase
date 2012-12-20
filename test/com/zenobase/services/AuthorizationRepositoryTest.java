@@ -42,15 +42,15 @@ public class AuthorizationRepositoryTest extends ElasticSearchTestSupport {
 	@Test
 	public void testFindAll() {
 		List<Authorization> authorizations = fill(20, new Identity());
-		assertThat(repository.find(0, 10)).hasSize(authorizations.size()).isEqualTo(authorizations.subList(0, 10));
-		assertThat(repository.find(10, 10)).hasSize(authorizations.size()).isEqualTo(authorizations.subList(10, 20));
+		assertThat(repository.find(0, 10)).hasTotal(authorizations.size()).isEqualTo(authorizations.subList(0, 10));
+		assertThat(repository.find(10, 10)).hasTotal(authorizations.size()).isEqualTo(authorizations.subList(10, 20));
 	}
 
 	@Test
 	public void testFindClientOnly() {
 		Identity me = new Identity();
 		List<Authorization> authorizations = fill(20, me);
-		assertThat(repository.find(Authorization.PRINCIPAL.getName(), me.toString(), true, 0, 20)).hasSize(authorizations.size() / 2);
+		assertThat(repository.find(Authorization.PRINCIPAL.getName(), me.toString(), true, 0, 20)).hasTotal(authorizations.size() / 2);
 	}
 
 	@Test
@@ -59,8 +59,8 @@ public class AuthorizationRepositoryTest extends ElasticSearchTestSupport {
 		Identity you = new Identity();
 		List<Authorization> mine = fill(2, me);
 		List<Authorization> yours = fill(3, you);
-		assertThat(repository.find(Authorization.PRINCIPAL.getName(), me.toString(), false, 0, 10)).hasSize(mine.size()).isEqualTo(mine);
-		assertThat(repository.find(Authorization.PRINCIPAL.getName(), you.toString(), false, 0, 10)).hasSize(yours.size()).isEqualTo(yours);
+		assertThat(repository.find(Authorization.PRINCIPAL.getName(), me.toString(), false, 0, 10)).hasTotal(mine.size()).isEqualTo(mine);
+		assertThat(repository.find(Authorization.PRINCIPAL.getName(), you.toString(), false, 0, 10)).hasTotal(yours.size()).isEqualTo(yours);
 	}
 
 	private List<Authorization> fill(int size, Identity principal) {

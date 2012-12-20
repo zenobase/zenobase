@@ -20,15 +20,17 @@ import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
+import com.google.common.primitives.Ints;
 
 import com.zenobase.common.Callback;
-import com.zenobase.common.PartialList;
 import com.zenobase.json.DomainNode;
+import com.zenobase.json.NodeList;
 import com.zenobase.json.Nodes;
 import com.zenobase.json.Schema;
 
 public class Index {
 
+	private final TimeValue timeout = TimeValue.timeValueMillis(1000);
 	private final String indexName;
 	private final Client client;
 
@@ -48,8 +50,11 @@ public class Index {
 	}
 
 	public void putMapping(Schema schema) {
-		// Logger.info("Mapping: " + schema.toJson());
-		client.admin().indices().preparePutMapping(indexName).setType(schema.getTypeName()).setSource(schema.toJson().toString()).execute().actionGet();
+		client.admin().indices()
+			.preparePutMapping(indexName)
+			.setType(schema.getTypeName())
+			.setSource(schema.toJson().toString())
+			.execute().actionGet();
 	}
 
 	public void store(String type, String id, ObjectNode node, boolean refresh) {
@@ -75,29 +80,35 @@ public class Index {
 	}
 
 	public boolean delete(String type, String id, boolean refresh) {
-		return !client.prepareDelete(indexName, type, id).setRefresh(refresh).execute().actionGet().notFound();
+		return !client.prepareDelete(indexName, type, id)
+			.setRefresh(refresh)
+			.execute().actionGet().notFound();
 	}
 
 	public boolean exists() {
-		return client.admin().indices().prepareExists(indexName).execute().actionGet().exists();
+		return client.admin().indices()
+			.prepareExists(indexName)
+			.execute().actionGet().exists();
 	}
 
 	public void refresh() {
-		client.admin().indices().prepareRefresh(indexName).execute().actionGet();
+		client.admin().indices()
+			.prepareRefresh(indexName)
+			.execute().actionGet();
 	}
 
-	public PartialList<ObjectNode> find(QueryBuilder query) {
+	public NodeList find(QueryBuilder query) {
 		return find(new SearchSourceBuilder().query(query).version(Boolean.TRUE));
 	}
 
-	public PartialList<ObjectNode> find(SearchSourceBuilder search) {
+	public NodeList find(SearchSourceBuilder search) {
 		SearchResponse response = search(search);
 		SearchHits hits = response.hits();
 		List<ObjectNode> nodes = Lists.newArrayListWithCapacity(hits.hits().length);
 		for (SearchHit hit : hits) {
 			nodes.add(read(hit));
 		}
-		return new PartialList<ObjectNode>(nodes, hits.totalHits());
+		return new NodeList(nodes, hits.totalHits());
 	}
 
 	public SearchResponse search(SearchSourceBuilder search) {
@@ -115,14 +126,12 @@ public class Index {
 	}
 
 	private SearchResponse scroll(SearchSourceBuilder search) {
-		final TimeValue timeout = TimeValue.timeValueMillis(1000);
 		SearchResponse response = client.search(Requests.searchRequest(indexName)
 			.searchType(SearchType.SCAN).scroll(timeout).source(search)).actionGet();
 		return scroll(response.getScrollId());
 	}
 
 	private SearchResponse scroll(String scrollId) {
-		final TimeValue timeout = TimeValue.timeValueMillis(1000);
 		return client.searchScroll(Requests.searchScrollRequest(indexName).scrollId(scrollId).scroll(timeout)).actionGet();
 	}
 
@@ -144,18 +153,26 @@ public class Index {
 	}
 
 	public boolean exists(String type, String id) {
-		return client.prepareGet(indexName, type, id).execute().actionGet().exists();
+		return client
+			.prepareGet(indexName, type, id)
+			.execute().actionGet().exists();
 	}
 
-	public long count() {
-		return client.prepareCount(indexName).execute().actionGet().count();
+	public int count() {
+		return Ints.saturatedCast(client
+			.prepareCount(indexName)
+			.execute().actionGet().count());
 	}
 
 	public void open() {
-		client.admin().indices().prepareOpen(indexName).execute().actionGet();
+		client.admin().indices()
+			.prepareOpen(indexName)
+			.execute().actionGet();
 	}
 
 	public void close() {
-		client.admin().indices().prepareClose(indexName).execute().actionGet();
+		client.admin().indices()
+			.prepareClose(indexName)
+			.execute().actionGet();
 	}
 }

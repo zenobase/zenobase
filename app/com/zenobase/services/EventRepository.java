@@ -60,7 +60,7 @@ public class EventRepository {
 		return terms;
 	}
 
-	public long getSize(String bucketId) {
+	public long size(String bucketId) {
 		return getIndex(bucketId).count();
 	}
 
@@ -75,5 +75,4 @@ public class EventRepository {
 	private Index getIndex(String bucketId) {
 		return manager.getIndex(bucketId);
 	}
-
 }
