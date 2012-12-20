@@ -96,7 +96,7 @@
 				</table>
 				<div class="btn-toolbar">
 					<div class="btn-group pull-left" data-ng-show="buckets">
-						<a class="btn" href="/buckets/" title="Download"><i class="icon-download-alt"></i></a>
+						<a class="btn" data-ng-href="/buckets/?code={{token}}" title="Download"><i class="icon-download-alt"></i></a>
 					</div>
 					<div class="btn-group pull-right" data-ng-show="buckets">
 						<button class="btn" title="Previous" data-ng-click="prev()" data-ng-disabled="!hasPrev()"><i class="icon-chevron-left"></i></button>
@@ -141,7 +141,7 @@
 				</table>
 				<div class="btn-toolbar">
 					<div class="btn-group pull-left" data-ng-show="users">
-						<a class="btn" href="/users/" title="Download"><i class="icon-download-alt"></i></a>
+						<a class="btn" data-ng-href="/users/?code={{token}}" title="Download"><i class="icon-download-alt"></i></a>
 					</div>
 					<div class="btn-group pull-right" data-ng-show="users">
 						<button class="btn" title="Previous" data-ng-click="prev()" data-ng-disabled="!hasPrev()"><i class="icon-chevron-left"></i></button>

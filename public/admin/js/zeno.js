@@ -62,7 +62,7 @@
 		$scope.refresh({});
 	}]);
 
-	app.controller('admin.BucketListController', ['$scope', '$http', 'Bucket', 'delay', function($scope, $http, Bucket, delay) {
+	app.controller('admin.BucketListController', ['$scope', '$http', 'Bucket', 'delay', 'token', function($scope, $http, Bucket, delay, token) {
 
 		$scope.offset = 0;
 		$scope.limit = 10;
@@ -92,6 +92,7 @@
 				return params;
 		}
 		$scope.refresh = function(params) {
+			$scope.token = token.get();
 			$http.get('/buckets/?' + $.param($.extend($scope.params(), params))).success(function(response) {
 				$.extend($scope, params);
 				$scope.total = response.total;
@@ -114,7 +115,7 @@
 		$scope.refresh({});
 	}]);
 
-	app.controller('admin.UserListController', ['$scope', '$http', 'delay', function($scope, $http, delay) {
+	app.controller('admin.UserListController', ['$scope', '$http', 'delay', 'token', function($scope, $http, delay, token) {
 
 		$scope.offset = 0;
 		$scope.limit = 10;
@@ -140,6 +141,7 @@
 			};
 		};
 		$scope.refresh = function(params) {
+			$scope.token = token.get();
 			if ($scope.filter) {
 				$http.get('/users/?' + $.param({ identity : $scope.filter, detail : 1 })).success(function(response) {
 					$scope.total = 1;

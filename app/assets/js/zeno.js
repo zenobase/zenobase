@@ -1009,7 +1009,7 @@
 		return Bucket;
 	});
 
-	app.controller('DashboardController', ['$scope', '$http', '$route', '$routeParams', '$location', 'Bucket', 'Field', 'Filter', 'tracker', 'delay', function($scope, $http, $route, $routeParams, $location, Bucket, Field, Filter, tracker, delay) {
+	app.controller('DashboardController', ['$scope', '$http', '$route', '$routeParams', '$location', 'Bucket', 'Field', 'Filter', 'tracker', 'delay', 'token', function($scope, $http, $route, $routeParams, $location, Bucket, Field, Filter, tracker, delay, token) {
 
 		function updateEditable() {
 				$scope.editable = $scope.user && $scope.bucket.canEdit($scope.user['@id']);
@@ -1112,7 +1112,7 @@
 		$scope.getExportUrl = function() {
 			var url = '/buckets/' + $scope.bucketId + '/';
 			if ($scope.filters.length > 0) {
-				url += '?' + $.param({ 'q' : $scope.filters }, true);
+				url += '?' + $.param({ 'q' : $scope.filters, 'code' : token.get() }, true);
 			}
 			return url;
 		};
