@@ -62,7 +62,7 @@ public class UserListControllerTest extends ControllerTestSupport {
 
 	@Test
 	public void testFindUsersPaged() {
-		PartialList<User> expected = new DefaultPartialList<User>();
+		PartialList<User> expected = DefaultPartialList.of();
 		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
 		when(users.isSuperuser(user.asIdentity())).thenReturn(true);
 		when(users.find(0, 1)).thenReturn(expected);

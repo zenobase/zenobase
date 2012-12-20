@@ -16,8 +16,8 @@ public class DefaultPartialList<T> extends AbstractList<T> implements PartialLis
 		return new DefaultPartialList<T>(elements, total);
 	}
 
-	public DefaultPartialList() {
-		this(Collections.<T>emptyList(), 0L);
+	public static <T> PartialList<T> of() {
+		return new DefaultPartialList<T>(Collections.<T>emptyList(), 0L);
 	}
 
 	protected DefaultPartialList(Iterable<T> elements, long total) {

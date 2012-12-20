@@ -45,7 +45,7 @@ public class AuthorizationListControllerTest extends ControllerTestSupport {
 
 	@Test
 	public void testFindByPrincipal() {
-		PartialList<Authorization> list = new DefaultPartialList<Authorization>();
+		PartialList<Authorization> list = DefaultPartialList.of();
 		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
 		when(authorizations.find(Authorization.PRINCIPAL.getName(), user.asIdentity().toString(), false, 0, 10)).thenReturn(list);
 		Result result = call(Authorization.PRINCIPAL.getName() + ":" + user.asIdentity(), false, 0, 10);
@@ -61,7 +61,7 @@ public class AuthorizationListControllerTest extends ControllerTestSupport {
 
 	@Test
 	public void testFindAllAsSuperuser() {
-		PartialList<Authorization> list = new DefaultPartialList<Authorization>();
+		PartialList<Authorization> list = DefaultPartialList.of();
 		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
 		when(users.isSuperuser(user.asIdentity())).thenReturn(true);
 		when(authorizations.find(0, 10)).thenReturn(list);
