@@ -3,6 +3,8 @@ package com.zenobase.tasks;
 import org.codehaus.jackson.node.ObjectNode;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
+import org.joda.time.Minutes;
+import com.google.common.base.Objects;
 
 import com.zenobase.common.Generator;
 import com.zenobase.json.DateTimeField;
@@ -135,6 +137,11 @@ public class Task extends DomainNode {
 	public boolean isPermitted(Authorization auth) {
 		return auth.getScope() == null
 			&& getPrincipal().equals(auth.getPrincipal());
+	}
+
+	public boolean isStale() {
+		DateTime completed = Objects.firstNonNull(getCompleted(), new DateTime(0L));
+		return isEnabled() && Minutes.minutesBetween(completed, DateTime.now()).isGreaterThan(Minutes.ONE);
 	}
 
 	public Task copy() {

@@ -3,13 +3,9 @@ package com.zenobase.controllers;
 import javax.inject.Inject;
 
 import org.codehaus.jackson.node.ObjectNode;
-import org.joda.time.DateTime;
-import org.joda.time.Minutes;
-import play.Logger;
 import play.mvc.BodyParser;
 import play.mvc.Result;
 import play.mvc.With;
-import com.google.common.base.Objects;
 
 import com.zenobase.actions.Timed;
 import com.zenobase.commands.Command;
@@ -24,6 +20,7 @@ import com.zenobase.services.TaskRepository;
 import com.zenobase.tasks.Task;
 import com.zenobase.tasks.TaskManager;
 import com.zenobase.tasks.TaskManagerRegistry;
+import com.zenobase.tasks.TaskRefresher;
 
 @With(Timed.class)
 public class TaskController extends ControllerSupport {
@@ -32,16 +29,18 @@ public class TaskController extends ControllerSupport {
 	private final TaskManagerRegistry registry;
 	private final TaskRepository tasks;
 	private final BucketRepository buckets;
+	private final TaskRefresher refresher;
 
 	@Inject
 	public TaskController(AuthorizationContext security, CommandDispatcher dispatcher,
-		TaskManagerRegistry registry, TaskRepository tasks, BucketRepository buckets) {
+		TaskManagerRegistry registry, TaskRepository tasks, BucketRepository buckets, TaskRefresher refresher) {
 
 		super(security);
 		this.dispatcher = dispatcher;
 		this.registry = registry;
 		this.tasks = tasks;
 		this.buckets = buckets;
+		this.refresher = refresher;
 	}
 
 	public Result get(String taskId) {
@@ -56,40 +55,13 @@ public class TaskController extends ControllerSupport {
 		if (!task.isPermitted(auth)) {
 			return forbidden();
 		}
-		if (isStale(task)) {
-			refresh(task);
+		if (task.isStale()) {
+			refresher.refresh(task);
 		}
     	return ok(task.sanitized().toJson());
     }
 
-	private boolean isStale(Task task) {
-		DateTime completed = Objects.firstNonNull(task.getCompleted(), new DateTime(0L));
-		return task.isEnabled() && Minutes.minutesBetween(completed, DateTime.now()).isGreaterThan(Minutes.ONE);
-	}
-
-	private void refresh(Task task) {
-		Logger.info("Refreshing: " + task.getId());
-		Bucket bucket = buckets.find(task.getBucketId());
-		if (bucket == null) {
-			task.setStatus(Task.Status.FAILED);
-			return;
-		}
-    	if (!bucket.hasRole(new Authorization(task.getPrincipal()), Role.OWNER)) {
-			task.setStatus(Task.Status.FAILED);
-			return;
-    	}
-    	TaskManager manager = registry.find(task.getType());
-    	if (manager == null) {
-			task.setStatus(Task.Status.FAILED);
-			return;
-    	}
-    	Command command = manager.execute(task);
-    	if (command != null) {
-    		dispatcher.dispatch(command);
-    	}
-	}
-
-    @BodyParser.Of(BodyParser.Json.class)
+	@BodyParser.Of(BodyParser.Json.class)
 	public Result update(String taskId) {
 		Authorization auth = getCurrentAuthorization();
 		if (auth == null) {
@@ -137,7 +109,7 @@ public class TaskController extends ControllerSupport {
 			return notFound();
 		}
     	Bucket bucket = buckets.find(task.getBucketId());
-    	if (bucket != null && !bucket.hasRole(auth, Role.OWNER)) {
+    	if (bucket == null || !bucket.hasRole(auth, Role.OWNER)) {
     		return forbidden();
     	}
     	String commandId = dispatcher.dispatch(new DeleteTaskCommand(auth.getPrincipal(), task));

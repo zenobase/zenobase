@@ -82,6 +82,7 @@ import com.zenobase.tasks.FitbitIntradayTaskManager;
 import com.zenobase.tasks.FitbitTaskManager;
 import com.zenobase.tasks.FoursquareTaskManager;
 import com.zenobase.tasks.TaskManager;
+import com.zenobase.tasks.TaskRefresher;
 import com.zenobase.tasks.TwitterTaskManager;
 import com.zenobase.tasks.WithingsTaskManager;
 
@@ -120,6 +121,7 @@ public class Global extends GlobalSettings {
 				bind(AuthorizationContext.class).in(Singleton.class);
 				bind(Canonical.class).in(Singleton.class);
 				bind(TaskRepository.class).in(Singleton.class);
+				bind(TaskRefresher.class).in(Singleton.class);
 				bind(AuthorizationRepository.class).in(Singleton.class);
 
 				Multibinder<CommandParser> parsers = Multibinder.newSetBinder(binder(), CommandParser.class);
