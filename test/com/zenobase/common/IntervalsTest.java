@@ -72,4 +72,9 @@ public class IntervalsTest {
 		assertThat(Intervals.toString(time, "minute")).as(time + " as minute").isEqualTo("2012-04-25T18:30+0000");
 		assertThat(Intervals.toString(time, "second")).as(time + " as second").isEqualTo("2012-04-25T18:30:00+0000");
 	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testBadFormat() {
+		Intervals.valueOf("bla");
+	}
 }

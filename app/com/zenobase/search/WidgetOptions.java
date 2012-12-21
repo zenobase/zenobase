@@ -13,7 +13,6 @@ public class WidgetOptions {
 		return get(key, String.class, null);
 	}
 
-	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public <T> T get(String key, Class<T> type, T defaultValue) {
 		String value = map.get(key);
 		if (value == null) {
@@ -37,10 +36,7 @@ public class WidgetOptions {
 		if (type.equals(DateTimeZone.class)) {
 			return (T) DateTimeZone.forID(value);
 		}
-		if (type.isEnum()) {
-			return (T) Enum.valueOf((Class<? extends Enum>) type, value);
-		}
-		throw new UnsupportedOperationException("Don't know how to handle " + type);
+		throw new IllegalArgumentException("Don't know how to handle type <" + type + ">");
 	}
 
 	private void set(String key, String value) {
