@@ -47,6 +47,7 @@ public class EventSearch {
 		.put(Event.DURATION.getName(), new DurationRangeConstraint())
 		.put(Event.DISTANCE.getName(), new MeasureRangeConstraint()) // TODO add for all measure fields!
 		.put(Event.LOCATION.getName(), new BoundingBoxConstraint())
+		.put(Event.LOCATION.getName(), new DistanceConstraint())
 		.build();
 
 	private final Set<Widget> widgets = Sets.newLinkedHashSet();

@@ -16,6 +16,10 @@ public class Location {
 		this.longitude = longitude;
 	}
 
+	public Location(String latitude, String longitude) {
+		this(new BigDecimal(latitude), new BigDecimal(longitude));
+	}
+
 	public BigDecimal getLatitude() {
 		return latitude;
 	}

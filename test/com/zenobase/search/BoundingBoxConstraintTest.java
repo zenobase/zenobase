@@ -2,8 +2,6 @@ package com.zenobase.search;
 
 import static com.zenobase.testing.NodeAssert.assertThat;
 
-import java.math.BigDecimal;
-
 import org.codehaus.jackson.node.ObjectNode;
 import org.junit.Before;
 import org.junit.Test;
@@ -14,10 +12,11 @@ import com.zenobase.models.Location;
 
 public class BoundingBoxConstraintTest extends SearchTestSupport {
 
+	private static final Location SEATTLE = new Location("47.6097", "-122.3331");
+	private static final Location MIAMI = new Location("25.7878", "-80.2242");
+	private static final Location PARIS = new Location("48.8742", "2.3470");
+
 	private Event e1, e2, e3;
-	private Location seattle = new Location(new BigDecimal("47.6097"), new BigDecimal("-122.3331"));
-	private Location miami = new Location(new BigDecimal("25.7878"), new BigDecimal("-80.2242"));
-	private Location paris = new Location(new BigDecimal("48.8742"), new BigDecimal("2.3470"));
 
 	@Before
 	@Override
@@ -26,13 +25,13 @@ public class BoundingBoxConstraintTest extends SearchTestSupport {
 		super.setUp();
 
 		e1 = new Event();
-		e1.setValue(Event.LOCATION, seattle);
+		e1.setValue(Event.LOCATION, SEATTLE);
 
 		e2 = new Event();
-		e2.setValue(Event.LOCATION, miami);
+		e2.setValue(Event.LOCATION, MIAMI);
 
 		e3 = new Event();
-		e3.setValue(Event.LOCATION, paris);
+		e3.setValue(Event.LOCATION, PARIS);
 	}
 
 	@Test
@@ -41,7 +40,7 @@ public class BoundingBoxConstraintTest extends SearchTestSupport {
 		addEvent(e1);
 		addEvent(e2);
 		addEvent(e3);
-		addFilter(String.format("%s:%s", Event.LOCATION, Joiner.on(',').join(miami.getLatitude(), seattle.getLongitude(), seattle.getLatitude(), miami.getLongitude())));
+		addFilter(String.format("%s:%s", Event.LOCATION, Joiner.on(',').join(MIAMI.getLatitude(), SEATTLE.getLongitude(), SEATTLE.getLatitude(), MIAMI.getLongitude())));
 
 		ObjectNode result = execute();
 		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(2);

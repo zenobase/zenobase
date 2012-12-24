@@ -1,22 +1,26 @@
 package com.zenobase.search;
 
-import org.elasticsearch.index.mapper.geo.GeoPoint;
 import org.elasticsearch.index.query.FilterBuilder;
 import org.elasticsearch.index.query.FilterBuilders;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 
+import com.zenobase.models.Location;
+
 public class BoundingBoxConstraint implements Constraint {
 
 	@Override
 	public QueryBuilder build(String field, String value) {
-		String[] c = value.split(",");
-		GeoPoint topLeft = new GeoPoint(Double.parseDouble(c[2]), Double.parseDouble(c[1]));
-		GeoPoint bottomRight = new GeoPoint(Double.parseDouble(c[0]), Double.parseDouble(c[3]));
-		FilterBuilder locationFilter = FilterBuilders.geoBoundingBoxFilter(field)
-			.topLeft(topLeft.getLat(), topLeft.getLon())
-			.bottomRight(bottomRight.getLat(), bottomRight.getLon())
-			.type("indexed");
-		return QueryBuilders.constantScoreQuery(locationFilter);
+		String[] tokens = value.split(",");
+		return tokens.length == 4
+			? build(field, new Location(tokens[2], tokens[1]), new Location(tokens[0], tokens[3]))
+			: null;
+	}
+
+	private static QueryBuilder build(String field, Location topLeft, Location bottomRight) {
+		FilterBuilder filter = FilterBuilders.geoBoundingBoxFilter(field).type("indexed")
+			.topLeft(topLeft.getLatitude().doubleValue(), topLeft.getLongitude().doubleValue())
+			.bottomRight(bottomRight.getLatitude().doubleValue(), bottomRight.getLongitude().doubleValue());
+		return QueryBuilders.constantScoreQuery(filter);
 	}
 }
