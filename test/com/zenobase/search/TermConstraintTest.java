@@ -12,15 +12,16 @@ public class TermConstraintTest extends ConstraintTestSupport {
 
 	@Before
 	public void addEvents() {
-		addEvent("lunch", "Free Pizza!");
-		addEvent("lunch", "Burrito at Blue Water Taco");
-		addEvent("dinner", "Pizza at Domani");
+		addEvent("lunch", "Free Pizza!", 0);
+		addEvent("lunch", "Burrito at Blue Water Taco", 10);
+		addEvent("dinner", "Pizza at Domani", 15);
 	}
 
-	private void addEvent(String tag, String note) {
+	private void addEvent(String tag, String note, int count) {
 		Event event = new Event();
 		event.setValue(Event.TAG, tag);
 		event.setValue(Event.NOTE, note);
+		event.setValue(Event.COUNT, count);
 		addEvent(event);
 	}
 
@@ -36,5 +37,12 @@ public class TermConstraintTest extends ConstraintTestSupport {
 		addConstraint("%s:%s", Event.NOTE, "pizza");
 		ObjectNode result = execute();
 		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(2);
+	}
+
+	@Test
+	public void testWithCount() {
+		addConstraint("%s:%s", Event.COUNT, 10);
+		ObjectNode result = execute();
+		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(1);
 	}
 }

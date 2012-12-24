@@ -46,6 +46,7 @@ public class EventSearch {
 		.put(Event.AUTHOR.getName(), new TermConstraint())
 		.put(Event.NOTE.getName(), new WildcardConstraint())
 		.put(Event.NOTE.getName(), new TermConstraint())
+		.put(Event.COUNT.getName(), new TermConstraint())
 		.put(Event.TIMESTAMP.getName(), new DateTimeRangeConstraint())
 		.put(Event.RATING.getName(), new DecimalRangeConstraint())
 		.put(Event.DURATION.getName(), new DurationRangeConstraint())
