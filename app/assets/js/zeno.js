@@ -1429,11 +1429,11 @@
 			});
 		};
 		function toString(value) {
-			return typeof value === 'number' ? '' + value : '';
+			return typeof value === 'number' ? '' + value : '*';
 		}
 		$scope.filter = function(rating) {
 			$scope.offset = 0;
-			$scope.addFilter($scope.field, toString(rating.from) + ',' + toString(rating.to));
+			$scope.addFilter($scope.field, '[' + toString(rating.from) + '..' + toString(rating.to) + ')');
 		};
 
 		$scope.init();
