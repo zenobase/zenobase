@@ -1,7 +1,5 @@
 package com.zenobase.search;
 
-import java.math.BigDecimal;
-
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.query.RangeQueryBuilder;
@@ -9,13 +7,11 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.BoundType;
 import com.google.common.collect.Range;
 
-import com.zenobase.common.DecimalRangeParser;
-
-public class RangeConstraint implements Constraint {
+public abstract class RangeConstraintSupport<C extends Comparable<C>> implements Constraint {
 
 	@Override
 	public QueryBuilder build(String field, String value) {
-		Range<BigDecimal> range = parseRange(value);
+		Range<C> range = parseRange(value);
 		RangeQueryBuilder query = QueryBuilders.rangeQuery(getField(field));
 		if (range.hasLowerBound()) {
 			if (range.lowerBoundType() == BoundType.CLOSED) {
@@ -36,17 +32,13 @@ public class RangeConstraint implements Constraint {
 		return query;
 	}
 
-	private Range<BigDecimal> parseRange(String value) {
-		return new DecimalRangeParser().parse(value);
-	}
+	protected abstract Range<C> parseRange(String value);
 
-	private String getField(String name) {
+	protected String getField(String name) {
 		return name;
 	}
 
-	private Number getValue(BigDecimal value) {
-		return value;
-	}
+	protected abstract Number getValue(C value);
 
 	private static void checkBoundType(BoundType expected, BoundType actual) {
 		Preconditions.checkState(expected == actual, "Expected <%s> but got <%s>", expected, actual);
