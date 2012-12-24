@@ -37,7 +37,7 @@ public class DateTimeRangeConstraintTest extends SearchTestSupport {
 		addEvent(e1);
 		addEvent(e2);
 		addEvent(e3);
-		addFilter(String.format("%s:%s", Event.TIMESTAMP, Intervals.toString(e1.getValue(Event.TIMESTAMP), "hour")));
+		addFilter("%s:%s", Event.TIMESTAMP, Intervals.toString(e1.getValue(Event.TIMESTAMP), "hour"));
 
 		ObjectNode result = execute();
 		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(2);

@@ -39,7 +39,7 @@ public class CountWidgetTest extends SearchTestSupport {
 		addEvent(e1);
 		addEvent(e2);
 		addEvent(e3);
-		addWidget(String.format("id:%s,type:%s,field:%s", id, CountWidget.TYPE, Event.TAG));
+		addWidget("id:%s,type:%s,field:%s", id, CountWidget.TYPE, Event.TAG);
 
 		ObjectNode result = execute();
 		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(3);
@@ -56,7 +56,7 @@ public class CountWidgetTest extends SearchTestSupport {
 		addEvent(e1);
 		addEvent(e2);
 		addEvent(e3);
-		addWidget(String.format("id:%s,type:%s,field:%s,order:%s", id, CountWidget.TYPE, Event.TAG, "term"));
+		addWidget("id:%s,type:%s,field:%s,order:%s", id, CountWidget.TYPE, Event.TAG, "term");
 
 		ObjectNode result = execute();
 		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(3);
@@ -73,7 +73,7 @@ public class CountWidgetTest extends SearchTestSupport {
 		addEvent(e1);
 		addEvent(e2);
 		addEvent(e3);
-		addWidget(String.format("id:%s,type:%s,field:%s,reverse:%s", id, CountWidget.TYPE, Event.TAG, true));
+		addWidget("id:%s,type:%s,field:%s,reverse:%s", id, CountWidget.TYPE, Event.TAG, true);
 
 		ObjectNode result = execute();
 		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(3);
@@ -90,7 +90,7 @@ public class CountWidgetTest extends SearchTestSupport {
 		addEvent(e1);
 		addEvent(e2);
 		addEvent(e3);
-		addWidget(String.format("id:%s,type:%s,field:%s,limit:%s", id, CountWidget.TYPE, Event.TAG, 1));
+		addWidget("id:%s,type:%s,field:%s,limit:%s", id, CountWidget.TYPE, Event.TAG, 1);
 
 		ObjectNode result = execute();
 		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(3);
@@ -107,7 +107,7 @@ public class CountWidgetTest extends SearchTestSupport {
 		addEvent(e1);
 		addEvent(e2);
 		addEvent(e3);
-		addWidget(String.format("id:%s,type:%s,field:%s,offset:%s", id, CountWidget.TYPE, Event.TAG, 1));
+		addWidget("id:%s,type:%s,field:%s,offset:%s", id, CountWidget.TYPE, Event.TAG, 1);
 
 		ObjectNode result = execute();
 		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(3);
@@ -119,7 +119,7 @@ public class CountWidgetTest extends SearchTestSupport {
 	@Test
 	public void testEmpty() {
 
-		addWidget(String.format("id:%s,type:%s,field:%s", id, CountWidget.TYPE, Event.TAG));
+		addWidget("id:%s,type:%s,field:%s", id, CountWidget.TYPE, Event.TAG);
 
 		ObjectNode result = execute();
 		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(0);

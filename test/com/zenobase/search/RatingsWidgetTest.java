@@ -41,7 +41,7 @@ public class RatingsWidgetTest extends SearchTestSupport {
 		addEvent(e3);
 		addEvent(e4);
 		addEvent(e5);
-		addWidget(String.format("id:%s,type:%s", id, RatingsWidget.TYPE));
+		addWidget("id:%s,type:%s", id, RatingsWidget.TYPE);
 
 		ObjectNode result = execute();
 		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(5);
@@ -68,7 +68,7 @@ public class RatingsWidgetTest extends SearchTestSupport {
 		addEvent(e3);
 		addEvent(e4);
 		addEvent(e5);
-		addWidget(String.format("id:%s,type:%s,scale:%d", id, RatingsWidget.TYPE, 10));
+		addWidget("id:%s,type:%s,scale:%d", id, RatingsWidget.TYPE, 10);
 
 		ObjectNode result = execute();
 		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(5);
@@ -93,7 +93,7 @@ public class RatingsWidgetTest extends SearchTestSupport {
 	@Test
 	public void testEmpty() {
 
-		addWidget(String.format("id:%s,type:%s", id, RatingsWidget.TYPE));
+		addWidget("id:%s,type:%s", id, RatingsWidget.TYPE);
 
 		ObjectNode result = execute();
 		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(0);

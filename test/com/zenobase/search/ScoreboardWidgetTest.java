@@ -46,7 +46,7 @@ public class ScoreboardWidgetTest extends SearchTestSupport {
 		addEvent(e2);
 		addEvent(e3);
 		addEvent(e4);
-		addWidget(String.format("id:%s,type:%s,key_field:%s,value_field:%s,unit:%s,order:%s", id, ScoreboardWidget.TYPE, Event.TAG, Event.DISTANCE, "km", "total"));
+		addWidget("id:%s,type:%s,key_field:%s,value_field:%s,unit:%s,order:%s", id, ScoreboardWidget.TYPE, Event.TAG, Event.DISTANCE, "km", "total");
 
 		ObjectNode result = execute();
 		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(4);
@@ -76,7 +76,7 @@ public class ScoreboardWidgetTest extends SearchTestSupport {
 		addEvent(e2);
 		addEvent(e3);
 		addEvent(e4);
-		addWidget(String.format("id:%s,type:%s,key_field:%s,value_field:%s", id, ScoreboardWidget.TYPE, Event.TAG, Event.COUNT));
+		addWidget("id:%s,type:%s,key_field:%s,value_field:%s", id, ScoreboardWidget.TYPE, Event.TAG, Event.COUNT);
 
 		ObjectNode result = execute();
 		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(4);
@@ -98,7 +98,7 @@ public class ScoreboardWidgetTest extends SearchTestSupport {
 	@Test
 	public void testEmpty() {
 
-		addWidget(String.format("id:%s,type:%s,key_field:%s,value_field:%s,unit:%s,order:%s", id, ScoreboardWidget.TYPE, Event.TAG, Event.DISTANCE, "km", "total"));
+		addWidget("id:%s,type:%s,key_field:%s,value_field:%s,unit:%s,order:%s", id, ScoreboardWidget.TYPE, Event.TAG, Event.DISTANCE, "km", "total");
 
 		ObjectNode result = execute();
 		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(0);

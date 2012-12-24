@@ -41,7 +41,7 @@ public class PlotWidgetTest extends SearchTestSupport {
 
 		addEvent(first);
 		addEvent(last);
-		addWidget(String.format("id:%s,type:%s", id, PlotWidget.TYPE));
+		addWidget("id:%s,type:%s", id, PlotWidget.TYPE);
 
 		ObjectNode result = execute();
 		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(2);
@@ -57,7 +57,7 @@ public class PlotWidgetTest extends SearchTestSupport {
 
 		addEvent(first);
 		addEvent(last);
-		addWidget(String.format("id:%s,type:%s,field:%s,unit:%s", id, PlotWidget.TYPE, "distance", "m"));
+		addWidget("id:%s,type:%s,field:%s,unit:%s", id, PlotWidget.TYPE, "distance", "m");
 
 		ObjectNode result = execute();
 		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(2);
@@ -79,7 +79,7 @@ public class PlotWidgetTest extends SearchTestSupport {
 
 		addEvent(first);
 		addEvent(last);
-		addWidget(String.format("id:%s,type:%s,field:%s", id, PlotWidget.TYPE, "count"));
+		addWidget("id:%s,type:%s,field:%s", id, PlotWidget.TYPE, "count");
 
 		ObjectNode result = execute();
 		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(2);
@@ -101,7 +101,7 @@ public class PlotWidgetTest extends SearchTestSupport {
 	@Test
 	public void testEmpty() {
 
-		addWidget(String.format("id:%s,type:%s", id, PlotWidget.TYPE));
+		addWidget("id:%s,type:%s", id, PlotWidget.TYPE);
 
 		ObjectNode result = execute();
 		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(0);

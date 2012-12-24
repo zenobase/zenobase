@@ -41,7 +41,7 @@ public class TimelineWidgetTest extends SearchTestSupport {
 
 		addEvent(first);
 		addEvent(last);
-		addWidget(String.format("id:%s,type:%s", id, TimelineWidget.TYPE));
+		addWidget("id:%s,type:%s", id, TimelineWidget.TYPE);
 
 		ObjectNode result = execute();
 		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(2);
@@ -59,7 +59,7 @@ public class TimelineWidgetTest extends SearchTestSupport {
 
 		addEvent(first);
 		addEvent(last);
-		addWidget(String.format("id:%s,type:%s,field:%s,unit:%s", id, TimelineWidget.TYPE, "distance", "m"));
+		addWidget("id:%s,type:%s,field:%s,unit:%s", id, TimelineWidget.TYPE, "distance", "m");
 
 		ObjectNode result = execute();
 		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(2);
@@ -86,7 +86,7 @@ public class TimelineWidgetTest extends SearchTestSupport {
 
 		addEvent(first);
 		addEvent(last);
-		addWidget(String.format("id:%s,type:%s,field:%s", id, TimelineWidget.TYPE, "count"));
+		addWidget("id:%s,type:%s,field:%s", id, TimelineWidget.TYPE, "count");
 
 		ObjectNode result = execute();
 		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(2);
@@ -113,7 +113,7 @@ public class TimelineWidgetTest extends SearchTestSupport {
 	@Test
 	public void testEmpty() {
 
-		addWidget(String.format("id:%s,type:%s", id, TimelineWidget.TYPE));
+		addWidget("id:%s,type:%s", id, TimelineWidget.TYPE);
 
 		ObjectNode result = execute();
 		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(0);
@@ -125,7 +125,7 @@ public class TimelineWidgetTest extends SearchTestSupport {
 
 		addEvent(first);
 		addEvent(last);
-		addWidget(String.format("id:%s,type:%s,interval:%s", id, TimelineWidget.TYPE, "year"));
+		addWidget("id:%s,type:%s,interval:%s", id, TimelineWidget.TYPE, "year");
 
 		ObjectNode result = execute();
 		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(2);
@@ -139,7 +139,7 @@ public class TimelineWidgetTest extends SearchTestSupport {
 
 		addEvent(first);
 		addEvent(last);
-		addWidget(String.format("id:%s,type:%s,interval:%s,field:%s,unit:%s", id, TimelineWidget.TYPE, "year", "distance", "m"));
+		addWidget("id:%s,type:%s,interval:%s,field:%s,unit:%s", id, TimelineWidget.TYPE, "year", "distance", "m");
 
 		ObjectNode result = execute();
 		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(2);
@@ -156,7 +156,7 @@ public class TimelineWidgetTest extends SearchTestSupport {
 
 		addEvent(first);
 		addEvent(last);
-		addWidget(String.format("id:%s,type:%s,interval:%s,range:%s", id, TimelineWidget.TYPE, "month", "2012T+0000"));
+		addWidget("id:%s,type:%s,interval:%s,range:%s", id, TimelineWidget.TYPE, "month", "2012T+0000");
 
 		ObjectNode result = execute();
 		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(2);
@@ -176,7 +176,7 @@ public class TimelineWidgetTest extends SearchTestSupport {
 
 		addEvent(first);
 		addEvent(last);
-		addWidget(String.format("id:%s,type:%s,interval:%s,range:%s", id, TimelineWidget.TYPE, "day", "2012-03T+0000"));
+		addWidget("id:%s,type:%s,interval:%s,range:%s", id, TimelineWidget.TYPE, "day", "2012-03T+0000");
 
 		ObjectNode result = execute();
 		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(2);
@@ -192,7 +192,7 @@ public class TimelineWidgetTest extends SearchTestSupport {
 
 		addEvent(first);
 		addEvent(last);
-		addWidget(String.format("id:%s,type:%s,interval:%s,range:%s", id, TimelineWidget.TYPE, "hour", "2012-03-31T+0000"));
+		addWidget("id:%s,type:%s,interval:%s,range:%s", id, TimelineWidget.TYPE, "hour", "2012-03-31T+0000");
 
 		ObjectNode result = execute();
 		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(2);
@@ -210,7 +210,7 @@ public class TimelineWidgetTest extends SearchTestSupport {
 
 		addEvent(first);
 		addEvent(last);
-		addWidget(String.format("id:%s,type:%s,interval:%s,range:%s,timezone:%s", id, TimelineWidget.TYPE, "hour", "2012-03-31T-0800", "-08:00"));
+		addWidget("id:%s,type:%s,interval:%s,range:%s,timezone:%s", id, TimelineWidget.TYPE, "hour", "2012-03-31T-0800", "-08:00");
 
 		ObjectNode result = execute();
 		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(2);
@@ -228,7 +228,7 @@ public class TimelineWidgetTest extends SearchTestSupport {
 
 		addEvent(first);
 		addEvent(last);
-		addWidget(String.format("id:%s,type:%s,interval:%s,range:%s", id, TimelineWidget.TYPE, "minute", "2012-03-31T20+0000"));
+		addWidget("id:%s,type:%s,interval:%s,range:%s", id, TimelineWidget.TYPE, "minute", "2012-03-31T20+0000");
 
 		ObjectNode result = execute();
 		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(2);

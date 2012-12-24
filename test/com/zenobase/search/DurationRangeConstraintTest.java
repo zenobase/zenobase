@@ -29,35 +29,35 @@ public class DurationRangeConstraintTest extends SearchTestSupport {
 
 	@Test
 	public void testRange() {
-		addFilter(String.format("%s:%s", Event.DURATION, "[0..1d 1h]"));
+		addFilter("%s:%s", Event.DURATION, "[0..1d 1h]");
 		ObjectNode result = execute();
 		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(4);
 	}
 
 	@Test
 	public void testEmptyRange() {
-		addFilter(String.format("%s:%s", Event.DURATION, "(10h..20h)"));
+		addFilter("%s:%s", Event.DURATION, "(10h..20h)");
 		ObjectNode result = execute();
 		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(0);
 	}
 
 	@Test
 	public void testLowerRange() {
-		addFilter(String.format("%s:%s", Event.DURATION, "(*..10h)"));
+		addFilter("%s:%s", Event.DURATION, "(*..10h)");
 		ObjectNode result = execute();
 		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(3);
 	}
 
 	@Test
 	public void testUpperRange() {
-		addFilter(String.format("%s:%s", Event.DURATION, "[10h..*)"));
+		addFilter("%s:%s", Event.DURATION, "[10h..*)");
 		ObjectNode result = execute();
 		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(1);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testInvalidRange() {
-		addFilter(String.format("%s:%s", Event.DURATION, "(1)"));
+		addFilter("%s:%s", Event.DURATION, "(1)");
 		execute();
 	}
 }

@@ -30,7 +30,7 @@ public class MeasureConstraintTest extends SearchTestSupport {
 
 	@Test
 	public void test() {
-		addFilter(String.format("%s:%s", Event.DISTANCE, "10 km"));
+		addFilter("%s:%s", Event.DISTANCE, "10 km");
 		ObjectNode result = execute();
 		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(2);
 	}

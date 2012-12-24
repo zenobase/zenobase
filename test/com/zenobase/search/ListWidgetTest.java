@@ -47,7 +47,7 @@ public class ListWidgetTest extends SearchTestSupport {
 		addEvent(e2);
 		addEvent(e1);
 		addEvent(e3);
-		addWidget(String.format("id:%s,type:%s", id, ListWidget.TYPE));
+		addWidget("id:%s,type:%s", id, ListWidget.TYPE);
 
 		ObjectNode result = execute();
 		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(3);
@@ -60,7 +60,7 @@ public class ListWidgetTest extends SearchTestSupport {
 	@Test
 	public void testEmpty() {
 
-		addWidget(String.format("id:%s,type:%s", id, ListWidget.TYPE));
+		addWidget("id:%s,type:%s", id, ListWidget.TYPE);
 
 		ObjectNode result = execute();
 		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(0);
@@ -73,7 +73,7 @@ public class ListWidgetTest extends SearchTestSupport {
 		addEvent(e2);
 		addEvent(e1);
 		addEvent(e3);
-		addWidget(String.format("id:%s,type:%s,offset:%d,limit:%d,order:%s,reverse:%s", id, ListWidget.TYPE, 1, 1, Event.TAG.getName(), true));
+		addWidget("id:%s,type:%s,offset:%d,limit:%d,order:%s,reverse:%s", id, ListWidget.TYPE, 1, 1, Event.TAG.getName(), true);
 
 		ObjectNode result = execute();
 		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(3);

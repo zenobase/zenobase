@@ -47,7 +47,7 @@ public class HistogramWidgetTest extends SearchTestSupport {
 		addEvent(e2);
 		addEvent(e3);
 		addEvent(e4);
-		addWidget(String.format("id:%s,type:%s,field:%s,interval:%s", id, HistogramWidget.TYPE, Event.COUNT, 1000));
+		addWidget("id:%s,type:%s,field:%s,interval:%s", id, HistogramWidget.TYPE, Event.COUNT, 1000);
 
 		ObjectNode result = execute();
 		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(4);
@@ -67,7 +67,7 @@ public class HistogramWidgetTest extends SearchTestSupport {
 		addEvent(e2);
 		addEvent(e3);
 		addEvent(e4);
-		addWidget(String.format("id:%s,type:%s,field:%s,interval:%s,unit:%s", id, HistogramWidget.TYPE, Event.DISTANCE, 5, SI.KILOMETER));
+		addWidget("id:%s,type:%s,field:%s,interval:%s,unit:%s", id, HistogramWidget.TYPE, Event.DISTANCE, 5, SI.KILOMETER);
 
 		ObjectNode result = execute();
 		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(4);
@@ -91,7 +91,7 @@ public class HistogramWidgetTest extends SearchTestSupport {
 		addEvent(e2);
 		addEvent(e3);
 		addEvent(e4);
-		addWidget(String.format("id:%s,type:%s,field:%s,interval:%s,unit:%s", id, HistogramWidget.TYPE, Event.DISTANCE, 5, NonSI.MILE));
+		addWidget("id:%s,type:%s,field:%s,interval:%s,unit:%s", id, HistogramWidget.TYPE, Event.DISTANCE, 5, NonSI.MILE);
 
 		ObjectNode result = execute();
 		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(4);
@@ -111,7 +111,7 @@ public class HistogramWidgetTest extends SearchTestSupport {
 	@Test
 	public void testEmpty() {
 
-		addWidget(String.format("id:%s,type:%s,field:%s", id, HistogramWidget.TYPE, Event.RATING));
+		addWidget("id:%s,type:%s,field:%s", id, HistogramWidget.TYPE, Event.RATING);
 
 		ObjectNode result = execute();
 		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(0);

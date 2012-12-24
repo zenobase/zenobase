@@ -39,7 +39,7 @@ public class TimeHistogramWidgetTest extends SearchTestSupport {
 		addEvent(e1);
 		addEvent(e2);
 		addEvent(e3);
-		addWidget(String.format("id:%s,type:%s,field:%s,interval:%s,timezone:%s", id, TimeHistogramWidget.TYPE, Event.TIMESTAMP, "hour_of_day", timezone));
+		addWidget("id:%s,type:%s,field:%s,interval:%s,timezone:%s", id, TimeHistogramWidget.TYPE, Event.TIMESTAMP, "hour_of_day", timezone);
 
 		ObjectNode result = execute();
 		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(3);
@@ -56,7 +56,7 @@ public class TimeHistogramWidgetTest extends SearchTestSupport {
 		addEvent(e1);
 		addEvent(e2);
 		addEvent(e3);
-		addWidget(String.format("id:%s,type:%s,field:%s,interval:%s,timezone:%s", id, TimeHistogramWidget.TYPE, Event.TIMESTAMP, "day_of_week", timezone));
+		addWidget("id:%s,type:%s,field:%s,interval:%s,timezone:%s", id, TimeHistogramWidget.TYPE, Event.TIMESTAMP, "day_of_week", timezone);
 
 		ObjectNode result = execute();
 		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(3);
@@ -75,7 +75,7 @@ public class TimeHistogramWidgetTest extends SearchTestSupport {
 		addEvent(e1);
 		addEvent(e2);
 		addEvent(e3);
-		addWidget(String.format("id:%s,type:%s,field:%s,interval:%s,timezone:%s", id, TimeHistogramWidget.TYPE, Event.TIMESTAMP, "month_of_year", timezone));
+		addWidget("id:%s,type:%s,field:%s,interval:%s,timezone:%s", id, TimeHistogramWidget.TYPE, Event.TIMESTAMP, "month_of_year", timezone);
 
 		ObjectNode result = execute();
 		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(3);

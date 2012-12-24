@@ -29,35 +29,35 @@ public class RangeConstraintTest extends SearchTestSupport {
 
 	@Test
 	public void testRange() {
-		addFilter(String.format("%s:%s", Event.RATING, "[0..100]"));
+		addFilter("%s:%s", Event.RATING, "[0..100]");
 		ObjectNode result = execute();
 		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(4);
 	}
 
 	@Test
 	public void testEmptyRange() {
-		addFilter(String.format("%s:%s", Event.RATING, "(0..40)"));
+		addFilter("%s:%s", Event.RATING, "(0..40)");
 		ObjectNode result = execute();
 		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(0);
 	}
 
 	@Test
 	public void testLowerRange() {
-		addFilter(String.format("%s:%s", Event.RATING, "(*..50]"));
+		addFilter("%s:%s", Event.RATING, "(*..50]");
 		ObjectNode result = execute();
 		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(3);
 	}
 
 	@Test
 	public void testUpperRange() {
-		addFilter(String.format("%s:%s", Event.RATING, "[50..*)"));
+		addFilter("%s:%s", Event.RATING, "[50..*)");
 		ObjectNode result = execute();
 		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(1);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testInvalidRange() {
-		addFilter(String.format("%s:%s", Event.RATING, "1"));
+		addFilter("%s:%s", Event.RATING, "1");
 		execute();
 	}
 }

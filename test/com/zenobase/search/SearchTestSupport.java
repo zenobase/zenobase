@@ -27,12 +27,12 @@ public class SearchTestSupport extends ElasticSearchTestSupport {
 		index.store(Event.TYPE_NAME, event.getId(), event.toJson(), true);
 	}
 
-	protected void addWidget(String options) {
-		search.addWidget(options);
+	protected void addWidget(String options, Object... args) {
+		search.addWidget(String.format(options, args));
 	}
 
-	protected void addFilter(String expression) {
-		search.addFilter(expression);
+	protected void addFilter(String expression, Object... args) {
+		search.addFilter(String.format(expression, args));
 	}
 
 	protected ObjectNode execute() {
