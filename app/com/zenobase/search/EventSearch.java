@@ -46,6 +46,7 @@ public class EventSearch {
 		.put(Event.RATING.getName(), new DecimalRangeConstraint())
 		.put(Event.DURATION.getName(), new DurationRangeConstraint())
 		.put(Event.DISTANCE.getName(), new MeasureRangeConstraint()) // TODO add for all measure fields!
+		.put(Event.DISTANCE.getName(), new MeasureConstraint()) // TODO add for all measure fields!
 		.put(Event.LOCATION.getName(), new BoundingBoxConstraint())
 		.put(Event.LOCATION.getName(), new DistanceConstraint())
 		.build();

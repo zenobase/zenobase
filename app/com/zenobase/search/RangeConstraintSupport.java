@@ -12,6 +12,10 @@ public abstract class RangeConstraintSupport<C extends Comparable<C>> implements
 	@Override
 	public QueryBuilder build(String field, String value) {
 		Range<C> range = parseRange(value);
+		return range != null ? build(field, range) : null;
+	}
+
+	private QueryBuilder build(String field, Range<C> range) {
 		RangeQueryBuilder query = QueryBuilders.rangeQuery(getField(field));
 		if (range.hasLowerBound()) {
 			if (range.lowerBoundType() == BoundType.CLOSED) {
