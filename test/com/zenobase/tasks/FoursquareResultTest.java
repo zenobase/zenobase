@@ -2,7 +2,6 @@ package com.zenobase.tasks;
 
 import static org.fest.assertions.Assertions.assertThat;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 import org.joda.time.DateTime;
@@ -26,7 +25,7 @@ public class FoursquareResultTest extends ResultTestSupport {
 		expected.setValue(Event.AUTHOR, TESTER);
 		expected.setValue(Event.SOURCE, FoursquareResult.SOURCE);
 		expected.setValue(Event.RESOURCE, new Resource("Queen Anne Pool", FoursquareResult.SOURCE.getUrl()));
-		expected.setValue(Event.LOCATION, new Location(new BigDecimal("47.636366468491374"), new BigDecimal("-122.35784366726875")));
+		expected.setValue(Event.LOCATION, new Location("47.636366468491374", "-122.35784366726875"));
 		expected.addValue(Event.TAG, "Pool");
 		expected.setValue(Event.NOTE, "20 laps");
 		assertThat(events.get(0)).as("first event").isEqualTo(expected);

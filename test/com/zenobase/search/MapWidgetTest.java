@@ -2,8 +2,6 @@ package com.zenobase.search;
 
 import static com.zenobase.testing.NodeAssert.assertThat;
 
-import java.math.BigDecimal;
-
 import org.codehaus.jackson.node.ObjectNode;
 import org.junit.Before;
 import org.junit.Test;
@@ -15,6 +13,10 @@ import com.zenobase.testing.NodeAssert;
 
 public class MapWidgetTest extends SearchTestSupport {
 
+	private static final Location DENVER = new Location("39.75", "-104.87");
+	private static final Location LAS_VEGAS = new Location("36.08", "-115.17");
+	private static final Location SAN_DIEGO = new Location("32.82", "-117.13");
+
 	private String id = Generator.id();
 	private Event e1, e2, e3, e4;
 
@@ -22,15 +24,15 @@ public class MapWidgetTest extends SearchTestSupport {
 	@Override
 	public void setUp() {
 		super.setUp();
-		e1 = newEvent(39.75, -104.87); // Denver
-		e2 = newEvent(39.75, -104.87); // Denver
-		e3 = newEvent(36.08, -115.17); // Las Vegas
-		e4 = newEvent(32.82, -117.13); // San Diego
+		e1 = newEvent(DENVER);
+		e2 = newEvent(DENVER);
+		e3 = newEvent(LAS_VEGAS);
+		e4 = newEvent(SAN_DIEGO);
 	}
 
-	private static Event newEvent(double lat, double lon) {
+	private static Event newEvent(Location location) {
 		Event event = new Event();
-		event.setValue(Event.LOCATION, new Location(BigDecimal.valueOf(lat), BigDecimal.valueOf(lon)));
+		event.setValue(Event.LOCATION, location);
 		return event;
 	}
 
