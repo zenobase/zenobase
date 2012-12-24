@@ -44,6 +44,7 @@ public class EventSearch {
 		.put(Event.AUTHOR.getName(), new TermConstraint())
 		.put(Event.TIMESTAMP.getName(), new DateTimeRangeConstraint())
 		.put(Event.RATING.getName(), new RangeConstraint())
+		.put(Event.DURATION.getName(), new DurationRangeConstraint())
 		.put(Event.LOCATION.getName(), new BoundingBoxConstraint())
 		.build();
 
