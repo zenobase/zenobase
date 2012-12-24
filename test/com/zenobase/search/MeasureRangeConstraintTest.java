@@ -11,12 +11,10 @@ import org.junit.Test;
 import com.zenobase.common.Measures;
 import com.zenobase.models.Event;
 
-public class MeasureRangeConstraintTest extends SearchTestSupport {
+public class MeasureRangeConstraintTest extends ConstraintTestSupport {
 
 	@Before
-	@Override
-	public void setUp() {
-		super.setUp();
+	public void addEvents() {
 		addEvent("0 km");
 		addEvent("4 km");
 		addEvent("4000 m");
@@ -59,7 +57,7 @@ public class MeasureRangeConstraintTest extends SearchTestSupport {
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testInvalidRange() {
-		addFilter("%s:%s", Event.DISTANCE, "(1)");
+		addFilter("%s:%s", Event.DISTANCE, "(25 km..4 km)");
 		execute();
 	}
 }

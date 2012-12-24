@@ -9,16 +9,14 @@ import org.junit.Test;
 import com.zenobase.models.Event;
 import com.zenobase.models.Location;
 
-public class DistanceConstraintTest extends SearchTestSupport {
+public class DistanceConstraintTest extends ConstraintTestSupport {
 
 	private static final Location LAS_VEGAS = new Location("36.08", "-115.17");
 	private static final Location SAN_DIEGO = new Location("32.82", "-117.13");
 	private static final Location DENVER = new Location("39.75", "-104.87");
 
 	@Before
-	@Override
-	public void setUp() {
-		super.setUp();
+	public void addEvents() {
 		addEvent(LAS_VEGAS);
 		addEvent(LAS_VEGAS);
 		addEvent(SAN_DIEGO);

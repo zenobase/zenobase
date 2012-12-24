@@ -9,12 +9,10 @@ import org.junit.Test;
 import com.zenobase.models.Event;
 import com.zenobase.models.Rating;
 
-public class RangeConstraintTest extends SearchTestSupport {
+public class RangeConstraintTest extends ConstraintTestSupport {
 
 	@Before
-	@Override
-	public void setUp() {
-		super.setUp();
+	public void addEvents() {
 		addEvent(0);
 		addEvent(40);
 		addEvent(40);
@@ -57,7 +55,7 @@ public class RangeConstraintTest extends SearchTestSupport {
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testInvalidRange() {
-		addFilter("%s:%s", Event.RATING, "1");
+		addFilter("%s:%s", Event.RATING, "[100..0]");
 		execute();
 	}
 }

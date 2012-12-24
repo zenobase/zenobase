@@ -6,16 +6,14 @@ import org.codehaus.jackson.node.ObjectNode;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.zenobase.common.Generator;
 import com.zenobase.models.Event;
 import com.zenobase.testing.NodeAssert;
 
-public class CountWidgetTest extends SearchTestSupport {
+public class CountWidgetTest extends WidgetTestSupport {
 
 	private static final String TAG_LUNCH = "lunch";
 	private static final String TAG_DINNER = "dinner";
 
-	private String id = Generator.id();
 	private Event e1, e2, e3;
 
 	@Before
@@ -39,11 +37,11 @@ public class CountWidgetTest extends SearchTestSupport {
 		addEvent(e1);
 		addEvent(e2);
 		addEvent(e3);
-		addWidget("id:%s,type:%s,field:%s", id, CountWidget.TYPE, Event.TAG);
+		addWidget("id:%s,type:%s,field:%s", WIDGET_ID, CountWidget.TYPE, Event.TAG);
 
 		ObjectNode result = execute();
 		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(3);
-		NodeAssert node = assertThat(result).path(id).hasSize(2);
+		NodeAssert node = assertThat(result).path(WIDGET_ID).hasSize(2);
 		node.path(0).path("label").isEqualTo(TAG_LUNCH);
 		node.path(0).path("count").isEqualTo(2);
 		node.path(1).path("label").isEqualTo(TAG_DINNER);
@@ -56,11 +54,11 @@ public class CountWidgetTest extends SearchTestSupport {
 		addEvent(e1);
 		addEvent(e2);
 		addEvent(e3);
-		addWidget("id:%s,type:%s,field:%s,order:%s", id, CountWidget.TYPE, Event.TAG, "term");
+		addWidget("id:%s,type:%s,field:%s,order:%s", WIDGET_ID, CountWidget.TYPE, Event.TAG, "term");
 
 		ObjectNode result = execute();
 		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(3);
-		NodeAssert node = assertThat(result).path(id).hasSize(2);
+		NodeAssert node = assertThat(result).path(WIDGET_ID).hasSize(2);
 		node.path(0).path("label").isEqualTo(TAG_DINNER);
 		node.path(0).path("count").isEqualTo(1);
 		node.path(1).path("label").isEqualTo(TAG_LUNCH);
@@ -73,11 +71,11 @@ public class CountWidgetTest extends SearchTestSupport {
 		addEvent(e1);
 		addEvent(e2);
 		addEvent(e3);
-		addWidget("id:%s,type:%s,field:%s,reverse:%s", id, CountWidget.TYPE, Event.TAG, true);
+		addWidget("id:%s,type:%s,field:%s,reverse:%s", WIDGET_ID, CountWidget.TYPE, Event.TAG, true);
 
 		ObjectNode result = execute();
 		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(3);
-		NodeAssert node = assertThat(result).path(id).hasSize(2);
+		NodeAssert node = assertThat(result).path(WIDGET_ID).hasSize(2);
 		node.path(0).path("label").isEqualTo(TAG_DINNER);
 		node.path(0).path("count").isEqualTo(1);
 		node.path(1).path("label").isEqualTo(TAG_LUNCH);
@@ -90,11 +88,11 @@ public class CountWidgetTest extends SearchTestSupport {
 		addEvent(e1);
 		addEvent(e2);
 		addEvent(e3);
-		addWidget("id:%s,type:%s,field:%s,limit:%s", id, CountWidget.TYPE, Event.TAG, 1);
+		addWidget("id:%s,type:%s,field:%s,limit:%s", WIDGET_ID, CountWidget.TYPE, Event.TAG, 1);
 
 		ObjectNode result = execute();
 		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(3);
-		NodeAssert node = assertThat(result).path(id).hasSize(2);
+		NodeAssert node = assertThat(result).path(WIDGET_ID).hasSize(2);
 		node.path(0).path("label").isEqualTo(TAG_LUNCH);
 		node.path(0).path("count").isEqualTo(2);
 		node.path(1).path("label").isEqualTo(CountWidget.LABEL_MORE);
@@ -107,11 +105,11 @@ public class CountWidgetTest extends SearchTestSupport {
 		addEvent(e1);
 		addEvent(e2);
 		addEvent(e3);
-		addWidget("id:%s,type:%s,field:%s,offset:%s", id, CountWidget.TYPE, Event.TAG, 1);
+		addWidget("id:%s,type:%s,field:%s,offset:%s", WIDGET_ID, CountWidget.TYPE, Event.TAG, 1);
 
 		ObjectNode result = execute();
 		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(3);
-		NodeAssert node = assertThat(result).path(id).hasSize(1);
+		NodeAssert node = assertThat(result).path(WIDGET_ID).hasSize(1);
 		node.path(0).path("label").isEqualTo(TAG_DINNER);
 		node.path(0).path("count").isEqualTo(1);
 	}
@@ -119,10 +117,10 @@ public class CountWidgetTest extends SearchTestSupport {
 	@Test
 	public void testEmpty() {
 
-		addWidget("id:%s,type:%s,field:%s", id, CountWidget.TYPE, Event.TAG);
+		addWidget("id:%s,type:%s,field:%s", WIDGET_ID, CountWidget.TYPE, Event.TAG);
 
 		ObjectNode result = execute();
 		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(0);
-		assertThat(result).path(id).hasSize(0);
+		assertThat(result).path(WIDGET_ID).hasSize(0);
 	}
 }

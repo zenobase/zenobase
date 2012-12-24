@@ -10,16 +10,14 @@ import com.google.common.base.Joiner;
 import com.zenobase.models.Event;
 import com.zenobase.models.Location;
 
-public class BoundingBoxConstraintTest extends SearchTestSupport {
+public class BoundingBoxConstraintTest extends ConstraintTestSupport {
 
 	private static final Location SEATTLE = new Location("47.6097", "-122.3331");
 	private static final Location MIAMI = new Location("25.7878", "-80.2242");
 	private static final Location PARIS = new Location("48.8742", "2.3470");
 
 	@Before
-	@Override
-	public void setUp() {
-		super.setUp();
+	public void addEvents() {
 		addEvent(SEATTLE);
 		addEvent(MIAMI);
 		addEvent(PARIS);

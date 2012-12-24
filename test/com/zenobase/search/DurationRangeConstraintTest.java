@@ -9,12 +9,10 @@ import org.junit.Test;
 
 import com.zenobase.models.Event;
 
-public class DurationRangeConstraintTest extends SearchTestSupport {
+public class DurationRangeConstraintTest extends ConstraintTestSupport {
 
 	@Before
-	@Override
-	public void setUp() {
-		super.setUp();
+	public void addEvents() {
 		addEvent(0);
 		addEvent(4);
 		addEvent(4);

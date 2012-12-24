@@ -5,6 +5,16 @@ import com.google.common.testing.EqualsTester;
 
 public class EventSearchTest {
 
+	@Test(expected = IllegalArgumentException.class)
+	public void testUnsupportedFilter() {
+		new EventSearch().addFilter("xxx:lunch");
+	}
+
+	@Test
+	public void testUnsupportedWidget() {
+		new EventSearch().addWidget("type:xxx");
+	}
+
 	@Test
 	public void testEqualsHashCode() {
 		EventSearch a = new EventSearch().addFilter("tag:a").addFilter("tag:b");

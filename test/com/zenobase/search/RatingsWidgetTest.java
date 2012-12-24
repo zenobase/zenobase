@@ -6,14 +6,12 @@ import org.codehaus.jackson.node.ObjectNode;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.zenobase.common.Generator;
 import com.zenobase.models.Event;
 import com.zenobase.models.Rating;
 import com.zenobase.testing.NodeAssert;
 
-public class RatingsWidgetTest extends SearchTestSupport {
+public class RatingsWidgetTest extends WidgetTestSupport {
 
-	private String id = Generator.id();
 	private Event e1, e2, e3, e4, e5;
 
 	@Before
@@ -41,11 +39,11 @@ public class RatingsWidgetTest extends SearchTestSupport {
 		addEvent(e3);
 		addEvent(e4);
 		addEvent(e5);
-		addWidget("id:%s,type:%s", id, RatingsWidget.TYPE);
+		addWidget("id:%s,type:%s", WIDGET_ID, RatingsWidget.TYPE);
 
 		ObjectNode result = execute();
 		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(5);
-		NodeAssert node = assertThat(result).path(id).hasSize(4);
+		NodeAssert node = assertThat(result).path(WIDGET_ID).hasSize(4);
 		node.path(0).path("from").isEqualTo(90);
 		node.path(0).path("to").isEqualTo(100);
 		node.path(0).path("count").isEqualTo(1);
@@ -68,11 +66,11 @@ public class RatingsWidgetTest extends SearchTestSupport {
 		addEvent(e3);
 		addEvent(e4);
 		addEvent(e5);
-		addWidget("id:%s,type:%s,scale:%d", id, RatingsWidget.TYPE, 10);
+		addWidget("id:%s,type:%s,scale:%d", WIDGET_ID, RatingsWidget.TYPE, 10);
 
 		ObjectNode result = execute();
 		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(5);
-		NodeAssert node = assertThat(result).path(id).hasSize(5);
+		NodeAssert node = assertThat(result).path(WIDGET_ID).hasSize(5);
 		node.path(0).path("from").isEqualTo(95);
 		node.path(0).path("to").isEqualTo(100);
 		node.path(0).path("count").isEqualTo(1);
@@ -93,10 +91,10 @@ public class RatingsWidgetTest extends SearchTestSupport {
 	@Test
 	public void testEmpty() {
 
-		addWidget("id:%s,type:%s", id, RatingsWidget.TYPE);
+		addWidget("id:%s,type:%s", WIDGET_ID, RatingsWidget.TYPE);
 
 		ObjectNode result = execute();
 		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(0);
-		assertThat(result).path(id).hasSize(0);
+		assertThat(result).path(WIDGET_ID).hasSize(0);
 	}
 }

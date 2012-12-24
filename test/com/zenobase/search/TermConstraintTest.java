@@ -8,12 +8,10 @@ import org.junit.Test;
 
 import com.zenobase.models.Event;
 
-public class TermConstraintTest extends SearchTestSupport {
+public class TermConstraintTest extends ConstraintTestSupport {
 
 	@Before
-	@Override
-	public void setUp() {
-		super.setUp();
+	public void addEvents() {
 		addEvent("lunch");
 		addEvent("lunch");
 		addEvent("dinner");

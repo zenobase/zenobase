@@ -2,8 +2,6 @@ package com.zenobase.search;
 
 import static com.zenobase.testing.NodeAssert.assertThat;
 
-import java.math.BigDecimal;
-
 import javax.measure.DecimalMeasure;
 import javax.measure.quantity.Length;
 import javax.measure.unit.NonSI;
@@ -13,29 +11,27 @@ import org.codehaus.jackson.node.ObjectNode;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.zenobase.common.Generator;
 import com.zenobase.models.Event;
 import com.zenobase.testing.NodeAssert;
 
-public class HistogramWidgetTest extends SearchTestSupport {
+public class HistogramWidgetTest extends WidgetTestSupport {
 
-	private String id = Generator.id();
 	private Event e1, e2, e3, e4;
 
 	@Before
 	@Override
 	public void setUp() {
 		super.setUp();
-		e1 = newEvent("walk", new DecimalMeasure<Length>(new BigDecimal(10), SI.KILOMETER), 2000);
-		e2 = newEvent("hike", new DecimalMeasure<Length>(new BigDecimal(10100), SI.METER), 2500);
-		e3 = newEvent("hike", new DecimalMeasure<Length>(new BigDecimal(20), SI.KILOMETER), 7500);
+		e1 = newEvent("walk", "10 km", 2000);
+		e2 = newEvent("hike", "10100 m", 2500);
+		e3 = newEvent("hike", "20 km", 7500);
 		e4 = newEvent("climb", null, null);
 	}
 
-	private static Event newEvent(String tag, DecimalMeasure<Length> distance, Integer count) {
+	private static Event newEvent(String tag, String distance, Integer count) {
 		Event event = new Event();
 		event.setValue(Event.TAG, tag);
-		event.setValue(Event.DISTANCE, distance);
+		event.setValue(Event.DISTANCE, distance != null ? DecimalMeasure.<Length>valueOf(distance) : null);
 		event.setValue(Event.COUNT, count);
 		return event;
 	}
@@ -47,11 +43,11 @@ public class HistogramWidgetTest extends SearchTestSupport {
 		addEvent(e2);
 		addEvent(e3);
 		addEvent(e4);
-		addWidget("id:%s,type:%s,field:%s,interval:%s", id, HistogramWidget.TYPE, Event.COUNT, 1000);
+		addWidget("id:%s,type:%s,field:%s,interval:%s", WIDGET_ID, HistogramWidget.TYPE, Event.COUNT, 1000);
 
 		ObjectNode result = execute();
 		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(4);
-		NodeAssert node = assertThat(result).path(id).hasSize(2);
+		NodeAssert node = assertThat(result).path(WIDGET_ID).hasSize(2);
 		node.path(0).path("from").isEqualTo(7000.0);
 		node.path(0).path("to").isEqualTo(8000.0);
 		node.path(0).path("count").isEqualTo(1);
@@ -67,11 +63,11 @@ public class HistogramWidgetTest extends SearchTestSupport {
 		addEvent(e2);
 		addEvent(e3);
 		addEvent(e4);
-		addWidget("id:%s,type:%s,field:%s,interval:%s,unit:%s", id, HistogramWidget.TYPE, Event.DISTANCE, 5, SI.KILOMETER);
+		addWidget("id:%s,type:%s,field:%s,interval:%s,unit:%s", WIDGET_ID, HistogramWidget.TYPE, Event.DISTANCE, 5, SI.KILOMETER);
 
 		ObjectNode result = execute();
 		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(4);
-		NodeAssert node = assertThat(result).path(id).hasSize(2);
+		NodeAssert node = assertThat(result).path(WIDGET_ID).hasSize(2);
 		node.path(0).path("from").path("@value").isEqualTo(20.0);
 		node.path(0).path("from").path("unit").isEqualTo("km");
 		node.path(0).path("to").path("@value").isEqualTo(25.0);
@@ -91,11 +87,11 @@ public class HistogramWidgetTest extends SearchTestSupport {
 		addEvent(e2);
 		addEvent(e3);
 		addEvent(e4);
-		addWidget("id:%s,type:%s,field:%s,interval:%s,unit:%s", id, HistogramWidget.TYPE, Event.DISTANCE, 5, NonSI.MILE);
+		addWidget("id:%s,type:%s,field:%s,interval:%s,unit:%s", WIDGET_ID, HistogramWidget.TYPE, Event.DISTANCE, 5, NonSI.MILE);
 
 		ObjectNode result = execute();
 		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(4);
-		NodeAssert node = assertThat(result).path(id).hasSize(2);
+		NodeAssert node = assertThat(result).path(WIDGET_ID).hasSize(2);
 		node.path(0).path("from").path("@value").isEqualTo(10.0);
 		node.path(0).path("from").path("unit").isEqualTo("mi");
 		node.path(0).path("to").path("@value").isEqualTo(15.0);
@@ -111,10 +107,10 @@ public class HistogramWidgetTest extends SearchTestSupport {
 	@Test
 	public void testEmpty() {
 
-		addWidget("id:%s,type:%s,field:%s", id, HistogramWidget.TYPE, Event.RATING);
+		addWidget("id:%s,type:%s,field:%s", WIDGET_ID, HistogramWidget.TYPE, Event.RATING);
 
 		ObjectNode result = execute();
 		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(0);
-		assertThat(result).path(id).hasSize(0);
+		assertThat(result).path(WIDGET_ID).hasSize(0);
 	}
 }

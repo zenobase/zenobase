@@ -2,39 +2,34 @@ package com.zenobase.search;
 
 import static com.zenobase.testing.NodeAssert.assertThat;
 
-import java.math.BigDecimal;
-
 import javax.measure.DecimalMeasure;
 import javax.measure.quantity.Length;
-import javax.measure.unit.SI;
 
 import org.codehaus.jackson.node.ObjectNode;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.zenobase.common.Generator;
 import com.zenobase.models.Event;
 import com.zenobase.testing.NodeAssert;
 
-public class ScoreboardWidgetTest extends SearchTestSupport {
+public class ScoreboardWidgetTest extends WidgetTestSupport {
 
-	private String id = Generator.id();
 	private Event e1, e2, e3, e4;
 
 	@Before
 	@Override
 	public void setUp() {
 		super.setUp();
-		e1 = newEvent("walk", new DecimalMeasure<Length>(new BigDecimal(10), SI.KILOMETER), 2500);
-		e2 = newEvent("hike", new DecimalMeasure<Length>(new BigDecimal(10000), SI.METER), 2500);
-		e3 = newEvent("hike", new DecimalMeasure<Length>(new BigDecimal(20), SI.KILOMETER), 7500);
+		e1 = newEvent("walk", "10 km", 2500);
+		e2 = newEvent("hike", "10000 m", 2500);
+		e3 = newEvent("hike", "20 km", 7500);
 		e4 = newEvent("climb", null, null);
 	}
 
-	private static Event newEvent(String tag, DecimalMeasure<Length> distance, Integer count) {
+	private static Event newEvent(String tag, String distance, Integer count) {
 		Event event = new Event();
 		event.setValue(Event.TAG, tag);
-		event.setValue(Event.DISTANCE, distance);
+		event.setValue(Event.DISTANCE, distance != null ? DecimalMeasure.<Length>valueOf(distance) : null);
 		event.setValue(Event.COUNT, count);
 		return event;
 	}
@@ -46,11 +41,11 @@ public class ScoreboardWidgetTest extends SearchTestSupport {
 		addEvent(e2);
 		addEvent(e3);
 		addEvent(e4);
-		addWidget("id:%s,type:%s,key_field:%s,value_field:%s,unit:%s,order:%s", id, ScoreboardWidget.TYPE, Event.TAG, Event.DISTANCE, "km", "total");
+		addWidget("id:%s,type:%s,key_field:%s,value_field:%s,unit:%s,order:%s", WIDGET_ID, ScoreboardWidget.TYPE, Event.TAG, Event.DISTANCE, "km", "total");
 
 		ObjectNode result = execute();
 		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(4);
-		NodeAssert node = assertThat(result).path(id).hasSize(2);
+		NodeAssert node = assertThat(result).path(WIDGET_ID).hasSize(2);
 		node.path(0).path("label").isEqualTo(e2.getValue(Event.TAG));
 		node.path(0).path("min").path("@value").isEqualTo(10.0);
 		node.path(0).path("min").path("unit").isEqualTo("km");
@@ -76,11 +71,11 @@ public class ScoreboardWidgetTest extends SearchTestSupport {
 		addEvent(e2);
 		addEvent(e3);
 		addEvent(e4);
-		addWidget("id:%s,type:%s,key_field:%s,value_field:%s", id, ScoreboardWidget.TYPE, Event.TAG, Event.COUNT);
+		addWidget("id:%s,type:%s,key_field:%s,value_field:%s", WIDGET_ID, ScoreboardWidget.TYPE, Event.TAG, Event.COUNT);
 
 		ObjectNode result = execute();
 		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(4);
-		NodeAssert node = assertThat(result).path(id).hasSize(2);
+		NodeAssert node = assertThat(result).path(WIDGET_ID).hasSize(2);
 		node.path(0).path("label").isEqualTo(e2.getValue(Event.TAG));
 		node.path(0).path("count").isEqualTo(2);
 		node.path(0).path("min").isEqualTo(2500.0);
@@ -98,10 +93,10 @@ public class ScoreboardWidgetTest extends SearchTestSupport {
 	@Test
 	public void testEmpty() {
 
-		addWidget("id:%s,type:%s,key_field:%s,value_field:%s,unit:%s,order:%s", id, ScoreboardWidget.TYPE, Event.TAG, Event.DISTANCE, "km", "total");
+		addWidget("id:%s,type:%s,key_field:%s,value_field:%s,unit:%s,order:%s", WIDGET_ID, ScoreboardWidget.TYPE, Event.TAG, Event.DISTANCE, "km", "total");
 
 		ObjectNode result = execute();
 		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(0);
-		assertThat(result).path(id).hasSize(0);
+		assertThat(result).path(WIDGET_ID).hasSize(0);
 	}
 }

@@ -11,12 +11,10 @@ import org.junit.Test;
 import com.zenobase.common.Measures;
 import com.zenobase.models.Event;
 
-public class MeasureConstraintTest extends SearchTestSupport {
+public class MeasureConstraintTest extends ConstraintTestSupport {
 
 	@Before
-	@Override
-	public void setUp() {
-		super.setUp();
+	public void addEvents() {
 		addEvent("10 km");
 		addEvent("10000 m");
 		addEvent("20000 m");

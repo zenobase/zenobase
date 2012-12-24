@@ -8,14 +8,11 @@ import org.joda.time.DateTimeZone;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.zenobase.common.Generator;
 import com.zenobase.models.Event;
 import com.zenobase.testing.NodeAssert;
 
-public class TimeHistogramWidgetTest extends SearchTestSupport {
+public class TimeHistogramWidgetTest extends WidgetTestSupport {
 
-	private String id = Generator.id();
-	private DateTimeZone timezone = DateTimeZone.forOffsetHours(-8);
 	private Event e1, e2, e3;
 
 	@Before
@@ -39,11 +36,12 @@ public class TimeHistogramWidgetTest extends SearchTestSupport {
 		addEvent(e1);
 		addEvent(e2);
 		addEvent(e3);
-		addWidget("id:%s,type:%s,field:%s,interval:%s,timezone:%s", id, TimeHistogramWidget.TYPE, Event.TIMESTAMP, "hour_of_day", timezone);
+		addWidget("id:%s,type:%s,field:%s,interval:%s,timezone:%s",
+			WIDGET_ID, TimeHistogramWidget.TYPE, Event.TIMESTAMP, "hour_of_day", DateTimeZone.forOffsetHours(-8));
 
 		ObjectNode result = execute();
 		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(3);
-		NodeAssert node = assertThat(result).path(id).hasSize(24);
+		NodeAssert node = assertThat(result).path(WIDGET_ID).hasSize(24);
 		node.path(7).path("label").isEqualTo("07");
 		node.path(7).path("count").isEqualTo(1);
 		node.path(15).path("label").isEqualTo("15");
@@ -56,11 +54,12 @@ public class TimeHistogramWidgetTest extends SearchTestSupport {
 		addEvent(e1);
 		addEvent(e2);
 		addEvent(e3);
-		addWidget("id:%s,type:%s,field:%s,interval:%s,timezone:%s", id, TimeHistogramWidget.TYPE, Event.TIMESTAMP, "day_of_week", timezone);
+		addWidget("id:%s,type:%s,field:%s,interval:%s,timezone:%s",
+			WIDGET_ID, TimeHistogramWidget.TYPE, Event.TIMESTAMP, "day_of_week", DateTimeZone.forOffsetHours(-8));
 
 		ObjectNode result = execute();
 		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(3);
-		NodeAssert node = assertThat(result).path(id).hasSize(7);
+		NodeAssert node = assertThat(result).path(WIDGET_ID).hasSize(7);
 		node.path(1).path("label").isEqualTo("Tue");
 		node.path(1).path("count").isEqualTo(1);
 		node.path(4).path("label").isEqualTo("Fri");
@@ -75,11 +74,12 @@ public class TimeHistogramWidgetTest extends SearchTestSupport {
 		addEvent(e1);
 		addEvent(e2);
 		addEvent(e3);
-		addWidget("id:%s,type:%s,field:%s,interval:%s,timezone:%s", id, TimeHistogramWidget.TYPE, Event.TIMESTAMP, "month_of_year", timezone);
+		addWidget("id:%s,type:%s,field:%s,interval:%s,timezone:%s",
+			WIDGET_ID, TimeHistogramWidget.TYPE, Event.TIMESTAMP, "month_of_year", DateTimeZone.forOffsetHours(-8));
 
 		ObjectNode result = execute();
 		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(3);
-		NodeAssert node = assertThat(result).path(id).hasSize(12);
+		NodeAssert node = assertThat(result).path(WIDGET_ID).hasSize(12);
 		node.path(10).path("label").isEqualTo("Nov");
 		node.path(10).path("count").isEqualTo(1);
 		node.path(11).path("label").isEqualTo("Dec");
