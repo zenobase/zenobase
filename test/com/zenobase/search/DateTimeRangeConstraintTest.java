@@ -26,7 +26,7 @@ public class DateTimeRangeConstraintTest extends ConstraintTestSupport {
 
 	@Test
 	public void test() {
-		addFilter("%s:%s", Event.TIMESTAMP, "2012-01-05T12+0000");
+		addConstraint("%s:%s", Event.TIMESTAMP, "2012-01-05T12+0000");
 		ObjectNode result = execute();
 		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(2);
 	}

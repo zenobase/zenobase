@@ -31,21 +31,21 @@ public class DistanceConstraintTest extends ConstraintTestSupport {
 
 	@Test
 	public void testShortDistance() {
-		addFilter("%s:%s", Event.LOCATION, LAS_VEGAS); // location:-115.17,36.08
+		addConstraint("%s:%s", Event.LOCATION, LAS_VEGAS); // location:-115.17,36.08
 		ObjectNode result = execute();
 		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(2);
 	}
 
 	@Test
 	public void testMediumDistance() {
-		addFilter("%s:%s~%s", Event.LOCATION, LAS_VEGAS, "300 mi"); // location:-115.17,36.08~300 mi
+		addConstraint("%s:%s~%s", Event.LOCATION, LAS_VEGAS, "300 mi"); // location:-115.17,36.08~300 mi
 		ObjectNode result = execute();
 		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(3);
 	}
 
 	@Test(expected = NumberFormatException.class)
 	public void testBadDistance() {
-		addFilter("%s:%s~%s", Event.LOCATION, LAS_VEGAS, "x"); // location:-115.17,36.08~x
+		addConstraint("%s:%s~%s", Event.LOCATION, LAS_VEGAS, "x"); // location:-115.17,36.08~x
 		execute();
 	}
 }

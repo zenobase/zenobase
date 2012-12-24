@@ -53,13 +53,13 @@ public class EventListController extends ControllerSupport {
     		return auth == null ? unauthorized() : forbidden();
     	}
     	String[] widgets = request().queryString().get("w");
-    	String[] filters = request().queryString().get("q");
+    	String[] constraints = request().queryString().get("q");
     	if (widgets != null) {
-    		EventSearch search = new EventSearch().addWidgets(widgets).addFilters(filters);
+    		EventSearch search = new EventSearch().addWidgets(widgets).addConstraints(constraints);
     		return ok(events.find(bucketId, search));
     	} else {
         	response().setContentType("application/json");
-        	return ok(new EventChunks(events, bucketId, filters));
+        	return ok(new EventChunks(events, bucketId, constraints));
     	}
     }
 

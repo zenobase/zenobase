@@ -36,7 +36,7 @@ public class BoundingBoxConstraintTest extends ConstraintTestSupport {
 			SEATTLE.getLongitude(),
 			SEATTLE.getLatitude(),
 			MIAMI.getLongitude());
-		addFilter("%s:%s", Event.LOCATION, bounds);
+		addConstraint("%s:%s", Event.LOCATION, bounds);
 		ObjectNode result = execute();
 		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(2);
 	}

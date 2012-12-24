@@ -29,15 +29,15 @@ public class EventListControllerHttpGetTest extends EventListControllerTestSuppo
 
 	@Test
 	public void testSearchEvents() {
-		String filterExpression = "tag:value";
-		String widgetExpression = "id:xyz,type:list";
-		EventSearch expected = new EventSearch().addFilter(filterExpression).addWidget(widgetExpression);
+		String constraint = "tag:value";
+		String widget = "id:xyz,type:list";
+		EventSearch expected = new EventSearch().addConstraint(constraint).addWidget(widget);
 		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
 		when(buckets.find(bucket.getId())).thenReturn(bucket);
 		ObjectNode fakeResult = Nodes.newObject();
 		fakeResult.put("test", true);
 		when(events.find(bucket.getId(), expected)).thenReturn(fakeResult);
-		Result result = call(bucket, String.format("?q=%s&w=%s", filterExpression, widgetExpression));
+		Result result = call(bucket, String.format("?q=%s&w=%s", constraint, widget));
 		assertThat(result).hasStatus(OK).hasContent(fakeResult);
 	}
 

@@ -31,7 +31,7 @@ public class JournalControllerHttpGetTest extends JournalControllerTestSupport {
 	}
 
 	@Test
-	public void testFilteredGet() {
+	public void testGetForPrincipal() {
 		PartialList<Command> history = DefaultPartialList.of(ImmutableList.<Command>of(new TestCommand(principal, "do it"), new TestCommand(principal, "do it again")), 10);
 		when(auth.current()).thenReturn(new Authorization(principal));
 		when(users.isSuperuser(principal)).thenReturn(true);

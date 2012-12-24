@@ -25,7 +25,7 @@ public class TermConstraintTest extends ConstraintTestSupport {
 
 	@Test
 	public void test() {
-		addFilter("%s:%s", Event.TAG, "lunch");
+		addConstraint("%s:%s", Event.TAG, "lunch");
 		ObjectNode result = execute();
 		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(2);
 	}

@@ -29,35 +29,35 @@ public class MeasureRangeConstraintTest extends ConstraintTestSupport {
 
 	@Test
 	public void testRange() {
-		addFilter("%s:%s", Event.DISTANCE, "[0 km..25 km]");
+		addConstraint("%s:%s", Event.DISTANCE, "[0 km..25 km]");
 		ObjectNode result = execute();
 		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(4);
 	}
 
 	@Test
 	public void testEmptyRange() {
-		addFilter("%s:%s", Event.DISTANCE, "(4 km..25 km)");
+		addConstraint("%s:%s", Event.DISTANCE, "(4 km..25 km)");
 		ObjectNode result = execute();
 		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(0);
 	}
 
 	@Test
 	public void testLowerRange() {
-		addFilter("%s:%s", Event.DISTANCE, "(*..4 km]");
+		addConstraint("%s:%s", Event.DISTANCE, "(*..4 km]");
 		ObjectNode result = execute();
 		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(3);
 	}
 
 	@Test
 	public void testUpperRange() {
-		addFilter("%s:%s", Event.DISTANCE, "(4 km..*)");
+		addConstraint("%s:%s", Event.DISTANCE, "(4 km..*)");
 		ObjectNode result = execute();
 		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(1);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testInvalidRange() {
-		addFilter("%s:%s", Event.DISTANCE, "(25 km..4 km)");
+		addConstraint("%s:%s", Event.DISTANCE, "(25 km..4 km)");
 		execute();
 	}
 }

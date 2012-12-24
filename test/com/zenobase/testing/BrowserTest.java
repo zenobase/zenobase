@@ -199,7 +199,7 @@ public class BrowserTest {
 
 				// TODO: add & configure widgets
 
-				// TODO: test filtering & paging
+				// TODO: test constraints & paging
 
 				// sign up
 				$("#sign-up-link").click();

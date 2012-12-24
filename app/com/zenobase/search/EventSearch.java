@@ -79,16 +79,16 @@ public class EventSearch {
 		return this;
 	}
 
-	public EventSearch addFilters(String[] filters) {
-		if (filters != null) {
-			for (String filter : filters) {
-				addFilter(filter);
+	public EventSearch addConstraints(String[] expressions) {
+		if (expressions != null) {
+			for (String expression : expressions) {
+				addConstraint(expression);
 			}
 		}
 		return this;
 	}
 
-	public EventSearch addFilter(String expression) {
+	public EventSearch addConstraint(String expression) {
 		String[] tokens = expression.split(":", 2);
 		String field = tokens[0];
 		String value = tokens[1];
@@ -99,7 +99,7 @@ public class EventSearch {
 				return this;
 			}
 		}
-		throw new IllegalArgumentException("Don't know what to do with filter: " + expression);
+		throw new IllegalArgumentException("Don't know what to do with constraint: " + expression);
 	}
 
 	public ObjectNode execute(Index index) {
