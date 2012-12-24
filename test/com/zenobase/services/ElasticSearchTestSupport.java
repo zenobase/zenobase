@@ -15,7 +15,7 @@ public abstract class ElasticSearchTestSupport {
 	private IndexManager manager;
 
 	@Before
-	public void init() {
+	public void createManager() {
 		nodeFactory = new TestNodeFactory(folder.getRoot());
 		manager = new IndexManager(nodeFactory, clusterName);
 	}
@@ -33,7 +33,7 @@ public abstract class ElasticSearchTestSupport {
 	}
 
 	@After
-	public void close() {
+	public void closeManager() {
 		manager.close();
 	}
 }
