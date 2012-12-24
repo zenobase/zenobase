@@ -40,7 +40,9 @@ public class EventSearch {
 		.build();
 
 	private final ImmutableMultimap<String, Constraint> constraintBuilders = ImmutableMultimap.<String, Constraint>builder()
+		.put(Event.TAG.getName(), new WildcardConstraint())
 		.put(Event.TAG.getName(), new TermConstraint())
+		.put(Event.AUTHOR.getName(), new WildcardConstraint())
 		.put(Event.AUTHOR.getName(), new TermConstraint())
 		.put(Event.TIMESTAMP.getName(), new DateTimeRangeConstraint())
 		.put(Event.RATING.getName(), new DecimalRangeConstraint())
