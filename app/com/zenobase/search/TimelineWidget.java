@@ -145,7 +145,7 @@ public class TimelineWidget extends Widget {
 					options.get("interval", String.class, "month"),
 					options.get("range"),
 					options.get("timezone", DateTimeZone.class, DateTimeZone.UTC),
-					unit != null ? Measures.valueOf(unit) : Unit.ONE);
+					unit != null ? Measures.parseUnit(unit) : Unit.ONE);
 			}
 		};
 	}

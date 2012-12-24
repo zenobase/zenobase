@@ -78,7 +78,7 @@ public class HistogramWidget extends Widget {
 					options.get("id"),
 					options.get("field"),
 					options.get("interval", Long.class, 10L),
-					unit != null ? Measures.valueOf(unit) : Unit.ONE);
+					unit != null ? Measures.parseUnit(unit) : Unit.ONE);
 			}
 		};
 	}

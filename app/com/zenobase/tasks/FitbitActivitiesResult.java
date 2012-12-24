@@ -76,7 +76,7 @@ class FitbitActivitiesResult {
 
 	private DecimalMeasure<Energy> getCalories() {
 		BigDecimal value = node.path("summary").path("activityCalories").getDecimalValue();
-		Unit<Energy> unit = Measures.valueOf("cal");
+		Unit<Energy> unit = Measures.parseUnit("cal");
 		return value != null ? DecimalMeasure.valueOf(value, unit) : null;
 	}
 }

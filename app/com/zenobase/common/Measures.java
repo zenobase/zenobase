@@ -80,14 +80,18 @@ public class Measures {
 	}
 
 	public static <Q extends Quantity> DecimalMeasure<Q> valueOf(BigDecimal value, String unit) {
-		Unit<Q> u = valueOf(unit);
+		Unit<Q> u = parseUnit(unit);
 		return DecimalMeasure.valueOf(value, u);
+	}
+
+	public static <Q extends Quantity> DecimalMeasure<Q> valueOf(String s) {
+		return DecimalMeasure.valueOf(s);
 	}
 
 	/**
 	 * Obtain units from here to ensure the static initializers have registered any custom units.
 	 */
-	public static <Q extends Quantity> Unit<Q> valueOf(String unit) {
+	public static <Q extends Quantity> Unit<Q> parseUnit(String unit) {
 		return (Unit<Q>) Unit.valueOf(unit);
 	}
 

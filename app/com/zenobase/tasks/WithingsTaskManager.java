@@ -38,7 +38,7 @@ public class WithingsTaskManager extends OAuthTaskManager {
 	public WithingsTask newTask(String bucketId, Identity principal, ObjectNode settings) {
 		WithingsTask task = super.newTask(bucketId, principal, settings).as(WithingsTask.class);
 		task.setTag(Objects.firstNonNull(settings.path("tag").getTextValue(), "steps"));
-		task.setUnit(Measures.<Mass>valueOf(Objects.firstNonNull(settings.path("unit").getTextValue(), "kg")));
+		task.setUnit(Measures.<Mass>parseUnit(Objects.firstNonNull(settings.path("unit").getTextValue(), "kg")));
 		return task;
 	}
 

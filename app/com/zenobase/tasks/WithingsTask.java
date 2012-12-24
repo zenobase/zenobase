@@ -41,7 +41,7 @@ public class WithingsTask extends OAuthTask {
 	}
 
 	public Unit<Mass> getUnit() {
-		return Measures.<Mass>valueOf(getSetting(UNIT));
+		return Measures.<Mass>parseUnit(getSetting(UNIT));
 	}
 
 	public void setUnit(Unit<Mass> unit) {
