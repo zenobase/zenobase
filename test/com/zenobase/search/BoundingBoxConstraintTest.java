@@ -16,32 +16,29 @@ public class BoundingBoxConstraintTest extends SearchTestSupport {
 	private static final Location MIAMI = new Location("25.7878", "-80.2242");
 	private static final Location PARIS = new Location("48.8742", "2.3470");
 
-	private Event e1, e2, e3;
-
 	@Before
 	@Override
 	public void setUp() {
-
 		super.setUp();
+		addEvent(SEATTLE);
+		addEvent(MIAMI);
+		addEvent(PARIS);
+	}
 
-		e1 = new Event();
-		e1.setValue(Event.LOCATION, SEATTLE);
-
-		e2 = new Event();
-		e2.setValue(Event.LOCATION, MIAMI);
-
-		e3 = new Event();
-		e3.setValue(Event.LOCATION, PARIS);
+	private void addEvent(Location location) {
+		Event event = new Event();
+		event.setValue(Event.LOCATION, location);
+		addEvent(event);
 	}
 
 	@Test
 	public void test() {
-
-		addEvent(e1);
-		addEvent(e2);
-		addEvent(e3);
-		addFilter(String.format("%s:%s", Event.LOCATION, Joiner.on(',').join(MIAMI.getLatitude(), SEATTLE.getLongitude(), SEATTLE.getLatitude(), MIAMI.getLongitude())));
-
+		String bounds = Joiner.on(',').join(
+			MIAMI.getLatitude(),
+			SEATTLE.getLongitude(),
+			SEATTLE.getLatitude(),
+			MIAMI.getLongitude());
+		addFilter(String.format("%s:%s", Event.LOCATION, bounds));
 		ObjectNode result = execute();
 		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(2);
 	}
