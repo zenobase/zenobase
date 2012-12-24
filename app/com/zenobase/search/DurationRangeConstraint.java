@@ -14,25 +14,37 @@ public class DurationRangeConstraint implements Constraint {
 
 	@Override
 	public QueryBuilder build(String field, String value) {
-		Range<ReadableDuration> range = new DurationRangeParser().parse(value);
-		RangeQueryBuilder query = QueryBuilders.rangeQuery(field);
+		Range<ReadableDuration> range = parseRange(value);
+		RangeQueryBuilder query = QueryBuilders.rangeQuery(getField(field));
 		if (range.hasLowerBound()) {
 			if (range.lowerBoundType() == BoundType.CLOSED) {
-				query = query.gte(range.lowerEndpoint().getMillis());
+				query = query.gte(getValue(range.lowerEndpoint()));
 			} else {
 				checkBoundType(BoundType.OPEN, range.lowerBoundType());
-				query = query.gt(range.lowerEndpoint().getMillis());
+				query = query.gt(getValue(range.lowerEndpoint()));
 			}
 		}
 		if (range.hasUpperBound()) {
 			if (range.upperBoundType() == BoundType.CLOSED) {
-				query = query.lte(range.upperEndpoint().getMillis());
+				query = query.lte(getValue(range.upperEndpoint()));
 			} else {
 				checkBoundType(BoundType.OPEN, range.upperBoundType());
-				query = query.lt(range.upperEndpoint().getMillis());
+				query = query.lt(getValue(range.upperEndpoint()));
 			}
 		}
 		return query;
+	}
+
+	private Range<ReadableDuration> parseRange(String value) {
+		return new DurationRangeParser().parse(value);
+	}
+
+	private String getField(String name) {
+		return name;
+	}
+
+	private Long getValue(ReadableDuration value) {
+		return value.getMillis();
 	}
 
 	private static void checkBoundType(BoundType expected, BoundType actual) {

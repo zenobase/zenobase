@@ -1,6 +1,7 @@
 package com.zenobase.search;
 
-import java.math.BigDecimal;
+import javax.measure.DecimalMeasure;
+import javax.measure.Measurable;
 
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
@@ -9,13 +10,15 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.BoundType;
 import com.google.common.collect.Range;
 
-import com.zenobase.common.DecimalRangeParser;
+import com.zenobase.common.MeasureRangeParser;
+import com.zenobase.common.Measures;
+import com.zenobase.json.MeasurementField;
 
-public class RangeConstraint implements Constraint {
+public class MeasureRangeConstraint implements Constraint {
 
 	@Override
 	public QueryBuilder build(String field, String value) {
-		Range<BigDecimal> range = parseRange(value);
+		Range<Measurable<?>> range = new MeasureRangeParser().parse(value);
 		RangeQueryBuilder query = QueryBuilders.rangeQuery(getField(field));
 		if (range.hasLowerBound()) {
 			if (range.lowerBoundType() == BoundType.CLOSED) {
@@ -36,16 +39,12 @@ public class RangeConstraint implements Constraint {
 		return query;
 	}
 
-	private Range<BigDecimal> parseRange(String value) {
-		return new DecimalRangeParser().parse(value);
-	}
-
 	private String getField(String name) {
-		return name;
+		return name + "." + MeasurementField.VALUE_SI.getName();
 	}
 
-	private Number getValue(BigDecimal value) {
-		return value;
+	private Number getValue(Measurable<?> value) {
+		return Measures.toStandard(((DecimalMeasure<?>) value)).getValue();
 	}
 
 	private static void checkBoundType(BoundType expected, BoundType actual) {
