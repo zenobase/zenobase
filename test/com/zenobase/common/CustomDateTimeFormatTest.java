@@ -30,7 +30,7 @@ public class CustomDateTimeFormatTest {
 	}
 
 	private static void test(String value, String expected) {
-		DateTime actual = CustomDateTimeFormat.format().parseDateTime(value);
+		DateTime actual = CustomDateTimeFormat.parse(value);
 		assertThat(actual).isEqualTo(DateTime.parse(expected));
 	}
 
