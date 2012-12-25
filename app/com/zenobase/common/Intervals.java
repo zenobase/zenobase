@@ -7,6 +7,7 @@ import org.joda.time.DurationFieldType;
 import org.joda.time.Interval;
 import org.joda.time.Period;
 import org.joda.time.format.DateTimeFormatter;
+import org.joda.time.format.DateTimeFormatterBuilder;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 
@@ -14,23 +15,108 @@ public class Intervals extends DateTimeFormatSupport {
 
 	private enum IntervalType {
 
-		YEAR(DurationFieldType.years()),
-		MONTH(DurationFieldType.months()),
-		DAY(DurationFieldType.days()),
-		HOUR(DurationFieldType.hours()),
-		MINUTE(DurationFieldType.minutes()),
-		SECOND(DurationFieldType.seconds()),
-		MILLISECOND(DurationFieldType.millis());
+		YEAR(DurationFieldType.years()) {
+			@Override
+			protected DateTimeFormatterBuilder configure(DateTimeFormatterBuilder builder) {
+				return builder
+					.append(yearElement())
+					.appendLiteral('T')
+					.append(offsetElement());
+			}
+		},
+
+		MONTH(DurationFieldType.months()) {
+			@Override
+			protected DateTimeFormatterBuilder configure(DateTimeFormatterBuilder builder) {
+				return builder
+					.append(yearElement())
+					.append(monthElement())
+					.appendLiteral('T')
+					.append(offsetElement());
+			}
+		},
+
+		DAY(DurationFieldType.days()) {
+			@Override
+			protected DateTimeFormatterBuilder configure(DateTimeFormatterBuilder builder) {
+				return builder
+					.append(yearElement())
+					.append(monthElement())
+					.append(dayOfMonthElement())
+					.appendLiteral('T')
+					.append(offsetElement());
+			}
+		},
+
+		HOUR(DurationFieldType.hours()) {
+			@Override
+			protected DateTimeFormatterBuilder configure(DateTimeFormatterBuilder builder) {
+				return builder
+					.append(yearElement())
+					.append(monthElement())
+					.append(dayOfMonthElement())
+					.appendLiteral('T')
+					.append(hourElement())
+					.append(offsetElement());
+			}
+		},
+
+		MINUTE(DurationFieldType.minutes()) {
+			@Override
+			protected DateTimeFormatterBuilder configure(DateTimeFormatterBuilder builder) {
+				return builder
+					.append(yearElement())
+					.append(monthElement())
+					.append(dayOfMonthElement())
+					.appendLiteral('T')
+					.append(hourElement())
+					.append(minuteElement())
+					.append(offsetElement());
+			}
+		},
+
+		SECOND(DurationFieldType.seconds()) {
+			@Override
+			protected DateTimeFormatterBuilder configure(DateTimeFormatterBuilder builder) {
+				return builder
+					.append(yearElement())
+					.append(monthElement())
+					.append(dayOfMonthElement())
+					.appendLiteral('T')
+					.append(hourElement())
+					.append(minuteElement())
+					.append(secondElement())
+					.append(offsetElement());
+			}
+		},
+
+		MILLISECOND(DurationFieldType.millis()) {
+			@Override
+			protected DateTimeFormatterBuilder configure(DateTimeFormatterBuilder builder) {
+				return builder
+					.append(yearElement())
+					.append(monthElement())
+					.append(dayOfMonthElement())
+					.appendLiteral('T')
+					.append(hourElement())
+					.append(minuteElement())
+					.append(secondElement())
+					.append(millisElement())
+					.append(offsetElement());
+			}
+		};
 
 		private final DateTimeFormatter format;
 		private final int length;
 		private final Period period;
 
 		private IntervalType(DurationFieldType type) {
-			this.format = CustomDateTimeFormat.format(type);
+			this.format = configure(new DateTimeFormatterBuilder()).toFormatter().withOffsetParsed();
 			this.length = format.getParser().estimateParsedLength() - 1;
 			this.period = new Period().withField(type, 1);
 		}
+
+		protected abstract DateTimeFormatterBuilder configure(DateTimeFormatterBuilder builder);
 
 		public Interval toInterval(String value) {
 			return toInterval(format.parseDateTime(value));
