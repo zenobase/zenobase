@@ -1,10 +1,14 @@
 package com.zenobase.common;
 
+import java.util.Map;
+
 import org.joda.time.DateTime;
+import org.joda.time.DurationFieldType;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.DateTimeFormatterBuilder;
+import com.google.common.collect.ImmutableMap;
 
-public class CustomDateTimeFormat {
+public class CustomDateTimeFormat extends DateTimeFormatSupport {
 
 	private static final DateTimeFormatter PARSER = new DateTimeFormatterBuilder()
 		.append(yearElement())
@@ -28,7 +32,7 @@ public class CustomDateTimeFormat {
 		return PARSER.parseDateTime(s);
 	}
 
-	public static DateTimeFormatter inclYear() {
+	public static DateTimeFormatter year() {
 		return new DateTimeFormatterBuilder()
 			.append(yearElement())
 			.appendLiteral('T')
@@ -37,7 +41,7 @@ public class CustomDateTimeFormat {
 			.withOffsetParsed();
 	}
 
-	public static DateTimeFormatter inclMonth() {
+	public static DateTimeFormatter month() {
 		return new DateTimeFormatterBuilder()
 			.append(yearElement())
 			.append(monthElement())
@@ -47,7 +51,7 @@ public class CustomDateTimeFormat {
 			.withOffsetParsed();
 	}
 
-	public static DateTimeFormatter inclDayOfMonth() {
+	public static DateTimeFormatter day() {
 		return new DateTimeFormatterBuilder()
 			.append(yearElement())
 			.append(monthElement())
@@ -58,7 +62,7 @@ public class CustomDateTimeFormat {
 			.withOffsetParsed();
 	}
 
-	public static DateTimeFormatter inclHour() {
+	public static DateTimeFormatter hour() {
 		return new DateTimeFormatterBuilder()
 			.append(yearElement())
 			.append(monthElement())
@@ -70,7 +74,7 @@ public class CustomDateTimeFormat {
 			.withOffsetParsed();
 	}
 
-	public static DateTimeFormatter inclMinute() {
+	public static DateTimeFormatter minute() {
 		return new DateTimeFormatterBuilder()
 			.append(yearElement())
 			.append(monthElement())
@@ -83,7 +87,7 @@ public class CustomDateTimeFormat {
 			.withOffsetParsed();
 	}
 
-	public static DateTimeFormatter inclSecond() {
+	public static DateTimeFormatter second() {
 		return new DateTimeFormatterBuilder()
 			.append(yearElement())
 			.append(monthElement())
@@ -97,7 +101,7 @@ public class CustomDateTimeFormat {
 			.withOffsetParsed();
 	}
 
-	public static DateTimeFormatter inclMillis() {
+	public static DateTimeFormatter millis() {
 		return new DateTimeFormatterBuilder()
 			.append(yearElement())
 			.append(monthElement())
@@ -112,56 +116,18 @@ public class CustomDateTimeFormat {
 			.withOffsetParsed();
 	}
 
-	private static DateTimeFormatter yearElement() {
-		return new DateTimeFormatterBuilder()
-			.appendYear(4, 4)
-			.toFormatter();
-	}
+	private static final Map<DurationFieldType, DateTimeFormatter> FORMATS =
+		ImmutableMap.<DurationFieldType, DateTimeFormatter>builder()
+			.put(DurationFieldType.years(), year())
+			.put(DurationFieldType.months(), month())
+			.put(DurationFieldType.days(), day())
+			.put(DurationFieldType.hours(), hour())
+			.put(DurationFieldType.minutes(), minute())
+			.put(DurationFieldType.seconds(), second())
+			.put(DurationFieldType.millis(), millis())
+			.build();
 
-	private static DateTimeFormatter monthElement() {
-		return new DateTimeFormatterBuilder()
-			.appendLiteral('-')
-			.appendMonthOfYear(2)
-			.toFormatter();
-	}
-
-	private static DateTimeFormatter dayOfMonthElement() {
-		return new DateTimeFormatterBuilder()
-			.appendLiteral('-')
-			.appendDayOfMonth(2)
-			.toFormatter();
-	}
-
-	private static DateTimeFormatter hourElement() {
-		return new DateTimeFormatterBuilder()
-			.appendHourOfDay(2)
-			.toFormatter();
-	}
-
-	private static DateTimeFormatter minuteElement() {
-		return new DateTimeFormatterBuilder()
-			.appendLiteral(':')
-			.appendMinuteOfHour(2)
-			.toFormatter();
-	}
-
-	private static DateTimeFormatter secondElement() {
-		return new DateTimeFormatterBuilder()
-			.appendLiteral(':')
-			.appendSecondOfMinute(2)
-			.toFormatter();
-	}
-
-	private static DateTimeFormatter millisElement() {
-		return new DateTimeFormatterBuilder()
-			.appendLiteral('.')
-			.appendFractionOfSecond(3, 3)
-			.toFormatter();
-	}
-
-	private static DateTimeFormatter offsetElement() {
-		return new DateTimeFormatterBuilder()
-			.appendTimeZoneOffset("Z", true, 2, 2)
-			.toFormatter();
+	public static DateTimeFormatter format(DurationFieldType type) {
+		return FORMATS.get(type);
 	}
 }

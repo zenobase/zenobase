@@ -3,58 +3,54 @@ package com.zenobase.common;
 import java.util.List;
 
 import org.joda.time.DateTime;
+import org.joda.time.DurationFieldType;
 import org.joda.time.Interval;
 import org.joda.time.Period;
-import org.joda.time.ReadablePeriod;
 import org.joda.time.format.DateTimeFormatter;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 
-public class Intervals {
+public class Intervals extends DateTimeFormatSupport {
 
-	private enum Format {
+	private enum IntervalType {
 
-		YEAR(CustomDateTimeFormat.inclYear(), 11, Period.years(1)),
-		MONTH(CustomDateTimeFormat.inclMonth(), 14, Period.months(1)),
-		DAY(CustomDateTimeFormat.inclDayOfMonth(), 17, Period.days(1)),
-		HOUR(CustomDateTimeFormat.inclHour(), 19, Period.hours(1)),
-		MINUTE(CustomDateTimeFormat.inclMinute(), 22, Period.minutes(1)),
-		SECOND(CustomDateTimeFormat.inclSecond(), 25, Period.seconds(1)),
-		MILLISECOND(CustomDateTimeFormat.inclMillis(), 29, Period.millis(1));
+		YEAR(DurationFieldType.years()),
+		MONTH(DurationFieldType.months()),
+		DAY(DurationFieldType.days()),
+		HOUR(DurationFieldType.hours()),
+		MINUTE(DurationFieldType.minutes()),
+		SECOND(DurationFieldType.seconds()),
+		MILLISECOND(DurationFieldType.millis());
 
 		private final DateTimeFormatter format;
 		private final int length;
-		private final ReadablePeriod unit;
+		private final Period period;
 
-		private Format(DateTimeFormatter format, int length, ReadablePeriod unit) {
-			this.format = format;
-			this.length = length;
-			this.unit = unit;
-		}
-
-		public DateTime parse(String value) {
-			return format.parseDateTime(value);
-		}
-
-		public Interval toInterval(DateTime start) {
-			return new Interval(start, start.plus(unit));
+		private IntervalType(DurationFieldType type) {
+			this.format = CustomDateTimeFormat.format(type);
+			this.length = format.getParser().estimateParsedLength() - 1;
+			this.period = new Period().withField(type, 1);
 		}
 
 		public Interval toInterval(String value) {
-			return toInterval(parse(value));
+			return toInterval(format.parseDateTime(value));
+		}
+
+		private Interval toInterval(DateTime start) {
+			return new Interval(start, start.plus(period));
 		}
 
 		private String toString(DateTime time) {
 			return format.print(time);
 		}
 
-		public List<DateTime> expand(Interval interval) {
-			List<DateTime> times = Lists.newArrayList();
-			for (DateTime start = interval.getStart(); interval.contains(start); start = start.plus(unit)) {
-				Preconditions.checkState(times.size() < 1000, "Interval is too large: %s", interval);
-				times.add(start);
+		public List<DateTime> toList(Interval interval) {
+			List<DateTime> instants = Lists.newArrayList();
+			for (DateTime start = interval.getStart(); interval.contains(start); start = start.plus(period)) {
+				Preconditions.checkState(instants.size() < 1000, "Interval is too large: %s", interval);
+				instants.add(start);
 			}
-			return times;
+			return instants;
 		}
 	}
 
@@ -64,7 +60,7 @@ public class Intervals {
 
 	public static Interval valueOf(String value) {
 		value = value.replaceAll("Z", "+00:00");
-		for (Format format : Format.values()) {
+		for (IntervalType format : IntervalType.values()) {
 			if (value.length() == format.length) {
 				return format.toInterval(value);
 			}
@@ -73,14 +69,14 @@ public class Intervals {
 	}
 
 	public static String toString(DateTime time, String interval) {
-		Format format = Format.valueOf(interval.toUpperCase());
+		IntervalType format = IntervalType.valueOf(interval.toUpperCase());
 		Preconditions.checkNotNull(format, "Unsupported interval: %s", interval);
 		return format.toString(time);
 	}
 
 	public static List<DateTime> expand(DateTime start, DateTime end, String interval) {
-		Format format = Format.valueOf(interval.toUpperCase());
+		IntervalType format = IntervalType.valueOf(interval.toUpperCase());
 		Preconditions.checkNotNull(format, "Unsupported interval: %s", interval);
-		return format.expand(new Interval(start, end));
+		return format.toList(new Interval(start, end));
 	}
 }
