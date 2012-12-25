@@ -10,7 +10,7 @@ public class WidgetOptionsTest {
 	@Test
 	public void test() {
 
-		WidgetOptions options = WidgetOptions.parse("a:foo,b:42,c:1.23456789,d:true,e:-0800,f,g:,h:null,:");
+		WidgetOptions options = WidgetOptions.parse("a:foo,b:42,c:1.23456789,d:true,e:-08:00,f,g:,h:null,:");
 
 		assertThat(options.get("a")).isEqualTo("foo");
 		assertThat(options.get("z", String.class, "bar")).isEqualTo("bar");

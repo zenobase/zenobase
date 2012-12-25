@@ -43,11 +43,11 @@ public class TimelineWidgetTest extends WidgetTestSupport {
 		ObjectNode result = execute();
 		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(2);
 		NodeAssert node = assertThat(result).path(WIDGET_ID).hasSize(3);
-		node.path(0).path("label").isEqualTo("2012-03T+0000");
+		node.path(0).path("label").isEqualTo("2012-03TZ");
 		node.path(0).path("count").isEqualTo(1);
-		node.path(1).path("label").isEqualTo("2012-04T+0000");
+		node.path(1).path("label").isEqualTo("2012-04TZ");
 		node.path(1).path("count").isEqualTo(0);
-		node.path(2).path("label").isEqualTo("2012-05T+0000");
+		node.path(2).path("label").isEqualTo("2012-05TZ");
 		node.path(2).path("count").isEqualTo(1);
 	}
 
@@ -61,17 +61,17 @@ public class TimelineWidgetTest extends WidgetTestSupport {
 		ObjectNode result = execute();
 		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(2);
 		NodeAssert node = assertThat(result).path(WIDGET_ID).hasSize(3);
-		node.path(0).path("label").isEqualTo("2012-03T+0000");
+		node.path(0).path("label").isEqualTo("2012-03TZ");
 		node.path(0).path("count").isEqualTo(1);
 		node.path(0).path("min").isEqualTo(5000.0, "m");
 		node.path(0).path("max").isEqualTo(5000.0, "m");
 		node.path(0).path("avg").isEqualTo(5000.0, "m");
-		node.path(1).path("label").isEqualTo("2012-04T+0000");
+		node.path(1).path("label").isEqualTo("2012-04TZ");
 		node.path(1).path("count").isEqualTo(0);
 		node.path(1).path("min").isMissingNode();
 		node.path(1).path("max").isMissingNode();
 		node.path(1).path("avg").isMissingNode();
-		node.path(2).path("label").isEqualTo("2012-05T+0000");
+		node.path(2).path("label").isEqualTo("2012-05TZ");
 		node.path(2).path("count").isEqualTo(1);
 		node.path(2).path("min").isEqualTo(10000.0, "m");
 		node.path(2).path("max").isEqualTo(10000.0, "m");
@@ -88,18 +88,18 @@ public class TimelineWidgetTest extends WidgetTestSupport {
 		ObjectNode result = execute();
 		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(2);
 		NodeAssert node = assertThat(result).path(WIDGET_ID).hasSize(3);
-		node.path(0).path("label").isEqualTo("2012-03T+0000");
+		node.path(0).path("label").isEqualTo("2012-03TZ");
 		node.path(0).path("count").isEqualTo(1);
 		node.path(0).path("min").isEqualTo(2500.0);
 		node.path(0).path("max").isEqualTo(2500.0);
 		node.path(0).path("avg").isEqualTo(2500.0);
 		node.path(0).path("sum").isEqualTo(2500.0);
-		node.path(1).path("label").isEqualTo("2012-04T+0000");
+		node.path(1).path("label").isEqualTo("2012-04TZ");
 		node.path(1).path("count").isEqualTo(0);
 		node.path(1).path("min").isMissingNode();
 		node.path(1).path("max").isMissingNode();
 		node.path(1).path("avg").isMissingNode();
-		node.path(2).path("label").isEqualTo("2012-05T+0000");
+		node.path(2).path("label").isEqualTo("2012-05TZ");
 		node.path(2).path("count").isEqualTo(1);
 		node.path(2).path("min").isEqualTo(5000.0);
 		node.path(2).path("max").isEqualTo(5000.0);
@@ -127,7 +127,7 @@ public class TimelineWidgetTest extends WidgetTestSupport {
 		ObjectNode result = execute();
 		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(2);
 		NodeAssert node = assertThat(result).path(WIDGET_ID).hasSize(1);
-		node.path(0).path("label").isEqualTo("2012T+0000");
+		node.path(0).path("label").isEqualTo("2012TZ");
 		node.path(0).path("count").isEqualTo(2);
 	}
 
@@ -141,7 +141,7 @@ public class TimelineWidgetTest extends WidgetTestSupport {
 		ObjectNode result = execute();
 		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(2);
 		NodeAssert node = assertThat(result).path(WIDGET_ID).hasSize(1);
-		node.path(0).path("label").isEqualTo("2012T+0000");
+		node.path(0).path("label").isEqualTo("2012TZ");
 		node.path(0).path("count").isEqualTo(2);
 		node.path(0).path("min").isEqualTo(5000.0, "m");
 		node.path(0).path("max").isEqualTo(10000.0, "m");
@@ -153,18 +153,18 @@ public class TimelineWidgetTest extends WidgetTestSupport {
 
 		addEvent(first);
 		addEvent(last);
-		addWidget("id:%s,type:%s,interval:%s,range:%s", WIDGET_ID, TimelineWidget.TYPE, "month", "2012T+0000");
+		addWidget("id:%s,type:%s,interval:%s,range:%s", WIDGET_ID, TimelineWidget.TYPE, "month", "2012TZ");
 
 		ObjectNode result = execute();
 		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(2);
 		NodeAssert node = assertThat(result).path(WIDGET_ID).hasSize(12);
-		node.path(0).path("label").isEqualTo("2012-01T+0000");
+		node.path(0).path("label").isEqualTo("2012-01TZ");
 		node.path(0).path("count").isEqualTo(0);
-		node.path(2).path("label").isEqualTo("2012-03T+0000");
+		node.path(2).path("label").isEqualTo("2012-03TZ");
 		node.path(2).path("count").isEqualTo(1);
-		node.path(4).path("label").isEqualTo("2012-05T+0000");
+		node.path(4).path("label").isEqualTo("2012-05TZ");
 		node.path(4).path("count").isEqualTo(1);
-		node.path(11).path("label").isEqualTo("2012-12T+0000");
+		node.path(11).path("label").isEqualTo("2012-12TZ");
 		node.path(11).path("count").isEqualTo(0);
 	}
 
@@ -173,14 +173,14 @@ public class TimelineWidgetTest extends WidgetTestSupport {
 
 		addEvent(first);
 		addEvent(last);
-		addWidget("id:%s,type:%s,interval:%s,range:%s", WIDGET_ID, TimelineWidget.TYPE, "day", "2012-03T+0000");
+		addWidget("id:%s,type:%s,interval:%s,range:%s", WIDGET_ID, TimelineWidget.TYPE, "day", "2012-03TZ");
 
 		ObjectNode result = execute();
 		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(2);
 		NodeAssert node = assertThat(result).path(WIDGET_ID).hasSize(31);
-		node.path(0).path("label").isEqualTo("2012-03-01T+0000");
+		node.path(0).path("label").isEqualTo("2012-03-01TZ");
 		node.path(0).path("count").isEqualTo(0);
-		node.path(30).path("label").isEqualTo("2012-03-31T+0000");
+		node.path(30).path("label").isEqualTo("2012-03-31TZ");
 		node.path(30).path("count").isEqualTo(1);
 	}
 
@@ -189,16 +189,16 @@ public class TimelineWidgetTest extends WidgetTestSupport {
 
 		addEvent(first);
 		addEvent(last);
-		addWidget("id:%s,type:%s,interval:%s,range:%s", WIDGET_ID, TimelineWidget.TYPE, "hour", "2012-03-31T+0000");
+		addWidget("id:%s,type:%s,interval:%s,range:%s", WIDGET_ID, TimelineWidget.TYPE, "hour", "2012-03-31TZ");
 
 		ObjectNode result = execute();
 		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(2);
 		NodeAssert node = assertThat(result).path(WIDGET_ID).hasSize(24);
-		node.path(0).path("label").isEqualTo("2012-03-31T00+0000");
+		node.path(0).path("label").isEqualTo("2012-03-31T00Z");
 		node.path(0).path("count").isEqualTo(0);
-		node.path(20).path("label").isEqualTo("2012-03-31T20+0000");
+		node.path(20).path("label").isEqualTo("2012-03-31T20Z");
 		node.path(20).path("count").isEqualTo(1);
-		node.path(23).path("label").isEqualTo("2012-03-31T23+0000");
+		node.path(23).path("label").isEqualTo("2012-03-31T23Z");
 		node.path(23).path("count").isEqualTo(0);
 	}
 
@@ -207,16 +207,16 @@ public class TimelineWidgetTest extends WidgetTestSupport {
 
 		addEvent(first);
 		addEvent(last);
-		addWidget("id:%s,type:%s,interval:%s,range:%s,timezone:%s", WIDGET_ID, TimelineWidget.TYPE, "hour", "2012-03-31T-0800", "-08:00");
+		addWidget("id:%s,type:%s,interval:%s,range:%s,timezone:%s", WIDGET_ID, TimelineWidget.TYPE, "hour", "2012-03-31T-08:00", "-08:00");
 
 		ObjectNode result = execute();
 		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(2);
 		NodeAssert node = assertThat(result).path(WIDGET_ID).hasSize(24);
-		node.path(0).path("label").isEqualTo("2012-03-31T00-0800");
+		node.path(0).path("label").isEqualTo("2012-03-31T00-08:00");
 		node.path(0).path("count").isEqualTo(0);
-		node.path(12).path("label").isEqualTo("2012-03-31T12-0800");
+		node.path(12).path("label").isEqualTo("2012-03-31T12-08:00");
 		node.path(12).path("count").isEqualTo(1);
-		node.path(23).path("label").isEqualTo("2012-03-31T23-0800");
+		node.path(23).path("label").isEqualTo("2012-03-31T23-08:00");
 		node.path(23).path("count").isEqualTo(0);
 	}
 
@@ -225,16 +225,16 @@ public class TimelineWidgetTest extends WidgetTestSupport {
 
 		addEvent(first);
 		addEvent(last);
-		addWidget("id:%s,type:%s,interval:%s,range:%s", WIDGET_ID, TimelineWidget.TYPE, "minute", "2012-03-31T20+0000");
+		addWidget("id:%s,type:%s,interval:%s,range:%s", WIDGET_ID, TimelineWidget.TYPE, "minute", "2012-03-31T20Z");
 
 		ObjectNode result = execute();
 		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(2);
 		NodeAssert node = assertThat(result).path(WIDGET_ID).hasSize(60);
-		node.path(0).path("label").isEqualTo("2012-03-31T20:00+0000");
+		node.path(0).path("label").isEqualTo("2012-03-31T20:00Z");
 		node.path(0).path("count").isEqualTo(0);
-		node.path(15).path("label").isEqualTo("2012-03-31T20:15+0000");
+		node.path(15).path("label").isEqualTo("2012-03-31T20:15Z");
 		node.path(15).path("count").isEqualTo(1);
-		node.path(59).path("label").isEqualTo("2012-03-31T20:59+0000");
+		node.path(59).path("label").isEqualTo("2012-03-31T20:59Z");
 		node.path(59).path("count").isEqualTo(0);
 	}
 }

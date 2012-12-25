@@ -6,7 +6,6 @@ import org.joda.time.DateTime;
 import org.joda.time.Interval;
 import org.joda.time.Period;
 import org.joda.time.ReadablePeriod;
-import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
@@ -15,13 +14,13 @@ public class Intervals {
 
 	private enum Format {
 
-		YEAR(DateTimeFormat.forPattern("yyyy'T'Z").withOffsetParsed(), 10, Period.years(1)),
-		MONTH(DateTimeFormat.forPattern("yyyy-MM'T'Z").withOffsetParsed(), 13, Period.months(1)),
-		DAY(DateTimeFormat.forPattern("yyyy-MM-dd'T'Z").withOffsetParsed(), 16, Period.days(1)),
-		HOUR(DateTimeFormat.forPattern("yyyy-MM-dd'T'HHZ").withOffsetParsed(), 18, Period.hours(1)),
-		MINUTE(DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mmZ").withOffsetParsed(), 21, Period.minutes(1)),
-		SECOND(DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ssZ").withOffsetParsed(), 24, Period.seconds(1)),
-		MILLISECOND(DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss.SSSZ").withOffsetParsed(), 28, Period.millis(1));
+		YEAR(CustomDateTimeFormat.inclYear(), 11, Period.years(1)),
+		MONTH(CustomDateTimeFormat.inclMonth(), 14, Period.months(1)),
+		DAY(CustomDateTimeFormat.inclDayOfMonth(), 17, Period.days(1)),
+		HOUR(CustomDateTimeFormat.inclHour(), 19, Period.hours(1)),
+		MINUTE(CustomDateTimeFormat.inclMinute(), 22, Period.minutes(1)),
+		SECOND(CustomDateTimeFormat.inclSecond(), 25, Period.seconds(1)),
+		MILLISECOND(CustomDateTimeFormat.inclMillis(), 29, Period.millis(1));
 
 		private final DateTimeFormatter format;
 		private final int length;
@@ -64,6 +63,7 @@ public class Intervals {
 	}
 
 	public static Interval valueOf(String value) {
+		value = value.replaceAll("Z", "+00:00");
 		for (Format format : Format.values()) {
 			if (value.length() == format.length) {
 				return format.toInterval(value);

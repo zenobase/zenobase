@@ -3,6 +3,7 @@ package com.zenobase.common;
 import static org.fest.assertions.Assertions.assertThat;
 
 import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormatter;
 import org.junit.Test;
 
 public class CustomDateTimeFormatTest {
@@ -20,7 +21,7 @@ public class CustomDateTimeFormatTest {
 
 	@Test
 	public void testWithOffset() {
-		test("2012T-04:00", "2012-01-01T00:00:00.000-04:00");
+		test("2012T-08:00", "2012-01-01T00:00:00.000-08:00");
 	}
 
 	@Test(expected = IllegalArgumentException.class)
@@ -31,5 +32,14 @@ public class CustomDateTimeFormatTest {
 	private static void test(String value, String expected) {
 		DateTime actual = CustomDateTimeFormat.format().parseDateTime(value);
 		assertThat(actual).isEqualTo(DateTime.parse(expected));
+	}
+
+	@Test
+	public void testYearToString() {
+		test(CustomDateTimeFormat.inclYear(), "2012-02-03T04:05:06.007Z", "2012TZ");
+	}
+
+	private static void test(DateTimeFormatter formatter, String timestamp, String expected) {
+		assertThat(formatter.print(DateTime.parse(timestamp))).isEqualTo(expected);
 	}
 }

@@ -26,7 +26,7 @@ public class DateTimeRangeConstraintTest extends ConstraintTestSupport {
 
 	@Test
 	public void testHour() {
-		addConstraint("%s:%s", Event.TIMESTAMP, "2012-01-05T12+0000");
+		addConstraint("%s:%s", Event.TIMESTAMP, "2012-01-05T12Z");
 		ObjectNode result = execute();
 		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(2);
 	}
@@ -40,7 +40,7 @@ public class DateTimeRangeConstraintTest extends ConstraintTestSupport {
 
 	@Test
 	public void testMillisecond() {
-		addConstraint("%s:%s", Event.TIMESTAMP, "2012-01-05T12:00:00.000+0000");
+		addConstraint("%s:%s", Event.TIMESTAMP, "2012-01-05T12:00:00.000Z");
 		ObjectNode result = execute();
 		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(1);
 	}

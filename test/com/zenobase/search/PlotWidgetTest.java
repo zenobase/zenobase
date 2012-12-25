@@ -43,9 +43,9 @@ public class PlotWidgetTest extends WidgetTestSupport {
 		ObjectNode result = execute();
 		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(2);
 		NodeAssert node = assertThat(result).path(WIDGET_ID).hasSize(2);
-		node.path(0).path("label").isEqualTo("2012-03T+0000");
+		node.path(0).path("label").isEqualTo("2012-03TZ");
 		node.path(0).path("count").isEqualTo(1);
-		node.path(1).path("label").isEqualTo("2012-05T+0000");
+		node.path(1).path("label").isEqualTo("2012-05TZ");
 		node.path(1).path("count").isEqualTo(1);
 	}
 
@@ -59,12 +59,12 @@ public class PlotWidgetTest extends WidgetTestSupport {
 		ObjectNode result = execute();
 		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(2);
 		NodeAssert node = assertThat(result).path(WIDGET_ID).hasSize(2);
-		node.path(0).path("label").isEqualTo("2012-03T+0000");
+		node.path(0).path("label").isEqualTo("2012-03TZ");
 		node.path(0).path("count").isEqualTo(1);
 		node.path(0).path("min").isEqualTo(5000.0, "m");
 		node.path(0).path("max").isEqualTo(5000.0, "m");
 		node.path(0).path("avg").isEqualTo(5000.0, "m");
-		node.path(1).path("label").isEqualTo("2012-05T+0000");
+		node.path(1).path("label").isEqualTo("2012-05TZ");
 		node.path(1).path("count").isEqualTo(1);
 		node.path(1).path("min").isEqualTo(10000.0, "m");
 		node.path(1).path("max").isEqualTo(10000.0, "m");
@@ -81,13 +81,13 @@ public class PlotWidgetTest extends WidgetTestSupport {
 		ObjectNode result = execute();
 		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(2);
 		NodeAssert node = assertThat(result).path(WIDGET_ID).hasSize(2);
-		node.path(0).path("label").isEqualTo("2012-03T+0000");
+		node.path(0).path("label").isEqualTo("2012-03TZ");
 		node.path(0).path("count").isEqualTo(1);
 		node.path(0).path("min").isEqualTo(2500.0);
 		node.path(0).path("max").isEqualTo(2500.0);
 		node.path(0).path("avg").isEqualTo(2500.0);
 		node.path(0).path("sum").isEqualTo(2500.0);
-		node.path(1).path("label").isEqualTo("2012-05T+0000");
+		node.path(1).path("label").isEqualTo("2012-05TZ");
 		node.path(1).path("count").isEqualTo(1);
 		node.path(1).path("min").isEqualTo(5000.0);
 		node.path(1).path("max").isEqualTo(5000.0);
