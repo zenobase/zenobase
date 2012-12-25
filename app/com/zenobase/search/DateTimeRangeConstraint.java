@@ -14,6 +14,8 @@ public class DateTimeRangeConstraint implements Constraint {
 		Interval interval = Intervals.valueOf(value);
 		String from = interval.getStart().toString(ISODateTimeFormat.dateTime());
 		String to = interval.getEnd().toString(ISODateTimeFormat.dateTime());
-		return QueryBuilders.rangeQuery(field).gte(from).lt(to);
+		return interval.toDurationMillis() > 1L
+			? QueryBuilders.rangeQuery(field).gte(from).lt(to)
+			: QueryBuilders.termQuery(field, from);
 	}
 }
