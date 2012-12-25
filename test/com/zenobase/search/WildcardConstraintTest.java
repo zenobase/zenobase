@@ -43,4 +43,11 @@ public class WildcardConstraintTest extends ConstraintTestSupport {
 		ObjectNode result = execute();
 		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(2);
 	}
+
+	@Test
+	public void testEscaped() {
+		addConstraint("%s:%s", Event.TAG, "lu\\*");
+		ObjectNode result = execute();
+		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(0);
+	}
 }

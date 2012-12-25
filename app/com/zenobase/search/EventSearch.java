@@ -40,18 +40,33 @@ public class EventSearch {
 		.build();
 
 	private final ImmutableMultimap<String, Constraint> constraintBuilders = ImmutableMultimap.<String, Constraint>builder()
+
+		// token and text fields
 		.put(Event.TAG.getName(), new WildcardConstraint())
 		.put(Event.TAG.getName(), new TermConstraint())
 		.put(Event.AUTHOR.getName(), new WildcardConstraint())
 		.put(Event.AUTHOR.getName(), new TermConstraint())
 		.put(Event.NOTE.getName(), new WildcardConstraint())
 		.put(Event.NOTE.getName(), new TermConstraint())
+
+		// integer fields
+		.put(Event.COUNT.getName(), new DecimalRangeConstraint())
 		.put(Event.COUNT.getName(), new TermConstraint())
-		.put(Event.TIMESTAMP.getName(), new DateTimeRangeConstraint())
 		.put(Event.RATING.getName(), new DecimalRangeConstraint())
+		.put(Event.RATING.getName(), new TermConstraint())
+
+		// time fields
+		.put(Event.TIMESTAMP.getName(), new DateTimeRangeConstraint())
+
+		// duration fields
 		.put(Event.DURATION.getName(), new DurationRangeConstraint())
-		.put(Event.DISTANCE.getName(), new MeasureRangeConstraint()) // TODO add for all measure fields!
-		.put(Event.DISTANCE.getName(), new MeasureConstraint()) // TODO add for all measure fields!
+
+		// measure fields
+		.put(Event.DISTANCE.getName(), new MeasureRangeConstraint())
+		.put(Event.DISTANCE.getName(), new MeasureConstraint())
+		 // TODO add all measure fields!
+
+		// location fields
 		.put(Event.LOCATION.getName(), new BoundingBoxConstraint())
 		.put(Event.LOCATION.getName(), new DistanceConstraint())
 		.build();
