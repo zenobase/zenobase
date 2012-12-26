@@ -61,6 +61,7 @@ public class EventSearch {
 
 		// duration fields
 		.put(Event.DURATION.getName(), new DurationRangeConstraint())
+		.put(Event.DURATION.getName(), new DurationConstraint())
 
 		// measure fields
 		.put(Event.DISTANCE.getName(), new MeasureRangeConstraint())
