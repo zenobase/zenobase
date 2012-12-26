@@ -13,9 +13,10 @@ public class DurationConstraintTest extends ConstraintTestSupport {
 
 	@Before
 	public void addEvents() {
-		addEvent("1d");
+		addEvent("0s");
+		addEvent("4h");
+		addEvent("240min");
 		addEvent("1d 1h");
-		addEvent("1h");
 	}
 
 	private void addEvent(String duration) {
@@ -25,9 +26,23 @@ public class DurationConstraintTest extends ConstraintTestSupport {
 	}
 
 	@Test
-	public void test() {
-		addConstraint("%s:%s", Event.DURATION, "1d 1h");
+	public void testEqualsConstraint() {
+		addConstraint("%s:%s", Event.DURATION, "4h");
 		ObjectNode result = execute();
-		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(1);
+		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(2);
+	}
+
+	@Test
+	public void testRangeConstraint() {
+		addConstraint("%s:%s", Event.DURATION, "[0..1d 1h]");
+		ObjectNode result = execute();
+		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(4);
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testBadConstraint() {
+		addConstraint("%s:%s", Event.DURATION, "foo");
+		System.out.println(DurationFormat.parse("foo"));
+		execute();
 	}
 }
