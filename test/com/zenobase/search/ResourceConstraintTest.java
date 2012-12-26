@@ -39,6 +39,13 @@ public class ResourceConstraintTest extends ConstraintTestSupport {
 	}
 
 	@Test
+	public void testSearchTitleWithPhrase() {
+		addConstraint("resource.title:%s", "\"zenobase blog\"");
+		ObjectNode result = execute();
+		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(1);
+	}
+
+	@Test
 	public void testSearchUrlWithPrefix() {
 		addConstraint("resource.url:%s", "http:*");
 		ObjectNode result = execute();
@@ -50,5 +57,12 @@ public class ResourceConstraintTest extends ConstraintTestSupport {
 		addConstraint("resource.url:%s", "zenobase");
 		ObjectNode result = execute();
 		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(0);
+	}
+
+	@Test
+	public void testUrlEquals() {
+		addConstraint("resource.url:%s", "https://zenobase.com/");
+		ObjectNode result = execute();
+		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(1);
 	}
 }

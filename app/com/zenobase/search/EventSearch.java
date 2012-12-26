@@ -46,9 +46,12 @@ public class EventSearch {
 		.put(Event.TAG.getName(), new TermConstraint())
 		.put(Event.AUTHOR.getName(), new WildcardConstraint())
 		.put(Event.AUTHOR.getName(), new TermConstraint())
+
+		.put(Event.NOTE.getName(), new PhraseConstraint())
 		.put(Event.NOTE.getName(), new WildcardConstraint())
 		.put(Event.NOTE.getName(), new TermConstraint())
 
+		.put(Event.RESOURCE.getName() + ".title", new PhraseConstraint())
 		.put(Event.RESOURCE.getName() + ".title", new WildcardConstraint())
 		.put(Event.RESOURCE.getName() + ".title", new TermConstraint())
 		.put(Event.RESOURCE.getName() + ".url", new WildcardConstraint())
