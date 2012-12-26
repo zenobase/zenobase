@@ -10,5 +10,7 @@ public class RolesField extends MapField<Identity, Role> {
 
 	public RolesField(String name) {
 		super(name, PRINCIPAL, ROLE);
+		addConstraints(PRINCIPAL);
+		addConstraints(ROLE);
 	}
 }

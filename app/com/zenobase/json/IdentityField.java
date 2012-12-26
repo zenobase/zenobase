@@ -6,11 +6,13 @@ import org.codehaus.jackson.node.ObjectNode;
 import org.codehaus.jackson.node.TextNode;
 
 import com.zenobase.models.Identity;
+import com.zenobase.search.TermConstraint;
 
 public class IdentityField extends Field<Identity> {
 
 	public IdentityField(String name) {
 		super(name, Identity.class, "string");
+		addConstraint(new TermConstraint());
 	}
 
 	@Override

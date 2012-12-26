@@ -5,6 +5,9 @@ import org.codehaus.jackson.node.LongNode;
 import org.codehaus.jackson.node.NullNode;
 import org.codehaus.jackson.node.ObjectNode;
 
+import com.zenobase.search.DecimalRangeConstraint;
+import com.zenobase.search.TermConstraint;
+
 public class LongField extends Field<Long> {
 
 	private final boolean indexed;
@@ -16,6 +19,10 @@ public class LongField extends Field<Long> {
 	public LongField(String name, boolean indexed) {
 		super(name, Long.class, "long");
 		this.indexed = indexed;
+		if (indexed) {
+			addConstraint(new DecimalRangeConstraint());
+			addConstraint(new TermConstraint());
+		}
 	}
 
 	@Override
