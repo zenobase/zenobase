@@ -56,8 +56,8 @@ public class EventSearch {
 		.put(Event.RATING.getName(), new TermConstraint())
 
 		// time fields
-		.put(Event.TIMESTAMP.getName(), new ExplicitDateTimeRangeConstraint())
 		.put(Event.TIMESTAMP.getName(), new DateTimeRangeConstraint())
+		.put(Event.TIMESTAMP.getName(), new DateTimeConstraint())
 
 		// duration fields
 		.put(Event.DURATION.getName(), new DurationRangeConstraint())

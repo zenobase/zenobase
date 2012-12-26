@@ -15,9 +15,10 @@ public class MeasureConstraintTest extends ConstraintTestSupport {
 
 	@Before
 	public void addEvents() {
-		addEvent("10 km");
-		addEvent("10000 m");
-		addEvent("20000 m");
+		addEvent("0 km");
+		addEvent("4 km");
+		addEvent("4000 m");
+		addEvent("25 km");
 	}
 
 	private void addEvent(String distance) {
@@ -27,9 +28,22 @@ public class MeasureConstraintTest extends ConstraintTestSupport {
 	}
 
 	@Test
-	public void test() {
-		addConstraint("%s:%s", Event.DISTANCE, "10 km");
+	public void testEqualsConstraint() {
+		addConstraint("%s:%s", Event.DISTANCE, "4 km");
 		ObjectNode result = execute();
 		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(2);
+	}
+
+	@Test
+	public void testRangeConstraint() {
+		addConstraint("%s:%s", Event.DISTANCE, "[0 km..4 km]");
+		ObjectNode result = execute();
+		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(3);
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testIllegalContraint() {
+		addConstraint("%s:%s", Event.DISTANCE, "foo");
+		execute();
 	}
 }

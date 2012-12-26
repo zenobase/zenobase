@@ -9,7 +9,7 @@ import org.junit.Test;
 
 import com.zenobase.models.Event;
 
-public class DateTimeRangeConstraintTest extends ConstraintTestSupport {
+public class DateTimeConstraintTest extends ConstraintTestSupport {
 
 	@Before
 	public void addEvents() {
@@ -25,23 +25,23 @@ public class DateTimeRangeConstraintTest extends ConstraintTestSupport {
 	}
 
 	@Test
-	public void testHour() {
+	public void testEqualsConstraint() {
+		addConstraint("%s:%s", Event.TIMESTAMP, "2012-01-05T12:00:00.000Z");
+		ObjectNode result = execute();
+		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(1);
+	}
+
+	@Test
+	public void testHourConstraint() {
 		addConstraint("%s:%s", Event.TIMESTAMP, "2012-01-05T12Z");
 		ObjectNode result = execute();
 		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(2);
 	}
 
 	@Test
-	public void testRange() {
+	public void testRangeConstraint() {
 		addConstraint("%s:%s", Event.TIMESTAMP, "(2012-01-05T12Z..2012-01-06TZ]");
 		ObjectNode result = execute();
 		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(2);
-	}
-
-	@Test
-	public void testMillisecond() {
-		addConstraint("%s:%s", Event.TIMESTAMP, "2012-01-05T12:00:00.000Z");
-		ObjectNode result = execute();
-		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(1);
 	}
 }

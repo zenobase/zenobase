@@ -6,6 +6,6 @@ public class DateTimeRangeParser extends RangeParser<ReadableInstant> {
 
 	@Override
 	protected ReadableInstant getValue(String s) {
-		return CustomDateTimeFormat.parse(s);
+		return DateTimeFormat.parse(s);
 	}
 }

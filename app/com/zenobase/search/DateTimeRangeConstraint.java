@@ -1,21 +1,21 @@
 package com.zenobase.search;
 
-import org.elasticsearch.index.query.QueryBuilder;
-import org.elasticsearch.index.query.QueryBuilders;
-import org.joda.time.Interval;
-import org.joda.time.format.ISODateTimeFormat;
+import org.joda.time.ReadableInstant;
+import com.google.common.collect.Range;
 
-import com.zenobase.common.Intervals;
+import com.zenobase.common.DateTimeRangeParser;
 
-public class DateTimeRangeConstraint implements Constraint {
+public class DateTimeRangeConstraint extends RangeConstraintSupport<ReadableInstant> {
+
+	private final DateTimeRangeParser parser = new DateTimeRangeParser();
 
 	@Override
-	public QueryBuilder build(String field, String value) {
-		Interval interval = Intervals.valueOf(value);
-		String from = interval.getStart().toString(ISODateTimeFormat.dateTime());
-		String to = interval.getEnd().toString(ISODateTimeFormat.dateTime());
-		return interval.toDurationMillis() > 1L
-			? QueryBuilders.rangeQuery(field).gte(from).lt(to)
-			: QueryBuilders.termQuery(field, from);
+	protected Range<ReadableInstant> parseRange(String value) {
+		return parser.parse(value);
+	}
+
+	@Override
+	protected Number getValue(ReadableInstant value) {
+		return value.getMillis();
 	}
 }

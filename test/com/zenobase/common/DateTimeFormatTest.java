@@ -5,7 +5,7 @@ import static org.fest.assertions.Assertions.assertThat;
 import org.joda.time.DateTime;
 import org.junit.Test;
 
-public class CustomDateTimeFormatTest {
+public class DateTimeFormatTest {
 
 	@Test
 	public void testParse() {
@@ -29,7 +29,7 @@ public class CustomDateTimeFormatTest {
 	}
 
 	private static void test(String value, String expected) {
-		DateTime actual = CustomDateTimeFormat.parse(value);
+		DateTime actual = DateTimeFormat.parse(value);
 		assertThat(actual).isEqualTo(DateTime.parse(expected));
 	}
 }

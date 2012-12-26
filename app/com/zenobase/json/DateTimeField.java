@@ -5,12 +5,10 @@ import org.codehaus.jackson.node.NullNode;
 import org.codehaus.jackson.node.ObjectNode;
 import org.codehaus.jackson.node.TextNode;
 import org.joda.time.DateTime;
-import org.joda.time.format.DateTimeFormatter;
-import org.joda.time.format.ISODateTimeFormat;
+
+import com.zenobase.common.DateTimeFormat;
 
 public class DateTimeField extends Field<DateTime> {
-
-	private final DateTimeFormatter formatter = ISODateTimeFormat.dateTime().withOffsetParsed();
 
 	public DateTimeField(String name) {
 		super(name, DateTime.class, "date");
@@ -18,7 +16,7 @@ public class DateTimeField extends Field<DateTime> {
 
 	@Override
 	protected DateTime getValue(JsonNode node) {
-		return formatter.parseDateTime(node.getTextValue());
+		return DateTimeFormat.parse(node.getTextValue());
 	}
 
 	@Override

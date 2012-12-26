@@ -9,7 +9,7 @@ import org.joda.time.format.DateTimeFormatterBuilder;
  * and the rest is optional:
  * <code>yyyy ['-' MM ['-' dd ['T' [HH [':' mm [':' ss ['.' SSS]]]]]]] Z</code>
  */
-public class CustomDateTimeFormat extends DateTimeFormatSupport {
+public class DateTimeFormat extends DateTimeFormatSupport {
 
 	private static final DateTimeFormatter PARSER = new DateTimeFormatterBuilder()
 		.append(yearElement())
