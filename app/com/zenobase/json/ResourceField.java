@@ -13,6 +13,8 @@ public class ResourceField extends Field<Resource> {
 
 	public ResourceField(String name) {
 		super(name, Resource.class, "object");
+		addConstraints(TITLE);
+		addConstraints(URL);
 	}
 
 	@Override

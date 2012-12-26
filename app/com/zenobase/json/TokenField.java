@@ -5,6 +5,9 @@ import org.codehaus.jackson.node.NullNode;
 import org.codehaus.jackson.node.ObjectNode;
 import org.codehaus.jackson.node.TextNode;
 
+import com.zenobase.search.TermConstraint;
+import com.zenobase.search.WildcardConstraint;
+
 public class TokenField extends Field<String> {
 
 	private final boolean indexed;
@@ -16,6 +19,8 @@ public class TokenField extends Field<String> {
 	public TokenField(String name, boolean indexed) {
 		super(name, String.class, "string");
 		this.indexed = indexed;
+		addConstraint(new WildcardConstraint());
+		addConstraint(new TermConstraint());
 	}
 
 	@Override

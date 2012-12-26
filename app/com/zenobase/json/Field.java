@@ -1,19 +1,25 @@
 package com.zenobase.json;
 
 import java.lang.reflect.Type;
+import java.util.Map;
 
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.node.ArrayNode;
 import org.codehaus.jackson.node.ObjectNode;
 import com.google.common.base.Preconditions;
+import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
+import com.google.common.collect.Multimap;
+
+import com.zenobase.search.Constraint;
 
 public abstract class Field<T> {
 
 	private final String name;
 	private final Type type;
 	private final String schemaType;
+	private final Multimap<String, Constraint> constraints = ArrayListMultimap.create();
 
 	protected Field(String name, Type type, String schemaType) {
 		this.name = name;
@@ -134,6 +140,20 @@ public abstract class Field<T> {
 
 	protected static void configureSchema(ObjectNode properties, Field<?> field) {
 		field.configureSchema(properties.putObject(field.getName()));
+	}
+
+	public Multimap<String, Constraint> getConstraints() {
+		return constraints;
+	}
+
+	protected final void addConstraint(Constraint constraint) {
+		constraints.put(name, constraint);
+	}
+
+	protected final void addConstraints(Field<?> nested) {
+		for (Map.Entry<String, Constraint> entry : nested.getConstraints().entries()) {
+			constraints.put(name + "." + entry.getKey(), entry.getValue());
+		}
 	}
 
 	public void prePersist(ObjectNode node) {

@@ -39,47 +39,7 @@ public class EventSearch {
 		.put(MapWidget.TYPE, MapWidget.builder())
 		.build();
 
-	private final ImmutableMultimap<String, Constraint> constraintBuilders = ImmutableMultimap.<String, Constraint>builder()
-
-		// token and text fields
-		.put(Event.TAG.getName(), new WildcardConstraint())
-		.put(Event.TAG.getName(), new TermConstraint())
-		.put(Event.AUTHOR.getName(), new WildcardConstraint())
-		.put(Event.AUTHOR.getName(), new TermConstraint())
-
-		.put(Event.NOTE.getName(), new PhraseConstraint())
-		.put(Event.NOTE.getName(), new WildcardConstraint())
-		.put(Event.NOTE.getName(), new TermConstraint())
-
-		.put(Event.RESOURCE.getName() + ".title", new PhraseConstraint())
-		.put(Event.RESOURCE.getName() + ".title", new WildcardConstraint())
-		.put(Event.RESOURCE.getName() + ".title", new TermConstraint())
-		.put(Event.RESOURCE.getName() + ".url", new WildcardConstraint())
-		.put(Event.RESOURCE.getName() + ".url", new TermConstraint())
-
-		// integer fields
-		.put(Event.COUNT.getName(), new DecimalRangeConstraint())
-		.put(Event.COUNT.getName(), new TermConstraint())
-		.put(Event.RATING.getName(), new DecimalRangeConstraint())
-		.put(Event.RATING.getName(), new TermConstraint())
-
-		// time fields
-		.put(Event.TIMESTAMP.getName(), new DateTimeRangeConstraint())
-		.put(Event.TIMESTAMP.getName(), new DateTimeConstraint())
-
-		// duration fields
-		.put(Event.DURATION.getName(), new DurationRangeConstraint())
-		.put(Event.DURATION.getName(), new DurationConstraint())
-
-		// measure fields
-		.put(Event.DISTANCE.getName(), new MeasureRangeConstraint())
-		.put(Event.DISTANCE.getName(), new MeasureConstraint())
-		 // TODO add all measure fields!
-
-		// location fields
-		.put(Event.LOCATION.getName(), new BoundingBoxConstraint())
-		.put(Event.LOCATION.getName(), new DistanceConstraint())
-		.build();
+	private static final ImmutableMultimap<String, Constraint> constraintBuilders = Event.getConstraints();
 
 	private final Set<Widget> widgets = Sets.newLinkedHashSet();
 	private final List<QueryBuilder> constraints = Lists.newArrayList();

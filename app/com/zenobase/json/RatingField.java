@@ -6,11 +6,15 @@ import org.codehaus.jackson.node.NullNode;
 import org.codehaus.jackson.node.ObjectNode;
 
 import com.zenobase.models.Rating;
+import com.zenobase.search.DecimalRangeConstraint;
+import com.zenobase.search.TermConstraint;
 
 public class RatingField extends Field<Rating> {
 
 	public RatingField(String name) {
 		super(name, Rating.class, "byte");
+		addConstraint(new DecimalRangeConstraint());
+		addConstraint(new TermConstraint());
 	}
 
 	@Override
