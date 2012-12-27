@@ -43,7 +43,7 @@ public class GanttWidgetTest extends WidgetTestSupport {
 		addWidget("id:%s,type:%s,field:%s", WIDGET_ID, GanttWidget.TYPE, Event.TAG);
 
 		ObjectNode result = execute();
-		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(5);
+		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(5);
 		NodeAssert node = assertThat(result).path(WIDGET_ID).hasSize(2);
 		node.path(0).path("label").isEqualTo(e1.getValue(Event.TAG));
 		node.path(0).path("count").isEqualTo(2);
@@ -61,7 +61,7 @@ public class GanttWidgetTest extends WidgetTestSupport {
 		addWidget("id:%s,type:%s,field:%s", WIDGET_ID, GanttWidget.TYPE, Event.TAG);
 
 		ObjectNode result = execute();
-		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(0);
+		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(0);
 		assertThat(result).path(WIDGET_ID).hasSize(0);
 	}
 }

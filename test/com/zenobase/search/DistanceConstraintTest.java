@@ -33,14 +33,14 @@ public class DistanceConstraintTest extends ConstraintTestSupport {
 	public void testShortDistance() {
 		addConstraint("%s:%s", Event.LOCATION, LAS_VEGAS); // location:-115.17,36.08
 		ObjectNode result = execute();
-		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(2);
+		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(2);
 	}
 
 	@Test
 	public void testMediumDistance() {
 		addConstraint("%s:%s~%s", Event.LOCATION, LAS_VEGAS, "300 mi"); // location:-115.17,36.08~300 mi
 		ObjectNode result = execute();
-		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(3);
+		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(3);
 	}
 
 	@Test(expected = NumberFormatException.class)

@@ -11,7 +11,8 @@ import org.junit.Test;
 import com.zenobase.models.Bucket;
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
-import com.zenobase.search.EventSearch;
+import com.zenobase.search.EventSearchBuilder;
+import com.zenobase.search.Search;
 import com.zenobase.testing.NodeAssert;
 
 public class EventRepositoryTest extends ElasticSearchTestSupport {
@@ -43,7 +44,7 @@ public class EventRepositoryTest extends ElasticSearchTestSupport {
 		repository.refresh(bucket.getId());
 		assertThat(repository.size(bucket.getId())).as("bucket size").isEqualTo(1L);
 		assertThat(repository.find(bucket.getId(), event.getId()).toJson()).isEqualTo(event.toJson());
-		NodeAssert.assertThat(repository.find(bucket.getId(), new EventSearch())).path(EventSearch.TOTAL.getName()).isEqualTo(1);
+		NodeAssert.assertThat(repository.find(bucket.getId(), new EventSearchBuilder().build())).path(Search.TOTAL.getName()).isEqualTo(1);
 		assertThat(repository.terms(bucket.getId(), Event.TAG.getName())).as("tags").containsOnly("test", "demo");
 
 		// update event

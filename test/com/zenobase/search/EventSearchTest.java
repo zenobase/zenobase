@@ -7,23 +7,23 @@ public class EventSearchTest {
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testUnsupportedFilter() {
-		new EventSearch().addConstraint("xxx:lunch");
+		new EventSearchBuilder().addConstraint("xxx:lunch");
 	}
 
 	@Test
 	public void testUnsupportedWidget() {
-		new EventSearch().addWidget("type:xxx");
+		new EventSearchBuilder().addWidget("type:xxx");
 	}
 
 	@Test
 	public void testEqualsHashCode() {
-		EventSearch a = new EventSearch().addConstraint("tag:a").addConstraint("tag:b");
-		EventSearch b = new EventSearch().addConstraints(new String[] { "tag:a", "tag:b" });
-		EventSearch c = new EventSearch().addWidget("id:c1,type:list").addWidget("id:c2,type:count");
-		EventSearch d = new EventSearch().addWidgets(new String[] { "id:c1,type:list", "id:c2,type:count" });
-		EventSearch e = new EventSearch();
-		EventSearch f = new EventSearch().addConstraints(null).addWidgets(null);
-		EventSearch g = new EventSearch().addConstraint("tag:a").addWidget("id:c2,type:count");
+		Search a = new EventSearchBuilder().addConstraint("tag:a").addConstraint("tag:b").build();
+		Search b = new EventSearchBuilder().addConstraints(new String[] { "tag:a", "tag:b" }).build();
+		Search c = new EventSearchBuilder().addWidget("id:c1,type:list").addWidget("id:c2,type:count").build();
+		Search d = new EventSearchBuilder().addWidgets(new String[] { "id:c1,type:list", "id:c2,type:count" }).build();
+		Search e = new EventSearchBuilder().build();
+		Search f = new EventSearchBuilder().addConstraints(null).addWidgets(null).build();
+		Search g = new EventSearchBuilder().addConstraint("tag:a").addWidget("id:c2,type:count").build();
 		new EqualsTester()
 			.addEqualityGroup(a, b)
 			.addEqualityGroup(c, d)

@@ -27,27 +27,27 @@ public class WildcardConstraintTest extends ConstraintTestSupport {
 	public void testPrefix() {
 		addConstraint("%s:%s", Event.TAG, "lu*");
 		ObjectNode result = execute();
-		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(2);
+		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(2);
 	}
 
 	@Test
 	public void testPostfix() {
 		addConstraint("%s:%s", Event.TAG, "*nch");
 		ObjectNode result = execute();
-		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(2);
+		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(2);
 	}
 
 	@Test
 	public void testPrefixAndPostfix() {
 		addConstraint("%s:%s", Event.TAG, "lu*ch");
 		ObjectNode result = execute();
-		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(2);
+		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(2);
 	}
 
 	@Test
 	public void testEscaped() {
 		addConstraint("%s:%s", Event.TAG, "lu\\*");
 		ObjectNode result = execute();
-		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(0);
+		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(0);
 	}
 }

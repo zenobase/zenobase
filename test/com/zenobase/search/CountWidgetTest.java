@@ -40,7 +40,7 @@ public class CountWidgetTest extends WidgetTestSupport {
 		addWidget("id:%s,type:%s,field:%s", WIDGET_ID, CountWidget.TYPE, Event.TAG);
 
 		ObjectNode result = execute();
-		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(3);
+		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(3);
 		NodeAssert node = assertThat(result).path(WIDGET_ID).hasSize(2);
 		node.path(0).path("label").isEqualTo(TAG_LUNCH);
 		node.path(0).path("count").isEqualTo(2);
@@ -57,7 +57,7 @@ public class CountWidgetTest extends WidgetTestSupport {
 		addWidget("id:%s,type:%s,field:%s,order:%s", WIDGET_ID, CountWidget.TYPE, Event.TAG, "term");
 
 		ObjectNode result = execute();
-		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(3);
+		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(3);
 		NodeAssert node = assertThat(result).path(WIDGET_ID).hasSize(2);
 		node.path(0).path("label").isEqualTo(TAG_DINNER);
 		node.path(0).path("count").isEqualTo(1);
@@ -74,7 +74,7 @@ public class CountWidgetTest extends WidgetTestSupport {
 		addWidget("id:%s,type:%s,field:%s,reverse:%s", WIDGET_ID, CountWidget.TYPE, Event.TAG, true);
 
 		ObjectNode result = execute();
-		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(3);
+		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(3);
 		NodeAssert node = assertThat(result).path(WIDGET_ID).hasSize(2);
 		node.path(0).path("label").isEqualTo(TAG_DINNER);
 		node.path(0).path("count").isEqualTo(1);
@@ -91,7 +91,7 @@ public class CountWidgetTest extends WidgetTestSupport {
 		addWidget("id:%s,type:%s,field:%s,limit:%s", WIDGET_ID, CountWidget.TYPE, Event.TAG, 1);
 
 		ObjectNode result = execute();
-		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(3);
+		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(3);
 		NodeAssert node = assertThat(result).path(WIDGET_ID).hasSize(2);
 		node.path(0).path("label").isEqualTo(TAG_LUNCH);
 		node.path(0).path("count").isEqualTo(2);
@@ -108,7 +108,7 @@ public class CountWidgetTest extends WidgetTestSupport {
 		addWidget("id:%s,type:%s,field:%s,offset:%s", WIDGET_ID, CountWidget.TYPE, Event.TAG, 1);
 
 		ObjectNode result = execute();
-		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(3);
+		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(3);
 		NodeAssert node = assertThat(result).path(WIDGET_ID).hasSize(1);
 		node.path(0).path("label").isEqualTo(TAG_DINNER);
 		node.path(0).path("count").isEqualTo(1);
@@ -120,7 +120,7 @@ public class CountWidgetTest extends WidgetTestSupport {
 		addWidget("id:%s,type:%s,field:%s", WIDGET_ID, CountWidget.TYPE, Event.TAG);
 
 		ObjectNode result = execute();
-		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(0);
+		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(0);
 		assertThat(result).path(WIDGET_ID).hasSize(0);
 	}
 }

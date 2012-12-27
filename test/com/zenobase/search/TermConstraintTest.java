@@ -29,20 +29,20 @@ public class TermConstraintTest extends ConstraintTestSupport {
 	public void testWithTag() {
 		addConstraint("%s:%s", Event.TAG, "lunch");
 		ObjectNode result = execute();
-		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(2);
+		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(2);
 	}
 
 	@Test
 	public void testWithNote() {
 		addConstraint("%s:%s", Event.NOTE, "pizza");
 		ObjectNode result = execute();
-		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(2);
+		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(2);
 	}
 
 	@Test
 	public void testWithCount() {
 		addConstraint("%s:%s", Event.COUNT, 10);
 		ObjectNode result = execute();
-		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(1);
+		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(1);
 	}
 }

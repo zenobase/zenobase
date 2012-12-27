@@ -29,14 +29,14 @@ public class DurationConstraintTest extends ConstraintTestSupport {
 	public void testEqualsConstraint() {
 		addConstraint("%s:%s", Event.DURATION, "4h");
 		ObjectNode result = execute();
-		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(2);
+		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(2);
 	}
 
 	@Test
 	public void testRangeConstraint() {
 		addConstraint("%s:%s", Event.DURATION, "[0..1d 1h]");
 		ObjectNode result = execute();
-		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(4);
+		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(4);
 	}
 
 	@Test(expected = IllegalArgumentException.class)

@@ -21,7 +21,8 @@ import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
 import com.zenobase.models.Role;
 import com.zenobase.oauth.Authorization;
-import com.zenobase.search.EventSearch;
+import com.zenobase.search.EventSearchBuilder;
+import com.zenobase.search.Search;
 import com.zenobase.services.BucketRepository;
 import com.zenobase.services.CommandDispatcher;
 import com.zenobase.services.EventRepository;
@@ -55,7 +56,7 @@ public class EventListController extends ControllerSupport {
     	String[] widgets = request().queryString().get("w");
     	String[] constraints = request().queryString().get("q");
     	if (widgets != null) {
-    		EventSearch search = new EventSearch().addWidgets(widgets).addConstraints(constraints);
+    		Search search = new EventSearchBuilder().addWidgets(widgets).addConstraints(constraints).build();
     		return ok(events.find(bucketId, search));
     	} else {
         	response().setContentType("application/json");

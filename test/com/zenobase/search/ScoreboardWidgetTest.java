@@ -44,7 +44,7 @@ public class ScoreboardWidgetTest extends WidgetTestSupport {
 		addWidget("id:%s,type:%s,key_field:%s,value_field:%s,unit:%s,order:%s", WIDGET_ID, ScoreboardWidget.TYPE, Event.TAG, Event.DISTANCE, "km", "total");
 
 		ObjectNode result = execute();
-		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(4);
+		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(4);
 		NodeAssert node = assertThat(result).path(WIDGET_ID).hasSize(2);
 		node.path(0).path("label").isEqualTo(e2.getValue(Event.TAG));
 		node.path(0).path("min").path("@value").isEqualTo(10.0);
@@ -74,7 +74,7 @@ public class ScoreboardWidgetTest extends WidgetTestSupport {
 		addWidget("id:%s,type:%s,key_field:%s,value_field:%s", WIDGET_ID, ScoreboardWidget.TYPE, Event.TAG, Event.COUNT);
 
 		ObjectNode result = execute();
-		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(4);
+		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(4);
 		NodeAssert node = assertThat(result).path(WIDGET_ID).hasSize(2);
 		node.path(0).path("label").isEqualTo(e2.getValue(Event.TAG));
 		node.path(0).path("count").isEqualTo(2);
@@ -96,7 +96,7 @@ public class ScoreboardWidgetTest extends WidgetTestSupport {
 		addWidget("id:%s,type:%s,key_field:%s,value_field:%s,unit:%s,order:%s", WIDGET_ID, ScoreboardWidget.TYPE, Event.TAG, Event.DISTANCE, "km", "total");
 
 		ObjectNode result = execute();
-		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(0);
+		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(0);
 		assertThat(result).path(WIDGET_ID).hasSize(0);
 	}
 }

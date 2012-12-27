@@ -31,14 +31,14 @@ public class MeasureConstraintTest extends ConstraintTestSupport {
 	public void testEqualsConstraint() {
 		addConstraint("%s:%s", Event.DISTANCE, "4 km");
 		ObjectNode result = execute();
-		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(2);
+		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(2);
 	}
 
 	@Test
 	public void testRangeConstraint() {
 		addConstraint("%s:%s", Event.DISTANCE, "[0 km..4 km]");
 		ObjectNode result = execute();
-		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(3);
+		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(3);
 	}
 
 	@Test(expected = IllegalArgumentException.class)

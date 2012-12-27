@@ -28,41 +28,41 @@ public class ResourceConstraintTest extends ConstraintTestSupport {
 	public void testSearchTitleWithPrefix() {
 		addConstraint("resource.title:%s", "zeno*");
 		ObjectNode result = execute();
-		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(2);
+		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(2);
 	}
 
 	@Test
 	public void testSearchTitleWithTerm() {
 		addConstraint("resource.title:%s", "zenobase");
 		ObjectNode result = execute();
-		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(2);
+		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(2);
 	}
 
 	@Test
 	public void testSearchTitleWithPhrase() {
 		addConstraint("resource.title:%s", "\"zenobase blog\"");
 		ObjectNode result = execute();
-		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(1);
+		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(1);
 	}
 
 	@Test
 	public void testSearchUrlWithPrefix() {
 		addConstraint("resource.url:%s", "http:*");
 		ObjectNode result = execute();
-		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(2);
+		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(2);
 	}
 
 	@Test
 	public void testSearchUrlWithTerm() {
 		addConstraint("resource.url:%s", "zenobase");
 		ObjectNode result = execute();
-		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(0);
+		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(0);
 	}
 
 	@Test
 	public void testUrlEquals() {
 		addConstraint("resource.url:%s", "https://zenobase.com/");
 		ObjectNode result = execute();
-		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(1);
+		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(1);
 	}
 }

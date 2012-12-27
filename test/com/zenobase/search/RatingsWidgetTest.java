@@ -42,7 +42,7 @@ public class RatingsWidgetTest extends WidgetTestSupport {
 		addWidget("id:%s,type:%s", WIDGET_ID, RatingsWidget.TYPE);
 
 		ObjectNode result = execute();
-		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(5);
+		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(5);
 		NodeAssert node = assertThat(result).path(WIDGET_ID).hasSize(4);
 		node.path(0).path("from").isEqualTo(90);
 		node.path(0).path("to").isEqualTo(100);
@@ -69,7 +69,7 @@ public class RatingsWidgetTest extends WidgetTestSupport {
 		addWidget("id:%s,type:%s,scale:%d", WIDGET_ID, RatingsWidget.TYPE, 10);
 
 		ObjectNode result = execute();
-		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(5);
+		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(5);
 		NodeAssert node = assertThat(result).path(WIDGET_ID).hasSize(5);
 		node.path(0).path("from").isEqualTo(95);
 		node.path(0).path("to").isEqualTo(100);
@@ -94,7 +94,7 @@ public class RatingsWidgetTest extends WidgetTestSupport {
 		addWidget("id:%s,type:%s", WIDGET_ID, RatingsWidget.TYPE);
 
 		ObjectNode result = execute();
-		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(0);
+		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(0);
 		assertThat(result).path(WIDGET_ID).hasSize(0);
 	}
 }

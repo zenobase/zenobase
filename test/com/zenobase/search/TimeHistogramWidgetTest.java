@@ -40,7 +40,7 @@ public class TimeHistogramWidgetTest extends WidgetTestSupport {
 			WIDGET_ID, TimeHistogramWidget.TYPE, Event.TIMESTAMP, "hour_of_day", DateTimeZone.forOffsetHours(-8));
 
 		ObjectNode result = execute();
-		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(3);
+		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(3);
 		NodeAssert node = assertThat(result).path(WIDGET_ID).hasSize(24);
 		node.path(7).path("label").isEqualTo("07");
 		node.path(7).path("count").isEqualTo(1);
@@ -58,7 +58,7 @@ public class TimeHistogramWidgetTest extends WidgetTestSupport {
 			WIDGET_ID, TimeHistogramWidget.TYPE, Event.TIMESTAMP, "day_of_week", DateTimeZone.forOffsetHours(-8));
 
 		ObjectNode result = execute();
-		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(3);
+		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(3);
 		NodeAssert node = assertThat(result).path(WIDGET_ID).hasSize(7);
 		node.path(1).path("label").isEqualTo("Tue");
 		node.path(1).path("count").isEqualTo(1);
@@ -78,7 +78,7 @@ public class TimeHistogramWidgetTest extends WidgetTestSupport {
 			WIDGET_ID, TimeHistogramWidget.TYPE, Event.TIMESTAMP, "month_of_year", DateTimeZone.forOffsetHours(-8));
 
 		ObjectNode result = execute();
-		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(3);
+		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(3);
 		NodeAssert node = assertThat(result).path(WIDGET_ID).hasSize(12);
 		node.path(10).path("label").isEqualTo("Nov");
 		node.path(10).path("count").isEqualTo(1);

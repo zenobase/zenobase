@@ -20,6 +20,6 @@ public class EmptyWidgetTest extends SearchTestSupport {
 		}
 
 		ObjectNode result = execute();
-		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(size);
+		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(size);
 	}
 }

@@ -44,7 +44,7 @@ public class MapWidgetTest extends WidgetTestSupport {
 		addWidget("id:%s,type:%s,factor:%s", WIDGET_ID, MapWidget.TYPE, 0.5);
 
 		ObjectNode result = execute();
-		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(4);
+		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(4);
 		NodeAssert node = assertThat(result).path(WIDGET_ID).hasSize(2);
 		node.path(0).path("count").isEqualTo(2);
 		node.path(0).path("lat").isEqualTo(39.75);
@@ -64,7 +64,7 @@ public class MapWidgetTest extends WidgetTestSupport {
 		addWidget("id:%s,type:%s,factor:%s", WIDGET_ID, MapWidget.TYPE, 1.0);
 
 		ObjectNode result = execute();
-		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(4);
+		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(4);
 		NodeAssert node = assertThat(result).path(WIDGET_ID).hasSize(1);
 		node.path(0).path("count").isEqualTo(4);
 		node.path(0).path("lat").isEqualTo(37.1);
@@ -81,7 +81,7 @@ public class MapWidgetTest extends WidgetTestSupport {
 		addWidget("id:%s,type:%s", WIDGET_ID, MapWidget.TYPE);
 
 		ObjectNode result = execute();
-		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(0);
+		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(0);
 		assertThat(result).path(WIDGET_ID).hasSize(0);
 	}
 }

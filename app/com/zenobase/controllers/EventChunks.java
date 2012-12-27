@@ -9,8 +9,9 @@ import com.google.common.base.Preconditions;
 import com.zenobase.json.JsonChunks;
 import com.zenobase.json.JsonStream;
 import com.zenobase.models.Event;
-import com.zenobase.search.EventSearch;
+import com.zenobase.search.EventSearchBuilder;
 import com.zenobase.search.ListWidget;
+import com.zenobase.search.Search;
 import com.zenobase.services.EventRepository;
 
 final class EventChunks extends JsonChunks {
@@ -46,14 +47,14 @@ final class EventChunks extends JsonChunks {
 		return events.find(bucketId, createSearch(constraints, offset));
 	}
 
-	private static EventSearch createSearch(String[] filters, int offset) {
+	private static Search createSearch(String[] filters, int offset) {
 		ListWidget widget = new ListWidget(EventListController.EVENTS.getName(),
 			offset, LIMIT, Event.TIMESTAMP.getName(), SortOrder.ASC);
-		return new EventSearch().addConstraints(filters).addWidget(widget);
+		return new EventSearchBuilder().addConstraints(filters).addWidget(widget).build();
 	}
 
 	private static int getTotal(ObjectNode result) {
-		Integer total = EventSearch.TOTAL.getValue(result);
+		Integer total = Search.TOTAL.getValue(result);
 		Preconditions.checkNotNull(total, "missing total: %s", result);
 		return total;
 	}

@@ -13,7 +13,7 @@ import org.junit.Test;
 import com.zenobase.common.Generator;
 import com.zenobase.json.JsonStream;
 import com.zenobase.json.Nodes;
-import com.zenobase.search.EventSearch;
+import com.zenobase.search.Search;
 import com.zenobase.services.EventRepository;
 
 public class EventChunksTest {
@@ -24,7 +24,7 @@ public class EventChunksTest {
 		final int total = 102;
 		final String bucketId = Generator.id();
 		final EventRepository events = mock(EventRepository.class);
-		when(events.find(eq(bucketId), any(EventSearch.class)))
+		when(events.find(eq(bucketId), any(Search.class)))
 			.thenReturn(fakeResult(total, 100), fakeResult(total, 2));
 
 		ObjectNode result = onReady(new EventChunks(events, bucketId, null));
@@ -34,7 +34,7 @@ public class EventChunksTest {
 
 	private static ObjectNode fakeResult(int total, int size) {
 		ObjectNode fakeResult = Nodes.newObject();
-		EventSearch.TOTAL.setValue(fakeResult, total);
+		Search.TOTAL.setValue(fakeResult, total);
 		for (int i = 0; i < size; ++i) {
 			ObjectNode fakeEvent = Nodes.newObject();
 			fakeEvent.put("@id", Generator.id());

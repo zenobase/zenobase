@@ -16,7 +16,8 @@ import com.zenobase.models.Bucket;
 import com.zenobase.models.Identity;
 import com.zenobase.models.Role;
 import com.zenobase.oauth.Authorization;
-import com.zenobase.search.EventSearch;
+import com.zenobase.search.EventSearchBuilder;
+import com.zenobase.search.Search;
 
 public class EventListControllerHttpGetTest extends EventListControllerTestSupport {
 
@@ -31,7 +32,7 @@ public class EventListControllerHttpGetTest extends EventListControllerTestSuppo
 	public void testSearchEvents() {
 		String constraint = "tag:value";
 		String widget = "id:xyz,type:list";
-		EventSearch expected = new EventSearch().addConstraint(constraint).addWidget(widget);
+		Search expected = new EventSearchBuilder().addConstraint(constraint).addWidget(widget).build();
 		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
 		when(buckets.find(bucket.getId())).thenReturn(bucket);
 		ObjectNode fakeResult = Nodes.newObject();
@@ -45,7 +46,7 @@ public class EventListControllerHttpGetTest extends EventListControllerTestSuppo
 	public void testExportEvents() {
 		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
 		when(buckets.find(bucket.getId())).thenReturn(bucket);
-		when(events.find(Mockito.eq(bucket.getId()), Mockito.any(EventSearch.class))).thenReturn(Nodes.newObject());
+		when(events.find(Mockito.eq(bucket.getId()), Mockito.any(Search.class))).thenReturn(Nodes.newObject());
 		Result result = call(bucket, "");
 		assertThat(result).hasStatus(OK).hasContentType("application/json");
 	}

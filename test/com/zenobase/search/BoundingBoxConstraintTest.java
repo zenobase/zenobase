@@ -38,6 +38,6 @@ public class BoundingBoxConstraintTest extends ConstraintTestSupport {
 			MIAMI.getLongitude());
 		addConstraint("%s:%s", Event.LOCATION, bounds);
 		ObjectNode result = execute();
-		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(2);
+		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(2);
 	}
 }

@@ -10,7 +10,7 @@ import com.zenobase.services.Index;
 
 public class SearchTestSupport extends ElasticSearchTestSupport {
 
-	private final EventSearch search = new EventSearch();
+	private final EventSearchBuilder search = new EventSearchBuilder();
 	private Index index;
 
 	@Before
@@ -21,7 +21,7 @@ public class SearchTestSupport extends ElasticSearchTestSupport {
 		index.refresh();
 	}
 
-	protected EventSearch getSearch() {
+	protected EventSearchBuilder getSearch() {
 		return search;
 	}
 
@@ -31,6 +31,6 @@ public class SearchTestSupport extends ElasticSearchTestSupport {
 	}
 
 	protected ObjectNode execute() {
-		return search.execute(index);
+		return search.build().execute(index);
 	}
 }

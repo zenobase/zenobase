@@ -12,7 +12,7 @@ import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 
 import com.zenobase.models.Event;
-import com.zenobase.search.EventSearch;
+import com.zenobase.search.Search;
 
 public class EventRepository {
 
@@ -42,7 +42,7 @@ public class EventRepository {
 		return node != null ? new Event(node) : null;
 	}
 
-	public ObjectNode find(String bucketId, EventSearch search) {
+	public ObjectNode find(String bucketId, Search search) {
 		return search.execute(getIndex(bucketId));
 	}
 

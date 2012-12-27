@@ -46,7 +46,7 @@ public class HistogramWidgetTest extends WidgetTestSupport {
 		addWidget("id:%s,type:%s,field:%s,interval:%s", WIDGET_ID, HistogramWidget.TYPE, Event.COUNT, 1000);
 
 		ObjectNode result = execute();
-		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(4);
+		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(4);
 		NodeAssert node = assertThat(result).path(WIDGET_ID).hasSize(2);
 		node.path(0).path("from").isEqualTo(7000.0);
 		node.path(0).path("to").isEqualTo(8000.0);
@@ -66,7 +66,7 @@ public class HistogramWidgetTest extends WidgetTestSupport {
 		addWidget("id:%s,type:%s,field:%s,interval:%s,unit:%s", WIDGET_ID, HistogramWidget.TYPE, Event.DISTANCE, 5, SI.KILOMETER);
 
 		ObjectNode result = execute();
-		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(4);
+		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(4);
 		NodeAssert node = assertThat(result).path(WIDGET_ID).hasSize(2);
 		node.path(0).path("from").path("@value").isEqualTo(20.0);
 		node.path(0).path("from").path("unit").isEqualTo("km");
@@ -90,7 +90,7 @@ public class HistogramWidgetTest extends WidgetTestSupport {
 		addWidget("id:%s,type:%s,field:%s,interval:%s,unit:%s", WIDGET_ID, HistogramWidget.TYPE, Event.DISTANCE, 5, NonSI.MILE);
 
 		ObjectNode result = execute();
-		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(4);
+		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(4);
 		NodeAssert node = assertThat(result).path(WIDGET_ID).hasSize(2);
 		node.path(0).path("from").path("@value").isEqualTo(10.0);
 		node.path(0).path("from").path("unit").isEqualTo("mi");
@@ -110,7 +110,7 @@ public class HistogramWidgetTest extends WidgetTestSupport {
 		addWidget("id:%s,type:%s,field:%s", WIDGET_ID, HistogramWidget.TYPE, Event.RATING);
 
 		ObjectNode result = execute();
-		assertThat(result).path(EventSearch.TOTAL.getName()).isEqualTo(0);
+		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(0);
 		assertThat(result).path(WIDGET_ID).hasSize(0);
 	}
 }
