@@ -2,7 +2,7 @@ package com.zenobase.search;
 
 import org.elasticsearch.index.query.QueryBuilder;
 
-public interface Constraint {
+public interface ConstraintBuilder {
 
 	QueryBuilder build(String field, String value);
 }

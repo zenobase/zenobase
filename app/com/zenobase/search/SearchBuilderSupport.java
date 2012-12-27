@@ -53,7 +53,7 @@ public abstract class SearchBuilderSupport {
 		String[] tokens = expression.split(":", 2);
 		String field = tokens[0];
 		String value = tokens[1];
-		for (Constraint constraint : getConstraintBuilders().get(field)) {
+		for (ConstraintBuilder constraint : getConstraintBuilders().get(field)) {
 			QueryBuilder builder = constraint.build(field, value);
 			if (builder != null) {
 				return addConstraint(builder);
@@ -69,7 +69,7 @@ public abstract class SearchBuilderSupport {
 
 	protected abstract ImmutableMap<String, WidgetBuilder> getWidgetBuilders();
 
-	protected abstract ImmutableMultimap<String, Constraint> getConstraintBuilders();
+	protected abstract ImmutableMultimap<String, ConstraintBuilder> getConstraintBuilders();
 
 	public Search build() {
 		return new Search(widgets, constraints);

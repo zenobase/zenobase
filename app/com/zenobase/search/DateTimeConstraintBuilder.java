@@ -6,7 +6,7 @@ import org.joda.time.Interval;
 
 import com.zenobase.common.Intervals;
 
-public class DateTimeConstraint implements Constraint {
+public class DateTimeConstraintBuilder implements ConstraintBuilder {
 
 	@Override
 	public QueryBuilder build(String field, String value) {

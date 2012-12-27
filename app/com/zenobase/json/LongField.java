@@ -5,8 +5,8 @@ import org.codehaus.jackson.node.LongNode;
 import org.codehaus.jackson.node.NullNode;
 import org.codehaus.jackson.node.ObjectNode;
 
-import com.zenobase.search.DecimalRangeConstraint;
-import com.zenobase.search.TermConstraint;
+import com.zenobase.search.DecimalRangeConstraintBuilder;
+import com.zenobase.search.TermConstraintBuilder;
 
 public class LongField extends Field<Long> {
 
@@ -20,8 +20,8 @@ public class LongField extends Field<Long> {
 		super(name, Long.class, "long");
 		this.indexed = indexed;
 		if (indexed) {
-			addConstraint(new DecimalRangeConstraint());
-			addConstraint(new TermConstraint());
+			addConstraint(new DecimalRangeConstraintBuilder());
+			addConstraint(new TermConstraintBuilder());
 		}
 	}
 

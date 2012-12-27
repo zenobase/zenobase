@@ -11,8 +11,8 @@ import org.codehaus.jackson.node.NullNode;
 import org.codehaus.jackson.node.ObjectNode;
 
 import com.zenobase.common.Measures;
-import com.zenobase.search.MeasureConstraint;
-import com.zenobase.search.MeasureRangeConstraint;
+import com.zenobase.search.MeasureConstraintBuilder;
+import com.zenobase.search.MeasureRangeConstraintBuilder;
 
 public class MeasurementField<Q extends Quantity> extends Field<DecimalMeasure<Q>> {
 
@@ -22,8 +22,8 @@ public class MeasurementField<Q extends Quantity> extends Field<DecimalMeasure<Q
 
 	public MeasurementField(String name) {
 		super(name, DecimalMeasure.class.getGenericSuperclass(), "object");
-		addConstraint(new MeasureRangeConstraint());
-		addConstraint(new MeasureConstraint());
+		addConstraint(new MeasureRangeConstraintBuilder());
+		addConstraint(new MeasureConstraintBuilder());
 	}
 
 	@Override

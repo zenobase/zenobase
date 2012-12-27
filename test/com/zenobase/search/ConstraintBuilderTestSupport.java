@@ -1,6 +1,6 @@
 package com.zenobase.search;
 
-public class ConstraintTestSupport extends SearchTestSupport {
+public class ConstraintBuilderTestSupport extends SearchTestSupport {
 
 	protected void addConstraint(String expression, Object... args) {
 		getSearch().addConstraint(String.format(expression, args));

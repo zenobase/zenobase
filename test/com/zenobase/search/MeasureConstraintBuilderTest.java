@@ -2,47 +2,48 @@ package com.zenobase.search;
 
 import static com.zenobase.testing.NodeAssert.assertThat;
 
+import javax.measure.quantity.Length;
+
 import org.codehaus.jackson.node.ObjectNode;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.zenobase.common.DurationFormat;
+import com.zenobase.common.Measures;
 import com.zenobase.models.Event;
 
-public class DurationConstraintTest extends ConstraintTestSupport {
+public class MeasureConstraintBuilderTest extends ConstraintBuilderTestSupport {
 
 	@Before
 	public void addEvents() {
-		addEvent("0s");
-		addEvent("4h");
-		addEvent("240min");
-		addEvent("1d 1h");
+		addEvent("0 km");
+		addEvent("4 km");
+		addEvent("4000 m");
+		addEvent("25 km");
 	}
 
-	private void addEvent(String duration) {
+	private void addEvent(String distance) {
 		Event event = new Event();
-		event.setValue(Event.DURATION, DurationFormat.parse(duration));
+		event.setValue(Event.DISTANCE, Measures.<Length>valueOf(distance));
 		addEvent(event);
 	}
 
 	@Test
 	public void testEqualsConstraint() {
-		addConstraint("%s:%s", Event.DURATION, "4h");
+		addConstraint("%s:%s", Event.DISTANCE, "4 km");
 		ObjectNode result = execute();
 		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(2);
 	}
 
 	@Test
 	public void testRangeConstraint() {
-		addConstraint("%s:%s", Event.DURATION, "[0..1d 1h]");
+		addConstraint("%s:%s", Event.DISTANCE, "[0 km..4 km]");
 		ObjectNode result = execute();
-		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(4);
+		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(3);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
-	public void testIllegalConstraint() {
-		addConstraint("%s:%s", Event.DURATION, "foo");
-		System.out.println(DurationFormat.parse("foo"));
+	public void testIllegalContraint() {
+		addConstraint("%s:%s", Event.DISTANCE, "foo");
 		execute();
 	}
 }

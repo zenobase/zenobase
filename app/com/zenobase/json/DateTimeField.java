@@ -7,15 +7,15 @@ import org.codehaus.jackson.node.TextNode;
 import org.joda.time.DateTime;
 
 import com.zenobase.common.DateTimeFormat;
-import com.zenobase.search.DateTimeConstraint;
-import com.zenobase.search.DateTimeRangeConstraint;
+import com.zenobase.search.DateTimeConstraintBuilder;
+import com.zenobase.search.DateTimeRangeConstraintBuilder;
 
 public class DateTimeField extends Field<DateTime> {
 
 	public DateTimeField(String name) {
 		super(name, DateTime.class, "date");
-		addConstraint(new DateTimeRangeConstraint());
-		addConstraint(new DateTimeConstraint());
+		addConstraint(new DateTimeRangeConstraintBuilder());
+		addConstraint(new DateTimeConstraintBuilder());
 	}
 
 	@Override

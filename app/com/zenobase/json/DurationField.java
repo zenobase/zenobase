@@ -5,15 +5,15 @@ import org.codehaus.jackson.node.LongNode;
 import org.codehaus.jackson.node.NullNode;
 import org.joda.time.Duration;
 
-import com.zenobase.search.DurationConstraint;
-import com.zenobase.search.DurationRangeConstraint;
+import com.zenobase.search.DurationConstraintBuilder;
+import com.zenobase.search.DurationRangeConstraintBuilder;
 
 public class DurationField extends Field<Duration> {
 
 	public DurationField(String name) {
 		super(name, Duration.class, "long");
-		addConstraint(new DurationRangeConstraint());
-		addConstraint(new DurationConstraint());
+		addConstraint(new DurationRangeConstraintBuilder());
+		addConstraint(new DurationConstraintBuilder());
 	}
 
 	@Override

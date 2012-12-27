@@ -6,7 +6,7 @@ import org.joda.time.Duration;
 
 import com.zenobase.common.DurationFormat;
 
-public class DurationConstraint implements Constraint {
+public class DurationConstraintBuilder implements ConstraintBuilder {
 
 	@Override
 	public QueryBuilder build(String field, String value) {

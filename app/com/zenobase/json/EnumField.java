@@ -5,7 +5,7 @@ import org.codehaus.jackson.node.NullNode;
 import org.codehaus.jackson.node.ObjectNode;
 import org.codehaus.jackson.node.TextNode;
 
-import com.zenobase.search.TermConstraint;
+import com.zenobase.search.TermConstraintBuilder;
 
 public class EnumField<E extends Enum<E>> extends Field<E> {
 
@@ -15,7 +15,7 @@ public class EnumField<E extends Enum<E>> extends Field<E> {
 
 	private EnumField(String name, Class<E> type) {
 		super(name, type, "string");
-		addConstraint(new TermConstraint());
+		addConstraint(new TermConstraintBuilder());
 	}
 
 	@Override

@@ -8,7 +8,7 @@ import org.junit.Test;
 
 import com.zenobase.models.Event;
 
-public class TermConstraintTest extends ConstraintTestSupport {
+public class TermConstraintBuilderTest extends ConstraintBuilderTestSupport {
 
 	@Before
 	public void addEvents() {

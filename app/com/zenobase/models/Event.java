@@ -29,7 +29,7 @@ import com.zenobase.json.TokenField;
 import com.zenobase.json.VelocityField;
 import com.zenobase.json.VolumeField;
 import com.zenobase.json.WeightField;
-import com.zenobase.search.Constraint;
+import com.zenobase.search.ConstraintBuilder;
 
 public class Event extends DomainNode {
 
@@ -117,8 +117,8 @@ public class Event extends DomainNode {
 		return schema.build();
     }
 
-	public static ImmutableMultimap<String, Constraint> getConstraints() {
-		ImmutableMultimap.Builder<String, Constraint> builder = ImmutableMultimap.<String, Constraint>builder();
+	public static ImmutableMultimap<String, ConstraintBuilder> getConstraintBuilders() {
+		ImmutableMultimap.Builder<String, ConstraintBuilder> builder = ImmutableMultimap.<String, ConstraintBuilder>builder();
 		for (Field<?> field : FIELDS) {
 			builder.putAll(field.getConstraints());
 		}

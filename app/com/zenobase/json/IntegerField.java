@@ -5,8 +5,8 @@ import org.codehaus.jackson.node.IntNode;
 import org.codehaus.jackson.node.NullNode;
 import org.codehaus.jackson.node.ObjectNode;
 
-import com.zenobase.search.DecimalRangeConstraint;
-import com.zenobase.search.TermConstraint;
+import com.zenobase.search.DecimalRangeConstraintBuilder;
+import com.zenobase.search.TermConstraintBuilder;
 
 public class IntegerField extends Field<Integer> {
 
@@ -19,8 +19,8 @@ public class IntegerField extends Field<Integer> {
 	public IntegerField(String name, boolean indexed) {
 		super(name, Long.class, "integer");
 		this.indexed = indexed;
-		addConstraint(new DecimalRangeConstraint());
-		addConstraint(new TermConstraint());
+		addConstraint(new DecimalRangeConstraintBuilder());
+		addConstraint(new TermConstraintBuilder());
 	}
 
 	@Override

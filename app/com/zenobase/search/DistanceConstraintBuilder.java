@@ -17,7 +17,7 @@ import com.google.common.base.Objects;
 import com.zenobase.common.Measures;
 import com.zenobase.models.Location;
 
-public class DistanceConstraint implements Constraint {
+public class DistanceConstraintBuilder implements ConstraintBuilder {
 
 	private static final Pattern PATTERN = Pattern.compile("([^,]+),([^~]+)(?:~(.+))?");
 	private static final String DEFAULT_DISTANCE = "1 m"; // 0 won't match

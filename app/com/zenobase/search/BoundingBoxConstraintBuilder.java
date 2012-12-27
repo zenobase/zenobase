@@ -7,7 +7,7 @@ import org.elasticsearch.index.query.QueryBuilders;
 
 import com.zenobase.models.Location;
 
-public class BoundingBoxConstraint implements Constraint {
+public class BoundingBoxConstraintBuilder implements ConstraintBuilder {
 
 	@Override
 	public QueryBuilder build(String field, String value) {

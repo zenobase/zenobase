@@ -9,7 +9,7 @@ import org.junit.Test;
 import com.zenobase.models.Event;
 import com.zenobase.models.Resource;
 
-public class ResourceConstraintTest extends ConstraintTestSupport {
+public class ResourceConstraintBuilderTest extends ConstraintBuilderTestSupport {
 
 	@Before
 	public void addEvents() {

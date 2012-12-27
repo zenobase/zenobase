@@ -9,7 +9,7 @@ import org.junit.Test;
 import com.zenobase.models.Event;
 import com.zenobase.models.Rating;
 
-public class DecimalRangeConstraintTest extends ConstraintTestSupport {
+public class DecimalRangeConstraintBuilderTest extends ConstraintBuilderTestSupport {
 
 	@Before
 	public void addEvents() {

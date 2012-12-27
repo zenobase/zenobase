@@ -10,7 +10,7 @@ import com.zenobase.common.MeasureRangeParser;
 import com.zenobase.common.Measures;
 import com.zenobase.json.MeasurementField;
 
-public class MeasureRangeConstraint extends RangeConstraintSupport<Measurable<Quantity>> {
+public class MeasureRangeConstraintBuilder extends RangeConstraintBuilderSupport<Measurable<Quantity>> {
 
 	private final MeasureRangeParser parser = new MeasureRangeParser();
 

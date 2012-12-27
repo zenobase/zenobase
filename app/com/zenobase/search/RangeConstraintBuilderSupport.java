@@ -7,7 +7,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.BoundType;
 import com.google.common.collect.Range;
 
-public abstract class RangeConstraintSupport<C extends Comparable<C>> implements Constraint {
+public abstract class RangeConstraintBuilderSupport<C extends Comparable<C>> implements ConstraintBuilder {
 
 	@Override
 	public QueryBuilder build(String field, String value) {

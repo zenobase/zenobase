@@ -5,7 +5,7 @@ import com.google.common.collect.Range;
 
 import com.zenobase.common.DurationRangeParser;
 
-public class DurationRangeConstraint extends RangeConstraintSupport<ReadableDuration> {
+public class DurationRangeConstraintBuilder extends RangeConstraintBuilderSupport<ReadableDuration> {
 
 	private final DurationRangeParser parser = new DurationRangeParser();
 

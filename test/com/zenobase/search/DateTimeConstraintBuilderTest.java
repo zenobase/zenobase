@@ -9,7 +9,7 @@ import org.junit.Test;
 
 import com.zenobase.models.Event;
 
-public class DateTimeConstraintTest extends ConstraintTestSupport {
+public class DateTimeConstraintBuilderTest extends ConstraintBuilderTestSupport {
 
 	@Before
 	public void addEvents() {

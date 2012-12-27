@@ -8,7 +8,7 @@ import org.junit.Test;
 
 import com.zenobase.models.Event;
 
-public class WildcardConstraintTest extends ConstraintTestSupport {
+public class WildcardConstraintBuilderTest extends ConstraintBuilderTestSupport {
 
 	@Before
 	public void addEvents() {

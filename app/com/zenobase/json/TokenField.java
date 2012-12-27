@@ -5,8 +5,8 @@ import org.codehaus.jackson.node.NullNode;
 import org.codehaus.jackson.node.ObjectNode;
 import org.codehaus.jackson.node.TextNode;
 
-import com.zenobase.search.TermConstraint;
-import com.zenobase.search.WildcardConstraint;
+import com.zenobase.search.TermConstraintBuilder;
+import com.zenobase.search.WildcardConstraintBuilder;
 
 public class TokenField extends Field<String> {
 
@@ -20,8 +20,8 @@ public class TokenField extends Field<String> {
 		super(name, String.class, "string");
 		this.indexed = indexed;
 		if (indexed) {
-			addConstraint(new WildcardConstraint());
-			addConstraint(new TermConstraint());
+			addConstraint(new WildcardConstraintBuilder());
+			addConstraint(new TermConstraintBuilder());
 		}
 	}
 

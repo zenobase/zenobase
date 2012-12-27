@@ -3,7 +3,7 @@ package com.zenobase.search;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 
-public class WildcardConstraint implements Constraint {
+public class WildcardConstraintBuilder implements ConstraintBuilder {
 
 	@Override
 	public QueryBuilder build(String field, String value) {

@@ -5,7 +5,7 @@ import com.google.common.collect.Range;
 
 import com.zenobase.common.DateTimeRangeParser;
 
-public class DateTimeRangeConstraint extends RangeConstraintSupport<ReadableInstant> {
+public class DateTimeRangeConstraintBuilder extends RangeConstraintBuilderSupport<ReadableInstant> {
 
 	private final DateTimeRangeParser parser = new DateTimeRangeParser();
 

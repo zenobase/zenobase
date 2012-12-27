@@ -12,14 +12,14 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Multimap;
 
-import com.zenobase.search.Constraint;
+import com.zenobase.search.ConstraintBuilder;
 
 public abstract class Field<T> {
 
 	private final String name;
 	private final Type type;
 	private final String schemaType;
-	private final Multimap<String, Constraint> constraints = ArrayListMultimap.create();
+	private final Multimap<String, ConstraintBuilder> constraints = ArrayListMultimap.create();
 
 	protected Field(String name, Type type, String schemaType) {
 		this.name = name;
@@ -142,16 +142,16 @@ public abstract class Field<T> {
 		field.configureSchema(properties.putObject(field.getName()));
 	}
 
-	public Multimap<String, Constraint> getConstraints() {
+	public Multimap<String, ConstraintBuilder> getConstraints() {
 		return constraints;
 	}
 
-	protected final void addConstraint(Constraint constraint) {
+	protected final void addConstraint(ConstraintBuilder constraint) {
 		constraints.put(name, constraint);
 	}
 
 	protected final void addConstraints(Field<?> nested) {
-		for (Map.Entry<String, Constraint> entry : nested.getConstraints().entries()) {
+		for (Map.Entry<String, ConstraintBuilder> entry : nested.getConstraints().entries()) {
 			constraints.put(name + "." + entry.getKey(), entry.getValue());
 		}
 	}

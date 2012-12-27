@@ -8,7 +8,7 @@ import org.elasticsearch.index.query.QueryBuilders;
 import com.zenobase.common.Measures;
 import com.zenobase.json.MeasurementField;
 
-public class MeasureConstraint implements Constraint {
+public class MeasureConstraintBuilder implements ConstraintBuilder {
 
 	@Override
 	public QueryBuilder build(String field, String value) {

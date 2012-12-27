@@ -4,13 +4,13 @@ import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.node.BooleanNode;
 import org.codehaus.jackson.node.NullNode;
 
-import com.zenobase.search.TermConstraint;
+import com.zenobase.search.TermConstraintBuilder;
 
 public class BooleanField extends Field<Boolean> {
 
 	public BooleanField(String name) {
 		super(name, Boolean.class, "boolean");
-		addConstraint(new TermConstraint());
+		addConstraint(new TermConstraintBuilder());
 	}
 
 	@Override

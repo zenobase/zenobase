@@ -6,7 +6,7 @@ import com.google.common.collect.Range;
 
 import com.zenobase.common.DecimalRangeParser;
 
-public class DecimalRangeConstraint extends RangeConstraintSupport<BigDecimal> {
+public class DecimalRangeConstraintBuilder extends RangeConstraintBuilderSupport<BigDecimal> {
 
 	private final DecimalRangeParser parser = new DecimalRangeParser();
 

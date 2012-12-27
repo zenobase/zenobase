@@ -7,8 +7,8 @@ import org.codehaus.jackson.node.NullNode;
 import org.codehaus.jackson.node.ObjectNode;
 
 import com.zenobase.models.Location;
-import com.zenobase.search.BoundingBoxConstraint;
-import com.zenobase.search.DistanceConstraint;
+import com.zenobase.search.BoundingBoxConstraintBuilder;
+import com.zenobase.search.DistanceConstraintBuilder;
 
 public class LocationField extends Field<Location> {
 
@@ -17,8 +17,8 @@ public class LocationField extends Field<Location> {
 
 	public LocationField(String name) {
 		super(name, Location.class, "geo_point");
-		addConstraint(new BoundingBoxConstraint());
-		addConstraint(new DistanceConstraint());
+		addConstraint(new BoundingBoxConstraintBuilder());
+		addConstraint(new DistanceConstraintBuilder());
 	}
 
 	@Override
