@@ -12,7 +12,7 @@ public class IdentityField extends Field<Identity> {
 
 	public IdentityField(String name) {
 		super(name, Identity.class, "string");
-		addConstraint(new TermConstraintBuilder());
+		addConstraintBuilder(new TermConstraintBuilder());
 	}
 
 	@Override

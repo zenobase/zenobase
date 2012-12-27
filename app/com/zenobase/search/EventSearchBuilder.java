@@ -20,7 +20,7 @@ public class EventSearchBuilder extends SearchBuilderSupport {
 		.put(MapWidget.TYPE, MapWidget.builder())
 		.build();
 
-	private static final ImmutableMultimap<String, ConstraintBuilder> constraintBuilders = Event.getConstraintBuilders();
+	private static final ImmutableMultimap<String, ConstraintBuilder> constraintBuilders = Event.getSchema().getConstraintBuilders();
 
 	@Override
 	protected ImmutableMap<String, WidgetBuilder> getWidgetBuilders() {

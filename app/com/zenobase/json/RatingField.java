@@ -13,8 +13,8 @@ public class RatingField extends Field<Rating> {
 
 	public RatingField(String name) {
 		super(name, Rating.class, "byte");
-		addConstraint(new DecimalRangeConstraintBuilder());
-		addConstraint(new TermConstraintBuilder());
+		addConstraintBuilder(new DecimalRangeConstraintBuilder());
+		addConstraintBuilder(new TermConstraintBuilder());
 	}
 
 	@Override

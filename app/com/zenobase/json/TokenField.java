@@ -20,8 +20,8 @@ public class TokenField extends Field<String> {
 		super(name, String.class, "string");
 		this.indexed = indexed;
 		if (indexed) {
-			addConstraint(new WildcardConstraintBuilder());
-			addConstraint(new TermConstraintBuilder());
+			addConstraintBuilder(new WildcardConstraintBuilder());
+			addConstraintBuilder(new TermConstraintBuilder());
 		}
 	}
 

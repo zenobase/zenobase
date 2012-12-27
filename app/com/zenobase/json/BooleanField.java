@@ -10,7 +10,7 @@ public class BooleanField extends Field<Boolean> {
 
 	public BooleanField(String name) {
 		super(name, Boolean.class, "boolean");
-		addConstraint(new TermConstraintBuilder());
+		addConstraintBuilder(new TermConstraintBuilder());
 	}
 
 	@Override

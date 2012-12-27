@@ -2,6 +2,9 @@ package com.zenobase.json;
 
 import org.codehaus.jackson.node.ArrayNode;
 import org.codehaus.jackson.node.ObjectNode;
+import com.google.common.collect.ImmutableMultimap;
+
+import com.zenobase.search.ConstraintBuilder;
 
 
 public class SchemaBuilder {
@@ -12,6 +15,8 @@ public class SchemaBuilder {
 	private final ObjectNode schema = Nodes.newObject();
 	private final ObjectNode type;
 	private final ObjectNode properties;
+	private final ImmutableMultimap.Builder<String, ConstraintBuilder> constraintBuilders =
+		ImmutableMultimap.<String, ConstraintBuilder>builder();
 
 	public SchemaBuilder(String typeName) {
 		this.typeName = typeName;
@@ -43,10 +48,11 @@ public class SchemaBuilder {
 
 	public SchemaBuilder add(Field<?> field) {
 		field.configureSchema(properties.putObject(field.getName()));
+		constraintBuilders.putAll(field.getConstraintBuilders());
 		return this;
 	}
 
 	public Schema build() {
-		return new Schema(typeName, Nodes.copy(schema));
+		return new Schema(typeName, Nodes.copy(schema), constraintBuilders.build());
 	}
 }

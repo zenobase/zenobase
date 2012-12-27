@@ -20,8 +20,8 @@ public class LongField extends Field<Long> {
 		super(name, Long.class, "long");
 		this.indexed = indexed;
 		if (indexed) {
-			addConstraint(new DecimalRangeConstraintBuilder());
-			addConstraint(new TermConstraintBuilder());
+			addConstraintBuilder(new DecimalRangeConstraintBuilder());
+			addConstraintBuilder(new TermConstraintBuilder());
 		}
 	}
 

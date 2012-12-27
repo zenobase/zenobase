@@ -19,8 +19,8 @@ public class IntegerField extends Field<Integer> {
 	public IntegerField(String name, boolean indexed) {
 		super(name, Long.class, "integer");
 		this.indexed = indexed;
-		addConstraint(new DecimalRangeConstraintBuilder());
-		addConstraint(new TermConstraintBuilder());
+		addConstraintBuilder(new DecimalRangeConstraintBuilder());
+		addConstraintBuilder(new TermConstraintBuilder());
 	}
 
 	@Override

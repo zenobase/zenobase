@@ -19,7 +19,7 @@ public abstract class Field<T> {
 	private final String name;
 	private final Type type;
 	private final String schemaType;
-	private final Multimap<String, ConstraintBuilder> constraints = ArrayListMultimap.create();
+	private final Multimap<String, ConstraintBuilder> constraintBuilders = ArrayListMultimap.create();
 
 	protected Field(String name, Type type, String schemaType) {
 		this.name = name;
@@ -142,17 +142,17 @@ public abstract class Field<T> {
 		field.configureSchema(properties.putObject(field.getName()));
 	}
 
-	public Multimap<String, ConstraintBuilder> getConstraints() {
-		return constraints;
+	public Multimap<String, ConstraintBuilder> getConstraintBuilders() {
+		return constraintBuilders;
 	}
 
-	protected final void addConstraint(ConstraintBuilder constraint) {
-		constraints.put(name, constraint);
+	protected final void addConstraintBuilder(ConstraintBuilder constraint) {
+		constraintBuilders.put(name, constraint);
 	}
 
-	protected final void addConstraints(Field<?> nested) {
-		for (Map.Entry<String, ConstraintBuilder> entry : nested.getConstraints().entries()) {
-			constraints.put(name + "." + entry.getKey(), entry.getValue());
+	protected final void addConstraintBuilders(Field<?> nested) {
+		for (Map.Entry<String, ConstraintBuilder> entry : nested.getConstraintBuilders().entries()) {
+			constraintBuilders.put(name + "." + entry.getKey(), entry.getValue());
 		}
 	}
 

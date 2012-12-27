@@ -1,7 +1,6 @@
 package com.zenobase.models;
 
 import org.codehaus.jackson.node.ObjectNode;
-import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.ImmutableSet;
 
 import com.zenobase.common.Generator;
@@ -29,7 +28,6 @@ import com.zenobase.json.TokenField;
 import com.zenobase.json.VelocityField;
 import com.zenobase.json.VolumeField;
 import com.zenobase.json.WeightField;
-import com.zenobase.search.ConstraintBuilder;
 
 public class Event extends DomainNode {
 
@@ -116,12 +114,4 @@ public class Event extends DomainNode {
 		}
 		return schema.build();
     }
-
-	public static ImmutableMultimap<String, ConstraintBuilder> getConstraintBuilders() {
-		ImmutableMultimap.Builder<String, ConstraintBuilder> builder = ImmutableMultimap.<String, ConstraintBuilder>builder();
-		for (Field<?> field : FIELDS) {
-			builder.putAll(field.getConstraints());
-		}
-		return builder.build();
-	}
 }

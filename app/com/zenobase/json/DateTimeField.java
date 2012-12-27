@@ -14,8 +14,8 @@ public class DateTimeField extends Field<DateTime> {
 
 	public DateTimeField(String name) {
 		super(name, DateTime.class, "date");
-		addConstraint(new DateTimeRangeConstraintBuilder());
-		addConstraint(new DateTimeConstraintBuilder());
+		addConstraintBuilder(new DateTimeRangeConstraintBuilder());
+		addConstraintBuilder(new DateTimeConstraintBuilder());
 	}
 
 	@Override

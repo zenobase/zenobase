@@ -17,8 +17,8 @@ public class LocationField extends Field<Location> {
 
 	public LocationField(String name) {
 		super(name, Location.class, "geo_point");
-		addConstraint(new BoundingBoxConstraintBuilder());
-		addConstraint(new DistanceConstraintBuilder());
+		addConstraintBuilder(new BoundingBoxConstraintBuilder());
+		addConstraintBuilder(new DistanceConstraintBuilder());
 	}
 
 	@Override

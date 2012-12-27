@@ -13,9 +13,9 @@ public class TextField extends Field<String> {
 
 	public TextField(String name) {
 		super(name, String.class, "string");
-		addConstraint(new PhraseConstraintBuilder());
-		addConstraint(new WildcardConstraintBuilder());
-		addConstraint(new TermConstraintBuilder());
+		addConstraintBuilder(new PhraseConstraintBuilder());
+		addConstraintBuilder(new WildcardConstraintBuilder());
+		addConstraintBuilder(new TermConstraintBuilder());
 	}
 
 	@Override
