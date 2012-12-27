@@ -17,10 +17,27 @@ public class JsonPatch {
 	}
 
 	public ObjectNode apply(ObjectNode node) {
-		Preconditions.checkNotNull(from); // TODO check existing values
+		checkState(node, from);
 		ObjectNode patched = Nodes.copy(node);
 		apply(patched, to);
 		return patched;
+	}
+
+	private void checkState(ObjectNode node, ObjectNode expected) throws IllegalStateException {
+		for (Iterator<Map.Entry<String, JsonNode>> i = expected.getFields(); i.hasNext();) {
+			Map.Entry<String, JsonNode> entry = i.next();
+			JsonNode found = node.path(entry.getKey());
+			if (entry.getValue().isValueNode()) {
+				Preconditions.checkState(entry.getValue().equals(found),
+					"Expected value of field <%s> to be <%s> but found <%s>", entry.getKey(), entry.getValue(), found);
+			} else if (entry.getValue().isObject()) {
+				Preconditions.checkState(found.isObject(),
+					"Expected value of field <%s> to be an object node but found <%s>", entry.getKey(), found);
+				checkState((ObjectNode) found, (ObjectNode) entry.getValue());
+			} else {
+				throw new AssertionError();
+			}
+		}
 	}
 
 	private static void apply(ObjectNode target, ObjectNode changes) {
@@ -32,6 +49,8 @@ public class JsonPatch {
 				target.put(entry.getKey(), entry.getValue());
 			} else if (entry.getValue().isObject()) {
 				apply(target.with(entry.getKey()), (ObjectNode) entry.getValue());
+			} else {
+				throw new AssertionError();
 			}
 		}
 	}
