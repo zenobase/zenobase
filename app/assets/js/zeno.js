@@ -2365,9 +2365,6 @@
 			return new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
 		}
 
-		$scope.formatTimezone = function(value) {
-			return value.substring(0, 3) + ':' + value.substring(3);
-		};
 		$scope.init = function() {
 			var date = new Date();
 			date.setSeconds(0);
