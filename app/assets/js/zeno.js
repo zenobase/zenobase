@@ -1012,7 +1012,7 @@
 	app.controller('DashboardController', ['$scope', '$http', '$route', '$routeParams', '$location', 'Bucket', 'Field', 'Constraint', 'tracker', 'delay', 'token', function($scope, $http, $route, $routeParams, $location, Bucket, Field, Constraint, tracker, delay, token) {
 
 		function updateEditable() {
-				$scope.editable = $scope.user && $scope.bucket.canEdit($scope.user['@id']);
+			$scope.editable = $scope.user && $scope.bucket.canEdit($scope.user['@id']);
 		} 
 
 		$scope.bucketId = $routeParams.bucketId;
@@ -1498,6 +1498,14 @@
 					};
 					var element = document.getElementById($scope.settings.id + '-chart');
 					var chart = new google.visualization.BarChart(element);
+					google.visualization.events.addListener(chart, 'select', function() {
+						var selection = chart.getSelection();
+						var interval = $scope.intervals[selection[0].row];
+						var range = '[' + field.toText(interval.from) + '..' + field.toText(interval.to) + ')';
+						$scope.$apply(function() {
+							$scope.addConstraint($scope.settings.field, range, true);
+						});
+					});
 					chart.draw(data, options);
 				}});
 			}
