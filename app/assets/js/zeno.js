@@ -1393,7 +1393,7 @@
 			}
 		};
 		$scope.filter = function(term) {
-			$scope.addConstraint('timestamp', term.label)
+			$scope.addConstraint($scope.settings.field, term.label)
 		};
 
 		$scope.init();
@@ -1567,7 +1567,7 @@
 			$scope.terms = result[$scope.settings.id] || [];
 		};
 		$scope.filter = function(term) {
-			$scope.addConstraint($scope.settings.term_field, term.label)
+			$scope.addConstraint($scope.settings.key_field, term.label)
 		};
 
 		$scope.init();
