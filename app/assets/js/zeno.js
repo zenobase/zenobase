@@ -1630,14 +1630,15 @@
 
 		Interval.VALUES = [
 			new Interval('year', 0),
-			new Interval('month', 10), 
-			new Interval('day', 13), 
-			new Interval('hour', 16), 
-			new Interval('minute', 18),
-			new Interval('second', 21)
+			new Interval('month', 11), 
+			new Interval('day', 14), 
+			new Interval('hour', 17), 
+			new Interval('minute', 19),
+			new Interval('second', 22)
 		];
 
 		Interval.match = function(value) {
+			value = value.replace('Z', '+00:00');
 			var i, max;
 			for (i = 0, max = Interval.VALUES.length; i < max; ++i) {
 				if (Interval.VALUES[i].pattern === value.length) {
