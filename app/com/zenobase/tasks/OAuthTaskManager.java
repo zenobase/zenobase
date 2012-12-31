@@ -8,9 +8,10 @@ import org.scribe.model.Response;
 import org.scribe.model.Token;
 import org.scribe.model.Verifier;
 import org.scribe.oauth.OAuthService;
-import play.Logger;
-import com.google.common.base.Preconditions;
 
+import play.Logger;
+
+import com.google.common.base.Preconditions;
 import com.zenobase.commands.Command;
 import com.zenobase.commands.UpdateTaskCommand;
 import com.zenobase.json.Nodes;
@@ -82,11 +83,11 @@ public abstract class OAuthTaskManager extends TaskManager {
 
 	protected static ObjectNode parseObject(Response response) {
 		// System.out.println("parse: " + response.getBody());
-		return Nodes.readObject(response.getBody().getBytes());
+		return Nodes.readObject(response.getBody());
 	}
 
 	protected static ArrayNode parseArray(Response response) {
 		// System.out.println("parse: " + response.getBody());
-		return Nodes.readArray(response.getBody().getBytes());
+		return Nodes.readArray(response.getBody());
 	}
 }
