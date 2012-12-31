@@ -27,9 +27,12 @@ public class JsonPatch {
 		for (Iterator<Map.Entry<String, JsonNode>> i = expected.getFields(); i.hasNext();) {
 			Map.Entry<String, JsonNode> entry = i.next();
 			JsonNode found = node.path(entry.getKey());
-			if (entry.getValue().isValueNode()) {
-				Preconditions.checkState(entry.getValue().equals(found),
-					"Expected value of field <%s> to be <%s> but found <%s>", entry.getKey(), entry.getValue(), found);
+			if (entry.getValue().isNull()) {
+				Preconditions.checkState(found.isMissingNode(),
+					"Expected value of field <%s> to be missing but found <%s>", entry.getKey(), found);
+			} else if (entry.getValue().isValueNode()) {
+                Preconditions.checkState(entry.getValue().equals(found),
+                    "Expected value of field <%s> to be <%s> but found <%s>", entry.getKey(), entry.getValue(), found);
 			} else if (entry.getValue().isObject()) {
 				Preconditions.checkState(found.isObject(),
 					"Expected value of field <%s> to be an object node but found <%s>", entry.getKey(), found);
