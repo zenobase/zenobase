@@ -36,9 +36,9 @@
 				<span id="bucket-public-label" data-ng-show="bucket.isPublished()"><i class="icon-globe"></i> public</span>
 				<span data-ng-show="editing">[ <a id="roles-dialog-link" data-ng-click="openDialog('roles-dialog')">Change...</a> ]</span>
 			</p>
-			<ul class="nav nav-pills" data-ng-show="filters">
-				<li class="active" data-ng-repeat="filter in filters">
-					<a data-ng-click="removeFilter(filter)"><i class="icon-white" data-ng-class="getFilterIcon(filter)"></i> {{filter.value}} <i class="icon-remove icon-white"></i></a>
+			<ul class="nav nav-pills" data-ng-show="constraints">
+				<li class="active" data-ng-repeat="constraint in constraints">
+					<a data-ng-click="removeConstraint(constraint)"><i class="icon-white" data-ng-class="getConstraintIcon(constraint)"></i> {{constraint.value}} <i class="icon-remove icon-white"></i></a>
 				</li>
 			</ul>
 		</div>

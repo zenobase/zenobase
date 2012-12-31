@@ -253,30 +253,30 @@
 		return User;
 	}]);
 
-	app.factory('Filter', function() {
+	app.factory('Constraint', function() {
 
 		var separator = ':';
 
-		var Filter = function(field, value) {
+		var Constraint = function(field, value) {
 			this.field = field;
 			this.value = value;
 		}
 
-		Filter.prototype.toString = function() {
+		Constraint.prototype.toString = function() {
 			return this.field + separator + this.value;
 		};
 
-		Filter.parse = function(s) {
+		Constraint.parse = function(s) {
 			var pos = s.indexOf(separator);
 			if (pos < 1 || pos > s.length - 1) {
-				throw 'Can\'t parse filter: ' + s;
+				throw 'Can\'t parse constraint: ' + s;
 			}
 			var field = s.substring(0, pos);
 			var value = s.substring(pos + 1);
-			return new Filter(field, value);
+			return new Constraint(field, value);
 		}
 
-		return Filter;
+		return Constraint;
 	});
 
 	app.controller('UserController', ['$scope', '$http', '$routeParams', 'User', 'tracker', function($scope, $http, $routeParams, User, tracker) {
@@ -1009,7 +1009,7 @@
 		return Bucket;
 	});
 
-	app.controller('DashboardController', ['$scope', '$http', '$route', '$routeParams', '$location', 'Bucket', 'Field', 'Filter', 'tracker', 'delay', 'token', function($scope, $http, $route, $routeParams, $location, Bucket, Field, Filter, tracker, delay, token) {
+	app.controller('DashboardController', ['$scope', '$http', '$route', '$routeParams', '$location', 'Bucket', 'Field', 'Constraint', 'tracker', 'delay', 'token', function($scope, $http, $route, $routeParams, $location, Bucket, Field, Constraint, tracker, delay, token) {
 
 		function updateEditable() {
 				$scope.editable = $scope.user && $scope.bucket.canEdit($scope.user['@id']);
@@ -1029,7 +1029,7 @@
 				}
 			});
 
-		$scope.filters = [];
+		$scope.constraints = [];
 		$scope.widgets = [];
 
 		var layout = {};
@@ -1084,7 +1084,7 @@
 		};
 	
 		$scope.search = function(params, callback) {
-			var q = $scope.filters;
+			var q = $scope.constraints;
 			var w = $.map(params, function(param) {
 				return $.map(param, function(value, key) { return key + ':' + value }).join(',');
 			});
@@ -1098,7 +1098,7 @@
 				.error(function(response) { callback({ total : -1 }) });
 		};
 		$scope.refresh = function() {
-			$scope.updateFilters();
+			$scope.updateConstraints();
 			var params = $.map($scope.widgets, function(widget) { return widget.params(); });
 			$scope.$broadcast('refresh');
 			$scope.search(params, function(response) {
@@ -1112,8 +1112,8 @@
 		$scope.getExportUrl = function() {
 			var url = '/buckets/' + $scope.bucketId + '/';
 			var params = {};
-			if ($scope.filters.length > 0) {
-				params.q = $scope.filters;
+			if ($scope.constraints.length > 0) {
+				params.q = $scope.constraints;
 			}
 			if (token.get()) {
 				params.code = token.get();
@@ -1146,41 +1146,41 @@
 		$scope.$on('$routeUpdate', function() {
 			$scope.refresh();
 		});
-		$scope.updateFilters = function() {
+		$scope.updateConstraints = function() {
 			var q = $location.search()['q'];
-			$scope.filters = q ? $.map(q.split('__'), function(s) { return Filter.parse(s) }) : [ ];
+			$scope.constraints = q ? $.map(q.split('__'), function(s) { return Constraint.parse(s) }) : [ ];
 		};
-		$scope.getFilters = function(field) {
-			return $.grep($scope.filters, function(filter) {
-				return filter.field === field;
+		$scope.getConstraints = function(field) {
+			return $.grep($scope.constraints, function(constraint) {
+				return constraint.field === field;
 			});
 		};
-		function containsFilter(filter) {
-			return $.grep($scope.filters, function(f) {
-				return angular.equals(f, filter);
+		function containsConstraint(constraint) {
+			return $.grep($scope.constraints, function(c) {
+				return angular.equals(c, constraint);
 			}).length > 0;
 		};
-		$scope.addFilter = function(field, value, replace) {
-			var filter = new Filter(field, value);
-			if (containsFilter(filter)) {
+		$scope.addConstraint = function(field, value, replace) {
+			var constraint = new Constraint(field, value);
+			if (containsConstraint(constraint)) {
 				return;
 			}
 			if (replace) {
-				$scope.filters = $.grep($scope.filters, function(f) {
-					return f.field !== filter.field;
+				$scope.constraints = $.grep($scope.constraints, function(c) {
+					return c.field !== constraint.field;
 				});
 			}
-			$scope.filters.push(filter);
-			$location.search('q', $scope.filters.join('__'));
+			$scope.constraints.push(constraint);
+			$location.search('q', $scope.constraints.join('__'));
 		};
-		$scope.removeFilter = function(filter) {
-			$scope.filters = $.grep($scope.filters, function(f) {
-				return !angular.equals(f, filter);
+		$scope.removeConstraint = function(constraint) {
+			$scope.constraints = $.grep($scope.constraints, function(c) {
+				return !angular.equals(c, constraint);
 			});
-			$location.search('q', $scope.filters.length ? $scope.filters.join('__') : null);
+			$location.search('q', $scope.constraints.length ? $scope.constraints.join('__') : null);
 		};
-		$scope.getFilterIcon = function(filter) {
-			var field = Field.find(filter.field);
+		$scope.getConstraintIcon = function(constraint) {
+			var field = Field.find(constraint.field);
 			return field ? field.icon : 'icon-ban-circle';
 		};
 	
@@ -1343,7 +1343,7 @@
 		};
 		$scope.filter = function(term) {
 			$scope.offset = 0;
-			$scope.addFilter($scope.settings.field, term.label)
+			$scope.addConstraint($scope.settings.field, term.label)
 		};
 	
 		$scope.init();
@@ -1393,7 +1393,7 @@
 			}
 		};
 		$scope.filter = function(term) {
-			$scope.addFilter('timestamp', term.label)
+			$scope.addConstraint('timestamp', term.label)
 		};
 
 		$scope.init();
@@ -1440,7 +1440,7 @@
 		}
 		$scope.filter = function(rating) {
 			$scope.offset = 0;
-			$scope.addFilter($scope.field, '[' + toString(rating.from) + '..' + toString(rating.to) + ')');
+			$scope.addConstraint($scope.field, '[' + toString(rating.from) + '..' + toString(rating.to) + ')');
 		};
 
 		$scope.init();
@@ -1567,7 +1567,7 @@
 			$scope.terms = result[$scope.settings.id] || [];
 		};
 		$scope.filter = function(term) {
-			$scope.addFilter($scope.settings.term_field, term.label)
+			$scope.addConstraint($scope.settings.term_field, term.label)
 		};
 
 		$scope.init();
@@ -1651,9 +1651,9 @@
 		$scope.params = function() {
 			$scope.interval = Interval.VALUES[1];
 			$scope.range = '';
-			$.each($scope.getFilters($scope.keyField), function(i, filter) {
-				$scope.interval = Interval.match(filter.value);
-				$scope.range = filter.value;
+			$.each($scope.getConstraints($scope.keyField), function(i, constraint) {
+				$scope.interval = Interval.match(constraint.value);
+				$scope.range = constraint.value;
 			});
 			return $scope.interval && { 
 				id : $scope.settings.id,
@@ -1706,7 +1706,7 @@
 						var value = data.getValue(selection[0].row, 0);
 						$scope.interval = $scope.interval.zoomIn();
 						$scope.$apply(function() {
-							$scope.addFilter($scope.keyField, value, true);
+							$scope.addConstraint($scope.keyField, value, true);
 						});
 					});
 				}});
@@ -1900,7 +1900,7 @@
 						var selection = chart.getSelection();
 						var value = data.getValue(selection[0].row, 2);
 						$scope.$apply(function() {
-							$scope.addFilter($scope.keyField, value, true);
+							$scope.addConstraint($scope.keyField, value, true);
 						});
 					});
 				}});
@@ -1993,7 +1993,7 @@
 			$scope.draw();
 		};
 		$scope.filterBounds = function() {
-			$scope.addFilter($scope.field, $scope.map.getBounds().toUrlValue(3), true);
+			$scope.addConstraint($scope.field, $scope.map.getBounds().toUrlValue(3), true);
 		};
 		$scope.draw = function() {
 			if ($scope.points.length) {
@@ -2008,8 +2008,8 @@
 					$scope.map = new google.maps.Map(document.getElementById($scope.settings.id + '-map'), options);
 
 					var bounds = new google.maps.LatLngBounds();
-					$.each($scope.getFilters($scope.field), function(i, filter) {
-						var c = filter.value.split(',');
+					$.each($scope.getConstraints($scope.field), function(i, constraint) {
+						var c = constraint.value.split(',');
 						var sw = new google.maps.LatLng(c[0], c[1]);
 						var ne = new google.maps.LatLng(c[2], c[3]);
 						bounds = new google.maps.LatLngBounds(sw, ne);
@@ -2042,7 +2042,7 @@
 						var filterBounds = new google.maps.LatLngBounds(sw, ne);
 						google.maps.event.addListener(marker, 'click', function() {
 							$scope.$apply(function() {
-								$scope.addFilter($scope.field, filterBounds.toUrlValue(3), true);
+								$scope.addConstraint($scope.field, filterBounds.toUrlValue(3), true);
 							});
 						});
 						if (point.count > 1) {
