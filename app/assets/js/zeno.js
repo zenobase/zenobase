@@ -1111,8 +1111,15 @@
 		};
 		$scope.getExportUrl = function() {
 			var url = '/buckets/' + $scope.bucketId + '/';
+			var params = {};
 			if ($scope.filters.length > 0) {
-				url += '?' + $.param({ 'q' : $scope.filters, 'code' : token.get() }, true);
+				params.q = $scope.filters;
+			}
+			if (token.get()) {
+				params.code = token.get();
+			}
+			if (!$.isEmptyObject(params)) {
+				url += '?' + $.param(params, true); 
 			}
 			return url;
 		};
