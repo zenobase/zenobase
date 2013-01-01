@@ -2204,7 +2204,7 @@
 		};
 		$scope.save = function() {
 			if (!$scope.event['timestamp']) {
-				$scope.event.add(Field.find('timestamp'), moment().format('YYYY-MM-DDTHH:mm:ss.000ZZ'));
+				$scope.event.add(Field.find('timestamp'), moment().format('YYYY-MM-DDTHH:mm:ss.000Z'));
 			}
 			$scope.alert.clear();
 			if ($scope.isNew) {
