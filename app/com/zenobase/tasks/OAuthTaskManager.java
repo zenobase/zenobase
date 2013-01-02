@@ -8,10 +8,9 @@ import org.scribe.model.Response;
 import org.scribe.model.Token;
 import org.scribe.model.Verifier;
 import org.scribe.oauth.OAuthService;
-
 import play.Logger;
-
 import com.google.common.base.Preconditions;
+
 import com.zenobase.commands.Command;
 import com.zenobase.commands.UpdateTaskCommand;
 import com.zenobase.json.Nodes;
