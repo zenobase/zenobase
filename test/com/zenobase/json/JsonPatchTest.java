@@ -40,6 +40,8 @@ public class JsonPatchTest {
 
 		original.put("foo", 41);
 
+		from.put("bar", NullNode.getInstance());
+
 		to.put("bar", "xyz");
 
 		expected.put("foo", 41);
@@ -69,6 +71,10 @@ public class JsonPatchTest {
 		ObjectNode nestedOriginal = Nodes.newObject();
 		nestedOriginal.put("foo", 41);
 		original.put("nested", nestedOriginal);
+
+		ObjectNode nestedFrom = Nodes.newObject();
+		nestedFrom.put("bar", NullNode.getInstance());
+		from.put("nested", nestedFrom);
 
 		ObjectNode nestedTo = Nodes.newObject();
 		nestedTo.put("bar", "xyz");

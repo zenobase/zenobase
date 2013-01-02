@@ -1,0 +1,51 @@
+package com.zenobase.json;
+
+import java.util.Iterator;
+import java.util.Map;
+
+import org.codehaus.jackson.JsonNode;
+import org.codehaus.jackson.node.NullNode;
+import org.codehaus.jackson.node.ObjectNode;
+import com.google.common.base.Preconditions;
+import com.google.common.collect.Sets;
+
+public class JsonDiff {
+
+	private final ObjectNode from = Nodes.newObject();
+	private final ObjectNode to = Nodes.newObject();
+
+	public JsonPatch diff(JsonNode original, JsonNode modified) {
+		addedOrModified(original, modified);
+		return new JsonPatch(from, to);
+	}
+
+	private void add(String path, JsonDiff diff) {
+		from.put(path, diff.from);
+		to.put(path, diff.to);
+	}
+
+	private void addedOrModified(JsonNode original, JsonNode modified) {
+		for (Iterator<Map.Entry<String, JsonNode>> i = modified.getFields(); i.hasNext();) {
+			Map.Entry<String, JsonNode> entry = i.next();
+			JsonNode value = original.path(entry.getKey());
+			if (value.isMissingNode()) {
+				from.put(entry.getKey(), NullNode.getInstance());
+				to.put(entry.getKey(), entry.getValue());
+			} else if (value.isObject() && entry.getValue().isObject()) {
+				JsonDiff diff = new JsonDiff();
+				diff.diff(original.get(entry.getKey()), entry.getValue());
+				add(entry.getKey(), diff);
+			} else if (!value.equals(entry.getValue())) {
+				from.put(entry.getKey(), original.get(entry.getKey()));
+				to.put(entry.getKey(), entry.getValue());
+			} else {
+				Preconditions.checkState(value.equals(entry.getValue()),
+					"Expected <%s> but found <%s> in field <%s>", entry.getValue(), value, entry.getKey());
+			}
+		}
+		for (String removedField : Sets.difference(Sets.newHashSet(original.getFieldNames()), Sets.newHashSet(modified.getFieldNames()))) {
+			from.put(removedField, original.get(removedField));
+			to.put(removedField, NullNode.getInstance());
+		}
+	}
+}

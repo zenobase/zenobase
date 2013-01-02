@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.node.ObjectNode;
+import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 
 public class JsonPatch {
@@ -27,7 +28,10 @@ public class JsonPatch {
 		for (Iterator<Map.Entry<String, JsonNode>> i = expected.getFields(); i.hasNext();) {
 			Map.Entry<String, JsonNode> entry = i.next();
 			JsonNode found = node.path(entry.getKey());
-			if (entry.getValue().isValueNode()) {
+			if (entry.getValue().isNull()) {
+				Preconditions.checkState(found.isMissingNode(),
+					"Expected value of field <%s> to be empty but found <%s>", entry.getKey(), found);
+			} else if (entry.getValue().isValueNode()) {
 				Preconditions.checkState(entry.getValue().equals(found),
 					"Expected value of field <%s> to be <%s> but found <%s>", entry.getKey(), entry.getValue(), found);
 			} else if (entry.getValue().isObject()) {
@@ -47,11 +51,18 @@ public class JsonPatch {
 				target.remove(entry.getKey());
 			} else if (entry.getValue().isValueNode()) {
 				target.put(entry.getKey(), entry.getValue());
+			} else if (target.path(entry.getKey()).isValueNode()) {
+				target.put(entry.getKey(), entry.getValue());
 			} else if (entry.getValue().isObject()) {
 				apply(target.with(entry.getKey()), (ObjectNode) entry.getValue());
 			} else {
 				throw new AssertionError();
 			}
 		}
+	}
+
+	@Override
+	public String toString() {
+		return Objects.toStringHelper(this).add("from", from).add("to", to).toString();
 	}
 }
