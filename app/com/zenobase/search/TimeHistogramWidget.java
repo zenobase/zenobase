@@ -17,6 +17,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
 
 import com.zenobase.json.Nodes;
+import com.zenobase.models.Event;
 
 public class TimeHistogramWidget extends Widget {
 
@@ -116,7 +117,7 @@ public class TimeHistogramWidget extends Widget {
 			public Widget build(WidgetOptions options) {
 				return new TimeHistogramWidget(
 					options.get("id"),
-					options.get("field"),
+					options.get("field", String.class, Event.TIMESTAMP.getName()),
 					Interval.valueOf(options.get("interval").toUpperCase()),
 					options.get("timezone", DateTimeZone.class, DateTimeZone.UTC));
 			}
