@@ -47,14 +47,10 @@ public class RatingsWidget extends Widget {
 		for (RangeFacet.Entry entry : Lists.reverse(ratings.entries())) {
 			if (entry.getCount() > 0L) {
 				ObjectNode entryNode = result.addObject();
-				if (Double.isInfinite(entry.getFrom())) {
-					entryNode.put("from", 0);
-				} else {
+				if (!Double.isInfinite(entry.getFrom())) {
 					entryNode.put("from", (int) entry.getFrom());
 				}
-				if (Double.isInfinite(entry.getTo())) {
-					entryNode.put("to", 100);
-				} else {
+				if (!Double.isInfinite(entry.getTo())) {
 					entryNode.put("to", (int) entry.getTo());
 				}
 				entryNode.put("count", entry.getCount());
