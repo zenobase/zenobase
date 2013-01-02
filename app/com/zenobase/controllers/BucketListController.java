@@ -5,8 +5,8 @@ import javax.inject.Inject;
 import play.mvc.BodyParser;
 import play.mvc.Result;
 import play.mvc.With;
-import com.google.common.base.Strings;
 
+import com.google.common.base.Strings;
 import com.zenobase.actions.Timed;
 import com.zenobase.commands.CreateBucketCommand;
 import com.zenobase.io.BucketPrinter;
@@ -45,25 +45,29 @@ public class BucketListController extends ControllerSupport {
     	if (auth == null || auth.getScope() != null) {
     		return unauthorized();
     	}
+    	QueryConstraint constraint = null;
     	if (!Strings.isNullOrEmpty(query)) {
-    		QueryConstraint c;
 			try {
-				c = QueryConstraint.parse(query);
+				constraint = QueryConstraint.parse(query);
 			} catch (IllegalArgumentException e) {
     			return badRequest("query is malformed");
 			}
-    		if (!"roles.principal".equals(c.getField())) {
-    			return badRequest("unsupported query field");
-    		}
-    		return find(auth.getPrincipal(), new Identity(c.getValue()), offset, limit);
     	}
-        return find(auth.getPrincipal(), offset, limit);
+		if (!isConstrainedToPrincipal(constraint, auth.getPrincipal()) && !users.isSuperuser(auth.getPrincipal())) {
+			return forbidden();
+		}
+        return constraint != null
+        	? find(auth.getPrincipal(), new Identity(constraint.getValue()), offset, limit)
+        	: find(auth.getPrincipal(), offset, limit);
     }
 
+	private static boolean isConstrainedToPrincipal(QueryConstraint constraint, Identity principal) {
+		return constraint != null
+			&& "roles.principal".equals(constraint.getField())
+			&& principal.getId().equals(constraint.getValue());
+	}
+
     private Result find(Identity principal, Identity identity, int offset, int limit) {
-    	if (!(identity.equals(principal) || users.isSuperuser(principal))) {
-    		return forbidden();
-    	}
     	if (limit > 100) {
     		return badRequest("limit max 100");
     	}
@@ -71,9 +75,6 @@ public class BucketListController extends ControllerSupport {
     }
 
     private Result find(Identity principal, int offset, int limit) {
-    	if (!users.isSuperuser(principal)) {
-    		return forbidden();
-    	}
     	if (limit == Integer.MAX_VALUE) {
     		return findAll();
     	}

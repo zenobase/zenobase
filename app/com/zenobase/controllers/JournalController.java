@@ -5,12 +5,12 @@ import javax.inject.Inject;
 import play.mvc.BodyParser;
 import play.mvc.Result;
 import play.mvc.With;
-import com.google.common.base.Strings;
 
+import com.google.common.base.Strings;
 import com.zenobase.actions.Timed;
 import com.zenobase.commands.Command;
-import com.zenobase.models.Identity;
 import com.zenobase.models.CommandList;
+import com.zenobase.models.Identity;
 import com.zenobase.oauth.Authorization;
 import com.zenobase.search.QueryConstraint;
 import com.zenobase.services.CommandDispatcher;
@@ -53,17 +53,17 @@ public class JournalController extends ControllerSupport {
 				return badRequest("query is malformed");
 			}
 		}
-		if (constraint == null || !isConstrainedToPrincipal(constraint, auth.getPrincipal())) {
-			if (users.isSuperuser(auth.getPrincipal())) {
-		    	return ok(CommandList.toJson(repository.find(offset, limit, true)));
-			}
+		if (!isConstrainedToPrincipal(constraint, auth.getPrincipal()) && !users.isSuperuser(auth.getPrincipal())) {
 			return forbidden();
 		}
-    	return ok(CommandList.toJson(repository.find(constraint.getField(), constraint.getValue(), offset, limit, true)));
+    	return constraint != null
+    		? ok(CommandList.toJson(repository.find(constraint.getField(), constraint.getValue(), offset, limit, true)))
+    		: ok(CommandList.toJson(repository.find(offset, limit, true)));
     }
 
 	private static boolean isConstrainedToPrincipal(QueryConstraint constraint, Identity principal) {
-		return Command.PRINCIPAL.getName().equals(constraint.getField())
+		return constraint != null 
+			&& Command.PRINCIPAL.getName().equals(constraint.getField())
 			&& principal.getId().equals(constraint.getValue());
 	}
 

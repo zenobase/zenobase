@@ -4,8 +4,8 @@ import javax.inject.Inject;
 
 import play.mvc.Result;
 import play.mvc.With;
-import com.google.common.base.Strings;
 
+import com.google.common.base.Strings;
 import com.zenobase.actions.Timed;
 import com.zenobase.models.Identity;
 import com.zenobase.oauth.Authorization;
@@ -46,17 +46,17 @@ public class AuthorizationListController extends ControllerSupport {
 				return badRequest("query is malformed");
 			}
 		}
-		if (constraint == null || !isConstrainedToPrincipal(constraint, auth.getPrincipal())) {
-			if (users.isSuperuser(auth.getPrincipal())) {
-				return ok(AuthorizationList.toJson(authorizations.find(offset, limit)));
-			}
+		if (!isConstrainedToPrincipal(constraint, auth.getPrincipal()) && !users.isSuperuser(auth.getPrincipal())) {
 			return forbidden();
 		}
-		return ok(AuthorizationList.toJson(authorizations.find(constraint.getField(), constraint.getValue(), clientOnly, offset, limit)));
+		return constraint != null
+			? ok(AuthorizationList.toJson(authorizations.find(constraint.getField(), constraint.getValue(), clientOnly, offset, limit)))
+			: ok(AuthorizationList.toJson(authorizations.find(offset, limit)));
     }
 
 	private static boolean isConstrainedToPrincipal(QueryConstraint constraint, Identity principal) {
-		return Authorization.PRINCIPAL.getName().equals(constraint.getField())
+		return constraint != null
+			&& Authorization.PRINCIPAL.getName().equals(constraint.getField())
 			&& principal.getId().equals(constraint.getValue());
 	}
 }
