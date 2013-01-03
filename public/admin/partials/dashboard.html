@@ -5,9 +5,9 @@
 			<span class="page-title-text">Admin</span>
 			<a class="page-title-decoration" data-ng-click="reload()" title="Refresh"><i class="icon-refresh"></i></a>
 		</p>
-		<ul class="nav nav-pills" data-ng-show="filter">
+		<ul class="nav nav-pills" data-ng-show="constraint">
 			<li class="active">
-				<a data-ng-click="setFilter(null)"><i class="icon-white icon-user"></i> <span data-ng-bind="filter | username"></span> <i class="icon-remove icon-white"></i></a>
+				<a data-ng-click="setConstraint(null)"><i class="icon-white icon-user"></i> <span data-ng-bind="constraint | username"></span> <i class="icon-remove icon-white"></i></a>
 			</li>
 		</ul>
 	</div>
@@ -35,7 +35,7 @@
 					<tbody>
 						<tr data-ng-repeat="command in commands">
 							<td>
-								<a data-ng-click="setFilter(command.principal)">{{command.principal | username}}</a>
+								<a data-ng-click="setConstraint(command.principal)">{{command.principal | username}}</a>
 								<span data-ng-bind-html="command.label"></span>
 								<abbr title="{{command.timestamp}}">{{command.timestamp | age}}</abbr>
 							</td>
@@ -76,7 +76,7 @@
 					<tbody>
 						<tr data-ng-repeat="bucket in buckets">
 							<td>{{bucket['@id']}}</td>
-							<td><a data-ng-click="setFilter(getOwner(bucket))">{{getOwner(bucket) | username}}</a></td>
+							<td><a data-ng-click="setConstraint(getOwner(bucket))">{{getOwner(bucket) | username}}</a></td>
 							<td>{{bucket.created | age}}</td>
 							<td style="text-align: right">
 								<a data-ng-show="isPublished(bucket)" data-ng-href="/#/buckets/{{bucket['@id']}}">{{bucket.size}}</a>
@@ -121,7 +121,7 @@
 					<tbody>
 						<tr data-ng-repeat="user in users">
 							<td>
-								<a data-ng-click="setFilter(user['@id'])" data-ng-show="!user.suspended" data-ng-class="user.superuser && 'b'">{{user.name}}</a>
+								<a data-ng-click="setConstraint(user['@id'])" data-ng-show="!user.suspended" data-ng-class="user.superuser && 'b'">{{user.name}}</a>
 								<span style="color:gray" data-ng-show="user.suspended">{{user.name}}</span>
 							</td>
 							<td data-ng-bind="user.created | age"></td>
@@ -166,8 +166,8 @@
 					</thead>
 					<tbody>
 						<tr data-ng-repeat="authorization in authorizations">
-							<td><a data-ng-click="setFilter(authorization.principal)">{{authorization.principal | username}}</a></td>
-							<td><a data-ng-click="setFilter(authorization.client)" data-ng-show="authorization.client">{{authorization.client | username}}</a></td>
+							<td><a data-ng-click="setConstraint(authorization.principal)">{{authorization.principal | username}}</a></td>
+							<td><a data-ng-click="setConstraint(authorization.client)" data-ng-show="authorization.client">{{authorization.client | username}}</a></td>
 							<td>{{authorization.created | age}}</td>
 							<td>{{authorization.scope}}</td>
 							<td style="text-align: right">
@@ -211,7 +211,7 @@
 						<tr data-ng-repeat="task in tasks">
 							<td>{{task['@id']}}</td>
 							<td>{{task.type}}</td>
-							<td><a data-ng-click="setFilter(task.principal)">{{task.principal | username}}</a></td>
+							<td><a data-ng-click="setConstraint(task.principal)">{{task.principal | username}}</a></td>
 							<td>{{task.bucket}}</td>
 							<td>{{task.created | age}}</td>
 							<td>{{task.completed | age}}</td>

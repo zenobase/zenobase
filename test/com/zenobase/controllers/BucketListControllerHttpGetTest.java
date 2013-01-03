@@ -2,10 +2,14 @@ package com.zenobase.controllers;
 
 import static com.zenobase.testing.ResultAssert.assertThat;
 import static org.mockito.Mockito.when;
-import static play.mvc.Http.Status.*;
+import static play.mvc.Http.Status.BAD_REQUEST;
+import static play.mvc.Http.Status.FORBIDDEN;
+import static play.mvc.Http.Status.OK;
+import static play.mvc.Http.Status.UNAUTHORIZED;
 import static play.test.Helpers.callAction;
 
 import org.junit.Test;
+
 import play.mvc.Result;
 
 import com.zenobase.common.DefaultPartialList;
@@ -30,7 +34,7 @@ public class BucketListControllerHttpGetTest extends BucketListControllerTestSup
 	public void testGetBucketBadQuery() {
 		when(auth.current()).thenReturn(null);
 		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
-		Result result = call("foo:bar", 0, 10);
+		Result result = call("foo", 0, 10);
 		assertThat(result).hasStatus(BAD_REQUEST);
 	}
 

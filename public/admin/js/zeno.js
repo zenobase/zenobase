@@ -10,10 +10,10 @@
 	});
 
 	app.controller('admin.DashboardController', ['$scope', '$location', function($scope, $location) {
-		$scope.filter = $location.search()['q'];
-		$scope.setFilter = function(filter) {
-			$scope.filter = filter;
-			$location.search('q', $scope.filter);
+		$scope.constraint = $location.search()['q'];
+		$scope.setConstraint = function(constraint) {
+			$scope.constraint = constraint;
+			$location.search('q', $scope.constraint);
 		};
 	}]);
 
@@ -41,8 +41,8 @@
 				offset : $scope.offset,
 				limit : $scope.limit
 			};
-			if ($scope.filter) {
-				params.q = 'principal:' + $scope.filter;
+			if ($scope.constraint) {
+				params.q = 'principal:' + $scope.constraint;
 			}
 			return params;
 		}
@@ -86,8 +86,8 @@
 					offset : $scope.offset,
 					limit : $scope.limit
 				};
-				if ($scope.filter) {
-					params.q = 'roles.principal:' + $scope.filter;
+				if ($scope.constraint) {
+					params.q = 'roles.principal:' + $scope.constraint;
 				}
 				return params;
 		}
@@ -142,8 +142,8 @@
 		};
 		$scope.refresh = function(params) {
 			$scope.token = token.get();
-			if ($scope.filter) {
-				$http.get('/users/?' + $.param({ identity : $scope.filter, detail : 1 })).success(function(response) {
+			if ($scope.constraint) {
+				$http.get('/users/?' + $.param({ identity : $scope.constraint, detail : 1 })).success(function(response) {
 					$scope.total = 1;
 					$scope.users = [ response ];
 				});
@@ -189,8 +189,8 @@
 				offset : $scope.offset,
 				limit : $scope.limit
 			};
-			if ($scope.filter) {
-				params.q = 'principal:' + $scope.filter;
+			if ($scope.constraint) {
+				params.q = 'principal:' + $scope.constraint;
 			}
 			return params;
 		};
@@ -237,8 +237,8 @@
 					offset : $scope.offset,
 					limit : $scope.limit
 				};
-				if ($scope.filter) {
-					params.q = 'principal:' + $scope.filter;
+				if ($scope.constraint) {
+					params.q = 'principal:' + $scope.constraint;
 				}
 				return params;
 		}

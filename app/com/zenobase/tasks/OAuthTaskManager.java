@@ -82,11 +82,11 @@ public abstract class OAuthTaskManager extends TaskManager {
 
 	protected static ObjectNode parseObject(Response response) {
 		// System.out.println("parse: " + response.getBody());
-		return Nodes.readObject(response.getBody().getBytes());
+		return Nodes.readObject(response.getBody());
 	}
 
 	protected static ArrayNode parseArray(Response response) {
 		// System.out.println("parse: " + response.getBody());
-		return Nodes.readArray(response.getBody().getBytes());
+		return Nodes.readArray(response.getBody());
 	}
 }

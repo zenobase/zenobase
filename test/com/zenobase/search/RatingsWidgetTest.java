@@ -1,7 +1,6 @@
 package com.zenobase.search;
 
 import static com.zenobase.testing.NodeAssert.assertThat;
-
 import org.codehaus.jackson.node.ObjectNode;
 import org.junit.Before;
 import org.junit.Test;
@@ -45,7 +44,7 @@ public class RatingsWidgetTest extends WidgetTestSupport {
 		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(5);
 		NodeAssert node = assertThat(result).path(WIDGET_ID).hasSize(4);
 		node.path(0).path("from").isEqualTo(90);
-		node.path(0).path("to").isEqualTo(100);
+		node.path(0).path("to").isMissingNode();
 		node.path(0).path("count").isEqualTo(1);
 		node.path(1).path("from").isEqualTo(50);
 		node.path(1).path("to").isEqualTo(70);
@@ -53,7 +52,7 @@ public class RatingsWidgetTest extends WidgetTestSupport {
 		node.path(2).path("from").isEqualTo(10);
 		node.path(2).path("to").isEqualTo(30);
 		node.path(2).path("count").isEqualTo(2);
-		node.path(3).path("from").isEqualTo(0);
+		node.path(3).path("from").isMissingNode();
 		node.path(3).path("to").isEqualTo(10);
 		node.path(3).path("count").isEqualTo(1);
 	}
@@ -72,7 +71,7 @@ public class RatingsWidgetTest extends WidgetTestSupport {
 		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(5);
 		NodeAssert node = assertThat(result).path(WIDGET_ID).hasSize(5);
 		node.path(0).path("from").isEqualTo(95);
-		node.path(0).path("to").isEqualTo(100);
+		node.path(0).path("to").isMissingNode();
 		node.path(0).path("count").isEqualTo(1);
 		node.path(1).path("from").isEqualTo(45);
 		node.path(1).path("to").isEqualTo(55);
@@ -83,7 +82,7 @@ public class RatingsWidgetTest extends WidgetTestSupport {
 		node.path(3).path("from").isEqualTo(5);
 		node.path(3).path("to").isEqualTo(15);
 		node.path(3).path("count").isEqualTo(1);
-		node.path(4).path("from").isEqualTo(0);
+		node.path(4).path("from").isMissingNode();
 		node.path(4).path("to").isEqualTo(5);
 		node.path(4).path("count").isEqualTo(1);
 	}

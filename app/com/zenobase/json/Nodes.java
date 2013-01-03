@@ -74,4 +74,20 @@ public class Nodes {
 			throw new IllegalArgumentException("Can't read json: '" + new String(in) + "'");
 		}
 	}
+
+    public static ObjectNode readObject(String in) {
+        return (ObjectNode) read(in);
+    }
+
+    public static ArrayNode readArray(String in) {
+        return (ArrayNode) read(in);
+    }
+
+    private static JsonNode read(String in) {
+        try {
+            return MAPPER.readTree(in);
+        } catch (IOException e) {
+            throw new IllegalArgumentException("Can't read json: '" + new String(in) + "'");
+        }
+    }
 }

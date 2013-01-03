@@ -1,24 +1,79 @@
 Developer Guide
 ===============
 
-To refresh the dependencies in Eclipse, run:
+Eclipse
+-------
+
+Following the initial checkout, or after updating dependencies in the Build.scala file, run:
 
   play "eclipse with-source=true"
 
 
-js libs
--------
+Assets
+------
 
-bootstrap-2.2.x.js: concatenate modal + tabs + typeahead + bootstrap-datepicker
+When updating the bootstrap-xyz.js file, concatenate the modal, tabs and typeahead components, plus the bootstrap-datepicker plugin.
 
 
-Functional Tests
-----------------
+Tests
+-----
 
-To run the functional test only, run:
+To run a single test:
   
   play "test-only com.zenobase.testing.BrowserTest"
 
-To run all tests except the functional test:
+To run all tests except Selenium tests:
 
   play -Dwebdriver.enabled=false test
+
+
+Release Procedure
+-----------------
+
+  1. Push the code to the build server. This should trigger a build.
+
+  2. Obtain the build number [CloudBees].
+
+  3. Edit the "Custom JSON" field for the "Production" cloud [Scalarium]:
+
+     3.1. Set play.build to the new build number.
+
+     3.2. (if migrating) Set elasticsearch.replay to the previous clusterName and increment clusterName.
+
+  4. Set up two new instances [Scalarium]:
+
+     4.1. Add two instances named "acai-{build number}" in us-east-1a and "coco-{build number}" in us-east-1c to the role "Elasticsearch".
+
+     4.2. Add the two new instances to the role "Play".
+
+  5. Before proceeding:
+  
+     5.1. The build must complete [CloudBees].
+
+     5.2. There should be no traffic [Google Analytics].
+
+     5.3. The status check must show 4 nodes and green health [/status].
+
+  6. Start one (if migrating) or both (if not migrating) new instances [Scalarium].
+
+  7. As soon as a new instances is listed as "in service", remove all old instances from the load balancer [AWS Console].
+
+  8. (if migrating) Start the second instance [Scalarium].
+
+  9. Wait for the status check to show 4 (if migrating) or 8 (if not migrating) nodes and green health [/status].
+
+  10. Stop one or (if migrating) both old instance [Scalarium].
+
+  11. (if not migrating) Wait for 6 nodes and green health before [/status].
+
+  12. (if not migrating) Stop the second old instance [Scalarium].
+
+  13. Set the "keep this build forever" flag [CloudBees].
+
+  14. Cleanup (optional):
+
+      14.1. Remove stopped instances [Scalarium].
+
+      14.2. Remove the "keep this build forever" flag from builds older than a month or so [CloudBees].
+
+      14.3. Remove instances that are no longer reporting data [New Relic].
