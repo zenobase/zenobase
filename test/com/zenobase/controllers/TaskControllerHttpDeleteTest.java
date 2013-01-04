@@ -66,6 +66,17 @@ public class TaskControllerHttpDeleteTest extends TaskControllerTestSupport {
 		verifyZeroInteractions(dispatcher);
 	}
 
+	@Test
+	public void testDeleteTaskAsSuperuser() {
+		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
+		when(tasks.find(task.getId())).thenReturn(task.copy());
+		when(buckets.find(bucket.getId())).thenReturn(bucket);
+		when(users.isSuperuser(user.asIdentity())).thenReturn(true);
+		when(dispatcher.dispatch(any(Command.class))).thenReturn("c");
+		Result result = call(task.getId());
+		assertThat(result).hasStatus(NO_CONTENT).hasHeader(COMMAND_ID, "c").isEmpty();
+	}
+
 	private static Result call(String taskId) {
 		return callAction(com.zenobase.controllers.routes.ref.TaskController.delete(taskId));
 	}

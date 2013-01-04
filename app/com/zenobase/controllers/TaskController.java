@@ -17,6 +17,7 @@ import com.zenobase.oauth.Authorization;
 import com.zenobase.services.BucketRepository;
 import com.zenobase.services.CommandDispatcher;
 import com.zenobase.services.TaskRepository;
+import com.zenobase.services.UserRepository;
 import com.zenobase.tasks.Task;
 import com.zenobase.tasks.TaskManager;
 import com.zenobase.tasks.TaskManagerRegistry;
@@ -29,17 +30,19 @@ public class TaskController extends ControllerSupport {
 	private final TaskManagerRegistry registry;
 	private final TaskRepository tasks;
 	private final BucketRepository buckets;
+	private final UserRepository users;
 	private final TaskRefresher refresher;
 
 	@Inject
 	public TaskController(AuthorizationContext security, CommandDispatcher dispatcher,
-		TaskManagerRegistry registry, TaskRepository tasks, BucketRepository buckets, TaskRefresher refresher) {
+		TaskManagerRegistry registry, TaskRepository tasks, BucketRepository buckets, UserRepository users, TaskRefresher refresher) {
 
 		super(security);
 		this.dispatcher = dispatcher;
 		this.registry = registry;
 		this.tasks = tasks;
 		this.buckets = buckets;
+		this.users = users;
 		this.refresher = refresher;
 	}
 
@@ -109,7 +112,7 @@ public class TaskController extends ControllerSupport {
 			return notFound();
 		}
     	Bucket bucket = buckets.find(task.getBucketId());
-    	if (bucket == null || !bucket.hasRole(auth, Role.OWNER)) {
+    	if (bucket == null || !bucket.hasRole(auth, Role.OWNER) && !users.isSuperuser(auth.getPrincipal())) {
     		return forbidden();
     	}
     	String commandId = dispatcher.dispatch(new DeleteTaskCommand(auth.getPrincipal(), task));

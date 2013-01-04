@@ -10,6 +10,7 @@ import com.zenobase.models.User;
 import com.zenobase.services.BucketRepository;
 import com.zenobase.services.CommandDispatcher;
 import com.zenobase.services.TaskRepository;
+import com.zenobase.services.UserRepository;
 import com.zenobase.tasks.TaskManagerRegistry;
 import com.zenobase.tasks.TaskRefresher;
 
@@ -20,6 +21,7 @@ public abstract class TaskControllerTestSupport extends ControllerTestSupport {
 	protected final TaskRepository tasks = mock(TaskRepository.class);
 	protected final TaskRefresher refresher = mock(TaskRefresher.class);
 	protected final BucketRepository buckets = mock(BucketRepository.class);
+	protected final UserRepository users = mock(UserRepository.class);
 	protected final CommandDispatcher dispatcher = mock(CommandDispatcher.class);
 	protected final User user = new User("tester");
 
@@ -33,6 +35,7 @@ public abstract class TaskControllerTestSupport extends ControllerTestSupport {
 				bind(TaskRepository.class).toInstance(tasks);
 				bind(TaskRefresher.class).toInstance(refresher);
 				bind(BucketRepository.class).toInstance(buckets);
+				bind(UserRepository.class).toInstance(users);
 				bind(CommandDispatcher.class).toInstance(dispatcher);
 				bind(TaskController.class).in(Singleton.class);
 			}
