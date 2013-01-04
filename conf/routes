@@ -41,6 +41,7 @@ DELETE  /tasks/:taskId               @com.zenobase.controllers.TaskController.de
 
 POST    /oauth/authorize             @com.zenobase.controllers.OAuthController.authorize()
 POST    /oauth/token                 @com.zenobase.controllers.OAuthController.token()
+GET     /oauth/callback/:taskId      @com.zenobase.controllers.OAuthController.callback(taskId)
 
 GET     /authorizations/             @com.zenobase.controllers.AuthorizationListController.find(q ?= null, client_only : Boolean ?= false, offset : Int  ?= 0, limit : Int ?= 10)
 

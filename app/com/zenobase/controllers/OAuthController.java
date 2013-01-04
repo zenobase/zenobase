@@ -1,6 +1,9 @@
 package com.zenobase.controllers;
 
+import java.io.UnsupportedEncodingException;
 import java.net.URI;
+import java.net.URLEncoder;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -9,6 +12,7 @@ import play.data.Form;
 import play.mvc.BodyParser;
 import play.mvc.Result;
 import play.mvc.With;
+import com.google.common.base.Charsets;
 
 import com.zenobase.actions.Timed;
 import com.zenobase.commands.CreateAuthorizationCommand;
@@ -127,4 +131,25 @@ public class OAuthController extends ControllerSupport {
     	}
     	return ok(result);
     }
+
+    public Result callback(String taskId) {
+    	return redirect(String.format("/#/tasks/%s?%s", taskId, toString(request().queryString())));
+    }
+
+	private static String toString(Map<String, String[]> params) {
+		try {
+			StringBuilder builder = new StringBuilder();
+			for (Map.Entry<String, String[]> entry : params.entrySet()) {
+				for (String value : entry.getValue()) {
+					if (builder.length() > 0) {
+						builder.append('&');
+					}
+					builder.append(entry.getKey()).append('=').append(URLEncoder.encode(value, Charsets.UTF_8.name()));
+				}
+			}
+			return builder.toString();
+		} catch (UnsupportedEncodingException e) {
+			throw new RuntimeException(e);
+		}
+	}
 }

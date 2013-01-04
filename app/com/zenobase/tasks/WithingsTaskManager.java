@@ -26,7 +26,7 @@ public class WithingsTaskManager extends OAuthTaskManager {
 
 	@Inject
 	public WithingsTaskManager(@Named("withings.api.key") String apiKey, @Named("withings.api.secret") String apiSecret, @Named("oauth.hostname") String callbackUrl) {
-		super(WithingsApi.class, apiKey, apiSecret, callbackUrl);
+		super(new WithingsApi(), apiKey, apiSecret, callbackUrl);
 	}
 
 	@Override

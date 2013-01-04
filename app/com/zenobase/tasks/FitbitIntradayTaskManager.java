@@ -21,7 +21,7 @@ public class FitbitIntradayTaskManager extends FitbitTaskManagerSupport {
 
 	@Inject
 	public FitbitIntradayTaskManager(@Named("fitbit.api.key") String apiKey, @Named("fitbit.api.secret") String apiSecret, @Named("oauth.hostname") String callbackUrl) {
-		super(FitbitApi.class, apiKey, apiSecret, callbackUrl);
+		super(new FitbitApi(), apiKey, apiSecret, callbackUrl);
 	}
 
 	@Override

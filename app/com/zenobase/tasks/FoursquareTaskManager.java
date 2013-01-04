@@ -30,7 +30,7 @@ public class FoursquareTaskManager extends OAuthTaskManager {
 
 	@Inject
 	public FoursquareTaskManager(@Named("foursquare.api.key") String apiKey, @Named("foursquare.api.secret") String apiSecret, @Named("oauth.hostname") String callbackUrl) {
-		super(Foursquare2Api.class, apiKey, apiSecret, callbackUrl);
+		super(new Foursquare2Api(), apiKey, apiSecret, callbackUrl);
 	}
 
 	@Override

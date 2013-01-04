@@ -19,9 +19,8 @@ import com.zenobase.models.Event;
 
 public abstract class FitbitTaskManagerSupport extends OAuthTaskManager {
 
-	public FitbitTaskManagerSupport(Class<? extends Api> apiClass,
-			String apiKey, String apiSecret, String callbackUrl) {
-		super(apiClass, apiKey, apiSecret, callbackUrl);
+	public FitbitTaskManagerSupport(Api provider, String apiKey, String apiSecret, String callbackUrl) {
+		super(provider, apiKey, apiSecret, callbackUrl);
 	}
 
 	protected LocalDate getLastDate(OAuthTask task, OAuthService service) {

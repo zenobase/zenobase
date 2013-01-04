@@ -15,7 +15,7 @@ public class TwitterTaskManager extends OAuthTaskManager {
 
 	@Inject
 	public TwitterTaskManager(@Named("twitter.api.key") String apiKey, @Named("twitter.api.secret") String apiSecret, @Named("oauth.hostname") String callbackUrl) {
-		super(TwitterApi.class, apiKey, apiSecret, callbackUrl);
+		super(new TwitterApi(), apiKey, apiSecret, callbackUrl);
 	}
 
 	@Override

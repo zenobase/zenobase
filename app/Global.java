@@ -77,13 +77,13 @@ import com.zenobase.services.NodeFactory;
 import com.zenobase.services.TaskRepository;
 import com.zenobase.services.TestNodeFactory;
 import com.zenobase.services.UserRepository;
+import com.zenobase.tasks.BodyMediaTaskManager;
 import com.zenobase.tasks.DemoTaskManager;
 import com.zenobase.tasks.FitbitIntradayTaskManager;
 import com.zenobase.tasks.FitbitTaskManager;
 import com.zenobase.tasks.FoursquareTaskManager;
 import com.zenobase.tasks.TaskManager;
 import com.zenobase.tasks.TaskRefresher;
-import com.zenobase.tasks.TwitterTaskManager;
 import com.zenobase.tasks.WithingsTaskManager;
 
 public class Global extends GlobalSettings {
@@ -167,27 +167,12 @@ public class Global extends GlobalSettings {
 
 				Multibinder<TaskManager> managers = Multibinder.newSetBinder(binder(), new TypeLiteral<TaskManager>() {});
 				managers.addBinding().to(DemoTaskManager.class);
-				if (isConfigured("fitbit")) {
-					managers.addBinding().to(FitbitTaskManager.class);
-					managers.addBinding().to(FitbitIntradayTaskManager.class);
-				} else {
-					Logger.warn("Fitbit is not configured");
-				}
-				if (isConfigured("foursquare")) {
-					managers.addBinding().to(FoursquareTaskManager.class);
-				} else {
-					Logger.warn("Foursquare is not configured");
-				}
-				if (isConfigured("twitter")) {
-					managers.addBinding().to(TwitterTaskManager.class);
-				} else {
-					Logger.warn("Twitter is not configured");
-				}
-				if (isConfigured("withings")) {
-					managers.addBinding().to(WithingsTaskManager.class);
-				} else {
-					Logger.warn("Withings is not configured");
-				}
+				bindIfConfigured("fitbit", FitbitTaskManager.class, managers);
+				bindIfConfigured("fitbit", FitbitIntradayTaskManager.class, managers);
+				bindIfConfigured("foursquare", FoursquareTaskManager.class, managers);
+				bindIfConfigured("withings", WithingsTaskManager.class, managers);
+				bindIfConfigured("bodymedia", BodyMediaTaskManager.class, managers);
+				// bindIfConfigured("twitter", TwitterTaskManager.class, managers);
 
 				bind(AccountController.class).in(Singleton.class);
 				bind(BucketController.class).in(Singleton.class);
@@ -208,6 +193,14 @@ public class Global extends GlobalSettings {
 				bind(AuthorizationListController.class).in(Singleton.class);
 
 				requestInjection(Global.this);
+			}
+
+			private <T> void bindIfConfigured(String prefix, Class<? extends T> type, Multibinder<T> managers) {
+				if (isConfigured(prefix)) {
+					managers.addBinding().to(type);
+				} else {
+					Logger.warn("missing configuration for " + prefix);
+				}
 			}
 
 			private boolean isConfigured(String key) {

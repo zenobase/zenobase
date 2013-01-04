@@ -18,13 +18,13 @@ import com.zenobase.models.Identity;
 
 public abstract class OAuthTaskManager extends TaskManager {
 
-	private final Class<? extends Api> apiClass;
+	private final Api provider;
 	private final String apiKey;
 	private final String apiSecret;
 	private final String callbackUrl;
 
-	protected OAuthTaskManager(Class<? extends Api> apiClass, String apiKey, String apiSecret, String callbackUrl) {
-		this.apiClass = apiClass;
+	protected OAuthTaskManager(Api provider, String apiKey, String apiSecret, String callbackUrl) {
+		this.provider = provider;
 		this.apiKey = apiKey;
 		this.apiSecret = apiSecret;
 		this.callbackUrl = callbackUrl;
@@ -45,9 +45,9 @@ public abstract class OAuthTaskManager extends TaskManager {
 	}
 
 	private Command authorize(OAuthTask task, ObjectNode config) {
-		String token = config.get("oauth_token").getTextValue();
-		String verifier = config.get("oauth_verifier").getTextValue();
-		if (token == null || verifier == null) {
+		String token = config.path("oauth_token").getTextValue();
+		String verifier = config.path("oauth_verifier").asText();
+		if (token == null) {
 			Logger.warn(String.format("Couldn't authorize %s task <%s>: %s",
 				task.getType(), task.getId(), config));
 			return null;
@@ -68,10 +68,10 @@ public abstract class OAuthTaskManager extends TaskManager {
 
 	protected final OAuthService getService(OAuthTask task) {
 		ServiceBuilder builder = new ServiceBuilder()
-			.provider(apiClass)
+			.provider(provider)
 			.apiKey(apiKey)
 			.apiSecret(apiSecret)
-			.callback(String.format("%s/#/tasks/%s", callbackUrl, task.getId()));
+			.callback(String.format("%s/oauth/callback/%s", callbackUrl, task.getId()));
 		configure(builder);
 		return builder.build();
 	}
