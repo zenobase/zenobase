@@ -27,7 +27,7 @@ public class BodyMediaSummaryResultTest extends ResultTestSupport {
 
 		Event sleep = new Event(events.get(0).getId());
 		sleep.setValue(Event.TAG, BodyMediaSummaryResult.TAG_SLEEP);
-		sleep.setValue(Event.TIMESTAMP, DateTime.parse("2013-01-01T00:00:00.000-08:00"));
+		sleep.setValue(Event.TIMESTAMP, DateTime.parse("2013-01-01T12:00:00.000-12:00"));
 		sleep.setValue(Event.DURATION, Duration.standardMinutes(471));
 		sleep.setValue(Event.RATING, Rating.valueOf(79));
 		sleep.setValue(Event.AUTHOR, TESTER);
@@ -36,7 +36,7 @@ public class BodyMediaSummaryResultTest extends ResultTestSupport {
 
 		Event steps = new Event(events.get(2).getId());
 		steps.setValue(Event.TAG, BodyMediaSummaryResult.TAG_STEPS);
-		steps.setValue(Event.TIMESTAMP, DateTime.parse("2013-01-01T00:00:00.000-08:00"));
+		steps.setValue(Event.TIMESTAMP, DateTime.parse("2013-01-01T12:00:00.000-12:00"));
 		steps.setValue(Event.COUNT, 12981);
 		steps.setValue(Event.ENERGY, Measures.<Energy>valueOf("-2986 cal"));
 		steps.setValue(Event.AUTHOR, TESTER);

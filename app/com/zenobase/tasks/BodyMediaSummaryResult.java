@@ -12,6 +12,7 @@ import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.Duration;
 import org.joda.time.LocalDate;
+import org.joda.time.LocalTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import com.google.common.base.Preconditions;
@@ -30,7 +31,7 @@ class BodyMediaSummaryResult {
 	static final String TAG_STEPS = "steps";
 	static final Resource SOURCE = new Resource("BodyMedia", "http://bodymedia.com/");
 
-	private static final DateTimeFormatter DATE_TIME_FORMAT = DateTimeFormat.forPattern("yyyyMMdd'T'hhmmssZZ");
+	private static final DateTimeFormatter DATE_TIME_FORMAT = DateTimeFormat.forPattern("yyyyMMdd'T'hhmmssZZ").withOffsetParsed();
 	private static final DateTimeFormatter DATE_FORMAT = DateTimeFormat.forPattern("yyyyMMdd");
 
 	private final ObjectNode node;
@@ -112,7 +113,7 @@ class BodyMediaSummaryResult {
 	}
 
 	private static DateTime toDateTime(LocalDate date, DateTimeZone zone) {
-		return date.toDateTimeAtStartOfDay(zone);
+		return date.toDateTime(new LocalTime(12, 0), zone);
 	}
 
 	private static LocalDate getLocalDate(JsonNode node) {
