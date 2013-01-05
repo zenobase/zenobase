@@ -16,6 +16,7 @@ public class UpdateTaskCommand extends UpdateCommandSupport {
 
 	private UpdateTaskCommand(ObjectNode node) {
 		super(node);
+		setType(TYPE);
 	}
 
 	private UpdateTaskCommand(Identity principal, String taskId, ObjectNode from, ObjectNode to) {
