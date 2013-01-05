@@ -16,6 +16,7 @@ public class DeleteUserCommand extends Command {
 
 	private DeleteUserCommand(ObjectNode node) {
 		super(node);
+		checkType(TYPE);
 	}
 
 	public DeleteUserCommand(Identity principal, User user) {

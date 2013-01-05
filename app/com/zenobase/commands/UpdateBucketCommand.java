@@ -16,7 +16,7 @@ public class UpdateBucketCommand extends Command {
 
 	private UpdateBucketCommand(ObjectNode node) {
 		super(node);
-		setType(TYPE);
+		checkType(TYPE);
 	}
 
 	public UpdateBucketCommand(Identity principal, Bucket from, Bucket to) {
@@ -57,10 +57,7 @@ public class UpdateBucketCommand extends Command {
 		@Override
 		public Command parse(ObjectNode node, int version) {
 			switch (version) {
-				case 1:
-				case 2:
-				case 3:
-					return new UpdateBucketCommand(node);
+				case 3: return new UpdateBucketCommand(node);
 			}
 			return null;
 		}

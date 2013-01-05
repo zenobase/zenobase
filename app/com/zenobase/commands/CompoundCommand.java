@@ -22,6 +22,7 @@ public class CompoundCommand extends Command {
 
 	CompoundCommand(ObjectNode node, CommandParserRegistry registry) {
 		super(node);
+		checkType(TYPE);
 		this.registry = registry;
 	}
 

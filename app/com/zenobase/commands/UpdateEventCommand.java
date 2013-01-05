@@ -18,6 +18,7 @@ public class UpdateEventCommand extends Command {
 
 	private UpdateEventCommand(ObjectNode node) {
 		super(node);
+		checkType(TYPE);
 	}
 
 	public UpdateEventCommand(Identity principal, String bucketId, Event from, Event to) {

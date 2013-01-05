@@ -18,6 +18,7 @@ public class TestCommand extends Command {
 
 	public TestCommand(ObjectNode node) {
 		super(node);
+		checkType(TYPE);
 	}
 
 	public String getTag() {

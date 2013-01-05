@@ -16,6 +16,7 @@ public class DeleteBucketCommand extends Command {
 
 	private DeleteBucketCommand(ObjectNode node) {
 		super(node);
+		checkType(TYPE);
 	}
 
 	public DeleteBucketCommand(Identity principal, Bucket bucket) {

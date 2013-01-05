@@ -20,6 +20,7 @@ public class ChangeUserEmailCommand extends Command {
 
 	private ChangeUserEmailCommand(ObjectNode node) {
 		super(node);
+		checkType(TYPE);
 	}
 
 	public ChangeUserEmailCommand(Identity principal, String username, String from, String to, boolean fromVerified, boolean toVerified) {

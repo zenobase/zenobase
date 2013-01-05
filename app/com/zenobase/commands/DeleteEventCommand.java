@@ -17,6 +17,7 @@ public class DeleteEventCommand extends Command {
 
 	private DeleteEventCommand(ObjectNode node) {
 		super(node);
+		checkType(TYPE);
 	}
 
 	public DeleteEventCommand(Identity principal, String bucketId, Event event) {

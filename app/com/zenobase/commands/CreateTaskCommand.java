@@ -15,6 +15,7 @@ public class CreateTaskCommand extends Command {
 
 	private CreateTaskCommand(ObjectNode node) {
 		super(node);
+		checkType(TYPE);
 	}
 
 	public CreateTaskCommand(Identity principal, Task task) {

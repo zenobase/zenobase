@@ -17,6 +17,7 @@ public class ChangeUserPasswordCommand extends Command {
 
 	private ChangeUserPasswordCommand(ObjectNode node) {
 		super(node);
+		checkType(TYPE);
 	}
 
 	public ChangeUserPasswordCommand(Identity principal, String username, String from, String to) {

@@ -17,6 +17,7 @@ public class ChangeUserVerifiedCommand extends Command {
 
 	private ChangeUserVerifiedCommand(ObjectNode node) {
 		super(node);
+		checkType(TYPE);
 	}
 
 	public ChangeUserVerifiedCommand(Identity principal, String name, boolean verified) {

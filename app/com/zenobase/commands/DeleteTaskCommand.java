@@ -15,6 +15,7 @@ public class DeleteTaskCommand extends Command {
 
 	private DeleteTaskCommand(ObjectNode node) {
 		super(node);
+		checkType(TYPE);
 	}
 
 	public DeleteTaskCommand(Identity principal, Task task) {

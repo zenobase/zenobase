@@ -4,6 +4,7 @@ import org.codehaus.jackson.node.ObjectNode;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import com.google.common.base.Objects;
+import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 
 import com.zenobase.common.Generator;
@@ -52,6 +53,11 @@ public abstract class Command extends DomainNode {
 
 	public void setType(Command.Type type) {
 		setValue(TYPE, type);
+	}
+
+	protected void checkType(Command.Type expected) {
+		Preconditions.checkArgument(expected.equals(getType()),
+			"Expected %s but was %s", expected, getType());
 	}
 
 	public Identity getPrincipal() {

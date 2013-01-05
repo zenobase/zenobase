@@ -16,7 +16,7 @@ public class UpdateTaskCommand extends UpdateCommandSupport {
 
 	private UpdateTaskCommand(ObjectNode node) {
 		super(node);
-		setType(TYPE);
+		checkType(TYPE);
 	}
 
 	private UpdateTaskCommand(Identity principal, String taskId, ObjectNode from, ObjectNode to) {
@@ -56,9 +56,7 @@ public class UpdateTaskCommand extends UpdateCommandSupport {
 		@Override
 		public Command parse(ObjectNode node, int version) {
 			switch (version) {
-				case 1:
-				case 2:
-					return new UpdateTaskCommand(node);
+				case 2: return new UpdateTaskCommand(node);
 			}
 			return null;
 		}

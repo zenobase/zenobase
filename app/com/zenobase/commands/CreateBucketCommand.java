@@ -15,7 +15,7 @@ public class CreateBucketCommand extends Command {
 
 	private CreateBucketCommand(ObjectNode node) {
 		super(node);
-		setType(TYPE);
+		checkType(TYPE);
 	}
 
 	public CreateBucketCommand(Identity principal, Bucket bucket) {
@@ -47,9 +47,7 @@ public class CreateBucketCommand extends Command {
 		@Override
 		public Command parse(ObjectNode node, int version) {
 			switch (version) {
-				case 1:
-				case 2:
-					return new CreateBucketCommand(node);
+				case 2: return new CreateBucketCommand(node);
 			}
 			return null;
 		}

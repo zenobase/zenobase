@@ -15,6 +15,7 @@ public class RestoreBucketCommand extends Command {
 
 	private RestoreBucketCommand(ObjectNode node) {
 		super(node);
+		checkType(TYPE);
 	}
 
 	public RestoreBucketCommand(Identity principal, Bucket bucket) {

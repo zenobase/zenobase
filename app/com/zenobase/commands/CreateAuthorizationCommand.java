@@ -15,6 +15,7 @@ public class CreateAuthorizationCommand extends Command {
 
 	private CreateAuthorizationCommand(ObjectNode node) {
 		super(node);
+		checkType(TYPE);
 	}
 
 	public CreateAuthorizationCommand(Identity principal, Authorization authorization) {

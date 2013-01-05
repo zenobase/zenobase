@@ -15,6 +15,7 @@ public class CreateUserCommand extends Command {
 
 	public CreateUserCommand(ObjectNode node) {
 		super(node);
+		checkType(TYPE);
 	}
 
 	public CreateUserCommand(Identity principal, User user) {

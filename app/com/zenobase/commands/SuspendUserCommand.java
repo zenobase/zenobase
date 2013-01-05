@@ -17,6 +17,7 @@ public class SuspendUserCommand extends Command {
 
 	private SuspendUserCommand(ObjectNode node) {
 		super(node);
+		checkType(TYPE);
 	}
 
 	public SuspendUserCommand(Identity principal, String name, boolean suspend) {

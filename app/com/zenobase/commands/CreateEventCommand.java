@@ -17,6 +17,7 @@ public class CreateEventCommand extends Command {
 
 	private CreateEventCommand(ObjectNode node) {
 		super(node);
+		checkType(TYPE);
 	}
 
 	public CreateEventCommand(Identity principal, String bucketId, Event event) {

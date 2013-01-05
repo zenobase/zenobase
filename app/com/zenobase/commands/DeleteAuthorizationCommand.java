@@ -15,6 +15,7 @@ public class DeleteAuthorizationCommand extends Command {
 
 	private DeleteAuthorizationCommand(ObjectNode node) {
 		super(node);
+		checkType(TYPE);
 	}
 
 	public DeleteAuthorizationCommand(Identity principal, Authorization authorization) {
