@@ -103,9 +103,11 @@ public class Bucket extends DomainNode {
 				}
 			}
 		}
-		for (Map.Entry<Identity, Role> entry : roles) {
-			if (entry.getKey().equals(Identity.PUBLIC)) {
-				return entry.getValue().implies(role);
+		if (auth == null || auth.getScope() == null) {
+			for (Map.Entry<Identity, Role> entry : roles) {
+				if (entry.getKey().equals(Identity.PUBLIC)) {
+					return entry.getValue().implies(role);
+				}
 			}
 		}
 		return false;
