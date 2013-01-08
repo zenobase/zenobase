@@ -31,7 +31,7 @@ class BodyMediaSummaryResult {
 	static final String TAG_STEPS = "steps";
 	static final Resource SOURCE = new Resource("BodyMedia", "http://bodymedia.com/");
 
-	private static final DateTimeFormatter DATE_TIME_FORMAT = DateTimeFormat.forPattern("yyyyMMdd'T'hhmmssZZ").withOffsetParsed();
+	private static final DateTimeFormatter DATE_TIME_FORMAT = DateTimeFormat.forPattern("yyyyMMdd'T'HHmmssZZ").withOffsetParsed();
 	private static final DateTimeFormatter DATE_FORMAT = DateTimeFormat.forPattern("yyyyMMdd");
 
 	private final ObjectNode node;
