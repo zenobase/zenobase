@@ -49,6 +49,8 @@ public class BucketTest {
 		bucket.addRole(Identity.PUBLIC, Role.VIEWER);
 		assertThat(bucket.hasRole(new Authorization(other), Role.VIEWER))
 			.as("other can use the bucket after it was made public").isTrue();
+		assertThat(bucket.hasRole(new Authorization(owner, other, Generator.id()), Role.VIEWER))
+			.as("other can not use this bucket on behalf of the owner even if it's public").isFalse();
 
 		assertThat(bucket.getPrincipals(Role.OWNER))
 			.as("principals with full access to the bucket").containsOnly(owner);

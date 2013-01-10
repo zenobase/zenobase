@@ -51,7 +51,20 @@ public class AccountControllerOpenAccountTest extends AccountControllerTestSuppo
 
 	@Test
 	public void testSignUpGuest() {
-		String username = "guest";
+		testSignUpWithBadName("guest");
+	}
+
+	@Test
+	public void testSignUpZeno() {
+		testSignUpWithBadName("iamzenos");
+	}
+
+	@Test
+	public void testSignUpAdmin() {
+		testSignUpWithBadName("admin");
+	}
+
+	private void testSignUpWithBadName(String username) {
 		when(users.exists(username)).thenReturn(false);
 		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
 		SignUpForm form = new SignUpForm(username, password, user.getEmail());
