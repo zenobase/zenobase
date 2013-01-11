@@ -11,7 +11,7 @@ import com.zenobase.services.EventRepository;
 
 public class DeleteEventCommand extends Command {
 
-	private static final Command.Type TYPE = new Command.Type("delete event", 1);
+	private static final Command.Type TYPE = new Command.Type("delete event", 2);
 	private static final TokenField BUCKET_ID = new TokenField("bucketId");
 	private static final ObjectField EVENT = new ObjectField("event");
 
@@ -54,7 +54,12 @@ public class DeleteEventCommand extends Command {
 		@Override
 		public Command parse(ObjectNode node, int version) {
 			switch (version) {
-				case 1: return new DeleteEventCommand(node);
+				case 1:
+					Command c = new Command(node);
+					Event event = Event.migrate(c.getParameter(EVENT));
+					return new DeleteEventCommand(c.getPrincipal(), c.getParameter(BUCKET_ID), event);
+				case 2:
+					return new DeleteEventCommand(node);
 			}
 			return null;
 		}

@@ -114,4 +114,10 @@ public class Event extends DomainNode {
 		}
 		return schema.build();
     }
+
+	public static Event migrate(ObjectNode node) {
+		Event event = new Event(node);
+		event.setValue(Event.TIMESTAMP, event.getValue(Event.TIMESTAMP));
+		return event;
+	}
 }

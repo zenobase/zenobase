@@ -11,7 +11,7 @@ import com.zenobase.services.EventRepository;
 
 public class UpdateEventCommand extends Command {
 
-	private static final Command.Type TYPE = new Command.Type("update event", 1);
+	private static final Command.Type TYPE = new Command.Type("update event", 2);
 	private static final TokenField BUCKET = new TokenField("bucket");
 	private static final ObjectField FROM = new ObjectField("from");
 	private static final ObjectField TO = new ObjectField("to");
@@ -65,6 +65,11 @@ public class UpdateEventCommand extends Command {
 		public Command parse(ObjectNode node, int version) {
 			switch (version) {
 				case 1:
+					Command c = new Command(node);
+					Event from = Event.migrate(c.getParameter(FROM));
+					Event to = Event.migrate(c.getParameter(TO));
+					return new UpdateEventCommand(c.getPrincipal(), c.getParameter(BUCKET), from, to);
+				case 2:
 					return new UpdateEventCommand(node);
 			}
 			return null;

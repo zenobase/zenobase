@@ -11,7 +11,7 @@ import com.zenobase.services.BucketRepository;
 
 public class DeleteBucketCommand extends Command {
 
-	private static final Command.Type TYPE = new Command.Type("delete bucket", 1);
+	private static final Command.Type TYPE = new Command.Type("delete bucket", 2);
 	private static final ObjectField BUCKET = new ObjectField("bucket");
 
 	private DeleteBucketCommand(ObjectNode node) {
@@ -40,6 +40,13 @@ public class DeleteBucketCommand extends Command {
 
 	public static class Parser extends CommandParser {
 
+		private final BucketRepository buckets;
+
+		@javax.inject.Inject
+		public Parser(BucketRepository buckets) {
+			this.buckets = buckets;
+		}
+
 		@Override
 		public String getTypeName() {
 			return TYPE.getName();
@@ -48,7 +55,12 @@ public class DeleteBucketCommand extends Command {
 		@Override
 		public Command parse(ObjectNode node, int version) {
 			switch (version) {
-				case 1: return new DeleteBucketCommand(node);
+				case 1:
+					Command c = new Command(node);
+					Bucket b = new Bucket(c.getParameter(BUCKET));
+					return new DeleteBucketCommand(c.getPrincipal(), buckets.find(b.getId()));
+				case 2:
+					return new DeleteBucketCommand(node);
 			}
 			return null;
 		}

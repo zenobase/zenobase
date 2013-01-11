@@ -21,7 +21,7 @@ import com.zenobase.json.TokenField;
 import com.zenobase.models.Identity;
 import com.zenobase.oauth.Authorization;
 
-public abstract class Command extends DomainNode {
+public class Command extends DomainNode {
 
 	public static final String TYPE_NAME = "command";
 
@@ -88,7 +88,9 @@ public abstract class Command extends DomainNode {
 		field.addValues(getValue(PARAMETERS), values);
 	}
 
-	public abstract Command reverse(Identity principal);
+	public Command reverse(Identity principal) {
+		throw new UnsupportedOperationException();
+	}
 
 	public boolean isPermitted(Authorization auth) {
 		return auth.getScope() == null
@@ -109,9 +111,6 @@ public abstract class Command extends DomainNode {
 	public int hashCode() {
 		return getId().hashCode();
 	}
-
-	@Override
-	public abstract String toString();
 
 	public static Schema getSchema() {
 		return new SchemaBuilder(TYPE_NAME)

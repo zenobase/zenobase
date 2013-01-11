@@ -57,9 +57,19 @@ public class UpdateBucketCommand extends Command {
 		@Override
 		public Command parse(ObjectNode node, int version) {
 			switch (version) {
-				case 3: return new UpdateBucketCommand(node);
+				case 3:
+					UpdateBucketCommand c = new UpdateBucketCommand(node);
+					removeTimeFieldParam(c.getFrom());
+					removeTimeFieldParam(c.getTo());
+					return c;
 			}
 			return null;
+		}
+
+		private void removeTimeFieldParam(Bucket bucket) {
+			for (ObjectNode widget : bucket.getWidgets()) {
+				widget.remove("timeField");
+			}
 		}
 	}
 
