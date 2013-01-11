@@ -141,7 +141,7 @@
 							<td>{{task.type}}</td>
 							<td style="white-space: nowrap"><a data-ng-href="#/buckets/{{task.bucket}}/">{{task.bucket}}</a></td>
 							<td>
-								<span data-ng-show="task.status">
+								<span data-ng-show="task.status && !task.authorizationUrl">
 									<span data-ng-show="task.status == 'success'">ran</span>
 									<span data-ng-show="task.status == 'failed'">failed</span>
 									{{task.completed | age}}

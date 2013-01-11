@@ -10,6 +10,7 @@ import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.scribe.builder.api.Foursquare2Api;
 import org.scribe.model.OAuthRequest;
+import org.scribe.model.Response;
 import org.scribe.model.Token;
 import org.scribe.model.Verb;
 import play.Logger;
@@ -21,7 +22,6 @@ import com.zenobase.commands.CompoundCommand;
 import com.zenobase.commands.CreateEventCommand;
 import com.zenobase.commands.UpdateTaskCommand;
 import com.zenobase.models.Event;
-import com.zenobase.models.Identity;
 
 public class FoursquareTaskManager extends OAuthTaskManager {
 
@@ -39,11 +39,8 @@ public class FoursquareTaskManager extends OAuthTaskManager {
 	}
 
 	@Override
-	public FoursquareTask newTask(String bucketId, Identity principal, ObjectNode settings) {
-		Preconditions.checkArgument(settings.size() == 0, "Expected no settings but got: %s", settings);
-		FoursquareTask task = new FoursquareTask(bucketId, principal);
-		task.setAuthorizationUrl(getService(task).getAuthorizationUrl(task.getToken()));
-		return task;
+	protected Token getRequestToken(OAuthTask task) {
+		return Token.empty();
 	}
 
 	@Override
@@ -69,8 +66,12 @@ public class FoursquareTaskManager extends OAuthTaskManager {
 
 	@Override
 	public Command execute(Task task) {
-		Preconditions.checkState(task.isEnabled(), "Task is not enabled: %s", task.getId());
-		return execute(task.as(FoursquareTask.class));
+		try {
+			Preconditions.checkState(task.isEnabled(), "Task is not enabled: %s", task.getId());
+			return execute(task.as(FoursquareTask.class));
+		} catch (InvalidTokenException e) {
+			return createCommand(e);
+		}
 	}
 
 	private Command execute(FoursquareTask task) {
@@ -94,8 +95,9 @@ public class FoursquareTaskManager extends OAuthTaskManager {
 		request.addQuerystringParameter("beforeTimestamp", marker);
 		request.addQuerystringParameter("offset", Integer.toString(offset));
 		request.addQuerystringParameter("limit", Integer.toString(LIMIT));
-		FoursquareResult result = new FoursquareResult(task.getPrincipal(), parseObject(request.send()));
-		Preconditions.checkState(result.getStatus() == 200, "Expected status <200> but got <%s> for task <%s>", result.getStatus(), task.getId());
+		Response response = request.send();
+		checkResponse(task, request, response);
+		FoursquareResult result = new FoursquareResult(task.getPrincipal(), parseObject(response));
 		List<Event> found = result.getEvents();
 		events.addAll(found);
 		return found.size() == LIMIT && result.getTotal() > offset + LIMIT;

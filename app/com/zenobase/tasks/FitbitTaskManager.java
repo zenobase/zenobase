@@ -40,8 +40,12 @@ public class FitbitTaskManager extends FitbitTaskManagerSupport {
 
 	@Override
 	public Command execute(Task task) {
-		Preconditions.checkState(task.isEnabled(), "Task is not enabled: %s", task.getId());
-		return execute(task.as(FitbitTask.class));
+		try {
+			Preconditions.checkState(task.isEnabled(), "Task is not enabled: %s", task.getId());
+			return execute(task.as(FitbitTask.class));
+		} catch (InvalidTokenException e) {
+			return createCommand(e);
+		}
 	}
 
 	private Command execute(FitbitTask task) {
@@ -57,7 +61,7 @@ public class FitbitTaskManager extends FitbitTaskManagerSupport {
 			request.addHeader("Accept-Language", profile.getDistanceLocale());
 			service.signRequest(task.getToken(), request);
 			Response response = request.send();
-			Preconditions.checkState(response.isSuccessful(), "Failed to get activities on <%s> for task <%s>: %s", date, task.getId(), response.getBody());
+			checkResponse(task, request, response);
 			events.addAll(new FitbitActivitiesResult(parseObject(response), task.getTag(), task.getPrincipal(),
 				date.toDateTimeAtStartOfDay(profile.getTimezone()), profile.getDistanceUnit(), profile.getHeightUnit()).getEvents());
 		}

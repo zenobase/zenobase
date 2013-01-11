@@ -141,7 +141,7 @@ public class Task extends DomainNode {
 
 	public boolean isStale() {
 		DateTime completed = Objects.firstNonNull(getCompleted(), new DateTime(0L));
-		return isEnabled() && Minutes.minutesBetween(completed, DateTime.now()).isGreaterThan(Minutes.ONE);
+		return isEnabled() && (getStatus() == Status.FAILED || Minutes.minutesBetween(completed, DateTime.now()).isGreaterThan(Minutes.ONE));
 	}
 
 	public Task copy() {

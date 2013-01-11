@@ -2,13 +2,17 @@ package com.zenobase.tasks;
 
 import org.codehaus.jackson.node.ArrayNode;
 import org.codehaus.jackson.node.ObjectNode;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.scribe.builder.ServiceBuilder;
 import org.scribe.builder.api.Api;
+import org.scribe.model.OAuthRequest;
 import org.scribe.model.Response;
 import org.scribe.model.Token;
 import org.scribe.model.Verifier;
 import org.scribe.oauth.OAuthService;
 import play.Logger;
+import play.mvc.Http;
 import com.google.common.base.Preconditions;
 
 import com.zenobase.commands.Command;
@@ -33,9 +37,13 @@ public abstract class OAuthTaskManager extends TaskManager {
 	@Override
 	public OAuthTask newTask(String bucketId, Identity principal, ObjectNode settings) {
 		OAuthTask task = new OAuthTask(getType(), bucketId, principal);
-		task.setToken(getService(task).getRequestToken());
+		task.setToken(getRequestToken(task));
 		task.setAuthorizationUrl(getService(task).getAuthorizationUrl(task.getToken()));
 		return task;
+	}
+
+	protected Token getRequestToken(OAuthTask task) {
+		return getService(task).getRequestToken();
 	}
 
 	@Override
@@ -88,5 +96,29 @@ public abstract class OAuthTaskManager extends TaskManager {
 	protected static ArrayNode parseArray(Response response) {
 		// System.out.println("parse: " + response.getBody());
 		return Nodes.readArray(response.getBody());
+	}
+
+	protected void checkResponse(OAuthTask task, OAuthRequest request, Response response) throws OAuthException {
+		if (!response.isSuccessful()) {
+			if (isTokenInvalid(response)) {
+				throw new InvalidTokenException(task, request);
+			} else {
+				throw new InvalidStatusException(task, request, response.getCode());
+			}
+		}
+	}
+
+	protected boolean isTokenInvalid(Response response) {
+		return response.getCode() == Http.Status.UNAUTHORIZED;
+	}
+
+	protected Command createCommand(InvalidTokenException e) {
+		Token requestToken = getRequestToken(e.getTask());
+		return UpdateTaskCommand.builder(e.getTask())
+			.set(Task.COMPLETED, e.getTask().getCompleted(), new DateTime(DateTimeZone.UTC))
+			.set(Task.STATUS, e.getTask().getStatus(), Task.Status.FAILED)
+			.set(Task.UNDO, e.getTask().getUndoId(), null)
+			.set(Task.AUTHORIZATION_URL, e.getTask().getAuthorizationUrl(), getService(e.getTask()).getAuthorizationUrl(requestToken))
+			.with(Task.CREDENTIALS).set(OAuthTask.TOKEN, e.getTask().getToken(), requestToken).build();
 	}
 }

@@ -9,6 +9,7 @@ import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.scribe.builder.ServiceBuilder;
 import org.scribe.model.OAuthRequest;
+import org.scribe.model.Response;
 import org.scribe.model.SignatureType;
 import org.scribe.model.Verb;
 import com.google.common.base.Objects;
@@ -44,8 +45,12 @@ public class WithingsTaskManager extends OAuthTaskManager {
 
 	@Override
 	public Command authorize(Task task, ObjectNode config) {
-		Preconditions.checkState(!task.isEnabled(), "Task is already enabled: %s", task.getId());
-		return authorize(task.as(WithingsTask.class), config);
+		try {
+			Preconditions.checkState(!task.isEnabled(), "Task is already enabled: %s", task.getId());
+			return authorize(task.as(WithingsTask.class), config);
+		} catch (InvalidTokenException e) {
+			return createCommand(e);
+		}
 	}
 
 	private Command authorize(WithingsTask task, ObjectNode config) {
@@ -72,7 +77,9 @@ public class WithingsTaskManager extends OAuthTaskManager {
 	private Command execute(WithingsTask task) {
 		OAuthRequest request = createRequest(task);
 		getService(task).signRequest(task.getToken(), request);
-		WithingsResult result = new WithingsResult(parseObject(request.send()), task.getPrincipal(), task.getTag(), task.getUnit());
+		Response response = request.send();
+		checkResponse(task, request, response);
+		WithingsResult result = new WithingsResult(parseObject(response), task.getPrincipal(), task.getTag(), task.getUnit());
 		Preconditions.checkState(result.getStatus() == 0, "Expected status <0> but got <%s> for task <%s>", result.getStatus(), task.getId());
 		return createCommand(task, result);
 	}

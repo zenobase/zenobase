@@ -10,8 +10,8 @@ import org.scribe.model.OAuthRequest;
 import org.scribe.model.Response;
 import org.scribe.model.Verb;
 import org.scribe.oauth.OAuthService;
-import com.google.common.base.Preconditions;
 
+import com.zenobase.commands.Command;
 import com.zenobase.commands.CompoundCommand;
 import com.zenobase.commands.CreateEventCommand;
 import com.zenobase.commands.UpdateTaskCommand;
@@ -27,7 +27,7 @@ public abstract class FitbitTaskManagerSupport extends OAuthTaskManager {
 		OAuthRequest request = new OAuthRequest(Verb.GET, "https://api.fitbit.com/1/user/-/devices.json");
 		service.signRequest(task.getToken(), request);
 		Response response = request.send();
-		Preconditions.checkState(response.isSuccessful(), "Failed to get devices for task <%s>: %s", task.getId(), response.getBody());
+		checkResponse(task, request, response);
 		return new FitbitDevicesResult(parseArray(response)).getLastDate();
 	}
 
@@ -39,11 +39,11 @@ public abstract class FitbitTaskManagerSupport extends OAuthTaskManager {
 		OAuthRequest request = new OAuthRequest(Verb.GET, "https://api.fitbit.com/1/user/-/profile.json");
 		service.signRequest(task.getToken(), request);
 		Response response = request.send();
-		Preconditions.checkState(response.isSuccessful(), "Failed to get profile for task <%s>: %s", task.getId(), response.getBody());
+		checkResponse(task, request, response);
 		return new FitbitProfileResult(parseObject(response));
 	}
 
-	protected CompoundCommand createCommand(Task task, List<Event> events, LocalDate lastDate) {
+	protected Command createCommand(Task task, List<Event> events, LocalDate lastDate) {
 		CompoundCommand command = new CompoundCommand(task.getPrincipal(), "ran " + getType() + " task", "reverted " + getType() + " task");
 		command.add(UpdateTaskCommand.builder(task)
 			.set(Task.COMPLETED, task.getCompleted(), new DateTime(DateTimeZone.UTC))
@@ -57,5 +57,4 @@ public abstract class FitbitTaskManagerSupport extends OAuthTaskManager {
 		}
 		return command;
 	}
-
 }

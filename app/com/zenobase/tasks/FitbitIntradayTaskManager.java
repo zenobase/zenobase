@@ -31,8 +31,12 @@ public class FitbitIntradayTaskManager extends FitbitTaskManagerSupport {
 
 	@Override
 	public Command execute(Task task) {
-		Preconditions.checkState(task.isEnabled(), "Task is not enabled: %s", task.getId());
-		return execute(task.as(FitbitIntradayTask.class));
+		try {
+			Preconditions.checkState(task.isEnabled(), "Task is not enabled: %s", task.getId());
+			return execute(task.as(FitbitIntradayTask.class));
+		} catch (InvalidTokenException e) {
+			return createCommand(e);
+		}
 	}
 
 	private Command execute(FitbitIntradayTask task) {
@@ -48,7 +52,7 @@ public class FitbitIntradayTaskManager extends FitbitTaskManagerSupport {
 			OAuthRequest sleepRequest = new OAuthRequest(Verb.GET, "https://api.fitbit.com/1/user/-/sleep/date/" + date + ".json");
 			service.signRequest(task.getToken(), sleepRequest);
 			Response sleepResponse = sleepRequest.send();
-			Preconditions.checkState(sleepResponse.isSuccessful(), "Failed to get sleep for task <%s>", task.getId());
+			checkResponse(task, sleepRequest, sleepResponse);
 			for (Event event : new FitbitSleepResult(parseObject(sleepResponse), task.getPrincipal(), profile.getTimezone()).getEvents()) {
 				if (date.isBefore(syncDate)) {
 					events.add(event);
@@ -61,7 +65,7 @@ public class FitbitIntradayTaskManager extends FitbitTaskManagerSupport {
 			OAuthRequest caloriesRequest = new OAuthRequest(Verb.GET, "https://api.fitbit.com/1/user/-/activities/calories/date/" + date + "/" + date + ".json");
 			service.signRequest(task.getToken(), caloriesRequest);
 			Response caloriesResponse = caloriesRequest.send();
-			Preconditions.checkState(caloriesResponse.isSuccessful(), "Failed to get calories on <%s> for task <%s>", date, task.getId());
+			checkResponse(task, caloriesRequest, caloriesResponse);
 			events.addAll(new FitbitIntradayResult(parseObject(caloriesResponse), task.getPrincipal(), date, profile.getTimezone(), sleeping).getEvents());
 		}
 

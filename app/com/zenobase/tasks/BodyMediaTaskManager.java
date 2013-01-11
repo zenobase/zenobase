@@ -34,15 +34,19 @@ public class BodyMediaTaskManager extends OAuthTaskManager {
 
 	@Override
 	public Command execute(Task task) {
-		Preconditions.checkState(task.isEnabled(), "Task is not enabled: %s", task.getId());
-		return execute(task.as(BodyMediaTask.class));
+		try {
+			Preconditions.checkState(task.isEnabled(), "Task is not enabled: %s", task.getId());
+			return execute(task.as(BodyMediaTask.class));
+		} catch (InvalidTokenException e) {
+			return createCommand(e);
+		}
 	}
 
 	private Command execute(BodyMediaTask task) {
 		OAuthRequest request = createRequest(task);
 		getService(task).signRequest(task.getToken(), request);
 		Response response = request.send();
-		Preconditions.checkState(response.isSuccessful(), "Request failed with response <%s> for task <%s>", response.getBody(), task.getId());
+		checkResponse(task, request, response);
 		BodyMediaSummaryResult result = new BodyMediaSummaryResult(parseObject(response), task.getPrincipal());
 		return createCommand(task, result);
 	}
