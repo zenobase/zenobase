@@ -38,24 +38,26 @@ public class CommandReplay {
 	}
 
 	void replay(final IndexManager indexManager) {
-		CommandRepository repository = new CommandRepository(indexManager, parsers);
-		Logger.info("Replaying " + repository.size() + " commands from " + sourceCluster + "...");
+		final CommandRepository repository = new CommandRepository(indexManager, parsers);
 		final StringBloomFilter identities = new IdentitiesFilterBuilder(new UserRepository(indexManager)).build();
+		Logger.info(String.format("Processing %d commands from %s...", repository.size(), sourceCluster));
 		Stopwatch timer = new Stopwatch().start();
-		try {
-			repository.find(new Callback<Command>() {
-				@Override
-				public void call(Command command) {
-					if (identities.mightContain(command.getPrincipal().getId())) {
+		repository.find(new Callback<Command>() {
+			@Override
+			public void call(Command command) {
+				if (identities.mightContain(command.getPrincipal().getId())) {
+					try {
 						dispatcher.dispatch(command);
 						++replayed;
+					} catch (RuntimeException e) {
+						Logger.error(String.format("Couldn't replay command %d/%d: %s", count, repository.size(), command.toJson()), e);
+						throw e;
 					}
-					++count;
 				}
-			});
-		} finally {
-			timer.stop();
-			Logger.warn("Replayed " + replayed + "/" + count + " in " + timer.elapsedTime(TimeUnit.SECONDS) + " s");
-		}
+				++count;
+			}
+		});
+		Logger.warn(String.format("Processed %d/%d commands and discarded %d commands in %d s",
+			count, repository.size(), count - replayed, timer.elapsedTime(TimeUnit.SECONDS)));
 	}
 }
