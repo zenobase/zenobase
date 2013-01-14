@@ -23,9 +23,10 @@ public class CommandReplayTest extends ElasticSearchTestSupport {
 	@Test
 	public void test() {
 
-		List<Command> commands = newCommands(55, user.asIdentity());
-		addCommands(commands);
-		addCommands(newCommands(50, new Identity())); // these should be skipped
+		List<Command> commandsToReplay = newCommands(55, user.asIdentity());
+		addCommands(commandsToReplay);
+		List<Command> commandsToDiscard = newCommands(50, new Identity());
+		addCommands(commandsToDiscard);
 
 		CommandDispatcher dispatcher = Mockito.mock(CommandDispatcher.class);
 
@@ -33,8 +34,11 @@ public class CommandReplayTest extends ElasticSearchTestSupport {
 		new CommandReplay(getClusterName(), getNodeFactory(), parsers, dispatcher).replay(getManager());
 
 		InOrder ordered = Mockito.inOrder(dispatcher);
-		for (Command command : commands) {
+		for (Command command : commandsToReplay) {
 			ordered.verify(dispatcher).dispatch(command);
+		}
+		for (Command command : commandsToDiscard) {
+			ordered.verify(dispatcher).discard(command);
 		}
 		ordered.verifyNoMoreInteractions();
 	}
