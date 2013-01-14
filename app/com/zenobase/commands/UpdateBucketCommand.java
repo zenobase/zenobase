@@ -59,6 +59,7 @@ public class UpdateBucketCommand extends Command {
 			switch (version) {
 				case 3:
 					UpdateBucketCommand c = new UpdateBucketCommand(node);
+					// TODO remove after migration
 					removeTimeFieldParam(c.getFrom());
 					removeTimeFieldParam(c.getTo());
 					return c;
