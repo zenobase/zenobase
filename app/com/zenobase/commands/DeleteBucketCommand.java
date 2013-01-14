@@ -2,6 +2,7 @@ package com.zenobase.commands;
 
 import org.codehaus.jackson.node.ObjectNode;
 import play.Logger;
+import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
 
 import com.zenobase.json.ObjectField;
@@ -56,9 +57,12 @@ public class DeleteBucketCommand extends Command {
 		public Command parse(ObjectNode node, int version) {
 			switch (version) {
 				case 1:
+					// TODO remove after migration
 					Command c = new Command(node);
 					Bucket b = new Bucket(c.getParameter(BUCKET));
-					return new DeleteBucketCommand(c.getPrincipal(), buckets.find(b.getId()));
+					Bucket original = buckets.find(b.getId());
+					Preconditions.checkNotNull(original, "Couldn't find bucket <%s>: %s", b.getId(), b.toJson());
+					return new DeleteBucketCommand(c.getPrincipal(), original);
 				case 2:
 					return new DeleteBucketCommand(node);
 			}
