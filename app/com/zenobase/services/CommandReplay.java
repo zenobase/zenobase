@@ -49,12 +49,14 @@ public class CommandReplay {
 					if (identities.mightContain(command.getPrincipal().getId())) {
 						dispatcher.dispatch(command);
 						++replayed;
+					} else {
+						dispatcher.discard(command);
 					}
 					++count;
 				}
 			});
 		} catch (RuntimeException e) {
-			Logger.error(String.format("Couldn't replay command %d/%d", count, repository.size()), e);
+			Logger.error("Couldn't replay a command", e);
 			throw e;
 		} finally {
 			Logger.warn(String.format("Replayed %d and discarded %d commands out of %d in %d s",

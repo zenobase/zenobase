@@ -37,4 +37,8 @@ public class CommandDispatcher {
 			handlers.execute(c);
 		}
 	}
+
+	public void discard(Command command) {
+		log.info(String.format("[%s %s]", command.getPrincipal(), command.toString()));
+	}
 }
