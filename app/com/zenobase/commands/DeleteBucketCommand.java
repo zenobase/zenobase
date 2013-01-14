@@ -2,9 +2,11 @@ package com.zenobase.commands;
 
 import org.codehaus.jackson.node.ObjectNode;
 import play.Logger;
+import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
 
+import com.zenobase.json.Nodes;
 import com.zenobase.json.ObjectField;
 import com.zenobase.models.Bucket;
 import com.zenobase.models.Identity;
@@ -60,9 +62,7 @@ public class DeleteBucketCommand extends Command {
 					// TODO remove after migration
 					Command c = new Command(node);
 					Bucket b = new Bucket(c.getParameter(BUCKET));
-					Bucket original = buckets.find(b.getId());
-					Preconditions.checkNotNull(original, "Couldn't find bucket <%s>: %s", b.getId(), b.toJson());
-					return new DeleteBucketCommand(c.getPrincipal(), original);
+					return new DeleteBucketCommand(c.getPrincipal(), Objects.firstNonNull(buckets.find(b.getId()), new Bucket(Nodes.newObject())));
 				case 2:
 					return new DeleteBucketCommand(node);
 			}
@@ -82,6 +82,8 @@ public class DeleteBucketCommand extends Command {
 
 		@Override
 		public void executeTyped(DeleteBucketCommand command) {
+			// TODO remove after migration
+			Preconditions.checkNotNull(command.getBucket().getId());
 			if (!repository.delete(command.getBucket().getId())) {
 				Logger.warn("Tried to delete nonexistent bucket: " + command.getBucket().getId());
 			}
