@@ -54,13 +54,7 @@ public class CreateEventCommand extends Command {
 		@Override
 		public Command parse(ObjectNode node, int version) {
 			switch (version) {
-				case 1:
-				case 2:
-					// TODO remove after migration
-					Command c = new Command(node);
-					return new CreateEventCommand(c.getPrincipal(), c.getParameter(BUCKET_ID), Event.migrate(c.getParameter(EVENT)));
-				case 3:
-					return new CreateEventCommand(node);
+				case 3: return new CreateEventCommand(node);
 			}
 			return null;
 		}

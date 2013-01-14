@@ -60,7 +60,7 @@ public class CommandReplay {
 			throw e;
 		} finally {
 			Logger.warn(String.format("Replayed %d and discarded %d commands out of %d in %d s",
-				count, count - replayed, repository.size(), timer.elapsedTime(TimeUnit.SECONDS)));
+				replayed, count - replayed, repository.size(), timer.elapsedTime(TimeUnit.SECONDS)));
 		}
 	}
 }

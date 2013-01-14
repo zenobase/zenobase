@@ -1,11 +1,7 @@
 package com.zenobase.models;
 
-import java.util.List;
-
 import org.codehaus.jackson.node.ObjectNode;
-import org.joda.time.DateTime;
 import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Iterables;
 
 import com.zenobase.common.Generator;
 import com.zenobase.json.BitsField;
@@ -118,19 +114,4 @@ public class Event extends DomainNode {
 		}
 		return schema.build();
     }
-
-	// TODO remove after migration
-	public static Event migrate(ObjectNode node) {
-		Event event = new Event(node);
-		List<DateTime> timestamps = event.getValues(Event.TIMESTAMP);
-		if (timestamps.size() == 1) {
-			event.setValue(Event.TIMESTAMP, Iterables.getOnlyElement(timestamps));
-		} else {
-			event.setValue(Event.TIMESTAMP, null);
-			for (DateTime timestamp : timestamps) {
-				event.addValue(Event.TIMESTAMP, timestamp);
-			}
-		}
-		return event;
-	}
 }

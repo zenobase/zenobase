@@ -64,14 +64,7 @@ public class UpdateEventCommand extends Command {
 		@Override
 		public Command parse(ObjectNode node, int version) {
 			switch (version) {
-				case 1:
-					// TODO remove after migration
-					Command c = new Command(node);
-					Event from = Event.migrate(c.getParameter(FROM));
-					Event to = Event.migrate(c.getParameter(TO));
-					return new UpdateEventCommand(c.getPrincipal(), c.getParameter(BUCKET), from, to);
-				case 2:
-					return new UpdateEventCommand(node);
+				case 2: return new UpdateEventCommand(node);
 			}
 			return null;
 		}

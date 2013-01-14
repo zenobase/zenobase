@@ -54,13 +54,7 @@ public class DeleteEventCommand extends Command {
 		@Override
 		public Command parse(ObjectNode node, int version) {
 			switch (version) {
-				case 1:
-					// TODO remove after migration
-					Command c = new Command(node);
-					Event event = Event.migrate(c.getParameter(EVENT));
-					return new DeleteEventCommand(c.getPrincipal(), c.getParameter(BUCKET_ID), event);
-				case 2:
-					return new DeleteEventCommand(node);
+				case 2: return new DeleteEventCommand(node);
 			}
 			return null;
 		}
