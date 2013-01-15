@@ -12,7 +12,7 @@
 			<tr data-ng-repeat="term in terms">
 				<td><a data-ng-click="filter(term)" data-ng-bind-html="term.label | field:settings.field"></a></td>
 				<td style="text-align: right"><abbr title="{{term.last}}">{{term.last | age}}</abbr></td>
-				<td style="text-align: right">{{term.freq  | duration}}</td>
+				<td style="text-align: right">{{term.freq | duration}}</td>
 			</tr>
 		</tbody>
 	</table>
