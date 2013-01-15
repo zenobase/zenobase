@@ -47,6 +47,12 @@
 		// TODO see https://github.com/timrwood/moment/issues/463
 		moment.duration.fn.countdown = function(precision) {
 			var args = [];
+			if (this.years()) {
+				args.push(this.years() + 'y'); 
+			}
+			if (this.months()) {
+				args.push(this.months() + 'm'); 
+			}
 			if (this.days()) {
 				args.push(this.days() + 'd'); 
 			}
@@ -54,7 +60,7 @@
 				args.push(this.hours() + 'h'); 
 			}
 			if (this.minutes()) {
-				args.push(this.minutes() + 'm'); 
+				args.push(this.minutes() + 'min'); 
 			}
 			if (this.seconds()) {
 				args.push(this.seconds() + 's'); 
@@ -1388,7 +1394,7 @@
 			$scope.terms = result[$scope.settings.id] || [];
 			if ($scope.terms) {
 				$.each($scope.terms, function(i, term) {
-					term.freq = Math.round((new Date(term.last).getTime() - new Date(term.first).getTime()) / term.count);
+					term.freq = Math.round((new Date(term.last).getTime() - new Date(term.first).getTime()) / (term.count - 1));
 				});
 			}
 		};
