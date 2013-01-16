@@ -77,14 +77,15 @@ import com.zenobase.services.NodeFactory;
 import com.zenobase.services.TaskRepository;
 import com.zenobase.services.TestNodeFactory;
 import com.zenobase.services.UserRepository;
-import com.zenobase.tasks.BodyMediaTaskManager;
-import com.zenobase.tasks.DemoTaskManager;
-import com.zenobase.tasks.FitbitIntradayTaskManager;
-import com.zenobase.tasks.FitbitTaskManager;
-import com.zenobase.tasks.FoursquareTaskManager;
 import com.zenobase.tasks.TaskManager;
 import com.zenobase.tasks.TaskRefresher;
-import com.zenobase.tasks.WithingsTaskManager;
+import com.zenobase.tasks.bodymedia.BodyMediaTaskManager;
+import com.zenobase.tasks.demo.DemoTaskManager;
+import com.zenobase.tasks.fitbit.FitbitIntradayTaskManager;
+import com.zenobase.tasks.fitbit.FitbitTaskManager;
+import com.zenobase.tasks.foursquare.FoursquareTaskManager;
+import com.zenobase.tasks.withings.WithingsTaskManager;
+
 
 public class Global extends GlobalSettings {
 
