@@ -32,7 +32,7 @@
 			<a href="/#/"><img src="/img/logo.png" alt="Zenobase" width="159" height="25"/></a>
 			<div class="pull-right ng-cloak">
 				<p data-ng-show="user">
-					<i class="icon-user"></i> <a id="user-profile-link" data-ng-href="#/users/{{user.getName()}}">{{user.getName()}}</a> | <a id="sign-out-link" data-ng-click="signOut()">Sign out</a>
+					<i class="icon-user"></i> <a id="user-profile-link" data-ng-href="/#/users/{{user.getName()}}">{{user.getName()}}</a> | <a id="sign-out-link" data-ng-click="signOut()">Sign out</a>
 				</p>
 				<p data-ng-hide="user">
 					<a id="sign-in-link" data-ng-click="openDialog('sign-in-dialog')">Sign in</a>
