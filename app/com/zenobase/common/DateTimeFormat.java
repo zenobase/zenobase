@@ -5,7 +5,7 @@ import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.DateTimeFormatterBuilder;
 
 /**
- * ISO date time formatt where the year and timezone offset are mandatory,
+ * ISO date time format where the year and timezone offset are mandatory,
  * and the rest is optional:
  * <code>yyyy ['-' MM ['-' dd ['T' [HH [':' mm [':' ss ['.' SSS]]]]]]] Z</code>
  */
