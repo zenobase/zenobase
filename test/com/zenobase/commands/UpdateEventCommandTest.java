@@ -1,7 +1,8 @@
 package com.zenobase.commands;
 
-import static org.mockito.Mockito.*;
-
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.verify;
 import org.junit.Test;
 
 import com.zenobase.common.Generator;
@@ -28,17 +29,17 @@ public class UpdateEventCommandTest {
 
 		Command command = new UpdateEventCommand(principal, bucketId, from, to);
 		registry.execute(command);
-		verify(events).update(bucketId, to);
+		verify(events).update(bucketId, to, command.getTimestamp());
 		reset(events);
 
 		Command undo = command.reverse(principal);
 		registry.execute(undo);
-		verify(events).update(bucketId, from);
+		verify(events).update(bucketId, from, undo.getTimestamp());
 		reset(events);
 
 		Command redo = undo.reverse(principal);
 		registry.execute(redo);
-		verify(events).update(bucketId, to);
+		verify(events).update(bucketId, to, redo.getTimestamp());
 		reset(events);
 	}
 }

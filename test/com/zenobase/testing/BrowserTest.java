@@ -2,7 +2,8 @@ package com.zenobase.testing;
 
 import static com.zenobase.testing.WebElementAssert.assertThat;
 import static org.fest.assertions.Assertions.assertThat;
-import static play.test.Helpers.*;
+import static play.test.Helpers.running;
+import static play.test.Helpers.testServer;
 
 import java.io.IOException;
 import java.util.List;
@@ -13,6 +14,7 @@ import java.util.regex.Pattern;
 import javax.inject.Inject;
 import javax.mail.MessagingException;
 
+import org.joda.time.DateTime;
 import org.junit.After;
 import org.junit.Assume;
 import org.junit.Before;
@@ -373,7 +375,7 @@ public class BrowserTest {
 					Bucket b = new Bucket();
 					b.addRole(owner, Role.OWNER);
 					b.setLabel("Bucket #" + i);
-					buckets.store(b, true);
+					buckets.store(b, DateTime.now(), true);
 				}
 			}
 		});

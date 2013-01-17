@@ -2,7 +2,6 @@ package com.zenobase.services;
 
 import static com.zenobase.testing.NodeAssert.assertThat;
 import static org.fest.assertions.Assertions.assertThat;
-
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.junit.Before;
@@ -29,7 +28,7 @@ public class EventRepositoryTest extends ElasticSearchTestSupport {
 	public void testCrudEvent() {
 
 		Bucket bucket = new Bucket();
-		new BucketRepository(getManager()).store(bucket, true);
+		new BucketRepository(getManager()).store(bucket, DateTime.now(), true);
 
 		// create event
 		Event event = new Event();
@@ -40,7 +39,7 @@ public class EventRepositoryTest extends ElasticSearchTestSupport {
 
 		// store and retrieve event
 		assertThat(repository.size(bucket.getId())).as("bucket size").isZero();
-		repository.add(bucket.getId(), event);
+		repository.add(bucket.getId(), event, DateTime.now());
 		repository.refresh(bucket.getId());
 		assertThat(repository.size(bucket.getId())).as("bucket size").isEqualTo(1L);
 		assertThat(repository.find(bucket.getId(), event.getId()).toJson()).isEqualTo(event.toJson());
@@ -49,7 +48,7 @@ public class EventRepositoryTest extends ElasticSearchTestSupport {
 
 		// update event
 		event.addValue(Event.TAG, "updated");
-		repository.update(bucket.getId(), event);
+		repository.update(bucket.getId(), event, DateTime.now());
 		repository.refresh(bucket.getId());
 		assertThat(repository.find(bucket.getId(), event.getId()).toJson()).isEqualTo(event.toJson());
 		assertThat(repository.terms(bucket.getId(), Event.TAG.getName())).as("tags").containsOnly("test", "demo", "updated");

@@ -5,6 +5,8 @@ import org.codehaus.jackson.node.ObjectNode;
 import com.google.common.collect.ImmutableMultimap;
 
 import com.zenobase.search.ConstraintBuilder;
+import com.zenobase.search.DateTimeConstraintBuilder;
+import com.zenobase.search.DateTimeRangeConstraintBuilder;
 
 
 public class SchemaBuilder {
@@ -26,6 +28,7 @@ public class SchemaBuilder {
 		configureSourceField();
 		configureTypeField();
 		configureAllField();
+		configureTimestampField();
 	}
 
 	private void configureSourceField() {
@@ -44,6 +47,14 @@ public class SchemaBuilder {
 	private void configureAllField() {
 		ObjectNode sourceNode = type.putObject("_all");
 		sourceNode.put("enabled", false);
+	}
+
+	private void configureTimestampField() {
+		String fieldName = "_timestamp";
+		ObjectNode timestampNode = type.putObject(fieldName);
+		timestampNode.put("enabled", true);
+		constraintBuilders.put(fieldName, new DateTimeRangeConstraintBuilder());
+		constraintBuilders.put(fieldName, new DateTimeConstraintBuilder());
 	}
 
 	public SchemaBuilder add(Field<?> field) {

@@ -1,7 +1,8 @@
 package com.zenobase.commands;
 
-import static org.mockito.Mockito.*;
-
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.verify;
 import org.junit.Test;
 
 import com.zenobase.common.Generator;
@@ -24,7 +25,7 @@ public class CreateAndDeleteAuthorizationCommandTest {
 
 		Command command = new CreateAuthorizationCommand(principal, authorization);
 		registry.execute(command);
-		verify(authorizations).store(authorization);
+		verify(authorizations).store(authorization, command.getTimestamp());
 		reset(authorizations);
 
 		Command undo = command.reverse(principal);
@@ -34,7 +35,7 @@ public class CreateAndDeleteAuthorizationCommandTest {
 
 		Command redo = undo.reverse(principal);
 		registry.execute(redo);
-		verify(authorizations).store(authorization);
+		verify(authorizations).store(authorization, redo.getTimestamp());
 		reset(authorizations);
 	}
 }

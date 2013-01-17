@@ -74,7 +74,7 @@ public class SuspendUserCommand extends Command {
 		public void executeTyped(SuspendUserCommand command) {
 			User user = repository.find(command.getName());
 			user.setSuspended(command.isSuspend());
-			repository.update(user);
+			repository.update(user, command.getTimestamp());
 		}
 	}
 }

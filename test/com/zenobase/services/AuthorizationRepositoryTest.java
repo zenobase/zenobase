@@ -7,6 +7,7 @@ import static org.fest.assertions.Assertions.assertThat;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 import com.google.common.collect.Lists;
@@ -32,7 +33,7 @@ public class AuthorizationRepositoryTest extends ElasticSearchTestSupport {
 		assertThat(repository.find(authorization.getId())).isNull();
 		assertThat(repository.delete(authorization.getId())).isFalse();
 
-		repository.store(authorization);
+		repository.store(authorization, DateTime.now());
 		assertThat(repository.find(authorization.getId()).toJson()).isEqualTo(authorization.toJson());
 
 		assertThat(repository.delete(authorization.getId())).isTrue();
@@ -69,7 +70,7 @@ public class AuthorizationRepositoryTest extends ElasticSearchTestSupport {
 			Authorization authorization = new Authorization(principal, i % 2 == 0 ? new Identity() : null, Generator.id());
 			authorizations.add(authorization);
 			Uninterruptibles.sleepUninterruptibly(5, TimeUnit.MILLISECONDS); // tasks will be returned in order of creation time
-			repository.store(authorization);
+			repository.store(authorization, DateTime.now());
 		}
 		return Lists.reverse(authorizations);
 	}

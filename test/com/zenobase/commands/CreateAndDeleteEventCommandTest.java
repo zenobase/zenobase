@@ -1,7 +1,8 @@
 package com.zenobase.commands;
 
-import static org.mockito.Mockito.*;
-
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.verify;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.junit.Test;
@@ -28,7 +29,7 @@ public class CreateAndDeleteEventCommandTest {
 
 		Command command = new CreateEventCommand(principal, bucketId, event);
 		registry.execute(command);
-		verify(events).add(bucketId, event);
+		verify(events).add(bucketId, event, command.getTimestamp());
 		reset(events);
 
 		Command undo = command.reverse(principal);
@@ -38,7 +39,7 @@ public class CreateAndDeleteEventCommandTest {
 
 		Command redo = undo.reverse(principal);
 		registry.execute(redo);
-		verify(events).add(bucketId, event);
+		verify(events).add(bucketId, event, redo.getTimestamp());
 		reset(events);
 	}
 }

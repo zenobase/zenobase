@@ -93,7 +93,7 @@ public class ChangeUserEmailCommand extends Command {
 			User user = repository.find(command.getUsername());
 			user.setEmail(command.getTo());
 			user.setVerified(command.getToVerified());
-			repository.update(user);
+			repository.update(user, command.getTimestamp());
 		}
 	}
 }

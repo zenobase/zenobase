@@ -74,7 +74,7 @@ public class ChangeUserVerifiedCommand extends Command {
 		public void executeTyped(ChangeUserVerifiedCommand command) {
 			User user = repository.find(command.getName());
 			user.setVerified(command.isVerified());
-			repository.update(user);
+			repository.update(user, command.getTimestamp());
 		}
 	}
 }

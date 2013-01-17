@@ -4,12 +4,15 @@ import static com.zenobase.testing.NodeAssert.assertThat;
 import static com.zenobase.testing.PartialListAssert.assertThat;
 import static org.fest.assertions.Assertions.assertThat;
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import org.codehaus.jackson.node.ObjectNode;
+import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 import com.google.common.base.Preconditions;
@@ -41,19 +44,19 @@ public class BucketRepositoryTest extends ElasticSearchTestSupport {
 		bucket.setWidgets(ImmutableList.of(newWidget()));
 
 		// store and retrieve bucket
-		repository.store(bucket, true);
+		repository.store(bucket, DateTime.now(), true);
 		assertThat(repository.find(bucket.getId()).toJson()).isEqualTo(bucket.toJson());
 
 		// update bucket
 		bucket.setDescription("just a test");
-		repository.update(bucket);
+		repository.update(bucket, DateTime.now());
 		assertThat(repository.find(bucket.getId()).toJson()).isEqualTo(bucket.toJson());
 
 		// delete and recreate bucket
 		assertThat(repository.delete(bucket.getId())).isTrue();
 		assertThat(repository.find(bucket.getId())).as("bucket").isNull();
 		assertThat(repository.delete(bucket.getId())).isFalse();
-		repository.store(bucket, false);
+		repository.store(bucket, DateTime.now(), false);
 		assertThat(repository.find(bucket.getId()).toJson()).isEqualTo(bucket.toJson());
 	}
 
@@ -68,7 +71,7 @@ public class BucketRepositoryTest extends ElasticSearchTestSupport {
 
 		List<Bucket> buckets = newBucketList(20);
 		for (Bucket bucket : buckets) {
-			repository.store(bucket, true);
+			repository.store(bucket, DateTime.now(), true);
 		}
 
 		assertThat(repository.find(0, 10)).hasTotal(buckets.size()).isEqualTo(buckets.subList(0, 10));
@@ -81,7 +84,7 @@ public class BucketRepositoryTest extends ElasticSearchTestSupport {
 
 		List<Bucket> buckets = newBucketList(15); // large enough to require scrolling
 		for (Bucket bucket : buckets) {
-			repository.store(bucket, true);
+			repository.store(bucket, DateTime.now(), true);
 		}
 
 		Callback<Bucket> callback = mock(Callback.class);

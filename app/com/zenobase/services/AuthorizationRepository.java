@@ -8,6 +8,7 @@ import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.elasticsearch.search.sort.SortOrder;
+import org.joda.time.DateTime;
 import play.Logger;
 import com.google.common.base.Preconditions;
 
@@ -31,8 +32,8 @@ public class AuthorizationRepository {
 		}
 	}
 
-	public void store(Authorization authorization) {
-		this.index.store(Authorization.TYPE_NAME, authorization.getId(), authorization.toJson(), true);
+	public void store(Authorization authorization, DateTime timestamp) {
+		this.index.store(Authorization.TYPE_NAME, authorization.getId(), authorization.toJson(), timestamp, true);
 	}
 
 	public boolean delete(String authId) {

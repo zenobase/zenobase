@@ -7,6 +7,7 @@ import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.elasticsearch.search.sort.SortOrder;
+import org.joda.time.DateTime;
 import play.Logger;
 
 import com.zenobase.tasks.Task;
@@ -28,12 +29,12 @@ public class TaskRepository {
 		}
 	}
 
-	public void store(Task task) {
-		this.index.store(Task.TYPE_NAME, task.getId(), task.toJson(), false);
+	public void store(Task task, DateTime timestamp) {
+		this.index.store(Task.TYPE_NAME, task.getId(), task.toJson(), timestamp, false);
 	}
 
-	public void update(Task task) {
-		index.update(Task.TYPE_NAME, task.getId(), task.toJson(), false);
+	public void update(Task task, DateTime timestamp) {
+		index.update(Task.TYPE_NAME, task.getId(), task.toJson(), timestamp, false);
 	}
 
 	public boolean delete(String taskId) {

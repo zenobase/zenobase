@@ -7,12 +7,13 @@ import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.elasticsearch.search.sort.SortOrder;
+import org.joda.time.DateTime;
 import play.Logger;
 import com.google.common.base.Preconditions;
 
 import com.zenobase.common.Callback;
-import com.zenobase.common.PartialList;
 import com.zenobase.common.DefaultPartialList;
+import com.zenobase.common.PartialList;
 import com.zenobase.models.Identity;
 import com.zenobase.models.User;
 import com.zenobase.models.UserList;
@@ -86,12 +87,12 @@ public class UserRepository {
 		return hits.size() > 0L;
 	}
 
-	public void store(User user) {
-		index.store(User.TYPE_NAME, user.getName(), user.toJson(), true);
+	public void store(User user, DateTime timestamp) {
+		index.store(User.TYPE_NAME, user.getName(), user.toJson(), timestamp, true);
 	}
 
-	public void update(User user) {
-		index.update(User.TYPE_NAME, user.getName(), user.toJson(), true);
+	public void update(User user, DateTime timestamp) {
+		index.update(User.TYPE_NAME, user.getName(), user.toJson(), timestamp, true);
 	}
 
 	public boolean delete(User user) {

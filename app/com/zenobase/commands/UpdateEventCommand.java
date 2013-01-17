@@ -82,7 +82,7 @@ public class UpdateEventCommand extends Command {
 
 		@Override
 		public void executeTyped(UpdateEventCommand command) {
-			repository.update(command.getBucketId(), command.getTo().copy()); // copy to prevent the version number from being incremented
+			repository.update(command.getBucketId(), command.getTo().copy(), command.getTimestamp()); // copy to prevent the version number from being incremented
 		}
 	}
 }

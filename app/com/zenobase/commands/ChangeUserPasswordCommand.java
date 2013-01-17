@@ -79,7 +79,7 @@ public class ChangeUserPasswordCommand extends Command {
 		public void executeTyped(ChangeUserPasswordCommand command) {
 			User user = repository.find(command.getUsername());
 			user.setHashedPassword(command.getTo());
-			repository.update(user);
+			repository.update(user, command.getTimestamp());
 		}
 	}
 }

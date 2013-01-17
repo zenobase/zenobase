@@ -3,6 +3,7 @@ package com.zenobase.services;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import org.joda.time.DateTime;
 import org.junit.Test;
 import org.mockito.InOrder;
 import org.mockito.Mockito;
@@ -30,7 +31,7 @@ public class CommandReplayTest extends ElasticSearchTestSupport {
 
 		CommandDispatcher dispatcher = Mockito.mock(CommandDispatcher.class);
 
-		new UserRepository(getManager()).store(user);
+		new UserRepository(getManager()).store(user, DateTime.now());
 		new CommandReplay(getClusterName(), getNodeFactory(), parsers, dispatcher).replay(getManager());
 
 		InOrder ordered = Mockito.inOrder(dispatcher);

@@ -76,7 +76,7 @@ public class UpdateTaskCommand extends UpdateCommandSupport {
 		public void executeTyped(UpdateTaskCommand command) {
 			Task task = repository.find(command.getObjectId());
 			Preconditions.checkNotNull(task, "Can't find task: %s", command.getObjectId());
-			repository.update(command.apply(task));
+			repository.update(command.apply(task), command.getTimestamp());
 		}
 	}
 }

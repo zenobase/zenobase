@@ -18,6 +18,7 @@ import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
+import org.joda.time.DateTime;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.google.common.primitives.Ints;
@@ -57,15 +58,15 @@ public class Index {
 			.execute().actionGet();
 	}
 
-	public void store(String type, String id, ObjectNode node, boolean refresh) {
-		index(type, id, node, OpType.CREATE, refresh);
+	public void store(String type, String id, ObjectNode node, DateTime timestamp, boolean refresh) {
+		index(type, id, node, OpType.CREATE, timestamp, refresh);
 	}
 
-	public void update(String type, String id, ObjectNode node, boolean refresh) {
-		index(type, id, node, OpType.INDEX, refresh);
+	public void update(String type, String id, ObjectNode node, DateTime timestamp, boolean refresh) {
+		index(type, id, node, OpType.INDEX, timestamp, refresh);
 	}
 
-	private void index(String type, String id, ObjectNode node, OpType operation, boolean refresh) {
+	private void index(String type, String id, ObjectNode node, OpType operation, DateTime timestamp, boolean refresh) {
 		IndexRequestBuilder request = client.prepareIndex(indexName, type, id);
 		if (operation == OpType.INDEX) {
 			Long version = DomainNode.VERSION.getValue(node);
@@ -74,6 +75,7 @@ public class Index {
 		}
 		request.setSource(Nodes.toByteArray(node));
 		request.setOpType(operation);
+		request.setTimestamp(timestamp.toString());
 		request.setRefresh(refresh);
 		long version = request.execute().actionGet().getVersion();
 		DomainNode.VERSION.setValue(node, version);

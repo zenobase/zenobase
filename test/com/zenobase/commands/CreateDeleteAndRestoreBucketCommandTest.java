@@ -1,7 +1,8 @@
 package com.zenobase.commands;
 
-import static org.mockito.Mockito.*;
-
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.verify;
 import org.junit.Test;
 
 import com.zenobase.models.Bucket;
@@ -25,7 +26,7 @@ public class CreateDeleteAndRestoreBucketCommandTest {
 
 		Command command = new CreateBucketCommand(principal, bucket);
 		registry.execute(command);
-		verify(buckets).store(bucket, true);
+		verify(buckets).store(bucket, command.getTimestamp(), true);
 		reset(buckets);
 
 		Command undo = command.reverse(principal);
@@ -35,7 +36,7 @@ public class CreateDeleteAndRestoreBucketCommandTest {
 
 		Command redo = undo.reverse(principal);
 		registry.execute(redo);
-		verify(buckets).store(bucket, false);
+		verify(buckets).store(bucket, redo.getTimestamp(), false);
 		reset(buckets);
 
 		Command unredo = redo.reverse(principal);

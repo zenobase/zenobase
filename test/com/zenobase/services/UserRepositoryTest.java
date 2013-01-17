@@ -4,10 +4,13 @@ import static com.zenobase.testing.NodeAssert.assertThat;
 import static com.zenobase.testing.PartialListAssert.assertThat;
 import static org.fest.assertions.Assertions.assertThat;
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 import java.util.List;
 
+import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 import com.google.common.collect.Lists;
@@ -38,7 +41,7 @@ public class UserRepositoryTest extends ElasticSearchTestSupport {
 		assertThat(repository.delete(user)).isFalse();
 
 		// store and retrieve user
-		repository.store(user);
+		repository.store(user, DateTime.now());
 		assertThat(repository.isEmpty()).isFalse();
 		assertThat(repository.find(user.getName()).toJson()).isEqualTo(user.toJson());
 		assertThat(repository.find(user.asIdentity()).toJson()).isEqualTo(user.toJson());
@@ -48,7 +51,7 @@ public class UserRepositoryTest extends ElasticSearchTestSupport {
 		// update user
 		user.setVerified(true);
 		user.setSuperuser(true);
-		repository.update(user);
+		repository.update(user, DateTime.now());
 		assertThat(repository.isSuperuser(user.asIdentity())).isTrue();
 		assertThat(repository.find(user.getName()).toJson()).isEqualTo(user.toJson());
 
@@ -77,7 +80,7 @@ public class UserRepositoryTest extends ElasticSearchTestSupport {
 		for (int i = 0; i < size; ++i) {
 			User user = new User(String.format("user%03d", i + 1));
 			users.add(user);
-			repository.store(user);
+			repository.store(user, DateTime.now());
 		}
 		return users;
 	}

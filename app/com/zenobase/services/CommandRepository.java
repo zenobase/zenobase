@@ -5,6 +5,8 @@ import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.elasticsearch.search.sort.SortOrder;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import play.Logger;
 import com.google.inject.Inject;
 
@@ -33,7 +35,7 @@ public class CommandRepository {
 	}
 
 	public void put(Command command) {
-		index.store(Command.TYPE_NAME, command.getId(), command.toJson(), false);
+		index.store(Command.TYPE_NAME, command.getId(), command.toJson(), DateTime.now(DateTimeZone.UTC), false);
 	}
 
 	public Command find(String id) {

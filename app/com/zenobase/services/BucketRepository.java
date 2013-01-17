@@ -7,6 +7,7 @@ import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.elasticsearch.search.sort.SortOrder;
+import org.joda.time.DateTime;
 import play.Logger;
 import com.google.common.base.Preconditions;
 
@@ -36,7 +37,7 @@ public class BucketRepository extends RepositorySupport<Bucket> {
 		}
 	}
 
-	public void store(Bucket bucket, boolean createIndex) {
+	public void store(Bucket bucket, DateTime timestamp, boolean createIndex) {
 		Index index = manager.getIndex(bucket.getId());
 		if (index.exists()) {
 			Preconditions.checkState(!createIndex, "Index exists already: %s", bucket.getId());
@@ -47,11 +48,11 @@ public class BucketRepository extends RepositorySupport<Bucket> {
 			index.create(1);
 			index.putMapping(Event.getSchema());
 		}
-		this.index.store(Bucket.TYPE_NAME, bucket.getId(), bucket.toJson(), true);
+		this.index.store(Bucket.TYPE_NAME, bucket.getId(), bucket.toJson(), timestamp, true);
 	}
 
-	public void update(Bucket bucket) {
-		index.update(Bucket.TYPE_NAME, bucket.getId(), bucket.toJson(), true);
+	public void update(Bucket bucket, DateTime timestamp) {
+		index.update(Bucket.TYPE_NAME, bucket.getId(), bucket.toJson(), timestamp, true);
 	}
 
 	public boolean delete(String bucketId) {

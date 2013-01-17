@@ -8,6 +8,7 @@ import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.elasticsearch.search.facet.FacetBuilders;
 import org.elasticsearch.search.facet.terms.TermsFacet;
 import org.elasticsearch.search.facet.terms.TermsFacet.ComparatorType;
+import org.joda.time.DateTime;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 
@@ -23,14 +24,14 @@ public class EventRepository {
 		this.manager = manager;
 	}
 
-	public void add(String bucketId, Event event) {
+	public void add(String bucketId, Event event, DateTime timestamp) {
 		event.prePersist();
-		getIndex(bucketId).store(Event.TYPE_NAME, event.getId(), event.toJson(), false);
+		getIndex(bucketId).store(Event.TYPE_NAME, event.getId(), event.toJson(), timestamp, false);
 	}
 
-	public void update(String bucketId, Event event) {
+	public void update(String bucketId, Event event, DateTime timestamp) {
 		event.prePersist();
-		getIndex(bucketId).update(Event.TYPE_NAME, event.getId(), event.toJson(), false);
+		getIndex(bucketId).update(Event.TYPE_NAME, event.getId(), event.toJson(), timestamp, false);
 	}
 
 	public boolean delete(String bucketId, String eventId) {

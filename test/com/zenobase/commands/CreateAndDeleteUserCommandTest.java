@@ -1,7 +1,8 @@
 package com.zenobase.commands;
 
-import static org.mockito.Mockito.*;
-
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.verify;
 import org.junit.Test;
 
 import com.zenobase.models.User;
@@ -21,7 +22,7 @@ public class CreateAndDeleteUserCommandTest {
 
 		Command command = new CreateUserCommand(user.asIdentity(), user);
 		registry.execute(command);
-		verify(users).store(user);
+		verify(users).store(user, command.getTimestamp());
 		reset(users);
 
 		Command undo = command.reverse(user.asIdentity());
@@ -31,7 +32,7 @@ public class CreateAndDeleteUserCommandTest {
 
 		Command redo = undo.reverse(user.asIdentity());
 		registry.execute(redo);
-		verify(users).store(user);
+		verify(users).store(user, redo.getTimestamp());
 		reset(users);
 	}
 }

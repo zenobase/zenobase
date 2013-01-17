@@ -1,7 +1,9 @@
 package com.zenobase.commands;
 
-import static org.mockito.Mockito.*;
-
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import org.joda.time.DateTime;
 import org.junit.Test;
 
@@ -31,19 +33,19 @@ public class UpdateTaskCommandTest {
 			.build();
 		when(tasks.find(from.getId())).thenReturn(from.copy());
 		registry.execute(command);
-		verify(tasks).update(to);
+		verify(tasks).update(to, command.getTimestamp());
 		reset(tasks);
 
 		Command undo = command.reverse(principal);
 		when(tasks.find(from.getId())).thenReturn(to.copy());
 		registry.execute(undo);
-		verify(tasks).update(from);
+		verify(tasks).update(from, undo.getTimestamp());
 		reset(tasks);
 
 		Command redo = undo.reverse(principal);
 		when(tasks.find(from.getId())).thenReturn(from.copy());
 		registry.execute(redo);
-		verify(tasks).update(to);
+		verify(tasks).update(to, redo.getTimestamp());
 		reset(tasks);
 	}
 }

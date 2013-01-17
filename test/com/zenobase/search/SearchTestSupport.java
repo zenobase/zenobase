@@ -1,6 +1,7 @@
 package com.zenobase.search;
 
 import org.codehaus.jackson.node.ObjectNode;
+import org.joda.time.DateTime;
 import org.junit.Before;
 
 import com.zenobase.common.Generator;
@@ -26,8 +27,12 @@ public class SearchTestSupport extends ElasticSearchTestSupport {
 	}
 
 	protected void addEvent(Event event) {
+		addEvent(event, DateTime.now());
+	}
+
+	protected void addEvent(Event event, DateTime timestamp) {
 		event.prePersist();
-		index.store(Event.TYPE_NAME, event.getId(), event.toJson(), true);
+		index.store(Event.TYPE_NAME, event.getId(), event.toJson(), timestamp, true);
 	}
 
 	protected ObjectNode execute() {
