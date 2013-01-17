@@ -1,7 +1,6 @@
 package com.zenobase.search;
 
 import static com.zenobase.testing.NodeAssert.assertThat;
-
 import org.codehaus.jackson.node.ObjectNode;
 import org.joda.time.DateTime;
 import org.junit.Before;
@@ -32,6 +31,13 @@ public class DateTimeConstraintBuilderTest extends ConstraintBuilderTestSupport 
 	}
 
 	@Test
+	public void testMillisEqualsConstraint() {
+		addConstraint("%s:%s", Event.TIMESTAMP, "1325764800000");
+		ObjectNode result = execute();
+		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(1);
+	}
+
+	@Test
 	public void testHourConstraint() {
 		addConstraint("%s:%s", Event.TIMESTAMP, "2012-01-05T12Z");
 		ObjectNode result = execute();
@@ -41,6 +47,13 @@ public class DateTimeConstraintBuilderTest extends ConstraintBuilderTestSupport 
 	@Test
 	public void testRangeConstraint() {
 		addConstraint("%s:%s", Event.TIMESTAMP, "(2012-01-05T12Z..2012-01-06TZ]");
+		ObjectNode result = execute();
+		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(2);
+	}
+
+	@Test
+	public void testMillisRangeConstraint() {
+		addConstraint("%s:%s", Event.TIMESTAMP, "(1325764800000..1325808000000]");
 		ObjectNode result = execute();
 		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(2);
 	}
