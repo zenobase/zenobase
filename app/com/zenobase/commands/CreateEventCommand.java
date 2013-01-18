@@ -1,7 +1,6 @@
 package com.zenobase.commands;
 
 import org.codehaus.jackson.node.ObjectNode;
-import play.Logger;
 import com.google.inject.Inject;
 
 import com.zenobase.json.ObjectField;
@@ -55,12 +54,7 @@ public class CreateEventCommand extends Command {
 		@Override
 		public Command parse(ObjectNode node, int version) {
 			switch (version) {
-				case 1:
-				case 2:
-					Logger.info("migrating command: " + node);
-					Command.TYPE.setValue(node, TYPE);
-				case 3:
-					return new CreateEventCommand(node);
+				case 3: return new CreateEventCommand(node);
 			}
 			return null;
 		}
