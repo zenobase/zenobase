@@ -114,6 +114,8 @@
 		};
 	});
 
+	app.constant('googleApiKey', 'AIzaSyDv7t1arxF_85-QF-ZUi9C4MV1z94BsH0I');
+
 	app.constant('timezone', moment().format('Z'));
 
 	// TODO should inject this, but can't inject into config...
@@ -1977,7 +1979,7 @@
 		});
 	}]);
 
-	app.controller('MapWidgetController', ['$scope', function($scope) {
+	app.controller('MapWidgetController', ['$scope', 'googleApiKey', function($scope, googleApiKey) {
 
 		$scope.field = 'location';
 	
@@ -2012,7 +2014,7 @@
 		};
 		$scope.draw = function() {
 			if ($scope.points.length) {
-				google.load('maps', '3.10', { other_params : 'libraries=places&sensor=false', callback : function() {
+				google.load('maps', '3.10', { other_params : 'libraries=places&sensor=false&key=' + googleApiKey, callback : function() {
 					var options = {
 						mapTypeId: google.maps.MapTypeId.TERRAIN,
 						streetViewControl: false,
@@ -2287,10 +2289,10 @@
 		}
 	}]);
 
-	app.controller('CreateLocationFieldController', ['$scope', function($scope) {
+	app.controller('CreateLocationFieldController', ['$scope', 'googleApiKey', function($scope, googleApiKey) {
 
 		$scope.init = function() {
-			google.load('maps', '3.10', { other_params : 'libraries=places&sensor=false', callback : function() {
+			google.load('maps', '3.10', { other_params : 'libraries=places&sensor=false&key=' + googleApiKey, callback : function() {
 				var center = new google.maps.LatLng(0, 0);
 				var options = {
 					center : center,
