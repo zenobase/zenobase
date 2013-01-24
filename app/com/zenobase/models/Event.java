@@ -1,6 +1,7 @@
 package com.zenobase.models;
 
 import org.codehaus.jackson.node.ObjectNode;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 
 import com.zenobase.common.Generator;
@@ -86,8 +87,18 @@ public class Event extends DomainNode {
 	}
 
 	@Override
+	public <T> ImmutableList<T> getValues(Field<T> field) {
+		return super.getValues(field);
+	}
+
+	@Override
 	public <T> void setValue(Field<T> field, T value) {
 		super.setValue(field, value);
+	}
+
+	@Override
+	public <T> void setValues(Field<T> field, Iterable<T> values) {
+		super.setValues(field, values);
 	}
 
 	@Override
