@@ -90,4 +90,8 @@ public class Nodes {
             throw new IllegalArgumentException("Can't read json: '" + new String(in) + "'");
         }
     }
+
+	public static int size(JsonNode node) {
+		return node != null ? node.size() : 0;
+	}
 }

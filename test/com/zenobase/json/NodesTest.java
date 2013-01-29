@@ -5,7 +5,9 @@ import static com.zenobase.testing.NodeAssert.assertThat;
 import java.util.List;
 
 import org.codehaus.jackson.node.ArrayNode;
+import org.codehaus.jackson.node.IntNode;
 import org.codehaus.jackson.node.ObjectNode;
+import org.fest.assertions.Assertions;
 import org.junit.Test;
 import com.google.common.collect.Lists;
 
@@ -55,5 +57,15 @@ public class NodesTest {
 	public void testReadInvalidJson() {
 
 		Nodes.readObject("{".getBytes());
+	}
+
+	@Test
+	public void testSize() {
+
+		Assertions.assertThat(Nodes.size(null)).as("null").isEqualTo(0);
+		Assertions.assertThat(Nodes.size(Nodes.newObject())).as("empty object node").isEqualTo(0);
+		Assertions.assertThat(Nodes.size(Nodes.newArray())).as("empty array node").isEqualTo(0);
+		Assertions.assertThat(Nodes.size(new IntNode(42))).as("int node").isEqualTo(0);
+		Assertions.assertThat(Nodes.size(Nodes.newObject("name", "Foo"))).as("object node with one field").isEqualTo(1);
 	}
 }

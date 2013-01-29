@@ -11,6 +11,7 @@ import com.zenobase.actions.Timed;
 import com.zenobase.commands.Command;
 import com.zenobase.commands.DeleteTaskCommand;
 import com.zenobase.commands.UpdateTaskCommand;
+import com.zenobase.json.Nodes;
 import com.zenobase.models.Bucket;
 import com.zenobase.models.Role;
 import com.zenobase.oauth.Authorization;
@@ -79,10 +80,10 @@ public class TaskController extends ControllerSupport {
     	}
     	TaskManager manager = registry.find(task.getType());
     	if (manager == null) {
-    		return internalServerError("unsupported task type: " + task.getType());
+    		return badRequest("unsupported task type: " + task.getType());
     	}
     	ObjectNode body = body();
-    	if (body == null || body.size() > 1) {
+    	if (Nodes.size(body) != 1) {
     		return badRequest();
     	}
     	Command command = null;
