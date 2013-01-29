@@ -25,8 +25,8 @@ public class TaskControllerHttpGetTest extends TaskControllerTestSupport {
 		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
 		when(tasks.find(task.getId())).thenReturn(task.copy());
 		Result result = call(task.getId());
-		verifyZeroInteractions(refresher);
 		assertThat(result).hasStatus(OK).hasContent(task.toJson());
+		verifyZeroInteractions(refresher);
 	}
 
 	@Test
@@ -34,8 +34,8 @@ public class TaskControllerHttpGetTest extends TaskControllerTestSupport {
 		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
 		when(tasks.find(task.getId())).thenReturn(task.copy());
 		Result result = call(task.getId());
-		// TODO verify(refresher).refresh(any(Task.class));
 		assertThat(result).hasStatus(OK).hasContent(task.toJson());
+		verify(refresher).refresh(task);
 	}
 
 	@Test
