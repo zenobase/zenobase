@@ -4,7 +4,7 @@ import static org.fest.assertions.Assertions.assertThat;
 
 import org.junit.Test;
 
-public class AssetTest {
+public class AssetsTest {
 
 	@Test
 	public void testStripCacheBuster() {
