@@ -144,7 +144,6 @@
 			.when('/users/:userId/reset', { templateUrl : cacheBuster.rewrite('/partials/reset.html') })
 			.when('/users/:userId/verify', { templateUrl : cacheBuster.rewrite('/partials/verification.html') })
 			.when('/oauth/authorize', { templateUrl : cacheBuster.rewrite('/partials/oauth.html') })
-			.when('/api', { templateUrl : cacheBuster.rewrite('/partials/api.html') })
 			.otherwise({ templateUrl : cacheBuster.rewrite('/partials/404.html') });
 	}]);
 
