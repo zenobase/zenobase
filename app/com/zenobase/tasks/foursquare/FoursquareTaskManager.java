@@ -13,6 +13,7 @@ import org.scribe.model.OAuthRequest;
 import org.scribe.model.Response;
 import org.scribe.model.Token;
 import org.scribe.model.Verb;
+import org.scribe.oauth.OAuthService;
 import play.Logger;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
@@ -45,6 +46,11 @@ public class FoursquareTaskManager extends OAuthTaskManager {
 	@Override
 	protected Token getRequestToken(OAuthTask task) {
 		return Token.empty();
+	}
+
+	@Override
+	protected OAuthService getService(OAuthTask task) {
+		return super.getService(task);
 	}
 
 	@Override
@@ -99,12 +105,16 @@ public class FoursquareTaskManager extends OAuthTaskManager {
 		request.addQuerystringParameter("beforeTimestamp", marker);
 		request.addQuerystringParameter("offset", Integer.toString(offset));
 		request.addQuerystringParameter("limit", Integer.toString(LIMIT));
-		Response response = request.send();
+		Response response = send(request);
 		checkResponse(task, request, response);
 		FoursquareResult result = new FoursquareResult(task.getPrincipal(), parseObject(response));
 		List<Event> found = result.getEvents();
 		events.addAll(found);
 		return found.size() == LIMIT && result.getTotal() > offset + LIMIT;
+	}
+
+	protected Response send(OAuthRequest request) {
+		return request.send();
 	}
 
 	private Command createCommand(FoursquareTask task, String marker, List<Event> events) {

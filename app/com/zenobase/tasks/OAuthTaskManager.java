@@ -70,11 +70,11 @@ public abstract class OAuthTaskManager extends TaskManager {
 			.build();
 	}
 
-	protected final Token getAccessToken(OAuthTask task, String verifier) {
+	protected Token getAccessToken(OAuthTask task, String verifier) {
 		return getService(task).getAccessToken(task.getToken(), new Verifier(verifier));
 	}
 
-	protected final OAuthService getService(OAuthTask task) {
+	protected OAuthService getService(OAuthTask task) {
 		ServiceBuilder builder = new ServiceBuilder()
 			.provider(provider)
 			.apiKey(apiKey)
