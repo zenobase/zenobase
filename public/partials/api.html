@@ -1,0 +1,1094 @@
+<div id="api" class="container-fluid">
+
+<h1>Zenobase API <small>v1</small></h1>
+
+<div class="alert alert-block">If you are using this API in an application, 
+please <a href="mailto:info@zenobase.com?subject=Zenobase+API">drop us a note</a>.</div>
+
+<div class="well">
+	<div class="row-fluid">
+		<div class="span3">
+			<ul class="nav nav-list">
+				<li class="nav-header"><a href="/#/api/buckets">Buckets</a></li>
+				<li><a href="/#/api/list-buckets">List buckets</a></li>
+				<li><a href="/#/api/get-bucket">Get a single bucket</a></li>
+				<li><a href="/#/api/create-bucket">Create a bucket</a></li>
+				<li><a href="/#/api/update-bucket">Update a bucket</a></li>
+				<li><a href="/#/api/delete-bucket">Delete a bucket</a></li>
+			</ul>
+		</div>
+		<div class="span3">
+			<ul class="nav nav-list">
+				<li class="nav-header"><a href="/#/api/events">Events</a></li>
+				<li><a href="/#/api/list-events">List events</a></li>
+				<li><a href="/#/api/get-event">Get a single event</a></li>
+				<li><a href="/#/api/create-event">Create an event</a></li>
+				<li><a href="/#/api/update-event">Update an event</a></li>
+				<li><a href="/#/api/delete-event">Delete an event</a></li>
+			</ul>
+		</div>
+		<div class="span3">
+			<ul class="nav nav-list">
+				<li class="nav-header"><a href="/#/api/auth">Authentication</a></li>
+				<li><a href="/#/api/auth-implicit">Implicit Grant</a></li>
+				<li><a href="/#/api/auth-password">Password Grant</a></li>
+			</ul>
+		</div>
+		<div class="span3">
+			<ul class="nav nav-list">
+				<li class="nav-header">Common</li>
+				<li><a href="/#/api/username">Look up a username</a></li>
+				<li><a href="/#/api/constraints">Query Constraints</a></li>
+				<li><a href="/#/api/facets">Query Facets</a></li>
+				<li><a href="/#/api/errors">Errors</a></li>
+			</ul>
+		</div>
+	</div>
+</div>
+
+
+<section id="api-buckets">
+
+<h2>Buckets</h2>
+
+<p class="lead">Buckets are containers for <a href="/#/api-events">events</a>, 
+but also include permissions and dashboard settings.</p>
+
+<section id="api-list-buckets">
+
+<h3>List buckets</h3>
+
+<pre>GET /buckets/?q=role.identity:<em>&lt;user_id&gt;</em>&amp;offset=<em>&lt;offset&gt;</em>&amp;limit=<em>&lt;limit&gt;</em>
+Host: api.zenobase.com
+Authorization: Bearer <em>&lt;access_token&gt;</em>
+</pre>
+
+<dl>
+  <dt>user_id</dt><dd>The user whose buckets we want to retrieve. Required.</dd>
+  <dt>offset</dt><dd>How many buckets to skip. Defaults to 0.</dd>
+  <dt>limit</dt><dd>The maximum number of buckets to return. Required.</dd>
+</dl>
+
+<h4>Example</h4>
+
+<h5>Request</h5>
+
+<pre>curl -i 'https://api.zenobase.com/buckets/?q=role.identity:args4iqh2c&amp;limit=10' \
+  -H 'Authorization: Bearer e7975e8bb6eabc3ef567'
+</pre>
+
+<h5>Response</h5>
+
+<pre>HTTP/1.1 200 OK
+Content-Type: application/json
+
+{ 
+  "total" : 1,
+  "buckets" : [
+    { 
+      "@id" : "jl2rg0o36e",
+      "version" : 1,
+      "label" : "My Data",
+      "created" : "2012-10-18T20:59:36.295Z", 
+      "size" : 4
+      "roles" : [
+        { "principal" : "args4iqh2c", "role" : "owner" }
+      ]
+    }
+  ]
+}
+</pre>
+
+</section>
+
+<section id="api-get-bucket">
+
+<h3>Get a single bucket</h3>
+
+<p>Get the metadata for a single bucket.</p>
+
+<pre>GET /buckets/<em>&lt;bucket_id&gt;</em>
+Authorization: Bearer <em>&lt;access_token&gt;</em>
+</pre>
+
+<dl>
+  <dt>bucket_id</dt>
+  <dd>The bucket we want to retrieve.</dd>
+</dl>
+
+<h4>Example</h4>
+
+<h5>Request</h5>
+
+<pre>curl -i GET 'http://api.zenobase.com/buckets/v7jg3l5ibc' \
+  -H 'Authorization: Bearer e7975e8bb6eabc3ef567'
+</pre>
+
+<h5>Response</h5>
+
+<pre>HTTP/1.1 200 OK
+Content-Type: application/json
+
+{
+  "@id" : "v7jg3l5ibc",
+  "created" : "2012-10-24T23:01:44.438Z",
+  "label" : "Test Bucket",
+  "description" : "This bucket is for testing."
+  "roles": [
+    { "principal" : "args4iqh2c" , "role" : "owner" }
+  ],
+  "version" : 1,
+  "widgets" : [ ... ]
+}
+</pre>
+
+</section>
+
+<section id="api-create-bucket">
+
+<h3>Create a bucket</h3>
+
+<pre>POST /buckets/
+Content-Type: application/json
+Host: api.zenobase.com
+Authorization: Bearer <em>&lt;access_token&gt;</em>
+
+{ 
+  "label" : <em>&lt;label&gt;</em>,
+  "description" : <em>&lt;description&gt;</em>
+}
+</pre>
+
+<dl>
+  <dt>label</dt>
+  <dd>A human-readable name for the bucket. Required, 1-20 characters from <code>a-zA-Z0-9-_ </code>.</dd>
+  <dt>description</dt>
+  <dd>One or two sentences describing this bucket. Optional.</dd>
+</dl>
+
+<h4>Example</h4>
+
+<h5>Request</h5>
+
+<pre>curl -i -X POST 'https://api.zenobase.com/buckets/' \
+  -H 'Content-Type: application/json' \
+  -H 'Authorization: Bearer e7975e8bb6eabc3ef567 \  
+  -d '{
+    "label" : "Test Bucket",
+    "description" : "This bucket is for testing."
+  }'
+</pre>
+
+<h5>Response</h5>
+
+<pre>HTTP/1.1 201 Created
+Content-Type: application/json
+Location: /buckets/v7jg3l5ibc
+X-Command-ID: 4o6iqmpnrr
+
+{
+  "@id" : "v7jg3l5ibc",
+  "created" : "2012-10-24T23:01:44.438Z",
+  "label" : "Test Bucket",
+  "description" : "This bucket is for testing."
+  "roles": [
+    { "principal" : "args4iqh2c" , "role" : "owner" }
+  ],
+  "version" : 1
+}
+</pre>
+
+</section>
+
+<section id="api-update-bucket">
+
+<h3>Update a bucket</h3>
+
+<p>Update a bucket's metadata, i.e. its label, description, roles and widgets.</p>
+
+<pre>PUT /buckets/v7jg3l5ibc
+Content-Type: application/json
+Host: api.zenobase.com
+Authorization: Bearer <em>&lt;access_token&gt;</em>
+
+{ 
+  "label" : <em>&lt;label&gt;</em>,
+  "description" : <em>&lt;description&gt;</em>,
+  "roles" : [
+    {
+      "principal" : <em>&lt;identity&gt;</em>,
+      "role" : <em>&lt;'owner'|'viewer'&gt;</em>
+    },
+    ...
+  ],
+  "widgets" : [
+    ...
+  ]
+}
+</pre>
+
+<h4>Example</h4>
+
+<h5>Request</h5>
+
+<pre>curl -i -X PUT 'https://api.zenobase.com/buckets/v7jg3l5ibc' \
+  -H 'Content-Type: application/json' \
+  -H 'Authorization: Bearer e7975e8bb6eabc3ef567 \  
+  -d '{
+    "label" : "Updated Bucket",
+    "description" : "This bucket is public!",
+    "roles" : [
+      { "principal" : "args4iqh2c", "role" : "owner" },
+      { "principal" : "*", "role" : "viewer" }
+    ]
+  }'
+</pre>
+
+<h5>Response</h5>
+
+<pre>HTTP/1.1 204 No Content
+Content-Type: application/json
+X-Command-ID: 4o6iqmpnrr
+</pre>
+
+</section>
+
+<section id="api-delete-bucket">
+
+<h3>Delete buckets</h3>
+
+<p>Delete a bucket including all its events.</p>
+
+<pre>DELETE /buckets/<em>&lt;bucket_id&gt;</em>
+Host: api.zenobase.com
+Authorization: Bearer <em>&lt;access_token&gt;</em>
+</pre>
+
+<dl>
+  <dt>bucket_id</dt>
+  <dd>The bucket to delete.</dd>
+</dl>
+
+<h4>Example</h4>
+
+<h5>Request</h5>
+
+<pre>curl -i -X DELETE 'https://api.zenobase.com/buckets/v7jg3l5ibc' \
+  -H 'Authorization: Bearer e7975e8bb6eabc3ef567'
+</pre>
+
+<h5>Response</h5>
+
+<pre>HTTP/1.1 204 No Content
+X-Command-ID: p3atfetvs2
+</pre>
+
+</section>
+
+</section>
+
+
+<section id="api-events">
+
+<h2>Events</h2>
+
+<p class="lead">Events contain the actual data being tracked.</p>
+
+<section id="api-list-events">
+
+<h3>List events</h3>
+
+<pre>GET /buckets/<em>&lt;bucket_id&gt;</em><strong>/</strong>?w=<em>&lt;facet_expression&gt;</em>&amp;q=<em>&lt;constraint_expression&gt;</em>
+Host: api.zenobase.com
+Authorization: Bearer <em>&lt;access_token&gt;</em>
+</pre>
+
+<dl>
+  <dt>bucket_id</dt>
+  <dd>The bucket from which to retrieve events.</dd>
+  <dt>facet_expression</dt>
+  <dd>See <a href="/#/api/facets">facets</a>. If no facets are specified, a list of all matching events is returned.
+  More than one facet parameter can be given.</dd>
+  <dt>constraint_expression</dt>
+  <dd>See <a href="/#/api/constraints">constraints</a>. Optional. 
+  If more than one constraint parameter is present, all constraints must be fulfilled.</dd>
+</dl>
+
+<h4>Example</h4>
+
+<h5>Request</h5>
+
+<pre>curl -i 'http://api.zenobase.com/buckets/v7jg3l5ibc/?w=id:a,type:list&amp;w=id:b,type:count&amp;q=tag:lunch' \
+  -H 'Authorization: Bearer e7975e8bb6eabc3ef567'
+</pre>
+
+<h5>Response</h5>
+
+<pre>HTTP/1.1 200 OK
+Content-Type: application/json
+
+{
+  "total" : 42,
+  "a": [ 
+    { 
+      "timestamp" : [ "20121024T13:10:00.000-07:00" ],
+      "tag" : [ "lunch", "thai" ],
+      "author" : "7ghkds6jar",
+      ...
+    },
+    ...
+  ],
+  "b": [ 
+    { "label" : "lunch", "count" : 10 },
+    { "label" : "thai", "count" : 1 },
+    ...
+  ]
+}
+</pre>
+
+</section>
+
+<section id="api-get-event">
+
+<h3>Get a single event</h3>
+
+<pre>GET /buckets/<em>&lt;bucket_id&gt;</em>/<em>&lt;event_id&gt;</em>
+Host: api.zenobase.com
+Authorization: Bearer <em>&lt;access_token&gt;</em>
+</pre>
+
+<dl>
+  <dt>bucket_id</dt>
+  <dd>The bucket from which to get the event from.</dd>
+  <dt>event_id</dt>
+  <dd>The event to get.</dd>
+</dl>
+
+<h4>Example</h4>
+
+<h5>Request</h5>
+
+<pre>curl -i 'https://api.zenobase.com/buckets/v7jg3l5ibc/chd6fmchgs' \
+  -H 'Authorization: Bearer e7975e8bb6eabc3ef567'
+</pre>
+
+<h5>Response</h5>
+
+<pre>HTTP/1.1 200 OK
+Content-Type:application/json
+
+{ 
+  "timestamp" : [ "20121024T13:10:00.000-07:00" ],
+  "tag" : [ "lunch", "thai" ],
+  "rating" : [ 80 ],
+  "resource" : [
+    {
+      "title" : "Tup Tim Thai",
+      "url" : "https://plus.google.com/116718770873870194999"
+    }
+  ],
+  "author" : "7ghkds6jar"
+}
+</pre>
+
+</section>
+
+<section id="api-create-event">
+
+<h3>Create an event</h3>
+
+<pre>POST /buckets/<em>&lt;bucket_id&gt;</em><strong>/</strong>
+Content-Type: application/json
+Host: api.zenobase.com
+Authorization: Bearer <em>&lt;access_token&gt;</em>
+
+{
+  <em>&lt;field&gt;</em> : <em>&lt;value&gt;</em>,
+  <em>&lt;field&gt;</em> : [ <em>&lt;1st value&gt;</em>, <em>&lt;2nd value&gt;</em>, ... ],
+  ...
+  "bits" : {
+    "@value" : <em>&lt;Number&gt;</em>,
+    "unit" : <em>&lt;"bit" | "B" | "KB" | "MB" | "GB" | "TB" | "PB" | "KiB" | "MiB" | "GiB" | "TiB" | "PiB"&gt;</em>
+  },
+  "concentration" : {
+    "@value" : <em>&lt;Number&gt;</em>,
+    "unit" : <em>&lt;"g/L" | "mg/L" | "ug/L" | "ng/L" | "g/dL" | "mg/dL" | "ug/dL" | "ng/dL"&gt;</em>
+  },
+  "count" : <em>&lt;Integer&gt;</em>,
+  "distance" : {
+    "@value" : <em>&lt;Number&gt;</em>,
+    "unit" : <em>&lt;"mi" | "ft" | "in" | "km" | "m" | "cm" | "mm"&gt;</em>
+  },
+  "duration" : <em>&lt;Milliseconds&gt;</em>,
+  "energy" : {
+    "@value" : <em>&lt;Number&gt;</em>,
+    "unit" : <em>&lt;"cal" | "kcal" | "L" | "kJ"&gt;</em>
+  },
+  "frequency" : {
+    "@value" : <em>&lt;Number&gt;</em>,
+    "unit" : <em>&lt;"bpm" | "Hz"&gt;</em>    
+  },
+  "height" : {
+    "@value" : <em>&lt;Number&gt;</em>,
+    "unit" : <em>&lt;"mi" | "ft" | "in" | "km" | "m" | "cm" | "mm"&gt;</em>
+  },
+  "location" : {
+    "lat" : <em>&lt;Number&gt;</em>,
+    "lon" : <em>&lt;Number&gt;</em>
+  },
+  "note" : <em>&lt;String&gt;</em>,
+  "pressure" : {
+    "@value" : <em>&lt;Number&gt;</em>,
+    "unit" : <em>&lt;"Pa" | "mmHg" | "inHg" | "psi"&gt;</em>    
+  },
+  "rating" : <em>&lt;(0..100)&gt;</em>,
+  "resource" : {
+    "title" : <em>&lt;String&gt;</em>,
+    "url" : <em>&lt;URL&gt;</em>
+  },
+  "tag" : <em>&lt;String&gt;</em>,
+  "temperature" : {
+    "@value" : <em>&lt;Number&gt;</em>,
+    "unit" : <em>&lt;"C" | "F" | "K"&gt;</em>    
+  },
+  "timestamp" : <em>&lt;yyyy-MM-dd'T'hh:mm:ss.SSSZ&gt;</em>,
+  "velocity" : {
+    "@value" : <em>&lt;Number&gt;</em>,
+    "unit" : <em>&lt;"m/s" | "mph" | "kmh" | "kn" | "Mach"&gt;</em>    
+  },
+  "volume" : {
+    "@value" : <em>&lt;Number&gt;</em>,
+    "unit" : <em>&lt;"L" | "dL" | "cL" | "mL" | "gal" | "qt" | "pt" | "cup" | "fl_oz"&gt;</em>    
+  },
+  "weight" : {
+    "@value" : <em>&lt;Number&gt;</em>,
+    "unit" : <em>&lt;"lb" | "oz" | "kg" | "g" | "mg"&gt;</em>    
+  }
+}
+</pre>
+
+<dl>
+  <dt>bucket_id</dt>
+  <dd>The bucket to add the event to.</dd>
+</dl>
+
+<p>All fields are optional (and can be repeated any number of times). 
+But if no <code>timestamp</code> is specified, a <code>timestamp</code> 
+with the current time and the +00:00 time zone is added, and the 
+<code>author</code> is always set to the current user.</p>
+
+<h4>Example</h4>
+
+<h5>Request</h5>
+
+<pre>curl -i -X POST 'https://api.zenobase.com/buckets/v7jg3l5ibc/' \
+  -H 'Content-Type: application/json' \
+  -H 'Authorization: Bearer e7975e8bb6eabc3ef567' \
+  -d '{
+    "timestamp" : [ "20121024T13:10:00.000-07:00" ],
+    "tag" : [ "lunch", "thai" ],
+    "rating" : [ 80 ],
+    "resource" : [
+      {
+        "title" : "Tup Tim Thai",
+        "url" : "https://plus.google.com/116718770873870194999"
+      }
+    ]
+  }'
+</pre>
+
+<h5>Response</h5>
+
+<pre>HTTP/1.1 201 Created
+Content-Type:application/json
+Location: /buckets/v7jg3l5ibc/chd6fmchgs
+X-Command-ID: p3ateetvs1
+
+{ 
+  "timestamp" : [ "20121024T13:10:00.000-07:00" ],
+  "tag" : [ "lunch", "thai" ],
+  "rating" : [ 80 ],
+  "resource" : [
+    {
+      "title" : "Tup Tim Thai",
+      "url" : "https://plus.google.com/116718770873870194999"
+    }
+  ],
+  "author" : "7ghkds6jar"
+}
+</pre>
+
+</section>
+
+<section id="api-update-event">
+
+<h3>Update an event</h3>
+
+<pre>PUT /buckets/<em>&lt;bucket_id&gt;</em>/<em>&lt;event_id&gt;</em>
+Content-Type: application/json
+Host: api.zenobase.com
+Authorization: Bearer <em>&lt;access_token&gt;</em>
+
+{
+  <em>&lt;field&gt;</em> : <em>&lt;value&gt;</em>,
+  ...
+}
+</pre>
+
+<dl>
+  <dt>bucket_id</dt>
+  <dd>The bucket containing the event to update.</dd>
+  <dt>event_id</dt>
+  <dd>The event to update.</dd>
+</dl>
+
+<h4>Example</h4>
+
+<h5>Request</h5>
+
+<pre>curl -i -X PUT 'https://api.zenobase.com/buckets/v7jg3l5ibc/chd6fmchgs' \
+  -H 'Content-Type: application/json' \
+  -H 'Authorization: Bearer e7975e8bb6eabc3ef567' \
+  -d '{
+    "timestamp" : [ "20121024T13:10:00.000-07:00" ],
+    "tag" : [ "lunch", "thai" ],
+    "rating" : [ 100 ],
+    "resource" : [
+      {
+        "title" : "Tup Tim Thai",
+        "url" : "https://plus.google.com/116718770873870194999"
+      }
+    ]
+  }'
+</pre>
+
+<h5>Response</h5>
+
+<pre>HTTP/1.1 204 No Content
+X-Command-ID: p3ateetvs1
+</pre>
+
+</section>
+
+<section id="api-delete-event">
+
+<h3>Delete an event</h3>
+
+<pre>DELETE /buckets/<em>&lt;bucket_id&gt;</em>/<em>&lt;event_id&gt;</em>
+Host: api.zenobase.com
+Authorization: Bearer <em>&lt;access_token&gt;</em>
+</pre>
+
+<dl>
+  <dt>bucket_id</dt>
+  <dd>The bucket that contains the event to delete.</dd>
+  <dt>event_id</dt>
+  <dd>The event to delete.</dd>
+</dl>
+
+<h4>Example</h4>
+
+<h5>Request</h5>
+
+<pre>curl -i -X DELETE 'https://api.zenobase.com/buckets/v7jg3l5ibc/chd6fmchgs' \
+  -H 'Authorization: Bearer e7975e8bb6eabc3ef567'
+</pre>
+
+<h5>Response</h5>
+
+<pre>HTTP/1.1 204 No Content
+X-Command-ID: p3ateetvs1
+</pre>
+
+</section>
+
+</section>
+
+
+<section id="api-auth">
+
+<h2>Authentication</h2>
+
+<p>Requests for restricted resources must either include an <a rel="nofollow" target="_blank" href="http://oauth.net/2/">OAuth 2</a> <em>Authorization</em> header:</p>
+
+<pre>Authorization: Bearer <em>&lt;access_token&gt;</em></pre>
+
+<p>...or append the access token as a query parameter:</p>
+
+<pre>https://zenobase.com/...?code=<em>&lt;access_token&gt;</em></pre>
+
+<p>Access tokens do not expire, but can be revoked any time.</p>
+
+<p>There are two ways to obtain an access token:</p>
+
+<section id="api-auth-implicit">
+
+<h3>Implicit Grant</h3>
+
+<p>This authentication method allows a user to grant an application access to a single bucket.</p>
+
+<p>In order to use this authentication method, an account with a validated email address is required.</p>
+
+<p>The first step is to redirect the user to an authorization page:</p>
+
+<pre>https://zenobase.com/#/oauth/authorize?response_type=token&amp;client_id=<em>&lt;client_id&gt;</em>&amp;redirect_uri=<em>&lt;redirect_uri&gt;</em></pre>
+
+<dl>
+<dt>client_id</dt>
+<dd>The user ID from your profile page (click the <em>Edit</em> icon).</dd>
+<dt>redirect_uri</dt>
+<dd>The page to which the user is redirected back to. The domain must match the domain of your verified email address. If the address does not end with either <code>#</code> or <code>?</code>, <code>#</code> is appended.</dd>
+</dl>
+
+<p>Upon authorization, the user is redirected to:</p>
+
+<pre><em>&lt;redirect_uri#&gt;</em>code=<em>&lt;code&gt;</em>&amp;scope=<em>&lt;scope&gt;</em></pre>
+
+<dl>
+<dt>code</dt>
+<dd>The access token to use in the <em>Authorization</em> header.</dd>
+<dt>scope</dt>
+<dd>The bucket to which you have been granted access.</dd>
+</dl>
+
+<p>If the authorization fails for any reason other than an invalid <em>redirect_uri</em>, the user is redirected to:</p>
+
+<pre><em>&lt;redirect_uri#&gt;</em>error=<em>&lt;error&gt;</em>&amp;error_description=<em>&lt;error_description&gt;</em></pre>
+
+<dl>
+<dt>error</dt>
+<dd>The error code:
+<blockquote>
+  <dl>
+  <dt>invalid_request</dt>
+  <dd>The request is missing a required parameter.</dd>
+  <dt>unauthorized_client</dt>
+  <dd>The client is not authorized to request an access token using this method.</dd>
+  <dt>access_denied</dt>
+  <dd>The user denied the request.</dd>
+  <dt>unsupported_response_type</dt>
+  <dd>The <em>response_type</em> parameter must be set to <em>token</em>.</dd>
+  <dt>server_error</dt>
+  <dd>The request could not be processed. Try again later or contact support.</dd>
+  </dl>
+</blockquote>
+</dd>
+<dt>error_description</dt>
+<dd>Optional description of the error.</dd>
+</dl>
+
+</section>
+
+<section id="api-auth-password">
+
+<h3>Password Grant</h3>
+
+<p>This authentication method grants full access to a user's account.</p>
+
+<pre>POST /oauth/token
+Host: api.zenobase.com
+Content-Type: application/x-www-form-urlencoded
+
+grant_type=password&amp;username=<em>&lt;username&gt;</em>&amp;password=<em>&lt;password&gt;</em>
+</pre>
+
+<dl>
+<dt>username</dt>
+<dd>The user's name.</dd>
+<dt>password</dt>
+<dd>The user's password.</dd>
+</dl>
+
+<h4>Example</h4>
+
+<h5>Request</h5>
+
+<pre>curl -i -X POST 'https://api.zenobase.com/oauth/token' \
+  -d 'grant_type=password&amp;username=jdoe&amp;password=secret1337'
+</pre>
+
+<h5>Response</h5>
+
+<pre>HTTP/1.1 200 OK
+Content-Type: application/json
+
+{
+  "access_token" : "e7975e8bb6mabc3ek567",
+}
+</pre>
+
+</section>
+
+</section>
+
+
+<section>
+
+<h2>Common</h2>
+
+<section id="api-username">
+
+<h3>Look up a username</h3>
+
+<pre>GET /users/identity=<em>&lt;user_id&gt;</em>
+Authorization: Bearer <em>&lt;access_token&gt;</em>
+</pre>
+
+<dl>
+<dt>user_id</dt>
+<dd>The identity to look up.</dd>
+</dl>
+
+<h4>Example</h4>
+
+<h5>Request</h5>
+
+<pre>curl -i GET 'http://api.zenobase.com/users/?identity=kbuk9h0ihh' \
+  -H 'Authorization: Bearer e7975e8bb6eabc3ef567'
+</pre>
+
+<h5>Response</h5>
+
+<pre>HTTP/1.1 200 OK
+Content-Type: application/json
+
+{
+  "@id" : "v7jg3l5ibc",
+  "name" : "zeno".
+}
+</pre>
+
+</section>
+
+<section id="api-constraints">
+
+<h3>Query Constraints</h3>
+
+<p>Constraints can be used to restrict lists of events.</p>
+
+<pre><em>&lt;field&gt;</em>:<em>&lt;expression&gt;</em></pre>
+
+<dl>
+<dt>field</dt>
+<dd>The field name.</dd>
+<dt>expression</dt>
+<dd>Type-specific expression.</dd>
+</dl>
+
+<h4>Expressions</h4>
+
+<dl>
+<dt>tokens</dt>
+<dd>
+  <blockquote>
+  <dl>
+  <dt><code>foo</code></dt>
+  <dd>exact match</dd>
+  <dt><code>foo*</code></dt>
+  <dd>prefix match</dd>
+  </dl>
+  </blockquote>
+</dd>
+<dt>text</dt>
+<dd>
+  <blockquote>
+  <dl>
+  <dt><code>foo</code></dt>
+  <dd>exact match on a word</dd>
+  <dt><code>foo*</code></dt>
+  <dd>prefix match on a word</dd>
+  </dl>
+  </blockquote>
+</dd>
+<dt>timestamps</dt>
+<dd>
+  <blockquote>
+  <dl>
+  <dt><code>2013TZ</code></dt>
+  <dt><code>[2013TZ..2014TZ)</code></dt>
+  <dd>all of 2013</dd>
+  <dt><code>2013-01TZ</code></dt>
+  <dt><code>[2013-01TZ..2013-02TZ)</code></dt>
+  <dd>January</dd>
+  <dt><code>2013-01-02TZ</code></dt>
+  <dt><code>[2013-01-02TZ..2013-01-03TZ)</code></dt>
+  <dd>January 2nd</dd>
+  <dt><code>2013-01-02T20Z</code></dt>
+  <dt><code>[2013-01-02T20Z..2013-01-02T21Z)</code></dt>
+  <dd>8-9pm</dd>
+  <dt><code>2013-01-02T20:05Z</code></dt>
+  <dt><code>[2013-01-02T20:05Z..2013-01-02T20:06Z)</code></dt>
+  <dd>8:05-8:06pm</dd>
+  <dt><code>2013-01-30T23:00:00.000TZ</code></dt>
+  <dt><code>2013-01-30T15:00:00.000T-08:00</code></dt>
+  <dt><code>1359586800000</code></dt>
+  <dd>an exact moment</dd>
+  </dl>
+  </blockquote>
+</dd>
+<dt>locations</dt>
+<dd>
+  <blockquote>
+  <dl>
+  <dt><code>25.787,-122.333,47.610,-80.224</code></dt>
+  <dd>points in the area between Seattle and Miami</dd>
+  <dt><code>36.08,-115.17~100 mi</code></dt>
+  <dd>point within 100 miles of Las Vegas</dd>
+  </dl>
+  </blockquote>
+</dd>
+<dt>numbers</dt>
+<dd>
+  <blockquote>
+  <dl>
+  <dt><code>80</code></dt>
+  <dd>exact match</dd>
+  <dt><code>(80..100]</code></dt>
+  <dd>larger than 80, but not larger than 100</dd>
+  </dl>
+  </blockquote>
+</dd>
+<dt>measures</dt>
+<dd>
+  <blockquote>
+  <dl>
+  <dt><code>10 lb</code></dt>
+  <dd>10 lb, or 4.54 kg (or equivalent)</dd>
+  <dt><code>[10 lb..20 lb]</code></dt>
+  <dd>not less than 10, and not more than 20 lb (or equivalent)</dd>
+  </dl>
+  </blockquote>
+</dd>
+<dt>durations</dt>
+<dd>
+  <blockquote>
+  <dl>
+  <dt><code>1h 30min</code></dt>
+  <dd>1 hour and 30 minutes, or 90 minutes</dd>
+  <dt><code>[1h..1d]</code></dt>
+  <dd>not less than 1 hour, and not more than 1 day</dd>
+  </dl>
+  </blockquote>
+</dd>
+</dl>
+
+<h4>Ranges</h4>
+
+<p>The begin or end of a range expressions can be open, inclusive or exclusive:</p>
+
+<dl>
+<dt>[<em>a</em>..<em>b</em>]</dt>
+<dd>values not smaller than <em>a</em> and not larger than <em>b</em></dd>
+<dt>[<em>a</em>..<em>b</em>)</dt>
+<dd>values not smaller than <em>a</em> but smaller than <em>b</em></dd>
+<dt>(<em>a</em>..<em>b</em>]</dt>
+<dd>values larger than <em>a</em> but not larger than <em>b</em></dd>
+<dt>(<em>a</em>..<em>b</em>)</dt>
+<dd>values larger than <em>a</em> and smaller than <em>b</em></dd>
+<dt>[<em>a</em>..<em>*</em>)</dt>
+<dd>values not smaller than <em>a</em></dd>
+<dt>(<em>*</em>..<em>b</em>]</dt>
+<dd>values not larger than <em>b</em></dd>
+</dl>
+
+</section>
+
+<section id="api-facets">
+
+<h3>Query Facets</h3>
+
+<p>Facets can be used to specify what data to return when listing events.</p>
+
+<pre>id:<em>&lt;id&gt;</em>,type=<em>&lt;type&gt;</em>,<em>&lt;param=value&gt;</em>,...</pre>
+
+<dl>
+<dt>id</dt>
+<dd>A short string, used to identify the widget's data in the result.</dd>
+<dt>type</dt>
+<dd>The widget type, see below.</dd>
+<dt>param=value</dt>
+<dd>Type-specific parameters for the widget, see below.</dd>
+</dl>
+
+<h4>Types</h4>
+
+<dl>
+<dt>list</dt>
+<dd>
+  <blockquote>
+  <dl>
+  <dt>offset=<em>&lt;integer&gt;</em></dt>
+  <dd>The offset of the first event. Default is <em>0</em>.</dd>
+  <dt>limit=<em>&lt;integer&gt;</em></dt>
+  <dd>How many events to return. Default is <em>10</em>.</dd>
+  <dt>order=<em>&lt;field name&gt;</em></dt>
+  <dd>The field to sort on. Default is <em>timestamp</em>.</dd>
+  <dt>reverse=<em>&lt;boolean&gt;</em></dt>
+  <dd>Sort in ascending order. Default is <em>false</em></dd>
+  </dl>
+  </blockquote>
+</dd>
+<dt>count</dt>
+<dd>
+  <blockquote>
+  <dl>
+  <dt>field=<em>&lt;'tag'|'author'&gt;</em></dt>
+  <dd>The field to aggregate on. Required.</dd>
+  <dt>order=<em>&lt;'count'|'term'&gt;</em></dt>
+  <dd>Order results by count or alphabetic. Default is by <em>count</em>.</dd>
+  <dt>offset=<em>&lt;integer&gt;</em></dt>
+  <dd>The offset of the first result. Default is <em>0</em>.</dd>
+  <dt>limit=<em>&lt;integer&gt;</em></dt>
+  <dd>How many results to return. Default is <em>10</em>.</dd>
+  <dt>reverse=<em>&lt;boolean&gt;</em></dt>
+  <dd>Sort in descending order. Default is <em>false</em></dd>
+  </dl>
+  </blockquote>
+</dd>
+<dt>timeline</dt>
+<dd>
+  <blockquote>
+  <dl>
+  <dt>interval=<em>&lt;'year'|'month'|'day'|'hour'|'minute'&gt;</em></dt>
+  <dd>The interval at which values are aggregated. Default is <em>month</em>.</dd>
+  <dt>timezone=<em>&lt;Z&gt;</em></dt>
+  <dd>The timezone offset to use. Default is <em>+00:00</em></dd>
+  </dl>
+  </blockquote>
+</dd>
+<dt>map</dt>
+<dd>
+  <blockquote>
+  <dl>
+  <dt>factor=<em>&lt;Number&gt;</em></dt>
+  <dd>Controls the clustering, from 0.0 (show each point) to 1.0 (one big cluster). Default is <em>0.2</em>.</dd>
+  </dl>
+  </blockquote>
+</dd>
+<dt>plot</dt>
+<dd>
+  <blockquote>
+  <dl>
+  <dt>field=<em>&lt;String&gt;</em></dt>
+  <dd>The field containing the values to plot. Required.</dd>
+  <dt>unit=<em>&lt;String&gt;</em></dt>
+  <dd>The unit of the value. Required for fields with units.</dd>
+  <dt>interval=<em>&lt;'year'|'month'|'day'|'hour'|'minute'&gt;</em></dt>
+  <dd>Resolution of the time axis. Default is <em>month</em>.</dd>
+  <dt>timezone=<em>&lt;Z&gt;</em></dt>
+  <dd>The timezone offset to use. Default is <em>+00:00</em></dd>
+  </dl>
+  </blockquote>
+</dd>
+<dt>ratings</dt>
+<dd>
+  <blockquote>
+  <dl>
+  <dt>scale=<em>&lt;Integer&gt;</em></dt>
+  <dd>The number of groups to sort the ratings into. Defaults to <em>5</em> (i.e. 0 to 5 stars).</dd>
+  </dl>
+  </blockquote>
+</dd>
+<dt>scoreboard</dt>
+<dd>
+  <blockquote>
+  <dl>
+  <dt>key_field=<em>&lt;'author'|'tag'&gt;</em></dt>
+  <dd>The field to aggregate on. Required.</dd>
+  <dt>value_field=<em>&lt;String&gt;</em></dt>
+  <dd>The field containing the values. Required.</dd>
+  <dt>unit=<em>&lt;String&gt;</em></dt>
+  <dd>The unit of the value. Required for fields with units.</dd>
+  <dt>order=<em>&lt;'count'|'term'&gt;</em></dt>
+  <dd>Order results by count or alphabetic. Default is by <em>count</em>.</dd>
+  <dt>limit=<em>&lt;integer&gt;</em></dt>
+  <dd>How many results to return. Default is <em>10</em>.</dd>
+  </dl>
+  </blockquote>
+</dd>
+<dt>gantt</dt>
+<dd>
+  <blockquote>
+  <dl>
+  <dt>field=<em>&lt;String&gt;</em></dt>
+  <dd>The field containing the values. Required.</dd>
+  <dt>order=<em>&lt;'count'|'term'&gt;</em></dt>
+  <dd>Order results by count or alphabetic. Default is by <em>term</em>.</dd>
+  <dt>limit=<em>&lt;integer&gt;</em></dt>
+  <dd>How many results to return. Default is <em>10</em>.</dd>
+  <dt>timezone=<em>&lt;Z&gt;</em></dt>
+  <dd>The timezone offset to use. Default is <em>+00:00</em></dd>
+  </dl>
+  </blockquote>
+</dd>
+<dt>histogram</dt>
+<dd>
+  <blockquote>
+  <dl>
+  <dt>field=<em>&lt;String&gt;</em></dt>
+  <dd>The field containing the values. Required.</dd>
+  <dt>unit=<em>&lt;String&gt;</em></dt>
+  <dd>The unit of the value. Required for fields with units.</dd>
+  <dt>interval=<em>&lt;Integer&gt;</em></dt>
+  <dd>The bucket size. Default is <em>10</em>.</dd>
+  </dl>
+  </blockquote>
+</dd>
+<dt>time_histogram</dt>
+<dd>
+  <blockquote>
+  <dl>
+  <dt>interval=<em>&lt;'hour_of_day'|'day_of_week'|'month_of_year'&gt;</em></dt>
+  <dd>The time interval to aggregate on. Required.</dd>
+  <dt>timezone=<em>&lt;Z&gt;</em></dt>
+  <dd>The timezone offset to use. Default is <em>+00:00</em></dd>
+  </dl>
+  </blockquote>
+</dd>
+</dl>
+
+</section>
+
+<section id="api-errors">
+
+<h3>Errors</h3>
+
+<p>The following error codes could be returned for most requests:</p>
+
+<dl>
+
+<dt>400 Bad Request</dt>
+<dd>Invalid or missing parameters or request body; check the response body for an explanation.</dd>
+
+<dt>401 Unauthorized</dt>
+<dd>Missing <code>Authentication</code> header.</dd>
+
+<dt>403 Forbidden</dt>
+<dd>Authentication failed, or insufficient permissions.</dd>
+
+<dt>404 Not Found</dt>
+<dd>The requested resource doesn't exist.</dd>
+
+<dt>409 Conflict</dt>
+<dd>Trying to update a stale resource.</dd>
+
+<dt>500 Internal Server Error</dt>
+<dd>Shouldn't happen; please contact us.</dd>
+
+<dt>503 Service Unavailable</dt>
+<dd>The site is down for maintenance or overloaded; contact us if this lasts longer than a few minutes.</dd>
+
+</dl>
+
+<p>In some cases, the response may contain a body with a problem description:</p>
+
+<pre>{
+  "message" : <em>&lt;String&gt;</em>
+}
+</pre>
+
+</section>
+
+</section>
+
+</div>

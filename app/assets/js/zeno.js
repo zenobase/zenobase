@@ -144,6 +144,7 @@
 			.when('/users/:userId/reset', { templateUrl : cacheBuster.rewrite('/partials/reset.html') })
 			.when('/users/:userId/verify', { templateUrl : cacheBuster.rewrite('/partials/verification.html') })
 			.when('/oauth/authorize', { templateUrl : cacheBuster.rewrite('/partials/oauth.html') })
+			.when('/api/:section', { templateUrl : cacheBuster.rewrite('/partials/api.html'), controller : 'DocumentController' })
 			.otherwise({ templateUrl : cacheBuster.rewrite('/partials/404.html') });
 	}]);
 
@@ -2721,6 +2722,16 @@
 					$scope.message = 'Couldn\'t authorize this task. Try again later or contact support.';
 				}
 			});
+	}]);
+
+	app.controller('DocumentController', ['$scope', '$location', '$routeParams', '$timeout', function($scope, $location, $routeParams, $timeout) {
+		var id = $location.path().substring(1).replace('/', '-');
+		var element = document.getElementById(id);
+		if (element) {
+			$timeout(function() { 
+				element.scrollIntoView(true);
+			});
+		}
 	}]);
 
 	app.factory('Field', ['User', 'moment', function(User, moment) {
