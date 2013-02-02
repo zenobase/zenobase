@@ -36,7 +36,7 @@ please <a href="mailto:info@zenobase.com?subject=Zenobase+API">drop us a note</a
 		</div>
 		<div class="span3">
 			<ul class="nav nav-list">
-				<li class="nav-header">Common</li>
+				<li class="nav-header"><a href="/#/api/buckets">Common</a></li>
 				<li><a href="/#/api/username">Look up a username</a></li>
 				<li><a href="/#/api/constraints">Query Constraints</a></li>
 				<li><a href="/#/api/facets">Query Facets</a></li>
@@ -324,7 +324,7 @@ X-Command-ID: 4o6iqmpnrr
 
 <p>Update a bucket's metadata, i.e. its label, description, roles and widgets.</p>
 
-<pre>PUT /buckets/v7jg3l5ibc
+<pre>PUT /buckets/<em>&lt;bucket_id&gt;</em>
 Content-Type: application/json
 Host: api.zenobase.com
 Authorization: Bearer <em>&lt;access_token&gt;</em>
@@ -344,6 +344,11 @@ Authorization: Bearer <em>&lt;access_token&gt;</em>
   ]
 }
 </pre>
+
+<dl>
+  <dt>bucket_id</dt>
+  <dd>The bucket to update.</dd>
+</dl>
 
 <h4>Example</h4>
 
@@ -373,7 +378,7 @@ X-Command-ID: 4o6iqmpnrr
 
 <section id="api-delete-bucket">
 
-<h3>Delete buckets</h3>
+<h3>Delete a bucket</h3>
 
 <p>Delete a bucket including all its events.</p>
 
