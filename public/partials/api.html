@@ -9,6 +9,13 @@ please <a href="mailto:info@zenobase.com?subject=Zenobase+API">drop us a note</a
 	<div class="row-fluid">
 		<div class="span3">
 			<ul class="nav nav-list">
+				<li class="nav-header"><a href="/#/api/auth">Authentication</a></li>
+				<li><a href="/#/api/implicit-grant">Implicit Grant</a></li>
+				<li><a href="/#/api/password-grant">Password Grant</a></li>
+			</ul>
+		</div>
+		<div class="span3">
+			<ul class="nav nav-list">
 				<li class="nav-header"><a href="/#/api/buckets">Buckets</a></li>
 				<li><a href="/#/api/list-buckets">List buckets</a></li>
 				<li><a href="/#/api/get-bucket">Get a single bucket</a></li>
@@ -29,13 +36,6 @@ please <a href="mailto:info@zenobase.com?subject=Zenobase+API">drop us a note</a
 		</div>
 		<div class="span3">
 			<ul class="nav nav-list">
-				<li class="nav-header"><a href="/#/api/auth">Authentication</a></li>
-				<li><a href="/#/api/auth-implicit">Implicit Grant</a></li>
-				<li><a href="/#/api/auth-password">Password Grant</a></li>
-			</ul>
-		</div>
-		<div class="span3">
-			<ul class="nav nav-list">
 				<li class="nav-header">Common</li>
 				<li><a href="/#/api/username">Look up a username</a></li>
 				<li><a href="/#/api/constraints">Query Constraints</a></li>
@@ -47,11 +47,129 @@ please <a href="mailto:info@zenobase.com?subject=Zenobase+API">drop us a note</a
 </div>
 
 
+<section id="api-auth">
+
+<h2>Authentication</h2>
+
+<p>Requests for protected resources must either include an <a href="http://oauth.net/2/">OAuth 2</a> <em>Authorization</em> header:</p>
+
+<pre>Authorization: Bearer <em>&lt;access_token&gt;</em></pre>
+
+<p>...or append the access token as a query parameter:</p>
+
+<pre>https://zenobase.com/...?code=<em>&lt;access_token&gt;</em></pre>
+
+<p>Access tokens do not expire, but can be revoked any time.</p>
+
+<p>Access tokens can be obtained by an <a href="/#/api/implicit-grant">implicit grant</a> 
+or a <a href="/#/api/password-grant">password grant</a>.</p>
+
+<section id="api-implicit-grant">
+
+<h3>Implicit Grant</h3>
+
+<p>This authentication method allows a user to grant an application access to a single bucket.</p>
+
+<p>In order to use this authentication method, an account with a validated email address is required.</p>
+
+<p>The first step is to redirect the user to an authorization page:</p>
+
+<pre>https://zenobase.com/#/oauth/authorize?response_type=token&amp;client_id=<em>&lt;client_id&gt;</em>&amp;redirect_uri=<em>&lt;redirect_uri&gt;</em></pre>
+
+<dl>
+<dt>client_id</dt>
+<dd>Your user ID (hidden behind the <i class="icon-pencil" title="Edit"></i> icon on your profile page).</dd>
+<dt>redirect_uri</dt>
+<dd>The page to which the user should be redirected back to. The domain must match the domain of your verified email address. If the address does not end with either <code>#</code> or <code>?</code>, <code>#</code> is appended.</dd>
+</dl>
+
+<p>Upon authorization, the user is redirected to:</p>
+
+<pre><em>&lt;redirect_uri#&gt;</em>code=<em>&lt;code&gt;</em>&amp;scope=<em>&lt;scope&gt;</em></pre>
+
+<dl>
+<dt>code</dt>
+<dd>The access token to use in the <em>Authorization</em> header.</dd>
+<dt>scope</dt>
+<dd>The bucket to which you have been granted access.</dd>
+</dl>
+
+<p>If the authorization fails for any reason other than an invalid <em>redirect_uri</em>, the user is redirected to:</p>
+
+<pre><em>&lt;redirect_uri#&gt;</em>error=<em>&lt;error&gt;</em>&amp;error_description=<em>&lt;error_description&gt;</em></pre>
+
+<dl>
+<dt>error</dt>
+<dd>The error code:
+<blockquote>
+  <dl>
+  <dt>invalid_request</dt>
+  <dd>The request is missing a required parameter.</dd>
+  <dt>unauthorized_client</dt>
+  <dd>The client is not authorized to request an access token using this method.</dd>
+  <dt>access_denied</dt>
+  <dd>The user denied the request.</dd>
+  <dt>unsupported_response_type</dt>
+  <dd>The <em>response_type</em> parameter must be set to <em>token</em>.</dd>
+  <dt>server_error</dt>
+  <dd>The request could not be processed. Try again later or contact support.</dd>
+  </dl>
+</blockquote>
+</dd>
+<dt>error_description</dt>
+<dd>Optional description of the error.</dd>
+</dl>
+
+</section>
+
+<section id="api-password-grant">
+
+<h3>Password Grant</h3>
+
+<p>This authentication method grants full access to a user's account.</p>
+
+<pre>POST /oauth/token
+Host: api.zenobase.com
+Content-Type: application/x-www-form-urlencoded
+
+grant_type=password&amp;username=<em>&lt;username&gt;</em>&amp;password=<em>&lt;password&gt;</em>
+</pre>
+
+<dl>
+<dt>username</dt>
+<dd>The user's name.</dd>
+<dt>password</dt>
+<dd>The user's password.</dd>
+</dl>
+
+<h4>Example</h4>
+
+<h5>Request</h5>
+
+<pre>curl -i -X POST 'https://api.zenobase.com/oauth/token' \
+  -d 'grant_type=password&amp;username=jdoe&amp;password=secret1337'
+</pre>
+
+<h5>Response</h5>
+
+<pre>HTTP/1.1 200 OK
+Content-Type: application/json
+
+{
+  "access_token" : "e7975e8bb6mabc3ek567",
+}
+</pre>
+
+</section>
+
+</section>
+
+
 <section id="api-buckets">
 
 <h2>Buckets</h2>
 
-<p class="lead">Buckets are containers for <a href="/#/api-events">events</a>, 
+<p class="lead">Buckets are containers for <a href="/#/api/events">events</a>, 
 but also include permissions and dashboard settings.</p>
 
 <section id="api-list-buckets">
@@ -605,126 +723,9 @@ X-Command-ID: p3ateetvs1
 </section>
 
 
-<section id="api-auth">
-
-<h2>Authentication</h2>
-
-<p>Requests for restricted resources must either include an <a rel="nofollow" target="_blank" href="http://oauth.net/2/">OAuth 2</a> <em>Authorization</em> header:</p>
-
-<pre>Authorization: Bearer <em>&lt;access_token&gt;</em></pre>
-
-<p>...or append the access token as a query parameter:</p>
-
-<pre>https://zenobase.com/...?code=<em>&lt;access_token&gt;</em></pre>
-
-<p>Access tokens do not expire, but can be revoked any time.</p>
-
-<p>There are two ways to obtain an access token:</p>
-
-<section id="api-auth-implicit">
-
-<h3>Implicit Grant</h3>
-
-<p>This authentication method allows a user to grant an application access to a single bucket.</p>
-
-<p>In order to use this authentication method, an account with a validated email address is required.</p>
-
-<p>The first step is to redirect the user to an authorization page:</p>
-
-<pre>https://zenobase.com/#/oauth/authorize?response_type=token&amp;client_id=<em>&lt;client_id&gt;</em>&amp;redirect_uri=<em>&lt;redirect_uri&gt;</em></pre>
-
-<dl>
-<dt>client_id</dt>
-<dd>The user ID from your profile page (click the <em>Edit</em> icon).</dd>
-<dt>redirect_uri</dt>
-<dd>The page to which the user is redirected back to. The domain must match the domain of your verified email address. If the address does not end with either <code>#</code> or <code>?</code>, <code>#</code> is appended.</dd>
-</dl>
-
-<p>Upon authorization, the user is redirected to:</p>
-
-<pre><em>&lt;redirect_uri#&gt;</em>code=<em>&lt;code&gt;</em>&amp;scope=<em>&lt;scope&gt;</em></pre>
-
-<dl>
-<dt>code</dt>
-<dd>The access token to use in the <em>Authorization</em> header.</dd>
-<dt>scope</dt>
-<dd>The bucket to which you have been granted access.</dd>
-</dl>
-
-<p>If the authorization fails for any reason other than an invalid <em>redirect_uri</em>, the user is redirected to:</p>
-
-<pre><em>&lt;redirect_uri#&gt;</em>error=<em>&lt;error&gt;</em>&amp;error_description=<em>&lt;error_description&gt;</em></pre>
-
-<dl>
-<dt>error</dt>
-<dd>The error code:
-<blockquote>
-  <dl>
-  <dt>invalid_request</dt>
-  <dd>The request is missing a required parameter.</dd>
-  <dt>unauthorized_client</dt>
-  <dd>The client is not authorized to request an access token using this method.</dd>
-  <dt>access_denied</dt>
-  <dd>The user denied the request.</dd>
-  <dt>unsupported_response_type</dt>
-  <dd>The <em>response_type</em> parameter must be set to <em>token</em>.</dd>
-  <dt>server_error</dt>
-  <dd>The request could not be processed. Try again later or contact support.</dd>
-  </dl>
-</blockquote>
-</dd>
-<dt>error_description</dt>
-<dd>Optional description of the error.</dd>
-</dl>
-
-</section>
-
-<section id="api-auth-password">
-
-<h3>Password Grant</h3>
-
-<p>This authentication method grants full access to a user's account.</p>
-
-<pre>POST /oauth/token
-Host: api.zenobase.com
-Content-Type: application/x-www-form-urlencoded
-
-grant_type=password&amp;username=<em>&lt;username&gt;</em>&amp;password=<em>&lt;password&gt;</em>
-</pre>
-
-<dl>
-<dt>username</dt>
-<dd>The user's name.</dd>
-<dt>password</dt>
-<dd>The user's password.</dd>
-</dl>
-
-<h4>Example</h4>
-
-<h5>Request</h5>
-
-<pre>curl -i -X POST 'https://api.zenobase.com/oauth/token' \
-  -d 'grant_type=password&amp;username=jdoe&amp;password=secret1337'
-</pre>
-
-<h5>Response</h5>
-
-<pre>HTTP/1.1 200 OK
-Content-Type: application/json
-
-{
-  "access_token" : "e7975e8bb6mabc3ek567",
-}
-</pre>
-
-</section>
-
-</section>
-
-
 <section>
 
-<h2>Common</h2>
+<h2 id="api-common">Common</h2>
 
 <section id="api-username">
 
