@@ -400,8 +400,8 @@
 					console.assert(response.access_token, 'missing token in sign in response');
 					token.set(response.access_token);
 					$scope.closeDialog();
+					$scope.whoami();
 					if ($location.url() === '/') {
-						$scope.whoami();
 						$location.url('/users/' + $scope.username);
 					} else {
 						$route.reload();
@@ -545,30 +545,8 @@
 		$scope.init();
 	}]);
 	
-	app.controller('OAuthController', ['$scope', '$http', '$location', '$window', function($scope, $http, $location, $window) {
+	app.controller('OAuthController', ['$scope', '$http', '$location', '$window', 'token', function($scope, $http, $location, $window, token) {
 
-		var init = function() {
-			$scope.bucket = null;
-			$scope.client = $location.search()['client_id']
-			$scope.redirectUri = $location.search()['redirect_uri'];
-			if (!$scope.client) {
-				$scope.deny('invalid_request', 'client_id is missing');
-			}
-			if (!$scope.redirectUri) {
-				$scope.message = 'Redirect URI is missing.';
-			}
-			$http.get('/buckets/?' + $.param({ 'q' : 'roles.principal:' + $scope.user['@id'], 'offset' : 0, 'limit' : 25 }))
-				.success(function(response) {
-					$scope.buckets = response.buckets;
-				})
-				.error(function(response, status) {
-					if (status < 500) {
-						$scope.message = 'Can\'t list buckets.';
-					} else {
-						$scope.message = 'Could not list buckets. Try again later or contact support.';
-					}
-				});		
-		};
 		var getRedirectUri = function(params) {
 			return [ $scope.redirectUri, $.param(params) ]
 				.join(/[?#]$/.test($scope.redirectUri) ? '' : '#');
@@ -603,7 +581,35 @@
 			$window.location = getRedirectUri({ 'error' : code, 'error_message' : message });
 		};
 
-		$scope.$watch('user', init);
+		$scope.client = $location.search()['client_id']
+		$scope.redirectUri = $location.search()['redirect_uri'];
+		if (!$scope.client) {
+			$scope.deny('invalid_request', 'client_id is missing');
+		}
+		if (!$scope.redirectUri) {
+			$scope.message = 'Redirect URI is missing.';
+		}
+		if (!token.get()) {
+			$scope.openDialog('sign-in-dialog');
+		}
+
+		$scope.$watch('user', function(user) {
+			if (user) {
+				$http.get('/buckets/?' + $.param({ 'q' : 'roles.principal:' + $scope.user['@id'], 'offset' : 0, 'limit' : 25 }))
+				.success(function(response) {
+					$scope.buckets = response.buckets;
+				})
+				.error(function(response, status) {
+					if (status < 500) {
+						$scope.message = 'Can\'t list buckets.';
+					} else {
+						$scope.message = 'Could not list buckets. Try again later or contact support.';
+					}
+				});		
+			} else {
+				$scope.bucket = null;
+			}
+		});
 	}]);
 
 	app.controller('BucketListController', ['$scope', '$http', 'tracker', function($scope, $http, tracker) {
