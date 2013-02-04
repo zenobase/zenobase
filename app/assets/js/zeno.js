@@ -557,7 +557,7 @@
 			if (!$scope.redirectUri) {
 				$scope.message = 'Redirect URI is missing.';
 			}
-			$http.get('/buckets/?' + $.param({ 'identity' : $scope.user['@id'], 'offset' : 0, 'limit' : 25 }))
+			$http.get('/buckets/?' + $.param({ 'q' : 'roles.principal:' + $scope.user['@id'], 'offset' : 0, 'limit' : 25 }))
 				.success(function(response) {
 					$scope.buckets = response.buckets;
 				})
