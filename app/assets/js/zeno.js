@@ -37,8 +37,8 @@
 	app.factory('moment', function() {
 
 		// TODO see https://github.com/timrwood/moment/issues/537
-		moment.fn.fromNowOrNow = function (a) {
-			if (Math.abs(moment().diff(this)) < 45000) {
+		moment.fn.fromNowOrNow = function(a) {
+			if (Math.abs(moment().diff(this)) < 60000) {
 				return 'just now';
 			}
 			return this.fromNow(a);
