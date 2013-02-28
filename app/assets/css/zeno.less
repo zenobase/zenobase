@@ -1,9 +1,10 @@
-// CSS Reset
-@import "bootstrap/reset.less";
 
 // Core variables and mixins
 @import "bootstrap/variables.less";
 @import "bootstrap/mixins.less";
+
+// CSS Reset
+@import "bootstrap/reset.less";
 
 // Grid system and page structure
 @import "bootstrap/scaffolding.less";
@@ -53,7 +54,15 @@
 @import "bootstrap/utilities.less";
 
 // Responsive
+@-ms-viewport{
+  width: device-width;
+}
 @import "bootstrap/responsive-utilities.less";
+@import "bootstrap/responsive-1200px-min.less";
+@import "bootstrap/responsive-768px-979px.less";
+@import "bootstrap/responsive-767px-max.less";
+
+
 @import "bootstrap/responsive-767px-max.less";
 @import "bootstrap/responsive-768px-979px.less";
 @import "bootstrap/responsive-1200px-min.less";
