@@ -11,7 +11,7 @@ object ApplicationBuild extends Build {
 
     val appDependencies = Seq(
       javaCore,
-      "javax.mail" % "mail" % "1.4.5",
+      "javax.mail" % "mail" % "1.4.6",
       "com.google.guava" % "guava" % "14.0",
       "com.google.guava" % "guava-testlib" % "14.0" % "test",
       "com.google.inject" % "guice" % "3.0",
@@ -20,12 +20,12 @@ object ApplicationBuild extends Build {
       "org.elasticsearch" % "elasticsearch-cloud-aws" % "1.10.0",
       "org.elasticsearch" % "elasticsearch-lang-javascript" % "1.2.0" exclude("log4j", "log4j"),
       "org.jscience" % "jscience" % "4.3.1",
-      "org.jsoup" % "jsoup" % "1.7.1",
+      "org.jsoup" % "jsoup" % "1.7.2",
       "org.scribe" % "scribe" % "1.3.2",
-      "newrelic.java-agent" % "newrelic-api" % "2.13.0",
-      "org.seleniumhq.selenium" % "selenium-chrome-driver" % "2.28.0" % "test",
+      "newrelic.java-agent" % "newrelic-api" % "2.14.1",
+      "org.seleniumhq.selenium" % "selenium-chrome-driver" % "2.29.1" % "test",
       "org.apache.httpcomponents" % "httpcore" % "4.2.3" % "test",
-      "org.mockito" % "mockito-all" % "1.9.0" % "test",
+      "org.mockito" % "mockito-all" % "1.9.5" % "test",
       "org.jvnet.mock-javamail" % "mock-javamail" % "1.9" % "test"
     )
 

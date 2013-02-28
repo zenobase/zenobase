@@ -2,7 +2,6 @@ package com.zenobase.common;
 
 import com.google.common.collect.BoundType;
 import com.google.common.collect.Range;
-import com.google.common.collect.Ranges;
 
 public abstract class RangeParser<T extends Comparable<T>> {
 
@@ -34,14 +33,14 @@ public abstract class RangeParser<T extends Comparable<T>> {
 	private Range<T> toRange(BoundType lowerType, T lower, T upper, BoundType upperType) {
 		if (lower == null) {
 			if (upper == null) {
-				return Ranges.all();
+				return Range.all();
 			} else {
-				return Ranges.upTo(upper, upperType);
+				return Range.upTo(upper, upperType);
 			}
 		} else if (upper == null) {
-			return Ranges.downTo(lower, lowerType);
+			return Range.downTo(lower, lowerType);
 		} else {
-			return Ranges.range(lower, lowerType, upper, upperType);
+			return Range.range(lower, lowerType, upper, upperType);
 		}
 	}
 

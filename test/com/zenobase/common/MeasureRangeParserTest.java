@@ -8,7 +8,6 @@ import javax.measure.Measurable;
 
 import org.junit.Test;
 import com.google.common.collect.Range;
-import com.google.common.collect.Ranges;
 
 public class MeasureRangeParserTest {
 
@@ -18,7 +17,7 @@ public class MeasureRangeParserTest {
 	public void testClosedOpenRange() {
 		Measurable<?> lower = Measures.valueOf(new BigDecimal(-1), "mg/L");
 		Measurable<?> upper = Measures.valueOf(new BigDecimal(1), "mg/L");
-		testRange("[-1 mg/L..1 mg/L)", Ranges.closedOpen(lower, upper));
+		testRange("[-1 mg/L..1 mg/L)", Range.closedOpen(lower, upper));
 	}
 
 	private void testRange(String value, Range<Measurable<?>> expected) {

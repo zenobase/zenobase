@@ -7,7 +7,6 @@ import java.math.BigDecimal;
 import org.junit.Test;
 import com.google.common.collect.BoundType;
 import com.google.common.collect.Range;
-import com.google.common.collect.Ranges;
 
 public class DecimalRangeParserTest {
 
@@ -15,42 +14,42 @@ public class DecimalRangeParserTest {
 
 	@Test
 	public void testClosedRange() {
-		testRange("[-3.1415..1]", Ranges.closed(new BigDecimal("-3.1415"), BigDecimal.ONE));
+		testRange("[-3.1415..1]", Range.closed(new BigDecimal("-3.1415"), BigDecimal.ONE));
 	}
 
 	@Test
 	public void testOpenRange() {
-		testRange("(-3.1415..1)", Ranges.open(new BigDecimal("-3.1415"), BigDecimal.ONE));
+		testRange("(-3.1415..1)", Range.open(new BigDecimal("-3.1415"), BigDecimal.ONE));
 	}
 
 	@Test
 	public void testOpenClosedRange() {
-		testRange("(-3.1415..1]", Ranges.openClosed(new BigDecimal("-3.1415"), BigDecimal.ONE));
+		testRange("(-3.1415..1]", Range.openClosed(new BigDecimal("-3.1415"), BigDecimal.ONE));
 	}
 
 	@Test
 	public void testClosedUnboundedRange() {
-		testRange("[-3.1415..*)", Ranges.downTo(new BigDecimal("-3.1415"), BoundType.CLOSED));
+		testRange("[-3.1415..*)", Range.downTo(new BigDecimal("-3.1415"), BoundType.CLOSED));
 	}
 
 	@Test
 	public void testUnboundedClosedRange() {
-		testRange("(*..1]", Ranges.upTo(BigDecimal.ONE, BoundType.CLOSED));
+		testRange("(*..1]", Range.upTo(BigDecimal.ONE, BoundType.CLOSED));
 	}
 
 	@Test
 	public void testOpenUnboundedRange() {
-		testRange("(-3.1415..*)", Ranges.downTo(new BigDecimal("-3.1415"), BoundType.OPEN));
+		testRange("(-3.1415..*)", Range.downTo(new BigDecimal("-3.1415"), BoundType.OPEN));
 	}
 
 	@Test
 	public void testUnboundedRange() {
-		testRange("(*..*)", Ranges.<BigDecimal>all());
+		testRange("(*..*)", Range.<BigDecimal>all());
 	}
 
 	@Test
 	public void testSingletonRange() {
-		testRange("[1..1]", Ranges.singleton(BigDecimal.ONE));
+		testRange("[1..1]", Range.singleton(BigDecimal.ONE));
 	}
 
 	@Test(expected = IllegalArgumentException.class)
