@@ -62,9 +62,9 @@ Release Procedure
 
   9. Wait for the status check to show 4 (if migrating) or 8 (if not migrating) nodes and green health [/status].
 
-  10. Stop one or (if migrating) both old instance [Scalarium].
+  10. Stop one or (if migrating) both old instances [Scalarium].
 
-  11. (if not migrating) Wait for 6 nodes and green health before [/status].
+  11. (if not migrating) Wait for 6 nodes and green health [/status].
 
   12. (if not migrating) Stop the second old instance [Scalarium].
 
