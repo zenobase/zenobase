@@ -126,6 +126,7 @@ public class OAuthController extends ControllerSupport {
     	dispatcher.dispatch(new CreateAuthorizationCommand(principal, auth));
     	ObjectNode result = Nodes.newObject();
     	result.put("access_token", auth.getId());
+    	result.put("client_id", principal.getId());
     	if (scope != null) {
     		result.put("scope", scope);
     	}
