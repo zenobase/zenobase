@@ -6,10 +6,13 @@
 		<p><img src="/img/timeline.png"/></p>
 		<br/>
 		<p>
-			Explore <a href="https://zenobase.com/#/buckets/u07qih0a27/">sample data</a>, or 
-			<span data-ng-hide="user"><a id="new-user-link" data-ng-click="start()">start collecting your own data</a>.</span>
-			<span data-ng-show="user"><a id="existing-user-link" data-ng-href="/#/users/{{user.getName()}}" data-ng-show="user">view your data</a>.</span>
+			Track <a href="https://zenobase.com/#/buckets/u07qih0a27/">places you've been</a>,
+			<a href="https://zenobase.com/#/buckets/ma1vat5aoq/">movies you've seen</a>,
+			<a href="https://zenobase.com/#/buckets/djln1s6q9i/?q=timestamp:2013-02T-07:00">sleep</a>,
+			body weight, exercise, or just about anything else.
 		</p>
+		<p data-ng-hide="user"><a id="new-user-link" data-ng-click="start()">Start collecting</a> your own data now.</p>
+		<p data-ng-show="user"><a id="existing-user-link" data-ng-href="/#/users/{{user.getName()}}" data-ng-show="user">Revisit</a> your own data.</p>
 		<p id="tweet" data-ui-tweet data-username="zenobase"/>
 	</div>
 
