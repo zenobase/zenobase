@@ -38,8 +38,12 @@
 
 		// TODO see https://github.com/timrwood/moment/issues/537
 		moment.fn.fromNowOrNow = function(a) {
-			if (Math.abs(moment().diff(this)) < 60000) {
+			var diff = Math.abs(moment().diff(this));
+			if (diff < 60000) { // less than a minute
 				return 'just now';
+			}
+			if (diff >= 86400000) { // a day or more
+				return this.format('MMM D, YYYY');
 			}
 			return this.fromNow(a);
 		}
