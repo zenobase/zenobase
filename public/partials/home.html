@@ -8,12 +8,21 @@
 		<p>
 			Track <a href="https://zenobase.com/#/buckets/u07qih0a27/">places you've been</a>,
 			<a href="https://zenobase.com/#/buckets/ma1vat5aoq/">movies you've seen</a>,
-			<a href="https://zenobase.com/#/buckets/djln1s6q9i/?q=timestamp:2013-02T-07:00">sleep</a>,
-			body weight, exercise, or just about anything else.
+			health, fitness, or just about anything else.
 		</p>
-		<p data-ng-hide="user"><a id="new-user-link" data-ng-click="start()">Start collecting</a> your own data now.</p>
-		<p data-ng-show="user"><a id="existing-user-link" data-ng-href="/#/users/{{user.getName()}}" data-ng-show="user">Revisit</a> your own data.</p>
-		<p id="tweet" data-ui-tweet data-username="zenobase"/>
+		<p>
+			Pull in data from <a href="https://www.fitbit.com/">Fitbit</a>,
+			<a href="http://www.bodymedia.com/">BodyMedia</a>,
+			<a href="http://withings.com/">Withings</a> and
+			<a href="https://foursquare.com/">Foursquare</a>.
+		</p>
+		<br/>
+		<p data-ng-hide="user">
+			<a id="new-user-link" class="btn btn-large btn-primary" data-ng-click="start()">Get Started &raquo;</a>
+		</p>
+		<p data-ng-show="user">
+			<a id="existing-user-link" class="btn btn-large btn-primary" data-ng-href="/#/users/{{user.getName()}}">My Data &raquo;</a>
+		</p>
 	</div>
 
 </div>
