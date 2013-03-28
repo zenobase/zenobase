@@ -2215,8 +2215,10 @@
 			$scope.message = '';
 			$scope.field = null;
 			$scope.value = '';
+			$scope.$watch('event', function(event) {
+				$scope.entries = event.get($scope.fields);
+			}, true);
 			tracker.event('dialog', $scope.isNew ? 'create event' : 'edit event');
-
 		};
 		$scope.getTemplate = function(field) {
 			return field ? '/create-' + field.name + '.html' : null;
@@ -2268,11 +2270,6 @@
 		$scope.reset = function() {
 			$scope.field = null;
 		};
-
-		$scope.init();
-		$scope.$watch('event', function(event) {
-			$scope.entries = event.get($scope.fields);
-		}, true);
 	}]);
 
 	app.controller('CreateTagFieldController', ['$scope', '$http', function($scope, $http) {
