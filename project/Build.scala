@@ -12,8 +12,8 @@ object ApplicationBuild extends Build {
     val appDependencies = Seq(
       javaCore,
       "javax.mail" % "mail" % "1.4.6",
-      "com.google.guava" % "guava" % "14.0",
-      "com.google.guava" % "guava-testlib" % "14.0" % "test",
+      "com.google.guava" % "guava" % "14.0.1",
+      "com.google.guava" % "guava-testlib" % "14.0.1" % "test",
       "com.google.inject" % "guice" % "3.0",
       "com.google.inject.extensions" % "guice-multibindings" % "3.0",
       "org.elasticsearch" % "elasticsearch" % "0.20.6",
