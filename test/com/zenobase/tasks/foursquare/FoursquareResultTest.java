@@ -11,8 +11,6 @@ import com.zenobase.models.Event;
 import com.zenobase.models.Location;
 import com.zenobase.models.Resource;
 import com.zenobase.tasks.ResultTestSupport;
-import com.zenobase.tasks.foursquare.FoursquareResult;
-
 
 public class FoursquareResultTest extends ResultTestSupport {
 

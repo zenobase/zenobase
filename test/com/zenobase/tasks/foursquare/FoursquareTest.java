@@ -11,9 +11,6 @@ import com.zenobase.json.Nodes;
 import com.zenobase.tasks.Task;
 import com.zenobase.tasks.TaskManager;
 import com.zenobase.tasks.TaskTestSupport;
-import com.zenobase.tasks.foursquare.FoursquareTask;
-import com.zenobase.tasks.foursquare.FoursquareTaskManager;
-
 
 public class FoursquareTest extends TaskTestSupport {
 
