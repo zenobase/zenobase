@@ -22,7 +22,7 @@ object ApplicationBuild extends Build {
       "org.jscience" % "jscience" % "4.3.1",
       "org.jsoup" % "jsoup" % "1.7.2",
       "net.sf.opencsv" % "opencsv" % "2.3",
-      "org.scribe" % "scribe" % "1.3.2",
+      "org.scribe" % "scribe" % "1.3.3",
       "newrelic.java-agent" % "newrelic-api" % "2.16.0",
       "org.seleniumhq.selenium" % "selenium-chrome-driver" % "2.31.0" % "test",
       "org.apache.httpcomponents" % "httpcore" % "4.2.3" % "test",
