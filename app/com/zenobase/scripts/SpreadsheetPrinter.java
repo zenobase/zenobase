@@ -1,0 +1,148 @@
+package com.zenobase.scripts;
+
+import java.io.IOException;
+import java.io.Writer;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import org.codehaus.jackson.JsonNode;
+import org.codehaus.jackson.node.ArrayNode;
+import org.codehaus.jackson.node.ObjectNode;
+import au.com.bytecode.opencsv.CSVWriter;
+import com.google.common.base.Joiner;
+import com.google.common.base.Objects;
+import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
+
+public class SpreadsheetPrinter {
+
+	private CSVWriter writer;
+	private ImmutableList<Field> fields;
+
+	public SpreadsheetPrinter(Writer out) {
+		writer = new CSVWriter(out, ',', '"', "\n");
+	}
+
+	private static class Field {
+
+		private final ImmutableList<String> path;
+
+		public Field(Field parent, String field) {
+			ImmutableList.Builder<String> builder = ImmutableList.builder();
+			if (parent != null) {
+				builder.addAll(parent.path);
+			}
+			this.path = builder.add(field).build();
+		}
+
+		public JsonNode get(JsonNode node) {
+			JsonNode value = node;
+			for (String pathElement : path) {
+				if (value.isArray() && value.size() == 1) {
+					value = value.get(0);
+				}
+				value = value.path(pathElement);
+			}
+			return value;
+		}
+
+		@Override
+		public boolean equals(Object that) {
+			return that instanceof Field && equals((Field) that);
+		}
+
+		private boolean equals(Field that) {
+			return Objects.equal(path, that.path);
+		}
+
+		@Override
+		public int hashCode() {
+			return path.hashCode();
+		}
+
+		@Override
+		public String toString() {
+			return Joiner.on('.').join(path);
+		}
+	}
+
+	private static ImmutableList<Field> getFields(ArrayNode node) {
+		Set<Field> fields = Sets.newLinkedHashSet();
+		for (JsonNode item : node) {
+			Preconditions.checkArgument(item.isObject(), "Expected an array of objects");
+			getFields((ObjectNode) item, fields, null);
+		}
+		return ImmutableList.copyOf(fields);
+	}
+
+	private static void getFields(ObjectNode node, Set<Field> fields, Field parent) {
+		for (Iterator<Map.Entry<String, JsonNode>> i = node.getFields(); i.hasNext();) {
+			Map.Entry<String, JsonNode> entry = i.next();
+			Field field = new Field(parent, entry.getKey());
+			JsonNode value = entry.getValue();
+			if (value.isArray() && value.size() > 0) {
+				value = value.get(0);
+			}
+			if (value.isValueNode()) {
+				fields.add(field);
+			} else if (value.isObject()) {
+				getFields((ObjectNode) value, fields, field);
+			} else {
+				throw new IllegalArgumentException("Expected a value, an array of values, or an object");
+			}
+		}
+	}
+
+	public void print(ArrayNode items) {
+		if (fields == null) {
+			fields = getFields(items);
+			writer.writeNext(toString(fields));
+		}
+		for (JsonNode item : items) {
+			Preconditions.checkArgument(item.isObject());
+			writer.writeNext(toRow((ObjectNode) item));
+		}
+	}
+
+	public void close() throws IOException {
+		writer.close();
+	}
+
+	private static String[] toString(List<?> items) {
+		String[] stringified = new String[items.size()];
+		for (int i = 0; i < items.size(); ++i) {
+			stringified[i] = items.get(i).toString();
+		}
+		return stringified;
+	}
+
+	public String[] toRow(ObjectNode node) {
+		List<String> row = Lists.newArrayListWithCapacity(fields.size());
+		for (Field field : fields) {
+			row.add(toString(field.get(node)));
+		}
+		return row.toArray(new String[0]);
+	}
+
+	private static String toString(JsonNode node) {
+		if (node.isValueNode() || node.isMissingNode()) {
+			return node.asText();
+		}
+		if (node.isArray()) {
+			return toString((ArrayNode) node);
+		}
+		throw new IllegalArgumentException("Expected a value or an array of values, but got: " + node);
+	}
+
+	private static String toString(ArrayNode node) {
+		List<String> stringified = Lists.newArrayListWithCapacity(node.size());
+		for (JsonNode item : node) {
+			stringified.add(toString(item));
+		}
+		return Joiner.on(',').join(stringified);
+	}
+}
