@@ -2907,7 +2907,7 @@
 			name : 'pressure',
 			icon : 'icon-fullscreen',
 			type : 'numeric',
-			units : [ 'Pa', 'mmHg', 'inHg', 'psi' ],
+			units : [ 'Pa', 'hPa', 'mmHg', 'inHg', 'psi' ],
 			toText : function(value) {
 				return typeof value === 'object' ? value['@value'] + ' ' + value.unit : '';
 			},

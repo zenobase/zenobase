@@ -51,7 +51,7 @@ class NetatmoResult {
 		event.addValue(Event.TAG, device.getLabel().toLowerCase());
 		event.setValue(Event.LOCATION, device.getLocation());
 		event.setValue(Event.TEMPERATURE, Measures.<Temperature>valueOf(node.get(0).getDecimalValue(), "C"));
-		event.setValue(Event.PRESSURE, Measures.<Pressure>valueOf(node.get(2).getDecimalValue(), "mbar"));
+		event.setValue(Event.PRESSURE, Measures.<Pressure>valueOf(node.get(2).getDecimalValue(), "hPa"));
 		// TODO humidity (%), co2 (ppm), sound level (decibel)
 		event.setValue(Event.AUTHOR, author);
 		event.setValue(Event.SOURCE, SOURCE);

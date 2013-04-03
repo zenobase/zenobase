@@ -29,7 +29,7 @@ public class NetatmoResultTest extends ResultTestSupport {
 		expected.addValue(Event.TAG, device.getLabel());
 		expected.setValue(Event.LOCATION, device.getLocation());
 		expected.setValue(Event.TEMPERATURE, Measures.<Temperature>valueOf("25.7 C"));
-		expected.setValue(Event.PRESSURE, Measures.<Pressure>valueOf("1009.8 mbar"));
+		expected.setValue(Event.PRESSURE, Measures.<Pressure>valueOf("1009.8 hPa"));
 		expected.setValue(Event.AUTHOR, TESTER);
 		expected.setValue(Event.SOURCE, NetatmoResult.SOURCE);
 		assertThat(events.get(0)).as("first event").isEqualTo(expected);

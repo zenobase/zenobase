@@ -29,7 +29,6 @@ public class Measures {
 		UnitFormat.getInstance().label(NonSI.OUNCE, "oz");
 
 		UnitFormat.getInstance().label(SI.PASCAL.times(6894.75729), "psi");
-		UnitFormat.getInstance().label(NonSI.BAR.divide(1000), "mbar");
 
 		UnitFormat.getInstance().alias(NonSI.KILOMETERS_PER_HOUR, "kmh");
 
