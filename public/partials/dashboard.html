@@ -425,6 +425,23 @@
 		</div>
 	</script>
 
+	<script id="/create-sound.html" type="text/ng-template">
+		<button class="close" data-ng-click="reset()">&times;</button>
+		<div data-ng-controller="CreateUnitFieldController">
+			<div class="control-group">
+				<label for="value" class="control-label">Value</label>
+				<input id="sound-value-field" name="value" type="number" min="0" data-ng-model="value['@value']"/>
+			</div>
+			<div class="control-group">
+				<label for="unit" class="control-label">Unit</label>
+				<select id="sound-unit-select" name="unit" data-ng-model="value.unit" data-ng-options="unit for unit in field.units"></select>
+			</div>
+			<div class="control-group">
+				<button id="add-sound-button" class="btn" data-ng-click="addField()" data-ng-disabled="!valid()">Add</button>
+			</div>
+		</div>
+	</script>
+
 	<script id="/create-energy.html" type="text/ng-template">
 		<button class="close" data-ng-click="reset()">&times;</button>
 		<div data-ng-controller="CreateUnitFieldController">

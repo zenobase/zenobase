@@ -23,6 +23,7 @@ import com.zenobase.json.RatingField;
 import com.zenobase.json.ResourceField;
 import com.zenobase.json.Schema;
 import com.zenobase.json.SchemaBuilder;
+import com.zenobase.json.SoundLevelField;
 import com.zenobase.json.TemperatureField;
 import com.zenobase.json.TextField;
 import com.zenobase.json.TokenField;
@@ -52,13 +53,14 @@ public class Event extends DomainNode {
 	public static final VolumeField VOLUME = new VolumeField("volume");
 	public static final ConcentrationField CONCENTRATION = new ConcentrationField("concentration");
 	public static final PressureField PRESSURE = new PressureField("pressure");
+	public static final SoundLevelField SOUND = new SoundLevelField("sound");
 	public static final EnergyField ENERGY = new EnergyField("energy");
 	public static final TemperatureField TEMPERATURE = new TemperatureField("temperature");
 	public static final RatingField RATING = new RatingField("rating");
 	public static final TextField NOTE = new TextField("note");
 
 	private static final ImmutableSet<Field<?>> FIELDS =
-		ImmutableSet.<Field<?>>of(ID, VERSION, AUTHOR, SOURCE, TIMESTAMP, DURATION, FREQUENCY, VELOCITY, BITS, COUNT, LOCATION, TAG, RESOURCE, DISTANCE, HEIGHT, WEIGHT, VOLUME, CONCENTRATION, PRESSURE, ENERGY, TEMPERATURE, RATING, NOTE);
+		ImmutableSet.<Field<?>>of(ID, VERSION, AUTHOR, SOURCE, TIMESTAMP, DURATION, FREQUENCY, VELOCITY, BITS, COUNT, LOCATION, TAG, RESOURCE, DISTANCE, HEIGHT, WEIGHT, VOLUME, CONCENTRATION, PRESSURE, SOUND, ENERGY, TEMPERATURE, RATING, NOTE);
 
 	public Event() {
 		this(Generator.id());

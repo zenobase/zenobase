@@ -2919,6 +2919,21 @@
 		});
 
 		register({
+			name : 'sound',
+			icon : 'icon-volume-up',
+			type : 'numeric',
+			units : [ 'dB' ],
+			toText : function(value) {
+				return typeof value === 'object' ? value['@value'] + ' ' + value.unit : '';
+			},
+			toHtml : function(value) {
+				return '<span class="nowrap">' +
+			  	'<i class="' + this.icon + '" title="Sound Level"></i> ' + this.toText(value) +
+			  '</span>';
+			}
+		});
+
+		register({
 			name : 'location',
 			icon : 'icon-map-marker',
 			type : 'object',
