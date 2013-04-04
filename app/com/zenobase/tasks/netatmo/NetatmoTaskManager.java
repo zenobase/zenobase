@@ -110,7 +110,6 @@ public class NetatmoTaskManager extends OAuthTaskManager {
 			} else {
 				from = formatMarker(device.getCreated());
 			}
-			System.err.println("get from " + from);
 			if (!events.addAll(request.find(from, to).getEvents())) {
 				break;
 			}
@@ -172,7 +171,7 @@ public class NetatmoTaskManager extends OAuthTaskManager {
 			.set(Task.UNDO, task.getUndoId(), command.getId())
 			.build());
 		for (Event event : events) {
-			System.out.println("[event] " + event);
+			// System.out.println("[event] " + event);
 			command.add(new CreateEventCommand(task.getPrincipal(), task.getBucketId(), event));
 		}
 		return command;
