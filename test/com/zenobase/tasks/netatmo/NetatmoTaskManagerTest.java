@@ -6,7 +6,6 @@ import static org.mockito.Mockito.*;
 
 import org.codehaus.jackson.node.ObjectNode;
 import org.junit.Test;
-import org.scribe.model.OAuthRequest;
 import org.scribe.model.Response;
 import org.scribe.model.Token;
 import org.scribe.model.Verifier;
@@ -70,7 +69,7 @@ public class NetatmoTaskManagerTest {
 		assertThat(task.getUndoId()).isNull();
 
 		Response response = mock(Response.class);
-		doReturn(response).when(manager).send(any(OAuthRequest.class));
+		//doReturn(response).when(manager).send(any(OAuthRequest.class));
 		when(response.isSuccessful()).thenReturn(true);
 		when(response.getBody()).thenReturn("{}");
 

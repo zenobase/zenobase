@@ -98,7 +98,7 @@ public abstract class OAuthTaskManager extends TaskManager {
 		return Nodes.readArray(response.getBody());
 	}
 
-	protected void checkResponse(OAuthTask task, OAuthRequest request, Response response) throws OAuthException {
+	protected static void checkResponse(OAuthTask task, OAuthRequest request, Response response) throws OAuthException {
 		if (!response.isSuccessful()) {
 			if (isTokenInvalid(response)) {
 				throw new InvalidTokenException(task, request);
@@ -108,7 +108,7 @@ public abstract class OAuthTaskManager extends TaskManager {
 		}
 	}
 
-	protected boolean isTokenInvalid(Response response) {
+	protected static boolean isTokenInvalid(Response response) {
 		return response.getCode() == Http.Status.UNAUTHORIZED;
 	}
 

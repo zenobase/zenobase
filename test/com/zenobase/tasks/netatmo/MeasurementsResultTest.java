@@ -16,13 +16,12 @@ import com.zenobase.models.Event;
 import com.zenobase.models.Location;
 import com.zenobase.tasks.ResultTestSupport;
 
-public class NetatmoResultTest extends ResultTestSupport {
+public class MeasurementsResultTest extends ResultTestSupport {
 
 	@Test
 	public void test() {
-		Device device = new Device("1", "test", DateTime.now(), new Location("1", "2"));
-		NetatmoResult result = new NetatmoResult(TESTER, device, readObject("NetatmoResultTest.json"));
-		assertThat(result.getStatus()).as("status").isEqualTo("ok");
+		Device device = new Device("1", "test", DateTime.now(), DateTime.now(), new Location("1", "2"));
+		MeasurementsResult result = new MeasurementsResult(TESTER, device, readObject("MeasurementsResultTest.json"));
 		List<Event> events = result.getEvents();
 		assertThat(events).as("events").hasSize(10);
 		Event expected = new Event(events.get(0).getId());
@@ -33,7 +32,7 @@ public class NetatmoResultTest extends ResultTestSupport {
 		expected.setValue(Event.PRESSURE, Measures.<Pressure>valueOf("1009.8 hPa"));
 		expected.setValue(Event.SOUND, Measures.<Dimensionless>valueOf("40 dB"));
 		expected.setValue(Event.AUTHOR, TESTER);
-		expected.setValue(Event.SOURCE, NetatmoResult.SOURCE);
+		expected.setValue(Event.SOURCE, MeasurementsResult.SOURCE);
 		assertThat(events.get(0)).as("first event").isEqualTo(expected);
 		assertThat(events.get(1).getValue(Event.SOUND)).as("second event has no sound level").isNull();
 	}

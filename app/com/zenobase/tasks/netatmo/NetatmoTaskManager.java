@@ -15,6 +15,7 @@ import org.scribe.model.Verb;
 import org.scribe.oauth.OAuthService;
 import play.Logger;
 import com.google.common.base.Preconditions;
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 
 import com.zenobase.commands.Command;
@@ -81,57 +82,103 @@ public class NetatmoTaskManager extends OAuthTaskManager {
 	}
 
 	private Command execute(NetatmoTask task) {
-		String marker = formatMarker(new DateTime(DateTimeZone.UTC).minusMinutes(1));
 		List<Event> events = Lists.newArrayList();
+		String to = formatMarker(new DateTime(DateTimeZone.UTC).minusMinutes(1));
 		for (Device device : getDevices(task)) {
-			events.addAll(getEvents(task, device));
+			events.addAll(getEvents(task, device, to));
 		}
-		return createCommand(task, marker, events);
+		return createCommand(task, events);
 	}
 
 	static String formatMarker(DateTime time) {
-		return Long.toString(time.getMillis());
+		return Long.toString(time.getMillis() / 1000);
 	}
 
 	private List<Device> getDevices(NetatmoTask task) {
-		OAuthRequest request = new OAuthRequest(Verb.GET, "http://api.netatmo.net/api/devicelist");
-		request.addQuerystringParameter("access_token", task.getToken().getToken());
-		Response response = send(request);
-		checkResponse(task, request, response);
-		return new NetatmoDeviceListResult(parseObject(response)).getDevices();
+		return new DevicesQuery(task).execute().getDevices();
 	}
 
-	private List<Event> getEvents(NetatmoTask task, Device device) {
-		OAuthRequest request = new OAuthRequest(Verb.GET, "http://api.netatmo.net/api/getmeasure");
-		request.addQuerystringParameter("access_token", task.getToken().getToken());
-		request.addQuerystringParameter("device_id", device.getId());
-		// request.addQuerystringParameter("module_id", );
-		request.addQuerystringParameter("scale", "max");
-		request.addQuerystringParameter("type", "Temperature,Pressure,Noise,Humidity,CO2");
-		//request.addQuerystringParameter("date_begin", "");
-		//request.addQuerystringParameter("date_end", "");
-		request.addQuerystringParameter("optimize", "false");
-		Response response = send(request);
-		checkResponse(task, request, response);
-		return new NetatmoResult(task.getPrincipal(), device, parseObject(response)).getEvents();
+	private List<Event> getEvents(NetatmoTask task, Device device, String to) {
+		List<Event> events = Lists.newArrayList();
+		MeasurementsQuery request = new MeasurementsQuery(task, device);
+		while (true) {
+			String from = null;
+			if (!events.isEmpty()) {
+				from = getMarker(events);
+			} else if (task.getMarker() != null) {
+				from = task.getMarker();
+			} else {
+				from = formatMarker(device.getCreated());
+			}
+			System.err.println("get from " + from);
+			if (!events.addAll(request.find(from, to).getEvents())) {
+				break;
+			}
+		}
+		return events;
 	}
 
-	protected Response send(OAuthRequest request) {
-		return request.send();
+	private static class DevicesQuery {
+
+		private final OAuthTask task;
+
+		public DevicesQuery(OAuthTask task) {
+			this.task = task;
+		}
+
+		public DevicesResult execute() {
+			OAuthRequest request = new OAuthRequest(Verb.GET, "http://api.netatmo.net/api/devicelist");
+			request.addQuerystringParameter("access_token", task.getToken().getToken());
+			Response response = request.send();
+			checkResponse(task, request, response);
+			return new DevicesResult(parseObject(response));
+		}
 	}
 
-	private Command createCommand(NetatmoTask task, String marker, List<Event> events) {
+	private static class MeasurementsQuery {
+
+		private final OAuthTask task;
+		private final Device device;
+
+		public MeasurementsQuery(OAuthTask task, Device device) {
+			this.task = task;
+			this.device = device;
+		}
+
+		public MeasurementsResult find(String from, String to) {
+			OAuthRequest request = new OAuthRequest(Verb.GET, "http://api.netatmo.net/api/getmeasure");
+			request.addQuerystringParameter("access_token", task.getToken().getToken());
+			request.addQuerystringParameter("device_id", device.getId());
+			if (from != null) {
+				request.addQuerystringParameter("date_begin", from);
+			}
+			request.addQuerystringParameter("date_end", to);
+			request.addQuerystringParameter("limit", "1000");
+			request.addQuerystringParameter("scale", "max");
+			request.addQuerystringParameter("optimize", "false");
+			request.addQuerystringParameter("type", "Temperature,Pressure,Noise");
+			Response response = request.send();
+			checkResponse(task, request, response);
+			return new MeasurementsResult(task.getPrincipal(), device, parseObject(response));
+		}
+	}
+
+	private Command createCommand(NetatmoTask task, List<Event> events) {
 		CompoundCommand command = new CompoundCommand(task.getPrincipal(), "ran netatmo task", "reverted netatmo task");
 		command.add(UpdateTaskCommand.builder(task)
 			.set(Task.COMPLETED, task.getCompleted(), new DateTime(DateTimeZone.UTC))
 			.set(Task.STATUS, task.getStatus(), Task.Status.SUCCESS)
-			.set(Task.MARKER, task.getMarker(), marker)
+			.set(Task.MARKER, task.getMarker(), events.isEmpty() ? task.getMarker() : getMarker(events))
 			.set(Task.UNDO, task.getUndoId(), command.getId())
 			.build());
 		for (Event event : events) {
-			//System.out.println("[event] " + event);
+			System.out.println("[event] " + event);
 			command.add(new CreateEventCommand(task.getPrincipal(), task.getBucketId(), event));
 		}
 		return command;
+	}
+
+	private static String getMarker(List<Event> events) {
+		return formatMarker(Iterables.getLast(events).getValue(Event.TIMESTAMP).plusSeconds(1));
 	}
 }

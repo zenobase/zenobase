@@ -3,7 +3,6 @@ package com.zenobase.tasks.netatmo;
 import java.util.Scanner;
 
 import org.codehaus.jackson.node.ObjectNode;
-import org.joda.time.DateTime;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -15,6 +14,7 @@ import com.zenobase.tasks.TaskTestSupport;
 public class NetatmoTest extends TaskTestSupport {
 
 	@Test
+	@Ignore
 	public void testNew() {
 		TaskManager manager = new NetatmoTaskManager(apiKey, apiSecret, callbackUrl);
 		Task task = manager.newTask(bucketId, principal, Nodes.newObject());
@@ -29,9 +29,8 @@ public class NetatmoTest extends TaskTestSupport {
 	}
 
 	@Test
-	@Ignore
 	public void testExisting() {
 		NetatmoTaskManager manager = new NetatmoTaskManager(apiKey, apiSecret, callbackUrl);
-		manager.execute(new NetatmoTask(bucketId, principal, getToken(), NetatmoTaskManager.formatMarker(DateTime.now().minusDays(2))));
+		manager.execute(new NetatmoTask(bucketId, principal, getToken(), null));
 	}
 }
