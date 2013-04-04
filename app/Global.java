@@ -84,6 +84,7 @@ import com.zenobase.tasks.demo.DemoTaskManager;
 import com.zenobase.tasks.fitbit.FitbitIntradayTaskManager;
 import com.zenobase.tasks.fitbit.FitbitTaskManager;
 import com.zenobase.tasks.foursquare.FoursquareTaskManager;
+import com.zenobase.tasks.netatmo.NetatmoTaskManager;
 import com.zenobase.tasks.withings.WithingsTaskManager;
 
 
@@ -173,6 +174,7 @@ public class Global extends GlobalSettings {
 				bindIfConfigured("foursquare", FoursquareTaskManager.class, managers);
 				bindIfConfigured("withings", WithingsTaskManager.class, managers);
 				bindIfConfigured("bodymedia", BodyMediaTaskManager.class, managers);
+				bindIfConfigured("netatmo", NetatmoTaskManager.class, managers);
 				// bindIfConfigured("twitter", TwitterTaskManager.class, managers);
 
 				bind(AccountController.class).in(Singleton.class);

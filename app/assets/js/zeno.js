@@ -2607,6 +2607,7 @@
 			{ 'id' : 'fitbit-intraday', 'description' : 'Creates events from Fitbit data for each period of time spent moving, sitting or sleeping.' },
 			{ 'id' : 'bodymedia', 'description' : 'Creates events for daily BodyMedia sleep and step stats.' },
 			{ 'id' : 'foursquare', 'description' : 'Creates events for Foursquare check-ins.' },
+			{ 'id' : 'netatmo', 'description' : 'Creates events from Netatmo weather station measurements.' },
 			{ 'id' : 'withings', 'description' : 'Creates events for Withings weight measurements.' },
 			{ 'id' : 'demo', 'description' : 'Creates events with a custom tag.' }
 		];
@@ -2677,6 +2678,15 @@
 	}]);
 
 	app.controller('FoursquareSettingsController', ['$scope', function($scope) {
+
+		$scope.init = function() {
+			$scope.settings = $scope.$parent.$parent.settings = { };
+		};
+
+		$scope.init();
+	}]);
+
+	app.controller('NetatmoSettingsController', ['$scope', function($scope) {
 
 		$scope.init = function() {
 			$scope.settings = $scope.$parent.$parent.settings = { };
