@@ -4,6 +4,7 @@ import static org.fest.assertions.Assertions.assertThat;
 
 import java.util.List;
 
+import javax.measure.quantity.Dimensionless;
 import javax.measure.quantity.Pressure;
 import javax.measure.quantity.Temperature;
 
@@ -23,15 +24,17 @@ public class NetatmoResultTest extends ResultTestSupport {
 		NetatmoResult result = new NetatmoResult(TESTER, device, readObject("NetatmoResultTest.json"));
 		assertThat(result.getStatus()).as("status").isEqualTo("ok");
 		List<Event> events = result.getEvents();
-		assertThat(events).as("events").hasSize(1024);
+		assertThat(events).as("events").hasSize(10);
 		Event expected = new Event(events.get(0).getId());
 		expected.setValue(Event.TIMESTAMP, DateTime.parse("2013-03-28T16:38:45.000-07:00"));
 		expected.addValue(Event.TAG, device.getLabel());
 		expected.setValue(Event.LOCATION, device.getLocation());
 		expected.setValue(Event.TEMPERATURE, Measures.<Temperature>valueOf("25.7 C"));
 		expected.setValue(Event.PRESSURE, Measures.<Pressure>valueOf("1009.8 hPa"));
+		expected.setValue(Event.SOUND, Measures.<Dimensionless>valueOf("40 dB"));
 		expected.setValue(Event.AUTHOR, TESTER);
 		expected.setValue(Event.SOURCE, NetatmoResult.SOURCE);
 		assertThat(events.get(0)).as("first event").isEqualTo(expected);
+		assertThat(events.get(1).getValue(Event.SOUND)).as("second event has no sound level").isNull();
 	}
 }

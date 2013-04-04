@@ -107,7 +107,7 @@ public class NetatmoTaskManager extends OAuthTaskManager {
 		request.addQuerystringParameter("device_id", device.getId());
 		// request.addQuerystringParameter("module_id", );
 		request.addQuerystringParameter("scale", "max");
-		request.addQuerystringParameter("type", "Temperature,Humidity,Pressure,CO2");
+		request.addQuerystringParameter("type", "Temperature,Pressure,Noise,Humidity,CO2");
 		//request.addQuerystringParameter("date_begin", "");
 		//request.addQuerystringParameter("date_end", "");
 		request.addQuerystringParameter("optimize", "false");
@@ -129,7 +129,7 @@ public class NetatmoTaskManager extends OAuthTaskManager {
 			.set(Task.UNDO, task.getUndoId(), command.getId())
 			.build());
 		for (Event event : events) {
-			System.out.println("[event] " + event);
+			//System.out.println("[event] " + event);
 			command.add(new CreateEventCommand(task.getPrincipal(), task.getBucketId(), event));
 		}
 		return command;

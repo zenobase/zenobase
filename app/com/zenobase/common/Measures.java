@@ -81,7 +81,11 @@ public class Measures {
 
 	public static <Q extends Quantity> DecimalMeasure<Q> valueOf(BigDecimal value, String unit) {
 		Unit<Q> u = parseUnit(unit);
-		return DecimalMeasure.valueOf(value, u);
+		return valueOf(value, u);
+	}
+
+	public static <Q extends Quantity> DecimalMeasure<Q> valueOf(BigDecimal value, Unit<Q> unit) {
+		return DecimalMeasure.valueOf(value, unit);
 	}
 
 	public static <Q extends Quantity> DecimalMeasure<Q> valueOf(String s) {
