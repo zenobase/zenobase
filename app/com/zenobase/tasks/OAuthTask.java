@@ -4,6 +4,7 @@ import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.node.NullNode;
 import org.codehaus.jackson.node.ObjectNode;
 import org.scribe.model.Token;
+import com.google.common.base.Strings;
 
 import com.zenobase.json.DateTimeField;
 import com.zenobase.json.Field;
@@ -55,12 +56,12 @@ public class OAuthTask extends Task {
 
 		private Token getToken(ObjectNode node) {
 			return isOAuth2(node)
-				? new Token(VALUE.getValue(node), SECRET.getValue(node))
-				: new OAuth2Token(VALUE.getValue(node), REFRESH.getValue(node), EXPIRES.getValue(node));
+				? new OAuth2Token(VALUE.getValue(node), REFRESH.getValue(node), EXPIRES.getValue(node))
+				: new Token(VALUE.getValue(node), SECRET.getValue(node));
 		}
 
 		private boolean isOAuth2(ObjectNode node) {
-			return SECRET.getValue(node) == null
+			return Strings.isNullOrEmpty(SECRET.getValue(node))
 				&& REFRESH.getValue(node) != null;
 		}
 
