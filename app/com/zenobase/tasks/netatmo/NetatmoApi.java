@@ -1,9 +1,5 @@
 package com.zenobase.tasks.netatmo;
 
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.node.ObjectNode;
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
 import org.scribe.builder.api.DefaultApi20;
 import org.scribe.extractors.AccessTokenExtractor;
 import org.scribe.model.OAuthConfig;
@@ -18,8 +14,7 @@ import org.scribe.oauth.OAuthService;
 import org.scribe.utils.OAuthEncoder;
 import org.scribe.utils.Preconditions;
 
-import com.zenobase.json.Nodes;
-import com.zenobase.oauth.RefreshableToken;
+import com.zenobase.oauth.OAuth2TokenExtractor;
 
 public class NetatmoApi extends DefaultApi20 {
 
@@ -43,23 +38,7 @@ public class NetatmoApi extends DefaultApi20 {
 
 	@Override
 	public AccessTokenExtractor getAccessTokenExtractor() {
-		return new RefreshableTokenExtractor();
-	}
-
-	public static class RefreshableTokenExtractor implements AccessTokenExtractor {
-
-		@Override
-		public RefreshableToken extract(String response) {
-			ObjectNode node = Nodes.readObject(response);
-			String token = node.path("access_token").getTextValue();
-			String refreshToken = node.path("refresh_token").getTextValue();
-			DateTime expires = getDateTime(node.path("expire_in"));
-			return new RefreshableToken(token, "", refreshToken, expires);
-		}
-
-		private DateTime getDateTime(JsonNode node) {
-			return node.isNumber() ? new DateTime(node.getLongValue() * 1000, DateTimeZone.UTC) : null;
-		}
+		return new OAuth2TokenExtractor();
 	}
 
 	// workaround for https://github.com/fernandezpablo85/scribe-java/issues/368

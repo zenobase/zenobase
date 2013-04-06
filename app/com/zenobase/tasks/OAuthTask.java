@@ -10,7 +10,7 @@ import com.zenobase.json.Field;
 import com.zenobase.json.Nodes;
 import com.zenobase.json.TokenField;
 import com.zenobase.models.Identity;
-import com.zenobase.oauth.RefreshableToken;
+import com.zenobase.oauth.OAuth2Token;
 
 public class OAuthTask extends Task {
 
@@ -54,7 +54,14 @@ public class OAuthTask extends Task {
 		}
 
 		private Token getToken(ObjectNode node) {
-			return new RefreshableToken(VALUE.getValue(node), SECRET.getValue(node), REFRESH.getValue(node), EXPIRES.getValue(node));
+			return isOAuth2(node)
+				? new Token(VALUE.getValue(node), SECRET.getValue(node))
+				: new OAuth2Token(VALUE.getValue(node), REFRESH.getValue(node), EXPIRES.getValue(node));
+		}
+
+		private boolean isOAuth2(ObjectNode node) {
+			return SECRET.getValue(node) == null
+				&& REFRESH.getValue(node) != null;
 		}
 
 		@Override
@@ -65,9 +72,9 @@ public class OAuthTask extends Task {
 			ObjectNode node = Nodes.newObject();
 			VALUE.setValue(node, value.getToken());
 			SECRET.setValue(node, value.getSecret());
-			if (value instanceof RefreshableToken) {
-				REFRESH.setValue(node, ((RefreshableToken) value).getRefreshToken());
-				EXPIRES.setValue(node, ((RefreshableToken) value).getExpires());
+			if (value instanceof OAuth2Token) {
+				REFRESH.setValue(node, ((OAuth2Token) value).getRefreshToken());
+				EXPIRES.setValue(node, ((OAuth2Token) value).getExpires());
 			}
 			return node;
 		}

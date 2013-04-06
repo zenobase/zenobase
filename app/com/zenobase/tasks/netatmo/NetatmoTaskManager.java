@@ -24,7 +24,8 @@ import com.zenobase.commands.CompoundCommand;
 import com.zenobase.commands.CreateEventCommand;
 import com.zenobase.commands.UpdateTaskCommand;
 import com.zenobase.models.Event;
-import com.zenobase.oauth.RefreshableToken;
+import com.zenobase.oauth.OAuth2Token;
+import com.zenobase.oauth.OAuth2TokenExtractor;
 import com.zenobase.tasks.InvalidTokenException;
 import com.zenobase.tasks.OAuthTask;
 import com.zenobase.tasks.OAuthTaskManager;
@@ -65,7 +66,7 @@ public class NetatmoTaskManager extends OAuthTaskManager {
 				task.getType(), task.getId(), config));
 			return null;
 		}
-		RefreshableToken token = (RefreshableToken) getAccessToken(task, code);
+		OAuth2Token token = (OAuth2Token) getAccessToken(task, code);
 		return UpdateTaskCommand.builder(task)
 			.set(Task.AUTHORIZATION_URL, task.getAuthorizationUrl(), null)
 			.with(Task.CREDENTIALS)
@@ -81,11 +82,11 @@ public class NetatmoTaskManager extends OAuthTaskManager {
 	private void reauthorize(OAuthTask task) {
 		OAuthRequest request = new OAuthRequest(Verb.POST, "http://api.netatmo.net/oauth2/token");
 		request.addBodyParameter("grant_type", "refresh_token");
-		request.addBodyParameter("refresh_token", ((RefreshableToken) task.getToken()).getRefreshToken());
+		request.addBodyParameter("refresh_token", ((OAuth2Token) task.getToken()).getRefreshToken());
 		request.addBodyParameter(OAuthConstants.CLIENT_ID, apiKey);
 		request.addBodyParameter(OAuthConstants.CLIENT_SECRET, apiSecret);
 		Response response = request.send();
-		task.setToken(new NetatmoApi.RefreshableTokenExtractor().extract(response.getBody()));
+		task.setToken(new OAuth2TokenExtractor().extract(response.getBody()));
 	}
 
 	@Override
@@ -100,7 +101,7 @@ public class NetatmoTaskManager extends OAuthTaskManager {
 
 	private Command execute(NetatmoTask task) {
 		Token token = task.getToken();
-		if (((RefreshableToken) task.getToken()).isExpired()) {
+		if (((OAuth2Token) task.getToken()).isExpired()) {
 			reauthorize(task);
 		}
 		List<Event> events = Lists.newArrayList();

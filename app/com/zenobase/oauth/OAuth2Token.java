@@ -3,15 +3,15 @@ package com.zenobase.oauth;
 import org.joda.time.DateTime;
 import org.scribe.model.Token;
 
-public class RefreshableToken extends Token {
+public class OAuth2Token extends Token {
 
 	private static final long serialVersionUID = 1L;
 
 	private final String refreshToken;
 	private final DateTime expires;
 
-	public RefreshableToken(String token, String secret, String refreshToken, DateTime expires) {
-		super(token, secret);
+	public OAuth2Token(String token, String refreshToken, DateTime expires) {
+		super(token, "");
 		this.refreshToken = refreshToken;
 		this.expires = expires;
 	}

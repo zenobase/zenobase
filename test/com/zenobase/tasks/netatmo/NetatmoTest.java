@@ -9,7 +9,7 @@ import org.junit.Test;
 import org.scribe.model.Token;
 
 import com.zenobase.json.Nodes;
-import com.zenobase.oauth.RefreshableToken;
+import com.zenobase.oauth.OAuth2Token;
 import com.zenobase.tasks.Task;
 import com.zenobase.tasks.TaskManager;
 import com.zenobase.tasks.TaskTestSupport;
@@ -27,16 +27,14 @@ public class NetatmoTest extends TaskTestSupport {
 		System.out.print("code=");
 		config.put("code", scanner.nextLine());
 		task = apply(manager.authorize(task, config), task);
-		System.out.println(task.toJson());
 		manager.execute(task);
 	}
 
 	@Test
 	public void testReauthorization() {
 		Token token = getToken();
-		Task task = new NetatmoTask(bucketId, principal, new RefreshableToken(token.getToken(), token.getSecret(), "5154d346197759768f000001|c5b102abf2baf45e982b9087d3847f00", DateTime.now().minusHours(1)), null);
+		Task task = new NetatmoTask(bucketId, principal, new OAuth2Token(token.getToken(), "5154d346197759768f000001|c5b102abf2baf45e982b9087d3847f00", DateTime.now().minusHours(1)), null);
 		NetatmoTaskManager manager = new NetatmoTaskManager(apiKey, apiSecret, callbackUrl);
-		System.out.println(task.toJson());
 		manager.execute(task);
 	}
 
