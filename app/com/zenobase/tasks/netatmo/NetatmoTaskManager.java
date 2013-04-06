@@ -8,6 +8,7 @@ import javax.inject.Named;
 import org.codehaus.jackson.node.ObjectNode;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
+import org.scribe.model.OAuthConstants;
 import org.scribe.model.OAuthRequest;
 import org.scribe.model.Response;
 import org.scribe.model.Token;
@@ -23,6 +24,7 @@ import com.zenobase.commands.CompoundCommand;
 import com.zenobase.commands.CreateEventCommand;
 import com.zenobase.commands.UpdateTaskCommand;
 import com.zenobase.models.Event;
+import com.zenobase.oauth.RefreshableToken;
 import com.zenobase.tasks.InvalidTokenException;
 import com.zenobase.tasks.OAuthTask;
 import com.zenobase.tasks.OAuthTaskManager;
@@ -63,12 +65,27 @@ public class NetatmoTaskManager extends OAuthTaskManager {
 				task.getType(), task.getId(), config));
 			return null;
 		}
-		Token token = getAccessToken(task, code);
+		RefreshableToken token = (RefreshableToken) getAccessToken(task, code);
 		return UpdateTaskCommand.builder(task)
 			.set(Task.AUTHORIZATION_URL, task.getAuthorizationUrl(), null)
 			.with(Task.CREDENTIALS)
 			.set(OAuthTask.TOKEN, task.getToken(), token)
 			.build();
+	}
+
+	@Override
+	public void reauthorize(Task task) {
+		reauthorize(task.as(OAuthTask.class));
+	}
+
+	private void reauthorize(OAuthTask task) {
+		OAuthRequest request = new OAuthRequest(Verb.POST, "http://api.netatmo.net/oauth2/token");
+		request.addBodyParameter("grant_type", "refresh_token");
+		request.addBodyParameter("refresh_token", ((RefreshableToken) task.getToken()).getRefreshToken());
+		request.addBodyParameter(OAuthConstants.CLIENT_ID, apiKey);
+		request.addBodyParameter(OAuthConstants.CLIENT_SECRET, apiSecret);
+		Response response = request.send();
+		task.setToken(new NetatmoApi.RefreshableTokenExtractor().extract(response.getBody()));
 	}
 
 	@Override
@@ -82,12 +99,16 @@ public class NetatmoTaskManager extends OAuthTaskManager {
 	}
 
 	private Command execute(NetatmoTask task) {
+		Token token = task.getToken();
+		if (((RefreshableToken) task.getToken()).isExpired()) {
+			reauthorize(task);
+		}
 		List<Event> events = Lists.newArrayList();
 		String to = formatMarker(new DateTime(DateTimeZone.UTC).minusMinutes(1));
 		for (Device device : getDevices(task)) {
 			events.addAll(getEvents(task, device, to));
 		}
-		return createCommand(task, events);
+		return createCommand(task, events, token);
 	}
 
 	static String formatMarker(DateTime time) {
@@ -162,13 +183,15 @@ public class NetatmoTaskManager extends OAuthTaskManager {
 		}
 	}
 
-	private Command createCommand(NetatmoTask task, List<Event> events) {
+	private Command createCommand(NetatmoTask task, List<Event> events, Token expiredToken) {
 		CompoundCommand command = new CompoundCommand(task.getPrincipal(), "ran netatmo task", "reverted netatmo task");
 		command.add(UpdateTaskCommand.builder(task)
 			.set(Task.COMPLETED, task.getCompleted(), new DateTime(DateTimeZone.UTC))
 			.set(Task.STATUS, task.getStatus(), Task.Status.SUCCESS)
 			.set(Task.MARKER, task.getMarker(), events.isEmpty() ? task.getMarker() : getMarker(events))
 			.set(Task.UNDO, task.getUndoId(), command.getId())
+			.with(Task.CREDENTIALS)
+			.set(OAuthTask.TOKEN, task.getToken(), expiredToken)
 			.build());
 		for (Event event : events) {
 			// System.out.println("[event] " + event);

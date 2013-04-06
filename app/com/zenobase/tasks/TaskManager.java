@@ -15,5 +15,9 @@ public abstract class TaskManager {
 		throw new UnsupportedOperationException();
 	}
 
+	public void reauthorize(Task task) {
+		throw new UnsupportedOperationException();
+	}
+
 	public abstract Command execute(Task task);
 }

@@ -23,8 +23,8 @@ import com.zenobase.models.Identity;
 public abstract class OAuthTaskManager extends TaskManager {
 
 	private final Api provider;
-	private final String apiKey;
-	private final String apiSecret;
+	protected final String apiKey;
+	protected final String apiSecret;
 	private final String callbackUrl;
 
 	protected OAuthTaskManager(Api provider, String apiKey, String apiSecret, String callbackUrl) {

@@ -5,10 +5,12 @@ import org.codehaus.jackson.node.NullNode;
 import org.codehaus.jackson.node.ObjectNode;
 import org.scribe.model.Token;
 
+import com.zenobase.json.DateTimeField;
 import com.zenobase.json.Field;
 import com.zenobase.json.Nodes;
 import com.zenobase.json.TokenField;
 import com.zenobase.models.Identity;
+import com.zenobase.oauth.RefreshableToken;
 
 public class OAuthTask extends Task {
 
@@ -39,6 +41,8 @@ public class OAuthTask extends Task {
 
 		private static final TokenField VALUE = new TokenField("@value");
 		private static final TokenField SECRET = new TokenField("secret");
+		private static final TokenField REFRESH = new TokenField("refresh");
+		private static final DateTimeField EXPIRES = new DateTimeField("expires");
 
 		public OAuthTokenField(String name) {
 			super(name, Token.class, "object");
@@ -46,20 +50,25 @@ public class OAuthTask extends Task {
 
 		@Override
 		protected Token getValue(JsonNode node) {
-			return new Token(VALUE.getValue((ObjectNode) node), SECRET.getValue((ObjectNode) node));
+			return getToken((ObjectNode) node);
+		}
+
+		private Token getToken(ObjectNode node) {
+			return new RefreshableToken(VALUE.getValue(node), SECRET.getValue(node), REFRESH.getValue(node), EXPIRES.getValue(node));
 		}
 
 		@Override
 		public JsonNode toJson(Token value) {
-			return value != null ?
-				toJson(value.getToken(), value.getSecret()) :
-				NullNode.getInstance();
-		}
-
-		private JsonNode toJson(String token, String secret) {
+			if (value == null) {
+				return NullNode.getInstance();
+			}
 			ObjectNode node = Nodes.newObject();
-			VALUE.setValue(node, token);
-			SECRET.setValue(node, secret);
+			VALUE.setValue(node, value.getToken());
+			SECRET.setValue(node, value.getSecret());
+			if (value instanceof RefreshableToken) {
+				REFRESH.setValue(node, ((RefreshableToken) value).getRefreshToken());
+				EXPIRES.setValue(node, ((RefreshableToken) value).getExpires());
+			}
 			return node;
 		}
 	}
