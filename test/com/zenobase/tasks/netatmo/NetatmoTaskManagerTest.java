@@ -5,8 +5,9 @@ import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 
 import org.codehaus.jackson.node.ObjectNode;
-import org.junit.Ignore;
+import org.joda.time.DateTime;
 import org.junit.Test;
+import org.scribe.model.OAuthRequest;
 import org.scribe.model.Response;
 import org.scribe.model.Token;
 import org.scribe.model.Verifier;
@@ -19,6 +20,7 @@ import com.zenobase.commands.UpdateTaskCommand;
 import com.zenobase.common.Generator;
 import com.zenobase.json.Nodes;
 import com.zenobase.models.Identity;
+import com.zenobase.oauth.OAuth2Token;
 import com.zenobase.tasks.OAuthTask;
 import com.zenobase.tasks.Task.Status;
 
@@ -27,7 +29,6 @@ public class NetatmoTaskManagerTest {
 	private final OAuthService oauth = mock(OAuthService.class);
 
 	@Test
-	@Ignore // TODO
 	public void test() {
 
 		NetatmoTaskManager manager = spy(new NetatmoTaskManager("", "", ""));
@@ -38,7 +39,7 @@ public class NetatmoTaskManagerTest {
 		ObjectNode settings = Nodes.newObject();
 
 		Token requestToken = Token.empty();
-		Token accessToken = new Token("fee", "fie");
+		Token accessToken = new OAuth2Token("fee", "fie", DateTime.now().plusYears(1));
 		String authorizationUrl = "localhost";
 
 		when(oauth.getAuthorizationUrl(requestToken)).thenReturn(authorizationUrl);
@@ -71,9 +72,9 @@ public class NetatmoTaskManagerTest {
 		assertThat(task.getUndoId()).isNull();
 
 		Response response = mock(Response.class);
-		//doReturn(response).when(manager).send(any(OAuthRequest.class));
+		doReturn(response).when(manager).send(any(OAuthRequest.class));
 		when(response.isSuccessful()).thenReturn(true);
-		when(response.getBody()).thenReturn("{}");
+		when(response.getBody()).thenReturn("{ \"status\" : \"ok\" }");
 
 		Command commands = manager.execute(task);
 		task = apply(commands, task);
@@ -85,7 +86,7 @@ public class NetatmoTaskManagerTest {
 		assertThat(task.getCompleted()).isNotNull();
 		assertThat(task.getStatus()).isEqualTo(Status.SUCCESS);
 		assertThat(task.isStale()).isFalse();
-		assertThat(task.getMarker()).isNotNull();
+		assertThat(task.getMarker()).isNull();
 		assertThat(task.getUndoId()).isEqualTo(commands.getId());
 	}
 

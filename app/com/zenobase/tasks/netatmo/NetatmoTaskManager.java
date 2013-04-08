@@ -85,7 +85,7 @@ public class NetatmoTaskManager extends OAuthTaskManager {
 		request.addBodyParameter("refresh_token", ((OAuth2Token) task.getToken()).getRefreshToken());
 		request.addBodyParameter(OAuthConstants.CLIENT_ID, apiKey);
 		request.addBodyParameter(OAuthConstants.CLIENT_SECRET, apiSecret);
-		Response response = request.send();
+		Response response = send(request);
 		task.setToken(new OAuth2TokenExtractor().extract(response.getBody()));
 	}
 
@@ -139,7 +139,7 @@ public class NetatmoTaskManager extends OAuthTaskManager {
 		return events;
 	}
 
-	private static class DevicesQuery {
+	private class DevicesQuery {
 
 		private final OAuthTask task;
 
@@ -150,13 +150,13 @@ public class NetatmoTaskManager extends OAuthTaskManager {
 		public DevicesResult execute() {
 			OAuthRequest request = new OAuthRequest(Verb.GET, "http://api.netatmo.net/api/devicelist");
 			request.addQuerystringParameter("access_token", task.getToken().getToken());
-			Response response = request.send();
+			Response response = send(request);
 			checkResponse(task, request, response);
 			return new DevicesResult(parseObject(response));
 		}
 	}
 
-	private static class MeasurementsQuery {
+	private class MeasurementsQuery {
 
 		private final OAuthTask task;
 		private final Device device;
@@ -178,7 +178,7 @@ public class NetatmoTaskManager extends OAuthTaskManager {
 			request.addQuerystringParameter("scale", "max");
 			request.addQuerystringParameter("optimize", "false");
 			request.addQuerystringParameter("type", "Temperature,Pressure,Noise");
-			Response response = request.send();
+			Response response = send(request);
 			checkResponse(task, request, response);
 			return new MeasurementsResult(task.getPrincipal(), device, parseObject(response));
 		}
@@ -203,5 +203,9 @@ public class NetatmoTaskManager extends OAuthTaskManager {
 
 	private static String getMarker(List<Event> events) {
 		return formatMarker(Iterables.getLast(events).getValue(Event.TIMESTAMP).plusSeconds(1));
+	}
+
+	Response send(OAuthRequest request) {
+		return request.send();
 	}
 }
