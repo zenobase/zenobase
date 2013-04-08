@@ -192,7 +192,7 @@ public class NetatmoTaskManager extends OAuthTaskManager {
 			.set(Task.MARKER, task.getMarker(), events.isEmpty() ? task.getMarker() : getMarker(events))
 			.set(Task.UNDO, task.getUndoId(), command.getId())
 			.with(Task.CREDENTIALS)
-			.set(OAuthTask.TOKEN, task.getToken(), expiredToken)
+			.set(OAuthTask.TOKEN, expiredToken, task.getToken())
 			.build());
 		for (Event event : events) {
 			// System.out.println("[event] " + event);
