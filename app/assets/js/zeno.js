@@ -2280,7 +2280,7 @@
 	    $scope.value = '';
 		};
 		$scope.addField = function() {
-			$scope.value = input.val();
+			$scope.value = $.trim(input.val());
 			$scope.event.add($scope.field, $scope.value);
 			$scope.reset();
 		};
