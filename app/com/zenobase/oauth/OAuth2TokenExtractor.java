@@ -16,7 +16,7 @@ public class OAuth2TokenExtractor implements AccessTokenExtractor {
 		ObjectNode node = Nodes.readObject(response);
 		String token = node.path(OAuthConstants.ACCESS_TOKEN).getTextValue();
 		String refreshToken = node.path("refresh_token").getTextValue();
-		DateTime expires = getDateTime(node.path("expire_in")); // TODO for Netatmo; should be expires_in
+		DateTime expires = getDateTime(node.path("expires_in"));
 		return new OAuth2Token(token, refreshToken, expires);
 	}
 
