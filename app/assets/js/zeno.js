@@ -42,7 +42,7 @@
 			if (diff < 60000) { // less than a minute
 				return 'just now';
 			}
-			if (!alwaysRelative && diff >= 86400000) { // a day or more
+			if (!alwaysRelative && diff >= 129600000) { // 36 hours or more
 				return this.format('MMM D, YYYY');
 			}
 			return this.fromNow(a);
