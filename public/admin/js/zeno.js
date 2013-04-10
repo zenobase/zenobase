@@ -9,12 +9,23 @@
 		$routeProvider.otherwise({ templateUrl : '/partials/404.html' });
 	});
 
-	app.controller('admin.DashboardController', ['$scope', '$location', function($scope, $location) {
+	app.controller('admin.DashboardController', ['$scope', '$location', '$http', function($scope, $location, $http) {
 		$scope.constraint = $location.search()['q'];
 		$scope.setConstraint = function(constraint) {
 			$scope.constraint = constraint;
 			$location.search('q', $scope.constraint);
 		};
+		$scope.refresh = function(params) {
+			$http.get('/status')
+				.success(function(response) {
+					$scope.status = response;
+				})
+				.error(function(response) {
+					$scope.status = { nodes : '?', health : 'UNKNOWN' };
+				});
+		};
+		$scope.$on('reload', $scope.refresh);
+		$scope.refresh();
 	}]);
 
 	app.controller('admin.QueueController', ['$scope', '$http', 'delay', function($scope, $http, delay) {

@@ -3,6 +3,8 @@
 	<div class="row-fluid page-titlebar">
 		<p class="pull-left page-title">
 			<span class="page-title-text">Admin</span>
+			<span class="badge badge-success page-title-decoration" title="Cluster Health" data-ng-show="status && status.health == 'GREEN'">{{status.nodes}}</span>
+			<span class="badge badge-important page-title-decoration" title="Cluster Health" data-ng-show="status && status.health != 'GREEN'">{{status.nodes}}</span>
 			<a class="page-title-decoration" data-ng-click="reload()" title="Refresh"><i class="icon-refresh"></i></a>
 		</p>
 		<ul class="nav nav-pills" data-ng-show="constraint">
