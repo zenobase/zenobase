@@ -37,12 +37,12 @@
 	app.factory('moment', function() {
 
 		// TODO see https://github.com/timrwood/moment/issues/537
-		moment.fn.fromNowOrNow = function(a) {
+		moment.fn.fromNowOrNow = function(a, alwaysRelative) {
 			var diff = Math.abs(moment().diff(this));
 			if (diff < 60000) { // less than a minute
 				return 'just now';
 			}
-			if (diff >= 86400000) { // a day or more
+			if (!alwaysRelative && diff >= 86400000) { // a day or more
 				return this.format('MMM D, YYYY');
 			}
 			return this.fromNow(a);
@@ -2965,7 +2965,7 @@
 			toHtml : function(value) {
 				return '<span class="nowrap">' +
 			  	'<i class="' + this.icon + '" title="Timestamp"></i> ' +
-					'<abbr title="' + value + '">' + moment(value).fromNowOrNow() + '</abbr>' +
+					'<abbr title="' + value + '">' + moment(value).fromNowOrNow(false) + '</abbr>' +
 			  '</span>';
 			}
 		});
@@ -3163,7 +3163,7 @@
 
 	app.filter('age', [ 'moment', function(moment) {
 		return function(date) {
-			return date ? moment(date).fromNowOrNow() : '';
+			return date ? moment(date).fromNowOrNow(true) : '';
 		}
 	}]);
 
