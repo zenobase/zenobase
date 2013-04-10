@@ -37,7 +37,7 @@
 	app.factory('moment', function() {
 
 		// TODO see https://github.com/timrwood/moment/issues/537
-		moment.fn.fromNowOrNow = function(a, alwaysRelative) {
+		moment.fn.fromNowOrNow = function(alwaysRelative, a) {
 			var diff = Math.abs(moment().diff(this));
 			if (diff < 60000) { // less than a minute
 				return 'just now';
