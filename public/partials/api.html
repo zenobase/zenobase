@@ -177,7 +177,7 @@ but also include permissions and dashboard settings.</p>
 
 <h3>List buckets</h3>
 
-<pre>GET /buckets/?q=role.identity:<em>&lt;user_id&gt;</em>&amp;offset=<em>&lt;offset&gt;</em>&amp;limit=<em>&lt;limit&gt;</em>
+<pre>GET /buckets/?q=roles.principal:<em>&lt;user_id&gt;</em>&amp;offset=<em>&lt;offset&gt;</em>&amp;limit=<em>&lt;limit&gt;</em>
 Host: api.zenobase.com
 Authorization: Bearer <em>&lt;access_token&gt;</em>
 </pre>
@@ -192,7 +192,7 @@ Authorization: Bearer <em>&lt;access_token&gt;</em>
 
 <h5>Request</h5>
 
-<pre>curl -i 'https://api.zenobase.com/buckets/?q=role.identity:args4iqh2c&amp;limit=10' \
+<pre>curl -i 'https://api.zenobase.com/buckets/?q=roles.principal:args4iqh2c&amp;limit=10' \
   -H 'Authorization: Bearer e7975e8bb6eabc3ef567'
 </pre>
 
