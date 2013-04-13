@@ -14,7 +14,7 @@ public abstract class ClientSupport {
 	protected final String token;
 
 	protected ClientSupport() {
-		host = System.getProperty("api.host", "https://zenobase.com");
+		host = System.getProperty("api.host", "https://api.zenobase.com");
 		callback = System.getProperty("api.callback", host + "/test/");
 		apiKey = System.getProperty("api.key");
 		token = System.getProperty("api.token");
