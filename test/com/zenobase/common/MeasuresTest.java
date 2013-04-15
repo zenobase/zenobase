@@ -2,6 +2,8 @@ package com.zenobase.common;
 
 import static org.fest.assertions.Assertions.assertThat;
 
+import java.math.BigDecimal;
+
 import javax.measure.DecimalMeasure;
 import javax.measure.quantity.Dimensionless;
 import javax.measure.quantity.Duration;
@@ -137,5 +139,11 @@ public class MeasuresTest {
 
 	private static void assertThatIsEqualTo(String expected, String value) {
 		assertThat(Measures.toStandard(DecimalMeasure.valueOf(value))).isEqualTo(DecimalMeasure.valueOf(expected));
+	}
+
+	@Test
+	public void testRounding() {
+		assertThat(Measures.round(1.665)).isEqualTo(new BigDecimal("1.67"));
+		assertThat(Measures.round(Double.NaN)).isNull();
 	}
 }

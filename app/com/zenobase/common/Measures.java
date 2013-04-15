@@ -14,6 +14,7 @@ import javax.measure.unit.Unit;
 import javax.measure.unit.UnitFormat;
 
 import com.google.common.collect.Lists;
+import com.google.common.primitives.Doubles;
 
 public class Measures {
 
@@ -104,6 +105,6 @@ public class Measures {
 	}
 
 	public static BigDecimal round(double value) {
-		return new BigDecimal(value).setScale(2, RoundingMode.HALF_UP);
+		return Doubles.isFinite(value) ? new BigDecimal(value).setScale(2, RoundingMode.HALF_UP) : null;
 	}
 }
