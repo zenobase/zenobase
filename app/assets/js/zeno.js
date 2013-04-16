@@ -1876,14 +1876,12 @@
 				new Highcharts.Chart({
 					chart : {
 						type : 'column',
-						renderTo : $scope.settings.id + '-chart',
-						height : 120
+						polar: true,
+						renderTo : $scope.settings.id + '-chart'
 					},
 					title : null,
-					colors : [ '#aaa' ],
 					xAxis : {
-						categories : categories,
-						tickLength : 0
+						categories : categories
 					},
 					yAxis : {
 						title : {
@@ -1897,9 +1895,13 @@
 					}],
 					plotOptions : {
 						series : {
+							color : 'rgba(47,126,216,0.3)',
 							animation : false,
-							pointWidth : 10,
-							borderRadius : 5
+							pointPlacement: 'on'
+						},
+						column : {
+							pointPadding: 0,
+							groupPadding: 0
 						}
 					},
 					credits: {
