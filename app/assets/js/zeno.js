@@ -1496,37 +1496,62 @@
 		};
 		$scope.draw = function() {
 			if ($scope.intervals && $scope.intervals.length) {
-				google.load('visualization', '1', { packages : [ 'corechart' ], callback : function() { 
-					var field = Field.find($scope.settings.field);
-					var data = new google.visualization.DataTable();
-					data.addColumn('string', 'Interval');
-					data.addColumn('number', 'Value');
-					data.addColumn({ type : 'string', role : 'tooltip'});
-					$.each($scope.intervals, function(i, interval) {
-						var label = field.toText(interval.from) + ' - ' + field.toText(interval.to);
-						data.addRow([ label, interval.count, 'Count: ' + interval.count ]);
-					});
-					var options = {
-						legend : { position : 'none' },
-						series : [ { color : '#AAA' } ],
-						chartArea : { top : 0 },
-						fontSize : 14,
-						height : 28 * $scope.intervals.length,
-						vAxis : { baselineColor : 'transparent' },
-						hAxis : { baselineColor : 'transparent', minValue : 0, textStyle : { fontSize: 12 }, gridlines : { color : '#EEE' } }
-					};
-					var element = document.getElementById($scope.settings.id + '-chart');
-					var chart = new google.visualization.BarChart(element);
-					google.visualization.events.addListener(chart, 'select', function() {
-						var selection = chart.getSelection();
-						var interval = $scope.intervals[selection[0].row];
-						var range = '[' + field.toText(interval.from) + '..' + field.toText(interval.to) + ')';
-						$scope.$apply(function() {
-							$scope.addConstraint($scope.settings.field, range, true);
-						});
-					});
-					chart.draw(data, options);
-				}});
+				var field = Field.find($scope.settings.field);
+				var categories = [];
+				var data = [];
+				$.each($scope.intervals, function(i, interval) {
+					categories.push(field.toText(interval.from) + ' - ' + field.toText(interval.to));
+					data.push(interval.count);
+				});
+				new Highcharts.Chart({
+					chart : {
+						type : 'bar',
+						renderTo : $scope.settings.id + '-chart'
+					},
+					title : null,
+					xAxis : {
+						categories : categories,
+						tickLength : 0
+					},
+					yAxis : {
+						title : null,
+						labels : {
+							overflow : 'justify'
+						}
+					},
+					series : [{
+						name : 'count',
+						data : data,
+						showInLegend : false
+					}],
+					tooltip : {
+						shared : true
+					},
+					plotOptions : {
+						series : {
+							pointWidth : 10,
+							// pointPadding: 0,
+							// groupPadding: 0,
+							borderRadius : 5,
+							color : '#aaa',
+							borderWidth : 2,
+							cursor : 'pointer',
+							animation : false,
+							events : {
+								click : function(event) {
+									var interval = $scope.intervals[event.point.x];
+									var range = '[' + field.toText(interval.from) + '..' + field.toText(interval.to) + ')';
+									$scope.$apply(function() {
+										$scope.addConstraint($scope.settings.field, range, true);
+									});
+								}
+							}
+						}
+					},
+					credits: {
+						enabled: false
+					}
+				});
 			}
 		}
 
@@ -1534,10 +1559,6 @@
 		$scope.register($scope);
 		$scope.$on('result', $scope.update);
 		$scope.$on('refresh', $scope.init);
-		$(window).on('resize', $scope.draw);
-		$scope.$on('$destroy', function(e) {
-			$(window).off('resize', $scope.draw);
-		});
 		$('#' + $scope.settings.id + '-tab').on('show', $scope.draw);
 	}]);
 
@@ -1633,9 +1654,10 @@
 
 	app.factory('Interval', function() {
 
-		var Interval = function(name, pattern) {
+		var Interval = function(name, pattern, minTickInterval) {
 			this.name = name;
 			this.pattern = pattern;
+			this.minTickInterval = minTickInterval;
 		}
 
 		Interval.prototype.zoomIn = function() {
@@ -1648,12 +1670,12 @@
 		};
 
 		Interval.VALUES = [
-			new Interval('year', 0),
-			new Interval('month', 11), 
-			new Interval('day', 14), 
-			new Interval('hour', 17), 
-			new Interval('minute', 19),
-			new Interval('second', 22)
+			new Interval('year', 0, 365 * 24 * 60 * 60 * 1000),
+			new Interval('month', 11, 28 * 24 * 60 * 60 * 1000), 
+			new Interval('day', 14, 24 * 60 * 60 * 1000), 
+			new Interval('hour', 17, 60 * 60 * 1000), 
+			new Interval('minute', 19, 60 * 1000),
+			new Interval('second', 22, 1000)
 		];
 
 		Interval.match = function(value) {
@@ -1669,7 +1691,7 @@
 		return Interval;
 	});
 
-	app.controller('TimelineWidgetController', ['$scope', 'Field', 'Interval', 'timezone', function($scope, Field, Interval, timezone) {
+	app.controller('TimelineWidgetController', ['$scope', '$timeout', 'Field', 'Interval', 'timezone', function($scope, $timeout, Field, Interval, timezone) {
 
 		$scope.keyField = 'timestamp';
 
@@ -1703,41 +1725,67 @@
 		};
 		$scope.update = function(event, result) {
 			$scope.times = result[$scope.settings.id] || [];
-			$scope.draw();
+			$timeout($scope.draw, 0); // need to delay in order to get the correct width
 		};
 		$scope.draw = function() {
 			if ($scope.times && $scope.times.length) {
-				google.load('visualization', '1', { packages : [ 'corechart' ], callback : function() {
-					var field = Field.find($scope.settings.field);
-					var data = new google.visualization.DataTable();
-					data.addColumn('string', $scope.interval.name);
-					data.addColumn('number', 'Count');
-					data.addColumn({ type : 'string', role : 'tooltip'});
-					$.each($scope.times, function(i, time) {
-						var value = time[$scope.settings.statistic || 'count'];
-						data.addRow([ time.label, field.toNumber(value), time.label + ': ' + field.toText(value) ]);
-					});
-					var options = {
-						height : 100,
-						legend : { position : 'none' },
-						series : [ { color : '#AAA' } ],
-						chartArea : { width : '100%', height : 90, left : 30, top : 5 },
-						vAxis : { gridlines : { color : '#EEE', count : 2 }, minorGridlines : { color : '#EEE', count : 1 }, baselineColor : '#EEE', textStyle : { fontSize: 10 } },
-						hAxis : { baselineColor : 'white', textPosition : 'none', textStyle : { fontSize: 10 } },
-						bar : { groupWidth : 20 }
-					};
-					var element = document.getElementById($scope.settings.id + '-chart');
-					var chart = new google.visualization.ColumnChart(element);
-					chart.draw(data, options);
-					google.visualization.events.addListener(chart, 'select', function() {
-						var selection = chart.getSelection();
-						var value = data.getValue(selection[0].row, 0);
-						$scope.interval = $scope.interval.zoomIn();
-						$scope.$apply(function() {
-							$scope.addConstraint($scope.keyField, value, true);
-						});
-					});
-				}});
+				var field = Field.find($scope.settings.field);
+				var data = [];
+				$.each($scope.times, function(i, time) {
+					var value = time[$scope.settings.statistic || 'count'];
+					data.push([ time.time, field.toNumber(value) ]);
+				});
+				new Highcharts.Chart({
+					chart : {
+						renderTo : $scope.settings.id + '-chart',
+						height : 120
+					},
+					title : null,
+					xAxis : {
+						type : 'datetime',
+						minTickInterval : $scope.interval.minTickInterval
+					},
+					yAxis : {
+						title : {
+							text : null
+						}
+					},
+					tooltip : {
+						shared : true,
+						valueSuffix: $scope.settings.unit
+					},
+					series : [{
+						name : $scope.settings.statistic || 'count',
+						type : 'column',
+						lineWidth : 0,
+						data : data,
+						showInLegend : false
+					}],
+					plotOptions : {
+						series : {
+							animation : false,
+							cursor : 'pointer',
+							color : '#aaa',
+							borderRadius : 5,
+							borderWidth : 2,
+							events : {
+								click : function(event) {
+									$scope.$apply(function() {
+										$.each($scope.times, function(i, time) {
+											if (time.time == event.point.x) {
+												$scope.addConstraint($scope.keyField, time.label, true);
+												return;
+											}
+										});
+									});
+								}
+							}
+						}
+					},
+					credits: {
+						enabled: false
+					}
+				});
 			}
 		}
 
@@ -1745,11 +1793,6 @@
 		$scope.register($scope);
 		$scope.$on('result', $scope.update);
 		$scope.$on('refresh', $scope.init);
-		$(window).on('resize', $scope.draw);
-		$scope.$on('$destroy', function(e) {
-			$(window).off('resize', $scope.draw);
-		});
-		$('#' + $scope.settings.id + '-tab').on('show', $scope.draw);
 	}]);
 
 	app.controller('TimelineWidgetDialogController', ['$scope', 'WidgetDialogControllerSupport', 'Field', function($scope, WidgetDialogControllerSupport, Field) {
@@ -1793,7 +1836,7 @@
 		});
 	}]);
 
-	app.controller('TimeHistogramWidgetController', ['$scope', 'timezone', function($scope, timezone) {
+	app.controller('TimeHistogramWidgetController', ['$scope', '$timeout', 'timezone', function($scope, $timeout, timezone) {
 
 		$scope.field = 'timestamp';
 
@@ -1819,32 +1862,50 @@
 		};
 		$scope.update = function(event, result) {
 			$scope.times = result[$scope.settings.id] || [];
-			$scope.draw();
+			$timeout($scope.draw, 0); // need to delay in order to get the correct width
 		};
 		$scope.draw = function() {
 			if ($scope.times && $scope.times.length) {
-				google.load('visualization', '1', { packages : [ 'corechart' ], callback : function() {
-					var data = new google.visualization.DataTable();
-					data.addColumn('string', $scope.interval);
-					data.addColumn('number', 'count');
-					data.addColumn({ type : 'string', role : 'tooltip'});
-					$.each($scope.times, function(i, time) {
-						var value = time[$scope.settings.statistic || 'count'];
-						data.addRow([ time.label, time.count, time.label + ': ' + time.count ]);
-					});
-					var options = {
-						height : 100,
-						fontSize: 14,
-						legend : { position : 'none' },
-						series : [ { color : '#AAA' } ],
-						chartArea : { top : 5 },
-						vAxis : { baselineColor : 'transparent', textStyle : { fontSize: 12 }, minValue : 0, gridlines : { color : '#EEE' } },
-						hAxis : { baselineColor : 'transparent', textStyle : { fontSize: 14 } }
-					};
-					var element = document.getElementById($scope.settings.id + '-chart');
-					var chart = new google.visualization.ColumnChart(element);
-					chart.draw(data, options);
-				}});
+				var categories = [];
+				var data = [];
+				$.each($scope.times, function(i, time) {
+					var value = time[$scope.settings.statistic || 'count'];
+					categories.push(time.label);
+					data.push(time.count);
+				});
+				new Highcharts.Chart({
+					chart : {
+						type : 'column',
+						renderTo : $scope.settings.id + '-chart',
+						height : 120
+					},
+					title : null,
+					colors : [ '#aaa' ],
+					xAxis : {
+						categories : categories,
+						tickLength : 0
+					},
+					yAxis : {
+						title : {
+							text : null
+						}
+					},
+					series : [{
+						name : 'count',
+						data : data,
+						showInLegend : false
+					}],
+					plotOptions : {
+						series : {
+							animation : false,
+							pointWidth : 10,
+							borderRadius : 5
+						}
+					},
+					credits: {
+						enabled: false
+					}
+				});				
 			}
 		}
 	
@@ -1852,11 +1913,7 @@
 		$scope.register($scope);
 		$scope.$on('result', $scope.update);
 		$scope.$on('refresh', $scope.init);
-		$(window).on('resize', $scope.draw);
-		$scope.$on('$destroy', function(e) {
-			$(window).off('resize', $scope.draw);
-		});
-		$('#' + $scope.settings.id + '-tab').on('show', $scope.draw);
+		// $('#' + $scope.settings.id + '-tab').on('show', function() { $timeout($scope.draw, 0) });
 	}]);
 
 	app.controller('TimeHistogramWidgetDialogController', ['$scope', 'WidgetDialogControllerSupport', function($scope, WidgetDialogControllerSupport) {
@@ -1901,37 +1958,80 @@
 		};
 		$scope.draw = function() {
 			if ($scope.times && $scope.times.length) {
-				google.load('visualization', '1', { packages : [ 'corechart' ], callback : function() { 
-					var field = Field.find($scope.settings.field);
-					var data = new google.visualization.DataTable();
-					data.addColumn('date', 'Time');
-					data.addColumn('number', 'Value');
-					data.addColumn({ type : 'string', role : 'filter'});
-					data.addColumn({ type : 'string', role : 'tooltip'});
-					$.each($scope.times, function(i, time) {
-						var value = time[$scope.settings.statistic || 'count'];
-						data.addRow([ new Date(time.time), field.toNumber(value), time.label, time.label + ': ' + field.toText(value) ]);
-					});
-					var options = {
-						height : 100,
-						legend : { position : 'none' },
-						series : [ { color : '#058dc7' } ],
-						pointSize : 5,
-						chartArea : { width : '100%', height : 90, left : 30, top : 5 },
-						vAxis : { gridlines : { color : '#EEE', count : 2 }, minorGridlines : { color : '#EEE', count : 1 }, baselineColor : '#EEE', textStyle : { fontSize: 10 } },
-						hAxis : { gridlines : { color : 'transparent', count : 2 }, baselineColor : 'transparent', textPosition : 'none' }
-					};
-					var element = document.getElementById($scope.settings.id + '-chart');
-					var chart = new google.visualization.AreaChart(element);
-					chart.draw(data, options);
-					google.visualization.events.addListener(chart, 'select', function() {
-						var selection = chart.getSelection();
-						var value = data.getValue(selection[0].row, 2);
-						$scope.$apply(function() {
-							$scope.addConstraint($scope.keyField, value, true);
-						});
-					});
-				}});
+				var field = Field.find($scope.settings.field);
+				var data = [];
+				var ranges = [];
+				$.each($scope.times, function(i, time) {
+					var value = time[$scope.settings.statistic || 'count'];
+					data.push([ time.time, field.toNumber(value) ]);
+					if ($scope.settings.statistic == 'avg') {
+						ranges.push([ time.time, field.toNumber(time['min']), field.toNumber(time['max']) ]);
+					}
+				});
+				new Highcharts.Chart({
+					chart : {
+						renderTo : $scope.settings.id + '-chart'
+					},
+					title : null,
+					xAxis : {
+						type : 'datetime',
+						labels : {
+							overflow : 'justify'
+						}
+					},
+					yAxis : {
+						title : {
+							text : null
+						}
+					},
+					tooltip : {
+						crosshairs : true,
+						shared : true,
+						valueSuffix: $scope.settings.unit
+					},
+					series : [{
+						name : $scope.settings.statistic || 'count',
+						data : data,
+						zIndex: 1,
+						marker : {
+							fillColor : 'white',
+							lineWidth : 2,
+							lineColor: Highcharts.getOptions().colors[0]
+						},
+						showInLegend : false
+					}, {
+						name : 'range',
+						data : ranges,
+						type : 'arearange',
+						lineWidth : 0,
+						linkedTo : ':previous',
+						color: Highcharts.getOptions().colors[0],
+						fillOpacity: 0.3,
+						zIndex: 0,
+						showInLegend : false
+					}],
+					plotOptions : {
+						series : {
+							animation : false,
+							cursor : 'pointer',
+							events : {
+								click : function(event) {
+									$scope.$apply(function() {
+										$.each($scope.times, function(i, time) {
+											if (time.time == event.point.x) {
+												$scope.addConstraint($scope.keyField, time.label, true);
+												return;
+											}
+										});
+									});
+								}
+							}
+						}
+					},
+					credits: {
+						enabled: false
+					}
+				});
 			}
 		}
 	
@@ -1939,10 +2039,6 @@
 		$scope.register($scope);
 		$scope.$on('result', $scope.update);
 		$scope.$on('refresh', $scope.init);
-		$(window).on('resize', $scope.draw);
-		$scope.$on('$destroy', function(e) {
-			$(window).off('resize', $scope.draw);
-		});
 		$('#' + $scope.settings.id + '-tab').on('show', $scope.draw);
 	}]);
 
@@ -2767,6 +2863,9 @@
 		}
 
 		Field.prototype.toNumber = function(value) {
+			if (value === null) {
+				return null;
+			}
 			if (typeof value === 'number') {
 				return value;
 			}

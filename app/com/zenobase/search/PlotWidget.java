@@ -59,7 +59,7 @@ public class PlotWidget extends Widget {
 					ObjectNode entryNode = Nodes.newObject();
 					String key = getLabel(toDateTime(entry.getTime()));
 					entryNode.put("label", key);
-					entryNode.put("time", entry.getTime());
+					entryNode.put("time", entry.getTime() + timezone.getOffset(entry.getTime()));
 					entryNode.put("count", entry.getTotalCount());
 					if (!keyField.equals(valueField)) {
 						addValue(entryNode, "min",  entry.getMin());

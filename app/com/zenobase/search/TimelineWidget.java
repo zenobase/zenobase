@@ -66,6 +66,7 @@ public class TimelineWidget extends Widget {
 				if (range == null || counts.containsKey(key)) {
 					ObjectNode entryNode = Objects.firstNonNull(counts.get(key), Nodes.newObject());
 					entryNode.put("label", key);
+					entryNode.put("time", entry.getTime() + timezone.getOffset(entry.getTime()));
 					entryNode.put("count", entry.getTotalCount());
 					if (!keyField.equals(valueField) && entry.getTotalCount() > 0) {
 						addValue(entryNode, "min",  entry.getMin());
@@ -122,6 +123,7 @@ public class TimelineWidget extends Widget {
 				String label = getLabel(time);
 				ObjectNode node = Nodes.newObject();
 				node.put("label", label);
+				node.put("time", time.getMillis() + timezone.getOffset(time));
 				node.put("count", 0);
 				counts.put(label, node);
 			}
