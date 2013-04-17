@@ -2095,7 +2095,7 @@
 		});
 	}]);
 
-	app.controller('CorrelateWidgetController', ['$scope', 'Field', 'timezone', function($scope, Field, timezone) {
+	app.controller('CorrelateWidgetController', ['$scope', '$timeout', 'Field', 'timezone', function($scope, $timeout, Field, timezone) {
 
 		$scope.init = function() {
 			$scope.data = null;
@@ -2122,7 +2122,7 @@
 		};
 		$scope.update = function(event, result) {
 			$scope.data = result[$scope.settings.id] || [];
-			$scope.draw();
+			$timeout($scope.draw, 0); // need to delay in order to get the correct width
 		};
 		$scope.draw = function() {
 			if ($scope.data && $scope.data.length) {
@@ -2173,7 +2173,7 @@
 		$scope.register($scope);
 		$scope.$on('result', $scope.update);
 		$scope.$on('refresh', $scope.init);
-		$('#' + $scope.settings.id + '-tab').on('show', $scope.draw);
+		// $('#' + $scope.settings.id + '-tab').on('show', $scope.draw);
 	}]);
 
 	app.controller('CorrelateWidgetDialogController', ['$scope', 'WidgetDialogControllerSupport', 'Field', 'Interval', function($scope, WidgetDialogControllerSupport, Field, Interval) {
