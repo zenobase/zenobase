@@ -1474,7 +1474,7 @@
 		$scope.$on('refresh', $scope.init);
 	}]);
 
-	app.controller('HistogramWidgetController', ['$scope', 'Field', function($scope, Field) {
+	app.controller('HistogramWidgetController', ['$scope', '$timeout', 'Field', function($scope, $timeout, Field) {
 	
 		$scope.init = function() {
 			$scope.intervals = null;
@@ -1498,7 +1498,7 @@
 		};
 		$scope.update = function(event, result) {
 			$scope.intervals = result[$scope.settings.id] || [];
-			$scope.draw();
+			$timeout($scope.draw, 0); // need to delay in order to get the correct width
 		};
 		$scope.draw = function() {
 			if ($scope.intervals && $scope.intervals.length) {
@@ -1565,7 +1565,7 @@
 		$scope.register($scope);
 		$scope.$on('result', $scope.update);
 		$scope.$on('refresh', $scope.init);
-		$('#' + $scope.settings.id + '-tab').on('show', $scope.draw);
+		// $('#' + $scope.settings.id + '-tab').on('show', $scope.draw);
 	}]);
 
 	app.controller('HistogramWidgetDialogController', ['$scope', 'WidgetDialogControllerSupport', 'Field', function($scope, WidgetDialogControllerSupport, Field) {
@@ -1799,6 +1799,7 @@
 		$scope.register($scope);
 		$scope.$on('result', $scope.update);
 		$scope.$on('refresh', $scope.init);
+		// $('#' + $scope.settings.id + '-tab').on('show', $scope.draw);
 	}]);
 
 	app.controller('TimelineWidgetDialogController', ['$scope', 'WidgetDialogControllerSupport', 'Field', function($scope, WidgetDialogControllerSupport, Field) {
@@ -1921,7 +1922,7 @@
 		$scope.register($scope);
 		$scope.$on('result', $scope.update);
 		$scope.$on('refresh', $scope.init);
-		// $('#' + $scope.settings.id + '-tab').on('show', function() { $timeout($scope.draw, 0) });
+		// $('#' + $scope.settings.id + '-tab').on('show', $scope.draw);
 	}]);
 
 	app.controller('TimeHistogramWidgetDialogController', ['$scope', 'WidgetDialogControllerSupport', function($scope, WidgetDialogControllerSupport) {
@@ -1935,7 +1936,7 @@
 		];
 	}]);
 
-	app.controller('PlotWidgetController', ['$scope', 'Field', 'timezone', function($scope, Field, timezone) {
+	app.controller('PlotWidgetController', ['$scope', '$timeout', 'Field', 'timezone', function($scope, $timeout, Field, timezone) {
 	
 		$scope.keyField = 'timestamp';
 
@@ -1962,7 +1963,7 @@
 		};
 		$scope.update = function(event, result) {
 			$scope.times = result[$scope.settings.id] || [];
-			$scope.draw();
+			$timeout($scope.draw, 0); // need to delay in order to get the correct width
 		};
 		$scope.draw = function() {
 			if ($scope.times && $scope.times.length) {
@@ -2042,12 +2043,12 @@
 				});
 			}
 		}
-	
+
 		$scope.init();
 		$scope.register($scope);
 		$scope.$on('result', $scope.update);
 		$scope.$on('refresh', $scope.init);
-		$('#' + $scope.settings.id + '-tab').on('show', $scope.draw);
+		// $('#' + $scope.settings.id + '-tab').on('show', $scope.draw);
 	}]);
 
 	app.controller('PlotWidgetDialogController', ['$scope', 'WidgetDialogControllerSupport', 'Field', 'Interval', function($scope, WidgetDialogControllerSupport, Field, Interval) {
