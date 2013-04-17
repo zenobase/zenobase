@@ -21,15 +21,16 @@ public class MultiplotWidgetTest extends WidgetTestSupport {
 	@Override
 	public void setUp() {
 		super.setUp();
-		e1 = newEvent("2012-03-30T08:00:00Z", "4 km", 2000);
-		e2 = newEvent("2012-03-30T15:00:00Z", "6 km", 4000);
-		e3 = newEvent("2012-04-15T09:00:00Z", "10 km", 5000);
+		e1 = newEvent("2012-03-30T08:00:00Z", "4 km", "100 ft", 2000);
+		e2 = newEvent("2012-03-30T15:00:00Z", "6 km", "300 ft", 4000);
+		e3 = newEvent("2012-04-15T09:00:00Z", "10 km", "400 ft", 5000);
 	}
 
-	private static Event newEvent(String timestamp, String distance, int steps) {
+	private static Event newEvent(String timestamp, String distance, String height, int steps) {
 		Event event = new Event();
 		event.setValue(Event.TIMESTAMP, DateTime.parse(timestamp));
 		event.setValue(Event.DISTANCE, DecimalMeasure.<Length>valueOf(distance));
+		event.setValue(Event.HEIGHT, DecimalMeasure.<Length>valueOf(height));
 		event.setValue(Event.COUNT, steps);
 		return event;
 	}
@@ -40,23 +41,25 @@ public class MultiplotWidgetTest extends WidgetTestSupport {
 		addEvent(e1);
 		addEvent(e2);
 		addEvent(e3);
-		addWidget("id:%s,type:%s,field_x:distance,unit_x:km,field_y:count,interval:day,statistic:avg", WIDGET_ID, MultiplotWidget.TYPE);
+		addWidget("id:%s,type:%s,fields:distance|height|count,units:km|ft|,interval:day,statistic:avg", WIDGET_ID, MultiplotWidget.TYPE);
 
 		ObjectNode result = execute();
 		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(3);
 		NodeAssert node = assertThat(result).path(WIDGET_ID).hasSize(2);
 		node.path(0).path("label").isEqualTo("2012-03-30TZ");
 		node.path(0).path("distance").isEqualTo(5.0);
+		node.path(0).path("height").isEqualTo(200.0);
 		node.path(0).path("count").isEqualTo(3000.0);
 		node.path(1).path("label").isEqualTo("2012-04-15TZ");
 		node.path(1).path("distance").isEqualTo(10.0);
+		node.path(1).path("height").isEqualTo(400.0);
 		node.path(1).path("count").isEqualTo(5000.0);
 	}
 
 	@Test
 	public void testEmpty() {
 
-		addWidget("id:%s,type:%s,field_x:distance,unit_x:km,field_y:duration", WIDGET_ID, MultiplotWidget.TYPE);
+		addWidget("id:%s,type:%s,fields:distance|count,units:km|", WIDGET_ID, MultiplotWidget.TYPE);
 
 		ObjectNode result = execute();
 		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(0);

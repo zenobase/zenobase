@@ -1,6 +1,7 @@
 package com.zenobase.search;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Map;
 
 import javax.measure.unit.Unit;
@@ -14,6 +15,9 @@ import org.elasticsearch.search.facet.FacetBuilders;
 import org.elasticsearch.search.facet.datehistogram.DateHistogramFacet;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
+import com.google.common.base.Preconditions;
+import com.google.common.base.Splitter;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
 import com.zenobase.common.Intervals;
@@ -27,36 +31,36 @@ public class MultiplotWidget extends Widget {
 	public static final String TYPE = "multiplot";
 
 	private final String keyField;
-	private final String xField, yField;
+	private final List<String> fields;
+	private final List<String> units;
 	private final String interval;
 	private final DateTimeZone timezone;
-	private final Unit<?> xUnit, yUnit;
 	private final Statistic statistic;
 
-	public MultiplotWidget(String id, String keyField, String xField, Unit<?> xUnit, String yField, Unit<?> yUnit, String interval, DateTimeZone timezone, Statistic statistic) {
+	public MultiplotWidget(String id, String keyField, Iterable<String> fields, Iterable<String> units, String interval, DateTimeZone timezone, Statistic statistic) {
 		super(id);
 		this.keyField = keyField;
-		this.xField = xField;
-		this.xUnit = xUnit;
-		this.yField = yField;
-		this.yUnit = yUnit;
+		this.fields = Lists.newArrayList(fields);
+		this.units = Lists.newArrayList(units);
 		this.interval = interval;
 		this.timezone = timezone;
 		this.statistic = statistic;
+		Preconditions.checkArgument(this.fields.size() == this.units.size());
 	}
 
-	private String getXId() {
-		return getId() + "-x";
+	private String getId(int series) {
+		return getId() + "-" + series;
 	}
 
-	private String getYId() {
-		return getId() + "-y";
+	private Unit<?> getUnit(int series) {
+		return Measures.parseUnit(units.get(series));
 	}
 
 	@Override
 	public void configure(SearchSourceBuilder builder) {
-		addFacet(builder, getXId(), xField, xUnit);
-		addFacet(builder, getYId(), yField, yUnit);
+		for (int i = 0; i < fields.size(); ++i) {
+			addFacet(builder, getId(i), fields.get(i), getUnit(i));
+		}
 	}
 
 	private void addFacet(SearchSourceBuilder builder, String id, String field, Unit<?> unit) {
@@ -70,8 +74,9 @@ public class MultiplotWidget extends Widget {
 	@Override
 	public JsonNode process(SearchResponse response) {
 		Map<String, ObjectNode> values = Maps.newLinkedHashMap();
-		process(response, values, getXId(), xField, xUnit);
-		process(response, values, getYId(), yField, yUnit);
+		for (int i = 0; i < fields.size(); ++i) {
+			process(response, values, getId(i), fields.get(i), getUnit(i));
+		}
 		return toJson(values.values());
 	}
 
@@ -151,19 +156,14 @@ public class MultiplotWidget extends Widget {
 		return new WidgetBuilder() {
 			@Override
 			public Widget build(WidgetOptions options) {
-				String xUnit = options.get("unit_x");
-				String yUnit = options.get("unit_y");
-				String statistic = options.get("statistic", String.class, "avg");
 				return new MultiplotWidget(
 					options.get("id"),
 					Event.TIMESTAMP.getName(),
-					options.get("field_x"),
-					xUnit != null ? Measures.parseUnit(xUnit) : Unit.ONE,
-					options.get("field_y"),
-					yUnit != null ? Measures.parseUnit(yUnit) : Unit.ONE,
+					Splitter.on('|').split(options.get("fields", String.class, "")),
+					Splitter.on('|').split(options.get("units", String.class, "")),
 					options.get("interval", String.class, "month"),
 					options.get("timezone", DateTimeZone.class, DateTimeZone.UTC),
-					Statistic.valueOf(statistic.toUpperCase()));
+					Statistic.valueOf(options.get("statistic", String.class, "avg").toUpperCase()));
 			}
 		};
 	}
