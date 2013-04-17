@@ -1,5 +1,6 @@
 package com.zenobase.search;
 
+import javax.measure.unit.Dimension;
 import javax.measure.unit.Unit;
 
 import org.codehaus.jackson.JsonNode;
@@ -40,7 +41,7 @@ public class HistogramWidget extends Widget {
 	}
 
 	private long getStandardInterval() {
-		if (unit == null || unit.isStandardUnit()) {
+		if (unit == null || Measures.isStandard(unit) || unit.getDimension() == Dimension.TEMPERATURE) {
 			return interval;
 		}
 		return (long) unit.toStandardUnit().convert(interval);

@@ -137,6 +137,11 @@ public class MeasuresTest {
 		assertThatIsEqualTo("4184.000 J", "1 kcal");
 	}
 
+	@Test
+	public void testSound() {
+		assertThatIsEqualTo("42 dB", "42 dB");
+	}
+
 	private static void assertThatIsEqualTo(String expected, String value) {
 		assertThat(Measures.toStandard(DecimalMeasure.valueOf(value))).isEqualTo(DecimalMeasure.valueOf(expected));
 	}

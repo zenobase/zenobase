@@ -62,7 +62,11 @@ public class Measures {
 	}
 
 	public static <Q extends Quantity> DecimalMeasure<Q> toStandard(DecimalMeasure<Q> measure) {
-		return measure.to((Unit<Q>) measure.getUnit().getStandardUnit(), MathContext.DECIMAL32);
+		return isStandard(measure.getUnit()) ? measure : measure.to((Unit<Q>) measure.getUnit().getStandardUnit(), MathContext.DECIMAL32);
+	}
+
+	public static boolean isStandard(Unit<?> unit) {
+		return unit.isStandardUnit() || NonSI.DECIBEL.equals(unit);
 	}
 
 	public static <Q extends Quantity> Iterable<Unit<Q>> getUnits(Dimension dimension, Class<Q> type) {
@@ -101,7 +105,7 @@ public class Measures {
 	}
 
 	public static BigDecimal convert(double value, Unit<?> unit) {
-		return round(unit.getStandardUnit().getConverterTo(unit).convert(value));
+		return round(isStandard(unit) ? value : unit.getStandardUnit().getConverterTo(unit).convert(value));
 	}
 
 	public static BigDecimal round(double value) {
