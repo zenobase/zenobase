@@ -1,6 +1,7 @@
 package com.zenobase.search;
 
-import javax.measure.unit.Dimension;
+import javax.measure.unit.NonSI;
+import javax.measure.unit.SI;
 import javax.measure.unit.Unit;
 
 import org.codehaus.jackson.JsonNode;
@@ -41,8 +42,14 @@ public class HistogramWidget extends Widget {
 	}
 
 	private long getStandardInterval() {
-		if (unit == null || Measures.isStandard(unit) || unit.getDimension() == Dimension.TEMPERATURE) {
+		if (unit == null || Measures.isStandard(unit)) {
 			return interval;
+		}
+		if (SI.CELSIUS.equals(unit)) {
+			return interval;
+		}
+		if (NonSI.FAHRENHEIT.equals(unit)) {
+			return (long) (interval * 0.556);
 		}
 		return (long) unit.toStandardUnit().convert(interval);
 	}
