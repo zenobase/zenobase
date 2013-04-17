@@ -915,7 +915,7 @@
       	type : 'map',
       	label : 'Map', 
       	description : 'Maps event locations.',
-      	settings : {},
+      	settings : { },
       	singleton : true
       },
       {
@@ -928,7 +928,7 @@
       	type : 'ratings',
       	label : 'Ratings',
     		description : 'Counts events by their rating.',
-      	settings : {}
+      	settings : { }
       },
       {
       	type : 'histogram',
@@ -953,6 +953,12 @@
       	label : 'Time Histogram', 
       	description : 'Counts events by month of year, day of week, or hour of day.',
       	settings : { interval : 'day_of_week' }
+      },
+	  	{
+      	type : 'correlate',
+      	label : 'Correlate', 
+      	description : 'Correlates the values from two fields.',
+      	settings : { field_x : 'count', field_y : 'count' }
       }
 	  ];
 		$scope.init = function() {
@@ -1928,7 +1934,7 @@
 			{ id : 'month_of_year', label : 'month of year' }
 		];
 	}]);
-	
+
 	app.controller('PlotWidgetController', ['$scope', 'Field', 'timezone', function($scope, Field, timezone) {
 	
 		$scope.keyField = 'timestamp';
@@ -2084,6 +2090,127 @@
 			}
 			if (!isStatisticValid()) {
 				$scope.settings.statistic = $scope.getStatistics($scope.settings.field)[0];
+			}
+		});
+	}]);
+
+	app.controller('CorrelateWidgetController', ['$scope', 'Field', 'timezone', function($scope, Field, timezone) {
+
+		$scope.init = function() {
+			$scope.data = null;
+		};
+		$scope.params = function() {
+			return {
+				id : $scope.settings.id,
+				type : 'correlate',
+				field_x : $scope.settings.field_x,
+				unit_x : $scope.settings.unit_x || '',
+				field_y : $scope.settings.field_y,
+				unit_y : $scope.settings.unit_y || '',
+				interval : $scope.settings.interval || 'day',
+				timezone : timezone
+			};
+		};
+		$scope.refresh = function(options, settings) {
+			$scope.init();
+			$scope.search([ $.extend($scope.params(), options, settings) ], function(result) {
+				$.extend($scope, options)
+				$.extend($scope.settings, settings)
+				$scope.update(null, result);
+			});
+		};
+		$scope.update = function(event, result) {
+			$scope.data = result[$scope.settings.id] || [];
+			$scope.draw();
+		};
+		$scope.draw = function() {
+			if ($scope.data && $scope.data.length) {
+				new Highcharts.Chart({
+					chart : {
+						type : 'scatter',
+						zoomType: 'xy',
+						renderTo : $scope.settings.id + '-chart'
+					},
+					title : null,
+					xAxis : {
+						title : {
+							text : $scope.settings.field_x
+						}
+					},
+					yAxis : {
+						title : {
+							text : $scope.settings.field_y
+						}
+					},
+					series : [{
+						name : 'xy',
+						data : $scope.data,
+						color : 'rgba(119, 152, 191, 0.5)',
+						marker : {
+							radius : 5
+						},
+						tooltip : {
+							crosshairs : true,
+							headerFormat : '',
+							pointFormat : '<b>{point.x}</b>' + ($scope.settings.unit_x || '') + '<br/><b>{point.y}</b>' + ($scope.settings.unit_y || '')
+						},
+						showInLegend : false
+					}],
+					plotOptions : {
+						series : {
+							animation : false
+						}
+					},
+					credits: {
+						enabled: false
+					}
+				});
+			}
+		}
+	
+		$scope.init();
+		$scope.register($scope);
+		$scope.$on('result', $scope.update);
+		$scope.$on('refresh', $scope.init);
+		$('#' + $scope.settings.id + '-tab').on('show', $scope.draw);
+	}]);
+
+	app.controller('CorrelateWidgetDialogController', ['$scope', 'WidgetDialogControllerSupport', 'Field', 'Interval', function($scope, WidgetDialogControllerSupport, Field, Interval) {
+
+		WidgetDialogControllerSupport($scope);
+
+		function isUnitValid(field, unit) {
+			var units = $scope.getUnits(field);
+			return units.length === 0
+				? unit === null
+				: $.inArray(unit, units) != -1;
+		};
+
+		$scope.getFields = function() {
+			return Field.findByType('numeric');
+		};
+		$scope.getIntervals = function() {
+			return Interval.VALUES;
+		};
+		$scope.getStatistics = function(field) {
+			return [ 'sum', 'avg', 'min', 'max', 'count' ];
+		};
+		$scope.getUnits = function(field) {
+			return field && Field.find(field).units || [];
+		};
+		$scope.valid = function() {
+			return isUnitValid($scope.settings.field_x, $scope.settings.unit_x)
+				&& isUnitValid($scope.settings.field_y, $scope.settings.unit_y);
+		};
+
+		$scope.$watch('settings.field_x', function() {
+			if (!isUnitValid($scope.settings.field_x, $scope.settings.unit_x)) {
+				$scope.settings.unit_x = null;
+			}
+		});
+		$scope.$watch('settings.field_y', function() {
+			if (!isUnitValid($scope.settings.field_y, $scope.settings.unit_y)) {
+				$scope.settings.unit_y = null;
 			}
 		});
 	}]);
