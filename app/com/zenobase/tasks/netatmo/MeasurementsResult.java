@@ -19,6 +19,7 @@ import com.google.common.collect.Lists;
 import com.zenobase.common.Measures;
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
+import com.zenobase.models.Rating;
 import com.zenobase.models.Resource;
 
 class MeasurementsResult {
@@ -60,7 +61,8 @@ class MeasurementsResult {
 		event.setValue(Event.TEMPERATURE, getMeasure(node.get(0), SI.CELSIUS));
 		event.setValue(Event.PRESSURE, getMeasure(node.get(1), SI.HECTO(SI.PASCAL)));
 		event.setValue(Event.SOUND, getMeasure(node.get(2), NonSI.DECIBEL));
-		// TODO humidity (%), co2 (ppm)
+		event.setValue(Event.HUMIDITY, getInteger(node.get(3)));
+		event.setValue(Event.RATING, getRating(node.get(4)));
 		event.setValue(Event.AUTHOR, author);
 		event.setValue(Event.SOURCE, SOURCE);
 		return event;
@@ -68,5 +70,32 @@ class MeasurementsResult {
 
 	private static <Q extends Quantity> DecimalMeasure<Q> getMeasure(JsonNode node, Unit<Q> unit) {
 		return node.isNumber() ? Measures.<Q>valueOf(node.getDecimalValue(), unit) : null;
+	}
+
+	private static Integer getInteger(JsonNode node) {
+		return node.isNumber() ? node.getIntValue() : null;
+	}
+
+	private static Rating getRating(JsonNode node) {
+		return node.isNumber() ? Rating.valueOf(getRating(node.getIntValue())) : null;
+	}
+
+	private static int getRating(int value) {
+		if (value < 450) { // outdoor
+			return 100;
+		}
+		if (value < 600) { // ok
+			return 80;
+		}
+		if (value < 800) {
+			return 60;
+		}
+		if (value < 1000) { // drowsy
+			return 40;
+		}
+		if (value < 2500) { // hazard
+			return 20;
+		}
+		return 0;
 	}
 }

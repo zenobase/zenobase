@@ -177,7 +177,7 @@ public class NetatmoTaskManager extends OAuthTaskManager {
 			request.addQuerystringParameter("limit", "1000");
 			request.addQuerystringParameter("scale", "max");
 			request.addQuerystringParameter("optimize", "false");
-			request.addQuerystringParameter("type", "Temperature,Pressure,Noise");
+			request.addQuerystringParameter("type", "Temperature,Pressure,Noise,Humidity,CO2");
 			Response response = send(request);
 			checkResponse(task, request, response);
 			return new MeasurementsResult(task.getPrincipal(), device, parseObject(response));

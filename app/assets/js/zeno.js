@@ -3015,6 +3015,17 @@
 		});
 
 		register({
+			name : 'humidity',
+			icon : 'icon-tint',
+			type : 'numeric',
+			toHtml : function(value) {
+				return '<span class="nowrap">' +
+			  	'<i class="' + this.icon + '" title="Humidity"></i> ' + value + '%' +
+			  '</span>';
+			}
+		});
+
+		register({
 			name : 'pressure',
 			icon : 'icon-fullscreen',
 			type : 'numeric',

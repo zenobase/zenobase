@@ -14,6 +14,7 @@ import org.junit.Test;
 import com.zenobase.common.Measures;
 import com.zenobase.models.Event;
 import com.zenobase.models.Location;
+import com.zenobase.models.Rating;
 import com.zenobase.tasks.ResultTestSupport;
 
 public class MeasurementsResultTest extends ResultTestSupport {
@@ -31,6 +32,8 @@ public class MeasurementsResultTest extends ResultTestSupport {
 		expected.setValue(Event.TEMPERATURE, Measures.<Temperature>valueOf("25.7 C"));
 		expected.setValue(Event.PRESSURE, Measures.<Pressure>valueOf("1009.8 hPa"));
 		expected.setValue(Event.SOUND, Measures.<Dimensionless>valueOf("40 dB"));
+		expected.setValue(Event.HUMIDITY, 48);
+		expected.setValue(Event.RATING, Rating.valueOf(80));
 		expected.setValue(Event.AUTHOR, TESTER);
 		expected.setValue(Event.SOURCE, MeasurementsResult.SOURCE);
 		assertThat(events.get(0)).as("first event").isEqualTo(expected);
