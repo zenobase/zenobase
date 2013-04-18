@@ -1,8 +1,11 @@
 package com.zenobase.controllers;
 
 
+import java.io.StringWriter;
+
 import javax.inject.Inject;
 
+import org.codehaus.jackson.node.ArrayNode;
 import org.codehaus.jackson.node.ObjectNode;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
@@ -21,6 +24,7 @@ import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
 import com.zenobase.models.Role;
 import com.zenobase.oauth.Authorization;
+import com.zenobase.scripts.SpreadsheetPrinter;
 import com.zenobase.search.EventSearchBuilder;
 import com.zenobase.search.Search;
 import com.zenobase.services.BucketRepository;
@@ -55,9 +59,17 @@ public class EventListController extends ControllerSupport {
     	}
     	String[] widgets = request().queryString().get("w");
     	String[] constraints = request().queryString().get("q");
+    	String extract = request().getQueryString("x");
     	if (widgets != null) {
     		Search search = new EventSearchBuilder().addWidgets(widgets).addConstraints(constraints).build();
-    		return ok(events.find(bucketId, search));
+    		ObjectNode result = events.find(bucketId, search);
+    		if (extract != null) {
+    			StringWriter out = new StringWriter();
+    			new SpreadsheetPrinter(out).print((ArrayNode) result.get(extract));
+    			return ok(out.toString());
+    		} else {
+    			return ok(result);
+    		}
     	} else {
         	response().setContentType("application/json");
         	return ok(new EventChunks(events, bucketId, constraints));
