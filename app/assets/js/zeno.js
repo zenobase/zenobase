@@ -1498,7 +1498,7 @@
 		};
 		$scope.update = function(event, result) {
 			$scope.intervals = result[$scope.settings.id] || [];
-			$timeout($scope.draw, 0); // need to delay in order to get the correct width
+			$timeout($scope.draw, 0); // delay for correct width
 		};
 		$scope.draw = function() {
 			if ($scope.intervals && $scope.intervals.length) {
@@ -1562,7 +1562,7 @@
 		$scope.register($scope);
 		$scope.$on('result', $scope.update);
 		$scope.$on('refresh', $scope.init);
-		// $('#' + $scope.settings.id + '-tab').on('show', $scope.draw);
+		$('#' + $scope.settings.id + '-tab').on('shown', $scope.draw);
 	}]);
 
 	app.controller('HistogramWidgetDialogController', ['$scope', 'WidgetDialogControllerSupport', 'Field', function($scope, WidgetDialogControllerSupport, Field) {
@@ -1728,7 +1728,7 @@
 		};
 		$scope.update = function(event, result) {
 			$scope.times = result[$scope.settings.id] || [];
-			$timeout($scope.draw, 0); // need to delay in order to get the correct width
+			$timeout($scope.draw, 0); // delay for correct width
 		};
 		$scope.draw = function() {
 			if ($scope.times && $scope.times.length) {
@@ -1796,7 +1796,7 @@
 		$scope.register($scope);
 		$scope.$on('result', $scope.update);
 		$scope.$on('refresh', $scope.init);
-		// $('#' + $scope.settings.id + '-tab').on('show', $scope.draw);
+		$('#' + $scope.settings.id + '-tab').on('shown', $scope.draw);
 	}]);
 
 	app.controller('TimelineWidgetDialogController', ['$scope', 'WidgetDialogControllerSupport', 'Field', function($scope, WidgetDialogControllerSupport, Field) {
@@ -1866,7 +1866,7 @@
 		};
 		$scope.update = function(event, result) {
 			$scope.times = result[$scope.settings.id] || [];
-			$timeout($scope.draw, 0); // need to delay in order to get the correct width
+			$timeout($scope.draw, 0); // delay for correct width
 		};
 		$scope.draw = function() {
 			if ($scope.times && $scope.times.length) {
@@ -1918,7 +1918,7 @@
 		$scope.register($scope);
 		$scope.$on('result', $scope.update);
 		$scope.$on('refresh', $scope.init);
-		// $('#' + $scope.settings.id + '-tab').on('show', $scope.draw);
+		$('#' + $scope.settings.id + '-tab').on('shown', $scope.draw);
 	}]);
 
 	app.controller('TimeHistogramWidgetDialogController', ['$scope', 'WidgetDialogControllerSupport', function($scope, WidgetDialogControllerSupport) {
@@ -1959,7 +1959,7 @@
 		};
 		$scope.update = function(event, result) {
 			$scope.times = result[$scope.settings.id] || [];
-			$timeout($scope.draw, 0); // need to delay in order to get the correct width
+			$timeout($scope.draw, 0); // delay for correct width
 		};
 		$scope.draw = function() {
 			if ($scope.times && $scope.times.length) {
@@ -2038,7 +2038,7 @@
 		$scope.register($scope);
 		$scope.$on('result', $scope.update);
 		$scope.$on('refresh', $scope.init);
-		// $('#' + $scope.settings.id + '-tab').on('show', $scope.draw);
+		$('#' + $scope.settings.id + '-tab').on('shown', $scope.draw);
 	}]);
 
 	app.controller('PlotWidgetDialogController', ['$scope', 'WidgetDialogControllerSupport', 'Field', 'Interval', function($scope, WidgetDialogControllerSupport, Field, Interval) {
@@ -2089,6 +2089,7 @@
 
 		$scope.init = function() {
 			$scope.data = null;
+			$scope.chart = null;
 		};
 		$scope.params = function() {
 			return {
@@ -2112,11 +2113,11 @@
 		};
 		$scope.update = function(event, result) {
 			$scope.data = result[$scope.settings.id] || [];
-			$timeout($scope.draw, 0); // need to delay in order to get the correct width
+			$timeout($scope.draw, 0); // delay for correct width
 		};
 		$scope.draw = function() {
 			if ($scope.data && $scope.data.length) {
-				new Highcharts.Chart({
+				$scope.chart = new Highcharts.Chart({
 					chart : {
 						type : 'scatter',
 						zoomType: 'xy',
@@ -2157,13 +2158,13 @@
 					}
 				});
 			}
-		}
+		};
 	
 		$scope.init();
 		$scope.register($scope);
 		$scope.$on('result', $scope.update);
 		$scope.$on('refresh', $scope.init);
-		// $('#' + $scope.settings.id + '-tab').on('show', $scope.draw);
+		$('#' + $scope.settings.id + '-tab').on('shown', $scope.draw);
 	}]);
 
 	app.controller('CorrelateWidgetDialogController', ['$scope', 'WidgetDialogControllerSupport', 'Field', 'Interval', function($scope, WidgetDialogControllerSupport, Field, Interval) {
