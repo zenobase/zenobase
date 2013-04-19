@@ -2089,7 +2089,6 @@
 
 		$scope.init = function() {
 			$scope.data = null;
-			$scope.chart = null;
 		};
 		$scope.params = function() {
 			return {
@@ -2117,7 +2116,7 @@
 		};
 		$scope.draw = function() {
 			if ($scope.data && $scope.data.length) {
-				$scope.chart = new Highcharts.Chart({
+				new Highcharts.Chart({
 					chart : {
 						type : 'scatter',
 						zoomType: 'xy',
