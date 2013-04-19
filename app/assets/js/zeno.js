@@ -1503,20 +1503,14 @@
 		$scope.draw = function() {
 			if ($scope.intervals && $scope.intervals.length) {
 				var field = Field.find($scope.settings.field);
-				var categories = [];
-				var data = [];
-				$.each($scope.intervals, function(i, interval) {
-					categories.push(field.toText(interval.from) + ' - ' + field.toText(interval.to));
-					data.push(interval.count);
-				});
-				new Highcharts.Chart({
+				var options = {
 					chart : {
 						type : 'bar',
 						renderTo : $scope.settings.id + '-chart'
 					},
 					title : null,
 					xAxis : {
-						categories : categories,
+						categories : [],
 						tickLength : 0
 					},
 					yAxis : {
@@ -1527,7 +1521,7 @@
 					},
 					series : [{
 						name : 'count',
-						data : data,
+						data : [],
 						showInLegend : false
 					}],
 					tooltip : {
@@ -1536,8 +1530,6 @@
 					plotOptions : {
 						series : {
 							pointWidth : 10,
-							// pointPadding: 0,
-							// groupPadding: 0,
 							borderRadius : 5,
 							color : '#aaa',
 							borderWidth : 2,
@@ -1557,7 +1549,12 @@
 					credits: {
 						enabled: false
 					}
+				};
+				$.each($scope.intervals, function(i, interval) {
+					options.xAxis.categories.push(field.toText(interval.from) + ' - ' + field.toText(interval.to));
+					options.series[0].data.push(interval.count);
 				});
+				new Highcharts.Chart(options);
 			}
 		}
 
@@ -1736,12 +1733,7 @@
 		$scope.draw = function() {
 			if ($scope.times && $scope.times.length) {
 				var field = Field.find($scope.settings.field);
-				var data = [];
-				$.each($scope.times, function(i, time) {
-					var value = time[$scope.settings.statistic || 'count'];
-					data.push([ time.time, field.toNumber(value) ]);
-				});
-				new Highcharts.Chart({
+				var options = {
 					chart : {
 						renderTo : $scope.settings.id + '-chart',
 						height : 120
@@ -1764,7 +1756,7 @@
 						name : $scope.settings.statistic || 'count',
 						type : 'column',
 						lineWidth : 0,
-						data : data,
+						data : [],
 						showInLegend : false
 					}],
 					plotOptions : {
@@ -1791,7 +1783,12 @@
 					credits: {
 						enabled: false
 					}
+				};
+				$.each($scope.times, function(i, time) {
+					var value = time[$scope.settings.statistic || 'count'];
+					options.series[0].data.push([ time.time, field.toNumber(value) ]);
 				});
+				new Highcharts.Chart(options);
 			}
 		}
 
@@ -1873,14 +1870,7 @@
 		};
 		$scope.draw = function() {
 			if ($scope.times && $scope.times.length) {
-				var categories = [];
-				var data = [];
-				$.each($scope.times, function(i, time) {
-					var value = time[$scope.settings.statistic || 'count'];
-					categories.push(time.label);
-					data.push(time.count);
-				});
-				new Highcharts.Chart({
+				var options = {
 					chart : {
 						type : 'column',
 						polar: true,
@@ -1888,7 +1878,7 @@
 					},
 					title : null,
 					xAxis : {
-						categories : categories
+						categories : []
 					},
 					yAxis : {
 						title : {
@@ -1897,7 +1887,7 @@
 					},
 					series : [{
 						name : 'count',
-						data : data,
+						data : [],
 						showInLegend : false
 					}],
 					plotOptions : {
@@ -1914,9 +1904,15 @@
 					credits: {
 						enabled: false
 					}
-				});				
+				};
+				$.each($scope.times, function(i, time) {
+					var value = time[$scope.settings.statistic || 'count'];
+					options.xAxis.categories.push(time.label);
+					options.series[0].data.push(time.count);
+				});
+				new Highcharts.Chart(options);				
 			}
-		}
+		};
 	
 		$scope.init();
 		$scope.register($scope);
@@ -1968,16 +1964,7 @@
 		$scope.draw = function() {
 			if ($scope.times && $scope.times.length) {
 				var field = Field.find($scope.settings.field);
-				var data = [];
-				var ranges = [];
-				$.each($scope.times, function(i, time) {
-					var value = time[$scope.settings.statistic || 'count'];
-					data.push([ time.time, field.toNumber(value) ]);
-					if ($scope.settings.statistic == 'avg') {
-						ranges.push([ time.time, field.toNumber(time['min']), field.toNumber(time['max']) ]);
-					}
-				});
-				new Highcharts.Chart({
+				var options = {
 					chart : {
 						renderTo : $scope.settings.id + '-chart'
 					},
@@ -2000,7 +1987,7 @@
 					},
 					series : [{
 						name : $scope.settings.statistic || 'count',
-						data : data,
+						data : [],
 						zIndex: 1,
 						marker : {
 							fillColor : 'white',
@@ -2010,7 +1997,7 @@
 						showInLegend : false
 					}, {
 						name : 'range',
-						data : ranges,
+						data : [],
 						type : 'arearange',
 						lineWidth : 0,
 						linkedTo : ':previous',
@@ -2026,12 +2013,7 @@
 							events : {
 								click : function(event) {
 									$scope.$apply(function() {
-										$.each($scope.times, function(i, time) {
-											if (time.time == event.point.x) {
-												$scope.addConstraint($scope.keyField, time.label, true);
-												return;
-											}
-										});
+											$scope.addConstraint($scope.keyField, event.point.options.filter, true);
 									});
 								}
 							}
@@ -2040,7 +2022,15 @@
 					credits: {
 						enabled: false
 					}
+				};
+				$.each($scope.times, function(i, time) {
+					var value = time[$scope.settings.statistic || 'count'];
+					options.series[0].data.push({ x : time.time, y :field.toNumber(value), filter : time.label });
+					if ($scope.settings.statistic == 'avg') {
+						options.series[1].data.push([ time.time, field.toNumber(time['min']), field.toNumber(time['max']) ]);
+					}
 				});
+				new Highcharts.Chart(options);
 			}
 		}
 
