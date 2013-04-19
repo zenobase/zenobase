@@ -1525,7 +1525,8 @@
 						showInLegend : false
 					}],
 					tooltip : {
-						shared : true
+						shared : true,
+						hideDelay : 0
 					},
 					plotOptions : {
 						series : {
@@ -1750,6 +1751,7 @@
 					},
 					tooltip : {
 						shared : true,
+						hideDelay : 0,
 						valueSuffix: $scope.settings.unit
 					},
 					series : [{
@@ -1885,6 +1887,10 @@
 							text : null
 						}
 					},
+					tooltip : {
+						shared : true,
+						hideDelay : 0
+					},
 					series : [{
 						name : 'count',
 						data : [],
@@ -1983,6 +1989,7 @@
 					tooltip : {
 						crosshairs : true,
 						shared : true,
+						hideDelay : 0,
 						valueSuffix: $scope.settings.unit
 					},
 					series : [{
@@ -2132,6 +2139,10 @@
 						title : {
 							text : $scope.settings.field_y
 						}
+					},
+					tooltip : {
+						shared : true,
+						hideDelay : 0
 					},
 					series : [{
 						name : 'xy',
