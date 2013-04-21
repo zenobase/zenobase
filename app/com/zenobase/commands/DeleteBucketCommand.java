@@ -5,13 +5,14 @@ import play.Logger;
 import com.google.inject.Inject;
 
 import com.zenobase.json.ObjectField;
+import com.zenobase.migrate.Migrate21to22;
 import com.zenobase.models.Bucket;
 import com.zenobase.models.Identity;
 import com.zenobase.services.BucketRepository;
 
 public class DeleteBucketCommand extends Command {
 
-	private static final Command.Type TYPE = new Command.Type("delete bucket", 2);
+	private static final Command.Type TYPE = new Command.Type("delete bucket", 3);
 	private static final ObjectField BUCKET = new ObjectField("bucket");
 
 	private DeleteBucketCommand(ObjectNode node) {
@@ -47,8 +48,13 @@ public class DeleteBucketCommand extends Command {
 
 		@Override
 		public Command parse(ObjectNode node, int version) {
+			DeleteBucketCommand command = new DeleteBucketCommand(node);
 			switch (version) {
-				case 2: return new DeleteBucketCommand(node);
+				case 2:
+					command.setType(TYPE);
+					Migrate21to22.migrate(command.getBucket());
+				case 3:
+					return command;
 			}
 			return null;
 		}

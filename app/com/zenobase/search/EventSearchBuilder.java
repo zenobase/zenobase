@@ -15,7 +15,6 @@ public class EventSearchBuilder extends SearchBuilderSupport {
 		.put(HistogramWidget.TYPE, HistogramWidget.builder())
 		.put(TimelineWidget.TYPE, TimelineWidget.builder())
 		.put(TimeHistogramWidget.TYPE, TimeHistogramWidget.builder())
-		.put(PlotWidget.TYPE, PlotWidget.builder())
 		.put(MultiplotWidget.TYPE, MultiplotWidget.builder())
 		.put(ScoreboardWidget.TYPE, ScoreboardWidget.builder())
 		.put(MapWidget.TYPE, MapWidget.builder())

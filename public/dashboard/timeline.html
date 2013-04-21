@@ -46,6 +46,13 @@
 						<p class="help-block">The unit of the value field.</p>
 					</div>
 				</div>
+				<div class="control-group">
+					<label class="control-label" for="interval">Interval</label>
+					<div class="controls">
+						<select name="interval" data-ng-model="settings.interval" data-ng-options="interval.name as interval.name for interval in getIntervals()"></select>
+						<p class="help-block">The default interval at which to aggregate the values.</p>
+					</div>
+				</div>
 			</div>
 			<div class="modal-footer">
 				<button class="btn btn-primary" data-ng-click="save()" data-ng-disabled="!form.$valid || !valid()">Update</button>
