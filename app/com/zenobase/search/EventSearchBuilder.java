@@ -18,7 +18,7 @@ public class EventSearchBuilder extends SearchBuilderSupport {
 		.put(MultiplotWidget.TYPE, MultiplotWidget.builder())
 		.put(ScoreboardWidget.TYPE, ScoreboardWidget.builder())
 		.put(MapWidget.TYPE, MapWidget.builder())
-		.put(CorrelateWidget.TYPE, CorrelateWidget.builder())
+		.put(ScatterPlotWidget.TYPE, ScatterPlotWidget.builder())
 		.build();
 
 	private static final ImmutableMultimap<String, ConstraintBuilder> constraintBuilders = Event.getSchema().getConstraintBuilders();

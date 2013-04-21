@@ -13,7 +13,7 @@ import org.junit.Test;
 import com.zenobase.models.Event;
 import com.zenobase.testing.NodeAssert;
 
-public class CorrelateWidgetTest extends WidgetTestSupport {
+public class ScatterPlotWidgetTest extends WidgetTestSupport {
 
 	private Event e1, e2, e3;
 
@@ -40,7 +40,7 @@ public class CorrelateWidgetTest extends WidgetTestSupport {
 		addEvent(e1);
 		addEvent(e2);
 		addEvent(e3);
-		addWidget("id:%s,type:%s,field_x:distance,unit_x:km,field_y:count,interval:day,statistic:avg", WIDGET_ID, CorrelateWidget.TYPE);
+		addWidget("id:%s,type:%s,field_x:distance,unit_x:km,field_y:count,interval:day,statistic:avg", WIDGET_ID, ScatterPlotWidget.TYPE);
 
 		ObjectNode result = execute();
 		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(3);
@@ -54,7 +54,7 @@ public class CorrelateWidgetTest extends WidgetTestSupport {
 	@Test
 	public void testEmpty() {
 
-		addWidget("id:%s,type:%s,field_x:distance,unit_x:km,field_y:duration", WIDGET_ID, CorrelateWidget.TYPE);
+		addWidget("id:%s,type:%s,field_x:distance,unit_x:km,field_y:duration", WIDGET_ID, ScatterPlotWidget.TYPE);
 
 		ObjectNode result = execute();
 		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(0);

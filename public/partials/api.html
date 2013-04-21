@@ -929,13 +929,13 @@ Content-Type: application/json
   <blockquote>
   <dl>
   <dt>offset=<em>&lt;integer&gt;</em></dt>
-  <dd>The offset of the first event. Default is <em>0</em>.</dd>
+  <dd>The offset of the first event. Defaults to <em>0</em>.</dd>
   <dt>limit=<em>&lt;integer&gt;</em></dt>
-  <dd>How many events to return. Default is <em>10</em>.</dd>
+  <dd>How many events to return. Defaults to <em>10</em>.</dd>
   <dt>order=<em>&lt;field name&gt;</em></dt>
-  <dd>The field to sort on. Default is <em>timestamp</em>.</dd>
+  <dd>The field to sort on. Defaults to <em>timestamp</em>.</dd>
   <dt>reverse=<em>&lt;boolean&gt;</em></dt>
-  <dd>Sort in ascending order. Default is <em>false</em></dd>
+  <dd>Sort in ascending order. Defaults to <em>false</em></dd>
   </dl>
   </blockquote>
 </dd>
@@ -946,13 +946,13 @@ Content-Type: application/json
   <dt>field=<em>&lt;'tag'|'author'&gt;</em></dt>
   <dd>The field to aggregate on. Required.</dd>
   <dt>order=<em>&lt;'count'|'term'&gt;</em></dt>
-  <dd>Order results by count or alphabetic. Default is by <em>count</em>.</dd>
+  <dd>Order results by count or alphabetic. Defaults to <em>count</em>.</dd>
   <dt>offset=<em>&lt;integer&gt;</em></dt>
-  <dd>The offset of the first result. Default is <em>0</em>.</dd>
+  <dd>The offset of the first result. Defaults to <em>0</em>.</dd>
   <dt>limit=<em>&lt;integer&gt;</em></dt>
-  <dd>How many results to return. Default is <em>10</em>.</dd>
+  <dd>How many results to return. Defaults to <em>10</em>.</dd>
   <dt>reverse=<em>&lt;boolean&gt;</em></dt>
-  <dd>Sort in descending order. Default is <em>false</em></dd>
+  <dd>Sort in descending order. Defaults to <em>false</em></dd>
   </dl>
   </blockquote>
 </dd>
@@ -960,10 +960,14 @@ Content-Type: application/json
 <dd>
   <blockquote>
   <dl>
+  <dt>field=<em>&lt;String&gt;</em></dt>
+  <dd>The field containing the values. Required.</dd>
+  <dt>unit=<em>&lt;String&gt;</em></dt>
+  <dd>The unit of the value. Required for fields with units.</dd>
   <dt>interval=<em>&lt;'year'|'month'|'day'|'hour'|'minute'&gt;</em></dt>
-  <dd>The interval at which values are aggregated. Default is <em>month</em>.</dd>
+  <dd>The interval at which values are aggregated. Defaults to <em>month</em>.</dd>
   <dt>timezone=<em>&lt;Z&gt;</em></dt>
-  <dd>The timezone offset to use. Default is <em>+00:00</em></dd>
+  <dd>The timezone offset to use. Defaults to <em>+00:00</em></dd>
   </dl>
   </blockquote>
 </dd>
@@ -972,7 +976,7 @@ Content-Type: application/json
   <blockquote>
   <dl>
   <dt>factor=<em>&lt;Number&gt;</em></dt>
-  <dd>Controls the clustering, from 0.0 (show each point) to 1.0 (one big cluster). Default is <em>0.2</em>.</dd>
+  <dd>Controls the clustering, from 0.0 (show each point) to 1.0 (one big cluster). Defaults to <em>0.2</em>.</dd>
   </dl>
   </blockquote>
 </dd>
@@ -996,9 +1000,28 @@ Content-Type: application/json
   <dt>unit=<em>&lt;String&gt;</em></dt>
   <dd>The unit of the value. Required for fields with units.</dd>
   <dt>order=<em>&lt;'count'|'term'&gt;</em></dt>
-  <dd>Order results by count or alphabetic. Default is by <em>count</em>.</dd>
+  <dd>Order results by count or alphabetic. Defaults to <em>count</em>.</dd>
   <dt>limit=<em>&lt;integer&gt;</em></dt>
-  <dd>How many results to return. Default is <em>10</em>.</dd>
+  <dd>How many results to return. Defaults to <em>10</em>.</dd>
+  </dl>
+  </blockquote>
+</dd>
+<dt>scatterplot</dt>
+<dd>
+  <blockquote>
+  <dl>
+  <dt>field_x=<em>&lt;String&gt;</em></dt>
+  <dd>The first field to correlate. Required.</dd>
+  <dt>unit_x=<em>&lt;String&gt;</em></dt>
+  <dd>The unit of the first field. Required for fields with units.</dd>
+  <dt>field_y=<em>&lt;String&gt;</em></dt>
+  <dd>The second field to correlate. Required.</dd>
+  <dt>unit_y=<em>&lt;String&gt;</em></dt>
+  <dd>The unit of the second field. Required for fields with units.</dd>
+  <dt>interval=<em>&lt;'year'|'month'|'day'|'hour'|'minute'&gt;</em></dt>
+  <dd>The interval at which values are aggregated. Defaults to <em>day</em>.</dd>
+  <dt>timezone=<em>&lt;Z&gt;</em></dt>
+  <dd>The timezone offset to use. Defaults to <em>+00:00</em></dd>
   </dl>
   </blockquote>
 </dd>
@@ -1009,11 +1032,11 @@ Content-Type: application/json
   <dt>field=<em>&lt;String&gt;</em></dt>
   <dd>The field containing the values. Required.</dd>
   <dt>order=<em>&lt;'count'|'term'&gt;</em></dt>
-  <dd>Order results by count or alphabetic. Default is by <em>term</em>.</dd>
+  <dd>Order results by count or alphabetic. Defaults to <em>term</em>.</dd>
   <dt>limit=<em>&lt;integer&gt;</em></dt>
-  <dd>How many results to return. Default is <em>10</em>.</dd>
+  <dd>How many results to return. Defaults to <em>10</em>.</dd>
   <dt>timezone=<em>&lt;Z&gt;</em></dt>
-  <dd>The timezone offset to use. Default is <em>+00:00</em></dd>
+  <dd>The timezone offset to use. Defaults to <em>+00:00</em></dd>
   </dl>
   </blockquote>
 </dd>
@@ -1026,7 +1049,7 @@ Content-Type: application/json
   <dt>unit=<em>&lt;String&gt;</em></dt>
   <dd>The unit of the value. Required for fields with units.</dd>
   <dt>interval=<em>&lt;Integer&gt;</em></dt>
-  <dd>The bucket size. Default is <em>10</em>.</dd>
+  <dd>The bucket size. Defaults to <em>10</em>.</dd>
   </dl>
   </blockquote>
 </dd>
@@ -1037,7 +1060,7 @@ Content-Type: application/json
   <dt>interval=<em>&lt;'hour_of_day'|'day_of_week'|'month_of_year'&gt;</em></dt>
   <dd>The time interval to aggregate on. Required.</dd>
   <dt>timezone=<em>&lt;Z&gt;</em></dt>
-  <dd>The timezone offset to use. Default is <em>+00:00</em></dd>
+  <dd>The timezone offset to use. Defaults to <em>+00:00</em></dd>
   </dl>
   </blockquote>
 </dd>

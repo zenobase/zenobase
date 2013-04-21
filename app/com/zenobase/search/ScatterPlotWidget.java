@@ -20,9 +20,9 @@ import com.zenobase.json.MeasurementField;
 import com.zenobase.json.Nodes;
 import com.zenobase.models.Event;
 
-public class CorrelateWidget extends Widget {
+public class ScatterPlotWidget extends Widget {
 
-	public static final String TYPE = "correlate";
+	public static final String TYPE = "scatterplot";
 
 	private final String keyField;
 	private final String xField, yField;
@@ -31,7 +31,7 @@ public class CorrelateWidget extends Widget {
 	private final Unit<?> xUnit, yUnit;
 	private final Statistic statistic;
 
-	public CorrelateWidget(String id, String keyField, String xField, Unit<?> xUnit, String yField, Unit<?> yUnit, String interval, DateTimeZone timezone, Statistic statistic) {
+	public ScatterPlotWidget(String id, String keyField, String xField, Unit<?> xUnit, String yField, Unit<?> yUnit, String interval, DateTimeZone timezone, Statistic statistic) {
 		super(id);
 		this.keyField = keyField;
 		this.xField = xField;
@@ -148,14 +148,14 @@ public class CorrelateWidget extends Widget {
 				String xUnit = options.get("unit_x");
 				String yUnit = options.get("unit_y");
 				String statistic = options.get("statistic", String.class, "avg");
-				return new CorrelateWidget(
+				return new ScatterPlotWidget(
 					options.get("id"),
 					Event.TIMESTAMP.getName(),
 					options.get("field_x"),
 					xUnit != null ? Measures.parseUnit(xUnit) : Unit.ONE,
 					options.get("field_y"),
 					yUnit != null ? Measures.parseUnit(yUnit) : Unit.ONE,
-					options.get("interval", String.class, "month"),
+					options.get("interval", String.class, "day"),
 					options.get("timezone", DateTimeZone.class, DateTimeZone.UTC),
 					Statistic.valueOf(statistic.toUpperCase()));
 			}

@@ -1,4 +1,4 @@
-<div id="{{settings.id}}-content" data-ng-controller="CorrelateWidgetController">
+<div id="{{settings.id}}-content" data-ng-controller="ScatterPlotWidgetController">
 
 	<div id="{{settings.id}}-chart" data-ng-show="data"></div>
 
@@ -12,11 +12,11 @@
 		</div>
 	</div>
 
-	<div data-ui-modal="dialog == settings.id + '-dialog'" data-ui-modal-open="init()" data-ui-modal-close="closeDialog()" data-ng-controller="CorrelateWidgetDialogController">
+	<div data-ui-modal="dialog == settings.id + '-dialog'" data-ui-modal-open="init()" data-ui-modal-close="closeDialog()" data-ng-controller="ScatterPlotWidgetDialogController">
 		<form name="form" class="modal-form">
 			<div class="modal-header">
 				<a class="close" data-dismiss="modal">&times;</a>
-				<h4>Correlate Widget</h4>
+				<h4>Scatter Plot Widget</h4>
 			</div>
 			<div class="modal-body">
 				<div class="control-group">

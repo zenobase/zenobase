@@ -949,9 +949,9 @@
       	settings : { interval : 'day_of_week' }
       },
 	  	{
-      	type : 'correlate',
-      	label : 'Correlate', 
-      	description : 'Correlates the values from two fields.',
+      	type : 'scatterplot',
+      	label : 'Scatter Plot', 
+      	description : 'Correlates values from two fields.',
       	settings : { field_x : 'count', field_y : 'count' }
       }
 	  ];
@@ -1971,7 +1971,7 @@
 		];
 	}]);
 
-	app.controller('CorrelateWidgetController', ['$scope', '$timeout', 'Field', 'timezone', function($scope, $timeout, Field, timezone) {
+	app.controller('ScatterPlotWidgetController', ['$scope', '$timeout', 'Field', 'timezone', function($scope, $timeout, Field, timezone) {
 
 		$scope.init = function() {
 			$scope.data = null;
@@ -1979,7 +1979,7 @@
 		$scope.params = function() {
 			return {
 				id : $scope.settings.id,
-				type : 'correlate',
+				type : 'scatterplot',
 				field_x : $scope.settings.field_x,
 				unit_x : $scope.settings.unit_x || '',
 				field_y : $scope.settings.field_y,
@@ -2056,7 +2056,7 @@
 		$('#' + $scope.settings.id + '-tab').on('shown', $scope.draw);
 	}]);
 
-	app.controller('CorrelateWidgetDialogController', ['$scope', 'WidgetDialogControllerSupport', 'Field', 'Interval', function($scope, WidgetDialogControllerSupport, Field, Interval) {
+	app.controller('ScatterPlotWidgetDialogController', ['$scope', 'WidgetDialogControllerSupport', 'Field', 'Interval', function($scope, WidgetDialogControllerSupport, Field, Interval) {
 
 		WidgetDialogControllerSupport($scope);
 

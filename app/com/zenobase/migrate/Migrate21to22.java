@@ -10,6 +10,8 @@ public class Migrate21to22 {
 		for (ObjectNode widget : bucket.getWidgets()) {
 			if ("plot".equals(widget.get("type"))) {
 				widget.put("type", "timeline");
+			} else if ("correlate".equals(widget.get("type"))) {
+				widget.put("type", "scatterplot");
 			}
 		}
 	}
