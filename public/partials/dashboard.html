@@ -55,7 +55,7 @@
 					<li data-ng-show="editing"><a data-ng-click="chooseWidget('top')" title="Add Widget..."><i class="icon-plus-sign"></i></a></li>
 				</ul>
 				<div class="tab-content">
-					<div id="{{settings.id}}" class="tab-pane" data-ng-class="$index == 0 && 'active'" data-ng-repeat="settings in getWidgetSettings('top')" data-ng-include="getTemplate(settings.type)"></div>
+					<div id="{{settings.id}}" class="tab-pane" style="height:120px" data-ng-class="$index == 0 && 'active'" data-ng-repeat="settings in getWidgetSettings('top')" data-ng-include="getTemplate(settings.type)"></div>
 				</div>
 			</div>
 		</div>

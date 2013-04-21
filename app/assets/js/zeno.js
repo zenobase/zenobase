@@ -1729,7 +1729,7 @@
 		};
 		$scope.update = function(event, result) {
 			$scope.times = result[$scope.settings.id] || [];
-			$timeout($scope.draw, 0); // delay for correct width
+			$timeout($scope.draw, 1); // delay for correct width
 		};
 		$scope.draw = function() {
 			if ($scope.times && $scope.times.length) {
@@ -1737,7 +1737,7 @@
 				var options = {
 					chart : {
 						renderTo : $scope.settings.id + '-chart',
-						height : 120
+						height : $('#' + $scope.settings.id).height()
 					},
 					title : null,
 					xAxis : {
