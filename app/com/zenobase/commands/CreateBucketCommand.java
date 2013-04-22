@@ -50,8 +50,7 @@ public class CreateBucketCommand extends Command {
 			CreateBucketCommand command = new CreateBucketCommand(node);
 			switch (version) {
 				case 2:
-					command.setType(TYPE);
-					Migrate21to22.migrate(command.getBucket());
+					return new CreateBucketCommand(command.getPrincipal(), Migrate21to22.migrate(command.getBucket()));
 				case 3:
 					return command;
 			}

@@ -60,9 +60,7 @@ public class UpdateBucketCommand extends Command {
 			UpdateBucketCommand command = new UpdateBucketCommand(node);
 			switch (version) {
 				case 3:
-					command.setType(TYPE);
-					Migrate21to22.migrate(command.getFrom());
-					Migrate21to22.migrate(command.getTo());
+					return new UpdateBucketCommand(command.getPrincipal(), Migrate21to22.migrate(command.getFrom()), Migrate21to22.migrate(command.getTo()));
 				case 4:
 					return command;
 			}

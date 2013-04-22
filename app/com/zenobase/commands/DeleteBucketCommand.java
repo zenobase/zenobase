@@ -51,8 +51,7 @@ public class DeleteBucketCommand extends Command {
 			DeleteBucketCommand command = new DeleteBucketCommand(node);
 			switch (version) {
 				case 2:
-					command.setType(TYPE);
-					Migrate21to22.migrate(command.getBucket());
+					return new DeleteBucketCommand(command.getPrincipal(), Migrate21to22.migrate(command.getBucket()));
 				case 3:
 					return command;
 			}
