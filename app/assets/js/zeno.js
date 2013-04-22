@@ -1500,6 +1500,7 @@
 				var options = {
 					chart : {
 						type : 'bar',
+						height : Math.max($scope.intervals.length * 20, 150),
 						renderTo : $scope.settings.id + '-chart'
 					},
 					title : null,
@@ -1809,8 +1810,9 @@
 						enabled: false
 					}
 				};
-				var height = $('#' + $scope.settings.id).height();
-				options.chart.height = height > 100 ? height - 50 : null;
+				if ($scope.settings.placement === 'top') {
+					options.chart.height = 150;
+				}
 				$.each($scope.times, function(i, time) {
 					var value = time[$scope.settings.statistic || 'count'];
 					if (value !== undefined) {
@@ -1944,6 +1946,9 @@
 						enabled: false
 					}
 				};
+				if ($scope.settings.placement === 'top') {
+					options.chart.height = 150;
+				}
 				$.each($scope.times, function(i, time) {
 					var value = time[$scope.settings.statistic || 'count'];
 					options.xAxis.categories.push(time.label);
@@ -2002,7 +2007,7 @@
 		};
 		$scope.draw = function() {
 			if ($scope.data && $scope.data.length) {
-				new Highcharts.Chart({
+				var options = {
 					chart : {
 						type : 'scatter',
 						zoomType: 'xy',
@@ -2045,7 +2050,11 @@
 					credits: {
 						enabled: false
 					}
-				});
+				};
+				if ($scope.settings.placement === 'top') {
+					options.chart.height = 150;
+				}
+				new Highcharts.Chart(options);
 			}
 		};
 	
