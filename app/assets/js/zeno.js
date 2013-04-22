@@ -1669,7 +1669,7 @@
 		};
 
 		Interval.VALUES = [
-			new Interval('year', 0, 365 * 24 * 60 * 60 * 1000),
+			new Interval('year', 0, 366 * 24 * 60 * 60 * 1000),
 			new Interval('month', 11, 28 * 24 * 60 * 60 * 1000), 
 			new Interval('day', 14, 24 * 60 * 60 * 1000), 
 			new Interval('hour', 17, 60 * 60 * 1000), 
