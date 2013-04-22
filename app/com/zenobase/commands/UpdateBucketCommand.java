@@ -4,7 +4,6 @@ import org.codehaus.jackson.node.ObjectNode;
 import com.google.inject.Inject;
 
 import com.zenobase.json.ObjectField;
-import com.zenobase.migrate.Migrate21to22;
 import com.zenobase.models.Bucket;
 import com.zenobase.models.Identity;
 import com.zenobase.services.BucketRepository;
@@ -17,7 +16,7 @@ public class UpdateBucketCommand extends Command {
 
 	private UpdateBucketCommand(ObjectNode node) {
 		super(node);
-		// TODO checkType(TYPE);
+		checkType(TYPE);
 	}
 
 	public UpdateBucketCommand(Identity principal, Bucket from, Bucket to) {
@@ -59,12 +58,7 @@ public class UpdateBucketCommand extends Command {
 		public Command parse(ObjectNode node, int version) {
 			UpdateBucketCommand command = new UpdateBucketCommand(node);
 			switch (version) {
-				case 3:
-					command.setType(TYPE);
-					command.setParameter(FROM, Migrate21to22.migrate(command.getFrom()).toJson());
-					command.setParameter(TO, Migrate21to22.migrate(command.getTo()).toJson());
-				case 4:
-					return command;
+				case 4: return command;
 			}
 			return null;
 		}
