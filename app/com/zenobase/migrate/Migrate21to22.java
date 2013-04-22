@@ -3,7 +3,6 @@ package com.zenobase.migrate;
 import java.util.List;
 
 import org.codehaus.jackson.node.ObjectNode;
-import play.Logger;
 import com.google.common.collect.Lists;
 
 import com.zenobase.models.Bucket;
@@ -24,7 +23,6 @@ public class Migrate21to22 {
 			}
 		}
 		if (touched) {
-			Logger.warn("Migrated: " + bucket);
 			bucket.setWidgets(widgets);
 		}
 		return bucket;
