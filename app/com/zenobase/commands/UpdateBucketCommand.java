@@ -62,7 +62,7 @@ public class UpdateBucketCommand extends Command {
 				case 3:
 					command.setType(TYPE);
 					command.setParameter(FROM, Migrate21to22.migrate(command.getFrom()).toJson());
-					command.setParameter(TO, Migrate21to22.migrate(command.getFrom()).toJson());
+					command.setParameter(TO, Migrate21to22.migrate(command.getTo()).toJson());
 				case 4:
 					return command;
 			}
