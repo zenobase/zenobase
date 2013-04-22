@@ -15,16 +15,16 @@ public class Migrate21to22 {
 		boolean touched = false;
 		for (ObjectNode widget : bucket.getWidgets()) {
 			widgets.add(widget);
-			if ("plot".equals(widget.get("type"))) {
+			if ("plot".equals(widget.path("type").getTextValue())) {
 				widget.put("type", "timeline");
 				touched = true;
-			} else if ("correlate".equals(widget.get("type"))) {
+			} else if ("correlate".equals(widget.path("type").getTextValue())) {
 				widget.put("type", "scatterplot");
 				touched = true;
 			}
 		}
 		if (touched) {
-			Logger.info("Migrated: " + bucket);
+			Logger.warn("Migrated: " + bucket);
 			bucket.setWidgets(widgets);
 		}
 		return bucket;
