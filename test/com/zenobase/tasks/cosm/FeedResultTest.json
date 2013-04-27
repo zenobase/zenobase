@@ -1,0 +1,88 @@
+{
+    "id": 127524,
+    "title": "Test Feed",
+    "private": "true",
+    "website": "https://zenobase.com/",
+    "tags": [
+        "test"
+    ],
+    "feed": "https://api.cosm.com/v2/feeds/127524.json",
+    "status": "live",
+    "updated": "2013-04-25T01:08:52.442476Z",
+    "created": "2013-04-24T22:35:38.857168Z",
+    "email": "info@zenobase.com",
+    "creator": "https://cosm.com/users/zenobase",
+    "version": "1.0.0",
+    "datastreams": [
+        {
+            "id": "Humidity",
+            "current_value": "43",
+            "at": "2013-04-25T01:11:25.490936Z",
+            "max_value": "43.0",
+            "min_value": "42.0",
+            "tags": [
+                "bedroom"
+            ],
+            "unit": {
+                "symbol": "%"
+            },
+            "datapoints": [
+                {
+                    "value": "43",
+                    "at": "2013-04-25T01:11:25.490936Z"
+                }
+            ]
+        },
+        {
+            "id": "Temperature",
+            "current_value": "24",
+            "at": "2013-04-25T00:52:08.032655Z",
+            "max_value": "24.0",
+            "min_value": "24.0",
+            "tags": [
+                "office"
+            ],
+            "unit": {
+                "symbol": "C",
+                "label": "Celsius"
+            },
+            "datapoints": [
+                {
+                    "value": "23.60",
+                    "at": "2013-04-24T23:14:58.350971Z"
+                },
+                {
+                    "value": "24.1",
+                    "at": "2013-04-25T00:06:25.463968Z"
+                },
+                {
+                    "value": "24",
+                    "at": "2013-04-25T00:52:08.032655Z"
+                }
+            ]
+        }
+    ],
+    "location": {
+        "disposition": "mobile",
+        "name": "Seattle",
+        "exposure": "indoor",
+        "domain": "physical",
+        "ele": "50",
+        "lat": 47.6299851859062,
+        "lon": -122.361602783203,
+        "waypoints": [
+            {
+                "at": "2013-04-24T22:35:38.857168Z",
+                "lat": 47.59480501577337,
+                "lon": -122.34375,
+                "ele": "50"
+            },
+            {
+                "at": "2013-04-24T23:14:38.463587Z",
+                "lat": 47.6299851859062,
+                "lon": -122.36160278320312,
+                "ele": "50"
+            }
+        ]
+    }
+}

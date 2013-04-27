@@ -131,4 +131,13 @@ public class Event extends DomainNode {
 		}
 		return schema.build();
     }
+
+	public static Field<?> getField(String name) {
+		for (Field<?> field : FIELDS) {
+			if (field.getName().equals(name)) {
+				return field;
+			}
+		}
+		return null;
+	}
 }

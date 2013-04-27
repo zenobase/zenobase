@@ -175,6 +175,7 @@ public class Global extends GlobalSettings {
 				bindIfConfigured("withings", WithingsTaskManager.class, managers);
 				bindIfConfigured("bodymedia", BodyMediaTaskManager.class, managers);
 				bindIfConfigured("netatmo", NetatmoTaskManager.class, managers);
+				// bindIfConfigured("cosm", CosmTaskManager.class, managers);
 				// bindIfConfigured("twitter", TwitterTaskManager.class, managers);
 
 				bind(AccountController.class).in(Singleton.class);
