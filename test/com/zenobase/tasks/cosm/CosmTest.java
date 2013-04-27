@@ -24,14 +24,12 @@ public class CosmTest extends TaskTestSupport {
 		System.out.print("code=");
 		config.put("code", scanner.nextLine());
 		task = apply(manager.authorize(task, config), task);
-		System.out.println(task);
-		// manager.execute(task);
+		manager.execute(task);
 	}
 
 	@Test
-	//@Ignore
+	@Ignore
 	public void testExisting() {
-		System.out.println(getToken());
 		CosmTaskManager manager = new CosmTaskManager(apiKey, apiSecret, callbackUrl);
 		manager.execute(new CosmTask(bucketId, principal, 127524, getToken(), null));
 	}

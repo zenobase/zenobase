@@ -8,6 +8,7 @@ import javax.inject.Named;
 import org.codehaus.jackson.node.ObjectNode;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
+import org.joda.time.Duration;
 import org.scribe.model.OAuthRequest;
 import org.scribe.model.Response;
 import org.scribe.model.Token;
@@ -30,6 +31,9 @@ import com.zenobase.tasks.OAuthTaskManager;
 import com.zenobase.tasks.Task;
 
 public class CosmTaskManager extends OAuthTaskManager {
+
+	private static final Duration MAX_DURATION = Duration.standardHours(6);
+	private static final int MAX_LIMIT = 1000;
 
 	@Inject
 	public CosmTaskManager(@Named("cosm.api.key") String apiKey, @Named("cosm.api.secret") String apiSecret, @Named("oauth.hostname") String callbackUrl) {
@@ -84,28 +88,33 @@ public class CosmTaskManager extends OAuthTaskManager {
 
 	private Command execute(CosmTask task) {
 		Token token = task.getToken();
-		DateTime to = new DateTime(DateTimeZone.UTC).minusMinutes(1);
-		List<Event> events = getEvents(task, to);
+		List<Event> events = getEvents(task);
 		return createCommand(task, events, token);
 	}
 
-	private List<Event> getEvents(CosmTask task, DateTime to) {
+	private List<Event> getEvents(CosmTask task) {
 		List<Event> events = Lists.newArrayList();
 		FeedQuery request = new FeedQuery(task);
-		while (true) {
-			DateTime from = null;
-			if (!events.isEmpty()) {
+		for (DateTime from = getFrom(task); from.isBeforeNow();) {
+			List<Event> add = request.find(from).getEvents();
+			events.addAll(add);
+			if (add.size() == MAX_LIMIT) {
 				from = getNextTimestamp(events);
-			} else if (task.getMarker() != null) {
-				from = DateTime.parse(task.getMarker());
 			} else {
-				from = to.minusHours(6);
-			}
-			if (!events.addAll(request.find(from, to).getEvents())) {
-				break;
+				from = from.plus(MAX_DURATION);
 			}
 		}
 		return events;
+	}
+
+	private static DateTime getFrom(CosmTask task) {
+		return task.getMarker() != null ?
+			DateTime.parse(task.getMarker()) :
+			DateTime.now(DateTimeZone.UTC).minusDays(1);
+	}
+
+	private static DateTime getNextTimestamp(Iterable<Event> events) {
+		return Iterables.getLast(events).getValue(Event.TIMESTAMP).plusMillis(1);
 	}
 
 	private class FeedQuery {
@@ -116,15 +125,13 @@ public class CosmTaskManager extends OAuthTaskManager {
 			this.task = task;
 		}
 
-		public FeedResult find(DateTime from, DateTime to) {
+		public FeedResult find(DateTime from) {
 			String url = String.format("http://api.cosm.com/v2/feeds/%s.json", task.getFeedId());
 			OAuthRequest request = new OAuthRequest(Verb.GET, url);
 			request.addQuerystringParameter("key", task.getToken().getToken());
-			if (from != null) {
-				request.addQuerystringParameter("start", from.toString());
-			}
-			request.addQuerystringParameter("end", to.toString());
-			request.addQuerystringParameter("limit", "1000");
+			request.addQuerystringParameter("start", from.toString());
+			request.addQuerystringParameter("end", from.plus(MAX_DURATION).toString());
+			request.addQuerystringParameter("limit", Integer.toString(MAX_LIMIT));
 			request.addQuerystringParameter("interval", "0");
 			Response response = send(request);
 			checkResponse(task, request, response);
@@ -143,14 +150,10 @@ public class CosmTaskManager extends OAuthTaskManager {
 			.set(OAuthTask.TOKEN, expiredToken, task.getToken())
 			.build());
 		for (Event event : events) {
-			System.out.println("[event] " + event);
+			// System.out.println("[event] " + event);
 			command.add(new CreateEventCommand(task.getPrincipal(), task.getBucketId(), event));
 		}
 		return command;
-	}
-
-	private static DateTime getNextTimestamp(List<Event> events) {
-		return Iterables.getLast(events).getValue(Event.TIMESTAMP).plusMillis(1);
 	}
 
 	Response send(OAuthRequest request) {
