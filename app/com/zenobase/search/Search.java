@@ -20,11 +20,12 @@ public class Search {
 	public static final IntegerField TOTAL = new IntegerField("total");
 
 	private final ImmutableSet<Widget> widgets;
-	private final ImmutableList<QueryBuilder> constraints;
+	private final ImmutableList<QueryBuilder> must, mustNot;
 
-	public Search(Iterable<Widget> widgets, Iterable<QueryBuilder> constraints) {
+	public Search(Iterable<Widget> widgets, Iterable<QueryBuilder> must, Iterable<QueryBuilder> mustNot) {
 		this.widgets = ImmutableSet.copyOf(widgets);
-		this.constraints = ImmutableList.copyOf(constraints);
+		this.must = ImmutableList.copyOf(must);
+		this.mustNot = ImmutableList.copyOf(mustNot);
 	}
 
 	public ObjectNode execute(Index index) {
@@ -45,12 +46,15 @@ public class Search {
 
 	private QueryBuilder buildQuery() {
 		QueryBuilder query = null;
-		if (constraints.isEmpty()) {
+		if (must.isEmpty() && mustNot.isEmpty()) {
 			query = QueryBuilders.matchAllQuery();
 		} else {
 			query = QueryBuilders.boolQuery();
-			for (QueryBuilder constraint : constraints) {
+			for (QueryBuilder constraint : must) {
 				((BoolQueryBuilder) query).must(constraint);
+			}
+			for (QueryBuilder constraint : mustNot) {
+				((BoolQueryBuilder) query).mustNot(constraint);
 			}
 		}
 		return query;
@@ -67,7 +71,7 @@ public class Search {
 
 	@Override
 	public String toString() {
-		return String.format("Search(widgets:%s, constraints:%s", widgets, constraints);
+		return String.format("Search(widgets:%s, must:%s, must not:%s", widgets, must, mustNot);
 	}
 
 	@Override
@@ -78,11 +82,12 @@ public class Search {
 
 	private boolean equals(Search that) {
 		return widgets.toString().equals(that.widgets.toString()) &&
-			constraints.toString().equals(that.constraints.toString());
+			must.toString().equals(that.must.toString()) &&
+			mustNot.toString().equals(that.mustNot.toString());
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hashCode(widgets.toString(), constraints.toString());
+		return Objects.hashCode(widgets.toString(), must.toString(), mustNot.toString());
 	}
 }

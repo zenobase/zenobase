@@ -33,6 +33,13 @@ public class TermConstraintBuilderTest extends ConstraintBuilderTestSupport {
 	}
 
 	@Test
+	public void testExcludeTag() {
+		addConstraint("-%s:%s", Event.TAG, "lunch");
+		ObjectNode result = execute();
+		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(1);
+	}
+
+	@Test
 	public void testWithNote() {
 		addConstraint("%s:%s", Event.NOTE, "pizza");
 		ObjectNode result = execute();

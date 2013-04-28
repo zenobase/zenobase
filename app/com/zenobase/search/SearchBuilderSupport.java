@@ -13,7 +13,8 @@ import com.google.common.collect.Sets;
 public abstract class SearchBuilderSupport {
 
 	private final Set<Widget> widgets = Sets.newLinkedHashSet();
-	private final List<QueryBuilder> constraints = Lists.newArrayList();
+	private final List<QueryBuilder> must = Lists.newArrayList();
+	private final List<QueryBuilder> mustNot = Lists.newArrayList();
 
 	public SearchBuilderSupport addWidgets(String[] widgets) {
 		if (widgets != null) {
@@ -53,17 +54,22 @@ public abstract class SearchBuilderSupport {
 		String[] tokens = expression.split(":", 2);
 		String field = tokens[0];
 		String value = tokens[1];
+		boolean negated = false;
+		if (field.startsWith("-")) {
+			negated = true;
+			field = field.substring(1);
+		}
 		for (ConstraintBuilder constraint : getConstraintBuilders().get(field)) {
 			QueryBuilder builder = constraint.build(field, value);
 			if (builder != null) {
-				return addConstraint(builder);
+				return addConstraint(builder, negated);
 			}
 		}
 		throw new IllegalArgumentException("Don't know what to do with constraint: " + expression);
 	}
 
-	public SearchBuilderSupport addConstraint(QueryBuilder builder) {
-		constraints.add(builder);
+	private SearchBuilderSupport addConstraint(QueryBuilder builder, boolean negated) {
+		(negated ? mustNot : must).add(builder);
 		return this;
 	}
 
@@ -72,6 +78,6 @@ public abstract class SearchBuilderSupport {
 	protected abstract ImmutableMultimap<String, ConstraintBuilder> getConstraintBuilders();
 
 	public Search build() {
-		return new Search(widgets, constraints);
+		return new Search(widgets, must, mustNot);
 	}
 }

@@ -38,7 +38,7 @@
 			</p>
 			<ul class="nav nav-pills" data-ng-show="constraints">
 				<li class="active" data-ng-repeat="constraint in constraints">
-					<a data-ng-click="removeConstraint(constraint)"><i class="icon-white" data-ng-class="getConstraintIcon(constraint)"></i> {{constraint.value}} <i class="icon-remove icon-white"></i></a>
+					<a data-ng-click="removeConstraint(constraint)"><i class="icon-minus icon-white" data-ng-show="constraint.negated"></i><i class="icon-white" data-ng-class="getConstraintIcon(constraint)"></i> {{constraint.value}} <i class="icon-remove icon-white"></i></a>
 				</li>
 			</ul>
 		</div>

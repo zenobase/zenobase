@@ -270,23 +270,29 @@
 
 		var separator = ':';
 
-		var Constraint = function(field, value) {
+		var Constraint = function(field, value, negated) {
 			this.field = field;
 			this.value = value;
+			this.negated = negated;
 		}
 
 		Constraint.prototype.toString = function() {
-			return this.field + separator + this.value;
+			return (this.negated ? '-' : '') + this.field + separator + this.value;
 		};
 
 		Constraint.parse = function(s) {
+			var negated = false;
+			if (s.length > 1 && s.charAt(0) == '-') {
+				negated = true;
+				s = s.substring(1);
+			}
 			var pos = s.indexOf(separator);
 			if (pos < 1 || pos > s.length - 1) {
 				throw 'Can\'t parse constraint: ' + s;
 			}
 			var field = s.substring(0, pos);
 			var value = s.substring(pos + 1);
-			return new Constraint(field, value);
+			return new Constraint(field, value, negated);
 		}
 
 		return Constraint;
