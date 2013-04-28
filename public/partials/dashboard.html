@@ -27,7 +27,7 @@
 				<a class="page-title-decoration" data-ng-click="refresh()" title="Refresh"><i class="icon-refresh"></i></a>
 				<a id="edit-bucket-action" class="page-title-decoration" title="Edit Dashboard..." data-ng-click="edit()" data-ng-show="editable && !editing"><i class="icon-pencil"></i></a>
 				<a class="page-title-decoration" title="Import Events..." data-ng-click="openDialog('import-dialog')" data-ng-show="canImport()"><i class="icon-upload"></i></a>
-				<a class="page-title-decoration" data-ng-href="{{getExportUrl()}}" title="Export Events" data-ng-show="total > 0"><i class="icon-download"></i></a>
+				<a class="page-title-decoration" data-ng-href="{{getExportUrl()}}" title="Export Events" download="events.json" data-ng-show="total > 0"><i class="icon-download"></i></a>
 				<a id="add-event-action" class="page-title-decoration" title="Add Event..." data-ng-click="editEvent({})" data-ng-show="editable"><i class="icon-plus"></i></a>
 				<a id="create-task-action" class="page-title-decoration" title="Connect..." data-ng-click="openDialog('task-dialog')" data-ng-show="editable"><i class="icon-share"></i></a>
 			</p>
