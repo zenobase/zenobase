@@ -1,5 +1,6 @@
 package com.zenobase.common;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.joda.time.DateTime;
@@ -8,6 +9,7 @@ import org.joda.time.Interval;
 import org.joda.time.Period;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.DateTimeFormatterBuilder;
+import play.Logger;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 
@@ -133,7 +135,10 @@ public class Intervals extends DateTimeFormatSupport {
 		public List<DateTime> toList(Interval interval) {
 			List<DateTime> instants = Lists.newArrayList();
 			for (DateTime start = interval.getStart(); interval.contains(start); start = start.plus(period)) {
-				Preconditions.checkState(instants.size() < 1000, "Interval is too large: %s", interval);
+				if (instants.size() > 1440) {
+					Logger.warn("Interval is too large to expand: " + interval);
+					return Collections.emptyList();
+				}
 				instants.add(start);
 			}
 			return instants;
