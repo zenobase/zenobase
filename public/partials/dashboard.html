@@ -547,6 +547,19 @@
 		</div>
 	</script>
 
+	<script id="/create-humidity.html" type="text/ng-template">
+		<button class="close" data-ng-click="reset()">&times;</button>
+		<div data-ng-controller="CreateIntegerFieldController">
+			<div class="control-group">
+				<label for="value" class="control-label">Value</label>
+				<input id="humidity-value-field" name="value" type="number" data-ng-model="value"/> <strong>%</strong>
+			</div>
+			<div class="control-group">
+				<button id="add-humidity-button" class="btn" data-ng-click="addField()" data-ng-disabled="!valid()">Add</button>
+			</div>
+		</div>
+	</script>
+
 	<script id="/create-rating.html" type="text/ng-template">
 		<button class="close" data-ng-click="reset()">&times;</button>
 		<div data-ng-controller="CreateRatingFieldController">
