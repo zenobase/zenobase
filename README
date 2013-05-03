@@ -12,8 +12,11 @@ Following the initial checkout, or after updating dependencies in the Build.scal
 Assets
 ------
 
-When updating the bootstrap-xyz.js file, concatenate the modal, tabs and 
-typeahead components, and add the bootstrap-fileupload and bootstrap-datepicker plugins.
+When updating the bootstrap.js file, concatenate the modal, tabs and typeahead components, and append bootstrap-fileupload and bootstrap-datepicker.
+
+When updating angular.js, append angular-sanitize.
+
+When updating highcharts.js, append highcharts-more.
 
 
 Tests
