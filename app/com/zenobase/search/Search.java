@@ -37,7 +37,7 @@ public class Search {
 	}
 
 	private SearchSourceBuilder buildSearch() {
-		SearchSourceBuilder builder = new SearchSourceBuilder().query(buildQuery());
+		SearchSourceBuilder builder = new SearchSourceBuilder().query(buildQuery()).size(0);
 		for (Widget widget : widgets) {
 			widget.configure(builder);
 		}
