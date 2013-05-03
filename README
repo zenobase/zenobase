@@ -12,7 +12,8 @@ Following the initial checkout, or after updating dependencies in the Build.scal
 Assets
 ------
 
-When updating the bootstrap-xyz.js file, concatenate the modal, tabs and typeahead components, plus the bootstrap-datepicker plugin.
+When updating the bootstrap-xyz.js file, concatenate the modal, tabs and 
+typeahead components, and add the bootstrap-fileupload and bootstrap-datepicker plugins.
 
 
 Tests
