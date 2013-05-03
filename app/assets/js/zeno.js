@@ -2666,16 +2666,22 @@
 			$scope.message = '';
 			$scope.events = [];
 			tracker.event('dialog', 'import events');
+			$('#select-import-file').fileupload('reset');
 		};
 		$scope.isEmpty = function() {
 			return !$scope.events || $scope.events.length == 0;
 		};
 		$scope.setFiles = function(files) {
+			$scope.events = [];
 			$scope.$apply(function(scope) {
 				var reader = new FileReader();
 				reader.onload = function(e) {
 					scope.$apply(function(scope) {
-						scope.events = JSON.parse(e.target.result);
+						try {
+							scope.events = JSON.parse(e.target.result);
+						} catch(error) {
+							$scope.message = 'Can\'t read the file. Is the format valid?';
+						}
 					});
 				};
 				reader.readAsText(files[0]);
@@ -2690,7 +2696,7 @@
 					$scope.closeDialog();
 				})
 				.error(function(response) {
-					$scope.message = 'Couldn\'t import events.';
+					$scope.message = 'Couldn\'t upload the file. Is the format valid?';
 				});
 			tracker.event('action', 'import events');
 		};
