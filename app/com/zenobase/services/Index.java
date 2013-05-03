@@ -84,13 +84,13 @@ public class Index {
 	public boolean delete(String type, String id, boolean refresh) {
 		return !client.prepareDelete(indexName, type, id)
 			.setRefresh(refresh)
-			.execute().actionGet().notFound();
+			.execute().actionGet().isNotFound();
 	}
 
 	public boolean exists() {
 		return client.admin().indices()
 			.prepareExists(indexName)
-			.execute().actionGet().exists();
+			.execute().actionGet().isExists();
 	}
 
 	public void refresh() {
@@ -105,8 +105,8 @@ public class Index {
 
 	public NodeList find(SearchSourceBuilder search) {
 		SearchResponse response = search(search);
-		SearchHits hits = response.hits();
-		List<ObjectNode> nodes = Lists.newArrayListWithCapacity(hits.hits().length);
+		SearchHits hits = response.getHits();
+		List<ObjectNode> nodes = Lists.newArrayListWithCapacity(hits.getHits().length);
 		for (SearchHit hit : hits) {
 			nodes.add(read(hit));
 		}
@@ -120,8 +120,8 @@ public class Index {
 
 	public void find(QueryBuilder query, Callback<ObjectNode> callback, int scrollSize) {
 		SearchSourceBuilder search = new SearchSourceBuilder().query(query).size(scrollSize);
-		for (SearchResponse response = scroll(search.version(true)); response.hits().hits().length > 0; response = scroll(response.getScrollId())) {
-			for (SearchHit hit : response.hits()) {
+		for (SearchResponse response = scroll(search.version(true)); response.getHits().getHits().length > 0; response = scroll(response.getScrollId())) {
+			for (SearchHit hit : response.getHits()) {
 				callback.call(read(hit));
 			}
 		}
@@ -139,7 +139,7 @@ public class Index {
 
 	public ObjectNode get(String type, String id) {
 		GetResponse response = client.prepareGet(indexName, type, id).execute().actionGet();
-		return response.exists() ? read(response.source(), response.version()) : null;
+		return response.isExists() ? read(response.getSourceAsBytes(), response.getVersion()) : null;
 	}
 
 	private static ObjectNode read(SearchHit hit) {
@@ -157,13 +157,13 @@ public class Index {
 	public boolean exists(String type, String id) {
 		return client
 			.prepareGet(indexName, type, id)
-			.execute().actionGet().exists();
+			.execute().actionGet().isExists();
 	}
 
 	public int count() {
 		return Ints.saturatedCast(client
 			.prepareCount(indexName)
-			.execute().actionGet().count());
+			.execute().actionGet().getCount());
 	}
 
 	public void open() {

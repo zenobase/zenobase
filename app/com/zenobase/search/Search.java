@@ -62,7 +62,7 @@ public class Search {
 
 	private ObjectNode toJson(SearchResponse response) {
 		ObjectNode node = Nodes.newObject();
-		TOTAL.setValue(node, Ints.checkedCast(response.hits().getTotalHits()));
+		TOTAL.setValue(node, Ints.checkedCast(response.getHits().getTotalHits()));
 		for (Widget widget : widgets) {
 			node.put(widget.getId(), widget.process(response));
 		}

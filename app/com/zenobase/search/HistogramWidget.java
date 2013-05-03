@@ -57,8 +57,8 @@ public class HistogramWidget extends Widget {
 	@Override
 	public JsonNode process(SearchResponse response) {
 		ArrayNode result = Nodes.newArray();
-		HistogramFacet facet = response.facets().facet(HistogramFacet.class, getId());
-		for (HistogramFacet.Entry entry : Lists.reverse(facet.entries())) {
+		HistogramFacet facet = response.getFacets().facet(HistogramFacet.class, getId());
+		for (HistogramFacet.Entry entry : Lists.reverse(facet.getEntries())) {
 			ObjectNode entryNode = result.addObject();
 			entryNode.put("count", entry.getCount());
 			addValue(entryNode, "from", entry.getKey());

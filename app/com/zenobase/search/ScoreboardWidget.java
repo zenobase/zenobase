@@ -43,11 +43,11 @@ public class ScoreboardWidget extends Widget {
 	@Override
 	public JsonNode process(SearchResponse response) {
 		ArrayNode result = Nodes.newArray();
-		TermsStatsFacet terms = response.facets().facet(TermsStatsFacet.class, getId());
-		for (TermsStatsFacet.Entry entry : terms.entries()) {
+		TermsStatsFacet terms = response.getFacets().facet(TermsStatsFacet.class, getId());
+		for (TermsStatsFacet.Entry entry : terms.getEntries()) {
 			if (entry.getTotalCount() > 0) {
 				ObjectNode entryNode = result.addObject();
-				entryNode.put("label", entry.getTerm());
+				entryNode.put("label", entry.getTerm().toString());
 				entryNode.put("count", entry.getTotalCount());
 				addValue(entryNode, "min", entry.getMin());
 				addValue(entryNode, "max", entry.getMax());

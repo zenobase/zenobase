@@ -50,12 +50,12 @@ public class GanttWidget extends Widget {
 	@Override
 	public JsonNode process(SearchResponse response) {
 		ArrayNode result = Nodes.newArray();
-		TermsStatsFacet terms = response.facets().facet(TermsStatsFacet.class, getId());
-		for (TermsStatsFacet.Entry entry : terms.entries()) {
+		TermsStatsFacet terms = response.getFacets().facet(TermsStatsFacet.class, getId());
+		for (TermsStatsFacet.Entry entry : terms.getEntries()) {
 			DateTime first = asDateTime(entry.getMin());
 			if (first != null) {
 				ObjectNode entryNode = result.addObject();
-				LABEL.setValue(entryNode, entry.getTerm());
+				LABEL.setValue(entryNode, entry.getTerm().toString());
 				COUNT.setValue(entryNode, entry.getCount());
 				FIRST.setValue(entryNode, first);
 				LAST.setValue(entryNode, asDateTime(entry.getMax()));

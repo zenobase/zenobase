@@ -54,9 +54,9 @@ public class EventRepository {
 			.facet(FacetBuilders.termsFacet(facetId).field(field).size(limit).order(ComparatorType.COUNT));
 		SearchResponse response = getIndex(bucketId).search(search);
 		List<String> terms = Lists.newArrayList();
-		TermsFacet facet = response.facets().facet(TermsFacet.class, facetId);
-		for (TermsFacet.Entry entry : facet.entries()) {
-			terms.add(entry.getTerm());
+		TermsFacet facet = response.getFacets().facet(TermsFacet.class, facetId);
+		for (TermsFacet.Entry entry : facet.getEntries()) {
+			terms.add(entry.getTerm().toString());
 		}
 		return terms;
 	}

@@ -1,5 +1,7 @@
 package com.zenobase.search;
 
+import java.util.List;
+
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.node.ArrayNode;
 import org.codehaus.jackson.node.ObjectNode;
@@ -38,10 +40,11 @@ public class CountWidget extends Widget {
 	@Override
 	public JsonNode process(SearchResponse response) {
 		ArrayNode result = Nodes.newArray();
-		TermsFacet terms = response.facets().facet(TermsFacet.class, getId());
-		for (TermsFacet.Entry entry : terms.entries().subList(offset, Math.min(terms.entries().size(), offset + limit))) {
+		TermsFacet terms = response.getFacets().facet(TermsFacet.class, getId());
+		List<? extends TermsFacet.Entry> entries = terms.getEntries();
+		for (TermsFacet.Entry entry : entries.subList(offset, Math.min(entries.size(), offset + limit))) {
 			ObjectNode entryNode = result.addObject();
-			entryNode.put("label", entry.getTerm());
+			entryNode.put("label", entry.getTerm().toString());
 			entryNode.put("count", entry.getCount());
 		}
 		if (terms.getOtherCount() > 0) {

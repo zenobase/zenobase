@@ -38,7 +38,7 @@ public class ListWidget extends Widget {
 	@Override
 	public JsonNode process(SearchResponse response) {
 		ArrayNode eventsNode = Nodes.newArray();
-		for (SearchHit hit : response.hits()) {
+		for (SearchHit hit : response.getHits()) {
 			Event event = new Event(Nodes.readObject(hit.source()));
 			event.setVersion(hit.version());
 			eventsNode.add(event.toJson());

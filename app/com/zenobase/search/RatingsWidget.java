@@ -43,8 +43,8 @@ public class RatingsWidget extends Widget {
 	@Override
 	public JsonNode process(SearchResponse response) {
 		ArrayNode result = Nodes.newArray();
-		RangeFacet ratings = response.facets().facet(RangeFacet.class, getId());
-		for (RangeFacet.Entry entry : Lists.reverse(ratings.entries())) {
+		RangeFacet facet = response.getFacets().facet(RangeFacet.class, getId());
+		for (RangeFacet.Entry entry : Lists.reverse(facet.getEntries())) {
 			if (entry.getCount() > 0L) {
 				ObjectNode entryNode = result.addObject();
 				if (!Double.isInfinite(entry.getFrom())) {

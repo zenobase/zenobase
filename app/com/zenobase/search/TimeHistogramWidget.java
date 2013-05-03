@@ -45,10 +45,10 @@ public class TimeHistogramWidget extends Widget {
 
 	@Override
 	public JsonNode process(SearchResponse response) {
-		TermsFacet terms = response.facets().facet(TermsFacet.class, getId());
+		TermsFacet terms = response.getFacets().facet(TermsFacet.class, getId());
 		Map<Integer, Integer> result = interval.emptyMap();
-		for (TermsFacet.Entry entry : terms.entries()) {
-			result.put(Integer.valueOf(entry.getTerm()), entry.getCount());
+		for (TermsFacet.Entry entry : terms.getEntries()) {
+			result.put(Integer.valueOf(entry.getTerm().toString()), entry.getCount());
 		}
 		return toJson(result);
 	}

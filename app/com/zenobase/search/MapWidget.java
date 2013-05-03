@@ -33,8 +33,8 @@ public class MapWidget extends Widget {
 	@Override
 	public JsonNode process(SearchResponse response) {
 		ArrayNode result = Nodes.newArray();
-		GeoClusterFacet facet = response.facets().facet(GeoClusterFacet.class, getId());
-		for (GeoCluster entry : facet.entries()) {
+		GeoClusterFacet facet = response.getFacets().facet(GeoClusterFacet.class, getId());
+		for (GeoCluster entry : facet.getEntries()) {
 			ObjectNode entryNode = result.addObject();
 			entryNode.put("count", entry.size());
 			entryNode.put("lat", entry.center().lat());

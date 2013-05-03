@@ -57,7 +57,7 @@ public class TimelineWidget extends Widget {
 
 	@Override
 	public JsonNode process(SearchResponse response) {
-		DateHistogramFacet facet = response.facets().facet(DateHistogramFacet.class, getId());
+		DateHistogramFacet facet = response.getFacets().facet(DateHistogramFacet.class, getId());
 		Map<String, ObjectNode> counts = Collections.emptyMap();
 		if (!facet.getEntries().isEmpty()) {
 			counts = getMap(getInterval(facet.getEntries()));

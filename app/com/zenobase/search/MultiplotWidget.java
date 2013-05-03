@@ -81,7 +81,7 @@ public class MultiplotWidget extends Widget {
 	}
 
 	private void process(SearchResponse response, Map<String, ObjectNode> values, String id, String field, Unit<?> unit) {
-		DateHistogramFacet facet = response.facets().facet(DateHistogramFacet.class, id);
+		DateHistogramFacet facet = response.getFacets().facet(DateHistogramFacet.class, id);
 		for (DateHistogramFacet.Entry entry : facet.getEntries()) {
 			if (entry.getTotalCount() > 0) {
 				String key = getLabel(toDateTime(entry.getTime()));
