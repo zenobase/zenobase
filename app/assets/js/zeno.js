@@ -2146,7 +2146,7 @@
 		};
 		$scope.draw = function() {
 			if ($scope.points.length) {
-				google.load('maps', '3.10', { other_params : 'libraries=places&sensor=false&key=' + googleApiKey, callback : function() {
+				google.load('maps', '3.11', { other_params : 'libraries=places&sensor=false&key=' + googleApiKey, callback : function() {
 					var options = {
 						mapTypeId: google.maps.MapTypeId.TERRAIN,
 						streetViewControl: false,
