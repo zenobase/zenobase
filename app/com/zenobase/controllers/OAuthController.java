@@ -1,7 +1,6 @@
 package com.zenobase.controllers;
 
 import java.io.UnsupportedEncodingException;
-import java.net.URI;
 import java.net.URLEncoder;
 import java.util.Map;
 
@@ -72,7 +71,7 @@ public class OAuthController extends ControllerSupport {
     	if (client == null || !client.isVerified() || client.isSuspended()) {
     		return deny(UNAUTHORIZED_CLIENT, "client account must be enabled and verified");
     	}
-    	if (!sameDomain(client.getEmail(), URI.create(form.getRedirectUri()))) {
+    	if (!new OAuthRedirectValidator(client).valid(form.getRedirectUri())) {
     		return deny(INVALID_REDIRECT_URI, "domain must match the domain of the email address");
     	}
     	if (form.getScope() == null) {
@@ -82,12 +81,7 @@ public class OAuthController extends ControllerSupport {
         return grant(auth.getPrincipal(), form.getClient(), form.getScope());
     }
 
-	private static boolean sameDomain(String email, URI uri) {
-		String domain = email.substring(email.indexOf('@') + 1);
-    	return uri.getHost().endsWith(domain);
-	}
-
-    public Result token() {
+	public Result token() {
     	return token(Form.form(TokenForm.class).bindFromRequest().get());
     }
 

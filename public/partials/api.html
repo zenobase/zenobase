@@ -80,7 +80,7 @@ or a <a href="/#/api/password-grant">password grant</a>.</p>
 <dt>client_id</dt>
 <dd>Your user ID (hidden behind the <i class="icon-pencil" title="Edit"></i> icon on your profile page).</dd>
 <dt>redirect_uri</dt>
-<dd>The page to which the user should be redirected back to. The domain must match the domain of your verified email address. If the address does not end with either <code>#</code> or <code>?</code>, <code>#</code> is appended.</dd>
+<dd>The page to which the user should be redirected back to. The domain must match the domain of your verified email address, unless the URI has a custom scheme that is prefixed with <code>x-</code>. If the address does not end with either <code>#</code> or <code>?</code>, <code>#</code> is appended.</dd>
 </dl>
 
 <p>Upon authorization, the user is redirected to:</p>
