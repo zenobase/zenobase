@@ -10,8 +10,9 @@ please <a href="mailto:info@zenobase.com?subject=Zenobase+API">drop us a note</a
 		<div class="span3">
 			<ul class="nav nav-list">
 				<li class="nav-header"><a href="/#/api/auth">Authentication</a></li>
-				<li><a href="/#/api/implicit-grant">Implicit Grant</a></li>
-				<li><a href="/#/api/password-grant">Password Grant</a></li>
+				<li><a href="/#/api/implicit-grant">Create an implicit grant</a></li>
+				<li><a href="/#/api/password-grant">Create a password grant</a></li>
+				<li><a href="/#/api/revoke-grant">Revoke a grant</a></li>
 			</ul>
 		</div>
 		<div class="span3">
@@ -66,7 +67,7 @@ or a <a href="/#/api/password-grant">password grant</a>.</p>
 
 <section id="api-implicit-grant">
 
-<h3>Implicit Grant</h3>
+<h3>Create an implicit grant</h3>
 
 <p>This authentication method allows a user to grant an application access to a single bucket.</p>
 
@@ -124,7 +125,7 @@ or a <a href="/#/api/password-grant">password grant</a>.</p>
 
 <section id="api-password-grant">
 
-<h3>Password Grant</h3>
+<h3>Create a password grant</h3>
 
 <p>This authentication method grants full access to a user's account.</p>
 
@@ -159,6 +160,35 @@ Content-Type: application/json
   "access_token" : "e7975e8bb6mabc3ek567",
   "client_id" : "args4iqh2c"
 }
+</pre>
+
+</section>
+
+<section id="api-revoke-grant">
+
+<h3>Revoke a grant</h3>
+
+<pre>DELETE /authorizations/<em>&lt;access_token&gt;</em>
+Host: api.zenobase.com
+Authorization: Bearer <em>&lt;access_token&gt;</em>
+</pre>
+
+<dl>
+<dt>access_token</dt>
+<dd>The access token associated with the grant to revoke.</dd>
+</dl>
+
+<h4>Example</h4>
+
+<h5>Request</h5>
+
+<pre>curl -i -X DELETE 'https://api.zenobase.com/authorizations/e7975e8bb6eabc3ef567' \
+  -H 'Authorization: Bearer e7975e8bb6eabc3ef567'
+</pre>
+
+<h5>Response</h5>
+
+<pre>HTTP/1.1 204 No Content
 </pre>
 
 </section>
