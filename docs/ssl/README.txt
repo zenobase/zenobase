@@ -17,4 +17,4 @@ Elastic Load Balancer
 
 Private Key: server_rsa.key
 Public Key Certificate: STAR_zenobase_com.crt
-Certificate Chain: N/A
+Certificate Chain: PositiveSSLCA2.crt + AddTrustExternalCARoot.crt
