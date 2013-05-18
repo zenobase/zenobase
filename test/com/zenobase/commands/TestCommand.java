@@ -14,6 +14,7 @@ public class TestCommand extends Command {
 	public TestCommand(Identity principal, String tag) {
 		super(TYPE, principal);
 		setParameter(TAG, tag);
+		addCost(1);
 	}
 
 	public TestCommand(ObjectNode node) {

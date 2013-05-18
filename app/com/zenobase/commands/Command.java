@@ -13,6 +13,7 @@ import com.zenobase.json.DateTimeField;
 import com.zenobase.json.DomainNode;
 import com.zenobase.json.Field;
 import com.zenobase.json.IdentityField;
+import com.zenobase.json.IntegerField;
 import com.zenobase.json.Nodes;
 import com.zenobase.json.ObjectField;
 import com.zenobase.json.Schema;
@@ -30,6 +31,7 @@ public class Command extends DomainNode {
 	public static final IdentityField PRINCIPAL = new IdentityField("principal");
 	public static final DateTimeField TIMESTAMP = new DateTimeField("timestamp");
 	public static final ObjectField PARAMETERS = new ObjectField("parameters");
+	public static final IntegerField COST = new IntegerField("cost");
 
 	public Command(ObjectNode node) {
 		super(node);
@@ -88,6 +90,14 @@ public class Command extends DomainNode {
 		field.addValues(getValue(PARAMETERS), values);
 	}
 
+	public int getCost() {
+		return getValue(COST, Integer.valueOf(0));
+	}
+
+	protected void addCost(int cost) {
+		setValue(COST, getCost() + cost);
+	}
+
 	public Command reverse(Identity principal) {
 		throw new UnsupportedOperationException();
 	}
@@ -114,8 +124,8 @@ public class Command extends DomainNode {
 
 	public static Schema getSchema() {
 		return new SchemaBuilder(TYPE_NAME)
-			.add(ID).add(TYPE).add(PRINCIPAL)
-			.add(TIMESTAMP).add(PARAMETERS).build();
+			.add(ID).add(TYPE).add(PRINCIPAL).add(TIMESTAMP)
+			.add(PARAMETERS).add(COST).build();
 	}
 
 	public static class Type {

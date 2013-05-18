@@ -24,6 +24,7 @@ public class CreateEventCommand extends Command {
 		super(TYPE, principal);
 		setParameter(BUCKET_ID, bucketId);
 		setParameter(EVENT, event.toJson());
+		addCost(1);
 	}
 
 	public String getBucketId() {

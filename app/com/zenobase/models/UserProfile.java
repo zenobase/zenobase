@@ -3,6 +3,7 @@ package com.zenobase.models;
 import com.zenobase.json.BooleanField;
 import com.zenobase.json.DateTimeField;
 import com.zenobase.json.DomainNode;
+import com.zenobase.json.IntegerField;
 import com.zenobase.json.TokenField;
 
 public class UserProfile extends DomainNode {
@@ -15,6 +16,7 @@ public class UserProfile extends DomainNode {
 	private static final BooleanField VERIFIED = new BooleanField("verified");
 	private static final BooleanField SUSPENDED = new BooleanField("suspended");
 	private static final BooleanField SUPERUSER = new BooleanField("superuser");
+	private static final IntegerField QUOTA = new IntegerField("quota");
 
 	public UserProfile(User user) {
 		setValue(ID, user.getId());
@@ -25,5 +27,6 @@ public class UserProfile extends DomainNode {
 		setValue(VERIFIED, user.isVerified());
 		setValue(SUSPENDED, user.isSuspended());
 		setValue(SUPERUSER, user.isSuperuser());
+		setValue(QUOTA, user.getQuota());
 	}
 }

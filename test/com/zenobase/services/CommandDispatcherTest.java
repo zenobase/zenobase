@@ -19,8 +19,9 @@ public class CommandDispatcherTest {
 
 		CommandHandlerRegistry handlers = mock(CommandHandlerRegistry.class);
 		CommandRepository repository = mock(CommandRepository.class);
+		QuotaManager quotas = mock(QuotaManager.class);
 
-		CommandDispatcher dispatcher = new CommandDispatcher(handlers, repository);
+		CommandDispatcher dispatcher = new CommandDispatcher(handlers, repository, quotas);
 
 		Command c1 = new TestCommand(TESTER, "do a bit");
 		Command c2 = new TestCommand(TESTER, "do more");
@@ -37,6 +38,8 @@ public class CommandDispatcherTest {
 		verify(handlers).execute(c1);
 		verify(handlers).execute(c2);
 		verify(handlers).execute(c3);
+
+		verify(quotas, times(3)).spend(TESTER, 1);
 	}
 
 	@Test
@@ -44,8 +47,9 @@ public class CommandDispatcherTest {
 
 		CommandHandlerRegistry handlers = mock(CommandHandlerRegistry.class);
 		CommandRepository repository = mock(CommandRepository.class);
+		QuotaManager quotas = mock(QuotaManager.class);
 
-		CommandDispatcher dispatcher = new CommandDispatcher(handlers, repository);
+		CommandDispatcher dispatcher = new CommandDispatcher(handlers, repository, quotas);
 
 		Command c1 = new TestCommand(TESTER, "do a bit");
 		Command c2 = new TestCommand(TESTER, "do more");
@@ -62,5 +66,7 @@ public class CommandDispatcherTest {
 		verify(handlers).execute(c1);
 		verify(handlers).execute(c2);
 		verify(handlers).execute(c3);
+
+		verify(quotas).spend(TESTER, 3);
 	}
 }

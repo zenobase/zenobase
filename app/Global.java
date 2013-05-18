@@ -74,6 +74,7 @@ import com.zenobase.services.EventRepository;
 import com.zenobase.services.IndexManager;
 import com.zenobase.services.LocalNodeFactory;
 import com.zenobase.services.NodeFactory;
+import com.zenobase.services.QuotaManager;
 import com.zenobase.services.TaskRepository;
 import com.zenobase.services.TestNodeFactory;
 import com.zenobase.services.UserRepository;
@@ -125,6 +126,7 @@ public class Global extends GlobalSettings {
 				bind(TaskRepository.class).in(Singleton.class);
 				bind(TaskRefresher.class).in(Singleton.class);
 				bind(AuthorizationRepository.class).in(Singleton.class);
+				bind(QuotaManager.class).in(Singleton.class);
 
 				Multibinder<CommandParser> parsers = Multibinder.newSetBinder(binder(), CommandParser.class);
 				parsers.addBinding().to(CreateBucketCommand.Parser.class);

@@ -43,6 +43,7 @@ public class CompoundCommand extends Command {
 	public void add(Command command) {
 		commands.add(command);
 		addParameter(COMMANDS, command.toJson());
+		addCost(command.getCost());
 	}
 
 	public ImmutableList<Command> getCommands() {

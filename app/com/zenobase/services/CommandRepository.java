@@ -1,9 +1,13 @@
 package com.zenobase.services;
 
 import org.codehaus.jackson.node.ObjectNode;
+import org.elasticsearch.action.search.SearchResponse;
+import org.elasticsearch.index.query.FilterBuilders;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
+import org.elasticsearch.search.facet.FacetBuilders;
+import org.elasticsearch.search.facet.statistical.StatisticalFacet;
 import org.elasticsearch.search.sort.SortOrder;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
@@ -15,6 +19,7 @@ import com.zenobase.commands.CommandParserRegistry;
 import com.zenobase.common.Callback;
 import com.zenobase.common.PartialList;
 import com.zenobase.models.CommandList;
+import com.zenobase.models.Identity;
 
 public class CommandRepository {
 
@@ -92,5 +97,14 @@ public class CommandRepository {
 
 	public void refresh() {
 		index.refresh();
+	}
+
+	public int getTotalCost(Identity principal, DateTime since) {
+		final String facetId = "statisticalFacet";
+		SearchResponse response = index.search(new SearchSourceBuilder().size(0)
+			.filter(FilterBuilders.termFilter(Command.PRINCIPAL.getName(), principal.getId()))
+			.filter(FilterBuilders.rangeFilter(Command.TIMESTAMP.getName()).from(since.getMillis()))
+			.facet(FacetBuilders.statisticalFacet(facetId).field(Command.COST.getName())));
+		return (int) ((StatisticalFacet) response.getFacets().facet(facetId)).getTotal();
 	}
 }

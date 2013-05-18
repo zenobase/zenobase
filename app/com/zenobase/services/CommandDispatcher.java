@@ -13,15 +13,20 @@ public class CommandDispatcher {
 	private final ALogger log = Logger.of("dispatch");
 	private final CommandHandlerRegistry handlers;
 	private final CommandRepository repository;
+	private final QuotaManager quotas;
 
 	@Inject
-	public CommandDispatcher(CommandHandlerRegistry handlers, CommandRepository repository) {
+	public CommandDispatcher(CommandHandlerRegistry handlers, CommandRepository repository, QuotaManager quotas) {
 		this.handlers = handlers;
 		this.repository = repository;
+		this.quotas = quotas;
 	}
 
 	public String dispatch(Command command) {
 		log.info(String.format("%s %s", command.getPrincipal(), command.toString()));
+		if (command.getCost() > 0) {
+			quotas.spend(command.getPrincipal(), command.getCost());
+		}
 		if (command instanceof CompoundCommand) {
 			dispatch((CompoundCommand) command);
 		}

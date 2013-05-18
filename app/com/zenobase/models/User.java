@@ -9,6 +9,7 @@ import com.zenobase.common.Generator;
 import com.zenobase.json.BooleanField;
 import com.zenobase.json.DateTimeField;
 import com.zenobase.json.DomainNode;
+import com.zenobase.json.IntegerField;
 import com.zenobase.json.Nodes;
 import com.zenobase.json.Schema;
 import com.zenobase.json.SchemaBuilder;
@@ -26,6 +27,7 @@ public class User extends DomainNode {
 	public static final BooleanField VERIFIED = new BooleanField("verified");
 	public static final BooleanField SUSPENDED = new BooleanField("suspended");
 	public static final BooleanField SUPERUSER = new BooleanField("superuser");
+	public static final IntegerField QUOTA = new IntegerField("quota");
 
 	public User(ObjectNode node) {
 		super(node);
@@ -109,6 +111,14 @@ public class User extends DomainNode {
 		return getId().equals(identity.getId());
 	}
 
+	public Integer getQuota() {
+		return getValue(QUOTA);
+	}
+
+	public void setQuota(Integer quota) {
+		setValue(QUOTA, quota);
+	}
+
 	@Override
 	public String toString() {
 		return getName();
@@ -122,7 +132,8 @@ public class User extends DomainNode {
 		return new SchemaBuilder(TYPE_NAME)
 			.add(VERSION).add(ID).add(NAME)
 			.add(CREATED).add(PASSWORD).add(EMAIL)
-			.add(VERIFIED).add(SUSPENDED).add(SUPERUSER).build();
+			.add(VERIFIED).add(SUSPENDED).add(SUPERUSER)
+			.add(QUOTA).build();
 	}
 
 	public User copy() {
