@@ -1,0 +1,32 @@
+<div id="plans" class="container-fluid" data-ng-controller="PlanController">
+
+	<div class="row-fluid page-titlebar">
+		<p class="pull-left page-title">
+			<span class="page-title-text">Plans</span>
+		</p>
+	</div>
+
+	<table id="plans" class="table table-bordered">
+		<tr data-ng-class="user && 'success'">
+			<td>add up to <strong>1,000</strong> events per month</td>
+			<td>enough to add at least one event every hour</td>
+			<td style="text-align: right"><strong><em>free</em></strong></td>
+			<td style="text-align: right" data-ng-show="user">
+				<!-- <button class="btn" disabled>Select</button> -->
+			</td>
+		</tr>
+		<tr>
+			<td>add up to <strong>50,000</strong> events per month</td>
+			<td>enough to add at least one event every minute</td>
+			<td style="text-align: right"><strong><abbr title="USD">$</abbr>5</strong> per month</td>
+			<td style="text-align: right" data-ng-show="user"><em>Coming soon...</em></td>
+		</tr>
+		<tr>
+			<td>add up to <strong>3 million</strong> events per month</td>
+			<td>enough to add at least one event every second</td>
+			<td style="text-align: right"><strong><abbr title="USD">$</abbr>30</strong> per month</td>
+			<td style="text-align: right" data-ng-show="user"><em>Coming soon...</em></td>
+		</tr>
+	</table>
+
+</div>

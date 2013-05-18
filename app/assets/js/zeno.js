@@ -149,6 +149,7 @@
 			.when('/users/:userId/verify', { templateUrl : cacheBuster.rewrite('/partials/verification.html') })
 			.when('/oauth/authorize', { templateUrl : cacheBuster.rewrite('/partials/oauth.html') })
 			.when('/api/:section', { templateUrl : cacheBuster.rewrite('/partials/api.html'), controller : 'DocumentController' })
+			.when('/plans/', { templateUrl : cacheBuster.rewrite('/partials/plans.html') })
 			.otherwise({ templateUrl : cacheBuster.rewrite('/partials/404.html') });
 	}]);
 
@@ -2876,6 +2877,10 @@
 				element.scrollIntoView(true);
 			});
 		}
+	}]);
+
+	app.controller('PlanController', ['$scope', function($scope) {
+		
 	}]);
 
 	app.factory('Field', ['User', 'moment', function(User, moment) {
