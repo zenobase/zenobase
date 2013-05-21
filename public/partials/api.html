@@ -38,6 +38,7 @@ please <a href="mailto:info@zenobase.com?subject=Zenobase+API">drop us a note</a
 		<div class="span3">
 			<ul class="nav nav-list">
 				<li class="nav-header"><a href="/#/api/common">Common</a></li>
+				<li><a href="/#/api/quota">Quota check</a></li>
 				<li><a href="/#/api/username">Look up a username</a></li>
 				<li><a href="/#/api/constraints">Query Constraints</a></li>
 				<li><a href="/#/api/facets">Query Facets</a></li>
@@ -767,6 +768,37 @@ X-Command-ID: p3ateetvs1
 
 <h2 id="api-common">Common</h2>
 
+<section id="api-quota">
+
+<h3>Quota check</h3>
+
+<p>Check how many events can be added by (or on behalf of) a user each month.</p>
+
+<pre>GET /quota
+Authorization: Bearer <em>&lt;access_token&gt;</em>
+</pre>
+
+<h4>Example</h4>
+
+<h5>Request</h5>
+
+<pre>curl -i GET 'http://api.zenobase.com/quota \
+  -H 'Authorization: Bearer e7975e8bb6eabc3ef567'
+</pre>
+
+<h5>Response</h5>
+
+<pre>HTTP/1.1 200 OK
+Content-Type: application/json
+
+{
+  "limit" : 1000,
+  "remaining" : 995
+}
+</pre>
+
+</section>
+
 <section id="api-username">
 
 <h3>Look up a username</h3>
@@ -795,7 +827,7 @@ Content-Type: application/json
 
 {
   "@id" : "kbuk9h0ihh",
-  "name" : "zeno".
+  "name" : "zeno"
 }
 </pre>
 

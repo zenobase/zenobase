@@ -4,6 +4,7 @@ GET     /status                      @com.zenobase.controllers.StatusController.
 
 GET     /who                         @com.zenobase.controllers.WhoController.who()
 POST    /reset                       @com.zenobase.controllers.PasswordResetController.requestReset()
+GET     /quota                       @com.zenobase.controllers.QuotaController.get()
 
 GET     /users/                      @com.zenobase.controllers.UserListController.find(identity ?= null, offset : Int ?= 0, limit : Int ?= java.lang.Integer.MAX_VALUE, detail : Boolean ?= false)
 GET     /users/:name                 @com.zenobase.controllers.UserController.get(name)

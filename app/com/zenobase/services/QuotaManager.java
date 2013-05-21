@@ -23,15 +23,15 @@ public class QuotaManager {
 	}
 
 	public void spend(Identity principal, int cost) {
-		int remaining = getQuotaRemaining(principal);
-		Logger.debug("Quota remaining: " + remaining +  ", required: " + cost);
-		if (remaining < cost) {
-			throw new QuotaException(remaining, cost);
+		Quota quota = getQuota(principal);
+		Logger.debug("Quota remaining: " + quota.getRemaining() +  ", required: " + cost);
+		if (quota.getRemaining() < cost) {
+			throw new QuotaException(quota.getRemaining(), cost);
 		}
 	}
 
-	private int getQuotaRemaining(Identity principal) {
-		return getQuotaLimit(principal) - getQuotaUsed(principal);
+	public Quota getQuota(Identity principal) {
+		return new Quota(getQuotaLimit(principal), getQuotaUsed(principal));
 	}
 
 	private int getQuotaLimit(Identity principal) {
