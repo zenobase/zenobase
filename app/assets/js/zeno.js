@@ -1685,11 +1685,13 @@
 		];
 
 		Interval.match = function(value) {
-			value = value.replace('Z', '+00:00');
-			var i, max;
-			for (i = 0, max = Interval.VALUES.length; i < max; ++i) {
-				if (Interval.VALUES[i].pattern === value.length) {
-					return Interval.VALUES[i];
+			if (value.match(/^[0-9]{4}/)) {
+				value = value.replace('Z', '+00:00');
+				var i, max;
+				for (i = 0, max = Interval.VALUES.length; i < max; ++i) {
+					if (Interval.VALUES[i].pattern === value.length) {
+						return Interval.VALUES[i];
+					}
 				}
 			}
 		};
@@ -1719,10 +1721,13 @@
 			$scope.interval = Interval.valueOf($scope.settings.interval) || Interval.VALUES[1];
 			$scope.range = '';
 			$.each($scope.getConstraints($scope.keyField), function(i, constraint) {
-				$scope.interval = Interval.match(constraint.value);
-				$scope.range = constraint.value;
+				var interval = Interval.match(constraint.value);
+				if (interval) {
+					$scope.interval = interval;
+					$scope.range = constraint.value;
+				}
 			});
-			return $scope.interval && { 
+			return { 
 				id : $scope.settings.id,
 				type : 'timeline',
 				field : $scope.settings.field,
