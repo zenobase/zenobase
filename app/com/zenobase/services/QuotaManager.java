@@ -23,23 +23,23 @@ public class QuotaManager {
 	}
 
 	public void spend(Identity principal, int cost) {
-		// TODO: Cache "available"!
-		int limit = getLimit(principal);
-		int spent = getSpent(principal);
-		Logger.debug("Limit: " + limit);
-		Logger.debug("Spent: " + spent);
-		Logger.debug("Cost:  " + cost);
-		if (limit - spent < cost) {
-			throw new RuntimeException("quota insufficient");
+		int remaining = getQuotaRemaining(principal);
+		Logger.debug("Quota remaining: " + remaining +  ", required: " + cost);
+		if (remaining < cost) {
+			throw new QuotaException(remaining, cost);
 		}
 	}
 
-	public int getLimit(Identity principal) {
+	private int getQuotaRemaining(Identity principal) {
+		return getQuotaLimit(principal) - getQuotaUsed(principal);
+	}
+
+	private int getQuotaLimit(Identity principal) {
 		User user = users.find(principal);
 		return user != null && user.getQuota() != null ? user.getQuota() : DEFAULT_QUOTA;
 	}
 
-	public int getSpent(Identity principal) {
+	private int getQuotaUsed(Identity principal) {
 		return commands.getTotalCost(principal, timeAtStartOfMonth());
 	}
 

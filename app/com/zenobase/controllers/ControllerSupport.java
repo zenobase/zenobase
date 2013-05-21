@@ -6,10 +6,11 @@ import play.mvc.Controller;
 import play.mvc.With;
 
 import com.zenobase.actions.NoCache;
+import com.zenobase.actions.QuotaExceptionHandler;
 import com.zenobase.json.Nodes;
 import com.zenobase.oauth.Authorization;
 
-@With(NoCache.class)
+@With({NoCache.class, QuotaExceptionHandler.class})
 public abstract class ControllerSupport extends Controller implements CustomHeaders {
 
 	private final AuthorizationContext authContext;

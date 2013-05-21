@@ -2702,7 +2702,7 @@
 					$scope.closeDialog();
 				})
 				.error(function(response) {
-					$scope.message = 'Couldn\'t upload the file. Is the format valid?';
+					$scope.message = response.message || 'Couldn\'t import the file. Try again later, or contact support.';
 				});
 			tracker.event('action', 'import events');
 		};
