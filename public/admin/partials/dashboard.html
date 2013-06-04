@@ -117,7 +117,8 @@
 						<tr>
 							<th>User</th>
 							<th>Signed up</th>
-							<th style="text-align:center">Verified</th>
+							<th style="text-align: right">Quota</th>
+							<th style="text-align: center">Verified</th>
 							<th></th>
 						</tr>
 					</thead>
@@ -128,6 +129,7 @@
 								<span style="color:gray" data-ng-show="user.suspended">{{user.name}}</span>
 							</td>
 							<td data-ng-bind="user.created | age"></td>
+							<td data-ng-bind="user.quota | number" style="text-align: right"></td>
 							<td data-ng-bind="user.verified && 'yes' || 'no'" style="text-align:center"></td>
 							<td style="text-align: right">
 								<a class="action" data-ng-click="close(user.name)" data-ng-show="!user.suspended && !user.superuser" title="Close Account"><i class="icon-ban-circle"></i></a>
@@ -135,10 +137,10 @@
 							</td>
 						</tr>
 						<tr data-ng-show="users == null">
-							<td colspan="4"><i>Loading</i></td>
+							<td colspan="5"><i>Loading</i></td>
 						</tr>
 						<tr data-ng-show="users.length == 0">
-							<td colspan="4"><i>None</i></td>
+							<td colspan="5"><i>None</i></td>
 						</tr>
 					</tbody>
 				</table>
