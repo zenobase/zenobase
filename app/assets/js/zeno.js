@@ -149,7 +149,7 @@
 			.when('/users/:userId/verify', { templateUrl : cacheBuster.rewrite('/partials/verification.html') })
 			.when('/oauth/authorize', { templateUrl : cacheBuster.rewrite('/partials/oauth.html') })
 			.when('/api/:section', { templateUrl : cacheBuster.rewrite('/partials/api.html'), controller : 'DocumentController' })
-			.when('/plans/', { templateUrl : cacheBuster.rewrite('/partials/plans.html') })
+			.when('/pricing/', { templateUrl : cacheBuster.rewrite('/partials/pricing.html') })
 			.otherwise({ templateUrl : cacheBuster.rewrite('/partials/404.html') });
 	}]);
 
@@ -2884,7 +2884,7 @@
 		}
 	}]);
 
-	app.controller('PlanController', ['$scope', function($scope) {
+	app.controller('PricingController', ['$scope', function($scope) {
 		
 	}]);
 
