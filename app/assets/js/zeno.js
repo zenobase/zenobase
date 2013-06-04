@@ -150,6 +150,7 @@
 			.when('/oauth/authorize', { templateUrl : cacheBuster.rewrite('/partials/oauth.html') })
 			.when('/api/:section', { templateUrl : cacheBuster.rewrite('/partials/api.html'), controller : 'DocumentController' })
 			.when('/pricing/', { templateUrl : cacheBuster.rewrite('/partials/pricing.html') })
+			.when('/legal/', { templateUrl : cacheBuster.rewrite('/partials/legal.html') })
 			.otherwise({ templateUrl : cacheBuster.rewrite('/partials/404.html') });
 	}]);
 
