@@ -2884,8 +2884,16 @@
 		}
 	}]);
 
-	app.controller('PricingController', ['$scope', function($scope) {
-		
+	app.controller('PricingController', ['$scope', 'tracker', function($scope, tracker) {
+		$scope.isPlan = function(quota) {
+			if ($scope.user) {
+				return ($scope.user.quota || 1000) == quota; 
+			}
+		};
+		$scope.selectPlan = function(quota) {
+			$scope.openDialog('plan-dialog');
+			tracker.event('action', 'select plan', quota);
+		};
 	}]);
 
 	app.factory('Field', ['User', 'moment', function(User, moment) {

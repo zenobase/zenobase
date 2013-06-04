@@ -6,29 +6,55 @@
 		</p>
 	</div>
 
-	<table id="plans" class="table table-bordered">
-		<tr data-ng-class="user && 'success'">
-			<td>add up to <strong>1,000</strong> events per month</td>
-			<td>enough to add at least one event every hour</td>
-			<td style="text-align: right"><strong><em>free</em></strong></td>
-			<td style="text-align: right" data-ng-show="user">
-				<!-- <button class="btn" disabled>Select</button> -->
-			</td>
-		</tr>
-		<tr>
-			<td>add up to <strong>50,000</strong> events per month</td>
-			<td>enough to add at least one event every minute</td>
-			<td style="text-align: right"><strong><abbr title="USD">$</abbr>5</strong> per month</td>
-			<td style="text-align: right" data-ng-show="user"><em>Coming soon...</em></td>
-		</tr>
-		<tr>
-			<td>add up to <strong>3 million</strong> events per month</td>
-			<td>enough to add at least one event every second</td>
-			<td style="text-align: right"><strong><abbr title="USD">$</abbr>30</strong> per month</td>
-			<td style="text-align: right" data-ng-show="user"><em>Coming soon...</em></td>
-		</tr>
-	</table>
+	<div class="row">
 
-	<p>Quotas are reset at the beginning of each month, and include events added by third parties on your behalf.</p>
+		<div class="span4 alert" data-ng-class="isPlan(1000) && 'alert-success' || 'alert-info'">
+			<h4>Free</h4>
+			<p></p>
+			<ul>
+				<li>add up to <strong>1,000</strong> events per month*</li>
+				<li><strong>1</strong> bucket</li>
+			</ul>
+			<button class="btn" data-ng-hide="user" data-ng-click="start()" data-ng-controller="HomeController">Select</button>
+			<button class="btn" data-ng-show="user" data-ng-disabled="isPlan(1000)">Select</button>
+		</div>
+	
+		<div class="span4 alert" data-ng-class="isPlan(50000) && 'alert-success' || 'alert-info'">
+			<h4>$5 <small>per month</small></h4>
+			<p></p>
+			<ul>
+				<li>add up to <strong>50,000</strong> events per month*</li>
+				<li><strong>5</strong> buckets</li>
+			</ul>
+			<button class="btn" data-ng-disabled="isPlan(50000)" data-ng-click="selectPlan(50000)">Select</button>
+		</div>
+	
+		<div class="span4 alert" data-ng-class="isPlan(3000000) && 'alert-success' || 'alert-info'">
+			<h4>$30 <small>per month</small></h4>
+			<p></p>
+			<ul>
+				<li>add up to <strong>3 million</strong> events per month*</li>
+				<li><strong>25</strong> buckets</li>
+			</ul>
+			<button class="btn" data-ng-disabled="isPlan(3000000)" data-ng-click="selectPlan(3000000)">Select</button>
+		</div>
+	
+	</div>
+
+	<p>* Quotas are reset at the beginning of each month, and include events added by third parties on your behalf.</p>
+
+	<div id="plan-dialog" class="hide" data-ui-modal="dialog == 'plan-dialog'" data-ui-modal-close="closeDialog()">
+		<div class="modal-header">
+			<a class="close" data-dismiss="modal">&times;</a>
+			<h4>Select Plan</h4>
+		</div>
+		<div class="modal-body">
+			This plan is <strong>not yet available</strong>.
+			Meanwhile, <a href="mailto:support@zenobase.com?subject=Quota">contact us</a> to increase your quota.
+		</div>
+		<div class="modal-footer">
+			<button type="reset" class="btn" data-dismiss="modal">Cancel</button>
+		</div>
+	</div>
 
 </div>
