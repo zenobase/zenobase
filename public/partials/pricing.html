@@ -12,7 +12,7 @@
 			<h4>Free</h4>
 			<p></p>
 			<ul>
-				<li>add up to <strong>1,000</strong> events per month*</li>
+				<li>add up to <strong>1,000</strong> events per month</li>
 				<li><strong>1</strong> bucket</li>
 			</ul>
 			<button class="btn" data-ng-hide="user" data-ng-click="start()" data-ng-controller="HomeController">Select</button>
@@ -23,7 +23,7 @@
 			<h4>$5 <small>per month</small></h4>
 			<p></p>
 			<ul>
-				<li>add up to <strong>50,000</strong> events per month*</li>
+				<li>add up to <strong>50,000</strong> events per month</li>
 				<li><strong>5</strong> buckets</li>
 			</ul>
 			<button class="btn" data-ng-disabled="isPlan(50000)" data-ng-click="selectPlan(50000)">Select</button>
@@ -33,15 +33,13 @@
 			<h4>$30 <small>per month</small></h4>
 			<p></p>
 			<ul>
-				<li>add up to <strong>3 million</strong> events per month*</li>
+				<li>add up to <strong>3 million</strong> events per month</li>
 				<li><strong>25</strong> buckets</li>
 			</ul>
 			<button class="btn" data-ng-disabled="isPlan(3000000)" data-ng-click="selectPlan(3000000)">Select</button>
 		</div>
 	
 	</div>
-
-	<p>* Quotas are reset at the beginning of each month, and include events added by third parties on your behalf.</p>
 
 	<div id="plan-dialog" class="hide" data-ui-modal="dialog == 'plan-dialog'" data-ui-modal-close="closeDialog()">
 		<div class="modal-header">
