@@ -254,6 +254,10 @@
 			return this.name || 'guest';
 		};
 
+		User.prototype.isGuest = function() {
+			return !this.name;
+		};
+
 		User.find = function(identity) {
 			var user = cache.get(identity);
 			if (!user) {

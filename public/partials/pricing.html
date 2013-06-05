@@ -22,7 +22,7 @@
 			<p></p>
 			<p>add up to <strong>50,000</strong> events / month</p>
 			<div data-ui-quota="quota" data-ui-enabled="isPlan(50000)"></div>
-			<button class="btn" data-ng-disabled="!user || isPlan(50000)" data-ng-click="selectPlan(50000)">Select</button>
+			<button class="btn" data-ng-disabled="!user || user.isGuest() || isPlan(50000)" data-ng-click="selectPlan(50000)">Select</button>
 		</div>
 	
 		<div class="span3 alert" data-ng-class="isPlan(3000000) && 'alert-success' || 'alert-info'">
@@ -30,7 +30,7 @@
 			<p></p>
 			<p>add up to <strong>3 million</strong> events / month</p>
 			<div data-ui-quota="quota" data-ui-enabled="isPlan(3000000)"></div>
-			<button class="btn" data-ng-disabled="!user || isPlan(3000000)" data-ng-click="selectPlan(3000000)">Select</button>
+			<button class="btn" data-ng-disabled="!user || user.isGuest() || isPlan(3000000)" data-ng-click="selectPlan(3000000)">Select</button>
 		</div>
 	
 	</div>
