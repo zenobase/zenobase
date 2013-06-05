@@ -222,7 +222,11 @@
 				<label for="unit" class="control-label">Unit</label>
 				<select name="unit" data-ng-model="settings.unit" data-ng-options="unit for unit in getUnits()" required></select>
 			</div>
-		</div>	
+			<div class="control-group">
+				<label for="marker" class="control-label">Starting from</label>
+				<input id="withings-marker-field" class="input-small" type="text" data-ui-datepicker data-ng-model="settings.marker"/>
+			</div>
+		</div>
 	</script>
 
 	<div id="edit-event-dialog" data-ui-modal="selectedEvent" data-ui-modal-open="init()" data-ui-modal-close="editEvent(null)" data-keyboard="false" data-backdrop="static" data-ng-controller="EventDialogController">

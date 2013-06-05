@@ -2743,13 +2743,13 @@
 	app.controller('CreateTaskDialogController', ['$scope', '$http', 'tracker', 'tasks', function($scope, $http, tracker, tasks) {
 	
 		$scope.types = [ 
-			{ 'id' : 'fitbit', 'description' : 'Creates events for daily Fitbit step counts.' },
-			{ 'id' : 'fitbit-intraday', 'description' : 'Creates events from Fitbit data for each period of time spent moving, sitting or sleeping.' },
-			{ 'id' : 'bodymedia', 'description' : 'Creates events for daily BodyMedia sleep and step stats.' },
-			{ 'id' : 'foursquare', 'description' : 'Creates events for Foursquare check-ins.' },
-			{ 'id' : 'netatmo', 'description' : 'Creates events from Netatmo weather station measurements.' },
-			{ 'id' : 'withings', 'description' : 'Creates events for Withings weight measurements.' },
-			{ 'id' : 'demo', 'description' : 'Creates events with a custom tag.' }
+			{ 'id' : 'fitbit', 'description' : 'Creates one step count event per day.' },
+			{ 'id' : 'fitbit-intraday', 'description' : 'Creates one event for each period of time spent moving, sitting or sleeping (100 to 1,000 events per day).' },
+			{ 'id' : 'bodymedia', 'description' : 'Creates one calorie count and one sleep summary event per day.' },
+			{ 'id' : 'foursquare', 'description' : 'Creates an event for each Foursquare check-in.' },
+			{ 'id' : 'netatmo', 'description' : 'Creates an event for each weather station measurement (up to 300 per day).' },
+			{ 'id' : 'withings', 'description' : 'Creates an event for each weight measurement.' },
+			{ 'id' : 'demo', 'description' : 'Creates an event with a custom tag each time this task is run.' }
 		];
 
 		$scope.init = function() {
@@ -2840,7 +2840,8 @@
 		$scope.init = function() {
 			$scope.settings = $scope.$parent.$parent.settings = {
 					tag : 'body',
-					unit : 'lb'
+					unit : 'lb',
+					marker : new Date(moment().utc().startOf('month').valueOf())
 			};
 		};
 		$scope.getUnits = function() {

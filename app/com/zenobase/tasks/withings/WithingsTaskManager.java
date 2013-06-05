@@ -44,7 +44,12 @@ public class WithingsTaskManager extends OAuthTaskManager {
 		WithingsTask task = super.newTask(bucketId, principal, settings).as(WithingsTask.class);
 		task.setTag(Objects.firstNonNull(settings.path("tag").getTextValue(), "steps"));
 		task.setUnit(Measures.<Mass>parseUnit(Objects.firstNonNull(settings.path("unit").getTextValue(), "kg")));
+		task.setMarker(parseMarker(settings.path("marker").getTextValue()));
 		return task;
+	}
+
+	private String parseMarker(String marker) {
+		return marker != null ? Long.toString(DateTime.parse(marker).getMillis() / 1000) : null;
 	}
 
 	@Override
