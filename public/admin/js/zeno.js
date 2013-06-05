@@ -166,8 +166,11 @@
 				});
 			}
 		};
+		$scope.select = function(selected) {
+			$scope.selected = selected;
+		};
 		$scope.close = function(userId) {
-			$http({ method : 'DELETE', url : '/users/' + userId }).success(function(response, code, headers) {
+			$http({ method : 'DELETE', url : '/users/' + user.name }).success(function(response, code, headers) {
 				delay($scope.reload);
 			});
 		};
@@ -175,6 +178,25 @@
 		$scope.$on('reload', $scope.refresh);
 		$scope.refresh({});
 	}]);
+
+	app.controller('admin.EditQuotaDialogController', ['$scope', '$http', 'delay', function($scope, $http, delay) {
+		$scope.init = function() {
+			console.log('init');
+			$scope.message = '';
+			$scope.quota = $scope.selected ? $scope.selected.quota : '';
+		};
+		$scope.save = function() {
+			$http.post('/users/' + $scope.selected.name, { 'quota' : $scope.quota })
+				.success(function(response) {
+					$scope.closeDialog();
+					delay($scope.reload);
+				})
+				.error(function(response, code) {
+					$scope.message = 'Failed (' + code + ')';
+				});
+		};
+	}]);
+
 
 	app.controller('admin.AuthorizationListController', ['$scope', '$http', 'delay', function($scope, $http, delay) {
 

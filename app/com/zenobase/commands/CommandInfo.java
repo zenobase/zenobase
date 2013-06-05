@@ -4,6 +4,7 @@ import com.zenobase.json.CommandTypeField;
 import com.zenobase.json.DateTimeField;
 import com.zenobase.json.DomainNode;
 import com.zenobase.json.IdentityField;
+import com.zenobase.json.IntegerField;
 import com.zenobase.json.TextField;
 import com.zenobase.json.TokenField;
 
@@ -14,6 +15,7 @@ public class CommandInfo extends DomainNode {
 	public static final IdentityField PRINCIPAL = new IdentityField("principal");
 	public static final DateTimeField TIMESTAMP = new DateTimeField("timestamp");
 	public static final TextField LABEL = new TextField("label");
+	public static final IntegerField COST = new IntegerField("cost");
 
 	public CommandInfo(Command command) {
 		setValue(ID, command.getId());
@@ -21,5 +23,6 @@ public class CommandInfo extends DomainNode {
 		setValue(PRINCIPAL, command.getPrincipal());
 		setValue(TIMESTAMP, command.getTimestamp());
 		setValue(LABEL, command.toString());
+		setValue(COST, command.getCost());
 	}
 }

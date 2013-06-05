@@ -2888,8 +2888,8 @@
 	app.controller('PricingController', ['$scope', '$http', 'tracker', function($scope, $http, tracker) {
 
 		$scope.isPlan = function(quota) {
-			if ($scope.user) {
-				return ($scope.user.quota || 1000) == quota; 
+			if ($scope.quota) {
+				return $scope.quota.limit == quota; 
 			}
 		};
 		$scope.selectPlan = function(quota) {

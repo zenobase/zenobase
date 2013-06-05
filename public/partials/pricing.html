@@ -14,7 +14,7 @@
 			<p>add up to <strong>1,000</strong> events / month</p>
 			<div data-ui-quota="quota" data-ui-enabled="isPlan(1000)"></div>
 			<button class="btn" data-ng-hide="user" data-ng-click="start()" data-ng-controller="HomeController">Select</button>
-			<button class="btn" data-ng-show="user" data-ng-disabled="isPlan(1000)">Select</button>
+			<button class="btn" data-ng-show="user" data-ng-disabled="isPlan(1000)" data-ng-click="selectPlan(1000)">Select</button>
 		</div>
 	
 		<div class="span3 alert" data-ng-class="isPlan(50000) && 'alert-success' || 'alert-info'">
@@ -41,8 +41,7 @@
 			<h4>Select Plan</h4>
 		</div>
 		<div class="modal-body">
-			This plan is <strong>not yet available</strong>.
-			Meanwhile, <a href="mailto:support@zenobase.com?subject=Quota">contact us</a> to increase your quota.
+			To upgrade or downgrade your plan, please <a href="mailto:support@zenobase.com?subject=Quota">contact us</a>.
 		</div>
 		<div class="modal-footer">
 			<button type="reset" class="btn" data-dismiss="modal">Cancel</button>

@@ -129,7 +129,10 @@
 								<span style="color:gray" data-ng-show="user.suspended">{{user.name}}</span>
 							</td>
 							<td data-ng-bind="user.created | age"></td>
-							<td data-ng-bind="user.quota | number" style="text-align: right"></td>
+							<td style="text-align: right">
+								<a class="action" data-ng-click="select(user); openDialog('edit-quota-dialog')" title="Edit Quota"><i class="icon-pencil"></i></a>
+								<span data-ng-bind="user.quota | number" ></span>
+							</td>
 							<td data-ng-bind="user.verified && 'yes' || 'no'" style="text-align:center"></td>
 							<td style="text-align: right">
 								<a class="action" data-ng-click="close(user.name)" data-ng-show="!user.suspended && !user.superuser" title="Close Account"><i class="icon-ban-circle"></i></a>
@@ -155,6 +158,27 @@
 					<div class="btn-group pull-right" data-ng-show="users">
 						<button class="btn disabled zeno-paging"><b>{{offset + 1}}</b> &ndash; <b>{{offset + users.length}}</b> of <b>{{total}}</b></button>
 					</div>
+				</div>
+				<div id="edit-quota-dialog" data-ui-modal="dialog == 'edit-quota-dialog'" data-ui-modal-open="init()" data-ui-modal-close="closeDialog()" data-ng-controller="admin.EditQuotaDialogController">
+					<form name="editQuotaForm" data-ng-submit="save()" class="modal-form">
+						<div class="modal-header">
+							<a class="close" data-dismiss="modal">&times;</a>
+							<h4>{{selected.name}}</h4>
+						</div>
+						<div class="modal-body">
+							<div id="edit-quota-message" class="alert alert-error" data-ng-show="message">
+								{{message}}
+							</div>
+							<div class="control-group">
+								<label for="quota-field">Quota</label>
+								<input id="quota-field" name="quota" type="number" min="0" class="xlarge" required data-ui-focus-on="dialog:edit-quota-dialog" data-ng-model="quota"/>
+							</div>
+						</div>
+						<div class="modal-footer">
+							<button id="save-quota-button" type="submit" class="btn btn-primary">Save</button>
+							<button type="reset" class="btn" data-dismiss="modal">Cancel</button>
+						</div>
+					</form>
 				</div>
 			</div>
 
