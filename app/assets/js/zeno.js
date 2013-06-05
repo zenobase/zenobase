@@ -2885,7 +2885,8 @@
 		}
 	}]);
 
-	app.controller('PricingController', ['$scope', 'tracker', function($scope, tracker) {
+	app.controller('PricingController', ['$scope', '$http', 'tracker', function($scope, $http, tracker) {
+
 		$scope.isPlan = function(quota) {
 			if ($scope.user) {
 				return ($scope.user.quota || 1000) == quota; 
@@ -2895,6 +2896,18 @@
 			$scope.openDialog('plan-dialog');
 			tracker.event('action', 'select plan', quota);
 		};
+
+		$scope.$watch('user', function(user) {
+			if (user) {
+				$http.get('/quota')
+					.success(function(response) {
+						$scope.quota = response;
+					})
+					.error(function(response, status) {
+						$scope.quota = null;
+					});
+			}
+		});
 	}]);
 
 	app.factory('Field', ['User', 'moment', function(User, moment) {
@@ -3364,27 +3377,37 @@
 		$httpProvider.responseInterceptors.push(interceptor);
 	}]);
 
-	app.directive('uiTweet', ['$http', '$interpolate', function($http, $interpolate) {
+	app.directive('uiQuota', ['$interpolate', function($interpolate) {
+		function getBarClass(percent) {
+			if (percent == 100) {
+				return 'bar-danger';
+			} else if (percent > 80) {
+				return 'bar-warning';
+			} else {
+				return 'bar-success';
+			}
+		}
 		return {
 			restrict: 'A',
 			compile: function() {
 				return function(scope, element, attrs) {
 					var template = $interpolate(
-						'<small>' +
-						'  <i class="icon-comment"></i> {{text | linky}} &nbsp; ' +
-						'  <i class="icon-calendar"></i> {{created | age}} &nbsp; ' +
-						'  <a href="http://twitter.com/{{username}}">Updates &raquo;</a>' +
-						'</small>');
-					$http.jsonp('https://api.twitter.com/1/statuses/user_timeline.json?screen_name=' + attrs.username + '&callback=JSON_CALLBACK&count=1&trim_user=true&exclude_replies=true')
-						.success(function(data) {
-							if (data.length) {
-								element.html(template({
-									'text' : data[0].text.replace(' #quantifiedself', ''),
-									'created' : data[0].created_at,
-									'username' :  attrs.username
-								}));
-							}
-						});
+						'<div class="progress" title="{{title}}">' +
+						'  <div class="bar {{class}}" style="width:{{percent}}%;"></div>' +
+						'</div>');
+					scope.$watch(attrs.uiQuota, function(quota) {
+						if (quota) {
+							var enabled = scope.$eval(attrs.uiEnabled);
+							var limit = quota.limit;
+							var used = limit - quota.remaining;
+							var percent = enabled ? Math.round(used / limit * 100) : 0;
+							element.html(template({
+								'title' : enabled ? 'You have used: ' + used + '/' + limit : '',
+								'class' : getBarClass(percent),
+								'percent' :  percent
+							}));
+						}
+					});
 				};
 			}
 		};
