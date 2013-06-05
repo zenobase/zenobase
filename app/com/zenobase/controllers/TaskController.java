@@ -5,9 +5,7 @@ import javax.inject.Inject;
 import org.codehaus.jackson.node.ObjectNode;
 import play.mvc.BodyParser;
 import play.mvc.Result;
-import play.mvc.With;
 
-import com.zenobase.actions.Timed;
 import com.zenobase.commands.Command;
 import com.zenobase.commands.DeleteTaskCommand;
 import com.zenobase.commands.UpdateTaskCommand;
@@ -24,7 +22,6 @@ import com.zenobase.tasks.TaskManager;
 import com.zenobase.tasks.TaskManagerRegistry;
 import com.zenobase.tasks.TaskRefresher;
 
-@With(Timed.class)
 public class TaskController extends ControllerSupport {
 
 	private final CommandDispatcher dispatcher;

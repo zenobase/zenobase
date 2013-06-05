@@ -3,9 +3,7 @@ package com.zenobase.controllers;
 import javax.inject.Inject;
 
 import play.mvc.Result;
-import play.mvc.With;
 
-import com.zenobase.actions.Timed;
 import com.zenobase.json.Nodes;
 import com.zenobase.models.Bucket;
 import com.zenobase.models.Event;
@@ -14,7 +12,6 @@ import com.zenobase.oauth.Authorization;
 import com.zenobase.services.BucketRepository;
 import com.zenobase.services.EventRepository;
 
-@With(Timed.class)
 public class TagController extends ControllerSupport {
 
 	private final BucketRepository buckets;

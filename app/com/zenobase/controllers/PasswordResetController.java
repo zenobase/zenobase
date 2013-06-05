@@ -5,15 +5,12 @@ import javax.inject.Inject;
 import org.codehaus.jackson.node.ObjectNode;
 import play.mvc.BodyParser;
 import play.mvc.Result;
-import play.mvc.With;
 
-import com.zenobase.actions.Timed;
 import com.zenobase.json.TokenField;
 import com.zenobase.mail.PasswordResetMailer;
 import com.zenobase.models.User;
 import com.zenobase.services.UserRepository;
 
-@With(Timed.class)
 public class PasswordResetController extends ControllerSupport {
 
 	static final TokenField USERNAME = new TokenField("username");

@@ -5,9 +5,7 @@ import javax.inject.Inject;
 import org.elasticsearch.index.engine.VersionConflictEngineException;
 import play.mvc.BodyParser;
 import play.mvc.Result;
-import play.mvc.With;
 
-import com.zenobase.actions.Timed;
 import com.zenobase.commands.DeleteEventCommand;
 import com.zenobase.commands.UpdateEventCommand;
 import com.zenobase.models.Bucket;
@@ -18,7 +16,6 @@ import com.zenobase.services.BucketRepository;
 import com.zenobase.services.CommandDispatcher;
 import com.zenobase.services.EventRepository;
 
-@With(Timed.class)
 public class EventController extends ControllerSupport {
 
 	private final BucketRepository buckets;

@@ -9,12 +9,9 @@ import play.Logger;
 import play.libs.F;
 import play.libs.WS;
 import play.mvc.Result;
-import play.mvc.With;
 
-import com.zenobase.actions.Timed;
 import com.zenobase.io.OpenGraph;
 
-@With(Timed.class)
 public class OpenGraphController extends ControllerSupport {
 
 	@Inject

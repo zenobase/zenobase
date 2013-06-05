@@ -3,10 +3,8 @@ package com.zenobase.controllers;
 import javax.inject.Inject;
 
 import play.mvc.Result;
-import play.mvc.With;
-
 import com.google.common.base.Strings;
-import com.zenobase.actions.Timed;
+
 import com.zenobase.models.Identity;
 import com.zenobase.oauth.Authorization;
 import com.zenobase.oauth.AuthorizationList;
@@ -14,7 +12,6 @@ import com.zenobase.search.QueryConstraint;
 import com.zenobase.services.AuthorizationRepository;
 import com.zenobase.services.UserRepository;
 
-@With(Timed.class)
 public class AuthorizationListController extends ControllerSupport {
 
 	private final AuthorizationRepository authorizations;

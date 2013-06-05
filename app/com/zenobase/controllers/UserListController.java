@@ -3,9 +3,7 @@ package com.zenobase.controllers;
 import javax.inject.Inject;
 
 import play.mvc.Result;
-import play.mvc.With;
 
-import com.zenobase.actions.Timed;
 import com.zenobase.io.UserPrinter;
 import com.zenobase.models.Identity;
 import com.zenobase.models.User;
@@ -14,7 +12,6 @@ import com.zenobase.models.UserList;
 import com.zenobase.oauth.Authorization;
 import com.zenobase.services.UserRepository;
 
-@With(Timed.class)
 public class UserListController extends ControllerSupport {
 
 	private final UserRepository users;

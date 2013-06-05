@@ -11,10 +11,8 @@ import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import play.mvc.BodyParser;
 import play.mvc.Result;
-import play.mvc.With;
 import com.google.common.collect.ImmutableList;
 
-import com.zenobase.actions.Timed;
 import com.zenobase.commands.CompoundCommand;
 import com.zenobase.commands.CreateEventCommand;
 import com.zenobase.common.Generator;
@@ -31,7 +29,6 @@ import com.zenobase.services.BucketRepository;
 import com.zenobase.services.CommandDispatcher;
 import com.zenobase.services.EventRepository;
 
-@With(Timed.class)
 public class EventListController extends ControllerSupport {
 
 	static final ObjectField EVENTS = new ObjectField("events");

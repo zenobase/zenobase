@@ -8,10 +8,8 @@ import org.codehaus.jackson.node.ObjectNode;
 import org.elasticsearch.index.engine.VersionConflictEngineException;
 import play.mvc.BodyParser;
 import play.mvc.Result;
-import play.mvc.With;
 import com.google.common.collect.ImmutableList;
 
-import com.zenobase.actions.Timed;
 import com.zenobase.commands.DeleteBucketCommand;
 import com.zenobase.commands.UpdateBucketCommand;
 import com.zenobase.json.Nodes;
@@ -23,7 +21,6 @@ import com.zenobase.services.BucketRepository;
 import com.zenobase.services.CommandDispatcher;
 import com.zenobase.services.UserRepository;
 
-@With(Timed.class)
 public class BucketController extends ControllerSupport {
 
 	private final CommandDispatcher dispatcher;

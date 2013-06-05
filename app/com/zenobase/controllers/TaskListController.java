@@ -4,10 +4,8 @@ import javax.inject.Inject;
 
 import play.mvc.BodyParser;
 import play.mvc.Result;
-import play.mvc.With;
-
 import com.google.common.base.Strings;
-import com.zenobase.actions.Timed;
+
 import com.zenobase.commands.CreateTaskCommand;
 import com.zenobase.models.Bucket;
 import com.zenobase.models.Identity;
@@ -23,7 +21,6 @@ import com.zenobase.tasks.TaskList;
 import com.zenobase.tasks.TaskManager;
 import com.zenobase.tasks.TaskManagerRegistry;
 
-@With(Timed.class)
 public class TaskListController extends ControllerSupport {
 
 	private final CommandDispatcher dispatcher;

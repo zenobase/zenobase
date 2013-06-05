@@ -4,9 +4,7 @@ import javax.inject.Inject;
 
 import play.mvc.BodyParser;
 import play.mvc.Result;
-import play.mvc.With;
 
-import com.zenobase.actions.Timed;
 import com.zenobase.commands.CloseAccountCommandBuilder;
 import com.zenobase.commands.Command;
 import com.zenobase.commands.CreateUserCommand;
@@ -18,7 +16,6 @@ import com.zenobase.services.BucketRepository;
 import com.zenobase.services.CommandDispatcher;
 import com.zenobase.services.UserRepository;
 
-@With(Timed.class)
 public class AccountController extends ControllerSupport {
 
 	private final BucketRepository buckets;

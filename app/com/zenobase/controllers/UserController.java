@@ -5,9 +5,7 @@ import javax.inject.Inject;
 import org.codehaus.jackson.node.ObjectNode;
 import play.mvc.BodyParser;
 import play.mvc.Result;
-import play.mvc.With;
 
-import com.zenobase.actions.Timed;
 import com.zenobase.commands.ChangeQuotaCommand;
 import com.zenobase.commands.ChangeUserEmailCommand;
 import com.zenobase.commands.ChangeUserPasswordCommand;
@@ -22,7 +20,6 @@ import com.zenobase.oauth.Authorization;
 import com.zenobase.services.CommandDispatcher;
 import com.zenobase.services.UserRepository;
 
-@With(Timed.class)
 public class UserController extends ControllerSupport {
 
 	private final UserRepository users;

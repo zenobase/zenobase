@@ -4,10 +4,8 @@ import javax.inject.Inject;
 
 import play.mvc.BodyParser;
 import play.mvc.Result;
-import play.mvc.With;
-
 import com.google.common.base.Strings;
-import com.zenobase.actions.Timed;
+
 import com.zenobase.commands.Command;
 import com.zenobase.models.CommandList;
 import com.zenobase.models.Identity;
@@ -17,7 +15,6 @@ import com.zenobase.services.CommandDispatcher;
 import com.zenobase.services.CommandRepository;
 import com.zenobase.services.UserRepository;
 
-@With(Timed.class)
 public class JournalController extends ControllerSupport {
 
 	private final CommandDispatcher dispatcher;
@@ -62,7 +59,7 @@ public class JournalController extends ControllerSupport {
     }
 
 	private static boolean isConstrainedToPrincipal(QueryConstraint constraint, Identity principal) {
-		return constraint != null 
+		return constraint != null
 			&& Command.PRINCIPAL.getName().equals(constraint.getField())
 			&& principal.getId().equals(constraint.getValue());
 	}

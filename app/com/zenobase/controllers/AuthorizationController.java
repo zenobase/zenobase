@@ -3,16 +3,13 @@ package com.zenobase.controllers;
 import javax.inject.Inject;
 
 import play.mvc.Result;
-import play.mvc.With;
 
-import com.zenobase.actions.Timed;
 import com.zenobase.commands.DeleteAuthorizationCommand;
 import com.zenobase.oauth.Authorization;
 import com.zenobase.services.AuthorizationRepository;
 import com.zenobase.services.CommandDispatcher;
 import com.zenobase.services.UserRepository;
 
-@With(Timed.class)
 public class AuthorizationController extends ControllerSupport {
 
 	private final CommandDispatcher dispatcher;

@@ -10,10 +10,8 @@ import org.codehaus.jackson.node.ObjectNode;
 import play.data.Form;
 import play.mvc.BodyParser;
 import play.mvc.Result;
-import play.mvc.With;
 import com.google.common.base.Charsets;
 
-import com.zenobase.actions.Timed;
 import com.zenobase.commands.CreateAuthorizationCommand;
 import com.zenobase.json.Nodes;
 import com.zenobase.models.Identity;
@@ -22,7 +20,6 @@ import com.zenobase.oauth.Authorization;
 import com.zenobase.services.CommandDispatcher;
 import com.zenobase.services.UserRepository;
 
-@With(Timed.class)
 public class OAuthController extends ControllerSupport {
 
 	static String RESPONSE_TYPE_TOKEN = "token";
