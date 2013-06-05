@@ -49,7 +49,7 @@ public class ChangeQuotaCommand extends Command {
 
 	@Override
 	public String toString() {
-		return String.format("changed quota for user %s to %d", getUsername(), getTo());
+		return String.format("changed quota for %s to %d", getUsername(), getTo());
 	}
 
 	public static class Parser extends CommandParser {
