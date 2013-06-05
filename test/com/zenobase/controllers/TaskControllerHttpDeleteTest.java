@@ -51,9 +51,9 @@ public class TaskControllerHttpDeleteTest extends TaskControllerTestSupport {
 	public void testDeleteTaskBucketNotFound() {
 		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
 		when(tasks.find(task.getId())).thenReturn(task);
+		when(dispatcher.dispatch(any(Command.class))).thenReturn("c");
 		Result result = call(task.getId());
-		assertThat(result).hasStatus(FORBIDDEN);
-		verifyZeroInteractions(dispatcher);
+		assertThat(result).hasStatus(NO_CONTENT).hasHeader(COMMAND_ID, "c").isEmpty();
 	}
 
 	@Test
