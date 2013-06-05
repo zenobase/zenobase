@@ -110,7 +110,7 @@ public class TaskController extends ControllerSupport {
 			return notFound();
 		}
     	Bucket bucket = buckets.find(task.getBucketId());
-    	if (bucket == null || !bucket.hasRole(auth, Role.OWNER) && !users.isSuperuser(auth.getPrincipal())) {
+    	if (bucket != null && !bucket.hasRole(auth, Role.OWNER) && !users.isSuperuser(auth.getPrincipal())) {
     		return forbidden();
     	}
     	String commandId = dispatcher.dispatch(new DeleteTaskCommand(auth.getPrincipal(), task));
