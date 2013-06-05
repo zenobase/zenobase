@@ -3382,15 +3382,6 @@
 	}]);
 
 	app.directive('uiQuota', ['$interpolate', function($interpolate) {
-		function getBarClass(percent) {
-			if (percent == 100) {
-				return 'bar-danger';
-			} else if (percent > 80) {
-				return 'bar-warning';
-			} else {
-				return 'bar-success';
-			}
-		}
 		return {
 			restrict: 'A',
 			compile: function() {
@@ -3401,13 +3392,12 @@
 						'</div>');
 					scope.$watch(attrs.uiQuota, function(quota) {
 						if (quota) {
-							var enabled = scope.$eval(attrs.uiEnabled);
-							var limit = quota.limit;
-							var used = limit - quota.remaining;
-							var percent = enabled ? Math.round(used / limit * 100) : 0;
+							var limit = scope.$eval(attrs.uiLimit);
+							var used = quota.limit - quota.remaining;
+							var percent = Math.min(Math.ceil(used / limit * 100), 100);
 							element.html(template({
-								'title' : enabled ? 'You have used: ' + used + '/' + limit : '',
-								'class' : getBarClass(percent),
+								'title' : 'Used: ' + used + '/' + limit,
+								'class' : quota.limit == limit ? 'bar-success' : 'bar-info',
 								'percent' :  percent
 							}));
 						}
