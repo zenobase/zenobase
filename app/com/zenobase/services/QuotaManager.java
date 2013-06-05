@@ -5,6 +5,7 @@ import javax.inject.Inject;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import play.Logger;
+import play.Logger.ALogger;
 
 import com.zenobase.models.Identity;
 import com.zenobase.models.User;
@@ -13,6 +14,7 @@ public class QuotaManager {
 
 	private static final int DEFAULT_QUOTA = 1000;
 
+	private final ALogger log = Logger.of("quota");
 	private final UserRepository users;
 	private final CommandRepository commands;
 
@@ -24,8 +26,8 @@ public class QuotaManager {
 
 	public void spend(Identity principal, int cost) {
 		Quota quota = getQuota(principal);
-		Logger.debug("Quota remaining: " + quota.getRemaining() +  ", required: " + cost);
 		if (quota.getRemaining() < cost) {
+			log.warn(principal + " has " + quota.getRemaining() +  " but needs " + cost);
 			throw new QuotaException(quota.getRemaining(), cost);
 		}
 	}
