@@ -11,6 +11,7 @@ import org.junit.Test;
 import org.mockito.Matchers;
 import play.mvc.Result;
 
+import com.zenobase.commands.ChangeQuotaCommand;
 import com.zenobase.commands.ChangeUserEmailCommand;
 import com.zenobase.commands.ChangeUserVerifiedCommand;
 import com.zenobase.commands.CompoundCommand;
@@ -161,6 +162,25 @@ public class UserControllerHttpPostTest extends UserControllerTestSupport {
 		Result result = call(user.getName(), new UpdateUserForm(Boolean.TRUE, key.getKey()).toJson());
 		assertThat(result).hasStatus(BAD_REQUEST);
 		verifyZeroInteractions(dispatcher);
+	}
+
+	@Test
+	public void testUpdateQuota() {
+		String commandId = Generator.id();
+		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
+		when(users.find(user.getName())).thenReturn(user);
+		when(users.isSuperuser(user.asIdentity())).thenReturn(true);
+		when(dispatcher.dispatch(any(ChangeQuotaCommand.class))).thenReturn(commandId);
+		Result result = call(user.getName(), new UpdateUserForm(50000).toJson());
+		assertThat(result).hasStatus(NO_CONTENT).hasHeader(COMMAND_ID, commandId).isEmpty();
+	}
+
+	@Test
+	public void testUpdateQuotaForbidden() {
+		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
+		when(users.find(user.getName())).thenReturn(user);
+		Result result = call(user.getName(), new UpdateUserForm(50000).toJson());
+		assertThat(result).hasStatus(FORBIDDEN).isEmpty();
 	}
 
 	@Test

@@ -8,6 +8,7 @@ import play.mvc.Result;
 import play.mvc.With;
 
 import com.zenobase.actions.Timed;
+import com.zenobase.commands.ChangeQuotaCommand;
 import com.zenobase.commands.ChangeUserEmailCommand;
 import com.zenobase.commands.ChangeUserPasswordCommand;
 import com.zenobase.commands.ChangeUserVerifiedCommand;
@@ -70,6 +71,9 @@ public class UserController extends ControllerSupport {
     	if (form.isVerified()) {
     		return updateVerified(form, user);
     	}
+    	if (form.getQuota() != null) {
+    		return updateQuota(form, user);
+    	}
     	return badRequest("invalid update request");
 	}
 
@@ -128,6 +132,19 @@ public class UserController extends ControllerSupport {
 			return badRequest("invalid key");
 		}
 		String commandId = dispatcher.dispatch(new ChangeUserVerifiedCommand(user.asIdentity(), user.getName(), true));
+		response().setHeader(COMMAND_ID, commandId);
+		return noContent();
+	}
+
+	private Result updateQuota(UpdateUserForm form, User user) {
+		Authorization auth = getCurrentAuthorization();
+    	if (auth == null) {
+    		return unauthorized();
+    	}
+    	if (!users.isSuperuser(auth.getPrincipal())) {
+    		return forbidden();
+    	}
+		String commandId = dispatcher.dispatch(new ChangeQuotaCommand(auth.getPrincipal(), user.getName(), user.getQuota(), form.getQuota()));
 		response().setHeader(COMMAND_ID, commandId);
 		return noContent();
 	}

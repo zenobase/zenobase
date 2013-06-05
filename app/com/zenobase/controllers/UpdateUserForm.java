@@ -4,6 +4,7 @@ import org.codehaus.jackson.node.ObjectNode;
 
 import com.zenobase.json.BooleanField;
 import com.zenobase.json.DomainNode;
+import com.zenobase.json.IntegerField;
 import com.zenobase.json.TokenField;
 
 public class UpdateUserForm extends DomainNode {
@@ -13,6 +14,7 @@ public class UpdateUserForm extends DomainNode {
 	private static final TokenField PASSWORD = new TokenField("password");
 	private static final TokenField KEY = new TokenField("key");
 	private static final TokenField EXPIRES = new TokenField("expires");
+	private static final IntegerField QUOTA = new IntegerField("quota");
 
 	public UpdateUserForm(ObjectNode node) {
 		super(node);
@@ -33,6 +35,10 @@ public class UpdateUserForm extends DomainNode {
 		setValue(EXPIRES, expires);
 	}
 
+	UpdateUserForm(Integer quota) {
+		setValue(QUOTA, quota);
+	}
+
 	public String getEmail() {
 		return getValue(EMAIL);
 	}
@@ -51,5 +57,9 @@ public class UpdateUserForm extends DomainNode {
 
 	public String getExpires() {
 		return getValue(EXPIRES);
+	}
+
+	public Integer getQuota() {
+		return getValue(QUOTA);
 	}
 }
