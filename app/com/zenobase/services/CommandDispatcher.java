@@ -1,5 +1,6 @@
 package com.zenobase.services;
 
+import org.joda.time.DateTime;
 import play.Logger;
 import play.Logger.ALogger;
 import com.google.inject.Inject;
@@ -24,7 +25,7 @@ public class CommandDispatcher {
 
 	public String dispatch(Command command) {
 		log.info(String.format("%s %s", command.getPrincipal(), command.toString()));
-		if (command.getCost() > 0) {
+		if (command.getCost() > 0 && isCurrentMonth(command.getTimestamp())) {
 			quotas.spend(command.getPrincipal(), command.getCost());
 		}
 		if (command instanceof CompoundCommand) {
@@ -35,6 +36,10 @@ public class CommandDispatcher {
 		}
 		repository.put(command);
 		return command.getId();
+	}
+
+	private static boolean isCurrentMonth(DateTime time) {
+		return time.getMonthOfYear() == DateTime.now().getMonthOfYear();
 	}
 
 	private void dispatch(CompoundCommand command) {
