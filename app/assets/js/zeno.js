@@ -2729,7 +2729,9 @@
 					}
 				})
 				.error(function(response, status) {
-					if (status < 500) {
+					if (status == 403) {
+						$scope.alert.show('Couldn\'t refresh task. Insufficient quota?', 'alert-error');
+					} else if (status < 500) {
 						$scope.alert.show('Couldn\'t refresh task.', 'alert-error');
 					} else {
 						$scope.alert.show('Couldn\'t refresh task. Try again later or contact support.', 'alert-error');
@@ -2770,12 +2772,12 @@
 			$scope.alert.clear();
 			$http.post('/tasks/', $scope.data())
 				.success(function(response, status, headers) {
+					$scope.closeDialog();
 					var location = headers('Location');
 					console.assert(status === 201, status);
 					console.assert(location, 'missing location header');
 					var taskId = location.replace(/.+\//, '');
 					tasks.refresh($scope, taskId, function() {
-						$scope.closeDialog();
 						$scope.refresh();
 					})
 				})
