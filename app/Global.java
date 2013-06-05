@@ -18,6 +18,7 @@ import com.google.inject.multibindings.Multibinder;
 import com.google.inject.name.Names;
 
 import com.zenobase.actions.Canonical;
+import com.zenobase.commands.ChangeQuotaCommand;
 import com.zenobase.commands.ChangeUserEmailCommand;
 import com.zenobase.commands.ChangeUserPasswordCommand;
 import com.zenobase.commands.ChangeUserVerifiedCommand;
@@ -142,6 +143,7 @@ public class Global extends GlobalSettings {
 				parsers.addBinding().to(SuspendUserCommand.Parser.class);
 				parsers.addBinding().to(ChangeUserPasswordCommand.Parser.class);
 				parsers.addBinding().to(ChangeUserVerifiedCommand.Parser.class);
+				parsers.addBinding().to(ChangeQuotaCommand.Parser.class);
 				parsers.addBinding().to(CreateTaskCommand.Parser.class);
 				parsers.addBinding().to(UpdateTaskCommand.Parser.class);
 				parsers.addBinding().to(DeleteTaskCommand.Parser.class);
@@ -161,8 +163,9 @@ public class Global extends GlobalSettings {
 				handlers.addBinding().to(DeleteUserCommand.Handler.class);
 				handlers.addBinding().to(ChangeUserEmailCommand.Handler.class);
 				handlers.addBinding().to(SuspendUserCommand.Handler.class);
-				handlers.addBinding().to(ChangeUserVerifiedCommand.Handler.class);
 				handlers.addBinding().to(ChangeUserPasswordCommand.Handler.class);
+				handlers.addBinding().to(ChangeUserVerifiedCommand.Handler.class);
+				handlers.addBinding().to(ChangeQuotaCommand.Handler.class);
 				handlers.addBinding().to(CreateTaskCommand.Handler.class);
 				handlers.addBinding().to(UpdateTaskCommand.Handler.class);
 				handlers.addBinding().to(DeleteTaskCommand.Handler.class);
