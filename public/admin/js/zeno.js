@@ -181,7 +181,6 @@
 
 	app.controller('admin.EditQuotaDialogController', ['$scope', '$http', 'delay', function($scope, $http, delay) {
 		$scope.init = function() {
-			console.log('init');
 			$scope.message = '';
 			$scope.quota = $scope.selected ? $scope.selected.quota : '';
 		};
