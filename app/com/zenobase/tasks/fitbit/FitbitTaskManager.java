@@ -37,6 +37,7 @@ public class FitbitTaskManager extends FitbitTaskManagerSupport {
 	public FitbitTask newTask(String bucketId, Identity principal, ObjectNode settings) {
 		FitbitTask task = super.newTask(bucketId, principal, settings).as(FitbitTask.class);
 		task.setTag(Objects.firstNonNull(settings.path("tag").getTextValue(), "steps"));
+		task.setMarker(parseMarker(settings.path("marker").getTextValue()).toString());
 		return task;
 	}
 

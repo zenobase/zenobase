@@ -48,7 +48,7 @@ public class WithingsTaskManager extends OAuthTaskManager {
 		return task;
 	}
 
-	private String parseMarker(String marker) {
+	private static String parseMarker(String marker) {
 		return marker != null ? Long.toString(DateTime.parse(marker).getMillis() / 1000) : null;
 	}
 

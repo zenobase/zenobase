@@ -5,6 +5,7 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.codehaus.jackson.node.ObjectNode;
 import org.joda.time.Interval;
 import org.joda.time.LocalDate;
 import org.scribe.model.OAuthRequest;
@@ -16,7 +17,9 @@ import com.google.common.collect.Lists;
 
 import com.zenobase.commands.Command;
 import com.zenobase.models.Event;
+import com.zenobase.models.Identity;
 import com.zenobase.tasks.InvalidTokenException;
+import com.zenobase.tasks.OAuthTask;
 import com.zenobase.tasks.Task;
 
 public class FitbitIntradayTaskManager extends FitbitTaskManagerSupport {
@@ -29,6 +32,13 @@ public class FitbitIntradayTaskManager extends FitbitTaskManagerSupport {
 	@Override
 	public String getType() {
 		return FitbitIntradayTask.TYPE;
+	}
+
+	@Override
+	public OAuthTask newTask(String bucketId, Identity principal, ObjectNode settings) {
+		OAuthTask task = super.newTask(bucketId, principal, settings);
+		task.setMarker(parseMarker(settings.path("marker").getTextValue()).toString());
+		return task;
 	}
 
 	@Override

@@ -35,7 +35,11 @@ public abstract class FitbitTaskManagerSupport extends OAuthTaskManager {
 	}
 
 	protected LocalDate getFromDate(Task task) {
-		return task.getMarker() != null ? LocalDate.parse(task.getMarker()) : LocalDate.now().minusMonths(1);
+		return LocalDate.parse(task.getMarker());
+	}
+
+	protected LocalDate parseMarker(String marker) {
+		return marker != null ? DateTime.parse(marker).toLocalDate() : LocalDate.now().withDayOfMonth(1);
 	}
 
 	protected FitbitProfileResult getProfile(OAuthTask task, OAuthService service) {

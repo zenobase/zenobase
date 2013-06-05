@@ -2792,7 +2792,8 @@
 
 		$scope.init = function() {
 			$scope.settings = $scope.$parent.$parent.settings = {
-					tag : 'steps'
+					tag : 'steps',
+					marker : new Date(moment().utc().startOf('month').valueOf())
 			};
 		};
 
@@ -2802,7 +2803,9 @@
 	app.controller('FitbitIntradaySettingsController', ['$scope', function($scope) {
 
 		$scope.init = function() {
-			$scope.settings = $scope.$parent.$parent.settings = { };
+			$scope.settings = $scope.$parent.$parent.settings = {
+					marker : new Date(moment().utc().startOf('month').valueOf())
+			};
 		};
 
 		$scope.init();
@@ -2811,7 +2814,9 @@
 	app.controller('BodyMediaSettingsController', ['$scope', function($scope) {
 
 		$scope.init = function() {
-			$scope.settings = $scope.$parent.$parent.settings = { };
+			$scope.settings = $scope.$parent.$parent.settings = {
+					marker : new Date(moment().utc().startOf('month').valueOf())
+			};
 		};
 
 		$scope.init();
@@ -2820,7 +2825,9 @@
 	app.controller('FoursquareSettingsController', ['$scope', function($scope) {
 
 		$scope.init = function() {
-			$scope.settings = $scope.$parent.$parent.settings = { };
+			$scope.settings = $scope.$parent.$parent.settings = {
+					marker : new Date(moment().utc().startOf('month').valueOf())
+			};
 		};
 
 		$scope.init();
@@ -2829,7 +2836,9 @@
 	app.controller('NetatmoSettingsController', ['$scope', function($scope) {
 
 		$scope.init = function() {
-			$scope.settings = $scope.$parent.$parent.settings = { };
+			$scope.settings = $scope.$parent.$parent.settings = {
+					marker : new Date(moment().utc().startOf('month').valueOf())
+			};
 		};
 
 		$scope.init();

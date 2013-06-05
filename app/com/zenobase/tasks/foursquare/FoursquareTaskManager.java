@@ -23,6 +23,7 @@ import com.zenobase.commands.CompoundCommand;
 import com.zenobase.commands.CreateEventCommand;
 import com.zenobase.commands.UpdateTaskCommand;
 import com.zenobase.models.Event;
+import com.zenobase.models.Identity;
 import com.zenobase.tasks.InvalidTokenException;
 import com.zenobase.tasks.OAuthTask;
 import com.zenobase.tasks.OAuthTaskManager;
@@ -41,6 +42,13 @@ public class FoursquareTaskManager extends OAuthTaskManager {
 	@Override
 	public String getType() {
 		return FoursquareTask.TYPE;
+	}
+
+	@Override
+	public OAuthTask newTask(String bucketId, Identity principal, ObjectNode settings) {
+		OAuthTask task = super.newTask(bucketId, principal, settings);
+		task.setMarker(formatMarker(parseMarker(settings.path("marker").getTextValue())));
+		return task;
 	}
 
 	@Override
@@ -91,8 +99,12 @@ public class FoursquareTaskManager extends OAuthTaskManager {
 		return createCommand(task, marker, events);
 	}
 
+	static DateTime parseMarker(String marker) {
+		return marker != null ? DateTime.parse(marker) : null;
+	}
+
 	static String formatMarker(DateTime time) {
-		return Long.toString(time.getMillis() / 1000);
+		return time != null ? Long.toString(time.getMillis() / 1000) : null;
 	}
 
 	private boolean execute(FoursquareTask task, String marker, int offset, List<Event> events) {

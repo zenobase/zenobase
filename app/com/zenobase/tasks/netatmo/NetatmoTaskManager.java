@@ -24,6 +24,7 @@ import com.zenobase.commands.CompoundCommand;
 import com.zenobase.commands.CreateEventCommand;
 import com.zenobase.commands.UpdateTaskCommand;
 import com.zenobase.models.Event;
+import com.zenobase.models.Identity;
 import com.zenobase.oauth.OAuth2Token;
 import com.zenobase.oauth.OAuth2TokenExtractor;
 import com.zenobase.tasks.InvalidTokenException;
@@ -41,6 +42,13 @@ public class NetatmoTaskManager extends OAuthTaskManager {
 	@Override
 	public String getType() {
 		return NetatmoTask.TYPE;
+	}
+
+	@Override
+	public OAuthTask newTask(String bucketId, Identity principal, ObjectNode settings) {
+		OAuthTask task = super.newTask(bucketId, principal, settings);
+		task.setMarker(formatMarker(parseMarker(settings.path("marker").getTextValue())));
+		return task;
 	}
 
 	@Override
@@ -112,8 +120,12 @@ public class NetatmoTaskManager extends OAuthTaskManager {
 		return createCommand(task, events, token);
 	}
 
+	static DateTime parseMarker(String marker) {
+		return marker != null ? DateTime.parse(marker) : null;
+	}
+
 	static String formatMarker(DateTime time) {
-		return Long.toString(time.getMillis() / 1000);
+		return time != null ? Long.toString(time.getMillis() / 1000) : null;
 	}
 
 	private List<Device> getDevices(NetatmoTask task) {
