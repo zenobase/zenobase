@@ -101,10 +101,11 @@ public class CommandRepository {
 
 	public int getTotalCost(Identity principal, DateTime since) {
 		final String facetId = "statisticalFacet";
-		SearchResponse response = index.search(new SearchSourceBuilder().size(0)
-			.filter(FilterBuilders.termFilter(Command.PRINCIPAL.getName(), principal.getId()))
-			.filter(FilterBuilders.rangeFilter(Command.TIMESTAMP.getName()).from(since.getMillis()))
-			.facet(FacetBuilders.statisticalFacet(facetId).field(Command.COST.getName())));
+		SearchResponse response = index.search(new SearchSourceBuilder().size(10)
+			.facet(FacetBuilders.statisticalFacet(facetId).field(Command.COST.getName())
+				.facetFilter(FilterBuilders.boolFilter().must(
+					FilterBuilders.termFilter(Command.PRINCIPAL.getName(), principal.getId()),
+					FilterBuilders.rangeFilter(Command.TIMESTAMP.getName()).from(since.getMillis())))));
 		return (int) ((StatisticalFacet) response.getFacets().facet(facetId)).getTotal();
 	}
 }
