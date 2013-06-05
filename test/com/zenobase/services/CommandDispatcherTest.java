@@ -2,6 +2,7 @@ package com.zenobase.services;
 
 import static org.mockito.Mockito.*;
 
+import org.joda.time.DateTime;
 import org.junit.Test;
 
 import com.zenobase.commands.Command;
@@ -25,7 +26,7 @@ public class CommandDispatcherTest {
 
 		Command c1 = new TestCommand(TESTER, "do a bit");
 		Command c2 = new TestCommand(TESTER, "do more");
-		Command c3 = new TestCommand(TESTER, "do most");
+		Command c3 = new TestCommand(TESTER, "do most").setTimestamp(DateTime.now().minusMonths(1));
 
 		dispatcher.dispatch(c1);
 		dispatcher.dispatch(c2);
@@ -39,7 +40,7 @@ public class CommandDispatcherTest {
 		verify(handlers).execute(c2);
 		verify(handlers).execute(c3);
 
-		verify(quotas, times(3)).spend(TESTER, 1);
+		verify(quotas, times(2)).spend(TESTER, 1);
 	}
 
 	@Test

@@ -1,6 +1,7 @@
 package com.zenobase.commands;
 
 import org.codehaus.jackson.node.ObjectNode;
+import org.joda.time.DateTime;
 import com.google.common.base.Preconditions;
 
 import com.zenobase.json.TokenField;
@@ -24,6 +25,11 @@ public class TestCommand extends Command {
 
 	public String getTag() {
 		return getParameter(TAG);
+	}
+
+	public TestCommand setTimestamp(DateTime timestamp) {
+		setValue(TIMESTAMP, timestamp);
+		return this;
 	}
 
 	@Override
