@@ -46,7 +46,7 @@ public class Index {
 			.put("auto_expand_replicas", replicas == Integer.MAX_VALUE ? "0-all" : "0-" + replicas)
 			.build();
 		CreateIndexResponse response = client.admin().indices().prepareCreate(indexName).setSettings(settings).execute().actionGet();
-		Preconditions.checkState(response.acknowledged(), "Expected acknowledgement of index creation: %s", indexName);
+		Preconditions.checkState(response.isAcknowledged(), "Expected acknowledgement of index creation: %s", indexName);
 		Preconditions.checkState(new Cluster(client).isReady(), "Expected at least one shard in cluster");
 	}
 
