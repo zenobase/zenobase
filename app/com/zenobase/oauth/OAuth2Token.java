@@ -25,6 +25,6 @@ public class OAuth2Token extends Token {
 	}
 
 	public boolean isExpired() {
-		return expires != null && DateTime.now().isAfter(expires);
+		return expires != null && DateTime.now().isAfter(expires); // TODO add a few minutes, to be safe?
 	}
 }
