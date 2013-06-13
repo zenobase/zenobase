@@ -25,7 +25,7 @@ import com.zenobase.commands.CreateEventCommand;
 import com.zenobase.commands.UpdateTaskCommand;
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
-import com.zenobase.oauth.OAuth2Token;
+import com.zenobase.oauth.ExpiringToken;
 import com.zenobase.oauth.OAuth2TokenExtractor;
 import com.zenobase.tasks.InvalidTokenException;
 import com.zenobase.tasks.OAuthTask;
@@ -74,7 +74,7 @@ public class NetatmoTaskManager extends OAuthTaskManager {
 				task.getType(), task.getId(), config));
 			return null;
 		}
-		OAuth2Token token = (OAuth2Token) getAccessToken(task, code);
+		ExpiringToken token = (ExpiringToken) getAccessToken(task, code);
 		return UpdateTaskCommand.builder(task)
 			.set(Task.AUTHORIZATION_URL, task.getAuthorizationUrl(), null)
 			.with(Task.CREDENTIALS)
@@ -90,7 +90,7 @@ public class NetatmoTaskManager extends OAuthTaskManager {
 	private void reauthorize(OAuthTask task) {
 		OAuthRequest request = new OAuthRequest(Verb.POST, "http://api.netatmo.net/oauth2/token");
 		request.addBodyParameter("grant_type", "refresh_token");
-		request.addBodyParameter("refresh_token", ((OAuth2Token) task.getToken()).getRefreshToken());
+		request.addBodyParameter("refresh_token", ((ExpiringToken) task.getToken()).getRefreshToken());
 		request.addBodyParameter(OAuthConstants.CLIENT_ID, apiKey);
 		request.addBodyParameter(OAuthConstants.CLIENT_SECRET, apiSecret);
 		Response response = send(request);
@@ -109,7 +109,7 @@ public class NetatmoTaskManager extends OAuthTaskManager {
 
 	private Command execute(NetatmoTask task) {
 		Token token = task.getToken();
-		if (((OAuth2Token) task.getToken()).isExpired()) {
+		if (((ExpiringToken) task.getToken()).isExpired()) {
 			reauthorize(task);
 		}
 		List<Event> events = Lists.newArrayList();

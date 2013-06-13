@@ -4,6 +4,7 @@ import org.codehaus.jackson.node.ObjectNode;
 import org.scribe.model.Token;
 
 import com.zenobase.models.Identity;
+import com.zenobase.oauth.ExpiringToken;
 import com.zenobase.tasks.OAuthTask;
 
 public class BodyMediaTask extends OAuthTask {
@@ -17,6 +18,12 @@ public class BodyMediaTask extends OAuthTask {
 	BodyMediaTask(String bucketId, Identity principal, Token token, String marker) {
 		super(TYPE, bucketId, principal, token);
 		setMarker(marker);
+	}
+
+	public boolean isExpired() {
+		Token token = getToken();
+		return token instanceof ExpiringToken &&
+			((ExpiringToken) token).isExpired();
 	}
 
 	@Override

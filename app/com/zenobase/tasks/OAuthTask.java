@@ -4,14 +4,13 @@ import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.node.NullNode;
 import org.codehaus.jackson.node.ObjectNode;
 import org.scribe.model.Token;
-import com.google.common.base.Strings;
 
 import com.zenobase.json.DateTimeField;
 import com.zenobase.json.Field;
 import com.zenobase.json.Nodes;
 import com.zenobase.json.TokenField;
 import com.zenobase.models.Identity;
-import com.zenobase.oauth.OAuth2Token;
+import com.zenobase.oauth.ExpiringToken;
 
 public class OAuthTask extends Task {
 
@@ -55,14 +54,13 @@ public class OAuthTask extends Task {
 		}
 
 		private Token getToken(ObjectNode node) {
-			return isOAuth2(node)
-				? new OAuth2Token(VALUE.getValue(node), REFRESH.getValue(node), EXPIRES.getValue(node))
+			return isExpiring(node)
+				? new ExpiringToken(VALUE.getValue(node), SECRET.getValue(node), EXPIRES.getValue(node), REFRESH.getValue(node))
 				: new Token(VALUE.getValue(node), SECRET.getValue(node));
 		}
 
-		private boolean isOAuth2(ObjectNode node) {
-			return Strings.isNullOrEmpty(SECRET.getValue(node))
-				&& REFRESH.getValue(node) != null;
+		private boolean isExpiring(ObjectNode node) {
+			return EXPIRES.getValue(node) != null;
 		}
 
 		@Override
@@ -73,9 +71,9 @@ public class OAuthTask extends Task {
 			ObjectNode node = Nodes.newObject();
 			VALUE.setValue(node, value.getToken());
 			SECRET.setValue(node, value.getSecret());
-			if (value instanceof OAuth2Token) {
-				REFRESH.setValue(node, ((OAuth2Token) value).getRefreshToken());
-				EXPIRES.setValue(node, ((OAuth2Token) value).getExpires());
+			if (value instanceof ExpiringToken) {
+				REFRESH.setValue(node, ((ExpiringToken) value).getRefreshToken());
+				EXPIRES.setValue(node, ((ExpiringToken) value).getExpires());
 			}
 			return node;
 		}

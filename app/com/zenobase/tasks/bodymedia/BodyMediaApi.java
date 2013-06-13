@@ -1,6 +1,7 @@
 package com.zenobase.tasks.bodymedia;
 
 import org.scribe.builder.api.DefaultApi10a;
+import org.scribe.extractors.AccessTokenExtractor;
 import org.scribe.model.OAuthConfig;
 import org.scribe.model.Token;
 import org.scribe.oauth.OAuth10aServiceImpl;
@@ -35,6 +36,11 @@ public class BodyMediaApi extends DefaultApi10a {
 	@Override
 	public String getAccessTokenEndpoint() {
 		return String.format("%s/access_token?api_key=%s", BASE, apiKey);
+	}
+
+	@Override
+	public AccessTokenExtractor getAccessTokenExtractor() {
+		return new BodyMediaTokenExtractor();
 	}
 
 	@Override

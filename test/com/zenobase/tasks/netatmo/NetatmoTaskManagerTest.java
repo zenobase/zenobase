@@ -20,7 +20,7 @@ import com.zenobase.commands.UpdateTaskCommand;
 import com.zenobase.common.Generator;
 import com.zenobase.json.Nodes;
 import com.zenobase.models.Identity;
-import com.zenobase.oauth.OAuth2Token;
+import com.zenobase.oauth.ExpiringToken;
 import com.zenobase.tasks.OAuthTask;
 import com.zenobase.tasks.Task.Status;
 
@@ -39,7 +39,7 @@ public class NetatmoTaskManagerTest {
 		ObjectNode settings = Nodes.newObject();
 
 		Token requestToken = Token.empty();
-		Token accessToken = new OAuth2Token("fee", "fie", DateTime.now().plusYears(1));
+		Token accessToken = new ExpiringToken("fee", "", DateTime.now().plusYears(1), "fie");
 		String authorizationUrl = "localhost";
 
 		when(oauth.getAuthorizationUrl(requestToken)).thenReturn(authorizationUrl);

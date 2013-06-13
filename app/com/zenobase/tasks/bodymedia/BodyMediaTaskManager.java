@@ -10,6 +10,7 @@ import org.joda.time.LocalDate;
 import org.scribe.model.OAuthRequest;
 import org.scribe.model.Response;
 import org.scribe.model.Verb;
+import play.Logger;
 import com.google.common.base.Preconditions;
 
 import com.zenobase.commands.Command;
@@ -56,6 +57,10 @@ public class BodyMediaTaskManager extends OAuthTaskManager {
 	}
 
 	private Command execute(BodyMediaTask task) {
+		if (task.isExpired()) {
+			Logger.info("Refreshing token...");
+			task.setToken(getAccessToken(task, ""));
+		}
 		OAuthRequest request = createRequest(task);
 		getService(task).signRequest(task.getToken(), request);
 		Response response = request.send();

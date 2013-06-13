@@ -12,12 +12,12 @@ import com.zenobase.json.Nodes;
 public class OAuth2TokenExtractor implements AccessTokenExtractor {
 
 	@Override
-	public OAuth2Token extract(String response) {
+	public ExpiringToken extract(String response) {
 		ObjectNode node = Nodes.readObject(response);
 		String token = node.path(OAuthConstants.ACCESS_TOKEN).getTextValue();
 		String refreshToken = node.path("refresh_token").getTextValue();
 		DateTime expires = getDateTime(node.path("expires_in"));
-		return new OAuth2Token(token, refreshToken, expires);
+		return new ExpiringToken(token, "", expires, refreshToken);
 	}
 
 	private DateTime getDateTime(JsonNode node) {

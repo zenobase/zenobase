@@ -8,7 +8,7 @@ public class OAuth2TokenExtractorTest {
 
 	@Test
 	public void testSimpleToken() {
-		OAuth2Token token = new OAuth2TokenExtractor().extract("{ \"access_token\" : \"e16b2f39\" }");
+		ExpiringToken token = new OAuth2TokenExtractor().extract("{ \"access_token\" : \"e16b2f39\" }");
 		assertThat(token.getToken()).as("token").isEqualTo("e16b2f39");
 		assertThat(token.getSecret()).as("secret").isEmpty();
 		assertThat(token.getRefreshToken()).as("refresh token").isNull();
@@ -18,7 +18,7 @@ public class OAuth2TokenExtractorTest {
 
 	@Test
 	public void testExpiringToken() {
-		OAuth2Token token = new OAuth2TokenExtractor().extract("{ \"access_token\" : \"e16b2f39\", \"refresh_token\" : \"888909ec\", \"expires_in\" : 10800 }");
+		ExpiringToken token = new OAuth2TokenExtractor().extract("{ \"access_token\" : \"e16b2f39\", \"refresh_token\" : \"888909ec\", \"expires_in\" : 10800 }");
 		assertThat(token.getToken()).as("token").isEqualTo("e16b2f39");
 		assertThat(token.getSecret()).as("secret").isEmpty();
 		assertThat(token.getRefreshToken()).as("refresh token").isEqualTo("888909ec");
