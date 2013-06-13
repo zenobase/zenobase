@@ -2,8 +2,7 @@ package com.zenobase.testing;
 
 import static com.zenobase.testing.WebElementAssert.assertThat;
 import static org.fest.assertions.Assertions.assertThat;
-import static play.test.Helpers.running;
-import static play.test.Helpers.testServer;
+import static play.test.Helpers.*;
 
 import java.io.IOException;
 import java.util.List;
