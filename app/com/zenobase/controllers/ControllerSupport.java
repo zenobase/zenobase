@@ -2,6 +2,7 @@ package com.zenobase.controllers;
 
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.node.ObjectNode;
+import org.elasticsearch.common.base.Objects;
 import play.mvc.Controller;
 import play.mvc.With;
 
@@ -58,6 +59,6 @@ public abstract class ControllerSupport extends Controller implements CustomHead
 	}
 
 	private static Status result(int status, String message) {
-		return status(status, Nodes.newObject("message", message));
+		return status(status, Nodes.newObject("message", Objects.firstNonNull(message, "?")));
 	}
 }
