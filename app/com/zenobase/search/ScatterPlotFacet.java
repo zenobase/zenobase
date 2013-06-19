@@ -20,7 +20,7 @@ import com.zenobase.json.MeasurementField;
 import com.zenobase.json.Nodes;
 import com.zenobase.models.Event;
 
-public class ScatterPlotWidget extends Facet {
+public class ScatterPlotFacet extends Facet {
 
 	public static final String TYPE = "scatterplot";
 
@@ -31,7 +31,7 @@ public class ScatterPlotWidget extends Facet {
 	private final Unit<?> xUnit, yUnit;
 	private final Statistic statistic;
 
-	public ScatterPlotWidget(String id, String keyField, String xField, Unit<?> xUnit, String yField, Unit<?> yUnit, String interval, DateTimeZone timezone, Statistic statistic) {
+	public ScatterPlotFacet(String id, String keyField, String xField, Unit<?> xUnit, String yField, Unit<?> yUnit, String interval, DateTimeZone timezone, Statistic statistic) {
 		super(id);
 		this.keyField = keyField;
 		this.xField = xField;
@@ -148,7 +148,7 @@ public class ScatterPlotWidget extends Facet {
 				String xUnit = options.get("unit_x");
 				String yUnit = options.get("unit_y");
 				String statistic = options.get("statistic", String.class, "avg");
-				return new ScatterPlotWidget(
+				return new ScatterPlotFacet(
 					options.get("id"),
 					Event.TIMESTAMP.getName(),
 					options.get("field_x"),

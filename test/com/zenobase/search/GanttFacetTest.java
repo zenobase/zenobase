@@ -40,11 +40,11 @@ public class GanttFacetTest extends FacetTestSupport {
 		addEvent(e3);
 		addEvent(e4);
 		addEvent(e5);
-		addFacet("id:%s,type:%s,field:%s", WIDGET_ID, GanttFacet.TYPE, Event.TAG);
+		addFacet("id:%s,type:%s,field:%s", FACET_ID, GanttFacet.TYPE, Event.TAG);
 
 		ObjectNode result = execute();
 		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(5);
-		NodeAssert node = assertThat(result).path(WIDGET_ID).hasSize(2);
+		NodeAssert node = assertThat(result).path(FACET_ID).hasSize(2);
 		node.path(0).path("label").isEqualTo(e1.getValue(Event.TAG));
 		node.path(0).path("count").isEqualTo(2);
 		node.path(0).path("first").isEqualTo(e1.getValue(Event.TIMESTAMP).toString());
@@ -58,10 +58,10 @@ public class GanttFacetTest extends FacetTestSupport {
 	@Test
 	public void testEmpty() {
 
-		addFacet("id:%s,type:%s,field:%s", WIDGET_ID, GanttFacet.TYPE, Event.TAG);
+		addFacet("id:%s,type:%s,field:%s", FACET_ID, GanttFacet.TYPE, Event.TAG);
 
 		ObjectNode result = execute();
 		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(0);
-		assertThat(result).path(WIDGET_ID).hasSize(0);
+		assertThat(result).path(FACET_ID).hasSize(0);
 	}
 }

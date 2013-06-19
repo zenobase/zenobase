@@ -45,10 +45,10 @@ public abstract class SearchBuilderSupport {
 			Logger.warn("Facet builder not registered: " + type);
 			return this;
 		}
-		return addWidget(builder.build(options));
+		return addFacet(builder.build(options));
 	}
 
-	public SearchBuilderSupport addWidget(Facet facet) {
+	public SearchBuilderSupport addFacet(Facet facet) {
 		facets.add(facet);
 		return this;
 	}

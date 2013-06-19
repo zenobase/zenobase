@@ -11,7 +11,7 @@ public class EventSearchTest {
 	}
 
 	@Test
-	public void testUnsupportedWidget() {
+	public void testUnsupportedFacet() {
 		new EventSearchBuilder().addFacet("type:xxx");
 	}
 

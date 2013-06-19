@@ -50,7 +50,7 @@ final class EventChunks extends JsonChunks {
 	private static Search createSearch(String[] filters, int offset) {
 		ListFacet facet = new ListFacet(EventListController.EVENTS.getName(),
 			offset, LIMIT, Event.TIMESTAMP.getName(), SortOrder.ASC);
-		return new EventSearchBuilder().addConstraints(filters).addWidget(facet).build();
+		return new EventSearchBuilder().addConstraints(filters).addFacet(facet).build();
 	}
 
 	private static int getTotal(ObjectNode result) {

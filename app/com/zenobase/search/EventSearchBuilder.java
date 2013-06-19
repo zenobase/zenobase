@@ -14,11 +14,11 @@ public class EventSearchBuilder extends SearchBuilderSupport {
 		.put(RatingsFacet.TYPE, RatingsFacet.builder())
 		.put(HistogramFacet.TYPE, HistogramFacet.builder())
 		.put(TimelineFacet.TYPE, TimelineFacet.builder())
-		.put(TimeHistogramWidget.TYPE, TimeHistogramWidget.builder())
+		.put(TimeHistogramFacet.TYPE, TimeHistogramFacet.builder())
 		.put(MultiplotFacet.TYPE, MultiplotFacet.builder())
 		.put(ScoreboardFacet.TYPE, ScoreboardFacet.builder())
 		.put(MapFacet.TYPE, MapFacet.builder())
-		.put(ScatterPlotWidget.TYPE, ScatterPlotWidget.builder())
+		.put(ScatterPlotFacet.TYPE, ScatterPlotFacet.builder())
 		.build();
 
 	private static final ImmutableMultimap<String, ConstraintBuilder> constraintBuilders = Event.getSchema().getConstraintBuilders();

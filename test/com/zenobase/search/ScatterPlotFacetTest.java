@@ -13,7 +13,7 @@ import org.junit.Test;
 import com.zenobase.models.Event;
 import com.zenobase.testing.NodeAssert;
 
-public class ScatterPlotWidgetTest extends FacetTestSupport {
+public class ScatterPlotFacetTest extends FacetTestSupport {
 
 	private Event e1, e2, e3;
 
@@ -40,11 +40,11 @@ public class ScatterPlotWidgetTest extends FacetTestSupport {
 		addEvent(e1);
 		addEvent(e2);
 		addEvent(e3);
-		addFacet("id:%s,type:%s,field_x:distance,unit_x:km,field_y:count,interval:day,statistic:avg", WIDGET_ID, ScatterPlotWidget.TYPE);
+		addFacet("id:%s,type:%s,field_x:distance,unit_x:km,field_y:count,interval:day,statistic:avg", FACET_ID, ScatterPlotFacet.TYPE);
 
 		ObjectNode result = execute();
 		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(3);
-		NodeAssert node = assertThat(result).path(WIDGET_ID).hasSize(2);
+		NodeAssert node = assertThat(result).path(FACET_ID).hasSize(2);
 		node.path(0).path(0).isEqualTo(5.0);
 		node.path(0).path(1).isEqualTo(3000.0);
 		node.path(1).path(0).isEqualTo(10.0);
@@ -54,10 +54,10 @@ public class ScatterPlotWidgetTest extends FacetTestSupport {
 	@Test
 	public void testEmpty() {
 
-		addFacet("id:%s,type:%s,field_x:distance,unit_x:km,field_y:duration", WIDGET_ID, ScatterPlotWidget.TYPE);
+		addFacet("id:%s,type:%s,field_x:distance,unit_x:km,field_y:duration", FACET_ID, ScatterPlotFacet.TYPE);
 
 		ObjectNode result = execute();
 		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(0);
-		assertThat(result).path(WIDGET_ID).hasSize(0);
+		assertThat(result).path(FACET_ID).hasSize(0);
 	}
 }

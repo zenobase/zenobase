@@ -19,7 +19,7 @@ import com.google.common.collect.Maps;
 import com.zenobase.json.Nodes;
 import com.zenobase.models.Event;
 
-public class TimeHistogramWidget extends Facet {
+public class TimeHistogramFacet extends Facet {
 
 	public static final String TYPE = "time_histogram";
 
@@ -27,7 +27,7 @@ public class TimeHistogramWidget extends Facet {
 	private final Interval interval;
 	private final DateTimeZone timezone;
 
-	private TimeHistogramWidget(String id, String field, Interval interval, DateTimeZone timezone) {
+	private TimeHistogramFacet(String id, String field, Interval interval, DateTimeZone timezone) {
 		super(id);
 		Preconditions.checkNotNull(field);
 		Preconditions.checkNotNull(interval);
@@ -115,7 +115,7 @@ public class TimeHistogramWidget extends Facet {
 		return new FacetBuilder() {
 			@Override
 			public Facet build(FacetOptions options) {
-				return new TimeHistogramWidget(
+				return new TimeHistogramFacet(
 					options.get("id"),
 					options.get("field", String.class, Event.TIMESTAMP.getName()),
 					Interval.valueOf(options.get("interval").toUpperCase()),

@@ -9,7 +9,7 @@ import org.junit.Test;
 import com.zenobase.models.Event;
 import com.zenobase.testing.NodeAssert;
 
-public class CountWidgetTest extends FacetTestSupport {
+public class CountFacetTest extends FacetTestSupport {
 
 	private static final String TAG_LUNCH = "lunch";
 	private static final String TAG_DINNER = "dinner";
@@ -37,11 +37,11 @@ public class CountWidgetTest extends FacetTestSupport {
 		addEvent(e1);
 		addEvent(e2);
 		addEvent(e3);
-		addFacet("id:%s,type:%s,field:%s", WIDGET_ID, CountFacet.TYPE, Event.TAG);
+		addFacet("id:%s,type:%s,field:%s", FACET_ID, CountFacet.TYPE, Event.TAG);
 
 		ObjectNode result = execute();
 		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(3);
-		NodeAssert node = assertThat(result).path(WIDGET_ID).hasSize(2);
+		NodeAssert node = assertThat(result).path(FACET_ID).hasSize(2);
 		node.path(0).path("label").isEqualTo(TAG_LUNCH);
 		node.path(0).path("count").isEqualTo(2);
 		node.path(1).path("label").isEqualTo(TAG_DINNER);
@@ -54,11 +54,11 @@ public class CountWidgetTest extends FacetTestSupport {
 		addEvent(e1);
 		addEvent(e2);
 		addEvent(e3);
-		addFacet("id:%s,type:%s,field:%s,order:%s", WIDGET_ID, CountFacet.TYPE, Event.TAG, "term");
+		addFacet("id:%s,type:%s,field:%s,order:%s", FACET_ID, CountFacet.TYPE, Event.TAG, "term");
 
 		ObjectNode result = execute();
 		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(3);
-		NodeAssert node = assertThat(result).path(WIDGET_ID).hasSize(2);
+		NodeAssert node = assertThat(result).path(FACET_ID).hasSize(2);
 		node.path(0).path("label").isEqualTo(TAG_DINNER);
 		node.path(0).path("count").isEqualTo(1);
 		node.path(1).path("label").isEqualTo(TAG_LUNCH);
@@ -71,11 +71,11 @@ public class CountWidgetTest extends FacetTestSupport {
 		addEvent(e1);
 		addEvent(e2);
 		addEvent(e3);
-		addFacet("id:%s,type:%s,field:%s,reverse:%s", WIDGET_ID, CountFacet.TYPE, Event.TAG, true);
+		addFacet("id:%s,type:%s,field:%s,reverse:%s", FACET_ID, CountFacet.TYPE, Event.TAG, true);
 
 		ObjectNode result = execute();
 		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(3);
-		NodeAssert node = assertThat(result).path(WIDGET_ID).hasSize(2);
+		NodeAssert node = assertThat(result).path(FACET_ID).hasSize(2);
 		node.path(0).path("label").isEqualTo(TAG_DINNER);
 		node.path(0).path("count").isEqualTo(1);
 		node.path(1).path("label").isEqualTo(TAG_LUNCH);
@@ -88,11 +88,11 @@ public class CountWidgetTest extends FacetTestSupport {
 		addEvent(e1);
 		addEvent(e2);
 		addEvent(e3);
-		addFacet("id:%s,type:%s,field:%s,limit:%s", WIDGET_ID, CountFacet.TYPE, Event.TAG, 1);
+		addFacet("id:%s,type:%s,field:%s,limit:%s", FACET_ID, CountFacet.TYPE, Event.TAG, 1);
 
 		ObjectNode result = execute();
 		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(3);
-		NodeAssert node = assertThat(result).path(WIDGET_ID).hasSize(2);
+		NodeAssert node = assertThat(result).path(FACET_ID).hasSize(2);
 		node.path(0).path("label").isEqualTo(TAG_LUNCH);
 		node.path(0).path("count").isEqualTo(2);
 		node.path(1).path("label").isEqualTo(CountFacet.LABEL_MORE);
@@ -105,11 +105,11 @@ public class CountWidgetTest extends FacetTestSupport {
 		addEvent(e1);
 		addEvent(e2);
 		addEvent(e3);
-		addFacet("id:%s,type:%s,field:%s,offset:%s", WIDGET_ID, CountFacet.TYPE, Event.TAG, 1);
+		addFacet("id:%s,type:%s,field:%s,offset:%s", FACET_ID, CountFacet.TYPE, Event.TAG, 1);
 
 		ObjectNode result = execute();
 		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(3);
-		NodeAssert node = assertThat(result).path(WIDGET_ID).hasSize(1);
+		NodeAssert node = assertThat(result).path(FACET_ID).hasSize(1);
 		node.path(0).path("label").isEqualTo(TAG_DINNER);
 		node.path(0).path("count").isEqualTo(1);
 	}
@@ -117,10 +117,10 @@ public class CountWidgetTest extends FacetTestSupport {
 	@Test
 	public void testEmpty() {
 
-		addFacet("id:%s,type:%s,field:%s", WIDGET_ID, CountFacet.TYPE, Event.TAG);
+		addFacet("id:%s,type:%s,field:%s", FACET_ID, CountFacet.TYPE, Event.TAG);
 
 		ObjectNode result = execute();
 		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(0);
-		assertThat(result).path(WIDGET_ID).hasSize(0);
+		assertThat(result).path(FACET_ID).hasSize(0);
 	}
 }

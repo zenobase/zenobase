@@ -10,7 +10,7 @@ import com.zenobase.models.Event;
 import com.zenobase.models.Location;
 import com.zenobase.testing.NodeAssert;
 
-public class MapWidgetTest extends FacetTestSupport {
+public class MapFacetTest extends FacetTestSupport {
 
 	private static final Location DENVER = new Location("39.75", "-104.87");
 	private static final Location LAS_VEGAS = new Location("36.08", "-115.17");
@@ -41,11 +41,11 @@ public class MapWidgetTest extends FacetTestSupport {
 		addEvent(e2);
 		addEvent(e3);
 		addEvent(e4);
-		addFacet("id:%s,type:%s,factor:%s", WIDGET_ID, MapFacet.TYPE, 0.5);
+		addFacet("id:%s,type:%s,factor:%s", FACET_ID, MapFacet.TYPE, 0.5);
 
 		ObjectNode result = execute();
 		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(4);
-		NodeAssert node = assertThat(result).path(WIDGET_ID).hasSize(2);
+		NodeAssert node = assertThat(result).path(FACET_ID).hasSize(2);
 		node.path(0).path("count").isEqualTo(2);
 		node.path(0).path("lat").isEqualTo(39.75);
 		node.path(0).path("lon").isEqualTo(-104.87);
@@ -61,11 +61,11 @@ public class MapWidgetTest extends FacetTestSupport {
 		addEvent(e2);
 		addEvent(e3);
 		addEvent(e4);
-		addFacet("id:%s,type:%s,factor:%s", WIDGET_ID, MapFacet.TYPE, 1.0);
+		addFacet("id:%s,type:%s,factor:%s", FACET_ID, MapFacet.TYPE, 1.0);
 
 		ObjectNode result = execute();
 		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(4);
-		NodeAssert node = assertThat(result).path(WIDGET_ID).hasSize(1);
+		NodeAssert node = assertThat(result).path(FACET_ID).hasSize(1);
 		node.path(0).path("count").isEqualTo(4);
 		node.path(0).path("lat").isEqualTo(37.1);
 		node.path(0).path("lon").isEqualTo(-110.51);
@@ -78,10 +78,10 @@ public class MapWidgetTest extends FacetTestSupport {
 	@Test
 	public void testEmpty() {
 
-		addFacet("id:%s,type:%s", WIDGET_ID, MapFacet.TYPE);
+		addFacet("id:%s,type:%s", FACET_ID, MapFacet.TYPE);
 
 		ObjectNode result = execute();
 		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(0);
-		assertThat(result).path(WIDGET_ID).hasSize(0);
+		assertThat(result).path(FACET_ID).hasSize(0);
 	}
 }

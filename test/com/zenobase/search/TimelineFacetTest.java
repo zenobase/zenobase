@@ -13,7 +13,7 @@ import org.junit.Test;
 import com.zenobase.models.Event;
 import com.zenobase.testing.NodeAssert;
 
-public class TimelineWidgetTest extends FacetTestSupport {
+public class TimelineFacetTest extends FacetTestSupport {
 
 	private Event first, last;
 
@@ -38,11 +38,11 @@ public class TimelineWidgetTest extends FacetTestSupport {
 
 		addEvent(first);
 		addEvent(last);
-		addFacet("id:%s,type:%s", WIDGET_ID, TimelineFacet.TYPE);
+		addFacet("id:%s,type:%s", FACET_ID, TimelineFacet.TYPE);
 
 		ObjectNode result = execute();
 		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(2);
-		NodeAssert node = assertThat(result).path(WIDGET_ID).hasSize(3);
+		NodeAssert node = assertThat(result).path(FACET_ID).hasSize(3);
 		node.path(0).path("label").isEqualTo("2012-03TZ");
 		node.path(0).path("count").isEqualTo(1);
 		node.path(1).path("label").isEqualTo("2012-04TZ");
@@ -56,11 +56,11 @@ public class TimelineWidgetTest extends FacetTestSupport {
 
 		addEvent(first);
 		addEvent(last);
-		addFacet("id:%s,type:%s,field:%s,unit:%s", WIDGET_ID, TimelineFacet.TYPE, "distance", "m");
+		addFacet("id:%s,type:%s,field:%s,unit:%s", FACET_ID, TimelineFacet.TYPE, "distance", "m");
 
 		ObjectNode result = execute();
 		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(2);
-		NodeAssert node = assertThat(result).path(WIDGET_ID).hasSize(3);
+		NodeAssert node = assertThat(result).path(FACET_ID).hasSize(3);
 		node.path(0).path("label").isEqualTo("2012-03TZ");
 		node.path(0).path("count").isEqualTo(1);
 		node.path(0).path("min").isEqualTo(5000.0, "m");
@@ -83,11 +83,11 @@ public class TimelineWidgetTest extends FacetTestSupport {
 
 		addEvent(first);
 		addEvent(last);
-		addFacet("id:%s,type:%s,field:%s", WIDGET_ID, TimelineFacet.TYPE, "count");
+		addFacet("id:%s,type:%s,field:%s", FACET_ID, TimelineFacet.TYPE, "count");
 
 		ObjectNode result = execute();
 		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(2);
-		NodeAssert node = assertThat(result).path(WIDGET_ID).hasSize(3);
+		NodeAssert node = assertThat(result).path(FACET_ID).hasSize(3);
 		node.path(0).path("label").isEqualTo("2012-03TZ");
 		node.path(0).path("count").isEqualTo(1);
 		node.path(0).path("min").isEqualTo(2500.0);
@@ -110,11 +110,11 @@ public class TimelineWidgetTest extends FacetTestSupport {
 	@Test
 	public void testEmpty() {
 
-		addFacet("id:%s,type:%s", WIDGET_ID, TimelineFacet.TYPE);
+		addFacet("id:%s,type:%s", FACET_ID, TimelineFacet.TYPE);
 
 		ObjectNode result = execute();
 		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(0);
-		assertThat(result).path(WIDGET_ID).hasSize(0);
+		assertThat(result).path(FACET_ID).hasSize(0);
 	}
 
 	@Test
@@ -122,11 +122,11 @@ public class TimelineWidgetTest extends FacetTestSupport {
 
 		addEvent(first);
 		addEvent(last);
-		addFacet("id:%s,type:%s,interval:%s", WIDGET_ID, TimelineFacet.TYPE, "year");
+		addFacet("id:%s,type:%s,interval:%s", FACET_ID, TimelineFacet.TYPE, "year");
 
 		ObjectNode result = execute();
 		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(2);
-		NodeAssert node = assertThat(result).path(WIDGET_ID).hasSize(1);
+		NodeAssert node = assertThat(result).path(FACET_ID).hasSize(1);
 		node.path(0).path("label").isEqualTo("2012TZ");
 		node.path(0).path("count").isEqualTo(2);
 	}
@@ -136,11 +136,11 @@ public class TimelineWidgetTest extends FacetTestSupport {
 
 		addEvent(first);
 		addEvent(last);
-		addFacet("id:%s,type:%s,interval:%s,field:%s,unit:%s", WIDGET_ID, TimelineFacet.TYPE, "year", "distance", "m");
+		addFacet("id:%s,type:%s,interval:%s,field:%s,unit:%s", FACET_ID, TimelineFacet.TYPE, "year", "distance", "m");
 
 		ObjectNode result = execute();
 		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(2);
-		NodeAssert node = assertThat(result).path(WIDGET_ID).hasSize(1);
+		NodeAssert node = assertThat(result).path(FACET_ID).hasSize(1);
 		node.path(0).path("label").isEqualTo("2012TZ");
 		node.path(0).path("count").isEqualTo(2);
 		node.path(0).path("min").isEqualTo(5000.0, "m");
@@ -153,11 +153,11 @@ public class TimelineWidgetTest extends FacetTestSupport {
 
 		addEvent(first);
 		addEvent(last);
-		addFacet("id:%s,type:%s,interval:%s,range:%s", WIDGET_ID, TimelineFacet.TYPE, "month", "2012TZ");
+		addFacet("id:%s,type:%s,interval:%s,range:%s", FACET_ID, TimelineFacet.TYPE, "month", "2012TZ");
 
 		ObjectNode result = execute();
 		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(2);
-		NodeAssert node = assertThat(result).path(WIDGET_ID).hasSize(12);
+		NodeAssert node = assertThat(result).path(FACET_ID).hasSize(12);
 		node.path(0).path("label").isEqualTo("2012-01TZ");
 		node.path(0).path("count").isEqualTo(0);
 		node.path(2).path("label").isEqualTo("2012-03TZ");
@@ -173,11 +173,11 @@ public class TimelineWidgetTest extends FacetTestSupport {
 
 		addEvent(first);
 		addEvent(last);
-		addFacet("id:%s,type:%s,interval:%s,range:%s", WIDGET_ID, TimelineFacet.TYPE, "day", "2012-03TZ");
+		addFacet("id:%s,type:%s,interval:%s,range:%s", FACET_ID, TimelineFacet.TYPE, "day", "2012-03TZ");
 
 		ObjectNode result = execute();
 		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(2);
-		NodeAssert node = assertThat(result).path(WIDGET_ID).hasSize(31);
+		NodeAssert node = assertThat(result).path(FACET_ID).hasSize(31);
 		node.path(0).path("label").isEqualTo("2012-03-01TZ");
 		node.path(0).path("count").isEqualTo(0);
 		node.path(30).path("label").isEqualTo("2012-03-31TZ");
@@ -189,11 +189,11 @@ public class TimelineWidgetTest extends FacetTestSupport {
 
 		addEvent(first);
 		addEvent(last);
-		addFacet("id:%s,type:%s,interval:%s,range:%s", WIDGET_ID, TimelineFacet.TYPE, "hour", "2012-03-31TZ");
+		addFacet("id:%s,type:%s,interval:%s,range:%s", FACET_ID, TimelineFacet.TYPE, "hour", "2012-03-31TZ");
 
 		ObjectNode result = execute();
 		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(2);
-		NodeAssert node = assertThat(result).path(WIDGET_ID).hasSize(24);
+		NodeAssert node = assertThat(result).path(FACET_ID).hasSize(24);
 		node.path(0).path("label").isEqualTo("2012-03-31T00Z");
 		node.path(0).path("count").isEqualTo(0);
 		node.path(20).path("label").isEqualTo("2012-03-31T20Z");
@@ -207,11 +207,11 @@ public class TimelineWidgetTest extends FacetTestSupport {
 
 		addEvent(first);
 		addEvent(last);
-		addFacet("id:%s,type:%s,interval:%s,range:%s,timezone:%s", WIDGET_ID, TimelineFacet.TYPE, "hour", "2012-03-31T-08:00", "-08:00");
+		addFacet("id:%s,type:%s,interval:%s,range:%s,timezone:%s", FACET_ID, TimelineFacet.TYPE, "hour", "2012-03-31T-08:00", "-08:00");
 
 		ObjectNode result = execute();
 		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(2);
-		NodeAssert node = assertThat(result).path(WIDGET_ID).hasSize(24);
+		NodeAssert node = assertThat(result).path(FACET_ID).hasSize(24);
 		node.path(0).path("label").isEqualTo("2012-03-31T00-08:00");
 		node.path(0).path("count").isEqualTo(0);
 		node.path(12).path("label").isEqualTo("2012-03-31T12-08:00");
@@ -225,11 +225,11 @@ public class TimelineWidgetTest extends FacetTestSupport {
 
 		addEvent(first);
 		addEvent(last);
-		addFacet("id:%s,type:%s,interval:%s,range:%s", WIDGET_ID, TimelineFacet.TYPE, "minute", "2012-03-31T20Z");
+		addFacet("id:%s,type:%s,interval:%s,range:%s", FACET_ID, TimelineFacet.TYPE, "minute", "2012-03-31T20Z");
 
 		ObjectNode result = execute();
 		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(2);
-		NodeAssert node = assertThat(result).path(WIDGET_ID).hasSize(60);
+		NodeAssert node = assertThat(result).path(FACET_ID).hasSize(60);
 		node.path(0).path("label").isEqualTo("2012-03-31T20:00Z");
 		node.path(0).path("count").isEqualTo(0);
 		node.path(15).path("label").isEqualTo("2012-03-31T20:15Z");

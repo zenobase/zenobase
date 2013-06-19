@@ -13,7 +13,7 @@ import org.junit.Test;
 import com.zenobase.models.Event;
 import com.zenobase.testing.NodeAssert;
 
-public class MultiplotWidgetTest extends FacetTestSupport {
+public class MultiplotFacetTest extends FacetTestSupport {
 
 	private Event e1, e2, e3;
 
@@ -41,11 +41,11 @@ public class MultiplotWidgetTest extends FacetTestSupport {
 		addEvent(e1);
 		addEvent(e2);
 		addEvent(e3);
-		addFacet("id:%s,type:%s,fields:distance|height|count,units:km|ft|,interval:day,statistic:avg", WIDGET_ID, MultiplotFacet.TYPE);
+		addFacet("id:%s,type:%s,fields:distance|height|count,units:km|ft|,interval:day,statistic:avg", FACET_ID, MultiplotFacet.TYPE);
 
 		ObjectNode result = execute();
 		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(3);
-		NodeAssert node = assertThat(result).path(WIDGET_ID).hasSize(2);
+		NodeAssert node = assertThat(result).path(FACET_ID).hasSize(2);
 		node.path(0).path("label").isEqualTo("2012-03-30TZ");
 		node.path(0).path("distance").isEqualTo(5.0);
 		node.path(0).path("height").isEqualTo(200.0);
@@ -59,10 +59,10 @@ public class MultiplotWidgetTest extends FacetTestSupport {
 	@Test
 	public void testEmpty() {
 
-		addFacet("id:%s,type:%s,fields:distance|count,units:km|", WIDGET_ID, MultiplotFacet.TYPE);
+		addFacet("id:%s,type:%s,fields:distance|count,units:km|", FACET_ID, MultiplotFacet.TYPE);
 
 		ObjectNode result = execute();
 		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(0);
-		assertThat(result).path(WIDGET_ID).hasSize(0);
+		assertThat(result).path(FACET_ID).hasSize(0);
 	}
 }

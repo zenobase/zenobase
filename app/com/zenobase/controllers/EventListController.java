@@ -62,8 +62,8 @@ public class EventListController extends ControllerSupport {
     	}
     	String[] constraints = request().queryString().get("q");
     	String extract = request().getQueryString("x");
-    	if (hasWidgets()) {
-    		Search search = new EventSearchBuilder().addFacets(getWidgetOptions()).addConstraints(constraints).build();
+    	if (hasFacets()) {
+    		Search search = new EventSearchBuilder().addFacets(getFacetOptions()).addConstraints(constraints).build();
     		ObjectNode result = events.find(bucketId, search);
     		if (extract != null) {
     			StringWriter out = new StringWriter();
@@ -78,12 +78,12 @@ public class EventListController extends ControllerSupport {
     	}
     }
 
-	private static boolean hasWidgets() {
-		return getWidgetQueryStrings() != null
+	private static boolean hasFacets() {
+		return getFacetQueryStrings() != null
 			|| request().getQueryString("limit") != null;
 	}
 
-	private static String[] getWidgetQueryStrings() {
+	private static String[] getFacetQueryStrings() {
 		String[] facets = request().queryString().get("facet");
 		if (facets == null) {
 			facets = request().queryString().get("w");
@@ -91,9 +91,9 @@ public class EventListController extends ControllerSupport {
 		return facets;
 	}
 
-	private static List<FacetOptions> getWidgetOptions() {
+	private static List<FacetOptions> getFacetOptions() {
 		List<FacetOptions> options = Lists.newArrayList();
-		String[] w = getWidgetQueryStrings();
+		String[] w = getFacetQueryStrings();
 		if (w != null) {
 			for (String option : w) {
 				options.add(FacetOptions.parse(option));

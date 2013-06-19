@@ -40,11 +40,11 @@ public class ListFacetTest extends FacetTestSupport {
 		addEvent(e2);
 		addEvent(e1);
 		addEvent(e3);
-		addFacet("id:%s,type:%s", WIDGET_ID, ListFacet.TYPE);
+		addFacet("id:%s,type:%s", FACET_ID, ListFacet.TYPE);
 
 		ObjectNode result = execute();
 		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(3);
-		NodeAssert node = assertThat(result).path(WIDGET_ID).hasSize(3);
+		NodeAssert node = assertThat(result).path(FACET_ID).hasSize(3);
 		node.path(0).isEqualTo(e1.toJson());
 		node.path(1).isEqualTo(e2.toJson());
 		node.path(2).isEqualTo(e3.toJson());
@@ -53,11 +53,11 @@ public class ListFacetTest extends FacetTestSupport {
 	@Test
 	public void testEmpty() {
 
-		addFacet("id:%s,type:%s", WIDGET_ID, ListFacet.TYPE);
+		addFacet("id:%s,type:%s", FACET_ID, ListFacet.TYPE);
 
 		ObjectNode result = execute();
 		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(0);
-		assertThat(result).path(WIDGET_ID).hasSize(0);
+		assertThat(result).path(FACET_ID).hasSize(0);
 	}
 
 	@Test
@@ -66,11 +66,11 @@ public class ListFacetTest extends FacetTestSupport {
 		addEvent(e2);
 		addEvent(e1);
 		addEvent(e3);
-		addFacet("id:%s,type:%s,offset:%d,limit:%d,order:%s,reverse:%s", WIDGET_ID, ListFacet.TYPE, 1, 1, Event.TAG.getName(), true);
+		addFacet("id:%s,type:%s,offset:%d,limit:%d,order:%s,reverse:%s", FACET_ID, ListFacet.TYPE, 1, 1, Event.TAG.getName(), true);
 
 		ObjectNode result = execute();
 		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(3);
-		assertThat(result).path(WIDGET_ID).hasSize(1);
-		assertThat(result).path(WIDGET_ID).path(0).isEqualTo(e3.toJson());
+		assertThat(result).path(FACET_ID).hasSize(1);
+		assertThat(result).path(FACET_ID).path(0).isEqualTo(e3.toJson());
 	}
 }

@@ -9,7 +9,7 @@ import com.zenobase.models.Event;
 import com.zenobase.models.Rating;
 import com.zenobase.testing.NodeAssert;
 
-public class RatingsWidgetTest extends FacetTestSupport {
+public class RatingsFacetTest extends FacetTestSupport {
 
 	private Event e1, e2, e3, e4, e5;
 
@@ -38,11 +38,11 @@ public class RatingsWidgetTest extends FacetTestSupport {
 		addEvent(e3);
 		addEvent(e4);
 		addEvent(e5);
-		addFacet("id:%s,type:%s", WIDGET_ID, RatingsFacet.TYPE);
+		addFacet("id:%s,type:%s", FACET_ID, RatingsFacet.TYPE);
 
 		ObjectNode result = execute();
 		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(5);
-		NodeAssert node = assertThat(result).path(WIDGET_ID).hasSize(4);
+		NodeAssert node = assertThat(result).path(FACET_ID).hasSize(4);
 		node.path(0).path("from").isEqualTo(90);
 		node.path(0).path("to").isMissingNode();
 		node.path(0).path("count").isEqualTo(1);
@@ -65,11 +65,11 @@ public class RatingsWidgetTest extends FacetTestSupport {
 		addEvent(e3);
 		addEvent(e4);
 		addEvent(e5);
-		addFacet("id:%s,type:%s,scale:%d", WIDGET_ID, RatingsFacet.TYPE, 10);
+		addFacet("id:%s,type:%s,scale:%d", FACET_ID, RatingsFacet.TYPE, 10);
 
 		ObjectNode result = execute();
 		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(5);
-		NodeAssert node = assertThat(result).path(WIDGET_ID).hasSize(5);
+		NodeAssert node = assertThat(result).path(FACET_ID).hasSize(5);
 		node.path(0).path("from").isEqualTo(95);
 		node.path(0).path("to").isMissingNode();
 		node.path(0).path("count").isEqualTo(1);
@@ -90,10 +90,10 @@ public class RatingsWidgetTest extends FacetTestSupport {
 	@Test
 	public void testEmpty() {
 
-		addFacet("id:%s,type:%s", WIDGET_ID, RatingsFacet.TYPE);
+		addFacet("id:%s,type:%s", FACET_ID, RatingsFacet.TYPE);
 
 		ObjectNode result = execute();
 		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(0);
-		assertThat(result).path(WIDGET_ID).hasSize(0);
+		assertThat(result).path(FACET_ID).hasSize(0);
 	}
 }

@@ -14,7 +14,7 @@ import org.junit.Test;
 import com.zenobase.models.Event;
 import com.zenobase.testing.NodeAssert;
 
-public class HistogramWidgetTest extends FacetTestSupport {
+public class HistogramFacetTest extends FacetTestSupport {
 
 	private Event e1, e2, e3, e4;
 
@@ -43,11 +43,11 @@ public class HistogramWidgetTest extends FacetTestSupport {
 		addEvent(e2);
 		addEvent(e3);
 		addEvent(e4);
-		addFacet("id:%s,type:%s,field:%s,interval:%s", WIDGET_ID, HistogramFacet.TYPE, Event.COUNT, 1000);
+		addFacet("id:%s,type:%s,field:%s,interval:%s", FACET_ID, HistogramFacet.TYPE, Event.COUNT, 1000);
 
 		ObjectNode result = execute();
 		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(4);
-		NodeAssert node = assertThat(result).path(WIDGET_ID).hasSize(2);
+		NodeAssert node = assertThat(result).path(FACET_ID).hasSize(2);
 		node.path(0).path("from").isEqualTo(7000.0);
 		node.path(0).path("to").isEqualTo(8000.0);
 		node.path(0).path("count").isEqualTo(1);
@@ -63,11 +63,11 @@ public class HistogramWidgetTest extends FacetTestSupport {
 		addEvent(e2);
 		addEvent(e3);
 		addEvent(e4);
-		addFacet("id:%s,type:%s,field:%s,interval:%s,unit:%s", WIDGET_ID, HistogramFacet.TYPE, Event.DISTANCE, 5, SI.KILOMETER);
+		addFacet("id:%s,type:%s,field:%s,interval:%s,unit:%s", FACET_ID, HistogramFacet.TYPE, Event.DISTANCE, 5, SI.KILOMETER);
 
 		ObjectNode result = execute();
 		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(4);
-		NodeAssert node = assertThat(result).path(WIDGET_ID).hasSize(2);
+		NodeAssert node = assertThat(result).path(FACET_ID).hasSize(2);
 		node.path(0).path("from").path("@value").isEqualTo(20.0);
 		node.path(0).path("from").path("unit").isEqualTo("km");
 		node.path(0).path("to").path("@value").isEqualTo(25.0);
@@ -87,11 +87,11 @@ public class HistogramWidgetTest extends FacetTestSupport {
 		addEvent(e2);
 		addEvent(e3);
 		addEvent(e4);
-		addFacet("id:%s,type:%s,field:%s,interval:%s,unit:%s", WIDGET_ID, HistogramFacet.TYPE, Event.DISTANCE, 5, NonSI.MILE);
+		addFacet("id:%s,type:%s,field:%s,interval:%s,unit:%s", FACET_ID, HistogramFacet.TYPE, Event.DISTANCE, 5, NonSI.MILE);
 
 		ObjectNode result = execute();
 		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(4);
-		NodeAssert node = assertThat(result).path(WIDGET_ID).hasSize(2);
+		NodeAssert node = assertThat(result).path(FACET_ID).hasSize(2);
 		node.path(0).path("from").path("@value").isEqualTo(10.0);
 		node.path(0).path("from").path("unit").isEqualTo("mi");
 		node.path(0).path("to").path("@value").isEqualTo(15.0);
@@ -107,10 +107,10 @@ public class HistogramWidgetTest extends FacetTestSupport {
 	@Test
 	public void testEmpty() {
 
-		addFacet("id:%s,type:%s,field:%s", WIDGET_ID, HistogramFacet.TYPE, Event.RATING);
+		addFacet("id:%s,type:%s,field:%s", FACET_ID, HistogramFacet.TYPE, Event.RATING);
 
 		ObjectNode result = execute();
 		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(0);
-		assertThat(result).path(WIDGET_ID).hasSize(0);
+		assertThat(result).path(FACET_ID).hasSize(0);
 	}
 }

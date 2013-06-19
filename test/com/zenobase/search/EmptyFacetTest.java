@@ -8,7 +8,7 @@ import org.junit.Test;
 import com.zenobase.commands.RandomEvent;
 import com.zenobase.models.Identity;
 
-public class EmptyWidgetTest extends SearchTestSupport {
+public class EmptyFacetTest extends SearchTestSupport {
 
 	@Test
 	public void test() {
