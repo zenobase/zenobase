@@ -51,7 +51,7 @@ public class BrowserTest {
 		try {
 			driver = new ChromeDriver();
 			driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
-			wait = new WebDriverWait(driver, 5);
+			wait = new WebDriverWait(driver, 10);
 		} catch (IllegalStateException e) {
 			Assume.assumeNoException(e);
 		}
