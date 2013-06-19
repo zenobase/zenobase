@@ -5,15 +5,15 @@ import java.util.Map;
 import org.joda.time.DateTimeZone;
 import com.google.common.collect.Maps;
 
-public class WidgetOptions {
+public class FacetOptions {
 
 	private final Map<String, String> map;
 
-	private WidgetOptions() {
+	private FacetOptions() {
 		this(Maps.<String, String>newLinkedHashMap());
 	}
 
-	public WidgetOptions(Map<String, String> map) {
+	public FacetOptions(Map<String, String> map) {
 		this.map = map;
 	}
 
@@ -51,8 +51,8 @@ public class WidgetOptions {
 		map.put(key, value);
 	}
 
-	public static WidgetOptions parse(String value) {
-		WidgetOptions options = new WidgetOptions();
+	public static FacetOptions parse(String value) {
+		FacetOptions options = new FacetOptions();
 		for (String option : value.split(",")) {
 			String[] tokens = option.split(":", 2);
 			if (tokens.length == 2 && !isEmpty(tokens[0]) && !isEmpty(tokens[1])) {

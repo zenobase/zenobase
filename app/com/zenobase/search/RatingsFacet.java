@@ -14,14 +14,14 @@ import com.zenobase.json.Nodes;
 import com.zenobase.models.Event;
 import com.zenobase.models.Rating;
 
-public class RatingsWidget extends Widget {
+public class RatingsFacet extends Facet {
 
 	public static final String TYPE = "ratings";
 
 	private final String field;
 	private final double from, to, step;
 
-	public RatingsWidget(String id, String field, int scale) {
+	public RatingsFacet(String id, String field, int scale) {
 		super(id);
 		this.field = field;
 		step = Rating.MAX_VALUE / scale;
@@ -59,11 +59,11 @@ public class RatingsWidget extends Widget {
 		return result;
 	}
 
-	public static WidgetBuilder builder() {
-		return new WidgetBuilder() {
+	public static FacetBuilder builder() {
+		return new FacetBuilder() {
 			@Override
-			public Widget build(WidgetOptions options) {
-				return new RatingsWidget(
+			public Facet build(FacetOptions options) {
+				return new RatingsFacet(
 					options.get("id"),
 					Event.RATING.getName(),
 					options.get("scale", Integer.class, 5));

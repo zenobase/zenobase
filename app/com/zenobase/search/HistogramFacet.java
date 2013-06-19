@@ -10,7 +10,6 @@ import org.codehaus.jackson.node.ObjectNode;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.elasticsearch.search.facet.FacetBuilders;
-import org.elasticsearch.search.facet.histogram.HistogramFacet;
 import org.elasticsearch.search.facet.histogram.HistogramFacet.ComparatorType;
 import com.google.common.collect.Lists;
 
@@ -18,7 +17,7 @@ import com.zenobase.common.Measures;
 import com.zenobase.json.MeasurementField;
 import com.zenobase.json.Nodes;
 
-public class HistogramWidget extends Widget {
+public class HistogramFacet extends Facet {
 
 	public static final String TYPE = "histogram";
 
@@ -26,7 +25,7 @@ public class HistogramWidget extends Widget {
 	private final long interval;
 	private final Unit<?> unit;
 
-	public HistogramWidget(String id, String field, long interval, Unit<?> unit) {
+	public HistogramFacet(String id, String field, long interval, Unit<?> unit) {
 		super(id);
 		this.field = field;
 		this.interval = interval;
@@ -57,8 +56,8 @@ public class HistogramWidget extends Widget {
 	@Override
 	public JsonNode process(SearchResponse response) {
 		ArrayNode result = Nodes.newArray();
-		HistogramFacet facet = response.getFacets().facet(HistogramFacet.class, getId());
-		for (HistogramFacet.Entry entry : Lists.reverse(facet.getEntries())) {
+		org.elasticsearch.search.facet.histogram.HistogramFacet facet = response.getFacets().facet(org.elasticsearch.search.facet.histogram.HistogramFacet.class, getId());
+		for (org.elasticsearch.search.facet.histogram.HistogramFacet.Entry entry : Lists.reverse(facet.getEntries())) {
 			ObjectNode entryNode = result.addObject();
 			entryNode.put("count", entry.getCount());
 			addValue(entryNode, "from", entry.getKey());
@@ -77,12 +76,12 @@ public class HistogramWidget extends Widget {
 		}
 	}
 
-	public static WidgetBuilder builder() {
-		return new WidgetBuilder() {
+	public static FacetBuilder builder() {
+		return new FacetBuilder() {
 			@Override
-			public Widget build(WidgetOptions options) {
+			public Facet build(FacetOptions options) {
 				String unit = options.get("unit");
-				return new HistogramWidget(
+				return new HistogramFacet(
 					options.get("id"),
 					options.get("field"),
 					options.get("interval", Long.class, 10L),

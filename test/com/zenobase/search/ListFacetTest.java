@@ -12,7 +12,7 @@ import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
 import com.zenobase.testing.NodeAssert;
 
-public class ListWidgetTest extends WidgetTestSupport {
+public class ListFacetTest extends FacetTestSupport {
 
 	private Event e1, e2, e3;
 
@@ -40,7 +40,7 @@ public class ListWidgetTest extends WidgetTestSupport {
 		addEvent(e2);
 		addEvent(e1);
 		addEvent(e3);
-		addWidget("id:%s,type:%s", WIDGET_ID, ListWidget.TYPE);
+		addFacet("id:%s,type:%s", WIDGET_ID, ListFacet.TYPE);
 
 		ObjectNode result = execute();
 		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(3);
@@ -53,7 +53,7 @@ public class ListWidgetTest extends WidgetTestSupport {
 	@Test
 	public void testEmpty() {
 
-		addWidget("id:%s,type:%s", WIDGET_ID, ListWidget.TYPE);
+		addFacet("id:%s,type:%s", WIDGET_ID, ListFacet.TYPE);
 
 		ObjectNode result = execute();
 		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(0);
@@ -66,7 +66,7 @@ public class ListWidgetTest extends WidgetTestSupport {
 		addEvent(e2);
 		addEvent(e1);
 		addEvent(e3);
-		addWidget("id:%s,type:%s,offset:%d,limit:%d,order:%s,reverse:%s", WIDGET_ID, ListWidget.TYPE, 1, 1, Event.TAG.getName(), true);
+		addFacet("id:%s,type:%s,offset:%d,limit:%d,order:%s,reverse:%s", WIDGET_ID, ListFacet.TYPE, 1, 1, Event.TAG.getName(), true);
 
 		ObjectNode result = execute();
 		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(3);

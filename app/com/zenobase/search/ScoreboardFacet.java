@@ -15,7 +15,7 @@ import com.zenobase.common.Measures;
 import com.zenobase.json.MeasurementField;
 import com.zenobase.json.Nodes;
 
-public class ScoreboardWidget extends Widget {
+public class ScoreboardFacet extends Facet {
 
 	public static final String TYPE = "scoreboard";
 
@@ -25,7 +25,7 @@ public class ScoreboardWidget extends Widget {
 	private final ComparatorType order;
 	private final int limit;
 
-	private ScoreboardWidget(String id, String termField, String valueField, Unit<?> unit, ComparatorType order, int limit) {
+	private ScoreboardFacet(String id, String termField, String valueField, Unit<?> unit, ComparatorType order, int limit) {
 		super(id);
 		this.termField = termField;
 		this.valueField = valueField;
@@ -68,12 +68,12 @@ public class ScoreboardWidget extends Widget {
 		}
 	}
 
-	public static WidgetBuilder builder() {
-		return new WidgetBuilder() {
+	public static FacetBuilder builder() {
+		return new FacetBuilder() {
 			@Override
-			public Widget build(WidgetOptions options) {
+			public Facet build(FacetOptions options) {
 				String unit = options.get("unit");
-				return new ScoreboardWidget(
+				return new ScoreboardFacet(
 					options.get("id"),
 					options.get("key_field"),
 					options.get("value_field"),

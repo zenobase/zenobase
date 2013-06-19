@@ -12,7 +12,7 @@ import org.junit.Test;
 import com.zenobase.models.Event;
 import com.zenobase.testing.NodeAssert;
 
-public class ScoreboardWidgetTest extends WidgetTestSupport {
+public class ScoreboardWidgetTest extends FacetTestSupport {
 
 	private Event e1, e2, e3, e4;
 
@@ -41,7 +41,7 @@ public class ScoreboardWidgetTest extends WidgetTestSupport {
 		addEvent(e2);
 		addEvent(e3);
 		addEvent(e4);
-		addWidget("id:%s,type:%s,key_field:%s,value_field:%s,unit:%s,order:%s", WIDGET_ID, ScoreboardWidget.TYPE, Event.TAG, Event.DISTANCE, "km", "total");
+		addFacet("id:%s,type:%s,key_field:%s,value_field:%s,unit:%s,order:%s", WIDGET_ID, ScoreboardFacet.TYPE, Event.TAG, Event.DISTANCE, "km", "total");
 
 		ObjectNode result = execute();
 		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(4);
@@ -71,7 +71,7 @@ public class ScoreboardWidgetTest extends WidgetTestSupport {
 		addEvent(e2);
 		addEvent(e3);
 		addEvent(e4);
-		addWidget("id:%s,type:%s,key_field:%s,value_field:%s", WIDGET_ID, ScoreboardWidget.TYPE, Event.TAG, Event.COUNT);
+		addFacet("id:%s,type:%s,key_field:%s,value_field:%s", WIDGET_ID, ScoreboardFacet.TYPE, Event.TAG, Event.COUNT);
 
 		ObjectNode result = execute();
 		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(4);
@@ -93,7 +93,7 @@ public class ScoreboardWidgetTest extends WidgetTestSupport {
 	@Test
 	public void testEmpty() {
 
-		addWidget("id:%s,type:%s,key_field:%s,value_field:%s,unit:%s,order:%s", WIDGET_ID, ScoreboardWidget.TYPE, Event.TAG, Event.DISTANCE, "km", "total");
+		addFacet("id:%s,type:%s,key_field:%s,value_field:%s,unit:%s,order:%s", WIDGET_ID, ScoreboardFacet.TYPE, Event.TAG, Event.DISTANCE, "km", "total");
 
 		ObjectNode result = execute();
 		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(0);

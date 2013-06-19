@@ -26,7 +26,7 @@ import com.zenobase.json.MeasurementField;
 import com.zenobase.json.Nodes;
 import com.zenobase.models.Event;
 
-public class MultiplotWidget extends Widget {
+public class MultiplotFacet extends Facet {
 
 	public static final String TYPE = "multiplot";
 
@@ -37,7 +37,7 @@ public class MultiplotWidget extends Widget {
 	private final DateTimeZone timezone;
 	private final Statistic statistic;
 
-	public MultiplotWidget(String id, String keyField, Iterable<String> fields, Iterable<String> units, String interval, DateTimeZone timezone, Statistic statistic) {
+	public MultiplotFacet(String id, String keyField, Iterable<String> fields, Iterable<String> units, String interval, DateTimeZone timezone, Statistic statistic) {
 		super(id);
 		this.keyField = keyField;
 		this.fields = Lists.newArrayList(fields);
@@ -152,11 +152,11 @@ public class MultiplotWidget extends Widget {
 		abstract double getValue(DateHistogramFacet.Entry entry);
 	}
 
-	public static WidgetBuilder builder() {
-		return new WidgetBuilder() {
+	public static FacetBuilder builder() {
+		return new FacetBuilder() {
 			@Override
-			public Widget build(WidgetOptions options) {
-				return new MultiplotWidget(
+			public Facet build(FacetOptions options) {
+				return new MultiplotFacet(
 					options.get("id"),
 					Event.TIMESTAMP.getName(),
 					Splitter.on('|').split(options.get("fields", String.class, "")),

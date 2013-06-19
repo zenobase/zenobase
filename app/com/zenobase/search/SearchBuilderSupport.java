@@ -12,44 +12,44 @@ import com.google.common.collect.Sets;
 
 public abstract class SearchBuilderSupport {
 
-	private final Set<Widget> widgets = Sets.newLinkedHashSet();
+	private final Set<Facet> facets = Sets.newLinkedHashSet();
 	private final List<QueryBuilder> must = Lists.newArrayList();
 	private final List<QueryBuilder> mustNot = Lists.newArrayList();
 
-	public SearchBuilderSupport addWidgets(String[] widgets) {
-		if (widgets != null) {
-			for (String widget : widgets) {
-				addWidget(widget);
+	public SearchBuilderSupport addFacets(String[] facets) {
+		if (facets != null) {
+			for (String facet : facets) {
+				addFacet(facet);
 			}
 		}
 		return this;
 	}
 
-	public SearchBuilderSupport addWidgets(Iterable<WidgetOptions> widgets) {
-		if (widgets != null) {
-			for (WidgetOptions widget : widgets) {
-				addWidget(widget);
+	public SearchBuilderSupport addFacets(Iterable<FacetOptions> options) {
+		if (options != null) {
+			for (FacetOptions option : options) {
+				addFacet(option);
 			}
 		}
 		return this;
 	}
 
-	public SearchBuilderSupport addWidget(String widget) {
-		return addWidget(WidgetOptions.parse(widget));
+	public SearchBuilderSupport addFacet(String options) {
+		return addFacet(FacetOptions.parse(options));
 	}
 
-	public SearchBuilderSupport addWidget(WidgetOptions options) {
+	public SearchBuilderSupport addFacet(FacetOptions options) {
 		String type = options.get("type");
-		WidgetBuilder builder = getWidgetBuilders().get(type);
+		FacetBuilder builder = getFacetBuilders().get(type);
 		if (builder == null) {
-			Logger.warn("Widget builder not registered: " + type);
+			Logger.warn("Facet builder not registered: " + type);
 			return this;
 		}
 		return addWidget(builder.build(options));
 	}
 
-	public SearchBuilderSupport addWidget(Widget widget) {
-		widgets.add(widget);
+	public SearchBuilderSupport addWidget(Facet facet) {
+		facets.add(facet);
 		return this;
 	}
 
@@ -85,11 +85,11 @@ public abstract class SearchBuilderSupport {
 		return this;
 	}
 
-	protected abstract ImmutableMap<String, WidgetBuilder> getWidgetBuilders();
+	protected abstract ImmutableMap<String, FacetBuilder> getFacetBuilders();
 
 	protected abstract ImmutableMultimap<String, ConstraintBuilder> getConstraintBuilders();
 
 	public Search build() {
-		return new Search(widgets, must, mustNot);
+		return new Search(facets, must, mustNot);
 	}
 }

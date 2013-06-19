@@ -25,7 +25,7 @@ import com.zenobase.json.MeasurementField;
 import com.zenobase.json.Nodes;
 import com.zenobase.models.Event;
 
-public class TimelineWidget extends Widget {
+public class TimelineFacet extends Facet {
 
 	public static final String TYPE = "timeline";
 
@@ -36,7 +36,7 @@ public class TimelineWidget extends Widget {
 	private final DateTimeZone timezone;
 	private final Unit<?> unit;
 
-	public TimelineWidget(String id, String keyField, String valueField, String interval, String range, DateTimeZone timezone, Unit<?> unit) {
+	public TimelineFacet(String id, String keyField, String valueField, String interval, String range, DateTimeZone timezone, Unit<?> unit) {
 		super(id);
 		this.keyField = keyField;
 		this.valueField = valueField;
@@ -135,12 +135,12 @@ public class TimelineWidget extends Widget {
 		return Intervals.toString(time, interval);
 	}
 
-	public static WidgetBuilder builder() {
-		return new WidgetBuilder() {
+	public static FacetBuilder builder() {
+		return new FacetBuilder() {
 			@Override
-			public Widget build(WidgetOptions options) {
+			public Facet build(FacetOptions options) {
 				String unit = options.get("unit");
-				return new TimelineWidget(
+				return new TimelineFacet(
 					options.get("id"),
 					Event.TIMESTAMP.getName(),
 					options.get("field", String.class, Event.TIMESTAMP.getName()),

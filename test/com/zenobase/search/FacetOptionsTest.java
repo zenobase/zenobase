@@ -6,11 +6,11 @@ import org.joda.time.DateTimeZone;
 import org.junit.Test;
 import com.google.common.collect.ImmutableMap;
 
-public class WidgetOptionsTest {
+public class FacetOptionsTest {
 
 	@Test
 	public void test() {
-		check(new WidgetOptions(ImmutableMap.<String, String>builder()
+		check(new FacetOptions(ImmutableMap.<String, String>builder()
 			.put("a", "foo")
 			.put("b", "42")
 			.put("c", "1.23456789")
@@ -21,10 +21,10 @@ public class WidgetOptionsTest {
 
 	@Test
 	public void testParse() {
-		check(WidgetOptions.parse("a:foo,b:42,c:1.23456789,d:true,e:-08:00,f,g:,h:null,:"));
+		check(FacetOptions.parse("a:foo,b:42,c:1.23456789,d:true,e:-08:00,f,g:,h:null,:"));
 	}
 
-	private static void check(WidgetOptions options) {
+	private static void check(FacetOptions options) {
 
 		assertThat(options.get("a")).isEqualTo("foo");
 		assertThat(options.get("z", String.class, "bar")).isEqualTo("bar");
@@ -57,6 +57,6 @@ public class WidgetOptionsTest {
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testBadType() {
-		WidgetOptions.parse("a:1").get("a", WidgetOptions.class, null);
+		FacetOptions.parse("a:1").get("a", FacetOptions.class, null);
 	}
 }

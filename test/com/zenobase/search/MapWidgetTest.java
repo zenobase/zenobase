@@ -10,7 +10,7 @@ import com.zenobase.models.Event;
 import com.zenobase.models.Location;
 import com.zenobase.testing.NodeAssert;
 
-public class MapWidgetTest extends WidgetTestSupport {
+public class MapWidgetTest extends FacetTestSupport {
 
 	private static final Location DENVER = new Location("39.75", "-104.87");
 	private static final Location LAS_VEGAS = new Location("36.08", "-115.17");
@@ -41,7 +41,7 @@ public class MapWidgetTest extends WidgetTestSupport {
 		addEvent(e2);
 		addEvent(e3);
 		addEvent(e4);
-		addWidget("id:%s,type:%s,factor:%s", WIDGET_ID, MapWidget.TYPE, 0.5);
+		addFacet("id:%s,type:%s,factor:%s", WIDGET_ID, MapFacet.TYPE, 0.5);
 
 		ObjectNode result = execute();
 		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(4);
@@ -61,7 +61,7 @@ public class MapWidgetTest extends WidgetTestSupport {
 		addEvent(e2);
 		addEvent(e3);
 		addEvent(e4);
-		addWidget("id:%s,type:%s,factor:%s", WIDGET_ID, MapWidget.TYPE, 1.0);
+		addFacet("id:%s,type:%s,factor:%s", WIDGET_ID, MapFacet.TYPE, 1.0);
 
 		ObjectNode result = execute();
 		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(4);
@@ -78,7 +78,7 @@ public class MapWidgetTest extends WidgetTestSupport {
 	@Test
 	public void testEmpty() {
 
-		addWidget("id:%s,type:%s", WIDGET_ID, MapWidget.TYPE);
+		addFacet("id:%s,type:%s", WIDGET_ID, MapFacet.TYPE);
 
 		ObjectNode result = execute();
 		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(0);

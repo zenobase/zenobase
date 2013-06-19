@@ -14,7 +14,7 @@ import org.junit.Test;
 import com.zenobase.models.Event;
 import com.zenobase.testing.NodeAssert;
 
-public class HistogramWidgetTest extends WidgetTestSupport {
+public class HistogramWidgetTest extends FacetTestSupport {
 
 	private Event e1, e2, e3, e4;
 
@@ -43,7 +43,7 @@ public class HistogramWidgetTest extends WidgetTestSupport {
 		addEvent(e2);
 		addEvent(e3);
 		addEvent(e4);
-		addWidget("id:%s,type:%s,field:%s,interval:%s", WIDGET_ID, HistogramWidget.TYPE, Event.COUNT, 1000);
+		addFacet("id:%s,type:%s,field:%s,interval:%s", WIDGET_ID, HistogramFacet.TYPE, Event.COUNT, 1000);
 
 		ObjectNode result = execute();
 		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(4);
@@ -63,7 +63,7 @@ public class HistogramWidgetTest extends WidgetTestSupport {
 		addEvent(e2);
 		addEvent(e3);
 		addEvent(e4);
-		addWidget("id:%s,type:%s,field:%s,interval:%s,unit:%s", WIDGET_ID, HistogramWidget.TYPE, Event.DISTANCE, 5, SI.KILOMETER);
+		addFacet("id:%s,type:%s,field:%s,interval:%s,unit:%s", WIDGET_ID, HistogramFacet.TYPE, Event.DISTANCE, 5, SI.KILOMETER);
 
 		ObjectNode result = execute();
 		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(4);
@@ -87,7 +87,7 @@ public class HistogramWidgetTest extends WidgetTestSupport {
 		addEvent(e2);
 		addEvent(e3);
 		addEvent(e4);
-		addWidget("id:%s,type:%s,field:%s,interval:%s,unit:%s", WIDGET_ID, HistogramWidget.TYPE, Event.DISTANCE, 5, NonSI.MILE);
+		addFacet("id:%s,type:%s,field:%s,interval:%s,unit:%s", WIDGET_ID, HistogramFacet.TYPE, Event.DISTANCE, 5, NonSI.MILE);
 
 		ObjectNode result = execute();
 		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(4);
@@ -107,7 +107,7 @@ public class HistogramWidgetTest extends WidgetTestSupport {
 	@Test
 	public void testEmpty() {
 
-		addWidget("id:%s,type:%s,field:%s", WIDGET_ID, HistogramWidget.TYPE, Event.RATING);
+		addFacet("id:%s,type:%s,field:%s", WIDGET_ID, HistogramFacet.TYPE, Event.RATING);
 
 		ObjectNode result = execute();
 		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(0);

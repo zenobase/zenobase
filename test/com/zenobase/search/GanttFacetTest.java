@@ -10,7 +10,7 @@ import org.junit.Test;
 import com.zenobase.models.Event;
 import com.zenobase.testing.NodeAssert;
 
-public class GanttWidgetTest extends WidgetTestSupport {
+public class GanttFacetTest extends FacetTestSupport {
 
 	private Event e1, e2, e3, e4, e5;
 
@@ -40,7 +40,7 @@ public class GanttWidgetTest extends WidgetTestSupport {
 		addEvent(e3);
 		addEvent(e4);
 		addEvent(e5);
-		addWidget("id:%s,type:%s,field:%s", WIDGET_ID, GanttWidget.TYPE, Event.TAG);
+		addFacet("id:%s,type:%s,field:%s", WIDGET_ID, GanttFacet.TYPE, Event.TAG);
 
 		ObjectNode result = execute();
 		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(5);
@@ -58,7 +58,7 @@ public class GanttWidgetTest extends WidgetTestSupport {
 	@Test
 	public void testEmpty() {
 
-		addWidget("id:%s,type:%s,field:%s", WIDGET_ID, GanttWidget.TYPE, Event.TAG);
+		addFacet("id:%s,type:%s,field:%s", WIDGET_ID, GanttFacet.TYPE, Event.TAG);
 
 		ObjectNode result = execute();
 		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(0);

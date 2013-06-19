@@ -10,7 +10,7 @@ import com.zenobase.json.JsonChunks;
 import com.zenobase.json.JsonStream;
 import com.zenobase.models.Event;
 import com.zenobase.search.EventSearchBuilder;
-import com.zenobase.search.ListWidget;
+import com.zenobase.search.ListFacet;
 import com.zenobase.search.Search;
 import com.zenobase.services.EventRepository;
 
@@ -48,9 +48,9 @@ final class EventChunks extends JsonChunks {
 	}
 
 	private static Search createSearch(String[] filters, int offset) {
-		ListWidget widget = new ListWidget(EventListController.EVENTS.getName(),
+		ListFacet facet = new ListFacet(EventListController.EVENTS.getName(),
 			offset, LIMIT, Event.TIMESTAMP.getName(), SortOrder.ASC);
-		return new EventSearchBuilder().addConstraints(filters).addWidget(widget).build();
+		return new EventSearchBuilder().addConstraints(filters).addWidget(facet).build();
 	}
 
 	private static int getTotal(ObjectNode result) {

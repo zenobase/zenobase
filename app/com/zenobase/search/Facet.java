@@ -4,11 +4,11 @@ import org.codehaus.jackson.JsonNode;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 
-public abstract class Widget {
+public abstract class Facet {
 
 	private final String id;
 
-	protected Widget(String id) {
+	protected Facet(String id) {
 		this.id = id;
 	}
 
@@ -22,8 +22,8 @@ public abstract class Widget {
 
 	@Override
 	public boolean equals(Object that) {
-		return that instanceof Widget &&
-			id.equals(((Widget) that).getId());
+		return that instanceof Facet &&
+			id.equals(((Facet) that).getId());
 	}
 
 	@Override

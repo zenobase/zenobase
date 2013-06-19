@@ -7,25 +7,25 @@ import com.zenobase.models.Event;
 
 public class EventSearchBuilder extends SearchBuilderSupport {
 
-	private static final ImmutableMap<String, WidgetBuilder> widgetBuilders = ImmutableMap.<String, WidgetBuilder>builder()
-		.put(ListWidget.TYPE, ListWidget.builder())
-		.put(CountWidget.TYPE, CountWidget.builder())
-		.put(GanttWidget.TYPE, GanttWidget.builder())
-		.put(RatingsWidget.TYPE, RatingsWidget.builder())
-		.put(HistogramWidget.TYPE, HistogramWidget.builder())
-		.put(TimelineWidget.TYPE, TimelineWidget.builder())
+	private static final ImmutableMap<String, FacetBuilder> facetBuilders = ImmutableMap.<String, FacetBuilder>builder()
+		.put(ListFacet.TYPE, ListFacet.builder())
+		.put(CountFacet.TYPE, CountFacet.builder())
+		.put(GanttFacet.TYPE, GanttFacet.builder())
+		.put(RatingsFacet.TYPE, RatingsFacet.builder())
+		.put(HistogramFacet.TYPE, HistogramFacet.builder())
+		.put(TimelineFacet.TYPE, TimelineFacet.builder())
 		.put(TimeHistogramWidget.TYPE, TimeHistogramWidget.builder())
-		.put(MultiplotWidget.TYPE, MultiplotWidget.builder())
-		.put(ScoreboardWidget.TYPE, ScoreboardWidget.builder())
-		.put(MapWidget.TYPE, MapWidget.builder())
+		.put(MultiplotFacet.TYPE, MultiplotFacet.builder())
+		.put(ScoreboardFacet.TYPE, ScoreboardFacet.builder())
+		.put(MapFacet.TYPE, MapFacet.builder())
 		.put(ScatterPlotWidget.TYPE, ScatterPlotWidget.builder())
 		.build();
 
 	private static final ImmutableMultimap<String, ConstraintBuilder> constraintBuilders = Event.getSchema().getConstraintBuilders();
 
 	@Override
-	protected ImmutableMap<String, WidgetBuilder> getWidgetBuilders() {
-		return widgetBuilders;
+	protected ImmutableMap<String, FacetBuilder> getFacetBuilders() {
+		return facetBuilders;
 	}
 
 	@Override

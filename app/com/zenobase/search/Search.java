@@ -19,11 +19,11 @@ public class Search {
 
 	public static final IntegerField TOTAL = new IntegerField("total");
 
-	private final ImmutableSet<Widget> widgets;
+	private final ImmutableSet<Facet> facets;
 	private final ImmutableList<QueryBuilder> must, mustNot;
 
-	public Search(Iterable<Widget> widgets, Iterable<QueryBuilder> must, Iterable<QueryBuilder> mustNot) {
-		this.widgets = ImmutableSet.copyOf(widgets);
+	public Search(Iterable<Facet> facets, Iterable<QueryBuilder> must, Iterable<QueryBuilder> mustNot) {
+		this.facets = ImmutableSet.copyOf(facets);
 		this.must = ImmutableList.copyOf(must);
 		this.mustNot = ImmutableList.copyOf(mustNot);
 	}
@@ -38,8 +38,8 @@ public class Search {
 
 	private SearchSourceBuilder buildSearch() {
 		SearchSourceBuilder builder = new SearchSourceBuilder().query(buildQuery()).size(0);
-		for (Widget widget : widgets) {
-			widget.configure(builder);
+		for (Facet facet : facets) {
+			facet.configure(builder);
 		}
 		return builder;
 	}
@@ -63,15 +63,15 @@ public class Search {
 	private ObjectNode toJson(SearchResponse response) {
 		ObjectNode node = Nodes.newObject();
 		TOTAL.setValue(node, Ints.checkedCast(response.getHits().getTotalHits()));
-		for (Widget widget : widgets) {
-			node.put(widget.getId(), widget.process(response));
+		for (Facet facet : facets) {
+			node.put(facet.getId(), facet.process(response));
 		}
 		return node;
 	}
 
 	@Override
 	public String toString() {
-		return String.format("Search(widgets:%s, must:%s, must not:%s", widgets, must, mustNot);
+		return String.format("Search(facets:%s, must:%s, must not:%s", facets, must, mustNot);
 	}
 
 	@Override
@@ -81,13 +81,13 @@ public class Search {
 	}
 
 	private boolean equals(Search that) {
-		return widgets.toString().equals(that.widgets.toString()) &&
+		return facets.toString().equals(that.facets.toString()) &&
 			must.toString().equals(that.must.toString()) &&
 			mustNot.toString().equals(that.mustNot.toString());
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hashCode(widgets.toString(), must.toString(), mustNot.toString());
+		return Objects.hashCode(facets.toString(), must.toString(), mustNot.toString());
 	}
 }

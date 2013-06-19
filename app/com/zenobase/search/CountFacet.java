@@ -13,7 +13,7 @@ import org.elasticsearch.search.facet.terms.TermsFacet.ComparatorType;
 
 import com.zenobase.json.Nodes;
 
-public class CountWidget extends Widget {
+public class CountFacet extends Facet {
 
 	public static final String TYPE = "count";
 	public static final String LABEL_MORE = "...";
@@ -23,7 +23,7 @@ public class CountWidget extends Widget {
 	private final int offset;
 	private final int limit;
 
-	private CountWidget(String id, String field, String order, boolean reverse, int offset, int limit) {
+	private CountFacet(String id, String field, String order, boolean reverse, int offset, int limit) {
 		super(id);
 		this.field = field;
 		this.order = ComparatorType.fromString((reverse ? "reverse_" : "") + order);
@@ -55,11 +55,11 @@ public class CountWidget extends Widget {
 		return result;
 	}
 
-	public static WidgetBuilder builder() {
-		return new WidgetBuilder() {
+	public static FacetBuilder builder() {
+		return new FacetBuilder() {
 			@Override
-			public Widget build(WidgetOptions options) {
-				return new CountWidget(
+			public Facet build(FacetOptions options) {
+				return new CountFacet(
 					options.get("id"),
 					options.get("field"),
 					options.get("order", String.class, "count"),

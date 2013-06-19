@@ -12,14 +12,14 @@ import com.zenobase.search.facet.geocluster.GeoCluster;
 import com.zenobase.search.facet.geocluster.GeoClusterFacet;
 import com.zenobase.search.facet.geocluster.GeoClusterFacetBuilder;
 
-public class MapWidget extends Widget {
+public class MapFacet extends Facet {
 
 	public static final String TYPE = "map";
 
 	private final String field;
 	private final double factor;
 
-	private MapWidget(String id, String field, double factor) {
+	private MapFacet(String id, String field, double factor) {
 		super(id);
 		this.field = field;
 		this.factor = factor;
@@ -49,11 +49,11 @@ public class MapWidget extends Widget {
 		return result;
 	}
 
-	public static WidgetBuilder builder() {
-		return new WidgetBuilder() {
+	public static FacetBuilder builder() {
+		return new FacetBuilder() {
 			@Override
-			public Widget build(WidgetOptions options) {
-				return new MapWidget(
+			public Facet build(FacetOptions options) {
+				return new MapFacet(
 					options.get("id"),
 					options.get("field", String.class, Event.LOCATION.getName()),
 					options.get("factor", Double.class, 0.2));

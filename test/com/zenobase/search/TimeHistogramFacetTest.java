@@ -11,7 +11,7 @@ import org.junit.Test;
 import com.zenobase.models.Event;
 import com.zenobase.testing.NodeAssert;
 
-public class TimeHistogramWidgetTest extends WidgetTestSupport {
+public class TimeHistogramFacetTest extends FacetTestSupport {
 
 	private Event e1, e2, e3;
 
@@ -36,7 +36,7 @@ public class TimeHistogramWidgetTest extends WidgetTestSupport {
 		addEvent(e1);
 		addEvent(e2);
 		addEvent(e3);
-		addWidget("id:%s,type:%s,field:%s,interval:%s,timezone:%s",
+		addFacet("id:%s,type:%s,field:%s,interval:%s,timezone:%s",
 			WIDGET_ID, TimeHistogramWidget.TYPE, Event.TIMESTAMP, "hour_of_day", DateTimeZone.forOffsetHours(-8));
 
 		ObjectNode result = execute();
@@ -54,7 +54,7 @@ public class TimeHistogramWidgetTest extends WidgetTestSupport {
 		addEvent(e1);
 		addEvent(e2);
 		addEvent(e3);
-		addWidget("id:%s,type:%s,field:%s,interval:%s,timezone:%s",
+		addFacet("id:%s,type:%s,field:%s,interval:%s,timezone:%s",
 			WIDGET_ID, TimeHistogramWidget.TYPE, Event.TIMESTAMP, "day_of_week", DateTimeZone.forOffsetHours(-8));
 
 		ObjectNode result = execute();
@@ -74,7 +74,7 @@ public class TimeHistogramWidgetTest extends WidgetTestSupport {
 		addEvent(e1);
 		addEvent(e2);
 		addEvent(e3);
-		addWidget("id:%s,type:%s,field:%s,interval:%s,timezone:%s",
+		addFacet("id:%s,type:%s,field:%s,interval:%s,timezone:%s",
 			WIDGET_ID, TimeHistogramWidget.TYPE, Event.TIMESTAMP, "month_of_year", DateTimeZone.forOffsetHours(-8));
 
 		ObjectNode result = execute();

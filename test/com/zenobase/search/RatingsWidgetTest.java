@@ -9,7 +9,7 @@ import com.zenobase.models.Event;
 import com.zenobase.models.Rating;
 import com.zenobase.testing.NodeAssert;
 
-public class RatingsWidgetTest extends WidgetTestSupport {
+public class RatingsWidgetTest extends FacetTestSupport {
 
 	private Event e1, e2, e3, e4, e5;
 
@@ -38,7 +38,7 @@ public class RatingsWidgetTest extends WidgetTestSupport {
 		addEvent(e3);
 		addEvent(e4);
 		addEvent(e5);
-		addWidget("id:%s,type:%s", WIDGET_ID, RatingsWidget.TYPE);
+		addFacet("id:%s,type:%s", WIDGET_ID, RatingsFacet.TYPE);
 
 		ObjectNode result = execute();
 		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(5);
@@ -65,7 +65,7 @@ public class RatingsWidgetTest extends WidgetTestSupport {
 		addEvent(e3);
 		addEvent(e4);
 		addEvent(e5);
-		addWidget("id:%s,type:%s,scale:%d", WIDGET_ID, RatingsWidget.TYPE, 10);
+		addFacet("id:%s,type:%s,scale:%d", WIDGET_ID, RatingsFacet.TYPE, 10);
 
 		ObjectNode result = execute();
 		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(5);
@@ -90,7 +90,7 @@ public class RatingsWidgetTest extends WidgetTestSupport {
 	@Test
 	public void testEmpty() {
 
-		addWidget("id:%s,type:%s", WIDGET_ID, RatingsWidget.TYPE);
+		addFacet("id:%s,type:%s", WIDGET_ID, RatingsFacet.TYPE);
 
 		ObjectNode result = execute();
 		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(0);

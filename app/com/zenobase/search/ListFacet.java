@@ -10,7 +10,7 @@ import org.elasticsearch.search.sort.SortOrder;
 import com.zenobase.json.Nodes;
 import com.zenobase.models.Event;
 
-public class ListWidget extends Widget {
+public class ListFacet extends Facet {
 
 	public static final String TYPE = "list";
 
@@ -19,7 +19,7 @@ public class ListWidget extends Widget {
 	private final String sort;
 	private final SortOrder order;
 
-	public ListWidget(String id, int offset, int limit, String sort, SortOrder order) {
+	public ListFacet(String id, int offset, int limit, String sort, SortOrder order) {
 		super(id);
 		this.offset = offset;
 		this.limit = limit;
@@ -46,11 +46,11 @@ public class ListWidget extends Widget {
 		return eventsNode;
 	}
 
-	public static WidgetBuilder builder() {
-		return new WidgetBuilder() {
+	public static FacetBuilder builder() {
+		return new FacetBuilder() {
 			@Override
-			public Widget build(WidgetOptions options) {
-				return new ListWidget(
+			public Facet build(FacetOptions options) {
+				return new ListFacet(
 					options.get("id"),
 					options.get("offset", Integer.class, 0),
 					options.get("limit", Integer.class, 10),

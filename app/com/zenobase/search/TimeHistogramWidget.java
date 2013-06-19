@@ -19,7 +19,7 @@ import com.google.common.collect.Maps;
 import com.zenobase.json.Nodes;
 import com.zenobase.models.Event;
 
-public class TimeHistogramWidget extends Widget {
+public class TimeHistogramWidget extends Facet {
 
 	public static final String TYPE = "time_histogram";
 
@@ -111,10 +111,10 @@ public class TimeHistogramWidget extends Widget {
 		public abstract String getLabel(int i);
 	}
 
-	public static WidgetBuilder builder() {
-		return new WidgetBuilder() {
+	public static FacetBuilder builder() {
+		return new FacetBuilder() {
 			@Override
-			public Widget build(WidgetOptions options) {
+			public Facet build(FacetOptions options) {
 				return new TimeHistogramWidget(
 					options.get("id"),
 					options.get("field", String.class, Event.TIMESTAMP.getName()),

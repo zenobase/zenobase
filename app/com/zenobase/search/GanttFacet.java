@@ -17,7 +17,7 @@ import com.zenobase.json.Nodes;
 import com.zenobase.json.TokenField;
 import com.zenobase.models.Event;
 
-public class GanttWidget extends Widget {
+public class GanttFacet extends Facet {
 
 	public static final String TYPE = "gantt";
 
@@ -32,7 +32,7 @@ public class GanttWidget extends Widget {
 	private final int limit;
 	private final DateTimeZone timezone;
 
-	private GanttWidget(String id, String keyField, String valueField, ComparatorType order, int limit, DateTimeZone timezone) {
+	private GanttFacet(String id, String keyField, String valueField, ComparatorType order, int limit, DateTimeZone timezone) {
 		super(id);
 		this.keyField = keyField;
 		this.valueField = valueField;
@@ -68,11 +68,11 @@ public class GanttWidget extends Widget {
 		return !Double.isInfinite(value) ? new DateTime((long) value, timezone) : null;
 	}
 
-	public static WidgetBuilder builder() {
-		return new WidgetBuilder() {
+	public static FacetBuilder builder() {
+		return new FacetBuilder() {
 			@Override
-			public Widget build(WidgetOptions options) {
-				return new GanttWidget(
+			public Facet build(FacetOptions options) {
+				return new GanttFacet(
 					options.get("id"),
 					options.get("field"),
 					Event.TIMESTAMP.getName(),

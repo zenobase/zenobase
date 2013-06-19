@@ -20,7 +20,7 @@ import com.zenobase.json.MeasurementField;
 import com.zenobase.json.Nodes;
 import com.zenobase.models.Event;
 
-public class ScatterPlotWidget extends Widget {
+public class ScatterPlotWidget extends Facet {
 
 	public static final String TYPE = "scatterplot";
 
@@ -141,10 +141,10 @@ public class ScatterPlotWidget extends Widget {
 		abstract double getValue(DateHistogramFacet.Entry entry);
 	}
 
-	public static WidgetBuilder builder() {
-		return new WidgetBuilder() {
+	public static FacetBuilder builder() {
+		return new FacetBuilder() {
 			@Override
-			public Widget build(WidgetOptions options) {
+			public Facet build(FacetOptions options) {
 				String xUnit = options.get("unit_x");
 				String yUnit = options.get("unit_y");
 				String statistic = options.get("statistic", String.class, "avg");

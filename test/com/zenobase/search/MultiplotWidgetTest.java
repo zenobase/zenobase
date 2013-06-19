@@ -13,7 +13,7 @@ import org.junit.Test;
 import com.zenobase.models.Event;
 import com.zenobase.testing.NodeAssert;
 
-public class MultiplotWidgetTest extends WidgetTestSupport {
+public class MultiplotWidgetTest extends FacetTestSupport {
 
 	private Event e1, e2, e3;
 
@@ -41,7 +41,7 @@ public class MultiplotWidgetTest extends WidgetTestSupport {
 		addEvent(e1);
 		addEvent(e2);
 		addEvent(e3);
-		addWidget("id:%s,type:%s,fields:distance|height|count,units:km|ft|,interval:day,statistic:avg", WIDGET_ID, MultiplotWidget.TYPE);
+		addFacet("id:%s,type:%s,fields:distance|height|count,units:km|ft|,interval:day,statistic:avg", WIDGET_ID, MultiplotFacet.TYPE);
 
 		ObjectNode result = execute();
 		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(3);
@@ -59,7 +59,7 @@ public class MultiplotWidgetTest extends WidgetTestSupport {
 	@Test
 	public void testEmpty() {
 
-		addWidget("id:%s,type:%s,fields:distance|count,units:km|", WIDGET_ID, MultiplotWidget.TYPE);
+		addFacet("id:%s,type:%s,fields:distance|count,units:km|", WIDGET_ID, MultiplotFacet.TYPE);
 
 		ObjectNode result = execute();
 		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(0);

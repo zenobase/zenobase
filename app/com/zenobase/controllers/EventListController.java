@@ -28,9 +28,9 @@ import com.zenobase.models.Role;
 import com.zenobase.oauth.Authorization;
 import com.zenobase.scripts.SpreadsheetPrinter;
 import com.zenobase.search.EventSearchBuilder;
-import com.zenobase.search.ListWidget;
+import com.zenobase.search.ListFacet;
 import com.zenobase.search.Search;
-import com.zenobase.search.WidgetOptions;
+import com.zenobase.search.FacetOptions;
 import com.zenobase.services.BucketRepository;
 import com.zenobase.services.CommandDispatcher;
 import com.zenobase.services.EventRepository;
@@ -63,7 +63,7 @@ public class EventListController extends ControllerSupport {
     	String[] constraints = request().queryString().get("q");
     	String extract = request().getQueryString("x");
     	if (hasWidgets()) {
-    		Search search = new EventSearchBuilder().addWidgets(getWidgetOptions()).addConstraints(constraints).build();
+    		Search search = new EventSearchBuilder().addFacets(getWidgetOptions()).addConstraints(constraints).build();
     		ObjectNode result = events.find(bucketId, search);
     		if (extract != null) {
     			StringWriter out = new StringWriter();
@@ -91,23 +91,23 @@ public class EventListController extends ControllerSupport {
 		return facets;
 	}
 
-	private static List<WidgetOptions> getWidgetOptions() {
-		List<WidgetOptions> options = Lists.newArrayList();
+	private static List<FacetOptions> getWidgetOptions() {
+		List<FacetOptions> options = Lists.newArrayList();
 		String[] w = getWidgetQueryStrings();
 		if (w != null) {
 			for (String option : w) {
-				options.add(WidgetOptions.parse(option));
+				options.add(FacetOptions.parse(option));
 			}
 		}
     	if (options.isEmpty()) {
     		Map<String, String> map = Maps.newLinkedHashMap();
 			map.put("id", "events");
-			map.put("type", ListWidget.TYPE);
+			map.put("type", ListFacet.TYPE);
 			copyQueryString("offset", map);
 			copyQueryString("limit", map);
 			copyQueryString("sort", map);
 			copyQueryString("order", map);
-    		options.add(new WidgetOptions(map));
+    		options.add(new FacetOptions(map));
     	}
 		return options;
 	}
