@@ -53,11 +53,9 @@ public abstract class SearchBuilderSupport {
 		return this;
 	}
 
-	public SearchBuilderSupport addConstraints(String[] expressions) {
-		if (expressions != null) {
-			for (String expression : expressions) {
-				addConstraint(expression);
-			}
+	public SearchBuilderSupport addConstraints(Iterable<String> expressions) {
+		for (String expression : expressions) {
+			addConstraint(expression);
 		}
 		return this;
 	}

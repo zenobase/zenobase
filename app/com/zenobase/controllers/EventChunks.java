@@ -20,9 +20,9 @@ final class EventChunks extends JsonChunks {
 
 	private final EventRepository events;
 	private final String bucketId;
-	private final String[] constraints;
+	private final Iterable<String> constraints;
 
-	public EventChunks(EventRepository events, String bucketId, String[] constraints) {
+	public EventChunks(EventRepository events, String bucketId, Iterable<String> constraints) {
 		this.events = events;
 		this.bucketId = bucketId;
 		this.constraints = constraints;
@@ -47,10 +47,10 @@ final class EventChunks extends JsonChunks {
 		return events.find(bucketId, createSearch(constraints, offset));
 	}
 
-	private static Search createSearch(String[] filters, int offset) {
+	private static Search createSearch(Iterable<String> constraints, int offset) {
 		ListFacet facet = new ListFacet(EventListController.EVENTS.getName(),
 			offset, LIMIT, Event.TIMESTAMP.getName(), SortOrder.ASC);
-		return new EventSearchBuilder().addConstraints(filters).addFacet(facet).build();
+		return new EventSearchBuilder().addConstraints(constraints).addFacet(facet).build();
 	}
 
 	private static int getTotal(ObjectNode result) {

@@ -9,6 +9,7 @@ import java.io.IOException;
 
 import org.codehaus.jackson.node.ObjectNode;
 import org.junit.Test;
+import com.google.common.collect.ImmutableList;
 
 import com.zenobase.common.Generator;
 import com.zenobase.json.JsonStream;
@@ -27,7 +28,7 @@ public class EventChunksTest {
 		when(events.find(eq(bucketId), any(Search.class)))
 			.thenReturn(fakeResult(total, 100), fakeResult(total, 2));
 
-		ObjectNode result = onReady(new EventChunks(events, bucketId, null));
+		ObjectNode result = onReady(new EventChunks(events, bucketId, ImmutableList.<String>of()));
 
 		assertThat(result).path(EventListController.EVENTS.getName()).hasSize(total);
 	}

@@ -2,6 +2,7 @@ package com.zenobase.controllers;
 
 
 import java.io.StringWriter;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -28,9 +29,9 @@ import com.zenobase.models.Role;
 import com.zenobase.oauth.Authorization;
 import com.zenobase.scripts.SpreadsheetPrinter;
 import com.zenobase.search.EventSearchBuilder;
+import com.zenobase.search.FacetOptions;
 import com.zenobase.search.ListFacet;
 import com.zenobase.search.Search;
-import com.zenobase.search.FacetOptions;
 import com.zenobase.services.BucketRepository;
 import com.zenobase.services.CommandDispatcher;
 import com.zenobase.services.EventRepository;
@@ -60,64 +61,66 @@ public class EventListController extends ControllerSupport {
     	if (!bucket.hasRole(auth, Role.VIEWER)) {
     		return auth == null ? unauthorized() : forbidden();
     	}
-    	String[] constraints = request().queryString().get("q");
-    	String extract = request().getQueryString("x");
-    	if (hasFacets()) {
-    		Search search = new EventSearchBuilder().addFacets(getFacetOptions()).addConstraints(constraints).build();
-    		ObjectNode result = events.find(bucketId, search);
-    		if (extract != null) {
-    			StringWriter out = new StringWriter();
-    			new SpreadsheetPrinter(out).print((ArrayNode) result.get(extract));
-    			return ok(out.toString());
-    		} else {
-    			return ok(result);
-    		}
-    	} else {
-        	response().setContentType("application/json");
-        	return ok(new EventChunks(events, bucketId, constraints));
-    	}
+    	List<String> constraints = getConstraints();
+    	List<FacetOptions> facets = getFacets();
+    	return !facets.isEmpty()
+    		? get(bucketId, constraints, facets)
+    		: get(bucketId, constraints);
     }
 
-	private static boolean hasFacets() {
-		return getFacetQueryStrings() != null
-			|| request().getQueryString("limit") != null;
+	private static List<String> getConstraints() {
+		String[] q = request().queryString().get("q");
+		return q != null ? Arrays.asList(q) : ImmutableList.<String>of();
 	}
 
-	private static String[] getFacetQueryStrings() {
+	private static List<FacetOptions> getFacets() {
+		List<FacetOptions> options = Lists.newArrayList();
 		String[] facets = request().queryString().get("facet");
 		if (facets == null) {
 			facets = request().queryString().get("w");
 		}
-		return facets;
-	}
-
-	private static List<FacetOptions> getFacetOptions() {
-		List<FacetOptions> options = Lists.newArrayList();
-		String[] w = getFacetQueryStrings();
-		if (w != null) {
-			for (String option : w) {
-				options.add(FacetOptions.parse(option));
+		if (facets != null) {
+			for (String facet : facets) {
+				options.add(FacetOptions.parse(facet));
 			}
 		}
-    	if (options.isEmpty()) {
+    	if (options.isEmpty() && request().getQueryString("limit") != null) {
     		Map<String, String> map = Maps.newLinkedHashMap();
 			map.put("id", "events");
 			map.put("type", ListFacet.TYPE);
-			copyQueryString("offset", map);
-			copyQueryString("limit", map);
-			copyQueryString("sort", map);
-			copyQueryString("order", map);
+			copyRequestParameter("offset", map);
+			copyRequestParameter("limit", map);
+			copyRequestParameter("sort", map);
+			copyRequestParameter("order", map);
     		options.add(new FacetOptions(map));
     	}
 		return options;
 	}
 
-	private static void copyQueryString(String key, Map<String, String> target) {
+	private static void copyRequestParameter(String key, Map<String, String> target) {
 		String value = request().getQueryString(key);
 		if (value != null) {
 			target.put(key, value);
 		}
 	}
+
+	public Result get(String bucketId, List<String> constraints, List<FacetOptions> facets) {
+		Search search = new EventSearchBuilder().addConstraints(constraints).addFacets(facets).build();
+		ObjectNode result = events.find(bucketId, search);
+    	String extract = request().getQueryString("x");
+		if (extract != null) {
+			StringWriter out = new StringWriter();
+			new SpreadsheetPrinter(out).print((ArrayNode) result.get(extract));
+			return ok(out.toString());
+		} else {
+			return ok(result);
+		}
+    }
+
+	public Result get(String bucketId, List<String> constraints) {
+    	response().setContentType("application/json");
+    	return ok(new EventChunks(events, bucketId, constraints));
+    }
 
 	@BodyParser.Of(value = BodyParser.Json.class)
 	public Result post(String bucketId) {
