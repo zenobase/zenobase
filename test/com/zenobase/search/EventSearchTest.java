@@ -22,7 +22,7 @@ public class EventSearchTest {
 		Search c = new EventSearchBuilder().addWidget("id:c1,type:list").addWidget("id:c2,type:count").build();
 		Search d = new EventSearchBuilder().addWidgets(new String[] { "id:c1,type:list", "id:c2,type:count" }).build();
 		Search e = new EventSearchBuilder().build();
-		Search f = new EventSearchBuilder().addConstraints(null).addWidgets(null).build();
+		Search f = new EventSearchBuilder().addConstraints(new String[0]).addWidgets(new String[0]).build();
 		Search g = new EventSearchBuilder().addConstraint("tag:a").addWidget("id:c2,type:count").build();
 		new EqualsTester()
 			.addEqualityGroup(a, b)

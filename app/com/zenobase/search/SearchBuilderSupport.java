@@ -25,8 +25,20 @@ public abstract class SearchBuilderSupport {
 		return this;
 	}
 
+	public SearchBuilderSupport addWidgets(Iterable<WidgetOptions> widgets) {
+		if (widgets != null) {
+			for (WidgetOptions widget : widgets) {
+				addWidget(widget);
+			}
+		}
+		return this;
+	}
+
 	public SearchBuilderSupport addWidget(String widget) {
-		WidgetOptions options = WidgetOptions.parse(widget);
+		return addWidget(WidgetOptions.parse(widget));
+	}
+
+	public SearchBuilderSupport addWidget(WidgetOptions options) {
 		String type = options.get("type");
 		WidgetBuilder builder = getWidgetBuilders().get(type);
 		if (builder == null) {

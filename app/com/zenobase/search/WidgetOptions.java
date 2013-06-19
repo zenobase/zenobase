@@ -7,7 +7,15 @@ import com.google.common.collect.Maps;
 
 public class WidgetOptions {
 
-	private final Map<String, String> map = Maps.newHashMap();
+	private final Map<String, String> map;
+
+	private WidgetOptions() {
+		this(Maps.<String, String>newLinkedHashMap());
+	}
+
+	public WidgetOptions(Map<String, String> map) {
+		this.map = map;
+	}
 
 	public String get(String key) {
 		return get(key, String.class, null);
@@ -47,10 +55,14 @@ public class WidgetOptions {
 		WidgetOptions options = new WidgetOptions();
 		for (String option : value.split(",")) {
 			String[] tokens = option.split(":", 2);
-			if (tokens.length == 2 && !tokens[0].isEmpty() && !tokens[1].isEmpty() && !"null".equals(tokens[1])) {
+			if (tokens.length == 2 && !isEmpty(tokens[0]) && !isEmpty(tokens[1])) {
 				options.set(tokens[0], tokens[1]);
 			}
 		}
 		return options;
+	}
+
+	private static boolean isEmpty(String value) {
+		return value == null || value.isEmpty() || "null".equals(value);
 	}
 }

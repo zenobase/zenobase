@@ -456,7 +456,7 @@ X-Command-ID: p3atfetvs2
 
 <h3>List events</h3>
 
-<pre>GET /buckets/<em>&lt;bucket_id&gt;</em><strong>/</strong>?w=<em>&lt;facet_expression&gt;</em>&amp;q=<em>&lt;constraint_expression&gt;</em>
+<pre>GET /buckets/<em>&lt;bucket_id&gt;</em><strong>/</strong>?offset=<em>&lt;offset&gt;</em>&amp;limit=<em>&lt;limit&gt;</em>&amp;order=<em>&lt;order&gt;</em>&amp;reverse=<em>&lt;reverse&gt;</em>&amp;w=<em>&lt;facet_expression&gt;</em>&amp;q=<em>&lt;constraint_expression&gt;</em>
 Host: api.zenobase.com
 Authorization: Bearer <em>&lt;access_token&gt;</em>
 </pre>
@@ -464,8 +464,16 @@ Authorization: Bearer <em>&lt;access_token&gt;</em>
 <dl>
   <dt>bucket_id</dt>
   <dd>The bucket from which to retrieve events.</dd>
+  <dt>offset</dt>
+  <dd>The offset of the first event. Defaults to <em>0</em>.</dd>
+  <dt>limit</dt>
+  <dd>How many events to return. If no limit and no facets are specified, a list of all matching events is returned.</dd>
+  <dt>order</dt>
+  <dd>The field to sort on. Defaults to <em>timestamp</em>.</dd>
+  <dt>reverse</dt>
+  <dd>Sort in ascending order. Defaults to <em>false</em></dd>
   <dt>facet_expression</dt>
-  <dd>See <a href="/#/api/facets">facets</a>. If no facets are specified, a list of all matching events is returned.
+  <dd>See <a href="/#/api/facets">facets</a>.
   More than one facet parameter can be given.</dd>
   <dt>constraint_expression</dt>
   <dd>See <a href="/#/api/constraints">constraints</a>. Optional. 
@@ -476,7 +484,7 @@ Authorization: Bearer <em>&lt;access_token&gt;</em>
 
 <h5>Request</h5>
 
-<pre>curl -i 'http://api.zenobase.com/buckets/v7jg3l5ibc/?w=id:a,type:list&amp;w=id:b,type:count&amp;q=tag:lunch' \
+<pre>curl -i 'http://api.zenobase.com/buckets/v7jg3l5ibc/?offset=0&amp;limit=10&amp;w=id:tags,type:count&amp;q=tag:lunch' \
   -H 'Authorization: Bearer e7975e8bb6eabc3ef567'
 </pre>
 
@@ -487,7 +495,7 @@ Content-Type: application/json
 
 {
   "total" : 42,
-  "a": [ 
+  "events": [ 
     { 
       "timestamp" : [ "20121024T13:10:00.000-07:00" ],
       "tag" : [ "lunch", "thai" ],
@@ -496,7 +504,7 @@ Content-Type: application/json
     },
     ...
   ],
-  "b": [ 
+  "tags": [ 
     { "label" : "lunch", "count" : 10 },
     { "label" : "thai", "count" : 1 },
     ...
@@ -996,21 +1004,6 @@ Content-Type: application/json
 <h4>Types</h4>
 
 <dl>
-<dt>list</dt>
-<dd>
-  <blockquote>
-  <dl>
-  <dt>offset=<em>&lt;integer&gt;</em></dt>
-  <dd>The offset of the first event. Defaults to <em>0</em>.</dd>
-  <dt>limit=<em>&lt;integer&gt;</em></dt>
-  <dd>How many events to return. Defaults to <em>10</em>.</dd>
-  <dt>order=<em>&lt;field name&gt;</em></dt>
-  <dd>The field to sort on. Defaults to <em>timestamp</em>.</dd>
-  <dt>reverse=<em>&lt;boolean&gt;</em></dt>
-  <dd>Sort in ascending order. Defaults to <em>false</em></dd>
-  </dl>
-  </blockquote>
-</dd>
 <dt>count</dt>
 <dd>
   <blockquote>

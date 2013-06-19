@@ -2,11 +2,15 @@ package com.zenobase.controllers;
 
 
 import java.io.StringWriter;
+import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
 import org.codehaus.jackson.node.ArrayNode;
 import org.codehaus.jackson.node.ObjectNode;
+import org.elasticsearch.common.collect.Lists;
+import org.elasticsearch.common.collect.Maps;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import play.mvc.BodyParser;
@@ -24,7 +28,9 @@ import com.zenobase.models.Role;
 import com.zenobase.oauth.Authorization;
 import com.zenobase.scripts.SpreadsheetPrinter;
 import com.zenobase.search.EventSearchBuilder;
+import com.zenobase.search.ListWidget;
 import com.zenobase.search.Search;
+import com.zenobase.search.WidgetOptions;
 import com.zenobase.services.BucketRepository;
 import com.zenobase.services.CommandDispatcher;
 import com.zenobase.services.EventRepository;
@@ -54,11 +60,10 @@ public class EventListController extends ControllerSupport {
     	if (!bucket.hasRole(auth, Role.VIEWER)) {
     		return auth == null ? unauthorized() : forbidden();
     	}
-    	String[] widgets = request().queryString().get("w");
     	String[] constraints = request().queryString().get("q");
     	String extract = request().getQueryString("x");
-    	if (widgets != null) {
-    		Search search = new EventSearchBuilder().addWidgets(widgets).addConstraints(constraints).build();
+    	if (hasWidgets()) {
+    		Search search = new EventSearchBuilder().addWidgets(getWidgets()).addConstraints(constraints).build();
     		ObjectNode result = events.find(bucketId, search);
     		if (extract != null) {
     			StringWriter out = new StringWriter();
@@ -72,6 +77,39 @@ public class EventListController extends ControllerSupport {
         	return ok(new EventChunks(events, bucketId, constraints));
     	}
     }
+
+	private static boolean hasWidgets() {
+		return request().getQueryString("w") != null
+			|| request().getQueryString("limit") != null;
+	}
+
+	private static List<WidgetOptions> getWidgets() {
+		List<WidgetOptions> options = Lists.newArrayList();
+		String[] w = request().queryString().get("w");
+		if (w != null) {
+			for (String option : w) {
+				options.add(WidgetOptions.parse(option));
+			}
+		}
+    	if (options.isEmpty()) {
+    		Map<String, String> map = Maps.newLinkedHashMap();
+			map.put("id", "events");
+			map.put("type", ListWidget.TYPE);
+			copyQueryString("offset", map);
+			copyQueryString("limit", map);
+			copyQueryString("sort", map);
+			copyQueryString("order", map);
+    		options.add(new WidgetOptions(map));
+    	}
+		return options;
+	}
+
+	private static void copyQueryString(String key, Map<String, String> target) {
+		String value = request().getQueryString(key);
+		if (value != null) {
+			target.put(key, value);
+		}
+	}
 
 	@BodyParser.Of(value = BodyParser.Json.class)
 	public Result post(String bucketId) {
