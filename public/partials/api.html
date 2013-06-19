@@ -456,7 +456,7 @@ X-Command-ID: p3atfetvs2
 
 <h3>List events</h3>
 
-<pre>GET /buckets/<em>&lt;bucket_id&gt;</em><strong>/</strong>?offset=<em>&lt;offset&gt;</em>&amp;limit=<em>&lt;limit&gt;</em>&amp;order=<em>&lt;order&gt;</em>&amp;reverse=<em>&lt;reverse&gt;</em>&amp;w=<em>&lt;facet_expression&gt;</em>&amp;q=<em>&lt;constraint_expression&gt;</em>
+<pre>GET /buckets/<em>&lt;bucket_id&gt;</em><strong>/</strong>?offset=<em>&lt;offset&gt;</em>&amp;limit=<em>&lt;limit&gt;</em>&amp;order=<em>&lt;order&gt;</em>&amp;reverse=<em>&lt;reverse&gt;</em>&amp;facet=<em>&lt;facet_expression&gt;</em>&amp;q=<em>&lt;constraint_expression&gt;</em>
 Host: api.zenobase.com
 Authorization: Bearer <em>&lt;access_token&gt;</em>
 </pre>
@@ -484,7 +484,7 @@ Authorization: Bearer <em>&lt;access_token&gt;</em>
 
 <h5>Request</h5>
 
-<pre>curl -i 'http://api.zenobase.com/buckets/v7jg3l5ibc/?offset=0&amp;limit=10&amp;w=id:tags,type:count&amp;q=tag:lunch' \
+<pre>curl -i 'http://api.zenobase.com/buckets/v7jg3l5ibc/?offset=0&amp;limit=10&amp;facet=id:tags,type:count&amp;q=tag:lunch' \
   -H 'Authorization: Bearer e7975e8bb6eabc3ef567'
 </pre>
 

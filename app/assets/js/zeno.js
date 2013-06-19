@@ -1116,11 +1116,11 @@
 	
 		$scope.search = function(params, callback) {
 			var q = $scope.constraints;
-			var w = $.map(params, function(param) {
+			var facet = $.map(params, function(param) {
 				return $.map(param, function(value, key) { return key + ':' + value }).join(',');
 			});
 			var t0 = new Date().getTime();
-			$http.get('/buckets/' + $scope.bucketId + '/?' + $.param({ 'q' : q, 'w' : w }, true))
+			$http.get('/buckets/' + $scope.bucketId + '/?' + $.param({ 'q' : q, 'facet' : facet }, true))
 				.success(function(response) { 
 					var t1 = new Date().getTime();
 					callback(response);
