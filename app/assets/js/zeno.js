@@ -103,8 +103,8 @@
 
 	app.factory('tracker', function() {
 		return {
-			event : function(category, action) {
-				_gaq.push([ '_trackEvent', category, action ]);
+			event : function(category, action, label) {
+				_gaq.push([ '_trackEvent', category, action, label ]);
 			},
 			timing : function(category, action, time, label) {
 				_gaq.push([ '_trackTiming', category, action, time, label, 100 ]);				
