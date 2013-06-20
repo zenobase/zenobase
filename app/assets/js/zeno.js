@@ -2431,6 +2431,16 @@
 
 	app.controller('CreateLocationFieldController', ['$scope', 'googleApiKey', function($scope, googleApiKey) {
 
+		function parseLatLng(value) {
+			var p = value.indexOf(',');
+			if (p == -1) {
+				return null;
+			}
+			var lat = parseFloat(value.substring(0, p));
+			var lng = parseFloat(value.substring(p + 1));
+			return !isNaN(lat) && !isNaN(lng) ? new google.maps.LatLng(lat, lng) : null;
+		}
+
 		$scope.init = function() {
 			google.load('maps', '3.12', { other_params : 'libraries=places&sensor=false&key=' + googleApiKey, callback : function() {
 				var center = new google.maps.LatLng(0, 0);
@@ -2448,8 +2458,15 @@
 				google.maps.event.addListener($scope.map, 'click', function(e) {
 					$scope.moveMarker(e.latLng);
 			  });
-				var input = document.getElementById('location-search-field');
-				var autocomplete = new google.maps.places.Autocomplete(input);
+				var input = $('#location-search-field');
+				input.on('input', function(e) {
+					var latLng = parseLatLng(input.val());
+					if (latLng) {
+						$scope.moveMarker(latLng);
+		  			$scope.map.setCenter(latLng);
+					}
+				});
+				var autocomplete = new google.maps.places.Autocomplete(input.get(0));
 				autocomplete.bindTo('bounds', $scope.map);
 			  google.maps.event.addListener(autocomplete, 'place_changed', function() {
 			  	var place = autocomplete.getPlace();
