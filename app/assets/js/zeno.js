@@ -148,9 +148,9 @@
 			.when('/users/:userId/reset', { templateUrl : cacheBuster.rewrite('/partials/reset.html') })
 			.when('/users/:userId/verify', { templateUrl : cacheBuster.rewrite('/partials/verification.html') })
 			.when('/oauth/authorize', { templateUrl : cacheBuster.rewrite('/partials/oauth.html') })
+			.when('/legal/:section', { templateUrl : cacheBuster.rewrite('/partials/legal.html'), controller : 'DocumentController' })
 			.when('/api/:section', { templateUrl : cacheBuster.rewrite('/partials/api.html'), controller : 'DocumentController' })
 			.when('/pricing/', { templateUrl : cacheBuster.rewrite('/partials/pricing.html') })
-			.when('/legal/', { templateUrl : cacheBuster.rewrite('/partials/legal.html') })
 			.otherwise({ templateUrl : cacheBuster.rewrite('/partials/404.html') });
 	}]);
 
