@@ -10,8 +10,6 @@ import com.zenobase.json.Nodes;
 import com.zenobase.tasks.Task;
 import com.zenobase.tasks.TaskManager;
 import com.zenobase.tasks.TaskTestSupport;
-import com.zenobase.tasks.withings.WithingsTask;
-import com.zenobase.tasks.withings.WithingsTaskManager;
 
 public class WithingsTest extends TaskTestSupport {
 
@@ -29,6 +27,7 @@ public class WithingsTest extends TaskTestSupport {
 		config.put("oauth_verifier", scanner.nextLine());
 		System.out.print("userid=");
 		config.put("userid", scanner.nextLine());
+		scanner.close();
 		task = apply(manager.authorize(task, config), task);
 		manager.execute(task);
 	}

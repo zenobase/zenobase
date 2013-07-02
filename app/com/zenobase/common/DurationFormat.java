@@ -25,6 +25,7 @@ public class DurationFormat {
 			String unit = token.substring(i);
 			duration = duration.withDurationAdded(valueOf(amount, unit), 1);
 		}
+		scanner.close();
 		return duration;
 	}
 

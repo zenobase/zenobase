@@ -11,10 +11,6 @@ import com.zenobase.json.Nodes;
 import com.zenobase.tasks.Task;
 import com.zenobase.tasks.TaskManager;
 import com.zenobase.tasks.TaskTestSupport;
-import com.zenobase.tasks.fitbit.FitbitIntradayTask;
-import com.zenobase.tasks.fitbit.FitbitIntradayTaskManager;
-import com.zenobase.tasks.fitbit.FitbitTask;
-import com.zenobase.tasks.fitbit.FitbitTaskManager;
 
 public class FitbitTest extends TaskTestSupport {
 
@@ -30,6 +26,7 @@ public class FitbitTest extends TaskTestSupport {
 		config.put("oauth_token", scanner.nextLine());
 		System.out.print("oauth_verifier=");
 		config.put("oauth_verifier", scanner.nextLine());
+		scanner.close();
 		task = apply(manager.authorize(task, config), task);
 		manager.execute(task);
 	}

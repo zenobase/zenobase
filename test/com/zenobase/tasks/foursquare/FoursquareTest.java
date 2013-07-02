@@ -24,6 +24,7 @@ public class FoursquareTest extends TaskTestSupport {
 		Scanner scanner = new Scanner(System.in);
 		System.out.print("code=");
 		config.put("code", scanner.nextLine());
+		scanner.close();
 		task = apply(manager.authorize(task, config), task);
 		manager.execute(task);
 	}

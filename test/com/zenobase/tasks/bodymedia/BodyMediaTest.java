@@ -10,8 +10,6 @@ import com.zenobase.json.Nodes;
 import com.zenobase.tasks.Task;
 import com.zenobase.tasks.TaskManager;
 import com.zenobase.tasks.TaskTestSupport;
-import com.zenobase.tasks.bodymedia.BodyMediaTask;
-import com.zenobase.tasks.bodymedia.BodyMediaTaskManager;
 
 public class BodyMediaTest extends TaskTestSupport {
 
@@ -26,6 +24,7 @@ public class BodyMediaTest extends TaskTestSupport {
 		System.out.print("oauth_token=");
 		config.put("oauth_token", scanner.nextLine());
 		config.put("oauth_verifier", "");
+		scanner.close();
 		task = apply(manager.authorize(task, config), task);
 		manager.execute(task);
 	}
@@ -33,6 +32,6 @@ public class BodyMediaTest extends TaskTestSupport {
 	@Test
 	public void testExisting() {
 		TaskManager manager = new BodyMediaTaskManager(apiKey, apiSecret, callbackUrl);
-		manager.execute(new BodyMediaTask(bucketId, principal, getToken(), "2013-01-01"));
+		manager.execute(new BodyMediaTask(bucketId, principal, getToken(), "2013-06-01"));
 	}
 }
