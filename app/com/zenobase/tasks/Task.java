@@ -21,7 +21,7 @@ import com.zenobase.oauth.Authorization;
 
 public class Task extends DomainNode {
 
-	public static final String TYPE_NAME = "bucket";
+	public static final String TYPE_NAME = "task";
 
 	public static final TokenField ID = new TokenField("@id", false);
 	public static final TokenField TYPE = new TokenField("type");
