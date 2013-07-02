@@ -14,7 +14,7 @@ import com.zenobase.oauth.ExpiringToken;
 
 public class BodyMediaTokenExtractor implements AccessTokenExtractor {
 
-	private static final Pattern EXPIRATION_REGEX = Pattern.compile("xoauth_token_expiration=([^&]*)");
+	private static final Pattern EXPIRATION_REGEX = Pattern.compile("xoauth_token_expiration_time=([^&]*)");
 
 	@Override
 	public ExpiringToken extract(String response) {
