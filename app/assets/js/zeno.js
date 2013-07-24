@@ -1639,13 +1639,12 @@
 
 		WidgetDialogControllerSupport($scope);
 
-		function isUnitValid() {
+		$scope.isUnitValid = function() {
 			var units = $scope.getUnits();
 			return units.length === 0
 				? $scope.settings.unit === null
 				: $.inArray($scope.settings.unit, units) != -1;
 		};
-
 		$scope.getKeyFields = function() {
 			return Field.findByType('text');
 		};
@@ -1657,7 +1656,7 @@
 			return valueField ? valueField.units : [];
 		};
 		$scope.$watch('settings.value_field', function() {
-			if (!isUnitValid()) {
+			if (!$scope.isUnitValid()) {
 				$scope.settings.unit = null;
 			}
 		});
