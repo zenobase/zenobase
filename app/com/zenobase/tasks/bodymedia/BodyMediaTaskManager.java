@@ -9,6 +9,7 @@ import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDate;
 import org.scribe.model.OAuthRequest;
 import org.scribe.model.Response;
+import org.scribe.model.Token;
 import org.scribe.model.Verb;
 import play.Logger;
 import com.google.common.base.Preconditions;
@@ -57,6 +58,7 @@ public class BodyMediaTaskManager extends OAuthTaskManager {
 	}
 
 	private Command execute(BodyMediaTask task) {
+		Token token = task.getToken();
 		if (task.isExpired()) {
 			Logger.info("Refreshing token...");
 			task.setToken(getAccessToken(task, ""));
@@ -66,7 +68,7 @@ public class BodyMediaTaskManager extends OAuthTaskManager {
 		Response response = request.send();
 		checkResponse(task, request, response);
 		BodyMediaSummaryResult result = new BodyMediaSummaryResult(parseObject(response), task.getPrincipal());
-		return createCommand(task, result);
+		return createCommand(task, result, token);
 	}
 
 	private OAuthRequest createRequest(BodyMediaTask task) {
@@ -85,13 +87,15 @@ public class BodyMediaTaskManager extends OAuthTaskManager {
 		return date.toString("yyyyMMdd");
 	}
 
-	private static Command createCommand(BodyMediaTask task, BodyMediaSummaryResult result) {
+	private static Command createCommand(BodyMediaTask task, BodyMediaSummaryResult result, Token expiredToken) {
 		CompoundCommand command = new CompoundCommand(task.getPrincipal(), "ran bodymedia task", "reverted bodymedia task");
 		command.add(UpdateTaskCommand.builder(task)
 			.set(Task.COMPLETED, task.getCompleted(), new DateTime(DateTimeZone.UTC))
 			.set(Task.STATUS, task.getStatus(), Task.Status.SUCCESS)
 			.set(Task.MARKER, task.getMarker(), result.getLastSyncDate().toString())
 			.set(Task.UNDO, task.getUndoId(), command.getId())
+			.with(Task.CREDENTIALS)
+			.set(OAuthTask.TOKEN, expiredToken, task.getToken())
 			.build());
 		for (Event event : result.getEvents()) {
 			// System.out.println("[event] " + event);
