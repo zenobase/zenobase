@@ -24,7 +24,7 @@ object ApplicationBuild extends Build {
       "net.sf.opencsv" % "opencsv" % "2.3",
       "org.scribe" % "scribe" % "1.3.3",
       "newrelic.java-agent" % "newrelic-api" % "2.20.0",
-      "org.seleniumhq.selenium" % "selenium-chrome-driver" % "2.32.0" % "test",
+      "org.seleniumhq.selenium" % "selenium-chrome-driver" % "2.33.0" % "test",
       "org.apache.httpcomponents" % "httpcore" % "4.2.3" % "test",
       "org.mockito" % "mockito-all" % "1.9.5" % "test",
       "org.jvnet.mock-javamail" % "mock-javamail" % "1.9" % "test"
