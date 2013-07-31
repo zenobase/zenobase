@@ -53,6 +53,14 @@ public abstract class OAuthTaskManager extends TaskManager {
 	}
 
 	private Command authorize(OAuthTask task, ObjectNode config) {
+		if (config.size() == 0) {
+			Token token = getRequestToken(task);
+			return UpdateTaskCommand.builder(task)
+				.set(Task.AUTHORIZATION_URL, task.getAuthorizationUrl(), getService(task).getAuthorizationUrl(token))
+				.with(Task.CREDENTIALS)
+				.set(OAuthTask.TOKEN, task.getToken(), token)
+				.build();
+		}
 		String token = config.path("oauth_token").getTextValue();
 		String verifier = config.path("oauth_verifier").asText();
 		if (token == null) {

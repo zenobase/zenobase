@@ -3,10 +3,13 @@ package com.zenobase.tasks.bodymedia;
 import java.util.Scanner;
 
 import org.codehaus.jackson.node.ObjectNode;
+import org.joda.time.DateTime;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.scribe.model.Token;
 
 import com.zenobase.json.Nodes;
+import com.zenobase.oauth.ExpiringToken;
 import com.zenobase.tasks.Task;
 import com.zenobase.tasks.TaskManager;
 import com.zenobase.tasks.TaskTestSupport;
@@ -32,6 +35,12 @@ public class BodyMediaTest extends TaskTestSupport {
 	@Test
 	public void testExisting() {
 		TaskManager manager = new BodyMediaTaskManager(apiKey, apiSecret, callbackUrl);
-		manager.execute(new BodyMediaTask(bucketId, principal, getToken(), "2013-06-01"));
+		manager.execute(new BodyMediaTask(bucketId, principal, getToken(), "2013-07-01"));
+	}
+
+	@Override
+	protected Token getToken() {
+		Token token = super.getToken();
+		return new ExpiringToken(token.getToken(), token.getSecret(), DateTime.now().minusDays(1), "");
 	}
 }
