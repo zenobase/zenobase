@@ -3170,7 +3170,7 @@
 			toHtml : function(value) {
 				return '<span class="nowrap">' +
 			  	'<i class="' + this.icon + '" title="Timestamp"></i> ' +
-					'<abbr title="' + value + '">' + moment(value).fromNowOrNow(false) + '</abbr>' +
+					'<abbr title="' + value + '">' + moment(value).zone(value).fromNowOrNow(false) + '</abbr>' +
 			  '</span>';
 			}
 		});
@@ -3368,7 +3368,7 @@
 
 	app.filter('age', [ 'moment', function(moment) {
 		return function(date) {
-			return date ? moment(date).fromNowOrNow(true) : '';
+			return date ? moment(date).zone(date).fromNowOrNow(true) : '';
 		}
 	}]);
 
