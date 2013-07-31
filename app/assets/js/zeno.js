@@ -3027,7 +3027,7 @@
 			toHtml : function(value) {
 				return '<span>' +
 			  	'<i class="' + this.icon + '" title="Resource"></i>&nbsp;' +
-			  	'<a href="' +  encode(value.url) + '" rel="nofollow">' +  encode(value.title) + '</a>' +
+			  	'<a href="' +  encode(value.url) + '" target="_blank" rel="nofollow">' +  encode(value.title) + '</a>' +
 			  '</span>';
 			}
 		});
@@ -3158,7 +3158,7 @@
 			toHtml : function(value) {
 				return '<span class="nowrap">' +
 					'<i class="' + this.icon + '" title="Location"></i> ' +
-					'<a href="http://maps.google.com/maps?q=' + encode(value.lat + ',' + value.lon) + '&t=p&z=5">' + this.toText(value) + '</a>' +
+					'<a href="http://maps.google.com/maps?q=' + encode(value.lat + ',' + value.lon) + '&t=p&z=5" target="_blank">' + this.toText(value) + '</a>' +
 				'</span>';
 			}
 		});
