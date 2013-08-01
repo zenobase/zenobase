@@ -183,7 +183,7 @@
 				.script("/js/json3-3.2.4.min.js")
 				.script("//www.google.com/jsapi").wait()
 				.script("/js/zeno-29af5bb9.min.js").wait(function() {
-					angular.bootstrap(document, ['ZenoModule']);
+					angular.bootstrap(document.documentElement, ['ZenoModule']);
 				})
 				.script("//google-analytics.com/ga.js");
 		</script>

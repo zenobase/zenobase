@@ -56,7 +56,7 @@
 				.script("/js/json3-3.2.4.min.js")
 				.script("/js/zeno-29af5bb9.min.js").wait()
 				.script("/admin/js/zeno-c5d0b69c.js").wait(function() {
-					angular.bootstrap(document, ['ZenoAdminModule']);
+					angular.bootstrap(document.documentElement, ['ZenoAdminModule']);
 				});
 		</script>
 
