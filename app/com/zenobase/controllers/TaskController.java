@@ -81,7 +81,7 @@ public class TaskController extends ControllerSupport {
     	}
     	ObjectNode body = body();
     	if (Nodes.size(body) != 1) {
-    		return badRequest();
+    		return badRequest("no data");
     	}
     	Command command = null;
     	ObjectNode credentials = Task.CREDENTIALS.getValue(body);
@@ -93,7 +93,7 @@ public class TaskController extends ControllerSupport {
 	    	command = UpdateTaskCommand.builder(task).set(Task.SETTINGS, task.getSettings(), settings).build();
     	}
     	if (command == null) {
-    		return badRequest();
+    		return badRequest("nothing to do");
     	}
     	String commandId = dispatcher.dispatch(command);
 		response().setHeader(COMMAND_ID, commandId);

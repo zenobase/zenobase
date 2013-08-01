@@ -48,19 +48,13 @@ public abstract class OAuthTaskManager extends TaskManager {
 
 	@Override
 	public Command authorize(Task task, ObjectNode config) {
-		Preconditions.checkState(!task.isEnabled(), "Task is already enabled: %s", task.getId());
-		return authorize(task.as(OAuthTask.class), config);
+		return config.size() != 0 ?
+			authorize(task.as(OAuthTask.class), config) :
+			deauthorize(task.as(OAuthTask.class));
 	}
 
 	private Command authorize(OAuthTask task, ObjectNode config) {
-		if (config.size() == 0) {
-			Token token = getRequestToken(task);
-			return UpdateTaskCommand.builder(task)
-				.set(Task.AUTHORIZATION_URL, task.getAuthorizationUrl(), getService(task).getAuthorizationUrl(token))
-				.with(Task.CREDENTIALS)
-				.set(OAuthTask.TOKEN, task.getToken(), token)
-				.build();
-		}
+		Preconditions.checkState(!task.isEnabled(), "Task is already enabled: %s", task.getId());
 		String token = config.path("oauth_token").getTextValue();
 		String verifier = config.path("oauth_verifier").asText();
 		if (token == null) {
@@ -75,6 +69,15 @@ public abstract class OAuthTaskManager extends TaskManager {
 			.set(Task.AUTHORIZATION_URL, task.getAuthorizationUrl(), null)
 			.with(Task.CREDENTIALS)
 			.set(OAuthTask.TOKEN, task.getToken(), getAccessToken(task, verifier))
+			.build();
+	}
+
+	private Command deauthorize(OAuthTask task) {
+		Token token = getRequestToken(task);
+		return UpdateTaskCommand.builder(task)
+			.set(Task.AUTHORIZATION_URL, task.getAuthorizationUrl(), getService(task).getAuthorizationUrl(token))
+			.with(Task.CREDENTIALS)
+			.set(OAuthTask.TOKEN, task.getToken(), token)
 			.build();
 	}
 
