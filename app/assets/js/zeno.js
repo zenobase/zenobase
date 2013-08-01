@@ -210,7 +210,7 @@
 			$scope.dialog = null;
 		};
 
-		$scope.$on('$routeChangeStart', function(x, y) {
+		$scope.$on('$routeChangeStart', function() {
 			$scope.alert.clear();
 		});
 		$scope.$on('$routeChangeSuccess', function() {
