@@ -1,6 +1,7 @@
 package com.zenobase.services;
 
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import play.Logger;
 import play.Logger.ALogger;
 import com.google.inject.Inject;
@@ -39,7 +40,7 @@ public class CommandDispatcher {
 	}
 
 	private static boolean isCurrentMonth(DateTime time) {
-		return time.getMonthOfYear() == DateTime.now().getMonthOfYear();
+		return time.getMonthOfYear() == DateTime.now(DateTimeZone.UTC).getMonthOfYear();
 	}
 
 	private void dispatch(CompoundCommand command) {
