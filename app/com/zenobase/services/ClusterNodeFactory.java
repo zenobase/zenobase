@@ -28,7 +28,8 @@ public class ClusterNodeFactory extends NodeFactorySupport {
 			.put("cloud.aws.access_key", accessKey)
 			.put("cloud.aws.secret_key", secretKey)
 			.put("cloud.aws.region", region)
-			.put("discovery.type", "ec2");
+			.put("discovery.type", "ec2")
+			.put("discovery.ec2.ping_timeout", "15s");
 		return NodeBuilder.nodeBuilder().clusterName(clusterName).client(true).local(false).settings(settings.build()).node();
 	}
 }
