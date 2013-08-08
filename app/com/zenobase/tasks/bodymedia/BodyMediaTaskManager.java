@@ -72,7 +72,7 @@ public class BodyMediaTaskManager extends OAuthTaskManager {
 	}
 
 	private OAuthRequest createRequest(BodyMediaTask task) {
-		return new OAuthRequest(Verb.GET, String.format("http://api.bodymedia.com/v2/json/summary/day/%s/%s?api_key=%s", formatMarker(getFromDate(task)), formatMarker(new LocalDate()), apiKey));
+		return new OAuthRequest(Verb.GET, String.format("https://api.bodymedia.com/v2/json/summary/day/%s/%s?api_key=%s", formatMarker(getFromDate(task)), formatMarker(new LocalDate()), apiKey));
 	}
 
 	private static LocalDate getFromDate(Task task) {
