@@ -23,7 +23,7 @@ object ApplicationBuild extends Build {
       "org.jsoup" % "jsoup" % "1.7.2",
       "net.sf.opencsv" % "opencsv" % "2.3",
       "org.scribe" % "scribe" % "1.3.3",
-      "newrelic.java-agent" % "newrelic-api" % "2.20.0",
+      "com.newrelic.agent.java" % "newrelic-api" % "2.21.1",
       "org.seleniumhq.selenium" % "selenium-chrome-driver" % "2.33.0" % "test",
       "org.apache.httpcomponents" % "httpcore" % "4.2.3" % "test",
       "org.mockito" % "mockito-all" % "1.9.5" % "test",
