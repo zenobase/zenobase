@@ -17,7 +17,7 @@ object ApplicationBuild extends Build {
       "com.google.inject" % "guice" % "3.0",
       "com.google.inject.extensions" % "guice-multibindings" % "3.0",
       "org.elasticsearch" % "elasticsearch" % "0.90.3",
-      "org.elasticsearch" % "elasticsearch-cloud-aws" % "1.12.0",
+      "org.elasticsearch" % "elasticsearch-cloud-aws" % "1.14.0",
       "org.elasticsearch" % "elasticsearch-lang-javascript" % "1.4.0" exclude("log4j", "log4j"),
       "org.jscience" % "jscience" % "4.3.1",
       "org.jsoup" % "jsoup" % "1.7.2",
