@@ -11,7 +11,7 @@ object ApplicationBuild extends Build {
 
     val appDependencies = Seq(
       javaCore,
-      "javax.mail" % "mail" % "1.4.6",
+      "javax.mail" % "mail" % "1.4.7",
       "com.google.guava" % "guava" % "14.0.1",
       "com.google.guava" % "guava-testlib" % "14.0.1" % "test",
       "com.google.inject" % "guice" % "3.0",
@@ -23,9 +23,9 @@ object ApplicationBuild extends Build {
       "org.jsoup" % "jsoup" % "1.7.2",
       "net.sf.opencsv" % "opencsv" % "2.3",
       "org.scribe" % "scribe" % "1.3.3",
-      "com.newrelic.agent.java" % "newrelic-api" % "2.21.1",
-      "org.seleniumhq.selenium" % "selenium-chrome-driver" % "2.33.0" % "test",
-      "org.apache.httpcomponents" % "httpcore" % "4.2.3" % "test",
+      "com.newrelic.agent.java" % "newrelic-api" % "2.21.3",
+      "org.seleniumhq.selenium" % "selenium-chrome-driver" % "2.35.0" % "test",
+      "org.apache.httpcomponents" % "httpcore" % "4.2.5" % "test",
       "org.mockito" % "mockito-all" % "1.9.5" % "test",
       "org.jvnet.mock-javamail" % "mock-javamail" % "1.9" % "test"
     )
