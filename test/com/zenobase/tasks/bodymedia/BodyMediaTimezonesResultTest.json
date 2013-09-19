@@ -1,0 +1,18 @@
+{
+	"timezones" : [
+		{
+			"value" : "US/Pacific",
+			"startDate" : "20121230T193614-0800",
+			"endDate" : "20130509T233000-0800"
+		},
+		{
+			"value" : "Europe/Amsterdam",
+			"startDate" : "20130510T083000+0100",
+			"endDate" : "20130513T220000+0100"
+		},
+		{
+			"value" : "US/Pacific",
+			"startDate" : "20130513T130000-0800"
+		}
+	]
+}
