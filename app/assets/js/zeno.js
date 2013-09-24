@@ -2017,8 +2017,28 @@
 				$scope.update(null, result);
 			});
 		};
+		function applyLag(data, lag) {
+			if (lag < 0) {
+				for (var i = 0; i < data.length; ++i) {
+					if (i - lag < 0 || i - lag >= data.length) {
+						data[i][1] = null;
+					} else {
+						data[i][1] = data[i - lag][1];
+					}
+				}
+			} else if (lag > 0) {
+				for (var i = data.length - 1; i >= 0; --i) {
+					if (i - lag < 0 || i - lag >= data.length) {
+						data[i][1] = null;
+					} else {
+						data[i][1] = data[i - lag][1];
+					}
+				}
+			}
+		}
 		$scope.update = function(event, result) {
 			$scope.data = result[$scope.settings.id] || [];
+			applyLag($scope.data, $scope.settings.lag);
 			$timeout($scope.draw, 0); // delay for correct width
 		};
 		$scope.draw = function() {

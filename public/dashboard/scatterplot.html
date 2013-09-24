@@ -67,6 +67,13 @@
 						<p class="help-block">The statistic to use when aggregating.</p>
 					</div>
 				</div>
+				<div class="control-group">
+					<label class="control-label" for="lag">Lag</label>
+					<div class="controls">
+						<input name="lag" type="number" data-ng-model="settings.lag"/>
+						<p class="help-block">By how many time units to offset the second data series.</p>
+					</div>
+				</div>
 			</div>
 			<div class="modal-footer">
 				<button class="btn btn-primary" data-ng-click="save()" data-ng-disabled="!form.$valid || !valid()">Update</button>
