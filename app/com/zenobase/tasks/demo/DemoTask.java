@@ -1,6 +1,6 @@
 package com.zenobase.tasks.demo;
 
-import org.codehaus.jackson.node.ObjectNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import com.zenobase.json.TokenField;
 import com.zenobase.models.Identity;

@@ -11,7 +11,7 @@ import static org.mockito.Mockito.verify;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import org.codehaus.jackson.node.ObjectNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;

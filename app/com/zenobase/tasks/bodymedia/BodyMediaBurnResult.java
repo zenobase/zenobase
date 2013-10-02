@@ -4,8 +4,8 @@ import java.util.List;
 
 import javax.measure.quantity.Energy;
 
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.node.ObjectNode;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.elasticsearch.common.collect.Iterables;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
@@ -61,7 +61,7 @@ class BodyMediaBurnResult {
 				Logger.warn("Can't find timzone for " + date.toLocalDateTime(time) + " in " + timezones);
 				continue;
 			}
-			if (minuteNode.path("source").getTextValue().equals("X")) {
+			if (minuteNode.path("source").textValue().equals("X")) {
 				events.clear(); // incomplete day
 				return;
 			}
@@ -74,7 +74,7 @@ class BodyMediaBurnResult {
 		Event event = new Event();
 		event.setValue(Event.TAG, TAG);
 		event.setValue(Event.TIMESTAMP, timestamp);
-		event.setValue(Event.ENERGY, Measures.<Energy>valueOf(node.path("cals").getDecimalValue(), "cal"));
+		event.setValue(Event.ENERGY, Measures.<Energy>valueOf(node.path("cals").decimalValue(), "cal"));
 		event.setValue(Event.AUTHOR, author);
 		event.setValue(Event.SOURCE, SOURCE);
 		events.add(event);
@@ -82,6 +82,6 @@ class BodyMediaBurnResult {
 
 	private static LocalDate getLocalDate(JsonNode node) {
 		Preconditions.checkArgument(!node.isMissingNode());
-		return LocalDate.parse(node.getTextValue(), DATE_FORMAT);
+		return LocalDate.parse(node.textValue(), DATE_FORMAT);
 	}
 }

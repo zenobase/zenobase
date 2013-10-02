@@ -4,7 +4,7 @@ import static org.fest.assertions.Assertions.assertThat;
 
 import java.util.Collections;
 
-import org.codehaus.jackson.node.ObjectNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.junit.Test;
 import com.google.common.collect.ImmutableList;
 

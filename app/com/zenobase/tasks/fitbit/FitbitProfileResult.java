@@ -5,7 +5,7 @@ import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
 import javax.measure.unit.Unit;
 
-import org.codehaus.jackson.JsonNode;
+import com.fasterxml.jackson.databind.JsonNode;
 import org.joda.time.DateTimeZone;
 
 class FitbitProfileResult {
@@ -17,11 +17,11 @@ class FitbitProfileResult {
 	}
 
 	public DateTimeZone getTimezone() {
-		return DateTimeZone.forOffsetMillis(node.path("user").path("offsetFromUTCMillis").getIntValue());
+		return DateTimeZone.forOffsetMillis(node.path("user").path("offsetFromUTCMillis").intValue());
 	}
 
 	public String getDistanceLocale() {
-		return node.path("user").path("distanceUnit").getTextValue();
+		return node.path("user").path("distanceUnit").textValue();
 	}
 
 	public Unit<Length> getDistanceUnit() {

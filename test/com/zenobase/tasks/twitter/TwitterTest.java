@@ -2,7 +2,7 @@ package com.zenobase.tasks.twitter;
 
 import java.util.Scanner;
 
-import org.codehaus.jackson.node.ObjectNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.junit.Ignore;
 import org.junit.Test;
 

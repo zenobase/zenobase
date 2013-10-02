@@ -5,14 +5,18 @@ import java.util.Map;
 
 import javax.measure.unit.Unit;
 
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.node.ArrayNode;
-import org.codehaus.jackson.node.ObjectNode;
 import org.elasticsearch.action.search.SearchResponse;
+import org.elasticsearch.index.query.FilterBuilder;
+import org.elasticsearch.index.query.FilterBuilders;
+import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.elasticsearch.search.facet.FacetBuilders;
 import org.elasticsearch.search.facet.datehistogram.DateHistogramFacet;
 import org.joda.time.DateTimeZone;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.common.base.Strings;
 import com.google.common.collect.Maps;
 
 import com.zenobase.common.Measures;
@@ -26,21 +30,30 @@ public class ScatterPlotFacet extends Facet {
 
 	private final String keyField;
 	private final String xField, yField;
+	private final FilterBuilder xFilter, yFilter;
 	private final String interval;
 	private final DateTimeZone timezone;
 	private final Unit<?> xUnit, yUnit;
 	private final Statistic statistic;
 
-	public ScatterPlotFacet(String id, String keyField, String xField, Unit<?> xUnit, String yField, Unit<?> yUnit, String interval, DateTimeZone timezone, Statistic statistic) {
+	public ScatterPlotFacet(String id, String keyField, String xField, Unit<?> xUnit, String xFilter, String yField, Unit<?> yUnit, String yFilter, String interval, DateTimeZone timezone, Statistic statistic) {
 		super(id);
 		this.keyField = keyField;
 		this.xField = xField;
+		this.xFilter = filter(xFilter);
 		this.xUnit = xUnit;
 		this.yField = yField;
 		this.yUnit = yUnit;
+		this.yFilter = filter(yFilter);
 		this.interval = interval;
 		this.timezone = timezone;
 		this.statistic = statistic;
+	}
+
+	private static FilterBuilder filter(String expression) {
+		return !Strings.isNullOrEmpty(expression)
+			? FilterBuilders.queryFilter(QueryBuilders.queryString(expression))
+			: FilterBuilders.matchAllFilter();
 	}
 
 	private String getXId() {
@@ -53,16 +66,17 @@ public class ScatterPlotFacet extends Facet {
 
 	@Override
 	public void configure(SearchSourceBuilder builder) {
-		addFacet(builder, getXId(), xField, xUnit);
-		addFacet(builder, getYId(), yField, yUnit);
+		addFacet(builder, getXId(), xField, xUnit, xFilter);
+		addFacet(builder, getYId(), yField, yUnit, yFilter);
 	}
 
-	private void addFacet(SearchSourceBuilder builder, String id, String field, Unit<?> unit) {
+	private void addFacet(SearchSourceBuilder builder, String id, String field, Unit<?> unit, FilterBuilder filter) {
 		builder.facet(FacetBuilders.dateHistogramFacet(id)
 			.keyField(keyField).valueField(unit == Unit.ONE ? field : field + "." + MeasurementField.VALUE_SI.getName())
 			.interval(interval)
 			.preZone(timezone.toString())
-			.preZoneAdjustLargeInterval(true));
+			.preZoneAdjustLargeInterval(true)
+			.facetFilter(filter));
 	}
 
 	@Override
@@ -153,8 +167,10 @@ public class ScatterPlotFacet extends Facet {
 					Event.TIMESTAMP.getName(),
 					options.get("field_x"),
 					xUnit != null ? Measures.parseUnit(xUnit) : Unit.ONE,
+					options.get("filter_x"),
 					options.get("field_y"),
 					yUnit != null ? Measures.parseUnit(yUnit) : Unit.ONE,
+					options.get("filter_y"),
 					options.get("interval", String.class, "day"),
 					options.get("timezone", DateTimeZone.class, DateTimeZone.UTC),
 					Statistic.valueOf(statistic.toUpperCase()));

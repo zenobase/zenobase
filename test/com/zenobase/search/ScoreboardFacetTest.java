@@ -5,7 +5,7 @@ import static com.zenobase.testing.NodeAssert.assertThat;
 import javax.measure.DecimalMeasure;
 import javax.measure.quantity.Length;
 
-import org.codehaus.jackson.node.ObjectNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.junit.Before;
 import org.junit.Test;
 

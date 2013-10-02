@@ -1,6 +1,6 @@
 package com.zenobase.json;
 
-import org.codehaus.jackson.node.ObjectNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.ImmutableMultimap;
 
 import com.zenobase.search.ConstraintBuilder;

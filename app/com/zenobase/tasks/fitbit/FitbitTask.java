@@ -1,6 +1,6 @@
 package com.zenobase.tasks.fitbit;
 
-import org.codehaus.jackson.node.ObjectNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.scribe.model.Token;
 
 import com.zenobase.json.TokenField;

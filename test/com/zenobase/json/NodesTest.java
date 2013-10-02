@@ -4,9 +4,9 @@ import static com.zenobase.testing.NodeAssert.assertThat;
 
 import java.util.List;
 
-import org.codehaus.jackson.node.ArrayNode;
-import org.codehaus.jackson.node.IntNode;
-import org.codehaus.jackson.node.ObjectNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.IntNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.fest.assertions.Assertions;
 import org.junit.Test;
 import com.google.common.collect.Lists;

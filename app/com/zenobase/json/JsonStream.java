@@ -3,17 +3,17 @@ package com.zenobase.json;
 import java.io.IOException;
 import java.io.OutputStream;
 
-import org.codehaus.jackson.JsonFactory;
-import org.codehaus.jackson.JsonGenerator;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.map.ObjectMapper;
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class JsonStream {
 
 	private final JsonGenerator generator;
 
 	public JsonStream(OutputStream out) throws IOException {
-		generator = new JsonFactory().createJsonGenerator(out);
+		generator = new JsonFactory().createGenerator(out);
 		generator.setCodec(new ObjectMapper());
 		generator.useDefaultPrettyPrinter();
 		generator.writeStartObject();

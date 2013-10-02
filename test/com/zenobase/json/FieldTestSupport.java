@@ -2,7 +2,7 @@ package com.zenobase.json;
 
 import static org.fest.assertions.Assertions.assertThat;
 
-import org.codehaus.jackson.node.ObjectNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 public abstract class FieldTestSupport {
 

@@ -3,9 +3,9 @@ package com.zenobase.json;
 import java.util.Iterator;
 import java.util.Map;
 
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.node.NullNode;
-import org.codehaus.jackson.node.ObjectNode;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.NullNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Sets;
 
@@ -25,7 +25,7 @@ public class JsonDiff {
 	}
 
 	private void addedOrModified(JsonNode original, JsonNode modified) {
-		for (Iterator<Map.Entry<String, JsonNode>> i = modified.getFields(); i.hasNext();) {
+		for (Iterator<Map.Entry<String, JsonNode>> i = modified.fields(); i.hasNext();) {
 			Map.Entry<String, JsonNode> entry = i.next();
 			JsonNode value = original.path(entry.getKey());
 			if (value.isMissingNode()) {
@@ -43,7 +43,7 @@ public class JsonDiff {
 					"Expected <%s> but found <%s> in field <%s>", entry.getValue(), value, entry.getKey());
 			}
 		}
-		for (String removedField : Sets.difference(Sets.newHashSet(original.getFieldNames()), Sets.newHashSet(modified.getFieldNames()))) {
+		for (String removedField : Sets.difference(Sets.newHashSet(original.fieldNames()), Sets.newHashSet(modified.fieldNames()))) {
 			from.put(removedField, original.get(removedField));
 			to.put(removedField, NullNode.getInstance());
 		}

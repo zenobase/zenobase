@@ -2,7 +2,7 @@ package com.zenobase.controllers;
 
 import java.util.Map;
 
-import org.codehaus.jackson.node.ObjectNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.Maps;
 
 import com.zenobase.json.Nodes;

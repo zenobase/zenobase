@@ -8,7 +8,7 @@ import javax.measure.quantity.Energy;
 import javax.measure.quantity.Length;
 import javax.measure.unit.Unit;
 
-import org.codehaus.jackson.JsonNode;
+import com.fasterxml.jackson.databind.JsonNode;
 import org.joda.time.DateTime;
 import com.google.common.collect.Lists;
 
@@ -56,13 +56,13 @@ class FitbitActivitiesResult {
 	}
 
 	private int getSteps() {
-		return node.path("summary").path(tag).getIntValue();
+		return node.path("summary").path(tag).intValue();
 	}
 
 	private DecimalMeasure<Length> getDistance() {
 		for (JsonNode distance : node.path("summary").path("distances")) {
-			if ("total".equals(distance.path("activity").getTextValue())) {
-				BigDecimal value = distance.path("distance").getDecimalValue();
+			if ("total".equals(distance.path("activity").textValue())) {
+				BigDecimal value = distance.path("distance").decimalValue();
 				return value != null ? DecimalMeasure.valueOf(value, distanceUnit) : null;
 			}
 		}
@@ -70,12 +70,12 @@ class FitbitActivitiesResult {
 	}
 
 	private DecimalMeasure<Length> getElevation() {
-		BigDecimal value = node.path("summary").path("elevation").getDecimalValue();
+		BigDecimal value = node.path("summary").path("elevation").decimalValue();
 		return value != null ? DecimalMeasure.valueOf(value, heightUnit) : null;
 	}
 
 	private DecimalMeasure<Energy> getCalories() {
-		BigDecimal value = node.path("summary").path("activityCalories").getDecimalValue();
+		BigDecimal value = node.path("summary").path("activityCalories").decimalValue();
 		Unit<Energy> unit = Measures.parseUnit("cal");
 		return value != null ? DecimalMeasure.valueOf(value, unit) : null;
 	}

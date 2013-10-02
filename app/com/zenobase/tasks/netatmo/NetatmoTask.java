@@ -1,6 +1,6 @@
 package com.zenobase.tasks.netatmo;
 
-import org.codehaus.jackson.node.ObjectNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.scribe.model.Token;
 
 import com.zenobase.models.Identity;

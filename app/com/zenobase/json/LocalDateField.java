@@ -1,9 +1,9 @@
 package com.zenobase.json;
 
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.node.NullNode;
-import org.codehaus.jackson.node.ObjectNode;
-import org.codehaus.jackson.node.TextNode;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.NullNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.fasterxml.jackson.databind.node.TextNode;
 import org.joda.time.LocalDate;
 
 public class LocalDateField extends Field<LocalDate> {
@@ -14,7 +14,7 @@ public class LocalDateField extends Field<LocalDate> {
 
 	@Override
 	protected LocalDate getValue(JsonNode node) {
-		return LocalDate.parse(node.getTextValue());
+		return LocalDate.parse(node.textValue());
 	}
 
 	@Override

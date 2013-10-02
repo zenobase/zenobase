@@ -7,6 +7,7 @@ import javax.inject.Inject;
 
 import play.Logger;
 import play.libs.F;
+import play.libs.F.Promise;
 import play.libs.WS;
 import play.mvc.Result;
 
@@ -19,14 +20,14 @@ public class OpenGraphController extends ControllerSupport {
 		super(security);
 	}
 
-	public Result get(final String url) {
+	public Promise<Result> get(final String url) {
 		if (!url.startsWith("http")) {
 			return get("http://" + url);
 		}
 		if (!isValid(url)) {
-			return badRequest("Invalid URL: " + url);
+			return Promise.<Result>pure(badRequest("Invalid URL: " + url));
 		}
-		return async(WS.url(url).get()
+		return WS.url(url).get()
 			.map(new F.Function<WS.Response, Result>() {
 				@Override
 				public Result apply(WS.Response response) {
@@ -50,7 +51,7 @@ public class OpenGraphController extends ControllerSupport {
 					return badRequest(message);
 				}
 			}
-		));
+		);
 	}
 
 	private static boolean isValid(String url) {

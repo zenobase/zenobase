@@ -4,7 +4,7 @@ import static com.zenobase.testing.PartialListAssert.assertThat;
 
 import java.util.List;
 
-import org.codehaus.jackson.node.ObjectNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.junit.Test;
 import com.google.common.base.Function;
 import com.google.common.collect.ImmutableList;

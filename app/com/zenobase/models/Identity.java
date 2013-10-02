@@ -1,6 +1,6 @@
 package com.zenobase.models;
 
-import org.codehaus.jackson.node.ObjectNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import com.zenobase.common.Generator;
 import com.zenobase.json.Nodes;

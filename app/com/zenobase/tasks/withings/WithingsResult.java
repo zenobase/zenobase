@@ -9,8 +9,8 @@ import javax.measure.quantity.Mass;
 import javax.measure.unit.SI;
 import javax.measure.unit.Unit;
 
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.node.ObjectNode;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import com.google.common.base.Strings;
@@ -38,7 +38,7 @@ class WithingsResult {
 	}
 
 	public int getStatus() {
-		return node.path("status").isInt() ? node.path("status").getIntValue() : -1;
+		return node.path("status").isInt() ? node.path("status").intValue() : -1;
 	}
 
 	public String getMarker() {
@@ -55,7 +55,7 @@ class WithingsResult {
 
 	private void addEvents(JsonNode node, List<Event> events) {
 		for (JsonNode measure : node.path("measures")) {
-			switch (measure.path("type").getIntValue()) {
+			switch (measure.path("type").intValue()) {
 				case 1: // weight
 					Event event = new Event();
 					event.setValue(Event.TAG, tag);
@@ -74,12 +74,12 @@ class WithingsResult {
 	}
 
 	private static BigDecimal getBigDecimal(JsonNode node) {
-		int value = node.path("value").getIntValue();
-		int scale = node.path("unit").getIntValue();
+		int value = node.path("value").intValue();
+		int scale = node.path("unit").intValue();
 		return value != 0 ? BigDecimal.valueOf(value, -scale) : null;
 	}
 
 	private static DateTime getDateTime(JsonNode node, DateTimeZone timezone) {
-		return new DateTime(node.path("date").getLongValue() * 1000, timezone);
+		return new DateTime(node.path("date").longValue() * 1000, timezone);
 	}
 }

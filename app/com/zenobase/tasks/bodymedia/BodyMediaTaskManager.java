@@ -3,7 +3,7 @@ package com.zenobase.tasks.bodymedia;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.codehaus.jackson.node.ObjectNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDate;
@@ -43,7 +43,7 @@ public class BodyMediaTaskManager extends OAuthTaskManager {
 	@Override
 	public OAuthTask newTask(String bucketId, Identity principal, ObjectNode settings) {
 		OAuthTask task = super.newTask(bucketId, principal, settings);
-		task.setMarker(parseMarker(settings.path("marker").getTextValue()).toString());
+		task.setMarker(parseMarker(settings.path("marker").textValue()).toString());
 		return task;
 	}
 

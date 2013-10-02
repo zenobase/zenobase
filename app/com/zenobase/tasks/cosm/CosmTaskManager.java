@@ -5,7 +5,7 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.codehaus.jackson.node.ObjectNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.Duration;
@@ -62,7 +62,7 @@ public class CosmTaskManager extends OAuthTaskManager {
 	}
 
 	private Command authorize(OAuthTask task, ObjectNode config) {
-		String code = config.get("code").getTextValue();
+		String code = config.get("code").textValue();
 		if (code == null) {
 			Logger.warn(String.format("Couldn't authorize %s task <%s>: %s",
 				task.getType(), task.getId(), config));

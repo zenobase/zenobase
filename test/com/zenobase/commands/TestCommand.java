@@ -1,6 +1,6 @@
 package com.zenobase.commands;
 
-import org.codehaus.jackson.node.ObjectNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.joda.time.DateTime;
 import com.google.common.base.Preconditions;
 

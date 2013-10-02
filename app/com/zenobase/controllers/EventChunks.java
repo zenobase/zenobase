@@ -2,7 +2,7 @@ package com.zenobase.controllers;
 
 import java.io.IOException;
 
-import org.codehaus.jackson.node.ObjectNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.elasticsearch.search.sort.SortOrder;
 import com.google.common.base.Preconditions;
 

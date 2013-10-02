@@ -1,7 +1,7 @@
 package com.zenobase.tasks;
 
-import org.codehaus.jackson.node.ArrayNode;
-import org.codehaus.jackson.node.ObjectNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.scribe.builder.ServiceBuilder;
@@ -55,7 +55,7 @@ public abstract class OAuthTaskManager extends TaskManager {
 
 	private Command authorize(OAuthTask task, ObjectNode config) {
 		Preconditions.checkState(!task.isEnabled(), "Task is already enabled: %s", task.getId());
-		String token = config.path("oauth_token").getTextValue();
+		String token = config.path("oauth_token").textValue();
 		String verifier = config.path("oauth_verifier").asText();
 		if (token == null) {
 			Logger.warn(String.format("Couldn't authorize %s task <%s>: %s",

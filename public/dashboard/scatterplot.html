@@ -26,31 +26,45 @@
 					</div>
 				</div>
 				<div class="control-group">
-					<label class="control-label" for="field">Field (x)</label>
+					<label class="control-label" for="fieldX">Field (x)</label>
 					<div class="controls">
-						<select name="field" data-ng-model="settings.field_x" data-ng-options="field.name as field.name for field in getFields()"></select>
+						<select name="fieldX" data-ng-model="settings.field_x" data-ng-options="field.name as field.name for field in getFields()"></select>
 						<p class="help-block">The first field to correlate.</p>
 					</div>
 				</div>
 				<div class="control-group">
-					<label class="control-label" for="unit">Unit (x)</label>
+					<label class="control-label" for="unitX">Unit (x)</label>
 					<div class="controls">
-						<select name="unit" data-ng-model="settings.unit_x" data-ng-options="unit for unit in getUnits(settings.field_x)"></select>
+						<select name="unitX" data-ng-model="settings.unit_x" data-ng-options="unit for unit in getUnits(settings.field_x)"></select>
 						<p class="help-block">The unit of the first field.</p>
 					</div>
 				</div>
 				<div class="control-group">
-					<label class="control-label" for="field">Field (y)</label>
+					<label class="control-label" for="filterX">Filter (x)</label>
 					<div class="controls">
-						<select name="field" data-ng-model="settings.field_y" data-ng-options="field.name as field.name for field in getFields()"></select>
+						<input name="filterX" type="text" data-ng-model="settings.filter_x"/>
+						<p class="help-block">Optional constraint.</p>
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label" for="fieldY">Field (y)</label>
+					<div class="controls">
+						<select name="fieldY" data-ng-model="settings.field_y" data-ng-options="field.name as field.name for field in getFields()"></select>
 						<p class="help-block">The second field to correlate.</p>
 					</div>
 				</div>
 				<div class="control-group">
-					<label class="control-label" for="unit">Unit (y)</label>
+					<label class="control-label" for="unitY">Unit (y)</label>
 					<div class="controls">
-						<select name="unit" data-ng-model="settings.unit_y" data-ng-options="unit for unit in getUnits(settings.field_y)"></select>
+						<select name="unitY" data-ng-model="settings.unit_y" data-ng-options="unit for unit in getUnits(settings.field_y)"></select>
 						<p class="help-block">The unit of the second field.</p>
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label" for="filterY">Filter (y)</label>
+					<div class="controls">
+						<input name="filterY" type="text" data-ng-model="settings.filter_y"/>
+						<p class="help-block">Optional constraint.</p>
 					</div>
 				</div>
 				<div class="control-group">

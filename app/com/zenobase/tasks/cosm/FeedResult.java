@@ -6,7 +6,7 @@ import java.util.List;
 import javax.measure.unit.Dimension;
 import javax.measure.unit.Unit;
 
-import org.codehaus.jackson.JsonNode;
+import com.fasterxml.jackson.databind.JsonNode;
 import org.joda.time.DateTime;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Iterables;
@@ -49,7 +49,7 @@ class FeedResult {
 	private static List<String> getTags(JsonNode node) {
 		List<String> tags = Lists.newArrayList();
 		for (JsonNode tag : node.path("tags")) {
-			tags.add(tag.getTextValue());
+			tags.add(tag.textValue());
 		}
 		return tags;
 	}
@@ -66,14 +66,14 @@ class FeedResult {
 	}
 
 	private static Field<Object> getDatastreamField(JsonNode node) {
-		String fieldName = node.path("id").getTextValue();
+		String fieldName = node.path("id").textValue();
 		Preconditions.checkNotNull(fieldName, "Can't extract a field name from: <%s>", node);
 		return (Field<Object>) Event.getField(fieldName.toLowerCase());
 	}
 
 	private static Unit<?> getDatastreamUnit(JsonNode node) {
 		try {
-			String symbol = node.path("unit").path("symbol").getTextValue();
+			String symbol = node.path("unit").path("symbol").textValue();
 			return symbol != null ? dimensionlessToNull(Measures.parseUnit(symbol)) : null;
 		} catch (IllegalArgumentException e) {
 			throw new IllegalArgumentException(String.format("Can't extract a valid unit from: <%s>", node));
@@ -86,7 +86,7 @@ class FeedResult {
 
 	public Event getEventForDatapoint(Iterable<String> tags, Field<Object> field, Unit<?> unit, JsonNode node) {
 		Event event = new Event();
-		event.setValue(Event.TIMESTAMP, DateTime.parse(node.path("at").getTextValue()));
+		event.setValue(Event.TIMESTAMP, DateTime.parse(node.path("at").textValue()));
 		for (String tag : tags) {
 			event.addValue(Event.TAG, tag);
 		}
@@ -98,7 +98,7 @@ class FeedResult {
 
 	private static Object getDatapointValue(JsonNode node, Unit<?> unit) {
 		Preconditions.checkArgument(node.path("value").isTextual(), "Expected text node but found <%s>", node);
-		return getDatapointValue(new BigDecimal(node.path("value").getTextValue()), unit);
+		return getDatapointValue(new BigDecimal(node.path("value").textValue()), unit);
 	}
 
 	private static Object getDatapointValue(BigDecimal value, Unit<?> unit) {

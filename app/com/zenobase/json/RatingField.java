@@ -1,9 +1,9 @@
 package com.zenobase.json;
 
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.node.IntNode;
-import org.codehaus.jackson.node.NullNode;
-import org.codehaus.jackson.node.ObjectNode;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.IntNode;
+import com.fasterxml.jackson.databind.node.NullNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import com.zenobase.models.Rating;
 import com.zenobase.search.DecimalRangeConstraintBuilder;
@@ -19,7 +19,7 @@ public class RatingField extends Field<Rating> {
 
 	@Override
 	protected Rating getValue(JsonNode node) {
-		return Rating.valueOf(node.getIntValue());
+		return Rating.valueOf(node.intValue());
 	}
 
 	@Override

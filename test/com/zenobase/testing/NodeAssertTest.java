@@ -2,10 +2,10 @@ package com.zenobase.testing;
 
 import static com.zenobase.testing.NodeAssert.assertThat;
 
-import org.codehaus.jackson.node.BooleanNode;
-import org.codehaus.jackson.node.MissingNode;
-import org.codehaus.jackson.node.ObjectNode;
-import org.codehaus.jackson.node.TextNode;
+import com.fasterxml.jackson.databind.node.BooleanNode;
+import com.fasterxml.jackson.databind.node.MissingNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.fasterxml.jackson.databind.node.TextNode;
 import org.junit.Test;
 
 import com.zenobase.json.Nodes;

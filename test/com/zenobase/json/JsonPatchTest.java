@@ -1,7 +1,7 @@
 package com.zenobase.json;
 
-import org.codehaus.jackson.node.NullNode;
-import org.codehaus.jackson.node.ObjectNode;
+import com.fasterxml.jackson.databind.node.NullNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.junit.Test;
 
 import com.zenobase.testing.NodeAssert;

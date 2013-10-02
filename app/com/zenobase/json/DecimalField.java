@@ -2,9 +2,9 @@ package com.zenobase.json;
 
 import java.math.BigDecimal;
 
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.node.DecimalNode;
-import org.codehaus.jackson.node.NullNode;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.DecimalNode;
+import com.fasterxml.jackson.databind.node.NullNode;
 
 public class DecimalField extends Field<BigDecimal> {
 
@@ -14,7 +14,7 @@ public class DecimalField extends Field<BigDecimal> {
 
 	@Override
 	protected BigDecimal getValue(JsonNode node) {
-		return node.getDecimalValue();
+		return node.decimalValue();
 	}
 
 	@Override

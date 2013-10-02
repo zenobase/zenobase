@@ -1,6 +1,6 @@
 package com.zenobase.commands;
 
-import org.codehaus.jackson.node.ObjectNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.inject.Inject;
 
 import com.zenobase.json.TokenField;

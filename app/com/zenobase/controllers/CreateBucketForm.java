@@ -1,6 +1,6 @@
 package com.zenobase.controllers;
 
-import org.codehaus.jackson.node.ObjectNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import com.zenobase.json.DomainNode;
 import com.zenobase.models.Bucket;

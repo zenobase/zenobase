@@ -4,10 +4,10 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import org.codehaus.jackson.node.ObjectNode;
 import org.elasticsearch.index.engine.VersionConflictEngineException;
 import play.mvc.BodyParser;
 import play.mvc.Result;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.ImmutableList;
 
 import com.zenobase.commands.DeleteBucketCommand;

@@ -2,8 +2,8 @@ package com.zenobase.tasks;
 
 import java.io.IOException;
 
-import org.codehaus.jackson.node.ArrayNode;
-import org.codehaus.jackson.node.ObjectNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.io.ByteStreams;
 
 import com.zenobase.json.Nodes;

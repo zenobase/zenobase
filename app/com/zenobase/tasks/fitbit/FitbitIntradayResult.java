@@ -2,7 +2,7 @@ package com.zenobase.tasks.fitbit;
 
 import java.util.List;
 
-import org.codehaus.jackson.JsonNode;
+import com.fasterxml.jackson.databind.JsonNode;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.Duration;
@@ -60,9 +60,9 @@ class FitbitIntradayResult {
 	}
 
 	private Record getRecord(JsonNode node) {
-		LocalTime time = LocalTime.parse(node.path("time").getTextValue());
+		LocalTime time = LocalTime.parse(node.path("time").textValue());
 		DateTime timestamp = date.toDateTime(time, timezone);
-		int level = node.path("level").getIntValue();
+		int level = node.path("level").intValue();
 		return new Record(timestamp, level >= threshold);
 	}
 

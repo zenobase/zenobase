@@ -1,9 +1,9 @@
 package com.zenobase.json;
 
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.node.NullNode;
-import org.codehaus.jackson.node.ObjectNode;
-import org.codehaus.jackson.node.TextNode;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.NullNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.fasterxml.jackson.databind.node.TextNode;
 
 import com.zenobase.search.TermConstraintBuilder;
 import com.zenobase.search.WildcardConstraintBuilder;
@@ -27,7 +27,7 @@ public class TokenField extends Field<String> {
 
 	@Override
 	protected String getValue(JsonNode node) {
-		return node.getTextValue();
+		return node.textValue();
 	}
 
 	@Override

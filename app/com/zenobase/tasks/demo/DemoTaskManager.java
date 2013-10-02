@@ -1,6 +1,6 @@
 package com.zenobase.tasks.demo;
 
-import org.codehaus.jackson.node.ObjectNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import com.google.common.base.Objects;
@@ -28,7 +28,7 @@ public class DemoTaskManager extends TaskManager {
 	@Override
 	public DemoTask newTask(String bucketId, Identity principal, ObjectNode settings) {
 		DemoTask task = new DemoTask(bucketId, principal);
-		task.setTag(Objects.firstNonNull(settings.path("tag").getTextValue(), "test"));
+		task.setTag(Objects.firstNonNull(settings.path("tag").textValue(), "test"));
 		return task;
 	}
 

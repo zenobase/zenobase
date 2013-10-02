@@ -1,6 +1,6 @@
 package com.zenobase.commands;
 
-import org.codehaus.jackson.node.ObjectNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Objects;
 
 import com.zenobase.json.Field;

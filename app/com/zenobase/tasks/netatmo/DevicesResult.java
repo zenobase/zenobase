@@ -2,7 +2,7 @@ package com.zenobase.tasks.netatmo;
 
 import java.util.List;
 
-import org.codehaus.jackson.JsonNode;
+import com.fasterxml.jackson.databind.JsonNode;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import com.google.common.base.Preconditions;
@@ -20,7 +20,7 @@ class DevicesResult {
 	}
 
 	public boolean isSuccess() {
-		return "ok".equals(node.path("status").getTextValue());
+		return "ok".equals(node.path("status").textValue());
 	}
 
 	public List<Device> getDevices() {
@@ -33,8 +33,8 @@ class DevicesResult {
 	}
 
 	private static Device getDevice(JsonNode node) {
-		String id = node.path("_id").getTextValue();
-		String label = node.path("module_name").getTextValue();
+		String id = node.path("_id").textValue();
+		String label = node.path("module_name").textValue();
 		DateTime created = getTimestamp(node.path("date_setup").path("sec"), DateTimeZone.UTC);
 		DateTime updated = getTimestamp(node.path("last_status_store"), getTimezone(node.path("place").path("timezone")));
 		Location location = getLocation(node.path("place").path("location"));
@@ -44,18 +44,18 @@ class DevicesResult {
 	private static DateTimeZone getTimezone(JsonNode node) {
 		Preconditions.checkArgument(node.isTextual(),
 			"Expected text but got <%s>", node);
-		return DateTimeZone.forID(node.getTextValue());
+		return DateTimeZone.forID(node.textValue());
 	}
 
 	private static DateTime getTimestamp(JsonNode node, DateTimeZone timezone) {
-		Preconditions.checkArgument(node.getLongValue() != 0,
+		Preconditions.checkArgument(node.longValue() != 0,
 			"Expected a number but got <%s>", node);
-		return new DateTime(node.getLongValue() * 1000, timezone);
+		return new DateTime(node.longValue() * 1000, timezone);
 	}
 
 	private static Location getLocation(JsonNode node) {
 		Preconditions.checkArgument(node.isArray() && node.size() == 2,
 			"Expected an array with two elements but got <%s>", node);
-		return new Location(node.path(0).getDecimalValue(), node.path(1).getDecimalValue());
+		return new Location(node.path(0).decimalValue(), node.path(1).decimalValue());
 	}
 }

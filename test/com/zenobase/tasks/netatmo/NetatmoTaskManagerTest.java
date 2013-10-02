@@ -4,7 +4,7 @@ import static org.fest.assertions.Assertions.assertThat;
 import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 
-import org.codehaus.jackson.node.ObjectNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.joda.time.DateTime;
 import org.junit.Test;
 import org.scribe.model.OAuthRequest;

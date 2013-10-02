@@ -2,7 +2,7 @@ package com.zenobase.tasks.fitbit;
 
 import java.util.List;
 
-import org.codehaus.jackson.JsonNode;
+import com.fasterxml.jackson.databind.JsonNode;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.Duration;
@@ -47,18 +47,18 @@ class FitbitSleepResult {
 	}
 
 	private static DateTime getDateTime(JsonNode item, DateTimeZone timezone) {
-		String value = item.path("startTime").getTextValue();
+		String value = item.path("startTime").textValue();
 		Preconditions.checkNotNull(value, "Missing sleep start time");
 		return LocalDateTime.parse(value).toDateTime(timezone);
 	}
 
 	private static Duration getDuration(JsonNode item) {
-		long value = item.path("duration").getLongValue();
+		long value = item.path("duration").longValue();
 		return value > 0 ? Duration.millis(value) : null;
 	}
 
 	private static Rating getRating(JsonNode item) {
-		int value = item.path("efficiency").getIntValue();
+		int value = item.path("efficiency").intValue();
 		return value > 0 ? Rating.valueOf(value) : null;
 	}
 }

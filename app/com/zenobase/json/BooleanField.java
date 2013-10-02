@@ -1,8 +1,8 @@
 package com.zenobase.json;
 
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.node.BooleanNode;
-import org.codehaus.jackson.node.NullNode;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.BooleanNode;
+import com.fasterxml.jackson.databind.node.NullNode;
 
 import com.zenobase.search.TermConstraintBuilder;
 
@@ -15,7 +15,7 @@ public class BooleanField extends Field<Boolean> {
 
 	@Override
 	protected Boolean getValue(JsonNode node) {
-		return node.getBooleanValue();
+		return node.booleanValue();
 	}
 
 	@Override

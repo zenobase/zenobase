@@ -2,7 +2,7 @@ package com.zenobase.tasks.foursquare;
 
 import java.util.Scanner;
 
-import org.codehaus.jackson.node.ObjectNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.joda.time.DateTime;
 import org.junit.Ignore;
 import org.junit.Test;

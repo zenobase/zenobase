@@ -10,8 +10,8 @@ import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
 import javax.measure.unit.Unit;
 
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.node.ArrayNode;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import org.joda.time.DateTime;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
@@ -40,13 +40,13 @@ class MeasurementsResult {
 	}
 
 	public boolean isSuccess() {
-		return "ok".equals(node.path("status").getTextValue());
+		return "ok".equals(node.path("status").textValue());
 	}
 
 	public List<Event> getEvents() {
 		Preconditions.checkState(isSuccess(), "Expected a successful response but got <%s>", node);
 		List<Event> events = Lists.newArrayList();
-		for (Iterator<Map.Entry<String, JsonNode>> i = node.path("body").getFields(); i.hasNext();) {
+		for (Iterator<Map.Entry<String, JsonNode>> i = node.path("body").fields(); i.hasNext();) {
 			events.add(getEvent(i.next()));
 		}
 		return events;
@@ -69,15 +69,15 @@ class MeasurementsResult {
 	}
 
 	private static <Q extends Quantity> DecimalMeasure<Q> getMeasure(JsonNode node, Unit<Q> unit) {
-		return node.isNumber() ? Measures.<Q>valueOf(node.getDecimalValue(), unit) : null;
+		return node.isNumber() ? Measures.<Q>valueOf(node.decimalValue(), unit) : null;
 	}
 
 	private static Integer getInteger(JsonNode node) {
-		return node.isNumber() ? node.getIntValue() : null;
+		return node.isNumber() ? node.intValue() : null;
 	}
 
 	private static Rating getRating(JsonNode node) {
-		return node.isNumber() ? Rating.valueOf(getRating(node.getIntValue())) : null;
+		return node.isNumber() ? Rating.valueOf(getRating(node.intValue())) : null;
 	}
 
 	private static int getRating(int value) {

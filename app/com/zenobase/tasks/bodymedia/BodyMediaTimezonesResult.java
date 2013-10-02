@@ -1,7 +1,7 @@
 package com.zenobase.tasks.bodymedia;
 
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.node.ObjectNode;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDateTime;
@@ -35,11 +35,11 @@ class BodyMediaTimezonesResult {
 
 	private static DateTimeZone getDateTimeZone(JsonNode node) {
 		Preconditions.checkState(!node.isMissingNode(), "missing timezone");
-		return DateTimeZone.forID(node.getTextValue());
+		return DateTimeZone.forID(node.textValue());
 	}
 
 	private static LocalDateTime getLocalDateTime(JsonNode node) {
-		return !node.isMissingNode() ? DateTime.parse(node.getTextValue(), DATE_TIME_FORMAT).toLocalDateTime() : null;
+		return !node.isMissingNode() ? DateTime.parse(node.textValue(), DATE_TIME_FORMAT).toLocalDateTime() : null;
 	}
 
 	private static Range<LocalDateTime> getRange(LocalDateTime from, LocalDateTime to) {

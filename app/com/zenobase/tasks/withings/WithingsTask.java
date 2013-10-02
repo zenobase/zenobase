@@ -3,7 +3,7 @@ package com.zenobase.tasks.withings;
 import javax.measure.quantity.Mass;
 import javax.measure.unit.Unit;
 
-import org.codehaus.jackson.node.ObjectNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.scribe.model.Token;
 
 import com.zenobase.common.Measures;

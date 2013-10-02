@@ -3,7 +3,7 @@ package com.zenobase.io;
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.codehaus.jackson.node.ObjectNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;

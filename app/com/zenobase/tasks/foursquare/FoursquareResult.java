@@ -3,7 +3,7 @@ package com.zenobase.tasks.foursquare;
 import java.math.BigDecimal;
 import java.util.List;
 
-import org.codehaus.jackson.JsonNode;
+import com.fasterxml.jackson.databind.JsonNode;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import com.google.common.base.Objects;
@@ -27,11 +27,11 @@ class FoursquareResult {
 	}
 
 	public int getStatus() {
-		return node.path("meta").path("code").getIntValue();
+		return node.path("meta").path("code").intValue();
 	}
 
 	public int getTotal() {
-		return node.path("response").path("checkins").path("count").getIntValue();
+		return node.path("response").path("checkins").path("count").intValue();
 	}
 
 	public List<Event> getEvents() {
@@ -58,12 +58,12 @@ class FoursquareResult {
 
 		public Event getEvent() {
 			Event event = new Event();
-			long time = node.get("createdAt").getLongValue() * 1000;
-			int offset = node.get("timeZoneOffset").getIntValue() * 60 * 1000;
+			long time = node.get("createdAt").longValue() * 1000;
+			int offset = node.get("timeZoneOffset").intValue() * 60 * 1000;
 			event.setValue(Event.TIMESTAMP, new DateTime(time, DateTimeZone.forOffsetMillis(offset)));
 			event.setValue(Event.AUTHOR, author);
 			event.setValue(Event.SOURCE, SOURCE);
-			event.setValue(Event.NOTE, node.path("shout").getTextValue());
+			event.setValue(Event.NOTE, node.path("shout").textValue());
 			Venue venue = getVenue();
 			event.setValue(Event.RESOURCE, venue.getResource());
 			event.setValue(Event.LOCATION, venue.getLocation());
@@ -87,8 +87,8 @@ class FoursquareResult {
 		}
 
 		public Resource getResource() {
-			String title = node.path("name").getTextValue();
-			String url = Objects.firstNonNull(node.path("url").getTextValue(), SOURCE.getUrl());
+			String title = node.path("name").textValue();
+			String url = Objects.firstNonNull(node.path("url").textValue(), SOURCE.getUrl());
 			return title != null ? new Resource(title, url) : null;
 		}
 
@@ -97,15 +97,15 @@ class FoursquareResult {
 		}
 
 		private static Location getLocation(JsonNode node) {
-			BigDecimal lat = node.path("lat").getDecimalValue();
-			BigDecimal lon = node.path("lng").getDecimalValue();
+			BigDecimal lat = node.path("lat").decimalValue();
+			BigDecimal lon = node.path("lng").decimalValue();
 			return lat != BigDecimal.ZERO && lon != BigDecimal.ZERO ? new Location(lat, lon) : null;
 		}
 
 		public List<String> getTags() {
 			List<String> tags = Lists.newArrayList();
 			for (JsonNode category : node.path("categories")) {
-				tags.add(category.get("name").getTextValue());
+				tags.add(category.get("name").textValue());
 			}
 			return tags;
 		}

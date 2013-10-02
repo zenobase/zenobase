@@ -1,9 +1,9 @@
 package com.zenobase.json;
 
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.node.NullNode;
-import org.codehaus.jackson.node.ObjectNode;
-import org.codehaus.jackson.node.TextNode;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.NullNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.fasterxml.jackson.databind.node.TextNode;
 
 import com.zenobase.search.TermConstraintBuilder;
 
@@ -20,7 +20,7 @@ public class EnumField<E extends Enum<E>> extends Field<E> {
 
 	@Override
 	protected E getValue(JsonNode node) {
-		String value = node.getTextValue();
+		String value = node.textValue();
 		return value != null ? Enum.valueOf((Class<E>) getType(), value.toUpperCase()) : null;
 	}
 

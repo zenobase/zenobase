@@ -2,8 +2,8 @@ package com.zenobase.testing;
 
 import static play.test.Helpers.*;
 
-import org.codehaus.jackson.node.ArrayNode;
-import org.codehaus.jackson.node.ObjectNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.fest.assertions.Assertions;
 import org.fest.assertions.GenericAssert;
 import play.mvc.Result;

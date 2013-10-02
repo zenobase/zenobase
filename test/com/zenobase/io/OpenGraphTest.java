@@ -5,7 +5,7 @@ import static com.zenobase.testing.NodeAssert.assertThat;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 
-import org.codehaus.jackson.node.ObjectNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.junit.Test;
 
 public class OpenGraphTest {

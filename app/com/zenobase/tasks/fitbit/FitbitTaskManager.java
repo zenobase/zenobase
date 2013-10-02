@@ -5,7 +5,7 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.codehaus.jackson.node.ObjectNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.joda.time.LocalDate;
 import org.scribe.model.OAuthRequest;
 import org.scribe.model.Response;
@@ -36,8 +36,8 @@ public class FitbitTaskManager extends FitbitTaskManagerSupport {
 	@Override
 	public FitbitTask newTask(String bucketId, Identity principal, ObjectNode settings) {
 		FitbitTask task = super.newTask(bucketId, principal, settings).as(FitbitTask.class);
-		task.setTag(Objects.firstNonNull(settings.path("tag").getTextValue(), "steps"));
-		task.setMarker(parseMarker(settings.path("marker").getTextValue()).toString());
+		task.setTag(Objects.firstNonNull(settings.path("tag").textValue(), "steps"));
+		task.setMarker(parseMarker(settings.path("marker").textValue()).toString());
 		return task;
 	}
 

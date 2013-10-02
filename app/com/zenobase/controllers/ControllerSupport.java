@@ -1,7 +1,7 @@
 package com.zenobase.controllers;
 
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.node.ObjectNode;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.elasticsearch.common.base.Objects;
 import play.mvc.Controller;
 import play.mvc.With;

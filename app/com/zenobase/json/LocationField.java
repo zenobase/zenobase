@@ -2,9 +2,9 @@ package com.zenobase.json;
 
 import java.math.BigDecimal;
 
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.node.NullNode;
-import org.codehaus.jackson.node.ObjectNode;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.NullNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import com.zenobase.models.Location;
 import com.zenobase.search.BoundingBoxConstraintBuilder;

@@ -6,8 +6,8 @@ import java.util.Map;
 
 import javax.measure.quantity.Energy;
 
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.node.ObjectNode;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.Duration;
@@ -49,7 +49,7 @@ class BodyMediaSummaryResult {
 	}
 
 	public DateTimeZone getTimezone() {
-		String text = node.path("lastSync").path("dateTime").getTextValue();
+		String text = node.path("lastSync").path("dateTime").textValue();
 		return text != null ? DateTime.parse(text, DATE_TIME_FORMAT).getZone() : null;
 	}
 
@@ -71,8 +71,8 @@ class BodyMediaSummaryResult {
 			Event event = new Event();
 			event.setValue(Event.TAG, TAG_SLEEP);
 			event.setValue(Event.TIMESTAMP, toDateTime(date, lastSync.getZone()));
-			event.setValue(Event.DURATION, Duration.standardMinutes(node.path("totalLying").getIntValue()));
-			event.setValue(Event.RATING, Rating.valueOf(node.path("efficiency").getDecimalValue().scaleByPowerOfTen(2).intValue()));
+			event.setValue(Event.DURATION, Duration.standardMinutes(node.path("totalLying").intValue()));
+			event.setValue(Event.RATING, Rating.valueOf(node.path("efficiency").decimalValue().scaleByPowerOfTen(2).intValue()));
 			event.setValue(Event.AUTHOR, author);
 			event.setValue(Event.SOURCE, SOURCE);
 			events.add(event);
@@ -97,7 +97,7 @@ class BodyMediaSummaryResult {
 			Event event = new Event();
 			event.setValue(Event.TAG, TAG_STEPS);
 			event.setValue(Event.TIMESTAMP, toDateTime(date, lastSync.getZone()));
-			event.setValue(Event.COUNT, stepNode.path("totalSteps").getIntValue());
+			event.setValue(Event.COUNT, stepNode.path("totalSteps").intValue());
 			if (burn.containsKey(date)) {
 				event.setValue(Event.ENERGY, Measures.<Energy>valueOf(burn.get(date).negate(), "cal"));
 			}
@@ -109,7 +109,7 @@ class BodyMediaSummaryResult {
 
 	private static DateTime getDateTime(JsonNode node) {
 		Preconditions.checkArgument(!node.isMissingNode());
-		return DateTime.parse(node.getTextValue(), DATE_TIME_FORMAT);
+		return DateTime.parse(node.textValue(), DATE_TIME_FORMAT);
 	}
 
 	private static DateTime toDateTime(LocalDate date, DateTimeZone zone) {
@@ -118,10 +118,10 @@ class BodyMediaSummaryResult {
 
 	private static LocalDate getLocalDate(JsonNode node) {
 		Preconditions.checkArgument(!node.isMissingNode());
-		return LocalDate.parse(node.getTextValue(), DATE_FORMAT);
+		return LocalDate.parse(node.textValue(), DATE_FORMAT);
 	}
 
 	private static BigDecimal getBigDecimal(JsonNode node) {
-		return BigDecimal.valueOf(node.getLongValue());
+		return BigDecimal.valueOf(node.longValue());
 	}
 }

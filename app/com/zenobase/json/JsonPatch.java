@@ -3,8 +3,8 @@ package com.zenobase.json;
 import java.util.Iterator;
 import java.util.Map;
 
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.node.ObjectNode;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 
@@ -25,7 +25,7 @@ public class JsonPatch {
 	}
 
 	private void checkState(ObjectNode node, ObjectNode expected) throws IllegalStateException {
-		for (Iterator<Map.Entry<String, JsonNode>> i = expected.getFields(); i.hasNext();) {
+		for (Iterator<Map.Entry<String, JsonNode>> i = expected.fields(); i.hasNext();) {
 			Map.Entry<String, JsonNode> entry = i.next();
 			JsonNode found = node.path(entry.getKey());
 			if (entry.getValue().isNull()) {
@@ -45,7 +45,7 @@ public class JsonPatch {
 	}
 
 	private static void apply(ObjectNode target, ObjectNode changes) {
-		for (Iterator<Map.Entry<String, JsonNode>> i = changes.getFields(); i.hasNext();) {
+		for (Iterator<Map.Entry<String, JsonNode>> i = changes.fields(); i.hasNext();) {
 			Map.Entry<String, JsonNode> entry = i.next();
 			if (entry.getValue().isNull()) {
 				target.remove(entry.getKey());

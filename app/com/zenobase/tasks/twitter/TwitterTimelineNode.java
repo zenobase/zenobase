@@ -1,6 +1,6 @@
 package com.zenobase.tasks.twitter;
 
-import org.codehaus.jackson.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 
 class TwitterTimelineNode {
 

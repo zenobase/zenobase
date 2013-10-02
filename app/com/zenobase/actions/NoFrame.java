@@ -1,8 +1,9 @@
 package com.zenobase.actions;
 
+import play.libs.F.Promise;
 import play.mvc.Action;
 import play.mvc.Http.Context;
-import play.mvc.Result;
+import play.mvc.SimpleResult;
 
 /**
  * Protection against clickjacking attacks.
@@ -12,7 +13,7 @@ import play.mvc.Result;
 public class NoFrame extends Action.Simple {
 
 	@Override
-	public Result call(Context context) throws Throwable {
+	public Promise<SimpleResult> call(Context context) throws Throwable {
 		context.response().setHeader("X-Frame-Options", "SAMEORIGIN");
 		return delegate.call(context);
 	}

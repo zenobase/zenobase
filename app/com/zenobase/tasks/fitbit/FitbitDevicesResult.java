@@ -1,7 +1,7 @@
 package com.zenobase.tasks.fitbit;
 
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.node.ArrayNode;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
 
@@ -15,8 +15,8 @@ class FitbitDevicesResult {
 
 	public LocalDate getLastDate() {
 		for (JsonNode device : node) {
-			if ("TRACKER".equals(device.path("type").getTextValue())) {
-				return LocalDateTime.parse(device.path("lastSyncTime").getTextValue()).toLocalDate();
+			if ("TRACKER".equals(device.path("type").textValue())) {
+				return LocalDateTime.parse(device.path("lastSyncTime").textValue()).toLocalDate();
 			}
 		}
 		return null;

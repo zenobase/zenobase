@@ -1,8 +1,8 @@
 package com.zenobase.json;
 
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.node.LongNode;
-import org.codehaus.jackson.node.NullNode;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.LongNode;
+import com.fasterxml.jackson.databind.node.NullNode;
 import org.joda.time.Duration;
 
 import com.zenobase.search.DurationConstraintBuilder;
@@ -18,7 +18,7 @@ public class DurationField extends Field<Duration> {
 
 	@Override
 	protected Duration getValue(JsonNode node) {
-		return Duration.millis(node.getIntValue());
+		return Duration.millis(node.intValue());
 	}
 
 	@Override

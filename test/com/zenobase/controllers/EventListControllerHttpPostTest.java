@@ -6,8 +6,8 @@ import static org.mockito.Mockito.when;
 import static play.mvc.Http.Status.*;
 import static play.test.Helpers.callAction;
 
-import org.codehaus.jackson.node.ArrayNode;
-import org.codehaus.jackson.node.ObjectNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.junit.Before;

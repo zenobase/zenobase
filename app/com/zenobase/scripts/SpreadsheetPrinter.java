@@ -7,9 +7,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.node.ArrayNode;
-import org.codehaus.jackson.node.ObjectNode;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import au.com.bytecode.opencsv.CSVWriter;
 import com.google.common.base.Joiner;
 import com.google.common.base.Objects;
@@ -80,7 +80,7 @@ public class SpreadsheetPrinter {
 	}
 
 	private static void getFields(ObjectNode node, Set<Field> fields, Field parent) {
-		for (Iterator<Map.Entry<String, JsonNode>> i = node.getFields(); i.hasNext();) {
+		for (Iterator<Map.Entry<String, JsonNode>> i = node.fields(); i.hasNext();) {
 			Map.Entry<String, JsonNode> entry = i.next();
 			Field field = new Field(parent, entry.getKey());
 			JsonNode value = entry.getValue();

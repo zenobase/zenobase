@@ -4,7 +4,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.measure.quantity.Mass;
 
-import org.codehaus.jackson.node.ObjectNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.scribe.builder.ServiceBuilder;
@@ -42,9 +42,9 @@ public class WithingsTaskManager extends OAuthTaskManager {
 	@Override
 	public WithingsTask newTask(String bucketId, Identity principal, ObjectNode settings) {
 		WithingsTask task = super.newTask(bucketId, principal, settings).as(WithingsTask.class);
-		task.setTag(Objects.firstNonNull(settings.path("tag").getTextValue(), "steps"));
-		task.setUnit(Measures.<Mass>parseUnit(Objects.firstNonNull(settings.path("unit").getTextValue(), "kg")));
-		task.setMarker(parseMarker(settings.path("marker").getTextValue()));
+		task.setTag(Objects.firstNonNull(settings.path("tag").textValue(), "steps"));
+		task.setUnit(Measures.<Mass>parseUnit(Objects.firstNonNull(settings.path("unit").textValue(), "kg")));
+		task.setMarker(parseMarker(settings.path("marker").textValue()));
 		return task;
 	}
 
@@ -63,8 +63,8 @@ public class WithingsTaskManager extends OAuthTaskManager {
 	}
 
 	private Command authorize(WithingsTask task, ObjectNode config) {
-		String token = config.get("oauth_token").getTextValue();
-		String verifier = config.get("oauth_verifier").getTextValue();
+		String token = config.get("oauth_token").textValue();
+		String verifier = config.get("oauth_verifier").textValue();
 		int userId = config.get("userid").asInt();
 		Preconditions.checkState(task.getToken().getToken().equals(token),
 			"Token matches in task %s, expected %s, got %s",

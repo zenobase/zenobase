@@ -1,8 +1,8 @@
 package com.zenobase.testing;
 
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.node.ArrayNode;
-import org.codehaus.jackson.node.ObjectNode;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.fest.assertions.Assertions;
 import org.fest.assertions.Delta;
 import org.fest.assertions.GenericAssert;
@@ -36,7 +36,7 @@ public class NodeAssert extends GenericAssert<NodeAssert, JsonNode> {
 
 	public NodeAssert isEqualTo(int expected) {
 		Assertions.assertThat(actual.isIntegralNumber()).overridingErrorMessage("expected int node but found " + actual).isTrue();
-		Assertions.assertThat(actual.getIntValue()).as("int value").isEqualTo(expected);
+		Assertions.assertThat(actual.intValue()).as("int value").isEqualTo(expected);
 		return this;
 	}
 
@@ -48,13 +48,13 @@ public class NodeAssert extends GenericAssert<NodeAssert, JsonNode> {
 
 	public NodeAssert isEqualTo(String expected) {
 		Assertions.assertThat(actual.isTextual()).overridingErrorMessage("expected text node but found " + actual).isTrue();
-		Assertions.assertThat(actual.getTextValue()).as("text value").isEqualTo(expected);
+		Assertions.assertThat(actual.textValue()).as("text value").isEqualTo(expected);
 		return this;
 	}
 
 	public NodeAssert isEqualTo(boolean expected) {
 		Assertions.assertThat(actual.isBoolean()).overridingErrorMessage("expected boolean node but found " + actual).isTrue();
-		Assertions.assertThat(actual.getBooleanValue()).as("boolean value").isEqualTo(expected);
+		Assertions.assertThat(actual.booleanValue()).as("boolean value").isEqualTo(expected);
 		return this;
 	}
 
