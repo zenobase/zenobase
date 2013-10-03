@@ -2005,7 +2005,7 @@
 		  var SXX = 0;
 		  var SXY = 0;
 		  var SYY = 0;
-		  for (var i = 0; i < N; i++) {
+		  for (var i = 0; i < N; ++i) {
 		    SX = SX + X[i];
 		    SY = SY + Y[i];
 		    SXY = SXY + X[i] * Y[i];
@@ -2014,45 +2014,36 @@
 		  }
 		  var slope = (N * SXY - SX * SY) / (N * SXX - SX * SX);
 		  var intercept = (SY - slope * SX) / N;
-		  return [slope, intercept];
+		  return { 
+		  	slope : slope,
+		  	intercept : intercept
+		  };
 		}
 
 		return function(data) {
-			var ret;
-		  var res;
 		  var x = [];
 		  var y = [];
+		  var min = 0;
+		  var max = 0;
 		  var ypred = [];
-
-		  for (i = 0; i < data.length; i++) {
-		    if (data[i] != null && Object.prototype.toString.call(data[i]) === '[object Array]') {
-		      if (data[i] != null && data[i][0] != null && data[i][1] != null) {
-		        x.push(data[i][0]);
-		        y.push(data[i][1]);
-		      }
-		    }
-		    else if (data[i] != null && typeof data[i] === 'number' ) {
-		      x.push(i);
-		      y.push(data[i]);
-		    }
+		  for (i = 0; i < data.length; ++i) {
+		  	x.push(data[i][0]);
+        y.push(data[i][1]);
+        if (data[i][0] > data[max][0]) {
+        	max = i;
+        }
+        if (data[i][0] < data[min][0]) {
+        	min = i;
+        }
 		  }
-
-	    ret = regression(x, y);
-	    for (var i = 0; i < x.length; i++) {
-	      res = ret[0] * x[i] + ret[1];
-	      ypred.push([x[i], res]);
-	    }
-
+	    var params = regression(x, y);
 	    return {
-	      data: ypred,
-	      slope: ret[0],
-	      intercept: ret[1],
-	      y: function(x) {
-	        return (this.slope * x) + this.intercept;
-	      },
-	      x: function(y) {
-	        return (y - this.intercept) / this.slope;
-	      }
+				data : [
+					[x[min], params.slope * x[min] + params.intercept],
+					[x[max], params.slope * x[max] + params.intercept]
+				],
+				slope : params.slope,
+				intercept : params.intercept
 	    };		
 		}
 	});
@@ -2111,6 +2102,7 @@
 		};
 		$scope.draw = function() {
 			if ($scope.data && $scope.data.length) {
+				var fit = regression($scope.data);
 				var options = {
 					chart : {
 						type : 'scatter',
@@ -2129,6 +2121,7 @@
 						}
 					},
 					tooltip : {
+						crosshairs : false,
 						shared : true,
 						hideDelay : 0
 					},
@@ -2140,19 +2133,29 @@
 							radius : 5
 						},
 						tooltip : {
-							crosshairs : true,
 							headerFormat : '',
 							pointFormat : '<b>{point.x}</b>' + ($scope.settings.unit_x || '') + '<br/><b>{point.y}</b>' + ($scope.settings.unit_y || '')
 						},
 						showInLegend : false
-					}/*, {
-						type: 'line',
-						showInLegend : false,
-						marker: { enabled: false },
-							data: (function() {
-								return regression($scope.data).data;
-							})()
-					}*/],
+					}, {
+						type : 'line',
+						name : '',
+						data : fit.data,
+						color : 'rgba(119, 152, 191, 0.5)',
+						marker : {
+							enabled : false
+						},
+						states : {
+							hover : {
+								enabled : false
+							}
+						},
+						tooltip : {
+							headerFormat : '',
+							pointFormat : '<b>' + fit.slope.toFixed(2) + '</b>x + <b>' + fit.intercept.toFixed(2) + '</b>'
+						},
+						showInLegend : false
+					}],
 					plotOptions : {
 						series : {
 							animation : false
