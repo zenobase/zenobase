@@ -6,7 +6,7 @@ import com.google.javascript.jscomp.CompilationLevel
 
 object ApplicationBuild extends Build {
 
-	val appName = "Zenobase"
+	val appName = "zenobase"
 	val appVersion = "SNAPSHOT"
 
 	val appDependencies = Seq(
