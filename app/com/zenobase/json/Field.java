@@ -134,6 +134,10 @@ public abstract class Field<T> {
 
 	public abstract JsonNode toJson(T value);
 
+	public void createSchema(ObjectNode schema) {
+		configureSchema(schema.putObject(getName()));
+	}
+
 	public void configureSchema(ObjectNode schema) {
 		schema.put("type", schemaType);
 	}
@@ -146,14 +150,22 @@ public abstract class Field<T> {
 		return constraintBuilders;
 	}
 
-	protected final void addConstraintBuilder(ConstraintBuilder constraint) {
+	protected void addConstraintBuilder(ConstraintBuilder constraint) {
+		addConstraintBuilder(name, constraint);
+	}
+
+	protected void addConstraintBuilders(Field<?> nested) {
+		for (Map.Entry<String, ConstraintBuilder> entry : nested.getConstraintBuilders().entries()) {
+			addConstraintBuilder(name + "." + entry.getKey(), wrap(entry.getValue()));
+		}
+	}
+
+	protected void addConstraintBuilder(String name, ConstraintBuilder constraint) {
 		constraintBuilders.put(name, constraint);
 	}
 
-	protected final void addConstraintBuilders(Field<?> nested) {
-		for (Map.Entry<String, ConstraintBuilder> entry : nested.getConstraintBuilders().entries()) {
-			constraintBuilders.put(name + "." + entry.getKey(), entry.getValue());
-		}
+	protected ConstraintBuilder wrap(ConstraintBuilder builder) {
+		return builder;
 	}
 
 	public void prePersist(ObjectNode node) {

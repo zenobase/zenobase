@@ -4,15 +4,13 @@ import java.text.DateFormatSymbols;
 import java.util.Locale;
 import java.util.Map;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.elasticsearch.search.facet.FacetBuilders;
 import org.elasticsearch.search.facet.terms.TermsFacet;
-import org.elasticsearch.search.facet.terms.TermsFacetBuilder;
-import org.joda.time.DateTimeZone;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
 
@@ -25,22 +23,20 @@ public class TimeHistogramFacet extends Facet {
 
 	private final String field;
 	private final Interval interval;
-	private final DateTimeZone timezone;
 
-	private TimeHistogramFacet(String id, String field, Interval interval, DateTimeZone timezone) {
+	private TimeHistogramFacet(String id, String field, Interval interval) {
 		super(id);
 		Preconditions.checkNotNull(field);
 		Preconditions.checkNotNull(interval);
 		this.field = field;
 		this.interval = interval;
-		this.timezone = timezone;
 	}
 
 	@Override
 	public void configure(SearchSourceBuilder builder) {
-		TermsFacetBuilder facet = FacetBuilders.termsFacet(getId()).size(31)
-			.lang("js").scriptField(interval.script(field, timezone));
-		builder.facet(facet);
+		builder.facet(FacetBuilders.termsFacet(getId())
+			.field(interval.getField(field))
+			.size(31).order(TermsFacet.ComparatorType.TERM));
 	}
 
 	@Override
@@ -57,6 +53,7 @@ public class TimeHistogramFacet extends Facet {
 		ArrayNode node = Nodes.newArray();
 		for (Map.Entry<Integer, Integer> entry : map.entrySet()) {
 			ObjectNode entryNode = Nodes.newObject();
+			entryNode.put("value", entry.getKey());
 			entryNode.put("label", interval.getLabel(entry.getKey()));
 			entryNode.put("count", entry.getValue());
 			node.add(entryNode);
@@ -66,19 +63,25 @@ public class TimeHistogramFacet extends Facet {
 
 	private enum Interval {
 
-		HOUR_OF_DAY("getHourOfDay()", 0, 24) {
+		HOUR_OF_DAY(0, 24) {
 			@Override
 			public String getLabel(int i) {
 				return String.format("%02d", i);
 			}
 		},
-		DAY_OF_WEEK("getDayOfWeek()", 1, 7) {
+		DAY_OF_WEEK(1, 7) {
 			@Override
 			public String getLabel(int i) {
 				return format.getShortWeekdays()[i < 7 ? i + 1 : 1];
 			}
 		},
-		MONTH_OF_YEAR("getMonthOfYear()", 1, 12) {
+		DAY_OF_MONTH(1, 31) {
+			@Override
+			public String getLabel(int i) {
+				return String.format("%02d", i);
+			}
+		},
+		MONTH_OF_YEAR(1, 12) {
 			@Override
 			public String getLabel(int i) {
 				return format.getShortMonths()[i - 1];
@@ -87,11 +90,9 @@ public class TimeHistogramFacet extends Facet {
 
 		private static final DateFormatSymbols format = new DateFormatSymbols(Locale.US);
 
-		private final String method;
 		private final int offset, size;
 
-		private Interval(String method, int offset, int size) {
-			this.method = method;
+		private Interval(int offset, int size) {
 			this.offset = offset;
 			this.size = size;
 		}
@@ -104,8 +105,8 @@ public class TimeHistogramFacet extends Facet {
 			return map;
 		}
 
-		public String script(String field, DateTimeZone timezone) {
-			return String.format("t=doc['%s'].date;t.addMillis(%d);v=t.%s;v", field, timezone.getOffset(0), method);
+		public String getField(String parent) {
+			return "$" + parent + "." + toString().toLowerCase();
 		}
 
 		public abstract String getLabel(int i);
@@ -118,8 +119,7 @@ public class TimeHistogramFacet extends Facet {
 				return new TimeHistogramFacet(
 					options.get("id"),
 					options.get("field", String.class, Event.TIMESTAMP.getName()),
-					Interval.valueOf(options.get("interval").toUpperCase()),
-					options.get("timezone", DateTimeZone.class, DateTimeZone.UTC));
+					Interval.valueOf(options.get("interval").toUpperCase()));
 			}
 		};
 	}

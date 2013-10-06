@@ -2,11 +2,10 @@ package com.zenobase.search;
 
 import static com.zenobase.testing.NodeAssert.assertThat;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
 import org.junit.Before;
 import org.junit.Test;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import com.zenobase.models.Event;
 import com.zenobase.testing.NodeAssert;
@@ -19,9 +18,9 @@ public class TimeHistogramFacetTest extends FacetTestSupport {
 	@Override
 	public void setUp() {
 		super.setUp();
-		e1 = newEvent("2012-11-30T15:00-08:00");
-		e2 = newEvent("2012-12-11T15:00Z");
-		e3 = newEvent("2012-12-02T15:00-08:00");
+		e1 = newEvent("2012-11-30T20:00-08:00");
+		e2 = newEvent("2012-12-11T06:00Z");
+		e3 = newEvent("2012-12-02T20:00-08:00");
 	}
 
 	private static Event newEvent(String timestamp) {
@@ -36,16 +35,16 @@ public class TimeHistogramFacetTest extends FacetTestSupport {
 		addEvent(e1);
 		addEvent(e2);
 		addEvent(e3);
-		addFacet("id:%s,type:%s,field:%s,interval:%s,timezone:%s",
-			FACET_ID, TimeHistogramFacet.TYPE, Event.TIMESTAMP, "hour_of_day", DateTimeZone.forOffsetHours(-8));
+		addFacet("id:%s,type:%s,field:%s,interval:%s",
+			FACET_ID, TimeHistogramFacet.TYPE, Event.TIMESTAMP, "hour_of_day");
 
 		ObjectNode result = execute();
 		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(3);
 		NodeAssert node = assertThat(result).path(FACET_ID).hasSize(24);
-		node.path(7).path("label").isEqualTo("07");
-		node.path(7).path("count").isEqualTo(1);
-		node.path(15).path("label").isEqualTo("15");
-		node.path(15).path("count").isEqualTo(2);
+		node.path(6).path("label").isEqualTo("06");
+		node.path(6).path("count").isEqualTo(1);
+		node.path(20).path("label").isEqualTo("20");
+		node.path(20).path("count").isEqualTo(2);
 	}
 
 	@Test
@@ -54,8 +53,8 @@ public class TimeHistogramFacetTest extends FacetTestSupport {
 		addEvent(e1);
 		addEvent(e2);
 		addEvent(e3);
-		addFacet("id:%s,type:%s,field:%s,interval:%s,timezone:%s",
-			FACET_ID, TimeHistogramFacet.TYPE, Event.TIMESTAMP, "day_of_week", DateTimeZone.forOffsetHours(-8));
+		addFacet("id:%s,type:%s,field:%s,interval:%s",
+			FACET_ID, TimeHistogramFacet.TYPE, Event.TIMESTAMP, "day_of_week");
 
 		ObjectNode result = execute();
 		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(3);
@@ -69,13 +68,33 @@ public class TimeHistogramFacetTest extends FacetTestSupport {
 	}
 
 	@Test
+	public void testDayOfMonth() {
+
+		addEvent(e1);
+		addEvent(e2);
+		addEvent(e3);
+		addFacet("id:%s,type:%s,field:%s,interval:%s",
+			FACET_ID, TimeHistogramFacet.TYPE, Event.TIMESTAMP, "day_of_month");
+
+		ObjectNode result = execute();
+		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(3);
+		NodeAssert node = assertThat(result).path(FACET_ID).hasSize(31);
+		node.path(1).path("label").isEqualTo("02");
+		node.path(1).path("count").isEqualTo(1);
+		node.path(10).path("label").isEqualTo("11");
+		node.path(10).path("count").isEqualTo(1);
+		node.path(29).path("label").isEqualTo("30");
+		node.path(29).path("count").isEqualTo(1);
+	}
+
+	@Test
 	public void testMonthOfYear() {
 
 		addEvent(e1);
 		addEvent(e2);
 		addEvent(e3);
-		addFacet("id:%s,type:%s,field:%s,interval:%s,timezone:%s",
-			FACET_ID, TimeHistogramFacet.TYPE, Event.TIMESTAMP, "month_of_year", DateTimeZone.forOffsetHours(-8));
+		addFacet("id:%s,type:%s,field:%s,interval:%s",
+			FACET_ID, TimeHistogramFacet.TYPE, Event.TIMESTAMP, "month_of_year");
 
 		ObjectNode result = execute();
 		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(3);

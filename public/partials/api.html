@@ -890,23 +890,48 @@ Content-Type: application/json
   <dl>
   <dt><code>2013TZ</code></dt>
   <dt><code>[2013TZ..2014TZ)</code></dt>
-  <dd>all of 2013</dd>
+  <dt><code>[2012-12-31T16-08:00..2013-12-31T16-08:00)</code></dt>
+  <dd>all of 2013 (UTC)</dd>
   <dt><code>2013-01TZ</code></dt>
   <dt><code>[2013-01TZ..2013-02TZ)</code></dt>
+  <dt><code>[2012-12-31T16-08:00..2013-01-31T16-08:00)</code></dt>
   <dd>January</dd>
   <dt><code>2013-01-02TZ</code></dt>
   <dt><code>[2013-01-02TZ..2013-01-03TZ)</code></dt>
+  <dt><code>[2013-01-01T16-08:00..2013-01-02T16-08:00)</code></dt>
   <dd>January 2nd</dd>
   <dt><code>2013-01-02T20Z</code></dt>
   <dt><code>[2013-01-02T20Z..2013-01-02T21Z)</code></dt>
+  <dt><code>[2013-01-02T12-08:00..2013-01-02T13-08:00)</code></dt>
   <dd>8-9pm</dd>
   <dt><code>2013-01-02T20:05Z</code></dt>
   <dt><code>[2013-01-02T20:05Z..2013-01-02T20:06Z)</code></dt>
+  <dt><code>[2013-01-02T12:05-08:00..2013-01-02T12:06-08:00)</code></dt>
   <dd>8:05-8:06pm</dd>
   <dt><code>2013-01-30T23:00:00.000TZ</code></dt>
   <dt><code>2013-01-30T15:00:00.000T-08:00</code></dt>
   <dt><code>1359586800000</code></dt>
   <dd>an exact moment</dd>
+  </dl>
+  </blockquote>
+  <blockquote>
+  <dl>
+  <dt><code><i>&lt;field&gt;</i>.year:2013</code></dt>
+  <dd>all of 2013 (based on the timestamp's timezone offset)</dd>
+  <dt><code><i>&lt;field&gt;</i>.month_of_year:1</code></dt>
+  <dd>any January</dd>
+  <dt><code><i>&lt;field&gt;</i>.day_of_year:1</code></dt>
+  <dd>any 1st day of the year</dd>
+  <dt><code><i>&lt;field&gt;</i>.day_of_month:1</code></dt>
+  <dd>any 1st day of the month</dd>
+  <dt><code><i>&lt;field&gt;</i>.day_of_week:1</code></dt>
+  <dd>any Monday</dd>
+  <dt><code><i>&lt;field&gt;</i>.day_of_week:[6..7]</code></dt>
+  <dd>any weekend</dd>
+  <dt><code><i>&lt;field&gt;</i>.hour_of_day:10</code></dt>
+  <dd>10-11am any day</dd>
+  <dt><code><i>&lt;field&gt;</i>.hour_of_day:(*..12)</code></dt>
+  <dd>first half of the day</dd>
   </dl>
   </blockquote>
 </dd>
@@ -1122,10 +1147,8 @@ Content-Type: application/json
 <dd>
   <blockquote>
   <dl>
-  <dt>interval=<em>&lt;'hour_of_day'|'day_of_week'|'month_of_year'&gt;</em></dt>
-  <dd>The time interval to aggregate on. Required.</dd>
-  <dt>timezone=<em>&lt;Z&gt;</em></dt>
-  <dd>The timezone offset to use. Defaults to <em>+00:00</em></dd>
+  <dt>interval=<em>&lt;'hour_of_day'|'day_of_week'|'day_of_month'|'month_of_year'&gt;</em></dt>
+  <dd>The (local, timezone-independent) interval to aggregate on. Required.</dd>
   </dl>
   </blockquote>
 </dd>

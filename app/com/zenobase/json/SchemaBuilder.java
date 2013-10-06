@@ -8,7 +8,6 @@ import com.zenobase.search.ConstraintBuilder;
 import com.zenobase.search.DateTimeConstraintBuilder;
 import com.zenobase.search.DateTimeRangeConstraintBuilder;
 
-
 public class SchemaBuilder {
 
 	private static final String PROPERTIES = "properties";
@@ -36,6 +35,8 @@ public class SchemaBuilder {
 		ArrayNode excludesNode = sourceNode.putArray("excludes");
 		excludesNode.add("_*");
 		excludesNode.add("*._*");
+		// excludesNode.add("$*");
+		// excludesNode.add("*.$*");
 		excludesNode.add(DomainNode.VERSION.getName());
 	}
 
@@ -58,7 +59,7 @@ public class SchemaBuilder {
 	}
 
 	public SchemaBuilder add(Field<?> field) {
-		field.configureSchema(properties.putObject(field.getName()));
+		field.createSchema(properties);
 		constraintBuilders.putAll(field.getConstraintBuilders());
 		return this;
 	}

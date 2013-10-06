@@ -1211,7 +1211,12 @@
 			$location.search('q', $scope.constraints.length ? $scope.constraints.join('__') : null);
 		};
 		$scope.getConstraintIcon = function(constraint) {
-			var field = Field.find(constraint.field);
+			var fieldName = constraint.field;
+			var dot = fieldName.indexOf('.');
+			if (dot != -1) {
+				fieldName = fieldName.substring(0, dot);
+			}
+			var field = Field.find(fieldName);
 			return field ? field.icon : 'icon-ban-circle';
 		};
 	
@@ -1893,7 +1898,7 @@
 		});
 	}]);
 
-	app.controller('TimeHistogramWidgetController', ['$scope', '$timeout', 'timezone', function($scope, $timeout, timezone) {
+	app.controller('TimeHistogramWidgetController', ['$scope', '$timeout', function($scope, $timeout) {
 
 		$scope.field = 'timestamp';
 
@@ -1905,8 +1910,7 @@
 				id : $scope.settings.id,
 				type : 'time_histogram',
 				field : $scope.field,
-				interval : $scope.settings.interval,
-				timezone : timezone
+				interval : $scope.settings.interval
 			};
 		};
 		$scope.refresh = function(options, settings) {
@@ -1951,7 +1955,15 @@
 						series : {
 							color : 'rgba(47,126,216,0.3)',
 							animation : false,
-							pointPlacement: 'on'
+							pointPlacement: 'on',
+							cursor : 'pointer',
+							events : {
+								click : function(event) {
+									$scope.$apply(function() {
+										$scope.addConstraint($scope.field + '.' + $scope.settings.interval, $scope.times[event.point.x].value, false);
+									});
+								}
+							}
 						},
 						column : {
 							pointPadding: 0,
@@ -1988,6 +2000,7 @@
 		$scope.intervals = [
 			{ id : 'hour_of_day', label : 'hour of day' },
 			{ id : 'day_of_week', label : 'day of week' },
+			{ id : 'day_of_month', label : 'day of month' },
 			{ id : 'month_of_year', label : 'month of year' }
 		];
 	}]);
