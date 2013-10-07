@@ -2042,7 +2042,7 @@
 			return isUnitValid() && isStatisticValid();
 		};
 
-		$scope.$watch('settings.field', function() {
+		$scope.$watch('settings.value_field', function() {
 			if (!isUnitValid()) {
 				$scope.settings.unit = null;
 			}
