@@ -4,16 +4,20 @@ import java.text.DateFormatSymbols;
 import java.util.Locale;
 import java.util.Map;
 
+import javax.measure.unit.Unit;
+
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.elasticsearch.search.facet.FacetBuilders;
-import org.elasticsearch.search.facet.terms.TermsFacet;
+import org.elasticsearch.search.facet.termsstats.TermsStatsFacet;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
 
+import com.zenobase.common.Measures;
+import com.zenobase.json.MeasurementField;
 import com.zenobase.json.Nodes;
 import com.zenobase.models.Event;
 
@@ -21,44 +25,69 @@ public class TimeHistogramFacet extends Facet {
 
 	public static final String TYPE = "time_histogram";
 
-	private final String field;
+	private final String keyField;
+	private final String valueField;
 	private final Interval interval;
+	private final Unit<?> unit;
 
-	private TimeHistogramFacet(String id, String field, Interval interval) {
+	private TimeHistogramFacet(String id, String keyField, String valueField, Interval interval, Unit<?> unit) {
 		super(id);
-		Preconditions.checkNotNull(field);
+		Preconditions.checkNotNull(keyField);
 		Preconditions.checkNotNull(interval);
-		this.field = field;
+		this.keyField = keyField;
+		this.valueField = valueField;
 		this.interval = interval;
+		this.unit = unit;
 	}
 
 	@Override
 	public void configure(SearchSourceBuilder builder) {
-		builder.facet(FacetBuilders.termsFacet(getId())
-			.field(interval.getField(field))
-			.size(31).order(TermsFacet.ComparatorType.TERM));
+		builder.facet(FacetBuilders.termsStatsFacet(getId())
+			.keyField(interval.getField(keyField))
+			.valueField(unit == Unit.ONE ? valueField : valueField + "." + MeasurementField.VALUE_SI.getName())
+			.order(TermsStatsFacet.ComparatorType.TERM).size(31));
 	}
 
 	@Override
 	public JsonNode process(SearchResponse response) {
-		TermsFacet terms = response.getFacets().facet(TermsFacet.class, getId());
-		Map<Integer, Integer> result = interval.emptyMap();
-		for (TermsFacet.Entry entry : terms.getEntries()) {
-			result.put(Integer.valueOf(entry.getTerm().toString()), entry.getCount());
+		TermsStatsFacet terms = response.getFacets().facet(TermsStatsFacet.class, getId());
+		Map<Integer, TermsStatsFacet.Entry> result = interval.emptyMap();
+		for (TermsStatsFacet.Entry entry : terms.getEntries()) {
+			result.put(Integer.valueOf(entry.getTerm().toString()), entry);
 		}
 		return toJson(result);
 	}
 
-	private JsonNode toJson(Map<Integer, Integer> map) {
+	private JsonNode toJson(Map<Integer, TermsStatsFacet.Entry> map) {
 		ArrayNode node = Nodes.newArray();
-		for (Map.Entry<Integer, Integer> entry : map.entrySet()) {
+		for (Map.Entry<Integer, TermsStatsFacet.Entry> entry : map.entrySet()) {
 			ObjectNode entryNode = Nodes.newObject();
 			entryNode.put("value", entry.getKey());
 			entryNode.put("label", interval.getLabel(entry.getKey()));
-			entryNode.put("count", entry.getValue());
+			if (entry.getValue() != null) {
+				entryNode.put("count", entry.getValue().getCount());
+				if (!keyField.equals(valueField) && entry.getValue().getTotalCount() > 0) {
+					addValue(entryNode, "min", entry.getValue().getMin());
+					addValue(entryNode, "max", entry.getValue().getMax());
+					addValue(entryNode, "sum", entry.getValue().getTotal());
+					addValue(entryNode, "avg", entry.getValue().getMean());
+				}
+			} else {
+				entryNode.put("count", 0);
+			}
 			node.add(entryNode);
 		}
 		return node;
+	}
+
+	private void addValue(ObjectNode parent, String property, double value) {
+		if (unit != Unit.ONE) {
+			ObjectNode node = parent.putObject(property);
+			node.put("@value", Measures.convert(value, unit));
+			node.put("unit", unit.toString());
+		} else {
+			parent.put(property, Measures.round(value));
+		}
 	}
 
 	private enum Interval {
@@ -97,10 +126,10 @@ public class TimeHistogramFacet extends Facet {
 			this.size = size;
 		}
 
-		public Map<Integer, Integer> emptyMap() {
-			Map<Integer, Integer> map = Maps.newTreeMap();
+		public Map<Integer, TermsStatsFacet.Entry> emptyMap() {
+			Map<Integer, TermsStatsFacet.Entry> map = Maps.newTreeMap();
 			for (int i = offset; i < offset + size; ++i) {
-				map.put(i, 0);
+				map.put(i, null);
 			}
 			return map;
 		}
@@ -116,10 +145,13 @@ public class TimeHistogramFacet extends Facet {
 		return new FacetBuilder() {
 			@Override
 			public Facet build(FacetOptions options) {
+				String unit = options.get("unit");
 				return new TimeHistogramFacet(
 					options.get("id"),
-					options.get("field", String.class, Event.TIMESTAMP.getName()),
-					Interval.valueOf(options.get("interval").toUpperCase()));
+					options.get("key_field", String.class, Event.TIMESTAMP.getName()),
+					options.get("value_field", String.class, Event.TIMESTAMP.getName()),
+					Interval.valueOf(options.get("interval").toUpperCase()),
+					unit != null ? Measures.parseUnit(unit) : Unit.ONE);
 			}
 		};
 	}

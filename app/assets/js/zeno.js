@@ -1898,9 +1898,9 @@
 		});
 	}]);
 
-	app.controller('TimeHistogramWidgetController', ['$scope', '$timeout', function($scope, $timeout) {
+	app.controller('TimeHistogramWidgetController', ['$scope', '$timeout', 'Field', function($scope, $timeout, Field) {
 
-		$scope.field = 'timestamp';
+		$scope.keyField = 'timestamp';
 
 		$scope.init = function() {
 			$scope.times = null;
@@ -1909,7 +1909,9 @@
 			return { 
 				id : $scope.settings.id,
 				type : 'time_histogram',
-				field : $scope.field,
+				key_field : $scope.keyField,
+				value_field : $scope.settings.value_field || null,
+				unit : $scope.settings.unit || '',
 				interval : $scope.settings.interval
 			};
 		};
@@ -1927,6 +1929,8 @@
 		};
 		$scope.draw = function() {
 			if ($scope.times && $scope.times.length) {
+				var type = $scope.settings.statistic === 'count' || $scope.settings.statistic === 'sum' ? 'column' : 'line';
+				var field = Field.find($scope.settings.field);
 				var options = {
 					chart : {
 						type : 'column',
@@ -1944,10 +1948,11 @@
 					},
 					tooltip : {
 						shared : true,
-						hideDelay : 0
+						hideDelay : 0,
+						valueSuffix: $scope.settings.unit
 					},
 					series : [{
-						name : 'count',
+						name : $scope.settings.statistic || 'count',
 						data : [],
 						showInLegend : false
 					}],
@@ -1979,8 +1984,10 @@
 				}
 				$.each($scope.times, function(i, time) {
 					var value = time[$scope.settings.statistic || 'count'];
-					options.xAxis.categories.push(time.label);
-					options.series[0].data.push(time.count);
+					if (value !== undefined) {
+						options.xAxis.categories.push(time.label);
+						options.series[0].data.push(field.toNumber(value));
+					}
 				});
 				new Highcharts.Chart(options);				
 			}
@@ -1993,7 +2000,7 @@
 		$('#' + $scope.settings.id + '-tab').on('shown', $scope.draw);
 	}]);
 
-	app.controller('TimeHistogramWidgetDialogController', ['$scope', 'WidgetDialogControllerSupport', function($scope, WidgetDialogControllerSupport) {
+	app.controller('TimeHistogramWidgetDialogController', ['$scope', 'WidgetDialogControllerSupport', 'Field', function($scope, WidgetDialogControllerSupport, Field) {
 
 		WidgetDialogControllerSupport($scope);
 
@@ -2003,6 +2010,46 @@
 			{ id : 'day_of_month', label : 'day of month' },
 			{ id : 'month_of_year', label : 'month of year' }
 		];
+
+		function isUnitValid() {
+			var units = $scope.getUnits();
+			return units.length === 0
+				? $scope.settings.unit === null
+				: $.inArray($scope.settings.unit, units) != -1;
+		};
+		function isStatisticValid() {
+			return $.grep($scope.getStatistics($scope.settings.value_field), function(statistic) {
+				return $scope.settings.statistic === statistic;
+			}).length > 0;
+		};
+
+		$scope.getFields = function() {
+			var fields = Field.findByType('numeric');
+			fields.unshift(Field.find($scope.keyField));
+			return fields;
+		};
+		$scope.getStatistics = function(field) {
+			return field === $scope.keyField ? [ 'count' ] : [ 'sum', 'avg', 'min', 'max' ];
+		};
+		$scope.getUnits = function() {
+			var valueField = Field.find($scope.settings.value_field);
+			return valueField ? valueField.units : [];
+		};
+		$scope.getIntervals = function() {
+			return Interval.VALUES;
+		};
+		$scope.valid = function() {
+			return isUnitValid() && isStatisticValid();
+		};
+
+		$scope.$watch('settings.field', function() {
+			if (!isUnitValid()) {
+				$scope.settings.unit = null;
+			}
+			if (!isStatisticValid()) {
+				$scope.settings.statistic = $scope.getStatistics($scope.settings.value_field)[0];
+			}
+		});
 	}]);
 
 

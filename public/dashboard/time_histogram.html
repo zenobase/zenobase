@@ -32,9 +32,30 @@
 						<p class="help-block">The interval to aggregate on.</p>
 					</div>
 				</div>
+				<div class="control-group">
+					<label class="control-label" for="valueField">Field</label>
+					<div class="controls">
+						<select name="valueField" data-ng-model="settings.value_field" data-ng-options="field.name as field.name for field in getFields()"></select>
+						<p class="help-block">The field on which to gather statistics.</p>
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label" for="statisic">Statistic</label>
+					<div class="controls">
+						<select name="statistic" required data-ng-model="settings.statistic" data-ng-options="value for value in getStatistics(settings.value_field)"></select>
+						<p class="help-block">The statistic to gather for the selected value field.</p>
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label" for="unit">Unit</label>
+					<div class="controls">
+						<select name="unit" data-ng-model="settings.unit" data-ng-options="unit for unit in getUnits()"></select>
+						<p class="help-block">The unit of the value field.</p>
+					</div>
+				</div>
 			</div>
 			<div class="modal-footer">
-				<button class="btn btn-primary" data-ng-click="save()" data-ng-disabled="!form.$valid">Update</button>
+				<button class="btn btn-primary" data-ng-click="save()" data-ng-disabled="!form.$valid || !valid()">Update</button>
 				<button class="btn" data-dismiss="modal">Cancel</button>
 			</div>
 		</form>
