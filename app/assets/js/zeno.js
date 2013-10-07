@@ -1930,7 +1930,7 @@
 		$scope.draw = function() {
 			if ($scope.times && $scope.times.length) {
 				var type = $scope.settings.statistic === 'count' || $scope.settings.statistic === 'sum' ? 'column' : 'line';
-				var field = Field.find($scope.settings.field);
+				var field = Field.find($scope.settings.value_field);
 				var options = {
 					chart : {
 						type : 'column',
