@@ -1965,7 +1965,7 @@
 							events : {
 								click : function(event) {
 									$scope.$apply(function() {
-										$scope.addConstraint($scope.field + '.' + $scope.settings.interval, $scope.times[event.point.x].value, false);
+										$scope.addConstraint($scope.keyField + '.' + $scope.settings.interval, $scope.times[event.point.x].value, false);
 									});
 								}
 							}
@@ -1984,10 +1984,8 @@
 				}
 				$.each($scope.times, function(i, time) {
 					var value = time[$scope.settings.statistic || 'count'];
-					if (value !== undefined) {
-						options.xAxis.categories.push(time.label);
-						options.series[0].data.push(field.toNumber(value));
-					}
+					options.xAxis.categories.push(time.label);
+					options.series[0].data.push(value !== undefined ? field.toNumber(value) : 0);
 				});
 				new Highcharts.Chart(options);				
 			}
