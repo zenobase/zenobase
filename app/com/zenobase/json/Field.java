@@ -172,6 +172,10 @@ public abstract class Field<T> {
 
 	}
 
+	public void postPersist(ObjectNode node) {
+
+	}
+
 	@Override
 	public String toString() {
 		return name;

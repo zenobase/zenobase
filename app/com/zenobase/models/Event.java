@@ -120,6 +120,14 @@ public class Event extends DomainNode {
 		}
 	}
 
+	public void postPersist() {
+		for (Field<?> field : FIELDS) {
+			if (contains(field)) {
+				field.postPersist(toJson());
+			}
+		}
+	}
+
 	public Event copy() {
 		return new Event(Nodes.copy(toJson()));
 	}

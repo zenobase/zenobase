@@ -66,4 +66,12 @@ public class MeasurementField<Q extends Quantity> extends Field<DecimalMeasure<Q
 			VALUE_SI.setValue(fieldNode, Measures.toStandard(value).getValue());
 		}
 	}
+
+	@Override
+	public void postPersist(ObjectNode node) {
+		for (JsonNode childNode : getNodes(node)) {
+			ObjectNode fieldNode = (ObjectNode) childNode;
+			VALUE_SI.setValue(fieldNode, null);
+		}
+	}
 }

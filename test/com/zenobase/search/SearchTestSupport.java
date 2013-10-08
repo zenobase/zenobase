@@ -1,8 +1,8 @@
 package com.zenobase.search;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.joda.time.DateTime;
 import org.junit.Before;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import com.zenobase.common.Generator;
 import com.zenobase.models.Event;
@@ -33,6 +33,7 @@ public class SearchTestSupport extends ElasticSearchTestSupport {
 	protected void addEvent(Event event, DateTime timestamp) {
 		event.prePersist();
 		index.store(Event.TYPE_NAME, event.getId(), event.toJson(), timestamp, true);
+		event.postPersist();
 	}
 
 	protected ObjectNode execute() {

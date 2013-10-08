@@ -49,4 +49,9 @@ public class DateTimeField extends Field<DateTime> {
 			shadow.addValue(node, getValue(childNode));
 		}
 	}
+
+	@Override
+	public void postPersist(ObjectNode node) {
+		shadow.setValue(node, null);
+	}
 }

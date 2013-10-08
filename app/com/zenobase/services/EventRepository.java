@@ -2,13 +2,13 @@ package com.zenobase.services;
 
 import java.util.List;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.elasticsearch.search.facet.FacetBuilders;
 import org.elasticsearch.search.facet.terms.TermsFacet;
 import org.elasticsearch.search.facet.terms.TermsFacet.ComparatorType;
 import org.joda.time.DateTime;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 
@@ -27,11 +27,13 @@ public class EventRepository {
 	public void add(String bucketId, Event event, DateTime timestamp) {
 		event.prePersist();
 		getIndex(bucketId).store(Event.TYPE_NAME, event.getId(), event.toJson(), timestamp, false);
+		event.postPersist();
 	}
 
 	public void update(String bucketId, Event event, DateTime timestamp) {
 		event.prePersist();
 		getIndex(bucketId).update(Event.TYPE_NAME, event.getId(), event.toJson(), timestamp, false);
+		event.postPersist();
 	}
 
 	public boolean delete(String bucketId, String eventId) {

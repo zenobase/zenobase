@@ -2,6 +2,7 @@ package com.zenobase.services;
 
 import static com.zenobase.testing.NodeAssert.assertThat;
 import static org.fest.assertions.Assertions.assertThat;
+
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.junit.Before;
