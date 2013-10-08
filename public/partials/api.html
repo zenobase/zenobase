@@ -1147,13 +1147,21 @@ Content-Type: application/json
   <blockquote>
   <dl>
   <dt>field_x=<em>&lt;String&gt;</em></dt>
-  <dd>The first field to correlate. Required.</dd>
+  <dd>The field for the x series. Required.</dd>
   <dt>unit_x=<em>&lt;String&gt;</em></dt>
-  <dd>The unit of the first field. Required for fields with units.</dd>
+  <dd>The unit for the x series. Required for fields with units.</dd>
+  <dt>statistic_x=<em>&lt;'count'|'avg'|'min'|'max'|'sum'&gt;</em></dt>
+  <dd>The aggregate function for the x series. Defaults to <em>avg</em>.</dd>
+  <dt>filter_x=<em>&lt;constraint&gt;</em></dt>
+  <dd>Optional <a href="/#/api/constraints">constraint</a> for the x series.</dd>
   <dt>field_y=<em>&lt;String&gt;</em></dt>
-  <dd>The second field to correlate. Required.</dd>
+  <dd>The field for the y series. Required.</dd>
   <dt>unit_y=<em>&lt;String&gt;</em></dt>
-  <dd>The unit of the second field. Required for fields with units.</dd>
+  <dd>The unit for the y series. Required for fields with units.</dd>
+  <dt>statistic_y=<em>&lt;'count'|'avg'|'min'|'max'|'sum'&gt;</em></dt>
+  <dd>The aggregate function for the y series. Defaults to <em>avg</em>.</dd>
+  <dt>filter_y=<em>&lt;constraint&gt;</em></dt>
+  <dd>Optional <a href="/#/api/constraints">constraint</a> for the y series.</dd>
   <dt>interval=<em>&lt;'year'|'month'|'day'|'hour'|'minute'&gt;</em></dt>
   <dd>The interval at which values are aggregated. Defaults to <em>day</em>.</dd>
   <dt>timezone=<em>&lt;Z&gt;</em></dt>

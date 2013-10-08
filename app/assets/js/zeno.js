@@ -2151,7 +2151,8 @@
 				filter_y : $scope.settings.filter_y || '',
 				interval : $scope.settings.interval || 'day',
 				timezone : timezone,
-				statistic : $scope.settings.statistic || 'avg'
+				statistic_x : $scope.settings.statistic_x || 'avg',
+				statistic_y : $scope.settings.statistic_y || 'avg'
 			};
 		};
 		$scope.refresh = function(options, settings) {

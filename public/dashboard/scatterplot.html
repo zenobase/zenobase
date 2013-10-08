@@ -29,63 +29,70 @@
 					<label class="control-label" for="fieldX">Field (x)</label>
 					<div class="controls">
 						<select name="fieldX" data-ng-model="settings.field_x" data-ng-options="field.name as field.name for field in getFields()"></select>
-						<p class="help-block">The first field to correlate.</p>
+						<p class="help-block">The field for the x series.</p>
 					</div>
 				</div>
 				<div class="control-group">
 					<label class="control-label" for="unitX">Unit (x)</label>
 					<div class="controls">
 						<select name="unitX" data-ng-model="settings.unit_x" data-ng-options="unit for unit in getUnits(settings.field_x)"></select>
-						<p class="help-block">The unit of the first field.</p>
+						<p class="help-block">The unit for the x series.</p>
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label" for="statisicX">Statistic (x)</label>
+					<div class="controls">
+						<select name="statisticX" required data-ng-model="settings.statistic_x" data-ng-options="value for value in getStatistics(settings.field)"></select>
+						<p class="help-block">The aggregate function for the x series.</p>
 					</div>
 				</div>
 				<div class="control-group">
 					<label class="control-label" for="filterX">Filter (x)</label>
 					<div class="controls">
 						<input name="filterX" type="text" data-ng-model="settings.filter_x"/>
-						<p class="help-block">Optional constraint.</p>
+						<p class="help-block">Optional constraint for the x series.</p>
 					</div>
 				</div>
 				<div class="control-group">
 					<label class="control-label" for="fieldY">Field (y)</label>
 					<div class="controls">
 						<select name="fieldY" data-ng-model="settings.field_y" data-ng-options="field.name as field.name for field in getFields()"></select>
-						<p class="help-block">The second field to correlate.</p>
+						<p class="help-block">The field for the y series.</p>
 					</div>
 				</div>
 				<div class="control-group">
 					<label class="control-label" for="unitY">Unit (y)</label>
 					<div class="controls">
 						<select name="unitY" data-ng-model="settings.unit_y" data-ng-options="unit for unit in getUnits(settings.field_y)"></select>
-						<p class="help-block">The unit of the second field.</p>
+						<p class="help-block">The unit for the y series.</p>
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label" for="statisicY">Statistic (y)</label>
+					<div class="controls">
+						<select name="statisticY" required data-ng-model="settings.statistic_y" data-ng-options="value for value in getStatistics(settings.field)"></select>
+						<p class="help-block">The aggregate function for the y series.</p>
 					</div>
 				</div>
 				<div class="control-group">
 					<label class="control-label" for="filterY">Filter (y)</label>
 					<div class="controls">
 						<input name="filterY" type="text" data-ng-model="settings.filter_y"/>
-						<p class="help-block">Optional constraint.</p>
+						<p class="help-block">Optional constraint for the y series.</p>
 					</div>
 				</div>
 				<div class="control-group">
 					<label class="control-label" for="interval">Interval</label>
 					<div class="controls">
 						<select name="interval" data-ng-model="settings.interval" data-ng-options="interval.name as interval.name for interval in getIntervals()"></select>
-						<p class="help-block">The interval at which to aggregate the values.</p>
-					</div>
-				</div>
-				<div class="control-group">
-					<label class="control-label" for="statisic">Statistic</label>
-					<div class="controls">
-						<select name="statistic" required data-ng-model="settings.statistic" data-ng-options="value for value in getStatistics(settings.field)"></select>
-						<p class="help-block">The statistic to use when aggregating.</p>
+						<p class="help-block">The interval at which values are aggregated.</p>
 					</div>
 				</div>
 				<div class="control-group">
 					<label class="control-label" for="lag">Lag</label>
 					<div class="controls">
 						<input name="lag" type="number" data-ng-model="settings.lag"/>
-						<p class="help-block">By how many time units to offset the second data series.</p>
+						<p class="help-block">By how many time units to offset the y series values from the x series values.</p>
 					</div>
 				</div>
 			</div>
