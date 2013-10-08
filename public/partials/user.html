@@ -72,9 +72,25 @@
 						<label for="template">Label</label>
 						<input id="create-bucket-label" name="label" type="text" class="xlarge" required data-ui-focus-on="dialog:create-bucket-dialog" data-ng-minlength="1" data-ng-maxlength="20" data-ng-pattern="/^[a-zA-Z0-9-_ ]+$/" data-ng-model="label"/>
 					</div>
+					<div class="control-group">
+						<label class="checkbox">
+							<input id="create-bucket-label" name="virtual" type="checkbox" data-ng-model="virtual"/> <abbr title="Virtual buckets can't store events, but show events from one or more other buckets.">Virtual</abbr>							
+						</label>
+					</div>
+					<div class="control-group" data-ng-show="virtual">
+						<ul class="nav nav-pills">
+							<li class="active" data-ng-repeat="bucket in aliases">
+								<a data-ng-click="removeBucket(bucket)">{{bucket.label}} <i class="icon-remove icon-white"></i></a>
+							</li>
+						</ul>
+						<div class="form-horizontal">
+							<select id="include-bucket-select" class="input-medium" data-ng-model="selected" data-ng-options="bucket.label for bucket in listBuckets() | orderBy:'label'"></select>
+							<button id="include-bucket-button" type="button" class="btn" data-ng-disabled="!selected" data-ng-click="addBucket()">Add</button>
+						</div>
+					</div>
 				</div>
 				<div class="modal-footer">
-					<button id="create-bucket-button" type="submit" class="btn btn-primary" data-ng-disabled="!createBucketForm.$valid">Create</button>
+					<button id="create-bucket-button" type="submit" class="btn btn-primary" data-ng-disabled="!createBucketForm.$valid || !valid()">Create</button>
 					<button type="reset" class="btn" data-dismiss="modal">Cancel</button>
 				</div>
 			</form>
@@ -100,7 +116,10 @@
 							<td colspan="3"><i>None</i></td>
 						</tr>
 						<tr class="bucket-row" data-ng-repeat="bucket in buckets">
-							<td style="white-space: nowrap"><a class="bucket-link" data-ng-href="/#/buckets/{{bucket['@id']}}/">{{bucket.label}}</a></td>
+							<td style="white-space: nowrap">
+								<i class="icon-share-alt" title="Virtual Bucket" data-ng-show="bucket.aliases"></i>
+								<a class="bucket-link" data-ng-href="/#/buckets/{{bucket['@id']}}/">{{bucket.label}}</a>
+							</td>
 							<td>{{bucket.description}}</td>
 							<td style="text-align: right">{{bucket.size}}</td>
 							<td style="text-align: right">

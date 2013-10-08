@@ -2,7 +2,8 @@ package com.zenobase.services;
 
 import java.util.List;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.elasticsearch.action.admin.indices.alias.IndicesAliasesRequestBuilder;
+import org.elasticsearch.action.admin.indices.alias.IndicesAliasesResponse;
 import org.elasticsearch.action.admin.indices.create.CreateIndexResponse;
 import org.elasticsearch.action.get.GetResponse;
 import org.elasticsearch.action.index.IndexRequest.OpType;
@@ -19,6 +20,8 @@ import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.joda.time.DateTime;
+import play.Logger;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.google.common.primitives.Ints;
@@ -28,6 +31,7 @@ import com.zenobase.json.DomainNode;
 import com.zenobase.json.NodeList;
 import com.zenobase.json.Nodes;
 import com.zenobase.json.Schema;
+import com.zenobase.models.Alias;
 
 public class Index {
 
@@ -48,6 +52,16 @@ public class Index {
 		CreateIndexResponse response = client.admin().indices().prepareCreate(indexName).setSettings(settings).execute().actionGet();
 		Preconditions.checkState(response.isAcknowledged(), "Expected acknowledgement of index creation: %s", indexName);
 		Preconditions.checkState(new Cluster(client).isReady(), "Expected at least one shard in cluster");
+	}
+
+	public void create(List<Alias> aliases) {
+		Logger.info("Creating aliases for " + indexName + ": " + aliases);
+		IndicesAliasesRequestBuilder request = client.admin().indices().prepareAliases();
+		for (Alias alias : aliases) {
+			request.addAlias(alias.getId(), indexName);
+		}
+		IndicesAliasesResponse response = request.execute().actionGet();
+		Preconditions.checkState(response.isAcknowledged(), "Expected acknowledgement of alias creation: %s", indexName);
 	}
 
 	public void putMapping(Schema schema) {

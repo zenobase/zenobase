@@ -34,6 +34,7 @@ public class BucketControllerHttpDeleteTest extends BucketControllerTestSupport 
 		String commandId = Generator.id();
 		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
 		when(buckets.find(bucket.getId())).thenReturn(bucket.copy());
+		when(buckets.isAliased(bucket.getId())).thenReturn(false);
 		when(dispatcher.dispatch(any(DeleteBucketCommand.class))).thenReturn(commandId);
 		Result result = call(bucket.getId());
 		assertThat(result).hasStatus(NO_CONTENT).hasHeader(COMMAND_ID, commandId).isEmpty();
@@ -46,6 +47,7 @@ public class BucketControllerHttpDeleteTest extends BucketControllerTestSupport 
 		when(auth.current()).thenReturn(new Authorization(superuser));
 		when(users.isSuperuser(superuser)).thenReturn(true);
 		when(buckets.find(bucket.getId())).thenReturn(bucket.copy());
+		when(buckets.isAliased(bucket.getId())).thenReturn(false);
 		when(dispatcher.dispatch(any(DeleteBucketCommand.class))).thenReturn(commandId);
 		Result result = call(bucket.getId());
 		assertThat(result).hasStatus(NO_CONTENT).hasHeader(COMMAND_ID, commandId).isEmpty();
@@ -73,6 +75,16 @@ public class BucketControllerHttpDeleteTest extends BucketControllerTestSupport 
 		when(buckets.find(bucket.getId())).thenReturn(bucket.copy());
 		Result result = call(bucket.getId());
 		assertThat(result).hasStatus(FORBIDDEN);
+		verifyZeroInteractions(dispatcher);
+	}
+
+	@Test
+	public void testDeleteAliasedBucket() {
+		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
+		when(buckets.find(bucket.getId())).thenReturn(bucket.copy());
+		when(buckets.isAliased(bucket.getId())).thenReturn(true);
+		Result result = call(bucket.getId());
+		assertThat(result).hasStatus(CONFLICT);
 		verifyZeroInteractions(dispatcher);
 	}
 

@@ -308,7 +308,11 @@ Authorization: Bearer <em>&lt;access_token&gt;</em>
 
 { 
   "label" : <em>&lt;label&gt;</em>,
-  "description" : <em>&lt;description&gt;</em>
+  "description" : <em>&lt;description&gt;</em>,
+  "aliases" : [
+    { "@id" : <em>&lt;bucket_id&gt;</em> },
+    { "@id" : <em>&lt;bucket_id&gt;</em> },
+    ...
 }
 </pre>
 
@@ -317,9 +321,11 @@ Authorization: Bearer <em>&lt;access_token&gt;</em>
   <dd>A human-readable name for the bucket. Required, 1-20 characters from <code>a-zA-Z0-9-_ </code>.</dd>
   <dt>description</dt>
   <dd>One or two sentences describing this bucket. Optional.</dd>
+  <dt>aliases</dt>
+  <dd>Optional list of existing buckets; creates a virtual bucket that serves as a read-only view.</dd>
 </dl>
 
-<h4>Example</h4>
+<h4>Example #1</h4>
 
 <h5>Request</h5>
 
@@ -343,9 +349,49 @@ X-Command-ID: 4o6iqmpnrr
   "@id" : "v7jg3l5ibc",
   "created" : "2012-10-24T23:01:44.438Z",
   "label" : "Test Bucket",
-  "description" : "This bucket is for testing."
+  "description" : "This bucket is for testing.",
   "roles": [
     { "principal" : "args4iqh2c" , "role" : "owner" }
+  ],
+  "version" : 1
+}
+</pre>
+
+<h4>Example #2</h4>
+
+<h5>Request</h5>
+
+<pre>curl -i -X POST 'https://api.zenobase.com/buckets/' \
+  -H 'Content-Type: application/json' \
+  -H 'Authorization: Bearer e7975e8bb6eabc3ef567 \  
+  -d '{
+    "label" : "My Data",
+    "description" : "This is all my data.",
+    "aliases" : [
+      { "@id" : "v7jg3l5ibc" },
+      { "@id" : "17tfv4rmvn" }
+    ]
+  }'
+</pre>
+
+<h5>Response</h5>
+
+<pre>HTTP/1.1 201 Created
+Content-Type: application/json
+Location: /buckets/v7jg3l5ibc
+X-Command-ID: 4o6iqmpnrr
+
+{
+  "@id" : "v7jg3l5ibc",
+  "created" : "2012-10-24T23:11:43.112Z",
+  "label" : "My Data",
+  "description" : "This is all my data.",
+  "aliases" : [
+    { "@id" : "v7jg3l5ibc" },
+    { "@id" : "17tfv4rmvn" }
+  ],
+  "roles": [
+    { "principal" : "dch4v3salm" , "role" : "owner" }
   ],
   "version" : 1
 }
@@ -424,7 +470,7 @@ Authorization: Bearer <em>&lt;access_token&gt;</em>
 
 <dl>
   <dt>bucket_id</dt>
-  <dd>The bucket to delete.</dd>
+  <dd>The bucket to delete; must not be aliased from a virtual bucket.</dd>
 </dl>
 
 <h4>Example</h4>

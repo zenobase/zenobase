@@ -5,9 +5,9 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.regex.Pattern;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Objects;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
@@ -15,6 +15,7 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
 
 import com.zenobase.common.Generator;
+import com.zenobase.json.AliasField;
 import com.zenobase.json.DateTimeField;
 import com.zenobase.json.DomainNode;
 import com.zenobase.json.Nodes;
@@ -38,6 +39,7 @@ public class Bucket extends DomainNode {
 	public static final DateTimeField CREATED = new DateTimeField("created");
 	public static final RolesField ROLES = new RolesField("roles");
 	public static final ObjectField WIDGETS = new ObjectField("widgets");
+	public static final AliasField ALIASES = new AliasField("aliases");
 
 	public Bucket(ObjectNode node) {
 		super(node);
@@ -125,10 +127,26 @@ public class Bucket extends DomainNode {
 		setValues(WIDGETS, widgets);
 	}
 
+	public List<Alias> getAliases() {
+		return getValues(ALIASES);
+	}
+
+	public void setAliases(Iterable<Alias> alias) {
+		setValues(ALIASES, alias);
+	}
+
+	public void addAlias(Alias alias) {
+		addValue(ALIASES, alias);
+	}
+
+	public boolean isVirtual() {
+		return !getAliases().isEmpty();
+	}
+
 	public static Schema getSchema() {
 		return new SchemaBuilder(TYPE_NAME).add(VERSION)
 			.add(ID).add(LABEL).add(DESCRIPTION).add(CREATED)
-			.add(ROLES).add(WIDGETS).build();
+			.add(ROLES).add(WIDGETS).add(ALIASES).build();
 	}
 
 	public Bucket copy() {

@@ -1,8 +1,11 @@
 package com.zenobase.controllers;
 
+import java.util.List;
+
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import com.zenobase.json.DomainNode;
+import com.zenobase.models.Alias;
 import com.zenobase.models.Bucket;
 
 public class CreateBucketForm extends DomainNode {
@@ -11,9 +14,10 @@ public class CreateBucketForm extends DomainNode {
 		super(node);
 	}
 
-	CreateBucketForm(String label, String description) {
+	CreateBucketForm(String label, String description, Iterable<Alias> aliases) {
 		setValue(Bucket.LABEL, label);
 		setValue(Bucket.DESCRIPTION, description);
+		setValues(Bucket.ALIASES, aliases);
 	}
 
 	public String getId() {
@@ -26,5 +30,9 @@ public class CreateBucketForm extends DomainNode {
 
 	public String getDescription() {
 		return getValue(Bucket.DESCRIPTION);
+	}
+
+	public List<Alias> getIncluded() {
+		return getValues(Bucket.ALIASES);
 	}
 }

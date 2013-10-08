@@ -78,7 +78,10 @@
 					</thead>
 					<tbody>
 						<tr data-ng-repeat="bucket in buckets">
-							<td>{{bucket['@id']}}</td>
+							<td>
+								<i class="icon-share-alt" title="Virtual Bucket" data-ng-show="bucket.aliases"></i>
+								{{bucket['@id']}}
+							</td>
 							<td><a data-ng-click="setConstraint(getOwner(bucket))">{{getOwner(bucket) | username}}</a></td>
 							<td>{{bucket.created | age}}</td>
 							<td style="text-align: right">

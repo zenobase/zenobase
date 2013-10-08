@@ -147,6 +147,9 @@ public class BucketController extends ControllerSupport {
     	if (!bucket.hasRole(auth, Role.OWNER) && !users.isSuperuser(auth.getPrincipal())) {
     		return forbidden();
     	}
+    	if (buckets.isAliased(bucketId)) {
+    		return conflict("bucket is aliased");
+    	}
     	String commandId = dispatcher.dispatch(new DeleteBucketCommand(auth.getPrincipal(), bucket));
 		response().setHeader(COMMAND_ID, commandId);
     	return noContent();

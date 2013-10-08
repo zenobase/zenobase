@@ -8,6 +8,7 @@ import com.google.common.base.Strings;
 
 import com.zenobase.commands.CreateBucketCommand;
 import com.zenobase.io.BucketPrinter;
+import com.zenobase.models.Alias;
 import com.zenobase.models.Bucket;
 import com.zenobase.models.BucketList;
 import com.zenobase.models.Identity;
@@ -102,9 +103,16 @@ public class BucketListController extends ControllerSupport {
 		Bucket bucket = form.getId() != null ? new Bucket(form.getId()) : new Bucket();
 		bucket.setLabel(form.getLabel());
 		bucket.setDescription(form.getDescription());
+		bucket.setAliases(form.getIncluded());
 		bucket.addRole(auth.getPrincipal(), Role.OWNER);
 		if (!bucket.valid()) {
 			return badRequest("not valid");
+		}
+		for (Alias alias : bucket.getAliases()) {
+			Bucket b = buckets.find(alias.getId());
+			if (b == null || !b.hasRole(auth, Role.OWNER)) {
+				return badRequest("invalid alias: " + alias.getId());
+			}
 		}
     	String commandId = dispatcher.dispatch(new CreateBucketCommand(auth.getPrincipal(), bucket));
         response().setHeader(LOCATION, com.zenobase.controllers.routes.BucketController.get(bucket.getId()).toString());

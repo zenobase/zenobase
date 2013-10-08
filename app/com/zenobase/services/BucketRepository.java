@@ -2,13 +2,13 @@ package com.zenobase.services;
 
 import javax.inject.Inject;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.elasticsearch.search.sort.SortOrder;
 import org.joda.time.DateTime;
 import play.Logger;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Preconditions;
 
 import com.zenobase.common.Callback;
@@ -42,8 +42,10 @@ public class BucketRepository extends RepositorySupport<Bucket> {
 		if (index.exists()) {
 			Preconditions.checkState(!createIndex, "Index exists already: %s", bucket.getId());
 			index.open();
-		}
-		else {
+		} else if (bucket.isVirtual()) {
+			Preconditions.checkState(createIndex, "Can't find index: %s", bucket.getId());
+			index.create(bucket.getAliases());
+		} else {
 			Preconditions.checkState(createIndex, "Can't find index: %s", bucket.getId());
 			index.create(1);
 			index.putMapping(Event.getSchema());
@@ -61,6 +63,13 @@ public class BucketRepository extends RepositorySupport<Bucket> {
 			manager.getIndex(bucketId).close();
 		}
 		return deleted;
+	}
+
+	/**
+	 * Returns <code>true</code> if a bucket is aliased from another bucket.
+	 */
+	public boolean isAliased(String bucketId) {
+		return !index.find(QueryBuilders.termQuery(Bucket.ALIASES + ".@id", bucketId)).isEmpty();
 	}
 
 	public Bucket find(String bucketId) {
