@@ -2199,12 +2199,12 @@
 					title : null,
 					xAxis : {
 						title : {
-							text : $scope.settings.field_x
+							text : $scope.settings.label_x || $scope.settings.field_x
 						}
 					},
 					yAxis : {
 						title : {
-							text : $scope.settings.field_y
+							text : $scope.settings.label_y || $scope.settings.field_y
 						}
 					},
 					tooltip : {

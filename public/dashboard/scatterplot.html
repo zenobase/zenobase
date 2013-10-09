@@ -26,6 +26,13 @@
 					</div>
 				</div>
 				<div class="control-group">
+					<label class="control-label" for="labelX">Label (x)</label>
+					<div class="controls">
+						<input name="labelX" type="text" data-ng-model="settings.label_x"/>
+						<p class="help-block">Optional label for the x series.</p>
+					</div>
+				</div>
+				<div class="control-group">
 					<label class="control-label" for="fieldX">Field (x)</label>
 					<div class="controls">
 						<select name="fieldX" data-ng-model="settings.field_x" data-ng-options="field.name as field.name for field in getFields()"></select>
@@ -40,7 +47,7 @@
 					</div>
 				</div>
 				<div class="control-group">
-					<label class="control-label" for="statisicX">Statistic (x)</label>
+					<label class="control-label" for="statisticX">Statistic (x)</label>
 					<div class="controls">
 						<select name="statisticX" required data-ng-model="settings.statistic_x" data-ng-options="value for value in getStatistics(settings.field)"></select>
 						<p class="help-block">The aggregate function for the x series.</p>
@@ -51,6 +58,13 @@
 					<div class="controls">
 						<input name="filterX" type="text" data-ng-model="settings.filter_x"/>
 						<p class="help-block">Optional constraint for the x series.</p>
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label" for="labelY">Label (y)</label>
+					<div class="controls">
+						<input name="labelY" type="text" data-ng-model="settings.label_y"/>
+						<p class="help-block">Optional label for the y series.</p>
 					</div>
 				</div>
 				<div class="control-group">
@@ -68,7 +82,7 @@
 					</div>
 				</div>
 				<div class="control-group">
-					<label class="control-label" for="statisicY">Statistic (y)</label>
+					<label class="control-label" for="statisticY">Statistic (y)</label>
 					<div class="controls">
 						<select name="statisticY" required data-ng-model="settings.statistic_y" data-ng-options="value for value in getStatistics(settings.field)"></select>
 						<p class="help-block">The aggregate function for the y series.</p>
