@@ -1771,7 +1771,8 @@
 				unit : $scope.settings.unit || '',
 				interval : $scope.interval.name,
 				range : $scope.range,
-				timezone : timezone
+				timezone : timezone,
+				filter : $scope.settings.filter || ''
 			};
 		};
 		$scope.refresh = function(options, settings) {

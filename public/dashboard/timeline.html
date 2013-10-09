@@ -53,6 +53,13 @@
 						<p class="help-block">The default interval at which to aggregate the values.</p>
 					</div>
 				</div>
+				<div class="control-group">
+					<label class="control-label" for="filter">Filter</label>
+					<div class="controls">
+						<input name="filter" type="text" data-ng-model="settings.filter"/>
+						<p class="help-block">Optional constraint.</p>
+					</div>
+				</div>
 			</div>
 			<div class="modal-footer">
 				<button class="btn btn-primary" data-ng-click="save()" data-ng-disabled="!form.$valid || !valid()">Update</button>

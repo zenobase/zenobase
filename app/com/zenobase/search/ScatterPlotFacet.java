@@ -185,7 +185,6 @@ public class ScatterPlotFacet extends Facet {
 	}
 
 	private static FilterBuilder parseFilter(String expressions, FilterBuilderSupport filterBuilder) {
-		filterBuilder.addConstraints(expressions);
-		return filterBuilder.buildFilter();
+		return filterBuilder.addConstraints(expressions).buildFilter();
 	}
 }

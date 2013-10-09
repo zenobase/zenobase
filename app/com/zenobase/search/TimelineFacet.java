@@ -5,16 +5,17 @@ import java.util.Map;
 
 import javax.measure.unit.Unit;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.elasticsearch.action.search.SearchResponse;
+import org.elasticsearch.index.query.FilterBuilder;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.elasticsearch.search.facet.FacetBuilders;
 import org.elasticsearch.search.facet.datehistogram.DateHistogramFacet;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.Interval;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Objects;
 import com.google.common.base.Strings;
 import com.google.common.collect.Maps;
@@ -35,8 +36,9 @@ public class TimelineFacet extends Facet {
 	private final Interval range;
 	private final DateTimeZone timezone;
 	private final Unit<?> unit;
+	private final FilterBuilder filter;
 
-	public TimelineFacet(String id, String keyField, String valueField, String interval, String range, DateTimeZone timezone, Unit<?> unit) {
+	public TimelineFacet(String id, String keyField, String valueField, String interval, String range, DateTimeZone timezone, Unit<?> unit, FilterBuilder filter) {
 		super(id);
 		this.keyField = keyField;
 		this.valueField = valueField;
@@ -44,6 +46,7 @@ public class TimelineFacet extends Facet {
 		this.range = !Strings.isNullOrEmpty(range) ? Intervals.valueOf(range) : null;
 		this.timezone = timezone;
 		this.unit = unit;
+		this.filter = filter;
 	}
 
 	@Override
@@ -52,7 +55,8 @@ public class TimelineFacet extends Facet {
 			.keyField(keyField).valueField(unit == Unit.ONE ? valueField : valueField + "." + MeasurementField.VALUE_SI.getName())
 			.interval(interval)
 			.preZone(timezone.toString())
-			.preZoneAdjustLargeInterval(true));
+			.preZoneAdjustLargeInterval(true)
+			.facetFilter(filter));
 	}
 
 	@Override
@@ -135,7 +139,7 @@ public class TimelineFacet extends Facet {
 		return Intervals.toString(time, interval);
 	}
 
-	public static FacetBuilder builder() {
+	public static FacetBuilder builder(final FilterBuilderSupport filterBuilder) {
 		return new FacetBuilder() {
 			@Override
 			public Facet build(FacetOptions options) {
@@ -147,7 +151,8 @@ public class TimelineFacet extends Facet {
 					options.get("interval", String.class, "month"),
 					options.get("range"),
 					options.get("timezone", DateTimeZone.class, DateTimeZone.UTC),
-					unit != null ? Measures.parseUnit(unit) : Unit.ONE);
+					unit != null ? Measures.parseUnit(unit) : Unit.ONE,
+					filterBuilder.addConstraints(options.get("filter")).buildFilter());
 			}
 		};
 	}
