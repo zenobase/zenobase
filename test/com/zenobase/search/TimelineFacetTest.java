@@ -5,10 +5,10 @@ import static com.zenobase.testing.NodeAssert.assertThat;
 import javax.measure.DecimalMeasure;
 import javax.measure.quantity.Length;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import com.zenobase.models.Event;
 import com.zenobase.testing.NodeAssert;
@@ -49,6 +49,20 @@ public class TimelineFacetTest extends FacetTestSupport {
 		node.path(1).path("count").isEqualTo(0);
 		node.path(2).path("label").isEqualTo("2012-05TZ");
 		node.path(2).path("count").isEqualTo(1);
+	}
+
+	@Test
+	public void testDefaultWithFilter() {
+
+		addEvent(first);
+		addEvent(last);
+		addFacet("id:%s,type:%s,filter:%s", FACET_ID, TimelineFacet.TYPE, "count:(*..3000)");
+
+		ObjectNode result = execute();
+		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(2);
+		NodeAssert node = assertThat(result).path(FACET_ID).hasSize(1);
+		node.path(0).path("label").isEqualTo("2012-03TZ");
+		node.path(0).path("count").isEqualTo(1);
 	}
 
 	@Test

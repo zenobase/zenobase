@@ -40,7 +40,8 @@ public class ScatterPlotFacetTest extends FacetTestSupport {
 		addEvent(e1);
 		addEvent(e2);
 		addEvent(e3);
-		addFacet("id:%s,type:%s,field_x:distance,unit_x:km,statistic_x:avg,field_y:count,statistic_y:sum,interval:day", FACET_ID, ScatterPlotFacet.TYPE);
+		addFacet("id:%s,type:%s,field_x:%s,unit_x:%s,statistic_x:%s,field_y:%s,statistic_y:%s,interval:%s",
+			FACET_ID, ScatterPlotFacet.TYPE, Event.DISTANCE, "km", "avg", Event.COUNT, "sum", "day");
 
 		ObjectNode result = execute();
 		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(3);
@@ -52,9 +53,26 @@ public class ScatterPlotFacetTest extends FacetTestSupport {
 	}
 
 	@Test
+	public void testFiltered() {
+
+		addEvent(e1);
+		addEvent(e2);
+		addEvent(e3);
+		addFacet("id:%s,type:%s,field_x:%s,unit_x:%s,statistic_x:%s,field_y:%s,statistic_y:%s,interval:%s,filter_x:%s,filter_y:%s",
+			FACET_ID, ScatterPlotFacet.TYPE, Event.DISTANCE, "km", "avg", Event.COUNT, "sum", "day", "distance:(*..10 km)", "count:(2000..*)");
+
+		ObjectNode result = execute();
+		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(3);
+		NodeAssert node = assertThat(result).path(FACET_ID).hasSize(1);
+		node.path(0).path(0).isEqualTo(5.0);
+		node.path(0).path(1).isEqualTo(4000.0);
+	}
+
+	@Test
 	public void testEmpty() {
 
-		addFacet("id:%s,type:%s,field_x:distance,unit_x:km,field_y:duration", FACET_ID, ScatterPlotFacet.TYPE);
+		addFacet("id:%s,type:%s,field_x:%s,unit_x:%s,field_y:%s",
+			FACET_ID, ScatterPlotFacet.TYPE, Event.DISTANCE, "km", Event.COUNT);
 
 		ObjectNode result = execute();
 		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(0);

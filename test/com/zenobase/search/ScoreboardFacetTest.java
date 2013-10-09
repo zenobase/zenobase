@@ -5,9 +5,9 @@ import static com.zenobase.testing.NodeAssert.assertThat;
 import javax.measure.DecimalMeasure;
 import javax.measure.quantity.Length;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.junit.Before;
 import org.junit.Test;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import com.zenobase.models.Event;
 import com.zenobase.testing.NodeAssert;
@@ -35,13 +35,14 @@ public class ScoreboardFacetTest extends FacetTestSupport {
 	}
 
 	@Test
-	public void testDefaultWithMeasureField() {
+	public void testMeasureField() {
 
 		addEvent(e1);
 		addEvent(e2);
 		addEvent(e3);
 		addEvent(e4);
-		addFacet("id:%s,type:%s,key_field:%s,value_field:%s,unit:%s,order:%s", FACET_ID, ScoreboardFacet.TYPE, Event.TAG, Event.DISTANCE, "km", "total");
+		addFacet("id:%s,type:%s,key_field:%s,value_field:%s,unit:%s,order:%s",
+			FACET_ID, ScoreboardFacet.TYPE, Event.TAG, Event.DISTANCE, "km", "total");
 
 		ObjectNode result = execute();
 		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(4);
@@ -65,13 +66,14 @@ public class ScoreboardFacetTest extends FacetTestSupport {
 	}
 
 	@Test
-	public void testDefaultWithNumericField() {
+	public void testNumericField() {
 
 		addEvent(e1);
 		addEvent(e2);
 		addEvent(e3);
 		addEvent(e4);
-		addFacet("id:%s,type:%s,key_field:%s,value_field:%s", FACET_ID, ScoreboardFacet.TYPE, Event.TAG, Event.COUNT);
+		addFacet("id:%s,type:%s,key_field:%s,value_field:%s",
+			FACET_ID, ScoreboardFacet.TYPE, Event.TAG, Event.COUNT);
 
 		ObjectNode result = execute();
 		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(4);
@@ -88,6 +90,27 @@ public class ScoreboardFacetTest extends FacetTestSupport {
 		node.path(1).path("max").isEqualTo(2500.0);
 		node.path(1).path("avg").isEqualTo(2500.0);
 		node.path(1).path("sum").isEqualTo(2500.0);
+	}
+
+	@Test
+	public void testNumericFieldFiltered() {
+
+		addEvent(e1);
+		addEvent(e2);
+		addEvent(e3);
+		addEvent(e4);
+		addFacet("id:%s,type:%s,key_field:%s,value_field:%s,filter:%s",
+			FACET_ID, ScoreboardFacet.TYPE, Event.TAG, Event.COUNT, "tag:walk");
+
+		ObjectNode result = execute();
+		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(4);
+		NodeAssert node = assertThat(result).path(FACET_ID).hasSize(1);
+		node.path(0).path("label").isEqualTo(e1.getValue(Event.TAG));
+		node.path(0).path("count").isEqualTo(1);
+		node.path(0).path("min").isEqualTo(2500.0);
+		node.path(0).path("max").isEqualTo(2500.0);
+		node.path(0).path("avg").isEqualTo(2500.0);
+		node.path(0).path("sum").isEqualTo(2500.0);
 	}
 
 	@Test

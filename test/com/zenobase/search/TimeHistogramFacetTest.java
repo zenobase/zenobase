@@ -161,6 +161,35 @@ public class TimeHistogramFacetTest extends FacetTestSupport {
 	}
 
 	@Test
+	public void testMonthOfYearWithFilter() {
+
+		addEvent(e1);
+		addEvent(e2);
+		addEvent(e3);
+		addFacet("id:%s,type:%s,key_field:%s,interval:%s,filter:%s",
+			FACET_ID, TimeHistogramFacet.TYPE, Event.TIMESTAMP, "month_of_year", "count:(*..5000)");
+
+		ObjectNode result = execute();
+		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(3);
+		NodeAssert node = assertThat(result).path(FACET_ID).hasSize(12);
+
+		node.path(0).path("value").isEqualTo(1);
+		node.path(0).path("label").isEqualTo("Jan");
+		node.path(0).path("count").isEqualTo(0);
+		node.path(0).path("avg").isMissingNode();
+
+		node.path(10).path("value").isEqualTo(11);
+		node.path(10).path("label").isEqualTo("Nov");
+		node.path(10).path("count").isEqualTo(1);
+		node.path(10).path("avg").isMissingNode();
+
+		node.path(11).path("value").isEqualTo(12);
+		node.path(11).path("label").isEqualTo("Dec");
+		node.path(11).path("count").isEqualTo(1);
+		node.path(11).path("avg").isMissingNode();
+	}
+
+	@Test
 	public void testMonthOfYearWithMeasureField() {
 
 		addEvent(e1);

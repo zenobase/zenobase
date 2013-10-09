@@ -1,9 +1,10 @@
 package com.zenobase.search;
 
 import static com.zenobase.testing.NodeAssert.assertThat;
-import com.fasterxml.jackson.databind.node.ObjectNode;
+
 import org.junit.Before;
 import org.junit.Test;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import com.zenobase.models.Event;
 import com.zenobase.models.Rating;
@@ -55,6 +56,27 @@ public class RatingsFacetTest extends FacetTestSupport {
 		node.path(3).path("from").isMissingNode();
 		node.path(3).path("to").isEqualTo(10);
 		node.path(3).path("count").isEqualTo(1);
+	}
+
+	@Test
+	public void testFiltered() {
+
+		addEvent(e1);
+		addEvent(e2);
+		addEvent(e3);
+		addEvent(e4);
+		addEvent(e5);
+		addFacet("id:%s,type:%s,filter:%s", FACET_ID, RatingsFacet.TYPE, "rating:[50..*)");
+
+		ObjectNode result = execute();
+		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(5);
+		NodeAssert node = assertThat(result).path(FACET_ID).hasSize(2);
+		node.path(0).path("from").isEqualTo(90);
+		node.path(0).path("to").isMissingNode();
+		node.path(0).path("count").isEqualTo(1);
+		node.path(1).path("from").isEqualTo(50);
+		node.path(1).path("to").isEqualTo(70);
+		node.path(1).path("count").isEqualTo(1);
 	}
 
 	@Test

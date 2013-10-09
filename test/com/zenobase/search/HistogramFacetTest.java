@@ -7,9 +7,9 @@ import javax.measure.quantity.Length;
 import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.junit.Before;
 import org.junit.Test;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import com.zenobase.models.Event;
 import com.zenobase.testing.NodeAssert;
@@ -54,6 +54,24 @@ public class HistogramFacetTest extends FacetTestSupport {
 		node.path(1).path("from").isEqualTo(2000.0);
 		node.path(1).path("to").isEqualTo(3000.0);
 		node.path(1).path("count").isEqualTo(2);
+	}
+
+	@Test
+	public void testNumericFieldWithFilter() {
+
+		addEvent(e1);
+		addEvent(e2);
+		addEvent(e3);
+		addEvent(e4);
+		addFacet("id:%s,type:%s,field:%s,interval:%s,filter:%s", FACET_ID,
+			HistogramFacet.TYPE, Event.COUNT, 1000, "tag:hike|count:(5000..*)");
+
+		ObjectNode result = execute();
+		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(4);
+		NodeAssert node = assertThat(result).path(FACET_ID).hasSize(1);
+		node.path(0).path("from").isEqualTo(7000.0);
+		node.path(0).path("to").isEqualTo(8000.0);
+		node.path(0).path("count").isEqualTo(1);
 	}
 
 	@Test
