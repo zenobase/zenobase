@@ -7,6 +7,7 @@ import java.util.Map;
 import javax.measure.unit.Unit;
 
 import org.elasticsearch.action.search.SearchResponse;
+import org.elasticsearch.index.query.FilterBuilder;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.elasticsearch.search.facet.FacetBuilders;
 import org.elasticsearch.search.facet.termsstats.TermsStatsFacet;
@@ -29,8 +30,9 @@ public class TimeHistogramFacet extends Facet {
 	private final String valueField;
 	private final Interval interval;
 	private final Unit<?> unit;
+	private final FilterBuilder filter;
 
-	private TimeHistogramFacet(String id, String keyField, String valueField, Interval interval, Unit<?> unit) {
+	private TimeHistogramFacet(String id, String keyField, String valueField, Interval interval, Unit<?> unit, FilterBuilder filter) {
 		super(id);
 		Preconditions.checkNotNull(keyField);
 		Preconditions.checkNotNull(interval);
@@ -38,6 +40,7 @@ public class TimeHistogramFacet extends Facet {
 		this.valueField = valueField;
 		this.interval = interval;
 		this.unit = unit;
+		this.filter = filter;
 	}
 
 	@Override
@@ -45,7 +48,8 @@ public class TimeHistogramFacet extends Facet {
 		builder.facet(FacetBuilders.termsStatsFacet(getId())
 			.keyField(interval.getField(keyField))
 			.valueField(unit == Unit.ONE ? valueField : valueField + "." + MeasurementField.VALUE_SI.getName())
-			.order(TermsStatsFacet.ComparatorType.TERM).size(31));
+			.order(TermsStatsFacet.ComparatorType.TERM).size(31)
+			.facetFilter(filter));
 	}
 
 	@Override
@@ -141,7 +145,7 @@ public class TimeHistogramFacet extends Facet {
 		public abstract String getLabel(int i);
 	}
 
-	public static FacetBuilder builder() {
+	public static FacetBuilder builder(final FilterBuilderSupport filterBuilder) {
 		return new FacetBuilder() {
 			@Override
 			public Facet build(FacetOptions options) {
@@ -151,7 +155,8 @@ public class TimeHistogramFacet extends Facet {
 					options.get("key_field", String.class, Event.TIMESTAMP.getName()),
 					options.get("value_field", String.class, Event.TIMESTAMP.getName()),
 					Interval.valueOf(options.get("interval").toUpperCase()),
-					unit != null ? Measures.parseUnit(unit) : Unit.ONE);
+					unit != null ? Measures.parseUnit(unit) : Unit.ONE,
+					filterBuilder.addConstraints(options.get("filter")).buildFilter());
 			}
 		};
 	}

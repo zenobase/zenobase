@@ -18,7 +18,7 @@ public class EventSearchBuilder extends SearchBuilderSupport {
 		.put(RatingsFacet.TYPE, RatingsFacet.builder())
 		.put(HistogramFacet.TYPE, HistogramFacet.builder())
 		.put(TimelineFacet.TYPE, TimelineFacet.builder(filterBuilder))
-		.put(TimeHistogramFacet.TYPE, TimeHistogramFacet.builder())
+		.put(TimeHistogramFacet.TYPE, TimeHistogramFacet.builder(filterBuilder))
 		.put(MultiplotFacet.TYPE, MultiplotFacet.builder())
 		.put(ScoreboardFacet.TYPE, ScoreboardFacet.builder())
 		.put(MapFacet.TYPE, MapFacet.builder())
