@@ -7,8 +7,6 @@ import javax.measure.unit.Unit;
 
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.index.query.FilterBuilder;
-import org.elasticsearch.index.query.FilterBuilders;
-import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.elasticsearch.search.facet.FacetBuilders;
 import org.elasticsearch.search.facet.datehistogram.DateHistogramFacet;
@@ -17,7 +15,6 @@ import org.joda.time.DateTimeZone;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.google.common.base.Strings;
 import com.google.common.collect.Maps;
 
 import com.zenobase.common.Measures;
@@ -156,7 +153,7 @@ public class ScatterPlotFacet extends Facet {
 		abstract double getValue(DateHistogramFacet.Entry entry);
 	}
 
-	public static FacetBuilder builder() {
+	public static FacetBuilder builder(final FilterBuilderSupport filterBuilder) {
 		return new FacetBuilder() {
 			@Override
 			public Facet build(FacetOptions options) {
@@ -165,12 +162,12 @@ public class ScatterPlotFacet extends Facet {
 					options.get("field_x"),
 					parseUnit(options.get("unit_x")),
 					parseStatistic(options.get("statistic_x", String.class, "avg")),
-					parseFilter(options.get("filter_x")));
+					parseFilter(options.get("filter_x"), filterBuilder));
 				Series y = new Series(id + "-y",
 					options.get("field_y"),
 					parseUnit(options.get("unit_y")),
 					parseStatistic(options.get("statistic_y", String.class, "avg")),
-					parseFilter(options.get("filter_y")));
+					parseFilter(options.get("filter_y"), filterBuilder));
 				return new ScatterPlotFacet(
 					id, Event.TIMESTAMP.getName(), x, y,
 					options.get("interval", String.class, "day"),
@@ -187,9 +184,8 @@ public class ScatterPlotFacet extends Facet {
 		return Statistic.valueOf(value.toUpperCase());
 	}
 
-	private static FilterBuilder parseFilter(String expression) {
-		return !Strings.isNullOrEmpty(expression)
-			? FilterBuilders.queryFilter(QueryBuilders.queryString(expression))
-			: FilterBuilders.matchAllFilter();
+	private static FilterBuilder parseFilter(String expressions, FilterBuilderSupport filterBuilder) {
+		filterBuilder.addConstraints(expressions);
+		return filterBuilder.buildFilter();
 	}
 }

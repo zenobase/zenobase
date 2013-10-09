@@ -32,7 +32,7 @@ public class EventListControllerHttpGetTest extends EventListControllerTestSuppo
 	public void testSearchEvents() {
 		String constraint = "tag:value";
 		String facet = "id:xyz,type:list";
-		Search expected = new EventSearchBuilder().addConstraint(constraint).addFacet(facet).build();
+		Search expected = new EventSearchBuilder().addConstraint(constraint).addFacet(facet).buildSearch();
 		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
 		when(buckets.find(bucket.getId())).thenReturn(bucket);
 		ObjectNode fakeResult = Nodes.newObject();

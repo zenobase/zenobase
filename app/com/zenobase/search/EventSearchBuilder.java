@@ -7,6 +7,10 @@ import com.zenobase.models.Event;
 
 public class EventSearchBuilder extends SearchBuilderSupport {
 
+	private static final ImmutableMultimap<String, ConstraintBuilder> constraintBuilders = Event.getSchema().getConstraintBuilders();
+
+	private static final FilterBuilderSupport filterBuilder = new FilterBuilderSupport(constraintBuilders);
+
 	private static final ImmutableMap<String, FacetBuilder> facetBuilders = ImmutableMap.<String, FacetBuilder>builder()
 		.put(ListFacet.TYPE, ListFacet.builder())
 		.put(CountFacet.TYPE, CountFacet.builder())
@@ -18,18 +22,10 @@ public class EventSearchBuilder extends SearchBuilderSupport {
 		.put(MultiplotFacet.TYPE, MultiplotFacet.builder())
 		.put(ScoreboardFacet.TYPE, ScoreboardFacet.builder())
 		.put(MapFacet.TYPE, MapFacet.builder())
-		.put(ScatterPlotFacet.TYPE, ScatterPlotFacet.builder())
+		.put(ScatterPlotFacet.TYPE, ScatterPlotFacet.builder(filterBuilder))
 		.build();
 
-	private static final ImmutableMultimap<String, ConstraintBuilder> constraintBuilders = Event.getSchema().getConstraintBuilders();
-
-	@Override
-	protected ImmutableMap<String, FacetBuilder> getFacetBuilders() {
-		return facetBuilders;
-	}
-
-	@Override
-	protected ImmutableMultimap<String, ConstraintBuilder> getConstraintBuilders() {
-		return constraintBuilders;
+	public EventSearchBuilder() {
+		super(constraintBuilders, facetBuilders);
 	}
 }

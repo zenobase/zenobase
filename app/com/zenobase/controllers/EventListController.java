@@ -8,14 +8,14 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.elasticsearch.common.collect.Lists;
 import org.elasticsearch.common.collect.Maps;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import play.mvc.BodyParser;
 import play.mvc.Result;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.ImmutableList;
 
 import com.zenobase.commands.CompoundCommand;
@@ -105,7 +105,7 @@ public class EventListController extends ControllerSupport {
 	}
 
 	public Result get(String bucketId, List<String> constraints, List<FacetOptions> facets) {
-		Search search = new EventSearchBuilder().addConstraints(constraints).addFacets(facets).build();
+		Search search = new EventSearchBuilder().addConstraints(constraints).addFacets(facets).buildSearch();
 		ObjectNode result = events.find(bucketId, search);
     	String extract = request().getQueryString("x");
 		if (extract != null) {

@@ -37,6 +37,6 @@ public class SearchTestSupport extends ElasticSearchTestSupport {
 	}
 
 	protected ObjectNode execute() {
-		return search.build().execute(index);
+		return search.buildSearch().execute(index);
 	}
 }
