@@ -1485,7 +1485,8 @@
 		$scope.params = function() {
 			return { 
 				id : $scope.settings.id,
-				type : 'ratings'
+				type : 'ratings',
+				filter : $scope.settings.filter || ''
 			};
 		};
 		$scope.update = function(event, result) {
@@ -1524,7 +1525,8 @@
 				type : 'histogram',
 				field : $scope.settings.field, 
 				interval : $scope.settings.interval,
-				unit : $scope.settings.unit
+				unit : $scope.settings.unit,
+				filter : $scope.settings.filter || ''
 			};
 		};
 		$scope.refresh = function(options, settings) {
@@ -1644,7 +1646,8 @@
 				value_field : $scope.settings.value_field,
 				unit : $scope.settings.unit,
 				order : $scope.settings.order,
-				limit : $scope.settings.limit
+				limit : $scope.settings.limit,
+				filter : $scope.settings.filter || ''
 			};
 		};
 		$scope.refresh = function(options, settings) {
@@ -1941,7 +1944,8 @@
 				key_field : $scope.keyField,
 				value_field : $scope.settings.value_field || null,
 				unit : $scope.settings.unit || '',
-				interval : $scope.settings.interval
+				interval : $scope.settings.interval,
+				filter : $scope.settings.filter || ''
 			};
 		};
 		$scope.refresh = function(options, settings) {

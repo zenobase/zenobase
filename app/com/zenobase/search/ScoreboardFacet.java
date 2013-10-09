@@ -2,14 +2,15 @@ package com.zenobase.search;
 
 import javax.measure.unit.Unit;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.elasticsearch.action.search.SearchResponse;
+import org.elasticsearch.index.query.FilterBuilder;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.elasticsearch.search.facet.FacetBuilders;
 import org.elasticsearch.search.facet.termsstats.TermsStatsFacet;
 import org.elasticsearch.search.facet.termsstats.TermsStatsFacet.ComparatorType;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import com.zenobase.common.Measures;
 import com.zenobase.json.MeasurementField;
@@ -24,20 +25,24 @@ public class ScoreboardFacet extends Facet {
 	private final Unit<?> unit;
 	private final ComparatorType order;
 	private final int limit;
+	private final FilterBuilder filter;
 
-	private ScoreboardFacet(String id, String termField, String valueField, Unit<?> unit, ComparatorType order, int limit) {
+	private ScoreboardFacet(String id, String termField, String valueField, Unit<?> unit, ComparatorType order, int limit, FilterBuilder filter) {
 		super(id);
 		this.termField = termField;
 		this.valueField = valueField;
 		this.unit = unit;
 		this.order = order;
 		this.limit = limit;
+		this.filter = filter;
 	}
 
 	@Override
 	public void configure(SearchSourceBuilder builder) {
 		builder.facet(FacetBuilders.termsStatsFacet(getId())
-			.keyField(termField).valueField(unit == Unit.ONE ? valueField : valueField + "." + MeasurementField.VALUE_SI.getName()).order(order).size(limit));
+			.keyField(termField).valueField(unit == Unit.ONE ? valueField : valueField + "." + MeasurementField.VALUE_SI.getName())
+			.order(order).size(limit)
+			.facetFilter(filter));
 	}
 
 	@Override
@@ -68,7 +73,7 @@ public class ScoreboardFacet extends Facet {
 		}
 	}
 
-	public static FacetBuilder builder() {
+	public static FacetBuilder builder(final FilterParser filterParser) {
 		return new FacetBuilder() {
 			@Override
 			public Facet build(FacetOptions options) {
@@ -79,7 +84,8 @@ public class ScoreboardFacet extends Facet {
 					options.get("value_field"),
 					unit != null ? Measures.parseUnit(unit) : Unit.ONE,
 					ComparatorType.valueOf(options.get("order", String.class, "term").toUpperCase()),
-					options.get("limit", Integer.class, 10));
+					options.get("limit", Integer.class, 10),
+					filterParser.parse(options.get("filter")));
 			}
 		};
 	}

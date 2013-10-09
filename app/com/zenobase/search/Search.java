@@ -5,7 +5,6 @@ import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
-import play.Logger;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableList;
@@ -31,7 +30,7 @@ public class Search {
 
 	public ObjectNode execute(Index index) {
 		SearchSourceBuilder builder = buildSearch();
-		Logger.info("q: " + builder);
+		// Logger.info("q: " + builder);
 		SearchResponse response = index.search(builder);
 		// Logger.info("r: " + response);
 		return toJson(response);

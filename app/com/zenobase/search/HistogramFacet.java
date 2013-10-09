@@ -4,13 +4,14 @@ import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
 import javax.measure.unit.Unit;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.elasticsearch.action.search.SearchResponse;
+import org.elasticsearch.index.query.FilterBuilder;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.elasticsearch.search.facet.FacetBuilders;
 import org.elasticsearch.search.facet.histogram.HistogramFacet.ComparatorType;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.Lists;
 
 import com.zenobase.common.Measures;
@@ -24,12 +25,14 @@ public class HistogramFacet extends Facet {
 	private final String field;
 	private final long interval;
 	private final Unit<?> unit;
+	private final FilterBuilder filter;
 
-	public HistogramFacet(String id, String field, long interval, Unit<?> unit) {
+	public HistogramFacet(String id, String field, long interval, Unit<?> unit, FilterBuilder filter) {
 		super(id);
 		this.field = field;
 		this.interval = interval;
 		this.unit = unit;
+		this.filter = filter;
 	}
 
 	@Override
@@ -37,7 +40,8 @@ public class HistogramFacet extends Facet {
 		builder.facet(FacetBuilders.histogramFacet(getId())
 			.field(unit == Unit.ONE ? field : field + "." + MeasurementField.VALUE_SI.getName())
 			.interval(getStandardInterval())
-			.comparator(ComparatorType.KEY));
+			.comparator(ComparatorType.KEY)
+			.facetFilter(filter));
 	}
 
 	private long getStandardInterval() {
@@ -76,7 +80,7 @@ public class HistogramFacet extends Facet {
 		}
 	}
 
-	public static FacetBuilder builder() {
+	public static FacetBuilder builder(final FilterParser filterParser) {
 		return new FacetBuilder() {
 			@Override
 			public Facet build(FacetOptions options) {
@@ -85,7 +89,8 @@ public class HistogramFacet extends Facet {
 					options.get("id"),
 					options.get("field"),
 					options.get("interval", Long.class, 10L),
-					unit != null ? Measures.parseUnit(unit) : Unit.ONE);
+					unit != null ? Measures.parseUnit(unit) : Unit.ONE,
+					filterParser.parse(options.get("filter")));
 			}
 		};
 	}

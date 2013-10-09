@@ -1,13 +1,14 @@
 package com.zenobase.search;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.elasticsearch.action.search.SearchResponse;
+import org.elasticsearch.index.query.FilterBuilder;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.elasticsearch.search.facet.FacetBuilders;
 import org.elasticsearch.search.facet.range.RangeFacet;
 import org.elasticsearch.search.facet.range.RangeFacetBuilder;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.Lists;
 
 import com.zenobase.json.Nodes;
@@ -20,13 +21,15 @@ public class RatingsFacet extends Facet {
 
 	private final String field;
 	private final double from, to, step;
+	private final FilterBuilder filter;
 
-	public RatingsFacet(String id, String field, int scale) {
+	public RatingsFacet(String id, String field, int scale, FilterBuilder filter) {
 		super(id);
 		this.field = field;
 		step = Rating.MAX_VALUE / scale;
 		from = step / 2;
 		to = Rating.MAX_VALUE - from;
+		this.filter = filter;
 	}
 
 	@Override
@@ -37,6 +40,7 @@ public class RatingsFacet extends Facet {
 			facet.addRange(i, Math.min(i + step, to));
 		}
 		facet.addUnboundedTo(to);
+		facet.facetFilter(filter);
 		builder.facet(facet);
 	}
 
@@ -59,14 +63,15 @@ public class RatingsFacet extends Facet {
 		return result;
 	}
 
-	public static FacetBuilder builder() {
+	public static FacetBuilder builder(final FilterParser filterParser) {
 		return new FacetBuilder() {
 			@Override
 			public Facet build(FacetOptions options) {
 				return new RatingsFacet(
 					options.get("id"),
 					Event.RATING.getName(),
-					options.get("scale", Integer.class, 5));
+					options.get("scale", Integer.class, 5),
+					filterParser.parse(options.get("filter")));
 			}
 		};
 	}

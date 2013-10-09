@@ -15,14 +15,14 @@ public class EventSearchBuilder extends SearchBuilderSupport {
 		.put(ListFacet.TYPE, ListFacet.builder())
 		.put(CountFacet.TYPE, CountFacet.builder())
 		.put(GanttFacet.TYPE, GanttFacet.builder())
-		.put(RatingsFacet.TYPE, RatingsFacet.builder())
-		.put(HistogramFacet.TYPE, HistogramFacet.builder())
+		.put(MapFacet.TYPE, MapFacet.builder())
+		.put(RatingsFacet.TYPE, RatingsFacet.builder(filterParser))
+		.put(HistogramFacet.TYPE, HistogramFacet.builder(filterParser))
 		.put(TimelineFacet.TYPE, TimelineFacet.builder(filterParser))
 		.put(TimeHistogramFacet.TYPE, TimeHistogramFacet.builder(filterParser))
-		.put(MultiplotFacet.TYPE, MultiplotFacet.builder())
-		.put(ScoreboardFacet.TYPE, ScoreboardFacet.builder())
-		.put(MapFacet.TYPE, MapFacet.builder())
+		.put(ScoreboardFacet.TYPE, ScoreboardFacet.builder(filterParser))
 		.put(ScatterPlotFacet.TYPE, ScatterPlotFacet.builder(filterParser))
+		.put(MultiplotFacet.TYPE, MultiplotFacet.builder())
 		.build();
 
 	public EventSearchBuilder() {
