@@ -145,7 +145,7 @@ public class TimeHistogramFacet extends Facet {
 		public abstract String getLabel(int i);
 	}
 
-	public static FacetBuilder builder(final FilterBuilderSupport filterBuilder) {
+	public static FacetBuilder builder(final FilterParser filterParser) {
 		return new FacetBuilder() {
 			@Override
 			public Facet build(FacetOptions options) {
@@ -156,7 +156,7 @@ public class TimeHistogramFacet extends Facet {
 					options.get("value_field", String.class, Event.TIMESTAMP.getName()),
 					Interval.valueOf(options.get("interval").toUpperCase()),
 					unit != null ? Measures.parseUnit(unit) : Unit.ONE,
-					filterBuilder.addConstraints(options.get("filter")).buildFilter());
+					filterParser.parse(options.get("filter")));
 			}
 		};
 	}

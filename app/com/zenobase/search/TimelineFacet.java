@@ -139,7 +139,7 @@ public class TimelineFacet extends Facet {
 		return Intervals.toString(time, interval);
 	}
 
-	public static FacetBuilder builder(final FilterBuilderSupport filterBuilder) {
+	public static FacetBuilder builder(final FilterParser filterParser) {
 		return new FacetBuilder() {
 			@Override
 			public Facet build(FacetOptions options) {
@@ -152,7 +152,7 @@ public class TimelineFacet extends Facet {
 					options.get("range"),
 					options.get("timezone", DateTimeZone.class, DateTimeZone.UTC),
 					unit != null ? Measures.parseUnit(unit) : Unit.ONE,
-					filterBuilder.addConstraints(options.get("filter")).buildFilter());
+					filterParser.parse(options.get("filter")));
 			}
 		};
 	}

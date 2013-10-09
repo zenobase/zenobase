@@ -9,7 +9,7 @@ public class EventSearchBuilder extends SearchBuilderSupport {
 
 	private static final ImmutableMultimap<String, ConstraintBuilder> constraintBuilders = Event.getSchema().getConstraintBuilders();
 
-	private static final FilterBuilderSupport filterBuilder = new FilterBuilderSupport(constraintBuilders);
+	private static final FilterParser filterParser = new FilterParser(constraintBuilders);
 
 	private static final ImmutableMap<String, FacetBuilder> facetBuilders = ImmutableMap.<String, FacetBuilder>builder()
 		.put(ListFacet.TYPE, ListFacet.builder())
@@ -17,12 +17,12 @@ public class EventSearchBuilder extends SearchBuilderSupport {
 		.put(GanttFacet.TYPE, GanttFacet.builder())
 		.put(RatingsFacet.TYPE, RatingsFacet.builder())
 		.put(HistogramFacet.TYPE, HistogramFacet.builder())
-		.put(TimelineFacet.TYPE, TimelineFacet.builder(filterBuilder))
-		.put(TimeHistogramFacet.TYPE, TimeHistogramFacet.builder(filterBuilder))
+		.put(TimelineFacet.TYPE, TimelineFacet.builder(filterParser))
+		.put(TimeHistogramFacet.TYPE, TimeHistogramFacet.builder(filterParser))
 		.put(MultiplotFacet.TYPE, MultiplotFacet.builder())
 		.put(ScoreboardFacet.TYPE, ScoreboardFacet.builder())
 		.put(MapFacet.TYPE, MapFacet.builder())
-		.put(ScatterPlotFacet.TYPE, ScatterPlotFacet.builder(filterBuilder))
+		.put(ScatterPlotFacet.TYPE, ScatterPlotFacet.builder(filterParser))
 		.build();
 
 	public EventSearchBuilder() {
