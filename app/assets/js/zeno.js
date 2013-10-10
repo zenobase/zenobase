@@ -2111,6 +2111,44 @@
 		  };
 		}
 
+		function pearson(x, y) {
+
+			console.assert(x.length == y.length, 'expected arrays with same length');
+			
+			var n = x.length;
+			var xy = [];
+			var x2 = [];
+			var y2 = [];
+
+			for (var i = 0; i < n; ++i) {
+				xy.push(x[i] * y[i]);
+				x2.push(x[i] * x[i]);
+				y2.push(y[i] * y[i]);
+			}
+
+			var sum_x = 0;
+			var sum_y = 0;
+			var sum_xy = 0;
+			var sum_x2 = 0;
+			var sum_y2 = 0;
+
+			for (var i = 0; i < n; ++i) {
+				sum_x += x[i];
+				sum_y += y[i];
+				sum_xy += xy[i];
+				sum_x2 += x2[i];
+				sum_y2 += y2[i];
+			}
+
+			var step1 = (n * sum_xy) - (sum_x * sum_y);
+			var step2 = (n * sum_x2) - (sum_x * sum_x);
+			var step3 = (n * sum_y2) - (sum_y * sum_y);
+			var step4 = Math.sqrt(step2 * step3);
+			var answer = step1 / step4;
+
+			return answer;
+		}
+
 		return function(data) {
 		  var x = [];
 		  var y = [];
@@ -2134,7 +2172,8 @@
 					[x[max], params.slope * x[max] + params.intercept]
 				],
 				slope : params.slope,
-				intercept : params.intercept
+				intercept : params.intercept,
+				pearson : pearson(x, y)
 	    };		
 		}
 	});
@@ -2244,7 +2283,8 @@
 						},
 						tooltip : {
 							headerFormat : '',
-							pointFormat : '<b>' + fit.slope.toFixed(2) + '</b>x + <b>' + fit.intercept.toFixed(2) + '</b>'
+							pointFormat : 
+								'<b>Pearson\'s r:</b> ' + fit.pearson.toFixed(2) 
 						},
 						showInLegend : false
 					}],
