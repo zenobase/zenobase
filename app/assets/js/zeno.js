@@ -2149,6 +2149,26 @@
 			return answer;
 		}
 
+		function rank(x) {
+			var ranked = [];
+			$.each(x, function(i, a) {
+				var rank = 1;
+				var freq = 0;
+				$.each(x, function(j, b) {
+					if (b > a) {
+						++rank;
+					} else if (b == a) {
+						++freq;
+					}
+				});
+				if (freq > 1) {
+					rank = (freq * (2 * rank + freq - 1)) / (2 * freq); // derived from sum of arithmetic sequence formula 
+				}
+				ranked.push(rank);
+			});
+			return ranked;
+		}
+
 		return function(data) {
 		  var x = [];
 		  var y = [];
@@ -2173,7 +2193,8 @@
 				],
 				slope : params.slope,
 				intercept : params.intercept,
-				pearson : pearson(x, y)
+				pearson : pearson(x, y),
+				spearman : pearson(rank(x), rank(y))
 	    };		
 		}
 	});
@@ -2284,7 +2305,8 @@
 						tooltip : {
 							headerFormat : '',
 							pointFormat : 
-								'<b>Pearson\'s r:</b> ' + fit.pearson.toFixed(2) 
+								'<b>Pearson\'s r:</b> ' + fit.pearson.toFixed(3) + '<br/>' + 
+								'<b>Spearman\'s rho:</b> ' + fit.spearman.toFixed(3) 
 						},
 						showInLegend : false
 					}],
