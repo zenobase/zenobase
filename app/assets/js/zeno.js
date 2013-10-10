@@ -2169,6 +2169,50 @@
 			return ranked;
 		}
 
+		function tanh(x) {
+			return (Math.exp(x) - Math.exp(-x)) / (Math.exp(x) + Math.exp(-x));
+		}
+
+		function atanh(value) {
+			return Math.abs(value) < 0.5 ?
+				(log1p(value) - log1p(-value)) / 2 :
+				0.5 * Math.log((value + 1.0) / (value - 1.0));
+		}
+
+		/* Based on http://phpjs.org/functions/log1p/ */
+		function log1p(x) {
+			var ret = 0,
+			n = 50; // degree of precision
+			if (x <= -1) {
+				return Number.NEGATIVE_INFINITY; 
+			}
+			if (x < 0 || x > 1) {
+				return Math.log(1 + x);
+			}
+			for (var i = 1; i < n; ++i) {
+				if ((i % 2) === 0) {
+					ret -= Math.pow(x, i) / i;
+				} else {
+					ret += Math.pow(x, i) / i;
+				}
+			}
+			return ret;
+		}
+
+		/* Based on http://stats.stackexchange.com/a/18904 */
+		function confidence(r, n) {
+			var stderr = 1.0 / Math.sqrt(n - 3);
+			var delta = 1.96 * stderr;
+			var lower = tanh(atanh(r) - delta);
+			var upper = tanh(atanh(r) + delta);
+			//console.log('r', r);
+			//console.log('n', n);
+			//console.log('delta', delta);
+			//console.log('lower', lower);
+			//console.log('upper', upper);
+			return { r : r, lower : lower, upper : upper };
+		}
+
 		return function(data) {
 		  var x = [];
 		  var y = [];
@@ -2193,8 +2237,8 @@
 				],
 				slope : params.slope,
 				intercept : params.intercept,
-				pearson : pearson(x, y),
-				spearman : pearson(rank(x), rank(y))
+				pearson : confidence(pearson(x, y), x.length),
+				spearman : confidence(pearson(rank(x), rank(y)), x.length)
 	    };		
 		}
 	});
@@ -2305,8 +2349,8 @@
 						tooltip : {
 							headerFormat : '',
 							pointFormat : 
-								'<b>Pearson\'s r:</b> ' + fit.pearson.toFixed(3) + '<br/>' + 
-								'<b>Spearman\'s rho:</b> ' + fit.spearman.toFixed(3) 
+								'<b>Pearson\'s r:</b> ' + fit.pearson.r.toFixed(3) + ', <b>95%:</b> ' + fit.pearson.lower.toFixed(3) + '..' + fit.pearson.upper.toFixed(3) + '<br/>' + 
+								'<b>Spearman\'s rho:</b> ' + fit.spearman.r.toFixed(3) + ', <b>95%:</b> ' + fit.spearman.lower.toFixed(3) + '..' + fit.spearman.upper.toFixed(3) 
 						},
 						showInLegend : false
 					}],
