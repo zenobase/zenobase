@@ -2170,46 +2170,47 @@
 		}
 
 		function tanh(x) {
-			return (Math.exp(x) - Math.exp(-x)) / (Math.exp(x) + Math.exp(-x));
+			var e = Math.exp(2 * x);
+			return (e - 1) / (e + 1);
 		}
 
-		function atanh(value) {
-			return Math.abs(value) < 0.5 ?
-				(log1p(value) - log1p(-value)) / 2 :
-				0.5 * Math.log((value + 1.0) / (value - 1.0));
+		function atanh(x) {
+			return 0.5 * (log1p(x) - log1p(-x));
 		}
 
-		/* Based on http://phpjs.org/functions/log1p/ */
+		/** 
+		 * Computes log(1 + x) accurately for small values of x. 
+		 * Based on http://phpjs.org/functions/log1p/.
+		 */
 		function log1p(x) {
-			var ret = 0,
-			n = 50; // degree of precision
 			if (x <= -1) {
-				return Number.NEGATIVE_INFINITY; 
+				return Number.NEGATIVE_INFINITY;
 			}
 			if (x < 0 || x > 1) {
 				return Math.log(1 + x);
 			}
-			for (var i = 1; i < n; ++i) {
+			var value = 0;
+			var precision = 50;
+			for (var i = 1; i < precision; ++i) {
 				if ((i % 2) === 0) {
-					ret -= Math.pow(x, i) / i;
+					value -= Math.pow(x, i) / i;
 				} else {
-					ret += Math.pow(x, i) / i;
+					value += Math.pow(x, i) / i;
 				}
 			}
-			return ret;
+			return value;
 		}
 
-		/* Based on http://stats.stackexchange.com/a/18904 */
+		/**
+		 * Computes the 95% confidence interval for a correlation coefficient. 
+		 * Based on http://stats.stackexchange.com/a/18904.
+		 */
 		function confidence(r, n) {
+			console.assert(n > 3, 'not enough samples');
 			var stderr = 1.0 / Math.sqrt(n - 3);
 			var delta = 1.96 * stderr;
 			var lower = tanh(atanh(r) - delta);
 			var upper = tanh(atanh(r) + delta);
-			//console.log('r', r);
-			//console.log('n', n);
-			//console.log('delta', delta);
-			//console.log('lower', lower);
-			//console.log('upper', upper);
 			return { r : r, lower : lower, upper : upper };
 		}
 
@@ -2235,8 +2236,6 @@
 					[x[min], params.slope * x[min] + params.intercept],
 					[x[max], params.slope * x[max] + params.intercept]
 				],
-				slope : params.slope,
-				intercept : params.intercept,
 				pearson : confidence(pearson(x, y), x.length),
 				spearman : confidence(pearson(rank(x), rank(y)), x.length)
 	    };		
@@ -2298,7 +2297,6 @@
 		};
 		$scope.draw = function() {
 			if ($scope.data && $scope.data.length) {
-				var fit = regression($scope.data);
 				var options = {
 					chart : {
 						type : 'scatter',
@@ -2333,10 +2331,22 @@
 							pointFormat : '<b>{point.x}</b>' + ($scope.settings.unit_x || '') + '<br/><b>{point.y}</b>' + ($scope.settings.unit_y || '')
 						},
 						showInLegend : false
-					}, {
+					}],
+					plotOptions : {
+						series : {
+							animation : false
+						}
+					},
+					credits: {
+						enabled: false
+					}
+				};
+				if ($scope.data.length > 3) {
+					var stats = regression($scope.data);
+					options.series.push({
 						type : 'line',
 						name : '',
-						data : fit.data,
+						data : stats.data,
 						color : 'rgba(119, 152, 191, 0.5)',
 						marker : {
 							enabled : false
@@ -2349,20 +2359,12 @@
 						tooltip : {
 							headerFormat : '',
 							pointFormat : 
-								'<b>Pearson\'s r:</b> ' + fit.pearson.r.toFixed(3) + ', <b>95%:</b> ' + fit.pearson.lower.toFixed(3) + '..' + fit.pearson.upper.toFixed(3) + '<br/>' + 
-								'<b>Spearman\'s rho:</b> ' + fit.spearman.r.toFixed(3) + ', <b>95%:</b> ' + fit.spearman.lower.toFixed(3) + '..' + fit.spearman.upper.toFixed(3) 
+								'<b>Pearson\'s r:</b> ' + stats.pearson.r.toFixed(3) + ', <b>95%:</b> ' + stats.pearson.lower.toFixed(3) + '..' + stats.pearson.upper.toFixed(3) + '<br/>' + 
+								'<b>Spearman\'s rho:</b> ' + stats.spearman.r.toFixed(3) + ', <b>95%:</b> ' + stats.spearman.lower.toFixed(3) + '..' + stats.spearman.upper.toFixed(3) 
 						},
 						showInLegend : false
-					}],
-					plotOptions : {
-						series : {
-							animation : false
-						}
-					},
-					credits: {
-						enabled: false
-					}
-				};
+					});
+				}
 				if ($scope.settings.placement === 'top') {
 					options.chart.height = 150;
 				}
