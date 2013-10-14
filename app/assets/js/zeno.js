@@ -991,6 +991,12 @@
 	  	{
       	type : 'scatterplot',
       	label : 'Scatter Plot', 
+      	description : 'Plots values from two fields.',
+      	settings : { field_x : 'count', field_y : 'count' }
+      },
+	  	{
+      	type : 'correlation',
+      	label : 'Correlation', 
       	description : 'Correlates values from two fields.',
       	settings : { field_x : 'count', field_y : 'count' }
       }
@@ -2087,7 +2093,7 @@
 	/**
 	 * Based on https://github.com/virtualstaticvoid/highcharts_trendline
 	 */
-	app.factory('regression', function() {
+	app.factory('statistics', function() {
 
 		function regression(X, Y) {
 		  var N = X.length;
@@ -2211,38 +2217,59 @@
 			var delta = 1.96 * stderr;
 			var lower = tanh(atanh(r) - delta);
 			var upper = tanh(atanh(r) + delta);
-			return { r : r, lower : lower, upper : upper };
+			return [ lower, upper ];
 		}
 
-		return function(data) {
-		  var x = [];
-		  var y = [];
-		  var min = 0;
-		  var max = 0;
-		  var ypred = [];
-		  for (i = 0; i < data.length; ++i) {
-		  	x.push(data[i][0]);
-        y.push(data[i][1]);
-        if (data[i][0] > data[max][0]) {
-        	max = i;
-        }
-        if (data[i][0] < data[min][0]) {
-        	min = i;
-        }
-		  }
-	    var params = regression(x, y);
-	    return {
-				data : [
-					[x[min], params.slope * x[min] + params.intercept],
-					[x[max], params.slope * x[max] + params.intercept]
-				],
-				pearson : confidence(pearson(x, y), x.length),
-				spearman : confidence(pearson(rank(x), rank(y)), x.length)
-	    };		
-		}
+		return {
+			regression : function(data) {
+			  var x = [];
+			  var y = [];
+			  var min = 0;
+			  var max = 0;
+			  var ypred = [];
+			  for (i = 0; i < data.length; ++i) {
+			  	x.push(data[i][0]);
+	        y.push(data[i][1]);
+	        if (data[i][0] > data[max][0]) {
+	        	max = i;
+	        }
+	        if (data[i][0] < data[min][0]) {
+	        	min = i;
+	        }
+			  }
+		    var params = regression(x, y);
+		    return {
+					data : [
+						[x[min], params.slope * x[min] + params.intercept],
+						[x[max], params.slope * x[max] + params.intercept]
+					],
+					slope : params.slope,
+					intercept : params.intercept
+		    };		
+			},
+			correlate : function(data, ranked) {
+			  var x = [];
+			  var y = [];
+			  for (i = 0; i < data.length; ++i) {
+			  	x.push(data[i][0]);
+	        y.push(data[i][1]);
+			  }
+			  if (ranked) {
+			  	x = rank(x);
+			  	y = rank(y);
+			  }
+			  var r = pearson(x, y);
+			  var c = confidence(r, x.length)
+		    return {
+					r : r,
+					lower : c[0],
+					upper : c[1]
+		    };		
+			}
+		};
 	});
 
-	app.controller('ScatterPlotWidgetController', ['$scope', '$timeout', 'Field', 'timezone', 'regression', function($scope, $timeout, Field, timezone, regression) {
+	app.controller('ScatterPlotWidgetController', ['$scope', '$timeout', 'Field', 'timezone', 'statistics', function($scope, $timeout, Field, timezone, statistics) {
 
 		$scope.init = function() {
 			$scope.data = null;
@@ -2316,11 +2343,10 @@
 					},
 					tooltip : {
 						crosshairs : false,
-						shared : true,
+						shared : false,
 						hideDelay : 0
 					},
 					series : [{
-						name : 'xy',
 						data : $scope.data,
 						color : 'rgba(119, 152, 191, 0.5)',
 						marker : {
@@ -2328,26 +2354,28 @@
 						},
 						tooltip : {
 							headerFormat : '',
-							pointFormat : '<b>{point.x}</b>' + ($scope.settings.unit_x || '') + '<br/><b>{point.y}</b>' + ($scope.settings.unit_y || '')
-						},
-						showInLegend : false
+							pointFormat : '<b>{point.x}</b>' + ($scope.settings.unit_x || '') + ', <b>{point.y}</b>' + ($scope.settings.unit_y || '')
+						}
 					}],
 					plotOptions : {
 						series : {
 							animation : false
 						}
 					},
+					legend: {
+						enabled: false
+					},
 					credits: {
 						enabled: false
 					}
 				};
 				if ($scope.data.length > 3) {
-					var stats = regression($scope.data);
+					var regression = statistics.regression($scope.data);
 					options.series.push({
 						type : 'line',
 						name : '',
-						data : stats.data,
-						color : 'rgba(119, 152, 191, 0.5)',
+						data : regression.data,
+						color : 'rgba(119, 152, 191, 1.0)',
 						marker : {
 							enabled : false
 						},
@@ -2358,11 +2386,8 @@
 						},
 						tooltip : {
 							headerFormat : '',
-							pointFormat : 
-								'<b>Pearson\'s r:</b> ' + stats.pearson.r.toFixed(3) + ', <b>95%:</b> ' + stats.pearson.lower.toFixed(3) + '..' + stats.pearson.upper.toFixed(3) + '<br/>' + 
-								'<b>Spearman\'s rho:</b> ' + stats.spearman.r.toFixed(3) + ', <b>95%:</b> ' + stats.spearman.lower.toFixed(3) + '..' + stats.spearman.upper.toFixed(3) 
-						},
-						showInLegend : false
+							pointFormat : regression.slope.toFixed(3) + 'x' + (regression.intercept < 0 ? ' - ' : ' + ') + regression.intercept.toFixed(3)
+						}
 					});
 				}
 				if ($scope.settings.placement === 'top') {
@@ -2380,6 +2405,195 @@
 	}]);
 
 	app.controller('ScatterPlotWidgetDialogController', ['$scope', 'WidgetDialogControllerSupport', 'Field', 'Interval', function($scope, WidgetDialogControllerSupport, Field, Interval) {
+
+		WidgetDialogControllerSupport($scope);
+
+		function isUnitValid(field, unit) {
+			var units = $scope.getUnits(field);
+			return units.length === 0
+				? unit === null
+				: $.inArray(unit, units) != -1;
+		};
+
+		$scope.getFields = function() {
+			return Field.findByType('numeric');
+		};
+		$scope.getIntervals = function() {
+			return Interval.VALUES;
+		};
+		$scope.getStatistics = function(field) {
+			return [ 'sum', 'avg', 'min', 'max', 'count' ];
+		};
+		$scope.getUnits = function(field) {
+			return field && Field.find(field).units || [];
+		};
+		$scope.valid = function() {
+			return isUnitValid($scope.settings.field_x, $scope.settings.unit_x)
+				&& isUnitValid($scope.settings.field_y, $scope.settings.unit_y);
+		};
+
+		$scope.$watch('settings.field_x', function() {
+			if (!isUnitValid($scope.settings.field_x, $scope.settings.unit_x)) {
+				$scope.settings.unit_x = null;
+			}
+		});
+		$scope.$watch('settings.field_y', function() {
+			if (!isUnitValid($scope.settings.field_y, $scope.settings.unit_y)) {
+				$scope.settings.unit_y = null;
+			}
+		});
+	}]);
+
+	app.controller('CorrelationWidgetController', ['$scope', '$timeout', 'Field', 'timezone', 'statistics', function($scope, $timeout, Field, timezone, statistics) {
+
+		$scope.init = function() {
+			$scope.data = null;
+		};
+		$scope.params = function() {
+			return {
+				id : $scope.settings.id,
+				type : 'scatterplot',
+				field_x : $scope.settings.field_x,
+				unit_x : $scope.settings.unit_x || '',
+				filter_x : $scope.settings.filter_x || '',
+				field_y : $scope.settings.field_y,
+				unit_y : $scope.settings.unit_y || '',
+				filter_y : $scope.settings.filter_y || '',
+				interval : $scope.settings.interval || 'day',
+				timezone : timezone,
+				statistic_x : $scope.settings.statistic_x || 'avg',
+				statistic_y : $scope.settings.statistic_y || 'avg'
+			};
+		};
+		$scope.refresh = function(options, settings) {
+			$scope.init();
+			$scope.search([ $.extend($scope.params(), options, settings) ], function(result) {
+				$.extend($scope, options)
+				$.extend($scope.settings, settings)
+				$scope.update(null, result);
+			});
+		};
+		function applyLag(data, lag) {
+			if (lag < 0) {
+				for (var i = 0; i < data.length; ++i) {
+					if (i - lag < 0 || i - lag >= data.length) {
+						data[i][1] = null;
+					} else {
+						data[i][1] = data[i - lag][1];
+					}
+				}
+			} else if (lag > 0) {
+				for (var i = data.length - 1; i >= 0; --i) {
+					if (i - lag < 0 || i - lag >= data.length) {
+						data[i][1] = null;
+					} else {
+						data[i][1] = data[i - lag][1];
+					}
+				}
+			}
+		}
+		$scope.update = function(event, result) {
+			$scope.data = result[$scope.settings.id] || [];
+			applyLag($scope.data, $scope.settings.lag);
+			$timeout($scope.draw, 0); // delay for correct width
+		};
+		$scope.draw = function() {
+			if ($scope.data) {
+				if ($scope.data.length > 3) {
+					var correlation = statistics.correlate($scope.data, true);
+					new Highcharts.Chart({
+						chart : {
+							type : 'line',
+							inverted : true,
+							renderTo : $scope.settings.id + '-chart',
+							height : 95,
+							plotBorderWidth : 1
+						},
+						title : null,
+						xAxis : {
+							title : {
+								text : null
+							},
+							labels : {
+								enabled : false
+							},
+							lineWidth : 0,
+							tickLength : 0
+						},
+						yAxis : {
+							title : {
+								text : null
+							},
+							max : 1.0,
+							min : -1.0,
+							lineWidth : 0,
+							tickInterval : 1.0,
+							tickWidth : 0,
+							gridLineWidth : 1
+						},
+						tooltip : {
+							shared : true,
+							hideDelay : 0
+						},
+						series : [{
+							data : [[ correlation.r ]],
+							color : 'rgba(119, 152, 191, 1.0)',
+							animation : false,
+							marker : {
+								radius : 5
+							},
+							tooltip : {
+								headerFormat : '',
+								pointFormat : '' 
+							},
+							states : {
+								hover : {
+									enabled : false
+								}
+							}
+						}, {
+							type : 'errorbar',
+							data : [[ correlation.lower, correlation.upper ]],
+							lineWidth : 2,
+							color : 'rgba(119, 152, 191, 1.0)',
+							animation : false,
+							tooltip : {
+								headerFormat : '',
+								pointFormat : '<b>[' + correlation.lower.toFixed(3) + '..' + correlation.upper.toFixed(3) + ']</b> at 95% confidence' 
+							}
+						}],
+						plotOptions : {
+							line : {
+								dataLabels : {
+									enabled : true,
+									color : 'rgba(119, 152, 191, 1.0)',
+									format : '{point.y:.2f}',
+									style: {
+										fontWeight : 'bold'
+									},
+									verticalAlign : 'bottom'
+								}
+							}
+						},
+						legend : {
+							enabled : false
+						},
+						credits : {
+							enabled : false
+						}
+					});
+				}
+			}
+		};
+	
+		$scope.init();
+		$scope.register($scope);
+		$scope.$on('result', $scope.update);
+		$scope.$on('refresh', $scope.init);
+		$('#' + $scope.settings.id + '-tab').on('shown', $scope.draw);
+	}]);
+
+	app.controller('CorrelationWidgetDialogController', ['$scope', 'WidgetDialogControllerSupport', 'Field', 'Interval', function($scope, WidgetDialogControllerSupport, Field, Interval) {
 
 		WidgetDialogControllerSupport($scope);
 

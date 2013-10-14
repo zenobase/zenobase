@@ -1,0 +1,106 @@
+<div id="{{settings.id}}-content" data-ng-controller="CorrelationWidgetController">
+
+	<div id="{{settings.id}}-chart" data-ng-show="data"></div>
+
+	<p data-ng-show="data == null" class="none">Loading...</p>
+
+	<p data-ng-show="data.length == 0" class="none">None</p>
+
+	<div class="btn-toolbar">
+		<div class="btn-group">
+			<button class="btn" title="Settings..." data-ng-click="openDialog(settings.id + '-dialog')" data-ng-show="editing"><i class="icon-cog"></i> Settings...</button>
+		</div>
+	</div>
+
+	<div data-ui-modal="dialog == settings.id + '-dialog'" data-ui-modal-open="init()" data-ui-modal-close="closeDialog()" data-ng-controller="ScatterPlotWidgetDialogController">
+		<form name="form" class="modal-form">
+			<div class="modal-header">
+				<a class="close" data-dismiss="modal">&times;</a>
+				<h4>Correlation Widget</h4>
+			</div>
+			<div class="modal-body">
+				<div class="control-group">
+					<label class="control-label" for="label">Title</label>
+					<div class="controls">
+						<input name="label" type="text" required min="1" max="20" data-ng-model="settings.label"/>
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label" for="fieldX">Field (x)</label>
+					<div class="controls">
+						<select name="fieldX" data-ng-model="settings.field_x" data-ng-options="field.name as field.name for field in getFields()"></select>
+						<p class="help-block">The field for the x series.</p>
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label" for="unitX">Unit (x)</label>
+					<div class="controls">
+						<select name="unitX" data-ng-model="settings.unit_x" data-ng-options="unit for unit in getUnits(settings.field_x)"></select>
+						<p class="help-block">The unit for the x series.</p>
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label" for="statisticX">Statistic (x)</label>
+					<div class="controls">
+						<select name="statisticX" required data-ng-model="settings.statistic_x" data-ng-options="value for value in getStatistics(settings.field)"></select>
+						<p class="help-block">The aggregate function for the x series.</p>
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label" for="filterX">Filter (x)</label>
+					<div class="controls">
+						<input name="filterX" type="text" data-ng-model="settings.filter_x"/>
+						<p class="help-block">Optional constraint for the x series.</p>
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label" for="fieldY">Field (y)</label>
+					<div class="controls">
+						<select name="fieldY" data-ng-model="settings.field_y" data-ng-options="field.name as field.name for field in getFields()"></select>
+						<p class="help-block">The field for the y series.</p>
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label" for="unitY">Unit (y)</label>
+					<div class="controls">
+						<select name="unitY" data-ng-model="settings.unit_y" data-ng-options="unit for unit in getUnits(settings.field_y)"></select>
+						<p class="help-block">The unit for the y series.</p>
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label" for="statisticY">Statistic (y)</label>
+					<div class="controls">
+						<select name="statisticY" required data-ng-model="settings.statistic_y" data-ng-options="value for value in getStatistics(settings.field)"></select>
+						<p class="help-block">The aggregate function for the y series.</p>
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label" for="filterY">Filter (y)</label>
+					<div class="controls">
+						<input name="filterY" type="text" data-ng-model="settings.filter_y"/>
+						<p class="help-block">Optional constraint for the y series.</p>
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label" for="interval">Interval</label>
+					<div class="controls">
+						<select name="interval" data-ng-model="settings.interval" data-ng-options="interval.name as interval.name for interval in getIntervals()"></select>
+						<p class="help-block">The interval at which values are aggregated.</p>
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label" for="lag">Lag</label>
+					<div class="controls">
+						<input name="lag" type="number" data-ng-model="settings.lag"/>
+						<p class="help-block">By how many time units to offset the y series values from the x series values.</p>
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button class="btn btn-primary" data-ng-click="save()" data-ng-disabled="!form.$valid || !valid()">Update</button>
+				<button class="btn" data-dismiss="modal">Cancel</button>
+			</div>
+		</form>
+	</div>
+
+</div>
