@@ -1569,8 +1569,7 @@
 					},
 					series : [{
 						name : 'count',
-						data : [],
-						showInLegend : false
+						data : []
 					}],
 					tooltip : {
 						shared : true,
@@ -1594,6 +1593,9 @@
 								}
 							}
 						}
+					},
+					legend : {
+						enabled : false
 					},
 					credits: {
 						enabled: false
@@ -1827,8 +1829,7 @@
 						name : $scope.settings.statistic || 'count',
 						type : type,
 						data : [],
-						zIndex: 1,
-						showInLegend : false
+						zIndex: 1
 					}, {
 						name : 'range',
 						data : [],
@@ -1837,8 +1838,7 @@
 						linkedTo : ':previous',
 						color: Highcharts.getOptions().colors[0],
 						fillOpacity: 0.3,
-						zIndex: 0,
-						showInLegend : false
+						zIndex: 0
 					}],
 					plotOptions : {
 						series : {
@@ -1864,6 +1864,9 @@
 								lineColor: Highcharts.getOptions().colors[0]
 							}
 						}
+					},
+					legend : {
+						enabled : false
 					},
 					credits: {
 						enabled: false
@@ -1992,8 +1995,7 @@
 					},
 					series : [{
 						name : $scope.settings.statistic || 'count',
-						data : [],
-						showInLegend : false
+						data : []
 					}],
 					plotOptions : {
 						series : {
@@ -2013,6 +2015,9 @@
 							pointPadding: 0,
 							groupPadding: 0
 						}
+					},
+					legend : {
+						enabled : false
 					},
 					credits: {
 						enabled: false
