@@ -20,7 +20,7 @@
 	
 		<div class="row-fluid page-titlebar">
 			<p class="pull-left page-title">
-				<i class="icon-share-alt" title="Virtual Bucket" data-ng-show="bucket.aliases"></i>
+				<i class="icon-eye-open" title="Virtual Bucket" data-ng-show="bucket.aliases"></i>
 				<span id="bucket-title" class="page-title-text" data-ng-hide="editing">{{bucket.label}}</span>
 				<input id="edit-bucket-label" type="text" class="input-large pull-left page-title-text" required data-ng-minlength="1" data-ng-maxlength="20" data-ng-pattern="/^[a-zA-Z0-9-_ ]+$/" data-ng-model="bucket.label" data-ng-show="editing"/>
 				<span id="event-count" class="badge badge-success page-title-decoration" title="Events" data-ng-show="total >= 0">{{total}}</span>
