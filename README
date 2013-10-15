@@ -38,17 +38,17 @@ Release Procedure
 
   2. Obtain the build number [CloudBees].
 
-  3. Edit the "Custom JSON" field for the "Production" cloud [Scalarium]:
+  3. Edit the "Custom JSON" field for the "Production" stack [OpsWorks]:
 
      3.1. Set play.build to the new build number.
 
      3.2. (if migrating) Set elasticsearch.replay to the previous clusterName and increment clusterName.
 
-  4. Set up two new instances [Scalarium]:
+  4. Set up two new instances [OpsWorks]:
 
-     4.1. Add two instances named "acai-{build number}" in us-east-1a and "coco-{build number}" in us-east-1c to the role "Elasticsearch".
+     4.1. Add two m1.medium instances named "{build number}-1a" in us-east-1a and "{build number}-1c" in us-east-1c to the "Elasticsearch" layer.
 
-     4.2. Add the two new instances to the role "Play".
+     4.2. Add the two new instances to the "Play" layer.
 
   5. Before proceeding:
   
@@ -58,25 +58,25 @@ Release Procedure
 
      5.3. The status check must show 4 nodes and green health [/status].
 
-  6. Start one (if migrating) or both (if not migrating) new instances [Scalarium].
+  6. Start one (if migrating) or both (if not migrating) new instances [OpsWorks].
 
   7. As soon as a new instances is listed as "in service", remove all old instances from the load balancer [AWS Console].
 
-  8. (if migrating) Start the second instance [Scalarium].
+  8. (if migrating) Start the second instance [OpsWorks].
 
   9. Wait for the status check to show 4 (if migrating) or 8 (if not migrating) nodes and green health [/status].
 
-  10. Stop one or (if migrating) both old instances [Scalarium].
+  10. Stop one or (if migrating) both old instances [OpsWorks].
 
   11. (if not migrating) Wait for 6 nodes and green health [/status].
 
-  12. (if not migrating) Stop the second old instance [Scalarium].
+  12. (if not migrating) Stop the second old instance [OpsWorks].
 
   13. Set the "keep this build forever" flag [CloudBees].
 
   14. Cleanup (optional):
 
-      14.1. Remove stopped instances [Scalarium].
+      14.1. Remove stopped instances [OpsWorks].
 
       14.2. Remove the "keep this build forever" flag from builds older than a month or so [CloudBees].
 
