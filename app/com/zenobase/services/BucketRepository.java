@@ -2,6 +2,7 @@ package com.zenobase.services;
 
 import javax.inject.Inject;
 
+import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
@@ -13,6 +14,7 @@ import com.google.common.base.Preconditions;
 
 import com.zenobase.common.Callback;
 import com.zenobase.common.PartialList;
+import com.zenobase.json.AliasField;
 import com.zenobase.json.RolesField;
 import com.zenobase.models.Bucket;
 import com.zenobase.models.BucketList;
@@ -43,7 +45,6 @@ public class BucketRepository extends RepositorySupport<Bucket> {
 			Preconditions.checkState(!createIndex, "Index exists already: %s", bucket.getId());
 			index.open();
 		} else if (bucket.isVirtual()) {
-			Preconditions.checkState(createIndex, "Can't find index: %s", bucket.getId());
 			index.create(bucket.getAliases());
 		} else {
 			Preconditions.checkState(createIndex, "Can't find index: %s", bucket.getId());
@@ -58,9 +59,12 @@ public class BucketRepository extends RepositorySupport<Bucket> {
 	}
 
 	public boolean delete(String bucketId) {
+		Preconditions.checkState(!isAliased(bucketId), "Can't delete an aliased bucket");
 		boolean deleted = index.delete(Bucket.TYPE_NAME, bucketId, true);
 		if (deleted) {
-			manager.getIndex(bucketId).close();
+			if (!manager.getIndex(bucketId).close()) {
+				Logger.warn("Couldn't close index: " + bucketId);
+			}
 		}
 		return deleted;
 	}
@@ -90,6 +94,17 @@ public class BucketRepository extends RepositorySupport<Bucket> {
 			QueryBuilders.termQuery(RolesField.PRINCIPAL.getName(), identity.getId()));
 	}
 
+	private static QueryBuilder restrict(Identity identity, boolean isAlias) {
+		BoolQueryBuilder query = QueryBuilders.boolQuery().must(restrict(identity));
+		QueryBuilder clause = QueryBuilders.wildcardQuery(Bucket.ALIASES + "." + AliasField.ID, "*");
+		if (isAlias) {
+			query.must(clause);
+		} else {
+			query.mustNot(clause);
+		}
+		return query;
+	}
+
 	private PartialList<Bucket> find(QueryBuilder query, int offset, int limit) {
 		SearchSourceBuilder search = new SearchSourceBuilder()
 			.query(query).version(true).from(offset).size(limit)
@@ -97,8 +112,8 @@ public class BucketRepository extends RepositorySupport<Bucket> {
 		return new BucketList(index.find(search));
 	}
 
-	public void find(Identity identity, final Callback<Bucket> callback) {
-		find(restrict(identity), callback);
+	public void find(Identity identity, boolean isAlias, final Callback<Bucket> callback) {
+		find(restrict(identity, isAlias), callback);
 	}
 
 	@Override

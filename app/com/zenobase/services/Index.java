@@ -1,6 +1,7 @@
 package com.zenobase.services;
 
 import java.util.List;
+import java.util.Set;
 
 import org.elasticsearch.action.admin.indices.alias.IndicesAliasesRequestBuilder;
 import org.elasticsearch.action.admin.indices.alias.IndicesAliasesResponse;
@@ -186,9 +187,28 @@ public class Index {
 			.execute().actionGet();
 	}
 
-	public void close() {
-		client.admin().indices()
-			.prepareClose(indexName)
-			.execute().actionGet();
+	public boolean close() {
+		Set<String> aliases = aliases();
+		if (aliases.isEmpty()) {
+			return client.admin().indices()
+				.prepareClose(indexName)
+				.execute().actionGet().isAcknowledged();
+		} else {
+			return close(aliases);
+		}
+	}
+
+	private Set<String> aliases() {
+		return client.admin().indices()
+			.prepareGetAliases(indexName)
+			.execute().actionGet().getAliases().keySet();
+	}
+
+	private boolean close(Iterable<String> aliases) {
+		IndicesAliasesRequestBuilder request = client.admin().indices().prepareAliases();
+		for (String alias : aliases()) {
+			request.removeAlias(alias, indexName);
+		}
+		return request.execute().actionGet().isAcknowledged();
 	}
 }

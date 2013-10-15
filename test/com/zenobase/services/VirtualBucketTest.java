@@ -54,6 +54,10 @@ public class VirtualBucketTest extends ElasticSearchTestSupport {
 		assertThat(events.size(b1.getId())).isEqualTo(1);
 		assertThat(events.size(b2.getId())).isEqualTo(2);
 		assertThat(events.size(b3.getId())).isEqualTo(3);
+
+		assertThat(buckets.delete(b3.getId())).isTrue();
+		assertThat(buckets.isAliased(b1.getId())).isFalse();
+		assertThat(buckets.isAliased(b2.getId())).isFalse();
 	}
 
 	private static Bucket newBucket(String label, Identity owner) {

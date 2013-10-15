@@ -8,7 +8,7 @@ import com.zenobase.models.Alias;
 
 public class AliasField extends Field<Alias> {
 
-	private static final TokenField ID = new TokenField("@id", true);
+	public static final TokenField ID = new TokenField("@id", true);
 
 	public AliasField(String name) {
 		super(name, Alias.class, "object");
