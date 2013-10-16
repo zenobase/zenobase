@@ -18,7 +18,7 @@ public abstract class RangeParser<T extends Comparable<T>> {
 					value.charAt(value.length() - 1)) :
 				null;
 		} catch (Exception e) {
-			throw new IllegalArgumentException("Can't parse range: " + value);
+			throw new IllegalArgumentException("Can't parse range: " + value, e);
 		}
 	}
 

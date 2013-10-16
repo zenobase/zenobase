@@ -1,10 +1,11 @@
 package com.zenobase.search;
 
 import static com.zenobase.testing.NodeAssert.assertThat;
-import com.fasterxml.jackson.databind.node.ObjectNode;
+
 import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import com.zenobase.models.Event;
 
@@ -49,6 +50,13 @@ public class DateTimeConstraintBuilderTest extends ConstraintBuilderTestSupport 
 		addConstraint("%s:%s", Event.TIMESTAMP, "(2012-01-05T12Z..2012-01-06TZ]");
 		ObjectNode result = execute();
 		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(2);
+	}
+
+	@Test
+	public void testRelativeRangeConstraint() {
+		addConstraint("%s:%s", Event.TIMESTAMP, "(*..-1M)");
+		ObjectNode result = execute();
+		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(3);
 	}
 
 	@Test

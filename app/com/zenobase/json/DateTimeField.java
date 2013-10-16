@@ -9,6 +9,7 @@ import com.fasterxml.jackson.databind.node.TextNode;
 import com.zenobase.common.DateTimeFormat;
 import com.zenobase.search.DateTimeConstraintBuilder;
 import com.zenobase.search.DateTimeRangeConstraintBuilder;
+import com.zenobase.search.PeriodRangeConstraintBuilder;
 
 public class DateTimeField extends Field<DateTime> {
 
@@ -17,6 +18,7 @@ public class DateTimeField extends Field<DateTime> {
 	public DateTimeField(String name) {
 		super(name, DateTime.class, "date");
 		shadow = new ShadowDateTimeField(this);
+		addConstraintBuilder(new PeriodRangeConstraintBuilder());
 		addConstraintBuilder(new DateTimeRangeConstraintBuilder());
 		addConstraintBuilder(new DateTimeConstraintBuilder());
 	}
