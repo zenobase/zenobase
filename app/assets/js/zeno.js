@@ -1884,6 +1884,7 @@
 						}
 					}
 				});
+				field.formatAxis(options.yAxis);
 				new Highcharts.Chart(options);
 			}
 		}
@@ -2031,6 +2032,7 @@
 					options.xAxis.categories.push(time.label);
 					options.series[0].data.push(value !== undefined ? field.toNumber(value) : 0);
 				});
+				field.formatAxis(options.yAxis);
 				new Highcharts.Chart(options);				
 			}
 		};
@@ -2328,6 +2330,8 @@
 			$timeout($scope.draw, 0); // delay for correct width
 		};
 		$scope.draw = function() {
+			var xField = Field.find($scope.settings.field_x);
+			var yField = Field.find($scope.settings.field_y);
 			if ($scope.data && $scope.data.length) {
 				var options = {
 					chart : {
@@ -2398,6 +2402,8 @@
 				if ($scope.settings.placement === 'top') {
 					options.chart.height = 150;
 				}
+				xField.formatAxis(options.xAxis);
+				yField.formatAxis(options.yAxis);
 				new Highcharts.Chart(options);
 			}
 		};
@@ -3464,7 +3470,7 @@
 		var fields = [];
 		var fieldsByName = {};
 
-		var Field = function(name, icon, type, units, readOnly, toText, toHtml) {
+		var Field = function(name, icon, type, units, readOnly, toText, toHtml, formatAxis) {
 			this.name = name;
 			this.icon = icon;
 			this.type = type;
@@ -3472,6 +3478,7 @@
 			this.readOnly = readOnly;
 			this.toText = toText;
 			this.toHtml = toHtml;
+			this.formatAxis = formatAxis;
 		}
 
 		Field.prototype.toNumber = function(value) {
@@ -3520,7 +3527,8 @@
 				fieldOptions.units || [], 
 				fieldOptions.readOnly == true, 
 				fieldOptions.toText || function(value) { return value; }, 
-				fieldOptions.toHtml || function(value) { return value; }
+				fieldOptions.toHtml || function(value) { return value; },
+				fieldOptions.formatAxis || function(options) {}
 			);
 			fields.push(field); 
 			fieldsByName[field.name] = field; 
@@ -3718,6 +3726,14 @@
 				return '<span class="nowrap">' +
 			  	'<i class="' + this.icon + '" title="Duration"></i> ' + this.toText(value) +
 			  '</span>';
+			},
+			formatAxis : function(options) {
+				options.type = 'datetime';
+				options.labels = {
+					formatter : function() {
+						return this.value >= 0 ? moment.duration(this.value).countdown(2) : ''; 
+					}
+				};
 			}
 		});
 
