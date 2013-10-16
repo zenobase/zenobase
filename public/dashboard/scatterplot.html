@@ -109,6 +109,15 @@
 						<p class="help-block">By how many time units to offset the y series values from the x series values.</p>
 					</div>
 				</div>
+				<div class="control-group">
+					<label class="control-label" for="regression">Regression</label>
+					<div class="controls">
+						<select name="regression" data-ng-model="settings.regression" data-ng-options="method for method in regressionMethods">
+							<option value=""></option>
+						</select>
+						<p class="help-block">Optional method for drawing a regression line.</p>
+					</div>
+				</div>
 			</div>
 			<div class="modal-footer">
 				<button class="btn btn-primary" data-ng-click="save()" data-ng-disabled="!form.$valid || !valid()">Update</button>

@@ -2384,7 +2384,7 @@
 						enabled: false
 					}
 				};
-				if ($scope.data.length > 3) {
+				if ($scope.settings.regression == 'linear' && $scope.data.length > 3) {
 					var regression = statistics.regression($scope.data);
 					options.series.push({
 						type : 'line',
@@ -2422,6 +2422,8 @@
 				? unit === null
 				: $.inArray(unit, units) != -1;
 		};
+
+		$scope.regressionMethods = [ 'linear' ];
 
 		$scope.getFields = function() {
 			return Field.findByType('numeric');
