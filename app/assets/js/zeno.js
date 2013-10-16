@@ -1823,7 +1823,9 @@
 						crosshairs : true,
 						shared : true,
 						hideDelay : 0,
-						valueSuffix: $scope.settings.unit
+						formatter : function() {
+							return (field.toText(this.y) || this.y) + ($scope.settings.unit || '')
+						}
 					},
 					series : [{
 						name : $scope.settings.statistic || 'count',
@@ -1992,7 +1994,9 @@
 					tooltip : {
 						shared : true,
 						hideDelay : 0,
-						valueSuffix: $scope.settings.unit
+						formatter : function() {
+							return '<b>' + this.x + '</b>: ' + (field.toText(this.y) || this.y) + ($scope.settings.unit || '');
+						}
 					},
 					series : [{
 						name : $scope.settings.statistic || 'count',
@@ -2353,22 +2357,24 @@
 					tooltip : {
 						crosshairs : false,
 						shared : false,
-						hideDelay : 0
+						hideDelay : 0,
+						formatter : function() {
+							return '<b>x</b>: ' + (xField.toText(this.x) || this.x) + ($scope.settings.unit_x || '') + ', ' +
+								'<b>y</b>: ' + (yField.toText(this.y) || this.y) + ($scope.settings.unit_y || '');
+						}
 					},
 					series : [{
 						data : $scope.data,
 						color : 'rgba(119, 152, 191, 0.5)',
+						allowPointSelect : true,
 						marker : {
 							radius : 5
-						},
-						tooltip : {
-							headerFormat : '',
-							pointFormat : '<b>{point.x}</b>' + ($scope.settings.unit_x || '') + ', <b>{point.y}</b>' + ($scope.settings.unit_y || '')
 						}
 					}],
 					plotOptions : {
 						series : {
-							animation : false
+							animation : false,
+							stickyTracking : false
 						}
 					},
 					legend: {
@@ -2382,20 +2388,11 @@
 					var regression = statistics.regression($scope.data);
 					options.series.push({
 						type : 'line',
-						name : '',
 						data : regression.data,
 						color : 'rgba(119, 152, 191, 1.0)',
+						enableMouseTracking : false,
 						marker : {
 							enabled : false
-						},
-						states : {
-							hover : {
-								enabled : false
-							}
-						},
-						tooltip : {
-							headerFormat : '',
-							pointFormat : regression.slope.toFixed(3) + 'x' + (regression.intercept < 0 ? ' - ' : ' + ') + regression.intercept.toFixed(3)
 						}
 					});
 				}
@@ -3813,8 +3810,7 @@
 			icon : 'icon-star',
 			type : 'numeric',
 			toText : function(value) {
-				var stars = Math.round((value || 0) / 20);
-				return stars + '/5';
+				return value + '%';
 			},
 			toHtml : function(value) {
 				var stars = Math.round((value || 0) / 20);
