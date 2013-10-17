@@ -141,7 +141,7 @@ footer {
 	margin-left: 4px;
 }
 
-.page-title > .page-title-text {
+.page-title .page-title-text {
 	vertical-align: middle;
 	font-size: 18px;
 	font-weight: bold;
@@ -282,4 +282,15 @@ a {
 #plans td {
 	font-size: larger;
 	vertical-align: middle;
+}
+
+.icon-hover {
+	opacity: 0;
+	filter: alpha(opacity=0);
+	cursor: pointer;
+}
+
+a:hover > i.icon-hover {
+	opacity: 0.5;
+	filter: alpha(opacity=50);
 }

@@ -1111,16 +1111,19 @@
 			});
 		};
 		$scope.removeWidget = function(settings) {
-			$scope.bucket.widgets = $.grep($scope.bucket.widgets, function(widget) {
-				return widget.id !== settings.id;
+			delay(function() { // dialog won't close properly if we don't delay
+				$scope.bucket.widgets = $.grep($scope.bucket.widgets, function(widget) {
+					return widget.id !== settings.id;
+				});
+				$scope.widgets = $.grep($scope.widgets, function(widget) {
+					return widget.settings.id !== settings.id;
+				});
+				var remaining = $scope.getWidgetSettings(settings.placement);
+				if (remaining.length > 0) {
+					$('#' + remaining[0].id + '-tab').tab('show');
+				}
+				$scope.setStale(true);
 			});
-			$scope.widgets = $.grep($scope.widgets, function(widget) {
-				return widget.settings.id !== settings.id;
-			});
-			var remaining = $scope.getWidgetSettings(settings.placement);
-			if (remaining.length > 0) {
-				$('#' + remaining[0].id + '-tab').tab('show');
-			}
 		};
 		$scope.placement = null;
 		$scope.canImport = function() {
@@ -1248,24 +1251,21 @@
 			return field ? field.icon : 'icon-ban-circle';
 		};
 	
-		$scope.editing = false;
-		$scope.edit = function() {
-			$scope.editing = true;
-			tracker.event('dialog', 'edit bucket');
-		};
-		$scope.cancel = function() {
-			$scope.editing = false;
+		$scope.stale = false;
+		$scope.setStale = function(stale) {
+			$scope.stale = stale;
 		};
 	}]);
 	
-	app.controller('EditBucketController', ['$scope', '$http', '$route', 'tracker', function($scope, $http, $route, tracker) {
+	app.controller('EditWidgetsController', ['$scope', '$http', '$route', 'tracker', function($scope, $http, $route, tracker) {
 		$scope.save = function(settings) {
+			console.log('update widgets');
 			$scope.alert.clear();
 			$http.put('/buckets/' + $scope.bucketId, $scope.bucket)
 				.success(function (response, status, headers) {
 					$scope.alert.show('Saved settings.', 'alert-success', headers('X-Command-ID'));
 					++$scope.$parent.bucket.version;
-					$scope.$parent.cancel();
+					$scope.setStale(false);
 				})
 				.error(function(response, status) {
 					if (status === 400) {
@@ -1274,11 +1274,35 @@
 						$scope.alert.show('Couldn\'t save this bucket. Try again later or contact support.', 'alert-error');						
 					}
 				});
-			tracker.event('action', 'save bucket');
+			tracker.event('action', 'save widgets');
 		};
-		$scope.cancel = function() {
-			$scope.$parent.cancel();
+		$scope.revert = function() {
 			$route.reload();
+		};
+	}]);
+
+	app.controller('EditBucketDialogController', ['$scope', '$http', '$route', 'delay', 'tracker', function($scope, $http, $route, delay, tracker) {
+
+		$scope.init = function() {
+			$scope.bucket = angular.copy($scope.$parent.bucket);
+			tracker.event('dialog', 'edit bucket');
+		};
+		$scope.save = function() {
+			$scope.message = '';
+			$http.put('/buckets/' + $scope.bucketId, $scope.bucket)
+				.success(function (response, status, headers) {
+					$scope.closeDialog();
+					$scope.alert.show('Saved settings.', 'alert-success', headers('X-Command-ID'));
+					delay($route.reload);
+					tracker.event('action', 'save bucket');
+				})
+				.error(function(response, status) {
+					if (status === 400) {
+						$scope.message = 'Can\'t save this bucket';
+					} else {
+						$scope.message = 'Couldn\'t save this bucket. Try again later or contact support.';						
+					}
+				});
 		};
 	}]);
 	
@@ -1338,6 +1362,7 @@
 			$scope.save = function() {
 				$scope.refresh({}, $scope.settings);
 				$scope.closeDialog();
+				$scope.setStale(true);
 			};
 			$scope.getField = function(name) {
 				return Field.find(name);
@@ -2662,19 +2687,6 @@
 
 		$scope.getColors = function() {
 			return [ 'white', 'black', 'red', 'green', 'blue', 'yellow' ];
-		};
-	}]);
-
-	app.controller('RolesDialogController', ['$scope', '$http', 'tracker', function($scope, $http, tracker) {
-
-		$scope.init = function() {
-			$scope.bucket = angular.copy($scope.$parent.bucket);
-			tracker.event('dialog', 'edit roles');
-		};
-		$scope.update = function() {
-			$scope.$parent.bucket = $scope.bucket;
-			$scope.closeDialog();
-			tracker.event('action', 'update roles');
 		};
 	}]);
 

@@ -7,36 +7,47 @@
 	<div id="dashboard-loading-message" data-ng-hide="bucket || message">
 		<i class="icon-refresh"></i> Loading...		
 	</div>
-	
-	<div class="alert alert-block alert-info" data-ng-controller="EditBucketController" data-ng-show="editing">
-		<a class="close" data-ng-click="cancel()">&times;</a>
+
+	<div class="alert alert-block alert-info" data-ng-controller="EditWidgetsController" data-ng-show="stale && editable">
+		<a class="close" data-ng-click="revert()">&times;</a>
 		<p>
-			<button id="save-bucket-button" data-ng-click="save()" class="btn btn-primary">Save</button>
-			<button data-ng-click="cancel()" class="btn">Cancel</button>
+			<strong><a id="save-widgets-button" data-ng-click="save()">Save</a></strong> or 
+			<strong><a data-ng-click="revert()">revert</a></strong> changes to this dashboard.
 		</p>
 	</div>
 
 	<div data-ng-show="bucket">
 	
 		<div class="row-fluid page-titlebar">
+
 			<p class="pull-left page-title">
 				<i class="icon-eye-open" title="Virtual Bucket" data-ng-show="bucket.aliases"></i>
-				<span id="bucket-title" class="page-title-text" data-ng-hide="editing">{{bucket.label}}</span>
-				<input id="edit-bucket-label" type="text" class="input-large pull-left page-title-text" required data-ng-minlength="1" data-ng-maxlength="20" data-ng-pattern="/^[a-zA-Z0-9-_ ]+$/" data-ng-model="bucket.label" data-ng-show="editing"/>
+				<span id="bucket-title" class="page-title-text">{{bucket.label}}</span>
 				<span id="event-count" class="badge badge-success page-title-decoration" title="Events" data-ng-show="total >= 0">{{total}}</span>
 				<span class="badge badge-important page-title-decoration" title="Couldn't load any events" data-ng-show="total < 0">0</span>
 				<a class="page-title-decoration" data-ng-click="refresh()" title="Refresh"><i class="icon-refresh"></i></a>
-				<a id="edit-bucket-action" class="page-title-decoration" title="Edit Dashboard..." data-ng-click="edit()" data-ng-show="editable && !editing"><i class="icon-pencil"></i></a>
-				<a class="page-title-decoration" title="Import..." data-ng-click="openDialog('import-dialog')" data-ng-show="canImport()"><i class="icon-upload"></i></a>
-				<a class="page-title-decoration" data-ng-href="{{getExportUrl()}}" title="Export" download="events.json" data-ng-show="total > 0"><i class="icon-download"></i></a>
 				<a id="add-event-action" class="page-title-decoration" title="Add Event..." data-ng-click="editEvent({})" data-ng-show="editable"><i class="icon-plus"></i></a>
-				<a id="create-task-action" class="page-title-decoration" title="Connect..." data-ng-click="openDialog('task-dialog')" data-ng-show="editable"><i class="icon-share"></i></a>
 			</p>
-			<p id="bucket-roles" class="pull-right" data-ng-show="editable">
-				<span id="bucket-private-label" data-ng-show="!bucket.isPublished()"><i class="icon-lock"></i> private</span>
-				<span id="bucket-public-label" data-ng-show="bucket.isPublished()"><i class="icon-globe"></i> public</span>
-				<span data-ng-show="editing">[ <a id="roles-dialog-link" data-ng-click="openDialog('roles-dialog')">Change...</a> ]</span>
-			</p>
+
+			<div class="pull-right page-title dropdown" data-ng-show="editable">
+				<a id="bucket-menu" class="dropdown-toggle" data-toggle="dropdown" title="More..."> <i class="icon-align-justify"></i><b class="caret"></b></a>
+				<ul class="dropdown-menu" role="menu">
+					<li role="presentation">
+						<a role="menuitem" data-ng-href="{{getExportUrl()}}" download="events.json" data-ng-show="total > 0">Export</a>
+					</li>
+					<li role="presentation">
+						<a role="menuitem" data-ng-click="openDialog('import-dialog')" data-ng-show="canImport()">Import...</a>
+					</li>
+					<li role="presentation">
+						<a role="menuitem" id="create-task-action" data-ng-click="openDialog('task-dialog')">Connect...</a>
+					</li>
+					<li role="presentation" class="divider"></li>
+					<li role="presentation">
+						<a id="edit-bucket-action" role="menuitem" data-ng-click="openDialog('edit-bucket-dialog')">Edit...</a>
+					</li>
+				</ul>
+			</div>
+
 			<ul class="nav nav-pills" data-ng-show="constraints">
 				<li class="active" data-ng-repeat="constraint in constraints">
 					<a data-ng-click="removeConstraint(constraint)" title="{{constraint.toString()}}"><i class="icon-minus icon-white" data-ng-show="constraint.negated"></i><i class="icon-white" data-ng-class="getConstraintIcon(constraint)"></i> {{constraint.value}} <i class="icon-remove icon-white"></i></a>
@@ -44,16 +55,15 @@
 			</ul>
 		</div>
 
-		<p data-ng-show="bucket.description && !editing" data-ng-bind-html="bucket.description" style="margin-bottom: 18px;"></p>
-		<textarea id="edit-bucket-description" class="input-xxlarge" rows="2" placeholder="Description..." data-ng-show="editing" data-ng-model="bucket.description" style="margin-bottom: 18px;"></textarea>
+		<p data-ng-show="bucket.description" data-ng-bind-html="bucket.description" style="margin-bottom: 18px;"></p>
 
-		<div class="row-fluid" data-ng-show="hasWidgets('top') || editing">
+		<div class="row-fluid">
 			<div class="span12">
 				<ul class="nav nav-tabs">
 					<li data-ng-class="$index == 0 && 'active'" data-ng-repeat="settings in getWidgetSettings('top')">
-						<a id="{{settings.id}}-tab" data-ng-href="#{{settings.id}}" data-toggle="tab">{{settings.label}}&nbsp;<span class="close close-tab" title="Remove" data-ng-click="removeWidget(settings)" data-ng-show="editing">&times;</span></a>
+						<a id="{{settings.id}}-tab" data-ng-href="#{{settings.id}}" data-toggle="tab">{{settings.label}}&nbsp;<i class="icon-cog icon-hover" title="Settings..." data-ng-click="openDialog(settings.id + '-dialog')"></i></a>
 					</li>
-					<li data-ng-show="editing"><a data-ng-click="chooseWidget('top')" title="Add Widget..."><i class="icon-plus-sign"></i></a></li>
+					<li><a data-ng-click="chooseWidget('top')" title="Add...">&nbsp;</a></li>
 				</ul>
 				<div class="tab-content">
 					<div id="{{settings.id}}" class="tab-pane" data-ng-class="$index == 0 && 'active'" data-ng-repeat="settings in getWidgetSettings('top')" data-ng-include="getTemplate(settings.type)"></div>
@@ -62,23 +72,23 @@
 		</div>
 	
 		<div class="row-fluid">
-			<div class="span6" data-ng-show="hasWidgets('left') || editing">
+			<div class="span6">
 				<ul class="nav nav-tabs">
 					<li data-ng-class="$index == 0 && 'active'" data-ng-repeat="settings in getWidgetSettings('left')">
-						<a id="{{settings.id}}-tab" data-ng-href="#{{settings.id}}" data-toggle="tab">{{settings.label}}&nbsp;<span class="close close-tab" title="Remove" data-ng-click="removeWidget(settings)" data-ng-show="editing">&times;</span></a>
+						<a id="{{settings.id}}-tab" data-ng-href="#{{settings.id}}" data-toggle="tab">{{settings.label}}&nbsp;<i class="icon-cog icon-hover" title="Settings..." data-ng-click="openDialog(settings.id + '-dialog')"></i></a>
 					</li>
-					<li data-ng-show="editing"><a data-ng-click="chooseWidget('left')" title="Add Widget..."><i class="icon-plus-sign"></i></a></li>
+					<li><a data-ng-click="chooseWidget('left')" title="Add...">&nbsp;</a></li>
 				</ul>
 				<div class="tab-content">
 					<div id="{{settings.id}}" class="tab-pane" data-ng-class="$index == 0 && 'active'" data-ng-repeat="settings in getWidgetSettings('left')" data-ng-include="getTemplate(settings.type)"></div>
 				</div>
 			</div>
-			<div class="span6" data-ng-show="hasWidgets('right') || editing">
+			<div class="span6">
 				<ul class="nav nav-tabs">
 					<li data-ng-class="$index == 0 && 'active'" data-ng-repeat="settings in getWidgetSettings('right')">
-						<a id="{{settings.id}}-tab" data-ng-href="#{{settings.id}}" data-toggle="tab">{{settings.label}}&nbsp;<span class="close close-tab" title="Remove" data-ng-click="removeWidget(settings)" data-ng-show="editing">&times;</span></a>
+						<a id="{{settings.id}}-tab" data-ng-href="#{{settings.id}}" data-toggle="tab">{{settings.label}}&nbsp;<i class="icon-cog icon-hover" title="Settings..." data-ng-click="openDialog(settings.id + '-dialog')"></i></a>
 					</li>
-					<li data-ng-show="editing"><a data-ng-click="chooseWidget('right')" title="Add Widget..."><i class="icon-plus-sign"></i></a></li>
+					<li><a data-ng-click="chooseWidget('right')" title="Add...">&nbsp;</a></li>
 				</ul>
 				<div class="tab-content">
 					<div id="{{settings.id}}" class="tab-pane" data-ng-class="$index == 0 && 'active'" data-ng-repeat="settings in getWidgetSettings('right')" data-ng-include="getTemplate(settings.type)"></div>
@@ -88,37 +98,44 @@
 
 	</div>
 
-	<div id="roles-dialog" data-ui-modal="dialog == 'roles-dialog'" data-ui-modal-open="init()" data-ui-modal-close="closeDialog()" data-ng-controller="RolesDialogController">
-		<form class="modal-form">
+	<div id="edit-bucket-dialog" data-ui-modal="dialog == 'edit-bucket-dialog'" data-ui-modal-open="init()" data-ui-modal-close="closeDialog()" data-ng-controller="EditBucketDialogController">
+		<form name="editBucketForm" data-ng-submit="save()" class="modal-form">
 			<div class="modal-header">
 				<a class="close" data-dismiss="modal">&times;</a>
-				<h4>Roles</h4>
+				<h4>Edit Bucket</h4>
 			</div>
 			<div class="modal-body">
+				<div id="create-bucket-message" class="alert alert-error" data-ng-show="message">
+					{{message}}
+				</div>
+				<div class="control-group" data-ng-class="editBucketForm.label.$valid || 'error'">
+					<label for="label">Label</label>
+					<input id="edit-bucket-label" name="label" type="text" class="xlarge" required data-ui-focus-on="dialog:edit-bucket-dialog" data-ng-minlength="1" data-ng-maxlength="20" data-ng-pattern="/^[a-zA-Z0-9-_ ]+$/" data-ng-model="bucket.label"/>
+				</div>
 				<div class="control-group">
-					<div class="controls">
-						<p style="clear:both" data-ng-repeat="role in bucket.roles">
-							<span class="editable" data-ng-show="role.principal == '*'">
-								<i class="icon-globe"></i> public<a data-ng-click="bucket.unpublish()"><i class="icon-remove" title="Delete"></i></a>
-							</span>
-							<span class="editable" data-ng-show="role.principal != '*'">
-								<i class="icon-user"></i> {{role.principal | username}} ({{role.role}})
-							</span>
-						</p>
-						<p style="clear:both">
-							<hr/>
-							<span data-ng-show="user.verified && !bucket.isPublished()">
-								<strong>Add:</strong> <a id="publish-link" data-ng-click="bucket.publish()">public</a>
-							</span>
-							<span data-ng-hide="user.verified">
-								<i>You can make this dashboard public after signing up and verifying your email address.</i>
-							</span>
-						</p>
-					</div>
+					<label for="description">Description</label>
+					<textarea id="edit-bucket-description" class="input-xlarge" rows="2" data-ng-model="bucket.description" style="margin-bottom: 18px;"></textarea>
+				</div>
+				<div class="control-group">
+					<label>Permissions</label>
+					<span data-ng-repeat="role in bucket.roles">
+						<span class="editable" data-ng-show="role.principal == '*'">
+							<i class="icon-globe"></i> public<a data-ng-click="bucket.unpublish()"><i class="icon-remove" title="Delete"></i></a>
+						</span>
+						<span class="editable" data-ng-show="role.principal != '*'">
+							<i class="icon-user"></i> {{role.principal | username}} ({{role.role}})
+						</span>
+					</span>
+					<p class="help-block" style="clear:both" data-ng-show="user.verified && !bucket.isPublished()">
+						<strong>Add:</strong> <a id="publish-link" data-ng-click="bucket.publish()">public</a>
+					</p>
+					<p class="help-block" data-ng-hide="user.verified">
+						<i>You can make this dashboard public after signing up and verifying your email address.</i>
+					</p>
 				</div>
 			</div>
 			<div class="modal-footer">
-				<button id="update-roles-button" class="btn btn-primary" data-ng-click="update()">Update</button>
+				<button id="save-bucket-button" class="btn btn-primary">Update</button>
 				<button class="btn" data-dismiss="modal">Cancel</button>
 			</div>
 		</form>
