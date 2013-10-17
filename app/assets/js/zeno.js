@@ -1829,19 +1829,27 @@
 						labels : {
 							overflow : 'justify'
 						},
-						minTickInterval : $scope.interval.minTickInterval
+						minTickInterval : $scope.interval.minTickInterval,
+						tickLength : 5,
+						tickWidth : 1,
+						lineWidth : 0,
+						gridLineWidth : 0
 					},
 					yAxis : {
 						title : {
 							text : null
-						}
+						},
+						tickLength : 5,
+						tickWidth : 1,
+						lineWidth : 0,
+						gridLineWidth : 0
 					},
 					tooltip : {
 						crosshairs : true,
 						shared : true,
 						hideDelay : 0,
 						formatter : function() {
-							return (field.toText(this.y) || this.y) + ($scope.settings.unit || '')
+							return '<b>' + this.points[0].point.filter + ':</b> ' + (field.toText(this.y) || this.y) + ($scope.settings.unit || '')
 						}
 					},
 					series : [{
@@ -2343,15 +2351,23 @@
 					xAxis : {
 						title : {
 							text : $scope.settings.label_x || $scope.settings.field_x
-						}
+						},
+						tickLength : 5,
+						tickWidth : 1,
+						lineWidth : 0,
+						gridLineWidth : 0
 					},
 					yAxis : {
 						title : {
 							text : $scope.settings.label_y || $scope.settings.field_y
-						}
+						},
+						tickLength : 5,
+						tickWidth : 1,
+						lineWidth : 0,
+						gridLineWidth : 0
 					},
 					tooltip : {
-						crosshairs : false,
+						crosshairs : [ true, true ],
 						shared : false,
 						hideDelay : 0,
 						formatter : function() {
