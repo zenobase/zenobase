@@ -2285,14 +2285,15 @@
 				type : 'scatterplot',
 				field_x : $scope.settings.field_x,
 				unit_x : $scope.settings.unit_x || '',
+				statistic_x : $scope.settings.statistic_x || 'avg',
 				filter_x : $scope.settings.filter_x || '',
 				field_y : $scope.settings.field_y,
 				unit_y : $scope.settings.unit_y || '',
+				statistic_y : $scope.settings.statistic_y || 'avg',
 				filter_y : $scope.settings.filter_y || '',
 				interval : $scope.settings.interval || 'day',
 				timezone : timezone,
-				statistic_x : $scope.settings.statistic_x || 'avg',
-				statistic_y : $scope.settings.statistic_y || 'avg'
+				lag : $scope.settings.lag || 0
 			};
 		};
 		$scope.refresh = function(options, settings) {
@@ -2303,28 +2304,8 @@
 				$scope.update(null, result);
 			});
 		};
-		function applyLag(data, lag) {
-			if (lag < 0) {
-				for (var i = 0; i < data.length; ++i) {
-					if (i - lag < 0 || i - lag >= data.length) {
-						data[i][1] = null;
-					} else {
-						data[i][1] = data[i - lag][1];
-					}
-				}
-			} else if (lag > 0) {
-				for (var i = data.length - 1; i >= 0; --i) {
-					if (i - lag < 0 || i - lag >= data.length) {
-						data[i][1] = null;
-					} else {
-						data[i][1] = data[i - lag][1];
-					}
-				}
-			}
-		}
 		$scope.update = function(event, result) {
 			$scope.data = result[$scope.settings.id] || [];
-			applyLag($scope.data, $scope.settings.lag);
 			$timeout($scope.draw, 0); // delay for correct width
 		};
 		$scope.draw = function() {

@@ -11,10 +11,14 @@ import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.elasticsearch.search.facet.FacetBuilders;
 import org.elasticsearch.search.facet.datehistogram.DateHistogramFacet;
 import org.elasticsearch.search.facet.datehistogram.DateHistogramFacetBuilder;
+import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
+import org.joda.time.DurationFieldType;
+import org.joda.time.Period;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 
 import com.zenobase.common.Measures;
@@ -26,18 +30,28 @@ public class ScatterPlotFacet extends Facet {
 
 	public static final String TYPE = "scatterplot";
 
+	private static final Map<String, DurationFieldType> INTERVALS = ImmutableMap.<String, DurationFieldType>builder()
+		.put("year", DurationFieldType.years())
+		.put("month", DurationFieldType.months())
+		.put("day", DurationFieldType.days())
+		.put("hour", DurationFieldType.hours())
+		.put("minute", DurationFieldType.minutes())
+		.build();
+
 	private final String keyField;
 	private final Series x, y;
 	private final String interval;
 	private final DateTimeZone timezone;
+	private final int lag;
 
-	public ScatterPlotFacet(String id, String keyField, Series x, Series y, String interval, DateTimeZone timezone) {
+	public ScatterPlotFacet(String id, String keyField, Series x, Series y, String interval, DateTimeZone timezone, int lag) {
 		super(id);
 		this.keyField = keyField;
 		this.x = x;
 		this.y = y;
 		this.interval = interval;
 		this.timezone = timezone;
+		this.lag = lag;
 	}
 
 	@Override
@@ -49,23 +63,32 @@ public class ScatterPlotFacet extends Facet {
 	@Override
 	public JsonNode process(SearchResponse response) {
 		Map<Long, ObjectNode> values = Maps.newLinkedHashMap();
-		process(response, values, "x", x);
-		process(response, values, "y", y);
+		process(response, values, "x", x, 0);
+		process(response, values, "y", y, lag);
 		return toJson(values.values());
 	}
 
-	private void process(SearchResponse response, Map<Long, ObjectNode> values, String field, Series series) {
+	private void process(SearchResponse response, Map<Long, ObjectNode> values, String field, Series series, int lag) {
 		DateHistogramFacet facet = response.getFacets().facet(DateHistogramFacet.class, series.getId());
 		for (DateHistogramFacet.Entry entry : facet.getEntries()) {
 			if (entry.getTotalCount() > 0) {
-				ObjectNode entryNode = values.get(entry.getTime());
+				long time = addLag(entry.getTime(), lag);
+				ObjectNode entryNode = values.get(time);
 				if (entryNode == null) {
 					entryNode = Nodes.newObject();
-					values.put(entry.getTime(), entryNode);
+					values.put(time, entryNode);
 				}
 				entryNode.put(field, series.getValue(entry));
 			}
 		}
+	}
+
+	private long addLag(long time, int lag) {
+		return lag != 0 ? new DateTime(time, timezone).plus(toPeriod(interval, lag)).getMillis() : time;
+	}
+
+	private static Period toPeriod(String interval, int value) {
+		return new Period().withField(INTERVALS.get(interval), value);
 	}
 
 	private JsonNode toJson(Iterable<ObjectNode> values) {
@@ -171,7 +194,8 @@ public class ScatterPlotFacet extends Facet {
 				return new ScatterPlotFacet(
 					id, Event.TIMESTAMP.getName(), x, y,
 					options.get("interval", String.class, "day"),
-					options.get("timezone", DateTimeZone.class, DateTimeZone.UTC));
+					options.get("timezone", DateTimeZone.class, DateTimeZone.UTC),
+					options.get("lag", Integer.class, 0));
 			}
 		};
 	}
