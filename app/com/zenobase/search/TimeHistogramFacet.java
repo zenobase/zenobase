@@ -98,20 +98,33 @@ public class TimeHistogramFacet extends Facet {
 
 		HOUR_OF_DAY(0, 24) {
 			@Override
-			public String getLabel(int i) {
-				return String.format("%02d", i);
+			public String getLabel(int n) {
+				return String.format("%02d:00", n);
 			}
 		},
 		DAY_OF_WEEK(1, 7) {
 			@Override
-			public String getLabel(int i) {
-				return format.getShortWeekdays()[i < 7 ? i + 1 : 1];
+			public String getLabel(int n) {
+				return format.getShortWeekdays()[n < 7 ? n + 1 : 1];
 			}
 		},
 		DAY_OF_MONTH(1, 31) {
 			@Override
-			public String getLabel(int i) {
-				return String.format("%02d", i);
+			public String getLabel(int n) {
+				return n + getDayOfMonthSuffix(n);
+			}
+
+			private String getDayOfMonthSuffix(int n) {
+				Preconditions.checkArgument(n >= 1 && n <= 31, "Invalid day of month: %d", n);
+				if (n >= 11 && n <= 13) {
+					return "th";
+				}
+				switch (n % 10) {
+					case 1: return "st";
+					case 2: return "nd";
+					case 3: return "rd";
+					default: return "th";
+				}
 			}
 		},
 		MONTH_OF_YEAR(1, 12) {

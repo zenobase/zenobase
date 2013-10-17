@@ -48,17 +48,17 @@ public class TimeHistogramFacetTest extends FacetTestSupport {
 		NodeAssert node = assertThat(result).path(FACET_ID).hasSize(24);
 
 		node.path(0).path("value").isEqualTo(0);
-		node.path(0).path("label").isEqualTo("00");
+		node.path(0).path("label").isEqualTo("00:00");
 		node.path(0).path("count").isEqualTo(0);
 		node.path(0).path("avg").isMissingNode();
 
 		node.path(6).path("value").isEqualTo(6);
-		node.path(6).path("label").isEqualTo("06");
+		node.path(6).path("label").isEqualTo("06:00");
 		node.path(6).path("count").isEqualTo(1);
 		node.path(6).path("avg").isMissingNode();
 
 		node.path(20).path("value").isEqualTo(20);
-		node.path(20).path("label").isEqualTo("20");
+		node.path(20).path("label").isEqualTo("20:00");
 		node.path(20).path("count").isEqualTo(2);
 		node.path(20).path("avg").isMissingNode();
 	}
@@ -111,22 +111,22 @@ public class TimeHistogramFacetTest extends FacetTestSupport {
 		NodeAssert node = assertThat(result).path(FACET_ID).hasSize(31);
 
 		node.path(0).path("value").isEqualTo(1);
-		node.path(0).path("label").isEqualTo("01");
+		node.path(0).path("label").isEqualTo("1st");
 		node.path(0).path("count").isEqualTo(0);
 		node.path(0).path("avg").isMissingNode();
 
 		node.path(1).path("value").isEqualTo(2);
-		node.path(1).path("label").isEqualTo("02");
+		node.path(1).path("label").isEqualTo("2nd");
 		node.path(1).path("count").isEqualTo(1);
 		node.path(1).path("avg").isMissingNode();
 
 		node.path(10).path("value").isEqualTo(11);
-		node.path(10).path("label").isEqualTo("11");
+		node.path(10).path("label").isEqualTo("11th");
 		node.path(10).path("count").isEqualTo(1);
 		node.path(10).path("avg").isMissingNode();
 
 		node.path(29).path("value").isEqualTo(30);
-		node.path(29).path("label").isEqualTo("30");
+		node.path(29).path("label").isEqualTo("30th");
 		node.path(29).path("count").isEqualTo(1);
 		node.path(29).path("avg").isMissingNode();
 	}
