@@ -148,10 +148,21 @@
 			.when('/users/:userId/reset', { templateUrl : cacheBuster.rewrite('/partials/reset.html') })
 			.when('/users/:userId/verify', { templateUrl : cacheBuster.rewrite('/partials/verification.html') })
 			.when('/oauth/authorize', { templateUrl : cacheBuster.rewrite('/partials/oauth.html') })
-			.when('/legal/:section', { templateUrl : cacheBuster.rewrite('/partials/legal.html'), controller : 'DocumentController' })
-			.when('/api/:section', { templateUrl : cacheBuster.rewrite('/partials/api.html'), controller : 'DocumentController' })
-			.when('/pricing/', { templateUrl : cacheBuster.rewrite('/partials/pricing.html') })
+			.when('/legal/:section', { title : 'Legal', templateUrl : cacheBuster.rewrite('/partials/legal.html'), controller : 'DocumentController' })
+			.when('/api/:section', { title : 'API', templateUrl : cacheBuster.rewrite('/partials/api.html'), controller : 'DocumentController' })
+			.when('/pricing/', { title : 'Pricing', templateUrl : cacheBuster.rewrite('/partials/pricing.html') })
 			.otherwise({ templateUrl : cacheBuster.rewrite('/partials/404.html') });
+	}]);
+
+	app.run(['$rootScope', function($rootScope) {
+		$rootScope.page = {
+			setTitle: function(title) {
+				this.title = (title ? title + ' | ' : '') + 'Zenobase';
+			}
+		};
+		$rootScope.$on('$routeChangeSuccess', function(event, current, previous) {
+			$rootScope.page.setTitle(current.$$route.title);
+		});
 	}]);
 
 	app.controller('ApplicationController', ['$scope', '$route', '$http', '$location', 'Alert', 'User', 'token', 'tracker', 'delay', function($scope, $route, $http, $location, Alert, User, token, tracker, delay) {
@@ -313,6 +324,7 @@
 			$http.get('/users/' + $scope.userId)
 				.success(function(response) {
 					$scope.userInfo = new User(response);
+					$scope.page.setTitle($scope.userInfo.getName());
 				})
 				.error(function(response, status) {
 					if (status < 500) {
@@ -1078,6 +1090,7 @@
 		$http.get('/buckets/' + $scope.bucketId)
 			.success(function(response) {
 				$scope.bucket = new Bucket(response);
+				$scope.page.setTitle($scope.bucket.label);
 				$scope.$watch('user', updateEditable);
 			})
 			.error(function(response, status) {
