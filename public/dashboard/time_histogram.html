@@ -1,6 +1,6 @@
 <div id="{{settings.id}}-content" data-ng-controller="TimeHistogramWidgetController">
 
-	<div id="{{settings.id}}-chart" data-ng-show="times"></div>
+	<div id="{{settings.id}}-chart" data-ui-chart-options="chartOptions" data-ng-show="times"></div>
 
 	<p data-ng-show="times == null" class="none">Loading...</p>
 

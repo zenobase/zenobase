@@ -1797,9 +1797,7 @@
 				var type = $scope.settings.statistic === 'count' || $scope.settings.statistic === 'sum' ? 'column' : 'line';
 				var field = Field.find($scope.settings.field);
 				var options = {
-					chart : {
-						renderTo : $scope.settings.id + '-chart'
-					},
+					chart : { },
 					title : null,
 					xAxis : {
 						type : 'datetime',
@@ -1881,7 +1879,7 @@
 					}
 				});
 				field.formatAxis(options.yAxis);
-				new Highcharts.Chart(options);
+				$scope.chartOptions = options;
 			}
 		}
 
@@ -1973,8 +1971,7 @@
 				var options = {
 					chart : {
 						type : 'column',
-						polar: true,
-						renderTo : $scope.settings.id + '-chart'
+						polar: true
 					},
 					title : null,
 					xAxis : {
@@ -2031,7 +2028,7 @@
 					options.series[0].data.push(value !== undefined ? field.toNumber(value) : 0);
 				});
 				field.formatAxis(options.yAxis);
-				new Highcharts.Chart(options);				
+				$scope.chartOptions = options;				
 			}
 		};
 	
@@ -2315,8 +2312,7 @@
 				var options = {
 					chart : {
 						type : 'scatter',
-						zoomType: 'xy',
-						renderTo : $scope.settings.id + '-chart'
+						zoomType: 'xy'
 					},
 					title : null,
 					xAxis : {
@@ -2373,11 +2369,10 @@
 				}
 				if ($scope.data.length > 3) {
 					var correlation = statistics.correlate($scope.data, true);
-					new Highcharts.Chart({
+					$scope.rChartOptions = {
 						chart : {
 							type : 'line',
 							inverted : true,
-							renderTo : $scope.settings.id + '-r-chart',
 							height : 75,
 							plotBorderWidth : 1,
 							plotBackgroundColor : '#fafafa',
@@ -2443,14 +2438,14 @@
 						credits : {
 							enabled : false
 						}
-					});
+					};
 				}
 				if ($scope.settings.placement === 'top') {
 					options.chart.height = 150;
 				}
 				xField.formatAxis(options.xAxis);
 				yField.formatAxis(options.yAxis);
-				new Highcharts.Chart(options);
+				$scope.chartOptions = options;
 			}
 		};
 	
@@ -3946,5 +3941,28 @@
 			}
 		}
 	}]);
+
+	app.directive('uiChartOptions', function() {
+		return {
+			require: '?ngModel',
+			restrict: 'A',
+			scope : true,
+			link: function($scope, element, attrs) {
+				var defaultOptions = {
+					chart : {
+						renderTo : element[0]
+					}
+				};
+				$scope.$watch(attrs.uiChartOptions, function(newOptions) {
+					if (newOptions) {
+						if ($scope.chart) {
+							$scope.chart.destroy();
+						}
+						$scope.chart = new Highcharts.Chart($.extend(true, {}, newOptions, defaultOptions));
+					}
+				}, true);
+			}
+		};
+	});
 
 }());
