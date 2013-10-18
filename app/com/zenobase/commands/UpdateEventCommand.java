@@ -11,14 +11,15 @@ import com.zenobase.services.EventRepository;
 
 public class UpdateEventCommand extends Command {
 
-	private static final Command.Type TYPE = new Command.Type("update event", 2);
+	private static final Command.Type TYPE = new Command.Type("update event", 3);
 	private static final TokenField BUCKET = new TokenField("bucket");
 	private static final ObjectField FROM = new ObjectField("from");
 	private static final ObjectField TO = new ObjectField("to");
 
 	private UpdateEventCommand(ObjectNode node) {
 		super(node);
-		checkType(TYPE);
+		// checkType(TYPE);
+		setType(TYPE);
 	}
 
 	public UpdateEventCommand(Identity principal, String bucketId, Event from, Event to) {
@@ -63,8 +64,13 @@ public class UpdateEventCommand extends Command {
 
 		@Override
 		public Command parse(ObjectNode node, int version) {
+			UpdateEventCommand command = new UpdateEventCommand(node);
 			switch (version) {
-				case 2: return new UpdateEventCommand(node);
+				case 2:
+					Migrations.rewriteDuration(command.getFrom());
+					Migrations.rewriteDuration(command.getTo());
+				case 3:
+					return command;
 			}
 			return null;
 		}
