@@ -6,7 +6,7 @@
 				<td style="line-height: 1.5; border-style: none;">
 					<span data-ng-bind-html="event | fields"></span>
 					&nbsp;
-					<div class="action pull-right" data-ng-show="editable">
+					<div class="action pull-right" data-ng-show="editable && !bucket.isVirtual()">
 						<a class="event-edit-action" data-ng-click="editEvent(event)"><i class="icon-pencil" title="Edit"></i></a>
 						<a class="event-delete-action" data-ng-click="removeEvent(event['@id'])"><i class="icon-trash" title="Delete"></i></a>
 					</div>

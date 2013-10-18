@@ -1077,6 +1077,10 @@
 			}
 		};
 
+		Bucket.prototype.isVirtual = function() {
+			return this.aliases && this.aliases.length > 0;
+		};
+
 		return Bucket;
 	});
 
