@@ -7,7 +7,9 @@ import javax.inject.Inject;
 import org.elasticsearch.index.engine.VersionConflictEngineException;
 import play.mvc.BodyParser;
 import play.mvc.Result;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.common.base.Function;
 import com.google.common.collect.ImmutableList;
 
 import com.zenobase.commands.DeleteBucketCommand;
@@ -37,7 +39,7 @@ public class BucketController extends ControllerSupport {
 		this.users = users;
 	}
 
-	public Result get(String bucketId) {
+	public Result get(String bucketId, boolean labelOnly) {
 		Authorization auth = getCurrentAuthorization();
 		Bucket bucket = buckets.find(bucketId);
 		if (bucket == null) {
@@ -49,7 +51,26 @@ public class BucketController extends ControllerSupport {
 		if (bucket.getWidgets().isEmpty()) {
 			setDefaultDashboard(bucket);
 		}
-    	return ok(bucket.toJson());
+    	return ok(labelOnly ? toLabel(bucket) : bucket.toJson());
+    }
+
+	private static JsonNode toLabel(Bucket bucket) {
+		return Nodes.newObject("label", bucket.getLabel());
+	}
+
+	public Result get(String bucketId, Function<Bucket, JsonNode> f) {
+		Authorization auth = getCurrentAuthorization();
+		Bucket bucket = buckets.find(bucketId);
+		if (bucket == null) {
+			return notFound();
+		}
+    	if (!bucket.hasRole(auth, Role.VIEWER)) {
+    		return auth == null ? unauthorized() : forbidden();
+    	}
+		if (bucket.getWidgets().isEmpty()) {
+			setDefaultDashboard(bucket);
+		}
+    	return ok(f.apply(bucket));
     }
 
 	static void setDefaultDashboard(Bucket bucket) {

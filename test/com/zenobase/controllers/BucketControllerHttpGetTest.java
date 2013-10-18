@@ -32,15 +32,24 @@ public class BucketControllerHttpGetTest extends BucketControllerTestSupport {
 		bucket.setWidgets(ImmutableList.of(Nodes.newObject()));
 		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
 		when(buckets.find(bucket.getId())).thenReturn(bucket.copy());
-		Result result = call(bucket.getId());
+		Result result = call(bucket.getId(), false);
 		assertThat(result).hasStatus(OK).hasContent(bucket.toJson());
+	}
+
+	@Test
+	public void testGetBucketLabel() {
+		bucket.setLabel("Test Bucket");
+		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
+		when(buckets.find(bucket.getId())).thenReturn(bucket.copy());
+		Result result = call(bucket.getId(), true);
+		assertThat(result).hasStatus(OK).asNode().path("label").isEqualTo(bucket.getLabel());
 	}
 
 	@Test
 	public void testGetBucketWithDefaultDashboard() {
 		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
 		when(buckets.find(bucket.getId())).thenReturn(bucket.copy());
-		Result result = call(bucket.getId());
+		Result result = call(bucket.getId(), false);
 		BucketController.setDefaultDashboard(bucket);
 		assertThat(result).hasStatus(OK).hasContent(bucket.toJson());
 	}
@@ -48,7 +57,7 @@ public class BucketControllerHttpGetTest extends BucketControllerTestSupport {
 	@Test
 	public void testGetBucketNotFound() {
 		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
-		Result result = call(bucket.getId());
+		Result result = call(bucket.getId(), false);
 		assertThat(result).hasStatus(NOT_FOUND);
 	}
 
@@ -56,7 +65,7 @@ public class BucketControllerHttpGetTest extends BucketControllerTestSupport {
 	public void testGetBucketUnauthorized() {
 		when(auth.current()).thenReturn(null);
 		when(buckets.find(bucket.getId())).thenReturn(bucket.copy());
-		Result result = call(bucket.getId());
+		Result result = call(bucket.getId(), false);
 		assertThat(result).hasStatus(UNAUTHORIZED);
 	}
 
@@ -64,11 +73,11 @@ public class BucketControllerHttpGetTest extends BucketControllerTestSupport {
 	public void testGetBucketForbidden() {
 		when(auth.current()).thenReturn(new Authorization(new Identity()));
 		when(buckets.find(bucket.getId())).thenReturn(bucket.copy());
-		Result result = call(bucket.getId());
+		Result result = call(bucket.getId(), false);
 		assertThat(result).hasStatus(FORBIDDEN);
 	}
 
-	private static Result call(String bucketId) {
-		return callAction(com.zenobase.controllers.routes.ref.BucketController.get(bucketId), fakeRequest());
+	private static Result call(String bucketId, boolean labelOnly) {
+		return callAction(com.zenobase.controllers.routes.ref.BucketController.get(bucketId, labelOnly), fakeRequest());
 	}
 }

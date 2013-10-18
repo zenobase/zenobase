@@ -115,7 +115,7 @@ public class BucketListController extends ControllerSupport {
 			}
 		}
     	String commandId = dispatcher.dispatch(new CreateBucketCommand(auth.getPrincipal(), bucket));
-        response().setHeader(LOCATION, com.zenobase.controllers.routes.BucketController.get(bucket.getId()).toString());
+        response().setHeader(LOCATION, com.zenobase.controllers.routes.BucketController.get(bucket.getId(), false).toString());
 		response().setHeader(COMMAND_ID, commandId);
         return created(bucket.toJson());
     }

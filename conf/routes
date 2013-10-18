@@ -16,9 +16,11 @@ DELETE  /users/:name                 @com.zenobase.controllers.AccountController
 GET     /buckets/                    @com.zenobase.controllers.BucketListController.find(q ?= null, offset : Int ?= 0, limit : Int ?= java.lang.Integer.MAX_VALUE)
 POST    /buckets/                    @com.zenobase.controllers.BucketListController.post()
 
-GET     /buckets/:bucketId           @com.zenobase.controllers.BucketController.get(bucketId)
+GET     /buckets/:bucketId           @com.zenobase.controllers.BucketController.get(bucketId, labelOnly : Boolean = false)
 PUT     /buckets/:bucketId           @com.zenobase.controllers.BucketController.update(bucketId)
 DELETE  /buckets/:bucketId           @com.zenobase.controllers.BucketController.delete(bucketId)
+
+GET     /buckets/:bucketId/label     @com.zenobase.controllers.BucketController.get(bucketId, labelOnly : Boolean = true)
 
 GET     /buckets/:bucketId/          @com.zenobase.controllers.EventListController.get(bucketId)
 POST    /buckets/:bucketId/          @com.zenobase.controllers.EventListController.post(bucketId)

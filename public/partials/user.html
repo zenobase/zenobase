@@ -158,7 +158,7 @@
 						</tr>
 						<tr class="task-row" data-ng-repeat="task in tasks">
 							<td>{{task.type}}</td>
-							<td style="white-space: nowrap"><a data-ng-href="/#/buckets/{{task.bucket}}/">{{task.bucket}}</a></td>
+							<td style="white-space: nowrap"><a data-ng-href="/#/buckets/{{task.bucket}}/" data-ui-bucket-label="task.bucket"></a></td>
 							<td>
 								<span data-ng-show="task.status && !task.authorizationUrl">
 									<span data-ng-show="task.status == 'success'">ran</span>

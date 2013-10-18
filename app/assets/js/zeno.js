@@ -1045,10 +1045,10 @@
 			$.extend(this, data);
 		}
 
-		Bucket.find = function(id, callback) {
-			$http.get('/buckets/' + id)
+		Bucket.getLabel = function(id, callback) {
+			$http.get('/buckets/' + id + '/label')
 				.success(function(response) {
-					callback(new Bucket(response));
+					callback(response.label);
 				});
 		};
 
@@ -1289,7 +1289,6 @@
 	
 	app.controller('EditWidgetsController', ['$scope', '$http', '$route', 'tracker', function($scope, $http, $route, tracker) {
 		$scope.save = function(settings) {
-			console.log('update widgets');
 			$scope.alert.clear();
 			$http.put('/buckets/' + $scope.bucketId, $scope.bucket)
 				.success(function (response, status, headers) {
@@ -4023,8 +4022,8 @@
 			link : function(scope, element, attrs) {
 				var id = scope.$eval(attrs.uiBucketLabel);
 				element.html(id);
-				var bucket = Bucket.find(id, function(bucket) {
-					element.html(bucket.getLabel());
+				var bucket = Bucket.getLabel(id, function(label) {
+					element.html(label);
 				});
 			}
 		};
