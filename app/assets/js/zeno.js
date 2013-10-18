@@ -1861,7 +1861,7 @@
 						minTickInterval : $scope.interval.minTickInterval,
 						tickLength : 5,
 						tickWidth : 1,
-						lineWidth : 0,
+						lineWidth : 1,
 						gridLineWidth : 0
 					},
 					yAxis : {
