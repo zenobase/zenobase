@@ -3881,10 +3881,8 @@
 	app.directive('uiCurrentYear', function() {
 		return {
 			restrict : 'A',
-			compile : function() {
-				return function(scope, element, attrs) {
-					element.html(new Date().getFullYear());
-				};
+			link : function(scope, element, attrs) {
+				element.html(new Date().getFullYear());
 			}
 		};
 	});
@@ -4021,7 +4019,6 @@
 	app.directive('uiBucketLabel', ['Bucket', function(Bucket) {
 		return {
 			restrict : 'A',
-			transclude : true,
 			link : function(scope, element, attrs) {
 				var id = scope.$eval(attrs.uiBucketLabel);
 				element.html(id);
