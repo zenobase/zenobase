@@ -1023,6 +1023,7 @@
 			$timeout(function() {
 				$('#' + settings.id + '-tab').tab('show');
 				$scope.openDialog(settings.id + '-dialog');
+				$scope.setDirty(true);
 			}, 500);
 		};
 		$scope.findTemplates = function() {
