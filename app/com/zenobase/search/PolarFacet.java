@@ -22,9 +22,9 @@ import com.zenobase.json.MeasurementField;
 import com.zenobase.json.Nodes;
 import com.zenobase.models.Event;
 
-public class TimeHistogramFacet extends Facet {
+public class PolarFacet extends Facet {
 
-	public static final String TYPE = "time_histogram";
+	public static final String TYPE = "polar";
 
 	private final String keyField;
 	private final String valueField;
@@ -32,7 +32,7 @@ public class TimeHistogramFacet extends Facet {
 	private final Unit<?> unit;
 	private final FilterBuilder filter;
 
-	private TimeHistogramFacet(String id, String keyField, String valueField, Interval interval, Unit<?> unit, FilterBuilder filter) {
+	private PolarFacet(String id, String keyField, String valueField, Interval interval, Unit<?> unit, FilterBuilder filter) {
 		super(id);
 		Preconditions.checkNotNull(keyField);
 		Preconditions.checkNotNull(interval);
@@ -163,7 +163,7 @@ public class TimeHistogramFacet extends Facet {
 			@Override
 			public Facet build(FacetOptions options) {
 				String unit = options.get("unit");
-				return new TimeHistogramFacet(
+				return new PolarFacet(
 					options.get("id"),
 					options.get("key_field", String.class, Event.TIMESTAMP.getName()),
 					options.get("value_field", String.class, Event.TIMESTAMP.getName()),

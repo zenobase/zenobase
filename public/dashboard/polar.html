@@ -1,4 +1,4 @@
-<div id="{{settings.id}}-content" data-ng-controller="TimeHistogramWidgetController">
+<div id="{{settings.id}}-content" data-ng-controller="PolarWidgetController">
 
 	<div id="{{settings.id}}-chart" data-ui-chart-options="chartOptions" data-ng-show="times"></div>
 
@@ -10,7 +10,7 @@
 		<div class="btn-group"></div>
 	</div>
 
-	<div data-ui-modal="dialog == settings.id + '-dialog'" data-ui-modal-open="init()" data-ui-modal-close="closeDialog()" data-ng-controller="TimeHistogramWidgetDialogController">
+	<div data-ui-modal="dialog == settings.id + '-dialog'" data-ui-modal-open="init()" data-ui-modal-close="closeDialog()" data-ng-controller="PolarWidgetDialogController">
 		<form name="form" class="modal-form">
 			<div class="modal-header">
 				<a class="close" data-dismiss="modal">&times;</a>

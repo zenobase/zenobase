@@ -995,7 +995,7 @@
       	settings : { field : 'tag', order : 'max', limit : 10 }
       },
 	  	{
-      	type : 'time_histogram',
+      	type : 'polar',
       	label : 'Polar Chart', 
       	description : 'Plots values by month of year, day of week, or hour of day.',
       	settings : { interval : 'day_of_week' }
@@ -1997,7 +1997,7 @@
 		});
 	}]);
 
-	app.controller('TimeHistogramWidgetController', ['$scope', '$timeout', 'Field', function($scope, $timeout, Field) {
+	app.controller('PolarWidgetController', ['$scope', '$timeout', 'Field', function($scope, $timeout, Field) {
 
 		$scope.keyField = 'timestamp';
 
@@ -2007,7 +2007,7 @@
 		$scope.params = function() {
 			return { 
 				id : $scope.settings.id,
-				type : 'time_histogram',
+				type : 'polar',
 				key_field : $scope.keyField,
 				value_field : $scope.settings.value_field || null,
 				unit : $scope.settings.unit || '',
@@ -2102,7 +2102,7 @@
 		$('#' + $scope.settings.id + '-tab').on('shown', $scope.draw);
 	}]);
 
-	app.controller('TimeHistogramWidgetDialogController', ['$scope', 'WidgetDialogControllerSupport', 'Field', function($scope, WidgetDialogControllerSupport, Field) {
+	app.controller('PolarWidgetDialogController', ['$scope', 'WidgetDialogControllerSupport', 'Field', function($scope, WidgetDialogControllerSupport, Field) {
 
 		WidgetDialogControllerSupport($scope);
 
