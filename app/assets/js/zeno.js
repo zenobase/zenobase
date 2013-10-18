@@ -3866,16 +3866,12 @@
 		};
 	}]);
 
-	app.directive('uiCopyrightYear', function() {
+	app.directive('uiCurrentYear', function() {
 		return {
 			restrict: 'A',
 			compile: function() {
 				return function(scope, element, attrs) {
-					var start = parseInt(attrs.uiCopyrightYear, 10);
-					var year = new Date().getFullYear();
-					var text = start === year ?
-						start : start + '&ndash;' + year;
-					element.html(text);
+					element.html(new Date().getFullYear());
 				};
 			}
 		};
