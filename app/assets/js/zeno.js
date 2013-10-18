@@ -1151,7 +1151,7 @@
 				if (remaining.length > 0) {
 					$('#' + remaining[0].id + '-tab').tab('show');
 				}
-				$scope.setStale(true);
+				$scope.setDirty(true);
 			});
 		};
 		$scope.placement = null;
@@ -1280,9 +1280,9 @@
 			return field ? field.icon : 'icon-ban-circle';
 		};
 	
-		$scope.stale = false;
-		$scope.setStale = function(stale) {
-			$scope.stale = stale;
+		$scope.dirty = false;
+		$scope.setDirty = function(dirty) {
+			$scope.dirty = dirty;
 		};
 	}]);
 	
@@ -1294,7 +1294,7 @@
 				.success(function (response, status, headers) {
 					$scope.alert.show('Saved settings.', 'alert-success', headers('X-Command-ID'));
 					++$scope.$parent.bucket.version;
-					$scope.setStale(false);
+					$scope.setDirty(false);
 				})
 				.error(function(response, status) {
 					if (status === 400) {
@@ -1391,7 +1391,7 @@
 			$scope.save = function() {
 				$scope.refresh({}, $scope.settings);
 				$scope.closeDialog();
-				$scope.setStale(true);
+				$scope.setDirty(true);
 			};
 			$scope.getField = function(name) {
 				return Field.find(name);
