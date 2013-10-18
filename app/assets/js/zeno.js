@@ -966,7 +966,7 @@
       {
       	type : 'map',
       	label : 'Map', 
-      	description : 'Maps event locations.',
+      	description : 'Shows event locations on a map.',
       	settings : { },
       	singleton : true
       },
@@ -979,7 +979,7 @@
       {
       	type : 'histogram',
       	label : 'Histogram', 
-      	description : 'Histogram of values in a field.',
+      	description : 'Shows the distribution of values in a field.',
       	settings : { field : 'distance', interval : 10, unit : 'mi' }
       },
       {
@@ -990,20 +990,20 @@
       },                    
 	  	{
       	type : 'gantt',
-      	label : 'Time Range', 
-      	description : 'Gives the time of the first and last occurence of each value in a field.',
+      	label : 'Frequency', 
+      	description : 'Shows how long ago and how often certain events occur.',
       	settings : { field : 'tag', order : 'max', limit : 10 }
       },
 	  	{
       	type : 'time_histogram',
-      	label : 'Time Histogram', 
-      	description : 'Counts events by month of year, day of week, or hour of day.',
+      	label : 'Polar Chart', 
+      	description : 'Plots values by month of year, day of week, or hour of day.',
       	settings : { interval : 'day_of_week' }
       },
 	  	{
       	type : 'scatterplot',
       	label : 'Scatter Plot', 
-      	description : 'Plots values from two fields.',
+      	description : 'Correlates the values in two different fields.',
       	settings : { field_x : 'count', field_y : 'count' }
       }
 	  ];
