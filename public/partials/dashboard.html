@@ -109,28 +109,34 @@
 				</div>
 				<div class="control-group" data-ng-class="editBucketForm.label.$valid || 'error'">
 					<label for="label">Label</label>
-					<input id="edit-bucket-label" name="label" type="text" class="xlarge" required data-ui-focus-on="dialog:edit-bucket-dialog" data-ng-minlength="1" data-ng-maxlength="20" data-ng-pattern="/^[a-zA-Z0-9-_ ]+$/" data-ng-model="bucket.label"/>
+					<input id="edit-bucket-label" name="label" type="text" class="xlarge" required data-ui-focus-on="dialog:edit-bucket-dialog" data-ng-minlength="1" data-ng-maxlength="20" data-ng-pattern="/^[a-zA-Z0-9-_ ]+$/" data-ng-model="newBucket.label"/>
 				</div>
 				<div class="control-group">
 					<label for="description">Description</label>
-					<textarea id="edit-bucket-description" class="input-xlarge" rows="2" data-ng-model="bucket.description" style="margin-bottom: 18px;"></textarea>
+					<textarea id="edit-bucket-description" class="input-xlarge" rows="2" data-ng-model="newBucket.description"></textarea>
 				</div>
 				<div class="control-group">
 					<label>Permissions</label>
-					<span data-ng-repeat="role in bucket.roles">
-						<span class="editable" data-ng-show="role.principal == '*'">
-							<i class="icon-globe"></i> public<a data-ng-click="bucket.unpublish()"><i class="icon-remove" title="Delete"></i></a>
-						</span>
-						<span class="editable" data-ng-show="role.principal != '*'">
-							<i class="icon-user"></i> {{role.principal | username}} ({{role.role}})
-						</span>
-					</span>
-					<p class="help-block" style="clear:both" data-ng-show="user.verified && !bucket.isPublished()">
-						<strong>Add:</strong> <a id="publish-link" data-ng-click="bucket.publish()">public</a>
-					</p>
+					<ul class="nav nav-pills gray">
+						<li class="active" data-ng-repeat="role in newBucket.roles">
+							<a data-ng-click="newBucket.unpublish()" data-ng-show="role.principal == '*'"><i class="icon-globe"></i> <strong>anyone</strong> with a link can view <i class="icon-remove" title="Revoke"></i></a>
+							<a data-ng-show="role.principal != '*'" style="cursor:default"><i class="icon-user"></i> <strong>{{role.principal | username}}</strong> is {{role.role}}</a>
+						</li>
+						<li data-ng-show="user.verified && !newBucket.isPublished()">
+							<a id="publish-link" title="Add..." data-ng-click="newBucket.publish()"><i class="icon-plus"></i></a>
+						</li>
+					</ul>
 					<p class="help-block" data-ng-hide="user.verified">
 						<i>You can make this dashboard public after signing up and verifying your email address.</i>
 					</p>
+				</div>
+				<div class="control-group" data-ng-show="newBucket.aliases.length > 0" style="clear:both">
+					<label>Aliases:</label>
+					<ul class="nav nav-pills gray">
+						<li class="active" data-ng-repeat="alias in newBucket.aliases">
+							<a style="cursor:default"><strong data-ui-bucket-label="alias['@id']"></strong></a>
+						</li>
+					</ul>
 				</div>
 			</div>
 			<div class="modal-footer">

@@ -1037,11 +1037,23 @@
 		};
 	}]);
 
-	app.factory('Bucket', function() {
+
+	app.factory('Bucket', [ '$http', function($http) {
 
 		var Bucket = function(data) {
 			$.extend(this, data);
 		}
+
+		Bucket.find = function(id, callback) {
+			$http.get('/buckets/' + id)
+				.success(function(response) {
+					callback(new Bucket(response));
+				});
+		};
+
+		Bucket.prototype.getLabel = function() {
+			return this.label || '?';
+		};
 
 		Bucket.prototype.isPublished = function() {
 			return $.grep(this.roles, function(role) {
@@ -1082,7 +1094,7 @@
 		};
 
 		return Bucket;
-	});
+	}]);
 
 	app.controller('DashboardController', ['$scope', '$http', '$route', '$routeParams', '$location', 'Bucket', 'Field', 'Constraint', 'tracker', 'delay', 'token', function($scope, $http, $route, $routeParams, $location, Bucket, Field, Constraint, tracker, delay, token) {
 
@@ -1301,12 +1313,12 @@
 	app.controller('EditBucketDialogController', ['$scope', '$http', '$route', 'delay', 'tracker', function($scope, $http, $route, delay, tracker) {
 
 		$scope.init = function() {
-			$scope.bucket = angular.copy($scope.$parent.bucket);
+			$scope.newBucket = angular.copy($scope.$parent.bucket);
 			tracker.event('dialog', 'edit bucket');
 		};
 		$scope.save = function() {
 			$scope.message = '';
-			$http.put('/buckets/' + $scope.bucketId, $scope.bucket)
+			$http.put('/buckets/' + $scope.bucketId, $scope.newBucket)
 				.success(function (response, status, headers) {
 					$scope.closeDialog();
 					$scope.alert.show('Saved settings.', 'alert-success', headers('X-Command-ID'));
@@ -3821,7 +3833,7 @@
 			return User.find(identity).getName();
 		}
 	}]);
-	
+
 	app.config(['$httpProvider', function($httpProvider) {
 		var interceptor = ['$rootScope', '$q', function(scope, $q) {
 			function success(response) {
@@ -3842,8 +3854,8 @@
 
 	app.directive('uiQuota', ['$interpolate', function($interpolate) {
 		return {
-			restrict: 'A',
-			compile: function() {
+			restrict : 'A',
+			compile : function() {
 				return function(scope, element, attrs) {
 					var template = $interpolate(
 						'<div class="progress" title="{{title}}">' +
@@ -3868,8 +3880,8 @@
 
 	app.directive('uiCurrentYear', function() {
 		return {
-			restrict: 'A',
-			compile: function() {
+			restrict : 'A',
+			compile : function() {
 				return function(scope, element, attrs) {
 					element.html(new Date().getFullYear());
 				};
@@ -3879,8 +3891,8 @@
 
 	app.directive('uiFocusOn', function() {
 		return {
-			restrict: 'A',
-			link: function(scope, element, attrs) {
+			restrict : 'A',
+			link : function(scope, element, attrs) {
 				scope.$on(attrs.uiFocusOn, function() {
 					setTimeout(function() {
 						element.select();
@@ -3892,8 +3904,8 @@
 
 	app.directive('uiModal', function() {
 		return {
-			restrict: 'A',
-			link: function(scope, element, attrs, model) {
+			restrict : 'A',
+			link : function(scope, element, attrs, model) {
 				element.addClass('modal hide');
 				if (attrs.uiModalClose) {
 					element.on('hidden', function() {
@@ -3918,9 +3930,9 @@
 
 	app.directive('uiDatepicker', function() {
 		return {
-			require: '?ngModel',
-			restrict: 'A',
-			link: function($scope, element, attrs, controller) {
+			require : '?ngModel',
+			restrict : 'A',
+			link : function($scope, element, attrs, controller) {
 				var updateModel = function(event) {
 					element.datepicker('hide');
 					element.blur();
@@ -3947,9 +3959,9 @@
 
 	app.directive('uiTimepicker', function() {
 		return {
-			require: '?ngModel',
-			restrict: 'A',
-			link: function($scope, element, attrs, controller) {
+			require : '?ngModel',
+			restrict : 'A',
+			link : function($scope, element, attrs, controller) {
 				var updateModel = function() {
 					return $scope.$apply(function() {
 						return controller.$setViewValue(element.val());
@@ -3967,8 +3979,8 @@
 
 	app.directive('uiDefer', ['$timeout', function($timeout) {
 		return {
-			require: 'ngModel',
-			link: function($scope, $element, $attrs, modelCtrl) {
+			require : 'ngModel',
+			link : function($scope, $element, $attrs, modelCtrl) {
 				var $setViewValue = modelCtrl.$setViewValue;
 				var bufferedValue;
 				modelCtrl.$setViewValue = function(value) {
@@ -3985,10 +3997,10 @@
 
 	app.directive('uiChartOptions', function() {
 		return {
-			require: '?ngModel',
-			restrict: 'A',
+			require : '?ngModel',
+			restrict : 'A',
 			scope : true,
-			link: function($scope, element, attrs) {
+			link : function($scope, element, attrs) {
 				var defaultOptions = {
 					chart : {
 						renderTo : element[0]
@@ -4005,5 +4017,19 @@
 			}
 		};
 	});
+
+	app.directive('uiBucketLabel', ['Bucket', function(Bucket) {
+		return {
+			restrict : 'A',
+			transclude : true,
+			link : function(scope, element, attrs) {
+				var id = scope.$eval(attrs.uiBucketLabel);
+				element.html(id);
+				var bucket = Bucket.find(id, function(bucket) {
+					element.html(bucket.getLabel());
+				});
+			}
+		};
+	}]);
 
 }());

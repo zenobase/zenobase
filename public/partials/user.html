@@ -68,7 +68,7 @@
 					<div id="create-bucket-message" class="alert alert-error" data-ng-show="message">
 						{{message}}
 					</div>
-					<div class="control-group" data-ng-class="createBucketForm.label.$valid && 'success' || 'error'">
+					<div class="control-group" data-ng-class="createBucketForm.label.$valid || 'error'">
 						<label for="label">Label</label>
 						<input id="create-bucket-label" name="label" type="text" class="xlarge" required data-ui-focus-on="dialog:create-bucket-dialog" data-ng-minlength="1" data-ng-maxlength="20" data-ng-pattern="/^[a-zA-Z0-9-_ ]+$/" data-ng-model="label"/>
 					</div>
@@ -78,9 +78,9 @@
 						</label>
 					</div>
 					<div class="control-group" data-ng-show="virtual">
-						<ul class="nav nav-pills">
-							<li class="active" data-ng-repeat="bucket in aliases">
-								<a data-ng-click="removeBucket(bucket)">{{bucket.label}} <i class="icon-remove icon-white"></i></a>
+						<ul class="nav nav-pills gray">
+							<li class="active" data-ng-repeat="alias in aliases">
+								<a data-ng-click="removeBucket(alias)">{{alias.label}} <i class="icon-remove icon-white"></i></a>
 							</li>
 						</ul>
 						<div class="form-horizontal">
