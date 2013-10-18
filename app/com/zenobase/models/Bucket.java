@@ -3,7 +3,6 @@ package com.zenobase.models;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.regex.Pattern;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
@@ -28,8 +27,6 @@ import com.zenobase.json.TokenField;
 import com.zenobase.oauth.Authorization;
 
 public class Bucket extends DomainNode {
-
-	private static final Pattern LABEL_PATTERN = Pattern.compile("[a-zA-Z0-9-_ ]{1,20}");
 
 	public static final String TYPE_NAME = "bucket";
 
@@ -155,7 +152,6 @@ public class Bucket extends DomainNode {
 
 	public boolean valid() {
 		return !Strings.isNullOrEmpty(getLabel()) &&
-			LABEL_PATTERN.matcher(getLabel().trim()).matches() &&
 			!getPrincipals(Role.OWNER).isEmpty();
 	}
 
