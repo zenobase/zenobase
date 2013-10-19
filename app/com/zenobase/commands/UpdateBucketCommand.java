@@ -16,8 +16,7 @@ public class UpdateBucketCommand extends Command {
 
 	private UpdateBucketCommand(ObjectNode node) {
 		super(node);
-		// checkType(TYPE);
-		setType(TYPE);
+		checkType(TYPE);
 	}
 
 	public UpdateBucketCommand(Identity principal, Bucket from, Bucket to) {
@@ -59,11 +58,7 @@ public class UpdateBucketCommand extends Command {
 		public Command parse(ObjectNode node, int version) {
 			UpdateBucketCommand command = new UpdateBucketCommand(node);
 			switch (version) {
-				case 4:
-					Migrations.replaceTimelineHistogramWithPolar(command.getFrom().getWidgets());
-					Migrations.replaceTimelineHistogramWithPolar(command.getTo().getWidgets());
-				case 5:
-					return command;
+				case 5: return command;
 			}
 			return null;
 		}

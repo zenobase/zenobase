@@ -15,8 +15,7 @@ public class CreateBucketCommand extends Command {
 
 	private CreateBucketCommand(ObjectNode node) {
 		super(node);
-		// checkType(TYPE);
-		setType(TYPE);
+		checkType(TYPE);
 	}
 
 	public CreateBucketCommand(Identity principal, Bucket bucket) {
@@ -50,10 +49,7 @@ public class CreateBucketCommand extends Command {
 			CreateBucketCommand command = new CreateBucketCommand(node);
 			command.setType(TYPE);
 			switch (version) {
-				case 3:
-					Migrations.replaceTimelineHistogramWithPolar(command.getBucket().getWidgets());
-				case 4:
-					return command;
+				case 4: return command;
 			}
 			return null;
 		}

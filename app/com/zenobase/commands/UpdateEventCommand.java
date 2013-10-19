@@ -18,8 +18,7 @@ public class UpdateEventCommand extends Command {
 
 	private UpdateEventCommand(ObjectNode node) {
 		super(node);
-		// checkType(TYPE);
-		setType(TYPE);
+		checkType(TYPE);
 	}
 
 	public UpdateEventCommand(Identity principal, String bucketId, Event from, Event to) {
@@ -66,11 +65,7 @@ public class UpdateEventCommand extends Command {
 		public Command parse(ObjectNode node, int version) {
 			UpdateEventCommand command = new UpdateEventCommand(node);
 			switch (version) {
-				case 2:
-					Migrations.rewriteDuration(command.getFrom());
-					Migrations.rewriteDuration(command.getTo());
-				case 3:
-					return command;
+				case 3: return command;
 			}
 			return null;
 		}

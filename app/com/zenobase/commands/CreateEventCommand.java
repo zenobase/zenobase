@@ -17,8 +17,7 @@ public class CreateEventCommand extends Command {
 
 	private CreateEventCommand(ObjectNode node) {
 		super(node);
-		// checkType(TYPE);
-		setType(TYPE);
+		checkType(TYPE);
 	}
 
 	public CreateEventCommand(Identity principal, String bucketId, Event event) {
@@ -57,10 +56,7 @@ public class CreateEventCommand extends Command {
 		public Command parse(ObjectNode node, int version) {
 			CreateEventCommand command = new CreateEventCommand(node);
 			switch (version) {
-				case 3:
-					Migrations.rewriteDuration(command.getEvent());
-				case 4:
-					return command;
+				case 4: return command;
 			}
 			return null;
 		}
