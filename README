@@ -60,9 +60,9 @@ Release Procedure
 
   6. Start one (if migrating) or both (if not migrating) new instances [OpsWorks].
 
-  7. As soon as a new instances is listed as "in service", remove all old instances from the load balancer [AWS Console].
+  7. Add the new instance(s) to the load balancer, and remove the old instances as soon as one of the new instances is listed as "in service" [AWS Console].
 
-  8. (if migrating) Start the second instance [OpsWorks].
+  8. (if migrating) Start the second instance [OpsWorks] and add it to the load balancer [AWS Console].
 
   9. Wait for the status check to show 4 (if migrating) or 8 (if not migrating) nodes and green health [/status].
 
