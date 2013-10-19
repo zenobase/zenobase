@@ -10,7 +10,7 @@ public class Migrations {
 
 	public static void replaceTimelineHistogramWithPolar(Iterable<ObjectNode> widgets) {
 		for (ObjectNode widget : widgets) {
-			if ("time_histogram".equals(widget.path("type"))) {
+			if ("time_histogram".equals(widget.path("type").textValue())) {
 				Logger.info("Migrating a polar widget...");
 				widget.put("type", "polar");
 			}
