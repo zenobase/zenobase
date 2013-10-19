@@ -77,7 +77,7 @@
 		</footer>
 
 		<div id="sign-in-dialog" class="hide" data-ui-modal="dialog == 'sign-in-dialog'" data-ui-modal-open="init()" data-ui-modal-close="closeDialog()" data-ng-controller="SignInDialogController">
-			<form name="signInForm" novalidate data-ng-submit="signIn()" class="modal-form">
+			<form name="signInForm" data-ng-submit="signIn()" class="modal-form">
 				<div class="modal-header">
 					<a class="close" data-dismiss="modal">&times;</a>
 					<h4>Sign in</h4>
@@ -88,18 +88,18 @@
 					</div>
 					<div class="control-group">
 						<label for="sign-in-username">Username</label>
-						<input id="sign-in-username" type="text" class="large" data-ng-model="username" data-ui-focus-on="dialog:sign-in-dialog" required/>
+						<input id="sign-in-username" type="text" class="large" data-ui-focus-on="dialog:sign-in-dialog" required/>
 					</div>
 					<div class="control-group">
 						<label for="sign-in-password">Password</label>
-						<input id="sign-in-password" type="password" class="large" data-ng-model="password" required/>
+						<input id="sign-in-password" type="password" class="large" required/>
 					</div>
 				</div>
 				<div class="modal-footer">
 					<div class="pull-left">
 						<a id="lost-password-link" data-ng-click="openDialog('lost-password-dialog')">Lost password?</a>
 					</div>
-					<button id="sign-in-button" type="submit" class="btn btn-primary" data-ng-disabled="!signInForm.$valid">Sign in</button>
+					<button id="sign-in-button" type="submit" class="btn btn-primary">Sign in</button>
 					<button type="reset" class="btn" data-dismiss="modal">Cancel</button>
 				</div>
 			</form>

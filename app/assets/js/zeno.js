@@ -407,21 +407,17 @@
 	app.controller('SignInDialogController', ['$scope', '$http', '$location', '$route', 'User', 'token', 'tracker', function($scope, $http, $location, $route, User, token, tracker) {
 
 		$scope.init = function() {
-			$scope.username = '';
-			$scope.password = '';
-			$scope.remember = true;
 			$scope.message = '';
+			$("#sign-in-username").val('');
+			$("#sign-in-password").val('');
 			tracker.event('dialog', 'sign in');
 		};
-		$scope.data = function() {
-			return {
-				'grant_type' : 'password',
-				'username' : $scope.username,
-				'password' : $scope.password
-			};
-		};
 		$scope.signIn = function() {
-			$http({ method: 'POST', url: '/oauth/token', data: $.param($scope.data()),
+			// autocompleted values don't propagate to model!
+			var username = $("#sign-in-username").val();
+			var password = $("#sign-in-password").val();
+			$http({ method: 'POST', url: '/oauth/token', 
+				data: $.param({ 'grant_type' : 'password', 'username' : username, 'password' : password }),
 				headers: { 'Content-Type' : 'application/x-www-form-urlencoded' }
 			})
 				.success(function(response) {
@@ -430,7 +426,7 @@
 					$scope.closeDialog();
 					$scope.whoami();
 					if ($location.url() === '/') {
-						$location.url('/users/' + $scope.username);
+						$location.url('/users/' + username);
 					} else {
 						$route.reload();
 					}
