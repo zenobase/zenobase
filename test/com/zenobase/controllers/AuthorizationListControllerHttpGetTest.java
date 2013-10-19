@@ -1,47 +1,20 @@
 package com.zenobase.controllers;
 
 import static com.zenobase.testing.ResultAssert.assertThat;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.when;
 import static play.mvc.Http.Status.*;
 import static play.test.Helpers.callAction;
 
-import org.junit.Before;
 import org.junit.Test;
 import play.mvc.Result;
-import com.google.inject.AbstractModule;
-import com.google.inject.Singleton;
 
 import com.zenobase.common.DefaultPartialList;
 import com.zenobase.common.PartialList;
 import com.zenobase.models.Identity;
-import com.zenobase.models.User;
 import com.zenobase.oauth.Authorization;
 import com.zenobase.oauth.AuthorizationList;
-import com.zenobase.services.AuthorizationRepository;
-import com.zenobase.services.CommandDispatcher;
-import com.zenobase.services.UserRepository;
 
-public class AuthorizationListControllerTest extends ControllerTestSupport {
-
-	private final AuthorizationContext auth = mock(AuthorizationContext.class);
-	private final AuthorizationRepository authorizations = mock(AuthorizationRepository.class);
-	private final UserRepository users = mock(UserRepository.class);
-	private final CommandDispatcher dispatcher = mock(CommandDispatcher.class);
-	private final User user = new User("tester");
-
-	@Before
-	public void setUp() {
-		start(new AbstractModule() {
-			@Override
-			protected void configure() {
-				bind(AuthorizationContext.class).toInstance(auth);
-				bind(AuthorizationRepository.class).toInstance(authorizations);
-				bind(UserRepository.class).toInstance(users);
-				bind(CommandDispatcher.class).toInstance(dispatcher);
-				bind(AuthorizationController.class).in(Singleton.class);
-			}
-		});
-	}
+public class AuthorizationListControllerHttpGetTest extends AuthorizationListControllerTestSupport {
 
 	@Test
 	public void testFindByPrincipal() {

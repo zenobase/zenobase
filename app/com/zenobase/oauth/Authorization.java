@@ -1,8 +1,8 @@
 package com.zenobase.oauth;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import com.zenobase.common.Generator;
 import com.zenobase.json.DateTimeField;
@@ -33,11 +33,15 @@ public class Authorization extends DomainNode {
 	}
 
 	public Authorization(Identity principal, Identity client, String scope) {
+		this(principal, client, scope, new DateTime(DateTimeZone.UTC));
+	}
+
+	public Authorization(Identity principal, Identity client, String scope, DateTime created) {
 		setValue(ID, Generator.longId());
-		setValue(CREATED, new DateTime(DateTimeZone.UTC));
 		setValue(PRINCIPAL, principal);
 		setValue(CLIENT, client);
 		setValue(SCOPE, scope);
+		setValue(CREATED, created);
 	}
 
 	public String getId() {

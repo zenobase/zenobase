@@ -7,13 +7,16 @@ import static org.fest.assertions.Assertions.assertThat;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import org.fest.assertions.Assertions;
 import org.joda.time.DateTime;
+import org.joda.time.Period;
 import org.junit.Before;
 import org.junit.Test;
 import com.google.common.collect.Lists;
 import com.google.common.util.concurrent.Uninterruptibles;
 
 import com.zenobase.common.Generator;
+import com.zenobase.common.PartialList;
 import com.zenobase.models.Identity;
 import com.zenobase.oauth.Authorization;
 
@@ -73,5 +76,21 @@ public class AuthorizationRepositoryTest extends ElasticSearchTestSupport {
 			repository.store(authorization, DateTime.now());
 		}
 		return Lists.reverse(authorizations);
+	}
+
+	@Test
+	public void testFindExpired() {
+		add(false, DateTime.now());
+		add(true, DateTime.now().minusMonths(2));
+		Authorization expected = add(false, DateTime.now().minusMonths(2));
+		PartialList<Authorization> results = repository.find(Period.months(1), 0, 10);
+		Assertions.assertThat(results).hasSize(1);
+		Assertions.assertThat(results.get(0)).isEqualTo(expected);
+	}
+
+	private Authorization add(boolean withClient, DateTime created) {
+		Authorization authorization = new Authorization(new Identity(), withClient ? new Identity() : null, null, created);
+		repository.store(authorization, DateTime.now());
+		return authorization;
 	}
 }

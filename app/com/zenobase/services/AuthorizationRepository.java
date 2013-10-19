@@ -2,14 +2,16 @@ package com.zenobase.services;
 
 import javax.inject.Inject;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.elasticsearch.index.query.FilterBuilders;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.elasticsearch.search.sort.SortOrder;
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
+import org.joda.time.Period;
 import play.Logger;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Preconditions;
 
 import com.zenobase.common.PartialList;
@@ -63,7 +65,16 @@ public class AuthorizationRepository {
 		return query;
 	}
 
-	private AuthorizationList find(QueryBuilder query, int offset, int limit) {
+	/**
+	 * Finds authorizations without a client and that are older than maxAge.
+	 */
+	public PartialList<Authorization> find(Period maxAge, int offset, int limit) {
+		return find(QueryBuilders.filteredQuery(
+			QueryBuilders.rangeQuery(Authorization.CREATED.getName()).to(DateTime.now(DateTimeZone.UTC).minus(maxAge)),
+			FilterBuilders.missingFilter(Authorization.CLIENT.getName())), offset, limit);
+	}
+
+	private PartialList<Authorization> find(QueryBuilder query, int offset, int limit) {
 		SearchSourceBuilder search = new SearchSourceBuilder()
 			.query(query).version(true).from(offset).size(limit)
 			.sort(Authorization.CREATED.getName(), SortOrder.DESC);

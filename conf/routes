@@ -47,6 +47,7 @@ POST    /oauth/token                 @com.zenobase.controllers.OAuthController.t
 GET     /oauth/callback/:taskId      @com.zenobase.controllers.OAuthController.callback(taskId)
 
 GET     /authorizations/             @com.zenobase.controllers.AuthorizationListController.find(q ?= null, client_only : Boolean ?= false, offset : Int  ?= 0, limit : Int ?= 10)
+DELETE  /authorizations/             @com.zenobase.controllers.AuthorizationListController.delete()
 
 GET     /authorizations/:authId      @com.zenobase.controllers.AuthorizationController.get(authId)
 DELETE  /authorizations/:authId      @com.zenobase.controllers.AuthorizationController.delete(authId)
