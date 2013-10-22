@@ -1597,8 +1597,7 @@
 				var options = {
 					chart : {
 						type : 'bar',
-						height : Math.max($scope.intervals.length * 20, 150),
-						renderTo : $scope.settings.id + '-chart'
+						height : Math.max($scope.intervals.length * 20, 150)
 					},
 					title : null,
 					xAxis : {
@@ -1649,7 +1648,7 @@
 					options.xAxis.categories.push(field.toText(interval.from) + ' - ' + field.toText(interval.to));
 					options.series[0].data.push(interval.count);
 				});
-				new Highcharts.Chart(options);
+				$scope.chartOptions = options;
 			}
 		}
 
