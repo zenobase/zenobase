@@ -20,7 +20,6 @@ public class EventSearchBuilder extends SearchBuilderSupport {
 		.put(HistogramFacet.TYPE, HistogramFacet.builder(filterParser))
 		.put(TimelineFacet.TYPE, TimelineFacet.builder(filterParser))
 		.put(PolarFacet.TYPE, PolarFacet.builder(filterParser))
-		.put("time_histogram", PolarFacet.builder(filterParser)) // deprecated 2013-10-18
 		.put(ScoreboardFacet.TYPE, ScoreboardFacet.builder(filterParser))
 		.put(ScatterPlotFacet.TYPE, ScatterPlotFacet.builder(filterParser))
 		.put(MultiplotFacet.TYPE, MultiplotFacet.builder())
