@@ -1605,15 +1605,16 @@
 						categories : [],
 						tickLength : 0,
 						events : {
-							afterSetExtremes : function(event) {
-								var min = (event.userMin !== undefined) ? Math.ceil(event.userMin) : 0;
-								var max = (event.userMax !== undefined) ? Math.floor(event.userMax) : $scope.intervals.length - 1;
+							setExtremes : function(event) {
+								var min = (event.min !== undefined) ? Math.ceil(event.min) : 0;
+								var max = (event.max !== undefined) ? Math.floor(event.max) : $scope.intervals.length - 1;
 								var from = field.toText($scope.intervals[max].from); 
 								var to = field.toText($scope.intervals[min].to);
-								var range = '[' + from + '..' + to + ']';
+								var range = '[' + from + '..' + to + ')';
 								$scope.$apply(function() {
 									$scope.addConstraint($scope.settings.field, range, true);
 								});
+								return false;
 							}
 						}
 					},
@@ -1875,19 +1876,17 @@
 						lineWidth : 1,
 						gridLineWidth : 0,
 						events : {
-							afterSetExtremes : function(event) {
-								var min = event.userMin; 
-								var max = event.userMax;
+							setExtremes : function(event) {
 								var from = '*';
 								var to = '*';
 								$.each($scope.times, function(i, time) {
-									if (time.time >= min) {
+									if (time.time >= event.min) {
 										from = time.label;
 										return false;
 									}
 								});
 								$.each($scope.times, function(i, time) {
-									if (time.time >= max) {
+									if (time.time >= event.max) {
 										to = time.label;
 										return false;
 									}
@@ -1896,6 +1895,7 @@
 								$scope.$apply(function() {
 									$scope.addConstraint($scope.keyField, range, true);
 								});
+								return false;
 							}
 						}
 					},
