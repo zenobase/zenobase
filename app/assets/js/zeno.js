@@ -1860,7 +1860,9 @@
 				var type = $scope.settings.statistic === 'count' || $scope.settings.statistic === 'sum' ? 'column' : 'line';
 				var field = Field.find($scope.settings.field);
 				var options = {
-					chart : { },
+					chart : {
+						zoomType : 'x'
+					},
 					title : null,
 					xAxis : {
 						type : 'datetime',
@@ -1871,7 +1873,31 @@
 						tickLength : 5,
 						tickWidth : 1,
 						lineWidth : 1,
-						gridLineWidth : 0
+						gridLineWidth : 0,
+						events : {
+							afterSetExtremes : function(event) {
+								var min = event.userMin; 
+								var max = event.userMax;
+								var from = '*';
+								var to = '*';
+								$.each($scope.times, function(i, time) {
+									if (time.time >= min) {
+										from = time.label;
+										return false;
+									}
+								});
+								$.each($scope.times, function(i, time) {
+									if (time.time >= max) {
+										to = time.label;
+										return false;
+									}
+								});
+								var range = '[' + from + '..' + to + ')';
+								$scope.$apply(function() {
+									$scope.addConstraint($scope.keyField, range, true);
+								});
+							}
+						}
 					},
 					yAxis : {
 						title : {
@@ -1883,7 +1909,7 @@
 						gridLineWidth : 0
 					},
 					tooltip : {
-						crosshairs : true,
+						crosshairs : false,
 						shared : true,
 						hideDelay : 0,
 						formatter : function() {
