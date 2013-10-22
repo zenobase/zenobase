@@ -1597,12 +1597,25 @@
 				var options = {
 					chart : {
 						type : 'bar',
+						zoomType : 'x',
 						height : Math.max($scope.intervals.length * 20, 150)
 					},
 					title : null,
 					xAxis : {
 						categories : [],
-						tickLength : 0
+						tickLength : 0,
+						events : {
+							afterSetExtremes : function(event) {
+								var min = (event.userMin !== undefined) ? Math.ceil(event.userMin) : 0;
+								var max = (event.userMax !== undefined) ? Math.floor(event.userMax) : $scope.intervals.length - 1;
+								var from = field.toText($scope.intervals[max].from); 
+								var to = field.toText($scope.intervals[min].to);
+								var range = '[' + from + '..' + to + ']';
+								$scope.$apply(function() {
+									$scope.addConstraint($scope.settings.field, range, true);
+								});
+							}
+						}
 					},
 					yAxis : {
 						title : null,
@@ -1616,7 +1629,8 @@
 					}],
 					tooltip : {
 						shared : true,
-						hideDelay : 0
+						hideDelay : 0,
+						crosshairs : [ false, false ]
 					},
 					plotOptions : {
 						series : {
