@@ -6,15 +6,15 @@ import com.fasterxml.jackson.databind.node.NullNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import com.zenobase.models.Rating;
-import com.zenobase.search.DecimalRangeConstraintBuilder;
-import com.zenobase.search.TermConstraintBuilder;
+import com.zenobase.search.PercentConstraintBuilder;
+import com.zenobase.search.PercentRangeConstraintBuilder;
 
 public class RatingField extends Field<Rating> {
 
 	public RatingField(String name) {
 		super(name, Rating.class, "byte");
-		addConstraintBuilder(new DecimalRangeConstraintBuilder());
-		addConstraintBuilder(new TermConstraintBuilder());
+		addConstraintBuilder(new PercentRangeConstraintBuilder());
+		addConstraintBuilder(new PercentConstraintBuilder());
 	}
 
 	@Override

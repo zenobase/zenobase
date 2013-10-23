@@ -1551,7 +1551,7 @@
 			});
 		};
 		function toString(value) {
-			return typeof value === 'number' ? '' + value : '*';
+			return typeof value === 'number' ? value + '%' : '*';
 		}
 		$scope.filter = function(rating) {
 			$scope.offset = 0;
