@@ -11,7 +11,7 @@ import com.zenobase.search.LocalDateTimeRangeConstraintBuilder;
 
 public class LocalDateTimeField extends Field<LocalDateTime> {
 
-	private static final OffsetDateTimeField TIME = new OffsetDateTimeField("time");
+	public static final OffsetDateTimeField TIME = new OffsetDateTimeField("time");
 	private static final IntegerField MONTH_OF_YEAR = new IntegerField("month_of_year");
 	private static final IntegerField DAY_OF_YEAR = new IntegerField("day_of_year");
 	private static final IntegerField DAY_OF_MONTH = new IntegerField("day_of_month");
@@ -20,8 +20,8 @@ public class LocalDateTimeField extends Field<LocalDateTime> {
 
 	public LocalDateTimeField(String name) {
 		super(name, LocalDateTime.class, "object");
-		addConstraintBuilder(new LocalDateTimeRangeConstraintBuilder(name + ".time"));
-		addConstraintBuilder(new LocalDateTimeConstraintBuilder(name + ".time"));
+		addConstraintBuilder(new LocalDateTimeRangeConstraintBuilder(name + "." + TIME.getName()));
+		addConstraintBuilder(new LocalDateTimeConstraintBuilder(name + "." + TIME.getName()));
 		addConstraintBuilders(MONTH_OF_YEAR);
 		addConstraintBuilders(DAY_OF_YEAR);
 		addConstraintBuilders(DAY_OF_MONTH);

@@ -18,6 +18,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
 
 import com.zenobase.common.Measures;
+import com.zenobase.json.DateTimeField;
 import com.zenobase.json.MeasurementField;
 import com.zenobase.json.Nodes;
 import com.zenobase.models.Event;
@@ -152,7 +153,7 @@ public class PolarFacet extends Facet {
 		}
 
 		public String getField(String parent) {
-			return "$" + parent + "." + toString().toLowerCase();
+			return DateTimeField.getName(parent, toString().toLowerCase());
 		}
 
 		public abstract String getLabel(int i);
