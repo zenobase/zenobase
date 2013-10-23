@@ -36,7 +36,7 @@
 
 	app.factory('moment', function() {
 
-		// TODO see https://github.com/timrwood/moment/issues/537
+		// See https://github.com/timrwood/moment/issues/537
 		moment.fn.fromNowOrNow = function(alwaysRelative, a) {
 			var diff = Math.abs(moment().diff(this));
 			if (diff < 60000) { // less than a minute
@@ -48,7 +48,7 @@
 			return this.fromNow(a);
 		}
 
-		// TODO see https://github.com/timrwood/moment/issues/463
+		// See https://github.com/timrwood/moment/issues/463
 		moment.duration.fn.countdown = function(precision) {
 			var args = [];
 			if (this.years()) {
