@@ -15,7 +15,7 @@ public class DateTimeConstraintBuilderTest extends ConstraintBuilderTestSupport 
 	public void addEvents() {
 		addEvent("2012-01-05T12:00:00Z");
 		addEvent("2012-01-05T12:15:00Z");
-		addEvent("2012-01-05T13:00:00Z");
+		addEvent("2012-01-05T05:00:00-08:00");
 	}
 
 	private void addEvent(String timestamp) {
@@ -27,6 +27,13 @@ public class DateTimeConstraintBuilderTest extends ConstraintBuilderTestSupport 
 	@Test
 	public void testEqualsConstraint() {
 		addConstraint("%s:%s", Event.TIMESTAMP, "2012-01-05T12:00:00.000Z");
+		ObjectNode result = execute();
+		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(1);
+	}
+
+	@Test
+	public void testLocalEqualsConstraint() {
+		addConstraint("%s:%s", Event.TIMESTAMP, "2012-01-05T05:00:00.000");
 		ObjectNode result = execute();
 		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(1);
 	}
@@ -46,8 +53,22 @@ public class DateTimeConstraintBuilderTest extends ConstraintBuilderTestSupport 
 	}
 
 	@Test
+	public void testLocalHourConstraint() {
+		addConstraint("%s:%s", Event.TIMESTAMP, "2012-01-05T05");
+		ObjectNode result = execute();
+		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(1);
+	}
+
+	@Test
 	public void testRangeConstraint() {
 		addConstraint("%s:%s", Event.TIMESTAMP, "(2012-01-05T12Z..2012-01-06TZ]");
+		ObjectNode result = execute();
+		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(2);
+	}
+
+	@Test
+	public void testLocalRangeConstraint() {
+		addConstraint("%s:%s", Event.TIMESTAMP, "(2012-01-05T00..2012-01-05T12]");
 		ObjectNode result = execute();
 		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(2);
 	}

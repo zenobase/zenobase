@@ -13,7 +13,7 @@ import play.Logger;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 
-public class Intervals extends DateTimeFormatSupport {
+public class OffsetIntervals extends DateTimeFormatSupport {
 
 	private enum IntervalType {
 
@@ -145,7 +145,7 @@ public class Intervals extends DateTimeFormatSupport {
 		}
 	}
 
-	private Intervals() {
+	private OffsetIntervals() {
 		throw new AssertionError();
 	}
 
@@ -156,7 +156,7 @@ public class Intervals extends DateTimeFormatSupport {
 				return format.toInterval(value);
 			}
 		}
-		throw new IllegalArgumentException("Unsupported date/time format: " + value);
+		return null;
 	}
 
 	public static String toString(DateTime time, String interval) {

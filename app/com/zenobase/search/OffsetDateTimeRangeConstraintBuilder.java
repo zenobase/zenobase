@@ -3,11 +3,11 @@ package com.zenobase.search;
 import org.joda.time.ReadableInstant;
 import com.google.common.collect.Range;
 
-import com.zenobase.common.DateTimeRangeParser;
+import com.zenobase.common.OffsetDateTimeRangeParser;
 
-public class DateTimeRangeConstraintBuilder extends RangeConstraintBuilderSupport<ReadableInstant> {
+public class OffsetDateTimeRangeConstraintBuilder extends RangeConstraintBuilderSupport<ReadableInstant> {
 
-	private final DateTimeRangeParser parser = new DateTimeRangeParser();
+	private final OffsetDateTimeRangeParser parser = new OffsetDateTimeRangeParser();
 
 	@Override
 	protected Range<ReadableInstant> parseRange(String value) {

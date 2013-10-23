@@ -154,18 +154,23 @@ public abstract class Field<T> {
 		addConstraintBuilder(name, constraint);
 	}
 
+	protected void addConstraintBuilders(Multimap<String, ConstraintBuilder> builders) {
+		for (Map.Entry<String, ConstraintBuilder> entry : builders.entries()) {
+			addConstraintBuilder(entry.getKey(), entry.getValue());
+		}
+	}
+
 	protected void addConstraintBuilders(Field<?> nested) {
 		for (Map.Entry<String, ConstraintBuilder> entry : nested.getConstraintBuilders().entries()) {
-			addConstraintBuilder(name + "." + entry.getKey(), wrap(entry.getValue()));
+			addConstraintBuilder(name + "." + entry.getKey(), entry.getValue());
 		}
 	}
 
 	protected void addConstraintBuilder(String name, ConstraintBuilder constraint) {
+		if (name.startsWith("$")) {
+			name = name.substring(1);
+		}
 		constraintBuilders.put(name, constraint);
-	}
-
-	protected ConstraintBuilder wrap(ConstraintBuilder builder) {
-		return builder;
 	}
 
 	public void prePersist(ObjectNode node) {

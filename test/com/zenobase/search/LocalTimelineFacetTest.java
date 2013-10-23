@@ -13,7 +13,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.zenobase.models.Event;
 import com.zenobase.testing.NodeAssert;
 
-public class TimelineFacetTest extends FacetTestSupport {
+public class LocalTimelineFacetTest extends FacetTestSupport {
 
 	private Event first, last;
 
@@ -34,7 +34,7 @@ public class TimelineFacetTest extends FacetTestSupport {
 	}
 
 	@Test
-	public void testDefault() {
+	public void testDefaultInterval() {
 
 		addEvent(first);
 		addEvent(last);
@@ -43,16 +43,16 @@ public class TimelineFacetTest extends FacetTestSupport {
 		ObjectNode result = execute();
 		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(2);
 		NodeAssert node = assertThat(result).path(FACET_ID).hasSize(3);
-		node.path(0).path("label").isEqualTo("2012-03TZ");
+		node.path(0).path("label").isEqualTo("2012-03");
 		node.path(0).path("count").isEqualTo(1);
-		node.path(1).path("label").isEqualTo("2012-04TZ");
+		node.path(1).path("label").isEqualTo("2012-04");
 		node.path(1).path("count").isEqualTo(0);
-		node.path(2).path("label").isEqualTo("2012-05TZ");
+		node.path(2).path("label").isEqualTo("2012-05");
 		node.path(2).path("count").isEqualTo(1);
 	}
 
 	@Test
-	public void testDefaultWithFilter() {
+	public void testDefaultIntervalWithFilter() {
 
 		addEvent(first);
 		addEvent(last);
@@ -61,12 +61,12 @@ public class TimelineFacetTest extends FacetTestSupport {
 		ObjectNode result = execute();
 		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(2);
 		NodeAssert node = assertThat(result).path(FACET_ID).hasSize(1);
-		node.path(0).path("label").isEqualTo("2012-03TZ");
+		node.path(0).path("label").isEqualTo("2012-03");
 		node.path(0).path("count").isEqualTo(1);
 	}
 
 	@Test
-	public void testDefaultWithMeasureField() {
+	public void testDefaultIntervalWithMeasureField() {
 
 		addEvent(first);
 		addEvent(last);
@@ -75,17 +75,17 @@ public class TimelineFacetTest extends FacetTestSupport {
 		ObjectNode result = execute();
 		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(2);
 		NodeAssert node = assertThat(result).path(FACET_ID).hasSize(3);
-		node.path(0).path("label").isEqualTo("2012-03TZ");
+		node.path(0).path("label").isEqualTo("2012-03");
 		node.path(0).path("count").isEqualTo(1);
 		node.path(0).path("min").isEqualTo(5000.0, "m");
 		node.path(0).path("max").isEqualTo(5000.0, "m");
 		node.path(0).path("avg").isEqualTo(5000.0, "m");
-		node.path(1).path("label").isEqualTo("2012-04TZ");
+		node.path(1).path("label").isEqualTo("2012-04");
 		node.path(1).path("count").isEqualTo(0);
 		node.path(1).path("min").isMissingNode();
 		node.path(1).path("max").isMissingNode();
 		node.path(1).path("avg").isMissingNode();
-		node.path(2).path("label").isEqualTo("2012-05TZ");
+		node.path(2).path("label").isEqualTo("2012-05");
 		node.path(2).path("count").isEqualTo(1);
 		node.path(2).path("min").isEqualTo(10000.0, "m");
 		node.path(2).path("max").isEqualTo(10000.0, "m");
@@ -93,7 +93,7 @@ public class TimelineFacetTest extends FacetTestSupport {
 	}
 
 	@Test
-	public void testDefaultWithNumericField() {
+	public void testDefaultIntervalWithNumericField() {
 
 		addEvent(first);
 		addEvent(last);
@@ -102,18 +102,18 @@ public class TimelineFacetTest extends FacetTestSupport {
 		ObjectNode result = execute();
 		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(2);
 		NodeAssert node = assertThat(result).path(FACET_ID).hasSize(3);
-		node.path(0).path("label").isEqualTo("2012-03TZ");
+		node.path(0).path("label").isEqualTo("2012-03");
 		node.path(0).path("count").isEqualTo(1);
 		node.path(0).path("min").isEqualTo(2500.0);
 		node.path(0).path("max").isEqualTo(2500.0);
 		node.path(0).path("avg").isEqualTo(2500.0);
 		node.path(0).path("sum").isEqualTo(2500.0);
-		node.path(1).path("label").isEqualTo("2012-04TZ");
+		node.path(1).path("label").isEqualTo("2012-04");
 		node.path(1).path("count").isEqualTo(0);
 		node.path(1).path("min").isMissingNode();
 		node.path(1).path("max").isMissingNode();
 		node.path(1).path("avg").isMissingNode();
-		node.path(2).path("label").isEqualTo("2012-05TZ");
+		node.path(2).path("label").isEqualTo("2012-05");
 		node.path(2).path("count").isEqualTo(1);
 		node.path(2).path("min").isEqualTo(5000.0);
 		node.path(2).path("max").isEqualTo(5000.0);
@@ -122,7 +122,7 @@ public class TimelineFacetTest extends FacetTestSupport {
 	}
 
 	@Test
-	public void testEmpty() {
+	public void testEmptyResult() {
 
 		addFacet("id:%s,type:%s", FACET_ID, TimelineFacet.TYPE);
 
@@ -132,7 +132,7 @@ public class TimelineFacetTest extends FacetTestSupport {
 	}
 
 	@Test
-	public void testYear() {
+	public void testYearInterval() {
 
 		addEvent(first);
 		addEvent(last);
@@ -141,12 +141,12 @@ public class TimelineFacetTest extends FacetTestSupport {
 		ObjectNode result = execute();
 		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(2);
 		NodeAssert node = assertThat(result).path(FACET_ID).hasSize(1);
-		node.path(0).path("label").isEqualTo("2012TZ");
+		node.path(0).path("label").isEqualTo("2012");
 		node.path(0).path("count").isEqualTo(2);
 	}
 
 	@Test
-	public void testYearWithMeasureField() {
+	public void testYearIntervalWithMeasureField() {
 
 		addEvent(first);
 		addEvent(last);
@@ -155,7 +155,7 @@ public class TimelineFacetTest extends FacetTestSupport {
 		ObjectNode result = execute();
 		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(2);
 		NodeAssert node = assertThat(result).path(FACET_ID).hasSize(1);
-		node.path(0).path("label").isEqualTo("2012TZ");
+		node.path(0).path("label").isEqualTo("2012");
 		node.path(0).path("count").isEqualTo(2);
 		node.path(0).path("min").isEqualTo(5000.0, "m");
 		node.path(0).path("max").isEqualTo(10000.0, "m");
@@ -163,92 +163,74 @@ public class TimelineFacetTest extends FacetTestSupport {
 	}
 
 	@Test
-	public void testMonth() {
+	public void testMonthInterval() {
 
 		addEvent(first);
 		addEvent(last);
-		addFacet("id:%s,type:%s,interval:%s,range:%s", FACET_ID, TimelineFacet.TYPE, "month", "2012TZ");
+		addFacet("id:%s,type:%s,interval:%s,range:%s", FACET_ID, TimelineFacet.TYPE, "month", "2012");
 
 		ObjectNode result = execute();
 		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(2);
 		NodeAssert node = assertThat(result).path(FACET_ID).hasSize(12);
-		node.path(0).path("label").isEqualTo("2012-01TZ");
+		node.path(0).path("label").isEqualTo("2012-01");
 		node.path(0).path("count").isEqualTo(0);
-		node.path(2).path("label").isEqualTo("2012-03TZ");
+		node.path(2).path("label").isEqualTo("2012-03");
 		node.path(2).path("count").isEqualTo(1);
-		node.path(4).path("label").isEqualTo("2012-05TZ");
+		node.path(4).path("label").isEqualTo("2012-05");
 		node.path(4).path("count").isEqualTo(1);
-		node.path(11).path("label").isEqualTo("2012-12TZ");
+		node.path(11).path("label").isEqualTo("2012-12");
 		node.path(11).path("count").isEqualTo(0);
 	}
 
 	@Test
-	public void testDay() {
+	public void testDayInterval() {
 
 		addEvent(first);
 		addEvent(last);
-		addFacet("id:%s,type:%s,interval:%s,range:%s", FACET_ID, TimelineFacet.TYPE, "day", "2012-03TZ");
+		addFacet("id:%s,type:%s,interval:%s,range:%s", FACET_ID, TimelineFacet.TYPE, "day", "2012-03");
 
 		ObjectNode result = execute();
 		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(2);
 		NodeAssert node = assertThat(result).path(FACET_ID).hasSize(31);
-		node.path(0).path("label").isEqualTo("2012-03-01TZ");
+		node.path(0).path("label").isEqualTo("2012-03-01");
 		node.path(0).path("count").isEqualTo(0);
-		node.path(30).path("label").isEqualTo("2012-03-31TZ");
+		node.path(30).path("label").isEqualTo("2012-03-31");
 		node.path(30).path("count").isEqualTo(1);
 	}
 
 	@Test
-	public void testHour() {
+	public void testHourInterval() {
 
 		addEvent(first);
 		addEvent(last);
-		addFacet("id:%s,type:%s,interval:%s,range:%s", FACET_ID, TimelineFacet.TYPE, "hour", "2012-03-31TZ");
+		addFacet("id:%s,type:%s,interval:%s,range:%s", FACET_ID, TimelineFacet.TYPE, "hour", "2012-03-31");
 
 		ObjectNode result = execute();
 		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(2);
 		NodeAssert node = assertThat(result).path(FACET_ID).hasSize(24);
-		node.path(0).path("label").isEqualTo("2012-03-31T00Z");
+		node.path(0).path("label").isEqualTo("2012-03-31T00");
 		node.path(0).path("count").isEqualTo(0);
-		node.path(20).path("label").isEqualTo("2012-03-31T20Z");
+		node.path(20).path("label").isEqualTo("2012-03-31T20");
 		node.path(20).path("count").isEqualTo(1);
-		node.path(23).path("label").isEqualTo("2012-03-31T23Z");
+		node.path(23).path("label").isEqualTo("2012-03-31T23");
 		node.path(23).path("count").isEqualTo(0);
 	}
 
 	@Test
-	public void testHourWithTimezone() {
+	public void testMinuteInterval() {
 
 		addEvent(first);
 		addEvent(last);
-		addFacet("id:%s,type:%s,interval:%s,range:%s,timezone:%s", FACET_ID, TimelineFacet.TYPE, "hour", "2012-03-31T-08:00", "-08:00");
-
-		ObjectNode result = execute();
-		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(2);
-		NodeAssert node = assertThat(result).path(FACET_ID).hasSize(24);
-		node.path(0).path("label").isEqualTo("2012-03-31T00-08:00");
-		node.path(0).path("count").isEqualTo(0);
-		node.path(12).path("label").isEqualTo("2012-03-31T12-08:00");
-		node.path(12).path("count").isEqualTo(1);
-		node.path(23).path("label").isEqualTo("2012-03-31T23-08:00");
-		node.path(23).path("count").isEqualTo(0);
-	}
-
-	@Test
-	public void testMinute() {
-
-		addEvent(first);
-		addEvent(last);
-		addFacet("id:%s,type:%s,interval:%s,range:%s", FACET_ID, TimelineFacet.TYPE, "minute", "2012-03-31T20Z");
+		addFacet("id:%s,type:%s,interval:%s,range:%s", FACET_ID, TimelineFacet.TYPE, "minute", "2012-03-31T20");
 
 		ObjectNode result = execute();
 		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(2);
 		NodeAssert node = assertThat(result).path(FACET_ID).hasSize(60);
-		node.path(0).path("label").isEqualTo("2012-03-31T20:00Z");
+		node.path(0).path("label").isEqualTo("2012-03-31T20:00");
 		node.path(0).path("count").isEqualTo(0);
-		node.path(15).path("label").isEqualTo("2012-03-31T20:15Z");
+		node.path(15).path("label").isEqualTo("2012-03-31T20:15");
 		node.path(15).path("count").isEqualTo(1);
-		node.path(59).path("label").isEqualTo("2012-03-31T20:59Z");
+		node.path(59).path("label").isEqualTo("2012-03-31T20:59");
 		node.path(59).path("count").isEqualTo(0);
 	}
 }

@@ -1,6 +1,6 @@
 <div id="api" class="container-fluid">
 
-<h1>Zenobase API <small>v1</small></h1>
+<h1>Zenobase API <small>v2013-10-23</small></h1>
 
 <div class="alert alert-block">
 <p>If you are using this API in an application, 
@@ -8,6 +8,22 @@ please <a href="mailto:support@zenobase.com?subject=Zenobase+API">drop us a note
 <p>Also, have a look at <a href="https://github.com/zenobase/zenobase-mindlog">the source code of MindLog</a>,
 a simple Android app that authenticates with and posts data to Zenobase.</p>
 </div>
+
+<section id="api-auth">
+
+<h3>Changelog</h3>
+
+<dl>
+	<dt>2013-10-23</dt>
+	<dd>
+		<ul>
+			<li>timestamp constraints can now be based on the timestamp's local time</li>
+			<li>made the timezone parameter for the timeline widget optional</li>
+		</ul>
+	</dd>
+</dl>
+
+</section>
 
 <div class="well">
 	<div class="row-fluid">
@@ -934,40 +950,39 @@ Content-Type: application/json
 <dd>
   <blockquote>
   <dl>
-  <dt><code>2013TZ</code></dt>
-  <dt><code>[2013TZ..2014TZ)</code></dt>
-  <dt><code>[2012-12-31T16-08:00..2013-12-31T16-08:00)</code></dt>
-  <dd>all of 2013 (UTC)</dd>
-  <dt><code>2013-01TZ</code></dt>
-  <dt><code>[2013-01TZ..2013-02TZ)</code></dt>
-  <dt><code>[2012-12-31T16-08:00..2013-01-31T16-08:00)</code></dt>
+  <dt><code>2013TZ</code>, <code>[2013TZ..2014TZ)</code>, <code>[2012-12-31T16-08:00..2013-12-31T16-08:00)</code></dt>
+  <dd>all of 2013</dd>
+  <dt><code>2013-01TZ</code>, <code>[2013-01TZ..2013-02TZ)</code>, <code>[2012-12-31T16-08:00..2013-01-31T16-08:00)</code></dt>
   <dd>January</dd>
-  <dt><code>2013-01-02TZ</code></dt>
-  <dt><code>[2013-01-02TZ..2013-01-03TZ)</code></dt>
-  <dt><code>[2013-01-01T16-08:00..2013-01-02T16-08:00)</code></dt>
+  <dt><code>2013-01-02TZ</code>, <code>[2013-01-02TZ..2013-01-03TZ)</code>, <code>[2013-01-01T16-08:00..2013-01-02T16-08:00)</code></dt>
   <dd>January 2nd</dd>
-  <dt><code>2013-01-02T20Z</code></dt>
-  <dt><code>[2013-01-02T20Z..2013-01-02T21Z)</code></dt>
-  <dt><code>[2013-01-02T12-08:00..2013-01-02T13-08:00)</code></dt>
+  <dt><code>2013-01-02T20Z</code>, <code>[2013-01-02T20Z..2013-01-02T21Z)</code>, <code>[2013-01-02T12-08:00..2013-01-02T13-08:00)</code></dt>
   <dd>8-9pm</dd>
-  <dt><code>2013-01-02T20:05Z</code></dt>
-  <dt><code>[2013-01-02T20:05Z..2013-01-02T20:06Z)</code></dt>
-  <dt><code>[2013-01-02T12:05-08:00..2013-01-02T12:06-08:00)</code></dt>
+  <dt><code>2013-01-02T20:05Z</code>, <code>[2013-01-02T20:05Z..2013-01-02T20:06Z)</code>, <code>[2013-01-02T12:05-08:00..2013-01-02T12:06-08:00)</code></dt>
   <dd>8:05-8:06pm</dd>
-  <dt><code>2013-01-30T23:00:00.000TZ</code></dt>
-  <dt><code>2013-01-30T15:00:00.000T-08:00</code></dt>
-  <dt><code>1359586800000</code></dt>
+  <dt><code>2013-01-30T23:00:00.000TZ</code>, <code>2013-01-30T15:00:00.000-08:00</code>, <code>1359586800000</code></dt>
   <dd>an exact moment</dd>
-  <dt><code>[-1y..*)</code></dt>
-  <dd>one year ago up to now</dd>
-  <dt><code>[-1y..-1M)</code></dt>
-  <dd>one year ago up to one month ago</dd>
+  </dl>
+  </blockquote>
+  <em>based on the timestamp's local time</em>
+  <blockquote>
+  <dl>
+  <dt><code>2013</code>, <code>[2013..2014)</code></dt>
+  <dd>all of 2013</dd>
+  <dt><code>2013-01</code>, <code>[2013-01..2013-02)</code></dt>
+  <dd>January</dd>
+  <dt><code>2013-01-02</code>, <code>[2013-01-02..2013-01-03)</code></dt>
+  <dd>January 2nd</dd>
+  <dt><code>2013-01-02T20</code>, <code>[2013-01-02T20..2013-01-02T21)</code></dt>
+  <dd>8-9pm</dd>
+  <dt><code>2013-01-02T20:05</code>, <code>[2013-01-02T20:05..2013-01-02T20:06)</code></dt>
+  <dd>8:05-8:06pm</dd>
+  <dt><code>2013-01-30T15:00:00.000</code></dt>
+  <dd>an exact moment</dd>
   </dl>
   </blockquote>
   <blockquote>
   <dl>
-  <dt><code><i>&lt;field&gt;</i>.year:2013</code></dt>
-  <dd>all of 2013 (based on the timestamp's timezone offset)</dd>
   <dt><code><i>&lt;field&gt;</i>.month_of_year:1</code></dt>
   <dd>any January</dd>
   <dt><code><i>&lt;field&gt;</i>.day_of_year:1</code></dt>
@@ -981,7 +996,18 @@ Content-Type: application/json
   <dt><code><i>&lt;field&gt;</i>.hour_of_day:10</code></dt>
   <dd>10-11am any day</dd>
   <dt><code><i>&lt;field&gt;</i>.hour_of_day:(*..12)</code></dt>
-  <dd>first half of the day</dd>
+  <dd>first half of any day</dd>
+  </dl>
+  </blockquote>
+  <em>relative</em>
+  <blockquote>
+  <dl>
+  <dt><code>[-1y..*)</code></dt>
+  <dd>since one year ago</dd>
+  <dt><code>(*..-1M]</code></dt>
+  <dd>up to one month ago</dd>
+  <dt><code>[-1y..-1M]</code></dt>
+  <dd>since one year ago and up to one month ago</dd>
   </dl>
   </blockquote>
 </dd>
@@ -1054,7 +1080,7 @@ Content-Type: application/json
 
 <dl>
 <dt>_timestamp</dt>
-<dd>The last modification time of an item. For example, <code>q=_timestamp:[2013TZ..*]</code> returns items that have been modified since the beginning of 2013.</dd>
+<dd>The last modification time of an item. For example, <code>_timestamp:[2013TZ..*)</code> matches items that have been modified since the beginning of 2013.</dd>
 </dl>
 
 </section>
@@ -1107,7 +1133,7 @@ Content-Type: application/json
   <dt>interval=<em>&lt;'year'|'month'|'day'|'hour'|'minute'&gt;</em></dt>
   <dd>The interval at which values are aggregated. Defaults to <em>month</em>.</dd>
   <dt>timezone=<em>&lt;Z&gt;</em></dt>
-  <dd>The timezone offset to use. Defaults to <em>+00:00</em></dd>
+  <dd>Optional timezone offset, e.g.<em>+00:00</em>. If not set, values are aggregated using their local time.</dd>
   <dt>filter=<em>&lt;constraint&gt;</em></dt>
   <dd>Optional <a href="/#/api/constraints">constraint</a>.</dd>
   </dl>
@@ -1221,7 +1247,7 @@ Content-Type: application/json
   <dd>A field containing the values to be aggregated. Optional; if not set, only a count is returned for each interval.</dd>
   <dt>unit=<em>&lt;String&gt;</em></dt>
   <dd>The unit of the values. Required for fields with units.</dd>
-  <dt>interval=<em>&lt;'hour_of_day'|'day_of_week'|'day_of_month'|'month_of_year'&gt;</em></dt>
+  <dt>interval=<em>&lt;'hour_of_day'|'day_of_week'|'day_of_month'|'day_of_year'|'month_of_year'&gt;</em></dt>
   <dd>The (local, timezone-independent) interval to aggregate on. Required.</dd>
   <dt>filter=<em>&lt;constraint&gt;</em></dt>
   <dd>Optional <a href="/#/api/constraints">constraint</a>.</dd>
@@ -1263,7 +1289,7 @@ Content-Type: application/json
 
 </dl>
 
-<p>In some cases, the response may contain a body with a problem description:</p>
+<p>The response may contain a body with a description of the problem:</p>
 
 <pre>{
   "message" : <em>&lt;String&gt;</em>

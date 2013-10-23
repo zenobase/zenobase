@@ -1,158 +1,38 @@
 package com.zenobase.search;
 
-import java.util.Collections;
-import java.util.Map;
-
 import javax.measure.unit.Unit;
 
-import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.index.query.FilterBuilder;
-import org.elasticsearch.search.builder.SearchSourceBuilder;
-import org.elasticsearch.search.facet.FacetBuilders;
-import org.elasticsearch.search.facet.datehistogram.DateHistogramFacet;
-import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
-import org.joda.time.Interval;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.google.common.base.Objects;
-import com.google.common.base.Strings;
-import com.google.common.collect.Maps;
 
-import com.zenobase.common.Intervals;
 import com.zenobase.common.Measures;
-import com.zenobase.json.MeasurementField;
-import com.zenobase.json.Nodes;
 import com.zenobase.models.Event;
 
-public class TimelineFacet extends Facet {
+public class TimelineFacet {
 
 	public static final String TYPE = "timeline";
 
-	private final String keyField;
-	private final String valueField;
-	private final String interval;
-	private final Interval range;
-	private final DateTimeZone timezone;
-	private final Unit<?> unit;
-	private final FilterBuilder filter;
-
-	public TimelineFacet(String id, String keyField, String valueField, String interval, String range, DateTimeZone timezone, Unit<?> unit, FilterBuilder filter) {
-		super(id);
-		this.keyField = keyField;
-		this.valueField = valueField;
-		this.interval = interval;
-		this.range = !Strings.isNullOrEmpty(range) ? Intervals.valueOf(range) : null;
-		this.timezone = timezone;
-		this.unit = unit;
-		this.filter = filter;
-	}
-
-	@Override
-	public void configure(SearchSourceBuilder builder) {
-		builder.facet(FacetBuilders.dateHistogramFacet(getId())
-			.keyField(keyField).valueField(unit == Unit.ONE ? valueField : valueField + "." + MeasurementField.VALUE_SI.getName())
-			.interval(interval)
-			.preZone(timezone.toString())
-			.preZoneAdjustLargeInterval(true)
-			.facetFilter(filter));
-	}
-
-	@Override
-	public JsonNode process(SearchResponse response) {
-		DateHistogramFacet facet = response.getFacets().facet(DateHistogramFacet.class, getId());
-		Map<String, ObjectNode> counts = Collections.emptyMap();
-		if (!facet.getEntries().isEmpty()) {
-			counts = getMap(getInterval(facet.getEntries()));
-			for (DateHistogramFacet.Entry entry : facet.getEntries()) {
-				String key = getLabel(toDateTime(entry.getTime()));
-				if (range == null || counts.containsKey(key)) {
-					ObjectNode entryNode = Objects.firstNonNull(counts.get(key), Nodes.newObject());
-					entryNode.put("label", key);
-					entryNode.put("time", entry.getTime() + timezone.getOffset(entry.getTime()));
-					entryNode.put("count", entry.getTotalCount());
-					if (!keyField.equals(valueField) && entry.getTotalCount() > 0) {
-						addValue(entryNode, "min",  entry.getMin());
-						addValue(entryNode, "max", entry.getMax());
-						addValue(entryNode, "sum", entry.getTotal());
-						addValue(entryNode, "avg", entry.getMean());
-					}
-					counts.put(key, entryNode);
-
-				}
-			}
-		}
-		return toJson(counts.values());
-	}
-
-	private JsonNode toJson(Iterable<ObjectNode> values) {
-		ArrayNode node = Nodes.newArray();
-		for (ObjectNode value : values) {
-			node.add(value);
-		}
-		return node;
-	}
-
-	private void addValue(ObjectNode parent, String property, double value) {
-		if (unit != Unit.ONE) {
-			ObjectNode node = parent.putObject(property);
-			node.put("@value", Measures.convert(value, unit));
-			node.put("unit", unit.toString());
-		} else {
-			parent.put(property, Measures.round(value));
-		}
-	}
-
-	private Interval getInterval(Iterable<? extends DateHistogramFacet.Entry> entries) {
-		if (range != null) {
-			return range;
-		}
-		long min = Long.MAX_VALUE, max = Long.MIN_VALUE;
-		for (DateHistogramFacet.Entry entry : entries) {
-			min = Math.min(min, entry.getTime());
-			max = Math.max(max, entry.getTime());
-		}
-		return min <= max ? new Interval(toDateTime(min), toDateTime(max)) : null;
-	}
-
-	private DateTime toDateTime(long time) {
-		return new DateTime(time, timezone);
-	}
-
-	private Map<String, ObjectNode> getMap(Interval interval) {
-		Map<String, ObjectNode> counts = Maps.newTreeMap();
-		if (interval != null) {
-			for (DateTime time : Intervals.expand(interval.getStart(), interval.getEnd(), this.interval)) {
-				String label = getLabel(time);
-				ObjectNode node = Nodes.newObject();
-				node.put("label", label);
-				node.put("time", time.getMillis() + timezone.getOffset(time));
-				node.put("count", 0);
-				counts.put(label, node);
-			}
-		}
-		return counts;
-	}
-
-	private String getLabel(DateTime time) {
-		return Intervals.toString(time, interval);
-	}
-
 	public static FacetBuilder builder(final FilterParser filterParser) {
+
 		return new FacetBuilder() {
+
 			@Override
 			public Facet build(FacetOptions options) {
-				String unit = options.get("unit");
-				return new TimelineFacet(
-					options.get("id"),
-					Event.TIMESTAMP.getName(),
-					options.get("field", String.class, Event.TIMESTAMP.getName()),
-					options.get("interval", String.class, "month"),
-					options.get("range"),
-					options.get("timezone", DateTimeZone.class, DateTimeZone.UTC),
-					unit != null ? Measures.parseUnit(unit) : Unit.ONE,
-					filterParser.parse(options.get("filter")));
+				String id = options.get("id");
+				String keyField = Event.TIMESTAMP.getName();
+				String valueField = options.get("field", String.class, Event.TIMESTAMP.getName());
+				Unit<?> unit = getUnit(options.get("unit"));
+				String interval = options.get("interval", String.class, "month");
+				String range = options.get("range");
+				DateTimeZone timezone = options.get("timezone", DateTimeZone.class, null);
+				FilterBuilder filter = filterParser.parse(options.get("filter"));
+				return timezone != null
+					? new OffsetTimelineFacet(id, keyField, valueField, interval, range, timezone, unit, filter)
+					: new LocalTimelineFacet(id, keyField, valueField, interval, range, unit, filter);
+			}
+
+			private Unit<?> getUnit(String value) {
+				return value != null ? Measures.parseUnit(value) : Unit.ONE;
 			}
 		};
 	}

@@ -43,18 +43,13 @@ public class DecimalRangeParserTest {
 	}
 
 	@Test
-	public void testUnboundedRange() {
-		testRange("(*..*)", Range.<BigDecimal>all());
-	}
-
-	@Test
 	public void testSingletonRange() {
 		testRange("[1..1]", Range.singleton(BigDecimal.ONE));
 	}
 
-	@Test(expected = IllegalArgumentException.class)
-	public void testMisformattedRange() {
+	public void testUnparsedRange() {
 		testRange("{-3.1415..1}", null);
+		testRange("(*..*)", null);
 	}
 
 	@Test(expected = IllegalArgumentException.class)

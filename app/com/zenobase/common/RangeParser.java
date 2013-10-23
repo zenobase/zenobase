@@ -9,34 +9,25 @@ public abstract class RangeParser<T extends Comparable<T>> {
 
 	public Range<T> parse(String value) {
 		int p = value.indexOf(TO);
-		try {
-			return p != -1 ?
-				toRange(
-					value.charAt(0),
-					value.substring(1, p),
-					value.substring(p + TO.length(), value.length() - 1),
-					value.charAt(value.length() - 1)) :
-				null;
-		} catch (Exception e) {
-			throw new IllegalArgumentException("Can't parse range: " + value, e);
+		if (p == -1 || value.length() < 6) {
+			return null;
 		}
-	}
-
-	private Range<T> toRange(char lowerType, String lower, String upper, char upperType) {
-		return toRange(
-			getBoundType(lowerType),
-			getOptionalValue(lower),
-			getOptionalValue(upper),
-			getBoundType(upperType));
+		BoundType lowerBound = getBoundType(value.charAt(0));
+		BoundType upperBound = getBoundType(value.charAt(value.length() - 1));
+		if (lowerBound == null || upperBound == null) {
+			return null;
+		}
+		T lower = getOptionalValue(value.substring(1, p));
+		T upper = getOptionalValue(value.substring(p + TO.length(), value.length() - 1));
+		if (lower == null && upper == null) {
+			return null;
+		}
+		return toRange(lowerBound, lower, upper, upperBound);
 	}
 
 	private Range<T> toRange(BoundType lowerType, T lower, T upper, BoundType upperType) {
 		if (lower == null) {
-			if (upper == null) {
-				return Range.all();
-			} else {
-				return Range.upTo(upper, upperType);
-			}
+			return Range.upTo(upper, upperType);
 		} else if (upper == null) {
 			return Range.downTo(lower, lowerType);
 		} else {

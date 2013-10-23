@@ -5,8 +5,8 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.ImmutableMultimap;
 
 import com.zenobase.search.ConstraintBuilder;
-import com.zenobase.search.DateTimeConstraintBuilder;
-import com.zenobase.search.DateTimeRangeConstraintBuilder;
+import com.zenobase.search.OffsetDateTimeConstraintBuilder;
+import com.zenobase.search.OffsetDateTimeRangeConstraintBuilder;
 
 public class SchemaBuilder {
 
@@ -54,8 +54,8 @@ public class SchemaBuilder {
 		String fieldName = "_timestamp";
 		ObjectNode timestampNode = type.putObject(fieldName);
 		timestampNode.put("enabled", true);
-		constraintBuilders.put(fieldName, new DateTimeRangeConstraintBuilder());
-		constraintBuilders.put(fieldName, new DateTimeConstraintBuilder());
+		constraintBuilders.put(fieldName, new OffsetDateTimeRangeConstraintBuilder());
+		constraintBuilders.put(fieldName, new OffsetDateTimeConstraintBuilder());
 	}
 
 	public SchemaBuilder add(Field<?> field) {

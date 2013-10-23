@@ -27,12 +27,11 @@ public class DateTimeFieldTest extends FieldTestSupport {
 
 		NodeAssert internal = NodeAssert.assertThat(node).path("$" + FIELD_NAME).path(0);
 		internal.isObject();
-		internal.path("year").isEqualTo(2013);
+		internal.path("time").isEqualTo("2013-10-06T11:59:00.000Z");
 		internal.path("month_of_year").isEqualTo(10);
 		internal.path("day_of_week").isEqualTo(7);
 		internal.path("day_of_month").isEqualTo(6);
 		internal.path("day_of_year").isEqualTo(279);
 		internal.path("hour_of_day").isEqualTo(11);
-		internal.path("offset").isEqualTo(-420);
 	}
 }

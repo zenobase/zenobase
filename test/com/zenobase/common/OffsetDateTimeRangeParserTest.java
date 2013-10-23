@@ -6,9 +6,9 @@ import org.joda.time.DateTime;
 import org.junit.Test;
 import com.google.common.collect.Range;
 
-public class DateTimeRangeParserTest {
+public class OffsetDateTimeRangeParserTest {
 
-	private final DateTimeRangeParser parser = new DateTimeRangeParser();
+	private final OffsetDateTimeRangeParser parser = new OffsetDateTimeRangeParser();
 
 	@Test
 	public void test() {

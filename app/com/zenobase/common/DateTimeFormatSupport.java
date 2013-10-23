@@ -25,6 +25,12 @@ public class DateTimeFormatSupport {
 			.toFormatter();
 	}
 
+	protected static DateTimeFormatter tElement() {
+		return new DateTimeFormatterBuilder()
+			.appendLiteral('T')
+			.toFormatter();
+	}
+
 	protected static DateTimeFormatter hourElement() {
 		return new DateTimeFormatterBuilder()
 			.appendHourOfDay(2)

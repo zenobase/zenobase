@@ -1622,7 +1622,8 @@
 						title : null,
 						labels : {
 							overflow : 'justify'
-						}
+						},
+						allowDecimals : false
 					},
 					series : [{
 						name : 'count',
@@ -1768,35 +1769,54 @@
 
 		var Interval = function(name, pattern, minTickInterval) {
 			this.name = name;
-			this.pattern = pattern;
+			this.pattern = pattern.length;
 			this.minTickInterval = minTickInterval;
 		}
 
-		Interval.prototype.zoomIn = function() {
-			var i, max;
-			for (i = 0, max = Interval.VALUES.length; i < max; ++i) {
-				if (Interval.VALUES[i].pattern > this.pattern) {
-					return Interval.VALUES[i];
-				}
-			}
-		};
-
 		Interval.VALUES = [
-			new Interval('year', 0, 366 * 24 * 60 * 60 * 1000),
-			new Interval('month', 11, 28 * 24 * 60 * 60 * 1000), 
-			new Interval('day', 14, 24 * 60 * 60 * 1000), 
-			new Interval('hour', 17, 60 * 60 * 1000), 
-			new Interval('minute', 19, 60 * 1000),
-			new Interval('second', 22, 1000)
+			new Interval('year', 'yyyy', 366 * 24 * 60 * 60 * 1000),
+			new Interval('month', 'yyyy-MM', 28 * 24 * 60 * 60 * 1000), 
+			new Interval('day', 'yyyy-MM-dd', 24 * 60 * 60 * 1000), 
+			new Interval('hour', 'yyyy-MM-ddTHH', 60 * 60 * 1000), 
+			new Interval('minute', 'yyyy-MM-ddTHH:mm', 60 * 1000),
+			new Interval('second', 'yyyy-MM-ddTHH:mm:ss', 1000)
 		];
 
 		Interval.match = function(value) {
 			if (value.match(/^[0-9]{4}/)) {
-				value = value.replace('Z', '+00:00');
-				var i, max;
-				for (i = 0, max = Interval.VALUES.length; i < max; ++i) {
-					if (Interval.VALUES[i].pattern === value.length) {
-						return Interval.VALUES[i];
+				if (!value.match(/Z|[+-]\d\d:\d\d/)) {
+					var i, max;
+					for (i = 1, max = Interval.VALUES.length; i < max; ++i) {
+						if (value.length === Interval.VALUES[i - 1].pattern) {
+							return Interval.VALUES[i];
+						}
+					}
+				}
+			}
+		};
+
+		function getFirst(rangeExpression) {
+			if (rangeExpression.length >= 12 && rangeExpression.indexOf('..') != -1) {
+				var tokens = rangeExpression.substring(1, rangeExpression.length - 1).split('..');
+				if (tokens[0] == '*') {
+					return tokens[1];
+				}
+				if (tokens[1] == '*') {
+					return tokens[0];
+				}
+				return tokens[0];
+			}
+		}
+
+		Interval.matchRange = function(value, expectOffset) {
+			value = getFirst(value);
+			if (value && value.match(/^[0-9]{4}/)) {
+				if (!value.match(/Z|[+-]\d\d:\d\d/)) {
+					var i, max;
+					for (i = 0, max = Interval.VALUES.length; i < max; ++i) {
+						if (value.length === Interval.VALUES[i].pattern) {
+							return Interval.VALUES[i];
+						}
 					}
 				}
 			}
@@ -1816,7 +1836,7 @@
 		return Interval;
 	});
 
-	app.controller('TimelineWidgetController', ['$scope', '$timeout', 'Field', 'Interval', 'timezone', function($scope, $timeout, Field, Interval, timezone) {
+	app.controller('TimelineWidgetController', ['$scope', '$timeout', 'Field', 'Interval', function($scope, $timeout, Field, Interval) {
 
 		$scope.keyField = 'timestamp';
 
@@ -1827,7 +1847,7 @@
 			$scope.interval = Interval.valueOf($scope.settings.interval) || Interval.VALUES[1];
 			$scope.range = '';
 			$.each($scope.getConstraints($scope.keyField), function(i, constraint) {
-				var interval = Interval.match(constraint.value);
+				var interval = Interval.match(constraint.value) || Interval.matchRange(constraint.value);
 				if (interval) {
 					$scope.interval = interval;
 					$scope.range = constraint.value;
@@ -1840,7 +1860,6 @@
 				unit : $scope.settings.unit || '',
 				interval : $scope.interval.name,
 				range : $scope.range,
-				timezone : timezone,
 				filter : $scope.settings.filter || ''
 			};
 		};

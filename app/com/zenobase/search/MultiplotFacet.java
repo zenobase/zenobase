@@ -20,7 +20,7 @@ import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
-import com.zenobase.common.Intervals;
+import com.zenobase.common.OffsetIntervals;
 import com.zenobase.common.Measures;
 import com.zenobase.json.MeasurementField;
 import com.zenobase.json.Nodes;
@@ -114,7 +114,7 @@ public class MultiplotFacet extends Facet {
 	}
 
 	private String getLabel(DateTime time) {
-		return Intervals.toString(time, interval);
+		return OffsetIntervals.toString(time, interval);
 	}
 
 	enum Statistic {
