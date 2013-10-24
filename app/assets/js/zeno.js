@@ -994,7 +994,7 @@
       	type : 'polar',
       	label : 'Polar Chart', 
       	description : 'Plots values by month of year, day of week, or hour of day.',
-      	settings : { interval : 'day_of_week' }
+      	settings : { interval : 'day_of_week', value_field : 'timestamp' }
       },
 	  	{
       	type : 'scatterplot',
