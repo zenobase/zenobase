@@ -42,7 +42,6 @@ public class DurationConstraintBuilderTest extends ConstraintBuilderTestSupport 
 	@Test(expected = IllegalArgumentException.class)
 	public void testIllegalConstraint() {
 		addConstraint("%s:%s", Event.DURATION, "foo");
-		System.out.println(DurationFormat.parse("foo"));
 		execute();
 	}
 }
