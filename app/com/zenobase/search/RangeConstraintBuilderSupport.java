@@ -7,12 +7,10 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.BoundType;
 import com.google.common.collect.Range;
 
-import com.zenobase.json.Field;
-
 public abstract class RangeConstraintBuilderSupport<C extends Comparable<C>> extends ConstraintBuilder {
 
-	public RangeConstraintBuilderSupport(Field<?> field) {
-		super(field);
+	public RangeConstraintBuilderSupport(String path) {
+		super(path);
 	}
 
 	@Override
@@ -43,10 +41,6 @@ public abstract class RangeConstraintBuilderSupport<C extends Comparable<C>> ext
 	}
 
 	protected abstract Range<C> parseRange(String value);
-
-	protected String getPath() {
-		return getField().getPath();
-	}
 
 	protected abstract Object getValue(C value);
 

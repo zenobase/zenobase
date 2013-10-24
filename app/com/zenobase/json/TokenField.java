@@ -24,8 +24,8 @@ public class TokenField extends Field<String> {
 		super(parent, name, String.class, "string");
 		this.indexed = indexed;
 		if (indexed) {
-			addConstraintBuilder(name, new WildcardConstraintBuilder(this));
-			addConstraintBuilder(name, new TermConstraintBuilder(this));
+			addConstraintBuilder(name, new WildcardConstraintBuilder(getPath()));
+			addConstraintBuilder(name, new TermConstraintBuilder(getPath()));
 		}
 	}
 

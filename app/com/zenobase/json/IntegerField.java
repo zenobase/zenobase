@@ -27,8 +27,8 @@ public class IntegerField extends Field<Integer> {
 	public IntegerField(Field<?> parent, String name, boolean indexed) {
 		super(parent, name, Long.class, "integer");
 		this.indexed = indexed;
-		addConstraintBuilder(name, new DecimalRangeConstraintBuilder(this));
-		addConstraintBuilder(name, new TermConstraintBuilder(this));
+		addConstraintBuilder(name, new DecimalRangeConstraintBuilder(getPath()));
+		addConstraintBuilder(name, new TermConstraintBuilder(getPath()));
 	}
 
 	@Override

@@ -15,8 +15,8 @@ public class MeasureRangeConstraintBuilder extends RangeConstraintBuilderSupport
 
 	private final MeasureRangeParser parser = new MeasureRangeParser();
 
-	public MeasureRangeConstraintBuilder(Field<?> field) {
-		super(field);
+	public MeasureRangeConstraintBuilder(String path) {
+		super(path);
 	}
 
 	@Override

@@ -15,7 +15,6 @@ import org.elasticsearch.index.query.QueryBuilders;
 import com.google.common.base.Objects;
 
 import com.zenobase.common.Measures;
-import com.zenobase.json.Field;
 import com.zenobase.models.Location;
 
 public class DistanceConstraintBuilder extends ConstraintBuilder {
@@ -23,8 +22,8 @@ public class DistanceConstraintBuilder extends ConstraintBuilder {
 	private static final Pattern PATTERN = Pattern.compile("([^,]+),([^~]+)(?:~(.+))?");
 	private static final String DEFAULT_DISTANCE = "1 m"; // 0 won't match
 
-	public DistanceConstraintBuilder(Field<?> field) {
-		super(field);
+	public DistanceConstraintBuilder(String path) {
+		super(path);
 	}
 
 	@Override
@@ -43,7 +42,7 @@ public class DistanceConstraintBuilder extends ConstraintBuilder {
 	}
 
 	private QueryBuilder build(Location location, DecimalMeasure<Length> distance) {
-		FilterBuilder filter = FilterBuilders.geoDistanceFilter(getField().getPath())
+		FilterBuilder filter = FilterBuilders.geoDistanceFilter(getPath())
 			.lat(location.getLatitude().doubleValue())
 			.lon(location.getLongitude().doubleValue())
 			.distance(distance.doubleValue(SI.KILOMETER), DistanceUnit.KILOMETERS);

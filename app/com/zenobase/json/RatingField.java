@@ -13,8 +13,8 @@ public class RatingField extends Field<Rating> {
 
 	public RatingField(String name) {
 		super(name, Rating.class, "byte");
-		addConstraintBuilder(name, new PercentRangeConstraintBuilder(this));
-		addConstraintBuilder(name, new PercentConstraintBuilder(this));
+		addConstraintBuilder(name, new PercentRangeConstraintBuilder(getPath()));
+		addConstraintBuilder(name, new PercentConstraintBuilder(getPath()));
 	}
 
 	@Override

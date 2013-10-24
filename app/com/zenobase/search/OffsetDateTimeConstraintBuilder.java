@@ -6,12 +6,11 @@ import org.joda.time.Interval;
 
 import com.zenobase.common.OffsetDateTimeFormat;
 import com.zenobase.common.OffsetIntervals;
-import com.zenobase.json.Field;
 
 public class OffsetDateTimeConstraintBuilder extends ConstraintBuilder {
 
-	public OffsetDateTimeConstraintBuilder(Field<?> field) {
-		super(field);
+	public OffsetDateTimeConstraintBuilder(String path) {
+		super(path);
 	}
 
 	@Override
@@ -23,9 +22,9 @@ public class OffsetDateTimeConstraintBuilder extends ConstraintBuilder {
 		if (interval == null) {
 			return null;
 		} else if (interval.toDurationMillis() > 1L) {
-			return QueryBuilders.rangeQuery(getField().getPath()).gte(interval.getStart().toString()).lt(interval.getEnd().toString());
+			return QueryBuilders.rangeQuery(getPath()).gte(interval.getStart().toString()).lt(interval.getEnd().toString());
 		} else {
-			return QueryBuilders.termQuery(getField().getPath(), interval.getStart().toString());
+			return QueryBuilders.termQuery(getPath(), interval.getStart().toString());
 		}
 	}
 }

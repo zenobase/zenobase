@@ -4,16 +4,15 @@ import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 
 import com.zenobase.common.Characters;
-import com.zenobase.json.Field;
 
 public class EpochDateTimeConstraintBuilder extends ConstraintBuilder {
 
-	public EpochDateTimeConstraintBuilder(Field<?> field) {
-		super(field);
+	public EpochDateTimeConstraintBuilder(String path) {
+		super(path);
 	}
 
 	@Override
 	public QueryBuilder build(String value) {
-		return Characters.isDigits(value) ? QueryBuilders.termQuery(getField().getPath(), value) : null;
+		return Characters.isDigits(value) ? QueryBuilders.termQuery(getPath(), value) : null;
 	}
 }

@@ -20,8 +20,8 @@ public class LocalDateTimeField extends Field<LocalDateTime> {
 
 	public LocalDateTimeField(String name) {
 		super(internal(name), LocalDateTime.class, "object");
-		addConstraintBuilder(name, new LocalDateTimeRangeConstraintBuilder(timeField));
-		addConstraintBuilder(name, new LocalDateTimeConstraintBuilder(timeField));
+		addConstraintBuilder(name, new LocalDateTimeRangeConstraintBuilder(timeField.getPath()));
+		addConstraintBuilder(name, new LocalDateTimeConstraintBuilder(timeField.getPath()));
 		addConstraintBuilders(name, monthOfYearField);
 		addConstraintBuilders(name, dayOfYearField);
 		addConstraintBuilders(name, dayOfMonthField);

@@ -2,18 +2,16 @@ package com.zenobase.search;
 
 import org.elasticsearch.index.query.QueryBuilder;
 
-import com.zenobase.json.Field;
-
 public abstract class ConstraintBuilder {
 
-	private final Field<?> field;
+	private final String path;
 
-	protected ConstraintBuilder(Field<?> field) {
-		this.field = field;
+	protected ConstraintBuilder(String path) {
+		this.path = path;
 	}
 
-	public Field<?> getField() {
-		return field;
+	protected String getPath() {
+		return path;
 	}
 
 	public abstract QueryBuilder build(String value);

@@ -23,7 +23,7 @@ public class EnumField<E extends Enum<E>> extends Field<E> {
 
 	private EnumField(Field<?> parent, String name, Class<E> type) {
 		super(parent, name, type, "string");
-		addConstraintBuilder(name, new TermConstraintBuilder(this));
+		addConstraintBuilder(name, new TermConstraintBuilder(getPath()));
 	}
 
 	@Override

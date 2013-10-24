@@ -5,13 +5,12 @@ import org.elasticsearch.index.query.FilterBuilders;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 
-import com.zenobase.json.Field;
 import com.zenobase.models.Location;
 
 public class BoundingBoxConstraintBuilder extends ConstraintBuilder {
 
-	public BoundingBoxConstraintBuilder(Field<?> field) {
-		super(field);
+	public BoundingBoxConstraintBuilder(String path) {
+		super(path);
 	}
 
 	@Override
@@ -21,7 +20,7 @@ public class BoundingBoxConstraintBuilder extends ConstraintBuilder {
 	}
 
 	private QueryBuilder build(Location topLeft, Location bottomRight) {
-		FilterBuilder filter = FilterBuilders.geoBoundingBoxFilter(getField().getPath()).type("indexed")
+		FilterBuilder filter = FilterBuilders.geoBoundingBoxFilter(getPath()).type("indexed")
 			.topLeft(topLeft.getLatitude().doubleValue(), topLeft.getLongitude().doubleValue())
 			.bottomRight(bottomRight.getLatitude().doubleValue(), bottomRight.getLongitude().doubleValue());
 		return QueryBuilders.constantScoreQuery(filter);

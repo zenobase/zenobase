@@ -6,14 +6,13 @@ import org.joda.time.ReadablePartial;
 import com.google.common.collect.Range;
 
 import com.zenobase.common.LocalDateTimeRangeParser;
-import com.zenobase.json.Field;
 
 public class LocalDateTimeRangeConstraintBuilder extends RangeConstraintBuilderSupport<ReadablePartial> {
 
 	private final LocalDateTimeRangeParser parser = new LocalDateTimeRangeParser();
 
-	public LocalDateTimeRangeConstraintBuilder(Field<?> field) {
-		super(field);
+	public LocalDateTimeRangeConstraintBuilder(String path) {
+		super(path);
 	}
 
 	@Override

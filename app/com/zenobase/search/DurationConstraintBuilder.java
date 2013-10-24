@@ -5,12 +5,11 @@ import org.elasticsearch.index.query.QueryBuilders;
 import org.joda.time.Duration;
 
 import com.zenobase.common.DurationFormat;
-import com.zenobase.json.Field;
 
 public class DurationConstraintBuilder extends ConstraintBuilder {
 
-	public DurationConstraintBuilder(Field<?> field) {
-		super(field);
+	public DurationConstraintBuilder(String path) {
+		super(path);
 	}
 
 	@Override
@@ -19,6 +18,6 @@ public class DurationConstraintBuilder extends ConstraintBuilder {
 	}
 
 	private QueryBuilder build(Duration value) {
-		return QueryBuilders.termQuery(getField().getPath(), value.getMillis());
+		return QueryBuilders.termQuery(getPath(), value.getMillis());
 	}
 }

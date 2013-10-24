@@ -16,7 +16,7 @@ public class IdentityField extends Field<Identity> {
 
 	public IdentityField(Field<?> parent, String name) {
 		super(parent, name, Identity.class, "string");
-		addConstraintBuilder(name, new TermConstraintBuilder(this));
+		addConstraintBuilder(name, new TermConstraintBuilder(getPath()));
 	}
 
 	@Override

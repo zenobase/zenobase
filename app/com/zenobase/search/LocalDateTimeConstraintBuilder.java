@@ -7,12 +7,11 @@ import org.joda.time.LocalDateTime;
 
 import com.zenobase.common.LocalInterval;
 import com.zenobase.common.LocalIntervals;
-import com.zenobase.json.Field;
 
 public class LocalDateTimeConstraintBuilder extends ConstraintBuilder {
 
-	public LocalDateTimeConstraintBuilder(Field<?> field) {
-		super(field);
+	public LocalDateTimeConstraintBuilder(String path) {
+		super(path);
 	}
 
 	@Override
@@ -24,9 +23,9 @@ public class LocalDateTimeConstraintBuilder extends ConstraintBuilder {
 		if (interval == null) {
 			return null;
 		} else if (interval.toDurationMillis() > 1L) {
-			return QueryBuilders.rangeQuery(getField().getPath()).gte(toString(interval.getStart())).lt(toString(interval.getEnd()));
+			return QueryBuilders.rangeQuery(getPath()).gte(toString(interval.getStart())).lt(toString(interval.getEnd()));
 		} else {
-			return QueryBuilders.termQuery(getField().getPath(), toString(interval.getStart()));
+			return QueryBuilders.termQuery(getPath(), toString(interval.getStart()));
 		}
 	}
 

@@ -21,11 +21,11 @@ public class OffsetDateTimeField extends Field<DateTime> {
 
 	public OffsetDateTimeField(Field<?> parent, String name) {
 		super(parent, name, DateTime.class, "date");
-		addConstraintBuilder(name, new PeriodRangeConstraintBuilder(this));
-		addConstraintBuilder(name, new EpochDateTimeRangeConstraintBuilder(this));
-		addConstraintBuilder(name, new OffsetDateTimeRangeConstraintBuilder(this));
-		addConstraintBuilder(name, new EpochDateTimeConstraintBuilder(this));
-		addConstraintBuilder(name, new OffsetDateTimeConstraintBuilder(this));
+		addConstraintBuilder(name, new PeriodRangeConstraintBuilder(getPath()));
+		addConstraintBuilder(name, new EpochDateTimeRangeConstraintBuilder(getPath()));
+		addConstraintBuilder(name, new OffsetDateTimeRangeConstraintBuilder(getPath()));
+		addConstraintBuilder(name, new EpochDateTimeConstraintBuilder(getPath()));
+		addConstraintBuilder(name, new OffsetDateTimeConstraintBuilder(getPath()));
 	}
 
 	@Override

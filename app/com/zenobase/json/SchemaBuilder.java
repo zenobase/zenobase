@@ -54,9 +54,8 @@ public class SchemaBuilder {
 		String fieldName = "_timestamp";
 		ObjectNode timestampNode = type.putObject(fieldName);
 		timestampNode.put("enabled", true);
-		OffsetDateTimeField field = new OffsetDateTimeField(fieldName);
-		constraintBuilders.put(fieldName, new OffsetDateTimeRangeConstraintBuilder(field));
-		constraintBuilders.put(fieldName, new OffsetDateTimeConstraintBuilder(field));
+		constraintBuilders.put(fieldName, new OffsetDateTimeRangeConstraintBuilder(fieldName));
+		constraintBuilders.put(fieldName, new OffsetDateTimeConstraintBuilder(fieldName));
 	}
 
 	public SchemaBuilder add(Field<?> field) {

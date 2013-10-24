@@ -12,8 +12,8 @@ public class DurationField extends Field<Duration> {
 
 	public DurationField(String name) {
 		super(name, Duration.class, "long");
-		addConstraintBuilder(name, new DurationRangeConstraintBuilder(this));
-		addConstraintBuilder(name, new DurationConstraintBuilder(this));
+		addConstraintBuilder(name, new DurationRangeConstraintBuilder(getPath()));
+		addConstraintBuilder(name, new DurationConstraintBuilder(getPath()));
 	}
 
 	@Override

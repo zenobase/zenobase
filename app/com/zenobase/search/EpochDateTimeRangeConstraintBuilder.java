@@ -4,14 +4,13 @@ import org.joda.time.ReadableInstant;
 import com.google.common.collect.Range;
 
 import com.zenobase.common.EpochDateTimeRangeParser;
-import com.zenobase.json.Field;
 
 public class EpochDateTimeRangeConstraintBuilder extends RangeConstraintBuilderSupport<ReadableInstant> {
 
 	private final EpochDateTimeRangeParser parser = new EpochDateTimeRangeParser();
 
-	public EpochDateTimeRangeConstraintBuilder(Field<?> field) {
-		super(field);
+	public EpochDateTimeRangeConstraintBuilder(String path) {
+		super(path);
 	}
 
 	@Override

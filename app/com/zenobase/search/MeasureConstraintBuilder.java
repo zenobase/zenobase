@@ -11,8 +11,8 @@ import com.zenobase.json.MeasurementField;
 
 public class MeasureConstraintBuilder extends ConstraintBuilder {
 
-	public MeasureConstraintBuilder(Field<?> field) {
-		super(field);
+	public MeasureConstraintBuilder(String path) {
+		super(path);
 	}
 
 	@Override
@@ -24,7 +24,8 @@ public class MeasureConstraintBuilder extends ConstraintBuilder {
 		return QueryBuilders.termQuery(getPath(), value);
 	}
 
-	private String getPath() {
-		return Field.concat(getField().getPath(), MeasurementField.VALUE_SI.getName());
+	@Override
+	protected String getPath() {
+		return Field.concat(super.getPath(), MeasurementField.VALUE_SI.getName());
 	}
 }
