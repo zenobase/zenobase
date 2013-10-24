@@ -18,10 +18,17 @@ public class LocalDateTimeConstraintBuilder implements ConstraintBuilder {
 
 	@Override
 	public QueryBuilder build(String field, String value) {
-		LocalInterval interval = LocalIntervals.valueOf(value);
-		return interval.toDurationMillis() > 1L
-			? QueryBuilders.rangeQuery(this.field).gte(toString(interval.getStart())).lt(toString(interval.getEnd()))
-			: QueryBuilders.termQuery(this.field, toString(interval.getStart()));
+		return build(LocalIntervals.valueOf(value));
+	}
+
+	private QueryBuilder build(LocalInterval interval) {
+		if (interval == null) {
+			return null;
+		} else if (interval.toDurationMillis() > 1L) {
+			return QueryBuilders.rangeQuery(field).gte(toString(interval.getStart())).lt(toString(interval.getEnd()));
+		} else {
+			return QueryBuilders.termQuery(field, toString(interval.getStart()));
+		}
 	}
 
 	private static String toString(LocalDateTime value) {
