@@ -1930,10 +1930,7 @@
 					tooltip : {
 						crosshairs : false,
 						shared : true,
-						hideDelay : 0,
-						formatter : function() {
-							return '<b>' + this.points[0].point.filter + ':</b> ' + (field.toText(this.y) || this.y) + ($scope.settings.unit || '')
-						}
+						hideDelay : 0
 					},
 					series : [{
 						name : $scope.settings.statistic || 'count',
@@ -1952,7 +1949,11 @@
 					}],
 					plotOptions : {
 						series : {
-							animation : false
+							animation : false,
+							tooltip : {
+								headerFormat : '<b>{point.key}:</b> ',
+								pointFormat : "{point.tooltip}"
+							}
 						},
 						column : {
 							color : '#aaa',
@@ -1990,7 +1991,7 @@
 				$.each($scope.times, function(i, time) {
 					var value = time[$scope.settings.statistic || 'count'];
 					if (value !== undefined) {
-						options.series[0].data.push({ x : time.time, y : field.toNumber(value), filter : time.label });
+						options.series[0].data.push({ x : time.time, y : field.toNumber(value), filter : time.label, tooltip : field.toText(value) });
 						if ($scope.settings.statistic === 'avg') {
 							options.series[1].data.push([ time.time, field.toNumber(time['min']), field.toNumber(time['max']) ]);
 						}
