@@ -8,19 +8,17 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 
-import com.zenobase.models.Resource;
-
 public abstract class MapField<K, V> extends Field<Map.Entry<K, V>> {
 
-	private final Field<K> keyField;
-	private final Field<V> valueField;
+	private final NestedField<K> keyField;
+	private final NestedField<V> valueField;
 
 	public MapField(String name) {
-		super(name, Resource.class, "nested");
-		this.keyField = getKeyField();
-		this.valueField = getValueField();
-		addConstraintBuilders(name, keyField);
-		addConstraintBuilders(name, valueField);
+		super(name, Object.class, "nested");
+		this.keyField = nest(getKeyField());
+		this.valueField = nest(getValueField());
+		keyField.addConstraintBuilders(name, this);
+		valueField.addConstraintBuilders(name, this);
 	}
 
 	protected abstract Field<K> getKeyField();

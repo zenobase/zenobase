@@ -14,11 +14,11 @@ public class RolesField extends MapField<Identity, Role> {
 
 	@Override
 	protected Field<Identity> getKeyField() {
-		return new IdentityField(PRINCIPAL, this);
+		return new IdentityField(PRINCIPAL);
 	}
 
 	@Override
 	protected Field<Role> getValueField() {
-		return EnumField.newInstance(ROLE, Role.class, this);
+		return EnumField.newInstance(ROLE, Role.class);
 	}
 }

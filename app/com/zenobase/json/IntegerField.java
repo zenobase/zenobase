@@ -13,11 +13,11 @@ public class IntegerField extends Field<Integer> {
 	private final boolean indexed;
 
 	public IntegerField(String name) {
-		this(name, true, null);
+		this(name, true);
 	}
 
-	public IntegerField(String name, boolean indexed, Field<?> parent) {
-		super(name, Long.class, "integer", parent);
+	public IntegerField(String name, boolean indexed) {
+		super(name, Long.class, "integer");
 		this.indexed = indexed;
 		addConstraintBuilder(name, new DecimalRangeConstraintBuilder(getPath()));
 		addConstraintBuilder(name, new TermConstraintBuilder(getPath()));

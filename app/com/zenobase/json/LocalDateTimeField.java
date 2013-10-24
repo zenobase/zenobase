@@ -1,5 +1,6 @@
 package com.zenobase.json;
 
+import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDateTime;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -11,22 +12,22 @@ import com.zenobase.search.LocalDateTimeRangeConstraintBuilder;
 
 public class LocalDateTimeField extends Field<LocalDateTime> {
 
-	private final OffsetDateTimeField timeField = new OffsetDateTimeField("time", this);
-	private final IntegerField monthOfYearField = new IntegerField("month_of_year", true, this);
-	private final IntegerField dayOfYearField = new IntegerField("day_of_year", true, this);
-	private final IntegerField dayOfMonthField = new IntegerField("day_of_month", true, this);
-	private final IntegerField dayOfWeekField = new IntegerField("day_of_week", true, this);
-	private final IntegerField hourOfDayField = new IntegerField("hour_of_day", true, this);
+	private final NestedField<DateTime> timeField = nest(new OffsetDateTimeField("time"));
+	private final NestedField<Integer> monthOfYearField = nest(new IntegerField("month_of_year", true));
+	private final NestedField<Integer> dayOfYearField = nest(new IntegerField("day_of_year", true));
+	private final NestedField<Integer> dayOfMonthField = nest(new IntegerField("day_of_month", true));
+	private final NestedField<Integer> dayOfWeekField = nest(new IntegerField("day_of_week", true));
+	private final NestedField<Integer> hourOfDayField = nest(new IntegerField("hour_of_day", true));
 
 	public LocalDateTimeField(String name) {
 		super(internal(name), LocalDateTime.class, "object");
 		addConstraintBuilder(name, new LocalDateTimeRangeConstraintBuilder(timeField.getPath()));
 		addConstraintBuilder(name, new LocalDateTimeConstraintBuilder(timeField.getPath()));
-		addConstraintBuilders(name, monthOfYearField);
-		addConstraintBuilders(name, dayOfYearField);
-		addConstraintBuilders(name, dayOfMonthField);
-		addConstraintBuilders(name, dayOfWeekField);
-		addConstraintBuilders(name, hourOfDayField);
+		monthOfYearField.addConstraintBuilders(name, this);
+		dayOfYearField.addConstraintBuilders(name, this);
+		dayOfMonthField.addConstraintBuilders(name, this);
+		dayOfWeekField.addConstraintBuilders(name, this);
+		hourOfDayField.addConstraintBuilders(name, this);
 	}
 
 	@Override

@@ -11,11 +11,7 @@ import com.zenobase.search.TermConstraintBuilder;
 public class IdentityField extends Field<Identity> {
 
 	public IdentityField(String name) {
-		this(name, null);
-	}
-
-	public IdentityField(String name, Field<?> parent) {
-		super(name, Identity.class, "string", parent);
+		super(name, Identity.class, "string");
 		addConstraintBuilder(name, new TermConstraintBuilder(getPath()));
 	}
 

@@ -97,7 +97,7 @@ public class BucketRepository extends RepositorySupport<Bucket> {
 
 	private static QueryBuilder restrict(Identity identity, boolean isAlias) {
 		BoolQueryBuilder query = QueryBuilders.boolQuery().must(restrict(identity));
-		QueryBuilder clause = QueryBuilders.wildcardQuery(Field.concat(Bucket.ALIASES.getName(), AliasField.ID.getName()), "*");
+		QueryBuilder clause = QueryBuilders.wildcardQuery(Field.concat(Bucket.ALIASES.getName(), AliasField.ID), "*");
 		if (isAlias) {
 			query.must(clause);
 		} else {

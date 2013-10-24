@@ -12,9 +12,9 @@ public class DateTimeField extends Field<DateTime> {
 	public DateTimeField(String name) {
 		super(name, DateTime.class, "date");
 		offset = new OffsetDateTimeField(name);
+		offset.copyConstraintBuilders(this);
 		local = new LocalDateTimeField(name);
-		addConstraintBuilders(offset.getConstraintBuilders());
-		addConstraintBuilders(local.getConstraintBuilders());
+		local.copyConstraintBuilders(this);
 	}
 
 	@Override

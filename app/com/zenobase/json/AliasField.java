@@ -8,23 +8,25 @@ import com.zenobase.models.Alias;
 
 public class AliasField extends Field<Alias> {
 
-	public static final TokenField ID = new TokenField("@id", true);
+	public static final String ID = "@id";
+
+	private final NestedField<String> idField = nest(new TokenField(ID, true));
 
 	public AliasField(String name) {
 		super(name, Alias.class, "object");
-		addConstraintBuilders(name, ID);
+		idField.addConstraintBuilders(name, this);
 	}
 
 	@Override
 	public void configureSchema(ObjectNode schema) {
 		super.configureSchema(schema);
 		ObjectNode properties = schema.putObject("properties");
-		configureSchema(properties, ID);
+		configureSchema(properties, idField);
 	}
 
 	@Override
 	protected Alias getValue(JsonNode node) {
-		return new Alias(ID.getValue((ObjectNode) node));
+		return new Alias(idField.getValue((ObjectNode) node));
 	}
 
 	@Override
@@ -34,9 +36,9 @@ public class AliasField extends Field<Alias> {
 			: NullNode.getInstance();
 	}
 
-	private static JsonNode toJson(String id) {
+	private JsonNode toJson(String id) {
 		ObjectNode node = Nodes.newObject();
-		ID.setValue(node, id);
+		idField.setValue(node, id);
 		return node;
 	}
 }

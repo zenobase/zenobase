@@ -16,40 +16,34 @@ import com.zenobase.search.ConstraintBuilder;
 
 public abstract class Field<T> {
 
-	private final Field<?> parent;
 	private final String name;
 	private final Type type;
 	private final String schemaType;
 	private final Multimap<String, ConstraintBuilder> constraintBuilders = ArrayListMultimap.create();
 
 	protected Field(String name, Type type, String schemaType) {
-		this(name, type, schemaType, null);
-	}
-
-	protected Field(String name, Type type, String schemaType, Field<?> parent) {
-		this.parent = parent;
 		this.name = name;
 		this.type = type;
 		this.schemaType = schemaType;
 	}
 
-	public String getName() {
+	public final String getName() {
 		return name;
 	}
 
-	public Type getType() {
+	public final Type getType() {
 		return type;
 	}
 
-	public String getPath() {
-		StringBuilder s = new StringBuilder();
-		if (parent != null) {
-			s.append(parent.getPath()).append('.');
-		}
-		return s.append(name).toString();
+	public final String getSchemaType() {
+		return schemaType;
 	}
 
-	public T getValue(ObjectNode node) {
+	public String getPath() {
+		return name;
+	}
+
+	public final T getValue(ObjectNode node) {
 		JsonNode fieldNode = node.get(name);
 		if (fieldNode != null && fieldNode.isArray() && fieldNode.size() > 0) {
 			return getValue(Iterables.getOnlyElement(((ArrayNode) fieldNode)));
@@ -60,7 +54,7 @@ public abstract class Field<T> {
 		return null;
 	}
 
-	public ImmutableList<T> getValues(ObjectNode node) {
+	public final ImmutableList<T> getValues(ObjectNode node) {
 		ImmutableList.Builder<T> values = ImmutableList.builder();
 		JsonNode fieldNode = node.get(name);
 		if (fieldNode != null && fieldNode.isArray()) {
@@ -74,7 +68,7 @@ public abstract class Field<T> {
 		return values.build();
 	}
 
-	protected ImmutableList<JsonNode> getNodes(ObjectNode node) {
+	protected final ImmutableList<JsonNode> getNodes(ObjectNode node) {
 		ImmutableList.Builder<JsonNode> values = ImmutableList.builder();
 		JsonNode fieldNode = node.get(name);
 		if (fieldNode != null && fieldNode.isArray()) {
@@ -90,7 +84,7 @@ public abstract class Field<T> {
 
 	protected abstract T getValue(JsonNode node);
 
-	public void addValue(ObjectNode node, T value) {
+	public final void addValue(ObjectNode node, T value) {
 		Preconditions.checkNotNull(value, "Can't add null value");
 		JsonNode fieldNode = node.get(name);
 		if (fieldNode == null) {
@@ -108,7 +102,7 @@ public abstract class Field<T> {
 		}
 	}
 
-	public void addValues(ObjectNode node, Iterable<T> values) {
+	public final void addValues(ObjectNode node, Iterable<T> values) {
 		JsonNode fieldNode = node.get(name);
 		if (fieldNode == null) {
 			ArrayNode arrayNode = node.putArray(name);
@@ -125,7 +119,7 @@ public abstract class Field<T> {
 		}
 	}
 
-	public void setValue(ObjectNode node, T value) {
+	public final void setValue(ObjectNode node, T value) {
 		if (value != null) {
 			node.put(name, toJson(value));
 		}
@@ -134,12 +128,12 @@ public abstract class Field<T> {
 		}
 	}
 
-	public void setValues(ObjectNode node, Iterable<T> values) {
+	public final void setValues(ObjectNode node, Iterable<T> values) {
 		ArrayNode arrayNode = node.putArray(name);
 		addValues(arrayNode, values);
 	}
 
-	private void addValues(ArrayNode node, Iterable<T> values) {
+	private final void addValues(ArrayNode node, Iterable<T> values) {
 		for (T value : values) {
 			Preconditions.checkNotNull(value, "Can't add null value");
 			node.add(toJson(value));
@@ -160,24 +154,18 @@ public abstract class Field<T> {
 		field.configureSchema(properties.putObject(field.getName()));
 	}
 
-	public Multimap<String, ConstraintBuilder> getConstraintBuilders() {
+	public final Multimap<String, ConstraintBuilder> getConstraintBuilders() {
 		return constraintBuilders;
 	}
 
-	protected void addConstraintBuilders(Multimap<String, ConstraintBuilder> builders) {
-		for (Map.Entry<String, ConstraintBuilder> entry : builders.entries()) {
-			addConstraintBuilder(entry.getKey(), entry.getValue());
-		}
-	}
-
-	protected void addConstraintBuilders(String path, Field<?> nested) {
-		for (Map.Entry<String, ConstraintBuilder> entry : nested.getConstraintBuilders().entries()) {
-			addConstraintBuilder(concat(path, entry.getKey()), entry.getValue());
-		}
-	}
-
-	protected void addConstraintBuilder(String path, ConstraintBuilder constraint) {
+	protected final void addConstraintBuilder(String path, ConstraintBuilder constraint) {
 		constraintBuilders.put(path, constraint);
+	}
+
+	protected final void copyConstraintBuilders(Field<?> target) {
+		for (Map.Entry<String, ConstraintBuilder> entry : getConstraintBuilders().entries()) {
+			target.addConstraintBuilder(entry.getKey(), entry.getValue());
+		}
 	}
 
 	public void prePersist(ObjectNode node) {
@@ -191,6 +179,10 @@ public abstract class Field<T> {
 	@Override
 	public String toString() {
 		return name;
+	}
+
+	protected <F> NestedField<F> nest(Field<F> field) {
+		return new NestedField<F>(this, field);
 	}
 
 	protected static String internal(String name) {
