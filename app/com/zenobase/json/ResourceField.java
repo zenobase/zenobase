@@ -8,26 +8,26 @@ import com.zenobase.models.Resource;
 
 public class ResourceField extends Field<Resource> {
 
-	private static final TextField TITLE = new TextField("title");
-	private static final TokenField URL = new TokenField("url");
+	private final TextField titleField = new TextField(this, "title");
+	private final TokenField urlField = new TokenField(this, "url", true);
 
 	public ResourceField(String name) {
 		super(name, Resource.class, "object");
-		addConstraintBuilders(TITLE);
-		addConstraintBuilders(URL);
+		addConstraintBuilders(name, titleField);
+		addConstraintBuilders(name, urlField);
 	}
 
 	@Override
 	public void configureSchema(ObjectNode schema) {
 		super.configureSchema(schema);
 		ObjectNode properties = schema.putObject("properties");
-		configureSchema(properties, TITLE);
-		configureSchema(properties, URL);
+		configureSchema(properties, titleField);
+		configureSchema(properties, urlField);
 	}
 
 	@Override
 	protected Resource getValue(JsonNode node) {
-		return new Resource(TITLE.getValue((ObjectNode) node), URL.getValue((ObjectNode) node));
+		return new Resource(titleField.getValue((ObjectNode) node), urlField.getValue((ObjectNode) node));
 	}
 
 	@Override
@@ -37,10 +37,10 @@ public class ResourceField extends Field<Resource> {
 			: NullNode.getInstance();
 	}
 
-	private static JsonNode toJson(String title, String url) {
+	private JsonNode toJson(String title, String url) {
 		ObjectNode node = Nodes.newObject();
-		TITLE.setValue(node, title);
-		URL.setValue(node, url);
+		titleField.setValue(node, title);
+		urlField.setValue(node, url);
 		return node;
 	}
 }

@@ -5,12 +5,20 @@ import com.zenobase.models.Role;
 
 public class RolesField extends MapField<Identity, Role> {
 
-	public static final IdentityField PRINCIPAL = new IdentityField("principal");
-	public static final EnumField<Role> ROLE = EnumField.newInstance("role", Role.class);
+	public static final String PRINCIPAL = "principal";
+	public static final String ROLE = "role";
 
 	public RolesField(String name) {
-		super(name, PRINCIPAL, ROLE);
-		addConstraintBuilders(PRINCIPAL);
-		addConstraintBuilders(ROLE);
+		super(name);
+	}
+
+	@Override
+	protected Field<Identity> getKeyField() {
+		return new IdentityField(this, PRINCIPAL);
+	}
+
+	@Override
+	protected Field<Role> getValueField() {
+		return EnumField.newInstance(this, ROLE, Role.class);
 	}
 }

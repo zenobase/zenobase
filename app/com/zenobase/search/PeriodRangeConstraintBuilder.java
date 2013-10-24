@@ -4,10 +4,15 @@ import com.google.common.collect.Range;
 
 import com.zenobase.common.PeriodRangeParser;
 import com.zenobase.common.StandardPeriod;
+import com.zenobase.json.Field;
 
 public class PeriodRangeConstraintBuilder extends RangeConstraintBuilderSupport<StandardPeriod> {
 
 	private final PeriodRangeParser parser = new PeriodRangeParser();
+
+	public PeriodRangeConstraintBuilder(Field<?> field) {
+		super(field);
+	}
 
 	@Override
 	protected Range<StandardPeriod> parseRange(String value) {

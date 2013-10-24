@@ -22,6 +22,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 
 import com.zenobase.common.Measures;
+import com.zenobase.json.Field;
 import com.zenobase.json.MeasurementField;
 import com.zenobase.json.Nodes;
 import com.zenobase.models.Event;
@@ -128,7 +129,7 @@ public class ScatterPlotFacet extends Facet {
 
 		public DateHistogramFacetBuilder createFacet(String keyField, String interval, DateTimeZone timezone) {
 			return FacetBuilders.dateHistogramFacet(id)
-				.keyField(keyField).valueField(unit == Unit.ONE ? field : field + "." + MeasurementField.VALUE_SI.getName())
+				.keyField(keyField).valueField(unit == Unit.ONE ? field : Field.concat(field, MeasurementField.VALUE_SI.getName()))
 				.interval(interval)
 				.preZone(timezone.toString())
 				.preZoneAdjustLargeInterval(true)

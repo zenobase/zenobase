@@ -47,7 +47,7 @@ public class FilterBuilderSupport {
 			field = field.substring(1);
 		}
 		for (ConstraintBuilder constraint : constraintBuilders.get(field)) {
-			QueryBuilder builder = constraint.build(field, value);
+			QueryBuilder builder = constraint.build(value);
 			if (builder != null) {
 				return addConstraint(builder, negated);
 			}

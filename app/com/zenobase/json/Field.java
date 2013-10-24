@@ -16,12 +16,18 @@ import com.zenobase.search.ConstraintBuilder;
 
 public abstract class Field<T> {
 
+	private final Field<?> parent;
 	private final String name;
 	private final Type type;
 	private final String schemaType;
 	private final Multimap<String, ConstraintBuilder> constraintBuilders = ArrayListMultimap.create();
 
 	protected Field(String name, Type type, String schemaType) {
+		this(null, name, type, schemaType);
+	}
+
+	protected Field(Field<?> parent, String name, Type type, String schemaType) {
+		this.parent = parent;
 		this.name = name;
 		this.type = type;
 		this.schemaType = schemaType;
@@ -33,6 +39,14 @@ public abstract class Field<T> {
 
 	public Type getType() {
 		return type;
+	}
+
+	public String getPath() {
+		StringBuilder s = new StringBuilder();
+		if (parent != null) {
+			s.append(parent.getPath()).append('.');
+		}
+		return s.append(name).toString();
 	}
 
 	public T getValue(ObjectNode node) {
@@ -150,27 +164,20 @@ public abstract class Field<T> {
 		return constraintBuilders;
 	}
 
-	protected void addConstraintBuilder(ConstraintBuilder constraint) {
-		addConstraintBuilder(name, constraint);
-	}
-
 	protected void addConstraintBuilders(Multimap<String, ConstraintBuilder> builders) {
 		for (Map.Entry<String, ConstraintBuilder> entry : builders.entries()) {
 			addConstraintBuilder(entry.getKey(), entry.getValue());
 		}
 	}
 
-	protected void addConstraintBuilders(Field<?> nested) {
+	protected void addConstraintBuilders(String path, Field<?> nested) {
 		for (Map.Entry<String, ConstraintBuilder> entry : nested.getConstraintBuilders().entries()) {
-			addConstraintBuilder(name + "." + entry.getKey(), entry.getValue());
+			addConstraintBuilder(concat(path, entry.getKey()), entry.getValue());
 		}
 	}
 
-	protected void addConstraintBuilder(String name, ConstraintBuilder constraint) {
-		if (name.startsWith("$")) {
-			name = name.substring(1);
-		}
-		constraintBuilders.put(name, constraint);
+	protected void addConstraintBuilder(String path, ConstraintBuilder constraint) {
+		constraintBuilders.put(path, constraint);
 	}
 
 	public void prePersist(ObjectNode node) {
@@ -184,5 +191,13 @@ public abstract class Field<T> {
 	@Override
 	public String toString() {
 		return name;
+	}
+
+	protected static String internal(String name) {
+		return '$' + name;
+	}
+
+	public static String concat(String parent, String field) {
+		return parent + '.' + field;
 	}
 }

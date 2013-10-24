@@ -20,8 +20,9 @@ import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
-import com.zenobase.common.OffsetIntervals;
 import com.zenobase.common.Measures;
+import com.zenobase.common.OffsetIntervals;
+import com.zenobase.json.Field;
 import com.zenobase.json.MeasurementField;
 import com.zenobase.json.Nodes;
 import com.zenobase.models.Event;
@@ -65,7 +66,7 @@ public class MultiplotFacet extends Facet {
 
 	private void addFacet(SearchSourceBuilder builder, String id, String field, Unit<?> unit) {
 		builder.facet(FacetBuilders.dateHistogramFacet(id)
-			.keyField(keyField).valueField(unit == Unit.ONE ? field : field + "." + MeasurementField.VALUE_SI.getName())
+			.keyField(keyField).valueField(unit == Unit.ONE ? field : Field.concat(field, MeasurementField.VALUE_SI.getName()))
 			.interval(interval)
 			.preZone(timezone.toString())
 			.preZoneAdjustLargeInterval(true));

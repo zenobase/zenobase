@@ -4,10 +4,15 @@ import org.joda.time.ReadableDuration;
 import com.google.common.collect.Range;
 
 import com.zenobase.common.DurationRangeParser;
+import com.zenobase.json.Field;
 
 public class DurationRangeConstraintBuilder extends RangeConstraintBuilderSupport<ReadableDuration> {
 
 	private final DurationRangeParser parser = new DurationRangeParser();
+
+	public DurationRangeConstraintBuilder(Field<?> field) {
+		super(field);
+	}
 
 	@Override
 	protected Range<ReadableDuration> parseRange(String value) {

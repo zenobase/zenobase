@@ -12,13 +12,13 @@ import com.zenobase.search.DistanceConstraintBuilder;
 
 public class LocationField extends Field<Location> {
 
-	private static final DecimalField LATITUDE = new DecimalField("lat");
-	private static final DecimalField LONGITUDE = new DecimalField("lon");
+	private final DecimalField latitude = new DecimalField(this, "lat");
+	private final DecimalField longitude = new DecimalField(this, "lon");
 
 	public LocationField(String name) {
 		super(name, Location.class, "geo_point");
-		addConstraintBuilder(new BoundingBoxConstraintBuilder());
-		addConstraintBuilder(new DistanceConstraintBuilder());
+		addConstraintBuilder(name, new BoundingBoxConstraintBuilder(this));
+		addConstraintBuilder(name, new DistanceConstraintBuilder(this));
 	}
 
 	@Override
@@ -29,9 +29,9 @@ public class LocationField extends Field<Location> {
 
 	@Override
 	protected Location getValue(JsonNode node) {
-		BigDecimal latitude = LATITUDE.getValue((ObjectNode) node);
-		BigDecimal longitude = LONGITUDE.getValue((ObjectNode) node);
-		return new Location(latitude, longitude);
+		BigDecimal lat = latitude.getValue((ObjectNode) node);
+		BigDecimal lon = longitude.getValue((ObjectNode) node);
+		return new Location(lat, lon);
 	}
 
 	@Override
@@ -41,10 +41,10 @@ public class LocationField extends Field<Location> {
 			: NullNode.getInstance();
 	}
 
-	private static JsonNode toJson(BigDecimal lat, BigDecimal lon) {
+	private JsonNode toJson(BigDecimal lat, BigDecimal lon) {
 		ObjectNode node = Nodes.newObject();
-		LATITUDE.setValue(node, lat);
-		LONGITUDE.setValue(node, lon);
+		latitude.setValue(node, lat);
+		longitude.setValue(node, lon);
 		return node;
 	}
 }

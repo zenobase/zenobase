@@ -16,11 +16,19 @@ public class IntegerField extends Field<Integer> {
 		this(name, true);
 	}
 
+	public IntegerField(Field<?> parent, String name) {
+		this(parent, name, true);
+	}
+
 	public IntegerField(String name, boolean indexed) {
-		super(name, Long.class, "integer");
+		this(null, name, indexed);
+	}
+
+	public IntegerField(Field<?> parent, String name, boolean indexed) {
+		super(parent, name, Long.class, "integer");
 		this.indexed = indexed;
-		addConstraintBuilder(new DecimalRangeConstraintBuilder());
-		addConstraintBuilder(new TermConstraintBuilder());
+		addConstraintBuilder(name, new DecimalRangeConstraintBuilder(this));
+		addConstraintBuilder(name, new TermConstraintBuilder(this));
 	}
 
 	@Override

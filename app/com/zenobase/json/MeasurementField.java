@@ -22,8 +22,8 @@ public class MeasurementField<Q extends Quantity> extends Field<DecimalMeasure<Q
 
 	public MeasurementField(String name) {
 		super(name, DecimalMeasure.class.getGenericSuperclass(), "object");
-		addConstraintBuilder(new MeasureRangeConstraintBuilder());
-		addConstraintBuilder(new MeasureConstraintBuilder());
+		addConstraintBuilder(name, new MeasureRangeConstraintBuilder(this));
+		addConstraintBuilder(name, new MeasureConstraintBuilder(this));
 	}
 
 	@Override

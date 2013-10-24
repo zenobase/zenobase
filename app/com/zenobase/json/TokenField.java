@@ -17,11 +17,15 @@ public class TokenField extends Field<String> {
 	}
 
 	public TokenField(String name, boolean indexed) {
-		super(name, String.class, "string");
+		this(null, name, indexed);
+	}
+
+	public TokenField(Field<?> parent, String name, boolean indexed) {
+		super(parent, name, String.class, "string");
 		this.indexed = indexed;
 		if (indexed) {
-			addConstraintBuilder(new WildcardConstraintBuilder());
-			addConstraintBuilder(new TermConstraintBuilder());
+			addConstraintBuilder(name, new WildcardConstraintBuilder(this));
+			addConstraintBuilder(name, new TermConstraintBuilder(this));
 		}
 	}
 

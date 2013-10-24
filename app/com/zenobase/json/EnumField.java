@@ -13,9 +13,17 @@ public class EnumField<E extends Enum<E>> extends Field<E> {
 		return new EnumField<T>(name, type);
 	}
 
+	public static <T extends Enum<T>> EnumField<T> newInstance(Field<?> parent, String name, Class<T> type) {
+		return new EnumField<T>(parent, name, type);
+	}
+
 	private EnumField(String name, Class<E> type) {
-		super(name, type, "string");
-		addConstraintBuilder(new TermConstraintBuilder());
+		this(null, name, type);
+	}
+
+	private EnumField(Field<?> parent, String name, Class<E> type) {
+		super(parent, name, type, "string");
+		addConstraintBuilder(name, new TermConstraintBuilder(this));
 	}
 
 	@Override

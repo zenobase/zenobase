@@ -22,7 +22,8 @@ import com.google.common.collect.Maps;
 import com.zenobase.common.LocalInterval;
 import com.zenobase.common.LocalIntervals;
 import com.zenobase.common.Measures;
-import com.zenobase.json.DateTimeField;
+import com.zenobase.json.Field;
+import com.zenobase.json.LocalDateTimeField;
 import com.zenobase.json.MeasurementField;
 import com.zenobase.json.Nodes;
 
@@ -48,8 +49,8 @@ public class LocalTimelineFacet extends Facet {
 	@Override
 	public void configure(SearchSourceBuilder builder) {
 		builder.facet(FacetBuilders.dateHistogramFacet(getId())
-			.keyField(DateTimeField.getName(keyField, true))
-			.valueField(unit == Unit.ONE ? valueField : valueField + "." + MeasurementField.VALUE_SI.getName())
+			.keyField(LocalDateTimeField.getLocalTimePath(keyField))
+			.valueField(unit == Unit.ONE ? valueField : Field.concat(valueField, MeasurementField.VALUE_SI.getName()))
 			.interval(interval)
 			.preZone(DateTimeZone.UTC.toString())
 			.preZoneAdjustLargeInterval(true)

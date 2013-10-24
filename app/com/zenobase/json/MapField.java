@@ -15,11 +15,17 @@ public abstract class MapField<K, V> extends Field<Map.Entry<K, V>> {
 	private final Field<K> keyField;
 	private final Field<V> valueField;
 
-	public MapField(String name, Field<K> keyField, Field<V> valueField) {
+	public MapField(String name) {
 		super(name, Resource.class, "nested");
-		this.keyField = keyField;
-		this.valueField = valueField;
+		this.keyField = getKeyField();
+		this.valueField = getValueField();
+		addConstraintBuilders(name, keyField);
+		addConstraintBuilders(name, valueField);
 	}
+
+	protected abstract Field<K> getKeyField();
+
+	protected abstract Field<V> getValueField();
 
 	@Override
 	public void configureSchema(ObjectNode schema) {

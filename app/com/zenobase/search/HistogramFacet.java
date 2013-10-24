@@ -15,6 +15,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.Lists;
 
 import com.zenobase.common.Measures;
+import com.zenobase.json.Field;
 import com.zenobase.json.MeasurementField;
 import com.zenobase.json.Nodes;
 
@@ -38,7 +39,7 @@ public class HistogramFacet extends Facet {
 	@Override
 	public void configure(SearchSourceBuilder builder) {
 		builder.facet(FacetBuilders.histogramFacet(getId())
-			.field(unit == Unit.ONE ? field : field + "." + MeasurementField.VALUE_SI.getName())
+			.field(unit == Unit.ONE ? field : Field.concat(field, MeasurementField.VALUE_SI.getName()))
 			.interval(getStandardInterval())
 			.comparator(ComparatorType.KEY)
 			.facetFilter(filter));

@@ -8,11 +8,16 @@ import com.google.common.collect.Range;
 
 import com.zenobase.common.MeasureRangeParser;
 import com.zenobase.common.Measures;
+import com.zenobase.json.Field;
 import com.zenobase.json.MeasurementField;
 
 public class MeasureRangeConstraintBuilder extends RangeConstraintBuilderSupport<Measurable<Quantity>> {
 
 	private final MeasureRangeParser parser = new MeasureRangeParser();
+
+	public MeasureRangeConstraintBuilder(Field<?> field) {
+		super(field);
+	}
 
 	@Override
 	protected Range<Measurable<Quantity>> parseRange(String value) {
@@ -20,8 +25,8 @@ public class MeasureRangeConstraintBuilder extends RangeConstraintBuilderSupport
 	}
 
 	@Override
-	protected String getField(String name) {
-		return name + "." + MeasurementField.VALUE_SI.getName();
+	protected String getPath() {
+		return Field.concat(super.getPath(), MeasurementField.VALUE_SI.getName());
 	}
 
 	@Override

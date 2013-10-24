@@ -12,7 +12,7 @@ public class DateTimeField extends Field<DateTime> {
 	public DateTimeField(String name) {
 		super(name, DateTime.class, "date");
 		offset = new OffsetDateTimeField(name);
-		local = new LocalDateTimeField("$" + name);
+		local = new LocalDateTimeField(name);
 		addConstraintBuilders(offset.getConstraintBuilders());
 		addConstraintBuilders(local.getConstraintBuilders());
 	}
@@ -43,13 +43,5 @@ public class DateTimeField extends Field<DateTime> {
 	@Override
 	public void postPersist(ObjectNode node) {
 		local.setValue(node, null);
-	}
-
-	public static String getName(String field, boolean local) {
-		return local ? getName(field, LocalDateTimeField.TIME.getName()) : field;
-	}
-
-	public static String getName(String parent, String field) {
-		return "$" + parent + "." + field;
 	}
 }

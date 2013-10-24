@@ -6,17 +6,25 @@ import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 
 import com.zenobase.common.Measures;
+import com.zenobase.json.Field;
 import com.zenobase.json.MeasurementField;
 
-public class MeasureConstraintBuilder implements ConstraintBuilder {
+public class MeasureConstraintBuilder extends ConstraintBuilder {
 
-	@Override
-	public QueryBuilder build(String field, String value) {
-		return build(field + "." + MeasurementField.VALUE_SI.getName(),
-			Measures.toStandard(Measures.valueOf(value)).getValue());
+	public MeasureConstraintBuilder(Field<?> field) {
+		super(field);
 	}
 
-	private static QueryBuilder build(String field, BigDecimal value) {
-		return QueryBuilders.termQuery(field, value);
+	@Override
+	public QueryBuilder build(String value) {
+		return build(Measures.toStandard(Measures.valueOf(value)).getValue());
+	}
+
+	private QueryBuilder build(BigDecimal value) {
+		return QueryBuilders.termQuery(getPath(), value);
+	}
+
+	private String getPath() {
+		return Field.concat(getField().getPath(), MeasurementField.VALUE_SI.getName());
 	}
 }

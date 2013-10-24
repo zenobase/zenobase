@@ -12,7 +12,7 @@ public class AliasField extends Field<Alias> {
 
 	public AliasField(String name) {
 		super(name, Alias.class, "object");
-		addConstraintBuilders(ID);
+		addConstraintBuilders(name, ID);
 	}
 
 	@Override

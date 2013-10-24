@@ -11,22 +11,22 @@ import com.zenobase.search.LocalDateTimeRangeConstraintBuilder;
 
 public class LocalDateTimeField extends Field<LocalDateTime> {
 
-	public static final OffsetDateTimeField TIME = new OffsetDateTimeField("time");
-	private static final IntegerField MONTH_OF_YEAR = new IntegerField("month_of_year");
-	private static final IntegerField DAY_OF_YEAR = new IntegerField("day_of_year");
-	private static final IntegerField DAY_OF_MONTH = new IntegerField("day_of_month");
-	private static final IntegerField DAY_OF_WEEK = new IntegerField("day_of_week");
-	private static final IntegerField HOUR_OF_DAY = new IntegerField("hour_of_day");
+	private final OffsetDateTimeField timeField = new OffsetDateTimeField(this, "time");
+	private final IntegerField monthOfYearField = new IntegerField(this, "month_of_year");
+	private final IntegerField dayOfYearField = new IntegerField(this, "day_of_year");
+	private final IntegerField dayOfMonthField = new IntegerField(this, "day_of_month");
+	private final IntegerField dayOfWeekField = new IntegerField(this, "day_of_week");
+	private final IntegerField hourOfDayField = new IntegerField(this, "hour_of_day");
 
 	public LocalDateTimeField(String name) {
-		super(name, LocalDateTime.class, "object");
-		addConstraintBuilder(new LocalDateTimeRangeConstraintBuilder(name + "." + TIME.getName()));
-		addConstraintBuilder(new LocalDateTimeConstraintBuilder(name + "." + TIME.getName()));
-		addConstraintBuilders(MONTH_OF_YEAR);
-		addConstraintBuilders(DAY_OF_YEAR);
-		addConstraintBuilders(DAY_OF_MONTH);
-		addConstraintBuilders(DAY_OF_WEEK);
-		addConstraintBuilders(HOUR_OF_DAY);
+		super(internal(name), LocalDateTime.class, "object");
+		addConstraintBuilder(name, new LocalDateTimeRangeConstraintBuilder(timeField));
+		addConstraintBuilder(name, new LocalDateTimeConstraintBuilder(timeField));
+		addConstraintBuilders(name, monthOfYearField);
+		addConstraintBuilders(name, dayOfYearField);
+		addConstraintBuilders(name, dayOfMonthField);
+		addConstraintBuilders(name, dayOfWeekField);
+		addConstraintBuilders(name, hourOfDayField);
 	}
 
 	@Override
@@ -40,12 +40,12 @@ public class LocalDateTimeField extends Field<LocalDateTime> {
 			return NullNode.getInstance();
 		}
 		ObjectNode node = Nodes.newObject();
-		TIME.setValue(node, value.toDateTime(DateTimeZone.UTC));
-		MONTH_OF_YEAR.setValue(node, value.getMonthOfYear());
-		DAY_OF_YEAR.setValue(node, value.getDayOfYear());
-		DAY_OF_MONTH.setValue(node, value.getDayOfMonth());
-		DAY_OF_WEEK.setValue(node, value.getDayOfWeek());
-		HOUR_OF_DAY.setValue(node, value.getHourOfDay());
+		timeField.setValue(node, value.toDateTime(DateTimeZone.UTC));
+		monthOfYearField.setValue(node, value.getMonthOfYear());
+		dayOfYearField.setValue(node, value.getDayOfYear());
+		dayOfMonthField.setValue(node, value.getDayOfMonth());
+		dayOfWeekField.setValue(node, value.getDayOfWeek());
+		hourOfDayField.setValue(node, value.getHourOfDay());
 		return node;
 	}
 
@@ -53,11 +53,19 @@ public class LocalDateTimeField extends Field<LocalDateTime> {
 	public void configureSchema(ObjectNode schema) {
 		super.configureSchema(schema);
 		ObjectNode properties = schema.putObject("properties");
-		configureSchema(properties, TIME);
-		configureSchema(properties, MONTH_OF_YEAR);
-		configureSchema(properties, DAY_OF_YEAR);
-		configureSchema(properties, DAY_OF_MONTH);
-		configureSchema(properties, DAY_OF_WEEK);
-		configureSchema(properties, HOUR_OF_DAY);
+		configureSchema(properties, timeField);
+		configureSchema(properties, monthOfYearField);
+		configureSchema(properties, dayOfYearField);
+		configureSchema(properties, dayOfMonthField);
+		configureSchema(properties, dayOfWeekField);
+		configureSchema(properties, hourOfDayField);
+	}
+
+	public static String getLocalTimePath(String parent) {
+		return getLocalTimePath(parent, "time");
+	}
+
+	public static String getLocalTimePath(String parent, String field) {
+		return concat(internal(parent), field);
 	}
 }

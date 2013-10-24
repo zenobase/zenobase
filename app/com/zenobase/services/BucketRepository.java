@@ -15,6 +15,7 @@ import com.google.common.base.Preconditions;
 import com.zenobase.common.Callback;
 import com.zenobase.common.PartialList;
 import com.zenobase.json.AliasField;
+import com.zenobase.json.Field;
 import com.zenobase.json.RolesField;
 import com.zenobase.models.Bucket;
 import com.zenobase.models.BucketList;
@@ -91,12 +92,12 @@ public class BucketRepository extends RepositorySupport<Bucket> {
 
 	private static QueryBuilder restrict(Identity identity) {
 		return QueryBuilders.nestedQuery(Bucket.ROLES.getName(),
-			QueryBuilders.termQuery(RolesField.PRINCIPAL.getName(), identity.getId()));
+			QueryBuilders.termQuery(RolesField.PRINCIPAL, identity.getId()));
 	}
 
 	private static QueryBuilder restrict(Identity identity, boolean isAlias) {
 		BoolQueryBuilder query = QueryBuilders.boolQuery().must(restrict(identity));
-		QueryBuilder clause = QueryBuilders.wildcardQuery(Bucket.ALIASES + "." + AliasField.ID, "*");
+		QueryBuilder clause = QueryBuilders.wildcardQuery(Field.concat(Bucket.ALIASES.getName(), AliasField.ID.getName()), "*");
 		if (isAlias) {
 			query.must(clause);
 		} else {

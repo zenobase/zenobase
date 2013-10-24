@@ -18,7 +18,8 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
 
 import com.zenobase.common.Measures;
-import com.zenobase.json.DateTimeField;
+import com.zenobase.json.Field;
+import com.zenobase.json.LocalDateTimeField;
 import com.zenobase.json.MeasurementField;
 import com.zenobase.json.Nodes;
 import com.zenobase.models.Event;
@@ -48,7 +49,7 @@ public class PolarFacet extends Facet {
 	public void configure(SearchSourceBuilder builder) {
 		builder.facet(FacetBuilders.termsStatsFacet(getId())
 			.keyField(interval.getField(keyField))
-			.valueField(unit == Unit.ONE ? valueField : valueField + "." + MeasurementField.VALUE_SI.getName())
+			.valueField(unit == Unit.ONE ? valueField : Field.concat(valueField, MeasurementField.VALUE_SI.getName()))
 			.order(TermsStatsFacet.ComparatorType.TERM).size(31)
 			.facetFilter(filter));
 	}
@@ -153,7 +154,7 @@ public class PolarFacet extends Facet {
 		}
 
 		public String getField(String parent) {
-			return DateTimeField.getName(parent, toString().toLowerCase());
+			return LocalDateTimeField.getLocalTimePath(parent, toString().toLowerCase());
 		}
 
 		public abstract String getLabel(int i);

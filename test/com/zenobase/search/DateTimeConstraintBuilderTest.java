@@ -86,4 +86,11 @@ public class DateTimeConstraintBuilderTest extends ConstraintBuilderTestSupport 
 		ObjectNode result = execute();
 		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(2);
 	}
+
+	@Test
+	public void testHourOfDayConstraint() {
+		addConstraint("%s.hour_of_day:%s", Event.TIMESTAMP, "12");
+		ObjectNode result = execute();
+		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(2);
+	}
 }

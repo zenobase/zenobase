@@ -7,16 +7,22 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.BoundType;
 import com.google.common.collect.Range;
 
-public abstract class RangeConstraintBuilderSupport<C extends Comparable<C>> implements ConstraintBuilder {
+import com.zenobase.json.Field;
 
-	@Override
-	public QueryBuilder build(String field, String value) {
-		Range<C> range = parseRange(value);
-		return range != null ? build(field, range) : null;
+public abstract class RangeConstraintBuilderSupport<C extends Comparable<C>> extends ConstraintBuilder {
+
+	public RangeConstraintBuilderSupport(Field<?> field) {
+		super(field);
 	}
 
-	private QueryBuilder build(String field, Range<C> range) {
-		RangeQueryBuilder query = QueryBuilders.rangeQuery(getField(field));
+	@Override
+	public QueryBuilder build(String value) {
+		Range<C> range = parseRange(value);
+		return range != null ? build(range) : null;
+	}
+
+	private QueryBuilder build(Range<C> range) {
+		RangeQueryBuilder query = QueryBuilders.rangeQuery(getPath());
 		if (range.hasLowerBound()) {
 			if (range.lowerBoundType() == BoundType.CLOSED) {
 				query = query.gte(getValue(range.lowerEndpoint()));
@@ -38,8 +44,8 @@ public abstract class RangeConstraintBuilderSupport<C extends Comparable<C>> imp
 
 	protected abstract Range<C> parseRange(String value);
 
-	protected String getField(String name) {
-		return name;
+	protected String getPath() {
+		return getField().getPath();
 	}
 
 	protected abstract Object getValue(C value);
