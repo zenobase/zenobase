@@ -74,10 +74,14 @@ Release Procedure
 
   13. Set the "keep this build forever" flag [CloudBees].
 
-  14. Cleanup (optional):
+  14. Move the "prod" tag to HEAD.
 
-      14.1. Remove stopped instances [OpsWorks].
+  15. Cleanup (optional):
 
-      14.2. Remove the "keep this build forever" flag from builds older than a month or so [CloudBees].
+      15.1. Remove stopped instances [OpsWorks].
 
-      14.3. Remove instances that are no longer reporting data [New Relic].
+      15.2. Remove the "keep this build forever" flag from builds older than a month or so [CloudBees].
+
+      15.3. Remove instances that are no longer reporting data [New Relic].
+
+      15.4. (if migrating) Remove all but the last three S3 buckets [AWS Console].
