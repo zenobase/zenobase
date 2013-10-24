@@ -23,10 +23,10 @@ public abstract class Field<T> {
 	private final Multimap<String, ConstraintBuilder> constraintBuilders = ArrayListMultimap.create();
 
 	protected Field(String name, Type type, String schemaType) {
-		this(null, name, type, schemaType);
+		this(name, type, schemaType, null);
 	}
 
-	protected Field(Field<?> parent, String name, Type type, String schemaType) {
+	protected Field(String name, Type type, String schemaType, Field<?> parent) {
 		this.parent = parent;
 		this.name = name;
 		this.type = type;

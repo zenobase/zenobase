@@ -11,6 +11,6 @@ public class SoundLevelFieldTest extends FieldTestSupport {
 
 	@Test
 	public void test() {
-		roundtrip(new SoundLevelField(FIELD_NAME), DecimalMeasure.valueOf(new BigDecimal("40"), NonSI.DECIBEL));
+		roundtrip(new SoundField(FIELD_NAME), DecimalMeasure.valueOf(new BigDecimal("40"), NonSI.DECIBEL));
 	}
 }

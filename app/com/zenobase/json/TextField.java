@@ -12,11 +12,11 @@ import com.zenobase.search.WildcardConstraintBuilder;
 public class TextField extends Field<String> {
 
 	public TextField(String name) {
-		this(null, name);
+		this(name, null);
 	}
 
-	public TextField(Field<?> parent, String name) {
-		super(parent, name, String.class, "string");
+	public TextField(String name, Field<?> parent) {
+		super(name, String.class, "string", parent);
 		addConstraintBuilder(name, new PhraseConstraintBuilder(getPath()));
 		addConstraintBuilder(name, new WildcardConstraintBuilder(getPath()));
 		addConstraintBuilder(name, new TermConstraintBuilder(getPath()));

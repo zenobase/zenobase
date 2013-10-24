@@ -8,8 +8,8 @@ import com.zenobase.models.Resource;
 
 public class ResourceField extends Field<Resource> {
 
-	private final TextField titleField = new TextField(this, "title");
-	private final TokenField urlField = new TokenField(this, "url", true);
+	private final TextField titleField = new TextField("title", this);
+	private final TokenField urlField = new TokenField("url", true, this);
 
 	public ResourceField(String name) {
 		super(name, Resource.class, "object");

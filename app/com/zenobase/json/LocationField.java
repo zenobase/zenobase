@@ -12,8 +12,8 @@ import com.zenobase.search.DistanceConstraintBuilder;
 
 public class LocationField extends Field<Location> {
 
-	private final DecimalField latitude = new DecimalField(this, "lat");
-	private final DecimalField longitude = new DecimalField(this, "lon");
+	private final DecimalField latitude = new DecimalField("lat", this);
+	private final DecimalField longitude = new DecimalField("lon", this);
 
 	public LocationField(String name) {
 		super(name, Location.class, "geo_point");

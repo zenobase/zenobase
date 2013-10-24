@@ -11,12 +11,12 @@ import com.zenobase.search.LocalDateTimeRangeConstraintBuilder;
 
 public class LocalDateTimeField extends Field<LocalDateTime> {
 
-	private final OffsetDateTimeField timeField = new OffsetDateTimeField(this, "time");
-	private final IntegerField monthOfYearField = new IntegerField(this, "month_of_year");
-	private final IntegerField dayOfYearField = new IntegerField(this, "day_of_year");
-	private final IntegerField dayOfMonthField = new IntegerField(this, "day_of_month");
-	private final IntegerField dayOfWeekField = new IntegerField(this, "day_of_week");
-	private final IntegerField hourOfDayField = new IntegerField(this, "hour_of_day");
+	private final OffsetDateTimeField timeField = new OffsetDateTimeField("time", this);
+	private final IntegerField monthOfYearField = new IntegerField("month_of_year", true, this);
+	private final IntegerField dayOfYearField = new IntegerField("day_of_year", true, this);
+	private final IntegerField dayOfMonthField = new IntegerField("day_of_month", true, this);
+	private final IntegerField dayOfWeekField = new IntegerField("day_of_week", true, this);
+	private final IntegerField hourOfDayField = new IntegerField("hour_of_day", true, this);
 
 	public LocalDateTimeField(String name) {
 		super(internal(name), LocalDateTime.class, "object");

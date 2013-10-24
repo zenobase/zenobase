@@ -9,11 +9,11 @@ import com.fasterxml.jackson.databind.node.NullNode;
 public class DecimalField extends Field<BigDecimal> {
 
 	public DecimalField(String name) {
-		this(null, name);
+		this(name, null);
 	}
 
-	public DecimalField(Field<?> parent, String name) {
-		super(parent, name, BigDecimal.class, "double");
+	public DecimalField(String name, Field<?> parent) {
+		super(name, BigDecimal.class, "double", parent);
 	}
 
 	@Override

@@ -16,11 +16,11 @@ import com.zenobase.search.PeriodRangeConstraintBuilder;
 public class OffsetDateTimeField extends Field<DateTime> {
 
 	public OffsetDateTimeField(String name) {
-		this(null, name);
+		this(name, null);
 	}
 
-	public OffsetDateTimeField(Field<?> parent, String name) {
-		super(parent, name, DateTime.class, "date");
+	public OffsetDateTimeField(String name, Field<?> parent) {
+		super(name, DateTime.class, "date", parent);
 		addConstraintBuilder(name, new PeriodRangeConstraintBuilder(getPath()));
 		addConstraintBuilder(name, new EpochDateTimeRangeConstraintBuilder(getPath()));
 		addConstraintBuilder(name, new OffsetDateTimeRangeConstraintBuilder(getPath()));

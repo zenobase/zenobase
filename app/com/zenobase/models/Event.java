@@ -23,7 +23,7 @@ import com.zenobase.json.RatingField;
 import com.zenobase.json.ResourceField;
 import com.zenobase.json.Schema;
 import com.zenobase.json.SchemaBuilder;
-import com.zenobase.json.SoundLevelField;
+import com.zenobase.json.SoundField;
 import com.zenobase.json.TemperatureField;
 import com.zenobase.json.TextField;
 import com.zenobase.json.TokenField;
@@ -54,7 +54,7 @@ public class Event extends DomainNode {
 	public static final ConcentrationField CONCENTRATION = new ConcentrationField("concentration");
 	public static final IntegerField HUMIDITY = new IntegerField("humidity");
 	public static final PressureField PRESSURE = new PressureField("pressure");
-	public static final SoundLevelField SOUND = new SoundLevelField("sound");
+	public static final SoundField SOUND = new SoundField("sound");
 	public static final EnergyField ENERGY = new EnergyField("energy");
 	public static final TemperatureField TEMPERATURE = new TemperatureField("temperature");
 	public static final RatingField RATING = new RatingField("rating");
