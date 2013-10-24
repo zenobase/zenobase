@@ -1632,7 +1632,9 @@
 					tooltip : {
 						shared : true,
 						hideDelay : 0,
-						crosshairs : [ false, false ]
+						crosshairs : false,
+						headerFormat : '<b>{point.key}</b>: ',
+						pointFormat : '{point.y}'
 					},
 					plotOptions : {
 						series : {
@@ -1661,7 +1663,7 @@
 					}
 				};
 				$.each($scope.intervals, function(i, interval) {
-					options.xAxis.categories.push(field.toText(interval.from) + ' - ' + field.toText(interval.to));
+					options.xAxis.categories.push(field.toText(interval.from) + '..' + field.toText(interval.to));
 					options.series[0].data.push(interval.count);
 				});
 				$scope.chartOptions = options;
