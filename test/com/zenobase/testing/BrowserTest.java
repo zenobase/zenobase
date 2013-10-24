@@ -280,11 +280,8 @@ public class BrowserTest {
 				wait.withMessage("sign in dialog is displayed").until(ExpectedConditions.visibilityOfElementLocated(By.id("sign-in-dialog")));
 
 				// try to log back in, reset password
-				assertThat($("#sign-in-button")).isNotEnabled();
 				$("#sign-in-username").sendKeys("jdoe");
-				assertThat($("#sign-in-button")).isNotEnabled();
 				$("#sign-in-password").sendKeys("????????");
-				assertThat($("#sign-in-button")).isEnabled();
 				$("#sign-in-button").click();
 				wait.withMessage("sign in message is displayed").until(ExpectedConditions.visibilityOfElementLocated(By.id("sign-in-message")));
 				$("#lost-password-link").click();
