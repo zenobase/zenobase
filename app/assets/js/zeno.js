@@ -1952,15 +1952,7 @@
 					}],
 					plotOptions : {
 						series : {
-							animation : false,
-							cursor : 'pointer',
-							events : {
-								click : function(event) {
-									$scope.$apply(function() {
-										$scope.addConstraint($scope.keyField, event.point.options.filter, true);
-									});
-								}
-							}
+							animation : false
 						},
 						column : {
 							color : '#aaa',
@@ -1982,6 +1974,16 @@
 						enabled: false
 					}
 				};
+				if ($scope.interval != Interval.VALUES[Interval.VALUES.length - 1]) {
+					options.plotOptions.series.cursor = 'pointer';
+					options.plotOptions.series.events = {
+						click : function(event) {
+							$scope.$apply(function() {
+								$scope.addConstraint($scope.keyField, event.point.options.filter, true);
+							});
+						}
+					};
+				}
 				if ($scope.settings.placement === 'top') {
 					options.chart.height = 150;
 				}
