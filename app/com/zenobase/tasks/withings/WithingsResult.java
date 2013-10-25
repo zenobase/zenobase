@@ -9,10 +9,10 @@ import javax.measure.quantity.Mass;
 import javax.measure.unit.SI;
 import javax.measure.unit.Unit;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 
@@ -28,13 +28,14 @@ class WithingsResult {
 	private final Identity author;
 	private final String tag;
 	private final Unit<Mass> unit;
-	private final DateTimeZone timezone = DateTimeZone.UTC;
+	private final DateTimeZone timezone;
 
-	public WithingsResult(ObjectNode node, Identity author, String tag, Unit<Mass> unit) {
+	public WithingsResult(ObjectNode node, Identity author, String tag, Unit<Mass> unit, DateTimeZone timezone) {
 		this.node = node;
 		this.author = author;
 		this.tag = tag;
 		this.unit = unit;
+		this.timezone = timezone;
 	}
 
 	public int getStatus() {

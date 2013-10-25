@@ -4,14 +4,15 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.measure.quantity.Mass;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
+import org.joda.time.LocalDateTime;
 import org.scribe.builder.ServiceBuilder;
 import org.scribe.model.OAuthRequest;
 import org.scribe.model.Response;
 import org.scribe.model.SignatureType;
 import org.scribe.model.Verb;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 
@@ -41,15 +42,17 @@ public class WithingsTaskManager extends OAuthTaskManager {
 
 	@Override
 	public WithingsTask newTask(String bucketId, Identity principal, ObjectNode settings) {
+		DateTimeZone timezone = DateTimeZone.forID(Objects.firstNonNull(settings.path("timezone").textValue(), "UTC"));
 		WithingsTask task = super.newTask(bucketId, principal, settings).as(WithingsTask.class);
 		task.setTag(Objects.firstNonNull(settings.path("tag").textValue(), "steps"));
 		task.setUnit(Measures.<Mass>parseUnit(Objects.firstNonNull(settings.path("unit").textValue(), "kg")));
-		task.setMarker(parseMarker(settings.path("marker").textValue()));
+		task.setTimezone(timezone);
+		task.setMarker(parseMarker(settings.path("marker").textValue(), timezone));
 		return task;
 	}
 
-	private static String parseMarker(String marker) {
-		return marker != null ? Long.toString(DateTime.parse(marker).getMillis() / 1000) : null;
+	private static String parseMarker(String marker, DateTimeZone timezone) {
+		return marker != null ? Long.toString(LocalDateTime.parse(marker.replaceAll("Z", "")).toDateTime(timezone).getMillis() / 1000) : null;
 	}
 
 	@Override
@@ -88,7 +91,7 @@ public class WithingsTaskManager extends OAuthTaskManager {
 		getService(task).signRequest(task.getToken(), request);
 		Response response = request.send();
 		checkResponse(task, request, response);
-		WithingsResult result = new WithingsResult(parseObject(response), task.getPrincipal(), task.getTag(), task.getUnit());
+		WithingsResult result = new WithingsResult(parseObject(response), task.getPrincipal(), task.getTag(), task.getUnit(), task.getTimezone());
 		Preconditions.checkState(result.getStatus() == 0, "Expected status <0> but got <%s> for task <%s>", result.getStatus(), task.getId());
 		return createCommand(task, result);
 	}

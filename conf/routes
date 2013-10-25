@@ -30,7 +30,6 @@ PUT     /buckets/:bucketId/:eventId  @com.zenobase.controllers.EventController.u
 DELETE  /buckets/:bucketId/:eventId  @com.zenobase.controllers.EventController.delete(bucketId, eventId)
 
 GET     /buckets/:bucketId/tags/     @com.zenobase.controllers.TagController.get(bucketId)
-GET     /og                          @com.zenobase.controllers.OpenGraphController.get(url)
 
 GET     /journal/                    @com.zenobase.controllers.JournalController.get(q ?= null, offset : Int, limit : Int)
 POST    /journal/                    @com.zenobase.controllers.JournalController.post()
@@ -52,4 +51,6 @@ DELETE  /authorizations/             @com.zenobase.controllers.AuthorizationList
 GET     /authorizations/:authId      @com.zenobase.controllers.AuthorizationController.get(authId)
 DELETE  /authorizations/:authId      @com.zenobase.controllers.AuthorizationController.delete(authId)
 
+GET     /og                          @com.zenobase.controllers.OpenGraphController.get(url)
+GET     /tz                          @com.zenobase.controllers.TimezoneListController.get()
 GET     /*file                       com.zenobase.controllers.Assets.at(path="/public", file)

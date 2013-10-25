@@ -266,6 +266,10 @@
 				<select name="unit" data-ng-model="settings.unit" data-ng-options="unit for unit in getUnits()" required></select>
 			</div>
 			<div class="control-group">
+				<label for="timezone" class="control-label">Timezone</label>
+				<select name="timezone" data-ng-model="settings.timezone" data-ng-options="timezone for timezone in timezones" required></select>
+			</div>
+			<div class="control-group">
 				<label for="marker" class="control-label">Starting from</label>
 				<input class="input-small" type="text" data-ui-datepicker data-ng-model="settings.marker"/>
 			</div>

@@ -35,12 +35,12 @@ public abstract class OAuthControllerTestSupport extends ControllerTestSupport {
 	}
 
 	protected static void assertGranted(Result result) {
-		assertThat(result).hasStatus(Http.Status.OK).asNode()
+		assertThat(result).hasStatus(Http.Status.OK).asObjectNode()
 			.path("access_token").isNotNull();
 	}
 
 	protected static void assertDenied(Result result, String expectedError) {
-		assertThat(result).hasStatus(Http.Status.BAD_REQUEST).asNode()
+		assertThat(result).hasStatus(Http.Status.BAD_REQUEST).asObjectNode()
 			.path("error").isEqualTo(expectedError);
 	}
 }

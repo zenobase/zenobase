@@ -3,8 +3,9 @@ package com.zenobase.tasks.withings;
 import javax.measure.quantity.Mass;
 import javax.measure.unit.Unit;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.joda.time.DateTimeZone;
 import org.scribe.model.Token;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import com.zenobase.common.Measures;
 import com.zenobase.json.IntegerField;
@@ -18,6 +19,7 @@ public class WithingsTask extends OAuthTask {
 	public static final IntegerField USER_ID = new IntegerField("userId");
 	public static final TokenField TAG = new TokenField("tag");
 	public static final TokenField UNIT = new TokenField("unit");
+	public static final TokenField TIMEZONE = new TokenField("timezone");
 
 	public WithingsTask(ObjectNode node) {
 		super(node);
@@ -47,6 +49,15 @@ public class WithingsTask extends OAuthTask {
 
 	public void setUnit(Unit<Mass> unit) {
 		setSetting(UNIT, unit.toString());
+	}
+
+	public DateTimeZone getTimezone() {
+		String value = getSetting(TIMEZONE);
+		return value != null ? DateTimeZone.forID(value) : DateTimeZone.UTC;
+	}
+
+	public void setTimezone(DateTimeZone timezone) {
+		setSetting(TIMEZONE, timezone != null ? timezone.getID() : null);
 	}
 
 	@Override

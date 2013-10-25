@@ -75,7 +75,7 @@ public class UserControllerHttpPostTest extends UserControllerTestSupport {
 		when(dispatcher.dispatch(Matchers.any(CompoundCommand.class))).thenReturn(commandId);
 		PasswordResetKey key = new PasswordResetKey(user);
 		Result result = call(user.getName(), new UpdateUserForm("newpassword",  key.getKey(), key.getExpirationToken()).toJson());
-		assertThat(result).hasStatus(OK).hasHeader(COMMAND_ID, commandId).asNode().path("access_code").isNotNull();
+		assertThat(result).hasStatus(OK).hasHeader(COMMAND_ID, commandId).asObjectNode().path("access_code").isNotNull();
 	}
 
 	@Test

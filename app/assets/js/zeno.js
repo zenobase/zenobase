@@ -3353,14 +3353,18 @@
 		$scope.init();
 	}]);
 
-	app.controller('WithingsSettingsController', ['$scope', 'Field', function($scope, Field) {
+	app.controller('WithingsSettingsController', ['$scope', '$http', 'Field', function($scope, $http, Field) {
 
 		$scope.init = function() {
 			$scope.settings = $scope.$parent.$parent.settings = {
 					tag : 'body',
-					unit : 'lb',
-					marker : new Date(moment().utc().startOf('month').valueOf())
+					unit : 'kg',
+					marker : new Date(moment().utc().startOf('month').valueOf()),
+					timezone : 'UTC'
 			};
+			$http.get('/tz').success(function(response) {
+				$scope.timezones = response;
+			});
 		};
 		$scope.getUnits = function() {
 			return Field.find('weight').units;

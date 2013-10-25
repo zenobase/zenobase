@@ -42,7 +42,7 @@ public class BucketControllerHttpGetTest extends BucketControllerTestSupport {
 		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
 		when(buckets.find(bucket.getId())).thenReturn(bucket.copy());
 		Result result = call(bucket.getId(), true);
-		assertThat(result).hasStatus(OK).asNode().path("label").isEqualTo(bucket.getLabel());
+		assertThat(result).hasStatus(OK).asObjectNode().path("label").isEqualTo(bucket.getLabel());
 	}
 
 	@Test
