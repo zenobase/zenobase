@@ -623,6 +623,18 @@
 		</div>
 	</script>
 
+	<script id="/create-percentage.html" type="text/ng-template">
+		<button class="close" data-ng-click="reset()">&times;</button>
+		<div data-ng-controller="CreatePercentageFieldController">
+			<div class="control-group">
+				<input id="percentage-field" name="percentage" type="number" min="0" max="100" step="0.1" data-ng-model="value"/> %
+			</div>
+			<div class="control-group">
+				<button id="add-percentage-button" class="btn" data-ng-click="addField()" data-ng-disabled="!valid()">Add</button>
+			</div>
+		</div>
+	</script>
+
 	<script id="/create-note.html" type="text/ng-template">
 		<button class="close" data-ng-click="reset()">&times;</button>
 		<div data-ng-controller="CreateNoteFieldController">

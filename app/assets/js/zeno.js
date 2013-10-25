@@ -3160,7 +3160,23 @@
 
 		$scope.init();
 	}]);
-	
+
+	app.controller('CreatePercentageFieldController', ['$scope', function($scope) {
+
+		$scope.init = function() {
+			$scope.value = 0;
+		};
+		$scope.addField = function() {
+			$scope.event.add($scope.field, $scope.value);
+			$scope.reset();
+		};
+		$scope.valid = function() {
+			return $.isNumeric($scope.value);
+		};
+
+		$scope.init();
+	}]);
+
 	app.controller('CreateNoteFieldController', ['$scope', function($scope) {
 
 		$scope.init = function() {
@@ -3580,6 +3596,20 @@
 			toHtml : function(value) {
 				return '<span class="nowrap">' +
 			  	'<i class="' + this.icon + '" title="Weight"></i> ' + this.toText(value) +
+			  '</span>';
+			}
+		});
+
+		register({
+			name : 'percentage',
+			icon : 'icon-th',
+			type : 'numeric',
+			toText : function(value) {
+				return value + '%';
+			},
+			toHtml : function(value) {
+				return '<span class="nowrap">' +
+			  	'<i class="' + this.icon + '" title="Percentage"></i> <abbr title="' + value + '%">' + Math.round(value) + '%</abbr>' +
 			  '</span>';
 			}
 		});

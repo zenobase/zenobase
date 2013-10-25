@@ -18,6 +18,7 @@ import com.google.common.collect.Lists;
 
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
+import com.zenobase.models.Percentage;
 import com.zenobase.models.Resource;
 
 class WithingsResult {
@@ -55,17 +56,26 @@ class WithingsResult {
 	}
 
 	private void addEvents(JsonNode node, List<Event> events) {
+		Event event = new Event();
+		event.setValue(Event.TAG, tag);
+		event.setValue(Event.TIMESTAMP, getDateTime(node, timezone));
+		int count = 0;
 		for (JsonNode measure : node.path("measures")) {
 			switch (measure.path("type").intValue()) {
 				case 1: // weight
-					Event event = new Event();
-					event.setValue(Event.TAG, tag);
 					event.setValue(Event.WEIGHT, getDecimalMeasure(measure, unit));
-					event.setValue(Event.TIMESTAMP, getDateTime(node, timezone));
-					event.setValue(Event.AUTHOR, author);
-					event.setValue(Event.SOURCE, SOURCE);
-					events.add(event);
+					++count;
+					break;
+				case 6: // fat %
+					event.setValue(Event.PERCENTAGE, Percentage.valueOf(getBigDecimal(measure)));
+					++count;
+					break;
 			}
+		}
+		if (count > 0) {
+			event.setValue(Event.AUTHOR, author);
+			event.setValue(Event.SOURCE, SOURCE);
+			events.add(event);
 		}
 	}
 

@@ -18,6 +18,7 @@ import com.zenobase.json.IntegerField;
 import com.zenobase.json.LengthField;
 import com.zenobase.json.LocationField;
 import com.zenobase.json.Nodes;
+import com.zenobase.json.PercentageField;
 import com.zenobase.json.PressureField;
 import com.zenobase.json.RatingField;
 import com.zenobase.json.ResourceField;
@@ -58,13 +59,14 @@ public class Event extends DomainNode {
 	public static final EnergyField ENERGY = new EnergyField("energy");
 	public static final TemperatureField TEMPERATURE = new TemperatureField("temperature");
 	public static final RatingField RATING = new RatingField("rating");
+	public static final PercentageField PERCENTAGE = new PercentageField("percentage");
 	public static final TextField NOTE = new TextField("note");
 
 	private static final ImmutableSet<Field<?>> FIELDS =
 		ImmutableSet.<Field<?>>of(
 			ID, VERSION, AUTHOR, SOURCE, TIMESTAMP, DURATION, FREQUENCY, VELOCITY, BITS, COUNT,
 			LOCATION, TAG, RESOURCE, DISTANCE, HEIGHT, WEIGHT, VOLUME, CONCENTRATION, HUMIDITY, PRESSURE,
-			SOUND, ENERGY, TEMPERATURE, RATING, NOTE);
+			SOUND, ENERGY, TEMPERATURE, RATING, PERCENTAGE, NOTE);
 
 	public Event() {
 		this(Generator.id());
