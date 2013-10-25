@@ -3348,12 +3348,12 @@
 			$scope.settings = $scope.$parent.$parent.settings = {
 					marker : new Date(moment().utc().startOf('month').valueOf())
 			};
-		};
+		};	
 
 		$scope.init();
 	}]);
 
-	app.controller('WithingsSettingsController', ['$scope', '$http', 'Field', function($scope, $http, Field) {
+	app.controller('WithingsSettingsController', ['$scope', '$http', 'Field', 'googleApiKey', function($scope, $http, Field, googleApiKey) {
 
 		$scope.init = function() {
 			$scope.settings = $scope.$parent.$parent.settings = {
@@ -3364,6 +3364,14 @@
 			};
 			$http.get('/tz').success(function(response) {
 				$scope.timezones = response;
+				if (navigator.geolocation) {
+					navigator.geolocation.getCurrentPosition(function(position) {
+						$http.get('/tz?' + $.param({ 'lat' : position.coords.latitude, 'lon' : position.coords.longitude }))
+							.success(function(response) {
+								$scope.settings.timezone = response.timeZoneId;
+							});
+					});
+				}
 			});
 		};
 		$scope.getUnits = function() {

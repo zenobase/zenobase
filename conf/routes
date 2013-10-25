@@ -52,5 +52,5 @@ GET     /authorizations/:authId      @com.zenobase.controllers.AuthorizationCont
 DELETE  /authorizations/:authId      @com.zenobase.controllers.AuthorizationController.delete(authId)
 
 GET     /og                          @com.zenobase.controllers.OpenGraphController.get(url)
-GET     /tz                          @com.zenobase.controllers.TimezoneListController.get()
+GET     /tz                          @com.zenobase.controllers.TimezoneController.get(lat ?= null, lon ?= null)
 GET     /*file                       com.zenobase.controllers.Assets.at(path="/public", file)

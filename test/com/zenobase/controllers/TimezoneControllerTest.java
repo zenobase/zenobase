@@ -9,7 +9,7 @@ import org.junit.Test;
 import play.mvc.Result;
 import com.google.inject.AbstractModule;
 
-public class TimezoneListControllerTest extends ControllerTestSupport {
+public class TimezoneControllerTest extends ControllerTestSupport {
 
 	@Before
 	public void setUp() {
@@ -28,6 +28,6 @@ public class TimezoneListControllerTest extends ControllerTestSupport {
 	}
 
 	private static Result call() {
-		return callAction(com.zenobase.controllers.routes.ref.TimezoneListController.get(), fakeRequest());
+		return callAction(com.zenobase.controllers.routes.ref.TimezoneListController.get(null, null), fakeRequest());
 	}
 }
