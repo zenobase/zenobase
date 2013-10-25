@@ -1598,6 +1598,11 @@
 					chart : {
 						type : 'bar',
 						zoomType : 'x',
+						resetZoomButton : {
+							theme : {
+								display : 'none'
+							}
+						},
 						height : Math.max($scope.intervals.length * 20, 150)
 					},
 					title : null,
@@ -1610,10 +1615,12 @@
 								var max = (event.max !== undefined) ? Math.floor(event.max) : $scope.intervals.length - 1;
 								var from = field.toText($scope.intervals[max].from); 
 								var to = field.toText($scope.intervals[min].to);
-								var range = '[' + from + '..' + to + ')';
-								$scope.$apply(function() {
-									$scope.addConstraint($scope.settings.field, range, true);
-								});
+								if (from != '*' || to != '*') {
+									var range = '[' + from + '..' + to + ')';
+									$scope.$apply(function() {
+										$scope.addConstraint($scope.settings.field, range, true);
+									});
+								}
 								return false;
 							}
 						}
@@ -1883,7 +1890,12 @@
 				var field = Field.find($scope.settings.field);
 				var options = {
 					chart : {
-						zoomType : 'x'
+						zoomType : 'x',
+						resetZoomButton : {
+							theme : {
+								display : 'none'
+							}
+						}
 					},
 					title : null,
 					xAxis : {
@@ -1912,10 +1924,12 @@
 										return false;
 									}
 								});
-								var range = '[' + from + '..' + to + ')';
-								$scope.$apply(function() {
-									$scope.addConstraint($scope.keyField, range, true);
-								});
+								if (from != '*' || to != '*') {
+									var range = '[' + from + '..' + to + ')';
+									$scope.$apply(function() {
+										$scope.addConstraint($scope.keyField, range, true);
+									});
+								}
 								return false;
 							}
 						}
