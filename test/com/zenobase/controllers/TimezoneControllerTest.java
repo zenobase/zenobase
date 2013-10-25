@@ -28,6 +28,6 @@ public class TimezoneControllerTest extends ControllerTestSupport {
 	}
 
 	private static Result call() {
-		return callAction(com.zenobase.controllers.routes.ref.TimezoneListController.get(null, null), fakeRequest());
+		return callAction(com.zenobase.controllers.routes.ref.TimezoneController.get(null, null), fakeRequest());
 	}
 }
