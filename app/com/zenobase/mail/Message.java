@@ -10,12 +10,9 @@ public class Message {
 	private final String text;
 
 	public Message(String to, String subject, String text) {
-		Preconditions.checkNotNull(to);
-		Preconditions.checkNotNull(subject);
-		Preconditions.checkNotNull(text);
-		this.to = to;
-		this.subject = subject;
-		this.text = text;
+		this.to = Preconditions.checkNotNull(to);
+		this.subject = Preconditions.checkNotNull(subject);
+		this.text = Preconditions.checkNotNull(text);
 	}
 
 	public String getTo() {

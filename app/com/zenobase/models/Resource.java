@@ -9,10 +9,8 @@ public class Resource {
 	private final String url;
 
 	public Resource(String title, String url) {
-		Preconditions.checkNotNull(title);
-		Preconditions.checkNotNull(url);
-		this.title = title;
-		this.url = url;
+		this.title = Preconditions.checkNotNull(title);
+		this.url = Preconditions.checkNotNull(url);
 	}
 
 	public String getTitle() {

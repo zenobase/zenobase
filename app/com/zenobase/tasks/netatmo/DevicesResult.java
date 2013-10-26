@@ -2,9 +2,9 @@ package com.zenobase.tasks.netatmo;
 
 import java.util.List;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 
@@ -15,8 +15,7 @@ class DevicesResult {
 	private final JsonNode node;
 
 	public DevicesResult(JsonNode node) {
-		Preconditions.checkNotNull(node);
-		this.node = node;
+		this.node = Preconditions.checkNotNull(node);
 	}
 
 	public boolean isSuccess() {

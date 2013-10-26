@@ -10,10 +10,8 @@ public class Location {
 	private final BigDecimal latitude, longitude;
 
 	public Location(BigDecimal latitude, BigDecimal longitude) {
-		Preconditions.checkNotNull(latitude);
-		Preconditions.checkNotNull(longitude);
-		this.latitude = latitude;
-		this.longitude = longitude;
+		this.latitude = Preconditions.checkNotNull(latitude);
+		this.longitude = Preconditions.checkNotNull(longitude);
 	}
 
 	public Location(String latitude, String longitude) {

@@ -6,8 +6,8 @@ import java.util.List;
 import javax.measure.unit.Dimension;
 import javax.measure.unit.Unit;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import org.joda.time.DateTime;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
@@ -26,10 +26,8 @@ class FeedResult {
 	private final JsonNode node;
 
 	public FeedResult(Identity author, JsonNode node) {
-		Preconditions.checkNotNull(author);
-		Preconditions.checkNotNull(node);
-		this.author = author;
-		this.node = node;
+		this.author = Preconditions.checkNotNull(author);
+		this.node = Preconditions.checkNotNull(node);
 	}
 
 	public boolean isSuccess() {

@@ -10,9 +10,9 @@ import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
 import javax.measure.unit.Unit;
 
+import org.joda.time.DateTime;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
-import org.joda.time.DateTime;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 
@@ -31,12 +31,9 @@ class MeasurementsResult {
 	private final JsonNode node;
 
 	public MeasurementsResult(Identity author, Device device, JsonNode node) {
-		Preconditions.checkNotNull(author);
-		Preconditions.checkNotNull(device);
-		Preconditions.checkNotNull(node);
-		this.author = author;
-		this.device = device;
-		this.node = node;
+		this.author = Preconditions.checkNotNull(author);
+		this.device = Preconditions.checkNotNull(device);
+		this.node = Preconditions.checkNotNull(node);
 	}
 
 	public boolean isSuccess() {

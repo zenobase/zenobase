@@ -14,8 +14,7 @@ public class DomainNode {
 	private final ObjectNode node;
 
 	public DomainNode(ObjectNode node) {
-		Preconditions.checkNotNull(node);
-		this.node = node;
+		this.node = Preconditions.checkNotNull(node);
 	}
 
 	public DomainNode() {

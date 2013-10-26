@@ -36,11 +36,9 @@ public class PolarFacet extends Facet {
 
 	private PolarFacet(String id, String keyField, String valueField, Interval interval, Unit<?> unit, FilterBuilder filter) {
 		super(id);
-		Preconditions.checkNotNull(keyField);
-		Preconditions.checkNotNull(interval);
-		this.keyField = keyField;
-		this.valueField = valueField;
-		this.interval = interval;
+		this.keyField = Preconditions.checkNotNull(keyField);
+		this.valueField = Preconditions.checkNotNull(valueField);
+		this.interval = Preconditions.checkNotNull(interval);
 		this.unit = unit;
 		this.filter = filter;
 	}

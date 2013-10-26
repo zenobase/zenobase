@@ -15,16 +15,11 @@ public class Device {
 	private final Location location;
 
 	public Device(String id, String label, DateTime created, DateTime updated, Location location) {
-		Preconditions.checkNotNull(id);
-		Preconditions.checkNotNull(label);
-		Preconditions.checkNotNull(created);
-		Preconditions.checkNotNull(updated);
-		Preconditions.checkNotNull(location);
-		this.id = id;
-		this.label = label;
-		this.created = created;
-		this.updated = updated;
-		this.location = location;
+		this.id = Preconditions.checkNotNull(id);
+		this.label = Preconditions.checkNotNull(label);
+		this.created = Preconditions.checkNotNull(created);
+		this.updated = Preconditions.checkNotNull(updated);
+		this.location = Preconditions.checkNotNull(location);
 	}
 
 	public String getId() {
