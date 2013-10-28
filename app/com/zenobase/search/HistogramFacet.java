@@ -7,7 +7,6 @@ import javax.measure.unit.Unit;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.index.query.FilterBuilder;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
-import org.elasticsearch.search.facet.FacetBuilders;
 import org.elasticsearch.search.facet.histogram.HistogramFacet.ComparatorType;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -18,17 +17,19 @@ import com.zenobase.common.Measures;
 import com.zenobase.json.Field;
 import com.zenobase.json.MeasurementField;
 import com.zenobase.json.Nodes;
+import com.zenobase.search.facet.decimalhistogram.DecimalHistogramFacet;
+import com.zenobase.search.facet.decimalhistogram.DecimalHistogramFacetBuilder;
 
 public class HistogramFacet extends Facet {
 
 	public static final String TYPE = "histogram";
 
 	private final String field;
-	private final long interval;
+	private final double interval;
 	private final Unit<?> unit;
 	private final FilterBuilder filter;
 
-	public HistogramFacet(String id, String field, long interval, Unit<?> unit, FilterBuilder filter) {
+	public HistogramFacet(String id, String field, double interval, Unit<?> unit, FilterBuilder filter) {
 		super(id);
 		this.field = field;
 		this.interval = interval;
@@ -38,40 +39,46 @@ public class HistogramFacet extends Facet {
 
 	@Override
 	public void configure(SearchSourceBuilder builder) {
-		builder.facet(FacetBuilders.histogramFacet(getId())
-			.field(unit == Unit.ONE ? field : Field.concat(field, MeasurementField.VALUE_SI.getName()))
-			.interval(getStandardInterval())
-			.comparator(ComparatorType.KEY)
-			.facetFilter(filter));
+		String field = unit == Unit.ONE ? this.field : Field.concat(this.field, MeasurementField.VALUE_SI.getName());
+		builder.facet(new DecimalHistogramFacetBuilder(getId(), field, getStandardInterval(), getStandardOffset(), ComparatorType.KEY).facetFilter(filter));
 	}
 
-	private long getStandardInterval() {
-		if (unit == null || Measures.isStandard(unit)) {
-			return interval;
-		}
-		if (SI.CELSIUS.equals(unit)) {
+	private double getStandardInterval() {
+		if (unit == null || Measures.isStandard(unit) || SI.CELSIUS.equals(unit)) {
 			return interval;
 		}
 		if (NonSI.FAHRENHEIT.equals(unit)) {
-			return (long) (interval * 0.556);
+			return interval * (5.0 / 9.0);
 		}
-		return (long) unit.toStandardUnit().convert(interval);
+		return unit.toStandardUnit().convert(interval);
+	}
+
+	private double getStandardOffset() {
+		if (SI.CELSIUS.equals(unit)) {
+			return -273.15;
+		}
+		if (NonSI.FAHRENHEIT.equals(unit)) {
+			return -459.67 * (5.0 / 9.0);
+		}
+		return 0.0;
 	}
 
 	@Override
 	public JsonNode process(SearchResponse response) {
 		ArrayNode result = Nodes.newArray();
-		org.elasticsearch.search.facet.histogram.HistogramFacet facet = response.getFacets().facet(org.elasticsearch.search.facet.histogram.HistogramFacet.class, getId());
-		for (org.elasticsearch.search.facet.histogram.HistogramFacet.Entry entry : Lists.reverse(facet.getEntries())) {
+		DecimalHistogramFacet facet = response.getFacets().facet(DecimalHistogramFacet.class, getId());
+		for (DecimalHistogramFacet.Entry entry : Lists.reverse(facet.getEntries())) {
 			ObjectNode entryNode = result.addObject();
 			entryNode.put("count", entry.getCount());
-			addValue(entryNode, "from", entry.getKey());
-			addValue(entryNode, "to", entry.getKey() + getStandardInterval());
+			double interval = getStandardInterval();
+			double from = entry.getKey(interval) - getStandardOffset();
+			addValue(entryNode, "from", from);
+			addValue(entryNode, "to", from + interval);
 		}
 		return result;
 	}
 
-	private void addValue(ObjectNode parent, String property, long value) {
+	private void addValue(ObjectNode parent, String property, double value) {
 		if (unit != Unit.ONE) {
 			ObjectNode node = parent.putObject(property);
 			node.put("@value", Measures.convert(value, unit));
@@ -89,7 +96,7 @@ public class HistogramFacet extends Facet {
 				return new HistogramFacet(
 					options.get("id"),
 					options.get("field"),
-					options.get("interval", Long.class, 10L),
+					options.get("interval", Double.class, 10.0),
 					unit != null ? Measures.parseUnit(unit) : Unit.ONE,
 					filterParser.parse(options.get("filter")));
 			}
