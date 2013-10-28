@@ -1,7 +1,7 @@
 <div id="{{settings.id}}-content" data-ng-controller="ScatterPlotWidgetController">
 
-	<div id="{{settings.id}}-chart" data-ui-chart-options="chartOptions" data-ng-show="data"></div>
-	<div id="{{settings.id}}-r-chart" data-ui-chart-options="rChartOptions" data-ng-show="data"></div>
+	<div id="{{settings.id}}-chart" data-ui-chart-options="chartOptions" data-ui-id="{{settings.id}}" data-ng-show="data"></div>
+	<div id="{{settings.id}}-r-chart" data-ui-chart-options="rChartOptions" data-ui-id="{{settings.id}}" data-ng-show="data"></div>
 
 	<p data-ng-show="data == null" class="none">Loading...</p>
 

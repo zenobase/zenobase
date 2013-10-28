@@ -1603,7 +1603,8 @@
 								display : 'none'
 							}
 						},
-						height : Math.max($scope.intervals.length * 20, 150)
+						height : Math.max($scope.intervals.length * 20, 150),
+						animation : false
 					},
 					title : null,
 					xAxis : {
@@ -1681,7 +1682,6 @@
 		$scope.register($scope);
 		$scope.$on('result', $scope.update);
 		$scope.$on('refresh', $scope.init);
-		$('#' + $scope.settings.id + '-tab').on('shown', $scope.draw);
 	}]);
 
 	app.controller('HistogramWidgetDialogController', ['$scope', 'WidgetDialogControllerSupport', 'Field', function($scope, WidgetDialogControllerSupport, Field) {
@@ -1894,6 +1894,7 @@
 				var field = Field.find($scope.settings.field);
 				var options = {
 					chart : {
+						animation : false,
 						zoomType : 'x',
 						resetZoomButton : {
 							theme : {
@@ -2026,7 +2027,6 @@
 		$scope.register($scope);
 		$scope.$on('result', $scope.update);
 		$scope.$on('refresh', $scope.init);
-		$('#' + $scope.settings.id + '-tab').on('shown', $scope.draw);
 	}]);
 
 	app.controller('TimelineWidgetDialogController', ['$scope', 'WidgetDialogControllerSupport', 'Field', 'Interval', function($scope, WidgetDialogControllerSupport, Field, Interval) {
@@ -2110,7 +2110,8 @@
 				var options = {
 					chart : {
 						type : 'column',
-						polar: true
+						polar: true,
+						animation : false
 					},
 					title : null,
 					xAxis : {
@@ -2175,7 +2176,6 @@
 		$scope.register($scope);
 		$scope.$on('result', $scope.update);
 		$scope.$on('refresh', $scope.init);
-		$('#' + $scope.settings.id + '-tab').on('shown', $scope.draw);
 	}]);
 
 	app.controller('PolarWidgetDialogController', ['$scope', 'WidgetDialogControllerSupport', 'Field', function($scope, WidgetDialogControllerSupport, Field) {
@@ -2451,7 +2451,8 @@
 				var options = {
 					chart : {
 						type : 'scatter',
-						zoomType: 'xy'
+						zoomType: 'xy',
+						animation : false
 					},
 					title : null,
 					xAxis : {
@@ -2483,6 +2484,7 @@
 					},
 					series : [{
 						data : $scope.data,
+						animation : false,
 						color : 'rgba(119, 152, 191, 0.5)',
 						allowPointSelect : true,
 						marker : {
@@ -2523,7 +2525,8 @@
 							height : 75,
 							plotBorderWidth : 1,
 							plotBackgroundColor : '#fafafa',
-							marginLeft : 65
+							marginLeft : 65,
+							animation : false
 						},
 						title : null,
 						xAxis : {
@@ -2600,7 +2603,6 @@
 		$scope.register($scope);
 		$scope.$on('result', $scope.update);
 		$scope.$on('refresh', $scope.init);
-		$('#' + $scope.settings.id + '-tab').on('shown', $scope.draw);
 	}]);
 
 	app.controller('ScatterPlotWidgetDialogController', ['$scope', 'WidgetDialogControllerSupport', 'Field', 'Interval', function($scope, WidgetDialogControllerSupport, Field, Interval) {
@@ -4114,21 +4116,25 @@
 
 	app.directive('uiChartOptions', function() {
 		return {
-			require : '?ngModel',
 			restrict : 'A',
 			scope : true,
-			link : function($scope, element, attrs) {
+			link : function(scope, element, attrs) {
 				var defaultOptions = {
 					chart : {
 						renderTo : element[0]
 					}
 				};
-				$scope.$watch(attrs.uiChartOptions, function(newOptions) {
+				scope.$watch(attrs.uiChartOptions, function(newOptions) {
 					if (newOptions) {
-						if ($scope.chart) {
-							$scope.chart.destroy();
+						if (scope.chart) {
+							scope.chart.destroy();
 						}
-						$scope.chart = new Highcharts.Chart($.extend(true, {}, newOptions, defaultOptions));
+						scope.chart = new Highcharts.Chart($.extend(true, {}, newOptions, defaultOptions));
+						$('#' + attrs.uiId + '-tab').on('shown', function(e) { 
+					    var parent = $(scope.chart.container).parent();
+					    scope.chart.setSize(parent.width(), parent.height());
+					    scope.chart.hasUserSize = undefined;
+						});
 					}
 				}, true);
 			}
