@@ -3750,7 +3750,7 @@
 			icon : 'icon-time',
 			type : 'numeric',
 			toText : function(value) {
-				return value != null ? moment.duration(Number(value)).countdown() : value; // some durations are stored as strings!
+				return value != null ? moment.duration(value).countdown() : value;
 			},
 			toHtml : function(value) {
 				return '<span class="nowrap">' +
