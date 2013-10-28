@@ -1702,6 +1702,10 @@
 			var f = Field.find($scope.settings.field);
 			return f ? f.units : [];
 		};
+		$scope.valid = function() {
+			return $scope.settings.interval > 0.0;
+		};
+
 		$scope.$watch('settings.field', function() {
 			if (!isUnitValid()) {
 				$scope.settings.unit = null;

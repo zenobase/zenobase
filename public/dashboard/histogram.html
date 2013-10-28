@@ -33,7 +33,7 @@
 				<div class="control-group">
 					<label class="control-label" for="interval">Interval</label>
 					<div class="controls">
-						<input name="interval" type="number" required min="1" data-ng-model="settings.interval"/>
+						<input name="interval" type="number" min="0" step="any" data-ng-model="settings.interval"/>
 						<p class="help-block">The size of each interval in the histogram.</p>
 					</div>
 				</div>
@@ -54,7 +54,7 @@
 			</div>
 			<div class="modal-footer">
 				<button class="btn btn-danger pull-left" data-ng-click="removeWidget(settings)" data-dismiss="modal">Remove</button>
-				<button class="btn btn-primary" data-ng-click="save()" data-ng-disabled="!form.$valid">Update</button>
+				<button class="btn btn-primary" data-ng-click="save()" data-ng-disabled="!form.$valid || !valid()">Update</button>
 				<button class="btn" data-dismiss="modal">Cancel</button>
 			</div>
 		</form>
