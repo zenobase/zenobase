@@ -1694,7 +1694,19 @@
 				? $scope.settings.unit === null
 				: $.inArray($scope.settings.unit, units) != -1;
 		};
+		function getField() {
+			return Field.find($scope.settings.field);
+		}
+		function setInterval(value) {
+			if (value) {
+				$scope.settings.interval = getField().toNumber($scope.interval);
+			}
+		}
 
+		$scope.init = function() {
+			$scope.$parent.init();
+			$scope.interval = getField().toText($scope.settings.interval);
+		}
 		$scope.getFields = function() {
 			return Field.findByType('numeric');
 		};
@@ -1703,13 +1715,16 @@
 			return f ? f.units : [];
 		};
 		$scope.valid = function() {
-			return $scope.settings.interval > 0.0;
+			return $scope.settings.interval > 0.0 && isUnitValid();
 		};
-
+		$scope.$watch('interval', function(value) {
+			setInterval(value);
+		});
 		$scope.$watch('settings.field', function() {
 			if (!isUnitValid()) {
 				$scope.settings.unit = null;
 			}
+			setInterval($scope.interval);
 		});
 	}]);
 
@@ -3488,7 +3503,7 @@
 		var fields = [];
 		var fieldsByName = {};
 
-		var Field = function(name, icon, type, units, readOnly, toText, toHtml, formatAxis) {
+		var Field = function(name, icon, type, units, readOnly, toText, toHtml, toNumber, formatAxis) {
 			this.name = name;
 			this.icon = icon;
 			this.type = type;
@@ -3496,20 +3511,24 @@
 			this.readOnly = readOnly;
 			this.toText = toText;
 			this.toHtml = toHtml;
+			this.toNumber = toNumber;
 			this.formatAxis = formatAxis;
 		}
 
-		Field.prototype.toNumber = function(value) {
+		var toNumber = function(value) {
 			if (value === null) {
 				return null;
 			}
 			if (typeof value === 'number') {
 				return value;
 			}
+			if (typeof value === 'string') {
+				return Number(value);
+			}
 			if (typeof value === 'object' && value.hasOwnProperty('@value')) {
 				return value['@value'];
 			}
-			return undefined;
+			return Number.NaN;
 		};
 		
 		Field.find = function(name) {
@@ -3546,7 +3565,8 @@
 				fieldOptions.readOnly == true, 
 				fieldOptions.toText || function(value) { return value; }, 
 				fieldOptions.toHtml || function(value) { return value; },
-				fieldOptions.formatAxis || function(options) {}
+				fieldOptions.toNumber || toNumber,
+				fieldOptions.formatAxis || function(options) { }
 			);
 			fields.push(field); 
 			fieldsByName[field.name] = field; 
@@ -3581,7 +3601,7 @@
 			type : 'numeric',
 			units : [ 'mi', 'ft', 'in', 'km', 'm', 'cm', 'mm' ],
 			toText : function(value) {
-				return typeof value === 'object' ? value['@value'] + ' ' + value.unit : '';
+				return typeof value === 'object' ? value['@value'] + ' ' + value.unit : value;
 			},
 			toHtml : function(value) {
 				return '<span class="nowrap">' +
@@ -3596,7 +3616,7 @@
 			type : 'numeric',
 			units : [ 'mi', 'ft', 'in', 'km', 'm', 'cm', 'mm' ],
 			toText : function(value) {
-				return typeof value === 'object' ? value['@value'] + ' ' + value.unit : '';
+				return typeof value === 'object' ? value['@value'] + ' ' + value.unit : value;
 			},
 			toHtml : function(value) {
 				return '<span class="nowrap">' +
@@ -3611,7 +3631,7 @@
 			type : 'numeric',
 			units : [ 'lb', 'oz', 'kg', 'g', 'mg', 'st' ],
 			toText : function(value) {
-				return typeof value === 'object' ? value['@value'] + ' ' + value.unit : '';
+				return typeof value === 'object' ? value['@value'] + ' ' + value.unit : value;
 			},
 			toHtml : function(value) {
 				return '<span class="nowrap">' +
@@ -3640,7 +3660,7 @@
 			type : 'numeric',
 			units : [ 'L', 'dL', 'cL', 'mL', 'gal', 'qt', 'pt', 'cups', 'fl_oz' ],
 			toText : function(value) {
-				return typeof value === 'object' ? value['@value'] + ' ' + value.unit : '';
+				return typeof value === 'object' ? value['@value'] + ' ' + value.unit : value;
 			},
 			toHtml : function(value) {
 				return '<span class="nowrap">' +
@@ -3655,7 +3675,7 @@
 			type : 'numeric',
 			units : [ 'g/L', 'mg/L', 'ug/L', 'ng/L', 'g/dL', 'mg/dL', 'ug/dL', 'ng/dL', 'g/mL', 'mg/mL', 'ug/mL', 'ng/mL' ],
 			toText : function(value) {
-				return typeof value === 'object' ? value['@value'] + ' ' + value.unit : '';
+				return typeof value === 'object' ? value['@value'] + ' ' + value.unit : value;
 			},
 			toHtml : function(value) {
 				return '<span class="nowrap">' +
@@ -3681,7 +3701,7 @@
 			type : 'numeric',
 			units : [ 'Pa', 'hPa', 'mmHg', 'inHg', 'psi' ],
 			toText : function(value) {
-				return typeof value === 'object' ? value['@value'] + ' ' + value.unit : '';
+				return typeof value === 'object' ? value['@value'] + ' ' + value.unit : value;
 			},
 			toHtml : function(value) {
 				return '<span class="nowrap">' +
@@ -3696,7 +3716,7 @@
 			type : 'numeric',
 			units : [ 'dB' ],
 			toText : function(value) {
-				return typeof value === 'object' ? value['@value'] + ' ' + value.unit : '';
+				return typeof value === 'object' ? value['@value'] + ' ' + value.unit : value;
 			},
 			toHtml : function(value) {
 				return '<span class="nowrap">' +
@@ -3738,7 +3758,7 @@
 			type : 'numeric',
 			units : [ 'm/s', 'mph', 'kmh', 'kn', 'Mach' ],
 			toText : function(value) {
-				return typeof value === 'object' ? value['@value'] + ' ' + value.unit : '';
+				return typeof value === 'object' ? value['@value'] + ' ' + value.unit : value;
 			},
 			toHtml : function(value) {
 				return '<span class="nowrap">' +
@@ -3759,6 +3779,33 @@
 			  	'<i class="' + this.icon + '" title="Duration"></i> ' + this.toText(value) +
 			  '</span>';
 			},
+			toNumber : function(value) {
+				var n = toNumber(value);
+				if (isNaN(n)) {
+					var valid = true;
+					$.each(value.split(' '), function(i, token) {
+						var m = /^(\d+)(d|h|min|s)?$/.exec(token);
+						if (m) {
+							var ms = Number(m[1]);
+							switch (m[2]) {
+								case 'd':
+									ms *= 24;
+								case 'h':
+									ms *= 60;
+								case 'min':
+									ms *= 60;
+								case 's':
+									ms *= 1000;
+							}
+							n = isNaN(n) ? ms : n + ms;
+						} else {
+							n = Number.NaN;
+							return false;
+						}
+					});
+				}
+				return n;
+			},
 			formatAxis : function(options) {
 				options.type = 'datetime';
 				options.labels = {
@@ -3775,7 +3822,7 @@
 			type : 'numeric',
 			units : [ 'bpm', 'Hz' ],
 			toText : function(value) {
-				return typeof value === 'object' ? value['@value'] + ' ' + value.unit : '';
+				return typeof value === 'object' ? value['@value'] + ' ' + value.unit : value;
 			},
 			toHtml : function(value) {
 				return '<span class="nowrap">' +
@@ -3790,7 +3837,7 @@
 			type : 'numeric',
 			units : [ 'bit', 'B', 'KB', 'MB', 'GB', 'TB', 'PB', 'KiB', 'MiB', 'GiB', 'TiB', 'PiB' ],
 			toText : function(value) {
-				return typeof value === 'object' ? value['@value'] + ' ' + value.unit : '';
+				return typeof value === 'object' ? value['@value'] + ' ' + value.unit : value;
 			},
 			toHtml : function(value) {
 				return '<span class="nowrap">' +
@@ -3816,7 +3863,7 @@
 			type : 'numeric',
 			units : [ 'J', 'kJ', 'cal', 'kcal' ],
 			toText : function(value) {
-				return typeof value === 'object' ? value['@value'] + ' ' + value.unit : '';
+				return typeof value === 'object' ? value['@value'] + ' ' + value.unit : value;
 			},
 			toHtml : function(value) {
 				return '<span class="nowrap">' +
@@ -3831,7 +3878,7 @@
 			type : 'numeric',
 			units : [ 'C', 'F', 'K' ],
 			toText : function(value) {
-				return typeof value === 'object' ? value['@value'] + ' ' + value.unit : '';
+				return typeof value === 'object' ? value['@value'] + ' ' + value.unit : value;
 			},
 			toHtml : function(value) {
 				return '<span class="nowrap">' +
