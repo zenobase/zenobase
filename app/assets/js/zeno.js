@@ -1689,18 +1689,9 @@
 				? $scope.settings.unit === null
 				: $.inArray($scope.settings.unit, units) != -1;
 		};
-		function getField() {
-			return Field.find($scope.settings.field);
-		}
-		function setInterval(value) {
-			if (value) {
-				$scope.settings.interval = getField().toNumber($scope.interval);
-			}
-		}
 
-		$scope.init = function() {
-			$scope.$parent.init();
-			$scope.interval = getField().toText($scope.settings.interval);
+		$scope.getField = function() {
+			return Field.find($scope.settings.field);
 		}
 		$scope.getFields = function() {
 			return Field.findByType('numeric');
@@ -1712,14 +1703,10 @@
 		$scope.valid = function() {
 			return $scope.settings.interval > 0.0 && isUnitValid();
 		};
-		$scope.$watch('interval', function(value) {
-			setInterval(value);
-		});
 		$scope.$watch('settings.field', function() {
 			if (!isUnitValid()) {
 				$scope.settings.unit = null;
 			}
-			setInterval($scope.interval);
 		});
 	}]);
 
@@ -4190,5 +4177,22 @@
 			}
 		};
 	}]);
+
+	app.directive('uiFieldValue', function() {
+		return {
+			require: 'ngModel',
+			link: function(scope, element, attrs, controller) {
+				controller.$parsers.unshift(function(value) {
+					var field = scope.getField();
+					var n = field.toNumber(value);
+					return !isNaN(n) ? n : value;
+				});
+				controller.$formatters.unshift(function(value) {
+					var field = scope.getField();
+					return field.toText(value);
+				});
+			}
+		};
+	});
 
 }());
