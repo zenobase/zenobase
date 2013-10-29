@@ -2037,6 +2037,10 @@
 			}).length > 0;
 		};
 
+		$scope.init = function() {
+			$scope.$parent.init();
+			$scope.settings.interval = $scope.settings.interval || Interval.VALUES[1].name;
+		}
 		$scope.getFields = function() {
 			var fields = Field.findByType('numeric');
 			fields.unshift(Field.find($scope.keyField));
