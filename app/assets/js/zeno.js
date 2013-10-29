@@ -1598,22 +1598,12 @@
 					chart : {
 						type : 'bar',
 						zoomType : 'x',
-						resetZoomButton : {
-							theme : {
-								display : 'none'
-							}
-						},
 						height : Math.max($scope.intervals.length * 20, 150),
-						animation : false
-					},
-					title : null,
-					xAxis : {
-						categories : [],
-						tickLength : 0,
+						animation : false,
 						events : {
-							setExtremes : function(event) {
-								var min = (event.min !== undefined) ? Math.ceil(event.min) : 0;
-								var max = (event.max !== undefined) ? Math.floor(event.max) : $scope.intervals.length - 1;
+							selection : function(event) {
+								var min = (event.xAxis[0].min !== undefined) ? Math.ceil(event.xAxis[0].min) : 0;
+								var max = (event.xAxis[0].max !== undefined) ? Math.floor(event.xAxis[0].max) : $scope.intervals.length - 1;
 								var from = field.toText($scope.intervals[max].from); 
 								var to = field.toText($scope.intervals[min].to);
 								if (from != '*' || to != '*') {
@@ -1625,6 +1615,11 @@
 								return false;
 							}
 						}
+					},
+					title : null,
+					xAxis : {
+						categories : [],
+						tickLength : 0
 					},
 					yAxis : {
 						title : null,
@@ -1911,35 +1906,18 @@
 					chart : {
 						animation : false,
 						zoomType : 'x',
-						resetZoomButton : {
-							theme : {
-								display : 'none'
-							}
-						}
-					},
-					title : null,
-					xAxis : {
-						type : 'datetime',
-						labels : {
-							overflow : 'justify'
-						},
-						minTickInterval : $scope.interval.minTickInterval,
-						tickLength : 5,
-						tickWidth : 1,
-						lineWidth : 1,
-						gridLineWidth : 0,
 						events : {
-							setExtremes : function(event) {
+							selection : function(event) {
 								var from = '*';
 								var to = '*';
 								$.each($scope.times, function(i, time) {
-									if (time.time >= event.min) {
+									if (time.time >= event.xAxis[0].min) {
 										from = time.label;
 										return false;
 									}
 								});
 								$.each($scope.times, function(i, time) {
-									if (time.time >= event.max) {
+									if (time.time >= event.xAxis[0].max) {
 										to = time.label;
 										return false;
 									}
@@ -1953,6 +1931,18 @@
 								return false;
 							}
 						}
+					},
+					title : null,
+					xAxis : {
+						type : 'datetime',
+						labels : {
+							overflow : 'justify'
+						},
+						minTickInterval : $scope.interval.minTickInterval,
+						tickLength : 5,
+						tickWidth : 1,
+						lineWidth : 1,
+						gridLineWidth : 0
 					},
 					yAxis : {
 						title : {
