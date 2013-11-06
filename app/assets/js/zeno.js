@@ -640,7 +640,7 @@
 		});
 	}]);
 
-	app.controller('BucketListController', ['$scope', '$http', 'tracker', function($scope, $http, tracker) {
+	app.controller('BucketListController', ['$scope', '$http', 'delay', 'taskRunner', 'tracker', function($scope, $http, delay, taskRunner, tracker) {
 	
 		$scope.offset = 0;
 		$scope.limit = 10;
@@ -673,6 +673,13 @@
 					$scope.total = response.total;
 					$scope.buckets = response.buckets;
 				});
+		};
+		$scope.run = function(bucketId) {
+			$scope.alert.clear();
+			taskRunner.runAll($scope, bucketId, function() {
+				delay($scope.refresh);
+			});
+			tracker.event('action', 'run tasks');
 		};
 		$scope.remove = function(bucketId) {
 			$scope.alert.clear();
@@ -734,9 +741,9 @@
 				})
 				.error(function(response, status) {
 					if (status < 500) {
-						$scope.message = 'Can\'t retrieve any connected accounts.';
+						$scope.message = 'Can\'t retrieve any credentials.';
 					} else {
-						$scope.message = 'Couldn\'t retrieve any connected accounts. Try again later or contact support.';
+						$scope.message = 'Couldn\'t retrieve any credentials. Try again later or contact support.';
 					}
 				});
 		};
@@ -744,17 +751,17 @@
 			$scope.alert.clear();
 			$http({ method : 'DELETE', url : '/credentials/' + credentialsId })
 				.success(function(response, status, headers) {
-					$scope.alert.show('Disconnected an account.', 'alert-success', headers('X-Command-ID'));
+					$scope.alert.show('Deleted credentials.', 'alert-success', headers('X-Command-ID'));
 					delay($scope.refresh);
 				})
 				.error(function(response, status) {
 					if (status < 500) {
-						$scope.message = 'Can\'t disconnect the account.';
+						$scope.message = 'Can\'t delete credentials.';
 					} else {
-						$scope.message = 'Couldn\'t disconnect the account. Try again later or contact support.';
+						$scope.message = 'Couldn\'t delete credentials. Try again later or contact support.';
 					}
 				});
-			tracker.event('action', 'delete credential');
+			tracker.event('action', 'delete credentials');
 		};
 
 		$scope.$watch('userInfo', function(user) {
@@ -1094,7 +1101,7 @@
 		return Bucket;
 	}]);
 
-	app.controller('DashboardController', ['$scope', '$http', '$route', '$routeParams', '$location', '$window', 'Bucket', 'Field', 'Constraint', 'tracker', 'delay', 'token', 'tasks', function($scope, $http, $route, $routeParams, $location, $window, Bucket, Field, Constraint, tracker, delay, token, tasks) {
+	app.controller('DashboardController', ['$scope', '$http', '$route', '$routeParams', '$location', '$window', 'Bucket', 'Field', 'Constraint', 'tracker', 'delay', 'token', 'taskRunner', function($scope, $http, $route, $routeParams, $location, $window, Bucket, Field, Constraint, tracker, delay, token, taskRunner) {
 
 		function updateEditable() {
 			$scope.editable = $scope.user && $scope.bucket.canEdit($scope.user['@id']);
@@ -1231,20 +1238,12 @@
 				});
 			tracker.event('action', 'delete event');
 		};
-		$scope.refreshTasks = function() {
+		$scope.run = function() {
 			$scope.alert.clear();
-			var params = {
-				offset : 0,
-				limit : 100
-			};
-			$http.get('/buckets/' + $scope.bucketId + '/tasks/?' + params).success(function(response) {
-				$.each(response.tasks, function(i, task) {
-					tasks.refresh($scope, task['@id'], function() {
-						delay($scope.refresh);
-					});
-				});
+			taskRunner.runAll($scope, $scope.bucketId, function() {
+				delay($scope.refresh);
 			});
-			tracker.event('action', 'refresh tasks');
+			tracker.event('action', 'run tasks');
 		};
 
 		$scope.$on('$routeUpdate', function() {
@@ -3274,37 +3273,23 @@
 		};
 	}]);
 
-	app.service('tasks', [ '$http', '$window', function($http, $window) {
+	app.factory('taskRunner', [ '$http', '$window', function($http, $window) {
 
-		function popup($scope, url) {
-			$scope.alert.show('Task requires authorization', '', '', function() {
-				$window.open(url);
-			});
-		}
-		function createCredentials($scope, type) {
-			$http.post('/credentials/', { type : type })
-				.success(function(response, status) {
-					console.assert(status === 201, status);
-					if (response.authorizationUrl) {
-						popup($scope, response.authorizationUrl);
-					}
-				})
-				.error(function(response, status) {
-					if (status === 400) {
-						$scope.alert.show('Can\'t link account: ' + response.message, 'alert-error');					
-					} else {
-						$scope.alert.show('Couldn\'t link account. Please try again later or contact support.', 'alert-error');					
-					}
+		var runAll = function($scope, bucketId, success) {
+			$http.get('/buckets/' + bucketId + '/tasks/').success(function(response) {
+				$.each(response.tasks, function(i, task) {
+					run($scope, task['@id'], success);
 				});
+			});
 		};
 
-		this.refresh = function($scope, taskId, success) {
+		var run = function($scope, taskId, success) {
 			$http.get('/tasks/' + taskId)
 				.success(function(response, status, headers) {
 					if (headers('X-Credentials')) {
-						createCredentials($scope, headers('X-Credentials'));
+						newCredentials($scope, headers('X-Credentials'));
 					} else if (headers('Link')) {
-						popup($scope, headers('Link'));
+						authorize($scope, response.type, headers('Link'));
 					} else {
 						success(response);
 					}
@@ -3318,6 +3303,34 @@
 						$scope.alert.show('Couldn\'t refresh task. Try again later or contact support.', 'alert-error');
 					}
 				});		
+		};
+
+		var newCredentials = function($scope, type) {
+			$http.post('/credentials/', { type : type })
+				.success(function(response, status) {
+					console.assert(status === 201, status);
+					if (response.authorizationUrl) {
+						authorize($scope, type, response.authorizationUrl);
+					}
+				})
+				.error(function(response, status) {
+					if (status === 400) {
+						$scope.alert.show('Can\'t create credentials: ' + response.message, 'alert-error');					
+					} else {
+						$scope.alert.show('Couldn\'t create credentials. Please try again later or contact support.', 'alert-error');					
+					}
+				});
+		};
+
+		var authorize = function($scope, type, url) {
+			$scope.alert.show('<b>' + type + '</b> requires authorization', '', '', function() {
+				$window.open(url);
+			});
+		}
+		
+		return {
+			runAll : runAll,
+			run : run
 		};
 	}]);
 
@@ -3417,7 +3430,7 @@
 				.success(function(response, status, headers) {
 					console.assert(status === 201, status);
 					$scope.closeDialog();
-					delay($scope.$parent.refreshTasks);
+					delay($scope.$parent.run);
 				})
 				.error(function(response) {
 					$scope.message = 'Couldn\'t create task. Try again later or contact support.';
@@ -3527,15 +3540,15 @@
 
 		$http.post('/credentials/' + $scope.credentialsId, { 'credentials' : $location.search() })
 			.success(function(response) {
-				$scope.alert.show('Connected account.', 'alert-success');
+				$scope.alert.show('Updated credentials.', 'alert-success');
 				$window.opener.angular.element('#app').scope().$broadcast('credentials');
 				$window.close();
 			})
 			.error(function(response, status) {
 				if (status < 500) {
-					$scope.message = 'Can\'t connect account.';
+					$scope.message = 'Can\'t update credentials.';
 				} else {
-					$scope.message = 'Couldn\'t connect account. Try again later or contact support.';
+					$scope.message = 'Couldn\'t update credentials. Try again later or contact support.';
 				}
 			});
 	}]);

@@ -118,7 +118,8 @@
 								<a class="bucket-link" data-ng-href="/#/buckets/{{bucket['@id']}}/">{{bucket.label}}</a> 
 								({{bucket.size}})
 							</td>
-							<td style="text-align: right">
+							<td style="text-align: right; white-space: nowrap;">
+								<a class="action bucket-refresh-action" data-ng-click="run(bucket['@id'])"><i class="icon-refresh" title="Refresh"></i></a>
 								<a class="action bucket-delete-action" data-ng-click="remove(bucket['@id'])"><i class="icon-trash" title="Delete"></i></a>
 							</td>
 						</tr>
@@ -139,7 +140,7 @@
 				<table class="table">
 					<thead>
 						<tr>
-							<th>Connected Accounts</th>
+							<th>Credentials</th>
 							<th></th>
 						</tr>
 					</thead>
@@ -152,13 +153,10 @@
 						</tr>
 						<tr class="credentials-row" data-ng-repeat="c in credentials">
 							<td>
-								{{c.type}}
-								<span data-ng-show="c.authorizationUrl">
-									(<a data-ng-href="{{c.authorizationUrl}}">authorization required</a>)
-								</span>
+								<span data-ng-class="c.authorizationUrl && 'credentials-invalid'">{{c.type}}</span>
 							</td>
 							<td style="text-align: right">
-								<a class="action credentials-delete-action" data-ng-click="remove(c['@id'])"><i class="icon-trash" title="Disconnect"></i></a>
+								<a class="action credentials-delete-action" data-ng-click="remove(c['@id'])"><i class="icon-trash" title="Delete"></i></a>
 							</td>
 						</tr>
 					</tbody>
@@ -178,7 +176,7 @@
 				<table class="table">
 					<thead>
 						<tr>
-							<th>Authorized Applications</th>
+							<th>Authorizations</th>
 							<th></th>
 						</tr>
 					</thead>
