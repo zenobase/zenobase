@@ -7,7 +7,7 @@ import com.zenobase.tasks.Task;
 
 public class FoursquareTask extends Task {
 
-	public static final String TYPE = "foursquare-checkins";
+	public static final String TYPE = "foursquare";
 
 	public FoursquareTask(ObjectNode node) {
 		super(node);

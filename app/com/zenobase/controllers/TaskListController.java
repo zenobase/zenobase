@@ -51,7 +51,7 @@ public class TaskListController extends ControllerSupport {
 		if (auth.getScope() != null) {
     		return forbidden();
 		}
-		if (!!users.isSuperuser(auth.getPrincipal())) {
+		if (!users.isSuperuser(auth.getPrincipal())) {
 			return forbidden();
 		}
 		return ok(TaskList.toJson(tasks.find(offset, limit)));

@@ -1250,7 +1250,7 @@
 			$scope.refresh();
 		});
 		$scope.$on('credentials', function() {
-			$scope.refreshTasks();
+			$scope.run();
 		});
 
 		$scope.updateConstraints = function() {
