@@ -15,16 +15,13 @@ public class DemoTask extends Task {
 		super(node);
 	}
 
-	public DemoTask(String bucketId, Identity principal) {
+	public DemoTask(String bucketId, Identity principal, String tag) {
 		super(TYPE, bucketId, principal);
+		setSetting(TAG, tag);
 	}
 
 	public String getTag() {
 		return getSetting(TAG);
-	}
-
-	public void setTag(String tag) {
-		setSetting(TAG, tag);
 	}
 
 	@Override

@@ -5,32 +5,28 @@ import java.util.List;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDate;
-import org.scribe.builder.api.Api;
 import org.scribe.model.OAuthRequest;
 import org.scribe.model.Response;
 import org.scribe.model.Verb;
-import org.scribe.oauth.OAuthService;
 
 import com.zenobase.commands.Command;
 import com.zenobase.commands.CompoundCommand;
 import com.zenobase.commands.CreateEventCommand;
 import com.zenobase.commands.UpdateTaskCommand;
 import com.zenobase.models.Event;
-import com.zenobase.tasks.OAuthTask;
+import com.zenobase.tasks.OAuthCredentials;
 import com.zenobase.tasks.OAuthTaskManager;
 import com.zenobase.tasks.Task;
 
 public abstract class FitbitTaskManagerSupport extends OAuthTaskManager {
 
-	public FitbitTaskManagerSupport(Api provider, String apiKey, String apiSecret, String callbackUrl) {
-		super(provider, apiKey, apiSecret, callbackUrl);
+	protected FitbitTaskManagerSupport(String type, FitbitCredentialsManager credentialsManager) {
+		super(type, credentialsManager);
 	}
 
-	protected LocalDate getLastDate(OAuthTask task, OAuthService service) {
+	protected LocalDate getLastDate(Task task, OAuthCredentials credentials) {
 		OAuthRequest request = new OAuthRequest(Verb.GET, "https://api.fitbit.com/1/user/-/devices.json");
-		service.signRequest(task.getToken(), request);
-		Response response = request.send();
-		checkResponse(task, request, response);
+		Response response = send(request, credentials);
 		return new FitbitDevicesResult(parseArray(response)).getLastDate();
 	}
 
@@ -42,11 +38,9 @@ public abstract class FitbitTaskManagerSupport extends OAuthTaskManager {
 		return marker != null ? DateTime.parse(marker).toLocalDate() : LocalDate.now().withDayOfMonth(1);
 	}
 
-	protected FitbitProfileResult getProfile(OAuthTask task, OAuthService service) {
+	protected FitbitProfileResult getProfile(Task task, OAuthCredentials credentials) {
 		OAuthRequest request = new OAuthRequest(Verb.GET, "https://api.fitbit.com/1/user/-/profile.json");
-		service.signRequest(task.getToken(), request);
-		Response response = request.send();
-		checkResponse(task, request, response);
+		Response response = send(request, credentials);
 		return new FitbitProfileResult(parseObject(response));
 	}
 

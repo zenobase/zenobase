@@ -31,12 +31,6 @@ public class TaskTest {
 	}
 
 	@Test
-	public void testUnauthorizedTaskIsNotStale() {
-		task.setAuthorizationUrl("localhost");
-		assertThat(task.isStale()).isFalse();
-	}
-
-	@Test
 	public void testFailedTaskIsStale() {
 		task.setStatus(Status.FAILED);
 		task.setCompleted(DateTime.now());

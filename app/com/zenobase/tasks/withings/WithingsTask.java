@@ -4,19 +4,16 @@ import javax.measure.quantity.Mass;
 import javax.measure.unit.Unit;
 
 import org.joda.time.DateTimeZone;
-import org.scribe.model.Token;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import com.zenobase.common.Measures;
-import com.zenobase.json.IntegerField;
 import com.zenobase.json.TokenField;
 import com.zenobase.models.Identity;
-import com.zenobase.tasks.OAuthTask;
+import com.zenobase.tasks.Task;
 
-public class WithingsTask extends OAuthTask {
+public class WithingsTask extends Task {
 
 	public static final String TYPE = "withings";
-	public static final IntegerField USER_ID = new IntegerField("userId");
 	public static final TokenField TAG = new TokenField("tag");
 	public static final TokenField UNIT = new TokenField("unit");
 	public static final TokenField TIMEZONE = new TokenField("timezone");
@@ -25,14 +22,9 @@ public class WithingsTask extends OAuthTask {
 		super(node);
 	}
 
-	WithingsTask(String bucketId, Identity principal, Token token, Integer userId, String marker) {
-		super(TYPE, bucketId, principal, token);
-		setCredential(USER_ID, userId);
+	WithingsTask(String bucketId, Identity principal, String marker) {
+		super(TYPE, bucketId, principal);
 		setMarker(marker);
-	}
-
-	public Integer getUserId() {
-		return getCredential(USER_ID);
 	}
 
 	public String getTag() {

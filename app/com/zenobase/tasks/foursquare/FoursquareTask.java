@@ -1,14 +1,13 @@
 package com.zenobase.tasks.foursquare;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.scribe.model.Token;
 
 import com.zenobase.models.Identity;
-import com.zenobase.tasks.OAuthTask;
+import com.zenobase.tasks.Task;
 
-public class FoursquareTask extends OAuthTask {
+public class FoursquareTask extends Task {
 
-	public static final String TYPE = "foursquare";
+	public static final String TYPE = "foursquare-checkins";
 
 	public FoursquareTask(ObjectNode node) {
 		super(node);
@@ -16,11 +15,10 @@ public class FoursquareTask extends OAuthTask {
 
 	public FoursquareTask(String bucketId, Identity principal) {
 		super(TYPE, bucketId, principal);
-		setCredential(TOKEN, Token.empty());
 	}
 
-	FoursquareTask(String bucketId, Identity principal, Token accessToken, String marker) {
-		super(TYPE, bucketId, principal, accessToken);
+	FoursquareTask(String bucketId, Identity principal, String marker) {
+		super(TYPE, bucketId, principal);
 		setMarker(marker);
 	}
 

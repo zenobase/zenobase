@@ -1,21 +1,35 @@
 package com.zenobase.tasks;
 
+import java.net.URI;
+import java.util.Scanner;
+
+import org.apache.http.NameValuePair;
+import org.apache.http.client.utils.URLEncodedUtils;
+import org.joda.time.DateTime;
 import org.junit.Assume;
 import org.junit.Before;
+import org.mockito.Mockito;
 import org.scribe.model.Token;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.common.base.Charsets;
 
 import com.zenobase.commands.Command;
-import com.zenobase.commands.UpdateTaskCommand;
+import com.zenobase.commands.UpdateCredentialsCommand;
 import com.zenobase.common.Generator;
+import com.zenobase.json.Nodes;
 import com.zenobase.models.Identity;
+import com.zenobase.oauth.ExpiringToken;
+import com.zenobase.services.CredentialsRepository;
 
-public class TaskTestSupport {
+public abstract class TaskTestSupport {
 
 	protected final Identity principal = new Identity();
 	protected final String bucketId = Generator.id();
 	protected final String apiKey = System.getProperty("oauth.apiKey");
 	protected final String apiSecret = System.getProperty("oauth.apiSecret");
 	protected final String callbackUrl = "https://zenobase.com";
+	protected final CredentialsRepository repository = Mockito.mock(CredentialsRepository.class);
 
 	@Before
 	public void setUp() {
@@ -23,14 +37,76 @@ public class TaskTestSupport {
 		Assume.assumeNotNull(apiSecret);
 	}
 
-	protected Token getToken() {
-		String token = System.getProperty("oauth.token");
-		String secret = System.getProperty("oauth.secret", "");
-		Assume.assumeNotNull(token);
-		return new Token(token, secret);
+	protected OAuthCredentials getCredentials() {
+		OAuthCredentials credentials = parseCredentials();
+		return credentials != null ? credentials : requestCredentials();
 	}
 
-	protected Task apply(Command command, Task task) {
-		return ((UpdateTaskCommand) command).apply(task);
+	private OAuthCredentials parseCredentials() {
+		String token = System.getProperty("oauth.token");
+		String secret = System.getProperty("oauth.secret", "");
+		String refresh = System.getProperty("oauth.refresh");
+		String scope = System.getProperty("oauth.scope");
+		return token != null ? newCredentials(newToken(token, secret, refresh), scope) : null;
+	}
+
+	private Token newToken(String token, String secret, String refresh) {
+		return refresh != null
+			? new ExpiringToken(token, secret, DateTime.now().minusMonths(1), refresh)
+			: new Token(token, secret);
+	}
+
+	private OAuthCredentials newCredentials(Token token, String scope) {
+		OAuthCredentials credentials = new OAuthCredentials(Nodes.newObject());
+		credentials.setToken(token);
+		credentials.setScope(scope);
+		return credentials;
+	}
+
+	private OAuthCredentials requestCredentials() {
+		OAuthCredentialsManager manager = newCredentialsManager();
+		OAuthCredentials credentials = manager.newCredentials(principal);
+		System.out.println(credentials.getAuthorizationUrl());
+		System.out.print("> ");
+		Scanner scanner = new Scanner(System.in);
+		ObjectNode config = parseQueryString(scanner.nextLine());
+		scanner.close();
+		credentials = apply(manager.authorize(credentials, config), credentials).as(OAuthCredentials.class);
+		print(credentials);
+		return credentials;
+	}
+
+	protected abstract OAuthCredentialsManager newCredentialsManager();
+
+	private ObjectNode parseQueryString(String url) {
+		ObjectNode node = Nodes.newObject();
+		URI uri = URI.create(url.replaceAll("/#", ""));
+		for (NameValuePair param : URLEncodedUtils.parse(uri, Charsets.UTF_8.name())) {
+			node.put(param.getName(), param.getValue());
+		}
+		return node;
+	}
+
+	private Credentials apply(Command command, Credentials credentials) {
+		return ((UpdateCredentialsCommand) command).apply(credentials);
+	}
+
+	private void print(OAuthCredentials credentials) {
+		print(credentials.getToken());
+		if (credentials.getScope() != null) {
+			System.out.println("-Doauth.scope=" + credentials.getScope());
+		}
+	}
+
+	private void print(Token token) {
+		System.out.println("-Doauth.token=" + token.getToken());
+		System.out.println("-Doauth.secret=" + token.getSecret());
+		if (token instanceof ExpiringToken) {
+			System.out.println("-Doauth.refresh=" + ((ExpiringToken) token).getRefreshToken());
+		}
+	}
+
+	protected void print(JsonNode node) {
+		System.out.println(Nodes.toString(node));
 	}
 }

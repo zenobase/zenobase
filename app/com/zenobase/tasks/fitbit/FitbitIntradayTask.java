@@ -1,12 +1,11 @@
 package com.zenobase.tasks.fitbit;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.scribe.model.Token;
 
 import com.zenobase.models.Identity;
-import com.zenobase.tasks.OAuthTask;
+import com.zenobase.tasks.Task;
 
-public class FitbitIntradayTask extends OAuthTask {
+public class FitbitIntradayTask extends Task {
 
 	public static final String TYPE = "fitbit-intraday";
 
@@ -14,8 +13,8 @@ public class FitbitIntradayTask extends OAuthTask {
 		super(node);
 	}
 
-	FitbitIntradayTask(String bucketId, Identity principal, Token accessToken, String marker) {
-		super(TYPE, bucketId, principal, accessToken);
+	FitbitIntradayTask(String bucketId, Identity principal, String marker) {
+		super(TYPE, bucketId, principal);
 		setMarker(marker);
 	}
 

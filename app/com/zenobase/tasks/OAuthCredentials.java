@@ -1,9 +1,9 @@
 package com.zenobase.tasks;
 
+import org.scribe.model.Token;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.NullNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.scribe.model.Token;
 
 import com.zenobase.json.DateTimeField;
 import com.zenobase.json.Field;
@@ -12,20 +12,21 @@ import com.zenobase.json.TokenField;
 import com.zenobase.models.Identity;
 import com.zenobase.oauth.ExpiringToken;
 
-public class OAuthTask extends Task {
+public class OAuthCredentials extends Credentials {
 
 	public static final OAuthTokenField TOKEN = new OAuthTokenField("token");
+	public static final TokenField SCOPE = new TokenField("scope", false);
 
-	public OAuthTask(ObjectNode node) {
+	public OAuthCredentials(ObjectNode node) {
 		super(node);
 	}
 
-	public OAuthTask(String type, String bucketId, Identity principal) {
-		super(type, bucketId, principal);
+	public OAuthCredentials(String type, Identity principal) {
+		super(type, principal);
 	}
 
-	protected OAuthTask(String type, String bucketId, Identity principal, Token token) {
-		super(type, bucketId, principal);
+	protected OAuthCredentials(String type, Identity principal, Token token) {
+		super(type, principal);
 		setToken(token);
 	}
 
@@ -35,6 +36,20 @@ public class OAuthTask extends Task {
 
 	public void setToken(Token token) {
 		setCredential(TOKEN, token);
+	}
+
+	public String getScope() {
+		return getCredential(SCOPE);
+	}
+
+	public void setScope(String scope) {
+		setCredential(SCOPE, scope);
+	}
+
+	public boolean isExpired() {
+		Token token = getToken();
+		return token instanceof ExpiringToken &&
+			((ExpiringToken) token).isExpired();
 	}
 
 	private static class OAuthTokenField extends Field<Token> {

@@ -2,9 +2,10 @@ package com.zenobase.controllers;
 
 import javax.inject.Inject;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import play.Logger;
 import play.mvc.BodyParser;
 import play.mvc.Result;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import com.zenobase.commands.Command;
 import com.zenobase.commands.DeleteTaskCommand;
@@ -17,6 +18,8 @@ import com.zenobase.services.BucketRepository;
 import com.zenobase.services.CommandDispatcher;
 import com.zenobase.services.TaskRepository;
 import com.zenobase.services.UserRepository;
+import com.zenobase.tasks.IncompleteCredentialsException;
+import com.zenobase.tasks.MissingCredentialsException;
 import com.zenobase.tasks.Task;
 import com.zenobase.tasks.TaskManager;
 import com.zenobase.tasks.TaskManagerRegistry;
@@ -57,9 +60,17 @@ public class TaskController extends ControllerSupport {
 			return forbidden();
 		}
 		if (task.isStale()) {
-			refresher.refresh(task);
+			try {
+				refresher.refresh(task);
+			} catch (IncompleteCredentialsException e) {
+				response().setHeader("Link", "<" + e.getCredentials().getAuthorizationUrl() + ">");
+			} catch (MissingCredentialsException e) {
+				response().setHeader("X-Credentials", e.getExpectedType());
+	    	} catch (Exception e) {
+				Logger.warn("Couldn't refresh task: " + task.getId(), e);
+			}
 		}
-    	return ok(task.sanitized().toJson());
+    	return ok(task.toJson());
     }
 
 	@BodyParser.Of(BodyParser.Json.class)
@@ -84,10 +95,6 @@ public class TaskController extends ControllerSupport {
     		return badRequest("no data");
     	}
     	Command command = null;
-    	ObjectNode credentials = Task.CREDENTIALS.getValue(body);
-    	if (credentials != null) {
-	    	command = manager.authorize(task, credentials);
-    	}
     	ObjectNode settings = Task.SETTINGS.getValue(body);
     	if (settings != null) {
 	    	command = UpdateTaskCommand.builder(task).set(Task.SETTINGS, task.getSettings(), settings).build();

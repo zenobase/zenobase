@@ -196,7 +196,6 @@
 		};
 	}]);
 
-
 	app.controller('admin.AuthorizationListController', ['$scope', '$http', 'delay', function($scope, $http, delay) {
 
 		$scope.offset = 0;
@@ -251,12 +250,12 @@
 		$scope.refresh({});
 	}]);
 
-	app.controller('admin.TaskListController', ['$scope', '$http', 'delay', function($scope, $http, delay) {
+	app.controller('admin.CredentialsListController', ['$scope', '$http', 'delay', function($scope, $http, delay) {
 
 		$scope.offset = 0;
 		$scope.limit = 10;
 		$scope.total = 0;
-		$scope.tasks = null;
+		$scope.credentials = null;
 
 		$scope.hasPrev = function() {
 			return $scope.offset > 0;
@@ -281,7 +280,50 @@
 				return params;
 		}
 		$scope.refresh = function(params) {
-			$http.get('/tasks/?' + $.param($.extend($scope.params(), params))).success(function(response) {
+			$http.get('/credentials/?' + $.param($.extend($scope.params(), params))).success(function(response) {
+				$.extend($scope, params);
+				$scope.total = response.total;
+				$scope.credentials = response.items;
+			});
+		};
+		$scope.remove = function(credentialsId) {
+			$http({ method : 'DELETE', url : '/tasks/' + credentialsId }).success(function(response, code, headers) {
+				delay($scope.reload);
+			});
+		};
+
+		$scope.$on('reload', $scope.refresh);
+		$scope.refresh({});
+	}]);
+
+	app.controller('admin.TaskListController', ['$scope', '$http', 'delay', function($scope, $http, delay) {
+
+		$scope.offset = 0;
+		$scope.limit = 10;
+		$scope.total = 0;
+		$scope.tasks = null;
+
+		$scope.hasPrev = function() {
+			return $scope.offset > 0;
+		}
+		$scope.hasNext = function() {
+			return $scope.offset + $scope.limit < $scope.total;
+		}
+		$scope.prev = function() {
+			$scope.refresh({ offset : $scope.offset - $scope.limit });
+		}
+		$scope.next = function() {
+			$scope.refresh({ offset : $scope.offset + $scope.limit });
+		}
+		$scope.params = function() {
+			return {
+					offset : $scope.offset,
+					limit : $scope.limit
+				};
+		}
+		$scope.refresh = function(params) {
+			var path = $scope.constraint ? '/users/@' + $scope.constraint + '/tasks/' : '/tasks/';
+			$http.get(path + '?' + $.param($.extend($scope.params(), params))).success(function(response) {
 				$.extend($scope, params);
 				$scope.total = response.total;
 				$scope.tasks = response.tasks;

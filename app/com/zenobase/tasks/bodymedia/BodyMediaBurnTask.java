@@ -1,13 +1,11 @@
 package com.zenobase.tasks.bodymedia;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.scribe.model.Token;
 
 import com.zenobase.models.Identity;
-import com.zenobase.oauth.ExpiringToken;
-import com.zenobase.tasks.OAuthTask;
+import com.zenobase.tasks.Task;
 
-public class BodyMediaBurnTask extends OAuthTask {
+public class BodyMediaBurnTask extends Task {
 
 	public static final String TYPE = "bodymedia-burn";
 
@@ -15,15 +13,9 @@ public class BodyMediaBurnTask extends OAuthTask {
 		super(node);
 	}
 
-	BodyMediaBurnTask(String bucketId, Identity principal, Token token, String marker) {
-		super(TYPE, bucketId, principal, token);
+	public BodyMediaBurnTask(String bucketId, Identity principal, String marker) {
+		super(TYPE, bucketId, principal);
 		setMarker(marker);
-	}
-
-	public boolean isExpired() {
-		Token token = getToken();
-		return token instanceof ExpiringToken &&
-			((ExpiringToken) token).isExpired();
 	}
 
 	@Override

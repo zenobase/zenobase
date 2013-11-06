@@ -1,13 +1,12 @@
 package com.zenobase.tasks.fitbit;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.scribe.model.Token;
 
 import com.zenobase.json.TokenField;
 import com.zenobase.models.Identity;
-import com.zenobase.tasks.OAuthTask;
+import com.zenobase.tasks.Task;
 
-public class FitbitTask extends OAuthTask {
+public class FitbitTask extends Task {
 
 	public static final String TYPE = "fitbit";
 	public static final TokenField TAG = new TokenField("tag");
@@ -16,8 +15,8 @@ public class FitbitTask extends OAuthTask {
 		super(node);
 	}
 
-	FitbitTask(String bucketId, Identity principal, Token accessToken, String marker, String tag) {
-		super(TYPE, bucketId, principal, accessToken);
+	FitbitTask(String bucketId, Identity principal, String marker, String tag) {
+		super(TYPE, bucketId, principal);
 		setMarker(marker);
 		setTag(tag);
 	}

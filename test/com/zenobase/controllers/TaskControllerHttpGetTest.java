@@ -21,7 +21,7 @@ public class TaskControllerHttpGetTest extends TaskControllerTestSupport {
 
 	@Test
 	public void testGetTask() {
-		task.setAuthorizationUrl("xyz");
+		// task.setAuthorizationUrl("xyz");
 		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
 		when(tasks.find(task.getId())).thenReturn(task.copy());
 		Result result = call(task.getId());

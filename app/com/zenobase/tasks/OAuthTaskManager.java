@@ -1,135 +1,89 @@
 package com.zenobase.tasks;
 
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
-import org.scribe.builder.ServiceBuilder;
-import org.scribe.builder.api.Api;
 import org.scribe.model.OAuthRequest;
 import org.scribe.model.Response;
 import org.scribe.model.Token;
-import org.scribe.model.Verifier;
-import org.scribe.oauth.OAuthService;
-import play.Logger;
 import play.mvc.Http;
-import com.google.common.base.Preconditions;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import com.zenobase.commands.Command;
-import com.zenobase.commands.UpdateTaskCommand;
+import com.zenobase.commands.UpdateCredentialsCommand;
 import com.zenobase.json.Nodes;
 import com.zenobase.models.Identity;
 
 public abstract class OAuthTaskManager extends TaskManager {
 
-	private final Api provider;
-	protected final String apiKey;
-	protected final String apiSecret;
-	private final String callbackUrl;
+	private final OAuthCredentialsManager credentialsManager;
 
-	protected OAuthTaskManager(Api provider, String apiKey, String apiSecret, String callbackUrl) {
-		this.provider = provider;
-		this.apiKey = apiKey;
-		this.apiSecret = apiSecret;
-		this.callbackUrl = callbackUrl;
+	protected OAuthTaskManager(String type, OAuthCredentialsManager credentialsManager) {
+		super(type);
+		this.credentialsManager = credentialsManager;
 	}
 
 	@Override
-	public OAuthTask newTask(String bucketId, Identity principal, ObjectNode settings) {
-		OAuthTask task = new OAuthTask(getType(), bucketId, principal);
-		task.setToken(getRequestToken(task));
-		task.setAuthorizationUrl(getService(task).getAuthorizationUrl(task.getToken()));
-		return task;
-	}
-
-	protected Token getRequestToken(OAuthTask task) {
-		return getService(task).getRequestToken();
-	}
+	public abstract Task newTask(String bucketId, Identity principal, ObjectNode settings);
 
 	@Override
-	public Command authorize(Task task, ObjectNode config) {
-		return config.size() != 0 ?
-			authorize(task.as(OAuthTask.class), config) :
-			deauthorize(task.as(OAuthTask.class));
-	}
-
-	private Command authorize(OAuthTask task, ObjectNode config) {
-		Preconditions.checkState(!task.isEnabled(), "Task is already enabled: %s", task.getId());
-		String token = config.path("oauth_token").textValue();
-		String verifier = config.path("oauth_verifier").asText();
-		if (token == null) {
-			Logger.warn(String.format("Couldn't authorize %s task <%s>: %s",
-				task.getType(), task.getId(), config));
-			return null;
+	public Command execute(Task task) {
+		try {
+			OAuthCredentials credentials = getCredentials(task.getPrincipal());
+			return credentials != null ? execute(task, credentials) : null;
+		} catch (InvalidTokenException e) {
+			return createCommand(e);
 		}
-		Preconditions.checkState(task.getToken().getToken().equals(token),
-			"Token matches in task %s, expected %s, got %s",
-			task.getId(), task.getToken().getToken(), token);
-		return UpdateTaskCommand.builder(task)
-			.set(Task.AUTHORIZATION_URL, task.getAuthorizationUrl(), null)
-			.with(Task.CREDENTIALS)
-			.set(OAuthTask.TOKEN, task.getToken(), getAccessToken(task, verifier))
-			.build();
 	}
 
-	private Command deauthorize(OAuthTask task) {
-		Token token = getRequestToken(task);
-		return UpdateTaskCommand.builder(task)
-			.set(Task.AUTHORIZATION_URL, task.getAuthorizationUrl(), getService(task).getAuthorizationUrl(token))
-			.with(Task.CREDENTIALS)
-			.set(OAuthTask.TOKEN, task.getToken(), token)
-			.build();
+	private OAuthCredentials getCredentials(Identity principal) {
+		return check(credentialsManager.find(principal));
 	}
 
-	protected Token getAccessToken(OAuthTask task, String verifier) {
-		return getService(task).getAccessToken(task.getToken(), new Verifier(verifier));
+	private OAuthCredentials check(Credentials credentials) {
+		if (credentials == null) {
+			throw new MissingCredentialsException(credentialsManager.getType());
+		}
+		return check(credentials.as(OAuthCredentials.class));
 	}
 
-	protected OAuthService getService(OAuthTask task) {
-		ServiceBuilder builder = new ServiceBuilder()
-			.provider(provider)
-			.apiKey(apiKey)
-			.apiSecret(apiSecret)
-			.callback(String.format("%s/oauth/callback/%s", callbackUrl, task.getId()));
-		configure(builder);
-		return builder.build();
+	private OAuthCredentials check(OAuthCredentials credentials) {
+		if (!credentials.isAuthorized()) {
+			throw new IncompleteCredentialsException(credentials.as(OAuthCredentials.class));
+		}
+		return credentials.as(OAuthCredentials.class);
 	}
 
-	protected void configure(ServiceBuilder builder) {
+	public abstract Command execute(Task task, OAuthCredentials credentials);
 
+	protected void reauthorize(OAuthCredentials credentials) {
+		credentialsManager.reauthorize(credentials);
+	}
+
+	protected Response send(OAuthRequest request, OAuthCredentials credentials) {
+		Response response = credentialsManager.send(request, credentials);
+		if (!response.isSuccessful()) {
+			if (response.getCode() == Http.Status.UNAUTHORIZED) {
+				throw new InvalidTokenException(request, credentials);
+			} else {
+				throw new InvalidStatusException(request, response.getCode());
+			}
+		}
+		return response;
 	}
 
 	protected static ObjectNode parseObject(Response response) {
-		// System.out.println("parse: " + response.getBody());
 		return Nodes.readObject(response.getBody());
 	}
 
 	protected static ArrayNode parseArray(Response response) {
-		// System.out.println("parse: " + response.getBody());
 		return Nodes.readArray(response.getBody());
 	}
 
-	protected static void checkResponse(OAuthTask task, OAuthRequest request, Response response) throws OAuthException {
-		if (!response.isSuccessful()) {
-			if (isTokenInvalid(response)) {
-				throw new InvalidTokenException(task, request);
-			} else {
-				throw new InvalidStatusException(task, request, response.getCode());
-			}
-		}
-	}
-
-	protected static boolean isTokenInvalid(Response response) {
-		return response.getCode() == Http.Status.UNAUTHORIZED;
-	}
-
 	protected Command createCommand(InvalidTokenException e) {
-		Token requestToken = getRequestToken(e.getTask());
-		return UpdateTaskCommand.builder(e.getTask())
-			.set(Task.COMPLETED, e.getTask().getCompleted(), new DateTime(DateTimeZone.UTC))
-			.set(Task.STATUS, e.getTask().getStatus(), Task.Status.FAILED)
-			.set(Task.UNDO, e.getTask().getUndoId(), null)
-			.set(Task.AUTHORIZATION_URL, e.getTask().getAuthorizationUrl(), getService(e.getTask()).getAuthorizationUrl(requestToken))
-			.with(Task.CREDENTIALS).set(OAuthTask.TOKEN, e.getTask().getToken(), requestToken).build();
+		Token requestToken = credentialsManager.getRequestToken(e.getCredentials());
+		return UpdateCredentialsCommand.builder(e.getCredentials())
+			.set(Credentials.AUTHORIZATION_URL, e.getCredentials().getAuthorizationUrl(), credentialsManager.getService(e.getCredentials()).getAuthorizationUrl(requestToken))
+			.with(Credentials.CREDENTIALS)
+			.set(OAuthCredentials.TOKEN, e.getCredentials().getToken(), requestToken)
+			.build();
 	}
 }

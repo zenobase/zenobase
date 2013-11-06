@@ -12,7 +12,7 @@ public class OAuthControllerCallbackTest extends OAuthControllerTestSupport {
 	@Test
 	public void testRedirect() {
 		Result result = call("zzz", "?a=b&c=d");
-		assertThat(result).hasStatus(SEE_OTHER).hasHeader("Location", "/#/tasks/zzz?a=b&c=d");
+		assertThat(result).hasStatus(SEE_OTHER).hasHeader("Location", "/#/credentials/zzz?a=b&c=d");
 	}
 
 	private Result call(String taskId, String params) {

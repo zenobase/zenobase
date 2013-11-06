@@ -15,7 +15,7 @@
 		<meta name="application-name" content="Zenobase"/>
 		<meta name="msapplication-TileColor" content="#ffffff"/>
 		<meta name="msapplication-TileImage" content="/img/tile.png"/>
-		<link rel="stylesheet" type="text/css" href="/css/zeno-cde60733.min.css"/>
+		<link rel="stylesheet" type="text/css" href="/css/zeno-cde60734.min.css"/>
 		<link rel="canonical" href="https://zenobase.com/"/>
 		<link rel="apple-touch-icon" href="/img/icon.png"/>
 		<!--[if lt IE 9]>
@@ -23,7 +23,7 @@
 		<![endif]-->
 	</head>
 
-	<body data-ng-controller="ApplicationController">
+	<body id="app" data-ng-controller="ApplicationController">
 
 		<div id="sign-up-banner" class="ng-cloak" data-ng-show="user.getName() == 'guest'">
 			<div class="alert">
@@ -46,7 +46,8 @@
 		<div class="container-fluid ng-cloak">
 			<div id="alert-banner" class="alert {{alert.level}}">
 				<a class="close" data-ng-click="alert.clear()">&times;</a>
-				<span data-ng-bind-html="alert.message"></span>
+				<a data-ng-bind-html="alert.message" data-ng-show="alert.onClick != null" data-ng-click="alert.onClick()"></a>
+				<span data-ng-bind-html="alert.message" data-ng-hide="alert.onClick != null"></span>
 				<span data-ng-show="alert.undo">
 					<a id="undo-link" data-ng-click="undo(alert.undo)">Undo.</a>
 				</span>

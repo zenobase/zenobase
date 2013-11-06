@@ -24,8 +24,9 @@
 				<span id="bucket-title" class="page-title-text">{{bucket.label}}</span>
 				<span id="event-count" class="badge badge-success page-title-decoration" title="Events" data-ng-show="total >= 0">{{total}}</span>
 				<span class="badge badge-important page-title-decoration" title="Couldn't load any events" data-ng-show="total < 0">0</span>
-				<a class="page-title-decoration" data-ng-click="refresh()" title="Refresh"><i class="icon-refresh"></i></a>
+				<a class="page-title-decoration" data-ng-click="refreshTasks()" title="Refresh"><i class="icon-refresh"></i></a>
 				<a id="add-event-action" class="page-title-decoration" title="Add Event..." data-ng-click="editEvent({})" data-ng-show="editable && !bucket.isVirtual()"><i class="icon-plus"></i></a>
+				<a class="page-title-decoration" title="Popup..." data-ng-click="popup()"><i class="icon-warning-sign"></i></a>
 			</p>
 
 			<div class="pull-right page-title dropdown" data-ng-show="editable">
@@ -38,7 +39,7 @@
 						<a role="menuitem" data-ng-click="openDialog('import-dialog')" data-ng-show="canImport() && !bucket.isVirtual()">Import...</a>
 					</li>
 					<li role="presentation">
-						<a role="menuitem" id="create-task-action" data-ng-click="openDialog('task-dialog')" data-ng-show="!bucket.isVirtual()">Connect...</a>
+						<a role="menuitem" id="task-list-action" data-ng-click="openDialog('task-list-dialog')" data-ng-show="!bucket.isVirtual()">Tasks...</a>
 					</li>
 					<li role="presentation" class="divider"></li>
 					<li role="presentation">
@@ -170,7 +171,53 @@
 			</div>
 		</form>
 	</div>
-	
+
+	<div id="task-list-dialog" data-ui-modal="dialog == 'task-list-dialog'" data-ui-modal-open="init()" data-ui-modal-close="closeDialog()" data-ng-controller="TaskListDialogController">
+		<div class="modal-header">
+			<a class="close" data-dismiss="modal">&times;</a>
+			<h4 class="alert-heading">Tasks</h4>
+		</div>
+		<div class="modal-body">
+			<div class="alert alert-error" data-ng-show="message">
+				{{message}}
+			</div>
+			<div class="control-group">
+				<table class="table table-borderless">
+					<tr data-ng-show="tasks == null">
+						<td colspan="3"><i>Loading...</i></td>
+					</tr>
+					<tr data-ng-show="tasks.length == 0">
+						<td colspan="3"><i>None</i></td>
+					</tr>
+					<tr class="task-row" data-ng-repeat="task in tasks">
+						<td>{{task.type}}</td>
+						<td>
+							<span data-ng-show="task.status">ran {{task.completed | age}}</span>
+						</td>
+						<td style="text-align: right">
+							<a class="action task-delete-action" data-ng-click="remove(task['@id'])"><i class="icon-trash" title="Delete"></i></a>
+						</td>
+					</tr>
+				</table>
+				<div class="btn-toolbar">
+					<div class="btn-group pull-left">
+						<button id="create-task-action"  class="btn" data-ng-click="openDialog('task-dialog')"><i class="icon-plus"></i></button>
+					</div>
+					<div class="btn-group pull-right" data-ng-show="tasks">
+						<button class="btn" title="Previous" data-ng-click="prev()" data-ng-disabled="!hasPrev()"><i class="icon-chevron-left"></i></button>
+						<button class="btn" title="Next" data-ng-click="next()" data-ng-disabled="!hasNext()"><i class="icon-chevron-right"></i></button>
+					</div>
+					<div class="btn-group pull-right" data-ng-show="tasks">
+						<button class="btn disabled zeno-paging"><b>{{offset + 1}}</b> &ndash; <b>{{offset + tasks.length}}</b> of <b>{{total}}</b></button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="modal-footer">
+			<button class="btn" data-dismiss="modal">Close</button>
+		</div>
+	</div>
+
 	<div id="create-task-dialog" data-ui-modal="dialog == 'task-dialog'" data-ui-modal-open="init()" data-ui-modal-close="closeDialog()" data-ng-controller="CreateTaskDialogController">
 		<form name="createTaskForm" class="modal-form">
 			<div class="modal-header">

@@ -15,7 +15,7 @@
 				<span id="user-title" class="page-title-text">{{userId}}</span>
 				<a id="refresh-buckets-link" class="page-title-decoration" data-ng-click="reload()" title="Refresh"><i class="icon-refresh"></i></a>
 				<a id="edit-user-link" class="page-title-decoration" data-ng-click="broadcast('edit:user')" title="Edit..." data-ng-show="editable()"><i class="icon-pencil"></i></a>
-				<a id="add-bucket-action" class="page-title-decoration" data-ng-click="openDialog('create-bucket-dialog')" title="Add Bucket..." data-ng-show="addable()"><i class="icon-plus"></i></a>
+				<a id="add-bucket-action" class="page-title-decoration" data-ng-click="openDialog('create-bucket-dialog')" title="Create Bucket..."><i class="icon-plus"></i></a>
 			</p>
 		</div>
 	
@@ -102,26 +102,22 @@
 				<table class="table">
 					<thead>
 						<tr>
-							<th style="width: 0px">Bucket</th>
-							<th style="width: 100%"></th>
-							<th style="width: 0px; text-align: right">Size</th>
+							<th style="width: 100%">Buckets</th>
 							<th style="width: 0px"></th>
 						</tr>
 					</thead>
 					<tbody>
 						<tr data-ng-show="buckets == null">
-							<td colspan="3"><i>Loading...</i></td>
+							<td colspan="2"><i>Loading...</i></td>
 						</tr>
 						<tr data-ng-show="buckets.length == 0">
-							<td colspan="3"><i>None</i></td>
+							<td colspan="2"><i>None</i></td>
 						</tr>
 						<tr class="bucket-row" data-ng-repeat="bucket in buckets">
-							<td style="white-space: nowrap">
-								<i class="icon-eye-open" title="Virtual Bucket" data-ng-show="bucket.aliases"></i>
-								<a class="bucket-link" data-ng-href="/#/buckets/{{bucket['@id']}}/">{{bucket.label}}</a>
+							<td style="white-space: nowrap" data-ng-class="bucket.aliases && bucket.aliases.length && 'bucket-virtual'">
+								<a class="bucket-link" data-ng-href="/#/buckets/{{bucket['@id']}}/">{{bucket.label}}</a> 
+								({{bucket.size}})
 							</td>
-							<td>{{bucket.description}}</td>
-							<td style="text-align: right">{{bucket.size}}</td>
 							<td style="text-align: right">
 								<a class="action bucket-delete-action" data-ng-click="remove(bucket['@id'])"><i class="icon-trash" title="Delete"></i></a>
 							</td>
@@ -139,51 +135,41 @@
 				</div>
 			</div>
 
-			<div class="span4" data-ng-controller="TaskListController">
+			<div class="span4" data-ng-controller="CredentialsListController">
 				<table class="table">
 					<thead>
 						<tr>
-							<th style="width: 0px">Task</th>
-							<th style="width: 0px">Bucket</th>
-							<th style="width: 0px">Status</th>
-							<th style="width: 0px"></th>
+							<th>Connected Accounts</th>
+							<th></th>
 						</tr>
 					</thead>
 					<tbody>
-						<tr data-ng-show="tasks == null">
-							<td colspan="8"><i>Loading...</i></td>
+						<tr data-ng-show="credentials == null">
+							<td colspan="2"><i>Loading...</i></td>
 						</tr>
-						<tr data-ng-show="tasks.length == 0">
-							<td colspan="8"><i>None</i></td>
+						<tr data-ng-show="credentials.length == 0">
+							<td colspan="2"><i>None</i></td>
 						</tr>
-						<tr class="task-row" data-ng-repeat="task in tasks">
-							<td>{{task.type}}</td>
-							<td style="white-space: nowrap"><a data-ng-href="/#/buckets/{{task.bucket}}/" data-ui-bucket-label="task.bucket"></a></td>
+						<tr class="credentials-row" data-ng-repeat="c in credentials">
 							<td>
-								<span data-ng-show="task.status && !task.authorizationUrl">
-									<span data-ng-show="task.status == 'success'">ran</span>
-									<span data-ng-show="task.status == 'failed'">failed</span>
-									{{task.completed | age}}
-								</span>
-								<span data-ng-show="task.authorizationUrl">
-									<a data-ng-href="{{task.authorizationUrl}}">requires authentication</a>
+								{{c.type}}
+								<span data-ng-show="c.authorizationUrl">
+									(<a data-ng-href="{{c.authorizationUrl}}">authorization required</a>)
 								</span>
 							</td>
 							<td style="text-align: right">
-								<a class="action task-run-action" data-ng-click="refreshTask(task['@id'])"><i class="icon-refresh" title="Refresh"></i></a>
-								<a class="action task-undo-action" data-ng-click="undo(task.undo)" data-ng-show="task.undo" title="Undo"><i class="icon-step-backward"></i></a>
-								<a class="action task-delete-action" data-ng-click="remove(task['@id'])"><i class="icon-trash" title="Delete"></i></a>
+								<a class="action credentials-delete-action" data-ng-click="remove(c['@id'])"><i class="icon-trash" title="Disconnect"></i></a>
 							</td>
 						</tr>
 					</tbody>
 				</table>
-				<div class="btn-toolbar">
-					<div class="btn-group pull-right" data-ng-show="tasks">
+				<div class="btn-toolbar" data-ng-show="addable()">
+					<div class="btn-group pull-right" data-ng-show="credentials">
 						<button class="btn" title="Previous" data-ng-click="prev()" data-ng-disabled="!hasPrev()"><i class="icon-chevron-left"></i></button>
 						<button class="btn" title="Next" data-ng-click="next()" data-ng-disabled="!hasNext()"><i class="icon-chevron-right"></i></button>
 					</div>
-					<div class="btn-group pull-right" data-ng-show="tasks">
-						<button class="btn disabled zeno-paging"><b>{{offset + 1}}</b> &ndash; <b>{{offset + tasks.length}}</b> of <b>{{total}}</b></button>
+					<div class="btn-group pull-right" data-ng-show="credentials">
+						<button class="btn disabled zeno-paging"><b>{{offset + 1}}</b> &ndash; <b>{{offset + credentials.length}}</b> of <b>{{total}}</b></button>
 					</div>
 				</div>
 			</div>
@@ -192,26 +178,26 @@
 				<table class="table">
 					<thead>
 						<tr>
-							<th>Token</th>
-							<th>Bucket</th>
-							<th>Created</th>
+							<th>Authorized Applications</th>
 							<th></th>
 						</tr>
 					</thead>
 					<tbody>
+						<tr data-ng-show="authorizations == null">
+							<td colspan="2"><i>Loading</i></td>
+						</tr>
+						<tr data-ng-show="authorizations.length == 0">
+							<td colspan="2"><i>None</i></td>
+						</tr>
 						<tr data-ng-repeat="authorization in authorizations">
-							<td>{{authorization.client | username}}</td>
-							<td>{{authorization.scope}}</td>
-							<td>{{authorization.created | age}}</td>
+							<td>
+								{{authorization.client | username}}
+								<span data-ng-hide="authorization.scope">(*)</span>
+								<span data-ng-show="authorization.scope">(<span data-ui-bucket-label="authorization.scope"></span>)</span>
+							</td>
 							<td style="text-align: right">
 								<a class="action" data-ng-click="remove(authorization['@id'])" title="Delete"><i class="icon-trash"></i></a>
 							</td>
-						</tr>
-						<tr data-ng-show="authorizations == null">
-							<td colspan="4"><i>Loading</i></td>
-						</tr>
-						<tr data-ng-show="authorizations.length == 0">
-							<td colspan="4"><i>None</i></td>
 						</tr>
 					</tbody>
 				</table>

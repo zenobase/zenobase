@@ -28,21 +28,16 @@ public class TaskRefresher {
 		Logger.info("Refreshing: " + task.getId());
 		Bucket bucket = buckets.find(task.getBucketId());
 		if (bucket == null) {
-			task.setStatus(Task.Status.FAILED);
 			return;
 		}
     	if (!bucket.hasRole(new Authorization(task.getPrincipal()), Role.OWNER)) {
-			task.setStatus(Task.Status.FAILED);
 			return;
     	}
     	TaskManager manager = registry.find(task.getType());
     	if (manager == null) {
-			task.setStatus(Task.Status.FAILED);
 			return;
     	}
-    	Command command = manager.execute(task);
-    	if (command != null) {
-    		dispatcher.dispatch(command);
-    	}
+		Command command = manager.execute(task);
+    	dispatcher.dispatch(command);
 	}
 }

@@ -1,16 +1,14 @@
 package com.zenobase.tasks.withings;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 import javax.measure.quantity.Mass;
+import javax.measure.unit.Unit;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDateTime;
-import org.scribe.builder.ServiceBuilder;
 import org.scribe.model.OAuthRequest;
 import org.scribe.model.Response;
-import org.scribe.model.SignatureType;
 import org.scribe.model.Verb;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Objects;
@@ -23,31 +21,27 @@ import com.zenobase.commands.UpdateTaskCommand;
 import com.zenobase.common.Measures;
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
-import com.zenobase.tasks.InvalidTokenException;
-import com.zenobase.tasks.OAuthTask;
+import com.zenobase.tasks.OAuthCredentials;
 import com.zenobase.tasks.OAuthTaskManager;
 import com.zenobase.tasks.Task;
 
 public class WithingsTaskManager extends OAuthTaskManager {
 
 	@Inject
-	public WithingsTaskManager(@Named("withings.api.key") String apiKey, @Named("withings.api.secret") String apiSecret, @Named("oauth.hostname") String callbackUrl) {
-		super(new WithingsApi(), apiKey, apiSecret, callbackUrl);
-	}
-
-	@Override
-	public String getType() {
-		return WithingsTask.TYPE;
+	public WithingsTaskManager(WithingsCredentialsManager credentialsManager) {
+		super(WithingsTask.TYPE, credentialsManager);
 	}
 
 	@Override
 	public WithingsTask newTask(String bucketId, Identity principal, ObjectNode settings) {
 		DateTimeZone timezone = DateTimeZone.forID(Objects.firstNonNull(settings.path("timezone").textValue(), "UTC"));
-		WithingsTask task = super.newTask(bucketId, principal, settings).as(WithingsTask.class);
-		task.setTag(Objects.firstNonNull(settings.path("tag").textValue(), "steps"));
-		task.setUnit(Measures.<Mass>parseUnit(Objects.firstNonNull(settings.path("unit").textValue(), "kg")));
+		String marker = parseMarker(settings.path("marker").textValue(), timezone);
+		String tag = Objects.firstNonNull(settings.path("tag").textValue(), "body");
+		Unit<Mass> unit = Measures.<Mass>parseUnit(Objects.firstNonNull(settings.path("unit").textValue(), "kg"));
+		WithingsTask task = new WithingsTask(bucketId, principal, marker);
+		task.setTag(tag);
+		task.setUnit(unit);
 		task.setTimezone(timezone);
-		task.setMarker(parseMarker(settings.path("marker").textValue(), timezone));
 		return task;
 	}
 
@@ -56,49 +50,21 @@ public class WithingsTaskManager extends OAuthTaskManager {
 	}
 
 	@Override
-	public Command authorize(Task task, ObjectNode config) {
-		try {
-			Preconditions.checkState(!task.isEnabled(), "Task is already enabled: %s", task.getId());
-			return authorize(task.as(WithingsTask.class), config);
-		} catch (InvalidTokenException e) {
-			return createCommand(e);
-		}
+	public Command execute(Task task, OAuthCredentials credentials) {
+		return execute(task.as(WithingsTask.class), credentials);
 	}
 
-	private Command authorize(WithingsTask task, ObjectNode config) {
-		String token = config.get("oauth_token").textValue();
-		String verifier = config.get("oauth_verifier").textValue();
-		int userId = config.get("userid").asInt();
-		Preconditions.checkState(task.getToken().getToken().equals(token),
-			"Token matches in task %s, expected %s, got %s",
-			task.getId(), task.getToken().getToken(), token);
-		return UpdateTaskCommand.builder(task)
-			.set(Task.AUTHORIZATION_URL, task.getAuthorizationUrl(), null)
-			.with(Task.CREDENTIALS)
-			.set(OAuthTask.TOKEN, task.getToken(), getAccessToken(task, verifier))
-			.set(WithingsTask.USER_ID, task.getUserId(), userId)
-			.build();
-	}
-
-	@Override
-	public Command execute(Task task) {
-		Preconditions.checkState(task.isEnabled(), "Task is not enabled: %s", task.getId());
-		return execute(task.as(WithingsTask.class));
-	}
-
-	private Command execute(WithingsTask task) {
-		OAuthRequest request = createRequest(task);
-		getService(task).signRequest(task.getToken(), request);
-		Response response = request.send();
-		checkResponse(task, request, response);
+	private Command execute(WithingsTask task, OAuthCredentials credentials) {
+		OAuthRequest request = createRequest(task, credentials);
+		Response response = send(request, credentials);
 		WithingsResult result = new WithingsResult(parseObject(response), task.getPrincipal(), task.getTag(), task.getUnit(), task.getTimezone());
 		Preconditions.checkState(result.getStatus() == 0, "Expected status <0> but got <%s> for task <%s>", result.getStatus(), task.getId());
 		return createCommand(task, result);
 	}
 
-	private static OAuthRequest createRequest(WithingsTask task) {
+	private OAuthRequest createRequest(WithingsTask task, OAuthCredentials credentials) {
 		OAuthRequest request = new OAuthRequest(Verb.GET, "http://wbsapi.withings.net/measure");
-		request.addQuerystringParameter("userid", task.getUserId().toString());
+		request.addQuerystringParameter("userid", credentials.getScope());
 		request.addQuerystringParameter("action", "getmeas");
 		request.addQuerystringParameter("devtype", "1"); // weight scale data
 		if (task.getMarker() != null) {
@@ -120,10 +86,5 @@ public class WithingsTaskManager extends OAuthTaskManager {
 			command.add(new CreateEventCommand(task.getPrincipal(), task.getBucketId(), event));
 		}
 		return command;
-	}
-
-	@Override
-	protected void configure(ServiceBuilder builder) {
-		builder.signatureType(SignatureType.QueryString);
 	}
 }

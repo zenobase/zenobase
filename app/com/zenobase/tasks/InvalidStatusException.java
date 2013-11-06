@@ -8,14 +8,14 @@ public class InvalidStatusException extends OAuthException {
 
 	private final int status;
 
-	public InvalidStatusException(OAuthTask task, OAuthRequest request, int status) {
-		super(task, request);
+	public InvalidStatusException(OAuthRequest request, int status) {
+		super(request);
 		this.status = status;
 	}
 
 	@Override
 	public String getMessage() {
-		return String.format("Request for <%s> in task <%s> returned status <%d>",
-			getRequest().getCompleteUrl(), getTask().getId(), status);
+		return String.format("Request for <%s> returned status <%d>",
+			getRequest().getCompleteUrl(), status);
 	}
 }

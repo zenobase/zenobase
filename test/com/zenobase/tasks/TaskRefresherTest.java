@@ -1,6 +1,5 @@
 package com.zenobase.tasks;
 
-import static org.fest.assertions.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
 import org.junit.Test;
@@ -51,7 +50,6 @@ public class TaskRefresherTest {
 
 		new TaskRefresher(registry, buckets, dispatcher).refresh(task);
 
-		assertThat(task.getStatus()).isEqualTo(Task.Status.FAILED);
 		verifyZeroInteractions(dispatcher);
 	}
 
@@ -68,7 +66,6 @@ public class TaskRefresherTest {
 
 		new TaskRefresher(registry, buckets, dispatcher).refresh(task);
 
-		assertThat(task.getStatus()).isEqualTo(Task.Status.FAILED);
 		verifyZeroInteractions(dispatcher);
 	}
 
@@ -85,7 +82,6 @@ public class TaskRefresherTest {
 
 		new TaskRefresher(registry, buckets, dispatcher).refresh(task);
 
-		assertThat(task.getStatus()).isEqualTo(Task.Status.FAILED);
 		verifyZeroInteractions(dispatcher);
 	}
 

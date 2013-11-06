@@ -2,9 +2,11 @@ package com.zenobase.json;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.StringWriter;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Preconditions;
@@ -93,5 +95,20 @@ public class Nodes {
 
 	public static int size(JsonNode node) {
 		return node != null ? node.size() : 0;
+	}
+
+	/**
+	 * Pretty-prints a node.
+	 */
+	public static String toString(JsonNode node) {
+		ObjectMapper mapper = new ObjectMapper();
+		mapper.enable(SerializationFeature.INDENT_OUTPUT);
+		StringWriter s = new StringWriter();
+		try {
+			mapper.writeValue(s, node);
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+		return s.toString();
 	}
 }

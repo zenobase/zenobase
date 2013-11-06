@@ -1,10 +1,9 @@
 package com.zenobase.tasks.demo;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Objects;
-import com.google.common.base.Preconditions;
 
 import com.zenobase.commands.Command;
 import com.zenobase.commands.CompoundCommand;
@@ -20,16 +19,14 @@ public class DemoTaskManager extends TaskManager {
 
 	private static final Resource SOURCE = new Resource("Zenobase", "http://zenobase.com/");
 
-	@Override
-	public String getType() {
-		return DemoTask.TYPE;
+	public DemoTaskManager() {
+		super(DemoTask.TYPE);
 	}
 
 	@Override
 	public DemoTask newTask(String bucketId, Identity principal, ObjectNode settings) {
-		DemoTask task = new DemoTask(bucketId, principal);
-		task.setTag(Objects.firstNonNull(settings.path("tag").textValue(), "test"));
-		return task;
+		String tag = Objects.firstNonNull(settings.path("tag").textValue(), "test");
+		return new DemoTask(bucketId, principal, tag);
 	}
 
 	@Override
@@ -38,7 +35,6 @@ public class DemoTaskManager extends TaskManager {
 	}
 
 	private Command execute(DemoTask task) {
-		Preconditions.checkState(task.isEnabled(), "Task is not enabled: %s", task.getId());
 		CompoundCommand command = new CompoundCommand(task.getPrincipal(), "ran demo task", "reverted demo task");
 		Event event = new Event();
 		event.setValue(Event.AUTHOR, task.getPrincipal());

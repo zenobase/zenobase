@@ -8,8 +8,8 @@ import javax.measure.quantity.Energy;
 import javax.measure.quantity.Length;
 import javax.measure.unit.Unit;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import org.joda.time.DateTime;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.collect.Lists;
 
 import com.zenobase.common.Measures;
@@ -56,7 +56,7 @@ class FitbitActivitiesResult {
 	}
 
 	private int getSteps() {
-		return node.path("summary").path(tag).intValue();
+		return node.path("summary").path("steps").intValue();
 	}
 
 	private DecimalMeasure<Length> getDistance() {

@@ -32,17 +32,20 @@ import com.zenobase.commands.CommandParserRegistry;
 import com.zenobase.commands.CompoundCommand;
 import com.zenobase.commands.CreateAuthorizationCommand;
 import com.zenobase.commands.CreateBucketCommand;
+import com.zenobase.commands.CreateCredentialsCommand;
 import com.zenobase.commands.CreateEventCommand;
 import com.zenobase.commands.CreateTaskCommand;
 import com.zenobase.commands.CreateUserCommand;
 import com.zenobase.commands.DeleteAuthorizationCommand;
 import com.zenobase.commands.DeleteBucketCommand;
+import com.zenobase.commands.DeleteCredentialsCommand;
 import com.zenobase.commands.DeleteEventCommand;
 import com.zenobase.commands.DeleteTaskCommand;
 import com.zenobase.commands.DeleteUserCommand;
 import com.zenobase.commands.RestoreBucketCommand;
 import com.zenobase.commands.SuspendUserCommand;
 import com.zenobase.commands.UpdateBucketCommand;
+import com.zenobase.commands.UpdateCredentialsCommand;
 import com.zenobase.commands.UpdateEventCommand;
 import com.zenobase.commands.UpdateTaskCommand;
 import com.zenobase.common.Globals;
@@ -53,6 +56,8 @@ import com.zenobase.controllers.AuthorizationListController;
 import com.zenobase.controllers.BucketController;
 import com.zenobase.controllers.BucketListController;
 import com.zenobase.controllers.ControllerSupport;
+import com.zenobase.controllers.CredentialsController;
+import com.zenobase.controllers.CredentialsListController;
 import com.zenobase.controllers.EventController;
 import com.zenobase.controllers.EventListController;
 import com.zenobase.controllers.JournalController;
@@ -74,6 +79,7 @@ import com.zenobase.services.ClusterNodeFactory;
 import com.zenobase.services.CommandDispatcher;
 import com.zenobase.services.CommandReplay;
 import com.zenobase.services.CommandRepository;
+import com.zenobase.services.CredentialsRepository;
 import com.zenobase.services.EventRepository;
 import com.zenobase.services.IndexManager;
 import com.zenobase.services.LocalNodeFactory;
@@ -82,14 +88,21 @@ import com.zenobase.services.QuotaManager;
 import com.zenobase.services.TaskRepository;
 import com.zenobase.services.TestNodeFactory;
 import com.zenobase.services.UserRepository;
+import com.zenobase.tasks.CredentialsManager;
 import com.zenobase.tasks.TaskManager;
 import com.zenobase.tasks.TaskRefresher;
+import com.zenobase.tasks.bodymedia.BodyMediaCredentialsManager;
 import com.zenobase.tasks.bodymedia.BodyMediaTaskManager;
+import com.zenobase.tasks.demo.DemoCredentialsManager;
 import com.zenobase.tasks.demo.DemoTaskManager;
+import com.zenobase.tasks.fitbit.FitbitCredentialsManager;
 import com.zenobase.tasks.fitbit.FitbitIntradayTaskManager;
 import com.zenobase.tasks.fitbit.FitbitTaskManager;
+import com.zenobase.tasks.foursquare.FoursquareCredentialsManager;
 import com.zenobase.tasks.foursquare.FoursquareTaskManager;
+import com.zenobase.tasks.netatmo.NetatmoCredentialsManager;
 import com.zenobase.tasks.netatmo.NetatmoTaskManager;
+import com.zenobase.tasks.withings.WithingsCredentialsManager;
 import com.zenobase.tasks.withings.WithingsTaskManager;
 
 
@@ -129,6 +142,7 @@ public class Global extends GlobalSettings {
 				bind(Canonical.class).in(Singleton.class);
 				bind(TaskRepository.class).in(Singleton.class);
 				bind(TaskRefresher.class).in(Singleton.class);
+				bind(CredentialsRepository.class).in(Singleton.class);
 				bind(AuthorizationRepository.class).in(Singleton.class);
 				bind(QuotaManager.class).in(Singleton.class);
 
@@ -150,6 +164,9 @@ public class Global extends GlobalSettings {
 				parsers.addBinding().to(CreateTaskCommand.Parser.class);
 				parsers.addBinding().to(UpdateTaskCommand.Parser.class);
 				parsers.addBinding().to(DeleteTaskCommand.Parser.class);
+				parsers.addBinding().to(CreateCredentialsCommand.Parser.class);
+				parsers.addBinding().to(UpdateCredentialsCommand.Parser.class);
+				parsers.addBinding().to(DeleteCredentialsCommand.Parser.class);
 				parsers.addBinding().to(CompoundCommand.Parser.class);
 				parsers.addBinding().to(CreateAuthorizationCommand.Parser.class);
 				parsers.addBinding().to(DeleteAuthorizationCommand.Parser.class);
@@ -172,19 +189,28 @@ public class Global extends GlobalSettings {
 				handlers.addBinding().to(CreateTaskCommand.Handler.class);
 				handlers.addBinding().to(UpdateTaskCommand.Handler.class);
 				handlers.addBinding().to(DeleteTaskCommand.Handler.class);
+				handlers.addBinding().to(CreateCredentialsCommand.Handler.class);
+				handlers.addBinding().to(UpdateCredentialsCommand.Handler.class);
+				handlers.addBinding().to(DeleteCredentialsCommand.Handler.class);
 				handlers.addBinding().to(CreateAuthorizationCommand.Handler.class);
 				handlers.addBinding().to(DeleteAuthorizationCommand.Handler.class);
 
-				Multibinder<TaskManager> managers = Multibinder.newSetBinder(binder(), new TypeLiteral<TaskManager>() {});
-				managers.addBinding().to(DemoTaskManager.class);
-				bindIfConfigured("fitbit", FitbitTaskManager.class, managers);
-				bindIfConfigured("fitbit", FitbitIntradayTaskManager.class, managers);
-				bindIfConfigured("foursquare", FoursquareTaskManager.class, managers);
-				bindIfConfigured("withings", WithingsTaskManager.class, managers);
-				bindIfConfigured("bodymedia", BodyMediaTaskManager.class, managers);
-				bindIfConfigured("netatmo", NetatmoTaskManager.class, managers);
-				// bindIfConfigured("cosm", CosmTaskManager.class, managers);
-				// bindIfConfigured("twitter", TwitterTaskManager.class, managers);
+				Multibinder<CredentialsManager> credentials = Multibinder.newSetBinder(binder(), new TypeLiteral<CredentialsManager>() {});
+				credentials.addBinding().to(DemoCredentialsManager.class);
+				bindIfConfigured("fitbit", FitbitCredentialsManager.class, credentials);
+				bindIfConfigured("foursquare", FoursquareCredentialsManager.class, credentials);
+				bindIfConfigured("withings", WithingsCredentialsManager.class, credentials);
+				bindIfConfigured("bodymedia", BodyMediaCredentialsManager.class, credentials);
+				bindIfConfigured("netatmo", NetatmoCredentialsManager.class, credentials);
+
+				Multibinder<TaskManager> tasks = Multibinder.newSetBinder(binder(), new TypeLiteral<TaskManager>() {});
+				tasks.addBinding().to(DemoTaskManager.class);
+				bindIfConfigured("fitbit", FitbitTaskManager.class, tasks);
+				bindIfConfigured("fitbit", FitbitIntradayTaskManager.class, tasks);
+				bindIfConfigured("foursquare", FoursquareTaskManager.class, tasks);
+				bindIfConfigured("withings", WithingsTaskManager.class, tasks);
+				bindIfConfigured("bodymedia", BodyMediaTaskManager.class, tasks);
+				bindIfConfigured("netatmo", NetatmoTaskManager.class, tasks);
 
 				bind(AccountController.class).in(Singleton.class);
 				bind(BucketController.class).in(Singleton.class);
@@ -200,6 +226,8 @@ public class Global extends GlobalSettings {
 				bind(WhoController.class).in(Singleton.class);
 				bind(TaskController.class).in(Singleton.class);
 				bind(TaskListController.class).in(Singleton.class);
+				bind(CredentialsController.class).in(Singleton.class);
+				bind(CredentialsListController.class).in(Singleton.class);
 				bind(OAuthController.class).in(Singleton.class);
 				bind(AuthorizationController.class).in(Singleton.class);
 				bind(AuthorizationListController.class).in(Singleton.class);
@@ -207,11 +235,9 @@ public class Global extends GlobalSettings {
 				requestInjection(Global.this);
 			}
 
-			private <T> void bindIfConfigured(String prefix, Class<? extends T> type, Multibinder<T> managers) {
+			private <T> void bindIfConfigured(String prefix, Class<? extends T> type, Multibinder<T> binder) {
 				if (isConfigured(prefix)) {
-					managers.addBinding().to(type);
-				} else {
-					Logger.warn("missing configuration for " + prefix);
+					binder.addBinding().to(type);
 				}
 			}
 

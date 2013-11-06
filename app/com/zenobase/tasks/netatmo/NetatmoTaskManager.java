@@ -3,121 +3,59 @@ package com.zenobase.tasks.netatmo;
 import java.util.List;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.elasticsearch.common.base.Objects;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
-import org.scribe.model.OAuthConstants;
 import org.scribe.model.OAuthRequest;
 import org.scribe.model.Response;
 import org.scribe.model.Token;
 import org.scribe.model.Verb;
-import org.scribe.oauth.OAuthService;
-import play.Logger;
-import com.google.common.base.Preconditions;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 
 import com.zenobase.commands.Command;
 import com.zenobase.commands.CompoundCommand;
 import com.zenobase.commands.CreateEventCommand;
+import com.zenobase.commands.UpdateCredentialsCommand;
 import com.zenobase.commands.UpdateTaskCommand;
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
-import com.zenobase.oauth.ExpiringToken;
-import com.zenobase.oauth.OAuth2TokenExtractor;
-import com.zenobase.tasks.InvalidTokenException;
-import com.zenobase.tasks.OAuthTask;
+import com.zenobase.tasks.Credentials;
+import com.zenobase.tasks.OAuthCredentials;
 import com.zenobase.tasks.OAuthTaskManager;
 import com.zenobase.tasks.Task;
 
 public class NetatmoTaskManager extends OAuthTaskManager {
 
 	@Inject
-	public NetatmoTaskManager(@Named("netatmo.api.key") String apiKey, @Named("netatmo.api.secret") String apiSecret, @Named("oauth.hostname") String callbackUrl) {
-		super(new NetatmoApi(), apiKey, apiSecret, callbackUrl);
+	public NetatmoTaskManager(NetatmoCredentialsManager credentialsManager) {
+		super(NetatmoTask.TYPE, credentialsManager);
 	}
 
 	@Override
-	public String getType() {
-		return NetatmoTask.TYPE;
+	public Task newTask(String bucketId, Identity principal, ObjectNode settings) {
+		String marker = formatMarker(parseMarker(settings.path("marker").textValue()));
+		return new NetatmoTask(bucketId, principal, marker);
 	}
 
 	@Override
-	public OAuthTask newTask(String bucketId, Identity principal, ObjectNode settings) {
-		OAuthTask task = super.newTask(bucketId, principal, settings);
-		task.setMarker(formatMarker(parseMarker(settings.path("marker").textValue())));
-		return task;
+	public Command execute(Task task, OAuthCredentials credentials) {
+		return execute(task.as(NetatmoTask.class), credentials);
 	}
 
-	@Override
-	protected Token getRequestToken(OAuthTask task) {
-		return Token.empty();
-	}
-
-	@Override
-	protected OAuthService getService(OAuthTask task) {
-		return super.getService(task);
-	}
-
-	@Override
-	public Command authorize(Task task, ObjectNode config) {
-		Preconditions.checkState(!task.isEnabled(), "Task is already enabled: %s", task.getId());
-		return authorize(task.as(OAuthTask.class), config);
-	}
-
-	private Command authorize(OAuthTask task, ObjectNode config) {
-		String code = config.get("code").textValue();
-		if (code == null) {
-			Logger.warn(String.format("Couldn't authorize %s task <%s>: %s",
-				task.getType(), task.getId(), config));
-			return null;
-		}
-		ExpiringToken token = (ExpiringToken) getAccessToken(task, code);
-		return UpdateTaskCommand.builder(task)
-			.set(Task.AUTHORIZATION_URL, task.getAuthorizationUrl(), null)
-			.with(Task.CREDENTIALS)
-			.set(OAuthTask.TOKEN, task.getToken(), token)
-			.build();
-	}
-
-	@Override
-	public void reauthorize(Task task) {
-		reauthorize(task.as(OAuthTask.class));
-	}
-
-	private void reauthorize(OAuthTask task) {
-		OAuthRequest request = new OAuthRequest(Verb.POST, "http://api.netatmo.net/oauth2/token");
-		request.addBodyParameter("grant_type", "refresh_token");
-		request.addBodyParameter("refresh_token", ((ExpiringToken) task.getToken()).getRefreshToken());
-		request.addBodyParameter(OAuthConstants.CLIENT_ID, apiKey);
-		request.addBodyParameter(OAuthConstants.CLIENT_SECRET, apiSecret);
-		Response response = send(request);
-		task.setToken(new OAuth2TokenExtractor().extract(response.getBody()));
-	}
-
-	@Override
-	public Command execute(Task task) {
-		try {
-			Preconditions.checkState(task.isEnabled(), "Task is not enabled: %s", task.getId());
-			return execute(task.as(NetatmoTask.class));
-		} catch (InvalidTokenException e) {
-			return createCommand(e);
-		}
-	}
-
-	private Command execute(NetatmoTask task) {
-		Token token = task.getToken();
-		if (((ExpiringToken) task.getToken()).isExpired()) {
-			reauthorize(task);
+	private Command execute(NetatmoTask task, OAuthCredentials credentials) {
+		Token token = credentials.getToken();
+		if (credentials.isExpired()) {
+			reauthorize(credentials);
 		}
 		List<Event> events = Lists.newArrayList();
 		String to = formatMarker(new DateTime(DateTimeZone.UTC).minusMinutes(1));
-		for (Device device : getDevices(task)) {
-			events.addAll(getEvents(task, device, to));
+		for (Device device : getDevices(credentials)) {
+			events.addAll(getEvents(task, credentials, device, to));
 		}
-		return createCommand(task, events, token);
+		return createCommand(task, credentials, events, token);
 	}
 
 	static DateTime parseMarker(String marker) {
@@ -128,13 +66,13 @@ public class NetatmoTaskManager extends OAuthTaskManager {
 		return time != null ? Long.toString(time.getMillis() / 1000) : null;
 	}
 
-	private List<Device> getDevices(NetatmoTask task) {
-		return new DevicesQuery(task).execute().getDevices();
+	private List<Device> getDevices(OAuthCredentials credentials) {
+		return new DevicesQuery(credentials).execute().getDevices();
 	}
 
-	private List<Event> getEvents(NetatmoTask task, Device device, String to) {
+	private List<Event> getEvents(NetatmoTask task, OAuthCredentials credentials, Device device, String to) {
 		List<Event> events = Lists.newArrayList();
-		MeasurementsQuery request = new MeasurementsQuery(task, device);
+		MeasurementsQuery request = new MeasurementsQuery(task.getPrincipal(), credentials, device);
 		while (true) {
 			String from = null;
 			if (!events.isEmpty()) {
@@ -153,34 +91,33 @@ public class NetatmoTaskManager extends OAuthTaskManager {
 
 	private class DevicesQuery {
 
-		private final OAuthTask task;
+		private final OAuthCredentials credentials;
 
-		public DevicesQuery(OAuthTask task) {
-			this.task = task;
+		public DevicesQuery(OAuthCredentials credentials) {
+			this.credentials = credentials;
 		}
 
 		public DevicesResult execute() {
 			OAuthRequest request = new OAuthRequest(Verb.GET, "http://api.netatmo.net/api/devicelist");
-			request.addQuerystringParameter("access_token", task.getToken().getToken());
-			Response response = send(request);
-			checkResponse(task, request, response);
+			Response response = send(request, credentials);
 			return new DevicesResult(parseObject(response));
 		}
 	}
 
 	private class MeasurementsQuery {
 
-		private final OAuthTask task;
+		private final Identity principal;
+		private final OAuthCredentials credentials;
 		private final Device device;
 
-		public MeasurementsQuery(OAuthTask task, Device device) {
-			this.task = task;
+		public MeasurementsQuery(Identity principal, OAuthCredentials credentials, Device device) {
+			this.principal = principal;
+			this.credentials = credentials;
 			this.device = device;
 		}
 
 		public MeasurementsResult find(String from, String to) {
 			OAuthRequest request = new OAuthRequest(Verb.GET, "http://api.netatmo.net/api/getmeasure");
-			request.addQuerystringParameter("access_token", task.getToken().getToken());
 			request.addQuerystringParameter("device_id", device.getId());
 			if (from != null) {
 				request.addQuerystringParameter("date_begin", from);
@@ -190,22 +127,25 @@ public class NetatmoTaskManager extends OAuthTaskManager {
 			request.addQuerystringParameter("scale", "max");
 			request.addQuerystringParameter("optimize", "false");
 			request.addQuerystringParameter("type", "Temperature,Pressure,Noise,Humidity,CO2");
-			Response response = send(request);
-			checkResponse(task, request, response);
-			return new MeasurementsResult(task.getPrincipal(), device, parseObject(response));
+			Response response = send(request, credentials);
+			return new MeasurementsResult(principal, device, parseObject(response));
 		}
 	}
 
-	private Command createCommand(NetatmoTask task, List<Event> events, Token expiredToken) {
+	private Command createCommand(NetatmoTask task, OAuthCredentials credentials, List<Event> events, Token expiredToken) {
 		CompoundCommand command = new CompoundCommand(task.getPrincipal(), "ran netatmo task", "reverted netatmo task");
 		command.add(UpdateTaskCommand.builder(task)
 			.set(Task.COMPLETED, task.getCompleted(), new DateTime(DateTimeZone.UTC))
 			.set(Task.STATUS, task.getStatus(), Task.Status.SUCCESS)
 			.set(Task.MARKER, task.getMarker(), events.isEmpty() ? task.getMarker() : getMarker(events))
 			.set(Task.UNDO, task.getUndoId(), command.getId())
-			.with(Task.CREDENTIALS)
-			.set(OAuthTask.TOKEN, expiredToken, task.getToken())
 			.build());
+		if (!Objects.equal(credentials.getToken(), expiredToken)) {
+			command.add(UpdateCredentialsCommand.builder(credentials)
+				.with(Credentials.CREDENTIALS)
+				.set(OAuthCredentials.TOKEN, expiredToken, credentials.getToken())
+				.build());
+		}
 		for (Event event : events) {
 			// System.out.println("[event] " + event);
 			command.add(new CreateEventCommand(task.getPrincipal(), task.getBucketId(), event));
@@ -215,9 +155,5 @@ public class NetatmoTaskManager extends OAuthTaskManager {
 
 	private static String getMarker(List<Event> events) {
 		return formatMarker(Iterables.getLast(events).getValue(Event.TIMESTAMP).plusSeconds(1));
-	}
-
-	Response send(OAuthRequest request) {
-		return request.send();
 	}
 }

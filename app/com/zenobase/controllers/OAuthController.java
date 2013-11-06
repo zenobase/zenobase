@@ -6,10 +6,10 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import play.data.Form;
 import play.mvc.BodyParser;
 import play.mvc.Result;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Charsets;
 
 import com.zenobase.commands.CreateAuthorizationCommand;
@@ -124,8 +124,8 @@ public class OAuthController extends ControllerSupport {
     	return ok(result);
     }
 
-    public Result callback(String taskId) {
-    	return redirect(String.format("/#/tasks/%s?%s", taskId, toString(request().queryString())));
+    public Result callback(String id) {
+    	return redirect(String.format("/#/credentials/%s?%s", id, toString(request().queryString())));
     }
 
 	private static String toString(Map<String, String[]> params) {

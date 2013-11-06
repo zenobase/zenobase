@@ -3,9 +3,7 @@ package com.zenobase.tasks.bodymedia;
 import java.util.List;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.elasticsearch.common.collect.Lists;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
@@ -13,85 +11,68 @@ import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
 import org.scribe.model.OAuthRequest;
 import org.scribe.model.Response;
+import org.scribe.model.Token;
 import org.scribe.model.Verb;
-import play.Logger;
-import com.google.common.base.Preconditions;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.RangeMap;
 
 import com.zenobase.commands.Command;
 import com.zenobase.commands.CompoundCommand;
 import com.zenobase.commands.CreateEventCommand;
+import com.zenobase.commands.UpdateCredentialsCommand;
 import com.zenobase.commands.UpdateTaskCommand;
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
-import com.zenobase.tasks.InvalidTokenException;
-import com.zenobase.tasks.OAuthTask;
+import com.zenobase.tasks.Credentials;
+import com.zenobase.tasks.OAuthCredentials;
 import com.zenobase.tasks.OAuthTaskManager;
 import com.zenobase.tasks.Task;
 
 public class BodyMediaBurnTaskManager extends OAuthTaskManager {
 
-	private final String apiKey;
-
 	@Inject
-	public BodyMediaBurnTaskManager(@Named("bodymedia.api.key") String apiKey, @Named("bodymedia.api.secret") String apiSecret, @Named("oauth.hostname") String callbackUrl) {
-		super(new BodyMediaApi(apiKey), apiKey, apiSecret, callbackUrl);
-		this.apiKey = apiKey;
+	public BodyMediaBurnTaskManager(BodyMediaCredentialsManager credentialsManager) {
+		super(BodyMediaBurnTask.TYPE, credentialsManager);
 	}
 
 	@Override
-	public String getType() {
-		return BodyMediaBurnTask.TYPE;
+	public Task newTask(String bucketId, Identity principal, ObjectNode settings) {
+		String marker = parseMarker(settings.path("marker").textValue()).toString();
+		return new BodyMediaBurnTask(bucketId, principal, marker);
 	}
 
 	@Override
-	public OAuthTask newTask(String bucketId, Identity principal, ObjectNode settings) {
-		OAuthTask task = super.newTask(bucketId, principal, settings);
-		task.setMarker(parseMarker(settings.path("marker").textValue()).toString());
-		return task;
+	public Command execute(Task task, OAuthCredentials credentials) {
+		return execute(task.as(BodyMediaBurnTask.class), credentials);
 	}
 
-	@Override
-	public Command execute(Task task) {
-		try {
-			Preconditions.checkState(task.isEnabled(), "Task is not enabled: %s", task.getId());
-			return execute(task.as(BodyMediaBurnTask.class));
-		} catch (InvalidTokenException e) {
-			return createCommand(e);
-		}
-	}
-
-	private Command execute(BodyMediaBurnTask task) {
-		if (task.isExpired()) {
-			Logger.info("Refreshing token...");
-			task.setToken(getAccessToken(task, ""));
+	private Command execute(BodyMediaBurnTask task, OAuthCredentials credentials) {
+		Token token = credentials.getToken();
+		if (credentials.isExpired()) {
+			reauthorize(credentials);
 		}
 		List<Event> events = Lists.newArrayList();
-		RangeMap<LocalDateTime, DateTimeZone> timezones = getTimezones(task);
+		RangeMap<LocalDateTime, DateTimeZone> timezones = getTimezones(task, credentials);
 		LocalDate date = parseMarker(task.getMarker());
 		while (true) {
-			BodyMediaBurnResult result = execute(task, date, timezones);
+			BodyMediaBurnResult result = execute(task, credentials, date, timezones);
 			if (!events.addAll(result.getEvents())) {
 				break;
 			}
 			date = date.plusDays(1);
 		}
-		return createCommand(task, date, events);
+		return createCommand(task, credentials, date, events, token);
 	}
 
-	private RangeMap<LocalDateTime, DateTimeZone> getTimezones(BodyMediaBurnTask task) {
-		OAuthRequest request = new OAuthRequest(Verb.GET, String.format("http://api.bodymedia.com/v2/json/timezone?api_key=%s", apiKey));
-		getService(task).signRequest(task.getToken(), request);
-		Response response = request.send();
-		checkResponse(task, request, response);
+	private RangeMap<LocalDateTime, DateTimeZone> getTimezones(BodyMediaBurnTask task, OAuthCredentials credentials) {
+		OAuthRequest request = new OAuthRequest(Verb.GET, String.format("http://api.bodymedia.com/v2/json/timezone"));
+		Response response = send(request, credentials);
 		return new BodyMediaTimezonesResult(parseObject(response)).getTimezones();
 	}
 
-	private BodyMediaBurnResult execute(BodyMediaBurnTask task, LocalDate date, RangeMap<LocalDateTime, DateTimeZone> timezones) {
-		OAuthRequest request = new OAuthRequest(Verb.GET, String.format("http://api.bodymedia.com/v2/json/burn/day/minute/%s?api_key=%s", formatMarker(date), apiKey));
-		getService(task).signRequest(task.getToken(), request);
-		Response response = request.send();
-		checkResponse(task, request, response);
+	private BodyMediaBurnResult execute(BodyMediaBurnTask task, OAuthCredentials credentials, LocalDate date, RangeMap<LocalDateTime, DateTimeZone> timezones) {
+		OAuthRequest request = new OAuthRequest(Verb.GET, String.format("http://api.bodymedia.com/v2/json/burn/day/minute/%s", formatMarker(date)));
+		Response response = send(request, credentials);
 		return new BodyMediaBurnResult(parseObject(response), task.getPrincipal(), timezones);
 	}
 
@@ -103,14 +84,20 @@ public class BodyMediaBurnTaskManager extends OAuthTaskManager {
 		return date.toString("yyyyMMdd");
 	}
 
-	private static Command createCommand(BodyMediaBurnTask task, LocalDate lastSync, Iterable<Event> events) {
-		CompoundCommand command = new CompoundCommand(task.getPrincipal(), "ran bodymedia task", "reverted bodymedia task");
+	private static Command createCommand(BodyMediaBurnTask task, OAuthCredentials credentials, LocalDate lastSync, Iterable<Event> events, Token expiredToken) {
+		CompoundCommand command = new CompoundCommand(task.getPrincipal(), "ran bodymedia burn task", "reverted bodymedia burn task");
 		command.add(UpdateTaskCommand.builder(task)
 			.set(Task.COMPLETED, task.getCompleted(), new DateTime(DateTimeZone.UTC))
 			.set(Task.STATUS, task.getStatus(), Task.Status.SUCCESS)
 			.set(Task.MARKER, task.getMarker(), lastSync.toString())
 			.set(Task.UNDO, task.getUndoId(), command.getId())
 			.build());
+		if (!credentials.getToken().equals(expiredToken)) {
+			command.add(UpdateCredentialsCommand.builder(credentials)
+				.with(Credentials.CREDENTIALS)
+				.set(OAuthCredentials.TOKEN, expiredToken, credentials.getToken())
+				.build());
+		}
 		for (Event event : events) {
 			// System.out.println("[event] " + event);
 			command.add(new CreateEventCommand(task.getPrincipal(), task.getBucketId(), event));

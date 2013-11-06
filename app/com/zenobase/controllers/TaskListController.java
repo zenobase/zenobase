@@ -4,14 +4,13 @@ import javax.inject.Inject;
 
 import play.mvc.BodyParser;
 import play.mvc.Result;
-import com.google.common.base.Strings;
 
 import com.zenobase.commands.CreateTaskCommand;
 import com.zenobase.models.Bucket;
 import com.zenobase.models.Identity;
 import com.zenobase.models.Role;
+import com.zenobase.models.User;
 import com.zenobase.oauth.Authorization;
-import com.zenobase.search.QueryConstraint;
 import com.zenobase.services.BucketRepository;
 import com.zenobase.services.CommandDispatcher;
 import com.zenobase.services.TaskRepository;
@@ -41,7 +40,7 @@ public class TaskListController extends ControllerSupport {
 		this.users = users;
 	}
 
-	public Result find(String query, int offset, int limit) {
+	public Result findAll(int offset, int limit) {
 		if (limit > 100) {
 			return badRequest("limit can't be more than 100");
 		}
@@ -52,29 +51,60 @@ public class TaskListController extends ControllerSupport {
 		if (auth.getScope() != null) {
     		return forbidden();
 		}
-		QueryConstraint constraint = null;
-		if (!Strings.isNullOrEmpty(query)) {
-			try {
-				constraint = QueryConstraint.parse(query);
-			} catch (IllegalArgumentException e) {
-				return badRequest("query is malformed");
-			}
-		}
-		if (!isConstrainedToPrincipal(constraint, auth.getPrincipal()) && !users.isSuperuser(auth.getPrincipal())) {
+		if (!!users.isSuperuser(auth.getPrincipal())) {
 			return forbidden();
 		}
-		return constraint != null
-			? ok(TaskList.toJson(tasks.find(constraint.getField(), constraint.getValue(), offset, limit)))
-			: ok(TaskList.toJson(tasks.find(offset, limit)));
+		return ok(TaskList.toJson(tasks.find(offset, limit)));
     }
 
-	private static boolean isConstrainedToPrincipal(QueryConstraint constraint, Identity principal) {
-		return constraint != null
-			&& Task.PRINCIPAL.getName().equals(constraint.getField())
-			&& principal.getId().equals(constraint.getValue());
+	public Result findByBucket(String bucketId, int offset, int limit) {
+		if (limit > 100) {
+			return badRequest("limit can't be more than 100");
+		}
+		Authorization auth = getCurrentAuthorization();
+    	if (auth == null) {
+    		return unauthorized();
+    	}
+		Bucket bucket = buckets.find(bucketId);
+		if (bucket == null) {
+			return badRequest("bucket not found");
+		}
+		if (!bucket.hasRole(auth, Role.OWNER) && !users.isSuperuser(auth.getPrincipal())) {
+			return forbidden();
+		}
+		return ok(TaskList.toJson(tasks.find(Task.BUCKET.getName(), bucketId, offset, limit)));
+    }
+
+	public Result findByUser(String username, int offset, int limit) {
+		if (limit > 100) {
+			return badRequest("limit can't be more than 100");
+		}
+		Authorization auth = getCurrentAuthorization();
+    	if (auth == null) {
+    		return unauthorized();
+    	}
+		if (auth.getScope() != null) {
+    		return forbidden();
+		}
+		Identity principal = getIdentity(username);
+		if (principal == null) {
+			return badRequest("user not found");
+		}
+		if (!auth.getPrincipal().equals(principal) && !users.isSuperuser(auth.getPrincipal())) {
+			return forbidden();
+		}
+		return ok(TaskList.toJson(tasks.find(Task.PRINCIPAL.getName(), principal.toString(), offset, limit)));
+    }
+
+	private Identity getIdentity(String username) {
+		if (username.startsWith("@")) {
+			return new Identity(username.substring(1));
+		}
+		User user = users.find(username);
+		return user != null ? user.asIdentity() : null;
 	}
 
-    @BodyParser.Of(BodyParser.Json.class)
+	@BodyParser.Of(BodyParser.Json.class)
     public Result post() {
 		Authorization auth = getCurrentAuthorization();
     	if (auth == null) {

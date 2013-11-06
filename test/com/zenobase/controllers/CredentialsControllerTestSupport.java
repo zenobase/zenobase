@@ -1,0 +1,44 @@
+package com.zenobase.controllers;
+
+import static org.mockito.Mockito.mock;
+
+import org.junit.Before;
+import com.google.inject.AbstractModule;
+import com.google.inject.Singleton;
+
+import com.zenobase.models.User;
+import com.zenobase.services.BucketRepository;
+import com.zenobase.services.CommandDispatcher;
+import com.zenobase.services.TaskRepository;
+import com.zenobase.services.UserRepository;
+import com.zenobase.tasks.TaskManagerRegistry;
+import com.zenobase.tasks.TaskRefresher;
+
+public abstract class CredentialsControllerTestSupport extends ControllerTestSupport {
+
+	protected final AuthorizationContext auth = mock(AuthorizationContext.class);
+	protected final TaskManagerRegistry registry = mock(TaskManagerRegistry.class);
+	protected final TaskRepository tasks = mock(TaskRepository.class);
+	protected final TaskRefresher refresher = mock(TaskRefresher.class);
+	protected final BucketRepository buckets = mock(BucketRepository.class);
+	protected final UserRepository users = mock(UserRepository.class);
+	protected final CommandDispatcher dispatcher = mock(CommandDispatcher.class);
+	protected final User user = new User("tester");
+
+	@Before
+	public void setUp() {
+		start(new AbstractModule() {
+			@Override
+			protected void configure() {
+				bind(AuthorizationContext.class).toInstance(auth);
+				bind(TaskManagerRegistry.class).toInstance(registry);
+				bind(TaskRepository.class).toInstance(tasks);
+				bind(TaskRefresher.class).toInstance(refresher);
+				bind(BucketRepository.class).toInstance(buckets);
+				bind(UserRepository.class).toInstance(users);
+				bind(CommandDispatcher.class).toInstance(dispatcher);
+				bind(TaskController.class).in(Singleton.class);
+			}
+		});
+	}
+}

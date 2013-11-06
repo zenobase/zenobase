@@ -1,9 +1,7 @@
 package com.zenobase.tasks.bodymedia;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDate;
@@ -11,68 +9,51 @@ import org.scribe.model.OAuthRequest;
 import org.scribe.model.Response;
 import org.scribe.model.Token;
 import org.scribe.model.Verb;
-import play.Logger;
-import com.google.common.base.Preconditions;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import com.zenobase.commands.Command;
 import com.zenobase.commands.CompoundCommand;
 import com.zenobase.commands.CreateEventCommand;
+import com.zenobase.commands.UpdateCredentialsCommand;
 import com.zenobase.commands.UpdateTaskCommand;
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
-import com.zenobase.tasks.InvalidTokenException;
-import com.zenobase.tasks.OAuthTask;
+import com.zenobase.tasks.Credentials;
+import com.zenobase.tasks.OAuthCredentials;
 import com.zenobase.tasks.OAuthTaskManager;
 import com.zenobase.tasks.Task;
 
 public class BodyMediaTaskManager extends OAuthTaskManager {
 
-	private final String apiKey;
-
 	@Inject
-	public BodyMediaTaskManager(@Named("bodymedia.api.key") String apiKey, @Named("bodymedia.api.secret") String apiSecret, @Named("oauth.hostname") String callbackUrl) {
-		super(new BodyMediaApi(apiKey), apiKey, apiSecret, callbackUrl);
-		this.apiKey = apiKey;
+	public BodyMediaTaskManager(BodyMediaCredentialsManager credentialsManager) {
+		super(BodyMediaTask.TYPE, credentialsManager);
 	}
 
 	@Override
-	public String getType() {
-		return BodyMediaTask.TYPE;
+	public Task newTask(String bucketId, Identity principal, ObjectNode settings) {
+		String marker = parseMarker(settings.path("marker").textValue()).toString();
+		return new BodyMediaTask(bucketId, principal, marker);
 	}
 
 	@Override
-	public OAuthTask newTask(String bucketId, Identity principal, ObjectNode settings) {
-		OAuthTask task = super.newTask(bucketId, principal, settings);
-		task.setMarker(parseMarker(settings.path("marker").textValue()).toString());
-		return task;
+	public Command execute(Task task, OAuthCredentials credentials) {
+		return execute(task.as(BodyMediaTask.class), credentials);
 	}
 
-	@Override
-	public Command execute(Task task) {
-		try {
-			Preconditions.checkState(task.isEnabled(), "Task is not enabled: %s", task.getId());
-			return execute(task.as(BodyMediaTask.class));
-		} catch (InvalidTokenException e) {
-			return createCommand(e);
-		}
-	}
-
-	private Command execute(BodyMediaTask task) {
-		Token token = task.getToken();
-		if (task.isExpired()) {
-			Logger.info("Refreshing token...");
-			task.setToken(getAccessToken(task, ""));
+	private Command execute(BodyMediaTask task, OAuthCredentials credentials) {
+		Token token = credentials.getToken();
+		if (credentials.isExpired()) {
+			reauthorize(credentials);
 		}
 		OAuthRequest request = createRequest(task);
-		getService(task).signRequest(task.getToken(), request);
-		Response response = request.send();
-		checkResponse(task, request, response);
+		Response response = send(request, credentials);
 		BodyMediaSummaryResult result = new BodyMediaSummaryResult(parseObject(response), task.getPrincipal());
-		return createCommand(task, result, token);
+		return createCommand(task, credentials, result, token);
 	}
 
 	private OAuthRequest createRequest(BodyMediaTask task) {
-		return new OAuthRequest(Verb.GET, String.format("https://api.bodymedia.com/v2/json/summary/day/%s/%s?api_key=%s", formatMarker(getFromDate(task)), formatMarker(new LocalDate()), apiKey));
+		return new OAuthRequest(Verb.GET, String.format("https://api.bodymedia.com/v2/json/summary/day/%s/%s", formatMarker(getFromDate(task)), formatMarker(new LocalDate())));
 	}
 
 	private static LocalDate getFromDate(Task task) {
@@ -87,16 +68,20 @@ public class BodyMediaTaskManager extends OAuthTaskManager {
 		return date.toString("yyyyMMdd");
 	}
 
-	private static Command createCommand(BodyMediaTask task, BodyMediaSummaryResult result, Token expiredToken) {
+	private static Command createCommand(BodyMediaTask task, OAuthCredentials credentials, BodyMediaSummaryResult result, Token expiredToken) {
 		CompoundCommand command = new CompoundCommand(task.getPrincipal(), "ran bodymedia task", "reverted bodymedia task");
 		command.add(UpdateTaskCommand.builder(task)
 			.set(Task.COMPLETED, task.getCompleted(), new DateTime(DateTimeZone.UTC))
 			.set(Task.STATUS, task.getStatus(), Task.Status.SUCCESS)
 			.set(Task.MARKER, task.getMarker(), result.getLastSyncDate().toString())
 			.set(Task.UNDO, task.getUndoId(), command.getId())
-			.with(Task.CREDENTIALS)
-			.set(OAuthTask.TOKEN, expiredToken, task.getToken())
 			.build());
+		if (!credentials.getToken().equals(expiredToken)) {
+			command.add(UpdateCredentialsCommand.builder(credentials)
+				.with(Credentials.CREDENTIALS)
+				.set(OAuthCredentials.TOKEN, expiredToken, credentials.getToken())
+				.build());
+		}
 		for (Event event : result.getEvents()) {
 			// System.out.println("[event] " + event);
 			command.add(new CreateEventCommand(task.getPrincipal(), task.getBucketId(), event));

@@ -1,12 +1,11 @@
 package com.zenobase.tasks.netatmo;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.scribe.model.Token;
 
 import com.zenobase.models.Identity;
-import com.zenobase.tasks.OAuthTask;
+import com.zenobase.tasks.Task;
 
-public class NetatmoTask extends OAuthTask {
+public class NetatmoTask extends Task {
 
 	public static final String TYPE = "netatmo";
 
@@ -15,12 +14,11 @@ public class NetatmoTask extends OAuthTask {
 	}
 
 	public NetatmoTask(String bucketId, Identity principal) {
-		super(TYPE, bucketId, principal);
-		setCredential(TOKEN, Token.empty());
+		this(bucketId, principal, null);
 	}
 
-	NetatmoTask(String bucketId, Identity principal, Token accessToken, String marker) {
-		super(TYPE, bucketId, principal, accessToken);
+	NetatmoTask(String bucketId, Identity principal, String marker) {
+		super(TYPE, bucketId, principal);
 		setMarker(marker);
 	}
 

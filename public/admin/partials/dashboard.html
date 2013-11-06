@@ -22,6 +22,7 @@
 			<li><a href="#widget-buckets" data-toggle="tab">Buckets</a></li>
 			<li><a href="#widget-users" data-toggle="tab">Users</a></li>
 			<li><a href="#widget-authorizations" data-toggle="tab">Tokens</a></li>
+			<li><a href="#widget-credentials" data-toggle="tab">Credentials</a></li>
 			<li><a href="#widget-tasks" data-toggle="tab">Tasks</a></li>
 		</ul>
     	
@@ -228,6 +229,46 @@
 				</div>
 			</div>
 
+			<div id="widget-tasks" data-ng-controller="admin.CredentialsListController" class="tab-pane">
+				<table class="table">
+					<thead>
+						<tr>
+							<th>Type</th>
+							<th>Owner</th>
+							<th>Created</th>
+							<th>Authorized</th>
+							<th></th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr data-ng-repeat="credential in credentials">
+							<td>{{credential.type}}</td>
+							<td><a data-ng-click="setConstraint(credential.principal)">{{credential.principal | username}}</a></td>
+							<td>{{credential.created | age}}</td>
+							<td>{{!credential.authorizationUrl}}</td>
+							<td style="text-align: right">
+								<a class="action" data-ng-click="remove(credential['@id'])" title="Delete"><i class="icon-trash"></i></a>
+							</td>
+						</tr>
+						<tr data-ng-show="credentials == null">
+							<td colspan="5"><i>Loading</i></td>
+						</tr>
+						<tr data-ng-show="credentials.length == 0">
+							<td colspan="5"><i>None</i></td>
+						</tr>
+					</tbody>
+				</table>
+				<div class="btn-toolbar">
+					<div class="btn-group pull-right" data-ng-show="tasks">
+						<button class="btn" title="Previous" data-ng-click="prev()" data-ng-disabled="!hasPrev()"><i class="icon-chevron-left"></i></button>
+						<button class="btn" title="Next" data-ng-click="next()" data-ng-disabled="!hasNext()"><i class="icon-chevron-right"></i></button>
+					</div>
+					<div class="btn-group pull-right" data-ng-show="credentials">
+						<button class="btn disabled zeno-paging"><b>{{offset + 1}}</b> &ndash; <b>{{offset + credentials.length}}</b> of <b>{{total}}</b></button>
+					</div>
+				</div>
+			</div>
+
 			<div id="widget-tasks" data-ng-controller="admin.TaskListController" class="tab-pane">
 				<table class="table">
 					<thead>
@@ -275,7 +316,7 @@
 			</div>
 
 		</div>
-		
+
 	</div>		
 </div>		
 	

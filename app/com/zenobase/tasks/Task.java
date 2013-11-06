@@ -1,9 +1,9 @@
 package com.zenobase.tasks;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.Minutes;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Objects;
 
 import com.zenobase.common.Generator;
@@ -28,11 +28,7 @@ public class Task extends DomainNode {
 	public static final TokenField BUCKET = new TokenField("bucket");
 	public static final IdentityField PRINCIPAL = new IdentityField("principal");
 	public static final DateTimeField CREATED = new DateTimeField("created");
-	public static final TokenField AUTHORIZATION_URL = new TokenField("authorizationUrl");
-
-	public static final ObjectField CREDENTIALS = new ObjectField("credentials");
 	public static final ObjectField SETTINGS = new ObjectField("settings");
-
 	public static final DateTimeField COMPLETED = new DateTimeField("completed");
 	public static final EnumField<Status> STATUS = EnumField.newInstance("status", Status.class);
 	public static final TokenField MARKER = new TokenField("marker");
@@ -70,18 +66,6 @@ public class Task extends DomainNode {
 		return getValue(CREATED);
 	}
 
-	public boolean isEnabled() {
-		return getValue(AUTHORIZATION_URL) == null;
-	}
-
-	public String getAuthorizationUrl() {
-		return getValue(AUTHORIZATION_URL);
-	}
-
-	public void setAuthorizationUrl(String authorizationUrl) {
-		setValue(AUTHORIZATION_URL, authorizationUrl);
-	}
-
 	public DateTime getCompleted() {
 		return getValue(COMPLETED);
 	}
@@ -114,14 +98,6 @@ public class Task extends DomainNode {
 		setValue(UNDO, undoId);
 	}
 
-	protected <T> T getCredential(Field<T> field) {
-		return getValue(CREDENTIALS, field);
-	}
-
-	protected <T> void setCredential(Field<T> field, T value) {
-		setValue(CREDENTIALS, field, value);
-	}
-
 	public ObjectNode getSettings() {
 		return getValue(SETTINGS);
 	}
@@ -141,27 +117,27 @@ public class Task extends DomainNode {
 
 	public boolean isStale() {
 		DateTime completed = Objects.firstNonNull(getCompleted(), new DateTime(0L));
-		return isEnabled() && (getStatus() == Status.FAILED || Minutes.minutesBetween(completed, DateTime.now()).isGreaterThan(Minutes.ONE));
+		return getStatus() == Status.FAILED || Minutes.minutesBetween(completed, DateTime.now()).isGreaterThan(Minutes.ONE);
 	}
 
 	public Task copy() {
 		return copy(getClass());
 	}
 
-	/**
-	 * Create a copy of this task with sensitive fields cleared.
-	 */
-	public Task sanitized() {
-		Task sanitized = copy();
-		sanitized.setValue(CREDENTIALS, null);
-		return sanitized;
-	}
-
 	public static Schema getSchema() {
 		return new SchemaBuilder(TYPE_NAME)
-			.add(VERSION).add(ID).add(TYPE).add(BUCKET).add(PRINCIPAL).add(CREATED).add(AUTHORIZATION_URL)
-			.add(COMPLETED).add(STATUS).add(MARKER).add(UNDO)
-			.add(CREDENTIALS).add(SETTINGS).build();
+			.add(VERSION)
+			.add(ID)
+			.add(TYPE)
+			.add(BUCKET)
+			.add(PRINCIPAL)
+			.add(CREATED)
+			.add(COMPLETED)
+			.add(STATUS)
+			.add(MARKER)
+			.add(UNDO)
+			.add(SETTINGS)
+			.build();
 	}
 
 	public enum Status {

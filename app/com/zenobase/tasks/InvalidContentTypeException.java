@@ -9,15 +9,15 @@ public class InvalidContentTypeException extends OAuthException {
 	private final String actual;
 	private final String expected;
 
-	public InvalidContentTypeException(OAuthTask task, OAuthRequest request, String actual, String expected) {
-		super(task, request);
+	public InvalidContentTypeException(OAuthRequest request, String actual, String expected) {
+		super(request);
 		this.actual = actual;
 		this.expected = expected;
 	}
 
 	@Override
 	public String getMessage() {
-		return String.format("Expected <%s> in task <%s> to return <%s> but got <%s>",
-			getRequest().getCompleteUrl(), getTask().getId(), expected, actual);
+		return String.format("Expected <%s> to return <%s> but got <%s>",
+			getRequest().getCompleteUrl(), expected, actual);
 	}
 }

@@ -7,17 +7,17 @@ import com.zenobase.models.Identity;
 
 public abstract class TaskManager {
 
-	public abstract String getType();
+	private final String type;
+
+	protected TaskManager(String type) {
+		this.type = type;
+	}
+
+	public String getType() {
+		return type;
+	}
 
 	public abstract Task newTask(String bucketId, Identity principal, ObjectNode settings);
-
-	public Command authorize(Task task, ObjectNode config) {
-		throw new UnsupportedOperationException();
-	}
-
-	public void reauthorize(Task task) {
-		throw new UnsupportedOperationException();
-	}
 
 	public abstract Command execute(Task task);
 }

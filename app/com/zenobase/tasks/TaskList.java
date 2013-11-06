@@ -24,7 +24,7 @@ public class TaskList extends LazyList<Task> {
     	TOTAL.setValue(resultNode, Ints.checkedCast(tasks.getTotal()));
     	ArrayNode tasksNode = resultNode.putArray("tasks");
     	for (Task task : tasks) {
-    		tasksNode.add(task.sanitized().toJson());
+    		tasksNode.add(task.toJson());
     	}
 		return resultNode;
 	}

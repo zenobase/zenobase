@@ -6,10 +6,10 @@ import static org.mockito.Mockito.*;
 import static play.mvc.Http.Status.*;
 import static play.test.Helpers.*;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.junit.Before;
 import org.junit.Test;
 import play.mvc.Result;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import com.zenobase.commands.Command;
 import com.zenobase.commands.UpdateTaskCommand;
@@ -17,6 +17,7 @@ import com.zenobase.common.Generator;
 import com.zenobase.json.Nodes;
 import com.zenobase.models.Identity;
 import com.zenobase.oauth.Authorization;
+import com.zenobase.tasks.Credentials;
 import com.zenobase.tasks.Task;
 import com.zenobase.tasks.TaskManager;
 
@@ -49,7 +50,7 @@ public class TaskControllerHttpPostTest extends TaskControllerTestSupport {
 		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
 		when(tasks.find(task.getId())).thenReturn(task.copy());
 		when(registry.find(task.getType())).thenReturn(manager);
-		when(manager.authorize(task, Task.CREDENTIALS.getValue(newCredentials()))).thenReturn(command);
+		// when(manager.authorize(task, Credentials.CREDENTIALS.getValue(newCredentials()))).thenReturn(command);
 		when(dispatcher.dispatch(command)).thenReturn(command.getId());
 		Result result = call(task.getId(), newCredentials());
 		assertThat(result).hasStatus(NO_CONTENT).hasHeader(COMMAND_ID, command.getId()).isEmpty();
@@ -117,7 +118,7 @@ public class TaskControllerHttpPostTest extends TaskControllerTestSupport {
 
 	private static <T> ObjectNode newCredentials() {
 		ObjectNode task = Nodes.newObject();
-		Task.CREDENTIALS.setValue(task, Nodes.newObject("secret", "123"));
+		Credentials.CREDENTIALS.setValue(task, Nodes.newObject("secret", "123"));
 		return task;
 	}
 

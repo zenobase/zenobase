@@ -1,46 +1,38 @@
 package com.zenobase.tasks.fitbit;
 
-import java.util.Scanner;
-
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.joda.time.LocalDate;
 import org.junit.Ignore;
 import org.junit.Test;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import com.zenobase.json.Nodes;
 import com.zenobase.tasks.Task;
-import com.zenobase.tasks.TaskManager;
 import com.zenobase.tasks.TaskTestSupport;
 
 public class FitbitTest extends TaskTestSupport {
 
 	@Test
 	@Ignore
-	public void testNew() {
-		TaskManager manager = new FitbitTaskManager(apiKey, apiSecret, callbackUrl);
-		Task task = manager.newTask(bucketId, principal, Nodes.newObject());
-		System.out.println(task.getAuthorizationUrl());
-		ObjectNode config = Nodes.newObject();
-		Scanner scanner = new Scanner(System.in);
-		System.out.print("oauth_token=");
-		config.put("oauth_token", scanner.nextLine());
-		System.out.print("oauth_verifier=");
-		config.put("oauth_verifier", scanner.nextLine());
-		scanner.close();
-		task = apply(manager.authorize(task, config), task);
-		manager.execute(task);
+	public void test() {
+		FitbitTaskManager manager = new FitbitTaskManager(newCredentialsManager());
+		ObjectNode settings = Nodes.newObject();
+		settings.put("tag", "walk");
+		settings.put("marker", "2013-11-01");
+		Task task = manager.newTask(bucketId, principal, settings);
+		print(manager.execute(task, getCredentials()).toJson());
 	}
 
 	@Test
 	@Ignore
-	public void testExisting() {
-		TaskManager manager = new FitbitTaskManager(apiKey, apiSecret, callbackUrl);
-		manager.execute(new FitbitTask(bucketId, principal, getToken(), LocalDate.now().minusDays(2).toString(), "steps"));
+	public void testIntraday() {
+		FitbitIntradayTaskManager manager = new FitbitIntradayTaskManager(newCredentialsManager());
+		ObjectNode settings = Nodes.newObject();
+		settings.put("marker", "2013-11-01");
+		Task task = manager.newTask(bucketId, principal, settings);
+		print(manager.execute(task, getCredentials()).toJson());
 	}
 
-	@Test
-	public void testIntraday() {
-		TaskManager manager = new FitbitIntradayTaskManager(apiKey, apiSecret, callbackUrl);
-		manager.execute(new FitbitIntradayTask(bucketId, principal, getToken(), LocalDate.now().minusDays(2).toString()));
+	@Override
+	protected FitbitCredentialsManager newCredentialsManager() {
+		return new FitbitCredentialsManager(repository, apiKey, apiSecret, callbackUrl);
 	}
 }
