@@ -3289,7 +3289,9 @@
 					if (headers('X-Credentials')) {
 						newCredentials($scope, headers('X-Credentials'));
 					} else if (headers('Link')) {
-						authorize($scope, response.type, headers('Link'));
+						var match = headers('Link').match(/<(.+?)>/);
+						console.assert(match, 'Invalid Link header: ' + headers('Link'));
+						authorize($scope, response.type, match[1]);
 					} else {
 						success(response);
 					}
