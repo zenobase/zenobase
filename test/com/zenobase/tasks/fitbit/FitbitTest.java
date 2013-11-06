@@ -11,7 +11,6 @@ import com.zenobase.tasks.TaskTestSupport;
 public class FitbitTest extends TaskTestSupport {
 
 	@Test
-	@Ignore
 	public void test() {
 		FitbitTaskManager manager = new FitbitTaskManager(newCredentialsManager());
 		ObjectNode settings = Nodes.newObject();

@@ -1,6 +1,5 @@
 package com.zenobase.tasks.netatmo;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
@@ -11,7 +10,6 @@ import com.zenobase.tasks.TaskTestSupport;
 public class NetatmoTest extends TaskTestSupport {
 
 	@Test
-	@Ignore
 	public void test() {
 		NetatmoTaskManager manager = new NetatmoTaskManager(newCredentialsManager());
 		ObjectNode settings = Nodes.newObject();

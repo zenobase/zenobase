@@ -1,6 +1,5 @@
 package com.zenobase.tasks.foursquare;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
@@ -12,7 +11,6 @@ import com.zenobase.tasks.TaskTestSupport;
 public class FoursquareTest extends TaskTestSupport {
 
 	@Test
-	@Ignore
 	public void test() {
 		OAuthTaskManager manager = new FoursquareTaskManager(newCredentialsManager());
 		ObjectNode settings = Nodes.newObject();
