@@ -38,6 +38,8 @@ public class TaskRefresher {
 			return;
     	}
 		Command command = manager.execute(task);
-    	dispatcher.dispatch(command);
+    	if (command != null) {
+    		dispatcher.dispatch(command);
+    	}
 	}
 }
