@@ -1,5 +1,6 @@
 package com.zenobase.commands;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import com.zenobase.json.Field;
@@ -10,7 +11,10 @@ import com.zenobase.tasks.OAuthCredentials;
 public class Migration {
 
 	public static <T> void copy(Field<T> field, ObjectNode from, ObjectNode to) {
-		field.setValue(to, field.getValue(from));
+		JsonNode value = from.get(field.getName());
+		if (value != null) {
+			to.put(field.getName(), value);
+		}
 	}
 
 	public static ObjectNode splitCredentials(ObjectNode taskNode) {
@@ -27,6 +31,7 @@ public class Migration {
 		if (config != null) {
 			if (config.get("userId") != null) {
 				config.put("scope", config.get("userId").asText());
+				config.remove("userId");
 			}
 		}
 		Credentials.CREDENTIALS.setValue(credentials.toJson(), config);

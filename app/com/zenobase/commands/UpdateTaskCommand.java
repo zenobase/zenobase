@@ -79,10 +79,9 @@ public class UpdateTaskCommand extends UpdateCommandSupport {
 		private Command migrate(ObjectNode node) {
 			Logger.info("\nmigrating 'update task'...");
 			Logger.info("< " + node);
-			ObjectNode original = node.deepCopy();
 			Identity principal = Command.PRINCIPAL.getValue(node);
-			ObjectNode fromCredentials = split(UpdateTaskCommand.FROM.getValue(PARAMETERS.getValue(node)));
-			ObjectNode toCredentials = split(UpdateTaskCommand.TO.getValue(PARAMETERS.getValue(node)));
+			ObjectNode fromCredentials = split(getFrom(node));
+			ObjectNode toCredentials = split(getTo(node));
 			if (fromCredentials == null && toCredentials == null) {
 				Logger.info("> " + new UpdateTaskCommand(node).toJson());
 				return new UpdateTaskCommand(node);
@@ -91,7 +90,7 @@ public class UpdateTaskCommand extends UpdateCommandSupport {
 				Command command = new UpdateCredentialsCommand(principal, id, fromCredentials, toCredentials);
 				Migration.copy(Command.TIMESTAMP, node, command.toJson());
 				Logger.info("> " + command.toJson());
-				if (original.equals(node)) {
+				if (getFrom(node).size() == 0 && getTo(node).size() == 0) {
 					return command;
 				}
 				CompoundCommand commands = new CompoundCommand(principal, "update task and credentials", "update task and credentials");
@@ -102,7 +101,15 @@ public class UpdateTaskCommand extends UpdateCommandSupport {
 			}
 		}
 
-		public static ObjectNode split(ObjectNode taskNode) {
+		private ObjectNode getFrom(ObjectNode node) {
+			return UpdateTaskCommand.FROM.getValue(PARAMETERS.getValue(node));
+		}
+
+		private ObjectNode getTo(ObjectNode node) {
+			return UpdateTaskCommand.TO.getValue(PARAMETERS.getValue(node));
+		}
+
+		private static ObjectNode split(ObjectNode taskNode) {
 			String url = Credentials.AUTHORIZATION_URL.getValue(taskNode);
 			ObjectNode config = Credentials.CREDENTIALS.getValue(taskNode);
 			if (config == null && url == null) {
@@ -112,6 +119,7 @@ public class UpdateTaskCommand extends UpdateCommandSupport {
 			if (config != null) {
 				if (config.get("userId") != null) {
 					config.put("scope", config.get("userId").asText());
+					config.remove("userId");
 				}
 			}
 			Credentials.CREDENTIALS.setValue(credentialsNode, config);
