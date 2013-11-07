@@ -11,7 +11,7 @@ import com.zenobase.tasks.Credentials;
 public class CreateCredentialsCommand extends Command {
 
 	private static final Command.Type TYPE = new Command.Type("create credentials", 1);
-	private static final ObjectField OBJECT = new ObjectField("object");
+	private static final ObjectField CREDENTIALS = new ObjectField("credentials");
 
 	private CreateCredentialsCommand(ObjectNode node) {
 		super(node);
@@ -20,11 +20,11 @@ public class CreateCredentialsCommand extends Command {
 
 	public CreateCredentialsCommand(Identity principal, Credentials credentials) {
 		super(TYPE, principal);
-		setParameter(OBJECT, credentials.toJson());
+		setParameter(CREDENTIALS, credentials.toJson());
 	}
 
 	public Credentials getCredentials() {
-		return new Credentials(getParameter(OBJECT));
+		return new Credentials(getParameter(CREDENTIALS));
 	}
 
 	@Override
