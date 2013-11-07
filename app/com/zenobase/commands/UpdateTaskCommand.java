@@ -7,9 +7,11 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Preconditions;
 
 import com.zenobase.json.JsonPatch;
+import com.zenobase.json.Nodes;
 import com.zenobase.models.Identity;
 import com.zenobase.services.CredentialsRepository;
 import com.zenobase.services.TaskRepository;
+import com.zenobase.tasks.Credentials;
 import com.zenobase.tasks.Task;
 
 public class UpdateTaskCommand extends UpdateCommandSupport {
@@ -79,8 +81,8 @@ public class UpdateTaskCommand extends UpdateCommandSupport {
 			Logger.info("< " + node);
 			ObjectNode original = node.deepCopy();
 			Identity principal = Command.PRINCIPAL.getValue(node);
-			ObjectNode fromCredentials = Migration.splitCredentials(UpdateTaskCommand.FROM.getValue(PARAMETERS.getValue(node)));
-			ObjectNode toCredentials = Migration.splitCredentials(UpdateTaskCommand.TO.getValue(PARAMETERS.getValue(node)));
+			ObjectNode fromCredentials = split(UpdateTaskCommand.FROM.getValue(PARAMETERS.getValue(node)));
+			ObjectNode toCredentials = split(UpdateTaskCommand.TO.getValue(PARAMETERS.getValue(node)));
 			if (fromCredentials == null && toCredentials == null) {
 				Logger.info("> " + new UpdateTaskCommand(node).toJson());
 				return new UpdateTaskCommand(node);
@@ -98,6 +100,25 @@ public class UpdateTaskCommand extends UpdateCommandSupport {
 				commands.add(command);
 				return commands;
 			}
+		}
+
+		public static ObjectNode split(ObjectNode taskNode) {
+			String url = Credentials.AUTHORIZATION_URL.getValue(taskNode);
+			ObjectNode config = Credentials.CREDENTIALS.getValue(taskNode);
+			if (config == null && url == null) {
+				return null;
+			}
+			ObjectNode credentialsNode = Nodes.newObject();
+			if (config != null) {
+				if (config.get("userId") != null) {
+					config.put("scope", config.get("userId").asText());
+				}
+			}
+			Credentials.CREDENTIALS.setValue(credentialsNode, config);
+			Migration.copy(Credentials.AUTHORIZATION_URL, taskNode, credentialsNode);
+			Credentials.AUTHORIZATION_URL.setValue(taskNode, null);
+			Credentials.CREDENTIALS.setValue(taskNode, null);
+			return credentialsNode;
 		}
 
 		private String findCredentialsId(String taskId) {
