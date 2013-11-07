@@ -87,7 +87,7 @@ public class UpdateTaskCommand extends UpdateCommandSupport {
 				Logger.info("> " + new UpdateTaskCommand(node).toJson());
 				return new UpdateTaskCommand(node);
 			} else {
-				String id = findCredentialsId(OBJECT_ID.getValue(node));
+				String id = findCredentialsId(OBJECT_ID.getValue(PARAMETERS.getValue(node)));
 				Command command = new UpdateCredentialsCommand(principal, id, fromCredentials, toCredentials);
 				Migration.copy(Command.TIMESTAMP, node, command.toJson());
 				Logger.info("> " + command.toJson());
