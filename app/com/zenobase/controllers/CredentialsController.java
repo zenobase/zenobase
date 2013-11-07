@@ -2,6 +2,7 @@ package com.zenobase.controllers;
 
 import javax.inject.Inject;
 
+import org.elasticsearch.index.engine.VersionConflictEngineException;
 import play.mvc.BodyParser;
 import play.mvc.Result;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -69,7 +70,7 @@ public class CredentialsController extends ControllerSupport {
     	}
     	ObjectNode body = body();
     	if (Nodes.size(body) != 1) {
-    		return badRequest("no data");
+    		return badRequest("expected a single property");
     	}
     	Command command = null;
     	ObjectNode config = Credentials.CREDENTIALS.getValue(body);
@@ -83,9 +84,13 @@ public class CredentialsController extends ControllerSupport {
     	if (command == null) {
     		return badRequest("nothing to do");
     	}
-    	String commandId = dispatcher.dispatch(command);
-		response().setHeader(COMMAND_ID, commandId);
-    	return noContent();
+    	try {
+    		String commandId = dispatcher.dispatch(command);
+    		response().setHeader(COMMAND_ID, commandId);
+    		return noContent();
+		} catch (VersionConflictEngineException e) {
+			return conflict("credentials are stale");
+		}
     }
 
     public Result delete(String credentialsId) {

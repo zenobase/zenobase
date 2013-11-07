@@ -6,7 +6,7 @@ import org.junit.Before;
 import com.google.inject.AbstractModule;
 import com.google.inject.Singleton;
 
-import com.zenobase.models.User;
+import com.zenobase.models.Identity;
 import com.zenobase.services.CommandDispatcher;
 import com.zenobase.services.CredentialsRepository;
 import com.zenobase.services.UserRepository;
@@ -19,7 +19,7 @@ public abstract class CredentialsControllerTestSupport extends ControllerTestSup
 	protected final CredentialsManagerRegistry registry = mock(CredentialsManagerRegistry.class);
 	protected final CredentialsRepository repository = mock(CredentialsRepository.class);
 	protected final UserRepository users = mock(UserRepository.class);
-	protected final User user = new User("jdoe");
+	protected final Identity principal = new Identity();
 
 	@Before
 	public void setUp() {

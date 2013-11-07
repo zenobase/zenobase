@@ -96,7 +96,7 @@ public class TaskControllerHttpPostTest extends TaskControllerTestSupport {
 		verifyZeroInteractions(dispatcher);
 	}
 
-	private static <T> ObjectNode newSettings() {
+	private static ObjectNode newSettings() {
 		ObjectNode task = Nodes.newObject();
 		Task.SETTINGS.setValue(task, Nodes.newObject("name", "Foo"));
 		return task;

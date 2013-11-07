@@ -10,6 +10,7 @@ import org.junit.Test;
 import play.mvc.Result;
 
 import com.zenobase.commands.Command;
+import com.zenobase.common.Generator;
 import com.zenobase.models.Bucket;
 import com.zenobase.models.Role;
 import com.zenobase.oauth.Authorization;
@@ -23,13 +24,14 @@ public class TaskControllerHttpDeleteTest extends TaskControllerTestSupport {
 
 	@Test
 	public void testDeleteTask() {
+		String commandId = Generator.id();
 		bucket.addRole(user.asIdentity(), Role.OWNER);
 		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
 		when(tasks.find(task.getId())).thenReturn(task.copy());
 		when(buckets.find(bucket.getId())).thenReturn(bucket);
-		when(dispatcher.dispatch(any(Command.class))).thenReturn("c");
+		when(dispatcher.dispatch(any(Command.class))).thenReturn(commandId);
 		Result result = call(task.getId());
-		assertThat(result).hasStatus(NO_CONTENT).hasHeader(COMMAND_ID, "c").isEmpty();
+		assertThat(result).hasStatus(NO_CONTENT).hasHeader(COMMAND_ID, commandId).isEmpty();
 	}
 
 	@Test
@@ -68,13 +70,14 @@ public class TaskControllerHttpDeleteTest extends TaskControllerTestSupport {
 
 	@Test
 	public void testDeleteTaskAsSuperuser() {
+		String commandId = Generator.id();
 		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
 		when(tasks.find(task.getId())).thenReturn(task.copy());
 		when(buckets.find(bucket.getId())).thenReturn(bucket);
 		when(users.isSuperuser(user.asIdentity())).thenReturn(true);
-		when(dispatcher.dispatch(any(Command.class))).thenReturn("c");
+		when(dispatcher.dispatch(any(Command.class))).thenReturn(commandId);
 		Result result = call(task.getId());
-		assertThat(result).hasStatus(NO_CONTENT).hasHeader(COMMAND_ID, "c").isEmpty();
+		assertThat(result).hasStatus(NO_CONTENT).hasHeader(COMMAND_ID, commandId).isEmpty();
 	}
 
 	private static Result call(String taskId) {
