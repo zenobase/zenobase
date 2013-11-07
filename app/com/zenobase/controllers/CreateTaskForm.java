@@ -11,6 +11,11 @@ public class CreateTaskForm extends DomainNode {
 		super(node);
 	}
 
+	public CreateTaskForm(String bucketId, String type) {
+		setValue(Task.TYPE, type);
+		setValue(Task.BUCKET, bucketId);
+	}
+
 	public String getType() {
 		return getValue(Task.TYPE);
 	}

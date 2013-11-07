@@ -41,8 +41,11 @@ public class TaskListController extends ControllerSupport {
 	}
 
 	public Result findAll(int offset, int limit) {
-		if (limit > 100) {
-			return badRequest("limit can't be more than 100");
+		if (offset < 0 || offset > 1000) {
+			return badRequest("expected offset in [0..1000]");
+		}
+		if (limit < 0 || limit > 100) {
+			return badRequest("expected limit in [0..100]");
 		}
 		Authorization auth = getCurrentAuthorization();
     	if (auth == null) {
@@ -58,8 +61,11 @@ public class TaskListController extends ControllerSupport {
     }
 
 	public Result findByBucket(String bucketId, int offset, int limit) {
-		if (limit > 100) {
-			return badRequest("limit can't be more than 100");
+		if (offset < 0 || offset > 1000) {
+			return badRequest("expected offset in [0..1000]");
+		}
+		if (limit < 0 || limit > 100) {
+			return badRequest("expected limit in [0..100]");
 		}
 		Authorization auth = getCurrentAuthorization();
     	if (auth == null) {
@@ -67,7 +73,7 @@ public class TaskListController extends ControllerSupport {
     	}
 		Bucket bucket = buckets.find(bucketId);
 		if (bucket == null) {
-			return badRequest("bucket not found");
+			return notFound("bucket not found");
 		}
 		if (!bucket.hasRole(auth, Role.OWNER) && !users.isSuperuser(auth.getPrincipal())) {
 			return forbidden();
@@ -76,8 +82,11 @@ public class TaskListController extends ControllerSupport {
     }
 
 	public Result findByUser(String username, int offset, int limit) {
-		if (limit > 100) {
-			return badRequest("limit can't be more than 100");
+		if (offset < 0 || offset > 1000) {
+			return badRequest("expected offset in [0..1000]");
+		}
+		if (limit < 0 || limit > 100) {
+			return badRequest("expected limit in [0..100]");
 		}
 		Authorization auth = getCurrentAuthorization();
     	if (auth == null) {
@@ -88,7 +97,7 @@ public class TaskListController extends ControllerSupport {
 		}
 		Identity principal = getIdentity(username);
 		if (principal == null) {
-			return badRequest("user not found");
+			return notFound("user not found");
 		}
 		if (!auth.getPrincipal().equals(principal) && !users.isSuperuser(auth.getPrincipal())) {
 			return forbidden();
