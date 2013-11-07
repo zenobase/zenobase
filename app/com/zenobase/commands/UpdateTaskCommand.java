@@ -1,22 +1,25 @@
 package com.zenobase.commands;
 
 
+import play.Logger;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
 
 import com.zenobase.json.JsonPatch;
 import com.zenobase.models.Identity;
+import com.zenobase.services.CredentialsRepository;
 import com.zenobase.services.TaskRepository;
 import com.zenobase.tasks.Task;
 
 public class UpdateTaskCommand extends UpdateCommandSupport {
 
-	private static final Command.Type TYPE = new Command.Type("update task", 2);
+	private static final Command.Type TYPE = new Command.Type("update task", 3);
 
 	private UpdateTaskCommand(ObjectNode node) {
 		super(node);
-		checkType(TYPE);
+		setType(TYPE);
+		// checkType(TYPE);
 	}
 
 	private UpdateTaskCommand(Identity principal, String taskId, ObjectNode from, ObjectNode to) {
@@ -48,6 +51,14 @@ public class UpdateTaskCommand extends UpdateCommandSupport {
 
 	public static class Parser extends CommandParser {
 
+		private final TaskRepository tasks;
+		private final CredentialsRepository credentials;
+
+		public Parser(TaskRepository tasks, CredentialsRepository credentials) {
+			this.tasks = tasks;
+			this.credentials = credentials;
+		}
+
 		@Override
 		public String getTypeName() {
 			return TYPE.getName();
@@ -56,9 +67,41 @@ public class UpdateTaskCommand extends UpdateCommandSupport {
 		@Override
 		public Command parse(ObjectNode node, int version) {
 			switch (version) {
-				case 2: return new UpdateTaskCommand(node);
+				case 2: return migrate(node);
+				case 3: return new UpdateTaskCommand(node);
 			}
 			return null;
+		}
+
+		private Command migrate(ObjectNode node) {
+			Logger.info("\nmigrating 'update task'...");
+			Logger.info("< " + node);
+			ObjectNode original = node.deepCopy();
+			Identity principal = Command.PRINCIPAL.getValue(node);
+			ObjectNode fromCredentials = Migration.splitCredentials(UpdateTaskCommand.FROM.getValue(PARAMETERS.getValue(node)));
+			ObjectNode toCredentials = Migration.splitCredentials(UpdateTaskCommand.TO.getValue(PARAMETERS.getValue(node)));
+			if (fromCredentials == null && toCredentials == null) {
+				Logger.info("> " + new UpdateTaskCommand(node).toJson());
+				return new UpdateTaskCommand(node);
+			} else {
+				String id = findCredentialsId(OBJECT_ID.getValue(node));
+				Command command = new UpdateCredentialsCommand(principal, id, fromCredentials, toCredentials);
+				Migration.copy(Command.TIMESTAMP, node, command.toJson());
+				Logger.info("> " + command.toJson());
+				if (original.equals(node)) {
+					return command;
+				}
+				CompoundCommand commands = new CompoundCommand(principal, "update task and credentials", "update task and credentials");
+				Logger.info("> " + new UpdateTaskCommand(node).toJson());
+				commands.add(new UpdateTaskCommand(node));
+				commands.add(command);
+				return commands;
+			}
+		}
+
+		private String findCredentialsId(String taskId) {
+			Task task = Preconditions.checkNotNull(tasks.find(taskId));
+			return Preconditions.checkNotNull(credentials.find(task.getPrincipal(), task.getType().replaceAll("-.*", ""))).getId();
 		}
 	}
 

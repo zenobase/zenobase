@@ -18,7 +18,7 @@ public class UpdateCredentialsCommand extends UpdateCommandSupport {
 		checkType(TYPE);
 	}
 
-	private UpdateCredentialsCommand(Identity principal, String credentialsId, ObjectNode from, ObjectNode to) {
+	protected UpdateCredentialsCommand(Identity principal, String credentialsId, ObjectNode from, ObjectNode to) {
 		super(TYPE, principal, credentialsId, from, to);
 	}
 

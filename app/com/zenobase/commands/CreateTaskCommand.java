@@ -1,21 +1,24 @@
 package com.zenobase.commands;
 
+import play.Logger;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.inject.Inject;
 
 import com.zenobase.json.ObjectField;
 import com.zenobase.models.Identity;
 import com.zenobase.services.TaskRepository;
+import com.zenobase.tasks.Credentials;
 import com.zenobase.tasks.Task;
 
 public class CreateTaskCommand extends Command {
 
-	private static final Command.Type TYPE = new Command.Type("create task", 1);
+	private static final Command.Type TYPE = new Command.Type("create task", 2);
 	private static final ObjectField TASK = new ObjectField("task");
 
 	private CreateTaskCommand(ObjectNode node) {
 		super(node);
-		checkType(TYPE);
+		setType(TYPE);
+		// checkType(TYPE);
 	}
 
 	public CreateTaskCommand(Identity principal, Task task) {
@@ -47,9 +50,31 @@ public class CreateTaskCommand extends Command {
 		@Override
 		public Command parse(ObjectNode node, int version) {
 			switch (version) {
-				case 1: return new CreateTaskCommand(node);
+				case 1: return migrate(node);
+				case 2: return new CreateTaskCommand(node);
 			}
 			return null;
+		}
+
+		private Command migrate(ObjectNode node) {
+			Logger.info("\nmigrating 'create task'...");
+			Logger.info("< " + node);
+			Identity principal = Command.PRINCIPAL.getValue(node);
+			ObjectNode credentials = Migration.splitCredentials(TASK.getValue(PARAMETERS.getValue(node)));
+			if (credentials == null) {
+				Logger.info("> " + new CreateTaskCommand(node).toJson());
+				return new CreateTaskCommand(node);
+			} else {
+				CompoundCommand commands = new CompoundCommand(principal, "create task and credentials", "delete task and credentials");
+				Migration.copy(Command.TIMESTAMP, node, commands.toJson());
+				Logger.info("> " + new CreateTaskCommand(node).toJson());
+				commands.add(new CreateTaskCommand(node));
+				Command command = new CreateCredentialsCommand(principal, new Credentials(credentials));
+				Migration.copy(Command.TIMESTAMP, node, command.toJson());
+				Logger.info("> " + command.toJson());
+				commands.add(command);
+				return commands;
+			}
 		}
 	}
 
