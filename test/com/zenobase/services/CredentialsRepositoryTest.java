@@ -32,7 +32,7 @@ public class CredentialsRepositoryTest extends ElasticSearchTestSupport {
 		Credentials credentials = new Credentials(type, new Identity());
 		assertThat(repository.find(credentials.getId())).isNull();
 		assertThat(repository.delete(credentials.getId())).isFalse();
-		store(credentials);
+		repository.store(credentials, DateTime.now());
 		assertThat(repository.find(credentials.getId()).toJson()).isEqualTo(credentials.toJson());
 		credentials.setAuthorizationUrl("http://localhost/");
 		repository.update(credentials, DateTime.now());
@@ -71,7 +71,7 @@ public class CredentialsRepositoryTest extends ElasticSearchTestSupport {
 	private List<Credentials> fill(int size, Identity principal) {
 		List<Credentials> credentialsList = Lists.newArrayListWithCapacity(size);
 		for (int i = 0; i < size; ++i) {
-			Credentials credentials = new Credentials(type, i % 2 == 0 ? principal : new Identity());
+			Credentials credentials = new Credentials(type, principal);
 			credentialsList.add(credentials);
 			Uninterruptibles.sleepUninterruptibly(5, TimeUnit.MILLISECONDS); // credentials will be returned in order of creation time
 			store(credentials);

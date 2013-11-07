@@ -26,7 +26,7 @@ public class EventRepositoryTest extends ElasticSearchTestSupport {
 	}
 
 	@Test
-	public void testCrudEvent() {
+	public void testCRUD() {
 
 		Bucket bucket = new Bucket();
 		new BucketRepository(getManager()).store(bucket, DateTime.now(), true);
