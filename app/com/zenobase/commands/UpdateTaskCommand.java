@@ -11,7 +11,6 @@ import com.google.common.base.Preconditions;
 import com.zenobase.json.JsonPatch;
 import com.zenobase.json.Nodes;
 import com.zenobase.models.Identity;
-import com.zenobase.services.CredentialsRepository;
 import com.zenobase.services.TaskRepository;
 import com.zenobase.tasks.Credentials;
 import com.zenobase.tasks.Task;
@@ -54,15 +53,6 @@ public class UpdateTaskCommand extends UpdateCommandSupport {
 	}
 
 	public static class Parser extends CommandParser {
-
-		private final TaskRepository tasks;
-		private final CredentialsRepository credentials;
-
-		@Inject
-		public Parser(TaskRepository tasks, CredentialsRepository credentials) {
-			this.tasks = tasks;
-			this.credentials = credentials;
-		}
 
 		@Override
 		public String getTypeName() {
@@ -138,8 +128,7 @@ public class UpdateTaskCommand extends UpdateCommandSupport {
 		}
 
 		private String findCredentialsId(String taskId) {
-			Task task = Preconditions.checkNotNull(tasks.find(taskId));
-			return Preconditions.checkNotNull(credentials.find(task.getPrincipal(), task.getType().replaceAll("-.*", ""))).getId();
+			return Preconditions.checkNotNull(CreateTaskCommand.taskToCredentials.get(taskId));
 		}
 	}
 

@@ -1,7 +1,11 @@
 package com.zenobase.commands;
 
+import java.util.Map;
+
+import org.elasticsearch.common.collect.Maps;
 import play.Logger;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
 
 import com.zenobase.json.ObjectField;
@@ -40,6 +44,8 @@ public class CreateTaskCommand extends Command {
 		return String.format("created a task");
 	}
 
+	public static Map<String, String> taskToCredentials = Maps.newHashMap();
+
 	public static class Parser extends CommandParser {
 
 		@Override
@@ -69,7 +75,10 @@ public class CreateTaskCommand extends Command {
 				Migration.copy(Command.TIMESTAMP, node, commands.toJson());
 				Logger.info("> " + new CreateTaskCommand(node).toJson());
 				commands.add(new CreateTaskCommand(node));
-				Command command = new CreateCredentialsCommand(principal, new Credentials(credentials));
+				Credentials cred = new Credentials(credentials);
+				String taskId = Preconditions.checkNotNull(Task.ID.getValue(TASK.getValue(PARAMETERS.getValue(node))));
+				taskToCredentials.put(taskId, cred.getId());
+				Command command = new CreateCredentialsCommand(principal, cred);
 				Migration.copy(Command.TIMESTAMP, node, command.toJson());
 				Logger.info("> " + command.toJson());
 				commands.add(command);
