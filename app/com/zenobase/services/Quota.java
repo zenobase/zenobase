@@ -25,7 +25,7 @@ public class Quota {
 	public ObjectNode toJson() {
 		ObjectNode node = Nodes.newObject();
 		node.put("limit", limit);
-		node.put("remaining", Math.max(limit - used, 0));
+		node.put("remaining", getRemaining());
 		return node;
 	}
 }
