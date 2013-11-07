@@ -22,12 +22,18 @@ public class TimezoneControllerTest extends ControllerTestSupport {
 	}
 
 	@Test
-	public void test() {
-		Result result = call();
+	public void testList() {
+		Result result = call(null, null);
 		assertThat(result).hasStatus(OK).asArrayNode().path(0).isEqualTo("Africa/Abidjan");
 	}
 
-	private static Result call() {
-		return callAction(com.zenobase.controllers.routes.ref.TimezoneController.get(null, null), fakeRequest());
+	@Test
+	public void testFind() {
+		Result result = call("47.61", "-122.33");
+		assertThat(result).hasStatus(OK).asObjectNode().path("timeZoneId").isEqualTo("America/Los_Angeles");
+	}
+
+	private static Result call(String lat, String lon) {
+		return callAction(com.zenobase.controllers.routes.ref.TimezoneController.get(lat, lon), fakeRequest());
 	}
 }
