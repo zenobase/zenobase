@@ -1,6 +1,7 @@
 package com.zenobase.commands;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.NullNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import com.zenobase.json.Field;
@@ -30,7 +31,13 @@ public class Migration {
 		credentials.setAuthorizationUrl(url);
 		if (config != null) {
 			if (config.get("userId") != null) {
-				config.put("scope", config.get("userId").asText());
+				JsonNode scope = config.get("userId");
+				if (!scope.isNull()) {
+					config.put("scope", scope.asText());
+				} else {
+					config.put("scope", NullNode.getInstance());
+
+				}
 				config.remove("userId");
 			}
 		}
