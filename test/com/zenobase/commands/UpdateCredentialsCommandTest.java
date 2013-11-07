@@ -2,32 +2,29 @@ package com.zenobase.commands;
 
 import static org.mockito.Mockito.*;
 
-import org.joda.time.DateTime;
 import org.junit.Test;
 
-import com.zenobase.common.Generator;
 import com.zenobase.models.Identity;
-import com.zenobase.services.TaskRepository;
-import com.zenobase.tasks.Task;
+import com.zenobase.services.CredentialsRepository;
+import com.zenobase.tasks.Credentials;
 
-public class UpdateTaskCommandTest {
+public class UpdateCredentialsCommandTest {
 
 	private final Identity principal = new Identity();
-	private final TaskRepository repository = mock(TaskRepository.class);
+	private final CredentialsRepository repository = mock(CredentialsRepository.class);
 	private final CommandHandlerRegistry registry = CommandHandlerRegistry.containing(
-		new UpdateTaskCommand.Handler(repository));
+		new UpdateCredentialsCommand.Handler(repository));
 
 	@Test
 	public void test() {
 
-		Task from = new Task("do nothing", Generator.id(), principal);
-		from.setCompleted(DateTime.now().minusDays(1));
+		Credentials from = new Credentials("do nothing", principal);
 
-		Task to = from.copy();
-		to.setCompleted(DateTime.now());
+		Credentials to = from.copy();
+		to.setAuthorizationUrl("http://localhost/");
 
-		Command command = UpdateTaskCommand.builder(from)
-			.set(Task.COMPLETED, from.getCompleted(), to.getCompleted())
+		Command command = UpdateCredentialsCommand.builder(from)
+			.set(Credentials.AUTHORIZATION_URL, from.getAuthorizationUrl(), to.getAuthorizationUrl())
 			.build();
 		when(repository.find(from.getId())).thenReturn(from.copy());
 		registry.execute(command);

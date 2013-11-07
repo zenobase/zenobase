@@ -4,27 +4,25 @@ import static org.mockito.Mockito.*;
 
 import org.junit.Test;
 
-import com.zenobase.common.Generator;
 import com.zenobase.models.Identity;
-import com.zenobase.services.TaskRepository;
-import com.zenobase.tasks.Task;
+import com.zenobase.services.CredentialsRepository;
+import com.zenobase.tasks.Credentials;
 
-public class CreateAndDeleteTaskCommandTest {
+public class CreateAndDeleteCredentialsCommandTest {
 
-	private final TaskRepository repository = mock(TaskRepository.class);
+	private final CredentialsRepository repository = mock(CredentialsRepository.class);
 	private final CommandHandlerRegistry registry = CommandHandlerRegistry.containing(
-		new CreateTaskCommand.Handler(repository),
-		new DeleteTaskCommand.Handler(repository));
+		new CreateCredentialsCommand.Handler(repository),
+		new DeleteCredentialsCommand.Handler(repository));
 
 	@Test
 	public void test() {
 
-		Identity principal = new Identity();
-		String bucketId = Generator.id();
 		String type = "test";
-		Task task = new Task(type, bucketId, principal);
+		Identity principal = new Identity();
+		Credentials task = new Credentials(type, principal);
 
-		Command command = new CreateTaskCommand(principal, task);
+		Command command = new CreateCredentialsCommand(principal, task);
 		registry.execute(command);
 		verify(repository).store(task, command.getTimestamp());
 		reset(repository);

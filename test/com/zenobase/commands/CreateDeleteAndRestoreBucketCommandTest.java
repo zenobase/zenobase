@@ -1,8 +1,7 @@
 package com.zenobase.commands;
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.reset;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
+
 import org.junit.Test;
 
 import com.zenobase.models.Bucket;
@@ -11,11 +10,11 @@ import com.zenobase.services.BucketRepository;
 
 public class CreateDeleteAndRestoreBucketCommandTest {
 
-	private final BucketRepository buckets = mock(BucketRepository.class);
+	private final BucketRepository repository = mock(BucketRepository.class);
 	private final CommandHandlerRegistry registry = CommandHandlerRegistry.containing(
-		new CreateBucketCommand.Handler(buckets),
-		new DeleteBucketCommand.Handler(buckets),
-		new RestoreBucketCommand.Handler(buckets));
+		new CreateBucketCommand.Handler(repository),
+		new DeleteBucketCommand.Handler(repository),
+		new RestoreBucketCommand.Handler(repository));
 
 	@Test
 	public void test() {
@@ -26,22 +25,22 @@ public class CreateDeleteAndRestoreBucketCommandTest {
 
 		Command command = new CreateBucketCommand(principal, bucket);
 		registry.execute(command);
-		verify(buckets).store(bucket, command.getTimestamp(), true);
-		reset(buckets);
+		verify(repository).store(bucket, command.getTimestamp(), true);
+		reset(repository);
 
 		Command undo = command.reverse(principal);
 		registry.execute(undo);
-		verify(buckets).delete(bucket.getId());
-		reset(buckets);
+		verify(repository).delete(bucket.getId());
+		reset(repository);
 
 		Command redo = undo.reverse(principal);
 		registry.execute(redo);
-		verify(buckets).store(bucket, redo.getTimestamp(), false);
-		reset(buckets);
+		verify(repository).store(bucket, redo.getTimestamp(), false);
+		reset(repository);
 
 		Command unredo = redo.reverse(principal);
 		registry.execute(unredo);
-		verify(buckets).delete(bucket.getId());
-		reset(buckets);
+		verify(repository).delete(bucket.getId());
+		reset(repository);
 	}
 }

@@ -1,8 +1,7 @@
 package com.zenobase.commands;
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.reset;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
+
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.junit.Test;
@@ -14,10 +13,10 @@ import com.zenobase.services.EventRepository;
 
 public class CreateAndDeleteEventCommandTest {
 
-	private final EventRepository events = mock(EventRepository.class);
+	private final EventRepository repository = mock(EventRepository.class);
 	private final CommandHandlerRegistry registry = CommandHandlerRegistry.containing(
-		new CreateEventCommand.Handler(events),
-		new DeleteEventCommand.Handler(events));
+		new CreateEventCommand.Handler(repository),
+		new DeleteEventCommand.Handler(repository));
 
 	@Test
 	public void test() {
@@ -29,17 +28,17 @@ public class CreateAndDeleteEventCommandTest {
 
 		Command command = new CreateEventCommand(principal, bucketId, event);
 		registry.execute(command);
-		verify(events).add(bucketId, event, command.getTimestamp());
-		reset(events);
+		verify(repository).add(bucketId, event, command.getTimestamp());
+		reset(repository);
 
 		Command undo = command.reverse(principal);
 		registry.execute(undo);
-		verify(events).delete(bucketId, event.getId());
-		reset(events);
+		verify(repository).delete(bucketId, event.getId());
+		reset(repository);
 
 		Command redo = undo.reverse(principal);
 		registry.execute(redo);
-		verify(events).add(bucketId, event, redo.getTimestamp());
-		reset(events);
+		verify(repository).add(bucketId, event, redo.getTimestamp());
+		reset(repository);
 	}
 }

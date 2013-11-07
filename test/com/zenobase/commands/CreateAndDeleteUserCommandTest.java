@@ -1,8 +1,7 @@
 package com.zenobase.commands;
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.reset;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
+
 import org.junit.Test;
 
 import com.zenobase.models.User;
@@ -10,10 +9,10 @@ import com.zenobase.services.UserRepository;
 
 public class CreateAndDeleteUserCommandTest {
 
-	private final UserRepository users = mock(UserRepository.class);
+	private final UserRepository repository = mock(UserRepository.class);
 	private final CommandHandlerRegistry registry = CommandHandlerRegistry.containing(
-		new CreateUserCommand.Handler(users),
-		new DeleteUserCommand.Handler(users));
+		new CreateUserCommand.Handler(repository),
+		new DeleteUserCommand.Handler(repository));
 
 	@Test
 	public void test() {
@@ -22,17 +21,17 @@ public class CreateAndDeleteUserCommandTest {
 
 		Command command = new CreateUserCommand(user.asIdentity(), user);
 		registry.execute(command);
-		verify(users).store(user, command.getTimestamp());
-		reset(users);
+		verify(repository).store(user, command.getTimestamp());
+		reset(repository);
 
 		Command undo = command.reverse(user.asIdentity());
 		registry.execute(undo);
-		verify(users).delete(user);
-		reset(users);
+		verify(repository).delete(user);
+		reset(repository);
 
 		Command redo = undo.reverse(user.asIdentity());
 		registry.execute(redo);
-		verify(users).store(user, redo.getTimestamp());
-		reset(users);
+		verify(repository).store(user, redo.getTimestamp());
+		reset(repository);
 	}
 }

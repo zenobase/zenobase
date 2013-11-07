@@ -1,8 +1,7 @@
 package com.zenobase.commands;
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.reset;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
+
 import org.junit.Test;
 
 import com.zenobase.common.Generator;
@@ -12,10 +11,10 @@ import com.zenobase.services.AuthorizationRepository;
 
 public class CreateAndDeleteAuthorizationCommandTest {
 
-	private final AuthorizationRepository authorizations = mock(AuthorizationRepository.class);
+	private final AuthorizationRepository repository = mock(AuthorizationRepository.class);
 	private final CommandHandlerRegistry registry = CommandHandlerRegistry.containing(
-		new CreateAuthorizationCommand.Handler(authorizations),
-		new DeleteAuthorizationCommand.Handler(authorizations));
+		new CreateAuthorizationCommand.Handler(repository),
+		new DeleteAuthorizationCommand.Handler(repository));
 
 	@Test
 	public void test() {
@@ -25,17 +24,17 @@ public class CreateAndDeleteAuthorizationCommandTest {
 
 		Command command = new CreateAuthorizationCommand(principal, authorization);
 		registry.execute(command);
-		verify(authorizations).store(authorization, command.getTimestamp());
-		reset(authorizations);
+		verify(repository).store(authorization, command.getTimestamp());
+		reset(repository);
 
 		Command undo = command.reverse(principal);
 		registry.execute(undo);
-		verify(authorizations).delete(authorization.getId());
-		reset(authorizations);
+		verify(repository).delete(authorization.getId());
+		reset(repository);
 
 		Command redo = undo.reverse(principal);
 		registry.execute(redo);
-		verify(authorizations).store(authorization, redo.getTimestamp());
-		reset(authorizations);
+		verify(repository).store(authorization, redo.getTimestamp());
+		reset(repository);
 	}
 }
