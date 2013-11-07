@@ -7,12 +7,12 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
 import com.google.inject.Inject;
 
-public class IntegrationManagerRegistry {
+public class CredentialsManagerRegistry {
 
 	private final Map<String, CredentialsManager> managers = Maps.newHashMap();
 
 	@Inject
-	public IntegrationManagerRegistry(Set<CredentialsManager> managers) {
+	public CredentialsManagerRegistry(Set<CredentialsManager> managers) {
 		for (CredentialsManager manager : managers) {
 			this.managers.put(manager.getType(), manager);
 		}

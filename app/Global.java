@@ -67,6 +67,7 @@ import com.zenobase.controllers.StatusController;
 import com.zenobase.controllers.TagController;
 import com.zenobase.controllers.TaskController;
 import com.zenobase.controllers.TaskListController;
+import com.zenobase.controllers.TimezoneController;
 import com.zenobase.controllers.UserController;
 import com.zenobase.controllers.UserListController;
 import com.zenobase.controllers.WhoController;
@@ -89,7 +90,9 @@ import com.zenobase.services.TaskRepository;
 import com.zenobase.services.TestNodeFactory;
 import com.zenobase.services.UserRepository;
 import com.zenobase.tasks.CredentialsManager;
+import com.zenobase.tasks.CredentialsManagerRegistry;
 import com.zenobase.tasks.TaskManager;
+import com.zenobase.tasks.TaskManagerRegistry;
 import com.zenobase.tasks.TaskRefresher;
 import com.zenobase.tasks.bodymedia.BodyMediaCredentialsManager;
 import com.zenobase.tasks.bodymedia.BodyMediaTaskManager;
@@ -202,6 +205,7 @@ public class Global extends GlobalSettings {
 				bindIfConfigured("withings", WithingsCredentialsManager.class, credentials);
 				bindIfConfigured("bodymedia", BodyMediaCredentialsManager.class, credentials);
 				bindIfConfigured("netatmo", NetatmoCredentialsManager.class, credentials);
+				bind(CredentialsManagerRegistry.class).in(Singleton.class);
 
 				Multibinder<TaskManager> tasks = Multibinder.newSetBinder(binder(), new TypeLiteral<TaskManager>() {});
 				tasks.addBinding().to(DemoTaskManager.class);
@@ -211,6 +215,7 @@ public class Global extends GlobalSettings {
 				bindIfConfigured("withings", WithingsTaskManager.class, tasks);
 				bindIfConfigured("bodymedia", BodyMediaTaskManager.class, tasks);
 				bindIfConfigured("netatmo", NetatmoTaskManager.class, tasks);
+				bind(TaskManagerRegistry.class).in(Singleton.class);
 
 				bind(AccountController.class).in(Singleton.class);
 				bind(BucketController.class).in(Singleton.class);
@@ -231,6 +236,7 @@ public class Global extends GlobalSettings {
 				bind(OAuthController.class).in(Singleton.class);
 				bind(AuthorizationController.class).in(Singleton.class);
 				bind(AuthorizationListController.class).in(Singleton.class);
+				bind(TimezoneController.class).in(Singleton.class);
 
 				requestInjection(Global.this);
 			}

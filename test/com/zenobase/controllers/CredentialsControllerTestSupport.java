@@ -7,23 +7,19 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Singleton;
 
 import com.zenobase.models.User;
-import com.zenobase.services.BucketRepository;
 import com.zenobase.services.CommandDispatcher;
-import com.zenobase.services.TaskRepository;
+import com.zenobase.services.CredentialsRepository;
 import com.zenobase.services.UserRepository;
-import com.zenobase.tasks.TaskManagerRegistry;
-import com.zenobase.tasks.TaskRefresher;
+import com.zenobase.tasks.CredentialsManagerRegistry;
 
 public abstract class CredentialsControllerTestSupport extends ControllerTestSupport {
 
 	protected final AuthorizationContext auth = mock(AuthorizationContext.class);
-	protected final TaskManagerRegistry registry = mock(TaskManagerRegistry.class);
-	protected final TaskRepository tasks = mock(TaskRepository.class);
-	protected final TaskRefresher refresher = mock(TaskRefresher.class);
-	protected final BucketRepository buckets = mock(BucketRepository.class);
-	protected final UserRepository users = mock(UserRepository.class);
 	protected final CommandDispatcher dispatcher = mock(CommandDispatcher.class);
-	protected final User user = new User("tester");
+	protected final CredentialsManagerRegistry registry = mock(CredentialsManagerRegistry.class);
+	protected final CredentialsRepository repository = mock(CredentialsRepository.class);
+	protected final UserRepository users = mock(UserRepository.class);
+	protected final User user = new User("jdoe");
 
 	@Before
 	public void setUp() {
@@ -31,13 +27,11 @@ public abstract class CredentialsControllerTestSupport extends ControllerTestSup
 			@Override
 			protected void configure() {
 				bind(AuthorizationContext.class).toInstance(auth);
-				bind(TaskManagerRegistry.class).toInstance(registry);
-				bind(TaskRepository.class).toInstance(tasks);
-				bind(TaskRefresher.class).toInstance(refresher);
-				bind(BucketRepository.class).toInstance(buckets);
-				bind(UserRepository.class).toInstance(users);
 				bind(CommandDispatcher.class).toInstance(dispatcher);
-				bind(TaskController.class).in(Singleton.class);
+				bind(CredentialsManagerRegistry.class).toInstance(registry);
+				bind(CredentialsRepository.class).toInstance(repository);
+				bind(UserRepository.class).toInstance(users);
+				bind(CredentialsController.class).in(Singleton.class);
 			}
 		});
 	}

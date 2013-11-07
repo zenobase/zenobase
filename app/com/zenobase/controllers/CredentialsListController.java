@@ -16,18 +16,18 @@ import com.zenobase.services.UserRepository;
 import com.zenobase.tasks.Credentials;
 import com.zenobase.tasks.CredentialsList;
 import com.zenobase.tasks.CredentialsManager;
-import com.zenobase.tasks.IntegrationManagerRegistry;
+import com.zenobase.tasks.CredentialsManagerRegistry;
 
 public class CredentialsListController extends ControllerSupport {
 
 	private final CommandDispatcher dispatcher;
-	private final IntegrationManagerRegistry registry;
+	private final CredentialsManagerRegistry registry;
 	private final CredentialsRepository credentials;
 	private final UserRepository users;
 
 	@Inject
 	public CredentialsListController(AuthorizationContext security, CommandDispatcher dispatcher,
-		IntegrationManagerRegistry registry, CredentialsRepository credentials, UserRepository users) {
+		CredentialsManagerRegistry registry, CredentialsRepository credentials, UserRepository users) {
 
 		super(security);
 		this.dispatcher = dispatcher;
