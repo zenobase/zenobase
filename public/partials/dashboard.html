@@ -25,7 +25,7 @@
 				<span id="event-count" class="badge badge-success page-title-decoration" title="Events" data-ng-show="total >= 0">{{total}}</span>
 				<span class="badge badge-important page-title-decoration" title="Couldn't load any events" data-ng-show="total < 0">0</span>
 				<a class="page-title-decoration" data-ng-click="run()" title="Refresh"><i class="icon-refresh"></i></a>
-				<a id="add-event-action" class="page-title-decoration" title="Add Event..." data-ng-click="editEvent({})" data-ng-show="editable && !bucket.isVirtual()"><i class="icon-plus"></i></a>
+				<a id="add-event-action" class="page-title-decoration" title="Add Event..." data-ng-click="openDialog('edit-event-dialog', {})" data-ng-show="editable && !bucket.isVirtual()"><i class="icon-plus"></i></a>
 			</p>
 
 			<div class="pull-right page-title dropdown" data-ng-show="editable">
@@ -62,7 +62,7 @@
 					<li data-ng-class="$index == 0 && 'active'" data-ng-repeat="settings in getWidgetSettings('top')">
 						<a id="{{settings.id}}-tab" data-ng-href="#{{settings.id}}" data-toggle="tab">{{settings.label}}&nbsp;<i class="icon-cog icon-hover" title="Settings..." data-ng-click="openDialog(settings.id + '-dialog')"></i></a>
 					</li>
-					<li><a data-ng-click="chooseWidget('top')" title="Add..."> <i class="icon-plus icon-hover"></i> </a></li>
+					<li><a data-ng-click="openDialog('add-widget-dialog', 'top')" title="Add..."> <i class="icon-plus icon-hover"></i> </a></li>
 				</ul>
 				<div class="tab-content">
 					<div id="{{settings.id}}" class="tab-pane" data-ng-class="$index == 0 && 'active'" data-ng-repeat="settings in getWidgetSettings('top')" data-ng-include="getTemplate(settings.type)"></div>
@@ -76,7 +76,7 @@
 					<li data-ng-class="$index == 0 && 'active'" data-ng-repeat="settings in getWidgetSettings('left')">
 						<a id="{{settings.id}}-tab" data-ng-href="#{{settings.id}}" data-toggle="tab">{{settings.label}}&nbsp;<i class="icon-cog icon-hover" title="Settings..." data-ng-click="openDialog(settings.id + '-dialog')"></i></a>
 					</li>
-					<li><a data-ng-click="chooseWidget('left')" title="Add..."> <i class="icon-plus icon-hover"></i> </a></li>
+					<li><a data-ng-click="openDialog('add-widget-dialog', 'left')" title="Add..."> <i class="icon-plus icon-hover"></i> </a></li>
 				</ul>
 				<div class="tab-content">
 					<div id="{{settings.id}}" class="tab-pane" data-ng-class="$index == 0 && 'active'" data-ng-repeat="settings in getWidgetSettings('left')" data-ng-include="getTemplate(settings.type)"></div>
@@ -87,7 +87,7 @@
 					<li data-ng-class="$index == 0 && 'active'" data-ng-repeat="settings in getWidgetSettings('right')">
 						<a id="{{settings.id}}-tab" data-ng-href="#{{settings.id}}" data-toggle="tab">{{settings.label}}&nbsp;<i class="icon-cog icon-hover" title="Settings..." data-ng-click="openDialog(settings.id + '-dialog')"></i></a>
 					</li>
-					<li><a data-ng-click="chooseWidget('right')" title="Add..."> <i class="icon-plus icon-hover"></i> </a></li>
+					<li><a data-ng-click="openDialog('add-widget-dialog', 'right')" title="Add..."> <i class="icon-plus icon-hover"></i> </a></li>
 				</ul>
 				<div class="tab-content">
 					<div id="{{settings.id}}" class="tab-pane" data-ng-class="$index == 0 && 'active'" data-ng-repeat="settings in getWidgetSettings('right')" data-ng-include="getTemplate(settings.type)"></div>
@@ -97,7 +97,7 @@
 
 	</div>
 
-	<div id="edit-bucket-dialog" data-ui-modal="dialog == 'edit-bucket-dialog'" data-ui-modal-open="init()" data-ui-modal-close="closeDialog()" data-ng-controller="EditBucketDialogController">
+	<div id="edit-bucket-dialog" data-ui-modal data-ng-controller="EditBucketDialogController">
 		<form name="editBucketForm" data-ng-submit="save()" class="modal-form">
 			<div class="modal-header">
 				<a class="close" data-dismiss="modal">&times;</a>
@@ -146,7 +146,7 @@
 		</form>
 	</div>
 
-	<div id="add-widget-dialog" data-ui-modal="placement" data-ui-modal-open="init()" data-ui-modal-close="chooseWidget(null)" data-ng-controller="AddWidgetController">
+	<div id="add-widget-dialog" data-ui-modal data-ng-controller="AddWidgetController">
 		<form name="addWidgetForm" class="modal-form">
 			<div class="modal-header">
 				<a class="close" data-dismiss="modal">&times;</a>
@@ -171,7 +171,7 @@
 		</form>
 	</div>
 
-	<div id="task-list-dialog" data-ui-modal="dialog == 'task-list-dialog'" data-ui-modal-open="init()" data-ui-modal-close="closeDialog()" data-ng-controller="TaskListDialogController">
+	<div id="task-list-dialog" data-ui-modal data-ng-controller="TaskListDialogController">
 		<div class="modal-header">
 			<a class="close" data-dismiss="modal">&times;</a>
 			<h4 class="alert-heading">Tasks</h4>
@@ -200,7 +200,7 @@
 				</table>
 				<div class="btn-toolbar">
 					<div class="btn-group pull-left">
-						<button id="create-task-action"  class="btn" data-ng-click="openDialog('task-dialog')"><i class="icon-plus"></i></button>
+						<button id="create-task-action"  class="btn" data-ng-click="openDialog('create-task-dialog')"><i class="icon-plus"></i></button>
 					</div>
 					<div class="btn-group pull-right" data-ng-show="tasks">
 						<button class="btn" title="Previous" data-ng-click="prev()" data-ng-disabled="!hasPrev()"><i class="icon-chevron-left"></i></button>
@@ -217,7 +217,7 @@
 		</div>
 	</div>
 
-	<div id="create-task-dialog" data-ui-modal="dialog == 'task-dialog'" data-ui-modal-open="init()" data-ui-modal-close="closeDialog()" data-ng-controller="CreateTaskDialogController">
+	<div id="create-task-dialog" data-ui-modal data-ng-controller="CreateTaskDialogController">
 		<form name="createTaskForm" class="modal-form">
 			<div class="modal-header">
 				<a class="close" data-dismiss="modal">&times;</a>
@@ -322,7 +322,7 @@
 		</div>
 	</script>
 
-	<div id="edit-event-dialog" data-ui-modal="selectedEvent" data-ui-modal-open="init()" data-ui-modal-close="editEvent(null)" data-keyboard="false" data-backdrop="static" data-ng-controller="EventDialogController">
+	<div id="edit-event-dialog" data-ui-modal data-keyboard="false" data-backdrop="static" data-ng-controller="EventDialogController">
 		<div class="modal-header">
 			<a class="close" data-dismiss="modal">&times;</a>
 			<h4>Event</h4>
@@ -694,7 +694,7 @@
 		</div>
 	</script>
 
-	<div id="import-dialog" data-ui-modal="dialog == 'import-dialog'" data-ui-modal-open="init()" data-ui-modal-close="closeDialog()" data-ng-controller="ImportDialogController">
+	<div id="import-dialog" data-ui-modal data-ng-controller="ImportDialogController">
 		<form data-ng-submit="submit()" class="modal-form">
 			<div class="modal-header">
 				<a class="close" data-dismiss="modal">&times;</a>
@@ -727,12 +727,12 @@
 		</form>
 	</div>
 
-	<div id="getting-started-dialog" data-ui-modal="dialog == 'getting-started-dialog'" data-ui-modal-open="init()" data-ui-modal-close="closeDialog()">
+	<div id="getting-started-dialog" data-ui-modal>
 		<div class="modal-body">
 			<ul class="nav nav-tabs nav-stacked">
-				<li><a id="getting-started-add-event-link" data-ng-click="closeDialog(); editEvent({})"><i class="icon-plus"></i> <strong>Add</strong> a single event</a></li>
+				<li><a id="getting-started-add-event-link" data-ng-click="openDialog('edit-event-dialog', {})"><i class="icon-plus"></i> <strong>Add</strong> a single event</a></li>
 				<li><a data-ng-click="openDialog('import-dialog')"><i class="icon-upload"></i> <strong>Import</strong> events from a file</a></li>
-				<li><a data-ng-click="openDialog('task-dialog')"><i class="icon-share"></i> <strong>Connect</strong> to an external service</a></li>
+				<li><a data-ng-click="openDialog('create-task-dialog')"><i class="icon-share"></i> <strong>Connect</strong> to an external service</a></li>
 			</ul>
 		</div>
 		<div class="modal-footer">

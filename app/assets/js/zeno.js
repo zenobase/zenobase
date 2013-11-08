@@ -215,12 +215,11 @@
 		$scope.reload = function() {
 			$route.reload();
 		};
-		$scope.openDialog = function(dialog) {
-			$scope.dialog = dialog;
-			$scope.$broadcast('dialog:' + dialog);
+		$scope.openDialog = function(dialog, param) {
+			$scope.$broadcast('openDialog', dialog, param);
 		};
 		$scope.closeDialog = function() {
-			$scope.dialog = null;
+			$scope.openDialog(null);
 		};
 
 		$scope.$on('$routeChangeStart', function() {
@@ -830,7 +829,7 @@
 		$scope.$on('reload', $scope.refresh);
 	}]);
 
-	app.controller('HomeController', ['$scope', '$http', '$location', 'token', 'tracker', function($scope, $http, $location, token, tracker) {
+	app.controller('HomeController', ['$scope', '$http', '$location', '$timeout', 'token', 'tracker', function($scope, $http, $location, $timeout, token, tracker) {
 
 		var createBucket = function() {
 			$http.post('/buckets/', { label : 'My Data' })
@@ -839,7 +838,9 @@
 					console.assert(status === 201, status);
 					console.assert(location, 'missing location header');
 					$location.url(location);
-					$scope.openDialog('getting-started-dialog');					
+					$timeout(function() {
+						$scope.openDialog('getting-started-dialog');
+					}, 500);
 				})
 				.error(function(response, status) {
 					if (status < 500) {
@@ -1011,8 +1012,9 @@
       	settings : { field_x : 'count', field_y : 'count' }
       }
 	  ];
-		$scope.init = function() {
+		$scope.init = function(placement) {
 			$scope.template = null;
+			$scope.placement = placement;
 		};
 		$scope.add = function() {
 			var settings = {
@@ -1023,7 +1025,6 @@
 			};
 			$.extend(true, settings, $scope.template.settings);
 			$scope.addWidget(settings);
-			$scope.chooseWidget(null);
 			$timeout(function() {
 				$('#' + settings.id + '-tab').tab('show');
 				$scope.openDialog(settings.id + '-dialog');
@@ -1161,12 +1162,8 @@
 				});
 			}
 		};
-		$scope.placement = null;
 		$scope.canImport = function() {
 			return typeof FileReader != 'undefined' && $scope.editable;
-		};
-		$scope.chooseWidget = function(placement) {
-			$scope.placement = placement;
 		};
 		$scope.addWidget = function(settings) {
 			$scope.bucket.widgets.push(settings);
@@ -1220,9 +1217,6 @@
 				url += '?' + $.param(params, true); 
 			}
 			return url;
-		};
-		$scope.editEvent = function(event) {
-			$scope.selectedEvent = event;
 		};
 		$scope.removeEvent = function(eventId) {
 			$scope.alert.clear();
@@ -2869,8 +2863,8 @@
 
 		$scope.params = $routeParams;
 		$scope.fields = Field.findEditable();
-		$scope.init = function() {
-			$scope.event = new Event($scope.selectedEvent);
+		$scope.init = function(event) {
+			$scope.event = new Event(event);
 			$scope.entries = $scope.event.get($scope.fields);
 			$scope.isNew = $.isEmptyObject($scope.entries);
 			$scope.message = '';
@@ -2892,7 +2886,7 @@
 			if ($scope.isNew) {
 				$http.post('/buckets/' + $scope.params.bucketId + '/', $scope.event)
 					.success(function(response) {
-						$scope.editEvent(null);
+						$scope.closeDialog();
 						delay($scope.refresh);
 					})
 					.error(function(response) {
@@ -2901,7 +2895,7 @@
 			} else {
 				$http.put('/buckets/' + $scope.params.bucketId + '/' + $scope.event['@id'], $scope.event)
 					.success(function(response, status, headers) {
-						$scope.editEvent(null);
+						$scope.closeDialog();
 						$scope.alert.show('Updated an event.', 'alert-success', headers('X-Command-ID'));
 						delay($scope.refresh);
 					})
@@ -4170,18 +4164,16 @@
 		return {
 			restrict : 'A',
 			link : function(scope, element, attrs, model) {
+				var id = attrs.id || scope.$eval(attrs.uiModal);
+				console.assert(id, '@id is required');
 				element.addClass('modal hide');
-				if (attrs.uiModalClose) {
-					element.on('hidden', function() {
-						if (scope.$eval(attrs.uiModal)) {
-							scope.$apply(attrs.uiModalClose);
-						}
-					});
-				}
-				scope.$watch(attrs.uiModal, function(value) {
-					if (value) {
-						if (attrs.uiModalOpen) {
-							scope.$eval(attrs.uiModalOpen);
+				element.on('hidden', function() {
+					scope.closeDialog();
+				});
+				scope.$on('openDialog', function(event, dialogId, param) {
+					if (dialogId === id) {
+						if (scope.init) {
+							scope.init(param);
 						}
 						element.modal('show');
 					} else {
