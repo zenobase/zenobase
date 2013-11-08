@@ -56,7 +56,11 @@ public class CredentialsRepository {
 		QueryBuilder q = QueryBuilders.boolQuery()
 			.must(QueryBuilders.termQuery(Credentials.PRINCIPAL.getName(), principal.getId()))
 			.must(QueryBuilders.termQuery(Credentials.TYPE.getName(), type));
-		return Iterables.getOnlyElement(find(q, 0, 2), null);
+		CredentialsList results = find(q, 0, 10);
+		if (results.size() > 1) {
+			Logger.warn("Found duplicate " + type + " credentials for " + principal);
+		}
+		return Iterables.getFirst(results, null);
 	}
 
 	public CredentialsList find(int offset, int limit) {
