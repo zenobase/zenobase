@@ -44,7 +44,7 @@
 		</header>
 
 		<div class="container-fluid ng-cloak">
-			<div id="alert-banner" class="alert {{alert.level}}">
+			<div id="alert-banner" class="alert alert-block {{alert.level}}">
 				<a class="close" data-ng-click="alert.clear()">&times;</a>
 				<a data-ng-bind-html="alert.message" data-ng-show="alert.onClick != null" data-ng-click="alert.onClick()"></a>
 				<span data-ng-bind-html="alert.message" data-ng-hide="alert.onClick != null"></span>
@@ -55,7 +55,7 @@
 		</div>
 
 		<div class="container-fluid ng-cloak" data-ng-show="user.suspended">
-			<div class="alert alert-error">
+			<div class="alert alert-block alert-error">
 				This account has been suspended. Please contact support.
 			</div>
 		</div>
