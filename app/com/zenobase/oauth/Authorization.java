@@ -8,7 +8,6 @@ import com.zenobase.common.Generator;
 import com.zenobase.json.DateTimeField;
 import com.zenobase.json.DomainNode;
 import com.zenobase.json.IdentityField;
-import com.zenobase.json.Nodes;
 import com.zenobase.json.Schema;
 import com.zenobase.json.SchemaBuilder;
 import com.zenobase.json.TokenField;
@@ -76,6 +75,6 @@ public class Authorization extends DomainNode {
 	}
 
 	public Authorization copy() {
-		return new Authorization(Nodes.copy(toJson()));
+		return new Authorization(toJson().deepCopy());
 	}
 }

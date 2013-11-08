@@ -10,7 +10,6 @@ import com.zenobase.json.BooleanField;
 import com.zenobase.json.DateTimeField;
 import com.zenobase.json.DomainNode;
 import com.zenobase.json.IntegerField;
-import com.zenobase.json.Nodes;
 import com.zenobase.json.Schema;
 import com.zenobase.json.SchemaBuilder;
 import com.zenobase.json.TokenField;
@@ -137,6 +136,6 @@ public class User extends DomainNode {
 	}
 
 	public User copy() {
-		return new User(Nodes.copy(toJson()));
+		return new User(toJson().deepCopy());
 	}
 }

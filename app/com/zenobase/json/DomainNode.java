@@ -100,7 +100,7 @@ public class DomainNode {
 	}
 
 	protected <T extends DomainNode> T copy(Class<T> type) {
-		return as(type, Nodes.copy(node));
+		return as(type, node.deepCopy());
 	}
 
 	public <T extends DomainNode> T as(Class<T> type) {

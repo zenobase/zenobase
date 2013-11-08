@@ -14,19 +14,6 @@ import com.google.common.collect.Lists;
 public class NodesTest {
 
 	@Test
-	public void testCopy() {
-
-		ObjectNode node = Nodes.newObject();
-		node.putObject("owner").put("name", "Foo");
-
-		ObjectNode copy = Nodes.copy(node);
-		assertThat(copy).as("copied node").isEqualTo(node);
-
-		((ObjectNode) copy.get("owner")).put("name", "Bar");
-		assertThat(copy).as("copied node after editing a nested field").isNotEqualTo(node);
-	}
-
-	@Test
 	public void testNewObject() {
 
 		ObjectNode node = Nodes.newObject("name", "Foo");

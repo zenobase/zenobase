@@ -17,7 +17,6 @@ import com.zenobase.common.Generator;
 import com.zenobase.json.AliasField;
 import com.zenobase.json.DateTimeField;
 import com.zenobase.json.DomainNode;
-import com.zenobase.json.Nodes;
 import com.zenobase.json.ObjectField;
 import com.zenobase.json.RolesField;
 import com.zenobase.json.Schema;
@@ -147,7 +146,7 @@ public class Bucket extends DomainNode {
 	}
 
 	public Bucket copy() {
-		return new Bucket(Nodes.copy(toJson()));
+		return new Bucket(toJson().deepCopy());
 	}
 
 	public boolean valid() {

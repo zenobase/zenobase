@@ -43,14 +43,6 @@ public class Nodes {
 		return result;
 	}
 
-	public static <T extends JsonNode> T copy(T node) {
-		try {
-			return (T) MAPPER.readTree(node.traverse());
-		} catch (IOException e) {
-			throw new AssertionError(e);
-		}
-	}
-
 	public static byte[] toByteArray(JsonNode node) {
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		try {

@@ -65,6 +65,6 @@ public class SchemaBuilder {
 	}
 
 	public Schema build() {
-		return new Schema(typeName, Nodes.copy(schema), constraintBuilders.build());
+		return new Schema(typeName, schema.deepCopy(), constraintBuilders.build());
 	}
 }

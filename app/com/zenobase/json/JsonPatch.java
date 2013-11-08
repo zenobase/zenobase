@@ -19,7 +19,7 @@ public class JsonPatch {
 
 	public ObjectNode apply(ObjectNode node) {
 		checkState(node, from);
-		ObjectNode patched = Nodes.copy(node);
+		ObjectNode patched = node.deepCopy();
 		apply(patched, to);
 		return patched;
 	}

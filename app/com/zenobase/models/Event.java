@@ -17,7 +17,6 @@ import com.zenobase.json.IdentityField;
 import com.zenobase.json.IntegerField;
 import com.zenobase.json.LengthField;
 import com.zenobase.json.LocationField;
-import com.zenobase.json.Nodes;
 import com.zenobase.json.PercentageField;
 import com.zenobase.json.PressureField;
 import com.zenobase.json.RatingField;
@@ -131,7 +130,7 @@ public class Event extends DomainNode {
 	}
 
 	public Event copy() {
-		return new Event(Nodes.copy(toJson()));
+		return new Event(toJson().deepCopy());
 	}
 
 	public static Schema getSchema() {
