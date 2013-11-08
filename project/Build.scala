@@ -30,16 +30,10 @@ object ApplicationBuild extends Build {
 	  "org.jvnet.mock-javamail" % "mock-javamail" % "1.9" % "test"
 	)
 
-	val defaultOptions = new CompilerOptions()
-	CompilationLevel.SIMPLE_OPTIMIZATIONS.setOptionsForCompilationLevel(defaultOptions)
-	defaultOptions.setProcessCommonJSModules(false)
-
 	lazy val main = play.Project(appName, appVersion, appDependencies).settings(
-    	closureCompilerSettings(defaultOptions) ++ Seq(
-			resolvers += "Sonatype Releases" at "https://oss.sonatype.org/content/repositories/releases/",
-			lessEntryPoints <<= baseDirectory(_ / "app" / "assets" / "css" / "zeno.less"),
-			javascriptEntryPoints <<= baseDirectory(_ / "app" / "assets" / "js" / "zeno.js"),
-			sources in doc in Compile := List() // skip scaladoc to speed up build
-		) : _*
+		resolvers += "Sonatype Releases" at "https://oss.sonatype.org/content/repositories/releases/",
+		lessEntryPoints <<= baseDirectory(_ / "app" / "assets" / "css" / "zeno.less"),
+		javascriptEntryPoints <<= baseDirectory(_ / "app" / "assets" / "js" / "zeno.js"),
+		sources in doc in Compile := List() // skip scaladoc to speed up build
 	)
 }
