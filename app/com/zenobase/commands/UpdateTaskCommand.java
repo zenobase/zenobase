@@ -85,7 +85,8 @@ public class UpdateTaskCommand extends UpdateCommandSupport {
 				if (getFrom(node).size() == 0 && getTo(node).size() == 0) {
 					return command;
 				}
-				CompoundCommand commands = new CompoundCommand(principal, "update task and credentials", "update task and credentials");
+				CompoundCommand commands = new CompoundCommand(principal, "updated task/credentials", "updated task/credentials");
+				Migration.copy(Command.TIMESTAMP, node, commands.toJson());
 				Logger.info("> " + new UpdateTaskCommand(node).toJson());
 				commands.add(new UpdateTaskCommand(node));
 				commands.add(command);

@@ -71,7 +71,7 @@ public class CreateTaskCommand extends Command {
 				Logger.info("> " + new CreateTaskCommand(node).toJson());
 				return new CreateTaskCommand(node);
 			} else {
-				CompoundCommand commands = new CompoundCommand(principal, "create task and credentials", "delete task and credentials");
+				CompoundCommand commands = new CompoundCommand(principal, "created task/credentials", "deleted task/credentials");
 				Migration.copy(Command.TIMESTAMP, node, commands.toJson());
 				Logger.info("> " + new CreateTaskCommand(node).toJson());
 				commands.add(new CreateTaskCommand(node));
