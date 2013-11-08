@@ -11,9 +11,9 @@ import com.zenobase.models.Identity;
 
 public abstract class UpdateCommandSupport extends Command {
 
-	protected static final TokenField OBJECT_ID = new TokenField("object");
-	protected static final ObjectField FROM = new ObjectField("from");
-	protected static final ObjectField TO = new ObjectField("to");
+	private static final TokenField OBJECT_ID = new TokenField("object");
+	private static final ObjectField FROM = new ObjectField("from");
+	private static final ObjectField TO = new ObjectField("to");
 
 	protected UpdateCommandSupport(ObjectNode node) {
 		super(node);
