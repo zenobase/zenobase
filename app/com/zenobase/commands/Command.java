@@ -94,8 +94,12 @@ public class Command extends DomainNode {
 		return getValue(COST, Integer.valueOf(0));
 	}
 
+	protected void setCost(int cost) {
+		setValue(COST, cost);
+	}
+
 	protected void addCost(int cost) {
-		setValue(COST, getCost() + cost);
+		setCost(getCost() + cost);
 	}
 
 	public Command reverse(Identity principal) {

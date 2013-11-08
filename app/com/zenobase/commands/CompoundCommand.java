@@ -46,10 +46,29 @@ public class CompoundCommand extends Command {
 		addCost(command.getCost());
 	}
 
+	private Command flatten() {
+		List<Command> commands = getCommands();
+		this.commands.clear();
+		setParameter(COMMANDS, null);
+		setCost(0);
+		if (commands.size() == 1) {
+			return commands.get(0);
+		}
+		for (Command command : commands) {
+			add(command);
+		}
+		return this;
+	}
+
 	public ImmutableList<Command> getCommands() {
 		if (commands.isEmpty() && registry != null) {
 			for (ObjectNode commandNode : getParameters(COMMANDS)) {
-				commands.add(registry.parse(commandNode));
+				Command command = registry.parse(commandNode);
+				if (command instanceof CompoundCommand) {
+					commands.addAll(((CompoundCommand) command).getCommands());
+				} else {
+					commands.add(command);
+				}
 			}
 		}
 		return ImmutableList.copyOf(commands);
@@ -79,7 +98,7 @@ public class CompoundCommand extends Command {
 		@Override
 		public Command parse(ObjectNode node, int version) {
 			switch (version) {
-				case 1: return new CompoundCommand(node, getRegistry());
+				case 1: return new CompoundCommand(node, getRegistry()).flatten();
 			}
 			return null;
 		}
