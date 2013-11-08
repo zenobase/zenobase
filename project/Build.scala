@@ -38,7 +38,8 @@ object ApplicationBuild extends Build {
     	closureCompilerSettings(defaultOptions) ++ Seq(
 			resolvers += "Sonatype Releases" at "https://oss.sonatype.org/content/repositories/releases/",
 			lessEntryPoints <<= baseDirectory(_ / "app" / "assets" / "css" / "zeno.less"),
-			javascriptEntryPoints <<= baseDirectory(_ / "app" / "assets" / "js" / "zeno.js")
+			javascriptEntryPoints <<= baseDirectory(_ / "app" / "assets" / "js" / "zeno.js"),
+			sources in doc in Compile := List() // skip scaladoc to speed up build
 		) : _*
 	)
 }
