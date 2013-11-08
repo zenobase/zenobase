@@ -3277,9 +3277,13 @@
 
 		var runAll = function($scope, bucketId, success) {
 			$http.get('/buckets/' + bucketId + '/tasks/').success(function(response) {
-				$.each(response.tasks, function(i, task) {
-					run($scope, task['@id'], success);
-				});
+				if (response.total > 0) {
+					$.each(response.tasks, function(i, task) {
+						run($scope, task['@id'], success);
+					});
+				} else {
+					success();
+				}
 			});
 		};
 
