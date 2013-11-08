@@ -1145,19 +1145,21 @@
 			});
 		};
 		$scope.removeWidget = function(settings) {
-			delay(function() { // dialog won't close properly if we don't delay
-				$scope.bucket.widgets = $.grep($scope.bucket.widgets, function(widget) {
-					return widget.id !== settings.id;
+			if ($scope.bucket.widgets.length > 1) {
+				delay(function() { // dialog won't close properly if we don't delay
+					$scope.bucket.widgets = $.grep($scope.bucket.widgets, function(widget) {
+						return widget.id !== settings.id;
+					});
+					$scope.widgets = $.grep($scope.widgets, function(widget) {
+						return widget.settings.id !== settings.id;
+					});
+					var remaining = $scope.getWidgetSettings(settings.placement);
+					if (remaining.length > 0) {
+						$('#' + remaining[0].id + '-tab').tab('show');
+					}
+					$scope.setDirty(true);
 				});
-				$scope.widgets = $.grep($scope.widgets, function(widget) {
-					return widget.settings.id !== settings.id;
-				});
-				var remaining = $scope.getWidgetSettings(settings.placement);
-				if (remaining.length > 0) {
-					$('#' + remaining[0].id + '-tab').tab('show');
-				}
-				$scope.setDirty(true);
-			});
+			}
 		};
 		$scope.placement = null;
 		$scope.canImport = function() {
