@@ -89,7 +89,7 @@
 					</div>
 					<div class="control-group">
 						<label for="sign-in-username">Username</label>
-						<input id="sign-in-username" type="text" class="large" data-ui-focus-on="dialog:sign-in-dialog" required/>
+						<input id="sign-in-username" type="text" class="large" data-ui-focus-on="openDialog:sign-in-dialog" required/>
 					</div>
 					<div class="control-group">
 						<label for="sign-in-password">Password</label>
@@ -118,7 +118,7 @@
 					</div>
 					<div class="control-group">
 						<label for="lost-password-username">Username</label>
-						<input id="lost-password-username" type="text" class="large" data-ng-model="username" data-ui-focus-on="dialog:password-reset-request" required/>
+						<input id="lost-password-username" type="text" class="large" data-ng-model="username" data-ui-focus-on="openDialog:lost-password-dialog" required/>
 					</div>
 					<div class="control-group">
 						<label for="lost-password-email">Email</label>
@@ -144,7 +144,7 @@
 						</div>
 						<div class="control-group">
 							<label for="sign-up-username">Username (4-16 lowercase letters and numbers)</label>
-							<input id="sign-up-username" name="username" type="text" class="large" required data-ui-focus-on="dialog:sign-up-dialog" data-ng-minlength="4" data-ng-maxlength="16" data-ng-pattern="/^[a-z0-9]+$/" data-ng-model="username"/>
+							<input id="sign-up-username" name="username" type="text" class="large" required data-ui-focus-on="openDialog:sign-up-dialog" data-ng-minlength="4" data-ng-maxlength="16" data-ng-pattern="/^[a-z0-9]+$/" data-ng-model="username"/>
 						</div>
 						<div class="control-group">
 							<label for="sign-up-password">Password (min 8 characters)</label>

@@ -4151,10 +4151,14 @@
 		return {
 			restrict : 'A',
 			link : function(scope, element, attrs) {
-				scope.$on(attrs.uiFocusOn, function() {
-					setTimeout(function() {
-						element.select();
-					}, 0);
+				var tokens = attrs.uiFocusOn.split(':', 2);
+				console.assert(tokens.length === 2);
+				scope.$on(tokens[0], function(event, param) {
+					if (event.name === tokens[0] && param === tokens[1]) {
+						setTimeout(function() {
+							element.select();
+						}, 0);
+					}
 				});
 			}
 		};
