@@ -891,7 +891,7 @@
 					'reverse' : false
 				}]
 		}, {
-			'label' : 'Places <- Foursquare',
+			'label' : 'Places (Foursquare)',
 			'task' : 'foursquare',
 			'widgets' : [{
 					'id' : 'timeline',
@@ -932,15 +932,9 @@
 					'value_field' : 'timestamp'
 				}]
 		}, {
-			'label' : 'Places',
+			'label' : 'Body Weight (Withings)',
+			'task' : 'withings', 
 			'widgets' : [{
-					'id' : 'timeline',
-					'type' : 'timeline',
-					'label' : 'Latest',
-					'placement' : 'top',
-					'field' : 'timestamp',
-					'statistic' : 'count'
-				}, {
 					'id' : 'latest',
 					'type' : 'list',
 					'label' : 'Latest',
@@ -950,26 +944,13 @@
 					'order' : 'timestamp',
 					'reverse' : true
 				}, {
-					'id' : 'tags',
-					'type' : 'count',
-					'label' : 'Tags',
-					'placement' : 'left',
-					'field' : 'tag',
-					'limit' : 10,
-					'order' : 'count',
-					'reverse' : false
-				}, {
-					'id' : 'map',
-					'type' : 'map',
-					'label' : 'Map',
-					'placement' : 'right'
-				}, {
-					'id' : 'day_of_week',
-					'type' : 'polar',
-					'label' : 'Day of Week',
+					'id' : 'weight',
+					'type' : 'timeline',
+					'label' : 'Weight',
 					'placement' : 'right',
-					'interval' : 'day_of_week',
-					'value_field' : 'timestamp'
+					'field' : 'weight',
+					'statistic' : 'avg',
+					'unit' : 'kg'
 				}]
 		}];
 
