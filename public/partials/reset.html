@@ -1,6 +1,6 @@
 <div id="password-reset-view" class="container-fluid" data-ng-controller="PasswordResetController">
 
-	<form name="passwordResetForm" novalidate data-ng-submit="submit()">
+	<form name="form" novalidate data-ng-submit="submit()">
 		<div id="password-reset-message" class="alert alert-block alert-error" data-ng-show="message">
 			{{message}}
 		</div>
@@ -16,7 +16,7 @@
 				<input id="password-reset-password-confirm" type="password" class="large" required data-ng-minlength="8" data-ng-model="passwordConfirmed"/>
 			</div>
 		</div>
-		<button id="password-reset-button" type="submit" class="btn btn-primary" data-ng-disabled="!passwordResetForm.$valid">Reset Password</button>
+		<button id="password-reset-button" type="submit" class="btn btn-primary" data-ng-disabled="!form.$valid">Reset Password</button>
 	</form>
 
 </div>

@@ -78,7 +78,7 @@
 		</footer>
 
 		<div id="sign-in-dialog" class="hide" data-ui-modal data-ng-controller="SignInDialogController">
-			<form name="signInForm" data-ng-submit="signIn()" class="modal-form">
+			<form name="form" data-ng-submit="signIn()" class="modal-form">
 				<div class="modal-header">
 					<a class="close" data-dismiss="modal">&times;</a>
 					<h4>Sign in</h4>
@@ -107,7 +107,7 @@
 		</div>
 
 		<div id="lost-password-dialog" class="hide" data-ui-modal data-ng-controller="LostPasswordDialogController">
-			<form name="lostPasswordForm" novalidate data-ng-submit="submit()" class="modal-form">
+			<form name="form" novalidate data-ng-submit="submit()" class="modal-form">
 				<div class="modal-header">
 					<a class="close" data-dismiss="modal">&times;</a>
 					<h4>Reset Password</h4>
@@ -126,14 +126,14 @@
 					</div>
 				</div>
 				<div class="modal-footer">
-					<button id="lost-password-button" type="submit" class="btn btn-primary" data-ng-disabled="!lostPasswordForm.$valid">Reset</button>
+					<button id="lost-password-button" type="submit" class="btn btn-primary" data-ng-disabled="!form.$valid">Reset</button>
 					<button type="reset" class="btn" data-dismiss="modal">Cancel</button>
 				</div>
 			</form>
 		</div>
 
 		<div id="sign-up-dialog" class="hide" data-ui-modal data-ng-controller="SignUpDialogController">
-			<form name="signUpForm" novalidate data-ng-submit="submit()" class="modal-form">
+			<form name="form" novalidate data-ng-submit="submit()" class="modal-form">
 					<div class="modal-header">
 						<a class="close" data-dismiss="modal">&times;</a>
 						<h4>Sign up</h4>
@@ -161,7 +161,7 @@
 						</div>
 					</div>
 					<div class="modal-footer">
-						<button id="sign-up-button" type="submit" class="btn btn-primary" data-ng-disabled="!signUpForm.$valid">Sign up</button>
+						<button id="sign-up-button" type="submit" class="btn btn-primary" data-ng-disabled="!form.$valid">Sign up</button>
 						<button type="reset" class="btn" data-dismiss="modal">Cancel</button>
 					</div>
 			</form>

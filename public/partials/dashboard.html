@@ -98,7 +98,7 @@
 	</div>
 
 	<div id="edit-bucket-dialog" data-ui-modal data-ng-controller="EditBucketDialogController">
-		<form name="editBucketForm" data-ng-submit="save()" class="modal-form">
+		<form name="form" data-ng-submit="save()" class="modal-form">
 			<div class="modal-header">
 				<a class="close" data-dismiss="modal">&times;</a>
 				<h4>Edit Bucket</h4>
@@ -107,7 +107,7 @@
 				<div id="create-bucket-message" class="alert alert-error" data-ng-show="message">
 					{{message}}
 				</div>
-				<div class="control-group" data-ng-class="editBucketForm.label.$valid || 'error'">
+				<div class="control-group" data-ng-class="form.label.$valid || 'error'">
 					<label for="label">Label</label>
 					<input id="edit-bucket-label" name="label" type="text" class="xlarge" required data-ui-focus-on="dialog:edit-bucket-dialog" data-ng-minlength="1" data-ng-maxlength="20" data-ng-pattern="/^[a-zA-Z0-9-_ ]+$/" data-ng-model="newBucket.label"/>
 				</div>
@@ -147,7 +147,7 @@
 	</div>
 
 	<div id="add-widget-dialog" data-ui-modal data-ng-controller="AddWidgetController">
-		<form name="addWidgetForm" class="modal-form">
+		<form name="form" class="modal-form">
 			<div class="modal-header">
 				<a class="close" data-dismiss="modal">&times;</a>
 				<h4>Add Widget</h4>
@@ -165,7 +165,7 @@
 				</div>
 			</div>
 			<div class="modal-footer">
-				<button class="btn btn-primary" data-ng-click="add()" data-ng-disabled="!addWidgetForm.$valid">Add</button>
+				<button class="btn btn-primary" data-ng-click="add()" data-ng-disabled="!form.$valid">Add</button>
 				<button class="btn" data-dismiss="modal">Cancel</button>
 			</div>
 		</form>
@@ -218,7 +218,7 @@
 	</div>
 
 	<div id="create-task-dialog" data-ui-modal data-ng-controller="CreateTaskDialogController">
-		<form name="createTaskForm" class="modal-form">
+		<form name="form" class="modal-form">
 			<div class="modal-header">
 				<a class="close" data-dismiss="modal">&times;</a>
 				<h4 class="alert-heading">Create Task</h4>
@@ -237,7 +237,7 @@
 				<div data-ng-include="getTemplate(type)" data-ng-show="type"></div>
 			</div>
 			<div class="modal-footer">
-				<button class="btn btn-primary" data-ng-click="create()" data-ng-disabled="!createTaskForm.$valid">Save</button>
+				<button class="btn btn-primary" data-ng-click="create()" data-ng-disabled="!form.$valid">Save</button>
 				<button class="btn" data-dismiss="modal">Cancel</button>
 			</div>
 		</form>
@@ -695,7 +695,7 @@
 	</script>
 
 	<div id="import-dialog" data-ui-modal data-ng-controller="ImportDialogController">
-		<form data-ng-submit="submit()" class="modal-form">
+		<form name="form" data-ng-submit="submit()" class="modal-form">
 			<div class="modal-header">
 				<a class="close" data-dismiss="modal">&times;</a>
 				<h4>Import</h4>

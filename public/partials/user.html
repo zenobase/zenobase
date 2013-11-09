@@ -22,7 +22,7 @@
 		<div id="user-edit-dialog" class="alert alert-block alert-info" data-ng-controller="UserFormController" data-ng-show="editing">
 			<a class="close" data-ng-click="cancel()">&times;</a>
 			<h4 class="alert-heading">Edit</h4>
-			<form name="userForm">
+			<form name="form">
 				<fieldset>
 					<div class="alert alert-block alert-error" data-ng-show="message">
 						{{message}}
@@ -52,14 +52,14 @@
 				</fieldset>
 			</form>
 			<p>
-				<button data-ng-click="save()" class="btn btn-primary" data-ng-disabled="!userForm.$valid">Save</button>
+				<button data-ng-click="save()" class="btn btn-primary" data-ng-disabled="!form.$valid">Save</button>
 				<button data-ng-click="cancel()" class="btn">Cancel</button>
 				<button id="close-account-button" data-ng-click="close()" class="btn btn-danger pull-right"><i class="icon-trash icon-white"></i> Close Account</button>
 			</p>
 		</div>
 
 		<div id="create-bucket-dialog" data-ui-modal data-ng-controller="CreateBucketDialogController">
-			<form name="createBucketForm" data-ng-submit="create()" class="modal-form">
+			<form name="form" data-ng-submit="create()" class="modal-form">
 				<div class="modal-header">
 					<a class="close" data-dismiss="modal">&times;</a>
 					<h4>Create Bucket</h4>
@@ -68,7 +68,7 @@
 					<div id="create-bucket-message" class="alert alert-error" data-ng-show="message">
 						{{message}}
 					</div>
-					<div class="control-group" data-ng-class="createBucketForm.label.$valid || 'error'">
+					<div class="control-group" data-ng-class="form.label.$valid || 'error'">
 						<label for="label">Label</label>
 						<input id="create-bucket-label" name="label" type="text" class="xlarge" required data-ui-focus-on="dialog:create-bucket-dialog" data-ng-minlength="1" data-ng-maxlength="20" data-ng-model="label"/>
 					</div>
@@ -90,7 +90,7 @@
 					</div>
 				</div>
 				<div class="modal-footer">
-					<button id="create-bucket-button" type="submit" class="btn btn-primary" data-ng-disabled="!createBucketForm.$valid || !valid()">Create</button>
+					<button id="create-bucket-button" type="submit" class="btn btn-primary" data-ng-disabled="!form.$valid || !valid()">Create</button>
 					<button type="reset" class="btn" data-dismiss="modal">Cancel</button>
 				</div>
 			</form>
