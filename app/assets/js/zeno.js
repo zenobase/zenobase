@@ -171,10 +171,13 @@
 
 		$scope.alert = new Alert();
 
-		$scope.whoami = function() {
+		$scope.whoami = function(success) {
 			$http.get('/who').success(function(response) {
 				$scope.user = response ? new User(response) : null;
 				if ($scope.user) {
+					if (success) {
+						success($scope.user);
+					}
 					tracker.variable(1, 'user type', $scope.user.name ? 'registered' : 'unregistered', 1);
 				}
 			});
@@ -831,26 +834,6 @@
 
 	app.controller('HomeController', ['$scope', '$http', '$location', '$timeout', 'token', 'tracker', function($scope, $http, $location, $timeout, token, tracker) {
 
-		var createBucket = function() {
-			$http.post('/buckets/', { label : 'My Data' })
-				.success(function(response, status, headers) {
-					var location = headers('Location');
-					console.assert(status === 201, status);
-					console.assert(location, 'missing location header');
-					$location.url(location);
-					$timeout(function() {
-						$scope.openDialog('getting-started-dialog');
-					}, 500);
-				})
-				.error(function(response, status) {
-					if (status < 500) {
-						$scope.alert.show('Can\'t create a new bucket.', 'alert-error');
-					} else {
-						$scope.alert.show('Couldn\'t create a new bucket. Try again later or contact support.', 'alert-error');
-					}
-				});			
-		};
-
 		$scope.start = function() {
 			$scope.alert.clear();
 			$http({ method: 'POST', url: '/oauth/token', data: 'grant_type=client_credentials',
@@ -859,8 +842,12 @@
 				.success(function(response) {
 					console.assert(response.access_token, 'missing access_token in getting started response');
 					token.set(response.access_token);
-					$scope.whoami();
-					createBucket();
+					$scope.whoami(function(user) {
+						$location.path('/users/' + user.getName());
+						$timeout(function() {
+							$scope.openDialog('create-bucket-dialog');
+						}, 1000);
+					});
 				})
 				.error(function(response, status) {
 					if (status < 500) {
@@ -873,26 +860,173 @@
 		};
 	}]);
 
-	app.controller('CreateBucketDialogController', ['$scope', '$http', '$location', 'tracker', function($scope, $http, $location, tracker) {
+	app.controller('CreateBucketDialogController', ['$scope', '$http', '$location', '$timeout', 'tracker', function($scope, $http, $location, $timeout, tracker) {
+
+		$scope.templates = [{
+				'label' : 'Default',
+				'widgets' : [{
+					'id' : 'timeline',
+					'type' : 'timeline',
+					'label' : 'Latest',
+					'placement' : 'top',
+					'field' : 'timestamp',
+					'statistic' : 'count'
+				}, {
+					'id' : 'latest',
+					'type' : 'list',
+					'label' : 'Latest',
+					'placement' : 'left',
+					'singleton' : true,
+					'limit' : 10,
+					'order' : 'timestamp',
+					'reverse' : true
+				}, {
+					'id' : 'tags',
+					'type' : 'count',
+					'label' : 'Tags',
+					'placement' : 'right',
+					'field' : 'tag',
+					'limit' : 10,
+					'order' : 'count',
+					'reverse' : false
+				}]
+		}, {
+			'label' : 'Places <- Foursquare',
+			'task' : 'foursquare',
+			'widgets' : [{
+					'id' : 'timeline',
+					'type' : 'timeline',
+					'label' : 'Latest',
+					'placement' : 'top',
+					'field' : 'timestamp',
+					'statistic' : 'count'
+				}, {
+					'id' : 'latest',
+					'type' : 'list',
+					'label' : 'Latest',
+					'placement' : 'left',
+					'singleton' : true,
+					'limit' : 10,
+					'order' : 'timestamp',
+					'reverse' : true
+				}, {
+					'id' : 'tags',
+					'type' : 'count',
+					'label' : 'Tags',
+					'placement' : 'left',
+					'field' : 'tag',
+					'limit' : 10,
+					'order' : 'count',
+					'reverse' : false
+				}, {
+					'id' : 'map',
+					'type' : 'map',
+					'label' : 'Map',
+					'placement' : 'right'
+				}, {
+					'id' : 'day_of_week',
+					'type' : 'polar',
+					'label' : 'Day of Week',
+					'placement' : 'right',
+					'interval' : 'day_of_week',
+					'value_field' : 'timestamp'
+				}]
+		}, {
+			'label' : 'Places',
+			'widgets' : [{
+					'id' : 'timeline',
+					'type' : 'timeline',
+					'label' : 'Latest',
+					'placement' : 'top',
+					'field' : 'timestamp',
+					'statistic' : 'count'
+				}, {
+					'id' : 'latest',
+					'type' : 'list',
+					'label' : 'Latest',
+					'placement' : 'left',
+					'singleton' : true,
+					'limit' : 10,
+					'order' : 'timestamp',
+					'reverse' : true
+				}, {
+					'id' : 'tags',
+					'type' : 'count',
+					'label' : 'Tags',
+					'placement' : 'left',
+					'field' : 'tag',
+					'limit' : 10,
+					'order' : 'count',
+					'reverse' : false
+				}, {
+					'id' : 'map',
+					'type' : 'map',
+					'label' : 'Map',
+					'placement' : 'right'
+				}, {
+					'id' : 'day_of_week',
+					'type' : 'polar',
+					'label' : 'Day of Week',
+					'placement' : 'right',
+					'interval' : 'day_of_week',
+					'value_field' : 'timestamp'
+				}]
+		}];
 
 		$scope.init = function() {
 			$scope.label = 'My Data';
 			$scope.message = '';
-			$scope.virtual = false;
+			$scope.template = $scope.templates[0];
+			tracker.event('dialog', 'create bucket');
+		};
+		$scope.valid = function() {
+			return true;
+		};
+		$scope.create = function() {
+			$scope.alert.clear();
+			$http.post('/buckets/', { label : $scope.label, widgets : $scope.template.widgets })
+				.success(function(response, status, headers) {
+					var location = headers('Location');
+					console.assert(status === 201, status);
+					console.assert(location, 'missing location header');
+					$scope.closeDialog();
+					$location.url(location);
+					if ($scope.template.task) {
+						$timeout(function() {
+							$scope.openDialog('create-task-dialog', $scope.template.task);
+						}, 500);
+					}
+				})
+				.error(function(response, status) {
+					if (status === 400) {
+						$scope.message = 'Can\'t create bucket.';					
+					} else {
+						$scope.message = 'Couldn\'t create bucket. Please try agan later or contact support.';					
+					}
+				});
+			tracker.event('action', 'create bucket');
+		};
+	}]);
+
+	app.controller('CreateViewDialogController', ['$scope', '$http', '$location', '$timeout', 'tracker', function($scope, $http, $location, $timeout, tracker) {
+
+		$scope.init = function() {
+			$scope.label = 'My View';
+			$scope.message = '';
 			$scope.buckets = [];
 			$scope.aliases = [];
 			$scope.selected = null;
 			$http.get('/buckets/?' + $.param({ q : 'roles.principal:' + $scope.userInfo['@id'], offset : 0, limit : 100 })).success(function(response) {
 				$scope.buckets = response.buckets;
 			});
-			tracker.event('dialog', 'create bucket');
+			tracker.event('dialog', 'create view');
 		};
 		$scope.valid = function() {
-			return !$scope.virtual || $scope.aliases.length > 0;
+			return $scope.aliases.length > 0;
 		};
 		$scope.create = function() {
 			$scope.alert.clear();
-			$http.post('/buckets/', { label : $scope.label, aliases : $scope.virtual ? $scope.aliases : [] })
+			$http.post('/buckets/', { label : $scope.label, aliases : $scope.aliases })
 				.success(function(response, status, headers) {
 					var location = headers('Location');
 					console.assert(status === 201, status);
@@ -902,12 +1036,12 @@
 				})
 				.error(function(response, status) {
 					if (status === 400) {
-						$scope.message = 'Can\'t create a new bucket with this label.';					
+						$scope.message = 'Can\'t create view.';					
 					} else {
-						$scope.message = 'Couldn\'t create a new bucket. Please try agan later or contact support.';					
+						$scope.message = 'Couldn\'t create view. Please try agan later or contact support.';					
 					}
 				});
-			tracker.event('action', 'create bucket');
+			tracker.event('action', 'create view');
 		};
 		$scope.listBuckets = function() {
 			if ($scope.buckets) {
@@ -3410,10 +3544,21 @@
 			{ 'id' : 'demo', 'description' : 'Creates an event with a custom tag each time this task is run.' }
 		];
 
-		$scope.init = function() {
+		function selectType(id) {
+			if (id) {
+				$.each($scope.types, function(i, type) {
+					if (type.id === id) {
+						$scope.type = type;
+						return false;
+					}
+				});
+			} else {
+				$scope.type = $scope.types[0];
+			}
+		}
+		$scope.init = function(type) {
 			$scope.message = '';
-			$scope.type = $scope.types[0];
-			$scope.settings = { foo : 42 };
+			selectType(type);
 			tracker.event('dialog', 'create task');
 		};
 		$scope.getTemplate = function(type) {

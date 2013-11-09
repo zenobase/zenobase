@@ -86,8 +86,11 @@ public class BrowserTest {
 
 				// follow get started link
 				$("#new-user-link").click();
-				wait.withMessage("getting started dialog is displayed").until(ExpectedConditions.visibilityOfElementLocated(By.id("getting-started-dialog")));
-				$("#getting-started-add-event-link").click();
+				wait.withMessage("create bucket dialog is displayed").until(ExpectedConditions.visibilityOfElementLocated(By.id("create-bucket-dialog")));
+				$("#create-bucket-button").click();
+				wait.withMessage("bucket is displayed").until(ExpectedConditions.textToBePresentInElement(By.id("bucket-title"), "My Data"));
+				wait.withMessage("edit event action is displayed").until(ExpectedConditions.visibilityOfElementLocated(By.id("add-event-action")));
+				$("#add-event-action").click();
 
 				// start creating a single event
 				wait.withMessage("edit event dialog is displayed").until(ExpectedConditions.visibilityOfElementLocated(By.id("edit-event-dialog")));
@@ -248,16 +251,16 @@ public class BrowserTest {
 				$("#prev-buckets-button").click();
 
 				// create a virtual, public bucket
-				$("#add-bucket-action").click();
-				assertThat($("#create-bucket-dialog")).isDisplayed();
-				$("#create-bucket-label").clear();
-				$("#create-bucket-label").sendKeys("My View");
-				$("#create-bucket-virtual").click();
+				$("#add-bucket-dropdown").click();
+				$("#add-view-action").click();
+				assertThat($("#create-view-dialog")).isDisplayed();
+				$("#create-view-label").clear();
+				$("#create-view-label").sendKeys("Private View");
 				assertThat($("#create-bucket-button")).isNotEnabled();
 				new Select($("#include-bucket-select")).selectByVisibleText("My Data");
 				$("#include-bucket-button").click();
-				assertThat($("#create-bucket-button")).isEnabled();
-				$("#create-bucket-button").click();
+				assertThat($("#create-view-button")).isEnabled();
+				$("#create-view-button").click();
 				wait.withMessage("event count").until(ExpectedConditions.textToBePresentInElement(By.id("event-count"), "1"));
 				$("#bucket-menu").click();
 				$("#edit-bucket-action").click();

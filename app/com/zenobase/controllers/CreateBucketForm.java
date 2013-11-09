@@ -32,6 +32,10 @@ public class CreateBucketForm extends DomainNode {
 		return getValue(Bucket.DESCRIPTION);
 	}
 
+	public Iterable<ObjectNode> getWidgets() {
+		return getValues(Bucket.WIDGETS);
+	}
+
 	public List<Alias> getIncluded() {
 		return getValues(Bucket.ALIASES);
 	}

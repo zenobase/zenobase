@@ -103,6 +103,7 @@ public class BucketListController extends ControllerSupport {
 		Bucket bucket = form.getId() != null ? new Bucket(form.getId()) : new Bucket();
 		bucket.setLabel(form.getLabel());
 		bucket.setDescription(form.getDescription());
+		bucket.setWidgets(form.getWidgets());
 		bucket.setAliases(form.getIncluded());
 		bucket.addRole(auth.getPrincipal(), Role.OWNER);
 		if (!bucket.valid()) {

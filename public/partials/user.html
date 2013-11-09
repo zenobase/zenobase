@@ -15,7 +15,6 @@
 				<span id="user-title" class="page-title-text">{{userId}}</span>
 				<a id="refresh-buckets-link" class="page-title-decoration" data-ng-click="reload()" title="Refresh"><i class="icon-refresh"></i></a>
 				<a id="edit-user-link" class="page-title-decoration" data-ng-click="broadcast('edit:user')" title="Edit..." data-ng-show="editable()"><i class="icon-pencil"></i></a>
-				<a id="add-bucket-action" class="page-title-decoration" data-ng-click="openDialog('create-bucket-dialog')" title="Create Bucket..."><i class="icon-plus"></i></a>
 			</p>
 		</div>
 	
@@ -72,12 +71,33 @@
 						<label for="label">Label</label>
 						<input id="create-bucket-label" name="label" type="text" class="xlarge" required data-ui-focus-on="openDialog:create-bucket-dialog" data-ng-minlength="1" data-ng-maxlength="20" data-ng-model="label"/>
 					</div>
-					<div class="control-group">
-						<label class="checkbox">
-							<input id="create-bucket-virtual" name="virtual" type="checkbox" data-ng-model="virtual"/> <abbr title="Virtual buckets can't store events, but show events from one or more other buckets.">Virtual</abbr>							
-						</label>
+					<div class="control-group" required>
+						<label for="bucket-template-select">Template</label>
+						<select id="bucket-template-select" data-ng-model="template" data-ng-options="template.label for template in templates"></select>
 					</div>
-					<div class="control-group" data-ng-show="virtual">
+				</div>
+				<div class="modal-footer">
+					<button id="create-bucket-button" type="submit" class="btn btn-primary" data-ng-disabled="!form.$valid || !valid()">Create</button>
+					<button type="reset" class="btn" data-dismiss="modal">Cancel</button>
+				</div>
+			</form>
+		</div>
+
+		<div id="create-view-dialog" data-ui-modal data-ng-controller="CreateViewDialogController">
+			<form name="form" data-ng-submit="create()" class="modal-form">
+				<div class="modal-header">
+					<a class="close" data-dismiss="modal">&times;</a>
+					<h4>Create View</h4>
+				</div>
+				<div class="modal-body">
+					<div id="create-view-message" class="alert alert-error" data-ng-show="message">
+						{{message}}
+					</div>
+					<div class="control-group" data-ng-class="form.label.$valid || 'error'">
+						<label for="label">Label</label>
+						<input id="create-view-label" name="label" type="text" class="xlarge" required data-ui-focus-on="openDialog:create-view-dialog" data-ng-minlength="1" data-ng-maxlength="20" data-ng-model="label"/>
+					</div>
+					<div class="control-group">
 						<ul class="nav nav-pills gray">
 							<li class="active" data-ng-repeat="alias in aliases">
 								<a data-ng-click="removeBucket(alias)">{{alias.label}} <i class="icon-remove icon-white"></i></a>
@@ -90,7 +110,7 @@
 					</div>
 				</div>
 				<div class="modal-footer">
-					<button id="create-bucket-button" type="submit" class="btn btn-primary" data-ng-disabled="!form.$valid || !valid()">Create</button>
+					<button id="create-view-button" type="submit" class="btn btn-primary" data-ng-disabled="!form.$valid || !valid()">Create</button>
 					<button type="reset" class="btn" data-dismiss="modal">Cancel</button>
 				</div>
 			</form>
@@ -126,6 +146,17 @@
 					</tbody>
 				</table>
 				<div class="btn-toolbar">
+					<div class="btn-group pull-left">
+						<a id="add-bucket-dropdown" class="btn dropdown-toggle" data-toggle="dropdown" title="Create..."><i class="icon-plus"></i> <span class="caret"></span></a>						
+						<ul class="dropdown-menu">
+							<li role="presentation">
+								<a id="add-bucket-action" role="menuitem" class="page-title-decoration" data-ng-click="openDialog('create-bucket-dialog')">Bucket...</a>
+							</li>
+							<li role="presentation">
+								<a id="add-view-action" role="menuitem" class="page-title-decoration" data-ng-click="openDialog('create-view-dialog')">View...</a>
+							</li>
+						</ul>
+					</div>
 					<div class="btn-group pull-right" data-ng-show="buckets">
 						<button id="prev-buckets-button" class="btn" title="Previous" data-ng-click="prev()" data-ng-disabled="!hasPrev()"><i class="icon-chevron-left"></i></button>
 						<button id="next-buckets-button" class="btn" title="Next" data-ng-click="next()" data-ng-disabled="!hasNext()"><i class="icon-chevron-right"></i></button>
