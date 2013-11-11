@@ -144,9 +144,9 @@
 		$routeProvider.when('/', { templateUrl: cacheBuster.rewrite('/partials/home.html') })
 			.when('/buckets/:bucketId/', { templateUrl : cacheBuster.rewrite('/partials/dashboard.html'), reloadOnSearch : false })
 			.when('/credentials/:credentialsId', { templateUrl : cacheBuster.rewrite('/partials/credentials.html') })
-			.when('/users/:userId', { templateUrl : cacheBuster.rewrite('/partials/user.html') })
-			.when('/users/:userId/reset', { templateUrl : cacheBuster.rewrite('/partials/reset.html') })
-			.when('/users/:userId/verify', { templateUrl : cacheBuster.rewrite('/partials/verification.html') })
+			.when('/users/:username', { templateUrl : cacheBuster.rewrite('/partials/user.html') })
+			.when('/users/:username/reset', { templateUrl : cacheBuster.rewrite('/partials/reset.html') })
+			.when('/users/:username/verify', { templateUrl : cacheBuster.rewrite('/partials/verification.html') })
 			.when('/oauth/authorize', { templateUrl : cacheBuster.rewrite('/partials/oauth.html') })
 			.when('/legal/:section', { title : 'Legal', templateUrl : cacheBuster.rewrite('/partials/legal.html'), controller : 'DocumentController' })
 			.when('/api/:section', { title : 'API', templateUrl : cacheBuster.rewrite('/partials/api.html'), controller : 'DocumentController' })
@@ -275,10 +275,11 @@
 			return !this.name;
 		};
 
-		User.find = function(identity) {
-			var user = cache.get(identity);
+		User.find = function(id) {
+			console.assert(id, "Can't find a user without an id");
+			var user = cache.get(id);
 			if (!user) {
-				$.ajax('/users/?identity=' + identity, { async : false, success : function(response) {
+				$.ajax('/users/@' + id, { async : false, success : function(response) {
 					user = new User(response);
 					cache.put(user['@id'], user);
 				}});
@@ -323,11 +324,11 @@
 
 	app.controller('UserController', ['$scope', '$http', '$routeParams', 'User', 'tracker', function($scope, $http, $routeParams, User, tracker) {
 	
-		$scope.userId = $routeParams.userId;
+		$scope.username = $routeParams.username;
 		$scope.userInfo = null;
 	
-		if ($scope.userId !== 'guest') {
-			$http.get('/users/' + $scope.userId)
+		if ($scope.username !== 'guest') {
+			$http.get('/users/' + $scope.username)
 				.success(function(response) {
 					$scope.userInfo = new User(response);
 					$scope.page.setTitle($scope.userInfo.getName());
@@ -352,7 +353,7 @@
 		$scope.close = function() {
 			if (confirm('Close your account and delete all associated data?')) {
 				tracker.event('action', 'close account');
-				$http({ method : 'DELETE', url : '/users/' + $routeParams.userId })
+				$http({ method : 'DELETE', url : '/users/' + $routeParams.username })
 					.success(function() {
 						$scope.signOut();
 					})
@@ -526,21 +527,21 @@
 	}]);
 
 	app.controller('UserVerificationController', ['$scope', '$http', '$location', '$routeParams', function($scope, $http, $location, $routeParams) {
-		$http.post('/users/' + $routeParams.userId, { 'key' : $location.search()['key'], 'verified' : true })
+		$http.post('/users/' + $routeParams.username, { 'key' : $location.search()['key'], 'verified' : true })
 			.success(function() {
 				$scope.alert.show('Your email address has been verified.', 'alert-success');
 				$scope.whoami();
-				$location.url('/users/' + $routeParams.userId);
+				$location.url('/users/' + $routeParams.username);
 			})
 			.error(function() {
 				$scope.alert.show('Your email address could not be verified.', 'alert-error');
-				$location.url('/users/' + $routeParams.userId);
+				$location.url('/users/' + $routeParams.username);
 			});
 	}]);
 	
 	app.controller('PasswordResetController', ['$scope', '$http', '$location', '$routeParams', 'token', function($scope, $http, $location, $routeParams, token) {
 
-		var userId = $routeParams.userId;
+		var username = $routeParams.username;
 		var key = $location.search()['key'];
 		var expires = $location.search()['expires'];
 
@@ -555,12 +556,12 @@
 				$scope.message = 'Passwords don\'t match.';
 				return;
 			}
-			$http.post('/users/' + userId, { 'key' : key, 'expires' : expires, 'password' : $scope.password })
+			$http.post('/users/' + username, { 'key' : key, 'expires' : expires, 'password' : $scope.password })
 				.success(function(response) {
 					console.assert(response.access_token, 'missing access_token in password reset response');
 					token.set(response.access_token);
 					$scope.alert.show('Your password has been changed.', 'alert-success');
-					$location.url('/users/' + userId);
+					$location.url('/users/' + username);
 					$scope.whoami();
 				})
 				.error(function(response, status) {
@@ -734,7 +735,7 @@
 			};
 		};
 		$scope.refresh = function(params) {
-			$http.get('/' + $scope.userInfo['@id'] + '/credentials/?' + $.param($.extend($scope.params(), params)))
+			$http.get('/users/@' + $scope.userInfo['@id'] + '/credentials/?' + $.param($.extend($scope.params(), params)))
 				.success(function(response) {
 					$.extend($scope, params);
 					$scope.total = response.total;
@@ -4382,7 +4383,7 @@
 
 	app.filter('username', ['User', function(User) {
 		return function(identity) {
-			return User.find(identity).getName();
+			return identity ? User.find(identity).getName() : '';
 		}
 	}]);
 

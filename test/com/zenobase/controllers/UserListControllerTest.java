@@ -14,7 +14,6 @@ import com.google.inject.Singleton;
 import com.zenobase.common.DefaultPartialList;
 import com.zenobase.common.PartialList;
 import com.zenobase.models.User;
-import com.zenobase.models.UserInfo;
 import com.zenobase.models.UserList;
 import com.zenobase.oauth.Authorization;
 import com.zenobase.services.UserRepository;
@@ -38,60 +37,37 @@ public class UserListControllerTest extends ControllerTestSupport {
 	}
 
 	@Test
-	public void testFindUserForIndividual() {
-		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
-		when(users.find(user.asIdentity())).thenReturn(user);
-		Result result = call(user.getId(), 0, 1, false);
-		assertThat(result).hasStatus(OK).hasContent(new UserInfo(user).toJson());
-	}
-
-	@Test
-	public void testFindUserDetailForIndividual() {
-		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
-		when(users.find(user.asIdentity())).thenReturn(user);
-		when(users.isSuperuser(user.asIdentity())).thenReturn(true);
-		Result result = call(user.getId(), 0, 1, true);
-		assertThat(result).hasStatus(OK).hasContent(user.toJson());
-	}
-
-	@Test
-	public void testFindUserNotFound() {
-		Result result = call(user.getId(), 0, 1, false);
-		assertThat(result).hasStatus(OK).hasContent(user.asIdentity().toJson());
-	}
-
-	@Test
-	public void testFindUsersPaged() {
+	public void test() {
 		PartialList<User> expected = DefaultPartialList.of();
 		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
 		when(users.isSuperuser(user.asIdentity())).thenReturn(true);
 		when(users.find(0, 1)).thenReturn(expected);
-		Result result = call(null, 0, 1, true);
+		Result result = call(0, 1);
 		assertThat(result).hasStatus(OK).hasContent(UserList.toJson(expected));
 	}
 
 	@Test
-	public void testFindUsersNotLoggedIn() {
-		Result result = call(null, 0, 1, true);
+	public void testNotAuthorized() {
+		Result result = call(0, 1);
 		assertThat(result).hasStatus(UNAUTHORIZED);
 	}
 
 	@Test
-	public void testFindUsersForbidden() {
+	public void testNotSuperuser() {
 		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
-		Result result = call(null, 0, 1, true);
+		Result result = call(0, 1);
 		assertThat(result).hasStatus(FORBIDDEN);
 	}
 
 	@Test
-	public void testDownloadUsers() {
+	public void testDownload() {
 		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
 		when(users.isSuperuser(user.asIdentity())).thenReturn(true);
-		Result result = call(null, 0, Integer.MAX_VALUE, true);
+		Result result = call(0, Integer.MAX_VALUE);
 		assertThat(result).hasStatus(OK).hasContentType("text/plain");
 	}
 
-	private static Result call(String id, int offset, int limit, boolean detail) {
-		return callAction(com.zenobase.controllers.routes.ref.UserListController.find(id, offset, limit, detail));
+	private static Result call(int offset, int limit) {
+		return callAction(com.zenobase.controllers.routes.ref.UserListController.find(offset, limit));
 	}
 }

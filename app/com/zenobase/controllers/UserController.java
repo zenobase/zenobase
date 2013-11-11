@@ -2,9 +2,9 @@ package com.zenobase.controllers;
 
 import javax.inject.Inject;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import play.mvc.BodyParser;
 import play.mvc.Result;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import com.zenobase.commands.ChangeQuotaCommand;
 import com.zenobase.commands.ChangeUserEmailCommand;
@@ -14,7 +14,9 @@ import com.zenobase.commands.CompoundCommand;
 import com.zenobase.commands.CreateAuthorizationCommand;
 import com.zenobase.json.Nodes;
 import com.zenobase.mail.VerificationMailer;
+import com.zenobase.models.Identity;
 import com.zenobase.models.User;
+import com.zenobase.models.UserInfo;
 import com.zenobase.models.UserProfile;
 import com.zenobase.oauth.Authorization;
 import com.zenobase.services.CommandDispatcher;
@@ -38,23 +40,37 @@ public class UserController extends ControllerSupport {
 
 	public Result get(String name) {
 		Authorization auth = getCurrentAuthorization();
-		if (auth == null) {
-			return unauthorized();
-		}
-		User user = users.find(name);
+		User user = find(name);
 		if (user == null) {
 			return notFound();
 		}
-		if (auth.getScope() != null || !(user.is(auth.getPrincipal()) || users.isSuperuser(auth.getPrincipal()))) {
-			return forbidden();
+		return ok(toJson(user, auth));
+	}
+
+	private User find(String name) {
+		return name.startsWith("@")
+			? find(new Identity(name.substring(1)))
+			: users.find(name);
+	}
+
+	private User find(Identity identity) {
+		User user = users.find(identity);
+		if (user == null) {
+			user = new User(identity.getId(), null);
 		}
-		return ok(new UserProfile(user).toJson());
+		return user;
+	}
+
+	private ObjectNode toJson(User user, Authorization auth) {
+		return auth != null && (auth.getScope() == null && user.is(auth.getPrincipal()) || users.isSuperuser(auth.getPrincipal()))
+			? new UserProfile(user).toJson()
+			: new UserInfo(user).toJson();
 	}
 
 	@BodyParser.Of(BodyParser.Json.class)
 	public Result update(String username) {
 		ObjectNode body = body();
-		User user = users.find(username);
+		User user = find(username);
     	if (user == null) {
     		return notFound("user not found");
     	}

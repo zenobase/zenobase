@@ -154,7 +154,7 @@
 		$scope.refresh = function(params) {
 			$scope.token = token.get();
 			if ($scope.constraint) {
-				$http.get('/users/?' + $.param({ identity : $scope.constraint, detail : 1 })).success(function(response) {
+				$http.get('/users/@' + $scope.constraint).success(function(response) {
 					$scope.total = 1;
 					$scope.users = [ response ];
 				});
