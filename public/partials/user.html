@@ -11,20 +11,38 @@
 	<div data-ng-show="userInfo">
 
 		<div class="row-fluid page-titlebar">
+
 			<p class="pull-left page-title">
 				<span id="user-title" class="page-title-text">{{username}}</span>
 				<a id="refresh-buckets-link" class="page-title-decoration" data-ng-click="reload()" title="Refresh"><i class="icon-refresh"></i></a>
-				<a id="edit-user-link" class="page-title-decoration" data-ng-click="broadcast('edit:user')" title="Edit..." data-ng-show="editable()"><i class="icon-pencil"></i></a>
 			</p>
-		</div>
 	
-		<div id="user-edit-dialog" class="alert alert-block alert-info" data-ng-controller="UserFormController" data-ng-show="editing">
-			<a class="close" data-ng-click="cancel()">&times;</a>
-			<h4 class="alert-heading">Edit</h4>
-			<form name="form">
-				<fieldset>
-					<div class="alert alert-block alert-error" data-ng-show="message">
+			<div class="pull-right page-title dropdown" data-ng-show="editable()">
+				<a id="user-menu" class="dropdown-toggle" data-toggle="dropdown" title="More..."> <i class="icon-align-justify"></i><b class="caret"></b></a>
+				<ul class="dropdown-menu" role="menu">
+					<li role="presentation">
+						<a id="account-settings-action"  role="menuitem" data-ng-click="openDialog('account-settings-dialog')">Settings...</a>
+					</li>
+				</ul>
+			</div>
+
+		</div>
+
+		<div id="account-settings-dialog" data-ui-modal data-ng-controller="AccountSettingsController">
+			<form name="form" data-ng-submit="save()" class="modal-form">
+				<div class="modal-header">
+					<a class="close" data-ng-click="cancel()">&times;</a>
+					<h4>Account Settings</h4>
+				</div>
+				<div class="modal-body">
+					<div class="alert alert-error" data-ng-show="message">
 						{{message}}
+					</div>
+					<div class="control-group">
+						<label class="control-label"><strong>User ID</strong></label>
+						<div class="controls">
+							<span class="input-large uneditable-input">{{userInfo['@id']}}</span>
+						</div>
 					</div>
 					<div class="control-group">
 						<label class="control-label" for="edit-email"><strong>Email</strong></label>
@@ -36,25 +54,13 @@
 							</p>
 						</div>
 					</div>
-					<div class="control-group">
-						<label class="control-label" for="oauth-id"><strong>OAuth ID</strong></label>
-						<div class="controls">
-							<code>{{userInfo['@id']}}</code>
-						</div>
-					</div>
-					<div class="control-group">
-						<label class="control-label" for="oauth-id"><strong>OAuth Secret</strong></label>
-						<div class="controls">
-							<code>{{userInfo.secret}}</code>
-						</div>
-					</div>
-				</fieldset>
+				</div>
+				<div class="modal-footer">
+					<button id="close-account-button" data-ng-click="close()" class="btn btn-danger pull-left">Close Account</button>
+					<button type="submit" class="btn btn-primary" data-ng-disabled="!form.$valid">Save</button>
+					<button type="reset" class="btn" data-dismiss="modal">Cancel</button>
+				</div>
 			</form>
-			<p>
-				<button data-ng-click="save()" class="btn btn-primary" data-ng-disabled="!form.$valid">Save</button>
-				<button data-ng-click="cancel()" class="btn">Cancel</button>
-				<button id="close-account-button" data-ng-click="close()" class="btn btn-danger pull-right"><i class="icon-trash icon-white"></i> Close Account</button>
-			</p>
 		</div>
 
 		<div id="create-bucket-dialog" data-ui-modal data-ng-controller="CreateBucketDialogController">
@@ -71,9 +77,9 @@
 						<label for="label">Label</label>
 						<input id="create-bucket-label" name="label" type="text" class="xlarge" required data-ui-focus-on="openDialog:create-bucket-dialog" data-ng-minlength="1" data-ng-maxlength="20" data-ng-model="label"/>
 					</div>
-					<div class="control-group" required>
+					<div class="control-group">
 						<label for="bucket-template-select">Template</label>
-						<select id="bucket-template-select" data-ng-model="template" data-ng-options="template.label for template in templates"></select>
+						<select id="bucket-template-select" required data-ng-model="template" data-ng-options="template.label for template in templates"></select>
 					</div>
 				</div>
 				<div class="modal-footer">

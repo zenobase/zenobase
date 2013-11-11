@@ -325,7 +325,8 @@ public class BrowserTest {
 				assertThat(buckets.find(0, 0).getTotal()).as("number of buckets").isEqualTo(12L);
 
 				// close account
-				$("#edit-user-link").click();
+				$("#user-menu").click();
+				$("#account-settings-action").click();
 				$("#close-account-button").click();
 				driver.switchTo().alert().accept();
 				wait.withMessage("home view is displayed").until(ExpectedConditions.visibilityOfElementLocated(By.id("home-view")));

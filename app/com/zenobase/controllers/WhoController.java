@@ -5,7 +5,7 @@ import javax.inject.Inject;
 import play.mvc.Result;
 
 import com.zenobase.models.User;
-import com.zenobase.models.UserInfo;
+import com.zenobase.models.UserProfile;
 import com.zenobase.oauth.Authorization;
 import com.zenobase.services.UserRepository;
 
@@ -23,7 +23,7 @@ public class WhoController extends ControllerSupport {
 		Authorization auth = getCurrentAuthorization();
 		if (auth != null) {
 			User user = users.find(auth.getPrincipal());
-			return ok(user != null ? new UserInfo(user).toJson() : auth.getPrincipal().toJson());
+			return ok(user != null ? new UserProfile(user).toJson() : auth.getPrincipal().toJson());
 		}
 		removeCookie("token"); // TODO remove end of 2013
     	return noContent();

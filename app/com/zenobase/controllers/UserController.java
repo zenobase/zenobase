@@ -126,7 +126,7 @@ public class UserController extends ControllerSupport {
 		}
 		Authorization auth = new Authorization(user.asIdentity(), null, null);
 		CompoundCommand command = new CompoundCommand(user.asIdentity(), "updated password", "reverted password");
-		command.add(new ChangeUserPasswordCommand(user.asIdentity(), user.getName(), user.getHashedPassword(), User.getHashedPassword(password)));
+		command.add(new ChangeUserPasswordCommand(user.asIdentity(), user.getName(), user.getHashedPassword(), User.hashPassword(password)));
 		command.add(new CreateAuthorizationCommand(user.asIdentity(), auth));
 		String commandId = dispatcher.dispatch(command);
 		response().setHeader(COMMAND_ID, commandId);

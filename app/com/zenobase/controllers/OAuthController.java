@@ -45,7 +45,7 @@ public class OAuthController extends ControllerSupport {
 		this.users = users;
 	}
 
-    @BodyParser.Of(BodyParser.Json.class)
+	@BodyParser.Of(BodyParser.Json.class)
 	public Result authorize() {
         return authorize(new AuthorizeForm(body()));
     }

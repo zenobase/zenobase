@@ -23,7 +23,7 @@ public class ChangeUserPasswordCommandTest {
 		user.setPassword(from);
 		when(users.find(user.getName())).thenReturn(user);
 
-		Command command = new ChangeUserPasswordCommand(user.asIdentity(), user.getName(), User.getHashedPassword(from), User.getHashedPassword(to));
+		Command command = new ChangeUserPasswordCommand(user.asIdentity(), user.getName(), User.hashPassword(from), User.hashPassword(to));
 		registry.execute(command);
 		assertThat(user.passwordEquals(to)).isTrue();
 

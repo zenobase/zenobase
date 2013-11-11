@@ -58,7 +58,7 @@ public class User extends DomainNode {
 		return getValue(PASSWORD);
 	}
 
-	public static String getHashedPassword(String password) {
+	public static String hashPassword(String password) {
 		return BCrypt.hashpw(password);
 	}
 
@@ -67,7 +67,7 @@ public class User extends DomainNode {
 	}
 
 	public void setPassword(String password) {
-		setHashedPassword(getHashedPassword(password));
+		setHashedPassword(hashPassword(password));
 	}
 
 	public boolean passwordEquals(String password) {

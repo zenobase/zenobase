@@ -367,10 +367,14 @@
 			}
 		};
 	}]);
+
+	app.controller('AccountSettingsController', ['$scope', '$http', 'tracker', function($scope, $http, tracker) {
 	
-	app.controller('UserFormController', ['$scope', '$http', 'tracker', function($scope, $http, tracker) {
-	
-		$scope.editing = false;
+		$scope.init = function() {
+			$scope.message = '';
+			$scope.email = $scope.userInfo.email;
+			tracker.event('dialog', 'edit user');
+		};
 
 		$scope.data = function() {
 			var data = {};
@@ -385,8 +389,8 @@
 			if (!$.isEmptyObject(data)) { 
 				$http.post('/users/' + $scope.userInfo.name, data)
 					.success(function(response, status, headers) {
-						$scope.alert.show('Updated user info.', 'alert-success', headers('X-Command-ID'));
-						$scope.editing = false;
+						$scope.alert.show('Updated account settings.', 'alert-success', headers('X-Command-ID'));
+						$scope.closeDialog();
 					})
 					.error(function(response, status) {
 						if (status < 500) {
@@ -400,17 +404,8 @@
 			}
 			tracker.event('action', 'save user');
 		};
-		$scope.cancel = function() {
-			$scope.editing = false;
-		};
-		$scope.$on('edit:user', function() {
-			$scope.message = '';
-			$scope.email = $scope.userInfo.email;
-			$scope.editing = true;
-			tracker.event('dialog', 'edit user');
-		});
 	}]);
-	
+
 	app.controller('SignInDialogController', ['$scope', '$http', '$location', '$route', 'User', 'token', 'tracker', function($scope, $http, $location, $route, User, token, tracker) {
 
 		$scope.init = function() {

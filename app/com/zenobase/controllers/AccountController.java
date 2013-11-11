@@ -49,7 +49,7 @@ public class AccountController extends ControllerSupport {
 		}
 		final User user = new User(auth.getPrincipal().getId(), form.getUsername());
 		user.setEmail(form.getEmail());
-		user.setHashedPassword(User.getHashedPassword(form.getPassword()));
+		user.setHashedPassword(User.hashPassword(form.getPassword()));
 		user.setSuperuser(users.isEmpty());
 		dispatcher.dispatch(new CreateUserCommand(auth.getPrincipal(), user));
 		mailer.send(user);

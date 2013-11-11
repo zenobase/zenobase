@@ -12,7 +12,7 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Singleton;
 
 import com.zenobase.models.User;
-import com.zenobase.models.UserInfo;
+import com.zenobase.models.UserProfile;
 import com.zenobase.oauth.Authorization;
 import com.zenobase.services.UserRepository;
 
@@ -54,7 +54,7 @@ public class WhoControllerTest extends ControllerTestSupport {
 		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
 		when(users.find(user.asIdentity())).thenReturn(user);
 		Result result = call();
-		assertThat(result).hasStatus(OK).hasContent(new UserInfo(user).toJson());
+		assertThat(result).hasStatus(OK).hasContent(new UserProfile(user).toJson());
 	}
 
 	private static Result call() {
