@@ -17,7 +17,7 @@ a simple Android app that authenticates with and posts data to Zenobase.</p>
 	<dt>2013-11-11</dt>
 	<dd>
 		<ul>
-			<li>look up username with <code>/users/@<em>&lt;user_id&gt;</em></code></li>
+			<li>changed URL for username lookups to <code>/users/<em>&lt;user_id&gt;</em></code></li>
 		</ul>
 	</dd>
 	<dt>2013-10-23</dt>
@@ -882,7 +882,7 @@ Content-Type: application/json
 
 <h3>Look up a username</h3>
 
-<pre>GET /users/@<em>&lt;user_id&gt;</em>
+<pre>GET /users/<em>&lt;user_id&gt;</em>
 Authorization: Bearer <em>&lt;access_token&gt;</em>
 </pre>
 
@@ -895,7 +895,7 @@ Authorization: Bearer <em>&lt;access_token&gt;</em>
 
 <h5>Request</h5>
 
-<pre>curl -i GET 'http://api.zenobase.com/users/@kbuk9h0ihh' \
+<pre>curl -i GET 'http://api.zenobase.com/users/kbuk9h0ihh' \
   -H 'Authorization: Bearer e7975e8bb6eabc3ef567'
 </pre>
 

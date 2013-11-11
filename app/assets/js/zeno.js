@@ -279,7 +279,7 @@
 			console.assert(id, "Can't find a user without an id");
 			var user = cache.get(id);
 			if (!user) {
-				$.ajax('/users/@' + id, { async : false, success : function(response) {
+				$.ajax('/users/' + id, { async : false, success : function(response) {
 					user = new User(response);
 					cache.put(user['@id'], user);
 				}});
@@ -340,7 +340,7 @@
 		if ($scope.user && $scope.username === $scope.user.getName()) {
 			$scope.profile = $scope.user;
 		} else {
-			$http.get('/users/' + $scope.username)
+			$http.get('/users/@' + $scope.username)
 				.success(function(response) {
 					$scope.profile = new User(response);
 				})
@@ -373,7 +373,7 @@
 			$scope.alert.clear();
 			var data = $scope.data();
 			if (!$.isEmptyObject(data)) { 
-				$http.post('/users/' + $scope.username, data)
+				$http.post('/users/@' + $scope.username, data)
 					.success(function(response, status, headers) {
 						$scope.alert.show('Updated account settings.', 'alert-success', headers('X-Command-ID'));
 						$scope.closeDialog();
@@ -393,7 +393,7 @@
 		$scope.close = function() {
 			if (confirm('Close your account and delete all associated data?')) {
 				tracker.event('action', 'close account');
-				$http({ method : 'DELETE', url : '/users/' + $scope.username })
+				$http({ method : 'DELETE', url : '/users/@' + $scope.username })
 					.success(function() {
 						$scope.signOut();
 					})
@@ -524,7 +524,7 @@
 	}]);
 
 	app.controller('UserVerificationController', ['$scope', '$http', '$location', '$routeParams', function($scope, $http, $location, $routeParams) {
-		$http.post('/users/' + $routeParams.username, { 'key' : $location.search()['key'], 'verified' : true })
+		$http.post('/users/@' + $routeParams.username, { 'key' : $location.search()['key'], 'verified' : true })
 			.success(function() {
 				$scope.alert.show('Your email address has been verified.', 'alert-success');
 				$scope.whoami();
@@ -553,7 +553,7 @@
 				$scope.message = 'Passwords don\'t match.';
 				return;
 			}
-			$http.post('/users/' + username, { 'key' : key, 'expires' : expires, 'password' : $scope.password })
+			$http.post('/users/@' + username, { 'key' : key, 'expires' : expires, 'password' : $scope.password })
 				.success(function(response) {
 					console.assert(response.access_token, 'missing access_token in password reset response');
 					token.set(response.access_token);
@@ -732,7 +732,7 @@
 			};
 		};
 		$scope.refresh = function(params) {
-			$http.get('/users/@' + $scope.profile['@id'] + '/credentials/?' + $.param($.extend($scope.params(), params)))
+			$http.get('/users/' + $scope.profile['@id'] + '/credentials/?' + $.param($.extend($scope.params(), params)))
 				.success(function(response) {
 					$.extend($scope, params);
 					$scope.total = response.total;

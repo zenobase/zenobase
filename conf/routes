@@ -7,11 +7,11 @@ POST    /reset                       @com.zenobase.controllers.PasswordResetCont
 GET     /quota                       @com.zenobase.controllers.QuotaController.get()
 
 GET     /users/                      @com.zenobase.controllers.UserListController.find(offset : Int ?= 0, limit : Int ?= java.lang.Integer.MAX_VALUE)
-GET     /users/:name                 @com.zenobase.controllers.UserController.get(name)
-POST    /users/:name                 @com.zenobase.controllers.UserController.update(name)
+GET     /users/:userId               @com.zenobase.controllers.UserController.get(userId)
+POST    /users/:userId               @com.zenobase.controllers.UserController.update(userId)
 
 POST    /users/                      @com.zenobase.controllers.AccountController.open()
-DELETE  /users/:name                 @com.zenobase.controllers.AccountController.close(name)
+DELETE  /users/:userId               @com.zenobase.controllers.AccountController.close(userId)
 
 GET     /buckets/                    @com.zenobase.controllers.BucketListController.find(q ?= null, offset : Int ?= 0, limit : Int ?= java.lang.Integer.MAX_VALUE)
 POST    /buckets/                    @com.zenobase.controllers.BucketListController.post()
@@ -35,7 +35,7 @@ GET     /journal/                    @com.zenobase.controllers.JournalController
 POST    /journal/                    @com.zenobase.controllers.JournalController.post()
 
 GET     /credentials/                @com.zenobase.controllers.CredentialsListController.findAll(offset : Int  ?= 0, limit : Int ?= 10)
-GET     /users/:name/credentials/    @com.zenobase.controllers.CredentialsListController.findByUser(name, offset : Int  ?= 0, limit : Int ?= 10)
+GET     /users/:userId/credentials/  @com.zenobase.controllers.CredentialsListController.findByUser(userId, offset : Int  ?= 0, limit : Int ?= 10)
 POST    /credentials/                @com.zenobase.controllers.CredentialsListController.post()
 
 GET     /credentials/:credentialsId  @com.zenobase.controllers.CredentialsController.get(credentialsId)
@@ -44,7 +44,7 @@ DELETE  /credentials/:credentialsId  @com.zenobase.controllers.CredentialsContro
 
 GET     /tasks/                      @com.zenobase.controllers.TaskListController.findAll(offset : Int  ?= 0, limit : Int ?= 10)
 GET     /buckets/:bucketId/tasks/    @com.zenobase.controllers.TaskListController.findByBucket(bucketId, offset : Int  ?= 0, limit : Int ?= 10)
-GET     /users/:name/tasks/          @com.zenobase.controllers.TaskListController.findByUser(name, offset : Int  ?= 0, limit : Int ?= 10)
+GET     /users/:userId/tasks/        @com.zenobase.controllers.TaskListController.findByUser(userId, offset : Int  ?= 0, limit : Int ?= 10)
 POST    /tasks/                      @com.zenobase.controllers.TaskListController.post()
 
 GET     /tasks/:taskId               @com.zenobase.controllers.TaskController.get(taskId)

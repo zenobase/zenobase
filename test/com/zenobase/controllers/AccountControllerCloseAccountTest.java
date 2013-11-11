@@ -64,6 +64,6 @@ public class AccountControllerCloseAccountTest extends AccountControllerTestSupp
 	}
 
 	private Result call(String username) {
-		return callAction(com.zenobase.controllers.routes.ref.AccountController.close(username));
+		return callAction(com.zenobase.controllers.routes.ref.AccountController.close('@' + username));
 	}
 }

@@ -9,11 +9,11 @@ import com.zenobase.commands.CreateTaskCommand;
 import com.zenobase.models.Bucket;
 import com.zenobase.models.Identity;
 import com.zenobase.models.Role;
-import com.zenobase.models.User;
 import com.zenobase.oauth.Authorization;
 import com.zenobase.services.BucketRepository;
 import com.zenobase.services.CommandDispatcher;
 import com.zenobase.services.TaskRepository;
+import com.zenobase.services.UserLookup;
 import com.zenobase.services.UserRepository;
 import com.zenobase.tasks.Task;
 import com.zenobase.tasks.TaskList;
@@ -81,7 +81,7 @@ public class TaskListController extends ControllerSupport {
 		return ok(TaskList.toJson(tasks.find(Task.BUCKET.getName(), bucketId, offset, limit)));
     }
 
-	public Result findByUser(String username, int offset, int limit) {
+	public Result findByUser(String userId, int offset, int limit) {
 		if (offset < 0 || offset > 1000) {
 			return badRequest("expected offset in [0..1000]");
 		}
@@ -95,7 +95,7 @@ public class TaskListController extends ControllerSupport {
 		if (auth.getScope() != null) {
     		return forbidden();
 		}
-		Identity principal = getIdentity(username);
+		Identity principal = new UserLookup(users).getIdentity(userId);
 		if (principal == null) {
 			return notFound("user not found");
 		}
@@ -104,14 +104,6 @@ public class TaskListController extends ControllerSupport {
 		}
 		return ok(TaskList.toJson(tasks.find(Task.PRINCIPAL.getName(), principal.toString(), offset, limit)));
     }
-
-	private Identity getIdentity(String username) {
-		if (username.startsWith("@")) {
-			return new Identity(username.substring(1));
-		}
-		User user = users.find(username);
-		return user != null ? user.asIdentity() : null;
-	}
 
 	@BodyParser.Of(BodyParser.Json.class)
     public Result post() {

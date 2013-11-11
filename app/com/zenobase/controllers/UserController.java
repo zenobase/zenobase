@@ -14,12 +14,12 @@ import com.zenobase.commands.CompoundCommand;
 import com.zenobase.commands.CreateAuthorizationCommand;
 import com.zenobase.json.Nodes;
 import com.zenobase.mail.VerificationMailer;
-import com.zenobase.models.Identity;
 import com.zenobase.models.User;
 import com.zenobase.models.UserInfo;
 import com.zenobase.models.UserProfile;
 import com.zenobase.oauth.Authorization;
 import com.zenobase.services.CommandDispatcher;
+import com.zenobase.services.UserLookup;
 import com.zenobase.services.UserRepository;
 
 public class UserController extends ControllerSupport {
@@ -38,27 +38,13 @@ public class UserController extends ControllerSupport {
 		this.mailer = mailer;
 	}
 
-	public Result get(String name) {
+	public Result get(String userId) {
 		Authorization auth = getCurrentAuthorization();
-		User user = find(name);
+		User user = new UserLookup(users).getUser(userId);
 		if (user == null) {
 			return notFound();
 		}
 		return ok(toJson(user, auth));
-	}
-
-	private User find(String name) {
-		return name.startsWith("@")
-			? find(new Identity(name.substring(1)))
-			: users.find(name);
-	}
-
-	private User find(Identity identity) {
-		User user = users.find(identity);
-		if (user == null) {
-			user = new User(identity.getId(), null);
-		}
-		return user;
 	}
 
 	private ObjectNode toJson(User user, Authorization auth) {
@@ -68,9 +54,9 @@ public class UserController extends ControllerSupport {
 	}
 
 	@BodyParser.Of(BodyParser.Json.class)
-	public Result update(String username) {
+	public Result update(String userId) {
 		ObjectNode body = body();
-		User user = find(username);
+		User user = new UserLookup(users).getUser(userId);
     	if (user == null) {
     		return notFound("user not found");
     	}

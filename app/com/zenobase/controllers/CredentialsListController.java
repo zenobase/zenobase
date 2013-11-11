@@ -7,10 +7,10 @@ import play.mvc.Result;
 
 import com.zenobase.commands.CreateCredentialsCommand;
 import com.zenobase.models.Identity;
-import com.zenobase.models.User;
 import com.zenobase.oauth.Authorization;
 import com.zenobase.services.CommandDispatcher;
 import com.zenobase.services.CredentialsRepository;
+import com.zenobase.services.UserLookup;
 import com.zenobase.services.UserRepository;
 import com.zenobase.tasks.Credentials;
 import com.zenobase.tasks.CredentialsList;
@@ -55,7 +55,7 @@ public class CredentialsListController extends ControllerSupport {
 		return ok(CredentialsList.toJson(credentials.find(offset, limit)));
     }
 
-	public Result findByUser(String username, int offset, int limit) {
+	public Result findByUser(String userId, int offset, int limit) {
 		if (offset < 0 || offset > 1000) {
 			return badRequest("expected offset in [0..1000]");
 		}
@@ -69,7 +69,7 @@ public class CredentialsListController extends ControllerSupport {
 		if (auth.getScope() != null) {
     		return forbidden();
 		}
-		Identity principal = getIdentity(username);
+		Identity principal = new UserLookup(users).getIdentity(userId);
 		if (principal == null) {
 			return notFound("user not found");
 		}
@@ -78,14 +78,6 @@ public class CredentialsListController extends ControllerSupport {
 		}
 		return ok(CredentialsList.toJson(credentials.find(Credentials.PRINCIPAL.getName(), principal.toString(), offset, limit)));
     }
-
-	private Identity getIdentity(String username) {
-		if (username.startsWith("@")) {
-			return new Identity(username.substring(1));
-		}
-		User user = users.find(username);
-		return user != null ? user.asIdentity() : null;
-	}
 
     @BodyParser.Of(BodyParser.Json.class)
     public Result post() {

@@ -14,6 +14,7 @@ import com.zenobase.models.UserInfo;
 import com.zenobase.oauth.Authorization;
 import com.zenobase.services.BucketRepository;
 import com.zenobase.services.CommandDispatcher;
+import com.zenobase.services.UserLookup;
 import com.zenobase.services.UserRepository;
 
 public class AccountController extends ControllerSupport {
@@ -56,12 +57,12 @@ public class AccountController extends ControllerSupport {
 		return created(new UserInfo(user).toJson());
 	}
 
-	public Result close(String name) {
+	public Result close(String userId) {
 		Authorization auth = getCurrentAuthorization();
 		if (auth == null) {
 			return unauthorized();
 		}
-		User user = users.find(name);
+		User user = new UserLookup(users).getUser(userId);
 		if (user == null) {
 			return notFound();
 		}
