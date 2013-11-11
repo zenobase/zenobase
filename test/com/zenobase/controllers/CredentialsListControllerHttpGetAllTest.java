@@ -10,21 +10,20 @@ import play.mvc.Result;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import com.zenobase.common.DefaultPartialList;
-import com.zenobase.common.Generator;
 import com.zenobase.models.Identity;
 import com.zenobase.oauth.Authorization;
-import com.zenobase.tasks.TaskList;
+import com.zenobase.tasks.CredentialsList;
 
-public class TaskListControllerHttpGetAllTest extends TaskListControllerTestSupport {
+public class CredentialsListControllerHttpGetAllTest extends CredentialsListControllerTestSupport {
 
 	@Test
 	public void test() {
-		TaskList list = new TaskList(DefaultPartialList.<ObjectNode>of());
+		CredentialsList list = new CredentialsList(DefaultPartialList.<ObjectNode>of());
 		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
 		when(users.isSuperuser(user.asIdentity())).thenReturn(true);
-		when(tasks.find(0, 10)).thenReturn(list);
+		when(repository.find(0, 10)).thenReturn(list);
 		Result result = call(0, 10);
-		assertThat(result).hasStatus(OK).hasContent(TaskList.toJson(list));
+		assertThat(result).hasStatus(OK).hasContent(CredentialsList.toJson(list));
 	}
 
 	@Test
@@ -53,13 +52,14 @@ public class TaskListControllerHttpGetAllTest extends TaskListControllerTestSupp
 
 	@Test
 	public void testNotAuthorized() {
+		when(auth.current()).thenReturn(null);
 		Result result = call(0, 10);
 		assertThat(result).hasStatus(UNAUTHORIZED);
 	}
 
 	@Test
 	public void testScopedAuthorization() {
-		when(auth.current()).thenReturn(new Authorization(user.asIdentity(), new Identity(), Generator.id()));
+		when(auth.current()).thenReturn(new Authorization(user.asIdentity(), new Identity(), "xyz"));
 		Result result = call(0, 10);
 		assertThat(result).hasStatus(FORBIDDEN);
 	}
@@ -72,6 +72,6 @@ public class TaskListControllerHttpGetAllTest extends TaskListControllerTestSupp
 	}
 
 	private static Result call(int offset, int limit) {
-		return callAction(com.zenobase.controllers.routes.ref.TaskListController.findAll(offset, limit));
+		return callAction(com.zenobase.controllers.routes.ref.CredentialsListController.findAll(offset, limit));
 	}
 }

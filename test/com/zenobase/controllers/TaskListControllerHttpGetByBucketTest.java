@@ -29,44 +29,44 @@ public class TaskListControllerHttpGetByBucketTest extends TaskListControllerTes
 		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
 		when(buckets.find(bucket.getId())).thenReturn(bucket);
 		when(tasks.find(Task.BUCKET.getName(), bucket.getId(), 0, 10)).thenReturn(list);
-		Result result = findByBucket(bucket.getId(), 0, 10);
+		Result result = call(bucket.getId(), 0, 10);
 		assertThat(result).hasStatus(OK).hasContent(TaskList.toJson(list));
 	}
 
 	@Test
 	public void testLimitTooLow() {
-		Result result = findByBucket(bucket.getId(), 0, -1);
+		Result result = call(bucket.getId(), 0, -1);
 		assertThat(result).hasStatus(BAD_REQUEST);
 	}
 
 	@Test
 	public void testLimitTooHigh() {
-		Result result = findByBucket(bucket.getId(), 0, 1000);
+		Result result = call(bucket.getId(), 0, 1000);
 		assertThat(result).hasStatus(BAD_REQUEST);
 	}
 
 	@Test
 	public void testOffsetTooLow() {
-		Result result = findByBucket(bucket.getId(), -1, 0);
+		Result result = call(bucket.getId(), -1, 0);
 		assertThat(result).hasStatus(BAD_REQUEST);
 	}
 
 	@Test
 	public void testOffsetTooHigh() {
-		Result result = findByBucket(bucket.getId(), 10000, 0);
+		Result result = call(bucket.getId(), 10000, 0);
 		assertThat(result).hasStatus(BAD_REQUEST);
 	}
 
 	@Test
 	public void testNotAuthorized() {
-		Result result = findByBucket(bucket.getId(), 0, 10);
+		Result result = call(bucket.getId(), 0, 10);
 		assertThat(result).hasStatus(UNAUTHORIZED);
 	}
 
 	@Test
 	public void testBucketNotFound() {
 		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
-		Result result = findByBucket(Generator.id(), 0, 10);
+		Result result = call(Generator.id(), 0, 10);
 		assertThat(result).hasStatus(NOT_FOUND);
 	}
 
@@ -74,7 +74,7 @@ public class TaskListControllerHttpGetByBucketTest extends TaskListControllerTes
 	public void testNotOwner() {
 		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
 		when(buckets.find(bucket.getId())).thenReturn(bucket);
-		Result result = findByBucket(bucket.getId(), 0, 10);
+		Result result = call(bucket.getId(), 0, 10);
 		assertThat(result).hasStatus(FORBIDDEN);
 	}
 
@@ -86,11 +86,11 @@ public class TaskListControllerHttpGetByBucketTest extends TaskListControllerTes
 		when(buckets.find(bucket.getId())).thenReturn(bucket);
 		when(users.isSuperuser(superuser)).thenReturn(true);
 		when(tasks.find(Task.BUCKET.getName(), bucket.getId(), 0, 10)).thenReturn(list);
-		Result result = findByBucket(bucket.getId(), 0, 10);
+		Result result = call(bucket.getId(), 0, 10);
 		assertThat(result).hasStatus(OK).hasContent(TaskList.toJson(list));
 	}
 
-	private static Result findByBucket(String bucketId, int offset, int limit) {
+	private static Result call(String bucketId, int offset, int limit) {
 		return callAction(com.zenobase.controllers.routes.ref.TaskListController.findByBucket(bucketId, offset, limit));
 	}
 }

@@ -4,12 +4,11 @@ import javax.inject.Inject;
 
 import play.mvc.BodyParser;
 import play.mvc.Result;
-import com.google.common.base.Strings;
 
 import com.zenobase.commands.CreateCredentialsCommand;
 import com.zenobase.models.Identity;
+import com.zenobase.models.User;
 import com.zenobase.oauth.Authorization;
-import com.zenobase.search.QueryConstraint;
 import com.zenobase.services.CommandDispatcher;
 import com.zenobase.services.CredentialsRepository;
 import com.zenobase.services.UserRepository;
@@ -36,9 +35,12 @@ public class CredentialsListController extends ControllerSupport {
 		this.users = users;
 	}
 
-	public Result find(String query, int offset, int limit) {
-		if (limit > 100) {
-			return badRequest("limit can't be more than 100");
+	public Result findAll(int offset, int limit) {
+		if (offset < 0 || offset > 1000) {
+			return badRequest("expected offset in [0..1000]");
+		}
+		if (limit < 0 || limit > 100) {
+			return badRequest("expected limit in [0..100]");
 		}
 		Authorization auth = getCurrentAuthorization();
     	if (auth == null) {
@@ -47,26 +49,42 @@ public class CredentialsListController extends ControllerSupport {
 		if (auth.getScope() != null) {
     		return forbidden();
 		}
-		QueryConstraint constraint = null;
-		if (!Strings.isNullOrEmpty(query)) {
-			try {
-				constraint = QueryConstraint.parse(query);
-			} catch (IllegalArgumentException e) {
-				return badRequest("query is malformed");
-			}
-		}
-		if (!isConstrainedToPrincipal(constraint, auth.getPrincipal()) && !users.isSuperuser(auth.getPrincipal())) {
+		if (!users.isSuperuser(auth.getPrincipal())) {
 			return forbidden();
 		}
-		return constraint != null
-			? ok(CredentialsList.toJson(credentials.find(constraint.getField(), constraint.getValue(), offset, limit)))
-			: ok(CredentialsList.toJson(credentials.find(offset, limit)));
+		return ok(CredentialsList.toJson(credentials.find(offset, limit)));
     }
 
-	private static boolean isConstrainedToPrincipal(QueryConstraint constraint, Identity principal) {
-		return constraint != null
-			&& Credentials.PRINCIPAL.getName().equals(constraint.getField())
-			&& principal.getId().equals(constraint.getValue());
+	public Result findByUser(String username, int offset, int limit) {
+		if (offset < 0 || offset > 1000) {
+			return badRequest("expected offset in [0..1000]");
+		}
+		if (limit < 0 || limit > 100) {
+			return badRequest("expected limit in [0..100]");
+		}
+		Authorization auth = getCurrentAuthorization();
+    	if (auth == null) {
+    		return unauthorized();
+    	}
+		if (auth.getScope() != null) {
+    		return forbidden();
+		}
+		Identity principal = getIdentity(username);
+		if (principal == null) {
+			return notFound("user not found");
+		}
+		if (!auth.getPrincipal().equals(principal) && !users.isSuperuser(auth.getPrincipal())) {
+			return forbidden();
+		}
+		return ok(CredentialsList.toJson(credentials.find(Credentials.PRINCIPAL.getName(), principal.toString(), offset, limit)));
+    }
+
+	private Identity getIdentity(String username) {
+		if (username.startsWith("@")) {
+			return new Identity(username.substring(1));
+		}
+		User user = users.find(username);
+		return user != null ? user.asIdentity() : null;
 	}
 
     @BodyParser.Of(BodyParser.Json.class)

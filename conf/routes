@@ -34,7 +34,8 @@ GET     /buckets/:bucketId/tags/     @com.zenobase.controllers.TagController.get
 GET     /journal/                    @com.zenobase.controllers.JournalController.get(q ?= null, offset : Int, limit : Int)
 POST    /journal/                    @com.zenobase.controllers.JournalController.post()
 
-GET     /credentials/                @com.zenobase.controllers.CredentialsListController.find(q ?= null, offset : Int  ?= 0, limit : Int ?= 10)
+GET     /credentials/                @com.zenobase.controllers.CredentialsListController.findAll(offset : Int  ?= 0, limit : Int ?= 10)
+GET     /users/:name/credentials/    @com.zenobase.controllers.CredentialsListController.findByUser(name, offset : Int  ?= 0, limit : Int ?= 10)
 POST    /credentials/                @com.zenobase.controllers.CredentialsListController.post()
 
 GET     /credentials/:credentialsId  @com.zenobase.controllers.CredentialsController.get(credentialsId)

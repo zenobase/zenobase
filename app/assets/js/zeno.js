@@ -729,13 +729,12 @@
 		};
 		$scope.params = function() {
 			return {
-				q : 'principal:' + $scope.userInfo['@id'],
 				offset : $scope.offset,
 				limit : $scope.limit
 			};
 		};
 		$scope.refresh = function(params) {
-			$http.get('/credentials/?' + $.param($.extend($scope.params(), params)))
+			$http.get('/' + $scope.userInfo['@id'] + '/credentials/?' + $.param($.extend($scope.params(), params)))
 				.success(function(response) {
 					$.extend($scope, params);
 					$scope.total = response.total;

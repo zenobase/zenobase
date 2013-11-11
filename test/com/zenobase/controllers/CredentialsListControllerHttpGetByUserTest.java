@@ -13,28 +13,28 @@ import com.zenobase.common.DefaultPartialList;
 import com.zenobase.common.Generator;
 import com.zenobase.models.Identity;
 import com.zenobase.oauth.Authorization;
-import com.zenobase.tasks.Task;
-import com.zenobase.tasks.TaskList;
+import com.zenobase.tasks.Credentials;
+import com.zenobase.tasks.CredentialsList;
 
-public class TaskListControllerHttpGetByUserTest extends TaskListControllerTestSupport {
+public class CredentialsListControllerHttpGetByUserTest extends CredentialsListControllerTestSupport {
 
 	@Test
 	public void testWithUserName() {
-		TaskList list = new TaskList(DefaultPartialList.<ObjectNode>of());
+		CredentialsList list = new CredentialsList(DefaultPartialList.<ObjectNode>of());
 		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
 		when(users.find(user.getName())).thenReturn(user);
-		when(tasks.find(Task.PRINCIPAL.getName(), user.getId(), 0, 10)).thenReturn(list);
+		when(repository.find(Credentials.PRINCIPAL.getName(), user.getId(), 0, 10)).thenReturn(list);
 		Result result = call(user.getName(), 0, 10);
-		assertThat(result).hasStatus(OK).hasContent(TaskList.toJson(list));
+		assertThat(result).hasStatus(OK).hasContent(CredentialsList.toJson(list));
 	}
 
 	@Test
 	public void testWithUserId() {
-		TaskList list = new TaskList(DefaultPartialList.<ObjectNode>of());
+		CredentialsList list = new CredentialsList(DefaultPartialList.<ObjectNode>of());
 		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
-		when(tasks.find(Task.PRINCIPAL.getName(), user.getId(), 0, 10)).thenReturn(list);
+		when(repository.find(Credentials.PRINCIPAL.getName(), user.getId(), 0, 10)).thenReturn(list);
 		Result result = call('@' + user.getId(), 0, 10);
-		assertThat(result).hasStatus(OK).hasContent(TaskList.toJson(list));
+		assertThat(result).hasStatus(OK).hasContent(CredentialsList.toJson(list));
 	}
 
 	@Test
@@ -92,16 +92,16 @@ public class TaskListControllerHttpGetByUserTest extends TaskListControllerTestS
 	@Test
 	public void testSuperuser() {
 		Identity superuser = new Identity();
-		TaskList list = new TaskList(DefaultPartialList.<ObjectNode>of());
+		CredentialsList list = new CredentialsList(DefaultPartialList.<ObjectNode>of());
 		when(auth.current()).thenReturn(new Authorization(superuser));
 		when(users.find(user.getName())).thenReturn(user);
 		when(users.isSuperuser(superuser)).thenReturn(true);
-		when(tasks.find(Task.PRINCIPAL.getName(), user.getId(), 0, 10)).thenReturn(list);
+		when(repository.find(Credentials.PRINCIPAL.getName(), user.getId(), 0, 10)).thenReturn(list);
 		Result result = call(user.getName(), 0, 10);
-		assertThat(result).hasStatus(OK).hasContent(TaskList.toJson(list));
+		assertThat(result).hasStatus(OK).hasContent(CredentialsList.toJson(list));
 	}
 
 	private static Result call(String username, int offset, int limit) {
-		return callAction(com.zenobase.controllers.routes.ref.TaskListController.findByUser(username, offset, limit));
+		return callAction(com.zenobase.controllers.routes.ref.CredentialsListController.findByUser(username, offset, limit));
 	}
 }

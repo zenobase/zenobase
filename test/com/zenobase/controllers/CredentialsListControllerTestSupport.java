@@ -7,16 +7,18 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Singleton;
 
 import com.zenobase.models.User;
-import com.zenobase.services.AuthorizationRepository;
 import com.zenobase.services.CommandDispatcher;
+import com.zenobase.services.CredentialsRepository;
 import com.zenobase.services.UserRepository;
+import com.zenobase.tasks.CredentialsManagerRegistry;
 
-public class AuthorizationListControllerTestSupport extends ControllerTestSupport {
+public class CredentialsListControllerTestSupport extends ControllerTestSupport {
 
 	protected final AuthorizationContext auth = mock(AuthorizationContext.class);
-	protected final AuthorizationRepository authorizations = mock(AuthorizationRepository.class);
-	protected final UserRepository users = mock(UserRepository.class);
 	protected final CommandDispatcher dispatcher = mock(CommandDispatcher.class);
+	protected final CredentialsManagerRegistry registry = mock(CredentialsManagerRegistry.class);
+	protected final CredentialsRepository repository = mock(CredentialsRepository.class);
+	protected final UserRepository users = mock(UserRepository.class);
 	protected final User user = new User("tester");
 
 	@Before
@@ -25,10 +27,11 @@ public class AuthorizationListControllerTestSupport extends ControllerTestSuppor
 			@Override
 			protected void configure() {
 				bind(AuthorizationContext.class).toInstance(auth);
-				bind(AuthorizationRepository.class).toInstance(authorizations);
-				bind(UserRepository.class).toInstance(users);
 				bind(CommandDispatcher.class).toInstance(dispatcher);
-				bind(AuthorizationListController.class).in(Singleton.class);
+				bind(CredentialsManagerRegistry.class).toInstance(registry);
+				bind(CredentialsRepository.class).toInstance(repository);
+				bind(UserRepository.class).toInstance(users);
+				bind(CredentialsListController.class).in(Singleton.class);
 			}
 		});
 	}

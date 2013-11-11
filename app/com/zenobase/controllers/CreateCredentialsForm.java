@@ -11,6 +11,11 @@ public class CreateCredentialsForm extends DomainNode {
 		super(node);
 	}
 
+	public CreateCredentialsForm(String type) {
+		super();
+		setValue(Credentials.TYPE, type);
+	}
+
 	public String getType() {
 		return getValue(Credentials.TYPE);
 	}

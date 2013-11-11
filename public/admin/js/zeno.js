@@ -271,23 +271,20 @@
 		}
 		$scope.params = function() {
 			var params = {
-					offset : $scope.offset,
-					limit : $scope.limit
-				};
-				if ($scope.constraint) {
-					params.q = 'principal:' + $scope.constraint;
-				}
-				return params;
+				offset : $scope.offset,
+				limit : $scope.limit
+			};
 		}
 		$scope.refresh = function(params) {
-			$http.get('/credentials/?' + $.param($.extend($scope.params(), params))).success(function(response) {
+			var path = $scope.constraint ? '/users/@' + $scope.constraint + '/credentials/' : '/credentials/';
+			$http.get(path + '?' + $.param($.extend($scope.params(), params))).success(function(response) {
 				$.extend($scope, params);
 				$scope.total = response.total;
 				$scope.credentials = response.items;
 			});
 		};
 		$scope.remove = function(credentialsId) {
-			$http({ method : 'DELETE', url : '/tasks/' + credentialsId }).success(function(response, code, headers) {
+			$http({ method : 'DELETE', url : '/credentials/' + credentialsId }).success(function(response, code, headers) {
 				delay($scope.reload);
 			});
 		};
@@ -317,9 +314,9 @@
 		}
 		$scope.params = function() {
 			return {
-					offset : $scope.offset,
-					limit : $scope.limit
-				};
+				offset : $scope.offset,
+				limit : $scope.limit
+			};
 		}
 		$scope.refresh = function(params) {
 			var path = $scope.constraint ? '/users/@' + $scope.constraint + '/tasks/' : '/tasks/';
