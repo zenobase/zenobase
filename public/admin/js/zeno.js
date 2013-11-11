@@ -93,18 +93,15 @@
 			$scope.refresh({ offset : $scope.offset + $scope.limit });
 		}
 		$scope.params = function() {
-			var params = {
-					offset : $scope.offset,
-					limit : $scope.limit
-				};
-				if ($scope.constraint) {
-					params.q = 'roles.principal:' + $scope.constraint;
-				}
-				return params;
+			return {
+				offset : $scope.offset,
+				limit : $scope.limit
+			};
 		}
 		$scope.refresh = function(params) {
 			$scope.token = token.get();
-			$http.get('/buckets/?' + $.param($.extend($scope.params(), params))).success(function(response) {
+			var path = $scope.constraint ? '/users/@' + $scope.constraint + '/buckets/' : '/buckets/';
+			$http.get(path + '?' + $.param($.extend($scope.params(), params))).success(function(response) {
 				$.extend($scope, params);
 				$scope.total = response.total;
 				$scope.buckets = response.buckets;

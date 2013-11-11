@@ -623,7 +623,7 @@
 
 		$scope.$watch('user', function(user) {
 			if (user) {
-				$http.get('/buckets/?' + $.param({ 'q' : 'roles.principal:' + $scope.user['@id'], 'offset' : 0, 'limit' : 25 }))
+				$http.get('/users/' + $scope.user['@id'] + '/buckets/?' + $.param({ 'offset' : 0, 'limit' : 25 }))
 				.success(function(response) {
 					$scope.buckets = response.buckets;
 				})
@@ -661,13 +661,12 @@
 		};
 		$scope.params = function() {
 			return {
-				q : 'roles.principal:' + $scope.profile['@id'],
 				offset : $scope.offset,
 				limit : $scope.limit
 			};
 		};
 		$scope.refresh = function(params) {
-			$http.get('/buckets/?' + $.param($.extend($scope.params(), params)))
+			$http.get('/users/' + $scope.profile['@id'] + '/buckets/?' + $.param($.extend($scope.params(), params)))
 				.success(function(response) {
 					$.extend($scope, params);
 					$scope.total = response.total;
@@ -1161,7 +1160,7 @@
 			$scope.buckets = [];
 			$scope.aliases = [];
 			$scope.selected = null;
-			$http.get('/buckets/?' + $.param({ q : 'roles.principal:' + $scope.profile['@id'], offset : 0, limit : 100 })).success(function(response) {
+			$http.get('/users/' + $scope.profile['@id'] + '/buckets/?' + $.param({ offset : 0, limit : 100 })).success(function(response) {
 				$scope.buckets = response.buckets;
 			});
 			tracker.event('dialog', 'create view');

@@ -4,7 +4,6 @@ import javax.inject.Inject;
 
 import play.mvc.BodyParser;
 import play.mvc.Result;
-import com.google.common.base.Strings;
 
 import com.zenobase.commands.CreateBucketCommand;
 import com.zenobase.io.BucketPrinter;
@@ -14,10 +13,10 @@ import com.zenobase.models.BucketList;
 import com.zenobase.models.Identity;
 import com.zenobase.models.Role;
 import com.zenobase.oauth.Authorization;
-import com.zenobase.search.QueryConstraint;
 import com.zenobase.services.BucketRepository;
 import com.zenobase.services.CommandDispatcher;
 import com.zenobase.services.EventRepository;
+import com.zenobase.services.UserLookup;
 import com.zenobase.services.UserRepository;
 
 public class BucketListController extends ControllerSupport {
@@ -38,48 +37,24 @@ public class BucketListController extends ControllerSupport {
 		this.users = users;
 	}
 
-	public Result find(String query, int offset, int limit) {
+	public Result findAll(int offset, int limit) {
     	Authorization auth = getCurrentAuthorization();
-    	if (auth == null || auth.getScope() != null) {
+    	if (auth == null) {
     		return unauthorized();
     	}
-    	QueryConstraint constraint = null;
-    	if (!Strings.isNullOrEmpty(query)) {
-			try {
-				constraint = QueryConstraint.parse(query);
-			} catch (IllegalArgumentException e) {
-    			return badRequest("query is malformed");
-			}
-    	}
-		if (!isConstrainedToPrincipal(constraint, auth.getPrincipal()) && !users.isSuperuser(auth.getPrincipal())) {
+		if (auth.getScope() != null) {
+    		return forbidden();
+		}
+		if (!users.isSuperuser(auth.getPrincipal())) {
 			return forbidden();
 		}
-        return constraint != null
-        	? find(auth.getPrincipal(), new Identity(constraint.getValue()), offset, limit)
-        	: find(auth.getPrincipal(), offset, limit);
+        return find(offset, limit);
     }
 
-	private static boolean isConstrainedToPrincipal(QueryConstraint constraint, Identity principal) {
-		return constraint != null
-			&& "roles.principal".equals(constraint.getField())
-			&& principal.getId().equals(constraint.getValue());
-	}
-
-    private Result find(Identity principal, Identity identity, int offset, int limit) {
-    	if (limit > 100) {
-    		return badRequest("limit max 100");
-    	}
-        return ok(BucketList.toJson(buckets.find(identity, offset, limit), events));
-    }
-
-    private Result find(Identity principal, int offset, int limit) {
-    	if (limit == Integer.MAX_VALUE) {
-    		return findAll();
-    	}
-    	if (limit > 100) {
-    		return badRequest("limit max 100");
-    	}
-        return ok(BucketList.toJson(buckets.find(offset, limit), events));
+    private Result find(int offset, int limit) {
+    	return limit < Integer.MAX_VALUE
+    		? ok(BucketList.toJson(buckets.find(offset, limit), events))
+    		: findAll();
     }
 
     private Result findAll() {
@@ -92,6 +67,34 @@ public class BucketListController extends ControllerSupport {
 		};
         return ok(chunks);
 	}
+
+	public Result findByUser(String userId, int offset, int limit) {
+		if (offset < 0 || offset > 1000) {
+			return badRequest("expected offset in [0..1000]");
+		}
+		if (limit < 0 || limit > 100) {
+			return badRequest("expected limit in [0..100]");
+		}
+    	Authorization auth = getCurrentAuthorization();
+    	if (auth == null) {
+    		return unauthorized();
+    	}
+    	if (auth.getScope() != null) {
+    		return forbidden();
+    	}
+		Identity principal = new UserLookup(users).getIdentity(userId);
+		if (principal == null) {
+			return notFound("user not found");
+		}
+		if (!auth.getPrincipal().equals(principal) && !users.isSuperuser(auth.getPrincipal())) {
+			return forbidden();
+		}
+        return find(principal, offset, limit);
+    }
+
+    private Result find(Identity principal, int offset, int limit) {
+        return ok(BucketList.toJson(buckets.find(principal, offset, limit), events));
+    }
 
     @BodyParser.Of(BodyParser.Json.class)
     public Result post() {
