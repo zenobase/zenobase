@@ -952,6 +952,129 @@
 					'statistic' : 'avg',
 					'unit' : 'kg'
 				}]
+		}, {
+			'label' : 'Environment (Netatmo)',
+			'task' : 'netatmo', 
+			'widgets': [{
+					'id' : 'latest',
+					'type' : 'list',
+					'label' : 'Latest',
+					'placement' : 'left',
+					'limit' : 10,
+					'order' : 'timestamp',
+					'reverse' : false,
+					'singleton' : true
+			},
+			{
+					'id' : 'tags',
+					'type' : 'count',
+					'label' : 'Rooms',
+					'placement' : 'left',
+					'field' : 'tag',
+					'order' : 'count',
+					'limit' : 5,
+					'reverse' : false
+			},
+			{
+					'id' : 'temperature',
+					'type' : 'timeline',
+					'label' : 'Temperature (C)',
+					'placement' : 'top',
+					'field' : 'temperature',
+					'unit' : 'C',
+					'statistic' : 'avg',
+					'interval' : 'month'
+			},
+			{
+					'id' : 'humidity',
+					'type' : 'timeline',
+					'label' : 'Humidity (%)',
+					'placement' : 'top',
+					'field' : 'humidity',
+					'unit' : null,
+					'statistic' : 'avg',
+					'interval' : 'month'
+			},
+			{
+					'id' : 'pressure',
+					'type' : 'timeline',
+					'label' : 'Air Pressure (hPa)',
+					'placement' : 'top',
+					'field' : 'pressure',
+					'statistic' : 'avg',
+					'unit' : 'hPa',
+					'interval' : 'month'
+			},
+			{
+					'id' : 'noise',
+					'type' : 'timeline',
+					'label' : 'Noise (dB)',
+					'placement' : 'top',
+					'field' : 'sound',
+					'unit' : 'dB',
+					'statistic' : 'avg',
+					'interval' : 'month'
+			},
+			{
+					'id' : 'air',
+					'type' : 'timeline',
+					'label' : 'Air Quality',
+					'placement' : 'top',
+					'field' : 'rating',
+					'unit' : null,
+					'statistic' : 'avg',
+					'interval' : 'month'
+			},
+			{
+					'id' : 'temperature_by_hour',
+					'type' : 'polar',
+					'label' : 'Temperature (C)',
+					'placement' : 'right',
+					'value_field' : 'temperature',
+					'unit' : 'C',
+					'statistic' : 'avg',
+					'interval' : 'hour_of_day'
+			},
+			{
+					'id' : 'humidity_by_hour',
+					'type' : 'polar',
+					'label' : 'Humidity (%)',
+					'placement' : 'right',
+					'value_field' : 'humidity',
+					'unit' : null,
+					'statistic' : 'avg',
+					'interval' : 'hour_of_day'
+			},
+			{
+					'id' : 'pressure_by_hour',
+					'type' : 'polar',
+					'label' : 'Air Pressure (hPa)',
+					'placement' : 'right',
+					'value_field' : 'pressure',
+					'unit' : 'hPa',
+					'statistic' : 'avg',
+					'interval' : 'hour_of_day'
+			},
+			{
+					'id' : 'noise_by_hour',
+					'type' : 'polar',
+					'label' : 'Noise (dB)',
+					'placement' : 'right',
+					'value_field' : 'sound',
+					'unit' : 'dB',
+					'statistic' : 'avg',
+					'interval' : 'hour_of_day'
+			},
+			{
+					'id' : 'air_by_hour',
+					'type' : 'polar',
+					'label' : 'Air Quality',
+					'placement' : 'right',
+					'value_field' : 'rating',
+					'unit' : null,
+					'statistic' : 'avg',
+					'interval' : 'hour_of_day'
+			}]
 		}];
 
 		$scope.init = function() {
