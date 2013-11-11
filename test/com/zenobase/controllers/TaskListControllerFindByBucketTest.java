@@ -18,7 +18,7 @@ import com.zenobase.oauth.Authorization;
 import com.zenobase.tasks.Task;
 import com.zenobase.tasks.TaskList;
 
-public class TaskListControllerHttpGetByBucketTest extends TaskListControllerTestSupport {
+public class TaskListControllerFindByBucketTest extends TaskListControllerTestSupport {
 
 	private final Bucket bucket = new Bucket();
 
