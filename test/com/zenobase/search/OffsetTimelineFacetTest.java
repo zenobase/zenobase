@@ -124,16 +124,6 @@ public class OffsetTimelineFacetTest extends FacetTestSupport {
 	}
 
 	@Test
-	public void testEmptyResult() {
-
-		addFacet("id:%s,type:%s,timezone:%s", FACET_ID, TimelineFacet.TYPE, UTC);
-
-		ObjectNode result = execute();
-		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(0);
-		assertThat(result).path(FACET_ID).hasSize(0);
-	}
-
-	@Test
 	public void testYearInterval() {
 
 		addEvent(first);
@@ -252,5 +242,15 @@ public class OffsetTimelineFacetTest extends FacetTestSupport {
 		node.path(15).path("count").isEqualTo(1);
 		node.path(59).path("label").isEqualTo("2012-03-31T20:59Z");
 		node.path(59).path("count").isEqualTo(0);
+	}
+
+	@Test
+	public void testEmpty() {
+
+		addFacet("id:%s,type:%s,timezone:%s", FACET_ID, TimelineFacet.TYPE, UTC);
+
+		ObjectNode result = execute();
+		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(0);
+		assertThat(result).path(FACET_ID).hasSize(0);
 	}
 }

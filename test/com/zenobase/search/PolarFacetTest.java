@@ -262,4 +262,15 @@ public class PolarFacetTest extends FacetTestSupport {
 		node.path(11).path("sum").isEqualTo(10000.0);
 		node.path(11).path("avg").isEqualTo(5000.0);
 	}
+
+	@Test
+	public void testEmpty() {
+
+		addFacet("id:%s,type:%s,key_field:%s,interval:%s",
+			FACET_ID, PolarFacet.TYPE, Event.TIMESTAMP, "hour_of_day");
+
+		ObjectNode result = execute();
+		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(0);
+		assertThat(result).path(FACET_ID).hasSize(0);
+	}
 }

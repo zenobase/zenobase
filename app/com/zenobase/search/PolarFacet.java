@@ -1,6 +1,7 @@
 package com.zenobase.search;
 
 import java.text.DateFormatSymbols;
+import java.util.Collections;
 import java.util.Locale;
 import java.util.Map;
 
@@ -55,9 +56,12 @@ public class PolarFacet extends Facet {
 	@Override
 	public JsonNode process(SearchResponse response) {
 		TermsStatsFacet terms = response.getFacets().facet(TermsStatsFacet.class, getId());
-		Map<Integer, TermsStatsFacet.Entry> result = interval.emptyMap();
-		for (TermsStatsFacet.Entry entry : terms.getEntries()) {
-			result.put(Integer.valueOf(entry.getTerm().toString()), entry);
+		Map<Integer, TermsStatsFacet.Entry> result = Collections.emptyMap();
+		if (!terms.getEntries().isEmpty()) {
+			result = interval.emptyMap();
+			for (TermsStatsFacet.Entry entry : terms.getEntries()) {
+				result.put(Integer.valueOf(entry.getTerm().toString()), entry);
+			}
 		}
 		return toJson(result);
 	}

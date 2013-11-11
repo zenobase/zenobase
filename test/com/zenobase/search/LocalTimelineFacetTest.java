@@ -233,4 +233,14 @@ public class LocalTimelineFacetTest extends FacetTestSupport {
 		node.path(59).path("label").isEqualTo("2012-03-31T20:59");
 		node.path(59).path("count").isEqualTo(0);
 	}
+
+	@Test
+	public void testEmpty() {
+
+		addFacet("id:%s,type:%s", FACET_ID, TimelineFacet.TYPE);
+
+		ObjectNode result = execute();
+		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(0);
+		assertThat(result).path(FACET_ID).hasSize(0);
+	}
 }
