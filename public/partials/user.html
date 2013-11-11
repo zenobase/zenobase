@@ -14,10 +14,10 @@
 
 			<p class="pull-left page-title">
 				<span id="user-title" class="page-title-text">{{username}}</span>
-				<a id="refresh-buckets-link" class="page-title-decoration" data-ng-click="reload()" title="Refresh"><i class="icon-refresh"></i></a>
+				<a id="refresh-buckets-link" class="page-title-decoration" data-ng-click="reload()" data-ng-show="isSelf()" title="Refresh"><i class="icon-refresh"></i></a>
 			</p>
 	
-			<div class="pull-right page-title dropdown" data-ng-show="editable()">
+			<div class="pull-right page-title dropdown" data-ng-show="isSelf() && !profile.isGuest()">
 				<a id="user-menu" class="dropdown-toggle" data-toggle="dropdown" title="More..."> <i class="icon-align-justify"></i><b class="caret"></b></a>
 				<ul class="dropdown-menu" role="menu">
 					<li role="presentation">
@@ -122,7 +122,11 @@
 			</form>
 		</div>
 
-		<div class="row-fluid">
+		<div class="alert alert-block alert-info" data-ng-hide="isSelf()">
+			Sign in as this user for more information.
+		</div>
+		
+		<div class="row-fluid" data-ng-show="isSelf()">
 
 			<div class="span4" data-ng-controller="BucketListController">
 				<table class="table">
@@ -198,7 +202,7 @@
 						</tr>
 					</tbody>
 				</table>
-				<div class="btn-toolbar" data-ng-show="addable()">
+				<div class="btn-toolbar">
 					<div class="btn-group pull-right" data-ng-show="credentials">
 						<button class="btn" title="Previous" data-ng-click="prev()" data-ng-disabled="!hasPrev()"><i class="icon-chevron-left"></i></button>
 						<button class="btn" title="Next" data-ng-click="next()" data-ng-disabled="!hasNext()"><i class="icon-chevron-right"></i></button>

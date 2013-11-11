@@ -323,15 +323,26 @@
 	});
 
 	app.controller('UserController', ['$scope', '$http', '$routeParams', 'User', 'tracker', function($scope, $http, $routeParams, User, tracker) {
-	
+
 		$scope.username = $routeParams.username;
 		$scope.profile = null;
-	
-		if ($scope.username !== 'guest') {
+		
+		$scope.isSelf = function() {
+			return $scope.user && $scope.profile && $scope.profile.getName() === $scope.user.getName();
+		};
+
+		$scope.$watch('profile', function(profile) {
+			if (profile) {
+				$scope.page.setTitle(profile.getName());
+			}
+		});
+
+		if ($scope.user && $scope.username === $scope.user.getName()) {
+			$scope.profile = $scope.user;
+		} else {
 			$http.get('/users/' + $scope.username)
 				.success(function(response) {
 					$scope.profile = new User(response);
-					$scope.page.setTitle($scope.profile.getName());
 				})
 				.error(function(response, status) {
 					if (status < 500) {
@@ -340,32 +351,7 @@
 						$scope.message = 'Couldn\'t retrieve this user. Try again later or contact support.';
 					}
 				});
-		} else if ($scope.user && $scope.user.getName() === 'guest') {
-			$scope.profile = $scope.user;
-		}
-	
-		$scope.editable = function() {
-			return $scope.user && $scope.profile && $scope.user.name && $scope.profile.name === $scope.user.name;
-		};
-		$scope.addable = function() {
-			return $scope.user && $scope.profile && $scope.profile.getName() === $scope.user.getName();
-		};
-		$scope.close = function() {
-			if (confirm('Close your account and delete all associated data?')) {
-				tracker.event('action', 'close account');
-				$http({ method : 'DELETE', url : '/users/' + $scope.username })
-					.success(function() {
-						$scope.signOut();
-					})
-					.error(function(response, status) {
-						if (status < 500) {
-							$scope.message = 'Can\'t close this account.';
-						} else {
-							$scope.message = 'Couldn\'t close this account. Try again later or contact support.';
-						}
-					});
-			}
-		};
+		} 
 	}]);
 
 	app.controller('AccountSettingsController', ['$scope', '$http', 'tracker', function($scope, $http, tracker) {
@@ -403,6 +389,22 @@
 				$scope.cancel();
 			}
 			tracker.event('action', 'save user');
+		};
+		$scope.close = function() {
+			if (confirm('Close your account and delete all associated data?')) {
+				tracker.event('action', 'close account');
+				$http({ method : 'DELETE', url : '/users/' + $scope.username })
+					.success(function() {
+						$scope.signOut();
+					})
+					.error(function(response, status) {
+						if (status < 500) {
+							$scope.message = 'Can\'t close this account.';
+						} else {
+							$scope.message = 'Couldn\'t close this account. Try again later or contact support.';
+						}
+					});
+			}
 		};
 	}]);
 
@@ -697,7 +699,7 @@
 		};
 
 		$scope.$watch('profile', function(profile) {
-			if (profile) {
+			if ($scope.isSelf() && profile) {
 				$scope.refresh({});
 			}
 		});
@@ -762,7 +764,7 @@
 		};
 
 		$scope.$watch('profile', function(profile) {
-			if (profile) {
+			if ($scope.isSelf() && profile) {
 				$scope.refresh({});
 			}
 		});
@@ -820,7 +822,7 @@
 		};
 
 		$scope.$watch('profile', function(profile) {
-			if (profile) {
+			if ($scope.isSelf() && profile) {
 				$scope.refresh({});
 			}
 		});
