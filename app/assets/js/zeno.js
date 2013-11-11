@@ -953,6 +953,50 @@
 					'unit' : 'kg'
 				}]
 		}, {
+			'label' : 'Steps (Fitbit)',
+			'task' : 'fitbit', 
+			'widgets' : [{
+        'id' : 'steps',
+        'type' : 'timeline',
+        'label' : 'Steps',
+        'placement' : 'top',
+        'field' : 'count',
+        'unit' : null,
+        'statistic' : 'sum',
+        'interval' : 'month'
+    },
+    {
+        'id' : 'latest',
+        'type' : 'list',
+        'label' : 'Latest',
+        'placement' : 'left',
+        'order' : 'timestamp',
+        'reverse' : true,
+        'limit' : 10,
+        'singleton' : true
+    },
+    {
+    		'id' : 'steps_scoreboard',
+        'type' : 'scoreboard',
+        'label' : 'Scoreboard',
+        'placement' : 'right',
+        'key_field' : 'author',
+        'value_field' : 'count',
+        'unit' : null,
+        'order' : 'total',
+        'limit' : 10
+    },
+    {
+    		'id' : 'steps_by_day',
+        'type' : 'polar',
+        'label' : 'Day of Week',
+        'placement' : 'right',
+        'value_field' : 'count',
+        'unit' : null,
+        'statistic' : 'avg',
+        'interval' : 'day_of_week'
+    	}]
+		}, {
 			'label' : 'Environment (Netatmo)',
 			'task' : 'netatmo', 
 			'widgets': [{
