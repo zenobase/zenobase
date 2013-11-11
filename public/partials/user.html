@@ -4,11 +4,11 @@
 		{{message}}
 	</div>
 
-	<div data-ng-hide="userInfo || message">
+	<div data-ng-hide="profile || message">
 		<i class="icon-refresh"></i> Loading...		
 	</div>
 
-	<div data-ng-show="userInfo">
+	<div data-ng-show="profile">
 
 		<div class="row-fluid page-titlebar">
 
@@ -41,7 +41,7 @@
 					<div class="control-group">
 						<label class="control-label"><strong>User ID</strong></label>
 						<div class="controls">
-							<span class="input-large uneditable-input">{{userInfo['@id']}}</span>
+							<span class="input-large uneditable-input">{{profile['@id']}}</span>
 						</div>
 					</div>
 					<div class="control-group">
@@ -49,8 +49,8 @@
 						<div class="controls">
 							<input type="email" class="input-large" required data-ng-model="email">
 							<p class="help-block">For important, account-related messages.
-								<strong data-ng-show="userInfo.verified">Verified.</strong>
-								<strong data-ng-hide="userInfo.verified">Not verified.</strong>
+								<strong data-ng-show="profile.verified">Verified.</strong>
+								<strong data-ng-hide="profile.verified">Not verified.</strong>
 							</p>
 						</div>
 					</div>

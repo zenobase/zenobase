@@ -325,13 +325,13 @@
 	app.controller('UserController', ['$scope', '$http', '$routeParams', 'User', 'tracker', function($scope, $http, $routeParams, User, tracker) {
 	
 		$scope.username = $routeParams.username;
-		$scope.userInfo = null;
+		$scope.profile = null;
 	
 		if ($scope.username !== 'guest') {
 			$http.get('/users/' + $scope.username)
 				.success(function(response) {
-					$scope.userInfo = new User(response);
-					$scope.page.setTitle($scope.userInfo.getName());
+					$scope.profile = new User(response);
+					$scope.page.setTitle($scope.profile.getName());
 				})
 				.error(function(response, status) {
 					if (status < 500) {
@@ -341,19 +341,19 @@
 					}
 				});
 		} else if ($scope.user && $scope.user.getName() === 'guest') {
-			$scope.userInfo = $scope.user;
+			$scope.profile = $scope.user;
 		}
 	
 		$scope.editable = function() {
-			return $scope.user && $scope.userInfo && $scope.user.name && $scope.userInfo.name === $scope.user.name;
+			return $scope.user && $scope.profile && $scope.user.name && $scope.profile.name === $scope.user.name;
 		};
 		$scope.addable = function() {
-			return $scope.user && $scope.userInfo && $scope.userInfo.getName() === $scope.user.getName();
+			return $scope.user && $scope.profile && $scope.profile.getName() === $scope.user.getName();
 		};
 		$scope.close = function() {
 			if (confirm('Close your account and delete all associated data?')) {
 				tracker.event('action', 'close account');
-				$http({ method : 'DELETE', url : '/users/' + $routeParams.username })
+				$http({ method : 'DELETE', url : '/users/' + $scope.username })
 					.success(function() {
 						$scope.signOut();
 					})
@@ -372,13 +372,13 @@
 	
 		$scope.init = function() {
 			$scope.message = '';
-			$scope.email = $scope.userInfo.email;
+			$scope.email = $scope.profile.email;
 			tracker.event('dialog', 'edit user');
 		};
 
 		$scope.data = function() {
 			var data = {};
-			if ($scope.email && $scope.email !== $scope.userInfo.email || !$scope.userInfo.verified) {
+			if ($scope.email && $scope.email !== $scope.profile.email || !$scope.profile.verified) {
 				data.email = $scope.email;
 			}
 			return data;
@@ -387,7 +387,7 @@
 			$scope.alert.clear();
 			var data = $scope.data();
 			if (!$.isEmptyObject(data)) { 
-				$http.post('/users/' + $scope.userInfo.name, data)
+				$http.post('/users/' + $scope.username, data)
 					.success(function(response, status, headers) {
 						$scope.alert.show('Updated account settings.', 'alert-success', headers('X-Command-ID'));
 						$scope.closeDialog();
@@ -659,7 +659,7 @@
 		};
 		$scope.params = function() {
 			return {
-				q : 'roles.principal:' + $scope.userInfo['@id'],
+				q : 'roles.principal:' + $scope.profile['@id'],
 				offset : $scope.offset,
 				limit : $scope.limit
 			};
@@ -696,8 +696,8 @@
 			tracker.event('action', 'delete bucket');
 		};
 
-		$scope.$watch('userInfo', function(user) {
-			if (user) {
+		$scope.$watch('profile', function(profile) {
+			if (profile) {
 				$scope.refresh({});
 			}
 		});
@@ -730,7 +730,7 @@
 			};
 		};
 		$scope.refresh = function(params) {
-			$http.get('/users/@' + $scope.userInfo['@id'] + '/credentials/?' + $.param($.extend($scope.params(), params)))
+			$http.get('/users/@' + $scope.profile['@id'] + '/credentials/?' + $.param($.extend($scope.params(), params)))
 				.success(function(response) {
 					$.extend($scope, params);
 					$scope.total = response.total;
@@ -761,8 +761,8 @@
 			tracker.event('action', 'delete credentials');
 		};
 
-		$scope.$watch('userInfo', function(user) {
-			if (user) {
+		$scope.$watch('profile', function(profile) {
+			if (profile) {
 				$scope.refresh({});
 			}
 		});
@@ -790,7 +790,7 @@
 		};
 		$scope.params = function() {
 			return {
-				q : 'principal:' + $scope.userInfo['@id'],
+				q : 'principal:' + $scope.profile['@id'],
 				client_only : true,
 				offset : $scope.offset,
 				limit : $scope.limit
@@ -819,8 +819,8 @@
 				});
 		};
 
-		$scope.$watch('userInfo', function(user) {
-			if (user) {
+		$scope.$watch('profile', function(profile) {
+			if (profile) {
 				$scope.refresh({});
 			}
 		});
@@ -1159,7 +1159,7 @@
 			$scope.buckets = [];
 			$scope.aliases = [];
 			$scope.selected = null;
-			$http.get('/buckets/?' + $.param({ q : 'roles.principal:' + $scope.userInfo['@id'], offset : 0, limit : 100 })).success(function(response) {
+			$http.get('/buckets/?' + $.param({ q : 'roles.principal:' + $scope.profile['@id'], offset : 0, limit : 100 })).success(function(response) {
 				$scope.buckets = response.buckets;
 			});
 			tracker.event('dialog', 'create view');
