@@ -48,17 +48,17 @@ public class PolarFacetTest extends FacetTestSupport {
 		NodeAssert node = assertThat(result).path(FACET_ID).hasSize(24);
 
 		node.path(0).path("value").isEqualTo(0);
-		node.path(0).path("label").isEqualTo("00:00");
+		node.path(0).path("label").isEqualTo("0h");
 		node.path(0).path("count").isEqualTo(0);
 		node.path(0).path("avg").isMissingNode();
 
 		node.path(6).path("value").isEqualTo(6);
-		node.path(6).path("label").isEqualTo("06:00");
+		node.path(6).path("label").isEqualTo("6h");
 		node.path(6).path("count").isEqualTo(1);
 		node.path(6).path("avg").isMissingNode();
 
 		node.path(20).path("value").isEqualTo(20);
-		node.path(20).path("label").isEqualTo("20:00");
+		node.path(20).path("label").isEqualTo("20h");
 		node.path(20).path("count").isEqualTo(2);
 		node.path(20).path("avg").isMissingNode();
 	}

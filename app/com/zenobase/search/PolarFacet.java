@@ -103,7 +103,7 @@ public class PolarFacet extends Facet {
 		HOUR_OF_DAY(0, 24) {
 			@Override
 			public String getLabel(int n) {
-				return String.format("%02d:00", n);
+				return String.format("%dh", n);
 			}
 		},
 		DAY_OF_WEEK(1, 7) {
