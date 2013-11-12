@@ -7,10 +7,10 @@ import static org.mockito.Mockito.*;
 import static play.mvc.Http.Status.*;
 import static play.test.Helpers.*;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import play.mvc.Result;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import com.zenobase.commands.Command;
 import com.zenobase.commands.TestCommand;
@@ -21,12 +21,12 @@ import com.zenobase.oauth.Authorization;
 
 public class JournalControllerHttpPostTest extends JournalControllerTestSupport {
 
-	private final Command command = new TestCommand(principal, "testing");
+	private final Command command = new TestCommand(user.asIdentity(), "testing");
 
 	@Test
 	public void testUndo() {
 		ArgumentCaptor<TestCommand> commandArg = ArgumentCaptor.forClass(TestCommand.class);
-		when(auth.current()).thenReturn(new Authorization(principal));
+		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
 		when(commands.find(command.getId())).thenReturn(command);
 		when(dispatcher.dispatch(commandArg.capture())).thenReturn(command.getId());
 		Result result = call(new UndoForm(command.getId()).toJson());
@@ -63,7 +63,7 @@ public class JournalControllerHttpPostTest extends JournalControllerTestSupport 
 
 	@Test
 	public void testUndoNotFound() {
-		when(auth.current()).thenReturn(new Authorization(principal));
+		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
 		when(commands.find(command.getId())).thenReturn(null);
 		Result result = call(new UndoForm(Generator.id()).toJson());
 		assertThat(result).hasStatus(NOT_FOUND);

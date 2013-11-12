@@ -6,7 +6,7 @@ import org.junit.Before;
 import com.google.inject.AbstractModule;
 import com.google.inject.Singleton;
 
-import com.zenobase.models.Identity;
+import com.zenobase.models.User;
 import com.zenobase.services.CommandDispatcher;
 import com.zenobase.services.CommandRepository;
 import com.zenobase.services.UserRepository;
@@ -17,7 +17,7 @@ public abstract class JournalControllerTestSupport extends ControllerTestSupport
 	protected final CommandRepository commands = mock(CommandRepository.class);
 	protected final UserRepository users = mock(UserRepository.class);
 	protected final CommandDispatcher dispatcher = mock(CommandDispatcher.class);
-	protected final Identity principal = new Identity();
+	protected final User user = new User("jdoe");
 
 	@Before
 	public void setUp() {

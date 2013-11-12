@@ -4,15 +4,14 @@ import javax.inject.Inject;
 
 import play.mvc.BodyParser;
 import play.mvc.Result;
-import com.google.common.base.Strings;
 
 import com.zenobase.commands.Command;
 import com.zenobase.models.CommandList;
 import com.zenobase.models.Identity;
 import com.zenobase.oauth.Authorization;
-import com.zenobase.search.QueryConstraint;
 import com.zenobase.services.CommandDispatcher;
 import com.zenobase.services.CommandRepository;
+import com.zenobase.services.UserLookup;
 import com.zenobase.services.UserRepository;
 
 public class JournalController extends ControllerSupport {
@@ -31,7 +30,7 @@ public class JournalController extends ControllerSupport {
 		this.users = users;
 	}
 
-	public Result get(String query, int offset, int limit) {
+	public Result findAll(int offset, int limit) {
     	Authorization auth = getCurrentAuthorization();
     	if (auth == null) {
     		return unauthorized();
@@ -42,27 +41,26 @@ public class JournalController extends ControllerSupport {
     	if (!users.isSuperuser(auth.getPrincipal())) {
     		return forbidden();
     	}
-		QueryConstraint constraint = null;
-		if (!Strings.isNullOrEmpty(query)) {
-			try {
-				constraint = QueryConstraint.parse(query);
-			} catch (IllegalArgumentException e) {
-				return badRequest("query is malformed");
-			}
-		}
-		if (!isConstrainedToPrincipal(constraint, auth.getPrincipal()) && !users.isSuperuser(auth.getPrincipal())) {
-			return forbidden();
-		}
-    	return constraint != null
-    		? ok(CommandList.toJson(repository.find(constraint.getField(), constraint.getValue(), offset, limit, true)))
-    		: ok(CommandList.toJson(repository.find(offset, limit, true)));
+    	return ok(CommandList.toJson(repository.find(offset, limit, true)));
     }
 
-	private static boolean isConstrainedToPrincipal(QueryConstraint constraint, Identity principal) {
-		return constraint != null
-			&& Command.PRINCIPAL.getName().equals(constraint.getField())
-			&& principal.getId().equals(constraint.getValue());
-	}
+	public Result findByUser(String userId, int offset, int limit) {
+    	Authorization auth = getCurrentAuthorization();
+    	if (auth == null) {
+    		return unauthorized();
+    	}
+    	if (auth.getScope() != null) {
+    		return forbidden();
+    	}
+		Identity principal = new UserLookup(users).getIdentity(userId);
+		if (principal == null) {
+			return notFound("user not found");
+		}
+		if (!auth.getPrincipal().equals(principal) && !users.isSuperuser(auth.getPrincipal())) {
+			return forbidden();
+		}
+    	return ok(CommandList.toJson(repository.find(Command.PRINCIPAL.getName(), principal.getId(), offset, limit, true)));
+    }
 
 	@BodyParser.Of(BodyParser.Json.class)
     public Result post() {

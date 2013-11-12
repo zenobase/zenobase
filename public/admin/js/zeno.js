@@ -28,7 +28,7 @@
 		$scope.refresh();
 	}]);
 
-	app.controller('admin.QueueController', ['$scope', '$http', 'delay', function($scope, $http, delay) {
+	app.controller('admin.JournalController', ['$scope', '$http', 'delay', function($scope, $http, delay) {
 	
 		$scope.offset = 0;
 		$scope.limit = 10;
@@ -48,17 +48,14 @@
 			$scope.refresh({ offset : $scope.offset + $scope.limit });
 		}
 		$scope.params = function() {
-			var params = {
+			return {
 				offset : $scope.offset,
 				limit : $scope.limit
 			};
-			if ($scope.constraint) {
-				params.q = 'principal:' + $scope.constraint;
-			}
-			return params;
 		}
 		$scope.refresh = function(params) {
-			$http.get('/journal/?' + $.param($.extend($scope.params(), params))).success(function(response) {
+			var path = $scope.constraint ? '/users/' + $scope.constraint + '/journal/' : '/journal/';
+			$http.get(path + '?' + $.param($.extend($scope.params(), params))).success(function(response) {
 				$.extend($scope, params);
 				$scope.total = response.total;
 				$scope.commands = response.commands;
@@ -100,7 +97,7 @@
 		}
 		$scope.refresh = function(params) {
 			$scope.token = token.get();
-			var path = $scope.constraint ? '/users/@' + $scope.constraint + '/buckets/' : '/buckets/';
+			var path = $scope.constraint ? '/users/' + $scope.constraint + '/buckets/' : '/buckets/';
 			$http.get(path + '?' + $.param($.extend($scope.params(), params))).success(function(response) {
 				$.extend($scope, params);
 				$scope.total = response.total;
@@ -151,7 +148,7 @@
 		$scope.refresh = function(params) {
 			$scope.token = token.get();
 			if ($scope.constraint) {
-				$http.get('/users/@' + $scope.constraint).success(function(response) {
+				$http.get('/users/' + $scope.constraint).success(function(response) {
 					$scope.total = 1;
 					$scope.users = [ response ];
 				});
@@ -213,18 +210,14 @@
 			$scope.refresh({ offset : $scope.offset + $scope.limit });
 		};
 		$scope.params = function() {
-			var params = {
+			return {
 				offset : $scope.offset,
 				limit : $scope.limit
 			};
-			if ($scope.constraint) {
-				params.q = 'principal:' + $scope.constraint;
-			}
-			return params;
 		};
 		$scope.refresh = function(params) {
-			var path = $scope.constraint ? '/users/@' + $scope.constraint + '/authorizations/' : '/authorizations/';
-			$http.get('/authorizations/?' + $.param($.extend($scope.params(), params)))
+			var path = $scope.constraint ? '/users/' + $scope.constraint + '/authorizations/' : '/authorizations/';
+			$http.get(path + '?' + $.param($.extend($scope.params(), params)))
 				.success(function(response) {
 					$.extend($scope, params);
 					$scope.total = response.total;
@@ -268,13 +261,13 @@
 			$scope.refresh({ offset : $scope.offset + $scope.limit });
 		}
 		$scope.params = function() {
-			var params = {
+			return {
 				offset : $scope.offset,
 				limit : $scope.limit
 			};
 		}
 		$scope.refresh = function(params) {
-			var path = $scope.constraint ? '/users/@' + $scope.constraint + '/credentials/' : '/credentials/';
+			var path = $scope.constraint ? '/users/' + $scope.constraint + '/credentials/' : '/credentials/';
 			$http.get(path + '?' + $.param($.extend($scope.params(), params))).success(function(response) {
 				$.extend($scope, params);
 				$scope.total = response.total;
@@ -317,7 +310,7 @@
 			};
 		}
 		$scope.refresh = function(params) {
-			var path = $scope.constraint ? '/users/@' + $scope.constraint + '/tasks/' : '/tasks/';
+			var path = $scope.constraint ? '/users/' + $scope.constraint + '/tasks/' : '/tasks/';
 			$http.get(path + '?' + $.param($.extend($scope.params(), params))).success(function(response) {
 				$.extend($scope, params);
 				$scope.total = response.total;
