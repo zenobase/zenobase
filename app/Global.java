@@ -94,6 +94,7 @@ import com.zenobase.tasks.CredentialsManagerRegistry;
 import com.zenobase.tasks.TaskManager;
 import com.zenobase.tasks.TaskManagerRegistry;
 import com.zenobase.tasks.TaskRefresher;
+import com.zenobase.tasks.bodymedia.BodyMediaBurnTaskManager;
 import com.zenobase.tasks.bodymedia.BodyMediaCredentialsManager;
 import com.zenobase.tasks.bodymedia.BodyMediaTaskManager;
 import com.zenobase.tasks.demo.DemoCredentialsManager;
@@ -214,6 +215,7 @@ public class Global extends GlobalSettings {
 				bindIfConfigured("foursquare", FoursquareTaskManager.class, tasks);
 				bindIfConfigured("withings", WithingsTaskManager.class, tasks);
 				bindIfConfigured("bodymedia", BodyMediaTaskManager.class, tasks);
+				bindIfConfigured("bodymedia", BodyMediaBurnTaskManager.class, tasks);
 				bindIfConfigured("netatmo", NetatmoTaskManager.class, tasks);
 				bind(TaskManagerRegistry.class).in(Singleton.class);
 

@@ -3688,6 +3688,7 @@
 			{ 'id' : 'fitbit', 'description' : 'Creates one step count event per day.' },
 			{ 'id' : 'fitbit-intraday', 'description' : 'Creates one event for each period of time spent moving, sitting or sleeping (100 to 1,000 events per day).' },
 			{ 'id' : 'bodymedia', 'description' : 'Creates one calorie count and one sleep summary event per day.' },
+			{ 'id' : 'bodymedia-burn-hour', 'description' : 'Creates an event for the number of calories burned each hour.' },
 			{ 'id' : 'foursquare', 'description' : 'Creates an event for each Foursquare check-in.' },
 			{ 'id' : 'netatmo', 'description' : 'Creates an event for each weather station measurement (up to 300 per day).' },
 			{ 'id' : 'withings', 'description' : 'Creates an event for each weight measurement.' },
@@ -3770,6 +3771,17 @@
 		$scope.init();
 	}]);
 
+	app.controller('BodyMediaBurnHourSettingsController', ['$scope', function($scope) {
+
+		$scope.init = function() {
+			$scope.settings = $scope.$parent.$parent.settings = {
+					marker : new Date(moment().utc().startOf('month').valueOf())
+			};
+		};
+
+		$scope.init();
+	}]);
+
 	app.controller('FoursquareSettingsController', ['$scope', function($scope) {
 
 		$scope.init = function() {
@@ -3838,8 +3850,10 @@
 		$http.post('/credentials/' + $scope.credentialsId, { 'credentials' : $location.search() })
 			.success(function(response) {
 				$scope.alert.show('Updated credentials.', 'alert-success');
-				$window.opener.angular.element('#app').scope().$broadcast('credentials');
-				$window.close();
+				if ($window.opener) {
+					$window.opener.angular.element('#app').scope().$broadcast('credentials');
+					$window.close();
+				}
 			})
 			.error(function(response, status) {
 				if (status < 500) {

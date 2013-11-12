@@ -15,6 +15,7 @@ import org.scribe.model.Verb;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.Lists;
 import com.google.common.collect.RangeMap;
+import com.google.common.util.concurrent.RateLimiter;
 
 import com.zenobase.commands.Command;
 import com.zenobase.commands.CompoundCommand;
@@ -29,6 +30,8 @@ import com.zenobase.tasks.OAuthTaskManager;
 import com.zenobase.tasks.Task;
 
 public class BodyMediaBurnTaskManager extends OAuthTaskManager {
+
+	private static final RateLimiter RATE_LIMITER = RateLimiter.create(2);
 
 	@Inject
 	public BodyMediaBurnTaskManager(BodyMediaCredentialsManager credentialsManager) {
@@ -54,7 +57,7 @@ public class BodyMediaBurnTaskManager extends OAuthTaskManager {
 		List<Event> events = Lists.newArrayList();
 		RangeMap<LocalDateTime, DateTimeZone> timezones = getTimezones(task, credentials);
 		LocalDate date = parseMarker(task.getMarker());
-		while (true) {
+		while (date.isBefore(LocalDate.now().plusDays(1))) {
 			BodyMediaBurnResult result = execute(task, credentials, date, timezones);
 			if (!events.addAll(result.getEvents())) {
 				break;
@@ -71,6 +74,7 @@ public class BodyMediaBurnTaskManager extends OAuthTaskManager {
 	}
 
 	private BodyMediaBurnResult execute(BodyMediaBurnTask task, OAuthCredentials credentials, LocalDate date, RangeMap<LocalDateTime, DateTimeZone> timezones) {
+		RATE_LIMITER.acquire();
 		OAuthRequest request = new OAuthRequest(Verb.GET, String.format("http://api.bodymedia.com/v2/json/burn/day/minute/%s", formatMarker(date)));
 		Response response = send(request, credentials);
 		return new BodyMediaBurnResult(parseObject(response), task.getPrincipal(), timezones);
@@ -85,7 +89,7 @@ public class BodyMediaBurnTaskManager extends OAuthTaskManager {
 	}
 
 	private static Command createCommand(BodyMediaBurnTask task, OAuthCredentials credentials, LocalDate lastSync, Iterable<Event> events, Token expiredToken) {
-		CompoundCommand command = new CompoundCommand(task.getPrincipal(), "ran bodymedia burn task", "reverted bodymedia burn task");
+		CompoundCommand command = new CompoundCommand(task.getPrincipal(), "ran bodymedia hourly burn task", "reverted bodymedia hourly burn task");
 		command.add(UpdateTaskCommand.builder(task)
 			.set(Task.COMPLETED, task.getCompleted(), new DateTime(DateTimeZone.UTC))
 			.set(Task.STATUS, task.getStatus(), Task.Status.SUCCESS)

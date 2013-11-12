@@ -1,22 +1,26 @@
 package com.zenobase.tasks.bodymedia;
 
+import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 
 import javax.measure.quantity.Energy;
 
+import org.elasticsearch.common.base.Objects;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
+import org.joda.time.Duration;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
 import org.joda.time.LocalTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
-import play.Logger;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.google.common.collect.RangeMap;
 
 import com.zenobase.common.Measures;
@@ -49,35 +53,50 @@ class BodyMediaBurnResult {
 
 	public List<Event> getEvents() {
 		List<Event> events = Lists.newArrayList();
-		addDay(Iterables.getOnlyElement(node.path("days")), events);
+		JsonNode dayNode = Iterables.getOnlyElement(node.path("days"));
+		for (Map.Entry<DateTime, BigDecimal> entry : getCaloriesByHour(dayNode).entrySet()) {
+			events.add(newEvent(entry.getKey(), entry.getValue()));
+		}
 		return events;
 	}
 
-	private void addDay(JsonNode dayNode, List<Event> events) {
-		LocalTime time = new LocalTime(0, 0);
+	private Map<DateTime, BigDecimal> getCaloriesByHour(JsonNode dayNode) {
+		Map<DateTime, BigDecimal> calories = Maps.newLinkedHashMap();
+		DateTime time = toMidnight(date);
 		for (JsonNode minuteNode : dayNode.path("minutes")) {
-			DateTimeZone timezone = timezones.get(date.toLocalDateTime(time));
-			if (timezone == null) {
-				Logger.warn("Can't find timzone for " + date.toLocalDateTime(time) + " in " + timezones);
-				continue;
-			}
 			if (minuteNode.path("source").textValue().equals("X")) {
-				events.clear(); // incomplete day
-				return;
+				calories.clear(); // incomplete day
+				break;
 			}
-			addMinute(minuteNode, date.toDateTime(time, timezone), events);
+			BigDecimal value = minuteNode.path("cals").decimalValue();
+			DateTime hour = toHour(time);
+			calories.put(hour, Objects.firstNonNull(calories.get(hour), BigDecimal.ZERO).add(value));
 			time = time.plusMinutes(1);
 		}
+		return calories;
 	}
 
-	private void addMinute(JsonNode node, DateTime timestamp, List<Event> events) {
+	private DateTime toMidnight(LocalDate date) {
+		LocalDateTime midnight = date.toLocalDateTime(LocalTime.MIDNIGHT);
+		DateTimeZone timezone = timezones.get(midnight);
+		Preconditions.checkNotNull(timezone, "Can't find timezone for %s in %s", midnight, timezones);
+		return midnight.toDateTime(timezone);
+
+	}
+
+	private static DateTime toHour(DateTime value) {
+		return value.withMinuteOfHour(0);
+	}
+
+	private Event newEvent(DateTime timestamp, BigDecimal calories) {
 		Event event = new Event();
 		event.setValue(Event.TAG, TAG);
 		event.setValue(Event.TIMESTAMP, timestamp);
-		event.setValue(Event.ENERGY, Measures.<Energy>valueOf(node.path("cals").decimalValue(), "cal"));
+		event.setValue(Event.DURATION, Duration.standardHours(1));
+		event.setValue(Event.ENERGY, Measures.<Energy>valueOf(calories, "cal"));
 		event.setValue(Event.AUTHOR, author);
 		event.setValue(Event.SOURCE, SOURCE);
-		events.add(event);
+		return event;
 	}
 
 	private static LocalDate getLocalDate(JsonNode node) {
