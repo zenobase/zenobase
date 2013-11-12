@@ -223,6 +223,7 @@
 			return params;
 		};
 		$scope.refresh = function(params) {
+			var path = $scope.constraint ? '/users/@' + $scope.constraint + '/authorizations/' : '/authorizations/';
 			$http.get('/authorizations/?' + $.param($.extend($scope.params(), params)))
 				.success(function(response) {
 					$.extend($scope, params);

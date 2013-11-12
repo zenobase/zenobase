@@ -791,14 +791,13 @@
 		};
 		$scope.params = function() {
 			return {
-				q : 'principal:' + $scope.profile['@id'],
 				client_only : true,
 				offset : $scope.offset,
 				limit : $scope.limit
 			};
 		};
 		$scope.refresh = function(params) {
-			$http.get('/authorizations/?' + $.param($.extend($scope.params(), params)))
+			$http.get('/users/' + $scope.profile['@id'] + '/authorizations/?' + $.param($.extend($scope.params(), params)))
 				.success(function(response) {
 					$.extend($scope, params);
 					$scope.total = response.total;

@@ -4,7 +4,6 @@ import javax.inject.Inject;
 
 import org.joda.time.Period;
 import play.mvc.Result;
-import com.google.common.base.Strings;
 
 import com.zenobase.commands.CompoundCommand;
 import com.zenobase.commands.DeleteAuthorizationCommand;
@@ -12,9 +11,9 @@ import com.zenobase.common.PartialList;
 import com.zenobase.models.Identity;
 import com.zenobase.oauth.Authorization;
 import com.zenobase.oauth.AuthorizationList;
-import com.zenobase.search.QueryConstraint;
 import com.zenobase.services.AuthorizationRepository;
 import com.zenobase.services.CommandDispatcher;
+import com.zenobase.services.UserLookup;
 import com.zenobase.services.UserRepository;
 
 public class AuthorizationListController extends ControllerSupport {
@@ -31,9 +30,26 @@ public class AuthorizationListController extends ControllerSupport {
 		this.users = users;
 	}
 
-	public Result find(String query, boolean clientOnly, int offset, int limit) {
-		if (limit > 100) {
-			return badRequest("limit can't be more than 100");
+	public Result findAll(int offset, int limit) {
+		Authorization auth = getCurrentAuthorization();
+    	if (auth == null) {
+    		return unauthorized();
+    	}
+    	if (auth.getScope() != null) {
+    		return forbidden();
+    	}
+		if (!users.isSuperuser(auth.getPrincipal())) {
+			return forbidden();
+		}
+		return ok(AuthorizationList.toJson(authorizations.find(offset, limit)));
+    }
+
+	public Result findByUser(String userId, boolean clientOnly, int offset, int limit) {
+		if (offset < 0 || offset > 1000) {
+			return badRequest("expected offset in [0..1000]");
+		}
+		if (limit < 0 || limit > 100) {
+			return badRequest("expected limit in [0..100]");
 		}
 		Authorization auth = getCurrentAuthorization();
     	if (auth == null) {
@@ -42,27 +58,15 @@ public class AuthorizationListController extends ControllerSupport {
     	if (auth.getScope() != null) {
     		return forbidden();
     	}
-		QueryConstraint constraint = null;
-		if (!Strings.isNullOrEmpty(query)) {
-			try {
-				constraint = QueryConstraint.parse(query);
-			} catch (IllegalArgumentException e) {
-				return badRequest("query is malformed");
-			}
+		Identity principal = new UserLookup(users).getIdentity(userId);
+		if (principal == null) {
+			return notFound("user not found");
 		}
-		if (!isConstrainedToPrincipal(constraint, auth.getPrincipal()) && !users.isSuperuser(auth.getPrincipal())) {
+		if (!auth.getPrincipal().equals(principal) && !users.isSuperuser(auth.getPrincipal())) {
 			return forbidden();
 		}
-		return constraint != null
-			? ok(AuthorizationList.toJson(authorizations.find(constraint.getField(), constraint.getValue(), clientOnly, offset, limit)))
-			: ok(AuthorizationList.toJson(authorizations.find(offset, limit)));
+		return ok(AuthorizationList.toJson(authorizations.find(Authorization.PRINCIPAL.getName(), principal.getId(), clientOnly, offset, limit)));
     }
-
-	private static boolean isConstrainedToPrincipal(QueryConstraint constraint, Identity principal) {
-		return constraint != null
-			&& Authorization.PRINCIPAL.getName().equals(constraint.getField())
-			&& principal.getId().equals(constraint.getValue());
-	}
 
 	public Result delete() {
 		Authorization auth = getCurrentAuthorization();
