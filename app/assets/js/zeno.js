@@ -43,7 +43,7 @@
 				return 'just now';
 			}
 			if (!alwaysRelative && diff >= 129600000) { // 36 hours or more
-				return this.format('MMM D, YYYY');
+				return this.format('MMM D, YYYY HH:mm');
 			}
 			return this.fromNow(a);
 		}
