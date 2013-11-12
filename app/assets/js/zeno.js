@@ -893,48 +893,7 @@
 					'reverse' : false
 				}]
 		}, {
-			'label' : 'Places (Foursquare)',
-			'task' : 'foursquare',
-			'widgets' : [{
-					'id' : 'timeline',
-					'type' : 'timeline',
-					'label' : 'Latest',
-					'placement' : 'top',
-					'field' : 'timestamp',
-					'statistic' : 'count'
-				}, {
-					'id' : 'latest',
-					'type' : 'list',
-					'label' : 'Latest',
-					'placement' : 'left',
-					'singleton' : true,
-					'limit' : 10,
-					'order' : 'timestamp',
-					'reverse' : true
-				}, {
-					'id' : 'tags',
-					'type' : 'count',
-					'label' : 'Tags',
-					'placement' : 'left',
-					'field' : 'tag',
-					'limit' : 10,
-					'order' : 'count',
-					'reverse' : false
-				}, {
-					'id' : 'map',
-					'type' : 'map',
-					'label' : 'Map',
-					'placement' : 'right'
-				}, {
-					'id' : 'day_of_week',
-					'type' : 'polar',
-					'label' : 'Day of Week',
-					'placement' : 'right',
-					'interval' : 'day_of_week',
-					'value_field' : 'timestamp'
-				}]
-		}, {
-			'label' : 'Body Weight (Withings)',
+			'label' : 'Body Weight -- Withings',
 			'task' : 'withings', 
 			'widgets' : [{
 					'id' : 'latest',
@@ -955,51 +914,59 @@
 					'unit' : 'kg'
 				}]
 		}, {
-			'label' : 'Steps (Fitbit)',
-			'task' : 'fitbit', 
+			'label' : 'Calories Burned (Hourly) -- BodyMedia',
+			'task' : 'bodymedia-burn-hour',
 			'widgets' : [{
-        'id' : 'steps',
-        'type' : 'timeline',
-        'label' : 'Steps',
-        'placement' : 'top',
-        'field' : 'count',
-        'unit' : null,
-        'statistic' : 'sum',
-        'interval' : 'month'
-    },
-    {
-        'id' : 'latest',
-        'type' : 'list',
-        'label' : 'Latest',
-        'placement' : 'left',
-        'order' : 'timestamp',
-        'reverse' : true,
-        'limit' : 10,
-        'singleton' : true
-    },
-    {
-    		'id' : 'steps_scoreboard',
-        'type' : 'scoreboard',
-        'label' : 'Scoreboard',
-        'placement' : 'right',
-        'key_field' : 'author',
-        'value_field' : 'count',
-        'unit' : null,
-        'order' : 'total',
-        'limit' : 10
-    },
-    {
-    		'id' : 'steps_by_day',
-        'type' : 'polar',
-        'label' : 'Day of Week',
-        'placement' : 'right',
-        'value_field' : 'count',
-        'unit' : null,
-        'statistic' : 'avg',
-        'interval' : 'day_of_week'
-    	}]
+				'id' : 'timeline_cal',
+				'type' : 'timeline',
+				'label' : 'Timeline',
+				'placement' : 'top',
+				'field' : 'energy',
+				'unit' : 'cal',
+				'statistic' : 'sum',
+				'interval' : 'month'
+			},
+			{
+				'id' : 'latest',
+				'type' : 'list',
+				'label' : 'Latest',
+				'placement' : 'left',
+				'order' : 'timestamp',
+				'reverse' : false,
+				'limit' : 10,
+				'singleton' : true
+			},
+			{
+				'id' : 'histogram_cal',
+				'type' : 'histogram',
+				'label' : 'Histogram',
+				'placement' : 'left',
+				'field' : 'energy',
+				'unit' : 'cal',
+				'interval' : 25
+			},
+			{
+				'id' : 'polar_cal_day',
+				'type' : 'polar',
+				'label' : 'Day',
+				'placement' : 'right',
+				'value_field' : 'energy',
+				'unit' : 'cal',
+				'statistic' : 'avg',
+				'interval' : 'day_of_week'
+			},
+			{
+				'id' : 'polar_cal_hour',
+				'type' : 'polar',
+				'label' : 'Hour',
+				'statistic' : 'avg',
+				'placement' : 'right',
+				'value_field' : 'energy',
+				'unit' : 'cal',
+				'interval' : 'hour_of_day'
+			}]
 		}, {
-			'label' : 'Environment (Netatmo)',
+			'label' : 'Environment -- Netatmo',
 			'task' : 'netatmo', 
 			'widgets': [{
 					'id' : 'latest',
@@ -1121,6 +1088,91 @@
 					'statistic' : 'avg',
 					'interval' : 'hour_of_day'
 			}]
+		}, {
+			'label' : 'Places -- Foursquare',
+			'task' : 'foursquare',
+			'widgets' : [{
+					'id' : 'timeline',
+					'type' : 'timeline',
+					'label' : 'Latest',
+					'placement' : 'top',
+					'field' : 'timestamp',
+					'statistic' : 'count'
+				}, {
+					'id' : 'latest',
+					'type' : 'list',
+					'label' : 'Latest',
+					'placement' : 'left',
+					'singleton' : true,
+					'limit' : 10,
+					'order' : 'timestamp',
+					'reverse' : true
+				}, {
+					'id' : 'tags',
+					'type' : 'count',
+					'label' : 'Tags',
+					'placement' : 'left',
+					'field' : 'tag',
+					'limit' : 10,
+					'order' : 'count',
+					'reverse' : false
+				}, {
+					'id' : 'map',
+					'type' : 'map',
+					'label' : 'Map',
+					'placement' : 'right'
+				}, {
+					'id' : 'day_of_week',
+					'type' : 'polar',
+					'label' : 'Day of Week',
+					'placement' : 'right',
+					'interval' : 'day_of_week',
+					'value_field' : 'timestamp'
+				}]
+		}, {
+			'label' : 'Steps (Daily) -- Fitbit',
+			'task' : 'fitbit', 
+			'widgets' : [{
+        'id' : 'steps',
+        'type' : 'timeline',
+        'label' : 'Steps',
+        'placement' : 'top',
+        'field' : 'count',
+        'unit' : null,
+        'statistic' : 'sum',
+        'interval' : 'month'
+    },
+    {
+        'id' : 'latest',
+        'type' : 'list',
+        'label' : 'Latest',
+        'placement' : 'left',
+        'order' : 'timestamp',
+        'reverse' : true,
+        'limit' : 10,
+        'singleton' : true
+    },
+    {
+    		'id' : 'steps_scoreboard',
+        'type' : 'scoreboard',
+        'label' : 'Scoreboard',
+        'placement' : 'right',
+        'key_field' : 'author',
+        'value_field' : 'count',
+        'unit' : null,
+        'order' : 'total',
+        'limit' : 10
+    },
+    {
+    		'id' : 'steps_by_day',
+        'type' : 'polar',
+        'label' : 'Day of Week',
+        'placement' : 'right',
+        'value_field' : 'count',
+        'unit' : null,
+        'statistic' : 'avg',
+        'interval' : 'day_of_week'
+    	}]
 		}];
 
 		$scope.init = function() {
