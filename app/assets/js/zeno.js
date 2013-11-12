@@ -330,6 +330,9 @@
 		$scope.isSelf = function() {
 			return $scope.user && $scope.profile && $scope.profile.getName() === $scope.user.getName();
 		};
+		$scope.isAnon = function() {
+			return $scope.user === null;
+		};
 
 		$scope.$watch('profile', function(profile) {
 			if (profile) {
@@ -337,21 +340,25 @@
 			}
 		});
 
-		if ($scope.user && $scope.username === $scope.user.getName()) {
-			$scope.profile = $scope.user;
-		} else {
-			$http.get('/users/@' + $scope.username)
-				.success(function(response) {
-					$scope.profile = new User(response);
-				})
-				.error(function(response, status) {
-					if (status < 500) {
-						$scope.message = 'Can\'t retrieve this user.';
-					} else {
-						$scope.message = 'Couldn\'t retrieve this user. Try again later or contact support.';
-					}
-				});
-		} 
+		$scope.$watch('user', function(user) {
+			if (angular.isDefined(user)) {
+				if (user && $scope.username === user.getName()) {
+					$scope.profile = user;
+				} else {
+					$http.get('/users/@' + $scope.username)
+					.success(function(response) {
+						$scope.profile = new User(response);
+					})
+					.error(function(response, status) {
+						if (status < 500) {
+							$scope.message = 'Can\'t retrieve this user.';
+						} else {
+							$scope.message = 'Couldn\'t retrieve this user. Try again later or contact support.';
+						}
+					});
+				} 
+			}
+		});
 	}]);
 
 	app.controller('AccountSettingsController', ['$scope', '$http', 'tracker', function($scope, $http, tracker) {
