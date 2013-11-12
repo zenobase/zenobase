@@ -23,7 +23,7 @@ DELETE  /buckets/:bucketId             @com.zenobase.controllers.BucketControlle
 
 GET     /buckets/:bucketId/label       @com.zenobase.controllers.BucketController.get(bucketId, labelOnly : Boolean = true)
 
-GET     /buckets/:bucketId/            @com.zenobase.controllers.EventListController.get(bucketId)
+GET     /buckets/:bucketId/            @com.zenobase.controllers.EventListController.find(bucketId)
 POST    /buckets/:bucketId/            @com.zenobase.controllers.EventListController.post(bucketId)
 
 GET     /buckets/:bucketId/:eventId    @com.zenobase.controllers.EventController.get(bucketId, eventId)

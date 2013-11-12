@@ -5,11 +5,11 @@ import static org.mockito.Mockito.when;
 import static play.mvc.Http.Status.*;
 import static play.test.Helpers.*;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 import play.mvc.Result;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import com.zenobase.json.Nodes;
 import com.zenobase.models.Bucket;
@@ -76,6 +76,6 @@ public class EventListControllerHttpGetTest extends EventListControllerTestSuppo
 	}
 
 	private static Result call(Bucket bucket, String query) {
-		return callAction(com.zenobase.controllers.routes.ref.EventListController.get(bucket.getId()), fakeRequest(GET, query));
+		return callAction(com.zenobase.controllers.routes.ref.EventListController.find(bucket.getId()), fakeRequest(GET, query));
 	}
 }

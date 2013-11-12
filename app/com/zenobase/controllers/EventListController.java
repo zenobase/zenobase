@@ -52,7 +52,7 @@ public class EventListController extends ControllerSupport {
 		this.dispatcher = dispatcher;
 	}
 
-	public Result get(String bucketId) {
+	public Result find(String bucketId) {
 		Authorization auth = getCurrentAuthorization();
 		Bucket bucket = buckets.find(bucketId);
     	if (bucket == null) {
