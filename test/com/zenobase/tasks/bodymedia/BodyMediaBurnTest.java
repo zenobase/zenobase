@@ -13,7 +13,7 @@ public class BodyMediaBurnTest extends TaskTestSupport {
 	public void test() {
 		BodyMediaBurnTaskManager manager = new BodyMediaBurnTaskManager(newCredentialsManager());
 		ObjectNode settings = Nodes.newObject();
-		settings.put("marker", "2013-11-02");
+		settings.put("marker", "2013-11-01");
 		Task task = manager.newTask(bucketId, principal, settings);
 		print(manager.execute(task, getCredentials()).toJson());
 	}

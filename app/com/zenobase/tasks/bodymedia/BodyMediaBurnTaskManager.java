@@ -7,14 +7,12 @@ import javax.inject.Inject;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDate;
-import org.joda.time.LocalDateTime;
 import org.scribe.model.OAuthRequest;
 import org.scribe.model.Response;
 import org.scribe.model.Token;
 import org.scribe.model.Verb;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.Lists;
-import com.google.common.collect.RangeMap;
 import com.google.common.util.concurrent.RateLimiter;
 
 import com.zenobase.commands.Command;
@@ -31,7 +29,7 @@ import com.zenobase.tasks.Task;
 
 public class BodyMediaBurnTaskManager extends OAuthTaskManager {
 
-	private static final RateLimiter RATE_LIMITER = RateLimiter.create(2);
+	private static final RateLimiter RATE_LIMITER = RateLimiter.create(4);
 
 	@Inject
 	public BodyMediaBurnTaskManager(BodyMediaCredentialsManager credentialsManager) {
@@ -55,8 +53,8 @@ public class BodyMediaBurnTaskManager extends OAuthTaskManager {
 			reauthorize(credentials);
 		}
 		List<Event> events = Lists.newArrayList();
-		RangeMap<LocalDateTime, DateTimeZone> timezones = getTimezones(task, credentials);
-		LocalDate date = parseMarker(task.getMarker());
+		TimezoneMap timezones = getTimezoneMap(task, credentials);
+		LocalDate date = getLast(parseMarker(task.getMarker()), timezones.getBegin());
 		while (date.isBefore(LocalDate.now().plusDays(1))) {
 			BodyMediaBurnResult result = execute(task, credentials, date, timezones);
 			if (!events.addAll(result.getEvents())) {
@@ -67,13 +65,18 @@ public class BodyMediaBurnTaskManager extends OAuthTaskManager {
 		return createCommand(task, credentials, date, events, token);
 	}
 
-	private RangeMap<LocalDateTime, DateTimeZone> getTimezones(BodyMediaBurnTask task, OAuthCredentials credentials) {
-		OAuthRequest request = new OAuthRequest(Verb.GET, String.format("http://api.bodymedia.com/v2/json/timezone"));
-		Response response = send(request, credentials);
-		return new BodyMediaTimezonesResult(parseObject(response)).getTimezones();
+	private LocalDate getLast(LocalDate a, LocalDate b) {
+		return a.isAfter(b) ? a : b;
 	}
 
-	private BodyMediaBurnResult execute(BodyMediaBurnTask task, OAuthCredentials credentials, LocalDate date, RangeMap<LocalDateTime, DateTimeZone> timezones) {
+	private TimezoneMap getTimezoneMap(BodyMediaBurnTask task, OAuthCredentials credentials) {
+		RATE_LIMITER.acquire();
+		OAuthRequest request = new OAuthRequest(Verb.GET, String.format("http://api.bodymedia.com/v2/json/timezone"));
+		Response response = send(request, credentials);
+		return new BodyMediaTimezonesResult(parseObject(response)).getTimezoneMap();
+	}
+
+	private BodyMediaBurnResult execute(BodyMediaBurnTask task, OAuthCredentials credentials, LocalDate date, TimezoneMap timezones) {
 		RATE_LIMITER.acquire();
 		OAuthRequest request = new OAuthRequest(Verb.GET, String.format("http://api.bodymedia.com/v2/json/burn/day/minute/%s", formatMarker(date)));
 		Response response = send(request, credentials);
