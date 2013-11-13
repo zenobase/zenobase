@@ -1130,6 +1130,49 @@
 					'value_field' : 'timestamp'
 				}]
 		}, {
+			'label' : 'Sleep -- BodyMedia',
+			'task' : 'bodymedia-sleep',
+			'widgets' : [{
+				'id' : 'timeline',
+				'type' : 'timeline',
+				'label' : 'Timeline',
+				'placement' : 'top',
+				'field' : 'duration',
+				'unit' : null,
+				'statistic' : 'avg',
+				'interval' : 'month',
+				'filter' : 'duration:[2h..*)'
+			},
+			{
+				'id' : 'latest',
+				'type' : 'list',
+				'label' : 'Latest',
+				'placement' : 'left',
+				'order' : 'timestamp',
+				'reverse' : false,
+				'limit' : 10,
+				'singleton' : true
+			},
+			{
+				'id' : 'histogram',
+				'type' : 'histogram',
+				'label' : 'Duration',
+				'placement' : 'left',
+				'field' : 'duration',
+				'unit' : null,
+				'interval' : 3600000
+			},
+			{
+				'id' : 'polar',
+				'type' : 'polar',
+				'label' : 'Bedtime',
+				'placement' : 'right',
+				'value_field' : 'count',
+				'unit' : null,
+				'statistic' : 'count',
+				'interval' : 'hour_of_day'
+			}]
+		}, {
 			'label' : 'Steps (Daily) -- Fitbit',
 			'task' : 'fitbit', 
 			'widgets' : [{
@@ -3794,6 +3837,7 @@
 			{ 'id' : 'bodymedia', 'description' : 'Creates one calorie count and one sleep summary event per day.' },
 			{ 'id' : 'bodymedia-burn-hour', 'description' : 'Creates an event for the number of calories burned each hour.' },
 			{ 'id' : 'bodymedia-steps-hour', 'description' : 'Creates an event for the number of steps walked each hour.' },
+			{ 'id' : 'bodymedia-sleep', 'description' : 'Creates an event for each sleep or nap.' },
 			{ 'id' : 'foursquare', 'description' : 'Creates an event for each Foursquare check-in.' },
 			{ 'id' : 'netatmo', 'description' : 'Creates an event for each weather station measurement (up to 300 per day).' },
 			{ 'id' : 'withings', 'description' : 'Creates an event for each weight measurement.' },
@@ -3888,6 +3932,17 @@
 	}]);
 
 	app.controller('BodyMediaStepsHourSettingsController', ['$scope', function($scope) {
+
+		$scope.init = function() {
+			$scope.settings = $scope.$parent.$parent.settings = {
+					marker : new Date(moment().utc().startOf('month').valueOf())
+			};
+		};
+
+		$scope.init();
+	}]);
+
+	app.controller('BodyMediaSleepSettingsController', ['$scope', function($scope) {
 
 		$scope.init = function() {
 			$scope.settings = $scope.$parent.$parent.settings = {

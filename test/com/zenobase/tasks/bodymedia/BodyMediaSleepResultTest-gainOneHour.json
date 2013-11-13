@@ -1,0 +1,308 @@
+{
+    "days": [
+        {
+            "date": "20131103",
+            "totalLying": 569,
+            "totalSleep": 426,
+            "efficiency": 0.75,
+            "sleepPeriods": [
+                {
+                    "state": "LYING",
+                    "duration": 20,
+                    "minuteIndex": 734
+                },
+                {
+                    "state": "ASLEEP",
+                    "duration": 5,
+                    "minuteIndex": 754
+                },
+                {
+                    "state": "LYING",
+                    "duration": 5,
+                    "minuteIndex": 759
+                },
+                {
+                    "state": "ASLEEP",
+                    "duration": 45,
+                    "minuteIndex": 764
+                },
+                {
+                    "state": "LYING",
+                    "duration": 4,
+                    "minuteIndex": 809
+                },
+                {
+                    "state": "ASLEEP",
+                    "duration": 10,
+                    "minuteIndex": 813
+                },
+                {
+                    "state": "LYING",
+                    "duration": 3,
+                    "minuteIndex": 823
+                },
+                {
+                    "state": "ASLEEP",
+                    "duration": 1,
+                    "minuteIndex": 826
+                },
+                {
+                    "state": "LYING",
+                    "duration": 4,
+                    "minuteIndex": 827
+                },
+                {
+                    "state": "ASLEEP",
+                    "duration": 19,
+                    "minuteIndex": 831
+                },
+                {
+                    "state": "LYING",
+                    "duration": 3,
+                    "minuteIndex": 850
+                },
+                {
+                    "state": "ASLEEP",
+                    "duration": 1,
+                    "minuteIndex": 853
+                },
+                {
+                    "state": "LYING",
+                    "duration": 2,
+                    "minuteIndex": 854
+                },
+                {
+                    "state": "ASLEEP",
+                    "duration": 25,
+                    "minuteIndex": 856
+                },
+                {
+                    "state": "LYING",
+                    "duration": 2,
+                    "minuteIndex": 881
+                },
+                {
+                    "state": "ASLEEP",
+                    "duration": 51,
+                    "minuteIndex": 883
+                },
+                {
+                    "state": "LYING",
+                    "duration": 3,
+                    "minuteIndex": 934
+                },
+                {
+                    "state": "ASLEEP",
+                    "duration": 65,
+                    "minuteIndex": 937
+                },
+                {
+                    "state": "LYING",
+                    "duration": 6,
+                    "minuteIndex": 1002
+                },
+                {
+                    "state": "ASLEEP",
+                    "duration": 6,
+                    "minuteIndex": 1008
+                },
+                {
+                    "state": "LYING",
+                    "duration": 4,
+                    "minuteIndex": 1014
+                },
+                {
+                    "state": "ASLEEP",
+                    "duration": 31,
+                    "minuteIndex": 1018
+                },
+                {
+                    "state": "LYING",
+                    "duration": 2,
+                    "minuteIndex": 1049
+                },
+                {
+                    "state": "ASLEEP",
+                    "duration": 9,
+                    "minuteIndex": 1051
+                },
+                {
+                    "state": "LYING",
+                    "duration": 3,
+                    "minuteIndex": 1060
+                },
+                {
+                    "state": "ASLEEP",
+                    "duration": 1,
+                    "minuteIndex": 1063
+                },
+                {
+                    "state": "LYING",
+                    "duration": 2,
+                    "minuteIndex": 1064
+                },
+                {
+                    "state": "ASLEEP",
+                    "duration": 8,
+                    "minuteIndex": 1066
+                },
+                {
+                    "state": "LYING",
+                    "duration": 2,
+                    "minuteIndex": 1074
+                },
+                {
+                    "state": "ASLEEP",
+                    "duration": 6,
+                    "minuteIndex": 1076
+                },
+                {
+                    "state": "LYING",
+                    "duration": 6,
+                    "minuteIndex": 1082
+                },
+                {
+                    "state": "ASLEEP",
+                    "duration": 6,
+                    "minuteIndex": 1088
+                },
+                {
+                    "state": "LYING",
+                    "duration": 7,
+                    "minuteIndex": 1094
+                },
+                {
+                    "state": "ASLEEP",
+                    "duration": 15,
+                    "minuteIndex": 1101
+                },
+                {
+                    "state": "LYING",
+                    "duration": 3,
+                    "minuteIndex": 1116
+                },
+                {
+                    "state": "ASLEEP",
+                    "duration": 5,
+                    "minuteIndex": 1119
+                },
+                {
+                    "state": "LYING",
+                    "duration": 3,
+                    "minuteIndex": 1124
+                },
+                {
+                    "state": "ASLEEP",
+                    "duration": 1,
+                    "minuteIndex": 1127
+                },
+                {
+                    "state": "LYING",
+                    "duration": 2,
+                    "minuteIndex": 1128
+                },
+                {
+                    "state": "ASLEEP",
+                    "duration": 26,
+                    "minuteIndex": 1130
+                },
+                {
+                    "state": "LYING",
+                    "duration": 3,
+                    "minuteIndex": 1156
+                },
+                {
+                    "state": "ASLEEP",
+                    "duration": 44,
+                    "minuteIndex": 1159
+                },
+                {
+                    "state": "LYING",
+                    "duration": 5,
+                    "minuteIndex": 1203
+                },
+                {
+                    "state": "ASLEEP",
+                    "duration": 11,
+                    "minuteIndex": 1208
+                },
+                {
+                    "state": "LYING",
+                    "duration": 5,
+                    "minuteIndex": 1219
+                },
+                {
+                    "state": "ASLEEP",
+                    "duration": 9,
+                    "minuteIndex": 1224
+                },
+                {
+                    "state": "LYING",
+                    "duration": 2,
+                    "minuteIndex": 1233
+                },
+                {
+                    "state": "ASLEEP",
+                    "duration": 1,
+                    "minuteIndex": 1235
+                },
+                {
+                    "state": "LYING",
+                    "duration": 2,
+                    "minuteIndex": 1236
+                },
+                {
+                    "state": "ASLEEP",
+                    "duration": 21,
+                    "minuteIndex": 1238
+                },
+                {
+                    "state": "LYING",
+                    "duration": 5,
+                    "minuteIndex": 1259
+                },
+                {
+                    "state": "ASLEEP",
+                    "duration": 1,
+                    "minuteIndex": 1264
+                },
+                {
+                    "state": "LYING",
+                    "duration": 2,
+                    "minuteIndex": 1265
+                },
+                {
+                    "state": "ASLEEP",
+                    "duration": 1,
+                    "minuteIndex": 1267
+                },
+                {
+                    "state": "LYING",
+                    "duration": 12,
+                    "minuteIndex": 1273
+                },
+                {
+                    "state": "ASLEEP",
+                    "duration": 2,
+                    "minuteIndex": 1285
+                },
+                {
+                    "state": "LYING",
+                    "duration": 21,
+                    "minuteIndex": 1287
+                }
+            ]
+        }
+    ],
+    "totalLying": 569,
+    "totalSleep": 426,
+    "efficiency": 0.75,
+    "lastSync": {
+        "type": "UPLOAD_SYNC_WIN",
+        "dateTime": "20131113T101807-0800"
+    },
+    "averageLying": 569,
+    "averageSleep": 426,
+    "startDate": "20131103",
+    "endDate": "20131103"
+}

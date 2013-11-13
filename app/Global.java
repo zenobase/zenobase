@@ -96,6 +96,7 @@ import com.zenobase.tasks.TaskManagerRegistry;
 import com.zenobase.tasks.TaskRefresher;
 import com.zenobase.tasks.bodymedia.BodyMediaBurnTaskManager;
 import com.zenobase.tasks.bodymedia.BodyMediaCredentialsManager;
+import com.zenobase.tasks.bodymedia.BodyMediaSleepTaskManager;
 import com.zenobase.tasks.bodymedia.BodyMediaStepsTaskManager;
 import com.zenobase.tasks.bodymedia.BodyMediaSummaryTaskManager;
 import com.zenobase.tasks.demo.DemoCredentialsManager;
@@ -218,6 +219,7 @@ public class Global extends GlobalSettings {
 				bindIfConfigured("bodymedia", BodyMediaSummaryTaskManager.class, tasks);
 				bindIfConfigured("bodymedia", BodyMediaBurnTaskManager.class, tasks);
 				bindIfConfigured("bodymedia", BodyMediaStepsTaskManager.class, tasks);
+				bindIfConfigured("bodymedia", BodyMediaSleepTaskManager.class, tasks);
 				bindIfConfigured("netatmo", NetatmoTaskManager.class, tasks);
 				bind(TaskManagerRegistry.class).in(Singleton.class);
 

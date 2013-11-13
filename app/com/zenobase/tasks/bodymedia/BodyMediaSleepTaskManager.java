@@ -1,0 +1,67 @@
+package com.zenobase.tasks.bodymedia;
+
+import java.util.List;
+
+import javax.inject.Inject;
+
+import org.joda.time.LocalDate;
+import org.scribe.model.OAuthRequest;
+import org.scribe.model.Response;
+import org.scribe.model.Token;
+import org.scribe.model.Verb;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.common.collect.Lists;
+
+import com.zenobase.commands.Command;
+import com.zenobase.models.Event;
+import com.zenobase.models.Identity;
+import com.zenobase.tasks.OAuthCredentials;
+import com.zenobase.tasks.Task;
+
+public class BodyMediaSleepTaskManager extends BodyMediaTaskManagerSupport {
+
+	@Inject
+	public BodyMediaSleepTaskManager(BodyMediaCredentialsManager credentialsManager) {
+		super(BodyMediaSleepTask.TYPE, credentialsManager);
+	}
+
+	@Override
+	public Task newTask(String bucketId, Identity principal, ObjectNode settings) {
+		String marker = parseMarker(settings.path("marker").textValue()).toString();
+		return new BodyMediaSleepTask(bucketId, principal, marker);
+	}
+
+	@Override
+	public Command execute(Task task, OAuthCredentials credentials) {
+		return execute(task.as(BodyMediaSleepTask.class), credentials);
+	}
+
+	private Command execute(BodyMediaSleepTask task, OAuthCredentials credentials) {
+		Token token = credentials.getToken();
+		if (credentials.isExpired()) {
+			reauthorize(credentials);
+		}
+		List<Event> events = Lists.newArrayList();
+		TimezoneMap timezones = getTimezoneMap(credentials);
+		LocalDate date = getLast(parseMarker(task.getMarker()), timezones.getBegin());
+		while (date.isBefore(LocalDate.now().plusDays(1))) {
+			BodyMediaSleepResult result = execute(task, credentials, date, timezones);
+			if (!events.addAll(result.getEvents())) {
+				break;
+			}
+			date = date.plusDays(1);
+		}
+		return createCommand(task, credentials, date, events, token);
+	}
+
+	private LocalDate getLast(LocalDate a, LocalDate b) {
+		return a.isAfter(b) ? a : b;
+	}
+
+	private BodyMediaSleepResult execute(BodyMediaSleepTask task, OAuthCredentials credentials, LocalDate date, TimezoneMap timezones) {
+		checkRateLimit();
+		OAuthRequest request = new OAuthRequest(Verb.GET, String.format("http://api.bodymedia.com/v2/json/sleep/day/period/%s", formatMarker(date)));
+		Response response = send(request, credentials);
+		return new BodyMediaSleepResult(parseObject(response), task.getPrincipal(), timezones);
+	}
+}

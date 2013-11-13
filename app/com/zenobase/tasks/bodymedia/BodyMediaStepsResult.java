@@ -1,9 +1,8 @@
 package com.zenobase.tasks.bodymedia;
 
+import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
-import org.elasticsearch.common.base.Objects;
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
 import org.joda.time.LocalDate;
@@ -12,7 +11,6 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
@@ -35,27 +33,21 @@ class BodyMediaStepsResult extends BodyMediaResultSupport {
 	}
 
 	public List<Event> getEvents() {
-		List<Event> events = Lists.newArrayList();
-		JsonNode dayNode = Iterables.getOnlyElement(path("days"));
-		for (Map.Entry<DateTime, Integer> entry : getStepsByHour(dayNode).entrySet()) {
-			events.add(newEvent(entry.getKey(), entry.getValue()));
-		}
-		return events;
+		return getEvents(Iterables.getOnlyElement(path("days")));
 	}
 
-	private Map<DateTime, Integer> getStepsByHour(JsonNode dayNode) {
-		Map<DateTime, Integer> steps = Maps.newLinkedHashMap();
+	public List<Event> getEvents(JsonNode dayNode) {
+		List<Event> events = Lists.newArrayList();
 		DateTime time = Preconditions.checkNotNull(timezones.getBegin(date));
 		for (JsonNode hourNode : dayNode.path("hours")) {
 			if (getLastSyncDate().isBefore(time)) {
-				steps.clear();
-				break;
+				return Collections.emptyList();
 			}
 			DateTime hour = timezones.rezone(time);
-			steps.put(hour, Objects.firstNonNull(steps.get(hour), 0) + hourNode.path("totalSteps").intValue());
+			events.add(newEvent(hour, hourNode.path("totalSteps").intValue()));
 			time = time.plusHours(1);
 		}
-		return steps;
+		return events;
 	}
 
 	private Event newEvent(DateTime timestamp, Integer steps) {
