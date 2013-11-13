@@ -1141,7 +1141,7 @@
 				'unit' : null,
 				'statistic' : 'avg',
 				'interval' : 'month',
-				'filter' : 'duration:[2h..*)'
+				'filter' : 'duration:[1h..*)'
 			},
 			{
 				'id' : 'latest',
@@ -1154,23 +1154,24 @@
 				'singleton' : true
 			},
 			{
-				'id' : 'histogram',
-				'type' : 'histogram',
-				'label' : 'Duration',
-				'placement' : 'left',
-				'field' : 'duration',
-				'unit' : null,
-				'interval' : 3600000
-			},
-			{
 				'id' : 'polar',
 				'type' : 'polar',
 				'label' : 'Bedtime',
 				'placement' : 'right',
-				'value_field' : 'count',
+				'value_field' : 'timestamp',
 				'unit' : null,
 				'statistic' : 'count',
-				'interval' : 'hour_of_day'
+				'interval' : 'hour_of_day',
+				'filter' : 'duration:[1h..*)'
+			},
+			{
+				'id' : 'histogram',
+				'type' : 'histogram',
+				'label' : 'Duration',
+				'placement' : 'right',
+				'field' : 'duration',
+				'unit' : null,
+				'interval' : 3600000
 			}]
 		}, {
 			'label' : 'Steps (Daily) -- Fitbit',
@@ -2050,8 +2051,8 @@
 							selection : function(event) {
 								var min = (event.xAxis[0].min !== undefined) ? Math.ceil(event.xAxis[0].min) : 0;
 								var max = (event.xAxis[0].max !== undefined) ? Math.floor(event.xAxis[0].max) : $scope.intervals.length - 1;
-								var from = field.toText($scope.intervals[max].from); 
-								var to = field.toText($scope.intervals[min].to);
+								var from = field.toText($scope.intervals[max].from) || '*'; 
+								var to = field.toText($scope.intervals[min].to) || '*';
 								if (from != '*' || to != '*') {
 									var range = '[' + from + '..' + to + ')';
 									$scope.$apply(function() {
