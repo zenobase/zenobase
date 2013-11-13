@@ -948,7 +948,7 @@
 			{
 				'id' : 'polar_cal_day',
 				'type' : 'polar',
-				'label' : 'Day',
+				'label' : 'Day of Week',
 				'placement' : 'right',
 				'value_field' : 'energy',
 				'unit' : 'cal',
@@ -958,7 +958,7 @@
 			{
 				'id' : 'polar_cal_hour',
 				'type' : 'polar',
-				'label' : 'Hour',
+				'label' : 'Hour of Day',
 				'statistic' : 'avg',
 				'placement' : 'right',
 				'value_field' : 'energy',
@@ -1173,6 +1173,58 @@
         'statistic' : 'avg',
         'interval' : 'day_of_week'
     	}]
+		}, {
+			'label' : 'Steps (Hourly) -- BodyMedia',
+			'task' : 'bodymedia-steps-hour',
+			'widgets' : [{
+				'id' : 'timeline_steps',
+				'type' : 'timeline',
+				'label' : 'Timeline',
+				'placement' : 'top',
+				'field' : 'count',
+				'unit' : null,
+				'statistic' : 'sum',
+				'interval' : 'month'
+			},
+			{
+				'id' : 'latest',
+				'type' : 'list',
+				'label' : 'Latest',
+				'placement' : 'left',
+				'order' : 'timestamp',
+				'reverse' : false,
+				'limit' : 10,
+				'singleton' : true
+			},
+			{
+				'id' : 'histogram_steps',
+				'type' : 'histogram',
+				'label' : 'Histogram',
+				'placement' : 'left',
+				'field' : 'count',
+				'unit' : null,
+				'interval' : 2500
+			},
+			{
+				'id' : 'steps_by_day',
+				'type' : 'polar',
+				'label' : 'Day of Week',
+				'placement' : 'right',
+				'value_field' : 'count',
+				'unit' : null,
+				'statistic' : 'avg',
+				'interval' : 'day_of_week'
+			},
+			{
+				'id' : 'steps_by_hour',
+				'type' : 'polar',
+				'label' : 'Hour of Day',
+				'statistic' : 'avg',
+				'placement' : 'right',
+				'value_field' : 'count',
+				'unit' : null,
+				'interval' : 'hour_of_day'
+			}]
 		}];
 
 		$scope.init = function() {
@@ -3741,6 +3793,7 @@
 			{ 'id' : 'fitbit-intraday', 'description' : 'Creates one event for each period of time spent moving, sitting or sleeping (100 to 1,000 events per day).' },
 			{ 'id' : 'bodymedia', 'description' : 'Creates one calorie count and one sleep summary event per day.' },
 			{ 'id' : 'bodymedia-burn-hour', 'description' : 'Creates an event for the number of calories burned each hour.' },
+			{ 'id' : 'bodymedia-steps-hour', 'description' : 'Creates an event for the number of steps walked each hour.' },
 			{ 'id' : 'foursquare', 'description' : 'Creates an event for each Foursquare check-in.' },
 			{ 'id' : 'netatmo', 'description' : 'Creates an event for each weather station measurement (up to 300 per day).' },
 			{ 'id' : 'withings', 'description' : 'Creates an event for each weight measurement.' },
@@ -3824,6 +3877,17 @@
 	}]);
 
 	app.controller('BodyMediaBurnHourSettingsController', ['$scope', function($scope) {
+
+		$scope.init = function() {
+			$scope.settings = $scope.$parent.$parent.settings = {
+					marker : new Date(moment().utc().startOf('month').valueOf())
+			};
+		};
+
+		$scope.init();
+	}]);
+
+	app.controller('BodyMediaStepsHourSettingsController', ['$scope', function($scope) {
 
 		$scope.init = function() {
 			$scope.settings = $scope.$parent.$parent.settings = {
@@ -4408,7 +4472,7 @@
 			var count = 0;
 			$.each(Field.findAll(), function(i, field) {
 				var value = event[field.name];
-				if (value) {
+				if (angular.isDefined(value)) {
 					$.each($.isArray(value) ? value : [ value ], function(i, value) {
 						if (count > 0) {
 							html += ' &nbsp; ';

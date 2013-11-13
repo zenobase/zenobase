@@ -18,25 +18,25 @@ import com.zenobase.models.Identity;
 import com.zenobase.tasks.OAuthCredentials;
 import com.zenobase.tasks.Task;
 
-public class BodyMediaBurnTaskManager extends BodyMediaTaskManagerSupport {
+public class BodyMediaStepsTaskManager extends BodyMediaTaskManagerSupport {
 
 	@Inject
-	public BodyMediaBurnTaskManager(BodyMediaCredentialsManager credentialsManager) {
-		super(BodyMediaBurnTask.TYPE, credentialsManager);
+	public BodyMediaStepsTaskManager(BodyMediaCredentialsManager credentialsManager) {
+		super(BodyMediaStepsTask.TYPE, credentialsManager);
 	}
 
 	@Override
 	public Task newTask(String bucketId, Identity principal, ObjectNode settings) {
 		String marker = parseMarker(settings.path("marker").textValue()).toString();
-		return new BodyMediaBurnTask(bucketId, principal, marker);
+		return new BodyMediaStepsTask(bucketId, principal, marker);
 	}
 
 	@Override
 	public Command execute(Task task, OAuthCredentials credentials) {
-		return execute(task.as(BodyMediaBurnTask.class), credentials);
+		return execute(task.as(BodyMediaStepsTask.class), credentials);
 	}
 
-	private Command execute(BodyMediaBurnTask task, OAuthCredentials credentials) {
+	private Command execute(BodyMediaStepsTask task, OAuthCredentials credentials) {
 		Token token = credentials.getToken();
 		if (credentials.isExpired()) {
 			reauthorize(credentials);
@@ -45,7 +45,7 @@ public class BodyMediaBurnTaskManager extends BodyMediaTaskManagerSupport {
 		TimezoneMap timezones = getTimezoneMap(credentials);
 		LocalDate date = getLast(parseMarker(task.getMarker()), timezones.getBegin());
 		while (date.isBefore(LocalDate.now().plusDays(1))) {
-			BodyMediaBurnResult result = execute(task, credentials, date, timezones);
+			BodyMediaStepsResult result = execute(task, credentials, date, timezones);
 			if (!events.addAll(result.getEvents())) {
 				break;
 			}
@@ -58,10 +58,10 @@ public class BodyMediaBurnTaskManager extends BodyMediaTaskManagerSupport {
 		return a.isAfter(b) ? a : b;
 	}
 
-	private BodyMediaBurnResult execute(BodyMediaBurnTask task, OAuthCredentials credentials, LocalDate date, TimezoneMap timezones) {
+	private BodyMediaStepsResult execute(BodyMediaStepsTask task, OAuthCredentials credentials, LocalDate date, TimezoneMap timezones) {
 		checkRateLimit();
-		OAuthRequest request = new OAuthRequest(Verb.GET, String.format("http://api.bodymedia.com/v2/json/burn/day/minute/%s", formatMarker(date)));
+		OAuthRequest request = new OAuthRequest(Verb.GET, String.format("http://api.bodymedia.com/v2/json/step/day/hour/%s", formatMarker(date)));
 		Response response = send(request, credentials);
-		return new BodyMediaBurnResult(parseObject(response), task.getPrincipal(), timezones);
+		return new BodyMediaStepsResult(parseObject(response), task.getPrincipal(), timezones);
 	}
 }

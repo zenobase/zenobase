@@ -1,0 +1,93 @@
+{
+    "days": [
+        {
+            "date": "20131103",
+            "hours": [
+                {
+                    "totalSteps": 91
+                },
+                {
+                    "totalSteps": 3
+                },
+                {
+                    "totalSteps": 2
+                },
+                {
+                    "totalSteps": 1
+                },
+                {
+                    "totalSteps": 0
+                },
+                {
+                    "totalSteps": 4
+                },
+                {
+                    "totalSteps": 3
+                },
+                {
+                    "totalSteps": 0
+                },
+                {
+                    "totalSteps": 7
+                },
+                {
+                    "totalSteps": 33
+                },
+                {
+                    "totalSteps": 133
+                },
+                {
+                    "totalSteps": 54
+                },
+                {
+                    "totalSteps": 83
+                },
+                {
+                    "totalSteps": 365
+                },
+                {
+                    "totalSteps": 1787
+                },
+                {
+                    "totalSteps": 4160
+                },
+                {
+                    "totalSteps": 1254
+                },
+                {
+                    "totalSteps": 271
+                },
+                {
+                    "totalSteps": 350
+                },
+                {
+                    "totalSteps": 10
+                },
+                {
+                    "totalSteps": 16
+                },
+                {
+                    "totalSteps": 3
+                },
+                {
+                    "totalSteps": 17
+                },
+                {
+                    "totalSteps": 238
+                },
+                {
+                    "totalSteps": 46
+                }
+            ],
+            "totalSteps": 8928
+        }
+    ],
+    "lastSync": {
+        "type": "UPLOAD_SYNC_WIN",
+        "dateTime": "20131113T101807-0800"
+    },
+    "totalSteps": 8928,
+    "averageSteps": 8928,
+    "startDate": "20131103",
+    "endDate": "20131103"
+}

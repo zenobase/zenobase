@@ -8,14 +8,12 @@ import javax.measure.quantity.Energy;
 
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
-import org.joda.time.LocalDate;
 import org.junit.Test;
 
 import com.zenobase.common.Measures;
 import com.zenobase.models.Event;
 import com.zenobase.models.Rating;
 import com.zenobase.tasks.ResultTestSupport;
-import com.zenobase.tasks.bodymedia.BodyMediaSummaryResult;
 
 public class BodyMediaSummaryResultTest extends ResultTestSupport {
 
@@ -23,7 +21,7 @@ public class BodyMediaSummaryResultTest extends ResultTestSupport {
 	public void test() {
 
 		BodyMediaSummaryResult result = new BodyMediaSummaryResult(readObject("BodyMediaSummaryResultTest.json"), TESTER);
-		assertThat(result.getLastSyncDate()).as("last sync date").isEqualTo(LocalDate.parse("2013-01-03"));
+		assertThat(result.getLastSyncDate()).as("last sync date").isEqualTo(DateTime.parse("2013-01-03T13:21:40.000-12:00"));
 		List<Event> events = result.getEvents();
 		assertThat(events).as("events").hasSize(4);
 
