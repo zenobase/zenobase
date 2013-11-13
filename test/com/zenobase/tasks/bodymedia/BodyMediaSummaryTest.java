@@ -7,11 +7,11 @@ import com.zenobase.json.Nodes;
 import com.zenobase.tasks.Task;
 import com.zenobase.tasks.TaskTestSupport;
 
-public class BodyMediaTest extends TaskTestSupport {
+public class BodyMediaSummaryTest extends TaskTestSupport {
 
 	@Test
 	public void test() {
-		BodyMediaTaskManager manager = new BodyMediaTaskManager(newCredentialsManager());
+		BodyMediaSummaryTaskManager manager = new BodyMediaSummaryTaskManager(newCredentialsManager());
 		ObjectNode settings = Nodes.newObject();
 		settings.put("marker", "2013-11-01");
 		Task task = manager.newTask(bucketId, principal, settings);

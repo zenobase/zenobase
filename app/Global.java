@@ -96,7 +96,7 @@ import com.zenobase.tasks.TaskManagerRegistry;
 import com.zenobase.tasks.TaskRefresher;
 import com.zenobase.tasks.bodymedia.BodyMediaBurnTaskManager;
 import com.zenobase.tasks.bodymedia.BodyMediaCredentialsManager;
-import com.zenobase.tasks.bodymedia.BodyMediaTaskManager;
+import com.zenobase.tasks.bodymedia.BodyMediaSummaryTaskManager;
 import com.zenobase.tasks.demo.DemoCredentialsManager;
 import com.zenobase.tasks.demo.DemoTaskManager;
 import com.zenobase.tasks.fitbit.FitbitCredentialsManager;
@@ -214,7 +214,7 @@ public class Global extends GlobalSettings {
 				bindIfConfigured("fitbit", FitbitIntradayTaskManager.class, tasks);
 				bindIfConfigured("foursquare", FoursquareTaskManager.class, tasks);
 				bindIfConfigured("withings", WithingsTaskManager.class, tasks);
-				bindIfConfigured("bodymedia", BodyMediaTaskManager.class, tasks);
+				bindIfConfigured("bodymedia", BodyMediaSummaryTaskManager.class, tasks);
 				bindIfConfigured("bodymedia", BodyMediaBurnTaskManager.class, tasks);
 				bindIfConfigured("netatmo", NetatmoTaskManager.class, tasks);
 				bind(TaskManagerRegistry.class).in(Singleton.class);
