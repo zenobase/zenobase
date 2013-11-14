@@ -1,0 +1,28 @@
+{
+    "items": [
+        {
+            "duration": 16121.187,
+            "total_distance": 6164.0509650984,
+            "has_path": true,
+            "entry_mode": "API",
+            "source": "RunKeeper",
+            "start_time": "Sat, 9 Nov 2013 11:50:48",
+            "total_calories": 1561,
+            "type": "Hiking",
+            "uri": "/fitnessActivities/268390846"
+        },
+        {
+            "duration": 3501.854,
+            "total_distance": 4497.40695021703,
+            "has_path": true,
+            "entry_mode": "API",
+            "source": "RunKeeper",
+            "start_time": "Sun, 13 Oct 2013 15:00:25",
+            "total_calories": 282,
+            "type": "Walking",
+            "uri": "/fitnessActivities/256631757"
+        }
+    ],
+    "next" : "/fitnessActivities?page=1&pageSize=2",
+    "size": 10
+}

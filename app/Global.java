@@ -110,6 +110,8 @@ import com.zenobase.tasks.foursquare.FoursquareCredentialsManager;
 import com.zenobase.tasks.foursquare.FoursquareTaskManager;
 import com.zenobase.tasks.netatmo.NetatmoCredentialsManager;
 import com.zenobase.tasks.netatmo.NetatmoTaskManager;
+import com.zenobase.tasks.runkeeper.RunkeeperCredentialsManager;
+import com.zenobase.tasks.runkeeper.RunkeeperTaskManager;
 import com.zenobase.tasks.withings.WithingsCredentialsManager;
 import com.zenobase.tasks.withings.WithingsTaskManager;
 
@@ -210,6 +212,7 @@ public class Global extends GlobalSettings {
 				bindIfConfigured("withings", WithingsCredentialsManager.class, credentials);
 				bindIfConfigured("bodymedia", BodyMediaCredentialsManager.class, credentials);
 				bindIfConfigured("netatmo", NetatmoCredentialsManager.class, credentials);
+				bindIfConfigured("runkeeper", RunkeeperCredentialsManager.class, credentials);
 				bind(CredentialsManagerRegistry.class).in(Singleton.class);
 
 				Multibinder<TaskManager> tasks = Multibinder.newSetBinder(binder(), new TypeLiteral<TaskManager>() {});
@@ -225,6 +228,7 @@ public class Global extends GlobalSettings {
 				bindIfConfigured("bodymedia", BodyMediaStepsTaskManager.class, tasks);
 				bindIfConfigured("bodymedia", BodyMediaSleepTaskManager.class, tasks);
 				bindIfConfigured("netatmo", NetatmoTaskManager.class, tasks);
+				bindIfConfigured("runkeeper", RunkeeperTaskManager.class, tasks);
 				bind(TaskManagerRegistry.class).in(Singleton.class);
 
 				bind(AccountController.class).in(Singleton.class);

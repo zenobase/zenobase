@@ -893,6 +893,58 @@
 					'reverse' : false
 				}]
 		}, {
+			'label' : 'Activities (RunKeeper)',
+			'task' : 'runkeeper-activities',
+			'widgets' : [{
+				'id' : 'timeline',
+				'type' : 'timeline',
+				'label' : 'Timeline',
+				'placement' : 'top',
+				'field' : 'distance',
+				'unit' : 'km',
+				'statistic' : 'sum',
+				'interval' : 'month'
+			},
+			{
+				'id' : 'latest',
+				'type' : 'list',
+				'label' : 'Latest',
+				'placement' : 'left',
+				'order' : 'timestamp',
+				'reverse' : false,
+				'limit' : 10,
+				'singleton' : true
+			},
+			{
+				'id' : 'tags',
+				'type' : 'count',
+				'label' : 'Type',
+				'placement' : 'left',
+				'field' : 'tag',
+				'order' : 'count',
+				'limit' : 5,
+				'reverse' : false
+			},
+			{
+				'id' : 'polar',
+				'type' : 'polar',
+				'label' : 'Day of Week',
+				'placement' : 'right',
+				'value_field' : 'timestamp',
+				'unit' : null,
+				'statistic' : 'count',
+				'interval' : 'day_of_week'
+			},
+			{
+				'id' : 'histogram',
+				'type' : 'histogram',
+				'label' : 'Distances',
+				'placement' : 'right',
+				'field' : 'distance',
+				'unit' : 'km',
+				'interval' : 5
+			}]
+		}, {
 			'label' : 'Burn (BodyMedia)',
 			'task' : 'bodymedia-burn',
 			'widgets' : [{
@@ -3896,6 +3948,7 @@
 			{ 'id' : 'bodymedia-sleep', 'description' : 'Creates an event for each period of sleep.' },
 			{ 'id' : 'bodymedia-steps', 'description' : 'Creates an event for the number of steps each hour.' },
 			{ 'id' : 'netatmo', 'description' : 'Creates an event for each weather station measurement.' },
+			{ 'id' : 'runkeeper-activities', 'description' : 'Creates an event for each logged activity.' },
 			{ 'id' : 'withings', 'description' : 'Creates an event for each body weight measurement.' },
 			{ 'id' : 'demo', 'description' : 'Creates an event with a custom tag.' }
 		];
@@ -4020,6 +4073,33 @@
 					marker : new Date(moment().utc().startOf('month').valueOf())
 			};
 		};	
+
+		$scope.init();
+	}]);
+
+	app.controller('RunkeeperSettingsController', ['$scope', '$http', 'Field', 'googleApiKey', function($scope, $http, Field, googleApiKey) {
+
+		$scope.init = function() {
+			$scope.settings = $scope.$parent.$parent.settings = {
+					unit : 'km',
+					marker : new Date(moment().utc().startOf('month').valueOf()),
+					timezone : 'UTC'
+			};
+			$http.get('/tz').success(function(response) {
+				$scope.timezones = response;
+				if (navigator.geolocation) {
+					navigator.geolocation.getCurrentPosition(function(position) {
+						$http.get('/tz?' + $.param({ 'lat' : position.coords.latitude, 'lon' : position.coords.longitude }))
+							.success(function(response) {
+								$scope.settings.timezone = response.timeZoneId;
+							});
+					});
+				}
+			});
+		};
+		$scope.getUnits = function() {
+			return Field.find('distance').units;
+		};
 
 		$scope.init();
 	}]);
