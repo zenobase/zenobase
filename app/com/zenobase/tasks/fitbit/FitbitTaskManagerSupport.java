@@ -20,6 +20,8 @@ import com.zenobase.tasks.Task;
 
 public abstract class FitbitTaskManagerSupport extends OAuthTaskManager {
 
+	protected static final int RATE_LIMIT = 150;
+
 	protected FitbitTaskManagerSupport(String type, FitbitCredentialsManager credentialsManager) {
 		super(type, credentialsManager);
 	}

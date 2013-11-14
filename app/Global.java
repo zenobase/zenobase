@@ -103,6 +103,7 @@ import com.zenobase.tasks.demo.DemoCredentialsManager;
 import com.zenobase.tasks.demo.DemoTaskManager;
 import com.zenobase.tasks.fitbit.FitbitCredentialsManager;
 import com.zenobase.tasks.fitbit.FitbitIntradayTaskManager;
+import com.zenobase.tasks.fitbit.FitbitSleepTaskManager;
 import com.zenobase.tasks.fitbit.FitbitStepsTaskManager;
 import com.zenobase.tasks.fitbit.FitbitSummaryTaskManager;
 import com.zenobase.tasks.foursquare.FoursquareCredentialsManager;
@@ -213,12 +214,13 @@ public class Global extends GlobalSettings {
 
 				Multibinder<TaskManager> tasks = Multibinder.newSetBinder(binder(), new TypeLiteral<TaskManager>() {});
 				tasks.addBinding().to(DemoTaskManager.class);
-				bindIfConfigured("fitbit", FitbitSummaryTaskManager.class, tasks);
-				bindIfConfigured("fitbit", FitbitIntradayTaskManager.class, tasks);
+				bindIfConfigured("fitbit", FitbitSummaryTaskManager.class, tasks); // TODO drop
+				bindIfConfigured("fitbit", FitbitIntradayTaskManager.class, tasks); // TODO drop
 				bindIfConfigured("fitbit", FitbitStepsTaskManager.class, tasks);
+				bindIfConfigured("fitbit", FitbitSleepTaskManager.class, tasks);
 				bindIfConfigured("foursquare", FoursquareTaskManager.class, tasks);
 				bindIfConfigured("withings", WithingsTaskManager.class, tasks);
-				bindIfConfigured("bodymedia", BodyMediaSummaryTaskManager.class, tasks);
+				bindIfConfigured("bodymedia", BodyMediaSummaryTaskManager.class, tasks); // TODO drop
 				bindIfConfigured("bodymedia", BodyMediaBurnTaskManager.class, tasks);
 				bindIfConfigured("bodymedia", BodyMediaStepsTaskManager.class, tasks);
 				bindIfConfigured("bodymedia", BodyMediaSleepTaskManager.class, tasks);

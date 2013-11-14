@@ -13,19 +13,20 @@ import com.zenobase.json.Nodes;
 import com.zenobase.models.Event;
 import com.zenobase.models.Rating;
 import com.zenobase.tasks.ResultTestSupport;
-import com.zenobase.tasks.fitbit.FitbitSleepResult;
 
 public class FitbitSleepResultTest extends ResultTestSupport {
 
+	private static final String TAG = "zzz";
+
 	@Test
 	public void test() {
-		FitbitSleepResult result = new FitbitSleepResult(readObject("FitbitSleepResultTest.json"), TESTER, DateTimeZone.forOffsetHours(-8));
+		FitbitSleepResult result = new FitbitSleepResult(readObject("FitbitSleepResultTest.json"), TAG, TESTER, DateTimeZone.forOffsetHours(-8));
 		List<Event> events = result.getEvents();
 		assertThat(events).as("events").hasSize(1);
 		Event expected = new Event(events.get(0).getId());
-		expected.setValue(Event.TAG, "sleeping");
+		expected.setValue(Event.TAG, TAG);
 		expected.setValue(Event.TIMESTAMP, DateTime.parse("2012-11-28T00:58:00.000-08:00"));
-		expected.setValue(Event.DURATION, new Duration(28200000));
+		expected.setValue(Event.DURATION, Duration.standardMinutes(470));
 		expected.setValue(Event.RATING, Rating.valueOf(100));
 		expected.setValue(Event.AUTHOR, TESTER);
 		expected.setValue(Event.SOURCE, FitbitSleepResult.SOURCE);
@@ -34,7 +35,7 @@ public class FitbitSleepResultTest extends ResultTestSupport {
 
 	@Test
 	public void testEmpty() {
-		FitbitSleepResult result = new FitbitSleepResult(Nodes.newObject(), TESTER, DateTimeZone.forOffsetHours(-8));
+		FitbitSleepResult result = new FitbitSleepResult(Nodes.newObject(), TAG, TESTER, DateTimeZone.forOffsetHours(-8));
 		List<Event> events = result.getEvents();
 		assertThat(events).as("events").hasSize(0);
 	}

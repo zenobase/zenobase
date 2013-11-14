@@ -1180,6 +1180,56 @@
 				'interval' : 3600000
 			}]
 		}, {
+			'label' : 'Sleep -- Fitbit',
+			'task' : 'fitbit-sleep',
+			'widgets' : [{
+				'id' : 'timeline',
+				'type' : 'timeline',
+				'label' : 'Timeline',
+				'placement' : 'top',
+				'field' : 'duration',
+				'unit' : null,
+				'statistic' : 'avg',
+				'interval' : 'month',
+				'filter' : 'duration:[1h..*)'
+			},
+			{
+				'id' : 'latest',
+				'type' : 'list',
+				'label' : 'Latest',
+				'placement' : 'left',
+				'order' : 'timestamp',
+				'reverse' : false,
+				'limit' : 10,
+				'singleton' : true
+			},
+			{
+				'id' : 'quality',
+				'type' : 'ratings',
+				'label' : 'Quality',
+				'placement' : 'left'
+			},
+			{
+				'id' : 'polar',
+				'type' : 'polar',
+				'label' : 'Bedtime',
+				'placement' : 'right',
+				'value_field' : 'timestamp',
+				'unit' : null,
+				'statistic' : 'count',
+				'interval' : 'hour_of_day',
+				'filter' : 'duration:[1h..*)'
+			},
+			{
+				'id' : 'histogram',
+				'type' : 'histogram',
+				'label' : 'Duration',
+				'placement' : 'right',
+				'field' : 'duration',
+				'unit' : null,
+				'interval' : 3600000
+			}]
+		}, {
 			'label' : 'Steps (Daily) -- Fitbit',
 			'task' : 'fitbit-steps', 
 			'widgets' : [{
@@ -3839,14 +3889,15 @@
 	app.controller('CreateTaskDialogController', ['$scope', '$http', 'delay', 'tracker', function($scope, $http, delay, tracker) {
 	
 		$scope.types = [ 
-			{ 'id' : 'fitbit-steps', 'description' : 'Creates an event for the total step count each day (incl distance etc, if available).' },
+      { 'id' : 'foursquare', 'description' : 'Creates an event for each check-in.' },
+			{ 'id' : 'fitbit-sleep', 'description' : 'Creates an event for each period of sleep.' },
+			{ 'id' : 'fitbit-steps', 'description' : 'Creates an event for the number of steps each day (incl distance and elevation, if available).' },
 			{ 'id' : 'bodymedia-burn', 'description' : 'Creates an event for the number of calories burned each hour.' },
-			{ 'id' : 'bodymedia-steps', 'description' : 'Creates an event for the number of steps walked each hour.' },
 			{ 'id' : 'bodymedia-sleep', 'description' : 'Creates an event for each period of sleep.' },
-			{ 'id' : 'foursquare', 'description' : 'Creates an event for each Foursquare check-in.' },
-			{ 'id' : 'netatmo', 'description' : 'Creates an event for each weather station measurement (up to 300 per day).' },
-			{ 'id' : 'withings', 'description' : 'Creates an event for each weight measurement.' },
-			{ 'id' : 'demo', 'description' : 'Creates an event with a custom tag each time this task is run.' }
+			{ 'id' : 'bodymedia-steps', 'description' : 'Creates an event for the number of steps each hour.' },
+			{ 'id' : 'netatmo', 'description' : 'Creates an event for each weather station measurement.' },
+			{ 'id' : 'withings', 'description' : 'Creates an event for each body weight measurement.' },
+			{ 'id' : 'demo', 'description' : 'Creates an event with a custom tag.' }
 		];
 
 		function selectType(id) {
@@ -3919,6 +3970,18 @@
 		$scope.init = function() {
 			$scope.settings = $scope.$parent.$parent.settings = {
 					tag : 'steps',
+					marker : new Date(moment().utc().startOf('month').valueOf())
+			};
+		};
+
+		$scope.init();
+	}]);
+
+	app.controller('FitbitSleepSettingsController', ['$scope', function($scope) {
+
+		$scope.init = function() {
+			$scope.settings = $scope.$parent.$parent.settings = {
+					tag : 'sleep',
 					marker : new Date(moment().utc().startOf('month').valueOf())
 			};
 		};

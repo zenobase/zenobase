@@ -13,6 +13,10 @@ public class InvalidStatusException extends OAuthException {
 		this.status = status;
 	}
 
+	public int getStatus() {
+		return status;
+	}
+
 	@Override
 	public String getMessage() {
 		return String.format("Request for <%s> returned status <%d>",

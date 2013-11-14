@@ -46,7 +46,7 @@ public class FitbitIntradayTaskManager extends FitbitTaskManagerSupport {
 		for (LocalDate date = fromDate; !date.isAfter(syncDate); date = date.plusDays(1)) {
 			OAuthRequest sleepRequest = new OAuthRequest(Verb.GET, "https://api.fitbit.com/1/user/-/sleep/date/" + date + ".json");
 			Response sleepResponse = send(sleepRequest, credentials);
-			for (Event event : new FitbitSleepResult(parseObject(sleepResponse), task.getPrincipal(), profile.getTimezone()).getEvents()) {
+			for (Event event : new FitbitSleepResult(parseObject(sleepResponse), "sleeping", task.getPrincipal(), profile.getTimezone()).getEvents()) {
 				if (date.isBefore(syncDate)) {
 					events.add(event);
 				}
