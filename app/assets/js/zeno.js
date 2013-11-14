@@ -915,7 +915,7 @@
 				}]
 		}, {
 			'label' : 'Calories Burned (Hourly) -- BodyMedia',
-			'task' : 'bodymedia-burn-hour',
+			'task' : 'bodymedia-burn',
 			'widgets' : [{
 				'id' : 'timeline_cal',
 				'type' : 'timeline',
@@ -1225,7 +1225,7 @@
     	}]
 		}, {
 			'label' : 'Steps (Hourly) -- BodyMedia',
-			'task' : 'bodymedia-steps-hour',
+			'task' : 'bodymedia-steps',
 			'widgets' : [{
 				'id' : 'timeline_steps',
 				'type' : 'timeline',
@@ -3840,8 +3840,8 @@
 	
 		$scope.types = [ 
 			{ 'id' : 'fitbit-steps', 'description' : 'Creates an event for the total step count each day (incl distance etc, if available).' },
-			{ 'id' : 'bodymedia-burn-hour', 'description' : 'Creates an event for the number of calories burned each hour.' },
-			{ 'id' : 'bodymedia-steps-hour', 'description' : 'Creates an event for the number of steps walked each hour.' },
+			{ 'id' : 'bodymedia-burn', 'description' : 'Creates an event for the number of calories burned each hour.' },
+			{ 'id' : 'bodymedia-steps', 'description' : 'Creates an event for the number of steps walked each hour.' },
 			{ 'id' : 'bodymedia-sleep', 'description' : 'Creates an event for each period of sleep.' },
 			{ 'id' : 'foursquare', 'description' : 'Creates an event for each Foursquare check-in.' },
 			{ 'id' : 'netatmo', 'description' : 'Creates an event for each weather station measurement (up to 300 per day).' },
@@ -3937,7 +3937,7 @@
 		$scope.init();
 	}]);
 
-	app.controller('BodyMediaBurnHourSettingsController', ['$scope', function($scope) {
+	app.controller('BodyMediaBurnSettingsController', ['$scope', function($scope) {
 
 		$scope.init = function() {
 			$scope.settings = $scope.$parent.$parent.settings = {
@@ -3948,7 +3948,7 @@
 		$scope.init();
 	}]);
 
-	app.controller('BodyMediaStepsHourSettingsController', ['$scope', function($scope) {
+	app.controller('BodyMediaStepsSettingsController', ['$scope', function($scope) {
 
 		$scope.init = function() {
 			$scope.settings = $scope.$parent.$parent.settings = {

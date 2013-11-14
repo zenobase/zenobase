@@ -7,7 +7,7 @@ import com.zenobase.tasks.Task;
 
 public class BodyMediaBurnTask extends Task {
 
-	public static final String TYPE = "bodymedia-burn-hour";
+	public static final String TYPE = "bodymedia-burn";
 
 	public BodyMediaBurnTask(ObjectNode node) {
 		super(node);

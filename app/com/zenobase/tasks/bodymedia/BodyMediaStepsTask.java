@@ -7,7 +7,7 @@ import com.zenobase.tasks.Task;
 
 public class BodyMediaStepsTask extends Task {
 
-	public static final String TYPE = "bodymedia-steps-hour";
+	public static final String TYPE = "bodymedia-steps";
 
 	public BodyMediaStepsTask(ObjectNode node) {
 		super(node);

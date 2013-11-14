@@ -47,8 +47,8 @@ public abstract class BodyMediaTaskManagerSupport extends OAuthTaskManager {
 		return date.toString("yyyyMMdd");
 	}
 
-	protected static Command createCommand(Task task, OAuthCredentials credentials, LocalDate lastSync, Iterable<Event> events, Token expiredToken) {
-		CompoundCommand command = new CompoundCommand(task.getPrincipal(), "ran a bodymedia task", "reverted a bodymedia task");
+	protected Command createCommand(Task task, OAuthCredentials credentials, LocalDate lastSync, Iterable<Event> events, Token expiredToken) {
+		CompoundCommand command = new CompoundCommand(task.getPrincipal(), "ran " + getType() + " task", "reverted " + getType() + " task");
 		command.add(UpdateTaskCommand.builder(task)
 			.set(Task.COMPLETED, task.getCompleted(), new DateTime(DateTimeZone.UTC))
 			.set(Task.STATUS, task.getStatus(), Task.Status.SUCCESS)
