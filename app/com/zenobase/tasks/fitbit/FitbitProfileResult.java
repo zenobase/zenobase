@@ -5,8 +5,8 @@ import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
 import javax.measure.unit.Unit;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import org.joda.time.DateTimeZone;
+import com.fasterxml.jackson.databind.JsonNode;
 
 class FitbitProfileResult {
 
@@ -17,7 +17,8 @@ class FitbitProfileResult {
 	}
 
 	public DateTimeZone getTimezone() {
-		return DateTimeZone.forOffsetMillis(node.path("user").path("offsetFromUTCMillis").intValue());
+		String value = node.path("user").path("timezone").textValue();
+		return value != null ? DateTimeZone.forID(value) : DateTimeZone.UTC;
 	}
 
 	public String getDistanceLocale() {

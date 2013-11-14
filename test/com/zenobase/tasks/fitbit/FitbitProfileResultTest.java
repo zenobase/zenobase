@@ -10,14 +10,13 @@ import org.junit.Test;
 
 import com.zenobase.json.Nodes;
 import com.zenobase.tasks.ResultTestSupport;
-import com.zenobase.tasks.fitbit.FitbitProfileResult;
 
 public class FitbitProfileResultTest extends ResultTestSupport {
 
 	@Test
 	public void test() {
 		FitbitProfileResult result = new FitbitProfileResult(readObject("FitbitProfileResultTest.json"));
-		assertThat(result.getTimezone()).as("time zone").isEqualTo(DateTimeZone.forOffsetHours(-8));
+		assertThat(result.getTimezone()).as("time zone").isEqualTo(DateTimeZone.forID("America/Los_Angeles"));
 		assertThat(result.getDistanceLocale()).as("distance locale").isEqualTo("en_US");
 		assertThat(result.getDistanceUnit()).as("distance unit").isEqualTo(NonSI.MILE);
 		assertThat(result.getHeightUnit()).as("height unit").isEqualTo(NonSI.FOOT);
