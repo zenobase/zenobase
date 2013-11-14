@@ -30,7 +30,7 @@ public class ActivitiesResultTest extends ResultTestSupport {
 		assertThat(events.get(0).getValue(Event.TAG)).isEqualTo("Hiking");
 		assertThat(events.get(0).getValue(Event.TIMESTAMP)).isEqualTo(DateTime.parse("2013-11-09T11:50:48-08:00"));
 		assertThat(events.get(0).getValue(Event.DURATION)).isEqualTo(Duration.millis(16121187L));
-		assertThat(events.get(0).getValue(Event.DISTANCE)).isEqualTo(Measures.valueOf(new BigDecimal("6.1640509650984"), SI.KILOMETER));
+		assertThat(events.get(0).getValue(Event.DISTANCE)).isEqualTo(Measures.valueOf(new BigDecimal("6.16"), SI.KILOMETER));
 		assertThat(events.get(0).getValue(Event.ENERGY)).isEqualTo(Measures.<Energy>valueOf(new BigDecimal("1561"), "cal"));
 		assertThat(events.get(0).getValue(Event.SOURCE)).isEqualTo(ActivitiesResult.SOURCE);
 		assertThat(events.get(0).getValue(Event.AUTHOR)).isEqualTo(author);

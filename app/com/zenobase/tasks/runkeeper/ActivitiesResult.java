@@ -1,12 +1,10 @@
 package com.zenobase.tasks.runkeeper;
 
-import java.math.MathContext;
 import java.util.List;
 
 import javax.measure.DecimalMeasure;
 import javax.measure.quantity.Energy;
 import javax.measure.quantity.Length;
-import javax.measure.unit.SI;
 import javax.measure.unit.Unit;
 
 import org.joda.time.DateTime;
@@ -72,7 +70,7 @@ class ActivitiesResult {
 	}
 
 	private DecimalMeasure<Length> distanceValue(JsonNode node) {
-		return node.isNumber() ? Measures.valueOf(node.decimalValue(), SI.METER).to(unit, MathContext.DECIMAL64) : null;
+		return node.isNumber() ? Measures.valueOf(Measures.convert(node.doubleValue(), unit), unit) : null;
 	}
 
 	private DecimalMeasure<Energy> energyValue(JsonNode node) {
