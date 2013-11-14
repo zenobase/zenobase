@@ -42,7 +42,9 @@ public class UserLookupTest {
 	@Test
 	public void testGetUserFromIdNotFound() {
 		Identity identity = new Identity();
-		assertThat(lookup.getUser(identity.getId())).isEqualTo(new User(identity.getId(), null));
+		User found = lookup.getUser(identity.getId());
+		assertThat(found.getId()).isEqualTo(identity.getId());
+		assertThat(found.getName()).isNull();
 	}
 
 	@Test
