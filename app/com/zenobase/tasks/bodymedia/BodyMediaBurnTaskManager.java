@@ -48,9 +48,10 @@ public class BodyMediaBurnTaskManager extends BodyMediaTaskManagerSupport {
 		LocalDate date = getLast(parseMarker(task.getMarker()), timezones.getBegin());
 		while (date.isBefore(LocalDate.now().plusDays(1))) {
 			BodyMediaBurnResult result = execute(task, credentials, date, timezones);
-			if (!events.addAll(result.getEvents())) {
+			if (!date.isBefore(result.getLastSyncDate().toLocalDate())) {
 				break;
 			}
+			events.addAll(result.getEvents());
 			date = date.plusDays(1);
 		}
 		return createCommand(task, credentials, date, events, token);

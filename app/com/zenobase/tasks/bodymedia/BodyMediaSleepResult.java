@@ -35,7 +35,8 @@ class BodyMediaSleepResult extends BodyMediaResultSupport {
 	}
 
 	public List<Event> getEvents() {
-		return getEvents(Iterables.getOnlyElement(path("days")));
+		JsonNode days = path("days");
+		return days.size() > 0 ? getEvents(Iterables.getOnlyElement(days)) : Collections.<Event>emptyList();
 	}
 
 	private List<Event> getEvents(JsonNode dayNode) {
@@ -47,9 +48,6 @@ class BodyMediaSleepResult extends BodyMediaResultSupport {
 		for (JsonNode periodNode : dayNode.path("sleepPeriods")) {
 			int offset = intValue(periodNode.path("minuteIndex"));
 			DateTime time = timezones.rezone(noon.plusMinutes(offset));
-			if (getLastSyncDate().isBefore(time)) {
-				return Collections.emptyList();
-			}
 			if (begin == null) {
 				begin = time;
 			}
