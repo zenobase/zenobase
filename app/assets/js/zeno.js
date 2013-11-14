@@ -3942,22 +3942,11 @@
 		};
 	}]);
 
-	app.controller('FitbitSettingsController', ['$scope', function($scope) {
+	app.controller('FitbitSleepSettingsController', ['$scope', function($scope) {
 
 		$scope.init = function() {
 			$scope.settings = $scope.$parent.$parent.settings = {
-					tag : 'steps',
-					marker : new Date(moment().utc().startOf('month').valueOf())
-			};
-		};
-
-		$scope.init();
-	}]);
-
-	app.controller('FitbitIntradaySettingsController', ['$scope', function($scope) {
-
-		$scope.init = function() {
-			$scope.settings = $scope.$parent.$parent.settings = {
+					tag : 'sleep',
 					marker : new Date(moment().utc().startOf('month').valueOf())
 			};
 		};
@@ -3977,44 +3966,11 @@
 		$scope.init();
 	}]);
 
-	app.controller('FitbitSleepSettingsController', ['$scope', function($scope) {
-
-		$scope.init = function() {
-			$scope.settings = $scope.$parent.$parent.settings = {
-					tag : 'sleep',
-					marker : new Date(moment().utc().startOf('month').valueOf())
-			};
-		};
-
-		$scope.init();
-	}]);
-
-	app.controller('BodyMediaSettingsController', ['$scope', function($scope) {
-
-		$scope.init = function() {
-			$scope.settings = $scope.$parent.$parent.settings = {
-					marker : new Date(moment().utc().startOf('month').valueOf())
-			};
-		};
-
-		$scope.init();
-	}]);
-
 	app.controller('BodyMediaBurnSettingsController', ['$scope', function($scope) {
 
 		$scope.init = function() {
 			$scope.settings = $scope.$parent.$parent.settings = {
-					marker : new Date(moment().utc().startOf('month').valueOf())
-			};
-		};
-
-		$scope.init();
-	}]);
-
-	app.controller('BodyMediaStepsSettingsController', ['$scope', function($scope) {
-
-		$scope.init = function() {
-			$scope.settings = $scope.$parent.$parent.settings = {
+					tag : 'burn',
 					marker : new Date(moment().utc().startOf('month').valueOf())
 			};
 		};
@@ -4026,6 +3982,19 @@
 
 		$scope.init = function() {
 			$scope.settings = $scope.$parent.$parent.settings = {
+					tag : 'sleep',
+					marker : new Date(moment().utc().startOf('month').valueOf())
+			};
+		};
+
+		$scope.init();
+	}]);
+
+	app.controller('BodyMediaStepsSettingsController', ['$scope', function($scope) {
+
+		$scope.init = function() {
+			$scope.settings = $scope.$parent.$parent.settings = {
+					tag : 'steps',
 					marker : new Date(moment().utc().startOf('month').valueOf())
 			};
 		};

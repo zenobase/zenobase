@@ -10,6 +10,7 @@ import org.scribe.model.Response;
 import org.scribe.model.Token;
 import org.scribe.model.Verb;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.common.base.Objects;
 import com.google.common.collect.Lists;
 
 import com.zenobase.commands.Command;
@@ -28,7 +29,8 @@ public class BodyMediaSleepTaskManager extends BodyMediaTaskManagerSupport {
 	@Override
 	public Task newTask(String bucketId, Identity principal, ObjectNode settings) {
 		String marker = parseMarker(settings.path("marker").textValue()).toString();
-		return new BodyMediaSleepTask(bucketId, principal, marker);
+		String tag = Objects.firstNonNull(settings.path("tag").textValue(), "steps");
+		return new BodyMediaSleepTask(bucketId, principal, marker, tag);
 	}
 
 	@Override
