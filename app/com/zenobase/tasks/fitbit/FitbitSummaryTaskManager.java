@@ -18,26 +18,26 @@ import com.zenobase.models.Identity;
 import com.zenobase.tasks.OAuthCredentials;
 import com.zenobase.tasks.Task;
 
-public class FitbitTaskManager extends FitbitTaskManagerSupport {
+public class FitbitSummaryTaskManager extends FitbitTaskManagerSupport {
 
 	@Inject
-	public FitbitTaskManager(FitbitCredentialsManager credentialsManager) {
-		super(FitbitTask.TYPE, credentialsManager);
+	public FitbitSummaryTaskManager(FitbitCredentialsManager credentialsManager) {
+		super(FitbitSummaryTask.TYPE, credentialsManager);
 	}
 
 	@Override
-	public FitbitTask newTask(String bucketId, Identity principal, ObjectNode settings) {
+	public FitbitSummaryTask newTask(String bucketId, Identity principal, ObjectNode settings) {
 		String marker = parseMarker(settings.path("marker").textValue()).toString();
 		String tag = Objects.firstNonNull(settings.path("tag").textValue(), "steps");
-		return new FitbitTask(bucketId, principal, marker, tag);
+		return new FitbitSummaryTask(bucketId, principal, marker, tag);
 	}
 
 	@Override
 	public Command execute(Task task, OAuthCredentials credentials) {
-		return execute(task.as(FitbitTask.class), credentials);
+		return execute(task.as(FitbitSummaryTask.class), credentials);
 	}
 
-	private Command execute(FitbitTask task, OAuthCredentials credentials) {
+	private Command execute(FitbitSummaryTask task, OAuthCredentials credentials) {
 		List<Event> events = Lists.newArrayList();
 		LocalDate syncDate = getLastDate(task, credentials);
 		LocalDate fromDate = getFromDate(task);
@@ -46,7 +46,7 @@ public class FitbitTaskManager extends FitbitTaskManagerSupport {
 			OAuthRequest request = new OAuthRequest(Verb.GET, "https://api.fitbit.com/1/user/-/activities/date/" + date + ".json");
 			request.addHeader("Accept-Language", profile.getDistanceLocale());
 			Response response = send(request, credentials);
-			events.addAll(new FitbitActivitiesResult(parseObject(response), task.getTag(), task.getPrincipal(),
+			events.addAll(new FitbitSummaryResult(parseObject(response), task.getTag(), task.getPrincipal(),
 				date.toDateTimeAtStartOfDay(profile.getTimezone()), profile.getDistanceUnit(), profile.getHeightUnit()).getEvents());
 		}
 		return createCommand(task, events, syncDate);

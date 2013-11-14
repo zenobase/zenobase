@@ -6,16 +6,16 @@ import com.zenobase.json.TokenField;
 import com.zenobase.models.Identity;
 import com.zenobase.tasks.Task;
 
-public class FitbitTask extends Task {
+public class FitbitSummaryTask extends Task {
 
 	public static final String TYPE = "fitbit";
 	public static final TokenField TAG = new TokenField("tag");
 
-	public FitbitTask(ObjectNode node) {
+	public FitbitSummaryTask(ObjectNode node) {
 		super(node);
 	}
 
-	FitbitTask(String bucketId, Identity principal, String marker, String tag) {
+	FitbitSummaryTask(String bucketId, Identity principal, String marker, String tag) {
 		super(TYPE, bucketId, principal);
 		setMarker(marker);
 		setTag(tag);
@@ -30,7 +30,7 @@ public class FitbitTask extends Task {
 	}
 
 	@Override
-	public FitbitTask copy() {
+	public FitbitSummaryTask copy() {
 		return copy(getClass());
 	}
 }

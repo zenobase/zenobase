@@ -15,16 +15,16 @@ import org.junit.Test;
 import com.zenobase.json.Nodes;
 import com.zenobase.models.Event;
 import com.zenobase.tasks.ResultTestSupport;
-import com.zenobase.tasks.fitbit.FitbitActivitiesResult;
+import com.zenobase.tasks.fitbit.FitbitSummaryResult;
 
-public class FitbitActivitiesResultTest extends ResultTestSupport {
+public class FitbitSummaryResultTest extends ResultTestSupport {
 
 	private static final String TAG = "steps";
 	private static final DateTime TIMESTAMP = DateTime.now();
 
 	@Test
 	public void test() {
-		FitbitActivitiesResult result = new FitbitActivitiesResult(readObject("FitbitActivitiesResultTest.json"), TAG, TESTER, TIMESTAMP, NonSI.MILE, NonSI.FOOT);
+		FitbitSummaryResult result = new FitbitSummaryResult(readObject("FitbitSummaryResultTest.json"), TAG, TESTER, TIMESTAMP, NonSI.MILE, NonSI.FOOT);
 		List<Event> events = result.getEvents();
 		assertThat(events).as("events").hasSize(1);
 		Event expected = new Event(events.get(0).getId());
@@ -35,13 +35,13 @@ public class FitbitActivitiesResultTest extends ResultTestSupport {
 		expected.setValue(Event.ENERGY, DecimalMeasure.<Energy>valueOf("1071 cal"));
 		expected.setValue(Event.TIMESTAMP, TIMESTAMP);
 		expected.setValue(Event.AUTHOR, TESTER);
-		expected.setValue(Event.SOURCE, FitbitActivitiesResult.SOURCE);
+		expected.setValue(Event.SOURCE, FitbitSummaryResult.SOURCE);
 		assertThat(events.get(0)).as("first event").isEqualTo(expected);
 	}
 
 	@Test
 	public void testEmpty() {
-		FitbitActivitiesResult result = new FitbitActivitiesResult(Nodes.newObject(), TAG, TESTER, TIMESTAMP, NonSI.MILE, NonSI.FOOT);
+		FitbitSummaryResult result = new FitbitSummaryResult(Nodes.newObject(), TAG, TESTER, TIMESTAMP, NonSI.MILE, NonSI.FOOT);
 		List<Event> events = result.getEvents();
 		assertThat(events).as("events").isEmpty();
 	}

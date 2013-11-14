@@ -15,7 +15,7 @@ import com.google.common.collect.Lists;
 import com.zenobase.json.Nodes;
 import com.zenobase.models.Event;
 import com.zenobase.tasks.ResultTestSupport;
-import com.zenobase.tasks.fitbit.FitbitActivitiesResult;
+import com.zenobase.tasks.fitbit.FitbitSummaryResult;
 import com.zenobase.tasks.fitbit.FitbitIntradayResult;
 
 public class FitbitIntradayResultTest extends ResultTestSupport {
@@ -37,13 +37,13 @@ public class FitbitIntradayResultTest extends ResultTestSupport {
 		first.setValue(Event.TIMESTAMP, DateTime.parse("2012-12-03T00:00:00.000-08:00"));
 		first.setValue(Event.DURATION, Duration.millis(1920000));
 		first.setValue(Event.AUTHOR, TESTER);
-		first.setValue(Event.SOURCE, FitbitActivitiesResult.SOURCE);
+		first.setValue(Event.SOURCE, FitbitSummaryResult.SOURCE);
 		Event second = new Event(events.get(1).getId());
 		second.setValue(Event.TAG, "sitting");
 		second.setValue(Event.TIMESTAMP, DateTime.parse("2012-12-03T08:25:00.000-08:00"));
 		second.setValue(Event.DURATION, Duration.millis(1680000));
 		second.setValue(Event.AUTHOR, TESTER);
-		second.setValue(Event.SOURCE, FitbitActivitiesResult.SOURCE);
+		second.setValue(Event.SOURCE, FitbitSummaryResult.SOURCE);
 		assertThat(events.get(1)).as("second event").isEqualTo(second);
 	}
 

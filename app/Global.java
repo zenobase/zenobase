@@ -103,7 +103,7 @@ import com.zenobase.tasks.demo.DemoCredentialsManager;
 import com.zenobase.tasks.demo.DemoTaskManager;
 import com.zenobase.tasks.fitbit.FitbitCredentialsManager;
 import com.zenobase.tasks.fitbit.FitbitIntradayTaskManager;
-import com.zenobase.tasks.fitbit.FitbitTaskManager;
+import com.zenobase.tasks.fitbit.FitbitSummaryTaskManager;
 import com.zenobase.tasks.foursquare.FoursquareCredentialsManager;
 import com.zenobase.tasks.foursquare.FoursquareTaskManager;
 import com.zenobase.tasks.netatmo.NetatmoCredentialsManager;
@@ -212,7 +212,7 @@ public class Global extends GlobalSettings {
 
 				Multibinder<TaskManager> tasks = Multibinder.newSetBinder(binder(), new TypeLiteral<TaskManager>() {});
 				tasks.addBinding().to(DemoTaskManager.class);
-				bindIfConfigured("fitbit", FitbitTaskManager.class, tasks);
+				bindIfConfigured("fitbit", FitbitSummaryTaskManager.class, tasks);
 				bindIfConfigured("fitbit", FitbitIntradayTaskManager.class, tasks);
 				bindIfConfigured("foursquare", FoursquareTaskManager.class, tasks);
 				bindIfConfigured("withings", WithingsTaskManager.class, tasks);

@@ -17,8 +17,7 @@ import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
 import com.zenobase.models.Resource;
 
-class FitbitActivitiesResult {
-
+class FitbitSummaryResult {
 
 	public static final Resource SOURCE = new Resource("Fitbit", "http://fitbit.com/");
 
@@ -28,7 +27,7 @@ class FitbitActivitiesResult {
 	private final DateTime timestamp;
 	private final Unit<Length> distanceUnit, heightUnit;
 
-	public FitbitActivitiesResult(JsonNode node, String tag, Identity author, DateTime timestamp, Unit<Length> distanceUnit, Unit<Length> heightUnit) {
+	public FitbitSummaryResult(JsonNode node, String tag, Identity author, DateTime timestamp, Unit<Length> distanceUnit, Unit<Length> heightUnit) {
 		this.node = node;
 		this.tag = tag;
 		this.author = author;
