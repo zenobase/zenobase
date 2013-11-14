@@ -893,28 +893,7 @@
 					'reverse' : false
 				}]
 		}, {
-			'label' : 'Body Weight -- Withings',
-			'task' : 'withings', 
-			'widgets' : [{
-					'id' : 'latest',
-					'type' : 'list',
-					'label' : 'Latest',
-					'placement' : 'left',
-					'singleton' : true,
-					'limit' : 10,
-					'order' : 'timestamp',
-					'reverse' : false
-				}, {
-					'id' : 'weight',
-					'type' : 'timeline',
-					'label' : 'Weight',
-					'placement' : 'right',
-					'field' : 'weight',
-					'statistic' : 'avg',
-					'unit' : 'kg'
-				}]
-		}, {
-			'label' : 'Calories Burned (Hourly) -- BodyMedia',
+			'label' : 'Burn (BodyMedia)',
 			'task' : 'bodymedia-burn',
 			'widgets' : [{
 				'id' : 'timeline_cal',
@@ -966,7 +945,7 @@
 				'interval' : 'hour_of_day'
 			}]
 		}, {
-			'label' : 'Environment -- Netatmo',
+			'label' : 'Environment (Netatmo)',
 			'task' : 'netatmo', 
 			'widgets': [{
 					'id' : 'latest',
@@ -1089,7 +1068,7 @@
 					'interval' : 'hour_of_day'
 			}]
 		}, {
-			'label' : 'Places -- Foursquare',
+			'label' : 'Places (Foursquare)',
 			'task' : 'foursquare',
 			'widgets' : [{
 					'id' : 'timeline',
@@ -1130,7 +1109,7 @@
 					'value_field' : 'timestamp'
 				}]
 		}, {
-			'label' : 'Sleep -- BodyMedia',
+			'label' : 'Sleep (BodyMedia)',
 			'task' : 'bodymedia-sleep',
 			'widgets' : [{
 				'id' : 'timeline',
@@ -1180,7 +1159,7 @@
 				'interval' : 3600000
 			}]
 		}, {
-			'label' : 'Sleep -- Fitbit',
+			'label' : 'Sleep (Fitbit)',
 			'task' : 'fitbit-sleep',
 			'widgets' : [{
 				'id' : 'timeline',
@@ -1230,7 +1209,7 @@
 				'interval' : 3600000
 			}]
 		}, {
-			'label' : 'Steps (Daily) -- Fitbit',
+			'label' : 'Steps (Fitbit)',
 			'task' : 'fitbit-steps', 
 			'widgets' : [{
         'id' : 'steps',
@@ -1274,7 +1253,7 @@
         'interval' : 'day_of_week'
     	}]
 		}, {
-			'label' : 'Steps (Hourly) -- BodyMedia',
+			'label' : 'Steps (BodyMedia)',
 			'task' : 'bodymedia-steps',
 			'widgets' : [{
 				'id' : 'timeline_steps',
@@ -1325,6 +1304,27 @@
 				'unit' : null,
 				'interval' : 'hour_of_day'
 			}]
+		}, {
+			'label' : 'Weight (Withings)',
+			'task' : 'withings', 
+			'widgets' : [{
+					'id' : 'latest',
+					'type' : 'list',
+					'label' : 'Latest',
+					'placement' : 'left',
+					'singleton' : true,
+					'limit' : 10,
+					'order' : 'timestamp',
+					'reverse' : false
+				}, {
+					'id' : 'weight',
+					'type' : 'timeline',
+					'label' : 'Weight',
+					'placement' : 'right',
+					'field' : 'weight',
+					'statistic' : 'avg',
+					'unit' : 'kg'
+				}]
 		}];
 
 		$scope.init = function() {
