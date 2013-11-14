@@ -3841,10 +3841,9 @@
 		$scope.types = [ 
 			{ 'id' : 'fitbit', 'description' : 'Creates one step count event per day.' },
 			{ 'id' : 'fitbit-intraday', 'description' : 'Creates one event for each period of time spent moving, sitting or sleeping (100 to 1,000 events per day).' },
-			{ 'id' : 'bodymedia', 'description' : 'Creates one calorie count and one sleep summary event per day.' },
 			{ 'id' : 'bodymedia-burn-hour', 'description' : 'Creates an event for the number of calories burned each hour.' },
 			{ 'id' : 'bodymedia-steps-hour', 'description' : 'Creates an event for the number of steps walked each hour.' },
-			{ 'id' : 'bodymedia-sleep', 'description' : 'Creates an event for each sleep or nap.' },
+			{ 'id' : 'bodymedia-sleep', 'description' : 'Creates an event for each period of sleep.' },
 			{ 'id' : 'foursquare', 'description' : 'Creates an event for each Foursquare check-in.' },
 			{ 'id' : 'netatmo', 'description' : 'Creates an event for each weather station measurement (up to 300 per day).' },
 			{ 'id' : 'withings', 'description' : 'Creates an event for each weight measurement.' },
