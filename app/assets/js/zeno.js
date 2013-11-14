@@ -1154,6 +1154,12 @@
 				'singleton' : true
 			},
 			{
+				'id' : 'quality',
+				'type' : 'ratings',
+				'label' : 'Quality',
+				'placement' : 'left'
+			},
+			{
 				'id' : 'polar',
 				'type' : 'polar',
 				'label' : 'Bedtime',
