@@ -7,12 +7,13 @@ import com.zenobase.json.Nodes;
 import com.zenobase.tasks.Task;
 import com.zenobase.tasks.TaskTestSupport;
 
-public class FitbitIntradayTest extends TaskTestSupport {
+public class FitbitStepsTest extends TaskTestSupport {
 
 	@Test
 	public void test() {
-		FitbitIntradayTaskManager manager = new FitbitIntradayTaskManager(newCredentialsManager());
+		FitbitStepsTaskManager manager = new FitbitStepsTaskManager(newCredentialsManager());
 		ObjectNode settings = Nodes.newObject();
+		settings.put("tag", "walk");
 		settings.put("marker", "2013-11-01");
 		Task task = manager.newTask(bucketId, principal, settings);
 		print(manager.execute(task, getCredentials()).toJson());

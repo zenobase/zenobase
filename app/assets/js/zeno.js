@@ -881,7 +881,7 @@
 					'singleton' : true,
 					'limit' : 10,
 					'order' : 'timestamp',
-					'reverse' : true
+					'reverse' : false
 				}, {
 					'id' : 'tags',
 					'type' : 'count',
@@ -903,7 +903,7 @@
 					'singleton' : true,
 					'limit' : 10,
 					'order' : 'timestamp',
-					'reverse' : true
+					'reverse' : false
 				}, {
 					'id' : 'weight',
 					'type' : 'timeline',
@@ -1106,7 +1106,7 @@
 					'singleton' : true,
 					'limit' : 10,
 					'order' : 'timestamp',
-					'reverse' : true
+					'reverse' : false
 				}, {
 					'id' : 'tags',
 					'type' : 'count',
@@ -1181,7 +1181,7 @@
 			}]
 		}, {
 			'label' : 'Steps (Daily) -- Fitbit',
-			'task' : 'fitbit', 
+			'task' : 'fitbit-steps', 
 			'widgets' : [{
         'id' : 'steps',
         'type' : 'timeline',
@@ -1198,7 +1198,7 @@
         'label' : 'Latest',
         'placement' : 'left',
         'order' : 'timestamp',
-        'reverse' : true,
+        'reverse' : false,
         'limit' : 10,
         'singleton' : true
     },
@@ -3839,8 +3839,7 @@
 	app.controller('CreateTaskDialogController', ['$scope', '$http', 'delay', 'tracker', function($scope, $http, delay, tracker) {
 	
 		$scope.types = [ 
-			{ 'id' : 'fitbit', 'description' : 'Creates one step count event per day.' },
-			{ 'id' : 'fitbit-intraday', 'description' : 'Creates one event for each period of time spent moving, sitting or sleeping (100 to 1,000 events per day).' },
+			{ 'id' : 'fitbit-steps', 'description' : 'Creates an event for the total step count each day (incl distance etc, if available).' },
 			{ 'id' : 'bodymedia-burn-hour', 'description' : 'Creates an event for the number of calories burned each hour.' },
 			{ 'id' : 'bodymedia-steps-hour', 'description' : 'Creates an event for the number of steps walked each hour.' },
 			{ 'id' : 'bodymedia-sleep', 'description' : 'Creates an event for each period of sleep.' },
@@ -3908,6 +3907,18 @@
 
 		$scope.init = function() {
 			$scope.settings = $scope.$parent.$parent.settings = {
+					marker : new Date(moment().utc().startOf('month').valueOf())
+			};
+		};
+
+		$scope.init();
+	}]);
+
+	app.controller('FitbitStepsSettingsController', ['$scope', function($scope) {
+
+		$scope.init = function() {
+			$scope.settings = $scope.$parent.$parent.settings = {
+					tag : 'steps',
 					marker : new Date(moment().utc().startOf('month').valueOf())
 			};
 		};
