@@ -44,22 +44,20 @@
 			<div class="modal-body">
 				<div class="control-group">
 					<label class="control-label" for="label">Title</label>
-					<div class="controls">
+					<div class="controls form-horizontal">
 						<input name="label" type="text" required min="1" max="20" data-ng-model="settings.label"/>
 					</div>
 				</div>
 				<div class="control-group">
-					<label class="control-label" for="field">Field</label>
-					<div class="controls">
+					<label class="control-label" for="field">Key</label>
+					<div class="controls form-horizontal">
 						<select required data-ng-model="settings.field" data-ng-options="field.name as field.name for field in getFields()"></select>
-						<p class="help-block">The field on which to aggregate.</p>
 					</div>
 				</div>
 				<div class="control-group">
 					<label class="control-label" for="limit">Limit</label>
-					<div class="controls">
+					<div class="controls form-horizontal">
 						<input name="limit" type="number" required min="1" max="100" data-ng-model="settings.limit"/>
-						<p class="help-block">The number of items to show.</p>
 					</div>
 				</div>
 			</div>

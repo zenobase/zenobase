@@ -19,43 +19,28 @@
 			<div class="modal-body">
 				<div class="control-group">
 					<label class="control-label" for="label">Title</label>
-					<div class="controls">
+					<div class="controls form-horizontal">
 						<input name="label" type="text" required min="1" max="20" data-ng-model="settings.label"/>
 					</div>
 				</div>
 				<div class="control-group">
+					<label class="control-label" for="valueField">Values</label>
+					<div class="controls form-horizontal">
+						<select name="statistic" class="input-small" required data-ng-model="settings.statistic" data-ng-options="value for value in getStatistics(settings.value_field)"></select>
+						of <select name="valueField" class="input-medium" data-ng-model="settings.value_field" data-ng-options="field.name as field.name for field in getFields()"></select>
+						<span data-ng-show="getUnits().length"> in <select name="unit" class="input-small" data-ng-model="settings.unit" data-ng-options="unit for unit in getUnits()"></select></span>
+					</div>
+				</div>
+				<div class="control-group">
 					<label class="control-label" for="interval">Interval</label>
-					<div class="controls">
+					<div class="controls form-horizontal">
 						<select name="interval" required data-ng-model="settings.interval" data-ng-options="interval.id as interval.label for interval in intervals"></select>
-						<p class="help-block">The interval to aggregate on.</p>
-					</div>
-				</div>
-				<div class="control-group">
-					<label class="control-label" for="valueField">Field</label>
-					<div class="controls">
-						<select name="valueField" data-ng-model="settings.value_field" data-ng-options="field.name as field.name for field in getFields()"></select>
-						<p class="help-block">The field on which to gather statistics.</p>
-					</div>
-				</div>
-				<div class="control-group">
-					<label class="control-label" for="statisic">Statistic</label>
-					<div class="controls">
-						<select name="statistic" required data-ng-model="settings.statistic" data-ng-options="value for value in getStatistics(settings.value_field)"></select>
-						<p class="help-block">The statistic to gather for the selected value field.</p>
-					</div>
-				</div>
-				<div class="control-group">
-					<label class="control-label" for="unit">Unit</label>
-					<div class="controls">
-						<select name="unit" data-ng-model="settings.unit" data-ng-options="unit for unit in getUnits()"></select>
-						<p class="help-block">The unit of the value field.</p>
 					</div>
 				</div>
 				<div class="control-group">
 					<label class="control-label" for="filter">Filter</label>
-					<div class="controls">
-						<input name="filter" type="text" data-ng-model="settings.filter"/>
-						<p class="help-block">Optional constraint.</p>
+					<div class="controls form-horizontal">
+						<input name="filter" type="text" data-ng-model="settings.filter" placeholder="e.g. tag:xyz"/>
 					</div>
 				</div>
 			</div>

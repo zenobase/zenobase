@@ -2595,7 +2595,7 @@
 		};
 
 		$scope.init = function() {
-			$scope.$parent.init();
+			$scope.settings = angular.copy($scope.$parent.settings);
 			$scope.settings.interval = $scope.settings.interval || Interval.VALUES[1].name;
 		}
 		$scope.getFields = function() {
