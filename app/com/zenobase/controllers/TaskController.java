@@ -66,7 +66,7 @@ public class TaskController extends ControllerSupport {
 				response().setHeader("Link", "<" + e.getCredentials().getAuthorizationUrl() + ">");
 			} catch (MissingCredentialsException e) {
 				response().setHeader("X-Credentials", e.getExpectedType());
-	    	} catch (Exception e) {
+	    	} catch (RuntimeException e) {
 				Logger.warn("Couldn't refresh task: " + task.getId(), e);
 			}
 		}

@@ -1,6 +1,7 @@
 package com.zenobase.controllers;
 
 import static com.zenobase.testing.ResultAssert.assertThat;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 import static play.mvc.Http.Status.*;
 import static play.test.Helpers.callAction;
@@ -12,6 +13,9 @@ import play.mvc.Result;
 import com.zenobase.models.Bucket;
 import com.zenobase.models.Identity;
 import com.zenobase.oauth.Authorization;
+import com.zenobase.tasks.IncompleteCredentialsException;
+import com.zenobase.tasks.MissingCredentialsException;
+import com.zenobase.tasks.OAuthCredentials;
 import com.zenobase.tasks.Task;
 
 public class TaskControllerHttpGetTest extends TaskControllerTestSupport {
@@ -34,6 +38,40 @@ public class TaskControllerHttpGetTest extends TaskControllerTestSupport {
 	public void testGetStaleTask() {
 		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
 		when(tasks.find(task.getId())).thenReturn(task.copy());
+		Result result = call(task.getId());
+		assertThat(result).hasStatus(OK).hasContent(task.toJson());
+		verify(refresher).refresh(task);
+	}
+
+	@Test
+	public void testGetStaleTaskWithMissingCredentials() {
+		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
+		when(tasks.find(task.getId())).thenReturn(task.copy());
+		doThrow(new MissingCredentialsException("test")).when(refresher).refresh(any(Task.class));
+		Result result = call(task.getId());
+		assertThat(result).hasStatus(OK).hasContent(task.toJson());
+		assertThat(result).hasHeader("X-Credentials", "test");
+		verify(refresher).refresh(task);
+	}
+
+	@Test
+	public void testGetStaleTaskWithIncompleteCredentials() {
+		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
+		when(tasks.find(task.getId())).thenReturn(task.copy());
+		OAuthCredentials credentials = new OAuthCredentials("test", user.asIdentity());
+		credentials.setAuthorizationUrl("http://localhost/authorize");
+		doThrow(new IncompleteCredentialsException(credentials)).when(refresher).refresh(any(Task.class));
+		Result result = call(task.getId());
+		assertThat(result).hasStatus(OK).hasContent(task.toJson());
+		assertThat(result).hasHeader("Link", "<" + credentials.getAuthorizationUrl() + ">");
+		verify(refresher).refresh(task);
+	}
+
+	@Test
+	public void testGetStaleTaskFailedRefresh() {
+		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
+		when(tasks.find(task.getId())).thenReturn(task.copy());
+		doThrow(new RuntimeException()).when(refresher).refresh(any(Task.class));
 		Result result = call(task.getId());
 		assertThat(result).hasStatus(OK).hasContent(task.toJson());
 		verify(refresher).refresh(task);
