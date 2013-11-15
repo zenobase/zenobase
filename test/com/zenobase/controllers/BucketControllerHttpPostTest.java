@@ -6,11 +6,11 @@ import static org.mockito.Mockito.*;
 import static play.mvc.Http.Status.*;
 import static play.test.Helpers.*;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.elasticsearch.index.engine.VersionConflictEngineException;
 import org.junit.Before;
 import org.junit.Test;
 import play.mvc.Result;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import com.zenobase.commands.UpdateBucketCommand;
 import com.zenobase.common.Generator;
@@ -42,6 +42,40 @@ public class BucketControllerHttpPostTest extends BucketControllerTestSupport {
 		when(dispatcher.dispatch(any(UpdateBucketCommand.class))).thenReturn(commandId);
 		Result result = call(from.getId(), to.toJson());
 		assertThat(result).hasStatus(NO_CONTENT).hasHeader(COMMAND_ID, commandId).isEmpty();
+	}
+
+	@Test
+	public void testAddRole() {
+		user.setVerified(true);
+		to.addRole(Identity.PUBLIC, Role.VIEWER);
+		String commandId = Generator.id();
+		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
+		when(buckets.find(from.getId())).thenReturn(from.copy());
+		when(users.find(user.asIdentity())).thenReturn(user);
+		when(dispatcher.dispatch(any(UpdateBucketCommand.class))).thenReturn(commandId);
+		Result result = call(from.getId(), to.toJson());
+		assertThat(result).hasStatus(NO_CONTENT).hasHeader(COMMAND_ID, commandId).isEmpty();
+	}
+
+	@Test
+	public void testAddRoleAsGuest() {
+		to.addRole(Identity.PUBLIC, Role.VIEWER);
+		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
+		when(buckets.find(from.getId())).thenReturn(from.copy());
+		Result result = call(from.getId(), to.toJson());
+		assertThat(result).hasStatus(FORBIDDEN);
+		verifyZeroInteractions(dispatcher);
+	}
+
+	@Test
+	public void testAddRoleAsUnverifiedUser() {
+		to.addRole(Identity.PUBLIC, Role.VIEWER);
+		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
+		when(buckets.find(from.getId())).thenReturn(from.copy());
+		when(users.find(user.asIdentity())).thenReturn(user);
+		Result result = call(from.getId(), to.toJson());
+		assertThat(result).hasStatus(FORBIDDEN);
+		verifyZeroInteractions(dispatcher);
 	}
 
 	@Test
