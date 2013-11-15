@@ -52,8 +52,10 @@ public class AccountController extends ControllerSupport {
 		user.setEmail(form.getEmail());
 		user.setHashedPassword(User.hashPassword(form.getPassword()));
 		user.setSuperuser(users.isEmpty());
-		dispatcher.dispatch(new CreateUserCommand(auth.getPrincipal(), user));
+		String commandId = dispatcher.dispatch(new CreateUserCommand(auth.getPrincipal(), user));
 		mailer.send(user);
+        response().setHeader(LOCATION, com.zenobase.controllers.routes.UserController.get(user.getName()).toString());
+		response().setHeader(COMMAND_ID, commandId);
 		return created(new UserInfo(user).toJson());
 	}
 

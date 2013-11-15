@@ -40,6 +40,7 @@ public class BucketListControllerHttpPostTest extends BucketListControllerTestSu
 		assertThat(bucket.getDescription()).isEqualTo(description);
 		assertThat(bucket.hasRole(new Authorization(user.asIdentity()), Role.OWNER)).isTrue();
 		assertThat(Helpers.redirectLocation(result)).isEqualTo(com.zenobase.controllers.routes.BucketController.get(bucket.getId(), false).toString());
+		assertThat(Helpers.header(COMMAND_ID, result)).isEqualTo(commandId);
 	}
 
 	@Test
@@ -60,6 +61,7 @@ public class BucketListControllerHttpPostTest extends BucketListControllerTestSu
 		assertThat(bucket.getAliases()).containsExactly(new Alias(alias.getId()));
 		assertThat(bucket.hasRole(new Authorization(user.asIdentity()), Role.OWNER)).isTrue();
 		assertThat(Helpers.redirectLocation(result)).isEqualTo(com.zenobase.controllers.routes.BucketController.get(bucket.getId(), false).toString());
+		assertThat(Helpers.header(COMMAND_ID, result)).isEqualTo(commandId);
 	}
 
 	@Test

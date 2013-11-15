@@ -35,6 +35,7 @@ public class CredentialsListControllerHttpPostTest extends CredentialsListContro
 		Result result = call(form);
 		assertThat(result).hasStatus(CREATED);
 		assertThat(Helpers.redirectLocation(result)).isEqualTo(com.zenobase.controllers.routes.CredentialsController.get(credentials.getId()).toString());
+		assertThat(Helpers.header(COMMAND_ID, result)).isEqualTo(commandId);
 	}
 
 	@Test

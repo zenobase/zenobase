@@ -37,8 +37,9 @@ public class TaskListControllerHttpPostTest extends TaskListControllerTestSuppor
 		when(manager.newTask(bucket.getId(), user.asIdentity(), form.getSettings())).thenReturn(task);
 		when(dispatcher.dispatch(any(Command.class))).thenReturn(commandId);
 		Result result = call(form);
-		assertThat(result).hasStatus(CREATED).hasContent(commandId);
+		assertThat(result).hasStatus(CREATED).hasContent(task.toJson());
 		assertThat(Helpers.redirectLocation(result)).isEqualTo(com.zenobase.controllers.routes.TaskController.get(task.getId()).toString());
+		assertThat(Helpers.header(COMMAND_ID, result)).isEqualTo(commandId);
 	}
 
 	@Test

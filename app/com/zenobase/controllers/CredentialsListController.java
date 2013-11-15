@@ -97,7 +97,8 @@ public class CredentialsListController extends ControllerSupport {
 			return badRequest("already connected");
 		}
     	Credentials credentials = manager.newCredentials(auth.getPrincipal());
-    	dispatcher.dispatch(new CreateCredentialsCommand(auth.getPrincipal(), credentials));
+    	String commandId = dispatcher.dispatch(new CreateCredentialsCommand(auth.getPrincipal(), credentials));
+    	response().setHeader(COMMAND_ID, commandId);
     	response().setHeader(LOCATION, com.zenobase.controllers.routes.CredentialsController.get(credentials.getId()).toString());
         return created(credentials.sanitized().toJson());
     }

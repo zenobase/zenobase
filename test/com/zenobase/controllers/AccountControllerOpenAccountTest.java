@@ -7,10 +7,11 @@ import static org.mockito.Mockito.*;
 import static play.mvc.Http.Status.*;
 import static play.test.Helpers.*;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import play.mvc.Result;
+import play.test.Helpers;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import com.zenobase.commands.CreateUserCommand;
 import com.zenobase.common.Generator;
@@ -25,16 +26,19 @@ public class AccountControllerOpenAccountTest extends AccountControllerTestSuppo
 		when(users.exists(user.getName())).thenReturn(false);
 		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
 		SignUpForm form = new SignUpForm(user.getName(), password, user.getEmail());
+		String commandId = Generator.id();
+		ArgumentCaptor<CreateUserCommand> commandArg = ArgumentCaptor.forClass(CreateUserCommand.class);
+		when(dispatcher.dispatch(commandArg.capture())).thenReturn(commandId);
 		Result result = call(form.toJson());
 		assertThat(result).hasStatus(CREATED).hasContent(new UserInfo(user).toJson());
-		ArgumentCaptor<CreateUserCommand> commandArg = ArgumentCaptor.forClass(CreateUserCommand.class);
-		verify(dispatcher).dispatch(commandArg.capture());
 		User actual = commandArg.getValue().getUser();
 		assertThat(actual.getName()).isEqualTo(user.getName());
 		assertThat(actual.getEmail()).isEqualTo(user.getEmail());
 		ArgumentCaptor<User> userArg = ArgumentCaptor.forClass(User.class);
 		verify(mailer).send(userArg.capture());
 		assertThat(userArg.getValue()).isEqualTo(actual);
+		assertThat(Helpers.redirectLocation(result)).isEqualTo(com.zenobase.controllers.routes.UserController.get(user.getName()).toString());
+		assertThat(Helpers.header(COMMAND_ID, result)).isEqualTo(commandId);
 	}
 
 	@Test
