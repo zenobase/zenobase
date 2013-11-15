@@ -315,7 +315,7 @@ public class BrowserTest {
 				$("#password-reset-button").click();
 
 				// delete bucket and undo
-				wait.withMessage("user profile is displayed").until(ExpectedConditions.visibilityOfElementLocated(By.id("user-view")));
+				wait.withMessage("user profile is displayed").until(ExpectedConditions.visibilityOfElementLocated(By.className("bucket-row")));
 				new Actions(driver).moveToElement($(".bucket-row")).click($(".bucket-delete-action")).perform();
 				wait.withMessage("alert banner").until(ExpectedConditions.visibilityOfElementLocated(By.id("alert-banner")));
 				assertThat(buckets.find(0, 0).getTotal()).as("number of buckets").isEqualTo(11L);
