@@ -43,6 +43,20 @@ public class EventListControllerHttpGetTest extends EventListControllerTestSuppo
 	}
 
 	@Test
+	public void testListEvents() {
+		String constraint = "tag:value";
+		String facet = "id:events,type:list,limit:25";
+		Search expected = new EventSearchBuilder().addConstraint(constraint).addFacet(facet).buildSearch();
+		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
+		when(buckets.find(bucket.getId())).thenReturn(bucket);
+		ObjectNode fakeResult = Nodes.newObject();
+		fakeResult.put("test", true);
+		when(events.find(bucket.getId(), expected)).thenReturn(fakeResult);
+		Result result = call(bucket, String.format("?q=%s&limit=25", constraint));
+		assertThat(result).hasStatus(OK).hasContent(fakeResult);
+	}
+
+	@Test
 	public void testExportEvents() {
 		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
 		when(buckets.find(bucket.getId())).thenReturn(bucket);
