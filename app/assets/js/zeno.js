@@ -2159,13 +2159,15 @@
 							selection : function(event) {
 								var min = (event.xAxis[0].min !== undefined) ? Math.ceil(event.xAxis[0].min) : 0;
 								var max = (event.xAxis[0].max !== undefined) ? Math.floor(event.xAxis[0].max) : $scope.intervals.length - 1;
-								var from = field.toText($scope.intervals[max].from) || '*'; 
-								var to = field.toText($scope.intervals[min].to) || '*';
-								if (from != '*' || to != '*') {
-									var range = '[' + from + '..' + to + ')';
-									$scope.$apply(function() {
-										$scope.addConstraint($scope.settings.field, range, true);
-									});
+								if (min <= max) {
+									var from = field.toText($scope.intervals[max].from); 
+									var to = field.toText($scope.intervals[min].to);
+									if (from || to) {
+										var range = '[' + from + '..' + to + ')';
+										$scope.$apply(function() {
+											$scope.addConstraint($scope.settings.field, range, true);
+										});
+									}
 								}
 								return false;
 							}
@@ -4473,7 +4475,7 @@
 			icon : 'icon-time',
 			type : 'numeric',
 			toText : function(value) {
-				return value != null ? moment.duration(value).countdown() : value;
+				return value ? moment.duration(value).countdown() : 0;
 			},
 			toHtml : function(value) {
 				return '<span class="nowrap">' +
