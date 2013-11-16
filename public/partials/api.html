@@ -30,6 +30,8 @@ a simple Android app that authenticates with and posts data to Zenobase.</p>
 	</dd>
 </dl>
 
+&nbsp;
+
 </section>
 
 <div class="well">
@@ -67,8 +69,8 @@ a simple Android app that authenticates with and posts data to Zenobase.</p>
 				<li class="nav-header"><a href="/#/api/common">Common</a></li>
 				<li><a href="/#/api/quota">Quota check</a></li>
 				<li><a href="/#/api/username">Look up a username</a></li>
-				<li><a href="/#/api/constraints">Query Constraints</a></li>
-				<li><a href="/#/api/facets">Query Facets</a></li>
+				<li><a href="/#/api/constraints">Constraints</a></li>
+				<li><a href="/#/api/facets">Facets</a></li>
 				<li><a href="/#/api/errors">Errors</a></li>
 			</ul>
 		</div>
@@ -885,7 +887,7 @@ Content-Type: application/json
 
 <section id="api-constraints">
 
-<h3>Query Constraints</h3>
+<h3>Constraints</h3>
 
 <p>Constraints can be used to restrict lists of events.</p>
 
@@ -1064,7 +1066,7 @@ Content-Type: application/json
 
 <section id="api-facets">
 
-<h3>Query Facets</h3>
+<h3>Facets</h3>
 
 <p>Facets can be used to specify what data to return e.g. <a href="/#/api/list-events">when listing events</a>.</p>
 
@@ -1075,41 +1077,46 @@ Content-Type: application/json
 <dd>A short string, used to identify the facet's data in the result.</dd>
 <dt>type</dt>
 <dd>The facet type, see below.</dd>
-<dt>param=value</dt>
+<dt>param:value</dt>
 <dd>Type-specific parameters for the facet, see below.</dd>
 </dl>
 
-<h4>Types</h4>
+&nbsp;
+
+<h4>Count Facet</h4>
 
 <dl>
-<dt>count</dt>
-<dd>
-  <blockquote>
-  <dl>
-  <dt>field=<em>&lt;'tag'|'author'&gt;</em></dt>
-  <dd>The field to aggregate on. Required.</dd>
-  <dt>order=<em>&lt;'count'|'term'&gt;</em></dt>
-  <dd>Order results by count or alphabetic. Defaults to <em>count</em>.</dd>
-  <dt>offset=<em>&lt;integer&gt;</em></dt>
-  <dd>The offset of the first result. Defaults to <em>0</em>.</dd>
-  <dt>limit=<em>&lt;integer&gt;</em></dt>
-  <dd>How many results to return. Defaults to <em>10</em>.</dd>
-  <dt>reverse=<em>&lt;boolean&gt;</em></dt>
-  <dd>Sort in descending order. Defaults to <em>false</em></dd>
-  </dl>
-  </blockquote>
-<pre class="example"><span class="title">id:tags,type:count,field:tag</span>
-"tags" : [
+	<dt>field=<em>&lt;'tag'|'author'&gt;</em></dt>
+	<dd>The field to aggregate on. Required.</dd>
+	<dt>order=<em>&lt;'count'|'term'&gt;</em></dt>
+	<dd>Order results by count or alphabetic. Defaults to <em>count</em>.</dd>
+	<dt>offset=<em>&lt;integer&gt;</em></dt>
+	<dd>The offset of the first result. Defaults to <em>0</em>.</dd>
+	<dt>limit=<em>&lt;integer&gt;</em></dt>
+	<dd>How many results to return. Defaults to <em>10</em>.</dd>
+	<dt>reverse=<em>&lt;boolean&gt;</em></dt>
+	<dd>Sort in descending order. Defaults to <em>false</em></dd>
+</dl>
+
+<h5>Example:</h5>
+
+<pre class="example"><span class="title">Response</span>
+id:xyz,type:count,field:tag
+</pre>
+
+<pre class="example"><span class="title">Request</span>
+"xyz" : [
   { "label" : "lunch", "count" : 31 },
   { "label" : "dinner", "count" : 22 },
   { "label" : "breakfast", "count" : 19 }
 ]
 </pre>
-</dd>
-<dt>timeline</dt>
-<dd>
-  <blockquote>
-  <dl>
+
+&nbsp;
+
+<h4>Timeline Facet</h4>
+
+<dl>
   <dt>field=<em>&lt;String&gt;</em></dt>
   <dd>The field containing the values. Required.</dd>
   <dt>unit=<em>&lt;String&gt;</em></dt>
@@ -1120,46 +1127,65 @@ Content-Type: application/json
   <dd>Optional timezone offset, e.g.<em>+00:00</em>. If not set, values are aggregated using their local time.</dd>
   <dt>filter=<em>&lt;constraint&gt;</em></dt>
   <dd>Optional <a href="/#/api/constraints">constraint</a>.</dd>
-  </dl>
-  </blockquote>
-<pre class="example"><span class="title">id:steps,type:timeline,field:count,filter:tag:steps</span>
-"steps" : [
+</dl>
+
+<h5>Example:</h5>
+
+<pre class="example"><span class="title">Request</span>
+id:xyz,type:timeline,field:count,filter:tag:steps
+</pre>
+
+<pre class="example"><span class="title">Response</span>
+"xyz" : [
   { "label" : "2013-01", "count" : 31, "avg" : 9832, "min" : 2559, "max" : 24600, "sum" : 304792 },
   { "label" : "2013-02", "count" : 28, "avg" : 12225.93, "min" : 4258, "max" : 19817, "sum" : 342326 },
   { "label" : "2013-03", "count" : 31, "avg" : 24134, "min" : 4512, "max" : 24134, "sum" : 317220 },
   ...
 ]
 </pre>
-</dd>
-<dt>map</dt>
-<dd>
-  <blockquote>
-  <dl>
+
+&nbsp;
+
+<h4>Map Facet</h4>
+
+<dl>
   <dt>factor=<em>&lt;Number&gt;</em></dt>
   <dd>Controls the clustering, from 0.0 (show each point) to 1.0 (one big cluster). Defaults to <em>0.2</em>.</dd>
-  </dl>
-  </blockquote>
-<pre class="example"><span class="title">id:places,type:map,factor:0.4</span>
-"places" : [
+</dl>
+
+<h5>Example:</h5>
+
+<pre class="example"><span class="title">Request</span>
+id:xyz,type:map,factor:0.4
+</pre>
+
+<pre class="example"><span class="title">Response</span>
+"xyz" : [
   { "count" : 1, "lat" : -2.8, "lon" : -40.48 },
   { "count" : 14, "lat" : 14.895, "lat_max" : 16.512, "lat_min" : -3.784, "lon" : -61.823, "lon_max" : -61.048, "lon_min" : -64.950 },
   ...
 ]
 </pre>
-</dd>
-<dt>ratings</dt>
-<dd>
-  <blockquote>
-  <dl>
+
+&nbsp;
+
+<h4>Ratings Facet</h4>
+
+<dl>
   <dt>scale=<em>&lt;Integer&gt;</em></dt>
   <dd>The number of groups to sort the ratings into. Defaults to <em>5</em> (i.e. 0 to 5 stars).</dd>
   <dt>filter=<em>&lt;constraint&gt;</em></dt>
   <dd>Optional <a href="/#/api/constraints">constraint</a>.</dd>
-  </dl>
-  </blockquote>
-</dd>
-<pre class="example"><span class="title">id:ratings,type:ratings</span>
-"ratings" : [
+</dl>
+
+<h5>Example:</h5>
+
+<pre class="example"><span class="title">Response</span>
+id:xyz,type:ratings
+</pre>
+
+<pre class="example"><span class="title">Response</span>
+"xyz" : [
   { "from" : 90, "count" : 1 },
   { "from" : 70, "to" : 90, "count" : 5 },
   { "from" : 50, "to" : 70, "count" : 17 },
@@ -1168,10 +1194,12 @@ Content-Type: application/json
   { "to" : 10, "count" : 4 },
 ]
 </pre>
-<dt>scoreboard</dt>
-<dd>
-  <blockquote>
-  <dl>
+
+&nbsp;
+
+<h4>Scoreboard Facet</h4>
+
+<dl>
   <dt>key_field=<em>&lt;'author'|'tag'&gt;</em></dt>
   <dd>The field to aggregate on. Required.</dd>
   <dt>value_field=<em>&lt;String&gt;</em></dt>
@@ -1184,19 +1212,26 @@ Content-Type: application/json
   <dd>How many results to return. Defaults to <em>10</em>.</dd>
   <dt>filter=<em>&lt;constraint&gt;</em></dt>
   <dd>Optional <a href="/#/api/constraints">constraint</a>.</dd>
-  </dl>
-  </blockquote>
-</dd>
-<pre class="example"><span class="title">id:top10,type:scoreboard,key_field:author,value_field:steps</span>
-"top10" : [
+</dl>
+
+<h5>Example:</h5>
+
+<pre class="example"><span class="title">Request</span>
+id:xyz,type:scoreboard,key_field:author,value_field:steps
+</pre>
+
+<pre class="example"><span class="title">Response</span>
+"xyz" : [
   { "label" : "dch4v3salm", "count" : 364, "min" : 1640, "max" : 38215, "sum" : 3899768, "avg" : 10713.65 },
   ...
 ]
 </pre>
-<dt>scatterplot</dt>
-<dd>
-  <blockquote>
-  <dl>
+
+&nbsp;
+
+<h4>Scatter Plot Facet</h4>
+
+<dl>
   <dt>field_x=<em>&lt;String&gt;</em></dt>
   <dd>The field for the x series. Required.</dd>
   <dt>unit_x=<em>&lt;String&gt;</em></dt>
@@ -1219,21 +1254,28 @@ Content-Type: application/json
   <dd>The timezone offset to use. Defaults to <em>+00:00</em></dd>
   <dt>lag=<em>&lt;Integer&gt;</em></dt>
   <dd>The number of time units (see <i>interval</i>) by which to offset the y series values from the x series values. Defaults to <em>0</em></dd>
-  </dl>
-  </blockquote>
-<pre class="example"><span class="title">id:sleep,type:scatterplot,field_x:duration,field_y:duration,statistic:sum,interval:day,lag:1</span>
-"sleep" : [
+</dl>
+
+<h5>Example:</h5>
+
+<pre class="example"><span class="title">Request</span>
+id:xyz,type:scatterplot,field_x:duration,field_y:duration,statistic:sum,interval:day,lag:1
+</pre>
+
+<pre class="example"><span class="title">Response</span>
+"xyz" : [
   [ 2.826E+7, 2.592E+7 ],
   [ 2.898E+7, 2.826E+7 ],
   [ 3.126E+7, 2.898E+7 ],
   ...
 ]
 </pre>
-</dd>
-<dt>gantt</dt>
-<dd>
-  <blockquote>
-  <dl>
+
+&nbsp;
+
+<h4>Gantt Facet</h4>
+
+<dl>
   <dt>field=<em>&lt;String&gt;</em></dt>
   <dd>The field containing the values. Required.</dd>
   <dt>order=<em>&lt;'count'|'term'|'min'|'max'&gt;</em></dt>
@@ -1242,20 +1284,27 @@ Content-Type: application/json
   <dd>How many results to return. Defaults to <em>10</em>.</dd>
   <dt>timezone=<em>&lt;Z&gt;</em></dt>
   <dd>The timezone offset to use. Defaults to <em>+00:00</em></dd>
-  </dl>
-  </blockquote>
-</dd>
-<pre class="example"><span class="title">id:recent,type:gantt,field:tag,order:max,timezone:-08:00</span>
-"recent" : [
+</dl>
+
+<h5>Example:</h5>
+
+<pre class="example"><span class="title">Request</span>
+id:xyz,type:gantt,field:tag,order:max,timezone:-08:00
+</pre>
+
+<pre class="example"><span class="title">Response</span>
+"xyz" : [
   { "label" : "dinner", "count" : 22, "first" : "2013-01-01T18:23:00.000-08:00", "last":"2013-11-07T19:45:00.000-08:00" },
   { "label" : "lunch", "count" : 31, "first" : "2013-01-01T13:23:00.000-08:00", "last":"2013-11-07T12:05:00.000-08:00" },
   ...
 ]
 </pre>
-<dt>histogram</dt>
-<dd>
-  <blockquote>
-  <dl>
+
+&nbsp;
+
+<h4>Histogram Facet</h4>
+
+<dl>
   <dt>field=<em>&lt;String&gt;</em></dt>
   <dd>The field containing the values. Required.</dd>
   <dt>unit=<em>&lt;String&gt;</em></dt>
@@ -1264,20 +1313,27 @@ Content-Type: application/json
   <dd>The bucket size. Defaults to <em>10</em>.</dd>
   <dt>filter=<em>&lt;constraint&gt;</em></dt>
   <dd>Optional <a href="/#/api/constraints">constraint</a>.</dd>
-  </dl>
-  </blockquote>
-<pre class="example"><span class="title">id:distances,type:histogram,field:distance,unit:mi,interval:5</span>
-"distances" : [
+</dl>
+
+<h5>Example:</h5>
+
+<pre class="example"><span class="title">Request</span>
+id:xyz,type:histogram,field:distance,unit:mi,interval:5
+</pre>
+
+<pre class="example"><span class="title">Response</span>
+"xyz" : [
   { "count" : 1, "from" : { "@value" : 35, "unit" : "mi" }, "to" : { "@value" : 4E+1, "unit" : "mi" }},
   { "count" : 7, "from" : { "@value" : 15, "unit" : "mi" }, "to" : { "@value" : 2E+1, "unit" : "mi" }},
   ...
 ]
 </pre>
-</dd>
-<dt>polar</dt>
-<dd>
-  <blockquote>
-  <dl>
+
+&nbsp;
+
+<h4>Polar Facet</h4>
+
+<dl>
   <dt>key_field=<em>&lt;String&gt;</em></dt>
   <dd>A field containing a timestamp. Defaults to <em>timestamp</em>.</dd>
   <dt>value_field=<em>&lt;String&gt;</em></dt>
@@ -1288,18 +1344,22 @@ Content-Type: application/json
   <dd>The (local, timezone-independent) interval to aggregate on. Required.</dd>
   <dt>filter=<em>&lt;constraint&gt;</em></dt>
   <dd>Optional <a href="/#/api/constraints">constraint</a>.</dd>
-  </dl>
-  </blockquote>
-<pre class="example"><span class="title">id:days,type:polar,interval:day_of_week</span>
-"days" : [
+</dl>
+
+<h5>Example:</h5>
+
+<pre class="example"><span class="title">Request</span>
+id:xyz,type:polar,interval:day_of_week
+</pre>
+
+<pre class="example"><span class="title">Response</span>
+"xyz" : [
   { "value" : 1, "label" : "Mon", "count" : 26 },
   { "value" : 2, "label" : "Tue", "count" : 14 },
   { "value" : 3, "label" : "Wed", "count" : 10 },
   ...
 ]
 </pre>
-</dd>
-</dl>
 
 </section>
 
