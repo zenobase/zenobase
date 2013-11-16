@@ -891,9 +891,11 @@ Content-Type: application/json
 
 <p>Constraints can be used to restrict lists of events.</p>
 
-<pre><em>&lt;field&gt;</em>:<em>&lt;expression&gt;</em></pre>
+<pre>[<em>&lt;operator&gt;</em>]<em>&lt;field&gt;</em>:<em>&lt;expression&gt;</em></pre>
 
 <dl>
+<dt>operator</dt>
+<dd>Prefix with <code>-</code> to negate the constraint.</dd>
 <dt>field</dt>
 <dd>The field name.</dd>
 <dt>expression</dt>
