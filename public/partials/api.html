@@ -17,8 +17,8 @@ a simple Android app that authenticates with and posts data to Zenobase.</p>
 	<dt>2013-11-11</dt>
 	<dd>
 		<ul>
-			<li>changed path for looking up user names to <code>/users/<em>&lt;user_id&gt;</em></code></li>
-			<li>changed path for finding a user's buckets to <code>/users/<em>&lt;user_id&gt;</em>/buckets/</code></li>
+			<li>changed the path for looking up user names to <code>/users/<em>&lt;user_id&gt;</em></code></li>
+			<li>changed the path for finding a user's buckets to <code>/users/<em>&lt;user_id&gt;</em>/buckets/</code></li>
 		</ul>
 	</dd>
 	<dt>2013-10-23</dt>
@@ -170,17 +170,15 @@ grant_type=password&amp;username=<em>&lt;username&gt;</em>&amp;password=<em>&lt;
 <dd>The user's password.</dd>
 </dl>
 
-<h4>Example</h4>
+<h5>Example:</h5>
 
-<h5>Request</h5>
-
-<pre>curl -i -X POST 'https://api.zenobase.com/oauth/token' \
+<pre class="example"><span class="title">Request</span>
+curl -i -X POST 'https://api.zenobase.com/oauth/token' \
   -d 'grant_type=password&amp;username=jdoe&amp;password=secret1337'
 </pre>
 
-<h5>Response</h5>
-
-<pre>HTTP/1.1 200 OK
+<pre class="example"><span class="title">Response</span>
+HTTP/1.1 200 OK
 Content-Type: application/json
 
 {
@@ -205,17 +203,15 @@ Authorization: Bearer <em>&lt;access_token&gt;</em>
 <dd>The access token associated with the grant to revoke.</dd>
 </dl>
 
-<h4>Example</h4>
+<h5>Example:</h5>
 
-<h5>Request</h5>
-
-<pre>curl -i -X DELETE 'https://api.zenobase.com/authorizations/e7975e8bb6eabc3ef567' \
+<pre class="example"><span class="title">Request</span>
+curl -i -X DELETE 'https://api.zenobase.com/authorizations/e7975e8bb6eabc3ef567' \
   -H 'Authorization: Bearer e7975e8bb6eabc3ef567'
 </pre>
 
-<h5>Response</h5>
-
-<pre>HTTP/1.1 204 No Content
+<pre class="example"><span class="title">Response</span>
+HTTP/1.1 204 No Content
 </pre>
 
 </section>
@@ -245,17 +241,15 @@ Authorization: Bearer <em>&lt;access_token&gt;</em>
   <dt>limit</dt><dd>The number of buckets to return, up to 100. Defaults to 10.</dd>
 </dl>
 
-<h4>Example</h4>
+<h5>Example</h5>
 
-<h5>Request</h5>
-
-<pre>curl -i 'https://api.zenobase.com/users/args4iqh2c/buckets/?limit=10' \
+<pre class="example"><span class="title">Request</span>
+curl -i 'https://api.zenobase.com/users/args4iqh2c/buckets/?limit=10' \
   -H 'Authorization: Bearer e7975e8bb6eabc3ef567'
 </pre>
 
-<h5>Response</h5>
-
-<pre>HTTP/1.1 200 OK
+<pre class="example"><span class="title">Response</span>
+HTTP/1.1 200 OK
 Content-Type: application/json
 
 { 
@@ -292,17 +286,15 @@ Authorization: Bearer <em>&lt;access_token&gt;</em>
   <dd>The bucket we want to retrieve.</dd>
 </dl>
 
-<h4>Example</h4>
+<h5>Example</h5>
 
-<h5>Request</h5>
-
-<pre>curl -i GET 'http://api.zenobase.com/buckets/v7jg3l5ibc' \
+<pre class="example"><span class="title">Request</span>
+curl -i GET 'http://api.zenobase.com/buckets/v7jg3l5ibc' \
   -H 'Authorization: Bearer e7975e8bb6eabc3ef567'
 </pre>
 
-<h5>Response</h5>
-
-<pre>HTTP/1.1 200 OK
+<pre class="example"><span class="title">Response</span>
+HTTP/1.1 200 OK
 Content-Type: application/json
 
 {
@@ -348,11 +340,10 @@ Authorization: Bearer <em>&lt;access_token&gt;</em>
   <dd>Optional list of existing buckets; creates a virtual bucket that serves as a read-only view.</dd>
 </dl>
 
-<h4>Example #1</h4>
+<h5>Example:</h5>
 
-<h5>Request</h5>
-
-<pre>curl -i -X POST 'https://api.zenobase.com/buckets/' \
+<pre class="example"><span class="title">Request</span>
+curl -i -X POST 'https://api.zenobase.com/buckets/' \
   -H 'Content-Type: application/json' \
   -H 'Authorization: Bearer e7975e8bb6eabc3ef567 \  
   -d '{
@@ -361,9 +352,8 @@ Authorization: Bearer <em>&lt;access_token&gt;</em>
   }'
 </pre>
 
-<h5>Response</h5>
-
-<pre>HTTP/1.1 201 Created
+<pre class="example"><span class="title">Response</span>
+HTTP/1.1 201 Created
 Content-Type: application/json
 Location: /buckets/v7jg3l5ibc
 X-Command-ID: 4o6iqmpnrr
@@ -380,11 +370,10 @@ X-Command-ID: 4o6iqmpnrr
 }
 </pre>
 
-<h4>Example #2</h4>
+<h5>Example:</h5>
 
-<h5>Request</h5>
-
-<pre>curl -i -X POST 'https://api.zenobase.com/buckets/' \
+<pre class="example"><span class="title">Request</span>
+curl -i -X POST 'https://api.zenobase.com/buckets/' \
   -H 'Content-Type: application/json' \
   -H 'Authorization: Bearer e7975e8bb6eabc3ef567 \  
   -d '{
@@ -397,9 +386,8 @@ X-Command-ID: 4o6iqmpnrr
   }'
 </pre>
 
-<h5>Response</h5>
-
-<pre>HTTP/1.1 201 Created
+<pre class="example"><span class="title">Response</span>
+HTTP/1.1 201 Created
 Content-Type: application/json
 Location: /buckets/v7jg3l5ibc
 X-Command-ID: 4o6iqmpnrr
@@ -454,11 +442,10 @@ Authorization: Bearer <em>&lt;access_token&gt;</em>
   <dd>The bucket to update.</dd>
 </dl>
 
-<h4>Example</h4>
+<h5>Example:</h5>
 
-<h5>Request</h5>
-
-<pre>curl -i -X PUT 'https://api.zenobase.com/buckets/v7jg3l5ibc' \
+<pre class="example"><span class="title">Request</span>
+curl -i -X PUT 'https://api.zenobase.com/buckets/v7jg3l5ibc' \
   -H 'Content-Type: application/json' \
   -H 'Authorization: Bearer e7975e8bb6eabc3ef567 \  
   -d '{
@@ -471,9 +458,8 @@ Authorization: Bearer <em>&lt;access_token&gt;</em>
   }'
 </pre>
 
-<h5>Response</h5>
-
-<pre>HTTP/1.1 204 No Content
+<pre class="example"><span class="title">Response</span>
+HTTP/1.1 204 No Content
 Content-Type: application/json
 X-Command-ID: 4o6iqmpnrr
 </pre>
@@ -496,17 +482,15 @@ Authorization: Bearer <em>&lt;access_token&gt;</em>
   <dd>The bucket to delete; must not be aliased from a virtual bucket.</dd>
 </dl>
 
-<h4>Example</h4>
+<h5>Example:</h5>
 
-<h5>Request</h5>
-
-<pre>curl -i -X DELETE 'https://api.zenobase.com/buckets/v7jg3l5ibc' \
+<pre class="example"><span class="title">Request</span>
+curl -i -X DELETE 'https://api.zenobase.com/buckets/v7jg3l5ibc' \
   -H 'Authorization: Bearer e7975e8bb6eabc3ef567'
 </pre>
 
-<h5>Response</h5>
-
-<pre>HTTP/1.1 204 No Content
+<pre class="example"><span class="title">Response</span>
+HTTP/1.1 204 No Content
 X-Command-ID: p3atfetvs2
 </pre>
 
@@ -549,17 +533,15 @@ Authorization: Bearer <em>&lt;access_token&gt;</em>
   If more than one constraint parameter is present, all constraints must be fulfilled.</dd>
 </dl>
 
-<h4>Example</h4>
+<h5>Example:</h5>
 
-<h5>Request</h5>
-
-<pre>curl -i 'http://api.zenobase.com/buckets/v7jg3l5ibc/?offset=0&amp;limit=10&amp;facet=id:tags,type:count&amp;q=tag:lunch' \
+<pre class="example"><span class="title">Request</span>
+curl -i 'http://api.zenobase.com/buckets/v7jg3l5ibc/?offset=0&amp;limit=10&amp;facet=id:tags,type:count&amp;q=tag:lunch' \
   -H 'Authorization: Bearer e7975e8bb6eabc3ef567'
 </pre>
 
-<h5>Response</h5>
-
-<pre>HTTP/1.1 200 OK
+<pre class="example"><span class="title">Response</span>
+HTTP/1.1 200 OK
 Content-Type: application/json
 
 {
@@ -599,17 +581,15 @@ Authorization: Bearer <em>&lt;access_token&gt;</em>
   <dd>The event to get.</dd>
 </dl>
 
-<h4>Example</h4>
+<h5>Example:</h5>
 
-<h5>Request</h5>
-
-<pre>curl -i 'https://api.zenobase.com/buckets/v7jg3l5ibc/chd6fmchgs' \
+<pre class="example"><span class="title">Request</span>
+curl -i 'https://api.zenobase.com/buckets/v7jg3l5ibc/chd6fmchgs' \
   -H 'Authorization: Bearer e7975e8bb6eabc3ef567'
 </pre>
 
-<h5>Response</h5>
-
-<pre>HTTP/1.1 200 OK
+<pre class="example"><span class="title">Response</span>
+HTTP/1.1 200 OK
 Content-Type:application/json
 
 { 
@@ -716,11 +696,10 @@ But if no <code>timestamp</code> is specified, a <code>timestamp</code>
 with the current time and the +00:00 time zone is added, and the 
 <code>author</code> is always set to the current user.</p>
 
-<h4>Example</h4>
+<h5>Example:</h5>
 
-<h5>Request</h5>
-
-<pre>curl -i -X POST 'https://api.zenobase.com/buckets/v7jg3l5ibc/' \
+<pre class="example"><span class="title">Request</span>
+curl -i -X POST 'https://api.zenobase.com/buckets/v7jg3l5ibc/' \
   -H 'Content-Type: application/json' \
   -H 'Authorization: Bearer e7975e8bb6eabc3ef567' \
   -d '{
@@ -736,9 +715,8 @@ with the current time and the +00:00 time zone is added, and the
   }'
 </pre>
 
-<h5>Response</h5>
-
-<pre>HTTP/1.1 201 Created
+<pre class="example"><span class="title">Response</span>
+HTTP/1.1 201 Created
 Content-Type:application/json
 Location: /buckets/v7jg3l5ibc/chd6fmchgs
 X-Command-ID: p3ateetvs1
@@ -781,11 +759,10 @@ Authorization: Bearer <em>&lt;access_token&gt;</em>
   <dd>The event to update.</dd>
 </dl>
 
-<h4>Example</h4>
+<h5>Example:</h5>
 
-<h5>Request</h5>
-
-<pre>curl -i -X PUT 'https://api.zenobase.com/buckets/v7jg3l5ibc/chd6fmchgs' \
+<pre class="example"><span class="title">Request</span>
+curl -i -X PUT 'https://api.zenobase.com/buckets/v7jg3l5ibc/chd6fmchgs' \
   -H 'Content-Type: application/json' \
   -H 'Authorization: Bearer e7975e8bb6eabc3ef567' \
   -d '{
@@ -801,9 +778,8 @@ Authorization: Bearer <em>&lt;access_token&gt;</em>
   }'
 </pre>
 
-<h5>Response</h5>
-
-<pre>HTTP/1.1 204 No Content
+<pre class="example"><span class="title">Response</span>
+HTTP/1.1 204 No Content
 X-Command-ID: p3ateetvs1
 </pre>
 
@@ -825,17 +801,15 @@ Authorization: Bearer <em>&lt;access_token&gt;</em>
   <dd>The event to delete.</dd>
 </dl>
 
-<h4>Example</h4>
+<h5>Example:</h5>
 
-<h5>Request</h5>
-
-<pre>curl -i -X DELETE 'https://api.zenobase.com/buckets/v7jg3l5ibc/chd6fmchgs' \
+<pre class="example"><span class="title">Request</span>
+curl -i -X DELETE 'https://api.zenobase.com/buckets/v7jg3l5ibc/chd6fmchgs' \
   -H 'Authorization: Bearer e7975e8bb6eabc3ef567'
 </pre>
 
-<h5>Response</h5>
-
-<pre>HTTP/1.1 204 No Content
+<pre class="example"><span class="title">Response</span>
+HTTP/1.1 204 No Content
 X-Command-ID: p3ateetvs1
 </pre>
 
@@ -858,17 +832,15 @@ X-Command-ID: p3ateetvs1
 Authorization: Bearer <em>&lt;access_token&gt;</em>
 </pre>
 
-<h4>Example</h4>
+<h5>Example:</h5>
 
-<h5>Request</h5>
-
-<pre>curl -i GET 'http://api.zenobase.com/quota \
+<pre class="example"><span class="title">Request</span>
+curl -i GET 'http://api.zenobase.com/quota \
   -H 'Authorization: Bearer e7975e8bb6eabc3ef567'
 </pre>
 
-<h5>Response</h5>
-
-<pre>HTTP/1.1 200 OK
+<pre class="example"><span class="title">Response</span>
+HTTP/1.1 200 OK
 Content-Type: application/json
 
 {
@@ -892,17 +864,15 @@ Authorization: Bearer <em>&lt;access_token&gt;</em>
 <dd>The user ID to look up.</dd>
 </dl>
 
-<h4>Example</h4>
+<h5>Example:</h5>
 
-<h5>Request</h5>
-
-<pre>curl -i GET 'http://api.zenobase.com/users/kbuk9h0ihh' \
+<pre class="example"><span class="title">Request</span>
+curl -i GET 'http://api.zenobase.com/users/kbuk9h0ihh' \
   -H 'Authorization: Bearer e7975e8bb6eabc3ef567'
 </pre>
 
-<h5>Response</h5>
-
-<pre>HTTP/1.1 200 OK
+<pre class="example"><span class="title">Response</span>
+HTTP/1.1 200 OK
 Content-Type: application/json
 
 {
@@ -1098,7 +1068,7 @@ Content-Type: application/json
 
 <p>Facets can be used to specify what data to return when listing events.</p>
 
-<pre>id:<em>&lt;id&gt;</em>,type=<em>&lt;type&gt;</em>,<em>&lt;param=value&gt;</em>,...</pre>
+<pre>id:<em>&lt;id&gt;</em>,type:<em>&lt;type&gt;</em>,<em>&lt;param:value&gt;</em>,...</pre>
 
 <dl>
 <dt>id</dt>
