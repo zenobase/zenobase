@@ -54,7 +54,7 @@ public class AuthorizationRepositoryTest extends ElasticSearchTestSupport {
 	public void testFindClientOnly() {
 		Identity me = new Identity();
 		List<Authorization> authorizations = fill(20, me);
-		assertThat(repository.find(Authorization.PRINCIPAL.getName(), me.toString(), true, 0, 20)).hasTotal(authorizations.size() / 2);
+		assertThat(repository.find(me, true, 0, 20)).hasTotal(authorizations.size() / 2);
 	}
 
 	@Test
@@ -63,8 +63,8 @@ public class AuthorizationRepositoryTest extends ElasticSearchTestSupport {
 		Identity you = new Identity();
 		List<Authorization> mine = fill(2, me);
 		List<Authorization> yours = fill(3, you);
-		assertThat(repository.find(Authorization.PRINCIPAL.getName(), me.toString(), false, 0, 10)).hasTotal(mine.size()).isEqualTo(mine);
-		assertThat(repository.find(Authorization.PRINCIPAL.getName(), you.toString(), false, 0, 10)).hasTotal(yours.size()).isEqualTo(yours);
+		assertThat(repository.find(me, false, 0, 10)).hasTotal(mine.size()).isEqualTo(mine);
+		assertThat(repository.find(you, false, 0, 10)).hasTotal(yours.size()).isEqualTo(yours);
 	}
 
 	private List<Authorization> fill(int size, Identity principal) {

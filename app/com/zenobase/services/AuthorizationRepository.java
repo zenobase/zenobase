@@ -13,7 +13,6 @@ import org.joda.time.DateTimeZone;
 import org.joda.time.Period;
 import play.Logger;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.google.common.base.Preconditions;
 import com.google.common.collect.Iterables;
 
 import com.zenobase.common.PartialList;
@@ -72,22 +71,19 @@ public class AuthorizationRepository {
 		return find(QueryBuilders.matchAllQuery(), offset, limit);
 	}
 
-	public PartialList<Authorization> find(String field, String value, boolean clientOnly, int offset, int limit) {
-		Preconditions.checkNotNull(field);
-		Preconditions.checkNotNull(value);
-		return find(restrict(field, value, clientOnly), offset, limit);
-	}
-
-	private static QueryBuilder restrict(String field, String value, boolean clientOnly) {
-		QueryBuilder query = QueryBuilders.termQuery(field, value);
+	/**
+	 * Find authorizations for a user.
+	 */
+	public PartialList<Authorization> find(Identity principal, boolean clientOnly, int offset, int limit) {
+		QueryBuilder query = QueryBuilders.termQuery(Authorization.PRINCIPAL.getName(), principal.getId());
 		if (clientOnly) {
 			query = QueryBuilders.filteredQuery(query, FilterBuilders.existsFilter(Authorization.CLIENT.getName()));
 		}
-		return query;
+		return find(query, offset, limit);
 	}
 
 	/**
-	 * Finds authorizations without a client and that are older than maxAge.
+	 * Find authorizations without a client that are older than maxAge.
 	 */
 	public PartialList<Authorization> find(Period maxAge, int offset, int limit) {
 		return find(QueryBuilders.filteredQuery(

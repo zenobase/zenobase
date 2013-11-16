@@ -20,7 +20,7 @@ public class AuthorizationListControllerFindByUserTest extends AuthorizationList
 	public void test() {
 		PartialList<Authorization> list = DefaultPartialList.of();
 		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
-		when(authorizations.find(Authorization.PRINCIPAL.getName(), user.getId(), false, 0, 10)).thenReturn(list);
+		when(authorizations.find(user.asIdentity(), false, 0, 10)).thenReturn(list);
 		Result result = call(user.getId(), false, 0, 10);
 		assertThat(result).hasStatus(OK).hasContent(AuthorizationList.toJson(list));
 	}
@@ -31,7 +31,7 @@ public class AuthorizationListControllerFindByUserTest extends AuthorizationList
 		PartialList<Authorization> list = DefaultPartialList.of();
 		when(auth.current()).thenReturn(new Authorization(superuser));
 		when(users.isSuperuser(superuser)).thenReturn(true);
-		when(authorizations.find(Authorization.PRINCIPAL.getName(), user.getId(), true, 0, 10)).thenReturn(list);
+		when(authorizations.find(user.asIdentity(), true, 0, 10)).thenReturn(list);
 		Result result = call(user.getId(), true, 0, 10);
 		assertThat(result).hasStatus(OK).hasContent(AuthorizationList.toJson(list));
 	}

@@ -65,7 +65,7 @@ public class AuthorizationListController extends ControllerSupport {
 		if (!auth.getPrincipal().equals(principal) && !users.isSuperuser(auth.getPrincipal())) {
 			return forbidden();
 		}
-		return ok(AuthorizationList.toJson(authorizations.find(Authorization.PRINCIPAL.getName(), principal.getId(), clientOnly, offset, limit)));
+		return ok(AuthorizationList.toJson(authorizations.find(principal, clientOnly, offset, limit)));
     }
 
 	public Result delete() {
