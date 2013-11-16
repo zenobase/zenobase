@@ -79,6 +79,30 @@ public class AuthorizationRepositoryTest extends ElasticSearchTestSupport {
 	}
 
 	@Test
+	public void testFindExisting() {
+		Identity me = new Identity();
+		Identity you = new Identity();
+		String s1 = "foo";
+		String s2 = "bar";
+		Authorization a1 = add(me, you, s1);
+		Authorization a2 = add(me, you, null);
+		Authorization a3 = add(me, null, null);
+		Authorization a4 = add(you, me, s1);
+		Authorization a5 = add(you, me, s2);
+		assertThat(repository.find(me, you, s1)).as("me to you with scope").isEqualTo(a1);
+		assertThat(repository.find(me, you, null)).as("me to you without scope").isEqualTo(a2);
+		assertThat(repository.find(me, null, null)).as("me without scope").isEqualTo(a3);
+		assertThat(repository.find(you, me, s1)).as("you to me with scope").isEqualTo(a4);
+		assertThat(repository.find(you, me, s2)).as("you to me with second scope").isEqualTo(a5);
+	}
+
+	private Authorization add(Identity principal, Identity client, String scope) {
+		Authorization authorization = new Authorization(principal, client, scope);
+		repository.store(authorization, DateTime.now());
+		return authorization;
+	}
+
+	@Test
 	public void testFindExpired() {
 		add(false, DateTime.now());
 		add(true, DateTime.now().minusMonths(2));

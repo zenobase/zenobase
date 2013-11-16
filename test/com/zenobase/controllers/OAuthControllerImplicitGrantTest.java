@@ -9,6 +9,7 @@ import static play.test.Helpers.*;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
+import play.mvc.Http;
 import play.mvc.Result;
 
 import com.zenobase.commands.CreateAuthorizationCommand;
@@ -45,6 +46,16 @@ public class OAuthControllerImplicitGrantTest extends OAuthControllerTestSupport
 		assertThat(auth.getPrincipal()).isEqualTo(user.asIdentity());
 		assertThat(auth.getClient()).isEqualTo(client.asIdentity());
 		assertThat(auth.getScope()).isEqualTo(scope);
+	}
+
+	@Test
+	public void testReusesTokenOnSecondRequest() {
+		Authorization authorization = new Authorization(user.asIdentity(), client.asIdentity(), scope);
+		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
+		when(users.find(client.asIdentity())).thenReturn(client);
+		when(authorizations.find(user.asIdentity(), client.asIdentity(), scope)).thenReturn(authorization);
+		Result result = call(new AuthorizeForm(OAuthController.RESPONSE_TYPE_TOKEN, client.asIdentity(), redirectUri, scope));
+		assertThat(result).hasStatus(Http.Status.OK).asObjectNode().path("access_token").isEqualTo(authorization.getId());
 	}
 
 	@Test

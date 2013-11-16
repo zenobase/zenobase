@@ -17,6 +17,7 @@ import com.zenobase.json.Nodes;
 import com.zenobase.models.Identity;
 import com.zenobase.models.User;
 import com.zenobase.oauth.Authorization;
+import com.zenobase.services.AuthorizationRepository;
 import com.zenobase.services.CommandDispatcher;
 import com.zenobase.services.UserRepository;
 
@@ -35,12 +36,14 @@ public class OAuthController extends ControllerSupport {
 
 	static String GRANT_TYPE_CLIENT_CREDENTIALS = "client_credentials";
 
+	private final AuthorizationRepository authorizations;
 	private final CommandDispatcher dispatcher;
 	private final UserRepository users;
 
 	@Inject
-	public OAuthController(AuthorizationContext security, CommandDispatcher dispatcher, UserRepository users) {
+	public OAuthController(AuthorizationContext security, AuthorizationRepository authorizations, CommandDispatcher dispatcher, UserRepository users) {
 		super(security);
+		this.authorizations = authorizations;
 		this.dispatcher = dispatcher;
 		this.users = users;
 	}
@@ -113,8 +116,14 @@ public class OAuthController extends ControllerSupport {
     }
 
     private Result grant(Identity principal, Identity client, String scope) {
-		Authorization auth = new Authorization(principal, client, scope);
-    	dispatcher.dispatch(new CreateAuthorizationCommand(principal, auth));
+    	Authorization auth = null;
+    	if (client != null) {
+    		auth = authorizations.find(principal, client, scope);
+    	}
+    	if (auth == null) {
+    		auth = new Authorization(principal, client, scope);
+    		dispatcher.dispatch(new CreateAuthorizationCommand(principal, auth));
+    	}
     	ObjectNode result = Nodes.newObject();
     	result.put("access_token", auth.getId());
     	result.put("client_id", principal.getId());

@@ -2,6 +2,7 @@ package com.zenobase.services;
 
 import javax.inject.Inject;
 
+import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.FilterBuilders;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
@@ -13,8 +14,11 @@ import org.joda.time.Period;
 import play.Logger;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Preconditions;
+import com.google.common.collect.Iterables;
 
 import com.zenobase.common.PartialList;
+import com.zenobase.json.Field;
+import com.zenobase.models.Identity;
 import com.zenobase.oauth.Authorization;
 import com.zenobase.oauth.AuthorizationList;
 
@@ -45,6 +49,23 @@ public class AuthorizationRepository {
 	public Authorization find(String authId) {
 		ObjectNode node = index.get(Authorization.TYPE_NAME, authId);
 		return node != null ? new Authorization(node) : null;
+	}
+
+	/**
+	 * Find an existing authorization.
+	 */
+	public Authorization find(Identity principal, Identity client, String scope) {
+		BoolQueryBuilder query = QueryBuilders.boolQuery();
+		add(query, Authorization.PRINCIPAL, principal.getId());
+		add(query, Authorization.CLIENT, client != null ? client.getId() : null);
+		add(query, Authorization.SCOPE, scope);
+		return Iterables.getFirst(find(query, 0, 1), null);
+	}
+
+	private static BoolQueryBuilder add(BoolQueryBuilder query, Field<?> field, String value) {
+		return value != null
+			? query.must(QueryBuilders.termQuery(field.getName(), value))
+			: query.mustNot(QueryBuilders.constantScoreQuery(FilterBuilders.existsFilter(field.getName())));
 	}
 
 	public PartialList<Authorization> find(int offset, int limit) {
