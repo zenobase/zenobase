@@ -1066,7 +1066,7 @@ Content-Type: application/json
 
 <h3>Query Facets</h3>
 
-<p>Facets can be used to specify what data to return when listing events.</p>
+<p>Facets can be used to specify what data to return e.g. <a href="/#/api/list-events">when listing events</a>.</p>
 
 <pre>id:<em>&lt;id&gt;</em>,type:<em>&lt;type&gt;</em>,<em>&lt;param:value&gt;</em>,...</pre>
 
@@ -1098,6 +1098,13 @@ Content-Type: application/json
   <dd>Sort in descending order. Defaults to <em>false</em></dd>
   </dl>
   </blockquote>
+<pre class="example"><span class="title">id:tags,type:count,field:tag</span>
+"tags" : [
+  { "label" : "lunch", "count" : 31 },
+  { "label" : "dinner", "count" : 22 },
+  { "label" : "breakfast", "count" : 19 }
+]
+</pre>
 </dd>
 <dt>timeline</dt>
 <dd>
@@ -1115,6 +1122,14 @@ Content-Type: application/json
   <dd>Optional <a href="/#/api/constraints">constraint</a>.</dd>
   </dl>
   </blockquote>
+<pre class="example"><span class="title">id:steps,type:timeline,field:count,filter:tag:steps</span>
+"steps" : [
+  { "label" : "2013-01", "count" : 31, "avg" : 9832, "min" : 2559, "max" : 24600, "sum" : 304792 },
+  { "label" : "2013-02", "count" : 28, "avg" : 12225.93, "min" : 4258, "max" : 19817, "sum" : 342326 },
+  { "label" : "2013-03", "count" : 31, "avg" : 24134, "min" : 4512, "max" : 24134, "sum" : 317220 },
+  ...
+]
+</pre>
 </dd>
 <dt>map</dt>
 <dd>
@@ -1124,6 +1139,13 @@ Content-Type: application/json
   <dd>Controls the clustering, from 0.0 (show each point) to 1.0 (one big cluster). Defaults to <em>0.2</em>.</dd>
   </dl>
   </blockquote>
+<pre class="example"><span class="title">id:places,type:map,factor:0.4</span>
+"places" : [
+  { "count" : 1, "lat" : -2.8, "lon" : -40.48 },
+  { "count" : 14, "lat" : 14.895, "lat_max" : 16.512, "lat_min" : -3.784, "lon" : -61.823, "lon_max" : -61.048, "lon_min" : -64.950 },
+  ...
+]
+</pre>
 </dd>
 <dt>ratings</dt>
 <dd>
@@ -1136,6 +1158,16 @@ Content-Type: application/json
   </dl>
   </blockquote>
 </dd>
+<pre class="example"><span class="title">id:ratings,type:ratings</span>
+"ratings" : [
+  { "from" : 90, "count" : 1 },
+  { "from" : 70, "to" : 90, "count" : 5 },
+  { "from" : 50, "to" : 70, "count" : 17 },
+  { "from" : 30, "to" : 50, "count" : 11 },
+  { "from" : 10, "to" : 30, "count" : 6 },
+  { "to" : 10, "count" : 4 },
+]
+</pre>
 <dt>scoreboard</dt>
 <dd>
   <blockquote>
@@ -1155,6 +1187,12 @@ Content-Type: application/json
   </dl>
   </blockquote>
 </dd>
+<pre class="example"><span class="title">id:top10,type:scoreboard,key_field:author,value_field:steps</span>
+"top10" : [
+  { "label" : "dch4v3salm", "count" : 364, "min" : 1640, "max" : 38215, "sum" : 3899768, "avg" : 10713.65 },
+  ...
+]
+</pre>
 <dt>scatterplot</dt>
 <dd>
   <blockquote>
@@ -1183,6 +1221,14 @@ Content-Type: application/json
   <dd>The number of time units (see <i>interval</i>) by which to offset the y series values from the x series values. Defaults to <em>0</em></dd>
   </dl>
   </blockquote>
+<pre class="example"><span class="title">id:sleep,type:scatterplot,field_x:duration,field_y:duration,statistic:sum,interval:day,lag:1</span>
+"sleep" : [
+  [ 2.826E+7, 2.592E+7 ],
+  [ 2.898E+7, 2.826E+7 ],
+  [ 3.126E+7, 2.898E+7 ],
+  ...
+]
+</pre>
 </dd>
 <dt>gantt</dt>
 <dd>
@@ -1190,8 +1236,8 @@ Content-Type: application/json
   <dl>
   <dt>field=<em>&lt;String&gt;</em></dt>
   <dd>The field containing the values. Required.</dd>
-  <dt>order=<em>&lt;'count'|'term'&gt;</em></dt>
-  <dd>Order results by count or alphabetic. Defaults to <em>term</em>.</dd>
+  <dt>order=<em>&lt;'count'|'term'|'min'|'max'&gt;</em></dt>
+  <dd>Order results by count, alphabetic, or be earliest or latest time. Defaults to <em>term</em>.</dd>
   <dt>limit=<em>&lt;integer&gt;</em></dt>
   <dd>How many results to return. Defaults to <em>10</em>.</dd>
   <dt>timezone=<em>&lt;Z&gt;</em></dt>
@@ -1199,6 +1245,13 @@ Content-Type: application/json
   </dl>
   </blockquote>
 </dd>
+<pre class="example"><span class="title">id:recent,type:gantt,field:tag,order:max,timezone:-08:00</span>
+"recent" : [
+  { "label" : "dinner", "count" : 22, "first" : "2013-01-01T18:23:00.000-08:00", "last":"2013-11-07T19:45:00.000-08:00" },
+  { "label" : "lunch", "count" : 31, "first" : "2013-01-01T13:23:00.000-08:00", "last":"2013-11-07T12:05:00.000-08:00" },
+  ...
+]
+</pre>
 <dt>histogram</dt>
 <dd>
   <blockquote>
@@ -1213,6 +1266,13 @@ Content-Type: application/json
   <dd>Optional <a href="/#/api/constraints">constraint</a>.</dd>
   </dl>
   </blockquote>
+<pre class="example"><span class="title">id:distances,type:histogram,field:distance,unit:mi,interval:5</span>
+"distances" : [
+  { "count" : 1, "from" : { "@value" : 35, "unit" : "mi" }, "to" : { "@value" : 4E+1, "unit" : "mi" }},
+  { "count" : 7, "from" : { "@value" : 15, "unit" : "mi" }, "to" : { "@value" : 2E+1, "unit" : "mi" }},
+  ...
+]
+</pre>
 </dd>
 <dt>polar</dt>
 <dd>
@@ -1230,6 +1290,14 @@ Content-Type: application/json
   <dd>Optional <a href="/#/api/constraints">constraint</a>.</dd>
   </dl>
   </blockquote>
+<pre class="example"><span class="title">id:days,type:polar,interval:day_of_week</span>
+"days" : [
+  { "value" : 1, "label" : "Mon", "count" : 26 },
+  { "value" : 2, "label" : "Tue", "count" : 14 },
+  { "value" : 3, "label" : "Wed", "count" : 10 },
+  ...
+]
+</pre>
 </dd>
 </dl>
 
