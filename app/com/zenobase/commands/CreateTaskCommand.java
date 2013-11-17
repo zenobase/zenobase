@@ -2,8 +2,8 @@ package com.zenobase.commands;
 
 import java.util.Map;
 
-import org.elasticsearch.common.collect.Maps;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.common.collect.Maps;
 import com.google.inject.Inject;
 
 import com.zenobase.json.ObjectField;
