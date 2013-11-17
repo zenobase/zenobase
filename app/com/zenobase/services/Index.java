@@ -134,7 +134,7 @@ public class Index {
 	}
 
 	public void find(QueryBuilder query, Callback<ObjectNode> callback, int scrollSize) {
-		SearchSourceBuilder search = new SearchSourceBuilder().query(query).size(scrollSize);
+		SearchSourceBuilder search = new SearchSourceBuilder().query(query).size(scrollSize).version(true);
 		for (SearchResponse response = scroll(search.version(true)); response.getHits().getHits().length > 0; response = scroll(response.getScrollId())) {
 			for (SearchHit hit : response.getHits()) {
 				callback.call(read(hit));

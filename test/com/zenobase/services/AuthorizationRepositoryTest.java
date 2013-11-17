@@ -3,11 +3,11 @@ package com.zenobase.services;
 import static com.zenobase.testing.NodeAssert.assertThat;
 import static com.zenobase.testing.PartialListAssert.assertThat;
 import static org.fest.assertions.Assertions.assertThat;
+import static org.mockito.Mockito.*;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import org.fest.assertions.Assertions;
 import org.joda.time.DateTime;
 import org.joda.time.Period;
 import org.junit.Before;
@@ -15,8 +15,8 @@ import org.junit.Test;
 import com.google.common.collect.Lists;
 import com.google.common.util.concurrent.Uninterruptibles;
 
+import com.zenobase.common.Callback;
 import com.zenobase.common.Generator;
-import com.zenobase.common.PartialList;
 import com.zenobase.models.Identity;
 import com.zenobase.oauth.Authorization;
 
@@ -114,9 +114,10 @@ public class AuthorizationRepositoryTest extends ElasticSearchTestSupport {
 		add(false, DateTime.now());
 		add(true, DateTime.now().minusMonths(2));
 		Authorization expected = add(false, DateTime.now().minusMonths(2));
-		PartialList<Authorization> results = repository.find(Period.months(1), 0, 10);
-		Assertions.assertThat(results).hasSize(1);
-		Assertions.assertThat(results.get(0)).isEqualTo(expected);
+		Callback<Authorization> callback = mock(Callback.class);
+		repository.find(Period.months(1), callback);
+		verify(callback).call(expected);
+		verifyNoMoreInteractions(callback);
 	}
 
 	private Authorization add(boolean withClient, DateTime created) {

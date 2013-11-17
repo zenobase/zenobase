@@ -7,7 +7,7 @@ import play.mvc.Result;
 
 import com.zenobase.commands.CompoundCommand;
 import com.zenobase.commands.DeleteAuthorizationCommand;
-import com.zenobase.common.PartialList;
+import com.zenobase.common.Callback;
 import com.zenobase.models.Identity;
 import com.zenobase.oauth.Authorization;
 import com.zenobase.oauth.AuthorizationList;
@@ -79,16 +79,18 @@ public class AuthorizationListController extends ControllerSupport {
 		return delete(Period.months(1), auth.getPrincipal());
 	}
 
-	public Result delete(Period maxAge, Identity principal) {
-		PartialList<Authorization> results = authorizations.find(maxAge, 0, 1000);
-		CompoundCommand command = new CompoundCommand(principal,
-			String.format("removed %d authorizations(s)", results.size()),
-			String.format("restored %d authorizations(s)", results.size()));
-    	for (Authorization result : results) {
-    		command.add(new DeleteAuthorizationCommand(principal, result));
-    	}
-		String commandId = dispatcher.dispatch(command);
-		response().setHeader(COMMAND_ID, commandId);
+	public Result delete(Period maxAge, final Identity principal) {
+		final CompoundCommand command = new CompoundCommand(principal, "expired authorizations", "unexpired authorizations");
+		authorizations.find(maxAge, new Callback<Authorization>() {
+			@Override
+			public void call(Authorization authorization) {
+	    		command.add(new DeleteAuthorizationCommand(principal, authorization));
+			}
+		});
+		if (!command.getCommands().isEmpty()) {
+			String commandId = dispatcher.dispatch(command);
+			response().setHeader(COMMAND_ID, commandId);
+		}
 		return noContent();
 	}
 }

@@ -16,13 +16,14 @@ import play.Logger;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.Iterables;
 
+import com.zenobase.common.Callback;
 import com.zenobase.common.PartialList;
 import com.zenobase.json.Field;
 import com.zenobase.models.Identity;
 import com.zenobase.oauth.Authorization;
 import com.zenobase.oauth.AuthorizationList;
 
-public class AuthorizationRepository {
+public class AuthorizationRepository extends RepositorySupport<Authorization> {
 
 	static final String INDEX_NAME = "authorizations";
 
@@ -36,6 +37,16 @@ public class AuthorizationRepository {
 			index.create(Integer.MAX_VALUE);
 			index.putMapping(Authorization.getSchema());
 		}
+	}
+
+	@Override
+	protected Index getIndex() {
+		return index;
+	}
+
+	@Override
+	protected Authorization toObject(ObjectNode node) {
+		return new Authorization(node);
 	}
 
 	public void store(Authorization authorization, DateTime timestamp) {
@@ -91,10 +102,11 @@ public class AuthorizationRepository {
 	/**
 	 * Find authorizations without a client that are older than maxAge.
 	 */
-	public PartialList<Authorization> find(Period maxAge, int offset, int limit) {
-		return find(QueryBuilders.filteredQuery(
+	public void find(Period maxAge, Callback<Authorization> callback) {
+		QueryBuilder query = QueryBuilders.filteredQuery(
 			QueryBuilders.rangeQuery(Authorization.CREATED.getName()).to(DateTime.now(DateTimeZone.UTC).minus(maxAge)),
-			FilterBuilders.missingFilter(Authorization.CLIENT.getName())), offset, limit);
+			FilterBuilders.missingFilter(Authorization.CLIENT.getName()));
+		find(query, callback);
 	}
 
 	private PartialList<Authorization> find(QueryBuilder query, int offset, int limit) {
@@ -103,4 +115,6 @@ public class AuthorizationRepository {
 			.sort(Authorization.CREATED.getName(), SortOrder.DESC);
 		return new AuthorizationList(index.find(search));
 	}
+
+
 }
