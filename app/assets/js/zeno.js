@@ -798,7 +798,7 @@
 		};
 		$scope.params = function() {
 			return {
-				client_only : true,
+				has_client : true,
 				offset : $scope.offset,
 				limit : $scope.limit
 			};

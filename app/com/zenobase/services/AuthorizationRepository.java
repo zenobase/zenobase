@@ -3,6 +3,7 @@ package com.zenobase.services;
 import javax.inject.Inject;
 
 import org.elasticsearch.index.query.BoolQueryBuilder;
+import org.elasticsearch.index.query.FilterBuilder;
 import org.elasticsearch.index.query.FilterBuilders;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
@@ -74,12 +75,16 @@ public class AuthorizationRepository {
 	/**
 	 * Find authorizations for a user.
 	 */
-	public PartialList<Authorization> find(Identity principal, boolean clientOnly, int offset, int limit) {
+	public PartialList<Authorization> find(Identity principal, Boolean client, int offset, int limit) {
 		QueryBuilder query = QueryBuilders.termQuery(Authorization.PRINCIPAL.getName(), principal.getId());
-		if (clientOnly) {
-			query = QueryBuilders.filteredQuery(query, FilterBuilders.existsFilter(Authorization.CLIENT.getName()));
+		if (client != null) {
+			query = QueryBuilders.filteredQuery(query, existsOrMissingFilter(Authorization.CLIENT.getName(), client));
 		}
 		return find(query, offset, limit);
+	}
+
+	private static FilterBuilder existsOrMissingFilter(String field, boolean exists) {
+		return exists ? FilterBuilders.existsFilter(field) : FilterBuilders.missingFilter(field);
 	}
 
 	/**

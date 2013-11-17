@@ -10,12 +10,15 @@ import org.junit.Test;
 import org.mockito.Matchers;
 import play.mvc.Result;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.common.collect.Lists;
 
 import com.zenobase.commands.ChangeQuotaCommand;
 import com.zenobase.commands.ChangeUserEmailCommand;
 import com.zenobase.commands.ChangeUserVerifiedCommand;
 import com.zenobase.commands.CompoundCommand;
+import com.zenobase.common.DefaultPartialList;
 import com.zenobase.common.Generator;
+import com.zenobase.common.PartialList;
 import com.zenobase.json.Nodes;
 import com.zenobase.models.Identity;
 import com.zenobase.models.User;
@@ -71,6 +74,9 @@ public class UserControllerHttpPostTest extends UserControllerTestSupport {
 	public void testUpdatePassword() {
 		user.setPassword("secret123");
 		String commandId = Generator.id();
+		Authorization authorization = new Authorization(new Identity());
+		PartialList<Authorization> list = DefaultPartialList.<Authorization>of(Lists.newArrayList(authorization), 1);
+		when(authorizations.find(user.asIdentity(), Boolean.FALSE, 0, 100)).thenReturn(list);
 		when(users.find(user.asIdentity())).thenReturn(user);
 		when(dispatcher.dispatch(Matchers.any(CompoundCommand.class))).thenReturn(commandId);
 		PasswordResetKey key = new PasswordResetKey(user);

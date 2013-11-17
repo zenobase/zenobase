@@ -12,12 +12,14 @@ import com.zenobase.commands.ChangeUserPasswordCommand;
 import com.zenobase.commands.ChangeUserVerifiedCommand;
 import com.zenobase.commands.CompoundCommand;
 import com.zenobase.commands.CreateAuthorizationCommand;
+import com.zenobase.commands.DeleteAuthorizationCommand;
 import com.zenobase.json.Nodes;
 import com.zenobase.mail.VerificationMailer;
 import com.zenobase.models.User;
 import com.zenobase.models.UserInfo;
 import com.zenobase.models.UserProfile;
 import com.zenobase.oauth.Authorization;
+import com.zenobase.services.AuthorizationRepository;
 import com.zenobase.services.CommandDispatcher;
 import com.zenobase.services.UserLookup;
 import com.zenobase.services.UserRepository;
@@ -25,15 +27,18 @@ import com.zenobase.services.UserRepository;
 public class UserController extends ControllerSupport {
 
 	private final UserRepository users;
+	private final AuthorizationRepository authorizations;
 	private final CommandDispatcher dispatcher;
 	private final VerificationMailer mailer;
 
 	@Inject
 	public UserController(AuthorizationContext security, UserRepository users,
-		CommandDispatcher dispatcher, VerificationMailer mailer) {
+		AuthorizationRepository authorizations, CommandDispatcher dispatcher,
+		VerificationMailer mailer) {
 
 		super(security);
 		this.users = users;
+		this.authorizations = authorizations;
 		this.dispatcher = dispatcher;
 		this.mailer = mailer;
 	}
@@ -114,6 +119,9 @@ public class UserController extends ControllerSupport {
 		CompoundCommand command = new CompoundCommand(user.asIdentity(), "updated password", "reverted password");
 		command.add(new ChangeUserPasswordCommand(user.asIdentity(), user.getName(), user.getHashedPassword(), User.hashPassword(password)));
 		command.add(new CreateAuthorizationCommand(user.asIdentity(), auth));
+		for (Authorization authorization : authorizations.find(user.asIdentity(), Boolean.FALSE, 0, 100)) {
+			command.add(new DeleteAuthorizationCommand(user.asIdentity(), authorization));
+		}
 		String commandId = dispatcher.dispatch(command);
 		response().setHeader(COMMAND_ID, commandId);
 		return ok(Nodes.newObject("access_token", auth.getId()));
