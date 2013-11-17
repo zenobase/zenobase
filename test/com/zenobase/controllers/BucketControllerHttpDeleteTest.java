@@ -9,13 +9,18 @@ import static play.test.Helpers.callAction;
 import org.junit.Before;
 import org.junit.Test;
 import play.mvc.Result;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
+import com.zenobase.commands.Command;
 import com.zenobase.commands.DeleteBucketCommand;
+import com.zenobase.common.DefaultPartialList;
 import com.zenobase.common.Generator;
 import com.zenobase.models.Bucket;
 import com.zenobase.models.Identity;
 import com.zenobase.models.Role;
 import com.zenobase.oauth.Authorization;
+import com.zenobase.tasks.Task;
+import com.zenobase.tasks.TaskList;
 
 public class BucketControllerHttpDeleteTest extends BucketControllerTestSupport {
 
@@ -35,7 +40,9 @@ public class BucketControllerHttpDeleteTest extends BucketControllerTestSupport 
 		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
 		when(buckets.find(bucket.getId())).thenReturn(bucket.copy());
 		when(buckets.isAliased(bucket.getId())).thenReturn(false);
-		when(dispatcher.dispatch(any(DeleteBucketCommand.class))).thenReturn(commandId);
+		when(authorizations.findAll(null, null, bucket.getId())).thenReturn(DefaultPartialList.<Authorization>of());
+		when(tasks.find(Task.BUCKET.getName(), bucket.getId(), 0, 100)).thenReturn(new TaskList(DefaultPartialList.<ObjectNode>of()));
+		when(dispatcher.dispatch(any(Command.class))).thenReturn(commandId);
 		Result result = call(bucket.getId());
 		assertThat(result).hasStatus(NO_CONTENT).hasHeader(COMMAND_ID, commandId).isEmpty();
 	}
@@ -48,6 +55,8 @@ public class BucketControllerHttpDeleteTest extends BucketControllerTestSupport 
 		when(users.isSuperuser(superuser)).thenReturn(true);
 		when(buckets.find(bucket.getId())).thenReturn(bucket.copy());
 		when(buckets.isAliased(bucket.getId())).thenReturn(false);
+		when(authorizations.findAll(null, null, bucket.getId())).thenReturn(DefaultPartialList.<Authorization>of());
+		when(tasks.find(Task.BUCKET.getName(), bucket.getId(), 0, 100)).thenReturn(new TaskList(DefaultPartialList.<ObjectNode>of()));
 		when(dispatcher.dispatch(any(DeleteBucketCommand.class))).thenReturn(commandId);
 		Result result = call(bucket.getId());
 		assertThat(result).hasStatus(NO_CONTENT).hasHeader(COMMAND_ID, commandId).isEmpty();

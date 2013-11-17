@@ -12,31 +12,42 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Function;
 import com.google.common.collect.ImmutableList;
 
+import com.zenobase.commands.CompoundCommand;
+import com.zenobase.commands.DeleteAuthorizationCommand;
 import com.zenobase.commands.DeleteBucketCommand;
+import com.zenobase.commands.DeleteTaskCommand;
 import com.zenobase.commands.UpdateBucketCommand;
 import com.zenobase.json.Nodes;
 import com.zenobase.models.Bucket;
 import com.zenobase.models.Role;
 import com.zenobase.models.User;
 import com.zenobase.oauth.Authorization;
+import com.zenobase.services.AuthorizationRepository;
 import com.zenobase.services.BucketRepository;
 import com.zenobase.services.CommandDispatcher;
+import com.zenobase.services.TaskRepository;
 import com.zenobase.services.UserRepository;
+import com.zenobase.tasks.Task;
 
 public class BucketController extends ControllerSupport {
 
 	private final CommandDispatcher dispatcher;
 	private final BucketRepository buckets;
 	private final UserRepository users;
+	private final AuthorizationRepository authorizations;
+	private final TaskRepository tasks;
 
 	@Inject
 	public BucketController(AuthorizationContext security, CommandDispatcher dispatcher,
-		BucketRepository buckets, UserRepository users) {
+		BucketRepository buckets, UserRepository users, AuthorizationRepository authorizations,
+		TaskRepository tasks) {
 
 		super(security);
 		this.dispatcher = dispatcher;
 		this.buckets = buckets;
 		this.users = users;
+		this.authorizations = authorizations;
+		this.tasks = tasks;
 	}
 
 	public Result get(String bucketId, boolean labelOnly) {
@@ -171,7 +182,15 @@ public class BucketController extends ControllerSupport {
     	if (buckets.isAliased(bucketId)) {
     		return conflict("bucket is aliased");
     	}
-    	String commandId = dispatcher.dispatch(new DeleteBucketCommand(auth.getPrincipal(), bucket));
+    	CompoundCommand command = new CompoundCommand(auth.getPrincipal(), "deleted bucket and associated data", "restored bucket and associated data");
+    	for (Authorization authorization : authorizations.findAll(null, null, bucket.getId())) {
+    		command.add(new DeleteAuthorizationCommand(auth.getPrincipal(), authorization));
+    	}
+    	for (Task task : tasks.find(Task.BUCKET.getName(), bucket.getId(), 0, 100)) {
+    		command.add(new DeleteTaskCommand(auth.getPrincipal(), task));
+    	}
+    	command.add(new DeleteBucketCommand(auth.getPrincipal(), bucket));
+    	String commandId = dispatcher.dispatch(command.unwrap());
 		response().setHeader(COMMAND_ID, commandId);
     	return noContent();
     }

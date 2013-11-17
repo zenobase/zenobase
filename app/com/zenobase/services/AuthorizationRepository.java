@@ -51,15 +51,16 @@ public class AuthorizationRepository {
 		return node != null ? new Authorization(node) : null;
 	}
 
-	/**
-	 * Find an existing authorization.
-	 */
 	public Authorization find(Identity principal, Identity client, String scope) {
+		return Iterables.getFirst(findAll(principal, client, scope), null);
+	}
+
+	public PartialList<Authorization> findAll(Identity principal, Identity client, String scope) {
 		BoolQueryBuilder query = QueryBuilders.boolQuery();
-		add(query, Authorization.PRINCIPAL, principal.getId());
+		add(query, Authorization.PRINCIPAL, principal != null ? principal.getId() : null);
 		add(query, Authorization.CLIENT, client != null ? client.getId() : null);
 		add(query, Authorization.SCOPE, scope);
-		return Iterables.getFirst(find(query, 0, 1), null);
+		return find(query, 0, 100);
 	}
 
 	private static BoolQueryBuilder add(BoolQueryBuilder query, Field<?> field, String value) {
