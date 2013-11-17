@@ -73,8 +73,18 @@ public class BucketRepositoryTest extends ElasticSearchTestSupport {
 		}
 
 		assertThat(repository.find(0, 10)).hasTotal(buckets.size()).isEqualTo(buckets.subList(0, 10));
-		assertThat(repository.find(me, 0, 10)).hasTotal(buckets.size() / 2);
-		assertThat(repository.find(you, 0, 10)).hasTotal(buckets.size() / 2);
+		assertThat(repository.find(me, BucketRepository.DEFAULT_ORDER, 0, 10)).hasTotal(buckets.size() / 2);
+		assertThat(repository.find(you, BucketRepository.DEFAULT_ORDER, 0, 10)).hasTotal(buckets.size() / 2);
+	}
+
+	@Test
+	public void testFindBucketsWithCustomOrder() {
+		Bucket b1 = newBucket("foo", me);
+		Bucket b2 = newBucket("bar", me);
+		repository.store(b1, DateTime.now(), true);
+		repository.store(b2, DateTime.now(), true);
+		assertThat(repository.find(me, SearchOrder.valueOf("label"), 0, 10)).as("order by label ascending").isEqualTo(ImmutableList.of(b2, b1));
+		assertThat(repository.find(me, SearchOrder.valueOf("-label"), 0, 10)).as("order by label descending").isEqualTo(ImmutableList.of(b1, b2));
 	}
 
 	@Test

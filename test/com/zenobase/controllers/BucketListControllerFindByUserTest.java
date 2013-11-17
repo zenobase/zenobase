@@ -14,15 +14,17 @@ import com.zenobase.models.Bucket;
 import com.zenobase.models.BucketList;
 import com.zenobase.models.Identity;
 import com.zenobase.oauth.Authorization;
+import com.zenobase.services.SearchOrder;
 
 public class BucketListControllerFindByUserTest extends BucketListControllerTestSupport {
 
+	private static final SearchOrder ORDER_BY = SearchOrder.valueOf("label");
 	@Test
 	public void test() {
 		PartialList<Bucket> list = DefaultPartialList.of();
 		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
-		when(buckets.find(user.asIdentity(), 0, 10)).thenReturn(list);
-		Result result = call(user.getId(), 0, 10);
+		when(buckets.find(user.asIdentity(), ORDER_BY, 0, 10)).thenReturn(list);
+		Result result = call(user.getId(), ORDER_BY, 0, 10);
 		assertThat(result).hasStatus(OK).hasContent(BucketList.toJson(list, events));
 	}
 
@@ -32,63 +34,63 @@ public class BucketListControllerFindByUserTest extends BucketListControllerTest
 		PartialList<Bucket> list = DefaultPartialList.of();
 		when(auth.current()).thenReturn(new Authorization(superuser));
 		when(users.isSuperuser(superuser)).thenReturn(true);
-		when(buckets.find(user.asIdentity(), 0, 10)).thenReturn(list);
-		Result result = call(user.getId(), 0, 10);
+		when(buckets.find(user.asIdentity(), ORDER_BY, 0, 10)).thenReturn(list);
+		Result result = call(user.getId(), ORDER_BY, 0, 10);
 		assertThat(result).hasStatus(OK).hasContent(BucketList.toJson(list, events));
 	}
 
 	@Test
 	public void testLimitTooLow() {
-		Result result = call(user.getId(), 0, -1);
+		Result result = call(user.getId(), ORDER_BY, 0, -1);
 		assertThat(result).hasStatus(BAD_REQUEST);
 	}
 
 	@Test
 	public void testLimitTooHigh() {
-		Result result = call(user.getId(), 0, 1000);
+		Result result = call(user.getId(), ORDER_BY, 0, 1000);
 		assertThat(result).hasStatus(BAD_REQUEST);
 	}
 
 	@Test
 	public void testOffsetTooLow() {
-		Result result = call(user.getId(), -1, 0);
+		Result result = call(user.getId(), ORDER_BY, -1, 0);
 		assertThat(result).hasStatus(BAD_REQUEST);
 	}
 
 	@Test
 	public void testOffsetTooHigh() {
-		Result result = call(user.getId(), 10000, 0);
+		Result result = call(user.getId(), ORDER_BY, 10000, 0);
 		assertThat(result).hasStatus(BAD_REQUEST);
 	}
 
 	@Test
 	public void testMissingAuthorization() {
-		Result result = call(user.getId(), 0, 10);
+		Result result = call(user.getId(), ORDER_BY, 0, 10);
 		assertThat(result).hasStatus(UNAUTHORIZED);
 	}
 
 	@Test
 	public void testScopedAuthorization() {
 		when(auth.current()).thenReturn(new Authorization(user.asIdentity(), new Identity(), "someScope"));
-		Result result = call(user.getId(), 0, 10);
+		Result result = call(user.getId(), ORDER_BY, 0, 10);
 		assertThat(result).hasStatus(FORBIDDEN);
 	}
 
 	@Test
 	public void testUserNotFound() {
 		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
-		Result result = call("@none", 0, 10);
+		Result result = call("@none", ORDER_BY, 0, 10);
 		assertThat(result).hasStatus(NOT_FOUND);
 	}
 
 	@Test
 	public void testAsNotOwner() {
 		when(auth.current()).thenReturn(new Authorization(new Identity()));
-		Result result = call(user.getId(), 0, 10);
+		Result result = call(user.getId(), ORDER_BY, 0, 10);
 		assertThat(result).hasStatus(FORBIDDEN);
 	}
 
-	private static Result call(String userId, int offset, int limit) {
-		return callAction(com.zenobase.controllers.routes.ref.BucketListController.findByUser(userId, offset, limit));
+	private static Result call(String userId, SearchOrder order, int offset, int limit) {
+		return callAction(com.zenobase.controllers.routes.ref.BucketListController.findByUser(userId, order.toString(), offset, limit));
 	}
 }

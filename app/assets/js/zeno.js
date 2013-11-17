@@ -630,7 +630,7 @@
 
 		$scope.$watch('user', function(user) {
 			if (user) {
-				$http.get('/users/' + $scope.user['@id'] + '/buckets/?' + $.param({ 'offset' : 0, 'limit' : 25 }))
+				$http.get('/users/' + $scope.user['@id'] + '/buckets/?' + $.param({ 'order_by' : 'label', 'offset' : 0, 'limit' : 25 }))
 				.success(function(response) {
 					$scope.buckets = response.buckets;
 				})
@@ -668,6 +668,7 @@
 		};
 		$scope.params = function() {
 			return {
+				order_by : 'label', 
 				offset : $scope.offset,
 				limit : $scope.limit
 			};
@@ -1422,7 +1423,7 @@
 			$scope.buckets = [];
 			$scope.aliases = [];
 			$scope.selected = null;
-			$http.get('/users/' + $scope.profile['@id'] + '/buckets/?' + $.param({ offset : 0, limit : 100 })).success(function(response) {
+			$http.get('/users/' + $scope.profile['@id'] + '/buckets/?' + $.param({ 'order_by' : 'label', offset : 0, limit : 100 })).success(function(response) {
 				$scope.buckets = response.buckets;
 			});
 			tracker.event('dialog', 'create view');

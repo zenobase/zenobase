@@ -16,6 +16,7 @@ import com.zenobase.oauth.Authorization;
 import com.zenobase.services.BucketRepository;
 import com.zenobase.services.CommandDispatcher;
 import com.zenobase.services.EventRepository;
+import com.zenobase.services.SearchOrder;
 import com.zenobase.services.UserLookup;
 import com.zenobase.services.UserRepository;
 
@@ -68,7 +69,7 @@ public class BucketListController extends ControllerSupport {
         return ok(chunks);
 	}
 
-	public Result findByUser(String userId, int offset, int limit) {
+	public Result findByUser(String userId, String orderBy, int offset, int limit) {
 		if (offset < 0 || offset > 1000) {
 			return badRequest("expected offset in [0..1000]");
 		}
@@ -89,11 +90,11 @@ public class BucketListController extends ControllerSupport {
 		if (!auth.getPrincipal().equals(principal) && !users.isSuperuser(auth.getPrincipal())) {
 			return forbidden();
 		}
-        return find(principal, offset, limit);
+        return find(principal, SearchOrder.valueOf(orderBy), offset, limit);
     }
 
-    private Result find(Identity principal, int offset, int limit) {
-        return ok(BucketList.toJson(buckets.find(principal, offset, limit), events));
+    private Result find(Identity principal, SearchOrder order, int offset, int limit) {
+        return ok(BucketList.toJson(buckets.find(principal, order, offset, limit), events));
     }
 
     @BodyParser.Of(BodyParser.Json.class)

@@ -6,7 +6,6 @@ import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
-import org.elasticsearch.search.sort.SortOrder;
 import org.joda.time.DateTime;
 import play.Logger;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -25,6 +24,7 @@ import com.zenobase.models.Identity;
 public class BucketRepository extends RepositorySupport<Bucket> {
 
 	static final String INDEX_NAME = "buckets";
+	static final SearchOrder DEFAULT_ORDER = new SearchOrder(Bucket.CREATED.getName(), false);
 
 	private final IndexManager manager;
 	private final Index index;
@@ -83,11 +83,11 @@ public class BucketRepository extends RepositorySupport<Bucket> {
 	}
 
 	public PartialList<Bucket> find(int offset, int limit) {
-		return find(QueryBuilders.matchAllQuery(), offset, limit);
+		return find(QueryBuilders.matchAllQuery(), DEFAULT_ORDER, offset, limit);
 	}
 
-	public PartialList<Bucket> find(Identity identity, int offset, int limit) {
-		return find(restrict(identity), offset, limit);
+	public PartialList<Bucket> find(Identity identity, SearchOrder order, int offset, int limit) {
+		return find(restrict(identity), order, offset, limit);
 	}
 
 	private static QueryBuilder restrict(Identity identity) {
@@ -106,10 +106,10 @@ public class BucketRepository extends RepositorySupport<Bucket> {
 		return query;
 	}
 
-	private PartialList<Bucket> find(QueryBuilder query, int offset, int limit) {
+	private PartialList<Bucket> find(QueryBuilder query, SearchOrder order, int offset, int limit) {
 		SearchSourceBuilder search = new SearchSourceBuilder()
-			.query(query).version(true).from(offset).size(limit)
-			.sort(Bucket.CREATED.getName(), SortOrder.DESC);
+			.query(query).version(true).from(offset).size(limit);
+		order.apply(search);
 		return new BucketList(index.find(search));
 	}
 
