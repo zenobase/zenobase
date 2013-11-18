@@ -20,6 +20,10 @@ public class DefaultPartialList<T> extends AbstractList<T> implements PartialLis
 		return new DefaultPartialList<T>(Collections.<T>emptyList(), 0L);
 	}
 
+	public static <T> PartialList<T> of(T... elements) {
+		return new DefaultPartialList<T>(ImmutableList.copyOf(elements), elements.length);
+	}
+
 	protected DefaultPartialList(Iterable<T> elements, long total) {
 		this.elements = ImmutableList.copyOf(elements);
 		this.total = total;

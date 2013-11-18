@@ -2,6 +2,7 @@ package com.zenobase.controllers;
 
 import static com.zenobase.testing.ResultAssert.assertThat;
 import static org.fest.assertions.Assertions.assertThat;
+import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.when;
 import static play.mvc.Http.Status.UNAUTHORIZED;
 import static play.test.Helpers.*;
@@ -13,9 +14,11 @@ import play.mvc.Http;
 import play.mvc.Result;
 
 import com.zenobase.commands.CreateAuthorizationCommand;
+import com.zenobase.common.DefaultPartialList;
 import com.zenobase.common.Generator;
 import com.zenobase.models.User;
 import com.zenobase.oauth.Authorization;
+import com.zenobase.services.AuthorizationQuery;
 
 public class OAuthControllerImplicitGrantTest extends OAuthControllerTestSupport {
 
@@ -37,6 +40,11 @@ public class OAuthControllerImplicitGrantTest extends OAuthControllerTestSupport
 	public void test() {
 		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
 		when(users.find(client.asIdentity())).thenReturn(client);
+		AuthorizationQuery query = new AuthorizationQuery()
+			.principalEqualTo(user.asIdentity())
+			.clientEqualTo(client.asIdentity())
+			.scopeEqualTo(scope);
+		when(authorizations.find(eq(query), anyInt(), anyInt())).thenReturn(DefaultPartialList.<Authorization>of());
 		ArgumentCaptor<CreateAuthorizationCommand> arg = ArgumentCaptor.forClass(CreateAuthorizationCommand.class);
 		when(dispatcher.dispatch(arg.capture())).thenReturn("c1");
 		Result result = call(new AuthorizeForm(OAuthController.RESPONSE_TYPE_TOKEN, client.asIdentity(), redirectUri, scope));
@@ -53,7 +61,11 @@ public class OAuthControllerImplicitGrantTest extends OAuthControllerTestSupport
 		Authorization authorization = new Authorization(user.asIdentity(), client.asIdentity(), scope);
 		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
 		when(users.find(client.asIdentity())).thenReturn(client);
-		when(authorizations.find(user.asIdentity(), client.asIdentity(), scope)).thenReturn(authorization);
+		AuthorizationQuery query = new AuthorizationQuery()
+			.principalEqualTo(user.asIdentity())
+			.clientEqualTo(client.asIdentity())
+			.scopeEqualTo(scope);
+		when(authorizations.find(eq(query), anyInt(), anyInt())).thenReturn(DefaultPartialList.of(authorization));
 		Result result = call(new AuthorizeForm(OAuthController.RESPONSE_TYPE_TOKEN, client.asIdentity(), redirectUri, scope));
 		assertThat(result).hasStatus(Http.Status.OK).asObjectNode().path("access_token").isEqualTo(authorization.getId());
 	}

@@ -11,12 +11,14 @@ import play.mvc.BodyParser;
 import play.mvc.Result;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Charsets;
+import com.google.common.collect.Iterables;
 
 import com.zenobase.commands.CreateAuthorizationCommand;
 import com.zenobase.json.Nodes;
 import com.zenobase.models.Identity;
 import com.zenobase.models.User;
 import com.zenobase.oauth.Authorization;
+import com.zenobase.services.AuthorizationQuery;
 import com.zenobase.services.AuthorizationRepository;
 import com.zenobase.services.CommandDispatcher;
 import com.zenobase.services.UserRepository;
@@ -118,7 +120,11 @@ public class OAuthController extends ControllerSupport {
     private Result grant(Identity principal, Identity client, String scope) {
     	Authorization auth = null;
     	if (client != null) {
-    		auth = authorizations.find(principal, client, scope);
+    		AuthorizationQuery query = new AuthorizationQuery()
+    			.principalEqualTo(principal)
+    			.clientEqualTo(client)
+    			.scopeEqualTo(scope);
+    		auth = Iterables.getOnlyElement(authorizations.find(query, 0, 1), null);
     	}
     	if (auth == null) {
     		auth = new Authorization(principal, client, scope);

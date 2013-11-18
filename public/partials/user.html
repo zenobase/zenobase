@@ -172,7 +172,7 @@
 						<button id="next-buckets-button" class="btn" title="Next" data-ng-click="next()" data-ng-disabled="!hasNext()"><i class="icon-chevron-right"></i></button>
 					</div>
 					<div class="btn-group pull-right" data-ng-show="buckets">
-						<button class="btn disabled zeno-paging"><b>{{offset + 1}}</b> &ndash; <b>{{offset + buckets.length}}</b> of <b>{{total}}</b></button>
+						<button class="btn disabled zeno-paging"><b>{{offset + 1}}</b> &ndash; <b>{{offset + buckets.length}}</b> of <b id="bucket-count">{{total}}</b></button>
 					</div>
 				</div>
 			</div>

@@ -1,7 +1,8 @@
 package com.zenobase.controllers;
 
+import static com.zenobase.testing.CallbackAnswer.doCallback;
 import static com.zenobase.testing.ResultAssert.assertThat;
-import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 import static play.mvc.Http.Status.*;
 import static play.test.Helpers.*;
@@ -10,19 +11,18 @@ import org.junit.Test;
 import org.mockito.Matchers;
 import play.mvc.Result;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.google.common.collect.Lists;
 
 import com.zenobase.commands.ChangeQuotaCommand;
 import com.zenobase.commands.ChangeUserEmailCommand;
 import com.zenobase.commands.ChangeUserVerifiedCommand;
 import com.zenobase.commands.CompoundCommand;
-import com.zenobase.common.DefaultPartialList;
+import com.zenobase.common.Callback;
 import com.zenobase.common.Generator;
-import com.zenobase.common.PartialList;
 import com.zenobase.json.Nodes;
 import com.zenobase.models.Identity;
 import com.zenobase.models.User;
 import com.zenobase.oauth.Authorization;
+import com.zenobase.services.AuthorizationQuery;
 
 public class UserControllerHttpPostTest extends UserControllerTestSupport {
 
@@ -74,10 +74,9 @@ public class UserControllerHttpPostTest extends UserControllerTestSupport {
 	public void testUpdatePassword() {
 		user.setPassword("secret123");
 		String commandId = Generator.id();
-		Authorization authorization = new Authorization(new Identity());
-		PartialList<Authorization> list = DefaultPartialList.<Authorization>of(Lists.newArrayList(authorization), 1);
-		when(authorizations.find(user.asIdentity(), Boolean.FALSE, 0, 100)).thenReturn(list);
 		when(users.find(user.asIdentity())).thenReturn(user);
+		AuthorizationQuery query = new AuthorizationQuery().principalEqualTo(user.asIdentity()).clientIsNull();
+		doCallback(new Authorization(new Identity())).when(authorizations).find(eq(query), any(Callback.class));
 		when(dispatcher.dispatch(Matchers.any(CompoundCommand.class))).thenReturn(commandId);
 		PasswordResetKey key = new PasswordResetKey(user);
 		Result result = call(user.getId(), new UpdateUserForm("newpassword",  key.getKey(), key.getExpirationToken()).toJson());

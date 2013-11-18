@@ -8,7 +8,6 @@ import static org.mockito.Mockito.*;
 import static play.mvc.Http.Status.*;
 import static play.test.Helpers.callAction;
 
-import org.joda.time.Period;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import play.mvc.Result;
@@ -18,6 +17,7 @@ import com.zenobase.common.Callback;
 import com.zenobase.common.Generator;
 import com.zenobase.models.Identity;
 import com.zenobase.oauth.Authorization;
+import com.zenobase.services.AuthorizationQuery;
 
 public class AuthorizationListControllerHttpDeleteTest extends AuthorizationListControllerTestSupport {
 
@@ -28,7 +28,7 @@ public class AuthorizationListControllerHttpDeleteTest extends AuthorizationList
 		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
 		when(users.isSuperuser(user.asIdentity())).thenReturn(true);
 		when(dispatcher.dispatch(arg.capture())).thenReturn(commandId);
-		doCallback(new Authorization(new Identity())).when(authorizations).find(any(Period.class), any(Callback.class));
+		doCallback(new Authorization(new Identity())).when(authorizations).find(any(AuthorizationQuery.class), any(Callback.class));
 		Result result = call();
 		assertThat(result).hasStatus(NO_CONTENT).hasHeader(COMMAND_ID, commandId);
 		assertThat(arg.getValue().getCommands()).hasSize(1);

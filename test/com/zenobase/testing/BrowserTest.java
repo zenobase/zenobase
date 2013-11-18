@@ -320,7 +320,7 @@ public class BrowserTest {
 				wait.withMessage("alert banner").until(ExpectedConditions.visibilityOfElementLocated(By.id("alert-banner")));
 				assertThat(buckets.find(0, 0).getTotal()).as("number of buckets").isEqualTo(11L);
 				$("#undo-link").click();
-				wait.withMessage("bucket").until(ExpectedConditions.visibilityOfElementLocated(By.className("bucket-row")));
+				wait.withMessage("bucket count").until(ExpectedConditions.textToBePresentInElement(By.id("bucket-count"), "12"));
 				assertThat($("#alert-banner")).isNotDisplayed();
 				assertThat(buckets.find(0, 0).getTotal()).as("number of buckets").isEqualTo(12L);
 

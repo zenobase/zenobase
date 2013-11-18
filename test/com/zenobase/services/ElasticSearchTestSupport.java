@@ -1,9 +1,13 @@
 package com.zenobase.services;
 
+import static org.mockito.Mockito.*;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.rules.TemporaryFolder;
+
+import com.zenobase.common.Callback;
 
 public abstract class ElasticSearchTestSupport {
 
@@ -35,5 +39,12 @@ public abstract class ElasticSearchTestSupport {
 	@After
 	public void closeManager() {
 		manager.close();
+	}
+
+	protected static <T> void verifyInteractions(Callback<T> callback, Iterable<T> expected) {
+		for (T t : expected) {
+			verify(callback).call(t);
+		}
+		verifyNoMoreInteractions(callback);
 	}
 }

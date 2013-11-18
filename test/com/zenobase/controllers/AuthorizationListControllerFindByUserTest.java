@@ -13,26 +13,27 @@ import com.zenobase.common.PartialList;
 import com.zenobase.models.Identity;
 import com.zenobase.oauth.Authorization;
 import com.zenobase.oauth.AuthorizationList;
+import com.zenobase.services.AuthorizationQuery;
 
 public class AuthorizationListControllerFindByUserTest extends AuthorizationListControllerTestSupport {
 
 	@Test
 	public void test() {
-		PartialList<Authorization> list = DefaultPartialList.of();
+		PartialList<Authorization> list = DefaultPartialList.of(new Authorization(user.asIdentity()));
 		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
-		when(authorizations.find(user.asIdentity(), null, 0, 10)).thenReturn(list);
-		Result result = call(user.getId(), null, 0, 10);
+		when(authorizations.find(new AuthorizationQuery().principalEqualTo(user.asIdentity()).clientNotNull(), 0, 10)).thenReturn(list);
+		Result result = call(user.getId(), Boolean.TRUE, 0, 10);
 		assertThat(result).hasStatus(OK).hasContent(AuthorizationList.toJson(list));
 	}
 
 	@Test
 	public void testAsSuperuser() {
 		Identity superuser = new Identity();
-		PartialList<Authorization> list = DefaultPartialList.of();
+		PartialList<Authorization> list = DefaultPartialList.of(new Authorization(user.asIdentity()));
 		when(auth.current()).thenReturn(new Authorization(superuser));
 		when(users.isSuperuser(superuser)).thenReturn(true);
-		when(authorizations.find(user.asIdentity(), Boolean.TRUE, 0, 10)).thenReturn(list);
-		Result result = call(user.getId(), Boolean.TRUE, 0, 10);
+		when(authorizations.find(new AuthorizationQuery().principalEqualTo(user.asIdentity()), 0, 10)).thenReturn(list);
+		Result result = call(user.getId(), null, 0, 10);
 		assertThat(result).hasStatus(OK).hasContent(AuthorizationList.toJson(list));
 	}
 

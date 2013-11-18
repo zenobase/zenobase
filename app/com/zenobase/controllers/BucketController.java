@@ -23,6 +23,7 @@ import com.zenobase.models.Bucket;
 import com.zenobase.models.Role;
 import com.zenobase.models.User;
 import com.zenobase.oauth.Authorization;
+import com.zenobase.services.AuthorizationQuery;
 import com.zenobase.services.AuthorizationRepository;
 import com.zenobase.services.BucketRepository;
 import com.zenobase.services.CommandDispatcher;
@@ -184,7 +185,7 @@ public class BucketController extends ControllerSupport {
     		return conflict("bucket is aliased");
     	}
     	final CompoundCommand command = new CompoundCommand(auth.getPrincipal(), "deleted bucket and associated data", "restored bucket and associated data");
-    	authorizations.find(null, null, bucket.getId(), new Callback<Authorization>() {
+    	authorizations.find(new AuthorizationQuery().scopeEqualTo(bucket.getId()), new Callback<Authorization>() {
 			@Override
 			public void call(Authorization authorization) {
 				command.add(new DeleteAuthorizationCommand(auth.getPrincipal(), authorization));
