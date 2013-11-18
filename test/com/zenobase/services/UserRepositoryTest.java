@@ -3,8 +3,7 @@ package com.zenobase.services;
 import static com.zenobase.testing.NodeAssert.assertThat;
 import static com.zenobase.testing.PartialListAssert.assertThat;
 import static org.fest.assertions.Assertions.assertThat;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
 
 import java.util.List;
 
@@ -26,7 +25,7 @@ public class UserRepositoryTest extends ElasticSearchTestSupport {
 	}
 
 	@Test
-	public void testCreateReadUpdateDelete() {
+	public void test() {
 
 		// create user
 		User user = new User("tester");
@@ -59,18 +58,19 @@ public class UserRepositoryTest extends ElasticSearchTestSupport {
 	}
 
 	@Test
-	public void testFindAll() {
-		List<User> users = fill(20);
+	public void testFindWithPaging() {
+		List<User> users = fill(11);
 		assertThat(repository.find(0, 10)).hasTotal(users.size()).isEqualTo(users.subList(0, 10));
-		assertThat(repository.find(10, 10)).hasTotal(users.size()).isEqualTo(users.subList(10, 20));
+		assertThat(repository.find(10, 10)).hasTotal(users.size()).isEqualTo(users.subList(10, 11));
+		assertThat(repository.find(20, 10)).hasTotal(users.size()).isEmpty();
 	}
 
 	@Test
 	public void testFindWithCallback() {
-		List<User> users = fill(15); // large enough to require scrolling
+		List<User> expected = fill(11);
 		Callback<User> callback = mock(Callback.class);
 		repository.find(callback);
-		verify(callback, times(users.size())).call(any(User.class));
+		verifyInteractions(callback, expected);
 	}
 
 	private List<User> fill(int size) {

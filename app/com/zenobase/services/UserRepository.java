@@ -2,23 +2,20 @@ package com.zenobase.services;
 
 import javax.inject.Inject;
 
-import org.elasticsearch.index.query.QueryBuilder;
-import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.common.collect.Iterables;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.elasticsearch.search.sort.SortOrder;
 import org.joda.time.DateTime;
 import play.Logger;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.google.common.base.Preconditions;
 
 import com.zenobase.common.Callback;
-import com.zenobase.common.DefaultPartialList;
 import com.zenobase.common.PartialList;
 import com.zenobase.models.Identity;
 import com.zenobase.models.User;
 import com.zenobase.models.UserList;
 
-public class UserRepository {
+public class UserRepository extends RepositorySupport<User> {
 
 	static final String INDEX_NAME = "users";
 
@@ -34,59 +31,6 @@ public class UserRepository {
 		}
 	}
 
-	public User find(Identity identity) {
-		DefaultPartialList<ObjectNode> hits = index.find(restrict(identity));
-		Preconditions.checkState(hits.size() <= 1,
-			"Expected 0..1 hits for identity '%s' but got %s", identity, hits.size());
-		return hits.size() > 0L ?
-			new User(hits.get(0)) : null;
-	}
-
-	public PartialList<User> find(int offset, int limit) {
-		SearchSourceBuilder search = new SearchSourceBuilder()
-			.query(QueryBuilders.matchAllQuery())
-			.sort(User.NAME.getName(), SortOrder.ASC)
-			.from(offset).size(limit)
-			.version(true);
-		return new UserList(index.find(search));
-	}
-
-	public void find(final Callback<User> callback) {
-		index.find(QueryBuilders.matchAllQuery(), new Callback<ObjectNode>() {
-			@Override
-			public void call(ObjectNode node) {
-				callback.call(new User(node));
-			}
-		}, 10);
-	}
-
-	private static QueryBuilder restrict(Identity identity) {
-		return QueryBuilders.termQuery(User.ID.getName(), identity.getId());
-	}
-
-	private static QueryBuilder restrict(String field, boolean value) {
-		return QueryBuilders.termQuery(field, value);
-	}
-
-	public User find(String name) {
-		ObjectNode node = index.get(User.TYPE_NAME, name);
-		return node != null ? new User(node) : null;
-	}
-
-	public boolean exists(String name) {
-		return index.exists(User.TYPE_NAME, name);
-	}
-
-	public boolean isSuperuser(Identity identity) {
-		QueryBuilder query = QueryBuilders.boolQuery()
-			.must(restrict(identity))
-			.must(restrict(User.SUPERUSER.getName(), true));
-		DefaultPartialList<ObjectNode> hits = index.find(query);
-		Preconditions.checkState(hits.size() <= 1,
-			"Expected 0..1 hits for identity '%s' but got %s", identity, hits.size());
-		return hits.size() > 0L;
-	}
-
 	public void store(User user, DateTime timestamp) {
 		index.store(User.TYPE_NAME, user.getName(), user.toJson(), timestamp, true);
 	}
@@ -99,11 +43,57 @@ public class UserRepository {
 		return index.delete(User.TYPE_NAME, user.getName(), true);
 	}
 
+	public User find(String name) {
+		ObjectNode node = index.get(User.TYPE_NAME, name);
+		return node != null ? new User(node) : null;
+	}
+
+	public User find(Identity identity) {
+		return Iterables.getOnlyElement(find(new UserQuery().principalEqualTo(identity), 0, 1), null);
+	}
+
+	public PartialList<User> find(int offset, int limit) {
+		return find(new UserQuery(), offset, limit);
+	}
+
+	public PartialList<User> find(UserQuery query, int offset, int limit) {
+		SearchSourceBuilder search = new SearchSourceBuilder()
+			.query(query.build())
+			.sort(User.NAME.getName(), SortOrder.ASC)
+			.from(offset).size(limit)
+			.version(true);
+		return new UserList(index.find(search));
+	}
+
+	public void find(Callback<User> callback) {
+		super.find(new UserQuery().build(), callback);
+	}
+
+	public boolean isSuperuser(Identity identity) {
+		UserQuery query = new UserQuery().principalEqualTo(identity).isSuperuser(true);
+		PartialList<User> users = find(query, 0, 1);
+		return !users.isEmpty();
+	}
+
+	public boolean exists(String name) {
+		return index.exists(User.TYPE_NAME, name);
+	}
+
 	public long size() {
 		return index.count();
 	}
 
 	public boolean isEmpty() {
 		return size() == 0L;
+	}
+
+	@Override
+	protected Index getIndex() {
+		return index;
+	}
+
+	@Override
+	protected User toObject(ObjectNode node) {
+		return new User(node);
 	}
 }
