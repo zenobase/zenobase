@@ -13,6 +13,7 @@ import com.zenobase.commands.ChangeUserVerifiedCommand;
 import com.zenobase.commands.CompoundCommand;
 import com.zenobase.commands.CreateAuthorizationCommand;
 import com.zenobase.commands.DeleteAuthorizationCommand;
+import com.zenobase.common.Callback;
 import com.zenobase.json.Nodes;
 import com.zenobase.mail.VerificationMailer;
 import com.zenobase.models.User;
@@ -99,7 +100,7 @@ public class UserController extends ControllerSupport {
 		return noContent();
 	}
 
-	private Result updatePassword(UpdateUserForm form, User user) {
+	private Result updatePassword(UpdateUserForm form, final User user) {
     	String key = form.getKey();
     	if (key == null) {
     		return badRequest("missing key field");
@@ -116,12 +117,15 @@ public class UserController extends ControllerSupport {
 			return badRequest("invalid key");
 		}
 		Authorization auth = new Authorization(user.asIdentity(), null, null);
-		CompoundCommand command = new CompoundCommand(user.asIdentity(), "updated password", "reverted password");
+		final CompoundCommand command = new CompoundCommand(user.asIdentity(), "updated password", "reverted password");
 		command.add(new ChangeUserPasswordCommand(user.asIdentity(), user.getName(), user.getHashedPassword(), User.hashPassword(password)));
 		command.add(new CreateAuthorizationCommand(user.asIdentity(), auth));
-		for (Authorization authorization : authorizations.find(user.asIdentity(), Boolean.FALSE, 0, 100)) {
-			command.add(new DeleteAuthorizationCommand(user.asIdentity(), authorization));
-		}
+		authorizations.find(user.asIdentity(), Boolean.FALSE, new Callback<Authorization>() {
+			@Override
+			public void call(Authorization authorization) {
+				command.add(new DeleteAuthorizationCommand(user.asIdentity(), authorization));
+			}
+		});
 		String commandId = dispatcher.dispatch(command);
 		response().setHeader(COMMAND_ID, commandId);
 		return ok(Nodes.newObject("access_token", auth.getId()));

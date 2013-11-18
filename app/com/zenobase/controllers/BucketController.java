@@ -17,6 +17,7 @@ import com.zenobase.commands.DeleteAuthorizationCommand;
 import com.zenobase.commands.DeleteBucketCommand;
 import com.zenobase.commands.DeleteTaskCommand;
 import com.zenobase.commands.UpdateBucketCommand;
+import com.zenobase.common.Callback;
 import com.zenobase.json.Nodes;
 import com.zenobase.models.Bucket;
 import com.zenobase.models.Role;
@@ -168,7 +169,7 @@ public class BucketController extends ControllerSupport {
     }
 
     public Result delete(String bucketId) {
-    	Authorization auth = getCurrentAuthorization();
+    	final Authorization auth = getCurrentAuthorization();
 		if (auth == null) {
 			return unauthorized();
 		}
@@ -182,10 +183,13 @@ public class BucketController extends ControllerSupport {
     	if (buckets.isAliased(bucketId)) {
     		return conflict("bucket is aliased");
     	}
-    	CompoundCommand command = new CompoundCommand(auth.getPrincipal(), "deleted bucket and associated data", "restored bucket and associated data");
-    	for (Authorization authorization : authorizations.findAll(null, null, bucket.getId())) {
-    		command.add(new DeleteAuthorizationCommand(auth.getPrincipal(), authorization));
-    	}
+    	final CompoundCommand command = new CompoundCommand(auth.getPrincipal(), "deleted bucket and associated data", "restored bucket and associated data");
+    	authorizations.find(null, null, bucket.getId(), new Callback<Authorization>() {
+			@Override
+			public void call(Authorization authorization) {
+				command.add(new DeleteAuthorizationCommand(auth.getPrincipal(), authorization));
+			}
+		});
     	for (Task task : tasks.find(Task.BUCKET.getName(), bucket.getId(), 0, 100)) {
     		command.add(new DeleteTaskCommand(auth.getPrincipal(), task));
     	}

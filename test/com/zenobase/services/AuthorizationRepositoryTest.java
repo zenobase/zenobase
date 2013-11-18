@@ -98,7 +98,7 @@ public class AuthorizationRepositoryTest extends ElasticSearchTestSupport {
 		Authorization a5 = add(you, me, s2);
 		assertThat(repository.find(me, you, s1)).as("me to you with scope").isEqualTo(a1);
 		assertThat(repository.find(me, you, null)).as("me to you without scope").isEqualTo(a2);
-		assertThat(repository.find(me, null, null)).as("me without scope").isEqualTo(a3);
+		assertThat(repository.find(me, (Identity) null, null)).as("me without scope").isEqualTo(a3);
 		assertThat(repository.find(you, me, s1)).as("you to me with scope").isEqualTo(a4);
 		assertThat(repository.find(you, me, s2)).as("you to me with second scope").isEqualTo(a5);
 	}

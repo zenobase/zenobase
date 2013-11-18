@@ -63,15 +63,19 @@ public class AuthorizationRepository extends RepositorySupport<Authorization> {
 	}
 
 	public Authorization find(Identity principal, Identity client, String scope) {
-		return Iterables.getFirst(findAll(principal, client, scope), null);
+		return Iterables.getFirst(find(buildQuery(principal, client, scope), 0, 1), null);
 	}
 
-	public PartialList<Authorization> findAll(Identity principal, Identity client, String scope) {
+	public void find(Identity principal, Identity client, String scope, Callback<Authorization> callback) {
+		find(buildQuery(principal, client, scope), callback);
+	}
+
+	private static QueryBuilder buildQuery(Identity principal, Identity client, String scope) {
 		BoolQueryBuilder query = QueryBuilders.boolQuery();
 		add(query, Authorization.PRINCIPAL, principal != null ? principal.getId() : null);
 		add(query, Authorization.CLIENT, client != null ? client.getId() : null);
 		add(query, Authorization.SCOPE, scope);
-		return find(query, 0, 100);
+		return query;
 	}
 
 	private static BoolQueryBuilder add(BoolQueryBuilder query, Field<?> field, String value) {
@@ -84,15 +88,20 @@ public class AuthorizationRepository extends RepositorySupport<Authorization> {
 		return find(QueryBuilders.matchAllQuery(), offset, limit);
 	}
 
-	/**
-	 * Find authorizations for a user.
-	 */
 	public PartialList<Authorization> find(Identity principal, Boolean client, int offset, int limit) {
+		return find(buildQuery(principal, client), offset, limit);
+	}
+
+	public void find(Identity principal, Boolean client, Callback<Authorization> callback) {
+		find(buildQuery(principal, client), callback);
+	}
+
+	private static QueryBuilder buildQuery(Identity principal, Boolean client) {
 		QueryBuilder query = QueryBuilders.termQuery(Authorization.PRINCIPAL.getName(), principal.getId());
 		if (client != null) {
 			query = QueryBuilders.filteredQuery(query, existsOrMissingFilter(Authorization.CLIENT.getName(), client));
 		}
-		return find(query, offset, limit);
+		return query;
 	}
 
 	private static FilterBuilder existsOrMissingFilter(String field, boolean exists) {
