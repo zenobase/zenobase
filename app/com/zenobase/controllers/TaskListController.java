@@ -12,6 +12,7 @@ import com.zenobase.models.Role;
 import com.zenobase.oauth.Authorization;
 import com.zenobase.services.BucketRepository;
 import com.zenobase.services.CommandDispatcher;
+import com.zenobase.services.TaskQuery;
 import com.zenobase.services.TaskRepository;
 import com.zenobase.services.UserLookup;
 import com.zenobase.services.UserRepository;
@@ -78,7 +79,7 @@ public class TaskListController extends ControllerSupport {
 		if (!bucket.hasRole(auth, Role.OWNER) && !users.isSuperuser(auth.getPrincipal())) {
 			return forbidden();
 		}
-		return ok(TaskList.toJson(tasks.find(Task.BUCKET.getName(), bucketId, offset, limit)));
+		return ok(TaskList.toJson(tasks.find(new TaskQuery().bucketEqualTo(bucketId), offset, limit)));
     }
 
 	public Result findByUser(String userId, int offset, int limit) {
@@ -102,7 +103,7 @@ public class TaskListController extends ControllerSupport {
 		if (!auth.getPrincipal().equals(principal) && !users.isSuperuser(auth.getPrincipal())) {
 			return forbidden();
 		}
-		return ok(TaskList.toJson(tasks.find(Task.PRINCIPAL.getName(), principal.toString(), offset, limit)));
+		return ok(TaskList.toJson(tasks.find(new TaskQuery().principalEqualTo(principal), offset, limit)));
     }
 
 	@BodyParser.Of(BodyParser.Json.class)

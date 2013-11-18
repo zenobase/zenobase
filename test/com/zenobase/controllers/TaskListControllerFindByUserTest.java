@@ -13,7 +13,7 @@ import com.zenobase.common.DefaultPartialList;
 import com.zenobase.common.Generator;
 import com.zenobase.models.Identity;
 import com.zenobase.oauth.Authorization;
-import com.zenobase.tasks.Task;
+import com.zenobase.services.TaskQuery;
 import com.zenobase.tasks.TaskList;
 
 public class TaskListControllerFindByUserTest extends TaskListControllerTestSupport {
@@ -22,7 +22,7 @@ public class TaskListControllerFindByUserTest extends TaskListControllerTestSupp
 	public void test() {
 		TaskList list = new TaskList(DefaultPartialList.<ObjectNode>of());
 		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
-		when(tasks.find(Task.PRINCIPAL.getName(), user.getId(), 0, 10)).thenReturn(list);
+		when(tasks.find(new TaskQuery().principalEqualTo(user.asIdentity()), 0, 10)).thenReturn(list);
 		Result result = call(user.getId(), 0, 10);
 		assertThat(result).hasStatus(OK).hasContent(TaskList.toJson(list));
 	}
@@ -86,7 +86,7 @@ public class TaskListControllerFindByUserTest extends TaskListControllerTestSupp
 		when(auth.current()).thenReturn(new Authorization(superuser));
 		when(users.find(user.getId())).thenReturn(user);
 		when(users.isSuperuser(superuser)).thenReturn(true);
-		when(tasks.find(Task.PRINCIPAL.getName(), user.getId(), 0, 10)).thenReturn(list);
+		when(tasks.find(new TaskQuery().principalEqualTo(user.asIdentity()), 0, 10)).thenReturn(list);
 		Result result = call(user.getId(), 0, 10);
 		assertThat(result).hasStatus(OK).hasContent(TaskList.toJson(list));
 	}

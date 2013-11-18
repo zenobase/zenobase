@@ -15,7 +15,7 @@ import com.zenobase.models.Bucket;
 import com.zenobase.models.Identity;
 import com.zenobase.models.Role;
 import com.zenobase.oauth.Authorization;
-import com.zenobase.tasks.Task;
+import com.zenobase.services.TaskQuery;
 import com.zenobase.tasks.TaskList;
 
 public class TaskListControllerFindByBucketTest extends TaskListControllerTestSupport {
@@ -28,7 +28,7 @@ public class TaskListControllerFindByBucketTest extends TaskListControllerTestSu
 		TaskList list = new TaskList(DefaultPartialList.<ObjectNode>of());
 		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
 		when(buckets.find(bucket.getId())).thenReturn(bucket);
-		when(tasks.find(Task.BUCKET.getName(), bucket.getId(), 0, 10)).thenReturn(list);
+		when(tasks.find(new TaskQuery().bucketEqualTo(bucket.getId()), 0, 10)).thenReturn(list);
 		Result result = call(bucket.getId(), 0, 10);
 		assertThat(result).hasStatus(OK).hasContent(TaskList.toJson(list));
 	}
@@ -85,7 +85,7 @@ public class TaskListControllerFindByBucketTest extends TaskListControllerTestSu
 		when(auth.current()).thenReturn(new Authorization(superuser));
 		when(buckets.find(bucket.getId())).thenReturn(bucket);
 		when(users.isSuperuser(superuser)).thenReturn(true);
-		when(tasks.find(Task.BUCKET.getName(), bucket.getId(), 0, 10)).thenReturn(list);
+		when(tasks.find(new TaskQuery().bucketEqualTo(bucket.getId()), 0, 10)).thenReturn(list);
 		Result result = call(bucket.getId(), 0, 10);
 		assertThat(result).hasStatus(OK).hasContent(TaskList.toJson(list));
 	}

@@ -2,18 +2,18 @@ package com.zenobase.services;
 
 import javax.inject.Inject;
 
-import org.elasticsearch.index.query.QueryBuilder;
-import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.elasticsearch.search.sort.SortOrder;
 import org.joda.time.DateTime;
 import play.Logger;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
+import com.zenobase.common.Callback;
+import com.zenobase.common.PartialList;
 import com.zenobase.tasks.Task;
 import com.zenobase.tasks.TaskList;
 
-public class TaskRepository {
+public class TaskRepository extends RepositorySupport<Task> {
 
 	static final String INDEX_NAME = "tasks";
 
@@ -46,22 +46,32 @@ public class TaskRepository {
 		return node != null ? new Task(node) : null;
 	}
 
-	public TaskList find(String field, String value, int offset, int limit) {
-		return find(QueryBuilders.termQuery(field, value), offset, limit);
+	public PartialList<Task> find(int offset, int limit) {
+		return find(new TaskQuery(), offset, limit);
 	}
 
-	public TaskList find(int offset, int limit) {
-		return find(QueryBuilders.matchAllQuery(), offset, limit);
-	}
-
-	private TaskList find(QueryBuilder query, int offset, int limit) {
+	public PartialList<Task> find(TaskQuery query, int offset, int limit) {
 		SearchSourceBuilder search = new SearchSourceBuilder()
-			.query(query).version(true).from(offset).size(limit)
+			.query(query.build()).version(true).from(offset).size(limit)
 			.sort(Task.CREATED.getName(), SortOrder.DESC);
 		return new TaskList(index.find(search));
 	}
 
+	public void find(TaskQuery query, Callback<Task> callback) {
+		super.find(query.build(), callback);
+	}
+
 	public void refresh() {
 		index.refresh();
+	}
+
+	@Override
+	protected Index getIndex() {
+		return index;
+	}
+
+	@Override
+	protected Task toObject(ObjectNode node) {
+		return new Task(node);
 	}
 }

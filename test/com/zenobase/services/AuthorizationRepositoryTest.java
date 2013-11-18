@@ -41,14 +41,14 @@ public class AuthorizationRepositoryTest extends ElasticSearchTestSupport {
 	}
 
 	@Test
-	public void testPaging() {
-		List<Authorization> authorizations = insert(11);
-		assertThat(repository.find(0, 10)).hasTotal(authorizations.size()).isEqualTo(authorizations.subList(0, 10));
-		assertThat(repository.find(10, 10)).hasTotal(authorizations.size()).isEqualTo(authorizations.subList(10, 11));
+	public void testFindWithPaging() {
+		List<Authorization> expected = insert(11);
+		assertThat(repository.find(0, 10)).hasTotal(expected.size()).isEqualTo(expected.subList(0, 10));
+		assertThat(repository.find(10, 10)).hasTotal(expected.size()).isEqualTo(expected.subList(10, 11));
 	}
 
 	@Test
-	public void testCallback() {
+	public void testFindWithCallback() {
 		List<Authorization> expected = insert(11);
 		Callback<Authorization> callback = mock(Callback.class);
 		repository.find(new AuthorizationQuery(), callback);

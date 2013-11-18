@@ -27,6 +27,7 @@ import com.zenobase.services.AuthorizationQuery;
 import com.zenobase.services.AuthorizationRepository;
 import com.zenobase.services.BucketRepository;
 import com.zenobase.services.CommandDispatcher;
+import com.zenobase.services.TaskQuery;
 import com.zenobase.services.TaskRepository;
 import com.zenobase.services.UserRepository;
 import com.zenobase.tasks.Task;
@@ -191,9 +192,12 @@ public class BucketController extends ControllerSupport {
 				command.add(new DeleteAuthorizationCommand(auth.getPrincipal(), authorization));
 			}
 		});
-    	for (Task task : tasks.find(Task.BUCKET.getName(), bucket.getId(), 0, 100)) {
-    		command.add(new DeleteTaskCommand(auth.getPrincipal(), task));
-    	}
+    	tasks.find(new TaskQuery().bucketEqualTo(bucketId), new Callback<Task>() {
+    		@Override
+    		public void call(Task task) {
+    			command.add(new DeleteTaskCommand(auth.getPrincipal(), task));
+    		}
+		});
     	command.add(new DeleteBucketCommand(auth.getPrincipal(), bucket));
     	String commandId = dispatcher.dispatch(command.unwrap());
 		response().setHeader(COMMAND_ID, commandId);

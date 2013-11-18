@@ -2,7 +2,6 @@ package com.zenobase.services;
 
 import javax.inject.Inject;
 
-import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.elasticsearch.search.sort.SortOrder;
 import org.joda.time.DateTime;
@@ -30,16 +29,6 @@ public class AuthorizationRepository extends RepositorySupport<Authorization> {
 		}
 	}
 
-	@Override
-	protected Index getIndex() {
-		return index;
-	}
-
-	@Override
-	protected Authorization toObject(ObjectNode node) {
-		return new Authorization(node);
-	}
-
 	public void store(Authorization authorization, DateTime timestamp) {
 		this.index.store(Authorization.TYPE_NAME, authorization.getId(), authorization.toJson(), timestamp, true);
 	}
@@ -58,17 +47,23 @@ public class AuthorizationRepository extends RepositorySupport<Authorization> {
 	}
 
 	public PartialList<Authorization> find(AuthorizationQuery query, int offset, int limit) {
-		return find(query.build(), offset, limit);
-	}
-
-	private PartialList<Authorization> find(QueryBuilder query, int offset, int limit) {
 		SearchSourceBuilder search = new SearchSourceBuilder()
-			.query(query).version(true).from(offset).size(limit)
+			.query(query.build()).version(true).from(offset).size(limit)
 			.sort(Authorization.CREATED.getName(), SortOrder.DESC);
 		return new AuthorizationList(index.find(search));
 	}
 
 	public void find(AuthorizationQuery query, Callback<Authorization> callback) {
 		super.find(query.build(), callback);
+	}
+
+	@Override
+	protected Index getIndex() {
+		return index;
+	}
+
+	@Override
+	protected Authorization toObject(ObjectNode node) {
+		return new Authorization(node);
 	}
 }
