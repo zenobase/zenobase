@@ -69,7 +69,7 @@ public class BucketListController extends ControllerSupport {
         return ok(chunks);
 	}
 
-	public Result findByUser(String userId, String orderBy, int offset, int limit) {
+	public Result findByUser(String userId, String order, int offset, int limit) {
 		if (offset < 0 || offset > 1000) {
 			return badRequest("expected offset in [0..1000]");
 		}
@@ -90,7 +90,7 @@ public class BucketListController extends ControllerSupport {
 		if (!auth.getPrincipal().equals(principal) && !users.isSuperuser(auth.getPrincipal())) {
 			return forbidden();
 		}
-        return find(principal, SearchOrder.valueOf(orderBy), offset, limit);
+        return find(principal, SearchOrder.valueOf(order), offset, limit);
     }
 
     private Result find(Identity principal, SearchOrder order, int offset, int limit) {
