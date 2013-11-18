@@ -2,8 +2,6 @@ package com.zenobase.services;
 
 import javax.inject.Inject;
 
-import org.elasticsearch.index.query.BoolQueryBuilder;
-import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.joda.time.DateTime;
@@ -13,13 +11,9 @@ import com.google.common.base.Preconditions;
 
 import com.zenobase.common.Callback;
 import com.zenobase.common.PartialList;
-import com.zenobase.json.AliasField;
-import com.zenobase.json.Field;
-import com.zenobase.json.RolesField;
 import com.zenobase.models.Bucket;
 import com.zenobase.models.BucketList;
 import com.zenobase.models.Event;
-import com.zenobase.models.Identity;
 
 public class BucketRepository extends RepositorySupport<Bucket> {
 
@@ -83,38 +77,18 @@ public class BucketRepository extends RepositorySupport<Bucket> {
 	}
 
 	public PartialList<Bucket> find(int offset, int limit) {
-		return find(QueryBuilders.matchAllQuery(), DEFAULT_ORDER, offset, limit);
+		return find(new BucketQuery(), DEFAULT_ORDER, offset, limit);
 	}
 
-	public PartialList<Bucket> find(Identity identity, SearchOrder order, int offset, int limit) {
-		return find(restrict(identity), order, offset, limit);
-	}
-
-	private static QueryBuilder restrict(Identity identity) {
-		return QueryBuilders.nestedQuery(Bucket.ROLES.getName(),
-			QueryBuilders.termQuery(RolesField.PRINCIPAL, identity.getId()));
-	}
-
-	private static QueryBuilder restrict(Identity identity, boolean isAlias) {
-		BoolQueryBuilder query = QueryBuilders.boolQuery().must(restrict(identity));
-		QueryBuilder clause = QueryBuilders.wildcardQuery(Field.concat(Bucket.ALIASES.getName(), AliasField.ID), "*");
-		if (isAlias) {
-			query.must(clause);
-		} else {
-			query.mustNot(clause);
-		}
-		return query;
-	}
-
-	private PartialList<Bucket> find(QueryBuilder query, SearchOrder order, int offset, int limit) {
+	public PartialList<Bucket> find(BucketQuery query, SearchOrder order, int offset, int limit) {
 		SearchSourceBuilder search = new SearchSourceBuilder()
-			.query(query).version(true).from(offset).size(limit);
+			.query(query.build()).version(true).from(offset).size(limit);
 		order.apply(search);
 		return new BucketList(index.find(search));
 	}
 
-	public void find(Identity identity, boolean isAlias, final Callback<Bucket> callback) {
-		find(restrict(identity, isAlias), callback);
+	public void find(BucketQuery query, Callback<Bucket> callback) {
+		super.find(query.build(), callback);
 	}
 
 	@Override

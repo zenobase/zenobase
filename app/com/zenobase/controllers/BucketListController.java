@@ -13,6 +13,7 @@ import com.zenobase.models.BucketList;
 import com.zenobase.models.Identity;
 import com.zenobase.models.Role;
 import com.zenobase.oauth.Authorization;
+import com.zenobase.services.BucketQuery;
 import com.zenobase.services.BucketRepository;
 import com.zenobase.services.CommandDispatcher;
 import com.zenobase.services.EventRepository;
@@ -94,7 +95,7 @@ public class BucketListController extends ControllerSupport {
     }
 
     private Result find(Identity principal, SearchOrder order, int offset, int limit) {
-        return ok(BucketList.toJson(buckets.find(principal, order, offset, limit), events));
+        return ok(BucketList.toJson(buckets.find(new BucketQuery().principalEqualTo(principal), order, offset, limit), events));
     }
 
     @BodyParser.Of(BodyParser.Json.class)

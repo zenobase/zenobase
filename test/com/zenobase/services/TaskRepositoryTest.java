@@ -5,7 +5,6 @@ import static com.zenobase.testing.PartialListAssert.assertThat;
 import static org.fest.assertions.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -23,9 +22,11 @@ import com.zenobase.tasks.Task;
 
 public class TaskRepositoryTest extends ElasticSearchTestSupport {
 
-	private final String type = "test";
-	private final String bucketId = Generator.id();
-	private final Identity principal = new Identity();
+	private static final String TYPE = "test";
+	private static final String BUCKET = Generator.id();
+	private static final Identity ME = new Identity();
+	private static final Identity YOU = new Identity();
+
 	private TaskRepository repository;
 
 	@Before
@@ -35,7 +36,7 @@ public class TaskRepositoryTest extends ElasticSearchTestSupport {
 
 	@Test
 	public void test() {
-		Task task = new Task(type, bucketId, principal);
+		Task task = new Task(TYPE, BUCKET, ME);
 		assertThat(repository.find(task.getId())).isNull();
 		assertThat(repository.delete(task.getId())).isFalse();
 		repository.store(task, DateTime.now());
@@ -52,41 +53,41 @@ public class TaskRepositoryTest extends ElasticSearchTestSupport {
 		List<Task> expected = insert(11);
 		assertThat(repository.find(0, 10)).hasTotal(expected.size()).isEqualTo(expected.subList(0, 10));
 		assertThat(repository.find(10, 10)).hasTotal(expected.size()).isEqualTo(expected.subList(10, 11));
-		assertThat(repository.find(20, 10)).hasTotal(expected.size()).isEqualTo(Collections.emptyList());
+		assertThat(repository.find(20, 10)).hasTotal(expected.size()).isEmpty();
 	}
 
 	@Test
 	public void testFindWithCallback() {
-		List<Task> expected = insert(11);
+		List<Task> t1 = insert(11);
 		Callback<Task> callback = mock(Callback.class);
 		repository.find(new TaskQuery(), callback);
-		verifyInteractions(callback, expected);
+		verifyInteractions(callback, t1);
 	}
 
 	@Test
 	public void testFindBucketEqualTo() {
-		Identity me = new Identity();
-		Task t1 = insert("foo", me);
-		insert("bar", me);
+		Task t1 = insert("foo", ME);
+		Task t2 = insert("foo", YOU);
+		insert("bar", ME);
 		Callback<Task> callback = mock(Callback.class);
-		repository.find(new TaskQuery().bucketEqualTo(t1.getBucketId()), callback);
-		verifyInteractions(callback, ImmutableList.of(t1));
+		repository.find(new TaskQuery().bucketEqualTo("foo"), callback);
+		verifyInteractions(callback, ImmutableList.of(t1, t2));
 	}
 
 	@Test
 	public void testFindPrincipalEqualTo() {
-		String bucketId = "foo";
-		Task t1 = insert(bucketId, new Identity());
-		insert(bucketId, new Identity());
+		Task t1 = insert("foo", ME);
+		Task t2 = insert("bar", ME);
+		insert("bar", YOU);
 		Callback<Task> callback = mock(Callback.class);
 		repository.find(new TaskQuery().principalEqualTo(t1.getPrincipal()), callback);
-		verifyInteractions(callback, ImmutableList.of(t1));
+		verifyInteractions(callback, ImmutableList.of(t1, t2));
 	}
 
 	private List<Task> insert(int size) {
 		List<Task> tasks = Lists.newArrayListWithCapacity(size);
 		for (int i = 0; i < size; ++i) {
-			Task task = new Task(type, bucketId, principal);
+			Task task = new Task(TYPE, BUCKET, ME);
 			tasks.add(task);
 			Uninterruptibles.sleepUninterruptibly(5, TimeUnit.MILLISECONDS); // tasks will be returned in order of creation time
 			repository.store(task, DateTime.now());
@@ -96,7 +97,7 @@ public class TaskRepositoryTest extends ElasticSearchTestSupport {
 	}
 
 	private Task insert(String bucketId, Identity principal) {
-		Task task = new Task(type, bucketId, principal);
+		Task task = new Task(TYPE, bucketId, principal);
 		Uninterruptibles.sleepUninterruptibly(5, TimeUnit.MILLISECONDS); // tasks will be returned in order of creation time
 		repository.store(task, DateTime.now());
 		repository.refresh();

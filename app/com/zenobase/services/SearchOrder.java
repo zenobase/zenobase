@@ -21,6 +21,10 @@ public class SearchOrder {
 		search.sort(field, asc ? SortOrder.ASC : SortOrder.DESC);
 	}
 
+	public SearchOrder reverse() {
+		return new SearchOrder(field, !asc);
+	}
+
 	public static SearchOrder valueOf(String s) {
 		Preconditions.checkArgument(!Strings.isNullOrEmpty(s));
 		boolean asc = true;

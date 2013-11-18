@@ -22,6 +22,9 @@ import com.zenobase.oauth.Authorization;
 
 public class AuthorizationRepositoryTest extends ElasticSearchTestSupport {
 
+	private static final Identity ME = new Identity();
+	private static final Identity YOU = new Identity();
+
 	private AuthorizationRepository repository;
 
 	@Before
@@ -45,6 +48,7 @@ public class AuthorizationRepositoryTest extends ElasticSearchTestSupport {
 		List<Authorization> expected = insert(11);
 		assertThat(repository.find(0, 10)).hasTotal(expected.size()).isEqualTo(expected.subList(0, 10));
 		assertThat(repository.find(10, 10)).hasTotal(expected.size()).isEqualTo(expected.subList(10, 11));
+		assertThat(repository.find(20, 10)).hasTotal(expected.size()).isEmpty();
 	}
 
 	@Test
@@ -57,34 +61,28 @@ public class AuthorizationRepositoryTest extends ElasticSearchTestSupport {
 
 	@Test
 	public void testFindPrincipalEqualTo() {
-		Identity me = new Identity();
-		Identity you = new Identity();
-		Authorization a1 = insert(me, null, null);
-		insert(you, null, null);
+		Authorization a1 = insert(ME, null, null);
+		insert(YOU, null, null);
 		Callback<Authorization> callback = mock(Callback.class);
-		repository.find(new AuthorizationQuery().principalEqualTo(me), callback);
+		repository.find(new AuthorizationQuery().principalEqualTo(ME), callback);
 		verifyInteractions(callback, ImmutableList.of(a1));
 	}
 
 	@Test
 	public void testFindClientEqualTo() {
-		Identity me = new Identity();
-		Identity you = new Identity();
-		Authorization a1 = insert(me, me, null);
-		Authorization a2 = insert(you, me, null);
-		insert(me, null, null);
+		Authorization a1 = insert(ME, ME, null);
+		Authorization a2 = insert(YOU, ME, null);
+		insert(ME, null, null);
 		Callback<Authorization> callback = mock(Callback.class);
-		repository.find(new AuthorizationQuery().clientEqualTo(me), callback);
+		repository.find(new AuthorizationQuery().clientEqualTo(ME), callback);
 		verifyInteractions(callback, ImmutableList.of(a1, a2));
 	}
 
 	@Test
 	public void testFindClientIsNull() {
-		Identity me = new Identity();
-		Identity you = new Identity();
-		Authorization a1 = insert(me, null, null);
-		Authorization a2 = insert(you, null, null);
-		insert(me, you, null);
+		Authorization a1 = insert(ME, null, null);
+		Authorization a2 = insert(YOU, null, null);
+		insert(ME, YOU, null);
 		Callback<Authorization> callback = mock(Callback.class);
 		repository.find(new AuthorizationQuery().clientIsNull(), callback);
 		verifyInteractions(callback, ImmutableList.of(a1, a2));
@@ -92,11 +90,9 @@ public class AuthorizationRepositoryTest extends ElasticSearchTestSupport {
 
 	@Test
 	public void testFindClientNotNull() {
-		Identity me = new Identity();
-		Identity you = new Identity();
-		Authorization a1 = insert(me, me, null);
-		Authorization a2 = insert(me, you, null);
-		insert(me, null, null);
+		Authorization a1 = insert(ME, ME, null);
+		Authorization a2 = insert(ME, YOU, null);
+		insert(ME, null, null);
 		Callback<Authorization> callback = mock(Callback.class);
 		repository.find(new AuthorizationQuery().clientNotNull(), callback);
 		verifyInteractions(callback, ImmutableList.of(a1, a2));
@@ -104,11 +100,10 @@ public class AuthorizationRepositoryTest extends ElasticSearchTestSupport {
 
 	@Test
 	public void testScopeEqualTo() {
-		Identity me = new Identity();
 		String scope = "foo";
-		Authorization a1 = insert(me, null, scope);
-		insert(me, null, "bar");
-		insert(me, null, null);
+		Authorization a1 = insert(ME, null, scope);
+		insert(ME, null, "bar");
+		insert(ME, null, null);
 		Callback<Authorization> callback = mock(Callback.class);
 		repository.find(new AuthorizationQuery().scopeEqualTo(scope), callback);
 		verifyInteractions(callback, ImmutableList.of(a1));
@@ -116,10 +111,9 @@ public class AuthorizationRepositoryTest extends ElasticSearchTestSupport {
 
 	@Test
 	public void testCreatedBefore() {
-		Identity me = new Identity();
 		DateTime t = DateTime.now().minusMonths(1);
-		Authorization a1 = insert(me, DateTime.now().minusMonths(2));
-		insert(me, DateTime.now());
+		Authorization a1 = insert(ME, DateTime.now().minusMonths(2));
+		insert(ME, DateTime.now());
 		Callback<Authorization> callback = mock(Callback.class);
 		repository.find(new AuthorizationQuery().createdBefore(t), callback);
 		verifyInteractions(callback, ImmutableList.of(a1));
@@ -128,7 +122,7 @@ public class AuthorizationRepositoryTest extends ElasticSearchTestSupport {
 	private List<Authorization> insert(int size) {
 		List<Authorization> authorizations = Lists.newArrayListWithCapacity(size);
 		for (int i = 0; i < size; ++i) {
-			authorizations.add(insert(new Identity(), null, null));
+			authorizations.add(insert(ME, null, null));
 			Uninterruptibles.sleepUninterruptibly(5, TimeUnit.MILLISECONDS); // tasks will be returned in order of creation time
 		}
 		return Lists.reverse(authorizations);

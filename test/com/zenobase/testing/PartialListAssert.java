@@ -27,4 +27,9 @@ public class PartialListAssert extends GenericAssert<PartialListAssert, PartialL
 		Assertions.assertThat(ImmutableList.copyOf(actual)).as("elements").isEqualTo(expected);
 		return this;
 	}
+
+	public PartialListAssert isEmpty() {
+		Assertions.assertThat(actual).as("elements").isEmpty();
+		return this;
+	}
 }

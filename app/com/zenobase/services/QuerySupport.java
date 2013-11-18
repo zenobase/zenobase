@@ -19,10 +19,6 @@ public class QuerySupport {
 
 	}
 
-	private void add(QueryBuilder constraint) {
-		constraints.add(constraint);
-	}
-
 	protected QuerySupport equalTo(Field<?> field, Object value) {
 		if (value != null) {
 			add(QueryBuilders.termQuery(field.getName(), value));
@@ -45,6 +41,10 @@ public class QuerySupport {
 	protected QuerySupport lessThan(Field<?> field, Object value) {
 		add(QueryBuilders.rangeQuery(field.getName()).lt(value));
 		return this;
+	}
+
+	protected void add(QueryBuilder constraint) {
+		constraints.add(constraint);
 	}
 
 	public QueryBuilder build() {

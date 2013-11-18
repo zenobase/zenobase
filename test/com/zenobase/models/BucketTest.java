@@ -22,6 +22,14 @@ public class BucketTest {
 	}
 
 	@Test
+	public void testAliases() {
+		Bucket bucket = new Bucket();
+		assertThat(bucket.isVirtual()).isFalse();
+		bucket.addAlias(new Alias("foo"));
+		assertThat(bucket.isVirtual()).isTrue();
+	}
+
+	@Test
 	public void testRoles() {
 
 		Identity owner = new Identity();

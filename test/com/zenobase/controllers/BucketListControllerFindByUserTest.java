@@ -14,6 +14,7 @@ import com.zenobase.models.Bucket;
 import com.zenobase.models.BucketList;
 import com.zenobase.models.Identity;
 import com.zenobase.oauth.Authorization;
+import com.zenobase.services.BucketQuery;
 import com.zenobase.services.SearchOrder;
 
 public class BucketListControllerFindByUserTest extends BucketListControllerTestSupport {
@@ -23,7 +24,7 @@ public class BucketListControllerFindByUserTest extends BucketListControllerTest
 	public void test() {
 		PartialList<Bucket> list = DefaultPartialList.of();
 		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
-		when(buckets.find(user.asIdentity(), ORDER_BY, 0, 10)).thenReturn(list);
+		when(buckets.find(new BucketQuery().principalEqualTo(user.asIdentity()), ORDER_BY, 0, 10)).thenReturn(list);
 		Result result = call(user.getId(), ORDER_BY, 0, 10);
 		assertThat(result).hasStatus(OK).hasContent(BucketList.toJson(list, events));
 	}
@@ -34,7 +35,7 @@ public class BucketListControllerFindByUserTest extends BucketListControllerTest
 		PartialList<Bucket> list = DefaultPartialList.of();
 		when(auth.current()).thenReturn(new Authorization(superuser));
 		when(users.isSuperuser(superuser)).thenReturn(true);
-		when(buckets.find(user.asIdentity(), ORDER_BY, 0, 10)).thenReturn(list);
+		when(buckets.find(new BucketQuery().principalEqualTo(user.asIdentity()), ORDER_BY, 0, 10)).thenReturn(list);
 		Result result = call(user.getId(), ORDER_BY, 0, 10);
 		assertThat(result).hasStatus(OK).hasContent(BucketList.toJson(list, events));
 	}
