@@ -2,8 +2,6 @@ package com.zenobase.services;
 
 import javax.inject.Inject;
 
-import org.elasticsearch.index.query.QueryBuilder;
-import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.elasticsearch.search.sort.SortOrder;
 import org.joda.time.DateTime;
@@ -11,11 +9,13 @@ import play.Logger;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.Iterables;
 
+import com.zenobase.common.Callback;
+import com.zenobase.common.PartialList;
 import com.zenobase.models.Identity;
 import com.zenobase.tasks.Credentials;
 import com.zenobase.tasks.CredentialsList;
 
-public class CredentialsRepository {
+public class CredentialsRepository extends RepositorySupport<Credentials> {
 
 	static final String INDEX_NAME = "credentials";
 
@@ -48,29 +48,37 @@ public class CredentialsRepository {
 		return node != null ? new Credentials(node) : null;
 	}
 
-	public CredentialsList find(String field, String value, int offset, int limit) {
-		return find(QueryBuilders.termQuery(field, value), offset, limit);
-	}
-
 	public Credentials find(Identity principal, String type) {
-		QueryBuilder q = QueryBuilders.boolQuery()
-			.must(QueryBuilders.termQuery(Credentials.PRINCIPAL.getName(), principal.getId()))
-			.must(QueryBuilders.termQuery(Credentials.TYPE.getName(), type));
-		CredentialsList results = find(q, 0, 10);
-		if (results.size() > 1) {
+		CredentialsQuery query = new CredentialsQuery().principalEqualTo(principal).typeEqualTo(type);
+		PartialList<Credentials> results = find(query, 0, 2);
+		if (results.getTotal() > 1) {
 			Logger.warn("Found duplicate " + type + " credentials for " + principal);
 		}
 		return Iterables.getFirst(results, null);
 	}
 
-	public CredentialsList find(int offset, int limit) {
-		return find(QueryBuilders.matchAllQuery(), offset, limit);
+	public PartialList<Credentials> find(int offset, int limit) {
+		return find(new CredentialsQuery(), offset, limit);
 	}
 
-	private CredentialsList find(QueryBuilder query, int offset, int limit) {
+	public PartialList<Credentials> find(CredentialsQuery query, int offset, int limit) {
 		SearchSourceBuilder search = new SearchSourceBuilder()
-			.query(query).version(true).from(offset).size(limit)
+			.query(query.build()).version(true).from(offset).size(limit)
 			.sort(Credentials.CREATED.getName(), SortOrder.DESC);
 		return new CredentialsList(index.find(search));
+	}
+
+	public void find(CredentialsQuery query, Callback<Credentials> callback) {
+		find(query.build(), callback);
+	}
+
+	@Override
+	protected Index getIndex() {
+		return index;
+	}
+
+	@Override
+	protected Credentials toObject(ObjectNode node) {
+		return new Credentials(node);
 	}
 }

@@ -9,6 +9,7 @@ import com.zenobase.commands.CreateCredentialsCommand;
 import com.zenobase.models.Identity;
 import com.zenobase.oauth.Authorization;
 import com.zenobase.services.CommandDispatcher;
+import com.zenobase.services.CredentialsQuery;
 import com.zenobase.services.CredentialsRepository;
 import com.zenobase.services.UserLookup;
 import com.zenobase.services.UserRepository;
@@ -76,7 +77,8 @@ public class CredentialsListController extends ControllerSupport {
 		if (!auth.getPrincipal().equals(principal) && !users.isSuperuser(auth.getPrincipal())) {
 			return forbidden();
 		}
-		return ok(CredentialsList.toJson(credentials.find(Credentials.PRINCIPAL.getName(), principal.toString(), offset, limit)));
+		CredentialsQuery query = new CredentialsQuery().principalEqualTo(principal);
+		return ok(CredentialsList.toJson(credentials.find(query, offset, limit)));
     }
 
     @BodyParser.Of(BodyParser.Json.class)

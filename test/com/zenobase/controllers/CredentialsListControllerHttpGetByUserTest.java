@@ -13,7 +13,7 @@ import com.zenobase.common.DefaultPartialList;
 import com.zenobase.common.Generator;
 import com.zenobase.models.Identity;
 import com.zenobase.oauth.Authorization;
-import com.zenobase.tasks.Credentials;
+import com.zenobase.services.CredentialsQuery;
 import com.zenobase.tasks.CredentialsList;
 
 public class CredentialsListControllerHttpGetByUserTest extends CredentialsListControllerTestSupport {
@@ -22,7 +22,7 @@ public class CredentialsListControllerHttpGetByUserTest extends CredentialsListC
 	public void test() {
 		CredentialsList list = new CredentialsList(DefaultPartialList.<ObjectNode>of());
 		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
-		when(repository.find(Credentials.PRINCIPAL.getName(), user.getId(), 0, 10)).thenReturn(list);
+		when(repository.find(new CredentialsQuery().principalEqualTo(user.asIdentity()), 0, 10)).thenReturn(list);
 		Result result = call(user.getId(), 0, 10);
 		assertThat(result).hasStatus(OK).hasContent(CredentialsList.toJson(list));
 	}
@@ -86,7 +86,7 @@ public class CredentialsListControllerHttpGetByUserTest extends CredentialsListC
 		when(auth.current()).thenReturn(new Authorization(superuser));
 		when(users.find(user.getName())).thenReturn(user);
 		when(users.isSuperuser(superuser)).thenReturn(true);
-		when(repository.find(Credentials.PRINCIPAL.getName(), user.getId(), 0, 10)).thenReturn(list);
+		when(repository.find(new CredentialsQuery().principalEqualTo(user.asIdentity()), 0, 10)).thenReturn(list);
 		Result result = call(user.getId(), 0, 10);
 		assertThat(result).hasStatus(OK).hasContent(CredentialsList.toJson(list));
 	}
