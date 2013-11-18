@@ -76,7 +76,7 @@ public class BucketRepositoryTest extends ElasticSearchTestSupport {
 	@Test
 	public void testFindWithPagingInReverse() {
 		List<Bucket> expected = insert(11);
-		SearchOrder order = BucketRepository.DEFAULT_ORDER.reverse();
+		SearchOrder order = BucketQuery.DEFAULT_ORDER.reverse();
 		assertThat(repository.find(new BucketQuery(), order, 0, 10)).hasTotal(expected.size()).isEqualTo(expected.subList(0, 10));
 		assertThat(repository.find(new BucketQuery(), order, 10, 10)).hasTotal(expected.size()).isEqualTo(expected.subList(10, 11));
 		assertThat(repository.find(new BucketQuery(), order, 20, 10)).hasTotal(expected.size()).isEmpty();

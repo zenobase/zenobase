@@ -18,7 +18,6 @@ import com.zenobase.models.Event;
 public class BucketRepository extends RepositorySupport<Bucket> {
 
 	static final String INDEX_NAME = "buckets";
-	static final SearchOrder DEFAULT_ORDER = new SearchOrder(Bucket.CREATED.getName(), false);
 
 	private final IndexManager manager;
 	private final Index index;
@@ -77,7 +76,7 @@ public class BucketRepository extends RepositorySupport<Bucket> {
 	}
 
 	public PartialList<Bucket> find(int offset, int limit) {
-		return find(new BucketQuery(), DEFAULT_ORDER, offset, limit);
+		return find(new BucketQuery(), BucketQuery.DEFAULT_ORDER, offset, limit);
 	}
 
 	public PartialList<Bucket> find(BucketQuery query, SearchOrder order, int offset, int limit) {

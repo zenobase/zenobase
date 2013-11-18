@@ -8,6 +8,8 @@ import com.zenobase.models.Identity;
 
 public class BucketQuery extends QuerySupport {
 
+	public static final SearchOrder DEFAULT_ORDER = new SearchOrder(Bucket.CREATED.getName(), false);
+
 	public BucketQuery principalEqualTo(Identity principal) {
 		add(QueryBuilders.nestedQuery(Bucket.ROLES.getName(),
 			QueryBuilders.termQuery(RolesField.PRINCIPAL, principal.getId())));
