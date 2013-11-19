@@ -130,17 +130,21 @@
 						<i>You can make this dashboard public after signing up and verifying your email address.</i>
 					</p>
 				</div>
-				<div class="control-group" data-ng-show="newBucket.aliases.length > 0" style="clear:both">
+				<div class="control-group" data-ng-show="isView" style="clear:both">
 					<label>Aliases:</label>
 					<ul class="nav nav-pills gray">
-						<li class="active" data-ng-repeat="alias in newBucket.aliases">
-							<a style="cursor:default"><strong data-ui-bucket-label="alias['@id']"></strong></a>
+						<li class="active" data-ng-repeat="bucket in newBucket.aliases">
+							<a data-ng-click="removeBucket(bucket['@id'])"><span data-ui-bucket-label="bucket['@id']"></span> <i class="icon-remove icon-white"></i></a>
 						</li>
 					</ul>
+					<div class="form-horizontal">
+						<select class="input-medium" data-ng-model="selected" data-ng-options="bucket.label for bucket in listBuckets()"></select>
+						<button type="button" class="btn" data-ng-disabled="!selected" data-ng-click="addBucket()">Add</button>
+					</div>
 				</div>
 			</div>
 			<div class="modal-footer">
-				<button id="save-bucket-button" class="btn btn-primary">Update</button>
+				<button id="save-bucket-button" class="btn btn-primary" data-ng-disabled="!form.$valid || !valid()">Update</button>
 				<button class="btn" data-dismiss="modal">Cancel</button>
 			</div>
 		</form>

@@ -25,6 +25,7 @@ import play.Logger;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import com.google.common.primitives.Ints;
 
 import com.zenobase.common.Callback;
@@ -55,7 +56,7 @@ public class Index {
 		Preconditions.checkState(new Cluster(client).isReady(), "Expected at least one shard in cluster");
 	}
 
-	public void create(List<Alias> aliases) {
+	public void create(Iterable<Alias> aliases) {
 		Logger.info("Creating aliases for " + indexName + ": " + aliases);
 		IndicesAliasesRequestBuilder request = client.admin().indices().prepareAliases();
 		for (Alias alias : aliases) {
@@ -63,6 +64,19 @@ public class Index {
 		}
 		IndicesAliasesResponse response = request.execute().actionGet();
 		Preconditions.checkState(response.isAcknowledged(), "Expected acknowledgement of alias creation: %s", indexName);
+	}
+
+	public void replace(Set<Alias> from, Set<Alias> to) {
+		Preconditions.checkArgument(!to.isEmpty(), "Can't remove all aliases from %s", from);
+		IndicesAliasesRequestBuilder request = client.admin().indices().prepareAliases();
+		for (Alias alias : Sets.difference(to, from)) {
+			request.addAlias(alias.getId(), indexName);
+		}
+		for (Alias alias : Sets.difference(from, to)) {
+			request.removeAlias(alias.getId(), indexName);
+		}
+		IndicesAliasesResponse response = request.execute().actionGet();
+		Preconditions.checkState(response.isAcknowledged(), "Expected acknowledgement of alias update: %s", indexName);
 	}
 
 	public void putMapping(Schema schema) {

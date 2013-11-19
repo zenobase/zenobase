@@ -110,7 +110,7 @@
 							</li>
 						</ul>
 						<div class="form-horizontal">
-							<select id="include-bucket-select" class="input-medium" data-ng-model="selected" data-ng-options="bucket.label for bucket in listBuckets() | orderBy:'label'"></select>
+							<select id="include-bucket-select" class="input-medium" data-ng-model="selected" data-ng-options="bucket.label for bucket in listBuckets()"></select>
 							<button id="include-bucket-button" type="button" class="btn" data-ng-disabled="!selected" data-ng-click="addBucket()">Add</button>
 						</div>
 					</div>

@@ -1434,7 +1434,10 @@
 		};
 		$scope.create = function() {
 			$scope.alert.clear();
-			$http.post('/buckets/', { label : $scope.label, aliases : $scope.aliases })
+			var aliases = $.map($scope.aliases, function(alias) {
+				return { '@id' : alias['@id'] };
+			});
+			$http.post('/buckets/', { label : $scope.label, aliases : aliases })
 				.success(function(response, status, headers) {
 					var location = headers('Location');
 					console.assert(status === 201, status);
@@ -1867,7 +1870,33 @@
 
 		$scope.init = function() {
 			$scope.newBucket = angular.copy($scope.$parent.bucket);
+			$scope.isView = $scope.newBucket.aliases && $scope.newBucket.aliases.length > 0;
+			$scope.selected = null;
+			$http.get('/users/' + $scope.user['@id'] + '/buckets/?' + $.param({ 'order' : 'label', offset : 0, limit : 100 })).success(function(response) {
+				$scope.buckets = response.buckets;
+			});
 			tracker.event('dialog', 'edit bucket');
+		};
+		$scope.listBuckets = function() {
+			if ($scope.buckets) {
+				return $.grep($scope.buckets, function(bucket) {
+					return (!bucket.aliases || bucket.aliases.length == 0) && $.grep($scope.newBucket.aliases, function(alias) {
+						return alias['@id'] == bucket['@id'];
+					}).length == 0;
+				});
+			}
+		};
+		$scope.addBucket = function() {
+			$scope.newBucket.aliases.push({ '@id' : $scope.selected['@id'] });
+			$scope.selected = null;
+		};
+		$scope.removeBucket = function(bucketId) {
+			$scope.newBucket.aliases = $.grep($scope.newBucket.aliases, function(bucket) {
+				return bucket['@id'] !== bucketId;
+			});
+		};
+		$scope.valid = function() {
+			return !$scope.isView || $scope.newBucket.aliases.length > 0;
 		};
 		$scope.save = function() {
 			$scope.message = '';

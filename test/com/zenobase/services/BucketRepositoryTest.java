@@ -39,24 +39,43 @@ public class BucketRepositoryTest extends ElasticSearchTestSupport {
 	public void test() {
 
 		// create bucket
-		Bucket bucket = newBucket("Test Bucket", ME);
-		bucket.setWidgets(ImmutableList.of(newWidget()));
+		Bucket b1 = newBucket("Test Bucket", ME);
+		b1.setWidgets(ImmutableList.of(newWidget()));
 
 		// store and retrieve bucket
-		repository.store(bucket, DateTime.now(), true);
-		assertThat(repository.find(bucket.getId()).toJson()).isEqualTo(bucket.toJson());
+		repository.store(b1, DateTime.now(), true);
+		assertThat(repository.find(b1.getId()).toJson()).isEqualTo(b1.toJson());
 
 		// update bucket
-		bucket.setDescription("just a test");
-		repository.update(bucket, DateTime.now());
-		assertThat(repository.find(bucket.getId()).toJson()).isEqualTo(bucket.toJson());
+		Bucket b2 = b1.copy();
+		b2.setDescription("just a test");
+		repository.update(b1, b2, DateTime.now());
+		assertThat(repository.find(b2.getId()).toJson()).isEqualTo(b2.toJson());
 
 		// delete and recreate bucket
-		assertThat(repository.delete(bucket.getId())).isTrue();
-		assertThat(repository.find(bucket.getId())).as("bucket").isNull();
-		assertThat(repository.delete(bucket.getId())).isFalse();
-		repository.store(bucket, DateTime.now(), false);
-		assertThat(repository.find(bucket.getId()).toJson()).isEqualTo(bucket.toJson());
+		assertThat(repository.delete(b2.getId())).isTrue();
+		assertThat(repository.find(b2.getId())).as("bucket").isNull();
+		assertThat(repository.delete(b2.getId())).isFalse();
+		repository.store(b2, DateTime.now(), false);
+		assertThat(repository.find(b2.getId()).toJson()).isEqualTo(b2.toJson());
+	}
+
+	@Test
+	public void testUpdateAliases() {
+
+		Bucket b1 = insert("Foo", ME);
+		Bucket b2 = insert("Bar", ME);
+		Bucket b3 = insert("Baz", ME);
+
+		Bucket v1 = newBucket("View", ME);
+		v1.setAliases(ImmutableList.of(new Alias(b1.getId()), new Alias(b2.getId())));
+		repository.store(v1, DateTime.now(), true);
+		assertThat(repository.find(v1.getId()).getAliases()).isEqualTo(v1.getAliases());
+
+		Bucket v2 = v1.copy();
+		v2.setAliases(ImmutableList.of(new Alias(b1.getId()), new Alias(b3.getId())));
+		repository.update(v1, v2, DateTime.now());
+		assertThat(repository.find(v2.getId()).getAliases()).isEqualTo(v2.getAliases());
 	}
 
 	private static ObjectNode newWidget() {

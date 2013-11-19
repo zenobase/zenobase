@@ -4,6 +4,7 @@ import static org.mockito.Mockito.*;
 
 import org.junit.Test;
 
+import com.zenobase.models.Alias;
 import com.zenobase.models.Bucket;
 import com.zenobase.models.Identity;
 import com.zenobase.services.BucketRepository;
@@ -26,17 +27,34 @@ public class UpdateBucketCommandTest {
 
 		Command command = new UpdateBucketCommand(principal, from, to);
 		registry.execute(command);
-		verify(repository).update(to, command.getTimestamp());
+		verify(repository).update(from, to, command.getTimestamp());
 		reset(repository);
 
 		Command undo = command.reverse(principal);
 		registry.execute(undo);
-		verify(repository).update(from, undo.getTimestamp());
+		verify(repository).update(to, from, undo.getTimestamp());
 		reset(repository);
 
 		Command redo = undo.reverse(principal);
 		registry.execute(redo);
-		verify(repository).update(to, redo.getTimestamp());
+		verify(repository).update(from, to, redo.getTimestamp());
 		reset(repository);
+	}
+
+	@Test
+	public void testReplaceAliases() {
+
+		Identity principal = new Identity();
+		Bucket from = new Bucket();
+		from.setVersion(1L);
+		Bucket to = from.copy();
+		from.addAlias(new Alias("foo"));
+		from.addAlias(new Alias("bar"));
+		to.addAlias(new Alias("foo"));
+		to.addAlias(new Alias("baz"));
+
+		Command command = new UpdateBucketCommand(principal, from, to);
+		registry.execute(command);
+		verify(repository).update(from, to, command.getTimestamp());
 	}
 }

@@ -77,7 +77,9 @@ public class UpdateBucketCommand extends Command {
 
 		@Override
 		public void executeTyped(UpdateBucketCommand command) {
-			repository.update(command.getTo().copy(), command.getTimestamp()); // copy to prevent the version number from being incremented
+			Bucket from = command.getFrom();
+			Bucket to = command.getTo();
+			repository.update(from, to.copy(), command.getTimestamp()); // copy to prevent the version number from being incremented
 		}
 	}
 }

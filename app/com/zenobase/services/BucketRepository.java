@@ -2,12 +2,14 @@ package com.zenobase.services;
 
 import javax.inject.Inject;
 
+import org.elasticsearch.common.base.Objects;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.joda.time.DateTime;
 import play.Logger;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Preconditions;
+import com.google.common.collect.Sets;
 
 import com.zenobase.common.Callback;
 import com.zenobase.common.PartialList;
@@ -48,8 +50,12 @@ public class BucketRepository extends RepositorySupport<Bucket> {
 		this.index.store(Bucket.TYPE_NAME, bucket.getId(), bucket.toJson(), timestamp, true);
 	}
 
-	public void update(Bucket bucket, DateTime timestamp) {
-		index.update(Bucket.TYPE_NAME, bucket.getId(), bucket.toJson(), timestamp, true);
+	public void update(Bucket from, Bucket to, DateTime timestamp) {
+		index.update(Bucket.TYPE_NAME, to.getId(), to.toJson(), timestamp, true);
+		if (!Objects.equal(from.getAliases(), to.getAliases())) {
+			Index index = manager.getIndex(to.getId());
+			index.replace(Sets.newHashSet(from.getAliases()), Sets.newHashSet(to.getAliases()));
+		}
 	}
 
 	public boolean delete(String bucketId) {
