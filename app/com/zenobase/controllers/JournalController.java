@@ -10,6 +10,7 @@ import com.zenobase.models.CommandList;
 import com.zenobase.models.Identity;
 import com.zenobase.oauth.Authorization;
 import com.zenobase.services.CommandDispatcher;
+import com.zenobase.services.CommandQuery;
 import com.zenobase.services.CommandRepository;
 import com.zenobase.services.UserLookup;
 import com.zenobase.services.UserRepository;
@@ -41,7 +42,7 @@ public class JournalController extends ControllerSupport {
     	if (!users.isSuperuser(auth.getPrincipal())) {
     		return forbidden();
     	}
-    	return ok(CommandList.toJson(repository.find(offset, limit, true)));
+    	return ok(CommandList.toJson(repository.find(new CommandQuery(), CommandQuery.DEFAULT_ORDER, offset, limit)));
     }
 
 	public Result findByUser(String userId, int offset, int limit) {
@@ -59,7 +60,7 @@ public class JournalController extends ControllerSupport {
 		if (!auth.getPrincipal().equals(principal) && !users.isSuperuser(auth.getPrincipal())) {
 			return forbidden();
 		}
-    	return ok(CommandList.toJson(repository.find(Command.PRINCIPAL.getName(), principal.getId(), offset, limit, true)));
+    	return ok(CommandList.toJson(repository.find(new CommandQuery().principalEqualTo(principal), CommandQuery.DEFAULT_ORDER, offset, limit)));
     }
 
 	@BodyParser.Of(BodyParser.Json.class)

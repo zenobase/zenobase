@@ -123,7 +123,7 @@ public class AuthorizationRepositoryTest extends ElasticSearchTestSupport {
 		List<Authorization> authorizations = Lists.newArrayListWithCapacity(size);
 		for (int i = 0; i < size; ++i) {
 			authorizations.add(insert(ME, null, null));
-			Uninterruptibles.sleepUninterruptibly(5, TimeUnit.MILLISECONDS); // tasks will be returned in order of creation time
+			Uninterruptibles.sleepUninterruptibly(5, TimeUnit.MILLISECONDS); // sleep so we can sort by creation time later
 		}
 		return Lists.reverse(authorizations);
 	}

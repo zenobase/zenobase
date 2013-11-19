@@ -1,17 +1,14 @@
 package com.zenobase.services;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.index.query.FilterBuilders;
-import org.elasticsearch.index.query.QueryBuilder;
-import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.elasticsearch.search.facet.FacetBuilders;
 import org.elasticsearch.search.facet.statistical.StatisticalFacet;
-import org.elasticsearch.search.sort.SortOrder;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import play.Logger;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.inject.Inject;
 
 import com.zenobase.commands.Command;
@@ -21,7 +18,7 @@ import com.zenobase.common.PartialList;
 import com.zenobase.models.CommandList;
 import com.zenobase.models.Identity;
 
-public class CommandRepository {
+public class CommandRepository extends RepositorySupport<Command> {
 
 	private static final String INDEX_NAME = "journal";
 
@@ -48,10 +45,10 @@ public class CommandRepository {
 		return node != null ? toObject(node) : null;
 	}
 
-	public void find(Callback<Command> callback) {
+	public void find(CommandQuery query, SearchOrder order, Callback<Command> callback) {
 		long count = 0;
-		for (int offset = 0, limit = 10; ; offset += limit) {
-			PartialList<Command> commands = find(offset, limit, false);
+		for (int offset = 0, limit = 100; ; offset += limit) {
+			PartialList<Command> commands = find(query, order, offset, limit);
 			for (Command command : commands) {
 				callback.call(command);
 				++count;
@@ -62,33 +59,11 @@ public class CommandRepository {
 		}
 	}
 
-	public PartialList<Command> find(int offset, int limit, boolean newestFirst) {
-		return find(newSearchSource(newestFirst).from(offset).size(limit), limit);
-	}
-
-	public PartialList<Command> find(String field, String value, int offset, int limit, boolean newestFirst) {
-		return find(newSearchSource(field, value, newestFirst).from(offset).size(limit), limit);
-	}
-
-	private CommandList find(SearchSourceBuilder search, int limit) {
+	public PartialList<Command> find(CommandQuery query, SearchOrder order, int offset, int limit) {
+		SearchSourceBuilder search = new SearchSourceBuilder()
+			.query(query.build()).version(true).from(offset).size(limit);
+		order.apply(search);
 		return new CommandList(index.find(search), parsers);
-	}
-
-	private Command toObject(ObjectNode node) {
-    	return parsers.parse(node);
-    }
-
-	private static SearchSourceBuilder newSearchSource(boolean newestFirst) {
-		return newSearchSource(QueryBuilders.matchAllQuery(), newestFirst);
-	}
-
-	private static SearchSourceBuilder newSearchSource(String field, String value, boolean newestFirst) {
-		return newSearchSource(QueryBuilders.termQuery(field, value), newestFirst);
-	}
-
-	private static SearchSourceBuilder newSearchSource(QueryBuilder query, boolean newestFirst) {
-		return new SearchSourceBuilder().query(query)
-			.sort(Command.TIMESTAMP.getName(), newestFirst ? SortOrder.DESC : SortOrder.ASC);
 	}
 
 	public long size() {
@@ -108,4 +83,14 @@ public class CommandRepository {
 					FilterBuilders.rangeFilter(Command.TIMESTAMP.getName()).from(since.getMillis())))));
 		return (int) ((StatisticalFacet) response.getFacets().facet(facetId)).getTotal();
 	}
+
+	@Override
+	protected Index getIndex() {
+		return index;
+	}
+
+	@Override
+	protected Command toObject(ObjectNode node) {
+    	return parsers.parse(node);
+    }
 }

@@ -47,7 +47,7 @@ public class CommandReplayTest extends ElasticSearchTestSupport {
 	private List<Command> newCommands(int count, Identity principal) {
 		List<Command> commands = Lists.newArrayList();
 		for (int i = 0; i < count; ++i) {
-			Uninterruptibles.sleepUninterruptibly(5, TimeUnit.MILLISECONDS); // to allow buckets to be sorted
+			Uninterruptibles.sleepUninterruptibly(5, TimeUnit.MILLISECONDS); // sleep so we can sort by creation time later
 			commands.add(new TestCommand(principal, String.format("Command #%s", i + 1)));
 		}
 		return commands;

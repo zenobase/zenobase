@@ -17,6 +17,7 @@ import com.zenobase.common.PartialList;
 import com.zenobase.models.CommandList;
 import com.zenobase.models.Identity;
 import com.zenobase.oauth.Authorization;
+import com.zenobase.services.CommandQuery;
 
 public class JournalControllerFindAllTest extends JournalControllerTestSupport {
 
@@ -28,7 +29,7 @@ public class JournalControllerFindAllTest extends JournalControllerTestSupport {
 		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
 		when(users.isSuperuser(user.asIdentity())).thenReturn(true);
 		when(commands.size()).thenReturn(history.getTotal());
-		when(commands.find(0, 2, true)).thenReturn(history);
+		when(commands.find(new CommandQuery(), CommandQuery.DEFAULT_ORDER, 0, 2)).thenReturn(history);
 		Result result = call(0, 2);
 		assertThat(result).hasStatus(OK).hasContent(CommandList.toJson(history));
 	}

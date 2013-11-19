@@ -58,10 +58,10 @@ public class TaskRepositoryTest extends ElasticSearchTestSupport {
 
 	@Test
 	public void testFindWithCallback() {
-		List<Task> t1 = insert(11);
+		List<Task> expected = insert(11);
 		Callback<Task> callback = mock(Callback.class);
 		repository.find(new TaskQuery(), callback);
-		verifyInteractions(callback, t1);
+		verifyInteractions(callback, expected);
 	}
 
 	@Test
@@ -89,7 +89,7 @@ public class TaskRepositoryTest extends ElasticSearchTestSupport {
 		for (int i = 0; i < size; ++i) {
 			Task task = new Task(TYPE, BUCKET, ME);
 			tasks.add(task);
-			Uninterruptibles.sleepUninterruptibly(5, TimeUnit.MILLISECONDS); // tasks will be returned in order of creation time
+			Uninterruptibles.sleepUninterruptibly(5, TimeUnit.MILLISECONDS); // sleep so we can sort by creation time later
 			repository.store(task, DateTime.now());
 		}
 		repository.refresh();
@@ -98,7 +98,6 @@ public class TaskRepositoryTest extends ElasticSearchTestSupport {
 
 	private Task insert(String bucketId, Identity principal) {
 		Task task = new Task(TYPE, bucketId, principal);
-		Uninterruptibles.sleepUninterruptibly(5, TimeUnit.MILLISECONDS); // tasks will be returned in order of creation time
 		repository.store(task, DateTime.now());
 		repository.refresh();
 		return task;

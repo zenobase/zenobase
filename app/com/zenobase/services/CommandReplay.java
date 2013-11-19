@@ -15,6 +15,8 @@ import com.zenobase.common.StringBloomFilter;
 
 public class CommandReplay {
 
+	private static final SearchOrder ORDER = new SearchOrder(Command.TIMESTAMP.getName(), true);
+
 	private final String sourceCluster;
 	private final NodeFactory nodeFactory;
 	private final CommandParserRegistry parsers;
@@ -43,7 +45,7 @@ public class CommandReplay {
 		Logger.info(String.format("Replaying %d commands from %s...", repository.size(), sourceCluster));
 		Stopwatch timer = new Stopwatch().start();
 		try {
-			repository.find(new Callback<Command>() {
+			repository.find(new CommandQuery(), ORDER, new Callback<Command>() {
 				@Override
 				public void call(Command command) {
 					if (identities.mightContain(command.getPrincipal().getId())) {

@@ -120,7 +120,7 @@ public class BucketRepositoryTest extends ElasticSearchTestSupport {
 	private List<Bucket> insert(int size) {
 		List<Bucket> buckets = Lists.newArrayListWithCapacity(size);
 		for (int i = 0; i < size; ++i) {
-			Uninterruptibles.sleepUninterruptibly(5, TimeUnit.MILLISECONDS); // to allow buckets to be sorted
+			Uninterruptibles.sleepUninterruptibly(5, TimeUnit.MILLISECONDS); // sleep so we can sort by creation time later
 			Bucket bucket = newBucket(String.format("bucket%03d", i + 1), ME);
 			buckets.add(bucket);
 			repository.store(bucket, DateTime.now(), true);

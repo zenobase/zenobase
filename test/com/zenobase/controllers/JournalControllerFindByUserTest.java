@@ -17,6 +17,7 @@ import com.zenobase.common.PartialList;
 import com.zenobase.models.CommandList;
 import com.zenobase.models.Identity;
 import com.zenobase.oauth.Authorization;
+import com.zenobase.services.CommandQuery;
 
 public class JournalControllerFindByUserTest extends JournalControllerTestSupport {
 
@@ -27,7 +28,7 @@ public class JournalControllerFindByUserTest extends JournalControllerTestSuppor
 			new TestCommand(user.asIdentity(), "do it again")), 10);
 		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
 		when(commands.size()).thenReturn(history.getTotal());
-		when(commands.find(Command.PRINCIPAL.getName(), user.getId(), 0, 2, true)).thenReturn(history);
+		when(commands.find(new CommandQuery().principalEqualTo(user.asIdentity()), CommandQuery.DEFAULT_ORDER, 0, 2)).thenReturn(history);
 		Result result = call(user.getId(), 0, 2);
 		assertThat(result).hasStatus(OK).hasContent(CommandList.toJson(history));
 	}
@@ -41,7 +42,7 @@ public class JournalControllerFindByUserTest extends JournalControllerTestSuppor
 		when(auth.current()).thenReturn(new Authorization(superuser));
 		when(users.isSuperuser(superuser)).thenReturn(true);
 		when(commands.size()).thenReturn(history.getTotal());
-		when(commands.find(Command.PRINCIPAL.getName(), user.getId(), 0, 2, true)).thenReturn(history);
+		when(commands.find(new CommandQuery().principalEqualTo(user.asIdentity()), CommandQuery.DEFAULT_ORDER, 0, 2)).thenReturn(history);
 		Result result = call(user.getId(), 0, 2);
 		assertThat(result).hasStatus(OK).hasContent(CommandList.toJson(history));
 	}

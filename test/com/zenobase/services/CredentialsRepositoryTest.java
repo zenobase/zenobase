@@ -74,7 +74,7 @@ public class CredentialsRepositoryTest extends ElasticSearchTestSupport {
 		for (int i = 0; i < size; ++i) {
 			Credentials credentials = new Credentials(TYPE, ME);
 			credentialsList.add(credentials);
-			Uninterruptibles.sleepUninterruptibly(5, TimeUnit.MILLISECONDS); // credentials will be returned in order of creation time
+			Uninterruptibles.sleepUninterruptibly(5, TimeUnit.MILLISECONDS); // sleep so we can sort by creation time later
 			store(credentials);
 		}
 		return Lists.reverse(credentialsList);
