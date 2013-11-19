@@ -23,7 +23,9 @@ public class IdentitiesFilterBuilder {
 		users.find(new Callback<User>() {
 			@Override
 			public void call(User user) {
-				filter.put(user.getId());
+				if (!user.isSuspended()) {
+					filter.put(user.getId());
+				}
 			}
 		});
 		return filter;
