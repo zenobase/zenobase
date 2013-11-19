@@ -402,6 +402,7 @@
 				tracker.event('action', 'close account');
 				$http({ method : 'DELETE', url : '/users/@' + $scope.username })
 					.success(function() {
+						$scope.closeDialog();
 						$scope.signOut();
 					})
 					.error(function(response, status) {
