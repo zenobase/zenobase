@@ -2,6 +2,8 @@ package com.zenobase.services;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.elasticsearch.search.facet.FacetBuilders;
@@ -10,7 +12,6 @@ import org.elasticsearch.search.facet.terms.TermsFacet.ComparatorType;
 import org.joda.time.DateTime;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.Lists;
-import com.google.inject.Inject;
 
 import com.zenobase.models.Event;
 import com.zenobase.search.Search;

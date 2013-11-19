@@ -1,5 +1,7 @@
 package com.zenobase.services;
 
+import javax.inject.Inject;
+
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.index.query.FilterBuilders;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
@@ -9,7 +11,6 @@ import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import play.Logger;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.google.inject.Inject;
 
 import com.zenobase.commands.Command;
 import com.zenobase.commands.CommandParserRegistry;

@@ -2,9 +2,10 @@ package com.zenobase.commands;
 
 import java.util.Map;
 
+import javax.inject.Inject;
+
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.Maps;
-import com.google.inject.Inject;
 
 import com.zenobase.json.ObjectField;
 import com.zenobase.models.Identity;

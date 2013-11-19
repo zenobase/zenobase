@@ -2,11 +2,11 @@ package com.zenobase.services;
 
 import java.util.concurrent.TimeUnit;
 
+import javax.inject.Inject;
 import javax.inject.Named;
 
 import play.Logger;
 import com.google.common.base.Stopwatch;
-import com.google.inject.Inject;
 
 import com.zenobase.commands.Command;
 import com.zenobase.commands.CommandParserRegistry;

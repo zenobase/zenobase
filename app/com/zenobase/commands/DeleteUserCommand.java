@@ -1,8 +1,9 @@
 package com.zenobase.commands;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import javax.inject.Inject;
+
 import play.Logger;
-import com.google.inject.Inject;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import com.zenobase.json.ObjectField;
 import com.zenobase.models.Identity;

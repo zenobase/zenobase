@@ -3,9 +3,10 @@ package com.zenobase.tasks;
 import java.util.Map;
 import java.util.Set;
 
+import javax.inject.Inject;
+
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
-import com.google.inject.Inject;
 
 public class TaskManagerRegistry {
 

@@ -1,10 +1,11 @@
 package com.zenobase.services;
 
+import javax.inject.Inject;
+
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import play.Logger;
 import play.Logger.ALogger;
-import com.google.inject.Inject;
 
 import com.zenobase.commands.Command;
 import com.zenobase.commands.CommandHandlerRegistry;

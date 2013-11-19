@@ -1,9 +1,10 @@
 package com.zenobase.commands;
 
+import javax.inject.Inject;
+
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
-import com.google.inject.Inject;
 
 import com.zenobase.json.IntegerField;
 import com.zenobase.json.TokenField;

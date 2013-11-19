@@ -1,10 +1,11 @@
 package com.zenobase.actions;
 
+import javax.inject.Inject;
+import javax.inject.Named;
+
 import play.Logger;
 import play.api.mvc.Handler;
 import play.mvc.Http.RequestHeader;
-import com.google.inject.Inject;
-import com.google.inject.name.Named;
 
 public class Canonical {
 

@@ -1,8 +1,7 @@
 package com.zenobase.tasks.fitbit;
 
+import javax.inject.Inject;
 import javax.inject.Named;
-
-import com.google.inject.Inject;
 
 import com.zenobase.services.CredentialsRepository;
 import com.zenobase.tasks.OAuthCredentialsManager;
