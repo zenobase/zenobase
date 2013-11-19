@@ -694,7 +694,8 @@
 			$http({ method : 'DELETE', url : '/buckets/' + bucketId })
 				.success(function(response, status, headers) {
 					$scope.alert.show('Deleted a bucket.', 'alert-success', headers('X-Command-ID'));
-					$scope.refresh({});
+					$scope.offset = 0;
+					$scope.refresh();
 				})
 				.error(function(response, status) {
 					if (status < 500) {
@@ -759,6 +760,7 @@
 			$http({ method : 'DELETE', url : '/credentials/' + credentialsId })
 				.success(function(response, status, headers) {
 					$scope.alert.show('Deleted credentials.', 'alert-success', headers('X-Command-ID'));
+					$scope.offset = 0;
 					delay($scope.refresh);
 				})
 				.error(function(response, status) {
@@ -817,6 +819,7 @@
 			$http({ method : 'DELETE', url : '/authorizations/' + authId })
 				.success(function(response, status, headers) {
 					$scope.alert.show('Revoked an authorization.', 'alert-success', headers('X-Command-ID'));
+					$scope.offset = 0;
 					delay($scope.refresh);
 				})
 				.error(function(response, status) {
