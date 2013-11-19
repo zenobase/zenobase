@@ -161,6 +161,12 @@ public class BucketController extends ControllerSupport {
 				return forbidden("not permitted to add or remove roles");
 			}
 		}
+		if (bucket.getAliases().isEmpty() != updated.getAliases().isEmpty()) {
+			return badRequest("can't change bucket type");
+		}
+		if (!new AliasValidator(buckets).checkPermissions(updated, auth)) {
+			return badRequest("one or more aliases are invalid");
+		}
 		try {
 			String commandId = dispatcher.dispatch(new UpdateBucketCommand(auth.getPrincipal(), bucket, updated));
     		response().setHeader(COMMAND_ID, commandId);
@@ -170,7 +176,7 @@ public class BucketController extends ControllerSupport {
 		}
     }
 
-    public Result delete(String bucketId) {
+	public Result delete(String bucketId) {
     	final Authorization auth = getCurrentAuthorization();
 		if (auth == null) {
 			return unauthorized();

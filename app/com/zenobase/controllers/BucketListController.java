@@ -7,7 +7,6 @@ import play.mvc.Result;
 
 import com.zenobase.commands.CreateBucketCommand;
 import com.zenobase.io.BucketPrinter;
-import com.zenobase.models.Alias;
 import com.zenobase.models.Bucket;
 import com.zenobase.models.BucketList;
 import com.zenobase.models.Identity;
@@ -114,11 +113,8 @@ public class BucketListController extends ControllerSupport {
 		if (!bucket.valid()) {
 			return badRequest("not valid");
 		}
-		for (Alias alias : bucket.getAliases()) {
-			Bucket b = buckets.find(alias.getId());
-			if (b == null || !b.hasRole(auth, Role.OWNER)) {
-				return badRequest("invalid alias: " + alias.getId());
-			}
+		if (!new AliasValidator(buckets).checkPermissions(bucket, auth)) {
+			return badRequest("one or more aliases are invalid");
 		}
     	String commandId = dispatcher.dispatch(new CreateBucketCommand(auth.getPrincipal(), bucket));
         response().setHeader(LOCATION, com.zenobase.controllers.routes.BucketController.get(bucket.getId(), false).toString());

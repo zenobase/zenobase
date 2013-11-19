@@ -14,6 +14,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import com.zenobase.commands.UpdateBucketCommand;
 import com.zenobase.common.Generator;
+import com.zenobase.models.Alias;
 import com.zenobase.models.Bucket;
 import com.zenobase.models.Identity;
 import com.zenobase.models.Role;
@@ -131,6 +132,44 @@ public class BucketControllerHttpPostTest extends BucketControllerTestSupport {
 		Result result = call(from.getId(), to.toJson());
 		assertThat(result).hasStatus(FORBIDDEN);
 		verifyZeroInteractions(dispatcher);
+	}
+
+	@Test
+	public void testUpdateBucketChangeType() {
+		to.addAlias(new Alias("foo"));
+		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
+		when(buckets.find(from.getId())).thenReturn(from.copy());
+		when(users.find(user.asIdentity())).thenReturn(user);
+		Result result = call(from.getId(), to.toJson());
+		assertThat(result).hasStatus(BAD_REQUEST);
+	}
+
+	@Test
+	public void testUpdateBucketInvalidAlias() {
+		from.addAlias(new Alias("foo"));
+		to.addAlias(new Alias("bar"));
+		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
+		when(buckets.find(from.getId())).thenReturn(from.copy());
+		when(buckets.find("bar")).thenReturn(new Bucket("bar"));
+		when(users.find(user.asIdentity())).thenReturn(user);
+		Result result = call(from.getId(), to.toJson());
+		assertThat(result).hasStatus(BAD_REQUEST);
+	}
+
+	@Test
+	public void testUpdateBucketReplaceAlias() {
+		String commandId = Generator.id();
+		Bucket alias = new Bucket("bar");
+		alias.addRole(user.asIdentity(), Role.OWNER);
+		from.addAlias(new Alias("foo"));
+		to.addAlias(new Alias(alias.getId()));
+		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
+		when(buckets.find(from.getId())).thenReturn(from.copy());
+		when(buckets.find("bar")).thenReturn(alias);
+		when(users.find(user.asIdentity())).thenReturn(user);
+		when(dispatcher.dispatch(any(UpdateBucketCommand.class))).thenReturn(commandId);
+		Result result = call(from.getId(), to.toJson());
+		assertThat(result).hasStatus(NO_CONTENT).hasHeader(COMMAND_ID, commandId).isEmpty();
 	}
 
 	private static Result call(String bucketId, ObjectNode body) {

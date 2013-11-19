@@ -65,6 +65,17 @@ public class BucketListControllerHttpPostTest extends BucketListControllerTestSu
 	}
 
 	@Test
+	public void testCreateInvalidVirtualBucket() {
+		String label = "test";
+		Bucket alias = new Bucket();
+		alias.addRole(new Identity(), Role.OWNER);
+		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
+		when(buckets.find(alias.getId())).thenReturn(alias);
+		Result result = call(new CreateBucketForm(label, null, ImmutableList.of(new Alias(alias.getId()))).toJson());
+		assertThat(result).hasStatus(BAD_REQUEST);
+	}
+
+	@Test
 	public void testCreateBucketWithoutLabel() {
 		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
 		Result result = call(Nodes.newObject());
