@@ -631,7 +631,7 @@
 
 		$scope.$watch('user', function(user) {
 			if (user) {
-				$http.get('/users/' + $scope.user['@id'] + '/buckets/?' + $.param({ 'order' : 'label', 'offset' : 0, 'limit' : 25 }))
+				$http.get('/users/' + $scope.user['@id'] + '/buckets/?' + $.param({ 'order' : 'label', 'offset' : 0, 'limit' : 100, 'label_only' : true }))
 				.success(function(response) {
 					$scope.buckets = response.buckets;
 				})
@@ -916,7 +916,7 @@
 			$scope.buckets = [];
 			$scope.aliases = [];
 			$scope.selected = null;
-			$http.get('/users/' + $scope.profile['@id'] + '/buckets/?' + $.param({ 'order' : 'label', offset : 0, limit : 100 })).success(function(response) {
+			$http.get('/users/' + $scope.profile['@id'] + '/buckets/?' + $.param({ order : 'label', offset : 0, limit : 100, labels_only : true })).success(function(response) {
 				$scope.buckets = response.buckets;
 			});
 			tracker.event('dialog', 'create view');
@@ -949,7 +949,7 @@
 		$scope.listBuckets = function() {
 			if ($scope.buckets) {
 				return $.grep($scope.buckets, function(bucket) {
-					return (!bucket.aliases || bucket.aliases.length == 0) && $.grep($scope.aliases, function(alias) {
+					return !bucket.aliases && $.grep($scope.aliases, function(alias) {
 						return alias['@id'] == bucket['@id'];
 					}).length == 0;
 				});
@@ -1364,7 +1364,7 @@
 			$scope.newBucket = angular.copy($scope.$parent.bucket);
 			$scope.isView = $scope.newBucket.aliases && $scope.newBucket.aliases.length > 0;
 			$scope.selected = null;
-			$http.get('/users/' + $scope.user['@id'] + '/buckets/?' + $.param({ 'order' : 'label', offset : 0, limit : 100 })).success(function(response) {
+			$http.get('/users/' + $scope.user['@id'] + '/buckets/?' + $.param({ 'order' : 'label', offset : 0, limit : 100, labels_only : true })).success(function(response) {
 				$scope.buckets = response.buckets;
 			});
 			tracker.event('dialog', 'edit bucket');
@@ -1372,7 +1372,7 @@
 		$scope.listBuckets = function() {
 			if ($scope.buckets) {
 				return $.grep($scope.buckets, function(bucket) {
-					return (!bucket.aliases || bucket.aliases.length == 0) && $.grep($scope.newBucket.aliases, function(alias) {
+					return !bucket.aliases && $.grep($scope.newBucket.aliases, function(alias) {
 						return alias['@id'] == bucket['@id'];
 					}).length == 0;
 				});

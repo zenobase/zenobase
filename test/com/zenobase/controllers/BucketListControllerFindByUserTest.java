@@ -20,6 +20,7 @@ import com.zenobase.services.SearchOrder;
 public class BucketListControllerFindByUserTest extends BucketListControllerTestSupport {
 
 	private static final SearchOrder ORDER_BY = SearchOrder.valueOf("label");
+
 	@Test
 	public void test() {
 		PartialList<Bucket> list = DefaultPartialList.of();
@@ -27,6 +28,15 @@ public class BucketListControllerFindByUserTest extends BucketListControllerTest
 		when(buckets.find(new BucketQuery().principalEqualTo(user.asIdentity()), ORDER_BY, 0, 10)).thenReturn(list);
 		Result result = call(user.getId(), ORDER_BY, 0, 10);
 		assertThat(result).hasStatus(OK).hasContent(BucketList.toJson(list, events));
+	}
+
+	@Test
+	public void testLabelsOnly() {
+		PartialList<Bucket> list = DefaultPartialList.of();
+		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
+		when(buckets.find(new BucketQuery().principalEqualTo(user.asIdentity()), ORDER_BY, 0, 10)).thenReturn(list);
+		Result result = call(user.getId(), ORDER_BY, 0, 10, true);
+		assertThat(result).hasStatus(OK).hasContent(BucketList.toJsonLabelsOnly(list));
 	}
 
 	@Test
@@ -92,6 +102,10 @@ public class BucketListControllerFindByUserTest extends BucketListControllerTest
 	}
 
 	private static Result call(String userId, SearchOrder order, int offset, int limit) {
-		return callAction(com.zenobase.controllers.routes.ref.BucketListController.findByUser(userId, order.toString(), offset, limit));
+		return call(userId, order, offset, limit, false);
+	}
+
+	private static Result call(String userId, SearchOrder order, int offset, int limit, boolean labelsOnly) {
+		return callAction(com.zenobase.controllers.routes.ref.BucketListController.findByUser(userId, order.toString(), offset, limit, labelsOnly));
 	}
 }

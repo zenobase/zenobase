@@ -34,4 +34,18 @@ public class BucketList extends LazyList<Bucket> {
     	}
     	return resultNode;
     }
+
+    public static ObjectNode toJsonLabelsOnly(PartialList<Bucket> buckets) {
+    	ObjectNode resultNode = Nodes.newObject();
+    	TOTAL.setValue(resultNode, Ints.checkedCast(buckets.getTotal()));
+    	ArrayNode bucketsNode = resultNode.putArray("buckets");
+    	for (Bucket bucket : buckets) {
+    		ObjectNode bucketNode = Nodes.newObject();
+    		bucketNode.put("@id", bucket.getId());
+    		bucketNode.put("label", bucket.getLabel());
+    		bucketNode.put("aliases", bucket.getAliases().size());
+    		bucketsNode.add(bucketNode);
+    	}
+    	return resultNode;
+    }
 }

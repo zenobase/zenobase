@@ -6,6 +6,7 @@ import play.mvc.BodyParser;
 import play.mvc.Result;
 
 import com.zenobase.commands.CreateBucketCommand;
+import com.zenobase.common.PartialList;
 import com.zenobase.io.BucketPrinter;
 import com.zenobase.models.Bucket;
 import com.zenobase.models.BucketList;
@@ -69,7 +70,7 @@ public class BucketListController extends ControllerSupport {
         return ok(chunks);
 	}
 
-	public Result findByUser(String userId, String order, int offset, int limit) {
+	public Result findByUser(String userId, String order, int offset, int limit, boolean labelsOnly) {
 		if (offset < 0 || offset > 1000) {
 			return badRequest("expected offset in [0..1000]");
 		}
@@ -90,11 +91,9 @@ public class BucketListController extends ControllerSupport {
 		if (!auth.getPrincipal().equals(principal) && !users.isSuperuser(auth.getPrincipal())) {
 			return forbidden();
 		}
-        return find(principal, SearchOrder.valueOf(order), offset, limit);
-    }
-
-    private Result find(Identity principal, SearchOrder order, int offset, int limit) {
-        return ok(BucketList.toJson(buckets.find(new BucketQuery().principalEqualTo(principal), order, offset, limit), events));
+		BucketQuery query = new BucketQuery().principalEqualTo(principal);
+        PartialList<Bucket> found = buckets.find(query, SearchOrder.valueOf(order), offset, limit);
+		return ok(labelsOnly ? BucketList.toJsonLabelsOnly(found) : BucketList.toJson(found, events));
     }
 
     @BodyParser.Of(BodyParser.Json.class)
