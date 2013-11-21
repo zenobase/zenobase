@@ -98,7 +98,7 @@ public class NetatmoTaskManager extends OAuthTaskManager {
 		}
 
 		public DevicesResult execute() {
-			OAuthRequest request = new OAuthRequest(Verb.GET, "http://api.netatmo.net/api/devicelist");
+			OAuthRequest request = new OAuthRequest(Verb.GET, "https://api.netatmo.net/api/devicelist");
 			Response response = send(request, credentials);
 			return new DevicesResult(parseObject(response));
 		}
@@ -117,7 +117,7 @@ public class NetatmoTaskManager extends OAuthTaskManager {
 		}
 
 		public MeasurementsResult find(String from, String to) {
-			OAuthRequest request = new OAuthRequest(Verb.GET, "http://api.netatmo.net/api/getmeasure");
+			OAuthRequest request = new OAuthRequest(Verb.GET, "https://api.netatmo.net/api/getmeasure");
 			request.addQuerystringParameter("device_id", device.getId());
 			if (from != null) {
 				request.addQuerystringParameter("date_begin", from);
