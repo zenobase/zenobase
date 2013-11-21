@@ -75,6 +75,7 @@ import com.zenobase.controllers.WhoController;
 import com.zenobase.mail.Mailer;
 import com.zenobase.mail.PasswordResetMailer;
 import com.zenobase.mail.VerificationMailer;
+import com.zenobase.oauth.CustomX509TrustManager;
 import com.zenobase.services.AuthorizationRepository;
 import com.zenobase.services.BucketRepository;
 import com.zenobase.services.ClusterNodeFactory;
@@ -125,6 +126,7 @@ public class Global extends GlobalSettings {
 
 	@Override
 	public void onStart(Application application) {
+		CustomX509TrustManager.setDefault();
 		createInjector();
 		replay();
 	}
