@@ -7,12 +7,13 @@ import javax.measure.quantity.Length;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
-import org.joda.time.LocalDate;
+import org.joda.time.LocalDateTime;
 import org.scribe.model.OAuthRequest;
 import org.scribe.model.Response;
 import org.scribe.model.Verb;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Objects;
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 
 import com.zenobase.commands.Command;
@@ -51,35 +52,44 @@ public class RunkeeperTaskManager extends OAuthTaskManager {
 		List<Event> events = Lists.newArrayList();
 		String host = "https://api.runkeeper.com";
 		String path = "/fitnessActivities";
-		LocalDate to = new DateTime(task.getTimezone()).toLocalDate().minusDays(1);
+		LocalDateTime from = parseMarker(task.getMarker());
 		while (path != null) {
 			OAuthRequest request = new OAuthRequest(Verb.GET, host + path);
 			request.addHeader("Accept", "application/vnd.com.runkeeper.FitnessActivityFeed+json");
-			request.addQuerystringParameter("noEarlierThan", task.getMarker());
-			request.addQuerystringParameter("noLaterThan", to.toString());
+			if (from != null) {
+				request.addQuerystringParameter("noEarlierThan", from.toLocalDate().toString());
+			}
 			request.addQuerystringParameter("pageSize", "100");
 			Response response = send(request, credentials);
 			ActivitiesResult result = new ActivitiesResult(parseObject(response), task.getPrincipal(), task.getUnit(), task.getTimezone());
-			events.addAll(result.getEvents());
+			for (Event event : result.getEvents()) {
+				if (from == null || event.getValue(Event.TIMESTAMP).toLocalDateTime().isAfter(from)) {
+					events.add(event);
+				}
+			}
 			path = result.getNext();
 		}
-		return createCommand(task, credentials, events, to.plusDays(1));
+		return createCommand(task, credentials, events);
 	}
 
-	static DateTime parseMarker(String marker) {
-		return marker != null ? DateTime.parse(marker) : null;
+	static LocalDateTime parseMarker(String marker) {
+		return marker != null ? LocalDateTime.parse(marker.replaceAll("Z", "")) : null;
 	}
 
-	static String formatMarker(DateTime time) {
-		return time != null ? time.toLocalDate().toString() : null;
+	static String formatMarker(LocalDateTime time) {
+		return time != null ? time.toString() : null;
 	}
 
-	private Command createCommand(RunkeeperTask task, OAuthCredentials credentials, List<Event> events, LocalDate marker) {
+	static String getMarker(Iterable<Event> events) {
+		return Iterables.getLast(events).getValue(Event.TIMESTAMP).toLocalDateTime().toString();
+	}
+
+	private Command createCommand(RunkeeperTask task, OAuthCredentials credentials, List<Event> events) {
 		CompoundCommand command = new CompoundCommand(task.getPrincipal(), "ran " + getType() + " task", "reverted " + getType() + " task");
 		command.add(UpdateTaskCommand.builder(task)
 			.set(Task.COMPLETED, task.getCompleted(), new DateTime(DateTimeZone.UTC))
 			.set(Task.STATUS, task.getStatus(), Task.Status.SUCCESS)
-			.set(Task.MARKER, task.getMarker(), events.isEmpty() ? task.getMarker() : marker.toString())
+			.set(Task.MARKER, task.getMarker(), events.isEmpty() ? task.getMarker() : getMarker(events).toString())
 			.set(Task.UNDO, task.getUndoId(), command.getId())
 			.build());
 		for (Event event : events) {
