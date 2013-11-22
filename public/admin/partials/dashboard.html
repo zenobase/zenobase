@@ -119,9 +119,9 @@
 					<thead>
 						<tr>
 							<th>User</th>
+							<th>Email</th>
 							<th>Signed up</th>
 							<th style="text-align: right">Quota</th>
-							<th style="text-align: center">Verified</th>
 							<th></th>
 						</tr>
 					</thead>
@@ -131,16 +131,17 @@
 								<a data-ng-click="setConstraint(user['@id'])" data-ng-show="!user.suspended" data-ng-class="user.superuser && 'b'">{{user.name}}</a>
 								<span style="color:gray" data-ng-show="user.suspended">{{user.name}}</span>
 							</td>
+							<td>
+								<a data-ng-href="mailto:{{user.email}}">{{user.email}}</a> <i class="icon-ok-circle" title="Verified" data-ng-show="user.verified"></i>
+							</td>
 							<td data-ng-bind="user.created | age"></td>
 							<td style="text-align: right">
 								<a class="action" data-ng-click="openDialog('edit-quota-dialog', user)" title="Edit Quota"><i class="icon-pencil"></i></a>
 								<span data-ng-bind="user.quota | number" ></span>
 							</td>
-							<td data-ng-bind="user.verified && 'yes' || 'no'" style="text-align:center"></td>
 							<td style="text-align: right">
 								<a class="action" data-ng-click="suspend(user.name)" data-ng-show="!user.suspended && !user.superuser" title="Suspend"><i class="icon-ban-circle"></i></a>
 								<a class="action" data-ng-click="remove(user.name)" data-ng-show="user.suspended" title="Delete"><i class="icon-trash"></i></a>
-								<a class="action" data-ng-href="mailto:{{user.email}}" title="Email"><i class="icon-envelope"></i></a>
 							</td>
 						</tr>
 						<tr data-ng-show="users == null">
