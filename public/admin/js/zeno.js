@@ -165,9 +165,6 @@
 				});
 			}
 		};
-		$scope.select = function(selected) {
-			$scope.selected = selected;
-		};
 		$scope.suspend = function(username) {
 			$http.post('/users/@' + username, { 'suspended' : true }).success(function() {
 				delay($scope.reload);
@@ -184,18 +181,16 @@
 	}]);
 
 	app.controller('admin.EditQuotaDialogController', ['$scope', '$http', 'delay', function($scope, $http, delay) {
-		$scope.init = function() {
+		$scope.init = function(user) {
+			$scope.user = user;
 			$scope.message = '';
-			$scope.quota = $scope.selected ? $scope.selected.quota : '';
+			$scope.quota = user.quota;
 		};
 		$scope.save = function() {
-			$http.post('/users/@' + $scope.selected.name, { 'quota' : $scope.quota })
+			$http.post('/users/@' + $scope.user.name, { 'quota' : $scope.quota })
 				.success(function(response) {
 					$scope.closeDialog();
 					delay($scope.reload);
-				})
-				.error(function(response, code) {
-					$scope.message = 'Failed (' + code + ')';
 				});
 		};
 	}]);

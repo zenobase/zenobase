@@ -133,7 +133,7 @@
 							</td>
 							<td data-ng-bind="user.created | age"></td>
 							<td style="text-align: right">
-								<a class="action" data-ng-click="select(user); openDialog('edit-quota-dialog')" title="Edit Quota"><i class="icon-pencil"></i></a>
+								<a class="action" data-ng-click="openDialog('edit-quota-dialog', user)" title="Edit Quota"><i class="icon-pencil"></i></a>
 								<span data-ng-bind="user.quota | number" ></span>
 							</td>
 							<td data-ng-bind="user.verified && 'yes' || 'no'" style="text-align:center"></td>
@@ -167,7 +167,7 @@
 					<form name="form" data-ng-submit="save()" class="modal-form">
 						<div class="modal-header">
 							<a class="close" data-dismiss="modal">&times;</a>
-							<h4>{{selected.name}}</h4>
+							<h4>{{user.getName()}}</h4>
 						</div>
 						<div class="modal-body">
 							<div id="edit-quota-message" class="alert alert-error" data-ng-show="message">
