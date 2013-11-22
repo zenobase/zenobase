@@ -72,7 +72,7 @@
 			if (precision > 0 && args.length > 1) {
 				args = args.slice(0, precision);
 			}
-			return args.join(' ');			
+			return args.length ? args.join(' ') : this.milliseconds() + 'ms';			
 		}
 
 		return moment;
