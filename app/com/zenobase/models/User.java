@@ -37,9 +37,13 @@ public class User extends DomainNode {
 	}
 
 	public User(String id, String name) {
+		this(id, name, new DateTime(DateTimeZone.UTC));
+	}
+
+	public User(String id, String name, DateTime created) {
 		setValue(ID, id);
 		setValue(NAME, name);
-		setValue(CREATED, new DateTime(DateTimeZone.UTC));
+		setValue(CREATED, created);
 	}
 
 	public String getId() {

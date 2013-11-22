@@ -12,7 +12,7 @@ import com.zenobase.commands.DeleteAuthorizationCommand;
 import com.zenobase.commands.DeleteBucketCommand;
 import com.zenobase.commands.DeleteCredentialsCommand;
 import com.zenobase.commands.DeleteTaskCommand;
-import com.zenobase.commands.SuspendUserCommand;
+import com.zenobase.commands.DeleteUserCommand;
 import com.zenobase.common.Callback;
 import com.zenobase.mail.VerificationMailer;
 import com.zenobase.models.Bucket;
@@ -103,7 +103,7 @@ public class AccountController extends ControllerSupport {
 
 	public Command buildCloseAccountCommand(final Identity principal, User user, final Authorization current) {
 		final CompoundCommand command = new CompoundCommand(principal, String.format("closed account %s", user.getName()), String.format("reopened account %s", user.getName()));
-		command.add(new SuspendUserCommand(principal, user.getName(), true));
+		command.add(new DeleteUserCommand(principal, user));
 		buckets.find(new BucketQuery().principalEqualTo(user.asIdentity()).isAlias(true), new Callback<Bucket>() {
 			@Override
 			public void call(Bucket bucket) {

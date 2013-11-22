@@ -10,9 +10,11 @@ import com.zenobase.commands.ChangeQuotaCommand;
 import com.zenobase.commands.ChangeUserEmailCommand;
 import com.zenobase.commands.ChangeUserPasswordCommand;
 import com.zenobase.commands.ChangeUserVerifiedCommand;
+import com.zenobase.commands.Command;
 import com.zenobase.commands.CompoundCommand;
 import com.zenobase.commands.CreateAuthorizationCommand;
 import com.zenobase.commands.DeleteAuthorizationCommand;
+import com.zenobase.commands.SuspendUserCommand;
 import com.zenobase.common.Callback;
 import com.zenobase.json.Nodes;
 import com.zenobase.mail.VerificationMailer;
@@ -80,6 +82,9 @@ public class UserController extends ControllerSupport {
     	if (form.getQuota() != null) {
     		return updateQuota(form, user);
     	}
+    	if (form.isSuspended() != null) {
+    		return updateSuspension(user, form.isSuspended());
+    	}
     	return badRequest("invalid update request");
 	}
 
@@ -135,6 +140,34 @@ public class UserController extends ControllerSupport {
 		return ok(Nodes.newObject("access_token", auth.getId()));
 	}
 
+	private Result updateSuspension(final User user, boolean suspended) {
+		final Authorization auth = getCurrentAuthorization();
+    	if (auth == null) {
+    		return unauthorized();
+    	}
+    	if (auth.getScope() != null || !users.isSuperuser(auth.getPrincipal())) {
+    		return forbidden();
+    	}
+		Command command = new SuspendUserCommand(auth.getPrincipal(), user.getName(), suspended);
+    	final CompoundCommand commands = new CompoundCommand(auth.getPrincipal(), command.toString(), command.reverse(auth.getPrincipal()).toString());
+		commands.add(command);
+		authorizations.find(new AuthorizationQuery().principalEqualTo(user.asIdentity()), new Callback<Authorization>() {
+			@Override
+			public void call(Authorization authorization) {
+				commands.add(new DeleteAuthorizationCommand(auth.getPrincipal(), authorization));
+			}
+		});
+		authorizations.find(new AuthorizationQuery().clientEqualTo(user.asIdentity()), new Callback<Authorization>() {
+			@Override
+			public void call(Authorization authorization) {
+				commands.add(new DeleteAuthorizationCommand(auth.getPrincipal(), authorization));
+			}
+		});
+		String commandId = dispatcher.dispatch(commands.unwrap());
+		response().setHeader(COMMAND_ID, commandId);
+		return noContent();
+	}
+
 	private Result updateVerified(UpdateUserForm form, User user) {
 		if (user.isVerified()) {
 			return badRequest("already verified");
@@ -156,7 +189,7 @@ public class UserController extends ControllerSupport {
     	if (auth == null) {
     		return unauthorized();
     	}
-    	if (!users.isSuperuser(auth.getPrincipal())) {
+    	if (auth.getScope() != null || !users.isSuperuser(auth.getPrincipal())) {
     		return forbidden();
     	}
 		String commandId = dispatcher.dispatch(new ChangeQuotaCommand(auth.getPrincipal(), user.getName(), user.getQuota(), form.getQuota()));

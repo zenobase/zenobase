@@ -15,6 +15,7 @@ public class UpdateUserForm extends DomainNode {
 	private static final TokenField KEY = new TokenField("key");
 	private static final TokenField EXPIRES = new TokenField("expires");
 	private static final IntegerField QUOTA = new IntegerField("quota");
+	private static final BooleanField SUSPENDED = new BooleanField("suspended");
 
 	public UpdateUserForm(ObjectNode node) {
 		super(node);
@@ -33,6 +34,10 @@ public class UpdateUserForm extends DomainNode {
 		setValue(PASSWORD, password);
 		setValue(KEY, key);
 		setValue(EXPIRES, expires);
+	}
+
+	UpdateUserForm(boolean suspended) {
+		setValue(SUSPENDED, suspended);
 	}
 
 	UpdateUserForm(Integer quota) {
@@ -61,5 +66,9 @@ public class UpdateUserForm extends DomainNode {
 
 	public Integer getQuota() {
 		return getValue(QUOTA);
+	}
+
+	public Boolean isSuspended() {
+		return getValue(SUSPENDED);
 	}
 }

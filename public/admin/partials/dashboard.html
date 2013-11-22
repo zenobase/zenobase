@@ -138,8 +138,9 @@
 							</td>
 							<td data-ng-bind="user.verified && 'yes' || 'no'" style="text-align:center"></td>
 							<td style="text-align: right">
-								<a class="action" data-ng-click="close(user.name)" data-ng-show="!user.suspended && !user.superuser" title="Close Account"><i class="icon-ban-circle"></i></a>
-								<a class="action" data-ng-href="mailto:{{user.email}}" title="Email User"><i class="icon-envelope"></i></a>
+								<a class="action" data-ng-click="suspend(user.name)" data-ng-show="!user.suspended && !user.superuser" title="Suspend"><i class="icon-ban-circle"></i></a>
+								<a class="action" data-ng-click="remove(user.name)" data-ng-show="user.suspended" title="Delete"><i class="icon-trash"></i></a>
+								<a class="action" data-ng-href="mailto:{{user.email}}" title="Email"><i class="icon-envelope"></i></a>
 							</td>
 						</tr>
 						<tr data-ng-show="users == null">

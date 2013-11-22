@@ -189,6 +189,25 @@ public class UserControllerHttpPostTest extends UserControllerTestSupport {
 	}
 
 	@Test
+	public void testUpdateSuspension() {
+		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
+		when(users.find(user.asIdentity())).thenReturn(user);
+		when(users.isSuperuser(user.asIdentity())).thenReturn(true);
+		Result result = call(user.getId(), new UpdateUserForm(true).toJson());
+		assertThat(result).hasStatus(NO_CONTENT);
+		verify(dispatcher).dispatch(Matchers.any(ChangeUserVerifiedCommand.class));
+	}
+
+	@Test
+	public void testUpdateSuspensionForbidden() {
+		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
+		when(users.find(user.asIdentity())).thenReturn(user);
+		Result result = call(user.getId(), new UpdateUserForm(true).toJson());
+		assertThat(result).hasStatus(FORBIDDEN);
+		verifyZeroInteractions(dispatcher);
+	}
+
+	@Test
 	public void testUpdateNothing() {
 		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
 		when(users.find(user.asIdentity())).thenReturn(user);

@@ -149,8 +149,13 @@
 			$scope.token = token.get();
 			if ($scope.constraint) {
 				$http.get('/users/' + $scope.constraint).success(function(response) {
-					$scope.total = 1;
-					$scope.users = [ response ];
+					if (response.name) {
+						$scope.total = 1;
+						$scope.users = [ response ];
+					} else {
+						$scope.total = 0;
+						$scope.users = [];
+					}
 				});
 			} else {
 				$http.get('/users/?' + $.param($.extend($scope.params(), params))).success(function(response) {
@@ -163,8 +168,13 @@
 		$scope.select = function(selected) {
 			$scope.selected = selected;
 		};
-		$scope.close = function(userId) {
-			$http({ method : 'DELETE', url : '/users/' + user.name }).success(function(response, code, headers) {
+		$scope.suspend = function(username) {
+			$http.post('/users/@' + username, { 'suspended' : true }).success(function() {
+				delay($scope.reload);
+			});
+		};
+		$scope.remove = function(username) {
+			$http({ method : 'DELETE', url : '/users/@' + username }).success(function() {
 				delay($scope.reload);
 			});
 		};
@@ -179,7 +189,7 @@
 			$scope.quota = $scope.selected ? $scope.selected.quota : '';
 		};
 		$scope.save = function() {
-			$http.post('/users/' + $scope.selected.name, { 'quota' : $scope.quota })
+			$http.post('/users/@' + $scope.selected.name, { 'quota' : $scope.quota })
 				.success(function(response) {
 					$scope.closeDialog();
 					delay($scope.reload);
