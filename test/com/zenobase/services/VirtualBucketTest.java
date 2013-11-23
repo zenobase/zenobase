@@ -38,7 +38,7 @@ public class VirtualBucketTest extends ElasticSearchTestSupport {
 
 		Bucket b3 = newBucket("My Data", me);
 		b3.addAlias(new Alias(b1.getId()));
-		b3.addAlias(new Alias(b2.getId()));
+		b3.addAlias(new Alias(b2.getId(), "tag:bar"));
 		buckets.store(b3, DateTime.now(), true);
 		assertThat(buckets.isAliased(b1.getId())).isTrue();
 		assertThat(buckets.isAliased(b2.getId())).isTrue();
@@ -53,7 +53,7 @@ public class VirtualBucketTest extends ElasticSearchTestSupport {
 
 		assertThat(events.size(b1.getId())).isEqualTo(1);
 		assertThat(events.size(b2.getId())).isEqualTo(2);
-		assertThat(events.size(b3.getId())).isEqualTo(3);
+		assertThat(events.size(b3.getId())).isEqualTo(2);
 
 		assertThat(buckets.delete(b3.getId())).isTrue();
 		assertThat(buckets.isAliased(b1.getId())).isFalse();

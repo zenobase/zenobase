@@ -134,11 +134,15 @@
 					<label>Aliases:</label>
 					<ul class="nav nav-pills gray">
 						<li class="active" data-ng-repeat="bucket in newBucket.aliases">
-							<a data-ng-click="removeBucket(bucket['@id'])"><span data-ui-bucket-label="bucket['@id']"></span> <i class="icon-remove icon-white"></i></a>
+							<a data-ng-click="removeBucket(bucket['@id'])">
+								<i class="icon-filter icon-white" title="{{bucket.filter}}" data-ng-show="bucket.filter"></i>
+								<span data-ui-bucket-label="bucket['@id']"></span> <i class="icon-remove icon-white"></i>
+							</a>
 						</li>
 					</ul>
 					<div class="form-horizontal">
 						<select class="input-medium" data-ng-model="selected" data-ng-options="bucket.label for bucket in listBuckets()"></select>
+						<input name="filter" type="text" class="input-medium" data-ng-model="filter" placeholder="e.g. tag:xyz"/>
 						<button type="button" class="btn" data-ng-disabled="!selected" data-ng-click="addBucket()">Add</button>
 					</div>
 				</div>

@@ -106,11 +106,15 @@
 					<div class="control-group">
 						<ul class="nav nav-pills gray">
 							<li class="active" data-ng-repeat="alias in aliases">
-								<a data-ng-click="removeBucket(alias)">{{alias.label}} <i class="icon-remove icon-white"></i></a>
+								<a data-ng-click="removeBucket(alias)">
+									<i class="icon-filter icon-white" title="{{alias.filter}}" data-ng-show="alias.filter"></i>
+									{{alias.label}} <i class="icon-remove icon-white"></i>
+								</a>
 							</li>
 						</ul>
 						<div class="form-horizontal">
 							<select id="include-bucket-select" class="input-medium" data-ng-model="selected" data-ng-options="bucket.label for bucket in listBuckets()"></select>
+							<input id="include-bucket-filter" name="filter" type="text" class="input-medium" data-ng-model="filter" placeholder="e.g. tag:xyz"/>
 							<button id="include-bucket-button" type="button" class="btn" data-ng-disabled="!selected" data-ng-click="addBucket()">Add</button>
 						</div>
 					</div>

@@ -916,6 +916,7 @@
 			$scope.buckets = [];
 			$scope.aliases = [];
 			$scope.selected = null;
+			$scope.filter = null;
 			$http.get('/users/' + $scope.profile['@id'] + '/buckets/?' + $.param({ order : 'label', offset : 0, limit : 100, labels_only : true })).success(function(response) {
 				$scope.buckets = response.buckets;
 			});
@@ -927,7 +928,7 @@
 		$scope.create = function() {
 			$scope.alert.clear();
 			var aliases = $.map($scope.aliases, function(alias) {
-				return { '@id' : alias['@id'] };
+				return { '@id' : alias['@id'], 'filter' : alias.filter };
 			});
 			$http.post('/buckets/', { label : $scope.label, aliases : aliases })
 				.success(function(response, status, headers) {
@@ -956,8 +957,13 @@
 			}
 		};
 		$scope.addBucket = function() {
-			$scope.aliases.push($scope.selected);
+			var alias = angular.copy($scope.selected);
+			if ($scope.filter) {
+				alias.filter = $scope.filter;
+			}
+			$scope.aliases.push(alias);
 			$scope.selected = null;
+			$scope.filter = null;
 		};
 		$scope.removeBucket = function(bucket) {
 			$scope.aliases = $.grep($scope.aliases, function(alias) {
@@ -1364,6 +1370,7 @@
 			$scope.newBucket = angular.copy($scope.$parent.bucket);
 			$scope.isView = $scope.newBucket.aliases && $scope.newBucket.aliases.length > 0;
 			$scope.selected = null;
+			$scope.filter = null;
 			$http.get('/users/' + $scope.user['@id'] + '/buckets/?' + $.param({ 'order' : 'label', offset : 0, limit : 100, labels_only : true })).success(function(response) {
 				$scope.buckets = response.buckets;
 			});
@@ -1379,8 +1386,9 @@
 			}
 		};
 		$scope.addBucket = function() {
-			$scope.newBucket.aliases.push({ '@id' : $scope.selected['@id'] });
+			$scope.newBucket.aliases.push({ '@id' : $scope.selected['@id'], 'filter' : $scope.filter });
 			$scope.selected = null;
+			$scope.filter = null;
 		};
 		$scope.removeBucket = function(bucketId) {
 			$scope.newBucket.aliases = $.grep($scope.newBucket.aliases, function(bucket) {

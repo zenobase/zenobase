@@ -9,8 +9,10 @@ import com.zenobase.models.Alias;
 public class AliasField extends Field<Alias> {
 
 	public static final String ID = "@id";
+	public static final String FILTER = "filter";
 
 	private final NestedField<String> idField = nest(new TokenField(ID, true));
+	private final NestedField<String> filterField = nest(new TokenField(FILTER, false));
 
 	public AliasField(String name) {
 		super(name, Alias.class, "object");
@@ -22,23 +24,26 @@ public class AliasField extends Field<Alias> {
 		super.configureSchema(schema);
 		ObjectNode properties = schema.putObject("properties");
 		configureSchema(properties, idField);
+		configureSchema(properties, filterField);
 	}
 
 	@Override
 	protected Alias getValue(JsonNode node) {
-		return new Alias(idField.getValue((ObjectNode) node));
+		ObjectNode object = (ObjectNode) node;
+		return new Alias(idField.getValue(object), filterField.getValue(object));
 	}
 
 	@Override
 	public JsonNode toJson(Alias value) {
 		return value != null
-			? toJson(value.getId())
+			? toJson(value.getId(), value.getFilter())
 			: NullNode.getInstance();
 	}
 
-	private JsonNode toJson(String id) {
+	private JsonNode toJson(String id, String filter) {
 		ObjectNode node = Nodes.newObject();
 		idField.setValue(node, id);
+		filterField.setValue(node, filter);
 		return node;
 	}
 }

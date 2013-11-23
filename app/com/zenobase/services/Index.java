@@ -16,6 +16,7 @@ import org.elasticsearch.client.Requests;
 import org.elasticsearch.common.settings.ImmutableSettings;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.unit.TimeValue;
+import org.elasticsearch.index.query.FilterBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
@@ -34,6 +35,7 @@ import com.zenobase.json.NodeList;
 import com.zenobase.json.Nodes;
 import com.zenobase.json.Schema;
 import com.zenobase.models.Alias;
+import com.zenobase.search.EventSearchBuilder;
 
 public class Index {
 
@@ -60,7 +62,7 @@ public class Index {
 		Logger.info("Creating aliases for " + indexName + ": " + aliases);
 		IndicesAliasesRequestBuilder request = client.admin().indices().prepareAliases();
 		for (Alias alias : aliases) {
-			request.addAlias(alias.getId(), indexName);
+			addAlias(request, alias);
 		}
 		IndicesAliasesResponse response = request.execute().actionGet();
 		Preconditions.checkState(response.isAcknowledged(), "Expected acknowledgement of alias creation: %s", indexName);
@@ -69,14 +71,27 @@ public class Index {
 	public void replace(Set<Alias> from, Set<Alias> to) {
 		Preconditions.checkArgument(!to.isEmpty(), "Can't remove all aliases from %s", from);
 		IndicesAliasesRequestBuilder request = client.admin().indices().prepareAliases();
-		for (Alias alias : Sets.difference(to, from)) {
-			request.addAlias(alias.getId(), indexName);
-		}
 		for (Alias alias : Sets.difference(from, to)) {
-			request.removeAlias(alias.getId(), indexName);
+			removeAlias(request, alias);
+		}
+		for (Alias alias : Sets.difference(to, from)) {
+			addAlias(request, alias);
 		}
 		IndicesAliasesResponse response = request.execute().actionGet();
 		Preconditions.checkState(response.isAcknowledged(), "Expected acknowledgement of alias update: %s", indexName);
+	}
+
+	private void addAlias(IndicesAliasesRequestBuilder request, Alias alias) {
+		if (alias.getFilter() != null) {
+			FilterBuilder filter = new EventSearchBuilder().addConstraints(alias.getFilter()).buildFilter();
+			request.addAlias(alias.getId(), indexName, filter);
+		} else {
+			request.addAlias(alias.getId(), indexName);
+		}
+	}
+
+	private void removeAlias(IndicesAliasesRequestBuilder request, Alias alias) {
+		request.removeAlias(alias.getId(), indexName);
 	}
 
 	public void putMapping(Schema schema) {
