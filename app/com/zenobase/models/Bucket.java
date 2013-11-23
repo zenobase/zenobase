@@ -30,7 +30,7 @@ public class Bucket extends DomainNode {
 	public static final String TYPE_NAME = "bucket";
 
 	public static final TokenField ID = new TokenField("@id", false);
-	public static final TextField LABEL = new TextField("label");
+	public static final TokenField LABEL = new TokenField("label", true);
 	public static final TextField DESCRIPTION = new TextField("description");
 	public static final DateTimeField CREATED = new DateTimeField("created");
 	public static final RolesField ROLES = new RolesField("roles");
