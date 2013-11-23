@@ -336,7 +336,7 @@ public class BrowserTest {
 				assertThat($("#sign-out-link")).isNotDisplayed();
 				assertThat($("#user-profile-link")).isNotDisplayed();
 				assertThat($("#existing-user-link")).isNotDisplayed();
-				assertThat(users.find("jdoe").isSuspended()).as("user is suspended").isTrue();
+				assertThat(users.find("jdoe")).as("user was removed").isNull();
 			}
 
 			private String readMessage(String receipient) {
