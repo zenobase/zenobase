@@ -22,7 +22,7 @@ public class NetatmoApi extends DefaultApi20 {
 
 	@Override
 	public String getAccessTokenEndpoint() {
-		return "http://api.netatmo.net/oauth2/token"; // Can't use SSL, Java is missing a required certificate.
+		return "https://api.netatmo.net/oauth2/token";
 	}
 
 	@Override
