@@ -250,7 +250,7 @@ public class BrowserTest {
 				assertThat($("#next-buckets-button")).isNotEnabled();
 				$("#prev-buckets-button").click();
 
-				// create a virtual, public bucket
+				// create a view
 				$("#add-bucket-dropdown").click();
 				$("#add-view-action").click();
 				assertThat($("#create-view-dialog")).isDisplayed();
@@ -258,10 +258,26 @@ public class BrowserTest {
 				$("#create-view-label").sendKeys("Private View");
 				assertThat($("#create-bucket-button")).isNotEnabled();
 				new Select($("#include-bucket-select")).selectByVisibleText("My Data");
+				$("#include-bucket-filter").sendKeys("tag:walk");
 				$("#include-bucket-button").click();
 				assertThat($("#create-view-button")).isEnabled();
 				$("#create-view-button").click();
+				wait.withMessage("event count").until(ExpectedConditions.textToBePresentInElement(By.id("event-count"), "0"));
+
+				// edit view
+				$("#bucket-menu").click();
+				$("#edit-bucket-action").click();
+				new Actions(driver).moveToElement($(".edit-alias-item")).click().perform();
+				assertThat($("#save-bucket-button")).isNotEnabled();
+				new Select($("#edit-alias-select")).selectByVisibleText("My Data");
+				$("#edit-alias-filter").sendKeys("tag:hike");
+				$("#edit-alias-button").click();
+				assertThat($("#save-bucket-button")).isEnabled();
+				$("#save-bucket-button").click();
 				wait.withMessage("event count").until(ExpectedConditions.textToBePresentInElement(By.id("event-count"), "1"));
+
+
+				// publish bucket
 				$("#bucket-menu").click();
 				$("#edit-bucket-action").click();
 				$("#edit-bucket-label").clear();
