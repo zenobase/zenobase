@@ -73,7 +73,7 @@
 					<div id="create-bucket-message" class="alert alert-error" data-ng-show="message">
 						{{message}}
 					</div>
-					<div class="control-group" data-ng-class="form.label.$valid || 'error'">
+					<div class="control-group" data-ng-class="!form.label.$valid && 'error'">
 						<label for="label">Label</label>
 						<input id="create-bucket-label" name="label" type="text" class="xlarge" required data-ui-focus-on="openDialog:create-bucket-dialog" data-ng-minlength="1" data-ng-maxlength="20" data-ng-model="label"/>
 					</div>
@@ -99,7 +99,7 @@
 					<div id="create-view-message" class="alert alert-error" data-ng-show="message">
 						{{message}}
 					</div>
-					<div class="control-group" data-ng-class="form.label.$valid || 'error'">
+					<div class="control-group" data-ng-class="!form.label.$valid && 'error'">
 						<label for="label">Label</label>
 						<input id="create-view-label" name="label" type="text" class="xlarge" required data-ui-focus-on="openDialog:create-view-dialog" data-ng-minlength="1" data-ng-maxlength="20" data-ng-model="label"/>
 					</div>

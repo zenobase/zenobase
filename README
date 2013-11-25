@@ -14,7 +14,7 @@ Assets
 
 When updating the bootstrap.js file, concatenate the "Modals", "Dropdowns", "Toggleable tabs" and the "Typeahead" plugins, and append bootstrap-fileupload and bootstrap-datepicker.
 
-When updating angular.js, append angular-sanitize.
+When updating angular-custom.js, append angular-route and angular-sanitize. Remove any "//# sourceMappingURL" lines.
 
 When updating highcharts.js, append highcharts-more.
 

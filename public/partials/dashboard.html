@@ -60,7 +60,7 @@
 			<div class="span12">
 				<ul class="nav nav-tabs">
 					<li data-ng-class="$index == 0 && 'active'" data-ng-repeat="settings in getWidgetSettings('top')">
-						<a id="{{settings.id}}-tab" data-ng-href="#{{settings.id}}" data-toggle="tab">{{settings.label}}&nbsp;<i class="icon-cog icon-hover" title="Settings..." data-ng-click="openDialog(settings.id + '-dialog')"></i></a>
+						<a id="{{settings.id}}-tab" data-ng-href="#{{settings.id}}" target="_self" data-toggle="tab">{{settings.label}}&nbsp;<i class="icon-cog icon-hover" title="Settings..." data-ng-click="openDialog(settings.id + '-dialog')"></i></a>
 					</li>
 					<li><a data-ng-click="openDialog('add-widget-dialog', 'top')" title="Add..."> <i class="icon-plus icon-hover"></i> </a></li>
 				</ul>
@@ -74,7 +74,7 @@
 			<div class="span6" data-ng-show="hasWidgets('left') || dirty">
 				<ul class="nav nav-tabs">
 					<li data-ng-class="$index == 0 && 'active'" data-ng-repeat="settings in getWidgetSettings('left')">
-						<a id="{{settings.id}}-tab" data-ng-href="#{{settings.id}}" data-toggle="tab">{{settings.label}}&nbsp;<i class="icon-cog icon-hover" title="Settings..." data-ng-click="openDialog(settings.id + '-dialog')"></i></a>
+						<a id="{{settings.id}}-tab" data-ng-href="#{{settings.id}}" target="_self" data-toggle="tab">{{settings.label}}&nbsp;<i class="icon-cog icon-hover" title="Settings..." data-ng-click="openDialog(settings.id + '-dialog')"></i></a>
 					</li>
 					<li><a data-ng-click="openDialog('add-widget-dialog', 'left')" title="Add..."> <i class="icon-plus icon-hover"></i> </a></li>
 				</ul>
@@ -85,7 +85,7 @@
 			<div class="span6" data-ng-show="hasWidgets('right') || dirty">
 				<ul class="nav nav-tabs">
 					<li data-ng-class="$index == 0 && 'active'" data-ng-repeat="settings in getWidgetSettings('right')">
-						<a id="{{settings.id}}-tab" data-ng-href="#{{settings.id}}" data-toggle="tab">{{settings.label}}&nbsp;<i class="icon-cog icon-hover" title="Settings..." data-ng-click="openDialog(settings.id + '-dialog')"></i></a>
+						<a id="{{settings.id}}-tab" data-ng-href="#{{settings.id}}" target="_self" data-toggle="tab">{{settings.label}}&nbsp;<i class="icon-cog icon-hover" title="Settings..." data-ng-click="openDialog(settings.id + '-dialog')"></i></a>
 					</li>
 					<li><a data-ng-click="openDialog('add-widget-dialog', 'right')" title="Add..."> <i class="icon-plus icon-hover"></i> </a></li>
 				</ul>
@@ -107,7 +107,7 @@
 				<div id="create-bucket-message" class="alert alert-error" data-ng-show="message">
 					{{message}}
 				</div>
-				<div class="control-group" data-ng-class="form.label.$valid || 'error'">
+				<div class="control-group" data-ng-class="!form.label.$valid && 'error'">
 					<label for="label">Label</label>
 					<input id="edit-bucket-label" name="label" type="text" class="xlarge" required data-ui-focus-on="openDialog:edit-bucket-dialog" data-ng-minlength="1" data-ng-maxlength="30" data-ng-pattern="/^[a-zA-Z0-9-_ ]+$/" data-ng-model="newBucket.label"/>
 				</div>

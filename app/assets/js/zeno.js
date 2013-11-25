@@ -11,7 +11,7 @@
 		});
 	}(window.console = window.console || {})); 
 
-	var app = angular.module('ZenoModule', ['ngSanitize']);
+	var app = angular.module('ZenoModule', [ 'ngRoute', 'ngSanitize' ]);
 
 	app.factory('delay', ['$timeout', function($timeout) {
 		return function(callback) {
@@ -148,8 +148,8 @@
 			.when('/users/:username/reset', { templateUrl : cacheBuster.rewrite('/partials/reset.html') })
 			.when('/users/:username/verify', { templateUrl : cacheBuster.rewrite('/partials/verification.html') })
 			.when('/oauth/authorize', { templateUrl : cacheBuster.rewrite('/partials/oauth.html') })
-			.when('/legal/:section', { title : 'Legal', templateUrl : cacheBuster.rewrite('/partials/legal.html'), controller : 'DocumentController' })
-			.when('/api/:section', { title : 'API', templateUrl : cacheBuster.rewrite('/partials/api.html'), controller : 'DocumentController' })
+			.when('/legal/:section?', { title : 'Legal', templateUrl : cacheBuster.rewrite('/partials/legal.html'), controller : 'DocumentController' })
+			.when('/api/:section?', { title : 'API', templateUrl : cacheBuster.rewrite('/partials/api.html'), controller : 'DocumentController' })
 			.when('/pricing/', { title : 'Pricing', templateUrl : cacheBuster.rewrite('/partials/pricing.html') })
 			.otherwise({ templateUrl : cacheBuster.rewrite('/partials/404.html') });
 	}]);
@@ -882,6 +882,9 @@
 		$scope.valid = function() {
 			return true;
 		};
+		$scope.validLabel = function() {
+			return $scope.label && $scope.label.length > 0;
+		};
 		$scope.create = function() {
 			$scope.alert.clear();
 			$http.post('/buckets/', { label : $scope.label, widgets : $scope.template.widgets })
@@ -1294,7 +1297,10 @@
 
 		$scope.updateConstraints = function() {
 			var q = $location.search()['q'];
-			$scope.constraints = q ? $.map(q.split('__'), function(s) { return Constraint.parse(s) }) : [ ];
+			if (q && !$.isArray(q)) {
+				q = q.split('__'); // TODO Deprecate '__', unused since angularjs 1.2.
+			}
+			$scope.constraints = q ? $.map(q, function(s) { return Constraint.parse(s) }) : [ ];
 		};
 		$scope.getConstraints = function(field) {
 			return $.grep($scope.constraints, function(constraint) {
@@ -1306,6 +1312,11 @@
 				return angular.equals(c, constraint);
 			}).length > 0;
 		};
+		function mapToString(values) {
+			return values.length > 0
+				? $.map(values, function(value) { return value.toString(); })
+				: null;
+		}
 		$scope.addConstraint = function(field, value, replace) {
 			var constraint = new Constraint(field, value);
 			if (containsConstraint(constraint)) {
@@ -1317,13 +1328,13 @@
 				});
 			}
 			$scope.constraints.push(constraint);
-			$location.search('q', $scope.constraints.join('__'));
+			$location.search( { 'q' : mapToString($scope.constraints) });
 		};
 		$scope.removeConstraint = function(constraint) {
 			$scope.constraints = $.grep($scope.constraints, function(c) {
 				return !angular.equals(c, constraint);
 			});
-			$location.search('q', $scope.constraints.length ? $scope.constraints.join('__') : null);
+			$location.search({ 'q' : mapToString($scope.constraints) });
 		};
 		$scope.getConstraintIcon = function(constraint) {
 			var fieldName = constraint.field;
@@ -3698,12 +3709,14 @@
 	}]);
 
 	app.controller('DocumentController', ['$scope', '$location', '$routeParams', '$timeout', function($scope, $location, $routeParams, $timeout) {
-		var id = $location.path().substring(1).replace('/', '-');
-		var element = document.getElementById(id);
-		if (element) {
-			$timeout(function() { 
-				element.scrollIntoView(true);
-			});
+		if ($routeParams.section) {
+			var id = $location.path().substring(1).replace('/', '-');
+			var element = document.getElementById(id);
+			if (element) {
+				$timeout(function() { 
+					element.scrollIntoView(true);
+				});
+			}
 		}
 	}]);
 
