@@ -51,11 +51,11 @@ public class BucketRepository extends RepositorySupport<Bucket> {
 	}
 
 	public void update(Bucket from, Bucket to, DateTime timestamp) {
-		index.update(Bucket.TYPE_NAME, to.getId(), to.toJson(), timestamp, true);
 		if (!Objects.equal(from.getAliases(), to.getAliases())) {
 			Index index = manager.getIndex(to.getId());
 			index.replace(Sets.newHashSet(from.getAliases()), Sets.newHashSet(to.getAliases()));
 		}
+		index.update(Bucket.TYPE_NAME, to.getId(), to.toJson(), timestamp, true);
 	}
 
 	public boolean delete(String bucketId) {
