@@ -219,6 +219,7 @@
 			$route.reload();
 		};
 		$scope.openDialog = function(dialog, param) {
+			$('input:focus').blur();
 			$scope.$broadcast('openDialog', dialog, param);
 		};
 		$scope.closeDialog = function() {
