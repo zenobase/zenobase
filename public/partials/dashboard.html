@@ -51,6 +51,7 @@
 				<li class="active" data-ng-repeat="constraint in constraints">
 					<a data-ng-click="removeConstraint(constraint)" title="{{constraint.toString()}}"><i class="icon-minus icon-white" data-ng-show="constraint.negated"></i><i class="icon-white" data-ng-class="getConstraintIcon(constraint)"></i> {{constraint.value}} <i class="icon-remove icon-white"></i></a>
 				</li>
+				<li><a data-ng-click="openDialog('save-as-view-dialog')" data-ng-hide="bucket.isVirtual()">Save...</a></li>
 			</ul>
 		</div>
 
@@ -150,6 +151,28 @@
 			<div class="modal-footer">
 				<button id="save-bucket-button" class="btn btn-primary" data-ng-disabled="!form.$valid || !valid()">Update</button>
 				<button class="btn" data-dismiss="modal">Cancel</button>
+			</div>
+		</form>
+	</div>
+
+	<div id="save-as-view-dialog" data-ui-modal data-ng-controller="SaveAsViewDialogController">
+		<form name="form" data-ng-submit="create()" class="modal-form">
+			<div class="modal-header">
+				<a class="close" data-dismiss="modal">&times;</a>
+				<h4>Create View</h4>
+			</div>
+			<div class="modal-body">
+				<div id="create-view-message" class="alert alert-error" data-ng-show="message">
+					{{message}}
+				</div>
+				<div class="control-group" data-ng-class="!form.label.$valid && 'error'">
+					<label for="label">Label</label>
+					<input id="create-view-label" name="label" type="text" class="xlarge" required data-ui-focus-on="openDialog:save-as-view-dialog" data-ng-minlength="1" data-ng-maxlength="20" data-ng-model="label"/>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button id="create-view-button" type="submit" class="btn btn-primary" data-ng-disabled="!form.$valid">Create</button>
+				<button type="reset" class="btn" data-dismiss="modal">Cancel</button>
 			</div>
 		</form>
 	</div>

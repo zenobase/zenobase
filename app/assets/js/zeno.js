@@ -1308,6 +1308,10 @@
 				return constraint.field === field;
 			});
 		};
+		$scope.getConstraintsString = function() {
+			var items = mapToString($scope.constraints);
+			return items != null ? items.join('|') : null;
+		};
 		function containsConstraint(constraint) {
 			return $.grep($scope.constraints, function(c) {
 				return angular.equals(c, constraint);
@@ -1354,7 +1358,7 @@
 	}]);
 	
 	app.controller('EditWidgetsController', ['$scope', '$http', '$route', 'tracker', function($scope, $http, $route, tracker) {
-		$scope.save = function(settings) {
+		$scope.save = function() {
 			$scope.alert.clear();
 			$http.put('/buckets/' + $scope.bucketId, $scope.bucket)
 				.success(function (response, status, headers) {
@@ -1373,6 +1377,44 @@
 		};
 		$scope.revert = function() {
 			$route.reload();
+		};
+	}]);
+
+	app.controller('SaveAsViewDialogController', ['$scope', '$http', '$location', '$timeout', 'tracker', function($scope, $http, $location, $timeout, tracker) {
+
+		$scope.init = function() {
+			$scope.label = $scope.$parent.bucket.label;
+			$scope.message = '';
+			tracker.event('dialog', 'save as view');
+		};
+		$scope.create = function() {
+			var bucket = {
+				'label' : $scope.label,
+				'widgets' : $scope.$parent.bucket.widgets,
+				'aliases' : [
+					{
+						'@id' : $scope.bucket['@id'], 
+						'filter' : $scope.$parent.getConstraintsString()
+					}
+				]
+			};
+			$http.post('/buckets/', bucket)
+				.success(function(response, status, headers) {
+					var location = headers('Location');
+					console.assert(status === 201, status);
+					console.assert(location, 'missing location header');
+					$scope.alert.clear();
+					$scope.closeDialog();
+					$location.url(location);
+				})
+				.error(function(response, status) {
+					if (status === 400) {
+						$scope.message = 'Can\'t create view.';					
+					} else {
+						$scope.message = 'Couldn\'t create view. Please try agan later or contact support.';					
+					}
+				});
+			tracker.event('action', 'create view');
 		};
 	}]);
 
