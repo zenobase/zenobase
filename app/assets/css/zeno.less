@@ -94,17 +94,31 @@ abbr {
 	text-transform: none;
 }
 
+/* Control style for Google Maps 3.14. */
 .map-control {
-	background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(white), to(#E6E6E6));
-	border: 1px solid #717B87;
-	box-shadow: rgba(0, 0, 0, 0.398438) 0 2px 4px;
-	-webkit-box-shadow: rgba(0, 0, 0, 0.398438) 0 2px 4px;
-	color: black;
+	z-index: 0;
 	cursor: pointer;
-	font-size: 13px;
+	text-decoration: none;
+	font-family: Roboto,Arial,sans-serif;
+	font-size: 11px;
 	font-weight: bold;
-	line-height: 18px;
+	direction: ltr;
+	overflow: hidden;
+	text-align: left;
+	position: relative;
+	color: rgb(0, 0, 0);
+	-webkit-user-select: none;
+	background-color: rgb(255, 255, 255);
 	padding: 1px 6px;
+	border-bottom-left-radius: 2px;
+	border-top-left-radius: 2px;
+	border-bottom-right-radius: 2px;
+	border-top-right-radius: 2px;
+	-webkit-background-clip: padding-box;
+	background-clip: padding-box;
+	border: 1px solid rgba(0, 0, 0, 0.14902);
+	-webkit-box-shadow: rgba(0, 0, 0, 0.298039) 0px 1px 4px -1px;
+	box-shadow: rgba(0, 0, 0, 0.298039) 0px 1px 4px -1px;
 }
 
 .none {	
