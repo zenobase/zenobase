@@ -3197,10 +3197,8 @@
 		}
 
 		$scope.init = function() {
-			var date = new Date();
-			date.setSeconds(0);
-			$scope.date = utc(date);
-			$scope.time = moment().format('HH:mm:ss');
+			$scope.date = utc(new Date());
+			$scope.time = moment().seconds(0).format('HH:mm:ss');
 			$scope.timezone = timezone;
 		};
 		$scope.addField = function() {
@@ -4399,6 +4397,9 @@
 					});
 				};
 				if (controller != null) {
+					controller.$formatters.unshift(function(value) {
+						return moment.utc(value).format('YYYY-MM-DD');
+					});
 					controller.$render = function() {
 						element.datepicker().data().datepicker.date = controller.$viewValue;
 						element.datepicker('setValue');
