@@ -3187,7 +3187,8 @@
 
 		function getValue() {
 			var day = (typeof $scope.date === 'object') ? moment(local($scope.date)).format('YYYY-MM-DD') : $scope.date;
-			return day + 'T' + $scope.time + '.000' + $scope.timezone;
+			var time = ($scope.time.length == 7 ? '0' : '') + $scope.time + '.000';
+			return day + 'T' + time + $scope.timezone;
 		}
 		function local(date) {
 			return new Date(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate());
@@ -3198,7 +3199,7 @@
 
 		$scope.init = function() {
 			$scope.date = utc(new Date());
-			$scope.time = moment().seconds(0).format('HH:mm:ss');
+			$scope.time = moment().seconds(0).format('H:mm:ss');
 			$scope.timezone = timezone;
 		};
 		$scope.addField = function() {
@@ -4421,17 +4422,14 @@
 			require : '?ngModel',
 			restrict : 'A',
 			link : function($scope, element, attrs, controller) {
-				var updateModel = function() {
-					return $scope.$apply(function() {
-						return controller.$setViewValue(element.val());
-					});
-				};
-				var options = { 
-					show24Hours : true, 
-					showSeconds : true,
-					spinnerImage : ''
-				};
-				element.timeEntry(options).change(updateModel);
+				element.timepicker({ 
+					template : false,
+					minuteStep : 1,
+					secondStep : 5,
+					defaultTime : false,
+					showMeridian : false, 
+					showSeconds : true
+				});
 			}
 		};
 	});

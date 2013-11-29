@@ -12,7 +12,8 @@ Following the initial checkout, or after updating dependencies in the Build.scal
 Assets
 ------
 
-When updating the bootstrap.js file, concatenate the "Modals", "Dropdowns", "Toggleable tabs" and the "Typeahead" plugins, and append bootstrap-fileupload and bootstrap-datepicker.
+When updating the bootstrap.js file, concatenate the "Modals", "Dropdowns", "Toggleable tabs" and the "Typeahead" plugins, 
+and append the bootstrap-fileupload, bootstrap-datepicker and bootstrap-timepicker plugins.
 
 When updating angular-custom.js, append angular-route and angular-sanitize. Remove any "//# sourceMappingURL" lines.
 
