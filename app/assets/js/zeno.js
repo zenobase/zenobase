@@ -1339,7 +1339,7 @@
 			$scope.constraints = $.grep($scope.constraints, function(c) {
 				return !angular.equals(c, constraint);
 			});
-			$location.search({ 'q' : mapToString($scope.constraints) });
+			$location.search($scope.constraints.length > 0 ? { 'q' : mapToString($scope.constraints) } : {});
 		};
 		$scope.getConstraintIcon = function(constraint) {
 			var fieldName = constraint.field;
