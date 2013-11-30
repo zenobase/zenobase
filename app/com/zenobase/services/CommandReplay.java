@@ -43,7 +43,7 @@ public class CommandReplay {
 		final CommandRepository repository = new CommandRepository(indexManager, parsers);
 		final StringBloomFilter identities = new IdentitiesFilterBuilder(new UserRepository(indexManager)).build();
 		Logger.info(String.format("Replaying %d commands from %s...", repository.size(), sourceCluster));
-		Stopwatch timer = new Stopwatch().start();
+		Stopwatch timer = Stopwatch.createStarted();
 		try {
 			repository.find(new CommandQuery(), ORDER, new Callback<Command>() {
 				@Override

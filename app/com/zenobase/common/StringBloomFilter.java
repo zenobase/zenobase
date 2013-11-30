@@ -8,7 +8,7 @@ public class StringBloomFilter {
 	private final BloomFilter<CharSequence> filter;
 
 	public StringBloomFilter(int expectedSize) {
-		filter = BloomFilter.create(Funnels.stringFunnel(), expectedSize);
+		filter = BloomFilter.create(Funnels.unencodedCharsFunnel(), expectedSize);
 	}
 
 	public void put(String value) {

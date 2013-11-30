@@ -13,7 +13,7 @@ object ApplicationBuild extends Build {
 	  javaCore,
 	  filters,
 	  "javax.mail" % "mail" % "1.4.7",
-	  "com.google.guava" % "guava" % "14.0.1",
+	  "com.google.guava" % "guava" % "15.0",
 	  "com.google.guava" % "guava-testlib" % "14.0.1" % "test",
 	  "com.google.inject" % "guice" % "3.0",
 	  "com.google.inject.extensions" % "guice-multibindings" % "3.0",
