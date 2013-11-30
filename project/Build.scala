@@ -23,7 +23,6 @@ object ApplicationBuild extends Build {
 	  "org.jsoup" % "jsoup" % "1.7.2",
 	  "net.sf.opencsv" % "opencsv" % "2.3",
 	  "org.scribe" % "scribe" % "1.3.3",
-	  "com.newrelic.agent.java" % "newrelic-api" % "3.1.1",
 	  "org.seleniumhq.selenium" % "selenium-chrome-driver" % "2.32.0" % "test", // Must match Play's version of Selenium!
 	  "org.apache.httpcomponents" % "httpcore" % "4.2.5" % "test",
 	  "org.mockito" % "mockito-core" % "1.9.5" % "test",
