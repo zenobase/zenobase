@@ -1000,12 +1000,14 @@
       	type : 'timeline',
       	label : 'Timeline',
       	description : 'Plots values on a timeline.',
+      	thumbnail : cacheBuster.rewrite('/img/widgets/timeline.png'),
       	settings : { field : 'timestamp', statistic : 'count' }
       },
       {
       	type : 'list',
       	label : 'List', 
-      	description : 'Lists events.',
+      	description : 'Shows all matching events, pageable.',
+      	thumbnail : cacheBuster.rewrite('/img/widgets/list.png'),
       	settings : { limit : 10, order : 'timestamp', reverse : false },
       	singleton : true
       },
@@ -1013,12 +1015,14 @@
       	type : 'count',
       	label : 'Count', 
       	description : 'Counts events by tag or author.',
+      	thumbnail : cacheBuster.rewrite('/img/widgets/count.png'),
       	settings : { field : 'tag', order : 'count', reverse : false, limit : 5 }
       },
       {
       	type : 'map',
       	label : 'Map', 
       	description : 'Shows event locations on a map.',
+      	thumbnail : cacheBuster.rewrite('/img/widgets/map.png'),
       	settings : { },
       	singleton : true
       },
@@ -1026,51 +1030,56 @@
       	type : 'ratings',
       	label : 'Ratings',
     		description : 'Counts events by their rating.',
+      	thumbnail : cacheBuster.rewrite('/img/widgets/ratings.png'),
       	settings : { }
       },
       {
       	type : 'histogram',
       	label : 'Histogram', 
       	description : 'Shows the distribution of values in a field.',
+      	thumbnail : cacheBuster.rewrite('/img/widgets/histogram.png'),
       	settings : { field : 'distance', interval : 10, unit : 'mi' }
       },
       {
       	type : 'scoreboard',
       	label : 'Scoreboard', 
       	description : 'Statistics for the values in a field',
+      	thumbnail : cacheBuster.rewrite('/img/widgets/scoreboard.png'),
       	settings : { key_field : 'author', value_field : 'distance', unit : 'mi', order : 'total', limit : 10 }
       },                    
 	  	{
       	type : 'gantt',
       	label : 'Frequency', 
       	description : 'Shows how long ago and how often certain events occur.',
+      	thumbnail : cacheBuster.rewrite('/img/widgets/gantt.png'),
       	settings : { field : 'tag', order : 'max', limit : 10 }
       },
 	  	{
       	type : 'polar',
       	label : 'Polar Chart', 
       	description : 'Plots values by month of year, day of week, or hour of day.',
+      	thumbnail : cacheBuster.rewrite('/img/widgets/polar.png'),
       	settings : { interval : 'day_of_week', value_field : 'timestamp' }
       },
 	  	{
       	type : 'scatterplot',
       	label : 'Scatter Plot', 
-      	description : 'Correlates the values in two different fields.',
+      	description : 'Correlates values from two fields.',
+      	thumbnail : cacheBuster.rewrite('/img/widgets/scatterplot.png'),
       	settings : { field_x : 'count', field_y : 'count' }
       }
 	  ];
 		$scope.init = function(placement) {
-			$scope.template = null;
 			$scope.placement = placement;
 		};
-		$scope.add = function() {
+		$scope.add = function(template) {
 			var settings = {
 				'id' : random.id(),
-				'type' : $scope.template.type,
-				'label' : $scope.template.label,
+				'type' : template.type,
+				'label' : template.label,
 				'placement' : $scope.placement
 			};
-			$.extend(true, settings, $scope.template.settings);
+			$.extend(true, settings, template.settings);
 			$scope.addWidget(settings);
 			$timeout(function() {
 				$('#' + settings.id + '-tab').tab('show');

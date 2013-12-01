@@ -188,15 +188,17 @@
 					{{message}}
 				</div>
 				<div class="control-group">
-					<label for="template" class="control-label">Type</label>
-					<div class="controls">
-						<select name="template" data-ng-model="template" data-ng-options="t.label for t in findTemplates()" required></select>
-						<p class="help-block">{{template.description}}</p>
-					</div>
+					<ul class="thumbnails">
+						<li class="span4" data-ng-repeat="template in findTemplates()">
+							<div class="thumbnail" style="cursor:pointer;" data-ng-click="add(template)">
+								<img width="300" height="200" data-ng-src="{{template.thumbnail}}" alt="Preview"/>
+								<p><strong>{{template.label}}:</strong> {{template.description}}</p>
+							</div>
+						</li>
+					</ul>
 				</div>
 			</div>
 			<div class="modal-footer">
-				<button class="btn btn-primary" data-ng-click="add()" data-ng-disabled="!form.$valid">Add</button>
 				<button class="btn" data-dismiss="modal">Cancel</button>
 			</div>
 		</form>
