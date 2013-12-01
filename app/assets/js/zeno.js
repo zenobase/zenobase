@@ -1023,8 +1023,7 @@
       	label : 'Map', 
       	description : 'Shows event locations on a map.',
       	thumbnail : cacheBuster.rewrite('/img/widgets/map.png'),
-      	settings : { },
-      	singleton : true
+      	settings : { }
       },
       {
       	type : 'ratings',
