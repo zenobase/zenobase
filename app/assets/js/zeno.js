@@ -2791,6 +2791,9 @@
 			swap($scope.settings, 'field_x', 'field_y');
 			swap($scope.settings, 'unit_x', 'unit_y');
 			swap($scope.settings, 'filter_x', 'filter_y');
+			if ($scope.settings.lag) {
+				$scope.settings.lag = -$scope.settings.lag; 
+			}
 		};
 
 		$scope.$watch('settings.field_x', function() {
