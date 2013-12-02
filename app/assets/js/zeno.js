@@ -237,6 +237,16 @@
 	}]);
 
 	app.factory('Alert', function() {
+	
+		var alert;
+
+		$(document).keyup(function(e) {
+			if (e.keyCode === 27) {
+				if (alert) {
+					alert.clear();
+				}
+			}
+		});
 
 		var Alert = function() {
 			this.clear();
@@ -247,6 +257,7 @@
 			this.level = level;
 			this.undo = undo;
 			this.onClick = onClick;
+			alert = this;
 		};
 
 		Alert.prototype.clear = function() {
