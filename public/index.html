@@ -182,8 +182,17 @@
 				.script("/js/zeno-39af5bc3.min.js").wait(function() {
 					angular.bootstrap(document.documentElement, ['ZenoModule']);
 				})
-				.script("//google-analytics.com/ga.js");
-		</script>
+				.script("//google-analytics.com/ga.js")
+				.script("//widget.uservoice.com/AsJzuiXVFfxoIEqdMJnow.js").wait(function() {
+					UserVoice = window.UserVoice || [];
+					UserVoice.push(['set', {
+					  accent_color: '#448dd6',
+					  trigger_color: 'white',
+					  trigger_background_color: 'rgba(46, 49, 51, 0.6)'
+					}]);
+					UserVoice.push(['addTrigger', { mode: 'contact', trigger_position: 'bottom-right' }]);
+				});
+	</script>
 
 	</body>
 
