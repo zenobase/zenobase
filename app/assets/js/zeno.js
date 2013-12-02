@@ -1042,7 +1042,7 @@
       {
       	type : 'scoreboard',
       	label : 'Scoreboard', 
-      	description : 'Statistics for the values in a field',
+      	description : 'Statistics for the values in a field.',
       	thumbnail : cacheBuster.rewrite('/img/widgets/scoreboard.png'),
       	settings : { key_field : 'author', value_field : 'distance', unit : 'mi', order : 'total', limit : 10 }
       },                    

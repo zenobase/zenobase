@@ -1,32 +1,73 @@
 <div id="home-view" class="container-fluid">
 
 	<div class="hero-unit" data-ng-controller="HomeController">
-		<h1>What do you want to track today?</h1>
-		<br/>
-		<p><img src="/img/timeline.png"/></p>
-		<br/>
-		<p>
-			Track and correlate <a href="https://zenobase.com/#/buckets/u07qih0a27/">places you've been</a>,
-			<a href="https://zenobase.com/#/buckets/ma1vat5aoq/">movies you've seen</a>,
-			health, fitness, or just about anything else.
-		</p>
-		<p>
-			Pull in data from services like 
-			<a href="https://www.fitbit.com/">Fitbit</a>,
-			<a href="http://www.bodymedia.com/">BodyMedia</a>,
-			<a href="http://withings.com/">Withings</a>,
-			<a href="https://foursquare.com/">Foursquare</a>,
-			<a href="http://runkeeper.com/">RunKeeper</a> and 
-			<a href="http://www.netatmo.com/">Netatmo</a>, 
-			or record data by hand or through our <a href="/#/api/">API</a>.
-		</p>
-		<br/>
+		<h1 style="text-shadow: white;">What do you want to track today?</h1>
+		<p class="lead">Data storage, aggregation and visualization for personal time-series data.</p>
 		<p data-ng-hide="user">
 			<a id="new-user-link" class="btn btn-large btn-primary" data-ng-click="start()">Get Started &raquo;</a>
 		</p>
 		<p data-ng-show="user">
 			<a id="existing-user-link" class="btn btn-large btn-primary" data-ng-href="/#/users/{{user.getName()}}">My Data &raquo;</a>
 		</p>
+	</div>
+	
+	&nbsp;
+	
+	<div>
+		<ul class="thumbnails" style="text-align:center;">
+			<li class="span6">
+				<div class="thumbnail">
+					<a href="https://zenobase.com/#/buckets/u07qih0a27/">
+						<img width="300" height="200" src="img/home/dashboard-1.png" alt=""/>
+					</a>
+					<h3>Explore</h3>
+					<p>Explore your data in an interactive dashboard.</p>
+				</div>
+			</li>
+			<li class="span6">
+				<div class="thumbnail">
+					<img width="300" height="200" src="img/home/dashboard-2.png" alt=""/>
+					<h3>Correlate</h3>
+					<p>Filter and correlate your data.</p>
+				</div>
+			</li>
+			<li class="span6">
+				<div class="thumbnail">
+					<img width="300" height="200" src="img/home/gadgets.png" alt=""/>
+					<h3>Connect</h3>
+					<p>
+						Import data from  
+						<a href="https://www.fitbit.com/">Fitbit</a>,
+						<a href="http://www.bodymedia.com/">BodyMedia</a>,
+						<a href="http://withings.com/">Withings</a>,
+						<a href="https://foursquare.com/">Foursquare</a>,
+						<a href="http://runkeeper.com/">RunKeeper</a> and 
+						<a href="http://www.netatmo.com/">Netatmo</a>.
+					</p>
+				</div>
+			</li>
+			<li class="span6">
+				<div class="thumbnail">
+					<img width="300" height="200" src="img/home/events.png" alt=""/>
+					<h3>Extend</h3>
+					<p>Choose from dozens of data types when adding custom data.</p>
+				</div>
+			</li>
+			<li class="span6">
+				<div class="thumbnail">
+					<img width="300" height="200" src="img/home/api.png" alt=""/>
+					<h3>Automate</h3>
+					<p>Store and retrieve data through our <a href="/#/api/">API</a>.</p>
+				</div>
+			</li>
+			<li class="span6">
+				<div class="thumbnail">
+					<img width="300" height="200" src="img/home/query.png" alt=""/>
+					<h3>Share</h3>
+					<p>Fine-grained control over what data is shared, and how soon.</p>
+				</div>
+			</li>
+		</ul>
 	</div>
 
 </div>

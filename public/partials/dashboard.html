@@ -189,10 +189,11 @@
 				</div>
 				<div class="control-group">
 					<ul class="thumbnails">
-						<li class="span4" data-ng-repeat="template in findTemplates()">
+						<li class="span2" data-ng-repeat="template in findTemplates()">
 							<div class="thumbnail" style="cursor:pointer;" data-ng-click="add(template)">
+								<p><strong>{{template.label}}</strong></p>
 								<img width="300" height="200" data-ng-src="{{template.thumbnail}}" alt="Preview"/>
-								<p><strong>{{template.label}}:</strong> {{template.description}}</p>
+								<p>{{template.description}}</p>
 							</div>
 						</li>
 					</ul>
