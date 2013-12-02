@@ -2791,6 +2791,18 @@
 			return isUnitValid($scope.settings.field_x, $scope.settings.unit_x)
 				&& isUnitValid($scope.settings.field_y, $scope.settings.unit_y);
 		};
+		$scope.swap = function() {
+			function swap(object, p1, p2) {
+				var tmp = object[p1];
+				object[p1] = object[p2];
+				object[p2] = tmp;
+			}
+			swap($scope.settings, 'label_x', 'label_y');
+			swap($scope.settings, 'statistic_x', 'statistic_y');
+			swap($scope.settings, 'field_x', 'field_y');
+			swap($scope.settings, 'unit_x', 'unit_y');
+			swap($scope.settings, 'filter_x', 'filter_y');
+		};
 
 		$scope.$watch('settings.field_x', function() {
 			if (!isUnitValid($scope.settings.field_x, $scope.settings.unit_x)) {

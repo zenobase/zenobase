@@ -24,46 +24,53 @@
 						<input name="label" type="text" required min="1" max="20" data-ng-model="settings.label"/>
 					</div>
 				</div>
-				<div class="control-group">
-					<label class="control-label" for="labelX">Title (x)</label>
-					<div class="controls form-horizontal">
-						<input name="labelX" type="text" data-ng-model="settings.label_x" placeholder="e.g. x"/>
+				<blockquote style="margin-bottom: 0">
+					<div class="control-group">
+						<label class="control-label" for="labelX">X Axis</label>
+						<div class="controls form-horizontal">
+							<input name="labelX" type="text" data-ng-model="settings.label_x" placeholder="Title"/>
+						</div>
 					</div>
-				</div>
-				<div class="control-group">
-					<label class="control-label" for="fieldX">Values (x)</label>
-					<div class="controls form-horizontal">
-						<select name="statisticX" class="input-small" required data-ng-model="settings.statistic_x" data-ng-options="value for value in getStatistics(settings.field)"></select>
-						of <select name="fieldX" class="input-medium" data-ng-model="settings.field_x" data-ng-options="field.name as field.name for field in getFields()"></select>
-						<span data-ng-show="getUnits(settings.field_x).length"> in <select name="unitX" class="input-small" data-ng-model="settings.unit_x" data-ng-options="unit for unit in getUnits(settings.field_x)"></select></span>
+					<div class="control-group">
+						<label class="control-label" for="fieldX">Values</label>
+						<div class="controls form-horizontal">
+							<select name="statisticX" class="input-small" required data-ng-model="settings.statistic_x" data-ng-options="value for value in getStatistics(settings.field)"></select>
+							of <select name="fieldX" class="input-medium" data-ng-model="settings.field_x" data-ng-options="field.name as field.name for field in getFields()"></select>
+							<span data-ng-show="getUnits(settings.field_x).length"> in <select name="unitX" class="input-small" data-ng-model="settings.unit_x" data-ng-options="unit for unit in getUnits(settings.field_x)"></select></span>
+						</div>
 					</div>
-				</div>
-				<div class="control-group">
-					<label class="control-label" for="filterX">Filter (x)</label>
-					<div class="controls form-horizontal">
-						<input name="filterX" type="text" data-ng-model="settings.filter_x" placeholder="e.g. tag:xyz"/>
+					<div class="control-group">
+						<label class="control-label" for="filterX">Filter</label>
+						<div class="controls form-horizontal">
+							<input name="filterX" type="text" data-ng-model="settings.filter_x" placeholder="e.g. tag:xyz"/>
+						</div>
 					</div>
-				</div>
+				</blockquote>
 				<div class="control-group">
-					<label class="control-label form-horizontal"" for="labelY">Title (y)</label>
-					<div class="controls form-horizontal">
-						<input name="labelY" type="text" data-ng-model="settings.label_y" placeholder="e.g. y"/>
-					</div>
+					<a title="Swap X and Y" data-ng-click="swap()"><i class="icon-random"></i></a>
 				</div>
-				<div class="control-group">
-					<label class="control-label" for="fieldY">Values (y)</label>
-					<div class="controls form-horizontal">
-						<select name="statisticY" class="input-small" required data-ng-model="settings.statistic_y" data-ng-options="value for value in getStatistics(settings.field)"></select>
-						of <select name="fieldY" class="input-medium" data-ng-model="settings.field_y" data-ng-options="field.name as field.name for field in getFields()"></select>
-						<span data-ng-show="getUnits(settings.field_y).length"> in <select name="unitY" class="input-small" data-ng-model="settings.unit_y" data-ng-options="unit for unit in getUnits(settings.field_y)"></select></span>
+				<blockquote>
+					<div class="control-group">
+						<label class="control-label form-horizontal" for="labelY">Y Axis</label>
+						<div class="controls form-horizontal">
+							<input name="labelY" type="text" data-ng-model="settings.label_y" placeholder="Title"/>
+						</div>
 					</div>
-				</div>
-				<div class="control-group">
-					<label class="control-label" for="filterY">Filter (y)</label>
-					<div class="controls form-horizontal">
-						<input name="filterY" type="text" data-ng-model="settings.filter_y" placeholder="e.g. tag:xyz"/>
+					<div class="control-group">
+						<label class="control-label" for="fieldY">Values</label>
+						<div class="controls form-horizontal">
+							<select name="statisticY" class="input-small" required data-ng-model="settings.statistic_y" data-ng-options="value for value in getStatistics(settings.field)"></select>
+							of <select name="fieldY" class="input-medium" data-ng-model="settings.field_y" data-ng-options="field.name as field.name for field in getFields()"></select>
+							<span data-ng-show="getUnits(settings.field_y).length"> in <select name="unitY" class="input-small" data-ng-model="settings.unit_y" data-ng-options="unit for unit in getUnits(settings.field_y)"></select></span>
+						</div>
 					</div>
-				</div>
+					<div class="control-group">
+						<label class="control-label" for="filterY">Filter</label>
+						<div class="controls form-horizontal">
+							<input name="filterY" type="text" data-ng-model="settings.filter_y" placeholder="e.g. tag:xyz"/>
+						</div>
+					</div>
+				</blockquote>
 				<div class="control-group">
 					<label class="control-label" for="interval">Interval</label>
 					<div class="controls">
