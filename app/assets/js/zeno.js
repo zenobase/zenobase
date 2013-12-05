@@ -1256,9 +1256,6 @@
 				$scope.$broadcast('result', response);
 			});
 		};
-		$scope.params = function() {
-			return null;
-		};
 		$scope.getExportUrl = function() {
 			var url = '/buckets/' + $scope.bucketId + '/';
 			var params = {};
