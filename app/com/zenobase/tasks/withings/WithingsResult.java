@@ -91,6 +91,6 @@ class WithingsResult {
 	}
 
 	private static DateTime getDateTime(JsonNode node, DateTimeZone timezone) {
-		return new DateTime(node.path("date").longValue() * 1000, DateTimeZone.UTC).toDateTime(timezone);
+		return new DateTime(node.path("date").longValue() * 1000, timezone);
 	}
 }
