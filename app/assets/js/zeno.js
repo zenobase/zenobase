@@ -1746,6 +1746,7 @@
 	
 		$scope.init = function() {
 			$scope.intervals = null;
+			$scope.intervalsB = null;
 		};
 		$scope.params = function() {
 			return { 
@@ -1759,24 +1760,29 @@
 		};
 		$scope.refresh = function(options, settings) {
 			$scope.init();
-			$scope.search([ $.extend($scope.params(), options, settings) ], function(result) {
+			$scope.search([ $.extend($scope.params(), options, settings) ], function(result, resultB) {
 				$.extend($scope, options)
 				$.extend($scope.settings, settings)
-				$scope.update(null, result);
+				$scope.update(null, result, resultB);
 			});
 		};
-		$scope.update = function(event, result) {
+		$scope.update = function(event, result, resultB) {
 			$scope.intervals = result[$scope.settings.id] || [];
+			$scope.intervalsB = resultB && resultB[$scope.settings.id] || [];
 			$timeout($scope.draw, 0); // delay for correct width
 		};
 		$scope.draw = function() {
 			if ($scope.intervals && $scope.intervals.length) {
 				var field = Field.find($scope.settings.field);
+				var height = Math.max($scope.intervals.length * 20, 150);
+				if ($scope.intervalsB && $scope.intervalsB.length) {
+					height *= 2;
+				}
 				var options = {
 					chart : {
 						type : 'bar',
 						zoomType : 'x',
-						height : Math.max($scope.intervals.length * 20, 150),
+						height : height,
 						animation : false,
 						events : {
 							selection : function(event) {
@@ -1810,10 +1816,11 @@
 					},
 					series : [{
 						name : 'count',
+						color : 'rgba(47, 126, 216, 0.4)',
 						data : []
 					}],
 					tooltip : {
-						shared : true,
+						shared : false,
 						hideDelay : 0,
 						crosshairs : false,
 						headerFormat : '<b>{point.key}</b>: ',
@@ -1823,8 +1830,7 @@
 						series : {
 							pointWidth : 10,
 							borderRadius : 5,
-							color : '#aaa',
-							borderWidth : 2,
+							borderWidth : 0,
 							cursor : 'pointer',
 							animation : false,
 							events : {
@@ -1849,6 +1855,17 @@
 					options.xAxis.categories.push(field.toText(interval.from) + '..' + field.toText(interval.to));
 					options.series[0].data.push(interval.count);
 				});
+				if ($scope.intervalsB && $scope.intervalsB.length) {
+					options.series.push({
+						name : 'count',
+						color : 'rgba(204, 102, 0, 0.4)',
+						data : []
+					});
+					$.each($scope.intervalsB, function(i, interval) {
+						options.xAxis.categories.push(field.toText(interval.from) + '..' + field.toText(interval.to));
+						options.series[1].data.push(interval.count);
+					});
+				}
 				$scope.chartOptions = options;
 			}
 		}
@@ -2132,7 +2149,7 @@
 						type : type,
 						data : [],
 						color: 'rgba(47, 126, 216, 0.4)',
-						lineColor: Highcharts.getOptions().colors[0],
+						lineColor: 'rgb(47, 126, 216)',
 						marker : {
 							symbol : 'circle',
 							fillColor : 'white',
@@ -2195,6 +2212,7 @@
 						type : type,
 						data : [],
 						color: 'rgba(204, 102, 0, 0.4)',
+						lineColor : 'rgb(204, 102, 0)',
 						marker : {
 							symbol : 'circle',
 							fillColor : 'white',
