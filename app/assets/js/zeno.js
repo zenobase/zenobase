@@ -2124,7 +2124,7 @@
 					},
 					tooltip : {
 						crosshairs : false,
-						shared : true,
+						shared : false,
 						hideDelay : 0
 					},
 					series : [{
@@ -2291,6 +2291,7 @@
 
 		$scope.init = function() {
 			$scope.times = null;
+			$scope.timesB;
 		};
 		$scope.params = function() {
 			return { 
@@ -2305,14 +2306,15 @@
 		};
 		$scope.refresh = function(options, settings) {
 			$scope.init();
-			$scope.search([ $.extend($scope.params(), options, settings) ], function(result) {
+			$scope.search([ $.extend($scope.params(), options, settings) ], function(result, resultB) {
 				$.extend($scope, options)
 				$.extend($scope.settings, settings)
-				$scope.update(null, result);
+				$scope.update(null, result, resultB);
 			});
 		};
-		$scope.update = function(event, result) {
+		$scope.update = function(event, result, resultB) {
 			$scope.times = result[$scope.settings.id] || [];
+			$scope.timesB = resultB && resultB[$scope.settings.id] || [];
 			$timeout($scope.draw, 0); // delay for correct width
 		};
 		$scope.draw = function() {
@@ -2335,7 +2337,7 @@
 						}
 					},
 					tooltip : {
-						shared : true,
+						shared : false,
 						hideDelay : 0,
 						formatter : function() {
 							return '<b>' + this.x + '</b>: ' + (field.toText(this.y) || this.y) + ($scope.settings.unit || '');
@@ -2347,7 +2349,7 @@
 					}],
 					plotOptions : {
 						series : {
-							color : 'rgba(47,126,216,0.3)',
+							color : 'rgba(47,126,216,0.4)',
 							animation : false,
 							pointPlacement: 'on',
 							cursor : 'pointer',
@@ -2379,6 +2381,18 @@
 					options.xAxis.categories.push(time.label);
 					options.series[0].data.push(value !== undefined ? field.toNumber(value) : 0);
 				});
+				if ($scope.timesB && $scope.timesB.length) {
+					options.series.push({
+						name : $scope.settings.statistic || 'count',
+						data : [],
+						color: 'rgba(204,102,0,0.4)'
+					});
+					$.each($scope.timesB, function(i, time) {
+						var value = time[$scope.settings.statistic || 'count'];
+						options.xAxis.categories.push(time.label);
+						options.series[1].data.push(value !== undefined ? field.toNumber(value) : 0);
+					});
+				}
 				field.formatAxis(options.yAxis);
 				$scope.chartOptions = options;				
 			}
