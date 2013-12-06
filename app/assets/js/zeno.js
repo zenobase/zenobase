@@ -2131,13 +2131,13 @@
 						name : $scope.settings.statistic || 'count',
 						type : type,
 						data : [],
-						color: '#aaa',
+						color: 'rgba(47, 126, 216, 0.4)',
 						lineColor: Highcharts.getOptions().colors[0],
 						marker : {
 							symbol : 'circle',
 							fillColor : 'white',
 							lineWidth : 2,
-							lineColor: Highcharts.getOptions().colors[0]
+							lineColor: 'rgb(47, 126, 216)'
 						},
 						borderRadius : 5,
 						borderWidth : 2,
@@ -2148,8 +2148,7 @@
 						type : 'arearange',
 						lineWidth : 0,
 						linkedTo : ':previous',
-						color: Highcharts.getOptions().colors[0],
-						fillOpacity: 0.3,
+						fillColor : 'rgba(47, 126, 216, 0.4)',
 						zIndex: 0
 					}],
 					plotOptions : {
@@ -2195,12 +2194,12 @@
 						name : $scope.settings.statistic || 'count',
 						type : type,
 						data : [],
-						color: '#CC6600',
+						color: 'rgba(204, 102, 0, 0.4)',
 						marker : {
 							symbol : 'circle',
 							fillColor : 'white',
 							lineWidth : 2,
-							lineColor: '#CC6600'
+							lineColor: 'rgb(204, 102, 0)'
 						},
 						borderRadius : 5,
 						borderWidth : 2,
@@ -2212,8 +2211,7 @@
 						type : 'arearange',
 						lineWidth : 0,
 						linkedTo : ':previous',
-						color: '#CC6600',
-						fillOpacity: 0.3,
+						fillColor : 'rgba(204, 102, 0, 0.4)',
 						zIndex: 0
 					});
 					$.each($scope.timesB, function(i, time) {
@@ -2349,7 +2347,7 @@
 					}],
 					plotOptions : {
 						series : {
-							color : 'rgba(47,126,216,0.4)',
+							color : 'rgba(47, 126, 216, 0.4)',
 							animation : false,
 							pointPlacement: 'on',
 							cursor : 'pointer',
@@ -2385,7 +2383,7 @@
 					options.series.push({
 						name : $scope.settings.statistic || 'count',
 						data : [],
-						color: 'rgba(204,102,0,0.4)'
+						color: 'rgba(204, 102, 0, 0.4)'
 					});
 					$.each($scope.timesB, function(i, time) {
 						var value = time[$scope.settings.statistic || 'count'];
