@@ -25,7 +25,8 @@
 				<span id="event-count" class="badge badge-success page-title-decoration" title="Events" data-ng-show="total >= 0">{{total}}</span>
 				<span class="badge badge-important page-title-decoration" title="Couldn't load any events" data-ng-show="total < 0">0</span>
 				<a class="page-title-decoration" data-ng-click="run()" title="Refresh"><i class="icon-refresh"></i></a>
-				<a id="add-event-action" class="page-title-decoration" title="Create Event..." data-ng-click="openDialog('edit-event-dialog', {})" data-ng-show="editable && !bucket.isVirtual()"><i class="icon-plus"></i></a>
+				<a class="page-title-decoration" data-ng-click="openDialog('save-as-view-dialog')" title="Create View..." data-ng-hide="bucket.isVirtual()"><i class="icon-share"></i></a>
+				<a id="add-event-action" class="page-title-decoration" data-ng-click="openDialog('edit-event-dialog', {})" title="Create Event..." data-ng-show="editable && !bucket.isVirtual()"><i class="icon-plus"></i></a>
 			</p>
 
 			<div class="pull-right page-title dropdown" data-ng-show="editable">
@@ -47,11 +48,14 @@
 				</ul>
 			</div>
 
-			<ul class="nav nav-pills" data-ng-show="constraints">
+			<ul class="nav nav-pills pull-left" data-ng-show="constraints.length || constraintsB.length">
 				<li class="active" data-ng-repeat="constraint in constraints">
 					<a data-ng-click="removeConstraint(constraint)" title="{{constraint.toString()}}"><i class="icon-minus icon-white" data-ng-show="constraint.negated"></i><i class="icon-white" data-ng-class="getConstraintIcon(constraint)"></i> {{constraint.value}} <i class="icon-remove icon-white"></i></a>
 				</li>
-				<li><a data-ng-click="openDialog('save-as-view-dialog')" data-ng-hide="bucket.isVirtual()">Save...</a></li>
+				<li><a title="A/B Comparison" data-ng-click="swapAB()"><i class="icon-adjust"></i></a></li>
+				<li class="active active-b" data-ng-repeat="constraint in constraintsB">
+					<a data-ng-click="removeConstraintB(constraint)" title="{{constraint.toString()}}"><i class="icon-minus icon-white" data-ng-show="constraint.negated"></i><i class="icon-white" data-ng-class="getConstraintIcon(constraint)"></i> {{constraint.value}} <i class="icon-remove icon-white"></i></a>
+				</li>
 			</ul>
 		</div>
 

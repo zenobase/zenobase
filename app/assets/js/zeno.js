@@ -1157,7 +1157,7 @@
 		return Bucket;
 	}]);
 
-	app.controller('DashboardController', ['$scope', '$http', '$route', '$routeParams', '$location', '$window', 'Bucket', 'Field', 'Constraint', 'tracker', 'delay', 'token', 'taskRunner', function($scope, $http, $route, $routeParams, $location, $window, Bucket, Field, Constraint, tracker, delay, token, taskRunner) {
+	app.controller('DashboardController', ['$scope', '$http', '$route', '$routeParams', '$location', '$q', '$window', 'Bucket', 'Field', 'Constraint', 'tracker', 'delay', 'token', 'taskRunner', function($scope, $http, $route, $routeParams, $location, $q, $window, Bucket, Field, Constraint, tracker, delay, token, taskRunner) {
 
 		function updateEditable() {
 			$scope.editable = $scope.user && $scope.bucket.canEdit($scope.user['@id']);
@@ -1179,6 +1179,7 @@
 			});
 
 		$scope.constraints = [];
+		$scope.constraintsB = [];
 		$scope.widgets = [];
 
 		var layout = {};
@@ -1233,27 +1234,33 @@
 			}
 		};
 	
+		function search(q, facets) {
+			return $http.get('/buckets/' + $scope.bucketId + '/?' + $.param({ 'q' : q, 'facet' : facets }, true))
+		}
 		$scope.search = function(params, callback) {
-			var q = $scope.constraints;
 			var facet = $.map(params, function(param) {
 				return $.map(param, function(value, key) { return key + ':' + value }).join(',');
 			});
 			var t0 = new Date().getTime();
-			$http.get('/buckets/' + $scope.bucketId + '/?' + $.param({ 'q' : q, 'facet' : facet }, true))
-				.success(function(response) { 
-					var t1 = new Date().getTime();
-					callback(response);
-					tracker.timing('action', 'refresh', t1 - t0, $scope.bucketId);
-				})
-				.error(function(response) { callback({ total : -1 }) });
+			var requests = [ search($scope.constraints, facet) ];
+			if ($scope.constraintsB.length > 0) {
+				requests.push(search($scope.constraintsB, facet));
+			}
+			$q.all(requests).then(function(responses) {
+				var t1 = new Date().getTime();
+				callback(responses[0].data, responses.length > 1 ? responses[1].data : null);
+				tracker.timing('action', 'refresh', t1 - t0, $scope.bucketId);
+			}, function(e) {
+				callback({ total : -1 });
+			});
 		};
 		$scope.refresh = function() {
 			$scope.updateConstraints();
 			var params = $.map($scope.widgets, function(widget) { return widget.params(); });
 			$scope.$broadcast('refresh');
-			$scope.search(params, function(response) {
+			$scope.search(params, function(response, responseB) {
 				$scope.total = response.total;
-				$scope.$broadcast('result', response);
+				$scope.$broadcast('result', response, responseB);
 			});
 		};
 		$scope.getExportUrl = function() {
@@ -1301,12 +1308,16 @@
 			$scope.run();
 		});
 
-		$scope.updateConstraints = function() {
-			var q = $location.search()['q'];
-			if (q && !$.isArray(q)) {
-				q = q.split('__'); // TODO Deprecate '__', unused since angularjs 1.2.
+		function parseConstraints(value) {
+			if (value && !$.isArray(value)) {
+				value = value.split('|');
 			}
-			$scope.constraints = q ? $.map(q, function(s) { return Constraint.parse(s) }) : [ ];
+			return value ? $.map(value, function(s) { return Constraint.parse(s) }) : [];
+			
+		}
+		$scope.updateConstraints = function() {
+			$scope.constraints = parseConstraints($location.search()['q']);
+			$scope.constraintsB = parseConstraints($location.search()['r']);
 		};
 		$scope.getConstraints = function(field) {
 			return $.grep($scope.constraints, function(constraint) {
@@ -1327,6 +1338,16 @@
 				? $.map(values, function(value) { return value.toString(); })
 				: null;
 		}
+		function params() {
+			var params = {};
+			if ($scope.constraints.length > 0) {
+				params.q = mapToString($scope.constraints);
+			}
+			if ($scope.constraintsB.length > 0) {
+				params.r = mapToString($scope.constraintsB);
+			}
+			return params;
+		}
 		$scope.addConstraint = function(field, value, replace) {
 			var constraint = new Constraint(field, value);
 			if (containsConstraint(constraint)) {
@@ -1338,13 +1359,19 @@
 				});
 			}
 			$scope.constraints.push(constraint);
-			$location.search( { 'q' : mapToString($scope.constraints) });
+			$location.search(params());
 		};
 		$scope.removeConstraint = function(constraint) {
 			$scope.constraints = $.grep($scope.constraints, function(c) {
 				return !angular.equals(c, constraint);
 			});
-			$location.search($scope.constraints.length > 0 ? { 'q' : mapToString($scope.constraints) } : {});
+			$location.search(params());
+		};
+		$scope.removeConstraintB = function(constraint) {
+			$scope.constraintsB = $.grep($scope.constraintsB, function(c) {
+				return !angular.equals(c, constraint);
+			});
+			$location.search(params());
 		};
 		$scope.getConstraintIcon = function(constraint) {
 			var fieldName = constraint.field;
@@ -1354,6 +1381,12 @@
 			}
 			var field = Field.find(fieldName);
 			return field ? field.icon : 'icon-ban-circle';
+		};
+		$scope.swapAB = function() {
+			var tmp = $scope.constraints;
+			$scope.constraints = $scope.constraintsB;
+			$scope.constraintsB = tmp;
+			$location.search(params());
 		};
 
 		$scope.dirty = false;
@@ -1999,6 +2032,7 @@
 
 		$scope.init = function() {
 			$scope.times = null;
+			$scope.timesB = null;
 		};
 		$scope.params = function() {
 			$scope.interval = Interval.valueOf($scope.settings.interval) || Interval.VALUES[1];
@@ -2028,12 +2062,13 @@
 				$scope.update(null, result);
 			});
 		};
-		$scope.update = function(event, result) {
+		$scope.update = function(event, result, resultB) {
 			$scope.times = result[$scope.settings.id] || [];
+			$scope.timesB = resultB && resultB[$scope.settings.id] || [];
 			$timeout($scope.draw, 1); // delay for correct width
 		};
 		$scope.draw = function() {
-			if ($scope.times && $scope.times.length) {
+			if ($scope.times && $scope.times.length || $scope.timesB && $scope.timesB.length) {
 				var type = $scope.settings.statistic === 'count' || $scope.settings.statistic === 'sum' ? 'column' : 'line';
 				var field = Field.find($scope.settings.field);
 				var options = {
@@ -2096,6 +2131,16 @@
 						name : $scope.settings.statistic || 'count',
 						type : type,
 						data : [],
+						color: '#aaa',
+						lineColor: Highcharts.getOptions().colors[0],
+						marker : {
+							symbol : 'circle',
+							fillColor : 'white',
+							lineWidth : 2,
+							lineColor: Highcharts.getOptions().colors[0]
+						},
+						borderRadius : 5,
+						borderWidth : 2,
 						zIndex: 1
 					}, {
 						name : 'range',
@@ -2113,18 +2158,6 @@
 							tooltip : {
 								headerFormat : '<b>{point.key}:</b> ',
 								pointFormat : "{point.tooltip}"
-							}
-						},
-						column : {
-							color : '#aaa',
-							borderRadius : 5,
-							borderWidth : 2
-						},
-						line : {
-							marker : {
-								fillColor : 'white',
-								lineWidth : 2,
-								lineColor: Highcharts.getOptions().colors[0]
 							}
 						}
 					},
@@ -2157,6 +2190,42 @@
 						}
 					}
 				});
+				if ($scope.timesB && $scope.timesB.length) {
+					options.series.push({
+						name : $scope.settings.statistic || 'count',
+						type : type,
+						data : [],
+						color: '#CC6600',
+						marker : {
+							symbol : 'circle',
+							fillColor : 'white',
+							lineWidth : 2,
+							lineColor: '#CC6600'
+						},
+						borderRadius : 5,
+						borderWidth : 2,
+						zIndex: 1
+					});
+					options.series.push({
+						name : 'range',
+						data : [],
+						type : 'arearange',
+						lineWidth : 0,
+						linkedTo : ':previous',
+						color: '#CC6600',
+						fillOpacity: 0.3,
+						zIndex: 0
+					});
+					$.each($scope.timesB, function(i, time) {
+						var value = time[$scope.settings.statistic || 'count'];
+						if (value !== undefined) {
+							options.series[2].data.push({ x : time.time, y : field.toNumber(value), filter : time.label, tooltip : field.toText(value) });
+							if ($scope.settings.statistic === 'avg') {
+								options.series[3].data.push([ time.time, field.toNumber(time['min']), field.toNumber(time['max']) ]);
+							}
+						}
+					});
+				}
 				field.formatAxis(options.yAxis);
 				$scope.chartOptions = options;
 			}
