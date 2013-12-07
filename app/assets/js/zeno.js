@@ -2676,14 +2676,15 @@
 		};
 		$scope.refresh = function(options, settings) {
 			$scope.init();
-			$scope.search([ $.extend($scope.params(), options, settings) ], function(result) {
+			$scope.search([ $.extend($scope.params(), options, settings) ], function(result, resultB) {
 				$.extend($scope, options)
 				$.extend($scope.settings, settings)
-				$scope.update(null, result);
+				$scope.update(null, result, resultB);
 			});
 		};
-		$scope.update = function(event, result) {
+		$scope.update = function(event, result, resultB) {
 			$scope.data = result[$scope.settings.id] || [];
+			$scope.dataB = resultB && resultB[$scope.settings.id] || [];
 			$timeout($scope.draw, 0); // delay for correct width
 		};
 		$scope.draw = function() {
@@ -2716,7 +2717,7 @@
 						gridLineWidth : 0
 					},
 					tooltip : {
-						crosshairs : [ true, true ],
+						crosshairs : false,
 						shared : false,
 						hideDelay : 0,
 						formatter : function() {
@@ -2730,7 +2731,8 @@
 						color : 'rgba(119, 152, 191, 0.5)',
 						allowPointSelect : true,
 						marker : {
-							radius : 5
+							radius : 5,
+							symbol : 'circle'
 						}
 					}],
 					plotOptions : {
@@ -2746,12 +2748,34 @@
 						enabled: false
 					}
 				};
+				if ($scope.dataB && $scope.dataB.length) {
+					options.series.push({
+						data : $scope.dataB,
+						animation : false,
+						color : 'rgba(204, 102, 0, 0.5)',
+						allowPointSelect : true,
+						marker : {
+							radius : 5,
+							symbol : 'circle'
+						}
+					});
+				}
 				if ($scope.data.length > 1 && $scope.settings.regression == 'linear') {
-					var regression = statistics.regression($scope.data);
 					options.series.push({
 						type : 'line',
-						data : regression.data,
-						color : 'rgba(119, 152, 191, 1.0)',
+						data : statistics.regression($scope.data).data,
+						color : 'rgb(119, 152, 191)',
+						enableMouseTracking : false,
+						marker : {
+							enabled : false
+						}
+					});
+				}
+				if ($scope.dataB && $scope.dataB.length > 1 && $scope.settings.regression == 'linear') {
+					options.series.push({
+						type : 'line',
+						data : statistics.regression($scope.dataB).data,
+						color : 'rgb(204, 102, 0)',
 						enableMouseTracking : false,
 						marker : {
 							enabled : false
@@ -2760,7 +2784,7 @@
 				}
 				if ($scope.data.length > 3) {
 					var correlation = statistics.correlate($scope.data, true);
-					$scope.rChartOptions = {
+					var rChartOptions = {
 						chart : {
 							type : 'line',
 							inverted : true,
@@ -2797,11 +2821,12 @@
 							hideDelay : 0
 						},
 						series : [{
-							data : [[ correlation.r ]],
-							color : 'rgba(119, 152, 191, 1.0)',
+							data : [[ 0, correlation.r ]],
+							color : 'rgb(119, 152, 191)',
 							animation : false,
 							marker : {
-								radius : 5
+								radius : 5,
+								symbol : 'circle'
 							},
 							tooltip : {
 								headerFormat : '',
@@ -2815,9 +2840,9 @@
 							}
 						}, {
 							type : 'errorbar',
-							data : [[ correlation.lower, correlation.upper ]],
+							data : [[ 0, correlation.lower, correlation.upper ]],
 							lineWidth : 2,
-							color : 'rgba(119, 152, 191, 1.0)',
+							color : 'rgb(119, 152, 191)',
 							animation : false,
 							tooltip : {
 								headerFormat : '',
@@ -2831,6 +2856,40 @@
 							enabled : false
 						}
 					};
+					if ($scope.dataB && $scope.dataB.length > 1) {
+						var correlationB = statistics.correlate($scope.dataB, true);
+						rChartOptions.series.push({
+							data : [[ 1, correlationB.r ]],
+							color : 'rgb(204, 102, 0)',
+							animation : false,
+							marker : {
+								radius : 5,
+								symbol : 'circle'
+							},
+							tooltip : {
+								headerFormat : '',
+								pointFormat : "<b>Spearman's rho:</b> {point.y}<br/>",
+								valueDecimals : 3
+							},
+							states : {
+								hover : {
+									enabled : false
+								}
+							}
+						});
+						rChartOptions.series.push({
+							type : 'errorbar',
+							data : [[ 1, correlationB.lower, correlationB.upper ]],
+							lineWidth : 2,
+							color : 'rgb(204, 102, 0)',
+							animation : false,
+							tooltip : {
+								headerFormat : '',
+								pointFormat : '<b>95% confidence interval:</b> [' + correlation.lower.toFixed(3) + '..' + correlation.upper.toFixed(3) + ']<br/>' 
+							}
+						});
+					}
+					$scope.rChartOptions = rChartOptions;
 				}
 				if ($scope.settings.placement === 'top') {
 					options.chart.height = 150;
