@@ -2043,7 +2043,7 @@
 		return Interval;
 	});
 
-	app.controller('TimelineWidgetController', ['$scope', '$timeout', 'Field', 'Interval', function($scope, $timeout, Field, Interval) {
+	app.controller('TimelineWidgetController', ['$scope', '$timeout', 'Field', 'Interval', 'statistics', function($scope, $timeout, Field, Interval, statistics) {
 
 		$scope.keyField = 'timestamp';
 
@@ -2241,6 +2241,25 @@
 							}
 						}
 					});
+
+					
+					var a = [];
+					var b = [];
+					$.each($scope.times, function(i, time) {
+						var value = time[$scope.settings.statistic || 'count'];
+						if (value !== undefined) {
+							a.push(field.toNumber(value));
+						}
+					});
+					$.each($scope.timesB, function(i, time) {
+						var value = time[$scope.settings.statistic || 'count'];
+						if (value !== undefined) {
+							b.push(field.toNumber(value));
+						}
+					});
+					// console.log('r', statistics.effect(a, b));
+
+					
 				}
 				field.formatAxis(options.yAxis);
 				$scope.chartOptions = options;
@@ -2591,6 +2610,36 @@
 		}
 
 		/**
+		 * Computes the effect size. See http://measuredme.com/2012/09/personal-analytics-101-testing-differences-in-quantified-self-data-html/
+		 */
+		function effect(a, b) {
+			var r = rank(a.concat(b));
+			var n = r.length;
+			var ra = r.slice(0, a.length);
+			var rb = r.slice(a.length);
+			var ma = mean(ra);
+			var mb = mean(rb);
+			var sd = Math.sqrt((Math.pow(ma.deviation, 2) * (a.length - 1) + Math.pow(mb.deviation, 2) * (b.length - 1)) / (n - 2));
+			var g = ((ma.mean - mb.mean) / sd) * ((n - 3) / (n - 2.25)) * Math.sqrt((n - 2) / n);
+			var r = Math.sqrt(Math.pow(g, 2) / (4 + Math.pow(g, 2)));
+		  var c = confidence(r, n)
+		  return {
+		  	r : r,
+				lower : c[0],
+				upper : c[1]
+		  };
+		}
+
+		function mean(a) {
+			var r = { mean : 0, variance : 0, deviation : 0 };
+			var t = a.length;
+			for (var m, s = 0, l = t; l--; s += a[l]);
+			for (m = r.mean = s / t, l = t, s = 0; l--; s += Math.pow(a[l] - m, 2));
+			r.deviation = Math.sqrt(r.variance = s / t);
+			return r;
+		}
+
+		/**
 		 * Computes the 95% confidence interval for a correlation coefficient. 
 		 * Based on http://stats.stackexchange.com/a/18904.
 		 */
@@ -2648,7 +2697,8 @@
 					lower : c[0],
 					upper : c[1]
 		    };		
-			}
+			},
+			effect : effect
 		};
 	});
 
