@@ -2244,10 +2244,84 @@
 							b.push(field.toNumber(value));
 						}
 					});
-					// console.log('r', statistics.effect(a, b));
-
 					
+					if ($scope.times && $scope.timesB && ($scope.times.length + $scope.timesB.length > 3)) {
+						var effect = statistics.effect(a, b);
+						$scope.rChartOptions = {
+							chart : {
+								type : 'line',
+								inverted : true,
+								height : 75,
+								plotBorderWidth : 1,
+								plotBackgroundColor : '#fafafa',
+								marginLeft : 35,
+								animation : false
+							},
+							title : null,
+							xAxis : {
+								title : {
+									text : null
+								},
+								labels : {
+									enabled : false
+								},
+								lineWidth : 0,
+								tickLength : 0
+							},
+							yAxis : {
+								title : {
+									text : null
+								},
+								max : 1.0,
+								min : -1.0,
+								lineWidth : 0,
+								tickInterval : 1.0,
+								tickWidth : 0,
+								gridLineWidth : 1
+							},
+							tooltip : {
+								shared : true,
+								hideDelay : 0
+							},
+							series : [{
+								data : [[ 0, effect.r ]],
+								color : '#C0C0C0',
+								animation : false,
+								marker : {
+									radius : 5,
+									symbol : 'circle'
+								},
+								tooltip : {
+									headerFormat : '',
+									pointFormat : "<b>r:</b> {point.y}<br/>",
+									valueDecimals : 3
+								},
+								states : {
+									hover : {
+										enabled : false
+									}
+								}
+							}, {
+								type : 'errorbar',
+								data : [[ 0, effect.lower, effect.upper ]],
+								lineWidth : 2,
+								color : '#C0C0C0',
+								animation : false,
+								tooltip : {
+									headerFormat : '',
+									pointFormat : '<b>95% confidence interval:</b> [' + effect.lower.toFixed(3) + '..' + effect.upper.toFixed(3) + ']<br/>' 
+								}
+							}],
+							legend : {
+								enabled : false
+							},
+							credits : {
+								enabled : false
+							}
+						};
+					}
 				}
+
 				field.formatAxis(options.yAxis);
 				$scope.chartOptions = options;
 			}
