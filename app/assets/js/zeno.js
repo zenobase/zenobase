@@ -1746,7 +1746,6 @@
 	
 		$scope.init = function() {
 			$scope.intervals = null;
-			$scope.intervalsB = null;
 		};
 		$scope.params = function() {
 			return { 
@@ -1766,9 +1765,8 @@
 				$scope.update(null, result, resultB);
 			});
 		};
-		$scope.update = function(event, result, resultB) {
+		$scope.update = function(event, result) {
 			$scope.intervals = result[$scope.settings.id] || [];
-			$scope.intervalsB = resultB && resultB[$scope.settings.id] || [];
 			$timeout($scope.draw, 0); // delay for correct width
 		};
 		$scope.draw = function() {
@@ -1855,17 +1853,6 @@
 					options.xAxis.categories.push(field.toText(interval.from) + '..' + field.toText(interval.to));
 					options.series[0].data.push(interval.count);
 				});
-				if ($scope.intervalsB && $scope.intervalsB.length) {
-					options.series.push({
-						name : 'count',
-						color : 'rgba(204, 102, 0, 0.4)',
-						data : []
-					});
-					$.each($scope.intervalsB, function(i, interval) {
-						options.xAxis.categories.push(field.toText(interval.from) + '..' + field.toText(interval.to));
-						options.series[1].data.push(interval.count);
-					});
-				}
 				$scope.chartOptions = options;
 			}
 		}
