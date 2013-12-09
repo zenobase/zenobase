@@ -10,13 +10,13 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 
+import com.zenobase.common.DateTimeZones;
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
 import com.zenobase.models.Rating;
 import com.zenobase.models.Resource;
 
 class FitbitSleepResult {
-
 
 	public static final Resource SOURCE = new Resource("Fitbit", "http://fitbit.com/");
 
@@ -50,9 +50,7 @@ class FitbitSleepResult {
 	private static DateTime getDateTime(JsonNode item, DateTimeZone timezone) {
 		String value = item.path("startTime").textValue();
 		Preconditions.checkNotNull(value, "Missing sleep start time");
-		LocalDateTime local = LocalDateTime.parse(value);
-		Preconditions.checkState(!timezone.isLocalDateTimeGap(local), "%s does not exist in %s", local, timezone);
-		return local.toDateTime(timezone);
+		return DateTimeZones.toDateTime(LocalDateTime.parse(value), timezone);
 	}
 
 	private static Duration getDuration(JsonNode item) {
