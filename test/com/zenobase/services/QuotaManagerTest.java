@@ -58,6 +58,6 @@ public class QuotaManagerTest {
 
 	@Test(expected = QuotaException.class)
 	public void testOverspend() {
-		quotas.spend(user.asIdentity(), 10000);
+		quotas.spend(user.asIdentity(), 100000);
 	}
 }

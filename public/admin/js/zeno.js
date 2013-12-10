@@ -120,7 +120,7 @@
 		$scope.refresh({});
 	}]);
 
-	app.controller('admin.UserListController', ['$scope', '$http', 'delay', 'token', function($scope, $http, delay, token) {
+	app.controller('admin.UserListController', ['$scope', '$http', '$q', 'delay', 'token', function($scope, $http, $q, delay, token) {
 
 		$scope.offset = 0;
 		$scope.limit = 10;
@@ -173,6 +173,17 @@
 		$scope.remove = function(username) {
 			$http({ method : 'DELETE', url : '/users/@' + username }).success(function() {
 				delay($scope.reload);
+			});
+		};
+		$scope.setQuotas = function(quota) {
+			$http.get('/users/?q=-quota:*|created:(*..1M]&limit=1000').success(function(response) {
+				var requests = [];
+				$.each(response.users, function(i, user) {
+					requests.push($http.post('/users/@' + user.name, { 'quota' : quota }));
+				});
+				$q.all(requests).then(function() {
+					delay($scope.reload());
+				});
 			});
 		};
 

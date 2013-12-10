@@ -1,5 +1,7 @@
 package com.zenobase.services;
 
+import org.joda.time.DateTime;
+
 import com.zenobase.models.Identity;
 import com.zenobase.models.User;
 
@@ -12,6 +14,16 @@ public class UserQuery extends QuerySupport {
 
 	public UserQuery isSuperuser(boolean b) {
 		equalTo(User.SUPERUSER, b);
+		return this;
+	}
+
+	public UserQuery quotaIsNull() {
+		isNull(User.QUOTA);
+		return this;
+	}
+
+	public UserQuery createdBefore(DateTime time) {
+		lessThan(User.CREATED, time);
 		return this;
 	}
 }

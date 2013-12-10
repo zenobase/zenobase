@@ -16,6 +16,7 @@ import com.zenobase.common.PartialList;
 import com.zenobase.models.User;
 import com.zenobase.models.UserList;
 import com.zenobase.oauth.Authorization;
+import com.zenobase.services.UserQuery;
 import com.zenobase.services.UserRepository;
 
 public class UserListControllerTest extends ControllerTestSupport {
@@ -41,21 +42,29 @@ public class UserListControllerTest extends ControllerTestSupport {
 		PartialList<User> expected = DefaultPartialList.of();
 		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
 		when(users.isSuperuser(user.asIdentity())).thenReturn(true);
-		when(users.find(0, 1)).thenReturn(expected);
-		Result result = call(0, 1);
+		when(users.find(new UserQuery(), 0, 1)).thenReturn(expected);
+		Result result = call(null, 0, 1);
 		assertThat(result).hasStatus(OK).hasContent(UserList.toJson(expected));
 	}
 
 	@Test
+	public void testUnsupportedQuery() {
+		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
+		when(users.isSuperuser(user.asIdentity())).thenReturn(true);
+		Result result = call("foo:bar", 0, 1);
+		assertThat(result).hasStatus(BAD_REQUEST);
+	}
+
+	@Test
 	public void testNotAuthorized() {
-		Result result = call(0, 1);
+		Result result = call(null, 0, 1);
 		assertThat(result).hasStatus(UNAUTHORIZED);
 	}
 
 	@Test
 	public void testNotSuperuser() {
 		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
-		Result result = call(0, 1);
+		Result result = call(null, 0, 1);
 		assertThat(result).hasStatus(FORBIDDEN);
 	}
 
@@ -63,11 +72,11 @@ public class UserListControllerTest extends ControllerTestSupport {
 	public void testDownload() {
 		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
 		when(users.isSuperuser(user.asIdentity())).thenReturn(true);
-		Result result = call(0, Integer.MAX_VALUE);
+		Result result = call(null, 0, Integer.MAX_VALUE);
 		assertThat(result).hasStatus(OK).hasContentType("text/plain");
 	}
 
-	private static Result call(int offset, int limit) {
-		return callAction(com.zenobase.controllers.routes.ref.UserListController.find(offset, limit));
+	private static Result call(String q, int offset, int limit) {
+		return callAction(com.zenobase.controllers.routes.ref.UserListController.find(q, offset, limit));
 	}
 }

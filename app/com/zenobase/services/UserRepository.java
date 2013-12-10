@@ -52,10 +52,6 @@ public class UserRepository extends RepositorySupport<User> {
 		return Iterables.getOnlyElement(find(new UserQuery().principalEqualTo(identity), 0, 1), null);
 	}
 
-	public PartialList<User> find(int offset, int limit) {
-		return find(new UserQuery(), offset, limit);
-	}
-
 	public PartialList<User> find(UserQuery query, int offset, int limit) {
 		SearchSourceBuilder search = new SearchSourceBuilder()
 			.query(query.build())
@@ -63,6 +59,10 @@ public class UserRepository extends RepositorySupport<User> {
 			.from(offset).size(limit)
 			.version(true);
 		return new UserList(index.find(search));
+	}
+
+	public void find(UserQuery query, Callback<User> callback) {
+		super.find(query.build(), callback);
 	}
 
 	public void find(Callback<User> callback) {
