@@ -1324,6 +1324,11 @@
 				return constraint.field === field;
 			});
 		};
+		$scope.getConstraintsB = function(field) {
+			return $.grep($scope.constraintsB, function(constraint) {
+				return constraint.field === field;
+			});
+		};
 		$scope.getConstraintsString = function() {
 			var items = mapToString($scope.constraints);
 			return items != null ? items.join('|') : null;
@@ -2034,6 +2039,25 @@
 
 		$scope.keyField = 'timestamp';
 
+		function commonPrefix(a, b) {
+			if (!a) {
+				return '';
+			}
+			if (!b) {
+				return a;
+			}
+			var i = 0;
+			var at = a.split(/(?=[-T:Z]+)/);
+			var bt = b.split(/(?=[-T:Z]+)/);
+			while (i < at.length && i < bt.length) {
+				if (at[i] !== bt[i]) {
+					break;
+				}
+				++i;
+			}
+			return at.slice(0, i).join('');
+		}
+
 		$scope.init = function() {
 			$scope.times = null;
 			$scope.timesB = null;
@@ -2041,13 +2065,22 @@
 		$scope.params = function() {
 			$scope.interval = Interval.valueOf($scope.settings.interval) || Interval.VALUES[1];
 			$scope.range = '';
+			var q = '';
 			$.each($scope.getConstraints($scope.keyField), function(i, constraint) {
-				var interval = Interval.match(constraint.value) || Interval.matchRange(constraint.value);
+				q = constraint.value;
+			});
+			var r = '';
+			$.each($scope.getConstraintsB($scope.keyField), function(i, constraint) {
+				r = constraint.value;
+			});
+			var prefix = commonPrefix(q, r);
+			if (prefix) {
+				var interval = Interval.match(prefix) || Interval.matchRange(prefix);
 				if (interval) {
 					$scope.interval = interval;
-					$scope.range = constraint.value;
+					$scope.range = prefix;
 				}
-			});
+			}
 			return { 
 				id : $scope.settings.id,
 				type : 'timeline',
