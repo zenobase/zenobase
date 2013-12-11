@@ -2261,7 +2261,6 @@
 							}
 						}
 					});
-
 					
 					var a = [];
 					var b = [];
@@ -2277,8 +2276,7 @@
 							b.push(field.toNumber(value));
 						}
 					});
-					
-					if ($scope.times && $scope.timesB && ($scope.times.length + $scope.timesB.length > 3)) {
+					if (a.length + b.length > 3) {
 						var effect = statistics.effect(a, b);
 						$scope.rChartOptions = {
 							chart : {
@@ -3908,7 +3906,7 @@
 		$scope.init = function() {
 			$scope.settings = $scope.$parent.$parent.settings = {
 					tag : 'sleep',
-					marker : new Date(moment().utc().startOf('month').valueOf())
+					marker : new Date(moment().utc().subtract('months', 3).startOf('month').valueOf())
 			};
 		};
 
@@ -3920,7 +3918,7 @@
 		$scope.init = function() {
 			$scope.settings = $scope.$parent.$parent.settings = {
 					tag : 'steps',
-					marker : new Date(moment().utc().startOf('month').valueOf())
+					marker : new Date(moment().utc().subtract('months', 3).startOf('month').valueOf())
 			};
 		};
 
@@ -3932,7 +3930,7 @@
 		$scope.init = function() {
 			$scope.settings = $scope.$parent.$parent.settings = {
 					tag : 'burn',
-					marker : new Date(moment().utc().startOf('month').valueOf())
+					marker : new Date(moment().utc().subtract('months', 3).startOf('month').valueOf())
 			};
 		};
 
@@ -3944,7 +3942,7 @@
 		$scope.init = function() {
 			$scope.settings = $scope.$parent.$parent.settings = {
 					tag : 'sleep',
-					marker : new Date(moment().utc().startOf('month').valueOf())
+					marker : new Date(moment().utc().subtract('months', 3).startOf('month').valueOf())
 			};
 		};
 
@@ -3956,7 +3954,7 @@
 		$scope.init = function() {
 			$scope.settings = $scope.$parent.$parent.settings = {
 					tag : 'steps',
-					marker : new Date(moment().utc().startOf('month').valueOf())
+					marker : new Date(moment().utc().subtract('months', 3).startOf('month').valueOf())
 			};
 		};
 
@@ -3967,7 +3965,7 @@
 
 		$scope.init = function() {
 			$scope.settings = $scope.$parent.$parent.settings = {
-					marker : new Date(moment().utc().startOf('month').valueOf())
+					marker : new Date(moment().utc().subtract('months', 3).startOf('month').valueOf())
 			};
 		};
 
@@ -3978,7 +3976,7 @@
 
 		$scope.init = function() {
 			$scope.settings = $scope.$parent.$parent.settings = {
-					marker : new Date(moment().utc().startOf('month').valueOf())
+					marker : new Date(moment().utc().subtract('months', 3).startOf('month').valueOf())
 			};
 		};	
 
@@ -3990,7 +3988,7 @@
 		$scope.init = function() {
 			$scope.settings = $scope.$parent.$parent.settings = {
 					unit : 'km',
-					marker : new Date(moment().utc().startOf('month').valueOf()),
+					marker : new Date(moment().utc().subtract('months', 3).startOf('month').valueOf()),
 					timezone : 'UTC'
 			};
 			$http.get('/tz').success(function(response) {
@@ -4018,7 +4016,7 @@
 			$scope.settings = $scope.$parent.$parent.settings = {
 					tag : 'body',
 					unit : 'kg',
-					marker : new Date(moment().utc().startOf('month').valueOf()),
+					marker : new Date(moment().utc().subtract('months', 3).startOf('month').valueOf()),
 					timezone : 'UTC'
 			};
 			$http.get('/tz').success(function(response) {
