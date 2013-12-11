@@ -2035,7 +2035,7 @@
 		return Interval;
 	});
 
-	app.controller('TimelineWidgetController', ['$scope', '$timeout', 'Field', 'Interval', 'statistics', function($scope, $timeout, Field, Interval, statistics) {
+	app.controller('TimelineWidgetController', ['$scope', '$timeout', 'Field', 'Interval', function($scope, $timeout, Field, Interval) {
 
 		$scope.keyField = 'timestamp';
 
@@ -2093,10 +2093,10 @@
 		};
 		$scope.refresh = function(options, settings) {
 			$scope.init();
-			$scope.search([ $.extend($scope.params(), options, settings) ], function(result) {
+			$scope.search([ $.extend($scope.params(), options, settings) ], function(result, resultB) {
 				$.extend($scope, options)
 				$.extend($scope.settings, settings)
-				$scope.update(null, result);
+				$scope.update(null, result, resultB);
 			});
 		};
 		$scope.update = function(event, result, resultB) {
@@ -2263,100 +2263,129 @@
 							}
 						}
 					});
-					
-					var a = [];
-					var b = [];
-					$.each($scope.times, function(i, time) {
-						var value = time[$scope.settings.statistic || 'count'];
-						if (value !== undefined) {
-							a.push(field.toNumber(value));
-						}
-					});
-					$.each($scope.timesB, function(i, time) {
-						var value = time[$scope.settings.statistic || 'count'];
-						if (value !== undefined) {
-							b.push(field.toNumber(value));
-						}
-					});
-					if (a.length + b.length > 3) {
-						var effect = statistics.effect(a, b);
-						$scope.rChartOptions = {
-							chart : {
-								type : 'line',
-								inverted : true,
-								height : 75,
-								plotBorderWidth : 1,
-								plotBackgroundColor : '#fafafa',
-								marginLeft : 35,
-								animation : false
-							},
-							title : null,
-							xAxis : {
-								title : {
-									text : null
-								},
-								labels : {
-									enabled : false
-								},
-								lineWidth : 0,
-								tickLength : 0
-							},
-							yAxis : {
-								title : {
-									text : null
-								},
-								max : 1.0,
-								min : -1.0,
-								lineWidth : 0,
-								tickInterval : 1.0,
-								tickWidth : 0,
-								gridLineWidth : 1
-							},
-							tooltip : {
-								shared : true,
-								hideDelay : 0
-							},
-							series : [{
-								data : [[ 0, effect.r ]],
-								color : '#C0C0C0',
-								animation : false,
-								marker : {
-									radius : 5,
-									symbol : 'circle'
-								},
-								tooltip : {
-									headerFormat : '',
-									pointFormat : "<b>r:</b> {point.y}<br/>",
-									valueDecimals : 3
-								},
-								states : {
-									hover : {
-										enabled : false
-									}
-								}
-							}, {
-								type : 'errorbar',
-								data : [[ 0, effect.lower, effect.upper ]],
-								lineWidth : 2,
-								color : '#C0C0C0',
-								animation : false,
-								tooltip : {
-									headerFormat : '',
-									pointFormat : '<b>95% confidence interval:</b> [' + effect.lower.toFixed(3) + '..' + effect.upper.toFixed(3) + ']<br/>' 
-								}
-							}],
-							legend : {
-								enabled : false
-							},
-							credits : {
-								enabled : false
-							}
-						};
-					}
 				}
-
 				field.formatAxis(options.yAxis);
 				$scope.chartOptions = options;
+			}
+		}
+
+		$scope.init();
+		$scope.register($scope);
+		$scope.$on('result', $scope.update);
+		$scope.$on('refresh', $scope.init);
+	}]);
+
+	app.controller('EffectSizeWidgetController', ['$scope', '$timeout', 'Field', 'statistics', function($scope, $timeout, Field, statistics) {
+
+		$scope.init = function() {
+			$scope.stats = null;
+			$scope.statsB = null;
+		};
+		$scope.params = function() {
+			return { 
+				id : $scope.settings.id + '-stats',
+				type : 'stats',
+				field : $scope.settings.field,
+				unit : $scope.settings.unit || '',
+				filter : $scope.settings.filter || ''
+			};
+		};
+		$scope.refresh = function(options, settings) {
+			$scope.init();
+			$scope.search([ $.extend($scope.params(), options, settings) ], function(result, resultB) {
+				$.extend($scope, options)
+				$.extend($scope.settings, settings)
+				$scope.update(null, result, resultB);
+			});
+		};
+		$scope.update = function(event, result, resultB) {
+			$scope.stats = result[$scope.settings.id + '-stats'];
+			$scope.statsB = resultB && resultB[$scope.settings.id + '-stats'];
+			$timeout($scope.draw, 1); // delay for correct width
+		};
+		function toNumber(field, stats) {
+			return {
+				count : stats.count,
+				avg : field.toNumber(stats.avg),
+				stdev : field.toNumber(stats.stdev)
+			};
+		}
+		$scope.draw = function() {
+			if ($scope.settings.field != $scope.keyField && $scope.stats && $scope.statsB) {
+				var field = Field.find($scope.settings.field);
+				var effect = statistics.effect(toNumber(field, $scope.stats), toNumber(field, $scope.statsB));
+				$scope.rChartOptions = {
+					chart : {
+						type : 'line',
+						inverted : true,
+						height : 75,
+						plotBorderWidth : 1,
+						plotBackgroundColor : '#fafafa',
+						marginLeft : 35,
+						animation : false
+					},
+					title : null,
+					xAxis : {
+						title : {
+							text : null
+						},
+						labels : {
+							enabled : false
+						},
+						lineWidth : 0,
+						tickLength : 0
+					},
+					yAxis : {
+						title : {
+							text : null
+						},
+						max : 1.0,
+						min : -1.0,
+						lineWidth : 0,
+						tickInterval : 1.0,
+						tickWidth : 0,
+						gridLineWidth : 1
+					},
+					tooltip : {
+						shared : true,
+						hideDelay : 0
+					},
+					series : [{
+						data : [[ 0, effect.r ]],
+						color : '#C0C0C0',
+						animation : false,
+						marker : {
+							radius : 5,
+							symbol : 'circle'
+						},
+						tooltip : {
+							headerFormat : '',
+							pointFormat : "<b>r:</b> {point.y}<br/>",
+							valueDecimals : 3
+						},
+						states : {
+							hover : {
+								enabled : false
+							}
+						}
+					}, {
+						type : 'errorbar',
+						data : [[ 0, effect.lower, effect.upper ]],
+						lineWidth : 2,
+						color : '#C0C0C0',
+						animation : false,
+						tooltip : {
+							headerFormat : '',
+							pointFormat : '<b>95% confidence interval:</b> [' + effect.lower.toFixed(3) + '..' + effect.upper.toFixed(3) + ']<br/>' 
+						}
+					}],
+					legend : {
+						enabled : false
+					},
+					credits : {
+						enabled : false
+					}
+				};
 			}
 		}
 
@@ -2707,14 +2736,9 @@
 		 * Computes the effect size. See http://measuredme.com/2012/09/personal-analytics-101-testing-differences-in-quantified-self-data-html/
 		 */
 		function effect(a, b) {
-			var r = rank(a.concat(b));
-			var n = r.length;
-			var ra = r.slice(0, a.length);
-			var rb = r.slice(a.length);
-			var ma = mean(ra);
-			var mb = mean(rb);
-			var sd = Math.sqrt((Math.pow(ma.deviation, 2) * (a.length - 1) + Math.pow(mb.deviation, 2) * (b.length - 1)) / (n - 2));
-			var g = ((ma.mean - mb.mean) / sd) * ((n - 3) / (n - 2.25)) * Math.sqrt((n - 2) / n);
+			var n = a.count + b.count;
+			var stdev = Math.sqrt((Math.pow(a.stdev, 2) * (a.count - 1) + Math.pow(b.stdev, 2) * (b.count - 1)) / (n - 2));
+			var g = ((a.avg - b.avg) / stdev) * ((n - 3) / (n - 2.25)) * Math.sqrt((n - 2) / n);
 			var r = Math.sqrt(Math.pow(g, 2) / (4 + Math.pow(g, 2)));
 		  var c = confidence(r, n)
 		  return {

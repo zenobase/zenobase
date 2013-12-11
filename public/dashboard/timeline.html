@@ -1,7 +1,9 @@
 <div id="{{settings.id}}-content" data-ng-controller="TimelineWidgetController">
 
 	<div id="{{settings.id}}-chart" data-ui-chart-options="chartOptions" data-ui-id="{{settings.id}}" data-ng-show="times"></div>
-	<div id="{{settings.id}}-r-chart" data-ui-chart-options="rChartOptions" data-ui-id="{{settings.id}}" data-ng-show="timesB"></div>
+	<div data-ng-controller="EffectSizeWidgetController">
+		<div id="{{settings.id}}-r-chart" data-ui-chart-options="rChartOptions" data-ui-id="{{settings.id}}" data-ng-show="timesB"></div>
+	</div>
 
 	<p data-ng-show="times == null" class="none">Loading...</p>
 

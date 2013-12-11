@@ -14,37 +14,27 @@ import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.Interval;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Objects;
 import com.google.common.base.Strings;
 import com.google.common.collect.Maps;
 
-import com.zenobase.common.Measures;
 import com.zenobase.common.OffsetIntervals;
 import com.zenobase.json.Field;
 import com.zenobase.json.MeasurementField;
 import com.zenobase.json.Nodes;
 
-public class OffsetTimelineFacet extends Facet {
+public class OffsetTimelineFacet extends TimelineFacetSupport {
 
-	private final String keyField;
-	private final String valueField;
 	private final String interval;
 	private final Interval range;
 	private final DateTimeZone timezone;
-	private final Unit<?> unit;
-	private final FilterBuilder filter;
 
 	public OffsetTimelineFacet(String id, String keyField, String valueField, String interval, String range, DateTimeZone timezone, Unit<?> unit, FilterBuilder filter) {
-		super(id);
-		this.keyField = keyField;
-		this.valueField = valueField;
+		super(id, keyField, valueField, unit, filter);
 		this.interval = interval;
 		this.range = !Strings.isNullOrEmpty(range) ? OffsetIntervals.valueOf(range) : null;
 		this.timezone = timezone;
-		this.unit = unit;
-		this.filter = filter;
 	}
 
 	@Override
@@ -87,24 +77,6 @@ public class OffsetTimelineFacet extends Facet {
 
 	private long addOffset(long time) {
 		return time + (timezone != null ? timezone.getOffset(time) : 0);
-	}
-
-	private JsonNode toJson(Iterable<ObjectNode> values) {
-		ArrayNode node = Nodes.newArray();
-		for (ObjectNode value : values) {
-			node.add(value);
-		}
-		return node;
-	}
-
-	private void addValue(ObjectNode parent, String property, double value) {
-		if (unit != Unit.ONE) {
-			ObjectNode node = parent.putObject(property);
-			node.put("@value", Measures.convert(value, unit));
-			node.put("unit", unit.toString());
-		} else {
-			parent.put(property, Measures.round(value));
-		}
 	}
 
 	private Interval getInterval(Iterable<? extends DateHistogramFacet.Entry> entries) {

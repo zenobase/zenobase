@@ -122,16 +122,6 @@ public class LocalTimelineFacetTest extends FacetTestSupport {
 	}
 
 	@Test
-	public void testEmptyResult() {
-
-		addFacet("id:%s,type:%s", FACET_ID, TimelineFacet.TYPE);
-
-		ObjectNode result = execute();
-		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(0);
-		assertThat(result).path(FACET_ID).hasSize(0);
-	}
-
-	@Test
 	public void testYearInterval() {
 
 		addEvent(first);

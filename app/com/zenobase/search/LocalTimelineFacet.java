@@ -13,7 +13,6 @@ import org.elasticsearch.search.facet.datehistogram.DateHistogramFacet;
 import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDateTime;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Objects;
 import com.google.common.base.Strings;
@@ -21,29 +20,20 @@ import com.google.common.collect.Maps;
 
 import com.zenobase.common.LocalInterval;
 import com.zenobase.common.LocalIntervals;
-import com.zenobase.common.Measures;
 import com.zenobase.json.Field;
 import com.zenobase.json.LocalDateTimeField;
 import com.zenobase.json.MeasurementField;
 import com.zenobase.json.Nodes;
 
-public class LocalTimelineFacet extends Facet {
+public class LocalTimelineFacet extends TimelineFacetSupport {
 
-	private final String keyField;
-	private final String valueField;
 	private final String interval;
 	private final LocalInterval range;
-	private final Unit<?> unit;
-	private final FilterBuilder filter;
 
 	public LocalTimelineFacet(String id, String keyField, String valueField, String interval, String range, Unit<?> unit, FilterBuilder filter) {
-		super(id);
-		this.keyField = keyField;
-		this.valueField = valueField;
+		super(id, keyField, valueField, unit, filter);
 		this.interval = interval;
 		this.range = !Strings.isNullOrEmpty(range) ? LocalIntervals.valueOf(range) : null;
-		this.unit = unit;
-		this.filter = filter;
 	}
 
 	@Override
@@ -82,24 +72,6 @@ public class LocalTimelineFacet extends Facet {
 			}
 		}
 		return toJson(counts.values());
-	}
-
-	private JsonNode toJson(Iterable<ObjectNode> values) {
-		ArrayNode node = Nodes.newArray();
-		for (ObjectNode value : values) {
-			node.add(value);
-		}
-		return node;
-	}
-
-	private void addValue(ObjectNode parent, String property, double value) {
-		if (unit != Unit.ONE) {
-			ObjectNode node = parent.putObject(property);
-			node.put("@value", Measures.convert(value, unit));
-			node.put("unit", unit.toString());
-		} else {
-			parent.put(property, Measures.round(value));
-		}
 	}
 
 	private LocalInterval getInterval(Iterable<? extends DateHistogramFacet.Entry> entries) {
