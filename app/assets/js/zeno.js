@@ -2224,6 +2224,8 @@
 						if ($scope.settings.statistic === 'avg') {
 							options.series[1].data.push([ time.time, field.toNumber(time['min']), field.toNumber(time['max']) ]);
 						}
+					} else {
+						options.series[0].data.push({ x : time.time, y : null });
 					}
 				});
 				if ($scope.timesB && $scope.timesB.length) {
