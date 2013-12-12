@@ -1229,7 +1229,8 @@
 		};
 		$scope.register = function(widget) {
 			$scope.widgets.push(widget);
-			if ($scope.widgets.length === $scope.bucket.widgets.length) {
+			// TODO find better logic to ensure that all widgets are present before refreshing
+			if ($scope.widgets.length >= $scope.bucket.widgets.length) {
 				$scope.refresh();
 			}
 		};
@@ -2293,8 +2294,6 @@
 		$scope.refresh = function(options, settings) {
 			$scope.init();
 			$scope.search([ $.extend($scope.params(), options, settings) ], function(result, resultB) {
-				$.extend($scope, options)
-				$.extend($scope.settings, settings)
 				$scope.update(null, result, resultB);
 			});
 		};
