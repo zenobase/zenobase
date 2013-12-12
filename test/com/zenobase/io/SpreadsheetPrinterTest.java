@@ -1,12 +1,12 @@
-package com.zenobase.scripts;
+package com.zenobase.io;
 
 import static org.fest.assertions.Assertions.assertThat;
 
 import java.io.IOException;
 import java.io.StringWriter;
 
+import com.zenobase.io.SpreadsheetPrinter;
 import com.zenobase.json.Nodes;
-import com.zenobase.scripts.SpreadsheetPrinter;
 
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;

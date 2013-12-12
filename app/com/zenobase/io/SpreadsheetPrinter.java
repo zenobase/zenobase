@@ -1,4 +1,4 @@
-package com.zenobase.scripts;
+package com.zenobase.io;
 
 import java.io.IOException;
 import java.io.Writer;
@@ -7,10 +7,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import au.com.bytecode.opencsv.CSVWriter;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import au.com.bytecode.opencsv.CSVWriter;
 import com.google.common.base.Joiner;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
@@ -120,7 +120,7 @@ public class SpreadsheetPrinter {
 		return stringified;
 	}
 
-	public String[] toRow(ObjectNode node) {
+	private String[] toRow(ObjectNode node) {
 		List<String> row = Lists.newArrayListWithCapacity(fields.size());
 		for (Field field : fields) {
 			row.add(toString(field.get(node)));
