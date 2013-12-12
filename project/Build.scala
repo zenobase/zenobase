@@ -14,7 +14,7 @@ object ApplicationBuild extends Build {
 	  filters,
 	  "javax.mail" % "mail" % "1.4.7",
 	  "com.google.guava" % "guava" % "15.0",
-	  "com.google.guava" % "guava-testlib" % "14.0.1" % "test",
+	  "com.google.guava" % "guava-testlib" % "15.0" % "test",
 	  "com.google.inject" % "guice" % "3.0",
 	  "com.google.inject.extensions" % "guice-multibindings" % "3.0",
 	  "org.elasticsearch" % "elasticsearch" % "0.90.7",
