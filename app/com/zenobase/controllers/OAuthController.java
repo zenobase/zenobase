@@ -6,6 +6,7 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
+import play.Logger;
 import play.data.Form;
 import play.mvc.BodyParser;
 import play.mvc.Result;
@@ -111,6 +112,7 @@ public class OAuthController extends ControllerSupport {
     }
 
     private Result deny(String errorCode, String errorDescription) {
+    	Logger.warn("Denied: " + errorDescription);
     	ObjectNode result = Nodes.newObject();
     	result.put("error", errorCode);
     	result.put("error_description", errorDescription);
