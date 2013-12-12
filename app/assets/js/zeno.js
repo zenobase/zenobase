@@ -2094,8 +2094,8 @@
 		$scope.refresh = function(options, settings) {
 			$scope.init();
 			$scope.search([ $.extend($scope.params(), options, settings) ], function(result, resultB) {
-				$.extend($scope, options)
-				$.extend($scope.settings, settings)
+				$.extend($scope, options);
+				$scope.settings = $.extend({}, $scope.settings, settings); // create new settings object to trigger watch
 				$scope.update(null, result, resultB);
 			});
 		};
@@ -2299,8 +2299,10 @@
 			});
 		};
 		$scope.update = function(event, result, resultB) {
-			$scope.stats = result[$scope.settings.id + '-stats'];
-			$scope.statsB = resultB && resultB[$scope.settings.id + '-stats'];
+			if ($scope.settings.statistic === 'avg') {
+				$scope.stats = result[$scope.settings.id + '-stats'];
+				$scope.statsB = resultB && resultB[$scope.settings.id + '-stats'];
+			}
 			$timeout($scope.draw, 1); // delay for correct width
 		};
 		function toNumber(field, stats) {
@@ -2311,7 +2313,7 @@
 			};
 		}
 		$scope.draw = function() {
-			if ($scope.settings.field != $scope.keyField && $scope.stats && $scope.statsB) {
+			if ($scope.stats && $scope.statsB) {
 				var field = Field.find($scope.settings.field);
 				var effect = statistics.effect(toNumber(field, $scope.stats), toNumber(field, $scope.statsB));
 				$scope.rChartOptions = {
@@ -2393,6 +2395,11 @@
 		$scope.register($scope);
 		$scope.$on('result', $scope.update);
 		$scope.$on('refresh', $scope.init);
+		$scope.$watch('settings', function(to, from) {
+			if (!angular.equals(to, from)) {
+				$scope.refresh();
+			}
+		});
 	}]);
 
 	app.controller('TimelineWidgetDialogController', ['$scope', 'WidgetDialogControllerSupport', 'Field', 'Interval', function($scope, WidgetDialogControllerSupport, Field, Interval) {
@@ -4808,17 +4815,19 @@
 						renderTo : element[0]
 					}
 				};
-				scope.$watch(attrs.uiChartOptions, function(newOptions) {
-					if (newOptions) {
-						if (scope.chart) {
+				scope.$watch(attrs.uiChartOptions, function(newOptions, oldOptions) {
+					if (!angular.equals(newOptions, oldOptions)) {
+						if (oldOptions) {
 							scope.chart.destroy();
 						}
-						scope.chart = new Highcharts.Chart($.extend(true, {}, newOptions, defaultOptions));
-						$('#' + attrs.uiId + '-tab').on('shown', function(e) { 
-					    var parent = $(scope.chart.container).parent();
-					    scope.chart.setSize(parent.width(), parent.height());
-					    scope.chart.hasUserSize = undefined;
-						});
+						if (newOptions) {
+							scope.chart = new Highcharts.Chart($.extend(true, {}, newOptions, defaultOptions));
+							$('#' + attrs.uiId + '-tab').on('shown', function(e) { 
+								var parent = $(scope.chart.container).parent();
+								scope.chart.setSize(parent.width(), parent.height());
+								scope.chart.hasUserSize = undefined;
+							});
+						}
 					}
 				}, true);
 			}
