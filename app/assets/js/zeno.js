@@ -2317,9 +2317,9 @@
 
 				var color;
 				if (lower <= 0 && upper >= 0) {
-					color = '#C0C0C0'; // gray
+					color = '#C0C0C0'; // light-gray
 				} else {
-					color = '#555'; // green
+					color = '#555'; // dark-gray
 				}
 
 				var rChartOptions = {
