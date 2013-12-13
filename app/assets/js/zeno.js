@@ -2262,7 +2262,7 @@
 		$scope.$on('refresh', $scope.init);
 	}]);
 
-	app.controller('EffectSizeWidgetController', ['$scope', '$timeout', 'Field', 'statistics', function($scope, $timeout, Field, statistics) {
+	app.controller('EffectSizeWidgetController', ['$scope', '$timeout', 'Field', function($scope, $timeout, Field) {
 
 		$scope.init = function() {
 			$scope.stats = null;
@@ -2300,15 +2300,36 @@
 		$scope.draw = function() {
 			if ($scope.stats && $scope.statsB) {
 				var field = Field.find($scope.settings.field);
-				var effect = statistics.effect(toNumber(field, $scope.stats), toNumber(field, $scope.statsB));
-				$scope.rChartOptions = {
+
+				var avgA = field.toNumber($scope.stats.avg);
+				var avgB = field.toNumber($scope.statsB.avg);
+				var avgAB = avgA - avgB;
+				var z = 1.96;
+				var stdevA = field.toNumber($scope.stats.stdev);
+				var stdevB = field.toNumber($scope.statsB.stdev);
+				var nA = $scope.stats.count;
+				var nB = $scope.statsB.count;
+
+				var d = z * Math.sqrt((stdevA * stdevA / nA) + (stdevB * stdevB / nB));
+				var lower = avgAB - d;
+				var upper = avgAB + d;
+
+				var color;
+				if (lower <= 0 && upper >= 0) {
+					color = '#C0C0C0'; // gray
+				} else {
+					color = '#555'; // green
+				}
+
+				var rChartOptions = {
 					chart : {
 						type : 'line',
 						inverted : true,
 						height : 75,
 						plotBorderWidth : 1,
 						plotBackgroundColor : '#fafafa',
-						marginLeft : 35,
+						marginLeft : 45,
+						marginRight : 25,
 						animation : false
 					},
 					title : null,
@@ -2326,44 +2347,28 @@
 						title : {
 							text : null
 						},
-						max : 1.0,
-						min : -1.0,
 						lineWidth : 0,
-						tickInterval : 1.0,
-						tickWidth : 0,
-						gridLineWidth : 1
+						tickColor : '#C0C0C0',
+						tickWidth : 1,
+						tickLength : 5,
+						tickPosition : 'inside',
+						gridLineWidth : 0
 					},
 					tooltip : {
-						shared : true,
-						hideDelay : 0
+						enabled : false
 					},
 					series : [{
-						data : [[ 0, effect.r ]],
-						color : '#C0C0C0',
+						data : [[ 0, avgAB ]],
+						color : color,
 						animation : false,
 						marker : {
 							radius : 5,
 							symbol : 'circle'
 						},
-						tooltip : {
-							headerFormat : '',
-							pointFormat : "<b>r:</b> {point.y}<br/>",
-							valueDecimals : 3
-						},
 						states : {
 							hover : {
 								enabled : false
 							}
-						}
-					}, {
-						type : 'errorbar',
-						data : [[ 0, effect.lower, effect.upper ]],
-						lineWidth : 2,
-						color : '#C0C0C0',
-						animation : false,
-						tooltip : {
-							headerFormat : '',
-							pointFormat : '<b>95% confidence interval:</b> [' + effect.lower.toFixed(3) + '..' + effect.upper.toFixed(3) + ']<br/>' 
 						}
 					}],
 					legend : {
@@ -2373,6 +2378,22 @@
 						enabled : false
 					}
 				};
+				if (d > 0) {
+					rChartOptions.series.push({
+						type : 'errorbar',
+						data : [[ 0, avgAB - d, avgAB + d ]],
+						lineWidth : 2,
+						color : color,
+						animation : false,
+						states : {
+							hover : {
+								enabled : false
+							}
+						}
+					});
+				}
+				field.formatAxis(rChartOptions.yAxis);
+				$scope.rChartOptions = rChartOptions;
 			}
 		}
 
@@ -2725,31 +2746,6 @@
 		}
 
 		/**
-		 * Computes the effect size. See http://measuredme.com/2012/09/personal-analytics-101-testing-differences-in-quantified-self-data-html/
-		 */
-		function effect(a, b) {
-			var n = a.count + b.count;
-			var stdev = Math.sqrt((Math.pow(a.stdev, 2) * (a.count - 1) + Math.pow(b.stdev, 2) * (b.count - 1)) / (n - 2));
-			var g = ((a.avg - b.avg) / stdev) * ((n - 3) / (n - 2.25)) * Math.sqrt((n - 2) / n);
-			var r = Math.sqrt(Math.pow(g, 2) / (4 + Math.pow(g, 2)));
-		  var c = confidence(r, n)
-		  return {
-		  	r : r,
-				lower : c[0],
-				upper : c[1]
-		  };
-		}
-
-		function mean(a) {
-			var r = { mean : 0, variance : 0, deviation : 0 };
-			var t = a.length;
-			for (var m, s = 0, l = t; l--; s += a[l]);
-			for (m = r.mean = s / t, l = t, s = 0; l--; s += Math.pow(a[l] - m, 2));
-			r.deviation = Math.sqrt(r.variance = s / t);
-			return r;
-		}
-
-		/**
 		 * Computes the 95% confidence interval for a correlation coefficient. 
 		 * Based on http://stats.stackexchange.com/a/18904.
 		 */
@@ -2807,8 +2803,7 @@
 					lower : c[0],
 					upper : c[1]
 		    };		
-			},
-			effect : effect
+			}
 		};
 	});
 
@@ -4455,7 +4450,7 @@
 				if (isNaN(n)) {
 					var valid = true;
 					$.each(value.split(' '), function(i, token) {
-						var m = /^(\d+)(d|h|min|s)?$/.exec(token);
+						var m = /^(-?\d+)(d|h|min|s)?$/.exec(token);
 						if (m) {
 							var ms = Number(m[1]);
 							switch (m[2]) {
@@ -4481,7 +4476,7 @@
 				options.type = 'datetime';
 				options.labels = {
 					formatter : function() {
-						return this.value >= 0 ? moment.duration(this.value).countdown(2) : ''; 
+						return this.value != 0 ? moment.duration(this.value).countdown(2) : '0'; 
 					}
 				};
 			}
