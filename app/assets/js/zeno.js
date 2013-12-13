@@ -2304,7 +2304,7 @@
 
 				var avgA = field.toNumber($scope.stats.avg);
 				var avgB = field.toNumber($scope.statsB.avg);
-				var avgAB = avgA - avgB;
+				var avgAB = avgB - avgA;
 				var z = 1.96;
 				var stdevA = field.toNumber($scope.stats.stdev);
 				var stdevB = field.toNumber($scope.statsB.stdev);
