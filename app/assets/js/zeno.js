@@ -2082,7 +2082,8 @@
 			$scope.init();
 			$scope.search([ $.extend($scope.params(), options, settings) ], function(result, resultB) {
 				$.extend($scope, options);
-				$scope.settings = $.extend({}, $scope.settings, settings); // create new settings object to trigger watch
+				$.extend($scope.settings, settings);
+				$scope.$broadcast('settings'); // notify nested widget
 				$scope.update(null, result, resultB);
 			});
 		};
@@ -2401,10 +2402,8 @@
 		$scope.register($scope);
 		$scope.$on('result', $scope.update);
 		$scope.$on('refresh', $scope.init);
-		$scope.$watch('settings', function(to, from) {
-			if (!angular.equals(to, from)) {
-				$scope.refresh();
-			}
+		$scope.$on('settings', function() {
+			$scope.refresh();
 		});
 	}]);
 
