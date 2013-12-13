@@ -15,7 +15,7 @@ public class RunkeeperTest extends TaskTestSupport {
 		CustomX509TrustManager.setDefault();
 		RunkeeperTaskManager manager = new RunkeeperTaskManager(newCredentialsManager());
 		ObjectNode settings = Nodes.newObject();
-		settings.put("marker", "2013-11-01");
+		settings.put("marker", "2013-12-01");
 		settings.put("unit", "mi");
 		settings.put("timezone", "America/Los_Angeles");
 		Task task = manager.newTask(bucketId, principal, settings);

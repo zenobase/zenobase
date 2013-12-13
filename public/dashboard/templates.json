@@ -67,14 +67,10 @@
 				"reverse" : false
 			},
 			{
-				"id" : "polar",
-				"type" : "polar",
-				"label" : "Day of Week",
-				"placement" : "right",
-				"value_field" : "timestamp",
-				"unit" : null,
-				"statistic" : "count",
-				"interval" : "day_of_week"
+				"id" : "map",
+				"type" : "map",
+				"label" : "Map",
+				"placement" : "right"
 			},
 			{
 				"id" : "histogram",
@@ -84,6 +80,16 @@
 				"field" : "distance",
 				"unit" : "km",
 				"interval" : 5
+			},
+			{
+				"id" : "polar",
+				"type" : "polar",
+				"label" : "Day of Week",
+				"placement" : "right",
+				"value_field" : "timestamp",
+				"unit" : null,
+				"statistic" : "count",
+				"interval" : "day_of_week"
 			}
 		]
 	},
@@ -279,7 +285,8 @@
 				"placement" : "top",
 				"field" : "timestamp",
 				"statistic" : "count"
-			}, {
+			},
+			{
 				"id" : "latest",
 				"type" : "list",
 				"label" : "Latest",
@@ -288,7 +295,8 @@
 				"limit" : 10,
 				"order" : "timestamp",
 				"reverse" : false
-			}, {
+			},
+			{
 				"id" : "tags",
 				"type" : "count",
 				"label" : "Tags",
@@ -297,12 +305,14 @@
 				"limit" : 10,
 				"order" : "count",
 				"reverse" : false
-			}, {
+			},
+			{
 				"id" : "map",
 				"type" : "map",
 				"label" : "Map",
 				"placement" : "right"
-			}, {
+			},
+			{
 				"id" : "day_of_week",
 				"type" : "polar",
 				"label" : "Day of Week",
@@ -431,8 +441,8 @@
 				"unit" : null,
 				"statistic" : "sum",
 				"interval" : "month"
-		},
-		{
+			},
+			{
 				"id" : "latest",
 				"type" : "list",
 				"label" : "Latest",
@@ -441,8 +451,8 @@
 				"reverse" : false,
 				"limit" : 10,
 				"singleton" : true
-		},
-		{
+			},
+			{
 				"id" : "steps_scoreboard",
 				"type" : "scoreboard",
 				"label" : "Scoreboard",
@@ -452,8 +462,8 @@
 				"unit" : null,
 				"order" : "total",
 				"limit" : 10
-		},
-		{
+			},
+			{
 				"id" : "steps_by_day",
 				"type" : "polar",
 				"label" : "Day of Week",
@@ -533,7 +543,8 @@
 				"limit" : 10,
 				"order" : "timestamp",
 				"reverse" : false
-			}, {
+			},
+			{
 				"id" : "weight",
 				"type" : "timeline",
 				"label" : "Weight",

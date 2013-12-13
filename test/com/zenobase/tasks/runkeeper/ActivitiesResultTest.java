@@ -16,6 +16,7 @@ import org.junit.Test;
 import com.zenobase.common.Measures;
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
+import com.zenobase.models.Resource;
 import com.zenobase.tasks.ResultTestSupport;
 
 public class ActivitiesResultTest extends ResultTestSupport {
@@ -32,7 +33,7 @@ public class ActivitiesResultTest extends ResultTestSupport {
 		assertThat(events.get(0).getValue(Event.DURATION)).isEqualTo(Duration.millis(16121187L));
 		assertThat(events.get(0).getValue(Event.DISTANCE)).isEqualTo(Measures.valueOf(new BigDecimal("6.16"), SI.KILOMETER));
 		assertThat(events.get(0).getValue(Event.ENERGY)).isEqualTo(Measures.<Energy>valueOf(new BigDecimal("1561"), "cal"));
-		assertThat(events.get(0).getValue(Event.SOURCE)).isEqualTo(ActivitiesResult.SOURCE);
+		assertThat(events.get(0).getValue(Event.SOURCE)).isEqualTo(new Resource("RunKeeper", "/fitnessActivities/268390846"));
 		assertThat(events.get(0).getValue(Event.AUTHOR)).isEqualTo(author);
 	}
 }

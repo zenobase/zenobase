@@ -1,6 +1,8 @@
 package com.zenobase.tasks.runkeeper;
 
 import javax.measure.quantity.Length;
+import javax.measure.unit.NonSI;
+import javax.measure.unit.SI;
 import javax.measure.unit.Unit;
 
 import org.joda.time.DateTimeZone;
@@ -32,6 +34,10 @@ public class RunkeeperTask extends Task {
 
 	public Unit<Length> getUnit() {
 		return Measures.<Length>parseUnit(getSetting(UNIT));
+	}
+
+	public Unit<Length> getHeightUnit() {
+		return getUnit().isStandardUnit() ? SI.METER : NonSI.FOOT;
 	}
 
 	public void setUnit(Unit<Length> unit) {

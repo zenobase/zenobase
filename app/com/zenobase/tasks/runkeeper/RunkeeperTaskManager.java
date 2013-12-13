@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 import javax.measure.quantity.Length;
+import javax.measure.unit.Unit;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
@@ -29,6 +30,8 @@ import com.zenobase.tasks.Task;
 
 public class RunkeeperTaskManager extends OAuthTaskManager {
 
+	private static final String host = "https://api.runkeeper.com";
+
 	@Inject
 	public RunkeeperTaskManager(RunkeeperCredentialsManager credentialsManager) {
 		super(RunkeeperTask.TYPE, credentialsManager);
@@ -49,9 +52,8 @@ public class RunkeeperTaskManager extends OAuthTaskManager {
 	}
 
 	private Command execute(RunkeeperTask task, OAuthCredentials credentials) {
-		List<Event> events = Lists.newArrayList();
-		String host = "https://api.runkeeper.com";
 		String path = "/fitnessActivities";
+		List<Event> events = Lists.newArrayList();
 		LocalDateTime from = parseMarker(task.getMarker());
 		while (path != null) {
 			OAuthRequest request = new OAuthRequest(Verb.GET, host + path);
@@ -69,7 +71,17 @@ public class RunkeeperTaskManager extends OAuthTaskManager {
 			}
 			path = result.getNext();
 		}
+		for (Event event : events) {
+			addDetails(event, task.getHeightUnit(), credentials);
+		}
 		return createCommand(task, credentials, events);
+	}
+
+	private void addDetails(Event event, Unit<Length> heightUnit, OAuthCredentials credentials) {
+		OAuthRequest request = new OAuthRequest(Verb.GET, host + event.getValue(Event.SOURCE).getUrl());
+		request.addHeader("Accept", "application/vnd.com.runkeeper.FitnessActivity+json");
+		Response response = send(request, credentials);
+		new ActivityResult(parseObject(response), heightUnit).addDetails(event);
 	}
 
 	static LocalDateTime parseMarker(String marker) {

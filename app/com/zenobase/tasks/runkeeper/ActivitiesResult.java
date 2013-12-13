@@ -24,7 +24,6 @@ import com.zenobase.models.Resource;
 
 class ActivitiesResult {
 
-	static final Resource SOURCE = new Resource("RunKeeper", "http://runkeeper.com/");
 	static final DateTimeFormatter TIME_FORMAT = DateTimeFormat.forPattern("EEE, dd MMM yyyy HH:mm:ss");
 
 	private final JsonNode node;
@@ -54,8 +53,8 @@ class ActivitiesResult {
 		event.setValue(Event.DURATION, durationValue(node.path("duration")));
 		event.setValue(Event.DISTANCE, distanceValue(node.path("total_distance")));
 		event.setValue(Event.ENERGY, energyValue(node.path("total_calories")));
+		event.setValue(Event.SOURCE, new Resource("RunKeeper", node.path("uri").textValue()));
 		event.setValue(Event.AUTHOR, author);
-		event.setValue(Event.SOURCE, SOURCE);
 		return event;
 	}
 
