@@ -25,7 +25,7 @@
 				<span id="event-count" class="badge badge-success page-title-decoration" title="Events" data-ng-show="total >= 0">{{total}}</span>
 				<span class="badge badge-important page-title-decoration" title="Couldn't load any events" data-ng-show="total < 0">0</span>
 				<a class="page-title-decoration" data-ng-click="run()" title="Refresh"><i class="icon-refresh"></i></a>
-				<a class="page-title-decoration" data-ng-click="openDialog('save-as-view-dialog')" title="Create View..." data-ng-hide="bucket.isVirtual()"><i class="icon-share"></i></a>
+				<a class="page-title-decoration" data-ng-click="openDialog('save-as-view-dialog')" title="Create View..." data-ng-hide="bucket.isVirtual()"><i class="icon-eye-open"></i></a>
 				<a id="add-event-action" class="page-title-decoration" data-ng-click="openDialog('edit-event-dialog', {})" title="Create Event..." data-ng-show="editable && !bucket.isVirtual()"><i class="icon-plus"></i></a>
 			</p>
 
