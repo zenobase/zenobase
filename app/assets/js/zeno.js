@@ -4039,7 +4039,7 @@
 		$scope.init();
 	}]);
 
-	app.controller('RunkeeperSettingsController', ['$scope', '$http', 'Field', 'googleApiKey', function($scope, $http, Field, googleApiKey) {
+	app.controller('RunkeeperSettingsController', ['$scope', '$http', 'Field', function($scope, $http, Field) {
 
 		$scope.init = function() {
 			$scope.settings = $scope.$parent.$parent.settings = {
@@ -4066,7 +4066,7 @@
 		$scope.init();
 	}]);
 
-	app.controller('WithingsSettingsController', ['$scope', '$http', 'Field', 'googleApiKey', function($scope, $http, Field, googleApiKey) {
+	app.controller('WithingsSettingsController', ['$scope', '$http', 'Field', function($scope, $http, Field) {
 
 		$scope.init = function() {
 			$scope.settings = $scope.$parent.$parent.settings = {
