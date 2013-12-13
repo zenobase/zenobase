@@ -38,7 +38,7 @@ public class EventListControllerHttpGetTest extends EventListControllerTestSuppo
 		ObjectNode fakeResult = Nodes.newObject();
 		fakeResult.put("test", true);
 		when(events.find(bucket.getId(), expected)).thenReturn(fakeResult);
-		Result result = call(bucket, String.format("?q=%s&w=%s", constraint, facet));
+		Result result = call(bucket, String.format("?q=%s&facet=%s", constraint, facet));
 		assertThat(result).hasStatus(OK).hasContent(fakeResult);
 	}
 
@@ -57,12 +57,30 @@ public class EventListControllerHttpGetTest extends EventListControllerTestSuppo
 	}
 
 	@Test
-	public void testExportEvents() {
+	public void testExportEventsToJson() {
 		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
 		when(buckets.find(bucket.getId())).thenReturn(bucket);
 		when(events.find(Mockito.eq(bucket.getId()), Mockito.any(Search.class))).thenReturn(Nodes.newObject());
 		Result result = call(bucket, "");
 		assertThat(result).hasStatus(OK).hasContentType("application/json");
+	}
+
+	@Test
+	public void testExportEventsToCsv() {
+		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
+		when(buckets.find(bucket.getId())).thenReturn(bucket);
+		when(events.find(Mockito.eq(bucket.getId()), Mockito.any(Search.class))).thenReturn(Nodes.newObject());
+		Result result = call(bucket, "?accept=text/plain");
+		assertThat(result).hasStatus(OK).hasContentType("text/plain");
+	}
+
+	@Test
+	public void testExportEventsToInvalidFormat() {
+		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
+		when(buckets.find(bucket.getId())).thenReturn(bucket);
+		when(events.find(Mockito.eq(bucket.getId()), Mockito.any(Search.class))).thenReturn(Nodes.newObject());
+		Result result = call(bucket, "?accept=foo/bar");
+		assertThat(result).hasStatus(BAD_REQUEST);
 	}
 
 	@Test

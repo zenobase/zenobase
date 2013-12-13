@@ -14,6 +14,7 @@ import play.mvc.BodyParser;
 import play.mvc.Result;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -76,9 +77,6 @@ public class EventListController extends ControllerSupport {
 	private static List<FacetOptions> getFacets() {
 		List<FacetOptions> options = Lists.newArrayList();
 		String[] facets = request().queryString().get("facet");
-		if (facets == null) {
-			facets = request().queryString().get("w");
-		}
 		if (facets != null) {
 			for (String facet : facets) {
 				options.add(FacetOptions.parse(facet));
@@ -118,8 +116,16 @@ public class EventListController extends ControllerSupport {
     }
 
 	public Result get(String bucketId, List<String> constraints) {
-    	response().setContentType("application/json");
-    	return ok(new EventChunks(events, bucketId, constraints));
+		String accept = Objects.firstNonNull(request().getQueryString("accept"), "application/json");
+		if (accept.equals("text/plain")) {
+    		response().setContentType(accept);
+        	return ok(new EventRows(events, bucketId, constraints));
+    	}
+		if (accept.equals("application/json")) {
+			response().setContentType(accept);
+			return ok(new EventChunks(events, bucketId, constraints));
+		}
+		return badRequest("Can't accept <" + accept + ">");
     }
 
 	@BodyParser.Of(value = BodyParser.Json.class)

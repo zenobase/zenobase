@@ -33,13 +33,13 @@
 				<a id="bucket-menu" class="dropdown-toggle" data-toggle="dropdown" title="More..."> <i class="icon-align-justify"></i><b class="caret"></b></a>
 				<ul class="dropdown-menu" role="menu">
 					<li role="presentation">
-						<a role="menuitem" data-ng-href="{{getExportUrl()}}" download="events.json" data-ng-show="total > 0">Export</a>
+						<a role="menuitem" id="task-list-action" data-ng-click="openDialog('task-list-dialog')" data-ng-show="!bucket.isVirtual()">Tasks...</a>
 					</li>
 					<li role="presentation">
 						<a role="menuitem" data-ng-click="openDialog('import-dialog')" data-ng-show="canImport() && !bucket.isVirtual()">Import...</a>
 					</li>
 					<li role="presentation">
-						<a role="menuitem" id="task-list-action" data-ng-click="openDialog('task-list-dialog')" data-ng-show="!bucket.isVirtual()">Tasks...</a>
+						<a role="menuitem" data-ng-click="openDialog('export-dialog')" data-ng-show="total > 0">Export...</a>
 					</li>
 					<li role="presentation" class="divider"></li>
 					<li role="presentation">
@@ -804,7 +804,7 @@
 				</div>
 				<div class="controls">
 					<span class="help-block">Import data that was exported from another bucket.
-					The data format is described in the <a href="/#/api/events">API docs</a>.
+					The data format is described in the <a href="/#/api/events" target="_blank">API docs</a>.
 					For help with importing data from other sources,
 					<a href="https://zenobase.uservoice.com/">contact us</a>.</span>
 				</div>
@@ -812,6 +812,30 @@
 			<div class="modal-footer">
 				<button type="submit" class="btn btn-primary" data-ng-disabled="isEmpty()">Import</button>
 				<button type="reset" class="btn" data-dismiss="modal">Cancel</button>
+			</div>
+		</form>
+	</div>
+
+	<div id="export-dialog" data-ui-modal data-ng-controller="ExportDialogController">
+		<form name="form" class="modal-form">
+			<div class="modal-header">
+				<a class="close" data-dismiss="modal">&times;</a>
+				<h4>Export</h4>
+			</div>
+			<div class="modal-body">
+				<div class="alert alert-info" data-ng-show="message" data-ng-bind-html="message"></div>
+				<div class="control-group">
+					<label class="radio">
+						<input type="radio" name="media" value="json" data-ng-model="media" /> as <strong>json</strong> <a href="/#/api/events" title="API docs" target="_blank"><i class="icon-question-sign"></i></a>
+					</label>
+					<label class="radio" data-ng-class="total > csvLimit && 'muted'">
+						<input type="radio" name="media" value="csv" data-ng-model="media" data-ng-disabled="total > csvLimit"/> as <strong>csv</strong>
+					</label>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<a class="btn btn-primary" data-ng-href="{{url()}}" data-ng-click="submit()" download="{{file()}}">Export</a>
+				<a class="btn" data-dismiss="modal">Cancel</a>
 			</div>
 		</form>
 	</div>

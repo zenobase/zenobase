@@ -1157,7 +1157,7 @@
 		return Bucket;
 	}]);
 
-	app.controller('DashboardController', ['$scope', '$http', '$route', '$routeParams', '$location', '$q', '$window', 'Bucket', 'Field', 'Constraint', 'tracker', 'delay', 'token', 'taskRunner', function($scope, $http, $route, $routeParams, $location, $q, $window, Bucket, Field, Constraint, tracker, delay, token, taskRunner) {
+	app.controller('DashboardController', ['$scope', '$http', '$route', '$routeParams', '$location', '$q', '$window', 'Bucket', 'Field', 'Constraint', 'tracker', 'delay', 'taskRunner', function($scope, $http, $route, $routeParams, $location, $q, $window, Bucket, Field, Constraint, tracker, delay, taskRunner) {
 
 		function updateEditable() {
 			$scope.editable = $scope.user && $scope.bucket.canEdit($scope.user['@id']);
@@ -1263,20 +1263,6 @@
 				$scope.total = response.total;
 				$scope.$broadcast('result', response, responseB);
 			});
-		};
-		$scope.getExportUrl = function() {
-			var url = '/buckets/' + $scope.bucketId + '/';
-			var params = {};
-			if ($scope.constraints.length > 0) {
-				params.q = $scope.constraints;
-			}
-			if (token.get()) {
-				params.code = token.get();
-			}
-			if (!$.isEmptyObject(params)) {
-				url += '?' + $.param(params, true); 
-			}
-			return url;
 		};
 		$scope.removeEvent = function(eventId) {
 			$scope.alert.clear();
@@ -3701,8 +3687,8 @@
 
 		$scope.init();
 	}]);
-	
-	
+
+
 	app.controller('ImportDialogController', ['$scope', '$http', '$routeParams', 'tracker', 'delay', function($scope, $http, $routeParams, tracker, delay) {
 
 		$scope.bucketId = $routeParams.bucketId;
@@ -3744,6 +3730,50 @@
 					$scope.message = response.message || 'Couldn\'t import the file. Try again later, or contact support.';
 				});
 			tracker.event('action', 'import events');
+		};
+	}]);
+
+
+	app.controller('ExportDialogController', ['$scope', '$routeParams', '$window', 'token', 'tracker', function($scope, $routeParams, $window, token, tracker) {
+
+		$scope.csvLimit = 16000;
+		$scope.bucketId = $routeParams.bucketId;
+
+		$scope.init = function() {
+			if ($scope.total > $scope.csvLimit) {
+				$scope.message = '<b>csv</b> export is limited to ' + $scope.csvLimit + ' events; add one or more constraints to enable.';
+			} else if ($scope.constraints.length > 0) {
+				$scope.message = 'Only events matching the current constraints will be exported.';
+			} else {
+				$scope.message = '';
+			}
+			$scope.media = 'json';
+			tracker.event('dialog', 'export events');
+		};
+		$scope.url = function() {
+			var url = '/buckets/' + $scope.bucketId + '/';
+			var params = {};
+			if ($scope.constraints.length > 0) {
+				params.q = $scope.constraints;
+			}
+			if (token.get()) {
+				params.code = token.get();
+			}
+			if ($scope.media === 'csv') {
+				params.accept = 'text/plain';
+			}
+			if (!$.isEmptyObject(params)) {
+				url += '?' + $.param(params, true); 
+			}
+			return url;
+		};
+		$scope.file = function() {
+			return $scope.bucketId + '.' + $scope.media;
+		}
+		$scope.submit = function() {
+			$scope.alert.clear();
+			$scope.closeDialog();			
+			tracker.event('action', 'export events', $scope.format);
 		};
 	}]);
 
