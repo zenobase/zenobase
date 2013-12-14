@@ -1023,7 +1023,8 @@
       	label : 'Map', 
       	description : 'Shows event locations on a map.',
       	thumbnail : cacheBuster.rewrite('/img/widgets/map.png'),
-      	settings : { }
+      	settings : { },
+      	singleton : true
       },
       {
       	type : 'ratings',
@@ -1227,11 +1228,18 @@
 		$scope.getTemplate = function(type) {
 			return cacheBuster.rewrite('/dashboard/' + type + '.html');
 		};
-		$scope.register = function(widget) {
+
+		var register = function(widget) {
 			$scope.widgets.push(widget);
-			// TODO find better logic to ensure that all widgets are present before refreshing
-			if ($scope.widgets.length >= $scope.bucket.widgets.length) {
-				$scope.refresh();
+		};
+		var seen = 0;
+		$scope.register = function(widget, implicit) {
+			register(widget);
+			if (!implicit) {
+				if (++seen == $scope.bucket.widgets.length) {
+					$scope.register = register;
+					$scope.refresh();
+				}
 			}
 		};
 	
@@ -2399,7 +2407,7 @@
 		}
 
 		$scope.init();
-		$scope.register($scope);
+		$scope.register($scope, true);
 		$scope.$on('result', $scope.update);
 		$scope.$on('refresh', $scope.init);
 		$scope.$on('settings', function() {
