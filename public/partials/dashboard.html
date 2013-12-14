@@ -113,15 +113,15 @@
 					{{message}}
 				</div>
 				<div class="control-group" data-ng-class="!form.label.$valid && 'error'">
-					<label for="label">Label</label>
+					<label for="label"><strong>Label</strong></label>
 					<input id="edit-bucket-label" name="label" type="text" class="xlarge" required data-ui-focus-on="openDialog:edit-bucket-dialog" data-ng-minlength="1" data-ng-maxlength="30" data-ng-pattern="/^[a-zA-Z0-9-_ ]+$/" data-ng-model="newBucket.label"/>
 				</div>
 				<div class="control-group">
-					<label for="description">Description</label>
+					<label for="description"><strong>Description</strong></label>
 					<textarea id="edit-bucket-description" class="input-xlarge" rows="2" data-ng-model="newBucket.description"></textarea>
 				</div>
 				<div class="control-group">
-					<label>Permissions</label>
+					<label><strong>Permissions</strong></label>
 					<ul class="nav nav-pills gray">
 						<li class="active" data-ng-repeat="role in newBucket.roles">
 							<a data-ng-click="newBucket.unpublish()" data-ng-show="role.principal == '*'"><i class="icon-globe"></i> <strong>anyone</strong> with a link can view <i class="icon-remove" title="Revoke"></i></a>
@@ -136,7 +136,7 @@
 					</p>
 				</div>
 				<div class="control-group" data-ng-show="isView" style="clear:both">
-					<label>Aliases:</label>
+					<label><strong>Aliases</strong></label>
 					<ul class="nav nav-pills gray">
 						<li class="active" data-ng-repeat="bucket in newBucket.aliases">
 							<a class="edit-alias-item" data-ng-click="removeBucket(bucket['@id'])">
@@ -170,7 +170,7 @@
 					{{message}}
 				</div>
 				<div class="control-group" data-ng-class="!form.label.$valid && 'error'">
-					<label for="label">Label</label>
+					<label for="label"><strong>Label</strong></label>
 					<input id="create-view-label" name="label" type="text" class="xlarge" required data-ui-focus-on="openDialog:save-as-view-dialog" data-ng-minlength="1" data-ng-maxlength="20" data-ng-model="label"/>
 				</div>
 			</div>

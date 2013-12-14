@@ -85,11 +85,11 @@
 						{{message}}
 					</div>
 					<div class="control-group">
-						<label for="sign-in-username">Username</label>
+						<label for="sign-in-username"><strong>Username</strong></label>
 						<input id="sign-in-username" type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" class="large" data-ui-focus-on="openDialog:sign-in-dialog" required/>
 					</div>
 					<div class="control-group">
-						<label for="sign-in-password">Password</label>
+						<label for="sign-in-password"><strong>Password</strong></label>
 						<input id="sign-in-password" type="password" class="large" required/>
 					</div>
 				</div>
@@ -114,11 +114,11 @@
 						{{message}}
 					</div>
 					<div class="control-group">
-						<label for="lost-password-username">Username</label>
+						<label for="lost-password-username"><strong>Username</strong></label>
 						<input id="lost-password-username" type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" class="large" data-ng-model="username" data-ui-focus-on="openDialog:lost-password-dialog" required/>
 					</div>
 					<div class="control-group">
-						<label for="lost-password-email">Email</label>
+						<label for="lost-password-email"><strong>Email</strong></label>
 						<input id="lost-password-email" type="email" class="large" data-ng-model="email" required/>
 					</div>
 				</div>
@@ -140,19 +140,19 @@
 							{{message}}
 						</div>
 						<div class="control-group">
-							<label for="sign-up-username">Username (4-16 lowercase letters and numbers)</label>
+							<label for="sign-up-username"><strong>Username</strong> <span data-ng-show="form.username.$invalid">(4-16 lowercase letters and numbers)</span></label>
 							<input id="sign-up-username" name="username" type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" class="large" required data-ui-focus-on="openDialog:sign-up-dialog" data-ng-minlength="4" data-ng-maxlength="16" data-ng-pattern="/^[a-z0-9]+$/" data-ng-model="username"/>
 						</div>
 						<div class="control-group">
-							<label for="sign-up-password">Password (min 8 characters)</label>
+							<label for="sign-up-password"><strong>Password</strong> <span data-ng-show="form.password.$invalid">(min 8 characters)</span></label>
 							<input id="sign-up-password" name="password" type="password" class="large" required data-ng-minlength="8" data-ng-model="password"/>
 						</div>
 						<div class="control-group">
-							<label for="sign-up-password-confirm">Confirm Password</label>
+							<label for="sign-up-password-confirm"><strong>Confirm Password</strong></label>
 							<input id="sign-up-password-confirm" name="retypedPassword" type="password" class="large" required data-ng-minlength="8" data-ng-model="passwordConfirmed"/>
 						</div>
 						<div class="control-group">
-							<label for="sign-up-email">Email</label>
+							<label for="sign-up-email"><strong>Email</strong></label>
 							<input id="sign-up-email" name="email" type="email" class="large" required data-ng-model="email"/>
 							<p class="help-block">We'll email you a confirmation.</p>
 						</div>
