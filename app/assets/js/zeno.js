@@ -2277,14 +2277,17 @@
 			$scope.stats = null;
 			$scope.statsB = null;
 		};
+		function shouldRequestStats() {
+			return $scope.constraintsB && $scope.settings.statistic === 'avg'; 
+		}
 		$scope.params = function() {
-			return { 
+			return shouldRequestStats() ? { 
 				id : $scope.settings.id + '-stats',
 				type : 'stats',
 				field : $scope.settings.field,
 				unit : $scope.settings.unit || '',
 				filter : $scope.settings.filter || ''
-			};
+			} : null;
 		};
 		$scope.refresh = function(options, settings) {
 			$scope.init();
@@ -2296,20 +2299,39 @@
 			if ($scope.settings.statistic === 'avg') {
 				$scope.stats = result[$scope.settings.id + '-stats'];
 				$scope.statsB = resultB && resultB[$scope.settings.id + '-stats'];
+			} else {
+				$scope.stats = stats($scope.times);
+				$scope.statsB = stats($scope.timesB);
 			}
 			$timeout($scope.draw, 1); // delay for correct width
 		};
-		function toNumber(field, stats) {
-			return {
-				count : stats.count,
-				avg : field.toNumber(stats.avg),
-				stdev : field.toNumber(stats.stdev)
-			};
+		function stats(times) {
+			var field = Field.find($scope.settings.field);
+			var values = toNumbers(times, field);
+			if (!values.length) {
+				return null;
+			}
+			var r = { avg : 0, stdev : 0, count : values.length }, variance = 0;
+			for (var m, s = 0, l = r.count; l--; s += values[l]);
+			for (m = r.avg = s / r.count, l = r.count, s = 0; l--; s += Math.pow(values[l] - m, 2));
+			r.stdev = toObject(Math.sqrt(variance = s / r.count));
+			r.avg = toObject(r.avg);
+			return r;
+		}
+		function toNumbers(items, field) {
+			var numbers = $.map(items, function(item) {
+				return field.toNumber(item[$scope.settings.statistic || 'count']);
+			});
+			return $.grep(numbers, function(number) {
+				return !isNaN(number);
+			});
+		}
+		function toObject(number) {
+			return $scope.settings.unit ? { '@value' : number, 'unit' : $scope.settings.unit } : number;
 		}
 		$scope.draw = function() {
-			if ($scope.stats && $scope.statsB) {
+			if ($scope.stats && $scope.stats.avg !== undefined && $scope.statsB && $scope.statsB.avg !== undefined) {
 				var field = Field.find($scope.settings.field);
-
 				var avgA = field.toNumber($scope.stats.avg);
 				var avgB = field.toNumber($scope.statsB.avg);
 				var avgAB = avgB - avgA;
