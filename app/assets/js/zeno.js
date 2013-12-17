@@ -2291,9 +2291,13 @@
 		};
 		$scope.refresh = function(options, settings) {
 			$scope.init();
-			$scope.search([ $.extend($scope.params(), options, settings) ], function(result, resultB) {
-				$scope.update(null, result, resultB);
-			});
+			if (shouldRequestStats()) {
+				$scope.search([ $.extend($scope.params(), options, settings) ], function(result, resultB) {
+					$scope.update(null, result, resultB);
+				});
+			} else {
+				$scope.$evalAsync($scope.update);
+			}
 		};
 		$scope.update = function(event, result, resultB) {
 			if ($scope.settings.statistic === 'avg') {
