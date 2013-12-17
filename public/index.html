@@ -140,21 +140,45 @@
 							{{message}}
 						</div>
 						<div class="control-group">
-							<label for="sign-up-username"><strong>Username</strong> <span data-ng-show="form.username.$invalid">(4-16 lowercase letters and numbers)</span></label>
-							<input id="sign-up-username" name="username" type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" class="large" required data-ui-focus-on="openDialog:sign-up-dialog" data-ng-minlength="4" data-ng-maxlength="16" data-ng-pattern="/^[a-z0-9]+$/" data-ng-model="username"/>
+							<label for="sign-up-username"><strong>Username</strong> (4-16 lowercase letters and numbers)</label>
+							<div class="input-append">
+								<input id="sign-up-username" name="username" type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" class="large" required data-ui-focus-on="openDialog:sign-up-dialog" data-ng-minlength="4" data-ng-maxlength="16" data-ng-pattern="/^[a-z0-9]+$/" data-ng-model="username"/>
+								<span class="add-on">
+									<i class="icon-exclamation-sign" title="not valid" data-ng-show="form.username.$invalid"></i>
+									<i class="icon-ok" title="valid" data-ng-hide="form.username.$invalid"></i>
+								</span>
+							</div>
 						</div>
 						<div class="control-group">
-							<label for="sign-up-password"><strong>Password</strong> <span data-ng-show="form.password.$invalid">(min 8 characters)</span></label>
-							<input id="sign-up-password" name="password" type="password" class="large" required data-ng-minlength="8" data-ng-model="password"/>
+							<label for="sign-up-password"><strong>Password</strong> (min 8 characters)</label>
+							<div class="input-append">
+								<input id="sign-up-password" name="password" type="password" class="large" required data-ng-minlength="8" data-ng-model="password"/>
+								<span class="add-on">
+									<i class="icon-exclamation-sign" title="not valid" data-ng-show="form.password.$invalid"></i>
+									<i class="icon-ok" title="valid" data-ng-hide="form.password.$invalid"></i>
+								</span>
+							</div>
 						</div>
 						<div class="control-group">
-							<label for="sign-up-password-confirm"><strong>Confirm Password</strong></label>
-							<input id="sign-up-password-confirm" name="retypedPassword" type="password" class="large" required data-ng-minlength="8" data-ng-model="passwordConfirmed"/>
+							<label for="sign-up-password-confirm"><strong>Password</strong> (repeat)</label>
+							<div class="input-append">
+								<input id="sign-up-password-confirm" name="retypedPassword" type="password" class="large" required data-ng-minlength="8" data-ng-model="passwordConfirmed" ui-password-match="sign-up-password"/>
+								<span class="add-on">
+									<i class="icon-exclamation-sign" title="not valid" data-ng-show="form.retypedPassword.$invalid"></i>
+									<i class="icon-ok" title="valid" data-ng-hide="form.retypedPassword.$invalid"></i>
+								</span>
+							</div>
 						</div>
 						<div class="control-group">
 							<label for="sign-up-email"><strong>Email</strong></label>
-							<input id="sign-up-email" name="email" type="email" class="large" required data-ng-model="email"/>
-							<p class="help-block">We'll email you a confirmation.</p>
+							<div class="input-append">
+								<input id="sign-up-email" name="email" type="email" class="large" required data-ng-model="email"/>
+								<span class="add-on">
+									<i class="icon-exclamation-sign" title="not valid" data-ng-show="form.email.$invalid"></i>
+									<i class="icon-ok" title="valid" data-ng-hide="form.email.$invalid"></i>
+								</span>
+							</div>
+							<p class="help-block">We'll email you a confirmation, and use this address if you ever need to reset your password.</p>
 						</div>
 					</div>
 					<div class="modal-footer">

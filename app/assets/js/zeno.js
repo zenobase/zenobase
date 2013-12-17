@@ -511,10 +511,6 @@
 		};
 		$scope.submit = function() {
 			$scope.alert.clear();
-			if ($scope.password !== $scope.passwordConfirmed) {
-				$scope.message = 'Passwords don\'t match.';
-				return;
-			}
 			$http.post('/users/', $scope.data())
 				.success(function(response) {
 					$scope.$parent.user = new User(response);
@@ -4920,5 +4916,20 @@
 			}
 		};
 	});
+
+	app.directive('uiPasswordMatch', [function () {
+		return {
+			require : 'ngModel',
+			link : function(scope, element, attrs, controller) {
+				var firstPassword = '#' + attrs.uiPasswordMatch;
+				element.add(firstPassword).on('keyup', function() {
+					scope.$apply(function() {
+						var v = element.val() === $(firstPassword).val();
+						controller.$setValidity('match', v);
+					});
+				});
+			}
+		}
+	}]);
 
 }());
