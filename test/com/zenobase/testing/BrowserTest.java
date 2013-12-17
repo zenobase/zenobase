@@ -217,10 +217,7 @@ public class BrowserTest {
 				$("#sign-up-password-confirm").sendKeys("password");
 				assertThat($("#sign-up-button")).isNotEnabled();
 				$("#sign-up-email").sendKeys("jdoe@zenobase.com");
-				assertThat($("#sign-up-button")).isEnabled();
-				$("#sign-up-button").click();
-				assertThat($("#sign-up-dialog")).isDisplayed();
-				assertThat($("#sign-up-message")).isDisplayed();
+				assertThat($("#sign-up-button")).isNotEnabled();
 				$("#sign-up-password-confirm").sendKeys("123");
 				$("#sign-up-button").click();
 				wait.withMessage("view title equals user name").until(ExpectedConditions.textToBePresentInElement(By.id("user-title"), "jdoe"));
