@@ -33,6 +33,15 @@ public class LocalIntervals extends DateTimeFormatSupport {
 			}
 		},
 
+		WEEK(DurationFieldType.weeks()) {
+			@Override
+			protected DateTimeFormatterBuilder configure(DateTimeFormatterBuilder builder) {
+				return builder
+					.append(yearElement())
+					.append(weekofYearElement());
+			}
+		},
+
 		DAY(DurationFieldType.days()) {
 			@Override
 			protected DateTimeFormatterBuilder configure(DateTimeFormatterBuilder builder) {

@@ -24,6 +24,13 @@ public class LocalIntervalsTest {
 	}
 
 	@Test
+	public void testForWeek() {
+		LocalInterval week = LocalIntervals.valueOf("2012-W50");
+		assertThat(week.getStart()).isEqualTo(LocalDateTime.parse("2012-12-10T00:00"));
+		assertThat(week.getEnd()).isEqualTo(LocalDateTime.parse("2012-12-17T00:00"));
+	}
+
+	@Test
 	public void testForDay() {
 		LocalInterval day = LocalIntervals.valueOf("2012-01-01");
 		assertThat(day.getStart()).isEqualTo(LocalDateTime.parse("2012-01-01T00:00"));

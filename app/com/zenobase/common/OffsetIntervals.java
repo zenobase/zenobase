@@ -38,6 +38,17 @@ public class OffsetIntervals extends DateTimeFormatSupport {
 			}
 		},
 
+		WEEK(DurationFieldType.weeks()) {
+			@Override
+			protected DateTimeFormatterBuilder configure(DateTimeFormatterBuilder builder) {
+				return builder
+					.append(yearElement())
+					.append(weekofYearElement())
+					.appendLiteral('T')
+					.append(offsetElement());
+			}
+		},
+
 		DAY(DurationFieldType.days()) {
 			@Override
 			protected DateTimeFormatterBuilder configure(DateTimeFormatterBuilder builder) {

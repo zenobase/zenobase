@@ -17,6 +17,7 @@ public class OffsetDateTimeFormat extends DateTimeFormatSupport {
 		.append(yearElement())
 		.appendOptional(monthElement().getParser())
 		.appendOptional(dayOfMonthElement().getParser())
+		.appendOptional(weekofYearElement().getParser())
 		.appendLiteral('T')
 		.appendOptional(hourElement().getParser())
 		.appendOptional(minuteElement().getParser())

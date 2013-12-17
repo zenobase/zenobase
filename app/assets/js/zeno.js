@@ -1966,19 +1966,27 @@
 		Interval.VALUES = [
 			new Interval('year', 'yyyy', 366 * 24 * 60 * 60 * 1000),
 			new Interval('month', 'yyyy-MM', 28 * 24 * 60 * 60 * 1000), 
+			new Interval('week', 'yyyy-Www', 7 * 24 * 60 * 60 * 1000), 
 			new Interval('day', 'yyyy-MM-dd', 24 * 60 * 60 * 1000), 
 			new Interval('hour', 'yyyy-MM-ddTHH', 60 * 60 * 1000), 
 			new Interval('minute', 'yyyy-MM-ddTHH:mm', 60 * 1000),
 			new Interval('second', 'yyyy-MM-ddTHH:mm:ss', 1000)
 		];
 
+		Interval.VALUES[0].zoomIn = Interval.VALUES[1]; // year -> month 
+		Interval.VALUES[1].zoomIn = Interval.VALUES[3]; // month -> day 
+		Interval.VALUES[2].zoomIn = Interval.VALUES[3]; // week -> day
+		Interval.VALUES[3].zoomIn = Interval.VALUES[4]; // day -> hour
+		Interval.VALUES[4].zoomIn = Interval.VALUES[5]; // hour -> minute
+		Interval.VALUES[5].zoomIn = Interval.VALUES[6]; // minute -> second
+
 		Interval.match = function(value) {
 			if (value.match(/^[0-9]{4}/)) {
 				if (!value.match(/Z|[+-]\d\d:\d\d/)) {
 					var i, max;
 					for (i = 1, max = Interval.VALUES.length; i < max; ++i) {
-						if (value.length === Interval.VALUES[i - 1].pattern) {
-							return Interval.VALUES[i];
+						if (value.length === Interval.VALUES[i].pattern) {
+							return Interval.VALUES[i].zoomIn;
 						}
 					}
 				}

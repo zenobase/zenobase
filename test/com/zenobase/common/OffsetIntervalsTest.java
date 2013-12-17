@@ -25,6 +25,13 @@ public class OffsetIntervalsTest {
 	}
 
 	@Test
+	public void testForWeek() {
+		Interval week = OffsetIntervals.valueOf("2012-W50TZ");
+		assertThat(week.getStart()).isEqualTo(DateTime.parse("2012-12-10T00:00Z"));
+		assertThat(week.getEnd()).isEqualTo(DateTime.parse("2012-12-17T00:00Z"));
+	}
+
+	@Test
 	public void testForDay() {
 		Interval day = OffsetIntervals.valueOf("2012-01-01TZ");
 		assertThat(day.getStart()).isEqualTo(DateTime.parse("2012-01-01T00:00Z"));

@@ -14,24 +14,30 @@ a simple Android app that authenticates with and posts data to Zenobase.</p>
 <h3>Changelog</h3>
 
 <dl>
+	<dt>2013-12-16</dt>
+	<dd>
+		<ul>
+			<li>timestamp constraints support week numbers</li>
+		</ul>
+	</dd>
 	<dt>2013-12-10</dt>
 	<dd>
 		<ul>
-			<li>added <code>stats</code> facet</li>
+			<li><code>stats</code> facet</li>
 		</ul>
 	</dd>
 	<dt>2013-11-11</dt>
 	<dd>
 		<ul>
-			<li>changed the path for looking up user names to <code>/users/<em>&lt;user_id&gt;</em></code></li>
-			<li>changed the path for finding a user's buckets to <code>/users/<em>&lt;user_id&gt;</em>/buckets/</code></li>
+			<li>path for looking up user names changed to <code>/users/<em>&lt;user_id&gt;</em></code></li>
+			<li>path for finding a user's buckets changed to <code>/users/<em>&lt;user_id&gt;</em>/buckets/</code></li>
 		</ul>
 	</dd>
 	<dt>2013-10-23</dt>
 	<dd>
 		<ul>
-			<li>timestamp constraints can now be based on the timestamp's local time</li>
-			<li>made the timezone parameter for the timeline widget optional</li>
+			<li>timestamp constraints can be based on the timestamp's local time</li>
+			<li>timezone parameter for the timeline widget is optional</li>
 		</ul>
 	</dd>
 </dl>
@@ -941,6 +947,8 @@ Content-Type: application/json
   <dd>all of 2013</dd>
   <dt><code>2013-01TZ</code>, <code>[2013-01TZ..2013-02TZ)</code>, <code>[2012-12-31T16-08:00..2013-01-31T16-08:00)</code></dt>
   <dd>January</dd>
+  <dt><code>2013-W01TZ</code>, <code>[2013-W01TZ..2013-W02TZ)</code>, <code>[2012-12-30TZ..2013-01-07TZ)</code></dt>
+  <dd>1st week of January</dd>
   <dt><code>2013-01-02TZ</code>, <code>[2013-01-02TZ..2013-01-03TZ)</code>, <code>[2013-01-01T16-08:00..2013-01-02T16-08:00)</code></dt>
   <dd>January 2nd</dd>
   <dt><code>2013-01-02T20Z</code>, <code>[2013-01-02T20Z..2013-01-02T21Z)</code>, <code>[2013-01-02T12-08:00..2013-01-02T13-08:00)</code></dt>
@@ -958,6 +966,8 @@ Content-Type: application/json
   <dd>all of 2013</dd>
   <dt><code>2013-01</code>, <code>[2013-01..2013-02)</code></dt>
   <dd>January</dd>
+  <dt><code>2013-W01</code>, <code>[2013-W01..2013-W02)</code>, <code>[2012-12-30..2013-01-07)</code></dt>
+  <dd>1st week of January</dd>
   <dt><code>2013-01-02</code>, <code>[2013-01-02..2013-01-03)</code></dt>
   <dd>January 2nd</dd>
   <dt><code>2013-01-02T20</code>, <code>[2013-01-02T20..2013-01-02T21)</code></dt>

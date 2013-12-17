@@ -18,6 +18,14 @@ public class DateTimeFormatSupport {
 			.toFormatter();
 	}
 
+	protected static DateTimeFormatter weekofYearElement() {
+		return new DateTimeFormatterBuilder()
+			.appendLiteral('-')
+			.appendLiteral('W')
+			.appendWeekOfWeekyear(2)
+			.toFormatter();
+	}
+
 	protected static DateTimeFormatter dayOfMonthElement() {
 		return new DateTimeFormatterBuilder()
 			.appendLiteral('-')
