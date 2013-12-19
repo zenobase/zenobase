@@ -2222,7 +2222,13 @@
 					if (value !== undefined) {
 						options.series[0].data.push({ x : time.time, y : field.toNumber(value), filter : time.label, tooltip : field.toText(value) });
 						if ($scope.settings.statistic === 'avg') {
-							options.series[1].data.push([ time.time, field.toNumber(time['min']), field.toNumber(time['max']) ]);
+							options.series[1].data.push({ 
+								x : time.time, 
+								low : field.toNumber(time['min']), 
+								high : field.toNumber(time['max']), 
+								filter : time.label,
+								tooltip : field.toText(time['min']) + '..' + field.toText(time['max'])
+							});
 						}
 					} else {
 						options.series[0].data.push({ x : time.time, y : null });
