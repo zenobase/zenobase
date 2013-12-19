@@ -25,6 +25,7 @@ import org.joda.time.DateTime;
 import play.Logger;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.google.common.primitives.Ints;
@@ -231,9 +232,9 @@ public class Index {
 	}
 
 	private Set<String> aliases() {
-		return client.admin().indices()
+		return ImmutableSet.copyOf(client.admin().indices()
 			.prepareGetAliases(indexName)
-			.execute().actionGet().getAliases().keySet();
+			.execute().actionGet().getAliases().keysIt());
 	}
 
 	private boolean close(Iterable<String> aliases) {
