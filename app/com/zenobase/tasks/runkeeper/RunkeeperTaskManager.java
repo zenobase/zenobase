@@ -14,7 +14,6 @@ import org.scribe.model.Response;
 import org.scribe.model.Verb;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Objects;
-import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 
 import com.zenobase.commands.Command;
@@ -93,7 +92,7 @@ public class RunkeeperTaskManager extends OAuthTaskManager {
 	}
 
 	static String getMarker(Iterable<Event> events) {
-		return Iterables.getLast(events).getValue(Event.TIMESTAMP).toLocalDateTime().toString();
+		return events.iterator().next().getValue(Event.TIMESTAMP).plusSeconds(1).toLocalDateTime().toString();
 	}
 
 	private Command createCommand(RunkeeperTask task, OAuthCredentials credentials, List<Event> events) {
