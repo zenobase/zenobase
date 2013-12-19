@@ -9,6 +9,7 @@ import javax.measure.quantity.Pressure;
 import javax.measure.quantity.Temperature;
 
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.junit.Test;
 
 import com.zenobase.common.Measures;
@@ -21,12 +22,13 @@ public class MeasurementsResultTest extends ResultTestSupport {
 
 	@Test
 	public void test() {
-		Device device = new Device("1", "test", DateTime.now(), DateTime.now(), new Location("1", "2"));
+		DateTimeZone tz = DateTimeZone.forOffsetHours(-7);
+		Device device = new Device("1", "test", DateTime.now(tz), DateTime.now(tz), new Location("1", "2"));
 		MeasurementsResult result = new MeasurementsResult(TESTER, device, readObject("MeasurementsResultTest.json"));
 		List<Event> events = result.getEvents();
 		assertThat(events).as("events").hasSize(10);
 		Event expected = new Event(events.get(0).getId());
-		expected.setValue(Event.TIMESTAMP, DateTime.parse("2013-03-28T16:38:45.000-07:00"));
+		expected.setValue(Event.TIMESTAMP, DateTime.parse("2013-03-28T16:38:45.000-07:00").withZone(DateTimeZone.forOffsetHours(-7)));
 		expected.addValue(Event.TAG, device.getLabel());
 		expected.setValue(Event.LOCATION, device.getLocation());
 		expected.setValue(Event.TEMPERATURE, Measures.<Temperature>valueOf("25.7 C"));
