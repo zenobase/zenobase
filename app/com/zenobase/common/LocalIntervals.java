@@ -148,9 +148,11 @@ public class LocalIntervals extends DateTimeFormatSupport {
 	}
 
 	public static LocalInterval valueOf(String value) {
-		for (IntervalType format : IntervalType.values()) {
-			if (value.length() == format.length) {
-				return format.toInterval(value);
+		if (Character.isDigit(value.charAt(0))) {
+			for (IntervalType format : IntervalType.values()) {
+				if (value.length() == format.length) {
+					return format.toInterval(value);
+				}
 			}
 		}
 		return null;
