@@ -75,7 +75,13 @@
 					</div>
 					<div class="control-group" data-ng-class="!form.label.$valid && 'error'">
 						<label for="label"><strong>Label</strong></label>
-						<input id="create-bucket-label" name="label" type="text" class="xlarge" required data-ui-focus-on="openDialog:create-bucket-dialog" data-ng-minlength="1" data-ng-maxlength="20" data-ng-model="label"/>
+						<div class="input-append">
+							<input id="create-bucket-label" name="label" type="text" class="xlarge" required data-ui-focus-on="openDialog:create-bucket-dialog" data-ng-minlength="1" data-ng-maxlength="20" data-ng-model="label"/>
+							<span class="add-on">
+								<i class="icon-exclamation-sign" title="not valid" data-ng-show="form.label.$invalid"></i>
+								<i class="icon-ok" title="valid" data-ng-hide="form.label.$invalid"></i>
+							</span>
+						</div>
 					</div>
 					<div class="control-group">
 						<label for="bucket-template-select"><strong>Template</strong></label>
@@ -101,7 +107,13 @@
 					</div>
 					<div class="control-group" data-ng-class="!form.label.$valid && 'error'">
 						<label for="label"><strong>Label</strong></label>
-						<input id="create-view-label" name="label" type="text" class="xlarge" required data-ui-focus-on="openDialog:create-view-dialog" data-ng-minlength="1" data-ng-maxlength="20" data-ng-model="label"/>
+						<div class="input-append">
+							<input id="create-view-label" name="label" type="text" class="xlarge" required data-ui-focus-on="openDialog:create-view-dialog" data-ng-minlength="1" data-ng-maxlength="20" data-ng-model="label"/>
+							<span class="add-on">
+								<i class="icon-exclamation-sign" title="not valid" data-ng-show="form.label.$invalid"></i>
+								<i class="icon-ok" title="valid" data-ng-hide="form.label.$invalid"></i>
+							</span>
+						</div>
 					</div>
 					<div class="control-group">
 						<ul class="nav nav-pills gray">

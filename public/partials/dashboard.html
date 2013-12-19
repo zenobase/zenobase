@@ -114,7 +114,13 @@
 				</div>
 				<div class="control-group" data-ng-class="!form.label.$valid && 'error'">
 					<label for="label"><strong>Label</strong></label>
-					<input id="edit-bucket-label" name="label" type="text" class="xlarge" required data-ui-focus-on="openDialog:edit-bucket-dialog" data-ng-minlength="1" data-ng-maxlength="30" data-ng-pattern="/^[a-zA-Z0-9-_ ]+$/" data-ng-model="newBucket.label"/>
+					<div class="input-append">
+						<input id="edit-bucket-label" name="label" type="text" class="xlarge" required data-ui-focus-on="openDialog:edit-bucket-dialog" data-ng-minlength="1" data-ng-maxlength="30" data-ng-pattern="/^[a-zA-Z0-9-_ ]+$/" data-ng-model="newBucket.label"/>
+						<span class="add-on">
+							<i class="icon-exclamation-sign" title="not valid" data-ng-show="form.label.$invalid"></i>
+							<i class="icon-ok" title="valid" data-ng-hide="form.label.$invalid"></i>
+						</span>
+					</div>
 				</div>
 				<div class="control-group">
 					<label for="description"><strong>Description</strong></label>
@@ -171,7 +177,13 @@
 				</div>
 				<div class="control-group" data-ng-class="!form.label.$valid && 'error'">
 					<label for="label"><strong>Label</strong></label>
-					<input id="create-view-label" name="label" type="text" class="xlarge" required data-ui-focus-on="openDialog:save-as-view-dialog" data-ng-minlength="1" data-ng-maxlength="20" data-ng-model="label"/>
+					<div class="input-append">
+						<input id="create-view-label" name="label" type="text" class="xlarge" required data-ui-focus-on="openDialog:save-as-view-dialog" data-ng-minlength="1" data-ng-maxlength="20" data-ng-model="label"/>
+						<span class="add-on">
+							<i class="icon-exclamation-sign" title="not valid" data-ng-show="form.label.$invalid"></i>
+							<i class="icon-ok" title="valid" data-ng-hide="form.label.$invalid"></i>
+						</span>
+					</div>
 				</div>
 			</div>
 			<div class="modal-footer">
