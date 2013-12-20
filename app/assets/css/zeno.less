@@ -18,7 +18,7 @@
 @import "bootstrap/tables.less";
 
 // Components: common
-@import "bootstrap/sprites.less";
+// @import "bootstrap/sprites.less";
 @import "bootstrap/dropdowns.less";
 @import "bootstrap/wells.less";
 // @import "bootstrap/component-animations.less";
@@ -52,6 +52,8 @@
 
 // Utility classes
 @import "bootstrap/utilities.less";
+
+@import "font-awesome-4.0.3.less";
 
 // Responsive
 @-ms-viewport{
@@ -312,12 +314,6 @@ a {
 	vertical-align: middle;
 }
 
-/* gray bootstrap icons that show on hover */
-.icon-hover {
-	opacity: 0;
-	filter: alpha(opacity=0);
-	cursor: pointer;
-}
 a:hover > i.icon-hover {
 	opacity: 0.5;
 	filter: alpha(opacity=50);
@@ -383,4 +379,19 @@ pre.example > .title {
 .nav-pills > .active-b > a:active,
 .nav-pills > .active-b > a:hover {
 	background-color: #CC6600; 
+}
+
+.fa {
+	color: #333;
+}
+
+.fa-white {
+	color: white;
+}
+
+/* gray icons that show on hover */
+.fa-hover {
+	opacity: 0;
+	filter: alpha(opacity=0);
+	cursor: pointer;
 }

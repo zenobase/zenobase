@@ -1376,7 +1376,7 @@
 				fieldName = fieldName.substring(0, dot);
 			}
 			var field = Field.find(fieldName);
-			return field ? field.icon : 'icon-ban-circle';
+			return field ? field.icon : 'fa-circle';
 		};
 		$scope.swapAB = function() {
 			var tmp = $scope.constraints;
@@ -4283,22 +4283,22 @@
 
 		register({
 			name : 'tag',
-			icon : 'icon-tag',
+			icon : 'fa-tag',
 			type : 'text',
 			toHtml : function(value) {
 				return '<span class="nowrap">' +
-					'<i class="' + this.icon + '" title="Tag"></i> ' + encode(value) +
+					'<i class="fa ' + this.icon + '" title="Tag"></i> ' + encode(value) +
 				'</span>';
 			}
 		});
 
 		register({
 			name : 'resource',
-			icon : 'icon-bookmark',
+			icon : 'fa-bookmark',
 			type : 'object',
 			toHtml : function(value) {
 				return '<span>' +
-			  	'<i class="' + this.icon + '" title="Resource"></i>&nbsp;' +
+			  	'<i class="fa ' + this.icon + '" title="Resource"></i>&nbsp;' +
 			  	'<a href="' +  encode(value.url) + '" target="_blank" rel="nofollow">' +  encode(value.title) + '</a>' +
 			  '</span>';
 			}
@@ -4306,7 +4306,7 @@
 
 		register({
 			name : 'distance',
-			icon : 'icon-resize-horizontal',
+			icon : 'fa-arrows-h',
 			type : 'numeric',
 			units : [ 'mi', 'ft', 'in', 'km', 'm', 'cm', 'mm' ],
 			toText : function(value) {
@@ -4314,14 +4314,14 @@
 			},
 			toHtml : function(value) {
 				return '<span class="nowrap">' +
-			  	'<i class="' + this.icon + '" title="Distance"></i> ' + this.toText(value) +
+			  	'<i class="fa ' + this.icon + '" title="Distance"></i> ' + this.toText(value) +
 			  '</span>';
 			}
 		});
 
 		register({
 			name : 'height',
-			icon : 'icon-resize-vertical',
+			icon : 'fa-arrows-v',
 			type : 'numeric',
 			units : [ 'mi', 'ft', 'in', 'km', 'm', 'cm', 'mm' ],
 			toText : function(value) {
@@ -4329,14 +4329,14 @@
 			},
 			toHtml : function(value) {
 				return '<span class="nowrap">' +
-			  	'<i class="' + this.icon + '" title="Height"></i> ' + this.toText(value) +
+			  	'<i class="fa ' + this.icon + '" title="Height"></i> ' + this.toText(value) +
 			  '</span>';
 			}
 		});
 
 		register({
 			name : 'weight',
-			icon : 'icon-leaf',
+			icon : 'fa-caret-square-o-down',
 			type : 'numeric',
 			units : [ 'lb', 'oz', 'kg', 'g', 'mg', 'st' ],
 			toText : function(value) {
@@ -4344,28 +4344,28 @@
 			},
 			toHtml : function(value) {
 				return '<span class="nowrap">' +
-			  	'<i class="' + this.icon + '" title="Weight"></i> ' + this.toText(value) +
+			  	'<i class="fa ' + this.icon + '" title="Weight"></i> ' + this.toText(value) +
 			  '</span>';
 			}
 		});
 
 		register({
 			name : 'percentage',
-			icon : 'icon-th',
+			icon : 'fa-th',
 			type : 'numeric',
 			toText : function(value) {
 				return value + '%';
 			},
 			toHtml : function(value) {
 				return '<span class="nowrap">' +
-			  	'<i class="' + this.icon + '" title="Percentage"></i> <abbr title="' + value + '%">' + Math.round(value) + '%</abbr>' +
+			  	'<i class="fa ' + this.icon + '" title="Percentage"></i> <abbr title="' + value + '%">' + Math.round(value) + '%</abbr>' +
 			  '</span>';
 			}
 		});
 
 		register({
 			name : 'volume',
-			icon : 'icon-tint',
+			icon : 'fa-flask',
 			type : 'numeric',
 			units : [ 'L', 'dL', 'cL', 'mL', 'gal', 'qt', 'pt', 'cups', 'fl_oz' ],
 			toText : function(value) {
@@ -4373,14 +4373,14 @@
 			},
 			toHtml : function(value) {
 				return '<span class="nowrap">' +
-			  	'<i class="' + this.icon + '" title="Volume"></i> ' + this.toText(value) +
+			  	'<i class="fa ' + this.icon + '" title="Volume"></i> ' + this.toText(value) +
 			  '</span>';
 			}
 		});
 
 		register({
 			name : 'concentration',
-			icon : 'icon-tint',
+			icon : 'fa-tint',
 			type : 'numeric',
 			units : [ 'g/L', 'mg/L', 'ug/L', 'ng/L', 'g/dL', 'mg/dL', 'ug/dL', 'ng/dL', 'g/mL', 'mg/mL', 'ug/mL', 'ng/mL' ],
 			toText : function(value) {
@@ -4388,25 +4388,25 @@
 			},
 			toHtml : function(value) {
 				return '<span class="nowrap">' +
-			  	'<i class="' + this.icon + '" title="Volume"></i> ' + this.toText(value) +
+			  	'<i class="fa ' + this.icon + '" title="Volume"></i> ' + this.toText(value) +
 			  '</span>';
 			}
 		});
 
 		register({
 			name : 'humidity',
-			icon : 'icon-tint',
+			icon : 'fa-tint',
 			type : 'numeric',
 			toHtml : function(value) {
 				return '<span class="nowrap">' +
-			  	'<i class="' + this.icon + '" title="Humidity"></i> ' + value + '%' +
+			  	'<i class="fa ' + this.icon + '" title="Humidity"></i> ' + value + '%' +
 			  '</span>';
 			}
 		});
 
 		register({
 			name : 'pressure',
-			icon : 'icon-fullscreen',
+			icon : 'fa-arrows-alt',
 			type : 'numeric',
 			units : [ 'Pa', 'hPa', 'mmHg', 'inHg', 'psi' ],
 			toText : function(value) {
@@ -4414,14 +4414,14 @@
 			},
 			toHtml : function(value) {
 				return '<span class="nowrap">' +
-			  	'<i class="' + this.icon + '" title="Pressure"></i> ' + this.toText(value) +
+			  	'<i class="fa ' + this.icon + '" title="Pressure"></i> ' + this.toText(value) +
 			  '</span>';
 			}
 		});
 
 		register({
 			name : 'sound',
-			icon : 'icon-volume-up',
+			icon : 'fa-volume-up',
 			type : 'numeric',
 			units : [ 'dB' ],
 			toText : function(value) {
@@ -4429,21 +4429,21 @@
 			},
 			toHtml : function(value) {
 				return '<span class="nowrap">' +
-			  	'<i class="' + this.icon + '" title="Sound Level"></i> ' + this.toText(value) +
+			  	'<i class="fa ' + this.icon + '" title="Sound Level"></i> ' + this.toText(value) +
 			  '</span>';
 			}
 		});
 
 		register({
 			name : 'location',
-			icon : 'icon-map-marker',
+			icon : 'fa-map-marker',
 			type : 'object',
 			toText : function(value) {
 				return typeof value === 'object' ? encode(Math.round(value.lat * 1000) / 1000 + ', ' + Math.round(value.lon * 1000) / 1000) : '';
 			},
 			toHtml : function(value) {
 				return '<span class="nowrap">' +
-					'<i class="' + this.icon + '" title="Location"></i> ' +
+					'<i class="fa ' + this.icon + '" title="Location"></i> ' +
 					'<a href="http://maps.google.com/maps?q=' + encode(value.lat + ',' + value.lon) + '&t=p&z=5" target="_blank">' + this.toText(value) + '</a>' +
 				'</span>';
 			}
@@ -4451,11 +4451,11 @@
 
 		register({
 			name : 'timestamp',
-			icon : 'icon-calendar',
+			icon : 'fa-calendar-o',
 			type : 'object',
 			toHtml : function(value) {
 				return '<span class="nowrap">' +
-			  	'<i class="' + this.icon + '" title="Timestamp"></i> ' +
+			  	'<i class="fa ' + this.icon + '" title="Timestamp"></i> ' +
 					'<abbr title="' + value + '">' + moment(value).zone(value).fromNowOrNow(false) + '</abbr>' +
 			  '</span>';
 			}
@@ -4463,7 +4463,7 @@
 
 		register({
 			name : 'velocity',
-			icon : 'icon-road',
+			icon : 'fa-tachometer',
 			type : 'numeric',
 			units : [ 'm/s', 'mph', 'kmh', 'kn', 'Mach' ],
 			toText : function(value) {
@@ -4471,21 +4471,21 @@
 			},
 			toHtml : function(value) {
 				return '<span class="nowrap">' +
-			  	'<i class="' + this.icon + '" title="Velocity"></i> ' + this.toText(value) +
+			  	'<i class="fa ' + this.icon + '" title="Velocity"></i> ' + this.toText(value) +
 			  '</span>';
 			}
 		});
 
 		register({
 			name : 'duration',
-			icon : 'icon-time',
+			icon : 'fa-clock-o',
 			type : 'numeric',
 			toText : function(value) {
 				return value ? moment.duration(value).countdown() : 0;
 			},
 			toHtml : function(value) {
 				return '<span class="nowrap">' +
-			  	'<i class="' + this.icon + '" title="Duration"></i> ' + this.toText(value) +
+			  	'<i class="fa ' + this.icon + '" title="Duration"></i> ' + this.toText(value) +
 			  '</span>';
 			},
 			toNumber : function(value) {
@@ -4527,7 +4527,7 @@
 
 		register({
 			name : 'frequency',
-			icon : 'icon-heart',
+			icon : 'fa-heart',
 			type : 'numeric',
 			units : [ 'bpm', 'Hz' ],
 			toText : function(value) {
@@ -4535,14 +4535,14 @@
 			},
 			toHtml : function(value) {
 				return '<span class="nowrap">' +
-			  	'<i class="' + this.icon + '" title="Frequency"></i> ' + this.toText(value) +
+			  	'<i class="fa ' + this.icon + '" title="Frequency"></i> ' + this.toText(value) +
 			  '</span>';
 			}
 		});
 
 		register({
 			name : 'bits',
-			icon : 'icon-hdd',
+			icon : 'fa-hdd-o',
 			type : 'numeric',
 			units : [ 'bit', 'B', 'KB', 'MB', 'GB', 'TB', 'PB', 'KiB', 'MiB', 'GiB', 'TiB', 'PiB' ],
 			toText : function(value) {
@@ -4550,25 +4550,25 @@
 			},
 			toHtml : function(value) {
 				return '<span class="nowrap">' +
-			  	'<i class="' + this.icon + '" title="Bits"></i> ' + this.toText(value) +
+			  	'<i class="fa ' + this.icon + '" title="Bits"></i> ' + this.toText(value) +
 			  '</span>';
 			}
 		});
 
 		register({
 			name : 'count',
-			icon : 'icon-th',
+			icon : 'fa-th',
 			type : 'numeric',
 			toHtml : function(value) {
 				return '<span class="nowrap">' +
-			  	'<i class="' + this.icon + '" title="Count"></i> ' + value +
+			  	'<i class="fa ' + this.icon + '" title="Count"></i> ' + value +
 			  '</span>';
 			}
 		});
 
 		register({
 			name : 'energy',
-			icon : 'icon-fire',
+			icon : 'fa-fire',
 			type : 'numeric',
 			units : [ 'J', 'kJ', 'cal', 'kcal' ],
 			toText : function(value) {
@@ -4576,14 +4576,14 @@
 			},
 			toHtml : function(value) {
 				return '<span class="nowrap">' +
-			  	'<i class="' + this.icon + '" title="Energy"></i> ' + this.toText(value) +
+			  	'<i class="fa ' + this.icon + '" title="Energy"></i> ' + this.toText(value) +
 			  '</span>';
 			}
 		});
 
 		register({
 			name : 'temperature',
-			icon : 'icon-fire',
+			icon : 'fa-fire',
 			type : 'numeric',
 			units : [ 'C', 'F', 'K' ],
 			toText : function(value) {
@@ -4591,14 +4591,14 @@
 			},
 			toHtml : function(value) {
 				return '<span class="nowrap">' +
-			  	'<i class="' + this.icon + '" title="Temperature"></i> ' + this.toText(value) +
+			  	'<i class="fa ' + this.icon + '" title="Temperature"></i> ' + this.toText(value) +
 			  '</span>';
 			}
 		});
 
 		register({
 			name : 'rating',
-			icon : 'icon-star',
+			icon : 'fa-star',
 			type : 'numeric',
 			toText : function(value) {
 				return value + '%';
@@ -4607,7 +4607,7 @@
 				var stars = Math.round((value || 0) / 20);
 				var html = '<span class="nowrap" title="' + this.toText(value) + '">';
 				for (var i = 0; i < 5; ++i) {
-					html += '<i class="' + (stars > i ? 'icon-star' : 'icon-star-empty') + '"></i>';
+					html += '<i class="fa ' + (stars > i ? 'fa-star' : 'fa-star-o') + '"></i>';
 				}
 				html += '</span>';
 				return html;
@@ -4616,18 +4616,18 @@
 
 		register({
 			name : 'note',
-			icon : 'icon-comment',
+			icon : 'fa-comment-o',
 			type : 'object',
 			toHtml : function(value) {
 				return '<span>' +
-			  	'<i class="' + this.icon + '" title="Note"></i>&nbsp;' + encode(value) +
+			  	'<i class="fa ' + this.icon + '" title="Note"></i>&nbsp;' + encode(value) +
 			  '</span>';
 			}
 		});
 
 		register({
 			name : 'author',
-			icon : 'icon-user',
+			icon : 'fa-user',
 			type : 'text',
 			readOnly : true,
 			toText : function(value) {
@@ -4635,14 +4635,14 @@
 			},
 			toHtml : function(value) {
 				return '<span class="nowrap">' +
-			  	'<i class="' + this.icon + '" title="User"></i> ' + this.toText(value) +
+			  	'<i class="fa ' + this.icon + '" title="User"></i> ' + this.toText(value) +
 			  '</span>';
 			}
 		});
 
 		register({
 			name : 'source',
-			icon : 'icon-share',
+			icon : 'fa-external-link',
 			type : 'object',
 			readOnly : true,
 			toText : function(value) {
@@ -4650,7 +4650,7 @@
 			},
 			toHtml : function(value) {
 				return '<span class="nowrap">' +
-					'<i class="' + this.icon + '" title="Source"></i> <a href="' +  encode(value.url) + '" rel="nofollow">' +  encode(value.title) + '</a>' +
+					'<i class="fa ' + this.icon + '" title="Source"></i> <a href="' +  encode(value.url) + '" rel="nofollow">' +  encode(value.title) + '</a>' +
 				 '</span>';
 			}
 		});

@@ -5,7 +5,7 @@
 	</div>
 
 	<div id="dashboard-loading-message" data-ng-hide="bucket || message">
-		<i class="icon-refresh"></i> Loading...		
+		<i class="fa fa-refresh"></i> Loading...		
 	</div>
 
 	<div class="alert alert-block alert-info" data-ng-controller="EditWidgetsController" data-ng-show="dirty && editable">
@@ -24,13 +24,13 @@
 				<span id="bucket-title" class="page-title-text">{{bucket.label}}</span>
 				<span id="event-count" class="badge badge-success page-title-decoration" title="Events" data-ng-show="total >= 0">{{total}}</span>
 				<span class="badge badge-important page-title-decoration" title="Couldn't load any events" data-ng-show="total < 0">0</span>
-				<a class="page-title-decoration" data-ng-click="run()" title="Refresh"><i class="icon-refresh"></i></a>
-				<a class="page-title-decoration" data-ng-click="openDialog('save-as-view-dialog')" title="Create View..." data-ng-hide="bucket.isVirtual()"><i class="icon-eye-open"></i></a>
-				<a id="add-event-action" class="page-title-decoration" data-ng-click="openDialog('edit-event-dialog', {})" title="Create Event..." data-ng-show="editable && !bucket.isVirtual()"><i class="icon-plus"></i></a>
+				<a class="page-title-decoration" data-ng-click="run()" title="Refresh"><i class="fa fa-refresh"></i></a>
+				<a class="page-title-decoration" data-ng-click="openDialog('save-as-view-dialog')" title="Create View..." data-ng-hide="bucket.isVirtual()"><i class="fa fa-share-square"></i></a>
+				<a id="add-event-action" class="page-title-decoration" data-ng-click="openDialog('edit-event-dialog', {})" title="Create Event..." data-ng-show="editable && !bucket.isVirtual()"><i class="fa fa-plus"></i></a>
 			</p>
 
 			<div class="pull-right page-title dropdown" data-ng-show="editable">
-				<a id="bucket-menu" class="dropdown-toggle" data-toggle="dropdown" title="More..."> <i class="icon-align-justify"></i><b class="caret"></b></a>
+				<a id="bucket-menu" class="dropdown-toggle" data-toggle="dropdown" title="More..."> <i class="fa fa-bars"></i><b class="caret"></b></a>
 				<ul class="dropdown-menu" role="menu">
 					<li role="presentation">
 						<a role="menuitem" id="task-list-action" data-ng-click="openDialog('task-list-dialog')" data-ng-show="!bucket.isVirtual()">Tasks...</a>
@@ -50,11 +50,11 @@
 
 			<ul class="nav nav-pills pull-left" data-ng-show="constraints.length || constraintsB.length">
 				<li class="active" data-ng-repeat="constraint in constraints">
-					<a data-ng-click="removeConstraint(constraint)" title="{{constraint.toString()}}"><i class="icon-minus icon-white" data-ng-show="constraint.negated"></i><i class="icon-white" data-ng-class="getConstraintIcon(constraint)"></i> {{constraint.value}} <i class="icon-remove icon-white"></i></a>
+					<a data-ng-click="removeConstraint(constraint)" title="{{constraint.toString()}}"><i class="fa fa-minus fa-white" data-ng-show="constraint.negated"></i><i class="fa fa-white" data-ng-class="getConstraintIcon(constraint)"></i> {{constraint.value}} <i class="fa fa-times fa-white"></i></a>
 				</li>
-				<li><a title="A/B Comparison" data-ng-click="swapAB()"><i class="icon-adjust"></i></a></li>
+				<li><a title="A/B Comparison" data-ng-click="swapAB()"><i class="fa fa-adjust"></i></a></li>
 				<li class="active active-b" data-ng-repeat="constraint in constraintsB">
-					<a data-ng-click="removeConstraintB(constraint)" title="{{constraint.toString()}}"><i class="icon-minus icon-white" data-ng-show="constraint.negated"></i><i class="icon-white" data-ng-class="getConstraintIcon(constraint)"></i> {{constraint.value}} <i class="icon-remove icon-white"></i></a>
+					<a data-ng-click="removeConstraintB(constraint)" title="{{constraint.toString()}}"><i class="fa fa-minus fa-white" data-ng-show="constraint.negated"></i><i class="fa fa-white" data-ng-class="getConstraintIcon(constraint)"></i> {{constraint.value}} <i class="fa fa-times fa-white"></i></a>
 				</li>
 			</ul>
 		</div>
@@ -65,9 +65,9 @@
 			<div class="span12">
 				<ul class="nav nav-tabs">
 					<li data-ng-class="$index == 0 && 'active'" data-ng-repeat="settings in getWidgetSettings('top')">
-						<a id="{{settings.id}}-tab" data-ng-href="#{{settings.id}}" target="_self" data-toggle="tab">{{settings.label}}&nbsp;<i class="icon-cog icon-hover" title="Settings..." data-ng-click="openDialog(settings.id + '-dialog')"></i></a>
+						<a id="{{settings.id}}-tab" data-ng-href="#{{settings.id}}" target="_self" data-toggle="tab">{{settings.label}}&nbsp;<i class="fa fa-cog fa-hover" title="Settings..." data-ng-click="openDialog(settings.id + '-dialog')"></i></a>
 					</li>
-					<li><a data-ng-click="openDialog('add-widget-dialog', 'top')" title="Add..."> <i class="icon-plus icon-hover"></i> </a></li>
+					<li><a data-ng-click="openDialog('add-widget-dialog', 'top')" title="Add..."> <i class="fa fa-plus fa-hover"></i> </a></li>
 				</ul>
 				<div class="tab-content">
 					<div id="{{settings.id}}" class="tab-pane" data-ng-class="$index == 0 && 'active'" data-ng-repeat="settings in getWidgetSettings('top')" data-ng-include="getTemplate(settings.type)"></div>
@@ -79,9 +79,9 @@
 			<div class="span6" data-ng-show="hasWidgets('left') || dirty">
 				<ul class="nav nav-tabs">
 					<li data-ng-class="$index == 0 && 'active'" data-ng-repeat="settings in getWidgetSettings('left')">
-						<a id="{{settings.id}}-tab" data-ng-href="#{{settings.id}}" target="_self" data-toggle="tab">{{settings.label}}&nbsp;<i class="icon-cog icon-hover" title="Settings..." data-ng-click="openDialog(settings.id + '-dialog')"></i></a>
+						<a id="{{settings.id}}-tab" data-ng-href="#{{settings.id}}" target="_self" data-toggle="tab">{{settings.label}}&nbsp;<i class="fa fa-cog fa-hover" title="Settings..." data-ng-click="openDialog(settings.id + '-dialog')"></i></a>
 					</li>
-					<li><a data-ng-click="openDialog('add-widget-dialog', 'left')" title="Add..."> <i class="icon-plus icon-hover"></i> </a></li>
+					<li><a data-ng-click="openDialog('add-widget-dialog', 'left')" title="Add..."> <i class="fa fa-plus fa-hover"></i> </a></li>
 				</ul>
 				<div class="tab-content">
 					<div id="{{settings.id}}" class="tab-pane" data-ng-class="$index == 0 && 'active'" data-ng-repeat="settings in getWidgetSettings('left')" data-ng-include="getTemplate(settings.type)"></div>
@@ -90,9 +90,9 @@
 			<div class="span6" data-ng-show="hasWidgets('right') || dirty">
 				<ul class="nav nav-tabs">
 					<li data-ng-class="$index == 0 && 'active'" data-ng-repeat="settings in getWidgetSettings('right')">
-						<a id="{{settings.id}}-tab" data-ng-href="#{{settings.id}}" target="_self" data-toggle="tab">{{settings.label}}&nbsp;<i class="icon-cog icon-hover" title="Settings..." data-ng-click="openDialog(settings.id + '-dialog')"></i></a>
+						<a id="{{settings.id}}-tab" data-ng-href="#{{settings.id}}" target="_self" data-toggle="tab">{{settings.label}}&nbsp;<i class="fa fa-cog fa-hover" title="Settings..." data-ng-click="openDialog(settings.id + '-dialog')"></i></a>
 					</li>
-					<li><a data-ng-click="openDialog('add-widget-dialog', 'right')" title="Add..."> <i class="icon-plus icon-hover"></i> </a></li>
+					<li><a data-ng-click="openDialog('add-widget-dialog', 'right')" title="Add..."> <i class="fa-plus fa-hover"></i> </a></li>
 				</ul>
 				<div class="tab-content">
 					<div id="{{settings.id}}" class="tab-pane" data-ng-class="$index == 0 && 'active'" data-ng-repeat="settings in getWidgetSettings('right')" data-ng-include="getTemplate(settings.type)"></div>
@@ -117,8 +117,8 @@
 					<div class="input-append">
 						<input id="edit-bucket-label" name="label" type="text" class="xlarge" required data-ui-focus-on="openDialog:edit-bucket-dialog" data-ng-minlength="1" data-ng-maxlength="30" data-ng-pattern="/^[a-zA-Z0-9-_ ]+$/" data-ng-model="newBucket.label"/>
 						<span class="add-on">
-							<i class="icon-exclamation-sign" title="not valid" data-ng-show="form.label.$invalid"></i>
-							<i class="icon-ok" title="valid" data-ng-hide="form.label.$invalid"></i>
+							<i class="fa fa-exclamation" title="not valid" data-ng-show="form.label.$invalid"></i>
+							<i class="fa fa-check" title="valid" data-ng-hide="form.label.$invalid"></i>
 						</span>
 					</div>
 				</div>
@@ -130,11 +130,11 @@
 					<label><strong>Permissions</strong></label>
 					<ul class="nav nav-pills gray">
 						<li class="active" data-ng-repeat="role in newBucket.roles">
-							<a data-ng-click="newBucket.unpublish()" data-ng-show="role.principal == '*'"><i class="icon-globe"></i> <strong>anyone</strong> with a link can view <i class="icon-remove" title="Revoke"></i></a>
-							<a data-ng-show="role.principal != '*'" style="cursor:default"><i class="icon-user"></i> <strong>{{role.principal | username}}</strong> is {{role.role}}</a>
+							<a data-ng-click="newBucket.unpublish()" data-ng-show="role.principal == '*'"><i class="fa fa-globe fa-white"></i> <strong>anyone</strong> with a link can view <i class="fa fa-times fa-white" title="Revoke"></i></a>
+							<a data-ng-show="role.principal != '*'" style="cursor:default"><i class="fa fa-user fa-white"></i> <strong>{{role.principal | username}}</strong> is {{role.role}}</a>
 						</li>
 						<li data-ng-show="user.verified && !newBucket.isPublished()">
-							<a id="publish-link" title="Add..." data-ng-click="newBucket.publish()"><i class="icon-plus"></i></a>
+							<a id="publish-link" title="Add..." data-ng-click="newBucket.publish()"><i class="fa fa-plus"></i></a>
 						</li>
 					</ul>
 					<p class="help-block" data-ng-hide="user.verified">
@@ -146,8 +146,8 @@
 					<ul class="nav nav-pills gray">
 						<li class="active" data-ng-repeat="bucket in newBucket.aliases">
 							<a class="edit-alias-item" data-ng-click="removeBucket(bucket['@id'])">
-								<i class="icon-filter icon-white" title="{{bucket.filter}}" data-ng-show="bucket.filter"></i>
-								<span data-ui-bucket-label="bucket['@id']"></span> <i class="icon-remove icon-white"></i>
+								<i class="fa fa-filter fa-white" title="{{bucket.filter}}" data-ng-show="bucket.filter"></i>
+								<span data-ui-bucket-label="bucket['@id']"></span> <i class="fa fa-times fa-white"></i>
 							</a>
 						</li>
 					</ul>
@@ -180,8 +180,8 @@
 					<div class="input-append">
 						<input id="create-view-label" name="label" type="text" class="xlarge" required data-ui-focus-on="openDialog:save-as-view-dialog" data-ng-minlength="1" data-ng-maxlength="20" data-ng-model="label"/>
 						<span class="add-on">
-							<i class="icon-exclamation-sign" title="not valid" data-ng-show="form.label.$invalid"></i>
-							<i class="icon-ok" title="valid" data-ng-hide="form.label.$invalid"></i>
+							<i class="fa fa-exclamation" title="not valid" data-ng-show="form.label.$invalid"></i>
+							<i class="fa fa-check" title="valid" data-ng-hide="form.label.$invalid"></i>
 						</span>
 					</div>
 				</div>
@@ -244,17 +244,17 @@
 							<span data-ng-show="task.status">ran {{task.completed | age}}</span>
 						</td>
 						<td style="text-align: right">
-							<a class="action task-delete-action" data-ng-click="remove(task['@id'])"><i class="icon-trash" title="Delete"></i></a>
+							<a class="action task-delete-action" data-ng-click="remove(task['@id'])"><i class="fa fa-trash-o" title="Delete"></i></a>
 						</td>
 					</tr>
 				</table>
 				<div class="btn-toolbar">
 					<div class="btn-group pull-left">
-						<button id="create-task-action" title="Create Task..." class="btn" data-ng-click="openDialog('create-task-dialog')"><i class="icon-plus"></i></button>
+						<button id="create-task-action" title="Create Task..." class="btn" data-ng-click="openDialog('create-task-dialog')"><i class="fa fa-plus"></i></button>
 					</div>
 					<div class="btn-group pull-right" data-ng-show="tasks">
-						<button class="btn" title="Previous" data-ng-click="prev()" data-ng-disabled="!hasPrev()"><i class="icon-chevron-left"></i></button>
-						<button class="btn" title="Next" data-ng-click="next()" data-ng-disabled="!hasNext()"><i class="icon-chevron-right"></i></button>
+						<button class="btn" title="Previous" data-ng-click="prev()" data-ng-disabled="!hasPrev()"><i class="fa fa-chevron-left"></i></button>
+						<button class="btn" title="Next" data-ng-click="next()" data-ng-disabled="!hasNext()"><i class="fa fa-chevron-right"></i></button>
 					</div>
 					<div class="btn-group pull-right" data-ng-show="tasks">
 						<button class="btn disabled zeno-paging"><b>{{offset + 1}}</b> &ndash; <b>{{offset + tasks.length}}</b> of <b>{{total}}</b></button>
@@ -443,7 +443,7 @@
 				<em data-ng-hide="entries.length > 0">Add one or more fields, then save.</em>
 				<span class="editable" data-ng-repeat="entry in entries">
 					<span data-ng-bind-html="entry.value | field:entry.field.name"></span>
-					<a class="action" data-ng-click="remove(entry)"><i class="icon-remove" title="Delete"></i></a>
+					<a class="action" data-ng-click="remove(entry)"><i class="fa fa-times" title="Delete"></i></a>
 				</span>
 			</div>
 		</div>
@@ -762,7 +762,7 @@
 		<button class="close" data-ng-click="reset()">&times;</button>
 		<div data-ng-controller="CreateRatingFieldController">
 			<div class="control-group">
-				<span class="nowrap" style="cursor:pointer"><i id="rating-{{i}}-star" title="Rate {{i}}/5" data-ng-class="get() >= i && 'icon-star' || 'icon-star-empty'" data-ng-mouseenter="highlight(i)" data-ng-mouseleave="highlight(0)" data-ng-click="set(i)" data-ng-repeat="i in [ 1, 2, 3, 4, 5 ]"></i></span>
+				<span class="nowrap" style="cursor:pointer"><i id="rating-{{i}}-star" title="Rate {{i}}/5" class="fa" data-ng-class="get() >= i && 'fa-star' || 'fa-star-o'" data-ng-mouseenter="highlight(i)" data-ng-mouseleave="highlight(0)" data-ng-click="set(i)" data-ng-repeat="i in [ 1, 2, 3, 4, 5 ]"></i></span>
 			</div>
 			<div class="control-group">
 				<button id="add-rating-button" class="btn" data-ng-click="addField()">Add</button>
@@ -838,7 +838,7 @@
 				<div class="alert alert-info" data-ng-show="message" data-ng-bind-html="message"></div>
 				<div class="control-group">
 					<label class="radio">
-						<input type="radio" name="media" value="json" data-ng-model="media" /> as <strong>json</strong> <a href="/#/api/events" title="API docs" target="_blank"><i class="icon-question-sign"></i></a>
+						<input type="radio" name="media" value="json" data-ng-model="media" /> as <strong>json</strong> <a href="/#/api/events" title="API docs" target="_blank"><i class="fa fa-question-circle"></i></a>
 					</label>
 					<label class="radio" data-ng-class="total > csvLimit && 'muted'">
 						<input type="radio" name="media" value="csv" data-ng-model="media" data-ng-disabled="total > csvLimit"/> as <strong>csv</strong>

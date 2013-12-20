@@ -15,7 +15,7 @@
 		<meta name="application-name" content="Zenobase"/>
 		<meta name="msapplication-TileColor" content="#ffffff"/>
 		<meta name="msapplication-TileImage" content="/img/tile.png"/>
-		<link rel="stylesheet" type="text/css" href="/css/zeno-cde6073c.min.css"/>
+		<link rel="stylesheet" type="text/css" href="/css/zeno-cde6073d.min.css"/>
 		<link rel="canonical" href="https://zenobase.com/"/>
 		<link rel="apple-touch-icon" href="/img/icon.png"/>
 	</head>
@@ -32,7 +32,7 @@
 			<a href="/#/"><img src="/img/logo.png" alt="Zenobase" width="159" height="25"/></a>
 			<div class="pull-right ng-cloak">
 				<p data-ng-show="user">
-					<i class="icon-user"></i> <a id="user-profile-link" data-ng-href="/#/users/{{user.getName()}}">{{user.getName()}}</a> | <a id="sign-out-link" data-ng-click="signOut()">Sign out</a>
+					<i class="fa fa-user"></i> <a id="user-profile-link" data-ng-href="/#/users/{{user.getName()}}">{{user.getName()}}</a> | <a id="sign-out-link" data-ng-click="signOut()">Sign out</a>
 				</p>
 				<p data-ng-hide="user">
 					<a id="sign-in-link" data-ng-click="openDialog('sign-in-dialog')">Sign in</a>
@@ -59,7 +59,7 @@
 
 		<div id="content" data-ng-hide="user.suspended" data-ng-view>
 			<div class="container-fluid">
-				<i class="icon-refresh"></i> Loading...
+				<i class="fa fa-refresh"></i> Loading...
 			</div>			
 		</div>
 
@@ -144,8 +144,8 @@
 							<div class="input-append">
 								<input id="sign-up-username" name="username" type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" class="large" required data-ui-focus-on="openDialog:sign-up-dialog" data-ng-minlength="4" data-ng-maxlength="16" data-ng-pattern="/^[a-z0-9]+$/" data-ng-model="username"/>
 								<span class="add-on">
-									<i class="icon-exclamation-sign" title="not valid" data-ng-show="form.username.$invalid"></i>
-									<i class="icon-ok" title="valid" data-ng-hide="form.username.$invalid"></i>
+									<i class="fa fa-exclamation" title="not valid" data-ng-show="form.username.$invalid"></i>
+									<i class="fa fa-check" title="valid" data-ng-hide="form.username.$invalid"></i>
 								</span>
 							</div>
 						</div>
@@ -154,8 +154,8 @@
 							<div class="input-append">
 								<input id="sign-up-password" name="password" type="password" class="large" required data-ng-minlength="8" data-ng-model="password"/>
 								<span class="add-on">
-									<i class="icon-exclamation-sign" title="not valid" data-ng-show="form.password.$invalid"></i>
-									<i class="icon-ok" title="valid" data-ng-hide="form.password.$invalid"></i>
+									<i class="fa fa-exclamation" title="not valid" data-ng-show="form.password.$invalid"></i>
+									<i class="fa fa-check" title="valid" data-ng-hide="form.password.$invalid"></i>
 								</span>
 							</div>
 						</div>
@@ -164,8 +164,8 @@
 							<div class="input-append">
 								<input id="sign-up-password-confirm" name="retypedPassword" type="password" class="large" required data-ng-minlength="8" data-ng-model="passwordConfirmed" ui-password-match="sign-up-password"/>
 								<span class="add-on">
-									<i class="icon-exclamation-sign" title="not valid" data-ng-show="form.retypedPassword.$invalid"></i>
-									<i class="icon-ok" title="valid" data-ng-hide="form.retypedPassword.$invalid"></i>
+									<i class="fa fa-exclamation" title="not valid" data-ng-show="form.retypedPassword.$invalid"></i>
+									<i class="fa fa-check" title="valid" data-ng-hide="form.retypedPassword.$invalid"></i>
 								</span>
 							</div>
 						</div>
@@ -174,8 +174,8 @@
 							<div class="input-append">
 								<input id="sign-up-email" name="email" type="email" class="large" required data-ng-model="email"/>
 								<span class="add-on">
-									<i class="icon-exclamation-sign" title="not valid" data-ng-show="form.email.$invalid"></i>
-									<i class="icon-ok" title="valid" data-ng-hide="form.email.$invalid"></i>
+									<i class="fa fa-exclamation" title="not valid" data-ng-show="form.email.$invalid"></i>
+									<i class="fa fa-check" title="valid" data-ng-hide="form.email.$invalid"></i>
 								</span>
 							</div>
 							<p class="help-block">We'll email you a confirmation, and use this address if you ever need to reset your password.</p>
