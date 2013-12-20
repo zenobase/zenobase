@@ -679,10 +679,17 @@
 					$scope.buckets = response.buckets;
 				});
 		};
+		$scope.loading = {};
 		$scope.run = function(bucketId) {
+			$scope.loading[bucketId] = true;
 			$scope.alert.clear();
 			taskRunner.runAll($scope, bucketId, function() {
-				delay($scope.refresh);
+				delay(function() {
+					$scope.refresh();
+					delete $scope.loading[bucketId];
+				});
+			}, function() {
+					delete $scope.loading[bucketId];
 			});
 			tracker.event('action', 'run tasks');
 		};
@@ -1286,8 +1293,12 @@
 		};
 		$scope.run = function() {
 			$scope.alert.clear();
+			$scope.loading = true;
 			taskRunner.runAll($scope, $scope.bucketId, function() {
 				delay($scope.refresh);
+				$scope.loading = false;
+			}, function() {
+				$scope.loading = false;
 			});
 			tracker.event('action', 'run tasks');
 		};
@@ -3817,16 +3828,18 @@
 
 	app.factory('taskRunner', [ '$http', '$window', function($http, $window) {
 
-		var runAll = function($scope, bucketId, success) {
-			$http.get('/buckets/' + bucketId + '/tasks/').success(function(response) {
-				if (response.total > 0) {
-					$.each(response.tasks, function(i, task) {
-						run($scope, task['@id'], success);
-					});
-				} else {
-					success();
-				}
-			});
+		var runAll = function($scope, bucketId, success, error) {
+			$http.get('/buckets/' + bucketId + '/tasks/')
+				.success(function(response) {
+					if (response.total > 0) {
+						$.each(response.tasks, function(i, task) {
+							run($scope, task['@id'], success);
+						});
+					} else {
+						success();
+					}
+				})
+				.error(error);
 		};
 
 		var run = function($scope, taskId, success) {
