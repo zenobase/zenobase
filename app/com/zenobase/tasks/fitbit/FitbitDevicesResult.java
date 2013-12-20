@@ -1,9 +1,10 @@
 package com.zenobase.tasks.fitbit;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ArrayNode;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
+import play.Logger;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 
 class FitbitDevicesResult {
 
@@ -19,6 +20,7 @@ class FitbitDevicesResult {
 				return LocalDateTime.parse(device.path("lastSyncTime").textValue()).toLocalDate();
 			}
 		}
+		Logger.warn("User does not have a Fitbit tracker:" + node);
 		return null;
 	}
 }

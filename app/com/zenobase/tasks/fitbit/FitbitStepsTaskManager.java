@@ -43,19 +43,21 @@ public class FitbitStepsTaskManager extends FitbitTaskManagerSupport {
 		LocalDate syncDate = getLastDate(task, credentials);
 		LocalDate fromDate = getFromDate(task);
 		FitbitProfileResult profile = getProfile(task, credentials);
-		for (LocalDate date = fromDate; date.isBefore(syncDate); date = date.plusDays(1)) {
-			OAuthRequest request = new OAuthRequest(Verb.GET, "https://api.fitbit.com/1/user/-/activities/date/" + date + ".json");
-			request.addHeader("Accept-Language", profile.getDistanceLocale());
-			try {
-				Response response = send(request, credentials);
-				events.addAll(new FitbitStepsResult(parseObject(response), task.getTag(), task.getPrincipal(),
-					date, profile.getTimezone(), profile.getDistanceUnit(), profile.getHeightUnit()).getEvents());
-			} catch (InvalidStatusException e) {
-				if (e.getStatus() == 409) { // reached rate limit
-					syncDate = date;
-					break;
+		if (syncDate != null) {
+			for (LocalDate date = fromDate; date.isBefore(syncDate); date = date.plusDays(1)) {
+				OAuthRequest request = new OAuthRequest(Verb.GET, "https://api.fitbit.com/1/user/-/activities/date/" + date + ".json");
+				request.addHeader("Accept-Language", profile.getDistanceLocale());
+				try {
+					Response response = send(request, credentials);
+					events.addAll(new FitbitStepsResult(parseObject(response), task.getTag(), task.getPrincipal(),
+						date, profile.getTimezone(), profile.getDistanceUnit(), profile.getHeightUnit()).getEvents());
+				} catch (InvalidStatusException e) {
+					if (e.getStatus() == 409) { // reached rate limit
+						syncDate = date;
+						break;
+					}
+					throw e;
 				}
-				throw e;
 			}
 		}
 		return createCommand(task, events, syncDate);
