@@ -911,7 +911,7 @@
 						$scope.message = 'Couldn\'t create bucket. Please try agan later or contact support.';					
 					}
 				});
-			tracker.event('action', 'create bucket');
+			tracker.event('action', 'create bucket', $scope.template.label);
 		};
 	}]);
 
