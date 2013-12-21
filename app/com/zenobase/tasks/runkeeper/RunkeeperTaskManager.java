@@ -92,7 +92,14 @@ public class RunkeeperTaskManager extends OAuthTaskManager {
 	}
 
 	static String getMarker(Iterable<Event> events) {
-		return events.iterator().next().getValue(Event.TIMESTAMP).plusSeconds(1).toLocalDateTime().toString();
+		DateTime latest = null;
+		for (Event event : events) {
+			DateTime time = event.getValue(Event.TIMESTAMP);
+			if (latest == null || time.isAfter(latest)) {
+				latest = time;
+			}
+		}
+		return latest != null ? latest.plusSeconds(1).toLocalDateTime().toString() : null;
 	}
 
 	private Command createCommand(RunkeeperTask task, OAuthCredentials credentials, List<Event> events) {
