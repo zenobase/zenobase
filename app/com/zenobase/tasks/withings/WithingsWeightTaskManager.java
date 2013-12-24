@@ -25,20 +25,20 @@ import com.zenobase.tasks.OAuthCredentials;
 import com.zenobase.tasks.OAuthTaskManager;
 import com.zenobase.tasks.Task;
 
-public class WithingsTaskManager extends OAuthTaskManager {
+public class WithingsWeightTaskManager extends OAuthTaskManager {
 
 	@Inject
-	public WithingsTaskManager(WithingsCredentialsManager credentialsManager) {
-		super(WithingsTask.TYPE, credentialsManager);
+	public WithingsWeightTaskManager(WithingsCredentialsManager credentialsManager) {
+		super(WithingsWeightTask.TYPE, credentialsManager);
 	}
 
 	@Override
-	public WithingsTask newTask(String bucketId, Identity principal, ObjectNode settings) {
+	public WithingsWeightTask newTask(String bucketId, Identity principal, ObjectNode settings) {
 		DateTimeZone timezone = DateTimeZone.forID(Objects.firstNonNull(settings.path("timezone").textValue(), "UTC"));
 		String marker = parseMarker(settings.path("marker").textValue(), timezone);
 		String tag = Objects.firstNonNull(settings.path("tag").textValue(), "body");
 		Unit<Mass> unit = Measures.<Mass>parseUnit(Objects.firstNonNull(settings.path("unit").textValue(), "kg"));
-		WithingsTask task = new WithingsTask(bucketId, principal, marker);
+		WithingsWeightTask task = new WithingsWeightTask(bucketId, principal, marker);
 		task.setTag(tag);
 		task.setUnit(unit);
 		task.setTimezone(timezone);
@@ -51,18 +51,18 @@ public class WithingsTaskManager extends OAuthTaskManager {
 
 	@Override
 	public Command execute(Task task, OAuthCredentials credentials) {
-		return execute(task.as(WithingsTask.class), credentials);
+		return execute(task.as(WithingsWeightTask.class), credentials);
 	}
 
-	private Command execute(WithingsTask task, OAuthCredentials credentials) {
+	private Command execute(WithingsWeightTask task, OAuthCredentials credentials) {
 		OAuthRequest request = createRequest(task, credentials);
 		Response response = send(request, credentials);
-		WithingsResult result = new WithingsResult(parseObject(response), task.getPrincipal(), task.getTag(), task.getUnit(), task.getTimezone());
+		WithingsWeightResult result = new WithingsWeightResult(parseObject(response), task.getPrincipal(), task.getTag(), task.getUnit(), task.getTimezone());
 		Preconditions.checkState(result.getStatus() == 0, "Expected status <0> but got <%s> for task <%s>", result.getStatus(), task.getId());
 		return createCommand(task, result);
 	}
 
-	private OAuthRequest createRequest(WithingsTask task, OAuthCredentials credentials) {
+	private OAuthRequest createRequest(WithingsWeightTask task, OAuthCredentials credentials) {
 		OAuthRequest request = new OAuthRequest(Verb.GET, "http://wbsapi.withings.net/measure");
 		request.addQuerystringParameter("userid", credentials.getScope());
 		request.addQuerystringParameter("action", "getmeas");
@@ -73,7 +73,7 @@ public class WithingsTaskManager extends OAuthTaskManager {
 		return request;
 	}
 
-	private static Command createCommand(WithingsTask task, WithingsResult result) {
+	private static Command createCommand(WithingsWeightTask task, WithingsWeightResult result) {
 		CompoundCommand command = new CompoundCommand(task.getPrincipal(), "ran withings task", "reverted withings task");
 		command.add(UpdateTaskCommand.builder(task)
 			.set(Task.COMPLETED, task.getCompleted(), new DateTime(DateTimeZone.UTC))

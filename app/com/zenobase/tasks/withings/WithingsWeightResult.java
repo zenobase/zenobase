@@ -21,7 +21,7 @@ import com.zenobase.models.Identity;
 import com.zenobase.models.Percentage;
 import com.zenobase.models.Resource;
 
-class WithingsResult {
+class WithingsWeightResult {
 
 	public static final Resource SOURCE = new Resource("Withings", "http://withings.com/");
 
@@ -31,7 +31,7 @@ class WithingsResult {
 	private final Unit<Mass> unit;
 	private final DateTimeZone timezone;
 
-	public WithingsResult(ObjectNode node, Identity author, String tag, Unit<Mass> unit, DateTimeZone timezone) {
+	public WithingsWeightResult(ObjectNode node, Identity author, String tag, Unit<Mass> unit, DateTimeZone timezone) {
 		this.node = node;
 		this.author = author;
 		this.tag = tag;

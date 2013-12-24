@@ -30,7 +30,7 @@ public class WithingsStepsTaskManager extends OAuthTaskManager {
 
 	@Inject
 	public WithingsStepsTaskManager(WithingsCredentialsManager credentialsManager) {
-		super(WithingsTask.TYPE, credentialsManager);
+		super(WithingsWeightTask.TYPE, credentialsManager);
 	}
 
 	@Override

@@ -17,11 +17,11 @@ import com.zenobase.models.Event;
 import com.zenobase.models.Percentage;
 import com.zenobase.tasks.ResultTestSupport;
 
-public class WithingsResultTest extends ResultTestSupport {
+public class WithingsWeightResultTest extends ResultTestSupport {
 
 	@Test
 	public void test() {
-		WithingsResult result = new WithingsResult(readObject("WithingsResultTest.json"), TESTER, "body", NonSI.POUND, DateTimeZone.forID("America/Los_Angeles"));
+		WithingsWeightResult result = new WithingsWeightResult(readObject("WithingsWeightResultTest.json"), TESTER, "body", NonSI.POUND, DateTimeZone.forID("America/Los_Angeles"));
 		assertThat(result.getStatus()).as("status").isEqualTo(0);
 		assertThat(result.getMarker()).as("marker").isEqualTo("1353615011");
 		List<Event> events = result.getEvents();
@@ -32,7 +32,7 @@ public class WithingsResultTest extends ResultTestSupport {
 		expected.setValue(Event.PERCENTAGE, Percentage.valueOf(new BigDecimal("13.459")));
 		expected.setValue(Event.TIMESTAMP, DateTime.parse("2012-11-22T09:49:17.000-08:00"));
 		expected.setValue(Event.AUTHOR, TESTER);
-		expected.setValue(Event.SOURCE, WithingsResult.SOURCE);
+		expected.setValue(Event.SOURCE, WithingsWeightResult.SOURCE);
 		assertThat(events.get(0)).as("first event").isEqualTo(expected);
 	}
 }

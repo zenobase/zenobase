@@ -7,11 +7,11 @@ import com.zenobase.json.Nodes;
 import com.zenobase.tasks.Task;
 import com.zenobase.tasks.TaskTestSupport;
 
-public class WithingsTest extends TaskTestSupport {
+public class WithingsWeightTest extends TaskTestSupport {
 
 	@Test
 	public void test() {
-		WithingsTaskManager manager = new WithingsTaskManager(newCredentialsManager());
+		WithingsWeightTaskManager manager = new WithingsWeightTaskManager(newCredentialsManager());
 		ObjectNode settings = Nodes.newObject();
 		settings.put("tag", "weight");
 		settings.put("unit", "lb");
