@@ -10,6 +10,7 @@ import org.joda.time.LocalDate;
 import org.scribe.model.OAuthRequest;
 import org.scribe.model.Response;
 import org.scribe.model.Verb;
+import play.Logger;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
@@ -53,6 +54,8 @@ public class WithingsStepsTaskManager extends OAuthTaskManager {
 	}
 
 	private Command execute(WithingsStepsTask task, OAuthCredentials credentials) {
+		Logger.info("-Doauth.token=" + credentials.getToken().getToken());
+		Logger.info("-Doauth.secret=" + credentials.getToken().getSecret());
 		OAuthRequest request = createRequest(task, credentials);
 		Response response = send(request, credentials);
 		WithingsStepsResult result = new WithingsStepsResult(parseObject(response), task.getPrincipal(), task.getTag(), task.getDistanceUnit(), task.getHeightUnit());

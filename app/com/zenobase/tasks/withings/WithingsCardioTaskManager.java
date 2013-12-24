@@ -1,8 +1,6 @@
 package com.zenobase.tasks.withings;
 
 import javax.inject.Inject;
-import javax.measure.quantity.Mass;
-import javax.measure.unit.Unit;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
@@ -18,29 +16,26 @@ import com.zenobase.commands.Command;
 import com.zenobase.commands.CompoundCommand;
 import com.zenobase.commands.CreateEventCommand;
 import com.zenobase.commands.UpdateTaskCommand;
-import com.zenobase.common.Measures;
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
 import com.zenobase.tasks.OAuthCredentials;
 import com.zenobase.tasks.OAuthTaskManager;
 import com.zenobase.tasks.Task;
 
-public class WithingsWeightTaskManager extends OAuthTaskManager {
+public class WithingsCardioTaskManager extends OAuthTaskManager {
 
 	@Inject
-	public WithingsWeightTaskManager(WithingsCredentialsManager credentialsManager) {
-		super(WithingsWeightTask.TYPE, credentialsManager);
+	public WithingsCardioTaskManager(WithingsCredentialsManager credentialsManager) {
+		super(WithingsCardioTask.TYPE, credentialsManager);
 	}
 
 	@Override
-	public WithingsWeightTask newTask(String bucketId, Identity principal, ObjectNode settings) {
+	public WithingsCardioTask newTask(String bucketId, Identity principal, ObjectNode settings) {
 		DateTimeZone timezone = DateTimeZone.forID(Objects.firstNonNull(settings.path("timezone").textValue(), "UTC"));
 		String marker = parseMarker(settings.path("marker").textValue(), timezone);
 		String tag = Objects.firstNonNull(settings.path("tag").textValue(), "body");
-		Unit<Mass> unit = Measures.<Mass>parseUnit(Objects.firstNonNull(settings.path("unit").textValue(), "kg"));
-		WithingsWeightTask task = new WithingsWeightTask(bucketId, principal, marker);
+		WithingsCardioTask task = new WithingsCardioTask(bucketId, principal, marker);
 		task.setTag(tag);
-		task.setUnit(unit);
 		task.setTimezone(timezone);
 		return task;
 	}
@@ -51,18 +46,18 @@ public class WithingsWeightTaskManager extends OAuthTaskManager {
 
 	@Override
 	public Command execute(Task task, OAuthCredentials credentials) {
-		return execute(task.as(WithingsWeightTask.class), credentials);
+		return execute(task.as(WithingsCardioTask.class), credentials);
 	}
 
-	private Command execute(WithingsWeightTask task, OAuthCredentials credentials) {
+	private Command execute(WithingsCardioTask task, OAuthCredentials credentials) {
 		OAuthRequest request = createRequest(task, credentials);
 		Response response = send(request, credentials);
-		WithingsWeightResult result = new WithingsWeightResult(parseObject(response), task.getPrincipal(), task.getTag(), task.getUnit(), task.getTimezone());
+		WithingsCardioResult result = new WithingsCardioResult(parseObject(response), task.getPrincipal(), task.getTag(), task.getTimezone());
 		Preconditions.checkState(result.getStatus() == 0, "Expected status <0> but got <%s> for task <%s>", result.getStatus(), task.getId());
 		return createCommand(task, result);
 	}
 
-	private OAuthRequest createRequest(WithingsWeightTask task, OAuthCredentials credentials) {
+	private OAuthRequest createRequest(WithingsCardioTask task, OAuthCredentials credentials) {
 		OAuthRequest request = new OAuthRequest(Verb.GET, "http://wbsapi.withings.net/measure");
 		request.addQuerystringParameter("userid", credentials.getScope());
 		request.addQuerystringParameter("action", "getmeas");
@@ -73,8 +68,8 @@ public class WithingsWeightTaskManager extends OAuthTaskManager {
 		return request;
 	}
 
-	private static Command createCommand(WithingsWeightTask task, WithingsWeightResult result) {
-		CompoundCommand command = new CompoundCommand(task.getPrincipal(), "ran withings task", "reverted withings task");
+	private static Command createCommand(WithingsCardioTask task, WithingsCardioResult result) {
+		CompoundCommand command = new CompoundCommand(task.getPrincipal(), "ran withings-cardio task", "reverted withings-cardio task");
 		command.add(UpdateTaskCommand.builder(task)
 			.set(Task.COMPLETED, task.getCompleted(), new DateTime(DateTimeZone.UTC))
 			.set(Task.STATUS, task.getStatus(), Task.Status.SUCCESS)

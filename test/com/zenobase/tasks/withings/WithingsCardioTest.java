@@ -7,14 +7,14 @@ import com.zenobase.json.Nodes;
 import com.zenobase.tasks.Task;
 import com.zenobase.tasks.TaskTestSupport;
 
-public class WithingsStepsTest extends TaskTestSupport {
+public class WithingsCardioTest extends TaskTestSupport {
 
 	@Test
 	public void test() {
-		WithingsStepsTaskManager manager = new WithingsStepsTaskManager(newCredentialsManager());
+		WithingsCardioTaskManager manager = new WithingsCardioTaskManager(newCredentialsManager());
 		ObjectNode settings = Nodes.newObject();
-		settings.put("tag", "walk");
-		settings.put("unit", "mi");
+		settings.put("tag", "cardio");
+		settings.put("timezone", "America/Los_Angeles");
 		settings.put("marker", "2013-12-01");
 		Task task = manager.newTask(bucketId, principal, settings);
 		print(manager.execute(task, getCredentials()).toJson());

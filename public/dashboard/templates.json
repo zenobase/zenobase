@@ -275,6 +275,41 @@
 		]
 	},
 	{
+		"label" : "Heart Rate (Withings)",
+		"task" : "withings-cardio", 
+		"widgets" : [
+			{
+				"id" : "timeline",
+				"type" : "timeline",
+				"label" : "Heart Rate (bpm)",
+				"placement" : "top",
+				"field" : "frequency",
+				"statistic" : "avg",
+				"unit" : "bpm"
+			},
+			{
+				"id" : "latest",
+				"type" : "list",
+				"label" : "Latest",
+				"placement" : "left",
+				"singleton" : true,
+				"limit" : 10,
+				"order" : "timestamp",
+				"reverse" : false
+			},
+			{
+				"id" : "hour_of_day",
+				"type" : "polar",
+				"label" : "Hour of Day",
+				"placement" : "right",
+				"value_field" : "frequency",
+				"unit" : "bpm",
+				"statistic" : "avg",
+				"interval" : "hour_of_day"
+			}
+		]
+	},
+	{
 		"label" : "Places (Foursquare)",
 		"task" : "foursquare",
 		"widgets" : [
@@ -429,53 +464,6 @@
 		]
 	},
 	{
-		"label" : "Steps (Fitbit)",
-		"task" : "fitbit-steps", 
-		"widgets" : [
-			{
-				"id" : "steps",
-				"type" : "timeline",
-				"label" : "Steps",
-				"placement" : "top",
-				"field" : "count",
-				"unit" : null,
-				"statistic" : "sum",
-				"interval" : "month"
-			},
-			{
-				"id" : "latest",
-				"type" : "list",
-				"label" : "Latest",
-				"placement" : "left",
-				"order" : "timestamp",
-				"reverse" : false,
-				"limit" : 10,
-				"singleton" : true
-			},
-			{
-				"id" : "steps_scoreboard",
-				"type" : "scoreboard",
-				"label" : "Scoreboard",
-				"placement" : "right",
-				"key_field" : "author",
-				"value_field" : "count",
-				"unit" : null,
-				"order" : "total",
-				"limit" : 10
-			},
-			{
-				"id" : "steps_by_day",
-				"type" : "polar",
-				"label" : "Day of Week",
-				"placement" : "right",
-				"value_field" : "count",
-				"unit" : null,
-				"statistic" : "avg",
-				"interval" : "day_of_week"
-			}
-		]
-	},
-	{
 		"label" : "Steps (BodyMedia)",
 		"task" : "bodymedia-steps",
 		"widgets" : [
@@ -527,6 +515,53 @@
 				"value_field" : "count",
 				"unit" : null,
 				"interval" : "hour_of_day"
+			}
+		]
+	},
+	{
+		"label" : "Steps (Fitbit)",
+		"task" : "fitbit-steps", 
+		"widgets" : [
+			{
+				"id" : "steps",
+				"type" : "timeline",
+				"label" : "Steps",
+				"placement" : "top",
+				"field" : "count",
+				"unit" : null,
+				"statistic" : "sum",
+				"interval" : "month"
+			},
+			{
+				"id" : "latest",
+				"type" : "list",
+				"label" : "Latest",
+				"placement" : "left",
+				"order" : "timestamp",
+				"reverse" : false,
+				"limit" : 10,
+				"singleton" : true
+			},
+			{
+				"id" : "steps_scoreboard",
+				"type" : "scoreboard",
+				"label" : "Scoreboard",
+				"placement" : "right",
+				"key_field" : "author",
+				"value_field" : "count",
+				"unit" : null,
+				"order" : "total",
+				"limit" : 10
+			},
+			{
+				"id" : "steps_by_day",
+				"type" : "polar",
+				"label" : "Day of Week",
+				"placement" : "right",
+				"value_field" : "count",
+				"unit" : null,
+				"statistic" : "avg",
+				"interval" : "day_of_week"
 			}
 		]
 	},
