@@ -115,6 +115,7 @@ import com.zenobase.tasks.netatmo.NetatmoTaskManager;
 import com.zenobase.tasks.runkeeper.RunkeeperCredentialsManager;
 import com.zenobase.tasks.runkeeper.RunkeeperTaskManager;
 import com.zenobase.tasks.withings.WithingsCredentialsManager;
+import com.zenobase.tasks.withings.WithingsStepsTaskManager;
 import com.zenobase.tasks.withings.WithingsWeightTaskManager;
 
 
@@ -225,6 +226,7 @@ public class Global extends GlobalSettings {
 				bindIfConfigured("fitbit", FitbitStepsTaskManager.class, tasks);
 				bindIfConfigured("fitbit", FitbitSleepTaskManager.class, tasks);
 				bindIfConfigured("foursquare", FoursquareTaskManager.class, tasks);
+				bindIfConfigured("withings", WithingsStepsTaskManager.class, tasks);
 				bindIfConfigured("withings", WithingsWeightTaskManager.class, tasks);
 				bindIfConfigured("bodymedia", BodyMediaSummaryTaskManager.class, tasks); // TODO drop
 				bindIfConfigured("bodymedia", BodyMediaBurnTaskManager.class, tasks);

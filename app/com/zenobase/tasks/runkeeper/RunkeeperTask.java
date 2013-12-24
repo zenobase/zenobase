@@ -32,12 +32,12 @@ public class RunkeeperTask extends Task {
 		setMarker(marker);
 	}
 
-	public Unit<Length> getUnit() {
+	public Unit<Length> getDistanceUnit() {
 		return Measures.<Length>parseUnit(getSetting(UNIT));
 	}
 
 	public Unit<Length> getHeightUnit() {
-		return getUnit().isStandardUnit() ? SI.METER : NonSI.FOOT;
+		return Measures.isMetric(getDistanceUnit()) ? SI.METER : NonSI.FOOT;
 	}
 
 	public void setUnit(Unit<Length> unit) {

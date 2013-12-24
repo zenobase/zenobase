@@ -13,6 +13,8 @@ import javax.measure.quantity.Mass;
 import javax.measure.quantity.Temperature;
 import javax.measure.quantity.Volume;
 import javax.measure.unit.Dimension;
+import javax.measure.unit.NonSI;
+import javax.measure.unit.SI;
 
 import org.junit.Test;
 
@@ -150,5 +152,14 @@ public class MeasuresTest {
 	public void testRounding() {
 		assertThat(Measures.round(1.665)).isEqualTo(new BigDecimal("1.67"));
 		assertThat(Measures.round(Double.NaN)).isNull();
+	}
+
+	@Test
+	public void testIsMetric() {
+		assertThat(Measures.isMetric(SI.METER)).as("m are metric").isTrue();
+		assertThat(Measures.isMetric(SI.KILOMETER)).as("km are metric").isTrue();
+		assertThat(Measures.isMetric(SI.CENTIMETER)).as("cm are metric").isTrue();
+		assertThat(Measures.isMetric(NonSI.FOOT)).as("ft are metric").isFalse();
+		assertThat(Measures.isMetric(NonSI.MILE)).as("mi are metric").isFalse();
 	}
 }

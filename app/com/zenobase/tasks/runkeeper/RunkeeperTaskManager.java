@@ -62,7 +62,7 @@ public class RunkeeperTaskManager extends OAuthTaskManager {
 			}
 			request.addQuerystringParameter("pageSize", "100");
 			Response response = send(request, credentials);
-			ActivitiesResult result = new ActivitiesResult(parseObject(response), task.getPrincipal(), task.getUnit(), task.getTimezone());
+			ActivitiesResult result = new ActivitiesResult(parseObject(response), task.getPrincipal(), task.getDistanceUnit(), task.getTimezone());
 			for (Event event : result.getEvents()) {
 				if (from == null || event.getValue(Event.TIMESTAMP).toLocalDateTime().isAfter(from)) {
 					events.add(event);

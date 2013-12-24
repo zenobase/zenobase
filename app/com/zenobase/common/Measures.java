@@ -111,4 +111,8 @@ public class Measures {
 	public static BigDecimal round(double value) {
 		return Doubles.isFinite(value) ? new BigDecimal(value).setScale(2, RoundingMode.HALF_UP) : null;
 	}
+
+	public static <Q extends Quantity> boolean isMetric(Unit<Q> unit) {
+		return unit.isStandardUnit() || Math.log10(unit.getConverterTo(unit.getStandardUnit()).convert(1)) % 1 == 0;
+	}
 }

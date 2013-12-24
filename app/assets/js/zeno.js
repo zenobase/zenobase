@@ -3969,6 +3969,7 @@
 			{ 'id' : 'netatmo', 'description' : 'Creates an event for each weather station measurement.' },
 			{ 'id' : 'runkeeper-activities', 'description' : 'Creates an event for each logged activity.' },
 			{ 'id' : 'withings', 'description' : 'Creates an event for each body weight measurement.' },
+			{ 'id' : 'withings-steps', 'description' : 'Creates an event for the number of steps each day (incl distance and elevation).' },
 			{ 'id' : 'demo', 'description' : 'Creates an event with a custom tag.' }
 		];
 
@@ -4123,7 +4124,7 @@
 		$scope.init();
 	}]);
 
-	app.controller('WithingsSettingsController', ['$scope', '$http', 'Field', function($scope, $http, Field) {
+	app.controller('WithingsWeightSettingsController', ['$scope', '$http', 'Field', function($scope, $http, Field) {
 
 		$scope.init = function() {
 			$scope.settings = $scope.$parent.$parent.settings = {
@@ -4146,6 +4147,23 @@
 		};
 		$scope.getUnits = function() {
 			return Field.find('weight').units;
+		};
+
+		$scope.init();
+	}]);
+
+	app.controller('WithingsStepsSettingsController', ['$scope', '$http', 'Field', function($scope, $http, Field) {
+
+		$scope.init = function() {
+			$scope.settings = $scope.$parent.$parent.settings = {
+					tag : 'steps',
+					unit : 'mi',
+					marker : new Date(moment().utc().subtract('months', 3).startOf('month').valueOf()),
+					timezone : 'UTC'
+			};
+		};
+		$scope.getUnits = function() {
+			return Field.find('distance').units;
 		};
 
 		$scope.init();

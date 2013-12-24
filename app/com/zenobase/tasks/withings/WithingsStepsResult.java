@@ -1,22 +1,22 @@
 package com.zenobase.tasks.withings;
 
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import javax.measure.DecimalMeasure;
+import javax.measure.quantity.Energy;
 import javax.measure.quantity.Length;
 import javax.measure.quantity.Quantity;
 import javax.measure.unit.Unit;
 
+import org.elasticsearch.common.collect.Lists;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
-import org.joda.time.Duration;
+import org.joda.time.LocalDate;
+import org.joda.time.Period;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.google.common.base.Strings;
-import com.google.common.collect.Lists;
 
+import com.zenobase.common.Measures;
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
 import com.zenobase.models.Resource;
@@ -28,71 +28,54 @@ class WithingsStepsResult {
 	private final ObjectNode node;
 	private final Identity author;
 	private final String tag;
-	private final Unit<Length> unit;
-	private final DateTimeZone timezone;
+	private final Unit<Length> distanceUnit, heightUnit;
 
-	public WithingsStepsResult(ObjectNode node, Identity author, String tag, Unit<Length> unit, DateTimeZone timezone) {
-		// System.err.println("result:" + node);
+	public WithingsStepsResult(ObjectNode node, Identity author, String tag, Unit<Length> distanceUnit, Unit<Length> heightUnit) {
 		this.node = node;
 		this.author = author;
 		this.tag = tag;
-		this.unit = unit;
-		this.timezone = timezone;
+		this.distanceUnit = distanceUnit;
+		this.heightUnit = heightUnit;
 	}
 
 	public int getStatus() {
 		return node.path("status").isInt() ? node.path("status").intValue() : -1;
 	}
 
-	public String getMarker() {
-		return Strings.emptyToNull(node.path("body").path("updatetime").asText());
-	}
-
 	public List<Event> getEvents() {
 		List<Event> events = Lists.newArrayList();
-		int size = node.path("body").path("series").size();
-		if (size > 0) {
-			ObjectNode series = (ObjectNode) node.path("body").path("series");
-			for (Iterator<Map.Entry<String, JsonNode>> i = series.fields(); i.hasNext();) {
-				Map.Entry<String, JsonNode> entry = i.next();
-				addEvents(Long.parseLong(entry.getKey()) * 1000L, (ObjectNode) entry.getValue(), events);
-			}
+		for (JsonNode activityNode : node.path("body").path("activities")) {
+			events.add(getEvent((ObjectNode) activityNode));
 		}
-		System.err.println(begin + " -> " + end);
 		return events;
 	}
 
-	private DateTime begin, end;
-
-	private void addEvents(long time, ObjectNode node, List<Event> events) {
-		DateTime begin = new DateTime(time, timezone);
-		Duration duration = getDuration(node.path("duration"));
-		DateTime end = begin.plus(duration);
-		if (this.begin == null || this.begin.isAfter(begin)) {
-			this.begin = begin;
-		}
-		if (this.end == null || this.end.isBefore(end)) {
-			this.end = end;
-		}
-		//System.out.println(begin + " -> " + end);
+	private Event getEvent(ObjectNode node) {
 		Event event = new Event();
 		event.setValue(Event.TAG, tag);
-		event.setValue(Event.TIMESTAMP, begin);
-		// steps
-		// elevation
-		// distance
-		// calories
-		event.setValue(Event.DISTANCE, getDecimalMeasure(node.path("distance"), unit));
+		DateTimeZone timezone = DateTimeZone.forID(node.path("timezone").textValue());
+		DateTime time = dateTimeValue(node.path("date"), timezone);
+		event.setValue(Event.TIMESTAMP, time);
+		event.setValue(Event.DURATION, Period.days(1).toDurationFrom(time));
+		event.setValue(Event.COUNT, node.path("steps").intValue());
+		event.setValue(Event.ENERGY, measureValue(node.path("calories"), Measures.<Energy>parseUnit("cal")));
+		event.setValue(Event.DISTANCE, convertMeasureValue(node.path("distance"), distanceUnit));
+		event.setValue(Event.HEIGHT, convertMeasureValue(node.path("elevation"), heightUnit));
 		event.setValue(Event.AUTHOR, author);
 		event.setValue(Event.SOURCE, SOURCE);
-		events.add(event);
+		return event;
 	}
 
-	private static Duration getDuration(JsonNode node) {
-		return Duration.standardSeconds(node.intValue());
+	private static DateTime dateTimeValue(JsonNode node, DateTimeZone timezone) {
+		LocalDate date = LocalDate.parse(node.textValue());
+		return date.toDateTimeAtStartOfDay(timezone);
 	}
 
-	private static <Q extends Quantity> DecimalMeasure<Q> getDecimalMeasure(JsonNode node, Unit<Q> unit) {
+	private static <Q extends Quantity> DecimalMeasure<Q> measureValue(JsonNode node, Unit<Q> unit) {
 		return DecimalMeasure.valueOf(node.decimalValue(), unit);
+	}
+
+	private static <Q extends Quantity> DecimalMeasure<Q> convertMeasureValue(JsonNode node, Unit<Q> unit) {
+		return node.isNumber() ? Measures.<Q>valueOf(Measures.convert(node.doubleValue(), unit), unit) : null;
 	}
 }

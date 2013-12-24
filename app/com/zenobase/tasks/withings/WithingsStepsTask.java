@@ -2,9 +2,10 @@ package com.zenobase.tasks.withings;
 
 import javax.measure.quantity.Length;
 import javax.measure.quantity.Mass;
+import javax.measure.unit.NonSI;
+import javax.measure.unit.SI;
 import javax.measure.unit.Unit;
 
-import org.joda.time.DateTimeZone;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import com.zenobase.common.Measures;
@@ -14,10 +15,9 @@ import com.zenobase.tasks.Task;
 
 public class WithingsStepsTask extends Task {
 
-	public static final String TYPE = "withings";
+	public static final String TYPE = "withings-steps";
 	public static final TokenField TAG = new TokenField("tag");
 	public static final TokenField UNIT = new TokenField("unit");
-	public static final TokenField TIMEZONE = new TokenField("timezone");
 
 	public WithingsStepsTask(ObjectNode node) {
 		super(node);
@@ -36,21 +36,16 @@ public class WithingsStepsTask extends Task {
 		setSetting(TAG, tag);
 	}
 
-	public Unit<Length> getUnit() {
+	public Unit<Length> getDistanceUnit() {
 		return Measures.<Length>parseUnit(getSetting(UNIT));
+	}
+
+	public Unit<Length> getHeightUnit() {
+		return Measures.isMetric(getDistanceUnit()) ? SI.METER : NonSI.FOOT;
 	}
 
 	public void setUnit(Unit<Mass> unit) {
 		setSetting(UNIT, unit.toString());
-	}
-
-	public DateTimeZone getTimezone() {
-		String value = getSetting(TIMEZONE);
-		return value != null ? DateTimeZone.forID(value) : DateTimeZone.UTC;
-	}
-
-	public void setTimezone(DateTimeZone timezone) {
-		setSetting(TIMEZONE, timezone != null ? timezone.getID() : null);
 	}
 
 	@Override

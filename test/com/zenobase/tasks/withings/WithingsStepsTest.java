@@ -15,10 +15,9 @@ public class WithingsStepsTest extends TaskTestSupport {
 		ObjectNode settings = Nodes.newObject();
 		settings.put("tag", "weight");
 		settings.put("unit", "mi");
-		settings.put("timezone", "Europe/Amsterdam");
 		settings.put("marker", "2013-12-01");
 		Task task = manager.newTask(bucketId, principal, settings);
-		manager.execute(task, getCredentials()).toJson();
+		print(manager.execute(task, getCredentials()).toJson());
 	}
 
 	@Override
