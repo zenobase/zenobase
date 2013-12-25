@@ -18,11 +18,13 @@ import org.joda.time.Period;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 
 import com.zenobase.common.Measures;
 import com.zenobase.json.Field;
+import com.zenobase.json.LocalDateTimeField;
 import com.zenobase.json.MeasurementField;
 import com.zenobase.json.Nodes;
 import com.zenobase.models.Event;
@@ -85,7 +87,7 @@ public class ScatterPlotFacet extends Facet {
 	}
 
 	private long addLag(long time, int lag) {
-		return lag != 0 ? new DateTime(time, timezone).plus(toPeriod(interval, lag)).getMillis() : time;
+		return lag != 0 ? new DateTime(time, Objects.firstNonNull(timezone, DateTimeZone.UTC)).plus(toPeriod(interval, lag)).getMillis() : time;
 	}
 
 	private static Period toPeriod(String interval, int value) {
@@ -129,9 +131,10 @@ public class ScatterPlotFacet extends Facet {
 
 		public DateHistogramFacetBuilder createFacet(String keyField, String interval, DateTimeZone timezone) {
 			return FacetBuilders.dateHistogramFacet(id)
-				.keyField(keyField).valueField(unit == Unit.ONE ? field : Field.concat(field, MeasurementField.VALUE_SI.getName()))
+				.keyField(timezone != null ? keyField : LocalDateTimeField.getLocalTimePath(keyField))
+				.valueField(unit == Unit.ONE ? field : Field.concat(field, MeasurementField.VALUE_SI.getName()))
 				.interval(interval)
-				.preZone(timezone.toString())
+				.preZone(Objects.firstNonNull(timezone, DateTimeZone.UTC).toString())
 				.preZoneAdjustLargeInterval(true)
 				.facetFilter(filter);
 		}
@@ -195,7 +198,7 @@ public class ScatterPlotFacet extends Facet {
 				return new ScatterPlotFacet(
 					id, Event.TIMESTAMP.getName(), x, y,
 					options.get("interval", String.class, "day"),
-					options.get("timezone", DateTimeZone.class, DateTimeZone.UTC),
+					options.get("timezone", DateTimeZone.class, null),
 					options.get("lag", Integer.class, 0));
 			}
 		};

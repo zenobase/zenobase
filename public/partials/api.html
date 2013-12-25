@@ -14,6 +14,12 @@ a simple Android app that authenticates with and posts data to Zenobase.</p>
 <h3>Changelog</h3>
 
 <dl>
+	<dt>2013-12-25</dt>
+	<dd>
+		<ul>
+			<li>scatterplot facet uses local time when no timezone is specified</li>
+		</ul>
+	</dd>
 	<dt>2013-12-16</dt>
 	<dd>
 		<ul>
@@ -1314,9 +1320,9 @@ id:xyz,type:scoreboard,key_field:author,value_field:steps
   <dt>interval=<em>&lt;'year'|'month'|'day'|'hour'|'minute'&gt;</em></dt>
   <dd>The interval at which values are aggregated. Defaults to <em>day</em>.</dd>
   <dt>timezone=<em>&lt;Z&gt;</em></dt>
-  <dd>The timezone offset to use. Defaults to <em>+00:00</em></dd>
+  <dd>The timezone offset to use. If not specified, local times are used.</dd>
   <dt>lag=<em>&lt;Integer&gt;</em></dt>
-  <dd>The number of time units (see <i>interval</i>) by which to offset the y series values from the x series values. Defaults to <em>0</em></dd>
+  <dd>The number of time units (see <i>interval</i>) by which to offset the y series values from the x series values. Defaults to <em>0</em>.</dd>
 </dl>
 
 <h5>Example:</h5>

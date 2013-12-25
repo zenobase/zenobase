@@ -2879,13 +2879,16 @@
 				statistic_y : $scope.settings.statistic_y || 'avg',
 				filter_y : $scope.settings.filter_y || '',
 				interval : $scope.settings.interval || 'day',
-				timezone : timezone,
 				lag : $scope.settings.lag || 0
 			};
 		};
 		$scope.refresh = function(options, settings) {
 			$scope.init();
-			$scope.search([ $.extend($scope.params(), options, settings) ], function(result, resultB) {
+			var params = $.extend($scope.params(), options, settings);
+			if (/hour|minute|second/.test(params.interval)) {
+				params.timezone = timezone;
+			}
+			$scope.search([ params ], function(result, resultB) {
 				$.extend($scope, options)
 				$.extend($scope.settings, settings)
 				$scope.update(null, result, resultB);
