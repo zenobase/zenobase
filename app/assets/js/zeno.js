@@ -3623,16 +3623,24 @@
 
 		$scope.init = function() {
 			$scope.value = {};
+			$scope.loading = false;
 		};
 		$scope.addField = function() {
 			$scope.event.add($scope.field, $scope.value);
 			$scope.reset();
 		};
 		$scope.prefillTitle = function() {
-			$http.get('/og?' + $.param({ url : $scope.value.url }))
-				.success(function(response) {
-					$scope.value.title = response.title;
-				});
+			if ($scope.value.url) {
+				$scope.loading = true;
+				$http.get('/og?' + $.param({ url : $scope.value.url }))
+					.success(function(response) {
+						$scope.value.title = response.title;
+						$scope.loading = false;					
+					})
+					.error(function() {
+						$scope.loading = false;					
+					});
+			}
 		};
 		$scope.valid = function() {
 			return $scope.value.url && $scope.value.title;

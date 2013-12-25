@@ -551,7 +551,10 @@
 			</div>
 			<div class="control-group">
 				<label for="title" class="control-label">Title</label>
-				<input id="resource-title-field" name="title" type="text" data-ng-model="value.title"/>
+				<div class="input-append">
+					<input id="resource-title-field" name="title" type="text" data-ng-model="value.title" data-ng-disabled="loading"/>
+					<a class="add-on" data-ng-click="prefillTitle()"><i class="fa fa-refresh" data-ng-class="loading && 'fa-spin'"></i></a>
+				</div>
 			</div>
 			<div class="control-group">
 				<button id="add-resource-button" class="btn" data-ng-click="addField()" data-ng-disabled="!valid()">Add</button>
