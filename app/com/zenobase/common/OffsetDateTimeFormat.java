@@ -9,7 +9,7 @@ import org.joda.time.format.DateTimeFormatterBuilder;
 /**
  * ISO date time format where the year and timezone offset are mandatory,
  * and the rest is optional:
- * <code>yyyy ['-' MM ['-' dd ['T' [HH [':' mm [':' ss ['.' SSS]]]]]]] Z</code>
+ * <code>yyyy ['-' MM ['-' dd ['T' [HH [':' mm [':' ss ['.' SSS]]]]]]] Z</code> or <code>yyyy '-' ww 'T' Z</code>
  */
 public class OffsetDateTimeFormat extends DateTimeFormatSupport {
 
@@ -27,8 +27,18 @@ public class OffsetDateTimeFormat extends DateTimeFormatSupport {
 		.toFormatter()
 		.withOffsetParsed();
 
+	private static final DateTimeFormatter PARSER_WEEK = new DateTimeFormatterBuilder()
+		.append(weekyearElement())
+		.appendOptional(weekofYearElement().getParser())
+		.appendLiteral('T')
+		.append(offsetElement())
+		.toFormatter()
+		.withOffsetParsed();
+
 	public static DateTime parse(String s) {
-		return PARSER.parseDateTime(s);
+		return s.contains("W")
+			? PARSER_WEEK.parseDateTime(s)
+			: PARSER.parseDateTime(s);
 	}
 
 	private static final Pattern TIMEZONE_OFFSET = Pattern.compile("Z|[+-]\\d\\d:\\d\\d");

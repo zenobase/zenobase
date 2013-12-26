@@ -6,7 +6,7 @@ import org.joda.time.format.DateTimeFormatterBuilder;
 
 /**
  * ISO local date time format where only the year is mandatory:
- * <code>yyyy ['-' MM ['-' dd ['T' [HH [':' mm [':' ss ['.' SSS]]]]]]]</code>
+ * <code>yyyy ['-' MM ['-' dd ['T' [HH [':' mm [':' ss ['.' SSS]]]]]]]</code> or <code>yyyy '-W' ww</code>
  */
 public class LocalDateTimeFormat extends DateTimeFormatSupport {
 
@@ -22,7 +22,14 @@ public class LocalDateTimeFormat extends DateTimeFormatSupport {
 		.appendOptional(millisElement().getParser())
 		.toFormatter();
 
+	private static final DateTimeFormatter PARSER_WEEK = new DateTimeFormatterBuilder()
+		.append(weekyearElement())
+		.appendOptional(weekofYearElement().getParser())
+		.toFormatter();
+
 	public static LocalDateTime parse(String s) {
-		return PARSER.parseLocalDateTime(s);
+		return s.contains("W")
+			? PARSER_WEEK.parseLocalDateTime(s)
+			: PARSER.parseLocalDateTime(s);
 	}
 }
