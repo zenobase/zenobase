@@ -79,14 +79,15 @@ public class LocalIntervalsTest {
 
 	@Test
 	public void testToString() {
-		LocalDateTime time = LocalDateTime.parse("2012-04-25T18:30");
+		LocalDateTime time = LocalDateTime.parse("2012-12-31T18:30");
 		assertThat(LocalIntervals.toString(time, "year")).as(time + " as year").isEqualTo("2012");
-		assertThat(LocalIntervals.toString(time, "month")).as(time + " as month").isEqualTo("2012-04");
-		assertThat(LocalIntervals.toString(time, "day")).as(time + " as day").isEqualTo("2012-04-25");
-		assertThat(LocalIntervals.toString(time, "hour")).as(time + " as hour").isEqualTo("2012-04-25T18");
-		assertThat(LocalIntervals.toString(time, "minute")).as(time + " as minute").isEqualTo("2012-04-25T18:30");
-		assertThat(LocalIntervals.toString(time, "second")).as(time + " as second").isEqualTo("2012-04-25T18:30:00");
-		assertThat(LocalIntervals.toString(time, "millisecond")).as(time + " as millisecond").isEqualTo("2012-04-25T18:30:00.000");
+		assertThat(LocalIntervals.toString(time, "month")).as(time + " as month").isEqualTo("2012-12");
+		assertThat(LocalIntervals.toString(time, "week")).as(time + " as week").isEqualTo("2013-W01");
+		assertThat(LocalIntervals.toString(time, "day")).as(time + " as day").isEqualTo("2012-12-31");
+		assertThat(LocalIntervals.toString(time, "hour")).as(time + " as hour").isEqualTo("2012-12-31T18");
+		assertThat(LocalIntervals.toString(time, "minute")).as(time + " as minute").isEqualTo("2012-12-31T18:30");
+		assertThat(LocalIntervals.toString(time, "second")).as(time + " as second").isEqualTo("2012-12-31T18:30:00");
+		assertThat(LocalIntervals.toString(time, "millisecond")).as(time + " as millisecond").isEqualTo("2012-12-31T18:30:00.000");
 	}
 
 	@Test

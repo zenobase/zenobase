@@ -11,6 +11,12 @@ public class DateTimeFormatSupport {
 			.toFormatter();
 	}
 
+	protected static DateTimeFormatter weekyearElement() {
+		return new DateTimeFormatterBuilder()
+			.appendWeekyear(4, 4)
+			.toFormatter();
+	}
+
 	protected static DateTimeFormatter monthElement() {
 		return new DateTimeFormatterBuilder()
 			.appendLiteral('-')

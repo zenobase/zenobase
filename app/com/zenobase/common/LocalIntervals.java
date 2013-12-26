@@ -37,7 +37,7 @@ public class LocalIntervals extends DateTimeFormatSupport {
 			@Override
 			protected DateTimeFormatterBuilder configure(DateTimeFormatterBuilder builder) {
 				return builder
-					.append(yearElement())
+					.append(weekyearElement())
 					.append(weekofYearElement());
 			}
 		},

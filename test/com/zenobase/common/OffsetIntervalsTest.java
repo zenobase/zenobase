@@ -87,14 +87,14 @@ public class OffsetIntervalsTest {
 
 	@Test
 	public void testToString() {
-		DateTime time = DateTime.parse("2012-04-25T18:30Z");
+		DateTime time = DateTime.parse("2012-12-31T18:30Z");
 		assertThat(OffsetIntervals.toString(time, "year")).as(time + " as year").isEqualTo("2012TZ");
-		assertThat(OffsetIntervals.toString(time, "month")).as(time + " as month").isEqualTo("2012-04TZ");
-		assertThat(OffsetIntervals.toString(time, "day")).as(time + " as day").isEqualTo("2012-04-25TZ");
-		assertThat(OffsetIntervals.toString(time, "hour")).as(time + " as hour").isEqualTo("2012-04-25T18Z");
-		assertThat(OffsetIntervals.toString(time, "minute")).as(time + " as minute").isEqualTo("2012-04-25T18:30Z");
-		assertThat(OffsetIntervals.toString(time, "second")).as(time + " as second").isEqualTo("2012-04-25T18:30:00Z");
-		assertThat(OffsetIntervals.toString(time, "millisecond")).as(time + " as millisecond").isEqualTo("2012-04-25T18:30:00.000Z");
+		assertThat(OffsetIntervals.toString(time, "month")).as(time + " as month").isEqualTo("2012-12TZ");
+		assertThat(OffsetIntervals.toString(time, "day")).as(time + " as day").isEqualTo("2012-12-31TZ");
+		assertThat(OffsetIntervals.toString(time, "hour")).as(time + " as hour").isEqualTo("2012-12-31T18Z");
+		assertThat(OffsetIntervals.toString(time, "minute")).as(time + " as minute").isEqualTo("2012-12-31T18:30Z");
+		assertThat(OffsetIntervals.toString(time, "second")).as(time + " as second").isEqualTo("2012-12-31T18:30:00Z");
+		assertThat(OffsetIntervals.toString(time, "millisecond")).as(time + " as millisecond").isEqualTo("2012-12-31T18:30:00.000Z");
 	}
 
 	@Test
