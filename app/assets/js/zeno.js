@@ -1968,20 +1968,21 @@
 
 	app.factory('Interval', function() {
 
-		var Interval = function(name, pattern, minTickInterval) {
+		var Interval = function(name, pattern, minTickInterval, symbol) {
 			this.name = name;
 			this.pattern = pattern.length;
 			this.minTickInterval = minTickInterval;
+			this.symbol = symbol;
 		}
 
 		Interval.VALUES = [
-			new Interval('year', 'yyyy', 366 * 24 * 60 * 60 * 1000),
-			new Interval('month', 'yyyy-MM', 28 * 24 * 60 * 60 * 1000), 
-			new Interval('week', 'yyyy-Www', 7 * 24 * 60 * 60 * 1000), 
-			new Interval('day', 'yyyy-MM-dd', 24 * 60 * 60 * 1000), 
-			new Interval('hour', 'yyyy-MM-ddTHH', 60 * 60 * 1000), 
-			new Interval('minute', 'yyyy-MM-ddTHH:mm', 60 * 1000),
-			new Interval('second', 'yyyy-MM-ddTHH:mm:ss', 1000)
+			new Interval('year', 'yyyy', 366 * 24 * 60 * 60 * 1000, 'y'),
+			new Interval('month', 'yyyy-MM', 28 * 24 * 60 * 60 * 1000, 'M'), 
+			new Interval('week', 'yyyy-Www', 7 * 24 * 60 * 60 * 1000, 'w'), 
+			new Interval('day', 'yyyy-MM-dd', 24 * 60 * 60 * 1000, 'd'), 
+			new Interval('hour', 'yyyy-MM-ddTHH', 60 * 60 * 1000, 'h'), 
+			new Interval('minute', 'yyyy-MM-ddTHH:mm', 60 * 1000, 'm'),
+			new Interval('second', 'yyyy-MM-ddTHH:mm:ss', 1000, 's')
 		];
 
 		Interval.VALUES[0].zoomIn = Interval.VALUES[1]; // year -> month 
@@ -2031,6 +2032,16 @@
 			}
 		};
 
+		Interval.matchSymbol = function(value) {
+			if (value) {
+				for (i = 0, max = Interval.VALUES.length; i < max; ++i) {
+					if (value.indexOf(Interval.VALUES[i].symbol) != -1) {
+						return Interval.VALUES[i];
+					}
+				}
+			}
+		};
+
 		Interval.valueOf = function(name) {
 			if (name) {
 				var i, max;
@@ -2067,6 +2078,9 @@
 			}
 			return at.slice(0, i).join('');
 		}
+		function filter(value) {
+			$scope.addConstraint($scope.keyField, value, true);			
+		}
 
 		$scope.init = function() {
 			$scope.times = null;
@@ -2085,7 +2099,7 @@
 			});
 			var prefix = commonPrefix(q, r);
 			if (prefix) {
-				var interval = Interval.match(prefix) || Interval.matchRange(prefix);
+				var interval = Interval.match(prefix) || Interval.matchRange(prefix) || Interval.matchSymbol(prefix);
 				if (interval) {
 					$scope.interval = interval;
 					$scope.range = prefix;
@@ -2115,6 +2129,38 @@
 			$scope.timesB = resultB && resultB[$scope.settings.id] || [];
 			$timeout($scope.draw, 1); // delay for correct width
 		};
+		$scope.filters = {
+				thisYear : function() {
+					filter(moment().format('YYYY'));			
+				},
+				lastYear : function() {
+					filter(moment().subtract('years', 1).format('YYYY'));			
+				},
+				thisMonth : function() {
+					filter(moment().format('YYYY-MM'));			
+				},
+				lastMonth : function() {
+					filter(moment().subtract('months', 1).format('YYYY-MM'));			
+				},
+				lastMonths : function(n) {
+					filter('[' + moment().subtract('months', n).format('YYYY-MM') + '..' + moment().format('YYYY-MM') + ')');			
+				},
+				thisWeek : function() {
+					filter(moment().format('GGGG-[W]WW'));			
+				},
+				lastWeek : function() {
+					filter(moment().subtract('weeks', 1).format('GGGG-[W]WW'));			
+				},
+				today : function() {
+					filter(moment().format('YYYY-MM-DD'));
+				},
+				yesterday : function() {
+					filter(moment().subtract('days', 1).format('YYYY-MM-DD'));			
+				},
+				lastHours : function(n) {
+					filter('[-' + n + 'h..*)');			
+				}
+		};
 		$scope.draw = function() {
 			if ($scope.times && $scope.times.length || $scope.timesB && $scope.timesB.length) {
 				var type = $scope.settings.statistic === 'count' || $scope.settings.statistic === 'sum' ? 'column' : 'line';
@@ -2142,7 +2188,7 @@
 								if (from != '*' || to != '*') {
 									var range = '[' + from + '..' + to + ')';
 									$scope.$apply(function() {
-										$scope.addConstraint($scope.keyField, range, true);
+										filter(range);
 									});
 								}
 								return false;
@@ -2220,7 +2266,7 @@
 					options.plotOptions.series.events = {
 						click : function(event) {
 							$scope.$apply(function() {
-								$scope.addConstraint($scope.keyField, event.point.options.filter, true);
+								filter(event.point.options.filter);
 							});
 						}
 					};
