@@ -2542,6 +2542,9 @@
 			$scope.timesB = resultB && resultB[$scope.settings.id] || [];
 			$timeout($scope.draw, 0); // delay for correct width
 		};
+		$scope.filter = function(value) {
+			$scope.addConstraint($scope.keyField + '.' + $scope.settings.interval, value, true);
+		};
 		$scope.draw = function() {
 			if ($scope.times && $scope.times.length) {
 				var type = $scope.settings.statistic === 'count' || $scope.settings.statistic === 'sum' ? 'column' : 'line';
@@ -2581,7 +2584,7 @@
 							events : {
 								click : function(event) {
 									$scope.$apply(function() {
-										$scope.addConstraint($scope.keyField + '.' + $scope.settings.interval, $scope.times[event.point.x].value, false);
+										$scope.filter($scope.times[event.point.x].value);
 									});
 								}
 							}

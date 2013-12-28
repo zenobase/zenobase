@@ -1,4 +1,40 @@
-<div id="{{settings.id}}-content" data-ng-controller="PolarWidgetController">
+<div id="{{settings.id}}-content" data-ng-controller="PolarWidgetController" style="position: relative">
+
+	<div class="pull-right dropdown filter-dropdown" style="position: absolute; top: 0; right: 0; z-index: 1" data-ng-show="times">
+		<a class="dropdown-toggle" data-toggle="dropdown" title="Filter"> <i class="fa fa-filter"></i><b class="caret"></b></a>
+		<ul class="dropdown-menu" role="menu">
+			<li role="presentation" data-ng-show="settings.interval == 'month_of_year'">
+				<a role="menuitem" data-ng-click="filter('[1..3]')">Jan - Mar</a>
+			</li>
+			<li role="presentation" data-ng-show="settings.interval == 'month_of_year'">
+				<a role="menuitem" data-ng-click="filter('[4..6]')">Apr - Jun</a>
+			</li>
+			<li role="presentation" data-ng-show="settings.interval == 'month_of_year'">
+				<a role="menuitem" data-ng-click="filter('[7..9]')">Jul - Sep</a>
+			</li>
+			<li role="presentation" data-ng-show="settings.interval == 'month_of_year'">
+				<a role="menuitem" data-ng-click="filter('[10..12]')">Oct - Dec</a>
+			</li>
+			<li role="presentation" data-ng-show="settings.interval == 'day_of_month'">
+				<a role="menuitem" data-ng-click="filter('[1..16)')">1st - 15th</a>
+			</li>
+			<li role="presentation" data-ng-show="settings.interval == 'day_of_month'">
+				<a role="menuitem" data-ng-click="filter('[16..*)')">16th - 31st</a>
+			</li>
+			<li role="presentation" data-ng-show="settings.interval == 'day_of_week'">
+				<a role="menuitem" data-ng-click="filter('[1..5]')">Mon - Fri</a>
+			</li>
+			<li role="presentation" data-ng-show="settings.interval == 'day_of_week'">
+				<a role="menuitem" data-ng-click="filter('[6..7]')">Sat - Sun</a>
+			</li>
+			<li role="presentation" data-ng-show="settings.interval == 'hour_of_day'">
+				<a role="menuitem" data-ng-click="filter('[0..12)')">0h - 12h</a>
+			</li>
+			<li role="presentation" data-ng-show="settings.interval == 'hour_of_day'">
+				<a role="menuitem" data-ng-click="filter('[12..24)')">12h - 24h</a>
+			</li>
+		</ul>
+	</div>
 
 	<div id="{{settings.id}}-chart" data-ui-chart-options="chartOptions" data-ui-id="{{settings.id}}" data-ng-show="times"></div>
 
