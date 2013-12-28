@@ -25,13 +25,16 @@
 				<span id="event-count" class="badge badge-success page-title-decoration" title="Events" data-ng-show="total >= 0">{{total}}</span>
 				<span class="badge badge-important page-title-decoration" title="Couldn't load any events" data-ng-show="total < 0">0</span>
 				<a class="page-title-decoration" data-ng-click="run()" title="Refresh"><i class="fa fa-refresh" data-ng-class="loading && 'fa-spin'" data-ng-show="editable"></i></a>
-				<a class="page-title-decoration" data-ng-click="openDialog('save-as-view-dialog')" title="Create View..." data-ng-show="editable && !bucket.isVirtual()"><i class="fa fa-code-fork"></i></a>
 				<a id="add-event-action" class="page-title-decoration" data-ng-click="openDialog('edit-event-dialog', {})" title="Create Event..." data-ng-show="editable && !bucket.isVirtual()"><i class="fa fa-plus"></i></a>
 			</p>
 
 			<div class="pull-right page-title dropdown" data-ng-show="editable">
 				<a id="bucket-menu" class="dropdown-toggle" data-toggle="dropdown" title="More..."> <i class="fa fa-bars"></i><b class="caret"></b></a>
 				<ul class="dropdown-menu" role="menu">
+					<li role="presentation" data-ng-show="editable && !bucket.isVirtual()">
+						<a role="menuitem" data-ng-click="openDialog('save-as-view-dialog')">Save View...</a>
+					</li>
+					<li role="presentation" class="divider" data-ng-show="editable && !bucket.isVirtual()"></li>
 					<li role="presentation">
 						<a role="menuitem" id="task-list-action" data-ng-click="openDialog('task-list-dialog')" data-ng-show="!bucket.isVirtual()">Tasks...</a>
 					</li>
