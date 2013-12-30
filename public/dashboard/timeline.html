@@ -1,57 +1,40 @@
 <div id="{{settings.id}}-content" data-ng-controller="TimelineWidgetController" style="position: relative">
 
-	<div class="pull-right dropdown filter-dropdown" style="position: absolute; top: 0; right: 0; z-index: 1" data-ng-show="times">
+	<div class="pull-right dropdown" data-ng-show="times">
 		<a class="dropdown-toggle" data-toggle="dropdown" title="Filter"> <i class="fa fa-filter"></i><b class="caret"></b></a>
 		<ul class="dropdown-menu" role="menu">
-			<li class="dropdown-submenu pull-left">
-				<a tabindex="-1" href="#">year</a>
-				<ul class="dropdown-menu">
-					<li role="presentation">
-						<a role="menuitem" data-ng-click="filters.thisYear()">this year</a>
-					</li>
-					<li role="presentation">
-						<a role="menuitem" data-ng-click="filters.lastYear()">last year</a>
-					</li>
-				</ul>
+			<li role="presentation">
+				<a role="menuitem" data-ng-click="filters.thisYear()">this year</a>
 			</li>
-			<li class="dropdown-submenu pull-left">
-				<a tabindex="-1" href="#">month</a>
-				<ul class="dropdown-menu">
-					<li role="presentation">
-						<a role="menuitem" data-ng-click="filters.thisMonth()">this month</a>
-					</li>
-					<li role="presentation">
-						<a role="menuitem" data-ng-click="filters.lastMonth()">last month</a>
-					</li>
-					<li role="presentation">
-						<a role="menuitem" data-ng-click="filters.lastMonths(3)">last 3 months</a>
-					</li>
-				</ul>
+			<li role="presentation">
+				<a role="menuitem" data-ng-click="filters.lastYear()">last year</a>
 			</li>
-			<li class="dropdown-submenu pull-left">
-				<a tabindex="-1" href="#">week</a>
-				<ul class="dropdown-menu">
-					<li role="presentation">
-						<a role="menuitem" data-ng-click="filters.thisWeek()">this week</a>
-					</li>
-					<li role="presentation">
-						<a role="menuitem" data-ng-click="filters.lastWeek()">last week</a>
-					</li>
-				</ul>
+			<li class="divider"></li>
+			<li role="presentation">
+				<a role="menuitem" data-ng-click="filters.thisMonth()">this month</a>
 			</li>
-			<li class="dropdown-submenu pull-left">
-				<a tabindex="-1" href="#">day</a>
-				<ul class="dropdown-menu">
-					<li role="presentation">
-						<a role="menuitem" data-ng-click="filters.today()">today</a>
-					</li>
-					<li role="presentation">
-						<a role="menuitem" data-ng-click="filters.yesterday()">yesterday</a>
-					</li>
-					<li role="presentation">
-						<a role="menuitem" data-ng-click="filters.lastHours(24)">last 24 hours</a>
-					</li>
-				</ul>
+			<li role="presentation">
+				<a role="menuitem" data-ng-click="filters.lastMonth()">last month</a>
+			</li>
+			<li role="presentation">
+				<a role="menuitem" data-ng-click="filters.lastMonths(3)">last 3 months</a>
+			</li>
+			<li class="divider"></li>
+			<li role="presentation">
+				<a role="menuitem" data-ng-click="filters.thisWeek()">this week</a>
+			</li>
+			<li role="presentation">
+				<a role="menuitem" data-ng-click="filters.lastWeek()">last week</a>
+			</li>
+			<li class="divider"></li>
+			<li role="presentation">
+				<a role="menuitem" data-ng-click="filters.today()">today</a>
+			</li>
+			<li role="presentation">
+				<a role="menuitem" data-ng-click="filters.yesterday()">yesterday</a>
+			</li>
+			<li role="presentation">
+				<a role="menuitem" data-ng-click="filters.lastHours(24)">last 24 hours</a>
 			</li>
 		</ul>
 	</div>
