@@ -23,7 +23,7 @@ public class WithingsStepsResultTest extends ResultTestSupport {
 		WithingsStepsResult result = new WithingsStepsResult(readObject("WithingsStepsResultTest.json"), TESTER, "walk", NonSI.MILE, NonSI.FOOT);
 		assertThat(result.getStatus()).as("status").isEqualTo(0);
 		List<Event> actual = result.getEvents();
-		assertThat(actual).hasSize(3);
+		assertThat(actual).hasSize(2);
 		Event expected = new Event(actual.get(0).getId());
 		expected.setValue(Event.TIMESTAMP, DateTime.parse("2013-12-16T00:00:00.000-08:00"));
 		expected.setValue(Event.DURATION, Duration.standardDays(1));

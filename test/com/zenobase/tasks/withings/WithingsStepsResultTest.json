@@ -3,6 +3,14 @@
     "body": {
         "activities": [
             {
+                "date": "2013-12-17",
+                "steps": 14917,
+                "distance": 13562.715,
+                "calories": 1428.97,
+                "elevation": 390.98,
+                "timezone": "Europe/Zurich"
+            },
+            {
                 "date": "2013-12-16",
                 "steps": 13548,
                 "distance": 12672.74,
@@ -11,19 +19,11 @@
                 "timezone": "America/Los_Angeles"
             },
             {
-                "date": "2013-12-17",
+                "date": "2013-12-15",
                 "steps": 4604,
                 "distance": 4193.641,
                 "calories": 465.51,
                 "elevation": 95.95,
-                "timezone": "Europe/Zurich"
-            },
-            {
-                "date": "2013-12-18",
-                "steps": 14917,
-                "distance": 13562.715,
-                "calories": 1428.97,
-                "elevation": 390.98,
                 "timezone": "Europe/Zurich"
             }
         ]
