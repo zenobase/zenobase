@@ -47,14 +47,18 @@ class WithingsStepsResult {
 		for (JsonNode activityNode : node.path("body").path("activities")) {
 			events.add(getEvent((ObjectNode) activityNode));
 		}
-		return events;
+		return removeLatest(events);
+	}
+
+	private List<Event> removeLatest(List<Event> events) {
+		return !events.isEmpty() ? events.subList(1, events.size()) : events;
 	}
 
 	private Event getEvent(ObjectNode node) {
-		Event event = new Event();
-		event.setValue(Event.TAG, tag);
 		DateTimeZone timezone = DateTimeZone.forID(node.path("timezone").textValue());
 		DateTime time = dateTimeValue(node.path("date"), timezone);
+		Event event = new Event();
+		event.setValue(Event.TAG, tag);
 		event.setValue(Event.TIMESTAMP, time);
 		event.setValue(Event.DURATION, Period.days(1).toDurationFrom(time));
 		event.setValue(Event.COUNT, node.path("steps").intValue());
