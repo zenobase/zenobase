@@ -1,5 +1,7 @@
 package com.zenobase.tasks.withings;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import javax.measure.DecimalMeasure;
@@ -51,7 +53,16 @@ class WithingsStepsResult {
 	}
 
 	private List<Event> removeLatest(List<Event> events) {
-		return !events.isEmpty() ? events.subList(1, events.size()) : events;
+		if (events.size() < 2) {
+			return Collections.emptyList();
+		}
+		Collections.sort(events, new Comparator<Event>() {
+			@Override
+			public int compare(Event left, Event right) {
+				return left.getValue(Event.TIMESTAMP).compareTo(right.getValue(Event.TIMESTAMP));
+			}
+		});
+		return events.subList(1, events.size());
 	}
 
 	private Event getEvent(ObjectNode node) {
