@@ -6,6 +6,7 @@ import org.elasticsearch.index.query.BoolFilterBuilder;
 import org.elasticsearch.index.query.FilterBuilder;
 import org.elasticsearch.index.query.FilterBuilders;
 import org.elasticsearch.index.query.QueryBuilder;
+import com.google.common.base.Preconditions;
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMultimap;
@@ -39,6 +40,7 @@ public class FilterBuilderSupport {
 
 	public FilterBuilderSupport addConstraint(String expression) {
 		String[] tokens = expression.split(":", 2);
+		Preconditions.checkArgument(tokens.length == 2, "Can't parse constraint: " + expression);
 		String field = tokens[0];
 		String value = tokens[1];
 		boolean negated = false;
