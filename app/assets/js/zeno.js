@@ -1394,6 +1394,7 @@
 			$scope.constraints = $scope.constraintsB;
 			$scope.constraintsB = tmp;
 			$location.search(params());
+			tracker.event('action', 'A/B test');
 		};
 
 		$scope.dirty = false;
