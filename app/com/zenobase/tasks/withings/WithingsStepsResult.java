@@ -59,7 +59,7 @@ class WithingsStepsResult {
 		Collections.sort(events, new Comparator<Event>() {
 			@Override
 			public int compare(Event left, Event right) {
-				return left.getValue(Event.TIMESTAMP).compareTo(right.getValue(Event.TIMESTAMP));
+				return right.getValue(Event.TIMESTAMP).compareTo(left.getValue(Event.TIMESTAMP));
 			}
 		});
 		return events.subList(1, events.size());
