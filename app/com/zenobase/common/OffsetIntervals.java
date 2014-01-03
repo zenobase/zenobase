@@ -161,7 +161,7 @@ public class OffsetIntervals extends DateTimeFormatSupport {
 	}
 
 	public static Interval valueOf(String value) {
-		if (Character.isDigit(value.charAt(0))) {
+		if (!value.isEmpty() && Character.isDigit(value.charAt(0))) {
 			value = value.replaceAll("Z", "+00:00");
 			for (IntervalType format : IntervalType.values()) {
 				if (value.length() == format.length) {

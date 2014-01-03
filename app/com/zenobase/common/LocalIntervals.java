@@ -148,7 +148,7 @@ public class LocalIntervals extends DateTimeFormatSupport {
 	}
 
 	public static LocalInterval valueOf(String value) {
-		if (Character.isDigit(value.charAt(0))) {
+		if (!value.isEmpty() && Character.isDigit(value.charAt(0))) {
 			for (IntervalType format : IntervalType.values()) {
 				if (value.length() == format.length) {
 					return format.toInterval(value);

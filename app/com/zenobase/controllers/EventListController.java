@@ -103,15 +103,19 @@ public class EventListController extends ControllerSupport {
 	}
 
 	public Result get(String bucketId, List<String> constraints, List<FacetOptions> facets) {
-		Search search = new EventSearchBuilder().addConstraints(constraints).addFacets(facets).buildSearch();
-		ObjectNode result = events.find(bucketId, search);
-    	String extract = request().getQueryString("x");
-		if (extract != null) {
-			StringWriter out = new StringWriter();
-			new SpreadsheetPrinter(out).print((ArrayNode) result.get(extract));
-			return ok(out.toString());
-		} else {
-			return ok(result);
+		try {
+			Search search = new EventSearchBuilder().addConstraints(constraints).addFacets(facets).buildSearch();
+			ObjectNode result = events.find(bucketId, search);
+	    	String extract = request().getQueryString("x");
+			if (extract != null) {
+				StringWriter out = new StringWriter();
+				new SpreadsheetPrinter(out).print((ArrayNode) result.get(extract));
+				return ok(out.toString());
+			} else {
+				return ok(result);
+			}
+		} catch (IllegalArgumentException e) {
+			return badRequest("Invalid parameters");
 		}
     }
 
