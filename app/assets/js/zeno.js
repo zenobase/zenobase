@@ -2057,7 +2057,7 @@
 		return Interval;
 	});
 
-	app.controller('TimelineWidgetController', ['$scope', '$timeout', 'Field', 'Interval', function($scope, $timeout, Field, Interval) {
+	app.controller('TimelineWidgetController', ['$scope', '$timeout', 'Field', 'Interval', 'moment', function($scope, $timeout, Field, Interval, moment) {
 
 		$scope.keyField = 'timestamp';
 
@@ -4077,7 +4077,7 @@
 		};
 	}]);
 
-	app.controller('FitbitSleepSettingsController', ['$scope', function($scope) {
+	app.controller('FitbitSleepSettingsController', ['$scope', 'moment', function($scope, moment) {
 
 		$scope.init = function() {
 			$scope.settings = $scope.$parent.$parent.settings = {
@@ -4089,7 +4089,7 @@
 		$scope.init();
 	}]);
 
-	app.controller('FitbitStepsSettingsController', ['$scope', function($scope) {
+	app.controller('FitbitStepsSettingsController', ['$scope', 'moment', function($scope, moment) {
 
 		$scope.init = function() {
 			$scope.settings = $scope.$parent.$parent.settings = {
@@ -4101,7 +4101,7 @@
 		$scope.init();
 	}]);
 
-	app.controller('BodyMediaBurnSettingsController', ['$scope', function($scope) {
+	app.controller('BodyMediaBurnSettingsController', ['$scope', 'moment', function($scope, moment) {
 
 		$scope.init = function() {
 			$scope.settings = $scope.$parent.$parent.settings = {
@@ -4113,7 +4113,7 @@
 		$scope.init();
 	}]);
 
-	app.controller('BodyMediaSleepSettingsController', ['$scope', function($scope) {
+	app.controller('BodyMediaSleepSettingsController', ['$scope', 'moment', function($scope, moment) {
 
 		$scope.init = function() {
 			$scope.settings = $scope.$parent.$parent.settings = {
@@ -4125,7 +4125,7 @@
 		$scope.init();
 	}]);
 
-	app.controller('BodyMediaStepsSettingsController', ['$scope', function($scope) {
+	app.controller('BodyMediaStepsSettingsController', ['$scope', 'moment', function($scope, moment) {
 
 		$scope.init = function() {
 			$scope.settings = $scope.$parent.$parent.settings = {
@@ -4137,7 +4137,7 @@
 		$scope.init();
 	}]);
 
-	app.controller('FoursquareSettingsController', ['$scope', function($scope) {
+	app.controller('FoursquareSettingsController', ['$scope', 'moment', function($scope, moment) {
 
 		$scope.init = function() {
 			$scope.settings = $scope.$parent.$parent.settings = {
@@ -4148,7 +4148,7 @@
 		$scope.init();
 	}]);
 
-	app.controller('NetatmoSettingsController', ['$scope', function($scope) {
+	app.controller('NetatmoSettingsController', ['$scope', 'moment', function($scope, moment) {
 
 		$scope.init = function() {
 			$scope.settings = $scope.$parent.$parent.settings = {
@@ -4159,7 +4159,7 @@
 		$scope.init();
 	}]);
 
-	app.controller('RunkeeperSettingsController', ['$scope', '$http', 'Field', function($scope, $http, Field) {
+	app.controller('RunkeeperSettingsController', ['$scope', '$http', 'Field', 'moment', function($scope, $http, Field, moment) {
 
 		$scope.init = function() {
 			$scope.settings = $scope.$parent.$parent.settings = {
@@ -4186,7 +4186,7 @@
 		$scope.init();
 	}]);
 
-	app.controller('WithingsWeightSettingsController', ['$scope', '$http', 'Field', function($scope, $http, Field) {
+	app.controller('WithingsWeightSettingsController', ['$scope', '$http', 'Field', 'moment', function($scope, $http, Field, moment) {
 
 		$scope.init = function() {
 			$scope.settings = $scope.$parent.$parent.settings = {
@@ -4214,7 +4214,7 @@
 		$scope.init();
 	}]);
 
-	app.controller('WithingsCardioSettingsController', ['$scope', '$http', 'Field', function($scope, $http, Field) {
+	app.controller('WithingsCardioSettingsController', ['$scope', '$http', 'Field', 'moment', function($scope, $http, Field, moment) {
 
 		$scope.init = function() {
 			$scope.settings = $scope.$parent.$parent.settings = {
@@ -4238,7 +4238,7 @@
 		$scope.init();
 	}]);
 
-	app.controller('WithingsStepsSettingsController', ['$scope', '$http', 'Field', function($scope, $http, Field) {
+	app.controller('WithingsStepsSettingsController', ['$scope', '$http', 'Field', 'moment', function($scope, $http, Field, moment) {
 
 		$scope.init = function() {
 			$scope.settings = $scope.$parent.$parent.settings = {
@@ -4922,7 +4922,7 @@
 		};		
 	});
 
-	app.directive('uiDatepicker', function() {
+	app.directive('uiDatepicker', ['moment', function(moment) {
 		return {
 			require : '?ngModel',
 			restrict : 'A',
@@ -4952,7 +4952,7 @@
 				return element.datepicker(options).on('changeDate', updateModel);
 			}
 		};
-	});
+	}]);
 
 	app.directive('uiTimepicker', function() {
 		return {
