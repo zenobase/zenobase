@@ -126,8 +126,14 @@
 						</ul>
 						<div class="form-horizontal">
 							<select id="include-bucket-select" class="input-medium" data-ng-model="selected" data-ng-options="bucket.label for bucket in listBuckets()"></select>
-							<input id="include-bucket-filter" name="filter" type="text" class="input-medium" data-ng-model="filter" placeholder="e.g. tag:xyz"/>
-							<button id="include-bucket-button" type="button" class="btn" data-ng-disabled="!selected" data-ng-click="addBucket()">Add</button>
+							<span class="input-append">
+								<input id="include-bucket-filter" name="filter" type="text" class="input-medium" data-ng-model="filter" data-ng-disabled="!selected" data-ui-check-filter="selected" placeholder="e.g. tag:xyz"/>
+								<span class="add-on">
+									<i class="fa fa-exclamation" title="not valid" data-ng-show="form.filter.$invalid"></i>
+									<i class="fa fa-check" title="valid" data-ng-hide="form.filter.$invalid"></i>
+								</span>
+							</span>
+							<button id="include-bucket-button" type="button" class="btn" data-ng-disabled="!selected || form.filter.$invalid" data-ng-click="addBucket()">Add</button>
 						</div>
 					</div>
 				</div>

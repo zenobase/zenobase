@@ -5047,7 +5047,7 @@
 		};
 	});
 
-	app.directive('uiPasswordMatch', [function () {
+	app.directive('uiPasswordMatch', [function() {
 		return {
 			require : 'ngModel',
 			link : function(scope, element, attrs, controller) {
@@ -5058,6 +5058,50 @@
 						controller.$setValidity('match', v);
 					});
 				});
+			}
+		}
+	}]);
+
+	app.directive('uiCheckFilter', ['$http', function($http) {
+
+		var validationErrorKey = 'filter';
+
+		function checkSyntax(value) {
+			return !value || $.grep(value.split('|'), function(expression) {
+				return expression.split(':').length != 2;
+			}).length == 0;
+		}
+
+		function checkResults(bucket, value, callback) {
+			$http.get('/buckets/' + bucket['@id'] + '/?' + $.param({ 'q' : value.split('|'), 'limit' : 0 }, true))
+			.success(function(response) {
+				callback(response.total > 0);
+			})
+			.error(function(response) {
+				callback(false);
+			});
+		}
+
+		return {
+			require : 'ngModel',
+			link : function(scope, element, attrs, controller) {
+				controller.$parsers.unshift(function(value) {
+					var valid = checkSyntax(value);
+					if (valid && value) {
+						var bucket = scope.$eval(attrs.uiCheckFilter);
+						checkResults(bucket, value, function(valid) {
+							controller.$setValidity(validationErrorKey, valid);
+						});
+					} else {
+						controller.$setValidity(validationErrorKey, valid);
+					}
+					return value;
+				});
+				controller.$formatters.unshift(function(value) {
+					var valid = checkSyntax(value);
+					controller.$setValidity(validationErrorKey, valid);
+					return value;
+				});				
 			}
 		}
 	}]);

@@ -41,8 +41,12 @@
 					</div>
 					<div class="control-group">
 						<label class="control-label" for="filterX">Filter</label>
-						<div class="controls form-horizontal">
-							<input name="filterX" type="text" data-ng-model="settings.filter_x" placeholder="e.g. tag:xyz"/>
+						<div class="controls form-horizontal input-append">
+							<input name="filterX" type="text" data-ng-model="settings.filter_x" data-ui-check-filter="bucket" placeholder="e.g. tag:xyz"/>
+							<span class="add-on">
+								<i class="fa fa-exclamation" title="not valid" data-ng-show="form.filter.$invalid"></i>
+								<i class="fa fa-check" title="valid" data-ng-hide="form.filter.$invalid"></i>
+							</span>
 						</div>
 					</div>
 				</blockquote>
@@ -66,8 +70,12 @@
 					</div>
 					<div class="control-group">
 						<label class="control-label" for="filterY">Filter</label>
-						<div class="controls form-horizontal">
-							<input name="filterY" type="text" data-ng-model="settings.filter_y" placeholder="e.g. tag:xyz"/>
+						<div class="controls form-horizontal input-append">
+							<input name="filterY" type="text" data-ng-model="settings.filter_y" data-ui-check-filter="bucket" placeholder="e.g. tag:xyz"/>
+							<span class="add-on">
+								<i class="fa fa-exclamation" title="not valid" data-ng-show="form.filter.$invalid"></i>
+								<i class="fa fa-check" title="valid" data-ng-hide="form.filter.$invalid"></i>
+							</span>
 						</div>
 					</div>
 				</blockquote>
