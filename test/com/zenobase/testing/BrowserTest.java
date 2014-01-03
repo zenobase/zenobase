@@ -255,6 +255,10 @@ public class BrowserTest {
 				$("#create-view-label").sendKeys("Private View");
 				assertThat($("#create-bucket-button")).isNotEnabled();
 				new Select($("#include-bucket-select")).selectByVisibleText("My Data");
+				assertThat($("#include-bucket-button")).isEnabled();
+				$("#include-bucket-filter").sendKeys("walk");
+				assertThat($("#include-bucket-button")).isNotEnabled();
+				$("#include-bucket-filter").clear();
 				$("#include-bucket-filter").sendKeys("tag:walk");
 				$("#include-bucket-button").click();
 				assertThat($("#create-view-button")).isEnabled();

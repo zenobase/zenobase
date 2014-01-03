@@ -5075,7 +5075,7 @@
 		function checkResults(bucket, value, callback) {
 			$http.get('/buckets/' + bucket['@id'] + '/?' + $.param({ 'q' : value.split('|'), 'limit' : 0 }, true))
 			.success(function(response) {
-				callback(response.total > 0);
+				callback(true);
 			})
 			.error(function(response) {
 				callback(false);
