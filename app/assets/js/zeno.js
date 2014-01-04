@@ -118,9 +118,11 @@
 		};
 	});
 
-	app.constant('googleApiKey', 'AIzaSyDv7t1arxF_85-QF-ZUi9C4MV1z94BsH0I');
+	app.factory('timezone', ['moment', function(moment) {
+		return moment().format('Z');
+	}]);
 
-	app.constant('timezone', moment().format('Z'));
+	app.constant('googleApiKey', 'AIzaSyDv7t1arxF_85-QF-ZUi9C4MV1z94BsH0I');
 
 	// TODO should inject this, but can't inject into config...
 	var cacheBuster = function() {
