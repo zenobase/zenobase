@@ -64,6 +64,9 @@ DELETE  /authorizations/               @com.zenobase.controllers.AuthorizationLi
 GET     /authorizations/:authId        @com.zenobase.controllers.AuthorizationController.get(authId)
 DELETE  /authorizations/:authId        @com.zenobase.controllers.AuthorizationController.delete(authId)
 
+GET     /users/:userId/cards/          @com.zenobase.controllers.PaymentController.findCards(userId)
+POST    /payments/                     @com.zenobase.controllers.PaymentController.pay()
+
 GET     /og                            @com.zenobase.controllers.OpenGraphController.get(url)
 GET     /tz                            @com.zenobase.controllers.TimezoneController.get(lat ?= null, lon ?= null)
 GET     /*file                         com.zenobase.controllers.Assets.at(path="/public", file)

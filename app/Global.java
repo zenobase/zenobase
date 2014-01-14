@@ -64,6 +64,7 @@ import com.zenobase.controllers.EventListController;
 import com.zenobase.controllers.JournalController;
 import com.zenobase.controllers.OAuthController;
 import com.zenobase.controllers.PasswordResetController;
+import com.zenobase.controllers.PaymentController;
 import com.zenobase.controllers.StatusController;
 import com.zenobase.controllers.TagController;
 import com.zenobase.controllers.TaskController;
@@ -87,6 +88,7 @@ import com.zenobase.services.EventRepository;
 import com.zenobase.services.IndexManager;
 import com.zenobase.services.LocalNodeFactory;
 import com.zenobase.services.NodeFactory;
+import com.zenobase.services.PaymentGateway;
 import com.zenobase.services.QuotaManager;
 import com.zenobase.services.TaskRepository;
 import com.zenobase.services.TestNodeFactory;
@@ -160,6 +162,7 @@ public class Global extends GlobalSettings {
 				bind(CredentialsRepository.class).in(Singleton.class);
 				bind(AuthorizationRepository.class).in(Singleton.class);
 				bind(QuotaManager.class).in(Singleton.class);
+				bind(PaymentGateway.class).in(Singleton.class);
 
 				Multibinder<CommandParser> parsers = Multibinder.newSetBinder(binder(), CommandParser.class);
 				parsers.addBinding().to(CreateBucketCommand.Parser.class);
@@ -258,6 +261,7 @@ public class Global extends GlobalSettings {
 				bind(AuthorizationController.class).in(Singleton.class);
 				bind(AuthorizationListController.class).in(Singleton.class);
 				bind(TimezoneController.class).in(Singleton.class);
+				bind(PaymentController.class).in(Singleton.class);
 
 				requestInjection(Global.this);
 			}

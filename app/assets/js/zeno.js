@@ -122,6 +122,13 @@
 		return moment().format('Z');
 	}]);
 
+	app.factory('braintree', function() {
+		return {
+			merchantId : 'tzq6d3tr7npjqzpt',
+			encrypt : Braintree.create("MIIBCgKCAQEA8GcDKmhjpEOK2TUoeCDf5NaOdD1TtjknS5Xqka7RZLRm53+fghvlQu5OaNiao+U61MiWYMQKJN1zd1tq9NvPfn/bhlucv+ftNvfCA2x29A09ZIO0TVC2whwrRRuZEssX0EKjHnWPwpyXxpyl87mrafhO2BjIEvdFn89rt80PwFCT6rPLq8oF57VvQ+5sTtTVLOUpDG8xhku71BZILX/rypmVChbOf6kgtSpJI1KzxQ637ePNE10YNHbTxJOfcxBWnuz3Qek8gGo69CznVndLwchSoSgKbbyHRyE43RbVLZCG3sF8JlYlIkskWuGU6Zphax+HHxwrnlrIuKDo0B0PswIDAQAB").encrypt
+		};
+	});
+
 	app.constant('googleApiKey', 'AIzaSyDv7t1arxF_85-QF-ZUi9C4MV1z94BsH0I');
 
 	// TODO should inject this, but can't inject into config...
@@ -416,6 +423,21 @@
 						}
 					});
 			}
+		};
+	}]);
+
+	app.controller('PlanDialogController', ['$scope', '$http', 'tracker', function($scope, $http, tracker) {
+	
+		$scope.init = function() {
+			$scope.message = '';
+			$scope.plan = $scope.user.quota;
+			console.log('plan', $scope.plan);
+			tracker.event('dialog', 'select plan');
+		};
+
+		$scope.select = function() {
+			$scope.alert.clear();
+			tracker.event('action', 'select plan', $scope.plan);
 		};
 	}]);
 
@@ -4309,7 +4331,7 @@
 			}
 		};
 		$scope.selectPlan = function(quota) {
-			$scope.openDialog('plan-dialog');
+			$scope.openDialog('payment-dialog', quota);
 			tracker.event('action', 'select plan', quota);
 		};
 
@@ -4324,6 +4346,48 @@
 					});
 			}
 		});
+	}]);
+
+	app.controller('PaymentDialogController', ['$scope', '$http', 'braintree', 'tracker', function($scope, $http, braintree, tracker) {
+
+		$scope.merchantId = braintree.merchantId;
+
+		$scope.init = function(plan) {
+			$scope.message = '';
+			$scope.card = {};
+			$scope.token = null;
+			$scope.addCard = true;
+			$http.get('/users/' + $scope.user['@id'] + '/cards/').success(function(response) {
+				if (response.length) {
+					$scope.token = response[0];
+					$scope.addCard = false;
+				}
+			});
+			tracker.event('dialog', 'payment');
+		};
+
+		$scope.pay = function() {
+			var card = {};
+			if (addCard) {
+				card.number = braintree.encrypt($scope.card.number);
+				card.cvv = braintree.encrypt($scope.card.cvv);
+				card.expiration_year = braintree.encrypt($scope.card.expirationYear);
+				card.expiration_month = braintree.encrypt($scope.card.expirationMonth);
+			} else if ($scope.token) {
+				card.token = $scope.token;
+			}
+			};
+			console.log('card', card);
+			$scope.alert.clear();
+			$http.post('/users/' + $scope.user['@id'] + '/payments/', { 'card' : card })
+				.success(function(response) {
+					
+				})
+				.error(function(response) {
+					
+				});
+			tracker.event('action', 'payment');
+		};
 	}]);
 
 	app.factory('Field', ['User', 'moment', function(User, moment) {

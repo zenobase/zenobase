@@ -25,7 +25,7 @@ public class AuthorizationListController extends ControllerSupport {
 	private final UserRepository users;
 
 	@Inject
-	public AuthorizationListController(AuthorizationContext security, AuthorizationRepository authorizations, CommandDispatcher dispatcher,UserRepository users) {
+	public AuthorizationListController(AuthorizationContext security, AuthorizationRepository authorizations, CommandDispatcher dispatcher, UserRepository users) {
 		super(security);
 		this.authorizations = authorizations;
 		this.dispatcher = dispatcher;

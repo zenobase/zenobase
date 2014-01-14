@@ -35,17 +35,44 @@
 	
 	</div>
 
-	<div id="plan-dialog" class="hide" data-ui-modal>
-		<div class="modal-header">
-			<a class="close" data-dismiss="modal">&times;</a>
-			<h4>Select Plan</h4>
-		</div>
-		<div class="modal-body">
-			To upgrade or downgrade your plan, please <a href="mailto:support@zenobase.com?subject=Quota">contact us</a>.
-		</div>
-		<div class="modal-footer">
-			<button type="reset" class="btn" data-dismiss="modal">Cancel</button>
-		</div>
+	<div id="payment-dialog" class="hide" data-ui-modal data-ng-controller="PaymentDialogController">
+		<form name="form" data-ng-submit="pay()" class="modal-form">
+			<div class="modal-header">
+				<a class="close" data-dismiss="modal">&times;</a>
+				<h4>Payment</h4>
+			</div>
+			<div class="modal-body">
+				<div class="alert alert-error" data-ng-show="message">
+					{{message}}
+				</div>
+				<div class="control-group" data-ng-show="token">
+					<label class="radio" data-ng-show="token"><input type="radio" name="addCard" data-ng-value="false" data-ng-model="addCard">Use existing card ({{token}})</label>
+					<label class="radio"><input type="radio" name="addCard" data-ng-value="true" data-ng-model="addCard">Use a new card</label>
+				</div>
+				<hr data-ng-show="token && addCard"/>
+				<div class="control-group" data-ng-show="addCard">
+					<label class="control-label"><strong>Card Number</strong></label>
+					<div class="controls">
+						<input name="number" type="text" class="input-large" required data-ui-focus-on="openDialog:payment-dialog" data-ng-model="card.number"/>
+						<input name="number" type="text" pattern="\d\d\d\d?" class="input-mini" required data-ng-model="card.cvv" placeholder="CVV"/>
+					</div>
+				</div>
+				<div class="control-group" data-ng-show="addCard">
+					<label class="control-label"><strong>Expiration Date</strong></label>
+					<div class="controls">
+						<input name="number" type="number" class="input-mini" required min="1" max="12" data-ng-model="card.expiration_month" placeholder="MM"/>
+						<input name="number" type="number" class="input-mini" required min="2014"  data-ng-model="card.expiration_year" placeholder="YYYY"/>
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<a data-ng-href="https://www.braintreegateway.com/merchants/{{merchantId}}/verified" title="Braintree Secure Payments" target="_blank" class="pull-left">
+					<img src="https://braintree-badges.s3.amazonaws.com/14.png" border="0"/>
+				</a>
+				<button type="submit" class="btn btn-primary" data-ng-disabled="!form.$valid">Pay</button>
+				<button type="reset" class="btn" data-dismiss="modal">Cancel</button>
+			</div>
+		</form>
 	</div>
 
 </div>
