@@ -4348,43 +4348,56 @@
 		});
 	}]);
 
-	app.controller('PaymentDialogController', ['$scope', '$http', 'braintree', 'tracker', function($scope, $http, braintree, tracker) {
+	app.controller('PaymentDialogController', ['$scope', '$http', '$location', 'braintree', 'tracker', function($scope, $http, $location, braintree, tracker) {
 
 		$scope.merchantId = braintree.merchantId;
 
 		$scope.init = function(plan) {
 			$scope.message = '';
-			$scope.card = {};
-			$scope.token = null;
+			$scope.plan = plan;
+			$scope.newCard = {};
+			$scope.oldCard = null;
 			$scope.addCard = true;
-			$http.get('/users/' + $scope.user['@id'] + '/cards/').success(function(response) {
-				if (response.length) {
-					$scope.token = response[0];
-					$scope.addCard = false;
-				}
-			});
+			$scope.ready = false;
+			if (!$scope.user.verified) {
+				$scope.message = 'Please verify your email address before selecting a plan.';
+			} else {
+				$http.get('/users/' + $scope.user['@id'] + '/card').success(function(response) {
+					if (response) {
+						$scope.oldCard = response;
+						$scope.addCard = false;
+					}
+					$scope.ready = true;
+				});
+			}
 			tracker.event('dialog', 'payment');
 		};
 
 		$scope.pay = function() {
-			var card = {};
-			if (addCard) {
-				card.number = braintree.encrypt($scope.card.number);
-				card.cvv = braintree.encrypt($scope.card.cvv);
-				card.expiration_year = braintree.encrypt($scope.card.expirationYear);
-				card.expiration_month = braintree.encrypt($scope.card.expirationMonth);
-			} else if ($scope.token) {
-				card.token = $scope.token;
-			}
+			var data = {
+					'plan' : $scope.plan
 			};
-			console.log('card', card);
+			if ($scope.addCard) {
+				data.card = {
+					'number' : braintree.encrypt($scope.newCard.number),
+					'cvv' : braintree.encrypt($scope.newCard.cvv),
+					'expiration_year' : braintree.encrypt($scope.newCard.expirationYear),
+					'expiration_month' : braintree.encrypt($scope.newCard.expirationMonth)
+				};
+			}
 			$scope.alert.clear();
-			$http.post('/users/' + $scope.user['@id'] + '/payments/', { 'card' : card })
+			$http.post('/payments/', data)
 				.success(function(response) {
-					
+					$scope.closeDialog();
+					$scope.whoami();
+					$scope.alert.show('Your plan has been updated.', 'alert-success');
 				})
-				.error(function(response) {
-					
+				.error(function(response, status) {
+					if (status < 500) {
+						$scope.message = 'Can\'t change the plan.';
+					} else {
+						$scope.message = 'Couldn\'t change the plan. Try again later or contact support.';
+					}
 				});
 			tracker.event('action', 'payment');
 		};

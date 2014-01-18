@@ -61,4 +61,16 @@ public class EventRepositoryTest extends ElasticSearchTestSupport {
 		assertThat(repository.find(bucket.getId(), event.getId())).as("event").isNull();
 		assertThat(repository.terms(bucket.getId(), Event.TAG.getName())).as("tags").isEmpty();
 	}
+
+	@Test
+	public void testTimestamp() {
+
+		Bucket bucket = new Bucket();
+		new BucketRepository(getManager()).store(bucket, DateTime.now(), true);
+		Event event = new Event();
+		event.setValue(Event.AUTHOR, me);
+		event.addValue(Event.TAG, "test");
+		event.toJson().put("timestamp", "2012-10-24T13:10:00.000-00:00");
+		repository.add(bucket.getId(), event, DateTime.now());
+	}
 }

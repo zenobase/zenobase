@@ -21,8 +21,8 @@
 			<p></p>
 			<p>add up to <strong>50,000</strong> events / month</p>
 			<div data-ui-quota="quota" data-ui-limit="50000"></div>
-			<button class="btn" data-ng-hide="user.quota" data-ng-disabled="user" data-ng-click="start()" data-ng-controller="HomeController">Trial</button>
-			<button class="btn" data-ng-show="user.quota" data-ng-disabled="!user || user.isGuest() || user.quota == 50000" data-ng-click="selectPlan(50000)">Select</button>
+			<button class="btn" data-ng-hide="user" data-ng-disabled="user" data-ng-click="start()" data-ng-controller="HomeController">Trial</button>
+			<button class="btn" data-ng-show="user" data-ng-disabled="!user || user.isGuest() || user.quota == 50000" data-ng-click="selectPlan(50000)">Select</button>
 		</div>
 	
 		<div class="span3 alert" data-ng-class="isPlan(3000000) && 'alert-success' || 'alert-info'">
@@ -36,7 +36,7 @@
 	</div>
 
 	<div id="payment-dialog" class="hide" data-ui-modal data-ng-controller="PaymentDialogController">
-		<form name="form" data-ng-submit="pay()" class="modal-form">
+		<form name="form" data-ng-submit="pay()" class="modal-form" novalidate>
 			<div class="modal-header">
 				<a class="close" data-dismiss="modal">&times;</a>
 				<h4>Payment</h4>
@@ -45,23 +45,25 @@
 				<div class="alert alert-error" data-ng-show="message">
 					{{message}}
 				</div>
-				<div class="control-group" data-ng-show="token">
-					<label class="radio" data-ng-show="token"><input type="radio" name="addCard" data-ng-value="false" data-ng-model="addCard">Use existing card ({{token}})</label>
-					<label class="radio"><input type="radio" name="addCard" data-ng-value="true" data-ng-model="addCard">Use a new card</label>
+				<div class="control-group" data-ng-show="ready && oldCard">
+					<label class="radio"><input type="radio" name="addCard" data-ng-value="false" data-ng-model="addCard"><strong>{{oldCard.number}}</strong> ({{oldCard.expiration_month}}/{{oldCard.expiration_year}})</label>
+					<label class="radio"><input type="radio" name="addCard" data-ng-value="true" data-ng-model="addCard">Other</label>
 				</div>
-				<hr data-ng-show="token && addCard"/>
-				<div class="control-group" data-ng-show="addCard">
-					<label class="control-label"><strong>Card Number</strong></label>
-					<div class="controls">
-						<input name="number" type="text" class="input-large" required data-ui-focus-on="openDialog:payment-dialog" data-ng-model="card.number"/>
-						<input name="number" type="text" pattern="\d\d\d\d?" class="input-mini" required data-ng-model="card.cvv" placeholder="CVV"/>
+				<div data-ng-show="ready && addCard">
+					<hr data-ng-show="oldCard"/>
+					<div class="control-group">
+						<label class="control-label"><strong>Card Number</strong></label>
+						<div class="controls">
+							<input name="number" type="text" class="input-large" required data-ui-focus-on="openDialog:payment-dialog" data-ng-model="newCard.number"/>
+							<input name="number" type="text" pattern="\d\d\d\d?" class="input-mini" required data-ng-model="newCard.cvv" placeholder="CVV"/>
+						</div>
 					</div>
-				</div>
-				<div class="control-group" data-ng-show="addCard">
-					<label class="control-label"><strong>Expiration Date</strong></label>
-					<div class="controls">
-						<input name="number" type="number" class="input-mini" required min="1" max="12" data-ng-model="card.expiration_month" placeholder="MM"/>
-						<input name="number" type="number" class="input-mini" required min="2014"  data-ng-model="card.expiration_year" placeholder="YYYY"/>
+					<div class="control-group">
+						<label class="control-label"><strong>Expiration Date</strong></label>
+						<div class="controls">
+							<input name="number" type="number" class="input-mini" required min="1" max="12" data-ng-model="newCard.expirationMonth" placeholder="MM"/>
+							<input name="number" type="number" class="input-mini" required min="2014"  data-ng-model="newCard.expirationYear" placeholder="YYYY"/>
+						</div>
 					</div>
 				</div>
 			</div>
@@ -69,7 +71,7 @@
 				<a data-ng-href="https://www.braintreegateway.com/merchants/{{merchantId}}/verified" title="Braintree Secure Payments" target="_blank" class="pull-left">
 					<img src="https://braintree-badges.s3.amazonaws.com/14.png" border="0"/>
 				</a>
-				<button type="submit" class="btn btn-primary" data-ng-disabled="!form.$valid">Pay</button>
+				<button type="submit" class="btn btn-primary" data-ng-disabled="addCard && !form.$valid">Pay</button>
 				<button type="reset" class="btn" data-dismiss="modal">Cancel</button>
 			</div>
 		</form>

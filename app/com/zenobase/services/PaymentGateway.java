@@ -37,7 +37,7 @@ public class PaymentGateway {
 		gateway = new BraintreeGateway(environment, merchantId, publicKey, privateKey);
 	}
 
-	public Customer find(String username) {
+	public Customer findCustomer(String username) {
 		try {
 			return gateway.customer().find(username);
 		} catch (NotFoundException e) {
@@ -46,7 +46,7 @@ public class PaymentGateway {
 	}
 
 	public void subscribe(String username, String email, Card card, String planId) {
-		Customer customer = find(username);
+		Customer customer = findCustomer(username);
 		if (customer != null) {
 			replaceSubscription(customer, card, planId);
 		} else {
@@ -66,9 +66,11 @@ public class PaymentGateway {
 	private void replaceSubscription(Customer customer, Card card, String planId) {
 		Subscription subscription = getSubscription(customer);
 		Preconditions.checkArgument(subscription != null, "Expected at least one subscription for <%s>", customer.getId());
+		BigDecimal price = findPrice(planId);
+		Preconditions.checkArgument(price != null, "Can't find a price for plan <%s>", planId);
 		CreditCard creditCard = card != null ? newCreditCard(customer.getId(), card) : getCreditCard(customer);
 		Preconditions.checkArgument(creditCard != null, "Expected a card for <%s>", customer.getId());
-		SubscriptionRequest request = new SubscriptionRequest().planId(planId).price(findPrice(planId)).paymentMethodToken(creditCard.getToken());
+		SubscriptionRequest request = new SubscriptionRequest().planId(planId).price(price).paymentMethodToken(creditCard.getToken());
 		Result<Subscription> result = gateway.subscription().update(subscription.getId(), request);
 		Preconditions.checkArgument(result.isSuccess(), "Couldn't subscribe <%s> to <%s>: %s", customer.getId(), planId, result.getMessage());
 	}
@@ -121,9 +123,9 @@ public class PaymentGateway {
 		return null;
 	}
 
-	public String findPaymentMethodToken(String username) {
-		CreditCard card = getCreditCard(find(username));
-		return card != null ? card.getLast4() : null;
+	public Card findCard(String username) {
+		CreditCard card = getCreditCard(findCustomer(username));
+		return card != null ? new Card(card.getMaskedNumber(), null, card.getExpirationYear(), card.getExpirationMonth()) : null;
 	}
 
 	public boolean cancel(String username) {
