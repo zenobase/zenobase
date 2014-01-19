@@ -8,7 +8,6 @@ import com.zenobase.json.TokenField;
 
 public class Card extends DomainNode {
 
-	public static final TokenField TOKEN = new TokenField("token");
 	public static final TokenField NUMBER = new TokenField("number");
 	public static final TokenField CVV = new TokenField("cvv");
 	public static final TokenField EXPIRATION_YEAR = new TokenField("expiration_year");
@@ -18,19 +17,11 @@ public class Card extends DomainNode {
 		super(node);
 	}
 
-	public Card(String token) {
-		setValue(TOKEN, token);
-	}
-
 	public Card(String number, String cvv, String expirationYear, String expirationMonth) {
 		setValue(NUMBER, number);
 		setValue(CVV, cvv);
 		setValue(EXPIRATION_YEAR, expirationYear);
 		setValue(EXPIRATION_MONTH, expirationMonth);
-	}
-
-	public String getPaymentMethodToken() {
-		return getValue(TOKEN);
 	}
 
 	public String getNumber() {
