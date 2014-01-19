@@ -24,6 +24,7 @@ public class AccountControllerCloseAccountTest extends AccountControllerTestSupp
 		when(dispatcher.dispatch(any(Command.class))).thenReturn(commandId);
 		Result result = call(user.getName());
 		assertThat(result).hasStatus(NO_CONTENT).hasHeader(COMMAND_ID, commandId).isEmpty();
+		verify(payments).cancel(user.getName());
 	}
 
 	@Test
@@ -31,7 +32,7 @@ public class AccountControllerCloseAccountTest extends AccountControllerTestSupp
 		when(users.find(user.getName())).thenReturn(user);
 		Result result = call(user.getName());
 		assertThat(result).hasStatus(UNAUTHORIZED);
-		verifyZeroInteractions(dispatcher);
+		verifyZeroInteractions(dispatcher, payments);
 	}
 
 	@Test
@@ -39,7 +40,7 @@ public class AccountControllerCloseAccountTest extends AccountControllerTestSupp
 		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
 		Result result = call(user.getName());
 		assertThat(result).hasStatus(NOT_FOUND);
-		verifyZeroInteractions(dispatcher);
+		verifyZeroInteractions(dispatcher, payments);
 	}
 
 	@Test
@@ -48,7 +49,7 @@ public class AccountControllerCloseAccountTest extends AccountControllerTestSupp
 		when(users.find(user.getName())).thenReturn(user);
 		Result result = call(user.getName());
 		assertThat(result).hasStatus(FORBIDDEN);
-		verifyZeroInteractions(dispatcher);
+		verifyZeroInteractions(dispatcher, payments);
 	}
 
 	@Test
@@ -61,6 +62,7 @@ public class AccountControllerCloseAccountTest extends AccountControllerTestSupp
 		when(dispatcher.dispatch(any(Command.class))).thenReturn(commandId);
 		Result result = call(user.getName());
 		assertThat(result).hasStatus(NO_CONTENT).hasHeader(COMMAND_ID, commandId).isEmpty();
+		verify(payments).cancel(user.getName());
 	}
 
 	private Result call(String username) {

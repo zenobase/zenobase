@@ -12,6 +12,7 @@ import com.zenobase.services.AuthorizationRepository;
 import com.zenobase.services.BucketRepository;
 import com.zenobase.services.CommandDispatcher;
 import com.zenobase.services.CredentialsRepository;
+import com.zenobase.services.PaymentGateway;
 import com.zenobase.services.TaskRepository;
 import com.zenobase.services.UserRepository;
 
@@ -25,6 +26,7 @@ public abstract class AccountControllerTestSupport extends ControllerTestSupport
 	protected final AuthorizationRepository authorizations = mock(AuthorizationRepository.class);
 	protected final CommandDispatcher dispatcher = mock(CommandDispatcher.class);
 	protected final VerificationMailer mailer = mock(VerificationMailer.class);
+	protected final PaymentGateway payments = mock(PaymentGateway.class);
 	protected final User user = new User("tester");
 	protected final String password = "secret123";
 
@@ -41,6 +43,7 @@ public abstract class AccountControllerTestSupport extends ControllerTestSupport
 				bind(AuthorizationRepository.class).toInstance(authorizations);
 				bind(CommandDispatcher.class).toInstance(dispatcher);
 				bind(VerificationMailer.class).toInstance(mailer); // unused
+				bind(PaymentGateway.class).toInstance(payments);
 				bind(AccountController.class).in(Singleton.class);
 			}
 		});

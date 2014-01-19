@@ -27,6 +27,7 @@ import com.zenobase.services.BucketRepository;
 import com.zenobase.services.CommandDispatcher;
 import com.zenobase.services.CredentialsQuery;
 import com.zenobase.services.CredentialsRepository;
+import com.zenobase.services.PaymentGateway;
 import com.zenobase.services.TaskQuery;
 import com.zenobase.services.TaskRepository;
 import com.zenobase.services.UserLookup;
@@ -43,11 +44,13 @@ public class AccountController extends ControllerSupport {
 	private final AuthorizationRepository authorizations;
 	private final CommandDispatcher dispatcher;
 	private final VerificationMailer mailer;
+	private final PaymentGateway payments;
 
 	@Inject
 	public AccountController(AuthorizationContext security, UserRepository users,
 		BucketRepository buckets, TaskRepository tasks, CredentialsRepository credentials,
-		AuthorizationRepository authorizations, CommandDispatcher dispatcher, VerificationMailer mailer) {
+		AuthorizationRepository authorizations, CommandDispatcher dispatcher, VerificationMailer mailer,
+		PaymentGateway payments) {
 
 		super(security);
 		this.users = users;
@@ -57,6 +60,7 @@ public class AccountController extends ControllerSupport {
 		this.authorizations = authorizations;
 		this.dispatcher = dispatcher;
 		this.mailer = mailer;
+		this.payments = payments;
 	}
 
 	@BodyParser.Of(BodyParser.Json.class)
@@ -96,6 +100,7 @@ public class AccountController extends ControllerSupport {
 			return forbidden();
 		}
 		Command command = buildCloseAccountCommand(auth.getPrincipal(), user, auth);
+		payments.cancel(user.getName());
 		String commandId = dispatcher.dispatch(command);
 		response().setHeader(COMMAND_ID, commandId);
 		return noContent();
