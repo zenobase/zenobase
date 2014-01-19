@@ -5,7 +5,6 @@ import static org.fest.assertions.Assertions.assertThat;
 
 import org.junit.Assume;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import com.braintreegateway.Environment;
 
@@ -32,7 +31,6 @@ public class PaymentGatewayTest {
 	}
 
 	@Test
-	@Ignore
 	public void testNewSubscription() {
 		assertThat(gateway.findCustomer(USERNAME)).isNull();
 		gateway.subscribe(USERNAME, EMAIL, CARD, PLAN_50K);
@@ -43,7 +41,6 @@ public class PaymentGatewayTest {
 	}
 
 	@Test(expected = IllegalArgumentException.class)
-	@Ignore
 	public void testNewSubscriptionWithInvalidCard() {
 		Card invalid = new Card("4000 1111 1111 1115", "100", "15", "01");
 		assertThat(gateway.findCustomer(USERNAME)).isNull();
@@ -51,7 +48,6 @@ public class PaymentGatewayTest {
 	}
 
 	@Test
-	@Ignore
 	public void testUpgradeSubscriptionWithExistingCard() {
 		assertThat(gateway.findCustomer(USERNAME)).isNull();
 		gateway.subscribe(USERNAME, EMAIL, CARD, PLAN_50K);
@@ -61,7 +57,6 @@ public class PaymentGatewayTest {
 	}
 
 	@Test
-	@Ignore
 	public void testDowngradeSubscriptionWithExistingCard() {
 		assertThat(gateway.findCustomer(USERNAME)).isNull();
 		gateway.subscribe(USERNAME, EMAIL, CARD, PLAN_50K);
@@ -71,7 +66,6 @@ public class PaymentGatewayTest {
 	}
 
 	@Test
-	@Ignore
 	public void testUpgradeSubscriptionWithNewCard() {
 		Card newCard = new Card("4005 5192 0000 0004", "101", "2016", "01");
 		assertThat(gateway.findCustomer(USERNAME)).isNull();
@@ -82,7 +76,6 @@ public class PaymentGatewayTest {
 	}
 
 	@Test
-	@Ignore
 	public void testUpgradeSubscriptionWithInvalidCard() {
 		Card invalid = new Card("4000 1111 1111 1115", "100", "15", "01");
 		assertThat(gateway.findCustomer(USERNAME)).isNull();
