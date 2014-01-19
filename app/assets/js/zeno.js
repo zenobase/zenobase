@@ -4351,11 +4351,12 @@
 			$scope.plan = plan;
 			$scope.newCard = {};
 			$scope.oldCard = null;
-			$scope.addCard = true;
+			$scope.addCard = false;
 			$scope.ready = false;
 			if (!$scope.user.verified) {
 				$scope.message = 'Please verify your email address before selecting a plan.';
 			} else if (plan.cost > 0) {
+				$scope.addCard = true;
 				$http.get('/users/' + $scope.user['@id'] + '/card').success(function(response) {
 					if (response) {
 						$scope.oldCard = response;
@@ -4919,23 +4920,21 @@
 		$httpProvider.responseInterceptors.push(interceptor);
 	}]);
 
-	app.directive('uiQuota', ['$interpolate', function($interpolate) {
+	app.directive('uiQuota', ['$interpolate', '$filter', function($interpolate, $filter) {
 		return {
 			restrict : 'A',
 			compile : function() {
 				return function(scope, element, attrs) {
 					var template = $interpolate(
-						'<div class="progress" title="{{title}}">' +
+						'<div class="progress" style="cursor:pointer;" onclick="window.location=\'/#/pricing/\'" title="{{title}}">' +
 						'  <div class="bar {{class}}" style="width:{{percent}}%;"></div>' +
 						'</div>');
 					scope.$watch(attrs.uiQuota, function(quota) {
 						if (quota) {
-							var limit = scope.$eval(attrs.uiLimit);
-							var used = quota.limit - quota.remaining;
-							var percent = Math.min(Math.ceil(used / limit * 100), 100);
+							var percent = Math.max(Math.ceil(quota.remaining / quota.limit * 100), 1);
 							element.html(template({
-								'title' : 'Used: ' + used + '/' + limit,
-								'class' : quota.limit == limit ? 'bar-success' : 'bar-info',
+								'title' : 'You have used ' + $filter('number')(quota.used) + '/' + $filter('number')(quota.limit) + ' events this month.',
+								'class' : percent > 10 ? 'bar-success' : percent > 1 ? 'bar-warning' : 'bar-danger',
 								'percent' :  percent
 							}));
 						}

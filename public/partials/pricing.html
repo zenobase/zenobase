@@ -11,27 +11,27 @@
 		<div class="span3 alert" data-ng-class="user && (user.quota == 1000 || !user.quota) && 'alert-success' || 'alert-info'">
 			<h4>Free</h4>
 			<p></p>
-			<p>add up to <strong>1,000</strong> events / month</p>
-			<div data-ui-quota="quota" data-ui-limit="1000"></div>
+			<p>add up to <strong>1,000</strong> events / month *</p>
+			<p><em>record one event every hour</em></p>
 			<button class="btn" data-ng-show="user && !user.isGuest()" data-ng-disabled="user.quota == 1000 || !user.quota" data-ng-click="selectPlan({ 'label' : 'Free', 'quota' : 1000, 'cost' : 0 })">Select</button>
 		</div>
-	
+
 		<div class="span3 alert" data-ng-class="user && user.quota == 50000 && 'alert-success' || 'alert-info'">
 			<h4>$5 <small>/ month</small></h4>
 			<p></p>
 			<p>add up to <strong>50,000</strong> events / month</p>
-			<div data-ui-quota="quota" data-ui-limit="50000"></div>
+			<p><em>record one event every minute</em></p>
 			<button class="btn" data-ng-show="user && !user.isGuest()" data-ng-disabled="user.quota == 50000" data-ng-click="selectPlan({ 'label' : '50K', 'quota' : 50000, 'cost' : 5 })">Select</button>
 		</div>
-	
+
 		<div class="span3 alert" data-ng-class="user && user.quota == 3000000 && 'alert-success' || 'alert-info'">
 			<h4>$30 <small>/ month</small></h4>
 			<p></p>
 			<p>add up to <strong>3 million</strong> events / month</p>
-			<div data-ui-quota="quota" data-ui-limit="3000000"></div>
+			<p><em>record one event every second</em></p>
 			<button class="btn" data-ng-show="user && !user.isGuest()" data-ng-disabled="user.quota == 3000000" data-ng-click="selectPlan({ 'label' : '3M', 'quota' : 3000000, 'cost' : 30 })">Select</button>
 		</div>
-	
+
 	</div>
 
 	<div id="payment-dialog" class="hide" data-ui-modal data-ng-controller="PaymentDialogController">

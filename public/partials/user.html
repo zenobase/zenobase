@@ -147,7 +147,11 @@
 		<div class="alert alert-block alert-info" data-ng-hide="isSelf()">
 			Sign in as this user for more information.
 		</div>
-		
+
+		<div class="row-fluid" data-ng-show="isSelf()" data-ng-controller="PricingController">
+			<div data-ui-quota="quota"></div>
+		</div>
+
 		<div class="row-fluid" data-ng-show="isSelf()">
 
 			<div class="span4" data-ng-controller="BucketListController">
