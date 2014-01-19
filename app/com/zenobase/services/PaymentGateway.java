@@ -7,6 +7,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.elasticsearch.common.collect.Lists;
+import play.Logger;
 import play.Play;
 import com.braintreegateway.BraintreeGateway;
 import com.braintreegateway.CreditCard;
@@ -126,6 +127,17 @@ public class PaymentGateway {
 	public Card findCard(String username) {
 		CreditCard card = getCreditCard(findCustomer(username));
 		return card != null ? new Card(card.getMaskedNumber(), null, card.getExpirationYear(), card.getExpirationMonth()) : null;
+	}
+
+	public boolean update(String username, String email) {
+		try {
+			return gateway.customer().update(username, new CustomerRequest().email(email)).isSuccess();
+		} catch (NotFoundException e) {
+			return false;
+		} catch (Throwable t) {
+			Logger.error("Couldn't update email of <" + username + "> to <" + email + ">", t);
+			return false;
+		}
 	}
 
 	public boolean cancel(String username) {

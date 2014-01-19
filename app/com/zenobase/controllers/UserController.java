@@ -25,6 +25,7 @@ import com.zenobase.oauth.Authorization;
 import com.zenobase.services.AuthorizationQuery;
 import com.zenobase.services.AuthorizationRepository;
 import com.zenobase.services.CommandDispatcher;
+import com.zenobase.services.PaymentGateway;
 import com.zenobase.services.UserLookup;
 import com.zenobase.services.UserRepository;
 
@@ -34,17 +35,19 @@ public class UserController extends ControllerSupport {
 	private final AuthorizationRepository authorizations;
 	private final CommandDispatcher dispatcher;
 	private final VerificationMailer mailer;
+	private final PaymentGateway payments;
 
 	@Inject
 	public UserController(AuthorizationContext security, UserRepository users,
 		AuthorizationRepository authorizations, CommandDispatcher dispatcher,
-		VerificationMailer mailer) {
+		VerificationMailer mailer, PaymentGateway payments) {
 
 		super(security);
 		this.users = users;
 		this.authorizations = authorizations;
 		this.dispatcher = dispatcher;
 		this.mailer = mailer;
+		this.payments = payments;
 	}
 
 	public Result get(String userId) {
@@ -180,6 +183,7 @@ public class UserController extends ControllerSupport {
 			return badRequest("invalid key");
 		}
 		String commandId = dispatcher.dispatch(new ChangeUserVerifiedCommand(user.asIdentity(), user.getName(), true));
+		payments.update(user.getName(), user.getEmail());
 		response().setHeader(COMMAND_ID, commandId);
 		return noContent();
 	}

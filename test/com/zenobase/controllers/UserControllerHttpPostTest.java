@@ -34,6 +34,7 @@ public class UserControllerHttpPostTest extends UserControllerTestSupport {
 		when(dispatcher.dispatch(any(ChangeUserEmailCommand.class))).thenReturn(commandId);
 		Result result = call(user.getId(), new UpdateUserForm("jdoe@zenobase.com").toJson());
 		assertThat(result).hasStatus(NO_CONTENT).hasHeader(COMMAND_ID, commandId).isEmpty();
+		verifyZeroInteractions(payments);
 	}
 
 	@Test
@@ -41,7 +42,7 @@ public class UserControllerHttpPostTest extends UserControllerTestSupport {
 		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
 		Result result = call('@' + user.getName(), new UpdateUserForm("jdoe@zenobase.com").toJson());
 		assertThat(result).hasStatus(NOT_FOUND);
-		verifyZeroInteractions(dispatcher, mailer);
+		verifyZeroInteractions(dispatcher, mailer, payments);
 	}
 
 	@Test
@@ -49,7 +50,7 @@ public class UserControllerHttpPostTest extends UserControllerTestSupport {
 		when(users.find(user.asIdentity())).thenReturn(user);
 		Result result = call(user.getId(), new UpdateUserForm("jdoe@zenobase.com").toJson());
 		assertThat(result).hasStatus(UNAUTHORIZED);
-		verifyZeroInteractions(dispatcher, mailer);
+		verifyZeroInteractions(dispatcher, mailer, payments);
 	}
 
 	@Test
@@ -58,7 +59,7 @@ public class UserControllerHttpPostTest extends UserControllerTestSupport {
 		when(users.find(user.asIdentity())).thenReturn(user);
 		Result result = call(user.getId(), new UpdateUserForm("jdoe@zenobase.com").toJson());
 		assertThat(result).hasStatus(FORBIDDEN);
-		verifyZeroInteractions(dispatcher, mailer);
+		verifyZeroInteractions(dispatcher, mailer, payments);
 	}
 
 	@Test
@@ -67,7 +68,7 @@ public class UserControllerHttpPostTest extends UserControllerTestSupport {
 		when(users.find(user.asIdentity())).thenReturn(user);
 		Result result = call(user.getId(), new UpdateUserForm("jdoe").toJson());
 		assertThat(result).hasStatus(BAD_REQUEST);
-		verifyZeroInteractions(dispatcher, mailer);
+		verifyZeroInteractions(dispatcher, mailer, payments);
 	}
 
 	@Test
@@ -81,6 +82,7 @@ public class UserControllerHttpPostTest extends UserControllerTestSupport {
 		PasswordResetKey key = new PasswordResetKey(user);
 		Result result = call(user.getId(), new UpdateUserForm("newpassword",  key.getKey(), key.getExpirationToken()).toJson());
 		assertThat(result).hasStatus(OK).hasHeader(COMMAND_ID, commandId).asObjectNode().path("access_code").isNotNull();
+		verifyZeroInteractions(payments);
 	}
 
 	@Test
@@ -90,7 +92,7 @@ public class UserControllerHttpPostTest extends UserControllerTestSupport {
 		PasswordResetKey key = new PasswordResetKey(user);
 		Result result = call(user.getId(), new UpdateUserForm("123", key.getKey(), key.getExpirationToken()).toJson());
 		assertThat(result).hasStatus(BAD_REQUEST);
-		verifyZeroInteractions(auth, dispatcher);
+		verifyZeroInteractions(auth, dispatcher, payments);
 	}
 
 	@Test
@@ -100,7 +102,7 @@ public class UserControllerHttpPostTest extends UserControllerTestSupport {
 		PasswordResetKey key = new PasswordResetKey(user);
 		Result result = call(user.getId(), new UpdateUserForm("newpassword", null, key.getExpirationToken()).toJson());
 		assertThat(result).hasStatus(BAD_REQUEST);
-		verifyZeroInteractions(auth, dispatcher);
+		verifyZeroInteractions(auth, dispatcher, payments);
 	}
 
 	@Test
@@ -110,7 +112,7 @@ public class UserControllerHttpPostTest extends UserControllerTestSupport {
 		PasswordResetKey key = new PasswordResetKey(user);
 		Result result = call(user.getId(), new UpdateUserForm("newpassword",  key.getKey(), null).toJson());
 		assertThat(result).hasStatus(BAD_REQUEST);
-		verifyZeroInteractions(auth, dispatcher);
+		verifyZeroInteractions(auth, dispatcher, payments);
 	}
 
 	@Test
@@ -122,7 +124,7 @@ public class UserControllerHttpPostTest extends UserControllerTestSupport {
 		PasswordResetKey key = new PasswordResetKey(other);
 		Result result = call(user.getId(), new UpdateUserForm("newpassword",  key.getKey(), key.getExpirationToken()).toJson());
 		assertThat(result).hasStatus(BAD_REQUEST);
-		verifyZeroInteractions(auth, dispatcher);
+		verifyZeroInteractions(auth, dispatcher, payments);
 	}
 
 	@Test
@@ -134,6 +136,7 @@ public class UserControllerHttpPostTest extends UserControllerTestSupport {
 		Result result = call(user.getId(), new UpdateUserForm(Boolean.TRUE, key.getKey()).toJson());
 		assertThat(result).hasStatus(NO_CONTENT);
 		verify(dispatcher).dispatch(Matchers.any(ChangeUserVerifiedCommand.class));
+		verify(payments).update(user.getName(), "jdoe@zenobase.com");
 	}
 
 	@Test
@@ -145,7 +148,7 @@ public class UserControllerHttpPostTest extends UserControllerTestSupport {
 		EmailVerificationKey key = new EmailVerificationKey(user.getName(), user.getEmail());
 		Result result = call(user.getId(), new UpdateUserForm(Boolean.TRUE, key.getKey()).toJson());
 		assertThat(result).hasStatus(BAD_REQUEST);
-		verifyZeroInteractions(dispatcher);
+		verifyZeroInteractions(dispatcher, payments);
 	}
 
 	@Test
@@ -155,7 +158,7 @@ public class UserControllerHttpPostTest extends UserControllerTestSupport {
 		when(users.find(user.asIdentity())).thenReturn(user);
 		Result result = call(user.getId(), new UpdateUserForm(Boolean.TRUE, null).toJson());
 		assertThat(result).hasStatus(BAD_REQUEST);
-		verifyZeroInteractions(dispatcher);
+		verifyZeroInteractions(dispatcher, payments);
 	}
 
 	@Test
@@ -166,7 +169,7 @@ public class UserControllerHttpPostTest extends UserControllerTestSupport {
 		EmailVerificationKey key = new EmailVerificationKey(user.getName(), "jdoe@zenobase.org");
 		Result result = call(user.getId(), new UpdateUserForm(Boolean.TRUE, key.getKey()).toJson());
 		assertThat(result).hasStatus(BAD_REQUEST);
-		verifyZeroInteractions(dispatcher);
+		verifyZeroInteractions(dispatcher, payments);
 	}
 
 	@Test
@@ -204,7 +207,7 @@ public class UserControllerHttpPostTest extends UserControllerTestSupport {
 		when(users.find(user.asIdentity())).thenReturn(user);
 		Result result = call(user.getId(), new UpdateUserForm(true).toJson());
 		assertThat(result).hasStatus(FORBIDDEN);
-		verifyZeroInteractions(dispatcher);
+		verifyZeroInteractions(dispatcher, payments);
 	}
 
 	@Test
@@ -213,7 +216,7 @@ public class UserControllerHttpPostTest extends UserControllerTestSupport {
 		when(users.find(user.asIdentity())).thenReturn(user);
 		Result result = call(user.getId(), new UpdateUserForm(Nodes.newObject()).toJson());
 		assertThat(result).hasStatus(BAD_REQUEST);
-		verifyZeroInteractions(dispatcher);
+		verifyZeroInteractions(dispatcher, payments);
 	}
 
 	private static Result call(String userId, ObjectNode body) {

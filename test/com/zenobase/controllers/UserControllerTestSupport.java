@@ -10,6 +10,7 @@ import com.zenobase.mail.VerificationMailer;
 import com.zenobase.models.User;
 import com.zenobase.services.AuthorizationRepository;
 import com.zenobase.services.CommandDispatcher;
+import com.zenobase.services.PaymentGateway;
 import com.zenobase.services.UserRepository;
 
 public abstract class UserControllerTestSupport extends ControllerTestSupport {
@@ -19,6 +20,7 @@ public abstract class UserControllerTestSupport extends ControllerTestSupport {
 	protected final AuthorizationRepository authorizations = mock(AuthorizationRepository.class);
 	protected final CommandDispatcher dispatcher = mock(CommandDispatcher.class);
 	protected final VerificationMailer mailer = mock(VerificationMailer.class);
+	protected final PaymentGateway payments = mock(PaymentGateway.class);
 	protected final User user = new User("tester");
 
 	@Before
@@ -31,6 +33,7 @@ public abstract class UserControllerTestSupport extends ControllerTestSupport {
 				bind(AuthorizationRepository.class).toInstance(authorizations);
 				bind(CommandDispatcher.class).toInstance(dispatcher);
 				bind(VerificationMailer.class).toInstance(mailer);
+				bind(PaymentGateway.class).toInstance(payments);
 				bind(UserController.class).in(Singleton.class);
 			}
 		});
