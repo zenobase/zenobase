@@ -431,7 +431,6 @@
 		$scope.init = function() {
 			$scope.message = '';
 			$scope.plan = $scope.user.quota;
-			console.log('plan', $scope.plan);
 			tracker.event('dialog', 'select plan');
 		};
 
@@ -4325,11 +4324,6 @@
 
 	app.controller('PricingController', ['$scope', '$http', 'tracker', function($scope, $http, tracker) {
 
-		$scope.isPlan = function(quota) {
-			if ($scope.quota) {
-				return $scope.quota.limit == quota; 
-			}
-		};
 		$scope.selectPlan = function(quota) {
 			$scope.openDialog('payment-dialog', quota);
 			tracker.event('action', 'select plan', quota);
@@ -4361,7 +4355,7 @@
 			$scope.ready = false;
 			if (!$scope.user.verified) {
 				$scope.message = 'Please verify your email address before selecting a plan.';
-			} else {
+			} else if (plan.cost > 0) {
 				$http.get('/users/' + $scope.user['@id'] + '/card').success(function(response) {
 					if (response) {
 						$scope.oldCard = response;
@@ -4375,7 +4369,7 @@
 
 		$scope.pay = function() {
 			var data = {
-					'plan' : $scope.plan
+					'plan' : $scope.plan.quota
 			};
 			if ($scope.addCard) {
 				data.card = {
