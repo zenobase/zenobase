@@ -5183,4 +5183,143 @@
 		}
 	}]);
 
+	/* Credit card validatition based on https://github.com/stripe/jquery.payment/ */
+	app.directive('uiCardNumber', function() {
+
+		var validationErrorKey = 'card';
+		var defaultFormat = /(\d{1,4})/g;
+		var cards = [
+			{
+				type : 'maestro',
+				pattern : /^(5018|5020|5038|6304|6759|676[1-3])/,
+				format : defaultFormat,
+				length : [12, 13, 14, 15, 16, 17, 18, 19],
+				cvcLength : [3],
+				luhn : true
+			},
+			{
+				type : 'dinersclub',
+				pattern : /^(36|38|30[0-5])/,
+				format : defaultFormat,
+				length : [14],
+				cvcLength : [3],
+				luhn : true
+			},
+			{
+				type : 'laser',
+				pattern : /^(6706|6771|6709)/,
+				format : defaultFormat,
+				length : [16, 17, 18, 19],
+				cvcLength : [3],
+				luhn : true
+			},
+			{
+				type : 'jcb',
+				pattern : /^35/,
+				format : defaultFormat,
+				length : [16],
+				cvcLength : [3],
+				luhn : true
+			},
+			{
+				type : 'unionpay',
+				pattern : /^62/,
+				format : defaultFormat,
+				length : [16, 17, 18, 19],
+				cvcLength : [3],
+				luhn : false
+			},
+			{
+				type : 'discover',
+				pattern : /^(6011|65|64[4-9]|622)/,
+				format : defaultFormat,
+				length : [16],
+				cvcLength : [3],
+				luhn : true
+			},
+			{
+				type : 'mastercard',
+				pattern : /^5[1-5]/,
+				format : defaultFormat,
+				length : [16],
+				cvcLength : [3],
+				luhn : true
+			},
+			{
+				type : 'amex',
+				pattern : /^3[47]/,
+				format : /(\d{1,4})(\d{1,6})?(\d{1,5})?/,
+				length : [15],
+				cvcLength : [3, 4],
+				luhn : true
+			},
+			{
+				type : 'visa',
+				pattern : /^4/,
+				format : defaultFormat,
+				length : [13, 14, 15, 16],
+				cvcLength : [3],
+				luhn : true
+			}
+		];
+
+		function cardFromNumber(number) {
+			number = (number + '').replace(/\D/g, '');
+			for (var i = 0; i < cards.length; ++i) {
+				if (cards[i].pattern.test(number)) {
+					return cards[i];
+				}
+			}
+			return;
+		}
+
+		function luhnCheck(number) {
+			var odd = true;
+			var sum = 0;
+			var digits = (number + '').split('').reverse();
+			for (var i = 0; i < digits.length; ++i) {
+				var digit = digits[i];
+				digit = parseInt(digit, 10);
+				if (odd = !odd) {
+					digit *= 2;
+				}
+				if (digit > 9) {
+					digit -= 9; 
+				}
+				sum += digit;
+			}
+			return sum % 10 == 0;
+		}
+
+		function validate(number) {
+			number = (number + '').replace(/\s+|-/g, '');
+			if (!/^\d+$/.test(number)) {
+				return false; 
+			}
+			var card = cardFromNumber(number);
+			console.log('card', card);
+			if (!card) {
+				return false;
+			}
+			if (card.length.indexOf(number.length) == -1) {
+				return false;
+			}
+			if (card.luhn && !luhnCheck(number)) {
+				return false;
+			}
+			return true;
+		}
+
+		return {
+			require : 'ngModel',
+			link : function(scope, element, attrs, controller) {
+				controller.$parsers.unshift(function(value) {
+					var valid = validate(value);
+					controller.$setValidity(validationErrorKey, valid);
+					return value;
+				});
+			}
+		}
+	});
+
 }());
