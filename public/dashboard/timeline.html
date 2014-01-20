@@ -1,42 +1,44 @@
-<div id="{{settings.id}}-content" data-ng-controller="TimelineWidgetController" style="position: relative">
+<div id="{{settings.id}}-content" data-ng-controller="TimelineWidgetController">
 
-	<div class="pull-right dropdown" data-ng-show="times">
-		<a class="dropdown-toggle" data-toggle="dropdown" title="Filter"> <i class="fa fa-filter"></i><b class="caret"></b></a>
-		<ul class="dropdown-menu" role="menu">
-			<li role="presentation">
-				<a role="menuitem" data-ng-click="filters.thisYear()">this year</a>
-			</li>
-			<li role="presentation">
-				<a role="menuitem" data-ng-click="filters.lastYear()">last year</a>
-			</li>
-			<li class="divider"></li>
-			<li role="presentation">
-				<a role="menuitem" data-ng-click="filters.thisMonth()">this month</a>
-			</li>
-			<li role="presentation">
-				<a role="menuitem" data-ng-click="filters.lastMonth()">last month</a>
-			</li>
-			<li role="presentation">
-				<a role="menuitem" data-ng-click="filters.lastMonths(3)">last 3 months</a>
-			</li>
-			<li class="divider"></li>
-			<li role="presentation">
-				<a role="menuitem" data-ng-click="filters.thisWeek()">this week</a>
-			</li>
-			<li role="presentation">
-				<a role="menuitem" data-ng-click="filters.lastWeek()">last week</a>
-			</li>
-			<li class="divider"></li>
-			<li role="presentation">
-				<a role="menuitem" data-ng-click="filters.today()">today</a>
-			</li>
-			<li role="presentation">
-				<a role="menuitem" data-ng-click="filters.yesterday()">yesterday</a>
-			</li>
-			<li role="presentation">
-				<a role="menuitem" data-ng-click="filters.lastHours(24)">last 24 hours</a>
-			</li>
-		</ul>
+	<div class="row-fluid">
+		<div class="pull-right dropdown" data-ng-show="times">
+			<a class="dropdown-toggle" data-toggle="dropdown" title="Filter"> <i class="fa fa-filter"></i><b class="caret"></b></a>
+			<ul class="dropdown-menu" role="menu">
+				<li role="presentation">
+					<a role="menuitem" data-ng-click="filters.thisYear()">this year</a>
+				</li>
+				<li role="presentation">
+					<a role="menuitem" data-ng-click="filters.lastYear()">last year</a>
+				</li>
+				<li class="divider"></li>
+				<li role="presentation">
+					<a role="menuitem" data-ng-click="filters.thisMonth()">this month</a>
+				</li>
+				<li role="presentation">
+					<a role="menuitem" data-ng-click="filters.lastMonth()">last month</a>
+				</li>
+				<li role="presentation">
+					<a role="menuitem" data-ng-click="filters.lastMonths(3)">last 3 months</a>
+				</li>
+				<li class="divider"></li>
+				<li role="presentation">
+					<a role="menuitem" data-ng-click="filters.thisWeek()">this week</a>
+				</li>
+				<li role="presentation">
+					<a role="menuitem" data-ng-click="filters.lastWeek()">last week</a>
+				</li>
+				<li class="divider"></li>
+				<li role="presentation">
+					<a role="menuitem" data-ng-click="filters.today()">today</a>
+				</li>
+				<li role="presentation">
+					<a role="menuitem" data-ng-click="filters.yesterday()">yesterday</a>
+				</li>
+				<li role="presentation">
+					<a role="menuitem" data-ng-click="filters.lastHours(24)">last 24 hours</a>
+				</li>
+			</ul>
+		</div>
 	</div>
 
 	<div id="{{settings.id}}-chart" data-ui-chart-options="chartOptions" data-ui-id="{{settings.id}}" data-ng-show="times"></div>
