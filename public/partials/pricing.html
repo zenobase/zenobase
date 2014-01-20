@@ -11,7 +11,7 @@
 		<div class="span3 alert" data-ng-class="user && (user.quota == 1000 || !user.quota) && 'alert-success' || 'alert-info'">
 			<h4>Free</h4>
 			<p></p>
-			<p>add up to <strong>1,000</strong> events / month *</p>
+			<p>add up to <strong>1,000</strong> events / month</p>
 			<p><em>record one event every hour</em></p>
 			<button class="btn" data-ng-show="user && !user.isGuest()" data-ng-disabled="user.quota == 1000 || !user.quota" data-ng-click="selectPlan({ 'label' : 'Free', 'quota' : 1000, 'cost' : 0 })">Select</button>
 		</div>
