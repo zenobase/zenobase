@@ -5184,9 +5184,11 @@
 	}]);
 
 	/* Credit card validatition based on https://github.com/stripe/jquery.payment/ */
-	app.directive('uiCardNumber', function() {
+	
 
-		var validationErrorKey = 'card';
+	/* Credit card validatition based on https://github.com/stripe/jquery.payment/ */
+	app.factory('Card', function() {
+
 		var defaultFormat = /(\d{1,4})/g;
 		var cards = [
 			{
@@ -5194,7 +5196,7 @@
 				pattern : /^(5018|5020|5038|6304|6759|676[1-3])/,
 				format : defaultFormat,
 				length : [12, 13, 14, 15, 16, 17, 18, 19],
-				cvcLength : [3],
+				cvvLength : [3],
 				luhn : true
 			},
 			{
@@ -5202,7 +5204,7 @@
 				pattern : /^(36|38|30[0-5])/,
 				format : defaultFormat,
 				length : [14],
-				cvcLength : [3],
+				cvvLength : [3],
 				luhn : true
 			},
 			{
@@ -5210,7 +5212,7 @@
 				pattern : /^(6706|6771|6709)/,
 				format : defaultFormat,
 				length : [16, 17, 18, 19],
-				cvcLength : [3],
+				cvvLength : [3],
 				luhn : true
 			},
 			{
@@ -5218,7 +5220,7 @@
 				pattern : /^35/,
 				format : defaultFormat,
 				length : [16],
-				cvcLength : [3],
+				cvvLength : [3],
 				luhn : true
 			},
 			{
@@ -5226,7 +5228,7 @@
 				pattern : /^62/,
 				format : defaultFormat,
 				length : [16, 17, 18, 19],
-				cvcLength : [3],
+				cvvLength : [3],
 				luhn : false
 			},
 			{
@@ -5234,7 +5236,7 @@
 				pattern : /^(6011|65|64[4-9]|622)/,
 				format : defaultFormat,
 				length : [16],
-				cvcLength : [3],
+				cvvLength : [3],
 				luhn : true
 			},
 			{
@@ -5242,7 +5244,7 @@
 				pattern : /^5[1-5]/,
 				format : defaultFormat,
 				length : [16],
-				cvcLength : [3],
+				cvvLength : [3],
 				luhn : true
 			},
 			{
@@ -5250,7 +5252,7 @@
 				pattern : /^3[47]/,
 				format : /(\d{1,4})(\d{1,6})?(\d{1,5})?/,
 				length : [15],
-				cvcLength : [3, 4],
+				cvvLength : [3, 4],
 				luhn : true
 			},
 			{
@@ -5258,19 +5260,37 @@
 				pattern : /^4/,
 				format : defaultFormat,
 				length : [13, 14, 15, 16],
-				cvcLength : [3],
+				cvvLength : [3],
 				luhn : true
 			}
 		];
 
-		function cardFromNumber(number) {
+		function Card(properties) {
+			angular.copy(properties, this);
+		}
+
+		Card.fromNumber = function(number) {
 			number = (number + '').replace(/\D/g, '');
 			for (var i = 0; i < cards.length; ++i) {
 				if (cards[i].pattern.test(number)) {
-					return cards[i];
+					return new Card(cards[i]);
 				}
 			}
 			return;
+		}
+
+		Card.prototype.validateNumber = function(number) {
+			number = (number + '').replace(/\s+|-/g, '');
+			if (!/^\d+$/.test(number)) {
+				return false; 
+			}
+			if (this.length.indexOf(number.length) == -1) {
+				return false;
+			}
+			if (this.luhn && !luhnCheck(number)) {
+				return false;
+			}
+			return true;
 		}
 
 		function luhnCheck(number) {
@@ -5291,35 +5311,36 @@
 			return sum % 10 == 0;
 		}
 
-		function validate(number) {
-			number = (number + '').replace(/\s+|-/g, '');
-			if (!/^\d+$/.test(number)) {
-				return false; 
-			}
-			var card = cardFromNumber(number);
-			console.log('card', card);
-			if (!card) {
-				return false;
-			}
-			if (card.length.indexOf(number.length) == -1) {
-				return false;
-			}
-			if (card.luhn && !luhnCheck(number)) {
-				return false;
-			}
-			return true;
+		Card.prototype.validateCVV = function(cvv) {
+			return /^\d+$/.test(cvv) && this.cvvLength.indexOf(cvv.length) != -1;
 		}
 
+		return Card;
+	});
+
+	app.directive('uiPaymentNumber', ['Card', function(Card) {
 		return {
 			require : 'ngModel',
 			link : function(scope, element, attrs, controller) {
 				controller.$parsers.unshift(function(value) {
-					var valid = validate(value);
-					controller.$setValidity(validationErrorKey, valid);
+					scope.card = Card.fromNumber(value);
+					controller.$setValidity('payment', scope.card && scope.card.validateNumber(value));
 					return value;
 				});
 			}
 		}
-	});
+	}]);
+
+	app.directive('uiPaymentCvv', ['Card', function(Card) {
+		return {
+			require : 'ngModel',
+			link : function(scope, element, attrs, controller) {
+				controller.$parsers.unshift(function(value) {
+					controller.$setValidity('payment', scope.card && scope.card.validateCVV(value));
+					return value;
+				});
+			}
+		}
+	}]);
 
 }());
