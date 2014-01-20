@@ -53,29 +53,66 @@
 						<i class="fa fa-refresh fa-spin"></i>
 					</div>
 					<div data-ng-show="ready">
-						<div class="control-group" data-ng-show="oldCard">
-							<label class="radio"><input type="radio" name="addCard" data-ng-value="false" data-ng-model="addCard">Existing Card</label>
-							<blockquote data-ng-hide="addCard">
-								<strong>{{oldCard.number}} ({{oldCard.expiration_month}}/{{oldCard.expiration_year}})</strong>
-							</blockquote>
-							<label class="radio"><input type="radio" name="addCard" data-ng-value="true" data-ng-model="addCard">New Card</label>
-						</div>
-						<blockquote data-ng-show="addCard">
+						<div data-ng-hide="addCard">
 							<div class="control-group">
 								<label class="control-label">Card Number</label>
 								<div class="controls">
-									<input name="number" type="text" class="input-large" required data-ui-payment-number data-ui-focus-on="openDialog:payment-dialog" data-ng-model="newCard.number"/>
-									<input name="number" type="text" class="input-mini" required data-ui-payment-cvv data-ng-model="newCard.cvv" placeholder="CVV"/>
+									<span class="input-append">
+										<input type="text" class="input-large" data-ng-model="oldCard.number" disabled/>
+										<span class="add-on">
+											<i class="fa fa-pencil" title="Edit" data-ng-click="addCard = true" style="cursor:pointer"></i>
+										</span>
+									</span>
 								</div>
 							</div>
 							<div class="control-group">
 								<label class="control-label">Expiration Date</label>
 								<div class="controls">
-									<input name="number" type="number" class="input-mini" required min="1" max="12" data-ng-model="newCard.expirationMonth" placeholder="MM"/>
-									<input name="number" type="number" class="input-mini" required min="2014"  data-ng-model="newCard.expirationYear" placeholder="YYYY"/>
+									<input type="text" class="input-mini" data-ng-model="oldCard.expiration_month" disabled/>
+									<input type="text" class="input-mini" data-ng-model="oldCard.expiration_year" disabled/>
 								</div>
 							</div>
-						</blockquote>
+						</div>
+						<div data-ng-show="addCard">
+							<div class="control-group">
+								<label class="control-label">Card Number</label>
+								<div class="controls">
+									<span class="input-append">
+										<input name="ccnumber" type="text" class="input-large" required autocomplete="off" data-ui-payment-number data-ui-focus-on="openDialog:payment-dialog" data-ng-model="newCard.number"/>
+										<span class="add-on">
+											<i class="fa fa-exclamation" title="not valid" data-ng-show="form.ccnumber.$invalid"></i>
+											<i class="fa fa-check" title="valid" data-ng-hide="form.ccnumber.$invalid"></i>
+										</span>
+									</span>
+									<span class="input-append">
+										<input name="cvv" type="text" class="input-mini" required autocomplete="off" data-ui-payment-cvv data-ng-model="newCard.cvv" placeholder="CVV"/>
+										<span class="add-on">
+											<i class="fa fa-exclamation" title="not valid" data-ng-show="form.cvv.$invalid"></i>
+											<i class="fa fa-check" title="valid" data-ng-hide="form.cvv.$invalid"></i>
+										</span>
+									</span>
+								</div>
+							</div>
+							<div class="control-group">
+								<label class="control-label">Expiration Date</label>
+								<div class="controls">
+									<span class="input-append">
+										<input name="expirationMonth" type="number" class="input-mini" required min="1" max="12" data-ng-model="newCard.expirationMonth" placeholder="MM"/>
+										<span class="add-on">
+											<i class="fa fa-exclamation" title="not valid" data-ng-show="form.expirationMonth.$invalid"></i>
+											<i class="fa fa-check" title="valid" data-ng-hide="form.expirationMonth.$invalid"></i>
+										</span>
+									</span>
+									<span class="input-append">
+										<input name="expirationYear" type="number" class="input-mini" required min="2014" max="2100"  data-ng-model="newCard.expirationYear" placeholder="YYYY"/>
+										<span class="add-on">
+											<i class="fa fa-exclamation" title="not valid" data-ng-show="form.expirationYear.$invalid"></i>
+											<i class="fa fa-check" title="valid" data-ng-hide="form.expirationYear.$invalid"></i>
+										</span>
+									</span>
+								</div>
+							</div>
+						</div>
 					</div>
 				</div>
 			</div>
