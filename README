@@ -57,7 +57,7 @@ Release Procedure
 
   4. Set up new instances [OpsWorks]:
 
-     4.1. Add two m1.medium instances named "{build number}-1a" in us-east-1a and "{build number}-1c" in us-east-1c to the "Elasticsearch" layer.
+     4.1. Add two m3.medium instances named "{build number}-1a" in us-east-1a and "{build number}-1c" in us-east-1c to the "Elasticsearch" layer.
 
      4.2. (if migrating) Add an m1.xlarge instance named "{build number}-1d" in us-east-1d to the "Elasticsearch" layer.
 
@@ -71,11 +71,11 @@ Release Procedure
 
      5.3. The status check must show 4 nodes and green health [/status].
 
-  6. Start either the new m1.xlarge instance (if migrating) or the new m1.medium instances [OpsWorks].
+  6. Start either the new m3.large instance (if migrating) or the new m3.medium instances [OpsWorks].
 
   7. Add all new instance(s) to the load balancer, and remove all old instances as soon as one of the new instances is listed as "in service" [AWS Console].
 
-  8. (if migrating) Start the two m1.medium instances as well [OpsWorks].
+  8. (if migrating) Start the two m3.medium instances as well [OpsWorks].
 
   9. Wait for the status check to show 6 (if migrating) or 8 (if not migrating) nodes and green health [/status].
 
