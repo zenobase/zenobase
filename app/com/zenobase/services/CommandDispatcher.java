@@ -14,6 +14,7 @@ import com.zenobase.commands.CompoundCommand;
 public class CommandDispatcher {
 
 	private final ALogger log = Logger.of("dispatch");
+	private final DateTime now = DateTime.now(DateTimeZone.UTC).minusSeconds(1);
 	private final CommandHandlerRegistry handlers;
 	private final CommandRepository repository;
 	private final QuotaManager quotas;
@@ -27,7 +28,7 @@ public class CommandDispatcher {
 
 	public String dispatch(Command command) {
 		log.info(String.format("%s %s", command.getPrincipal(), command.toString()));
-		if (command.getCost() > 0 && isCurrentMonth(command.getTimestamp())) {
+		if (command.getCost() > 0 && command.getTimestamp().isAfter(now)) { // don't spend while replaying commands
 			quotas.spend(command.getPrincipal(), command.getCost());
 		}
 		if (command instanceof CompoundCommand) {
@@ -38,10 +39,6 @@ public class CommandDispatcher {
 		}
 		repository.put(command);
 		return command.getId();
-	}
-
-	private static boolean isCurrentMonth(DateTime time) {
-		return time.getMonthOfYear() == DateTime.now(DateTimeZone.UTC).getMonthOfYear();
 	}
 
 	private void dispatch(CompoundCommand command) {
