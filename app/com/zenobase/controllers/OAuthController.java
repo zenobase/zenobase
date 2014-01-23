@@ -101,7 +101,7 @@ public class OAuthController extends ControllerSupport {
     		}
     		User user = users.find(form.getUsername());
     		if (user == null || !user.passwordEquals(form.getPassword())) {
-    			return deny(ACCESS_DENIED, "invalid username or password");
+    			return deny(ACCESS_DENIED, "invalid username or password for " + form.getUsername());
     		}
     		if (user.isSuspended()) {
     			return deny(ACCESS_DENIED, "user suspended");
