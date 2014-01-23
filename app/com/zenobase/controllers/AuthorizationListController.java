@@ -86,7 +86,7 @@ public class AuthorizationListController extends ControllerSupport {
 
 	private Result delete(Period maxAge, final Identity principal) {
 		final CompoundCommand command = new CompoundCommand(principal, "expired authorizations", "unexpired authorizations");
-		AuthorizationQuery query = new AuthorizationQuery().createdBefore(DateTime.now().minus(maxAge));
+		AuthorizationQuery query = new AuthorizationQuery().createdBefore(DateTime.now().minus(maxAge)).clientIsNull();
 		authorizations.find(query, new Callback<Authorization>() {
 			@Override
 			public void call(Authorization authorization) {
