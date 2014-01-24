@@ -3809,6 +3809,22 @@
 		$scope.init();
 	}]);
 
+	app.controller('CreateCurrencyFieldController', ['$scope', function($scope) {
+
+		$scope.init = function() {
+			$scope.value = 0.00;
+		};
+		$scope.addField = function() {
+			$scope.event.add($scope.field, $scope.value);
+			$scope.reset();
+		};
+		$scope.valid = function() {
+			return $.isNumeric($scope.value);
+		};
+
+		$scope.init();
+	}]);
+
 	app.controller('CreateNoteFieldController', ['$scope', function($scope) {
 
 		$scope.init = function() {
@@ -4806,6 +4822,20 @@
 				}
 				html += '</span>';
 				return html;
+			}
+		});
+
+		register({
+			name : 'currency',
+			icon : 'fa-money',
+			type : 'numeric',
+			toText : function(value) {
+				return value.toFixed(2);
+			},
+			toHtml : function(value) {
+				return '<span class="nowrap">' +
+			  	'<i class="fa ' + this.icon + '" title="Currency"></i> ' + this.toText(value) +
+			  '</span>';
 			}
 		});
 

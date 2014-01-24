@@ -8,6 +8,7 @@ import com.zenobase.common.Generator;
 import com.zenobase.json.BitsField;
 import com.zenobase.json.ConcentrationField;
 import com.zenobase.json.DateTimeField;
+import com.zenobase.json.DecimalField;
 import com.zenobase.json.DomainNode;
 import com.zenobase.json.DurationField;
 import com.zenobase.json.EnergyField;
@@ -59,13 +60,14 @@ public class Event extends DomainNode {
 	public static final TemperatureField TEMPERATURE = new TemperatureField("temperature");
 	public static final RatingField RATING = new RatingField("rating");
 	public static final PercentageField PERCENTAGE = new PercentageField("percentage");
+	public static final DecimalField CURRENCY = new DecimalField("currency");
 	public static final TextField NOTE = new TextField("note");
 
 	private static final ImmutableSet<Field<?>> FIELDS =
 		ImmutableSet.<Field<?>>of(
 			ID, VERSION, AUTHOR, SOURCE, TIMESTAMP, DURATION, FREQUENCY, VELOCITY, BITS, COUNT,
 			LOCATION, TAG, RESOURCE, DISTANCE, HEIGHT, WEIGHT, VOLUME, CONCENTRATION, HUMIDITY, PRESSURE,
-			SOUND, ENERGY, TEMPERATURE, RATING, PERCENTAGE, NOTE);
+			SOUND, ENERGY, TEMPERATURE, RATING, PERCENTAGE, CURRENCY, NOTE);
 
 	public Event() {
 		this(Generator.id());

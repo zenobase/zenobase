@@ -828,6 +828,18 @@
 		</div>
 	</script>
 
+	<script id="/create-currency.html" type="text/ng-template">
+		<button class="close" data-ng-click="reset()">&times;</button>
+		<div data-ng-controller="CreateCurrencyFieldController">
+			<div class="control-group">
+				<input id="currency-field" name="currency" type="number" step="0.01" data-ng-model="value"/>
+			</div>
+			<div class="control-group">
+				<button id="add-currency-button" class="btn" data-ng-click="addField()" data-ng-disabled="!valid()">Add</button>
+			</div>
+		</div>
+	</script>
+
 	<script id="/create-note.html" type="text/ng-template">
 		<button class="close" data-ng-click="reset()">&times;</button>
 		<div data-ng-controller="CreateNoteFieldController">
