@@ -2,6 +2,7 @@ package com.zenobase.json;
 
 import static com.zenobase.testing.NodeAssert.assertThat;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.fest.assertions.Assertions;
@@ -44,6 +45,16 @@ public class NodesTest {
 	public void testReadInvalidJson() {
 
 		Nodes.readObject("{".getBytes());
+	}
+
+	@Test
+	public void testRoundTripBigDecimal() {
+
+		ObjectNode node = Nodes.newObject();
+		node.put("value", new BigDecimal("1.00"));
+
+		byte[] bytes = Nodes.toByteArray(node);
+		assertThat(Nodes.readObject(bytes)).as("deserialized object node").isEqualTo(node);
 	}
 
 	@Test

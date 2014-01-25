@@ -1,6 +1,5 @@
 package com.zenobase.services;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -15,7 +14,6 @@ import com.braintreegateway.CreditCardRequest;
 import com.braintreegateway.Customer;
 import com.braintreegateway.CustomerRequest;
 import com.braintreegateway.Environment;
-import com.braintreegateway.Plan;
 import com.braintreegateway.Result;
 import com.braintreegateway.Subscription;
 import com.braintreegateway.SubscriptionRequest;
@@ -23,9 +21,12 @@ import com.braintreegateway.exceptions.NotFoundException;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Iterables;
 
-import com.zenobase.models.Card;
+import com.zenobase.models.Payment;
 
 public class PaymentGateway {
+
+	public static final String PLAN_PERSONAL = "personal";
+	public static final String PLAN_COMMERCIAL = "commercial";
 
 	private final BraintreeGateway gateway;
 
@@ -46,45 +47,34 @@ public class PaymentGateway {
 		}
 	}
 
-	public void subscribe(String username, String email, Card card, String planId) {
+	public void subscribe(String username, String email, Payment payment, String planId) {
 		Customer customer = findCustomer(username);
 		if (customer != null) {
-			replaceSubscription(customer, card, planId);
+			replaceSubscription(customer, payment, planId);
 		} else {
-			newSubscription(username, email, card, planId);
+			newSubscription(username, email, payment, planId);
 		}
 	}
 
-	private BigDecimal findPrice(String planId) {
-		for (Plan plan : gateway.plan().all()) {
-			if (plan.getId().equals(planId)) {
-				return plan.getPrice();
-			}
-		}
-		throw new IllegalArgumentException("Couldn't find plan: " + planId);
-	}
-
-	private void replaceSubscription(Customer customer, Card card, String planId) {
+	private void replaceSubscription(Customer customer, Payment payment, String planId) {
 		Subscription subscription = getSubscription(customer);
 		Preconditions.checkArgument(subscription != null, "Expected at least one subscription for <%s>", customer.getId());
-		BigDecimal price = findPrice(planId);
-		Preconditions.checkArgument(price != null, "Can't find a price for plan <%s>", planId);
-		CreditCard creditCard = card != null ? newCreditCard(customer.getId(), card) : getCreditCard(customer);
+		CreditCard creditCard = payment.hasCreditCard() ? newCreditCard(customer.getId(), payment) : getCreditCard(customer);
 		Preconditions.checkArgument(creditCard != null, "Expected a card for <%s>", customer.getId());
-		SubscriptionRequest request = new SubscriptionRequest().planId(planId).price(price).paymentMethodToken(creditCard.getToken());
+		SubscriptionRequest request = new SubscriptionRequest().planId(planId).price(payment.getPrice()).paymentMethodToken(creditCard.getToken());
 		Result<Subscription> result = gateway.subscription().update(subscription.getId(), request);
 		Preconditions.checkArgument(result.isSuccess(), "Couldn't subscribe <%s> to <%s>: %s", customer.getId(), planId, result.getMessage());
 	}
 
-	private void newSubscription(String username, String email, Card card, String planId) {
-		Preconditions.checkNotNull(card, "Can't create customer <%s> without a card", username);
-		Customer customer = newCustomer(username, email, card);
-		SubscriptionRequest request = new SubscriptionRequest().planId(planId).paymentMethodToken(getCreditCard(customer).getToken());
+	private void newSubscription(String username, String email, Payment payment, String planId) {
+		Preconditions.checkNotNull(payment, "Can't create customer <%s> without a card", username);
+		Customer customer = newCustomer(username, email, payment);
+		SubscriptionRequest request = new SubscriptionRequest().planId(planId).price(payment.getPrice()).paymentMethodToken(getCreditCard(customer).getToken());
 		Result<Subscription> result = gateway.subscription().create(request);
 		Preconditions.checkArgument(result.isSuccess(), "Couldn't subscribe <%s> to <%s>: %s", username, planId, result.getMessage());
 	}
 
-	private Customer newCustomer(String username, String email, Card card) {
+	private Customer newCustomer(String username, String email, Payment card) {
 		CustomerRequest request = new CustomerRequest().id(username).email(email);
 		card.fill(request.creditCard());
 		Result<Customer> result = gateway.customer().create(request);
@@ -92,7 +82,7 @@ public class PaymentGateway {
 		return result.getTarget();
 	}
 
-	private CreditCard newCreditCard(String username, Card card) {
+	private CreditCard newCreditCard(String username, Payment card) {
 		CreditCardRequest request = new CreditCardRequest().customerId(username).options().makeDefault(true).done();
 		card.fill(request);
 		Result<CreditCard> result = gateway.creditCard().create(request);
@@ -114,19 +104,22 @@ public class PaymentGateway {
 	}
 
 	static CreditCard getCreditCard(Customer customer) {
-		if (customer != null) {
-			for (CreditCard card : customer.getCreditCards()) {
-				if (card.isDefault() && !card.isExpired()) {
-					return card;
-				}
+		for (CreditCard card : customer.getCreditCards()) {
+			if (card.isDefault() && !card.isExpired()) {
+				return card;
 			}
 		}
 		return null;
 	}
 
-	public Card findCard(String username) {
-		CreditCard card = getCreditCard(findCustomer(username));
-		return card != null ? new Card(card.getMaskedNumber(), null, card.getExpirationYear(), card.getExpirationMonth()) : null;
+	public Payment findPayment(String username) {
+		Customer customer = findCustomer(username);
+		if (customer == null) {
+			return null;
+		}
+		CreditCard card = getCreditCard(customer);
+		Subscription subscription = getSubscription(customer);
+		return card != null ? new Payment(subscription.getPrice(), card.getMaskedNumber(), null, card.getExpirationYear(), card.getExpirationMonth()) : null;
 	}
 
 	public boolean update(String username, String email) {

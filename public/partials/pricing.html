@@ -1,35 +1,28 @@
-<div id="plans" class="container-fluid" data-ng-controller="PricingController">
+<div id="pricing" class="container-fluid" data-ng-controller="PricingController">
 
 	<div class="row-fluid page-titlebar">
 		<p class="pull-left page-title">
-			<span class="page-title-text">Plans</span>
+			<span class="page-title-text">Pricing</span>
 		</p>
 	</div>
 
 	<div class="row">
 
-		<div class="span3 alert" data-ng-class="user && (user.quota == 1000 || !user.quota) && 'alert-success' || 'alert-info'">
-			<h4>Free</h4>
+		<div class="span3 alert" data-ng-class="user && !user.quota && 'alert-success' || 'alert-info'">
+			<h4>Personal</h4>
 			<p></p>
-			<p>add up to <strong>1,000</strong> events / month</p>
-			<p><em>record one event every hour</em></p>
-			<button class="btn" data-ng-show="user && !user.isGuest()" data-ng-disabled="user.quota == 1000 || !user.quota" data-ng-click="selectPlan({ 'label' : 'Free', 'quota' : 1000, 'cost' : 0 })">Select</button>
+			<p>Record up to one event per second for <strong>$5 per month</strong>.</p>
+			<button class="btn" data-ng-disabled="!user" data-ng-click="setPayment()">
+				<span data-ng-hide="user.quota">Select</span>
+				<span data-ng-show="user.quota">Update</span>
+			</button>
 		</div>
 
-		<div class="span3 alert" data-ng-class="user && user.quota == 50000 && 'alert-success' || 'alert-info'">
-			<h4>$5 <small>/ month</small></h4>
+		<div class="span3 alert" data-ng-class="user && user.quota && 'alert-success' || 'alert-info'">
+			<h4>Commercial</h4>
 			<p></p>
-			<p>add up to <strong>50,000</strong> events / month</p>
-			<p><em>record one event every minute</em></p>
-			<button class="btn" data-ng-show="user && !user.isGuest()" data-ng-disabled="user.quota == 50000" data-ng-click="selectPlan({ 'label' : '50K', 'quota' : 50000, 'cost' : 5 })">Select</button>
-		</div>
-
-		<div class="span3 alert" data-ng-class="user && user.quota == 3000000 && 'alert-success' || 'alert-info'">
-			<h4>$30 <small>/ month</small></h4>
-			<p></p>
-			<p>add up to <strong>3 million</strong> events / month</p>
-			<p><em>record one event every second</em></p>
-			<button class="btn" data-ng-show="user && !user.isGuest()" data-ng-disabled="user.quota == 3000000" data-ng-click="selectPlan({ 'label' : '3M', 'quota' : 3000000, 'cost' : 30 })">Select</button>
+			<p>Flexible volume pricing starting at <strong>$30 per month</strong>.</p>
+			<a class="btn" href="mailto:info@zenobase.com?subject=Pricing" target="_blank">Contact us</a>
 		</div>
 
 	</div>
@@ -38,24 +31,21 @@
 		<form name="form" data-ng-submit="pay()" class="modal-form" novalidate>
 			<div class="modal-header">
 				<a class="close" data-dismiss="modal">&times;</a>
-				<h4>{{plan.label}} Plan</h4>
+				<h4>Payment</h4>
 			</div>
 			<div class="modal-body">
 				<div class="alert alert-error" data-ng-show="message">
 					{{message}}
 				</div>
-				<div data-ng-show="plan.cost == 0">
-					<p class="lead">This plan does not require any payment.</p>
+				<p class="lead">Your credit card will be billed <strong>$5 once a month</strong> as long as your account remains active.</p>
+				<div data-ng-hide="ready">
+					<em>Loading...</em>
 				</div>
-				<div data-ng-show="plan.cost > 0">
-					<p class="lead">Your credit card will be charged ${{plan.cost}} once a month, until you select a different plan or close your account.</p>
-					<div data-ng-hide="ready">
-						<em>Loading...</em>
-					</div>
-					<div data-ng-show="ready">
+				<div data-ng-show="ready">
+					<div data-ng-show="true">
 						<div data-ng-hide="addCard">
 							<div class="control-group">
-								<label class="control-label">Card Number</label>
+								<label class="control-label">Card#</label>
 								<div class="controls">
 									<span class="input-append">
 										<input type="text" class="input-large" data-ng-model="oldCard.number" disabled/>
@@ -66,7 +56,7 @@
 								</div>
 							</div>
 							<div class="control-group">
-								<label class="control-label">Expiration Date</label>
+								<label class="control-label">Expires</label>
 								<div class="controls">
 									<input type="text" class="input-mini" data-ng-model="oldCard.expiration_month" disabled/>
 									<input type="text" class="input-mini" data-ng-model="oldCard.expiration_year" disabled/>
@@ -75,7 +65,7 @@
 						</div>
 						<div data-ng-show="addCard">
 							<div class="control-group">
-								<label class="control-label">Card Number</label>
+								<label class="control-label">Card#</label>
 								<div class="controls">
 									<span class="input-append">
 										<input name="ccnumber" type="text" class="input-large" required autocomplete="off" data-ui-payment-number data-ui-focus-on="openDialog:payment-dialog" data-ng-model="newCard.number"/>
@@ -94,7 +84,7 @@
 								</div>
 							</div>
 							<div class="control-group">
-								<label class="control-label">Expiration Date</label>
+								<label class="control-label">Expires</label>
 								<div class="controls">
 									<span class="input-append">
 										<input name="expirationMonth" type="number" class="input-mini" required min="1" max="12" data-ng-model="newCard.expirationMonth" placeholder="MM"/>
@@ -120,7 +110,7 @@
 				<a data-ng-href="https://www.braintreegateway.com/merchants/{{merchantId}}/verified" title="Braintree Secure Payments" target="_blank" class="pull-left">
 					<img src="https://braintree-badges.s3.amazonaws.com/14.png" border="0"/>
 				</a>
-				<button type="submit" class="btn btn-primary" data-ng-disabled="plan.cost > 0 && addCard && !form.$valid">Confirm</button>
+				<button type="submit" class="btn btn-primary" data-ng-disabled="addCard && !form.$valid">Confirm</button>
 				<button type="reset" class="btn" data-dismiss="modal">Cancel</button>
 			</div>
 		</form>

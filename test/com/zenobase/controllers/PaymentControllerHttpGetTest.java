@@ -8,27 +8,22 @@ import static play.test.Helpers.callAction;
 import org.junit.Test;
 import play.mvc.Result;
 
-import com.zenobase.models.Card;
 import com.zenobase.models.Identity;
-import com.zenobase.models.User;
 import com.zenobase.oauth.Authorization;
 
 public class PaymentControllerHttpGetTest extends PaymentControllerTestSupport {
 
-	private final User user = new User("jdoe");
-	private final Card card = new Card("4111 1111 1111 1111", "100", "2050", "01");
-
 	@Test
-	public void testGetCard() {
+	public void testGetPayment() {
 		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
 		when(users.find(user.getName())).thenReturn(user);
-		when(payments.findCard(user.getName())).thenReturn(card);
+		when(payments.findPayment(user.getName())).thenReturn(payment);
 		Result result = call(user.getName());
-		assertThat(result).hasStatus(OK).hasContent(card.toJson());
+		assertThat(result).hasStatus(OK).hasContent(payment.toJson());
 	}
 
 	@Test
-	public void testGetCardNone() {
+	public void testGetPaymentNone() {
 		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
 		when(users.find(user.getName())).thenReturn(user);
 		Result result = call(user.getName());
@@ -36,20 +31,20 @@ public class PaymentControllerHttpGetTest extends PaymentControllerTestSupport {
 	}
 
 	@Test
-	public void testGetCardUnauthorized() {
+	public void testGetPaymentUnauthorized() {
 		Result result = call(user.getName());
 		assertThat(result).hasStatus(UNAUTHORIZED);
 	}
 
 	@Test
-	public void testGetCardUserNotFound() {
+	public void testGetPaymentUserNotFound() {
 		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
 		Result result = call(user.getName());
 		assertThat(result).hasStatus(NOT_FOUND);
 	}
 
 	@Test
-	public void testGetCardWithInvalidAuthorization() {
+	public void testGetPaymentWithInvalidAuthorization() {
 		when(auth.current()).thenReturn(new Authorization(new Identity()));
 		when(users.find(user.getName())).thenReturn(user);
 		Result result = call(user.getName());
@@ -57,7 +52,7 @@ public class PaymentControllerHttpGetTest extends PaymentControllerTestSupport {
 	}
 
 	@Test
-	public void testGetCardWithScopedAuthorization() {
+	public void testGetPaymentWithScopedAuthorization() {
 		when(auth.current()).thenReturn(new Authorization(user.asIdentity(), new Identity(), "xyz"));
 		when(users.find(user.getName())).thenReturn(user);
 		Result result = call(user.getName());

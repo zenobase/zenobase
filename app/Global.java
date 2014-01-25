@@ -10,6 +10,7 @@ import play.api.mvc.EssentialFilter;
 import play.api.mvc.Handler;
 import play.filters.gzip.GzipFilter;
 import play.libs.F.Promise;
+import play.libs.Json;
 import play.mvc.Http.RequestHeader;
 import play.mvc.SimpleResult;
 import com.google.common.base.Throwables;
@@ -73,6 +74,7 @@ import com.zenobase.controllers.TimezoneController;
 import com.zenobase.controllers.UserController;
 import com.zenobase.controllers.UserListController;
 import com.zenobase.controllers.WhoController;
+import com.zenobase.json.Nodes;
 import com.zenobase.mail.Mailer;
 import com.zenobase.mail.PasswordResetMailer;
 import com.zenobase.mail.VerificationMailer;
@@ -131,6 +133,7 @@ public class Global extends GlobalSettings {
 	@Override
 	public void onStart(Application application) {
 		CustomX509TrustManager.setDefault();
+		Json.setObjectMapper(Nodes.MAPPER);
 		createInjector();
 		replay();
 	}

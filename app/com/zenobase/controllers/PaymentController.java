@@ -1,13 +1,14 @@
 package com.zenobase.controllers;
 
+import java.math.BigDecimal;
+
 import javax.inject.Inject;
 
 import play.mvc.Result;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import com.zenobase.commands.ChangeQuotaCommand;
-import com.zenobase.models.Card;
+import com.zenobase.models.Payment;
 import com.zenobase.models.User;
 import com.zenobase.oauth.Authorization;
 import com.zenobase.services.CommandDispatcher;
@@ -44,8 +45,8 @@ public class PaymentController extends ControllerSupport {
 		if (!auth.getPrincipal().equals(user.asIdentity())) {
 			return forbidden();
 		}
-		Card card = payments.findCard(user.getName());
-		return card != null ? ok(card.toJson()) : noContent();
+		Payment payment = payments.findPayment(user.getName());
+		return payment != null ? ok(payment.toJson()) : noContent();
     }
 
 	public Result pay() {
@@ -64,13 +65,11 @@ public class PaymentController extends ControllerSupport {
 			return conflict("user not verified");
 		}
 		ObjectNode body = body();
-		int quota = body.path("plan").intValue();
-		if (quota == 0) {
-			return badRequest("no plan specified");
+		if (body == null || body.size() == 0) {
+			return badRequest("missing payment data");
 		}
-		JsonNode card = body.path("card");
-		payments.subscribe(user.getName(), user.getEmail(), !card.isMissingNode() ? new Card((ObjectNode) card) : null, Integer.toString(quota));
-		dispatcher.dispatch(new ChangeQuotaCommand(auth.getPrincipal(), user.getName(), user.getQuota(), quota));
+		payments.subscribe(user.getName(), user.getEmail(), new Payment(body).withPrice(new BigDecimal("5.00")), PaymentGateway.PLAN_PERSONAL);
+		dispatcher.dispatch(new ChangeQuotaCommand(auth.getPrincipal(), user.getName(), user.getQuota(), 3000000));
 		return ok();
 	}
 }

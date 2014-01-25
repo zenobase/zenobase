@@ -124,9 +124,9 @@
 
 	app.factory('braintree', function() {
 		/* sandbox key */
-		// var clientKey = 'MIIBCgKCAQEA8GcDKmhjpEOK2TUoeCDf5NaOdD1TtjknS5Xqka7RZLRm53+fghvlQu5OaNiao+U61MiWYMQKJN1zd1tq9NvPfn/bhlucv+ftNvfCA2x29A09ZIO0TVC2whwrRRuZEssX0EKjHnWPwpyXxpyl87mrafhO2BjIEvdFn89rt80PwFCT6rPLq8oF57VvQ+5sTtTVLOUpDG8xhku71BZILX/rypmVChbOf6kgtSpJI1KzxQ637ePNE10YNHbTxJOfcxBWnuz3Qek8gGo69CznVndLwchSoSgKbbyHRyE43RbVLZCG3sF8JlYlIkskWuGU6Zphax+HHxwrnlrIuKDo0B0PswIDAQAB';
+		var clientKey = 'MIIBCgKCAQEA8GcDKmhjpEOK2TUoeCDf5NaOdD1TtjknS5Xqka7RZLRm53+fghvlQu5OaNiao+U61MiWYMQKJN1zd1tq9NvPfn/bhlucv+ftNvfCA2x29A09ZIO0TVC2whwrRRuZEssX0EKjHnWPwpyXxpyl87mrafhO2BjIEvdFn89rt80PwFCT6rPLq8oF57VvQ+5sTtTVLOUpDG8xhku71BZILX/rypmVChbOf6kgtSpJI1KzxQ637ePNE10YNHbTxJOfcxBWnuz3Qek8gGo69CznVndLwchSoSgKbbyHRyE43RbVLZCG3sF8JlYlIkskWuGU6Zphax+HHxwrnlrIuKDo0B0PswIDAQAB';
 		/* production key */
-		var clientKey = 'MIIBCgKCAQEAubMOBpnM2FjuuK9lE8FK7XJ04nAtB0NTcKW2Xq8EiziguQji4KAA9WaIIRmHc4D377l35MMmwMWmhFhIxyBhjmEbOC+WMSqcgkPYKbVeIfMjKni1mWIKfcGq5aFDbHS0dZm87yStVl+sHS0Dwm9x87EuLRQQFM6hUdmSfkHn8J23RtN11YyZWZtysbqBEURdczOsDepMoanmfEpxOU8x7OBNfyqdEoaR0p8eSuO1LKLNpTFpJXPMyjYp23FEePZ7lUUDrxa119O7a+sFHlx1j0WwxE8C/zHEDxwLd5iD/yhWdb4bZVGNWyw3+W23Eajjw1HXknC1euvCb//4Nci6vQIDAQAB';
+		// var clientKey = 'MIIBCgKCAQEAubMOBpnM2FjuuK9lE8FK7XJ04nAtB0NTcKW2Xq8EiziguQji4KAA9WaIIRmHc4D377l35MMmwMWmhFhIxyBhjmEbOC+WMSqcgkPYKbVeIfMjKni1mWIKfcGq5aFDbHS0dZm87yStVl+sHS0Dwm9x87EuLRQQFM6hUdmSfkHn8J23RtN11YyZWZtysbqBEURdczOsDepMoanmfEpxOU8x7OBNfyqdEoaR0p8eSuO1LKLNpTFpJXPMyjYp23FEePZ7lUUDrxa119O7a+sFHlx1j0WwxE8C/zHEDxwLd5iD/yhWdb4bZVGNWyw3+W23Eajjw1HXknC1euvCb//4Nci6vQIDAQAB';
 		return {
 			merchantId : 'tzq6d3tr7npjqzpt',
 			encrypt : Braintree.create(clientKey).encrypt
@@ -234,6 +234,9 @@
 		$scope.openDialog = function(dialog, param) {
 			$('input:focus').blur();
 			$scope.$broadcast('openDialog', dialog, param);
+		};
+		$scope.openPage = function(path) {
+			$location.url(path);
 		};
 		$scope.closeDialog = function() {
 			$scope.openDialog(null);
@@ -4344,9 +4347,9 @@
 
 	app.controller('PricingController', ['$scope', '$http', 'tracker', function($scope, $http, tracker) {
 
-		$scope.selectPlan = function(quota) {
-			$scope.openDialog('payment-dialog', quota);
-			tracker.event('action', 'select plan', quota);
+		$scope.setPayment = function() {
+			$scope.openDialog('payment-dialog');
+			tracker.event('action', 'set payment');
 		};
 
 		$scope.$watch('user', function(user) {
@@ -4366,18 +4369,18 @@
 
 		$scope.merchantId = braintree.merchantId;
 
-		$scope.init = function(plan) {
+		$scope.init = function() {
 			$scope.message = '';
-			$scope.plan = plan;
 			$scope.newCard = {};
 			$scope.oldCard = null;
 			$scope.addCard = false;
 			$scope.ready = false;
 			if (!$scope.user.verified) {
-				$scope.message = 'Please verify your email address before selecting a plan.';
-			} else if (plan.cost > 0) {
+				$scope.message = 'Please verify your email address.';
+				$scope.ready = true;
+			} else {
 				$scope.addCard = true;
-				$http.get('/users/' + $scope.user['@id'] + '/card').success(function(response) {
+				$http.get('/users/' + $scope.user['@id'] + '/payment').success(function(response) {
 					if (response) {
 						$scope.oldCard = response;
 						$scope.addCard = false;
@@ -4389,29 +4392,24 @@
 		};
 
 		$scope.pay = function() {
-			var data = {
-					'plan' : $scope.plan.quota
-			};
+			var data = {};
 			if ($scope.addCard) {
-				data.card = {
-					'number' : braintree.encrypt($scope.newCard.number),
-					'cvv' : braintree.encrypt($scope.newCard.cvv),
-					'expiration_year' : braintree.encrypt($scope.newCard.expirationYear),
-					'expiration_month' : braintree.encrypt($scope.newCard.expirationMonth)
-				};
+				data.number = braintree.encrypt($scope.newCard.number);
+				data.cvv = braintree.encrypt($scope.newCard.cvv);
+				data.expiration_year = braintree.encrypt($scope.newCard.expirationYear);
+				data.expiration_month = braintree.encrypt($scope.newCard.expirationMonth);
 			}
 			$scope.alert.clear();
 			$http.post('/payments/', data)
 				.success(function(response) {
 					$scope.closeDialog();
 					$scope.whoami();
-					$scope.alert.show('Your plan has been updated.', 'alert-success');
 				})
 				.error(function(response, status) {
 					if (status < 500) {
-						$scope.message = 'Can\'t change the plan.';
+						$scope.message = 'Can\'t process the payment.';
 					} else {
-						$scope.message = 'Couldn\'t change the plan. Try again later or contact support.';
+						$scope.message = 'Couldn\'t process the payment. Try again later or contact support.';
 					}
 				});
 			tracker.event('action', 'payment');
