@@ -333,13 +333,13 @@ public class BrowserTest {
 
 				// delete bucket and undo
 				wait.withMessage("user profile is displayed").until(ExpectedConditions.visibilityOfElementLocated(By.className("bucket-row")));
-				new Actions(driver).moveToElement($(".bucket-row")).click($(".bucket-delete-action")).perform();
-				wait.withMessage("alert banner").until(ExpectedConditions.visibilityOfElementLocated(By.id("alert-banner")));
+				new Actions(driver).moveToElement($(".bucket-row")).click($(".bucket-link")).perform();
+				wait.withMessage("bucket is displayed").until(ExpectedConditions.textToBePresentInElement(By.id("bucket-title"), "Bucket #0"));
+				$("#bucket-menu").click();
+				$("#edit-bucket-action").click();
+				$("#delete-bucket-button").click();
+				wait.withMessage("user profile is displayed").until(ExpectedConditions.visibilityOfElementLocated(By.className("bucket-row")));
 				assertThat(buckets.find(0, 0).getTotal()).as("number of buckets").isEqualTo(11L);
-				$("#undo-link").click();
-				wait.withMessage("bucket count").until(ExpectedConditions.textToBePresentInElement(By.id("bucket-count"), "12"));
-				assertThat($("#alert-banner")).isNotDisplayed();
-				assertThat(buckets.find(0, 0).getTotal()).as("number of buckets").isEqualTo(12L);
 
 				// close account
 				$("#user-menu").click();

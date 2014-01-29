@@ -723,23 +723,6 @@
 			});
 			tracker.event('action', 'run tasks');
 		};
-		$scope.remove = function(bucketId) {
-			$scope.alert.clear();
-			$http({ method : 'DELETE', url : '/buckets/' + bucketId })
-				.success(function(response, status, headers) {
-					$scope.alert.show('Deleted a bucket.', 'alert-success', headers('X-Command-ID'));
-					$scope.offset = 0;
-					$scope.refresh();
-				})
-				.error(function(response, status) {
-					if (status < 500) {
-						$scope.alert.show('Can\'t delete the bucket.', 'alert-error');
-					} else {
-						$scope.alert.show('Couldn\'t delete the bucket. Try again later or contact support.', 'alert-error');
-					}
-				});
-			tracker.event('action', 'delete bucket');
-		};
 
 		$scope.$watch('profile', function(profile) {
 			if ($scope.isSelf() && profile) {
@@ -1494,7 +1477,7 @@
 		};
 	}]);
 
-	app.controller('EditBucketDialogController', ['$scope', '$http', '$route', 'delay', 'tracker', function($scope, $http, $route, delay, tracker) {
+	app.controller('EditBucketDialogController', ['$scope', '$http', '$route', '$location', 'delay', 'tracker', function($scope, $http, $route, $location, delay, tracker) {
 
 		$scope.init = function() {
 			$scope.newBucket = angular.copy($scope.$parent.bucket);
@@ -1544,6 +1527,22 @@
 						$scope.message = 'Couldn\'t save this bucket. Try again later or contact support.';						
 					}
 				});
+		};
+		$scope.deleteBucket = function() {
+			$scope.alert.clear();
+			$http({ method : 'DELETE', url : '/buckets/' + $scope.bucketId })
+				.success(function(response, status, headers) {
+					$scope.closeDialog();
+					$location.url('/users/' + $scope.$parent.user.name);
+				})
+				.error(function(response, status) {
+					if (status < 500) {
+						$scope.message = 'Can\'t delete this bucket.';
+					} else {
+						$scope.message = 'Couldn\'t delete this bucket. Try again later or contact support.';
+					}
+				});
+			tracker.event('action', 'delete bucket');
 		};
 	}]);
 	
