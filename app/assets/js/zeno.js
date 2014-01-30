@@ -236,6 +236,7 @@
 			$scope.$broadcast('openDialog', dialog, param);
 		};
 		$scope.openPage = function(path) {
+			$scope.closeDialog();
 			$location.url(path);
 		};
 		$scope.closeDialog = function() {
