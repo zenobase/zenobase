@@ -2,7 +2,6 @@ package com.zenobase.controllers;
 
 import javax.inject.Inject;
 
-import org.joda.time.DateTime;
 import play.mvc.Result;
 
 import com.zenobase.io.UserPrinter;
@@ -40,15 +39,9 @@ public class UserListController extends ControllerSupport {
     }
 
 	private UserQuery parseQuery(String q) {
-    	if ("-quota:*|created:(*..1M]".equals(q)) {
-    		return new UserQuery().quotaIsNull().createdBefore(DateTime.now().minusMonths(1));
-    	}
-    	if (q != null) {
-    		return null;
-    	}
-    	return new UserQuery();
-
+    	return q == null ? new UserQuery() : null;
 	}
+
 	private Result find() {
     	Chunks<String> chunks = new StringChunks() {
 			@Override

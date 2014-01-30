@@ -175,17 +175,6 @@
 				delay($scope.reload);
 			});
 		};
-		$scope.setQuotas = function(quota) {
-			$http.get('/users/?q=-quota:*|created:(*..1M]&limit=1000').success(function(response) {
-				var requests = [];
-				$.each(response.users, function(i, user) {
-					requests.push($http.post('/users/@' + user.name, { 'quota' : quota }));
-				});
-				$q.all(requests).then(function() {
-					delay($scope.reload());
-				});
-			});
-		};
 
 		$scope.$on('reload', $scope.refresh);
 		$scope.refresh({});
