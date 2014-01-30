@@ -4957,7 +4957,7 @@
 			compile : function() {
 				return function(scope, element, attrs) {
 					var template = $interpolate(
-						'<div class="progress" style="cursor:pointer;" onclick="window.location=\'/#/pricing/\'" title="{{title}}">' +
+						'<div class="progress" title="{{title}}">' +
 						'  <div class="bar {{class}}" style="width:{{percent}}%;"></div>' +
 						'</div>');
 					scope.$watch(attrs.uiQuota, function(quota) {

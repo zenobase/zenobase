@@ -38,6 +38,12 @@
 					<div class="alert alert-error" data-ng-show="message">
 						{{message}}
 					</div>
+					<div class="control-group" data-ng-controller="PricingController">
+						<label class="control-label"><strong>Quota</strong></label>
+						<div class="controls">
+							<div data-ui-quota="quota"></div>
+						</div>
+					</div>
 					<div class="control-group">
 						<label class="control-label"><strong>User ID</strong></label>
 						<div class="controls">
@@ -52,12 +58,6 @@
 								<strong data-ng-show="profile.verified">Verified.</strong>
 								<strong data-ng-hide="profile.verified">Not verified.</strong>
 							</p>
-						</div>
-					</div>
-					<div class="control-group" data-ng-controller="PricingController">
-						<label class="control-label"><strong>Quota</strong></label>
-						<div class="controls">
-							<div data-ui-quota="quota"></div>
 						</div>
 					</div>
 				</div>
