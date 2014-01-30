@@ -5,7 +5,7 @@
 			{
 				"id" : "timeline",
 				"type" : "timeline",
-				"label" : "Latest",
+				"label" : "Timeline",
 				"placement" : "top",
 				"field" : "timestamp",
 				"statistic" : "count"
