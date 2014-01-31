@@ -36,7 +36,7 @@ public class PaymentControllerHttpPostTest extends PaymentControllerTestSupport 
 		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
 		when(users.find(user.asIdentity())).thenReturn(user);
 		user.setVerified(true);
-		Result result = call(new Payment(new BigDecimal("10.00")));
+		Result result = call(new Payment(new BigDecimal("5.00")));
 		assertThat(result).hasStatus(OK);
 		verify(payments).subscribe(user.getName(), user.getEmail(), new Payment(new BigDecimal("5.00")), Plan.PERSONAL);
 		verify(dispatcher).dispatch(Mockito.any(ChangeQuotaCommand.class));
