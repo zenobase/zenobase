@@ -39,19 +39,18 @@
 						{{message}}
 					</div>
 					<div class="control-group" data-ng-controller="PricingController">
-						<label class="control-label"><strong>Quota</strong> <span style="font-weight: normal;">(see <a data-ng-click="openPage('/pricing')">pricing</a>)</span></label>
-						<div class="controls">
-							<div data-ui-quota="quota"></div>
-						</div>
+						<label class="control-label">Quota</label>
+						<div data-ui-quota="quota"></div>
+						<p class="help-block">See <a data-ng-click="openPage('/pricing')">pricing</a>.</p>
 					</div>
 					<div class="control-group">
-						<label class="control-label"><strong>User ID</strong></label>
+						<label class="control-label">User ID</label>
 						<div class="controls">
 							<span class="input-large uneditable-input">{{profile['@id']}}</span>
 						</div>
 					</div>
 					<div class="control-group">
-						<label class="control-label" for="edit-email"><strong>Email</strong></label>
+						<label class="control-label" for="edit-email">Email</label>
 						<div class="controls">
 							<input type="email" class="input-large" required data-ng-model="email">
 							<p class="help-block">For important, account-related messages.
