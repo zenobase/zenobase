@@ -15,8 +15,8 @@ import com.zenobase.commands.ChangeQuotaCommand;
 import com.zenobase.json.Nodes;
 import com.zenobase.models.Identity;
 import com.zenobase.models.Payment;
+import com.zenobase.models.Plan;
 import com.zenobase.oauth.Authorization;
-import com.zenobase.services.PaymentGateway;
 
 public class PaymentControllerHttpPostTest extends PaymentControllerTestSupport {
 
@@ -27,7 +27,7 @@ public class PaymentControllerHttpPostTest extends PaymentControllerTestSupport 
 		user.setVerified(true);
 		Result result = call(payment);
 		assertThat(result).hasStatus(OK);
-		verify(payments).subscribe(user.getName(), user.getEmail(), payment, PaymentGateway.PLAN_PERSONAL);
+		verify(payments).subscribe(user.getName(), user.getEmail(), payment, Plan.PERSONAL);
 		verify(dispatcher).dispatch(Mockito.any(ChangeQuotaCommand.class));
 	}
 
@@ -38,7 +38,7 @@ public class PaymentControllerHttpPostTest extends PaymentControllerTestSupport 
 		user.setVerified(true);
 		Result result = call(new Payment(new BigDecimal("10.00")));
 		assertThat(result).hasStatus(OK);
-		verify(payments).subscribe(user.getName(), user.getEmail(), new Payment(new BigDecimal("5.00")), PaymentGateway.PLAN_PERSONAL);
+		verify(payments).subscribe(user.getName(), user.getEmail(), new Payment(new BigDecimal("5.00")), Plan.PERSONAL);
 		verify(dispatcher).dispatch(Mockito.any(ChangeQuotaCommand.class));
 	}
 

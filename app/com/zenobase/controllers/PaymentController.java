@@ -1,7 +1,5 @@
 package com.zenobase.controllers;
 
-import java.math.BigDecimal;
-
 import javax.inject.Inject;
 
 import play.mvc.Result;
@@ -9,6 +7,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import com.zenobase.commands.ChangeQuotaCommand;
 import com.zenobase.models.Payment;
+import com.zenobase.models.Plan;
 import com.zenobase.models.User;
 import com.zenobase.oauth.Authorization;
 import com.zenobase.services.CommandDispatcher;
@@ -68,8 +67,33 @@ public class PaymentController extends ControllerSupport {
 		if (body == null || body.size() == 0) {
 			return badRequest("missing payment data");
 		}
-		payments.subscribe(user.getName(), user.getEmail(), new Payment(body).withPrice(new BigDecimal("5.00")), PaymentGateway.PLAN_PERSONAL);
-		dispatcher.dispatch(new ChangeQuotaCommand(auth.getPrincipal(), user.getName(), user.getQuota(), 3000000));
+		Payment payment = new Payment(body);
+		Plan plan = Plan.getPlan(payment.getPrice());
+		if (plan == null) {
+			return badRequest("no matching plan");
+		}
+		payments.subscribe(user.getName(), user.getEmail(), payment, plan);
+		dispatcher.dispatch(new ChangeQuotaCommand(auth.getPrincipal(), user.getName(), user.getQuota(), plan.getQuota()));
+		return ok();
+	}
+
+	public Result cancel(String userId) {
+		Authorization auth = getCurrentAuthorization();
+    	if (auth == null) {
+    		return unauthorized();
+    	}
+    	if (auth.getScope() != null) {
+    		return forbidden();
+    	}
+		User user = new UserLookup(users).getUser(userId);
+		if (user == null) {
+			return notFound("user not found");
+		}
+		if (!auth.getPrincipal().equals(user.asIdentity())) {
+			return forbidden();
+		}
+		payments.unsubscribe(user.getName());
+		dispatcher.dispatch(new ChangeQuotaCommand(auth.getPrincipal(), user.getName(), user.getQuota(), null));
 		return ok();
 	}
 }

@@ -24,13 +24,13 @@
 
 		<div id="sign-up-banner" class="ng-cloak" data-ng-show="user.getName() == 'guest'">
 			<div id="sign-up-link" class="alert" style="cursor:pointer;" data-ng-click="openDialog('sign-up-dialog')">
-				<strong>Sign up</strong> to preserve this account!
+				Please <strong>sign up </strong> to preserve your data.
 			</div>
 		</div>
 
 		<div id="pay-up-banner" class="ng-cloak" data-ng-show="user && user.getName() != 'guest' && !user.quota">
 			<div class="alert" style="cursor:pointer;" data-ng-click="openPage('/pricing')">
-				Upgrade to a <strong>paid account</strong> to support this service!
+				Select a <strong>personal or commercial plan</strong> to store more data and help support this service.
 			</div>
 		</div>
 

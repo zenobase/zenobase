@@ -11,6 +11,7 @@ import org.junit.Test;
 import com.braintreegateway.Environment;
 
 import com.zenobase.models.Payment;
+import com.zenobase.models.Plan;
 
 public class PaymentGatewayTest {
 
@@ -32,8 +33,8 @@ public class PaymentGatewayTest {
 	@Test
 	public void testNewSubscription() {
 		assertThat(gateway.findCustomer(USERNAME)).isNull();
-		gateway.subscribe(USERNAME, EMAIL, PAYMENT, PaymentGateway.PLAN_PERSONAL);
-		assertThat(gateway.findCustomer(USERNAME)).hasId(USERNAME).hasEmail(EMAIL).hasCardEndingWith("1111").hasPlan(PaymentGateway.PLAN_PERSONAL).hasPrice("5.00");
+		gateway.subscribe(USERNAME, EMAIL, PAYMENT, Plan.PERSONAL);
+		assertThat(gateway.findCustomer(USERNAME)).hasId(USERNAME).hasEmail(EMAIL).hasCardEndingWith("1111").hasPlan(Plan.PERSONAL).hasPrice("5.00");
 		assertThat(gateway.cancel(USERNAME)).isTrue();
 		assertThat(gateway.cancel(USERNAME)).isFalse();
 		assertThat(gateway.findCustomer(USERNAME)).isNull();
@@ -43,31 +44,31 @@ public class PaymentGatewayTest {
 	public void testNewSubscriptionWithInvalidCard() {
 		Payment invalid = new Payment(BigDecimal.valueOf(5), "4000 1111 1111 1115", "100", "15", "01");
 		assertThat(gateway.findCustomer(USERNAME)).isNull();
-		gateway.subscribe(USERNAME, EMAIL, invalid, PaymentGateway.PLAN_PERSONAL);
+		gateway.subscribe(USERNAME, EMAIL, invalid, Plan.PERSONAL);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testNewSubscriptionWithInvalidPrice() {
 		Payment invalid = new Payment(BigDecimal.valueOf(-5), "4000 1111 1111 1111", "100", "2015", "01");
 		assertThat(gateway.findCustomer(USERNAME)).isNull();
-		gateway.subscribe(USERNAME, EMAIL, invalid, PaymentGateway.PLAN_PERSONAL);
+		gateway.subscribe(USERNAME, EMAIL, invalid, Plan.PERSONAL);
 	}
 
 	@Test
 	public void testUpgradeSubscriptionWithExistingCard() {
 		assertThat(gateway.findCustomer(USERNAME)).isNull();
-		gateway.subscribe(USERNAME, EMAIL, PAYMENT, PaymentGateway.PLAN_PERSONAL);
-		gateway.subscribe(USERNAME, EMAIL, new Payment(BigDecimal.TEN), PaymentGateway.PLAN_PERSONAL);
-		assertThat(gateway.findCustomer(USERNAME)).hasId(USERNAME).hasEmail(EMAIL).hasCardEndingWith("1111").hasPlan(PaymentGateway.PLAN_PERSONAL).hasPrice("10.00");
+		gateway.subscribe(USERNAME, EMAIL, PAYMENT, Plan.PERSONAL);
+		gateway.subscribe(USERNAME, EMAIL, new Payment(BigDecimal.TEN), Plan.PERSONAL);
+		assertThat(gateway.findCustomer(USERNAME)).hasId(USERNAME).hasEmail(EMAIL).hasCardEndingWith("1111").hasPlan(Plan.PERSONAL).hasPrice("10.00");
 		assertThat(gateway.cancel(USERNAME)).isTrue();
 	}
 
 	@Test
 	public void testDowngradeSubscriptionWithExistingCard() {
 		assertThat(gateway.findCustomer(USERNAME)).isNull();
-		gateway.subscribe(USERNAME, EMAIL, PAYMENT, PaymentGateway.PLAN_PERSONAL);
-		gateway.subscribe(USERNAME, EMAIL, new Payment(BigDecimal.ZERO), PaymentGateway.PLAN_PERSONAL);
-		assertThat(gateway.findCustomer(USERNAME)).hasId(USERNAME).hasEmail(EMAIL).hasCardEndingWith("1111").hasPlan(PaymentGateway.PLAN_PERSONAL).hasPrice("0.00");
+		gateway.subscribe(USERNAME, EMAIL, PAYMENT, Plan.PERSONAL);
+		gateway.subscribe(USERNAME, EMAIL, new Payment(BigDecimal.ZERO), Plan.PERSONAL);
+		assertThat(gateway.findCustomer(USERNAME)).hasId(USERNAME).hasEmail(EMAIL).hasCardEndingWith("1111").hasPlan(Plan.PERSONAL).hasPrice("0.00");
 		assertThat(gateway.cancel(USERNAME)).isTrue();
 	}
 
@@ -75,9 +76,9 @@ public class PaymentGatewayTest {
 	public void testUpgradeSubscriptionWithNewCard() {
 		Payment newCard = new Payment(BigDecimal.TEN, "4005 5192 0000 0004", "101", "2016", "01");
 		assertThat(gateway.findCustomer(USERNAME)).isNull();
-		gateway.subscribe(USERNAME, EMAIL, PAYMENT, PaymentGateway.PLAN_PERSONAL);
-		gateway.subscribe(USERNAME, EMAIL, newCard, PaymentGateway.PLAN_PERSONAL);
-		assertThat(gateway.findCustomer(USERNAME)).hasId(USERNAME).hasEmail(EMAIL).hasCardEndingWith("0004").hasPlan(PaymentGateway.PLAN_PERSONAL).hasPrice("10.00");
+		gateway.subscribe(USERNAME, EMAIL, PAYMENT, Plan.PERSONAL);
+		gateway.subscribe(USERNAME, EMAIL, newCard, Plan.PERSONAL);
+		assertThat(gateway.findCustomer(USERNAME)).hasId(USERNAME).hasEmail(EMAIL).hasCardEndingWith("0004").hasPlan(Plan.PERSONAL).hasPrice("10.00");
 		assertThat(gateway.cancel(USERNAME)).isTrue();
 	}
 
@@ -85,13 +86,22 @@ public class PaymentGatewayTest {
 	public void testUpgradeSubscriptionWithInvalidCard() {
 		Payment invalid = new Payment(BigDecimal.TEN, "4000 1111 1111 1115", "100", "15", "01");
 		assertThat(gateway.findCustomer(USERNAME)).isNull();
-		gateway.subscribe(USERNAME, EMAIL, PAYMENT, PaymentGateway.PLAN_PERSONAL);
+		gateway.subscribe(USERNAME, EMAIL, PAYMENT, Plan.PERSONAL);
 		try {
-			gateway.subscribe(USERNAME, EMAIL, invalid, PaymentGateway.PLAN_PERSONAL);
+			gateway.subscribe(USERNAME, EMAIL, invalid, Plan.PERSONAL);
 		} catch (IllegalArgumentException e) {
 
 		}
-		assertThat(gateway.findCustomer(USERNAME)).hasId(USERNAME).hasEmail(EMAIL).hasCardEndingWith("1111").hasPlan(PaymentGateway.PLAN_PERSONAL).hasPrice("5.00");
+		assertThat(gateway.findCustomer(USERNAME)).hasId(USERNAME).hasEmail(EMAIL).hasCardEndingWith("1111").hasPlan(Plan.PERSONAL).hasPrice("5.00");
+		assertThat(gateway.cancel(USERNAME)).isTrue();
+	}
+
+	@Test
+	public void testCancelSubscription() {
+		assertThat(gateway.findCustomer(USERNAME)).isNull();
+		gateway.subscribe(USERNAME, EMAIL, PAYMENT, Plan.PERSONAL);
+		gateway.unsubscribe(USERNAME);
+		assertThat(gateway.findCustomer(USERNAME)).hasId(USERNAME).hasEmail(EMAIL).hasCardEndingWith("1111").planIsNull();
 		assertThat(gateway.cancel(USERNAME)).isTrue();
 	}
 }

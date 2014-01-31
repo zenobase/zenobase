@@ -4347,11 +4347,6 @@
 
 	app.controller('PricingController', ['$scope', '$http', 'tracker', function($scope, $http, tracker) {
 
-		$scope.setPayment = function() {
-			$scope.openDialog('payment-dialog');
-			tracker.event('action', 'set payment');
-		};
-
 		$scope.$watch('user', function(user) {
 			if (user) {
 				$http.get('/quota')
@@ -4365,7 +4360,32 @@
 		});
 	}]);
 
-	app.controller('PaymentDialogController', ['$scope', '$http', '$location', 'braintree', 'tracker', function($scope, $http, $location, braintree, tracker) {
+	app.controller('FreePlanDialogController', ['$scope', '$http', '$location', 'tracker', function($scope, $http, $location, tracker) {
+
+		$scope.init = function() {
+			$scope.message = '';
+			$scope.processing = false;
+			tracker.event('dialog', 'cancel payment');
+		};
+
+		$scope.cancel = function() {
+			$scope.processing = true;
+			$scope.alert.clear();
+			$http({ method : 'DELETE', url : '/users/' + $scope.user['@id'] + '/payment' })
+				.success(function(response) {
+					$scope.processing = false;
+					$scope.closeDialog();
+					$scope.whoami();
+				})
+				.error(function(response, status) {
+					$scope.processing = false;
+					$scope.message = 'Couldn\'t change the plan. Try again later or contact support.';
+				});
+			tracker.event('action', 'payment cancelled');
+		};
+	}]);
+
+	app.controller('PersonalPlanDialogController', ['$scope', '$http', '$location', 'braintree', 'tracker', function($scope, $http, $location, braintree, tracker) {
 
 		$scope.merchantId = braintree.merchantId;
 
@@ -4375,10 +4395,8 @@
 			$scope.oldCard = null;
 			$scope.addCard = false;
 			$scope.ready = false;
-			if (!$scope.user.verified) {
-				$scope.message = 'Please verify your email address.';
-				$scope.ready = true;
-			} else {
+			$scope.processing = false;
+			if ($scope.user.verified) {
 				$scope.addCard = true;
 				$http.get('/users/' + $scope.user['@id'] + '/payment').success(function(response) {
 					if (response) {
@@ -4392,7 +4410,10 @@
 		};
 
 		$scope.pay = function() {
-			var data = {};
+			$scope.processing = true;
+			var data = {
+				'price' : 5.0
+			};
 			if ($scope.addCard) {
 				data.number = braintree.encrypt($scope.newCard.number);
 				data.cvv = braintree.encrypt($scope.newCard.cvv);
@@ -4402,10 +4423,12 @@
 			$scope.alert.clear();
 			$http.post('/payments/', data)
 				.success(function(response) {
+					$scope.processing = false;
 					$scope.closeDialog();
 					$scope.whoami();
 				})
 				.error(function(response, status) {
+					$scope.processing = false;
 					if (status < 500) {
 						$scope.message = 'Can\'t process the payment.';
 					} else {

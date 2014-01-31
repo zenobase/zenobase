@@ -2,6 +2,8 @@ package com.zenobase.services;
 
 import java.math.BigDecimal;
 
+import com.zenobase.models.Plan;
+
 import org.fest.assertions.Assertions;
 import org.fest.assertions.GenericAssert;
 import com.braintreegateway.Customer;
@@ -30,9 +32,15 @@ public class CustomerAssert extends GenericAssert<CustomerAssert, Customer> {
 		return this;
 	}
 
-	public CustomerAssert hasPlan(String planId) {
+	public CustomerAssert planIsNull() {
 		isNotNull();
-		Assertions.assertThat(PaymentGateway.getSubscription(actual).getPlanId()).isEqualTo(planId);
+		Assertions.assertThat(PaymentGateway.getSubscription(actual)).isNull();
+		return this;
+	}
+
+	public CustomerAssert hasPlan(Plan plan) {
+		isNotNull();
+		Assertions.assertThat(PaymentGateway.getSubscription(actual).getPlanId()).isEqualTo(plan.getId());
 		return this;
 	}
 

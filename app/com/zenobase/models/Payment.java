@@ -37,11 +37,6 @@ public class Payment extends DomainNode {
 		return getValue(PRICE);
 	}
 
-	public Payment withPrice(BigDecimal price) {
-		setValue(PRICE, price);
-		return this;
-	}
-
 	public String getNumber() {
 		return getValue(NUMBER);
 	}

@@ -65,6 +65,7 @@ GET     /authorizations/:authId        @com.zenobase.controllers.AuthorizationCo
 DELETE  /authorizations/:authId        @com.zenobase.controllers.AuthorizationController.delete(authId)
 
 GET     /users/:userId/payment         @com.zenobase.controllers.PaymentController.get(userId)
+DELETE  /users/:userId/payment         @com.zenobase.controllers.PaymentController.cancel(userId)
 POST    /payments/                     @com.zenobase.controllers.PaymentController.pay()
 
 GET     /og                            @com.zenobase.controllers.OpenGraphController.get(url)

@@ -1,5 +1,6 @@
 package com.zenobase.services;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -22,11 +23,9 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.Iterables;
 
 import com.zenobase.models.Payment;
+import com.zenobase.models.Plan;
 
 public class PaymentGateway {
-
-	public static final String PLAN_PERSONAL = "personal";
-	public static final String PLAN_COMMERCIAL = "commercial";
 
 	private final BraintreeGateway gateway;
 
@@ -47,31 +46,32 @@ public class PaymentGateway {
 		}
 	}
 
-	public void subscribe(String username, String email, Payment payment, String planId) {
+	public void subscribe(String username, String email, Payment payment, Plan plan) {
 		Customer customer = findCustomer(username);
 		if (customer != null) {
-			replaceSubscription(customer, payment, planId);
+			replaceSubscription(customer, payment, plan);
 		} else {
-			newSubscription(username, email, payment, planId);
+			newSubscription(username, email, payment, plan);
 		}
 	}
 
-	private void replaceSubscription(Customer customer, Payment payment, String planId) {
+	private void replaceSubscription(Customer customer, Payment payment, Plan plan) {
 		Subscription subscription = getSubscription(customer);
-		Preconditions.checkArgument(subscription != null, "Expected at least one subscription for <%s>", customer.getId());
 		CreditCard creditCard = payment.hasCreditCard() ? newCreditCard(customer.getId(), payment) : getCreditCard(customer);
 		Preconditions.checkArgument(creditCard != null, "Expected a card for <%s>", customer.getId());
-		SubscriptionRequest request = new SubscriptionRequest().planId(planId).price(payment.getPrice()).paymentMethodToken(creditCard.getToken());
-		Result<Subscription> result = gateway.subscription().update(subscription.getId(), request);
-		Preconditions.checkArgument(result.isSuccess(), "Couldn't subscribe <%s> to <%s>: %s", customer.getId(), planId, result.getMessage());
+		SubscriptionRequest request = new SubscriptionRequest().planId(plan.getId()).price(payment.getPrice()).paymentMethodToken(creditCard.getToken());
+		Result<Subscription> result = subscription != null
+			? gateway.subscription().update(subscription.getId(), request)
+			: gateway.subscription().create(request);
+		Preconditions.checkArgument(result.isSuccess(), "Couldn't subscribe <%s> to <%s>: %s", customer.getId(), plan.getId(), result.getMessage());
 	}
 
-	private void newSubscription(String username, String email, Payment payment, String planId) {
+	private void newSubscription(String username, String email, Payment payment, Plan plan) {
 		Preconditions.checkNotNull(payment, "Can't create customer <%s> without a card", username);
 		Customer customer = newCustomer(username, email, payment);
-		SubscriptionRequest request = new SubscriptionRequest().planId(planId).price(payment.getPrice()).paymentMethodToken(getCreditCard(customer).getToken());
+		SubscriptionRequest request = new SubscriptionRequest().planId(plan.getId()).price(payment.getPrice()).paymentMethodToken(getCreditCard(customer).getToken());
 		Result<Subscription> result = gateway.subscription().create(request);
-		Preconditions.checkArgument(result.isSuccess(), "Couldn't subscribe <%s> to <%s>: %s", username, planId, result.getMessage());
+		Preconditions.checkArgument(result.isSuccess(), "Couldn't subscribe <%s> to <%s>: %s", username, plan.getId(), result.getMessage());
 	}
 
 	private Customer newCustomer(String username, String email, Payment card) {
@@ -119,7 +119,17 @@ public class PaymentGateway {
 		}
 		CreditCard card = getCreditCard(customer);
 		Subscription subscription = getSubscription(customer);
-		return card != null ? new Payment(subscription.getPrice(), card.getMaskedNumber(), null, card.getExpirationYear(), card.getExpirationMonth()) : null;
+		BigDecimal price = subscription != null ? subscription.getPrice() : null;
+		return card != null ? new Payment(price, card.getMaskedNumber(), null, card.getExpirationYear(), card.getExpirationMonth()) : null;
+	}
+
+	public void unsubscribe(String username) {
+		Customer customer = findCustomer(username);
+		Preconditions.checkArgument(customer != null, "Couldn't find customer: <%s>", customer.getId());
+		Subscription subscription = getSubscription(customer);
+		Preconditions.checkArgument(subscription != null, "Expected at least one subscription for <%s>", customer.getId());
+		Result<Subscription> result = gateway.subscription().cancel(subscription.getId());
+		Preconditions.checkArgument(result.isSuccess(), "Couldn't unsubscribe <%s>: %s", customer.getId(), result.getMessage());
 	}
 
 	public boolean update(String username, String email) {
