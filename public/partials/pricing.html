@@ -8,7 +8,7 @@
 
 	<div class="row">
 
-		<div class="span3 alert" data-ng-class="user && !user.quota && 'alert-success' || 'alert-info'">
+		<div class="span4 alert" data-ng-class="user && !user.quota && 'alert-success' || 'alert-info'">
 			<h4>Personal</h4>
 			<p></p>
 			<p>Record up to one event per second for <strong>$5 per month</strong>.</p>
@@ -18,7 +18,7 @@
 			</button>
 		</div>
 
-		<div class="span3 alert" data-ng-class="user && user.quota && 'alert-success' || 'alert-info'">
+		<div class="span4 alert" data-ng-class="user && user.quota && 'alert-success' || 'alert-info'">
 			<h4>Commercial</h4>
 			<p></p>
 			<p>Flexible volume pricing starting at <strong>$30 per month</strong>.</p>
@@ -37,70 +37,69 @@
 				<div class="alert alert-error" data-ng-show="message">
 					{{message}}
 				</div>
-				<p class="lead">Your credit card will be billed <strong>$5 once a month</strong> as long as your account remains active.</p>
 				<div data-ng-hide="ready">
 					<em>Loading...</em>
 				</div>
 				<div data-ng-show="ready">
-					<div data-ng-show="true">
-						<div data-ng-hide="addCard">
-							<div class="control-group">
-								<label class="control-label">Card#</label>
-								<div class="controls">
-									<span class="input-append">
-										<input type="text" class="input-large" data-ng-model="oldCard.number" disabled/>
-										<span class="add-on">
-											<i class="fa fa-pencil" title="Edit" data-ng-click="addCard = true" style="cursor:pointer"></i>
-										</span>
+					<p class="lead" data-ng-hide="oldCard">Your credit card will be billed <strong>$5 once a month</strong>.</p>
+					<p class="lead" data-ng-show="oldCard">Your credit card is being billed <strong>$5 once a month</strong>.</p>
+					<div data-ng-hide="addCard || !oldCard">
+						<div class="control-group">
+							<label class="control-label">Card#</label>
+							<div class="controls">
+								<span class="input-append">
+									<input type="text" class="input-large" data-ng-model="oldCard.number" disabled/>
+									<span class="add-on">
+										<i class="fa fa-pencil" title="Edit" data-ng-click="addCard = true" style="cursor:pointer"></i>
 									</span>
-								</div>
-							</div>
-							<div class="control-group">
-								<label class="control-label">Expires</label>
-								<div class="controls">
-									<input type="text" class="input-mini" data-ng-model="oldCard.expiration_month" disabled/>
-									<input type="text" class="input-mini" data-ng-model="oldCard.expiration_year" disabled/>
-								</div>
+								</span>
 							</div>
 						</div>
-						<div data-ng-show="addCard">
-							<div class="control-group">
-								<label class="control-label">Card#</label>
-								<div class="controls">
-									<span class="input-append">
-										<input name="ccnumber" type="text" class="input-large" required autocomplete="off" data-ui-payment-number data-ui-focus-on="openDialog:payment-dialog" data-ng-model="newCard.number"/>
-										<span class="add-on">
-											<i class="fa fa-exclamation" title="not valid" data-ng-show="form.ccnumber.$invalid"></i>
-											<i class="fa fa-check" title="valid" data-ng-hide="form.ccnumber.$invalid"></i>
-										</span>
-									</span>
-									<span class="input-append">
-										<input name="cvv" type="text" class="input-mini" required autocomplete="off" data-ui-payment-cvv data-ng-model="newCard.cvv" placeholder="CVV"/>
-										<span class="add-on">
-											<i class="fa fa-exclamation" title="not valid" data-ng-show="form.cvv.$invalid"></i>
-											<i class="fa fa-check" title="valid" data-ng-hide="form.cvv.$invalid"></i>
-										</span>
-									</span>
-								</div>
+						<div class="control-group">
+							<label class="control-label">Expires</label>
+							<div class="controls">
+								<input type="text" class="input-mini" data-ng-model="oldCard.expiration_month" disabled/>
+								<input type="text" class="input-mini" data-ng-model="oldCard.expiration_year" disabled/>
 							</div>
-							<div class="control-group">
-								<label class="control-label">Expires</label>
-								<div class="controls">
-									<span class="input-append">
-										<input name="expirationMonth" type="number" class="input-mini" required min="1" max="12" data-ng-model="newCard.expirationMonth" placeholder="MM"/>
-										<span class="add-on">
-											<i class="fa fa-exclamation" title="not valid" data-ng-show="form.expirationMonth.$invalid"></i>
-											<i class="fa fa-check" title="valid" data-ng-hide="form.expirationMonth.$invalid"></i>
-										</span>
+						</div>
+					</div>
+					<div data-ng-show="addCard">
+						<div class="control-group">
+							<label class="control-label">Card#</label>
+							<div class="controls">
+								<span class="input-append">
+									<input name="ccnumber" type="text" class="input-large" required autocomplete="off" data-ui-payment-number data-ui-focus-on="openDialog:payment-dialog" data-ng-model="newCard.number"/>
+									<span class="add-on">
+										<i class="fa fa-exclamation" title="not valid" data-ng-show="form.ccnumber.$invalid"></i>
+										<i class="fa fa-check" title="valid" data-ng-hide="form.ccnumber.$invalid"></i>
 									</span>
-									<span class="input-append">
-										<input name="expirationYear" type="number" class="input-mini" required min="2014" max="2100"  data-ng-model="newCard.expirationYear" placeholder="YYYY"/>
-										<span class="add-on">
-											<i class="fa fa-exclamation" title="not valid" data-ng-show="form.expirationYear.$invalid"></i>
-											<i class="fa fa-check" title="valid" data-ng-hide="form.expirationYear.$invalid"></i>
-										</span>
+								</span>
+								<span class="input-append">
+									<input name="cvv" type="text" class="input-mini" required autocomplete="off" data-ui-payment-cvv data-ng-model="newCard.cvv" placeholder="CVV"/>
+									<span class="add-on">
+										<i class="fa fa-exclamation" title="not valid" data-ng-show="form.cvv.$invalid"></i>
+										<i class="fa fa-check" title="valid" data-ng-hide="form.cvv.$invalid"></i>
 									</span>
-								</div>
+								</span>
+							</div>
+						</div>
+						<div class="control-group">
+							<label class="control-label">Expires</label>
+							<div class="controls">
+								<span class="input-append">
+									<input name="expirationMonth" type="number" class="input-mini" required min="1" max="12" data-ng-model="newCard.expirationMonth" placeholder="MM"/>
+									<span class="add-on">
+										<i class="fa fa-exclamation" title="not valid" data-ng-show="form.expirationMonth.$invalid"></i>
+										<i class="fa fa-check" title="valid" data-ng-hide="form.expirationMonth.$invalid"></i>
+									</span>
+								</span>
+								<span class="input-append">
+									<input name="expirationYear" type="number" class="input-mini" required min="2014" max="2100"  data-ng-model="newCard.expirationYear" placeholder="YYYY"/>
+									<span class="add-on">
+										<i class="fa fa-exclamation" title="not valid" data-ng-show="form.expirationYear.$invalid"></i>
+										<i class="fa fa-check" title="valid" data-ng-hide="form.expirationYear.$invalid"></i>
+									</span>
+								</span>
 							</div>
 						</div>
 					</div>

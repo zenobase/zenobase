@@ -12,7 +12,7 @@ import com.zenobase.models.User;
 
 public class QuotaManager {
 
-	static final int DEFAULT_QUOTA = 3000000;
+	static final int DEFAULT_QUOTA = 50000;
 
 	private final ALogger log = Logger.of("quota");
 	private final UserRepository users;
