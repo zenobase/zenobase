@@ -916,6 +916,10 @@
 						$timeout(function() {
 							$scope.openDialog('create-task-dialog', $scope.template.task);
 						}, 500);
+					} else if ($scope.template.importer) {
+						$timeout(function() {
+							$scope.openDialog('import-dialog', $scope.template.importer);
+						}, 500);
 					}
 				})
 				.error(function(response, status) {
@@ -3934,6 +3938,7 @@
 		$scope.bucketId = $routeParams.bucketId;
 		$scope.formats = [
 			{
+				id : 'zenobase',
 				label : 'Zenobase (json)', 
 				description : 'Import data exported from another bucket. The format is described in the <a href="/#/api/events" target="_blank">API docs</a>.',
 				parse : function(data) {
@@ -3945,16 +3950,25 @@
 				}
 			},
 			{
+				id : 'sleepcycle',
 				label : 'SleepCycle (csv)',
-				description : 'Import data exported from <a href="http://www.sleepcycle.com/" target="_blank">SleepCycle</a>.',
+				description : 'Import data from <a href="http://www.sleepcycle.com/" target="_blank">SleepCycle</a>.',
 				parse : function(data) {
 					return SleepCycle.parse(data);
 				}
 			}
 		];
 
-		$scope.init = function() {
+		$scope.init = function(formatId) {
 			$scope.format = $scope.formats[0];
+			if (formatId) {
+				$.each($scope.formats, function(i, format) {
+					if (format.id === formatId) {
+						$scope.format = format;
+						return false;
+					}
+				});
+			}
 			tracker.event('dialog', 'import events');
 		};
 		$scope.isEmpty = function() {

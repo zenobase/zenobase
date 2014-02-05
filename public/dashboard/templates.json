@@ -464,6 +464,93 @@
 		]
 	},
 	{
+		"label" : "Sleep (SleepCycle)",
+		"importer" : "sleepcycle",
+		"widgets" : [
+			{
+				"id" : "timeline-duration",
+				"type" : "timeline",
+				"label" : "Sleep Duration",
+				"placement" : "top",
+				"field" : "duration",
+				"unit" : null,
+				"statistic" : "avg",
+				"interval" : "week"
+			},
+			{
+				"id" : "timeline-efficiency",
+				"type" : "timeline",
+				"label" : "Sleep Efficiency",
+				"placement" : "top",
+				"field" : "percentage",
+				"unit" : null,
+				"statistic" : "avg",
+				"interval" : "week"
+			},
+			{
+				"id" : "latest",
+				"type" : "list",
+				"label" : "Latest",
+				"placement" : "left",
+				"order" : "timestamp",
+				"reverse" : false,
+				"limit" : 10,
+				"singleton" : true
+			},
+			{
+				"id" : "tags",
+				"type" : "count",
+				"label" : "Tags",
+				"placement" : "left",
+				"field" : "tag",
+				"limit" : 10,
+				"order" : "count",
+				"reverse" : false
+			},
+			{
+				"id" : "wakeup",
+				"type" : "ratings",
+				"label" : "Wake Up",
+				"placement" : "left"
+			},
+			{
+				"id" : "polar-start-hour",
+				"type" : "polar",
+				"label" : "Start Time",
+				"placement" : "right",
+				"value_field" : "timestamp",
+				"unit" : null,
+				"statistic" : "count",
+				"interval" : "hour_of_day"
+			},
+			{
+				"id" : "histogram-duration",
+				"type" : "histogram",
+				"label" : "Sleep Duration",
+				"placement" : "right",
+				"field" : "duration",
+				"unit" : null,
+				"interval" : 3600000
+			},
+			{
+				"id" : "duration-efficiency",
+				"type" : "scatterplot",
+				"label" : "Duration-Efficiency",
+				"placement" : "right",
+				"label_x" : "Duration",
+				"field_x" : "duration",
+				"unit_x" : null,
+				"statistic_x" : "avg",
+				"label_y" : "Efficiency",
+				"field_y" : "percentage",
+				"unit_y" : null,
+				"statistic_y" : "avg",
+				"interval" : "day",
+				"regression" : "linear"
+			}
+		]
+	},
+	{
 		"label" : "Steps (BodyMedia)",
 		"task" : "bodymedia-steps",
 		"widgets" : [
