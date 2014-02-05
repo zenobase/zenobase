@@ -53,11 +53,19 @@
 
 			<ul class="nav nav-pills pull-left" data-ng-show="constraints.length || constraintsB.length">
 				<li class="active" data-ng-repeat="constraint in constraints">
-					<a data-ng-click="removeConstraint(constraint)" title="{{constraint.toString()}}"><i class="fa fa-minus fa-white" data-ng-show="constraint.negated"></i> <i class="fa fa-white" data-ng-class="getConstraintIcon(constraint)"></i> {{constraint.value}} <i class="fa fa-times fa-white"></i></a>
+					<a data-ng-click="invertConstraint(constraint)" title="{{constraint.toString()}}">
+						<i class="fa fa-minus fa-white" data-ng-show="constraint.negated"></i> 
+						<i class="fa fa-white" data-ng-class="getConstraintIcon(constraint)"></i> {{constraint.value}} 
+						<i class="fa fa-times fa-white" data-ng-click="removeConstraint(constraint)" ></i>
+					</a>
 				</li>
 				<li><a title="A/B Comparison" data-ng-click="swapAB()"><i class="fa fa-adjust"></i></a></li>
 				<li class="active active-b" data-ng-repeat="constraint in constraintsB">
-					<a data-ng-click="removeConstraintB(constraint)" title="{{constraint.toString()}}"><i class="fa fa-minus fa-white" data-ng-show="constraint.negated"></i> <i class="fa fa-white" data-ng-class="getConstraintIcon(constraint)"></i> {{constraint.value}} <i class="fa fa-times fa-white"></i></a>
+					<a data-ng-click="invertConstraintB(constraint)" title="{{constraint.toString()}}">
+						<i class="fa fa-minus fa-white" data-ng-show="constraint.negated"></i> 
+						<i class="fa fa-white" data-ng-class="getConstraintIcon(constraint)"></i> {{constraint.value}} 
+						<i class="fa fa-times fa-white" data-ng-click="removeConstraintB(constraint)"></i>
+					</a>
 				</li>
 			</ul>
 		</div>

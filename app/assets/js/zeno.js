@@ -318,6 +318,10 @@
 			this.negated = negated;
 		}
 
+		Constraint.prototype.invert = function() {
+			return new Constraint(this.field, this.value, !this.negated);
+		};
+
 		Constraint.prototype.toString = function() {
 			return (this.negated ? '-' : '') + this.field + separator + this.value;
 		};
@@ -1395,6 +1399,18 @@
 		$scope.removeConstraintB = function(constraint) {
 			$scope.constraintsB = $.grep($scope.constraintsB, function(c) {
 				return !angular.equals(c, constraint);
+			});
+			$location.search(params());
+		};
+		$scope.invertConstraint = function(constraint) {
+			$scope.constraints = $.map($scope.constraints, function(c) {
+				return angular.equals(c, constraint) ? c.invert() : c;
+			});
+			$location.search(params());
+		};
+		$scope.invertConstraintB = function(constraint) {
+			$scope.constraintsB = $.map($scope.constraintsB, function(c) {
+				return angular.equals(c, constraint) ? c.invert() : c;
 			});
 			$location.search(params());
 		};
