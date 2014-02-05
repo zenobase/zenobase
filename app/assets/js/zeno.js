@@ -3845,29 +3845,132 @@
 	}]);
 
 
-	app.controller('ImportDialogController', ['$scope', '$http', '$routeParams', 'tracker', 'delay', function($scope, $http, $routeParams, tracker, delay) {
+	app.factory('SleepCycle', ['moment', function(moment) {
+
+		function parseStart(value) {
+			var t = moment(value);
+			if (t) {
+				return t.format('YYYY-MM-DDTHH:mm:ss.SSSZ');
+			}
+			throw new Error(value + ' is not a valid time');
+		}
+
+		function parseSleepQuality(value) {
+			var m = /(\d+)%/.exec(value);
+			if (m) {
+				return parseInt(m[1]);
+			}
+			throw new Error(value + ' is not a valid sleep quality');
+		}
+
+		function parseTimeInBed(value) {
+			var m = /(\d+):(\d+)/.exec(value);
+			if (m) {
+				return parseInt(m[1]) * 60 * 60 * 1000 + parseInt(m[2]) * 60 * 1000;
+			}
+			throw new Error(value + ' is not a valid duration');
+		}
+
+		function parseWakeUp(value) {
+			if (!value) {
+				return null;
+			}
+			if (value === ':)') {
+				return 100;
+			}
+			if (value === ':|') {
+				return 50;
+			}
+			if (value === ':(') {
+				return 0;
+			}
+			throw new Error(value + ' is not a valid emoticon');
+		}
+
+		function parseSleepNotes(value) {
+			var tags = [ 'sleep' ];
+			if (value) {
+				tags.push(value.toLowerCase());
+			}
+			return tags;
+		}
+		
+		return {
+			parse : function(data) {
+				var events = [];
+				var lines = data.split('\n');
+				var expected = [ 'Start', 'End', 'Sleep quality', 'Time in bed', 'Wake up', 'Sleep Notes' ];
+				var headers = lines.shift().split(';');
+				if (!angular.equals(headers, expected)) {
+					throw new Error('Expected headers: ' + expected.join(', '));
+				}
+				$.each(lines, function(i, line) {
+					var fields = line.split(';');
+					if (line.trim()) {
+						if (fields.length !== expected.length) {
+							throw new Error('Wrong number of fields in line ' + i);
+						}
+						var event = {
+							'tag' : parseSleepNotes(fields[5]),
+							'timestamp' : parseStart(fields[0]),
+							'duration' : parseTimeInBed(fields[3]),
+							'percentage' : parseSleepQuality(fields[2]),
+							'rating' : parseWakeUp(fields[4]),
+							'source' : {
+								'title' : 'SleepCycle',
+								'url' : 'http://www.sleepcycle.com/'
+							}
+						};
+						events.push(event);
+					}
+				});
+				return events;				
+			}
+		}
+	}]);
+
+	app.controller('ImportDialogController', ['$scope', '$http', '$routeParams', 'SleepCycle', 'tracker', 'delay', function($scope, $http, $routeParams, SleepCycle, tracker, delay) {
 
 		$scope.bucketId = $routeParams.bucketId;
+		$scope.formats = [
+			{
+				label : 'Zenobase (json)', 
+				description : 'Import data exported from another bucket. The format is described in the <a href="/#/api/events" target="_blank">API docs</a>.',
+				parse : function(data) {
+					var events = JSON.parse(data);
+					if (events && events.events) {
+						events = events.events;
+					}
+					return $.isArray(events) ? events : [];
+				}
+			},
+			{
+				label : 'SleepCycle (csv)',
+				description : 'Import data exported from <a href="http://www.sleepcycle.com/" target="_blank">SleepCycle</a>.',
+				parse : function(data) {
+					return SleepCycle.parse(data);
+				}
+			}
+		];
 
 		$scope.init = function() {
-			$scope.message = '';
-			$scope.events = [];
+			$scope.format = $scope.formats[0];
 			tracker.event('dialog', 'import events');
-			$('#select-import-file').fileupload('reset');
 		};
 		$scope.isEmpty = function() {
 			return !$scope.events || $scope.events.length == 0;
 		};
 		$scope.setFiles = function(files) {
+			$scope.message = '';
 			$scope.events = [];
 			$scope.$apply(function(scope) {
 				var reader = new FileReader();
 				reader.onload = function(e) {
 					scope.$apply(function(scope) {
 						try {
-							scope.events = JSON.parse(e.target.result);
+							scope.events = $scope.format.parse(e.target.result);
 						} catch(error) {
-							$scope.message = 'Can\'t read the file. Is the format valid?';
+							scope.message = error.message;
 						}
 					});
 				};
@@ -3876,7 +3979,7 @@
 		};
 		$scope.submit = function() {
 			$scope.alert.clear();
-			$http.post('/buckets/' + $scope.bucketId + '/', $.isArray($scope.events) ? { 'events' : $scope.events } : $scope.events)
+			$http.post('/buckets/' + $scope.bucketId + '/', { 'events' : $scope.events })
 				.success(function(response, status, headers) {
 					$scope.alert.show('Imported events.', 'alert-success', headers('X-Command-ID'));
 					delay($scope.refresh);
@@ -3887,6 +3990,14 @@
 				});
 			tracker.event('action', 'import events');
 		};
+
+		$scope.$watch('format', function(format) {
+			if (format) {
+				$scope.message = '';
+				$scope.events = [];
+				$('#select-import-file').fileupload('reset');
+			}
+		});
 	}]);
 
 

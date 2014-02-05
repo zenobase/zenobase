@@ -864,24 +864,26 @@
 				<div class="alert alert-error" data-ng-show="message">
 					{{message}}
 				</div>
-				<div id="select-import-file" class="fileupload fileupload-new" data-provides="fileupload">
-					<span class="btn btn-file">
-						<span class="fileupload-new">Select file</span>
-						<span class="fileupload-exists">Change</span>
-						<input type="file" required onchange="angular.element(this).scope().setFiles(this.files)" />
+				<div class="control-group form-horizontal">
+					<select class="input-medium" data-ng-model="format" data-ng-options="format.label for format in formats"></select>
+					<span id="select-import-file" class="fileupload fileupload-new" data-provides="fileupload">
+						<span class="btn btn-file">
+							<span class="fileupload-new">Select file</span>
+							<span class="fileupload-exists">Change</span>
+							<input type="file" required onchange="angular.element(this).scope().setFiles(this.files)" />
+						</span>
+						<span class="fileupload-preview"></span>
+						<a href="#" class="close fileupload-exists" data-dismiss="fileupload" style="float:none">&times;</a>
 					</span>
-					<span class="fileupload-preview"></span>
-					<a href="#" class="close fileupload-exists" data-dismiss="fileupload" style="float:none">&times;</a>
 				</div>
 				<div class="controls">
-					<span class="help-block">Import data that was exported from another bucket.
-					The data format is described in the <a href="/#/api/events" target="_blank">API docs</a>.
-					For help with importing data from other sources,
+					<span class="help-block" data-ng-bind-html="format.description"></span>
+					<span class="help-block">For help with importing data from other sources,
 					<a href="https://zenobase.uservoice.com/">contact us</a>.</span>
 				</div>
 			</div>
 			<div class="modal-footer">
-				<button type="submit" class="btn btn-primary" data-ng-disabled="isEmpty()">Import</button>
+				<button type="submit" class="btn btn-primary" data-ng-disabled="isEmpty()">Import <span data-ng-show="events.length">({{events.length}})</span></button>
 				<button type="reset" class="btn" data-dismiss="modal">Cancel</button>
 			</div>
 		</form>
