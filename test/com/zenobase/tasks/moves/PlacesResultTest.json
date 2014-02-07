@@ -1,0 +1,84 @@
+[
+    {
+        "date": "20121212",
+        "segments": [
+            {
+                "type": "place",
+                "startTime": "20121212T000000+0200",
+                "endTime": "20121212T071430+0200",
+                "place": {
+                    "id": 1,
+                    "type": "unknown",
+                    "location": {
+                        "lat": 55.55555,
+                        "lon": 33.33333
+                    }
+                },
+                "lastUpdate": "20130317T121143Z"
+            },
+            {
+                "type": "place",
+                "startTime": "20121212T074617+0200",
+                "endTime": "20121212T100051+0200",
+                "place": {
+                    "id": 2,
+                    "type": "unknown",
+                    "location": {
+                        "lat": 55.55555,
+                        "lon": 33.33333
+                    }
+                },
+                "lastUpdate": "20130317T121143Z"
+            },
+            {
+                "type": "place",
+                "startTime": "20121212T100715+0200",
+                "endTime": "20121212T110530+0200",
+                "place": {
+                    "id": 4,
+                    "name": "test",
+                    "type": "foursquare",
+                    "foursquareId": "4df0fdb17d8ba370a011d24c",
+                    "location": {
+                        "lat": 55.55555,
+                        "lon": 33.33333
+                    }
+                },
+                "lastUpdate": "20130317T121143Z"
+            },
+            {
+                "type": "place",
+                "startTime": "20121212T111129+0200",
+                "endTime": "20121212T153638+0200",
+                "place": {
+                    "id": 2,
+                    "type": "unknown",
+                    "location": {
+                        "lat": 55.55555,
+                        "lon": 33.33333
+                    }
+                },
+                "lastUpdate": "20130317T121143Z"
+            },
+            {
+                "type": "place",
+                "startTime": "20121212T160744+0200",
+                "endTime": "20121212T232730+0200",
+                "place": {
+                    "id": 1,
+                    "type": "unknown",
+                    "location": {
+                        "lat": 55.55555,
+                        "lon": 33.33333
+                    }
+                },
+                "lastUpdate": "20130317T121143Z"
+            }
+        ],
+        "lastUpdate": "20130317T121143Z"
+    },
+    {
+        "date": "20121213",
+        "segments": null
+    }
+]

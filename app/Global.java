@@ -114,6 +114,8 @@ import com.zenobase.tasks.fitbit.FitbitStepsTaskManager;
 import com.zenobase.tasks.fitbit.FitbitSummaryTaskManager;
 import com.zenobase.tasks.foursquare.FoursquareCredentialsManager;
 import com.zenobase.tasks.foursquare.FoursquareTaskManager;
+import com.zenobase.tasks.moves.MovesCredentialsManager;
+import com.zenobase.tasks.moves.MovesPlacesTaskManager;
 import com.zenobase.tasks.netatmo.NetatmoCredentialsManager;
 import com.zenobase.tasks.netatmo.NetatmoTaskManager;
 import com.zenobase.tasks.runkeeper.RunkeeperCredentialsManager;
@@ -224,6 +226,7 @@ public class Global extends GlobalSettings {
 				bindIfConfigured("bodymedia", BodyMediaCredentialsManager.class, credentials);
 				bindIfConfigured("netatmo", NetatmoCredentialsManager.class, credentials);
 				bindIfConfigured("runkeeper", RunkeeperCredentialsManager.class, credentials);
+				bindIfConfigured("moves", MovesCredentialsManager.class, credentials);
 				bind(CredentialsManagerRegistry.class).in(Singleton.class);
 
 				Multibinder<TaskManager> tasks = Multibinder.newSetBinder(binder(), new TypeLiteral<TaskManager>() {});
@@ -242,6 +245,7 @@ public class Global extends GlobalSettings {
 				bindIfConfigured("bodymedia", BodyMediaSleepTaskManager.class, tasks);
 				bindIfConfigured("netatmo", NetatmoTaskManager.class, tasks);
 				bindIfConfigured("runkeeper", RunkeeperTaskManager.class, tasks);
+				bindIfConfigured("moves", MovesPlacesTaskManager.class, tasks);
 				bind(TaskManagerRegistry.class).in(Singleton.class);
 
 				bind(AccountController.class).in(Singleton.class);
