@@ -388,18 +388,14 @@
 	<script id="/moves-activities-settings.html" type="text/ng-template">
 		<div data-ng-controller="MovesActivitiesSettingsController">
 			<div class="control-group">
-				<label for="marker" class="control-label">Starting from</label>
-				<input class="input-small" type="text" data-ui-datepicker data-ng-model="settings.marker"/>
+				<label for="unit" class="control-label">Unit</label>
+				<select name="unit" data-ng-model="settings.unit" data-ng-options="unit for unit in getUnits()" required></select>
 			</div>
 		</div>
 	</script>
 
 	<script id="/moves-places-settings.html" type="text/ng-template">
 		<div data-ng-controller="MovesPlacesSettingsController">
-			<div class="control-group">
-				<label for="marker" class="control-label">Starting from</label>
-				<input class="input-small" type="text" data-ui-datepicker data-ng-model="settings.marker"/>
-			</div>
 		</div>
 	</script>
 

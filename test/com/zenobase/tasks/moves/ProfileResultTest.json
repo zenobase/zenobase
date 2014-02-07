@@ -1,0 +1,18 @@
+{
+    "userId": 23138311640030064,
+    "profile": {
+        "firstDate": "20121211",
+        "currentTimeZone": {
+            "id": "Europe/Helsinki",
+            "offset": 10800
+        },
+        "localization": {
+            "language": "en",
+            "locale": "fi_FI",
+            "firstWeekDay": 2,
+            "metric": true
+        },
+        "caloriesAvailable": true,
+        "platform": "ios"
+    }
+}

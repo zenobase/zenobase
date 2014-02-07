@@ -6,7 +6,10 @@ import java.util.List;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDate;
+import org.scribe.model.OAuthRequest;
+import org.scribe.model.Response;
 import org.scribe.model.Token;
+import org.scribe.model.Verb;
 import com.google.common.base.Objects;
 import com.google.common.collect.Iterables;
 import com.google.common.util.concurrent.RateLimiter;
@@ -24,10 +27,23 @@ import com.zenobase.tasks.Task;
 
 abstract class MovesTaskManagerSupport extends OAuthTaskManager {
 
+	private static final String BASE_URL = "https://api.moves-app.com/api/1.1";
 	private static final RateLimiter RATE_LIMITER = RateLimiter.create(1);
 
 	protected MovesTaskManagerSupport(String type, MovesCredentialsManager credentialsManager) {
 		super(type, credentialsManager);
+	}
+
+	@Override
+	protected Response send(OAuthRequest request, OAuthCredentials credentials) {
+		RATE_LIMITER.acquire();
+		return super.send(request, credentials);
+	}
+
+	protected ProfileResult getProfile(OAuthCredentials credentials) {
+		OAuthRequest request = newRequest("/user/profile");
+		Response response = send(request, credentials);
+		return new ProfileResult(parseObject(response));
 	}
 
 	protected void removeDuplicates(List<Event> events) {
@@ -75,11 +91,11 @@ abstract class MovesTaskManagerSupport extends OAuthTaskManager {
 		return latest.getValue(Event.TIMESTAMP).plus(latest.getValue(Event.DURATION)).toString();
 	}
 
-	protected static void checkRateLimit() {
-		RATE_LIMITER.acquire();
-	}
-
 	protected static LocalDate min(LocalDate a, LocalDate b) {
 		return a.isAfter(b) ? b : a;
+	}
+
+	protected static OAuthRequest newRequest(String path) {
+		return new OAuthRequest(Verb.GET, BASE_URL + path);
 	}
 }

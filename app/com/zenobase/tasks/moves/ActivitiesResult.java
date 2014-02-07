@@ -7,7 +7,6 @@ import javax.measure.DecimalMeasure;
 import javax.measure.quantity.Energy;
 import javax.measure.quantity.Length;
 import javax.measure.quantity.Quantity;
-import javax.measure.unit.SI;
 import javax.measure.unit.Unit;
 
 import org.elasticsearch.common.collect.Sets;
@@ -30,12 +29,13 @@ class ActivitiesResult {
 
 	private final Identity author;
 	private final DateTime begin;
-	private final Unit<Length> unit = SI.METER;
+	private final Unit<Length> unit;
 	private final JsonNode node;
 
-	public ActivitiesResult(Identity author, DateTime begin, JsonNode node) {
+	public ActivitiesResult(Identity author, DateTime begin, Unit<Length> unit, JsonNode node) {
 		this.author = Preconditions.checkNotNull(author);
 		this.begin = Preconditions.checkNotNull(begin);
+		this.unit = Preconditions.checkNotNull(unit);
 		this.node = Preconditions.checkNotNull(node);
 	}
 
@@ -77,7 +77,7 @@ class ActivitiesResult {
 			event.setValues(Event.TAG, tags);
 			event.setValue(Event.COUNT, intValue(activityNode.path("steps")));
 			event.setValue(Event.ENERGY, measureValue(activityNode.path("calories"), CALORIES));
-			event.setValue(Event.DISTANCE, measureValue(activityNode.path("distance"), unit));
+			event.setValue(Event.DISTANCE, convertValue(activityNode.path("distance"), unit));
 			event.setValue(Event.AUTHOR, author);
 			event.setValue(Event.SOURCE, SOURCE);
 		}
@@ -94,5 +94,9 @@ class ActivitiesResult {
 
 	private static <Q extends Quantity> DecimalMeasure<Q> measureValue(JsonNode node, Unit<Q> unit) {
 		return node.isNumber() ? Measures.<Q>valueOf(node.decimalValue(), unit) : null;
+	}
+
+	private static <Q extends Quantity> DecimalMeasure<Q> convertValue(JsonNode node, Unit<Q> unit) {
+		return node.isNumber() ? Measures.valueOf(Measures.convert(node.doubleValue(), unit), unit) : null;
 	}
 }

@@ -3,17 +3,20 @@ package com.zenobase.tasks.moves;
 import java.util.List;
 
 import javax.inject.Inject;
+import javax.measure.quantity.Length;
+import javax.measure.unit.Unit;
 
+import org.elasticsearch.common.base.Objects;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.scribe.model.OAuthRequest;
 import org.scribe.model.Response;
 import org.scribe.model.Token;
-import org.scribe.model.Verb;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.Lists;
 
 import com.zenobase.commands.Command;
+import com.zenobase.common.Measures;
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
 import com.zenobase.tasks.OAuthCredentials;
@@ -28,8 +31,8 @@ public class MovesActivitiesTaskManager extends MovesTaskManagerSupport {
 
 	@Override
 	public Task newTask(String bucketId, Identity principal, ObjectNode settings) {
-		String marker = LocalDate.parse(settings.path("marker").textValue()).toString();
-		return new MovesActivitiesTask(bucketId, principal, marker);
+		Unit<Length> unit = Measures.<Length>parseUnit(Objects.firstNonNull(settings.path("unit").textValue(), "m"));
+		return new MovesActivitiesTask(bucketId, principal, unit);
 	}
 
 	@Override
@@ -42,7 +45,11 @@ public class MovesActivitiesTaskManager extends MovesTaskManagerSupport {
 		if (credentials.isExpired()) {
 			reauthorize(credentials);
 		}
-		DateTime from = DateTime.parse(task.getMarker());
+		DateTime from = task.getFrom();
+		if (from == null) {
+			ProfileResult profile = getProfile(credentials);
+			from = profile.getFirstDate();
+		}
 		List<Event> events = getEvents(task, credentials, from);
 		removeDuplicates(events);
 		removeLast(events);
@@ -53,9 +60,8 @@ public class MovesActivitiesTaskManager extends MovesTaskManagerSupport {
 		List<Event> events = Lists.newArrayList();
 		LocalDate today = LocalDate.now(begin.getZone());
 		for (LocalDate from = begin.toLocalDate(); !from.isAfter(today); from = from.withDayOfMonth(1).plusMonths(1)) {
-			checkRateLimit();
 			LocalDate to = min(from.dayOfMonth().withMaximumValue(), today);
-			ActivitiesQuery request = new ActivitiesQuery(begin, task.getPrincipal(), credentials);
+			ActivitiesQuery request = new ActivitiesQuery(task.getPrincipal(), begin, task.getUnit(), credentials);
 			events.addAll(request.find(from, to).getEvents());
 		}
 		return events;
@@ -63,22 +69,24 @@ public class MovesActivitiesTaskManager extends MovesTaskManagerSupport {
 
 	private class ActivitiesQuery {
 
-		private final DateTime begin;
 		private final Identity principal;
+		private final DateTime begin;
+		private final Unit<Length> unit;
 		private final OAuthCredentials credentials;
 
-		public ActivitiesQuery(DateTime begin, Identity principal, OAuthCredentials credentials) {
-			this.begin = begin;
+		public ActivitiesQuery(Identity principal, DateTime begin, Unit<Length> unit, OAuthCredentials credentials) {
 			this.principal = principal;
+			this.begin = begin;
+			this.unit = unit;
 			this.credentials = credentials;
 		}
 
 		public ActivitiesResult find(LocalDate from, LocalDate to) {
-			OAuthRequest request = new OAuthRequest(Verb.GET, "https://api.moves-app.com/api/1.1/user/activities/daily");
+			OAuthRequest request = newRequest("/user/activities/daily");
 			request.addQuerystringParameter("from", from.toString());
 			request.addQuerystringParameter("to", to.toString());
 			Response response = send(request, credentials);
-			return new ActivitiesResult(principal, begin, parseArray(response));
+			return new ActivitiesResult(principal, begin, unit, parseArray(response));
 		}
 	}
 }

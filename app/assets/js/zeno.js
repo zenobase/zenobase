@@ -4337,22 +4337,25 @@
 		$scope.init();
 	}]);
 
-	app.controller('MovesActivitiesSettingsController', ['$scope', 'moment', function($scope, moment) {
+	app.controller('MovesActivitiesSettingsController', ['$scope', 'Field', function($scope, Field) {
 
 		$scope.init = function() {
 			$scope.settings = $scope.$parent.$parent.settings = {
-					marker : new Date(moment().utc().subtract('months', 3).startOf('month').valueOf())
+					unit : 'km'
 			};
+		};
+		$scope.getUnits = function() {
+			return Field.find('distance').units;
 		};
 
 		$scope.init();
 	}]);
 
-	app.controller('MovesPlacesSettingsController', ['$scope', 'moment', function($scope, moment) {
+	app.controller('MovesPlacesSettingsController', ['$scope', function($scope) {
 
 		$scope.init = function() {
 			$scope.settings = $scope.$parent.$parent.settings = {
-					marker : new Date(moment().utc().subtract('months', 3).startOf('month').valueOf())
+					
 			};
 		};
 

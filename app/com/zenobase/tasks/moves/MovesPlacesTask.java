@@ -1,5 +1,6 @@
 package com.zenobase.tasks.moves;
 
+import org.joda.time.DateTime;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import com.zenobase.models.Identity;
@@ -14,12 +15,12 @@ public class MovesPlacesTask extends Task {
 	}
 
 	public MovesPlacesTask(String bucketId, Identity principal) {
-		this(bucketId, principal, null);
+		super(TYPE, bucketId, principal);
 	}
 
-	MovesPlacesTask(String bucketId, Identity principal, String marker) {
-		super(TYPE, bucketId, principal);
-		setMarker(marker);
+	public DateTime getFrom() {
+		String marker = getMarker();
+		return marker != null ? DateTime.parse(marker) : null;
 	}
 
 	@Override
