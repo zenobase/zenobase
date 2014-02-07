@@ -54,9 +54,17 @@ class PlacesResult {
 			DateTime end = dateTimeValue(segmentNode.path("endTime"));
 			event.setValue(Event.TIMESTAMP, begin);
 			event.setValue(Event.DURATION, new Duration(begin, end));
-			event.setValue(Event.LOCATION, locationValue((ObjectNode) segmentNode.path("place").path("location")));
-			// event.addValue(Event.TAG, );
-			// event.addValue(Event.RESOURCE, );
+			event.addValue(Event.TAG, "Place");
+			JsonNode placeNode = segmentNode.path("place");
+			event.setValue(Event.LOCATION, locationValue(placeNode.path("location")));
+			String placeType = segmentNode.path("place").path("type").textValue();
+			if ("foursquare".equals(placeType)) {
+				String foursquareId = placeNode.path("foursquareId").textValue();
+				event.addValue(Event.RESOURCE, new Resource(foursquareId, ""));
+			} else if ("home".equals(placeType) || "user".equals(placeType)) {
+				String name = placeNode.path("name").textValue();
+				event.addValue(Event.TAG, name);
+			}
 			event.setValue(Event.AUTHOR, author);
 			event.setValue(Event.SOURCE, SOURCE);
 		}
@@ -67,7 +75,7 @@ class PlacesResult {
 		return DateTime.parse(node.textValue(), ISODateTimeFormat.basicDateTimeNoMillis().withOffsetParsed());
 	}
 
-	private static Location locationValue(ObjectNode node) {
+	private static Location locationValue(JsonNode node) {
 		return new Location(node.path("lat").decimalValue(), node.path("lon").decimalValue());
 	}
 }

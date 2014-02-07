@@ -358,6 +358,63 @@
 		]
 	},
 	{
+		"label" : "Places (Moves)",
+		"task" : "moves-places",
+		"widgets" : [
+			{
+				"id" : "timeline",
+				"type" : "timeline",
+				"label" : "Latest",
+				"placement" : "top",
+				"field" : "timestamp",
+				"statistic" : "count"
+			},
+			{
+				"id" : "latest",
+				"type" : "list",
+				"label" : "Latest",
+				"placement" : "left",
+				"singleton" : true,
+				"limit" : 10,
+				"order" : "timestamp",
+				"reverse" : false
+			},
+			{
+				"id" : "tags",
+				"type" : "count",
+				"label" : "Tags",
+				"placement" : "left",
+				"field" : "tag",
+				"limit" : 10,
+				"order" : "count",
+				"reverse" : false
+			},
+			{
+				"id" : "map",
+				"type" : "map",
+				"label" : "Map",
+				"placement" : "right"
+			},
+			{
+				"id" : "duration",
+				"type" : "histogram",
+				"label" : "Duration",
+				"placement" : "right",
+				"field" : "duration",
+				"unit" : null,
+				"interval" : 3600000
+			},
+			{
+				"id" : "day_of_week",
+				"type" : "polar",
+				"label" : "Day of Week",
+				"placement" : "right",
+				"interval" : "day_of_week",
+				"value_field" : "timestamp"
+			}
+		]
+	},
+	{
 		"label" : "Sleep (BodyMedia)",
 		"task" : "bodymedia-sleep",
 		"widgets" : [

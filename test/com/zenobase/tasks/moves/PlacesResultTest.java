@@ -23,8 +23,7 @@ public class PlacesResultTest extends ResultTestSupport {
 		assertThat(events).as("events").hasSize(4);
 		Event expected = new Event(events.get(0).getId());
 		expected.setValue(Event.TIMESTAMP, begin);
-		// expected.addValue(Event.TAG, );
-		// expected.addValue(Event.RESOURCE, );
+		expected.addValue(Event.TAG, "Place");
 		expected.setValue(Event.LOCATION, new Location("55.55555", "33.33333"));
 		expected.setValue(Event.DURATION, Duration.standardSeconds(8074));
 		expected.setValue(Event.AUTHOR, TESTER);

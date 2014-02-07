@@ -1,5 +1,6 @@
 package com.zenobase.tasks.moves;
 
+import java.util.Iterator;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -15,6 +16,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Objects;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
+import com.google.common.util.concurrent.RateLimiter;
 
 import com.zenobase.commands.Command;
 import com.zenobase.commands.CompoundCommand;
@@ -23,16 +25,24 @@ import com.zenobase.commands.UpdateCredentialsCommand;
 import com.zenobase.commands.UpdateTaskCommand;
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
+import com.zenobase.models.Resource;
 import com.zenobase.tasks.Credentials;
 import com.zenobase.tasks.OAuthCredentials;
 import com.zenobase.tasks.OAuthTaskManager;
 import com.zenobase.tasks.Task;
+import com.zenobase.tasks.foursquare.FoursquareVenue;
+import com.zenobase.tasks.foursquare.FoursquareVenues;
 
 public class MovesPlacesTaskManager extends OAuthTaskManager {
 
+	private static final RateLimiter RATE_LIMITER = RateLimiter.create(1);
+
+	private final FoursquareVenues venues;
+
 	@Inject
-	public MovesPlacesTaskManager(MovesCredentialsManager credentialsManager) {
+	public MovesPlacesTaskManager(MovesCredentialsManager credentialsManager, FoursquareVenues venues) {
 		super(MovesPlacesTask.TYPE, credentialsManager);
+		this.venues = venues;
 	}
 
 	@Override
@@ -53,6 +63,9 @@ public class MovesPlacesTaskManager extends OAuthTaskManager {
 		}
 		DateTime from = DateTime.parse(task.getMarker());
 		List<Event> events = getEvents(task, credentials, from);
+		removeDuplicates(events);
+		removeLast(events);
+		resolveFoursquareVenues(events);
 		return createCommand(task, credentials, events, token);
 	}
 
@@ -60,14 +73,16 @@ public class MovesPlacesTaskManager extends OAuthTaskManager {
 		List<Event> events = Lists.newArrayList();
 		LocalDate today = LocalDate.now(begin.getZone());
 		for (LocalDate from = begin.toLocalDate(); !from.isAfter(today); from = from.withDayOfMonth(1).plusMonths(1)) {
-			LocalDate to = from.dayOfMonth().withMaximumValue();
-			if (to.isAfter(today)) {
-				to = today;
-			}
+			checkRateLimit();
+			LocalDate to = min(from.dayOfMonth().withMaximumValue(), today);
 			PlacesQuery request = new PlacesQuery(begin, task.getPrincipal(), credentials);
 			events.addAll(request.find(from, to).getEvents());
 		}
 		return events;
+	}
+
+	private static LocalDate min(LocalDate a, LocalDate b) {
+		return a.isAfter(b) ? b : a;
 	}
 
 	private class PlacesQuery {
@@ -88,6 +103,40 @@ public class MovesPlacesTaskManager extends OAuthTaskManager {
 			request.addQuerystringParameter("to", to.toString());
 			Response response = send(request, credentials);
 			return new PlacesResult(principal, begin, parseArray(response));
+		}
+	}
+
+	private void removeDuplicates(List<Event> events) {
+		DateTime t0 = null;
+		for (Iterator<Event> i = events.iterator(); i.hasNext();) {
+			Event event = i.next();
+			DateTime t1 = event.getValue(Event.TIMESTAMP);
+			if (t0 == null || !t0.equals(t1)) {
+				t0 = t1;
+			} else {
+				i.remove();
+			}
+		}
+	}
+
+	private void removeLast(List<Event> events) {
+		if (!events.isEmpty()) {
+			events.remove(events.size() - 1);
+		}
+	}
+
+	private void resolveFoursquareVenues(Iterable<Event> events) {
+		for (Event event : events) {
+			Resource resource = event.getValue(Event.RESOURCE);
+			if (resource != null) {
+				FoursquareVenue venue = venues.find(resource.getTitle());
+				if (venue != null) {
+					event.setValue(Event.RESOURCE, venue.toResource());
+					for (String tag : venue.getCategories()) {
+						event.addValue(Event.TAG, tag);
+					}
+				}
+			}
 		}
 	}
 
@@ -113,6 +162,11 @@ public class MovesPlacesTaskManager extends OAuthTaskManager {
 	}
 
 	private static String getMarker(List<Event> events) {
-		return Iterables.getLast(events).getValue(Event.TIMESTAMP).plusSeconds(1).toString();
+		Event latest = Iterables.getLast(events);
+		return latest.getValue(Event.TIMESTAMP).plus(latest.getValue(Event.DURATION)).toString();
+	}
+
+	private static void checkRateLimit() {
+		RATE_LIMITER.acquire();
 	}
 }

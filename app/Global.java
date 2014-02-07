@@ -114,6 +114,7 @@ import com.zenobase.tasks.fitbit.FitbitStepsTaskManager;
 import com.zenobase.tasks.fitbit.FitbitSummaryTaskManager;
 import com.zenobase.tasks.foursquare.FoursquareCredentialsManager;
 import com.zenobase.tasks.foursquare.FoursquareTaskManager;
+import com.zenobase.tasks.foursquare.FoursquareVenues;
 import com.zenobase.tasks.moves.MovesCredentialsManager;
 import com.zenobase.tasks.moves.MovesPlacesTaskManager;
 import com.zenobase.tasks.netatmo.NetatmoCredentialsManager;
@@ -168,6 +169,9 @@ public class Global extends GlobalSettings {
 				bind(AuthorizationRepository.class).in(Singleton.class);
 				bind(QuotaManager.class).in(Singleton.class);
 				bind(PaymentGateway.class).in(Singleton.class);
+				if (isConfigured("foursquare")) {
+					bind(FoursquareVenues.class).in(Singleton.class);
+				}
 
 				Multibinder<CommandParser> parsers = Multibinder.newSetBinder(binder(), CommandParser.class);
 				parsers.addBinding().to(CreateBucketCommand.Parser.class);
