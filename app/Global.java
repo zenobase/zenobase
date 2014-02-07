@@ -115,6 +115,7 @@ import com.zenobase.tasks.fitbit.FitbitSummaryTaskManager;
 import com.zenobase.tasks.foursquare.FoursquareCredentialsManager;
 import com.zenobase.tasks.foursquare.FoursquareTaskManager;
 import com.zenobase.tasks.foursquare.FoursquareVenues;
+import com.zenobase.tasks.moves.MovesActivitiesTaskManager;
 import com.zenobase.tasks.moves.MovesCredentialsManager;
 import com.zenobase.tasks.moves.MovesPlacesTaskManager;
 import com.zenobase.tasks.netatmo.NetatmoCredentialsManager;
@@ -250,6 +251,7 @@ public class Global extends GlobalSettings {
 				bindIfConfigured("netatmo", NetatmoTaskManager.class, tasks);
 				bindIfConfigured("runkeeper", RunkeeperTaskManager.class, tasks);
 				bindIfConfigured("moves", MovesPlacesTaskManager.class, tasks);
+				bindIfConfigured("moves", MovesActivitiesTaskManager.class, tasks);
 				bind(TaskManagerRegistry.class).in(Singleton.class);
 
 				bind(AccountController.class).in(Singleton.class);

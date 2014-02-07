@@ -16,34 +16,28 @@ import com.google.common.collect.Lists;
 import com.zenobase.commands.Command;
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
-import com.zenobase.models.Resource;
 import com.zenobase.tasks.OAuthCredentials;
 import com.zenobase.tasks.Task;
-import com.zenobase.tasks.foursquare.FoursquareVenue;
-import com.zenobase.tasks.foursquare.FoursquareVenues;
 
-public class MovesPlacesTaskManager extends MovesTaskManagerSupport {
-
-	private final FoursquareVenues venues;
+public class MovesActivitiesTaskManager extends MovesTaskManagerSupport {
 
 	@Inject
-	public MovesPlacesTaskManager(MovesCredentialsManager credentialsManager, FoursquareVenues venues) {
-		super(MovesPlacesTask.TYPE, credentialsManager);
-		this.venues = venues;
+	public MovesActivitiesTaskManager(MovesCredentialsManager credentialsManager) {
+		super(MovesActivitiesTask.TYPE, credentialsManager);
 	}
 
 	@Override
 	public Task newTask(String bucketId, Identity principal, ObjectNode settings) {
 		String marker = LocalDate.parse(settings.path("marker").textValue()).toString();
-		return new MovesPlacesTask(bucketId, principal, marker);
+		return new MovesActivitiesTask(bucketId, principal, marker);
 	}
 
 	@Override
 	public Command execute(Task task, OAuthCredentials credentials) {
-		return execute(task.as(MovesPlacesTask.class), credentials);
+		return execute(task.as(MovesActivitiesTask.class), credentials);
 	}
 
-	private Command execute(MovesPlacesTask task, OAuthCredentials credentials) {
+	private Command execute(MovesActivitiesTask task, OAuthCredentials credentials) {
 		Token token = credentials.getToken();
 		if (credentials.isExpired()) {
 			reauthorize(credentials);
@@ -52,55 +46,39 @@ public class MovesPlacesTaskManager extends MovesTaskManagerSupport {
 		List<Event> events = getEvents(task, credentials, from);
 		removeDuplicates(events);
 		removeLast(events);
-		resolveFoursquareVenues(events);
 		return createCommand(task, credentials, events, token);
 	}
 
-	private List<Event> getEvents(MovesPlacesTask task, OAuthCredentials credentials, DateTime begin) {
+	private List<Event> getEvents(MovesActivitiesTask task, OAuthCredentials credentials, DateTime begin) {
 		List<Event> events = Lists.newArrayList();
 		LocalDate today = LocalDate.now(begin.getZone());
 		for (LocalDate from = begin.toLocalDate(); !from.isAfter(today); from = from.withDayOfMonth(1).plusMonths(1)) {
 			checkRateLimit();
 			LocalDate to = min(from.dayOfMonth().withMaximumValue(), today);
-			PlacesQuery request = new PlacesQuery(begin, task.getPrincipal(), credentials);
+			ActivitiesQuery request = new ActivitiesQuery(begin, task.getPrincipal(), credentials);
 			events.addAll(request.find(from, to).getEvents());
 		}
 		return events;
 	}
 
-	private class PlacesQuery {
+	private class ActivitiesQuery {
 
 		private final DateTime begin;
 		private final Identity principal;
 		private final OAuthCredentials credentials;
 
-		public PlacesQuery(DateTime begin, Identity principal, OAuthCredentials credentials) {
+		public ActivitiesQuery(DateTime begin, Identity principal, OAuthCredentials credentials) {
 			this.begin = begin;
 			this.principal = principal;
 			this.credentials = credentials;
 		}
 
-		public PlacesResult find(LocalDate from, LocalDate to) {
-			OAuthRequest request = new OAuthRequest(Verb.GET, "https://api.moves-app.com/api/1.1/user/places/daily");
+		public ActivitiesResult find(LocalDate from, LocalDate to) {
+			OAuthRequest request = new OAuthRequest(Verb.GET, "https://api.moves-app.com/api/1.1/user/activities/daily");
 			request.addQuerystringParameter("from", from.toString());
 			request.addQuerystringParameter("to", to.toString());
 			Response response = send(request, credentials);
-			return new PlacesResult(principal, begin, parseArray(response));
-		}
-	}
-
-	private void resolveFoursquareVenues(Iterable<Event> events) {
-		for (Event event : events) {
-			Resource resource = event.getValue(Event.RESOURCE);
-			if (resource != null) {
-				FoursquareVenue venue = venues.find(resource.getTitle());
-				if (venue != null) {
-					event.setValue(Event.RESOURCE, venue.toResource());
-					for (String tag : venue.getCategories()) {
-						event.addValue(Event.TAG, tag);
-					}
-				}
-			}
+			return new ActivitiesResult(principal, begin, parseArray(response));
 		}
 	}
 }

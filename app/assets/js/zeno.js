@@ -4214,6 +4214,7 @@
 			{ 'id' : 'bodymedia-burn', 'description' : 'Creates an event for the number of calories burned each hour.' },
 			{ 'id' : 'bodymedia-sleep', 'description' : 'Creates an event for each period of sleep.' },
 			{ 'id' : 'bodymedia-steps', 'description' : 'Creates an event for the number of steps each hour.' },
+      { 'id' : 'moves-activities', 'description' : 'Creates an event for each logged activity.' },
       { 'id' : 'moves-places', 'description' : 'Creates an event for each visited place.' },
 			{ 'id' : 'netatmo', 'description' : 'Creates an event for each weather station measurement.' },
 			{ 'id' : 'runkeeper-activities', 'description' : 'Creates an event for each logged activity.' },
@@ -4326,6 +4327,17 @@
 	}]);
 
 	app.controller('FoursquareSettingsController', ['$scope', 'moment', function($scope, moment) {
+
+		$scope.init = function() {
+			$scope.settings = $scope.$parent.$parent.settings = {
+					marker : new Date(moment().utc().subtract('months', 3).startOf('month').valueOf())
+			};
+		};
+
+		$scope.init();
+	}]);
+
+	app.controller('MovesActivitiesSettingsController', ['$scope', 'moment', function($scope, moment) {
 
 		$scope.init = function() {
 			$scope.settings = $scope.$parent.$parent.settings = {
