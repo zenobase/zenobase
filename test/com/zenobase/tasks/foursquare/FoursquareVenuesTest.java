@@ -30,6 +30,6 @@ public class FoursquareVenuesTest {
 	public void testNotFound() {
 		FoursquareVenues venues = new FoursquareVenues(apiKey, apiSecret);
 		FoursquareVenue venue = venues.find("xxxxxxxxxxxxxxxxxxxxxxxx");
-		assertThat(venue).isNull();
+		assertThat(venue).isSameAs(FoursquareVenue.UNKNOWN);
 	}
 }

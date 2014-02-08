@@ -8,6 +8,8 @@ import com.zenobase.models.Resource;
 
 public class FoursquareVenue {
 
+	public static final FoursquareVenue UNKNOWN = new FoursquareVenue(null, "?");
+
 	private final String id;
 	private final String name;
 	private final List<String> categories = Lists.newArrayList();
@@ -26,6 +28,6 @@ public class FoursquareVenue {
 	}
 
 	public Resource toResource() {
-		return new Resource(name, "https://foursquare.com/venue/" + id);
+		return id != null ? new Resource(name, "https://foursquare.com/venue/" + id) : null;
 	}
 }

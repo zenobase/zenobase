@@ -95,11 +95,9 @@ public class MovesPlacesTaskManager extends MovesTaskManagerSupport {
 			Resource resource = event.getValue(Event.RESOURCE);
 			if (resource != null) {
 				FoursquareVenue venue = venues.find(resource.getTitle());
-				if (venue != null) {
-					event.setValue(Event.RESOURCE, venue.toResource());
-					for (String tag : venue.getCategories()) {
-						event.addValue(Event.TAG, tag);
-					}
+				event.setValue(Event.RESOURCE, venue.toResource());
+				for (String tag : venue.getCategories()) {
+					event.addValue(Event.TAG, tag);
 				}
 			}
 		}

@@ -1,5 +1,7 @@
 package com.zenobase.tasks.foursquare;
 
+import java.util.concurrent.TimeUnit;
+
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -7,11 +9,29 @@ import play.libs.WS;
 import play.libs.WS.Response;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.base.Preconditions;
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
 
 public class FoursquareVenues {
 
 	private final String apiKey;
 	private final String apiSecret;
+
+	private final LoadingCache<String, FoursquareVenue> cache = CacheBuilder.newBuilder()
+		.maximumSize(1000L)
+		.expireAfterAccess(5, TimeUnit.MINUTES)
+		.build(new CacheLoader<String, FoursquareVenue>() {
+			@Override
+			public FoursquareVenue load(String venueId) {
+				Response response = request(venueId);
+				if (response.getStatus() == 400) {
+					return FoursquareVenue.UNKNOWN;
+				}
+				Preconditions.checkState(response.getStatus() == 200, "Couldn't find venue <%s>: %s", venueId, response.getBody());
+				return parse(response.asJson().path("response").path("venue"));
+			}
+		});
 
 	@Inject
 	public FoursquareVenues(@Named("foursquare.api.key") String apiKey, @Named("foursquare.api.secret") String apiSecret) {
@@ -20,19 +40,22 @@ public class FoursquareVenues {
 	}
 
 	public FoursquareVenue find(String venueId) {
-		Response response = WS.url("https://api.foursquare.com/v2/venues/" + venueId)
+		return cache.getUnchecked(venueId);
+	}
+
+	private Response request(String venueId) {
+		return WS.url("https://api.foursquare.com/v2/venues/" + venueId)
 			.setQueryParameter("v", "20140206")
 			.setQueryParameter("client_id", apiKey)
 			.setQueryParameter("client_secret", apiSecret)
 			.get().get(5000L);
-		if (response.getStatus() == 400) {
-			return null;
-		}
-		Preconditions.checkState(response.getStatus() == 200, "Couldn't find venue <%s>: %s", venueId, response.getBody());
-		JsonNode venueNode = response.asJson().path("response").path("venue");
-		String name = venueNode.path("name").textValue();
-		FoursquareVenue venue = new FoursquareVenue(venueId, name);
-		for (JsonNode categoryNode : venueNode.path("categories")) {
+	}
+
+	private static FoursquareVenue parse(JsonNode node) {
+		String id = node.path("id").textValue();
+		String name = node.path("name").textValue();
+		FoursquareVenue venue = new FoursquareVenue(id, name);
+		for (JsonNode categoryNode : node.path("categories")) {
 			venue.addCategory(categoryNode.path("shortName").textValue());
 		}
 		return venue;
