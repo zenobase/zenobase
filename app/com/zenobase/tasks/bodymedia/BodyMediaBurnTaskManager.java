@@ -9,6 +9,7 @@ import org.scribe.model.OAuthRequest;
 import org.scribe.model.Response;
 import org.scribe.model.Token;
 import org.scribe.model.Verb;
+import play.Logger;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Objects;
 import com.google.common.collect.Lists;
@@ -16,6 +17,7 @@ import com.google.common.collect.Lists;
 import com.zenobase.commands.Command;
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
+import com.zenobase.tasks.InvalidStatusException;
 import com.zenobase.tasks.OAuthCredentials;
 import com.zenobase.tasks.Task;
 
@@ -46,13 +48,20 @@ public class BodyMediaBurnTaskManager extends BodyMediaTaskManagerSupport {
 		List<Event> events = Lists.newArrayList();
 		TimezoneMap timezones = getTimezoneMap(credentials);
 		LocalDate date = getLast(parseMarker(task.getMarker()), timezones.getBegin());
+		int count = 0;
 		while (date.isBefore(LocalDate.now().plusDays(1))) {
-			BodyMediaBurnResult result = execute(task, credentials, date, timezones);
-			if (!date.isBefore(result.getLastSyncDate().toLocalDate())) {
+			try {
+				BodyMediaBurnResult result = execute(task, credentials, date, timezones);
+				if (!date.isBefore(result.getLastSyncDate().toLocalDate())) {
+					break;
+				}
+				events.addAll(result.getEvents());
+				date = date.plusDays(1);
+				++count;
+			} catch (InvalidStatusException e) {
+				Logger.warn("Couldn't complete task: " + task.getId() + " (but got" + events.size() + " events after " + count + " requests)", e);
 				break;
 			}
-			events.addAll(result.getEvents());
-			date = date.plusDays(1);
 		}
 		return createCommand(task, credentials, date, events, token);
 	}
