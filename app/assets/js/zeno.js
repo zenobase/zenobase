@@ -3309,7 +3309,7 @@
 			$scope.addConstraint($scope.field, $scope.map.getBounds().toUrlValue(3), true);
 		};
 		$scope.draw = function() {
-			if ($scope.points.length) {
+			if ($scope.points && $scope.points.length) {
 				google.load('maps', '3.14', { other_params : 'libraries=places&sensor=false&key=' + googleApiKey, callback : function() {
 					var options = {
 						mapTypeId: google.maps.MapTypeId.TERRAIN,
