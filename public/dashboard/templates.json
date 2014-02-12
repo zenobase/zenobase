@@ -425,6 +425,15 @@
 				"statistic" : "count"
 			},
 			{
+				"id" : "timeline_home",
+				"type" : "timeline",
+				"label" : "Time at Home",
+				"placement" : "top",
+				"field" : "duration",
+				"statistic" : "sum",
+				"filter" : "tag:Home"
+			},
+			{
 				"id" : "latest",
 				"type" : "list",
 				"label" : "Latest",
@@ -466,6 +475,17 @@
 				"placement" : "right",
 				"interval" : "day_of_week",
 				"value_field" : "timestamp"
+			},
+			{
+				"id" : "top10",
+				"type" : "scoreboard",
+				"label" : "Top 10",
+				"placement" : "right",
+				"key_field" : "tag",
+				"value_field" : "duration",
+				"unit" : null,
+				"order" : "total",
+				"limit" : 10
 			}
 		]
 	},
