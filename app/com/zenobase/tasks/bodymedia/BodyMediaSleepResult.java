@@ -35,8 +35,10 @@ class BodyMediaSleepResult extends BodyMediaResultSupport {
 	}
 
 	public List<Event> getEvents() {
-		JsonNode days = path("days");
-		return days.size() > 0 ? getEvents(Iterables.getOnlyElement(days)) : Collections.<Event>emptyList();
+		JsonNode dayNode = path("days");
+		return dayNode.size() > 0
+			? getEvents(Iterables.getOnlyElement(dayNode))
+			: Collections.<Event>emptyList();
 	}
 
 	private List<Event> getEvents(JsonNode dayNode) {

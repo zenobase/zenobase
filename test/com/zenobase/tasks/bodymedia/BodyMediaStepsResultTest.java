@@ -47,6 +47,15 @@ public class BodyMediaStepsResultTest extends ResultTestSupport {
 		assertEvent(events.get(22), "2013-03-10T23:00:00-0700", 39);
 	}
 
+	@Test
+	public void testNoData() {
+		addTimezone("2013-01-01T00:00:00-08:00", "America/Los_Angeles");
+		BodyMediaStepsResult result = parse("BodyMediaStepsResultTest-empty.json");
+		List<Event> events = result.getEvents();
+		assertThat(result.getDate()).isEqualTo(LocalDate.parse("2013-11-03"));
+		assertThat(events).isEmpty();
+	}
+
 	private void addTimezone(String from, String timezone) {
 		timezones.add(DateTime.parse(from), null, DateTimeZone.forID(timezone));
 	}

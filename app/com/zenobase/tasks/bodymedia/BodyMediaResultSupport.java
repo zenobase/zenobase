@@ -22,9 +22,9 @@ abstract class BodyMediaResultSupport {
 	private final DateTime lastSync;
 
 	protected BodyMediaResultSupport(ObjectNode node, Identity author) {
-		this.node = node;
-		this.author = author;
-		this.lastSync = getDateTime(node.path("lastSync").path("dateTime"));
+		this.node = Preconditions.checkNotNull(node);
+		this.author = Preconditions.checkNotNull(author);
+		this.lastSync = Preconditions.checkNotNull(getDateTime(node.path("lastSync").path("dateTime")));
 	}
 
 	protected JsonNode path(String path) {

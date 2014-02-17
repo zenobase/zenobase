@@ -33,7 +33,10 @@ class BodyMediaStepsResult extends BodyMediaResultSupport {
 	}
 
 	public List<Event> getEvents() {
-		return getEvents(Iterables.getOnlyElement(path("days")));
+		JsonNode daysNode = path("days");
+		return daysNode.size() > 0
+			? getEvents(Iterables.getOnlyElement(daysNode))
+			: Collections.<Event>emptyList();
 	}
 
 	public List<Event> getEvents(JsonNode dayNode) {

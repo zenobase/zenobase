@@ -1,6 +1,7 @@
 package com.zenobase.tasks.bodymedia;
 
 import java.math.BigDecimal;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -39,8 +40,14 @@ class BodyMediaBurnResult extends BodyMediaResultSupport {
 	}
 
 	public List<Event> getEvents() {
+		JsonNode daysNode = path("days");
+		return daysNode.size() > 0
+			? getEvents(Iterables.getOnlyElement(daysNode))
+			: Collections.<Event>emptyList();
+	}
+
+	public List<Event> getEvents(JsonNode dayNode) {
 		List<Event> events = Lists.newArrayList();
-		JsonNode dayNode = Iterables.getOnlyElement(path("days"));
 		for (Map.Entry<DateTime, BigDecimal> entry : getCaloriesByHour(dayNode).entrySet()) {
 			events.add(newEvent(entry.getKey(), entry.getValue()));
 		}
