@@ -83,7 +83,7 @@
 								<span data-ng-class="bucket.aliases && bucket.aliases.length && 'bucket-virtual'">{{bucket['@id']}}</span>
 							</td>
 							<td><a data-ng-click="setConstraint(getOwner(bucket))">{{getOwner(bucket) | username}}</a></td>
-							<td>{{bucket.created | age}}</td>
+							<td><abbr title="{{bucket.created}}">{{bucket.created | age}}</abbr></td>
 							<td style="text-align: right">
 								<a data-ng-show="isPublished(bucket)" data-ng-href="/#/buckets/{{bucket['@id']}}">{{bucket.size}}</a>
 								<span data-ng-hide="isPublished(bucket)">{{bucket.size}}</span>
@@ -134,7 +134,7 @@
 							<td>
 								<a data-ng-href="mailto:{{user.email}}">{{user.email}}</a> <i class="fa fa-check-circle" title="Verified" data-ng-show="user.verified"></i>
 							</td>
-							<td data-ng-bind="user.created | age"></td>
+							<td><abbr title="{{user.created}}">{{user.created | age}}</abbr></td>
 							<td style="text-align: right">
 								<a class="action" data-ng-click="openDialog('edit-quota-dialog', user)" title="Edit Quota"><i class="fa fa-pencil"></i></a>
 								<span data-ng-bind="user.quota | number" ></span>
@@ -202,7 +202,7 @@
 						<tr data-ng-repeat="authorization in authorizations">
 							<td><a data-ng-click="setConstraint(authorization.principal)">{{authorization.principal | username}}</a></td>
 							<td><a data-ng-click="setConstraint(authorization.client)" data-ng-show="authorization.client">{{authorization.client | username}}</a></td>
-							<td>{{authorization.created | age}}</td>
+							<td><abbr title="{{authorization.created}}">{{authorization.created | age}}</abbr></td>
 							<td>{{authorization.scope}}</td>
 							<td style="text-align: right">
 								<a class="action" data-ng-click="remove(authorization['@id'])" title="Delete"><i class="fa fa-trash-o"></i></a>
@@ -245,7 +245,7 @@
 						<tr data-ng-repeat="credential in credentials">
 							<td>{{credential.type}}</td>
 							<td><a data-ng-click="setConstraint(credential.principal)">{{credential.principal | username}}</a></td>
-							<td>{{credential.created | age}}</td>
+							<td><abbr title="{{credentials.created}}">{{credentials.created | age}}</abbr></td>
 							<td>{{!credential.authorizationUrl}}</td>
 							<td style="text-align: right">
 								<a class="action" data-ng-click="remove(credential['@id'])" title="Delete"><i class="fa fa-trash-o"></i></a>
@@ -290,8 +290,8 @@
 							<td>{{task.type}}</td>
 							<td><a data-ng-click="setConstraint(task.principal)">{{task.principal | username}}</a></td>
 							<td>{{task.bucket}}</td>
-							<td>{{task.created | age}}</td>
-							<td>{{task.completed | age}}</td>
+							<td><abbr title="{{task.created}}">{{task.created | age}}</abbr></td>
+							<td><abbr title="{{bucket.completed}}">{{bucket.completed | age}}</abbr></td>
 							<td>{{task.status}}</td>
 							<td style="text-align: right">
 								<a class="action" data-ng-click="remove(task['@id'])" title="Delete"><i class="fa fa-trash-o"></i></a>
