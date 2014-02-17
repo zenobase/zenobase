@@ -191,6 +191,7 @@
 				<table class="table">
 					<thead>
 						<tr>
+							<th>Authorization</th>
 							<th>User</th>
 							<th>Client</th>
 							<th>Created</th>
@@ -200,6 +201,7 @@
 					</thead>
 					<tbody>
 						<tr data-ng-repeat="authorization in authorizations">
+							<td>{{authorization['@id']}}</td>
 							<td><a data-ng-click="setConstraint(authorization.principal)">{{authorization.principal | username}}</a></td>
 							<td><a data-ng-click="setConstraint(authorization.client)" data-ng-show="authorization.client">{{authorization.client | username}}</a></td>
 							<td><abbr title="{{authorization.created}}">{{authorization.created | age}}</abbr></td>
@@ -209,10 +211,10 @@
 							</td>
 						</tr>
 						<tr data-ng-show="authorizations == null">
-							<td colspan="5"><i>Loading</i></td>
+							<td colspan="6"><i>Loading</i></td>
 						</tr>
 						<tr data-ng-show="authorizations.length == 0">
-							<td colspan="5"><i>None</i></td>
+							<td colspan="6"><i>None</i></td>
 						</tr>
 					</tbody>
 				</table>
@@ -234,6 +236,7 @@
 				<table class="table">
 					<thead>
 						<tr>
+							<th>Credentials</th>
 							<th>Type</th>
 							<th>Owner</th>
 							<th>Created</th>
@@ -243,6 +246,7 @@
 					</thead>
 					<tbody>
 						<tr data-ng-repeat="credential in credentials">
+							<td>{{credential['@id']}}</td>
 							<td>{{credential.type}}</td>
 							<td><a data-ng-click="setConstraint(credential.principal)">{{credential.principal | username}}</a></td>
 							<td><abbr title="{{credentials.created}}">{{credentials.created | age}}</abbr></td>
@@ -252,10 +256,10 @@
 							</td>
 						</tr>
 						<tr data-ng-show="credentials == null">
-							<td colspan="5"><i>Loading</i></td>
+							<td colspan="6"><i>Loading</i></td>
 						</tr>
 						<tr data-ng-show="credentials.length == 0">
-							<td colspan="5"><i>None</i></td>
+							<td colspan="6"><i>None</i></td>
 						</tr>
 					</tbody>
 				</table>
