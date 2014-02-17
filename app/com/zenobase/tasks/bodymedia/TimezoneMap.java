@@ -7,6 +7,7 @@ import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
 import org.joda.time.LocalTime;
+import com.google.common.base.Preconditions;
 import com.google.common.collect.Range;
 import com.google.common.collect.RangeMap;
 import com.google.common.collect.Sets;
@@ -30,6 +31,7 @@ public class TimezoneMap {
 	}
 
 	public DateTime getBegin(LocalDate date) {
+		Preconditions.checkState(!set.isEmpty());
 		DateTime time = null;
 		for (LocalDateTime local = date.toLocalDateTime(LocalTime.MIDNIGHT); time == null; local = local.plusMinutes(1)) {
 			time = zone(local);
