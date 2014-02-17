@@ -33,9 +33,9 @@ public class WithingsCredentialsManager extends OAuthCredentialsManager {
 
 	private Command authorize(OAuthCredentials credentials, ObjectNode config) {
 
-		String token = config.get("oauth_token").textValue();
-		String verifier = config.get("oauth_verifier").textValue();
-		String userId = Strings.emptyToNull(config.get("userid").asText());
+		String token = config.path("oauth_token").textValue();
+		String verifier = config.path("oauth_verifier").textValue();
+		String userId = Strings.emptyToNull(config.path("userid").asText());
 
 		Preconditions.checkNotNull(token);
 		Preconditions.checkNotNull(verifier);
