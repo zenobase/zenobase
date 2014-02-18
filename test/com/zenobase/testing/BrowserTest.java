@@ -111,9 +111,8 @@ public class BrowserTest {
 				$("#timestamp-date-field").clear();
 				$("#timestamp-date-field").sendKeys("2012-08-04");
 				$("#timestamp-time-field").click();
-				$("#timestamp-time-field").sendKeys("08");
-				$("#timestamp-time-field").sendKeys("\t");
-				$("#timestamp-time-field").sendKeys("30");
+				$("#timestamp-time-field").clear();
+				$("#timestamp-time-field").sendKeys("8:30:00");
 				new Select($("#timestamp-timezone-offset-select")).selectByVisibleText("-07:00");
 				$("#add-timestamp-button").click();
 				assertThat($("#save-event-button")).isEnabled();
