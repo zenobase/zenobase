@@ -35,7 +35,7 @@ public class DeleteTaskCommand extends Command {
 
 	@Override
 	public String toString() {
-		return String.format("removed a task");
+		return String.format("removed task %s", getTask().getId());
 	}
 
 	public static class Parser extends CommandParser {

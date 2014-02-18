@@ -35,7 +35,7 @@ public class DeleteCredentialsCommand extends Command {
 
 	@Override
 	public String toString() {
-		return String.format("removed credentials");
+		return String.format("removed credentials %s", getCredentials().getId());
 	}
 
 	public static class Parser extends CommandParser {

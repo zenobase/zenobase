@@ -38,7 +38,8 @@ public class CreateTaskCommand extends Command {
 
 	@Override
 	public String toString() {
-		return String.format("created a task");
+		Task task = getTask();
+		return String.format("created %s task %s", task.getType(), task.getId());
 	}
 
 	public static Map<String, String> taskToCredentials = Maps.newHashMap();

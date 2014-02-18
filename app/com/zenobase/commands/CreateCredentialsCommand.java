@@ -35,7 +35,8 @@ public class CreateCredentialsCommand extends Command {
 
 	@Override
 	public String toString() {
-		return String.format("created credentials");
+		Credentials credentials = getCredentials();
+		return String.format("created %s credentials %s", credentials.getType(), credentials.getId());
 	}
 
 	public static class Parser extends CommandParser {
