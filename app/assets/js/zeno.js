@@ -4220,8 +4220,7 @@
 			{ 'id' : 'runkeeper-activities', 'description' : 'Creates an event for each logged activity.' },
 			{ 'id' : 'withings', 'description' : 'Creates an event for each body weight measurement.' },
 			{ 'id' : 'withings-cardio', 'description' : 'Creates an event for each heart rate measurement.' },
-			{ 'id' : 'withings-steps', 'description' : 'Creates an event for the number of steps each day (incl distance and elevation).' },
-			{ 'id' : 'demo', 'description' : 'Creates an event with a custom tag.' }
+			{ 'id' : 'withings-steps', 'description' : 'Creates an event for the number of steps each day (incl distance and elevation).' }
 		];
 
 		function selectType(id) {
