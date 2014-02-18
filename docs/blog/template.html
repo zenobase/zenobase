@@ -414,33 +414,38 @@
 <body>
     <div id="wrapper">
         <div id="header">
-            <div id="access">
+            <div id="access" style="border:0">
                 <div class="menu">
-                    <div id="pages">
-                        <ul>
-                            <li><a href="https://zenobase.com/">Home</a></li>
-                            <li><a href="/">Blog</a></li>
-                            {block:HasPages}{block:Pages}<li><a href="{URL}">{Label}</a></li>{/block:Pages}{/block:HasPages}
-                            {block:AskEnabled}<li class="ask"><a href="/ask" class="page">{AskLabel}</a></li>{/block:AskEnabled}
-                            {block:SubmissionsEnabled}<li class="submit"><a href="/submit" class="page">{SubmitLabel}</a></li>{/block:SubmissionsEnabled}
-                            <li class="mobile"><a href="/mobile">Mobile</a></li>
-                            <li class="rss"><a href="{RSS}">RSS</a></li>
-                        </ul>
+                    <div id="pages" style="text-align:center">
+                        <p>
+                            <a href="https://zenobase.com/" title="Home">
+                                <img src="{image:Header}" alt="{Title}" style="border:0" />
+                            </a>
+                        </p>
+                        <p>
+                            <strong><a href="/">Blog</a></strong> &nbsp;
+                            <a href="https://twitter.com/zenobase">Twitter</a> &nbsp;
+                            <a href="https://www.facebook.com/zenobase">Facebook</a> &nbsp;
+                            <a href="https://plus.google.com/+Zenobase">Google+</a> &nbsp;
+                            <a href="http://www.linkedin.com/company/2676455">LinkedIn</a>
+                        </p>
                     </div><!-- #pages -->
+                    <!--
                     <div id="search">
                         <form action="/search" method="get">
                             <input type="text" name="q" value="{SearchQuery}" class="search-text" />
                             <input type="submit" value="Search" class="search-submit" />
                         </form>
-                    </div><!-- #search -->
+                    </div>--><!-- #search -->
                 </div><!-- .menu -->
             </div><!-- #access -->
+            <!--
             <div id="branding">
-                <h1>
+                <h1>{Title}
                     {block:IfHeaderImage}<a href="https://zenobase.com/"><img src="{image:Header}" alt="{Title}" /></a>{/block:IfHeaderImage}
                     {block:IfNotHeaderImage}<a href="/">{Title}</a>{/block:IfNotHeaderImage}
                 </h1>
-            </div><!-- #branding -->
+            </div>--><!-- #branding -->
         </div><!-- #header -->
         <div id="main">
             <div id="container">
