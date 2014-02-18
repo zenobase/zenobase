@@ -127,9 +127,9 @@ public class Index {
 	}
 
 	public boolean delete(String type, String id, boolean refresh) {
-		return !client.prepareDelete(indexName, type, id)
+		return client.prepareDelete(indexName, type, id)
 			.setRefresh(refresh)
-			.execute().actionGet().isNotFound();
+			.execute().actionGet().isFound();
 	}
 
 	public boolean exists() {
