@@ -3677,7 +3677,7 @@
 
 		function getValue() {
 			var day = (typeof $scope.date === 'object') ? moment(local($scope.date)).format('YYYY-MM-DD') : $scope.date;
-			var time = ($scope.time.length == 7 ? '0' : '') + $scope.time + '.000';
+			var time = $scope.time.format('HH:mm:ss.SSS');
 			return day + 'T' + time + $scope.timezone;
 		}
 		function local(date) {
@@ -3689,7 +3689,7 @@
 
 		$scope.init = function() {
 			$scope.date = utc(new Date());
-			$scope.time = moment().seconds(0).format('H:mm:ss');
+			$scope.time = moment().seconds(0).milliseconds(0);
 			$scope.timezone = timezone;
 		};
 		$scope.addField = function() {
@@ -5249,22 +5249,19 @@
 		};
 	}]);
 
-	app.directive('uiTimepicker', function() {
+	app.directive('uiTimepicker', ['moment', function(moment) {
 		return {
-			require : '?ngModel',
-			restrict : 'A',
-			link : function($scope, element, attrs, controller) {
-				element.timepicker({ 
-					template : false,
-					minuteStep : 1,
-					secondStep : 5,
-					defaultTime : false,
-					showMeridian : false, 
-					showSeconds : true
+			require: 'ngModel',
+			link: function(scope, element, attrs, controller) {
+				controller.$parsers.push(function(s) {
+					return moment(s, [ 'H:mm:ss', 'H:mm:ss.SSS' ], true);
+				});
+				controller.$formatters.push(function(time) {
+					return time.format('HH:mm:ss');
 				});
 			}
-		};
-	});
+		}
+	}]);
 
 	app.directive('uiDefer', ['$timeout', function($timeout) {
 		return {
@@ -5402,8 +5399,6 @@
 		}
 	}]);
 
-	/* Credit card validatition based on https://github.com/stripe/jquery.payment/ */
-	
 
 	/* Credit card validatition based on https://github.com/stripe/jquery.payment/ */
 	app.factory('Card', function() {
