@@ -1,5 +1,6 @@
 package com.zenobase.tasks.moves;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
@@ -9,6 +10,7 @@ import javax.measure.quantity.Length;
 import javax.measure.quantity.Quantity;
 import javax.measure.unit.Unit;
 
+import org.elasticsearch.common.base.Strings;
 import org.elasticsearch.common.collect.Sets;
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
@@ -72,8 +74,8 @@ class ActivitiesResult {
 			event.setValue(Event.TIMESTAMP, begin);
 			event.setValue(Event.DURATION, Duration.standardSeconds(activityNode.path("duration").intValue()));
 			Set<String> tags = Sets.newLinkedHashSet();
-			tags.add(activityNode.path("activity").textValue());
-			tags.add(activityNode.path("group").textValue());
+			addTextValue(activityNode.path("activity"), tags);
+			addTextValue(activityNode.path("group"), tags);
 			event.setValues(Event.TAG, tags);
 			event.setValue(Event.COUNT, intValue(activityNode.path("steps")));
 			event.setValue(Event.ENERGY, measureValue(activityNode.path("calories"), CALORIES));
@@ -82,6 +84,13 @@ class ActivitiesResult {
 			event.setValue(Event.SOURCE, SOURCE);
 		}
 		return event;
+	}
+
+	private static void addTextValue(JsonNode node, Collection<String> values) {
+		String value = node.textValue();
+		if (!Strings.isNullOrEmpty(value)) {
+			values.add(value);
+		}
 	}
 
 	private static DateTime dateTimeValue(JsonNode node) {
