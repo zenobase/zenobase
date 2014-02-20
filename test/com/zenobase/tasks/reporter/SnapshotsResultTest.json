@@ -1,0 +1,370 @@
+{
+  "snapshots" : [
+    {
+      "battery" : 1,
+      "location" : {
+        "verticalAccuracy" : 8,
+        "timestamp" : 414323182.533215,
+        "longitude" : -71.70891081920983,
+        "latitude" : 41.41972990710421,
+        "course" : 0,
+        "placemark" : {
+          "thoroughfare" : "Burdickville Rd",
+          "postalCode" : "02813",
+          "subAdministrativeArea" : "Washington",
+          "subLocality" : "South County",
+          "subThoroughfare" : "318",
+          "region" : "<+41.42003439,-71.70888465> radius 90.77",
+          "locality" : "Charlestown",
+          "name" : "318 Burdickville Rd",
+          "country" : "United States",
+          "administrativeArea" : "RI"
+        },
+        "horizontalAccuracy" : 10,
+        "speed" : -1
+      },
+      "steps" : 0,
+      "day" : 414306000,
+      "audio" : {
+        "avg" : -48.52969,
+        "peak" : -41.07215
+      },
+      "sync" : 0,
+      "connection" : 1,
+      "background" : 0,
+      "dwellStatus" : 0,
+      "draft" : 0,
+      "weather" : {
+        "windMPH" : 5,
+        "windDirection" : "NW",
+        "tempF" : 15.3,
+        "precipTodayIn" : 0,
+        "windGustKPH" : 16.1,
+        "feelslikeC" : -14,
+        "visibilityMi" : 10,
+        "feelslikeF" : 7,
+        "stationID" : "KRIHOPKI2",
+        "latitude" : 41.489697,
+        "windGustMPH" : 10,
+        "pressureIn" : 30.1,
+        "pressureMb" : 1019,
+        "relativeHumidity" : "55%",
+        "longitude" : -71.74176,
+        "precipTodayMetric" : 0,
+        "windKPH" : 8,
+        "windDegrees" : 315,
+        "tempC" : -9.300000000000001,
+        "weather" : "Clear",
+        "uv" : 0,
+        "dewpointC" : -17,
+        "visibilityKM" : 16.1
+      },
+      "date" : 414323178.461518,
+      "responses" : [
+        {
+          "questionPrompt" : "How did you sleep?",
+          "answeredOptions" : [
+            "Great"
+          ]
+        },
+        {
+          "numericResponse" : "5",
+          "questionPrompt" : "How does your back feel? 0 = bad; 10 = great"
+        }
+      ]
+    },
+    {
+      "battery" : 0.95,
+      "location" : {
+        "verticalAccuracy" : 10,
+        "timestamp" : 414338862.11736,
+        "longitude" : -71.70834391640776,
+        "latitude" : 41.41948377668317,
+        "course" : 0,
+        "placemark" : {
+          "thoroughfare" : "Burdickville Rd",
+          "postalCode" : "02813",
+          "subAdministrativeArea" : "Washington",
+          "subLocality" : "South County",
+          "subThoroughfare" : "320",
+          "region" : "<+41.42008437,-71.70827583> radius 95.71",
+          "locality" : "Charlestown",
+          "name" : "320 Burdickville Rd",
+          "country" : "United States",
+          "administrativeArea" : "RI"
+        },
+        "horizontalAccuracy" : 65,
+        "speed" : -1
+      },
+      "steps" : 396,
+      "day" : 414306000,
+      "audio" : {
+        "avg" : -44.06892,
+        "peak" : -39.52498
+      },
+      "sync" : 0,
+      "connection" : 1,
+      "background" : 0,
+      "dwellStatus" : 0,
+      "draft" : 0,
+      "weather" : {
+        "windMPH" : 10,
+        "windDirection" : "NNW",
+        "tempF" : 19,
+        "precipTodayIn" : 0.01,
+        "windGustKPH" : 29,
+        "feelslikeC" : -14,
+        "visibilityMi" : 10,
+        "feelslikeF" : 8,
+        "stationID" : "MNINR1",
+        "latitude" : 41.37925,
+        "windGustMPH" : 18,
+        "pressureIn" : 30.25,
+        "pressureMb" : 1024,
+        "relativeHumidity" : "34%",
+        "longitude" : -71.582222,
+        "precipTodayMetric" : 0,
+        "windKPH" : 16.1,
+        "windDegrees" : 328,
+        "tempC" : -7.2,
+        "weather" : "Clear",
+        "uv" : 2,
+        "dewpointC" : -21,
+        "visibilityKM" : 16.1
+      },
+      "date" : 414338861.640321,
+      "responses" : [
+        {
+          "questionPrompt" : "How are you? ",
+          "answeredOptions" : [
+            "Average",
+            "Concerned",
+            "Motivated"
+          ]
+        },
+        {
+          "numericResponse" : "5",
+          "questionPrompt" : "How does your back feel? 0 = bad; 10 = great"
+        },
+        {
+          "questionPrompt" : "Pick a color",
+          "answeredOptions" : [
+            "Orange"
+          ]
+        },
+        {
+          "questionPrompt" : "If you could have one thing right now...",
+          "answeredOptions" : [
+            "All good"
+          ]
+        },
+        {
+          "numericResponse" : "6",
+          "questionPrompt" : "How are you 0-10?"
+        },
+        {
+          "questionPrompt" : "Did you shower today?",
+          "answeredOptions" : [
+            "Yes"
+          ]
+        },
+        {
+          "questionPrompt" : "Obtuse or acute?",
+          "answeredOptions" : [
+            "45*"
+          ]
+        },
+        {
+          "questionPrompt" : "How are you?",
+          "answeredOptions" : [
+            "ðŸ˜"
+          ]
+        },
+        {
+          "questionPrompt" : "Word",
+          "tokens" : [
+            "Work"
+          ]
+        },
+        {
+          "questionPrompt" : "Are you working?",
+          "answeredOptions" : [
+            "Yes"
+          ]
+        },
+        {
+          "questionPrompt" : "What are you doing?",
+          "tokens" : [
+            "Working from home"
+          ]
+        },
+        {
+          "questionPrompt" : "Where are you?",
+          "locationResponse" : {
+            "text" : "Home",
+            "location" : {
+              "verticalAccuracy" : 3,
+              "timestamp" : 414245874.409446,
+              "longitude" : -71.70935053385021,
+              "latitude" : 41.41952249691023,
+              "course" : 0,
+              "horizontalAccuracy" : 5,
+              "speed" : 0
+            }
+          }
+        },
+        {
+          "questionPrompt" : "Who are you with?",
+          "tokens" : [
+            "Jane Doe",
+            "John Doe"
+          ]
+        }
+      ]
+    },
+    {
+      "battery" : 0.8,
+      "location" : {
+        "verticalAccuracy" : 19.67517905632468,
+        "timestamp" : 414351357.205058,
+        "longitude" : -71.78436873076198,
+        "latitude" : 41.42717721747066,
+        "course" : 0,
+        "placemark" : {
+          "thoroughfare" : "Main St",
+          "postalCode" : "02804",
+          "subAdministrativeArea" : "Washington",
+          "subLocality" : "South County",
+          "subThoroughfare" : "229",
+          "region" : "<+41.42736804,-71.78494788> radius 141.44",
+          "locality" : "Ashaway",
+          "name" : "229 Main St",
+          "country" : "United States",
+          "administrativeArea" : "RI"
+        },
+        "horizontalAccuracy" : 65,
+        "speed" : -1
+      },
+      "steps" : 478,
+      "day" : 414306000,
+      "audio" : {
+        "avg" : -26.22625,
+        "peak" : -15.96949
+      },
+      "sync" : 0,
+      "connection" : 0,
+      "background" : 0,
+      "dwellStatus" : 0,
+      "draft" : 0,
+      "weather" : {
+        "windMPH" : 18,
+        "windDirection" : "North",
+        "tempF" : 27.5,
+        "precipTodayIn" : 0,
+        "windGustKPH" : 43.5,
+        "feelslikeC" : -10,
+        "visibilityMi" : 10,
+        "feelslikeF" : 15,
+        "stationID" : "KRIHOPKI2",
+        "latitude" : 41.489697,
+        "windGustMPH" : 27,
+        "pressureIn" : 30.28,
+        "pressureMb" : 1025,
+        "relativeHumidity" : "17%",
+        "longitude" : -71.74176,
+        "precipTodayMetric" : 0,
+        "windKPH" : 29,
+        "windDegrees" : 0,
+        "tempC" : -2.5,
+        "weather" : "Clear",
+        "uv" : 4,
+        "dewpointC" : -24,
+        "visibilityKM" : 16.1
+      },
+      "date" : 414351355.099556,
+      "responses" : [
+        {
+          "questionPrompt" : "How are you? ",
+          "answeredOptions" : [
+            "Average",
+            "Happy",
+            "Motivated"
+          ]
+        },
+        {
+          "numericResponse" : "6",
+          "questionPrompt" : "How does your back feel? 0 = bad; 10 = great"
+        },
+        {
+          "questionPrompt" : "Pick a color",
+          "answeredOptions" : [
+            "Orange"
+          ]
+        },
+        {
+          "questionPrompt" : "If you could have one thing right now...",
+          "answeredOptions" : [
+            "All good"
+          ]
+        },
+        {
+          "numericResponse" : "7",
+          "questionPrompt" : "How are you 0-10?"
+        },
+        {
+          "questionPrompt" : "Did you shower today?",
+          "answeredOptions" : [
+            "Yes"
+          ]
+        },
+        {
+          "questionPrompt" : "Obtuse or acute?",
+          "answeredOptions" : [
+            "Obtuse"
+          ]
+        },
+        {
+          "questionPrompt" : "How are you?",
+          "answeredOptions" : [
+            "ðŸ˜"
+          ]
+        },
+        {
+          "questionPrompt" : "Word",
+          "tokens" : [
+            "Pizza"
+          ]
+        },
+        {
+          "questionPrompt" : "Are you working?",
+          "answeredOptions" : [
+            "Yes"
+          ]
+        },
+        {
+          "questionPrompt" : "Where are you?",
+          "locationResponse" : {
+            "text" : "Main Street Pizza",
+            "location" : {
+              "verticalAccuracy" : -1,
+              "timestamp" : 414351532.551592,
+              "longitude" : -71.78456170037445,
+              "latitude" : 41.42718518090578,
+              "course" : 0,
+              "horizontalAccuracy" : 0,
+              "speed" : -1
+            },
+            "foursquareVenueId" : "4c5f21e0b6f3be9a666d5c73"
+          }
+        },
+        {
+          "questionPrompt" : "Who are you with?",
+          "tokens" : [
+            "Jane Doe",
+            "Joe Doe"
+          ]
+        }
+      ]
+    }
+ ]
+}

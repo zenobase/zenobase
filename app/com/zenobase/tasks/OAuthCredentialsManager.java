@@ -115,9 +115,13 @@ public abstract class OAuthCredentialsManager extends CredentialsManager {
 			.provider(provider)
 			.apiKey(apiKey)
 			.apiSecret(apiSecret)
-			.callback(String.format("%s/oauth/callback/%s", callbackUrl, credentials.getId()));
+			.callback(buildCallback(callbackUrl, credentials));
 		configure(builder);
 		return builder.build();
+	}
+
+	protected String buildCallback(String baseUrl, OAuthCredentials credentials) {
+		return String.format("%s/oauth/callback/%s", baseUrl, credentials.getId());
 	}
 
 	protected void configure(ServiceBuilder builder) {

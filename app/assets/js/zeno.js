@@ -4074,7 +4074,7 @@
 		};
 	}]);
 
-	app.factory('taskRunner', [ '$http', '$window', function($http, $window) {
+	app.factory('taskRunner', [ '$http', '$window', 'localStorage', function($http, $window, localStorage) {
 
 		var runAll = function($scope, bucketId, success, error) {
 			$http.get('/buckets/' + bucketId + '/tasks/')
@@ -4098,7 +4098,7 @@
 					} else if (headers('Link')) {
 						var match = headers('Link').match(/<(.+?)>/);
 						console.assert(match, 'Invalid Link header: ' + headers('Link'));
-						authorize($scope, response.type, match[1]);
+						authorize($scope, null, response.type, match[1]);
 					} else {
 						success(response);
 					}
@@ -4119,7 +4119,7 @@
 				.success(function(response, status) {
 					console.assert(status === 201, status);
 					if (response.authorizationUrl) {
-						authorize($scope, type, response.authorizationUrl);
+						authorize($scope, response['@id'], type, response.authorizationUrl);
 					}
 				})
 				.error(function(response, status) {
@@ -4131,8 +4131,11 @@
 				});
 		};
 
-		var authorize = function($scope, type, url) {
+		var authorize = function($scope, credentialsId, type, url) {
 			$scope.alert.show('<b>' + type + '</b> requires authorization', '', '', function() {
+				if (credentialsId && url.indexOf(credentialsId) == -1) {
+					localStorage.setItem('credentials', credentialsId);
+				}
 				$window.open(url);
 			});
 		}
@@ -4217,6 +4220,7 @@
       { 'id' : 'moves-activities', 'description' : 'Creates an event for each logged activity.' },
       { 'id' : 'moves-places', 'description' : 'Creates an event for each visited place.' },
 			{ 'id' : 'netatmo', 'description' : 'Creates an event for each weather station measurement.' },
+			{ 'id' : 'reporter-questions', 'description' : 'Creates an event for each question answered in the Reporter app.' },
 			{ 'id' : 'runkeeper-activities', 'description' : 'Creates an event for each logged activity.' },
 			{ 'id' : 'withings', 'description' : 'Creates an event for each body weight measurement.' },
 			{ 'id' : 'withings-cardio', 'description' : 'Creates an event for each heart rate measurement.' },
@@ -4399,6 +4403,17 @@
 		$scope.init();
 	}]);
 
+	app.controller('ReporterSettingsController', ['$scope', function($scope) {
+
+		$scope.init = function() {
+			$scope.settings = $scope.$parent.$parent.settings = {
+					folder : 'reporter-app'
+			};
+		};
+
+		$scope.init();
+	}]);
+
 	app.controller('WithingsWeightSettingsController', ['$scope', '$http', 'Field', 'moment', function($scope, $http, Field, moment) {
 
 		$scope.init = function() {
@@ -4479,13 +4494,17 @@
 		$scope.init();
 	}]);
 
-	app.controller('CredentialsController', ['$scope', '$http', '$routeParams', '$location', '$window', function($scope, $http, $routeParams, $location, $window) {
+	app.controller('CredentialsController', ['$scope', '$http', '$routeParams', '$location', '$window', 'localStorage', function($scope, $http, $routeParams, $location, $window, localStorage) {
 		
 		$scope.credentialsId = $routeParams.credentialsId;
+		if ($scope.credentialsId === '-') {
+			$scope.credentialsId = localStorage.getItem('credentials');
+		}
 
 		$http.post('/credentials/' + $scope.credentialsId, { 'credentials' : $location.search() })
 			.success(function(response) {
 				$scope.alert.show('Updated credentials.', 'alert-success');
+				localStorage.removeItem('credentials');
 				if ($window.opener) {
 					$window.opener.angular.element('#app').scope().$broadcast('credentials');
 					$window.close();

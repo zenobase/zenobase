@@ -428,6 +428,16 @@
 		</div>
 	</script>
 
+	<script id="/reporter-questions-settings.html" type="text/ng-template">
+		<div data-ng-controller="ReporterSettingsController">
+			<div class="control-group">
+				<label for="folder" class="control-label">Folder</label>
+				<input name="folder" class="input-medium" type="text" required data-ng-model="settings.folder"/>
+				<p class-"help-block">The name of the Dropbox folder to which the Reporter app is exporting.</p>
+			</div>
+		</div>
+	</script>
+
 	<script id="/withings-settings.html" type="text/ng-template">
 		<div data-ng-controller="WithingsWeightSettingsController">
 			<div class="control-group">

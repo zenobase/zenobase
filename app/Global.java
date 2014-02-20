@@ -107,6 +107,7 @@ import com.zenobase.tasks.bodymedia.BodyMediaStepsTaskManager;
 import com.zenobase.tasks.bodymedia.BodyMediaSummaryTaskManager;
 import com.zenobase.tasks.demo.DemoCredentialsManager;
 import com.zenobase.tasks.demo.DemoTaskManager;
+import com.zenobase.tasks.dropbox.DropboxCredentialsManager;
 import com.zenobase.tasks.fitbit.FitbitCredentialsManager;
 import com.zenobase.tasks.fitbit.FitbitIntradayTaskManager;
 import com.zenobase.tasks.fitbit.FitbitSleepTaskManager;
@@ -120,6 +121,7 @@ import com.zenobase.tasks.moves.MovesCredentialsManager;
 import com.zenobase.tasks.moves.MovesPlacesTaskManager;
 import com.zenobase.tasks.netatmo.NetatmoCredentialsManager;
 import com.zenobase.tasks.netatmo.NetatmoTaskManager;
+import com.zenobase.tasks.reporter.ReporterTaskManager;
 import com.zenobase.tasks.runkeeper.RunkeeperCredentialsManager;
 import com.zenobase.tasks.runkeeper.RunkeeperTaskManager;
 import com.zenobase.tasks.withings.WithingsCardioTaskManager;
@@ -232,6 +234,7 @@ public class Global extends GlobalSettings {
 				bindIfConfigured("netatmo", NetatmoCredentialsManager.class, credentials);
 				bindIfConfigured("runkeeper", RunkeeperCredentialsManager.class, credentials);
 				bindIfConfigured("moves", MovesCredentialsManager.class, credentials);
+				bindIfConfigured("dropbox", DropboxCredentialsManager.class, credentials);
 				bind(CredentialsManagerRegistry.class).in(Singleton.class);
 
 				Multibinder<TaskManager> tasks = Multibinder.newSetBinder(binder(), new TypeLiteral<TaskManager>() {});
@@ -252,6 +255,7 @@ public class Global extends GlobalSettings {
 				bindIfConfigured("runkeeper", RunkeeperTaskManager.class, tasks);
 				bindIfConfigured("moves", MovesPlacesTaskManager.class, tasks);
 				bindIfConfigured("moves", MovesActivitiesTaskManager.class, tasks);
+				bindIfConfigured("dropbox", ReporterTaskManager.class, tasks);
 				bind(TaskManagerRegistry.class).in(Singleton.class);
 
 				bind(AccountController.class).in(Singleton.class);

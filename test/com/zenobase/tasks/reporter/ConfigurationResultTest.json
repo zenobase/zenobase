@@ -1,0 +1,17 @@
+{
+	"timezone" : "America/New York",
+	"questions" : [
+		{
+			"prompt" : "How are you 0-10?",
+			"tag" : "Mood",
+			"field" : "rating"
+		},
+		{
+			"prompt" : "Pick a color",
+			"tag" : "Color"
+		},
+		{
+			"prompt" : "What are you doing?"
+		}
+	]
+}

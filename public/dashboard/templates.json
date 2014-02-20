@@ -490,6 +490,88 @@
 		]
 	},
 	{
+		"label" : "Questions (Reporter)",
+		"task" : "reporter-questions",
+		"widgets" : [
+			{
+				"id" : "timeline",
+				"type" : "timeline",
+				"label" : "Questions",
+				"placement" : "top",
+				"field" : "timestamp",
+				"unit" : null,
+				"statistic" : "sum",
+				"interval" : "day"
+			},
+			{
+				"id" : "timeline_c",
+				"type" : "timeline",
+				"label" : "Temperature (C)",
+				"placement" : "top",
+				"field" : "temperature",
+				"unit" : "C",
+				"statistic" : "avg",
+				"interval" : "day"
+			},
+			{
+				"id" : "timeline_hpa",
+				"type" : "timeline",
+				"label" : "Pressure (hPa)",
+				"placement" : "top",
+				"field" : "pressure",
+				"unit" : "hPa",
+				"statistic" : "avg",
+				"interval" : "day"
+			},
+			{
+				"id" : "latest",
+				"type" : "list",
+				"label" : "Latest",
+				"placement" : "left",
+				"order" : "timestamp",
+				"reverse" : false,
+				"limit" : 10,
+				"singleton" : true
+			},
+			{
+				"id" : "tags",
+				"type" : "count",
+				"label" : "Tags",
+				"placement" : "left",
+				"field" : "tag",
+				"order" : "count",
+				"limit" : 5,
+				"reverse" : false
+			},
+			{
+				"id" : "map",
+				"type" : "map",
+				"label" : "Map",
+				"placement" : "right"
+			},
+			{
+				"id" : "polar_day",
+				"type" : "polar",
+				"label" : "Day of Week",
+				"placement" : "right",
+				"value_field" : "timestamp",
+				"unit" : null,
+				"statistic" : "count",
+				"interval" : "day_of_week"
+			},
+			{
+				"id" : "polar_hour",
+				"type" : "polar",
+				"label" : "Hour of Day",
+				"placement" : "right",
+				"value_field" : "timestamp",
+				"unit" : null,
+				"statistic" : "count",
+				"interval" : "hour_of_day"
+			}
+		]
+	},
+	{
 		"label" : "Sleep (BodyMedia)",
 		"task" : "bodymedia-sleep",
 		"widgets" : [
