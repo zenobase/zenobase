@@ -1554,7 +1554,7 @@
 			$http({ method : 'DELETE', url : '/buckets/' + $scope.bucketId })
 				.success(function(response, status, headers) {
 					$scope.closeDialog();
-					$location.url('/users/' + $scope.$parent.user.name);
+					$location.url('/users/' + $scope.$parent.user.getName());
 				})
 				.error(function(response, status) {
 					if (status < 500) {
