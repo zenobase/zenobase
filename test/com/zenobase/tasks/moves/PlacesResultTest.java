@@ -18,7 +18,7 @@ public class PlacesResultTest extends ResultTestSupport {
 	@Test
 	public void test() {
 		DateTime begin = DateTime.parse("20121212T074617+0200", ISODateTimeFormat.basicDateTimeNoMillis().withOffsetParsed());
-		PlacesResult result = new PlacesResult(TESTER, begin, readArray("ConfigurationResultTest.json"));
+		PlacesResult result = new PlacesResult(TESTER, begin, readArray("PlacesResultTest.json"));
 		List<Event> events = result.getEvents();
 		assertThat(events).as("events").hasSize(4);
 		Event expected = new Event(events.get(0).getId());

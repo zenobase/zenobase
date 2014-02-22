@@ -17,6 +17,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 
 import com.zenobase.common.Generator;
+import com.zenobase.common.Measures;
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
 import com.zenobase.models.Location;
@@ -101,17 +102,17 @@ public class SnapshotsResult {
 
 	private DecimalMeasure<Temperature> temperatureValue(JsonNode node) {
 		BigDecimal value = node.isNumber() ? node.decimalValue() : null;
-		return value != null ? DecimalMeasure.valueOf(value, SI.CELSIUS) : null;
+		return value != null ? Measures.valueOf(value, SI.CELSIUS) : null;
 	}
 
 	private DecimalMeasure<Pressure> pressureValue(JsonNode node) {
 		BigDecimal value = node.isNumber() ? node.decimalValue() : null;
-		return value != null ? DecimalMeasure.valueOf(value, SI.HECTO(SI.PASCAL)) : null;
+		return value != null ? Measures.valueOf(value, SI.HECTO(SI.PASCAL)) : null;
 	}
 
 	private DecimalMeasure<Dimensionless> soundValue(JsonNode node) {
 		BigDecimal value = node.isNumber() ? node.decimalValue() : null;
-		return value != null ? DecimalMeasure.valueOf(value, NonSI.DECIBEL) : null;
+		return value != null ? Measures.valueOf(value, NonSI.DECIBEL) : null;
 	}
 
 	private boolean setNumericValue(JsonNode node, Question q, Event event) {
