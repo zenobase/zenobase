@@ -86,7 +86,7 @@
 							<td><abbr title="{{bucket.created}}">{{bucket.created | age}}</abbr></td>
 							<td style="text-align: right">
 								<a data-ng-show="isPublished(bucket)" data-ng-href="/#/buckets/{{bucket['@id']}}">{{bucket.size}}</a>
-								<span data-ng-hide="isPublished(bucket)">{{bucket.size}}</span>
+								<span data-ng-hide="isPublished(bucket)">{{bucket.size | number}}</span>
 							</td>
 							<td style="text-align: right">
 								<a class="action" data-ng-click="remove(bucket['@id'])" title="Delete"><i class="fa fa-trash-o"></i></a>

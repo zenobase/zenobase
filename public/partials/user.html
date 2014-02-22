@@ -173,7 +173,7 @@
 						<tr class="bucket-row" data-ng-repeat="bucket in buckets">
 							<td style="white-space: nowrap" data-ng-class="bucket.aliases && bucket.aliases.length && 'bucket-virtual'">
 								<a class="bucket-link" data-ng-href="/#/buckets/{{bucket['@id']}}/">{{bucket.label}}</a> 
-								({{bucket.size}})
+								({{bucket.size | number}})
 							</td>
 							<td style="text-align: right; white-space: nowrap;">
 								<a class="action bucket-refresh-action" data-ng-click="run(bucket['@id'])"><i class="fa fa-refresh" data-ng-class="loading[bucket['@id']] && 'fa-spin'" title="Refresh"></i></a>
