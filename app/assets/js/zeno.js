@@ -456,16 +456,23 @@
 
 		$scope.init = function() {
 			$scope.message = '';
-			$("#sign-in-username").val('');
-			$("#sign-in-password").val('');
+			$scope.username = '';
+			$scope.password = '';
 			tracker.event('dialog', 'sign in');
 		};
+		/** Ensures that autocompleted values are propagates to the model. */ 
+		function update() {
+			$scope.username = $("#sign-in-username").val();
+			$scope.password = $("#sign-in-password").val();
+		}
 		$scope.signIn = function() {
-			// autocompleted values don't propagate to model!
-			var username = $("#sign-in-username").val();
-			var password = $("#sign-in-password").val();
+			update();
+			if ($scope.username.indexOf('@') != -1) {
+				$scope.message = 'Please enter your username, not your email address.';
+				return;
+			}
 			$http({ method: 'POST', url: '/oauth/token', 
-				data: $.param({ 'grant_type' : 'password', 'username' : username, 'password' : password }),
+				data: $.param({ 'grant_type' : 'password', 'username' : $scope.username, 'password' : $scope.password }),
 				headers: { 'Content-Type' : 'application/x-www-form-urlencoded' }
 			})
 				.success(function(response) {
@@ -474,7 +481,7 @@
 					$scope.closeDialog();
 					$scope.whoami();
 					if ($location.url() === '/') {
-						$location.url('/users/' + username);
+						$location.url('/users/' + $scope.username);
 					} else {
 						$route.reload();
 					}

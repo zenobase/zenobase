@@ -96,11 +96,11 @@
 					</div>
 					<div class="control-group">
 						<label for="sign-in-username"><strong>Username</strong></label>
-						<input id="sign-in-username" type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" class="large" data-ui-focus-on="openDialog:sign-in-dialog" required/>
+						<input id="sign-in-username" type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" class="large" required data-ng-model="username" data-ui-focus-on="openDialog:sign-in-dialog"/>
 					</div>
 					<div class="control-group">
 						<label for="sign-in-password"><strong>Password</strong></label>
-						<input id="sign-in-password" type="password" class="large" required/>
+						<input id="sign-in-password" type="password" class="large" required data-ng-model="password"/>
 					</div>
 				</div>
 				<div class="modal-footer">
