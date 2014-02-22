@@ -83,6 +83,15 @@
 					</div>
 				</div>
 				<div class="control-group">
+					<label class="control-label" for="regression">Regression</label>
+					<div class="controls">
+						<select name="regression" data-ng-model="settings.regression" data-ng-options="method for method in regressionMethods">
+							<option value=""></option>
+						</select>
+						<p class="help-block">Optional method for drawing a regression line.</p>
+					</div>
+				</div>
+				<div class="control-group">
 					<label class="control-label" for="filter">Filter</label>
 					<div class="controls form-horizontal input-append">
 						<input name="filter" type="text" data-ng-model="settings.filter" data-ui-check-filter="bucket" placeholder="e.g. tag:xyz"/>

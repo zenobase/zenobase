@@ -934,7 +934,8 @@
 				"placement" : "right",
 				"field" : "weight",
 				"statistic" : "avg",
-				"unit" : "kg"
+				"unit" : "kg",
+				"regression" : "linear"
 			}
 		]
 	}

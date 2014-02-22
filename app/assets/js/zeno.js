@@ -2114,7 +2114,7 @@
 		return Interval;
 	});
 
-	app.controller('TimelineWidgetController', ['$scope', '$timeout', 'Field', 'Interval', 'moment', function($scope, $timeout, Field, Interval, moment) {
+	app.controller('TimelineWidgetController', ['$scope', '$timeout', 'Field', 'Interval', 'moment', 'statistics', function($scope, $timeout, Field, Interval, moment, statistics) {
 
 		$scope.keyField = 'timestamp';
 
@@ -2385,9 +2385,48 @@
 						}
 					});
 				}
+				if ($scope.times.length > 1 && $scope.settings.regression == 'linear') {
+					var data = toXY($scope.times);
+					options.series.push({
+						type : 'line',
+						data : statistics.regression(data).data,
+						color : 'rgb(119, 152, 191)',
+						dashStyle : 'Dot',
+						lineWidth : 2,
+						enableMouseTracking : false,
+						marker : {
+							enabled : false
+						}
+					});
+				}
+				if ($scope.timesB && $scope.timesB.length > 1 && $scope.settings.regression == 'linear') {
+					var data = toXY($scope.timesB);
+					options.series.push({
+						type : 'line',
+						data : statistics.regression(data).data,
+						color : 'rgb(204, 102, 0)',
+						dashStyle : 'Dot',
+						lineWidth : 2,
+						enableMouseTracking : false,
+						marker : {
+							enabled : false
+						}
+					});
+				}
 				field.formatAxis(options.yAxis);
 				$scope.chartOptions = options;
 			}
+		}
+		function toXY(times) {
+			var xy = [];
+			var field = Field.find($scope.settings.field);
+			$.each(times, function(i, time) {
+				var value = time[$scope.settings.statistic || 'count'];
+				if (value !== undefined) {
+					xy.push([ time.time, field.toNumber(value) ]);
+				}
+			});
+			return xy;
 		}
 
 		$scope.init();
@@ -2569,6 +2608,8 @@
 	app.controller('TimelineWidgetDialogController', ['$scope', 'WidgetDialogControllerSupport', 'Field', 'Interval', function($scope, WidgetDialogControllerSupport, Field, Interval) {
 
 		WidgetDialogControllerSupport($scope);
+
+		$scope.regressionMethods = [ 'linear' ];
 
 		function isUnitValid() {
 			var units = $scope.getUnits();
@@ -3084,6 +3125,8 @@
 						type : 'line',
 						data : statistics.regression($scope.data).data,
 						color : 'rgb(119, 152, 191)',
+						dashStyle : 'Dot',
+						lineWidth : 2,
 						enableMouseTracking : false,
 						marker : {
 							enabled : false
@@ -3095,6 +3138,8 @@
 						type : 'line',
 						data : statistics.regression($scope.dataB).data,
 						color : 'rgb(204, 102, 0)',
+						dashStyle : 'Dot',
+						lineWidth : 2,
 						enableMouseTracking : false,
 						marker : {
 							enabled : false
