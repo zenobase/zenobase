@@ -249,7 +249,7 @@
 							<td>{{credential['@id']}}</td>
 							<td>{{credential.type}}</td>
 							<td><a data-ng-click="setConstraint(credential.principal)">{{credential.principal | username}}</a></td>
-							<td><abbr title="{{credentials.created}}">{{credentials.created | age}}</abbr></td>
+							<td><abbr title="{{credential.created}}">{{credential.created | age}}</abbr></td>
 							<td>{{!credential.authorizationUrl}}</td>
 							<td style="text-align: right">
 								<a class="action" data-ng-click="remove(credential['@id'])" title="Delete"><i class="fa fa-trash-o"></i></a>
