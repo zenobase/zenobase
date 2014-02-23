@@ -9,6 +9,7 @@ import org.joda.time.LocalDate;
 import org.scribe.model.OAuthRequest;
 import org.scribe.model.Response;
 import org.scribe.model.Token;
+import play.Logger;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.Lists;
 
@@ -90,16 +91,23 @@ public class MovesPlacesTaskManager extends MovesTaskManagerSupport {
 		}
 	}
 
-	private void resolveFoursquareVenues(Iterable<Event> events) {
-		for (Event event : events) {
-			Resource resource = event.getValue(Event.RESOURCE);
-			if (resource != null) {
-				FoursquareVenue venue = venues.find(resource.getTitle());
-				event.setValue(Event.RESOURCE, venue.toResource());
-				for (String tag : venue.getCategories()) {
-					event.addValue(Event.TAG, tag);
+	private void resolveFoursquareVenues(List<Event> events) {
+		int resolved = 0;
+		try {
+			for (Event event : events) {
+				Resource resource = event.getValue(Event.RESOURCE);
+				if (resource != null) {
+					FoursquareVenue venue = venues.find(resource.getTitle());
+					event.setValue(Event.RESOURCE, venue.toResource());
+					for (String tag : venue.getCategories()) {
+						event.addValue(Event.TAG, tag);
+					}
+					++resolved;
 				}
 			}
+		} catch (RuntimeException e) {
+			Logger.warn("Failed after resolving " + resolved + "/" + events.size() + " venues");
+			throw e;
 		}
 	}
 }
