@@ -12,8 +12,11 @@ import com.google.common.base.Preconditions;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
+import com.google.common.util.concurrent.RateLimiter;
 
 public class FoursquareVenues {
+
+	private static final RateLimiter RATE_LIMITER = RateLimiter.create(10);
 
 	private final String apiKey;
 	private final String apiSecret;
@@ -27,6 +30,9 @@ public class FoursquareVenues {
 				Response response = request(venueId);
 				if (response.getStatus() == 400) {
 					return FoursquareVenue.UNKNOWN;
+				}
+				if (response.getStatus() == 502) {
+					response = request(venueId);
 				}
 				Preconditions.checkState(response.getStatus() == 200, "Couldn't find venue <%s>: %s", venueId, response.getBody());
 				return parse(response.asJson().path("response").path("venue"));
@@ -44,6 +50,7 @@ public class FoursquareVenues {
 	}
 
 	private Response request(String venueId) {
+		RATE_LIMITER.acquire();
 		return WS.url("https://api.foursquare.com/v2/venues/" + venueId)
 			.setQueryParameter("v", "20140206")
 			.setQueryParameter("client_id", apiKey)
