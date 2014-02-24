@@ -289,12 +289,13 @@
 		$scope.refresh({});
 	}]);
 
-	app.controller('admin.TaskListController', ['$scope', '$http', 'delay', function($scope, $http, delay) {
+	app.controller('admin.TaskListController', ['$scope', '$http', 'delay', 'taskRunner', function($scope, $http, delay, taskRunner) {
 
 		$scope.offset = 0;
 		$scope.limit = 10;
 		$scope.total = 0;
 		$scope.tasks = null;
+		$scope.running = {};
 
 		$scope.hasPrev = function() {
 			return $scope.offset > 0;
@@ -320,6 +321,18 @@
 				$.extend($scope, params);
 				$scope.total = response.total;
 				$scope.tasks = response.tasks;
+			});
+		};
+		$scope.run = function(taskId) {
+			$scope.running[taskId] = true;
+			$scope.alert.clear();
+			taskRunner.run($scope, taskId, function() {
+				delay(function() {
+					$scope.refresh({});
+					delete $scope.running[taskId];
+				});
+			}, function() {
+					delete $scope.running[taskId];
 			});
 		};
 		$scope.remove = function(taskId) {

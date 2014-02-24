@@ -56,7 +56,7 @@ public class TaskController extends ControllerSupport {
 		if (task == null) {
 			return notFound();
 		}
-		if (!task.isPermitted(auth)) {
+		if (!task.isPermitted(auth) && !users.isSuperuser(auth.getPrincipal())) {
 			return forbidden();
 		}
 		if (task.isStale()) {

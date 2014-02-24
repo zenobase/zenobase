@@ -4277,6 +4277,7 @@
 			{ 'id' : 'withings', 'description' : 'Creates an event for each body weight measurement.' },
 			{ 'id' : 'withings-cardio', 'description' : 'Creates an event for each heart rate measurement.' },
 			{ 'id' : 'withings-steps', 'description' : 'Creates an event for the number of steps each day (incl distance and elevation).' }
+			// { 'id' : 'demo', 'description' : 'Creates a single event each time this task is run.' }
 		];
 
 		function selectType(id) {

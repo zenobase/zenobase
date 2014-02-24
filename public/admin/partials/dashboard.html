@@ -298,6 +298,7 @@
 							<td><abbr title="{{task.completed}}">{{task.completed | age}}</abbr></td>
 							<td>{{task.status}}</td>
 							<td style="text-align: right">
+								<a class="action" data-ng-click="run(task['@id'])"><i class="fa fa-refresh" data-ng-class="running[task['@id']] && 'fa-spin'" title="Run"></i></a>
 								<a class="action" data-ng-click="remove(task['@id'])" title="Delete"><i class="fa fa-trash-o"></i></a>
 							</td>
 						</tr>
