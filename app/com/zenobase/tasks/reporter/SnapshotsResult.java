@@ -77,6 +77,11 @@ public class SnapshotsResult {
 				event.addValue(Event.NOTE, tokenNode.textValue());
 				add |= true;
 			}
+			JsonNode textNode = node.path("textResponse");
+			if (textNode.isTextual()) {
+				event.addValue(Event.NOTE, textNode.textValue());
+				add |= true;
+			}
 			add |= setNumericValue(node.path("numericResponse"), q, event);
 			if (add) {
 				events.add(event);
