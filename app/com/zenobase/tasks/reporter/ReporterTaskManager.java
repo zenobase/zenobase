@@ -41,6 +41,7 @@ public class ReporterTaskManager extends OAuthTaskManager {
 	@Override
 	public Task newTask(String bucketId, Identity principal, ObjectNode settings) {
 		String folder = Preconditions.checkNotNull(settings.path("folder").textValue());
+		folder = folder.replace('\\', '/');
 		return new ReporterTask(bucketId, principal, folder);
 	}
 
