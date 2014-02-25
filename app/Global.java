@@ -116,6 +116,8 @@ import com.zenobase.tasks.fitbit.FitbitSummaryTaskManager;
 import com.zenobase.tasks.foursquare.FoursquareCredentialsManager;
 import com.zenobase.tasks.foursquare.FoursquareTaskManager;
 import com.zenobase.tasks.foursquare.FoursquareVenues;
+import com.zenobase.tasks.lastfm.LastFmCredentialsManager;
+import com.zenobase.tasks.lastfm.LastFmTaskManager;
 import com.zenobase.tasks.moves.MovesActivitiesTaskManager;
 import com.zenobase.tasks.moves.MovesCredentialsManager;
 import com.zenobase.tasks.moves.MovesPlacesTaskManager;
@@ -235,6 +237,7 @@ public class Global extends GlobalSettings {
 				bindIfConfigured("runkeeper", RunkeeperCredentialsManager.class, credentials);
 				bindIfConfigured("moves", MovesCredentialsManager.class, credentials);
 				bindIfConfigured("dropbox", DropboxCredentialsManager.class, credentials);
+				bindIfConfigured("lastfm", LastFmCredentialsManager.class, credentials);
 				bind(CredentialsManagerRegistry.class).in(Singleton.class);
 
 				Multibinder<TaskManager> tasks = Multibinder.newSetBinder(binder(), new TypeLiteral<TaskManager>() {});
@@ -256,6 +259,7 @@ public class Global extends GlobalSettings {
 				bindIfConfigured("moves", MovesPlacesTaskManager.class, tasks);
 				bindIfConfigured("moves", MovesActivitiesTaskManager.class, tasks);
 				bindIfConfigured("dropbox", ReporterTaskManager.class, tasks);
+				bindIfConfigured("lastfm", LastFmTaskManager.class, tasks);
 				bind(TaskManagerRegistry.class).in(Singleton.class);
 
 				bind(AccountController.class).in(Singleton.class);

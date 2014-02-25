@@ -1,0 +1,35 @@
+package com.zenobase.tasks.lastfm;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+
+import com.google.common.base.Charsets;
+import com.google.common.base.Joiner;
+import com.google.common.base.Preconditions;
+import com.google.common.collect.Lists;
+import com.google.common.hash.Hashing;
+
+public class Signature {
+
+	private final String secret;
+
+	public Signature(String secret) {
+		this.secret = secret;
+	}
+
+	public String sign(Map<String, String> params) {
+		String hash = Hashing.md5().hashString(toString(params) + secret, Charsets.UTF_8).toString();
+		Preconditions.checkState(hash.length() == 32, "Expected 32 chars in hash but got: " + hash);
+		return hash;
+	}
+
+	private static String toString(Map<String, String> params) {
+		List<String> sortable = Lists.newArrayList();
+		for (Map.Entry<String, String> param : params.entrySet()) {
+			sortable.add(param.getKey() + param.getValue());
+		}
+		Collections.sort(sortable);
+		return Joiner.on("").join(sortable);
+	}
+}

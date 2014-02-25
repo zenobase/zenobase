@@ -1,0 +1,53 @@
+package com.zenobase.tasks.lastfm;
+
+import org.joda.time.Duration;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.common.base.Preconditions;
+import com.google.common.base.Strings;
+
+import com.zenobase.models.Resource;
+
+class TrackInfoResult {
+
+	private final ObjectNode node;
+
+	public TrackInfoResult(ObjectNode node) {
+		this.node = node;
+	}
+
+	public boolean isSuccess() {
+		return node.path("error").isMissingNode();
+	}
+
+	public TrackInfo get() {
+		Resource resource = resourceValue(node.path("track"));
+		Duration duration = durationValue(node.path("track").path("duration"));
+		TrackInfo track = new TrackInfo(resource, duration);
+		for (JsonNode tagNode : node.path("track").path("toptags").path("tag")) {
+			String tag = tagNode.path("name").textValue();
+			if (tag != null) {
+				track.addTag(tag);
+			}
+		}
+		return track;
+	}
+
+	private static Resource resourceValue(JsonNode node) {
+		String artistName = textValue(node.path("artist").path("name"));
+		String trackName = textValue(node.path("name"));
+		String url = textValue(node.path("url"));
+		Preconditions.checkNotNull(artistName, "missing artist name: %s", node);
+		Preconditions.checkNotNull(trackName, "missing track name: %s", node);
+		return new Resource(artistName + " - " + trackName, url);
+	}
+
+	private static String textValue(JsonNode node) {
+		return Strings.emptyToNull(node.textValue());
+	}
+
+	private static Duration durationValue(JsonNode node) {
+		long duration = node.asLong();
+		return duration > 0 ? Duration.millis(duration) : null;
+	}
+}

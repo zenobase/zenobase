@@ -365,6 +365,59 @@
 		]
 	},
 	{
+		"label" : "Music (Last.fm)",
+		"task" : "lastfm-tracks",
+		"widgets" : [
+			{
+				"id" : "timeline",
+				"type" : "timeline",
+				"label" : "Timeline",
+				"placement" : "top",
+				"field" : "timestamp",
+				"statistic" : "count"
+			},
+			{
+				"id" : "latest",
+				"type" : "list",
+				"label" : "Latest",
+				"placement" : "left",
+				"singleton" : true,
+				"limit" : 10,
+				"order" : "timestamp",
+				"reverse" : false
+			},
+			{
+				"id" : "tags",
+				"type" : "count",
+				"label" : "Tags",
+				"placement" : "right",
+				"field" : "tag",
+				"limit" : 10,
+				"order" : "count",
+				"reverse" : false
+			},
+			{
+				"id" : "duration_histogram",
+				"type" : "histogram",
+				"label" : "Duration",
+				"placement" : "right",
+				"field" : "duration",
+				"unit" : null,
+				"interval" : 60000
+			},
+			{
+				"id" : "hour_of_day",
+				"type" : "polar",
+				"label" : "Hour of Day",
+				"statistic" : "count",
+				"placement" : "right",
+				"value_field" : "timestamp",
+				"unit" : null,
+				"interval" : "hour_of_day"
+			}
+		]
+	},
+	{
 		"label" : "Places (Foursquare)",
 		"task" : "foursquare",
 		"widgets" : [

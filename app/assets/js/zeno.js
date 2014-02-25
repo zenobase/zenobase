@@ -4163,7 +4163,7 @@
 					} else {
 						$scope.alert.show('Couldn\'t refresh task. Try again later or contact support.', 'alert-error');
 					}
-				});		
+				});
 		};
 
 		var newCredentials = function($scope, type) {
@@ -4269,6 +4269,7 @@
 			{ 'id' : 'bodymedia-burn', 'description' : 'Creates an event for the number of calories burned each hour.' },
 			{ 'id' : 'bodymedia-sleep', 'description' : 'Creates an event for each period of sleep.' },
 			{ 'id' : 'bodymedia-steps', 'description' : 'Creates an event for the number of steps each hour.' },
+      { 'id' : 'lastfm-tracks', 'description' : 'Creates an event for each played track.' },
       { 'id' : 'moves-activities', 'description' : 'Creates an event for each logged activity.' },
       { 'id' : 'moves-places', 'description' : 'Creates an event for each visited place.' },
 			{ 'id' : 'netatmo', 'description' : 'Creates an event for each weather station measurement.' },
@@ -4462,6 +4463,30 @@
 			$scope.settings = $scope.$parent.$parent.settings = {
 					folder : 'reporter-app'
 			};
+		};
+
+		$scope.init();
+	}]);
+
+	app.controller('LastFmTracksSettingsController', ['$scope', '$http', 'moment', function($scope, $http, moment) {
+
+		$scope.init = function() {
+			$scope.settings = $scope.$parent.$parent.settings = {
+					tag : 'track',
+					marker : new Date(moment().utc().subtract('months', 3).startOf('month').valueOf()),
+					timezone : 'UTC'
+			};
+			$http.get('/tz').success(function(response) {
+				$scope.timezones = response;
+				if (navigator.geolocation) {
+					navigator.geolocation.getCurrentPosition(function(position) {
+						$http.get('/tz?' + $.param({ 'lat' : position.coords.latitude, 'lon' : position.coords.longitude }))
+							.success(function(response) {
+								$scope.settings.timezone = response.timeZoneId;
+							});
+					});
+				}
+			});
 		};
 
 		$scope.init();
