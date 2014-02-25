@@ -9,6 +9,7 @@ import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDateTime;
 import org.scribe.model.OAuthRequest;
 import org.scribe.model.Response;
+import play.Logger;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
@@ -94,8 +95,11 @@ public class LastFmTaskManager extends OAuthTaskManager {
 				LastFmRequest request = createTrackInfoRequest(mbid);
 				Response response = send(request, credentials);
 				TrackInfoResult result = new TrackInfoResult(parseObject(response));
-				Preconditions.checkState(result.isSuccess(), "Request for %s failed: %s", request.getCompleteUrl(), response.getBody());
-				result.get().apply(event);
+				if (result.isSuccess()) {
+					result.get().apply(event);
+				} else {
+					Logger.warn(String.format("Request for %s failed: %s", request.getCompleteUrl(), response.getBody()));
+				}
 			}
 		}
 	}
