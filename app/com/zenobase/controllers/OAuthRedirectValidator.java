@@ -21,11 +21,15 @@ class OAuthRedirectValidator {
 	}
 
 	public boolean valid(URI uri) {
-		return isCustomScheme(uri) || sameDomain(client.getEmail(), uri);
+		return isCustomScheme(uri) || isLocalhost(uri) || sameDomain(client.getEmail(), uri);
 	}
 
 	private static boolean isCustomScheme(URI uri) {
     	return uri.getScheme().startsWith("x-");
+	}
+
+	private static boolean isLocalhost(URI uri) {
+    	return uri.getHost().equals("localhost");
 	}
 
 	private static boolean sameDomain(String email, URI uri) {
