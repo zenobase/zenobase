@@ -11,6 +11,7 @@ import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
 
 import org.joda.time.DateTime;
+import org.joda.time.format.ISODateTimeFormat;
 import play.Logger;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.base.Preconditions;
@@ -93,8 +94,12 @@ public class SnapshotsResult {
 
 	private DateTime dateTimeValue(JsonNode node) {
 		int seconds = node.intValue();
-		Preconditions.checkArgument(seconds != 0, "missing date");
-		return new DateTime(2001, 1, 1, 0, 0, config.getTimezone()).plusSeconds(seconds);
+		if (seconds != 0) {
+			return new DateTime(2001, 1, 1, 0, 0, config.getTimezone()).plusSeconds(seconds);
+		}
+		String date = node.textValue();
+		Preconditions.checkNotNull(date, "missing date");
+		return DateTime.parse(date, ISODateTimeFormat.dateTimeNoMillis().withOffsetParsed());
 	}
 
 	private Location locationValue(JsonNode node) {
