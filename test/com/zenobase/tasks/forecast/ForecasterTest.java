@@ -8,6 +8,7 @@ import javax.measure.quantity.Temperature;
 import org.joda.time.DateTime;
 import org.joda.time.format.ISODateTimeFormat;
 import org.junit.Assume;
+import org.junit.Before;
 import org.junit.Test;
 
 import com.zenobase.common.Measures;
@@ -17,6 +18,7 @@ public class ForecasterTest {
 
 	private final String apiKey = System.getProperty("forecast.apiKey");
 
+	@Before
 	public void setUp() {
 		Assume.assumeNotNull(apiKey);
 	}
