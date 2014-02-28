@@ -27,16 +27,7 @@ public class ForecastResult {
 	}
 
 	public Forecast get(DateTime time) {
-		return get(time.withMinuteOfHour(0).withSecondOfMinute(0).getMillis() / 1000L);
-	}
-
-	public Forecast get(long epochSeconds) {
-		for (JsonNode hourNode : node.path("hourly").path("data")) {
-			if (hourNode.path("time").longValue() == epochSeconds) {
-				return parse(hourNode);
-			}
-		}
-		return null;
+		return parse(node.path("currently"));
 	}
 
 	private Forecast parse(JsonNode node) {

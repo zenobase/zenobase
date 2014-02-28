@@ -26,8 +26,8 @@ public class ForecasterTest {
 	@Test
 	public void test() {
 		Forecaster forecaster = new Forecaster(apiKey);
-		Forecast expected = new Forecast("Drizzle", Measures.<Temperature>valueOf("4.26 C"), Measures.<Pressure>valueOf("1020.51 hPa"), Integer.valueOf(90));
-		Forecast forecast = forecaster.find(new Location("47.6097", "-122.3331"), DateTime.parse("2014-02-25T03:15:05.100-08:00", ISODateTimeFormat.dateTime().withOffsetParsed()), true);
+		Forecast expected = new Forecast("Light Rain", Measures.<Temperature>valueOf("6.78 C"), Measures.<Pressure>valueOf("1024.18 hPa"), 94);
+		Forecast forecast = forecaster.find(new Location("47.6097", "-122.3331"), DateTime.parse("2013-02-28T03:15:05.100-08:00", ISODateTimeFormat.dateTime().withOffsetParsed()), true);
 		assertThat(forecast).isEqualTo(expected);
 	}
 }

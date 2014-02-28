@@ -41,6 +41,6 @@ public class Forecaster {
 			time.toString(ISODateTimeFormat.dateTimeNoMillis()));
 		return WS.url(url)
 			.setQueryParameter("units", standardUnits ? "si" : "us")
-			.setQueryParameter("exclude", "currently,minutely,daily,alerts,flags");
+			.setQueryParameter("exclude", "minutely,hourly,daily,alerts,flags");
 	}
 }
