@@ -170,6 +170,9 @@
 				delay($scope.reload);
 			});
 		};
+		$scope.reverify = function(user) {
+			$http.post('/users/@' + user.name, { 'email' : user.email });
+		};
 		$scope.remove = function(username) {
 			$http({ method : 'DELETE', url : '/users/@' + username }).success(function() {
 				delay($scope.reload);

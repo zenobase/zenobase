@@ -406,6 +406,7 @@
 					.success(function(response, status, headers) {
 						$scope.alert.show('Updated account settings.', 'alert-success', headers('X-Command-ID'));
 						$scope.closeDialog();
+						$scope.whoami();
 					})
 					.error(function(response, status) {
 						if (status < 500) {

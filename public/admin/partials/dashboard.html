@@ -132,7 +132,8 @@
 								<span style="color:gray" data-ng-show="user.suspended">{{user.name}}</span>
 							</td>
 							<td>
-								<a data-ng-href="mailto:{{user.email}}">{{user.email}}</a> <i class="fa fa-check-circle" title="Verified" data-ng-show="user.verified"></i>
+								<a data-ng-href="mailto:{{user.email}}">{{user.email}}</a> 
+								<a title="Resend Verification" data-ng-click="reverify(user)" data-ng-hide="user.verified"><i class="fa fa-play-circle-o"></i></a>
 							</td>
 							<td><abbr title="{{user.created}}">{{user.created | age}}</abbr></td>
 							<td style="text-align: right">
