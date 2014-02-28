@@ -171,7 +171,9 @@
 			});
 		};
 		$scope.reverify = function(user) {
-			$http.post('/users/@' + user.name, { 'email' : user.email });
+			$http.post('/users/@' + user.name, { 'email' : user.email }).success(function() {
+				delay($scope.reload);
+			});
 		};
 		$scope.remove = function(username) {
 			$http({ method : 'DELETE', url : '/users/@' + username }).success(function() {
