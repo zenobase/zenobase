@@ -1,0 +1,46 @@
+package com.zenobase.tasks.forecast;
+
+import javax.inject.Inject;
+import javax.inject.Named;
+
+import org.joda.time.DateTime;
+import org.joda.time.format.ISODateTimeFormat;
+import play.libs.WS;
+import play.libs.WS.Response;
+import play.libs.WS.WSRequestHolder;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.common.base.Preconditions;
+import com.google.common.util.concurrent.RateLimiter;
+
+import com.zenobase.json.Nodes;
+import com.zenobase.models.Location;
+
+public class Forecaster {
+
+	private final RateLimiter rateLimit = RateLimiter.create(10);
+	private final String apiKey;
+
+	@Inject
+	public Forecaster(@Named("forecast.api.key") String apiKey) {
+		this.apiKey = apiKey;
+	}
+
+	public Forecast find(Location location, DateTime time, boolean standardUnits) {
+		rateLimit.acquire();
+		WSRequestHolder request = newRequest(location, time, standardUnits);
+		Response response = request.get().get(10000L);
+		Preconditions.checkState(response.getStatus() == 200,
+			"Couldn't request <%s>: %s", response.getUri(), response.getBody());
+		ObjectNode node = Nodes.readObject(response.asByteArray());
+		return new ForecastResult(node, standardUnits).get(time);
+	}
+
+	private WSRequestHolder newRequest(Location location, DateTime time, boolean standardUnits) {
+		String url = String.format("https://api.forecast.io/forecast/%s/%s,%s,%s",
+			apiKey, location.getLatitude(), location.getLongitude(),
+			time.toString(ISODateTimeFormat.dateTimeNoMillis()));
+		return WS.url(url)
+			.setQueryParameter("units", standardUnits ? "si" : "us")
+			.setQueryParameter("exclude", "currently,minutely,daily,alerts,flags");
+	}
+}

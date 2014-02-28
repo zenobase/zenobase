@@ -39,7 +39,7 @@ import com.zenobase.services.EventRepository;
 
 public class EventListController extends ControllerSupport {
 
-	static final ObjectField EVENTS = new ObjectField("events");
+	public static final ObjectField EVENTS = new ObjectField("events");
 
 	private final BucketRepository buckets;
 	private final EventRepository events;

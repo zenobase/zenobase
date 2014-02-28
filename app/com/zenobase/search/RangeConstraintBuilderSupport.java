@@ -19,7 +19,7 @@ public abstract class RangeConstraintBuilderSupport<C extends Comparable<C>> ext
 		return range != null ? build(range) : null;
 	}
 
-	private QueryBuilder build(Range<C> range) {
+	public QueryBuilder build(Range<C> range) {
 		RangeQueryBuilder query = QueryBuilders.rangeQuery(getPath());
 		if (range.hasLowerBound()) {
 			if (range.lowerBoundType() == BoundType.CLOSED) {

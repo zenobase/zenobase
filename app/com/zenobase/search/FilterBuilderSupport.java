@@ -57,7 +57,7 @@ public class FilterBuilderSupport {
 		throw new IllegalArgumentException("Don't know what to do with constraint: " + expression);
 	}
 
-	private FilterBuilderSupport addConstraint(QueryBuilder builder, boolean negated) {
+	public FilterBuilderSupport addConstraint(QueryBuilder builder, boolean negated) {
 		(negated ? mustNot : must).add(builder);
 		return this;
 	}

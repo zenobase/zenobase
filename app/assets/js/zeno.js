@@ -4266,6 +4266,7 @@
       { 'id' : 'foursquare', 'description' : 'Creates an event for each check-in.' },
 			{ 'id' : 'fitbit-sleep', 'description' : 'Creates an event for each period of sleep.' },
 			{ 'id' : 'fitbit-steps', 'description' : 'Creates an event for the number of steps each day (incl distance and elevation, if available).' },
+			{ 'id' : 'forecast', 'description' : 'Adds weather conditions to events with locations.' },
 			{ 'id' : 'bodymedia-burn', 'description' : 'Creates an event for the number of calories burned each hour.' },
 			{ 'id' : 'bodymedia-sleep', 'description' : 'Creates an event for each period of sleep.' },
 			{ 'id' : 'bodymedia-steps', 'description' : 'Creates an event for the number of steps each hour.' },
@@ -4462,6 +4463,19 @@
 		$scope.init = function() {
 			$scope.settings = $scope.$parent.$parent.settings = {
 					folder : 'reporter-app'
+			};
+		};
+
+		$scope.init();
+	}]);
+
+	app.controller('ForecastSettingsController', ['$scope', function($scope) {
+
+		$scope.si = true;
+
+		$scope.init = function() {
+			$scope.settings = $scope.$parent.$parent.settings = {
+					si : $scope.si
 			};
 		};
 

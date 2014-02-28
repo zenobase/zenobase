@@ -113,6 +113,8 @@ import com.zenobase.tasks.fitbit.FitbitIntradayTaskManager;
 import com.zenobase.tasks.fitbit.FitbitSleepTaskManager;
 import com.zenobase.tasks.fitbit.FitbitStepsTaskManager;
 import com.zenobase.tasks.fitbit.FitbitSummaryTaskManager;
+import com.zenobase.tasks.forecast.ForecastTaskManager;
+import com.zenobase.tasks.forecast.Forecaster;
 import com.zenobase.tasks.foursquare.FoursquareCredentialsManager;
 import com.zenobase.tasks.foursquare.FoursquareTaskManager;
 import com.zenobase.tasks.foursquare.FoursquareVenues;
@@ -174,8 +176,12 @@ public class Global extends GlobalSettings {
 				bind(AuthorizationRepository.class).in(Singleton.class);
 				bind(QuotaManager.class).in(Singleton.class);
 				bind(PaymentGateway.class).in(Singleton.class);
+
 				if (isConfigured("foursquare")) {
 					bind(FoursquareVenues.class).in(Singleton.class);
+				}
+				if (isConfigured("forecast")) {
+					bind(Forecaster.class).in(Singleton.class);
 				}
 
 				Multibinder<CommandParser> parsers = Multibinder.newSetBinder(binder(), CommandParser.class);
@@ -260,6 +266,7 @@ public class Global extends GlobalSettings {
 				bindIfConfigured("moves", MovesActivitiesTaskManager.class, tasks);
 				bindIfConfigured("dropbox", ReporterTaskManager.class, tasks);
 				bindIfConfigured("lastfm", LastFmTaskManager.class, tasks);
+				bindIfConfigured("forecast", ForecastTaskManager.class, tasks);
 				bind(TaskManagerRegistry.class).in(Singleton.class);
 
 				bind(AccountController.class).in(Singleton.class);

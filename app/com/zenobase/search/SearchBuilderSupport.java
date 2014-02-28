@@ -2,6 +2,7 @@ package com.zenobase.search;
 
 import java.util.Set;
 
+import org.elasticsearch.index.query.QueryBuilder;
 import play.Logger;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMultimap;
@@ -20,6 +21,12 @@ public class SearchBuilderSupport extends FilterBuilderSupport {
 	@Override
 	public SearchBuilderSupport addConstraint(String expression) {
 		super.addConstraint(expression);
+		return this;
+	}
+
+	@Override
+	public SearchBuilderSupport addConstraint(QueryBuilder builder, boolean negated) {
+		super.addConstraint(builder, negated);
 		return this;
 	}
 
