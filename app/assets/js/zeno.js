@@ -4463,7 +4463,7 @@
 
 		$scope.init = function() {
 			$scope.settings = $scope.$parent.$parent.settings = {
-					folder : 'reporter-app'
+					folder : 'Apps/Reporter-App'
 			};
 		};
 
