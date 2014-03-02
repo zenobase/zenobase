@@ -3383,18 +3383,29 @@
 					var filtered = !bounds.isEmpty();
 					$.each($scope.points, function(i, point) {
 						var latLng = new google.maps.LatLng(point.lat, point.lon);
+						if (point.lat_min == point.lat_max) {
+							new google.maps.Marker({
+								position : latLng, 
+								map : $scope.map,
+								icon : {
+									path : google.maps.SymbolPath.CIRCLE,
+									fillOpacity : 0.6,
+									fillColor : $scope.settings['marker_color'],
+									strokeWeight : 0,
+									scale : 5
+								}
+							});
+						}
 						var marker = new google.maps.Marker({
 							position : latLng, 
 							map : $scope.map,
 							title : point.count > 1 ? point.count + ' events' : '1 event',
-							icon: {
-						    path: google.maps.SymbolPath.CIRCLE,
-						    fillOpacity: 0.5,
-						    fillColor: $scope.settings['marker_color'],
-						    strokeOpacity: 1.0,
-						    strokeColor: $scope.settings['marker_color'],
-						    strokeWeight: 1.0,
-						    scale: 10 + (5 * Math.log(point.count))
+							icon : {
+						    path : google.maps.SymbolPath.CIRCLE,
+						    fillOpacity : 0.3,
+						    fillColor : $scope.settings['marker_color'],
+						    strokeWeight : 0,
+						    scale : 5 + (5 * Math.log(point.count))
 						  }
 						});
 						if (point.count === 1) {
@@ -3411,7 +3422,7 @@
 								$scope.addConstraint($scope.field, filterBounds.toUrlValue(3), true);
 							});
 						});
-						if (point.count > 1) {
+						if (point.lat_min != point.lat_max) {
 							var filterRectangle = new google.maps.Rectangle({
 								bounds : filterBounds,
 								strokeWeight : 1,
