@@ -21,6 +21,7 @@ import com.zenobase.json.ObjectField;
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
 import com.zenobase.models.Location;
+import com.zenobase.models.Resource;
 import com.zenobase.search.EventSearchBuilder;
 import com.zenobase.search.Facet;
 import com.zenobase.search.ListFacet;
@@ -59,7 +60,7 @@ public class ForecastTaskManager extends TaskManager {
 		DateTime from = task.getFrom();
 		QueryBuilder query = new OffsetDateTimeRangeConstraintBuilder(field).build(Range.<ReadableInstant>greaterThan(from));
 		ObjectNode result = events.find(task.getBucketId(), new EventSearchBuilder().addConstraint(query, false).addFacet(list).buildSearch());
-		DateTime marker = null;
+		DateTime marker = from;
 		for (ObjectNode node : objects.getValues(result)) {
 			Event event = new Event(node);
 			DateTime timestamp = event.getValue(Event.TIMESTAMP);
@@ -79,11 +80,15 @@ public class ForecastTaskManager extends TaskManager {
 		if (location == null) {
 			return null;
 		}
+		// TODO allow re-runs
+		for (Resource resource : event.getValues(Event.SOURCE)) {
+			if ("Forecast".equals(resource.getTitle())) {
+				return null;
+			}
+		}
 		Forecast forecast = forecaster.find(location, timestamp, standardUnits);
 		Event updated = event.copy();
 		forecast.apply(updated);
-		// Logger.info("< " + event);
-		// Logger.info("> " + updated);
 		return updated;
 	}
 
