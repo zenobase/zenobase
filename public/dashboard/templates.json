@@ -123,7 +123,7 @@
 			},
 			{
 				"id" : "map",
-				"type" : "map",
+				"type" : "heatmap",
 				"label" : "Map",
 				"placement" : "right"
 			},
@@ -451,7 +451,7 @@
 			},
 			{
 				"id" : "map",
-				"type" : "map",
+				"type" : "heatmap",
 				"label" : "Map",
 				"placement" : "right"
 			},
@@ -508,7 +508,7 @@
 			},
 			{
 				"id" : "map",
-				"type" : "map",
+				"type" : "heatmap",
 				"label" : "Map",
 				"placement" : "right"
 			},
@@ -598,7 +598,7 @@
 			},
 			{
 				"id" : "map",
-				"type" : "map",
+				"type" : "heatmap",
 				"label" : "Map",
 				"placement" : "right"
 			},
