@@ -21,7 +21,6 @@ import com.zenobase.json.ObjectField;
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
 import com.zenobase.models.Location;
-import com.zenobase.models.Resource;
 import com.zenobase.search.EventSearchBuilder;
 import com.zenobase.search.Facet;
 import com.zenobase.search.ListFacet;
@@ -79,12 +78,6 @@ public class ForecastTaskManager extends TaskManager {
 		Location location = event.getValue(Event.LOCATION);
 		if (location == null) {
 			return null;
-		}
-		// TODO allow re-runs
-		for (Resource resource : event.getValues(Event.SOURCE)) {
-			if ("Forecast".equals(resource.getTitle())) {
-				return null;
-			}
 		}
 		Forecast forecast = forecaster.find(location, timestamp, standardUnits);
 		Event updated = event.copy();
