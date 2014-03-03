@@ -79,7 +79,8 @@ public class TaskListController extends ControllerSupport {
 		if (!bucket.hasRole(auth, Role.OWNER) && !users.isSuperuser(auth.getPrincipal())) {
 			return forbidden();
 		}
-		return ok(TaskList.toJson(tasks.find(new TaskQuery().bucketEqualTo(bucketId), offset, limit)));
+		TaskQuery query = new TaskQuery().bucketEqualTo(bucketId);
+		return ok(TaskList.toJson(tasks.find(query, TaskQuery.orderByCreated(true), offset, limit)));
     }
 
 	public Result findByUser(String userId, int offset, int limit) {

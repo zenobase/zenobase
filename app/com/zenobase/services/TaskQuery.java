@@ -14,4 +14,8 @@ public class TaskQuery extends QuerySupport {
 		equalTo(Task.BUCKET, bucketId);
 		return this;
 	}
+
+	public static SearchOrder orderByCreated(boolean asc) {
+		return new SearchOrder(Task.CREATED.getName(), asc);
+	}
 }

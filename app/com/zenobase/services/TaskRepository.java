@@ -3,7 +3,6 @@ package com.zenobase.services;
 import javax.inject.Inject;
 
 import org.elasticsearch.search.builder.SearchSourceBuilder;
-import org.elasticsearch.search.sort.SortOrder;
 import org.joda.time.DateTime;
 import play.Logger;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -51,9 +50,14 @@ public class TaskRepository extends RepositorySupport<Task> {
 	}
 
 	public PartialList<Task> find(TaskQuery query, int offset, int limit) {
+		return find(query, TaskQuery.orderByCreated(false), offset, limit);
+	}
+
+	public PartialList<Task> find(TaskQuery query, SearchOrder order, int offset, int limit) {
 		SearchSourceBuilder search = new SearchSourceBuilder()
-			.query(query.build()).version(true).from(offset).size(limit)
-			.sort(Task.CREATED.getName(), SortOrder.DESC);
+			.query(query.build()).version(true)
+			.from(offset).size(limit);
+		order.apply(search);
 		return new TaskList(index.find(search));
 	}
 
