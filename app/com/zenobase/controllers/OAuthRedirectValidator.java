@@ -25,7 +25,7 @@ class OAuthRedirectValidator {
 	}
 
 	private static boolean isCustomScheme(URI uri) {
-    	return uri.getScheme().startsWith("x-");
+    	return uri.getScheme().startsWith("x");
 	}
 
 	private static boolean isLocalhost(URI uri) {
