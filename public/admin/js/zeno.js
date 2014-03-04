@@ -331,13 +331,11 @@
 		$scope.run = function(taskId) {
 			$scope.running[taskId] = true;
 			$scope.alert.clear();
-			taskRunner.run($scope, taskId, function() {
+			taskRunner.runOne($scope, taskId)['finally'](function() {
 				delay(function() {
 					$scope.refresh({});
-					delete $scope.running[taskId];
 				});
-			}, function() {
-					delete $scope.running[taskId];
+				delete $scope.running[taskId];
 			});
 		};
 		$scope.remove = function(taskId) {

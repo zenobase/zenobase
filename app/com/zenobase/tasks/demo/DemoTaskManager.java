@@ -1,9 +1,12 @@
 package com.zenobase.tasks.demo;
 
+import java.util.concurrent.TimeUnit;
+
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Objects;
+import com.google.common.util.concurrent.Uninterruptibles;
 
 import com.zenobase.commands.Command;
 import com.zenobase.commands.CompoundCommand;
@@ -31,6 +34,7 @@ public class DemoTaskManager extends TaskManager {
 
 	@Override
 	public Command execute(Task task) {
+		Uninterruptibles.sleepUninterruptibly(3, TimeUnit.SECONDS);
 		return execute(task.as(DemoTask.class));
 	}
 

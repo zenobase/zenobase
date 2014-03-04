@@ -724,13 +724,9 @@
 		$scope.run = function(bucketId) {
 			$scope.loading[bucketId] = true;
 			$scope.alert.clear();
-			taskRunner.runAll($scope, bucketId, function() {
-				delay(function() {
-					$scope.refresh();
-					delete $scope.loading[bucketId];
-				});
-			}, function() {
-					delete $scope.loading[bucketId];
+			taskRunner.runAll($scope, bucketId)['finally'](function() {
+				delay($scope.refresh);
+				delete $scope.loading[bucketId];
 			});
 			tracker.event('action', 'run tasks');
 		};
@@ -1328,10 +1324,8 @@
 		$scope.run = function() {
 			$scope.alert.clear();
 			$scope.loading = true;
-			taskRunner.runAll($scope, $scope.bucketId, function() {
+			taskRunner.runAll($scope, $scope.bucketId)['finally'](function() {
 				delay($scope.refresh);
-				$scope.loading = false;
-			}, function() {
 				$scope.loading = false;
 			});
 			tracker.event('action', 'run tasks');
@@ -4307,60 +4301,55 @@
 		};
 	}]);
 
-	app.factory('taskRunner', [ '$http', '$window', 'localStorage', function($http, $window, localStorage) {
+	app.factory('taskRunner', [ '$http', '$q', '$window', 'localStorage', function($http, $q, $window, localStorage) {
 
-		var runAll = function($scope, bucketId, success, error) {
-			$http.get('/buckets/' + bucketId + '/tasks/')
-				.success(function(response) {
-					if (response.total > 0) {
-						$.each(response.tasks, function(i, task) {
-							run($scope, task['@id'], success);
-						});
-					} else {
-						success();
-					}
-				})
-				.error(error);
+		var runAll = function($scope, bucketId) {
+			return $http.get('/buckets/' + bucketId + '/tasks/').then(function(response) {
+				var previous = $q.when(null); // run tasks sequentially
+				$.each(response.data.tasks, function(i, task) {
+					previous = previous.then(function() {
+						return runOne($scope, task['@id']);
+					});
+				});
+				return previous;
+			});
 		};
 
-		var run = function($scope, taskId, success) {
-			$http.get('/tasks/' + taskId)
-				.success(function(response, status, headers) {
-					if (headers('X-Credentials')) {
-						newCredentials($scope, headers('X-Credentials'));
-					} else if (headers('Link')) {
-						var match = headers('Link').match(/<(.+?)>/);
-						console.assert(match, 'Invalid Link header: ' + headers('Link'));
-						authorize($scope, null, response.type, match[1]);
-					} else {
-						success(response);
+		var runOne = function($scope, taskId) {
+			return $http.get('/tasks/' + taskId)
+				.then(function(response) {
+					if (response.headers('X-Credentials')) {
+						return newCredentials($scope, response.headers('X-Credentials'));
+					} else if (response.headers('Link')) {
+						var match = response.headers('Link').match(/<(.+?)>/);
+						console.assert(match, 'Invalid Link header: ' + response.headers('Link'));
+						authorize($scope, null, response.data.type, match[1]);
 					}
-				})
-				.error(function(response, status) {
-					if (status == 403) {
-						$scope.alert.show('Couldn\'t refresh task. Insufficient quota?', 'alert-error');
-					} else if (status < 500) {
-						$scope.alert.show('Couldn\'t refresh task.', 'alert-error');
+				}, function(response) {
+					if (response.status == 403) {
+						$scope.alert.show('Couldn\'t refresh a task. Insufficient quota?', 'alert-error');
+					} else if (response.status < 500) {
+						$scope.alert.show('Couldn\'t refresh a task.', 'alert-error');
 					} else {
-						$scope.alert.show('Couldn\'t refresh task. Try again later or contact support.', 'alert-error');
+						$scope.alert.show('Couldn\'t refresh a task. Try again later or contact support.', 'alert-error');
 					}
+					return $q.reject();
 				});
 		};
 
 		var newCredentials = function($scope, type) {
-			$http.post('/credentials/', { type : type })
-				.success(function(response, status) {
-					console.assert(status === 201, status);
-					if (response.authorizationUrl) {
-						authorize($scope, response['@id'], type, response.authorizationUrl);
+			return $http.post('/credentials/', { type : type }).then(function(response) {
+					console.assert(response.status === 201, response.status);
+					if (response.data.authorizationUrl) {
+						authorize($scope, response.data['@id'], type, response.data.authorizationUrl);
 					}
-				})
-				.error(function(response, status) {
-					if (status === 400) {
-						$scope.alert.show('Can\'t create credentials: ' + response.message, 'alert-error');					
+				}, function(response) {
+					if (response.status === 400) {
+						$scope.alert.show('Can\'t create credentials: ' + response.data.message, 'alert-error');					
 					} else {
 						$scope.alert.show('Couldn\'t create credentials. Please try again later or contact support.', 'alert-error');					
 					}
+					return $q.reject();
 				});
 		};
 
@@ -4375,7 +4364,7 @@
 		
 		return {
 			runAll : runAll,
-			run : run
+			runOne : runOne
 		};
 	}]);
 
@@ -4460,7 +4449,7 @@
 			{ 'id' : 'withings', 'description' : 'Creates an event for each body weight measurement.' },
 			{ 'id' : 'withings-cardio', 'description' : 'Creates an event for each heart rate measurement.' },
 			{ 'id' : 'withings-steps', 'description' : 'Creates an event for the number of steps each day (incl distance and elevation).' }
-			// { 'id' : 'demo', 'description' : 'Creates a single event each time this task is run.' }
+			// , { 'id' : 'demo', 'description' : 'Creates a single event each time this task is run.' }
 		];
 
 		function selectType(id) {
