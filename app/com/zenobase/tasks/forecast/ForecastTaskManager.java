@@ -52,6 +52,7 @@ public class ForecastTaskManager extends TaskManager {
 	}
 
 	private Command execute(ForecastTask task) {
+		events.refresh(task.getBucketId());
 		List<Command> updates = Lists.newArrayList();
 		ObjectField objects = new ObjectField("events");
 		String field = "timestamp";
