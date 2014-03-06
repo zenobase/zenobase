@@ -12,7 +12,6 @@ import org.elasticsearch.action.index.IndexRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.search.SearchType;
 import org.elasticsearch.client.Client;
-import org.elasticsearch.client.Requests;
 import org.elasticsearch.common.settings.ImmutableSettings;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.unit.TimeValue;
@@ -54,7 +53,7 @@ public class Index {
 			.put("number_of_shards", 1)
 			.put("auto_expand_replicas", replicas == Integer.MAX_VALUE ? "0-all" : "0-" + replicas)
 			.build();
-		CreateIndexResponse response = client.admin().indices().prepareCreate(indexName).setSettings(settings).execute().actionGet();
+		CreateIndexResponse response = client.admin().indices().prepareCreate(indexName).setSettings(settings).get();
 		Preconditions.checkState(response.isAcknowledged(), "Expected acknowledgement of index creation: %s", indexName);
 		Preconditions.checkState(new Cluster(client).isReady(), "Expected at least one shard in cluster");
 	}
@@ -65,7 +64,7 @@ public class Index {
 		for (Alias alias : aliases) {
 			addAlias(request, alias);
 		}
-		IndicesAliasesResponse response = request.execute().actionGet();
+		IndicesAliasesResponse response = request.get();
 		Preconditions.checkState(response.isAcknowledged(), "Expected acknowledgement of alias creation: %s", indexName);
 	}
 
@@ -78,7 +77,7 @@ public class Index {
 		for (Alias alias : Sets.difference(to, from)) {
 			addAlias(request, alias);
 		}
-		IndicesAliasesResponse response = request.execute().actionGet();
+		IndicesAliasesResponse response = request.get();
 		Preconditions.checkState(response.isAcknowledged(), "Expected acknowledgement of alias update: %s", indexName);
 	}
 
@@ -100,7 +99,7 @@ public class Index {
 			.preparePutMapping(indexName)
 			.setType(schema.getTypeName())
 			.setSource(schema.toJson().toString())
-			.execute().actionGet();
+			.get();
 	}
 
 	public void store(String type, String id, ObjectNode node, DateTime timestamp, boolean refresh) {
@@ -122,26 +121,26 @@ public class Index {
 		request.setOpType(operation);
 		request.setTimestamp(timestamp.toString());
 		request.setRefresh(refresh);
-		long version = request.execute().actionGet().getVersion();
+		long version = request.get().getVersion();
 		DomainNode.VERSION.setValue(node, version);
 	}
 
 	public boolean delete(String type, String id, boolean refresh) {
 		return client.prepareDelete(indexName, type, id)
 			.setRefresh(refresh)
-			.execute().actionGet().isFound();
+			.get().isFound();
 	}
 
 	public boolean exists() {
 		return client.admin().indices()
 			.prepareExists(indexName)
-			.execute().actionGet().isExists();
+			.get().isExists();
 	}
 
 	public void refresh() {
 		client.admin().indices()
 			.prepareRefresh(indexName)
-			.execute().actionGet();
+			.get();
 	}
 
 	public NodeList find(QueryBuilder query) {
@@ -159,8 +158,10 @@ public class Index {
 	}
 
 	public SearchResponse search(SearchSourceBuilder search) {
-		return client.search(Requests.searchRequest(indexName)
-			.searchType(SearchType.DFS_QUERY_THEN_FETCH).source(search)).actionGet();
+		return client.prepareSearch(indexName)
+			.setSearchType(SearchType.DFS_QUERY_THEN_FETCH)
+			.setSource(search.buildAsBytes())
+			.get();
 	}
 
 	public void find(QueryBuilder query, Callback<ObjectNode> callback, int scrollSize) {
@@ -176,17 +177,20 @@ public class Index {
 	}
 
 	private SearchResponse scroll(SearchSourceBuilder search) {
-		SearchResponse response = client.search(Requests.searchRequest(indexName)
-			.searchType(SearchType.SCAN).scroll(timeout).source(search)).actionGet();
+		SearchResponse response = client.prepareSearch(indexName)
+			.setSearchType(SearchType.SCAN)
+			.setScroll(timeout)
+			.setSource(search.buildAsBytes())
+			.get();
 		return scroll(response.getScrollId());
 	}
 
 	private SearchResponse scroll(String scrollId) {
-		return client.searchScroll(Requests.searchScrollRequest(indexName).scrollId(scrollId).scroll(timeout)).actionGet();
+		return client.prepareSearchScroll(scrollId).setScroll(timeout).get();
 	}
 
 	public ObjectNode get(String type, String id) {
-		GetResponse response = client.prepareGet(indexName, type, id).execute().actionGet();
+		GetResponse response = client.prepareGet(indexName, type, id).get();
 		return response.isExists() ? read(response.getSourceAsBytes(), response.getVersion()) : null;
 	}
 
@@ -205,19 +209,19 @@ public class Index {
 	public boolean exists(String type, String id) {
 		return client
 			.prepareGet(indexName, type, id)
-			.execute().actionGet().isExists();
+			.get().isExists();
 	}
 
 	public int count() {
 		return Ints.saturatedCast(client
 			.prepareCount(indexName)
-			.execute().actionGet().getCount());
+			.get().getCount());
 	}
 
 	public void open() {
 		client.admin().indices()
 			.prepareOpen(indexName)
-			.execute().actionGet();
+			.get();
 	}
 
 	public boolean close() {
@@ -225,7 +229,7 @@ public class Index {
 		if (aliases.isEmpty()) {
 			return client.admin().indices()
 				.prepareClose(indexName)
-				.execute().actionGet().isAcknowledged();
+				.get().isAcknowledged();
 		} else {
 			return close(aliases);
 		}
@@ -234,7 +238,7 @@ public class Index {
 	private Set<String> aliases() {
 		return ImmutableSet.copyOf(client.admin().indices()
 			.prepareGetAliases(indexName)
-			.execute().actionGet().getAliases().keysIt());
+			.get().getAliases().keysIt());
 	}
 
 	private boolean close(Iterable<String> aliases) {
@@ -242,6 +246,6 @@ public class Index {
 		for (String alias : aliases()) {
 			request.removeAlias(alias, indexName);
 		}
-		return request.execute().actionGet().isAcknowledged();
+		return request.get().isAcknowledged();
 	}
 }
