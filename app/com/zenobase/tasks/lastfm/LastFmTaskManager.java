@@ -97,7 +97,7 @@ public class LastFmTaskManager extends OAuthTaskManager {
 				TrackInfoResult result = new TrackInfoResult(parseObject(response));
 				if (result.isSuccess()) {
 					result.get().apply(event);
-				} else {
+				} else if (!result.isNotFound()) {
 					Logger.warn(String.format("Request for %s failed: %s", request.getCompleteUrl(), response.getBody()));
 				}
 			}

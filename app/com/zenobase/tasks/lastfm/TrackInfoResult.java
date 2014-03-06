@@ -20,6 +20,10 @@ class TrackInfoResult {
 		return node.path("error").isMissingNode();
 	}
 
+	public boolean isNotFound() {
+		return node.path("error").intValue() == 6;
+	}
+
 	public TrackInfo get() {
 		Resource resource = resourceValue(node.path("track"));
 		Duration duration = durationValue(node.path("track").path("duration"));
