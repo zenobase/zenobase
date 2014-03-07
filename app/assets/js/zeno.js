@@ -1258,6 +1258,31 @@
 		$scope.addWidget = function(settings) {
 			$scope.bucket.widgets.push(settings);
 		};
+		$scope.moveWidget = function(sourceId, targetId) {
+			var sourceWidget, sourceIndex;
+			$.each($scope.bucket.widgets, function(i, widget) {
+				if (widget.id === sourceId) {
+					sourceIndex = i;
+					sourceWidget = widget;
+					return false;
+				}
+			});
+			console.assert(sourceWidget, "missing source widget", sourceId);
+			$scope.bucket.widgets.splice(sourceIndex, 1);
+			if (targetId.charAt(0) === '+') {
+				sourceWidget.placement = targetId.substring(1);
+				$scope.bucket.widgets.push(sourceWidget);
+			} else {
+				$.each($scope.bucket.widgets, function(i, widget) {
+					if (widget.id === targetId) {
+						sourceWidget.placement = widget.placement;
+						$scope.bucket.widgets.splice(i, 0, sourceWidget);
+						return false;
+					}
+				});
+			}
+			$scope.refresh();
+		}
 		$scope.getTemplate = function(type) {
 			return cacheBuster.rewrite('/dashboard/' + type + '.html');
 		};
@@ -2140,11 +2165,12 @@
 		}
 
 		$scope.init = function() {
+			$scope.interval = Interval.VALUES[1];
 			$scope.times = null;
 			$scope.timesB = null;
 		};
 		$scope.params = function() {
-			$scope.interval = Interval.valueOf($scope.settings.interval) || Interval.VALUES[1];
+			$scope.interval = Interval.valueOf($scope.settings.interval) || $scope.interval;
 			$scope.range = '';
 			var q = '';
 			$.each($scope.getConstraints($scope.keyField), function(i, constraint) {
@@ -5833,6 +5859,76 @@
 					controller.$setValidity('payment', scope.card && scope.card.validateCVV(value));
 					return value;
 				});
+			}
+		}
+	}]);
+
+	/* Based on http://blog.parkji.co.uk/2013/08/11/native-drag-and-drop-in-angularjs.html */
+	app.directive('uiDraggable', function() {
+		return function(scope, element, attrs) {
+			var el = element[0];
+			el.draggable = true;
+			el.addEventListener('dragstart', function(e) {
+					e.dataTransfer.effectAllowed = 'move';
+					e.dataTransfer.setData('text', attrs.uiDraggable);
+					this.classList.add('drag');
+					return false;
+				}, false);
+			el.addEventListener('dragend', function(e) {
+					this.classList.remove('drag');
+					return false;
+				}, false);
+		}
+	});
+
+	app.directive('uiDroppable', ['$timeout', function($timeout) {
+
+		return {
+			link : function(scope, element, attrs) {
+				var el = element[0];
+				el.addEventListener('dragover', function(e) {
+						e.dataTransfer.dropEffect = 'move';
+						if (e.preventDefault) {
+							e.preventDefault();
+						}
+						this.classList.add('drop');
+						return false;
+					}, false);
+
+				el.addEventListener('dragenter', function(e) {
+						if (e.preventDefault) {
+							e.preventDefault();
+						}
+						this.classList.add('drop');
+						return false;
+					}, false);
+
+				el.addEventListener('dragleave', function(e) {
+						this.classList.remove('drop');
+						return false;
+					}, false);
+
+				el.addEventListener('drop', function(e) {
+						if (e.stopPropagation) {
+							e.stopPropagation();
+						}
+						if (e.preventDefault) {
+							e.preventDefault();
+						}
+						this.classList.remove('drop');
+						scope.$apply(function(scope) {
+							var sourceId = e.dataTransfer.getData('text');
+							var targetId = attrs.uiDroppable;
+							if (sourceId !== targetId) {
+								scope.moveWidget(sourceId, targetId);
+								$timeout(function() {
+									$('#' + sourceId + '-tab').tab('show');
+									scope.setDirty(true);
+								}, 0);
+							}
+						});
+						return false;
+					}, false);
 			}
 		}
 	}]);
