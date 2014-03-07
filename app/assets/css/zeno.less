@@ -96,7 +96,7 @@ abbr {
 	text-transform: none;
 }
 
-/* Control style for Google Maps 3.14. */
+/* Control style for Google Maps 3.15. */
 .map-control {
 	z-index: 0;
 	cursor: pointer;
@@ -121,6 +121,11 @@ abbr {
 	border: 1px solid rgba(0, 0, 0, 0.14902);
 	-webkit-box-shadow: rgba(0, 0, 0, 0.298039) 0px 1px 4px -1px;
 	box-shadow: rgba(0, 0, 0, 0.298039) 0px 1px 4px -1px;
+}
+
+/* Fix for http://stackoverflow.com/a/7623351/1144085 */
+.map img {
+	max-width: none;
 }
 
 .none {	
