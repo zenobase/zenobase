@@ -5170,7 +5170,7 @@
 			},
 			toNumber : function(value) {
 				var n = toNumber(value);
-				if (isNaN(n)) {
+				if (value && isNaN(n)) {
 					var valid = true;
 					$.each(value.split(' '), function(i, token) {
 						var m = /^(-?\d+)(d|h|min|s)?$/.exec(token);
