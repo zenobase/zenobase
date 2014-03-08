@@ -4671,6 +4671,7 @@
 
 		$scope.init = function() {
 			$scope.settings = $scope.$parent.$parent.settings = {
+					tags : true,
 					si : $scope.si
 			};
 		};

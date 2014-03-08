@@ -25,8 +25,10 @@ public class Forecast {
 		this.humidity = humidity;
 	}
 
-	public void apply(Event event) {
-		event.addValue(Event.TAG, summary);
+	public void apply(Event event, boolean addTag) {
+		if (addTag) {
+			event.addValue(Event.TAG, summary);
+		}
 		event.setValue(Event.TEMPERATURE, temperature);
 		event.setValue(Event.PRESSURE, pressure);
 		event.setValue(Event.HUMIDITY, humidity);

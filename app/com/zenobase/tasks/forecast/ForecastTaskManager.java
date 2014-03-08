@@ -43,7 +43,7 @@ public class ForecastTaskManager extends TaskManager {
 
 	@Override
 	public Task newTask(String bucketId, Identity principal, ObjectNode settings) {
-		return new ForecastTask(bucketId, principal, settings.path("si").booleanValue());
+		return new ForecastTask(bucketId, principal, settings.path("si").booleanValue(), settings.path("tags").booleanValue());
 	}
 
 	@Override
@@ -64,7 +64,7 @@ public class ForecastTaskManager extends TaskManager {
 		for (ObjectNode node : objects.getValues(result)) {
 			Event event = new Event(node);
 			DateTime timestamp = event.getValue(Event.TIMESTAMP);
-			Event updated = update(event, timestamp, task.useStandardUnits());
+			Event updated = update(event, timestamp, task.useStandardUnits(), task.addTags());
 			if (marker == null || marker.isBefore(timestamp)) {
 				marker = timestamp;
 			}
@@ -75,14 +75,14 @@ public class ForecastTaskManager extends TaskManager {
 		return createCommand(task, marker, updates);
 	}
 
-	private Event update(Event event, DateTime timestamp, boolean standardUnits) {
+	private Event update(Event event, DateTime timestamp, boolean standardUnits, boolean addTags) {
 		Location location = event.getValue(Event.LOCATION);
 		if (location == null) {
 			return null;
 		}
 		Forecast forecast = forecaster.find(location, timestamp, standardUnits);
 		Event updated = event.copy();
-		forecast.apply(updated);
+		forecast.apply(updated, addTags);
 		return updated;
 	}
 
