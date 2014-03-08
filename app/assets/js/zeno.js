@@ -3299,6 +3299,8 @@
 
 		WidgetDialogControllerSupport($scope);
 
+		var keyField = Field.find('timestamp');
+
 		function isUnitValid(field, unit) {
 			var units = $scope.getUnits(field);
 			return units.length === 0
@@ -3309,13 +3311,15 @@
 		$scope.regressionMethods = [ 'linear' ];
 
 		$scope.getFields = function() {
-			return Field.findByType('numeric');
+			var fields = Field.findByType('numeric');
+			fields.unshift(keyField);
+			return fields;
 		};
 		$scope.getIntervals = function() {
 			return Interval.VALUES;
 		};
 		$scope.getStatistics = function(field) {
-			return [ 'sum', 'avg', 'min', 'max', 'count' ];
+			return field === keyField.name ? [ 'count' ] : [ 'sum', 'avg', 'min', 'max' ];
 		};
 		$scope.getUnits = function(field) {
 			return field && Field.find(field).units || [];

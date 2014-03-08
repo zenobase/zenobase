@@ -34,7 +34,7 @@
 					<div class="control-group">
 						<label class="control-label" for="fieldX">Values</label>
 						<div class="controls form-horizontal">
-							<select name="statisticX" class="input-small" required data-ng-model="settings.statistic_x" data-ng-options="value for value in getStatistics(settings.field)"></select>
+							<select name="statisticX" class="input-small" required data-ng-model="settings.statistic_x" data-ng-options="value for value in getStatistics(settings.field_x)"></select>
 							of <select name="fieldX" class="input-medium" data-ng-model="settings.field_x" data-ng-options="field.name as field.name for field in getFields()"></select>
 							<span data-ng-show="getUnits(settings.field_x).length"> in <select name="unitX" class="input-small" data-ng-model="settings.unit_x" data-ng-options="unit for unit in getUnits(settings.field_x)"></select></span>
 						</div>
@@ -63,7 +63,7 @@
 					<div class="control-group">
 						<label class="control-label" for="fieldY">Values</label>
 						<div class="controls form-horizontal">
-							<select name="statisticY" class="input-small" required data-ng-model="settings.statistic_y" data-ng-options="value for value in getStatistics(settings.field)"></select>
+							<select name="statisticY" class="input-small" required data-ng-model="settings.statistic_y" data-ng-options="value for value in getStatistics(settings.field_y)"></select>
 							of <select name="fieldY" class="input-medium" data-ng-model="settings.field_y" data-ng-options="field.name as field.name for field in getFields()"></select>
 							<span data-ng-show="getUnits(settings.field_y).length"> in <select name="unitY" class="input-small" data-ng-model="settings.unit_y" data-ng-options="unit for unit in getUnits(settings.field_y)"></select></span>
 						</div>
