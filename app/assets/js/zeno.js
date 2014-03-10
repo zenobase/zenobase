@@ -2165,12 +2165,11 @@
 		}
 
 		$scope.init = function() {
-			$scope.interval = Interval.VALUES[1];
 			$scope.times = null;
 			$scope.timesB = null;
 		};
 		$scope.params = function() {
-			$scope.interval = Interval.valueOf($scope.settings.interval) || $scope.interval;
+			$scope.interval = Interval.valueOf($scope.settings.interval) || Interval.VALUES[1];
 			$scope.range = '';
 			var q = '';
 			$.each($scope.getConstraints($scope.keyField), function(i, constraint) {
