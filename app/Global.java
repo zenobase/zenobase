@@ -126,6 +126,7 @@ import com.zenobase.tasks.moves.MovesPlacesTaskManager;
 import com.zenobase.tasks.netatmo.NetatmoCredentialsManager;
 import com.zenobase.tasks.netatmo.NetatmoTaskManager;
 import com.zenobase.tasks.reporter.ReporterTaskManager;
+import com.zenobase.tasks.rescuetime.RescueTimeProductivityTaskManager;
 import com.zenobase.tasks.runkeeper.RunkeeperCredentialsManager;
 import com.zenobase.tasks.runkeeper.RunkeeperTaskManager;
 import com.zenobase.tasks.withings.WithingsCardioTaskManager;
@@ -267,6 +268,7 @@ public class Global extends GlobalSettings {
 				bindIfConfigured("dropbox", ReporterTaskManager.class, tasks);
 				bindIfConfigured("lastfm", LastFmTaskManager.class, tasks);
 				bindIfConfigured("forecast", ForecastTaskManager.class, tasks);
+				tasks.addBinding().to(RescueTimeProductivityTaskManager.class);
 				bind(TaskManagerRegistry.class).in(Singleton.class);
 
 				bind(AccountController.class).in(Singleton.class);

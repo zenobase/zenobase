@@ -1,0 +1,143 @@
+package com.zenobase.tasks.rescuetime;
+
+import java.util.Iterator;
+import java.util.List;
+
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
+import org.joda.time.LocalDate;
+import org.joda.time.LocalDateTime;
+import play.Logger;
+import play.libs.WS;
+import play.libs.WS.Response;
+import play.libs.WS.WSRequestHolder;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.common.base.Objects;
+import com.google.common.base.Preconditions;
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
+import com.google.common.util.concurrent.RateLimiter;
+
+import com.zenobase.commands.Command;
+import com.zenobase.commands.CompoundCommand;
+import com.zenobase.commands.CreateEventCommand;
+import com.zenobase.commands.UpdateTaskCommand;
+import com.zenobase.json.Nodes;
+import com.zenobase.models.Event;
+import com.zenobase.models.Identity;
+import com.zenobase.tasks.Task;
+import com.zenobase.tasks.TaskManager;
+
+public class RescueTimeProductivityTaskManager extends TaskManager {
+
+	private final RateLimiter rateLimit = RateLimiter.create(10);
+
+	public RescueTimeProductivityTaskManager() {
+		super(RescueTimeProductivityTask.TYPE);
+	}
+
+	@Override
+	public Task newTask(String bucketId, Identity principal, ObjectNode settings) {
+		String key = settings.path("key").textValue();
+		String tag = Objects.firstNonNull(settings.path("tag").textValue(), "Productivity");
+		DateTimeZone timezone = DateTimeZone.forID(Objects.firstNonNull(settings.path("timezone").textValue(), "UTC"));
+		Task task = new RescueTimeProductivityTask(bucketId, principal, key, tag, timezone);
+		task.setMarker(parseMarker(settings.path("marker").textValue(), timezone));
+		return task;
+	}
+
+	private static String parseMarker(String marker, DateTimeZone timezone) {
+		return marker != null ? LocalDateTime.parse(marker.replaceAll("Z", "")).toDateTime(timezone).toString() : null;
+	}
+
+	@Override
+	public Command execute(Task task) {
+		return execute(task.as(RescueTimeProductivityTask.class));
+	}
+
+	private Command execute(RescueTimeProductivityTask task) {
+		DateTime last = task.getLast();
+		List<Event> events = Lists.newArrayList();
+		for (DateTime from = last; from == null || from.isBefore(DateTime.now()); from = from.plusWeeks(1)) {
+			events.addAll(get(task.getKey(), task.getTag(), task.getTimezone(), from != null ? from.toLocalDate() : null));
+			if (from == null) {
+				from = getFirst(events);
+			}
+			if (from == null) {
+				break;
+			}
+		}
+		if (last != null) {
+			removeNotAfter(events, last);
+		}
+		removeLast(events);
+		return createCommand(task, events);
+	}
+
+	private List<Event> get(String key, String tag, DateTimeZone timezone, LocalDate date) {
+		Logger.info("date: " + date);
+		rateLimit.acquire();
+		WSRequestHolder request = newRequest(key, date);
+		Response response = request.get().get(10000L);
+		Preconditions.checkState(response.getStatus() == 200,
+			"Couldn't request <%s>: %s", response.getUri(), response.getBody());
+		ObjectNode node = Nodes.readObject(response.asByteArray());
+		ProductivityResult result =  new ProductivityResult(node, tag, timezone);
+		Preconditions.checkState(result.isSuccess(),
+			"Request <%s> failed: %s", response.getUri(), response.getBody());
+		return result.getEvents();
+	}
+
+	private WSRequestHolder newRequest(String key, LocalDate date) {
+		WSRequestHolder request = WS.url("https://www.rescuetime.com/anapi/data");
+		request.setQueryParameter("key", key);
+		request.setQueryParameter("format", "json");
+		request.setQueryParameter("operation", "select");
+		request.setQueryParameter("perspective", "interval");
+		request.setQueryParameter("restrict_kind", "efficiency");
+		request.setQueryParameter("resolution_time", "hour");
+		if (date != null) {
+			request.setQueryParameter("restrict_begin", date.toString());
+		}
+		return request;
+	}
+
+	private void removeLast(List<Event> events) {
+		if (!events.isEmpty()) {
+			events.remove(events.size() - 1);
+		}
+	}
+
+	private void removeNotAfter(List<Event> events, DateTime last) {
+		for (Iterator<Event> i = events.iterator(); i.hasNext();) {
+			if (!i.next().getValue(Event.TIMESTAMP).isAfter(last)) {
+				i.remove();
+			}
+		}
+	}
+
+	private Command createCommand(Task task, List<Event> events) {
+		CompoundCommand command = new CompoundCommand(task.getPrincipal(), "ran " + getType() + " task", "reverted " + getType() + " task");
+		command.add(UpdateTaskCommand.builder(task)
+			.set(Task.COMPLETED, task.getCompleted(), new DateTime(DateTimeZone.UTC))
+			.set(Task.STATUS, task.getStatus(), Task.Status.SUCCESS)
+			.set(Task.MARKER, task.getMarker(), events.isEmpty() ? task.getMarker() : getLast(events).toString())
+			.set(Task.UNDO, task.getUndoId(), command.getId())
+			.build());
+		for (Event event : events) {
+			// System.out.println("[event] " + event);
+			command.add(new CreateEventCommand(task.getPrincipal(), task.getBucketId(), event));
+		}
+		return command;
+	}
+
+	private static DateTime getFirst(List<Event> events) {
+		Event first = Iterables.getFirst(events, null);
+		return first != null ? first.getValue(Event.TIMESTAMP) : null;
+	}
+
+	private static DateTime getLast(List<Event> events) {
+		Event latest = Iterables.getLast(events);
+		return latest.getValue(Event.TIMESTAMP);
+	}
+}

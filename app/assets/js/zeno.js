@@ -4474,6 +4474,7 @@
       { 'id' : 'moves-places', 'description' : 'Creates an event for each visited place.' },
 			{ 'id' : 'netatmo', 'description' : 'Creates an event for each weather station measurement.' },
 			{ 'id' : 'reporter-questions', 'description' : 'Creates an event for each question answered in the Reporter app.' },
+			{ 'id' : 'rescuetime-productivity', 'description' : 'The productivity score for each hour recorded by RescueTime.' },
 			{ 'id' : 'runkeeper-activities', 'description' : 'Creates an event for each logged activity.' },
 			{ 'id' : 'withings', 'description' : 'Creates an event for each body weight measurement.' },
 			{ 'id' : 'withings-cardio', 'description' : 'Creates an event for each heart rate measurement.' },
@@ -4663,6 +4664,31 @@
 			$scope.settings = $scope.$parent.$parent.settings = {
 					folder : 'Apps/Reporter-App'
 			};
+		};
+
+		$scope.init();
+	}]);
+
+	app.controller('RescueTimeProductivitySettingsController', ['$scope', '$http', 'moment', function($scope, $http, moment) {
+
+		$scope.init = function() {
+			$scope.settings = $scope.$parent.$parent.settings = {
+					key : null,
+					tag : 'Productivity',
+					marker : new Date(moment().utc().subtract('months', 3).startOf('month').valueOf()),
+					timezone : 'UTC'
+			};
+			$http.get('/tz').success(function(response) {
+				$scope.timezones = response;
+				if (navigator.geolocation) {
+					navigator.geolocation.getCurrentPosition(function(position) {
+						$http.get('/tz?' + $.param({ 'lat' : position.coords.latitude, 'lon' : position.coords.longitude }))
+							.success(function(response) {
+								$scope.settings.timezone = response.timeZoneId;
+							});
+					});
+				}
+			});
 		};
 
 		$scope.init();
