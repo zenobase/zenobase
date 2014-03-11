@@ -4149,7 +4149,7 @@
 
 		function parseWakeUp(value) {
 			if (!value) {
-				return null;
+				return undefined;
 			}
 			if (value === ':)') {
 				return 100;
@@ -4174,7 +4174,7 @@
 		return {
 			parse : function(data) {
 				var events = [];
-				var lines = data.split('\n');
+				var lines = data.split(/[\r\n]+/g);
 				var expected = [ 'Start', 'End', 'Sleep quality', 'Time in bed', 'Wake up', 'Sleep Notes' ];
 				var headers = lines.shift().split(';');
 				if (!angular.equals(headers, expected)) {
