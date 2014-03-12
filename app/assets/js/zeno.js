@@ -5675,7 +5675,8 @@
 								type : 'image/png',
 								sourceWidth : element[0].offsetWidth,
 								sourceHeight : element[0].offsetHeight,
-								scale : 1
+								scale : 1,
+								url : 'https://export.highcharts.com/'
 							});
 						}
 					})
