@@ -1,6 +1,12 @@
 <div id="{{settings.id}}-content" data-ng-controller="ScatterPlotWidgetController">
 
-	<div id="{{settings.id}}-chart" data-ui-chart-options="chartOptions" data-ui-id="{{settings.id}}" data-ng-show="data"></div>
+	<div class="row-fluid" data-ng-show="data">
+		<div class="pull-right">
+			<a class="xbtn" title="Snapshot" data-ng-click="snapshot()"><i class="fa fa-camera"></i></a>
+		</div>
+	</div>
+
+	<div id="{{settings.id}}-chart" data-ui-chart-options="chartOptions" data-ui-id="{{settings.id}}" data-ui-snapshot data-ng-show="data"></div>
 	<div id="{{settings.id}}-r-chart" data-ui-chart-options="rChartOptions" data-ui-id="{{settings.id}}" data-ng-show="data"></div>
 
 	<p data-ng-show="data == null" class="none">Loading...</p>

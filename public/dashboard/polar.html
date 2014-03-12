@@ -1,8 +1,8 @@
 <div id="{{settings.id}}-content" data-ng-controller="PolarWidgetController">
 
-	<div class="row-fluid">
-		<div class="dropdown pull-right" data-ng-show="times">
-			<a class="dropdown-toggle" data-toggle="dropdown" title="Filter"> <i class="fa fa-filter"></i><b class="caret"></b></a>
+	<div class="row-fluid" data-ng-show="times">
+		<div class="dropdown pull-right">
+			<a class="xbtn dropdown-toggle" data-toggle="dropdown" title="Filter"> <i class="fa fa-filter"></i><b class="caret"></b></a>
 			<ul class="dropdown-menu" role="menu">
 				<li role="presentation" data-ng-show="settings.interval == 'month_of_year'">
 					<a role="menuitem" data-ng-click="filter('[1..3]')">Jan - Mar</a>
@@ -35,10 +35,11 @@
 					<a role="menuitem" data-ng-click="filter('[12..24)')">12h - 24h</a>
 				</li>
 			</ul>
+			<a class="xbtn" title="Snapshot" data-ng-click="snapshot()"><i class="fa fa-camera"></i></a>
 		</div>
 	</div>
 
-	<div id="{{settings.id}}-chart" data-ui-chart-options="chartOptions" data-ui-id="{{settings.id}}" data-ng-show="times"></div>
+	<div id="{{settings.id}}-chart" data-ui-chart-options="chartOptions" data-ui-id="{{settings.id}}" data-ui-snapshot data-ng-show="times"></div>
 
 	<p data-ng-show="times == null" class="none">Loading...</p>
 

@@ -399,14 +399,14 @@ pre.example > .title {
 
 /* gray icons that show on hover */
 .fa-hover {
-	opacity: 0;
+	opacity: 0.0;
 	filter: alpha(opacity=0);
 	cursor: pointer;
 }
 
 a:hover > .fa-hover {
-	opacity: 0.5;
-	filter: alpha(opacity=50);
+	opacity: 0.65;
+	filter: alpha(opacity=65);
 }
 
 /* Don't clip dropdowns! */
@@ -421,4 +421,20 @@ a:hover > .fa-hover {
 /* Drag & Drop */
 .nav-tabs > .active > .drop, .nav-tabs .drop {
 	background-color: #eee;
+}
+
+/* hover-only buttons */
+.xbtn {
+	.btn;
+	background-image: none;
+	background-color: transparent;
+	border: 1px solid transparent;
+	opacity: 0.65;
+	filter: alpha(opacity=65);
+}
+
+.xbtn:hover {
+	.btn;
+	opacity: 1.0;
+	filter: alpha(opacity=100);
 }

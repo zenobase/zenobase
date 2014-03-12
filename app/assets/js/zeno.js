@@ -1858,6 +1858,9 @@
 			$scope.intervals = result[$scope.settings.id] || [];
 			$timeout($scope.draw, 0); // delay for correct width
 		};
+		$scope.snapshot = function() {
+			$scope.$broadcast('snapshot');
+		};
 		$scope.draw = function() {
 			if ($scope.intervals && $scope.intervals.length) {
 				var field = Field.find($scope.settings.field);
@@ -1889,7 +1892,9 @@
 							}
 						}
 					},
-					title : null,
+					title : {
+						text : null
+					},
 					xAxis : {
 						categories : [],
 						tickLength : 0
@@ -2243,6 +2248,9 @@
 					filter('[-' + n + 'h..*)');			
 				}
 		};
+		$scope.snapshot = function() {
+			$scope.$broadcast('snapshot');
+		};
 		$scope.draw = function() {
 			if ($scope.times && $scope.times.length || $scope.timesB && $scope.timesB.length) {
 				var type = $scope.settings.statistic === 'count' || $scope.settings.statistic === 'sum' ? 'column' : 'line';
@@ -2277,7 +2285,9 @@
 							}
 						}
 					},
-					title : null,
+					title : {
+						text : null
+					},
 					xAxis : {
 						type : 'datetime',
 						labels : {
@@ -2324,7 +2334,7 @@
 						type : 'arearange',
 						lineWidth : 0,
 						linkedTo : ':previous',
-						fillColor : 'rgba(47, 126, 216, 0.4)',
+						fillColor : 'rgba(47, 126, 216, 0.1)',
 						zIndex: 0
 					}],
 					plotOptions : {
@@ -2371,6 +2381,13 @@
 						}
 					} else {
 						options.series[0].data.push({ x : time.time, y : null });
+						if ($scope.settings.statistic === 'avg') {
+							options.series[1].data.push({ 
+								x : time.time, 
+								low : null, 
+								high : null
+							});
+						}
 					}
 				});
 				if ($scope.timesB && $scope.timesB.length) {
@@ -2396,7 +2413,7 @@
 						type : 'arearange',
 						lineWidth : 0,
 						linkedTo : ':previous',
-						fillColor : 'rgba(204, 102, 0, 0.4)',
+						fillColor : 'rgba(204, 102, 0, 0.1)',
 						zIndex: 0
 					});
 					$.each($scope.timesB, function(i, time) {
@@ -2405,6 +2422,11 @@
 							options.series[2].data.push({ x : time.time, y : field.toNumber(value), filter : time.label, tooltip : field.toText(value) });
 							if ($scope.settings.statistic === 'avg') {
 								options.series[3].data.push([ time.time, field.toNumber(time['min']), field.toNumber(time['max']) ]);
+							}
+						} else {
+							options.series[2].data.push({ x : time.time, y : null });
+							if ($scope.settings.statistic === 'avg') {
+								options.series[3].data.push([ time.time, null, null ]);
 							}
 						}
 					});
@@ -2555,7 +2577,9 @@
 						marginRight : 25,
 						animation : false
 					},
-					title : null,
+					title : {
+						text : null
+					},
 					xAxis : {
 						title : {
 							text : null
@@ -2714,6 +2738,9 @@
 		$scope.filter = function(value) {
 			$scope.addConstraint($scope.keyField + '.' + $scope.settings.interval, value, true);
 		};
+		$scope.snapshot = function() {
+			$scope.$broadcast('snapshot');
+		};
 		$scope.draw = function() {
 			if ($scope.times && $scope.times.length) {
 				var type = $scope.settings.statistic === 'count' || $scope.settings.statistic === 'sum' ? 'column' : 'line';
@@ -2724,7 +2751,9 @@
 						polar: true,
 						animation : false
 					},
-					title : null,
+					title : {
+						text : null
+					},
 					xAxis : {
 						categories : []
 					},
@@ -3071,6 +3100,9 @@
 			$scope.dataB = resultB && resultB[$scope.settings.id] || [];
 			$timeout($scope.draw, 0); // delay for correct width
 		};
+		$scope.snapshot = function() {
+			$scope.$broadcast('snapshot');
+		};
 		$scope.draw = function() {
 			var xField = Field.find($scope.settings.field_x);
 			var yField = Field.find($scope.settings.field_y);
@@ -3081,7 +3113,9 @@
 						zoomType: 'xy',
 						animation : false
 					},
-					title : null,
+					title : {
+						text : null
+					},
 					xAxis : {
 						title : {
 							text : $scope.settings.label_x || $scope.settings.field_x
@@ -3182,7 +3216,9 @@
 							marginLeft : 65,
 							animation : false
 						},
-						title : null,
+						title : {
+							text : null
+						},
 						xAxis : {
 							title : {
 								text : null
@@ -5625,8 +5661,25 @@
 				var defaultOptions = {
 					chart : {
 						renderTo : element[0]
+					},
+					exporting : {
+						enabled : false
 					}
 				};
+				if (attrs.uiSnapshot != undefined) {
+					scope.$on('snapshot', function() {
+						if (scope.chart) {
+							var filename = scope.settings.label.replace(' ', '-').toLowerCase();
+							scope.chart.exportChart({
+								filename : filename,
+								type : 'image/png',
+								sourceWidth : element[0].offsetWidth,
+								sourceHeight : element[0].offsetHeight,
+								scale : 1
+							});
+						}
+					})
+				}
 				scope.$watch(attrs.uiChartOptions, function(newOptions, oldOptions) {
 					if (!angular.equals(newOptions, oldOptions)) {
 						if (oldOptions) {

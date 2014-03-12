@@ -1,8 +1,8 @@
 <div id="{{settings.id}}-content" data-ng-controller="TimelineWidgetController">
 
-	<div class="row-fluid">
-		<div class="pull-right dropdown" data-ng-show="times">
-			<a class="dropdown-toggle" data-toggle="dropdown" title="Filter"> <i class="fa fa-filter"></i><b class="caret"></b></a>
+	<div class="row-fluid" data-ng-show="times">
+		<div class="pull-right dropdown">
+			<a class="xbtn dropdown-toggle" data-toggle="dropdown" title="Filter"> <i class="fa fa-filter"></i><b class="caret"></b></a>
 			<ul class="dropdown-menu" role="menu">
 				<li role="presentation">
 					<a role="menuitem" data-ng-click="filters.thisYear()">this year</a>
@@ -38,10 +38,11 @@
 					<a role="menuitem" data-ng-click="filters.lastHours(24)">last 24 hours</a>
 				</li>
 			</ul>
+			<a class="xbtn" title="Snapshot" data-ng-click="snapshot()"><i class="fa fa-camera"></i></a>
 		</div>
 	</div>
 
-	<div id="{{settings.id}}-chart" data-ui-chart-options="chartOptions" data-ui-id="{{settings.id}}" data-ng-show="times"></div>
+	<div id="{{settings.id}}-chart" data-ui-chart-options="chartOptions" data-ui-id="{{settings.id}}" data-ui-snapshot data-ng-show="times"></div>
 
 	<div data-ng-controller="EffectSizeWidgetController">
 		<div id="{{settings.id}}-r-chart" data-ui-chart-options="rChartOptions" data-ui-id="{{settings.id}}" data-ng-show="statsB"></div>

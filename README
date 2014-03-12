@@ -17,7 +17,7 @@ and append the bootstrap-fileupload, bootstrap-datepicker and bootstrap-timepick
 
 When updating angular-custom.js, append angular-route and angular-sanitize. Remove any "//# sourceMappingURL" lines.
 
-When updating highcharts.js, append highcharts-more.
+When updating highcharts.js, append highcharts-more.js and modules/exporting.js.
 
 
 SSL Trust Store
