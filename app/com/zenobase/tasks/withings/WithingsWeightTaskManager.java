@@ -66,7 +66,7 @@ public class WithingsWeightTaskManager extends OAuthTaskManager {
 		OAuthRequest request = new OAuthRequest(Verb.GET, "http://wbsapi.withings.net/measure");
 		request.addQuerystringParameter("userid", credentials.getScope());
 		request.addQuerystringParameter("action", "getmeas");
-		request.addQuerystringParameter("devtype", "1"); // data from a device
+		request.addQuerystringParameter("category", "1"); // actual measurements
 		if (task.getMarker() != null) {
 			request.addQuerystringParameter("lastupdate", task.getMarker().toString());
 		}
