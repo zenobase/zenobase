@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.measure.DecimalMeasure;
 import javax.measure.quantity.Frequency;
+import javax.measure.quantity.Pressure;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
@@ -22,14 +23,30 @@ public class WithingsCardioResultTest extends ResultTestSupport {
 		assertThat(result.getStatus()).as("status").isEqualTo(0);
 		assertThat(result.getMarker()).as("marker").isEqualTo("1387899568");
 		List<Event> events = result.getEvents();
-		assertThat(events).as("events").hasSize(2);
-		Event expected = new Event(events.get(0).getId());
+		assertThat(events).as("events").hasSize(3);
+		checkFirst(events.get(0));
+		checkLast(events.get(2));
+	}
+
+	private void checkFirst(Event event) {
+		Event expected = new Event(event.getId());
 		expected.setValue(Event.TAG, "heart rate");
 		expected.setValue(Event.FREQUENCY, DecimalMeasure.<Frequency>valueOf("59 bpm"));
 		expected.setValue(Event.TIMESTAMP, DateTime.parse("2013-12-22T22:59:41.000-08:00"));
 		expected.setValue(Event.AUTHOR, TESTER);
 		expected.setValue(Event.SOURCE, WithingsWeightResult.SOURCE);
-		assertThat(events.get(0)).as("first event").isEqualTo(expected);
-		assertThat(events.get(1).getValue(Event.TAG)).as("second event").isEqualTo("heart rate");
+		assertThat(event).as("first event").isEqualTo(expected);
+	}
+
+	private void checkLast(Event event) {
+		Event expected = new Event(event.getId());
+		expected.setValue(Event.TAG, "heart rate");
+		expected.setValue(Event.FREQUENCY, DecimalMeasure.<Frequency>valueOf("80 bpm"));
+		expected.addValue(Event.PRESSURE, DecimalMeasure.<Pressure>valueOf("70 mmHg"));
+		expected.addValue(Event.PRESSURE, DecimalMeasure.<Pressure>valueOf("110 mmHg"));
+		expected.setValue(Event.TIMESTAMP, DateTime.parse("2013-12-17T07:24:27.000-08:00"));
+		expected.setValue(Event.AUTHOR, TESTER);
+		expected.setValue(Event.SOURCE, WithingsWeightResult.SOURCE);
+		assertThat(event).as("last event").isEqualTo(expected);
 	}
 }

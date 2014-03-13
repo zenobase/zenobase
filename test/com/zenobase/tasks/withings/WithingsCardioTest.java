@@ -15,7 +15,7 @@ public class WithingsCardioTest extends TaskTestSupport {
 		ObjectNode settings = Nodes.newObject();
 		settings.put("tag", "cardio");
 		settings.put("timezone", "America/Los_Angeles");
-		settings.put("marker", "2013-12-01");
+		settings.put("marker", "2014-03-01");
 		Task task = manager.newTask(bucketId, principal, settings);
 		print(manager.execute(task, getCredentials()).toJson());
 	}

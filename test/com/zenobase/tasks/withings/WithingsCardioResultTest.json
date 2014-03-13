@@ -57,6 +57,29 @@
                         "unit": 0
                     }
                 ]
+            },
+            {
+                "grpid": 191079335,
+                "attrib": 2,
+                "date": 1387293867,
+                "category": 1,
+                "measures": [
+                    {
+                        "value": 70,
+                        "type": 9,
+                        "unit": 0
+                    },
+                    {
+                        "value": 110,
+                        "type": 10,
+                        "unit": 0
+                    },
+                    {
+                        "value": 80,
+                        "type": 11,
+                        "unit": 0
+                    }
+                ]
             }
         ]
     }

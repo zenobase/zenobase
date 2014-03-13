@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.measure.DecimalMeasure;
 import javax.measure.quantity.Frequency;
+import javax.measure.quantity.Pressure;
 import javax.measure.quantity.Quantity;
 import javax.measure.unit.Unit;
 
@@ -23,7 +24,8 @@ import com.zenobase.models.Resource;
 class WithingsCardioResult {
 
 	private static final Resource SOURCE = new Resource("Withings", "http://withings.com/");
-	private static final Unit<Frequency> UNIT = Measures.parseUnit("bpm");
+	private static final Unit<Frequency> UNIT_BPM = Measures.parseUnit("bpm");
+	private static final Unit<Pressure> UNIT_MMHG = Measures.parseUnit("mmHg");
 
 	private final ObjectNode node;
 	private final Identity author;
@@ -60,8 +62,13 @@ class WithingsCardioResult {
 		int count = 0;
 		for (JsonNode measure : node.path("measures")) {
 			switch (measure.path("type").intValue()) {
+				case 9: // diastolic blood pressure
+				case 10: // systolic blood pressure
+					event.addValue(Event.PRESSURE, getDecimalMeasure(measure, UNIT_MMHG));
+					++count;
+					break;
 				case 11: // heart rate
-					event.setValue(Event.FREQUENCY, getDecimalMeasure(measure, UNIT));
+					event.setValue(Event.FREQUENCY, getDecimalMeasure(measure, UNIT_BPM));
 					++count;
 					break;
 			}
