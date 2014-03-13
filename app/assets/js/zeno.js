@@ -5653,7 +5653,7 @@
 		}
 	}]);
 
-	app.directive('uiChartOptions', function() {
+	app.directive('uiChartOptions', ['tracker', function(tracker) {
 		return {
 			restrict : 'A',
 			scope : true,
@@ -5678,6 +5678,7 @@
 								scale : 1,
 								url : 'https://export.highcharts.com/'
 							});
+							tracker.event('action', 'snapshot');
 						}
 					})
 				}
@@ -5698,7 +5699,7 @@
 				}, true);
 			}
 		};
-	});
+	}]);
 
 	app.directive('uiBucketLabel', ['Bucket', function(Bucket) {
 		return {
