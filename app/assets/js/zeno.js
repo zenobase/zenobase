@@ -190,8 +190,6 @@
 		$scope.alert = new Alert();
 
 		$scope.whoami = function(success) {
-			throw new Error(1);
-
 			$http.get('/who').success(function(response) {
 				$scope.user = response ? new User(response) : null;
 				if ($scope.user) {
