@@ -101,7 +101,7 @@
 		}
 	}]);
 
-	app.factory('tracker', function() {
+	app.factory('tracker', ['$window', function($window) {
 		return {
 			event : function(category, action, label) {
 				_gaq.push([ '_trackEvent', category, action, label ]);
@@ -116,7 +116,7 @@
 				_gaq.push([ '_setCustomVar', index, name, value, scope ]);
 			}
 		};
-	});
+	}]);
 
 	app.factory('timezone', ['moment', function(moment) {
 		return moment().format('Z');
@@ -178,11 +178,20 @@
 		});
 	}]);
 
+	app.factory('$exceptionHandler', ['$log', 'tracker', function($log, tracker) {
+		return function(exception, cause) {
+			$log.error.apply($log, arguments);
+			tracker.event('error', exception.toString());
+		};
+	}]);
+
 	app.controller('ApplicationController', ['$scope', '$route', '$http', '$location', 'Alert', 'User', 'token', 'tracker', 'delay', function($scope, $route, $http, $location, Alert, User, token, tracker, delay) {
 
 		$scope.alert = new Alert();
 
 		$scope.whoami = function(success) {
+			throw new Error(1);
+
 			$http.get('/who').success(function(response) {
 				$scope.user = response ? new User(response) : null;
 				if ($scope.user) {

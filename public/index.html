@@ -205,6 +205,10 @@
 					window._gaq = window._gaq || [];
 					window._gaq.push(['_setAccount', 'UA-32260422-2']);
 					window._gaq.push(['_setSiteSpeedSampleRate', 100]);
+					window.onerror = function(message, file, line) {
+						console.log('error', message, file, line);
+						_gaq.push([ '_trackEvent', 'error', file + ':' + line + '\n\n' + message ]);
+					};
 					window.noop = function() {};
 				})
 				.script("/js/jquery-2.1.0.min.js")
