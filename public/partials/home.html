@@ -1,13 +1,23 @@
 <div id="home-view" class="container-fluid">
 
 	<div class="hero-unit" data-ng-controller="HomeController">
-		<h1 style="text-shadow: white;">What do you want to track today?</h1>
-		<p class="lead">Data storage, aggregation and visualization for personal time-series data.</p>
+		<h1>Got data? Get answers!</h1>
+		<p class="lead">Store, aggregate and visualize your data.</p>
 		<p data-ng-hide="user">
 			<a id="new-user-link" class="btn btn-large btn-primary" data-ng-click="start()">Get Started &raquo;</a>
 		</p>
 		<p data-ng-show="user">
 			<a id="existing-user-link" class="btn btn-large btn-primary" data-ng-href="/#/users/{{user.getName()}}">My Data &raquo;</a>
+		</p>
+		<p class="social" style="text-align: right;">
+			<a href="http://twitter.com/zenobase" title="Twitter"><i class="fa fa-white fa-twitter-square"></i></a>
+			&nbsp;<a href="https://www.facebook.com/zenobase" title="Facebook"><i class="fa fa-white fa-facebook-square"></i></a>
+			&nbsp;<a href="https://plus.google.com/+Zenobase" title="Google+" rel="publisher"><i class="fa fa-white fa-google-plus-square"></i></a>
+			&nbsp;<a href="http://www.linkedin.com/company/2676455" title="LinkedIn"><i class="fa fa-white fa-linkedin-square"></i></a>
+			&nbsp;<a href="http://blog.zenobase.com/" title="Blog"><i class="fa fa-white fa-tumblr-square"></i></a>
+			&nbsp;<a href="https://www.youtube.com/user/zenobase" title="YouTube"><i class="fa fa-white fa-youtube-square"></i></a>
+			&nbsp;<a href="http://www.pinterest.com/zenobase/" title="Pinterest"><i class="fa fa-white fa-pinterest-square"></i></a>
+			&nbsp;<a href="https://github.com/zenobase" title="GitHub"><i class="fa fa-white fa-github-square"></i></a>
 		</p>
 	</div>
 	
