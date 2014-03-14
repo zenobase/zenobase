@@ -8,6 +8,7 @@ import org.joda.time.LocalDate;
 import org.scribe.model.OAuthRequest;
 import org.scribe.model.Response;
 import org.scribe.model.Verb;
+import com.google.common.util.concurrent.RateLimiter;
 
 import com.zenobase.commands.Command;
 import com.zenobase.commands.CompoundCommand;
@@ -20,16 +21,26 @@ import com.zenobase.tasks.Task;
 
 public abstract class FitbitTaskManagerSupport extends OAuthTaskManager {
 
-	protected static final int RATE_LIMIT = 150;
+	private static final RateLimiter RATE_LIMITER = RateLimiter.create(10); // actually 400 per hour per user
 
 	protected FitbitTaskManagerSupport(String type, FitbitCredentialsManager credentialsManager) {
 		super(type, credentialsManager);
+	}
+
+	protected void checkRateLimit() {
+		RATE_LIMITER.acquire();
 	}
 
 	protected LocalDate getLastDate(Task task, OAuthCredentials credentials) {
 		OAuthRequest request = new OAuthRequest(Verb.GET, "https://api.fitbit.com/1/user/-/devices.json");
 		Response response = send(request, credentials);
 		return new FitbitDevicesResult(parseArray(response)).getLastDate();
+	}
+
+	@Override
+	protected Response send(OAuthRequest request, OAuthCredentials credentials) {
+		checkRateLimit();
+		return super.send(request, credentials);
 	}
 
 	protected LocalDate getFromDate(Task task) {
