@@ -36,6 +36,7 @@ public class ScatterPlotFacet extends Facet {
 	private static final Map<String, DurationFieldType> INTERVALS = ImmutableMap.<String, DurationFieldType>builder()
 		.put("year", DurationFieldType.years())
 		.put("month", DurationFieldType.months())
+		.put("week", DurationFieldType.weeks())
 		.put("day", DurationFieldType.days())
 		.put("hour", DurationFieldType.hours())
 		.put("minute", DurationFieldType.minutes())
