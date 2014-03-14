@@ -353,6 +353,15 @@
 				"reverse" : false
 			},
 			{
+				"id" : "histogram",
+				"type" : "histogram",
+				"label" : "Histogram",
+				"placement" : "right",
+				"field" : "frequency",
+				"unit" : "bpm",
+				"interval" : 5
+			},
+			{
 				"id" : "hour_of_day",
 				"type" : "polar",
 				"label" : "Hour of Day",
