@@ -103,11 +103,10 @@ public class SnapshotsResult {
 	}
 
 	private Location locationValue(JsonNode node) {
-		BigDecimal lat = node.path("latitude").decimalValue();
-		BigDecimal lon = node.path("longitude").decimalValue();
-		Preconditions.checkArgument(!BigDecimal.ZERO.equals(lat), "missing latitude");
-		Preconditions.checkArgument(!BigDecimal.ZERO.equals(lon), "missing longitude");
-		return new Location(lat, lon);
+		JsonNode lat = node.path("latitude");
+		JsonNode lon = node.path("longitude");
+		return !lat.isMissingNode() && !lon.isMissingNode()
+			? new Location(lat.decimalValue(), lon.decimalValue()) : null;
 	}
 
 	private DecimalMeasure<Temperature> temperatureValue(JsonNode node) {
