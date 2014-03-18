@@ -1113,15 +1113,15 @@ Content-Type: application/json
 <h4>Count Facet</h4>
 
 <dl>
-	<dt>field=<em>&lt;'tag'|'author'&gt;</em></dt>
+	<dt>field:<em>&lt;'tag'|'author'&gt;</em></dt>
 	<dd>The field to aggregate on. Required.</dd>
-	<dt>order=<em>&lt;'count'|'term'&gt;</em></dt>
+	<dt>order:<em>&lt;'count'|'term'&gt;</em></dt>
 	<dd>Order results by count or alphabetic. Defaults to <em>count</em>.</dd>
-	<dt>offset=<em>&lt;integer&gt;</em></dt>
+	<dt>offset:<em>&lt;integer&gt;</em></dt>
 	<dd>The offset of the first result. Defaults to <em>0</em>.</dd>
-	<dt>limit=<em>&lt;integer&gt;</em></dt>
+	<dt>limit:<em>&lt;integer&gt;</em></dt>
 	<dd>How many results to return. Defaults to <em>10</em>.</dd>
-	<dt>reverse=<em>&lt;boolean&gt;</em></dt>
+	<dt>reverse:<em>&lt;boolean&gt;</em></dt>
 	<dd>Sort in descending order. Defaults to <em>false</em></dd>
 </dl>
 
@@ -1144,15 +1144,15 @@ id:xyz,type:count,field:tag
 <h4>Timeline Facet</h4>
 
 <dl>
-  <dt>field=<em>&lt;String&gt;</em></dt>
+  <dt>field:<em>&lt;String&gt;</em></dt>
   <dd>The field containing the values. Required.</dd>
-  <dt>unit=<em>&lt;String&gt;</em></dt>
+  <dt>unit:<em>&lt;String&gt;</em></dt>
   <dd>The unit of the value. Required for fields with units.</dd>
-  <dt>interval=<em>&lt;'year'|'month'|'day'|'hour'|'minute'&gt;</em></dt>
+  <dt>interval:<em>&lt;'year'|'month'|'day'|'hour'|'minute'&gt;</em></dt>
   <dd>The interval at which values are aggregated. Defaults to <em>month</em>.</dd>
-  <dt>timezone=<em>&lt;Z&gt;</em></dt>
+  <dt>timezone:<em>&lt;Z&gt;</em></dt>
   <dd>Optional timezone offset, e.g.<em>+00:00</em>. If not set, values are aggregated using their local time.</dd>
-  <dt>filter=<em>&lt;constraint&gt;</em></dt>
+  <dt>filter:<em>&lt;constraint&gt;</em></dt>
   <dd>Optional <a href="/#/api/constraints">constraint</a>.</dd>
 </dl>
 
@@ -1176,11 +1176,11 @@ id:xyz,type:timeline,field:count,filter:tag:steps
 <h4>Stats Facet</h4>
 
 <dl>
-  <dt>field=<em>&lt;String&gt;</em></dt>
+  <dt>field:<em>&lt;String&gt;</em></dt>
   <dd>The field containing the values. Required.</dd>
-  <dt>unit=<em>&lt;String&gt;</em></dt>
+  <dt>unit:<em>&lt;String&gt;</em></dt>
   <dd>The unit of the value. Required for fields with units.</dd>
-  <dt>filter=<em>&lt;constraint&gt;</em></dt>
+  <dt>filter:<em>&lt;constraint&gt;</em></dt>
   <dd>Optional <a href="/#/api/constraints">constraint</a>.</dd>
 </dl>
 
@@ -1221,7 +1221,7 @@ id:xyz,type:stats,field:distance,unit:m
 <h4>Map Facet</h4>
 
 <dl>
-  <dt>factor=<em>&lt;Number&gt;</em></dt>
+  <dt>factor:<em>&lt;Number&gt;</em></dt>
   <dd>Controls the clustering, from 0.0 (show each point) to 1.0 (one big cluster). Defaults to <em>0.2</em>.</dd>
 </dl>
 
@@ -1244,9 +1244,9 @@ id:xyz,type:map,factor:0.4
 <h4>Ratings Facet</h4>
 
 <dl>
-  <dt>scale=<em>&lt;Integer&gt;</em></dt>
+  <dt>scale:<em>&lt;Integer&gt;</em></dt>
   <dd>The number of groups to sort the ratings into. Defaults to <em>5</em> (i.e. 0 to 5 stars).</dd>
-  <dt>filter=<em>&lt;constraint&gt;</em></dt>
+  <dt>filter:<em>&lt;constraint&gt;</em></dt>
   <dd>Optional <a href="/#/api/constraints">constraint</a>.</dd>
 </dl>
 
@@ -1272,17 +1272,17 @@ id:xyz,type:ratings
 <h4>Scoreboard Facet</h4>
 
 <dl>
-  <dt>key_field=<em>&lt;'author'|'tag'&gt;</em></dt>
+  <dt>key_field:<em>&lt;'author'|'tag'&gt;</em></dt>
   <dd>The field to aggregate on. Required.</dd>
-  <dt>value_field=<em>&lt;String&gt;</em></dt>
+  <dt>value_field:<em>&lt;String&gt;</em></dt>
   <dd>The field containing the values. Required.</dd>
-  <dt>unit=<em>&lt;String&gt;</em></dt>
+  <dt>unit:<em>&lt;String&gt;</em></dt>
   <dd>The unit of the value. Required for fields with units.</dd>
-  <dt>order=<em>&lt;'count'|'term'&gt;</em></dt>
+  <dt>order:<em>&lt;'count'|'term'&gt;</em></dt>
   <dd>Order results by count or alphabetic. Defaults to <em>count</em>.</dd>
-  <dt>limit=<em>&lt;integer&gt;</em></dt>
+  <dt>limit:<em>&lt;integer&gt;</em></dt>
   <dd>How many results to return. Defaults to <em>10</em>.</dd>
-  <dt>filter=<em>&lt;constraint&gt;</em></dt>
+  <dt>filter:<em>&lt;constraint&gt;</em></dt>
   <dd>Optional <a href="/#/api/constraints">constraint</a>.</dd>
 </dl>
 
@@ -1304,27 +1304,27 @@ id:xyz,type:scoreboard,key_field:author,value_field:steps
 <h4>Scatter Plot Facet</h4>
 
 <dl>
-  <dt>field_x=<em>&lt;String&gt;</em></dt>
+  <dt>field_x:<em>&lt;String&gt;</em></dt>
   <dd>The field for the x series. Required.</dd>
-  <dt>unit_x=<em>&lt;String&gt;</em></dt>
+  <dt>unit_x:<em>&lt;String&gt;</em></dt>
   <dd>The unit for the x series. Required for fields with units.</dd>
-  <dt>statistic_x=<em>&lt;'count'|'avg'|'min'|'max'|'sum'&gt;</em></dt>
+  <dt>statistic_x:<em>&lt;'count'|'avg'|'min'|'max'|'sum'&gt;</em></dt>
   <dd>The aggregate function for the x series. Defaults to <em>avg</em>.</dd>
-  <dt>filter_x=<em>&lt;constraint&gt;</em></dt>
+  <dt>filter_x:<em>&lt;constraint&gt;</em></dt>
   <dd>Optional <a href="/#/api/constraints">constraint</a> for the x series.</dd>
-  <dt>field_y=<em>&lt;String&gt;</em></dt>
+  <dt>field_y:<em>&lt;String&gt;</em></dt>
   <dd>The field for the y series. Required.</dd>
-  <dt>unit_y=<em>&lt;String&gt;</em></dt>
+  <dt>unit_y:<em>&lt;String&gt;</em></dt>
   <dd>The unit for the y series. Required for fields with units.</dd>
-  <dt>statistic_y=<em>&lt;'count'|'avg'|'min'|'max'|'sum'&gt;</em></dt>
+  <dt>statistic_y:<em>&lt;'count'|'avg'|'min'|'max'|'sum'&gt;</em></dt>
   <dd>The aggregate function for the y series. Defaults to <em>avg</em>.</dd>
-  <dt>filter_y=<em>&lt;constraint&gt;</em></dt>
+  <dt>filter_y:<em>&lt;constraint&gt;</em></dt>
   <dd>Optional <a href="/#/api/constraints">constraint</a> for the y series.</dd>
-  <dt>interval=<em>&lt;'year'|'month'|'day'|'hour'|'minute'&gt;</em></dt>
+  <dt>interval:<em>&lt;'year'|'month'|'day'|'hour'|'minute'&gt;</em></dt>
   <dd>The interval at which values are aggregated. Defaults to <em>day</em>.</dd>
-  <dt>timezone=<em>&lt;Z&gt;</em></dt>
+  <dt>timezone:<em>&lt;Z&gt;</em></dt>
   <dd>The timezone offset to use. If not specified, local times are used.</dd>
-  <dt>lag=<em>&lt;Integer&gt;</em></dt>
+  <dt>lag:<em>&lt;Integer&gt;</em></dt>
   <dd>The number of time units (see <i>interval</i>) by which to offset the y series values from the x series values. Defaults to <em>0</em>.</dd>
 </dl>
 
@@ -1348,13 +1348,13 @@ id:xyz,type:scatterplot,field_x:duration,field_y:duration,statistic:sum,interval
 <h4>Gantt Facet</h4>
 
 <dl>
-  <dt>field=<em>&lt;String&gt;</em></dt>
+  <dt>field:<em>&lt;String&gt;</em></dt>
   <dd>The field containing the values. Required.</dd>
-  <dt>order=<em>&lt;'count'|'term'|'min'|'max'&gt;</em></dt>
+  <dt>order:<em>&lt;'count'|'term'|'min'|'max'&gt;</em></dt>
   <dd>Order results by count, alphabetic, or be earliest or latest time. Defaults to <em>term</em>.</dd>
-  <dt>limit=<em>&lt;integer&gt;</em></dt>
+  <dt>limit:<em>&lt;integer&gt;</em></dt>
   <dd>How many results to return. Defaults to <em>10</em>.</dd>
-  <dt>timezone=<em>&lt;Z&gt;</em></dt>
+  <dt>timezone:<em>&lt;Z&gt;</em></dt>
   <dd>The timezone offset to use. Defaults to <em>+00:00</em></dd>
 </dl>
 
@@ -1377,13 +1377,13 @@ id:xyz,type:gantt,field:tag,order:max,timezone:-08:00
 <h4>Histogram Facet</h4>
 
 <dl>
-  <dt>field=<em>&lt;String&gt;</em></dt>
+  <dt>field:<em>&lt;String&gt;</em></dt>
   <dd>The field containing the values. Required.</dd>
-  <dt>unit=<em>&lt;String&gt;</em></dt>
+  <dt>unit:<em>&lt;String&gt;</em></dt>
   <dd>The unit of the value. Required for fields with units.</dd>
-  <dt>interval=<em>&lt;Integer&gt;</em></dt>
+  <dt>interval:<em>&lt;Integer&gt;</em></dt>
   <dd>The bucket size. Defaults to <em>10</em>.</dd>
-  <dt>filter=<em>&lt;constraint&gt;</em></dt>
+  <dt>filter:<em>&lt;constraint&gt;</em></dt>
   <dd>Optional <a href="/#/api/constraints">constraint</a>.</dd>
 </dl>
 
@@ -1406,15 +1406,15 @@ id:xyz,type:histogram,field:distance,unit:mi,interval:5
 <h4>Polar Facet</h4>
 
 <dl>
-  <dt>key_field=<em>&lt;String&gt;</em></dt>
+  <dt>key_field:<em>&lt;String&gt;</em></dt>
   <dd>A field containing a timestamp. Defaults to <em>timestamp</em>.</dd>
-  <dt>value_field=<em>&lt;String&gt;</em></dt>
+  <dt>value_field:<em>&lt;String&gt;</em></dt>
   <dd>A field containing the values to be aggregated. Optional; if not set, only a count is returned for each interval.</dd>
-  <dt>unit=<em>&lt;String&gt;</em></dt>
+  <dt>unit:<em>&lt;String&gt;</em></dt>
   <dd>The unit of the values. Required for fields with units.</dd>
-  <dt>interval=<em>&lt;'hour_of_day'|'day_of_week'|'day_of_month'|'day_of_year'|'month_of_year'&gt;</em></dt>
+  <dt>interval:<em>&lt;'hour_of_day'|'day_of_week'|'day_of_month'|'day_of_year'|'month_of_year'&gt;</em></dt>
   <dd>The (local, timezone-independent) interval to aggregate on. Required.</dd>
-  <dt>filter=<em>&lt;constraint&gt;</em></dt>
+  <dt>filter:<em>&lt;constraint&gt;</em></dt>
   <dd>Optional <a href="/#/api/constraints">constraint</a>.</dd>
 </dl>
 
