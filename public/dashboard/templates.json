@@ -885,6 +885,57 @@
 		]
 	},
 	{
+		"label" : "Sleep (Withings)",
+		"task" : "withings-sleep",
+		"widgets" : [
+			{
+				"id" : "timeline",
+				"type" : "timeline",
+				"label" : "Timeline",
+				"placement" : "top",
+				"field" : "duration",
+				"unit" : null,
+				"statistic" : "avg",
+				"interval" : "month"
+			},
+			{
+				"id" : "latest",
+				"type" : "list",
+				"label" : "Latest",
+				"placement" : "left",
+				"order" : "timestamp",
+				"reverse" : false,
+				"limit" : 10,
+				"singleton" : true
+			},
+			{
+				"id" : "quality",
+				"type" : "ratings",
+				"label" : "Quality",
+				"placement" : "left"
+			},
+			{
+				"id" : "polar",
+				"type" : "polar",
+				"label" : "Bedtime",
+				"placement" : "right",
+				"value_field" : "timestamp",
+				"unit" : null,
+				"statistic" : "count",
+				"interval" : "hour_of_day"
+			},
+			{
+				"id" : "histogram",
+				"type" : "histogram",
+				"label" : "Duration",
+				"placement" : "right",
+				"field" : "duration",
+				"unit" : null,
+				"interval" : 3600000
+			}
+		]
+	},
+	{
 		"label" : "Steps (BodyMedia)",
 		"task" : "bodymedia-steps",
 		"widgets" : [

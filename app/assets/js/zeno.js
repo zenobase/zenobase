@@ -4521,6 +4521,7 @@
 			{ 'id' : 'runkeeper-activities', 'description' : 'Creates an event for each logged activity.' },
 			{ 'id' : 'withings', 'description' : 'Creates an event for each body weight measurement.' },
 			{ 'id' : 'withings-cardio', 'description' : 'Creates an event for each heart rate measurement.' },
+			{ 'id' : 'withings-sleep', 'description' : 'Creates an event for each period of sleep.' },
 			{ 'id' : 'withings-steps', 'description' : 'Creates an event for the number of steps each day (incl distance and elevation).' }
 			// , { 'id' : 'demo', 'description' : 'Creates a single event each time this task is run.' }
 		];
@@ -4798,6 +4799,30 @@
 		};
 		$scope.getUnits = function() {
 			return Field.find('weight').units;
+		};
+
+		$scope.init();
+	}]);
+
+	app.controller('WithingsSleepSettingsController', ['$scope', '$http', 'moment', function($scope, $http, moment) {
+
+		$scope.init = function() {
+			$scope.settings = $scope.$parent.$parent.settings = {
+					tag : 'sleep',
+					marker : new Date(moment().utc().subtract('months', 3).startOf('month').valueOf()),
+					timezone : 'UTC'
+			};
+			$http.get('/tz').success(function(response) {
+				$scope.timezones = response;
+				if (navigator.geolocation) {
+					navigator.geolocation.getCurrentPosition(function(position) {
+						$http.get('/tz?' + $.param({ 'lat' : position.coords.latitude, 'lon' : position.coords.longitude }))
+							.success(function(response) {
+								$scope.settings.timezone = response.timeZoneId;
+							});
+					});
+				}
+			});
 		};
 
 		$scope.init();

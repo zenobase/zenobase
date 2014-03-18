@@ -131,6 +131,7 @@ import com.zenobase.tasks.runkeeper.RunkeeperCredentialsManager;
 import com.zenobase.tasks.runkeeper.RunkeeperTaskManager;
 import com.zenobase.tasks.withings.WithingsCardioTaskManager;
 import com.zenobase.tasks.withings.WithingsCredentialsManager;
+import com.zenobase.tasks.withings.WithingsSleepTaskManager;
 import com.zenobase.tasks.withings.WithingsStepsTaskManager;
 import com.zenobase.tasks.withings.WithingsWeightTaskManager;
 
@@ -257,6 +258,7 @@ public class Global extends GlobalSettings {
 				bindIfConfigured("withings", WithingsCardioTaskManager.class, tasks);
 				bindIfConfigured("withings", WithingsStepsTaskManager.class, tasks);
 				bindIfConfigured("withings", WithingsWeightTaskManager.class, tasks);
+				bindIfConfigured("withings", WithingsSleepTaskManager.class, tasks);
 				bindIfConfigured("bodymedia", BodyMediaSummaryTaskManager.class, tasks); // TODO drop
 				bindIfConfigured("bodymedia", BodyMediaBurnTaskManager.class, tasks);
 				bindIfConfigured("bodymedia", BodyMediaStepsTaskManager.class, tasks);
