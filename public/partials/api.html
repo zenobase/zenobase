@@ -567,7 +567,7 @@ Content-Type: application/json
   "total" : 42,
   "events": [ 
     { 
-      "timestamp" : [ "20121024T13:10:00.000-07:00" ],
+      "timestamp" : "2012-10-24T13:10:00.000-07:00",
       "tag" : [ "lunch", "thai" ],
       "author" : "7ghkds6jar",
       ...
@@ -612,15 +612,13 @@ HTTP/1.1 200 OK
 Content-Type:application/json
 
 { 
-  "timestamp" : [ "20121024T13:10:00.000-07:00" ],
+  "timestamp" : "2012-10-24T13:10:00.000-07:00",
   "tag" : [ "lunch", "thai" ],
-  "rating" : [ 80 ],
-  "resource" : [
-    {
-      "title" : "Tup Tim Thai",
-      "url" : "https://plus.google.com/116718770873870194999"
-    }
-  ],
+  "rating" : 0,
+  "resource" : {
+    "title" : "Tup Tim Thai",
+    "url" : "https://plus.google.com/116718770873870194999"
+  },
   "author" : "7ghkds6jar"
 }
 </pre>
@@ -726,15 +724,13 @@ curl -i -X POST 'https://api.zenobase.com/buckets/v7jg3l5ibc/' \
   -H 'Content-Type: application/json' \
   -H 'Authorization: Bearer e7975e8bb6eabc3ef567' \
   -d '{
-    "timestamp" : [ "20121024T13:10:00.000-07:00" ],
+    "timestamp" : "2012-10-24T13:10:00.000-07:00",
     "tag" : [ "lunch", "thai" ],
-    "rating" : [ 80 ],
-    "resource" : [
-      {
-        "title" : "Tup Tim Thai",
-        "url" : "https://plus.google.com/116718770873870194999"
-      }
-    ]
+    "rating" : 80,
+    "resource" : {
+      "title" : "Tup Tim Thai",
+      "url" : "https://plus.google.com/116718770873870194999"
+    }
   }'
 </pre>
 
@@ -745,15 +741,13 @@ Location: /buckets/v7jg3l5ibc/chd6fmchgs
 X-Command-ID: p3ateetvs1
 
 { 
-  "timestamp" : [ "20121024T13:10:00.000-07:00" ],
+  "timestamp" : [ "2012-10-24T13:10:00.000-07:00" ],
   "tag" : [ "lunch", "thai" ],
-  "rating" : [ 80 ],
-  "resource" : [
-    {
-      "title" : "Tup Tim Thai",
-      "url" : "https://plus.google.com/116718770873870194999"
-    }
-  ],
+  "rating" : 80,
+  "resource" : {
+    "title" : "Tup Tim Thai",
+    "url" : "https://plus.google.com/116718770873870194999"
+  },
   "author" : "7ghkds6jar"
 }
 </pre>
@@ -789,15 +783,13 @@ curl -i -X PUT 'https://api.zenobase.com/buckets/v7jg3l5ibc/chd6fmchgs' \
   -H 'Content-Type: application/json' \
   -H 'Authorization: Bearer e7975e8bb6eabc3ef567' \
   -d '{
-    "timestamp" : [ "20121024T13:10:00.000-07:00" ],
+    "timestamp" : "2012-10-24T13:10:00.000-07:00",
     "tag" : [ "lunch", "thai" ],
-    "rating" : [ 100 ],
-    "resource" : [
-      {
-        "title" : "Tup Tim Thai",
-        "url" : "https://plus.google.com/116718770873870194999"
-      }
-    ]
+    "rating" : 100,
+    "resource" : {
+      "title" : "Tup Tim Thai",
+      "url" : "https://plus.google.com/116718770873870194999"
+    }
   }'
 </pre>
 
