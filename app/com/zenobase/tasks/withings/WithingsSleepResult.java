@@ -9,9 +9,11 @@ import org.joda.time.Duration;
 import play.Logger;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.common.primitives.Ints;
 
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
+import com.zenobase.models.Percentage;
 import com.zenobase.models.Resource;
 
 class WithingsSleepResult {
@@ -56,6 +58,7 @@ class WithingsSleepResult {
 		event.setValue(Event.TAG, tag);
 		event.setValue(Event.TIMESTAMP, begin);
 		event.setValue(Event.DURATION, new Duration(begin, end));
+		event.setValue(Event.PERCENTAGE, percentageValue(node.path("state")));
 		event.setValue(Event.AUTHOR, author);
 		event.setValue(Event.SOURCE, SOURCE);
 		return event;
@@ -63,6 +66,10 @@ class WithingsSleepResult {
 
 	private static DateTime dateTimeValue(JsonNode node, DateTimeZone timezone) {
 		return !node.isMissingNode() ? new DateTime(node.longValue() * 1000L, timezone) : null;
+	}
+
+	private static Percentage percentageValue(JsonNode node) {
+		return Percentage.valueOf(node.intValue() > 0 ? 100 : 0);
 	}
 
 	public static List<Event> merge(List<Event> events) {
@@ -73,6 +80,7 @@ class WithingsSleepResult {
 			DateTime begin = event.getValue(Event.TIMESTAMP);
 			Duration duration = event.getValue(Event.DURATION);
 			if (prev != null && end != null && end.equals(begin)) {
+				prev.setValue(Event.PERCENTAGE, meanPercentage(prev, event));
 				prev.setValue(Event.DURATION, prev.getValue(Event.DURATION).plus(duration));
 				end = end.plus(duration);
 				continue;
@@ -82,5 +90,14 @@ class WithingsSleepResult {
 			end = event.getValue(Event.TIMESTAMP).plus(event.getValue(Event.DURATION));
 		}
 		return merged;
+	}
+
+	private static Percentage meanPercentage(Event left, Event right) {
+		return mean(left.getValue(Event.PERCENTAGE), Ints.checkedCast(left.getValue(Event.DURATION).getStandardSeconds()),
+			right.getValue(Event.PERCENTAGE), Ints.checkedCast(right.getValue(Event.DURATION).getStandardSeconds()));
+	}
+
+	private static Percentage mean(Percentage left, int leftWeight, Percentage right, int rightWeight) {
+		return Percentage.valueOf((left.getValue().intValue() * leftWeight + right.getValue().intValue() * rightWeight) / (leftWeight + rightWeight));
 	}
 }

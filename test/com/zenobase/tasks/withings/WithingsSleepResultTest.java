@@ -10,6 +10,7 @@ import org.joda.time.Duration;
 import org.junit.Test;
 
 import com.zenobase.models.Event;
+import com.zenobase.models.Percentage;
 import com.zenobase.tasks.ResultTestSupport;
 
 public class WithingsSleepResultTest extends ResultTestSupport {
@@ -31,6 +32,7 @@ public class WithingsSleepResultTest extends ResultTestSupport {
 		expected.setValue(Event.TAG, "sleep");
 		expected.setValue(Event.TIMESTAMP, DateTime.parse("2014-03-11T01:39:26.000-07:00"));
 		expected.setValue(Event.DURATION, Duration.standardSeconds(25500));
+		expected.setValue(Event.PERCENTAGE, Percentage.valueOf(98));
 		expected.setValue(Event.AUTHOR, TESTER);
 		expected.setValue(Event.SOURCE, WithingsWeightResult.SOURCE);
 		assertThat(event).as("first event").isEqualTo(expected);
@@ -41,6 +43,7 @@ public class WithingsSleepResultTest extends ResultTestSupport {
 		expected.setValue(Event.TAG, "sleep");
 		expected.setValue(Event.TIMESTAMP, DateTime.parse("2014-03-12T03:35:17.000-07:00"));
 		expected.setValue(Event.DURATION, Duration.standardSeconds(26880));
+		expected.setValue(Event.PERCENTAGE, Percentage.valueOf(96));
 		expected.setValue(Event.AUTHOR, TESTER);
 		expected.setValue(Event.SOURCE, WithingsWeightResult.SOURCE);
 		assertThat(event).as("last event").isEqualTo(expected);

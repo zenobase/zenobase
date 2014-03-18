@@ -703,8 +703,7 @@
 				"field" : "duration",
 				"unit" : null,
 				"statistic" : "avg",
-				"interval" : "month",
-				"filter" : "duration:[1h..*)"
+				"interval" : "week"
 			},
 			{
 				"id" : "latest",
@@ -713,34 +712,59 @@
 				"placement" : "left",
 				"order" : "timestamp",
 				"reverse" : false,
-				"limit" : 10,
+				"limit" : 7,
 				"singleton" : true
 			},
 			{
-				"id" : "quality",
-				"type" : "ratings",
-				"label" : "Quality",
-				"placement" : "left"
-			},
-			{
-				"id" : "polar",
+				"id" : "polar_hour",
 				"type" : "polar",
-				"label" : "Bedtime",
-				"placement" : "right",
+				"label" : "Hours (Begin)",
+				"placement" : "left",
 				"value_field" : "timestamp",
 				"unit" : null,
 				"statistic" : "count",
-				"interval" : "hour_of_day",
-				"filter" : "duration:[1h..*)"
+				"interval" : "hour_of_day"
 			},
 			{
-				"id" : "histogram",
+				"id" : "polar_day_duration",
+				"type" : "polar",
+				"label" : "Days (Duration)",
+				"placement" : "left",
+				"value_field" : "timestamp",
+				"unit" : null,
+				"statistic" : "count",
+				"interval" : "day_of_week"
+			},
+			{
+				"id" : "histogram_duration",
 				"type" : "histogram",
 				"label" : "Duration",
 				"placement" : "right",
 				"field" : "duration",
 				"unit" : null,
 				"interval" : 3600000
+			},
+			{
+				"id" : "quality",
+				"type" : "ratings",
+				"label" : "Efficiency",
+				"placement" : "right"
+			},
+			{
+				"id" : "scatterplot_duration_percentage",
+				"type" : "scatterplot",
+				"label" : "Duration & Efficiency",
+				"placement" : "right",
+				"label_x" : "Duration",
+				"field_x" : "duration",
+				"unit_x" : null,
+				"statistic_x" : "avg",
+				"label_y" : "Efficiency",
+				"field_y" : "rating",
+				"unit_y" : null,
+				"statistic_y" : "avg",
+				"interval" : "day",
+				"regression" : "linear"
 			}
 		]
 	},
@@ -756,8 +780,7 @@
 				"field" : "duration",
 				"unit" : null,
 				"statistic" : "avg",
-				"interval" : "month",
-				"filter" : "duration:[1h..*)"
+				"interval" : "week"
 			},
 			{
 				"id" : "latest",
@@ -766,34 +789,59 @@
 				"placement" : "left",
 				"order" : "timestamp",
 				"reverse" : false,
-				"limit" : 10,
+				"limit" : 7,
 				"singleton" : true
 			},
 			{
-				"id" : "quality",
-				"type" : "ratings",
-				"label" : "Quality",
-				"placement" : "left"
-			},
-			{
-				"id" : "polar",
+				"id" : "polar_hour",
 				"type" : "polar",
-				"label" : "Bedtime",
-				"placement" : "right",
+				"label" : "Hours (Begin)",
+				"placement" : "left",
 				"value_field" : "timestamp",
 				"unit" : null,
 				"statistic" : "count",
-				"interval" : "hour_of_day",
-				"filter" : "duration:[1h..*)"
+				"interval" : "hour_of_day"
 			},
 			{
-				"id" : "histogram",
+				"id" : "polar_day_duration",
+				"type" : "polar",
+				"label" : "Days (Duration)",
+				"placement" : "left",
+				"value_field" : "timestamp",
+				"unit" : null,
+				"statistic" : "count",
+				"interval" : "day_of_week"
+			},
+			{
+				"id" : "histogram_duration",
 				"type" : "histogram",
 				"label" : "Duration",
 				"placement" : "right",
 				"field" : "duration",
 				"unit" : null,
 				"interval" : 3600000
+			},
+			{
+				"id" : "ratings",
+				"type" : "ratings",
+				"label" : "Efficiency",
+				"placement" : "right"
+			},
+			{
+				"id" : "scatterplot_duration_percentage",
+				"type" : "scatterplot",
+				"label" : "Duration & Efficiency",
+				"placement" : "right",
+				"label_x" : "Duration",
+				"field_x" : "duration",
+				"unit_x" : null,
+				"statistic_x" : "avg",
+				"label_y" : "Efficiency",
+				"field_y" : "rating",
+				"unit_y" : null,
+				"statistic_y" : "avg",
+				"interval" : "day",
+				"regression" : "linear"
 			}
 		]
 	},
@@ -802,21 +850,11 @@
 		"importer" : "sleepcycle",
 		"widgets" : [
 			{
-				"id" : "timeline-duration",
+				"id" : "timeline_duration",
 				"type" : "timeline",
-				"label" : "Sleep Duration",
+				"label" : "Timeline",
 				"placement" : "top",
 				"field" : "duration",
-				"unit" : null,
-				"statistic" : "avg",
-				"interval" : "week"
-			},
-			{
-				"id" : "timeline-efficiency",
-				"type" : "timeline",
-				"label" : "Sleep Efficiency",
-				"placement" : "top",
-				"field" : "percentage",
 				"unit" : null,
 				"statistic" : "avg",
 				"interval" : "week"
@@ -828,48 +866,51 @@
 				"placement" : "left",
 				"order" : "timestamp",
 				"reverse" : false,
-				"limit" : 10,
+				"limit" : 7,
 				"singleton" : true
 			},
 			{
-				"id" : "tags",
-				"type" : "count",
-				"label" : "Tags",
-				"placement" : "left",
-				"field" : "tag",
-				"limit" : 10,
-				"order" : "count",
-				"reverse" : false
-			},
-			{
-				"id" : "wakeup",
-				"type" : "ratings",
-				"label" : "Wake Up",
-				"placement" : "left"
-			},
-			{
-				"id" : "polar-start-hour",
+				"id" : "polar_hour",
 				"type" : "polar",
-				"label" : "Start Time",
-				"placement" : "right",
+				"label" : "Hours (Begin)",
+				"placement" : "left",
 				"value_field" : "timestamp",
 				"unit" : null,
 				"statistic" : "count",
 				"interval" : "hour_of_day"
 			},
 			{
-				"id" : "histogram-duration",
+				"id" : "polar_day_duration",
+				"type" : "polar",
+				"label" : "Days (Duration)",
+				"placement" : "left",
+				"value_field" : "timestamp",
+				"unit" : null,
+				"statistic" : "count",
+				"interval" : "day_of_week"
+			},
+			{
+				"id" : "histogram_duration",
 				"type" : "histogram",
-				"label" : "Sleep Duration",
+				"label" : "Duration",
 				"placement" : "right",
 				"field" : "duration",
 				"unit" : null,
 				"interval" : 3600000
 			},
 			{
-				"id" : "duration-efficiency",
+				"id" : "histogram_percentage",
+				"type" : "histogram",
+				"label" : "Efficiency",
+				"placement" : "right",
+				"field" : "percentage",
+				"unit" : null,
+				"interval" : 10
+			},
+			{
+				"id" : "scatterplot_duration_percentage",
 				"type" : "scatterplot",
-				"label" : "Duration-Efficiency",
+				"label" : "Duration & Efficiency",
 				"placement" : "right",
 				"label_x" : "Duration",
 				"field_x" : "duration",
@@ -889,14 +930,14 @@
 		"task" : "withings-sleep",
 		"widgets" : [
 			{
-				"id" : "timeline",
+				"id" : "timeline_duration",
 				"type" : "timeline",
 				"label" : "Timeline",
 				"placement" : "top",
 				"field" : "duration",
 				"unit" : null,
 				"statistic" : "avg",
-				"interval" : "month"
+				"interval" : "week"
 			},
 			{
 				"id" : "latest",
@@ -905,33 +946,62 @@
 				"placement" : "left",
 				"order" : "timestamp",
 				"reverse" : false,
-				"limit" : 10,
+				"limit" : 7,
 				"singleton" : true
 			},
 			{
-				"id" : "quality",
-				"type" : "ratings",
-				"label" : "Quality",
-				"placement" : "left"
-			},
-			{
-				"id" : "polar",
+				"id" : "polar_hour",
 				"type" : "polar",
-				"label" : "Bedtime",
-				"placement" : "right",
+				"label" : "Hours (Begin)",
+				"placement" : "left",
 				"value_field" : "timestamp",
 				"unit" : null,
 				"statistic" : "count",
 				"interval" : "hour_of_day"
 			},
 			{
-				"id" : "histogram",
+				"id" : "polar_day_duration",
+				"type" : "polar",
+				"label" : "Days (Duration)",
+				"placement" : "left",
+				"value_field" : "timestamp",
+				"unit" : null,
+				"statistic" : "count",
+				"interval" : "day_of_week"
+			},
+			{
+				"id" : "histogram_duration",
 				"type" : "histogram",
 				"label" : "Duration",
 				"placement" : "right",
 				"field" : "duration",
 				"unit" : null,
 				"interval" : 3600000
+			},
+			{
+				"id" : "histogram_percentage",
+				"type" : "histogram",
+				"label" : "Efficiency",
+				"placement" : "right",
+				"field" : "percentage",
+				"unit" : null,
+				"interval" : 10
+			},
+			{
+				"id" : "scatterplot_duration_percentage",
+				"type" : "scatterplot",
+				"label" : "Duration & Efficiency",
+				"placement" : "right",
+				"label_x" : "Duration",
+				"field_x" : "duration",
+				"unit_x" : null,
+				"statistic_x" : "avg",
+				"label_y" : "Efficiency",
+				"field_y" : "percentage",
+				"unit_y" : null,
+				"statistic_y" : "avg",
+				"interval" : "day",
+				"regression" : "linear"
 			}
 		]
 	},
