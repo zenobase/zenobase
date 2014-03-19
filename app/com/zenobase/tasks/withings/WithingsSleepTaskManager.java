@@ -63,7 +63,7 @@ public class WithingsSleepTaskManager extends OAuthTaskManager {
 
 	private Command execute(WithingsSleepTask task, OAuthCredentials credentials) {
 		List<Event> events = Lists.newArrayList();
-		for (DateTime from = task.getFrom(); from.isBefore(DateTime.now()); from = from.plusDays(1)) {
+		for (DateTime from = task.getFrom(); from.isBefore(DateTime.now()); from = from.plusWeeks(1)) {
 			events.addAll(execute(task, credentials, from));
 		}
 		return createCommand(task, WithingsSleepResult.merge(events));
@@ -82,7 +82,7 @@ public class WithingsSleepTaskManager extends OAuthTaskManager {
 		request.addQuerystringParameter("action", "get");
 		request.addQuerystringParameter("userid", credentials.getScope());
 		request.addQuerystringParameter("startdate", toString(from));
-		request.addQuerystringParameter("enddate", toString(from.plusDays(1)));
+		request.addQuerystringParameter("enddate", toString(from.plusWeeks(1)));
 		return request;
 	}
 
