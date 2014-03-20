@@ -122,6 +122,7 @@ import com.zenobase.tasks.lastfm.LastFmCredentialsManager;
 import com.zenobase.tasks.lastfm.LastFmTaskManager;
 import com.zenobase.tasks.moves.MovesActivitiesTaskManager;
 import com.zenobase.tasks.moves.MovesCredentialsManager;
+import com.zenobase.tasks.moves.MovesLocateTaskManager;
 import com.zenobase.tasks.moves.MovesPlacesTaskManager;
 import com.zenobase.tasks.netatmo.NetatmoCredentialsManager;
 import com.zenobase.tasks.netatmo.NetatmoTaskManager;
@@ -267,6 +268,7 @@ public class Global extends GlobalSettings {
 				bindIfConfigured("runkeeper", RunkeeperTaskManager.class, tasks);
 				bindIfConfigured("moves", MovesPlacesTaskManager.class, tasks);
 				bindIfConfigured("moves", MovesActivitiesTaskManager.class, tasks);
+				bindIfConfigured("moves", MovesLocateTaskManager.class, tasks);
 				bindIfConfigured("dropbox", ReporterTaskManager.class, tasks);
 				bindIfConfigured("lastfm", LastFmTaskManager.class, tasks);
 				bindIfConfigured("forecast", ForecastTaskManager.class, tasks);

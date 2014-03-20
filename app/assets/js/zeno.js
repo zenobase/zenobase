@@ -4515,6 +4515,7 @@
       { 'id' : 'lastfm-tracks', 'description' : 'Creates an event for each played track.' },
       { 'id' : 'moves-activities', 'description' : 'Creates an event for each logged activity.' },
       { 'id' : 'moves-places', 'description' : 'Creates an event for each visited place.' },
+      { 'id' : 'moves-locate', 'description' : 'Adds locations to events without locations.' },
 			{ 'id' : 'netatmo', 'description' : 'Creates an event for each weather station measurement.' },
 			{ 'id' : 'reporter-questions', 'description' : 'Creates an event for each question answered in the Reporter app.' },
 			{ 'id' : 'rescuetime-productivity', 'description' : 'The productivity score for each hour recorded by RescueTime.' },
@@ -4654,6 +4655,17 @@
 	}]);
 
 	app.controller('MovesPlacesSettingsController', ['$scope', function($scope) {
+
+		$scope.init = function() {
+			$scope.settings = $scope.$parent.$parent.settings = {
+					
+			};
+		};
+
+		$scope.init();
+	}]);
+
+	app.controller('MovesLocateSettingsController', ['$scope', function($scope) {
 
 		$scope.init = function() {
 			$scope.settings = $scope.$parent.$parent.settings = {
