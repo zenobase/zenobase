@@ -4131,6 +4131,22 @@
 		$scope.init();
 	}]);
 
+	app.controller('CreatePhaseFieldController', ['$scope', function($scope) {
+
+		$scope.init = function() {
+			$scope.value = 0.0;
+		};
+		$scope.addField = function() {
+			$scope.event.add($scope.field, $scope.value);
+			$scope.reset();
+		};
+		$scope.valid = function() {
+			return $.isNumeric($scope.value) && $scope.value >= 0 && $scope.value < 1;
+		};
+
+		$scope.init();
+	}]);
+
 	app.controller('CreateCurrencyFieldController', ['$scope', function($scope) {
 
 		$scope.init = function() {
@@ -5175,6 +5191,17 @@
 			toHtml : function(value) {
 				return '<span class="nowrap">' +
 			  	'<i class="fa ' + this.icon + '" title="Percentage"></i> <abbr title="' + value + '%">' + Math.round(value) + '%</abbr>' +
+			  '</span>';
+			}
+		});
+
+		register({
+			name : 'phase',
+			icon : 'fa-moon-o',
+			type : 'numeric',
+			toHtml : function(value) {
+				return '<span class="nowrap">' +
+			  	'<i class="fa ' + this.icon + '" title="Phase"></i> ' + value +
 			  '</span>';
 			}
 		});
