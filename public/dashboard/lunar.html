@@ -1,0 +1,86 @@
+<div id="{{settings.id}}-content" data-ng-controller="LunarWidgetController">
+
+	<div class="row-fluid" data-ng-show="phases">
+		<div class="dropdown pull-right">
+			<a class="xbtn dropdown-toggle" data-toggle="dropdown" title="Filter"> <i class="fa fa-filter"></i><b class="caret"></b></a>
+			<ul class="dropdown-menu" role="menu">
+				<li role="presentation">
+					<a role="menuitem" data-ng-click="filter('[0.000..0.125)')">New Moon</a>
+				</li>
+				<li role="presentation">
+					<a role="menuitem" data-ng-click="filter('[0.125..0.250)')">Waxing Crescent</a>
+				</li>
+				<li role="presentation">
+					<a role="menuitem" data-ng-click="filter('[0.250..0.375)')">First Quarter</a>
+				</li>
+				<li role="presentation">
+					<a role="menuitem" data-ng-click="filter('[0.375..0.500)')">Waxing Gibbous</a>
+				</li>
+				<li role="presentation">
+					<a role="menuitem" data-ng-click="filter('[0.500..0.625)')">Full Moon</a>
+				</li>
+				<li role="presentation">
+					<a role="menuitem" data-ng-click="filter('[0.625..0.750)')">Waning Gibbous</a>
+				</li>
+				<li role="presentation">
+					<a role="menuitem" data-ng-click="filter('[0.750..0.875)')">Last Quarter</a>
+				</li>
+				<li role="presentation">
+					<a role="menuitem" data-ng-click="filter('[0.875..1.000)')">Waning Crescent</a>
+				</li>
+			</ul>
+			<a class="xbtn" title="Snapshot" data-ng-click="snapshot()"><i class="fa fa-camera"></i></a>
+		</div>
+	</div>
+
+	<div id="{{settings.id}}-chart" data-ui-chart-options="chartOptions" data-ui-id="{{settings.id}}" data-ui-snapshot data-ng-show="phases"></div>
+
+	<p data-ng-show="phases == null" class="none">Loading...</p>
+
+	<p data-ng-show="phases.length == 0" class="none">None</p>
+
+	<div class="btn-toolbar">
+		<div class="btn-group"></div>
+	</div>
+
+	<div data-ui-modal="settings.id + '-dialog'" data-ng-controller="LunarWidgetDialogController">
+		<form name="form" class="modal-form">
+			<div class="modal-header">
+				<a class="close" data-dismiss="modal">&times;</a>
+				<h4>Lunar Phase Widget</h4>
+			</div>
+			<div class="modal-body">
+				<div class="control-group">
+					<label class="control-label" for="label">Title</label>
+					<div class="controls form-horizontal">
+						<input name="label" type="text" required min="1" max="20" data-ng-model="settings.label"/>
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label" for="valueField">Values</label>
+					<div class="controls form-horizontal">
+						<select name="statistic" class="input-small" required data-ng-model="settings.statistic" data-ng-options="value for value in getStatistics(settings.value_field)"></select>
+						of <select name="valueField" class="input-medium" data-ng-model="settings.value_field" data-ng-options="field.name as field.name for field in getFields()"></select>
+						<span data-ng-show="getUnits().length"> in <select name="unit" class="input-small" data-ng-model="settings.unit" data-ng-options="unit for unit in getUnits()"></select></span>
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label" for="filter">Filter</label>
+					<div class="controls form-horizontal input-append">
+						<input name="filter" type="text" data-ng-model="settings.filter" data-ui-check-filter="bucket" placeholder="e.g. tag:xyz"/>
+						<span class="add-on">
+							<i class="fa fa-exclamation" title="not valid" data-ng-show="form.filter.$invalid"></i>
+							<i class="fa fa-check" title="valid" data-ng-hide="form.filter.$invalid"></i>
+						</span>
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<a class="pull-left" data-ng-click="removeWidget(settings)" data-dismiss="modal">Remove</a>
+				<button class="btn btn-primary" data-ng-click="save()" data-ng-disabled="!form.$valid || !valid()">Update</button>
+				<button class="btn" data-dismiss="modal">Cancel</button>
+			</div>
+		</form>
+	</div>
+
+</div>

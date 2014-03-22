@@ -44,7 +44,7 @@ public abstract class RangeConstraintBuilderSupport<C extends Comparable<C>> ext
 
 	protected abstract Object getValue(C value);
 
-	private static void checkBoundType(BoundType expected, BoundType actual) {
+	protected static void checkBoundType(BoundType expected, BoundType actual) {
 		Preconditions.checkState(expected == actual, "Expected <%s> but got <%s>", expected, actual);
 	}
 }
