@@ -21,7 +21,6 @@ public class EventSearchBuilder extends SearchBuilderSupport {
 		.put(HistogramFacet.TYPE, HistogramFacet.builder(filterParser))
 		.put(TimelineFacet.TYPE, TimelineFacet.builder(filterParser))
 		.put(PolarFacet.TYPE, PolarFacet.builder(filterParser))
-		.put(PhasesFacet.TYPE, PhasesFacet.builder(filterParser))
 		.put(ScoreboardFacet.TYPE, ScoreboardFacet.builder(filterParser))
 		.put(ScatterPlotFacet.TYPE, ScatterPlotFacet.builder(filterParser))
 		.put(StatsFacet.TYPE, StatsFacet.builder(filterParser))

@@ -941,14 +941,14 @@
 		</div>
 	</script>
 
-	<script id="/create-phase.html" type="text/ng-template">
+	<script id="/create-moon.html" type="text/ng-template">
 		<button class="close" data-ng-click="reset()">&times;</button>
-		<div data-ng-controller="CreatePhaseFieldController">
+		<div data-ng-controller="CreateMoonFieldController">
 			<div class="control-group">
-				<input id="phase-field" name="phase" type="number" min="0.000" max="0.875" step="0.125" data-ng-model="value"/>
+				<input id="moon-field" name="moon" type="number" min="0" max="100" step="1" data-ng-model="value"/> %
 			</div>
 			<div class="control-group">
-				<button id="add-phase-button" class="btn" data-ng-click="addField()" data-ng-disabled="!valid()">Add</button>
+				<button id="add-moon-button" class="btn" data-ng-click="addField()" data-ng-disabled="!valid()">Add</button>
 			</div>
 		</div>
 	</script>

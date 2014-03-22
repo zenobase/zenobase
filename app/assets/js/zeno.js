@@ -1102,13 +1102,6 @@
       	settings : { interval : 'day_of_week', value_field : 'timestamp' }
       },
 	  	{
-      	type : 'lunar',
-      	label : 'Lunar Phase', 
-      	description : 'Plots values by the phase of the moon.',
-      	thumbnail : cacheBuster.rewrite('/img/widgets/polar.png'),
-      	settings : { value_field : 'phase' }
-      },
-	  	{
       	type : 'scatterplot',
       	label : 'Scatter Plot', 
       	description : 'Correlates values from two fields.',
@@ -2895,188 +2888,6 @@
 		});
 	}]);
 
-	app.controller('LunarWidgetController', ['$scope', '$timeout', 'Field', function($scope, $timeout, Field) {
-
-		$scope.keyField = 'phase';
-		var labels = {
-			'1/8' : 'New Moon',
-			'2/8' : 'Waxing Crescent',
-			'3/8' : 'First Quarter',
-			'4/8' : 'Waxing Gibbous',
-			'5/8' : 'Full Moon',
-			'6/8' : 'Waning Gibbous',
-			'7/8' : 'Last Quarter',
-			'8/8' : 'Waning Crescent'
-		};
-
-		$scope.init = function() {
-			$scope.phases = null;
-			$scope.phasesB;
-		};
-		$scope.params = function() {
-			return { 
-				id : $scope.settings.id,
-				type : 'phases',
-				key_field : $scope.keyField,
-				value_field : $scope.settings.value_field || null,
-				unit : $scope.settings.unit || '',
-				phases : 8,
-				filter : $scope.settings.filter || ''
-			};
-		};
-		$scope.refresh = function(options, settings) {
-			$scope.init();
-			$scope.search([ $.extend($scope.params(), options, settings, { type : 'phases' }) ], function(result, resultB) {
-				$.extend($scope, options)
-				$.extend($scope.settings, settings)
-				$scope.update(null, result, resultB);
-			});
-		};
-		$scope.update = function(event, result, resultB) {
-			$scope.phases = result[$scope.settings.id] || [];
-			$scope.phasesB = resultB && resultB[$scope.settings.id] || [];
-			$timeout($scope.draw, 0); // delay for correct width
-		};
-		$scope.filter = function(value) {
-			$scope.addConstraint($scope.keyField, value, true);
-		};
-		$scope.snapshot = function() {
-			$scope.$broadcast('snapshot');
-		};
-		$scope.draw = function() {
-			if ($scope.phases && $scope.phases.length) {
-				var field = Field.find($scope.settings.value_field);
-				var options = {
-					chart : {
-						type : 'column',
-						polar: true,
-						animation : false
-					},
-					title : {
-						text : null
-					},
-					xAxis : {
-						categories : []
-					},
-					yAxis : {
-						title : {
-							text : null
-						}
-					},
-					tooltip : {
-						shared : false,
-						hideDelay : 0,
-						formatter : function() {
-							return '<b>' + this.x + '</b>: ' + (field.toText(this.y) || this.y) + ($scope.settings.unit || '');
-						}
-					},
-					series : [{
-						name : $scope.settings.statistic || 'count',
-						data : []
-					}],
-					plotOptions : {
-						series : {
-							color : 'rgba(47, 126, 216, 0.4)',
-							animation : false,
-							pointPlacement: 'on',
-							cursor : 'pointer',
-							events : {
-								click : function(event) {
-									$scope.$apply(function() {
-										var point = $scope.phases[event.point.x];
-										$scope.filter('[' + point.from + '..' + point.to + ')');
-									});
-								}
-							}
-						},
-						column : {
-							pointPadding: 0,
-							groupPadding: 0
-						}
-					},
-					legend : {
-						enabled : false
-					},
-					credits: {
-						enabled: false
-					}
-				};
-				if ($scope.settings.placement === 'top') {
-					options.chart.height = 150;
-				}
-				$.each($scope.phases, function(i, phase) {
-					var value = phase[$scope.settings.statistic || 'count'];
-					options.xAxis.categories.push(labels[phase.label]);
-					options.series[0].data.push(value !== undefined ? field.toNumber(value) : 0);
-				});
-				if ($scope.phasesB && $scope.phasesB.length) {
-					options.series.push({
-						name : $scope.settings.statistic || 'count',
-						data : [],
-						color: 'rgba(204, 102, 0, 0.4)'
-					});
-					$.each($scope.phasesB, function(i, phase) {
-						var value = phase[$scope.settings.statistic || 'count'];
-						options.xAxis.categories.push(labels[phase.label]);
-						options.series[1].data.push(value !== undefined ? field.toNumber(value) : 0);
-					});
-				}
-				field.formatAxis(options.yAxis);
-				$scope.chartOptions = options;
-			}
-		};
-	
-		$scope.init();
-		$scope.register($scope);
-		$scope.$on('result', $scope.update);
-		$scope.$on('refresh', $scope.init);
-	}]);
-
-	app.controller('LunarWidgetDialogController', ['$scope', 'WidgetDialogControllerSupport', 'Field', function($scope, WidgetDialogControllerSupport, Field) {
-
-		WidgetDialogControllerSupport($scope);
-
-		function isUnitValid() {
-			var units = $scope.getUnits();
-			return units.length === 0
-				? $scope.settings.unit === null
-				: $.inArray($scope.settings.unit, units) != -1;
-		};
-		function isStatisticValid() {
-			return $.grep($scope.getStatistics($scope.settings.value_field), function(statistic) {
-				return $scope.settings.statistic === statistic;
-			}).length > 0;
-		};
-
-		$scope.getFields = function() {
-			var fields = Field.findByType('numeric');
-			fields.unshift(Field.find($scope.keyField));
-			return fields;
-		};
-		$scope.getStatistics = function(field) {
-			return field === $scope.keyField ? [ 'count' ] : [ 'sum', 'avg', 'min', 'max' ];
-		};
-		$scope.getUnits = function() {
-			var valueField = Field.find($scope.settings.value_field);
-			return valueField ? valueField.units : [];
-		};
-		$scope.getIntervals = function() {
-			return Interval.VALUES;
-		};
-		$scope.valid = function() {
-			return isUnitValid() && isStatisticValid();
-		};
-
-		$scope.$watch('settings.value_field', function() {
-			if (!isUnitValid()) {
-				$scope.settings.unit = null;
-			}
-			if (!isStatisticValid()) {
-				$scope.settings.statistic = $scope.getStatistics($scope.settings.value_field)[0];
-			}
-		});
-	}]);
-
 
 	/**
 	 * Based on https://github.com/virtualstaticvoid/highcharts_trendline
@@ -4319,17 +4130,17 @@
 		$scope.init();
 	}]);
 
-	app.controller('CreatePhaseFieldController', ['$scope', function($scope) {
+	app.controller('CreateMoonFieldController', ['$scope', function($scope) {
 
 		$scope.init = function() {
-			$scope.value = 0.0;
+			$scope.value = 0;
 		};
 		$scope.addField = function() {
 			$scope.event.add($scope.field, $scope.value);
 			$scope.reset();
 		};
 		$scope.valid = function() {
-			return $.isNumeric($scope.value) && $scope.value >= 0 && $scope.value < 1;
+			return $.isNumeric($scope.value);
 		};
 
 		$scope.init();
@@ -5384,12 +5195,12 @@
 		});
 
 		register({
-			name : 'phase',
+			name : 'moon',
 			icon : 'fa-moon-o',
 			type : 'numeric',
 			toHtml : function(value) {
 				return '<span class="nowrap">' +
-			  	'<i class="fa ' + this.icon + '" title="Phase"></i> ' + value +
+			  	'<i class="fa ' + this.icon + '" title="Moon"></i> ' + value + '%'
 			  '</span>';
 			}
 		});
