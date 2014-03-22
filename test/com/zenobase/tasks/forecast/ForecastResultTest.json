@@ -19,5 +19,37 @@
         "visibility": 11.46,
         "cloudCover": 1,
         "pressure": 1024.18
+    },
+   "daily": {
+        "data": [
+            {
+                "time": 1362038400,
+                "summary": "Rain in the morning and overnight.",
+                "icon": "rain",
+                "sunriseTime": 1362063152,
+                "sunsetTime": 1362102839,
+                "moonPhase": 0.63,
+                "precipIntensity": 0.2413,
+                "precipIntensityMax": 1.11,
+                "precipIntensityMaxTime": 1362049200,
+                "precipProbability": 1,
+                "precipType": "rain",
+                "temperatureMin": 6.64,
+                "temperatureMinTime": 1362060000,
+                "temperatureMax": 11.65,
+                "temperatureMaxTime": 1362096000,
+                "apparentTemperatureMin": 5.04,
+                "apparentTemperatureMinTime": 1362049200,
+                "apparentTemperatureMax": 11.65,
+                "apparentTemperatureMaxTime": 1362096000,
+                "dewPoint": 7.91,
+                "humidity": 0.93,
+                "windSpeed": 2.18,
+                "windBearing": 155,
+                "visibility": 14.53,
+                "cloudCover": 1,
+                "pressure": 1024.41
+            }
+        ]
     }
 }

@@ -1,6 +1,7 @@
 package com.zenobase.tasks.forecast;
 
 import java.util.List;
+import java.util.Set;
 
 import javax.inject.Inject;
 
@@ -9,9 +10,12 @@ import org.elasticsearch.search.sort.SortOrder;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.ReadableInstant;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Range;
+import com.google.common.collect.Sets;
 
 import com.zenobase.commands.Command;
 import com.zenobase.commands.CompoundCommand;
@@ -43,9 +47,19 @@ public class ForecastTaskManager extends TaskManager {
 
 	@Override
 	public Task newTask(String bucketId, Identity principal, ObjectNode settings) {
-		return new ForecastTask(bucketId, principal, settings.path("si").booleanValue(), settings.path("tags").booleanValue());
+		return new ForecastTask(bucketId, principal, textValues(settings.path("fields")), settings.path("si").booleanValue());
 	}
 
+	private static Set<String> textValues(JsonNode node) {
+		Set<String> values = Sets.newHashSet();
+		for (JsonNode itemNode : node) {
+			String value = itemNode.textValue();
+			Preconditions.checkNotNull(value, "invalid fields setting: " + node);
+			values.add(value);
+		}
+		Preconditions.checkArgument(!values.isEmpty(), "no fields set");
+		return values;
+	}
 	@Override
 	public Command execute(Task task) {
 		return execute(task.as(ForecastTask.class));
@@ -64,7 +78,7 @@ public class ForecastTaskManager extends TaskManager {
 		for (ObjectNode node : objects.getValues(result)) {
 			Event event = new Event(node);
 			DateTime timestamp = event.getValue(Event.TIMESTAMP);
-			Event updated = update(event, timestamp, task.useStandardUnits(), task.addTags());
+			Event updated = update(event, timestamp, task.getFields(), task.useStandardUnits());
 			if (marker == null || marker.isBefore(timestamp)) {
 				marker = timestamp;
 			}
@@ -75,14 +89,14 @@ public class ForecastTaskManager extends TaskManager {
 		return createCommand(task, marker, updates);
 	}
 
-	private Event update(Event event, DateTime timestamp, boolean standardUnits, boolean addTags) {
+	private Event update(Event event, DateTime timestamp, Set<String> fields, boolean standardUnits) {
 		Location location = event.getValue(Event.LOCATION);
 		if (location == null) {
 			return null;
 		}
-		Forecast forecast = forecaster.find(location, timestamp, standardUnits);
+		Forecast forecast = forecaster.find(location, timestamp, fields, standardUnits);
 		Event updated = event.copy();
-		forecast.apply(updated, addTags);
+		forecast.apply(updated, fields);
 		return updated;
 	}
 

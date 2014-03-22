@@ -1,5 +1,7 @@
 package com.zenobase.tasks.forecast;
 
+import java.util.Set;
+
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -13,6 +15,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.util.concurrent.RateLimiter;
 
 import com.zenobase.json.Nodes;
+import com.zenobase.models.Event;
 import com.zenobase.models.Location;
 
 public class Forecaster {
@@ -25,9 +28,9 @@ public class Forecaster {
 		this.apiKey = apiKey;
 	}
 
-	public Forecast find(Location location, DateTime time, boolean standardUnits) {
+	public Forecast find(Location location, DateTime time, Set<String> fields, boolean standardUnits) {
 		rateLimit.acquire();
-		WSRequestHolder request = newRequest(location, time, standardUnits);
+		WSRequestHolder request = newRequest(location, time, fields.contains(Event.MOON.getName()), standardUnits);
 		Response response = request.get().get(10000L);
 		Preconditions.checkState(response.getStatus() == 200,
 			"Couldn't request <%s>: %s", response.getUri(), response.getBody());
@@ -35,12 +38,16 @@ public class Forecaster {
 		return new ForecastResult(node, standardUnits).get(time);
 	}
 
-	private WSRequestHolder newRequest(Location location, DateTime time, boolean standardUnits) {
+	private WSRequestHolder newRequest(Location location, DateTime time, boolean includeDaily, boolean standardUnits) {
 		String url = String.format("https://api.forecast.io/forecast/%s/%s,%s,%s",
 			apiKey, location.getLatitude(), location.getLongitude(),
 			time.toString(ISODateTimeFormat.dateTimeNoMillis()));
+		String exclude = "minutely,hourly,alerts,flags";
+		if (!includeDaily) {
+			exclude += ",daily";
+		}
 		return WS.url(url)
 			.setQueryParameter("units", standardUnits ? "si" : "us")
-			.setQueryParameter("exclude", "minutely,hourly,daily,alerts,flags");
+			.setQueryParameter("exclude", exclude);
 	}
 }

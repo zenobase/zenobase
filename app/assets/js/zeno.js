@@ -4523,7 +4523,7 @@
       { 'id' : 'foursquare', 'description' : 'Creates an event for each check-in.' },
 			{ 'id' : 'fitbit-sleep', 'description' : 'Creates an event for each period of sleep.' },
 			{ 'id' : 'fitbit-steps', 'description' : 'Creates an event for the number of steps each day (incl distance and elevation, if available).' },
-			{ 'id' : 'forecast', 'description' : 'Adds weather conditions to events with locations.' },
+			{ 'id' : 'forecast', 'description' : 'Adds weather conditions and moon phase to events with locations.' },
 			{ 'id' : 'bodymedia-burn', 'description' : 'Creates an event for the number of calories burned each hour.' },
 			{ 'id' : 'bodymedia-sleep', 'description' : 'Creates an event for each period of sleep.' },
 			{ 'id' : 'bodymedia-steps', 'description' : 'Creates an event for the number of steps each hour.' },
@@ -4765,17 +4765,27 @@
 		$scope.init();
 	}]);
 
-	app.controller('ForecastSettingsController', ['$scope', function($scope) {
+	app.controller('ForecastSettingsController', ['$scope', '$timeout', function($scope, $timeout) {
 
-		$scope.si = true;
-
+		$scope.selected = function(field) {
+			return $scope.settings.fields.indexOf(field) != -1;
+		};
+		$scope.toggle = function(field) {
+			var i = $scope.settings.fields.indexOf(field);
+			if (i != -1) {
+				$scope.settings.fields.splice(i, 1);
+			} else {
+				$scope.settings.fields.push(field);
+			}
+			$scope.count = $scope.settings.fields.length || undefined;
+		};
 		$scope.init = function() {
+			$scope.count = undefined;
 			$scope.settings = $scope.$parent.$parent.settings = {
-					tags : true,
-					si : $scope.si
+					fields : [],
+					si : true
 			};
 		};
-
 		$scope.init();
 	}]);
 
@@ -5200,7 +5210,7 @@
 			type : 'numeric',
 			toHtml : function(value) {
 				return '<span class="nowrap">' +
-			  	'<i class="fa ' + this.icon + '" title="Moon"></i> ' + value + '%'
+			  	'<i class="fa ' + this.icon + '" title="Moon"></i> ' + value + '%' +
 			  '</span>';
 			}
 		});

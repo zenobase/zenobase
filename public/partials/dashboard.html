@@ -469,13 +469,28 @@
 	<script id="/forecast-settings.html" type="text/ng-template">
 		<div data-ng-controller="ForecastSettingsController">
 			<div class="control-group">
+				<label class="control-label">Fields</label>
 				<label class="checkbox">
-					<input type="checkbox" data-ng-model="settings.tags"/> add tags (e.g. Clear, Mostly Cloudy)
+					<input type="checkbox" data-ng-checked="selected('tag')" data-ng-click="toggle('tag')"/> tag (e.g. Clear, Mostly Cloudy)
 				</label>
+				<label class="checkbox">
+					<input type="checkbox" data-ng-checked="selected('temperature')" data-ng-click="toggle('temperature')"/> temperature (C or F)
+				</label>
+				<label class="checkbox">
+					<input type="checkbox" data-ng-checked="selected('pressure')" data-ng-click="toggle('pressure')"/> air pressure (hPa)
+				</label>
+				<label class="checkbox">
+					<input type="checkbox" data-ng-checked="selected('humidity')" data-ng-click="toggle('humidity')"/> humidity (%)
+				</label>
+				<label class="checkbox">
+					<input type="checkbox" data-ng-checked="selected('moon')" data-ng-click="toggle('moon')"/> moon phase (%)
+				</label>
+				<input type="hidden" data-ng-model="count" required/>
 			</div>
 			<div class="control-group">
+				<label class="control-label">Units</label>
 				<label class="checkbox">
-					<input type="checkbox" data-ng-model="settings.si"/> use standard units (i.e. Celsius instead of Fahrenheit)
+					<input type="checkbox" data-ng-model="settings.si"/> use standard units (i.e. C instead of Fahrenheit)
 				</label>
 			</div>
 		</div>

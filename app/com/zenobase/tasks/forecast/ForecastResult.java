@@ -15,6 +15,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import com.zenobase.common.Measures;
+import com.zenobase.models.Percentage;
 
 public class ForecastResult {
 
@@ -27,15 +28,12 @@ public class ForecastResult {
 	}
 
 	public Forecast get(DateTime time) {
-		return parse(node.path("currently"));
-	}
-
-	private Forecast parse(JsonNode node) {
-		String tag = node.path("summary").textValue();
-		DecimalMeasure<Temperature> temperature = measureValue(node.path("temperature"), getTemperatureUnit());
-		DecimalMeasure<Pressure> pressure = measureValue(node.path("pressure"), getPressureUnit());
-		Integer humidity = percentValue(node.path("humidity"));
-		return new Forecast(tag, temperature, pressure, humidity);
+		String tag = node.path("currently").path("summary").textValue();
+		DecimalMeasure<Temperature> temperature = measureValue(node.path("currently").path("temperature"), getTemperatureUnit());
+		DecimalMeasure<Pressure> pressure = measureValue(node.path("currently").path("pressure"), getPressureUnit());
+		Integer humidity = percentValue(node.path("currently").path("humidity"));
+		Percentage moon = lunationValue(node.path("daily").path("data").path(0).path("moonPhase"));
+		return new Forecast(tag, temperature, pressure, humidity, moon);
 	}
 
 	private Unit<Temperature> getTemperatureUnit() {
@@ -59,5 +57,13 @@ public class ForecastResult {
 			return null;
 		}
 		return node.decimalValue().movePointRight(2).intValue();
+	}
+
+	private static Percentage lunationValue(JsonNode node) {
+		return !node.isMissingNode() ? moonPhaseToPercentage(node.doubleValue()) : null;
+	}
+
+	static Percentage moonPhaseToPercentage(double value) {
+		return Percentage.valueOf((int) (100 - (200 * Math.abs(0.5 - value))));
 	}
 }

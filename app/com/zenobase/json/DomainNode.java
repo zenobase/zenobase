@@ -66,6 +66,11 @@ public class DomainNode {
 		return node != null ? child.getValue(node) : null;
 	}
 
+	protected <T> Iterable<T> getValues(ObjectField parent, Field<T> child) {
+		ObjectNode node = getValue(parent);
+		return node != null ? child.getValues(node) : null;
+	}
+
 	public <T> void setValue(ObjectField parent, Field<T> child, T value) {
 		ObjectNode node = getValue(parent);
 		if (node == null) {
@@ -73,6 +78,15 @@ public class DomainNode {
 			setValue(parent, node);
 		}
 		child.setValue(node, value);
+	}
+
+	public <T> void setValues(ObjectField parent, Field<T> child, Iterable<T> values) {
+		ObjectNode node = getValue(parent);
+		if (node == null) {
+			node = Nodes.newObject();
+			setValue(parent, node);
+		}
+		child.setValues(node, values);
 	}
 
 	public ObjectNode toJson() {

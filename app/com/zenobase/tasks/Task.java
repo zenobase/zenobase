@@ -106,8 +106,16 @@ public class Task extends DomainNode {
 		return getValue(SETTINGS, field);
 	}
 
+	protected <T> Iterable<T> getSettings(Field<T> field) {
+		return getValues(SETTINGS, field);
+	}
+
 	protected <T> void setSetting(Field<T> field, T value) {
 		setValue(SETTINGS, field, value);
+	}
+
+	protected <T> void setSettings(Field<T> field, Iterable<T> values) {
+		setValues(SETTINGS, field, values);
 	}
 
 	public boolean isPermitted(Authorization auth) {
