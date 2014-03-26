@@ -5203,6 +5203,10 @@
 				return '<span class="nowrap">' +
 			  	'<i class="fa ' + this.icon + '" title="Percentage"></i> <abbr title="' + value + '%">' + Math.round(value) + '%</abbr>' +
 			  '</span>';
+			},
+			formatAxis : function(options) {
+				options.min = 0;
+				options.max = 100;
 			}
 		});
 
@@ -5214,6 +5218,10 @@
 				return '<span class="nowrap">' +
 			  	'<i class="fa ' + this.icon + '" title="Moon"></i> ' + value + '%' +
 			  '</span>';
+			},
+			formatAxis : function(options) {
+				options.min = 0;
+				options.max = 100;
 			}
 		});
 
@@ -5371,6 +5379,7 @@
 			},
 			formatAxis : function(options) {
 				options.type = 'datetime';
+				options.min = 0;
 				options.labels = {
 					formatter : function() {
 						return this.value != 0 ? moment.duration(this.value).countdown(2) : '0'; 
