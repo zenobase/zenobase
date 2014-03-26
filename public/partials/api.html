@@ -13,6 +13,12 @@ please <a href="mailto:info@zenobase.com?subject=Zenobase+API">drop us a note</a
 <h3>Changelog</h3>
 
 <dl>
+	<dt>2014-03-26</dt>
+	<dd>
+		<ul>
+			<li>added the humidity, moon and percentage fields</li>
+		</ul>
+	</dd>
 	<dt>2013-12-25</dt>
 	<dd>
 		<ul>
@@ -664,25 +670,28 @@ Authorization: Bearer <em>&lt;access_token&gt;</em>
     "@value" : <em>&lt;Number&gt;</em>,
     "unit" : <em>&lt;"mi" | "ft" | "in" | "km" | "m" | "cm" | "mm"&gt;</em>
   },
+  "humidity" : <em>&lt;(0..100)&gt;</em>,
   "location" : {
     "lat" : <em>&lt;Number&gt;</em>,
     "lon" : <em>&lt;Number&gt;</em>
   },
   "note" : <em>&lt;String&gt;</em>,
+  "moon" : <em>&lt;(0..100)&gt;</em>,
+  "percentage" : <em>&lt;(0..100)&gt;</em>,
   "pressure" : {
     "@value" : <em>&lt;Number&gt;</em>,
     "unit" : <em>&lt;"Pa" | "hPa" | "mmHg" | "inHg" | "psi"&gt;</em>    
+  },
+  "rating" : <em>&lt;(0..100)&gt;</em>,
+  "resource" : {
+    "title" : <em>&lt;String&gt;</em>,
+    "url" : <em>&lt;URL&gt;</em>
   },
   "sound" : {
     "@value" : <em>&lt;Number&gt;</em>,
     "unit" : "dB"    
   },
   "source" : {
-    "title" : <em>&lt;String&gt;</em>,
-    "url" : <em>&lt;URL&gt;</em>
-  },
-  "rating" : <em>&lt;(0..100)&gt;</em>,
-  "resource" : {
     "title" : <em>&lt;String&gt;</em>,
     "url" : <em>&lt;URL&gt;</em>
   },
