@@ -1463,7 +1463,7 @@
 		};
 		$scope.swapAB = function() {
 			var tmp = $scope.constraints;
-			$scope.constraints = $scope.constraintsB;
+			$scope.constraints = $scope.constraintsB.length ? $scope.constraintsB : angular.copy($scope.constraints);
 			$scope.constraintsB = tmp;
 			$location.search(params());
 			tracker.event('action', 'A/B test');
