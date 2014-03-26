@@ -5098,6 +5098,8 @@
 		Field.findByType = function(type) {
 			return $.grep(fields, function(field) {
 				return field.type === type;
+			}).sort(function(a, b) {
+				return a.name > b.name ? 1 : -1;
 			});
 		}
 
