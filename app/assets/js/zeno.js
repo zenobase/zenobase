@@ -2313,7 +2313,10 @@
 						tickLength : 5,
 						tickWidth : 1,
 						lineWidth : 0,
-						gridLineWidth : 0
+						gridLineWidth : 0,
+						startOnTick : false,
+						min : field.minValue,
+						max : field.maxValue
 					},
 					tooltip : {
 						crosshairs : false,
@@ -2766,7 +2769,9 @@
 					yAxis : {
 						title : {
 							text : null
-						}
+						},
+						min : field.minValue,
+						max : field.maxValue
 					},
 					tooltip : {
 						shared : false,
@@ -3129,7 +3134,10 @@
 						tickLength : 5,
 						tickWidth : 1,
 						lineWidth : 0,
-						gridLineWidth : 0
+						gridLineWidth : 0,
+						startOnTick : false,
+						min : xField.minValue,
+						max : yField.maxValue
 					},
 					yAxis : {
 						title : {
@@ -3138,7 +3146,10 @@
 						tickLength : 5,
 						tickWidth : 1,
 						lineWidth : 0,
-						gridLineWidth : 0
+						gridLineWidth : 0,
+						startOnTick : false,
+						min : xField.minValue,
+						max : yField.maxValue
 					},
 					tooltip : {
 						crosshairs : false,
@@ -5053,7 +5064,7 @@
 		var fields = [];
 		var fieldsByName = {};
 
-		var Field = function(name, icon, type, units, readOnly, toText, toHtml, toNumber, formatAxis) {
+		var Field = function(name, icon, type, units, readOnly, toText, toHtml, toNumber, formatAxis, minValue, maxValue) {
 			this.name = name;
 			this.icon = icon;
 			this.type = type;
@@ -5063,6 +5074,8 @@
 			this.toHtml = toHtml;
 			this.toNumber = toNumber;
 			this.formatAxis = formatAxis;
+			this.minValue = minValue;
+			this.maxValue = maxValue;
 		}
 
 		var toNumber = function(value) {
@@ -5118,7 +5131,9 @@
 				fieldOptions.toText || function(value) { return value; }, 
 				fieldOptions.toHtml || function(value) { return value; },
 				fieldOptions.toNumber || toNumber,
-				fieldOptions.formatAxis || function(options) { }
+				fieldOptions.formatAxis || function(options) { },
+				fieldOptions.minValue,
+				fieldOptions.maxValue
 			);
 			fields.push(field); 
 			fieldsByName[field.name] = field; 
@@ -5204,10 +5219,8 @@
 			  	'<i class="fa ' + this.icon + '" title="Percentage"></i> <abbr title="' + value + '%">' + Math.round(value) + '%</abbr>' +
 			  '</span>';
 			},
-			formatAxis : function(options) {
-				options.min = 0;
-				options.max = 100;
-			}
+			minValue : 0,
+			maxValue : 100
 		});
 
 		register({
@@ -5219,10 +5232,8 @@
 			  	'<i class="fa ' + this.icon + '" title="Moon"></i> ' + value + '%' +
 			  '</span>';
 			},
-			formatAxis : function(options) {
-				options.min = 0;
-				options.max = 100;
-			}
+			minValue : 0,
+			maxValue : 100
 		});
 
 		register({
@@ -5379,13 +5390,13 @@
 			},
 			formatAxis : function(options) {
 				options.type = 'datetime';
-				options.min = 0;
 				options.labels = {
 					formatter : function() {
 						return this.value != 0 ? moment.duration(this.value).countdown(2) : '0'; 
 					}
 				};
-			}
+			},
+			minValue : 0
 		});
 
 		register({
@@ -5426,7 +5437,8 @@
 				return '<span class="nowrap">' +
 			  	'<i class="fa ' + this.icon + '" title="Count"></i> ' + value +
 			  '</span>';
-			}
+			},
+			minValue : 0
 		});
 
 		register({
