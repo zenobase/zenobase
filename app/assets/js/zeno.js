@@ -1061,7 +1061,7 @@
       },
       {
       	type : 'heatmap',
-      	label : 'Heatmap', 
+      	label : 'Map', 
       	description : 'Shows the density of events on a map.',
       	thumbnail : cacheBuster.rewrite('/img/widgets/heatmap.png'),
       	settings : { }
