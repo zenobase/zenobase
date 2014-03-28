@@ -3137,7 +3137,7 @@
 						gridLineWidth : 0,
 						startOnTick : false,
 						min : xField.minValue,
-						max : yField.maxValue
+						max : xField.maxValue
 					},
 					yAxis : {
 						title : {
@@ -3148,7 +3148,7 @@
 						lineWidth : 0,
 						gridLineWidth : 0,
 						startOnTick : false,
-						min : xField.minValue,
+						min : yField.minValue,
 						max : yField.maxValue
 					},
 					tooltip : {
