@@ -433,6 +433,17 @@
 		</div>
 	</script>
 
+	<script id="/strava-activities-settings.html" type="text/ng-template">
+		<div data-ng-controller="StravaSettingsController">
+			<div class="control-group">
+				<label class="control-label">Units</label>
+				<label class="checkbox">
+					<input type="checkbox" data-ng-model="settings.metric"/> use metric units
+				</label>
+			</div>
+		</div>
+	</script>
+
 	<script id="/reporter-questions-settings.html" type="text/ng-template">
 		<div data-ng-controller="ReporterSettingsController">
 			<div class="control-group">

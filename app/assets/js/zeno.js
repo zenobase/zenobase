@@ -4546,6 +4546,7 @@
 			{ 'id' : 'reporter-questions', 'description' : 'Creates an event for each question answered in the Reporter app.' },
 			{ 'id' : 'rescuetime-productivity', 'description' : 'The productivity score for each hour recorded by RescueTime.' },
 			{ 'id' : 'runkeeper-activities', 'description' : 'Creates an event for each logged activity.' },
+			{ 'id' : 'strava-activities', 'description' : 'Creates an event for each logged activity.' },
 			{ 'id' : 'withings', 'description' : 'Creates an event for each body weight measurement.' },
 			{ 'id' : 'withings-cardio', 'description' : 'Creates an event for each heart rate measurement.' },
 			{ 'id' : 'withings-sleep', 'description' : 'Creates an event for each period of sleep.' },
@@ -4735,6 +4736,18 @@
 		};
 		$scope.getUnits = function() {
 			return Field.find('distance').units;
+		};
+
+		$scope.init();
+	}]);
+
+	app.controller('StravaSettingsController', ['$scope', 'moment', function($scope, moment) {
+
+		$scope.init = function() {
+			$scope.settings = $scope.$parent.$parent.settings = {
+					metric : false,
+					marker : new Date(moment().utc().subtract('months', 3).startOf('month').valueOf())
+			};
 		};
 
 		$scope.init();

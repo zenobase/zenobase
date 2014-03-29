@@ -130,6 +130,8 @@ import com.zenobase.tasks.reporter.ReporterTaskManager;
 import com.zenobase.tasks.rescuetime.RescueTimeProductivityTaskManager;
 import com.zenobase.tasks.runkeeper.RunkeeperCredentialsManager;
 import com.zenobase.tasks.runkeeper.RunkeeperTaskManager;
+import com.zenobase.tasks.strava.StravaCredentialsManager;
+import com.zenobase.tasks.strava.StravaTaskManager;
 import com.zenobase.tasks.withings.WithingsCardioTaskManager;
 import com.zenobase.tasks.withings.WithingsCredentialsManager;
 import com.zenobase.tasks.withings.WithingsSleepTaskManager;
@@ -244,6 +246,7 @@ public class Global extends GlobalSettings {
 				bindIfConfigured("bodymedia", BodyMediaCredentialsManager.class, credentials);
 				bindIfConfigured("netatmo", NetatmoCredentialsManager.class, credentials);
 				bindIfConfigured("runkeeper", RunkeeperCredentialsManager.class, credentials);
+				bindIfConfigured("strava", StravaCredentialsManager.class, credentials);
 				bindIfConfigured("moves", MovesCredentialsManager.class, credentials);
 				bindIfConfigured("dropbox", DropboxCredentialsManager.class, credentials);
 				bindIfConfigured("lastfm", LastFmCredentialsManager.class, credentials);
@@ -266,6 +269,7 @@ public class Global extends GlobalSettings {
 				bindIfConfigured("bodymedia", BodyMediaSleepTaskManager.class, tasks);
 				bindIfConfigured("netatmo", NetatmoTaskManager.class, tasks);
 				bindIfConfigured("runkeeper", RunkeeperTaskManager.class, tasks);
+				bindIfConfigured("strava", StravaTaskManager.class, tasks);
 				bindIfConfigured("moves", MovesPlacesTaskManager.class, tasks);
 				bindIfConfigured("moves", MovesActivitiesTaskManager.class, tasks);
 				bindIfConfigured("moves", MovesLocateTaskManager.class, tasks);
