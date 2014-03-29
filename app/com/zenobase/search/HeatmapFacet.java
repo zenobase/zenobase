@@ -9,6 +9,7 @@ import org.elasticsearch.search.builder.SearchSourceBuilder;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.common.base.Preconditions;
 
 import com.zenobase.json.Nodes;
 import com.zenobase.models.Event;
@@ -22,6 +23,7 @@ public class HeatmapFacet extends Facet {
 
 	private HeatmapFacet(String id, String field, int precision) {
 		super(id);
+		Preconditions.checkArgument(precision >= 1 && precision <= 10, "invalid precision value: %d", precision);
 		this.field = field;
 		this.precision = precision;
 	}
