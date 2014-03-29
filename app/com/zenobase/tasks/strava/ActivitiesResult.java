@@ -77,7 +77,7 @@ class ActivitiesResult {
 	}
 
 	private Location locationValue(JsonNode node) {
-		if (node.isMissingNode()) {
+		if (node.isMissingNode() || node.isNull()) {
 			return null;
 		}
 		Preconditions.checkState(node.size() == 2, "expected a node with a latitude and a longitude: <%s>", node);

@@ -51,7 +51,7 @@ public class StravaTaskManager extends OAuthTaskManager {
 			if (from != null) {
 				request.addQuerystringParameter("after", Long.toString(from.getMillis() / 1000));
 			}
-			request.addQuerystringParameter("per_page", "20");
+			request.addQuerystringParameter("per_page", "100");
 			request.addQuerystringParameter("page", Integer.toString(i + 1));
 			Response response = send(request, credentials);
 			ActivitiesResult result = new ActivitiesResult(parseArray(response), task.getPrincipal(), task.isMetric());
