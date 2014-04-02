@@ -16,6 +16,13 @@
 				<li role="presentation" data-ng-show="settings.interval == 'month_of_year'">
 					<a role="menuitem" data-ng-click="filter('[10..12]')">Oct - Dec</a>
 				</li>
+				<li class="divider" data-ng-show="settings.interval == 'month_of_year'"></li>
+				<li role="presentation" data-ng-show="settings.interval == 'month_of_year'">
+					<a role="menuitem" data-ng-click="filter('[4..9]')">Apr - Sep</a>
+				</li>
+				<li role="presentation" data-ng-show="settings.interval == 'month_of_year'">
+					<a role="menuitem" data-ng-click="filter('-[4..9]')">Oct - Mar</a>
+				</li>
 				<li role="presentation" data-ng-show="settings.interval == 'day_of_month'">
 					<a role="menuitem" data-ng-click="filter('[1..16)')">1st - 15th</a>
 				</li>
