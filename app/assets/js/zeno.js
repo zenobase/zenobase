@@ -2314,9 +2314,9 @@
 						tickWidth : 1,
 						lineWidth : 0,
 						gridLineWidth : 0,
-						startOnTick : false,
-						min : field.minValue,
-						max : field.maxValue
+						startOnTick : false
+						// min : field.minValue,
+						// max : field.maxValue
 					},
 					tooltip : {
 						crosshairs : false,
@@ -2769,9 +2769,9 @@
 					yAxis : {
 						title : {
 							text : null
-						},
-						min : field.minValue,
-						max : field.maxValue
+						}
+						// min : field.minValue,
+						// max : field.maxValue
 					},
 					tooltip : {
 						shared : false,
@@ -3135,9 +3135,9 @@
 						tickWidth : 1,
 						lineWidth : 0,
 						gridLineWidth : 0,
-						startOnTick : false,
-						min : xField.minValue,
-						max : xField.maxValue
+						startOnTick : false
+						// min : xField.minValue,
+						// max : xField.maxValue
 					},
 					yAxis : {
 						title : {
@@ -3147,9 +3147,9 @@
 						tickWidth : 1,
 						lineWidth : 0,
 						gridLineWidth : 0,
-						startOnTick : false,
-						min : yField.minValue,
-						max : yField.maxValue
+						startOnTick : false
+						// min : yField.minValue,
+						// max : yField.maxValue
 					},
 					tooltip : {
 						crosshairs : false,
