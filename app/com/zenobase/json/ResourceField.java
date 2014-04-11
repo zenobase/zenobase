@@ -8,13 +8,15 @@ import com.zenobase.models.Resource;
 
 public class ResourceField extends Field<Resource> {
 
-	private final NestedField<String> titleField = nest(new TextField("title"));
-	private final NestedField<String> urlField = nest(new TokenField("url", true));
+	private Field<String> titleField;
+	private Field<String> urlField;
 
 	public ResourceField(String name) {
 		super(name, Resource.class, "object");
-		titleField.addConstraintBuilders(name, this);
-		urlField.addConstraintBuilders(name, this);
+		titleField = new TextField(concat(name, "title"), "title");
+		urlField = new TokenField(concat(name, "url"), "url", true);
+		addAll(titleField.getConstraintBuilders());
+		addAll(urlField.getConstraintBuilders());
 	}
 
 	@Override

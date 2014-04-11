@@ -6,6 +6,7 @@ import org.junit.Before;
 import org.junit.Test;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
+import com.zenobase.json.ResourceField;
 import com.zenobase.models.Event;
 import com.zenobase.models.Resource;
 
@@ -13,14 +14,15 @@ public class ResourceConstraintBuilderTest extends ConstraintBuilderTestSupport 
 
 	@Before
 	public void addEvents() {
-		addEvent("Zenobase", "https://zenobase.com/");
-		addEvent("Zenobase Blog", "http://blog.zenobase.com/");
-		addEvent("Quantified Self", "http://quantifiedself.com/");
+		addEvent(Event.RESOURCE, "Zenobase", "https://zenobase.com/");
+		addEvent(Event.RESOURCE, "Zenobase Blog", "http://blog.zenobase.com/");
+		addEvent(Event.RESOURCE, "Quantified Self", "http://quantifiedself.com/");
+		addEvent(Event.SOURCE, "Test", "http://test/");
 	}
 
-	private void addEvent(String title, String url) {
+	private void addEvent(ResourceField field, String title, String url) {
 		Event event = new Event();
-		event.setValue(Event.RESOURCE, new Resource(title, url));
+		event.setValue(field, new Resource(title, url));
 		addEvent(event);
 	}
 
@@ -36,6 +38,20 @@ public class ResourceConstraintBuilderTest extends ConstraintBuilderTestSupport 
 		addConstraint("resource.title:%s", "zenobase");
 		ObjectNode result = execute();
 		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(2);
+	}
+
+	@Test
+	public void testSearchTitleWithMissingTerm() {
+		addConstraint("resource.title:%s", "test");
+		ObjectNode result = execute();
+		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(0);
+	}
+
+	@Test
+	public void testSearchSourceTitleWithTerm() {
+		addConstraint("source.title:%s", "test");
+		ObjectNode result = execute();
+		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(1);
 	}
 
 	@Test

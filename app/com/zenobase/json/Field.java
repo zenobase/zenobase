@@ -16,15 +16,25 @@ import com.zenobase.search.ConstraintBuilder;
 
 public abstract class Field<T> {
 
+	private final String path;
 	private final String name;
 	private final Type type;
 	private final String schemaType;
 	private final Multimap<String, ConstraintBuilder> constraintBuilders = ArrayListMultimap.create();
 
 	protected Field(String name, Type type, String schemaType) {
+		this(name, name, type, schemaType);
+	}
+
+	protected Field(String path, String name, Type type, String schemaType) {
+		this.path = path;
 		this.name = name;
 		this.type = type;
 		this.schemaType = schemaType;
+	}
+
+	public String getPath() {
+		return path;
 	}
 
 	public final String getName() {
@@ -37,10 +47,6 @@ public abstract class Field<T> {
 
 	public final String getSchemaType() {
 		return schemaType;
-	}
-
-	public String getPath() {
-		return name;
 	}
 
 	public final T getValue(ObjectNode node) {
@@ -160,6 +166,12 @@ public abstract class Field<T> {
 
 	protected final void addConstraintBuilder(String path, ConstraintBuilder constraint) {
 		constraintBuilders.put(path, constraint);
+	}
+
+	protected final void addAll(Multimap<String, ConstraintBuilder> constraints) {
+		for (Map.Entry<String, ConstraintBuilder> entry : constraints.entries()) {
+			addConstraintBuilder(entry.getKey(), entry.getValue());
+		}
 	}
 
 	protected final void copyConstraintBuilders(Field<?> target) {
