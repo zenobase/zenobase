@@ -1,7 +1,5 @@
 package com.zenobase.json;
 
-import com.zenobase.json.IntegerField;
-
 import org.junit.Test;
 
 public class IntegerFieldTest extends FieldTestSupport {
