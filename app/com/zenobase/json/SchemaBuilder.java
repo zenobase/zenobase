@@ -41,13 +41,13 @@ public class SchemaBuilder {
 	}
 
 	private void configureTypeField() {
-		ObjectNode sourceNode = type.putObject("_type");
-		sourceNode.put("index", "no");
+		ObjectNode node = type.putObject("_type");
+		node.put("index", "no");
 	}
 
 	private void configureAllField() {
-		ObjectNode sourceNode = type.putObject("_all");
-		sourceNode.put("enabled", false);
+		ObjectNode node = type.putObject("_all");
+		node.put("enabled", false);
 	}
 
 	private void configureTimestampField() {
