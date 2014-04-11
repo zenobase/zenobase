@@ -13,6 +13,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.zenobase.common.Measures;
 import com.zenobase.search.MeasureConstraintBuilder;
 import com.zenobase.search.MeasureRangeConstraintBuilder;
+import com.zenobase.search.TermConstraintBuilder;
 
 public class MeasurementField<Q extends Quantity> extends Field<DecimalMeasure<Q>> {
 
@@ -24,6 +25,7 @@ public class MeasurementField<Q extends Quantity> extends Field<DecimalMeasure<Q
 		super(name, DecimalMeasure.class.getGenericSuperclass(), "object");
 		addConstraintBuilder(name, new MeasureRangeConstraintBuilder(getPath()));
 		addConstraintBuilder(name, new MeasureConstraintBuilder(getPath()));
+		addConstraintBuilder(concat(name, UNIT.getName()), new TermConstraintBuilder(concat(name, UNIT.getName())));
 	}
 
 	@Override

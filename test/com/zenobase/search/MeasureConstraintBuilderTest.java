@@ -4,9 +4,9 @@ import static com.zenobase.testing.NodeAssert.assertThat;
 
 import javax.measure.quantity.Length;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.junit.Before;
 import org.junit.Test;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import com.zenobase.common.Measures;
 import com.zenobase.models.Event;
@@ -32,6 +32,13 @@ public class MeasureConstraintBuilderTest extends ConstraintBuilderTestSupport {
 		addConstraint("%s:%s", Event.DISTANCE, "4 km");
 		ObjectNode result = execute();
 		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(2);
+	}
+
+	@Test
+	public void testUnitEqualsConstraint() {
+		addConstraint("%s.unit:%s", Event.DISTANCE, "km");
+		ObjectNode result = execute();
+		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(3);
 	}
 
 	@Test
