@@ -169,7 +169,7 @@
 					<form name="form" data-ng-submit="save()" class="modal-form">
 						<div class="modal-header">
 							<a class="close" data-dismiss="modal">&times;</a>
-							<h4>{{user.getName()}}</h4>
+							<h4>{{user.name}}</h4>
 						</div>
 						<div class="modal-body">
 							<div id="edit-quota-message" class="alert alert-error" data-ng-show="message">
@@ -177,7 +177,7 @@
 							</div>
 							<div class="control-group">
 								<label for="quota-field">Quota</label>
-								<input id="quota-field" name="quota" type="number" min="0" class="xlarge" required data-ui-focus-on="openDialog:edit-quota-dialog" data-ng-model="quota"/>
+								<input id="quota-field" name="quota" type="number" min="0" class="xlarge" data-ui-focus-on="openDialog:edit-quota-dialog" data-ng-model="quota"/>
 							</div>
 						</div>
 						<div class="modal-footer">

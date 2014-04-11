@@ -192,7 +192,7 @@
 			$scope.quota = user.quota;
 		};
 		$scope.save = function() {
-			$http.post('/users/@' + $scope.user.name, { 'quota' : $scope.quota })
+			$http.post('/users/@' + $scope.user.name, { 'quota' : $.isNumeric($scope.quota) ? $scope.quota : null })
 				.success(function(response) {
 					$scope.closeDialog();
 					delay($scope.reload);

@@ -25,7 +25,7 @@ public class IntegerField extends Field<Integer> {
 
 	@Override
 	protected Integer getValue(JsonNode node) {
-		return node.intValue();
+		return node.isNumber() ? node.intValue() : null;
 	}
 
 	@Override

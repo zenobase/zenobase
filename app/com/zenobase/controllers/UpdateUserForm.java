@@ -64,6 +64,10 @@ public class UpdateUserForm extends DomainNode {
 		return getValue(EXPIRES);
 	}
 
+	public boolean hasQuota() {
+		return contains(QUOTA);
+	}
+
 	public Integer getQuota() {
 		return getValue(QUOTA);
 	}

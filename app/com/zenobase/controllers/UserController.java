@@ -82,7 +82,7 @@ public class UserController extends ControllerSupport {
     	if (form.isVerified()) {
     		return updateVerified(form, user);
     	}
-    	if (form.getQuota() != null) {
+    	if (form.hasQuota()) {
     		return updateQuota(form, user);
     	}
     	if (form.isSuspended() != null) {
