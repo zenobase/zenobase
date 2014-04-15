@@ -2201,7 +2201,7 @@
 				var interval = Interval.match(prefix) || Interval.matchRange(prefix) || Interval.matchSymbol(prefix);
 				if (interval) {
 					$scope.interval = interval;
-					$scope.range = prefix;
+					// $scope.range = prefix; // doesn't handle OR constraints
 				}
 			}
 			return { 
@@ -2228,6 +2228,27 @@
 			$scope.timesB = resultB && resultB[$scope.settings.id] || [];
 			$timeout($scope.draw, 1); // delay for correct width
 		};
+		function toRanges(times) {
+			var ranges = [];
+			var begin = null;
+			var length = 0;
+			$.each(times, function(i, time) {
+				if (time.count > 0) {
+					begin = begin || time.value;
+					++length;
+				} else {
+					if (begin != null) {
+						ranges.push(length === 1 ? begin : '[' + begin + '..' + time.value + ')');
+						begin = null;
+						length = 0;
+					}
+				}
+			});
+			if (begin != null) {
+				ranges.push(length === 1 ? begin : '[' + begin + '..*)');
+			}
+			return ranges;
+		}
 		$scope.filters = {
 				thisYear : function() {
 					filter(moment().format('YYYY'));			
@@ -2260,29 +2281,19 @@
 					filter('[-' + n + 'h..*)');			
 				},
 				select : function(offset) {
-					var ranges = [];
-					var begin = null;
-					var length = 0;
+					var times = [];
 					for (var i = 0; i < $scope.times.length; ++i) {
 						if (i + offset >= 0 && i + offset < $scope.times.length) {
-							var count = $scope.times[i].count;
-							var value = $scope.times[i + offset].label;
-							if (count > 0) {
-								begin = begin || value;
-								++length;
-							} else {
-								if (begin != null) {
-									ranges.push(length === 1 ? begin : '[' + begin + '..' + value + ')');
-									begin = null;
-									length = 0;
-								}
-							}
+							times.push({
+								value : $scope.times[i + offset].label,
+								count : $scope.times[i].count
+							});
 						}
 					}
-					if (begin != null) {
-						ranges.push(length === 1 ? begin : '[' + begin + '..*)');
+					var ranges = toRanges(times);
+					if (ranges.length) {
+						filter(ranges.join(' OR '));			
 					}
-					filter(ranges.join(' OR '));			
 				}
 		};
 		$scope.snapshot = function() {
