@@ -3,6 +3,7 @@ package com.zenobase.search;
 import java.util.List;
 
 import org.elasticsearch.index.query.BoolFilterBuilder;
+import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.FilterBuilder;
 import org.elasticsearch.index.query.FilterBuilders;
 import org.elasticsearch.index.query.QueryBuilder;
@@ -42,17 +43,30 @@ public class FilterBuilderSupport {
 		String[] tokens = expression.split(":", 2);
 		Preconditions.checkArgument(tokens.length == 2, "Can't parse constraint: " + expression);
 		String field = tokens[0];
-		String value = tokens[1];
+		String[] values = tokens[1].split(" OR ");
 		boolean negated = false;
 		if (field.startsWith("-")) {
 			negated = true;
 			field = field.substring(1);
 		}
-		for (ConstraintBuilder constraint : constraintBuilders.get(field)) {
-			QueryBuilder builder = constraint.build(value);
-			if (builder != null) {
-				return addConstraint(builder, negated);
+		List<QueryBuilder> builders = Lists.newArrayList();
+		for (String value : values) {
+			for (ConstraintBuilder constraint : constraintBuilders.get(field)) {
+				QueryBuilder builder = constraint.build(value);
+				if (builder != null) {
+					builders.add(builder);
+					break;
+				}
 			}
+		}
+		if (builders.size() == 1) {
+			return addConstraint(builders.get(0), negated);
+		} else if (builders.size() > 1) {
+			BoolQueryBuilder or = new BoolQueryBuilder();
+			for (QueryBuilder builder : builders) {
+				or.should(builder);
+			}
+			return addConstraint(or, negated);
 		}
 		throw new IllegalArgumentException("Don't know what to do with constraint: " + expression);
 	}

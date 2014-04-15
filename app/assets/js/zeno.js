@@ -331,6 +331,11 @@
 			return (this.negated ? '-' : '') + this.field + separator + this.value;
 		};
 
+		Constraint.prototype.shortValue = function() {
+			var p = this.value.indexOf(' OR ');
+			return p === -1 ? this.value : this.value.substring(0, p) + '...';
+		};
+
 		Constraint.parse = function(s) {
 			var negated = false;
 			if (s.length > 1 && s.charAt(0) == '-') {
@@ -2253,6 +2258,31 @@
 				},
 				lastHours : function(n) {
 					filter('[-' + n + 'h..*)');			
+				},
+				select : function(offset) {
+					var ranges = [];
+					var begin = null;
+					var length = 0;
+					for (var i = 0; i < $scope.times.length; ++i) {
+						if (i + offset >= 0 && i + offset < $scope.times.length) {
+							var count = $scope.times[i].count;
+							var value = $scope.times[i + offset].label;
+							if (count > 0) {
+								begin = begin || value;
+								++length;
+							} else {
+								if (begin != null) {
+									ranges.push(length === 1 ? begin : '[' + begin + '..' + value + ')');
+									begin = null;
+									length = 0;
+								}
+							}
+						}
+					}
+					if (begin != null) {
+						ranges.push(length === 1 ? begin : '[' + begin + '..*)');
+					}
+					filter(ranges.join(' OR '));			
 				}
 		};
 		$scope.snapshot = function() {

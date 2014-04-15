@@ -57,7 +57,7 @@
 				<li class="active" data-ng-repeat="constraint in constraints">
 					<a title="{{constraint.toString()}}">
 						<i class="fa fa-minus fa-white" data-ng-show="constraint.negated"></i> 
-						<i class="fa fa-white" data-ng-class="getConstraintIcon(constraint)" data-ng-click="invertConstraint(constraint)"></i> {{constraint.value}} 
+						<i class="fa fa-white" data-ng-class="getConstraintIcon(constraint)" data-ng-click="invertConstraint(constraint)"></i> {{constraint.shortValue()}} 
 						<i class="fa fa-times fa-white" data-ng-click="removeConstraint(constraint)"></i>
 					</a>
 				</li>
@@ -65,7 +65,7 @@
 				<li class="active active-b" data-ng-repeat="constraint in constraintsB">
 					<a title="{{constraint.toString()}}">
 						<i class="fa fa-minus fa-white" data-ng-show="constraint.negated"></i> 
-						<i class="fa fa-white" data-ng-class="getConstraintIcon(constraint)" data-ng-click="invertConstraintB(constraint)"></i> {{constraint.value}} 
+						<i class="fa fa-white" data-ng-class="getConstraintIcon(constraint)" data-ng-click="invertConstraintB(constraint)"></i> {{constraint.shortValue()}} 
 						<i class="fa fa-times fa-white" data-ng-click="removeConstraintB(constraint)"></i>
 					</a>
 				</li>

@@ -37,6 +37,16 @@
 				<li role="presentation">
 					<a role="menuitem" data-ng-click="filters.lastHours(24)">last 24 hours</a>
 				</li>
+				<li class="divider"></li>
+				<li role="presentation">
+					<a role="menuitem" data-ng-click="filters.select(0)">select {{interval.name}}s</a>
+				</li>
+				<li role="presentation">
+					<a role="menuitem" data-ng-click="filters.select(-1)">select previous {{interval.name}}s</a>
+				</li>
+				<li role="presentation">
+					<a role="menuitem" data-ng-click="filters.select(1)">select following {{interval.name}}s</a>
+				</li>
 			</ul>
 			<a class="xbtn" title="Snapshot" data-ng-click="snapshot()"><i class="fa fa-camera"></i></a>
 		</div>
