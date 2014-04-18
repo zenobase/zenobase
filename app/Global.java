@@ -127,6 +127,7 @@ import com.zenobase.tasks.moves.MovesPlacesTaskManager;
 import com.zenobase.tasks.netatmo.NetatmoCredentialsManager;
 import com.zenobase.tasks.netatmo.NetatmoTaskManager;
 import com.zenobase.tasks.reporter.ReporterTaskManager;
+import com.zenobase.tasks.rescuetime.RescueTimeCredentialsManager;
 import com.zenobase.tasks.rescuetime.RescueTimeProductivityTaskManager;
 import com.zenobase.tasks.runkeeper.RunkeeperCredentialsManager;
 import com.zenobase.tasks.runkeeper.RunkeeperTaskManager;
@@ -250,6 +251,7 @@ public class Global extends GlobalSettings {
 				bindIfConfigured("moves", MovesCredentialsManager.class, credentials);
 				bindIfConfigured("dropbox", DropboxCredentialsManager.class, credentials);
 				bindIfConfigured("lastfm", LastFmCredentialsManager.class, credentials);
+				bindIfConfigured("rescuetime", RescueTimeCredentialsManager.class, credentials);
 				bind(CredentialsManagerRegistry.class).in(Singleton.class);
 
 				Multibinder<TaskManager> tasks = Multibinder.newSetBinder(binder(), new TypeLiteral<TaskManager>() {});

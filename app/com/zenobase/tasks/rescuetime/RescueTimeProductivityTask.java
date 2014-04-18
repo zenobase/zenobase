@@ -14,7 +14,6 @@ import com.zenobase.tasks.Task;
 public class RescueTimeProductivityTask extends Task {
 
 	public static final String TYPE = "rescuetime-productivity";
-	public static final TokenField KEY = new TokenField("key");
 	public static final TokenField TAG = new TokenField("tag");
 	public static final TokenField TIMEZONE = new TokenField("timezone");
 
@@ -22,20 +21,15 @@ public class RescueTimeProductivityTask extends Task {
 		super(node);
 	}
 
-	public RescueTimeProductivityTask(String bucketId, Identity principal, String key, String tag, DateTimeZone timezone) {
-		this(bucketId, principal, key, tag, timezone, null);
+	public RescueTimeProductivityTask(String bucketId, Identity principal, String tag, DateTimeZone timezone) {
+		this(bucketId, principal, tag, timezone, null);
 	}
 
-	RescueTimeProductivityTask(String bucketId, Identity principal, String key, String tag, DateTimeZone timezone, String marker) {
+	RescueTimeProductivityTask(String bucketId, Identity principal, String tag, DateTimeZone timezone, String marker) {
 		super(TYPE, bucketId, principal);
-		setSetting(KEY, checkNotNull(key));
 		setSetting(TAG, checkNotNull(tag));
 		setSetting(TIMEZONE, timezone.getID());
 		setMarker(marker);
-	}
-
-	public String getKey() {
-		return getSetting(KEY);
 	}
 
 	public String getTag() {

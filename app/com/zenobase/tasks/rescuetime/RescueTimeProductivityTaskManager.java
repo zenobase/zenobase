@@ -3,14 +3,15 @@ package com.zenobase.tasks.rescuetime;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
-import play.Logger;
-import play.libs.WS;
-import play.libs.WS.Response;
-import play.libs.WS.WSRequestHolder;
+import org.scribe.model.OAuthRequest;
+import org.scribe.model.Response;
+import org.scribe.model.Verb;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
@@ -22,26 +23,26 @@ import com.zenobase.commands.Command;
 import com.zenobase.commands.CompoundCommand;
 import com.zenobase.commands.CreateEventCommand;
 import com.zenobase.commands.UpdateTaskCommand;
-import com.zenobase.json.Nodes;
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
+import com.zenobase.tasks.OAuthCredentials;
+import com.zenobase.tasks.OAuthTaskManager;
 import com.zenobase.tasks.Task;
-import com.zenobase.tasks.TaskManager;
 
-public class RescueTimeProductivityTaskManager extends TaskManager {
+public class RescueTimeProductivityTaskManager extends OAuthTaskManager {
 
 	private final RateLimiter rateLimit = RateLimiter.create(10);
 
-	public RescueTimeProductivityTaskManager() {
-		super(RescueTimeProductivityTask.TYPE);
+	@Inject
+	public RescueTimeProductivityTaskManager(RescueTimeCredentialsManager credentialsManager) {
+		super(RescueTimeProductivityTask.TYPE, credentialsManager);
 	}
 
 	@Override
 	public Task newTask(String bucketId, Identity principal, ObjectNode settings) {
-		String key = settings.path("key").textValue();
 		String tag = Objects.firstNonNull(settings.path("tag").textValue(), "Productivity");
 		DateTimeZone timezone = DateTimeZone.forID(Objects.firstNonNull(settings.path("timezone").textValue(), "UTC"));
-		Task task = new RescueTimeProductivityTask(bucketId, principal, key, tag, timezone);
+		Task task = new RescueTimeProductivityTask(bucketId, principal, tag, timezone);
 		task.setMarker(parseMarker(settings.path("marker").textValue(), timezone));
 		return task;
 	}
@@ -51,15 +52,15 @@ public class RescueTimeProductivityTaskManager extends TaskManager {
 	}
 
 	@Override
-	public Command execute(Task task) {
-		return execute(task.as(RescueTimeProductivityTask.class));
+	public Command execute(Task task, OAuthCredentials credentials) {
+		return execute(task.as(RescueTimeProductivityTask.class), credentials);
 	}
 
-	private Command execute(RescueTimeProductivityTask task) {
+	private Command execute(RescueTimeProductivityTask task, OAuthCredentials credentials) {
 		DateTime last = task.getLast();
 		List<Event> events = Lists.newArrayList();
 		for (DateTime from = last; from == null || from.isBefore(DateTime.now()); from = from.plusWeeks(1)) {
-			events.addAll(get(task.getKey(), task.getTag(), task.getTimezone(), from != null ? from.toLocalDate() : null));
+			events.addAll(get(credentials, task.getTag(), task.getTimezone(), from != null ? from.toLocalDate() : null));
 			if (from == null) {
 				from = getFirst(events);
 			}
@@ -74,30 +75,28 @@ public class RescueTimeProductivityTaskManager extends TaskManager {
 		return createCommand(task, events);
 	}
 
-	private List<Event> get(String key, String tag, DateTimeZone timezone, LocalDate date) {
-		Logger.info("date: " + date);
+	private List<Event> get(OAuthCredentials credentials, String tag, DateTimeZone timezone, LocalDate date) {
 		rateLimit.acquire();
-		WSRequestHolder request = newRequest(key, date);
-		Response response = request.get().get(10000L);
-		Preconditions.checkState(response.getStatus() == 200,
-			"Couldn't request <%s>: %s", response.getUri(), response.getBody());
-		ObjectNode node = Nodes.readObject(response.asByteArray());
+		OAuthRequest request = newRequest(date);
+		Response response = send(request, credentials);
+		Preconditions.checkState(response.getCode() == 200,
+			"Couldn't request <%s>: %s", request.getCompleteUrl(), response.getBody());
+		ObjectNode node = parseObject(response);
 		ProductivityResult result =  new ProductivityResult(node, tag, timezone);
 		Preconditions.checkState(result.isSuccess(),
-			"Request <%s> failed: %s", response.getUri(), response.getBody());
+			"Request <%s> failed: %s", request.getCompleteUrl(), response.getBody());
 		return result.getEvents();
 	}
 
-	private WSRequestHolder newRequest(String key, LocalDate date) {
-		WSRequestHolder request = WS.url("https://www.rescuetime.com/anapi/data");
-		request.setQueryParameter("key", key);
-		request.setQueryParameter("format", "json");
-		request.setQueryParameter("operation", "select");
-		request.setQueryParameter("perspective", "interval");
-		request.setQueryParameter("restrict_kind", "efficiency");
-		request.setQueryParameter("resolution_time", "hour");
+	private OAuthRequest newRequest(LocalDate date) {
+		OAuthRequest request = new OAuthRequest(Verb.GET, "https://www.rescuetime.com/api/oauth/data");
+		request.addQuerystringParameter("format", "json");
+		request.addQuerystringParameter("operation", "select");
+		request.addQuerystringParameter("perspective", "interval");
+		request.addQuerystringParameter("restrict_kind", "efficiency");
+		request.addQuerystringParameter("resolution_time", "hour");
 		if (date != null) {
-			request.setQueryParameter("restrict_begin", date.toString());
+			request.addQuerystringParameter("restrict_begin", date.toString());
 		}
 		return request;
 	}
