@@ -17,7 +17,7 @@ object ApplicationBuild extends Build {
 	  "com.google.guava" % "guava-testlib" % "16.0.1" % "test",
 	  "com.google.inject" % "guice" % "3.0",
 	  "com.google.inject.extensions" % "guice-multibindings" % "3.0",
-	  "org.elasticsearch" % "elasticsearch" % "1.1.1",
+	  "org.elasticsearch" % "elasticsearch" % "1.1.0",
 	  "org.elasticsearch" % "elasticsearch-cloud-aws" % "2.1.0",
 	  "org.jscience" % "jscience" % "4.3.1",
 	  "org.jsoup" % "jsoup" % "1.7.2",
