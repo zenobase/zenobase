@@ -13,6 +13,7 @@ import org.joda.time.DateTimeZone;
 import org.junit.Test;
 
 import com.zenobase.models.Event;
+import com.zenobase.models.Percentage;
 import com.zenobase.tasks.ResultTestSupport;
 
 public class WithingsCardioResultTest extends ResultTestSupport {
@@ -32,6 +33,7 @@ public class WithingsCardioResultTest extends ResultTestSupport {
 		Event expected = new Event(event.getId());
 		expected.setValue(Event.TAG, "heart rate");
 		expected.setValue(Event.FREQUENCY, DecimalMeasure.<Frequency>valueOf("59 bpm"));
+		expected.setValue(Event.PERCENTAGE, Percentage.valueOf(97));
 		expected.setValue(Event.TIMESTAMP, DateTime.parse("2013-12-22T22:59:41.000-08:00"));
 		expected.setValue(Event.AUTHOR, TESTER);
 		expected.setValue(Event.SOURCE, WithingsWeightResult.SOURCE);

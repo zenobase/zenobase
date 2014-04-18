@@ -19,6 +19,7 @@ import com.google.common.collect.Lists;
 import com.zenobase.common.Measures;
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
+import com.zenobase.models.Percentage;
 import com.zenobase.models.Resource;
 
 class WithingsCardioResult {
@@ -69,6 +70,10 @@ class WithingsCardioResult {
 					break;
 				case 11: // heart rate
 					event.setValue(Event.FREQUENCY, getDecimalMeasure(measure, UNIT_BPM));
+					++count;
+					break;
+				case 54: // SpO2
+					event.setValue(Event.PERCENTAGE, Percentage.valueOf(getBigDecimal(measure)));
 					++count;
 					break;
 			}

@@ -14,6 +14,11 @@
                         "value": 59,
                         "type": 11,
                         "unit": 0
+                    },
+                    {
+                        "value": 97,
+                        "type": 54,
+                        "unit": 0
                     }
                 ]
             },
