@@ -12,7 +12,6 @@ import org.scribe.model.Verb;
 import org.scribe.model.Verifier;
 import org.scribe.oauth.OAuth20ServiceImpl;
 import org.scribe.oauth.OAuthService;
-import org.scribe.utils.OAuthEncoder;
 import org.scribe.utils.Preconditions;
 
 public class RescueTimeApi extends DefaultApi20 {
@@ -32,7 +31,7 @@ public class RescueTimeApi extends DefaultApi20 {
 	@Override
 	public String getAuthorizationUrl(OAuthConfig config) {
 		Preconditions.checkValidUrl(config.getCallback(), "Must provide a valid url as callback.");
-		return String.format(AUTHORIZATION_URL, config.getApiKey(), OAuthEncoder.encode("https://zenobase.com/"));
+		return String.format(AUTHORIZATION_URL, config.getApiKey(), config.getCallback());
 	}
 
 	@Override
@@ -51,7 +50,7 @@ public class RescueTimeApi extends DefaultApi20 {
 				request.addBodyParameter(OAuthConstants.CLIENT_ID, config.getApiKey());
 				request.addBodyParameter(OAuthConstants.CLIENT_SECRET, config.getApiSecret());
 				request.addBodyParameter(OAuthConstants.CODE, verifier.getValue());
-				request.addBodyParameter(OAuthConstants.REDIRECT_URI, "https://zenobase.com/");
+				request.addBodyParameter(OAuthConstants.REDIRECT_URI, config.getCallback());
 				if (config.hasScope()) {
 					request.addBodyParameter(OAuthConstants.SCOPE, config.getScope());
 				}
