@@ -55,11 +55,13 @@ Release Procedure
 
      3.2. (if migrating) Set elasticsearch.replay to the previous clusterName and increment clusterName.
 
+     3.3. (if migrating) Temporarily increase elasticsearch.heap_size to 4500m.
+
   4. Set up new instances [OpsWorks]:
 
      4.1. Add two m3.medium instances named "{build number}-1a" in us-east-1a and "{build number}-1c" in us-east-1c to the "Elasticsearch" layer.
 
-     4.2. (if migrating) Add an m1.xlarge instance named "{build number}-1d" in us-east-1d to the "Elasticsearch" layer.
+     4.2. (if migrating) Add an m3.xlarge instance named "{build number}-1d" in us-east-1d to the "Elasticsearch" layer.
 
      4.3. Add the new instances to the "Play" layer.
 
@@ -67,11 +69,11 @@ Release Procedure
   
      5.1. The build must complete [CloudBees].
 
-     5.2. There should be no traffic [Google Analytics].
+     5.2. There should be no (or minimal) traffic [Google Analytics].
 
      5.3. The status check must show 4 nodes and green health [/status].
 
-  6. Start either the new m3.large instance (if migrating) or the new m3.medium instances [OpsWorks].
+  6. Start either the new m3.xlarge instance (if migrating) or the new m3.medium instances [OpsWorks].
 
   7. Add all new instance(s) to the load balancer, and remove all old instances as soon as one of the new instances is listed as "in service" [AWS Console].
 
@@ -79,13 +81,13 @@ Release Procedure
 
   9. Wait for the status check to show 6 (if migrating) or 8 (if not migrating) nodes and green health [/status].
 
-  10. Stop the m1.xlarge instance (if migrating) as well as any old instances [OpsWorks].
+  10. Stop the m3.xlarge instance (if migrating) as well as any old instances [OpsWorks].
 
   11. Wait for 4 nodes and green health [/status].
 
   12. Set the "keep this build forever" flag [CloudBees].
 
-  13. Move the "prod" tag to HEAD.
+  13. Tag HEAD with the build number.
 
   14. Cleanup (optional):
 
