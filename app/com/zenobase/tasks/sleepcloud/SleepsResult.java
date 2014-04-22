@@ -57,9 +57,15 @@ public class SleepsResult {
 		if (node.isMissingNode()) {
 			return DateTimeZone.UTC;
 		}
-		String value = node.textValue().replace("--", "-");
-		Preconditions.checkArgument(value.startsWith("GMT"), "Invalid timezone: %s", node);
-		return DateTimeZone.forID(value.substring(3));
+		String value = node.textValue()
+			.replace("GMT--", "-")
+			.replace("GMT-", "-")
+			.replace("GMT+", "+");
+		if (value.length() < 6) {
+			value = value.charAt(0) + "0" + value.substring(1);
+		}
+		Preconditions.checkArgument(value.length() == 6, "Invalid timezone: %s", node);
+		return DateTimeZone.forID(value);
 	}
 
 	private DateTime dateTimeValue(JsonNode node, DateTimeZone zone) {
