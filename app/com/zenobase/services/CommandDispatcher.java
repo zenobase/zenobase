@@ -29,10 +29,6 @@ public class CommandDispatcher {
 	public String dispatch(Command command) {
 		DateTime t = command.getTimestamp();
 		log.info(String.format("[%s] %s %s", t, command.getPrincipal(), command.toString()));
-		if (command.getCost() > 75000) { // TODO remove after next migration
-			log.warn("Skipping expensive command: " + command.getCost());
-			return null;
-		}
 		if (command.getCost() > 0 && t.isAfter(now)) { // don't spend while replaying commands
 			quotas.spend(command.getPrincipal(), command.getCost());
 		}
