@@ -57,7 +57,7 @@ public class SleepsResult {
 		if (node.isMissingNode()) {
 			return DateTimeZone.UTC;
 		}
-		String value = node.textValue();
+		String value = node.textValue().replace("--", "-");
 		Preconditions.checkArgument(value.startsWith("GMT"), "Invalid timezone: %s", node);
 		return DateTimeZone.forID(value.substring(3));
 	}
