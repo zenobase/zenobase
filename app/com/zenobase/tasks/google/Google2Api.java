@@ -1,10 +1,6 @@
 package com.zenobase.tasks.google;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import org.scribe.builder.api.DefaultApi20;
-import org.scribe.exceptions.OAuthException;
 import org.scribe.extractors.AccessTokenExtractor;
 import org.scribe.model.OAuthConfig;
 import org.scribe.model.OAuthConstants;
@@ -16,7 +12,8 @@ import org.scribe.model.Verifier;
 import org.scribe.oauth.OAuth20ServiceImpl;
 import org.scribe.oauth.OAuthService;
 import org.scribe.utils.OAuthEncoder;
-import org.scribe.utils.Preconditions;
+
+import com.zenobase.oauth.OAuth2TokenExtractor;
 
 /**
  * Google OAuth2.0
@@ -35,19 +32,7 @@ public class Google2Api extends DefaultApi20 {
 
 	@Override
 	public AccessTokenExtractor getAccessTokenExtractor() {
-		return new AccessTokenExtractor() {
-			@Override
-			public Token extract(String response) {
-				Preconditions.checkEmptyString(response, "Response body is incorrect. Can't extract a token from an empty string");
-				Matcher matcher = Pattern.compile("\"access_token\" : \"([^&\"]+)\"").matcher(response);
-				if (matcher.find()) {
-					String token = OAuthEncoder.decode(matcher.group(1));
-					return new Token(token, "", response);
-				} else {
-					throw new OAuthException("Response body is incorrect. Can't extract a token from this: '" + response + "'", null);
-				}
-			}
-		};
+		return new OAuth2TokenExtractor();
 	}
 
 	@Override

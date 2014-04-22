@@ -28,7 +28,7 @@ public class SleepCloudTask extends Task {
 
 	public DateTime getFrom() {
 		String marker = getMarker();
-		return marker != null ? DateTime.parse(marker, ISODateTimeFormat.basicDateTime().withOffsetParsed()) : null;
+		return marker != null ? DateTime.parse(marker, ISODateTimeFormat.dateTime().withOffsetParsed()) : null;
 	}
 
 	@Override
