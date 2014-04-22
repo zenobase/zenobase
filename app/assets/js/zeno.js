@@ -4587,6 +4587,7 @@
 			{ 'id' : 'reporter-questions', 'description' : 'Creates an event for each question answered in the Reporter app.' },
 			{ 'id' : 'rescuetime-productivity', 'description' : 'The productivity score for each hour recorded by RescueTime.' },
 			{ 'id' : 'runkeeper-activities', 'description' : 'Creates an event for each logged activity.' },
+			{ 'id' : 'sleepcloud', 'description' : 'Creates an event for each period of sleep recorded with the Sleep as Android app.' },
 			{ 'id' : 'strava-activities', 'description' : 'Creates an event for each logged activity.' },
 			{ 'id' : 'withings', 'description' : 'Creates an event for each body weight measurement.' },
 			{ 'id' : 'withings-cardio', 'description' : 'Creates an event for each heart rate measurement.' },
@@ -4809,7 +4810,6 @@
 
 		$scope.init = function() {
 			$scope.settings = $scope.$parent.$parent.settings = {
-					key : null,
 					tag : 'Productivity',
 					marker : new Date(moment().utc().subtract('months', 3).startOf('month').valueOf()),
 					timezone : 'UTC'
@@ -4966,6 +4966,17 @@
 		};
 		$scope.getUnits = function() {
 			return Field.find('distance').units;
+		};
+
+		$scope.init();
+	}]);
+
+	app.controller('SleepCloudSettingsController', ['$scope', function($scope) {
+
+		$scope.init = function() {
+			$scope.settings = $scope.$parent.$parent.settings = {
+					tag : 'Sleep'
+			};
 		};
 
 		$scope.init();
