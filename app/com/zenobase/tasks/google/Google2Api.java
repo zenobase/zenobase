@@ -23,7 +23,7 @@ import com.zenobase.oauth.OAuth2TokenExtractor;
 public class Google2Api extends DefaultApi20 {
 
 	private static final String SCOPE = "https://www.googleapis.com/auth/userinfo.email";
-	private static final String AUTHORIZE_URL = "https://accounts.google.com/o/oauth2/auth?response_type=code&client_id=%s&redirect_uri=%s&scope=%s";
+	private static final String AUTHORIZE_URL = "https://accounts.google.com/o/oauth2/auth?response_type=code&access_type=offline&client_id=%s&redirect_uri=%s&scope=%s";
 
 	@Override
 	public String getAccessTokenEndpoint() {
