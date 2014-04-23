@@ -12,7 +12,6 @@ import javax.measure.unit.SI;
 
 import org.joda.time.DateTime;
 import org.joda.time.format.ISODateTimeFormat;
-import play.Logger;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
@@ -86,8 +85,6 @@ public class SnapshotsResult {
 			add |= setNumericValue(node.path("numericResponse"), q, event);
 			if (add) {
 				events.add(event);
-			} else {
-				Logger.warn("Could't extract any values from: " + node);
 			}
 		}
 	}
