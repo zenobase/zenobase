@@ -74,8 +74,14 @@ public class SnapshotsResult {
 				add |= true;
 			}
 			for (JsonNode tokenNode : node.path("tokens")) {
-				event.addValue(Event.NOTE, tokenNode.textValue());
-				add |= true;
+				if (q.getField() == null || Event.NOTE.getName().equals(q.getField())) {
+					event.addValue(Event.NOTE, tokenNode.textValue());
+					add |= true;
+				}
+				if (Event.TAG.getName().equals(q.getField())) {
+					event.addValue(Event.TAG, tokenNode.textValue());
+					add |= true;
+				}
 			}
 			JsonNode textNode = node.path("textResponse");
 			if (textNode.isTextual()) {

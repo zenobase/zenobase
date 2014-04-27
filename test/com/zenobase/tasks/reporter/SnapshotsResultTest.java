@@ -28,10 +28,11 @@ public class SnapshotsResultTest extends ResultTestSupport {
 		config.addQuestion(new Question("How are you 0-10?", "Mood", "rating"));
 		config.addQuestion(new Question("Pick a color", "Color", null));
 		config.addQuestion(new Question("What are you doing?", null, null));
+		config.addQuestion(new Question("Who are you with?", "People", "tag"));
 		SnapshotsResult result = new SnapshotsResult(config, TESTER, readObject("SnapshotsResultTest.json"));
 		List<Event> events = result.getEvents();
 
-		assertThat(events).as("events").hasSize(5);
+		assertThat(events).as("events").hasSize(7);
 
 		Event e1 = new Event(events.get(0).getId());
 		e1.setValue(Event.TIMESTAMP, DateTime.parse("2014-02-17T14:07:41.000-05:00"));
@@ -66,6 +67,19 @@ public class SnapshotsResultTest extends ResultTestSupport {
 		e3.setValue(Event.TEMPERATURE, DecimalMeasure.<Temperature>valueOf("-7.2 C"));
 		e3.setValue(Event.SOUND, DecimalMeasure.<Dimensionless>valueOf("-44.06892 dB"));
 		e3.addValue(Event.NOTE, "Working from home");
-		assertThat(events.get(2)).as("2nd event").isEqualTo(e3);
+		assertThat(events.get(2)).as("3rd event").isEqualTo(e3);
+
+		Event e4 = new Event(events.get(3).getId());
+		e4.setValue(Event.TIMESTAMP, DateTime.parse("2014-02-17T14:07:41.000-05:00"));
+		e4.setValue(Event.AUTHOR, TESTER);
+		e4.setValue(Event.SOURCE, SnapshotsResult.SOURCE);
+		e4.setValue(Event.LOCATION, new Location("41.41948377668317", "-71.70834391640776"));
+		e4.setValue(Event.PRESSURE, DecimalMeasure.<Pressure>valueOf("1024 hPa"));
+		e4.setValue(Event.TEMPERATURE, DecimalMeasure.<Temperature>valueOf("-7.2 C"));
+		e4.setValue(Event.SOUND, DecimalMeasure.<Dimensionless>valueOf("-44.06892 dB"));
+		e4.addValue(Event.TAG, "People");
+		e4.addValue(Event.TAG, "Jane Doe");
+		e4.addValue(Event.TAG, "John Doe");
+		assertThat(events.get(3)).as("4th event").isEqualTo(e4);
 	}
 }
