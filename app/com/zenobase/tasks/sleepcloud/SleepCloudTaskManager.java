@@ -52,11 +52,12 @@ public class SleepCloudTaskManager extends OAuthTaskManager {
 			reauthorize(credentials);
 		}
 		OAuthRequest request = new OAuthRequest(Verb.GET, "https://sleep-cloud.appspot.com/fetchRecords");
+		request.addQuerystringParameter("tags", "true");
+		// request.addQuerystringParameter("sample", "true"); // test data
 		DateTime from = task.getFrom();
 		if (from != null) {
 			request.addQuerystringParameter("timestamp", Long.toString(from.getMillis()));
 		}
-		// request.addQuerystringParameter("sample", "true"); // test data
 		Response response = send(request, credentials);
 		List<Event> events = new SleepsResult(task.getTag(), task.getPrincipal(), parseObject(response)).getEvents();
 		return createCommand(task, credentials, events, token);
