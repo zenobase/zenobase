@@ -1,6 +1,10 @@
 {
     "sleeps": [
         {
+            "tags" : [
+              "home",
+              "drink"
+            ],
             "cycles": 8,
             "noiseLevel": 0.99,
             "rating": 0,

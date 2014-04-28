@@ -40,6 +40,9 @@ public class SleepsResult {
 	private void addSleep(JsonNode node, List<Event> events) {
 		Event event = new Event();
 		event.addValue(Event.TAG, tag);
+		for (JsonNode tagNode : node.path("tags")) {
+			event.addValue(Event.TAG, tagNode.textValue());
+		}
 		event.setValue(Event.SOURCE, SOURCE);
 		event.setValue(Event.AUTHOR, author);
 		DateTimeZone zone = dateTimeZoneValue(node.path("timezone"));
