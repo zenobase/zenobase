@@ -15,7 +15,7 @@ public class ReporterTest extends TaskTestSupport {
 	public void test() {
 		OAuthTaskManager manager = new ReporterTaskManager(newCredentialsManager());
 		ObjectNode settings = Nodes.newObject();
-		settings.put("folder", "reporter-app");
+		settings.put("folder", "Apps/Reporter-App");
 		Task task = manager.newTask(bucketId, principal, settings);
 		print(manager.execute(task, getCredentials()).toJson());
 	}
