@@ -60,7 +60,7 @@ public class MapMyFitnessTaskManager extends OAuthTaskManager {
 				request.addQuerystringParameter("started_after", from.toString());
 			}
 			Response response = send(request, credentials);
-			WorkoutsResult result = new WorkoutsResult(parseObject(response), task.getPrincipal(), !user.isImperial());
+			WorkoutsResult result = new WorkoutsResult(parseObject(response), task.getPrincipal(), user.isImperial());
 			workouts.addAll(result.getWorkouts());
 			path = result.getNext();
 		}
