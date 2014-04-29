@@ -121,6 +121,8 @@ import com.zenobase.tasks.foursquare.FoursquareVenues;
 import com.zenobase.tasks.google.GoogleCredentialsManager;
 import com.zenobase.tasks.lastfm.LastFmCredentialsManager;
 import com.zenobase.tasks.lastfm.LastFmTaskManager;
+import com.zenobase.tasks.mapmyfitness.MapMyFitnessTaskManager;
+import com.zenobase.tasks.mapmyfitness.MapMyFitnessCredentialsManager;
 import com.zenobase.tasks.moves.MovesActivitiesTaskManager;
 import com.zenobase.tasks.moves.MovesCredentialsManager;
 import com.zenobase.tasks.moves.MovesLocateTaskManager;
@@ -250,6 +252,7 @@ public class Global extends GlobalSettings {
 				bindIfConfigured("netatmo", NetatmoCredentialsManager.class, credentials);
 				bindIfConfigured("runkeeper", RunkeeperCredentialsManager.class, credentials);
 				bindIfConfigured("strava", StravaCredentialsManager.class, credentials);
+				bindIfConfigured("mapmyfitness", MapMyFitnessCredentialsManager.class, credentials);
 				bindIfConfigured("moves", MovesCredentialsManager.class, credentials);
 				bindIfConfigured("dropbox", DropboxCredentialsManager.class, credentials);
 				bindIfConfigured("lastfm", LastFmCredentialsManager.class, credentials);
@@ -275,6 +278,7 @@ public class Global extends GlobalSettings {
 				bindIfConfigured("netatmo", NetatmoTaskManager.class, tasks);
 				bindIfConfigured("runkeeper", RunkeeperTaskManager.class, tasks);
 				bindIfConfigured("strava", StravaTaskManager.class, tasks);
+				bindIfConfigured("mapmyfitness", MapMyFitnessTaskManager.class, tasks);
 				bindIfConfigured("moves", MovesPlacesTaskManager.class, tasks);
 				bindIfConfigured("moves", MovesActivitiesTaskManager.class, tasks);
 				bindIfConfigured("moves", MovesLocateTaskManager.class, tasks);

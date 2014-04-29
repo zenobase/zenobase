@@ -4580,15 +4580,16 @@
 			{ 'id' : 'bodymedia-sleep', 'description' : 'Creates an event for each period of sleep.' },
 			{ 'id' : 'bodymedia-steps', 'description' : 'Creates an event for the number of steps each hour.' },
       { 'id' : 'lastfm-tracks', 'description' : 'Creates an event for each played track.' },
+			{ 'id' : 'mapmyfitness-activities', 'description' : 'Creates an event for each activity logged with one of the MapMyFitness apps.' },
       { 'id' : 'moves-activities', 'description' : 'Creates an event for each logged activity.' },
       { 'id' : 'moves-places', 'description' : 'Creates an event for each visited place.' },
       { 'id' : 'moves-locate', 'description' : 'Adds locations to events without locations.' },
 			{ 'id' : 'netatmo', 'description' : 'Creates an event for each weather station measurement.' },
 			{ 'id' : 'reporter-questions', 'description' : 'Creates an event for each question answered in the Reporter app.' },
 			{ 'id' : 'rescuetime-productivity', 'description' : 'The productivity score for each hour recorded by RescueTime.' },
-			{ 'id' : 'runkeeper-activities', 'description' : 'Creates an event for each logged activity.' },
+			{ 'id' : 'runkeeper-activities', 'description' : 'Creates an event for each activity recorded with the RunKeeper app.' },
 			{ 'id' : 'sleepcloud', 'description' : 'Creates an event for each period of sleep recorded with the Sleep as Android app.' },
-			{ 'id' : 'strava-activities', 'description' : 'Creates an event for each logged activity.' },
+			{ 'id' : 'strava-activities', 'description' : 'Creates an event for each activity recorded with the Strava app.' },
 			{ 'id' : 'withings', 'description' : 'Creates an event for each body weight measurement.' },
 			{ 'id' : 'withings-cardio', 'description' : 'Creates an event for each heart rate measurement.' },
 			{ 'id' : 'withings-sleep', 'description' : 'Creates an event for each period of sleep.' },
@@ -4788,6 +4789,17 @@
 		$scope.init = function() {
 			$scope.settings = $scope.$parent.$parent.settings = {
 					metric : false,
+					marker : new Date(moment().utc().subtract('months', 3).startOf('month').valueOf())
+			};
+		};
+
+		$scope.init();
+	}]);
+
+	app.controller('MapMyFitnessSettingsController', ['$scope', 'moment', function($scope, moment) {
+
+		$scope.init = function() {
+			$scope.settings = $scope.$parent.$parent.settings = {
 					marker : new Date(moment().utc().subtract('months', 3).startOf('month').valueOf())
 			};
 		};

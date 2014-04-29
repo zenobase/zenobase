@@ -1,0 +1,171 @@
+{
+    "_links": {
+        "self": [
+            {
+                "href": "/v7.0/workout/?limit=20&user=37756949&offset=0"
+            }
+        ],
+        "documentation": [
+            {
+                "href": "https://www.mapmyapi.com/docs/Workout"
+            }
+        ]
+    },
+    "_embedded": {
+        "workouts": [
+            {
+                "start_datetime": "2014-04-17T22:09:58+00:00",
+                "name": "Walked 3.00 mi on 2014/04/17",
+                "updated_datetime": "2014-04-17T23:01:00+00:00",
+                "created_datetime": "2014-04-17T23:01:00+00:00",
+                "aggregates": {
+                    "active_time_total": 3049,
+                    "distance_total": 4836.03043968,
+                    "steps_total": 0,
+                    "speed_avg": 1.5861023904,
+                    "elapsed_time_total": 3049,
+                    "metabolic_energy_total": 0
+                },
+                "reference_key": null,
+                "start_locale_timezone": "America/Los_Angeles",
+                "source": "MapMyRun Android App",
+                "_links": {
+                    "route": [
+                        {
+                            "href": "/v7.0/route/394927596/",
+                            "id": "394927596"
+                        }
+                    ],
+                    "self": [
+                        {
+                            "href": "/v7.0/workout/539993898/",
+                            "id": "539993898"
+                        }
+                    ],
+                    "activity_type": [
+                        {
+                            "href": "/v7.0/activity_type/9/",
+                            "id": "9"
+                        }
+                    ],
+                    "user": [
+                        {
+                            "href": "/v7.0/user/37756949/",
+                            "id": "37756949"
+                        }
+                    ],
+                    "privacy": [
+                        {
+                            "href": "/v7.0/privacy_option/1/",
+                            "id": "1"
+                        }
+                    ]
+                },
+                "has_time_series": true
+            },
+            {
+                "start_datetime": "2014-04-21T22:04:20+00:00",
+                "name": "Walked 2.94 mi on 2014/04/21",
+                "updated_datetime": "2014-04-21T22:55:01+00:00",
+                "created_datetime": "2014-04-21T22:55:01+00:00",
+                "aggregates": {
+                    "active_time_total": 3016,
+                    "distance_total": 4736.31548544,
+                    "steps_total": 0,
+                    "speed_avg": 1.5703934048,
+                    "elapsed_time_total": 3016,
+                    "metabolic_energy_total": 0
+                },
+                "reference_key": null,
+                "start_locale_timezone": "America/Los_Angeles",
+                "source": "MapMyRun Android App",
+                "_links": {
+                    "route": [
+                        {
+                            "href": "/v7.0/route/398082650/",
+                            "id": "398082650"
+                        }
+                    ],
+                    "self": [
+                        {
+                            "href": "/v7.0/workout/544220056/",
+                            "id": "544220056"
+                        }
+                    ],
+                    "activity_type": [
+                        {
+                            "href": "/v7.0/activity_type/9/",
+                            "id": "9"
+                        }
+                    ],
+                    "user": [
+                        {
+                            "href": "/v7.0/user/37756949/",
+                            "id": "37756949"
+                        }
+                    ],
+                    "privacy": [
+                        {
+                            "href": "/v7.0/privacy_option/1/",
+                            "id": "1"
+                        }
+                    ]
+                },
+                "has_time_series": true
+            },
+            {
+                "start_datetime": "2014-04-24T22:36:33+00:00",
+                "name": "Walked 3.34 mi on 2014/04/24",
+                "updated_datetime": "2014-04-24T23:28:07+00:00",
+                "created_datetime": "2014-04-24T23:27:34+00:00",
+                "aggregates": {
+                    "active_time_total": 2991,
+                    "distance_total": 5375.51473536,
+                    "steps_total": 1000,
+                    "speed_avg": 1.7972304416,
+                    "heartrate_max": 176,
+                    "elapsed_time_total": 2992,
+                    "heartrate_avg": 115,
+                    "metabolic_energy_total": 0
+                },
+                "reference_key": null,
+                "start_locale_timezone": "America/Los_Angeles",
+                "source": "MapMyRun Android App",
+                "_links": {
+                    "route": [
+                        {
+                            "href": "/v7.0/route/400640020/",
+                            "id": "400640020"
+                        }
+                    ],
+                    "self": [
+                        {
+                            "href": "/v7.0/workout/547836386/",
+                            "id": "547836386"
+                        }
+                    ],
+                    "activity_type": [
+                        {
+                            "href": "/v7.0/activity_type/9/",
+                            "id": "9"
+                        }
+                    ],
+                    "user": [
+                        {
+                            "href": "/v7.0/user/37756949/",
+                            "id": "37756949"
+                        }
+                    ],
+                    "privacy": [
+                        {
+                            "href": "/v7.0/privacy_option/1/",
+                            "id": "1"
+                        }
+                    ]
+                },
+                "has_time_series": true
+            }
+        ]
+    },
+    "total_count": 3
+}
