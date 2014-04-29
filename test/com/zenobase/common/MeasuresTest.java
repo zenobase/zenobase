@@ -96,6 +96,7 @@ public class MeasuresTest {
 		assertThatIsEqualTo("1 Hz", "1 Hz");
 		assertThatIsEqualTo("1000 Hz", "1 kHz");
 		assertThatIsEqualTo("1 Hz", "60 bpm");
+		assertThatIsEqualTo("1 Hz", "60 rpm");
 	}
 
 	@Test

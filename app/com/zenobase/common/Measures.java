@@ -26,6 +26,7 @@ public class Measures {
 		UnitFormat.getInstance().alias(NonSI.FAHRENHEIT, "°F");
 
 		UnitFormat.getInstance().label(SI.HERTZ.divide(60L), "bpm");
+		UnitFormat.getInstance().label(SI.HERTZ.divide(60L), "rpm");
 
 		UnitFormat.getInstance().label(NonSI.OUNCE, "oz");
 

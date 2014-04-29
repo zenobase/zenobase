@@ -5480,7 +5480,7 @@
 			name : 'frequency',
 			icon : 'fa-heart',
 			type : 'numeric',
-			units : [ 'bpm', 'Hz' ],
+			units : [ 'bpm', 'rpm', 'Hz' ],
 			toText : function(value) {
 				return typeof value === 'object' ? value['@value'] + ' ' + value.unit : value;
 			},
