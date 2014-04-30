@@ -4987,7 +4987,7 @@
 
 		$scope.init = function() {
 			$scope.settings = $scope.$parent.$parent.settings = {
-					tag : 'Sleep'
+					tag : 'sleep'
 			};
 		};
 
