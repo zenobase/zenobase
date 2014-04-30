@@ -17,7 +17,7 @@ import com.zenobase.models.Resource;
 
 public class SleepsResult {
 
-	public static final Resource SOURCE = new Resource("SleepCloud", "http://sleep-cloud.appspot.com/‎");
+	public static final Resource SOURCE = new Resource("SleepCloud", "http://sleep-cloud.appspot.com/");
 
 	private final String tag;
 	private final Identity author;
