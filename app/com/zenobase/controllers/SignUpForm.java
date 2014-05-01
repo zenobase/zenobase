@@ -49,7 +49,7 @@ public class SignUpForm extends DomainNode {
 
 	public static boolean isValidUsername(String value) {
 		return !Strings.isNullOrEmpty(value) &&
-			!value.contains("zeno") &&
+			!value.contains("zenobase") &&
 			!value.contains("admin") &&
 			!"guest".equalsIgnoreCase(value) &&
 			USERNAME_PATTERN.matcher(value).matches();
