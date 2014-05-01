@@ -1002,6 +1002,16 @@
 				"singleton" : true
 			},
 			{
+				"id" : "tags",
+				"type" : "count",
+				"label" : "Tags",
+				"placement" : "left",
+				"field" : "tag",
+				"order" : "count",
+				"limit" : 10,
+				"reverse" : false
+			},
+			{
 				"id" : "polar_hour",
 				"type" : "polar",
 				"label" : "Hours (Begin)",
