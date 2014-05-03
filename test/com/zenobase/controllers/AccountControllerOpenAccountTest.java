@@ -60,7 +60,7 @@ public class AccountControllerOpenAccountTest extends AccountControllerTestSuppo
 
 	@Test
 	public void testSignUpZeno() {
-		testSignUpWithBadName("iamzenos");
+		testSignUpWithBadName("iamzenobase");
 	}
 
 	@Test
