@@ -13,6 +13,12 @@ please <a href="mailto:info@zenobase.com?subject=Zenobase+API">drop us a note</a
 <h3>Changelog</h3>
 
 <dl>
+	<dt>2014-05-02</dt>
+	<dd>
+		<ul>
+			<li>expires_in set for password grants</li>
+		</ul>
+	</dd>
 	<dt>2014-04-28</dt>
 	<dd>
 		<ul>
@@ -191,7 +197,7 @@ or a <a href="/#/api/password-grant">password grant</a>.</p>
 
 <h3>Create a password grant</h3>
 
-<p>This authentication method grants full access to a user's account.</p>
+<p>This authentication method grants full access to a user's account. Tokens expire after 31 days.</p>
 
 <pre>POST /oauth/token
 Host: api.zenobase.com
@@ -220,7 +226,8 @@ Content-Type: application/json
 
 {
   "access_token" : "e7975e8bb6mabc3ek567",
-  "client_id" : "args4iqh2c"
+  "client_id" : "args4iqh2c",
+  "expires_in" : 2678400
 }
 </pre>
 

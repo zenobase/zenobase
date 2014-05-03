@@ -6,6 +6,7 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
+import org.joda.time.Duration;
 import play.Logger;
 import play.data.Form;
 import play.mvc.BodyParser;
@@ -137,6 +138,8 @@ public class OAuthController extends ControllerSupport {
     	result.put("client_id", principal.getId());
     	if (scope != null) {
     		result.put("scope", scope);
+    	} else {
+        	result.put("expires_in", Duration.standardDays(31).getStandardSeconds());
     	}
     	return ok(result);
     }

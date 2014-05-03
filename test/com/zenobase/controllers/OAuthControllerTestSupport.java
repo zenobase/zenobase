@@ -39,6 +39,11 @@ public abstract class OAuthControllerTestSupport extends ControllerTestSupport {
 			.path("access_token").isNotNull();
 	}
 
+	protected static void assertExpires(Result result, int seconds) {
+		assertThat(result).asObjectNode()
+			.path("expires_in").isEqualTo(seconds);
+	}
+
 	protected static void assertDenied(Result result, String expectedError) {
 		assertThat(result).hasStatus(Http.Status.BAD_REQUEST).asObjectNode()
 			.path("error").isEqualTo(expectedError);

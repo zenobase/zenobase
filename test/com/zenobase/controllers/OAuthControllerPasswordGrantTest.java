@@ -4,11 +4,11 @@ import static org.fest.assertions.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 import static play.test.Helpers.*;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import play.mvc.Result;
+import com.fasterxml.jackson.databind.JsonNode;
 
 import com.zenobase.commands.CreateAuthorizationCommand;
 import com.zenobase.models.User;
@@ -35,6 +35,7 @@ public class OAuthControllerPasswordGrantTest extends OAuthControllerTestSupport
 		when(dispatcher.dispatch(arg.capture())).thenReturn("c");
 		Result result = call(new TokenForm(OAuthController.GRANT_TYPE_PASSWORD, user.getName(), password));
 		assertGranted(result);
+		assertExpires(result, 31 * 24 * 60 * 60);
 		Authorization auth = arg.getValue().getAuthorization();
 		assertThat(auth.getId()).isNotNull();
 		assertThat(auth.getPrincipal()).isEqualTo(user.asIdentity());
@@ -49,6 +50,7 @@ public class OAuthControllerPasswordGrantTest extends OAuthControllerTestSupport
 		when(dispatcher.dispatch(arg.capture())).thenReturn("c");
 		Result result = call(new TokenForm(OAuthController.GRANT_TYPE_PASSWORD, user.getName(), password).toJson());
 		assertGranted(result);
+		assertExpires(result, 31 * 24 * 60 * 60);
 		Authorization auth = arg.getValue().getAuthorization();
 		assertThat(auth.getId()).isNotNull();
 		assertThat(auth.getPrincipal()).isEqualTo(user.asIdentity());
