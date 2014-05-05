@@ -81,9 +81,9 @@ class ActivitiesResult {
 			return null;
 		}
 		Preconditions.checkState(node.size() == 2, "expected a node with a latitude and a longitude: <%s>", node);
-		Preconditions.checkState(node.get(0).isNumber(), "expected a numeric latitude in <%s>", node);
-		Preconditions.checkState(node.get(1).isNumber(), "expected a numeric longitude in <%s>", node);
-		return new Location(node.get(0).decimalValue(), node.get(1).decimalValue());
+		Preconditions.checkState(node.path(0).isNumber(), "expected a numeric latitude in <%s>", node);
+		Preconditions.checkState(node.path(1).isNumber(), "expected a numeric longitude in <%s>", node);
+		return new Location(node.path(0).decimalValue(), node.path(1).decimalValue());
 	}
 
 	private DecimalMeasure<Length> distanceValue(JsonNode node, Unit<Length> unit) {
