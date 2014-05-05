@@ -51,8 +51,8 @@ class WorkoutsResult {
 		event.setValue(Event.FREQUENCY, frequencyValue(node.path("aggregates").path("heartrate_avg")));
 		event.setValue(Event.SOURCE, resourceValue(node.path("_links").path("self").path(0).path("id")));
 		event.setValue(Event.AUTHOR, author);
-		String typeId = typeValue(node.path("_links").path("activity_type").path(0).path("id"));
-		String routeId = routeValue(node.path("_links").path("route").path(0).path("id"));
+		String typeId = node.path("_links").path("activity_type").path(0).path("id").textValue();
+		String routeId = node.path("_links").path("route").path(0).path("id").textValue();
 		return new Workout(event, typeId, routeId);
 	}
 
@@ -92,18 +92,6 @@ class WorkoutsResult {
 		String value = node.textValue();
 		Preconditions.checkNotNull(value, "Can't find workout id: %s", this.node);
 		return new Resource("MapMyFitness", "http://www.mapmyfitness.com/workout/" + value);
-	}
-
-	private String typeValue(JsonNode node) {
-		String value = node.textValue();
-		Preconditions.checkNotNull(value, "Can't find activity type: %s", this.node);
-		return value;
-	}
-
-	private String routeValue(JsonNode node) {
-		String value = node.textValue();
-		Preconditions.checkNotNull(value, "Can't find route id: %s", this.node);
-		return value;
 	}
 
 	public String getNext() {
