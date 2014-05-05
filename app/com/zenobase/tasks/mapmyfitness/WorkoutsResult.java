@@ -70,8 +70,7 @@ class WorkoutsResult {
 
 	private Duration durationValue(JsonNode node) {
 		long value = node.asLong();
-		Preconditions.checkArgument(value != 0, "Can't find elapsed time: %s", this.node);
-		return Duration.standardSeconds(value);
+		return value > 0 ? Duration.standardSeconds(value) : null;
 	}
 
 	private Integer countValue(JsonNode node) {
