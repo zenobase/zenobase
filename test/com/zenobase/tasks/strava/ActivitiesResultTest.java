@@ -15,7 +15,6 @@ import org.junit.Test;
 
 import com.zenobase.common.Measures;
 import com.zenobase.models.Event;
-import com.zenobase.models.Identity;
 import com.zenobase.models.Location;
 import com.zenobase.models.Resource;
 import com.zenobase.tasks.ResultTestSupport;
@@ -24,8 +23,7 @@ public class ActivitiesResultTest extends ResultTestSupport {
 
 	@Test
 	public void test() {
-		Identity author = new Identity();
-		ActivitiesResult result = new ActivitiesResult(readArray("ActivitiesResultTest.json"), author, true);
+		ActivitiesResult result = new ActivitiesResult(readArray("ActivitiesResultTest.json"), TESTER, true);
 		List<Event> events = result.getEvents();
 		assertThat(events).hasSize(1);
 		assertThat(events.get(0).getValue(Event.TAG)).isEqualTo("Ride");
@@ -37,6 +35,6 @@ public class ActivitiesResultTest extends ResultTestSupport {
 		assertThat(events.get(0).getValue(Event.ENERGY)).isEqualTo(Measures.<Energy>valueOf(new BigDecimal("857.6"), "kJ"));
 		assertThat(events.get(0).getValue(Event.FREQUENCY)).isEqualTo(Measures.<Frequency>valueOf(new BigDecimal("138.8"), "bpm"));
 		assertThat(events.get(0).getValue(Event.SOURCE)).isEqualTo(new Resource("Strava", "http://www.strava.com/activities/8529483"));
-		assertThat(events.get(0).getValue(Event.AUTHOR)).isEqualTo(author);
+		assertThat(events.get(0).getValue(Event.AUTHOR)).isEqualTo(TESTER);
 	}
 }
