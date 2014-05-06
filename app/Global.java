@@ -100,6 +100,8 @@ import com.zenobase.tasks.CredentialsManagerRegistry;
 import com.zenobase.tasks.TaskManager;
 import com.zenobase.tasks.TaskManagerRegistry;
 import com.zenobase.tasks.TaskRefresher;
+import com.zenobase.tasks.automatic.AutomaticCredentialsManager;
+import com.zenobase.tasks.automatic.AutomaticTaskManager;
 import com.zenobase.tasks.bodymedia.BodyMediaBurnTaskManager;
 import com.zenobase.tasks.bodymedia.BodyMediaCredentialsManager;
 import com.zenobase.tasks.bodymedia.BodyMediaSleepTaskManager;
@@ -121,8 +123,8 @@ import com.zenobase.tasks.foursquare.FoursquareVenues;
 import com.zenobase.tasks.google.GoogleCredentialsManager;
 import com.zenobase.tasks.lastfm.LastFmCredentialsManager;
 import com.zenobase.tasks.lastfm.LastFmTaskManager;
-import com.zenobase.tasks.mapmyfitness.MapMyFitnessTaskManager;
 import com.zenobase.tasks.mapmyfitness.MapMyFitnessCredentialsManager;
+import com.zenobase.tasks.mapmyfitness.MapMyFitnessTaskManager;
 import com.zenobase.tasks.moves.MovesActivitiesTaskManager;
 import com.zenobase.tasks.moves.MovesCredentialsManager;
 import com.zenobase.tasks.moves.MovesLocateTaskManager;
@@ -258,6 +260,7 @@ public class Global extends GlobalSettings {
 				bindIfConfigured("lastfm", LastFmCredentialsManager.class, credentials);
 				bindIfConfigured("rescuetime", RescueTimeCredentialsManager.class, credentials);
 				bindIfConfigured("google", GoogleCredentialsManager.class, credentials);
+				bindIfConfigured("automatic", AutomaticCredentialsManager.class, credentials);
 				bind(CredentialsManagerRegistry.class).in(Singleton.class);
 
 				Multibinder<TaskManager> tasks = Multibinder.newSetBinder(binder(), new TypeLiteral<TaskManager>() {});
@@ -287,6 +290,7 @@ public class Global extends GlobalSettings {
 				bindIfConfigured("forecast", ForecastTaskManager.class, tasks);
 				bindIfConfigured("rescuetime", RescueTimeProductivityTaskManager.class, tasks);
 				bindIfConfigured("google", SleepCloudTaskManager.class, tasks);
+				bindIfConfigured("automatic", AutomaticTaskManager.class, tasks);
 				bind(TaskManagerRegistry.class).in(Singleton.class);
 
 				bind(AccountController.class).in(Singleton.class);

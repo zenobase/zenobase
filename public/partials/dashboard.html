@@ -469,6 +469,21 @@
 		</div>
 	</script>
 
+	<script id="/automatic-trips-settings.html" type="text/ng-template">
+		<div data-ng-controller="AutomaticSettingsController">
+			<div class="control-group">
+				<label class="control-label">Units</label>
+				<label class="checkbox">
+					<input type="checkbox" data-ng-model="settings.metric"/> use metric units
+				</label>
+			</div>
+			<div class="control-group">
+				<label for="marker" class="control-label">Starting from</label>
+				<input class="input-small" type="text" data-ui-datepicker data-ng-model="settings.marker"/>
+			</div>
+		</div>
+	</script>
+
 	<script id="/rescuetime-productivity-settings.html" type="text/ng-template">
 		<div data-ng-controller="RescueTimeProductivitySettingsController">
 			<div class="control-group">

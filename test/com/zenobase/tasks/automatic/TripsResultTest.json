@@ -1,0 +1,40 @@
+[
+    {
+        "uri": "https://api.automatic.com/v1/trips/524da549e4b08d1af17f6dca",
+        "id": "524da549e4b08d1af17f6dca",
+        "user": {
+            "id": "6sQPMSEW71FQ3H"
+        },
+        "vehicle": {
+            "id": "xxx"
+        },
+        "start_location": {
+            "name": "Ashbury St, SF, CA",
+            "display_name": "Home",
+            "lat": 37.7692903,
+            "lon": -122.4465469,
+            "accuracy_m": 5
+        },
+        "start_time": 1383448450201,
+        "start_time_zone": "America/Los_Angeles",
+        "end_location": {
+            "name": "5th St, SF, CA",
+            "display_name": "Work",
+            "lat": 37.78270046281092,
+            "lon": -122.4064556183999,
+            "accuracy_m": 97.88124084472656
+        },
+        "end_time": 1383449950201,
+        "end_time_zone": "America/Los_Angeles",
+        "path": "uioeFxycjVxDMvAGBjATlJXrLaIZHvCFhCHpCaI^i@@",
+        "distance_m": 6573.416666666661,
+        "hard_accels": 0,
+        "hard_brakes": 1,
+        "duration_over_80_s": 0,
+        "duration_over_75_s": 2,
+        "duration_over_70_s": 3,
+        "fuel_cost_usd": 1.0428111627932486,
+        "fuel_volume_gal": 0.2465857561582522,
+        "average_mpg": 16.56434586845349
+    }
+]

@@ -1377,6 +1377,87 @@
 		]
 	},
 	{
+		"label" : "Trips (Automatic)",
+		"task" : "automatic-trips",
+		"widgets" : [
+			{
+				"id" : "timeline_distance",
+				"type" : "timeline",
+				"label" : "Distance (mi)",
+				"placement" : "top",
+				"field" : "distance",
+				"unit" : "mi",
+				"statistic" : "sum",
+				"interval" : "month"
+			},
+			{
+				"id" : "timeline_volume",
+				"type" : "timeline",
+				"label" : "Fuel (gal)",
+				"placement" : "top",
+				"field" : "volume",
+				"unit" : "gal",
+				"statistic" : "sum",
+				"interval" : "month"
+			},
+			{
+				"id" : "timeline_currency",
+				"type" : "timeline",
+				"label" : "Cost ($)",
+				"placement" : "top",
+				"field" : "currency",
+				"unit" : null,
+				"statistic" : "sum",
+				"interval" : "month"
+			},
+			{
+				"id" : "latest",
+				"type" : "list",
+				"label" : "Latest",
+				"placement" : "left",
+				"order" : "timestamp",
+				"reverse" : false,
+				"limit" : 10,
+				"singleton" : true
+			},
+			{
+				"id" : "tags",
+				"type" : "count",
+				"label" : "Vehicle",
+				"placement" : "left",
+				"field" : "tag",
+				"order" : "count",
+				"limit" : 5,
+				"reverse" : false
+			},
+			{
+				"id" : "map",
+				"type" : "heatmap",
+				"label" : "Map",
+				"placement" : "right"
+			},
+			{
+				"id" : "histogram",
+				"type" : "histogram",
+				"label" : "Distances",
+				"placement" : "right",
+				"field" : "distance",
+				"unit" : "mi",
+				"interval" : 10
+			},
+			{
+				"id" : "polar",
+				"type" : "polar",
+				"label" : "Day of Week",
+				"placement" : "right",
+				"value_field" : "timestamp",
+				"unit" : null,
+				"statistic" : "count",
+				"interval" : "day_of_week"
+			}
+		]
+	},
+	{
 		"label" : "Weight (Withings)",
 		"task" : "withings", 
 		"widgets" : [

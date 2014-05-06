@@ -4572,6 +4572,7 @@
 	app.controller('CreateTaskDialogController', ['$scope', '$http', 'delay', 'tracker', function($scope, $http, delay, tracker) {
 	
 		$scope.types = [ 
+ 			{ 'id' : 'automatic-trips', 'description' : 'Creates an event for each trip recorded with by Automatic.' },
       { 'id' : 'foursquare', 'description' : 'Creates an event for each check-in.' },
 			{ 'id' : 'fitbit-sleep', 'description' : 'Creates an event for each period of sleep.' },
 			{ 'id' : 'fitbit-steps', 'description' : 'Creates an event for the number of steps each day (incl distance and elevation, if available).' },
@@ -4785,6 +4786,18 @@
 	}]);
 
 	app.controller('StravaSettingsController', ['$scope', 'moment', function($scope, moment) {
+
+		$scope.init = function() {
+			$scope.settings = $scope.$parent.$parent.settings = {
+					metric : false,
+					marker : new Date(moment().utc().subtract('months', 3).startOf('month').valueOf())
+			};
+		};
+
+		$scope.init();
+	}]);
+
+	app.controller('AutomaticSettingsController', ['$scope', 'moment', function($scope, moment) {
 
 		$scope.init = function() {
 			$scope.settings = $scope.$parent.$parent.settings = {
