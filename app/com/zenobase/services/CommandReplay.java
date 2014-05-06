@@ -48,18 +48,20 @@ public class CommandReplay {
 			repository.find(new CommandQuery(), ORDER, new Callback<Command>() {
 				@Override
 				public void call(Command command) {
-					if (identities.mightContain(command.getPrincipal().getId())) {
-						dispatcher.dispatch(command);
-						++replayed;
-					} else {
-						dispatcher.discard(command);
+					try {
+						if (identities.mightContain(command.getPrincipal().getId())) {
+							dispatcher.dispatch(command);
+							++replayed;
+						} else {
+							dispatcher.discard(command);
+						}
+						++count;
+					} catch (RuntimeException e) {
+						Logger.error("Couldn't replay command: " + command, e);
+						throw e;
 					}
-					++count;
 				}
 			});
-		} catch (RuntimeException e) {
-			Logger.error("Couldn't replay a command", e);
-			throw e;
 		} finally {
 			Logger.warn(String.format("Replayed %d and discarded %d commands out of %d in %d s",
 				replayed, count - replayed, repository.size(), timer.elapsed(TimeUnit.SECONDS)));
