@@ -8,6 +8,7 @@ import javax.measure.quantity.Temperature;
 
 import org.joda.time.DateTime;
 import com.google.common.base.Objects;
+import com.google.common.collect.Iterables;
 
 import com.zenobase.models.Event;
 import com.zenobase.models.Location;
@@ -51,7 +52,7 @@ public class Forecast {
 
 	private static Resource newResource(Event event) {
 		DateTime timestamp = event.getValue(Event.TIMESTAMP);
-		Location location = event.getValue(Event.LOCATION);
+		Location location = Iterables.getFirst(event.getValues(Event.LOCATION), null);
 		String url = String.format("http://forecast.io/#/f/%s,%s/%d",
 			location.getLatitude(), location.getLongitude(),
 			timestamp.getMillis() / 1000L);

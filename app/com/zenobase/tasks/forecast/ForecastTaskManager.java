@@ -13,6 +13,7 @@ import org.joda.time.ReadableInstant;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Preconditions;
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Range;
 import com.google.common.collect.Sets;
@@ -90,7 +91,7 @@ public class ForecastTaskManager extends TaskManager {
 	}
 
 	private Event update(Event event, DateTime timestamp, Set<String> fields, boolean standardUnits) {
-		Location location = event.getValue(Event.LOCATION);
+		Location location = Iterables.getFirst(event.getValues(Event.LOCATION), null);
 		if (location == null) {
 			return null;
 		}
