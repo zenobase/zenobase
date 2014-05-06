@@ -4801,6 +4801,7 @@
 
 		$scope.init = function() {
 			$scope.settings = $scope.$parent.$parent.settings = {
+					tag : 'Trip',
 					metric : false,
 					marker : new Date(moment().utc().subtract('months', 3).startOf('month').valueOf())
 			};

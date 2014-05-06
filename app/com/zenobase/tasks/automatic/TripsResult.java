@@ -30,11 +30,13 @@ class TripsResult {
 
 	private final JsonNode node;
 	private final Identity author;
+	private final String tag;
 	private final boolean metric;
 
-	public TripsResult(JsonNode node, Identity author, boolean metric) {
+	public TripsResult(JsonNode node, Identity author, String tag, boolean metric) {
 		this.node = Preconditions.checkNotNull(node);
 		this.author = author;
+		this.tag = tag;
 		this.metric = metric;
 	}
 
@@ -52,6 +54,7 @@ class TripsResult {
 		DateTime end = dateTimeValue(node.path("end_time"), dateTimeZoneValue(node.path("end_time_zone")));
 		event.setValue(Event.TIMESTAMP, begin);
 		event.setValue(Event.DURATION, new Duration(begin, end));
+		event.addValue(Event.TAG, tag);
 		event.addValue(Event.LOCATION, locationValue(node.path("start_location")));
 		event.addValue(Event.LOCATION, locationValue(node.path("end_location")));
 		event.setValue(Event.CURRENCY, Measures.round(decimalValue(node.path("fuel_cost_usd"))));

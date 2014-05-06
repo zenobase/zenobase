@@ -21,9 +21,10 @@ public class TripsResultTest extends ResultTestSupport {
 
 	@Test
 	public void testWithImperialUnits() {
-		TripsResult result = new TripsResult(readArray("TripsResultTest.json"), TESTER, false);
+		TripsResult result = new TripsResult(readArray("TripsResultTest.json"), TESTER, "Trip", false);
 		Trip trip = Iterables.getOnlyElement(result.getTrips());
 		assertThat(trip.getVehicleId()).isEqualTo("xxx");
+		assertThat(trip.getEvent().getValue(Event.TAG)).isEqualTo("Trip");
 		assertThat(trip.getEvent().getValue(Event.TIMESTAMP)).isEqualTo(DateTime.parse("2013-11-02T20:14:10.201-07:00"));
 		assertThat(trip.getEvent().getValue(Event.DURATION)).isEqualTo(Duration.standardSeconds(1500));
 		assertThat(trip.getEvent().getValues(Event.LOCATION)).containsExactly(new Location("37.7692903", "-122.4465469"), new Location("37.78270046281092", "-122.4064556183999"));
@@ -37,7 +38,7 @@ public class TripsResultTest extends ResultTestSupport {
 
 	@Test
 	public void testWithMetricUnits() {
-		TripsResult result = new TripsResult(readArray("TripsResultTest.json"), TESTER, true);
+		TripsResult result = new TripsResult(readArray("TripsResultTest.json"), TESTER, "Trip", true);
 		Trip trip = Iterables.getOnlyElement(result.getTrips());
 		assertThat(trip.getEvent().getValue(Event.DISTANCE)).isEqualTo(Measures.valueOf(new BigDecimal("6.57"), SI.KILOMETER));
 		assertThat(trip.getEvent().getValue(Event.VOLUME)).isEqualTo(Measures.valueOf(new BigDecimal("0.93"), NonSI.LITER));

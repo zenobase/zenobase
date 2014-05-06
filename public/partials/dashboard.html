@@ -472,6 +472,10 @@
 	<script id="/automatic-trips-settings.html" type="text/ng-template">
 		<div data-ng-controller="AutomaticSettingsController">
 			<div class="control-group">
+				<label for="tag" class="control-label">Tag</label>
+				<input name="tag" type="text" required data-ng-model="settings.tag"/>
+			</div>
+			<div class="control-group">
 				<label class="control-label">Units</label>
 				<label class="checkbox">
 					<input type="checkbox" data-ng-model="settings.metric"/> use metric units

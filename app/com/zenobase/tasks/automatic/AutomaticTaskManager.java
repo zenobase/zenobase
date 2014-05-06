@@ -38,9 +38,10 @@ public class AutomaticTaskManager extends OAuthTaskManager {
 
 	@Override
 	public Task newTask(String bucketId, Identity principal, ObjectNode settings) {
+		String tag = settings.path("tag").textValue();
 		boolean metric = settings.path("metric").booleanValue();
 		String marker = formatMarker(parseMarker(settings.path("marker").textValue()));
-		return new AutomaticTask(bucketId, principal, metric, marker);
+		return new AutomaticTask(bucketId, principal, tag, metric, marker);
 	}
 
 	@Override
@@ -64,7 +65,7 @@ public class AutomaticTaskManager extends OAuthTaskManager {
 			request.addQuerystringParameter("per_page", "10");
 			request.addQuerystringParameter("page", Integer.toString(i + 1));
 			Response response = send(request, credentials);
-			List<Trip> add = new TripsResult(parseArray(response), task.getPrincipal(), task.isMetric()).getTrips();
+			List<Trip> add = new TripsResult(parseArray(response), task.getPrincipal(), task.getTag(), task.isMetric()).getTrips();
 			if (add.isEmpty()) {
 				break TRIPS;
 			}
