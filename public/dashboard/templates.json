@@ -1403,7 +1403,7 @@
 			{
 				"id" : "timeline_currency",
 				"type" : "timeline",
-				"label" : "Cost ($)",
+				"label" : "Cost (USD)",
 				"placement" : "top",
 				"field" : "currency",
 				"unit" : null,
@@ -1423,12 +1423,22 @@
 			{
 				"id" : "tags",
 				"type" : "count",
-				"label" : "Vehicle",
+				"label" : "Vehicles",
 				"placement" : "left",
 				"field" : "tag",
 				"order" : "count",
 				"limit" : 5,
 				"reverse" : false
+			},
+			{
+				"id" : "polar",
+				"type" : "polar",
+				"label" : "Days",
+				"placement" : "left",
+				"value_field" : "timestamp",
+				"unit" : null,
+				"statistic" : "count",
+				"interval" : "day_of_week"
 			},
 			{
 				"id" : "map",
@@ -1437,23 +1447,22 @@
 				"placement" : "right"
 			},
 			{
-				"id" : "histogram",
+				"id" : "histogram_mi",
 				"type" : "histogram",
-				"label" : "Distances",
+				"label" : "Distances (mi)",
 				"placement" : "right",
 				"field" : "distance",
 				"unit" : "mi",
 				"interval" : 10
 			},
 			{
-				"id" : "polar",
-				"type" : "polar",
-				"label" : "Day of Week",
+				"id" : "histogram_mpg",
+				"type" : "histogram",
+				"label" : "Fuel Efficiency (mpg)",
 				"placement" : "right",
-				"value_field" : "timestamp",
-				"unit" : null,
-				"statistic" : "count",
-				"interval" : "day_of_week"
+				"field" : "distance/volume",
+				"unit" : "mpg",
+				"interval" : 5
 			}
 		]
 	},

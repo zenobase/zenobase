@@ -141,6 +141,12 @@ public class MeasuresTest {
 	}
 
 	@Test
+	public void testDistancePerVolume() {
+		assertThatIsEqualTo("1000000 m^-2", "1 kpl");
+		assertThatIsEqualTo("1.0E+6 m^-2", "2.35214583 mpg");
+	}
+
+	@Test
 	public void testSound() {
 		assertThatIsEqualTo("42 dB", "42 dB");
 	}

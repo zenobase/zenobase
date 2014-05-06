@@ -56,6 +56,10 @@ public class Measures {
 
 		UnitFormat.getInstance().label(SI.JOULE.divide(0.239005736), "cal");
 		UnitFormat.getInstance().label(SI.JOULE.divide(0.000239005736), "kcal");
+
+		//UnitFormat.getInstance().label(SI.METER.pow(-2), "m^-2");
+		UnitFormat.getInstance().label(SI.KILOMETER.divide(NonSI.LITER), "kpl");
+		UnitFormat.getInstance().label(NonSI.MILE.divide(NonSI.GALLON_LIQUID_US), "mpg");
 	}
 
 	private Measures() {
@@ -110,7 +114,15 @@ public class Measures {
 	}
 
 	public static BigDecimal round(double value) {
-		return Doubles.isFinite(value) ? new BigDecimal(value).setScale(2, RoundingMode.HALF_UP) : null;
+		return Doubles.isFinite(value) ? round(new BigDecimal(value)) : null;
+	}
+
+	public static BigDecimal round(BigDecimal value) {
+		return value != null ? value.setScale(2, RoundingMode.HALF_UP) : null;
+	}
+
+	public static <Q extends Quantity> DecimalMeasure<Q> round(DecimalMeasure<Q> value) {
+		return value != null ? new DecimalMeasure<Q>(round(value.getValue()), value.getUnit()) : null;
 	}
 
 	public static <Q extends Quantity> boolean isMetric(Unit<Q> unit) {

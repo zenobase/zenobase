@@ -18,6 +18,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 
 import com.zenobase.common.Measures;
+import com.zenobase.json.LengthPerVolume;
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
 import com.zenobase.models.Location;
@@ -53,10 +54,10 @@ class TripsResult {
 		event.setValue(Event.DURATION, new Duration(begin, end));
 		event.addValue(Event.LOCATION, locationValue(node.path("start_location")));
 		event.addValue(Event.LOCATION, locationValue(node.path("end_location")));
-		event.setValue(Event.DISTANCE, distanceValue(node.path("distance_m")));
-		event.setValue(Event.CURRENCY, decimalValue(node.path("fuel_cost_usd")));
-		event.setValue(Event.VOLUME, volumeValue(node.path("fuel_volume_gal")));
-		// event.setValue(Event.DISTANCE_PER_VOLUME, volumeValue(node.path("average_mpg"), metric ? NonSI.LITER : NonSI.GALLON_LIQUID_US));
+		event.setValue(Event.CURRENCY, Measures.round(decimalValue(node.path("fuel_cost_usd"))));
+		event.setValue(Event.DISTANCE, Measures.round(distanceValue(node.path("distance_m"))));
+		event.setValue(Event.VOLUME, Measures.round(volumeValue(node.path("fuel_volume_gal"))));
+		event.setValue(Event.DISTANCE_PER_VOLUME, Measures.round(distancePerVolumeValue(node.path("average_mpg"))));
 		event.setValue(Event.SOURCE, SOURCE);
 		event.setValue(Event.AUTHOR, author);
 		return new Trip(event, node.path("vehicle").path("id").textValue());
@@ -96,6 +97,17 @@ class TripsResult {
 		DecimalMeasure<Volume> value = Measures.valueOf(node.decimalValue(), NonSI.GALLON_LIQUID_US);
 		if (metric) {
 			value = value.to(NonSI.LITER, MathContext.DECIMAL32);
+		}
+		return value;
+	}
+
+	private DecimalMeasure<LengthPerVolume> distancePerVolumeValue(JsonNode node) {
+		if (!node.isNumber()) {
+			return null;
+		}
+		DecimalMeasure<LengthPerVolume> value = Measures.valueOf(node.decimalValue(), "mpg");
+		if (metric) {
+			value = value.to(Measures.<LengthPerVolume>parseUnit("kpl"), MathContext.DECIMAL32);
 		}
 		return value;
 	}

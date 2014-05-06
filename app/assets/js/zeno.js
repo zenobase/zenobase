@@ -5357,6 +5357,21 @@
 		});
 
 		register({
+			name : 'distance/volume',
+			icon : 'fa-flask',
+			type : 'numeric',
+			units : [ 'mpg', 'kpl' ],
+			toText : function(value) {
+				return typeof value === 'object' ? value['@value'] + ' ' + value.unit : value;
+			},
+			toHtml : function(value) {
+				return '<span class="nowrap">' +
+			  	'<i class="fa ' + this.icon + '" title="Distance/Volume"></i> ' + this.toText(value) +
+			  '</span>';
+			}
+		});
+
+		register({
 			name : 'humidity',
 			icon : 'fa-tint',
 			type : 'numeric',

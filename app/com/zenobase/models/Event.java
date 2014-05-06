@@ -17,6 +17,7 @@ import com.zenobase.json.FrequencyField;
 import com.zenobase.json.IdentityField;
 import com.zenobase.json.IntegerField;
 import com.zenobase.json.LengthField;
+import com.zenobase.json.LengthPerVolumeField;
 import com.zenobase.json.LocationField;
 import com.zenobase.json.PercentageField;
 import com.zenobase.json.PressureField;
@@ -53,6 +54,7 @@ public class Event extends DomainNode {
 	public static final WeightField WEIGHT = new WeightField("weight");
 	public static final VolumeField VOLUME = new VolumeField("volume");
 	public static final ConcentrationField CONCENTRATION = new ConcentrationField("concentration");
+	public static final LengthPerVolumeField DISTANCE_PER_VOLUME = new LengthPerVolumeField("distance/volume");
 	public static final IntegerField HUMIDITY = new IntegerField("humidity");
 	public static final PressureField PRESSURE = new PressureField("pressure");
 	public static final SoundField SOUND = new SoundField("sound");
@@ -67,8 +69,8 @@ public class Event extends DomainNode {
 	private static final ImmutableSet<Field<?>> FIELDS =
 		ImmutableSet.<Field<?>>of(
 			ID, VERSION, AUTHOR, SOURCE, TIMESTAMP, DURATION, FREQUENCY, VELOCITY, BITS, COUNT,
-			LOCATION, TAG, RESOURCE, DISTANCE, HEIGHT, WEIGHT, VOLUME, CONCENTRATION, HUMIDITY, PRESSURE,
-			SOUND, ENERGY, TEMPERATURE, RATING, PERCENTAGE, MOON, CURRENCY, NOTE);
+			LOCATION, TAG, RESOURCE, DISTANCE, HEIGHT, WEIGHT, VOLUME, CONCENTRATION, DISTANCE_PER_VOLUME,
+			HUMIDITY, PRESSURE, SOUND, ENERGY, TEMPERATURE, RATING, PERCENTAGE, MOON, CURRENCY, NOTE);
 
 	public Event() {
 		this(Generator.id());

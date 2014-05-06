@@ -27,18 +27,20 @@ public class TripsResultTest extends ResultTestSupport {
 		assertThat(trip.getEvent().getValue(Event.TIMESTAMP)).isEqualTo(DateTime.parse("2013-11-02T20:14:10.201-07:00"));
 		assertThat(trip.getEvent().getValue(Event.DURATION)).isEqualTo(Duration.standardSeconds(1500));
 		assertThat(trip.getEvent().getValues(Event.LOCATION)).containsExactly(new Location("37.7692903", "-122.4465469"), new Location("37.78270046281092", "-122.4064556183999"));
-		assertThat(trip.getEvent().getValue(Event.CURRENCY)).isEqualTo(new BigDecimal("1.0428111627932486"));
+		assertThat(trip.getEvent().getValue(Event.CURRENCY)).isEqualTo(new BigDecimal("1.04"));
 		assertThat(trip.getEvent().getValue(Event.SOURCE)).isEqualTo(TripsResult.SOURCE);
 		assertThat(trip.getEvent().getValue(Event.AUTHOR)).isEqualTo(TESTER);
-		assertThat(trip.getEvent().getValue(Event.DISTANCE)).isEqualTo(Measures.valueOf(new BigDecimal("4.084532"), NonSI.MILE));
-		assertThat(trip.getEvent().getValue(Event.VOLUME)).isEqualTo(Measures.valueOf(new BigDecimal("0.2465857561582522"), NonSI.GALLON_LIQUID_US));
+		assertThat(trip.getEvent().getValue(Event.DISTANCE)).isEqualTo(Measures.valueOf(new BigDecimal("4.08"), NonSI.MILE));
+		assertThat(trip.getEvent().getValue(Event.VOLUME)).isEqualTo(Measures.valueOf(new BigDecimal("0.25"), NonSI.GALLON_LIQUID_US));
+		assertThat(trip.getEvent().getValue(Event.DISTANCE_PER_VOLUME)).isEqualTo(Measures.valueOf(new BigDecimal("16.56"), "mpg"));
 	}
 
 	@Test
 	public void testWithMetricUnits() {
 		TripsResult result = new TripsResult(readArray("TripsResultTest.json"), TESTER, true);
 		Trip trip = Iterables.getOnlyElement(result.getTrips());
-		assertThat(trip.getEvent().getValue(Event.DISTANCE)).isEqualTo(Measures.valueOf(new BigDecimal("6.573417"), SI.KILOMETER));
-		assertThat(trip.getEvent().getValue(Event.VOLUME)).isEqualTo(Measures.valueOf(new BigDecimal("0.9334288"), NonSI.LITER));
+		assertThat(trip.getEvent().getValue(Event.DISTANCE)).isEqualTo(Measures.valueOf(new BigDecimal("6.57"), SI.KILOMETER));
+		assertThat(trip.getEvent().getValue(Event.VOLUME)).isEqualTo(Measures.valueOf(new BigDecimal("0.93"), NonSI.LITER));
+		assertThat(trip.getEvent().getValue(Event.DISTANCE_PER_VOLUME)).isEqualTo(Measures.valueOf(new BigDecimal("7.04"), "kpl"));
 	}
 }
