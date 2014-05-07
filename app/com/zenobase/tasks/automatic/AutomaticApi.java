@@ -18,8 +18,7 @@ import com.zenobase.oauth.OAuth2TokenExtractor;
 public class AutomaticApi extends DefaultApi20 {
 
 	private static final String AUTHORIZATION_URL = "https://www.automatic.com/oauth/authorize/?response_type=code&client_id=%s&scope=%s";
-	// private static final String SCOPE = "scope:vehicle%20scope:location%20scope:trip:summary"; // causes an an internal server error when retrieving the access token
-	private static final String SCOPE = "scope:parking:changed%20scope:notification:speeding%20scope:ignition:off%20scope:vehicle%20scope:location%20scope:mil:off%20scope:mil:on%20scope:notification:hard_brake%20scope:trip:summary%20scope:ignition:on%20scope:notification:hard_accel%20scope:region:changed";
+	private static final String SCOPE = "scope:vehicle%20scope:location%20scope:trip:summary";
 
 	@Override
 	public String getAccessTokenEndpoint() {
