@@ -50,7 +50,7 @@ public class DeleteTaskCommand extends Command {
 		@Override
 		public Command parse(ObjectNode node, int version) {
 
-			JsonNode settings = node.path("task").path("settings");
+			JsonNode settings = node.path("parameters").path("task").path("settings");
 			if (settings.isObject()) {
 				if (((ObjectNode) settings).remove("key") != null) {
 					Logger.warn("Deleted obsolete API key");
