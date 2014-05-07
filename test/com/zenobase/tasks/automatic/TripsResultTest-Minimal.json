@@ -1,0 +1,19 @@
+[
+    {
+        "uri": "https://api.automatic.com/v1/trips/524da549e4b08d1af17f6dcb",
+        "id": "524da549e4b08d1af17f6dcb",
+        "user": {
+            "id": "6sQPMSEW71FQ3H"
+        },
+        "vehicle": {
+            "id": "No CarID Available"
+        },
+        "start_location": null,
+        "start_time": 1383448450201,
+        "start_time_zone": "No Time Zone Available",
+        "end_location": null,
+        "end_time": 1383449950201,
+        "end_time_zone": "No Time Zone Available",
+        "average_mpg": 16.56434586845349
+    }
+]

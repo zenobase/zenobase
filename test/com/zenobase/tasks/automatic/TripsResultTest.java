@@ -44,4 +44,13 @@ public class TripsResultTest extends ResultTestSupport {
 		assertThat(trip.getEvent().getValue(Event.VOLUME)).isEqualTo(Measures.valueOf(new BigDecimal("0.93"), NonSI.LITER));
 		assertThat(trip.getEvent().getValue(Event.DISTANCE_PER_VOLUME)).isEqualTo(Measures.valueOf(new BigDecimal("7.04"), "kpl"));
 	}
+
+	@Test
+	public void testMinimalTrip() {
+		TripsResult result = new TripsResult(readArray("TripsResultTest-Minimal.json"), TESTER, "Trip", false);
+		Trip trip = Iterables.getOnlyElement(result.getTrips());
+		assertThat(trip.getVehicleId()).isNull();
+		assertThat(trip.getEvent().getValue(Event.TIMESTAMP)).isEqualTo(DateTime.parse("2013-11-03T03:14:10.201Z"));
+		assertThat(trip.getEvent().getValue(Event.DURATION)).isEqualTo(Duration.standardSeconds(1500));
+	}
 }

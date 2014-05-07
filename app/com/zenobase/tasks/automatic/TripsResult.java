@@ -55,28 +55,36 @@ class TripsResult {
 		event.setValue(Event.TIMESTAMP, begin);
 		event.setValue(Event.DURATION, new Duration(begin, end));
 		event.addValue(Event.TAG, tag);
-		event.addValue(Event.LOCATION, locationValue(node.path("start_location")));
-		event.addValue(Event.LOCATION, locationValue(node.path("end_location")));
+		addLocationValue(event, node.path("start_location"));
+		addLocationValue(event, node.path("end_location"));
 		event.setValue(Event.CURRENCY, Measures.round(decimalValue(node.path("fuel_cost_usd"))));
 		event.setValue(Event.DISTANCE, Measures.round(distanceValue(node.path("distance_m"))));
 		event.setValue(Event.VOLUME, Measures.round(volumeValue(node.path("fuel_volume_gal"))));
 		event.setValue(Event.DISTANCE_PER_VOLUME, Measures.round(distancePerVolumeValue(node.path("average_mpg"))));
 		event.setValue(Event.SOURCE, SOURCE);
 		event.setValue(Event.AUTHOR, author);
-		return new Trip(event, node.path("vehicle").path("id").textValue());
+		return new Trip(event, idValue(node.path("vehicle").path("id")));
 	}
 
-	private DateTimeZone dateTimeZoneValue(JsonNode node) {
-		Preconditions.checkState(node.isTextual(), "expected a node with a time zone: <%s>", node);
-		return DateTimeZone.forID(node.textValue());
+	private static DateTimeZone dateTimeZoneValue(JsonNode node) {
+		return node.isTextual() && node.textValue().indexOf(' ') == -1 // handle "No Time Zone Available"
+			? DateTimeZone.forID(node.textValue())
+			: DateTimeZone.UTC;
 	}
 
-	private DateTime dateTimeValue(JsonNode node, DateTimeZone zone) {
+	private static DateTime dateTimeValue(JsonNode node, DateTimeZone zone) {
 		Preconditions.checkState(node.isLong(), "expected a node with a time: <%s>", node);
 		return new DateTime(node.longValue(), zone);
 	}
 
-	private Location locationValue(JsonNode node) {
+	private static void addLocationValue(Event event, JsonNode node) {
+		Location location = locationValue(node);
+		if (location != null) {
+			event.addValue(Event.LOCATION, location);
+		}
+	}
+
+	private static Location locationValue(JsonNode node) {
 		if (node.isMissingNode() || node.isNull()) {
 			return null;
 		}
@@ -115,7 +123,13 @@ class TripsResult {
 		return value;
 	}
 
-	private BigDecimal decimalValue(JsonNode node) {
+	private static BigDecimal decimalValue(JsonNode node) {
 		return node.isNumber() ? node.decimalValue() : null;
+	}
+
+	private static String idValue(JsonNode node) {
+		return node.isTextual() && node.textValue().indexOf(' ') == -1 // handle "No CarID Available"
+			? node.textValue()
+			: null;
 	}
 }
