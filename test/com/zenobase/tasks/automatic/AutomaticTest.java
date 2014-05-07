@@ -13,7 +13,7 @@ public class AutomaticTest extends TaskTestSupport {
 	public void test() {
 		AutomaticTaskManager manager = new AutomaticTaskManager(newCredentialsManager());
 		ObjectNode settings = Nodes.newObject();
-		settings.put("marker", "2014-02-16");
+		settings.put("marker", "2014-04-20T20:00:00.000-07:00");
 		settings.put("tag", "Trip");
 		settings.put("metric", "false");
 		Task task = manager.newTask(bucketId, principal, settings);

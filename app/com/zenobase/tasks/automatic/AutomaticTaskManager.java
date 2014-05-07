@@ -59,9 +59,6 @@ public class AutomaticTaskManager extends OAuthTaskManager {
 		TRIPS:
 		for (int i = 0; i < 100; ++i) {
 			OAuthRequest request = new OAuthRequest(Verb.GET, "https://api.automatic.com/v1/trips");
-			if (from != null) {
-				request.addQuerystringParameter("after", Long.toString(from.getMillis() / 1000));
-			}
 			request.addQuerystringParameter("per_page", "10");
 			request.addQuerystringParameter("page", Integer.toString(i + 1));
 			Response response = send(request, credentials);
@@ -70,7 +67,7 @@ public class AutomaticTaskManager extends OAuthTaskManager {
 				break TRIPS;
 			}
 			for (Trip trip : add) {
-				if (!trip.isAfter(from)) {
+				if (from != null && !trip.isAfter(from)) {
 					break TRIPS;
 				}
 				trips.add(trip);
