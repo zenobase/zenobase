@@ -4704,7 +4704,7 @@
 
 		$scope.init = function() {
 			$scope.settings = $scope.$parent.$parent.settings = {
-					marker : new Date(moment().utc().subtract('months', 3).startOf('month').valueOf())
+					marker : new Date(moment().utc().subtract('months', 12).startOf('month').valueOf())
 			};
 		};
 
@@ -4763,7 +4763,7 @@
 		$scope.init = function() {
 			$scope.settings = $scope.$parent.$parent.settings = {
 					unit : 'km',
-					marker : new Date(moment().utc().subtract('months', 3).startOf('month').valueOf()),
+					marker : new Date(moment().utc().subtract('months', 12).startOf('month').valueOf()),
 					timezone : 'UTC'
 			};
 			$http.get('/tz').success(function(response) {
@@ -4790,7 +4790,7 @@
 		$scope.init = function() {
 			$scope.settings = $scope.$parent.$parent.settings = {
 					metric : false,
-					marker : new Date(moment().utc().subtract('months', 3).startOf('month').valueOf())
+					marker : new Date(moment().utc().subtract('months', 12).startOf('month').valueOf())
 			};
 		};
 
@@ -4803,7 +4803,7 @@
 			$scope.settings = $scope.$parent.$parent.settings = {
 					tag : 'Trip',
 					metric : false,
-					marker : new Date(moment().utc().subtract('months', 3).startOf('month').valueOf())
+					marker : new Date(moment().utc().subtract('months', 12).startOf('month').valueOf())
 			};
 		};
 
@@ -4814,7 +4814,7 @@
 
 		$scope.init = function() {
 			$scope.settings = $scope.$parent.$parent.settings = {
-					marker : new Date(moment().utc().subtract('months', 3).startOf('month').valueOf())
+					marker : new Date(moment().utc().subtract('months', 12).startOf('month').valueOf())
 			};
 		};
 
@@ -4910,7 +4910,7 @@
 			$scope.settings = $scope.$parent.$parent.settings = {
 					tag : 'body',
 					unit : 'kg',
-					marker : new Date(moment().utc().subtract('months', 3).startOf('month').valueOf()),
+					marker : new Date(moment().utc().subtract('months', 12).startOf('month').valueOf()),
 					timezone : 'UTC'
 			};
 			$http.get('/tz').success(function(response) {
@@ -4961,7 +4961,7 @@
 		$scope.init = function() {
 			$scope.settings = $scope.$parent.$parent.settings = {
 					tag : 'heart rate',
-					marker : new Date(moment().utc().subtract('months', 3).startOf('month').valueOf()),
+					marker : new Date(moment().utc().subtract('months', 12).startOf('month').valueOf()),
 					timezone : 'UTC'
 			};
 			$http.get('/tz').success(function(response) {
@@ -4986,7 +4986,7 @@
 			$scope.settings = $scope.$parent.$parent.settings = {
 					tag : 'steps',
 					unit : 'mi',
-					marker : new Date(moment().utc().subtract('months', 3).startOf('month').valueOf()),
+					marker : new Date(moment().utc().subtract('months', 12).startOf('month').valueOf()),
 					timezone : 'UTC'
 			};
 		};
