@@ -1417,7 +1417,7 @@
 				"placement" : "left",
 				"order" : "timestamp",
 				"reverse" : false,
-				"limit" : 10,
+				"limit" : 5,
 				"singleton" : true
 			},
 			{
