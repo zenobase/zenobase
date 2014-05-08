@@ -19,7 +19,7 @@ public class RescueTimeTest extends TaskTestSupport {
 		RescueTimeProductivityTaskManager manager = new RescueTimeProductivityTaskManager(newCredentialsManager());
 		ObjectNode settings = Nodes.newObject();
 		settings.put("timezone", "America/Los_Angeles");
-		settings.put("marker", "2014-04-01T10:00:00.000");
+		settings.put("marker", "2014-05-01T10:00:00.000");
 		Task task = manager.newTask(bucketId, principal, settings);
 		print(manager.execute(task, getCredentials()).toJson());
 	}

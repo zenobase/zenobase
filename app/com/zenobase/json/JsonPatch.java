@@ -3,7 +3,6 @@ package com.zenobase.json;
 import java.util.Iterator;
 import java.util.Map;
 
-import play.Logger;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Objects;
@@ -33,15 +32,8 @@ public class JsonPatch {
 				Preconditions.checkState(found.isMissingNode(),
 					"Expected value of field <%s> to be empty but found <%s>", entry.getKey(), found);
 			} else if (entry.getValue().isValueNode()) {
-				if (!entry.getValue().equals(found)) {
-					entry.setValue(found); // TODO
-					Logger.warn(String.format("Expected value of field <%s> to be <%s> but found <%s>", entry.getKey(), entry.getValue(), found));
-					// Logger.warn("Object: " + node);
-					// Logger.warn("From:   " + from);
-					// Logger.warn("To:     " + to);
-				}
-				// Preconditions.checkState(entry.getValue().equals(found),
-				//	"Expected value of field <%s> to be <%s> but found <%s>", entry.getKey(), entry.getValue(), found);
+				Preconditions.checkState(entry.getValue().equals(found),
+					"Expected value of field <%s> to be <%s> but found <%s>", entry.getKey(), entry.getValue(), found);
 			} else if (entry.getValue().isObject()) {
 				Preconditions.checkState(found.isObject(),
 					"Expected value of field <%s> to be an object node but found <%s>", entry.getKey(), found);
