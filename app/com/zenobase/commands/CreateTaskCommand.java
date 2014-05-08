@@ -4,8 +4,6 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
-import play.Logger;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.Maps;
 
@@ -55,14 +53,6 @@ public class CreateTaskCommand extends Command {
 
 		@Override
 		public Command parse(ObjectNode node, int version) {
-
-			JsonNode settings = node.path("parameters").path("task").path("settings");
-			if (settings.isObject()) {
-				if (((ObjectNode) settings).remove("key") != null) {
-					Logger.warn("Deleted obsolete API key");
-				}
-			}
-
 			switch (version) {
 				case 2: return new CreateTaskCommand(node);
 			}
