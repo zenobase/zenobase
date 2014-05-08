@@ -24,7 +24,6 @@ public class ProductivityResult {
 	private final DateTimeZone timezone;
 
 	public ProductivityResult(ObjectNode node, String tag, DateTimeZone timezone) {
-		System.err.println(node);
 		this.node = node;
 		this.tag = tag;
 		this.timezone = timezone;

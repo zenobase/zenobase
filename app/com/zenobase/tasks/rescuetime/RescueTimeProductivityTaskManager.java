@@ -93,7 +93,7 @@ public class RescueTimeProductivityTaskManager extends OAuthTaskManager {
 		request.addQuerystringParameter("format", "json");
 		request.addQuerystringParameter("operation", "select");
 		request.addQuerystringParameter("perspective", "interval");
-		request.addQuerystringParameter("restrict_kind", "overview");
+		request.addQuerystringParameter("restrict_kind", "category"); // TODO "overview" option
 		request.addQuerystringParameter("resolution_time", "hour");
 		if (date != null) {
 			request.addQuerystringParameter("restrict_begin", date.toString());
