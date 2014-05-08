@@ -54,9 +54,12 @@ public class CreateEventCommand extends Command {
 				fix(sourceNode);
 			}
 		} else if (node.isObject()) {
-			if ("SleepCloud".equals(node.path("title")) && !"http://sleep-cloud.appspot.com/".equals(node.path("url"))) {
-				Logger.warn("Correcting source url: <" + node.path("url") + ">");
-				((ObjectNode) node).put("url", "http://sleep-cloud.appspot.com/");
+			if ("SleepCloud".equals(node.path("title"))) {
+				Logger.info("Checking source...");
+				if (!"http://sleep-cloud.appspot.com/".equals(node.path("url"))) {
+					Logger.warn("Correcting source url: <" + node.path("url") + ">");
+					((ObjectNode) node).put("url", "http://sleep-cloud.appspot.com/");
+				}
 			}
 		} else if (!node.isMissingNode()) {
 			throw new IllegalArgumentException("Can't handle: " + node);
