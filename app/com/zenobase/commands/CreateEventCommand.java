@@ -54,9 +54,9 @@ public class CreateEventCommand extends Command {
 				fix(sourceNode);
 			}
 		} else if (node.isObject()) {
-			if ("SleepCloud".equals(node.path("title"))) {
+			if ("SleepCloud".equals(node.path("title").textValue())) {
 				Logger.info("Checking source...");
-				if (!"http://sleep-cloud.appspot.com/".equals(node.path("url"))) {
+				if (!"http://sleep-cloud.appspot.com/".equals(node.path("url").textValue())) {
 					Logger.warn("Correcting source url: <" + node.path("url") + ">");
 					((ObjectNode) node).put("url", "http://sleep-cloud.appspot.com/");
 				}
