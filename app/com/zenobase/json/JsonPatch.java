@@ -35,7 +35,7 @@ public class JsonPatch {
 			} else if (entry.getValue().isValueNode()) {
 				if (!entry.getValue().equals(found)) {
 					Logger.warn(String.format("Expected value of field <%s> to be <%s> but found <%s>", entry.getKey(), entry.getValue(), found));
-					Logger.warn("Object: " + to);
+					Logger.warn("Object: " + node);
 					Logger.warn("From:   " + from);
 					Logger.warn("To:     " + to);
 				}
