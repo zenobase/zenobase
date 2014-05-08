@@ -34,10 +34,11 @@ public class JsonPatch {
 					"Expected value of field <%s> to be empty but found <%s>", entry.getKey(), found);
 			} else if (entry.getValue().isValueNode()) {
 				if (!entry.getValue().equals(found)) {
+					entry.setValue(found); // TODO
 					Logger.warn(String.format("Expected value of field <%s> to be <%s> but found <%s>", entry.getKey(), entry.getValue(), found));
-					Logger.warn("Object: " + node);
-					Logger.warn("From:   " + from);
-					Logger.warn("To:     " + to);
+					// Logger.warn("Object: " + node);
+					// Logger.warn("From:   " + from);
+					// Logger.warn("To:     " + to);
 				}
 				// Preconditions.checkState(entry.getValue().equals(found),
 				//	"Expected value of field <%s> to be <%s> but found <%s>", entry.getKey(), entry.getValue(), found);

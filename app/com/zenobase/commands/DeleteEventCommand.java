@@ -54,6 +54,7 @@ public class DeleteEventCommand extends Command {
 
 		@Override
 		public Command parse(ObjectNode node, int version) {
+			CreateEventCommand.fix(node.path("parameters").path("event").path("source"));
 			switch (version) {
 				case 2: return new DeleteEventCommand(node);
 			}

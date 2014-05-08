@@ -64,6 +64,8 @@ public class UpdateEventCommand extends Command {
 
 		@Override
 		public Command parse(ObjectNode node, int version) {
+			CreateEventCommand.fix(node.path("parameters").path("from").path("source"));
+			CreateEventCommand.fix(node.path("parameters").path("to").path("source"));
 			UpdateEventCommand command = new UpdateEventCommand(node);
 			switch (version) {
 				case 3: return command;
