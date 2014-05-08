@@ -34,7 +34,10 @@ public class JsonPatch {
 					"Expected value of field <%s> to be empty but found <%s>", entry.getKey(), found);
 			} else if (entry.getValue().isValueNode()) {
 				if (!entry.getValue().equals(found)) {
-					Logger.warn(String.format("Expected value of field <%s> in <%s> to be <%s> but found <%s> in <%s>", entry.getKey(), expected, entry.getValue(), found, node));
+					Logger.warn(String.format("Expected value of field <%s> to be <%s> but found <%s>", entry.getKey(), entry.getValue(), found));
+					Logger.warn("Object: " + to);
+					Logger.warn("From:   " + from);
+					Logger.warn("To:     " + to);
 				}
 				// Preconditions.checkState(entry.getValue().equals(found),
 				//	"Expected value of field <%s> to be <%s> but found <%s>", entry.getKey(), entry.getValue(), found);
