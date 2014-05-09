@@ -74,8 +74,7 @@ public class NetatmoTaskManager extends OAuthTaskManager {
 	private List<Event> getEvents(NetatmoTask task, OAuthCredentials credentials, Device device, String to) {
 		List<Event> events = Lists.newArrayList();
 		MeasurementsQuery request = new MeasurementsQuery(task.getPrincipal(), credentials, device);
-		int i = 0;
-		while (++i <= 50) {
+		while (events.size() < 30000) {
 			String from = null;
 			if (!events.isEmpty()) {
 				from = getMarker(events);
@@ -88,8 +87,8 @@ public class NetatmoTaskManager extends OAuthTaskManager {
 				break;
 			}
 		}
-		if (i == 50) {
-			Logger.warn("Too may measurements to import in one go");
+		if (events.size() >= 30000) {
+			Logger.warn("Reached maximum number of measurements");
 		}
 		return events;
 	}
