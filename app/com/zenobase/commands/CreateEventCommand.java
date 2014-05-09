@@ -2,8 +2,6 @@ package com.zenobase.commands;
 
 import javax.inject.Inject;
 
-import play.Logger;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import com.zenobase.json.ObjectField;
@@ -48,24 +46,6 @@ public class CreateEventCommand extends Command {
 		return String.format("added an event to %s", getBucketId());
 	}
 
-	public static void fix(JsonNode node) {
-		if (node.isArray()) {
-			for (JsonNode sourceNode : node) {
-				fix(sourceNode);
-			}
-		} else if (node.isObject()) {
-			if ("SleepCloud".equals(node.path("title").textValue())) {
-				Logger.info("Checking source...");
-				if (!"http://sleep-cloud.appspot.com/".equals(node.path("url").textValue())) {
-					Logger.warn("Correcting source url: <" + node.path("url") + ">");
-					((ObjectNode) node).put("url", "http://sleep-cloud.appspot.com/");
-				}
-			}
-		} else if (!node.isMissingNode()) {
-			throw new IllegalArgumentException("Can't handle: " + node);
-		}
-	}
-
 	public static class Parser extends CommandParser {
 
 		@Override
@@ -75,7 +55,6 @@ public class CreateEventCommand extends Command {
 
 		@Override
 		public Command parse(ObjectNode node, int version) {
-			fix(node.path("parameters").path("event").path("source"));
 			CreateEventCommand command = new CreateEventCommand(node);
 			switch (version) {
 				case 4: return command;
