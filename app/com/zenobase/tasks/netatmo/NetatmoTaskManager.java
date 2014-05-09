@@ -10,6 +10,7 @@ import org.scribe.model.OAuthRequest;
 import org.scribe.model.Response;
 import org.scribe.model.Token;
 import org.scribe.model.Verb;
+import play.Logger;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Objects;
 import com.google.common.collect.Iterables;
@@ -73,7 +74,8 @@ public class NetatmoTaskManager extends OAuthTaskManager {
 	private List<Event> getEvents(NetatmoTask task, OAuthCredentials credentials, Device device, String to) {
 		List<Event> events = Lists.newArrayList();
 		MeasurementsQuery request = new MeasurementsQuery(task.getPrincipal(), credentials, device);
-		while (true) {
+		int i = 0;
+		while (++i <= 50) {
 			String from = null;
 			if (!events.isEmpty()) {
 				from = getMarker(events);
@@ -85,6 +87,9 @@ public class NetatmoTaskManager extends OAuthTaskManager {
 			if (!events.addAll(request.find(from, to).getEvents())) {
 				break;
 			}
+		}
+		if (i == 50) {
+			Logger.warn("Too may measurements to import in one go");
 		}
 		return events;
 	}
