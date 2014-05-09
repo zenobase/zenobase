@@ -43,10 +43,17 @@ public class ProductivityResult {
 
 	private Event getEvent(JsonNode node) {
 		Event event = new Event();
-		event.addValue(Event.TAG, tag);
+		if (tag != null) {
+			event.addValue(Event.TAG, tag);
+		}
 		event.setValue(Event.TIMESTAMP, timeValue(node.get(0)));
 		event.setValue(Event.DURATION, Duration.standardSeconds(node.get(1).intValue()));
-		event.setValue(Event.RATING, Rating.valueOf(Ints.checkedCast(Math.round(node.get(4).doubleValue()))));
+		if (node.path(3).isTextual()) {
+			event.addValue(Event.TAG, node.path(3).textValue());
+		}
+		if (node.path(4).isNumber()) {
+			event.setValue(Event.RATING, Rating.valueOf(Ints.checkedCast(Math.round(node.get(4).doubleValue()))));
+		}
 		event.setValue(Event.SOURCE, SOURCE);
 		return event;
 	}

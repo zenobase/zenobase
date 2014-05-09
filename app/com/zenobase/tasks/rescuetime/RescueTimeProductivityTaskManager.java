@@ -15,6 +15,7 @@ import org.scribe.model.Verb;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
+import com.google.common.base.Strings;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.util.concurrent.RateLimiter;
@@ -40,9 +41,10 @@ public class RescueTimeProductivityTaskManager extends OAuthTaskManager {
 
 	@Override
 	public Task newTask(String bucketId, Identity principal, ObjectNode settings) {
-		String tag = Objects.firstNonNull(settings.path("tag").textValue(), "Productivity");
+		String tag = Strings.emptyToNull(settings.path("tag").textValue());
+		String kind = Strings.emptyToNull(settings.path("kind").textValue());
 		DateTimeZone timezone = DateTimeZone.forID(Objects.firstNonNull(settings.path("timezone").textValue(), "UTC"));
-		Task task = new RescueTimeProductivityTask(bucketId, principal, tag, timezone);
+		Task task = new RescueTimeProductivityTask(bucketId, principal, tag, kind, timezone);
 		task.setMarker(parseMarker(settings.path("marker").textValue(), timezone));
 		return task;
 	}
@@ -60,7 +62,7 @@ public class RescueTimeProductivityTaskManager extends OAuthTaskManager {
 		DateTime last = task.getLast();
 		List<Event> events = Lists.newArrayList();
 		for (DateTime from = last; from == null || from.isBefore(DateTime.now()); from = from.plusWeeks(1)) {
-			events.addAll(get(credentials, task.getTag(), task.getTimezone(), from != null ? from.toLocalDate() : null));
+			events.addAll(get(credentials, task.getTag(), task.getKind(), task.getTimezone(), from != null ? from.toLocalDate() : null));
 			if (from == null) {
 				from = getFirst(events);
 			}
@@ -75,25 +77,25 @@ public class RescueTimeProductivityTaskManager extends OAuthTaskManager {
 		return createCommand(task, events);
 	}
 
-	private List<Event> get(OAuthCredentials credentials, String tag, DateTimeZone timezone, LocalDate date) {
+	private List<Event> get(OAuthCredentials credentials, String tag, String kind, DateTimeZone timezone, LocalDate date) {
 		rateLimit.acquire();
-		OAuthRequest request = newRequest(date);
+		OAuthRequest request = newRequest(kind, date);
 		Response response = send(request, credentials);
 		Preconditions.checkState(response.getCode() == 200,
 			"Couldn't request <%s>: %s", request.getCompleteUrl(), response.getBody());
 		ObjectNode node = parseObject(response);
-		ProductivityResult result =  new ProductivityResult(node, tag, timezone);
+		ProductivityResult result = new ProductivityResult(node, tag, timezone);
 		Preconditions.checkState(result.isSuccess(),
 			"Request <%s> failed: %s", request.getCompleteUrl(), response.getBody());
 		return result.getEvents();
 	}
 
-	private OAuthRequest newRequest(LocalDate date) {
+	private OAuthRequest newRequest(String kind, LocalDate date) {
 		OAuthRequest request = new OAuthRequest(Verb.GET, "https://www.rescuetime.com/api/oauth/data");
 		request.addQuerystringParameter("format", "json");
 		request.addQuerystringParameter("operation", "select");
 		request.addQuerystringParameter("perspective", "interval");
-		request.addQuerystringParameter("restrict_kind", "category"); // TODO "overview" option
+		request.addQuerystringParameter("restrict_kind", kind);
 		request.addQuerystringParameter("resolution_time", "hour");
 		if (date != null) {
 			request.addQuerystringParameter("restrict_begin", date.toString());

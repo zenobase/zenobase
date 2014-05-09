@@ -492,7 +492,11 @@
 		<div data-ng-controller="RescueTimeProductivitySettingsController">
 			<div class="control-group">
 				<label for="tag" class="control-label">Tag</label>
-				<input name="tag" type="text" required data-ng-model="settings.tag"/>
+				<input name="tag" type="text" data-ng-model="settings.tag" placeholder="optional tag"/>
+			</div>
+			<div class="control-group">
+				<label for="kind" class="control-label">Break down by</label>
+				<select name="kind" data-ng-model="settings.kind" data-ng-options="kind.id as kind.label for kind in kinds" required></select>
 			</div>
 			<div class="control-group">
 				<label for="timezone" class="control-label">Timezone</label>

@@ -4587,7 +4587,7 @@
       { 'id' : 'moves-locate', 'description' : 'Adds locations to events without locations.' },
 			{ 'id' : 'netatmo', 'description' : 'Creates an event for each weather station measurement.' },
 			{ 'id' : 'reporter-questions', 'description' : 'Creates an event for each question answered in the Reporter app.' },
-			{ 'id' : 'rescuetime-productivity', 'description' : 'The productivity score for each hour recorded by RescueTime.' },
+			{ 'id' : 'rescuetime-productivity', 'description' : 'Creates an event for each hour logged with RescueTime.' },
 			{ 'id' : 'runkeeper-activities', 'description' : 'Creates an event for each activity recorded with the RunKeeper app.' },
 			{ 'id' : 'sleepcloud', 'description' : 'Creates an event for each period of sleep recorded with the Sleep as Android app.' },
 			{ 'id' : 'strava-activities', 'description' : 'Creates an event for each activity recorded with the Strava app.' },
@@ -4833,10 +4833,15 @@
 	}]);
 
 	app.controller('RescueTimeProductivitySettingsController', ['$scope', '$http', 'moment', function($scope, $http, moment) {
-
+		$scope.kinds = [
+			{ 'id' : 'efficiency', 'label' : 'None' },
+			{ 'id' : 'overview', 'label' : 'Category' },
+			{ 'id' : 'category', 'label' : 'Sub-Category' }
+		];
 		$scope.init = function() {
 			$scope.settings = $scope.$parent.$parent.settings = {
-					tag : 'Productivity',
+					tag : '',
+					kind : 'efficiency',
 					marker : new Date(moment().utc().subtract('months', 3).startOf('month').valueOf()),
 					timezone : 'UTC'
 			};

@@ -674,64 +674,6 @@
 		]
 	},
 	{
-		"label" : "Productivity (RescueTime)",
-		"task" : "rescuetime-productivity",
-		"widgets" : [
-			{
-				"id" : "timeline_duration",
-				"type" : "timeline",
-				"label" : "Time Logged",
-				"placement" : "top",
-				"field" : "duration",
-				"statistic" : "sum"
-			},
-			{
-				"id" : "timeline_rating",
-				"type" : "timeline",
-				"label" : "Productivity",
-				"placement" : "top",
-				"field" : "rating",
-				"statistic" : "avg"
-			},
-			{
-				"id" : "latest",
-				"type" : "list",
-				"label" : "Latest",
-				"placement" : "left",
-				"singleton" : true,
-				"limit" : 10,
-				"order" : "timestamp",
-				"reverse" : false
-			},
-			{
-				"id" : "ratings",
-				"type" : "ratings",
-				"label" : "Productivity",
-				"placement" : "right"
-			},
-			{
-				"id" : "polar_hours",
-				"type" : "polar",
-				"label" : "Hours",
-				"placement" : "right",
-				"value_field" : "rating",
-				"unit" : null,
-				"statistic" : "avg",
-				"interval" : "hour_of_day"
-			},
-			{
-				"id" : "polar_days",
-				"type" : "polar",
-				"label" : "Days",
-				"placement" : "right",
-				"value_field" : "rating",
-				"unit" : null,
-				"statistic" : "avg",
-				"interval" : "day_of_week"
-			}
-		]
-	},
-	{
 		"label" : "Questions (Reporter)",
 		"task" : "reporter-questions",
 		"widgets" : [
@@ -1373,6 +1315,69 @@
 				"unit" : null,
 				"statistic" : "avg",
 				"interval" : "day_of_week"
+			}
+		]
+	},
+	{
+		"label" : "Time Tracking (RescueTime)",
+		"task" : "rescuetime-productivity",
+		"widgets" : [
+			{
+				"id" : "timeline_duration",
+				"type" : "timeline",
+				"label" : "Time Logged",
+				"placement" : "top",
+				"field" : "duration",
+				"statistic" : "sum",
+				"interval" : "week"
+			},
+			{
+				"id" : "latest",
+				"type" : "list",
+				"label" : "Latest",
+				"placement" : "left",
+				"singleton" : true,
+				"limit" : 10,
+				"order" : "timestamp",
+				"reverse" : false
+			},
+			{
+				"id" : "tags",
+				"type" : "count",
+				"label" : "Tags",
+				"placement" : "left",
+				"field" : "tag",
+				"order" : "count",
+				"limit" : 10,
+				"reverse" : false
+			},
+			{
+				"id" : "polar_hours",
+				"type" : "polar",
+				"label" : "Hours",
+				"placement" : "right",
+				"value_field" : "duration",
+				"unit" : null,
+				"statistic" : "avg",
+				"interval" : "hour_of_day"
+			},
+			{
+				"id" : "histogram_duration",
+				"type" : "histogram",
+				"label" : "Durations",
+				"placement" : "right",
+				"field" : "duration",
+				"unit" : null,
+				"interval" : 600000
+			},
+			{
+				"id" : "histogram_rating",
+				"type" : "histogram",
+				"label" : "Productivity",
+				"placement" : "right",
+				"field" : "rating",
+				"unit" : null,
+				"interval" : 10
 			}
 		]
 	},
