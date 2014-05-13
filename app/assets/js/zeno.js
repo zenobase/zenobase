@@ -1420,8 +1420,8 @@
 			}
 			return params;
 		}
-		$scope.addConstraint = function(field, value, replace) {
-			var constraint = new Constraint(field, value);
+		$scope.addConstraint = function(field, value, replace, negated) {
+			var constraint = new Constraint(field, value, negated);
 			if (containsConstraint(constraint)) {
 				return;
 			}
@@ -2786,8 +2786,8 @@
 			$scope.timesB = resultB && resultB[$scope.settings.id] || [];
 			$timeout($scope.draw, 0); // delay for correct width
 		};
-		$scope.filter = function(value) {
-			$scope.addConstraint($scope.keyField + '.' + $scope.settings.interval, value, true);
+		$scope.filter = function(value, negated) {
+			$scope.addConstraint($scope.keyField + '.' + $scope.settings.interval, value, true, negated);
 		};
 		$scope.snapshot = function() {
 			$scope.$broadcast('snapshot');
