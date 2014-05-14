@@ -15,7 +15,7 @@ public class LastFmTest extends TaskTestSupport {
 		ObjectNode settings = Nodes.newObject();
 		settings.put("tag", "track");
 		settings.put("timezone", "America/Los_Angeles");
-		settings.put("marker", "2014-01-01");
+		settings.put("marker", "2014-05-01T17:35:45.000Z");
 		Task task = manager.newTask(bucketId, principal, settings);
 		print(manager.execute(task, getCredentials()).toJson());
 	}

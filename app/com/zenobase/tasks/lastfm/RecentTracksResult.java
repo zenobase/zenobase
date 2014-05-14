@@ -77,10 +77,10 @@ class RecentTracksResult {
 
 	public boolean hasNext() {
 		JsonNode attrNode = node.path("recenttracks").path("@attr");
-		int page = attrNode.path("page").asInt();
-		int totalPages = attrNode.path("totalPages").asInt();
-		Preconditions.checkState(page > 0, "Can't find page number: %s", attrNode);
-		Preconditions.checkState(totalPages > 0, "Can't find page count: %s", attrNode);
-		return page < totalPages;
+		JsonNode pageNode = attrNode.path("page");
+		JsonNode totalPagesNode = attrNode.path("totalPages");
+		Preconditions.checkState(!pageNode.isMissingNode(), "Can't find page number: %s", attrNode);
+		Preconditions.checkState(!totalPagesNode.isMissingNode(), "Can't find page count: %s", attrNode);
+		return pageNode.asInt() < totalPagesNode.asInt();
 	}
 }
