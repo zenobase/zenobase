@@ -43,7 +43,7 @@
 
 // Components: Misc
 @import "bootstrap/thumbnails.less";
-// @import "bootstrap/media.less";
+@import "bootstrap/media.less";
 @import "bootstrap/labels-badges.less";
 @import "bootstrap/progress-bars.less";
 // @import "bootstrap/accordion.less";
@@ -380,6 +380,26 @@ pre.example > .title {
 	background-size: cover;
 	background-repeat: no-repeat;
 	background-position: center top;     
+}
+
+#home-view .media-object {
+	.border-radius(6px);
+}
+
+#home-view .media > .pull-left {
+	margin-right: 20px;
+}
+
+#home-view .media > .pull-right {
+	margin-left: 20px;
+}
+
+#home-examples {
+	.clearfix();
+	color: #333;
+	max-width: 800px;
+	margin-left: auto;
+	margin-right: auto;	
 }
 
 .nav-pills > .active-b > a,
