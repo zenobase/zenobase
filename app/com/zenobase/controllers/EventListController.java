@@ -88,8 +88,8 @@ public class EventListController extends ControllerSupport {
 			map.put("type", ListFacet.TYPE);
 			copyRequestParameter("offset", map);
 			copyRequestParameter("limit", map);
-			copyRequestParameter("sort", map);
 			copyRequestParameter("order", map);
+			copyRequestParameter("reverse", map);
     		options.add(new FacetOptions(map));
     	}
 		return options;
