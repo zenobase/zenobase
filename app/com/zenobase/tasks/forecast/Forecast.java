@@ -31,31 +31,45 @@ public class Forecast {
 		this.moon = moon;
 	}
 
-	public void apply(Event event, Set<String> fields) {
-		if (fields.contains(Event.TAG.getName())) {
-			event.addValue(Event.TAG, summary);
-		}
-		if (fields.contains(Event.TEMPERATURE.getName())) {
-			event.setValue(Event.TEMPERATURE, temperature);
-		}
-		if (fields.contains(Event.PRESSURE.getName())) {
-			event.setValue(Event.PRESSURE, pressure);
-		}
-		if (fields.contains(Event.HUMIDITY.getName())) {
-			event.setValue(Event.HUMIDITY, humidity);
+	public boolean apply(Event event, Set<String> fields) {
+		boolean updated = false;
+		if (event.contains(Event.LOCATION)) {
+			if (fields.contains(Event.TAG.getName())) {
+				event.addValue(Event.TAG, summary);
+				updated = true;
+			}
+			if (fields.contains(Event.TEMPERATURE.getName())) {
+				event.setValue(Event.TEMPERATURE, temperature);
+				updated = true;
+			}
+			if (fields.contains(Event.PRESSURE.getName())) {
+				event.setValue(Event.PRESSURE, pressure);
+				updated = true;
+			}
+			if (fields.contains(Event.HUMIDITY.getName())) {
+				event.setValue(Event.HUMIDITY, humidity);
+				updated = true;
+			}
 		}
 		if (fields.contains(Event.MOON.getName())) {
 			event.setValue(Event.MOON, moon);
+			updated = true;
 		}
-		event.addValue(Event.SOURCE, newResource(event));
+		if (updated) {
+			event.addValue(Event.SOURCE, newResource(event));
+		}
+		return updated;
 	}
 
 	private static Resource newResource(Event event) {
 		DateTime timestamp = event.getValue(Event.TIMESTAMP);
 		Location location = Iterables.getFirst(event.getValues(Event.LOCATION), null);
-		String url = String.format("http://forecast.io/#/f/%s,%s/%d",
-			location.getLatitude(), location.getLongitude(),
-			timestamp.getMillis() / 1000L);
+		String url = "http://forecast.io/";
+		if (location != null) {
+			url += String.format("#/f/%s,%s/%d",
+				location.getLatitude(), location.getLongitude(),
+				timestamp.getMillis() / 1000L);
+		}
 		return new Resource("Forecast", url);
 	}
 

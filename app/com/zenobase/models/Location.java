@@ -7,6 +7,8 @@ import com.google.common.base.Preconditions;
 
 public class Location {
 
+	public static final Location ORIGIN = new Location("51.48", "0.00");
+
 	private final BigDecimal latitude, longitude;
 
 	public Location(BigDecimal latitude, BigDecimal longitude) {

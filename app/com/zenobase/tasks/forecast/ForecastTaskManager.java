@@ -93,12 +93,15 @@ public class ForecastTaskManager extends TaskManager {
 	private Event update(Event event, DateTime timestamp, Set<String> fields, boolean standardUnits) {
 		Location location = Iterables.getFirst(event.getValues(Event.LOCATION), null);
 		if (location == null) {
-			return null;
+			if (fields.contains(Event.MOON.getName())) {
+				location = Location.ORIGIN;
+			} else {
+				return null;
+			}
 		}
 		Forecast forecast = forecaster.find(location, timestamp, fields, standardUnits);
 		Event updated = event.copy();
-		forecast.apply(updated, fields);
-		return updated;
+		return forecast.apply(updated, fields) ? updated : null;
 	}
 
 	private Command createCommand(Task task, DateTime marker, List<Command> updates) {
