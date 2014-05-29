@@ -39,7 +39,29 @@
 					<a role="menuitem" data-ng-click="filter('[0..12)')">0h - 12h</a>
 				</li>
 				<li role="presentation" data-ng-show="settings.interval == 'hour_of_day'">
-					<a role="menuitem" data-ng-click="filter('[12..24)')">12h - 24h</a>
+					<a role="menuitem" data-ng-click="filter('[12..*)')">12h - 24h</a>
+				</li>
+				<li class="divider" data-ng-show="settings.interval == 'hour_of_day'"></li>
+				<li role="presentation" data-ng-show="settings.interval == 'hour_of_day'">
+					<a role="menuitem" data-ng-click="filter('[0..3)')">0h - 3h</a>
+				</li>
+				<li role="presentation" data-ng-show="settings.interval == 'hour_of_day'">
+					<a role="menuitem" data-ng-click="filter('[3..6)')">3h - 6h</a>
+				</li>
+				<li role="presentation" data-ng-show="settings.interval == 'hour_of_day'">
+					<a role="menuitem" data-ng-click="filter('[6..12)')">6h - 12h</a>
+				</li>
+				<li role="presentation" data-ng-show="settings.interval == 'hour_of_day'">
+					<a role="menuitem" data-ng-click="filter('[12..15)')">12h - 15h</a>
+				</li>
+				<li role="presentation" data-ng-show="settings.interval == 'hour_of_day'">
+					<a role="menuitem" data-ng-click="filter('[15..18)')">15h - 18h</a>
+				</li>
+				<li role="presentation" data-ng-show="settings.interval == 'hour_of_day'">
+					<a role="menuitem" data-ng-click="filter('[18..21)')">18h - 21h</a>
+				</li>
+				<li role="presentation" data-ng-show="settings.interval == 'hour_of_day'">
+					<a role="menuitem" data-ng-click="filter('[21..*)')">21h - 24h</a>
 				</li>
 			</ul>
 			<a class="xbtn" title="Snapshot" data-ng-click="snapshot()"><i class="fa fa-camera"></i></a>
