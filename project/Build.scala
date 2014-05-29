@@ -20,10 +20,10 @@ object ApplicationBuild extends Build {
 	  "org.elasticsearch" % "elasticsearch" % "1.1.1",
 	  "org.elasticsearch" % "elasticsearch-cloud-aws" % "2.1.1",
 	  "org.jscience" % "jscience" % "4.3.1",
-	  "org.jsoup" % "jsoup" % "1.7.2",
+	  "org.jsoup" % "jsoup" % "1.7.3",
 	  "net.sf.opencsv" % "opencsv" % "2.3",
 	  "org.scribe" % "scribe" % "1.3.3",
-	  "com.braintreepayments.gateway" % "braintree-java" % "2.29.0",
+	  "com.braintreepayments.gateway" % "braintree-java" % "2.29.1",
 	  "org.seleniumhq.selenium" % "selenium-chrome-driver" % "2.32.0" % "test", // Must match Play's version of Selenium!
 	  "org.apache.httpcomponents" % "httpcore" % "4.2.5" % "test",
 	  "org.mockito" % "mockito-core" % "1.9.5" % "test",
