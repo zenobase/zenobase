@@ -61,9 +61,10 @@ class PlacesResult {
 			if ("foursquare".equals(placeType)) {
 				String foursquareId = placeNode.path("foursquareId").textValue();
 				event.addValue(Event.RESOURCE, new Resource(foursquareId, ""));
-			} else if ("home".equals(placeType) || "user".equals(placeType)) {
-				String name = placeNode.path("name").textValue();
-				event.addValue(Event.TAG, name);
+			} else if (placeNode.has("name")) {
+				event.addValue(Event.TAG, placeNode.path("name").textValue());
+			} else if (!"unknown".equals(placeType) && !placeType.isEmpty()) {
+				event.addValue(Event.TAG, Character.toUpperCase(placeType.charAt(0)) + placeType.substring(1));
 			}
 			event.setValue(Event.AUTHOR, author);
 			event.setValue(Event.SOURCE, SOURCE);

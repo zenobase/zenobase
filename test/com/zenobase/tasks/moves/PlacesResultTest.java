@@ -28,6 +28,9 @@ public class PlacesResultTest extends ResultTestSupport {
 		expected.setValue(Event.DURATION, Duration.standardSeconds(8074));
 		expected.setValue(Event.AUTHOR, TESTER);
 		expected.setValue(Event.SOURCE, PlacesResult.SOURCE);
-		assertThat(events.get(0)).as("first event").isEqualTo(expected);
+		assertThat(events.get(0)).as("1st event").isEqualTo(expected);
+		assertThat(events.get(1).getValues(Event.TAG)).containsExactly("Place");
+		assertThat(events.get(2).getValues(Event.TAG)).containsExactly("Place", "Home");
+		assertThat(events.get(3).getValues(Event.TAG)).containsExactly("Place", "Condo");
 	}
 }
