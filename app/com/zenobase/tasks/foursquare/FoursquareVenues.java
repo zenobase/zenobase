@@ -5,8 +5,8 @@ import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import play.libs.WS;
-import play.libs.WS.Response;
+import play.libs.ws.WS;
+import play.libs.ws.WSResponse;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.base.Preconditions;
 import com.google.common.cache.CacheBuilder;
@@ -27,7 +27,7 @@ public class FoursquareVenues {
 		.build(new CacheLoader<String, FoursquareVenue>() {
 			@Override
 			public FoursquareVenue load(String venueId) {
-				Response response = request(venueId);
+				WSResponse response = request(venueId);
 				if (response.getStatus() == 400) {
 					return FoursquareVenue.UNKNOWN;
 				}
@@ -49,7 +49,7 @@ public class FoursquareVenues {
 		return cache.getUnchecked(venueId);
 	}
 
-	private Response request(String venueId) {
+	private WSResponse request(String venueId) {
 		RATE_LIMITER.acquire();
 		return WS.url("https://api.foursquare.com/v2/venues/" + venueId)
 			.setQueryParameter("v", "20140206")
