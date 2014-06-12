@@ -49,7 +49,7 @@ public class FitbitSleepTaskManager extends FitbitTaskManagerSupport {
 				Response response = send(request, credentials);
 				events.addAll(new FitbitSleepResult(parseObject(response), task.getTag(), task.getPrincipal(), profile.getTimezone()).getEvents());
 			} catch (InvalidStatusException e) {
-				if (e.getStatus() == 409) { // reached rate limit
+				if (e.getStatus() == 429) { // reached rate limit
 					syncDate = date;
 					break;
 				}

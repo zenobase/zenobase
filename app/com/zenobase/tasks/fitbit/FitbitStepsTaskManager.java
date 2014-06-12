@@ -52,7 +52,7 @@ public class FitbitStepsTaskManager extends FitbitTaskManagerSupport {
 					events.addAll(new FitbitStepsResult(parseObject(response), task.getTag(), task.getPrincipal(),
 						date, profile.getTimezone(), profile.getDistanceUnit(), profile.getHeightUnit()).getEvents());
 				} catch (InvalidStatusException e) {
-					if (e.getStatus() == 409) { // reached rate limit
+					if (e.getStatus() == 429) { // reached rate limit
 						syncDate = date;
 						break;
 					}
