@@ -9,7 +9,6 @@ import org.joda.time.Interval;
 import org.joda.time.Period;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.DateTimeFormatterBuilder;
-import play.Logger;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 
