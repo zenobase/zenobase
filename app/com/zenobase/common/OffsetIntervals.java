@@ -147,7 +147,6 @@ public class OffsetIntervals extends DateTimeFormatSupport {
 			List<DateTime> instants = Lists.newArrayList();
 			for (DateTime start = interval.getStart(); interval.contains(start); start = start.plus(period)) {
 				if (instants.size() > 1440) {
-					Logger.warn("Interval is too large to expand: " + interval);
 					return Collections.emptyList();
 				}
 				instants.add(start);
