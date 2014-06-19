@@ -6,8 +6,9 @@ import org.joda.time.DateTimeZone;
 import play.Logger;
 import play.libs.F;
 import play.libs.F.Promise;
-import play.libs.WS;
-import play.libs.WS.WSRequestHolder;
+import play.libs.ws.WS;
+import play.libs.ws.WSRequestHolder;
+import play.libs.ws.WSResponse;
 import play.mvc.Controller;
 import play.mvc.Result;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -25,9 +26,9 @@ public class TimezoneController extends Controller {
 
 	public Promise<Result> find(final Location location) {
 		return createRequest(location).get()
-			.map(new F.Function<WS.Response, ObjectNode>() {
+			.map(new F.Function<WSResponse, ObjectNode>() {
 				@Override
-				public ObjectNode apply(WS.Response response) {
+				public ObjectNode apply(WSResponse response) {
 					Preconditions.checkState(response.getStatus() == OK,
 						"Expected 200 status but got %d", response.getStatus());
 					return Nodes.readObject(response.getBody());
