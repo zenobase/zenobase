@@ -4,6 +4,7 @@ import org.scribe.model.OAuthRequest;
 import org.scribe.model.Response;
 import org.scribe.model.Token;
 import play.mvc.Http;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
@@ -68,6 +69,10 @@ public abstract class OAuthTaskManager extends TaskManager {
 			}
 		}
 		return response;
+	}
+
+	protected static JsonNode parse(Response response) {
+		return Nodes.read(response.getBody());
 	}
 
 	protected static ObjectNode parseObject(Response response) {

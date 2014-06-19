@@ -65,7 +65,7 @@ public class Nodes {
 		return (ArrayNode) read(in);
 	}
 
-	private static JsonNode read(byte[] in) {
+	public static JsonNode read(byte[] in) {
 		try {
 			return MAPPER.readTree(in);
 		} catch (IOException e) {
@@ -81,7 +81,7 @@ public class Nodes {
         return (ArrayNode) read(in);
     }
 
-    private static JsonNode read(String in) {
+    public static JsonNode read(String in) {
         try {
             return MAPPER.readTree(in);
         } catch (IOException e) {

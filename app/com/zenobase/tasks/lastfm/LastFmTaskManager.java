@@ -94,7 +94,7 @@ public class LastFmTaskManager extends OAuthTaskManager {
 				String mbid = resource.getUrl().substring(resource.getUrl().lastIndexOf('/') + 1);
 				LastFmRequest request = createTrackInfoRequest(mbid);
 				Response response = send(request, credentials);
-				TrackInfoResult result = new TrackInfoResult(parseObject(response));
+				TrackInfoResult result = new TrackInfoResult(parse(response));
 				if (result.isSuccess()) {
 					result.get().apply(event);
 				} else if (!result.isNotFound()) {

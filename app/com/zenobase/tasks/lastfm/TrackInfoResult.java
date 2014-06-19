@@ -2,7 +2,6 @@ package com.zenobase.tasks.lastfm;
 
 import org.joda.time.Duration;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 
@@ -10,14 +9,14 @@ import com.zenobase.models.Resource;
 
 class TrackInfoResult {
 
-	private final ObjectNode node;
+	private final JsonNode node;
 
-	public TrackInfoResult(ObjectNode node) {
+	public TrackInfoResult(JsonNode node) {
 		this.node = node;
 	}
 
 	public boolean isSuccess() {
-		return node.path("error").isMissingNode();
+		return node.isObject() && node.path("error").isMissingNode();
 	}
 
 	public boolean isNotFound() {
