@@ -73,7 +73,7 @@ class WithingsCardioResult {
 					++count;
 					break;
 				case 54: // SpO2
-					event.setValue(Event.PERCENTAGE, Percentage.valueOf(getBigDecimal(measure)));
+					event.setValue(Event.PERCENTAGE, getPercentage(measure));
 					++count;
 					break;
 			}
@@ -94,6 +94,11 @@ class WithingsCardioResult {
 		int value = node.path("value").intValue();
 		int scale = node.path("unit").intValue();
 		return value != 0 ? BigDecimal.valueOf(value, -scale) : null;
+	}
+
+	private static Percentage getPercentage(JsonNode node) {
+		BigDecimal value = getBigDecimal(node);
+		return value != null && value.signum() > -1 ? Percentage.valueOf(value) : null;
 	}
 
 	private static DateTime getDateTime(JsonNode node, DateTimeZone timezone) {
