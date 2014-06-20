@@ -34,6 +34,6 @@ UglifyKeys.output := "js/zeno.min.js"
 
 includeFilter in (Assets, LessKeys.less) := "zeno.less"
 
-includeFilter in uglify := GlobFilter("js/zeno.js"),
+includeFilter in uglify := GlobFilter("js/zeno.js")
 
 pipelineStages := Seq(uglify, gzip)
