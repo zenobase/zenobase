@@ -667,7 +667,7 @@
 			$window.location = getRedirectUri({ 'error' : code, 'error_message' : message });
 		};
 
-		$scope.client = $location.search()['client_id']
+		$scope.client = $location.search()['client_id'];
 		$scope.redirectUri = $location.search()['redirect_uri'];
 		if (!$scope.client) {
 			$scope.deny('invalid_request', 'client_id is missing');
