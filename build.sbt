@@ -28,8 +28,10 @@ libraryDependencies ++= Seq(
 	"org.jvnet.mock-javamail" % "mock-javamail" % "1.9" % "test"
 )
 
-// LessKeys.compress := true
+LessKeys.compress := true
+
+UglifyKeys.output := "js/zeno.min.js"
 
 includeFilter in (Assets, LessKeys.less) := "zeno.less"
 
-// pipelineStages := Seq(rjs, digest, gzip)
+pipelineStages := Seq(uglify, gzip)
