@@ -28,6 +28,8 @@ libraryDependencies ++= Seq(
 	"org.jvnet.mock-javamail" % "mock-javamail" % "1.9" % "test"
 )
 
+JsTaskKeys.timeoutPerSource := 10.minutes
+
 LessKeys.compress := true
 
 UglifyKeys.output := "js/zeno.min.js"
