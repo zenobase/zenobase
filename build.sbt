@@ -1,3 +1,5 @@
+import scala.concurrent.duration._
+
 name := "zenobase"
 
 version := "SNAPSHOT"
