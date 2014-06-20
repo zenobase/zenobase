@@ -34,7 +34,7 @@ JsTaskKeys.timeoutPerSource := 10.minutes
 
 LessKeys.compress := true
 
-UglifyKeys.output := "js/zeno.min.js"
+UglifyKeys.output := "js/zeno.js"
 
 includeFilter in (Assets, LessKeys.less) := "zeno.less"
 
