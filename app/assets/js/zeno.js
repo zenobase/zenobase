@@ -46,7 +46,7 @@
 				return this.format('MMM D, YYYY HH:mm');
 			}
 			return this.fromNow(a);
-		}
+		};
 
 		// See https://github.com/timrwood/moment/issues/463
 		moment.duration.fn.countdown = function(precision) {
@@ -73,7 +73,7 @@
 				args = args.slice(0, precision);
 			}
 			return args.length ? args.join(' ') : this.milliseconds() + 'ms';			
-		}
+		};
 
 		return moment;
 	});
@@ -85,7 +85,7 @@
 		};
 		var set = function(token) {
 			if (token) {
-				localStorage.setItem(key, token)
+				localStorage.setItem(key, token);
 			} else {
 				localStorage.removeItem(key);				
 			}
@@ -98,7 +98,7 @@
 		return {
 			get : get,
 			set : set
-		}
+		};
 	}]);
 
 	app.factory('tracker', ['$window', function($window) {
@@ -148,7 +148,7 @@
 			rewrite : function(path) {
 				return path.replace(/\.(.+)$/, '-' + version + '.$1');
 			}
-		}
+		};
 	}();
 
 	app.config(['$routeProvider', function($routeProvider) {
@@ -262,7 +262,7 @@
 
 		var Alert = function() {
 			this.clear();
-		}
+		};
 
 		Alert.prototype.show = function(message, level, undo, onClick) {
 			this.message = message;
@@ -288,7 +288,7 @@
 		var User = function(data) {
 			$.extend(this, data);
 			cache.put(this['@id'], this);
-		}
+		};
 
 		User.prototype.getName = function() {
 			return this.name || 'guest';
@@ -321,7 +321,7 @@
 			this.field = field;
 			this.value = value;
 			this.negated = negated;
-		}
+		};
 
 		Constraint.prototype.invert = function() {
 			return new Constraint(this.field, this.value, !this.negated);
@@ -349,7 +349,7 @@
 			var field = s.substring(0, pos);
 			var value = s.substring(pos + 1);
 			return new Constraint(field, value, negated);
-		}
+		};
 
 		return Constraint;
 	});
@@ -505,7 +505,7 @@
 					}
 				});
 			tracker.event('action', 'sign in');
-		}
+		};
 
 		$scope.$on('event:unauthorized', function() {
 			$scope.openDialog('sign-in-dialog');
@@ -995,7 +995,7 @@
 				return $.grep($scope.buckets, function(bucket) {
 					return !bucket.aliases && $.grep($scope.aliases, function(alias) {
 						return alias['@id'] == bucket['@id'];
-					}).length == 0;
+					}).length === 0;
 				});
 			}
 		};
@@ -1020,13 +1020,13 @@
 			id : function id() {
 				var len = 5;
 				var chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-				var id = '';
+				var value = '';
 				var pos;
 				for (var i = 0; i < len; ++i) {
 					pos = Math.floor(Math.random() * chars.length);
-					id += chars.substring(pos, pos + 1);
+					value += chars.substring(pos, pos + 1);
 				}
-				return id;
+				return value;
 			}
 		};
 	});
@@ -1035,85 +1035,85 @@
 
 		$scope.dialog = $('#add-widget-dialog');
 		$scope.templates = [
-      {
-      	type : 'timeline',
-      	label : 'Timeline',
-      	description : 'Plots values on a timeline.',
-      	thumbnail : cacheBuster.rewrite('/img/widgets/timeline.png'),
-      	settings : { field : 'timestamp', statistic : 'count' }
-      },
-      {
-      	type : 'list',
-      	label : 'List', 
-      	description : 'Shows all matching events, pageable.',
-      	thumbnail : cacheBuster.rewrite('/img/widgets/list.png'),
-      	settings : { limit : 10, order : 'timestamp', reverse : false },
-      	singleton : true
-      },
-      {
-      	type : 'count',
-      	label : 'Count', 
-      	description : 'Counts events by tag or author.',
-      	thumbnail : cacheBuster.rewrite('/img/widgets/count.png'),
-      	settings : { field : 'tag', order : 'count', reverse : false, limit : 5 }
-      },
-      {
-      	type : 'map',
-      	label : 'Map', 
-      	description : 'Shows clusters of events on a map.',
-      	thumbnail : cacheBuster.rewrite('/img/widgets/map.png'),
-      	settings : { }
-      },
-      {
-      	type : 'heatmap',
-      	label : 'Map', 
-      	description : 'Shows the density of events on a map.',
-      	thumbnail : cacheBuster.rewrite('/img/widgets/heatmap.png'),
-      	settings : { }
-      },
-      {
-      	type : 'ratings',
-      	label : 'Ratings',
-    		description : 'Counts events by their rating.',
-      	thumbnail : cacheBuster.rewrite('/img/widgets/ratings.png'),
-      	settings : { }
-      },
-      {
-      	type : 'histogram',
-      	label : 'Histogram', 
-      	description : 'Shows the distribution of values in a field.',
-      	thumbnail : cacheBuster.rewrite('/img/widgets/histogram.png'),
-      	settings : { field : 'distance', interval : 10, unit : 'mi' }
-      },
-      {
-      	type : 'scoreboard',
-      	label : 'Scoreboard', 
-      	description : 'Statistics for the values in a field.',
-      	thumbnail : cacheBuster.rewrite('/img/widgets/scoreboard.png'),
-      	settings : { key_field : 'author', value_field : 'distance', unit : 'mi', order : 'total', limit : 10 }
-      },                    
-	  	{
-      	type : 'gantt',
-      	label : 'Frequency', 
-      	description : 'Shows how long ago and how often certain events occur.',
-      	thumbnail : cacheBuster.rewrite('/img/widgets/gantt.png'),
-      	settings : { field : 'tag', order : 'max', limit : 10 }
-      },
-	  	{
-      	type : 'polar',
-      	label : 'Polar Chart', 
-      	description : 'Plots values by month of year, day of week, or hour of day.',
-      	thumbnail : cacheBuster.rewrite('/img/widgets/polar.png'),
-      	settings : { interval : 'day_of_week', value_field : 'timestamp' }
-      },
-	  	{
-      	type : 'scatterplot',
-      	label : 'Scatter Plot', 
-      	description : 'Correlates values from two fields.',
-      	thumbnail : cacheBuster.rewrite('/img/widgets/scatterplot.png'),
-      	settings : { field_x : 'count', field_y : 'count' }
-      }
-	  ];
+			{
+				type : 'timeline',
+				label : 'Timeline',
+				description : 'Plots values on a timeline.',
+				thumbnail : cacheBuster.rewrite('/img/widgets/timeline.png'),
+				settings : { field : 'timestamp', statistic : 'count' }
+			},
+			{
+				type : 'list',
+				label : 'List',
+				description : 'Shows all matching events, pageable.',
+				thumbnail : cacheBuster.rewrite('/img/widgets/list.png'),
+				settings : { limit : 10, order : 'timestamp', reverse : false },
+				singleton : true
+			},
+			{
+				type : 'count',
+				label : 'Count',
+				description : 'Counts events by tag or author.',
+				thumbnail : cacheBuster.rewrite('/img/widgets/count.png'),
+				settings : { field : 'tag', order : 'count', reverse : false, limit : 5 }
+			},
+			{
+				type : 'map',
+				label : 'Map',
+				description : 'Shows clusters of events on a map.',
+				thumbnail : cacheBuster.rewrite('/img/widgets/map.png'),
+				settings : { }
+			},
+			{
+				type : 'heatmap',
+				label : 'Map',
+				description : 'Shows the density of events on a map.',
+				thumbnail : cacheBuster.rewrite('/img/widgets/heatmap.png'),
+				settings : { }
+			},
+			{
+				type : 'ratings',
+				label : 'Ratings',
+				description : 'Counts events by their rating.',
+				thumbnail : cacheBuster.rewrite('/img/widgets/ratings.png'),
+				settings : { }
+			},
+			{
+				type : 'histogram',
+				label : 'Histogram',
+				description : 'Shows the distribution of values in a field.',
+				thumbnail : cacheBuster.rewrite('/img/widgets/histogram.png'),
+				settings : { field : 'distance', interval : 10, unit : 'mi' }
+			},
+			{
+				type : 'scoreboard',
+				label : 'Scoreboard',
+				description : 'Statistics for the values in a field.',
+				thumbnail : cacheBuster.rewrite('/img/widgets/scoreboard.png'),
+				settings : { key_field : 'author', value_field : 'distance', unit : 'mi', order : 'total', limit : 10 }
+			},
+			{
+				type : 'gantt',
+				label : 'Frequency',
+				description : 'Shows how long ago and how often certain events occur.',
+				thumbnail : cacheBuster.rewrite('/img/widgets/gantt.png'),
+				settings : { field : 'tag', order : 'max', limit : 10 }
+			},
+			{
+				type : 'polar',
+				label : 'Polar Chart',
+				description : 'Plots values by month of year, day of week, or hour of day.',
+				thumbnail : cacheBuster.rewrite('/img/widgets/polar.png'),
+				settings : { interval : 'day_of_week', value_field : 'timestamp' }
+			},
+			{
+				type : 'scatterplot',
+				label : 'Scatter Plot',
+				description : 'Correlates values from two fields.',
+				thumbnail : cacheBuster.rewrite('/img/widgets/scatterplot.png'),
+				settings : { field_x : 'count', field_y : 'count' }
+			}
+		];
 		$scope.init = function(placement) {
 			$scope.placement = placement;
 		};
@@ -1149,7 +1149,7 @@
 
 		var Bucket = function(data) {
 			$.extend(this, data);
-		}
+		};
 
 		Bucket.getLabel = function(id, callback) {
 			$http.get('/buckets/' + id + '/label')
@@ -1294,7 +1294,7 @@
 				});
 			}
 			$scope.refresh();
-		}
+		};
 		$scope.getTemplate = function(type) {
 			return cacheBuster.rewrite('/dashboard/' + type + '.html');
 		};
@@ -1314,11 +1314,11 @@
 		};
 	
 		function search(q, facets) {
-			return $http.get('/buckets/' + $scope.bucketId + '/?' + $.param({ 'q' : q, 'facet' : facets }, true))
+			return $http.get('/buckets/' + $scope.bucketId + '/?' + $.param({ 'q' : q, 'facet' : facets }, true));
 		}
 		$scope.search = function(params, callback) {
 			var facet = $.map(params, function(param) {
-				return $.map(param, function(value, key) { return key + ':' + value }).join(',');
+				return $.map(param, function(value, key) { return key + ':' + value; }).join(',');
 			});
 			var t0 = new Date().getTime();
 			var requests = [ search($scope.constraints, facet) ];
@@ -1379,7 +1379,7 @@
 			if (value && !$.isArray(value)) {
 				value = value.split('|');
 			}
-			return value ? $.map(value, function(s) { return Constraint.parse(s) }) : [];
+			return value ? $.map(value, function(s) { return Constraint.parse(s); }) : [];
 			
 		}
 		$scope.updateConstraints = function() {
@@ -1398,27 +1398,27 @@
 		};
 		$scope.getConstraintsString = function() {
 			var items = mapToString($scope.constraints);
-			return items != null ? items.join('|') : null;
+			return items !== null ? items.join('|') : null;
 		};
 		function containsConstraint(constraint) {
 			return $.grep($scope.constraints, function(c) {
 				return angular.equals(c, constraint);
 			}).length > 0;
-		};
+		}
 		function mapToString(values) {
-			return values.length > 0
-				? $.map(values, function(value) { return value.toString(); })
-				: null;
+			return values.length > 0 ?
+				$.map(values, function(value) { return value.toString(); }) : 
+				null;
 		}
 		function params() {
-			var params = {};
+			var value = {};
 			if ($scope.constraints.length > 0) {
-				params.q = mapToString($scope.constraints);
+				value.q = mapToString($scope.constraints);
 			}
 			if ($scope.constraintsB.length > 0) {
-				params.r = mapToString($scope.constraintsB);
+				value.r = mapToString($scope.constraintsB);
 			}
-			return params;
+			return value;
 		}
 		$scope.addConstraint = function(field, value, replace, negated) {
 			var constraint = new Constraint(field, value, negated);
@@ -1558,7 +1558,7 @@
 				return $.grep($scope.buckets, function(bucket) {
 					return !bucket.aliases && $.grep($scope.newBucket.aliases, function(alias) {
 						return alias['@id'] == bucket['@id'];
-					}).length == 0;
+					}).length === 0;
 				});
 			}
 		};
@@ -1619,16 +1619,16 @@
 		};
 		$scope.hasPrev = function() {
 			return $scope.offset > 0;
-		}
+		};
 		$scope.hasNext = function() {
 			return $scope.offset + $scope.settings.limit < $scope.total;
-		}
+		};
 		$scope.prev = function() {
 			$scope.refresh({ offset : $scope.offset - $scope.settings.limit });
-		}
+		};
 		$scope.next = function() {
 			$scope.refresh({ offset : $scope.offset + $scope.settings.limit });
-		}
+		};
 		$scope.params = function() {
 			return {
 				id : $scope.settings.id,
@@ -1675,7 +1675,7 @@
 	}]);
 
 	app.controller('WidgetDialogController', ['$scope', 'WidgetDialogControllerSupport', function($scope, WidgetDialogControllerSupport) {
-		WidgetDialogControllerSupport($scope);
+		new WidgetDialogControllerSupport($scope);
 	}]);
 	
 	app.controller('CountWidgetController', ['$scope', function($scope) {
@@ -1687,19 +1687,19 @@
 		};
 		$scope.hasPrev = function() {
 			return $scope.offset > 0;
-		}
+		};
 		$scope.hasNext = function() {
 			return $scope.more;
-		}
+		};
 		$scope.prev = function() {
 			$scope.refresh({ offset : $scope.offset - $scope.settings.limit });
-		}
+		};
 		$scope.next = function() {
 			$scope.refresh({ offset : $scope.offset + $scope.settings.limit });
-		}
+		};
 		$scope.setOrder = function(order) {
 			$scope.refresh({ offset : 0 }, { order : order, reverse : order === $scope.settings.order && !$scope.settings.reverse });
-		}
+		};
 		$scope.getClasses = function(column) {
 			var classes = [];
 			if (column === $scope.order) {
@@ -1709,7 +1709,7 @@
 				classes.push('caret');
 			}
 			return classes;
-		}
+		};
 		$scope.params = function() {
 			return { 
 				id : $scope.settings.id,
@@ -1724,8 +1724,8 @@
 		$scope.refresh = function(options, settings) {
 			$scope.init();
 			$scope.search([ $.extend($scope.params(), options, settings) ], function(result) {
-				$.extend($scope, options)
-				$.extend($scope.settings, settings)
+				$.extend($scope, options);
+				$.extend($scope.settings, settings);
 				$scope.update(null, result);
 			});
 		};
@@ -1736,7 +1736,7 @@
 		};
 		$scope.filter = function(term) {
 			$scope.offset = 0;
-			$scope.addConstraint($scope.settings.field, term.label)
+			$scope.addConstraint($scope.settings.field, term.label);
 		};
 	
 		$scope.init();
@@ -1747,7 +1747,7 @@
 
 	app.controller('CountWidgetDialogController', ['$scope', 'WidgetDialogControllerSupport', 'Field', function($scope, WidgetDialogControllerSupport, Field) {
 
-		WidgetDialogControllerSupport($scope);
+		new WidgetDialogControllerSupport($scope);
 
 		$scope.getFields = function() {
 			return Field.findByType('text');
@@ -1772,8 +1772,8 @@
 		$scope.refresh = function(options, settings) {
 			$scope.init();
 			$scope.search([ $.extend($scope.params(), options, settings) ], function(result) {
-				$.extend($scope, options)
-				$.extend($scope.settings, settings)
+				$.extend($scope, options);
+				$.extend($scope.settings, settings);
 				$scope.update(null, result);
 			});
 		};
@@ -1786,7 +1786,7 @@
 			}
 		};
 		$scope.filter = function(term) {
-			$scope.addConstraint($scope.settings.field, term.label)
+			$scope.addConstraint($scope.settings.field, term.label);
 		};
 
 		$scope.init();
@@ -1797,7 +1797,7 @@
 
 	app.controller('GanttWidgetDialogController', ['$scope', 'WidgetDialogControllerSupport', 'Field', function($scope, WidgetDialogControllerSupport, Field) {
 
-		WidgetDialogControllerSupport($scope);
+		new WidgetDialogControllerSupport($scope);
 
 		$scope.getFields = function() {
 			return Field.findByType('text');
@@ -1861,8 +1861,8 @@
 		$scope.refresh = function(options, settings) {
 			$scope.init();
 			$scope.search([ $.extend($scope.params(), options, settings) ], function(result, resultB) {
-				$.extend($scope, options)
-				$.extend($scope.settings, settings)
+				$.extend($scope, options);
+				$.extend($scope.settings, settings);
 				$scope.update(null, result, resultB);
 			});
 		};
@@ -1961,7 +1961,7 @@
 				});
 				$scope.chartOptions = options;
 			}
-		}
+		};
 
 		$scope.init();
 		$scope.register($scope);
@@ -1971,18 +1971,18 @@
 
 	app.controller('HistogramWidgetDialogController', ['$scope', 'WidgetDialogControllerSupport', 'Field', function($scope, WidgetDialogControllerSupport, Field) {
 
-		WidgetDialogControllerSupport($scope);
+		new WidgetDialogControllerSupport($scope);
 
 		function isUnitValid() {
 			var units = $scope.getUnits();
-			return units.length === 0
-				? $scope.settings.unit === null
-				: $.inArray($scope.settings.unit, units) != -1;
-		};
+			return units.length === 0 ?
+					$scope.settings.unit === null :
+					$.inArray($scope.settings.unit, units) != -1;
+		}
 
 		$scope.getField = function() {
 			return Field.find($scope.settings.field);
-		}
+		};
 		$scope.getFields = function() {
 			return Field.findByType('numeric');
 		};
@@ -2020,8 +2020,8 @@
 		$scope.refresh = function(options, settings) {
 			$scope.init();
 			$scope.search([ $.extend($scope.params(), options, settings) ], function(result) {
-				$.extend($scope, options)
-				$.extend($scope.settings, settings)
+				$.extend($scope, options);
+				$.extend($scope.settings, settings);
 				$scope.update(null, result);
 			});
 		};
@@ -2029,7 +2029,7 @@
 			$scope.terms = result[$scope.settings.id] || [];
 		};
 		$scope.filter = function(term) {
-			$scope.addConstraint($scope.settings.key_field, term.label)
+			$scope.addConstraint($scope.settings.key_field, term.label);
 		};
 
 		$scope.init();
@@ -2040,13 +2040,13 @@
 
 	app.controller('ScoreboardWidgetDialogController', ['$scope', 'WidgetDialogControllerSupport', 'Field', function($scope, WidgetDialogControllerSupport, Field) {
 
-		WidgetDialogControllerSupport($scope);
+		new WidgetDialogControllerSupport($scope);
 
 		$scope.isUnitValid = function() {
 			var units = $scope.getUnits();
-			return units.length === 0
-				? $scope.settings.unit === null
-				: $.inArray($scope.settings.unit, units) != -1;
+			return units.length === 0 ?
+				$scope.settings.unit === null :
+				$.inArray($scope.settings.unit, units) != -1;
 		};
 		$scope.getKeyFields = function() {
 			return Field.findByType('text');
@@ -2072,7 +2072,7 @@
 			this.pattern = pattern.length;
 			this.minTickInterval = minTickInterval;
 			this.symbol = symbol;
-		}
+		};
 
 		Interval.VALUES = [
 			new Interval('year', 'yyyy', 366 * 24 * 60 * 60 * 1000, 'y'),
@@ -2237,14 +2237,14 @@
 					begin = begin || time.value;
 					++length;
 				} else {
-					if (begin != null) {
+					if (begin !== null) {
 						ranges.push(length === 1 ? begin : '[' + begin + '..' + time.value + ')');
 						begin = null;
 						length = 0;
 					}
 				}
 			});
-			if (begin != null) {
+			if (begin !== null) {
 				ranges.push(length === 1 ? begin : '[' + begin + '..*)');
 			}
 			return ranges;
@@ -2497,10 +2497,10 @@
 					});
 				}
 				if ($scope.timesB && $scope.timesB.length > 1 && $scope.settings.regression == 'linear') {
-					var data = toXY($scope.timesB);
+					var xy = toXY($scope.timesB);
 					options.series.push({
 						type : 'line',
-						data : statistics.regression(data).data,
+						data : statistics.regression(xy).data,
 						color : 'rgb(204, 102, 0)',
 						dashStyle : 'Dot',
 						lineWidth : 2,
@@ -2513,7 +2513,7 @@
 				field.formatAxis(options.yAxis);
 				$scope.chartOptions = options;
 			}
-		}
+		};
 		function toXY(times) {
 			var xy = [];
 			var field = Field.find($scope.settings.field);
@@ -2693,7 +2693,7 @@
 				field.formatAxis(rChartOptions.yAxis);
 				$scope.rChartOptions = rChartOptions;
 			}
-		}
+		};
 
 		$scope.init();
 		$scope.register($scope, true);
@@ -2706,26 +2706,26 @@
 
 	app.controller('TimelineWidgetDialogController', ['$scope', 'WidgetDialogControllerSupport', 'Field', 'Interval', function($scope, WidgetDialogControllerSupport, Field, Interval) {
 
-		WidgetDialogControllerSupport($scope);
+		new WidgetDialogControllerSupport($scope);
 
 		$scope.regressionMethods = [ 'linear' ];
 
 		function isUnitValid() {
 			var units = $scope.getUnits();
-			return units.length === 0
-				? $scope.settings.unit === null
-				: $.inArray($scope.settings.unit, units) != -1;
-		};
+			return units.length === 0 ?
+					$scope.settings.unit === null :
+					$.inArray($scope.settings.unit, units) != -1;
+		}
 		function isStatisticValid() {
 			return $.grep($scope.getStatistics($scope.settings.field), function(statistic) {
 				return $scope.settings.statistic === statistic;
 			}).length > 0;
-		};
+		}
 
 		$scope.init = function() {
 			$scope.settings = angular.copy($scope.$parent.settings);
 			$scope.settings.interval = $scope.settings.interval || Interval.VALUES[1].name;
-		}
+		};
 		$scope.getFields = function() {
 			var fields = Field.findByType('numeric');
 			fields.unshift(Field.find($scope.keyField));
@@ -2760,7 +2760,7 @@
 
 		$scope.init = function() {
 			$scope.times = null;
-			$scope.timesB;
+			$scope.timesB = null;
 		};
 		$scope.params = function() {
 			return { 
@@ -2776,8 +2776,8 @@
 		$scope.refresh = function(options, settings) {
 			$scope.init();
 			$scope.search([ $.extend($scope.params(), options, settings) ], function(result, resultB) {
-				$.extend($scope, options)
-				$.extend($scope.settings, settings)
+				$.extend($scope, options);
+				$.extend($scope.settings, settings);
 				$scope.update(null, result, resultB);
 			});
 		};
@@ -2884,7 +2884,7 @@
 
 	app.controller('PolarWidgetDialogController', ['$scope', 'WidgetDialogControllerSupport', 'Field', function($scope, WidgetDialogControllerSupport, Field) {
 
-		WidgetDialogControllerSupport($scope);
+		new WidgetDialogControllerSupport($scope);
 
 		$scope.intervals = [
 			{ id : 'hour_of_day', label : 'hour of day' },
@@ -2895,15 +2895,15 @@
 
 		function isUnitValid() {
 			var units = $scope.getUnits();
-			return units.length === 0
-				? $scope.settings.unit === null
-				: $.inArray($scope.settings.unit, units) != -1;
-		};
+			return units.length === 0 ?
+				$scope.settings.unit === null :
+				$.inArray($scope.settings.unit, units) != -1;
+		}
 		function isStatisticValid() {
 			return $.grep($scope.getStatistics($scope.settings.value_field), function(statistic) {
 				return $scope.settings.statistic === statistic;
 			}).length > 0;
-		};
+		}
 
 		$scope.getFields = function() {
 			var fields = Field.findByType('numeric');
@@ -2941,25 +2941,25 @@
 	app.factory('statistics', function() {
 
 		function regression(X, Y) {
-		  var N = X.length;
-		  var SX = 0;
-		  var SY = 0;
-		  var SXX = 0;
-		  var SXY = 0;
-		  var SYY = 0;
-		  for (var i = 0; i < N; ++i) {
-		    SX = SX + X[i];
-		    SY = SY + Y[i];
-		    SXY = SXY + X[i] * Y[i];
-		    SXX = SXX + X[i] * X[i];
-		    SYY = SYY + Y[i] * Y[i];
-		  }
-		  var slope = (N * SXY - SX * SY) / (N * SXX - SX * SX);
-		  var intercept = (SY - slope * SX) / N;
-		  return { 
-		  	slope : slope,
-		  	intercept : intercept
-		  };
+			var N = X.length;
+			var SX = 0;
+			var SY = 0;
+			var SXX = 0;
+			var SXY = 0;
+			var SYY = 0;
+			for (var i = 0; i < N; ++i) {
+				SX = SX + X[i];
+				SY = SY + Y[i];
+				SXY = SXY + X[i] * Y[i];
+				SXX = SXX + X[i] * X[i];
+				SYY = SYY + Y[i] * Y[i];
+			}
+			var slope = (N * SXY - SX * SY) / (N * SXX - SX * SX);
+			var intercept = (SY - slope * SX) / N;
+			return { 
+				slope : slope,
+				intercept : intercept
+			};
 		}
 
 		function pearson(x, y) {
@@ -2983,7 +2983,7 @@
 			var sum_x2 = 0;
 			var sum_y2 = 0;
 
-			for (var i = 0; i < n; ++i) {
+			for (i = 0; i < n; ++i) {
 				sum_x += x[i];
 				sum_y += y[i];
 				sum_xy += xy[i];
@@ -3067,49 +3067,49 @@
 
 		return {
 			regression : function(data) {
-			  var x = [];
-			  var y = [];
-			  var min = 0;
-			  var max = 0;
-			  var ypred = [];
-			  for (i = 0; i < data.length; ++i) {
-			  	x.push(data[i][0]);
-	        y.push(data[i][1]);
-	        if (data[i][0] > data[max][0]) {
-	        	max = i;
-	        }
-	        if (data[i][0] < data[min][0]) {
-	        	min = i;
-	        }
-			  }
-		    var params = regression(x, y);
-		    return {
+				var x = [];
+				var y = [];
+				var min = 0;
+				var max = 0;
+				var ypred = [];
+				for (i = 0; i < data.length; ++i) {
+					x.push(data[i][0]);
+					y.push(data[i][1]);
+					if (data[i][0] > data[max][0]) {
+						max = i;
+					}
+					if (data[i][0] < data[min][0]) {
+						min = i;
+					}
+				}
+				var params = regression(x, y);
+				return {
 					data : [
 						[x[min], params.slope * x[min] + params.intercept],
 						[x[max], params.slope * x[max] + params.intercept]
 					],
 					slope : params.slope,
 					intercept : params.intercept
-		    };		
+				};		
 			},
 			correlate : function(data, ranked) {
-			  var x = [];
-			  var y = [];
-			  for (i = 0; i < data.length; ++i) {
-			  	x.push(data[i][0]);
-	        y.push(data[i][1]);
-			  }
-			  if (ranked) {
-			  	x = rank(x);
-			  	y = rank(y);
-			  }
-			  var r = pearson(x, y);
-			  var c = confidence(r, x.length)
-		    return {
+				var x = [];
+				var y = [];
+				for (i = 0; i < data.length; ++i) {
+					x.push(data[i][0]);
+					y.push(data[i][1]);
+				}
+				if (ranked) {
+					x = rank(x);
+					y = rank(y);
+				}
+				var r = pearson(x, y);
+				var c = confidence(r, x.length);
+				return {
 					r : r,
 					lower : c[0],
 					upper : c[1]
-		    };		
+				};		
 			}
 		};
 	});
@@ -3142,8 +3142,8 @@
 				params.timezone = timezone;
 			}
 			$scope.search([ params ], function(result, resultB) {
-				$.extend($scope, options)
-				$.extend($scope.settings, settings)
+				$.extend($scope, options);
+				$.extend($scope.settings, settings);
 				$scope.update(null, result, resultB);
 			});
 		};
@@ -3390,16 +3390,16 @@
 
 	app.controller('ScatterPlotWidgetDialogController', ['$scope', 'WidgetDialogControllerSupport', 'Field', 'Interval', function($scope, WidgetDialogControllerSupport, Field, Interval) {
 
-		WidgetDialogControllerSupport($scope);
+		new WidgetDialogControllerSupport($scope);
 
 		var keyField = Field.find('timestamp');
 
 		function isUnitValid(field, unit) {
 			var units = $scope.getUnits(field);
-			return units.length === 0
-				? unit === null
-				: $.inArray(unit, units) != -1;
-		};
+			return units.length === 0 ?
+				unit === null :
+				$.inArray(unit, units) != -1;
+		}
 
 		$scope.regressionMethods = [ 'linear' ];
 
@@ -3418,8 +3418,8 @@
 			return field && Field.find(field).units || [];
 		};
 		$scope.valid = function() {
-			return isUnitValid($scope.settings.field_x, $scope.settings.unit_x)
-				&& isUnitValid($scope.settings.field_y, $scope.settings.unit_y);
+			return isUnitValid($scope.settings.field_x, $scope.settings.unit_x) &&
+				isUnitValid($scope.settings.field_y, $scope.settings.unit_y);
 		};
 		$scope.swap = function() {
 			function swap(object, p1, p2) {
@@ -3472,8 +3472,8 @@
 		$scope.refresh = function(options, settings) {
 			$scope.init();
 			$scope.search([ $.extend($scope.params(), settings) ], function(result) {
-				$.extend($scope, options)
-				$.extend($scope.settings, settings)
+				$.extend($scope, options);
+				$.extend($scope.settings, settings);
 				$scope.update(null, result);
 			});
 		};
@@ -3524,12 +3524,12 @@
 						map : $scope.map,
 						title : point.count > 1 ? point.count + ' events' : '1 event',
 						icon : {
-					    path : google.maps.SymbolPath.CIRCLE,
-					    fillOpacity : 0.3,
-					    fillColor : $scope.settings['marker_color'],
-					    strokeWeight : 0,
-					    scale : 5 + (5 * Math.log(point.count))
-					  }
+							path : google.maps.SymbolPath.CIRCLE,
+							fillOpacity : 0.3,
+							fillColor : $scope.settings['marker_color'],
+							strokeWeight : 0,
+							scale : 5 + (5 * Math.log(point.count))
+						}
 					});
 					if (point.count === 1) {
 						point.lat_min = point.lat;
@@ -3591,7 +3591,7 @@
 						map : $scope.map							
 					});
 				}
-			  $scope.map.controls[google.maps.ControlPosition.TOP_RIGHT].push($scope.createFilterControl());
+				$scope.map.controls[google.maps.ControlPosition.TOP_RIGHT].push($scope.createFilterControl());
 			} else {
 				$('#' + $scope.settings.id + 'map').html('<i class="none">None</i>');
 			}
@@ -3629,7 +3629,7 @@
 
 	app.controller('MapWidgetDialogController', ['$scope', 'WidgetDialogControllerSupport', function($scope, WidgetDialogControllerSupport) {
 
-		WidgetDialogControllerSupport($scope);
+		new WidgetDialogControllerSupport($scope);
 
 		$scope.getColors = function() {
 			return [ 'white', 'black', 'red', 'green', 'blue', 'yellow' ];
@@ -3656,8 +3656,8 @@
 		$scope.refresh = function(options, settings) {
 			$scope.init();
 			$scope.search([ $.extend($scope.params(), settings) ], function(result) {
-				$.extend($scope, options)
-				$.extend($scope.settings, settings)
+				$.extend($scope, options);
+				$.extend($scope.settings, settings);
 				$scope.update(null, result);
 			});
 		};
@@ -3752,7 +3752,7 @@
 						map : $scope.map							
 					});
 				}
-			  $scope.map.controls[google.maps.ControlPosition.TOP_RIGHT].push($scope.createFilterControl());
+				$scope.map.controls[google.maps.ControlPosition.TOP_RIGHT].push($scope.createFilterControl());
 			} else {
 				$('#' + $scope.settings.id + 'map').html('<i class="none">None</i>');
 			}
@@ -3790,7 +3790,7 @@
 
 	app.controller('HeatmapWidgetDialogController', ['$scope', 'WidgetDialogControllerSupport', function($scope, WidgetDialogControllerSupport) {
 
-		WidgetDialogControllerSupport($scope);
+		new WidgetDialogControllerSupport($scope);
 
 	}]);
 
@@ -3798,7 +3798,7 @@
 
 		var Event = function(data) {
 			$.extend(true, this, data);
-		}
+		};
 
 		Event.prototype.get = function(fields) {
 			var self = this;
@@ -3901,7 +3901,7 @@
 		var input = $('#tag-value-field');
 
 		$scope.init = function() {
-	    $scope.value = '';
+			$scope.value = '';
 		};
 		$scope.addField = function() {
 			$scope.value = $.trim(input.val());
@@ -3948,29 +3948,29 @@
 			$scope.map = new google.maps.Map(document.getElementById('create-location-map'), options);
 			google.maps.event.addListener($scope.map, 'click', function(e) {
 				$scope.moveMarker(e.latLng);
-		  });
+			});
 			var input = $('#location-search-field');
 			input.on('input', function(e) {
 				var latLng = parseLatLng(input.val());
 				if (latLng) {
 					$scope.moveMarker(latLng);
-	  			$scope.map.setCenter(latLng);
+					$scope.map.setCenter(latLng);
 				}
 			});
 			var autocomplete = new google.maps.places.Autocomplete(input.get(0));
 			autocomplete.bindTo('bounds', $scope.map);
-		  google.maps.event.addListener(autocomplete, 'place_changed', function() {
-		  	var place = autocomplete.getPlace();
-		  	if (place.geometry) {
-		  		if (place.geometry.viewport) {
-		  			$scope.map.fitBounds(place.geometry.viewport);
-		  		}
-		  		if (place.geometry.location) {
+			google.maps.event.addListener(autocomplete, 'place_changed', function() {
+				var place = autocomplete.getPlace();
+				if (place.geometry) {
+					if (place.geometry.viewport) {
+						$scope.map.fitBounds(place.geometry.viewport);
+					}
+					if (place.geometry.location) {
 						$scope.moveMarker(place.geometry.location);
-		  			$scope.map.setCenter(place.geometry.location);
-		  		}
-		  	}
-		  });
+						$scope.map.setCenter(place.geometry.location);
+					}
+				}
+			});
 
 			if (navigator.geolocation) {
 				navigator.geolocation.getCurrentPosition(function(position) {
@@ -4312,7 +4312,7 @@
 				});
 				return events;				
 			}
-		}
+		};
 	}]);
 
 	app.controller('ImportDialogController', ['$scope', '$http', '$routeParams', 'SleepCycle', 'tracker', 'delay', function($scope, $http, $routeParams, SleepCycle, tracker, delay) {
@@ -4354,7 +4354,7 @@
 			tracker.event('dialog', 'import events');
 		};
 		$scope.isEmpty = function() {
-			return !$scope.events || $scope.events.length == 0;
+			return !$scope.events || $scope.events.length === 0;
 		};
 		$scope.setFiles = function(files) {
 			$scope.message = '';
@@ -4432,7 +4432,7 @@
 		};
 		$scope.file = function() {
 			return $scope.bucketId + '.' + $scope.media;
-		}
+		};
 		$scope.submit = function() {
 			$scope.alert.clear();
 			$scope.closeDialog();			
@@ -4499,7 +4499,7 @@
 				}
 				$window.open(url);
 			});
-		}
+		};
 		
 		return {
 			runAll : runAll,
@@ -4572,19 +4572,19 @@
 	app.controller('CreateTaskDialogController', ['$scope', '$http', 'delay', 'tracker', function($scope, $http, delay, tracker) {
 	
 		$scope.types = [ 
- 			{ 'id' : 'automatic-trips', 'description' : 'Creates an event for each trip recorded with by Automatic.' },
-      { 'id' : 'foursquare', 'description' : 'Creates an event for each check-in.' },
+			{ 'id' : 'automatic-trips', 'description' : 'Creates an event for each trip recorded with by Automatic.' },
+			{ 'id' : 'foursquare', 'description' : 'Creates an event for each check-in.' },
 			{ 'id' : 'fitbit-sleep', 'description' : 'Creates an event for each period of sleep.' },
 			{ 'id' : 'fitbit-steps', 'description' : 'Creates an event for the number of steps each day (incl distance and elevation, if available).' },
 			{ 'id' : 'forecast', 'description' : 'Adds weather conditions and moon phase to events with locations.' },
 			{ 'id' : 'bodymedia-burn', 'description' : 'Creates an event for the number of calories burned each hour.' },
 			{ 'id' : 'bodymedia-sleep', 'description' : 'Creates an event for each period of sleep.' },
 			{ 'id' : 'bodymedia-steps', 'description' : 'Creates an event for the number of steps each hour.' },
-      { 'id' : 'lastfm-tracks', 'description' : 'Creates an event for each played track.' },
+			{ 'id' : 'lastfm-tracks', 'description' : 'Creates an event for each played track.' },
 			{ 'id' : 'mapmyfitness-activities', 'description' : 'Creates an event for each activity logged with one of the MapMyFitness apps.' },
-      { 'id' : 'moves-activities', 'description' : 'Creates an event for each logged activity.' },
-      { 'id' : 'moves-places', 'description' : 'Creates an event for each visited place.' },
-      { 'id' : 'moves-locate', 'description' : 'Adds locations to events without locations.' },
+			{ 'id' : 'moves-activities', 'description' : 'Creates an event for each logged activity.' },
+			{ 'id' : 'moves-places', 'description' : 'Creates an event for each visited place.' },
+			{ 'id' : 'moves-locate', 'description' : 'Adds locations to events without locations.' },
 			{ 'id' : 'netatmo', 'description' : 'Creates an event for each weather station measurement.' },
 			{ 'id' : 'reporter-questions', 'description' : 'Creates an event for each question answered in the Reporter app.' },
 			{ 'id' : 'rescuetime-productivity', 'description' : 'Creates an event for each hour logged with RescueTime.' },
@@ -5172,7 +5172,7 @@
 			this.formatAxis = formatAxis;
 			this.minValue = minValue;
 			this.maxValue = maxValue;
-		}
+		};
 
 		var toNumber = function(value) {
 			if (value === null) {
@@ -5192,17 +5192,17 @@
 		
 		Field.find = function(name) {
 			return fieldsByName[name];
-		}
+		};
 		
 		Field.findAll = function() {
 			return fields;
-		}
+		};
 
 		Field.findEditable = function() {
 			return $.grep(fields, function(field) {
 				return !field.readOnly;
 			});
-		}
+		};
 
 		Field.findByType = function(type) {
 			return $.grep(fields, function(field) {
@@ -5210,11 +5210,11 @@
 			}).sort(function(a, b) {
 				return a.name > b.name ? 1 : -1;
 			});
-		}
+		};
 
 		function encode(value) {
 			return $('<div />').text(value).html();
-		};
+		}
 
 		function register(fieldOptions) {
 			console.assert(fieldOptions.name, 'missing <name>');
@@ -5223,7 +5223,7 @@
 				fieldOptions.icon || '', 
 				fieldOptions.type || 'numeric',
 				fieldOptions.units || [], 
-				fieldOptions.readOnly == true, 
+				fieldOptions.readOnly === true, 
 				fieldOptions.toText || function(value) { return value; }, 
 				fieldOptions.toHtml || function(value) { return value; },
 				fieldOptions.toNumber || toNumber,
@@ -5233,7 +5233,7 @@
 			);
 			fields.push(field); 
 			fieldsByName[field.name] = field; 
-		};
+		}
 
 		register({
 			name : 'tag',
@@ -5252,9 +5252,9 @@
 			type : 'object',
 			toHtml : function(value) {
 				return '<span>' +
-			  	'<i class="fa ' + this.icon + '" title="Resource"></i>&nbsp;' +
-			  	'<a href="' +  encode(value.url) + '" target="_blank" rel="nofollow">' +  encode(value.title) + '</a>' +
-			  '</span>';
+					'<i class="fa ' + this.icon + '" title="Resource"></i>&nbsp;' +
+					'<a href="' + encode(value.url) + '" target="_blank" rel="nofollow">' + encode(value.title) + '</a>' +
+				'</span>';
 			}
 		});
 
@@ -5268,8 +5268,8 @@
 			},
 			toHtml : function(value) {
 				return '<span class="nowrap">' +
-			  	'<i class="fa ' + this.icon + '" title="Distance"></i> ' + this.toText(value) +
-			  '</span>';
+					'<i class="fa ' + this.icon + '" title="Distance"></i> ' + this.toText(value) +
+				'</span>';
 			}
 		});
 
@@ -5283,8 +5283,8 @@
 			},
 			toHtml : function(value) {
 				return '<span class="nowrap">' +
-			  	'<i class="fa ' + this.icon + '" title="Height"></i> ' + this.toText(value) +
-			  '</span>';
+					'<i class="fa ' + this.icon + '" title="Height"></i> ' + this.toText(value) +
+				'</span>';
 			}
 		});
 
@@ -5298,8 +5298,8 @@
 			},
 			toHtml : function(value) {
 				return '<span class="nowrap">' +
-			  	'<i class="fa ' + this.icon + '" title="Weight"></i> ' + this.toText(value) +
-			  '</span>';
+					'<i class="fa ' + this.icon + '" title="Weight"></i> ' + this.toText(value) +
+				'</span>';
 			}
 		});
 
@@ -5312,8 +5312,8 @@
 			},
 			toHtml : function(value) {
 				return '<span class="nowrap">' +
-			  	'<i class="fa ' + this.icon + '" title="Percentage"></i> <abbr title="' + value + '%">' + Math.round(value) + '%</abbr>' +
-			  '</span>';
+					'<i class="fa ' + this.icon + '" title="Percentage"></i> <abbr title="' + value + '%">' + Math.round(value) + '%</abbr>' +
+				'</span>';
 			},
 			minValue : 0,
 			maxValue : 100
@@ -5325,8 +5325,8 @@
 			type : 'numeric',
 			toHtml : function(value) {
 				return '<span class="nowrap">' +
-			  	'<i class="fa ' + this.icon + '" title="Moon"></i> ' + value + '%' +
-			  '</span>';
+					'<i class="fa ' + this.icon + '" title="Moon"></i> ' + value + '%' +
+				'</span>';
 			},
 			minValue : 0,
 			maxValue : 100
@@ -5342,8 +5342,8 @@
 			},
 			toHtml : function(value) {
 				return '<span class="nowrap">' +
-			  	'<i class="fa ' + this.icon + '" title="Volume"></i> ' + this.toText(value) +
-			  '</span>';
+					'<i class="fa ' + this.icon + '" title="Volume"></i> ' + this.toText(value) +
+				'</span>';
 			}
 		});
 
@@ -5357,8 +5357,8 @@
 			},
 			toHtml : function(value) {
 				return '<span class="nowrap">' +
-			  	'<i class="fa ' + this.icon + '" title="Volume"></i> ' + this.toText(value) +
-			  '</span>';
+					'<i class="fa ' + this.icon + '" title="Volume"></i> ' + this.toText(value) +
+				'</span>';
 			}
 		});
 
@@ -5372,8 +5372,8 @@
 			},
 			toHtml : function(value) {
 				return '<span class="nowrap">' +
-			  	'<i class="fa ' + this.icon + '" title="Distance/Volume"></i> ' + this.toText(value) +
-			  '</span>';
+					'<i class="fa ' + this.icon + '" title="Distance/Volume"></i> ' + this.toText(value) +
+				'</span>';
 			}
 		});
 
@@ -5383,8 +5383,8 @@
 			type : 'numeric',
 			toHtml : function(value) {
 				return '<span class="nowrap">' +
-			  	'<i class="fa ' + this.icon + '" title="Humidity"></i> ' + value + '%' +
-			  '</span>';
+					'<i class="fa ' + this.icon + '" title="Humidity"></i> ' + value + '%' +
+				'</span>';
 			}
 		});
 
@@ -5398,8 +5398,8 @@
 			},
 			toHtml : function(value) {
 				return '<span class="nowrap">' +
-			  	'<i class="fa ' + this.icon + '" title="Pressure"></i> ' + this.toText(value) +
-			  '</span>';
+					'<i class="fa ' + this.icon + '" title="Pressure"></i> ' + this.toText(value) +
+				'</span>';
 			}
 		});
 
@@ -5413,8 +5413,8 @@
 			},
 			toHtml : function(value) {
 				return '<span class="nowrap">' +
-			  	'<i class="fa ' + this.icon + '" title="Sound Level"></i> ' + this.toText(value) +
-			  '</span>';
+					'<i class="fa ' + this.icon + '" title="Sound Level"></i> ' + this.toText(value) +
+				'</span>';
 			}
 		});
 
@@ -5439,9 +5439,9 @@
 			type : 'object',
 			toHtml : function(value) {
 				return '<span class="nowrap">' +
-			  	'<i class="fa ' + this.icon + '" title="Timestamp"></i> ' +
+					'<i class="fa ' + this.icon + '" title="Timestamp"></i> ' +
 					'<abbr title="' + value + '">' + moment(value).zone(value).fromNowOrNow(false) + '</abbr>' +
-			  '</span>';
+				'</span>';
 			}
 		});
 
@@ -5455,8 +5455,8 @@
 			},
 			toHtml : function(value) {
 				return '<span class="nowrap">' +
-			  	'<i class="fa ' + this.icon + '" title="Velocity"></i> ' + this.toText(value) +
-			  '</span>';
+					'<i class="fa ' + this.icon + '" title="Velocity"></i> ' + this.toText(value) +
+				'</span>';
 			}
 		});
 
@@ -5469,8 +5469,8 @@
 			},
 			toHtml : function(value) {
 				return '<span class="nowrap">' +
-			  	'<i class="fa ' + this.icon + '" title="Duration"></i> ' + this.toText(value) +
-			  '</span>';
+					'<i class="fa ' + this.icon + '" title="Duration"></i> ' + this.toText(value) +
+				'</span>';
 			},
 			toNumber : function(value) {
 				var n = toNumber(value);
@@ -5483,12 +5483,16 @@
 							switch (m[2]) {
 								case 'd':
 									ms *= 24;
+									/* falls through */
 								case 'h':
 									ms *= 60;
+									/* falls through */
 								case 'min':
 									ms *= 60;
+									/* falls through */
 								case 's':
 									ms *= 1000;
+									/* falls through */
 							}
 							n = isNaN(n) ? ms : n + ms;
 						} else {
@@ -5503,7 +5507,7 @@
 				options.type = 'datetime';
 				options.labels = {
 					formatter : function() {
-						return this.value != 0 ? moment.duration(this.value).countdown(2) : '0'; 
+						return this.value !== 0 ? moment.duration(this.value).countdown(2) : '0'; 
 					}
 				};
 			},
@@ -5520,8 +5524,8 @@
 			},
 			toHtml : function(value) {
 				return '<span class="nowrap">' +
-			  	'<i class="fa ' + this.icon + '" title="Frequency"></i> ' + this.toText(value) +
-			  '</span>';
+					'<i class="fa ' + this.icon + '" title="Frequency"></i> ' + this.toText(value) +
+				'</span>';
 			}
 		});
 
@@ -5535,8 +5539,8 @@
 			},
 			toHtml : function(value) {
 				return '<span class="nowrap">' +
-			  	'<i class="fa ' + this.icon + '" title="Bits"></i> ' + this.toText(value) +
-			  '</span>';
+					'<i class="fa ' + this.icon + '" title="Bits"></i> ' + this.toText(value) +
+				'</span>';
 			}
 		});
 
@@ -5546,8 +5550,8 @@
 			type : 'numeric',
 			toHtml : function(value) {
 				return '<span class="nowrap">' +
-			  	'<i class="fa ' + this.icon + '" title="Count"></i> ' + value +
-			  '</span>';
+					'<i class="fa ' + this.icon + '" title="Count"></i> ' + value +
+				'</span>';
 			},
 			minValue : 0
 		});
@@ -5562,8 +5566,8 @@
 			},
 			toHtml : function(value) {
 				return '<span class="nowrap">' +
-			  	'<i class="fa ' + this.icon + '" title="Energy"></i> ' + this.toText(value) +
-			  '</span>';
+					'<i class="fa ' + this.icon + '" title="Energy"></i> ' + this.toText(value) +
+				'</span>';
 			}
 		});
 
@@ -5577,8 +5581,8 @@
 			},
 			toHtml : function(value) {
 				return '<span class="nowrap">' +
-			  	'<i class="fa ' + this.icon + '" title="Temperature"></i> ' + this.toText(value) +
-			  '</span>';
+					'<i class="fa ' + this.icon + '" title="Temperature"></i> ' + this.toText(value) +
+				'</span>';
 			}
 		});
 
@@ -5609,8 +5613,8 @@
 			},
 			toHtml : function(value) {
 				return '<span class="nowrap">' +
-			  	'<i class="fa ' + this.icon + '" title="Currency"></i> ' + this.toText(value) +
-			  '</span>';
+					'<i class="fa ' + this.icon + '" title="Currency"></i> ' + this.toText(value) +
+				'</span>';
 			}
 		});
 
@@ -5620,8 +5624,8 @@
 			type : 'object',
 			toHtml : function(value) {
 				return '<span>' +
-			  	'<i class="fa ' + this.icon + '" title="Note"></i>&nbsp;' + encode(value) +
-			  '</span>';
+					'<i class="fa ' + this.icon + '" title="Note"></i>&nbsp;' + encode(value) +
+				'</span>';
 			}
 		});
 
@@ -5635,8 +5639,8 @@
 			},
 			toHtml : function(value) {
 				return '<span class="nowrap">' +
-			  	'<i class="fa ' + this.icon + '" title="User"></i> ' + this.toText(value) +
-			  '</span>';
+					'<i class="fa ' + this.icon + '" title="User"></i> ' + this.toText(value) +
+				'</span>';
 			}
 		});
 
@@ -5650,8 +5654,8 @@
 			},
 			toHtml : function(value) {
 				return '<span class="nowrap">' +
-					'<i class="fa ' + this.icon + '" title="Source"></i> <a href="' +  encode(value.url) + '" target="_blank" rel="nofollow">' +  encode(value.title) + '</a>' +
-				 '</span>';
+					'<i class="fa ' + this.icon + '" title="Source"></i> <a href="' + encode(value.url) + '" target="_blank" rel="nofollow">' + encode(value.title) + '</a>' +
+				'</span>';
 			}
 		});
 
@@ -5675,40 +5679,40 @@
 				}
 			});
 			return html;
-		}
+		};
 	}]);
 
 	app.filter('field', ['Field', function(Field) {
 		return function(value, fieldName) {
 			var field = Field.find(fieldName);
-			console.assert(field, 'Don\'t know how to format field: ' + fieldName)
+			console.assert(field, 'Don\'t know how to format field: ' + fieldName);
 			return field.toHtml(value);
-		}
+		};
 	}]);
 
 	app.filter('age', [ 'moment', function(moment) {
 		return function(date) {
 			return date ? moment(date).zone(date).fromNowOrNow(true) : '';
-		}
+		};
 	}]);
 
 	app.filter('duration', ['moment', function(moment) {
 		return function(millis) {
 			return moment.duration(millis).countdown(1);
-		}
+		};
 	}]);
 
 	app.filter('stars', ['Field', function(Field) {
 		var field = Field.find('rating');
 		return function(rating) {
 			return field.toHtml(rating);
-		}
+		};
 	}]);
 
 	app.filter('username', ['User', function(User) {
 		return function(identity) {
 			return identity ? User.find(identity).getName() : '';
-		}
+		};
 	}]);
 
 	app.config(['$httpProvider', function($httpProvider) {
@@ -5724,7 +5728,7 @@
 			}
 			return function(promise) {
 				return promise.then(success, error);
-			}
+			};
 		}];
 		$httpProvider.responseInterceptors.push(interceptor);
 	}]);
@@ -5744,7 +5748,7 @@
 							element.html(template({
 								'title' : 'You have used ' + $filter('number')(quota.used) + '/' + $filter('number')(quota.limit) + ' events this month.',
 								'class' : percent > 10 ? 'bar-success' : percent > 1 ? 'bar-warning' : 'bar-danger',
-								'percent' :  percent
+								'percent' : percent
 							}));
 						}
 					});
@@ -5815,7 +5819,7 @@
 						return controller.$setViewValue(event.date);
 					});
 				};
-				if (controller != null) {
+				if (controller !== null) {
 					controller.$formatters.unshift(function(value) {
 						return moment.utc(value).format('YYYY-MM-DD');
 					});
@@ -5846,7 +5850,7 @@
 					return time.format('HH:mm:ss');
 				});
 			}
-		}
+		};
 	}]);
 
 	app.directive('uiDefer', ['$timeout', function($timeout) {
@@ -5857,14 +5861,14 @@
 				var bufferedValue;
 				modelCtrl.$setViewValue = function(value) {
 					bufferedValue = value;
-				}
+				};
 				$element.bind('change', function() {
 					$timeout(function() {
 						$setViewValue.call(modelCtrl, bufferedValue);
 					});
 				});
 			}
-		}
+		};
 	}]);
 
 	app.directive('uiChartOptions', ['tracker', function(tracker) {
@@ -5880,7 +5884,7 @@
 						enabled : false
 					}
 				};
-				if (attrs.uiSnapshot != undefined) {
+				if (attrs.uiSnapshot !== undefined) {
 					scope.$on('snapshot', function() {
 						if (scope.chart) {
 							var filename = scope.settings.label.replace(' ', '-').toLowerCase();
@@ -5894,7 +5898,7 @@
 							});
 							tracker.event('action', 'snapshot');
 						}
-					})
+					});
 				}
 				scope.$watch(attrs.uiChartOptions, function(newOptions, oldOptions) {
 					if (!angular.equals(newOptions, oldOptions)) {
@@ -5957,7 +5961,7 @@
 					});
 				});
 			}
-		}
+		};
 	}]);
 
 	app.directive('uiCheckFilter', ['$http', function($http) {
@@ -5967,7 +5971,7 @@
 		function checkSyntax(value) {
 			return !value || $.grep(value.split('|'), function(expression) {
 				return expression.split(':').length != 2;
-			}).length == 0;
+			}).length === 0;
 		}
 
 		function checkResults(bucket, value, callback) {
@@ -6001,7 +6005,7 @@
 					return value;
 				});				
 			}
-		}
+		};
 	}]);
 
 
@@ -6096,7 +6100,7 @@
 				}
 			}
 			return;
-		}
+		};
 
 		Card.prototype.validateNumber = function(number) {
 			number = (number + '').replace(/\s+|-/g, '');
@@ -6110,7 +6114,7 @@
 				return false;
 			}
 			return true;
-		}
+		};
 
 		function luhnCheck(number) {
 			var odd = true;
@@ -6127,12 +6131,12 @@
 				}
 				sum += digit;
 			}
-			return sum % 10 == 0;
+			return sum % 10 === 0;
 		}
 
 		Card.prototype.validateCVV = function(cvv) {
 			return /^\d+$/.test(cvv) && this.cvvLength.indexOf(cvv.length) != -1;
-		}
+		};
 
 		return Card;
 	});
@@ -6147,7 +6151,7 @@
 					return value;
 				});
 			}
-		}
+		};
 	}]);
 
 	app.directive('uiPaymentCvv', ['Card', function(Card) {
@@ -6159,7 +6163,7 @@
 					return value;
 				});
 			}
-		}
+		};
 	}]);
 
 	/* Based on http://blog.parkji.co.uk/2013/08/11/native-drag-and-drop-in-angularjs.html */
@@ -6177,7 +6181,7 @@
 					this.classList.remove('drag');
 					return false;
 				}, false);
-		}
+		};
 	});
 
 	app.directive('uiDroppable', ['$timeout', function($timeout) {
@@ -6229,7 +6233,7 @@
 						return false;
 					}, false);
 			}
-		}
+		};
 	}]);
 
 }());
