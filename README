@@ -4,9 +4,9 @@ Developer Guide
 Eclipse
 -------
 
-Following the initial checkout, or after updating dependencies in the build.sbt file, run:
+Following the initial checkout, or after updating dependencies in the Build.scala file, run:
 
-  activator "eclipse with-source=true"
+  play "eclipse with-source=true"
 
 
 Assets
@@ -35,11 +35,11 @@ Tests
 
 To run a single test:
   
-  activator "test-only com.zenobase.testing.BrowserTest"
+  play "test-only com.zenobase.testing.BrowserTest"
 
 To run all tests except Selenium tests:
 
-  activator -Dwebdriver.enabled=false test
+  play -Dwebdriver.enabled=false test
 
 
 Release Procedure

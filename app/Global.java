@@ -6,11 +6,13 @@ import play.GlobalSettings;
 import play.Logger;
 import play.Play;
 import play.api.PlayException;
+import play.api.mvc.EssentialFilter;
 import play.api.mvc.Handler;
+import play.filters.gzip.GzipFilter;
 import play.libs.F.Promise;
 import play.libs.Json;
 import play.mvc.Http.RequestHeader;
-import play.mvc.Result;
+import play.mvc.SimpleResult;
 import com.google.common.base.Throwables;
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
@@ -370,23 +372,23 @@ public class Global extends GlobalSettings {
 	}
 
 	@Override
-	public Promise<Result> onError(RequestHeader request, Throwable t) {
+	public Promise<SimpleResult> onError(RequestHeader request, Throwable t) {
 		return isProgrammatic(request)
-			? Promise.<Result>pure(ControllerSupport.internalServerError(Throwables.getRootCause(t).getMessage()))
+			? Promise.<SimpleResult>pure(ControllerSupport.internalServerError(Throwables.getRootCause(t).getMessage()))
 			: super.onError(request, t);
 	}
 
 	@Override
-	public Promise<Result> onHandlerNotFound(RequestHeader request) {
+	public Promise<SimpleResult> onHandlerNotFound(RequestHeader request) {
 		return isProgrammatic(request)
-			? Promise.<Result>pure(ControllerSupport.notFound())
+			? Promise.<SimpleResult>pure(ControllerSupport.notFound())
 			: super.onHandlerNotFound(request);
 	}
 
 	@Override
-	public Promise<Result> onBadRequest(RequestHeader request, String error) {
+	public Promise<SimpleResult> onBadRequest(RequestHeader request, String error) {
 		return isProgrammatic(request)
-			? Promise.<Result>pure(ControllerSupport.badRequest(error))
+			? Promise.<SimpleResult>pure(ControllerSupport.badRequest(error))
 			: super.onBadRequest(request, error);
 	}
 
@@ -397,5 +399,13 @@ public class Global extends GlobalSettings {
 	@Override
 	public void onStop(Application application) {
 		injector.getInstance(IndexManager.class).close();
+	}
+
+	@Override
+	@SuppressWarnings("unchecked")
+	public <T extends EssentialFilter> Class<T>[] filters() {
+		return new Class[] {
+			GzipFilter.class
+		};
 	}
 }

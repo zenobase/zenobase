@@ -11,4 +11,3 @@ tmp
 /dist
 /.target
 /*.log
-/bin

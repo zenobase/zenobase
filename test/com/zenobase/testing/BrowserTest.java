@@ -88,7 +88,7 @@ public class BrowserTest {
 				$("#new-user-link").click();
 				wait.withMessage("create bucket dialog is displayed").until(ExpectedConditions.visibilityOfElementLocated(By.id("create-bucket-dialog")));
 				$("#create-bucket-button").click();
-				wait.withMessage("bucket is displayed").until(ExpectedConditions.textToBePresentInElementLocated(By.id("bucket-title"), "My Data"));
+				wait.withMessage("bucket is displayed").until(ExpectedConditions.textToBePresentInElement(By.id("bucket-title"), "My Data"));
 				wait.withMessage("edit event action is displayed").until(ExpectedConditions.visibilityOfElementLocated(By.id("add-event-action")));
 				$("#add-event-action").click();
 
@@ -186,7 +186,7 @@ public class BrowserTest {
 
 				$("#save-event-button").click();
 
-				wait.withMessage("event count").until(ExpectedConditions.textToBePresentInElementLocated(By.id("event-count"), "1"));
+				wait.withMessage("event count").until(ExpectedConditions.textToBePresentInElement(By.id("event-count"), "1"));
 
 				// edit event
 				new Actions(driver).moveToElement($(".event-row")).click($(".event-edit-action")).perform();
@@ -219,7 +219,7 @@ public class BrowserTest {
 				assertThat($("#sign-up-button")).isNotEnabled();
 				$("#sign-up-password-confirm").sendKeys("123");
 				$("#sign-up-button").click();
-				wait.withMessage("view title equals user name").until(ExpectedConditions.textToBePresentInElementLocated(By.id("user-title"), "jdoe"));
+				wait.withMessage("view title equals user name").until(ExpectedConditions.textToBePresentInElement(By.id("user-title"), "jdoe"));
 				assertThat(find(".bucket-link")).as("bucket links").hasSize(1);
 				assertThat($("#sign-up-banner")).isNotDisplayed();
 				assertThat($("#alert-banner")).isNotDisplayed();
@@ -231,7 +231,7 @@ public class BrowserTest {
 
 				// verify email
 				driver.get(findUrl(readMessage("jdoe@zenobase.com")));
-				wait.withMessage("view title equals user name").until(ExpectedConditions.textToBePresentInElementLocated(By.id("user-title"), "jdoe"));
+				wait.withMessage("view title equals user name").until(ExpectedConditions.textToBePresentInElement(By.id("user-title"), "jdoe"));
 				assertThat(users.find("jdoe").isVerified()).as("user is verified").isTrue();
 
 				// generate and browse buckets
@@ -262,7 +262,7 @@ public class BrowserTest {
 				$("#include-bucket-button").click();
 				assertThat($("#create-view-button")).isEnabled();
 				$("#create-view-button").click();
-				wait.withMessage("event count").until(ExpectedConditions.textToBePresentInElementLocated(By.id("event-count"), "0"));
+				wait.withMessage("event count").until(ExpectedConditions.textToBePresentInElement(By.id("event-count"), "0"));
 
 				// edit view
 				$("#bucket-menu").click();
@@ -274,7 +274,7 @@ public class BrowserTest {
 				$("#edit-alias-button").click();
 				assertThat($("#save-bucket-button")).isEnabled();
 				$("#save-bucket-button").click();
-				wait.withMessage("event count").until(ExpectedConditions.textToBePresentInElementLocated(By.id("event-count"), "1"));
+				wait.withMessage("event count").until(ExpectedConditions.textToBePresentInElement(By.id("event-count"), "1"));
 
 
 				// publish bucket
@@ -285,14 +285,14 @@ public class BrowserTest {
 				$("#publish-link").click();
 				assertThat($("#save-bucket-button")).isEnabled();
 				$("#save-bucket-button").click();
-				wait.withMessage("bucket is displayed").until(ExpectedConditions.textToBePresentInElementLocated(By.id("bucket-title"), "Public View"));
+				wait.withMessage("bucket is displayed").until(ExpectedConditions.textToBePresentInElement(By.id("bucket-title"), "Public View"));
 				String publicBucketUrl = driver.getCurrentUrl();
 
 				// access public bucket after signing out
 				$("#sign-out-link").click();
 				wait.withMessage("sign in link is displayed").until(ExpectedConditions.visibilityOfElementLocated(By.id("sign-in-link")));
 				driver.get(publicBucketUrl);
-				wait.withMessage("bucket is displayed").until(ExpectedConditions.textToBePresentInElementLocated(By.id("bucket-title"), "Public View"));
+				wait.withMessage("bucket is displayed").until(ExpectedConditions.textToBePresentInElement(By.id("bucket-title"), "Public View"));
 
 				// try to access private bucket after signing out
 				driver.get(privateBucketUrl);
@@ -333,7 +333,7 @@ public class BrowserTest {
 				// delete bucket and undo
 				wait.withMessage("user profile is displayed").until(ExpectedConditions.visibilityOfElementLocated(By.className("bucket-row")));
 				new Actions(driver).moveToElement($(".bucket-row")).click($(".bucket-link")).perform();
-				wait.withMessage("bucket is displayed").until(ExpectedConditions.textToBePresentInElementLocated(By.id("bucket-title"), "Bucket #0"));
+				wait.withMessage("bucket is displayed").until(ExpectedConditions.textToBePresentInElement(By.id("bucket-title"), "Bucket #0"));
 				$("#bucket-menu").click();
 				$("#edit-bucket-action").click();
 				$("#delete-bucket-button").click();

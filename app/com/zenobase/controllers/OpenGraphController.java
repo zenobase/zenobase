@@ -8,8 +8,7 @@ import javax.inject.Inject;
 import play.Logger;
 import play.libs.F;
 import play.libs.F.Promise;
-import play.libs.ws.WS;
-import play.libs.ws.WSResponse;
+import play.libs.WS;
 import play.mvc.Result;
 
 import com.zenobase.io.OpenGraph;
@@ -29,9 +28,9 @@ public class OpenGraphController extends ControllerSupport {
 			return Promise.<Result>pure(badRequest("Invalid URL: " + url));
 		}
 		return WS.url(url).get()
-			.map(new F.Function<WSResponse, Result>() {
+			.map(new F.Function<WS.Response, Result>() {
 				@Override
-				public Result apply(WSResponse response) {
+				public Result apply(WS.Response response) {
 					if (response.getStatus() != OK) {
 						return badRequest("Couldn't retrieve resource: " + url);
 					}
