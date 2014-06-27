@@ -4286,14 +4286,14 @@
 				var events = [];
 				var lines = data.split(/[\r\n]+/g);
 				var expected = [ 'Start', 'End', 'Sleep quality', 'Time in bed', 'Wake up', 'Sleep Notes' ];
-				var headers = lines.shift().split(';');
+				var headers = lines.shift().split(';').slice(0, 6);
 				if (!angular.equals(headers, expected)) {
 					throw new Error('Expected headers: ' + expected.join(', '));
 				}
 				$.each(lines, function(i, line) {
 					var fields = line.split(';');
 					if (line.trim()) {
-						if (fields.length !== expected.length) {
+						if (fields.length < expected.length) {
 							throw new Error('Wrong number of fields in line ' + i);
 						}
 						var event = {
