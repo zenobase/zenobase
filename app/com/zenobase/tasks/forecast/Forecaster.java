@@ -7,9 +7,9 @@ import javax.inject.Named;
 
 import org.joda.time.DateTime;
 import org.joda.time.format.ISODateTimeFormat;
-import play.libs.WS;
-import play.libs.WS.Response;
-import play.libs.WS.WSRequestHolder;
+import play.libs.ws.WS;
+import play.libs.ws.WSRequestHolder;
+import play.libs.ws.WSResponse;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Preconditions;
 import com.google.common.util.concurrent.RateLimiter;
@@ -31,7 +31,7 @@ public class Forecaster {
 	public Forecast find(Location location, DateTime time, Set<String> fields, boolean standardUnits) {
 		rateLimit.acquire();
 		WSRequestHolder request = newRequest(location, time, fields.contains(Event.MOON.getName()), standardUnits);
-		Response response = request.get().get(10000L);
+		WSResponse response = request.get().get(10000L);
 		Preconditions.checkState(response.getStatus() == 200,
 			"Couldn't request <%s>: %s", response.getUri(), response.getBody());
 		ObjectNode node = Nodes.readObject(response.asByteArray());
