@@ -5,6 +5,7 @@ import java.util.List;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.Duration;
+import org.joda.time.IllegalInstantException;
 import org.joda.time.LocalDateTime;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -36,7 +37,11 @@ public class ProductivityResult {
 	public List<Event> getEvents() {
 		List<Event> events = Lists.newArrayList();
 		for (JsonNode hourNode : node.path("rows")) {
-			events.add(getEvent(hourNode));
+			try {
+				events.add(getEvent(hourNode));
+			} catch (IllegalInstantException e) {
+
+			}
 		}
 		return events;
 	}
