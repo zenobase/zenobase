@@ -59,7 +59,7 @@ public class LastFmTaskManager extends OAuthTaskManager {
 	private Command execute(LastFmTask task, OAuthCredentials credentials) {
 		List<Event> events = Lists.newArrayList();
 		DateTime now = DateTime.now().minusMinutes(5);
-		for (int page = 1; page < 100; ++page) {
+		for (int page = 1; page < 10; ++page) {
 			LastFmRequest request = createRequest(task, now, credentials, page);
 			Response response = send(request, credentials);
 			RecentTracksResult result = new RecentTracksResult(parseObject(response), task.getPrincipal(), task.getTag(), task.getTimezone());
@@ -78,7 +78,7 @@ public class LastFmTaskManager extends OAuthTaskManager {
 		request.addQuerystringParameter("user", credentials.getScope());
 		request.addQuerystringParameter("method", "user.getrecenttracks");
 		request.addQuerystringParameter("extended", "0");
-		request.addQuerystringParameter("limit", "100");
+		request.addQuerystringParameter("limit", "200");
 		request.addQuerystringParameter("page", Integer.toString(page));
 		request.addQuerystringParameter("to", Long.toString(now.getMillis() / 1000));
 		if (task.getMarker() != null) {
