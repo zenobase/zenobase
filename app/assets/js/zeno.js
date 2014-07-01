@@ -319,7 +319,7 @@
 
 		var Constraint = function(field, value, negated) {
 			this.field = field;
-			this.value = value;
+			this.value = value.toString();
 			this.negated = negated;
 		};
 
