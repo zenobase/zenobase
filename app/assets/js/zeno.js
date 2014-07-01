@@ -3072,7 +3072,8 @@
 				var min = 0;
 				var max = 0;
 				var ypred = [];
-				for (i = 0; i < data.length; ++i) {
+				var i = 0;
+				for (; i < data.length; ++i) {
 					x.push(data[i][0]);
 					y.push(data[i][1]);
 					if (data[i][0] > data[max][0]) {
@@ -3095,7 +3096,8 @@
 			correlate : function(data, ranked) {
 				var x = [];
 				var y = [];
-				for (i = 0; i < data.length; ++i) {
+				var i = 0;
+				for (; i < data.length; ++i) {
 					x.push(data[i][0]);
 					y.push(data[i][1]);
 				}
