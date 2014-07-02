@@ -34,7 +34,13 @@ JsTaskKeys.timeoutPerSource := 10.minutes
 
 LessKeys.compress := true
 
-UglifyKeys.output := "js/zeno.js"
+UglifyKeys.uglifyOps := { js =>
+	Seq((js.sortBy(_._2), "js/zeno.js"))
+}
+
+UglifyKeys.sourceMap := false
+
+// UglifyKeys.mangle := false
 
 includeFilter in (Assets, LessKeys.less) := "zeno.less"
 
