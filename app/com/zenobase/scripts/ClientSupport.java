@@ -3,11 +3,11 @@ package com.zenobase.scripts;
 import java.io.IOException;
 
 import org.apache.http.client.HttpClient;
-import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.impl.client.DefaultHttpClient;
 
 public abstract class ClientSupport {
 
-	protected final HttpClient client = HttpClientBuilder.create().build();
+	protected final HttpClient client = new DefaultHttpClient();
 	protected final String host;
 	protected final String callback;
 	protected final String apiKey;
