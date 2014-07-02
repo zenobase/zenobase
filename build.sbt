@@ -25,7 +25,6 @@ libraryDependencies ++= Seq(
 	"org.scribe" % "scribe" % "1.3.3",
 	"com.braintreepayments.gateway" % "braintree-java" % "2.29.1",
 	"org.seleniumhq.selenium" % "selenium-chrome-driver" % "2.39.0" % "test", // Must match Play's version of Selenium!
-	"org.apache.httpcomponents" % "httpcore" % "4.3.2" % "test",
 	"org.mockito" % "mockito-core" % "1.9.5" % "test",
 	"org.jvnet.mock-javamail" % "mock-javamail" % "1.9" % "test"
 )

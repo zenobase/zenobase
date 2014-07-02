@@ -5,6 +5,7 @@ import java.io.IOException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.impl.client.DefaultHttpClient;
 
+@SuppressWarnings("deprecation")
 public abstract class ClientSupport {
 
 	protected final HttpClient client = new DefaultHttpClient();
