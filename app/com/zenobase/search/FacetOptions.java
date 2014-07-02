@@ -21,6 +21,7 @@ public class FacetOptions {
 		return get(key, String.class, null);
 	}
 
+	@SuppressWarnings("unchecked")
 	public <T> T get(String key, Class<T> type, T defaultValue) {
 		String value = map.get(key);
 		if (value == null) {

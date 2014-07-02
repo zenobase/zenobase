@@ -66,6 +66,7 @@ public class Measures {
 		throw new AssertionError();
 	}
 
+	@SuppressWarnings("unchecked")
 	public static <Q extends Quantity> DecimalMeasure<Q> toStandard(DecimalMeasure<Q> measure) {
 		return isStandard(measure.getUnit()) ? measure : measure.to((Unit<Q>) measure.getUnit().getStandardUnit(), MathContext.DECIMAL32);
 	}
@@ -105,6 +106,7 @@ public class Measures {
 	/**
 	 * Obtain units from here to ensure the static initializers have registered any custom units.
 	 */
+	@SuppressWarnings("unchecked")
 	public static <Q extends Quantity> Unit<Q> parseUnit(String unit) {
 		return (Unit<Q>) Unit.valueOf(unit);
 	}

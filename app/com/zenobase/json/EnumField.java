@@ -19,6 +19,7 @@ public class EnumField<E extends Enum<E>> extends Field<E> {
 	}
 
 	@Override
+	@SuppressWarnings("unchecked")
 	protected E getValue(JsonNode node) {
 		String value = node.textValue();
 		return value != null ? Enum.valueOf((Class<E>) getType(), value.toUpperCase()) : null;
