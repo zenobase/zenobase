@@ -28,9 +28,7 @@ public class OAuthControllerImplicitGrantTest extends OAuthControllerTestSupport
 	private String scope = Generator.id();
 
 	@Before
-	@Override
 	public void setUp() {
-		super.setUp();
 		client.setVerified(true);
 		client.setSuspended(false);
 		client.setEmail("info@zenobase.com");

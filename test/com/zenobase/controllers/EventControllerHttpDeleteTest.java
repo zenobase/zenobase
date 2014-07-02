@@ -24,9 +24,7 @@ public class EventControllerHttpDeleteTest extends EventControllerTestSupport {
 	private final Identity friend = new Identity();
 
 	@Before
-	@Override
 	public void setUp() {
-		super.setUp();
 		bucket.addRole(user.asIdentity(), Role.OWNER);
 		bucket.addRole(friend, Role.CONTRIBUTOR);
 		event.setValue(Event.AUTHOR, user.asIdentity());

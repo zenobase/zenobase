@@ -4,10 +4,10 @@ import static com.zenobase.testing.ResultAssert.assertThat;
 import static org.mockito.Mockito.*;
 import static play.test.Helpers.callAction;
 
-import org.junit.Before;
 import org.junit.Test;
 import play.mvc.Http;
 import play.mvc.Result;
+import play.test.FakeApplication;
 import com.google.inject.AbstractModule;
 import com.google.inject.Singleton;
 
@@ -22,9 +22,9 @@ public class QuotaControllerTest extends ControllerTestSupport {
 	protected final QuotaManager quotas = mock(QuotaManager.class);
 	protected final Identity user = new Identity();
 
-	@Before
-	public void setUp() {
-		start(new AbstractModule() {
+	@Override
+	protected FakeApplication provideFakeApplication() {
+		return fakeApplication(new AbstractModule() {
 			@Override
 			protected void configure() {
 				bind(AuthorizationContext.class).toInstance(auth);

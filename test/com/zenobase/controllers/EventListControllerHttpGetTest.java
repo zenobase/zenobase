@@ -22,9 +22,7 @@ import com.zenobase.search.Search;
 public class EventListControllerHttpGetTest extends EventListControllerTestSupport {
 
 	@Before
-	@Override
 	public void setUp() {
-		super.setUp();
 		bucket.addRole(user.asIdentity(), Role.OWNER);
 	}
 

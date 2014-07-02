@@ -4,16 +4,17 @@ import static com.zenobase.testing.ResultAssert.assertThat;
 import static play.mvc.Http.Status.OK;
 import static play.test.Helpers.*;
 
-import org.junit.Before;
 import org.junit.Test;
 import play.mvc.Result;
+import play.test.FakeApplication;
 import com.google.inject.AbstractModule;
 
 public class TimezoneControllerTest extends ControllerTestSupport {
 
-	@Before
-	public void setUp() {
-		start(new AbstractModule() {
+
+	@Override
+	protected FakeApplication provideFakeApplication() {
+		return fakeApplication(new AbstractModule() {
 			@Override
 			protected void configure() {
 

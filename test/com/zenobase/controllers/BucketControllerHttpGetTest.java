@@ -21,9 +21,7 @@ public class BucketControllerHttpGetTest extends BucketControllerTestSupport {
 	private final Bucket bucket = new Bucket();
 
 	@Before
-	@Override
 	public void setUp() {
-		super.setUp();
 		bucket.addRole(user.asIdentity(), Role.OWNER);
 	}
 

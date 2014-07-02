@@ -20,9 +20,7 @@ public class EventControllerHttpGetTest extends EventControllerTestSupport {
 	private final Event event = new Event();
 
 	@Before
-	@Override
 	public void setUp() {
-		super.setUp();
 		bucket.addRole(user.asIdentity(), Role.OWNER);
 		event.setValue(Event.AUTHOR, user.asIdentity());
 	}

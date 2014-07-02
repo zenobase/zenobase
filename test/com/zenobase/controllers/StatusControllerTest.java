@@ -7,9 +7,9 @@ import static play.test.Helpers.*;
 
 import org.elasticsearch.action.admin.cluster.health.ClusterHealthResponse;
 import org.elasticsearch.action.admin.cluster.health.ClusterHealthStatus;
-import org.junit.Before;
 import org.junit.Test;
 import play.mvc.Result;
+import play.test.FakeApplication;
 import com.google.inject.AbstractModule;
 import com.google.inject.Singleton;
 
@@ -24,9 +24,9 @@ public class StatusControllerTest extends ControllerTestSupport {
 	private final Cluster cluster = mock(Cluster.class);
 	private final CommandRepository history = mock(CommandRepository.class);
 
-	@Before
-	public void setUp() {
-		start(new AbstractModule() {
+	@Override
+	protected FakeApplication provideFakeApplication() {
+		return fakeApplication(new AbstractModule() {
 			@Override
 			protected void configure() {
 				bind(AuthorizationContext.class).toInstance(mock(AuthorizationContext.class));

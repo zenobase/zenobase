@@ -25,9 +25,7 @@ public class TaskControllerHttpPostTest extends TaskControllerTestSupport {
 	private Task task;
 
 	@Before
-	@Override
 	public void setUp() {
-		super.setUp();
 		task = new Task("test", Generator.id(), user.asIdentity());
 	}
 

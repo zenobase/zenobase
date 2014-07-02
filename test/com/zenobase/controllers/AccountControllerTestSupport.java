@@ -3,6 +3,7 @@ package com.zenobase.controllers;
 import static org.mockito.Mockito.mock;
 
 import org.junit.Before;
+import play.test.FakeApplication;
 import com.google.inject.AbstractModule;
 import com.google.inject.Singleton;
 
@@ -30,9 +31,9 @@ public abstract class AccountControllerTestSupport extends ControllerTestSupport
 	protected final User user = new User("tester");
 	protected final String password = "secret123";
 
-	@Before
-	public void setUp() {
-		start(new AbstractModule() {
+	@Override
+	protected FakeApplication provideFakeApplication() {
+		return fakeApplication(new AbstractModule() {
 			@Override
 			protected void configure() {
 				bind(AuthorizationContext.class).toInstance(auth);
@@ -47,6 +48,10 @@ public abstract class AccountControllerTestSupport extends ControllerTestSupport
 				bind(AccountController.class).in(Singleton.class);
 			}
 		});
+	}
+
+	@Before
+	public void setUp() {
 		user.setEmail("jdoe@zenobase.com");
 		user.setPassword(password);
 	}

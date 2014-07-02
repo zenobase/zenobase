@@ -4,7 +4,7 @@ import static org.mockito.Mockito.mock;
 
 import java.math.BigDecimal;
 
-import org.junit.Before;
+import play.test.FakeApplication;
 import com.google.inject.AbstractModule;
 import com.google.inject.Singleton;
 
@@ -23,9 +23,9 @@ public abstract class PaymentControllerTestSupport extends ControllerTestSupport
 	protected final User user = new User("jdoe");
 	protected final Payment payment = new Payment(new BigDecimal("5.00"), "4111 1111 1111 1111", "100", "2050", "01");
 
-	@Before
-	public void setUp() {
-		start(new AbstractModule() {
+	@Override
+	protected FakeApplication provideFakeApplication() {
+		return fakeApplication(new AbstractModule() {
 			@Override
 			protected void configure() {
 				bind(AuthorizationContext.class).toInstance(auth);

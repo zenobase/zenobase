@@ -2,7 +2,7 @@ package com.zenobase.controllers;
 
 import static org.mockito.Mockito.mock;
 
-import org.junit.Before;
+import play.test.FakeApplication;
 import com.google.inject.AbstractModule;
 import com.google.inject.Singleton;
 
@@ -23,9 +23,9 @@ public abstract class UserControllerTestSupport extends ControllerTestSupport {
 	protected final PaymentGateway payments = mock(PaymentGateway.class);
 	protected final User user = new User("tester");
 
-	@Before
-	public void setUp() {
-		start(new AbstractModule() {
+	@Override
+	protected FakeApplication provideFakeApplication() {
+		return fakeApplication(new AbstractModule() {
 			@Override
 			protected void configure() {
 				bind(AuthorizationContext.class).toInstance(auth);

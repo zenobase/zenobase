@@ -27,9 +27,7 @@ public class CredentialsControllerHttpPostTest extends CredentialsControllerTest
 	private ObjectNode update = Nodes.newObject();
 
 	@Before
-	@Override
 	public void setUp() {
-		super.setUp();
 		from = new OAuthCredentials("test", principal);
 		from.setAuthorizationUrl("http://localhost/");
 		Credentials.CREDENTIALS.setValue(update, Nodes.newObject("foo", "bar"));

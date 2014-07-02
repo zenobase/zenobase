@@ -10,6 +10,7 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 import play.mvc.Result;
+import play.test.FakeApplication;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.inject.AbstractModule;
@@ -35,9 +36,9 @@ public class TagControllerTest extends ControllerTestSupport {
 	private final User user = new User("tester");
 	private final Bucket bucket = new Bucket();
 
-	@Before
-	public void setUp() {
-		start(new AbstractModule() {
+	@Override
+	protected FakeApplication provideFakeApplication() {
+		return fakeApplication(new AbstractModule() {
 			@Override
 			protected void configure() {
 				bind(AuthorizationContext.class).toInstance(auth);
@@ -47,6 +48,10 @@ public class TagControllerTest extends ControllerTestSupport {
 				bind(TagController.class).in(Singleton.class);
 			}
 		});
+	}
+
+	@Before
+	public void setUp() {
 		bucket.addRole(user.asIdentity(), Role.OWNER);
 	}
 

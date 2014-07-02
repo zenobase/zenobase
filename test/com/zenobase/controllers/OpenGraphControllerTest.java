@@ -5,18 +5,18 @@ import static org.mockito.Mockito.mock;
 import static play.mvc.Http.Status.*;
 import static play.test.Helpers.*;
 
-import org.junit.Before;
 import org.junit.Test;
 import play.mvc.Result;
+import play.test.FakeApplication;
 import com.google.inject.AbstractModule;
 
 import com.zenobase.testing.NodeAssert;
 
 public class OpenGraphControllerTest extends ControllerTestSupport {
 
-	@Before
-	public void setUp() {
-		start(new AbstractModule() {
+	@Override
+	protected FakeApplication provideFakeApplication() {
+		return fakeApplication(new AbstractModule() {
 			@Override
 			protected void configure() {
 				bind(AuthorizationContext.class).toInstance(mock(AuthorizationContext.class));

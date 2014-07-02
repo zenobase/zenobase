@@ -20,9 +20,7 @@ public class OAuthControllerPasswordGrantTest extends OAuthControllerTestSupport
 	private String password = "secret123";
 
 	@Before
-	@Override
 	public void setUp() {
-		super.setUp();
 		user.setVerified(true);
 		user.setSuspended(false);
 		user.setPassword(password);

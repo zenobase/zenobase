@@ -6,8 +6,6 @@ import static org.mockito.Mockito.when;
 import static play.mvc.Http.Status.*;
 import static play.test.Helpers.callAction;
 
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.junit.Before;
@@ -15,6 +13,8 @@ import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import play.mvc.Result;
 import play.test.Helpers;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import com.zenobase.commands.CompoundCommand;
 import com.zenobase.commands.CreateEventCommand;
@@ -31,9 +31,7 @@ public class EventListControllerHttpPostTest extends EventListControllerTestSupp
 	private final ObjectNode body = Nodes.newObject();
 
 	@Before
-	@Override
 	public void setUp() {
-		super.setUp();
 		bucket.addRole(user.asIdentity(), Role.OWNER);
 	}
 

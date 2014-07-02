@@ -25,9 +25,7 @@ public class BucketControllerHttpPostTest extends BucketControllerTestSupport {
 	private Bucket from, to;
 
 	@Before
-	@Override
 	public void setUp() {
-		super.setUp();
 		from = new Bucket();
 		from.setLabel("Test Bucket");
 		from.addRole(user.asIdentity(), Role.OWNER);

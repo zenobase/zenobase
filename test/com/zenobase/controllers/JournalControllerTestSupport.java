@@ -2,7 +2,7 @@ package com.zenobase.controllers;
 
 import static org.mockito.Mockito.mock;
 
-import org.junit.Before;
+import play.test.FakeApplication;
 import com.google.inject.AbstractModule;
 import com.google.inject.Singleton;
 
@@ -19,9 +19,9 @@ public abstract class JournalControllerTestSupport extends ControllerTestSupport
 	protected final CommandDispatcher dispatcher = mock(CommandDispatcher.class);
 	protected final User user = new User("jdoe");
 
-	@Before
-	public void setUp() {
-		start(new AbstractModule() {
+	@Override
+	protected FakeApplication provideFakeApplication() {
+		return fakeApplication(new AbstractModule() {
 			@Override
 			protected void configure() {
 				bind(AuthorizationContext.class).toInstance(auth);

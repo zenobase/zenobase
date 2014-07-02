@@ -26,9 +26,7 @@ public class BucketControllerHttpDeleteTest extends BucketControllerTestSupport 
 	private Bucket bucket = new Bucket();
 
 	@Before
-	@Override
 	public void setUp() {
-		super.setUp();
 		bucket.setLabel("Obsolete Bucket");
 		bucket.addRole(user.asIdentity(), Role.OWNER);
 	}

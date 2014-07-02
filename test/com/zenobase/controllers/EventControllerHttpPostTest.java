@@ -6,11 +6,11 @@ import static org.mockito.Mockito.*;
 import static play.mvc.Http.Status.*;
 import static play.test.Helpers.*;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.elasticsearch.index.engine.VersionConflictEngineException;
 import org.junit.Before;
 import org.junit.Test;
 import play.mvc.Result;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import com.zenobase.commands.UpdateEventCommand;
 import com.zenobase.common.Generator;
@@ -26,9 +26,7 @@ public class EventControllerHttpPostTest extends EventControllerTestSupport {
 	private Event from, to;
 
 	@Before
-	@Override
 	public void setUp() {
-		super.setUp();
 		bucket.addRole(user.asIdentity(), Role.OWNER);
 		from = new Event();
 		from.setValue(Event.TAG, "foo");
