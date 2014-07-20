@@ -55,6 +55,6 @@ class DevicesResult {
 	private static Location getLocation(JsonNode node) {
 		Preconditions.checkArgument(node.isArray() && node.size() == 2,
 			"Expected an array with two elements but got <%s>", node);
-		return new Location(node.path(0).decimalValue(), node.path(1).decimalValue());
+		return new Location(node.path(1).decimalValue(), node.path(0).decimalValue());
 	}
 }

@@ -19,6 +19,6 @@ public class DevicesResultTest extends ResultTestSupport {
 		assertThat(device.getId()).as("id").isEqualTo("70:ee:50:ff:80:ee");
 		assertThat(device.getCreated()).as("created").isEqualTo(new DateTime("2013-03-28T23:40:07.000Z", DateTimeZone.UTC));
 		assertThat(device.getUpdated()).as("updated").isEqualTo(new DateTime("2013-04-03T04:27:16.000Z", DateTimeZone.forID("America/Los_Angeles")));
-		assertThat(device.getLocation()).as("location").isEqualTo(new Location("-122.3331", "47.6097"));
+		assertThat(device.getLocation()).as("location").isEqualTo(new Location("47.6097", "-122.3331"));
 	}
 }
