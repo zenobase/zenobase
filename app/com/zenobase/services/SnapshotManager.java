@@ -30,15 +30,16 @@ public class SnapshotManager implements Closeable {
 	public void snapshot() {
 		client.admin().cluster().prepareCreateSnapshot(repositoryName, DateTime.now(DateTimeZone.UTC).toString());
 	}
+
+	private void flush() {
+		client.admin().indices().prepareFlush("_all").execute().actionGet();
+	}
+
 	@Override
 	public void close() {
 		Logger.info("Closing node...");
 		flush();
 		client.close();
 		node.close();
-	}
-
-	private void flush() {
-		client.admin().indices().prepareFlush("_all").execute().actionGet();
 	}
 }

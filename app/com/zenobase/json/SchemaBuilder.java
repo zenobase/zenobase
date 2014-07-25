@@ -64,6 +64,12 @@ public class SchemaBuilder {
 		return this;
 	}
 
+	public void setRouting(String path) {
+		ObjectNode routingNode = type.putObject("_routing");
+		routingNode.put("required", true);
+		routingNode.put("path", path);
+	}
+
 	public Schema build() {
 		return new Schema(typeName, schema.deepCopy(), constraintBuilders.build());
 	}

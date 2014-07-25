@@ -38,6 +38,7 @@ public class Event extends DomainNode {
 	public static final String TYPE_NAME = "event";
 
 	public static final TokenField ID = new TokenField("@id", false);
+	public static final TokenField BUCKET = new TokenField("_bucket");
 	public static final IdentityField AUTHOR = new IdentityField("author");
 	public static final ResourceField SOURCE = new ResourceField("source");
 	public static final DateTimeField TIMESTAMP = new DateTimeField("timestamp");
@@ -68,7 +69,7 @@ public class Event extends DomainNode {
 
 	private static final ImmutableSet<Field<?>> FIELDS =
 		ImmutableSet.<Field<?>>of(
-			ID, VERSION, AUTHOR, SOURCE, TIMESTAMP, DURATION, FREQUENCY, VELOCITY, BITS, COUNT,
+			ID, BUCKET, VERSION, AUTHOR, SOURCE, TIMESTAMP, DURATION, FREQUENCY, VELOCITY, BITS, COUNT,
 			LOCATION, TAG, RESOURCE, DISTANCE, HEIGHT, WEIGHT, VOLUME, CONCENTRATION, DISTANCE_PER_VOLUME,
 			HUMIDITY, PRESSURE, SOUND, ENERGY, TEMPERATURE, RATING, PERCENTAGE, MOON, CURRENCY, NOTE);
 
@@ -118,7 +119,8 @@ public class Event extends DomainNode {
 		return super.contains(field);
 	}
 
-	public void prePersist() {
+	public void prePersist(String bucketId) {
+		setValue(Event.BUCKET, bucketId);
 		for (Field<?> field : FIELDS) {
 			if (contains(field)) {
 				field.prePersist(toJson());
@@ -127,6 +129,7 @@ public class Event extends DomainNode {
 	}
 
 	public void postPersist() {
+		setValue(Event.BUCKET, null);
 		for (Field<?> field : FIELDS) {
 			if (contains(field)) {
 				field.postPersist(toJson());
@@ -140,6 +143,7 @@ public class Event extends DomainNode {
 
 	public static Schema getSchema() {
 		SchemaBuilder schema = new SchemaBuilder(TYPE_NAME);
+		schema.setRouting(BUCKET.getName());
 		for (Field<?> field : FIELDS) {
 			schema.add(field);
 		}

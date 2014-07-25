@@ -10,6 +10,7 @@ import org.elasticsearch.search.facet.FacetBuilders;
 import org.elasticsearch.search.facet.terms.TermsFacet;
 import org.elasticsearch.search.facet.terms.TermsFacet.ComparatorType;
 import org.joda.time.DateTime;
+import play.Logger;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.Lists;
 
@@ -18,21 +19,30 @@ import com.zenobase.search.Search;
 
 public class EventRepository {
 
+	static final String INDEX_NAME = "events";
+
 	private final IndexManager manager;
+	private final Index index;
 
 	@Inject
 	public EventRepository(IndexManager manager) {
 		this.manager = manager;
+		this.index = manager.getIndex(INDEX_NAME);
+		if (!index.exists()) {
+			Logger.info("Creating event index...");
+			index.create(4, 1);
+			index.putMapping(Event.getSchema());
+		}
 	}
 
 	public void add(String bucketId, Event event, DateTime timestamp) {
-		event.prePersist();
+		event.prePersist(bucketId);
 		getIndex(bucketId).store(Event.TYPE_NAME, event.getId(), event.toJson(), timestamp, false);
 		event.postPersist();
 	}
 
 	public void update(String bucketId, Event event, DateTime timestamp) {
-		event.prePersist();
+		event.prePersist(bucketId);
 		getIndex(bucketId).update(Event.TYPE_NAME, event.getId(), event.toJson(), timestamp, false);
 		event.postPersist();
 	}
@@ -70,10 +80,6 @@ public class EventRepository {
 
 	public void refresh(String bucketId) {
 		getIndex(bucketId).refresh();
-	}
-
-	public void close(String bucketId) {
-		getIndex(bucketId).close();
 	}
 
 	private Index getIndex(String bucketId) {

@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Set;
 
 import org.elasticsearch.action.admin.indices.alias.IndicesAliasesRequestBuilder;
-import org.elasticsearch.action.admin.indices.alias.IndicesAliasesResponse;
 import org.elasticsearch.action.admin.indices.create.CreateIndexResponse;
 import org.elasticsearch.action.get.GetResponse;
 import org.elasticsearch.action.index.IndexRequest.OpType;
@@ -15,18 +14,15 @@ import org.elasticsearch.client.Client;
 import org.elasticsearch.common.settings.ImmutableSettings;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.unit.TimeValue;
-import org.elasticsearch.index.query.FilterBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.joda.time.DateTime;
-import play.Logger;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
 import com.google.common.primitives.Ints;
 
 import com.zenobase.common.Callback;
@@ -34,8 +30,6 @@ import com.zenobase.json.DomainNode;
 import com.zenobase.json.NodeList;
 import com.zenobase.json.Nodes;
 import com.zenobase.json.Schema;
-import com.zenobase.models.Alias;
-import com.zenobase.search.EventSearchBuilder;
 
 public class Index {
 
@@ -49,49 +43,17 @@ public class Index {
 	}
 
 	public void create(int replicas) {
+		create(1, replicas);
+	}
+
+	public void create(int shards, int replicas) {
 		Settings settings = ImmutableSettings.settingsBuilder()
-			.put("number_of_shards", 1)
+			.put("number_of_shards", shards)
 			.put("auto_expand_replicas", replicas == Integer.MAX_VALUE ? "0-all" : "0-" + replicas)
 			.build();
 		CreateIndexResponse response = client.admin().indices().prepareCreate(indexName).setSettings(settings).get();
 		Preconditions.checkState(response.isAcknowledged(), "Expected acknowledgement of index creation: %s", indexName);
 		Preconditions.checkState(new Cluster(client).isReady(), "Expected at least one shard in cluster");
-	}
-
-	public void create(Iterable<Alias> aliases) {
-		Logger.info("Creating aliases for " + indexName + ": " + aliases);
-		IndicesAliasesRequestBuilder request = client.admin().indices().prepareAliases();
-		for (Alias alias : aliases) {
-			addAlias(request, alias);
-		}
-		IndicesAliasesResponse response = request.get();
-		Preconditions.checkState(response.isAcknowledged(), "Expected acknowledgement of alias creation: %s", indexName);
-	}
-
-	public void replace(Set<Alias> from, Set<Alias> to) {
-		Preconditions.checkArgument(!to.isEmpty(), "Can't remove all aliases from %s", from);
-		IndicesAliasesRequestBuilder request = client.admin().indices().prepareAliases();
-		for (Alias alias : Sets.difference(from, to)) {
-			removeAlias(request, alias);
-		}
-		for (Alias alias : Sets.difference(to, from)) {
-			addAlias(request, alias);
-		}
-		IndicesAliasesResponse response = request.get();
-		Preconditions.checkState(response.isAcknowledged(), "Expected acknowledgement of alias update: %s", indexName);
-	}
-
-	private void addAlias(IndicesAliasesRequestBuilder request, Alias alias) {
-		if (alias.getFilter() != null) {
-			FilterBuilder filter = new EventSearchBuilder().addConstraints(alias.getFilter()).buildFilter();
-			request.addAlias(alias.getId(), indexName, filter);
-		} else {
-			request.addAlias(alias.getId(), indexName);
-		}
-	}
-
-	private void removeAlias(IndicesAliasesRequestBuilder request, Alias alias) {
-		request.removeAlias(alias.getId(), indexName);
 	}
 
 	public void putMapping(Schema schema) {

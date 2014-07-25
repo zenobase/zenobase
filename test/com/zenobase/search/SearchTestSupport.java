@@ -12,11 +12,12 @@ import com.zenobase.services.Index;
 public class SearchTestSupport extends ElasticSearchTestSupport {
 
 	private final EventSearchBuilder search = new EventSearchBuilder();
+	private final String bucketId = Generator.id();
 	private Index index;
 
 	@Before
 	public void setUp() {
-		index = getManager().getIndex(Generator.id());
+		index = getManager().getIndex(bucketId);
 		index.create(0);
 		index.putMapping(Event.getSchema());
 		index.refresh();
@@ -31,7 +32,7 @@ public class SearchTestSupport extends ElasticSearchTestSupport {
 	}
 
 	protected void addEvent(Event event, DateTime timestamp) {
-		event.prePersist();
+		event.prePersist(bucketId);
 		index.store(Event.TYPE_NAME, event.getId(), event.toJson(), timestamp, true);
 		event.postPersist();
 	}

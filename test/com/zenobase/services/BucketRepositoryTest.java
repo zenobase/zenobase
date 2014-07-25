@@ -33,6 +33,7 @@ public class BucketRepositoryTest extends ElasticSearchTestSupport {
 	@Before
 	public void setUp() {
 		repository = new BucketRepository(getManager());
+		new EventRepository(getManager());
 	}
 
 	@Test

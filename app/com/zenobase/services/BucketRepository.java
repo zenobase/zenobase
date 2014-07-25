@@ -9,13 +9,13 @@ import org.joda.time.DateTime;
 import play.Logger;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Preconditions;
-import com.google.common.collect.Sets;
+import com.google.common.collect.Lists;
 
 import com.zenobase.common.Callback;
 import com.zenobase.common.PartialList;
+import com.zenobase.models.Alias;
 import com.zenobase.models.Bucket;
 import com.zenobase.models.BucketList;
-import com.zenobase.models.Event;
 
 public class BucketRepository extends RepositorySupport<Bucket> {
 
@@ -36,24 +36,13 @@ public class BucketRepository extends RepositorySupport<Bucket> {
 	}
 
 	public void store(Bucket bucket, DateTime timestamp, boolean createIndex) {
-		Index index = manager.getIndex(bucket.getId());
-		if (index.exists()) {
-			Preconditions.checkState(!createIndex, "Index exists already: %s", bucket.getId());
-			index.open();
-		} else if (bucket.isVirtual()) {
-			index.create(bucket.getAliases());
-		} else {
-			Preconditions.checkState(createIndex, "Can't find index: %s", bucket.getId());
-			index.create(1);
-			index.putMapping(Event.getSchema());
-		}
-		this.index.store(Bucket.TYPE_NAME, bucket.getId(), bucket.toJson(), timestamp, true);
+		manager.createAlias(EventRepository.INDEX_NAME, bucket.getId(), bucket.isVirtual() ? bucket.getAliases() : Lists.newArrayList(new Alias(bucket.getId())));
+		index.store(Bucket.TYPE_NAME, bucket.getId(), bucket.toJson(), timestamp, true);
 	}
 
 	public void update(Bucket from, Bucket to, DateTime timestamp) {
 		if (!Objects.equal(from.getAliases(), to.getAliases())) {
-			Index index = manager.getIndex(to.getId());
-			index.replace(Sets.newHashSet(from.getAliases()), Sets.newHashSet(to.getAliases()));
+			manager.updateAlias(EventRepository.INDEX_NAME, from.getId(), to.getAliases());
 		}
 		index.update(Bucket.TYPE_NAME, to.getId(), to.toJson(), timestamp, true);
 	}
@@ -62,9 +51,7 @@ public class BucketRepository extends RepositorySupport<Bucket> {
 		Preconditions.checkState(!isAliased(bucketId), "Can't delete an aliased bucket");
 		boolean deleted = index.delete(Bucket.TYPE_NAME, bucketId, true);
 		if (deleted) {
-			if (!manager.getIndex(bucketId).close()) {
-				Logger.warn("Couldn't close index: " + bucketId);
-			}
+			manager.deleteAlias(EventRepository.INDEX_NAME, bucketId);
 		}
 		return deleted;
 	}
