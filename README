@@ -45,6 +45,9 @@ To run all tests except Selenium tests:
 Release Procedure
 -----------------
 
+(Note: Pending resolution of https://github.com/elasticsearch/elasticsearch-cloud-aws/issues/99, the web application has 
+to be started manually with `sudo start play`.)
+
   1. Push the code to the build server. This should trigger a build.
 
   2. Obtain the build number [CloudBees].
@@ -55,13 +58,13 @@ Release Procedure
 
      3.2. (if migrating) Set elasticsearch.replay to the previous clusterName and increment clusterName.
 
-     3.3. (if migrating) Temporarily increase elasticsearch.heap_size to 4500m.
+     3.3. (if migrating) Temporarily increase elasticsearch.heap_size to 2000m.
 
   4. Set up new instances [OpsWorks]:
 
      4.1. Add two m3.medium instances named "{build number}-1a" in us-east-1a and "{build number}-1c" in us-east-1c to the "Elasticsearch" layer.
 
-     4.2. (if migrating) Add an m3.xlarge instance named "{build number}-1d" in us-east-1d to the "Elasticsearch" layer.
+     4.2. (if migrating) Add an m3.large instance named "{build number}-1d" in us-east-1d to the "Elasticsearch" layer.
 
      4.3. Add the new instances to the "Play" layer.
 
@@ -73,7 +76,9 @@ Release Procedure
 
      5.3. The status check must show 4 nodes and green health [/status].
 
-  6. Start either the new m3.xlarge instance (if migrating) or the new m3.medium instances [OpsWorks].
+     5.4. There should be a recent snapshot.
+
+  6. Start either the new m3.large instance (if migrating) or the new m3.medium instances [OpsWorks].
 
   7. Add all new instance(s) to the load balancer, and remove all old instances as soon as one of the new instances is listed as "in service" [AWS Console].
 
@@ -81,7 +86,7 @@ Release Procedure
 
   9. Wait for the status check to show 6 (if migrating) or 8 (if not migrating) nodes and green health [/status].
 
-  10. Stop the m3.xlarge instance (if migrating) as well as any old instances [OpsWorks].
+  10. Stop the m3.large instance (if migrating) as well as any old instances [OpsWorks].
 
   11. Wait for 4 nodes and green health [/status].
 
@@ -97,4 +102,28 @@ Release Procedure
 
       14.3. Remove instances that are no longer reporting data [New Relic].
 
-      14.4. (if migrating) Remove all but the last few S3 buckets [AWS Console].
+      14.4. (if migrating) Remove all but the last few snapshot buckets from S3 [AWS Console].
+
+
+Restore Procedure
+-----------------
+
+  1. Bring up an empty elasticsearch instance.
+
+  2. Register a snapshot repository, e.g.
+  
+    curl -XPUT 'localhost:9200/_snapshot/prod-xx' -d '{
+      "type": "s3",
+      "settings": {
+          "bucket": "zeno-snapshots",
+          "base_path": "prod-xx"
+      }
+    }'
+
+  3. List snapshots:
+
+    curl 'localhost:9200/_snapshot/prod-xx/_status?pretty=true'
+
+  4. Restore a snapshot:
+
+    curl -XPOST 'localhost:9200/_snapshot/prod-xx/yyyyyyyyyy/_restore'
