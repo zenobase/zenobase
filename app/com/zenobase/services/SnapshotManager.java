@@ -1,45 +1,43 @@
 package com.zenobase.services;
 
-import java.io.Closeable;
+import java.util.List;
 
-import javax.inject.Inject;
-import javax.inject.Named;
-
+import org.elasticsearch.action.admin.cluster.snapshots.get.GetSnapshotsResponse;
 import org.elasticsearch.client.Client;
-import org.elasticsearch.node.Node;
 import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
 import play.Logger;
+import com.google.common.collect.Lists;
 
-public class SnapshotManager implements Closeable {
+import com.zenobase.common.DefaultPartialList;
+import com.zenobase.common.PartialList;
 
-	private final Node node;
+public class SnapshotManager {
+
 	private final Client client;
 	private final String repositoryName;
 
-	@Inject
-	public SnapshotManager(NodeFactory nodeFactory, @Named("es.cluster") String clusterName) {
-		node = nodeFactory.createNode(clusterName);
-		client = node.client();
-		this.repositoryName = clusterName;
-		while (!new Cluster(client).isReady()) {
-			Logger.warn("Waiting for cluster to recover...");
+	public SnapshotManager(Client client, String repositoryName) {
+		this.client = client;
+		this.repositoryName = repositoryName;
+	}
+
+	public PartialList<Snapshot> findAll(int offset, int limit) {
+		List<Snapshot> snapshots = Lists.newArrayListWithExpectedSize(limit);
+		GetSnapshotsResponse response = client.admin().cluster().prepareGetSnapshots(repositoryName).get();
+		for (int i = offset; i < offset + limit && i < response.getSnapshots().size(); ++i) {
+			snapshots.add(new Snapshot(response.getSnapshots().get(i)));
 		}
+		return DefaultPartialList.of(snapshots, response.getSnapshots().size());
 	}
 
 	public void snapshot() {
-		client.admin().cluster().prepareCreateSnapshot(repositoryName, DateTime.now(DateTimeZone.UTC).toString());
+		String snapshotId = String.valueOf(DateTime.now().getMillis() / 1000);
+		Logger.info("Creating snapshot: " + snapshotId);
+		client.admin().cluster().prepareCreateSnapshot(repositoryName, snapshotId).get();
 	}
 
-	private void flush() {
-		client.admin().indices().prepareFlush("_all").execute().actionGet();
-	}
-
-	@Override
-	public void close() {
-		Logger.info("Closing node...");
-		flush();
-		client.close();
-		node.close();
+	public boolean delete(String snapshotId) {
+		Logger.info("Deleting snapshot: " + snapshotId);
+		return client.admin().cluster().prepareDeleteSnapshot(repositoryName, snapshotId).get().isAcknowledged();
 	}
 }

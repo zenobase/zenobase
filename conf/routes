@@ -68,6 +68,10 @@ GET     /users/:userId/payment         @com.zenobase.controllers.PaymentControll
 DELETE  /users/:userId/payment         @com.zenobase.controllers.PaymentController.cancel(userId)
 POST    /payments/                     @com.zenobase.controllers.PaymentController.pay()
 
+GET     /snapshots/                    @com.zenobase.controllers.SnapshotController.findAll(offset : Int  ?= 0, limit : Int ?= 10)
+DELETE  /snapshots/:snapshotId         @com.zenobase.controllers.SnapshotController.delete(snapshotId)
+POST    /snapshots/                    @com.zenobase.controllers.SnapshotController.snapshot()
+
 GET     /og                            @com.zenobase.controllers.OpenGraphController.get(url)
 GET     /tz                            @com.zenobase.controllers.TimezoneController.get(lat ?= null, lon ?= null)
 GET     /*file                         com.zenobase.controllers.Assets.at(path="/public", file)

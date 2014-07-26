@@ -24,6 +24,7 @@
 			<li><a href="#widget-authorizations" target="_self" data-toggle="tab">Authorizations</a></li>
 			<li><a href="#widget-credentials" target="_self" data-toggle="tab">Credentials</a></li>
 			<li><a href="#widget-tasks" target="_self" data-toggle="tab">Tasks</a></li>
+			<li><a href="#widget-snapshots" target="_self" data-toggle="tab">Snapshots</a></li>
 		</ul>
     	
 		<div class="tab-content">
@@ -65,7 +66,7 @@
 					</div>
 				</div>
 			</div>
-		
+
 			<div id="widget-buckets" data-ng-controller="admin.BucketListController" class="tab-pane">
 				<table class="table">
 					<thead>
@@ -322,6 +323,48 @@
 				</div>
 			</div>
 
+			<div id="widget-snapshots" data-ng-controller="admin.SnapshotController" class="tab-pane">
+				<table class="table">
+					<thead>
+						<tr>
+							<th>Snapshot</th>
+							<th>State</th>
+							<th>Created</th>
+							<th>Duration</th>
+							<th></th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr data-ng-repeat="snapshot in snapshots">
+							<td>{{snapshot['@id']}}</td>
+							<td>{{snapshot.state}}</td>
+							<td><abbr title="{{snapshot.created}}">{{snapshot.created | age}}</abbr></td>
+							<td>{{snapshot.duration | duration}}</td>
+							<td style="text-align: right">
+								<a class="action" data-ng-click="remove(snapshot['@id'])" title="Delete"><i class="fa fa-trash-o"></i></a>
+							</td>
+						</tr>
+						<tr data-ng-show="snapshots == null">
+							<td colspan="5"><i>Loading</i></td>
+						</tr>
+						<tr data-ng-show="snapshots.length == 0">
+							<td colspan="5"><i>None</i></td>
+						</tr>
+					</tbody>
+				</table>
+				<div class="btn-toolbar">
+					<div class="btn-group pull-left">
+						<a class="btn" data-ng-click="snapshot()" title="Snapshot"><i class="fa fa-camera"></i></a>
+					</div>
+					<div class="btn-group pull-right" data-ng-show="snapshots">
+						<button class="btn" title="Previous" data-ng-click="prev()" data-ng-disabled="!hasPrev()"><i class="fa fa-chevron-left"></i></button>
+						<button class="btn" title="Next" data-ng-click="next()" data-ng-disabled="!hasNext()"><i class="fa fa-chevron-right"></i></button>
+					</div>
+					<div class="btn-group pull-right" data-ng-show="snapshots">
+						<button class="btn disabled zeno-paging"><b>{{offset + 1}}</b> &ndash; <b>{{offset + snapshots.length}}</b> of <b>{{total | number}}</b></button>
+					</div>
+				</div>
+			</div>
 		</div>
 
 	</div>		

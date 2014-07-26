@@ -13,12 +13,14 @@ public class ClusterNodeFactory extends NodeFactorySupport {
 	private final String accessKey;
 	private final String secretKey;
 	private final String region;
+	private final String bucket;
 
 	@Inject
-	public ClusterNodeFactory(@Named("aws.access_key") String accessKey, @Named("aws.secret_key") String secretKey, @Named("aws.region") String region) {
+	public ClusterNodeFactory(@Named("aws.access_key") String accessKey, @Named("aws.secret_key") String secretKey, @Named("aws.region") String region, @Named("aws.bucket") String bucket) {
 		this.accessKey = accessKey;
 		this.secretKey = secretKey;
 		this.region = region;
+		this.bucket = bucket;
 	}
 
 	@Override
@@ -30,6 +32,14 @@ public class ClusterNodeFactory extends NodeFactorySupport {
 			.put("cloud.aws.region", region)
 			.put("discovery.type", "ec2")
 			.put("discovery.ec2.ping_timeout", "15s");
-		return NodeBuilder.nodeBuilder().clusterName(clusterName).client(true).local(false).settings(settings.build()).node();
+		Node node = NodeBuilder.nodeBuilder().clusterName(clusterName).client(true).local(false).settings(settings.build()).node();
+		registerSnapshotRepository(node, clusterName.toLowerCase());
+		return node;
+	}
+
+	private void registerSnapshotRepository(Node node, String repositoryName) {
+		node.client().admin().cluster().preparePutRepository(repositoryName).setType("s3")
+			.setSettings(ImmutableSettings.builder().put("bucket", bucket).put("base_path", repositoryName))
+			.get();
 	}
 }

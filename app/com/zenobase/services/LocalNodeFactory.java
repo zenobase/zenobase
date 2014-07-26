@@ -11,6 +11,14 @@ public class LocalNodeFactory extends NodeFactorySupport {
 	public Node createNode(String clusterName) {
 		Logger.info("Starting local node...");
 		ImmutableSettings.Builder settings = createDefaultSettings();
-		return NodeBuilder.nodeBuilder().clusterName(clusterName).client(false).local(true).settings(settings.build()).node();
+		Node node = NodeBuilder.nodeBuilder().clusterName(clusterName).client(false).local(true).settings(settings.build()).node();
+		registerSnapshotRepository(node, clusterName.toLowerCase());
+		return node;
+	}
+
+	private void registerSnapshotRepository(Node node, String repositoryName) {
+		node.client().admin().cluster().preparePutRepository(repositoryName).setType("fs")
+			.setSettings(ImmutableSettings.builder().put("location", "data/snapshots"))
+			.get();
 	}
 }

@@ -348,4 +348,55 @@
 		$scope.refresh({});
 	}]);
 
+	app.controller('admin.SnapshotController', ['$scope', '$http', 'delay', function($scope, $http, delay) {
+
+		$scope.offset = 0;
+		$scope.limit = 10;
+		$scope.total = 0;
+		$scope.snapshots = null;
+
+		$scope.hasPrev = function() {
+			return $scope.offset > 0;
+		}
+		$scope.hasNext = function() {
+			return $scope.offset + $scope.limit < $scope.total;
+		}
+		$scope.prev = function() {
+			$scope.refresh({ offset : $scope.offset - $scope.limit });
+		}
+		$scope.next = function() {
+			$scope.refresh({ offset : $scope.offset + $scope.limit });
+		}
+		$scope.params = function() {
+			return {
+				offset : $scope.offset,
+				limit : $scope.limit
+			};
+		}
+		$scope.refresh = function(params) {
+			$http.get('/snapshots/?' + $.param($.extend($scope.params(), params))).success(function(response) {
+				$.extend($scope, params);
+				$scope.total = response.total;
+				$scope.snapshots = response.snapshots;
+			});
+		};
+		$scope.remove = function(snapshotId) {
+			$http({ method : 'DELETE', url : '/snapshots/' + snapshotId }).success(function(response, code, headers) {
+				delay(function() {
+					$scope.refresh({});
+				});
+			});
+		};
+		$scope.snapshot = function() {
+			$http({ method : 'POST', url : '/snapshots/' }).success(function(response, code, headers) {
+				delay(function() {
+					$scope.refresh({});
+				});
+			});
+		};
+
+		$scope.$on('reload', $scope.refresh);
+		$scope.refresh({});
+	}]);
+
 }());

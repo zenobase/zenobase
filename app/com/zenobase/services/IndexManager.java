@@ -25,11 +25,13 @@ import com.zenobase.search.SearchBuilderSupport;
 
 public class IndexManager implements Closeable {
 
+	private final String clusterName;
 	private Node node;
 	private Client client;
 
 	@Inject
 	public IndexManager(NodeFactory nodeFactory, @Named("es.cluster") String clusterName) {
+		this.clusterName = clusterName;
 		node = nodeFactory.createNode(clusterName);
 		client = node.client();
 		while (!new Cluster(client).isReady()) {
@@ -43,6 +45,10 @@ public class IndexManager implements Closeable {
 
 	public Cluster getCluster() {
 		return new Cluster(client);
+	}
+
+	public SnapshotManager getSnapshotManager() {
+		return new SnapshotManager(client, clusterName.toLowerCase());
 	}
 
 	public void createAlias(String indexName, String aliasName, List<Alias> targets) {
