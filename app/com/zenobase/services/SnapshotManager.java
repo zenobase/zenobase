@@ -25,7 +25,7 @@ public class SnapshotManager {
 		List<Snapshot> snapshots = Lists.newArrayListWithExpectedSize(limit);
 		GetSnapshotsResponse response = client.admin().cluster().prepareGetSnapshots(repositoryName).get();
 		for (int i = offset; i < offset + limit && i < response.getSnapshots().size(); ++i) {
-			snapshots.add(new Snapshot(response.getSnapshots().get(i)));
+			snapshots.add(new Snapshot(response.getSnapshots().get(offset + limit - i)));
 		}
 		return DefaultPartialList.of(snapshots, response.getSnapshots().size());
 	}
