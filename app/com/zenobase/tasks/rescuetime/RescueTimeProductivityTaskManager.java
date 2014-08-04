@@ -43,8 +43,9 @@ public class RescueTimeProductivityTaskManager extends OAuthTaskManager {
 	public Task newTask(String bucketId, Identity principal, ObjectNode settings) {
 		String tag = Strings.emptyToNull(settings.path("tag").textValue());
 		String kind = Strings.emptyToNull(settings.path("kind").textValue());
+		String source = Strings.emptyToNull(settings.path("source").textValue());
 		DateTimeZone timezone = DateTimeZone.forID(Objects.firstNonNull(settings.path("timezone").textValue(), "UTC"));
-		Task task = new RescueTimeProductivityTask(bucketId, principal, tag, kind, timezone);
+		Task task = new RescueTimeProductivityTask(bucketId, principal, tag, kind, source, timezone);
 		task.setMarker(parseMarker(settings.path("marker").textValue(), timezone));
 		return task;
 	}
@@ -62,7 +63,7 @@ public class RescueTimeProductivityTaskManager extends OAuthTaskManager {
 		DateTime last = task.getLast();
 		List<Event> events = Lists.newArrayList();
 		for (DateTime from = last; from == null || from.isBefore(DateTime.now()); from = from.plusWeeks(1)) {
-			events.addAll(get(credentials, task.getTag(), task.getKind(), task.getTimezone(), from != null ? from.toLocalDate() : null));
+			events.addAll(get(credentials, task.getTag(), task.getKind(), task.getSource(), task.getTimezone(), from != null ? from.toLocalDate() : null));
 			if (from == null) {
 				from = getFirst(events);
 			}
@@ -77,9 +78,9 @@ public class RescueTimeProductivityTaskManager extends OAuthTaskManager {
 		return createCommand(task, events);
 	}
 
-	private List<Event> get(OAuthCredentials credentials, String tag, String kind, DateTimeZone timezone, LocalDate date) {
+	private List<Event> get(OAuthCredentials credentials, String tag, String kind, String source, DateTimeZone timezone, LocalDate date) {
 		rateLimit.acquire();
-		OAuthRequest request = newRequest(kind, date);
+		OAuthRequest request = newRequest(kind, source, date);
 		Response response = send(request, credentials);
 		Preconditions.checkState(response.getCode() == 200,
 			"Couldn't request <%s>: %s", request.getCompleteUrl(), response.getBody());
@@ -90,12 +91,15 @@ public class RescueTimeProductivityTaskManager extends OAuthTaskManager {
 		return result.getEvents();
 	}
 
-	private OAuthRequest newRequest(String kind, LocalDate date) {
+	private OAuthRequest newRequest(String kind, String source, LocalDate date) {
 		OAuthRequest request = new OAuthRequest(Verb.GET, "https://www.rescuetime.com/api/oauth/data");
 		request.addQuerystringParameter("format", "json");
 		request.addQuerystringParameter("operation", "select");
 		request.addQuerystringParameter("perspective", "interval");
 		request.addQuerystringParameter("restrict_kind", kind);
+		if (source != null) {
+			request.addQuerystringParameter("restrict_source_type", source);
+		}
 		request.addQuerystringParameter("resolution_time", "hour");
 		if (date != null) {
 			request.addQuerystringParameter("restrict_begin", date.toString());

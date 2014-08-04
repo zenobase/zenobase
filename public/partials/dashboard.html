@@ -499,6 +499,10 @@
 				<select name="kind" data-ng-model="settings.kind" data-ng-options="kind.id as kind.label for kind in kinds" required></select>
 			</div>
 			<div class="control-group">
+				<label for="source" class="control-label">Source</label>
+				<select name="source" data-ng-model="settings.source" data-ng-options="source.id as source.label for source in sources" required></select>
+			</div>
+			<div class="control-group">
 				<label for="timezone" class="control-label">Timezone</label>
 				<select name="timezone" data-ng-model="settings.timezone" data-ng-options="timezone for timezone in timezones" required></select>
 			</div>

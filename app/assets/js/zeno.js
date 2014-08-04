@@ -4840,10 +4840,17 @@
 			{ 'id' : 'overview', 'label' : 'Category' },
 			{ 'id' : 'category', 'label' : 'Sub-Category' }
 		];
+		$scope.sources = [
+			{ 'id' : '', 'label' : 'All' },
+			{ 'id' : 'computers', 'label' : 'Computers' },
+			{ 'id' : 'mobile', 'label' : 'Mobile' },
+			{ 'id' : 'offline', 'label' : 'Offline' }
+		];
 		$scope.init = function() {
 			$scope.settings = $scope.$parent.$parent.settings = {
 					tag : '',
 					kind : 'efficiency',
+					source : '',
 					marker : new Date(moment().utc().subtract('months', 3).startOf('month').valueOf()),
 					timezone : 'UTC'
 			};
