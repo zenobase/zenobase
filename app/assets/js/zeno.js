@@ -2133,6 +2133,7 @@
 
 		Interval.matchSymbol = function(value) {
 			if (value) {
+				var i, max;
 				for (i = 0, max = Interval.VALUES.length; i < max; ++i) {
 					if (value.indexOf(Interval.VALUES[i].symbol) != -1) {
 						return Interval.VALUES[i];
