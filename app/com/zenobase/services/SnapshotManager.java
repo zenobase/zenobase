@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.elasticsearch.action.admin.cluster.snapshots.get.GetSnapshotsResponse;
 import org.elasticsearch.client.Client;
+import org.elasticsearch.snapshots.SnapshotInfo;
 import org.joda.time.DateTime;
 import play.Logger;
 import com.google.common.collect.Lists;
@@ -24,8 +25,9 @@ public class SnapshotManager {
 	public PartialList<Snapshot> findAll(int offset, int limit) {
 		List<Snapshot> snapshots = Lists.newArrayListWithExpectedSize(limit);
 		GetSnapshotsResponse response = client.admin().cluster().prepareGetSnapshots(repositoryName).get();
-		for (int i = offset; i < offset + limit && i < response.getSnapshots().size(); ++i) {
-			snapshots.add(new Snapshot(response.getSnapshots().get(offset + limit - i)));
+		List<SnapshotInfo> infos = response.getSnapshots().reverse();
+		for (int i = offset; i < offset + limit && i < infos.size(); ++i) {
+			snapshots.add(new Snapshot(infos.get(i)));
 		}
 		return DefaultPartialList.of(snapshots, response.getSnapshots().size());
 	}
