@@ -11,6 +11,17 @@
 		});
 	}(window.console = window.console || {})); 
 
+	/**
+	 * Prevent charts from capturing single finger swipes. 
+	 */
+	(function() {
+		Highcharts.wrap(Highcharts.Pointer.prototype, 'pinch', function(proceed, e) {
+			if (e.touches.length > 1) {
+				proceed.call(this, e);
+			}
+		});
+	}());
+
 	var app = angular.module('ZenoModule', [ 'ngRoute', 'ngSanitize' ]);
 
 	app.factory('delay', ['$timeout', function($timeout) {
