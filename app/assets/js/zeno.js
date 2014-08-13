@@ -4287,10 +4287,12 @@
 			throw new Error(value + ' is not a valid emoticon');
 		}
 
-		function parseSleepNotes(value) {
+		function parseSleepNotes(values) {
 			var tags = [ 'sleep' ];
-			if (value) {
-				tags.push(value.toLowerCase());
+			if (values) {
+				$.each(values.split(':'), function(i, value) {
+					tags.push(value.toLowerCase());
+				});
 			}
 			return tags;
 		}
