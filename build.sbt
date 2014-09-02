@@ -23,7 +23,7 @@ libraryDependencies ++= Seq(
 	"org.jsoup" % "jsoup" % "1.7.3",
 	"net.sf.opencsv" % "opencsv" % "2.3",
 	"org.scribe" % "scribe" % "1.3.3",
-	"com.braintreepayments.gateway" % "braintree-java" % "2.29.1",
+	"com.braintreepayments.gateway" % "braintree-java" % "2.32.0",
 	"org.seleniumhq.selenium" % "selenium-chrome-driver" % "2.39.0" % "test", // Must match Play's version of Selenium!
 	"org.mockito" % "mockito-core" % "1.9.5" % "test",
 	"org.jvnet.mock-javamail" % "mock-javamail" % "1.9" % "test"
