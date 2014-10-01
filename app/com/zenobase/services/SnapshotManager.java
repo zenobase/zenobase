@@ -35,7 +35,7 @@ public class SnapshotManager {
 	public void snapshot() {
 		String snapshotId = String.valueOf(DateTime.now().getMillis() / 1000);
 		Logger.info("Creating snapshot: " + snapshotId);
-		client.admin().cluster().prepareCreateSnapshot(repositoryName, snapshotId).get();
+		client.admin().cluster().prepareCreateSnapshot(repositoryName, snapshotId).setWaitForCompletion(false).get();
 	}
 
 	public boolean delete(String snapshotId) {
