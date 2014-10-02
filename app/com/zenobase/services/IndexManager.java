@@ -52,7 +52,6 @@ public class IndexManager implements Closeable {
 	}
 
 	public void createAlias(String indexName, String aliasName, List<Alias> targets) {
-		Logger.info("Creating alias " + aliasName + " for: " + targets);
 		IndicesAliasesRequestBuilder request = client.admin().indices().prepareAliases();
 		buildAlias(indexName, aliasName, targets, request);
 		IndicesAliasesResponse response = request.get();
