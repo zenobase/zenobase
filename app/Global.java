@@ -119,6 +119,9 @@ import com.zenobase.tasks.foursquare.FoursquareCredentialsManager;
 import com.zenobase.tasks.foursquare.FoursquareTaskManager;
 import com.zenobase.tasks.foursquare.FoursquareVenues;
 import com.zenobase.tasks.google.GoogleCredentialsManager;
+import com.zenobase.tasks.jawbone.JawboneCredentialsManager;
+import com.zenobase.tasks.jawbone.JawboneSleepTaskManager;
+import com.zenobase.tasks.jawbone.JawboneStepsTaskManager;
 import com.zenobase.tasks.lastfm.LastFmCredentialsManager;
 import com.zenobase.tasks.lastfm.LastFmTaskManager;
 import com.zenobase.tasks.mapmyfitness.MapMyFitnessCredentialsManager;
@@ -259,6 +262,7 @@ public class Global extends GlobalSettings {
 				bindIfConfigured("rescuetime", RescueTimeCredentialsManager.class, credentials);
 				bindIfConfigured("google", GoogleCredentialsManager.class, credentials);
 				bindIfConfigured("automatic", AutomaticCredentialsManager.class, credentials);
+				bindIfConfigured("jawbone", JawboneCredentialsManager.class, credentials);
 				bind(CredentialsManagerRegistry.class).in(Singleton.class);
 
 				Multibinder<TaskManager> tasks = Multibinder.newSetBinder(binder(), new TypeLiteral<TaskManager>() {});
@@ -289,6 +293,8 @@ public class Global extends GlobalSettings {
 				bindIfConfigured("rescuetime", RescueTimeProductivityTaskManager.class, tasks);
 				bindIfConfigured("google", SleepCloudTaskManager.class, tasks);
 				bindIfConfigured("automatic", AutomaticTaskManager.class, tasks);
+				bindIfConfigured("jawbone", JawboneStepsTaskManager.class, tasks);
+				bindIfConfigured("jawbone", JawboneSleepTaskManager.class, tasks);
 				bind(TaskManagerRegistry.class).in(Singleton.class);
 
 				bind(AccountController.class).in(Singleton.class);

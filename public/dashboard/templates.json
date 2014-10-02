@@ -794,9 +794,9 @@
 				"type" : "polar",
 				"label" : "Days (Duration)",
 				"placement" : "left",
-				"value_field" : "timestamp",
+				"value_field" : "duration",
 				"unit" : null,
-				"statistic" : "count",
+				"statistic" : "avg",
 				"interval" : "day_of_week"
 			},
 			{
@@ -871,9 +871,9 @@
 				"type" : "polar",
 				"label" : "Days (Duration)",
 				"placement" : "left",
-				"value_field" : "timestamp",
+				"value_field" : "duration",
 				"unit" : null,
-				"statistic" : "count",
+				"statistic" : "avg",
 				"interval" : "day_of_week"
 			},
 			{
@@ -901,6 +901,83 @@
 				"unit_x" : null,
 				"statistic_x" : "avg",
 				"label_y" : "Efficiency",
+				"field_y" : "rating",
+				"unit_y" : null,
+				"statistic_y" : "avg",
+				"interval" : "day",
+				"regression" : "linear"
+			}
+		]
+	},
+	{
+		"label" : "Sleep (Jawbone)",
+		"task" : "jawbone-sleep",
+		"widgets" : [
+			{
+				"id" : "timeline",
+				"type" : "timeline",
+				"label" : "Timeline",
+				"placement" : "top",
+				"field" : "duration",
+				"unit" : null,
+				"statistic" : "avg",
+				"interval" : "week"
+			},
+			{
+				"id" : "latest",
+				"type" : "list",
+				"label" : "Latest",
+				"placement" : "left",
+				"order" : "timestamp",
+				"reverse" : false,
+				"limit" : 7,
+				"singleton" : true
+			},
+			{
+				"id" : "polar_hour",
+				"type" : "polar",
+				"label" : "Hours (Begin)",
+				"placement" : "left",
+				"value_field" : "timestamp",
+				"unit" : null,
+				"statistic" : "count",
+				"interval" : "hour_of_day"
+			},
+			{
+				"id" : "polar_day_duration",
+				"type" : "polar",
+				"label" : "Days (Duration)",
+				"placement" : "left",
+				"value_field" : "duration",
+				"unit" : null,
+				"statistic" : "avg",
+				"interval" : "day_of_week"
+			},
+			{
+				"id" : "histogram_duration",
+				"type" : "histogram",
+				"label" : "Duration",
+				"placement" : "right",
+				"field" : "duration",
+				"unit" : null,
+				"interval" : 3600000
+			},
+			{
+				"id" : "ratings",
+				"type" : "ratings",
+				"label" : "Quality",
+				"placement" : "right"
+			},
+			{
+				"id" : "scatterplot_duration_percentage",
+				"type" : "scatterplot",
+				"label" : "Duration & Quality",
+				"placement" : "right",
+				"label_x" : "Duration",
+				"field_x" : "duration",
+				"unit_x" : null,
+				"statistic_x" : "avg",
+				"label_y" : "Quality",
 				"field_y" : "rating",
 				"unit_y" : null,
 				"statistic_y" : "avg",
@@ -968,9 +1045,9 @@
 				"type" : "polar",
 				"label" : "Days (Duration)",
 				"placement" : "left",
-				"value_field" : "timestamp",
+				"value_field" : "duration",
 				"unit" : null,
-				"statistic" : "count",
+				"statistic" : "avg",
 				"interval" : "day_of_week"
 			},
 			{
@@ -1048,9 +1125,9 @@
 				"type" : "polar",
 				"label" : "Days (Duration)",
 				"placement" : "left",
-				"value_field" : "timestamp",
+				"value_field" : "duration",
 				"unit" : null,
-				"statistic" : "count",
+				"statistic" : "avg",
 				"interval" : "day_of_week"
 			},
 			{
@@ -1128,9 +1205,9 @@
 				"type" : "polar",
 				"label" : "Days (Duration)",
 				"placement" : "left",
-				"value_field" : "timestamp",
+				"value_field" : "duration",
 				"unit" : null,
-				"statistic" : "count",
+				"statistic" : "avg",
 				"interval" : "day_of_week"
 			},
 			{
@@ -1227,6 +1304,53 @@
 	{
 		"label" : "Steps (Fitbit)",
 		"task" : "fitbit-steps", 
+		"widgets" : [
+			{
+				"id" : "steps",
+				"type" : "timeline",
+				"label" : "Steps",
+				"placement" : "top",
+				"field" : "count",
+				"unit" : null,
+				"statistic" : "sum",
+				"interval" : "month"
+			},
+			{
+				"id" : "latest",
+				"type" : "list",
+				"label" : "Latest",
+				"placement" : "left",
+				"order" : "timestamp",
+				"reverse" : false,
+				"limit" : 10,
+				"singleton" : true
+			},
+			{
+				"id" : "steps_scoreboard",
+				"type" : "scoreboard",
+				"label" : "Scoreboard",
+				"placement" : "right",
+				"key_field" : "author",
+				"value_field" : "count",
+				"unit" : null,
+				"order" : "total",
+				"limit" : 10
+			},
+			{
+				"id" : "steps_by_day",
+				"type" : "polar",
+				"label" : "Day of Week",
+				"placement" : "right",
+				"value_field" : "count",
+				"unit" : null,
+				"statistic" : "avg",
+				"interval" : "day_of_week"
+			}
+		]
+	},
+	{
+		"label" : "Steps (Jawbone)",
+		"task" : "jawbone-steps", 
 		"widgets" : [
 			{
 				"id" : "steps",
