@@ -1,8 +1,11 @@
 package com.zenobase.tasks.jawbone;
 
+import java.math.RoundingMode;
+
 import javax.measure.DecimalMeasure;
 import javax.measure.quantity.Energy;
 import javax.measure.quantity.Length;
+import javax.measure.quantity.Quantity;
 import javax.measure.unit.SI;
 import javax.measure.unit.Unit;
 
@@ -67,6 +70,10 @@ abstract class JawboneResult {
 
 	protected DecimalMeasure<Length> distanceValue(JsonNode node, Unit<Length> unit) {
 		return node.isNumber() ? Measures.valueOf(Measures.convert(node.doubleValue(), unit), unit) : null;
+	}
+
+	protected <T extends Quantity> DecimalMeasure<T> round(DecimalMeasure<T> value) {
+		return value != null ? DecimalMeasure.valueOf(value.getValue().setScale(0, RoundingMode.HALF_UP), value.getUnit()) : null;
 	}
 
 	protected DecimalMeasure<Energy> energyValue(JsonNode node) {

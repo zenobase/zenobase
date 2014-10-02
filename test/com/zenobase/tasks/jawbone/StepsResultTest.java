@@ -20,7 +20,7 @@ public class StepsResultTest extends ResultTestSupport {
 
 	@Test
 	public void testDailyMetric() {
-		DateTime begin = DateTime.parse("20140311T090000-07:00", ISODateTimeFormat.basicDateTimeNoMillis().withOffsetParsed());
+		DateTime begin = parseDateTime("20140311T090000-07:00");
 		StepsResult result = new StepsResult(readObject("StepsResultTest.json"), TESTER, "steps", false, true);
 		List<Event> events = result.getEvents();
 		assertThat(events).as("events").hasSize(3);
@@ -42,5 +42,27 @@ public class StepsResultTest extends ResultTestSupport {
 		List<Event> events = result.getEvents();
 		assertThat(events).as("events").hasSize(3);
 		assertThat(events.get(0).getValue(Event.DISTANCE)).isEqualTo(Measures.<Length>valueOf("7.81 mi"));
+	}
+
+	@Test
+	public void testHourlyMetric() {
+		DateTime begin = parseDateTime("20140311T090000-07:00");
+		StepsResult result = new StepsResult(readObject("StepsResultTest.json"), TESTER, "steps", true, true);
+		List<Event> events = result.getEvents();
+		assertThat(events).as("events").hasSize(36);
+		Event expected = new Event(events.get(0).getId());
+		expected.setValue(Event.TIMESTAMP, begin);
+		expected.setValue(Event.DURATION, Duration.standardHours(1));
+		expected.addValue(Event.TAG, "steps");
+		expected.setValue(Event.COUNT, 1268);
+		expected.setValue(Event.DISTANCE, Measures.<Length>valueOf("994 m"));
+		expected.setValue(Event.ENERGY, Measures.<Energy>valueOf("120 kcal"));
+		expected.setValue(Event.AUTHOR, TESTER);
+		expected.setValue(Event.SOURCE, JawboneResult.SOURCE);
+		assertThat(events.get(0)).as("first event").isEqualTo(expected);
+	}
+
+	private static DateTime parseDateTime(String value) {
+		return DateTime.parse(value, ISODateTimeFormat.basicDateTimeNoMillis().withOffsetParsed());
 	}
 }
