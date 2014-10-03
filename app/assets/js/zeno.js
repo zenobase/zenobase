@@ -326,20 +326,23 @@
 
 	app.factory('Constraint', function() {
 
-		var separator = ':';
+		var fieldSeparator = ':';
+		var subfieldSeparator = '$';
 
-		var Constraint = function(field, value, negated) {
+		var Constraint = function(field, value, negated, subfield) {
 			this.field = field;
 			this.value = value.toString();
 			this.negated = negated;
+			this.subfield = subfield;
 		};
 
 		Constraint.prototype.invert = function() {
-			return new Constraint(this.field, this.value, !this.negated);
+			return new Constraint(this.field, this.value, !this.negated, this.subfield);
 		};
 
 		Constraint.prototype.toString = function() {
-			return (this.negated ? '-' : '') + this.field + separator + this.value;
+			var field = this.field + (this.subfield ? subfieldSeparator + this.subfield : '');
+			return (this.negated ? '-' : '') + field + fieldSeparator + this.value;
 		};
 
 		Constraint.prototype.shortValue = function() {
@@ -353,13 +356,19 @@
 				negated = true;
 				s = s.substring(1);
 			}
-			var pos = s.indexOf(separator);
+			var pos = s.indexOf(fieldSeparator);
 			if (pos < 1 || pos > s.length - 1) {
 				throw 'Can\'t parse constraint: ' + s;
 			}
 			var field = s.substring(0, pos);
+			var subfield = null;
+			var pos2 = field.indexOf(subfieldSeparator);
+			if (pos2 > 0) {
+				subfield = field.substring(pos2 + 1);
+				field = field.substring(0, pos2);
+			}
 			var value = s.substring(pos + 1);
-			return new Constraint(field, value, negated);
+			return new Constraint(field, value, negated, subfield);
 		};
 
 		return Constraint;
