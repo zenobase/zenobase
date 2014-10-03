@@ -2782,12 +2782,13 @@
 		$scope.init = function() {
 			$scope.times = null;
 			$scope.timesB = null;
+			$scope.settings.key_field = $scope.settings.key_field || $scope.keyField;
 		};
 		$scope.params = function() {
 			return { 
 				id : $scope.settings.id,
 				type : 'polar',
-				key_field : $scope.keyField,
+				key_field : $scope.settings.key_field,
 				value_field : $scope.settings.value_field || null,
 				unit : $scope.settings.unit || '',
 				interval : $scope.settings.interval,
@@ -2808,7 +2809,7 @@
 			$timeout($scope.draw, 0); // delay for correct width
 		};
 		$scope.filter = function(value, negated) {
-			$scope.addConstraint($scope.keyField + '.' + $scope.settings.interval, value, true, negated);
+			$scope.addConstraint($scope.settings.key_field + '.' + $scope.settings.interval, value, true, negated);
 		};
 		$scope.snapshot = function() {
 			$scope.$broadcast('snapshot');
@@ -2926,6 +2927,9 @@
 			}).length > 0;
 		}
 
+		$scope.getKeyFields = function() {
+			return Field.find($scope.keyField).subfields;
+		};
 		$scope.getFields = function() {
 			var fields = Field.findByType('numeric');
 			fields.unshift(Field.find($scope.keyField));
@@ -5220,7 +5224,7 @@
 		var fields = [];
 		var fieldsByName = {};
 
-		var Field = function(name, icon, type, units, readOnly, toText, toHtml, toNumber, formatAxis, minValue, maxValue) {
+		var Field = function(name, icon, type, units, readOnly, toText, toHtml, toNumber, formatAxis, minValue, maxValue, subfields) {
 			this.name = name;
 			this.icon = icon;
 			this.type = type;
@@ -5232,6 +5236,7 @@
 			this.formatAxis = formatAxis;
 			this.minValue = minValue;
 			this.maxValue = maxValue;
+			this.subfields = subfields;
 		};
 
 		var toNumber = function(value) {
@@ -5289,7 +5294,8 @@
 				fieldOptions.toNumber || toNumber,
 				fieldOptions.formatAxis || function(options) { },
 				fieldOptions.minValue,
-				fieldOptions.maxValue
+				fieldOptions.maxValue,
+				fieldOptions.subfields
 			);
 			fields.push(field); 
 			fieldsByName[field.name] = field; 
@@ -5502,7 +5508,8 @@
 					'<i class="fa ' + this.icon + '" title="Timestamp"></i> ' +
 					'<abbr title="' + value + '">' + moment(value).zone(value).fromNowOrNow(false) + '</abbr>' +
 				'</span>';
-			}
+			},
+			subfields : [ 'timestamp', 'timestamp$min', 'timestamp$max' ]
 		});
 
 		register({
