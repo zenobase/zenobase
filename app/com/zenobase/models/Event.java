@@ -7,7 +7,7 @@ import com.google.common.collect.ImmutableSet;
 import com.zenobase.common.Generator;
 import com.zenobase.json.BitsField;
 import com.zenobase.json.ConcentrationField;
-import com.zenobase.json.DateTimeField;
+import com.zenobase.json.DateTimeRangeField;
 import com.zenobase.json.DecimalField;
 import com.zenobase.json.DomainNode;
 import com.zenobase.json.DurationField;
@@ -41,7 +41,7 @@ public class Event extends DomainNode {
 	public static final TokenField BUCKET = new TokenField("_bucket");
 	public static final IdentityField AUTHOR = new IdentityField("author");
 	public static final ResourceField SOURCE = new ResourceField("source");
-	public static final DateTimeField TIMESTAMP = new DateTimeField("timestamp");
+	public static final DateTimeRangeField TIMESTAMP = new DateTimeRangeField("timestamp");
 	public static final DurationField DURATION = new DurationField("duration");
 	public static final FrequencyField FREQUENCY = new FrequencyField("frequency");
 	public static final VelocityField VELOCITY = new VelocityField("velocity");

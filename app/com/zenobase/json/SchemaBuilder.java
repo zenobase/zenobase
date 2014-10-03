@@ -35,8 +35,7 @@ public class SchemaBuilder {
 		ArrayNode excludesNode = sourceNode.putArray("excludes");
 		excludesNode.add("_*");
 		excludesNode.add("*._*");
-		excludesNode.add("$*");
-		excludesNode.add("*.$*");
+		excludesNode.add("*$*");
 		excludesNode.add(DomainNode.VERSION.getName());
 	}
 
