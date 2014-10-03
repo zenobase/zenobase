@@ -2206,12 +2206,13 @@
 			return at.slice(0, i).join('');
 		}
 		function filter(value) {
-			$scope.addConstraint($scope.keyField, value, true);			
+			$scope.addConstraint($scope.settings.key_field, value, true);			
 		}
 
 		$scope.init = function() {
 			$scope.times = null;
 			$scope.timesB = null;
+			$scope.settings.key_field = $scope.settings.key_field || $scope.keyField;
 		};
 		$scope.params = function() {
 			$scope.interval = Interval.valueOf($scope.settings.interval) || Interval.VALUES[1];
@@ -2765,6 +2766,9 @@
 		$scope.getUnits = function() {
 			return Field.find($scope.settings.field).units || [];
 		};
+		$scope.getKeyFields = function() {
+			return Field.find($scope.keyField).subfields;
+		};		
 		$scope.getIntervals = function() {
 			return Interval.VALUES;
 		};

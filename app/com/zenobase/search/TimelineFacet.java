@@ -19,7 +19,7 @@ public class TimelineFacet {
 			@Override
 			public Facet build(FacetOptions options) {
 				String id = options.get("id");
-				String keyField = Event.TIMESTAMP.getName();
+				String keyField = options.get("key_field", String.class, Event.TIMESTAMP.getName());
 				String valueField = options.get("field", String.class, Event.TIMESTAMP.getName());
 				Unit<?> unit = getUnit(options.get("unit"));
 				String interval = options.get("interval", String.class, "month");
