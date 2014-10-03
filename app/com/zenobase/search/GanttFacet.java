@@ -1,8 +1,5 @@
 package com.zenobase.search;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.elasticsearch.search.facet.FacetBuilders;
@@ -10,6 +7,9 @@ import org.elasticsearch.search.facet.termsstats.TermsStatsFacet;
 import org.elasticsearch.search.facet.termsstats.TermsStatsFacet.ComparatorType;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import com.zenobase.json.DateTimeField;
 import com.zenobase.json.LongField;
@@ -75,7 +75,7 @@ public class GanttFacet extends Facet {
 				return new GanttFacet(
 					options.get("id"),
 					options.get("field"),
-					Event.TIMESTAMP.getName(),
+					options.get("key_field", String.class, Event.TIMESTAMP.getName()),
 					ComparatorType.valueOf(options.get("order", String.class, "term").toUpperCase()),
 					options.get("limit", Integer.class, 10),
 					options.get("timezone", DateTimeZone.class, DateTimeZone.UTC));

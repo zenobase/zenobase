@@ -1775,14 +1775,18 @@
 	}]);
 
 	app.controller('GanttWidgetController', ['$scope', 'timezone', function($scope, timezone) {
-	
+
+		$scope.keyField = 'timestamp';
+
 		$scope.init = function() {
 			$scope.terms = null;
+			$scope.settings.key_field = $scope.settings.key_field || $scope.keyField;
 		};
 		$scope.params = function() {
 			return { 
 				id : $scope.settings.id,
 				type : 'gantt',
+				key_field : $scope.settings.key_field,
 				field : $scope.settings.field, 
 				timezone : timezone,
 				order : $scope.settings.order,
@@ -1819,6 +1823,9 @@
 
 		new WidgetDialogControllerSupport($scope);
 
+		$scope.getKeyFields = function() {
+			return Field.find($scope.keyField).subfields;
+		};
 		$scope.getFields = function() {
 			return Field.findByType('text');
 		};
@@ -5767,7 +5774,7 @@
 
 	app.filter('duration', ['moment', function(moment) {
 		return function(millis) {
-			return moment.duration(millis).countdown(1);
+			return isFinite(millis) ? moment.duration(millis).countdown(1) : '';
 		};
 	}]);
 
