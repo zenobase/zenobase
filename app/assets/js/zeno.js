@@ -3150,8 +3150,11 @@
 
 	app.controller('ScatterPlotWidgetController', ['$scope', '$timeout', 'Field', 'timezone', 'statistics', function($scope, $timeout, Field, timezone, statistics) {
 
+		$scope.keyField = 'timestamp';
+
 		$scope.init = function() {
 			$scope.data = null;
+			$scope.settings.key_field = $scope.settings.key_field || $scope.keyField;
 		};
 		$scope.params = function() {
 			return {
@@ -3165,6 +3168,7 @@
 				unit_y : $scope.settings.unit_y || '',
 				statistic_y : $scope.settings.statistic_y || 'avg',
 				filter_y : $scope.settings.filter_y || '',
+				key_field : $scope.settings.key_field,
 				interval : $scope.settings.interval || 'day',
 				lag : $scope.settings.lag || 0
 			};
@@ -3442,6 +3446,9 @@
 			fields.unshift(keyField);
 			return fields;
 		};
+		$scope.getKeyFields = function() {
+			return Field.find($scope.keyField).subfields;
+		};		
 		$scope.getIntervals = function() {
 			return Interval.VALUES;
 		};

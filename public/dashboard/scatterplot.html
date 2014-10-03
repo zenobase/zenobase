@@ -86,6 +86,13 @@
 					</div>
 				</blockquote>
 				<div class="control-group">
+					<label class="control-label" for="keyField">Key</label>
+					<div class="controls form-horizontal">
+						<select name="keyField" class="input-medium" data-ng-model="settings.key_field" data-ng-options="value for value in getKeyFields()"></select>
+						<p class="help-block">The field used to aggregate values.</p>
+					</div>
+				</div>
+				<div class="control-group">
 					<label class="control-label" for="interval">Interval</label>
 					<div class="controls">
 						<select name="interval" data-ng-model="settings.interval" data-ng-options="interval.name as interval.name for interval in getIntervals()"></select>

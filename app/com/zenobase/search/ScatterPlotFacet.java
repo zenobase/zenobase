@@ -48,7 +48,7 @@ public class ScatterPlotFacet extends Facet {
 	private final DateTimeZone timezone;
 	private final int lag;
 
-	public ScatterPlotFacet(String id, String keyField, Series x, Series y, String interval, DateTimeZone timezone, int lag) {
+	public ScatterPlotFacet(String id, Series x, Series y, String keyField, String interval, DateTimeZone timezone, int lag) {
 		super(id);
 		this.keyField = keyField;
 		this.x = x;
@@ -196,8 +196,8 @@ public class ScatterPlotFacet extends Facet {
 					parseUnit(options.get("unit_y")),
 					parseStatistic(options.get("statistic_y", String.class, "avg")),
 					filterParser.parse(options.get("filter_y")));
-				return new ScatterPlotFacet(
-					id, Event.TIMESTAMP.getName(), x, y,
+				return new ScatterPlotFacet(id, x, y,
+					options.get("key_field", String.class, Event.TIMESTAMP.getName()),
 					options.get("interval", String.class, "day"),
 					options.get("timezone", DateTimeZone.class, null),
 					options.get("lag", Integer.class, 0));
