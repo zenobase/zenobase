@@ -72,7 +72,7 @@ public class WithingsSleepTaskManager extends OAuthTaskManager {
 	private List<Event> execute(WithingsSleepTask task, OAuthCredentials credentials, DateTime from) {
 		OAuthRequest request = createRequest(task, credentials, from);
 		Response response = send(request, credentials);
-		WithingsSleepResult result = new WithingsSleepResult(parseObject(response), task.getPrincipal(), task.getTag(), task.getTimezone());
+		WithingsSleepResult result = new WithingsSleepResult(parseObject(response), task.getPrincipal(), task.getTag(), task.useRanges(), task.getTimezone());
 		Preconditions.checkState(result.getStatus() == 0, "Expected status <0> but got <%s> for task <%s>: %s", result.getStatus(), task.getId(), response.getBody());
 		return result.getEvents();
 	}

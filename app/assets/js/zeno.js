@@ -4343,10 +4343,12 @@
 						if (fields.length < expected.length) {
 							throw new Error('Wrong number of fields in line ' + i);
 						}
+						var begin = parseStart(fields[0]);
+						var duration = parseTimeInBed(fields[3]);
 						var event = {
 							'tag' : parseSleepNotes(fields[5]),
-							'timestamp' : parseStart(fields[0]),
-							'duration' : parseTimeInBed(fields[3]),
+							'timestamp' : [ begin, begin.add(duration, 'ms') ],
+							'duration' : duration,
 							'percentage' : parseSleepQuality(fields[2]),
 							'rating' : parseWakeUp(fields[4]),
 							'source' : {

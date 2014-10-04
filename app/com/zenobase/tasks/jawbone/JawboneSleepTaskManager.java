@@ -51,7 +51,7 @@ public class JawboneSleepTaskManager extends JawboneTaskManagerSupport {
 				request.addQuerystringParameter("start_time", Long.toString(from.getMillis() / 1000));
 			}
 			Response response = send(request, credentials);
-			SleepResult result = new SleepResult(parseObject(response).path("data"), task.getPrincipal(), task.getTag());
+			SleepResult result = new SleepResult(parseObject(response).path("data"), task.getPrincipal(), task.getTag(), task.useRanges());
 			if (!events.addAll(result.getEvents())) {
 				break;
 			}

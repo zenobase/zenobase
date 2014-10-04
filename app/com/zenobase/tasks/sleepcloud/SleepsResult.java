@@ -21,11 +21,13 @@ public class SleepsResult {
 
 	private final String tag;
 	private final Identity author;
+	private final boolean useRanges;
 	private final JsonNode node;
 
-	public SleepsResult(String tag, Identity author, JsonNode node) {
+	public SleepsResult(String tag, Identity author, boolean useRanges, JsonNode node) {
 		this.tag = tag;
 		this.author = author;
+		this.useRanges = useRanges;
 		this.node = node;
 	}
 
@@ -49,6 +51,9 @@ public class SleepsResult {
 		DateTime begin = dateTimeValue(node.path("fromTime"), zone);
 		DateTime end = dateTimeValue(node.path("toTime"), zone);
 		event.setValue(Event.TIMESTAMP, begin);
+		if (useRanges) {
+			event.addValue(Event.TIMESTAMP, end);
+		}
 		event.setValue(Event.DURATION, new Duration(begin, end));
 		event.setValue(Event.COUNT, countValue(node.path("cycles")));
 		event.setValue(Event.RATING, ratingValue(node.path("rating")));

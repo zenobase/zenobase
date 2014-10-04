@@ -19,11 +19,13 @@ public class SleepResultTest extends ResultTestSupport {
 	@Test
 	public void test() {
 		DateTime begin = DateTime.parse("20140228T220000-07:00", ISODateTimeFormat.basicDateTimeNoMillis().withOffsetParsed());
-		SleepResult result = new SleepResult(readObject("SleepResultTest.json"), TESTER, "sleep");
+		DateTime end = DateTime.parse("20140228T221319-07:00", ISODateTimeFormat.basicDateTimeNoMillis().withOffsetParsed());
+		SleepResult result = new SleepResult(readObject("SleepResultTest.json"), TESTER, "sleep", true);
 		List<Event> events = result.getEvents();
 		assertThat(events).as("events").hasSize(10);
 		Event expected = new Event(events.get(0).getId());
-		expected.setValue(Event.TIMESTAMP, begin);
+		expected.addValue(Event.TIMESTAMP, begin);
+		expected.addValue(Event.TIMESTAMP, end);
 		expected.setValue(Event.DURATION, Duration.standardSeconds(799));
 		expected.addValue(Event.TAG, "sleep");
 		expected.setValue(Event.RATING, Rating.valueOf(90));

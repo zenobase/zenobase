@@ -1,7 +1,9 @@
 package com.zenobase.tasks.bodymedia;
 
+import org.elasticsearch.common.base.Objects;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
+import com.zenobase.json.BooleanField;
 import com.zenobase.json.TokenField;
 import com.zenobase.models.Identity;
 import com.zenobase.tasks.Task;
@@ -10,6 +12,7 @@ public class BodyMediaSleepTask extends Task {
 
 	public static final String TYPE = "bodymedia-sleep";
 	public static final TokenField TAG = new TokenField("tag");
+	public static final BooleanField RANGES = new BooleanField("ranges");
 
 	public BodyMediaSleepTask(ObjectNode node) {
 		super(node);
@@ -19,6 +22,7 @@ public class BodyMediaSleepTask extends Task {
 		super(TYPE, bucketId, principal);
 		setMarker(marker);
 		setTag(tag);
+		setSetting(RANGES, true);
 	}
 
 	public String getTag() {
@@ -27,6 +31,10 @@ public class BodyMediaSleepTask extends Task {
 
 	public void setTag(String tag) {
 		setSetting(TAG, tag);
+	}
+
+	public boolean useRanges() {
+		return Objects.firstNonNull(getSetting(RANGES), false);
 	}
 
 	@Override

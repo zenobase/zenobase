@@ -23,22 +23,29 @@ class FitbitSleepResult {
 	private final JsonNode node;
 	private final String tag;
 	private final Identity author;
+	private final boolean useRanges;
 	private final DateTimeZone timezone;
 
-	public FitbitSleepResult(JsonNode node, String tag, Identity author, DateTimeZone timezone) {
+	public FitbitSleepResult(JsonNode node, String tag, Identity author, boolean useRanges, DateTimeZone timezone) {
 		this.node = node;
 		this.tag = tag;
 		this.author = author;
+		this.useRanges = useRanges;
 		this.timezone = timezone;
 	}
 
 	public List<Event> getEvents() {
 		List<Event> events = Lists.newArrayList();
 		for (JsonNode item : node.path("sleep")) {
+			DateTime begin = getDateTime(item, timezone);
+			Duration duration = getDuration(item);
 			Event event = new Event();
 			event.setValue(Event.TAG, tag);
-			event.setValue(Event.TIMESTAMP, getDateTime(item, timezone));
-			event.setValue(Event.DURATION, getDuration(item));
+			event.setValue(Event.TIMESTAMP, begin);
+			if (useRanges) {
+				event.addValue(Event.TIMESTAMP, begin.plus(duration));
+			}
+			event.setValue(Event.DURATION, duration);
 			event.setValue(Event.RATING, getRating(item));
 			event.setValue(Event.AUTHOR, author);
 			event.setValue(Event.SOURCE, SOURCE);

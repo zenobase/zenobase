@@ -22,11 +22,13 @@ class BodyMediaSleepResult extends BodyMediaResultSupport {
 	static final String TAG = "sleep";
 
 	private final LocalDate date;
+	private final boolean useRanges;
 	private final TimezoneMap timezones;
 
-	public BodyMediaSleepResult(ObjectNode node, Identity author, TimezoneMap timezones) {
+	public BodyMediaSleepResult(ObjectNode node, Identity author, boolean useRanges, TimezoneMap timezones) {
 		super(node, author);
 		this.date = getLocalDate(node.path("startDate"));
+		this.useRanges = useRanges;
 		this.timezones = timezones;
 	}
 
@@ -85,6 +87,9 @@ class BodyMediaSleepResult extends BodyMediaResultSupport {
 		Event event = new Event();
 		event.setValue(Event.TAG, TAG);
 		event.setValue(Event.TIMESTAMP, timestamp);
+		if (useRanges) {
+			event.addValue(Event.TIMESTAMP, timestamp.plusMinutes(minutesTotal));
+		}
 		event.setValue(Event.DURATION, Duration.standardMinutes(minutesTotal));
 		event.setValue(Event.RATING, Rating.valueOf(minutesSleeping > 0 ? Ints.checkedCast(Math.round(100.0 * minutesSleeping / minutesTotal)) : 0));
 		event.setValue(Event.AUTHOR, getAuthor());

@@ -1,9 +1,11 @@
 package com.zenobase.tasks.withings;
 
+import org.elasticsearch.common.base.Objects;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
+import com.zenobase.json.BooleanField;
 import com.zenobase.json.TokenField;
 import com.zenobase.models.Identity;
 import com.zenobase.tasks.Task;
@@ -13,6 +15,7 @@ public class WithingsSleepTask extends Task {
 	public static final String TYPE = "withings-sleep";
 	public static final TokenField TAG = new TokenField("tag");
 	public static final TokenField TIMEZONE = new TokenField("timezone");
+	public static final BooleanField RANGES = new BooleanField("ranges");
 
 	public WithingsSleepTask(ObjectNode node) {
 		super(node);
@@ -21,6 +24,7 @@ public class WithingsSleepTask extends Task {
 	WithingsSleepTask(String bucketId, Identity principal, String marker) {
 		super(TYPE, bucketId, principal);
 		setMarker(marker);
+		setSetting(RANGES, true);
 	}
 
 	public String getTag() {
@@ -43,6 +47,10 @@ public class WithingsSleepTask extends Task {
 	public DateTime getFrom() {
 		String value = getMarker();
 		return value != null ? new DateTime(Long.parseLong(value) * 1000, getTimezone()) : null;
+	}
+
+	public boolean useRanges() {
+		return Objects.firstNonNull(getSetting(RANGES), false);
 	}
 
 	@Override

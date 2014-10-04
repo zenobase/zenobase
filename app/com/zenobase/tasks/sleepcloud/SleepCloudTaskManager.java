@@ -59,7 +59,7 @@ public class SleepCloudTaskManager extends OAuthTaskManager {
 			request.addQuerystringParameter("timestamp", Long.toString(from.getMillis()));
 		}
 		Response response = send(request, credentials);
-		List<Event> events = new SleepsResult(task.getTag(), task.getPrincipal(), parseObject(response)).getEvents();
+		List<Event> events = new SleepsResult(task.getTag(), task.getPrincipal(), task.useRanges(), parseObject(response)).getEvents();
 		return createCommand(task, credentials, events, token);
 	}
 

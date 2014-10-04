@@ -74,6 +74,6 @@ public class BodyMediaSleepTaskManager extends BodyMediaTaskManagerSupport {
 		checkRateLimit();
 		OAuthRequest request = new OAuthRequest(Verb.GET, String.format("http://api.bodymedia.com/v2/json/sleep/day/period/%s", formatMarker(date)));
 		Response response = send(request, credentials);
-		return new BodyMediaSleepResult(parseObject(response), task.getPrincipal(), timezones);
+		return new BodyMediaSleepResult(parseObject(response), task.getPrincipal(), task.useRanges(), timezones);
 	}
 }

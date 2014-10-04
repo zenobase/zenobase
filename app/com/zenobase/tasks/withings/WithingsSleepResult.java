@@ -9,6 +9,8 @@ import org.joda.time.Duration;
 import play.Logger;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Ordering;
 import com.google.common.primitives.Ints;
 
 import com.zenobase.models.Event;
@@ -23,12 +25,14 @@ class WithingsSleepResult {
 	private final ObjectNode node;
 	private final Identity author;
 	private final String tag;
+	private final boolean useRanges;
 	private final DateTimeZone timezone;
 
-	public WithingsSleepResult(ObjectNode node, Identity author, String tag, DateTimeZone timezone) {
+	public WithingsSleepResult(ObjectNode node, Identity author, String tag, boolean useRanges, DateTimeZone timezone) {
 		this.node = node;
 		this.author = author;
 		this.tag = tag;
+		this.useRanges = useRanges;
 		this.timezone = timezone;
 	}
 
@@ -57,6 +61,9 @@ class WithingsSleepResult {
 		Event event = new Event();
 		event.setValue(Event.TAG, tag);
 		event.setValue(Event.TIMESTAMP, begin);
+		if (useRanges) {
+			event.addValue(Event.TIMESTAMP, end);
+		}
 		event.setValue(Event.DURATION, new Duration(begin, end));
 		event.setValue(Event.PERCENTAGE, percentageValue(node.path("state")));
 		event.setValue(Event.AUTHOR, author);
@@ -77,19 +84,28 @@ class WithingsSleepResult {
 		Event prev = null;
 		DateTime end = null;
 		for (Event event : events) {
-			DateTime begin = event.getValue(Event.TIMESTAMP);
+			DateTime begin = getBegin(event);
 			Duration duration = event.getValue(Event.DURATION);
 			if (prev != null && end != null && end.equals(begin)) {
 				prev.setValue(Event.PERCENTAGE, meanPercentage(prev, event));
 				prev.setValue(Event.DURATION, prev.getValue(Event.DURATION).plus(duration));
-				end = end.plus(duration);
+				end = getEnd(event);
+				prev.setValues(Event.TIMESTAMP, ImmutableList.of(getBegin(prev), end));
 				continue;
 			}
 			merged.add(event);
 			prev = event;
-			end = event.getValue(Event.TIMESTAMP).plus(event.getValue(Event.DURATION));
+			end = getEnd(event);
 		}
 		return merged;
+	}
+
+	private static DateTime getBegin(Event event) {
+		return Ordering.natural().min(event.getValues(Event.TIMESTAMP));
+	}
+
+	private static DateTime getEnd(Event event) {
+		return Ordering.natural().max(event.getValues(Event.TIMESTAMP));
 	}
 
 	private static Percentage meanPercentage(Event left, Event right) {

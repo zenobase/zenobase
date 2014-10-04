@@ -30,8 +30,8 @@ public class DateTimeRangeField extends DateTimeField {
 	public void prePersist(ObjectNode node) {
 		super.prePersist(node);
 		List<DateTime> values = getValues(node);
-		min.setValue(node, Ordering.<DateTime>natural().min(values));
-		max.setValue(node, Ordering.<DateTime>natural().max(values));
+		min.setValue(node, Ordering.natural().min(values));
+		max.setValue(node, Ordering.natural().max(values));
 		min.prePersist(node);
 		max.prePersist(node);
 	}
