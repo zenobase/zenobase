@@ -42,7 +42,7 @@ abstract class JawboneResult {
 	protected DateTimeZone dateTimeZoneValue(JsonNode node) {
 		Preconditions.checkState(node.isTextual(), "expected a node with a time zone: <%s>", node);
 		int offset = node.asInt();
-		return offset != 0 ? DateTimeZone.forOffsetMillis(offset * 1000) : DateTimeZone.forID(node.textValue());
+		return offset != 0 ? DateTimeZone.forOffsetMillis(offset * 1000) : DateTimeZone.forID(node.textValue().replace("GMT", ""));
 	}
 
 	protected DateTime dateTimeValue(JsonNode node, DateTimeZone zone) {
