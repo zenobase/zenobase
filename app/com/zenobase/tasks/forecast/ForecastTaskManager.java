@@ -15,6 +15,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Ordering;
 import com.google.common.collect.Range;
 import com.google.common.collect.Sets;
 
@@ -78,7 +79,7 @@ public class ForecastTaskManager extends TaskManager {
 		DateTime marker = from;
 		for (ObjectNode node : objects.getValues(result)) {
 			Event event = new Event(node);
-			DateTime timestamp = event.getValue(Event.TIMESTAMP);
+			DateTime timestamp = Ordering.natural().min(event.getValues(Event.TIMESTAMP));
 			Event updated = update(event, timestamp, task.getFields(), task.useStandardUnits());
 			if (marker == null || marker.isBefore(timestamp)) {
 				marker = timestamp;

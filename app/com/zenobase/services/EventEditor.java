@@ -8,6 +8,7 @@ import org.joda.time.DateTime;
 import org.joda.time.ReadableInstant;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Ordering;
 import com.google.common.collect.Range;
 
 import com.zenobase.commands.Command;
@@ -41,7 +42,7 @@ public abstract class EventEditor {
 	public void run() {
 		for (ObjectNode node : FIELD.getValues(find())) {
 			Event event = new Event(node);
-			DateTime time = event.getValue(Event.TIMESTAMP);
+			DateTime time = Ordering.natural().min(event.getValues(Event.TIMESTAMP));
 			Event edited = edit(event);
 			if (last == null || last.isBefore(time)) {
 				last = time;

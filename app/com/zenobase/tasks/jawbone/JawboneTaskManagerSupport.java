@@ -8,6 +8,7 @@ import org.scribe.model.OAuthRequest;
 import org.scribe.model.Response;
 import org.scribe.model.Token;
 import com.google.common.base.Objects;
+import com.google.common.collect.Ordering;
 import com.google.common.util.concurrent.RateLimiter;
 
 import com.zenobase.commands.Command;
@@ -47,7 +48,7 @@ public abstract class JawboneTaskManagerSupport extends OAuthTaskManager {
 	protected static String getMarker(Iterable<Event> events) {
 		DateTime latest = null;
 		for (Event event : events) {
-			DateTime time = event.getValue(Event.TIMESTAMP);
+			DateTime time = Ordering.natural().min(event.getValues(Event.TIMESTAMP));
 			if (latest == null || time.isAfter(latest)) {
 				latest = time;
 			}

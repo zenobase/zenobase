@@ -4,9 +4,9 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import org.elasticsearch.common.collect.Ordering;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
-import org.joda.time.Duration;
 import org.scribe.model.OAuthRequest;
 import org.scribe.model.Response;
 import org.scribe.model.Token;
@@ -87,9 +87,7 @@ public class SleepCloudTaskManager extends OAuthTaskManager {
 	private static String getMarker(Iterable<Event> events) {
 		DateTime latest = null;
 		for (Event event : events) {
-			DateTime begin = event.getValue(Event.TIMESTAMP);
-			Duration duration = event.getValue(Event.DURATION);
-			DateTime end = begin.plus(duration);
+			DateTime end = Ordering.natural().max(event.getValues(Event.TIMESTAMP));
 			if (latest == null || end.isAfter(latest)) {
 				latest = end;
 			}
