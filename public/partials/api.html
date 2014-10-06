@@ -13,6 +13,12 @@ please <a href="mailto:info@zenobase.com?subject=Zenobase+API">drop us a note</a
 <h3>Changelog</h3>
 
 <dl>
+	<dt>2014-10-06</dt>
+	<dd>
+		<ul>
+			<li>$min/$max pseudo-fields for handling events with multiple timestamps</li>
+		</ul>
+	</dd>
 	<dt>2014-05-02</dt>
 	<dd>
 		<ul>
@@ -742,7 +748,7 @@ Authorization: Bearer <em>&lt;access_token&gt;</em>
 
 <p>All fields are optional (and can be repeated any number of times). 
 But if no <code>timestamp</code> is specified, a <code>timestamp</code> 
-with the current time and the +00:00 time zone is added, and the 
+with the current time and a +00:00 time zone offset is added, and the 
 <code>author</code> is always set to the current user.</p>
 
 <h5>Example:</h5>
@@ -1102,11 +1108,15 @@ Content-Type: application/json
 <dd>values not larger than <em>b</em></dd>
 </dl>
 
-<h4>Special Fields</h4>
+<h4>Pseudo-Fields</h4>
 
 <dl>
 <dt>_timestamp</dt>
 <dd>The last modification time of an item. For example, <code>_timestamp:[2013TZ..*)</code> matches items that have been modified since the beginning of 2013.</dd>
+<dt><em>&lt;field&gt;</em>$min</dt>
+<dd>The lowest value in a field with multiple values. Currently only supported for timestamp fields.</dd>
+<dt><em>&lt;field&gt;</em>$max</dt>
+<dd>The highest value in a field with multiple values. Currently only supported for timestamp fields.</dd>
 </dl>
 
 </section>
@@ -1174,6 +1184,8 @@ id:xyz,type:count,field:tag
   <dd>Optional timezone offset, e.g.<em>+00:00</em>. If not set, values are aggregated using their local time.</dd>
   <dt>filter:<em>&lt;constraint&gt;</em></dt>
   <dd>Optional <a href="/#/api/constraints">constraint</a>.</dd>
+  <dt>key_field:<em>&lt;'timestamp'|'timestamp$min'|'timestamp$max'&gt;</em></dt>
+  <dd>How to handle events with multiple timestamps. Defaults to <em>timestamp</em>, i.e. aggregate on each timestamp, rather than on the highest or lowest timestamp.</dd>
 </dl>
 
 <h5>Example:</h5>
@@ -1369,6 +1381,8 @@ id:xyz,type:scoreboard,key_field:author,value_field:steps
   <dd>The timezone offset to use. If not specified, local times are used.</dd>
   <dt>lag:<em>&lt;Integer&gt;</em></dt>
   <dd>The number of time units (see <i>interval</i>) by which to offset the y series values from the x series values. Defaults to <em>0</em>.</dd>
+  <dt>key_field:<em>&lt;'timestamp'|'timestamp$min'|'timestamp$max'&gt;</em></dt>
+  <dd>How to handle events with multiple timestamps. Defaults to <em>timestamp</em>, i.e. aggregate on each timestamp, rather than on the highest or lowest timestamp.</dd>
 </dl>
 
 <h5>Example:</h5>
@@ -1399,6 +1413,8 @@ id:xyz,type:scatterplot,field_x:duration,field_y:duration,statistic:sum,interval
   <dd>How many results to return. Defaults to <em>10</em>.</dd>
   <dt>timezone:<em>&lt;Z&gt;</em></dt>
   <dd>The timezone offset to use. Defaults to <em>+00:00</em></dd>
+  <dt>key_field:<em>&lt;'timestamp'|'timestamp$min'|'timestamp$max'&gt;</em></dt>
+  <dd>How to handle events with multiple timestamps. Defaults to <em>timestamp</em>, i.e. aggregate on each timestamp, rather than on the highest or lowest timestamp.</dd>
 </dl>
 
 <h5>Example:</h5>
@@ -1459,6 +1475,8 @@ id:xyz,type:histogram,field:distance,unit:mi,interval:5
   <dd>The (local, timezone-independent) interval to aggregate on. Required.</dd>
   <dt>filter:<em>&lt;constraint&gt;</em></dt>
   <dd>Optional <a href="/#/api/constraints">constraint</a>.</dd>
+  <dt>key_field:<em>&lt;'timestamp'|'timestamp$min'|'timestamp$max'&gt;</em></dt>
+  <dd>How to handle events with multiple timestamps. Defaults to <em>timestamp</em>, i.e. aggregate on each timestamp, rather than on the highest or lowest timestamp.</dd>
 </dl>
 
 <h5>Example:</h5>
