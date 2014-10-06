@@ -1823,9 +1823,9 @@
 
 		new WidgetDialogControllerSupport($scope);
 
-		$scope.getKeyFields = function() {
-			return Field.find($scope.keyField).subfields;
-		};
+		$scope.subfields = $.map(Field.find($scope.keyField).subfields, function(subfield) {
+			return { label : subfield, value : (subfield ? $scope.keyField + '$' + subfield : $scope.keyField) };
+		});
 		$scope.getFields = function() {
 			return Field.findByType('text');
 		};
@@ -2766,9 +2766,9 @@
 		$scope.getUnits = function() {
 			return Field.find($scope.settings.field).units || [];
 		};
-		$scope.getKeyFields = function() {
-			return Field.find($scope.keyField).subfields;
-		};		
+		$scope.subfields = $.map(Field.find($scope.keyField).subfields, function(subfield) {
+			return { label : subfield, value : (subfield ? $scope.keyField + '$' + subfield : $scope.keyField) };
+		});
 		$scope.getIntervals = function() {
 			return Interval.VALUES;
 		};
@@ -2938,9 +2938,9 @@
 			}).length > 0;
 		}
 
-		$scope.getKeyFields = function() {
-			return Field.find($scope.keyField).subfields;
-		};
+		$scope.subfields = $.map(Field.find($scope.keyField).subfields, function(subfield) {
+			return { label : subfield, value : (subfield ? $scope.keyField + '$' + subfield : $scope.keyField) };
+		});
 		$scope.getFields = function() {
 			var fields = Field.findByType('numeric');
 			fields.unshift(Field.find($scope.keyField));
@@ -3450,9 +3450,9 @@
 			fields.unshift(keyField);
 			return fields;
 		};
-		$scope.getKeyFields = function() {
-			return Field.find($scope.keyField).subfields;
-		};		
+		$scope.subfields = $.map(Field.find($scope.keyField).subfields, function(subfield) {
+			return { label : subfield, value : (subfield ? $scope.keyField + '$' + subfield : $scope.keyField) };
+		});
 		$scope.getIntervals = function() {
 			return Interval.VALUES;
 		};
@@ -5529,7 +5529,7 @@
 					'<abbr title="' + value + '">' + moment(value).zone(value).fromNowOrNow(false) + '</abbr>' +
 				'</span>';
 			},
-			subfields : [ 'timestamp', 'timestamp$min', 'timestamp$max' ]
+			subfields : [ '', 'min', 'max' ]
 		});
 
 		register({

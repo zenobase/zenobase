@@ -92,12 +92,6 @@
 					</div>
 				</div>
 				<div class="control-group">
-					<label class="control-label" for="keyField">Key</label>
-					<div class="controls form-horizontal">
-						<select name="keyField" class="input-medium" data-ng-model="settings.key_field" data-ng-options="value for value in getKeyFields()"></select>
-					</div>
-				</div>
-				<div class="control-group">
 					<label class="control-label" for="valueField">Values</label>
 					<div class="controls form-horizontal">
 						<select name="statistic" class="input-small" required data-ng-model="settings.statistic" data-ng-options="value for value in getStatistics(settings.value_field)"></select>
@@ -119,6 +113,13 @@
 							<i class="fa fa-exclamation" title="not valid" data-ng-show="form.filter.$invalid"></i>
 							<i class="fa fa-check" title="valid" data-ng-hide="form.filter.$invalid"></i>
 						</span>
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label" for="keyField">Timestamp</label>
+					<div class="controls form-horizontal">
+						<select name="keyField" class="input-small" data-ng-model="settings.key_field" data-ng-options="subfield.value as subfield.label for subfield in subfields"></select>
+						<p class="help-block">How to handle events with multiple timestamps.</p>
 					</div>
 				</div>
 			</div>
