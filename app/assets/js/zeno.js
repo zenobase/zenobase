@@ -2236,6 +2236,7 @@
 			return { 
 				id : $scope.settings.id,
 				type : 'timeline',
+				key_field : $scope.settings.key_field,
 				field : $scope.settings.field,
 				unit : $scope.settings.unit || '',
 				interval : $scope.interval.name,
