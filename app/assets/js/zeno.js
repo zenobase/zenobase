@@ -1441,7 +1441,13 @@
 			return value;
 		}
 		$scope.addConstraint = function(field, value, replace, negated) {
-			var constraint = new Constraint(field, value, negated);
+			var subfield = null;
+			var p = field.indexOf('$');
+			if (p > 0) {
+				subfield = field.substring(p + 1);
+				field = field.substring(0, p);
+			}
+			var constraint = new Constraint(field, value, negated, subfield);
 			if (containsConstraint(constraint)) {
 				return;
 			}
