@@ -15,19 +15,25 @@ public class LocalDateTimeRangeParser extends RangeParser<ReadablePartial> {
 	}
 
 	private static Range<ReadablePartial> toRange(Range<LocalInterval> range) {
-		ReadablePartial lower = range.lowerBoundType() == BoundType.CLOSED
+		if (!range.hasLowerBound()) {
+			return Range.lessThan(getUpper(range));
+		} else if (!range.hasUpperBound()) {
+			return Range.atLeast(getLower(range));
+		} else {
+			return Range.closedOpen(getLower(range), getUpper(range));
+		}
+	}
+
+	private static ReadablePartial getLower(Range<LocalInterval> range) {
+		return range.lowerBoundType() == BoundType.CLOSED
 			? range.lowerEndpoint().getStart()
 			: range.lowerEndpoint().getEnd();
-		ReadablePartial upper = range.upperBoundType() == BoundType.OPEN
+	}
+
+	private static ReadablePartial getUpper(Range<LocalInterval> range) {
+		return range.upperBoundType() == BoundType.OPEN
 			? range.upperEndpoint().getStart()
 			: range.upperEndpoint().getEnd();
-		if (!range.hasLowerBound()) {
-			return Range.lessThan(upper);
-		} else if (!range.hasUpperBound()) {
-			return Range.atLeast(lower);
-		} else {
-			return Range.closedOpen(lower, upper);
-		}
 	}
 
 	@Override

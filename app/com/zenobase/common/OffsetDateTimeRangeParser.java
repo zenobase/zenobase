@@ -15,15 +15,25 @@ public class OffsetDateTimeRangeParser extends RangeParser<ReadableInstant> {
 	}
 
 	private static Range<ReadableInstant> toRange(Range<ComparableInterval> range) {
-		ReadableInstant lower = range.lowerBoundType() == BoundType.CLOSED ? range.lowerEndpoint().getStart() : range.lowerEndpoint().getEnd();
-		ReadableInstant upper = range.upperBoundType() == BoundType.OPEN ? range.upperEndpoint().getStart() : range.upperEndpoint().getEnd();
 		if (!range.hasLowerBound()) {
-			return Range.lessThan(upper);
+			return Range.lessThan(getUpper(range));
 		} else if (!range.hasUpperBound()) {
-			return Range.atLeast(lower);
+			return Range.atLeast(getLower(range));
 		} else {
-			return Range.closedOpen(lower, upper);
+			return Range.closedOpen(getLower(range), getUpper(range));
 		}
+	}
+
+	private static ReadableInstant getLower(Range<ComparableInterval> range) {
+		return range.lowerBoundType() == BoundType.CLOSED
+			? range.lowerEndpoint().getStart()
+			: range.lowerEndpoint().getEnd();
+	}
+
+	private static ReadableInstant getUpper(Range<ComparableInterval> range) {
+		return range.upperBoundType() == BoundType.OPEN
+			? range.upperEndpoint().getStart()
+			: range.upperEndpoint().getEnd();
 	}
 
 	@Override

@@ -74,6 +74,20 @@ public class DateTimeConstraintBuilderTest extends ConstraintBuilderTestSupport 
 	}
 
 	@Test
+	public void testUnboundedRangeConstraint() {
+		addConstraint("%s:%s", Event.TIMESTAMP, "[2012-01-05T13Z..*)");
+		ObjectNode result = execute();
+		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(1);
+	}
+
+	@Test
+	public void testUnboundedLocalRangeConstraint() {
+		addConstraint("%s:%s", Event.TIMESTAMP, "[2012-01-05T06..*)");
+		ObjectNode result = execute();
+		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(2);
+	}
+
+	@Test
 	public void testOpenRangeConstraint() {
 		addConstraint("%s:%s", Event.TIMESTAMP, "(2012-01-05T12Z..2012-01-06TZ)");
 		ObjectNode result = execute();
