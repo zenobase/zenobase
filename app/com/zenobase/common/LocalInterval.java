@@ -4,12 +4,13 @@ import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDateTime;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
+import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 
 /**
  * Interval without a time zone.
  */
-public class LocalInterval {
+public class LocalInterval implements Comparable<LocalInterval> {
 
 	private final LocalDateTime start, end;
 
@@ -33,6 +34,32 @@ public class LocalInterval {
 
 	public long toDurationMillis() {
 		return end.toDateTime(DateTimeZone.UTC).getMillis() - start.toDateTime(DateTimeZone.UTC).getMillis();
+	}
+
+
+	@Override
+	public int compareTo(LocalInterval that) {
+		if (equals(that)) {
+			return 0;
+		}
+		int cmp = start.compareTo(that.start);
+		return cmp != 0 ? cmp : end.compareTo(that.end);
+	}
+
+	@Override
+	public boolean equals(Object that) {
+		return that instanceof LocalInterval
+			&& equals((LocalInterval) that);
+	}
+
+	private boolean equals(LocalInterval that) {
+		return start.equals(that.start)
+			&& end.equals(that.end);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hashCode(start, end);
 	}
 
 	@Override

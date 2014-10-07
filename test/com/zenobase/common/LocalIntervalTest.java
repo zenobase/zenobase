@@ -4,6 +4,7 @@ import static org.fest.assertions.Assertions.assertThat;
 
 import org.joda.time.LocalDateTime;
 import org.junit.Test;
+import com.google.common.testing.EqualsTester;
 
 public class LocalIntervalTest {
 
@@ -23,5 +24,13 @@ public class LocalIntervalTest {
 	@Test(expected = IllegalArgumentException.class)
 	public void testIllegalInterval() {
 		new LocalInterval(end, start);
+	}
+
+	@Test
+	public void testEqualsHashCode() {
+		new EqualsTester()
+			.addEqualityGroup(start, LocalDateTime.parse("2013-01-01T00:00"))
+			.addEqualityGroup(end)
+			.testEquals();
 	}
 }
