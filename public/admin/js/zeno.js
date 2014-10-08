@@ -354,6 +354,7 @@
 		$scope.limit = 10;
 		$scope.total = 0;
 		$scope.snapshots = null;
+		$scope.snapshotting = false;
 
 		$scope.hasPrev = function() {
 			return $scope.offset > 0;
@@ -388,8 +389,10 @@
 			});
 		};
 		$scope.snapshot = function() {
-			$http({ method : 'POST', url : '/snapshots/' }).success(function(response, code, headers) {
+			$scope.snapshotting = true;
+			$http({ method : 'POST', url : '/snapshots/' }).then(function() {
 				delay(function() {
+					$scope.snapshotting = false;
 					$scope.refresh({});
 				});
 			});
