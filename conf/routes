@@ -26,6 +26,9 @@ GET     /buckets/:bucketId/label       @com.zenobase.controllers.BucketControlle
 GET     /buckets/:bucketId/            @com.zenobase.controllers.EventListController.find(bucketId)
 POST    /buckets/:bucketId/            @com.zenobase.controllers.EventListController.post(bucketId)
 
+GET     /events/                       @com.zenobase.controllers.EventListController.count(userId = null)
+GET     /users/:userId/events/         @com.zenobase.controllers.EventListController.count(userId)
+
 GET     /buckets/:bucketId/:eventId    @com.zenobase.controllers.EventController.get(bucketId, eventId)
 PUT     /buckets/:bucketId/:eventId    @com.zenobase.controllers.EventController.update(bucketId, eventId)
 DELETE  /buckets/:bucketId/:eventId    @com.zenobase.controllers.EventController.delete(bucketId, eventId)
@@ -36,7 +39,7 @@ GET     /journal/                      @com.zenobase.controllers.JournalControll
 GET     /users/:userId/journal/        @com.zenobase.controllers.JournalController.findByUser(userId, offset : Int, limit : Int)
 POST    /journal/                      @com.zenobase.controllers.JournalController.post()
 
-GET     /credentials/                  @com.zenobase.controllers.CredentialsListController.findAll(offset : Int  ?= 0, limit : Int ?= 10)
+GET     /credentials/                  @com.zenobase.controllers.CredentialsListController.findAll(offset : Int ?= 0, limit : Int ?= 10)
 GET     /users/:userId/credentials/    @com.zenobase.controllers.CredentialsListController.findByUser(userId, offset : Int  ?= 0, limit : Int ?= 10)
 POST    /credentials/                  @com.zenobase.controllers.CredentialsListController.post()
 

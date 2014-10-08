@@ -5,6 +5,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import org.elasticsearch.action.search.SearchResponse;
+import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.elasticsearch.search.facet.FacetBuilders;
 import org.elasticsearch.search.facet.terms.TermsFacet;
@@ -15,6 +16,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.Lists;
 
 import com.zenobase.models.Event;
+import com.zenobase.models.Identity;
 import com.zenobase.search.Search;
 
 public class EventRepository {
@@ -72,6 +74,14 @@ public class EventRepository {
 			terms.add(entry.getTerm().toString());
 		}
 		return terms;
+	}
+
+	public long size() {
+		return index.count();
+	}
+
+	public long size(Identity author) {
+		return index.count(QueryBuilders.termQuery(Event.AUTHOR.getName(), author.getId()));
 	}
 
 	public long size(String bucketId) {

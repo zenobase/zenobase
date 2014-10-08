@@ -39,9 +39,13 @@ public class EventRepositoryTest extends ElasticSearchTestSupport {
 		event.addValue(Event.TAG, "demo");
 
 		// store and retrieve event
+		assertThat(repository.size()).as("repository size").isZero();
+		assertThat(repository.size(me)).as("event count for user").isZero();
 		assertThat(repository.size(bucket.getId())).as("bucket size").isZero();
 		repository.add(bucket.getId(), event, DateTime.now());
 		repository.refresh(bucket.getId());
+		assertThat(repository.size()).as("repository size").isEqualTo(1L);
+		assertThat(repository.size(me)).as("event count for user").isEqualTo(1L);
 		assertThat(repository.size(bucket.getId())).as("bucket size").isEqualTo(1L);
 		assertThat(repository.find(bucket.getId(), event.getId()).toJson()).isEqualTo(event.toJson());
 		NodeAssert.assertThat(repository.find(bucket.getId(), new EventSearchBuilder().buildSearch())).path(Search.TOTAL.getName()).isEqualTo(1);
@@ -57,6 +61,8 @@ public class EventRepositoryTest extends ElasticSearchTestSupport {
 		// delete event
 		repository.delete(bucket.getId(), event.getId());
 		repository.refresh(bucket.getId());
+		assertThat(repository.size()).as("repository size").isZero();
+		assertThat(repository.size(me)).as("event count for user").isZero();
 		assertThat(repository.size(bucket.getId())).as("bucket size").isZero();
 		assertThat(repository.find(bucket.getId(), event.getId())).as("event").isNull();
 		assertThat(repository.terms(bucket.getId(), Event.TAG.getName())).as("tags").isEmpty();

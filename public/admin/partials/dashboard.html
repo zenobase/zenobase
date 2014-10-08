@@ -93,6 +93,23 @@
 								<a class="action" data-ng-click="remove(bucket['@id'])" title="Delete"><i class="fa fa-trash-o"></i></a>
 							</td>
 						</tr>
+						<tr data-ng-show="buckets.length">
+							<td>
+								<em>Total</em>
+							</td>
+							<td></td>
+							<td></td>
+							<td style="text-align: right">
+								{{events | number}}
+							</td>
+							<td></td>
+						</tr>
+						<tr data-ng-show="buckets == null">
+							<td colspan="5"><i>Loading</i></td>
+						</tr>
+						<tr data-ng-show="buckets.length == 0">
+							<td colspan="5"><i>None</i></td>
+						</tr>
 						<tr data-ng-show="buckets == null">
 							<td colspan="5"><i>Loading</i></td>
 						</tr>

@@ -180,6 +180,13 @@ public class Index {
 			.get().getCount());
 	}
 
+	public int count(QueryBuilder query) {
+		return Ints.saturatedCast(client
+			.prepareCount(indexName)
+			.setQuery(query)
+			.get().getCount());
+	}
+
 	public void open() {
 		client.admin().indices()
 			.prepareOpen(indexName)

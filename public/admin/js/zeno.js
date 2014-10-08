@@ -76,6 +76,7 @@
 		$scope.limit = 10;
 		$scope.total = 0;
 		$scope.buckets = null;
+		$scope.events = 0;
 
 		$scope.hasPrev = function() {
 			return $scope.offset > 0;
@@ -95,13 +96,18 @@
 				limit : $scope.limit
 			};
 		}
+		var path = function(resource) {
+			return $scope.constraint ? '/users/' + $scope.constraint + resource : resource;
+		}
 		$scope.refresh = function(params) {
 			$scope.token = token.get();
-			var path = $scope.constraint ? '/users/' + $scope.constraint + '/buckets/' : '/buckets/';
-			$http.get(path + '?' + $.param($.extend($scope.params(), params))).success(function(response) {
+			$http.get(path('/buckets/') + '?' + $.param($.extend($scope.params(), params))).success(function(response) {
 				$.extend($scope, params);
 				$scope.total = response.total;
 				$scope.buckets = response.buckets;
+			});
+			$http.get(path('/events/')).success(function(response) {
+				$scope.events = response.total;
 			});
 		};
 		$scope.remove = function(bucketId) {

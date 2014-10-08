@@ -35,6 +35,13 @@ public class Nodes {
 		return node;
 	}
 
+	public static ObjectNode newObject(String fieldName, long value) {
+		Preconditions.checkNotNull(fieldName);
+		ObjectNode node = newObject();
+		node.put(fieldName, value);
+		return node;
+	}
+
 	public static ArrayNode newArray() {
 		return MAPPER.createArrayNode();
 	}

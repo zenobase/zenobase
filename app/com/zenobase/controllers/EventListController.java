@@ -23,6 +23,7 @@ import com.zenobase.commands.CompoundCommand;
 import com.zenobase.commands.CreateEventCommand;
 import com.zenobase.common.Generator;
 import com.zenobase.io.SpreadsheetPrinter;
+import com.zenobase.json.Nodes;
 import com.zenobase.json.ObjectField;
 import com.zenobase.models.Bucket;
 import com.zenobase.models.Event;
@@ -36,6 +37,8 @@ import com.zenobase.search.Search;
 import com.zenobase.services.BucketRepository;
 import com.zenobase.services.CommandDispatcher;
 import com.zenobase.services.EventRepository;
+import com.zenobase.services.UserLookup;
+import com.zenobase.services.UserRepository;
 
 public class EventListController extends ControllerSupport {
 
@@ -43,13 +46,15 @@ public class EventListController extends ControllerSupport {
 
 	private final BucketRepository buckets;
 	private final EventRepository events;
+	private final UserRepository users;
 	private final CommandDispatcher dispatcher;
 
 	@Inject
-	public EventListController(AuthorizationContext security, BucketRepository buckets, EventRepository events, CommandDispatcher dispatcher) {
+	public EventListController(AuthorizationContext security, BucketRepository buckets, EventRepository events, UserRepository users, CommandDispatcher dispatcher) {
 		super(security);
 		this.buckets = buckets;
 		this.events = events;
+		this.users = users;
 		this.dispatcher = dispatcher;
 	}
 
@@ -174,5 +179,34 @@ public class EventListController extends ControllerSupport {
 		}
 		return new CreateEventCommand(principal, bucketId, event);
 
+	}
+
+	public Result count(String userId) {
+    	Authorization auth = getCurrentAuthorization();
+    	if (auth == null) {
+    		return unauthorized();
+    	}
+    	if (auth.getScope() != null) {
+    		return forbidden();
+    	}
+    	if (!users.isSuperuser(auth.getPrincipal())) {
+    		return forbidden();
+    	}
+    	return userId != null ? count(new UserLookup(users).getIdentity(userId)) : count();
+    }
+
+	public Result count() {
+    	return ok(toJson(events.size()));
+    }
+
+	public Result count(Identity principal) {
+		if (principal == null) {
+			return notFound("user not found");
+		}
+    	return ok(toJson(events.size(principal)));
+    }
+
+	private static ObjectNode toJson(long total) {
+		return Nodes.newObject("total", total);
 	}
 }
