@@ -4634,6 +4634,7 @@
 			{ 'id' : 'bodymedia-steps', 'description' : 'Creates an event for the number of steps each hour.' },
 			{ 'id' : 'fitbit-sleep', 'description' : 'Creates an event for each period of sleep.' },
 			{ 'id' : 'fitbit-steps', 'description' : 'Creates an event for the number of steps each day (incl distance and elevation, if available).' },
+			{ 'id' : 'fitbit-weight', 'description' : 'Creates an event for each body weight measurement.' },
 			{ 'id' : 'forecast', 'description' : 'Adds weather conditions and moon phase to events with locations.' },
 			{ 'id' : 'foursquare', 'description' : 'Creates an event for each check-in.' },
 			{ 'id' : 'jawbone-sleep', 'description' : 'Creates an event for each period of sleep.' },
@@ -4715,6 +4716,18 @@
 		$scope.init = function() {
 			$scope.settings = $scope.$parent.$parent.settings = {
 					tag : 'steps',
+					marker : new Date(moment().utc().subtract(3, 'months').startOf('month').valueOf())
+			};
+		};
+
+		$scope.init();
+	}]);
+
+	app.controller('FitbitWeightSettingsController', ['$scope', 'moment', function($scope, moment) {
+
+		$scope.init = function() {
+			$scope.settings = $scope.$parent.$parent.settings = {
+					tag : 'body',
 					marker : new Date(moment().utc().subtract(3, 'months').startOf('month').valueOf())
 			};
 		};

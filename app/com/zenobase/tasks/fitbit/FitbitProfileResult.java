@@ -1,12 +1,15 @@
 package com.zenobase.tasks.fitbit;
 
 import javax.measure.quantity.Length;
+import javax.measure.quantity.Mass;
 import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
 import javax.measure.unit.Unit;
 
 import org.joda.time.DateTimeZone;
 import com.fasterxml.jackson.databind.JsonNode;
+
+import com.zenobase.common.Measures;
 
 class FitbitProfileResult {
 
@@ -33,5 +36,20 @@ class FitbitProfileResult {
 	public Unit<Length> getHeightUnit() {
 		return "en_US".equals(getDistanceLocale()) ?
 			NonSI.FOOT : SI.METER;
+	}
+
+	public String getWeightLocale() {
+		return node.path("user").path("weightUnit").textValue();
+	}
+
+	public Unit<Mass> getWeightUnit() {
+		String locale = getWeightLocale();
+		if ("en_US".equals(locale)) {
+			return NonSI.POUND;
+		}
+		if ("en_GB".equals(locale)) {
+			return Measures.parseUnit("st");
+		}
+		return SI.KILOGRAM;
 	}
 }

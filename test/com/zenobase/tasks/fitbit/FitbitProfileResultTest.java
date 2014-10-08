@@ -20,6 +20,8 @@ public class FitbitProfileResultTest extends ResultTestSupport {
 		assertThat(result.getDistanceLocale()).as("distance locale").isEqualTo("en_US");
 		assertThat(result.getDistanceUnit()).as("distance unit").isEqualTo(NonSI.MILE);
 		assertThat(result.getHeightUnit()).as("height unit").isEqualTo(NonSI.FOOT);
+		assertThat(result.getWeightLocale()).as("weight locale").isEqualTo("en_US");
+		assertThat(result.getWeightUnit()).as("weight unit").isEqualTo(NonSI.POUND);
 	}
 
 	@Test
@@ -29,5 +31,7 @@ public class FitbitProfileResultTest extends ResultTestSupport {
 		assertThat(result.getDistanceLocale()).as("distance locale").isNull();
 		assertThat(result.getDistanceUnit()).as("distance unit").isEqualTo(SI.KILOMETER);
 		assertThat(result.getHeightUnit()).as("height unit").isEqualTo(SI.METER);
+		assertThat(result.getWeightLocale()).as("weight locale").isNull();
+		assertThat(result.getWeightUnit()).as("weight unit").isEqualTo(SI.KILOGRAM);
 	}
 }
