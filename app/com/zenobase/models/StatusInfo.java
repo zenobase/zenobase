@@ -1,7 +1,9 @@
 package com.zenobase.models;
 
 import org.elasticsearch.action.admin.cluster.health.ClusterHealthStatus;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
+import com.zenobase.json.BooleanField;
 import com.zenobase.json.DomainNode;
 import com.zenobase.json.IntegerField;
 import com.zenobase.json.LongField;
@@ -11,12 +13,24 @@ public class StatusInfo extends DomainNode {
 
 	private static final LongField COUNT = new LongField("count");
 	private static final TokenField HEALTH = new TokenField("health");
-	private static final IntegerField NODES = new IntegerField("nodes");
+	private static final IntegerField NODES_DATA = new IntegerField("data_nodes");
+	private static final IntegerField NODES_WEB = new IntegerField("web_nodes");
+	private static final BooleanField READ_ONLY = new BooleanField("read_only");
 
-	public StatusInfo(long count, ClusterHealthStatus health, int nodes) {
+	public StatusInfo(ObjectNode node) {
+		super(node);
+	}
+
+	public StatusInfo(boolean readOnly) {
+		setValue(READ_ONLY, readOnly);
+	}
+
+	public StatusInfo(long count, ClusterHealthStatus health, int dataNodes, int webNodes, boolean readOnly) {
 		setValue(COUNT, count);
 		setValue(HEALTH, health.toString());
-		setValue(NODES, nodes);
+		setValue(NODES_DATA, dataNodes);
+		setValue(NODES_WEB, webNodes);
+		setValue(READ_ONLY, readOnly);
 	}
 
 	public long getCount() {
@@ -28,6 +42,10 @@ public class StatusInfo extends DomainNode {
 	}
 
 	public int getNodes() {
-		return getValue(NODES);
+		return getValue(NODES_DATA);
+	}
+
+	public boolean isReadOnly() {
+		return getValue(READ_ONLY, Boolean.FALSE);
 	}
 }

@@ -1,6 +1,8 @@
 GET     /                              com.zenobase.controllers.Assets.at(path="/public", file="index.html")
 GET     /admin/                        com.zenobase.controllers.Assets.at(path="/public/admin", file="index.html")
+
 GET     /status                        @com.zenobase.controllers.StatusController.get()
+POST    /status                        @com.zenobase.controllers.StatusController.post()
 
 GET     /who                           @com.zenobase.controllers.WhoController.who()
 POST    /reset                         @com.zenobase.controllers.PasswordResetController.requestReset()
