@@ -3,7 +3,6 @@ package com.zenobase.services;
 import java.util.Map;
 
 import play.Logger;
-import com.google.common.collect.Maps;
 import com.hazelcast.core.Hazelcast;
 import com.hazelcast.core.HazelcastInstance;
 
@@ -12,14 +11,19 @@ public class HazelcastManager {
 	private static final String KEY_READ_ONLY = "readOnly";
 
 	private final HazelcastInstance hazelcast = Hazelcast.newHazelcastInstance();
-	private final Map<Object, Object> map = Maps.newHashMap(); // hazelcast.getMap("map");
+	private Map<Object, Object> map;
 
 	public HazelcastManager() {
-		Logger.info("Hazelcast: " + hazelcast.getName());
+		Logger.warn("obtaining map for {}...", hazelcast.getName());
+		map = hazelcast.getMap("map");
+		Logger.warn("map ready");
 	}
 
 	public boolean isReadOnly() {
-		return map.containsKey(KEY_READ_ONLY);
+		Logger.warn("accessing map...");
+		boolean readOnly = map.containsKey(KEY_READ_ONLY);
+		Logger.warn("readOnly is {}", readOnly);
+		return readOnly;
 	}
 
 	public void setReadOnly(boolean readOnly) {
