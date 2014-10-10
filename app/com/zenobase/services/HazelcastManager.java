@@ -31,7 +31,7 @@ public class HazelcastManager {
 	}
 
 	public int count() {
-		return 1; // hazelcast.getCluster().getMembers().size();
+		return hazelcast.getCluster().getMembers().size();
 	}
 
 	public void close() {
