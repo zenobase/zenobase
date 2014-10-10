@@ -1,15 +1,22 @@
 package com.zenobase.services;
 
+import java.util.Map;
+
+import play.Logger;
+import com.google.common.collect.Maps;
 import com.hazelcast.core.Hazelcast;
 import com.hazelcast.core.HazelcastInstance;
-import com.hazelcast.core.IMap;
 
 public class HazelcastManager {
 
 	private static final String KEY_READ_ONLY = "readOnly";
 
 	private final HazelcastInstance hazelcast = Hazelcast.newHazelcastInstance();
-	private final IMap<Object, Object> map = hazelcast.getMap("map");
+	private final Map<Object, Object> map = Maps.newHashMap(); // hazelcast.getMap("map");
+
+	public HazelcastManager() {
+		Logger.info("Hazelcast: " + hazelcast.getName());
+	}
 
 	public boolean isReadOnly() {
 		return map.containsKey(KEY_READ_ONLY);
@@ -24,7 +31,7 @@ public class HazelcastManager {
 	}
 
 	public int count() {
-		return hazelcast.getCluster().getMembers().size();
+		return 1; // hazelcast.getCluster().getMembers().size();
 	}
 
 	public void close() {
