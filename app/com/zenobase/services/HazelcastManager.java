@@ -2,7 +2,6 @@ package com.zenobase.services;
 
 import java.util.Map;
 
-import play.Logger;
 import com.hazelcast.core.Hazelcast;
 import com.hazelcast.core.HazelcastInstance;
 
@@ -14,16 +13,11 @@ public class HazelcastManager {
 	private Map<Object, Object> map;
 
 	public HazelcastManager() {
-		Logger.warn("obtaining map for {}...", hazelcast.getName());
 		map = hazelcast.getMap("map");
-		Logger.warn("map ready");
 	}
 
 	public boolean isReadOnly() {
-		Logger.warn("accessing map...");
-		boolean readOnly = map.containsKey(KEY_READ_ONLY);
-		Logger.warn("readOnly is {}", readOnly);
-		return readOnly;
+		return map.containsKey(KEY_READ_ONLY);
 	}
 
 	public void setReadOnly(boolean readOnly) {
