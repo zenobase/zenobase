@@ -60,6 +60,7 @@ class MeasurementsResult {
 		event.setValue(Event.SOUND, getMeasure(node.get(2), NonSI.DECIBEL));
 		event.setValue(Event.HUMIDITY, getInteger(node.get(3)));
 		event.setValue(Event.RATING, getRating(node.get(4)));
+		event.setValue(Event.HEIGHT, getMeasure(node.get(5), SI.MILLIMETER));
 		event.setValue(Event.AUTHOR, author);
 		event.setValue(Event.SOURCE, SOURCE);
 		return event;

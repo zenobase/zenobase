@@ -3,7 +3,7 @@
     "body": {
         "devices": [
             {
-                "_id": "70:ee:50:ff:80:ee",
+                "_id": "70:ee:50:00:80:ee",
                 "alarm_config": {
                     "default_alarm": [
                         {

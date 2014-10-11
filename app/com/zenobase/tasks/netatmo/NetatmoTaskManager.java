@@ -1,5 +1,6 @@
 package com.zenobase.tasks.netatmo;
 
+import java.util.Collection;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -37,8 +38,9 @@ public class NetatmoTaskManager extends OAuthTaskManager {
 
 	@Override
 	public Task newTask(String bucketId, Identity principal, ObjectNode settings) {
+		boolean includeModules = settings.path("modules").booleanValue();
 		String marker = formatMarker(parseMarker(settings.path("marker").textValue()));
-		return new NetatmoTask(bucketId, principal, marker);
+		return new NetatmoTask(bucketId, principal, includeModules, marker);
 	}
 
 	@Override
@@ -53,7 +55,7 @@ public class NetatmoTaskManager extends OAuthTaskManager {
 		}
 		List<Event> events = Lists.newArrayList();
 		String to = formatMarker(new DateTime(DateTimeZone.UTC).minusMinutes(1));
-		for (Device device : getDevices(credentials)) {
+		for (Device device : getDevices(credentials, task.includeModules())) {
 			events.addAll(getEvents(task, credentials, device, to));
 		}
 		return createCommand(task, credentials, events, token);
@@ -67,8 +69,8 @@ public class NetatmoTaskManager extends OAuthTaskManager {
 		return time != null ? Long.toString(time.getMillis() / 1000) : null;
 	}
 
-	private List<Device> getDevices(OAuthCredentials credentials) {
-		return new DevicesQuery(credentials).execute().getDevices();
+	private Collection<Device> getDevices(OAuthCredentials credentials, boolean includeModules) {
+		return new DevicesQuery(credentials).execute(includeModules).getDevices();
 	}
 
 	private List<Event> getEvents(NetatmoTask task, OAuthCredentials credentials, Device device, String to) {
@@ -101,10 +103,10 @@ public class NetatmoTaskManager extends OAuthTaskManager {
 			this.credentials = credentials;
 		}
 
-		public DevicesResult execute() {
+		public DevicesResult execute(boolean includeModules) {
 			OAuthRequest request = new OAuthRequest(Verb.GET, "https://api.netatmo.net/api/devicelist");
 			Response response = send(request, credentials);
-			return new DevicesResult(parseObject(response));
+			return new DevicesResult(parseObject(response), includeModules);
 		}
 	}
 
@@ -123,6 +125,9 @@ public class NetatmoTaskManager extends OAuthTaskManager {
 		public MeasurementsResult find(String from, String to) {
 			OAuthRequest request = new OAuthRequest(Verb.GET, "https://api.netatmo.net/api/getmeasure");
 			request.addQuerystringParameter("device_id", device.getId());
+			if (device.getModuleId() != null) {
+				request.addQuerystringParameter("module_id", device.getModuleId());
+			}
 			if (from != null) {
 				request.addQuerystringParameter("date_begin", from);
 			}
@@ -130,7 +135,7 @@ public class NetatmoTaskManager extends OAuthTaskManager {
 			request.addQuerystringParameter("limit", "1000");
 			request.addQuerystringParameter("scale", "max");
 			request.addQuerystringParameter("optimize", "false");
-			request.addQuerystringParameter("type", "Temperature,Pressure,Noise,Humidity,CO2");
+			request.addQuerystringParameter("type", "Temperature,Pressure,Noise,Humidity,CO2,Rain");
 			Response response = send(request, credentials);
 			return new MeasurementsResult(principal, device, parseObject(response));
 		}

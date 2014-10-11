@@ -4822,6 +4822,7 @@
 
 		$scope.init = function() {
 			$scope.settings = $scope.$parent.$parent.settings = {
+					modules : true,
 					marker : new Date(moment().utc().subtract(3, 'months').startOf('month').valueOf())
 			};
 		};	
