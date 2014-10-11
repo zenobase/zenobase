@@ -24,6 +24,12 @@
 					$scope.status = { nodes : '?', health : 'UNKNOWN' };
 				});
 		};
+		$scope.setReadOnly = function(readOnly) {
+			$http.post('/status', { read_only : readOnly })
+				.then(function() {
+					$scope.refresh();
+				});
+		};
 		$scope.$on('reload', $scope.refresh);
 		$scope.refresh();
 	}]);

@@ -2,6 +2,7 @@ package com.zenobase.services;
 
 import java.util.Map;
 
+import play.Logger;
 import com.hazelcast.core.Hazelcast;
 import com.hazelcast.core.HazelcastInstance;
 
@@ -22,8 +23,10 @@ public class HazelcastManager {
 
 	public void setReadOnly(boolean readOnly) {
 		if (readOnly) {
+			Logger.warn("read-only mode enabled");
 			map.put(KEY_READ_ONLY, Boolean.TRUE);
 		} else {
+			Logger.warn("normal mode enabled");
 			map.remove(KEY_READ_ONLY);
 		}
 	}
