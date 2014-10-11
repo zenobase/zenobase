@@ -62,7 +62,7 @@ public class SearchBuilderSupport extends FilterBuilderSupport {
 		String type = options.get("type");
 		FacetBuilder builder = facetBuilders.get(type);
 		if (builder == null) {
-			Logger.warn("Facet builder not registered: " + type);
+			Logger.warn("Facet builder not registered: {}", type);
 			return this;
 		}
 		return addFacet(builder.build(options));

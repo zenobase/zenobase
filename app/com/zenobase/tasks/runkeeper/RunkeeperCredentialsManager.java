@@ -39,8 +39,8 @@ public class RunkeeperCredentialsManager extends OAuthCredentialsManager {
 	private Command authorize(OAuthCredentials credentials, ObjectNode config) {
 		String code = config.path("code").textValue();
 		if (code == null) {
-			Logger.warn(String.format("Couldn't obtain %s credentials <%s>: %s",
-				credentials.getType(), credentials.getId(), config));
+			Logger.warn("Couldn't obtain {} credentials <{}>: {}",
+				credentials.getType(), credentials.getId(), config);
 			return null;
 		}
 		Token token = getAccessToken(credentials, code);

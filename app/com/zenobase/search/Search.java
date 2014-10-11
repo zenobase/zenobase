@@ -30,9 +30,9 @@ public class Search {
 
 	public ObjectNode execute(Index index) {
 		SearchSourceBuilder builder = buildSearch();
-		// Logger.info("q: " + builder);
+		// Logger.info("q: {}", builder);
 		SearchResponse response = index.search(builder);
-		// Logger.info("r: " + response);
+		// Logger.info("r: {}", response);
 		return toJson(response);
 	}
 

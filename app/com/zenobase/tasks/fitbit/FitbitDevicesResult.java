@@ -20,7 +20,7 @@ class FitbitDevicesResult {
 				return LocalDateTime.parse(device.path("lastSyncTime").textValue()).toLocalDate();
 			}
 		}
-		Logger.warn("User does not have a Fitbit tracker:" + node);
+		Logger.warn("User does not have a Fitbit tracker: {}", node);
 		return null;
 	}
 }

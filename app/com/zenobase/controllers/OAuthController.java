@@ -113,7 +113,7 @@ public class OAuthController extends ControllerSupport {
     }
 
     private Result deny(String errorCode, String errorDescription) {
-    	Logger.warn("Denied: " + errorDescription);
+    	Logger.warn("Denied: {}", errorDescription);
     	ObjectNode result = Nodes.newObject();
     	result.put("error", errorCode);
     	result.put("error_description", errorDescription);

@@ -46,8 +46,8 @@ public class LastFmCredentialsManager extends OAuthCredentialsManager {
 	private Command authorize(OAuthCredentials credentials, ObjectNode config) {
 		String code = config.path("token").textValue();
 		if (code == null) {
-			Logger.warn(String.format("Couldn't obtain %s credentials <%s>: %s",
-				credentials.getType(), credentials.getId(), config));
+			Logger.warn("Couldn't obtain {} credentials <{}>: {}",
+				credentials.getType(), credentials.getId(), config);
 			return null;
 		}
 		LastFmToken token = getAccessToken(credentials, code);

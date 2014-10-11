@@ -69,8 +69,8 @@ public abstract class OAuthCredentialsManager extends CredentialsManager {
 		String token = config.path("oauth_token").textValue();
 		String verifier = config.path("oauth_verifier").asText();
 		if (token == null) {
-			Logger.warn(String.format("Couldn't authorize %s credentials<%s>: %s",
-				credentials.getType(), credentials.getId(), config));
+			Logger.warn("Couldn't obtain {} credentials <{}>: {}",
+				credentials.getType(), credentials.getId(), config);
 			return null;
 		}
 		Preconditions.checkState(credentials.getToken().getToken().equals(token),

@@ -106,7 +106,7 @@ public class MovesPlacesTaskManager extends MovesTaskManagerSupport {
 				}
 			}
 		} catch (RuntimeException e) {
-			Logger.warn("Failed after resolving " + resolved + "/" + events.size() + " venues");
+			Logger.warn("Failed after resolving {}/{} venues", resolved, events.size());
 			throw e;
 		}
 	}

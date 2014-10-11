@@ -25,7 +25,7 @@ public class TaskRefresher {
 	}
 
 	public void refresh(Task task) {
-		Logger.info("Refreshing: " + task.getId());
+		Logger.info("Refreshing: {}", task.getId());
 		Bucket bucket = buckets.find(task.getBucketId());
 		if (bucket == null) {
 			return;

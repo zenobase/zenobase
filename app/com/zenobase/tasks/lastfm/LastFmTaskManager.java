@@ -98,7 +98,7 @@ public class LastFmTaskManager extends OAuthTaskManager {
 				if (result.isSuccess()) {
 					result.get().apply(event);
 				} else if (!result.isNotFound()) {
-					Logger.warn(String.format("Request for %s failed: %s", request.getCompleteUrl(), response.getBody()));
+					Logger.warn("Request for {} failed: {}", request.getCompleteUrl(), response.getBody());
 				}
 			}
 		}

@@ -42,7 +42,7 @@ public class CommandReplay {
 	void replay(final IndexManager indexManager) {
 		final CommandRepository repository = new CommandRepository(indexManager, parsers);
 		final StringBloomFilter identities = new IdentitiesFilterBuilder(new UserRepository(indexManager), new AuthorizationRepository(indexManager)).build();
-		Logger.info(String.format("Replaying %d commands from %s...", repository.size(), sourceCluster));
+		Logger.info("Replaying {} commands from {}...", repository.size(), sourceCluster);
 		Stopwatch timer = Stopwatch.createStarted();
 		try {
 			repository.find(new CommandQuery(), ORDER, new Callback<Command>() {
@@ -63,8 +63,8 @@ public class CommandReplay {
 				}
 			});
 		} finally {
-			Logger.warn(String.format("Replayed %d and discarded %d commands out of %d in %d s",
-				replayed, count - replayed, repository.size(), timer.elapsed(TimeUnit.SECONDS)));
+			Logger.warn("Replayed {} and discarded {} commands out of {} in {} s",
+				replayed, count - replayed, repository.size(), timer.elapsed(TimeUnit.SECONDS));
 		}
 	}
 }

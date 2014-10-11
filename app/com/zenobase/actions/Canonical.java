@@ -18,7 +18,7 @@ public class Canonical {
 	private String apiUri;
 
 	public Handler redirect(RequestHeader request) {
-		Logger.info("redirect " + request.host() + request.uri());
+		Logger.info("Redirecting {}{}...", request.host(), request.uri());
 		return controllers.Default.redirect(baseUri + request.uri());
 	}
 

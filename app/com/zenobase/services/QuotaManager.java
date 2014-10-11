@@ -27,7 +27,7 @@ public class QuotaManager {
 	public void spend(Identity principal, int cost) {
 		Quota quota = getQuota(principal);
 		if (quota.getRemaining() < cost) {
-			log.warn(principal + " has " + quota.getRemaining() +  " but needs " + cost);
+			log.warn("{} has {} but needs {}", principal, quota.getRemaining(), cost);
 			throw new QuotaException(quota.getRemaining(), cost);
 		}
 	}

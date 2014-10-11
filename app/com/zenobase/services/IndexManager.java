@@ -85,7 +85,7 @@ public class IndexManager implements Closeable {
 	}
 
 	public void deleteAlias(String indexName, String aliasName) {
-		Logger.info("Deleting alias " + aliasName);
+		Logger.info("Deleting alias {}", aliasName);
 		IndicesAliasesRequestBuilder request = client.admin().indices().prepareAliases().removeAlias(indexName, aliasName);
 		IndicesAliasesResponse response = request.get();
 		Preconditions.checkState(response.isAcknowledged(), "Expected acknowledgement of alias deletion: %s", aliasName);

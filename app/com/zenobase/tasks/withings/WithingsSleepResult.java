@@ -55,7 +55,7 @@ class WithingsSleepResult {
 		DateTime begin = dateTimeValue(node.path("startdate"), timezone);
 		DateTime end = dateTimeValue(node.path("enddate"), timezone);
 		if (begin == null || end == null) {
-			Logger.warn("Missing a start or end date: " + node);
+			Logger.warn("Missing a start or end date: {}", node);
 			return null;
 		}
 		Event event = new Event();

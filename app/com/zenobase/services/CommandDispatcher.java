@@ -28,7 +28,7 @@ public class CommandDispatcher {
 
 	public String dispatch(Command command) {
 		DateTime t = command.getTimestamp();
-		log.info(String.format("[%s] %s %s", t, command.getPrincipal(), command.toString()));
+		log.info("[{}] {} {}", t, command.getPrincipal(), command);
 		if (command.getCost() > 0 && t.isAfter(now)) { // don't spend while replaying commands
 			quotas.spend(command.getPrincipal(), command.getCost());
 		}
@@ -49,6 +49,6 @@ public class CommandDispatcher {
 	}
 
 	public void discard(Command command) {
-		log.info(String.format("[%s %s]", command.getPrincipal(), command.toString()));
+		log.info("[{} {}]", command.getPrincipal(), command);
 	}
 }

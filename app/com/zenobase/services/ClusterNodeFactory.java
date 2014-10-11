@@ -25,7 +25,7 @@ public class ClusterNodeFactory extends NodeFactorySupport {
 
 	@Override
 	public Node createNode(String clusterName) {
-		Logger.info("Starting node in cluster " + clusterName + "...");
+		Logger.info("Starting node in cluster {}...", clusterName);
 		ImmutableSettings.Builder settings = createDefaultSettings()
 			.put("cloud.aws.access_key", accessKey)
 			.put("cloud.aws.secret_key", secretKey)

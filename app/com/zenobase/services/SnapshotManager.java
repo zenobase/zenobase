@@ -34,12 +34,12 @@ public class SnapshotManager {
 
 	public void snapshot() {
 		String snapshotId = String.valueOf(DateTime.now().getMillis() / 1000);
-		Logger.info("Creating snapshot: " + snapshotId);
+		Logger.info("Creating snapshot {}...", snapshotId);
 		client.admin().cluster().prepareCreateSnapshot(repositoryName, snapshotId).setWaitForCompletion(true).get();
 	}
 
 	public boolean delete(String snapshotId) {
-		Logger.info("Deleting snapshot: " + snapshotId);
+		Logger.info("Deleting snapshot {}...", snapshotId);
 		return client.admin().cluster().prepareDeleteSnapshot(repositoryName, snapshotId).get().isAcknowledged();
 	}
 }

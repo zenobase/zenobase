@@ -352,7 +352,7 @@ public class Global extends GlobalSettings {
 						String value = conf.getString(key);
 						bindConstant().annotatedWith(Names.named(key)).to(value);
 					} catch (PlayException e) {
-						Logger.info("Can't bind property from " + e.description);
+						Logger.info("Can't bind property from {}", e.description);
 					}
 				}
 			}

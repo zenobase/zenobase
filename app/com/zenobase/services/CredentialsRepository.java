@@ -52,7 +52,7 @@ public class CredentialsRepository extends RepositorySupport<Credentials> {
 		CredentialsQuery query = new CredentialsQuery().principalEqualTo(principal).typeEqualTo(type);
 		PartialList<Credentials> results = find(query, 0, 2);
 		if (results.getTotal() > 1) {
-			Logger.warn("Found duplicate " + type + " credentials for " + principal);
+			Logger.warn("Found duplicate {} credentials for {}", type, principal);
 		}
 		return Iterables.getFirst(results, null);
 	}

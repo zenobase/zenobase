@@ -51,7 +51,7 @@ public class Mailer {
 	}
 
 	public void send(final Message message) {
-		Logger.info("Sending message: " + message.getSubject());
+		Logger.info("Sending message: {}", message.getSubject());
 		try {
 			MimeMessage mime = new MimeMessage(session);
 			mime.setRecipients(MimeMessage.RecipientType.TO, InternetAddress.parse(message.getTo()));
