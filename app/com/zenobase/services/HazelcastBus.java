@@ -15,6 +15,7 @@ public class HazelcastBus implements Bus {
 
 	public HazelcastBus() {
 		map = hazelcast.getMap("map");
+		Logger.info("Started a Hazelcast node");
 	}
 
 	@Override
