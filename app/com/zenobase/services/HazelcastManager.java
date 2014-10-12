@@ -23,10 +23,10 @@ public class HazelcastManager {
 
 	public void setReadOnly(boolean readOnly) {
 		if (readOnly) {
-			Logger.warn("read-only mode enabled");
+			Logger.warn("Enabling read-only mode...");
 			map.put(KEY_READ_ONLY, Boolean.TRUE);
 		} else {
-			Logger.warn("normal mode enabled");
+			Logger.warn("Disabling read-only mode...");
 			map.remove(KEY_READ_ONLY);
 		}
 	}
