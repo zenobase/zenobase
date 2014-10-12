@@ -170,8 +170,8 @@ public class Global extends GlobalSettings {
 
 				bindConfiguration();
 
-				bind(Bus.class).to(HazelcastBus.class);
-				bind(NodeFactory.class).to(getNodeFactory());
+				bind(Bus.class).to(HazelcastBus.class).in(Singleton.class);
+				bind(NodeFactory.class).to(getNodeFactory()).in(Singleton.class);
 				bind(IndexManager.class).in(Singleton.class);
 				bind(BucketRepository.class).in(Singleton.class);
 				bind(EventRepository.class).in(Singleton.class);
@@ -328,7 +328,7 @@ public class Global extends GlobalSettings {
 
 			private <T> void bindIfConfigured(String prefix, Class<? extends T> type, Multibinder<T> binder) {
 				if (isConfigured(prefix)) {
-					binder.addBinding().to(type);
+					binder.addBinding().to(type).in(Singleton.class);
 				}
 			}
 
