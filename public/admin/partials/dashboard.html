@@ -5,7 +5,7 @@
 			<span class="page-title-text">Admin</span>
 			<span class="badge page-title-decoration" title="Cluster Health" data-ng-show="status"
 				data-ng-class="{ 'badge-success' : status.health == 'GREEN', 'badge-warning' : status.health == 'YELLOW', 'badge-important' : status.health == 'RED' }" 
-			>{{status.nodes}}</span>
+			>{{status.data_nodes}}</span>
 			<a class="page-title-decoration" data-ng-click="reload()" title="Refresh"><i class="fa fa-refresh"></i></a>
 			<a class="page-title-decoration" data-ng-show="status.read_only" data-ng-click="setReadOnly(false)" title="in read-only mode"><i class="fa fa-lock"></i></a>
 			<a class="page-title-decoration" data-ng-hide="status.read_only" data-ng-click="setReadOnly(true)" title="in normal mode"><i class="fa fa-unlock"></i></a>
