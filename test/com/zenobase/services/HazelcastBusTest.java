@@ -6,13 +6,13 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-public class HazelcastManagerTest {
+public class HazelcastBusTest {
 
-	private HazelcastManager hazelcast;
+	private Bus hazelcast;
 
 	@Before
 	public void setUp() {
-		hazelcast = new HazelcastManager();
+		hazelcast = new HazelcastBus();
 	}
 
 	@Test

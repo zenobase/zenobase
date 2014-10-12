@@ -10,7 +10,7 @@ import play.mvc.Result;
 
 import com.zenobase.controllers.AuthorizationContext;
 import com.zenobase.oauth.Authorization;
-import com.zenobase.services.HazelcastManager;
+import com.zenobase.services.Bus;
 import com.zenobase.services.UserRepository;
 
 /**
@@ -19,7 +19,7 @@ import com.zenobase.services.UserRepository;
 public class Gatekeeper extends Action.Simple {
 
 	@Inject
-	private HazelcastManager hazelcast;
+	private Bus bus;
 
 	@Inject
 	private UserRepository users;
@@ -29,7 +29,8 @@ public class Gatekeeper extends Action.Simple {
 
 	@Override
 	public Promise<Result> call(Context context) throws Throwable {
-		return !isSafe(context.request()) && hazelcast.isReadOnly() && !isSuperuser(context)
+		System.err.println("checking " + context.request().method());
+		return !isSafe(context.request()) && bus.isReadOnly() && !isSuperuser(context)
 			? Promise.<Result>pure(status(Http.Status.SERVICE_UNAVAILABLE))
 			: delegate.call(context);
 	}

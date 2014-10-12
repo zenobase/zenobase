@@ -15,6 +15,8 @@ import com.google.inject.Singleton;
 import com.zenobase.json.Nodes;
 import com.zenobase.mail.PasswordResetMailer;
 import com.zenobase.models.User;
+import com.zenobase.services.Bus;
+import com.zenobase.services.LocalBus;
 import com.zenobase.services.UserRepository;
 
 public class PasswordResetControllerTest extends ControllerTestSupport {
@@ -29,6 +31,7 @@ public class PasswordResetControllerTest extends ControllerTestSupport {
 		return fakeApplication(new AbstractModule() {
 			@Override
 			protected void configure() {
+				bind(Bus.class).to(LocalBus.class);
 				bind(AuthorizationContext.class).toInstance(auth);
 				bind(UserRepository.class).toInstance(users);
 				bind(PasswordResetMailer.class).toInstance(mailer);

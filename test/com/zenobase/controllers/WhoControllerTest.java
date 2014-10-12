@@ -14,6 +14,8 @@ import com.google.inject.Singleton;
 import com.zenobase.models.User;
 import com.zenobase.models.UserProfile;
 import com.zenobase.oauth.Authorization;
+import com.zenobase.services.Bus;
+import com.zenobase.services.LocalBus;
 import com.zenobase.services.UserRepository;
 
 public class WhoControllerTest extends ControllerTestSupport {
@@ -27,6 +29,7 @@ public class WhoControllerTest extends ControllerTestSupport {
 		return fakeApplication(new AbstractModule() {
 			@Override
 			protected void configure() {
+				bind(Bus.class).to(LocalBus.class);
 				bind(AuthorizationContext.class).toInstance(auth);
 				bind(UserRepository.class).toInstance(users);
 				bind(WhoController.class).in(Singleton.class);

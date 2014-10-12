@@ -9,6 +9,9 @@ import play.mvc.Result;
 import play.test.FakeApplication;
 import com.google.inject.AbstractModule;
 
+import com.zenobase.services.Bus;
+import com.zenobase.services.LocalBus;
+
 public class TimezoneControllerTest extends ControllerTestSupport {
 
 
@@ -17,7 +20,7 @@ public class TimezoneControllerTest extends ControllerTestSupport {
 		return fakeApplication(new AbstractModule() {
 			@Override
 			protected void configure() {
-
+				bind(Bus.class).to(LocalBus.class);
 			}
 		});
 	}

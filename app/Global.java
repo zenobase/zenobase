@@ -79,13 +79,14 @@ import com.zenobase.mail.VerificationMailer;
 import com.zenobase.oauth.CustomX509TrustManager;
 import com.zenobase.services.AuthorizationRepository;
 import com.zenobase.services.BucketRepository;
+import com.zenobase.services.Bus;
 import com.zenobase.services.ClusterNodeFactory;
 import com.zenobase.services.CommandDispatcher;
 import com.zenobase.services.CommandReplay;
 import com.zenobase.services.CommandRepository;
 import com.zenobase.services.CredentialsRepository;
 import com.zenobase.services.EventRepository;
-import com.zenobase.services.HazelcastManager;
+import com.zenobase.services.HazelcastBus;
 import com.zenobase.services.IndexManager;
 import com.zenobase.services.LocalNodeFactory;
 import com.zenobase.services.NodeFactory;
@@ -169,6 +170,7 @@ public class Global extends GlobalSettings {
 
 				bindConfiguration();
 
+				bind(Bus.class).to(HazelcastBus.class);
 				bind(NodeFactory.class).to(getNodeFactory());
 				bind(IndexManager.class).in(Singleton.class);
 				bind(BucketRepository.class).in(Singleton.class);
@@ -190,7 +192,6 @@ public class Global extends GlobalSettings {
 				bind(AuthorizationRepository.class).in(Singleton.class);
 				bind(QuotaManager.class).in(Singleton.class);
 				bind(PaymentGateway.class).in(Singleton.class);
-				bind(HazelcastManager.class).in(Singleton.class);
 
 				if (isConfigured("foursquare")) {
 					bind(FoursquareVenues.class).in(Singleton.class);
@@ -406,6 +407,6 @@ public class Global extends GlobalSettings {
 	@Override
 	public void onStop(Application application) {
 		injector.getInstance(IndexManager.class).close();
-		injector.getInstance(HazelcastManager.class).close();
+		injector.getInstance(HazelcastBus.class).close();
 	}
 }

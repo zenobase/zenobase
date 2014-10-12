@@ -10,7 +10,9 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Singleton;
 
 import com.zenobase.services.AuthorizationRepository;
+import com.zenobase.services.Bus;
 import com.zenobase.services.CommandDispatcher;
+import com.zenobase.services.LocalBus;
 import com.zenobase.services.UserRepository;
 
 public abstract class OAuthControllerTestSupport extends ControllerTestSupport {
@@ -25,6 +27,7 @@ public abstract class OAuthControllerTestSupport extends ControllerTestSupport {
 		return fakeApplication(new AbstractModule() {
 			@Override
 			protected void configure() {
+				bind(Bus.class).to(LocalBus.class);
 				bind(AuthorizationContext.class).toInstance(auth);
 				bind(UserRepository.class).toInstance(users);
 				bind(AuthorizationRepository.class).toInstance(authorizations);

@@ -10,8 +10,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 import com.zenobase.models.StatusInfo;
 import com.zenobase.oauth.Authorization;
+import com.zenobase.services.Bus;
 import com.zenobase.services.CommandRepository;
-import com.zenobase.services.HazelcastManager;
 import com.zenobase.services.IndexManager;
 import com.zenobase.services.UserRepository;
 
@@ -20,15 +20,15 @@ public class StatusController extends ControllerSupport {
 	private final IndexManager manager;
 	private final UserRepository users;
 	private final CommandRepository history;
-	private final HazelcastManager hazelcast;
+	private final Bus bus;
 
 	@Inject
-	public StatusController(AuthorizationContext auth, IndexManager manager, UserRepository users, CommandRepository history, HazelcastManager hazelcast) {
+	public StatusController(AuthorizationContext auth, IndexManager manager, UserRepository users, CommandRepository history, Bus bus) {
 		super(auth);
 		this.manager = manager;
 		this.users = users;
 		this.history = history;
-		this.hazelcast = hazelcast;
+		this.bus = bus;
 	}
 
 	public Result get() {
@@ -40,7 +40,7 @@ public class StatusController extends ControllerSupport {
 
 	private StatusInfo getStatus() {
 		ClusterHealthResponse health = manager.getCluster().getHealth();
-		return new StatusInfo(history.size(), health.getStatus(), health.getNumberOfNodes(), hazelcast.count(), hazelcast.isReadOnly());
+		return new StatusInfo(history.size(), health.getStatus(), health.getNumberOfNodes(), bus.count(), bus.isReadOnly());
 	}
 
 	@BodyParser.Of(BodyParser.Json.class)
@@ -59,7 +59,7 @@ public class StatusController extends ControllerSupport {
 		if (!node.isBoolean()) {
 			return badRequest();
 		}
-		hazelcast.setReadOnly(node.booleanValue());
+		bus.setReadOnly(node.booleanValue());
         return noContent();
     }
 }

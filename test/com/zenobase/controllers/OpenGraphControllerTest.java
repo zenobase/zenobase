@@ -10,6 +10,9 @@ import play.mvc.Result;
 import play.test.FakeApplication;
 import com.google.inject.AbstractModule;
 
+import com.zenobase.services.Bus;
+import com.zenobase.services.LocalBus;
+import com.zenobase.services.UserRepository;
 import com.zenobase.testing.NodeAssert;
 
 public class OpenGraphControllerTest extends ControllerTestSupport {
@@ -19,6 +22,8 @@ public class OpenGraphControllerTest extends ControllerTestSupport {
 		return fakeApplication(new AbstractModule() {
 			@Override
 			protected void configure() {
+				bind(Bus.class).to(LocalBus.class);
+				bind(UserRepository.class).toInstance(mock(UserRepository.class));
 				bind(AuthorizationContext.class).toInstance(mock(AuthorizationContext.class));
 			}
 		});

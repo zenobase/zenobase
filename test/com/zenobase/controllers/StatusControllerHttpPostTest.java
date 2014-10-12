@@ -15,19 +15,29 @@ import com.zenobase.oauth.Authorization;
 public class StatusControllerHttpPostTest extends StatusControllerTestSupport {
 
 	@Test
-	public void test() {
+	public void testEnableReadOnly() {
 		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
 		when(users.isSuperuser(user.asIdentity())).thenReturn(true);
 		Result result = call(new StatusInfo(true).toJson());
 		assertThat(result).hasStatus(NO_CONTENT);
-		verify(hazelcast).setReadOnly(true);
+		verify(bus).setReadOnly(true);
+	}
+
+	@Test
+	public void testDisableReadOnly() {
+		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
+		when(users.isSuperuser(user.asIdentity())).thenReturn(true);
+		when(bus.isReadOnly()).thenReturn(true);
+		Result result = call(new StatusInfo(false).toJson());
+		assertThat(result).hasStatus(NO_CONTENT);
+		verify(bus).setReadOnly(false);
 	}
 
 	@Test
 	public void testUnauthorized() {
 		Result result = call(new StatusInfo(true).toJson());
 		assertThat(result).hasStatus(UNAUTHORIZED);
-		verifyZeroInteractions(hazelcast);
+		verifyZeroInteractions(bus);
 	}
 
 	@Test
@@ -35,7 +45,7 @@ public class StatusControllerHttpPostTest extends StatusControllerTestSupport {
 		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
 		Result result = call(new StatusInfo(true).toJson());
 		assertThat(result).hasStatus(FORBIDDEN);
-		verifyZeroInteractions(hazelcast);
+		verifyZeroInteractions(bus);
 	}
 
 	private static Result call(JsonNode node) {

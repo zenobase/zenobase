@@ -23,8 +23,8 @@ public class StatusControllerHttpGetTest extends StatusControllerTestSupport {
 		when(manager.getCluster()).thenReturn(cluster);
 		when(history.size()).thenReturn(expected.getCount());
 		when(cluster.getHealth()).thenReturn(health);
-		when(hazelcast.count()).thenReturn(2);
-		when(hazelcast.isReadOnly()).thenReturn(true);
+		when(bus.count()).thenReturn(2);
+		when(bus.isReadOnly()).thenReturn(true);
 		Result result = call();
 		assertThat(result).hasStatus(OK).hasContent(expected.toJson());
 	}

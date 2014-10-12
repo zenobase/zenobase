@@ -7,8 +7,10 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Singleton;
 
 import com.zenobase.models.User;
+import com.zenobase.services.Bus;
 import com.zenobase.services.CommandDispatcher;
 import com.zenobase.services.CredentialsRepository;
+import com.zenobase.services.LocalBus;
 import com.zenobase.services.UserRepository;
 import com.zenobase.tasks.CredentialsManagerRegistry;
 
@@ -26,6 +28,7 @@ public class CredentialsListControllerTestSupport extends ControllerTestSupport 
 		return fakeApplication(new AbstractModule() {
 			@Override
 			protected void configure() {
+				bind(Bus.class).to(LocalBus.class);
 				bind(AuthorizationContext.class).toInstance(auth);
 				bind(CommandDispatcher.class).toInstance(dispatcher);
 				bind(CredentialsManagerRegistry.class).toInstance(registry);

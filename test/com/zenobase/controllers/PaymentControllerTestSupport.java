@@ -10,7 +10,9 @@ import com.google.inject.Singleton;
 
 import com.zenobase.models.Payment;
 import com.zenobase.models.User;
+import com.zenobase.services.Bus;
 import com.zenobase.services.CommandDispatcher;
+import com.zenobase.services.LocalBus;
 import com.zenobase.services.PaymentGateway;
 import com.zenobase.services.UserRepository;
 
@@ -28,6 +30,7 @@ public abstract class PaymentControllerTestSupport extends ControllerTestSupport
 		return fakeApplication(new AbstractModule() {
 			@Override
 			protected void configure() {
+				bind(Bus.class).to(LocalBus.class);
 				bind(AuthorizationContext.class).toInstance(auth);
 				bind(PaymentGateway.class).toInstance(payments);
 				bind(UserRepository.class).toInstance(users);

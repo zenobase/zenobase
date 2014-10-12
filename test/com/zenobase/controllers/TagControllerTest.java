@@ -24,7 +24,9 @@ import com.zenobase.models.Role;
 import com.zenobase.models.User;
 import com.zenobase.oauth.Authorization;
 import com.zenobase.services.BucketRepository;
+import com.zenobase.services.Bus;
 import com.zenobase.services.EventRepository;
+import com.zenobase.services.LocalBus;
 import com.zenobase.services.UserRepository;
 
 public class TagControllerTest extends ControllerTestSupport {
@@ -41,6 +43,7 @@ public class TagControllerTest extends ControllerTestSupport {
 		return fakeApplication(new AbstractModule() {
 			@Override
 			protected void configure() {
+				bind(Bus.class).to(LocalBus.class);
 				bind(AuthorizationContext.class).toInstance(auth);
 				bind(BucketRepository.class).toInstance(buckets);
 				bind(EventRepository.class).toInstance(events);
