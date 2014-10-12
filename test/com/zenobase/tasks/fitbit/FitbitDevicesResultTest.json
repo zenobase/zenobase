@@ -1,1 +1,26 @@
-[{"battery":"Medium","deviceVersion":"One","id":"850503","lastSyncTime":"2012-11-30T00:07:28.000","mac":"BC6F0ABCBABE","type":"TRACKER"}]
+[
+    {
+        "battery": "Medium",
+        "deviceVersion": "One",
+        "id": "850503",
+        "lastSyncTime": "2011-12-30T00:08:10.000",
+        "mac": "BC6F0ABCBABE",
+        "type": "TRACKER"
+    },
+    {
+        "battery": "Medium",
+        "deviceVersion": "Two",
+        "id": "850504",
+        "lastSyncTime": "2012-11-30T00:07:28.000",
+        "mac": "CC6F0ABCBABE",
+        "type": "TRACKER"
+    },
+    {
+        "battery": "Medium",
+        "deviceVersion": "Aria",
+        "id": "850505",
+        "lastSyncTime": "2014-09-30T00:09:01.000",
+        "mac": "DC6F0ABCBABE",
+        "type": "SCALE"
+    }
+]

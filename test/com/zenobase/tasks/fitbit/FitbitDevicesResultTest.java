@@ -7,19 +7,19 @@ import org.junit.Test;
 
 import com.zenobase.json.Nodes;
 import com.zenobase.tasks.ResultTestSupport;
-import com.zenobase.tasks.fitbit.FitbitDevicesResult;
 
 public class FitbitDevicesResultTest extends ResultTestSupport {
 
 	@Test
 	public void test() {
 		FitbitDevicesResult result = new FitbitDevicesResult(readArray("FitbitDevicesResultTest.json"));
-		assertThat(result.getLastDate()).as("last sync time").isEqualTo(LocalDate.parse("2012-11-30"));
+		assertThat(result.getLastDate(DeviceType.TRACKER)).as("last tracker sync time").isEqualTo(LocalDate.parse("2012-11-30"));
+		assertThat(result.getLastDate(DeviceType.SCALE)).as("last scale sync time").isEqualTo(LocalDate.parse("2014-09-30"));
 	}
 
 	@Test
 	public void testEmpty() {
 		FitbitDevicesResult result = new FitbitDevicesResult(Nodes.newArray());
-		assertThat(result.getLastDate()).as("last sync time").isNull();
+		assertThat(result.getLastDate(DeviceType.TRACKER)).as("last sync time").isNull();
 	}
 }

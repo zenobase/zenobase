@@ -38,12 +38,11 @@ public class FitbitIntradayTaskManager extends FitbitTaskManagerSupport {
 
 	private Command execute(FitbitIntradayTask task, OAuthCredentials credentials) {
 		List<Event> events = Lists.newArrayList();
-		LocalDate syncDate = getLastDate(task, credentials);
+		LocalDate syncDate = getLastDate(DeviceType.TRACKER, task, credentials);
 		LocalDate fromDate = getFromDate(task);
 		FitbitProfileResult profile = getProfile(task, credentials);
 		List<Interval> sleeping = Lists.newArrayList();
-
-		for (LocalDate date = fromDate; !date.isAfter(syncDate); date = date.plusDays(1)) {
+		for (LocalDate date = fromDate; syncDate != null && !date.isAfter(syncDate); date = date.plusDays(1)) {
 			OAuthRequest sleepRequest = new OAuthRequest(Verb.GET, "https://api.fitbit.com/1/user/-/sleep/date/" + date + ".json");
 			Response sleepResponse = send(sleepRequest, credentials);
 			for (Event event : new FitbitSleepResult(parseObject(sleepResponse), "sleeping", task.getPrincipal(), false, profile.getTimezone()).getEvents()) {
@@ -53,13 +52,11 @@ public class FitbitIntradayTaskManager extends FitbitTaskManagerSupport {
 				sleeping.add(new Interval(event.getValue(Event.TIMESTAMP), event.getValue(Event.DURATION)));
 			}
 		}
-
 		for (LocalDate date = fromDate; date.isBefore(syncDate); date = date.plusDays(1)) {
 			OAuthRequest caloriesRequest = new OAuthRequest(Verb.GET, "https://api.fitbit.com/1/user/-/activities/calories/date/" + date + "/" + date + ".json");
 			Response caloriesResponse = send(caloriesRequest, credentials);
 			events.addAll(new FitbitIntradayResult(parseObject(caloriesResponse), task.getPrincipal(), date, profile.getTimezone(), sleeping).getEvents());
 		}
-
 		return createCommand(task, events, syncDate);
 	}
 }

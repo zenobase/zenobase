@@ -40,10 +40,10 @@ public class FitbitSleepTaskManager extends FitbitTaskManagerSupport {
 
 	private Command execute(FitbitSleepTask task, OAuthCredentials credentials) {
 		List<Event> events = Lists.newArrayList();
-		LocalDate syncDate = getLastDate(task, credentials);
+		LocalDate syncDate = getLastDate(DeviceType.TRACKER, task, credentials);
 		LocalDate fromDate = getFromDate(task);
 		FitbitProfileResult profile = getProfile(task, credentials);
-		for (LocalDate date = fromDate; date.isBefore(syncDate); date = date.plusDays(1)) {
+		for (LocalDate date = fromDate; syncDate != null && date.isBefore(syncDate); date = date.plusDays(1)) {
 			OAuthRequest request = new OAuthRequest(Verb.GET, "https://api.fitbit.com/1/user/-/sleep/date/" + date + ".json");
 			try {
 				Response response = send(request, credentials);

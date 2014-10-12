@@ -31,10 +31,10 @@ public abstract class FitbitTaskManagerSupport extends OAuthTaskManager {
 		RATE_LIMITER.acquire();
 	}
 
-	protected LocalDate getLastDate(Task task, OAuthCredentials credentials) {
+	protected LocalDate getLastDate(DeviceType deviceType, Task task, OAuthCredentials credentials) {
 		OAuthRequest request = new OAuthRequest(Verb.GET, "https://api.fitbit.com/1/user/-/devices.json");
 		Response response = send(request, credentials);
-		return new FitbitDevicesResult(parseArray(response)).getLastDate();
+		return new FitbitDevicesResult(parseArray(response)).getLastDate(deviceType);
 	}
 
 	@Override

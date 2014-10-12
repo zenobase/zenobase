@@ -14,13 +14,22 @@ class FitbitDevicesResult {
 		this.node = node;
 	}
 
-	public LocalDate getLastDate() {
+	/**
+	 * @param deviceType TRACKER or SCALE
+	 */
+	public LocalDate getLastDate(DeviceType deviceType) {
+		LocalDate latest = null;
 		for (JsonNode device : node) {
-			if ("TRACKER".equals(device.path("type").textValue())) {
-				return LocalDateTime.parse(device.path("lastSyncTime").textValue()).toLocalDate();
+			if (deviceType.name().equals(device.path("type").textValue())) {
+				LocalDate date = LocalDateTime.parse(device.path("lastSyncTime").textValue()).toLocalDate();
+				if (latest == null || date.isAfter(latest)) {
+					latest = date;
+				}
 			}
 		}
-		Logger.warn("User does not have a Fitbit tracker: {}", node);
-		return null;
+		if (latest == null) {
+			Logger.warn("User does not have a device: {}", node);
+		}
+		return latest;
 	}
 }
