@@ -146,15 +146,25 @@
 
 	// TODO should inject this, but can't inject into config...
 	var cacheBuster = function() {
-		var version = function() {
-			var meta = document.getElementsByTagName('meta');
-			for (var i = 0; i < meta.length; ++i) {
-				if (meta[i].getAttribute('property') == 'version') {
-					return meta[i].content;
+		var version = (function() {
+			try {
+				throw new Error();
+			} catch(e) {
+				var callerIndex = 0;
+				var stackLines = e.stack.split('\n');
+				for (var i in stackLines) {
+					if (stackLines[i].match(/http[s]?:\/\//)) {
+						callerIndex = Number(i) + 2;
+						break;
+					}
 				}
+				var m = stackLines[callerIndex].match(/\-([0-9a-f]+).js:/);
+				if (!m) {
+					throw new Error('missing version');
+				}
+				return m[1];
 			}
-			throw new Error('missing version');
-		}();
+		})();
 		return {
 			rewrite : function(path) {
 				return path.replace(/\.(.+)$/, '-' + version + '.$1');

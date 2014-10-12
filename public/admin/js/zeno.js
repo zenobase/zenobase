@@ -4,9 +4,29 @@
 
 	var app = angular.module('ZenoAdminModule', [ 'ZenoModule' ]);
 
+	var version = (function() {
+		try {
+			throw new Error();
+		} catch(e) {
+			var callerIndex = 0;
+			var stackLines = e.stack.split('\n');
+			for (var i in stackLines) {
+				if (stackLines[i].match(/http[s]?:\/\//)) {
+					callerIndex = Number(i) + 2;
+					break;
+				}
+			}
+			var m = stackLines[callerIndex].match(/\-([0-9a-f]+).js:/);
+			if (!m) {
+				throw new Error('missing version');
+			}
+			return m[1];
+		}
+	})();
+
 	app.config(function($routeProvider) {
-		$routeProvider.when('/', { templateUrl: '/admin/partials/dashboard.html' });
-		$routeProvider.otherwise({ templateUrl : '/partials/404.html' });
+		$routeProvider.when('/', { templateUrl: '/admin/partials/dashboard-' + version + '.html' });
+		$routeProvider.otherwise({ templateUrl : '/partials/404-' + version + '.html' });
 	});
 
 	app.controller('admin.DashboardController', ['$scope', '$location', '$http', function($scope, $location, $http) {
