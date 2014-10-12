@@ -19,19 +19,23 @@ public class AuthorizationContext {
 	}
 
 	public Authorization current() {
-		String token = getParameter("code");
+		return current(Http.Context.current());
+	}
+
+	public Authorization current(Http.Context context) {
+		String token = getParameter(context, "code");
 		if (token == null) {
-			token = extractToken(getHeader(Http.HeaderNames.AUTHORIZATION));
+			token = extractToken(getHeader(context, Http.HeaderNames.AUTHORIZATION));
 		}
 		return token != null ? authorizations.find(token) : null;
 	}
 
-	private static String getParameter(String paramName) {
-		return Http.Context.current().request().getQueryString(paramName);
+	private static String getParameter(Http.Context context, String paramName) {
+		return context.request().getQueryString(paramName);
 	}
 
-	private static String getHeader(String headerName) {
-		return Http.Context.current().request().getHeader(headerName);
+	private static String getHeader(Http.Context context, String headerName) {
+		return context.request().getHeader(headerName);
 	}
 
 	static String extractToken(String header) {

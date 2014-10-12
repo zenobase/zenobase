@@ -6,12 +6,13 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Objects;
 
+import com.zenobase.actions.Gatekeeper;
 import com.zenobase.actions.NoCache;
 import com.zenobase.actions.QuotaExceptionHandler;
 import com.zenobase.json.Nodes;
 import com.zenobase.oauth.Authorization;
 
-@With({NoCache.class, QuotaExceptionHandler.class})
+@With({ Gatekeeper.class, NoCache.class, QuotaExceptionHandler.class })
 public abstract class ControllerSupport extends Controller implements CustomHeaders {
 
 	private final AuthorizationContext authContext;
