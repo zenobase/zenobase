@@ -29,7 +29,6 @@ public class Gatekeeper extends Action.Simple {
 
 	@Override
 	public Promise<Result> call(Context context) throws Throwable {
-		System.err.println("checking " + context.request().method());
 		return !isSafe(context.request()) && bus.isReadOnly() && !isSuperuser(context)
 			? Promise.<Result>pure(status(Http.Status.SERVICE_UNAVAILABLE))
 			: delegate.call(context);

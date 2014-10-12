@@ -17,17 +17,11 @@ public class HazelcastBus implements Bus {
 		map = hazelcast.getMap("map");
 	}
 
-	/* (non-Javadoc)
-	 * @see com.zenobase.services.Bus#isReadOnly()
-	 */
 	@Override
 	public boolean isReadOnly() {
 		return map.containsKey(KEY_READ_ONLY);
 	}
 
-	/* (non-Javadoc)
-	 * @see com.zenobase.services.Bus#setReadOnly(boolean)
-	 */
 	@Override
 	public void setReadOnly(boolean readOnly) {
 		if (readOnly) {
@@ -39,17 +33,11 @@ public class HazelcastBus implements Bus {
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see com.zenobase.services.Bus#count()
-	 */
 	@Override
 	public int count() {
 		return hazelcast.getCluster().getMembers().size();
 	}
 
-	/* (non-Javadoc)
-	 * @see com.zenobase.services.Bus#close()
-	 */
 	@Override
 	public void close() {
 		hazelcast.shutdown();
