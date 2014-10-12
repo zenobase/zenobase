@@ -25,6 +25,7 @@ public abstract class TaskControllerTestSupport extends ControllerTestSupport {
 	protected final BucketRepository buckets = mock(BucketRepository.class);
 	protected final UserRepository users = mock(UserRepository.class);
 	protected final CommandDispatcher dispatcher = mock(CommandDispatcher.class);
+	protected final Bus bus = new LocalBus();
 	protected final User user = new User("tester");
 
 	@Override
@@ -32,7 +33,7 @@ public abstract class TaskControllerTestSupport extends ControllerTestSupport {
 		return fakeApplication(new AbstractModule() {
 			@Override
 			protected void configure() {
-				bind(Bus.class).to(LocalBus.class);
+				bind(Bus.class).toInstance(bus);
 				bind(AuthorizationContext.class).toInstance(auth);
 				bind(TaskManagerRegistry.class).toInstance(registry);
 				bind(TaskRepository.class).toInstance(tasks);

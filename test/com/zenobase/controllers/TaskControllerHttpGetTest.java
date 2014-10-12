@@ -44,6 +44,16 @@ public class TaskControllerHttpGetTest extends TaskControllerTestSupport {
 	}
 
 	@Test
+	public void testGetStaleTaskInReadOnlyMode() {
+		bus.setReadOnly(true);
+		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
+		when(tasks.find(task.getId())).thenReturn(task.copy());
+		Result result = call(task.getId());
+		assertThat(result).hasStatus(OK).hasContent(task.toJson());
+		verifyZeroInteractions(refresher);
+	}
+
+	@Test
 	public void testGetStaleTaskWithMissingCredentials() {
 		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
 		when(tasks.find(task.getId())).thenReturn(task.copy());

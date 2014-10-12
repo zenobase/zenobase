@@ -15,6 +15,7 @@ import com.zenobase.models.Bucket;
 import com.zenobase.models.Role;
 import com.zenobase.oauth.Authorization;
 import com.zenobase.services.BucketRepository;
+import com.zenobase.services.Bus;
 import com.zenobase.services.CommandDispatcher;
 import com.zenobase.services.TaskRepository;
 import com.zenobase.services.UserRepository;
@@ -33,10 +34,12 @@ public class TaskController extends ControllerSupport {
 	private final BucketRepository buckets;
 	private final UserRepository users;
 	private final TaskRefresher refresher;
+	private final Bus bus;
 
 	@Inject
 	public TaskController(AuthorizationContext security, CommandDispatcher dispatcher,
-		TaskManagerRegistry registry, TaskRepository tasks, BucketRepository buckets, UserRepository users, TaskRefresher refresher) {
+		TaskManagerRegistry registry, TaskRepository tasks, BucketRepository buckets, UserRepository users,
+		TaskRefresher refresher, Bus bus) {
 
 		super(security);
 		this.dispatcher = dispatcher;
@@ -45,6 +48,7 @@ public class TaskController extends ControllerSupport {
 		this.buckets = buckets;
 		this.users = users;
 		this.refresher = refresher;
+		this.bus = bus;
 	}
 
 	public Result get(String taskId) {
@@ -59,7 +63,7 @@ public class TaskController extends ControllerSupport {
 		if (!task.isPermitted(auth) && !users.isSuperuser(auth.getPrincipal())) {
 			return forbidden();
 		}
-		if (task.isStale()) {
+		if (task.isStale() && !bus.isReadOnly()) {
 			try {
 				refresher.refresh(task);
 			} catch (IncompleteCredentialsException e) {
