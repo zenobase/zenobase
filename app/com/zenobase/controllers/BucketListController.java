@@ -29,10 +29,10 @@ public class BucketListController extends ControllerSupport {
 	private final UserRepository users;
 
 	@Inject
-    public BucketListController(AuthorizationContext security, CommandDispatcher dispatcher,
+    public BucketListController(AuthorizationContext auth, CommandDispatcher dispatcher,
     	BucketRepository buckets, EventRepository events, UserRepository users) {
 
-		super(security);
+		super(auth);
 		this.dispatcher = dispatcher;
 		this.buckets = buckets;
 		this.events = events;
