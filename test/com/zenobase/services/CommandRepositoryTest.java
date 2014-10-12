@@ -48,6 +48,7 @@ public class CommandRepositoryTest extends ElasticSearchTestSupport {
 		assertThat(repository.size()).as("stored commands").isEqualTo(1);
 		assertThat(repository.getTotalCost(principal, DateTime.now().minusHours(1))).as("cost").isEqualTo(1);
 
+		Uninterruptibles.sleepUninterruptibly(100, TimeUnit.MILLISECONDS); // to ensure correct sort order
 		Command command2 = new TestCommand(principal, "more work");
 		assertThat(repository.find(command2.getId())).isNull();
 		repository.put(command2);
@@ -56,7 +57,7 @@ public class CommandRepositoryTest extends ElasticSearchTestSupport {
 		assertThat(repository.size()).as("stored commands").isEqualTo(2);
 		assertThat(repository.getTotalCost(principal, DateTime.now().minusHours(1))).as("cost").isEqualTo(2);
 		assertThat(repository.getTotalCost(new Identity(), DateTime.now().minusHours(1))).as("cost for different user").isZero();
-		assertThat(repository.getTotalCost(principal, DateTime.now())).as("cost since now").isZero();
+		assertThat(repository.getTotalCost(principal, DateTime.now().plus(1L))).as("cost since now").isZero();
 
 		PartialListAssert.assertThat(repository.find(new CommandQuery(), CommandQuery.DEFAULT_ORDER, 0, 10)).hasTotal(2).isEqualTo(ImmutableList.of(command2, command1));
 	}
