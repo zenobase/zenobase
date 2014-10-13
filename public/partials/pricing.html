@@ -74,7 +74,8 @@
 				</div>
 				<div data-ng-show="ready">
 					<p class="lead" data-ng-hide="user.quota">Your credit card will be charged <strong>$5 once a month</strong>.</p>
-					<p class="lead" data-ng-show="user.quota">Your credit card is being charged <strong>$5 once a month</strong>.</p>
+					<p class="lead" data-ng-show="user.quota && !oldCard.past_due">Your credit card is being charged <strong>$5 once a month</strong>.</p>
+					<p class="lead" data-ng-show="user.quota && oldCard.past_due">Your <strong>$5 a month</strong> payment is past due, please update!</p>
 					<div data-ng-hide="addCard || !oldCard">
 						<div class="control-group">
 							<label class="control-label">Card#</label>

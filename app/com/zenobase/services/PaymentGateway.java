@@ -59,7 +59,10 @@ public class PaymentGateway {
 		Subscription subscription = getSubscription(customer);
 		CreditCard creditCard = payment.hasCreditCard() ? newCreditCard(customer.getId(), payment) : getCreditCard(customer);
 		Preconditions.checkArgument(creditCard != null, "Expected a card for <%s>", customer.getId());
-		SubscriptionRequest request = new SubscriptionRequest().planId(plan.getId()).price(payment.getPrice()).paymentMethodToken(creditCard.getToken());
+		SubscriptionRequest request = new SubscriptionRequest().paymentMethodToken(creditCard.getToken());
+		if (subscription != null && subscription.getStatus() != Subscription.Status.PAST_DUE) {
+			request = request.planId(plan.getId()).price(payment.getPrice());
+		}
 		Result<Subscription> result = subscription != null
 			? gateway.subscription().update(subscription.getId(), request)
 			: gateway.subscription().create(request);
@@ -120,7 +123,8 @@ public class PaymentGateway {
 		CreditCard card = getCreditCard(customer);
 		Subscription subscription = getSubscription(customer);
 		BigDecimal price = subscription != null ? subscription.getPrice() : null;
-		return card != null ? new Payment(price, card.getMaskedNumber(), null, card.getExpirationYear(), card.getExpirationMonth()) : null;
+		Boolean pastDue = subscription != null && subscription.getStatus() == Subscription.Status.PAST_DUE ? Boolean.TRUE : null;
+		return card != null ? new Payment(price, card.getMaskedNumber(), null, card.getExpirationYear(), card.getExpirationMonth(), pastDue) : null;
 	}
 
 	public void unsubscribe(String username) {
