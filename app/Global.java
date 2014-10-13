@@ -407,6 +407,6 @@ public class Global extends GlobalSettings {
 	@Override
 	public void onStop(Application application) {
 		injector.getInstance(IndexManager.class).close();
-		injector.getInstance(HazelcastBus.class).close();
+		injector.getInstance(Bus.class).close();
 	}
 }
