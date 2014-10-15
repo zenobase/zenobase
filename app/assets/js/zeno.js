@@ -5837,22 +5837,22 @@
 		};
 	}]);
 
-	app.config(['$httpProvider', function($httpProvider) {
-		var interceptor = ['$rootScope', '$q', function(scope, $q) {
-			function success(response) {
+	app.factory('unauthorizedInterceptor', ['$q', '$rootScope', function($q, $rootScope) {
+		return {
+			response : function(response) {
 				return response;
-			}
-			function error(response) {
+			},
+			responseError : function(response) {
 				if (response.status === 401) {
-					scope.$broadcast('event:unauthorized');
+					$rootScope.$broadcast('event:unauthorized');
 				}
 				return $q.reject(response);
 			}
-			return function(promise) {
-				return promise.then(success, error);
-			};
-		}];
-		$httpProvider.responseInterceptors.push(interceptor);
+		};
+	}]);
+
+	app.config(['$httpProvider', function($httpProvider) {
+		$httpProvider.interceptors.push('unauthorizedInterceptor');
 	}]);
 
 	app.directive('uiQuota', ['$interpolate', '$filter', function($interpolate, $filter) {
@@ -5943,10 +5943,10 @@
 				};
 				if (controller !== null) {
 					controller.$formatters.unshift(function(value) {
-						return moment.utc(value).format('YYYY-MM-DD');
+						return typeof value === 'object' ? moment.utc(value).format('YYYY-MM-DD') : null;
 					});
 					controller.$render = function() {
-						element.datepicker().data().datepicker.date = controller.$viewValue;
+						element.datepicker().data().datepicker.date = controller.$modelValue;
 						element.datepicker('setValue');
 						element.datepicker('update');
 						return controller.$viewValue;
