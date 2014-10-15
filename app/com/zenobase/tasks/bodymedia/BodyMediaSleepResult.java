@@ -19,16 +19,16 @@ import com.zenobase.models.Rating;
 
 class BodyMediaSleepResult extends BodyMediaResultSupport {
 
-	static final String TAG = "sleep";
-
-	private final LocalDate date;
+	private final String tag;
 	private final boolean useRanges;
+	private final LocalDate date;
 	private final TimezoneMap timezones;
 
-	public BodyMediaSleepResult(ObjectNode node, Identity author, boolean useRanges, TimezoneMap timezones) {
+	public BodyMediaSleepResult(ObjectNode node, Identity author, String tag, boolean useRanges, TimezoneMap timezones) {
 		super(node, author);
-		this.date = getLocalDate(node.path("startDate"));
+		this.tag = tag;
 		this.useRanges = useRanges;
+		this.date = getLocalDate(node.path("startDate"));
 		this.timezones = timezones;
 	}
 
@@ -85,7 +85,7 @@ class BodyMediaSleepResult extends BodyMediaResultSupport {
 
 	private Event newEvent(DateTime timestamp, int minutesTotal, int minutesSleeping) {
 		Event event = new Event();
-		event.setValue(Event.TAG, TAG);
+		event.setValue(Event.TAG, tag);
 		event.setValue(Event.TIMESTAMP, timestamp);
 		if (useRanges) {
 			event.addValue(Event.TIMESTAMP, timestamp.plusMinutes(minutesTotal));

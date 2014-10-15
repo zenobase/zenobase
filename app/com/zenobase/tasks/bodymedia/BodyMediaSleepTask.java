@@ -18,19 +18,15 @@ public class BodyMediaSleepTask extends Task {
 		super(node);
 	}
 
-	public BodyMediaSleepTask(String bucketId, Identity principal, String marker, String tag) {
+	public BodyMediaSleepTask(String bucketId, Identity principal, String tag, String marker) {
 		super(TYPE, bucketId, principal);
 		setMarker(marker);
-		setTag(tag);
+		setSetting(TAG, tag);
 		setSetting(RANGES, true);
 	}
 
 	public String getTag() {
 		return getSetting(TAG);
-	}
-
-	public void setTag(String tag) {
-		setSetting(TAG, tag);
 	}
 
 	public boolean useRanges() {

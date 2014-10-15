@@ -17,13 +17,15 @@ import com.zenobase.models.Identity;
 
 class BodyMediaStepsResult extends BodyMediaResultSupport {
 
-	static final String TAG = "steps";
-
+	private final String tag;
+	private final boolean hourly;
 	private final LocalDate date;
 	private final TimezoneMap timezones;
 
-	public BodyMediaStepsResult(ObjectNode node, Identity author, TimezoneMap timezones) {
+	public BodyMediaStepsResult(ObjectNode node, Identity author, String tag, boolean hourly, TimezoneMap timezones) {
 		super(node, author);
+		this.tag = tag;
+		this.hourly = hourly;
 		this.date = getLocalDate(node.path("startDate"));
 		this.timezones = timezones;
 	}
@@ -42,22 +44,26 @@ class BodyMediaStepsResult extends BodyMediaResultSupport {
 	public List<Event> getEvents(JsonNode dayNode) {
 		List<Event> events = Lists.newArrayList();
 		DateTime time = Preconditions.checkNotNull(timezones.getBegin(date));
-		for (JsonNode hourNode : dayNode.path("hours")) {
-			if (getLastSyncDate().isBefore(time)) {
-				return Collections.emptyList();
+		if (hourly) {
+			for (JsonNode hourNode : dayNode.path("hours")) {
+				if (getLastSyncDate().isBefore(time)) {
+					return Collections.emptyList();
+				}
+				DateTime hour = timezones.rezone(time);
+				events.add(newEvent(hour, hourNode.path("totalSteps").intValue(), 1));
+				time = time.plusHours(1);
 			}
-			DateTime hour = timezones.rezone(time);
-			events.add(newEvent(hour, hourNode.path("totalSteps").intValue()));
-			time = time.plusHours(1);
+		} else {
+			events.add(newEvent(timezones.rezone(time), dayNode.path("totalSteps").intValue(), dayNode.path("hours").size()));
 		}
 		return events;
 	}
 
-	private Event newEvent(DateTime timestamp, Integer steps) {
+	private Event newEvent(DateTime timestamp, Integer steps, int hours) {
 		Event event = new Event();
-		event.setValue(Event.TAG, TAG);
+		event.setValue(Event.TAG, tag);
 		event.setValue(Event.TIMESTAMP, timestamp);
-		event.setValue(Event.DURATION, Duration.standardHours(1));
+		event.setValue(Event.DURATION, Duration.standardHours(hours));
 		event.setValue(Event.COUNT, steps);
 		event.setValue(Event.AUTHOR, getAuthor());
 		event.setValue(Event.SOURCE, SOURCE);

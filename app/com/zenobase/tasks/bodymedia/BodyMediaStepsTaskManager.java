@@ -32,7 +32,8 @@ public class BodyMediaStepsTaskManager extends BodyMediaTaskManagerSupport {
 	public Task newTask(String bucketId, Identity principal, ObjectNode settings) {
 		String marker = parseMarker(settings.path("marker").textValue()).toString();
 		String tag = Objects.firstNonNull(settings.path("tag").textValue(), "steps");
-		return new BodyMediaStepsTask(bucketId, principal, marker, tag);
+		boolean hourly = settings.path("hourly").booleanValue();
+		return new BodyMediaStepsTask(bucketId, principal, tag, hourly, marker);
 	}
 
 	@Override
@@ -74,6 +75,6 @@ public class BodyMediaStepsTaskManager extends BodyMediaTaskManagerSupport {
 		checkRateLimit();
 		OAuthRequest request = new OAuthRequest(Verb.GET, String.format("http://api.bodymedia.com/v2/json/step/day/hour/%s", formatMarker(date)));
 		Response response = send(request, credentials);
-		return new BodyMediaStepsResult(parseObject(response), task.getPrincipal(), timezones);
+		return new BodyMediaStepsResult(parseObject(response), task.getPrincipal(), task.getTag(), task.isHourly(), timezones);
 	}
 }

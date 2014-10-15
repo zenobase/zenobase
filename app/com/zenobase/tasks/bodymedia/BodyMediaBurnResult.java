@@ -24,13 +24,15 @@ import com.zenobase.models.Identity;
 
 class BodyMediaBurnResult extends BodyMediaResultSupport {
 
-	static final String TAG = "burn";
-
+	private final String tag;
+	private final boolean hourly;
 	private final LocalDate date;
 	private final TimezoneMap timezones;
 
-	public BodyMediaBurnResult(ObjectNode node, Identity author, TimezoneMap timezones) {
+	public BodyMediaBurnResult(ObjectNode node, Identity author, String tag, boolean hourly, TimezoneMap timezones) {
 		super(node, author);
+		this.tag = tag;
+		this.hourly = hourly;
 		this.date = getLocalDate(node.path("startDate"));
 		this.timezones = timezones;
 	}
@@ -48,8 +50,13 @@ class BodyMediaBurnResult extends BodyMediaResultSupport {
 
 	public List<Event> getEvents(JsonNode dayNode) {
 		List<Event> events = Lists.newArrayList();
-		for (Map.Entry<DateTime, BigDecimal> entry : getCaloriesByHour(dayNode).entrySet()) {
-			events.add(newEvent(entry.getKey(), entry.getValue()));
+		if (hourly) {
+			for (Map.Entry<DateTime, BigDecimal> entry : getCaloriesByHour(dayNode).entrySet()) {
+				events.add(newEvent(entry.getKey(), entry.getValue(), 1));
+			}
+		} else {
+			DateTime time = Preconditions.checkNotNull(timezones.getBegin(date));
+			events.add(newEvent(time, dayNode.path("totalCalories").decimalValue(), getCaloriesByHour(dayNode).size()));
 		}
 		return events;
 	}
@@ -70,11 +77,11 @@ class BodyMediaBurnResult extends BodyMediaResultSupport {
 		return calories;
 	}
 
-	private Event newEvent(DateTime timestamp, BigDecimal calories) {
+	private Event newEvent(DateTime timestamp, BigDecimal calories, int hours) {
 		Event event = new Event();
-		event.setValue(Event.TAG, TAG);
+		event.setValue(Event.TAG, tag);
 		event.setValue(Event.TIMESTAMP, timestamp);
-		event.setValue(Event.DURATION, Duration.standardHours(1));
+		event.setValue(Event.DURATION, Duration.standardHours(hours));
 		event.setValue(Event.ENERGY, Measures.<Energy>valueOf(calories, "cal"));
 		event.setValue(Event.AUTHOR, getAuthor());
 		event.setValue(Event.SOURCE, SOURCE);

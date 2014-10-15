@@ -17,6 +17,8 @@ import com.zenobase.tasks.ResultTestSupport;
 
 public class BodyMediaSleepResultTest extends ResultTestSupport {
 
+	private static final String TAG = "my sleep";
+
 	private final TimezoneMap timezones = new TimezoneMap();
 	private final Identity author = new Identity();
 
@@ -46,10 +48,11 @@ public class BodyMediaSleepResultTest extends ResultTestSupport {
 	}
 
 	private BodyMediaSleepResult parse(String source) {
-		return new BodyMediaSleepResult(readObject(source), author, true, timezones);
+		return new BodyMediaSleepResult(readObject(source), author, TAG, true, timezones);
 	}
 
 	private static void assertEvent(Event event, String begin, String end, int minutes, int rating) {
+		assertThat(event.getValue(Event.TAG)).isEqualTo(TAG);
 		assertThat(event.getValues(Event.TIMESTAMP)).containsExactly(DateTime.parse(begin), DateTime.parse(end));
 		assertThat(event.getValue(Event.DURATION)).isEqualTo(Duration.standardMinutes(minutes));
 		assertThat(event.getValue(Event.RATING)).isEqualTo(Rating.valueOf(rating));

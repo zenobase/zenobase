@@ -32,7 +32,7 @@ public class BodyMediaSleepTaskManager extends BodyMediaTaskManagerSupport {
 	public Task newTask(String bucketId, Identity principal, ObjectNode settings) {
 		String marker = parseMarker(settings.path("marker").textValue()).toString();
 		String tag = Objects.firstNonNull(settings.path("tag").textValue(), "steps");
-		return new BodyMediaSleepTask(bucketId, principal, marker, tag);
+		return new BodyMediaSleepTask(bucketId, principal, tag, marker);
 	}
 
 	@Override
@@ -74,6 +74,6 @@ public class BodyMediaSleepTaskManager extends BodyMediaTaskManagerSupport {
 		checkRateLimit();
 		OAuthRequest request = new OAuthRequest(Verb.GET, String.format("http://api.bodymedia.com/v2/json/sleep/day/period/%s", formatMarker(date)));
 		Response response = send(request, credentials);
-		return new BodyMediaSleepResult(parseObject(response), task.getPrincipal(), task.useRanges(), timezones);
+		return new BodyMediaSleepResult(parseObject(response), task.getPrincipal(), task.getTag(), task.useRanges(), timezones);
 	}
 }
