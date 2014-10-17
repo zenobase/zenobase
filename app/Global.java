@@ -124,6 +124,7 @@ import com.zenobase.tasks.foursquare.FoursquareTaskManager;
 import com.zenobase.tasks.foursquare.FoursquareVenues;
 import com.zenobase.tasks.google.GoogleCredentialsManager;
 import com.zenobase.tasks.jawbone.JawboneCredentialsManager;
+import com.zenobase.tasks.jawbone.JawboneFoodTaskManager;
 import com.zenobase.tasks.jawbone.JawboneSleepTaskManager;
 import com.zenobase.tasks.jawbone.JawboneStepsTaskManager;
 import com.zenobase.tasks.lastfm.LastFmCredentialsManager;
@@ -301,6 +302,7 @@ public class Global extends GlobalSettings {
 				bindIfConfigured("automatic", AutomaticTaskManager.class, tasks);
 				bindIfConfigured("jawbone", JawboneStepsTaskManager.class, tasks);
 				bindIfConfigured("jawbone", JawboneSleepTaskManager.class, tasks);
+				bindIfConfigured("jawbone", JawboneFoodTaskManager.class, tasks);
 				bind(TaskManagerRegistry.class).in(Singleton.class);
 
 				bind(AccountController.class).in(Singleton.class);

@@ -4648,6 +4648,7 @@
 			{ 'id' : 'fitbit-weight', 'description' : 'Creates an event for each body weight measurement.' },
 			{ 'id' : 'forecast', 'description' : 'Adds weather conditions and moon phase to events with locations.' },
 			{ 'id' : 'foursquare', 'description' : 'Creates an event for each check-in.' },
+			{ 'id' : 'jawbone-food', 'description' : 'Creates an event for meal.' },
 			{ 'id' : 'jawbone-sleep', 'description' : 'Creates an event for each period of sleep.' },
 			{ 'id' : 'jawbone-steps', 'description' : 'Creates an event for the number of steps each day or hour.' },
 			{ 'id' : 'lastfm-tracks', 'description' : 'Creates an event for each played track.' },
@@ -5111,6 +5112,18 @@
 		$scope.init = function() {
 			$scope.settings = $scope.$parent.$parent.settings = {
 					tag : 'sleep'
+			};
+		};
+
+		$scope.init();
+	}]);
+
+	app.controller('JawboneFoodSettingsController', ['$scope', 'moment', function($scope, moment) {
+
+		$scope.init = function() {
+			$scope.settings = $scope.$parent.$parent.settings = {
+					tag : 'Meal',
+					marker : new Date(moment().utc().subtract(12, 'months').startOf('month').valueOf())
 			};
 		};
 

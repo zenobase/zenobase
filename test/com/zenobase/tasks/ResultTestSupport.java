@@ -2,6 +2,8 @@ package com.zenobase.tasks;
 
 import java.io.IOException;
 
+import org.joda.time.DateTime;
+import org.joda.time.format.ISODateTimeFormat;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.io.ByteStreams;
@@ -31,5 +33,9 @@ public class ResultTestSupport {
 
 	private byte[] readBytes(String filename) throws IOException {
 		return ByteStreams.toByteArray(getClass().getResourceAsStream(filename));
+	}
+
+	protected static DateTime dateTime(String value) {
+		return DateTime.parse(value, ISODateTimeFormat.basicDateTimeNoMillis().withOffsetParsed());
 	}
 }

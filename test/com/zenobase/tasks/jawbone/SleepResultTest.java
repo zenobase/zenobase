@@ -4,9 +4,7 @@ import static org.fest.assertions.Assertions.assertThat;
 
 import java.util.List;
 
-import org.joda.time.DateTime;
 import org.joda.time.Duration;
-import org.joda.time.format.ISODateTimeFormat;
 import org.junit.Test;
 
 import com.zenobase.models.Event;
@@ -18,14 +16,12 @@ public class SleepResultTest extends ResultTestSupport {
 
 	@Test
 	public void test() {
-		DateTime begin = DateTime.parse("20140228T220000-07:00", ISODateTimeFormat.basicDateTimeNoMillis().withOffsetParsed());
-		DateTime end = DateTime.parse("20140228T221319-07:00", ISODateTimeFormat.basicDateTimeNoMillis().withOffsetParsed());
 		SleepResult result = new SleepResult(readObject("SleepResultTest.json"), TESTER, "sleep", true);
 		List<Event> events = result.getEvents();
 		assertThat(events).as("events").hasSize(10);
 		Event expected = new Event(events.get(0).getId());
-		expected.addValue(Event.TIMESTAMP, begin);
-		expected.addValue(Event.TIMESTAMP, end);
+		expected.addValue(Event.TIMESTAMP, dateTime("20140228T220000-07:00"));
+		expected.addValue(Event.TIMESTAMP, dateTime("20140228T221319-07:00"));
 		expected.setValue(Event.DURATION, Duration.standardSeconds(799));
 		expected.addValue(Event.TAG, "sleep");
 		expected.setValue(Event.RATING, Rating.valueOf(90));

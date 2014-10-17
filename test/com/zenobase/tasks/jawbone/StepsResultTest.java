@@ -7,9 +7,7 @@ import java.util.List;
 import javax.measure.quantity.Energy;
 import javax.measure.quantity.Length;
 
-import org.joda.time.DateTime;
 import org.joda.time.Duration;
-import org.joda.time.format.ISODateTimeFormat;
 import org.junit.Test;
 
 import com.zenobase.common.Measures;
@@ -20,12 +18,11 @@ public class StepsResultTest extends ResultTestSupport {
 
 	@Test
 	public void testDailyMetric() {
-		DateTime begin = parseDateTime("20140311T090000-07:00");
 		StepsResult result = new StepsResult(readObject("StepsResultTest.json"), TESTER, "steps", false, true);
 		List<Event> events = result.getEvents();
 		assertThat(events).as("events").hasSize(3);
 		Event expected = new Event(events.get(0).getId());
-		expected.setValue(Event.TIMESTAMP, begin);
+		expected.setValue(Event.TIMESTAMP, dateTime("20140311T090000-07:00"));
 		expected.setValue(Event.DURATION, Duration.standardMinutes(719));
 		expected.addValue(Event.TAG, "steps");
 		expected.setValue(Event.COUNT, 16071);
@@ -46,12 +43,11 @@ public class StepsResultTest extends ResultTestSupport {
 
 	@Test
 	public void testHourlyMetric() {
-		DateTime begin = parseDateTime("20140311T090000-07:00");
 		StepsResult result = new StepsResult(readObject("StepsResultTest.json"), TESTER, "steps", true, true);
 		List<Event> events = result.getEvents();
 		assertThat(events).as("events").hasSize(36);
 		Event expected = new Event(events.get(0).getId());
-		expected.setValue(Event.TIMESTAMP, begin);
+		expected.setValue(Event.TIMESTAMP, dateTime("20140311T090000-07:00"));
 		expected.setValue(Event.DURATION, Duration.standardHours(1));
 		expected.addValue(Event.TAG, "steps");
 		expected.setValue(Event.COUNT, 1268);
@@ -60,9 +56,5 @@ public class StepsResultTest extends ResultTestSupport {
 		expected.setValue(Event.AUTHOR, TESTER);
 		expected.setValue(Event.SOURCE, JawboneResult.SOURCE);
 		assertThat(events.get(0)).as("first event").isEqualTo(expected);
-	}
-
-	private static DateTime parseDateTime(String value) {
-		return DateTime.parse(value, ISODateTimeFormat.basicDateTimeNoMillis().withOffsetParsed());
 	}
 }

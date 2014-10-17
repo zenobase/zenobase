@@ -62,10 +62,13 @@ abstract class JawboneResult {
 	protected Location locationValue(JsonNode node) {
 		JsonNode latNode = node.path("place_lat");
 		JsonNode lonNode = node.path("place_lon");
-		if (!latNode.isTextual() || "".equals(latNode.textValue())) {
-			return null;
+		if (latNode.isNumber() && lonNode.doubleValue() != 0.0) {
+			return new Location(latNode.decimalValue(), lonNode.decimalValue());
 		}
-		return new Location(latNode.textValue(), lonNode.textValue());
+		if (latNode.isTextual() && !"".equals(latNode.textValue())) {
+			return new Location(latNode.textValue(), lonNode.textValue());
+		}
+		return null;
 	}
 
 	protected DecimalMeasure<Length> distanceValue(JsonNode node, Unit<Length> unit) {
