@@ -31,10 +31,10 @@ public class BodyMediaBurnResultTest extends ResultTestSupport {
 		List<Event> events = result.getEvents();
 		assertThat(result.getDate()).isEqualTo(LocalDate.parse("2013-11-03"));
 		assertThat(events).hasSize(25);
-		assertEvent(events.get(0), "2013-11-03T00:00:00-0700", "98.082 cal", 1);
-		assertEvent(events.get(1), "2013-11-03T01:00:00-0700", "81.673 cal", 1);
-		assertEvent(events.get(2), "2013-11-03T01:00:00-0800", "78.222 cal", 1);
-		assertEvent(events.get(3), "2013-11-03T02:00:00-0800", "80.749 cal", 1);
+		assertEvent(events.get(0), "2013-11-03T00:00:00-0700", "98.082 kcal", 1);
+		assertEvent(events.get(1), "2013-11-03T01:00:00-0700", "81.673 kcal", 1);
+		assertEvent(events.get(2), "2013-11-03T01:00:00-0800", "78.222 kcal", 1);
+		assertEvent(events.get(3), "2013-11-03T02:00:00-0800", "80.749 kcal", 1);
 	}
 
 	@Test
@@ -44,7 +44,7 @@ public class BodyMediaBurnResultTest extends ResultTestSupport {
 		List<Event> events = result.getEvents();
 		assertThat(result.getDate()).isEqualTo(LocalDate.parse("2013-11-03"));
 		assertThat(events).hasSize(1);
-		assertEvent(events.get(0), "2013-11-03T00:00:00-0700", "3498 cal", 25);
+		assertEvent(events.get(0), "2013-11-03T00:00:00-0700", "3498 kcal", 25);
 	}
 
 	@Test
@@ -54,10 +54,10 @@ public class BodyMediaBurnResultTest extends ResultTestSupport {
 		List<Event> events = result.getEvents();
 		assertThat(result.getDate()).isEqualTo(LocalDate.parse("2013-03-10"));
 		assertThat(events).hasSize(23);
-		assertEvent(events.get(0), "2013-03-10T00:00:00-0800", "98.082 cal", 1);
-		assertEvent(events.get(1), "2013-03-10T01:00:00-0800", "81.673 cal", 1);
-		assertEvent(events.get(2), "2013-03-10T03:00:00-0700", "78.222 cal", 1);
-		assertEvent(events.get(3), "2013-03-10T04:00:00-0700", "80.749 cal", 1);
+		assertEvent(events.get(0), "2013-03-10T00:00:00-0800", "98.082 kcal", 1);
+		assertEvent(events.get(1), "2013-03-10T01:00:00-0800", "81.673 kcal", 1);
+		assertEvent(events.get(2), "2013-03-10T03:00:00-0700", "78.222 kcal", 1);
+		assertEvent(events.get(3), "2013-03-10T04:00:00-0700", "80.749 kcal", 1);
 	}
 
 	private void addTimezone(String from, String timezone) {
@@ -65,7 +65,7 @@ public class BodyMediaBurnResultTest extends ResultTestSupport {
 	}
 
 	private BodyMediaBurnResult parse(String source, boolean hourly) {
-		return new BodyMediaBurnResult(readObject(source), author, TAG, hourly, timezones);
+		return new BodyMediaBurnResult(readObject(source), author, TAG, hourly, Measures.<Energy>parseUnit("kcal"), timezones);
 	}
 
 	private static void assertEvent(Event event, String timestamp, String calories, int hours) {

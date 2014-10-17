@@ -1,5 +1,6 @@
 package com.zenobase.tasks.runkeeper;
 
+import java.math.RoundingMode;
 import java.util.List;
 
 import javax.measure.DecimalMeasure;
@@ -28,13 +29,15 @@ class ActivitiesResult {
 
 	private final JsonNode node;
 	private final Identity author;
-	private final Unit<Length> unit;
+	private final Unit<Length> lengthUnit;
+	private final Unit<Energy> energyUnit;
 	private final DateTimeZone timezone;
 
-	public ActivitiesResult(JsonNode node, Identity author, Unit<Length> unit, DateTimeZone timezone) {
+	public ActivitiesResult(JsonNode node, Identity author, Unit<Length> lengthUnit, Unit<Energy> energyUnit, DateTimeZone timezone) {
 		this.node = Preconditions.checkNotNull(node);
 		this.author = author;
-		this.unit = unit;
+		this.lengthUnit = lengthUnit;
+		this.energyUnit = energyUnit;
 		this.timezone = timezone;
 	}
 
@@ -69,11 +72,11 @@ class ActivitiesResult {
 	}
 
 	private DecimalMeasure<Length> distanceValue(JsonNode node) {
-		return node.isNumber() ? Measures.valueOf(Measures.convert(node.doubleValue(), unit), unit) : null;
+		return node.isNumber() ? Measures.valueOf(Measures.convert(node.doubleValue(), lengthUnit), lengthUnit) : null;
 	}
 
 	private DecimalMeasure<Energy> energyValue(JsonNode node) {
-		return node.isNumber() ? Measures.<Energy>valueOf(node.decimalValue(), "cal") : null;
+		return node.isNumber() ? Measures.<Energy>valueOf(node.decimalValue().setScale(0, RoundingMode.HALF_UP), energyUnit) : null;
 	}
 
 	public String getNext() {

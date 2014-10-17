@@ -3,6 +3,7 @@ package com.zenobase.tasks.moves;
 import java.util.List;
 
 import javax.inject.Inject;
+import javax.measure.quantity.Energy;
 import javax.measure.quantity.Length;
 import javax.measure.unit.Unit;
 
@@ -31,8 +32,9 @@ public class MovesActivitiesTaskManager extends MovesTaskManagerSupport {
 
 	@Override
 	public Task newTask(String bucketId, Identity principal, ObjectNode settings) {
-		Unit<Length> unit = Measures.<Length>parseUnit(Objects.firstNonNull(settings.path("unit").textValue(), "m"));
-		return new MovesActivitiesTask(bucketId, principal, unit);
+		Unit<Length> lengthUnit = Measures.parseUnit(Objects.firstNonNull(settings.path("unit").textValue(), "m"));
+		Unit<Energy> energyUnit = Measures.parseUnit(Objects.firstNonNull(settings.path("energy_unit").textValue(), "kcal"));
+		return new MovesActivitiesTask(bucketId, principal, lengthUnit, energyUnit);
 	}
 
 	@Override
@@ -61,7 +63,7 @@ public class MovesActivitiesTaskManager extends MovesTaskManagerSupport {
 		LocalDate today = LocalDate.now(begin.getZone());
 		for (LocalDate from = begin.toLocalDate(); !from.isAfter(today); from = from.withDayOfMonth(1).plusMonths(1)) {
 			LocalDate to = min(from.dayOfMonth().withMaximumValue(), today);
-			ActivitiesQuery request = new ActivitiesQuery(task.getPrincipal(), begin, task.getUnit(), credentials);
+			ActivitiesQuery request = new ActivitiesQuery(task.getPrincipal(), begin, task.getUnit(), task.getEnergyUnit(), credentials);
 			events.addAll(request.find(from, to).getEvents());
 		}
 		return events;
@@ -71,13 +73,15 @@ public class MovesActivitiesTaskManager extends MovesTaskManagerSupport {
 
 		private final Identity principal;
 		private final DateTime begin;
-		private final Unit<Length> unit;
+		private final Unit<Length> lengthUnit;
+		private final Unit<Energy> energyUnit;
 		private final OAuthCredentials credentials;
 
-		public ActivitiesQuery(Identity principal, DateTime begin, Unit<Length> unit, OAuthCredentials credentials) {
+		public ActivitiesQuery(Identity principal, DateTime begin, Unit<Length> lengthUnit, Unit<Energy> energyUnit, OAuthCredentials credentials) {
 			this.principal = principal;
 			this.begin = begin;
-			this.unit = unit;
+			this.lengthUnit = lengthUnit;
+			this.energyUnit = energyUnit;
 			this.credentials = credentials;
 		}
 
@@ -86,7 +90,7 @@ public class MovesActivitiesTaskManager extends MovesTaskManagerSupport {
 			request.addQuerystringParameter("from", from.toString());
 			request.addQuerystringParameter("to", to.toString());
 			Response response = send(request, credentials);
-			return new ActivitiesResult(principal, begin, unit, parseArray(response));
+			return new ActivitiesResult(parseArray(response), principal, begin, lengthUnit, energyUnit);
 		}
 	}
 }

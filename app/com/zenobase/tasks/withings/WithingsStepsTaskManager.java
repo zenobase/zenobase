@@ -1,7 +1,8 @@
 package com.zenobase.tasks.withings;
 
 import javax.inject.Inject;
-import javax.measure.quantity.Mass;
+import javax.measure.quantity.Energy;
+import javax.measure.quantity.Length;
 import javax.measure.unit.Unit;
 
 import org.joda.time.DateTime;
@@ -36,10 +37,9 @@ public class WithingsStepsTaskManager extends OAuthTaskManager {
 	public WithingsStepsTask newTask(String bucketId, Identity principal, ObjectNode settings) {
 		String marker = parseMarker(settings.path("marker").textValue());
 		String tag = Objects.firstNonNull(settings.path("tag").textValue(), "steps");
-		Unit<Mass> unit = Measures.<Mass>parseUnit(Objects.firstNonNull(settings.path("unit").textValue(), "km"));
-		WithingsStepsTask task = new WithingsStepsTask(bucketId, principal, marker);
-		task.setTag(tag);
-		task.setUnit(unit);
+		Unit<Length> lengthUnit = Measures.parseUnit(Objects.firstNonNull(settings.path("unit").textValue(), "km"));
+		Unit<Energy> energyUnit = Measures.parseUnit(Objects.firstNonNull(settings.path("energy_unit").textValue(), "kcal"));
+		WithingsStepsTask task = new WithingsStepsTask(bucketId, principal, tag, lengthUnit, energyUnit, marker);
 		return task;
 	}
 
@@ -55,7 +55,7 @@ public class WithingsStepsTaskManager extends OAuthTaskManager {
 	private Command execute(WithingsStepsTask task, OAuthCredentials credentials) {
 		OAuthRequest request = createRequest(task, credentials);
 		Response response = send(request, credentials);
-		WithingsStepsResult result = new WithingsStepsResult(parseObject(response), task.getPrincipal(), task.getTag(), task.getDistanceUnit(), task.getHeightUnit());
+		WithingsStepsResult result = new WithingsStepsResult(parseObject(response), task.getPrincipal(), task.getTag(), task.getDistanceUnit(), task.getHeightUnit(), task.getEnergyUnit());
 		Preconditions.checkState(result.getStatus() == 0, "Expected status <0> but got <%s> for task <%s>: %s", result.getStatus(), task.getId(), response.getBody());
 		return createCommand(task, result.getEvents());
 	}

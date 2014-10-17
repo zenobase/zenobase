@@ -31,13 +31,15 @@ class WithingsStepsResult {
 	private final Identity author;
 	private final String tag;
 	private final Unit<Length> distanceUnit, heightUnit;
+	private final Unit<Energy> energyUnit;
 
-	public WithingsStepsResult(ObjectNode node, Identity author, String tag, Unit<Length> distanceUnit, Unit<Length> heightUnit) {
+	public WithingsStepsResult(ObjectNode node, Identity author, String tag, Unit<Length> distanceUnit, Unit<Length> heightUnit, Unit<Energy> energyUnit) {
 		this.node = node;
 		this.author = author;
 		this.tag = tag;
 		this.distanceUnit = distanceUnit;
 		this.heightUnit = heightUnit;
+		this.energyUnit = energyUnit;
 	}
 
 	public int getStatus() {
@@ -73,7 +75,7 @@ class WithingsStepsResult {
 		event.setValue(Event.TIMESTAMP, time);
 		event.setValue(Event.DURATION, Period.days(1).toDurationFrom(time));
 		event.setValue(Event.COUNT, node.path("steps").intValue());
-		event.setValue(Event.ENERGY, measureValue(node.path("calories"), Measures.<Energy>parseUnit("cal")));
+		event.setValue(Event.ENERGY, measureValue(node.path("calories"), energyUnit));
 		event.setValue(Event.DISTANCE, convertMeasureValue(node.path("distance"), distanceUnit));
 		event.setValue(Event.HEIGHT, convertMeasureValue(node.path("elevation"), heightUnit));
 		event.setValue(Event.AUTHOR, author);

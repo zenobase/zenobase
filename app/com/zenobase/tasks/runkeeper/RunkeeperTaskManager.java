@@ -3,6 +3,7 @@ package com.zenobase.tasks.runkeeper;
 import java.util.List;
 
 import javax.inject.Inject;
+import javax.measure.quantity.Energy;
 import javax.measure.quantity.Length;
 import javax.measure.unit.Unit;
 
@@ -39,10 +40,10 @@ public class RunkeeperTaskManager extends OAuthTaskManager {
 	@Override
 	public Task newTask(String bucketId, Identity principal, ObjectNode settings) {
 		String marker = formatMarker(parseMarker(settings.path("marker").textValue()));
-		RunkeeperTask task = new RunkeeperTask(bucketId, principal, marker);
-		task.setTimezone(DateTimeZone.forID(Objects.firstNonNull(settings.path("timezone").textValue(), "UTC")));
-		task.setUnit(Measures.<Length>parseUnit(Objects.firstNonNull(settings.path("unit").textValue(), "km")));
-		return task;
+		DateTimeZone zone = DateTimeZone.forID(Objects.firstNonNull(settings.path("timezone").textValue(), "UTC"));
+		Unit<Length> lengthUnit = Measures.parseUnit(Objects.firstNonNull(settings.path("unit").textValue(), "km"));
+		Unit<Energy> energyUnit = Measures.parseUnit(Objects.firstNonNull(settings.path("energy_unit").textValue(), "kcal"));
+		return new RunkeeperTask(bucketId, principal, zone, lengthUnit, energyUnit, marker);
 	}
 
 	@Override
@@ -62,7 +63,7 @@ public class RunkeeperTaskManager extends OAuthTaskManager {
 			}
 			request.addQuerystringParameter("pageSize", "100");
 			Response response = send(request, credentials);
-			ActivitiesResult result = new ActivitiesResult(parseObject(response), task.getPrincipal(), task.getDistanceUnit(), task.getTimezone());
+			ActivitiesResult result = new ActivitiesResult(parseObject(response), task.getPrincipal(), task.getDistanceUnit(), task.getEnergyUnit(), task.getTimezone());
 			for (Event event : result.getEvents()) {
 				if (from == null || event.getValue(Event.TIMESTAMP).toLocalDateTime().isAfter(from)) {
 					events.add(event);

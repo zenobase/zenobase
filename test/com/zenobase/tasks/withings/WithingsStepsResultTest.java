@@ -20,7 +20,7 @@ public class WithingsStepsResultTest extends ResultTestSupport {
 
 	@Test
 	public void test() {
-		WithingsStepsResult result = new WithingsStepsResult(readObject("WithingsStepsResultTest.json"), TESTER, "walk", NonSI.MILE, NonSI.FOOT);
+		WithingsStepsResult result = new WithingsStepsResult(readObject("WithingsStepsResultTest.json"), TESTER, "walk", NonSI.MILE, NonSI.FOOT, Measures.<Energy>parseUnit("kcal"));
 		assertThat(result.getStatus()).as("status").isEqualTo(0);
 		List<Event> actual = result.getEvents();
 		assertThat(actual).hasSize(2);
@@ -29,7 +29,7 @@ public class WithingsStepsResultTest extends ResultTestSupport {
 		expected.setValue(Event.DURATION, Duration.standardDays(1));
 		expected.setValue(Event.TAG, "walk");
 		expected.setValue(Event.COUNT, 13548);
-		expected.setValue(Event.ENERGY, Measures.<Energy>valueOf("1231.8 cal"));
+		expected.setValue(Event.ENERGY, Measures.<Energy>valueOf("1231.8 kcal"));
 		expected.setValue(Event.DISTANCE, Measures.<Length>valueOf("7.87 mi"));
 		expected.setValue(Event.HEIGHT, Measures.<Length>valueOf("1055.31 ft"));
 		expected.setValue(Event.AUTHOR, TESTER);

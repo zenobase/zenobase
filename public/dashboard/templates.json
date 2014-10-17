@@ -275,12 +275,12 @@
 		"task" : "bodymedia-burn",
 		"widgets" : [
 			{
-				"id" : "timeline_cal",
+				"id" : "timeline_kcal",
 				"type" : "timeline",
 				"label" : "Timeline",
 				"placement" : "top",
 				"field" : "energy",
-				"unit" : "cal",
+				"unit" : "kcal",
 				"statistic" : "sum",
 				"interval" : "month"
 			},
@@ -295,32 +295,32 @@
 				"singleton" : true
 			},
 			{
-				"id" : "histogram_cal",
+				"id" : "histogram_kcal",
 				"type" : "histogram",
 				"label" : "Histogram",
 				"placement" : "left",
 				"field" : "energy",
-				"unit" : "cal",
+				"unit" : "kcal",
 				"interval" : 25
 			},
 			{
-				"id" : "polar_cal_day",
+				"id" : "polar_kcal_day",
 				"type" : "polar",
 				"label" : "Day of Week",
 				"placement" : "right",
 				"value_field" : "energy",
-				"unit" : "cal",
+				"unit" : "kcal",
 				"statistic" : "avg",
 				"interval" : "day_of_week"
 			},
 			{
-				"id" : "polar_cal_hour",
+				"id" : "polar_kcal_hour",
 				"type" : "polar",
 				"label" : "Hour of Day",
 				"statistic" : "avg",
 				"placement" : "right",
 				"value_field" : "energy",
-				"unit" : "cal",
+				"unit" : "kcal",
 				"interval" : "hour_of_day"
 			}
 		]
@@ -456,7 +456,7 @@
 		"task" : "fitbit-food", 
 		"widgets" : [
 			{
-				"id" : "calories",
+				"id" : "timeline_kcal",
 				"type" : "timeline",
 				"label" : "Calories",
 				"placement" : "top",
@@ -476,7 +476,7 @@
 				"singleton" : true
 			},
 			{
-				"id" : "calories_by_day",
+				"id" : "kcal_by_day",
 				"type" : "polar",
 				"label" : "Day of Week",
 				"placement" : "right",
@@ -501,7 +501,7 @@
 		"task" : "jawbone-food", 
 		"widgets" : [
 			{
-				"id" : "calories",
+				"id" : "timeline_kcal",
 				"type" : "timeline",
 				"label" : "Calories",
 				"placement" : "top",
@@ -521,7 +521,7 @@
 				"singleton" : true
 			},
 			{
-				"id" : "calories_by_day",
+				"id" : "kcal_by_day",
 				"type" : "polar",
 				"label" : "Day of Week",
 				"placement" : "right",

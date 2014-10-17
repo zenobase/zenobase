@@ -27,17 +27,18 @@ import com.zenobase.models.Resource;
 class ActivitiesResult {
 
 	public static final Resource SOURCE = new Resource("Moves", "http://www.moves-app.com/");
-	public static final Unit<Energy> CALORIES = Measures.<Energy>parseUnit("cal");
 
+	private final JsonNode node;
 	private final Identity author;
 	private final DateTime begin;
-	private final Unit<Length> unit;
-	private final JsonNode node;
+	private final Unit<Length> lengthUnit;
+	private final Unit<Energy> energyUnit;
 
-	public ActivitiesResult(Identity author, DateTime begin, Unit<Length> unit, JsonNode node) {
+	public ActivitiesResult(JsonNode node, Identity author, DateTime begin, Unit<Length> lengthUnit, Unit<Energy> energyUnit) {
 		this.author = Preconditions.checkNotNull(author);
 		this.begin = Preconditions.checkNotNull(begin);
-		this.unit = Preconditions.checkNotNull(unit);
+		this.lengthUnit = Preconditions.checkNotNull(lengthUnit);
+		this.energyUnit = Preconditions.checkNotNull(energyUnit);
 		this.node = Preconditions.checkNotNull(node);
 	}
 
@@ -78,8 +79,8 @@ class ActivitiesResult {
 			addTextValue(activityNode.path("group"), tags);
 			event.setValues(Event.TAG, tags);
 			event.setValue(Event.COUNT, intValue(activityNode.path("steps")));
-			event.setValue(Event.ENERGY, measureValue(activityNode.path("calories"), CALORIES));
-			event.setValue(Event.DISTANCE, convertValue(activityNode.path("distance"), unit));
+			event.setValue(Event.ENERGY, measureValue(activityNode.path("calories"), energyUnit));
+			event.setValue(Event.DISTANCE, convertValue(activityNode.path("distance"), lengthUnit));
 			event.setValue(Event.AUTHOR, author);
 			event.setValue(Event.SOURCE, SOURCE);
 		}

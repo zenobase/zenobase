@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.measure.quantity.Energy;
+import javax.measure.unit.Unit;
 
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
@@ -28,11 +29,13 @@ class BodyMediaBurnResult extends BodyMediaResultSupport {
 	private final boolean hourly;
 	private final LocalDate date;
 	private final TimezoneMap timezones;
+	private final Unit<Energy> energyUnit;
 
-	public BodyMediaBurnResult(ObjectNode node, Identity author, String tag, boolean hourly, TimezoneMap timezones) {
+	public BodyMediaBurnResult(ObjectNode node, Identity author, String tag, boolean hourly, Unit<Energy> energyUnit, TimezoneMap timezones) {
 		super(node, author);
 		this.tag = tag;
 		this.hourly = hourly;
+		this.energyUnit = energyUnit;
 		this.date = getLocalDate(node.path("startDate"));
 		this.timezones = timezones;
 	}
@@ -82,7 +85,7 @@ class BodyMediaBurnResult extends BodyMediaResultSupport {
 		event.setValue(Event.TAG, tag);
 		event.setValue(Event.TIMESTAMP, timestamp);
 		event.setValue(Event.DURATION, Duration.standardHours(hours));
-		event.setValue(Event.ENERGY, Measures.<Energy>valueOf(calories, "cal"));
+		event.setValue(Event.ENERGY, Measures.<Energy>valueOf(calories, energyUnit));
 		event.setValue(Event.AUTHOR, getAuthor());
 		event.setValue(Event.SOURCE, SOURCE);
 		return event;
