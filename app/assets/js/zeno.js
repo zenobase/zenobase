@@ -4642,6 +4642,7 @@
 			{ 'id' : 'bodymedia-burn', 'description' : 'Creates an event for the number of calories burned each day or hour.' },
 			{ 'id' : 'bodymedia-sleep', 'description' : 'Creates an event for each period of sleep.' },
 			{ 'id' : 'bodymedia-steps', 'description' : 'Creates an event for the number of steps each day or hour.' },
+			{ 'id' : 'fitbit-food', 'description' : 'Creates an event for the number of calories consumed each day.' },
 			{ 'id' : 'fitbit-sleep', 'description' : 'Creates an event for each period of sleep.' },
 			{ 'id' : 'fitbit-steps', 'description' : 'Creates an event for the number of steps each day (incl distance and elevation, if available).' },
 			{ 'id' : 'fitbit-weight', 'description' : 'Creates an event for each body weight measurement.' },
@@ -4707,6 +4708,18 @@
 				});
 			tracker.event('action', 'create task');
 		};
+	}]);
+
+	app.controller('FitbitFoodSettingsController', ['$scope', 'moment', function($scope, moment) {
+
+		$scope.init = function() {
+			$scope.settings = $scope.$parent.$parent.settings = {
+					tag : 'food',
+					marker : new Date(moment().utc().subtract(1, 'years').startOf('month').valueOf())
+			};
+		};
+
+		$scope.init();
 	}]);
 
 	app.controller('FitbitSleepSettingsController', ['$scope', 'moment', function($scope, moment) {

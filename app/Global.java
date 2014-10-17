@@ -111,6 +111,7 @@ import com.zenobase.tasks.demo.DemoCredentialsManager;
 import com.zenobase.tasks.demo.DemoTaskManager;
 import com.zenobase.tasks.dropbox.DropboxCredentialsManager;
 import com.zenobase.tasks.fitbit.FitbitCredentialsManager;
+import com.zenobase.tasks.fitbit.FitbitFoodTaskManager;
 import com.zenobase.tasks.fitbit.FitbitIntradayTaskManager;
 import com.zenobase.tasks.fitbit.FitbitSleepTaskManager;
 import com.zenobase.tasks.fitbit.FitbitStepsTaskManager;
@@ -275,6 +276,7 @@ public class Global extends GlobalSettings {
 				bindIfConfigured("fitbit", FitbitStepsTaskManager.class, tasks);
 				bindIfConfigured("fitbit", FitbitSleepTaskManager.class, tasks);
 				bindIfConfigured("fitbit", FitbitWeightTaskManager.class, tasks);
+				bindIfConfigured("fitbit", FitbitFoodTaskManager.class, tasks);
 				bindIfConfigured("foursquare", FoursquareTaskManager.class, tasks);
 				bindIfConfigured("withings", WithingsCardioTaskManager.class, tasks);
 				bindIfConfigured("withings", WithingsStepsTaskManager.class, tasks);

@@ -23,7 +23,7 @@ public class FitbitSummaryResultTest extends ResultTestSupport {
 
 	@Test
 	public void test() {
-		FitbitSummaryResult result = new FitbitSummaryResult(readObject("FitbitSummaryResultTest.json"), TAG, TESTER, TIMESTAMP, NonSI.MILE, NonSI.FOOT);
+		FitbitSummaryResult result = new FitbitSummaryResult(readObject("FitbitStepsResultTest.json"), TAG, TESTER, TIMESTAMP, NonSI.MILE, NonSI.FOOT);
 		List<Event> events = result.getEvents();
 		assertThat(events).as("events").hasSize(1);
 		Event expected = new Event(events.get(0).getId());

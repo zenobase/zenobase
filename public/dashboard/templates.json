@@ -452,6 +452,51 @@
 		]
 	},
 	{
+		"label" : "Food (Fitbit)",
+		"task" : "fitbit-food", 
+		"widgets" : [
+			{
+				"id" : "calories",
+				"type" : "timeline",
+				"label" : "Calories",
+				"placement" : "top",
+				"field" : "energy",
+				"unit" : "kcal",
+				"statistic" : "avg",
+				"interval" : "month"
+			},
+			{
+				"id" : "latest",
+				"type" : "list",
+				"label" : "Latest",
+				"placement" : "left",
+				"order" : "timestamp",
+				"reverse" : false,
+				"limit" : 10,
+				"singleton" : true
+			},
+			{
+				"id" : "calories_by_day",
+				"type" : "polar",
+				"label" : "Day of Week",
+				"placement" : "right",
+				"value_field" : "energy",
+				"unit" : "kcal",
+				"statistic" : "avg",
+				"interval" : "day_of_week"
+			},
+			{
+				"id" : "histogram",
+				"type" : "histogram",
+				"label" : "Histogram",
+				"placement" : "right",
+				"field" : "energy",
+				"unit" : "kcal",
+				"interval" : 500
+			}
+		]
+	},
+	{
 		"label" : "Heart Rate (Withings)",
 		"task" : "withings-cardio", 
 		"widgets" : [

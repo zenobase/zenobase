@@ -27,7 +27,7 @@ public class FitbitStepsResultTest extends ResultTestSupport {
 
 	@Test
 	public void test() {
-		FitbitStepsResult result = new FitbitStepsResult(readObject("FitbitSummaryResultTest.json"), TAG, TESTER, DATE, TIMEZONE, NonSI.MILE, NonSI.FOOT);
+		FitbitStepsResult result = new FitbitStepsResult(readObject("FitbitStepsResultTest.json"), TAG, TESTER, DATE, TIMEZONE, NonSI.MILE, NonSI.FOOT);
 		List<Event> events = result.getEvents();
 		assertThat(events).as("events").hasSize(1);
 		Event expected = new Event(events.get(0).getId());
@@ -39,7 +39,7 @@ public class FitbitStepsResultTest extends ResultTestSupport {
 		expected.setValue(Event.HEIGHT, DecimalMeasure.<Length>valueOf("540 ft"));
 		expected.setValue(Event.ENERGY, DecimalMeasure.<Energy>valueOf("1071 cal"));
 		expected.setValue(Event.AUTHOR, TESTER);
-		expected.setValue(Event.SOURCE, FitbitSummaryResult.SOURCE);
+		expected.setValue(Event.SOURCE, FitbitStepsResult.SOURCE);
 		assertThat(events.get(0)).as("first event").isEqualTo(expected);
 	}
 
