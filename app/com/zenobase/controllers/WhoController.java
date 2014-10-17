@@ -25,13 +25,6 @@ public class WhoController extends ControllerSupport {
 			User user = users.find(auth.getPrincipal());
 			return ok(user != null ? new UserProfile(user).toJson() : auth.getPrincipal().toJson());
 		}
-		removeCookie("token"); // TODO remove end of 2013
     	return noContent();
     }
-
-	private static void removeCookie(String cookieName) {
-		if (ctx().request().cookie(cookieName) != null) {
-			ctx().response().discardCookie(cookieName);
-		}
-	}
 }
