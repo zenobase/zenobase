@@ -19,7 +19,7 @@
 
 	<p data-ng-show="items.length == 0" class="none">None</p>
 
-	<div class="btn-toolbar">
+	<div class="btn-toolbar" data-ng-show="items.length">
 		<div class="btn-group pull-right" data-ng-show="items">
 			<button class="btn" title="Previous" data-ng-click="prev()" data-ng-disabled="!hasPrev()"><i class="fa fa-chevron-left"></i></button>
 			<button class="btn" title="Next" data-ng-click="next()" data-ng-disabled="!hasNext()"><i class="fa fa-chevron-right"></i></button>
