@@ -5,7 +5,6 @@ import static org.fest.assertions.Assertions.assertThat;
 import java.math.BigDecimal;
 import java.util.List;
 
-import javax.measure.quantity.Energy;
 import javax.measure.unit.SI;
 
 import org.joda.time.DateTime;
@@ -14,6 +13,7 @@ import org.joda.time.Duration;
 import org.junit.Test;
 
 import com.zenobase.common.Measures;
+import com.zenobase.common.Units;
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
 import com.zenobase.models.Resource;
@@ -24,7 +24,7 @@ public class ActivitiesResultTest extends ResultTestSupport {
 	@Test
 	public void test() {
 		Identity author = new Identity();
-		ActivitiesResult result = new ActivitiesResult(readObject("ActivitiesResultTest.json"), author, SI.KILOMETER, Measures.<Energy>parseUnit("kcal"), DateTimeZone.forID("America/Los_Angeles"));
+		ActivitiesResult result = new ActivitiesResult(readObject("ActivitiesResultTest.json"), author, SI.KILOMETER, Units.KCAL, DateTimeZone.forID("America/Los_Angeles"));
 		assertThat(result.getNext()).isEqualTo("/fitnessActivities?page=1&pageSize=2");
 		List<Event> events = result.getEvents();
 		assertThat(events).hasSize(2);

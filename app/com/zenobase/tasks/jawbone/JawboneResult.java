@@ -6,7 +6,6 @@ import javax.measure.DecimalMeasure;
 import javax.measure.quantity.Energy;
 import javax.measure.quantity.Length;
 import javax.measure.quantity.Quantity;
-import javax.measure.unit.SI;
 import javax.measure.unit.Unit;
 
 import org.joda.time.DateTime;
@@ -16,6 +15,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.base.Preconditions;
 
 import com.zenobase.common.Measures;
+import com.zenobase.common.Units;
 import com.zenobase.models.Identity;
 import com.zenobase.models.Location;
 import com.zenobase.models.Rating;
@@ -80,7 +80,6 @@ abstract class JawboneResult {
 	}
 
 	protected DecimalMeasure<Energy> energyValue(JsonNode node) {
-		Unit<Energy> unit = Measures.parseUnit("cal");
-		return node.isNumber() ? Measures.<Energy>valueOf(node.decimalValue(), SI.KILO(unit)) : null;
+		return node.isNumber() ? Measures.<Energy>valueOf(node.decimalValue(), Units.KCAL) : null;
 	}
 }

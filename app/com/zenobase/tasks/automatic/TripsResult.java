@@ -18,6 +18,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 
 import com.zenobase.common.Measures;
+import com.zenobase.common.Units;
 import com.zenobase.json.LengthPerVolume;
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
@@ -118,7 +119,7 @@ class TripsResult {
 		}
 		DecimalMeasure<LengthPerVolume> value = Measures.valueOf(node.decimalValue(), "mpg");
 		if (metric) {
-			value = value.to(Measures.<LengthPerVolume>parseUnit("kpl"), MathContext.DECIMAL32);
+			value = value.to(Units.<LengthPerVolume>valueOf("kpl"), MathContext.DECIMAL32);
 		}
 		return value;
 	}

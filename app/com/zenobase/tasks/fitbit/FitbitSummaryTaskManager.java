@@ -13,6 +13,7 @@ import com.google.common.base.Objects;
 import com.google.common.collect.Lists;
 
 import com.zenobase.commands.Command;
+import com.zenobase.common.Units;
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
 import com.zenobase.tasks.OAuthCredentials;
@@ -29,7 +30,7 @@ public class FitbitSummaryTaskManager extends FitbitTaskManagerSupport {
 	public FitbitSummaryTask newTask(String bucketId, Identity principal, ObjectNode settings) {
 		String marker = parseMarker(settings.path("marker").textValue()).toString();
 		String tag = Objects.firstNonNull(settings.path("tag").textValue(), "steps");
-		return new FitbitSummaryTask(bucketId, principal, marker, tag);
+		return new FitbitSummaryTask(bucketId, principal, marker, tag, Units.KCAL);
 	}
 
 	@Override
@@ -47,7 +48,7 @@ public class FitbitSummaryTaskManager extends FitbitTaskManagerSupport {
 			request.addHeader("Accept-Language", profile.getDistanceLocale());
 			Response response = send(request, credentials);
 			events.addAll(new FitbitSummaryResult(parseObject(response), task.getTag(), task.getPrincipal(),
-				date.toDateTimeAtStartOfDay(profile.getTimezone()), profile.getDistanceUnit(), profile.getHeightUnit()).getEvents());
+				date.toDateTimeAtStartOfDay(profile.getTimezone()), profile.getDistanceUnit(), profile.getHeightUnit(), task.getEnergyUnit()).getEvents());
 		}
 		return createCommand(task, events, syncDate);
 	}

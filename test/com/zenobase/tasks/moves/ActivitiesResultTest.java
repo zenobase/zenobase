@@ -14,6 +14,7 @@ import org.joda.time.format.ISODateTimeFormat;
 import org.junit.Test;
 
 import com.zenobase.common.Measures;
+import com.zenobase.common.Units;
 import com.zenobase.models.Event;
 import com.zenobase.tasks.ResultTestSupport;
 
@@ -22,7 +23,7 @@ public class ActivitiesResultTest extends ResultTestSupport {
 	@Test
 	public void test() {
 		DateTime begin = DateTime.parse("20121212T071430+0200", ISODateTimeFormat.basicDateTimeNoMillis().withOffsetParsed());
-		ActivitiesResult result = new ActivitiesResult(readArray("ActivitiesResultTest.json"), TESTER, begin, SI.KILOMETER, Measures.<Energy>parseUnit("kcal"));
+		ActivitiesResult result = new ActivitiesResult(readArray("ActivitiesResultTest.json"), TESTER, begin, SI.KILOMETER, Units.KCAL);
 		List<Event> events = result.getEvents();
 		assertThat(events).as("events").hasSize(6);
 		Event expected = new Event(events.get(0).getId());

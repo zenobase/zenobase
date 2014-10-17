@@ -10,6 +10,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.base.Preconditions;
 
 import com.zenobase.common.Measures;
+import com.zenobase.common.Units;
 import com.zenobase.models.Event;
 import com.zenobase.models.Location;
 import com.zenobase.models.Resource;
@@ -27,7 +28,7 @@ class ActivityResult {
 	public void addDetails(Event event) {
 		event.setValue(Event.NOTE, node.path("notes").textValue());
 		event.setValue(Event.HEIGHT, convertMeasureValue(node.path("climb"), unit));
-		event.setValue(Event.FREQUENCY, measureValue(node.path("average_heart_rate"), Measures.<Frequency>parseUnit("bpm")));
+		event.setValue(Event.FREQUENCY, measureValue(node.path("average_heart_rate"), Units.<Frequency>valueOf("bpm")));
 		event.setValue(Event.SOURCE, new Resource("RunKeeper", node.path("activity").textValue()));
 		event.setValue(Event.LOCATION, locationValue(node.path("path")));
 	}

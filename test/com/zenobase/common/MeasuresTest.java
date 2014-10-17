@@ -5,32 +5,10 @@ import static org.fest.assertions.Assertions.assertThat;
 import java.math.BigDecimal;
 
 import javax.measure.DecimalMeasure;
-import javax.measure.quantity.Dimensionless;
-import javax.measure.quantity.Duration;
-import javax.measure.quantity.Frequency;
-import javax.measure.quantity.Length;
-import javax.measure.quantity.Mass;
-import javax.measure.quantity.Temperature;
-import javax.measure.quantity.Volume;
-import javax.measure.unit.Dimension;
-import javax.measure.unit.NonSI;
-import javax.measure.unit.SI;
 
 import org.junit.Test;
 
 public class MeasuresTest {
-
-	@Test
-	public void testDimensions() {
-		assertThat(Measures.getUnits(Dimension.LENGTH, Length.class)).as("length units").isNotEmpty();
-		assertThat(Measures.getUnits(Dimension.MASS, Mass.class)).as("mass units").isNotEmpty();
-		assertThat(Measures.getUnits(Dimension.TEMPERATURE, Temperature.class)).as("temperature units").isNotEmpty();
-		assertThat(Measures.getUnits(Dimension.NONE, Dimensionless.class)).as("dimensionless units").isNotEmpty();
-		assertThat(Measures.getUnits(Dimension.LENGTH.pow(3), Volume.class)).as("volume units").isNotEmpty();
-		assertThat(Measures.getUnits(Dimension.TIME, Duration.class)).as("time units").isNotEmpty();
-		assertThat(Measures.getUnits(Dimension.NONE.divide(Dimension.TIME), Frequency.class)).as("frequency units").isNotEmpty();
-		assertThat(Measures.getUnits(Dimension.LENGTH.pow(3), Volume.class)).as("volume units").isNotEmpty();
-	}
 
 	@Test
 	public void testLength() {
@@ -159,14 +137,5 @@ public class MeasuresTest {
 	public void testRounding() {
 		assertThat(Measures.round(1.665)).isEqualTo(new BigDecimal("1.67"));
 		assertThat(Measures.round(Double.NaN)).isNull();
-	}
-
-	@Test
-	public void testIsMetric() {
-		assertThat(Measures.isMetric(SI.METER)).as("m are metric").isTrue();
-		assertThat(Measures.isMetric(SI.KILOMETER)).as("km are metric").isTrue();
-		assertThat(Measures.isMetric(SI.CENTIMETER)).as("cm are metric").isTrue();
-		assertThat(Measures.isMetric(NonSI.FOOT)).as("ft are metric").isFalse();
-		assertThat(Measures.isMetric(NonSI.MILE)).as("mi are metric").isFalse();
 	}
 }

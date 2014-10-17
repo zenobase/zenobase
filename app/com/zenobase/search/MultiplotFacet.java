@@ -22,6 +22,7 @@ import com.google.common.collect.Maps;
 
 import com.zenobase.common.Measures;
 import com.zenobase.common.OffsetIntervals;
+import com.zenobase.common.Units;
 import com.zenobase.json.Field;
 import com.zenobase.json.MeasurementField;
 import com.zenobase.json.Nodes;
@@ -54,7 +55,7 @@ public class MultiplotFacet extends Facet {
 	}
 
 	private Unit<?> getUnit(int series) {
-		return Measures.parseUnit(units.get(series));
+		return Units.valueOf(units.get(series));
 	}
 
 	@Override

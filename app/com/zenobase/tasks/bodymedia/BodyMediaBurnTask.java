@@ -6,7 +6,7 @@ import javax.measure.unit.Unit;
 import org.elasticsearch.common.base.Objects;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
-import com.zenobase.common.Measures;
+import com.zenobase.common.Units;
 import com.zenobase.json.BooleanField;
 import com.zenobase.json.TokenField;
 import com.zenobase.models.Identity;
@@ -40,7 +40,7 @@ public class BodyMediaBurnTask extends Task {
 	}
 
 	public Unit<Energy> getEnergyUnit() {
-		return Measures.parseUnit(Objects.firstNonNull(getSetting(ENERGY_UNIT), "cal"));
+		return Units.valueOf(Objects.firstNonNull(getSetting(ENERGY_UNIT), "cal"));
 	}
 
 	@Override

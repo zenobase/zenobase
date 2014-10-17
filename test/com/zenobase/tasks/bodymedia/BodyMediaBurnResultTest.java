@@ -13,6 +13,7 @@ import org.joda.time.LocalDate;
 import org.junit.Test;
 
 import com.zenobase.common.Measures;
+import com.zenobase.common.Units;
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
 import com.zenobase.tasks.ResultTestSupport;
@@ -65,7 +66,7 @@ public class BodyMediaBurnResultTest extends ResultTestSupport {
 	}
 
 	private BodyMediaBurnResult parse(String source, boolean hourly) {
-		return new BodyMediaBurnResult(readObject(source), author, TAG, hourly, Measures.<Energy>parseUnit("kcal"), timezones);
+		return new BodyMediaBurnResult(readObject(source), author, TAG, hourly, Units.KCAL, timezones);
 	}
 
 	private static void assertEvent(Event event, String timestamp, String calories, int hours) {

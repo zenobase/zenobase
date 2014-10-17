@@ -19,6 +19,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
 
 import com.zenobase.common.Measures;
+import com.zenobase.common.Units;
 import com.zenobase.json.Field;
 import com.zenobase.json.LocalDateTimeField;
 import com.zenobase.json.MeasurementField;
@@ -172,7 +173,7 @@ public class PolarFacet extends Facet {
 					options.get("key_field", String.class, Event.TIMESTAMP.getName()),
 					options.get("value_field", String.class, Event.TIMESTAMP.getName()),
 					Interval.valueOf(options.get("interval").toUpperCase()),
-					unit != null ? Measures.parseUnit(unit) : Unit.ONE,
+					unit != null ? Units.valueOf(unit) : Unit.ONE,
 					filterParser.parse(options.get("filter")));
 			}
 		};

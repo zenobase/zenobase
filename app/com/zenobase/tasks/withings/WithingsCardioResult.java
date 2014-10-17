@@ -16,7 +16,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 
-import com.zenobase.common.Measures;
+import com.zenobase.common.Units;
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
 import com.zenobase.models.Percentage;
@@ -25,8 +25,8 @@ import com.zenobase.models.Resource;
 class WithingsCardioResult {
 
 	private static final Resource SOURCE = new Resource("Withings", "http://withings.com/");
-	private static final Unit<Frequency> UNIT_BPM = Measures.parseUnit("bpm");
-	private static final Unit<Pressure> UNIT_MMHG = Measures.parseUnit("mmHg");
+	private static final Unit<Frequency> UNIT_BPM = Units.valueOf("bpm");
+	private static final Unit<Pressure> UNIT_MMHG = Units.valueOf("mmHg");
 
 	private final ObjectNode node;
 	private final Identity author;

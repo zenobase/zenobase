@@ -13,6 +13,7 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import com.zenobase.common.Measures;
+import com.zenobase.common.Units;
 import com.zenobase.json.Field;
 import com.zenobase.json.MeasurementField;
 import com.zenobase.json.Nodes;
@@ -83,7 +84,7 @@ public class ScoreboardFacet extends Facet {
 					options.get("id"),
 					options.get("key_field"),
 					options.get("value_field"),
-					unit != null ? Measures.parseUnit(unit) : Unit.ONE,
+					unit != null ? Units.valueOf(unit) : Unit.ONE,
 					ComparatorType.valueOf(options.get("order", String.class, "term").toUpperCase()),
 					options.get("limit", Integer.class, 10),
 					filterParser.parse(options.get("filter")));

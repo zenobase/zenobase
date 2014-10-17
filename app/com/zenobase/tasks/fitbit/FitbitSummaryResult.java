@@ -12,7 +12,6 @@ import org.joda.time.DateTime;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.collect.Lists;
 
-import com.zenobase.common.Measures;
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
 import com.zenobase.models.Resource;
@@ -26,14 +25,16 @@ class FitbitSummaryResult {
 	private final Identity author;
 	private final DateTime timestamp;
 	private final Unit<Length> distanceUnit, heightUnit;
+	private final Unit<Energy> energyUnit;
 
-	public FitbitSummaryResult(JsonNode node, String tag, Identity author, DateTime timestamp, Unit<Length> distanceUnit, Unit<Length> heightUnit) {
+	public FitbitSummaryResult(JsonNode node, String tag, Identity author, DateTime timestamp, Unit<Length> distanceUnit, Unit<Length> heightUnit, Unit<Energy> energyUnit) {
 		this.node = node;
 		this.tag = tag;
 		this.author = author;
 		this.timestamp = timestamp;
 		this.distanceUnit = distanceUnit;
 		this.heightUnit = heightUnit;
+		this.energyUnit = energyUnit;
 	}
 
 	public List<Event> getEvents() {
@@ -75,7 +76,6 @@ class FitbitSummaryResult {
 
 	private DecimalMeasure<Energy> getCalories() {
 		BigDecimal value = node.path("summary").path("activityCalories").decimalValue();
-		Unit<Energy> unit = Measures.parseUnit("cal");
-		return value != null ? DecimalMeasure.valueOf(value, unit) : null;
+		return value != null ? DecimalMeasure.valueOf(value, energyUnit) : null;
 	}
 }

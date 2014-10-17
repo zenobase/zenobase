@@ -18,6 +18,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 
 import com.zenobase.common.Measures;
+import com.zenobase.common.Units;
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
 import com.zenobase.models.Location;
@@ -25,7 +26,7 @@ import com.zenobase.models.Resource;
 
 class ActivitiesResult {
 
-	private static final Unit<Frequency> UNIT_BPM = Measures.<Frequency>parseUnit("bpm");
+	private static final Unit<Frequency> UNIT_BPM = Units.<Frequency>valueOf("bpm");
 
 	private final JsonNode node;
 	private final Identity author;

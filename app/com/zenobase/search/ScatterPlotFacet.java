@@ -23,6 +23,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 
 import com.zenobase.common.Measures;
+import com.zenobase.common.Units;
 import com.zenobase.json.Field;
 import com.zenobase.json.LocalDateTimeField;
 import com.zenobase.json.MeasurementField;
@@ -206,7 +207,7 @@ public class ScatterPlotFacet extends Facet {
 	}
 
 	private static Unit<?> parseUnit(String value) {
-		return value != null ? Measures.parseUnit(value) : Unit.ONE;
+		return value != null ? Units.valueOf(value) : Unit.ONE;
 	}
 
 	private static Statistic parseStatistic(String value) {

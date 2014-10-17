@@ -11,6 +11,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import com.zenobase.common.Measures;
+import com.zenobase.common.Units;
 import com.zenobase.json.Field;
 import com.zenobase.json.MeasurementField;
 import com.zenobase.json.Nodes;
@@ -76,7 +77,7 @@ public class StatsFacet extends Facet {
 			}
 
 			private Unit<?> getUnit(String value) {
-				return value != null ? Measures.parseUnit(value) : Unit.ONE;
+				return value != null ? Units.valueOf(value) : Unit.ONE;
 			}
 		};
 	}

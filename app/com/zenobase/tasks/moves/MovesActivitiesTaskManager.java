@@ -17,7 +17,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.Lists;
 
 import com.zenobase.commands.Command;
-import com.zenobase.common.Measures;
+import com.zenobase.common.Units;
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
 import com.zenobase.tasks.OAuthCredentials;
@@ -32,9 +32,8 @@ public class MovesActivitiesTaskManager extends MovesTaskManagerSupport {
 
 	@Override
 	public Task newTask(String bucketId, Identity principal, ObjectNode settings) {
-		Unit<Length> lengthUnit = Measures.parseUnit(Objects.firstNonNull(settings.path("unit").textValue(), "m"));
-		Unit<Energy> energyUnit = Measures.parseUnit(Objects.firstNonNull(settings.path("energy_unit").textValue(), "kcal"));
-		return new MovesActivitiesTask(bucketId, principal, lengthUnit, energyUnit);
+		Unit<Length> lengthUnit = Units.valueOf(Objects.firstNonNull(settings.path("unit").textValue(), "m"));
+		return new MovesActivitiesTask(bucketId, principal, lengthUnit, Units.KCAL);
 	}
 
 	@Override

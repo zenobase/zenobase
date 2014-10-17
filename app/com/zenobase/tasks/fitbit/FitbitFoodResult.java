@@ -5,7 +5,6 @@ import java.util.List;
 
 import javax.measure.DecimalMeasure;
 import javax.measure.quantity.Energy;
-import javax.measure.unit.Unit;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
@@ -14,7 +13,7 @@ import org.joda.time.Period;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.collect.Lists;
 
-import com.zenobase.common.Measures;
+import com.zenobase.common.Units;
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
 import com.zenobase.models.Resource;
@@ -22,7 +21,6 @@ import com.zenobase.models.Resource;
 class FitbitFoodResult {
 
 	public static final Resource SOURCE = new Resource("Fitbit", "http://fitbit.com/");
-	private static final Unit<Energy> KCAL = Measures.parseUnit("kcal");
 
 	private final JsonNode node;
 	private final String tag;
@@ -57,6 +55,6 @@ class FitbitFoodResult {
 	}
 
 	private DecimalMeasure<Energy> kcalValue(JsonNode node) {
-		return node.asInt() > 0 ? DecimalMeasure.valueOf(new BigDecimal(node.asInt()), KCAL) : null;
+		return node.asInt() > 0 ? DecimalMeasure.valueOf(new BigDecimal(node.asInt()), Units.KCAL) : null;
 	}
 }

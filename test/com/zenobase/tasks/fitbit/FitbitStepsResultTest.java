@@ -8,7 +8,6 @@ import javax.measure.DecimalMeasure;
 import javax.measure.quantity.Energy;
 import javax.measure.quantity.Length;
 import javax.measure.unit.NonSI;
-import javax.measure.unit.Unit;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
@@ -16,7 +15,7 @@ import org.joda.time.Duration;
 import org.joda.time.LocalDate;
 import org.junit.Test;
 
-import com.zenobase.common.Measures;
+import com.zenobase.common.Units;
 import com.zenobase.json.Nodes;
 import com.zenobase.models.Event;
 import com.zenobase.tasks.ResultTestSupport;
@@ -24,13 +23,12 @@ import com.zenobase.tasks.ResultTestSupport;
 public class FitbitStepsResultTest extends ResultTestSupport {
 
 	private static final String TAG = "walk";
-	private static final Unit<Energy> KCAL = Measures.parseUnit("kcal");
 	private static final LocalDate DATE = LocalDate.parse("2013-11-03");
 	private static final DateTimeZone TIMEZONE = DateTimeZone.forID("America/Los_Angeles");
 
 	@Test
 	public void test() {
-		FitbitStepsResult result = new FitbitStepsResult(readObject("FitbitStepsResultTest.json"), TAG, TESTER, DATE, TIMEZONE, NonSI.MILE, NonSI.FOOT, KCAL);
+		FitbitStepsResult result = new FitbitStepsResult(readObject("FitbitStepsResultTest.json"), TAG, TESTER, DATE, TIMEZONE, NonSI.MILE, NonSI.FOOT, Units.KCAL);
 		List<Event> events = result.getEvents();
 		assertThat(events).as("events").hasSize(1);
 		Event expected = new Event(events.get(0).getId());
@@ -48,7 +46,7 @@ public class FitbitStepsResultTest extends ResultTestSupport {
 
 	@Test
 	public void testEmpty() {
-		FitbitStepsResult result = new FitbitStepsResult(Nodes.newObject(), TAG, TESTER, DATE, TIMEZONE, NonSI.MILE, NonSI.FOOT, KCAL);
+		FitbitStepsResult result = new FitbitStepsResult(Nodes.newObject(), TAG, TESTER, DATE, TIMEZONE, NonSI.MILE, NonSI.FOOT, Units.KCAL);
 		List<Event> events = result.getEvents();
 		assertThat(events).as("events").isEmpty();
 	}

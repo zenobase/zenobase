@@ -3,7 +3,6 @@ package com.zenobase.tasks.runkeeper;
 import java.util.List;
 
 import javax.inject.Inject;
-import javax.measure.quantity.Energy;
 import javax.measure.quantity.Length;
 import javax.measure.unit.Unit;
 
@@ -21,7 +20,7 @@ import com.zenobase.commands.Command;
 import com.zenobase.commands.CompoundCommand;
 import com.zenobase.commands.CreateEventCommand;
 import com.zenobase.commands.UpdateTaskCommand;
-import com.zenobase.common.Measures;
+import com.zenobase.common.Units;
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
 import com.zenobase.tasks.OAuthCredentials;
@@ -41,9 +40,8 @@ public class RunkeeperTaskManager extends OAuthTaskManager {
 	public Task newTask(String bucketId, Identity principal, ObjectNode settings) {
 		String marker = formatMarker(parseMarker(settings.path("marker").textValue()));
 		DateTimeZone zone = DateTimeZone.forID(Objects.firstNonNull(settings.path("timezone").textValue(), "UTC"));
-		Unit<Length> lengthUnit = Measures.parseUnit(Objects.firstNonNull(settings.path("unit").textValue(), "km"));
-		Unit<Energy> energyUnit = Measures.parseUnit(Objects.firstNonNull(settings.path("energy_unit").textValue(), "kcal"));
-		return new RunkeeperTask(bucketId, principal, zone, lengthUnit, energyUnit, marker);
+		Unit<Length> lengthUnit = Units.valueOf(Objects.firstNonNull(settings.path("unit").textValue(), "km"));
+		return new RunkeeperTask(bucketId, principal, zone, lengthUnit, Units.KCAL, marker);
 	}
 
 	@Override

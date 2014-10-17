@@ -8,7 +8,7 @@ import org.joda.time.DateTime;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Objects;
 
-import com.zenobase.common.Measures;
+import com.zenobase.common.Units;
 import com.zenobase.json.TokenField;
 import com.zenobase.models.Identity;
 import com.zenobase.tasks.Task;
@@ -35,11 +35,11 @@ public class MovesActivitiesTask extends Task {
 	}
 
 	public Unit<Length> getUnit() {
-		return Measures.<Length>parseUnit(getSetting(LENGTH_UNIT));
+		return Units.<Length>valueOf(getSetting(LENGTH_UNIT));
 	}
 
 	public Unit<Energy> getEnergyUnit() {
-		return Measures.parseUnit(Objects.firstNonNull(getSetting(ENERGY_UNIT), "cal"));
+		return Units.valueOf(Objects.firstNonNull(getSetting(ENERGY_UNIT), "cal"));
 	}
 
 	@Override

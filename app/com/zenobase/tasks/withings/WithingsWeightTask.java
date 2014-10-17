@@ -6,7 +6,7 @@ import javax.measure.unit.Unit;
 import org.joda.time.DateTimeZone;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
-import com.zenobase.common.Measures;
+import com.zenobase.common.Units;
 import com.zenobase.json.TokenField;
 import com.zenobase.models.Identity;
 import com.zenobase.tasks.Task;
@@ -36,7 +36,7 @@ public class WithingsWeightTask extends Task {
 	}
 
 	public Unit<Mass> getUnit() {
-		return Measures.<Mass>parseUnit(getSetting(UNIT));
+		return Units.<Mass>valueOf(getSetting(UNIT));
 	}
 
 	public void setUnit(Unit<Mass> unit) {

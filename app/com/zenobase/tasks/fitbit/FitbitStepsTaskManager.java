@@ -3,8 +3,6 @@ package com.zenobase.tasks.fitbit;
 import java.util.List;
 
 import javax.inject.Inject;
-import javax.measure.quantity.Energy;
-import javax.measure.unit.Unit;
 
 import org.joda.time.LocalDate;
 import org.scribe.model.OAuthRequest;
@@ -15,7 +13,7 @@ import com.google.common.base.Objects;
 import com.google.common.collect.Lists;
 
 import com.zenobase.commands.Command;
-import com.zenobase.common.Measures;
+import com.zenobase.common.Units;
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
 import com.zenobase.tasks.InvalidStatusException;
@@ -33,8 +31,7 @@ public class FitbitStepsTaskManager extends FitbitTaskManagerSupport {
 	public FitbitStepsTask newTask(String bucketId, Identity principal, ObjectNode settings) {
 		String marker = parseMarker(settings.path("marker").textValue()).toString();
 		String tag = Objects.firstNonNull(settings.path("tag").textValue(), "steps");
-		Unit<Energy> energyUnit = Measures.parseUnit(Objects.firstNonNull(settings.path("energy_unit").textValue(), "kcal"));
-		return new FitbitStepsTask(bucketId, principal, marker, tag, energyUnit);
+		return new FitbitStepsTask(bucketId, principal, marker, tag, Units.KCAL);
 	}
 
 	@Override

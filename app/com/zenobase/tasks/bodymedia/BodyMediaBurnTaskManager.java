@@ -3,8 +3,6 @@ package com.zenobase.tasks.bodymedia;
 import java.util.List;
 
 import javax.inject.Inject;
-import javax.measure.quantity.Energy;
-import javax.measure.unit.Unit;
 
 import org.joda.time.LocalDate;
 import org.scribe.model.OAuthRequest;
@@ -17,7 +15,7 @@ import com.google.common.base.Objects;
 import com.google.common.collect.Lists;
 
 import com.zenobase.commands.Command;
-import com.zenobase.common.Measures;
+import com.zenobase.common.Units;
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
 import com.zenobase.tasks.InvalidStatusException;
@@ -36,8 +34,7 @@ public class BodyMediaBurnTaskManager extends BodyMediaTaskManagerSupport {
 		String marker = parseMarker(settings.path("marker").textValue()).toString();
 		String tag = Objects.firstNonNull(settings.path("tag").textValue(), "steps");
 		boolean hourly = settings.path("hourly").booleanValue();
-		Unit<Energy> energyUnit = Measures.parseUnit(Objects.firstNonNull(settings.path("energy_unit").textValue(), "kcal"));
-		return new BodyMediaBurnTask(bucketId, principal, tag, hourly, energyUnit, marker);
+		return new BodyMediaBurnTask(bucketId, principal, tag, hourly, Units.KCAL, marker);
 	}
 
 	@Override

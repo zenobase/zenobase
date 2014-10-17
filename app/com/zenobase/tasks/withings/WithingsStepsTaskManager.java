@@ -1,7 +1,6 @@
 package com.zenobase.tasks.withings;
 
 import javax.inject.Inject;
-import javax.measure.quantity.Energy;
 import javax.measure.quantity.Length;
 import javax.measure.unit.Unit;
 
@@ -19,7 +18,7 @@ import com.zenobase.commands.Command;
 import com.zenobase.commands.CompoundCommand;
 import com.zenobase.commands.CreateEventCommand;
 import com.zenobase.commands.UpdateTaskCommand;
-import com.zenobase.common.Measures;
+import com.zenobase.common.Units;
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
 import com.zenobase.tasks.OAuthCredentials;
@@ -37,9 +36,8 @@ public class WithingsStepsTaskManager extends OAuthTaskManager {
 	public WithingsStepsTask newTask(String bucketId, Identity principal, ObjectNode settings) {
 		String marker = parseMarker(settings.path("marker").textValue());
 		String tag = Objects.firstNonNull(settings.path("tag").textValue(), "steps");
-		Unit<Length> lengthUnit = Measures.parseUnit(Objects.firstNonNull(settings.path("unit").textValue(), "km"));
-		Unit<Energy> energyUnit = Measures.parseUnit(Objects.firstNonNull(settings.path("energy_unit").textValue(), "kcal"));
-		WithingsStepsTask task = new WithingsStepsTask(bucketId, principal, tag, lengthUnit, energyUnit, marker);
+		Unit<Length> lengthUnit = Units.valueOf(Objects.firstNonNull(settings.path("unit").textValue(), "km"));
+		WithingsStepsTask task = new WithingsStepsTask(bucketId, principal, tag, lengthUnit, Units.KCAL, marker);
 		return task;
 	}
 

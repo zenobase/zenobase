@@ -14,6 +14,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.Lists;
 
 import com.zenobase.common.Measures;
+import com.zenobase.common.Units;
 import com.zenobase.json.Field;
 import com.zenobase.json.MeasurementField;
 import com.zenobase.json.Nodes;
@@ -97,7 +98,7 @@ public class HistogramFacet extends Facet {
 					options.get("id"),
 					options.get("field"),
 					options.get("interval", Double.class, 10.0),
-					unit != null ? Measures.parseUnit(unit) : Unit.ONE,
+					unit != null ? Units.valueOf(unit) : Unit.ONE,
 					filterParser.parse(options.get("filter")));
 			}
 		};

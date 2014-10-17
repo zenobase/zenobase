@@ -5,7 +5,7 @@ import javax.measure.unit.Unit;
 import org.elasticsearch.index.query.FilterBuilder;
 import org.joda.time.DateTimeZone;
 
-import com.zenobase.common.Measures;
+import com.zenobase.common.Units;
 import com.zenobase.models.Event;
 
 public class TimelineFacet {
@@ -32,7 +32,7 @@ public class TimelineFacet {
 			}
 
 			private Unit<?> getUnit(String value) {
-				return value != null ? Measures.parseUnit(value) : Unit.ONE;
+				return value != null ? Units.valueOf(value) : Unit.ONE;
 			}
 		};
 	}

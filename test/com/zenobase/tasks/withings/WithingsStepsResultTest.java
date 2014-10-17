@@ -13,6 +13,7 @@ import org.joda.time.Duration;
 import org.junit.Test;
 
 import com.zenobase.common.Measures;
+import com.zenobase.common.Units;
 import com.zenobase.models.Event;
 import com.zenobase.tasks.ResultTestSupport;
 
@@ -20,7 +21,7 @@ public class WithingsStepsResultTest extends ResultTestSupport {
 
 	@Test
 	public void test() {
-		WithingsStepsResult result = new WithingsStepsResult(readObject("WithingsStepsResultTest.json"), TESTER, "walk", NonSI.MILE, NonSI.FOOT, Measures.<Energy>parseUnit("kcal"));
+		WithingsStepsResult result = new WithingsStepsResult(readObject("WithingsStepsResultTest.json"), TESTER, "walk", NonSI.MILE, NonSI.FOOT, Units.KCAL);
 		assertThat(result.getStatus()).as("status").isEqualTo(0);
 		List<Event> actual = result.getEvents();
 		assertThat(actual).hasSize(2);

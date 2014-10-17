@@ -9,7 +9,7 @@ import javax.measure.unit.Unit;
 import org.joda.time.DateTimeZone;
 import com.fasterxml.jackson.databind.JsonNode;
 
-import com.zenobase.common.Measures;
+import com.zenobase.common.Units;
 
 class FitbitProfileResult {
 
@@ -48,7 +48,7 @@ class FitbitProfileResult {
 			return NonSI.POUND;
 		}
 		if ("en_GB".equals(locale)) {
-			return Measures.parseUnit("st");
+			return Units.valueOf("st");
 		}
 		return SI.KILOGRAM;
 	}
