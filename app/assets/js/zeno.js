@@ -766,8 +766,9 @@
 		$scope.run = function(bucketId) {
 			$scope.loading[bucketId] = true;
 			$scope.alert.clear();
-			taskRunner.runAll($scope, bucketId)['finally'](function() {
+			taskRunner.runAll($scope, bucketId).then(function() {
 				delay($scope.refresh);
+			})['finally'](function() {
 				delete $scope.loading[bucketId];
 			});
 			tracker.event('action', 'run tasks');
@@ -1391,8 +1392,9 @@
 		$scope.run = function() {
 			$scope.alert.clear();
 			$scope.loading = true;
-			taskRunner.runAll($scope, $scope.bucketId)['finally'](function() {
+			taskRunner.runAll($scope, $scope.bucketId).then(function() {
 				delay($scope.refresh);
+			})['finally'](function() {
 				$scope.loading = false;
 			});
 			tracker.event('action', 'run tasks');
@@ -4514,6 +4516,8 @@
 				$.each(response.data.tasks, function(i, task) {
 					previous = previous.then(function() {
 						return runOne($scope, task['@id']);
+					}, function() {
+						return $q.reject();
 					});
 				});
 				return previous;
@@ -4529,6 +4533,7 @@
 						var match = response.headers('Link').match(/<(.+?)>/);
 						console.assert(match, 'Invalid Link header: ' + response.headers('Link'));
 						authorize($scope, null, response.data.type, match[1]);
+						return $q.reject();
 					}
 				}, function(response) {
 					if (response.status == 403) {
@@ -4548,6 +4553,7 @@
 					if (response.data.authorizationUrl) {
 						authorize($scope, response.data['@id'], type, response.data.authorizationUrl);
 					}
+					return $q.reject();
 				}, function(response) {
 					if (response.status === 400) {
 						$scope.alert.show('Can\'t create credentials: ' + response.data.message, 'alert-error');					
@@ -4666,7 +4672,7 @@
 			{ 'id' : 'withings-cardio', 'description' : 'Creates an event for each heart rate measurement.' },
 			{ 'id' : 'withings-sleep', 'description' : 'Creates an event for each period of sleep.' },
 			{ 'id' : 'withings-steps', 'description' : 'Creates an event for the number of steps each day (incl distance and elevation).' }
-			// , { 'id' : 'demo', 'description' : 'Creates a single event each time this task is run.' }
+			// { 'id' : 'demo', 'description' : 'Creates a single event each time this task is run.' }
 		];
 
 		function selectType(id) {
