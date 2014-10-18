@@ -77,14 +77,12 @@ public class TaskControllerHttpGetTest extends TaskControllerTestSupport {
 		verify(refresher).refresh(task);
 	}
 
-	@Test
+	@Test(expected = RuntimeException.class)
 	public void testGetStaleTaskFailedRefresh() {
 		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
 		when(tasks.find(task.getId())).thenReturn(task.copy());
 		doThrow(new RuntimeException()).when(refresher).refresh(any(Task.class));
-		Result result = call(task.getId());
-		assertThat(result).hasStatus(OK).hasContent(task.toJson());
-		verify(refresher).refresh(task);
+		call(task.getId());
 	}
 
 	@Test
