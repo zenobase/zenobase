@@ -5,7 +5,6 @@ import java.util.regex.Pattern;
 
 import javax.measure.DecimalMeasure;
 import javax.measure.quantity.Length;
-import javax.measure.unit.SI;
 
 import org.elasticsearch.common.unit.DistanceUnit;
 import org.elasticsearch.index.query.FilterBuilder;
@@ -15,6 +14,7 @@ import org.elasticsearch.index.query.QueryBuilders;
 import com.google.common.base.Objects;
 
 import com.zenobase.common.Measures;
+import com.zenobase.common.Units;
 import com.zenobase.models.Location;
 
 public class DistanceConstraintBuilder extends ConstraintBuilder {
@@ -45,7 +45,7 @@ public class DistanceConstraintBuilder extends ConstraintBuilder {
 		FilterBuilder filter = FilterBuilders.geoDistanceFilter(getPath())
 			.lat(location.getLatitude().doubleValue())
 			.lon(location.getLongitude().doubleValue())
-			.distance(distance.doubleValue(SI.KILOMETER), DistanceUnit.KILOMETERS);
+			.distance(distance.doubleValue(Units.KM), DistanceUnit.KILOMETERS);
 		return QueryBuilders.constantScoreQuery(filter);
 	}
 }

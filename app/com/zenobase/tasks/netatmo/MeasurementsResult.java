@@ -6,8 +6,6 @@ import java.util.Map;
 
 import javax.measure.DecimalMeasure;
 import javax.measure.quantity.Quantity;
-import javax.measure.unit.NonSI;
-import javax.measure.unit.SI;
 import javax.measure.unit.Unit;
 
 import org.joda.time.DateTime;
@@ -17,6 +15,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 
 import com.zenobase.common.Measures;
+import com.zenobase.common.Units;
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
 import com.zenobase.models.Rating;
@@ -55,12 +54,12 @@ class MeasurementsResult {
 		event.setValue(Event.TIMESTAMP, new DateTime(Long.parseLong(entry.getKey()) * 1000, device.getUpdated().getZone()));
 		event.addValue(Event.TAG, device.getLabel());
 		event.setValue(Event.LOCATION, device.getLocation());
-		event.setValue(Event.TEMPERATURE, getMeasure(node.get(0), SI.CELSIUS));
-		event.setValue(Event.PRESSURE, getMeasure(node.get(1), SI.HECTO(SI.PASCAL)));
-		event.setValue(Event.SOUND, getMeasure(node.get(2), NonSI.DECIBEL));
+		event.setValue(Event.TEMPERATURE, getMeasure(node.get(0), Units.C));
+		event.setValue(Event.PRESSURE, getMeasure(node.get(1), Units.HPA));
+		event.setValue(Event.SOUND, getMeasure(node.get(2), Units.DB));
 		event.setValue(Event.HUMIDITY, getInteger(node.get(3)));
 		event.setValue(Event.RATING, getRating(node.get(4)));
-		event.setValue(Event.HEIGHT, getMeasure(node.get(5), SI.MILLIMETER));
+		event.setValue(Event.HEIGHT, getMeasure(node.get(5), Units.MM));
 		event.setValue(Event.AUTHOR, author);
 		event.setValue(Event.SOURCE, SOURCE);
 		return event;

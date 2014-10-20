@@ -7,8 +7,6 @@ import javax.measure.DecimalMeasure;
 import javax.measure.quantity.Dimensionless;
 import javax.measure.quantity.Pressure;
 import javax.measure.quantity.Temperature;
-import javax.measure.unit.NonSI;
-import javax.measure.unit.SI;
 
 import org.joda.time.DateTime;
 import org.joda.time.format.ISODateTimeFormat;
@@ -18,6 +16,7 @@ import com.google.common.collect.Lists;
 
 import com.zenobase.common.Generator;
 import com.zenobase.common.Measures;
+import com.zenobase.common.Units;
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
 import com.zenobase.models.Location;
@@ -114,17 +113,17 @@ public class SnapshotsResult {
 
 	private DecimalMeasure<Temperature> temperatureValue(JsonNode node) {
 		BigDecimal value = node.isNumber() ? node.decimalValue() : null;
-		return value != null ? Measures.valueOf(value, SI.CELSIUS) : null;
+		return value != null ? Measures.valueOf(value, Units.C) : null;
 	}
 
 	private DecimalMeasure<Pressure> pressureValue(JsonNode node) {
 		BigDecimal value = node.isNumber() ? node.decimalValue() : null;
-		return value != null ? Measures.valueOf(value, SI.HECTO(SI.PASCAL)) : null;
+		return value != null ? Measures.valueOf(value, Units.HPA) : null;
 	}
 
 	private DecimalMeasure<Dimensionless> soundValue(JsonNode node) {
 		BigDecimal value = node.isNumber() ? node.decimalValue() : null;
-		return value != null ? Measures.valueOf(value, NonSI.DECIBEL) : null;
+		return value != null ? Measures.valueOf(value, Units.DB) : null;
 	}
 
 	private boolean setNumericValue(JsonNode node, Question q, Event event) {

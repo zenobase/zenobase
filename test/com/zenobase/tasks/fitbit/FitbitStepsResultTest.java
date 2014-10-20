@@ -7,7 +7,6 @@ import java.util.List;
 import javax.measure.DecimalMeasure;
 import javax.measure.quantity.Energy;
 import javax.measure.quantity.Length;
-import javax.measure.unit.NonSI;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
@@ -28,7 +27,7 @@ public class FitbitStepsResultTest extends ResultTestSupport {
 
 	@Test
 	public void test() {
-		FitbitStepsResult result = new FitbitStepsResult(readObject("FitbitStepsResultTest.json"), TAG, TESTER, DATE, TIMEZONE, NonSI.MILE, NonSI.FOOT, Units.KCAL);
+		FitbitStepsResult result = new FitbitStepsResult(readObject("FitbitStepsResultTest.json"), TAG, TESTER, DATE, TIMEZONE, Units.MI, Units.FT, Units.KCAL);
 		List<Event> events = result.getEvents();
 		assertThat(events).as("events").hasSize(1);
 		Event expected = new Event(events.get(0).getId());
@@ -46,7 +45,7 @@ public class FitbitStepsResultTest extends ResultTestSupport {
 
 	@Test
 	public void testEmpty() {
-		FitbitStepsResult result = new FitbitStepsResult(Nodes.newObject(), TAG, TESTER, DATE, TIMEZONE, NonSI.MILE, NonSI.FOOT, Units.KCAL);
+		FitbitStepsResult result = new FitbitStepsResult(Nodes.newObject(), TAG, TESTER, DATE, TIMEZONE, Units.MI, Units.FT, Units.KCAL);
 		List<Event> events = result.getEvents();
 		assertThat(events).as("events").isEmpty();
 	}

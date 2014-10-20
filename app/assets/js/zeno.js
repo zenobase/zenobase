@@ -5443,7 +5443,7 @@
 			name : 'weight',
 			icon : 'fa-caret-square-o-down',
 			type : 'numeric',
-			units : [ 'lb', 'oz', 'kg', 'g', 'mg', 'st' ],
+			units : [ 'lb', 'oz', 'kg', 'g', 'mg', 'ug', 'ng', 'st' ],
 			toText : function(value) {
 				return typeof value === 'object' ? value['@value'] + ' ' + value.unit : value;
 			},

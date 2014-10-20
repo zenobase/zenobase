@@ -7,8 +7,6 @@ import java.util.List;
 import javax.measure.DecimalMeasure;
 import javax.measure.quantity.Length;
 import javax.measure.quantity.Volume;
-import javax.measure.unit.NonSI;
-import javax.measure.unit.SI;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
@@ -17,9 +15,9 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 
+import com.zenobase.common.LengthPerVolume;
 import com.zenobase.common.Measures;
 import com.zenobase.common.Units;
-import com.zenobase.json.LengthPerVolume;
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
 import com.zenobase.models.Location;
@@ -98,17 +96,17 @@ class TripsResult {
 		if (!node.isNumber()) {
 			return null;
 		}
-		DecimalMeasure<Length> value = Measures.valueOf(node.decimalValue(), SI.METER);
-		return value.to(metric ? SI.KILOMETER : NonSI.MILE, MathContext.DECIMAL32);
+		DecimalMeasure<Length> value = Measures.valueOf(node.decimalValue(), Units.M);
+		return value.to(metric ? Units.KM : Units.MI, MathContext.DECIMAL32);
 	}
 
 	private DecimalMeasure<Volume> volumeValue(JsonNode node) {
 		if (!node.isNumber()) {
 			return null;
 		}
-		DecimalMeasure<Volume> value = Measures.valueOf(node.decimalValue(), NonSI.GALLON_LIQUID_US);
+		DecimalMeasure<Volume> value = Measures.valueOf(node.decimalValue(), Units.GAL);
 		if (metric) {
-			value = value.to(NonSI.LITER, MathContext.DECIMAL32);
+			value = value.to(Units.L, MathContext.DECIMAL32);
 		}
 		return value;
 	}
@@ -117,9 +115,9 @@ class TripsResult {
 		if (!node.isNumber()) {
 			return null;
 		}
-		DecimalMeasure<LengthPerVolume> value = Measures.valueOf(node.decimalValue(), "mpg");
+		DecimalMeasure<LengthPerVolume> value = Measures.valueOf(node.decimalValue(), Units.MPG);
 		if (metric) {
-			value = value.to(Units.<LengthPerVolume>valueOf("kpl"), MathContext.DECIMAL32);
+			value = value.to(Units.KPL, MathContext.DECIMAL32);
 		}
 		return value;
 	}

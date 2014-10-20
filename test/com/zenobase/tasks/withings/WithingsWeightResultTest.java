@@ -7,12 +7,12 @@ import java.util.List;
 
 import javax.measure.DecimalMeasure;
 import javax.measure.quantity.Mass;
-import javax.measure.unit.NonSI;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.junit.Test;
 
+import com.zenobase.common.Units;
 import com.zenobase.models.Event;
 import com.zenobase.models.Percentage;
 import com.zenobase.tasks.ResultTestSupport;
@@ -21,7 +21,7 @@ public class WithingsWeightResultTest extends ResultTestSupport {
 
 	@Test
 	public void test() {
-		WithingsWeightResult result = new WithingsWeightResult(readObject("WithingsWeightResultTest.json"), TESTER, "body", NonSI.POUND, DateTimeZone.forID("America/Los_Angeles"));
+		WithingsWeightResult result = new WithingsWeightResult(readObject("WithingsWeightResultTest.json"), TESTER, "body", Units.LB, DateTimeZone.forID("America/Los_Angeles"));
 		assertThat(result.getStatus()).as("status").isEqualTo(0);
 		assertThat(result.getMarker()).as("marker").isEqualTo("1353615011");
 		List<Event> events = result.getEvents();

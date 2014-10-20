@@ -9,6 +9,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.zenobase.common.Units;
 import com.zenobase.json.BooleanField;
 import com.zenobase.json.TokenField;
+import com.zenobase.json.UnitField;
 import com.zenobase.models.Identity;
 import com.zenobase.tasks.Task;
 
@@ -17,7 +18,7 @@ public class BodyMediaBurnTask extends Task {
 	public static final String TYPE = "bodymedia-burn";
 	public static final TokenField TAG = new TokenField("tag");
 	public static final BooleanField HOURLY = new BooleanField("hourly");
-	public static final TokenField ENERGY_UNIT = new TokenField("energy_unit");
+	public static final UnitField<Energy> ENERGY_UNIT = new UnitField<Energy>("energy_unit");
 
 	public BodyMediaBurnTask(ObjectNode node) {
 		super(node);
@@ -28,7 +29,7 @@ public class BodyMediaBurnTask extends Task {
 		setMarker(marker);
 		setSetting(TAG, tag);
 		setSetting(HOURLY, hourly);
-		setSetting(ENERGY_UNIT, energyUnit.toString());
+		setSetting(ENERGY_UNIT, energyUnit);
 	}
 
 	public String getTag() {
@@ -40,7 +41,7 @@ public class BodyMediaBurnTask extends Task {
 	}
 
 	public Unit<Energy> getEnergyUnit() {
-		return Units.valueOf(Objects.firstNonNull(getSetting(ENERGY_UNIT), "cal"));
+		return Objects.firstNonNull(getSetting(ENERGY_UNIT), Units.CAL);
 	}
 
 	@Override

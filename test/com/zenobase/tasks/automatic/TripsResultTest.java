@@ -4,9 +4,6 @@ import static org.fest.assertions.Assertions.assertThat;
 
 import java.math.BigDecimal;
 
-import javax.measure.unit.NonSI;
-import javax.measure.unit.SI;
-
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
 import org.junit.Test;
@@ -31,18 +28,18 @@ public class TripsResultTest extends ResultTestSupport {
 		assertThat(trip.getEvent().getValue(Event.CURRENCY)).isEqualTo(new BigDecimal("1.04"));
 		assertThat(trip.getEvent().getValue(Event.SOURCE)).isEqualTo(TripsResult.SOURCE);
 		assertThat(trip.getEvent().getValue(Event.AUTHOR)).isEqualTo(TESTER);
-		assertThat(trip.getEvent().getValue(Event.DISTANCE)).isEqualTo(Measures.valueOf(new BigDecimal("4.08"), NonSI.MILE));
-		assertThat(trip.getEvent().getValue(Event.VOLUME)).isEqualTo(Measures.valueOf(new BigDecimal("0.25"), NonSI.GALLON_LIQUID_US));
-		assertThat(trip.getEvent().getValue(Event.DISTANCE_PER_VOLUME)).isEqualTo(Measures.valueOf(new BigDecimal("16.56"), "mpg"));
+		assertThat(trip.getEvent().getValue(Event.DISTANCE)).isEqualTo(Measures.valueOf("4.08 mi"));
+		assertThat(trip.getEvent().getValue(Event.VOLUME)).isEqualTo(Measures.valueOf("0.25 gal"));
+		assertThat(trip.getEvent().getValue(Event.DISTANCE_PER_VOLUME)).isEqualTo(Measures.valueOf("16.56 mpg"));
 	}
 
 	@Test
 	public void testWithMetricUnits() {
 		TripsResult result = new TripsResult(readArray("TripsResultTest.json"), TESTER, "Trip", true);
 		Trip trip = Iterables.getOnlyElement(result.getTrips());
-		assertThat(trip.getEvent().getValue(Event.DISTANCE)).isEqualTo(Measures.valueOf(new BigDecimal("6.57"), SI.KILOMETER));
-		assertThat(trip.getEvent().getValue(Event.VOLUME)).isEqualTo(Measures.valueOf(new BigDecimal("0.93"), NonSI.LITER));
-		assertThat(trip.getEvent().getValue(Event.DISTANCE_PER_VOLUME)).isEqualTo(Measures.valueOf(new BigDecimal("7.04"), "kpl"));
+		assertThat(trip.getEvent().getValue(Event.DISTANCE)).isEqualTo(Measures.valueOf("6.57 km"));
+		assertThat(trip.getEvent().getValue(Event.VOLUME)).isEqualTo(Measures.valueOf("0.93 L"));
+		assertThat(trip.getEvent().getValue(Event.DISTANCE_PER_VOLUME)).isEqualTo(Measures.valueOf("7.04 kpl"));
 	}
 
 	@Test

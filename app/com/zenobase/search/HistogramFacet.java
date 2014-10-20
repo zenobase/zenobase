@@ -1,7 +1,5 @@
 package com.zenobase.search;
 
-import javax.measure.unit.NonSI;
-import javax.measure.unit.SI;
 import javax.measure.unit.Unit;
 
 import org.elasticsearch.action.search.SearchResponse;
@@ -45,20 +43,20 @@ public class HistogramFacet extends Facet {
 	}
 
 	private double getStandardInterval() {
-		if (unit == null || Measures.isStandard(unit) || SI.CELSIUS.equals(unit)) {
+		if (unit == null || Units.isStandard(unit) || Units.C.equals(unit)) {
 			return interval;
 		}
-		if (NonSI.FAHRENHEIT.equals(unit)) {
+		if (Units.F.equals(unit)) {
 			return interval * (5.0 / 9.0);
 		}
 		return unit.toStandardUnit().convert(interval);
 	}
 
 	private double getStandardOffset() {
-		if (SI.CELSIUS.equals(unit)) {
+		if (Units.C.equals(unit)) {
 			return -273.15;
 		}
-		if (NonSI.FAHRENHEIT.equals(unit)) {
+		if (Units.F.equals(unit)) {
 			return -459.67 * (5.0 / 9.0);
 		}
 		return 0.0;

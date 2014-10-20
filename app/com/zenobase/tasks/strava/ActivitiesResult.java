@@ -6,8 +6,6 @@ import javax.measure.DecimalMeasure;
 import javax.measure.quantity.Energy;
 import javax.measure.quantity.Frequency;
 import javax.measure.quantity.Length;
-import javax.measure.unit.NonSI;
-import javax.measure.unit.SI;
 import javax.measure.unit.Unit;
 
 import org.joda.time.DateTime;
@@ -25,8 +23,6 @@ import com.zenobase.models.Location;
 import com.zenobase.models.Resource;
 
 class ActivitiesResult {
-
-	private static final Unit<Frequency> UNIT_BPM = Units.<Frequency>valueOf("bpm");
 
 	private final JsonNode node;
 	private final Identity author;
@@ -52,8 +48,8 @@ class ActivitiesResult {
 		event.setValue(Event.TIMESTAMP, dateTimeValue(node.path("start_date"), dateTimeZoneValue(node.path("timezone"))));
 		event.setValue(Event.DURATION, durationValue(node.path("elapsed_time")));
 		event.setValue(Event.LOCATION, locationValue(node.path("start_latlng")));
-		event.setValue(Event.DISTANCE, distanceValue(node.path("distance"), metric ? SI.KILOMETER : NonSI.MILE));
-		event.setValue(Event.HEIGHT, distanceValue(node.path("total_elevation_gain"), metric ? SI.METER : NonSI.FOOT));
+		event.setValue(Event.DISTANCE, distanceValue(node.path("distance"), metric ? Units.KM : Units.MI));
+		event.setValue(Event.HEIGHT, distanceValue(node.path("total_elevation_gain"), metric ? Units.M : Units.FT));
 		event.setValue(Event.ENERGY, energyValue(node.path("kilojoules")));
 		event.setValue(Event.FREQUENCY, frequencyValue(node.path("average_heartrate")));
 		event.setValue(Event.SOURCE, resourceValue(node.path("id")));
@@ -92,11 +88,11 @@ class ActivitiesResult {
 	}
 
 	private DecimalMeasure<Energy> energyValue(JsonNode node) {
-		return node.isNumber() ? Measures.<Energy>valueOf(node.decimalValue(), SI.KILO(SI.JOULE)) : null;
+		return node.isNumber() ? Measures.<Energy>valueOf(node.decimalValue(), Units.KJ) : null;
 	}
 
 	private DecimalMeasure<Frequency> frequencyValue(JsonNode node) {
-		return node.isNumber() ? Measures.<Frequency>valueOf(node.decimalValue(), UNIT_BPM) : null;
+		return node.isNumber() ? Measures.<Frequency>valueOf(node.decimalValue(), Units.BPM) : null;
 	}
 
 	private Resource resourceValue(JsonNode node) {

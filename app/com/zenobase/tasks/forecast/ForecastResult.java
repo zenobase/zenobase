@@ -6,8 +6,6 @@ import javax.measure.DecimalMeasure;
 import javax.measure.quantity.Pressure;
 import javax.measure.quantity.Quantity;
 import javax.measure.quantity.Temperature;
-import javax.measure.unit.NonSI;
-import javax.measure.unit.SI;
 import javax.measure.unit.Unit;
 
 import org.joda.time.DateTime;
@@ -15,6 +13,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import com.zenobase.common.Measures;
+import com.zenobase.common.Units;
 import com.zenobase.models.Percentage;
 
 public class ForecastResult {
@@ -30,18 +29,14 @@ public class ForecastResult {
 	public Forecast get(DateTime time) {
 		String tag = node.path("currently").path("summary").textValue();
 		DecimalMeasure<Temperature> temperature = measureValue(node.path("currently").path("temperature"), getTemperatureUnit());
-		DecimalMeasure<Pressure> pressure = measureValue(node.path("currently").path("pressure"), getPressureUnit());
+		DecimalMeasure<Pressure> pressure = measureValue(node.path("currently").path("pressure"), Units.HPA);
 		Integer humidity = percentValue(node.path("currently").path("humidity"));
 		Percentage moon = lunationValue(node.path("daily").path("data").path(0).path("moonPhase"));
 		return new Forecast(tag, temperature, pressure, humidity, moon);
 	}
 
 	private Unit<Temperature> getTemperatureUnit() {
-		return standardUnits ? SI.CELSIUS : NonSI.FAHRENHEIT;
-	}
-
-	private Unit<Pressure> getPressureUnit() {
-		return SI.HECTO(SI.PASCAL);
+		return standardUnits ? Units.C : Units.F;
 	}
 
 	private static <Q extends Quantity> DecimalMeasure<Q> measureValue(JsonNode node, Unit<Q> unit) {

@@ -19,6 +19,7 @@ import com.zenobase.commands.CompoundCommand;
 import com.zenobase.commands.CreateEventCommand;
 import com.zenobase.commands.UpdateTaskCommand;
 import com.zenobase.common.Units;
+import com.zenobase.json.UnitField;
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
 import com.zenobase.tasks.OAuthCredentials;
@@ -34,14 +35,11 @@ public class WithingsWeightTaskManager extends OAuthTaskManager {
 
 	@Override
 	public WithingsWeightTask newTask(String bucketId, Identity principal, ObjectNode settings) {
+		String tag = Objects.firstNonNull(settings.path("tag").textValue(), "body");
+		Unit<Mass> unit = Objects.firstNonNull(new UnitField<Mass>("unit").getValue(settings), Units.KG);
 		DateTimeZone timezone = DateTimeZone.forID(Objects.firstNonNull(settings.path("timezone").textValue(), "UTC"));
 		String marker = parseMarker(settings.path("marker").textValue(), timezone);
-		String tag = Objects.firstNonNull(settings.path("tag").textValue(), "body");
-		Unit<Mass> unit = Units.<Mass>valueOf(Objects.firstNonNull(settings.path("unit").textValue(), "kg"));
-		WithingsWeightTask task = new WithingsWeightTask(bucketId, principal, marker);
-		task.setTag(tag);
-		task.setUnit(unit);
-		task.setTimezone(timezone);
+		WithingsWeightTask task = new WithingsWeightTask(bucketId, principal, tag, unit, timezone, marker);
 		return task;
 	}
 

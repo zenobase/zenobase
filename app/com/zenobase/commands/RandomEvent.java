@@ -7,7 +7,6 @@ import java.util.Random;
 
 import javax.measure.DecimalMeasure;
 import javax.measure.quantity.Length;
-import javax.measure.unit.SI;
 
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
@@ -16,6 +15,7 @@ import com.google.common.io.Files;
 import com.google.common.io.LineProcessor;
 
 import com.zenobase.common.RandomElement;
+import com.zenobase.common.Units;
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
 import com.zenobase.models.Location;
@@ -127,7 +127,7 @@ public class RandomEvent {
 		}
 
 		protected DecimalMeasure<Length> nextLength(int min, int max) {
-			return DecimalMeasure.valueOf(BigDecimal.valueOf(min + rand.nextInt(10) * (max / 10)), SI.METER);
+			return DecimalMeasure.valueOf(BigDecimal.valueOf(min + rand.nextInt(10) * (max / 10)), Units.M);
 		}
 	}
 

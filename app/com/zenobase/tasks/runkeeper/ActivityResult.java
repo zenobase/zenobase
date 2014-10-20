@@ -1,7 +1,6 @@
 package com.zenobase.tasks.runkeeper;
 
 import javax.measure.DecimalMeasure;
-import javax.measure.quantity.Frequency;
 import javax.measure.quantity.Length;
 import javax.measure.quantity.Quantity;
 import javax.measure.unit.Unit;
@@ -28,7 +27,7 @@ class ActivityResult {
 	public void addDetails(Event event) {
 		event.setValue(Event.NOTE, node.path("notes").textValue());
 		event.setValue(Event.HEIGHT, convertMeasureValue(node.path("climb"), unit));
-		event.setValue(Event.FREQUENCY, measureValue(node.path("average_heart_rate"), Units.<Frequency>valueOf("bpm")));
+		event.setValue(Event.FREQUENCY, measureValue(node.path("average_heart_rate"), Units.BPM));
 		event.setValue(Event.SOURCE, new Resource("RunKeeper", node.path("activity").textValue()));
 		event.setValue(Event.LOCATION, locationValue(node.path("path")));
 	}

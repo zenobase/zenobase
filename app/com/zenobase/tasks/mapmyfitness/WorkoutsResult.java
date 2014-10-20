@@ -6,8 +6,6 @@ import java.util.List;
 import javax.measure.DecimalMeasure;
 import javax.measure.quantity.Frequency;
 import javax.measure.quantity.Length;
-import javax.measure.unit.NonSI;
-import javax.measure.unit.SI;
 import javax.measure.unit.Unit;
 
 import org.joda.time.DateTime;
@@ -18,6 +16,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 
 import com.zenobase.common.Measures;
+import com.zenobase.common.Units;
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
 import com.zenobase.models.Resource;
@@ -79,13 +78,13 @@ class WorkoutsResult {
 	}
 
 	private DecimalMeasure<Length> distanceValue(JsonNode node) {
-		Unit<Length> unit = imperial ? NonSI.MILE : SI.KILO(SI.METER);
+		Unit<Length> unit = imperial ? Units.MI : Units.KM;
 		return node.isNumber() ? Measures.valueOf(Measures.convert(node.doubleValue(), unit), unit) : null;
 	}
 
 	private DecimalMeasure<Frequency> frequencyValue(JsonNode node) {
 		int value = node.intValue();
-		return value > 0 ? Measures.<Frequency>valueOf(BigDecimal.valueOf(value), "bpm") : null;
+		return value > 0 ? Measures.<Frequency>valueOf(BigDecimal.valueOf(value), Units.BPM) : null;
 	}
 
 	private Resource resourceValue(JsonNode node) {

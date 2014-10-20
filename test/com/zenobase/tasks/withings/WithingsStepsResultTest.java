@@ -6,7 +6,6 @@ import java.util.List;
 
 import javax.measure.quantity.Energy;
 import javax.measure.quantity.Length;
-import javax.measure.unit.NonSI;
 
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
@@ -21,7 +20,7 @@ public class WithingsStepsResultTest extends ResultTestSupport {
 
 	@Test
 	public void test() {
-		WithingsStepsResult result = new WithingsStepsResult(readObject("WithingsStepsResultTest.json"), TESTER, "walk", NonSI.MILE, NonSI.FOOT, Units.KCAL);
+		WithingsStepsResult result = new WithingsStepsResult(readObject("WithingsStepsResultTest.json"), TESTER, "walk", Units.MI, Units.FT, Units.KCAL);
 		assertThat(result.getStatus()).as("status").isEqualTo(0);
 		List<Event> actual = result.getEvents();
 		assertThat(actual).hasSize(2);

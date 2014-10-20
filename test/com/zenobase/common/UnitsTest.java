@@ -10,8 +10,6 @@ import javax.measure.quantity.Mass;
 import javax.measure.quantity.Temperature;
 import javax.measure.quantity.Volume;
 import javax.measure.unit.Dimension;
-import javax.measure.unit.NonSI;
-import javax.measure.unit.SI;
 
 import org.junit.Test;
 
@@ -19,22 +17,22 @@ public class UnitsTest {
 
 	@Test
 	public void testDimensions() {
-		assertThat(Measures.getUnits(Dimension.LENGTH, Length.class)).as("length units").isNotEmpty();
-		assertThat(Measures.getUnits(Dimension.MASS, Mass.class)).as("mass units").isNotEmpty();
-		assertThat(Measures.getUnits(Dimension.TEMPERATURE, Temperature.class)).as("temperature units").isNotEmpty();
-		assertThat(Measures.getUnits(Dimension.NONE, Dimensionless.class)).as("dimensionless units").isNotEmpty();
-		assertThat(Measures.getUnits(Dimension.LENGTH.pow(3), Volume.class)).as("volume units").isNotEmpty();
-		assertThat(Measures.getUnits(Dimension.TIME, Duration.class)).as("time units").isNotEmpty();
-		assertThat(Measures.getUnits(Dimension.NONE.divide(Dimension.TIME), Frequency.class)).as("frequency units").isNotEmpty();
-		assertThat(Measures.getUnits(Dimension.LENGTH.pow(3), Volume.class)).as("volume units").isNotEmpty();
+		assertThat(Units.getUnits(Dimension.LENGTH, Length.class)).as("length units").isNotEmpty();
+		assertThat(Units.getUnits(Dimension.MASS, Mass.class)).as("mass units").isNotEmpty();
+		assertThat(Units.getUnits(Dimension.TEMPERATURE, Temperature.class)).as("temperature units").isNotEmpty();
+		assertThat(Units.getUnits(Dimension.NONE, Dimensionless.class)).as("dimensionless units").isNotEmpty();
+		assertThat(Units.getUnits(Dimension.LENGTH.pow(3), Volume.class)).as("volume units").isNotEmpty();
+		assertThat(Units.getUnits(Dimension.TIME, Duration.class)).as("time units").isNotEmpty();
+		assertThat(Units.getUnits(Dimension.NONE.divide(Dimension.TIME), Frequency.class)).as("frequency units").isNotEmpty();
+		assertThat(Units.getUnits(Dimension.LENGTH.pow(3), Volume.class)).as("volume units").isNotEmpty();
 	}
 
 	@Test
 	public void testIsMetric() {
-		assertThat(Units.isMetric(SI.METER)).as("m are metric").isTrue();
-		assertThat(Units.isMetric(SI.KILOMETER)).as("km are metric").isTrue();
-		assertThat(Units.isMetric(SI.CENTIMETER)).as("cm are metric").isTrue();
-		assertThat(Units.isMetric(NonSI.FOOT)).as("ft are metric").isFalse();
-		assertThat(Units.isMetric(NonSI.MILE)).as("mi are metric").isFalse();
+		assertThat(Units.isMetric(Units.M)).as("m are metric").isTrue();
+		assertThat(Units.isMetric(Units.KM)).as("km are metric").isTrue();
+		assertThat(Units.isMetric(Units.CM)).as("cm are metric").isTrue();
+		assertThat(Units.isMetric(Units.FT)).as("ft are metric").isFalse();
+		assertThat(Units.isMetric(Units.MI)).as("mi are metric").isFalse();
 	}
 }

@@ -2,8 +2,6 @@ package com.zenobase.tasks.fitbit;
 
 import javax.measure.quantity.Length;
 import javax.measure.quantity.Mass;
-import javax.measure.unit.NonSI;
-import javax.measure.unit.SI;
 import javax.measure.unit.Unit;
 
 import org.joda.time.DateTimeZone;
@@ -30,12 +28,12 @@ class FitbitProfileResult {
 
 	public Unit<Length> getDistanceUnit() {
 		return "en_US".equals(getDistanceLocale()) ?
-			NonSI.MILE : SI.KILOMETER;
+			Units.MI : Units.KM;
 	}
 
 	public Unit<Length> getHeightUnit() {
 		return "en_US".equals(getDistanceLocale()) ?
-			NonSI.FOOT : SI.METER;
+			Units.FT : Units.M;
 	}
 
 	public String getWeightLocale() {
@@ -45,11 +43,11 @@ class FitbitProfileResult {
 	public Unit<Mass> getWeightUnit() {
 		String locale = getWeightLocale();
 		if ("en_US".equals(locale)) {
-			return NonSI.POUND;
+			return Units.LB;
 		}
 		if ("en_GB".equals(locale)) {
-			return Units.valueOf("st");
+			return Units.ST;
 		}
-		return SI.KILOGRAM;
+		return Units.KG;
 	}
 }

@@ -6,7 +6,6 @@ import java.util.List;
 
 import javax.measure.DecimalMeasure;
 import javax.measure.quantity.Mass;
-import javax.measure.unit.SI;
 import javax.measure.unit.Unit;
 
 import org.joda.time.DateTime;
@@ -16,6 +15,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 
+import com.zenobase.common.Units;
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
 import com.zenobase.models.Percentage;
@@ -81,7 +81,7 @@ class WithingsWeightResult {
 
 	private static DecimalMeasure<Mass> getDecimalMeasure(JsonNode measure, Unit<Mass> unit) {
 		BigDecimal value = getBigDecimal(measure);
-		return value != null ? new DecimalMeasure<Mass>(value, SI.KILOGRAM).to(unit, new MathContext(5)) : null;
+		return value != null ? new DecimalMeasure<Mass>(value, Units.KG).to(unit, new MathContext(5)) : null;
 	}
 
 	private static BigDecimal getBigDecimal(JsonNode node) {

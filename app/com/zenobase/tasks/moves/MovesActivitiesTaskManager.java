@@ -18,6 +18,7 @@ import com.google.common.collect.Lists;
 
 import com.zenobase.commands.Command;
 import com.zenobase.common.Units;
+import com.zenobase.json.UnitField;
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
 import com.zenobase.tasks.OAuthCredentials;
@@ -32,7 +33,7 @@ public class MovesActivitiesTaskManager extends MovesTaskManagerSupport {
 
 	@Override
 	public Task newTask(String bucketId, Identity principal, ObjectNode settings) {
-		Unit<Length> lengthUnit = Units.valueOf(Objects.firstNonNull(settings.path("unit").textValue(), "m"));
+		Unit<Length> lengthUnit = Objects.firstNonNull(new UnitField<Length>("unit").getValue(settings), Units.M);
 		return new MovesActivitiesTask(bucketId, principal, lengthUnit, Units.KCAL);
 	}
 

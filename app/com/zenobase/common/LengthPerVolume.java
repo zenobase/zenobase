@@ -1,4 +1,4 @@
-package com.zenobase.json;
+package com.zenobase.common;
 
 import javax.measure.quantity.Quantity;
 

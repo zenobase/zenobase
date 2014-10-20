@@ -7,7 +7,6 @@ import java.util.List;
 import javax.measure.DecimalMeasure;
 import javax.measure.quantity.Energy;
 import javax.measure.quantity.Length;
-import javax.measure.unit.NonSI;
 
 import org.joda.time.DateTime;
 import org.junit.Test;
@@ -24,7 +23,7 @@ public class FitbitSummaryResultTest extends ResultTestSupport {
 
 	@Test
 	public void test() {
-		FitbitSummaryResult result = new FitbitSummaryResult(readObject("FitbitStepsResultTest.json"), TAG, TESTER, TIMESTAMP, NonSI.MILE, NonSI.FOOT, Units.KCAL);
+		FitbitSummaryResult result = new FitbitSummaryResult(readObject("FitbitStepsResultTest.json"), TAG, TESTER, TIMESTAMP, Units.MI, Units.FT, Units.KCAL);
 		List<Event> events = result.getEvents();
 		assertThat(events).as("events").hasSize(1);
 		Event expected = new Event(events.get(0).getId());
@@ -41,7 +40,7 @@ public class FitbitSummaryResultTest extends ResultTestSupport {
 
 	@Test
 	public void testEmpty() {
-		FitbitSummaryResult result = new FitbitSummaryResult(Nodes.newObject(), TAG, TESTER, TIMESTAMP, NonSI.MILE, NonSI.FOOT, Units.KCAL);
+		FitbitSummaryResult result = new FitbitSummaryResult(Nodes.newObject(), TAG, TESTER, TIMESTAMP, Units.MI, Units.FT, Units.KCAL);
 		List<Event> events = result.getEvents();
 		assertThat(events).as("events").isEmpty();
 	}

@@ -19,6 +19,7 @@ import com.zenobase.commands.CompoundCommand;
 import com.zenobase.commands.CreateEventCommand;
 import com.zenobase.commands.UpdateTaskCommand;
 import com.zenobase.common.Units;
+import com.zenobase.json.UnitField;
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
 import com.zenobase.tasks.OAuthCredentials;
@@ -34,9 +35,9 @@ public class WithingsStepsTaskManager extends OAuthTaskManager {
 
 	@Override
 	public WithingsStepsTask newTask(String bucketId, Identity principal, ObjectNode settings) {
-		String marker = parseMarker(settings.path("marker").textValue());
 		String tag = Objects.firstNonNull(settings.path("tag").textValue(), "steps");
-		Unit<Length> lengthUnit = Units.valueOf(Objects.firstNonNull(settings.path("unit").textValue(), "km"));
+		Unit<Length> lengthUnit = Objects.firstNonNull(new UnitField<Length>("unit").getValue(settings), Units.KM);
+		String marker = parseMarker(settings.path("marker").textValue());
 		WithingsStepsTask task = new WithingsStepsTask(bucketId, principal, tag, lengthUnit, Units.KCAL, marker);
 		return task;
 	}

@@ -2,8 +2,6 @@ package com.zenobase.tasks.withings;
 
 import javax.measure.quantity.Energy;
 import javax.measure.quantity.Length;
-import javax.measure.unit.NonSI;
-import javax.measure.unit.SI;
 import javax.measure.unit.Unit;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -11,6 +9,7 @@ import com.google.common.base.Objects;
 
 import com.zenobase.common.Units;
 import com.zenobase.json.TokenField;
+import com.zenobase.json.UnitField;
 import com.zenobase.models.Identity;
 import com.zenobase.tasks.Task;
 
@@ -18,8 +17,8 @@ public class WithingsStepsTask extends Task {
 
 	public static final String TYPE = "withings-steps";
 	public static final TokenField TAG = new TokenField("tag");
-	public static final TokenField LENGTH_UNIT = new TokenField("unit");
-	public static final TokenField ENERGY_UNIT = new TokenField("energy_unit");
+	public static final UnitField<Length> LENGTH_UNIT = new UnitField<Length>("unit");
+	public static final UnitField<Energy> ENERGY_UNIT = new UnitField<Energy>("energy_unit");
 
 	public WithingsStepsTask(ObjectNode node) {
 		super(node);
@@ -29,8 +28,8 @@ public class WithingsStepsTask extends Task {
 		super(TYPE, bucketId, principal);
 		setMarker(marker);
 		setSetting(TAG, tag);
-		setSetting(LENGTH_UNIT, lengthUnit.toString());
-		setSetting(ENERGY_UNIT, energyUnit.toString());
+		setSetting(LENGTH_UNIT, lengthUnit);
+		setSetting(ENERGY_UNIT, energyUnit);
 	}
 
 	public String getTag() {
@@ -38,15 +37,15 @@ public class WithingsStepsTask extends Task {
 	}
 
 	public Unit<Length> getDistanceUnit() {
-		return Units.<Length>valueOf(getSetting(LENGTH_UNIT));
+		return getSetting(LENGTH_UNIT);
 	}
 
 	public Unit<Length> getHeightUnit() {
-		return Units.isMetric(getDistanceUnit()) ? SI.METER : NonSI.FOOT;
+		return Units.isMetric(getDistanceUnit()) ? Units.M : Units.FT;
 	}
 
 	public Unit<Energy> getEnergyUnit() {
-		return Units.valueOf(Objects.firstNonNull(getSetting(ENERGY_UNIT), "cal"));
+		return Objects.firstNonNull(getSetting(ENERGY_UNIT), Units.CAL);
 	}
 
 	@Override

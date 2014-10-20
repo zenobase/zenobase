@@ -8,6 +8,7 @@ import com.google.common.base.Objects;
 
 import com.zenobase.common.Units;
 import com.zenobase.json.TokenField;
+import com.zenobase.json.UnitField;
 import com.zenobase.models.Identity;
 import com.zenobase.tasks.Task;
 
@@ -15,7 +16,7 @@ public class FitbitStepsTask extends Task {
 
 	public static final String TYPE = "fitbit-steps";
 	public static final TokenField TAG = new TokenField("tag");
-	public static final TokenField ENERGY_UNIT = new TokenField("energy_unit");
+	public static final UnitField<Energy> ENERGY_UNIT = new UnitField<Energy>("energy_unit");
 
 	public FitbitStepsTask(ObjectNode node) {
 		super(node);
@@ -25,7 +26,7 @@ public class FitbitStepsTask extends Task {
 		super(TYPE, bucketId, principal);
 		setMarker(marker);
 		setSetting(TAG, tag);
-		setSetting(ENERGY_UNIT, energyUnit.toString());
+		setSetting(ENERGY_UNIT, energyUnit);
 	}
 
 	public String getTag() {
@@ -33,7 +34,7 @@ public class FitbitStepsTask extends Task {
 	}
 
 	public Unit<Energy> getEnergyUnit() {
-		return Units.valueOf(Objects.firstNonNull(getSetting(ENERGY_UNIT), "cal"));
+		return Objects.firstNonNull(getSetting(ENERGY_UNIT), Units.CAL);
 	}
 
 	@Override

@@ -9,15 +9,15 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Objects;
 
 import com.zenobase.common.Units;
-import com.zenobase.json.TokenField;
+import com.zenobase.json.UnitField;
 import com.zenobase.models.Identity;
 import com.zenobase.tasks.Task;
 
 public class MovesActivitiesTask extends Task {
 
 	public static final String TYPE = "moves-activities";
-	public static final TokenField LENGTH_UNIT = new TokenField("unit");
-	public static final TokenField ENERGY_UNIT = new TokenField("energy_unit");
+	public static final UnitField<Length> LENGTH_UNIT = new UnitField<Length>("unit");
+	public static final UnitField<Energy> ENERGY_UNIT = new UnitField<Energy>("energy_unit");
 
 	public MovesActivitiesTask(ObjectNode node) {
 		super(node);
@@ -25,8 +25,8 @@ public class MovesActivitiesTask extends Task {
 
 	public MovesActivitiesTask(String bucketId, Identity principal, Unit<Length> lengthUnit, Unit<Energy> energyUnit) {
 		super(TYPE, bucketId, principal);
-		setSetting(LENGTH_UNIT, lengthUnit.toString());
-		setSetting(ENERGY_UNIT, energyUnit.toString());
+		setSetting(LENGTH_UNIT, lengthUnit);
+		setSetting(ENERGY_UNIT, energyUnit);
 	}
 
 	public DateTime getFrom() {
@@ -35,11 +35,11 @@ public class MovesActivitiesTask extends Task {
 	}
 
 	public Unit<Length> getUnit() {
-		return Units.<Length>valueOf(getSetting(LENGTH_UNIT));
+		return getSetting(LENGTH_UNIT);
 	}
 
 	public Unit<Energy> getEnergyUnit() {
-		return Units.valueOf(Objects.firstNonNull(getSetting(ENERGY_UNIT), "cal"));
+		return Objects.firstNonNull(getSetting(ENERGY_UNIT), Units.CAL);
 	}
 
 	@Override
