@@ -1,17 +1,21 @@
 package com.zenobase.json;
 
-import java.math.BigDecimal;
-
 import javax.measure.DecimalMeasure;
+import javax.measure.quantity.Length;
 
 import org.junit.Test;
 
-import com.zenobase.common.Units;
+public class LengthFieldTest extends DecimalMeasureFieldTestSupport<Length> {
 
-public class LengthFieldTest extends FieldTestSupport {
+	@Override
+	protected Field<DecimalMeasure<Length>> newField(String name) {
+		return new LengthField(name);
+	}
 
 	@Test
 	public void test() {
-		roundtrip(new LengthField(FIELD_NAME), DecimalMeasure.valueOf(new BigDecimal("1.2345"), Units.MI));
+		roundtrip(null);
+		roundtrip(valueOf("1000 m"));
+		roundtrip(valueOf("1.2345 mi"));
 	}
 }

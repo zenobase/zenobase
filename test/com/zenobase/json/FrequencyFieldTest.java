@@ -1,17 +1,21 @@
 package com.zenobase.json;
 
-import java.math.BigDecimal;
-
 import javax.measure.DecimalMeasure;
+import javax.measure.quantity.Frequency;
 
 import org.junit.Test;
 
-import com.zenobase.common.Units;
+public class FrequencyFieldTest extends DecimalMeasureFieldTestSupport<Frequency> {
 
-public class FrequencyFieldTest extends FieldTestSupport {
+	@Override
+	protected Field<DecimalMeasure<Frequency>> newField(String name) {
+		return new FrequencyField(name);
+	}
 
 	@Test
 	public void test() {
-		roundtrip(new FrequencyField(FIELD_NAME), DecimalMeasure.valueOf(new BigDecimal("60"), Units.BPM));
+		roundtrip(null);
+		roundtrip(valueOf("100 Hz"));
+		roundtrip(valueOf("60 bpm"));
 	}
 }

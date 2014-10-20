@@ -1,26 +1,19 @@
 package com.zenobase.json;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.junit.Test;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
-import com.zenobase.json.ObjectField;
+public class ObjectFieldTest extends FieldTestSupport<ObjectNode> {
 
-public class ObjectFieldTest extends FieldTestSupport {
-
-	private final ObjectField field = new ObjectField(FIELD_NAME);
-
-	@Test
-	public void test() {
-		ObjectNode node = Nodes.newObject();
-		node.put("name", "Alice");
-		node.put("age", 42);
-		node.put("vegetarian", true);
-		roundtrip(field, node);
+	@Override
+	protected Field<ObjectNode> newField(String name) {
+		return new ObjectField(name);
 	}
 
 	@Test
-	public void testEmpty() {
-		ObjectNode node = Nodes.newObject();
-		roundtrip(field, node);
+	public void test() {
+		roundtrip(null);
+		roundtrip(Nodes.newObject());
+		roundtrip(Nodes.newObject("name", "Alice").put("age", 42).put("vegetarian", true));
 	}
 }

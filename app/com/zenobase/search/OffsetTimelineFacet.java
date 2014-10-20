@@ -21,7 +21,7 @@ import com.google.common.collect.Maps;
 
 import com.zenobase.common.OffsetIntervals;
 import com.zenobase.json.Field;
-import com.zenobase.json.MeasurementField;
+import com.zenobase.json.DecimalMeasureField;
 import com.zenobase.json.Nodes;
 
 public class OffsetTimelineFacet extends TimelineFacetSupport {
@@ -41,7 +41,7 @@ public class OffsetTimelineFacet extends TimelineFacetSupport {
 	public void configure(SearchSourceBuilder builder) {
 		builder.facet(FacetBuilders.dateHistogramFacet(getId())
 			.keyField(keyField)
-			.valueField(unit == Unit.ONE ? valueField : Field.concat(valueField, MeasurementField.VALUE_SI.getName()))
+			.valueField(unit == Unit.ONE ? valueField : Field.concat(valueField, DecimalMeasureField.VALUE_SI.getName()))
 			.interval(interval)
 			.preZone(timezone.toString())
 			.preZoneAdjustLargeInterval(true)

@@ -24,7 +24,7 @@ import com.zenobase.common.Measures;
 import com.zenobase.common.OffsetIntervals;
 import com.zenobase.common.Units;
 import com.zenobase.json.Field;
-import com.zenobase.json.MeasurementField;
+import com.zenobase.json.DecimalMeasureField;
 import com.zenobase.json.Nodes;
 import com.zenobase.models.Event;
 
@@ -67,7 +67,7 @@ public class MultiplotFacet extends Facet {
 
 	private void addFacet(SearchSourceBuilder builder, String id, String field, Unit<?> unit) {
 		builder.facet(FacetBuilders.dateHistogramFacet(id)
-			.keyField(keyField).valueField(unit == Unit.ONE ? field : Field.concat(field, MeasurementField.VALUE_SI.getName()))
+			.keyField(keyField).valueField(unit == Unit.ONE ? field : Field.concat(field, DecimalMeasureField.VALUE_SI.getName()))
 			.interval(interval)
 			.preZone(timezone.toString())
 			.preZoneAdjustLargeInterval(true));

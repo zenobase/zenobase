@@ -22,7 +22,7 @@ import com.zenobase.common.LocalInterval;
 import com.zenobase.common.LocalIntervals;
 import com.zenobase.json.Field;
 import com.zenobase.json.LocalDateTimeField;
-import com.zenobase.json.MeasurementField;
+import com.zenobase.json.DecimalMeasureField;
 import com.zenobase.json.Nodes;
 
 public class LocalTimelineFacet extends TimelineFacetSupport {
@@ -40,7 +40,7 @@ public class LocalTimelineFacet extends TimelineFacetSupport {
 	public void configure(SearchSourceBuilder builder) {
 		builder.facet(FacetBuilders.dateHistogramFacet(getId())
 			.keyField(LocalDateTimeField.getLocalTimePath(keyField))
-			.valueField(unit == Unit.ONE ? valueField : Field.concat(valueField, MeasurementField.VALUE_SI.getName()))
+			.valueField(unit == Unit.ONE ? valueField : Field.concat(valueField, DecimalMeasureField.VALUE_SI.getName()))
 			.interval(interval)
 			.preZone(DateTimeZone.UTC.toString())
 			.preZoneAdjustLargeInterval(true)

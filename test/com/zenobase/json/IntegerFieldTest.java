@@ -2,23 +2,19 @@ package com.zenobase.json;
 
 import org.junit.Test;
 
-public class IntegerFieldTest extends FieldTestSupport {
+public class IntegerFieldTest extends FieldTestSupport<Integer> {
 
-	private final IntegerField field = new IntegerField(FIELD_NAME);
+	@Override
+	protected Field<Integer> newField(String name) {
+		return new IntegerField(name);
+	}
 
 	@Test
 	public void test() {
-		roundtrip(field, Integer.valueOf(0));
-		roundtrip(field, Integer.valueOf(42));
-	}
-
-	@Test
-	public void testMin() {
-		roundtrip(field, Integer.valueOf(Integer.MIN_VALUE));
-	}
-
-	@Test
-	public void testMax() {
-		roundtrip(field, Integer.valueOf(Integer.MAX_VALUE));
+		roundtrip(null);
+		roundtrip(0);
+		roundtrip(42);
+		roundtrip(Integer.MIN_VALUE);
+		roundtrip(Integer.MAX_VALUE);
 	}
 }

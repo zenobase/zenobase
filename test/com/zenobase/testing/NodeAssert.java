@@ -7,7 +7,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
-import com.zenobase.json.MeasurementField;
+import com.zenobase.json.DecimalMeasureField;
 
 public class NodeAssert extends GenericAssert<NodeAssert, JsonNode> {
 
@@ -60,8 +60,8 @@ public class NodeAssert extends GenericAssert<NodeAssert, JsonNode> {
 
 	public void isEqualTo(double expectedValue, String expectedUnit) {
 		Assertions.assertThat(actual.isObject()).overridingErrorMessage("expected object node but found " + actual).isTrue();
-		path(MeasurementField.VALUE.getName()).isEqualTo(expectedValue);
-		path(MeasurementField.UNIT.getName()).isEqualTo(expectedUnit);
+		path(DecimalMeasureField.VALUE.getName()).isEqualTo(expectedValue);
+		path(DecimalMeasureField.UNIT.getName()).isEqualTo(expectedUnit);
 	}
 
 	public NodeAssert path(String fieldName) {

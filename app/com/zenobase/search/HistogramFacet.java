@@ -14,7 +14,7 @@ import com.google.common.collect.Lists;
 import com.zenobase.common.Measures;
 import com.zenobase.common.Units;
 import com.zenobase.json.Field;
-import com.zenobase.json.MeasurementField;
+import com.zenobase.json.DecimalMeasureField;
 import com.zenobase.json.Nodes;
 import com.zenobase.search.facet.decimalhistogram.DecimalHistogramFacet;
 import com.zenobase.search.facet.decimalhistogram.DecimalHistogramFacetBuilder;
@@ -38,7 +38,7 @@ public class HistogramFacet extends Facet {
 
 	@Override
 	public void configure(SearchSourceBuilder builder) {
-		String field = unit == Unit.ONE ? this.field : Field.concat(this.field, MeasurementField.VALUE_SI.getName());
+		String field = unit == Unit.ONE ? this.field : Field.concat(this.field, DecimalMeasureField.VALUE_SI.getName());
 		builder.facet(new DecimalHistogramFacetBuilder(getId(), field, getStandardInterval(), getStandardOffset(), ComparatorType.KEY).facetFilter(filter));
 	}
 

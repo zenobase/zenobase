@@ -2,18 +2,22 @@ package com.zenobase.json;
 
 import java.math.BigDecimal;
 
-import com.zenobase.json.DecimalField;
-
 import org.junit.Test;
 
-public class DecimalFieldTest extends FieldTestSupport {
+public class DecimalFieldTest extends FieldTestSupport<BigDecimal> {
 
-	private final DecimalField field = new DecimalField(FIELD_NAME);
+	@Override
+	protected Field<BigDecimal> newField(String name) {
+		return new DecimalField(name);
+	}
 
 	@Test
 	public void test() {
-		roundtrip(field, BigDecimal.valueOf(42));
-		roundtrip(field, BigDecimal.ZERO);
-		roundtrip(field, new BigDecimal("1.234567890"));
+		roundtrip(null);
+		roundtrip(BigDecimal.valueOf(42));
+		roundtrip(BigDecimal.ZERO);
+		roundtrip(BigDecimal.ONE);
+		roundtrip(new BigDecimal("1.0"));
+		roundtrip(new BigDecimal("1.2345678901234567"));
 	}
 }

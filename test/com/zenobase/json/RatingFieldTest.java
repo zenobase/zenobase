@@ -2,17 +2,20 @@ package com.zenobase.json;
 
 import org.junit.Test;
 
-import com.zenobase.json.RatingField;
 import com.zenobase.models.Rating;
 
-public class RatingFieldTest extends FieldTestSupport {
+public class RatingFieldTest extends FieldTestSupport<Rating> {
 
-	private final RatingField field = new RatingField(FIELD_NAME);
+	@Override
+	protected Field<Rating> newField(String name) {
+		return new RatingField(name);
+	}
 
 	@Test
 	public void test() {
-		roundtrip(field, Rating.valueOf(0));
-		roundtrip(field, Rating.valueOf(50));
-		roundtrip(field, Rating.valueOf(100));
+		roundtrip(null);
+		roundtrip(Rating.valueOf(0));
+		roundtrip(Rating.valueOf(50));
+		roundtrip(Rating.valueOf(100));
 	}
 }

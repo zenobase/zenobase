@@ -7,7 +7,7 @@ import org.elasticsearch.index.query.QueryBuilders;
 
 import com.zenobase.common.Measures;
 import com.zenobase.json.Field;
-import com.zenobase.json.MeasurementField;
+import com.zenobase.json.DecimalMeasureField;
 
 public class MeasureConstraintBuilder extends ConstraintBuilder {
 
@@ -26,6 +26,6 @@ public class MeasureConstraintBuilder extends ConstraintBuilder {
 
 	@Override
 	protected String getPath() {
-		return Field.concat(super.getPath(), MeasurementField.VALUE_SI.getName());
+		return Field.concat(super.getPath(), DecimalMeasureField.VALUE_SI.getName());
 	}
 }

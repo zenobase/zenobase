@@ -1,17 +1,19 @@
 package com.zenobase.json;
 
-import com.zenobase.json.DurationField;
-
 import org.joda.time.Duration;
 import org.junit.Test;
 
-public class DurationFieldTest extends FieldTestSupport {
+public class DurationFieldTest extends FieldTestSupport<Duration> {
 
-	private final DurationField field = new DurationField(FIELD_NAME);
+	@Override
+	protected Field<Duration> newField(String name) {
+		return new DurationField(name);
+	}
 
 	@Test
 	public void test() {
-		roundtrip(field, Duration.ZERO);
-		roundtrip(field, new Duration(1000));
+		roundtrip(null);
+		roundtrip(Duration.ZERO);
+		roundtrip(new Duration(1000));
 	}
 }

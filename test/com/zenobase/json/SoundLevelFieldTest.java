@@ -1,17 +1,20 @@
 package com.zenobase.json;
 
-import java.math.BigDecimal;
-
 import javax.measure.DecimalMeasure;
+import javax.measure.quantity.Dimensionless;
 
 import org.junit.Test;
 
-import com.zenobase.common.Units;
+public class SoundLevelFieldTest extends DecimalMeasureFieldTestSupport<Dimensionless> {
 
-public class SoundLevelFieldTest extends FieldTestSupport {
+	@Override
+	protected Field<DecimalMeasure<Dimensionless>> newField(String name) {
+		return new SoundField(name);
+	}
 
 	@Test
 	public void test() {
-		roundtrip(new SoundField(FIELD_NAME), DecimalMeasure.valueOf(new BigDecimal("40"), Units.DB));
+		roundtrip(null);
+		roundtrip(valueOf("40 dB"));
 	}
 }

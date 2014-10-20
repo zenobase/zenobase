@@ -1,26 +1,19 @@
 package com.zenobase.json;
 
-import com.zenobase.json.LongField;
-
 import org.junit.Test;
 
-public class LongFieldTest extends FieldTestSupport {
+public class LongFieldTest extends FieldTestSupport<Long> {
 
-	private final LongField field = new LongField(FIELD_NAME);
+	@Override
+	protected Field<Long> newField(String name) {
+		return new LongField(name);
+	}
 
 	@Test
 	public void test() {
-		roundtrip(field, Long.valueOf(0));
-		roundtrip(field, Long.valueOf(42));
-	}
-
-	@Test
-	public void testMin() {
-		roundtrip(field, Long.valueOf(Long.MIN_VALUE));
-	}
-
-	@Test
-	public void testMax() {
-		roundtrip(field, Long.valueOf(Long.MAX_VALUE));
+		roundtrip(0L);
+		roundtrip(42L);
+		roundtrip(Long.MIN_VALUE);
+		roundtrip(Long.MAX_VALUE);
 	}
 }

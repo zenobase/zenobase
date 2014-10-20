@@ -7,26 +7,26 @@ import java.util.Map;
 import org.junit.Test;
 import com.google.common.collect.ImmutableMap;
 
-import com.zenobase.json.RolesField;
 import com.zenobase.models.Identity;
 import com.zenobase.models.Role;
 
-public class RolesFieldTest extends FieldTestSupport {
+public class RolesFieldTest extends FieldTestSupport<Map.Entry<Identity, Role>> {
 
 	private final Map<Identity, Role> map = ImmutableMap.of(
 		new Identity(), Role.OWNER,
 		new Identity(), Role.CONTRIBUTOR);
 
-	@Test
-	public void test() {
-		RolesField field = new RolesField(FIELD_NAME);
-		for (Map.Entry<Identity, Role> entry : map.entrySet()) {
-			roundtrip(field, entry);
-		}
+	@Override
+	protected Field<Map.Entry<Identity, Role>> newField(String name) {
+		return new RolesField(name);
 	}
 
 	@Test
-	public void testToMap() {
+	public void test() {
 		assertThat(RolesField.toMap(map.entrySet())).isEqualTo(map);
+		for (Map.Entry<Identity, Role> entry : map.entrySet()) {
+			roundtrip(entry);
+		}
+		roundtrip(null);
 	}
 }

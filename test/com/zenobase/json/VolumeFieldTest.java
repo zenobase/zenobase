@@ -1,17 +1,21 @@
 package com.zenobase.json;
 
-import java.math.BigDecimal;
-
 import javax.measure.DecimalMeasure;
+import javax.measure.quantity.Volume;
 
 import org.junit.Test;
 
-import com.zenobase.common.Units;
+public class VolumeFieldTest extends DecimalMeasureFieldTestSupport<Volume> {
 
-public class VolumeFieldTest extends FieldTestSupport {
+	@Override
+	protected Field<DecimalMeasure<Volume>> newField(String name) {
+		return new VolumeField(name);
+	}
 
 	@Test
 	public void test() {
-		roundtrip(new VolumeField(FIELD_NAME), DecimalMeasure.valueOf(new BigDecimal("4.0"), Units.L));
+		roundtrip(null);
+		roundtrip(valueOf("4.0 L"));
+		roundtrip(valueOf("1 gal"));
 	}
 }

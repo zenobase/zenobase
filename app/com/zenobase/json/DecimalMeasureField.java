@@ -15,13 +15,13 @@ import com.zenobase.search.MeasureConstraintBuilder;
 import com.zenobase.search.MeasureRangeConstraintBuilder;
 import com.zenobase.search.TermConstraintBuilder;
 
-public class MeasurementField<Q extends Quantity> extends Field<DecimalMeasure<Q>> {
+public class DecimalMeasureField<Q extends Quantity> extends Field<DecimalMeasure<Q>> {
 
 	public static final DecimalField VALUE = new DecimalField("@value");
 	public static final TokenField UNIT = new TokenField("unit");
 	public static final DecimalField VALUE_SI = new DecimalField("_value");
 
-	public MeasurementField(String name) {
+	public DecimalMeasureField(String name) {
 		super(name, DecimalMeasure.class.getGenericSuperclass(), "object");
 		addConstraintBuilder(name, new MeasureRangeConstraintBuilder(getPath()));
 		addConstraintBuilder(name, new MeasureConstraintBuilder(getPath()));

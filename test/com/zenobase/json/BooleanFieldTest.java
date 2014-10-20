@@ -1,16 +1,17 @@
 package com.zenobase.json;
 
-import com.zenobase.json.BooleanField;
-
 import org.junit.Test;
 
-public class BooleanFieldTest extends FieldTestSupport {
+public class BooleanFieldTest extends FieldTestSupport<Boolean> {
 
-	private final BooleanField field = new BooleanField(FIELD_NAME);
+	@Override
+	protected Field<Boolean> newField(String name) {
+		return new BooleanField(name);
+	}
 
 	@Test
 	public void test() {
-		roundtrip(field, Boolean.TRUE);
-		roundtrip(field, Boolean.FALSE);
+		roundtrip(Boolean.TRUE);
+		roundtrip(Boolean.FALSE);
 	}
 }

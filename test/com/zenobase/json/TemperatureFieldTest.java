@@ -1,17 +1,22 @@
 package com.zenobase.json;
 
-import java.math.BigDecimal;
-
 import javax.measure.DecimalMeasure;
+import javax.measure.quantity.Temperature;
 
 import org.junit.Test;
 
-import com.zenobase.common.Units;
+public class TemperatureFieldTest extends DecimalMeasureFieldTestSupport<Temperature> {
 
-public class TemperatureFieldTest extends FieldTestSupport {
+	@Override
+	protected Field<DecimalMeasure<Temperature>> newField(String name) {
+		return new TemperatureField(name);
+	}
 
 	@Test
 	public void test() {
-		roundtrip(new TemperatureField(FIELD_NAME), DecimalMeasure.valueOf(new BigDecimal("70"), Units.F));
+		roundtrip(null);
+		roundtrip(valueOf("20.5 C"));
+		roundtrip(valueOf("70.0 F"));
+		roundtrip(valueOf("300 K"));
 	}
 }

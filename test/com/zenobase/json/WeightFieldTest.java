@@ -1,17 +1,21 @@
 package com.zenobase.json;
 
-import java.math.BigDecimal;
-
 import javax.measure.DecimalMeasure;
+import javax.measure.quantity.Mass;
 
 import org.junit.Test;
 
-import com.zenobase.common.Units;
+public class WeightFieldTest extends DecimalMeasureFieldTestSupport<Mass> {
 
-public class WeightFieldTest extends FieldTestSupport {
+	@Override
+	protected Field<DecimalMeasure<Mass>> newField(String name) {
+		return new WeightField(name);
+	}
 
 	@Test
 	public void test() {
-		roundtrip(new WeightField(FIELD_NAME), DecimalMeasure.valueOf(new BigDecimal("160.0"), Units.LB));
+		roundtrip(null);
+		roundtrip(valueOf("70.0 kg"));
+		roundtrip(valueOf("160 lb"));
 	}
 }

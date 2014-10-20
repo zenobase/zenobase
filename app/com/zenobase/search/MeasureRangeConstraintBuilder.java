@@ -9,7 +9,7 @@ import com.google.common.collect.Range;
 import com.zenobase.common.MeasureRangeParser;
 import com.zenobase.common.Measures;
 import com.zenobase.json.Field;
-import com.zenobase.json.MeasurementField;
+import com.zenobase.json.DecimalMeasureField;
 
 public class MeasureRangeConstraintBuilder extends RangeConstraintBuilderSupport<Measurable<Quantity>> {
 
@@ -26,7 +26,7 @@ public class MeasureRangeConstraintBuilder extends RangeConstraintBuilderSupport
 
 	@Override
 	protected String getPath() {
-		return Field.concat(super.getPath(), MeasurementField.VALUE_SI.getName());
+		return Field.concat(super.getPath(), DecimalMeasureField.VALUE_SI.getName());
 	}
 
 	@Override

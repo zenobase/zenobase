@@ -1,17 +1,21 @@
 package com.zenobase.json;
 
-import java.math.BigDecimal;
-
 import javax.measure.DecimalMeasure;
+import javax.measure.quantity.Energy;
 
 import org.junit.Test;
 
-import com.zenobase.common.Units;
+public class EnergyFieldTest extends DecimalMeasureFieldTestSupport<Energy> {
 
-public class EnergyFieldTest extends FieldTestSupport {
+	@Override
+	protected Field<DecimalMeasure<Energy>> newField(String name) {
+		return new EnergyField(name);
+	}
 
 	@Test
 	public void test() {
-		roundtrip(new EnergyField(FIELD_NAME), DecimalMeasure.valueOf(new BigDecimal("1"), Units.KJ));
+		roundtrip(null);
+		roundtrip(valueOf("1 kJ"));
+		roundtrip(valueOf("5000 kcal"));
 	}
 }

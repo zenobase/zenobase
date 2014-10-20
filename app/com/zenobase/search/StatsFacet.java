@@ -13,7 +13,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.zenobase.common.Measures;
 import com.zenobase.common.Units;
 import com.zenobase.json.Field;
-import com.zenobase.json.MeasurementField;
+import com.zenobase.json.DecimalMeasureField;
 import com.zenobase.json.Nodes;
 
 public class StatsFacet extends Facet {
@@ -34,7 +34,7 @@ public class StatsFacet extends Facet {
 	@Override
 	public void configure(SearchSourceBuilder builder) {
 		builder.facet(FacetBuilders.statisticalFacet(getId())
-			.field(unit == Unit.ONE ? field : Field.concat(field, MeasurementField.VALUE_SI.getName()))
+			.field(unit == Unit.ONE ? field : Field.concat(field, DecimalMeasureField.VALUE_SI.getName()))
 			.facetFilter(filter));
 	}
 

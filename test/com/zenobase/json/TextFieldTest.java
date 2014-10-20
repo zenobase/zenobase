@@ -1,13 +1,15 @@
 package com.zenobase.json;
 
-import com.zenobase.json.TextField;
-
 import org.junit.Test;
 
-public class TextFieldTest extends FieldTestSupport {
+public class TextFieldTest extends FieldTestSupport<String> {
 
+	@Override
+	protected Field<String> newField(String name) {
+		return new TextField(name);
+	}
 	@Test
 	public void test() {
-		roundtrip(new TextField(FIELD_NAME), "do-re-mi");
+		roundtrip("do-re-mi");
 	}
 }

@@ -1,20 +1,21 @@
 package com.zenobase.json;
 
-import java.math.BigDecimal;
-
 import javax.measure.DecimalMeasure;
 import javax.measure.quantity.DataAmount;
 
 import org.junit.Test;
 
-import com.zenobase.common.Measures;
+public class BitsFieldTest extends DecimalMeasureFieldTestSupport<DataAmount> {
 
-public class BitsFieldTest extends FieldTestSupport {
+	@Override
+	protected Field<DecimalMeasure<DataAmount>> newField(String name) {
+		return new BitsField(name);
+	}
 
 	@Test
 	public void test() {
-
-		DecimalMeasure<DataAmount> value = Measures.valueOf(new BigDecimal("1.2"), "GiB");
-		roundtrip(new BitsField(FIELD_NAME), value);
+		roundtrip(null);
+		roundtrip(valueOf("1 GB"));
+		roundtrip(valueOf("1.2 GiB"));
 	}
 }

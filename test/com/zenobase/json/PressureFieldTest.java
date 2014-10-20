@@ -1,17 +1,21 @@
 package com.zenobase.json;
 
-import java.math.BigDecimal;
-
 import javax.measure.DecimalMeasure;
+import javax.measure.quantity.Pressure;
 
 import org.junit.Test;
 
-import com.zenobase.common.Units;
+public class PressureFieldTest extends DecimalMeasureFieldTestSupport<Pressure> {
 
-public class PressureFieldTest extends FieldTestSupport {
+	@Override
+	protected Field<DecimalMeasure<Pressure>> newField(String name) {
+		return new PressureField(name);
+	}
 
 	@Test
 	public void test() {
-		roundtrip(new PressureField(FIELD_NAME), DecimalMeasure.valueOf(new BigDecimal("75.0"), Units.PA));
+		roundtrip(null);
+		roundtrip(valueOf("75.0 Pa"));
+		roundtrip(valueOf("40 psi"));
 	}
 }

@@ -5,10 +5,15 @@ import org.junit.Test;
 import com.zenobase.common.Generator;
 import com.zenobase.models.Alias;
 
-public class AliasFieldTest extends FieldTestSupport {
+public class AliasFieldTest extends FieldTestSupport<Alias> {
+
+	@Override
+	protected Field<Alias> newField(String name) {
+		return new AliasField(name);
+	}
 
 	@Test
 	public void test() {
-		roundtrip(new AliasField(FIELD_NAME), new Alias(Generator.id(), "tag:foo"));
+		roundtrip(new Alias(Generator.id(), "tag:foo"));
 	}
 }

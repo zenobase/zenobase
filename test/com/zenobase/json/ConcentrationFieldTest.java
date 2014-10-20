@@ -1,19 +1,20 @@
 package com.zenobase.json;
 
-import java.math.BigDecimal;
-
 import javax.measure.DecimalMeasure;
 import javax.measure.quantity.VolumetricDensity;
 
 import org.junit.Test;
 
-import com.zenobase.common.Measures;
+public class ConcentrationFieldTest extends DecimalMeasureFieldTestSupport<VolumetricDensity> {
 
-public class ConcentrationFieldTest extends FieldTestSupport {
+	@Override
+	protected Field<DecimalMeasure<VolumetricDensity>> newField(String name) {
+		return new ConcentrationField(name);
+	}
 
 	@Test
 	public void test() {
-		DecimalMeasure<VolumetricDensity> value = Measures.valueOf(new BigDecimal("10.0"), "ng/dL");
-		roundtrip(new ConcentrationField(FIELD_NAME), value);
+		roundtrip(null);
+		roundtrip(valueOf("10.0 ng/dL"));
 	}
 }

@@ -26,7 +26,7 @@ import com.zenobase.common.Measures;
 import com.zenobase.common.Units;
 import com.zenobase.json.Field;
 import com.zenobase.json.LocalDateTimeField;
-import com.zenobase.json.MeasurementField;
+import com.zenobase.json.DecimalMeasureField;
 import com.zenobase.json.Nodes;
 import com.zenobase.models.Event;
 
@@ -134,7 +134,7 @@ public class ScatterPlotFacet extends Facet {
 		public DateHistogramFacetBuilder createFacet(String keyField, String interval, DateTimeZone timezone) {
 			return FacetBuilders.dateHistogramFacet(id)
 				.keyField(timezone != null ? keyField : LocalDateTimeField.getLocalTimePath(keyField))
-				.valueField(unit == Unit.ONE ? field : Field.concat(field, MeasurementField.VALUE_SI.getName()))
+				.valueField(unit == Unit.ONE ? field : Field.concat(field, DecimalMeasureField.VALUE_SI.getName()))
 				.interval(interval)
 				.preZone(Objects.firstNonNull(timezone, DateTimeZone.UTC).toString())
 				.preZoneAdjustLargeInterval(true)

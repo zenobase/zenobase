@@ -1,17 +1,22 @@
 package com.zenobase.json;
 
-import java.math.BigDecimal;
-
 import javax.measure.DecimalMeasure;
+import javax.measure.quantity.Velocity;
 
 import org.junit.Test;
 
-import com.zenobase.common.Units;
+public class VelocityFieldTest extends DecimalMeasureFieldTestSupport<Velocity> {
 
-public class VelocityFieldTest extends FieldTestSupport {
+	@Override
+	protected Field<DecimalMeasure<Velocity>> newField(String name) {
+		return new VelocityField(name);
+	}
 
 	@Test
 	public void test() {
-		roundtrip(new VelocityField(FIELD_NAME), DecimalMeasure.valueOf(new BigDecimal("100"), Units.MPH));
+		roundtrip(null);
+		roundtrip(valueOf("10.0 m/s"));
+		roundtrip(valueOf("120 kmh"));
+		roundtrip(valueOf("100 mph"));
 	}
 }
