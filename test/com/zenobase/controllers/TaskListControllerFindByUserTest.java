@@ -23,51 +23,51 @@ public class TaskListControllerFindByUserTest extends TaskListControllerTestSupp
 		TaskList list = new TaskList(DefaultPartialList.<ObjectNode>of());
 		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
 		when(tasks.find(new TaskQuery().principalEqualTo(user.asIdentity()), 0, 10)).thenReturn(list);
-		Result result = call(user.getId(), 0, 10);
+		Result result = call(user.getId(), null, 0, 10);
 		assertThat(result).hasStatus(OK).hasContent(TaskList.toJson(list));
 	}
 
 	@Test
 	public void testLimitTooLow() {
-		Result result = call(user.getId(), 0, -1);
+		Result result = call(user.getId(), null, 0, -1);
 		assertThat(result).hasStatus(BAD_REQUEST);
 	}
 
 	@Test
 	public void testLimitTooHigh() {
-		Result result = call(user.getId(), 0, 1000);
+		Result result = call(user.getId(), null, 0, 1000);
 		assertThat(result).hasStatus(BAD_REQUEST);
 	}
 
 	@Test
 	public void testOffsetTooLow() {
-		Result result = call(user.getId(), -1, 0);
+		Result result = call(user.getId(), null, -1, 0);
 		assertThat(result).hasStatus(BAD_REQUEST);
 	}
 
 	@Test
 	public void testOffsetTooHigh() {
-		Result result = call(user.getId(), 10000, 0);
+		Result result = call(user.getId(), null, 10000, 0);
 		assertThat(result).hasStatus(BAD_REQUEST);
 	}
 
 	@Test
 	public void testNotAuthorized() {
-		Result result = call(user.getId(), 0, 10);
+		Result result = call(user.getId(), null, 0, 10);
 		assertThat(result).hasStatus(UNAUTHORIZED);
 	}
 
 	@Test
 	public void testScopedAuthorization() {
 		when(auth.current()).thenReturn(new Authorization(user.asIdentity(), new Identity(), Generator.id()));
-		Result result = call(user.getId(), 0, 10);
+		Result result = call(user.getId(), null, 0, 10);
 		assertThat(result).hasStatus(FORBIDDEN);
 	}
 
 	@Test
 	public void testUserNotFound() {
 		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
-		Result result = call("@jdoe", 0, 10);
+		Result result = call("@jdoe", null, 0, 10);
 		assertThat(result).hasStatus(NOT_FOUND);
 	}
 
@@ -75,7 +75,7 @@ public class TaskListControllerFindByUserTest extends TaskListControllerTestSupp
 	public void testNotOwner() {
 		when(auth.current()).thenReturn(new Authorization(new Identity()));
 		when(users.find(user.getId())).thenReturn(user);
-		Result result = call(user.getId(), 0, 10);
+		Result result = call(user.getId(), null, 0, 10);
 		assertThat(result).hasStatus(FORBIDDEN);
 	}
 
@@ -86,12 +86,12 @@ public class TaskListControllerFindByUserTest extends TaskListControllerTestSupp
 		when(auth.current()).thenReturn(new Authorization(superuser));
 		when(users.find(user.getId())).thenReturn(user);
 		when(users.isSuperuser(superuser)).thenReturn(true);
-		when(tasks.find(new TaskQuery().principalEqualTo(user.asIdentity()), 0, 10)).thenReturn(list);
-		Result result = call(user.getId(), 0, 10);
+		when(tasks.find(new TaskQuery().principalEqualTo(user.asIdentity()).match("type:foo"), 0, 10)).thenReturn(list);
+		Result result = call(user.getId(), "type:foo", 0, 10);
 		assertThat(result).hasStatus(OK).hasContent(TaskList.toJson(list));
 	}
 
-	private static Result call(String userId, int offset, int limit) {
-		return callAction(com.zenobase.controllers.routes.ref.TaskListController.findByUser(userId, offset, limit));
+	private static Result call(String userId, String q, int offset, int limit) {
+		return callAction(com.zenobase.controllers.routes.ref.TaskListController.findByUser(userId, q, offset, limit));
 	}
 }

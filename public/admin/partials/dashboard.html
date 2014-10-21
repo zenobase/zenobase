@@ -296,6 +296,14 @@
 			</div>
 
 			<div id="widget-tasks" data-ng-controller="admin.TaskListController" class="tab-pane">
+
+				<form class="form-search">
+ 					<div class="input-append">
+	 					<input type="text" class="search-query input-large" data-ng-model="filter"/>
+ 						<button class="btn" data-ng-click="refresh({})"><i class="fa fa-search"></i></button>
+ 					</div>
+ 				</form>
+
 				<table class="table">
 					<thead>
 						<tr>
@@ -331,7 +339,7 @@
 						</tr>
 					</tbody>
 				</table>
-				<div class="btn-toolbar">
+				<div class="btn-toolbar" data-ng-show="tasks.length">
 					<div class="btn-group pull-right" data-ng-show="tasks">
 						<button class="btn" title="Previous" data-ng-click="prev()" data-ng-disabled="!hasPrev()"><i class="fa fa-chevron-left"></i></button>
 						<button class="btn" title="Next" data-ng-click="next()" data-ng-disabled="!hasNext()"><i class="fa fa-chevron-right"></i></button>

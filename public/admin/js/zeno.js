@@ -333,6 +333,7 @@
 		$scope.total = 0;
 		$scope.tasks = null;
 		$scope.running = {};
+		$scope.filter = null;
 
 		$scope.hasPrev = function() {
 			return $scope.offset > 0;
@@ -347,10 +348,14 @@
 			$scope.refresh({ offset : $scope.offset + $scope.limit });
 		}
 		$scope.params = function() {
-			return {
+			var params = {
 				offset : $scope.offset,
 				limit : $scope.limit
 			};
+			if ($scope.filter) {
+				params.q = $scope.filter;
+			}
+			return params;
 		}
 		$scope.refresh = function(params) {
 			var path = $scope.constraint ? '/users/' + $scope.constraint + '/tasks/' : '/tasks/';

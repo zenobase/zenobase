@@ -41,7 +41,7 @@ public class TaskListController extends ControllerSupport {
 		this.users = users;
 	}
 
-	public Result findAll(int offset, int limit) {
+	public Result findAll(String q, int offset, int limit) {
 		if (offset < 0 || offset > 1000) {
 			return badRequest("expected offset in [0..1000]");
 		}
@@ -58,7 +58,11 @@ public class TaskListController extends ControllerSupport {
 		if (!users.isSuperuser(auth.getPrincipal())) {
 			return forbidden();
 		}
-		return ok(TaskList.toJson(tasks.find(offset, limit)));
+		TaskQuery query = new TaskQuery();
+		if (q != null) {
+			query = query.match(q);
+		}
+		return ok(TaskList.toJson(tasks.find(query, offset, limit)));
     }
 
 	public Result findByBucket(String bucketId, int offset, int limit) {
@@ -83,7 +87,7 @@ public class TaskListController extends ControllerSupport {
 		return ok(TaskList.toJson(tasks.find(query, TaskQuery.orderByCreated(true), offset, limit)));
     }
 
-	public Result findByUser(String userId, int offset, int limit) {
+	public Result findByUser(String userId, String q, int offset, int limit) {
 		if (offset < 0 || offset > 1000) {
 			return badRequest("expected offset in [0..1000]");
 		}
@@ -104,7 +108,11 @@ public class TaskListController extends ControllerSupport {
 		if (!auth.getPrincipal().equals(principal) && !users.isSuperuser(auth.getPrincipal())) {
 			return forbidden();
 		}
-		return ok(TaskList.toJson(tasks.find(new TaskQuery().principalEqualTo(principal), offset, limit)));
+		TaskQuery query = new TaskQuery().principalEqualTo(principal);
+		if (q != null) {
+			query = query.match(q);
+		}
+		return ok(TaskList.toJson(tasks.find(query, offset, limit)));
     }
 
 	@BodyParser.Of(BodyParser.Json.class)
