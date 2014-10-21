@@ -220,8 +220,10 @@
 
 		$scope.$on('reload', $scope.refresh);
 		$scope.refresh({});
-		$scope.$watch('filter', function() {
-			$scope.refresh({ offset : 0 });
+		$scope.$watch('filter', function(to, from) {
+			if (from !== to) {
+				$scope.refresh({ offset : 0 });
+			}
 		});
 	}]);
 
@@ -294,8 +296,10 @@
 
 		$scope.$on('reload', $scope.refresh);
 		$scope.refresh({});
-		$scope.$watch('filter', function() {
-			$scope.refresh({ offset : 0 });
+		$scope.$watch('filter', function(to, from) {
+			if (from !== to) {
+				$scope.refresh({ offset : 0 });
+			}
 		});
 	}]);
 
@@ -345,8 +349,10 @@
 
 		$scope.$on('reload', $scope.refresh);
 		$scope.refresh({});
-		$scope.$watch('filter', function() {
-			$scope.refresh({ offset : 0 });
+		$scope.$watch('filter', function(to, from) {
+			if (from !== to) {
+				$scope.refresh({ offset : 0 });
+			}
 		});
 	}]);
 
@@ -382,6 +388,7 @@
 			return params;
 		}
 		$scope.refresh = function(params) {
+			console.log('refreshing tasks');
 			var path = $scope.constraint ? '/users/' + $scope.constraint + '/tasks/' : '/tasks/';
 			$http.get(path + '?' + $.param($.extend($scope.params(), params))).success(function(response) {
 				$.extend($scope, params);
@@ -401,14 +408,22 @@
 		};
 		$scope.remove = function(taskId) {
 			$http({ method : 'DELETE', url : '/tasks/' + taskId }).success(function(response, code, headers) {
-				delay($scope.reload);
+				delay(function() {
+					var params = {};
+					if ($scope.tasks.length == 1) {
+						params.offset = Math.max(0, $scope.offset - $scope.limit);
+					}
+					$scope.refresh(params);
+				});
 			});
 		};
 
 		$scope.$on('reload', $scope.refresh);
 		$scope.refresh({});
-		$scope.$watch('filter', function() {
-			$scope.refresh({ offset : 0 });
+		$scope.$watch('filter', function(to, from) {
+			if (from !== to) {
+				$scope.refresh({ offset : 0 });
+			}
 		});
 	}]);
 
