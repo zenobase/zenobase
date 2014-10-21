@@ -135,6 +135,12 @@
 			</div>
 		
 			<div id="widget-users" data-ng-controller="admin.UserListController" class="tab-pane">
+				<form class="form-search">
+ 					<div class="input-append">
+	 					<input type="text" class="search-query input-large" data-ng-model="filter"/>
+ 						<button class="btn" data-ng-click="refresh({})"><i class="fa fa-search"></i></button>
+ 					</div>
+ 				</form>
 				<table class="table">
 					<thead>
 						<tr>

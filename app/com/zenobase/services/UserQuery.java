@@ -26,4 +26,10 @@ public class UserQuery extends QuerySupport {
 		lessThan(User.CREATED, time);
 		return this;
 	}
+
+	@Override
+	public UserQuery queryString(String query) {
+		super.queryString(query);
+		return this;
+	}
 }

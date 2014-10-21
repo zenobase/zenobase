@@ -45,17 +45,9 @@ public class UserListControllerTest extends ControllerTestSupport {
 		PartialList<User> expected = DefaultPartialList.of();
 		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
 		when(users.isSuperuser(user.asIdentity())).thenReturn(true);
-		when(users.find(new UserQuery(), 0, 1)).thenReturn(expected);
-		Result result = call(null, 0, 1);
+		when(users.find(new UserQuery().queryString("verified:true"), 0, 1)).thenReturn(expected);
+		Result result = call("verified:true", 0, 1);
 		assertThat(result).hasStatus(OK).hasContent(UserList.toJson(expected));
-	}
-
-	@Test
-	public void testUnsupportedQuery() {
-		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
-		when(users.isSuperuser(user.asIdentity())).thenReturn(true);
-		Result result = call("foo:bar", 0, 1);
-		assertThat(result).hasStatus(BAD_REQUEST);
 	}
 
 	@Test

@@ -31,16 +31,12 @@ public class UserListController extends ControllerSupport {
     	if (limit == Integer.MAX_VALUE) {
     		return find();
     	}
-    	UserQuery query = parseQuery(q);
-    	if (query == null) {
-    		return badRequest("Unsupported query: " + q);
+    	UserQuery query = new UserQuery();
+    	if (q != null) {
+    		query = query.queryString(q);
     	}
         return ok(UserList.toJson(repository.find(query, offset, limit)));
     }
-
-	private UserQuery parseQuery(String q) {
-    	return q == null ? new UserQuery() : null;
-	}
 
 	private Result find() {
     	Chunks<String> chunks = new StringChunks() {

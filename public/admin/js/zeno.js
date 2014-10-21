@@ -158,6 +158,7 @@
 		$scope.limit = 10;
 		$scope.total = 0;
 		$scope.users = null;
+		$scope.filter = null;
 
 		$scope.hasPrev = function() {
 			return $scope.offset > 0;
@@ -172,10 +173,14 @@
 			$scope.refresh({ offset : $scope.offset + $scope.limit });
 		};
 		$scope.params = function() {
-			return {
+			var params = {
 				offset : $scope.offset,
 				limit : $scope.limit
 			};
+			if ($scope.filter) {
+				params.q = $scope.filter;
+			}
+			return params;
 		};
 		$scope.refresh = function(params) {
 			$scope.token = token.get();
@@ -254,13 +259,13 @@
 		};
 		$scope.params = function() {
 			var params = {
-					offset : $scope.offset,
-					limit : $scope.limit
-				};
-				if ($scope.filter) {
-					params.q = $scope.filter;
-				}
-				return params;
+				offset : $scope.offset,
+				limit : $scope.limit
+			};
+			if ($scope.filter) {
+				params.q = $scope.filter;
+			}
+			return params;
 		};
 		$scope.refresh = function(params) {
 			var path = $scope.constraint ? '/users/' + $scope.constraint + '/authorizations/' : '/authorizations/';
@@ -310,13 +315,13 @@
 		}
 		$scope.params = function() {
 			var params = {
-					offset : $scope.offset,
-					limit : $scope.limit
-				};
-				if ($scope.filter) {
-					params.q = $scope.filter;
-				}
-				return params;
+				offset : $scope.offset,
+				limit : $scope.limit
+			};
+			if ($scope.filter) {
+				params.q = $scope.filter;
+			}
+			return params;
 		}
 		$scope.refresh = function(params) {
 			var path = $scope.constraint ? '/users/' + $scope.constraint + '/credentials/' : '/credentials/';
