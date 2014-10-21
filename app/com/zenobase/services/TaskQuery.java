@@ -1,7 +1,5 @@
 package com.zenobase.services;
 
-import org.elasticsearch.index.query.QueryBuilders;
-
 import com.zenobase.models.Identity;
 import com.zenobase.tasks.Task;
 
@@ -17,8 +15,9 @@ public class TaskQuery extends QuerySupport {
 		return this;
 	}
 
-	public TaskQuery match(String query) {
-		add(QueryBuilders.queryString(query));
+	@Override
+	public TaskQuery queryString(String query) {
+		super.queryString(query);
 		return this;
 	}
 

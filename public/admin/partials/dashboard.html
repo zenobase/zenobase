@@ -254,6 +254,12 @@
 			</div>
 
 			<div id="widget-credentials" data-ng-controller="admin.CredentialsListController" class="tab-pane">
+				<form class="form-search">
+ 					<div class="input-append">
+	 					<input type="text" class="search-query input-large" data-ng-model="filter"/>
+ 						<button class="btn" data-ng-click="refresh({})"><i class="fa fa-search"></i></button>
+ 					</div>
+ 				</form>
 				<table class="table">
 					<thead>
 						<tr>
@@ -296,14 +302,12 @@
 			</div>
 
 			<div id="widget-tasks" data-ng-controller="admin.TaskListController" class="tab-pane">
-
 				<form class="form-search">
  					<div class="input-append">
 	 					<input type="text" class="search-query input-large" data-ng-model="filter"/>
  						<button class="btn" data-ng-click="refresh({})"><i class="fa fa-search"></i></button>
  					</div>
  				</form>
-
 				<table class="table">
 					<thead>
 						<tr>

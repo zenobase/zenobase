@@ -43,6 +43,11 @@ public class QuerySupport {
 		return this;
 	}
 
+	protected QuerySupport queryString(String query) {
+		add(QueryBuilders.queryString(query));
+		return this;
+	}
+
 	protected void add(QueryBuilder constraint) {
 		constraints.add(constraint);
 	}

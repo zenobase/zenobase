@@ -86,7 +86,7 @@ public class TaskListControllerFindByUserTest extends TaskListControllerTestSupp
 		when(auth.current()).thenReturn(new Authorization(superuser));
 		when(users.find(user.getId())).thenReturn(user);
 		when(users.isSuperuser(superuser)).thenReturn(true);
-		when(tasks.find(new TaskQuery().principalEqualTo(user.asIdentity()).match("type:foo"), 0, 10)).thenReturn(list);
+		when(tasks.find(new TaskQuery().principalEqualTo(user.asIdentity()).queryString("type:foo"), 0, 10)).thenReturn(list);
 		Result result = call(user.getId(), "type:foo", 0, 10);
 		assertThat(result).hasStatus(OK).hasContent(TaskList.toJson(list));
 	}

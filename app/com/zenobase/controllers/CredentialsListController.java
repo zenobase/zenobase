@@ -36,7 +36,7 @@ public class CredentialsListController extends ControllerSupport {
 		this.users = users;
 	}
 
-	public Result findAll(int offset, int limit) {
+	public Result findAll(String q, int offset, int limit) {
 		if (offset < 0 || offset > 1000) {
 			return badRequest("expected offset in [0..1000]");
 		}
@@ -53,10 +53,14 @@ public class CredentialsListController extends ControllerSupport {
 		if (!users.isSuperuser(auth.getPrincipal())) {
 			return forbidden();
 		}
-		return ok(CredentialsList.toJson(credentials.find(offset, limit)));
+		CredentialsQuery query = new CredentialsQuery();
+		if (q != null) {
+			query = query.queryString(q);
+		}
+		return ok(CredentialsList.toJson(credentials.find(query, offset, limit)));
     }
 
-	public Result findByUser(String userId, int offset, int limit) {
+	public Result findByUser(String userId, String q, int offset, int limit) {
 		if (offset < 0 || offset > 1000) {
 			return badRequest("expected offset in [0..1000]");
 		}
@@ -78,6 +82,9 @@ public class CredentialsListController extends ControllerSupport {
 			return forbidden();
 		}
 		CredentialsQuery query = new CredentialsQuery().principalEqualTo(principal);
+		if (q != null) {
+			query = query.queryString(q);
+		}
 		return ok(CredentialsList.toJson(credentials.find(query, offset, limit)));
     }
 

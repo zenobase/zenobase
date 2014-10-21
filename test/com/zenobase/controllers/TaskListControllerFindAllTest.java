@@ -23,7 +23,7 @@ public class TaskListControllerFindAllTest extends TaskListControllerTestSupport
 		TaskList list = new TaskList(DefaultPartialList.<ObjectNode>of());
 		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
 		when(users.isSuperuser(user.asIdentity())).thenReturn(true);
-		when(tasks.find(new TaskQuery().match("type:foo"), 0, 10)).thenReturn(list);
+		when(tasks.find(new TaskQuery().queryString("type:foo"), 0, 10)).thenReturn(list);
 		Result result = call("type:foo", 0, 10);
 		assertThat(result).hasStatus(OK).hasContent(TaskList.toJson(list));
 	}

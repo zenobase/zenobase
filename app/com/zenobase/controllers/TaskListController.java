@@ -60,7 +60,7 @@ public class TaskListController extends ControllerSupport {
 		}
 		TaskQuery query = new TaskQuery();
 		if (q != null) {
-			query = query.match(q);
+			query = query.queryString(q);
 		}
 		return ok(TaskList.toJson(tasks.find(query, offset, limit)));
     }
@@ -110,7 +110,7 @@ public class TaskListController extends ControllerSupport {
 		}
 		TaskQuery query = new TaskQuery().principalEqualTo(principal);
 		if (q != null) {
-			query = query.match(q);
+			query = query.queryString(q);
 		}
 		return ok(TaskList.toJson(tasks.find(query, offset, limit)));
     }

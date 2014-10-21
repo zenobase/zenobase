@@ -14,4 +14,10 @@ public class CredentialsQuery extends QuerySupport {
 		equalTo(Credentials.TYPE, type);
 		return this;
 	}
+
+	@Override
+	public CredentialsQuery queryString(String query) {
+		super.queryString(query);
+		return this;
+	}
 }
