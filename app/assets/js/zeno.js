@@ -6390,4 +6390,17 @@
 		};
 	}]);
 
+	app.directive('uiBlurOnEnter', function() {
+		return {
+			link : function(scope, element, attrs) {
+				var el = element[0];
+				el.addEventListener('keydown', function(e) {
+					if (e.keyCode === 13) {
+						el.blur();
+					}
+				});
+			}
+		};
+	});
+	
 }());

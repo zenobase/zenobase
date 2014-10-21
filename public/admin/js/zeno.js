@@ -220,6 +220,9 @@
 
 		$scope.$on('reload', $scope.refresh);
 		$scope.refresh({});
+		$scope.$watch('filter', function() {
+			$scope.refresh({ offset : 0 });
+		});
 	}]);
 
 	app.controller('admin.EditQuotaDialogController', ['$scope', '$http', 'delay', function($scope, $http, delay) {
@@ -291,6 +294,9 @@
 
 		$scope.$on('reload', $scope.refresh);
 		$scope.refresh({});
+		$scope.$watch('filter', function() {
+			$scope.refresh({ offset : 0 });
+		});
 	}]);
 
 	app.controller('admin.CredentialsListController', ['$scope', '$http', 'delay', function($scope, $http, delay) {
@@ -339,6 +345,9 @@
 
 		$scope.$on('reload', $scope.refresh);
 		$scope.refresh({});
+		$scope.$watch('filter', function() {
+			$scope.refresh({ offset : 0 });
+		});
 	}]);
 
 	app.controller('admin.TaskListController', ['$scope', '$http', 'delay', 'taskRunner', function($scope, $http, delay, taskRunner) {
@@ -398,6 +407,9 @@
 
 		$scope.$on('reload', $scope.refresh);
 		$scope.refresh({});
+		$scope.$watch('filter', function() {
+			$scope.refresh({ offset : 0 });
+		});
 	}]);
 
 	app.controller('admin.SnapshotController', ['$scope', '$http', 'delay', function($scope, $http, delay) {
