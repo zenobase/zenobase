@@ -32,7 +32,7 @@ public class AuthorizationListController extends ControllerSupport {
 		this.users = users;
 	}
 
-	public Result findAll(int offset, int limit) {
+	public Result findAll(String q, int offset, int limit) {
 		Authorization auth = getCurrentAuthorization();
     	if (auth == null) {
     		return unauthorized();
@@ -43,10 +43,14 @@ public class AuthorizationListController extends ControllerSupport {
 		if (!users.isSuperuser(auth.getPrincipal())) {
 			return forbidden();
 		}
-		return ok(AuthorizationList.toJson(authorizations.find(offset, limit)));
+		AuthorizationQuery query = new AuthorizationQuery();
+		if (q != null) {
+			query = query.queryString(q);
+		}
+		return ok(AuthorizationList.toJson(authorizations.find(query, offset, limit)));
     }
 
-	public Result findByUser(String userId, Boolean hasClient, int offset, int limit) {
+	public Result findByUser(String userId, Boolean hasClient, String q, int offset, int limit) {
 		if (offset < 0 || offset > 1000) {
 			return badRequest("expected offset in [0..1000]");
 		}
@@ -70,6 +74,9 @@ public class AuthorizationListController extends ControllerSupport {
 		AuthorizationQuery query = new AuthorizationQuery()
 			.principalEqualTo(principal)
 			.clientNotNull(hasClient);
+		if (q != null) {
+			query = query.queryString(q);
+		}
 		return ok(AuthorizationList.toJson(authorizations.find(query, offset, limit)));
     }
 

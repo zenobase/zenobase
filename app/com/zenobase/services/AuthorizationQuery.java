@@ -45,4 +45,10 @@ public class AuthorizationQuery extends QuerySupport {
 		lessThan(Authorization.CREATED, time);
 		return this;
 	}
+
+	@Override
+	public AuthorizationQuery queryString(String query) {
+		super.queryString(query);
+		return this;
+	}
 }
