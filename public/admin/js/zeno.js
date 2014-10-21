@@ -35,7 +35,10 @@
 			$scope.constraint = constraint;
 			$location.search('q', $scope.constraint);
 		};
-		$scope.refresh = function(params) {
+		$scope.refreshAll = function() {
+			$scope.$broadcast('refreshAll');
+		};
+		$scope.refresh = function() {
 			$http.get('/status')
 				.success(function(response) {
 					$scope.status = response;
@@ -50,7 +53,9 @@
 					$scope.refresh();
 				});
 		};
-		$scope.$on('reload', $scope.refresh);
+		$scope.$on('refreshAll', function() {
+			$scope.refresh();
+		});
 		$scope.refresh();
 	}]);
 
@@ -89,10 +94,12 @@
 		};
 		$scope.undo = function(commandId) {
 			$scope.$parent.undo(commandId);
-			delay($scope.reload);
+			delay($scope.refreshAll);
 		};
 
-		$scope.$on('reload', $scope.refresh);
+		$scope.$on('refreshAll', function() {
+			$scope.refresh({ offset : 0 });
+		});
 		$scope.refresh({});
 	}]);
 
@@ -138,7 +145,7 @@
 		};
 		$scope.remove = function(bucketId) {
 			$http({ method : 'DELETE', url : '/buckets/' + bucketId }).success(function(response, code, headers) {
-				delay($scope.reload);
+				delay($scope.refreshAll);
 			});
 		};
 		$scope.getOwner = function(bucket) {
@@ -148,7 +155,9 @@
 			return new Bucket(bucket).isPublished();
 		};
 
-		$scope.$on('reload', $scope.refresh);
+		$scope.$on('refreshAll', function() {
+			$scope.refresh({ offset : 0 });
+		});
 		$scope.refresh({});
 	}]);
 
@@ -204,27 +213,29 @@
 		};
 		$scope.suspend = function(username) {
 			$http.post('/users/@' + username, { 'suspended' : true }).success(function() {
-				delay($scope.reload);
+				delay($scope.refreshAll);
 			});
 		};
 		$scope.reverify = function(user) {
 			$http.post('/users/@' + user.name, { 'email' : user.email }).success(function() {
-				delay($scope.reload);
+				delay($scope.refreshAll);
 			});
 		};
 		$scope.remove = function(username) {
 			$http({ method : 'DELETE', url : '/users/@' + username }).success(function() {
-				delay($scope.reload);
+				delay($scope.refreshAll);
 			});
 		};
 
-		$scope.$on('reload', $scope.refresh);
-		$scope.refresh({});
+		$scope.$on('refreshAll', function() {
+			$scope.refresh({ offset : 0 });
+		});
 		$scope.$watch('filter', function(to, from) {
 			if (from !== to) {
 				$scope.refresh({ offset : 0 });
 			}
 		});
+		$scope.refresh({});
 	}]);
 
 	app.controller('admin.EditQuotaDialogController', ['$scope', '$http', 'delay', function($scope, $http, delay) {
@@ -237,7 +248,7 @@
 			$http.post('/users/@' + $scope.user.name, { 'quota' : $.isNumeric($scope.quota) ? $scope.quota : null })
 				.success(function(response) {
 					$scope.closeDialog();
-					delay($scope.reload);
+					delay($scope.refreshAll);
 				});
 		};
 	}]);
@@ -284,23 +295,25 @@
 		$scope.remove = function(authId) {
 			$http({ method : 'DELETE', url : '/authorizations/' + authId })
 				.success(function(response, code, headers) {
-					delay($scope.reload);
+					delay($scope.refreshAll);
 				});
 		};
 		$scope.removeExpired = function(bucketId) {
 			$http({ method : 'DELETE', url : '/authorizations/' }).success(function(response, status) {
 				console.assert(status === 204, status);
-				delay($scope.reload);
+				delay($scope.refreshAll);
 			});
 		};
 
-		$scope.$on('reload', $scope.refresh);
-		$scope.refresh({});
+		$scope.$on('refreshAll', function() {
+			$scope.refresh({ offset : 0 });
+		});
 		$scope.$watch('filter', function(to, from) {
 			if (from !== to) {
 				$scope.refresh({ offset : 0 });
 			}
 		});
+		$scope.refresh({});
 	}]);
 
 	app.controller('admin.CredentialsListController', ['$scope', '$http', 'delay', function($scope, $http, delay) {
@@ -343,17 +356,19 @@
 		};
 		$scope.remove = function(credentialsId) {
 			$http({ method : 'DELETE', url : '/credentials/' + credentialsId }).success(function(response, code, headers) {
-				delay($scope.reload);
+				delay($scope.refreshAll);
 			});
 		};
 
-		$scope.$on('reload', $scope.refresh);
-		$scope.refresh({});
+		$scope.$on('refreshAll', function() {
+			$scope.refresh({ offset : 0 });
+		});
 		$scope.$watch('filter', function(to, from) {
 			if (from !== to) {
 				$scope.refresh({ offset : 0 });
 			}
 		});
+		$scope.refresh({});
 	}]);
 
 	app.controller('admin.TaskListController', ['$scope', '$http', 'delay', 'taskRunner', function($scope, $http, delay, taskRunner) {
@@ -388,7 +403,6 @@
 			return params;
 		}
 		$scope.refresh = function(params) {
-			console.log('refreshing tasks');
 			var path = $scope.constraint ? '/users/' + $scope.constraint + '/tasks/' : '/tasks/';
 			$http.get(path + '?' + $.param($.extend($scope.params(), params))).success(function(response) {
 				$.extend($scope, params);
@@ -408,23 +422,19 @@
 		};
 		$scope.remove = function(taskId) {
 			$http({ method : 'DELETE', url : '/tasks/' + taskId }).success(function(response, code, headers) {
-				delay(function() {
-					var params = {};
-					if ($scope.tasks.length == 1) {
-						params.offset = Math.max(0, $scope.offset - $scope.limit);
-					}
-					$scope.refresh(params);
-				});
+				delay($scope.refreshAll);
 			});
 		};
 
-		$scope.$on('reload', $scope.refresh);
-		$scope.refresh({});
+		$scope.$on('refreshAll', function() {
+			$scope.refresh({ offset : 0 });
+		});
 		$scope.$watch('filter', function(to, from) {
 			if (from !== to) {
 				$scope.refresh({ offset : 0 });
 			}
 		});
+		$scope.refresh({});
 	}]);
 
 	app.controller('admin.SnapshotController', ['$scope', '$http', 'delay', function($scope, $http, delay) {
@@ -462,9 +472,7 @@
 		};
 		$scope.remove = function(snapshotId) {
 			$http({ method : 'DELETE', url : '/snapshots/' + snapshotId }).success(function(response, code, headers) {
-				delay(function() {
-					$scope.refresh({});
-				});
+				delay($scope.refreshAll);
 			});
 		};
 		$scope.snapshot = function() {
@@ -472,12 +480,14 @@
 			$http({ method : 'POST', url : '/snapshots/' }).then(function() {
 				delay(function() {
 					$scope.snapshotting = false;
-					$scope.refresh({});
+					$scope.refreshAll();
 				});
 			});
 		};
 
-		$scope.$on('reload', $scope.refresh);
+		$scope.$on('refreshAll', function() {
+			$scope.refresh({ offset : 0 });
+		});
 		$scope.refresh({});
 	}]);
 
