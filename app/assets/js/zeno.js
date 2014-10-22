@@ -4435,10 +4435,13 @@
 							scope.events = $scope.format.parse(e.target.result);
 						} catch(error) {
 							scope.message = error.message;
+							$scope.clearFiles();
 						}
 					});
 				};
-				reader.readAsText(files[0]);
+				if (files.length) {
+					reader.readAsText(files[0]);
+				}
 			});
 		};
 		$scope.submit = function() {
@@ -4446,20 +4449,26 @@
 			$http.post('/buckets/' + $scope.bucketId + '/', { 'events' : $scope.events })
 				.success(function(response, status, headers) {
 					$scope.alert.show('Imported events.', 'alert-success', headers('X-Command-ID'));
+					$scope.events = [];
 					delay($scope.refresh);
 					$scope.closeDialog();
 				})
 				.error(function(response) {
 					$scope.message = response.message || 'Couldn\'t import the file. Try again later, or contact support.';
+					$scope.events = [];
+					$scope.clearFiles();
 				});
 			tracker.event('action', 'import events');
+		};
+		$scope.clearFiles = function() {
+			$('#select-import-file').fileupload('reset');
 		};
 
 		$scope.$watch('format', function(format) {
 			if (format) {
 				$scope.message = '';
 				$scope.events = [];
-				$('#select-import-file').fileupload('reset');
+				$scope.clearFiles();
 			}
 		});
 	}]);
