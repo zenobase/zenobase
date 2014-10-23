@@ -14,7 +14,8 @@ public class FitbitStepsTest extends TaskTestSupport {
 		FitbitStepsTaskManager manager = new FitbitStepsTaskManager(newCredentialsManager());
 		ObjectNode settings = Nodes.newObject();
 		settings.put("tag", "walk");
-		settings.put("marker", "2013-11-01");
+		settings.put("marker", "2014-10-20");
+		settings.put("hourly", true);
 		Task task = manager.newTask(bucketId, principal, settings);
 		print(manager.execute(task, getCredentials()).toJson());
 	}

@@ -4659,7 +4659,7 @@
 			{ 'id' : 'bodymedia-steps', 'description' : 'Creates an event for the number of steps each day or hour.' },
 			{ 'id' : 'fitbit-food', 'description' : 'Creates an event for the number of calories consumed each day.' },
 			{ 'id' : 'fitbit-sleep', 'description' : 'Creates an event for each period of sleep.' },
-			{ 'id' : 'fitbit-steps', 'description' : 'Creates an event for the number of steps each day (incl distance and elevation, if available).' },
+			{ 'id' : 'fitbit-steps', 'description' : 'Creates an event for the number of steps each day or hour.' },
 			{ 'id' : 'fitbit-weight', 'description' : 'Creates an event for each body weight measurement.' },
 			{ 'id' : 'forecast', 'description' : 'Adds weather conditions and moon phase to events with locations.' },
 			{ 'id' : 'foursquare', 'description' : 'Creates an event for each check-in.' },
@@ -4755,6 +4755,7 @@
 		$scope.init = function() {
 			$scope.settings = $scope.$parent.$parent.settings = {
 					tag : 'steps',
+					hourly : false,
 					marker : new Date(moment().utc().subtract(3, 'months').startOf('month').valueOf())
 			};
 		};

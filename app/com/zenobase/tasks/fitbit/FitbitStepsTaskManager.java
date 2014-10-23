@@ -31,7 +31,8 @@ public class FitbitStepsTaskManager extends FitbitTaskManagerSupport {
 	public FitbitStepsTask newTask(String bucketId, Identity principal, ObjectNode settings) {
 		String marker = parseMarker(settings.path("marker").textValue()).toString();
 		String tag = Objects.firstNonNull(settings.path("tag").textValue(), "steps");
-		return new FitbitStepsTask(bucketId, principal, marker, tag, Units.KCAL);
+		boolean hourly = settings.path("hourly").booleanValue();
+		return new FitbitStepsTask(bucketId, principal, marker, tag, hourly, Units.KCAL);
 	}
 
 	@Override
@@ -45,12 +46,18 @@ public class FitbitStepsTaskManager extends FitbitTaskManagerSupport {
 		LocalDate fromDate = getFromDate(task);
 		FitbitProfileResult profile = getProfile(task, credentials);
 		for (LocalDate date = fromDate; syncDate != null && date.isBefore(syncDate); date = date.plusDays(1)) {
-			OAuthRequest request = new OAuthRequest(Verb.GET, "https://api.fitbit.com/1/user/-/activities/date/" + date + ".json");
-			request.addHeader("Accept-Language", profile.getDistanceLocale());
 			try {
-				Response response = send(request, credentials);
-				events.addAll(new FitbitStepsResult(parseObject(response), task.getTag(), task.getPrincipal(),
-					date, profile.getTimezone(), profile.getDistanceUnit(), profile.getHeightUnit(), task.getEnergyUnit()).getEvents());
+				if (task.isHourly()) {
+					OAuthRequest request = new OAuthRequest(Verb.GET, "https://api.fitbit.com/1/user/-/activities/steps/date/" + date + "/1d/15min.json");
+					Response response = send(request, credentials);
+					events.addAll(new FitbitIntradayStepsResult(parseObject(response), task.getTag(), task.getPrincipal(),date, profile.getTimezone()).getEvents());
+				} else {
+					OAuthRequest request = new OAuthRequest(Verb.GET, "https://api.fitbit.com/1/user/-/activities/date/" + date + ".json");
+					request.addHeader("Accept-Language", profile.getDistanceLocale());
+					Response response = send(request, credentials);
+					events.addAll(new FitbitStepsResult(parseObject(response), task.getTag(), task.getPrincipal(), date, profile.getTimezone(),
+						profile.getDistanceUnit(), profile.getHeightUnit(), task.getEnergyUnit()).getEvents());
+				}
 			} catch (InvalidStatusException e) {
 				if (e.getStatus() == 429) { // reached rate limit
 					syncDate = date;
