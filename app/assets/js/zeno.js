@@ -4677,10 +4677,10 @@
 			{ 'id' : 'runkeeper-activities', 'description' : 'Creates an event for each activity recorded with the RunKeeper app.' },
 			{ 'id' : 'sleepcloud', 'description' : 'Creates an event for each period of sleep recorded with the Sleep as Android app.' },
 			{ 'id' : 'strava-activities', 'description' : 'Creates an event for each activity recorded with the Strava app.' },
-			{ 'id' : 'withings', 'description' : 'Creates an event for each body weight measurement.' },
 			{ 'id' : 'withings-cardio', 'description' : 'Creates an event for each heart rate measurement.' },
 			{ 'id' : 'withings-sleep', 'description' : 'Creates an event for each period of sleep.' },
-			{ 'id' : 'withings-steps', 'description' : 'Creates an event for the number of steps each day (incl distance and elevation).' }
+			{ 'id' : 'withings-steps', 'description' : 'Creates an event for the number of steps each day (incl distance and elevation).' },
+			{ 'id' : 'withings-weight', 'description' : 'Creates an event for each body weight measurement.' }
 			// { 'id' : 'demo', 'description' : 'Creates a single event each time this task is run.' }
 		];
 

@@ -2,6 +2,7 @@ package com.zenobase.commands;
 
 import javax.inject.Inject;
 
+import play.Logger;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import com.zenobase.json.ObjectField;
@@ -48,7 +49,18 @@ public class DeleteTaskCommand extends Command {
 		@Override
 		public Command parse(ObjectNode node, int version) {
 			switch (version) {
-				case 2: return new DeleteTaskCommand(node);
+				case 2:
+					DeleteTaskCommand c = new DeleteTaskCommand(node);
+					if ("withings".equalsIgnoreCase(c.getTask().getType())) {
+						Logger.warn("from: {}", c.toJson());
+						Task.TYPE.setValue(c.getTask().toJson(), "withings-weight");
+						Logger.warn("to: {}", c.toJson());
+					} else if ("fitbit".equalsIgnoreCase(c.getTask().getType())) {
+						Logger.warn("from: {}", c.toJson());
+						Task.TYPE.setValue(c.getTask().toJson(), "fitbit-steps");
+						Logger.warn("to: {}", c.toJson());
+					}
+					return c;
 			}
 			return null;
 		}

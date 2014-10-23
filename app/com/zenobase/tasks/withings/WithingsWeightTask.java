@@ -13,7 +13,7 @@ import com.zenobase.tasks.Task;
 
 public class WithingsWeightTask extends Task {
 
-	public static final String TYPE = "withings";
+	public static final String TYPE = "withings-weight";
 	public static final TokenField TAG = new TokenField("tag");
 	public static final UnitField<Mass> UNIT = new UnitField<Mass>("unit");
 	public static final TokenField TIMEZONE = new TokenField("timezone");

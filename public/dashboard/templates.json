@@ -1756,7 +1756,7 @@
 	},
 	{
 		"label" : "Weight (Withings)",
-		"task" : "withings", 
+		"task" : "withings-weight", 
 		"widgets" : [
 			{
 				"id" : "latest",

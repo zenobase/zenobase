@@ -115,7 +115,6 @@ import com.zenobase.tasks.fitbit.FitbitFoodTaskManager;
 import com.zenobase.tasks.fitbit.FitbitIntradayTaskManager;
 import com.zenobase.tasks.fitbit.FitbitSleepTaskManager;
 import com.zenobase.tasks.fitbit.FitbitStepsTaskManager;
-import com.zenobase.tasks.fitbit.FitbitSummaryTaskManager;
 import com.zenobase.tasks.fitbit.FitbitWeightTaskManager;
 import com.zenobase.tasks.forecast.ForecastTaskManager;
 import com.zenobase.tasks.forecast.Forecaster;
@@ -272,7 +271,6 @@ public class Global extends GlobalSettings {
 
 				Multibinder<TaskManager> tasks = Multibinder.newSetBinder(binder(), new TypeLiteral<TaskManager>() {});
 				tasks.addBinding().to(DemoTaskManager.class);
-				bindIfConfigured("fitbit", FitbitSummaryTaskManager.class, tasks); // TODO drop
 				bindIfConfigured("fitbit", FitbitIntradayTaskManager.class, tasks); // TODO drop
 				bindIfConfigured("fitbit", FitbitStepsTaskManager.class, tasks);
 				bindIfConfigured("fitbit", FitbitSleepTaskManager.class, tasks);

@@ -4,6 +4,7 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
+import play.Logger;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.Maps;
 
@@ -54,7 +55,18 @@ public class CreateTaskCommand extends Command {
 		@Override
 		public Command parse(ObjectNode node, int version) {
 			switch (version) {
-				case 2: return new CreateTaskCommand(node);
+				case 2:
+					CreateTaskCommand c = new CreateTaskCommand(node);
+					if ("withings".equalsIgnoreCase(c.getTask().getType())) {
+						Logger.warn("from: {}", c.toJson());
+						Task.TYPE.setValue(c.getTask().toJson(), "withings-weight");
+						Logger.warn("to: {}", c.toJson());
+					} else if ("fitbit".equalsIgnoreCase(c.getTask().getType())) {
+						Logger.warn("from: {}", c.toJson());
+						Task.TYPE.setValue(c.getTask().toJson(), "fitbit-steps");
+						Logger.warn("to: {}", c.toJson());
+					}
+					return c;
 			}
 			return null;
 		}
