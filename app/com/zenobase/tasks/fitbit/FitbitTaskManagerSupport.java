@@ -8,6 +8,7 @@ import org.joda.time.LocalDate;
 import org.scribe.model.OAuthRequest;
 import org.scribe.model.Response;
 import org.scribe.model.Verb;
+import play.Logger;
 import com.google.common.util.concurrent.RateLimiter;
 
 import com.zenobase.commands.Command;
@@ -15,17 +16,36 @@ import com.zenobase.commands.CompoundCommand;
 import com.zenobase.commands.CreateEventCommand;
 import com.zenobase.commands.UpdateTaskCommand;
 import com.zenobase.models.Event;
+import com.zenobase.tasks.InvalidStatusException;
 import com.zenobase.tasks.OAuthCredentials;
 import com.zenobase.tasks.OAuthTaskManager;
 import com.zenobase.tasks.Task;
 
-public abstract class FitbitTaskManagerSupport extends OAuthTaskManager {
+public abstract class FitbitTaskManagerSupport<T extends Task> extends OAuthTaskManager {
 
 	private static final RateLimiter RATE_LIMITER = RateLimiter.create(10); // actually 400 per hour per user
 
-	protected FitbitTaskManagerSupport(String type, FitbitCredentialsManager credentialsManager) {
+	private final Class<T> taskClass;
+
+	protected FitbitTaskManagerSupport(String type, Class<T> taskClass, FitbitCredentialsManager credentialsManager) {
 		super(type, credentialsManager);
+		this.taskClass = taskClass;
 	}
+
+	@Override
+	public final Command execute(Task task, OAuthCredentials credentials) {
+		try {
+			return safeExecute(task.as(taskClass), credentials);
+		} catch (InvalidStatusException e) {
+			if (e.getStatus() == 429) { // reached rate limit
+				Logger.warn("Hit rate limit and couldn't run task: {}", task.getId());
+				return null;
+			}
+			throw e;
+		}
+	}
+
+	protected abstract Command safeExecute(T task, OAuthCredentials credentials);
 
 	protected void checkRateLimit() {
 		RATE_LIMITER.acquire();

@@ -9,6 +9,7 @@ import org.joda.time.LocalDate;
 import org.scribe.model.OAuthRequest;
 import org.scribe.model.Response;
 import org.scribe.model.Verb;
+import play.Logger;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Objects;
 import com.google.common.collect.Lists;
@@ -19,13 +20,12 @@ import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
 import com.zenobase.tasks.InvalidStatusException;
 import com.zenobase.tasks.OAuthCredentials;
-import com.zenobase.tasks.Task;
 
-public class FitbitFoodTaskManager extends FitbitTaskManagerSupport {
+public class FitbitFoodTaskManager extends FitbitTaskManagerSupport<FitbitFoodTask> {
 
 	@Inject
 	public FitbitFoodTaskManager(FitbitCredentialsManager credentialsManager) {
-		super(FitbitFoodTask.TYPE, credentialsManager);
+		super(FitbitFoodTask.TYPE, FitbitFoodTask.class, credentialsManager);
 	}
 
 	@Override
@@ -36,11 +36,7 @@ public class FitbitFoodTaskManager extends FitbitTaskManagerSupport {
 	}
 
 	@Override
-	public Command execute(Task task, OAuthCredentials credentials) {
-		return execute(task.as(FitbitFoodTask.class), credentials);
-	}
-
-	private Command execute(FitbitFoodTask task, OAuthCredentials credentials) {
+	protected Command safeExecute(FitbitFoodTask task, OAuthCredentials credentials) {
 		List<Event> events = Lists.newArrayList();
 		FitbitProfileResult profile = getProfile(task, credentials);
 		LocalDate today = new DateTime(profile.getTimezone()).toLocalDate();
@@ -53,6 +49,7 @@ public class FitbitFoodTaskManager extends FitbitTaskManagerSupport {
 				events.addAll(new FitbitFoodResult(parseObject(response), task.getTag(), task.getPrincipal(), profile.getTimezone()).getEvents());
 			} catch (InvalidStatusException e) {
 				if (e.getStatus() == 429) { // reached rate limit
+					Logger.warn("Hit rate limit and couldn't complete task: {}", task.getId());
 					today = date;
 					break;
 				}

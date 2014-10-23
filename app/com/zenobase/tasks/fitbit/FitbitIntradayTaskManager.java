@@ -18,11 +18,11 @@ import com.zenobase.models.Identity;
 import com.zenobase.tasks.OAuthCredentials;
 import com.zenobase.tasks.Task;
 
-public class FitbitIntradayTaskManager extends FitbitTaskManagerSupport {
+public class FitbitIntradayTaskManager extends FitbitTaskManagerSupport<FitbitIntradayTask> {
 
 	@Inject
 	public FitbitIntradayTaskManager(FitbitCredentialsManager credentialsManager) {
-		super(FitbitIntradayTask.TYPE, credentialsManager);
+		super(FitbitIntradayTask.TYPE, FitbitIntradayTask.class, credentialsManager);
 	}
 
 	@Override
@@ -32,11 +32,7 @@ public class FitbitIntradayTaskManager extends FitbitTaskManagerSupport {
 	}
 
 	@Override
-	public Command execute(Task task, OAuthCredentials credentials) {
-		return execute(task.as(FitbitIntradayTask.class), credentials);
-	}
-
-	private Command execute(FitbitIntradayTask task, OAuthCredentials credentials) {
+	protected Command safeExecute(FitbitIntradayTask task, OAuthCredentials credentials) {
 		List<Event> events = Lists.newArrayList();
 		LocalDate syncDate = getLastDate(DeviceType.TRACKER, task, credentials);
 		LocalDate fromDate = getFromDate(task);

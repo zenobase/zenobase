@@ -8,6 +8,7 @@ import org.joda.time.LocalDate;
 import org.scribe.model.OAuthRequest;
 import org.scribe.model.Response;
 import org.scribe.model.Verb;
+import play.Logger;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Objects;
 import com.google.common.collect.Lists;
@@ -19,11 +20,11 @@ import com.zenobase.tasks.InvalidStatusException;
 import com.zenobase.tasks.OAuthCredentials;
 import com.zenobase.tasks.Task;
 
-public class FitbitSleepTaskManager extends FitbitTaskManagerSupport {
+public class FitbitSleepTaskManager extends FitbitTaskManagerSupport<FitbitSleepTask> {
 
 	@Inject
 	public FitbitSleepTaskManager(FitbitCredentialsManager credentialsManager) {
-		super(FitbitSleepTask.TYPE, credentialsManager);
+		super(FitbitSleepTask.TYPE, FitbitSleepTask.class, credentialsManager);
 	}
 
 	@Override
@@ -34,11 +35,7 @@ public class FitbitSleepTaskManager extends FitbitTaskManagerSupport {
 	}
 
 	@Override
-	public Command execute(Task task, OAuthCredentials credentials) {
-		return execute(task.as(FitbitSleepTask.class), credentials);
-	}
-
-	private Command execute(FitbitSleepTask task, OAuthCredentials credentials) {
+	protected Command safeExecute(FitbitSleepTask task, OAuthCredentials credentials) {
 		List<Event> events = Lists.newArrayList();
 		LocalDate syncDate = getLastDate(DeviceType.TRACKER, task, credentials);
 		LocalDate fromDate = getFromDate(task);
@@ -50,6 +47,7 @@ public class FitbitSleepTaskManager extends FitbitTaskManagerSupport {
 				events.addAll(new FitbitSleepResult(parseObject(response), task.getTag(), task.getPrincipal(), task.useRanges(), profile.getTimezone()).getEvents());
 			} catch (InvalidStatusException e) {
 				if (e.getStatus() == 429) { // reached rate limit
+					Logger.warn("Hit rate limit and couldn't complete task: {}", task.getId());
 					syncDate = date;
 					break;
 				}

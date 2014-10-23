@@ -8,6 +8,7 @@ import org.joda.time.LocalDate;
 import org.scribe.model.OAuthRequest;
 import org.scribe.model.Response;
 import org.scribe.model.Verb;
+import play.Logger;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Objects;
 import com.google.common.collect.Lists;
@@ -19,11 +20,11 @@ import com.zenobase.tasks.InvalidStatusException;
 import com.zenobase.tasks.OAuthCredentials;
 import com.zenobase.tasks.Task;
 
-public class FitbitWeightTaskManager extends FitbitTaskManagerSupport {
+public class FitbitWeightTaskManager extends FitbitTaskManagerSupport<FitbitWeightTask> {
 
 	@Inject
 	public FitbitWeightTaskManager(FitbitCredentialsManager credentialsManager) {
-		super(FitbitWeightTask.TYPE, credentialsManager);
+		super(FitbitWeightTask.TYPE, FitbitWeightTask.class, credentialsManager);
 	}
 
 	@Override
@@ -34,11 +35,7 @@ public class FitbitWeightTaskManager extends FitbitTaskManagerSupport {
 	}
 
 	@Override
-	public Command execute(Task task, OAuthCredentials credentials) {
-		return execute(task.as(FitbitWeightTask.class), credentials);
-	}
-
-	private Command execute(FitbitWeightTask task, OAuthCredentials credentials) {
+	protected Command safeExecute(FitbitWeightTask task, OAuthCredentials credentials) {
 		List<Event> events = Lists.newArrayList();
 		LocalDate syncDate = getLastDate(DeviceType.SCALE, task, credentials);
 		LocalDate fromDate = getFromDate(task);
@@ -51,6 +48,7 @@ public class FitbitWeightTaskManager extends FitbitTaskManagerSupport {
 				events.addAll(new FitbitWeightResult(parseObject(response), task.getTag(), task.getPrincipal(), date, profile.getTimezone(), profile.getWeightUnit()).getEvents());
 			} catch (InvalidStatusException e) {
 				if (e.getStatus() == 429) { // reached rate limit
+					Logger.warn("Hit rate limit and couldn't complete task: {}", task.getId());
 					syncDate = date;
 					break;
 				}

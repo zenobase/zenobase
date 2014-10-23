@@ -8,6 +8,7 @@ import org.joda.time.LocalDate;
 import org.scribe.model.OAuthRequest;
 import org.scribe.model.Response;
 import org.scribe.model.Verb;
+import play.Logger;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Objects;
 import com.google.common.collect.Lists;
@@ -18,13 +19,12 @@ import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
 import com.zenobase.tasks.InvalidStatusException;
 import com.zenobase.tasks.OAuthCredentials;
-import com.zenobase.tasks.Task;
 
-public class FitbitStepsTaskManager extends FitbitTaskManagerSupport {
+public class FitbitStepsTaskManager extends FitbitTaskManagerSupport<FitbitStepsTask> {
 
 	@Inject
 	public FitbitStepsTaskManager(FitbitCredentialsManager credentialsManager) {
-		super(FitbitStepsTask.TYPE, credentialsManager);
+		super(FitbitStepsTask.TYPE, FitbitStepsTask.class, credentialsManager);
 	}
 
 	@Override
@@ -36,11 +36,7 @@ public class FitbitStepsTaskManager extends FitbitTaskManagerSupport {
 	}
 
 	@Override
-	public Command execute(Task task, OAuthCredentials credentials) {
-		return execute(task.as(FitbitStepsTask.class), credentials);
-	}
-
-	private Command execute(FitbitStepsTask task, OAuthCredentials credentials) {
+	protected Command safeExecute(FitbitStepsTask task, OAuthCredentials credentials) {
 		List<Event> events = Lists.newArrayList();
 		LocalDate syncDate = getLastDate(DeviceType.TRACKER, task, credentials);
 		LocalDate fromDate = getFromDate(task);
@@ -60,6 +56,7 @@ public class FitbitStepsTaskManager extends FitbitTaskManagerSupport {
 				}
 			} catch (InvalidStatusException e) {
 				if (e.getStatus() == 429) { // reached rate limit
+					Logger.warn("Hit rate limit and couldn't complete task: {}", task.getId());
 					syncDate = date;
 					break;
 				}
