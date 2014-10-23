@@ -24,10 +24,10 @@
 		}
 	})();
 
-	app.config(function($routeProvider) {
+	app.config(['$routeProvider', function($routeProvider) {
 		$routeProvider.when('/', { templateUrl: '/admin/partials/dashboard-' + version + '.html' });
 		$routeProvider.otherwise({ templateUrl : '/partials/404-' + version + '.html' });
-	});
+	}]);
 
 	app.config(['$httpProvider', function($httpProvider) {
 		$httpProvider.interceptors.push('progressInterceptor');
