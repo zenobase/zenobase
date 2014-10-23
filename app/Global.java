@@ -106,7 +106,6 @@ import com.zenobase.tasks.bodymedia.BodyMediaBurnTaskManager;
 import com.zenobase.tasks.bodymedia.BodyMediaCredentialsManager;
 import com.zenobase.tasks.bodymedia.BodyMediaSleepTaskManager;
 import com.zenobase.tasks.bodymedia.BodyMediaStepsTaskManager;
-import com.zenobase.tasks.bodymedia.BodyMediaSummaryTaskManager;
 import com.zenobase.tasks.demo.DemoCredentialsManager;
 import com.zenobase.tasks.demo.DemoTaskManager;
 import com.zenobase.tasks.dropbox.DropboxCredentialsManager;
@@ -281,7 +280,6 @@ public class Global extends GlobalSettings {
 				bindIfConfigured("withings", WithingsStepsTaskManager.class, tasks);
 				bindIfConfigured("withings", WithingsWeightTaskManager.class, tasks);
 				bindIfConfigured("withings", WithingsSleepTaskManager.class, tasks);
-				bindIfConfigured("bodymedia", BodyMediaSummaryTaskManager.class, tasks); // TODO drop
 				bindIfConfigured("bodymedia", BodyMediaBurnTaskManager.class, tasks);
 				bindIfConfigured("bodymedia", BodyMediaStepsTaskManager.class, tasks);
 				bindIfConfigured("bodymedia", BodyMediaSleepTaskManager.class, tasks);
