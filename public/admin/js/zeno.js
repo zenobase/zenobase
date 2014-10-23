@@ -29,7 +29,48 @@
 		$routeProvider.otherwise({ templateUrl : '/partials/404-' + version + '.html' });
 	});
 
-	app.controller('admin.DashboardController', ['$scope', '$location', '$http', function($scope, $location, $http) {
+	app.config(['$httpProvider', function($httpProvider) {
+		$httpProvider.interceptors.push('progressInterceptor');
+	}]);
+
+	app.factory('progress', function() {
+		var outstanding = 0;
+		return {
+			begin : function(count) {
+				outstanding += count;
+			},
+			end : function(count) {
+				outstanding -= count;
+			},
+			isIncomplete : function() {
+				return outstanding > 0;
+			},
+		};
+	});
+
+	app.factory('progressInterceptor', ['$q', 'progress', function($q, progress) {
+		return {
+			'request' : function(config) {
+				progress.begin(1);
+				return config;
+			},
+			'requestError' : function(rejection) {
+				progress.end(1);
+				return $q.reject(rejection);
+			},
+			'response' : function(response) {
+				progress.end(1);
+				return response;
+			},
+			'responseError' : function(rejection) {
+				progress.end(1);
+				return $q.reject(rejection);
+			}
+		};
+	}]);
+
+	app.controller('admin.DashboardController', ['$scope', '$location', '$http', 'progress', function($scope, $location, $http, progress) {
+		$scope.progress = progress;
 		$scope.constraint = $location.search()['q'];
 		$scope.setConstraint = function(constraint) {
 			$scope.constraint = constraint;
@@ -86,11 +127,12 @@
 		}
 		$scope.refresh = function(params) {
 			var path = $scope.constraint ? '/users/' + $scope.constraint + '/journal/' : '/journal/';
-			$http.get(path + '?' + $.param($.extend($scope.params(), params))).success(function(response) {
-				$.extend($scope, params);
-				$scope.total = response.total;
-				$scope.commands = response.commands;
-			});
+			$http.get(path + '?' + $.param($.extend($scope.params(), params)))
+				.success(function(response) {
+					$.extend($scope, params);
+					$scope.total = response.total;
+					$scope.commands = response.commands;
+				});
 		};
 		$scope.undo = function(commandId) {
 			$scope.$parent.undo(commandId);
@@ -134,14 +176,16 @@
 		}
 		$scope.refresh = function(params) {
 			$scope.token = token.get();
-			$http.get(path('/buckets/') + '?' + $.param($.extend($scope.params(), params))).success(function(response) {
-				$.extend($scope, params);
-				$scope.total = response.total;
-				$scope.buckets = response.buckets;
-			});
-			$http.get(path('/events/')).success(function(response) {
-				$scope.events = response.total;
-			});
+			$http.get(path('/buckets/') + '?' + $.param($.extend($scope.params(), params)))
+				.success(function(response) {
+					$.extend($scope, params);
+					$scope.total = response.total;
+					$scope.buckets = response.buckets;
+				});
+			$http.get(path('/events/'))
+				.success(function(response) {
+					$scope.events = response.total;
+				});
 		};
 		$scope.remove = function(bucketId) {
 			$http({ method : 'DELETE', url : '/buckets/' + bucketId }).success(function(response, code, headers) {
@@ -194,37 +238,42 @@
 		$scope.refresh = function(params) {
 			$scope.token = token.get();
 			if ($scope.constraint) {
-				$http.get('/users/' + $scope.constraint).success(function(response) {
-					if (response.name) {
-						$scope.total = 1;
-						$scope.users = [ response ];
-					} else {
-						$scope.total = 0;
-						$scope.users = [];
-					}
-				});
+				$http.get('/users/' + $scope.constraint)
+					.success(function(response) {
+						if (response.name) {
+							$scope.total = 1;
+							$scope.users = [ response ];
+						} else {
+							$scope.total = 0;
+							$scope.users = [];
+						}
+					});
 			} else {
-				$http.get('/users/?' + $.param($.extend($scope.params(), params))).success(function(response) {
-					$.extend($scope, params);
-					$scope.total = response.total;
-					$scope.users = response.users;
-				});
+				$http.get('/users/?' + $.param($.extend($scope.params(), params)))
+					.success(function(response) {
+						$.extend($scope, params);
+						$scope.total = response.total;
+						$scope.users = response.users;
+					});
 			}
 		};
 		$scope.suspend = function(username) {
-			$http.post('/users/@' + username, { 'suspended' : true }).success(function() {
-				delay($scope.refreshAll);
-			});
+			$http.post('/users/@' + username, { 'suspended' : true })
+				.success(function() {
+					delay($scope.refreshAll);
+				});
 		};
 		$scope.reverify = function(user) {
-			$http.post('/users/@' + user.name, { 'email' : user.email }).success(function() {
-				delay($scope.refreshAll);
-			});
+			$http.post('/users/@' + user.name, { 'email' : user.email })
+				.success(function() {
+					delay($scope.refreshAll);
+				});
 		};
 		$scope.remove = function(username) {
-			$http({ method : 'DELETE', url : '/users/@' + username }).success(function() {
-				delay($scope.refreshAll);
-			});
+			$http({ method : 'DELETE', url : '/users/@' + username })
+				.success(function() {
+					delay($scope.refreshAll);
+				});
 		};
 
 		$scope.$on('refreshAll', function() {
@@ -299,10 +348,11 @@
 				});
 		};
 		$scope.removeExpired = function(bucketId) {
-			$http({ method : 'DELETE', url : '/authorizations/' }).success(function(response, status) {
-				console.assert(status === 204, status);
-				delay($scope.refreshAll);
-			});
+			$http({ method : 'DELETE', url : '/authorizations/' })
+				.success(function(response, status) {
+					console.assert(status === 204, status);
+					delay($scope.refreshAll);
+				});
 		};
 
 		$scope.$on('refreshAll', function() {
@@ -348,16 +398,18 @@
 		}
 		$scope.refresh = function(params) {
 			var path = $scope.constraint ? '/users/' + $scope.constraint + '/credentials/' : '/credentials/';
-			$http.get(path + '?' + $.param($.extend($scope.params(), params))).success(function(response) {
-				$.extend($scope, params);
-				$scope.total = response.total;
-				$scope.credentials = response.items;
-			});
+			$http.get(path + '?' + $.param($.extend($scope.params(), params)))
+				.success(function(response) {
+					$.extend($scope, params);
+					$scope.total = response.total;
+					$scope.credentials = response.items;
+				});
 		};
 		$scope.remove = function(credentialsId) {
-			$http({ method : 'DELETE', url : '/credentials/' + credentialsId }).success(function(response, code, headers) {
-				delay($scope.refreshAll);
-			});
+			$http({ method : 'DELETE', url : '/credentials/' + credentialsId })
+				.success(function(response, code, headers) {
+					delay($scope.refreshAll);
+				});
 		};
 
 		$scope.$on('refreshAll', function() {
@@ -404,11 +456,12 @@
 		}
 		$scope.refresh = function(params) {
 			var path = $scope.constraint ? '/users/' + $scope.constraint + '/tasks/' : '/tasks/';
-			$http.get(path + '?' + $.param($.extend($scope.params(), params))).success(function(response) {
-				$.extend($scope, params);
-				$scope.total = response.total;
-				$scope.tasks = response.tasks;
-			});
+			$http.get(path + '?' + $.param($.extend($scope.params(), params)))
+				.success(function(response) {
+					$.extend($scope, params);
+					$scope.total = response.total;
+					$scope.tasks = response.tasks;
+				});
 		};
 		$scope.run = function(taskId) {
 			$scope.running[taskId] = true;
@@ -421,9 +474,10 @@
 			});
 		};
 		$scope.remove = function(taskId) {
-			$http({ method : 'DELETE', url : '/tasks/' + taskId }).success(function(response, code, headers) {
-				delay($scope.refreshAll);
-			});
+			$http({ method : 'DELETE', url : '/tasks/' + taskId })
+				.success(function(response, code, headers) {
+					delay($scope.refreshAll);
+				});
 		};
 
 		$scope.$on('refreshAll', function() {
@@ -464,16 +518,18 @@
 			};
 		}
 		$scope.refresh = function(params) {
-			$http.get('/snapshots/?' + $.param($.extend($scope.params(), params))).success(function(response) {
-				$.extend($scope, params);
-				$scope.total = response.total;
-				$scope.snapshots = response.snapshots;
-			});
+			$http.get('/snapshots/?' + $.param($.extend($scope.params(), params)))
+				.success(function(response) {
+					$.extend($scope, params);
+					$scope.total = response.total;
+					$scope.snapshots = response.snapshots;
+				});
 		};
 		$scope.remove = function(snapshotId) {
-			$http({ method : 'DELETE', url : '/snapshots/' + snapshotId }).success(function(response, code, headers) {
-				delay($scope.refreshAll);
-			});
+			$http({ method : 'DELETE', url : '/snapshots/' + snapshotId })
+				.success(function(response, code, headers) {
+					delay($scope.refreshAll);
+				});
 		};
 		$scope.snapshot = function() {
 			$scope.snapshotting = true;
