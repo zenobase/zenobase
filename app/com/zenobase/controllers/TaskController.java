@@ -2,7 +2,6 @@ package com.zenobase.controllers;
 
 import javax.inject.Inject;
 
-import play.Logger;
 import play.mvc.BodyParser;
 import play.mvc.Result;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -70,10 +69,7 @@ public class TaskController extends ControllerSupport {
 				response().setHeader("Link", "<" + e.getCredentials().getAuthorizationUrl() + ">");
 			} catch (MissingCredentialsException e) {
 				response().setHeader("X-Credentials", e.getExpectedType());
-	    	} catch (RuntimeException e) {
-	    		Logger.warn("Couldn't refresh task: " + task.getId(), e);
-	    		return internalServerError("Couldn't refresh task: " + task.getId());
-			}
+	    	}
 		}
     	return ok(task.toJson());
     }
