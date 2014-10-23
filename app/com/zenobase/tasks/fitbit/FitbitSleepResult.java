@@ -5,40 +5,27 @@ import java.util.List;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.Duration;
-import org.joda.time.LocalDateTime;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 
-import com.zenobase.common.DateTimeZones;
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
-import com.zenobase.models.Rating;
-import com.zenobase.models.Resource;
 
-class FitbitSleepResult {
+class FitbitSleepResult extends FitbitResultSupport {
 
-	public static final Resource SOURCE = new Resource("Fitbit", "http://fitbit.com/");
-
-	private final JsonNode node;
-	private final String tag;
-	private final Identity author;
 	private final boolean useRanges;
-	private final DateTimeZone timezone;
 
 	public FitbitSleepResult(JsonNode node, String tag, Identity author, boolean useRanges, DateTimeZone timezone) {
-		this.node = node;
-		this.tag = tag;
-		this.author = author;
+		super(node, tag, author, timezone);
 		this.useRanges = useRanges;
-		this.timezone = timezone;
 	}
 
+	@Override
 	public List<Event> getEvents() {
 		List<Event> events = Lists.newArrayList();
 		for (JsonNode item : node.path("sleep")) {
-			DateTime begin = getDateTime(item, timezone);
-			Duration duration = getDuration(item);
+			DateTime begin = dateTimeValue(item.path("startTime"));
+			Duration duration = durationValue(item.path("duration"));
 			Event event = new Event();
 			event.setValue(Event.TAG, tag);
 			event.setValue(Event.TIMESTAMP, begin);
@@ -46,27 +33,11 @@ class FitbitSleepResult {
 				event.addValue(Event.TIMESTAMP, begin.plus(duration));
 			}
 			event.setValue(Event.DURATION, duration);
-			event.setValue(Event.RATING, getRating(item));
+			event.setValue(Event.RATING, ratingValue(item.path("efficiency")));
 			event.setValue(Event.AUTHOR, author);
 			event.setValue(Event.SOURCE, SOURCE);
 			events.add(event);
 		}
 		return events;
-	}
-
-	private static DateTime getDateTime(JsonNode item, DateTimeZone timezone) {
-		String value = item.path("startTime").textValue();
-		Preconditions.checkNotNull(value, "Missing sleep start time");
-		return DateTimeZones.toDateTime(LocalDateTime.parse(value), timezone);
-	}
-
-	private static Duration getDuration(JsonNode item) {
-		long value = item.path("duration").longValue();
-		return value > 0 ? Duration.millis(value) : null;
-	}
-
-	private static Rating getRating(JsonNode item) {
-		int value = item.path("efficiency").intValue();
-		return value > 0 ? Rating.valueOf(value) : null;
 	}
 }

@@ -2,38 +2,31 @@ package com.zenobase.tasks.fitbit;
 
 import java.util.List;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.Duration;
 import org.joda.time.Interval;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalTime;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.collect.Lists;
 
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
-import com.zenobase.models.Resource;
 
-class FitbitIntradayResult {
+class FitbitIntradayResult extends FitbitResultSupport {
 
-	public static final Resource SOURCE = new Resource("Fitbit", "http://fitbit.com/");
-
-	private final JsonNode node;
-	private final Identity author;
 	private final LocalDate date;
-	private final DateTimeZone timezone;
 	private final List<Interval> ignore;
 	private final int threshold = 1;
 
 	public FitbitIntradayResult(JsonNode node, Identity author, LocalDate date, DateTimeZone timezone, List<Interval> ignore) {
-		this.node = node;
-		this.author = author;
+		super(node, null, author, timezone);
 		this.date = date;
-		this.timezone = timezone;
 		this.ignore = ignore;
 	}
 
+	@Override
 	public List<Event> getEvents() {
 		List<Event> events = Lists.newArrayList();
 		Record previous = null;

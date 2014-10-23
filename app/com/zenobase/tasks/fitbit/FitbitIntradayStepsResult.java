@@ -15,26 +15,17 @@ import com.google.common.collect.Maps;
 
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
-import com.zenobase.models.Resource;
 
-class FitbitIntradayStepsResult {
+class FitbitIntradayStepsResult extends FitbitResultSupport {
 
-	public static final Resource SOURCE = new Resource("Fitbit", "http://fitbit.com/");
-
-	private final JsonNode node;
-	private final String tag;
-	private final Identity author;
 	private final LocalDate date;
-	private final DateTimeZone timezone;
 
 	public FitbitIntradayStepsResult(JsonNode node, String tag, Identity author, LocalDate date, DateTimeZone timezone) {
-		this.node = node;
-		this.tag = tag;
-		this.author = author;
+		super(node, tag, author, timezone);
 		this.date = date;
-		this.timezone = timezone;
 	}
 
+	@Override
 	public List<Event> getEvents() {
 		List<Event> events = Lists.newArrayList();
 		for (Map.Entry<DateTime, Integer> entry : valuesByHour().entrySet()) {

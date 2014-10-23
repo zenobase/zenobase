@@ -16,29 +16,19 @@ import com.google.common.collect.Lists;
 import com.zenobase.common.Units;
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
-import com.zenobase.models.Resource;
 
-class FitbitFoodResult {
-
-	public static final Resource SOURCE = new Resource("Fitbit", "http://fitbit.com/");
-
-	private final JsonNode node;
-	private final String tag;
-	private final Identity author;
-	private final DateTimeZone timezone;
+class FitbitFoodResult extends FitbitResultSupport {
 
 	public FitbitFoodResult(JsonNode node, String tag, Identity author, DateTimeZone timezone) {
-		this.node = node;
-		this.tag = tag;
-		this.author = author;
-		this.timezone = timezone;
+		super(node, tag, author, timezone);
 	}
 
+	@Override
 	public List<Event> getEvents() {
 		List<Event> events = Lists.newArrayList();
 		for (JsonNode foodNode : node.path("foods-log-caloriesIn")) {
-			DecimalMeasure<Energy> value = kcalValue(foodNode.path("value"));
-			if (value != null) {
+			DecimalMeasure<Energy> value = energyValue(foodNode.path("value"), Units.KCAL);
+			if (!BigDecimal.ZERO.equals(value.getValue())) {
 				LocalDate date = LocalDate.parse(foodNode.path("dateTime").textValue());
 				DateTime begin = date.toDateTimeAtStartOfDay(timezone);
 				Event event = new Event();
@@ -52,9 +42,5 @@ class FitbitFoodResult {
 			}
 		}
 		return events;
-	}
-
-	private DecimalMeasure<Energy> kcalValue(JsonNode node) {
-		return node.asInt() > 0 ? DecimalMeasure.valueOf(new BigDecimal(node.asInt()), Units.KCAL) : null;
 	}
 }
