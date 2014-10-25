@@ -528,17 +528,20 @@
 		$scope.remove = function(snapshotId) {
 			$http({ method : 'DELETE', url : '/snapshots/' + snapshotId })
 				.success(function(response, code, headers) {
-					delay($scope.refreshAll);
+					delay(function() {
+						$scope.refresh({ offset : 0 });						
+					});
 				});
 		};
 		$scope.snapshot = function() {
 			$scope.snapshotting = true;
-			$http({ method : 'POST', url : '/snapshots/' }).then(function() {
-				delay(function() {
-					$scope.snapshotting = false;
-					$scope.refreshAll();
+			$http({ method : 'POST', url : '/snapshots/' })
+				.then(function() {
+					delay(function() {
+						$scope.snapshotting = false;
+						$scope.refresh();
+					});
 				});
-			});
 		};
 
 		$scope.$on('refreshAll', function() {
