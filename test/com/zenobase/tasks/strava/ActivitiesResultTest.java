@@ -20,7 +20,7 @@ import com.zenobase.tasks.ResultTestSupport;
 public class ActivitiesResultTest extends ResultTestSupport {
 
 	@Test
-	public void test() {
+	public void testMetric() {
 		ActivitiesResult result = new ActivitiesResult(readArray("ActivitiesResultTest.json"), TESTER, true);
 		List<Event> events = result.getEvents();
 		assertThat(events).hasSize(1);
@@ -31,8 +31,20 @@ public class ActivitiesResultTest extends ResultTestSupport {
 		assertThat(events.get(0).getValue(Event.DISTANCE)).isEqualTo(Measures.valueOf("32.49 km"));
 		assertThat(events.get(0).getValue(Event.HEIGHT)).isEqualTo(Measures.valueOf("566.00 m"));
 		assertThat(events.get(0).getValue(Event.ENERGY)).isEqualTo(Measures.<Energy>valueOf("857.6 kJ"));
+		assertThat(events.get(0).getValue(Event.VELOCITY)).isEqualTo(Measures.valueOf("12.24 kmh"));
 		assertThat(events.get(0).getValue(Event.FREQUENCY)).isEqualTo(Measures.<Frequency>valueOf("138.8 bpm"));
 		assertThat(events.get(0).getValue(Event.SOURCE)).isEqualTo(new Resource("Strava", "http://www.strava.com/activities/8529483"));
 		assertThat(events.get(0).getValue(Event.AUTHOR)).isEqualTo(TESTER);
+	}
+
+	@Test
+	public void testImperial() {
+		ActivitiesResult result = new ActivitiesResult(readArray("ActivitiesResultTest.json"), TESTER, false);
+		List<Event> events = result.getEvents();
+		assertThat(events).hasSize(1);
+		assertThat(events.get(0).getValue(Event.DISTANCE)).isEqualTo(Measures.valueOf("20.19 mi"));
+		assertThat(events.get(0).getValue(Event.HEIGHT)).isEqualTo(Measures.valueOf("1856.96 ft"));
+		assertThat(events.get(0).getValue(Event.ENERGY)).isEqualTo(Measures.<Energy>valueOf("857.6 kJ"));
+		assertThat(events.get(0).getValue(Event.VELOCITY)).isEqualTo(Measures.valueOf("7.61 mph"));
 	}
 }

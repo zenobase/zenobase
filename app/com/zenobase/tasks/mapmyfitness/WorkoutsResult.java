@@ -6,6 +6,7 @@ import java.util.List;
 import javax.measure.DecimalMeasure;
 import javax.measure.quantity.Frequency;
 import javax.measure.quantity.Length;
+import javax.measure.quantity.Velocity;
 import javax.measure.unit.Unit;
 
 import org.joda.time.DateTime;
@@ -47,6 +48,7 @@ class WorkoutsResult {
 		event.setValue(Event.DURATION, durationValue(node.path("aggregates").path("elapsed_time_total")));
 		event.setValue(Event.COUNT, countValue(node.path("aggregates").path("steps_total")));
 		event.setValue(Event.DISTANCE, distanceValue(node.path("aggregates").path("distance_total")));
+		event.setValue(Event.VELOCITY, velocityValue(node.path("aggregates").path("speed_avg")));
 		event.setValue(Event.FREQUENCY, frequencyValue(node.path("aggregates").path("heartrate_avg")));
 		event.setValue(Event.SOURCE, resourceValue(node.path("_links").path("self").path(0).path("id")));
 		event.setValue(Event.AUTHOR, author);
@@ -79,6 +81,11 @@ class WorkoutsResult {
 
 	private DecimalMeasure<Length> distanceValue(JsonNode node) {
 		Unit<Length> unit = imperial ? Units.MI : Units.KM;
+		return node.isNumber() ? Measures.valueOf(Measures.convert(node.doubleValue(), unit), unit) : null;
+	}
+
+	private DecimalMeasure<Velocity> velocityValue(JsonNode node) {
+		Unit<Velocity> unit = imperial ? Units.MPH : Units.KMH;
 		return node.isNumber() ? Measures.valueOf(Measures.convert(node.doubleValue(), unit), unit) : null;
 	}
 

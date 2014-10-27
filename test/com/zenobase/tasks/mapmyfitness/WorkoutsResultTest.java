@@ -7,6 +7,7 @@ import java.util.List;
 import javax.measure.DecimalMeasure;
 import javax.measure.quantity.Frequency;
 import javax.measure.quantity.Length;
+import javax.measure.quantity.Velocity;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
@@ -32,6 +33,7 @@ public class WorkoutsResultTest extends ResultTestSupport {
 		event.setValue(Event.DURATION, Duration.standardSeconds(2992));
 		event.setValue(Event.COUNT, 1000);
 		event.setValue(Event.DISTANCE, DecimalMeasure.<Length>valueOf("3.34 mi"));
+		event.setValue(Event.VELOCITY,  DecimalMeasure.<Velocity>valueOf("4.02 mph"));
 		event.setValue(Event.FREQUENCY, DecimalMeasure.<Frequency>valueOf("115 bpm"));
 		event.setValue(Event.AUTHOR, TESTER);
 		event.setValue(Event.SOURCE, new Resource("MapMyFitness", "http://www.mapmyfitness.com/workout/547836386"));
