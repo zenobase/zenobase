@@ -4,7 +4,7 @@ resolvers += "Typesafe repository" at "http://repo.typesafe.com/typesafe/release
 
 addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.3.5")
 
-addSbtPlugin("com.typesafe.sbt" % "sbt-less" % "1.0.2")
+addSbtPlugin("com.typesafe.sbt" % "sbt-less" % "1.0.4")
 
 addSbtPlugin("com.typesafe.sbt" % "sbt-jshint" % "1.0.2")
 
