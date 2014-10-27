@@ -4410,6 +4410,9 @@
 		];
 
 		$scope.init = function(formatId) {
+			$scope.message = '';
+			$scope.events = [];
+			$scope.clearFiles();
 			$scope.format = $scope.formats[0];
 			if (formatId) {
 				$.each($scope.formats, function(i, format) {
