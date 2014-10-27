@@ -1166,36 +1166,40 @@
 
 	<div id="import-dialog" data-ui-modal data-ng-controller="ImportDialogController">
 		<form name="form" data-ng-submit="submit()" class="modal-form">
-			<div class="modal-header">
-				<a class="close" data-dismiss="modal">&times;</a>
-				<h4>Import</h4>
-			</div>
-			<div class="modal-body">
-				<div class="alert alert-error" data-ng-show="message">
-					{{message}}
+			<fieldset data-ng-disabled="importing">
+				<div class="modal-header">
+					<a class="close" data-dismiss="modal">&times;</a>
+					<h4>Import</h4>
 				</div>
-				<div class="control-group form-horizontal">
-					<select class="input-medium" data-ng-model="format" data-ng-options="format.label for format in formats"></select>
-					<span id="select-import-file" class="fileupload fileupload-new" data-provides="fileupload">
-						<span class="btn btn-file">
-							<span class="fileupload-new">Select file</span>
-							<span class="fileupload-exists">Change</span>
-							<input type="file" required onchange="angular.element(this).scope().setFiles(this.files)" />
+				<div class="modal-body">
+					<div class="alert alert-error" data-ng-show="message">
+						{{message}}
+					</div>
+					<div class="control-group form-horizontal">
+						<select class="input-medium" data-ng-model="format" data-ng-options="format.label for format in formats" data-ng-disabled="importing"></select>
+						<span id="select-import-file" class="fileupload fileupload-new" data-provides="fileupload">
+							<span class="btn btn-file">
+								<span class="fileupload-new">Select file</span>
+								<span class="fileupload-exists">Change</span>
+								<input type="file" required onchange="angular.element(this).scope().setFiles(this.files)" />
+							</span>
+							<span class="fileupload-preview"></span>
+							<a href="#" class="close fileupload-exists" data-dismiss="fileupload" style="float:none">&times;</a>
 						</span>
-						<span class="fileupload-preview"></span>
-						<a href="#" class="close fileupload-exists" data-dismiss="fileupload" style="float:none">&times;</a>
-					</span>
+					</div>
+					<div class="controls">
+						<span class="help-block" data-ng-bind-html="format.description"></span>
+						<span class="help-block">For help with importing data from other sources,
+						<a href="https://zenobase.uservoice.com/">contact us</a>.</span>
+					</div>
 				</div>
-				<div class="controls">
-					<span class="help-block" data-ng-bind-html="format.description"></span>
-					<span class="help-block">For help with importing data from other sources,
-					<a href="https://zenobase.uservoice.com/">contact us</a>.</span>
+				<div class="modal-footer" class="progress">
+					<button type="submit" class="btn btn-primary" data-ng-disabled="importing || isEmpty()">
+						Import <span data-ng-show="events.length">({{events.length | number}})</span>
+					</button>
+					<button type="reset" class="btn" data-dismiss="modal" data-ng-disabled="importing">Cancel</button>
 				</div>
-			</div>
-			<div class="modal-footer">
-				<button type="submit" class="btn btn-primary" data-ng-disabled="isEmpty()">Import <span data-ng-show="events.length">({{events.length | number}})</span></button>
-				<button type="reset" class="btn" data-dismiss="modal">Cancel</button>
-			</div>
+			</fieldset>
 		</form>
 	</div>
 

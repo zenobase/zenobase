@@ -4410,6 +4410,7 @@
 		];
 
 		$scope.init = function(formatId) {
+			$scope.importing = false;
 			$scope.message = '';
 			$scope.events = [];
 			$scope.clearFiles();
@@ -4449,17 +4450,20 @@
 		};
 		$scope.submit = function() {
 			$scope.alert.clear();
+			$scope.importing = true;
 			$http.post('/buckets/' + $scope.bucketId + '/', { 'events' : $scope.events })
 				.success(function(response, status, headers) {
 					$scope.alert.show('Imported events.', 'alert-success', headers('X-Command-ID'));
 					$scope.events = [];
 					delay($scope.refresh);
 					$scope.closeDialog();
+					$scope.importing = false;
 				})
 				.error(function(response) {
 					$scope.message = response.message || 'Couldn\'t import the file. Try again later, or contact support.';
 					$scope.events = [];
 					$scope.clearFiles();
+					$scope.importing = false;
 				});
 			tracker.event('action', 'import events');
 		};
