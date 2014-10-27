@@ -39,8 +39,9 @@ public class NetatmoTaskManager extends OAuthTaskManager {
 	@Override
 	public Task newTask(String bucketId, Identity principal, ObjectNode settings) {
 		boolean includeModules = settings.path("modules").booleanValue();
+		boolean hourly = settings.path("hourly").booleanValue();
 		String marker = formatMarker(parseMarker(settings.path("marker").textValue()));
-		return new NetatmoTask(bucketId, principal, includeModules, marker);
+		return new NetatmoTask(bucketId, principal, includeModules, hourly, marker);
 	}
 
 	@Override
@@ -75,7 +76,7 @@ public class NetatmoTaskManager extends OAuthTaskManager {
 
 	private List<Event> getEvents(NetatmoTask task, OAuthCredentials credentials, Device device, String to) {
 		List<Event> events = Lists.newArrayList();
-		MeasurementsQuery request = new MeasurementsQuery(task.getPrincipal(), credentials, device);
+		MeasurementsQuery request = new MeasurementsQuery(task.getPrincipal(), credentials, device, task.isHourly());
 		while (events.size() < 10000) {
 			String from = null;
 			if (!events.isEmpty()) {
@@ -91,6 +92,8 @@ public class NetatmoTaskManager extends OAuthTaskManager {
 		}
 		if (events.size() >= 10000) {
 			Logger.warn("Reached maximum number of measurements: {}", events.size());
+		} else if (events.size() > 0 && task.isHourly()) {
+			events.remove(events.size() - 1); // data for the last hour can still change
 		}
 		return events;
 	}
@@ -115,11 +118,13 @@ public class NetatmoTaskManager extends OAuthTaskManager {
 		private final Identity principal;
 		private final OAuthCredentials credentials;
 		private final Device device;
+		private final boolean hourly;
 
-		public MeasurementsQuery(Identity principal, OAuthCredentials credentials, Device device) {
+		public MeasurementsQuery(Identity principal, OAuthCredentials credentials, Device device, boolean hourly) {
 			this.principal = principal;
 			this.credentials = credentials;
 			this.device = device;
+			this.hourly = hourly;
 		}
 
 		public MeasurementsResult find(String from, String to) {
@@ -133,11 +138,11 @@ public class NetatmoTaskManager extends OAuthTaskManager {
 			}
 			request.addQuerystringParameter("date_end", to);
 			request.addQuerystringParameter("limit", "1000");
-			request.addQuerystringParameter("scale", "max");
+			request.addQuerystringParameter("scale", hourly ? "1hour" : "max");
 			request.addQuerystringParameter("optimize", "false");
-			request.addQuerystringParameter("type", "Temperature,Pressure,Noise,Humidity,CO2,Rain");
+			request.addQuerystringParameter("type", "Temperature,Pressure,Noise,Humidity,CO2," + (hourly ? "sum_rain" : "Rain"));
 			Response response = send(request, credentials);
-			return new MeasurementsResult(principal, device, parseObject(response));
+			return new MeasurementsResult(parseObject(response), principal, device, hourly);
 		}
 	}
 

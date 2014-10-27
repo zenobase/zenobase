@@ -11,6 +11,7 @@ import javax.measure.quantity.Temperature;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
+import org.joda.time.Duration;
 import org.junit.Test;
 
 import com.zenobase.common.Measures;
@@ -22,14 +23,14 @@ import com.zenobase.tasks.ResultTestSupport;
 public class MeasurementsResultTest extends ResultTestSupport {
 
 	@Test
-	public void test() {
+	public void test5min() {
 		DateTimeZone tz = DateTimeZone.forOffsetHours(-7);
 		Device device = new Device("1", "test", DateTime.now(tz), DateTime.now(tz), new Location("1", "2"));
-		MeasurementsResult result = new MeasurementsResult(TESTER, device, readObject("MeasurementsResultTest.json"));
+		MeasurementsResult result = new MeasurementsResult(readObject("MeasurementsResultTest-5min.json"), TESTER, device, false);
 		List<Event> events = result.getEvents();
 		assertThat(events).as("events").hasSize(10);
 		Event expected = new Event(events.get(0).getId());
-		expected.setValue(Event.TIMESTAMP, DateTime.parse("2013-03-28T16:38:45.000-07:00").withZone(DateTimeZone.forOffsetHours(-7)));
+		expected.setValue(Event.TIMESTAMP, dateTime("20130328T163845-0700"));
 		expected.addValue(Event.TAG, device.getLabel());
 		expected.setValue(Event.LOCATION, device.getLocation());
 		expected.setValue(Event.TEMPERATURE, Measures.<Temperature>valueOf("25.7 C"));
@@ -41,6 +42,27 @@ public class MeasurementsResultTest extends ResultTestSupport {
 		expected.setValue(Event.AUTHOR, TESTER);
 		expected.setValue(Event.SOURCE, MeasurementsResult.SOURCE);
 		assertThat(events.get(0)).as("first event").isEqualTo(expected);
-		assertThat(events.get(1).getValue(Event.SOUND)).as("second event has no sound level").isNull();
+	}
+
+	@Test
+	public void test1h() {
+		DateTimeZone tz = DateTimeZone.forOffsetHours(-7);
+		Device device = new Device("1", "test", DateTime.now(tz), DateTime.now(tz), new Location("1", "2"));
+		MeasurementsResult result = new MeasurementsResult(readObject("MeasurementsResultTest-1h.json"), TESTER, device, true);
+		List<Event> events = result.getEvents();
+		assertThat(events).as("events").hasSize(16);
+		Event expected = new Event(events.get(0).getId());
+		expected.setValue(Event.TIMESTAMP, dateTime("20141027T000000-0700"));
+		expected.setValue(Event.DURATION, Duration.standardHours(1));
+		expected.addValue(Event.TAG, device.getLabel());
+		expected.setValue(Event.LOCATION, device.getLocation());
+		expected.setValue(Event.TEMPERATURE, Measures.<Temperature>valueOf("22.1 C"));
+		expected.setValue(Event.PRESSURE, Measures.<Pressure>valueOf("1021.2 hPa"));
+		expected.setValue(Event.SOUND, Measures.<Dimensionless>valueOf("38 dB"));
+		expected.setValue(Event.HUMIDITY, 50);
+		expected.setValue(Event.RATING, Rating.valueOf(60));
+		expected.setValue(Event.AUTHOR, TESTER);
+		expected.setValue(Event.SOURCE, MeasurementsResult.SOURCE);
+		assertThat(events.get(0)).as("first event").isEqualTo(expected);
 	}
 }

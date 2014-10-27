@@ -9,6 +9,7 @@ import javax.measure.quantity.Quantity;
 import javax.measure.unit.Unit;
 
 import org.joda.time.DateTime;
+import org.joda.time.Duration;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.google.common.base.Preconditions;
@@ -25,14 +26,16 @@ class MeasurementsResult {
 
 	public static final Resource SOURCE = new Resource("Netatmo", "http://www.netatmo.com/");
 
+	private final JsonNode node;
 	private final Identity author;
 	private final Device device;
-	private final JsonNode node;
+	private final boolean hourly;
 
-	public MeasurementsResult(Identity author, Device device, JsonNode node) {
+	public MeasurementsResult(JsonNode node, Identity author, Device device, boolean hourly) {
+		this.node = Preconditions.checkNotNull(node);
 		this.author = Preconditions.checkNotNull(author);
 		this.device = Preconditions.checkNotNull(device);
-		this.node = Preconditions.checkNotNull(node);
+		this.hourly = hourly;
 	}
 
 	public boolean isSuccess() {
@@ -51,7 +54,13 @@ class MeasurementsResult {
 	public Event getEvent(Map.Entry<String, JsonNode> entry) {
 		ArrayNode node = (ArrayNode) entry.getValue();
 		Event event = new Event();
-		event.setValue(Event.TIMESTAMP, new DateTime(Long.parseLong(entry.getKey()) * 1000, device.getUpdated().getZone()));
+		DateTime timestamp = new DateTime(Long.parseLong(entry.getKey()) * 1000, device.getUpdated().getZone());
+		if (hourly) {
+			event.setValue(Event.TIMESTAMP, timestamp.withMinuteOfHour(0));
+			event.setValue(Event.DURATION, Duration.standardHours(1));
+		} else {
+			event.setValue(Event.TIMESTAMP, timestamp);
+		}
 		event.addValue(Event.TAG, device.getLabel());
 		event.setValue(Event.LOCATION, device.getLocation());
 		event.setValue(Event.TEMPERATURE, getMeasure(node.get(0), Units.C));

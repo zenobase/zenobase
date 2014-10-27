@@ -13,7 +13,8 @@ public class NetatmoTest extends TaskTestSupport {
 	public void test() {
 		NetatmoTaskManager manager = new NetatmoTaskManager(newCredentialsManager());
 		ObjectNode settings = Nodes.newObject();
-		settings.put("marker", "2014-05-13");
+		settings.put("marker", "2014-10-27");
+		settings.put("hourly", true);
 		Task task = manager.newTask(bucketId, principal, settings);
 		print(manager.execute(task, getCredentials()).toJson());
 	}

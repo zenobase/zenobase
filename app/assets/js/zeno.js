@@ -4678,7 +4678,7 @@
 			{ 'id' : 'moves-activities', 'description' : 'Creates an event for each logged activity.' },
 			{ 'id' : 'moves-places', 'description' : 'Creates an event for each visited place.' },
 			{ 'id' : 'moves-locate', 'description' : 'Adds locations to events without locations.' },
-			{ 'id' : 'netatmo', 'description' : 'Creates an event for each weather station measurement.' },
+			{ 'id' : 'netatmo', 'description' : 'Creates events for weather station measurements.' },
 			{ 'id' : 'reporter-questions', 'description' : 'Creates an event for each question answered in the Reporter app.' },
 			{ 'id' : 'rescuetime-productivity', 'description' : 'Creates an event for each hour logged with RescueTime.' },
 			{ 'id' : 'runkeeper-activities', 'description' : 'Creates an event for each activity recorded with the RunKeeper app.' },
@@ -4872,6 +4872,7 @@
 		$scope.init = function() {
 			$scope.settings = $scope.$parent.$parent.settings = {
 					modules : true,
+					hourly : true,
 					marker : new Date(moment().utc().subtract(3, 'months').startOf('month').valueOf())
 			};
 		};	
