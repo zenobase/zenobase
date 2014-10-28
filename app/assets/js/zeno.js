@@ -2299,34 +2299,34 @@
 		}
 		$scope.filters = {
 				thisYear : function() {
-					filter(moment().format('YYYY'));			
+					filter(moment().format('YYYY'));
 				},
 				lastYear : function() {
-					filter(moment().subtract(1, 'years').format('YYYY'));			
+					filter(moment().subtract(1, 'years').format('YYYY'));
 				},
 				thisMonth : function() {
-					filter(moment().format('YYYY-MM'));			
+					filter(moment().format('YYYY-MM'));
 				},
 				lastMonth : function() {
-					filter(moment().subtract(1, 'months').format('YYYY-MM'));			
+					filter(moment().subtract(1, 'months').format('YYYY-MM'));
 				},
 				lastMonths : function(n) {
-					filter('[' + moment().subtract(n, 'months').format('YYYY-MM') + '..' + moment().format('YYYY-MM') + ')');			
+					filter('[' + moment().subtract(n, 'months').format('YYYY-MM') + '..' + moment().format('YYYY-MM') + ')');
 				},
 				thisWeek : function() {
-					filter(moment().format('GGGG-[W]WW'));			
+					filter(moment().format('GGGG-[W]WW'));
 				},
 				lastWeek : function() {
-					filter(moment().subtract(1, 'weeks').format('GGGG-[W]WW'));			
+					filter(moment().subtract(1, 'weeks').format('GGGG-[W]WW'));
 				},
 				today : function() {
 					filter(moment().format('YYYY-MM-DD'));
 				},
 				yesterday : function() {
-					filter(moment().subtract(1, 'days').format('YYYY-MM-DD'));			
+					filter(moment().subtract(1, 'days').format('YYYY-MM-DD'));
 				},
 				lastHours : function(n) {
-					filter('[-' + n + 'h..*)');			
+					filter('[-' + n + 'h..*)');
 				},
 				select : function(offset) {
 					var times = [];
@@ -6080,9 +6080,7 @@
 						if (newOptions) {
 							scope.chart = new Highcharts.Chart($.extend(true, {}, newOptions, defaultOptions));
 							$('#' + attrs.uiId + '-tab').on('shown', function(e) { 
-								var parent = $(scope.chart.container).parent();
-								scope.chart.setSize(parent.width(), parent.height());
-								scope.chart.hasUserSize = undefined;
+								scope.chart.reflow();
 							});
 						}
 					}
