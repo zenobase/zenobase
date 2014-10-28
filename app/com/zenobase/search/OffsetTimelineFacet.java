@@ -20,8 +20,8 @@ import com.google.common.base.Strings;
 import com.google.common.collect.Maps;
 
 import com.zenobase.common.OffsetIntervals;
-import com.zenobase.json.Field;
 import com.zenobase.json.DecimalMeasureField;
+import com.zenobase.json.Field;
 import com.zenobase.json.Nodes;
 
 public class OffsetTimelineFacet extends TimelineFacetSupport {
@@ -55,20 +55,21 @@ public class OffsetTimelineFacet extends TimelineFacetSupport {
 		if (!facet.getEntries().isEmpty()) {
 			counts = getMap(getInterval(facet.getEntries()));
 			for (DateHistogramFacet.Entry entry : facet.getEntries()) {
-				String key = getLabel(toDateTime(entry.getTime()));
-				if (range == null || counts.containsKey(key)) {
-					ObjectNode entryNode = Objects.firstNonNull(counts.get(key), Nodes.newObject());
-					entryNode.put("label", key);
-					entryNode.put("time", addOffset(entry.getTime()));
-					entryNode.put("count", entry.getTotalCount());
-					if (!keyField.equals(valueField) && entry.getTotalCount() > 0) {
-						addValue(entryNode, "min",  entry.getMin());
-						addValue(entryNode, "max", entry.getMax());
-						addValue(entryNode, "sum", entry.getTotal());
-						addValue(entryNode, "avg", entry.getMean());
+				if (entry.getTotalCount() > 0) {
+					String key = getLabel(toDateTime(entry.getTime()));
+					if (range == null || counts.containsKey(key)) {
+						ObjectNode entryNode = Objects.firstNonNull(counts.get(key), Nodes.newObject());
+						entryNode.put("label", key);
+						entryNode.put("time", addOffset(entry.getTime()));
+						entryNode.put("count", entry.getTotalCount());
+						if (!keyField.equals(valueField) && entry.getTotalCount() > 0) {
+							addValue(entryNode, "min",  entry.getMin());
+							addValue(entryNode, "max", entry.getMax());
+							addValue(entryNode, "sum", entry.getTotal());
+							addValue(entryNode, "avg", entry.getMean());
+						}
+						counts.put(key, entryNode);
 					}
-					counts.put(key, entryNode);
-
 				}
 			}
 		}
@@ -85,8 +86,10 @@ public class OffsetTimelineFacet extends TimelineFacetSupport {
 		}
 		long min = Long.MAX_VALUE, max = Long.MIN_VALUE;
 		for (DateHistogramFacet.Entry entry : entries) {
-			min = Math.min(min, entry.getTime());
-			max = Math.max(max, entry.getTime());
+			if (entry.getTotalCount() > 0) {
+				min = Math.min(min, entry.getTime());
+				max = Math.max(max, entry.getTime());
+			}
 		}
 		return min <= max ? new Interval(toDateTime(min), toDateTime(max)) : null;
 	}
