@@ -302,6 +302,21 @@
 		};
 	}]);
 
+	app.controller('admin.SpendQuotaDialogController', ['$scope', '$http', 'delay', function($scope, $http, delay) {
+		$scope.init = function(user) {
+			$scope.user = user;
+			$scope.message = '';
+			$scope.cost = 0;
+		};
+		$scope.spend = function() {
+			$http.post('/users/@' + $scope.user.name + '/quota', { 'cost' : $scope.cost })
+				.success(function(response) {
+					$scope.closeDialog();
+					delay($scope.refreshAll);
+				});
+		};
+	}]);
+
 	app.controller('admin.AuthorizationListController', ['$scope', '$http', 'delay', function($scope, $http, delay) {
 
 		$scope.offset = 0;
