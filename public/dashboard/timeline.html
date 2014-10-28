@@ -55,7 +55,7 @@
 	<div id="{{settings.id}}-chart" data-ui-chart-options="chartOptions" data-ui-id="{{settings.id}}" data-ui-snapshot data-ng-show="times.length"></div>
 
 	<div data-ng-controller="EffectSizeWidgetController">
-		<div id="{{settings.id}}-r-chart" data-ui-chart-options="rChartOptions" data-ui-id="{{settings.id}}" data-ng-show="statsB"></div>
+		<div id="{{settings.id}}-r-chart" data-ui-chart-options="rChartOptions" data-ui-id="{{settings.id}}" data-ng-show="statsB.count"></div>
 	</div>
 
 	<p data-ng-show="times == null" class="none">Loading...</p>
