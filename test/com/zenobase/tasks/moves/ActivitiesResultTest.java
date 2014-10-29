@@ -9,7 +9,6 @@ import javax.measure.quantity.Length;
 
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
-import org.joda.time.format.ISODateTimeFormat;
 import org.junit.Test;
 
 import com.zenobase.common.Measures;
@@ -21,7 +20,7 @@ public class ActivitiesResultTest extends ResultTestSupport {
 
 	@Test
 	public void test() {
-		DateTime begin = DateTime.parse("20121212T071430+0200", ISODateTimeFormat.basicDateTimeNoMillis().withOffsetParsed());
+		DateTime begin = dateTime("2012-12-12T07:14:30+0200");
 		ActivitiesResult result = new ActivitiesResult(readArray("ActivitiesResultTest.json"), TESTER, begin, Units.KM, Units.KCAL);
 		List<Event> events = result.getEvents();
 		assertThat(events).as("events").hasSize(6);

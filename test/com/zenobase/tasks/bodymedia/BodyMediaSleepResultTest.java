@@ -40,7 +40,7 @@ public class BodyMediaSleepResultTest extends ResultTestSupport {
 		List<Event> events = result.getEvents();
 		assertThat(result.getDate()).isEqualTo(LocalDate.parse("2013-03-10"));
 		assertThat(events).hasSize(1);
-		assertEvent(events.get(0), "2013-03-09T23:58:00.000-08:00", "2013-03-10T09:04:00-0700", 486, 84);
+		assertEvent(events.get(0), "2013-03-09T23:58:00-08:00", "2013-03-10T09:04:00-0700", 486, 84);
 	}
 
 	private void addTimezone(String from, String timezone) {
@@ -53,7 +53,7 @@ public class BodyMediaSleepResultTest extends ResultTestSupport {
 
 	private static void assertEvent(Event event, String begin, String end, int minutes, int rating) {
 		assertThat(event.getValue(Event.TAG)).isEqualTo(TAG);
-		assertThat(event.getValues(Event.TIMESTAMP)).containsExactly(DateTime.parse(begin), DateTime.parse(end));
+		assertThat(event.getValues(Event.TIMESTAMP)).containsExactly(dateTime(begin), dateTime(end));
 		assertThat(event.getValue(Event.DURATION)).isEqualTo(Duration.standardMinutes(minutes));
 		assertThat(event.getValue(Event.RATING)).isEqualTo(Rating.valueOf(rating));
 	}

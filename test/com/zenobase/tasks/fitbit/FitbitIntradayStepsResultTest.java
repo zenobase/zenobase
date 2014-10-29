@@ -26,7 +26,7 @@ public class FitbitIntradayStepsResultTest extends ResultTestSupport {
 		assertThat(events).as("events").hasSize(24);
 		Event expected = new Event(events.get(0).getId());
 		expected.setValue(Event.TAG, TAG);
-		expected.setValue(Event.TIMESTAMP, dateTime("20141020T000000-0700"));
+		expected.setValue(Event.TIMESTAMP, dateTime("2014-10-20T00:00:00-07:00"));
 		expected.setValue(Event.DURATION, Duration.standardHours(1));
 		expected.setValue(Event.COUNT, 0);
 		expected.setValue(Event.AUTHOR, TESTER);

@@ -8,7 +8,6 @@ import javax.measure.DecimalMeasure;
 import javax.measure.quantity.Frequency;
 import javax.measure.quantity.Pressure;
 
-import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.junit.Test;
 
@@ -34,7 +33,7 @@ public class WithingsCardioResultTest extends ResultTestSupport {
 		expected.setValue(Event.TAG, "heart rate");
 		expected.setValue(Event.FREQUENCY, DecimalMeasure.<Frequency>valueOf("59 bpm"));
 		expected.setValue(Event.PERCENTAGE, Percentage.valueOf(97));
-		expected.setValue(Event.TIMESTAMP, DateTime.parse("2013-12-22T22:59:41.000-08:00"));
+		expected.setValue(Event.TIMESTAMP, dateTime("2013-12-22T22:59:41-08:00"));
 		expected.setValue(Event.AUTHOR, TESTER);
 		expected.setValue(Event.SOURCE, WithingsWeightResult.SOURCE);
 		assertThat(event).as("first event").isEqualTo(expected);
@@ -46,7 +45,7 @@ public class WithingsCardioResultTest extends ResultTestSupport {
 		expected.setValue(Event.FREQUENCY, DecimalMeasure.<Frequency>valueOf("80 bpm"));
 		expected.addValue(Event.PRESSURE, DecimalMeasure.<Pressure>valueOf("70 mmHg"));
 		expected.addValue(Event.PRESSURE, DecimalMeasure.<Pressure>valueOf("110 mmHg"));
-		expected.setValue(Event.TIMESTAMP, DateTime.parse("2013-12-17T07:24:27.000-08:00"));
+		expected.setValue(Event.TIMESTAMP, dateTime("2013-12-17T07:24:27-08:00"));
 		expected.setValue(Event.AUTHOR, TESTER);
 		expected.setValue(Event.SOURCE, WithingsWeightResult.SOURCE);
 		assertThat(event).as("last event").isEqualTo(expected);

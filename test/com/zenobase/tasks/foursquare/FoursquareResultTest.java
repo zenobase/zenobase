@@ -4,7 +4,6 @@ import static org.fest.assertions.Assertions.assertThat;
 
 import java.util.List;
 
-import org.joda.time.DateTime;
 import org.junit.Test;
 
 import com.zenobase.models.Event;
@@ -22,7 +21,7 @@ public class FoursquareResultTest extends ResultTestSupport {
 		List<Event> events = result.getEvents();
 		assertThat(events).as("events").hasSize(3);
 		Event expected = new Event(events.get(0).getId());
-		expected.setValue(Event.TIMESTAMP, DateTime.parse("2012-11-29T21:23:46.000-08:00"));
+		expected.setValue(Event.TIMESTAMP, dateTime("2012-11-29T21:23:46-08:00"));
 		expected.setValue(Event.AUTHOR, TESTER);
 		expected.setValue(Event.SOURCE, FoursquareResult.SOURCE);
 		expected.setValue(Event.RESOURCE, new Resource("Queen Anne Pool", FoursquareResult.SOURCE.getUrl()));

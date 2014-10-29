@@ -8,7 +8,6 @@ import java.util.List;
 import javax.measure.DecimalMeasure;
 import javax.measure.quantity.Mass;
 
-import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.junit.Test;
 
@@ -30,7 +29,7 @@ public class WithingsWeightResultTest extends ResultTestSupport {
 		expected.setValue(Event.TAG, "body");
 		expected.setValue(Event.WEIGHT, DecimalMeasure.<Mass>valueOf("157.74 lb"));
 		expected.setValue(Event.PERCENTAGE, Percentage.valueOf(new BigDecimal("13.459")));
-		expected.setValue(Event.TIMESTAMP, DateTime.parse("2012-11-22T09:49:17.000-08:00"));
+		expected.setValue(Event.TIMESTAMP, dateTime("2012-11-22T09:49:17-08:00"));
 		expected.setValue(Event.AUTHOR, TESTER);
 		expected.setValue(Event.SOURCE, WithingsWeightResult.SOURCE);
 		assertThat(events.get(0)).as("first event").isEqualTo(expected);

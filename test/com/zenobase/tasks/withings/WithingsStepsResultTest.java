@@ -7,7 +7,6 @@ import java.util.List;
 import javax.measure.quantity.Energy;
 import javax.measure.quantity.Length;
 
-import org.joda.time.DateTime;
 import org.joda.time.Duration;
 import org.junit.Test;
 
@@ -25,7 +24,7 @@ public class WithingsStepsResultTest extends ResultTestSupport {
 		List<Event> actual = result.getEvents();
 		assertThat(actual).hasSize(2);
 		Event expected = new Event(actual.get(0).getId());
-		expected.setValue(Event.TIMESTAMP, DateTime.parse("2013-12-16T00:00:00.000-08:00"));
+		expected.setValue(Event.TIMESTAMP, dateTime("2013-12-16T00:00:00-08:00"));
 		expected.setValue(Event.DURATION, Duration.standardDays(1));
 		expected.setValue(Event.TAG, "walk");
 		expected.setValue(Event.COUNT, 13548);

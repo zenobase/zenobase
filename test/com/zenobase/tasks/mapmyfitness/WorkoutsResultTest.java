@@ -9,8 +9,6 @@ import javax.measure.quantity.Frequency;
 import javax.measure.quantity.Length;
 import javax.measure.quantity.Velocity;
 
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
 import org.joda.time.Duration;
 import org.junit.Test;
 
@@ -29,7 +27,7 @@ public class WorkoutsResultTest extends ResultTestSupport {
 		assertThat(workout.getTypeId()).isEqualTo("9");
 		assertThat(workout.getRouteId()).isEqualTo("400640020");
 		Event event = new Event(workout.getEvent().getId());
-		event.setValue(Event.TIMESTAMP, DateTime.parse("2014-04-24T22:36:33+00:00").withZone(DateTimeZone.forID("America/Los_Angeles")));
+		event.setValue(Event.TIMESTAMP, dateTime("2014-04-24T15:36:33-07:00"));
 		event.setValue(Event.DURATION, Duration.standardSeconds(2992));
 		event.setValue(Event.COUNT, 1000);
 		event.setValue(Event.DISTANCE, DecimalMeasure.<Length>valueOf("3.34 mi"));

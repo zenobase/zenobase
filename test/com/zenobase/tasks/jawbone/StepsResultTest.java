@@ -22,7 +22,7 @@ public class StepsResultTest extends ResultTestSupport {
 		List<Event> events = result.getEvents();
 		assertThat(events).as("events").hasSize(3);
 		Event expected = new Event(events.get(0).getId());
-		expected.setValue(Event.TIMESTAMP, dateTime("20140311T090000-07:00"));
+		expected.setValue(Event.TIMESTAMP, dateTime("2014-03-11T09:00:00-07:00"));
 		expected.setValue(Event.DURATION, Duration.standardMinutes(719));
 		expected.addValue(Event.TAG, "steps");
 		expected.setValue(Event.COUNT, 16071);
@@ -47,7 +47,7 @@ public class StepsResultTest extends ResultTestSupport {
 		List<Event> events = result.getEvents();
 		assertThat(events).as("events").hasSize(36);
 		Event expected = new Event(events.get(0).getId());
-		expected.setValue(Event.TIMESTAMP, dateTime("20140311T090000-07:00"));
+		expected.setValue(Event.TIMESTAMP, dateTime("2014-03-11T09:00:00-07:00"));
 		expected.setValue(Event.DURATION, Duration.standardHours(1));
 		expected.addValue(Event.TAG, "steps");
 		expected.setValue(Event.COUNT, 1268);

@@ -20,8 +20,8 @@ public class SleepResultTest extends ResultTestSupport {
 		List<Event> events = result.getEvents();
 		assertThat(events).as("events").hasSize(10);
 		Event expected = new Event(events.get(0).getId());
-		expected.addValue(Event.TIMESTAMP, dateTime("20140228T220000-07:00"));
-		expected.addValue(Event.TIMESTAMP, dateTime("20140228T221319-07:00"));
+		expected.addValue(Event.TIMESTAMP, dateTime("2014-02-28T22:00:00-07:00"));
+		expected.addValue(Event.TIMESTAMP, dateTime("2014-02-28T22:13:19-07:00"));
 		expected.setValue(Event.DURATION, Duration.standardSeconds(799));
 		expected.addValue(Event.TAG, "sleep");
 		expected.setValue(Event.RATING, Rating.valueOf(90));

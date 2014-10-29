@@ -30,7 +30,7 @@ public class MeasurementsResultTest extends ResultTestSupport {
 		List<Event> events = result.getEvents();
 		assertThat(events).as("events").hasSize(10);
 		Event expected = new Event(events.get(0).getId());
-		expected.setValue(Event.TIMESTAMP, dateTime("20130328T163845-0700"));
+		expected.setValue(Event.TIMESTAMP, dateTime("2013-03-28T16:38:45-07:00"));
 		expected.addValue(Event.TAG, device.getLabel());
 		expected.setValue(Event.LOCATION, device.getLocation());
 		expected.setValue(Event.TEMPERATURE, Measures.<Temperature>valueOf("25.7 C"));
@@ -52,7 +52,7 @@ public class MeasurementsResultTest extends ResultTestSupport {
 		List<Event> events = result.getEvents();
 		assertThat(events).as("events").hasSize(16);
 		Event expected = new Event(events.get(0).getId());
-		expected.setValue(Event.TIMESTAMP, dateTime("20141027T000000-0700"));
+		expected.setValue(Event.TIMESTAMP, dateTime("2014-10-27T00:00:00-07:00"));
 		expected.setValue(Event.DURATION, Duration.standardHours(1));
 		expected.addValue(Event.TAG, device.getLabel());
 		expected.setValue(Event.LOCATION, device.getLocation());

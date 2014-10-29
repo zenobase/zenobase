@@ -26,7 +26,7 @@ public class FitbitActivitiesResultTest extends ResultTestSupport {
 		assertThat(events).as("events").hasSize(2);
 		Event expected = new Event(events.get(0).getId());
 		expected.setValue(Event.TAG, "Walk");
-		expected.setValue(Event.TIMESTAMP, dateTime("20141028T180800-07:00"));
+		expected.setValue(Event.TIMESTAMP, dateTime("2014-10-28T18:08:00-07:00"));
 		expected.setValue(Event.DURATION, Duration.standardSeconds(2079));
 		expected.setValue(Event.DISTANCE, Measures.<Length>valueOf("3.72 mi"));
 		expected.setValue(Event.ENERGY, Measures.<Energy>valueOf("240 kcal"));

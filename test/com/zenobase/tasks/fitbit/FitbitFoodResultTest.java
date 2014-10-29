@@ -7,7 +7,6 @@ import java.util.List;
 import javax.measure.DecimalMeasure;
 import javax.measure.quantity.Energy;
 
-import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.Duration;
 import org.junit.Test;
@@ -27,7 +26,7 @@ public class FitbitFoodResultTest extends ResultTestSupport {
 		assertThat(events).as("events").hasSize(3);
 		Event expected = new Event(events.get(0).getId());
 		expected.setValue(Event.TAG, TAG);
-		expected.setValue(Event.TIMESTAMP, DateTime.parse("2014-01-01T00:00:00-08:00"));
+		expected.setValue(Event.TIMESTAMP, dateTime("2014-01-01T00:00:00-08:00"));
 		expected.setValue(Event.DURATION, Duration.standardDays(1));
 		expected.setValue(Event.ENERGY, DecimalMeasure.<Energy>valueOf("2500 kcal"));
 		expected.setValue(Event.AUTHOR, TESTER);

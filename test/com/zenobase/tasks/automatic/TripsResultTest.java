@@ -4,7 +4,6 @@ import static org.fest.assertions.Assertions.assertThat;
 
 import java.math.BigDecimal;
 
-import org.joda.time.DateTime;
 import org.joda.time.Duration;
 import org.junit.Test;
 import com.google.common.collect.Iterables;
@@ -22,7 +21,7 @@ public class TripsResultTest extends ResultTestSupport {
 		Trip trip = Iterables.getOnlyElement(result.getTrips());
 		assertThat(trip.getVehicleId()).isEqualTo("xxx");
 		assertThat(trip.getEvent().getValue(Event.TAG)).isEqualTo("Trip");
-		assertThat(trip.getEvent().getValue(Event.TIMESTAMP)).isEqualTo(DateTime.parse("2013-11-02T20:14:10.201-07:00"));
+		assertThat(trip.getEvent().getValue(Event.TIMESTAMP)).isEqualTo(dateTime("2013-11-02T20:14:10-07:00"));
 		assertThat(trip.getEvent().getValue(Event.DURATION)).isEqualTo(Duration.standardSeconds(1500));
 		assertThat(trip.getEvent().getValues(Event.LOCATION)).containsExactly(new Location("37.7692903", "-122.4465469"), new Location("37.78270046281092", "-122.4064556183999"));
 		assertThat(trip.getEvent().getValue(Event.CURRENCY)).isEqualTo(new BigDecimal("1.04"));
@@ -47,7 +46,7 @@ public class TripsResultTest extends ResultTestSupport {
 		TripsResult result = new TripsResult(readArray("TripsResultTest-Minimal.json"), TESTER, "Trip", false);
 		Trip trip = Iterables.getOnlyElement(result.getTrips());
 		assertThat(trip.getVehicleId()).isNull();
-		assertThat(trip.getEvent().getValue(Event.TIMESTAMP)).isEqualTo(DateTime.parse("2013-11-03T03:14:10.201Z"));
+		assertThat(trip.getEvent().getValue(Event.TIMESTAMP)).isEqualTo(dateTime("2013-11-03T03:14:10Z"));
 		assertThat(trip.getEvent().getValue(Event.DURATION)).isEqualTo(Duration.standardSeconds(1500));
 	}
 }

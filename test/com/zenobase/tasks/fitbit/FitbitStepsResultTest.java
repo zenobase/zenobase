@@ -8,7 +8,6 @@ import javax.measure.DecimalMeasure;
 import javax.measure.quantity.Energy;
 import javax.measure.quantity.Length;
 
-import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.Duration;
 import org.joda.time.LocalDate;
@@ -32,7 +31,7 @@ public class FitbitStepsResultTest extends ResultTestSupport {
 		assertThat(events).as("events").hasSize(1);
 		Event expected = new Event(events.get(0).getId());
 		expected.setValue(Event.TAG, TAG);
-		expected.setValue(Event.TIMESTAMP, DateTime.parse("2013-11-03T00:00:00-07:00"));
+		expected.setValue(Event.TIMESTAMP, dateTime("2013-11-03T00:00:00-07:00"));
 		expected.setValue(Event.DURATION, Duration.standardHours(25));
 		expected.setValue(Event.COUNT, 9366);
 		expected.setValue(Event.DISTANCE, DecimalMeasure.<Length>valueOf("4.47 mi"));

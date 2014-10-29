@@ -4,7 +4,6 @@ import static org.fest.assertions.Assertions.assertThat;
 
 import java.util.List;
 
-import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.Duration;
 import org.junit.Test;
@@ -30,8 +29,8 @@ public class WithingsSleepResultTest extends ResultTestSupport {
 	private void checkFirst(Event event) {
 		Event expected = new Event(event.getId());
 		expected.setValue(Event.TAG, "sleep");
-		expected.addValue(Event.TIMESTAMP, DateTime.parse("2014-03-11T01:39:26.000-07:00"));
-		expected.addValue(Event.TIMESTAMP, DateTime.parse("2014-03-11T08:44:26.000-07:00"));
+		expected.addValue(Event.TIMESTAMP, dateTime("2014-03-11T01:39:26-07:00"));
+		expected.addValue(Event.TIMESTAMP, dateTime("2014-03-11T08:44:26-07:00"));
 		expected.setValue(Event.DURATION, Duration.standardSeconds(25500));
 		expected.setValue(Event.PERCENTAGE, Percentage.valueOf(98));
 		expected.setValue(Event.AUTHOR, TESTER);
@@ -42,8 +41,8 @@ public class WithingsSleepResultTest extends ResultTestSupport {
 	private void checkLast(Event event) {
 		Event expected = new Event(event.getId());
 		expected.setValue(Event.TAG, "sleep");
-		expected.addValue(Event.TIMESTAMP, DateTime.parse("2014-03-12T03:35:17.000-07:00"));
-		expected.addValue(Event.TIMESTAMP, DateTime.parse("2014-03-12T11:03:17.000-07:00"));
+		expected.addValue(Event.TIMESTAMP, dateTime("2014-03-12T03:35:17-07:00"));
+		expected.addValue(Event.TIMESTAMP, dateTime("2014-03-12T11:03:17-07:00"));
 		expected.setValue(Event.DURATION, Duration.standardSeconds(26880));
 		expected.setValue(Event.PERCENTAGE, Percentage.valueOf(96));
 		expected.setValue(Event.AUTHOR, TESTER);

@@ -4,7 +4,6 @@ import static org.fest.assertions.Assertions.assertThat;
 
 import java.util.List;
 
-import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.Duration;
 import org.junit.Test;
@@ -25,8 +24,8 @@ public class FitbitSleepResultTest extends ResultTestSupport {
 		assertThat(events).as("events").hasSize(1);
 		Event expected = new Event(events.get(0).getId());
 		expected.setValue(Event.TAG, TAG);
-		expected.addValue(Event.TIMESTAMP, DateTime.parse("2012-11-28T00:58:00.000-08:00"));
-		expected.addValue(Event.TIMESTAMP, DateTime.parse("2012-11-28T08:48:00.000-08:00"));
+		expected.addValue(Event.TIMESTAMP, dateTime("2012-11-28T00:58:00-08:00"));
+		expected.addValue(Event.TIMESTAMP, dateTime("2012-11-28T08:48:00-08:00"));
 		expected.setValue(Event.DURATION, Duration.standardMinutes(470));
 		expected.setValue(Event.RATING, Rating.valueOf(100));
 		expected.setValue(Event.AUTHOR, TESTER);

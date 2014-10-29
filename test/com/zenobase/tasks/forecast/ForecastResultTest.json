@@ -4,7 +4,7 @@
     "timezone": "America/Los_Angeles",
     "offset": -8,
     "currently": {
-        "time": 1362050105,
+        "time": 1362050000,
         "summary": "Light Rain",
         "icon": "rain",
         "precipIntensity": 1.0211,

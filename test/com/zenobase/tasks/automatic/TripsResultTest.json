@@ -15,7 +15,7 @@
             "lon": -122.4465469,
             "accuracy_m": 5
         },
-        "start_time": 1383448450201,
+        "start_time": 1383448450000,
         "start_time_zone": "America/Los_Angeles",
         "end_location": {
             "name": "5th St, SF, CA",
@@ -24,7 +24,7 @@
             "lon": -122.4064556183999,
             "accuracy_m": 97.88124084472656
         },
-        "end_time": 1383449950201,
+        "end_time": 1383449950000,
         "end_time_zone": "America/Los_Angeles",
         "path": "uioeFxycjVxDMvAGBjATlJXrLaIZHvCFhCHpCaI^i@@",
         "distance_m": 6573.416666666661,

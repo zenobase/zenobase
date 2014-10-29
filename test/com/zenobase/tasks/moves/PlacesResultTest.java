@@ -6,7 +6,6 @@ import java.util.List;
 
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
-import org.joda.time.format.ISODateTimeFormat;
 import org.junit.Test;
 
 import com.zenobase.models.Event;
@@ -17,7 +16,7 @@ public class PlacesResultTest extends ResultTestSupport {
 
 	@Test
 	public void test() {
-		DateTime begin = DateTime.parse("20121212T074617+0200", ISODateTimeFormat.basicDateTimeNoMillis().withOffsetParsed());
+		DateTime begin = dateTime("2012-12-12T07:46:17+0200");
 		PlacesResult result = new PlacesResult(TESTER, begin, readArray("PlacesResultTest.json"));
 		List<Event> events = result.getEvents();
 		assertThat(events).as("events").hasSize(4);

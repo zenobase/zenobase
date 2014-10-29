@@ -4,7 +4,6 @@ import static org.fest.assertions.Assertions.assertThat;
 
 import java.util.List;
 
-import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.Duration;
 import org.junit.Test;
@@ -23,7 +22,7 @@ public class CategoriesResultTest extends ResultTestSupport {
 		assertThat(events).hasSize(3);
 		Event expected = new Event(events.get(0).getId());
 		expected.addValue(Event.TAG, "Social Networking");
-		expected.setValue(Event.TIMESTAMP, DateTime.parse("2014-05-01T05:00:00-07:00"));
+		expected.setValue(Event.TIMESTAMP, dateTime("2014-05-01T05:00:00-07:00"));
 		expected.setValue(Event.DURATION, Duration.standardSeconds(192));
 		expected.setValue(Event.SOURCE, ProductivityResult.SOURCE);
 		assertThat(events.get(0)).isEqualTo(expected);

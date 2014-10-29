@@ -36,6 +36,6 @@ public class ResultTestSupport {
 	}
 
 	protected static DateTime dateTime(String value) {
-		return DateTime.parse(value, ISODateTimeFormat.basicDateTimeNoMillis().withOffsetParsed());
+		return DateTime.parse(value, ISODateTimeFormat.dateTimeNoMillis().withOffsetParsed());
 	}
 }

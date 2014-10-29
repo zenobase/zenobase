@@ -7,7 +7,6 @@ import java.util.List;
 import javax.measure.DecimalMeasure;
 import javax.measure.quantity.Mass;
 
-import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDate;
 import org.junit.Test;
@@ -31,7 +30,7 @@ public class FitbitWeightResultTest extends ResultTestSupport {
 		assertThat(events).as("events").hasSize(1);
 		Event expected = new Event(events.get(0).getId());
 		expected.setValue(Event.TAG, TAG);
-		expected.setValue(Event.TIMESTAMP, DateTime.parse("2014-10-08T00:00:00-07:00"));
+		expected.setValue(Event.TIMESTAMP, dateTime("2014-10-08T00:00:00-07:00"));
 		expected.setValue(Event.WEIGHT, DecimalMeasure.<Mass>valueOf("72.6 kg"));
 		expected.setValue(Event.PERCENTAGE, Percentage.valueOf(13));
 		expected.setValue(Event.AUTHOR, TESTER);

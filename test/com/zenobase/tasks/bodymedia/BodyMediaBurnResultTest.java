@@ -71,7 +71,7 @@ public class BodyMediaBurnResultTest extends ResultTestSupport {
 
 	private static void assertEvent(Event event, String timestamp, String calories, int hours) {
 		assertThat(event.getValue(Event.TAG)).isEqualTo(TAG);
-		assertThat(event.getValue(Event.TIMESTAMP)).isEqualTo(DateTime.parse(timestamp));
+		assertThat(event.getValue(Event.TIMESTAMP)).isEqualTo(dateTime(timestamp));
 		assertThat(event.getValue(Event.DURATION)).isEqualTo(Duration.standardHours(hours));
 		assertThat(event.getValue(Event.ENERGY)).isEqualTo(Measures.<Energy>valueOf(calories));
 	}

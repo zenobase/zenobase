@@ -4,7 +4,6 @@ import static org.fest.assertions.Assertions.assertThat;
 
 import java.util.List;
 
-import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.Duration;
 import org.junit.Test;
@@ -25,7 +24,7 @@ public class ProductivityResultTest extends ResultTestSupport {
 		assertThat(events).hasSize(14);
 		Event expected = new Event(events.get(0).getId());
 		expected.addValue(Event.TAG, tag);
-		expected.setValue(Event.TIMESTAMP, DateTime.parse("2014-03-09T10:00:00-07:00"));
+		expected.setValue(Event.TIMESTAMP, dateTime("2014-03-09T10:00:00-07:00"));
 		expected.setValue(Event.DURATION, Duration.standardSeconds(472));
 		expected.setValue(Event.RATING, Rating.valueOf(92));
 		expected.setValue(Event.SOURCE, ProductivityResult.SOURCE);
