@@ -6,6 +6,7 @@ import com.zenobase.json.BooleanField;
 import com.zenobase.json.DomainNode;
 import com.zenobase.json.IntegerField;
 import com.zenobase.json.TokenField;
+import com.zenobase.services.QuotaManager;
 
 public class UpdateUserForm extends DomainNode {
 
@@ -69,7 +70,8 @@ public class UpdateUserForm extends DomainNode {
 	}
 
 	public Integer getQuota() {
-		return getValue(QUOTA);
+		Integer quota = getValue(QUOTA);
+		return quota != null && quota != QuotaManager.DEFAULT_QUOTA ? quota : null;
 	}
 
 	public Boolean isSuspended() {

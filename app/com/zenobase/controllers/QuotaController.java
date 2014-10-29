@@ -29,12 +29,22 @@ public class QuotaController extends ControllerSupport {
 		this.dispatcher = dispatcher;
 	}
 
-	public Result get() {
+	public Result get(String userId) {
 		Authorization auth = getCurrentAuthorization();
-		if (auth != null) {
-			return ok(quotas.getQuota(auth.getPrincipal()).toJson());
-		}
-    	return noContent();
+    	if (auth == null) {
+    		return unauthorized();
+    	}
+    	if (auth.getScope() != null) {
+    		return forbidden();
+    	}
+    	Identity principal = new UserLookup(users).getIdentity(userId);
+    	if (principal == null) {
+    		return notFound("user not found");
+    	}
+    	if (!principal.equals(auth.getPrincipal()) && !users.isSuperuser(auth.getPrincipal())) {
+    		return forbidden();
+    	}
+		return ok(quotas.getQuota(principal).toJson());
     }
 
 	@BodyParser.Of(BodyParser.Json.class)

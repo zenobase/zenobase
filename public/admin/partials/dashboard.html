@@ -167,7 +167,6 @@
 							</td>
 							<td><abbr title="{{user.created}}">{{user.created | age}}</abbr></td>
 							<td style="text-align: right">
-								<a class="action" data-ng-click="openDialog('spend-quota-dialog', user)" title="Spend/Refund Quota"><i class="fa fa-gift"></i></a>
 								<a class="action" data-ng-click="openDialog('edit-quota-dialog', user)" title="Edit Quota"><i class="fa fa-pencil"></i></a>
 								<span data-ng-bind="user.quota | number" ></span>
 							</td>
@@ -198,44 +197,25 @@
 				</div>
 				<div id="edit-quota-dialog" data-ui-modal data-ng-controller="admin.EditQuotaDialogController">
 					<form name="form" class="modal-form" data-ng-submit="form.$valid && save()">
-						<div class="modal-header">
-							<a class="close" data-dismiss="modal">&times;</a>
-							<h4>Edit Quota - {{user.name}}</h4>
-						</div>
-						<div class="modal-body">
-							<div id="edit-quota-message" class="alert alert-error" data-ng-show="message">
-								{{message}}
+						<fieldset data-ng-disabled="usedOld === null">
+							<div class="modal-header">
+								<a class="close" data-dismiss="modal">&times;</a>
+								<h4>Quota - {{user.name}}</h4>
 							</div>
-							<div class="control-group">
-								<label for="quota-field">Quota</label>
-								<input id="quota-field" name="quota" type="number" min="0" class="xlarge" data-ui-focus-on="openDialog:edit-quota-dialog" data-ng-model="quota"/>
+							<div class="modal-body">
+								<div id="edit-quota-message" class="alert alert-error" data-ng-show="message">
+									{{message}}
+								</div>
+								<div class="control-group">
+									<input id="used-field" type="number" data-ng-model="usedNew" title="Used this month"/> /
+									<input id="limit-field" type="number" min="0" data-ui-focus-on="openDialog:edit-quota-dialog" data-ng-model="limit" title="Limit per month"/>
+								</div>
 							</div>
-						</div>
-						<div class="modal-footer">
-							<button id="save-quota-button" type="submit" class="btn btn-primary" data-ng-disabled="!form.$valid">Save</button>
-							<button type="reset" class="btn" data-dismiss="modal">Cancel</button>
-						</div>
-					</form>
-				</div>
-				<div id="spend-quota-dialog" data-ui-modal data-ng-controller="admin.SpendQuotaDialogController">
-					<form name="form" class="modal-form" data-ng-submit="cost && form.$valid && spend()">
-						<div class="modal-header">
-							<a class="close" data-dismiss="modal">&times;</a>
-							<h4>Spend/Refund Quota - {{user.name}}</h4>
-						</div>
-						<div class="modal-body">
-							<div id="spend-quota-message" class="alert alert-error" data-ng-show="message">
-								{{message}}
+							<div class="modal-footer">
+								<button id="save-quota-button" type="submit" class="btn btn-primary" data-ng-disabled="!form.$valid">Save</button>
+								<button type="reset" class="btn" data-dismiss="modal">Cancel</button>
 							</div>
-							<div class="control-group">
-								<label for="cost-field">Cost</label>
-								<input id="cost-field" name="cost" type="number" class="xlarge" required data-ui-focus-on="openDialog:spend-quota-dialog" data-ng-model="cost"/>
-							</div>
-						</div>
-						<div class="modal-footer">
-							<button id="spend-quota-button" type="submit" class="btn btn-primary"" data-ng-disabled="!cost || !form.$valid">Spend</button>
-							<button type="reset" class="btn" data-dismiss="modal">Cancel</button>
-						</div>
+						</fieldset>
 					</form>
 				</div>
 			</div>

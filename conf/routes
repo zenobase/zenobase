@@ -6,7 +6,7 @@ POST    /status                        @com.zenobase.controllers.StatusControlle
 
 GET     /who                           @com.zenobase.controllers.WhoController.who()
 POST    /reset                         @com.zenobase.controllers.PasswordResetController.requestReset()
-GET     /quota                         @com.zenobase.controllers.QuotaController.get()
+GET     /users/:userId/quota           @com.zenobase.controllers.QuotaController.get(userId)
 POST    /users/:userId/quota           @com.zenobase.controllers.QuotaController.post(userId)
 
 GET     /users/                        @com.zenobase.controllers.UserListController.find(q ?= null, offset : Int ?= 0, limit : Int ?= java.lang.Integer.MAX_VALUE)

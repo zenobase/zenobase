@@ -5244,7 +5244,7 @@
 
 		$scope.$watch('user', function(user) {
 			if (user) {
-				$http.get('/quota')
+				$http.get('/users/' + user['@id'] + '/quota')
 					.success(function(response) {
 						$scope.quota = response;
 					})

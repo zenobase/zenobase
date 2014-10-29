@@ -287,33 +287,45 @@
 		$scope.refresh({});
 	}]);
 
-	app.controller('admin.EditQuotaDialogController', ['$scope', '$http', 'delay', function($scope, $http, delay) {
+	app.controller('admin.EditQuotaDialogController', ['$scope', '$http', '$q', 'delay', function($scope, $http, $q, delay) {
 		$scope.init = function(user) {
 			$scope.user = user;
 			$scope.message = '';
-			$scope.quota = user.quota;
+			$scope.limit = null;
+			$scope.used = null;
+			$scope.usedOld = null;
+			$scope.usedNew = null;
+			$http.get('/users/@' + $scope.user.name + '/quota')
+				.success(function(response) {
+					$scope.limit = response.limit;
+					$scope.usedOld = response.used;
+					$scope.usedNew = response.used;
+				});
 		};
 		$scope.save = function() {
-			$http.post('/users/@' + $scope.user.name, { 'quota' : $.isNumeric($scope.quota) ? $scope.quota : null })
-				.success(function(response) {
-					$scope.closeDialog();
-					delay($scope.refreshAll);
-				});
-		};
-	}]);
-
-	app.controller('admin.SpendQuotaDialogController', ['$scope', '$http', 'delay', function($scope, $http, delay) {
-		$scope.init = function(user) {
-			$scope.user = user;
 			$scope.message = '';
-			$scope.cost = 0;
-		};
-		$scope.spend = function() {
-			$http.post('/users/@' + $scope.user.name + '/quota', { 'cost' : $scope.cost })
-				.success(function(response) {
-					$scope.closeDialog();
-					delay($scope.refreshAll);
-				});
+			var updates = $q.when(null);
+			if ($scope.limit != $scope.user.quota) {
+				updates = updates.then(function() {
+					return $http.post('/users/@' + $scope.user.name, { 'quota' : $.isNumeric($scope.limit) ? $scope.limit : null })
+					}, function() {
+						return $q.reject();
+					});
+			}
+			if ($scope.usedNew != $scope.usedOld) {
+				updates = updates
+					.then(function() {
+						return $http.post('/users/@' + $scope.user.name + '/quota', { 'cost' : $scope.usedNew - $scope.usedOld })
+					}, function() {
+						return $q.reject();
+					});
+			}
+			updates.then(function(response) {
+				$scope.closeDialog();
+				delay($scope.refreshAll);
+			}, function(e) {
+				$scope.message = "Couldn't update quota used/limit.";
+			});
 		};
 	}]);
 
