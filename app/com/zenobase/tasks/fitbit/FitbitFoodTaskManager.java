@@ -41,7 +41,7 @@ public class FitbitFoodTaskManager extends FitbitTaskManagerSupport<FitbitFoodTa
 		FitbitProfileResult profile = getProfile(task, credentials);
 		LocalDate today = new DateTime(profile.getTimezone()).toLocalDate();
 		LocalDate fromDate = getFromDate(task);
-		for (LocalDate date = fromDate; today != null && date.isBefore(today); date = date.plusYears(1)) {
+		for (LocalDate date = fromDate; date.isBefore(today); date = date.plusYears(1)) {
 			LocalDate toDate = Ordering.natural().min(today, date.plusYears(1)).minusDays(1);
 			OAuthRequest request = new OAuthRequest(Verb.GET, "https://api.fitbit.com/1/user/-/foods/log/caloriesIn/date/" + date + "/" + toDate + ".json");
 			try {

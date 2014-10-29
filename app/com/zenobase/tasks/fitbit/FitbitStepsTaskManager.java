@@ -39,9 +39,12 @@ public class FitbitStepsTaskManager extends FitbitTaskManagerSupport<FitbitSteps
 	protected Command safeExecute(FitbitStepsTask task, OAuthCredentials credentials) {
 		List<Event> events = Lists.newArrayList();
 		LocalDate syncDate = getLastDate(DeviceType.TRACKER, task, credentials);
+		if (syncDate == null) {
+			return null;
+		}
 		LocalDate fromDate = getFromDate(task);
 		FitbitProfileResult profile = getProfile(task, credentials);
-		for (LocalDate date = fromDate; syncDate != null && date.isBefore(syncDate); date = date.plusDays(1)) {
+		for (LocalDate date = fromDate; date.isBefore(syncDate); date = date.plusDays(1)) {
 			try {
 				if (task.isHourly()) {
 					OAuthRequest request = new OAuthRequest(Verb.GET, "https://api.fitbit.com/1/user/-/activities/steps/date/" + date + "/1d/15min.json");

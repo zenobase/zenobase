@@ -35,10 +35,13 @@ public class FitbitIntradayTaskManager extends FitbitTaskManagerSupport<FitbitIn
 	protected Command safeExecute(FitbitIntradayTask task, OAuthCredentials credentials) {
 		List<Event> events = Lists.newArrayList();
 		LocalDate syncDate = getLastDate(DeviceType.TRACKER, task, credentials);
+		if (syncDate == null) {
+			return null;
+		}
 		LocalDate fromDate = getFromDate(task);
 		FitbitProfileResult profile = getProfile(task, credentials);
 		List<Interval> sleeping = Lists.newArrayList();
-		for (LocalDate date = fromDate; syncDate != null && !date.isAfter(syncDate); date = date.plusDays(1)) {
+		for (LocalDate date = fromDate; !date.isAfter(syncDate); date = date.plusDays(1)) {
 			OAuthRequest sleepRequest = new OAuthRequest(Verb.GET, "https://api.fitbit.com/1/user/-/sleep/date/" + date + ".json");
 			Response sleepResponse = send(sleepRequest, credentials);
 			for (Event event : new FitbitSleepResult(parseObject(sleepResponse), "sleeping", task.getPrincipal(), false, profile.getTimezone()).getEvents()) {
