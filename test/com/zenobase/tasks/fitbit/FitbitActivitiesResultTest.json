@@ -1,0 +1,93 @@
+{
+    "activities": [
+        {
+            "activityId": 17220,
+            "activityParentId": 90013,
+            "activityParentName": "Walk",
+            "calories": 240,
+            "description": "4.0 mph, very brisk pace",
+            "distance": 3.72,
+            "duration": 2079000,
+            "hasStartTime": true,
+            "isFavorite": false,
+            "lastModified": "2014-10-28T18:44:08.000-07:00",
+            "logId": 113469958,
+            "name": "Walk",
+            "startDate": "2014-10-28",
+            "startTime": "18:08",
+            "steps": 4848
+        },
+        {
+            "activityId": 17190,
+            "activityParentId": 90013,
+            "activityParentName": "Walk",
+            "calories": 145,
+            "description": "3.0 mph, moderate pace",
+            "distance": 2.34,
+            "duration": 1825000,
+            "hasStartTime": true,
+            "isFavorite": false,
+            "lastModified": "2014-10-28T12:53:01.000-07:00",
+            "logId": 113335963,
+            "name": "Walk",
+            "startDate": "2014-10-28",
+            "startTime": "12:22",
+            "steps": 3050
+        }
+    ],
+    "goals": {
+        "activeMinutes": 30,
+        "caloriesOut": 0,
+        "distance": 8.05,
+        "floors": 30,
+        "steps": 10000
+    },
+    "summary": {
+        "activeScore": -1,
+        "activityCalories": 1278,
+        "caloriesBMR": 1708,
+        "caloriesOut": 2794,
+        "distances": [
+            {
+                "activity": "total",
+                "distance": 12.2
+            },
+            {
+                "activity": "tracker",
+                "distance": 11.2
+            },
+            {
+                "activity": "loggedActivities",
+                "distance": 6.07
+            },
+            {
+                "activity": "veryActive",
+                "distance": 6.4
+            },
+            {
+                "activity": "moderatelyActive",
+                "distance": 5.04
+            },
+            {
+                "activity": "lightlyActive",
+                "distance": 0.69
+            },
+            {
+                "activity": "sedentaryActive",
+                "distance": 0.05
+            },
+            {
+                "activity": "Walk",
+                "distance": 6.0600000000000005
+            }
+        ],
+        "elevation": 134.11,
+        "fairlyActiveMinutes": 77,
+        "floors": 44,
+        "lightlyActiveMinutes": 86,
+        "marginalCalories": 824,
+        "sedentaryMinutes": 777,
+        "steps": 15879,
+        "veryActiveMinutes": 67
+    }
+}
