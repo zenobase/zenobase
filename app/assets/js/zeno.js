@@ -112,7 +112,7 @@
 		};
 	}]);
 
-	app.factory('tracker', ['$window', function($window) {
+	app.factory('tracker', [function() {
 		return {
 			event : function(category, action, label) {
 				_gaq.push([ '_trackEvent', category, action, label ]);
@@ -192,7 +192,7 @@
 				this.title = (title ? title + ' | ' : '') + 'Zenobase';
 			}
 		};
-		$rootScope.$on('$routeChangeSuccess', function(event, current, previous) {
+		$rootScope.$on('$routeChangeSuccess', function(event, current) {
 			if (current.$$route) {
 				$rootScope.page.setTitle(current.$$route.title);
 			}
@@ -200,9 +200,9 @@
 	}]);
 
 	app.factory('$exceptionHandler', ['$log', 'tracker', function($log, tracker) {
-		return function(exception, cause) {
+		return function(e) {
 			$log.error.apply($log, arguments);
-			tracker.event('error', exception.toString());
+			tracker.event('error', e.toString());
 		};
 	}]);
 
@@ -224,10 +224,10 @@
 		$scope.undo = function(commandId) {
 			$scope.alert.clear();
 			$http.post('/journal/' , { 'undo' : commandId })
-				.success(function(response, status) {
+				.success(function() {
 					delay($route.reload);
 				})
-				.error(function(response) {
+				.error(function() {
 					$scope.alert.show('Couldn\'t undo.');
 				});
 			tracker.event('action', 'undo');
@@ -240,7 +240,7 @@
 			console.assert(token.get(), 'missing token');
 			$scope.alert.clear();
 			$http({ method : 'DELETE', url : '/authorizations/' + token.get() })
-				.success(function(response) {
+				.success(function() {
 					token.set(null);
 					$scope.user = null;
 					if ($location.url() === '/') {
@@ -384,7 +384,7 @@
 		return Constraint;
 	});
 
-	app.controller('UserController', ['$scope', '$http', '$routeParams', 'User', 'tracker', function($scope, $http, $routeParams, User, tracker) {
+	app.controller('UserController', ['$scope', '$http', '$routeParams', 'User', function($scope, $http, $routeParams, User) {
 
 		$scope.username = $routeParams.username;
 		$scope.profile = null;
@@ -1360,7 +1360,7 @@
 				var t1 = new Date().getTime();
 				callback(responses[0].data, responses.length > 1 ? responses[1].data : null);
 				tracker.timing('action', 'refresh', t1 - t0, $scope.bucketId);
-			}, function(e) {
+			}, function() {
 				callback({ total : -1 });
 			});
 		};
@@ -1633,7 +1633,7 @@
 		$scope.deleteBucket = function() {
 			$scope.alert.clear();
 			$http({ method : 'DELETE', url : '/buckets/' + $scope.bucketId })
-				.success(function(response, status, headers) {
+				.success(function() {
 					$scope.closeDialog();
 					$location.url('/users/' + $scope.$parent.user.getName());
 				})
@@ -2162,7 +2162,7 @@
 			}
 		}
 
-		Interval.matchRange = function(value, expectOffset) {
+		Interval.matchRange = function(value) {
 			value = getFirst(value);
 			if (value && value.match(/^[0-9]{4}/)) {
 				if (!value.match(/Z|[+-]\d\d:\d\d/)) {
@@ -3126,7 +3126,6 @@
 				var y = [];
 				var min = 0;
 				var max = 0;
-				var ypred = [];
 				var i = 0;
 				for (; i < data.length; ++i) {
 					x.push(data[i][0]);
@@ -3918,7 +3917,7 @@
 			$scope.alert.clear();
 			if ($scope.isNew) {
 				$http.post('/buckets/' + $scope.params.bucketId + '/', $scope.event)
-					.success(function(response) {
+					.success(function() {
 						$scope.closeDialog();
 						delay($scope.refresh);
 					})
@@ -4014,7 +4013,7 @@
 				$scope.moveMarker(e.latLng);
 			});
 			var input = $('#location-search-field');
-			input.on('input', function(e) {
+			input.on('input', function() {
 				var latLng = parseLatLng(input.val());
 				if (latLng) {
 					$scope.moveMarker(latLng);
@@ -4162,7 +4161,8 @@
 		$scope.valid = function() {
 			return $scope.value.url && $scope.value.title;
 		};
-		$scope.change = function(e) {
+		$scope.change = function() {
+			
 		};
 		$scope.$watch('value.url', function(url) {
 			if (url && !$scope.value.title) {
@@ -4643,7 +4643,7 @@
 		$scope.remove = function(taskId) {
 			$scope.message = '';
 			$http({ method : 'DELETE', url : '/tasks/' + taskId })
-				.success(function(response, status, headers) {
+				.success(function() {
 					delay($scope.refresh);
 				})
 				.error(function(response, status) {
@@ -4722,12 +4722,12 @@
 		$scope.create = function() {
 			$scope.alert.clear();
 			$http.post('/tasks/', $scope.data())
-				.success(function(response, status, headers) {
+				.success(function(response, status) {
 					console.assert(status === 201, status);
 					$scope.closeDialog();
 					delay($scope.$parent.run);
 				})
-				.error(function(response) {
+				.error(function() {
 					$scope.message = 'Couldn\'t create task. Try again later or contact support.';
 				});
 			tracker.event('action', 'create task');
@@ -5002,7 +5002,7 @@
 		$scope.init();
 	}]);
 
-	app.controller('ForecastSettingsController', ['$scope', '$timeout', function($scope, $timeout) {
+	app.controller('ForecastSettingsController', ['$scope', function($scope) {
 
 		$scope.selected = function(field) {
 			return $scope.settings.fields.indexOf(field) != -1;
@@ -5211,7 +5211,7 @@
 		}
 
 		$http.post('/credentials/' + $scope.credentialsId, { 'credentials' : $location.search() })
-			.success(function(response) {
+			.success(function() {
 				$scope.alert.show('Updated credentials.', 'alert-success');
 				localStorage.removeItem('credentials');
 				if ($window.opener) {
@@ -5240,7 +5240,7 @@
 		}
 	}]);
 
-	app.controller('PricingController', ['$scope', '$http', 'tracker', function($scope, $http, tracker) {
+	app.controller('PricingController', ['$scope', '$http', function($scope, $http) {
 
 		$scope.$watch('user', function(user) {
 			if (user) {
@@ -5248,7 +5248,7 @@
 					.success(function(response) {
 						$scope.quota = response;
 					})
-					.error(function(response, status) {
+					.error(function() {
 						$scope.quota = null;
 					});
 			}
@@ -5267,12 +5267,12 @@
 			$scope.processing = true;
 			$scope.alert.clear();
 			$http({ method : 'DELETE', url : '/users/' + $scope.user['@id'] + '/payment' })
-				.success(function(response) {
+				.success(function() {
 					$scope.processing = false;
 					$scope.closeDialog();
 					$scope.whoami();
 				})
-				.error(function(response, status) {
+				.error(function() {
 					$scope.processing = false;
 					$scope.message = 'Couldn\'t change the plan. Try again later or contact support.';
 				});
@@ -5317,7 +5317,7 @@
 			}
 			$scope.alert.clear();
 			$http.post('/payments/', data)
-				.success(function(response) {
+				.success(function() {
 					$scope.processing = false;
 					$scope.closeDialog();
 					$scope.whoami();
@@ -5657,7 +5657,6 @@
 			toNumber : function(value) {
 				var n = toNumber(value);
 				if (value && isNaN(n)) {
-					var valid = true;
 					$.each(value.split(' '), function(i, token) {
 						var m = /^(-?\d+)(d|h|min|s)?$/.exec(token);
 						if (m) {
@@ -5944,7 +5943,7 @@
 	app.directive('uiCurrentYear', function() {
 		return {
 			restrict : 'A',
-			link : function(scope, element, attrs) {
+			link : function(scope, element) {
 				element.html(new Date().getFullYear());
 			}
 		};
@@ -5970,7 +5969,7 @@
 	app.directive('uiModal', function() {
 		return {
 			restrict : 'A',
-			link : function(scope, element, attrs, model) {
+			link : function(scope, element, attrs) {
 				var id = attrs.id || scope.$eval(attrs.uiModal);
 				console.assert(id, '@id is required');
 				element.addClass('modal hide');
@@ -6091,7 +6090,7 @@
 						}
 						if (newOptions) {
 							scope.chart = new Highcharts.Chart($.extend(true, {}, newOptions, defaultOptions));
-							$('#' + attrs.uiId + '-tab').on('shown', function(e) { 
+							$('#' + attrs.uiId + '-tab').on('shown', function() { 
 								scope.chart.reflow();
 							});
 						}
@@ -6107,7 +6106,7 @@
 			link : function(scope, element, attrs) {
 				var id = scope.$eval(attrs.uiBucketLabel);
 				element.html(id);
-				var bucket = Bucket.getLabel(id, function(label) {
+				Bucket.getLabel(id, function(label) {
 					element.html(label);
 				});
 			}
@@ -6158,10 +6157,10 @@
 
 		function checkResults(bucket, value, callback) {
 			$http.get('/buckets/' + bucket['@id'] + '/?' + $.param({ 'q' : value.split('|'), 'limit' : 0 }, true))
-			.success(function(response) {
+			.success(function() {
 				callback(true);
 			})
-			.error(function(response) {
+			.error(function() {
 				callback(false);
 			});
 		}
@@ -6336,7 +6335,7 @@
 		};
 	}]);
 
-	app.directive('uiPaymentCvv', ['Card', function(Card) {
+	app.directive('uiPaymentCvv', [function() {
 		return {
 			require : 'ngModel',
 			link : function(scope, element, attrs, controller) {
@@ -6359,7 +6358,7 @@
 					this.classList.add('drag');
 					return false;
 				}, false);
-			el.addEventListener('dragend', function(e) {
+			el.addEventListener('dragend', function() {
 					this.classList.remove('drag');
 					return false;
 				}, false);
@@ -6388,7 +6387,7 @@
 						return false;
 					}, false);
 
-				el.addEventListener('dragleave', function(e) {
+				el.addEventListener('dragleave', function() {
 						this.classList.remove('drop');
 						return false;
 					}, false);
@@ -6420,7 +6419,7 @@
 
 	app.directive('uiBlurOnEnter', function() {
 		return {
-			link : function(scope, element, attrs) {
+			link : function(scope, element) {
 				var el = element[0];
 				el.addEventListener('keydown', function(e) {
 					if (e.keyCode === 13) {
