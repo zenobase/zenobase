@@ -41,6 +41,7 @@ public class FitbitActivitiesTaskManager extends FitbitTaskManagerSupport<Fitbit
 		LocalDate fromDate = getFromDate(task);
 		for (LocalDate date = fromDate; date.isBefore(today); date = date.plusDays(1)) {
 			OAuthRequest request = new OAuthRequest(Verb.GET, "https://api.fitbit.com/1/user/-/activities/date/" + date + ".json");
+			request.addHeader("Accept-Language", profile.getDistanceLocale());
 			try {
 				Response response = send(request, credentials);
 				events.addAll(new FitbitActivitiesResult(parseObject(response), task.getPrincipal(), profile.getTimezone(), profile.getDistanceUnit()).getEvents());
