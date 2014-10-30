@@ -302,7 +302,7 @@
 					<label class="control-label" for="task-type">Type</label>
 					<div class="controls">
 						<select name="type" data-ng-model="type" data-ng-options="type.id for type in types" required></select>
-						<p class="help-block">{{type.description}}</p>
+						<p class="help-block">{{type.description}} <a data-ng-href="{{type.url}}" data-ng-show="type.url" target="_blank">Source&hellip;</a></p>
 					</div>
 				</div>
 				<div data-ng-include="getTemplate(type)" data-ng-show="type"></div>
@@ -673,7 +673,7 @@
 		</div>
 	</script>
 
-	<script id="/withings-settings.html" type="text/ng-template">
+	<script id="/withings-weight-settings.html" type="text/ng-template">
 		<div data-ng-controller="WithingsWeightSettingsController">
 			<div class="control-group">
 				<label for="tag" class="control-label">Tag</label>
