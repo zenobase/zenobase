@@ -1,0 +1,53 @@
+{
+    "dataSource": [
+        {
+            "dataStreamId": "derived:com.google.location.sample",
+            "dataStreamName": "merge_location_samples",
+            "type": "derived",
+            "dataType": {
+                "name": "com.google.location.sample",
+                "field": [
+                    {
+                        "name": "latitude",
+                        "format": "floatPoint"
+                    },
+                    {
+                        "name": "longitude",
+                        "format": "floatPoint"
+                    },
+                    {
+                        "name": "accuracy",
+                        "format": "floatPoint"
+                    },
+                    {
+                        "name": "altitude",
+                        "format": "floatPoint"
+                    }
+                ]
+            },
+            "application": {
+                "detailsUrl": "http://example.com/",
+                "name": "Location App",
+                "version": "1"
+            }
+        },
+        {
+            "dataStreamId": "derived:com.google.step_count.delta",
+            "dataStreamName": "estimated_steps",
+            "type": "derived",
+            "dataType": {
+                "name": "com.google.step_count.delta",
+                "field": [
+                    {
+                        "name": "steps",
+                        "format": "integer"
+                    }
+                ]
+            },
+            "application": {
+                "packageName": "com.google.android.gms",
+                "version": ""
+            }
+        }
+    ]
+}

@@ -123,6 +123,7 @@ import com.zenobase.tasks.foursquare.FoursquareCredentialsManager;
 import com.zenobase.tasks.foursquare.FoursquareTaskManager;
 import com.zenobase.tasks.foursquare.FoursquareVenues;
 import com.zenobase.tasks.google.GoogleCredentialsManager;
+import com.zenobase.tasks.google.GoogleFitTaskManager;
 import com.zenobase.tasks.jawbone.JawboneCredentialsManager;
 import com.zenobase.tasks.jawbone.JawboneFoodTaskManager;
 import com.zenobase.tasks.jawbone.JawboneSleepTaskManager;
@@ -300,6 +301,7 @@ public class Global extends GlobalSettings {
 				bindIfConfigured("forecast", ForecastTaskManager.class, tasks);
 				bindIfConfigured("rescuetime", RescueTimeProductivityTaskManager.class, tasks);
 				bindIfConfigured("google", SleepCloudTaskManager.class, tasks);
+				bindIfConfigured("google", GoogleFitTaskManager.class, tasks);
 				bindIfConfigured("automatic", AutomaticTaskManager.class, tasks);
 				bindIfConfigured("jawbone", JawboneStepsTaskManager.class, tasks);
 				bindIfConfigured("jawbone", JawboneSleepTaskManager.class, tasks);

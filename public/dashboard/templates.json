@@ -88,6 +88,69 @@
 		]
 	},
 	{
+		"label" : "Activities (Google Fit)",
+		"task" : "google-activities",
+		"widgets" : [
+			{
+				"id" : "timeline",
+				"type" : "timeline",
+				"label" : "Timeline",
+				"placement" : "top",
+				"key_field" : "timestamp$max",
+				"field" : "distance",
+				"unit" : "mi",
+				"statistic" : "sum",
+				"interval" : "month"
+			},
+			{
+				"id" : "latest",
+				"type" : "list",
+				"label" : "Latest",
+				"placement" : "left",
+				"order" : "timestamp",
+				"reverse" : false,
+				"limit" : 10,
+				"singleton" : true
+			},
+			{
+				"id" : "tags",
+				"type" : "count",
+				"label" : "Type",
+				"placement" : "left",
+				"field" : "tag",
+				"order" : "count",
+				"limit" : 5,
+				"reverse" : false
+			},
+			{
+				"id" : "map",
+				"type" : "heatmap",
+				"label" : "Map",
+				"placement" : "right"
+			},
+			{
+				"id" : "histogram",
+				"type" : "histogram",
+				"label" : "Distances",
+				"placement" : "right",
+				"field" : "distance",
+				"unit" : "mi",
+				"interval" : 5
+			},
+			{
+				"id" : "polar",
+				"type" : "polar",
+				"label" : "Day of Week",
+				"placement" : "right",
+				"key_field" : "timestamp$max",
+				"value_field" : "timestamp",
+				"unit" : null,
+				"statistic" : "count",
+				"interval" : "day_of_week"
+			}
+		]
+	},
+	{
 		"label" : "Activities (Moves)",
 		"task" : "moves-activities",
 		"widgets" : [

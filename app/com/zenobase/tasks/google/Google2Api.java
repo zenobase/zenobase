@@ -12,6 +12,7 @@ import org.scribe.model.Verifier;
 import org.scribe.oauth.OAuth20ServiceImpl;
 import org.scribe.oauth.OAuthService;
 import org.scribe.utils.OAuthEncoder;
+import com.google.common.base.Joiner;
 
 import com.zenobase.oauth.OAuth2TokenExtractor;
 
@@ -22,8 +23,21 @@ import com.zenobase.oauth.OAuth2TokenExtractor;
  */
 public class Google2Api extends DefaultApi20 {
 
-	private static final String SCOPE = "https://www.googleapis.com/auth/userinfo.email";
-	private static final String AUTHORIZE_URL = "https://accounts.google.com/o/oauth2/auth?response_type=code&access_type=offline&approval_prompt=force&client_id=%s&redirect_uri=%s&scope=%s";
+	private static final String SCOPE = Joiner.on(' ').join(
+		"https://www.googleapis.com/auth/userinfo.email",
+		"https://www.googleapis.com/auth/fitness.activity.read",
+		"https://www.googleapis.com/auth/fitness.body.read",
+		"https://www.googleapis.com/auth/fitness.location.read"
+	);
+
+	private static final String AUTHORIZE_URL = "https://accounts.google.com/o/oauth2/auth?" + Joiner.on('&').join(
+		"response_type=code",
+		"access_type=offline",
+		"approval_prompt=force",
+		"client_id=%s",
+		"redirect_uri=%s",
+		"scope=%s"
+	);
 
 	@Override
 	public String getAccessTokenEndpoint() {

@@ -754,6 +754,29 @@
 		</div>
 	</script>
 
+	<script id="/google-activities-settings.html" type="text/ng-template">
+		<div data-ng-controller="GoogleActivitiesSettingsController">
+			<div class="control-group">
+				<label for="timezone" class="control-label">Timezone</label>
+				<select name="timezone" data-ng-model="settings.timezone" data-ng-options="timezone for timezone in timezones" required></select>
+			</div>
+			<div class="control-group">
+				<label class="control-label">Inferred</label>
+				<label class="radio"><input type="radio" data-ng-model="settings.derived" data-ng-value="true"/> all activities</label>
+				<label class="radio"><input type="radio" data-ng-model="settings.derived" data-ng-value="false"/> exercise sessions only</label>
+			</div>
+			<div class="control-group">
+				<label class="control-label">Units</label>
+				<label class="radio"><input type="radio" data-ng-model="settings.metric" data-ng-value="true"/> metric</label>
+				<label class="radio"><input type="radio" data-ng-model="settings.metric" data-ng-value="false"/> imperial</label>
+			</div>
+			<div class="control-group">
+				<label for="marker" class="control-label">Starting from</label>
+				<input class="input-small" type="text" data-ui-datepicker data-ng-model="settings.marker"/>
+			</div>
+		</div>
+	</script>
+
 	<script id="/demo-settings.html" type="text/ng-template">
 		<div data-ng-controller="DemoSettingsController">
 			<div class="control-group">
