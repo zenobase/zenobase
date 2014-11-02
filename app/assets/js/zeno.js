@@ -5254,7 +5254,7 @@
 			});
 	}]);
 
-	app.controller('DocumentController', ['$scope', '$location', '$routeParams', '$timeout', function($scope, $location, $routeParams, $timeout) {
+	app.controller('DocumentController', ['$scope', '$location', '$routeParams', '$timeout', '$window', function($scope, $location, $routeParams, $timeout, $window) {
 		if ($routeParams.section) {
 			var id = $location.path().substring(1).replace('/', '-');
 			var element = document.getElementById(id);
@@ -6455,5 +6455,13 @@
 			}
 		};
 	});
+
+	app.directive('uiHighlight', ['$window', function($window) {
+		return {
+			link : function(scope, element) {
+				$window.hljs.highlightBlock(element[0]);
+			}
+		};
+	}]);
 	
 }());

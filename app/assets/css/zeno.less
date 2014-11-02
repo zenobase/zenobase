@@ -74,6 +74,7 @@
 @import "fileupload.less";
 @import "datepicker.less";
 
+@import "highlight-railscasts-8.3.less";
 
 .btn-group > button.zeno-paging {
 	background-color: white;
@@ -345,14 +346,14 @@ a {
 	text-decoration: line-through;
 }
 
-pre.example > .title {
-	color: gray;
-	font-weight: bold;
-	font-family: sans-serif;
-	font-size: 14;
-	text-transform: uppercase;
-	display: inline-block;
-	padding-bottom: 10px;
+#api pre {
+	.hljs;
+}
+
+#api code {
+	background-color: #232323;
+	color: #e6e1dc;
+	border: none;
 }
 
 #add-widget-dialog div.thumbnail > p {

@@ -168,7 +168,7 @@ or a <a href="/#/api/password-grant">password grant</a>.</p>
 
 <p>Upon authorization, the user is redirected to:</p>
 
-<pre><em>&lt;redirect_uri#&gt;</em>access_token=<em>&lt;access_token&gt;</em>&amp;scope=<em>&lt;scope&gt;</em></pre>
+<pre class="hljs"><em>&lt;redirect_uri#&gt;</em>access_token=<em>&lt;access_token&gt;</em>&amp;scope=<em>&lt;scope&gt;</em></pre>
 
 <dl>
 <dt>access_token</dt>
@@ -215,8 +215,7 @@ or a <a href="/#/api/password-grant">password grant</a>.</p>
 Host: api.zenobase.com
 Content-Type: application/x-www-form-urlencoded
 
-grant_type=password&amp;username=<em>&lt;username&gt;</em>&amp;password=<em>&lt;password&gt;</em>
-</pre>
+grant_type=password&amp;username=<em>&lt;username&gt;</em>&amp;password=<em>&lt;password&gt;</em></pre>
 
 <dl>
 <dt>username</dt>
@@ -227,21 +226,16 @@ grant_type=password&amp;username=<em>&lt;username&gt;</em>&amp;password=<em>&lt;
 
 <h5>Example:</h5>
 
-<pre class="example"><span class="title">Request</span>
-curl -i -X POST 'https://api.zenobase.com/oauth/token' \
-  -d 'grant_type=password&amp;username=jdoe&amp;password=secret1337'
-</pre>
+<pre><code data-ui-highlight class="lang-bash">curl -i -X POST 'https://api.zenobase.com/oauth/token' \
+  -d 'grant_type=password&amp;username=jdoe&amp;password=secret1337'</code></pre>
 
-<pre class="example"><span class="title">Response</span>
-HTTP/1.1 200 OK
+<pre>HTTP/1.1 200 OK
 Content-Type: application/json
-
-{
+<code data-ui-highlight class="lang-json">{
   "access_token" : "e7975e8bb6mabc3ek567",
   "client_id" : "args4iqh2c",
   "expires_in" : 2678400
-}
-</pre>
+}</code></pre>
 
 </section>
 
@@ -261,12 +255,10 @@ Authorization: Bearer <em>&lt;access_token&gt;</em>
 
 <h5>Example:</h5>
 
-<pre class="example"><span class="title">Request</span>
-curl -i -X DELETE 'https://api.zenobase.com/authorizations/e7975e8bb6eabc3ef567' \
-  -H 'Authorization: Bearer e7975e8bb6eabc3ef567'
-</pre>
+<pre><code data-ui-highlight class="lang-bash">curl -i -X DELETE 'https://api.zenobase.com/authorizations/e7975e8bb6eabc3ef567' \
+  -H 'Authorization: Bearer e7975e8bb6eabc3ef567'</code></pre>
 
-<pre class="example"><span class="title">Response</span>
+<pre>
 HTTP/1.1 204 No Content
 </pre>
 
@@ -288,8 +280,7 @@ but also include permissions and dashboard settings.</p>
 
 <pre>GET /users/<em>&lt;user_id&gt;</em>/buckets/?offset=<em>&lt;offset&gt;</em>&amp;limit=<em>&lt;limit&gt;</em>
 Host: api.zenobase.com
-Authorization: Bearer <em>&lt;access_token&gt;</em>
-</pre>
+Authorization: Bearer <em>&lt;access_token&gt;</em></pre>
 
 <dl>
   <dt>user_id</dt><dd>The user whose buckets we want to retrieve.</dd>
@@ -299,16 +290,12 @@ Authorization: Bearer <em>&lt;access_token&gt;</em>
 
 <h5>Example</h5>
 
-<pre class="example"><span class="title">Request</span>
-curl -i 'https://api.zenobase.com/users/args4iqh2c/buckets/?limit=10' \
-  -H 'Authorization: Bearer e7975e8bb6eabc3ef567'
-</pre>
+<pre><code data-ui-highlight class="lang-bash">curl -i 'https://api.zenobase.com/users/args4iqh2c/buckets/?limit=10' \
+  -H 'Authorization: Bearer e7975e8bb6eabc3ef567'</code></pre>
 
-<pre class="example"><span class="title">Response</span>
-HTTP/1.1 200 OK
+<pre>HTTP/1.1 200 OK
 Content-Type: application/json
-
-{ 
+<code data-ui-highlight class="lang-json">{
   "total" : 1,
   "buckets" : [
     { 
@@ -316,14 +303,13 @@ Content-Type: application/json
       "version" : 1,
       "label" : "My Data",
       "created" : "2012-10-18T20:59:36.295Z", 
-      "size" : 4
+      "size" : 4,
       "roles" : [
         { "principal" : "args4iqh2c", "role" : "owner" }
       ]
     }
   ]
-}
-</pre>
+}</code></pre>
 
 </section>
 
@@ -334,8 +320,7 @@ Content-Type: application/json
 <p>Get the metadata for a single bucket.</p>
 
 <pre>GET /buckets/<em>&lt;bucket_id&gt;</em>
-Authorization: Bearer <em>&lt;access_token&gt;</em>
-</pre>
+Authorization: Bearer <em>&lt;access_token&gt;</em></pre>
 
 <dl>
   <dt>bucket_id</dt>
@@ -344,27 +329,22 @@ Authorization: Bearer <em>&lt;access_token&gt;</em>
 
 <h5>Example</h5>
 
-<pre class="example"><span class="title">Request</span>
-curl -i GET 'https://api.zenobase.com/buckets/v7jg3l5ibc' \
-  -H 'Authorization: Bearer e7975e8bb6eabc3ef567'
-</pre>
+<pre><code data-ui-highlight class="lang-bash">curl -i GET 'https://api.zenobase.com/buckets/v7jg3l5ibc' \
+  -H 'Authorization: Bearer e7975e8bb6eabc3ef567'</code></pre>
 
-<pre class="example"><span class="title">Response</span>
-HTTP/1.1 200 OK
+<pre>HTTP/1.1 200 OK
 Content-Type: application/json
-
-{
+<code data-ui-highlight class="lang-json">{
   "@id" : "v7jg3l5ibc",
   "created" : "2012-10-24T23:01:44.438Z",
   "label" : "Test Bucket",
-  "description" : "This bucket is for testing."
+  "description" : "This bucket is for testing.",
   "roles": [
     { "principal" : "args4iqh2c" , "role" : "owner" }
   ],
   "version" : 1,
   "widgets" : [ ... ]
-}
-</pre>
+}</code></pre>
 
 </section>
 
@@ -376,16 +356,14 @@ Content-Type: application/json
 Content-Type: application/json
 Host: api.zenobase.com
 Authorization: Bearer <em>&lt;access_token&gt;</em>
-
-{ 
+<code data-ui-highlight class="lang-json">{
   "label" : <em>&lt;label&gt;</em>,
   "description" : <em>&lt;description&gt;</em>,
   "aliases" : [
     { "@id" : <em>&lt;bucket_id&gt;</em> },
     { "@id" : <em>&lt;bucket_id&gt;</em> },
     ...
-}
-</pre>
+}</code></pre>
 
 <dl>
   <dt>label</dt>
@@ -398,23 +376,19 @@ Authorization: Bearer <em>&lt;access_token&gt;</em>
 
 <h5>Example:</h5>
 
-<pre class="example"><span class="title">Request</span>
-curl -i -X POST 'https://api.zenobase.com/buckets/' \
+<pre><code data-ui-highlight class="lang-bash">curl -i -X POST 'https://api.zenobase.com/buckets/' \
   -H 'Content-Type: application/json' \
   -H 'Authorization: Bearer e7975e8bb6eabc3ef567 \  
   -d '{
     "label" : "Test Bucket",
     "description" : "This bucket is for testing."
-  }'
-</pre>
+  }'</code></pre>
 
-<pre class="example"><span class="title">Response</span>
-HTTP/1.1 201 Created
+<pre>HTTP/1.1 201 Created
 Content-Type: application/json
 Location: /buckets/v7jg3l5ibc
 X-Command-ID: 4o6iqmpnrr
-
-{
+<code data-ui-highlight class="lang-json">{
   "@id" : "v7jg3l5ibc",
   "created" : "2012-10-24T23:01:44.438Z",
   "label" : "Test Bucket",
@@ -423,13 +397,11 @@ X-Command-ID: 4o6iqmpnrr
     { "principal" : "args4iqh2c" , "role" : "owner" }
   ],
   "version" : 1
-}
-</pre>
+}</code></pre>
 
 <h5>Example:</h5>
 
-<pre class="example"><span class="title">Request</span>
-curl -i -X POST 'https://api.zenobase.com/buckets/' \
+<pre><code data-ui-highlight class="lang-bash">curl -i -X POST 'https://api.zenobase.com/buckets/' \
   -H 'Content-Type: application/json' \
   -H 'Authorization: Bearer e7975e8bb6eabc3ef567 \  
   -d '{
@@ -439,16 +411,13 @@ curl -i -X POST 'https://api.zenobase.com/buckets/' \
       { "@id" : "v7jg3l5ibc" },
       { "@id" : "17tfv4rmvn" }
     ]
-  }'
-</pre>
+  }'</code></pre>
 
-<pre class="example"><span class="title">Response</span>
-HTTP/1.1 201 Created
+<pre>HTTP/1.1 201 Created
 Content-Type: application/json
 Location: /buckets/v7jg3l5ibc
 X-Command-ID: 4o6iqmpnrr
-
-{
+<code data-ui-highlight class="lang-json">{
   "@id" : "v7jg3l5ibc",
   "created" : "2012-10-24T23:11:43.112Z",
   "label" : "My Data",
@@ -461,8 +430,7 @@ X-Command-ID: 4o6iqmpnrr
     { "principal" : "dch4v3salm" , "role" : "owner" }
   ],
   "version" : 1
-}
-</pre>
+}</code></pre>
 
 </section>
 
@@ -476,8 +444,7 @@ X-Command-ID: 4o6iqmpnrr
 Content-Type: application/json
 Host: api.zenobase.com
 Authorization: Bearer <em>&lt;access_token&gt;</em>
-
-{ 
+<code data-ui-highlight class="lang-json">{
   "label" : <em>&lt;label&gt;</em>,
   "description" : <em>&lt;description&gt;</em>,
   "roles" : [
@@ -490,8 +457,7 @@ Authorization: Bearer <em>&lt;access_token&gt;</em>
   "widgets" : [
     ...
   ]
-}
-</pre>
+}</code></pre>
 
 <dl>
   <dt>bucket_id</dt>
@@ -500,8 +466,7 @@ Authorization: Bearer <em>&lt;access_token&gt;</em>
 
 <h5>Example:</h5>
 
-<pre class="example"><span class="title">Request</span>
-curl -i -X PUT 'https://api.zenobase.com/buckets/v7jg3l5ibc' \
+<pre><code data-ui-highlight class="lang-bash">curl -i -X PUT 'https://api.zenobase.com/buckets/v7jg3l5ibc' \
   -H 'Content-Type: application/json' \
   -H 'Authorization: Bearer e7975e8bb6eabc3ef567 \  
   -d '{
@@ -511,14 +476,11 @@ curl -i -X PUT 'https://api.zenobase.com/buckets/v7jg3l5ibc' \
       { "principal" : "args4iqh2c", "role" : "owner" },
       { "principal" : "*", "role" : "viewer" }
     ]
-  }'
-</pre>
+  }'</code></pre>
 
-<pre class="example"><span class="title">Response</span>
-HTTP/1.1 204 No Content
+<pre>HTTP/1.1 204 No Content
 Content-Type: application/json
-X-Command-ID: 4o6iqmpnrr
-</pre>
+X-Command-ID: 4o6iqmpnrr</pre>
 
 </section>
 
@@ -530,8 +492,7 @@ X-Command-ID: 4o6iqmpnrr
 
 <pre>DELETE /buckets/<em>&lt;bucket_id&gt;</em>
 Host: api.zenobase.com
-Authorization: Bearer <em>&lt;access_token&gt;</em>
-</pre>
+Authorization: Bearer <em>&lt;access_token&gt;</em></pre>
 
 <dl>
   <dt>bucket_id</dt>
@@ -540,15 +501,11 @@ Authorization: Bearer <em>&lt;access_token&gt;</em>
 
 <h5>Example:</h5>
 
-<pre class="example"><span class="title">Request</span>
-curl -i -X DELETE 'https://api.zenobase.com/buckets/v7jg3l5ibc' \
-  -H 'Authorization: Bearer e7975e8bb6eabc3ef567'
-</pre>
+<pre><code data-ui-highlight class="lang-bash">curl -i -X DELETE 'https://api.zenobase.com/buckets/v7jg3l5ibc' \
+  -H 'Authorization: Bearer e7975e8bb6eabc3ef567'</code></pre>
 
-<pre class="example"><span class="title">Response</span>
-HTTP/1.1 204 No Content
-X-Command-ID: p3atfetvs2
-</pre>
+<pre>HTTP/1.1 204 No Content
+X-Command-ID: p3atfetvs2</pre>
 
 </section>
 
@@ -567,8 +524,7 @@ X-Command-ID: p3atfetvs2
 
 <pre>GET /buckets/<em>&lt;bucket_id&gt;</em><strong>/</strong>?offset=<em>&lt;offset&gt;</em>&amp;limit=<em>&lt;limit&gt;</em>&amp;order=<em>&lt;order&gt;</em>&amp;reverse=<em>&lt;reverse&gt;</em>&amp;facet=<em>&lt;facet_expression&gt;</em>&amp;q=<em>&lt;constraint_expression&gt;</em>
 Host: api.zenobase.com
-Authorization: Bearer <em>&lt;access_token&gt;</em>
-</pre>
+Authorization: Bearer <em>&lt;access_token&gt;</em></pre>
 
 <dl>
   <dt>bucket_id</dt>
@@ -591,16 +547,12 @@ Authorization: Bearer <em>&lt;access_token&gt;</em>
 
 <h5>Example:</h5>
 
-<pre class="example"><span class="title">Request</span>
-curl -i 'https://api.zenobase.com/buckets/v7jg3l5ibc/?offset=0&amp;limit=10&amp;facet=id:tags,type:count&amp;q=tag:lunch' \
-  -H 'Authorization: Bearer e7975e8bb6eabc3ef567'
-</pre>
+<pre><code data-ui-highlight class="lang-bash">curl -i 'https://api.zenobase.com/buckets/v7jg3l5ibc/?offset=0&amp;limit=10&amp;facet=id:tags,type:count&amp;q=tag:lunch' \
+  -H 'Authorization: Bearer e7975e8bb6eabc3ef567'</code></pre>
 
-<pre class="example"><span class="title">Response</span>
-HTTP/1.1 200 OK
+<pre>HTTP/1.1 200 OK
 Content-Type: application/json
-
-{
+<code data-ui-highlight class="lang-json">{
   "total" : 42,
   "events": [ 
     { 
@@ -616,8 +568,7 @@ Content-Type: application/json
     { "label" : "thai", "count" : 1 },
     ...
   ]
-}
-</pre>
+}</code></pre>
 
 </section>
 
@@ -627,8 +578,7 @@ Content-Type: application/json
 
 <pre>GET /buckets/<em>&lt;bucket_id&gt;</em>/<em>&lt;event_id&gt;</em>
 Host: api.zenobase.com
-Authorization: Bearer <em>&lt;access_token&gt;</em>
-</pre>
+Authorization: Bearer <em>&lt;access_token&gt;</em></pre>
 
 <dl>
   <dt>bucket_id</dt>
@@ -639,26 +589,21 @@ Authorization: Bearer <em>&lt;access_token&gt;</em>
 
 <h5>Example:</h5>
 
-<pre class="example"><span class="title">Request</span>
-curl -i 'https://api.zenobase.com/buckets/v7jg3l5ibc/chd6fmchgs' \
-  -H 'Authorization: Bearer e7975e8bb6eabc3ef567'
-</pre>
+<pre><code data-ui-highlight class="lang-bash">curl -i 'https://api.zenobase.com/buckets/v7jg3l5ibc/chd6fmchgs' \
+  -H 'Authorization: Bearer e7975e8bb6eabc3ef567'</code></pre>
 
-<pre class="example"><span class="title">Response</span>
-HTTP/1.1 200 OK
+<pre>HTTP/1.1 200 OK
 Content-Type:application/json
-
-{ 
+<code data-ui-highlight class="lang-json">{ 
   "timestamp" : "2012-10-24T13:10:00.000-07:00",
   "tag" : [ "lunch", "thai" ],
-  "rating" : 0,
+  "rating" : 80,
   "resource" : {
     "title" : "Tup Tim Thai",
     "url" : "https://plus.google.com/116718770873870194999"
   },
   "author" : "7ghkds6jar"
-}
-</pre>
+}</code></pre>
 
 </section>
 
@@ -670,8 +615,7 @@ Content-Type:application/json
 Content-Type: application/json
 Host: api.zenobase.com
 Authorization: Bearer <em>&lt;access_token&gt;</em>
-
-{
+<code data-ui-highlight class="lang-json">{
   <em>&lt;field&gt;</em> : <em>&lt;value&gt;</em>,
   <em>&lt;field&gt;</em> : [ <em>&lt;1st value&gt;</em>, <em>&lt;2nd value&gt;</em>, ... ],
   ...
@@ -744,8 +688,7 @@ Authorization: Bearer <em>&lt;access_token&gt;</em>
     "@value" : <em>&lt;Number&gt;</em>,
     "unit" : <em>&lt;"lb" | "oz" | "kg" | "g" | "mg"&gt;</em>    
   }
-}
-</pre>
+}</code></pre>
 
 <dl>
   <dt>bucket_id</dt>
@@ -759,8 +702,7 @@ with the current time and a +00:00 time zone offset is added, and the
 
 <h5>Example:</h5>
 
-<pre class="example"><span class="title">Request</span>
-curl -i -X POST 'https://api.zenobase.com/buckets/v7jg3l5ibc/' \
+<pre><code data-ui-highlight class="lang-bash">curl -i -X POST 'https://api.zenobase.com/buckets/v7jg3l5ibc/' \
   -H 'Content-Type: application/json' \
   -H 'Authorization: Bearer e7975e8bb6eabc3ef567' \
   -d '{
@@ -771,16 +713,13 @@ curl -i -X POST 'https://api.zenobase.com/buckets/v7jg3l5ibc/' \
       "title" : "Tup Tim Thai",
       "url" : "https://plus.google.com/116718770873870194999"
     }
-  }'
-</pre>
+  }'</code></pre>
 
-<pre class="example"><span class="title">Response</span>
-HTTP/1.1 201 Created
+<pre>HTTP/1.1 201 Created
 Content-Type:application/json
 Location: /buckets/v7jg3l5ibc/chd6fmchgs
 X-Command-ID: p3ateetvs1
-
-{ 
+<code data-ui-highlight class="lang-json">{
   "timestamp" : "2012-10-24T13:10:00.000-07:00",
   "tag" : [ "lunch", "thai" ],
   "rating" : 80,
@@ -789,8 +728,7 @@ X-Command-ID: p3ateetvs1
     "url" : "https://plus.google.com/116718770873870194999"
   },
   "author" : "7ghkds6jar"
-}
-</pre>
+}</code></pre>
 
 </section>
 
@@ -802,12 +740,10 @@ X-Command-ID: p3ateetvs1
 Content-Type: application/json
 Host: api.zenobase.com
 Authorization: Bearer <em>&lt;access_token&gt;</em>
-
-{
+<code data-ui-highlight class="lang-json">{
   <em>&lt;field&gt;</em> : <em>&lt;value&gt;</em>,
   ...
-}
-</pre>
+}</code></pre>
 
 <dl>
   <dt>bucket_id</dt>
@@ -818,25 +754,21 @@ Authorization: Bearer <em>&lt;access_token&gt;</em>
 
 <h5>Example:</h5>
 
-<pre class="example"><span class="title">Request</span>
-curl -i -X PUT 'https://api.zenobase.com/buckets/v7jg3l5ibc/chd6fmchgs' \
+<pre><code data-ui-highlight class="lang-bash">curl -i -X PUT 'https://api.zenobase.com/buckets/v7jg3l5ibc/chd6fmchgs' \
   -H 'Content-Type: application/json' \
   -H 'Authorization: Bearer e7975e8bb6eabc3ef567' \
   -d '{
     "timestamp" : "2012-10-24T13:10:00.000-07:00",
     "tag" : [ "lunch", "thai" ],
-    "rating" : 100,
+    "rating" : 80,
     "resource" : {
       "title" : "Tup Tim Thai",
       "url" : "https://plus.google.com/116718770873870194999"
     }
-  }'
-</pre>
+  }'</code></pre>
 
-<pre class="example"><span class="title">Response</span>
-HTTP/1.1 204 No Content
-X-Command-ID: p3ateetvs1
-</pre>
+<pre>HTTP/1.1 204 No Content
+X-Command-ID: p3ateetvs1</pre>
 
 </section>
 
@@ -846,8 +778,7 @@ X-Command-ID: p3ateetvs1
 
 <pre>DELETE /buckets/<em>&lt;bucket_id&gt;</em>/<em>&lt;event_id&gt;</em>
 Host: api.zenobase.com
-Authorization: Bearer <em>&lt;access_token&gt;</em>
-</pre>
+Authorization: Bearer <em>&lt;access_token&gt;</em></pre>
 
 <dl>
   <dt>bucket_id</dt>
@@ -858,15 +789,11 @@ Authorization: Bearer <em>&lt;access_token&gt;</em>
 
 <h5>Example:</h5>
 
-<pre class="example"><span class="title">Request</span>
-curl -i -X DELETE 'https://api.zenobase.com/buckets/v7jg3l5ibc/chd6fmchgs' \
-  -H 'Authorization: Bearer e7975e8bb6eabc3ef567'
-</pre>
+<pre><code data-ui-highlight class="lang-bash">curl -i -X DELETE 'https://api.zenobase.com/buckets/v7jg3l5ibc/chd6fmchgs' \
+  -H 'Authorization: Bearer e7975e8bb6eabc3ef567'</code></pre>
 
-<pre class="example"><span class="title">Response</span>
-HTTP/1.1 204 No Content
-X-Command-ID: p3ateetvs1
-</pre>
+<pre>HTTP/1.1 204 No Content
+X-Command-ID: p3ateetvs1</pre>
 
 </section>
 
@@ -884,25 +811,19 @@ X-Command-ID: p3ateetvs1
 <p>Check how many events can be added by (or on behalf of) a user each month.</p>
 
 <pre>GET /quota
-Authorization: Bearer <em>&lt;access_token&gt;</em>
-</pre>
+Authorization: Bearer <em>&lt;access_token&gt;</em></pre>
 
 <h5>Example:</h5>
 
-<pre class="example"><span class="title">Request</span>
-curl -i GET 'https://api.zenobase.com/quota \
-  -H 'Authorization: Bearer e7975e8bb6eabc3ef567'
-</pre>
+<pre><code data-ui-highlight class="lang-bash">curl -i GET 'https://api.zenobase.com/quota \
+  -H 'Authorization: Bearer e7975e8bb6eabc3ef567'</code></pre>
 
-<pre class="example"><span class="title">Response</span>
-HTTP/1.1 200 OK
+<pre>HTTP/1.1 200 OK
 Content-Type: application/json
-
-{
+<code data-ui-highlight class="lang-json">{
   "limit" : 1000,
   "remaining" : 995
-}
-</pre>
+}</code></pre>
 
 </section>
 
@@ -911,8 +832,7 @@ Content-Type: application/json
 <h3>Look up a username</h3>
 
 <pre>GET /users/<em>&lt;user_id&gt;</em>
-Authorization: Bearer <em>&lt;access_token&gt;</em>
-</pre>
+Authorization: Bearer <em>&lt;access_token&gt;</em></pre>
 
 <dl>
 <dt>user_id</dt>
@@ -921,20 +841,15 @@ Authorization: Bearer <em>&lt;access_token&gt;</em>
 
 <h5>Example:</h5>
 
-<pre class="example"><span class="title">Request</span>
-curl -i GET 'https://api.zenobase.com/users/kbuk9h0ihh' \
-  -H 'Authorization: Bearer e7975e8bb6eabc3ef567'
-</pre>
+<pre><code data-ui-highlight class="lang-bash">curl -i GET 'https://api.zenobase.com/users/kbuk9h0ihh' \
+  -H 'Authorization: Bearer e7975e8bb6eabc3ef567'</code></pre>
 
-<pre class="example"><span class="title">Response</span>
-HTTP/1.1 200 OK
+<pre>HTTP/1.1 200 OK
 Content-Type: application/json
-
-{
+<code data-ui-highlight class="lang-json">{
   "@id" : "kbuk9h0ihh",
   "name" : "zeno"
-}
-</pre>
+}</code></pre>
 
 </section>
 
@@ -1163,17 +1078,13 @@ Content-Type: application/json
 
 <h5>Example:</h5>
 
-<pre class="example"><span class="title">Request</span>
-id:xyz,type:count,field:tag
-</pre>
+<pre>id:xyz,type:count,field:tag</pre>
 
-<pre class="example"><span class="title">Response</span>
-"xyz" : [
+<pre><code data-ui-highlight class="lang-json">"xyz" : [
   { "label" : "lunch", "count" : 31 },
   { "label" : "dinner", "count" : 22 },
   { "label" : "breakfast", "count" : 19 }
-]
-</pre>
+]</code></pre>
 
 &nbsp;
 
@@ -1196,18 +1107,14 @@ id:xyz,type:count,field:tag
 
 <h5>Example:</h5>
 
-<pre class="example"><span class="title">Request</span>
-id:xyz,type:timeline,field:count,filter:tag:steps
-</pre>
+<pre>id:xyz,type:timeline,field:count,filter:tag:steps</pre>
 
-<pre class="example"><span class="title">Response</span>
-"xyz" : [
+<pre><code data-ui-highlight class="lang-json">"xyz" : [
   { "label" : "2013-01", "count" : 31, "avg" : 9832, "min" : 2559, "max" : 24600, "sum" : 304792 },
   { "label" : "2013-02", "count" : 28, "avg" : 12225.93, "min" : 4258, "max" : 19817, "sum" : 342326 },
   { "label" : "2013-03", "count" : 31, "avg" : 24134, "min" : 4512, "max" : 24134, "sum" : 317220 },
   ...
-]
-</pre>
+]</code></pre>
 
 &nbsp;
 
@@ -1224,12 +1131,9 @@ id:xyz,type:timeline,field:count,filter:tag:steps
 
 <h5>Example:</h5>
 
-<pre class="example"><span class="title">Request</span>
-id:xyz,type:stats,field:distance,unit:m
-</pre>
+<pre>id:xyz,type:stats,field:distance,unit:m</pre>
 
-<pre class="example"><span class="title">Response</span>
-"xyz" : {
+<pre><code data-ui-highlight class="lang-json">"xyz" : {
   "count" : 31,
   "min" : {
     "@value" : 2559,
@@ -1251,8 +1155,7 @@ id:xyz,type:stats,field:distance,unit:m
     "@value" : 2443,
     "unit" : "m"
   }
-}
-</pre>
+}</code></pre>
 
 &nbsp;
 
@@ -1265,17 +1168,13 @@ id:xyz,type:stats,field:distance,unit:m
 
 <h5>Example:</h5>
 
-<pre class="example"><span class="title">Request</span>
-id:xyz,type:map,factor:0.4
-</pre>
+<pre>id:xyz,type:map,factor:0.4</pre>
 
-<pre class="example"><span class="title">Response</span>
-"xyz" : [
+<pre><code data-ui-highlight class="lang-json">"xyz" : [
   { "count" : 1, "lat" : -2.8, "lon" : -40.48 },
   { "count" : 14, "lat" : 14.895, "lat_max" : 16.512, "lat_min" : -3.784, "lon" : -61.823, "lon_max" : -61.048, "lon_min" : -64.950 },
   ...
-]
-</pre>
+]</code></pre>
 
 &nbsp;
 
@@ -1288,17 +1187,13 @@ id:xyz,type:map,factor:0.4
 
 <h5>Example:</h5>
 
-<pre class="example"><span class="title">Request</span>
-id:xyz,type:heatmap,precision:4
-</pre>
+<pre>id:xyz,type:heatmap,precision:4</pre>
 
-<pre class="example"><span class="title">Response</span>
-"xyz" : [
+<pre><code data-ui-highlight class="lang-json">"xyz" : [
   { "count" : 1, "lat" : -2.8, "lon" : -40.48 },
   { "count" : 14, "lat" : 14.895, "lon" : -61.823 },
   ...
-]
-</pre>
+]</code></pre>
 
 &nbsp;
 
@@ -1313,20 +1208,16 @@ id:xyz,type:heatmap,precision:4
 
 <h5>Example:</h5>
 
-<pre class="example"><span class="title">Request</span>
-id:xyz,type:ratings
-</pre>
+<pre>id:xyz,type:ratings</pre>
 
-<pre class="example"><span class="title">Response</span>
-"xyz" : [
+<pre><code data-ui-highlight class="lang-json">"xyz" : [
   { "from" : 90, "count" : 1 },
   { "from" : 70, "to" : 90, "count" : 5 },
   { "from" : 50, "to" : 70, "count" : 17 },
   { "from" : 30, "to" : 50, "count" : 11 },
   { "from" : 10, "to" : 30, "count" : 6 },
   { "to" : 10, "count" : 4 },
-]
-</pre>
+]</code></pre>
 
 &nbsp;
 
@@ -1349,16 +1240,12 @@ id:xyz,type:ratings
 
 <h5>Example:</h5>
 
-<pre class="example"><span class="title">Request</span>
-id:xyz,type:scoreboard,key_field:author,value_field:steps
-</pre>
+<pre>id:xyz,type:scoreboard,key_field:author,value_field:steps</pre>
 
-<pre class="example"><span class="title">Response</span>
-"xyz" : [
+<pre><code data-ui-highlight class="lang-json">"xyz" : [
   { "label" : "dch4v3salm", "count" : 364, "min" : 1640, "max" : 38215, "sum" : 3899768, "avg" : 10713.65 },
   ...
-]
-</pre>
+]</code></pre>
 
 &nbsp;
 
@@ -1393,18 +1280,14 @@ id:xyz,type:scoreboard,key_field:author,value_field:steps
 
 <h5>Example:</h5>
 
-<pre class="example"><span class="title">Request</span>
-id:xyz,type:scatterplot,field_x:duration,field_y:duration,statistic:sum,interval:day,lag:1
-</pre>
+<pre>id:xyz,type:scatterplot,field_x:duration,field_y:duration,statistic:sum,interval:day,lag:1</pre>
 
-<pre class="example"><span class="title">Response</span>
-"xyz" : [
+<pre><code data-ui-highlight class="lang-json">"xyz" : [
   [ 2.826E+7, 2.592E+7 ],
   [ 2.898E+7, 2.826E+7 ],
   [ 3.126E+7, 2.898E+7 ],
   ...
-]
-</pre>
+]</code></pre>
 
 &nbsp;
 
@@ -1425,17 +1308,13 @@ id:xyz,type:scatterplot,field_x:duration,field_y:duration,statistic:sum,interval
 
 <h5>Example:</h5>
 
-<pre class="example"><span class="title">Request</span>
-id:xyz,type:gantt,field:tag,order:max,timezone:-08:00
-</pre>
+<pre>id:xyz,type:gantt,field:tag,order:max,timezone:-08:00</pre>
 
-<pre class="example"><span class="title">Response</span>
-"xyz" : [
+<pre><code data-ui-highlight class="lang-json">"xyz" : [
   { "label" : "dinner", "count" : 22, "first" : "2013-01-01T18:23:00.000-08:00", "last":"2013-11-07T19:45:00.000-08:00" },
   { "label" : "lunch", "count" : 31, "first" : "2013-01-01T13:23:00.000-08:00", "last":"2013-11-07T12:05:00.000-08:00" },
   ...
-]
-</pre>
+]</code></pre>
 
 &nbsp;
 
@@ -1454,17 +1333,13 @@ id:xyz,type:gantt,field:tag,order:max,timezone:-08:00
 
 <h5>Example:</h5>
 
-<pre class="example"><span class="title">Request</span>
-id:xyz,type:histogram,field:distance,unit:mi,interval:5
-</pre>
+<pre>id:xyz,type:histogram,field:distance,unit:mi,interval:5</pre>
 
-<pre class="example"><span class="title">Response</span>
-"xyz" : [
+<pre><code data-ui-highlight class="lang-json">"xyz" : [
   { "count" : 1, "from" : { "@value" : 35, "unit" : "mi" }, "to" : { "@value" : 4E+1, "unit" : "mi" }},
   { "count" : 7, "from" : { "@value" : 15, "unit" : "mi" }, "to" : { "@value" : 2E+1, "unit" : "mi" }},
   ...
-]
-</pre>
+]</code></pre>
 
 &nbsp;
 
@@ -1487,18 +1362,14 @@ id:xyz,type:histogram,field:distance,unit:mi,interval:5
 
 <h5>Example:</h5>
 
-<pre class="example"><span class="title">Request</span>
-id:xyz,type:polar,interval:day_of_week
-</pre>
+<pre>id:xyz,type:polar,interval:day_of_week</pre>
 
-<pre class="example"><span class="title">Response</span>
-"xyz" : [
+<pre><code data-ui-highlight class="lang-json">"xyz" : [
   { "value" : 1, "label" : "Mon", "count" : 26 },
   { "value" : 2, "label" : "Tue", "count" : 14 },
   { "value" : 3, "label" : "Wed", "count" : 10 },
   ...
-]
-</pre>
+]</code></pre>
 
 </section>
 
@@ -1535,10 +1406,9 @@ id:xyz,type:polar,interval:day_of_week
 
 <p>The response may contain a body with a description of the problem:</p>
 
-<pre>{
+<pre><code data-ui-highlight class="lang-json">{
   "message" : <em>&lt;String&gt;</em>
-}
-</pre>
+}</code></pre>
 
 </section>
 
