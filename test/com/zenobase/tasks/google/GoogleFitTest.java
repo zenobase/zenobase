@@ -21,7 +21,6 @@ public class GoogleFitTest extends TaskTestSupport {
 		print(manager.execute(task, getCredentials()).toJson());
 	}
 
-	@Test
 	public void testWeight() {
 		OAuthTaskManager manager = new GoogleFitWeightTaskManager(newCredentialsManager());
 		ObjectNode settings = Nodes.newObject()
@@ -29,6 +28,17 @@ public class GoogleFitTest extends TaskTestSupport {
 			.put("timezone", "America/Los_Angeles")
 			.put("metric", true)
 			.put("tag", "foo");
+		Task task = manager.newTask(bucketId, principal, settings);
+		print(manager.execute(task, getCredentials()).toJson());
+	}
+
+	@Test
+	public void testCardio() {
+		OAuthTaskManager manager = new GoogleFitCardioTaskManager(newCredentialsManager());
+		ObjectNode settings = Nodes.newObject()
+			.put("marker", "2014-10-31")
+			.put("timezone", "America/Los_Angeles")
+			.put("tag", "bar");
 		Task task = manager.newTask(bucketId, principal, settings);
 		print(manager.execute(task, getCredentials()).toJson());
 	}

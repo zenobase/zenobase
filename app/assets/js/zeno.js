@@ -4672,6 +4672,7 @@
 			{ id : 'forecast', description : 'Adds weather conditions and moon phase to existing events that have a location.' },
 			{ id : 'foursquare', description : 'Creates an event for each place visited.', url : 'https://foursquare.com/' },
 			{ id : 'google-activities', description : 'Creates an event for each activity.', url : 'http://fit.google.com/' },
+			{ id : 'google-cardio', description : 'Creates an event for each heart rate measurement.', url : 'http://fit.google.com/' },
 			{ id : 'google-weight', description : 'Creates an event for each body weight measurement.', url : 'http://fit.google.com/' },
 			{ id : 'jawbone-food', description : 'Creates an event for each meal.', url : 'https://jawbone.com/up' },
 			{ id : 'jawbone-sleep', description : 'Creates an event for each period of sleep.', url : 'https://jawbone.com/up' },
@@ -5200,6 +5201,30 @@
 			$scope.settings = $scope.$parent.$parent.settings = {
 					derived : false,
 					metric : true,
+					marker : new Date(moment().utc().subtract(12, 'months').startOf('month').valueOf()),
+					timezone : 'UTC'
+			};
+			$http.get('/tz').success(function(response) {
+				$scope.timezones = response;
+				if (navigator.geolocation) {
+					navigator.geolocation.getCurrentPosition(function(position) {
+						$http.get('/tz?' + $.param({ 'lat' : position.coords.latitude, 'lon' : position.coords.longitude }))
+							.success(function(response) {
+								$scope.settings.timezone = response.timeZoneId;
+							});
+					});
+				}
+			});
+		};
+
+		$scope.init();
+	}]);
+
+	app.controller('GoogleFitCardioSettingsController', ['$scope', '$http', 'moment', function($scope, $http, moment) {
+
+		$scope.init = function() {
+			$scope.settings = $scope.$parent.$parent.settings = {
+					tag : 'Heart Rate',
 					marker : new Date(moment().utc().subtract(12, 'months').startOf('month').valueOf()),
 					timezone : 'UTC'
 			};

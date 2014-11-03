@@ -777,6 +777,23 @@
 		</div>
 	</script>
 
+	<script id="/google-cardio-settings.html" type="text/ng-template">
+		<div data-ng-controller="GoogleFitCardioSettingsController">
+			<div class="control-group">
+				<label for="timezone" class="control-label">Timezone</label>
+				<select name="timezone" data-ng-model="settings.timezone" data-ng-options="timezone for timezone in timezones" required></select>
+			</div>
+			<div class="control-group">
+				<label for="tag" class="control-label">Tag</label>
+				<input name="tag" type="text" required data-ng-model="settings.tag"/>
+			</div>
+			<div class="control-group">
+				<label for="marker" class="control-label">Starting from</label>
+				<input class="input-small" type="text" data-ui-datepicker data-ng-model="settings.marker"/>
+			</div>
+		</div>
+	</script>
+
 	<script id="/google-weight-settings.html" type="text/ng-template">
 		<div data-ng-controller="GoogleFitWeightSettingsController">
 			<div class="control-group">

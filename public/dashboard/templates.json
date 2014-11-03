@@ -660,6 +660,50 @@
 		]
 	},
 	{
+		"label" : "Heart Rate (Google Fit)",
+		"task" : "google-cardio", 
+		"widgets" : [
+			{
+				"id" : "timeline",
+				"type" : "timeline",
+				"label" : "Heart Rate (bpm)",
+				"placement" : "top",
+				"field" : "frequency",
+				"statistic" : "avg",
+				"unit" : "bpm"
+			},
+			{
+				"id" : "latest",
+				"type" : "list",
+				"label" : "Latest",
+				"placement" : "left",
+				"singleton" : true,
+				"limit" : 10,
+				"order" : "timestamp",
+				"reverse" : false
+			},
+			{
+				"id" : "histogram",
+				"type" : "histogram",
+				"label" : "Histogram",
+				"placement" : "right",
+				"field" : "frequency",
+				"unit" : "bpm",
+				"interval" : 5
+			},
+			{
+				"id" : "hour_of_day",
+				"type" : "polar",
+				"label" : "Hour of Day",
+				"placement" : "right",
+				"value_field" : "frequency",
+				"unit" : "bpm",
+				"statistic" : "avg",
+				"interval" : "hour_of_day"
+			}
+		]
+	},
+	{
 		"label" : "Heart Rate (Withings)",
 		"task" : "withings-cardio", 
 		"widgets" : [

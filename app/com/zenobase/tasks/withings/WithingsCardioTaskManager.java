@@ -33,7 +33,7 @@ public class WithingsCardioTaskManager extends OAuthTaskManager {
 	public WithingsCardioTask newTask(String bucketId, Identity principal, ObjectNode settings) {
 		DateTimeZone timezone = DateTimeZone.forID(Objects.firstNonNull(settings.path("timezone").textValue(), "UTC"));
 		String marker = parseMarker(settings.path("marker").textValue(), timezone);
-		String tag = Objects.firstNonNull(settings.path("tag").textValue(), "body");
+		String tag = Objects.firstNonNull(settings.path("tag").textValue(), "heart rate");
 		WithingsCardioTask task = new WithingsCardioTask(bucketId, principal, marker);
 		task.setTag(tag);
 		task.setTimezone(timezone);
