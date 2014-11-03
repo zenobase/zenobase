@@ -51,14 +51,14 @@ abstract class GoogleFitTaskManagerSupport<T extends GoogleFitTaskSupport> exten
 		}
 
 		Map<String, DataStream> streams = getDataStreams(credentials);
-		/*for (DataStream stream : streams.values()) {
-			if (stream.getId().contains("xxx")) {
+		for (DataStream stream : streams.values()) {
+			if (stream.getId().contains("weight")) {
 				System.err.println("[" + stream.getId() + "]");
-				for (DataPoint dataPoint : getDataPoints(task, credentials, stream)) {
+				for (DataPoint dataPoint : getDataPoints(task.as(taskClass), credentials, stream)) {
 					System.err.println(dataPoint);
 				}
 			}
-		}*/
+		}
 
 		List<Event> events = createEvents(task.as(taskClass), credentials, streams);
 
@@ -96,11 +96,16 @@ abstract class GoogleFitTaskManagerSupport<T extends GoogleFitTaskSupport> exten
 		return Range.closed(Ordering.natural().min(values), Ordering.natural().max(values));
 	}
 
-	protected Iterable<DataStream> filter(Iterable<DataStream> streams, final String dataType) {
+	protected Iterable<DataStream> filter(Iterable<DataStream> streams, final String... dataTypes) {
 		return Iterables.filter(streams, new Predicate<DataStream>() {
 			@Override
 			public boolean apply(DataStream stream) {
-				return dataType.equals(stream.getDataType());
+				for (String dataType : dataTypes) {
+					if (dataType.equals(stream.getDataType())) {
+						return true;
+					}
+				}
+				return false;
 			}
 		});
 	}

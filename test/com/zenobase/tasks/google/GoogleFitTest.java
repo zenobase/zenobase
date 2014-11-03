@@ -21,6 +21,7 @@ public class GoogleFitTest extends TaskTestSupport {
 		print(manager.execute(task, getCredentials()).toJson());
 	}
 
+	@Test
 	public void testWeight() {
 		OAuthTaskManager manager = new GoogleFitWeightTaskManager(newCredentialsManager());
 		ObjectNode settings = Nodes.newObject()
@@ -32,7 +33,6 @@ public class GoogleFitTest extends TaskTestSupport {
 		print(manager.execute(task, getCredentials()).toJson());
 	}
 
-	@Test
 	public void testCardio() {
 		OAuthTaskManager manager = new GoogleFitCardioTaskManager(newCredentialsManager());
 		ObjectNode settings = Nodes.newObject()

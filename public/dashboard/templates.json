@@ -668,6 +668,7 @@
 				"type" : "timeline",
 				"label" : "Heart Rate (bpm)",
 				"placement" : "top",
+				"key_field" : "timestamp$min",
 				"field" : "frequency",
 				"statistic" : "avg",
 				"unit" : "bpm"
@@ -696,6 +697,7 @@
 				"type" : "polar",
 				"label" : "Hour of Day",
 				"placement" : "right",
+				"key_field" : "timestamp$min",
 				"value_field" : "frequency",
 				"unit" : "bpm",
 				"statistic" : "avg",

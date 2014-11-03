@@ -36,11 +36,15 @@ public class GoogleFitCardioTaskManager extends GoogleFitTaskManagerSupport<Goog
 	@Override
 	protected List<Event> createEvents(GoogleFitCardioTask task, OAuthCredentials credentials, Map<String, DataStream> streams) {
 		List<Event> events = Lists.newArrayList();
-		for (DataStream stream : filter(streams.values(), "com.google.heart_rate.bpm")) {
+		for (DataStream stream : filter(streams.values(), "com.google.heart_rate.bpm", "com.google.heart_rate.summary")) {
 			for (DataPoint point : getDataPoints(task, credentials, stream)) {
 				Event event = new Event();
 				event.addValue(Event.TAG, task.getTag());
 				event.setValue(Event.TIMESTAMP, point.getBegin());
+				if (point.isRange()) {
+					event.addValue(Event.TIMESTAMP, point.getEnd());
+					event.setValue(Event.DURATION, point.getDuration());
+				}
 				event.setValue(Event.FREQUENCY, Measures.valueOf(point.getValue(0), Units.BPM));
 				event.setValue(Event.AUTHOR, task.getPrincipal());
 				event.setValue(Event.SOURCE, stream.getSource());

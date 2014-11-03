@@ -40,7 +40,8 @@ public class GoogleFitWeightTaskManager extends GoogleFitTaskManagerSupport<Goog
 	@Override
 	protected List<Event> createEvents(GoogleFitWeightTask task, OAuthCredentials credentials, Map<String, DataStream> streams) {
 		List<Event> events = Lists.newArrayList();
-		for (DataStream stream : filter(streams.values(), "com.google.weight")) {
+		DataStream stream = streams.get("derived:com.google.weight:com.google.android.gms:merge_weight");
+		if (stream != null) {
 			for (DataPoint point : getDataPoints(task, credentials, stream)) {
 				Event event = new Event();
 				event.addValue(Event.TAG, task.getTag());
@@ -49,7 +50,10 @@ public class GoogleFitWeightTaskManager extends GoogleFitTaskManagerSupport<Goog
 				BigDecimal value = Measures.convert(point.getValue(0).doubleValue(), unit);
 				event.setValue(Event.WEIGHT, Measures.valueOf(value, unit));
 				event.setValue(Event.AUTHOR, task.getPrincipal());
-				event.setValue(Event.SOURCE, stream.getSource());
+				DataStream origin = streams.get(point.getOrigin());
+				if (origin != null) {
+					event.setValue(Event.SOURCE, origin.getSource());
+				}
 				events.add(event);
 			}
 		}
