@@ -60,7 +60,7 @@ public class PaymentGateway {
 		CreditCard creditCard = payment.hasCreditCard() ? newCreditCard(customer.getId(), payment) : getCreditCard(customer);
 		Preconditions.checkArgument(creditCard != null, "Expected a card for <%s>", customer.getId());
 		SubscriptionRequest request = new SubscriptionRequest().paymentMethodToken(creditCard.getToken());
-		if (subscription != null && subscription.getStatus() != Subscription.Status.PAST_DUE) {
+		if (subscription == null || subscription.getStatus() != Subscription.Status.PAST_DUE) {
 			request = request.planId(plan.getId()).price(payment.getPrice());
 		}
 		Result<Subscription> result = subscription != null
