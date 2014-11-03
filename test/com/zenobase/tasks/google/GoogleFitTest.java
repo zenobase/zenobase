@@ -10,14 +10,25 @@ import com.zenobase.tasks.TaskTestSupport;
 
 public class GoogleFitTest extends TaskTestSupport {
 
-	@Test
-	public void test() {
-		OAuthTaskManager manager = new GoogleFitTaskManager(newCredentialsManager());
+	public void testActivities() {
+		OAuthTaskManager manager = new GoogleFitActivitiesTaskManager(newCredentialsManager());
 		ObjectNode settings = Nodes.newObject()
 			.put("marker", "2014-10-31")
 			.put("timezone", "America/Los_Angeles")
 			.put("metric", true)
 			.put("derived", true);
+		Task task = manager.newTask(bucketId, principal, settings);
+		print(manager.execute(task, getCredentials()).toJson());
+	}
+
+	@Test
+	public void testWeight() {
+		OAuthTaskManager manager = new GoogleFitWeightTaskManager(newCredentialsManager());
+		ObjectNode settings = Nodes.newObject()
+			.put("marker", "2014-10-31")
+			.put("timezone", "America/Los_Angeles")
+			.put("metric", true)
+			.put("tag", "foo");
 		Task task = manager.newTask(bucketId, principal, settings);
 		print(manager.execute(task, getCredentials()).toJson());
 	}

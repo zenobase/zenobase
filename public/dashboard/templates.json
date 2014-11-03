@@ -1873,6 +1873,43 @@
 		]
 	},
 	{
+		"label" : "Weight (Google Fit)",
+		"task" : "google-weight", 
+		"widgets" : [
+			{
+				"id" : "latest",
+				"type" : "list",
+				"label" : "Latest",
+				"placement" : "left",
+				"singleton" : true,
+				"limit" : 10,
+				"order" : "timestamp",
+				"reverse" : false
+			},
+			{
+				"id" : "weight",
+				"type" : "timeline",
+				"label" : "Weight",
+				"placement" : "right",
+				"field" : "weight",
+				"statistic" : "avg",
+				"interval" : "week",
+				"unit" : "kg",
+				"regression" : "linear"
+			},
+			{
+				"id" : "polar",
+				"type" : "polar",
+				"label" : "Months",
+				"placement" : "right",
+				"value_field" : "weight",
+				"unit" : "kg",
+				"statistic" : "avg",
+				"interval" : "month_of_year"
+			}
+		]
+	},
+	{
 		"label" : "Weight (Withings)",
 		"task" : "withings-weight", 
 		"widgets" : [
