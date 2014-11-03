@@ -19,7 +19,7 @@ public class DatasetResultTest extends ResultTestSupport {
 	@Test
 	public void test() {
 
-		DatasetResult result = new DatasetResult(readObject("DatasetResultTest.json"), TIMEZONE, dateTime("2014-10-29T00:17:46.474-07:00"));
+		DatasetResult result = new DatasetResult(readObject("DatasetResultTest.json"), TIMEZONE);
 		List<DataPoint> points = result.getDataPoints();
 		assertThat(points).hasSize(2);
 

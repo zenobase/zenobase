@@ -12,11 +12,8 @@ import com.google.common.base.Preconditions;
 
 public class DatasetResult extends GoogleFitResultSupport {
 
-	private final DateTime marker;
-
-	public DatasetResult(JsonNode node, DateTimeZone zone, DateTime marker) {
+	public DatasetResult(JsonNode node, DateTimeZone zone) {
 		super(node, zone);
-		this.marker = marker;
 	}
 
 	public List<DataPoint> getDataPoints() {
@@ -29,13 +26,11 @@ public class DatasetResult extends GoogleFitResultSupport {
 
 	private void addDataPoint(JsonNode node, List<DataPoint> dataPoints) {
 		DateTime begin = dateTimeValue(node.path("startTimeNanos"));
-		if (begin.isAfter(marker)) {
-			DateTime end = dateTimeValue(node.path("endTimeNanos"));
-			String dataType = node.path("dataTypeName").textValue();
-			String origin = node.path("originDataSourceId").textValue();
-			BigDecimal[] values = decimalValues(node.path("value"));
-			dataPoints.add(new DataPoint(begin, end, dataType, origin, values));
-		}
+		DateTime end = dateTimeValue(node.path("endTimeNanos"));
+		String dataType = node.path("dataTypeName").textValue();
+		String origin = node.path("originDataSourceId").textValue();
+		BigDecimal[] values = decimalValues(node.path("value"));
+		dataPoints.add(new DataPoint(begin, end, dataType, origin, values));
 	}
 
 	@Override

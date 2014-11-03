@@ -167,7 +167,7 @@ public class GoogleFitTaskManager extends OAuthTaskManager {
 		OAuthRequest request = new OAuthRequest(Verb.GET, String.format("https://www.googleapis.com/fitness/v1/users/me/dataSources/%s/datasets/%d-%d",
 			UrlEscapers.urlPathSegmentEscaper().escape(stream.getId()), begin.getMillis() * 1000000, end.getMillis() * 1000000));
 		Response response = send(request, credentials);
-		return new DatasetResult(parseObject(response), task.getTimezone(), begin).getDataPoints();
+		return new DatasetResult(parseObject(response), task.getTimezone()).getDataPoints();
 	}
 
 	private void addLocation(GoogleFitTask task, OAuthCredentials credentials, DataStream stream, List<Event> events) {

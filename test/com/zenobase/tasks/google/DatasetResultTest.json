@@ -4,18 +4,6 @@
     "dataSourceId": "derived:com.google.step_count.delta:com.google.android.gms:merge_step_deltas",
     "point": [
         {
-            "startTimeNanos": "1414567066474459143",
-            "endTimeNanos": "1414567242474467335",
-            "dataTypeName": "com.google.step_count.delta",
-            "originDataSourceId": "derived:com.google.step_count.cumulative:com.google.android.gms:LGE:Nexus 4:3c9c8cdb:soft_step_counter",
-            "value": [
-                {
-                    "intVal": 88
-                }
-            ],
-            "modifiedTimeMillis": "1414607615986"
-        },
-        {
             "startTimeNanos": "1414600305945997952",
             "endTimeNanos": "1414600365946000000",
             "dataTypeName": "com.google.step_count.delta",
