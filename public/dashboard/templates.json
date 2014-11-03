@@ -39,7 +39,7 @@
 			{
 				"id" : "timeline",
 				"type" : "timeline",
-				"label" : "Timeline",
+				"label" : "Distance (mi)",
 				"placement" : "top",
 				"field" : "distance",
 				"unit" : "mi",
@@ -94,7 +94,7 @@
 			{
 				"id" : "timeline",
 				"type" : "timeline",
-				"label" : "Timeline",
+				"label" : "Distance (mi)",
 				"placement" : "top",
 				"key_field" : "timestamp$min",
 				"field" : "distance",
@@ -157,10 +157,10 @@
 			{
 				"id" : "timeline",
 				"type" : "timeline",
-				"label" : "Timeline",
+				"label" : "Distance (mi)",
 				"placement" : "top",
 				"field" : "distance",
-				"unit" : "km",
+				"unit" : "mi",
 				"statistic" : "sum",
 				"interval" : "month"
 			},
@@ -212,10 +212,10 @@
 			{
 				"id" : "timeline",
 				"type" : "timeline",
-				"label" : "Timeline",
+				"label" : "Distance (mi)",
 				"placement" : "top",
 				"field" : "distance",
-				"unit" : "km",
+				"unit" : "mi",
 				"statistic" : "sum",
 				"interval" : "month"
 			},
@@ -273,10 +273,10 @@
 			{
 				"id" : "timeline",
 				"type" : "timeline",
-				"label" : "Timeline",
+				"label" : "Distance (mi)",
 				"placement" : "top",
 				"field" : "distance",
-				"unit" : "km",
+				"unit" : "mi",
 				"statistic" : "sum",
 				"interval" : "month"
 			},
@@ -334,7 +334,7 @@
 			{
 				"id" : "timeline",
 				"type" : "timeline",
-				"label" : "Timeline",
+				"label" : "Distance (mi)",
 				"placement" : "top",
 				"field" : "distance",
 				"unit" : "mi",
@@ -395,7 +395,7 @@
 			{
 				"id" : "timeline_kcal",
 				"type" : "timeline",
-				"label" : "Timeline",
+				"label" : "Burn (kcal)",
 				"placement" : "top",
 				"field" : "energy",
 				"unit" : "kcal",
