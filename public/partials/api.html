@@ -1,86 +1,45 @@
 <div id="api" class="container-fluid">
 
-<h1>Zenobase API</h1>
+<h1>API</h1>
 
-<div class="alert alert-block">
-<p>If you are using this API in an application, 
-please <a href="mailto:info@zenobase.com?subject=Zenobase+API">drop us a note</a> so we can keep you informed of changes.</p>
-<p>For a complete example that shows how to authenticate with and post data to Zenobase, look at <a href="https://github.com/zenobase/zenobase-cardio">this Android app</a>.</p>
-</div>
+<p class="lead">Zenobase has an open API that developers can use to create custom integrations with 3rd party data sources, 
+or access and update data on behalf of users. For a complete example that shows how to authenticate with and post data to Zenobase, 
+<a href="https://github.com/zenobase/zenobase-cardio">look at this Android app</a>, 
+or <a href="http://blog.zenobase.com/tagged/api">find additional tips and examples on our blog</a>.</p>
 
 <section id="api-auth">
 
 <h3>Changelog</h3>
 
+<p>Following is a list of recent changes. If you are using this API in an application, 
+please <a href="mailto:info@zenobase.com?subject=Zenobase+API">drop us a note</a> 
+so we can let you know about upcoming changes.</p>
+
 <dl>
-	<dt>2014-10-07</dt>
-	<dd>
-		<ul>
-			<li>ranges with partial timestamps: <code>(2010..*)</code> now excludes all of 2010, while <code>(*..2010]</code> includes all of 2010</li>
-		</ul>
-	</dd>
-	<dt>2014-10-06</dt>
-	<dd>
-		<ul>
-			<li>$min/$max pseudo-fields for handling events with multiple timestamps</li>
-		</ul>
-	</dd>
-	<dt>2014-05-02</dt>
-	<dd>
-		<ul>
-			<li>expires_in set for password grants</li>
-		</ul>
-	</dd>
-	<dt>2014-04-28</dt>
-	<dd>
-		<ul>
-			<li>rpm unit</li>
-		</ul>
-	</dd>
-	<dt>2014-03-28</dt>
-	<dd>
-		<ul>
-			<li>heatmap facet</li>
-		</ul>
-	</dd>
-	<dt>2014-03-26</dt>
-	<dd>
-		<ul>
-			<li>humidity, moon and percentage fields</li>
-		</ul>
-	</dd>
-	<dt>2013-12-25</dt>
-	<dd>
-		<ul>
-			<li>scatterplot facet uses local time when no timezone is specified</li>
-		</ul>
-	</dd>
-	<dt>2013-12-16</dt>
-	<dd>
-		<ul>
-			<li>timestamp constraints support week numbers</li>
-		</ul>
-	</dd>
-	<dt>2013-12-10</dt>
-	<dd>
-		<ul>
-			<li>stats facet</li>
-		</ul>
-	</dd>
-	<dt>2013-11-11</dt>
-	<dd>
-		<ul>
-			<li>path for looking up user names changed to <code>/users/<em>&lt;user_id&gt;</em></code></li>
-			<li>path for finding a user's buckets changed to <code>/users/<em>&lt;user_id&gt;</em>/buckets/</code></li>
-		</ul>
-	</dd>
-	<dt>2013-10-23</dt>
-	<dd>
-		<ul>
-			<li>timestamp constraints can be based on the timestamp's local time</li>
-			<li>timezone parameter for the timeline widget is optional</li>
-		</ul>
-	</dd>
+	<dt>October 7, 2014</dt>
+	<dd>Fixed ranges with partial timestamps: <code>(2010..*)</code> now excludes all of 2010, while <code>(*..2010]</code> includes all of 2010.</dd>
+	<dt>October 6, 2014</dt>
+	<dd>Added two computed fields, <code>timestamp$min</code> and <code>timestamp$max</code>, to better handle events with multiple timestamps.</dd>
+	<dt>May 2, 2014</dt>
+	<dd>Password grants now include an explicit expires_in.</dd>
+	<dt>April 28, 2014</dt>
+	<dd>Added a new frequency unit, "rpm".</dd>
+	<dt>March 28, 2014</dt>
+	<dd>Added a new facet, "heatmap".</dd>
+	<dt>March 26, 2014</dt>
+	<dd>Added fields for humidity, moon phase and percentages.</dd>
+	<dt>December 25, 2013</dt>
+	<dd>The scatterplot facet now uses timestamps' local times when no timezone is specified.</dd>
+	<dt>December 16, 2013</dt>
+	<dd>Timestamp constraints now support week numbers.</dd>
+	<dt>December 10, 2013</dt>
+	<dd>Added a new facet, "stats".</dd>
+	<dt>November 11, 2013</dt>
+	<dd>Changed the path for looking up user names to <code>/users/<em>&lt;user_id&gt;</em></code>.<br/>
+		Changed the path for finding a user's buckets to <code>/users/<em>&lt;user_id&gt;</em>/buckets/</code></dd>
+	<dt>October 23, 2013</dt>
+	<dd>Timestamp constraints can now be based on the timestamp's local time.<br/>
+		The timezone parameter for the timeline widget is now optional.</dd>
 </dl>
 
 &nbsp;
@@ -88,6 +47,7 @@ please <a href="mailto:info@zenobase.com?subject=Zenobase+API">drop us a note</a
 </section>
 
 <div class="well">
+	<h3>Overview</h3>
 	<div class="row-fluid">
 		<div class="span3">
 			<ul class="nav nav-list">
