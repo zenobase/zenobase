@@ -91,14 +91,15 @@ public class GoogleFitTaskManager extends OAuthTaskManager {
 			? createEventsFromActivities(task, credentials, streams)
 			: createEventsFromSessions(task, credentials);
 
-		addLocation(task, credentials, streams.get("derived:com.google.location.sample:com.google.android.gms:merge_location_samples"), events);
-		addDistance(task, credentials, streams.get("derived:com.google.distance.delta:com.google.android.gms:pruned_distance"), events);
-		addCount(task, credentials, streams.get("derived:com.google.step_count.delta:com.google.android.gms:merge_step_deltas"), events);
-		addVelocity(task, credentials, filter(streams.values(), "com.google.speed.summary"), events);
-		addEnergy(task, credentials, filter(streams.values(), "com.google.calories.expended"), events);
-		addFrequency(task, credentials, filter(streams.values(), "com.google.heart_rate.summary"), events);
-
-		setDefaultSource(events);
+		if (!events.isEmpty()) {
+			addLocation(task, credentials, streams.get("derived:com.google.location.sample:com.google.android.gms:merge_location_samples"), events);
+			addDistance(task, credentials, streams.get("derived:com.google.distance.delta:com.google.android.gms:pruned_distance"), events);
+			addCount(task, credentials, streams.get("derived:com.google.step_count.delta:com.google.android.gms:merge_step_deltas"), events);
+			addVelocity(task, credentials, filter(streams.values(), "com.google.speed.summary"), events);
+			addEnergy(task, credentials, filter(streams.values(), "com.google.calories.expended"), events);
+			addFrequency(task, credentials, filter(streams.values(), "com.google.heart_rate.summary"), events);
+			setDefaultSource(events);
+		}
 
 		return createCommand(task, credentials, events, token);
 	}
@@ -162,7 +163,7 @@ public class GoogleFitTaskManager extends OAuthTaskManager {
 
 	private List<DataPoint> getDataPoints(GoogleFitTask task, OAuthCredentials credentials, DataStream stream) {
 		DateTime begin = task.getFrom();
-		DateTime end = DateTime.now();
+		DateTime end = DateTime.now().minusHours(1);
 		OAuthRequest request = new OAuthRequest(Verb.GET, String.format("https://www.googleapis.com/fitness/v1/users/me/dataSources/%s/datasets/%d-%d",
 			UrlEscapers.urlPathSegmentEscaper().escape(stream.getId()), begin.getMillis() * 1000000, end.getMillis() * 1000000));
 		Response response = send(request, credentials);
