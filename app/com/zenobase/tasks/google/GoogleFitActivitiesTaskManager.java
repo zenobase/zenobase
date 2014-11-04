@@ -1,6 +1,7 @@
 package com.zenobase.tasks.google;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -56,6 +57,7 @@ public class GoogleFitActivitiesTaskManager extends GoogleFitTaskManagerSupport<
 
 		if (!events.isEmpty()) {
 			addLocation(task, credentials, streams.get("derived:com.google.location.sample:com.google.android.gms:merge_location_samples"), events);
+			addDistance(task, credentials, filter(streams.values(), "com.google.distance.cumulative"), events);
 			addDistance(task, credentials, streams.get("derived:com.google.distance.delta:com.google.android.gms:pruned_distance"), events);
 			addCount(task, credentials, streams.get("derived:com.google.step_count.delta:com.google.android.gms:merge_step_deltas"), events);
 			addVelocity(task, credentials, filter(streams.values(), "com.google.speed.summary"), events);
@@ -137,6 +139,28 @@ public class GoogleFitActivitiesTaskManager extends GoogleFitTaskManagerSupport<
 		}
 	}
 
+	private void addDistance(GoogleFitActivitiesTask task, OAuthCredentials credentials, Iterable<DataStream> streams, List<Event> events) {
+		RangeMap<DateTime, BigDecimal> values = TreeRangeMap.create();
+		for (DataStream stream : streams) {
+			for (DataPoint point : getDataPoints(task, credentials, stream)) {
+				BigDecimal value = point.getValue(0);
+				if (value.compareTo(BigDecimal.ZERO) > 0) {
+					values.put(Range.closed(point.getBegin(), point.getEnd()), value);
+				}
+			}
+		}
+		if (!values.asMapOfRanges().isEmpty()) {
+			for (Event event : events) {
+				Range<DateTime> range = getRange(event);
+				BigDecimal value = values.asMapOfRanges().get(range);
+				if (value != null) {
+					Unit<Length> unit = task.isMetric() ? Units.KM : Units.MI;
+					event.setValue(Event.DISTANCE, Measures.valueOf(Measures.convert(value.doubleValue(), unit), unit));
+				}
+			}
+		}
+	}
+
 	private void addDistance(GoogleFitActivitiesTask task, OAuthCredentials credentials, DataStream stream, List<Event> events) {
 		if (stream != null) {
 			RangeMap<DateTime, BigDecimal> values = TreeRangeMap.create();
@@ -148,11 +172,13 @@ public class GoogleFitActivitiesTaskManager extends GoogleFitTaskManagerSupport<
 				}
 			}
 			for (Event event : events) {
-				Range<DateTime> range = getRange(event);
-				double sum = sum(values.subRangeMap(range).asMapOfRanges().values());
-				if (sum > 0.0) {
-					Unit<Length> unit = task.isMetric() ? Units.KM : Units.MI;
-					event.setValue(Event.DISTANCE, Measures.valueOf(Measures.convert(sum, unit), unit));
+				if (!events.contains(Event.DISTANCE)) {
+					Range<DateTime> range = getRange(event);
+					double sum = sum(values.subRangeMap(range).asMapOfRanges().values());
+					if (sum > 0.0) {
+						Unit<Length> unit = task.isMetric() ? Units.KM : Units.MI;
+						event.setValue(Event.DISTANCE, Measures.valueOf(Measures.convert(sum, unit), unit));
+					}
 				}
 			}
 		}
@@ -233,7 +259,7 @@ public class GoogleFitActivitiesTaskManager extends GoogleFitTaskManagerSupport<
 				Range<DateTime> range = getRange(event);
 				BigDecimal value = values.asMapOfRanges().get(range);
 				if (value != null) {
-					event.setValue(Event.ENERGY, Measures.valueOf(value, Units.KCAL));
+					event.setValue(Event.ENERGY, Measures.valueOf(value.setScale(0, RoundingMode.HALF_UP), Units.KCAL));
 				}
 			}
 		}

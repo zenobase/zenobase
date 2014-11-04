@@ -84,7 +84,7 @@ abstract class GoogleFitTaskManagerSupport<T extends GoogleFitTaskSupport> exten
 
 	protected List<DataPoint> getDataPoints(GoogleFitTaskSupport task, OAuthCredentials credentials, DataStream stream) {
 		DateTime begin = task.getFrom();
-		DateTime end = DateTime.now().minusHours(1);
+		DateTime end = DateTime.now();
 		OAuthRequest request = new OAuthRequest(Verb.GET, String.format("https://www.googleapis.com/fitness/v1/users/me/dataSources/%s/datasets/%d-%d",
 			UrlEscapers.urlPathSegmentEscaper().escape(stream.getId()), begin.getMillis() * 1000000, end.getMillis() * 1000000));
 		Response response = send(request, credentials);
@@ -144,7 +144,7 @@ abstract class GoogleFitTaskManagerSupport<T extends GoogleFitTaskSupport> exten
 		for (Event event : events) {
 			DateTime end = Ordering.natural().max(event.getValues(Event.TIMESTAMP));
 			if (latest == null || end.isAfter(latest)) {
-				latest = end;
+				latest = end.plusMillis(1);
 			}
 		}
 		return latest != null ? latest.toString() : null;

@@ -12,10 +12,10 @@ public class GoogleFitTest extends TaskTestSupport {
 	@Ignore
 	public void testActivities() {
 		run(new GoogleFitActivitiesTaskManager(newCredentialsManager()), Nodes.newObject()
-			.put("marker", "2014-10-31")
+			.put("marker", "2014-11-03")
 			.put("timezone", "America/Los_Angeles")
 			.put("metric", true)
-			.put("derived", true));
+			.put("derived", false));
 	}
 
 	@Test
