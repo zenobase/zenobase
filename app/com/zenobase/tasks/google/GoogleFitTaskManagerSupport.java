@@ -51,14 +51,14 @@ abstract class GoogleFitTaskManagerSupport<T extends GoogleFitTaskSupport> exten
 		}
 
 		Map<String, DataStream> streams = getDataStreams(credentials);
-		for (DataStream stream : streams.values()) {
-			if (stream.getId().contains("weight")) {
+		/*for (DataStream stream : streams.values()) {
+			if (stream.getId().contains("xxx")) {
 				System.err.println("[" + stream.getId() + "]");
 				for (DataPoint dataPoint : getDataPoints(task.as(taskClass), credentials, stream)) {
 					System.err.println(dataPoint);
 				}
 			}
-		}
+		}*/
 
 		List<Event> events = createEvents(task.as(taskClass), credentials, streams);
 
