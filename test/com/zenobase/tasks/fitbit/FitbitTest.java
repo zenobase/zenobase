@@ -1,0 +1,62 @@
+package com.zenobase.tasks.fitbit;
+
+import org.junit.Ignore;
+import org.junit.Test;
+
+import com.zenobase.json.Nodes;
+import com.zenobase.tasks.TaskTestSupport;
+
+public class FitbitTest extends TaskTestSupport {
+
+	@Test
+	@Ignore
+	public void testSteps() {
+		run(new FitbitStepsTaskManager(newCredentialsManager()), Nodes.newObject()
+			.put("marker", "2014-10-20")
+			.put("tag", "walk")
+			.put("hourly", true));
+	}
+
+	@Test
+	@Ignore
+	public void testSleep() {
+		run(new FitbitSleepTaskManager(newCredentialsManager()), Nodes.newObject()
+			.put("marker", "2013-11-01")
+			.put("tag", "zzz"));
+	}
+
+	@Test
+	@Ignore
+	public void testIntraday() {
+		run(new FitbitIntradayTaskManager(newCredentialsManager()), Nodes.newObject()
+			.put("marker", "2013-11-01"));
+	}
+
+	@Test
+	@Ignore
+	public void testActivities() {
+		run(new FitbitActivitiesTaskManager(newCredentialsManager()), Nodes.newObject()
+			.put("marker", "2014-10-25"));
+	}
+
+	@Test
+	@Ignore
+	public void testWeight() {
+		run(new FitbitWeightTaskManager(newCredentialsManager()), Nodes.newObject()
+			.put("marker", "2014-10-01")
+			.put("tag", "weight"));
+	}
+
+	@Test
+	@Ignore
+	public void testFood() {
+		run(new FitbitFoodTaskManager(newCredentialsManager()), Nodes.newObject()
+			.put("marker", "2013-01-01")
+			.put("tag", "eat"));
+	}
+
+	@Override
+	protected FitbitCredentialsManager newCredentialsManager() {
+		return new FitbitCredentialsManager(repository, apiKey, apiSecret, callbackUrl);
+	}
+}

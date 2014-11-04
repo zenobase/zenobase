@@ -1,46 +1,40 @@
 package com.zenobase.tasks.google;
 
+import org.junit.Ignore;
 import org.junit.Test;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import com.zenobase.json.Nodes;
-import com.zenobase.tasks.OAuthTaskManager;
-import com.zenobase.tasks.Task;
 import com.zenobase.tasks.TaskTestSupport;
 
 public class GoogleFitTest extends TaskTestSupport {
 
+	@Test
+	@Ignore
 	public void testActivities() {
-		OAuthTaskManager manager = new GoogleFitActivitiesTaskManager(newCredentialsManager());
-		ObjectNode settings = Nodes.newObject()
+		run(new GoogleFitActivitiesTaskManager(newCredentialsManager()), Nodes.newObject()
 			.put("marker", "2014-10-31")
 			.put("timezone", "America/Los_Angeles")
 			.put("metric", true)
-			.put("derived", true);
-		Task task = manager.newTask(bucketId, principal, settings);
-		print(manager.execute(task, getCredentials()).toJson());
+			.put("derived", true));
 	}
 
 	@Test
+	@Ignore
 	public void testWeight() {
-		OAuthTaskManager manager = new GoogleFitWeightTaskManager(newCredentialsManager());
-		ObjectNode settings = Nodes.newObject()
+		run(new GoogleFitWeightTaskManager(newCredentialsManager()), Nodes.newObject()
 			.put("marker", "2014-10-31")
 			.put("timezone", "America/Los_Angeles")
 			.put("metric", true)
-			.put("tag", "foo");
-		Task task = manager.newTask(bucketId, principal, settings);
-		print(manager.execute(task, getCredentials()).toJson());
+			.put("tag", "foo"));
 	}
 
+	@Test
+	@Ignore
 	public void testCardio() {
-		OAuthTaskManager manager = new GoogleFitCardioTaskManager(newCredentialsManager());
-		ObjectNode settings = Nodes.newObject()
+		run(new GoogleFitCardioTaskManager(newCredentialsManager()), Nodes.newObject()
 			.put("marker", "2014-10-31")
 			.put("timezone", "America/Los_Angeles")
-			.put("tag", "bar");
-		Task task = manager.newTask(bucketId, principal, settings);
-		print(manager.execute(task, getCredentials()).toJson());
+			.put("tag", "bar"));
 	}
 
 	@Override

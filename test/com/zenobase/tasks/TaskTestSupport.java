@@ -37,12 +37,17 @@ public abstract class TaskTestSupport {
 		Assume.assumeNotNull(apiSecret);
 	}
 
-	protected OAuthCredentials getCredentials() {
+	protected void run(OAuthTaskManager manager, ObjectNode settings) {
+		Task task = manager.newTask(bucketId, principal, settings);
+		print(manager.execute(task, getCredentials()).toJson());
+	}
+
+	private OAuthCredentials getCredentials() {
 		OAuthCredentials credentials = parseCredentials();
 		return credentials != null ? credentials : requestCredentials();
 	}
 
-	private OAuthCredentials parseCredentials() {
+	private static OAuthCredentials parseCredentials() {
 		String token = System.getProperty("oauth.token");
 		String secret = System.getProperty("oauth.secret", "");
 		String refresh = System.getProperty("oauth.refresh");
@@ -50,13 +55,13 @@ public abstract class TaskTestSupport {
 		return token != null ? newCredentials(newToken(token, secret, refresh), scope) : null;
 	}
 
-	private Token newToken(String token, String secret, String refresh) {
+	private static Token newToken(String token, String secret, String refresh) {
 		return refresh != null
 			? new ExpiringToken(token, secret, DateTime.now().minusMonths(1), refresh)
 			: new Token(token, secret);
 	}
 
-	private OAuthCredentials newCredentials(Token token, String scope) {
+	private static OAuthCredentials newCredentials(Token token, String scope) {
 		OAuthCredentials credentials = new OAuthCredentials(Nodes.newObject());
 		credentials.setToken(token);
 		credentials.setScope(scope);
@@ -78,7 +83,7 @@ public abstract class TaskTestSupport {
 
 	protected abstract OAuthCredentialsManager newCredentialsManager();
 
-	private ObjectNode parseQueryString(String url) {
+	private static ObjectNode parseQueryString(String url) {
 		ObjectNode node = Nodes.newObject();
 		URI uri = URI.create(url.replaceAll("/#", ""));
 		for (NameValuePair param : URLEncodedUtils.parse(uri, Charsets.UTF_8.name())) {
@@ -87,18 +92,18 @@ public abstract class TaskTestSupport {
 		return node;
 	}
 
-	private Credentials apply(Command command, Credentials credentials) {
+	private static Credentials apply(Command command, Credentials credentials) {
 		return ((UpdateCredentialsCommand) command).apply(credentials);
 	}
 
-	private void print(OAuthCredentials credentials) {
+	private static void print(OAuthCredentials credentials) {
 		print(credentials.getToken());
 		if (credentials.getScope() != null) {
 			System.out.println("-Doauth.scope=" + credentials.getScope());
 		}
 	}
 
-	private void print(Token token) {
+	private static void print(Token token) {
 		System.out.println("-Doauth.token=" + token.getToken());
 		System.out.println("-Doauth.secret=" + token.getSecret());
 		if (token instanceof ExpiringToken) {
@@ -106,7 +111,7 @@ public abstract class TaskTestSupport {
 		}
 	}
 
-	protected void print(JsonNode node) {
+	private static void print(JsonNode node) {
 		System.out.println(Nodes.toString(node));
 	}
 }
