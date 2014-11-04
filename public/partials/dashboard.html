@@ -126,7 +126,7 @@
 				<div class="control-group" data-ng-class="!form.label.$valid && 'error'">
 					<label for="label"><strong>Label</strong></label>
 					<div class="input-append">
-						<input id="edit-bucket-label" name="label" type="text" class="xlarge" required data-ui-focus-on="openDialog:edit-bucket-dialog" data-ng-minlength="1" data-ng-maxlength="30" data-ng-model="newBucket.label"/>
+						<input id="edit-bucket-label" name="label" type="text" class="input-xlarge" required data-ui-focus-on="openDialog:edit-bucket-dialog" data-ng-minlength="1" data-ng-maxlength="30" data-ng-model="newBucket.label"/>
 						<span class="add-on">
 							<i class="fa fa-exclamation" title="not valid" data-ng-show="form.label.$invalid"></i>
 							<i class="fa fa-check" title="valid" data-ng-hide="form.label.$invalid"></i>
@@ -898,14 +898,45 @@
 	<script id="/create-duration.html" type="text/ng-template">
 		<button class="close" data-ng-click="reset()">&times;</button>
 		<div data-ng-controller="CreateDurationFieldController">
-			<div class="control-group">
-				<input id="duration-days-field" name="days" type="number" data-ng-model="days"/> d<br/>
-				<input id="duration-hours-field" name="hours" type="number" min="0" max="23" data-ng-model="hours"/> h<br/>
-				<input id="duration-minutes-field" name="minutes" type="number" min="0" max="59" data-ng-model="minutes"/> min<br/>
-				<input id="duration-seconds-field" name="seconds" type="number" min="0" max="59" data-ng-model="seconds"/> s
+			<div class="control-group input-append">
+				<input id="duration-days-field" name="days" type="number" class="input-mini" data-ng-model="days"/>
+				<span class="add-on"><strong>d</strong></span>
+			</div>
+			<div class="control-group input-append">
+				<input id="duration-hours-field" name="hours" type="number" min="0" max="23" class="input-mini" data-ng-model="hours"/>
+				<span class="add-on"><strong>h</strong></span>
+			</div>
+			<div class="control-group input-append">
+				<input id="duration-minutes-field" name="minutes" type="number" min="0" max="59" class="input-mini" data-ng-model="minutes"/>
+				<span class="add-on"><strong>min</strong></span>
+			</div>
+			<div class="control-group input-append">
+				<input id="duration-seconds-field" name="seconds" type="number" min="0" max="59" class="input-mini" data-ng-model="seconds"/>
+				<span class="add-on"><strong>s</strong></span>
 			</div>
 			<div class="control-group">
 				<button id="add-duration-button" class="btn" data-ng-click="addField()" data-ng-disabled="!valid()">Add</button>
+			</div>
+		</div>
+	</script>
+
+	<script id="/create-pace.html" type="text/ng-template">
+		<button class="close" data-ng-click="reset()">&times;</button>
+		<div data-ng-controller="CreatePaceFieldController">
+			<div class="control-group input-append">
+				<input id="duration-minutes-field" name="minutes" type="number" min="0" data-ng-model="minutes" class="input-mini"/>
+				<span class="add-on" title="minutes"><strong>'</strong></span>
+			</div>
+			<div class="control-group input-append">
+				<input id="duration-seconds-field" name="seconds" type="number" min="0" max="59" data-ng-model="seconds" class="input-mini"/>
+				<span class="add-on" title="seconds"><strong>"</strong></span>
+			</div>
+			<div class="control-group input-prepend">
+				<span class="add-on" title="per"><strong>/</strong></span>
+				<select id="pace-unit-select" name="unit" data-ng-model="unit" data-ng-options="unit for unit in getUnits()" class="input-small"></select>
+			</div>
+			<div class="control-group">
+				<button id="add-pace-button" class="btn" data-ng-click="addField()" data-ng-disabled="!valid()">Add</button>
 			</div>
 		</div>
 	</script>

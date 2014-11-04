@@ -86,6 +86,15 @@
 			return args.length ? args.join(' ') : this.milliseconds() + 'ms';			
 		};
 
+		moment.duration.fn.countdownCompact = function() {
+			var minutes = Math.floor(this.asMinutes()); 
+			var seconds = this.seconds(); 
+			if (seconds < 10) {
+				seconds = '0' + seconds;
+			}
+			return minutes + '\'' + seconds + '"';			
+		};
+
 		return moment;
 	});
 
@@ -4134,6 +4143,31 @@
 
 		$scope.init();
 	}]);
+
+	app.controller('CreatePaceFieldController', ['$scope', function($scope) {
+
+		$scope.init = function() {
+			$scope.minutes = $scope.seconds = 0;
+			$scope.unit = null;
+		};
+		$scope.addField = function() {
+			$scope.event.add($scope.field, {
+				'@value' : $scope.minutes * 60 + $scope.seconds,
+				'unit' : 's/' + $scope.unit
+			});
+			$scope.reset();
+		};
+		$scope.getUnits = function() {
+			return $.map($scope.field.units, function(unit) {
+				return unit.substring(2);
+			});
+		};
+		$scope.valid = function() {
+			return ($scope.minutes + $scope.seconds) > 0 && $scope.unit;
+		};
+
+		$scope.init();
+	}]);
 	
 	app.controller('CreateResourceFieldController', ['$scope', '$http', function($scope, $http) {
 
@@ -5717,6 +5751,30 @@
 					'<i class="fa ' + this.icon + '" title="Velocity"></i> ' + this.toText(value) +
 				'</span>';
 			}
+		});
+
+		register({
+			name : 'pace',
+			icon : 'fa-clock-o',
+			type : 'numeric',
+			units : [ 's/km', 's/mi' ],
+			toText : function(value) {
+				return typeof value === 'object' ? moment.duration(value['@value'], 'seconds').countdownCompact() + '/' + value.unit.substring(2) : value;
+			},
+			toHtml : function(value) {
+				return '<span class="nowrap">' +
+					'<i class="fa ' + this.icon + '" title="Pace"></i> ' + this.toText(value) +
+				'</span>';
+			},
+			formatAxis : function(options) {
+				options.type = 'datetime';
+				options.labels = {
+					formatter : function() {
+						return this.value !== 0 ? moment.duration(this.value, 'seconds').countdownCompact() : '0'; 
+					}
+				};
+			},
+			minValue : 0
 		});
 
 		register({

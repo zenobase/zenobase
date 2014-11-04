@@ -86,12 +86,19 @@ public class MeasuresTest {
 	}
 
 	@Test
-	public void testSpeed() {
+	public void testVelocity() {
 		assertThatIsEqualTo("1 m/s", "1 m/s");
 		assertThatIsEqualTo("0.2777778 m/s", "1 kmh");
 		assertThatIsEqualTo("0.44704 m/s", "1 mph");
 		assertThatIsEqualTo("0.5144444 m/s", "1 kn");
 		assertThatIsEqualTo("331.6 m/s", "1 Mach");
+	}
+
+	@Test
+	public void testPace() {
+		assertThatIsEqualTo("1 s/m", "1 s/m");
+		assertThatIsEqualTo("0.001 s/m", "1 s/km");
+		assertThatIsEqualTo("0.0006213712 s/m", "1 s/mi");
 	}
 
 	@Test

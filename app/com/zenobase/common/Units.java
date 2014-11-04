@@ -54,6 +54,9 @@ public class Units {
 
 		UnitFormat.getInstance().alias(NonSI.KILOMETERS_PER_HOUR, "kmh");
 
+		//UnitFormat.getInstance().label(SI.MILLI(SI.SECOND).divide(SI.KILOMETER), "ms/km");
+		//UnitFormat.getInstance().label(SI.MILLI(SI.SECOND).divide(NonSI.MILE), "ms/mi");
+
 		UnitFormat.getInstance().label(NonSI.OUNCE_LIQUID_US, "fl_oz");
 		UnitFormat.getInstance().label(NonSI.OUNCE_LIQUID_US.times(8), "cups");
 		UnitFormat.getInstance().label(NonSI.OUNCE_LIQUID_US.times(16), "pt");
@@ -127,6 +130,9 @@ public class Units {
 	public static final Unit<Velocity> MPH = valueOf("mph");
 	public static final Unit<Velocity> KN = valueOf("kn");
 	public static final Unit<Velocity> MACH = valueOf("Mach");
+
+	public static final Unit<Pace> S_PER_KM = valueOf("s/km");
+	public static final Unit<Pace> S_PER_MI = valueOf("s/mi");
 
 	public static final Unit<Volume> ML = valueOf("mL");
 	public static final Unit<Volume> CL = valueOf("cL");

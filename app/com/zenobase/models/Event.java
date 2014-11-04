@@ -19,6 +19,7 @@ import com.zenobase.json.IntegerField;
 import com.zenobase.json.LengthField;
 import com.zenobase.json.LengthPerVolumeField;
 import com.zenobase.json.LocationField;
+import com.zenobase.json.PaceField;
 import com.zenobase.json.PercentageField;
 import com.zenobase.json.PressureField;
 import com.zenobase.json.RatingField;
@@ -45,6 +46,7 @@ public class Event extends DomainNode {
 	public static final DurationField DURATION = new DurationField("duration");
 	public static final FrequencyField FREQUENCY = new FrequencyField("frequency");
 	public static final VelocityField VELOCITY = new VelocityField("velocity");
+	public static final PaceField PACE = new PaceField("pace");
 	public static final BitsField BITS = new BitsField("bits");
 	public static final IntegerField COUNT = new IntegerField("count");
 	public static final LocationField LOCATION = new LocationField("location");
@@ -69,7 +71,7 @@ public class Event extends DomainNode {
 
 	private static final ImmutableSet<Field<?>> FIELDS =
 		ImmutableSet.<Field<?>>of(
-			ID, BUCKET, VERSION, AUTHOR, SOURCE, TIMESTAMP, DURATION, FREQUENCY, VELOCITY, BITS, COUNT,
+			ID, BUCKET, VERSION, AUTHOR, SOURCE, TIMESTAMP, DURATION, FREQUENCY, VELOCITY, PACE, BITS, COUNT,
 			LOCATION, TAG, RESOURCE, DISTANCE, HEIGHT, WEIGHT, VOLUME, CONCENTRATION, DISTANCE_PER_VOLUME,
 			HUMIDITY, PRESSURE, SOUND, ENERGY, TEMPERATURE, RATING, PERCENTAGE, MOON, CURRENCY, NOTE);
 

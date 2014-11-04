@@ -16,6 +16,8 @@ please <a href="mailto:info@zenobase.com?subject=Zenobase+API">drop us a note</a
 so we can let you know about upcoming changes.</p>
 
 <dl>
+	<dt>November 4, 2014</dt>
+	<dd>Added a new field, "pace".</dd>
 	<dt>October 7, 2014</dt>
 	<dd>Fixed ranges with partial timestamps: <code>(2010..*)</code> now excludes all of 2010, while <code>(*..2010]</code> includes all of 2010.</dd>
 	<dt>October 6, 2014</dt>
@@ -612,6 +614,10 @@ Authorization: Bearer <em>&lt;access_token&gt;</em>
   },
   "note" : <em>&lt;String&gt;</em>,
   "moon" : <em>&lt;(0..100)&gt;</em>,
+  "pace" : {
+    "@value" : <em>&lt;Number&gt;</em>,
+    "unit" : <em>&lt;"s/km" | "s/mi"&gt;</em>    
+  },
   "percentage" : <em>&lt;(0..100)&gt;</em>,
   "pressure" : {
     "@value" : <em>&lt;Number&gt;</em>,
