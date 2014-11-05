@@ -112,6 +112,9 @@ public class GoogleFitActivitiesTaskManager extends GoogleFitTaskManagerSupport<
 				events.add(event);
 			}
 		}
+		if (!events.isEmpty()) {
+			events.remove(events.size() - 1); // could still be in progress
+		}
 		return events;
 	}
 
