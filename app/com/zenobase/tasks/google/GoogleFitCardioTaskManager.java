@@ -45,7 +45,7 @@ public class GoogleFitCardioTaskManager extends GoogleFitTaskManagerSupport<Goog
 					event.addValue(Event.TIMESTAMP, point.getEnd());
 					event.setValue(Event.DURATION, point.getDuration());
 				}
-				event.setValue(Event.FREQUENCY, Measures.valueOf(point.getValue(0), Units.BPM));
+				event.setValue(Event.FREQUENCY, Measures.valueOf(Measures.round(point.getValue(0), 0), Units.BPM));
 				event.setValue(Event.AUTHOR, task.getPrincipal());
 				event.setValue(Event.SOURCE, stream.getSource());
 				events.add(event);

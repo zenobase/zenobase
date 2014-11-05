@@ -104,7 +104,7 @@ class ActivitiesResult {
 	}
 
 	private DecimalMeasure<Frequency> frequencyValue(JsonNode node) {
-		return node.isNumber() ? Measures.<Frequency>valueOf(node.decimalValue(), Units.BPM) : null;
+		return node.isNumber() ? Measures.<Frequency>valueOf(Measures.round(node.decimalValue(), 0), Units.BPM) : null;
 	}
 
 	private Resource resourceValue(JsonNode node) {

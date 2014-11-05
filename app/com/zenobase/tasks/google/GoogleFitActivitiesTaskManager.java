@@ -288,7 +288,7 @@ public class GoogleFitActivitiesTaskManager extends GoogleFitTaskManagerSupport<
 				Range<DateTime> range = getRange(event);
 				BigDecimal value = values.asMapOfRanges().get(range);
 				if (value != null) {
-					event.setValue(Event.FREQUENCY, Measures.valueOf(value, Units.BPM));
+					event.setValue(Event.FREQUENCY, Measures.valueOf(Measures.round(value, 0), Units.BPM));
 				}
 			}
 		}
