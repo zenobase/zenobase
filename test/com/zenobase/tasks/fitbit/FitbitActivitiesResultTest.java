@@ -6,12 +6,14 @@ import java.util.List;
 
 import javax.measure.quantity.Energy;
 import javax.measure.quantity.Length;
+import javax.measure.quantity.Velocity;
 
 import org.joda.time.DateTimeZone;
 import org.joda.time.Duration;
 import org.junit.Test;
 
 import com.zenobase.common.Measures;
+import com.zenobase.common.Pace;
 import com.zenobase.common.Units;
 import com.zenobase.json.Nodes;
 import com.zenobase.models.Event;
@@ -29,6 +31,8 @@ public class FitbitActivitiesResultTest extends ResultTestSupport {
 		expected.setValue(Event.TIMESTAMP, dateTime("2014-10-28T18:08:00-07:00"));
 		expected.setValue(Event.DURATION, Duration.standardSeconds(2079));
 		expected.setValue(Event.DISTANCE, Measures.<Length>valueOf("3.72 mi"));
+		expected.setValue(Event.VELOCITY, Measures.<Velocity>valueOf("6.44 mph"));
+		expected.setValue(Event.PACE, Measures.<Pace>valueOf("559 s/mi"));
 		expected.setValue(Event.ENERGY, Measures.<Energy>valueOf("240 kcal"));
 		expected.setValue(Event.COUNT, 4848);
 		expected.setValue(Event.AUTHOR, TESTER);

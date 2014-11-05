@@ -25,6 +25,7 @@ import com.google.common.collect.RangeMap;
 import com.google.common.collect.TreeRangeMap;
 
 import com.zenobase.common.Measures;
+import com.zenobase.common.Pace;
 import com.zenobase.common.Units;
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
@@ -60,7 +61,7 @@ public class GoogleFitActivitiesTaskManager extends GoogleFitTaskManagerSupport<
 			addDistance(task, credentials, filter(streams.values(), "com.google.distance.cumulative"), events);
 			addDistance(task, credentials, streams.get("derived:com.google.distance.delta:com.google.android.gms:pruned_distance"), events);
 			addCount(task, credentials, streams.get("derived:com.google.step_count.delta:com.google.android.gms:merge_step_deltas"), events);
-			addVelocity(task, credentials, filter(streams.values(), "com.google.speed.summary"), events);
+			addVelocityAndPace(task, credentials, filter(streams.values(), "com.google.speed.summary"), events);
 			addEnergy(task, credentials, filter(streams.values(), "com.google.calories.expended"), events);
 			addFrequency(task, credentials, filter(streams.values(), "com.google.heart_rate.summary"), events);
 		}
@@ -222,7 +223,7 @@ public class GoogleFitActivitiesTaskManager extends GoogleFitTaskManagerSupport<
 		return sum;
 	}
 
-	private void addVelocity(GoogleFitActivitiesTask task, OAuthCredentials credentials, Iterable<DataStream> streams, List<Event> events) {
+	private void addVelocityAndPace(GoogleFitActivitiesTask task, OAuthCredentials credentials, Iterable<DataStream> streams, List<Event> events) {
 		RangeMap<DateTime, BigDecimal> values = TreeRangeMap.create();
 		for (DataStream stream : streams) {
 			for (DataPoint point : getDataPoints(task, credentials, stream)) {
@@ -239,6 +240,10 @@ public class GoogleFitActivitiesTaskManager extends GoogleFitTaskManagerSupport<
 				if (value != null) {
 					Unit<Velocity> unit = task.isMetric() ? Units.KMH : Units.MPH;
 					event.setValue(Event.VELOCITY, Measures.valueOf(Measures.convert(value.doubleValue(), unit), unit));
+					if (value.doubleValue() > 0.0) {
+						Unit<Pace> paceUnit = task.isMetric() ? Units.S_PER_KM : Units.S_PER_MI;
+						event.setValue(Event.PACE, Measures.valueOf(Measures.round(Measures.convert(Math.pow(value.doubleValue(), -1), paceUnit), 0), paceUnit));
+					}
 				}
 			}
 		}

@@ -12,6 +12,7 @@ import javax.measure.quantity.Velocity;
 import org.joda.time.Duration;
 import org.junit.Test;
 
+import com.zenobase.common.Pace;
 import com.zenobase.models.Event;
 import com.zenobase.models.Resource;
 import com.zenobase.tasks.ResultTestSupport;
@@ -32,6 +33,7 @@ public class WorkoutsResultTest extends ResultTestSupport {
 		event.setValue(Event.COUNT, 1000);
 		event.setValue(Event.DISTANCE, DecimalMeasure.<Length>valueOf("3.34 mi"));
 		event.setValue(Event.VELOCITY,  DecimalMeasure.<Velocity>valueOf("4.02 mph"));
+		event.setValue(Event.PACE,  DecimalMeasure.<Pace>valueOf("895 s/mi"));
 		event.setValue(Event.FREQUENCY, DecimalMeasure.<Frequency>valueOf("115 bpm"));
 		event.setValue(Event.AUTHOR, TESTER);
 		event.setValue(Event.SOURCE, new Resource("MapMyFitness", "http://www.mapmyfitness.com/workout/547836386"));

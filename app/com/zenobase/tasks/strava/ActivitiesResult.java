@@ -17,6 +17,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 
 import com.zenobase.common.Measures;
+import com.zenobase.common.Pace;
 import com.zenobase.common.Units;
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
@@ -53,6 +54,7 @@ class ActivitiesResult {
 		event.setValue(Event.HEIGHT, distanceValue(node.path("total_elevation_gain"), metric ? Units.M : Units.FT));
 		event.setValue(Event.ENERGY, energyValue(node.path("kilojoules")));
 		event.setValue(Event.VELOCITY, velocityValue(node.path("average_speed"), metric ? Units.KMH : Units.MPH));
+		event.setValue(Event.PACE, paceValue(node.path("average_speed"), metric ? Units.S_PER_KM : Units.S_PER_MI));
 		event.setValue(Event.FREQUENCY, frequencyValue(node.path("average_heartrate")));
 		event.setValue(Event.SOURCE, resourceValue(node.path("id")));
 		event.setValue(Event.AUTHOR, author);
@@ -91,6 +93,10 @@ class ActivitiesResult {
 
 	private DecimalMeasure<Velocity> velocityValue(JsonNode node, Unit<Velocity> unit) {
 		return node.isNumber() ? Measures.valueOf(Measures.convert(node.doubleValue(), unit), unit) : null;
+	}
+
+	private DecimalMeasure<Pace> paceValue(JsonNode node, Unit<Pace> unit) {
+		return node.isNumber() ? Measures.valueOf(Measures.round(Measures.convert(Math.pow(node.doubleValue(), -1.0), unit), 0), unit) : null;
 	}
 
 	private DecimalMeasure<Energy> energyValue(JsonNode node) {

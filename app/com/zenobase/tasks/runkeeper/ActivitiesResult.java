@@ -1,11 +1,11 @@
 package com.zenobase.tasks.runkeeper;
 
-import java.math.RoundingMode;
 import java.util.List;
 
 import javax.measure.DecimalMeasure;
 import javax.measure.quantity.Energy;
 import javax.measure.quantity.Length;
+import javax.measure.quantity.Velocity;
 import javax.measure.unit.Unit;
 
 import org.joda.time.DateTime;
@@ -19,6 +19,8 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 
 import com.zenobase.common.Measures;
+import com.zenobase.common.Pace;
+import com.zenobase.common.Units;
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
 import com.zenobase.models.Resource;
@@ -51,10 +53,16 @@ class ActivitiesResult {
 
 	private Event newEvent(JsonNode node) {
 		Event event = new Event();
+		Duration duration = durationValue(node.path("duration"));
+		DecimalMeasure<Length> distance = distanceValue(node.path("total_distance"));
 		event.addValue(Event.TAG, node.path("type").textValue());
 		event.setValue(Event.TIMESTAMP, dateTimeValue(node.path("start_time")));
-		event.setValue(Event.DURATION, durationValue(node.path("duration")));
-		event.setValue(Event.DISTANCE, distanceValue(node.path("total_distance")));
+		event.setValue(Event.DURATION, duration);
+		event.setValue(Event.DISTANCE, distance);
+		if (distance != null && duration != null) {
+			event.setValue(Event.VELOCITY, calculateVelocity(distance, duration));
+			event.setValue(Event.PACE, calculatePace(duration, distance));
+		}
 		event.setValue(Event.ENERGY, energyValue(node.path("total_calories")));
 		event.setValue(Event.SOURCE, new Resource("RunKeeper", node.path("uri").textValue()));
 		event.setValue(Event.AUTHOR, author);
@@ -76,7 +84,21 @@ class ActivitiesResult {
 	}
 
 	private DecimalMeasure<Energy> energyValue(JsonNode node) {
-		return node.isNumber() ? Measures.<Energy>valueOf(node.decimalValue().setScale(0, RoundingMode.HALF_UP), energyUnit) : null;
+		return node.isNumber() ? Measures.<Energy>valueOf(Measures.round(node.decimalValue(), 0), energyUnit) : null;
+	}
+
+	private DecimalMeasure<Velocity> calculateVelocity(DecimalMeasure<Length> distance, Duration duration) {
+		Unit<Velocity> unit = Units.isMetric(lengthUnit) ? Units.KMH : Units.MPH;
+		long t = duration.getStandardSeconds();
+		double d = Measures.toStandard(distance).getValue().doubleValue();
+		return t > 0 ? Measures.valueOf(Measures.convert(d / t, unit), unit) : null;
+	}
+
+	private DecimalMeasure<Pace> calculatePace(Duration duration, DecimalMeasure<Length> distance) {
+		Unit<Pace> unit = Units.isMetric(lengthUnit) ? Units.S_PER_KM : Units.S_PER_MI;
+		long t = duration.getStandardSeconds();
+		double d = Measures.toStandard(distance).getValue().doubleValue();
+		return d > 0.0 ? Measures.valueOf(Measures.round(Measures.convert(t / d, unit), 0), unit) : null;
 	}
 
 	public String getNext() {

@@ -17,6 +17,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 
 import com.zenobase.common.Measures;
+import com.zenobase.common.Pace;
 import com.zenobase.common.Units;
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
@@ -49,6 +50,7 @@ class WorkoutsResult {
 		event.setValue(Event.COUNT, countValue(node.path("aggregates").path("steps_total")));
 		event.setValue(Event.DISTANCE, distanceValue(node.path("aggregates").path("distance_total")));
 		event.setValue(Event.VELOCITY, velocityValue(node.path("aggregates").path("speed_avg")));
+		event.setValue(Event.PACE, paceValue(node.path("aggregates").path("speed_avg")));
 		event.setValue(Event.FREQUENCY, frequencyValue(node.path("aggregates").path("heartrate_avg")));
 		event.setValue(Event.SOURCE, resourceValue(node.path("_links").path("self").path(0).path("id")));
 		event.setValue(Event.AUTHOR, author);
@@ -87,6 +89,11 @@ class WorkoutsResult {
 	private DecimalMeasure<Velocity> velocityValue(JsonNode node) {
 		Unit<Velocity> unit = imperial ? Units.MPH : Units.KMH;
 		return node.isNumber() ? Measures.valueOf(Measures.convert(node.doubleValue(), unit), unit) : null;
+	}
+
+	private DecimalMeasure<Pace> paceValue(JsonNode node) {
+		Unit<Pace> unit = imperial ? Units.S_PER_MI : Units.S_PER_KM;
+		return node.isNumber() ? Measures.valueOf(Measures.round(Measures.convert(Math.pow(node.doubleValue(), -1.0), unit), 0), unit) : null;
 	}
 
 	private DecimalMeasure<Frequency> frequencyValue(JsonNode node) {

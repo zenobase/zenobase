@@ -39,11 +39,19 @@ public class Measures {
 	}
 
 	public static BigDecimal round(double value) {
-		return Doubles.isFinite(value) ? round(new BigDecimal(value)) : null;
+		return round(value, 2);
+	}
+
+	public static BigDecimal round(double value, int scale) {
+		return Doubles.isFinite(value) ? round(new BigDecimal(value), scale) : null;
 	}
 
 	public static BigDecimal round(BigDecimal value) {
-		return value != null ? value.setScale(2, RoundingMode.HALF_UP) : null;
+		return round(value, 2);
+	}
+
+	public static BigDecimal round(BigDecimal value, int scale) {
+		return value != null ? value.setScale(scale, RoundingMode.HALF_UP) : null;
 	}
 
 	public static <Q extends Quantity> DecimalMeasure<Q> round(DecimalMeasure<Q> value) {
