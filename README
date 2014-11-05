@@ -50,7 +50,7 @@ To run all tests except Selenium tests:
 Release Procedure
 -----------------
 
-(Note: Pending resolution of https://github.com/elasticsearch/elasticsearch-cloud-aws/issues/99, the web application has 
+(Note: Pending resolution of https://github.com/elasticsearch/elasticsearch/issues/7090, the web application has 
 to be started manually with `sudo start play`.)
 
   1. Push the code to the build server. This should trigger a build.
@@ -79,21 +79,23 @@ to be started manually with `sudo start play`.)
 
      5.2. There should be no (or minimal) traffic [Google Analytics].
 
-     5.3. The status check must show 4 nodes and green health [/status].
+     5.3. The status check must show 4 nodes and green health [Zenobase].
 
      5.4. There should be a recent snapshot.
 
   6. Start either the new m3.large instance (if migrating) or the new m3.medium instances [OpsWorks].
 
+     6.1 (if migrating) switch the old cluster into read-only mode [Zenobase]
+
   7. Add all new instance(s) to the load balancer, and remove all old instances as soon as one of the new instances is listed as "in service" [AWS Console].
 
   8. (if migrating) Start the two m3.medium instances as well [OpsWorks].
 
-  9. Wait for the status check to show 6 (if migrating) or 8 (if not migrating) nodes and green health [/status].
+  9. Wait for the status check to show 6 (if migrating) or 8 (if not migrating) nodes and green health [Zenobase].
 
   10. Stop the m3.large instance (if migrating) as well as any old instances [OpsWorks].
 
-  11. Wait for 4 nodes and green health [/status].
+  11. Wait for 4 nodes and green health [Zenobase].
 
   12. Set the "keep this build forever" flag [CloudBees].
 
