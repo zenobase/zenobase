@@ -1625,7 +1625,7 @@
 		$scope.save = function() {
 			$scope.message = '';
 			$http.put('/buckets/' + $scope.bucketId, $scope.newBucket)
-				.success(function (response, status, headers) {
+				.success(function(response, status, headers) {
 					$scope.closeDialog();
 					$scope.alert.show('Saved settings.', 'alert-success', headers('X-Command-ID'));
 					$scope.newBucket.version += 1;
