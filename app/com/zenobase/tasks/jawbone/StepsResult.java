@@ -12,6 +12,7 @@ import org.joda.time.format.DateTimeFormatter;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.collect.Lists;
 
+import com.zenobase.common.Measures;
 import com.zenobase.common.Units;
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
@@ -77,7 +78,7 @@ class StepsResult extends JawboneResult {
 		event.setValue(Event.TIMESTAMP, DateTime.parse(key, HOUR_FORMAT.withZone(zone)));
 		event.setValue(Event.DURATION, Duration.standardHours(1));
 		event.setValue(Event.COUNT, node.path("steps").intValue());
-		event.setValue(Event.DISTANCE, round(distanceValue(node.path("distance"), metric ? Units.M : Units.FT)));
+		event.setValue(Event.DISTANCE, Measures.round(distanceValue(node.path("distance"), metric ? Units.M : Units.FT), 0));
 		event.setValue(Event.ENERGY, energyValue(node.path("calories")));
 		event.setValue(Event.SOURCE, SOURCE);
 		event.setValue(Event.AUTHOR, author);

@@ -130,6 +130,7 @@ import com.zenobase.tasks.jawbone.JawboneCredentialsManager;
 import com.zenobase.tasks.jawbone.JawboneFoodTaskManager;
 import com.zenobase.tasks.jawbone.JawboneSleepTaskManager;
 import com.zenobase.tasks.jawbone.JawboneStepsTaskManager;
+import com.zenobase.tasks.jawbone.JawboneWeightTaskManager;
 import com.zenobase.tasks.lastfm.LastFmCredentialsManager;
 import com.zenobase.tasks.lastfm.LastFmTaskManager;
 import com.zenobase.tasks.mapmyfitness.MapMyFitnessCredentialsManager;
@@ -310,6 +311,7 @@ public class Global extends GlobalSettings {
 				bindIfConfigured("jawbone", JawboneStepsTaskManager.class, tasks);
 				bindIfConfigured("jawbone", JawboneSleepTaskManager.class, tasks);
 				bindIfConfigured("jawbone", JawboneFoodTaskManager.class, tasks);
+				bindIfConfigured("jawbone", JawboneWeightTaskManager.class, tasks);
 				bind(TaskManagerRegistry.class).in(Singleton.class);
 
 				bind(AccountController.class).in(Singleton.class);

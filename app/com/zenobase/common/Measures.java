@@ -55,6 +55,10 @@ public class Measures {
 	}
 
 	public static <Q extends Quantity> DecimalMeasure<Q> round(DecimalMeasure<Q> value) {
-		return value != null ? new DecimalMeasure<Q>(round(value.getValue()), value.getUnit()) : null;
+		return round(value, 2);
+	}
+
+	public static <Q extends Quantity> DecimalMeasure<Q> round(DecimalMeasure<Q> value, int scale) {
+		return value != null ? new DecimalMeasure<Q>(round(value.getValue(), scale), value.getUnit()) : null;
 	}
 }

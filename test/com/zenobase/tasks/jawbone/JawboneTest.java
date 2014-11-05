@@ -34,6 +34,15 @@ public class JawboneTest extends TaskTestSupport {
 			.put("marker", "2014-01-01"));
 	}
 
+	@Test
+	@Ignore
+	public void testWeight() {
+		run(new JawboneWeightTaskManager(newCredentialsManager()), Nodes.newObject()
+			.put("tag", "Body")
+			.put("metric", "Meal")
+			.put("marker", "2014-01-01"));
+	}
+
 	@Override
 	protected JawboneCredentialsManager newCredentialsManager() {
 		return new JawboneCredentialsManager(repository, apiKey, apiSecret, callbackUrl);

@@ -1956,6 +1956,50 @@
 		]
 	},
 	{
+		"label" : "Weight (Jawbone)",
+		"task" : "jawbone-weight", 
+		"widgets" : [
+			{
+				"id" : "latest",
+				"type" : "list",
+				"label" : "Latest",
+				"placement" : "left",
+				"singleton" : true,
+				"limit" : 10,
+				"order" : "timestamp",
+				"reverse" : false
+			},
+			{
+				"id" : "weight",
+				"type" : "timeline",
+				"label" : "Weight",
+				"placement" : "right",
+				"field" : "weight",
+				"statistic" : "avg",
+				"interval" : "week",
+				"unit" : "lb",
+				"regression" : "linear"
+			},
+			{
+				"id" : "scatterplot_weight_percentage",
+				"type" : "scatterplot",
+				"label" : "Weight-Fat",
+				"placement" : "right",
+				"label_x" : "weight",
+				"field_x" : "weight",
+				"unit_x" : "lb",
+				"statistic_x" : "avg",
+				"label_y" : "fat%",
+				"field_y" : "percentage",
+				"unit_y" : null,
+				"statistic_y" : "avg",
+				"key_field" : "timestamp",
+				"interval" : "day",
+				"regression" : "linear"
+			}
+		]
+	},
+	{
 		"label" : "Weight (Withings)",
 		"task" : "withings-weight", 
 		"widgets" : [

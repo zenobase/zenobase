@@ -1,11 +1,9 @@
 package com.zenobase.tasks.jawbone;
 
-import java.math.RoundingMode;
-
 import javax.measure.DecimalMeasure;
 import javax.measure.quantity.Energy;
 import javax.measure.quantity.Length;
-import javax.measure.quantity.Quantity;
+import javax.measure.quantity.Mass;
 import javax.measure.unit.Unit;
 
 import org.joda.time.DateTime;
@@ -18,6 +16,7 @@ import com.zenobase.common.Measures;
 import com.zenobase.common.Units;
 import com.zenobase.models.Identity;
 import com.zenobase.models.Location;
+import com.zenobase.models.Percentage;
 import com.zenobase.models.Rating;
 import com.zenobase.models.Resource;
 
@@ -40,9 +39,17 @@ abstract class JawboneResult {
 	}
 
 	protected DateTimeZone dateTimeZoneValue(JsonNode node) {
-		Preconditions.checkState(node.isTextual(), "expected a node with a time zone: <%s>", node);
-		int offset = node.asInt();
-		return offset != 0 ? DateTimeZone.forOffsetMillis(offset * 1000) : DateTimeZone.forID(node.textValue().replace("GMT", ""));
+		DateTimeZone zone = null;
+		if (node.isNull()) {
+			zone = DateTimeZone.UTC;
+		} else if (node.asInt() != 0) {
+			zone = DateTimeZone.forOffsetMillis(node.asInt() * 1000);
+		} else if (node.isTextual()) {
+			zone = DateTimeZone.forID(node.textValue().replace("GMT", ""));
+		} else {
+			throw new IllegalStateException("expected a node with a time zone: <" + node + ">");
+		}
+		return zone;
 	}
 
 	protected DateTime dateTimeValue(JsonNode node, DateTimeZone zone) {
@@ -57,6 +64,11 @@ abstract class JawboneResult {
 	protected Rating ratingValue(JsonNode node) {
 		int value = node.asInt();
 		return value != 0 ? Rating.valueOf(value) : null;
+	}
+
+	protected Percentage percentageValue(JsonNode node) {
+		int value = node.asInt();
+		return value != 0 ? Percentage.valueOf(value) : null;
 	}
 
 	protected Location locationValue(JsonNode node) {
@@ -75,11 +87,11 @@ abstract class JawboneResult {
 		return node.isNumber() ? Measures.valueOf(Measures.convert(node.doubleValue(), unit), unit) : null;
 	}
 
-	protected <T extends Quantity> DecimalMeasure<T> round(DecimalMeasure<T> value) {
-		return value != null ? DecimalMeasure.valueOf(value.getValue().setScale(0, RoundingMode.HALF_UP), value.getUnit()) : null;
-	}
-
 	protected DecimalMeasure<Energy> energyValue(JsonNode node) {
 		return node.isNumber() ? Measures.<Energy>valueOf(node.decimalValue(), Units.KCAL) : null;
+	}
+
+	protected DecimalMeasure<Mass> weightValue(JsonNode node, Unit<Mass> unit) {
+		return node.isNumber() ? Measures.valueOf(Measures.convert(node.doubleValue(), unit), unit) : null;
 	}
 }
