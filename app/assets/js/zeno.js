@@ -1588,7 +1588,7 @@
 		};
 	}]);
 
-	app.controller('EditBucketDialogController', ['$scope', '$http', '$route', '$location', 'delay', 'tracker', function($scope, $http, $route, $location, delay, tracker) {
+	app.controller('EditBucketDialogController', ['$scope', '$http', '$location', 'delay', 'tracker', function($scope, $http, $location, delay, tracker) {
 
 		$scope.init = function() {
 			$scope.newBucket = angular.copy($scope.$parent.bucket);
@@ -1628,7 +1628,9 @@
 				.success(function (response, status, headers) {
 					$scope.closeDialog();
 					$scope.alert.show('Saved settings.', 'alert-success', headers('X-Command-ID'));
-					delay($route.reload);
+					$scope.newBucket.version += 1;
+					$scope.$parent.bucket = $scope.newBucket;
+					delay($scope.refresh);
 					tracker.event('action', 'save bucket');
 				})
 				.error(function(response, status) {
