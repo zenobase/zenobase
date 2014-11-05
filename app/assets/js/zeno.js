@@ -5093,7 +5093,7 @@
 		$scope.init = function() {
 			$scope.settings = $scope.$parent.$parent.settings = {
 					tag : 'body',
-					unit : 'kg',
+					unit : 'lb',
 					marker : new Date(moment().utc().subtract(12, 'months').startOf('month').valueOf()),
 					timezone : 'UTC'
 			};
@@ -5297,7 +5297,7 @@
 		$scope.init = function() {
 			$scope.settings = $scope.$parent.$parent.settings = {
 					tag : 'Weight',
-					metric : true,
+					metric : false,
 					marker : new Date(moment().utc().subtract(12, 'months').startOf('month').valueOf()),
 					timezone : 'UTC'
 			};

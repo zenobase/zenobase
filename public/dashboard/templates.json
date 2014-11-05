@@ -1891,12 +1891,12 @@
 			{
 				"id" : "weight",
 				"type" : "timeline",
-				"label" : "Weight",
+				"label" : "Weight (lb)",
 				"placement" : "right",
 				"field" : "weight",
 				"statistic" : "avg",
 				"interval" : "week",
-				"unit" : "kg",
+				"unit" : "lb",
 				"regression" : "linear"
 			},
 			{
@@ -1906,7 +1906,7 @@
 				"placement" : "right",
 				"label_x" : "weight",
 				"field_x" : "weight",
-				"unit_x" : "kg",
+				"unit_x" : "lb",
 				"statistic_x" : "avg",
 				"label_y" : "fat%",
 				"field_y" : "percentage",
@@ -1935,12 +1935,12 @@
 			{
 				"id" : "weight",
 				"type" : "timeline",
-				"label" : "Weight",
+				"label" : "Weight (lb)",
 				"placement" : "right",
 				"field" : "weight",
 				"statistic" : "avg",
 				"interval" : "week",
-				"unit" : "kg",
+				"unit" : "lb",
 				"regression" : "linear"
 			},
 			{
@@ -1972,7 +1972,7 @@
 			{
 				"id" : "weight",
 				"type" : "timeline",
-				"label" : "Weight",
+				"label" : "Weight (lb)",
 				"placement" : "right",
 				"field" : "weight",
 				"statistic" : "avg",
@@ -2016,12 +2016,12 @@
 			{
 				"id" : "weight",
 				"type" : "timeline",
-				"label" : "Weight",
+				"label" : "Weight (lb)",
 				"placement" : "right",
 				"field" : "weight",
 				"statistic" : "avg",
 				"interval" : "week",
-				"unit" : "kg",
+				"unit" : "lb",
 				"regression" : "linear"
 			},
 			{
@@ -2031,7 +2031,7 @@
 				"placement" : "right",
 				"label_x" : "weight",
 				"field_x" : "weight",
-				"unit_x" : "kg",
+				"unit_x" : "lb",
 				"statistic_x" : "avg",
 				"label_y" : "fat%",
 				"field_y" : "percentage",
