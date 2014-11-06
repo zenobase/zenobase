@@ -24,13 +24,13 @@ import com.zenobase.models.Identity;
 import com.zenobase.models.Location;
 import com.zenobase.models.Resource;
 
-class ActivitiesResult {
+class StravaActivitiesResult {
 
 	private final JsonNode node;
 	private final Identity author;
 	private final boolean metric;
 
-	public ActivitiesResult(JsonNode node, Identity author, boolean metric) {
+	public StravaActivitiesResult(JsonNode node, Identity author, boolean metric) {
 		this.node = Preconditions.checkNotNull(node);
 		this.author = author;
 		this.metric = metric;

@@ -49,7 +49,7 @@ public class MovesPlacesTaskManager extends MovesTaskManagerSupport {
 		}
 		DateTime from = task.getFrom();
 		if (from == null) {
-			ProfileResult profile = getProfile(credentials);
+			MovesProfileResult profile = getProfile(credentials);
 			from = profile.getFirstDate();
 		}
 		List<Event> events = getEvents(task, credentials, from);
@@ -82,12 +82,12 @@ public class MovesPlacesTaskManager extends MovesTaskManagerSupport {
 			this.credentials = credentials;
 		}
 
-		public PlacesResult find(LocalDate from, LocalDate to) {
+		public MovesPlacesResult find(LocalDate from, LocalDate to) {
 			OAuthRequest request = newRequest("/user/places/daily");
 			request.addQuerystringParameter("from", from.toString());
 			request.addQuerystringParameter("to", to.toString());
 			Response response = send(request, credentials);
-			return new PlacesResult(principal, begin, parseArray(response));
+			return new MovesPlacesResult(principal, begin, parseArray(response));
 		}
 	}
 

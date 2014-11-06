@@ -7,7 +7,7 @@ import org.junit.Test;
 
 import com.zenobase.models.Location;
 
-public class StorylineTest {
+public class MovesStorylineTest {
 
 	@Test
 	public void test() {
@@ -18,7 +18,7 @@ public class StorylineTest {
 		Location l0 = new Location("47.6204", "-122.3491");
 		Location l1 = new Location("47.7315", "-122.4502");
 
-		Storyline storyline = new Storyline();
+		MovesStoryline storyline = new MovesStoryline();
 		assertThat(storyline.contains(t0)).isFalse();
 		assertThat(storyline.get(t0)).isNull();
 

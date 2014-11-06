@@ -9,11 +9,11 @@ import org.junit.Test;
 
 import com.zenobase.tasks.ResultTestSupport;
 
-public class ProfileResultTest extends ResultTestSupport {
+public class MovesProfileResultTest extends ResultTestSupport {
 
 	@Test
 	public void test() {
-		ProfileResult result = new ProfileResult(readObject("ProfileResultTest.json"));
+		MovesProfileResult result = new MovesProfileResult(readObject("MovesProfileResultTest.json"));
 		DateTimeZone zone = DateTimeZone.forID("Europe/Helsinki");
 		DateTime expected = LocalDateTime.parse("2012-12-11T00:00:00.000").toDateTime(zone);
 		assertThat(result.getFirstDate()).isEqualTo(expected);

@@ -17,12 +17,12 @@ import com.zenobase.models.Location;
 import com.zenobase.models.Resource;
 import com.zenobase.tasks.ResultTestSupport;
 
-public class ActivitiesResultTest extends ResultTestSupport {
+public class StravaActivitiesResultTest extends ResultTestSupport {
 
 	@Test
 	public void testMetric() {
 
-		ActivitiesResult result = new ActivitiesResult(readArray("ActivitiesResultTest.json"), TESTER, true);
+		StravaActivitiesResult result = new StravaActivitiesResult(readArray("StravaActivitiesResultTest.json"), TESTER, true);
 		List<Event> events = result.getEvents();
 		assertThat(events).hasSize(2);
 
@@ -56,7 +56,7 @@ public class ActivitiesResultTest extends ResultTestSupport {
 	@Test
 	public void testImperial() {
 
-		ActivitiesResult result = new ActivitiesResult(readArray("ActivitiesResultTest.json"), TESTER, false);
+		StravaActivitiesResult result = new StravaActivitiesResult(readArray("StravaActivitiesResultTest.json"), TESTER, false);
 		List<Event> events = result.getEvents();
 		assertThat(events).hasSize(2);
 

@@ -20,14 +20,14 @@ import com.zenobase.models.Identity;
 import com.zenobase.models.Resource;
 import com.zenobase.tasks.ResultTestSupport;
 
-public class ActivitiesResultTest extends ResultTestSupport {
+public class RunkeeperActivitiesResultTest extends ResultTestSupport {
 
 	private final Identity author = new Identity();
 
 	@Test
 	public void test() {
 
-		ActivitiesResult result = new ActivitiesResult(readObject("ActivitiesResultTest.json"), author, Units.KM, Units.KCAL, DateTimeZone.forID("America/Los_Angeles"));
+		RunkeeperActivitiesResult result = new RunkeeperActivitiesResult(readObject("RunkeeperActivitiesResultTest.json"), author, Units.KM, Units.KCAL, DateTimeZone.forID("America/Los_Angeles"));
 		assertThat(result.getNext()).isEqualTo("/fitnessActivities?page=1&pageSize=2");
 		List<Event> events = result.getEvents();
 		assertThat(events).hasSize(2);
@@ -54,7 +54,7 @@ public class ActivitiesResultTest extends ResultTestSupport {
 
 	@Test
 	public void testMeters() {
-		ActivitiesResult result = new ActivitiesResult(readObject("ActivitiesResultTest.json"), author, Units.M, Units.KCAL, DateTimeZone.forID("America/Los_Angeles"));
+		RunkeeperActivitiesResult result = new RunkeeperActivitiesResult(readObject("RunkeeperActivitiesResultTest.json"), author, Units.M, Units.KCAL, DateTimeZone.forID("America/Los_Angeles"));
 		List<Event> events = result.getEvents();
 		assertThat(events).hasSize(2);
 		assertThat(events.get(0).getValue(Event.DISTANCE)).isEqualTo(Measures.valueOf("6164.05 m"));
@@ -65,7 +65,7 @@ public class ActivitiesResultTest extends ResultTestSupport {
 	@Test
 	public void testMiles() {
 		Identity author = new Identity();
-		ActivitiesResult result = new ActivitiesResult(readObject("ActivitiesResultTest.json"), author, Units.MI, Units.KCAL, DateTimeZone.forID("America/Los_Angeles"));
+		RunkeeperActivitiesResult result = new RunkeeperActivitiesResult(readObject("RunkeeperActivitiesResultTest.json"), author, Units.MI, Units.KCAL, DateTimeZone.forID("America/Los_Angeles"));
 		List<Event> events = result.getEvents();
 		assertThat(events).hasSize(2);
 		assertThat(events.get(0).getValue(Event.DISTANCE)).isEqualTo(Measures.valueOf("3.83 mi"));

@@ -11,12 +11,12 @@ import com.zenobase.models.Location;
 import com.zenobase.models.Resource;
 import com.zenobase.tasks.ResultTestSupport;
 
-public class ActivityResultTest extends ResultTestSupport {
+public class RunkeeperActivityResultTest extends ResultTestSupport {
 
 	@Test
 	public void test() {
 		Event event = new Event();
-		new ActivityResult(readObject("ActivityResultTest.json"), Units.M).addDetails(event);
+		new RunkeeperActivityResult(readObject("RunkeeperActivityResultTest.json"), Units.M).addDetails(event);
 		assertThat(event.getValue(Event.NOTE)).isEqualTo("Nice evening walk.");
 		assertThat(event.getValue(Event.HEIGHT)).isEqualTo(Measures.valueOf("58 m"));
 		assertThat(event.getValue(Event.FREQUENCY)).isEqualTo(Measures.valueOf("75 bpm"));

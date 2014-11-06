@@ -8,7 +8,7 @@ import com.google.common.collect.TreeRangeMap;
 import com.zenobase.models.Event;
 import com.zenobase.models.Location;
 
-public class Storyline {
+public class MovesStoryline {
 
 	private final RangeMap<DateTime, Location> locations = TreeRangeMap.create();
 
@@ -37,7 +37,7 @@ public class Storyline {
 		}
 		Event copy = event.copy();
 		copy.setValue(Event.LOCATION, location);
-		copy.addValue(Event.SOURCE, ActivitiesResult.SOURCE);
+		copy.addValue(Event.SOURCE, MovesActivitiesResult.SOURCE);
 		return copy;
 	}
 

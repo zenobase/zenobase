@@ -14,12 +14,12 @@ import com.zenobase.models.Event;
 import com.zenobase.models.Location;
 import com.zenobase.models.Resource;
 
-class ActivityResult {
+class RunkeeperActivityResult {
 
 	private final JsonNode node;
 	private final Unit<Length> unit;
 
-	public ActivityResult(JsonNode node, Unit<Length> unit) {
+	public RunkeeperActivityResult(JsonNode node, Unit<Length> unit) {
 		this.node = Preconditions.checkNotNull(node);
 		this.unit = unit;
 	}

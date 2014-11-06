@@ -12,12 +12,12 @@ import com.zenobase.models.Event;
 import com.zenobase.models.Location;
 import com.zenobase.tasks.ResultTestSupport;
 
-public class PlacesResultTest extends ResultTestSupport {
+public class MovesPlacesResultTest extends ResultTestSupport {
 
 	@Test
 	public void test() {
 		DateTime begin = dateTime("2012-12-12T07:46:17+0200");
-		PlacesResult result = new PlacesResult(TESTER, begin, readArray("PlacesResultTest.json"));
+		MovesPlacesResult result = new MovesPlacesResult(TESTER, begin, readArray("MovesPlacesResultTest.json"));
 		List<Event> events = result.getEvents();
 		assertThat(events).as("events").hasSize(4);
 		Event expected = new Event(events.get(0).getId());
@@ -26,7 +26,7 @@ public class PlacesResultTest extends ResultTestSupport {
 		expected.setValue(Event.LOCATION, new Location("55.55555", "33.33333"));
 		expected.setValue(Event.DURATION, Duration.standardSeconds(8074));
 		expected.setValue(Event.AUTHOR, TESTER);
-		expected.setValue(Event.SOURCE, PlacesResult.SOURCE);
+		expected.setValue(Event.SOURCE, MovesPlacesResult.SOURCE);
 		assertThat(events.get(0)).as("1st event").isEqualTo(expected);
 		assertThat(events.get(1).getValues(Event.TAG)).containsExactly("Place");
 		assertThat(events.get(2).getValues(Event.TAG)).containsExactly("Place", "Home");

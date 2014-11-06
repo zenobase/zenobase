@@ -7,11 +7,11 @@ import org.joda.time.format.ISODateTimeFormat;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.base.Preconditions;
 
-class ProfileResult {
+class MovesProfileResult {
 
 	private final JsonNode node;
 
-	public ProfileResult(JsonNode node) {
+	public MovesProfileResult(JsonNode node) {
 		this.node = Preconditions.checkNotNull(node);
 	}
 

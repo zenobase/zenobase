@@ -9,27 +9,27 @@ import com.google.common.collect.Lists;
 
 import com.zenobase.models.Location;
 
-class StorylineResult {
+class MovesStorylineResult {
 
 	private final JsonNode node;
 
-	public StorylineResult(JsonNode node) {
+	public MovesStorylineResult(JsonNode node) {
 		this.node = node;
 	}
 
-	public void update(Storyline storyline) {
+	public void update(MovesStoryline storyline) {
 		for (JsonNode dayNode : node) {
 			addDay(dayNode, storyline);
 		}
 	}
 
-	public void addDay(JsonNode node, Storyline storyline) {
+	public void addDay(JsonNode node, MovesStoryline storyline) {
 		for (JsonNode segmentNode : node.path("segments")) {
 			addSegment(segmentNode, storyline);
 		}
 	}
 
-	public void addSegment(JsonNode node, Storyline storyline) {
+	public void addSegment(JsonNode node, MovesStoryline storyline) {
 		String type = node.path("type").textValue();
 		if ("move".equals(type)) {
 			TrackPoint previous = null;

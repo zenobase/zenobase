@@ -15,7 +15,7 @@ import com.zenobase.models.Identity;
 import com.zenobase.models.Location;
 import com.zenobase.models.Resource;
 
-class PlacesResult {
+class MovesPlacesResult {
 
 	public static final Resource SOURCE = new Resource("Moves", "http://www.moves-app.com/");
 
@@ -23,7 +23,7 @@ class PlacesResult {
 	private final DateTime begin;
 	private final JsonNode node;
 
-	public PlacesResult(Identity author, DateTime begin, JsonNode node) {
+	public MovesPlacesResult(Identity author, DateTime begin, JsonNode node) {
 		this.author = Preconditions.checkNotNull(author);
 		this.begin = Preconditions.checkNotNull(begin);
 		this.node = Preconditions.checkNotNull(node);

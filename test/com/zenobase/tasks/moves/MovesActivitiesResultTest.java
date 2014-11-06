@@ -16,12 +16,12 @@ import com.zenobase.common.Units;
 import com.zenobase.models.Event;
 import com.zenobase.tasks.ResultTestSupport;
 
-public class ActivitiesResultTest extends ResultTestSupport {
+public class MovesActivitiesResultTest extends ResultTestSupport {
 
 	@Test
 	public void test() {
 		DateTime begin = dateTime("2012-12-12T07:14:30+0200");
-		ActivitiesResult result = new ActivitiesResult(readArray("ActivitiesResultTest.json"), TESTER, begin, Units.KM, Units.KCAL);
+		MovesActivitiesResult result = new MovesActivitiesResult(readArray("MovesActivitiesResultTest.json"), TESTER, begin, Units.KM, Units.KCAL);
 		List<Event> events = result.getEvents();
 		assertThat(events).as("events").hasSize(6);
 		Event expected = new Event(events.get(0).getId());
@@ -32,7 +32,7 @@ public class ActivitiesResultTest extends ResultTestSupport {
 		expected.setValue(Event.COUNT, 1353);
 		expected.setValue(Event.ENERGY, Measures.<Energy>valueOf("99 kcal"));
 		expected.setValue(Event.AUTHOR, TESTER);
-		expected.setValue(Event.SOURCE, PlacesResult.SOURCE);
+		expected.setValue(Event.SOURCE, MovesPlacesResult.SOURCE);
 		assertThat(events.get(0)).as("first event").isEqualTo(expected);
 	}
 }

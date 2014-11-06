@@ -62,7 +62,7 @@ public class RunkeeperTaskManager extends OAuthTaskManager {
 			}
 			request.addQuerystringParameter("pageSize", "100");
 			Response response = send(request, credentials);
-			ActivitiesResult result = new ActivitiesResult(parseObject(response), task.getPrincipal(), task.getDistanceUnit(), task.getEnergyUnit(), task.getTimezone());
+			RunkeeperActivitiesResult result = new RunkeeperActivitiesResult(parseObject(response), task.getPrincipal(), task.getDistanceUnit(), task.getEnergyUnit(), task.getTimezone());
 			for (Event event : result.getEvents()) {
 				if (from == null || event.getValue(Event.TIMESTAMP).toLocalDateTime().isAfter(from)) {
 					events.add(event);
@@ -80,7 +80,7 @@ public class RunkeeperTaskManager extends OAuthTaskManager {
 		OAuthRequest request = new OAuthRequest(Verb.GET, host + event.getValue(Event.SOURCE).getUrl());
 		request.addHeader("Accept", "application/vnd.com.runkeeper.FitnessActivity+json");
 		Response response = send(request, credentials);
-		new ActivityResult(parseObject(response), heightUnit).addDetails(event);
+		new RunkeeperActivityResult(parseObject(response), heightUnit).addDetails(event);
 	}
 
 	static LocalDateTime parseMarker(String marker) {

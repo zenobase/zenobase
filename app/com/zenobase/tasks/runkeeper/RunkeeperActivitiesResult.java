@@ -25,7 +25,7 @@ import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
 import com.zenobase.models.Resource;
 
-class ActivitiesResult {
+class RunkeeperActivitiesResult {
 
 	static final DateTimeFormatter TIME_FORMAT = DateTimeFormat.forPattern("EEE, dd MMM yyyy HH:mm:ss");
 
@@ -35,7 +35,7 @@ class ActivitiesResult {
 	private final Unit<Energy> energyUnit;
 	private final DateTimeZone timezone;
 
-	public ActivitiesResult(JsonNode node, Identity author, Unit<Length> lengthUnit, Unit<Energy> energyUnit, DateTimeZone timezone) {
+	public RunkeeperActivitiesResult(JsonNode node, Identity author, Unit<Length> lengthUnit, Unit<Energy> energyUnit, DateTimeZone timezone) {
 		this.node = Preconditions.checkNotNull(node);
 		this.author = author;
 		this.lengthUnit = lengthUnit;

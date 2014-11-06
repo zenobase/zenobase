@@ -24,7 +24,7 @@ import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
 import com.zenobase.models.Resource;
 
-class ActivitiesResult {
+class MovesActivitiesResult {
 
 	public static final Resource SOURCE = new Resource("Moves", "http://www.moves-app.com/");
 
@@ -34,7 +34,7 @@ class ActivitiesResult {
 	private final Unit<Length> lengthUnit;
 	private final Unit<Energy> energyUnit;
 
-	public ActivitiesResult(JsonNode node, Identity author, DateTime begin, Unit<Length> lengthUnit, Unit<Energy> energyUnit) {
+	public MovesActivitiesResult(JsonNode node, Identity author, DateTime begin, Unit<Length> lengthUnit, Unit<Energy> energyUnit) {
 		this.author = Preconditions.checkNotNull(author);
 		this.begin = Preconditions.checkNotNull(begin);
 		this.lengthUnit = Preconditions.checkNotNull(lengthUnit);

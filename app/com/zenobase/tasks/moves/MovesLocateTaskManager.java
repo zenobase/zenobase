@@ -53,7 +53,7 @@ public class MovesLocateTaskManager extends MovesTaskManagerSupport {
 		}
 		DateTime from = task.getFrom();
 		if (from == null) {
-			ProfileResult profile = getProfile(credentials);
+			MovesProfileResult profile = getProfile(credentials);
 			from = profile.getFirstDate();
 		}
 		EventEditor editor = new LocationEditor(task.getBucketId(), task.getPrincipal(), from, credentials);
@@ -63,7 +63,7 @@ public class MovesLocateTaskManager extends MovesTaskManagerSupport {
 
 	private class LocationEditor extends EventEditor {
 
-		private final Storyline storyline = new Storyline();
+		private final MovesStoryline storyline = new MovesStoryline();
 		private final OAuthCredentials credentials;
 
 		public LocationEditor(String bucketId, Identity principal, DateTime last, OAuthCredentials credentials) {
@@ -85,13 +85,13 @@ public class MovesLocateTaskManager extends MovesTaskManagerSupport {
 			return storyline.update(event);
 		}
 
-		private StorylineResult find(LocalDate from, LocalDate today) {
+		private MovesStorylineResult find(LocalDate from, LocalDate today) {
 			OAuthRequest request = newRequest("/user/storyline/daily");
 			request.addQuerystringParameter("trackPoints", "true");
 			request.addQuerystringParameter("from", from.toString());
 			request.addQuerystringParameter("to", Ordering.natural().min(today, from.plusDays(6)).toString());
 			Response response = send(request, credentials);
-			return new StorylineResult(parseArray(response));
+			return new MovesStorylineResult(parseArray(response));
 		}
 	}
 

@@ -40,10 +40,10 @@ abstract class MovesTaskManagerSupport extends OAuthTaskManager {
 		return super.send(request, credentials);
 	}
 
-	protected ProfileResult getProfile(OAuthCredentials credentials) {
+	protected MovesProfileResult getProfile(OAuthCredentials credentials) {
 		OAuthRequest request = newRequest("/user/profile");
 		Response response = send(request, credentials);
-		return new ProfileResult(parseObject(response));
+		return new MovesProfileResult(parseObject(response));
 	}
 
 	protected void removeDuplicates(List<Event> events) {
