@@ -14,6 +14,7 @@ import org.joda.time.DateTimeZone;
 import org.joda.time.Duration;
 import org.joda.time.LocalDateTime;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.google.common.base.Preconditions;
 
 import com.zenobase.common.DateTimeZones;
 import com.zenobase.common.Measures;
@@ -46,35 +47,41 @@ abstract class FitbitResultSupport {
 	}
 
 	protected static Duration durationValue(JsonNode node) {
-		long value = node.longValue();
-		return value > 0 ? Duration.millis(value) : null;
+		return !isZero(node) ? Duration.millis(node.longValue()) : null;
 	}
 
 	protected static DecimalMeasure<Length> lengthValue(JsonNode node, Unit<Length> unit) {
-		BigDecimal value = node.decimalValue();
-		return value != null ? DecimalMeasure.valueOf(value, unit) : null;
+		return !isZero(node) ? DecimalMeasure.valueOf(node.decimalValue(), unit) : null;
 	}
 
 	protected static DecimalMeasure<Mass> weightValue(JsonNode node, Unit<Mass> unit) {
-		int value = node.intValue();
-		return value > 0 ? Measures.valueOf(node.decimalValue(), unit) : null;
+		return !isZero(node) ? Measures.valueOf(node.decimalValue(), unit) : null;
 	}
 
 	protected static DecimalMeasure<Energy> energyValue(JsonNode node, Unit<Energy> unit) {
-		BigDecimal value = node.decimalValue();
-		if (BigDecimal.ZERO.equals(value) && node.asInt() != 0) {
+		BigDecimal value = null;
+		if (node.isNumber()) {
+			value = node.decimalValue();
+		} else if (node.asInt() != 0) {
 			value = new BigDecimal(node.asInt());
 		}
 		return value != null ? DecimalMeasure.valueOf(value, unit) : null;
 	}
 
 	protected static Rating ratingValue(JsonNode node) {
-		int value = node.intValue();
-		return value > 0 ? Rating.valueOf(value) : null;
+		return !isZero(node) ? Rating.valueOf(node.intValue()) : null;
 	}
 
 	protected static Percentage percentageValue(JsonNode node) {
-		int value = node.intValue();
-		return value > 0 ? Percentage.valueOf(value) : null;
+		return !isZero(node) ? Percentage.valueOf(node.intValue()) : null;
+	}
+
+	protected static Integer countValue(JsonNode node) {
+		return !isZero(node) ? Integer.valueOf(node.intValue()) : null;
+	}
+
+	private static boolean isZero(JsonNode node) {
+		Preconditions.checkArgument(node.isMissingNode() || node.isNull() || node.isNumber());
+		return node.doubleValue() == 0.0;
 	}
 }

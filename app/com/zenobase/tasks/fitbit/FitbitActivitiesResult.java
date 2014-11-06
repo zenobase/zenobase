@@ -42,7 +42,7 @@ class FitbitActivitiesResult extends FitbitResultSupport {
 				event.setValue(Event.TAG, item.path("activityParentName").textValue());
 				event.setValue(Event.TIMESTAMP, date.toDateTime(time, timezone));
 				event.setValue(Event.DURATION, duration);
-				event.setValue(Event.COUNT, item.path("steps").intValue());
+				event.setValue(Event.COUNT, countValue(item.path("steps")));
 				event.setValue(Event.DISTANCE, distance);
 				if (duration != null && distance != null) {
 					event.setValue(Event.VELOCITY, calculateVelocity(distance, duration));
@@ -61,13 +61,13 @@ class FitbitActivitiesResult extends FitbitResultSupport {
 		Unit<Velocity> unit = Units.isMetric(distanceUnit) ? Units.KMH : Units.MPH;
 		long t = duration.getStandardSeconds();
 		double d = Measures.toStandard(distance).getValue().doubleValue();
-		return t > 0 ? Measures.valueOf(Measures.convert(d / t, unit), unit) : null;
+		return d * t > 0.0 ? Measures.valueOf(Measures.round(Measures.convert(d / t, unit), 1), unit) : null;
 	}
 
 	private DecimalMeasure<Pace> calculatePace(Duration duration, DecimalMeasure<Length> distance) {
 		Unit<Pace> unit = Units.isMetric(distanceUnit) ? Units.S_PER_KM : Units.S_PER_MI;
 		long t = duration.getStandardSeconds();
 		double d = Measures.toStandard(distance).getValue().doubleValue();
-		return d > 0.0 ? Measures.valueOf(Measures.round(Measures.convert(t / d, unit), 0), unit) : null;
+		return t * d > 0.0 ? Measures.valueOf(Measures.round(Measures.convert(t / d, unit), 0), unit) : null;
 	}
 }

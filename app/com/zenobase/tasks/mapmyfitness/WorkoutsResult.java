@@ -72,33 +72,30 @@ class WorkoutsResult {
 	}
 
 	private Duration durationValue(JsonNode node) {
-		long value = node.asLong();
-		return value > 0 ? Duration.standardSeconds(value) : null;
+		return !isZero(node) ? Duration.standardSeconds(node.longValue()) : null;
 	}
 
 	private Integer countValue(JsonNode node) {
-		int value = node.intValue();
-		return value > 0 ? value : null;
+		return !isZero(node) ? node.intValue() : null;
 	}
 
 	private DecimalMeasure<Length> distanceValue(JsonNode node) {
 		Unit<Length> unit = imperial ? Units.MI : Units.KM;
-		return node.isNumber() ? Measures.valueOf(Measures.convert(node.doubleValue(), unit), unit) : null;
+		return !isZero(node) ? Measures.valueOf(Measures.round(Measures.convert(node.doubleValue(), unit), 1), unit) : null;
 	}
 
 	private DecimalMeasure<Velocity> velocityValue(JsonNode node) {
 		Unit<Velocity> unit = imperial ? Units.MPH : Units.KMH;
-		return node.isNumber() ? Measures.valueOf(Measures.convert(node.doubleValue(), unit), unit) : null;
+		return !isZero(node) ? Measures.valueOf(Measures.round(Measures.convert(node.doubleValue(), unit), 1), unit) : null;
 	}
 
 	private DecimalMeasure<Pace> paceValue(JsonNode node) {
 		Unit<Pace> unit = imperial ? Units.S_PER_MI : Units.S_PER_KM;
-		return node.isNumber() ? Measures.valueOf(Measures.round(Measures.convert(Math.pow(node.doubleValue(), -1.0), unit), 0), unit) : null;
+		return !isZero(node) ? Measures.valueOf(Measures.round(Measures.convert(Math.pow(node.doubleValue(), -1.0), unit), 0), unit) : null;
 	}
 
 	private DecimalMeasure<Frequency> frequencyValue(JsonNode node) {
-		int value = node.intValue();
-		return value > 0 ? Measures.<Frequency>valueOf(BigDecimal.valueOf(value), Units.BPM) : null;
+		return !isZero(node) ? Measures.<Frequency>valueOf(BigDecimal.valueOf(node.intValue()), Units.BPM) : null;
 	}
 
 	private Resource resourceValue(JsonNode node) {
@@ -109,5 +106,10 @@ class WorkoutsResult {
 
 	public String getNext() {
 		return node.path("_links").path("next").path(0).path("href").textValue();
+	}
+
+	private static boolean isZero(JsonNode node) {
+		Preconditions.checkArgument(node.isMissingNode() || node.isNull() || node.isNumber());
+		return node.doubleValue() == 0.0;
 	}
 }

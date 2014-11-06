@@ -33,11 +33,11 @@ class ActivityResult {
 	}
 
 	private static <Q extends Quantity> DecimalMeasure<Q> measureValue(JsonNode node, Unit<Q> unit) {
-		return node.isNumber() ? Measures.<Q>valueOf(node.decimalValue(), unit) : null;
+		return !isZero(node) ? Measures.<Q>valueOf(node.decimalValue(), unit) : null;
 	}
 
 	private static <Q extends Quantity> DecimalMeasure<Q> convertMeasureValue(JsonNode node, Unit<Q> unit) {
-		return node.isNumber() ? Measures.<Q>valueOf(Measures.convert(node.doubleValue(), unit), unit) : null;
+		return !isZero(node) ? Measures.<Q>valueOf(Measures.round(Measures.convert(node.doubleValue(), unit), 0), unit) : null;
 	}
 
 	private static Location locationValue(JsonNode path) {
@@ -47,5 +47,10 @@ class ActivityResult {
 			}
 		}
 		return null;
+	}
+
+	private static boolean isZero(JsonNode node) {
+		Preconditions.checkArgument(node.isMissingNode() || node.isNull() || node.isNumber());
+		return node.doubleValue() == 0.0;
 	}
 }

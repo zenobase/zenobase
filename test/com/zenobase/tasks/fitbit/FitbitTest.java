@@ -33,10 +33,10 @@ public class FitbitTest extends TaskTestSupport {
 	}
 
 	@Test
-	@Ignore
+	// @Ignore
 	public void testActivities() {
 		run(new FitbitActivitiesTaskManager(newCredentialsManager()), Nodes.newObject()
-			.put("marker", "2014-10-25"));
+			.put("marker", "2014-11-05"));
 	}
 
 	@Test

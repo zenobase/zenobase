@@ -50,8 +50,8 @@ class ActivitiesResult {
 		event.setValue(Event.TIMESTAMP, dateTimeValue(node.path("start_date"), dateTimeZoneValue(node.path("timezone"))));
 		event.setValue(Event.DURATION, durationValue(node.path("elapsed_time")));
 		event.setValue(Event.LOCATION, locationValue(node.path("start_latlng")));
-		event.setValue(Event.DISTANCE, distanceValue(node.path("distance"), metric ? Units.KM : Units.MI));
-		event.setValue(Event.HEIGHT, distanceValue(node.path("total_elevation_gain"), metric ? Units.M : Units.FT));
+		event.setValue(Event.DISTANCE, distanceValue(node.path("distance"), metric ? Units.KM : Units.MI, 1));
+		event.setValue(Event.HEIGHT, distanceValue(node.path("total_elevation_gain"), metric ? Units.M : Units.FT, 0));
 		event.setValue(Event.ENERGY, energyValue(node.path("kilojoules")));
 		event.setValue(Event.VELOCITY, velocityValue(node.path("average_speed"), metric ? Units.KMH : Units.MPH));
 		event.setValue(Event.PACE, paceValue(node.path("average_speed"), metric ? Units.S_PER_KM : Units.S_PER_MI));
@@ -87,27 +87,32 @@ class ActivitiesResult {
 		return new Location(node.path(0).decimalValue(), node.path(1).decimalValue());
 	}
 
-	private DecimalMeasure<Length> distanceValue(JsonNode node, Unit<Length> unit) {
-		return node.isNumber() ? Measures.valueOf(Measures.convert(node.doubleValue(), unit), unit) : null;
+	private DecimalMeasure<Length> distanceValue(JsonNode node, Unit<Length> unit, int scale) {
+		return !isZero(node) ? Measures.valueOf(Measures.round(Measures.convert(node.doubleValue(), unit), scale), unit) : null;
 	}
 
 	private DecimalMeasure<Velocity> velocityValue(JsonNode node, Unit<Velocity> unit) {
-		return node.isNumber() ? Measures.valueOf(Measures.convert(node.doubleValue(), unit), unit) : null;
+		return !isZero(node) ? Measures.valueOf(Measures.round(Measures.convert(node.doubleValue(), unit), 1), unit) : null;
 	}
 
 	private DecimalMeasure<Pace> paceValue(JsonNode node, Unit<Pace> unit) {
-		return node.isNumber() ? Measures.valueOf(Measures.round(Measures.convert(Math.pow(node.doubleValue(), -1.0), unit), 0), unit) : null;
+		return !isZero(node) ? Measures.valueOf(Measures.round(Measures.convert(Math.pow(node.doubleValue(), -1.0), unit), 0), unit) : null;
 	}
 
 	private DecimalMeasure<Energy> energyValue(JsonNode node) {
-		return node.isNumber() ? Measures.<Energy>valueOf(node.decimalValue(), Units.KJ) : null;
+		return !isZero(node) ? Measures.valueOf(Measures.round(node.decimalValue(), 0), Units.KJ) : null;
 	}
 
 	private DecimalMeasure<Frequency> frequencyValue(JsonNode node) {
-		return node.isNumber() ? Measures.<Frequency>valueOf(Measures.round(node.decimalValue(), 0), Units.BPM) : null;
+		return !isZero(node) ? Measures.valueOf(Measures.round(node.decimalValue(), 0), Units.BPM) : null;
 	}
 
 	private Resource resourceValue(JsonNode node) {
-		return node.isNumber() ? new Resource("Strava", "http://www.strava.com/activities/" + node.intValue()) : null;
+		return !isZero(node) ? new Resource("Strava", "http://www.strava.com/activities/" + node.intValue()) : null;
+	}
+
+	private static boolean isZero(JsonNode node) {
+		Preconditions.checkArgument(node.isMissingNode() || node.isNull() || node.isNumber());
+		return node.doubleValue() == 0.0;
 	}
 }

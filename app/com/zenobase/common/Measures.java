@@ -8,6 +8,7 @@ import javax.measure.DecimalMeasure;
 import javax.measure.quantity.Quantity;
 import javax.measure.unit.Unit;
 
+import com.google.common.base.Preconditions;
 import com.google.common.primitives.Doubles;
 
 public class Measures {
@@ -21,11 +22,15 @@ public class Measures {
 	}
 
 	public static <Q extends Quantity> DecimalMeasure<Q> valueOf(BigDecimal value, String unit) {
+		Preconditions.checkNotNull(value);
+		Preconditions.checkNotNull(unit);
 		Unit<Q> u = Units.valueOf(unit);
 		return valueOf(value, u);
 	}
 
 	public static <Q extends Quantity> DecimalMeasure<Q> valueOf(BigDecimal value, Unit<Q> unit) {
+		Preconditions.checkNotNull(value);
+		Preconditions.checkNotNull(unit);
 		return DecimalMeasure.valueOf(value, unit);
 	}
 

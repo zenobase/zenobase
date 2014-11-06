@@ -9,7 +9,7 @@ public class MapMyFitnessTest extends TaskTestSupport {
 
 	@Test
 	public void test() {
-		run(new MapMyFitnessTaskManager(newCredentialsManager()), Nodes.newObject("marker", "2014-04-17T15:09:58.000-07:00"));
+		run(new MapMyFitnessTaskManager(newCredentialsManager()), Nodes.newObject("marker", "2014-11-06T00:00:00.000-08:00"));
 	}
 
 	@Override

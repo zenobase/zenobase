@@ -1,6 +1,5 @@
 package com.zenobase.tasks.fitbit;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 import javax.measure.DecimalMeasure;
@@ -28,7 +27,7 @@ class FitbitFoodResult extends FitbitResultSupport {
 		List<Event> events = Lists.newArrayList();
 		for (JsonNode foodNode : node.path("foods-log-caloriesIn")) {
 			DecimalMeasure<Energy> value = energyValue(foodNode.path("value"), Units.KCAL);
-			if (!BigDecimal.ZERO.equals(value.getValue())) {
+			if (value != null) {
 				LocalDate date = LocalDate.parse(foodNode.path("dateTime").textValue());
 				DateTime begin = date.toDateTimeAtStartOfDay(timezone);
 				Event event = new Event();

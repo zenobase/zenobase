@@ -9,6 +9,7 @@ import javax.measure.unit.Unit;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.NullNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.common.base.Preconditions;
 
 import com.zenobase.common.Measures;
 import com.zenobase.search.MeasureConstraintBuilder;
@@ -54,6 +55,8 @@ public class DecimalMeasureField<Q extends Quantity> extends Field<DecimalMeasur
 	}
 
 	private static JsonNode toJson(BigDecimal value, Unit<?> unit) {
+		Preconditions.checkNotNull(value);
+		Preconditions.checkNotNull(unit);
 		ObjectNode node = Nodes.newObject();
 		VALUE.setValue(node, value);
 		UNIT.setValue(node, unit.toString());

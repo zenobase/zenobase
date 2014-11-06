@@ -12,7 +12,7 @@ public class RunkeeperTest extends TaskTestSupport {
 	public void test() {
 		CustomX509TrustManager.setDefault();
 		run(new RunkeeperTaskManager(newCredentialsManager()), Nodes.newObject()
-			.put("marker", "2013-12-01")
+			.put("marker", "2014-11-06")
 			.put("unit", "mi")
 			.put("timezone", "America/Los_Angeles"));
 	}

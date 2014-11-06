@@ -20,19 +20,17 @@
         {
             "activityId": 17190,
             "activityParentId": 90013,
-            "activityParentName": "Walk",
-            "calories": 145,
-            "description": "3.0 mph, moderate pace",
-            "distance": 2.34,
-            "duration": 1825000,
+            "activityParentName": "Dynaflex",
+            "calories": 105,
+            "description": "",
+            "duration": 300000,
             "hasStartTime": true,
             "isFavorite": false,
             "lastModified": "2014-10-28T12:53:01.000-07:00",
             "logId": 113335963,
-            "name": "Walk",
+            "name": "Dynaflex",
             "startDate": "2014-10-28",
-            "startTime": "12:22",
-            "steps": 3050
+            "startTime": "12:22"
         }
     ],
     "goals": {

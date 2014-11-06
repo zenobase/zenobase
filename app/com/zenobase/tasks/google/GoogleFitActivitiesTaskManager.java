@@ -242,7 +242,7 @@ public class GoogleFitActivitiesTaskManager extends GoogleFitTaskManagerSupport<
 				BigDecimal value = values.asMapOfRanges().get(range);
 				if (value != null) {
 					Unit<Velocity> unit = task.isMetric() ? Units.KMH : Units.MPH;
-					event.setValue(Event.VELOCITY, Measures.valueOf(Measures.convert(value.doubleValue(), unit), unit));
+					event.setValue(Event.VELOCITY, Measures.valueOf(Measures.round(Measures.convert(value.doubleValue(), unit), 1), unit));
 					if (value.doubleValue() > 0.0) {
 						Unit<Pace> paceUnit = task.isMetric() ? Units.S_PER_KM : Units.S_PER_MI;
 						event.setValue(Event.PACE, Measures.valueOf(Measures.round(Measures.convert(Math.pow(value.doubleValue(), -1), paceUnit), 0), paceUnit));

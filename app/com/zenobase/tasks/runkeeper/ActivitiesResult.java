@@ -76,32 +76,37 @@ class ActivitiesResult {
 	}
 
 	private Duration durationValue(JsonNode node) {
-		return node.isNumber() ? Duration.millis(node.decimalValue().movePointRight(3).longValue()) : null;
+		return !isZero(node) ? Duration.millis(node.decimalValue().movePointRight(3).longValue()) : null;
 	}
 
 	private DecimalMeasure<Length> distanceValue(JsonNode node) {
-		return node.isNumber() ? Measures.valueOf(Measures.convert(node.doubleValue(), lengthUnit), lengthUnit) : null;
+		return !isZero(node) ? Measures.valueOf(Measures.convert(node.doubleValue(), lengthUnit), lengthUnit) : null;
 	}
 
 	private DecimalMeasure<Energy> energyValue(JsonNode node) {
-		return node.isNumber() ? Measures.<Energy>valueOf(Measures.round(node.decimalValue(), 0), energyUnit) : null;
+		return !isZero(node) ? Measures.<Energy>valueOf(Measures.round(node.decimalValue(), 0), energyUnit) : null;
 	}
 
 	private DecimalMeasure<Velocity> calculateVelocity(DecimalMeasure<Length> distance, Duration duration) {
 		Unit<Velocity> unit = Units.isMetric(lengthUnit) ? Units.KMH : Units.MPH;
 		long t = duration.getStandardSeconds();
 		double d = Measures.toStandard(distance).getValue().doubleValue();
-		return t > 0 ? Measures.valueOf(Measures.convert(d / t, unit), unit) : null;
+		return t * d > 0.0 ? Measures.valueOf(Measures.round(Measures.convert(d / t, unit), 1), unit) : null;
 	}
 
 	private DecimalMeasure<Pace> calculatePace(Duration duration, DecimalMeasure<Length> distance) {
 		Unit<Pace> unit = Units.isMetric(lengthUnit) ? Units.S_PER_KM : Units.S_PER_MI;
 		long t = duration.getStandardSeconds();
 		double d = Measures.toStandard(distance).getValue().doubleValue();
-		return d > 0.0 ? Measures.valueOf(Measures.round(Measures.convert(t / d, unit), 0), unit) : null;
+		return d * t > 0.0 ? Measures.valueOf(Measures.round(Measures.convert(t / d, unit), 0), unit) : null;
 	}
 
 	public String getNext() {
 		return node.path("next").textValue();
+	}
+
+	private static boolean isZero(JsonNode node) {
+		Preconditions.checkArgument(node.isMissingNode() || node.isNull() || node.isNumber());
+		return node.doubleValue() == 0.0;
 	}
 }

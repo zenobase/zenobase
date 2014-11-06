@@ -12,17 +12,16 @@
             "uri": "/fitnessActivities/268390846"
         },
         {
-            "duration": 3501.854,
-            "total_distance": 4497.40695021703,
-            "has_path": true,
+            "duration": 0,
+            "has_path": false,
             "entry_mode": "API",
             "source": "RunKeeper",
-            "start_time": "Sun, 13 Oct 2013 15:00:25",
-            "total_calories": 282,
-            "type": "Walking",
-            "uri": "/fitnessActivities/256631757"
+            "start_time": "Thu, 6 Nov 2014 11:48:07",
+            "total_calories": 0,
+            "type": "Other",
+            "uri": "/fitnessActivities/465890172"
         }
     ],
     "next" : "/fitnessActivities?page=1&pageSize=2",
-    "size": 10
+    "size": 2
 }
