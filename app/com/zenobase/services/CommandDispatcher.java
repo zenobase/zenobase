@@ -1,7 +1,10 @@
 package com.zenobase.services;
 
+import java.util.List;
+
 import javax.inject.Inject;
 
+import org.elasticsearch.common.collect.Lists;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import play.Logger;
@@ -43,8 +46,27 @@ public class CommandDispatcher {
 	}
 
 	private void dispatch(CompoundCommand command) {
-		for (Command c : command.getCommands()) {
-			handlers.execute(c);
+		List<Command> dispatched = Lists.newArrayList();
+		try {
+			for (Command c : command.getCommands()) {
+				handlers.execute(c);
+				dispatched.add(c);
+			}
+		} catch (RuntimeException e) {
+			if (!dispatched.isEmpty()) {
+				int count = dispatched.size();
+				Logger.warn("Reverting {} {} ({})...", command.getPrincipal(), command, count);
+				try {
+					while (count-- > 0) {
+						Command c = dispatched.get(count);
+						handlers.execute(c.reverse(c.getPrincipal()));
+					}
+				} catch (RuntimeException e2) {
+					Logger.error("Couldn't revert {} {} ({}/{})...", command.getPrincipal(), command, count + 1, dispatched.size());
+					throw e;
+				}
+			}
+			throw e;
 		}
 	}
 

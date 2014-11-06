@@ -1,5 +1,6 @@
 package com.zenobase.services;
 
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 
 import org.joda.time.DateTime;
@@ -69,5 +70,35 @@ public class CommandDispatcherTest {
 		verify(handlers).execute(c3);
 
 		verify(quotas).spend(TESTER, 3);
+	}
+
+	@Test
+	public void testFailingCompoundCommand() {
+		CommandHandlerRegistry handlers = mock(CommandHandlerRegistry.class);
+		CommandRepository repository = mock(CommandRepository.class);
+		QuotaManager quotas = mock(QuotaManager.class);
+
+		CommandDispatcher dispatcher = new CommandDispatcher(handlers, repository, quotas);
+
+		Command c1 = new TestCommand(TESTER, "do a bit");
+		Command c2 = new TestCommand(TESTER, "do more");
+		Command c3 = new TestCommand(TESTER, "do most");
+
+		doThrow(new RuntimeException()).when(handlers).execute(c3);
+
+		CompoundCommand cc = new CompoundCommand(TESTER, "do it all", "undo it all");
+		cc.add(c1);
+		cc.add(c2);
+		cc.add(c3);
+
+		try {
+			dispatcher.dispatch(cc);
+			throw new AssertionError("expected an exception");
+		} catch (RuntimeException e) {
+
+		}
+		verifyZeroInteractions(repository);
+
+		verify(handlers, times(5)).execute(any(TestCommand.class));
 	}
 }
