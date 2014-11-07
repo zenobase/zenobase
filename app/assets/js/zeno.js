@@ -4333,12 +4333,16 @@
 
 	app.factory('SleepCycle', ['moment', function(moment) {
 
+		function formatMoment(t) {
+			return t.format('YYYY-MM-DDTHH:mm:ss.SSSZ');
+		}
+
 		function parseStart(value) {
 			var t = moment(value);
-			if (t) {
-				return t.format('YYYY-MM-DDTHH:mm:ss.SSSZ');
+			if (!t) {
+				throw new Error(value + ' is not a valid time');
 			}
-			throw new Error(value + ' is not a valid time');
+			return t;
 		}
 
 		function parseSleepQuality(value) {
@@ -4402,7 +4406,7 @@
 						var duration = parseTimeInBed(fields[3]);
 						var event = {
 							'tag' : parseSleepNotes(fields[5]),
-							'timestamp' : [ begin, begin.add(duration, 'ms') ],
+							'timestamp' : [ formatMoment(begin), formatMoment(begin.add(duration, 'ms')) ],
 							'duration' : duration,
 							'percentage' : parseSleepQuality(fields[2]),
 							'rating' : parseWakeUp(fields[4]),
