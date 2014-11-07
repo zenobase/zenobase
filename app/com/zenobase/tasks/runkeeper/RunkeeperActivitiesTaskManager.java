@@ -6,7 +6,6 @@ import javax.inject.Inject;
 import javax.measure.quantity.Length;
 import javax.measure.unit.Unit;
 
-import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDateTime;
 import org.scribe.model.OAuthRequest;
@@ -17,24 +16,18 @@ import com.google.common.base.Objects;
 import com.google.common.collect.Lists;
 
 import com.zenobase.commands.Command;
-import com.zenobase.commands.CompoundCommand;
-import com.zenobase.commands.CreateEventCommand;
-import com.zenobase.commands.UpdateTaskCommand;
 import com.zenobase.common.Units;
 import com.zenobase.json.UnitField;
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
 import com.zenobase.tasks.OAuthCredentials;
-import com.zenobase.tasks.OAuthTaskManager;
 import com.zenobase.tasks.Task;
 
-public class RunkeeperTaskManager extends OAuthTaskManager {
-
-	private static final String host = "https://api.runkeeper.com";
+public class RunkeeperActivitiesTaskManager extends RunkeeperTaskManagerSupport {
 
 	@Inject
-	public RunkeeperTaskManager(RunkeeperCredentialsManager credentialsManager) {
-		super(RunkeeperTask.TYPE, credentialsManager);
+	public RunkeeperActivitiesTaskManager(RunkeeperCredentialsManager credentialsManager) {
+		super(RunkeeperActivitiesTask.TYPE, credentialsManager);
 	}
 
 	@Override
@@ -42,15 +35,15 @@ public class RunkeeperTaskManager extends OAuthTaskManager {
 		String marker = formatMarker(parseMarker(settings.path("marker").textValue()));
 		DateTimeZone zone = DateTimeZone.forID(Objects.firstNonNull(settings.path("timezone").textValue(), "UTC"));
 		Unit<Length> lengthUnit = Objects.firstNonNull(new UnitField<Length>("unit").getValue(settings), Units.KM);
-		return new RunkeeperTask(bucketId, principal, zone, lengthUnit, Units.KCAL, marker);
+		return new RunkeeperActivitiesTask(bucketId, principal, zone, lengthUnit, Units.KCAL, marker);
 	}
 
 	@Override
 	public Command execute(Task task, OAuthCredentials credentials) {
-		return execute(task.as(RunkeeperTask.class), credentials);
+		return execute(task.as(RunkeeperActivitiesTask.class), credentials);
 	}
 
-	private Command execute(RunkeeperTask task, OAuthCredentials credentials) {
+	private Command execute(RunkeeperActivitiesTask task, OAuthCredentials credentials) {
 		String path = "/fitnessActivities";
 		List<Event> events = Lists.newArrayList();
 		LocalDateTime from = parseMarker(task.getMarker());
@@ -81,39 +74,5 @@ public class RunkeeperTaskManager extends OAuthTaskManager {
 		request.addHeader("Accept", "application/vnd.com.runkeeper.FitnessActivity+json");
 		Response response = send(request, credentials);
 		new RunkeeperActivityResult(parseObject(response), heightUnit).addDetails(event);
-	}
-
-	static LocalDateTime parseMarker(String marker) {
-		return marker != null ? LocalDateTime.parse(marker.replaceAll("Z", "")) : null;
-	}
-
-	static String formatMarker(LocalDateTime time) {
-		return time != null ? time.toString() : null;
-	}
-
-	static String getMarker(Iterable<Event> events) {
-		DateTime latest = null;
-		for (Event event : events) {
-			DateTime time = event.getValue(Event.TIMESTAMP);
-			if (latest == null || time.isAfter(latest)) {
-				latest = time;
-			}
-		}
-		return latest != null ? latest.plusSeconds(1).toLocalDateTime().toString() : null;
-	}
-
-	private Command createCommand(RunkeeperTask task, OAuthCredentials credentials, List<Event> events) {
-		CompoundCommand command = new CompoundCommand(task.getPrincipal(), "ran " + getType() + " task", "reverted " + getType() + " task");
-		command.add(UpdateTaskCommand.builder(task)
-			.set(Task.COMPLETED, task.getCompleted(), new DateTime(DateTimeZone.UTC))
-			.set(Task.STATUS, task.getStatus(), Task.Status.SUCCESS)
-			.set(Task.MARKER, task.getMarker(), events.isEmpty() ? task.getMarker() : getMarker(events).toString())
-			.set(Task.UNDO, task.getUndoId(), command.getId())
-			.build());
-		for (Event event : events) {
-			// System.out.println("[event] " + event);
-			command.add(new CreateEventCommand(task.getPrincipal(), task.getBucketId(), event));
-		}
-		return command;
 	}
 }

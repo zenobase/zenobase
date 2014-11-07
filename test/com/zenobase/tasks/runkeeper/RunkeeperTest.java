@@ -1,5 +1,7 @@
 package com.zenobase.tasks.runkeeper;
 
+import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.zenobase.json.Nodes;
@@ -8,12 +10,27 @@ import com.zenobase.tasks.TaskTestSupport;
 
 public class RunkeeperTest extends TaskTestSupport {
 
-	@Test
-	public void test() {
+	@BeforeClass
+	public static void setUpSSL() {
 		CustomX509TrustManager.setDefault();
-		run(new RunkeeperTaskManager(newCredentialsManager()), Nodes.newObject()
+	}
+
+	@Test
+	@Ignore
+	public void testActivities() {
+		run(new RunkeeperActivitiesTaskManager(newCredentialsManager()), Nodes.newObject()
 			.put("marker", "2014-11-06")
 			.put("unit", "mi")
+			.put("timezone", "America/Los_Angeles"));
+	}
+
+	@Test
+	@Ignore
+	public void testWeight() {
+		run(new RunkeeperWeightTaskManager(newCredentialsManager()), Nodes.newObject()
+			.put("marker", "2014-11-01")
+			.put("tag", "Me")
+			.put("unit", "lb")
 			.put("timezone", "America/Los_Angeles"));
 	}
 

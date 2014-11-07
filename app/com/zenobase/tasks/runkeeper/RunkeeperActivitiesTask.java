@@ -14,22 +14,22 @@ import com.zenobase.json.UnitField;
 import com.zenobase.models.Identity;
 import com.zenobase.tasks.Task;
 
-public class RunkeeperTask extends Task {
+public class RunkeeperActivitiesTask extends Task {
 
 	public static final String TYPE = "runkeeper-activities";
 	public static final UnitField<Length> LENGTH_UNIT = new UnitField<Length>("unit");
 	public static final UnitField<Energy> ENERGY_UNIT = new UnitField<Energy>("energy_unit");
 	public static final TokenField TIMEZONE = new TokenField("timezone");
 
-	public RunkeeperTask(ObjectNode node) {
+	public RunkeeperActivitiesTask(ObjectNode node) {
 		super(node);
 	}
 
-	public RunkeeperTask(String bucketId, Identity principal) {
+	public RunkeeperActivitiesTask(String bucketId, Identity principal) {
 		super(TYPE, bucketId, principal);
 	}
 
-	RunkeeperTask(String bucketId, Identity principal, DateTimeZone timezone, Unit<Length> lengthUnit, Unit<Energy> energyUnit, String marker) {
+	RunkeeperActivitiesTask(String bucketId, Identity principal, DateTimeZone timezone, Unit<Length> lengthUnit, Unit<Energy> energyUnit, String marker) {
 		super(TYPE, bucketId, principal);
 		setMarker(marker);
 		setSetting(TIMEZONE, timezone != null ? timezone.getID() : null);
@@ -55,7 +55,7 @@ public class RunkeeperTask extends Task {
 	}
 
 	@Override
-	public RunkeeperTask copy() {
+	public RunkeeperActivitiesTask copy() {
 		return copy(getClass());
 	}
 }

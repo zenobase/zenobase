@@ -4727,6 +4727,7 @@
 			{ id : 'reporter-questions', description : 'Creates an event for each question answered.', url : 'http://www.reporter-app.com/' },
 			{ id : 'rescuetime-productivity', description : 'Creates an event for every hour the computer was used.', url : 'https://www.rescuetime.com/' },
 			{ id : 'runkeeper-activities', description : 'Creates an event for each activity.', url : 'http://runkeeper.com/' },
+			{ id : 'runkeeper-weight', description : 'Creates an event for each body weight measurement.', url : 'http://runkeeper.com/' },
 			{ id : 'sleepcloud', description : 'Creates an event for each period of sleep.', url : 'https://sites.google.com/site/sleepasandroid/sleepcloud' },
 			{ id : 'strava-activities', description : 'Creates an event for each activity.', url : 'http://www.strava.com/dashboard' },
 			{ id : 'withings-cardio', description : 'Creates an event for each heart rate measurement.', url : 'http://www.withings.com/' },
@@ -4936,7 +4937,7 @@
 		$scope.init();
 	}]);
 
-	app.controller('RunkeeperSettingsController', ['$scope', '$http', 'Field', 'moment', function($scope, $http, Field, moment) {
+	app.controller('RunkeeperActivitiesSettingsController', ['$scope', '$http', 'Field', 'moment', function($scope, $http, Field, moment) {
 
 		$scope.init = function() {
 			$scope.settings = $scope.$parent.$parent.settings = {
@@ -4958,6 +4959,34 @@
 		};
 		$scope.getUnits = function() {
 			return Field.find('distance').units;
+		};
+
+		$scope.init();
+	}]);
+
+	app.controller('RunkeeperWeightSettingsController', ['$scope', '$http', 'Field', 'moment', function($scope, $http, Field, moment) {
+
+		$scope.init = function() {
+			$scope.settings = $scope.$parent.$parent.settings = {
+					tag : 'Body',
+					unit : 'lb',
+					marker : new Date(moment().utc().subtract(12, 'months').startOf('month').valueOf()),
+					timezone : 'UTC'
+			};
+			$http.get('/tz').success(function(response) {
+				$scope.timezones = response;
+				if (navigator.geolocation) {
+					navigator.geolocation.getCurrentPosition(function(position) {
+						$http.get('/tz?' + $.param({ 'lat' : position.coords.latitude, 'lon' : position.coords.longitude }))
+							.success(function(response) {
+								$scope.settings.timezone = response.timeZoneId;
+							});
+					});
+				}
+			});
+		};
+		$scope.getUnits = function() {
+			return Field.find('weight').units;
 		};
 
 		$scope.init();
