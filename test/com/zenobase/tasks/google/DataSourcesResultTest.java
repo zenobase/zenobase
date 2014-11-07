@@ -18,6 +18,6 @@ public class DataSourcesResultTest extends ResultTestSupport {
 		List<DataStream> streams = result.get();
 		assertThat(streams).as("streams").hasSize(2);
 		assertThat(streams.get(0)).isEqualTo(new DataStream("derived:com.google.location.sample", "com.google.location.sample", new Resource("Location App", "http://example.com/")));
-		assertThat(streams.get(1)).isEqualTo(new DataStream("derived:com.google.step_count.delta", "com.google.step_count.delta", null));
+		assertThat(streams.get(1)).isEqualTo(new DataStream("derived:com.google.step_count.delta", "com.google.step_count.delta", new Resource("Google Fit", "https://fit.google.com/")));
 	}
 }

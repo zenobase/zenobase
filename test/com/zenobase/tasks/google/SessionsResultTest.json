@@ -19,7 +19,7 @@
             "startTimeMillis": "1414612800000",
             "endTimeMillis": "1414614960000",
             "application": {
-                "packageName": "com.google.android.apps.fitness"
+                "packageName": "com.strava"
             },
             "activityType": -1
         }

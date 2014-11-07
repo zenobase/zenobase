@@ -25,15 +25,12 @@ import com.zenobase.commands.CreateEventCommand;
 import com.zenobase.commands.UpdateCredentialsCommand;
 import com.zenobase.commands.UpdateTaskCommand;
 import com.zenobase.models.Event;
-import com.zenobase.models.Resource;
 import com.zenobase.tasks.Credentials;
 import com.zenobase.tasks.OAuthCredentials;
 import com.zenobase.tasks.OAuthTaskManager;
 import com.zenobase.tasks.Task;
 
 abstract class GoogleFitTaskManagerSupport<T extends GoogleFitTaskSupport> extends OAuthTaskManager {
-
-	private static final Resource DEFAULT_SOURCE = new Resource("Google Fit", "https://fit.google.com/");
 
 	private final Class<T> taskClass;
 
@@ -61,10 +58,6 @@ abstract class GoogleFitTaskManagerSupport<T extends GoogleFitTaskSupport> exten
 		}*/
 
 		List<Event> events = createEvents(task.as(taskClass), credentials, streams);
-
-		if (!events.isEmpty()) {
-			setDefaultSource(events);
-		}
 
 		return createCommand(task, credentials, events, token);
 	}
@@ -108,14 +101,6 @@ abstract class GoogleFitTaskManagerSupport<T extends GoogleFitTaskSupport> exten
 				return false;
 			}
 		});
-	}
-
-	protected void setDefaultSource(List<Event> events) {
-		for (Event event : events) {
-			if (!event.contains(Event.SOURCE)) {
-				event.setValue(Event.SOURCE, DEFAULT_SOURCE);
-			}
-		}
 	}
 
 	protected Command createCommand(Task task, OAuthCredentials credentials, List<Event> events, Token expiredToken) {

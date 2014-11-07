@@ -1,13 +1,22 @@
 package com.zenobase.tasks.google;
 
+import org.elasticsearch.common.base.Objects;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableMap;
 
 import com.zenobase.models.Resource;
 
 abstract class GoogleFitResultSupport {
+
+	private static final Resource DEFAULT_RESOURCE = new Resource("Google Fit", "https://fit.google.com/");
+	private static final ImmutableMap<String, Resource> RESOURCES = ImmutableMap.<String, Resource>builder()
+		.put("com.strava", new Resource("Strava", "http://www.strava.com/"))
+		.put("com.runtastic.android", new Resource("Runtastic", "https://www.runtastic.com/"))
+		.put("com.fitnesskeeper.runkeeper.pro", new Resource("RunKeeper", "http://runkeeper.com/"))
+		.build();
 
 	protected final JsonNode node;
 	protected final DateTimeZone zone;
@@ -28,8 +37,15 @@ abstract class GoogleFitResultSupport {
 	}
 
 	protected Resource resourceValue(JsonNode node) {
+		Resource resource = null;
+		String packageName = node.path("packageName").textValue();
 		String title = node.path("name").textValue();
-		String url = node.path("detailsUrl").textValue();
-		return title != null && url != null ? new Resource(title, url) : null;
+		String detailsUrl = node.path("detailsUrl").textValue();
+		if (title != null && detailsUrl != null) {
+			resource = new Resource(title, detailsUrl);
+		} else if (packageName != null) {
+			resource = RESOURCES.get(packageName);
+		}
+		return Objects.firstNonNull(resource, DEFAULT_RESOURCE);
 	}
 }

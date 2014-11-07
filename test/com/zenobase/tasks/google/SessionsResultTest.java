@@ -33,6 +33,7 @@ public class SessionsResultTest extends ResultTestSupport {
 
 		Event e2 = new Event(events.get(1).getId());
 		e2.setValue(Event.AUTHOR, TESTER);
+		e2.setValue(Event.SOURCE, new Resource("Strava", "http://www.strava.com/"));
 		e2.addValue(Event.TIMESTAMP, dateTime("2014-10-29T13:00:00-07:00"));
 		e2.addValue(Event.TIMESTAMP, dateTime("2014-10-29T13:36:00-07:00"));
 		e2.setValue(Event.DURATION, Duration.standardMinutes(36));
