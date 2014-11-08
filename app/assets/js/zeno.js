@@ -393,6 +393,46 @@
 		return Constraint;
 	});
 
+	app.factory('Spreadsheet', function() {
+
+		var Spreadsheet = function(headers) {
+			this.headers = headers;
+			this.records = [];
+		};
+
+		Spreadsheet.prototype.addHeader = function(header) {
+			this.headers.push(header);
+		};
+
+		Spreadsheet.prototype.addRecord = function(record) {
+			this.records.push(record);
+		};
+
+		Spreadsheet.prototype.mergeRecord = function(record) {
+			console.assert(record.length === 2);
+			for (var i = 0; i < this.records.length; ++i) {
+				if (this.records[i][0] === record[0]) {
+					this.records[i].push(record.slice(1));
+					return;
+				} else if (this.records[i][0] > record[0]) {
+					this.records.splice(i, 0, '', record[1]);
+					return;
+				}
+			}
+			this.records.push([ record[0], '', record[1] ]);
+		};
+
+		Spreadsheet.prototype.toBlob = function() {
+			var data = this.headers.join('\t') + '\n';
+			$.each(this.records, function(i, record) {
+				data += record.join('\t') + '\n';
+			});
+			return new Blob([ data ], { type: 'text/plain' });
+		};
+
+		return Spreadsheet;
+	});
+
 	app.controller('UserController', ['$scope', '$http', '$routeParams', 'User', function($scope, $http, $routeParams, User) {
 
 		$scope.username = $routeParams.username;
@@ -1899,7 +1939,7 @@
 		$scope.$on('refresh', $scope.init);
 	}]);
 
-	app.controller('HistogramWidgetController', ['$scope', '$timeout', 'Field', function($scope, $timeout, Field) {
+	app.controller('HistogramWidgetController', ['$scope', '$timeout', 'Field', 'Spreadsheet', function($scope, $timeout, Field, Spreadsheet) {
 	
 		$scope.init = function() {
 			$scope.intervals = null;
@@ -1928,6 +1968,15 @@
 		};
 		$scope.snapshot = function() {
 			$scope.$broadcast('snapshot');
+		};
+		$scope.toSpreadsheet = function(element) {
+			var spreadsheet = new Spreadsheet([ $scope.settings.field, 'count' ]);
+			var field = Field.find($scope.settings.field);
+			$.each($scope.intervals, function(i, interval) {
+				var value = '[' + field.toText(interval.from) + '..' + field.toText(interval.to) + ')';
+				spreadsheet.addRecord([ value, interval.count ]);
+			});
+			return spreadsheet;
 		};
 		$scope.draw = function() {
 			if ($scope.intervals && $scope.intervals.length) {
@@ -2212,7 +2261,7 @@
 		return Interval;
 	});
 
-	app.controller('TimelineWidgetController', ['$scope', '$timeout', 'Field', 'Interval', 'moment', 'statistics', function($scope, $timeout, Field, Interval, moment, statistics) {
+	app.controller('TimelineWidgetController', ['$scope', '$timeout', 'Field', 'Interval', 'Spreadsheet', 'moment', 'statistics', function($scope, $timeout, Field, Interval, Spreadsheet, moment, statistics) {
 
 		$scope.keyField = 'timestamp';
 
@@ -2357,6 +2406,26 @@
 		};
 		$scope.snapshot = function() {
 			$scope.$broadcast('snapshot');
+		};
+		$scope.toSpreadsheet = function(element) {
+			var header = $scope.settings.statistic + '_' + $scope.settings.field;
+			if ($scope.settings.unit) {
+				header += '_' + $scope.settings.unit;
+			}
+			var spreadsheet = new Spreadsheet([ $scope.interval.name, header ]);
+			var field = Field.find($scope.settings.field);
+			$.each($scope.times, function(i, time) {
+				var value = time[$scope.settings.statistic || 'count'];
+				spreadsheet.addRecord([ time.label, angular.isDefined(value) ? field.toNumber(value) : '' ]);
+			});
+			if ($scope.timesB && $scope.timesB.length) {
+				spreadsheet.addHeader(header);
+				$.each($scope.timesB, function(i, time) {
+					var value = time[$scope.settings.statistic || 'count'];
+					spreadsheet.mergeRecord([ time.label, angular.isDefined(value) ? field.toNumber(value) : '' ]);
+				});
+			}
+			return spreadsheet;
 		};
 		$scope.draw = function() {
 			if ($scope.times && $scope.times.length || $scope.timesB && $scope.timesB.length) {
@@ -2816,7 +2885,7 @@
 		});
 	}]);
 
-	app.controller('PolarWidgetController', ['$scope', '$timeout', 'Field', function($scope, $timeout, Field) {
+	app.controller('PolarWidgetController', ['$scope', '$timeout', 'Field', 'Spreadsheet', function($scope, $timeout, Field, Spreadsheet) {
 
 		$scope.keyField = 'timestamp';
 
@@ -2854,6 +2923,26 @@
 		};
 		$scope.snapshot = function() {
 			$scope.$broadcast('snapshot');
+		};
+		$scope.toSpreadsheet = function(element) {
+			var header = $scope.settings.statistic + '_' + $scope.settings.value_field;
+			if ($scope.settings.unit) {
+				header += '_' + $scope.settings.unit;
+			}
+			var spreadsheet = new Spreadsheet([ $scope.settings.interval, header ]);
+			var field = Field.find($scope.settings.value_field);
+			$.each($scope.times, function(i, time) {
+				var value = time[$scope.settings.statistic || 'count'];
+				spreadsheet.addRecord([ time.value, angular.isDefined(value) ? field.toNumber(value) : '' ]);
+			});
+			if ($scope.timesB && $scope.timesB.length) {
+				spreadsheet.addHeader(header);
+				$.each($scope.timesB, function(i, time) {
+					var value = time[$scope.settings.statistic || 'count'];
+					spreadsheet.mergeRecord([ time.value, angular.isDefined(value) ? field.toNumber(value) : '' ]);
+				});
+			}
+			return spreadsheet;
 		};
 		$scope.draw = function() {
 			if ($scope.times && $scope.times.length) {
@@ -3181,7 +3270,7 @@
 		};
 	});
 
-	app.controller('ScatterPlotWidgetController', ['$scope', '$timeout', 'Field', 'timezone', 'statistics', function($scope, $timeout, Field, timezone, statistics) {
+	app.controller('ScatterPlotWidgetController', ['$scope', '$timeout', 'Field', 'Spreadsheet', 'timezone', 'statistics', function($scope, $timeout, Field, Spreadsheet, timezone, statistics) {
 
 		$scope.keyField = 'timestamp';
 
@@ -3226,7 +3315,45 @@
 		$scope.snapshot = function() {
 			$scope.$broadcast('snapshot');
 		};
+		$scope.toSpreadsheet = function(element) {
+			function buildHeader(label, statistic, field, unit) {
+				var header = label;
+				if (!header) {
+					header = statistic + '_' + field;
+					if (unit) {
+						header += '_' + unit;
+					}
+				}
+				return header;
+			}
+			var compareMode = $scope.dataB && $scope.dataB.length;
+			var spreadsheet = new Spreadsheet([ 
+				buildHeader($scope.settings.label_x, $scope.settings.statistic_x, $scope.settings.field_x, $scope.settings.unit_x), 
+				buildHeader($scope.settings.label_y, $scope.settings.statistic_y, $scope.settings.field_y, $scope.settings.unit_y), 
+				compareMode ? 'dataset' : ''
+			]);
+			var field = Field.find($scope.settings.field);
+			$.each($scope.data, function(i, value) {
+				spreadsheet.addRecord([ value[0], value[1], compareMode ? 'a' : '' ]);
+			});
+			if (compareMode) {
+				$.each($scope.dataB, function(i, value) {
+					spreadsheet.addRecord([ value[0], value[1], 'b' ]);
+				});
+			}
+			return spreadsheet;
+		};
 		$scope.draw = function() {
+			function buildLabel(label, statistic, field, unit) {
+				var header = label;
+				if (!header) {
+					header = statistic + ' of ' + field;
+					if (unit) {
+						header += ' (' + unit + ')';
+					}
+				}
+				return header;
+			}
 			var xField = Field.find($scope.settings.field_x);
 			var yField = Field.find($scope.settings.field_y);
 			if ($scope.data && $scope.data.length) {
@@ -3241,7 +3368,7 @@
 					},
 					xAxis : {
 						title : {
-							text : $scope.settings.label_x || $scope.settings.field_x
+							text : buildLabel($scope.settings.label_x, $scope.settings.statistic_x, $scope.settings.field_x, $scope.settings.unit_x)
 						},
 						tickLength : 5,
 						tickWidth : 1,
@@ -3253,7 +3380,7 @@
 					},
 					yAxis : {
 						title : {
-							text : $scope.settings.label_y || $scope.settings.field_y
+							text : buildLabel($scope.settings.label_y, $scope.settings.statistic_y, $scope.settings.field_y, $scope.settings.unit_y)
 						},
 						tickLength : 5,
 						tickWidth : 1,
@@ -3409,7 +3536,7 @@
 							enabled : false
 						}
 					};
-					if ($scope.dataB && $scope.dataB.length > 1) {
+					if ($scope.dataB && $scope.dataB.length > 3) {
 						var correlationB = statistics.correlate($scope.dataB, true);
 						rChartOptions.series.push({
 							data : [[ 1, correlationB.r ]],
@@ -6618,6 +6745,25 @@
 		return {
 			link : function(scope, element) {
 				$window.hljs.highlightBlock(element[0]);
+			}
+		};
+	}]);
+
+	app.directive('uiDownloadCsv', ['$window', function($window) {
+		return {
+			link : function(scope, element) {
+				element.bind('click', function() {
+					var spreadsheet = scope.toSpreadsheet();
+					var url = ($window.URL || $window.webkitURL).createObjectURL(spreadsheet.toBlob());
+					var a = document.createElement('a');
+					document.body.appendChild(a);
+					a.style = 'display:none';
+					a.download = scope.settings.label.replace(' ', '-').toLowerCase() + '.csv';
+					a.href = url;
+					a.click();
+					document.body.removeChild(a);
+					$window.URL.revokeObjectURL(url);
+				});
 			}
 		};
 	}]);
