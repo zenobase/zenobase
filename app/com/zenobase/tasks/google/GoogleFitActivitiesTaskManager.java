@@ -19,10 +19,12 @@ import org.scribe.model.Verb;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Range;
 import com.google.common.collect.RangeMap;
 import com.google.common.collect.TreeRangeMap;
+import com.google.common.math.DoubleMath;
 
 import com.zenobase.common.Measures;
 import com.zenobase.common.Pace;
@@ -57,13 +59,14 @@ public class GoogleFitActivitiesTaskManager extends GoogleFitTaskManagerSupport<
 			: createEventsFromSessions(task, credentials);
 
 		if (!events.isEmpty()) {
-			addLocation(task, credentials, streams.get("derived:com.google.location.sample:com.google.android.gms:merge_location_samples"), events);
-			addDistance(task, credentials, filter(streams.values(), "com.google.distance.cumulative"), events);
-			addDistance(task, credentials, streams.get("derived:com.google.distance.delta:com.google.android.gms:pruned_distance"), events);
-			addCount(task, credentials, streams.get("derived:com.google.step_count.delta:com.google.android.gms:merge_step_deltas"), events);
-			addVelocityAndPace(task, credentials, filter(streams.values(), "com.google.speed.summary"), events);
-			addEnergy(task, credentials, filter(streams.values(), "com.google.calories.expended"), events);
-			addFrequency(task, credentials, filter(streams.values(), "com.google.heart_rate.summary"), events);
+			processLocationSample(task, credentials, streams.get("derived:com.google.location.sample:com.google.android.gms:merge_location_samples"), events);
+			processDistanceCumulative(task, credentials, filter(streams.values(), "com.google.distance.cumulative"), events);
+			processDistanceDelta(task, credentials, streams.get("derived:com.google.distance.delta:com.google.android.gms:pruned_distance"), events);
+			processStepCountDelta(task, credentials, streams.get("derived:com.google.step_count.delta:com.google.android.gms:merge_step_deltas"), events);
+			processSpeedSummary(task, credentials, filter(streams.values(), "com.google.speed.summary"), events);
+			processCaloriesExpended(task, credentials, filter(streams.values(), "com.google.calories.expended"), events);
+			processHeartRateSummary(task, credentials, filter(streams.values(), "com.google.heart_rate.summary"), events);
+			processHeartRate(task, credentials, filter(streams.values(), "com.google.heart_rate.bpm"), events);
 		}
 
 		return events;
@@ -118,7 +121,7 @@ public class GoogleFitActivitiesTaskManager extends GoogleFitTaskManagerSupport<
 		return events;
 	}
 
-	private void addLocation(GoogleFitActivitiesTask task, OAuthCredentials credentials, DataStream stream, List<Event> events) {
+	private void processLocationSample(GoogleFitActivitiesTask task, OAuthCredentials credentials, DataStream stream, List<Event> events) {
 		if (stream != null) {
 			RangeMap<DateTime, Location> locations = TreeRangeMap.create();
 			Location beginLocation = null;
@@ -143,10 +146,11 @@ public class GoogleFitActivitiesTaskManager extends GoogleFitTaskManagerSupport<
 		}
 	}
 
-	private void addDistance(GoogleFitActivitiesTask task, OAuthCredentials credentials, Iterable<DataStream> streams, List<Event> events) {
+	private void processDistanceCumulative(GoogleFitActivitiesTask task, OAuthCredentials credentials, Iterable<DataStream> streams, List<Event> events) {
 		RangeMap<DateTime, BigDecimal> values = TreeRangeMap.create();
 		for (DataStream stream : streams) {
 			for (DataPoint point : getDataPoints(task, credentials, stream)) {
+				Preconditions.checkState("com.google.distance.cumulative".equals(point.getDataType()));
 				BigDecimal value = point.getValue(0);
 				if (value.compareTo(BigDecimal.ZERO) > 0) {
 					values.put(Range.closed(point.getBegin(), point.getEnd()), value);
@@ -165,7 +169,7 @@ public class GoogleFitActivitiesTaskManager extends GoogleFitTaskManagerSupport<
 		}
 	}
 
-	private void addDistance(GoogleFitActivitiesTask task, OAuthCredentials credentials, DataStream stream, List<Event> events) {
+	private void processDistanceDelta(GoogleFitActivitiesTask task, OAuthCredentials credentials, DataStream stream, List<Event> events) {
 		if (stream != null) {
 			RangeMap<DateTime, BigDecimal> values = TreeRangeMap.create();
 			for (DataPoint point : getDataPoints(task, credentials, stream)) {
@@ -196,7 +200,7 @@ public class GoogleFitActivitiesTaskManager extends GoogleFitTaskManagerSupport<
 		return sum;
 	}
 
-	private void addCount(GoogleFitActivitiesTask task, OAuthCredentials credentials, DataStream stream, List<Event> events) {
+	private void processStepCountDelta(GoogleFitActivitiesTask task, OAuthCredentials credentials, DataStream stream, List<Event> events) {
 		if (stream != null) {
 			RangeMap<DateTime, BigDecimal> values = TreeRangeMap.create();
 			for (DataPoint point : getDataPoints(task, credentials, stream)) {
@@ -226,10 +230,11 @@ public class GoogleFitActivitiesTaskManager extends GoogleFitTaskManagerSupport<
 		return sum;
 	}
 
-	private void addVelocityAndPace(GoogleFitActivitiesTask task, OAuthCredentials credentials, Iterable<DataStream> streams, List<Event> events) {
+	private void processSpeedSummary(GoogleFitActivitiesTask task, OAuthCredentials credentials, Iterable<DataStream> streams, List<Event> events) {
 		RangeMap<DateTime, BigDecimal> values = TreeRangeMap.create();
 		for (DataStream stream : streams) {
 			for (DataPoint point : getDataPoints(task, credentials, stream)) {
+				Preconditions.checkState("com.google.speed.summary".equals(point.getDataType()));
 				BigDecimal value = point.getValue(0);
 				if (value.compareTo(BigDecimal.ZERO) > 0) {
 					values.put(Range.closed(point.getBegin(), point.getEnd()), value);
@@ -252,10 +257,11 @@ public class GoogleFitActivitiesTaskManager extends GoogleFitTaskManagerSupport<
 		}
 	}
 
-	private void addEnergy(GoogleFitActivitiesTask task, OAuthCredentials credentials, Iterable<DataStream> streams, List<Event> events) {
+	private void processCaloriesExpended(GoogleFitActivitiesTask task, OAuthCredentials credentials, Iterable<DataStream> streams, List<Event> events) {
 		RangeMap<DateTime, BigDecimal> values = TreeRangeMap.create();
 		for (DataStream stream : streams) {
 			for (DataPoint point : getDataPoints(task, credentials, stream)) {
+				Preconditions.checkState("com.google.calories.expended".equals(point.getDataType()));
 				BigDecimal value = point.getValue(0);
 				if (value.compareTo(BigDecimal.ZERO) > 0) {
 					values.put(Range.closed(point.getBegin(), point.getEnd()), value);
@@ -273,10 +279,11 @@ public class GoogleFitActivitiesTaskManager extends GoogleFitTaskManagerSupport<
 		}
 	}
 
-	private void addFrequency(GoogleFitActivitiesTask task, OAuthCredentials credentials, Iterable<DataStream> streams, List<Event> events) {
+	private void processHeartRateSummary(GoogleFitActivitiesTask task, OAuthCredentials credentials, Iterable<DataStream> streams, List<Event> events) {
 		RangeMap<DateTime, BigDecimal> values = TreeRangeMap.create();
 		for (DataStream stream : streams) {
 			for (DataPoint point : getDataPoints(task, credentials, stream)) {
+				Preconditions.checkState("com.google.heart_rate.summary".equals(point.getDataType()));
 				BigDecimal value = point.getValue(0);
 				if (value.compareTo(BigDecimal.ZERO) > 0) {
 					values.put(Range.closed(point.getBegin(), point.getEnd()), value);
@@ -292,5 +299,31 @@ public class GoogleFitActivitiesTaskManager extends GoogleFitTaskManagerSupport<
 				}
 			}
 		}
+	}
+
+	private void processHeartRate(GoogleFitActivitiesTask task, OAuthCredentials credentials, Iterable<DataStream> streams, List<Event> events) {
+		for (DataStream stream : streams) {
+			RangeMap<DateTime, Integer> values = TreeRangeMap.create();
+			for (DataPoint point : getDataPoints(task, credentials, stream)) {
+				Preconditions.checkState("com.google.heart_rate.bpm".equals(point.getDataType()));
+				int value = point.getValue(0).intValue();
+				if (value > 0) {
+					values.put(Range.closed(point.getBegin(), point.getEnd()), value);
+				}
+			}
+			for (Event event : events) {
+				if (!events.contains(Event.FREQUENCY)) {
+					Range<DateTime> range = getRange(event);
+					BigDecimal value = mean(values.subRangeMap(range).asMapOfRanges().values());
+					if (value != null) {
+						event.setValue(Event.FREQUENCY, Measures.valueOf(Measures.round(value, 0), Units.BPM));
+					}
+				}
+			}
+		}
+	}
+
+	private static BigDecimal mean(Iterable<? extends Number> values) {
+		return !Iterables.isEmpty(values) ? new BigDecimal(DoubleMath.mean(values)) : null;
 	}
 }

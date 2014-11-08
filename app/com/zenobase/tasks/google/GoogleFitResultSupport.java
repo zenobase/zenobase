@@ -18,7 +18,7 @@ abstract class GoogleFitResultSupport {
 		.put("com.mapmyrun.android2", new Resource("MapMyRun", "http://www.mapmyrun.com/"))
 		.put("com.runtastic.android", new Resource("Runtastic", "https://www.runtastic.com/"))
 		.put("com.strava", new Resource("Strava", "http://www.strava.com/"))
-		.put("fi.polar.beat", new Resource("Polar Beat", "www.polar.com/beat/"))
+		.put("fi.polar.beat", new Resource("Polar Beat", "http://www.polar.com/beat/"))
 		.build();
 
 	protected final JsonNode node;
