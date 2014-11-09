@@ -6053,7 +6053,7 @@
 			type : 'numeric',
 			toHtml : function(value) {
 				return '<span class="nowrap">' +
-					'<i class="fa ' + this.icon + '" title="Count"></i> ' + value +
+					'<i class="fa ' + this.icon + '" title="Count"></i> ' + value.toLocaleString() +
 				'</span>';
 			},
 			minValue : 0
