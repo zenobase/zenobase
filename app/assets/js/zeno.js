@@ -2945,7 +2945,7 @@
 			return spreadsheet;
 		};
 		$scope.draw = function() {
-			if ($scope.times && $scope.times.length) {
+			if ($scope.times && $scope.times.length || $scope.timesB && $scope.timesB.length) {
 				var field = Field.find($scope.settings.value_field);
 				var options = {
 					chart : {
@@ -3015,7 +3015,14 @@
 					options.series.push({
 						name : $scope.settings.statistic || 'count',
 						data : [],
-						color: 'rgba(204, 102, 0, 0.4)'
+						color: 'rgba(204, 102, 0, 0.4)',
+						events : {
+							click : function(event) {
+								$scope.$apply(function() {
+									$scope.filter($scope.timesB[event.point.x].value);
+								});
+							}
+						}
 					});
 					$.each($scope.timesB, function(i, time) {
 						var value = time[$scope.settings.statistic || 'count'];
@@ -3356,7 +3363,7 @@
 			}
 			var xField = Field.find($scope.settings.field_x);
 			var yField = Field.find($scope.settings.field_y);
-			if ($scope.data && $scope.data.length) {
+			if ($scope.data && $scope.data.length || $scope.dataB && $scope.dataB.length) {
 				var options = {
 					chart : {
 						type : 'scatter',
@@ -3460,8 +3467,7 @@
 						}
 					});
 				}
-				if ($scope.data.length > 3) {
-					var correlation = statistics.correlate($scope.data, true);
+				if ($scope.data.length > 3 || $scope.dataB.length > 3) {
 					var rChartOptions = {
 						chart : {
 							type : 'line',
@@ -3500,7 +3506,17 @@
 							shared : true,
 							hideDelay : 0
 						},
-						series : [{
+						series : [],
+						legend : {
+							enabled : false
+						},
+						credits : {
+							enabled : false
+						}
+					};
+					if ($scope.data && $scope.data.length > 3) {
+						var correlation = statistics.correlate($scope.data, true);
+						rChartOptions.series.push({
 							data : [[ 0, correlation.r ]],
 							color : 'rgb(119, 152, 191)',
 							animation : false,
@@ -3518,7 +3534,8 @@
 									enabled : false
 								}
 							}
-						}, {
+						});
+						rChartOptions.series.push({
 							type : 'errorbar',
 							data : [[ 0, correlation.lower, correlation.upper ]],
 							lineWidth : 2,
@@ -3528,14 +3545,8 @@
 								headerFormat : '',
 								pointFormat : '<b>95% confidence interval:</b> [' + correlation.lower.toFixed(3) + '..' + correlation.upper.toFixed(3) + ']<br/>' 
 							}
-						}],
-						legend : {
-							enabled : false
-						},
-						credits : {
-							enabled : false
-						}
-					};
+						});
+					}
 					if ($scope.dataB && $scope.dataB.length > 3) {
 						var correlationB = statistics.correlate($scope.dataB, true);
 						rChartOptions.series.push({
@@ -3565,7 +3576,7 @@
 							animation : false,
 							tooltip : {
 								headerFormat : '',
-								pointFormat : '<b>95% confidence interval:</b> [' + correlation.lower.toFixed(3) + '..' + correlation.upper.toFixed(3) + ']<br/>' 
+								pointFormat : '<b>95% confidence interval:</b> [' + correlationB.lower.toFixed(3) + '..' + correlationB.upper.toFixed(3) + ']<br/>' 
 							}
 						});
 					}
@@ -3873,7 +3884,7 @@
 			$scope.addConstraint($scope.field, $scope.map.getBounds().toUrlValue(3), true);
 		};
 		$scope.draw = function() {
-			if ($scope.points && $scope.points.length) {
+			if ($scope.points && $scope.points.length || $scope.pointsB && $scope.pointsB.length) {
 				var options = {
 					mapTypeId: google.maps.MapTypeId.TERRAIN,
 					streetViewControl: false,

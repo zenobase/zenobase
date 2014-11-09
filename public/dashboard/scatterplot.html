@@ -1,18 +1,18 @@
 <div id="{{settings.id}}-content" data-ng-controller="ScatterPlotWidgetController">
 
-	<div class="row-fluid" data-ng-show="data.length">
+	<div class="row-fluid" data-ng-show="data.length || dataB.length">
 		<div class="pull-right">
 			<a class="xbtn" title="Download" data-ui-download-csv><i class="fa fa-file-text"></i></a>
 			<a class="xbtn" title="Snapshot" data-ng-click="snapshot()"><i class="fa fa-camera"></i></a>
 		</div>
 	</div>
 
-	<div id="{{settings.id}}-chart" data-ui-chart-options="chartOptions" data-ui-id="{{settings.id}}" data-ui-snapshot data-ng-show="data.length"></div>
-	<div id="{{settings.id}}-r-chart" data-ui-chart-options="rChartOptions" data-ui-id="{{settings.id}}" data-ng-show="data.length"></div>
+	<div id="{{settings.id}}-chart" data-ui-chart-options="chartOptions" data-ui-id="{{settings.id}}" data-ui-snapshot data-ng-show="data.length || dataB.length"></div>
+	<div id="{{settings.id}}-r-chart" data-ui-chart-options="rChartOptions" data-ui-id="{{settings.id}}" data-ng-show="data.length || dataB.length"></div>
 
 	<p data-ng-show="data == null" class="none">Loading...</p>
 
-	<p data-ng-show="data.length == 0" class="none">None</p>
+	<p data-ng-show="data.length + dataB.length == 0" class="none">None</p>
 
 	<div class="btn-toolbar">
 		<div class="btn-group"></div>
