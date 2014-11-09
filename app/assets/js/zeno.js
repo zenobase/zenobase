@@ -5897,11 +5897,18 @@
 			toText : function(value) {
 				return typeof value === 'object' ? encode(Math.round(value.lat * 1000) / 1000 + ', ' + Math.round(value.lon * 1000) / 1000) : '';
 			},
-			toHtml : function(value) {
-				return '<span class="nowrap">' +
-					'<i class="fa ' + this.icon + '" title="Location"></i> ' +
-					'<a href="http://maps.google.com/maps?q=' + encode(value.lat + ',' + value.lon) + '&t=p&z=5" target="_blank">' + this.toText(value) + '</a>' +
-				'</span>';
+			toHtml : function(value, interactive) {
+				if (interactive) {
+					var ngClick = "addConstraint('location', '" + this.toText(value).replace(' ', '') + '~100 m' + "', true)";
+					return '<span class="nowrap">' +
+						'<i class="fa ' + this.icon + '" title="Location"></i> ' +
+						'<a data-ng-click="' + ngClick + '">' + this.toText(value) + '</a>' +
+					'</span>';
+				} else {
+					return '<span class="nowrap">' +
+						'<i class="fa ' + this.icon + '" title="Location"></i> ' + this.toText(value) + 
+					'</span>';
+				}
 			}
 		});
 
@@ -6160,23 +6167,28 @@
 		return Field;
 	}]);
 
-	app.filter('fields', ['Field', function(Field) {
-		return function(event) {
-			var html = '';
-			var count = 0;
-			$.each(Field.findAll(), function(i, field) {
-				var value = event[field.name];
-				if (angular.isDefined(value)) {
-					$.each($.isArray(value) ? value : [ value ], function(i, value) {
-						if (count > 0) {
-							html += ' &nbsp; ';
-						}
-						html += field.toHtml(value);
-						++count;
-					});
-				}
-			});
-			return html;
+	app.directive('uiBindEvent', ['Field', '$compile', function(Field, $compile) {
+		return {
+			restrict : 'A',
+			link : function(scope, element, attrs) {
+				var event = scope.$eval(attrs.uiBindEvent);
+				var html = '';
+				var count = 0;
+				$.each(Field.findAll(), function(i, field) {
+					var value = event[field.name];
+					if (angular.isDefined(value)) {
+						$.each($.isArray(value) ? value : [ value ], function(i, value) {
+							if (count > 0) {
+								html += ' &nbsp; ';
+							}
+							html += field.toHtml(value, true);
+							++count;
+						});
+					}
+				});
+				element.html(html);
+				$compile(element.contents())(scope);
+			}
 		};
 	}]);
 

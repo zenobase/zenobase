@@ -4,7 +4,7 @@
 		<tbody>
 			<tr class="event-row" data-ng-repeat="event in items">
 				<td style="line-height: 1.5; border-style: none;">
-					<span data-ng-bind-html="event | fields"></span>
+					<span data-ui-bind-event="event"></span>
 					&nbsp;
 					<div class="action pull-right" data-ng-show="editable && !bucket.isVirtual()">
 						<a class="event-edit-action" data-ng-click="openDialog('edit-event-dialog', event)"><i class="fa fa-pencil" title="Edit"></i></a>
