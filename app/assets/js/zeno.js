@@ -3913,26 +3913,32 @@
 				$scope.map.fitBounds(bounds);
 				$scope.bounds = bounds;
 				$scope.shown = false;
+				var gradient = [ 'rgba(0, 126, 216, 0.0)' ];
+				for (var r = 0; r < 256; ++r) {
+					gradient.push('rgba(' + r + ', 126, 216, 1.0)');
+				}
 				if (data.length > 0) {
 					new google.maps.visualization.HeatmapLayer({
 						data : data,
 						map : $scope.map,
-						opacity : 0.6,
-						maxIntensity : 1,
+						opacity : 0.5,
 						dissipating : true,
 						radius : 20,
-						gradient : [ 'rgba(47, 126, 216, 0.0)', 'rgba(47, 126, 216, 0.8)', 'rgba(47, 126, 216, 1.0)' ]
+						gradient : gradient
 					});
 				}
 				if (dataB.length > 0) {
+					var gradientB = [ 'rgba(204, 102, 0, 0.0)' ];
+					for (var g = 103; g < 256; ++g) {
+						gradientB.push('rgba(204, ' + g + ', 0, 1.0)');
+					}
 					new google.maps.visualization.HeatmapLayer({
 						data : dataB,
 						map : $scope.map,
-						opacity : 0.6,
-						maxIntensity : 1,
+						opacity : 0.5,
 						dissipating : true,
 						radius : 20,
-						gradient : [ 'rgba(204, 102, 0, 0.0)', 'rgba(204, 102, 0, 0.8)', 'rgba(204, 102, 0, 1.0)' ]
+						gradient : gradientB
 					});
 				}
 				if (filtered) {
