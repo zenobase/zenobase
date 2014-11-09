@@ -9,7 +9,7 @@ import com.zenobase.tasks.TaskTestSupport;
 public class GoogleFitTest extends TaskTestSupport {
 
 	@Test
-	//@Ignore
+	@Ignore
 	public void testActivities() {
 		run(new GoogleFitActivitiesTaskManager(newCredentialsManager()), Nodes.newObject()
 			.put("marker", "2014-11-01")
