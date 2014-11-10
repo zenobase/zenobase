@@ -3850,7 +3850,7 @@
 		};
 	}]);
 
-	app.controller('HeatmapWidgetController', ['$scope', '$timeout', function($scope, $timeout) {
+	app.controller('HeatmapWidgetController', ['$scope', '$timeout', 'Field', function($scope, $timeout, Field) {
 
 		$scope.field = 'location';
 	
@@ -3861,10 +3861,12 @@
 			$scope.shown = false;
 		};
 		$scope.params = function() {
-			return { 
+			return {
 				id : $scope.settings.id,
 				type : 'heatmap',
-				field : 'location'
+				field : 'location',
+				value_field : $scope.settings.value_field || '',
+				unit : $scope.settings.unit || ''
 			};
 		};
 		$scope.refresh = function(options, settings) {
@@ -3906,9 +3908,11 @@
 				});
 				var filtered = !bounds.isEmpty();
 				var data = [];
+				var field = Field.find($scope.settings.value_field);
 				$.each($scope.points, function(i, point) {
 					var latLng = new google.maps.LatLng(point.lat, point.lon);
-					data.push({ location : latLng, weight : point.count });
+					var weight = field ? field.toNumber(point.sum) : point.count;
+					data.push({ location : latLng, weight : weight });
 					if (!filtered) {
 						bounds.extend(latLng);
 					}
@@ -3916,7 +3920,8 @@
 				var dataB = [];
 				$.each($scope.pointsB, function(i, point) {
 					var latLng = new google.maps.LatLng(point.lat, point.lon);
-					dataB.push({ location : latLng, weight : point.count });
+					var weight = field ? field.toNumber(point.sum) : point.count;
+					dataB.push({ location : latLng, weight : weight });
 					if (!filtered) {
 						bounds.extend(latLng);
 					}
@@ -4010,9 +4015,18 @@
 		});
 	}]);
 
-	app.controller('HeatmapWidgetDialogController', ['$scope', 'WidgetDialogControllerSupport', function($scope, WidgetDialogControllerSupport) {
+	app.controller('HeatmapWidgetDialogController', ['$scope', 'WidgetDialogControllerSupport', 'Field', function($scope, WidgetDialogControllerSupport, Field) {
 
 		new WidgetDialogControllerSupport($scope);
+
+		$scope.getFields = function() {
+			return Field.findByType('numeric');
+		};
+
+		$scope.$watch('settings.value_field', function(fieldName) {
+			var field = Field.find(fieldName);
+			$scope.settings.unit = field && field.units.length ? field.units[0] : '';
+		});
 
 	}]);
 
