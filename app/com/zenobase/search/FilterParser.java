@@ -1,6 +1,7 @@
 package com.zenobase.search;
 
 import org.elasticsearch.index.query.FilterBuilder;
+import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMultimap;
 
 public class FilterParser {
@@ -12,6 +13,6 @@ public class FilterParser {
 	}
 
 	public FilterBuilder parse(String value) {
-		return new FilterBuilderSupport(constraintBuilders).addConstraints(value).buildFilter();
+		return !Strings.isNullOrEmpty(value) ? new FilterBuilderSupport(constraintBuilders).addConstraints(value).buildFilter() : null;
 	}
 }

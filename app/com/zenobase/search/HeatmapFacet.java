@@ -4,9 +4,11 @@ import javax.measure.unit.Unit;
 
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.common.geo.GeoPoint;
+import org.elasticsearch.index.query.FilterBuilder;
+import org.elasticsearch.search.aggregations.AggregationBuilder;
+import org.elasticsearch.search.aggregations.AggregationBuilders;
 import org.elasticsearch.search.aggregations.bucket.geogrid.GeoHashGrid;
 import org.elasticsearch.search.aggregations.bucket.geogrid.GeoHashGrid.Bucket;
-import org.elasticsearch.search.aggregations.bucket.geogrid.GeoHashGridBuilder;
 import org.elasticsearch.search.aggregations.metrics.sum.Sum;
 import org.elasticsearch.search.aggregations.metrics.sum.SumBuilder;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
@@ -22,7 +24,7 @@ import com.zenobase.json.Field;
 import com.zenobase.json.Nodes;
 import com.zenobase.models.Event;
 
-public class HeatmapFacet extends Facet {
+public class HeatmapFacet extends FilteredFacet {
 
 	public static final String TYPE = "heatmap";
 
@@ -31,8 +33,8 @@ public class HeatmapFacet extends Facet {
 	private final Unit<?> unit;
 	private final int precision;
 
-	private HeatmapFacet(String id, String keyField, String valueField, Unit<?> unit, int precision) {
-		super(id);
+	private HeatmapFacet(String id, String keyField, String valueField, Unit<?> unit, int precision, FilterBuilder filter) {
+		super(id, filter);
 		Preconditions.checkArgument(precision >= 1 && precision <= 10, "invalid precision value: %d", precision);
 		this.keyField = keyField;
 		this.valueField = valueField;
@@ -42,17 +44,17 @@ public class HeatmapFacet extends Facet {
 
 	@Override
 	public void configure(SearchSourceBuilder builder) {
-		GeoHashGridBuilder grid = new GeoHashGridBuilder(getId()).field(keyField).precision(precision);
+		AggregationBuilder<?> grid = AggregationBuilders.geohashGrid(getId()).field(keyField).precision(precision);
 		if (valueField != null) {
 			grid.subAggregation(new SumBuilder("sum").field(unit == Unit.ONE ? valueField : Field.concat(valueField, DecimalMeasureField.VALUE_SI.getName())));
 		}
-		builder.aggregation(grid);
+		addAggregation(grid, builder);
 	}
 
 	@Override
 	public JsonNode process(SearchResponse response) {
 		ArrayNode result = Nodes.newArray();
-		GeoHashGrid grid = response.getAggregations().get(getId());
+		GeoHashGrid grid = getAggregation(response);
 		for (Bucket bucket : grid.getBuckets()) {
 			Sum sum = bucket.getAggregations().get("sum");
 			if (sum == null || sum.getValue() > 0.0) {
@@ -79,7 +81,7 @@ public class HeatmapFacet extends Facet {
 		}
 	}
 
-	public static FacetBuilder builder() {
+	public static FacetBuilder builder(final FilterParser filterParser) {
 		return new FacetBuilder() {
 			@Override
 			public Facet build(FacetOptions options) {
@@ -89,7 +91,8 @@ public class HeatmapFacet extends Facet {
 					options.get("field", String.class, Event.LOCATION.getName()),
 					options.get("value_field", String.class, null),
 					unit != null ? Units.valueOf(unit) : Unit.ONE,
-					options.get("precision", Integer.class, 8));
+					options.get("precision", Integer.class, 8),
+					filterParser.parse(options.get("filter")));
 			}
 		};
 	}

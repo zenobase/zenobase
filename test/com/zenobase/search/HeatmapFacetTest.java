@@ -96,6 +96,30 @@ public class HeatmapFacetTest extends FacetTestSupport {
 	}
 
 	@Test
+	public void testFilteredAggregateCounts() {
+
+		addEvent(e1);
+		addEvent(e2);
+		addEvent(e3);
+		addEvent(e4);
+		addFacet("id:%s,type:%s,value_field:%s,filter:%s", FACET_ID, HeatmapFacet.TYPE, Event.COUNT.getName(), "count:[1500..*)");
+
+		ObjectNode result = execute();
+		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(4);
+		NodeAssert node = assertThat(result).path(FACET_ID).hasSize(2);
+
+		node.path(0).path("lat").isEqualTo(39.75);
+		node.path(0).path("lon").isEqualTo(-104.87);
+		node.path(0).path("count").isEqualTo(1);
+		node.path(0).path("sum").isEqualTo(2000.0);
+
+		node.path(1).path("lat").isEqualTo(36.08);
+		node.path(1).path("lon").isEqualTo(-115.17);
+		node.path(1).path("count").isEqualTo(1);
+		node.path(1).path("sum").isEqualTo(1500.0);
+	}
+
+	@Test
 	public void testAggregateDistances() {
 
 		addEvent(e1);

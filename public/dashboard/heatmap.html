@@ -31,6 +31,16 @@
 						</select>
 					</div>
 				</div>
+				<div class="control-group">
+					<label class="control-label" for="filter">Filter</label>
+					<div class="controls form-horizontal input-append">
+						<input name="filter" type="text" data-ng-model="settings.filter" data-ui-check-filter="bucket" placeholder="e.g. tag:xyz"/>
+						<span class="add-on">
+							<i class="fa fa-exclamation" title="not valid" data-ng-show="form.filter.$invalid"></i>
+							<i class="fa fa-check" title="valid" data-ng-hide="form.filter.$invalid"></i>
+						</span>
+					</div>
+				</div>
 			</div>
 			<div class="modal-footer">
 				<a class="pull-left" data-ng-click="removeWidget(settings)" data-dismiss="modal">Remove</a>

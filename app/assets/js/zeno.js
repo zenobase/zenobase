@@ -3866,7 +3866,8 @@
 				type : 'heatmap',
 				field : 'location',
 				value_field : $scope.settings.value_field || '',
-				unit : $scope.settings.unit || ''
+				unit : $scope.settings.unit || '',
+				filter : $scope.settings.filter || ''
 			};
 		};
 		$scope.refresh = function(options, settings) {
