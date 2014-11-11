@@ -17,7 +17,7 @@ so we can let you know about upcoming changes.</p>
 
 <dl>
 	<dt>November 9, 2014</dt>
-	<dd>Added field stats to the heatmap facet.</dd>
+	<dd>Added an option for calculating the "sum" of a numeric field to the heatmap facet.</dd>
 	<dt>November 4, 2014</dt>
 	<dd>Added a new field, "pace".</dd>
 	<dt>October 7, 2014</dt>
@@ -1151,15 +1151,19 @@ Content-Type: application/json
 <dl>
   <dt>precision:<em>&lt;integer&gt;</em></dt>
   <dd>Determines the grid size, from 1 (~5,000km) to 10 (~1m). Defaults to <em>8</em> (~30m).</dd>
+  <dt>field:<em>&lt;String&gt;</em></dt>
+  <dd>An optional, numeric field containing values to sum up.</dd>
+  <dt>unit:<em>&lt;String&gt;</em></dt>
+  <dd>The unit of the values. Required for fields with units.</dd>
 </dl>
 
 <h5>Example:</h5>
 
-<pre>id:xyz,type:heatmap,precision:4</pre>
+<pre>id:xyz,type:heatmap,precision:4,field:duration</pre>
 
 <pre><code data-ui-highlight class="lang-json">"xyz" : [
-  { "count" : 1, "lat" : -2.8, "lon" : -40.48 },
-  { "count" : 14, "lat" : 14.895, "lon" : -61.823 },
+  { "lat" : -2.8, "lon" : -40.48, "count" : 1, "sum" : 60000 },
+  { "lat" : 14.895, "lon" : -61.823, "count" : 3, "sum" : 180000 },
   ...
 ]</code></pre>
 
