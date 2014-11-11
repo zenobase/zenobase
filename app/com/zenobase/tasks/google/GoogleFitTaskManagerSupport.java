@@ -3,7 +3,6 @@ package com.zenobase.tasks.google;
 import java.util.List;
 import java.util.Map;
 
-import org.elasticsearch.common.collect.Ordering;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.scribe.model.OAuthRequest;
@@ -16,6 +15,7 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Ordering;
 import com.google.common.collect.Range;
 import com.google.common.net.UrlEscapers;
 

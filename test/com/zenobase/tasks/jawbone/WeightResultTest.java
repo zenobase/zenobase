@@ -4,8 +4,8 @@ import static org.fest.assertions.Assertions.assertThat;
 
 import javax.measure.quantity.Mass;
 
-import org.elasticsearch.common.collect.Iterables;
 import org.junit.Test;
+import com.google.common.collect.Iterables;
 
 import com.zenobase.common.Measures;
 import com.zenobase.models.Event;

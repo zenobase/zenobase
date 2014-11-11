@@ -3,8 +3,8 @@ package com.zenobase.tasks.bodymedia;
 import javax.measure.quantity.Energy;
 import javax.measure.unit.Unit;
 
-import org.elasticsearch.common.base.Objects;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.common.base.Objects;
 
 import com.zenobase.common.Units;
 import com.zenobase.json.BooleanField;

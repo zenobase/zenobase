@@ -1,7 +1,7 @@
 package com.zenobase.tasks.jawbone;
 
-import org.elasticsearch.common.base.Objects;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.common.base.Objects;
 
 import com.zenobase.json.BooleanField;
 import com.zenobase.json.TokenField;

@@ -1,9 +1,9 @@
 package com.zenobase.tasks.sleepcloud;
 
-import org.elasticsearch.common.base.Objects;
 import org.joda.time.DateTime;
 import org.joda.time.format.ISODateTimeFormat;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.common.base.Objects;
 
 import com.zenobase.json.BooleanField;
 import com.zenobase.json.TokenField;

@@ -1,10 +1,10 @@
 package com.zenobase.tasks.google;
 
-import org.elasticsearch.common.base.Objects;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import play.Logger;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
 

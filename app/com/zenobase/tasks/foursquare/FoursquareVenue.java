@@ -2,7 +2,7 @@ package com.zenobase.tasks.foursquare;
 
 import java.util.List;
 
-import org.elasticsearch.common.collect.Lists;
+import com.google.common.collect.Lists;
 
 import com.zenobase.models.Resource;
 
