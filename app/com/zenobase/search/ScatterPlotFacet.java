@@ -26,7 +26,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Objects;
-import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 
@@ -41,15 +40,6 @@ import com.zenobase.models.Event;
 public class ScatterPlotFacet extends Facet {
 
 	public static final String TYPE = "scatterplot";
-
-	private static final ImmutableMap<String, DateHistogram.Interval> INTERVALS = ImmutableMap.<String, DateHistogram.Interval>builder()
-		.put("year", DateHistogram.Interval.YEAR)
-		.put("month", DateHistogram.Interval.MONTH)
-		.put("week", DateHistogram.Interval.WEEK)
-		.put("day", DateHistogram.Interval.DAY)
-		.put("hour", DateHistogram.Interval.HOUR)
-		.put("minute", DateHistogram.Interval.MINUTE)
-		.build();
 
 	private static final Map<DateHistogram.Interval, DurationFieldType> PERIODS = ImmutableMap.<DateHistogram.Interval, DurationFieldType>builder()
 		.put(DateHistogram.Interval.YEAR, DurationFieldType.years())
@@ -71,7 +61,7 @@ public class ScatterPlotFacet extends Facet {
 		this.keyField = keyField;
 		this.x = x;
 		this.y = y;
-		this.interval = Preconditions.checkNotNull(INTERVALS.get(interval), "Invalid interval: %s", interval);
+		this.interval = DateHistograms.parseInterval(interval);
 		this.timezone = timezone;
 		this.lag = lag;
 	}
