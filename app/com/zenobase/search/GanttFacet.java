@@ -1,10 +1,12 @@
 package com.zenobase.search;
 
 import org.elasticsearch.action.search.SearchResponse;
+import org.elasticsearch.index.query.FilterBuilder;
+import org.elasticsearch.search.aggregations.AggregationBuilder;
+import org.elasticsearch.search.aggregations.AggregationBuilders;
+import org.elasticsearch.search.aggregations.bucket.terms.Terms;
+import org.elasticsearch.search.aggregations.metrics.stats.Stats;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
-import org.elasticsearch.search.facet.FacetBuilders;
-import org.elasticsearch.search.facet.termsstats.TermsStatsFacet;
-import org.elasticsearch.search.facet.termsstats.TermsStatsFacet.ComparatorType;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -17,7 +19,7 @@ import com.zenobase.json.Nodes;
 import com.zenobase.json.TokenField;
 import com.zenobase.models.Event;
 
-public class GanttFacet extends Facet {
+public class GanttFacet extends FilteredFacet {
 
 	public static final String TYPE = "gantt";
 
@@ -28,37 +30,53 @@ public class GanttFacet extends Facet {
 
 	private final String keyField;
 	private final String valueField;
-	private final ComparatorType order;
+	private final Terms.Order order;
 	private final int limit;
 	private final DateTimeZone timezone;
 
-	private GanttFacet(String id, String keyField, String valueField, ComparatorType order, int limit, DateTimeZone timezone) {
-		super(id);
+	private GanttFacet(String id, String keyField, String valueField, String order, int limit, DateTimeZone timezone, FilterBuilder filter) {
+		super(id, filter);
 		this.keyField = keyField;
 		this.valueField = valueField;
-		this.order = order;
+		this.order = parseOrder(order, false);
 		this.limit = limit;
 		this.timezone = timezone;
 	}
 
+	private Terms.Order parseOrder(String s, boolean reverse) {
+		if ("count".equals(s)) {
+			return Terms.Order.count(reverse);
+		} else if ("term".equals(s)) {
+			return Terms.Order.term(!reverse);
+		} else if ("min".equals(s)) {
+			return Terms.Order.aggregation(getId(), "min", !reverse);
+		} else if ("max".equals(s)) {
+			return Terms.Order.aggregation(getId(), "max", reverse);
+		} else {
+			throw new IllegalArgumentException("Invalid order: " + s);
+		}
+	}
+
 	@Override
 	public void configure(SearchSourceBuilder builder) {
-		builder.facet(FacetBuilders.termsStatsFacet(getId())
-			.keyField(keyField).valueField(valueField).order(order).size(limit));
+		AggregationBuilder<?> aggregation = AggregationBuilders.terms(getId()).field(keyField).order(order).size(limit)
+			.subAggregation(AggregationBuilders.stats(getId()).field(valueField));
+		addAggregation(aggregation, builder);
 	}
 
 	@Override
 	public JsonNode process(SearchResponse response) {
 		ArrayNode result = Nodes.newArray();
-		TermsStatsFacet terms = response.getFacets().facet(TermsStatsFacet.class, getId());
-		for (TermsStatsFacet.Entry entry : terms.getEntries()) {
-			DateTime first = asDateTime(entry.getMin());
+		Terms terms = getAggregation(response);
+		for (Terms.Bucket bucket : terms.getBuckets()) {
+			Stats stats = bucket.getAggregations().get(getId());
+			DateTime first = asDateTime(stats.getMin());
 			if (first != null) {
 				ObjectNode entryNode = result.addObject();
-				LABEL.setValue(entryNode, entry.getTerm().toString());
-				COUNT.setValue(entryNode, entry.getCount());
+				LABEL.setValue(entryNode, bucket.getKey());
+				COUNT.setValue(entryNode, bucket.getDocCount());
 				FIRST.setValue(entryNode, first);
-				LAST.setValue(entryNode, asDateTime(entry.getMax()));
+				LAST.setValue(entryNode, asDateTime(stats.getMax()));
 			}
 		}
 		return result;
@@ -68,7 +86,7 @@ public class GanttFacet extends Facet {
 		return !Double.isInfinite(value) ? new DateTime((long) value, timezone) : null;
 	}
 
-	public static FacetBuilder builder() {
+	public static FacetBuilder builder(final FilterParser filterParser) {
 		return new FacetBuilder() {
 			@Override
 			public Facet build(FacetOptions options) {
@@ -76,9 +94,10 @@ public class GanttFacet extends Facet {
 					options.get("id"),
 					options.get("field"),
 					options.get("key_field", String.class, Event.TIMESTAMP.getName()),
-					ComparatorType.valueOf(options.get("order", String.class, "term").toUpperCase()),
+					options.get("order", String.class, "term"),
 					options.get("limit", Integer.class, 10),
-					options.get("timezone", DateTimeZone.class, DateTimeZone.UTC));
+					options.get("timezone", DateTimeZone.class, DateTimeZone.UTC),
+					filterParser.parse(options.get("filter")));
 			}
 		};
 	}

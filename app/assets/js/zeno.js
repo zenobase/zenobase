@@ -1860,7 +1860,8 @@
 				field : $scope.settings.field, 
 				timezone : timezone,
 				order : $scope.settings.order,
-				limit : $scope.settings.limit
+				limit : $scope.settings.limit,
+				filter : $scope.settings.filter || ''
 			};
 		};
 		$scope.refresh = function(options, settings) {

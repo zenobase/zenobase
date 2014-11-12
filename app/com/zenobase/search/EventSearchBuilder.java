@@ -14,7 +14,7 @@ public class EventSearchBuilder extends SearchBuilderSupport {
 	private static final ImmutableMap<String, FacetBuilder> facetBuilders = ImmutableMap.<String, FacetBuilder>builder()
 		.put(ListFacet.TYPE, ListFacet.builder())
 		.put(CountFacet.TYPE, CountFacet.builder(filterParser))
-		.put(GanttFacet.TYPE, GanttFacet.builder())
+		.put(GanttFacet.TYPE, GanttFacet.builder(filterParser))
 		.put(MapFacet.TYPE, MapFacet.builder())
 		.put(HeatmapFacet.TYPE, HeatmapFacet.builder(filterParser))
 		.put(RatingsFacet.TYPE, RatingsFacet.builder(filterParser))
