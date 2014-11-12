@@ -4,51 +4,50 @@ import javax.measure.unit.Unit;
 
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.index.query.FilterBuilder;
+import org.elasticsearch.search.aggregations.AggregationBuilders;
+import org.elasticsearch.search.aggregations.metrics.stats.extended.ExtendedStats;
+import org.elasticsearch.search.aggregations.metrics.stats.extended.ExtendedStatsBuilder;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
-import org.elasticsearch.search.facet.FacetBuilders;
-import org.elasticsearch.search.facet.statistical.StatisticalFacet;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import com.zenobase.common.Measures;
 import com.zenobase.common.Units;
-import com.zenobase.json.Field;
 import com.zenobase.json.DecimalMeasureField;
+import com.zenobase.json.Field;
 import com.zenobase.json.Nodes;
 
-public class StatsFacet extends Facet {
+public class StatsFacet extends FilteredFacet {
 
 	public static final String TYPE = "stats";
 
 	private final String field;
 	private final Unit<?> unit;
-	private final FilterBuilder filter;
 
 	public StatsFacet(String id, String field, Unit<?> unit, FilterBuilder filter) {
-		super(id);
+		super(id, filter);
 		this.field = field;
 		this.unit = unit;
-		this.filter = filter;
 	}
 
 	@Override
 	public void configure(SearchSourceBuilder builder) {
-		builder.facet(FacetBuilders.statisticalFacet(getId())
-			.field(unit == Unit.ONE ? field : Field.concat(field, DecimalMeasureField.VALUE_SI.getName()))
-			.facetFilter(filter));
+		ExtendedStatsBuilder stats = AggregationBuilders.extendedStats(getId())
+			.field(unit == Unit.ONE ? field : Field.concat(field, DecimalMeasureField.VALUE_SI.getName()));
+		addAggregation(stats, builder);
 	}
 
 	@Override
 	public JsonNode process(SearchResponse response) {
-		StatisticalFacet facet = response.getFacets().facet(StatisticalFacet.class, getId());
+		ExtendedStats stats = getAggregation(response);
 		ObjectNode node = Nodes.newObject();
-		node.put("count", facet.getCount());
-		if (facet.getCount() > 0) {
-			put(node, "min",  facet.getMin());
-			put(node, "max",  facet.getMax());
-			put(node, "sum",  facet.getTotal());
-			put(node, "avg",  facet.getMean());
-			put(node, "stdev", facet.getStdDeviation());
+		node.put("count", stats.getCount());
+		if (stats.getCount() > 0) {
+			put(node, "min",  stats.getMin());
+			put(node, "max",  stats.getMax());
+			put(node, "sum",  stats.getSum());
+			put(node, "avg",  stats.getAvg());
+			put(node, "stdev", stats.getStdDeviation());
 		}
 		return node;
 	}

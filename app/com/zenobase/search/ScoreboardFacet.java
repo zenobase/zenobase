@@ -4,62 +4,76 @@ import javax.measure.unit.Unit;
 
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.index.query.FilterBuilder;
+import org.elasticsearch.search.aggregations.AggregationBuilder;
+import org.elasticsearch.search.aggregations.AggregationBuilders;
+import org.elasticsearch.search.aggregations.bucket.terms.Terms;
+import org.elasticsearch.search.aggregations.metrics.stats.extended.ExtendedStats;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
-import org.elasticsearch.search.facet.FacetBuilders;
-import org.elasticsearch.search.facet.termsstats.TermsStatsFacet;
-import org.elasticsearch.search.facet.termsstats.TermsStatsFacet.ComparatorType;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import com.zenobase.common.Measures;
 import com.zenobase.common.Units;
-import com.zenobase.json.Field;
 import com.zenobase.json.DecimalMeasureField;
+import com.zenobase.json.Field;
 import com.zenobase.json.Nodes;
 
-public class ScoreboardFacet extends Facet {
+public class ScoreboardFacet extends FilteredFacet {
 
 	public static final String TYPE = "scoreboard";
 
 	private final String termField;
 	private final String valueField;
 	private final Unit<?> unit;
-	private final ComparatorType order;
+	private final Terms.Order order;
 	private final int limit;
-	private final FilterBuilder filter;
 
-	private ScoreboardFacet(String id, String termField, String valueField, Unit<?> unit, ComparatorType order, int limit, FilterBuilder filter) {
-		super(id);
+	private ScoreboardFacet(String id, String termField, String valueField, Unit<?> unit, String order, boolean reverse, int limit, FilterBuilder filter) {
+		super(id, filter);
 		this.termField = termField;
 		this.valueField = valueField;
 		this.unit = unit;
-		this.order = order;
+		this.order = parseOrder(order, reverse);
 		this.limit = limit;
-		this.filter = filter;
+	}
+
+	private Terms.Order parseOrder(String s, boolean reverse) {
+		if ("count".equals(s)) {
+			return Terms.Order.count(reverse);
+		} else if ("term".equals(s)) {
+			return Terms.Order.term(!reverse);
+		} else {
+			return Terms.Order.aggregation(getId(), s, reverse);
+		}
 	}
 
 	@Override
 	public void configure(SearchSourceBuilder builder) {
-		builder.facet(FacetBuilders.termsStatsFacet(getId())
-			.keyField(termField).valueField(unit == Unit.ONE ? valueField : Field.concat(valueField, DecimalMeasureField.VALUE_SI.getName()))
-			.order(order).size(limit)
-			.facetFilter(filter));
+		AggregationBuilder<?> terms = AggregationBuilders.terms(getId())
+			.field(termField).order(order).size(limit)
+			.subAggregation(AggregationBuilders.extendedStats(getId()).field(getValueField()));
+		addAggregation(terms, builder);
+	}
+
+	private String getValueField() {
+		return unit == Unit.ONE ? valueField : Field.concat(valueField, DecimalMeasureField.VALUE_SI.getName());
 	}
 
 	@Override
 	public JsonNode process(SearchResponse response) {
 		ArrayNode result = Nodes.newArray();
-		TermsStatsFacet terms = response.getFacets().facet(TermsStatsFacet.class, getId());
-		for (TermsStatsFacet.Entry entry : terms.getEntries()) {
-			if (entry.getTotalCount() > 0) {
+		Terms terms = getAggregation(response);
+		for (Terms.Bucket bucket : terms.getBuckets()) {
+			ExtendedStats stats = bucket.getAggregations().get(getId());
+			if (stats.getCount() > 0) {
 				ObjectNode entryNode = result.addObject();
-				entryNode.put("label", entry.getTerm().toString());
-				entryNode.put("count", entry.getTotalCount());
-				addValue(entryNode, "min", entry.getMin());
-				addValue(entryNode, "max", entry.getMax());
-				addValue(entryNode, "sum", entry.getTotal());
-				addValue(entryNode, "avg", entry.getMean());
+				entryNode.put("label", bucket.getKey());
+				entryNode.put("count", bucket.getDocCount());
+				addValue(entryNode, "min", stats.getMin());
+				addValue(entryNode, "max", stats.getMax());
+				addValue(entryNode, "sum", stats.getSum());
+				addValue(entryNode, "avg", stats.getAvg());
 			}
 		}
 		return result;
@@ -85,7 +99,8 @@ public class ScoreboardFacet extends Facet {
 					options.get("key_field"),
 					options.get("value_field"),
 					unit != null ? Units.valueOf(unit) : Unit.ONE,
-					ComparatorType.valueOf(options.get("order", String.class, "term").toUpperCase()),
+					options.get("order", String.class, "count"),
+					options.get("reverse", Boolean.class, Boolean.FALSE),
 					options.get("limit", Integer.class, 10),
 					filterParser.parse(options.get("filter")));
 			}

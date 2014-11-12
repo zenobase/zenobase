@@ -9,10 +9,9 @@ import com.zenobase.tasks.TaskTestSupport;
 public class GoogleFitTest extends TaskTestSupport {
 
 	@Test
-	@Ignore
 	public void testActivities() {
 		run(new GoogleFitActivitiesTaskManager(newCredentialsManager()), Nodes.newObject()
-			.put("marker", "2014-11-01")
+			.put("marker", "2014-11-11")
 			.put("timezone", "America/Los_Angeles")
 			.put("metric", true)
 			.put("derived", false));

@@ -42,7 +42,7 @@ public class ScoreboardFacetTest extends FacetTestSupport {
 		addEvent(e3);
 		addEvent(e4);
 		addFacet("id:%s,type:%s,key_field:%s,value_field:%s,unit:%s,order:%s",
-			FACET_ID, ScoreboardFacet.TYPE, Event.TAG, Event.DISTANCE, "km", "total");
+			FACET_ID, ScoreboardFacet.TYPE, Event.TAG, Event.DISTANCE, "km", "sum");
 
 		ObjectNode result = execute();
 		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(4);
@@ -116,7 +116,7 @@ public class ScoreboardFacetTest extends FacetTestSupport {
 	@Test
 	public void testEmpty() {
 
-		addFacet("id:%s,type:%s,key_field:%s,value_field:%s,unit:%s,order:%s", FACET_ID, ScoreboardFacet.TYPE, Event.TAG, Event.DISTANCE, "km", "total");
+		addFacet("id:%s,type:%s,key_field:%s,value_field:%s,unit:%s,order:%s", FACET_ID, ScoreboardFacet.TYPE, Event.TAG, Event.DISTANCE, "km", "sum");
 
 		ObjectNode result = execute();
 		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(0);

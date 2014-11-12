@@ -2,60 +2,72 @@ package com.zenobase.search;
 
 import java.util.List;
 
+import org.elasticsearch.action.search.SearchResponse;
+import org.elasticsearch.index.query.FilterBuilder;
+import org.elasticsearch.search.aggregations.AggregationBuilders;
+import org.elasticsearch.search.aggregations.bucket.terms.Terms;
+import org.elasticsearch.search.aggregations.bucket.terms.TermsBuilder;
+import org.elasticsearch.search.builder.SearchSourceBuilder;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.elasticsearch.action.search.SearchResponse;
-import org.elasticsearch.search.builder.SearchSourceBuilder;
-import org.elasticsearch.search.facet.FacetBuilders;
-import org.elasticsearch.search.facet.terms.TermsFacet;
-import org.elasticsearch.search.facet.terms.TermsFacet.ComparatorType;
 
 import com.zenobase.json.Nodes;
 
-public class CountFacet extends Facet {
+public class CountFacet extends FilteredFacet {
 
 	public static final String TYPE = "count";
 	public static final String LABEL_MORE = "...";
 
 	private final String field;
-	private final ComparatorType order;
+	private final Terms.Order order;
 	private final int offset;
 	private final int limit;
 
-	private CountFacet(String id, String field, String order, boolean reverse, int offset, int limit) {
-		super(id);
+	private CountFacet(String id, String field, String order, boolean reverse, int offset, int limit, FilterBuilder filter) {
+		super(id, filter);
 		this.field = field;
-		this.order = ComparatorType.fromString((reverse ? "reverse_" : "") + order);
+		this.order = parseOrder(order, reverse);
 		this.offset = offset;
 		this.limit = limit;
 	}
 
+	private Terms.Order parseOrder(String s, boolean reverse) {
+		if ("count".equals(s)) {
+			return Terms.Order.count(reverse);
+		} else if ("term".equals(s)) {
+			return Terms.Order.term(!reverse);
+		} else {
+			throw new IllegalArgumentException("Invalid order: " + s);
+		}
+	}
+
 	@Override
 	public void configure(SearchSourceBuilder builder) {
-		builder.facet(FacetBuilders.termsFacet(getId())
-			.field(field).size(offset + limit).order(order));
+		TermsBuilder terms = AggregationBuilders.terms(getId())
+			.field(field).size(offset + limit).order(order);
+		addAggregation(terms, builder);
 	}
 
 	@Override
 	public JsonNode process(SearchResponse response) {
 		ArrayNode result = Nodes.newArray();
-		TermsFacet terms = response.getFacets().facet(TermsFacet.class, getId());
-		List<? extends TermsFacet.Entry> entries = terms.getEntries();
-		for (TermsFacet.Entry entry : entries.subList(offset, Math.min(entries.size(), offset + limit))) {
+		Terms terms = getAggregation(response);
+		List<Terms.Bucket> entries = terms.getBuckets();
+		for (Terms.Bucket entry : entries.subList(offset, Math.min(entries.size(), offset + limit))) {
 			ObjectNode entryNode = result.addObject();
-			entryNode.put("label", entry.getTerm().toString());
-			entryNode.put("count", entry.getCount());
+			entryNode.put("label", entry.getKey());
+			entryNode.put("count", entry.getDocCount());
 		}
-		if (terms.getOtherCount() > 0) {
+		if (terms.getSumOfOtherDocCounts() > 0) {
 			ObjectNode entryNode = result.addObject();
 			entryNode.put("label", LABEL_MORE);
-			entryNode.put("count", terms.getOtherCount());
+			entryNode.put("count", terms.getSumOfOtherDocCounts());
 		}
 		return result;
 	}
 
-	public static FacetBuilder builder() {
+	public static FacetBuilder builder(final FilterParser filterParser) {
 		return new FacetBuilder() {
 			@Override
 			public Facet build(FacetOptions options) {
@@ -65,7 +77,8 @@ public class CountFacet extends Facet {
 					options.get("order", String.class, "count"),
 					options.get("reverse", Boolean.class, Boolean.FALSE),
 					options.get("offset", Integer.class, 0),
-					options.get("limit", Integer.class, 10));
+					options.get("limit", Integer.class, 10),
+					filterParser.parse(options.get("filter")));
 			}
 		};
 	}

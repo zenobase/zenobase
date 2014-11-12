@@ -3,10 +3,13 @@ package com.zenobase.services;
 import javax.inject.Inject;
 
 import org.elasticsearch.action.search.SearchResponse;
+import org.elasticsearch.index.query.FilterBuilder;
 import org.elasticsearch.index.query.FilterBuilders;
+import org.elasticsearch.search.aggregations.AbstractAggregationBuilder;
+import org.elasticsearch.search.aggregations.AggregationBuilders;
+import org.elasticsearch.search.aggregations.HasAggregations;
+import org.elasticsearch.search.aggregations.metrics.sum.Sum;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
-import org.elasticsearch.search.facet.FacetBuilders;
-import org.elasticsearch.search.facet.statistical.StatisticalFacet;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import play.Logger;
@@ -76,13 +79,20 @@ public class CommandRepository extends RepositorySupport<Command> {
 	}
 
 	public int getTotalCost(Identity principal, DateTime since) {
-		final String facetId = "statisticalFacet";
-		SearchResponse response = index.search(new SearchSourceBuilder().size(10)
-			.facet(FacetBuilders.statisticalFacet(facetId).field(Command.COST.getName())
-				.facetFilter(FilterBuilders.boolFilter().must(
-					FilterBuilders.termFilter(Command.PRINCIPAL.getName(), principal.getId()),
-					FilterBuilders.rangeFilter(Command.TIMESTAMP.getName()).from(since.getMillis())))));
-		return (int) ((StatisticalFacet) response.getFacets().facet(facetId)).getTotal();
+		String id = "cost";
+		AbstractAggregationBuilder filter = AggregationBuilders.filter(id)
+			.filter(createFilter(principal, since))
+			.subAggregation(AggregationBuilders.sum(id).field(Command.COST.getName()));
+		SearchSourceBuilder search = new SearchSourceBuilder().size(1).aggregation(filter);
+		SearchResponse response = index.search(search);
+		Sum sum = ((HasAggregations) response.getAggregations().get(id)).getAggregations().get(id);
+		return (int) sum.getValue();
+	}
+
+	private static FilterBuilder createFilter(Identity principal, DateTime since) {
+		return FilterBuilders.boolFilter().must(
+			FilterBuilders.termFilter(Command.PRINCIPAL.getName(), principal.getId()),
+			FilterBuilders.rangeFilter(Command.TIMESTAMP.getName()).from(since.getMillis()));
 	}
 
 	@Override

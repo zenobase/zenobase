@@ -8,7 +8,6 @@ import org.elasticsearch.index.query.FilterBuilder;
 import org.elasticsearch.search.aggregations.AggregationBuilder;
 import org.elasticsearch.search.aggregations.AggregationBuilders;
 import org.elasticsearch.search.aggregations.bucket.geogrid.GeoHashGrid;
-import org.elasticsearch.search.aggregations.bucket.geogrid.GeoHashGrid.Bucket;
 import org.elasticsearch.search.aggregations.metrics.sum.Sum;
 import org.elasticsearch.search.aggregations.metrics.sum.SumBuilder;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
@@ -55,7 +54,7 @@ public class HeatmapFacet extends FilteredFacet {
 	public JsonNode process(SearchResponse response) {
 		ArrayNode result = Nodes.newArray();
 		GeoHashGrid grid = getAggregation(response);
-		for (Bucket bucket : grid.getBuckets()) {
+		for (GeoHashGrid.Bucket bucket : grid.getBuckets()) {
 			Sum sum = bucket.getAggregations().get("sum");
 			if (sum == null || sum.getValue() > 0.0) {
 				ObjectNode entryNode = result.addObject();

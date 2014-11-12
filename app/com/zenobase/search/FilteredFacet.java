@@ -2,8 +2,8 @@ package com.zenobase.search;
 
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.index.query.FilterBuilder;
+import org.elasticsearch.search.aggregations.AbstractAggregationBuilder;
 import org.elasticsearch.search.aggregations.Aggregation;
-import org.elasticsearch.search.aggregations.AggregationBuilder;
 import org.elasticsearch.search.aggregations.AggregationBuilders;
 import org.elasticsearch.search.aggregations.HasAggregations;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
@@ -17,7 +17,7 @@ public abstract class FilteredFacet extends Facet {
 		this.filter = filter;
 	}
 
-	protected void addAggregation(AggregationBuilder<?> aggregation, SearchSourceBuilder builder) {
+	protected void addAggregation(AbstractAggregationBuilder aggregation, SearchSourceBuilder builder) {
 		if (filter != null) {
 			aggregation = AggregationBuilders.filter(getId()).filter(filter).subAggregation(aggregation);
 		}
