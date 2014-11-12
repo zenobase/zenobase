@@ -1807,7 +1807,8 @@
 				offset : $scope.offset, 
 				limit : $scope.settings.limit,
 				order : $scope.settings.order,
-				reverse : $scope.settings.reverse
+				reverse : $scope.settings.reverse,
+				filter : $scope.settings.filter || ''
 			};
 		};
 		$scope.refresh = function(options, settings) {
