@@ -8,21 +8,25 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import com.zenobase.common.Measures;
+import com.zenobase.json.DecimalMeasureField;
+import com.zenobase.json.Field;
 import com.zenobase.json.Nodes;
 
-abstract class TimelineFacetSupport extends Facet {
+abstract class TimelineFacetSupport extends FilteredFacet {
 
 	protected final String keyField;
 	protected final String valueField;
 	protected final Unit<?> unit;
-	protected final FilterBuilder filter;
 
 	protected TimelineFacetSupport(String id, String keyField, String valueField, Unit<?> unit, FilterBuilder filter) {
-		super(id);
+		super(id, filter);
 		this.keyField = keyField;
 		this.valueField = valueField;
 		this.unit = unit;
-		this.filter = filter;
+	}
+
+	protected String getField() {
+		return unit == Unit.ONE ? valueField : Field.concat(valueField, DecimalMeasureField.VALUE_SI.getName());
 	}
 
 	protected JsonNode toJson(Iterable<ObjectNode> values) {

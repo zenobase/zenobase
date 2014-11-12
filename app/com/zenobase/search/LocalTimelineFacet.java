@@ -7,9 +7,11 @@ import javax.measure.unit.Unit;
 
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.index.query.FilterBuilder;
+import org.elasticsearch.search.aggregations.AggregationBuilder;
+import org.elasticsearch.search.aggregations.AggregationBuilders;
+import org.elasticsearch.search.aggregations.bucket.histogram.DateHistogram;
+import org.elasticsearch.search.aggregations.metrics.stats.Stats;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
-import org.elasticsearch.search.facet.FacetBuilders;
-import org.elasticsearch.search.facet.datehistogram.DateHistogramFacet;
 import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDateTime;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -20,9 +22,6 @@ import com.google.common.collect.Maps;
 
 import com.zenobase.common.LocalInterval;
 import com.zenobase.common.LocalIntervals;
-import com.zenobase.json.DecimalMeasureField;
-import com.zenobase.json.Field;
-import com.zenobase.json.LocalDateTimeField;
 import com.zenobase.json.Nodes;
 
 public class LocalTimelineFacet extends TimelineFacetSupport {
@@ -38,34 +37,35 @@ public class LocalTimelineFacet extends TimelineFacetSupport {
 
 	@Override
 	public void configure(SearchSourceBuilder builder) {
-		builder.facet(FacetBuilders.dateHistogramFacet(getId())
-			.keyField(LocalDateTimeField.getLocalTimePath(keyField))
-			.valueField(unit == Unit.ONE ? valueField : Field.concat(valueField, DecimalMeasureField.VALUE_SI.getName()))
-			.interval(interval)
+		AggregationBuilder<?> aggregation = AggregationBuilders.dateHistogram(getId())
+			.field(keyField)
+			.interval(DateHistograms.parseInterval(interval))
 			.preZone(DateTimeZone.UTC.toString())
 			.preZoneAdjustLargeInterval(true)
-			.facetFilter(filter));
+			.subAggregation(AggregationBuilders.stats(getId()).field(getField()));
+		addAggregation(aggregation, builder);
 	}
 
 	@Override
 	public JsonNode process(SearchResponse response) {
-		DateHistogramFacet facet = response.getFacets().facet(DateHistogramFacet.class, getId());
+		DateHistogram histogram = getAggregation(response);
 		Map<String, ObjectNode> counts = Collections.emptyMap();
-		if (!facet.getEntries().isEmpty()) {
-			counts = getMap(getInterval(facet.getEntries()));
-			for (DateHistogramFacet.Entry entry : facet.getEntries()) {
-				if (entry.getTotalCount() > 0) {
-					String key = getLabel(toLocalDateTime(entry.getTime()));
+		if (!histogram.getBuckets().isEmpty()) {
+			counts = getMap(getInterval(histogram.getBuckets()));
+			for (DateHistogram.Bucket bucket : histogram.getBuckets()) {
+				if (bucket.getDocCount() > 0) {
+					String key = getLabel(toLocalDateTime(bucket.getKeyAsNumber().longValue()));
 					if (range == null || counts.containsKey(key)) {
 						ObjectNode entryNode = Objects.firstNonNull(counts.get(key), Nodes.newObject());
 						entryNode.put("label", key);
-						entryNode.put("time", entry.getTime());
-						entryNode.put("count", entry.getTotalCount());
-						if (!keyField.equals(valueField) && entry.getTotalCount() > 0) {
-							addValue(entryNode, "min",  entry.getMin());
-							addValue(entryNode, "max", entry.getMax());
-							addValue(entryNode, "sum", entry.getTotal());
-							addValue(entryNode, "avg", entry.getMean());
+						entryNode.put("time", bucket.getKeyAsNumber().longValue());
+						entryNode.put("count", bucket.getDocCount());
+						if (!keyField.equals(valueField) && bucket.getDocCount() > 0) {
+							Stats stats = bucket.getAggregations().get(getId());
+							addValue(entryNode, "min",  stats.getMin());
+							addValue(entryNode, "max", stats.getMax());
+							addValue(entryNode, "sum", stats.getSum());
+							addValue(entryNode, "avg", stats.getAvg());
 						}
 						counts.put(key, entryNode);
 					}
@@ -75,15 +75,15 @@ public class LocalTimelineFacet extends TimelineFacetSupport {
 		return toJson(counts.values());
 	}
 
-	private LocalInterval getInterval(Iterable<? extends DateHistogramFacet.Entry> entries) {
+	private LocalInterval getInterval(Iterable<? extends DateHistogram.Bucket> buckets) {
 		if (range != null) {
 			return range;
 		}
 		long min = Long.MAX_VALUE, max = Long.MIN_VALUE;
-		for (DateHistogramFacet.Entry entry : entries) {
-			if (entry.getTotalCount() > 0) {
-				min = Math.min(min, entry.getTime());
-				max = Math.max(max, entry.getTime());
+		for (DateHistogram.Bucket bucket : buckets) {
+			if (bucket.getDocCount() > 0) {
+				min = Math.min(min, bucket.getKeyAsNumber().longValue());
+				max = Math.max(max, bucket.getKeyAsNumber().longValue());
 			}
 		}
 		return min <= max ? new LocalInterval(toLocalDateTime(min), toLocalDateTime(max)) : null;
