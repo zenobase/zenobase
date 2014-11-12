@@ -63,8 +63,6 @@ to be started manually with `sudo start play`.)
 
      3.2. (if migrating) Set elasticsearch.replay to the previous clusterName and increment clusterName.
 
-     3.3. (if migrating) Temporarily increase elasticsearch.heap_size to 2000m.
-
   4. Set up new instances [OpsWorks]:
 
      4.1. Add two m3.medium instances named "{build number}-1a" in us-east-1a and "{build number}-1c" in us-east-1c to the "Elasticsearch" layer.
