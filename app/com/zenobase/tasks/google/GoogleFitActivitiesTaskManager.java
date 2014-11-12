@@ -16,6 +16,7 @@ import org.joda.time.DateTimeZone;
 import org.scribe.model.OAuthRequest;
 import org.scribe.model.Response;
 import org.scribe.model.Verb;
+import play.Logger;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
@@ -106,7 +107,12 @@ public class GoogleFitActivitiesTaskManager extends GoogleFitTaskManagerSupport<
 					event.addValue(Event.TIMESTAMP, point.getEnd());
 					event.setValue(Event.DURATION, point.getDuration());
 				}
-				event.addValue(Event.TAG, ActivityTypes.forID(point.getValue(0).intValueExact()));
+				String tag = ActivityTypes.forID(point.getValue(0).intValueExact());
+				if (tag != null) {
+					event.addValue(Event.TAG, tag);
+				} else {
+					Logger.warn("Unknown activity type: {}", point.getValue(0));
+				}
 				event.setValue(Event.AUTHOR, task.getPrincipal());
 				DataStream origin = streams.get(point.getOrigin());
 				if (origin != null) {

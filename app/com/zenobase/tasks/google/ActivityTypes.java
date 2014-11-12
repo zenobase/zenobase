@@ -111,6 +111,7 @@ public class ActivityTypes {
 		.put(99, "Windsurfing")
 		.put(100, "Yoga")
 		.put(101, "Zumba")
+		.put(108, "Other") // not documented
 		.build();
 
 	private ActivityTypes() {
