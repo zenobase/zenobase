@@ -6,10 +6,9 @@ import javax.inject.Inject;
 
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.search.aggregations.AggregationBuilders;
+import org.elasticsearch.search.aggregations.bucket.terms.Terms;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
-import org.elasticsearch.search.facet.FacetBuilders;
-import org.elasticsearch.search.facet.terms.TermsFacet;
-import org.elasticsearch.search.facet.terms.TermsFacet.ComparatorType;
 import org.joda.time.DateTime;
 import play.Logger;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -64,14 +63,14 @@ public class EventRepository {
 
 	public List<String> terms(String bucketId, String field) {
 		final int limit = 100;
-		final String facetId = "terms";
+		final String id = "terms";
 		SearchSourceBuilder search = new SearchSourceBuilder().field(field)
-			.facet(FacetBuilders.termsFacet(facetId).field(field).size(limit).order(ComparatorType.COUNT));
+			.aggregation(AggregationBuilders.terms(id).field(field).size(limit).order(Terms.Order.count(false)));
 		SearchResponse response = getIndex(bucketId).search(search);
 		List<String> terms = Lists.newArrayList();
-		TermsFacet facet = response.getFacets().facet(TermsFacet.class, facetId);
-		for (TermsFacet.Entry entry : facet.getEntries()) {
-			terms.add(entry.getTerm().toString());
+		Terms aggregation = response.getAggregations().get(id);
+		for (Terms.Bucket bucket : aggregation.getBuckets()) {
+			terms.add(bucket.getKey().toString());
 		}
 		return terms;
 	}
