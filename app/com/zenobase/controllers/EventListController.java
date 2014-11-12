@@ -1,7 +1,6 @@
 package com.zenobase.controllers;
 
 
-import java.io.StringWriter;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -12,7 +11,6 @@ import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import play.mvc.BodyParser;
 import play.mvc.Result;
-import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableList;
@@ -22,7 +20,6 @@ import com.google.common.collect.Maps;
 import com.zenobase.commands.CompoundCommand;
 import com.zenobase.commands.CreateEventCommand;
 import com.zenobase.common.Generator;
-import com.zenobase.io.SpreadsheetPrinter;
 import com.zenobase.json.Nodes;
 import com.zenobase.json.ObjectField;
 import com.zenobase.models.Bucket;
@@ -110,15 +107,7 @@ public class EventListController extends ControllerSupport {
 	public Result get(String bucketId, List<String> constraints, List<FacetOptions> facets) {
 		try {
 			Search search = new EventSearchBuilder().addConstraints(constraints).addFacets(facets).buildSearch();
-			ObjectNode result = events.find(bucketId, search);
-	    	String extract = request().getQueryString("x");
-			if (extract != null) {
-				StringWriter out = new StringWriter();
-				new SpreadsheetPrinter(out).print((ArrayNode) result.get(extract));
-				return ok(out.toString());
-			} else {
-				return ok(result);
-			}
+			return ok(events.find(bucketId, search));
 		} catch (IllegalArgumentException e) {
 			return badRequest("Invalid parameters");
 		}

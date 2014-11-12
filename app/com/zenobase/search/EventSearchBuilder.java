@@ -24,7 +24,6 @@ public class EventSearchBuilder extends SearchBuilderSupport {
 		.put(ScoreboardFacet.TYPE, ScoreboardFacet.builder(filterParser))
 		.put(ScatterPlotFacet.TYPE, ScatterPlotFacet.builder(filterParser))
 		.put(StatsFacet.TYPE, StatsFacet.builder(filterParser))
-		.put(MultiplotFacet.TYPE, MultiplotFacet.builder())
 		.build();
 
 	public EventSearchBuilder() {
