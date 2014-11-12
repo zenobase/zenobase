@@ -15,7 +15,7 @@ import com.zenobase.models.Percentage;
 import com.zenobase.models.Rating;
 import com.zenobase.models.Resource;
 
-public class SleepsResult {
+public class SleepCloudResult {
 
 	public static final Resource SOURCE = new Resource("SleepCloud", "http://sleep-cloud.appspot.com/");
 
@@ -24,11 +24,15 @@ public class SleepsResult {
 	private final boolean useRanges;
 	private final JsonNode node;
 
-	public SleepsResult(String tag, Identity author, boolean useRanges, JsonNode node) {
+	public SleepCloudResult(String tag, Identity author, boolean useRanges, JsonNode node) {
 		this.tag = tag;
 		this.author = author;
 		this.useRanges = useRanges;
 		this.node = node;
+	}
+
+	public String getCursor() {
+		return node.path("cursor").textValue();
 	}
 
 	public List<Event> getEvents() {
@@ -58,6 +62,7 @@ public class SleepsResult {
 		event.setValue(Event.COUNT, countValue(node.path("cycles")));
 		event.setValue(Event.RATING, ratingValue(node.path("rating")));
 		event.setValue(Event.PERCENTAGE, percentageValue(node.path("deepSleep")));
+		event.setValue(Event.NOTE, node.path("comment").textValue());
 		events.add(event);
 	}
 

@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import org.elasticsearch.common.collect.Lists;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.scribe.model.OAuthRequest;
@@ -51,15 +52,27 @@ public class SleepCloudTaskManager extends OAuthTaskManager {
 		if (credentials.isExpired()) {
 			reauthorize(credentials);
 		}
-		OAuthRequest request = new OAuthRequest(Verb.GET, "https://sleep-cloud.appspot.com/fetchRecords");
-		request.addQuerystringParameter("tags", "true");
-		// request.addQuerystringParameter("sample", "true"); // test data
-		DateTime from = task.getFrom();
-		if (from != null) {
-			request.addQuerystringParameter("timestamp", Long.toString(from.getMillis()));
-		}
-		Response response = send(request, credentials);
-		List<Event> events = new SleepsResult(task.getTag(), task.getPrincipal(), task.useRanges(), parseObject(response)).getEvents();
+		List<Event> events = Lists.newArrayList();
+		String cursor = null;
+		do {
+			OAuthRequest request = new OAuthRequest(Verb.GET, "https://sleep-cloud.appspot.com/fetchRecords");
+			request.addQuerystringParameter("tags", "true");
+			request.addQuerystringParameter("comments", "true");
+			// request.addQuerystringParameter("sample", "true"); // test data
+			DateTime from = task.getFrom();
+			if (from != null) {
+				request.addQuerystringParameter("timestamp", Long.toString(from.getMillis()));
+			}
+			if (cursor != null) {
+				request.addQuerystringParameter("cursor", cursor);
+			}
+			Response response = send(request, credentials);
+			SleepCloudResult result = new SleepCloudResult(task.getTag(), task.getPrincipal(), task.useRanges(), parseObject(response));
+			if (!events.addAll(result.getEvents())) {
+				break;
+			}
+			cursor = result.getCursor();
+		} while (cursor != null);
 		return createCommand(task, credentials, events, token);
 	}
 

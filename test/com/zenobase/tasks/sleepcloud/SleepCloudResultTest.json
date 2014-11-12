@@ -12,7 +12,8 @@
             "fromTime": 1394420966000,
             "deepSleep": 0.4337349534034729,
             "toTime": 1394450810000,
-            "timezone": "GMT--5:00"
+            "timezone": "GMT--5:00",
+            "comment": "just testing..."
         },
         {
             "cycles": 6,
@@ -34,5 +35,6 @@
             "toTime": 1394269762000,
             "timezone": "GMT-05:00"
         }
-    ]
+    ],
+    "cursor": "xyz"
 }
