@@ -1,5 +1,7 @@
 package com.zenobase.tasks.runkeeper;
 
+import java.math.BigDecimal;
+
 import javax.measure.DecimalMeasure;
 import javax.measure.quantity.Energy;
 import javax.measure.quantity.Length;
@@ -34,7 +36,7 @@ class RunkeeperActivitiesResult extends RunkeeperResultSupport {
 		Duration duration = durationValue(node.path("duration"));
 		DecimalMeasure<Length> distance = distanceValue(node.path("total_distance"));
 		event.addValue(Event.TAG, node.path("type").textValue());
-		event.setValue(Event.TIMESTAMP, dateTimeValue(node.path("start_time")));
+		event.setValue(Event.TIMESTAMP, dateTimeValue(node.path("start_time"), dateTimeZoneValue(node.path("utc_offset"))));
 		event.setValue(Event.DURATION, duration);
 		event.setValue(Event.DISTANCE, distance);
 		if (distance != null && duration != null) {
@@ -45,6 +47,14 @@ class RunkeeperActivitiesResult extends RunkeeperResultSupport {
 		event.setValue(Event.SOURCE, new Resource("RunKeeper", node.path("uri").textValue()));
 		event.setValue(Event.AUTHOR, author);
 		return event;
+	}
+
+	private DateTimeZone dateTimeZoneValue(JsonNode node) {
+		if (node.isNumber()) {
+			int offset = BigDecimal.valueOf(node.doubleValue() * 60.0).intValueExact();
+			return DateTimeZone.forOffsetHoursMinutes(offset / 60, offset % 60);
+		}
+		return timezone;
 	}
 
 	private Duration durationValue(JsonNode node) {

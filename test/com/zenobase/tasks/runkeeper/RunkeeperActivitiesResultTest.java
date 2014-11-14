@@ -46,7 +46,7 @@ public class RunkeeperActivitiesResultTest extends ResultTestSupport {
 
 		Event e2 = new Event(events.get(1).getId());
 		e2.addValue(Event.TAG, "Other");
-		e2.setValue(Event.TIMESTAMP, dateTime("2014-11-06T11:48:07-08:00"));
+		e2.setValue(Event.TIMESTAMP, dateTime("2014-11-06T11:48:07-07:30"));
 		e2.setValue(Event.SOURCE, new Resource("RunKeeper", "/fitnessActivities/465890172"));
 		e2.setValue(Event.AUTHOR, author);
 		assertThat(events.get(1)).isEqualTo(e2);

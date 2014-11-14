@@ -16,10 +16,9 @@ public class RunkeeperTest extends TaskTestSupport {
 	}
 
 	@Test
-	@Ignore
 	public void testActivities() {
 		run(new RunkeeperActivitiesTaskManager(newCredentialsManager()), Nodes.newObject()
-			.put("marker", "2014-11-06")
+			.put("marker", "2014-11-13")
 			.put("unit", "mi")
 			.put("timezone", "America/Los_Angeles"));
 	}

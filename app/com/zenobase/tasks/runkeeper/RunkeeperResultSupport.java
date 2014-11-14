@@ -40,6 +40,10 @@ abstract class RunkeeperResultSupport {
 	protected abstract Event newEvent(JsonNode node);
 
 	protected DateTime dateTimeValue(JsonNode node) {
+		return dateTimeValue(node, timezone);
+	}
+
+	protected DateTime dateTimeValue(JsonNode node, DateTimeZone timezone) {
 		LocalDateTime local = TIME_FORMAT.parseLocalDateTime(node.textValue());
 		Preconditions.checkState(!timezone.isLocalDateTimeGap(local), "<%s> does not exist in <%s>", local, timezone);
 		return local.toDateTime(timezone);

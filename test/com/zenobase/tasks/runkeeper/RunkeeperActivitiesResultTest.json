@@ -12,6 +12,7 @@
             "uri": "/fitnessActivities/268390846"
         },
         {
+        	"utc_offset": -7.5,
             "duration": 0,
             "has_path": false,
             "entry_mode": "API",
