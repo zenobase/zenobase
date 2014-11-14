@@ -47,6 +47,24 @@ To run all tests except Selenium tests:
   activator -Dwebdriver.enabled=false test
 
 
+Profiling
+---------
+
+1. Run the JVM that will be monitored with the following properties:
+
+   -Dcom.sun.management.jmxremote \
+   -Dcom.sun.management.jmxremote.port=1099 \
+   -Dcom.sun.management.jmxremote.rmi.port=1099 \ 
+   -Dcom.sun.management.jmxremote.authenticate=false \ 
+   -Dcom.sun.management.jmxremote.ssl=false
+
+2. Create an ssh tunnel (with dynamic port forwarding and listening on port 1999) to the remote machine. 
+
+3. Configure jvisualvm or jmc to use localhost:1999 as a SOCKS proxy.
+
+4. Create a JMX connection using the *internal* IP address of the remote machine, and port 1099.
+
+
 Release Procedure
 -----------------
 
@@ -127,7 +145,7 @@ Restore Procedure
 
   3. List snapshots:
 
-    curl 'localhost:9200/_snapshot/prod-xx/_status?pretty=true'
+    curl 'localhost:9200/_snapshot/prod-xx/_all?pretty=true'
 
   4. Restore a snapshot:
 
