@@ -1971,7 +1971,7 @@
 		$scope.snapshot = function() {
 			$scope.$broadcast('snapshot');
 		};
-		$scope.toSpreadsheet = function(element) {
+		$scope.toSpreadsheet = function() {
 			var spreadsheet = new Spreadsheet([ $scope.settings.field, 'count' ]);
 			var field = Field.find($scope.settings.field);
 			$.each($scope.intervals, function(i, interval) {
@@ -2409,7 +2409,7 @@
 		$scope.snapshot = function() {
 			$scope.$broadcast('snapshot');
 		};
-		$scope.toSpreadsheet = function(element) {
+		$scope.toSpreadsheet = function() {
 			var header = $scope.settings.statistic + '_' + $scope.settings.field;
 			if ($scope.settings.unit) {
 				header += '_' + $scope.settings.unit;
@@ -2926,7 +2926,7 @@
 		$scope.snapshot = function() {
 			$scope.$broadcast('snapshot');
 		};
-		$scope.toSpreadsheet = function(element) {
+		$scope.toSpreadsheet = function() {
 			var header = $scope.settings.statistic + '_' + $scope.settings.value_field;
 			if ($scope.settings.unit) {
 				header += '_' + $scope.settings.unit;
@@ -3324,7 +3324,7 @@
 		$scope.snapshot = function() {
 			$scope.$broadcast('snapshot');
 		};
-		$scope.toSpreadsheet = function(element) {
+		$scope.toSpreadsheet = function() {
 			function buildHeader(label, statistic, field, unit) {
 				var header = label;
 				if (!header) {
@@ -3341,7 +3341,6 @@
 				buildHeader($scope.settings.label_y, $scope.settings.statistic_y, $scope.settings.field_y, $scope.settings.unit_y), 
 				compareMode ? 'dataset' : ''
 			]);
-			var field = Field.find($scope.settings.field);
 			$.each($scope.data, function(i, value) {
 				spreadsheet.addRecord([ value[0], value[1], compareMode ? 'a' : '' ]);
 			});
@@ -5553,7 +5552,7 @@
 			});
 	}]);
 
-	app.controller('DocumentController', ['$scope', '$location', '$routeParams', '$timeout', '$window', function($scope, $location, $routeParams, $timeout, $window) {
+	app.controller('DocumentController', ['$scope', '$location', '$routeParams', '$timeout', function($scope, $location, $routeParams, $timeout) {
 		if ($routeParams.section) {
 			var id = $location.path().substring(1).replace('/', '-');
 			var element = document.getElementById(id);
