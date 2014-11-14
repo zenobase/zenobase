@@ -502,7 +502,7 @@ Authorization: Bearer <em>&lt;access_token&gt;</em></pre>
   <dt>order</dt>
   <dd>The field to sort on. Defaults to <em>timestamp</em>.</dd>
   <dt>reverse</dt>
-  <dd>Sort in ascending order. Defaults to <em>false</em></dd>
+  <dd>Sort in reverse order. Defaults to <em>false</em></dd>
   <dt>facet_expression</dt>
   <dd>See <a href="/#/api/facets">facets</a>.
   More than one facet parameter can be given.</dd>
@@ -1208,8 +1208,10 @@ Content-Type: application/json
   <dd>The field containing the values. Required.</dd>
   <dt>unit:<em>&lt;String&gt;</em></dt>
   <dd>The unit of the value. Required for fields with units.</dd>
-  <dt>order:<em>&lt;'count'|'term'&gt;</em></dt>
-  <dd>Order results by count or alphabetic. Defaults to <em>count</em>.</dd>
+  <dt>order:<em>&lt;'term'|'count'|'min'|'max'|'sum'|'avg'&gt;</em></dt>
+  <dd>Order results by term or on a statistic. Defaults to <em>count</em>.</dd>
+  <dt>reverse:<em>&lt;boolean&gt;</em></dt>
+  <dd>Sort in reverse order. Defaults to <em>false</em></dd>
   <dt>limit:<em>&lt;integer&gt;</em></dt>
   <dd>How many results to return. Defaults to <em>10</em>.</dd>
   <dt>filter:<em>&lt;constraint&gt;</em></dt>

@@ -39,12 +39,17 @@ public class ScoreboardFacet extends FilteredFacet {
 	}
 
 	private Terms.Order parseOrder(String s, boolean reverse) {
+		s = s.replace("total", "sum"); // TODO drop
 		if ("count".equals(s)) {
 			return Terms.Order.count(reverse);
 		} else if ("term".equals(s)) {
 			return Terms.Order.term(!reverse);
-		} else {
+		} else if ("sum".equals(s) || "avg".equals(s) || "max".equals(s)) {
 			return Terms.Order.aggregation(getId(), s, reverse);
+		} else if ("min".equals(s)) {
+			return Terms.Order.aggregation(getId(), s, !reverse);
+		} else {
+			throw new IllegalArgumentException("Invalid order: " + s);
 		}
 	}
 
