@@ -68,6 +68,7 @@ public class CreateBucketCommand extends Command {
 
 		@Override
 		public void executeTyped(CreateBucketCommand command) {
+			command.getBucket().migrate();
 			repository.store(command.getBucket(), command.getTimestamp(), true);
 		}
 	}

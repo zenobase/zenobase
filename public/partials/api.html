@@ -16,6 +16,8 @@ please <a href="mailto:info@zenobase.com?subject=Zenobase+API">drop us a note</a
 so we can let you know about upcoming changes.</p>
 
 <dl>
+	<dt>November 14, 2014</dt>
+	<dd>Replaced "reverse" with "asc" in the count and scoreboard facets.</dd>
 	<dt>November 12, 2014</dt>
 	<dd>Added a "filter" option to the count and gantt facets.</dd>
 	<dt>November 9, 2014</dt>
@@ -1036,26 +1038,26 @@ Content-Type: application/json
 <dl>
   <dt>field:<em>&lt;'tag'|'author'&gt;</em></dt>
   <dd>The field to aggregate on. Required.</dd>
-  <dt>order:<em>&lt;'count'|'term'&gt;</em></dt>
-  <dd>Order results by count or alphabetic. Defaults to <em>count</em>.</dd>
   <dt>offset:<em>&lt;integer&gt;</em></dt>
   <dd>The offset of the first result. Defaults to <em>0</em>.</dd>
   <dt>limit:<em>&lt;integer&gt;</em></dt>
   <dd>How many results to return. Defaults to <em>10</em>.</dd>
-  <dt>reverse:<em>&lt;boolean&gt;</em></dt>
-  <dd>Sort in reverse order. Defaults to <em>false</em></dd>
+  <dt>order:<em>&lt;'term'|'count'&gt;</em></dt>
+  <dd>Order results by term or by count. Defaults to <em>count</em>.</dd>
+  <dt>asc:<em>&lt;boolean&gt;</em></dt>
+  <dd>Order results in ascending order. Defaults to <em>false</em></dd>
   <dt>filter:<em>&lt;constraint&gt;</em></dt>
   <dd>Optional <a href="/#/api/constraints">constraint</a>.</dd>
 </dl>
 
 <h5>Example:</h5>
 
-<pre>id:xyz,type:count,field:tag</pre>
+<pre>id:xyz,type:count,field:tag,order:term,asc:true</pre>
 
 <pre><code data-ui-highlight class="lang-json">"xyz" : [
-  { "label" : "lunch", "count" : 31 },
-  { "label" : "dinner", "count" : 22 },
   { "label" : "breakfast", "count" : 19 }
+  { "label" : "dinner", "count" : 31 },
+  { "label" : "lunch", "count" : 22 },
 ]</code></pre>
 
 &nbsp;
@@ -1208,19 +1210,19 @@ Content-Type: application/json
   <dd>The field containing the values. Required.</dd>
   <dt>unit:<em>&lt;String&gt;</em></dt>
   <dd>The unit of the value. Required for fields with units.</dd>
-  <dt>order:<em>&lt;'term'|'count'|'min'|'max'|'sum'|'avg'&gt;</em></dt>
-  <dd>Order results by term or on a statistic. Defaults to <em>count</em>.</dd>
-  <dt>reverse:<em>&lt;boolean&gt;</em></dt>
-  <dd>Sort in reverse order. Defaults to <em>false</em></dd>
   <dt>limit:<em>&lt;integer&gt;</em></dt>
   <dd>How many results to return. Defaults to <em>10</em>.</dd>
+  <dt>order:<em>&lt;'term'|'count'|'min'|'max'|'sum'|'avg'&gt;</em></dt>
+  <dd>Order results by term or on a statistic. Defaults to <em>sum</em>.</dd>
+  <dt>asc:<em>&lt;boolean&gt;</em></dt>
+  <dd>Order results in ascending order. Defaults to <em>false</em></dd>
   <dt>filter:<em>&lt;constraint&gt;</em></dt>
   <dd>Optional <a href="/#/api/constraints">constraint</a>.</dd>
 </dl>
 
 <h5>Example:</h5>
 
-<pre>id:xyz,type:scoreboard,key_field:author,value_field:steps</pre>
+<pre>id:xyz,type:scoreboard,key_field:author,value_field:steps,order:min,asc:true</pre>
 
 <pre><code data-ui-highlight class="lang-json">"xyz" : [
   { "label" : "dch4v3salm", "count" : 364, "min" : 1640, "max" : 38215, "sum" : 3899768, "avg" : 10713.65 },

@@ -28,7 +28,7 @@
 				"field" : "tag",
 				"limit" : 10,
 				"order" : "count",
-				"reverse" : false
+				"asc" : false
 			}
 		]
 	},
@@ -62,9 +62,9 @@
 				"label" : "Type",
 				"placement" : "left",
 				"field" : "tag",
-				"order" : "count",
 				"limit" : 5,
-				"reverse" : false
+				"order" : "count",
+				"asc" : false
 			},
 			{
 				"id" : "histogram",
@@ -118,9 +118,9 @@
 				"label" : "Type",
 				"placement" : "left",
 				"field" : "tag",
-				"order" : "count",
 				"limit" : 5,
-				"reverse" : false
+				"order" : "count",
+				"asc" : false
 			},
 			{
 				"id" : "map",
@@ -180,9 +180,9 @@
 				"label" : "Type",
 				"placement" : "left",
 				"field" : "tag",
-				"order" : "count",
 				"limit" : 5,
-				"reverse" : false
+				"order" : "count",
+				"asc" : false
 			},
 			{
 				"id" : "histogram",
@@ -235,9 +235,9 @@
 				"label" : "Type",
 				"placement" : "left",
 				"field" : "tag",
-				"order" : "count",
 				"limit" : 5,
-				"reverse" : false
+				"order" : "count",
+				"asc" : false
 			},
 			{
 				"id" : "map",
@@ -296,9 +296,9 @@
 				"label" : "Type",
 				"placement" : "left",
 				"field" : "tag",
-				"order" : "count",
 				"limit" : 5,
-				"reverse" : false
+				"order" : "count",
+				"asc" : false
 			},
 			{
 				"id" : "map",
@@ -357,9 +357,9 @@
 				"label" : "Type",
 				"placement" : "left",
 				"field" : "tag",
-				"order" : "count",
 				"limit" : 5,
-				"reverse" : false
+				"order" : "count",
+				"asc" : false
 			},
 			{
 				"id" : "map",
@@ -463,9 +463,9 @@
 				"label" : "Rooms",
 				"placement" : "left",
 				"field" : "tag",
-				"order" : "count",
 				"limit" : 5,
-				"reverse" : false
+				"order" : "count",
+				"asc" : false
 			},
 			{
 				"id" : "temperature",
@@ -779,7 +779,7 @@
 				"field" : "tag",
 				"limit" : 10,
 				"order" : "count",
-				"reverse" : false
+				"asc" : false
 			},
 			{
 				"id" : "duration_histogram",
@@ -832,7 +832,7 @@
 				"field" : "tag",
 				"limit" : 10,
 				"order" : "count",
-				"reverse" : false
+				"asc" : false
 			},
 			{
 				"id" : "map",
@@ -889,7 +889,7 @@
 				"field" : "tag",
 				"limit" : 10,
 				"order" : "count",
-				"reverse" : false
+				"asc" : false
 			},
 			{
 				"id" : "map",
@@ -923,6 +923,7 @@
 				"value_field" : "duration",
 				"unit" : null,
 				"order" : "sum",
+				"asc" : false,
 				"limit" : 10
 			}
 		]
@@ -977,9 +978,9 @@
 				"label" : "Tags",
 				"placement" : "left",
 				"field" : "tag",
-				"order" : "count",
 				"limit" : 5,
-				"reverse" : false
+				"order" : "count",
+				"asc" : false
 			},
 			{
 				"id" : "map",
@@ -1294,9 +1295,9 @@
 				"label" : "Tags",
 				"placement" : "left",
 				"field" : "tag",
-				"order" : "count",
 				"limit" : 10,
-				"reverse" : false
+				"order" : "count",
+				"asc" : false
 			},
 			{
 				"id" : "polar_hour",
@@ -1613,6 +1614,7 @@
 				"value_field" : "count",
 				"unit" : null,
 				"order" : "sum",
+				"asc" : false,
 				"limit" : 10
 			},
 			{
@@ -1660,6 +1662,7 @@
 				"value_field" : "count",
 				"unit" : null,
 				"order" : "sum",
+				"asc" : false,
 				"limit" : 10
 			},
 			{
@@ -1707,6 +1710,7 @@
 				"value_field" : "count",
 				"unit" : null,
 				"order" : "sum",
+				"asc" : false,
 				"limit" : 10
 			},
 			{
@@ -1750,9 +1754,9 @@
 				"label" : "Tags",
 				"placement" : "left",
 				"field" : "tag",
-				"order" : "count",
 				"limit" : 10,
-				"reverse" : false
+				"order" : "count",
+				"asc" : false
 			},
 			{
 				"id" : "polar_hours",
@@ -1834,9 +1838,9 @@
 				"label" : "Vehicles",
 				"placement" : "left",
 				"field" : "tag",
-				"order" : "count",
 				"limit" : 5,
-				"reverse" : false
+				"order" : "count",
+				"asc" : false
 			},
 			{
 				"id" : "polar",

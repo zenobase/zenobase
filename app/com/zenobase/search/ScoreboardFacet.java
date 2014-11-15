@@ -29,27 +29,22 @@ public class ScoreboardFacet extends FilteredFacet {
 	private final Terms.Order order;
 	private final int limit;
 
-	private ScoreboardFacet(String id, String termField, String valueField, Unit<?> unit, String order, boolean reverse, int limit, FilterBuilder filter) {
+	private ScoreboardFacet(String id, String termField, String valueField, Unit<?> unit, String order, boolean asc, int limit, FilterBuilder filter) {
 		super(id, filter);
 		this.termField = termField;
 		this.valueField = valueField;
 		this.unit = unit;
-		this.order = parseOrder(order, reverse);
+		this.order = parseOrder(order, asc);
 		this.limit = limit;
 	}
 
-	private Terms.Order parseOrder(String s, boolean reverse) {
-		s = s.replace("total", "sum"); // TODO drop
+	private Terms.Order parseOrder(String s, boolean asc) {
 		if ("count".equals(s)) {
-			return Terms.Order.count(reverse);
+			return Terms.Order.count(asc);
 		} else if ("term".equals(s)) {
-			return Terms.Order.term(!reverse);
-		} else if ("sum".equals(s) || "avg".equals(s) || "max".equals(s)) {
-			return Terms.Order.aggregation(getId(), s, reverse);
-		} else if ("min".equals(s)) {
-			return Terms.Order.aggregation(getId(), s, !reverse);
+			return Terms.Order.term(asc);
 		} else {
-			throw new IllegalArgumentException("Invalid order: " + s);
+			return Terms.Order.aggregation(getId(), s, asc);
 		}
 	}
 
@@ -105,7 +100,7 @@ public class ScoreboardFacet extends FilteredFacet {
 					options.get("value_field"),
 					unit != null ? Units.valueOf(unit) : Unit.ONE,
 					options.get("order", String.class, "count"),
-					options.get("reverse", Boolean.class, Boolean.FALSE),
+					options.get("asc", Boolean.class, false),
 					options.get("limit", Integer.class, 10),
 					filterParser.parse(options.get("filter")));
 			}

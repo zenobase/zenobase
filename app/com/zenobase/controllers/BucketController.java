@@ -64,6 +64,8 @@ public class BucketController extends ControllerSupport {
     	}
 		if (bucket.getWidgets().isEmpty()) {
 			setDefaultDashboard(bucket);
+		} else {
+			bucket.migrate();
 		}
     	return ok(labelOnly ? toLabel(bucket) : bucket.toJson());
     }
@@ -128,7 +130,7 @@ public class BucketController extends ControllerSupport {
 			widget.put("type", "count");
 			widget.put("field", "tag");
 			widget.put("order", "count");
-			widget.put("reverse", false);
+			widget.put("asc", false);
 			widget.put("limit", 10);
 			widget.put("placement", "right");
 			return widget;

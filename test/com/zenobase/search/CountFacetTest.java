@@ -2,9 +2,9 @@ package com.zenobase.search;
 
 import static com.zenobase.testing.NodeAssert.assertThat;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.junit.Before;
 import org.junit.Test;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import com.zenobase.models.Event;
 import com.zenobase.testing.NodeAssert;
@@ -54,7 +54,7 @@ public class CountFacetTest extends FacetTestSupport {
 		addEvent(e1);
 		addEvent(e2);
 		addEvent(e3);
-		addFacet("id:%s,type:%s,field:%s,order:%s", FACET_ID, CountFacet.TYPE, Event.TAG, "term");
+		addFacet("id:%s,type:%s,field:%s,order:%s,asc:%s", FACET_ID, CountFacet.TYPE, Event.TAG, "term", true);
 
 		ObjectNode result = execute();
 		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(3);
@@ -66,12 +66,12 @@ public class CountFacetTest extends FacetTestSupport {
 	}
 
 	@Test
-	public void testOrderByCountReverse() {
+	public void testOrderByCountAscending() {
 
 		addEvent(e1);
 		addEvent(e2);
 		addEvent(e3);
-		addFacet("id:%s,type:%s,field:%s,reverse:%s", FACET_ID, CountFacet.TYPE, Event.TAG, true);
+		addFacet("id:%s,type:%s,field:%s,asc:%s", FACET_ID, CountFacet.TYPE, Event.TAG, true);
 
 		ObjectNode result = execute();
 		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(3);

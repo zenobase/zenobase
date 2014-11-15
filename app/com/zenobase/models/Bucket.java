@@ -6,6 +6,7 @@ import java.util.Map.Entry;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
+import play.Logger;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Objects;
 import com.google.common.base.Strings;
@@ -157,5 +158,31 @@ public class Bucket extends DomainNode {
 	@Override
 	public String toString() {
 		return Objects.firstNonNull(getLabel(), getId());
+	}
+
+	public void migrate() {
+		for (ObjectNode widget : getWidgets()) {
+			if ("count".equals(widget.path("type").textValue())) {
+				if (widget.path("reverse").isBoolean()) {
+					if (widget.path("reverse").booleanValue()) {
+						Logger.warn("expected reverse to be false: {}", widget);
+					}
+					widget.remove("reverse");
+					widget.put("asc", false);
+					Logger.info("count: replaced 'reverse' with 'asc'");
+				}
+			}
+			if ("scoreboard".equals(widget.path("type").textValue())) {
+				if ("total".equals(widget.path("order").textValue())) {
+					Logger.warn("expected reverse to be false: {}", widget);
+					widget.put("order", "sum");
+					Logger.info("scoreboard: replaced 'total' with 'sum'");
+				}
+				if (widget.path("asc").isMissingNode()) {
+					widget.put("asc", false);
+					Logger.info("scoreboard: added 'asc'");
+				}
+			}
+		}
 	}
 }

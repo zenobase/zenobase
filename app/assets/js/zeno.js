@@ -1135,7 +1135,7 @@
 				label : 'Count',
 				description : 'Counts events by tag or author.',
 				thumbnail : cacheBuster.rewrite('/img/widgets/count.png'),
-				settings : { field : 'tag', order : 'count', reverse : false, limit : 5 }
+				settings : { field : 'tag', order : 'count', asc : false, limit : 5 }
 			},
 			{
 				type : 'map',
@@ -1170,7 +1170,7 @@
 				label : 'Scoreboard',
 				description : 'Statistics for the values in a field.',
 				thumbnail : cacheBuster.rewrite('/img/widgets/scoreboard.png'),
-				settings : { key_field : 'author', value_field : 'distance', unit : 'mi', order : 'sum', limit : 10 }
+				settings : { key_field : 'author', value_field : 'distance', unit : 'mi', order : 'sum', asc : false, limit : 10 }
 			},
 			{
 				type : 'gantt',
@@ -1397,13 +1397,15 @@
 			return $http.get('/buckets/' + $scope.bucketId + '/?' + $.param({ 'q' : q, 'facet' : facets }, true));
 		}
 		$scope.search = function(params, callback) {
-			var facet = $.map(params, function(param) {
-				return $.map(param, function(value, key) { return key + ':' + value; }).join(',');
+			var facets = $.map(params, function(param) {
+				return $.map(param, function(value, key) {
+					return angular.isDefined(value) ? key + ':' + value : null;
+				}).join(',');
 			});
 			var t0 = new Date().getTime();
-			var requests = [ search($scope.constraints, facet) ];
+			var requests = [ search($scope.constraints, facets) ];
 			if ($scope.constraintsB.length > 0) {
-				requests.push(search($scope.constraintsB, facet));
+				requests.push(search($scope.constraintsB, facets));
 			}
 			$q.all(requests).then(function(responses) {
 				var t1 = new Date().getTime();
@@ -1786,16 +1788,10 @@
 		$scope.next = function() {
 			$scope.refresh({ offset : $scope.offset + $scope.settings.limit });
 		};
-		$scope.setOrder = function(order) {
-			$scope.refresh({ offset : 0 }, { order : order, reverse : order === $scope.settings.order && !$scope.settings.reverse });
-		};
 		$scope.getClasses = function(column) {
-			var classes = [];
-			if (column === $scope.order) {
-				classes.push('caret-active');
-				classes.push($scope.reverse ? 'caret-inverted' : 'caret');
-			} else {
-				classes.push('caret');
+			var classes = [ 'fa' ];
+			if (column === $scope.settings.order) {
+				classes.push($scope.settings.asc ? 'fa-sort-asc' : 'fa-sort-desc');
 			}
 			return classes;
 		};
@@ -1807,8 +1803,8 @@
 				offset : $scope.offset, 
 				limit : $scope.settings.limit,
 				order : $scope.settings.order,
-				reverse : $scope.settings.reverse,
-				filter : $scope.settings.filter || ''
+				asc : $scope.settings.asc,
+				filter : $scope.settings.filter
 			};
 		};
 		$scope.refresh = function(options, settings) {
@@ -1839,9 +1835,9 @@
 
 		new WidgetDialogControllerSupport($scope);
 
-		$scope.getFields = function() {
-			return Field.findByType('text');
-		};
+		$scope.fields = Field.findByType('text');
+		$scope.orderings = [ 'term', 'count' ];
+		$scope.directions = { 'asc' : true, 'desc' : false };
 	}]);
 
 	app.controller('GanttWidgetController', ['$scope', 'timezone', function($scope, timezone) {
@@ -1861,7 +1857,7 @@
 				timezone : timezone,
 				order : $scope.settings.order,
 				limit : $scope.settings.limit,
-				filter : $scope.settings.filter || ''
+				filter : $scope.settings.filter
 			};
 		};
 		$scope.refresh = function(options, settings) {
@@ -1913,7 +1909,7 @@
 			return { 
 				id : $scope.settings.id,
 				type : 'ratings',
-				filter : $scope.settings.filter || ''
+				filter : $scope.settings.filter
 			};
 		};
 		$scope.update = function(event, result) {
@@ -1953,7 +1949,7 @@
 				field : $scope.settings.field, 
 				interval : $scope.settings.interval,
 				unit : $scope.settings.unit,
-				filter : $scope.settings.filter || ''
+				filter : $scope.settings.filter
 			};
 		};
 		$scope.refresh = function(options, settings) {
@@ -2120,8 +2116,9 @@
 				value_field : $scope.settings.value_field,
 				unit : $scope.settings.unit,
 				order : $scope.settings.order,
+				asc : $scope.settings.asc,
 				limit : $scope.settings.limit,
-				filter : $scope.settings.filter || ''
+				filter : $scope.settings.filter
 			};
 		};
 		$scope.refresh = function(options, settings) {
@@ -2137,6 +2134,13 @@
 		};
 		$scope.filter = function(term) {
 			$scope.addConstraint($scope.settings.key_field, term.label);
+		};
+		$scope.getClasses = function(column) {
+			var classes = [ 'fa' ];
+			if (column === $scope.settings.order) {
+				classes.push($scope.settings.asc ? 'fa-sort-asc' : 'fa-sort-desc');
+			}
+			return classes;
 		};
 
 		$scope.init();
@@ -2165,6 +2169,9 @@
 			var valueField = Field.find($scope.settings.value_field);
 			return valueField ? valueField.units : [];
 		};
+		$scope.orderings = [ 'term', 'count', 'sum', 'min', 'max', 'avg' ];
+		$scope.directions = { 'asc' : true, 'desc' : false };
+
 		$scope.$watch('settings.value_field', function() {
 			if (!$scope.isUnitValid()) {
 				$scope.settings.unit = null;
@@ -2318,10 +2325,10 @@
 				type : 'timeline',
 				key_field : $scope.settings.key_field,
 				field : $scope.settings.field,
-				unit : $scope.settings.unit || '',
+				unit : $scope.settings.unit,
 				interval : $scope.interval.name,
 				range : $scope.range,
-				filter : $scope.settings.filter || ''
+				filter : $scope.settings.filter
 			};
 		};
 		$scope.refresh = function(options, settings) {
@@ -2676,8 +2683,8 @@
 				id : $scope.settings.id + '-stats',
 				type : 'stats',
 				field : $scope.settings.field,
-				unit : $scope.settings.unit || '',
-				filter : $scope.settings.filter || ''
+				unit : $scope.settings.unit,
+				filter : $scope.settings.filter
 			} : null;
 		};
 		$scope.refresh = function(options, settings) {
@@ -2901,10 +2908,10 @@
 				id : $scope.settings.id,
 				type : 'polar',
 				key_field : $scope.settings.key_field,
-				value_field : $scope.settings.value_field || null,
-				unit : $scope.settings.unit || '',
+				value_field : $scope.settings.value_field,
+				unit : $scope.settings.unit,
 				interval : $scope.settings.interval,
-				filter : $scope.settings.filter || ''
+				filter : $scope.settings.filter
 			};
 		};
 		$scope.refresh = function(options, settings) {
@@ -3292,16 +3299,16 @@
 				id : $scope.settings.id,
 				type : 'scatterplot',
 				field_x : $scope.settings.field_x,
-				unit_x : $scope.settings.unit_x || '',
-				statistic_x : $scope.settings.statistic_x || 'avg',
-				filter_x : $scope.settings.filter_x || '',
+				unit_x : $scope.settings.unit_x,
+				statistic_x : $scope.settings.statistic_x,
+				filter_x : $scope.settings.filter_x,
 				field_y : $scope.settings.field_y,
-				unit_y : $scope.settings.unit_y || '',
-				statistic_y : $scope.settings.statistic_y || 'avg',
-				filter_y : $scope.settings.filter_y || '',
+				unit_y : $scope.settings.unit_y,
+				statistic_y : $scope.settings.statistic_y,
+				filter_y : $scope.settings.filter_y,
 				key_field : $scope.settings.key_field,
-				interval : $scope.settings.interval || 'day',
-				lag : $scope.settings.lag || 0
+				interval : $scope.settings.interval,
+				lag : $scope.settings.lag
 			};
 		};
 		$scope.refresh = function(options, settings) {
@@ -3866,9 +3873,9 @@
 				id : $scope.settings.id,
 				type : 'heatmap',
 				field : 'location',
-				value_field : $scope.settings.value_field || '',
-				unit : $scope.settings.unit || '',
-				filter : $scope.settings.filter || ''
+				value_field : $scope.settings.value_field,
+				unit : $scope.settings.unit,
+				filter : $scope.settings.filter
 			};
 		};
 		$scope.refresh = function(options, settings) {
