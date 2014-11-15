@@ -55,7 +55,7 @@ public class ListFacet extends Facet {
 					options.get("offset", Integer.class, 0),
 					options.get("limit", Integer.class, 10),
 					options.get("order", String.class, Event.TIMESTAMP.getName()),
-					options.get("reverse", Boolean.class, Boolean.FALSE) ? SortOrder.ASC : SortOrder.DESC);
+					options.get("asc", Boolean.class, Boolean.FALSE) ? SortOrder.ASC : SortOrder.DESC);
 			}
 		};
 	}

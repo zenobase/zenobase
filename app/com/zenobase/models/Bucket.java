@@ -162,7 +162,16 @@ public class Bucket extends DomainNode {
 
 	public void migrate() {
 		for (ObjectNode widget : getWidgets()) {
-			if ("count".equals(widget.path("type").textValue())) {
+			if ("list".equals(widget.path("type").textValue())) {
+				if (widget.path("reverse").isBoolean()) {
+					if (widget.path("reverse").booleanValue()) {
+						Logger.warn("expected reverse to be false: {}", widget);
+					}
+					widget.remove("reverse");
+					widget.put("asc", false);
+					Logger.info("list: replaced 'reverse' with 'asc:false'");
+				}
+			} else if ("count".equals(widget.path("type").textValue())) {
 				if (widget.path("reverse").isBoolean()) {
 					if (widget.path("reverse").booleanValue()) {
 						Logger.warn("expected reverse to be false: {}", widget);

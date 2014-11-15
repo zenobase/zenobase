@@ -1127,7 +1127,7 @@
 				label : 'List',
 				description : 'Shows all matching events, pageable.',
 				thumbnail : cacheBuster.rewrite('/img/widgets/list.png'),
-				settings : { limit : 10, order : 'timestamp', reverse : false },
+				settings : { limit : 10, order : 'timestamp', asc : false },
 				singleton : true
 			},
 			{
@@ -1727,7 +1727,7 @@
 				offset : 0, 
 				limit : $scope.settings.limit,
 				order : $scope.settings.order,
-				reverse : $scope.settings.reverse
+				asc : $scope.settings.asc
 			};
 		};
 		$scope.refresh = function(options, settings) {
@@ -1765,8 +1765,12 @@
 		};
 	}]);
 
-	app.controller('WidgetDialogController', ['$scope', 'WidgetDialogControllerSupport', function($scope, WidgetDialogControllerSupport) {
+	app.controller('ListWidgetDialogController', ['$scope', 'WidgetDialogControllerSupport', 'Field', function($scope, WidgetDialogControllerSupport, Field) {
+
 		new WidgetDialogControllerSupport($scope);
+
+		$scope.fields = [ 'timestamp', 'timestamp$min', 'timestamp$max' ];
+		$scope.directions = { 'asc' : true, 'desc' : false };
 	}]);
 	
 	app.controller('CountWidgetController', ['$scope', function($scope) {
@@ -1943,6 +1947,10 @@
 		$scope.register($scope);
 		$scope.$on('result', $scope.update);
 		$scope.$on('refresh', $scope.init);
+	}]);
+
+	app.controller('RatingsWidgetDialogController', ['$scope', 'WidgetDialogControllerSupport', function($scope, WidgetDialogControllerSupport) {
+		new WidgetDialogControllerSupport($scope);
 	}]);
 
 	app.controller('HistogramWidgetController', ['$scope', '$timeout', 'Field', 'Spreadsheet', function($scope, $timeout, Field, Spreadsheet) {

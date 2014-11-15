@@ -2,11 +2,11 @@ package com.zenobase.search;
 
 import static com.zenobase.testing.NodeAssert.assertThat;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.junit.Before;
 import org.junit.Test;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
@@ -66,7 +66,7 @@ public class ListFacetTest extends FacetTestSupport {
 		addEvent(e2);
 		addEvent(e1);
 		addEvent(e3);
-		addFacet("id:%s,type:%s,offset:%d,limit:%d,order:%s,reverse:%s", FACET_ID, ListFacet.TYPE, 1, 1, Event.TAG.getName(), true);
+		addFacet("id:%s,type:%s,offset:%d,limit:%d,order:%s,asc:%s", FACET_ID, ListFacet.TYPE, 1, 1, Event.TAG.getName(), false);
 
 		ObjectNode result = execute();
 		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(3);

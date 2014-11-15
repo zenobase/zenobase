@@ -17,7 +17,7 @@ so we can let you know about upcoming changes.</p>
 
 <dl>
 	<dt>November 14, 2014</dt>
-	<dd>Replaced "reverse" with "asc" in the count and scoreboard facets.</dd>
+	<dd>Replaced "reverse" with "asc".</dd>
 	<dt>November 12, 2014</dt>
 	<dd>Added a "filter" option to the count and gantt facets.</dd>
 	<dt>November 9, 2014</dt>
@@ -490,7 +490,7 @@ X-Command-ID: p3atfetvs2</pre>
 
 <h3>List events</h3>
 
-<pre>GET /buckets/<em>&lt;bucket_id&gt;</em><strong>/</strong>?offset=<em>&lt;offset&gt;</em>&amp;limit=<em>&lt;limit&gt;</em>&amp;order=<em>&lt;order&gt;</em>&amp;reverse=<em>&lt;reverse&gt;</em>&amp;facet=<em>&lt;facet_expression&gt;</em>&amp;q=<em>&lt;constraint_expression&gt;</em>
+<pre>GET /buckets/<em>&lt;bucket_id&gt;</em><strong>/</strong>?offset=<em>&lt;offset&gt;</em>&amp;limit=<em>&lt;limit&gt;</em>&amp;order=<em>&lt;order&gt;</em>&amp;asc=<em>&lt;asc&gt;</em>&amp;facet=<em>&lt;facet_expression&gt;</em>&amp;q=<em>&lt;constraint_expression&gt;</em>
 Host: api.zenobase.com
 Authorization: Bearer <em>&lt;access_token&gt;</em></pre>
 
@@ -502,9 +502,9 @@ Authorization: Bearer <em>&lt;access_token&gt;</em></pre>
   <dt>limit</dt>
   <dd>How many events to return. If no limit and no facets are specified, a list of all matching events is returned.</dd>
   <dt>order</dt>
-  <dd>The field to sort on. Defaults to <em>timestamp</em>.</dd>
-  <dt>reverse</dt>
-  <dd>Sort in reverse order. Defaults to <em>false</em></dd>
+  <dd>The timestamp to sort on, either any (<em>timestamp</em>), the earliest (<em>timestamp$min</em>), or the latest (<em>timestamp</em>). Defaults to <em>timestamp</em>.</dd>
+  <dt>asc</dt>
+  <dd>Order results in ascending order. Defaults to <em>false</em></dd>
   <dt>facet_expression</dt>
   <dd>See <a href="/#/api/facets">facets</a>.
   More than one facet parameter can be given.</dd>

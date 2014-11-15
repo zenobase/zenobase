@@ -18,7 +18,7 @@
 				"singleton" : true,
 				"limit" : 10,
 				"order" : "timestamp",
-				"reverse" : false
+				"asc" : false
 			},
 			{
 				"id" : "tags",
@@ -52,7 +52,7 @@
 				"label" : "Latest",
 				"placement" : "left",
 				"order" : "timestamp",
-				"reverse" : false,
+				"asc" : false,
 				"limit" : 10,
 				"singleton" : true
 			},
@@ -108,7 +108,7 @@
 				"label" : "Latest",
 				"placement" : "left",
 				"order" : "timestamp",
-				"reverse" : false,
+				"asc" : false,
 				"limit" : 10,
 				"singleton" : true
 			},
@@ -170,7 +170,7 @@
 				"label" : "Latest",
 				"placement" : "left",
 				"order" : "timestamp",
-				"reverse" : false,
+				"asc" : false,
 				"limit" : 10,
 				"singleton" : true
 			},
@@ -225,7 +225,7 @@
 				"label" : "Latest",
 				"placement" : "left",
 				"order" : "timestamp",
-				"reverse" : false,
+				"asc" : false,
 				"limit" : 10,
 				"singleton" : true
 			},
@@ -286,7 +286,7 @@
 				"label" : "Latest",
 				"placement" : "left",
 				"order" : "timestamp",
-				"reverse" : false,
+				"asc" : false,
 				"limit" : 10,
 				"singleton" : true
 			},
@@ -347,7 +347,7 @@
 				"label" : "Latest",
 				"placement" : "left",
 				"order" : "timestamp",
-				"reverse" : false,
+				"asc" : false,
 				"limit" : 10,
 				"singleton" : true
 			},
@@ -408,7 +408,7 @@
 				"label" : "Latest",
 				"placement" : "left",
 				"order" : "timestamp",
-				"reverse" : false,
+				"asc" : false,
 				"limit" : 10,
 				"singleton" : true
 			},
@@ -454,7 +454,7 @@
 				"placement" : "left",
 				"limit" : 10,
 				"order" : "timestamp",
-				"reverse" : false,
+				"asc" : false,
 				"singleton" : true
 			},
 			{
@@ -589,7 +589,7 @@
 				"label" : "Latest",
 				"placement" : "left",
 				"order" : "timestamp",
-				"reverse" : false,
+				"asc" : false,
 				"limit" : 10,
 				"singleton" : true
 			},
@@ -634,7 +634,7 @@
 				"label" : "Latest",
 				"placement" : "left",
 				"order" : "timestamp",
-				"reverse" : false,
+				"asc" : false,
 				"limit" : 10,
 				"singleton" : true
 			},
@@ -681,7 +681,7 @@
 				"singleton" : true,
 				"limit" : 10,
 				"order" : "timestamp",
-				"reverse" : false
+				"asc" : false
 			},
 			{
 				"id" : "histogram",
@@ -726,7 +726,7 @@
 				"singleton" : true,
 				"limit" : 10,
 				"order" : "timestamp",
-				"reverse" : false
+				"asc" : false
 			},
 			{
 				"id" : "histogram",
@@ -769,7 +769,7 @@
 				"singleton" : true,
 				"limit" : 10,
 				"order" : "timestamp",
-				"reverse" : false
+				"asc" : false
 			},
 			{
 				"id" : "tags",
@@ -822,7 +822,7 @@
 				"singleton" : true,
 				"limit" : 10,
 				"order" : "timestamp",
-				"reverse" : false
+				"asc" : false
 			},
 			{
 				"id" : "tags",
@@ -879,7 +879,7 @@
 				"singleton" : true,
 				"limit" : 10,
 				"order" : "timestamp",
-				"reverse" : false
+				"asc" : false
 			},
 			{
 				"id" : "tags",
@@ -968,7 +968,7 @@
 				"label" : "Latest",
 				"placement" : "left",
 				"order" : "timestamp",
-				"reverse" : false,
+				"asc" : false,
 				"limit" : 10,
 				"singleton" : true
 			},
@@ -1031,7 +1031,7 @@
 				"label" : "Latest",
 				"placement" : "left",
 				"order" : "timestamp",
-				"reverse" : false,
+				"asc" : false,
 				"limit" : 7,
 				"singleton" : true
 			},
@@ -1112,7 +1112,7 @@
 				"label" : "Latest",
 				"placement" : "left",
 				"order" : "timestamp",
-				"reverse" : false,
+				"asc" : false,
 				"limit" : 7,
 				"singleton" : true
 			},
@@ -1193,7 +1193,7 @@
 				"label" : "Latest",
 				"placement" : "left",
 				"order" : "timestamp",
-				"reverse" : false,
+				"asc" : false,
 				"limit" : 7,
 				"singleton" : true
 			},
@@ -1285,7 +1285,7 @@
 				"label" : "Latest",
 				"placement" : "left",
 				"order" : "timestamp",
-				"reverse" : false,
+				"asc" : false,
 				"limit" : 10,
 				"singleton" : true
 			},
@@ -1379,7 +1379,7 @@
 				"label" : "Latest",
 				"placement" : "left",
 				"order" : "timestamp",
-				"reverse" : false,
+				"asc" : false,
 				"limit" : 7,
 				"singleton" : true
 			},
@@ -1463,7 +1463,7 @@
 				"label" : "Latest",
 				"placement" : "left",
 				"order" : "timestamp",
-				"reverse" : false,
+				"asc" : false,
 				"limit" : 7,
 				"singleton" : true
 			},
@@ -1546,7 +1546,7 @@
 				"label" : "Latest",
 				"placement" : "left",
 				"order" : "timestamp",
-				"reverse" : false,
+				"asc" : false,
 				"limit" : 10,
 				"singleton" : true
 			},
@@ -1601,7 +1601,7 @@
 				"label" : "Latest",
 				"placement" : "left",
 				"order" : "timestamp",
-				"reverse" : false,
+				"asc" : false,
 				"limit" : 10,
 				"singleton" : true
 			},
@@ -1649,7 +1649,7 @@
 				"label" : "Latest",
 				"placement" : "left",
 				"order" : "timestamp",
-				"reverse" : false,
+				"asc" : false,
 				"limit" : 10,
 				"singleton" : true
 			},
@@ -1697,7 +1697,7 @@
 				"label" : "Latest",
 				"placement" : "left",
 				"order" : "timestamp",
-				"reverse" : false,
+				"asc" : false,
 				"limit" : 10,
 				"singleton" : true
 			},
@@ -1746,7 +1746,7 @@
 				"singleton" : true,
 				"limit" : 10,
 				"order" : "timestamp",
-				"reverse" : false
+				"asc" : false
 			},
 			{
 				"id" : "tags",
@@ -1828,7 +1828,7 @@
 				"label" : "Latest",
 				"placement" : "left",
 				"order" : "timestamp",
-				"reverse" : false,
+				"asc" : false,
 				"limit" : 5,
 				"singleton" : true
 			},
@@ -1890,7 +1890,7 @@
 				"singleton" : true,
 				"limit" : 10,
 				"order" : "timestamp",
-				"reverse" : false
+				"asc" : false
 			},
 			{
 				"id" : "weight",
@@ -1934,7 +1934,7 @@
 				"singleton" : true,
 				"limit" : 10,
 				"order" : "timestamp",
-				"reverse" : false
+				"asc" : false
 			},
 			{
 				"id" : "weight",
@@ -1971,7 +1971,7 @@
 				"singleton" : true,
 				"limit" : 10,
 				"order" : "timestamp",
-				"reverse" : false
+				"asc" : false
 			},
 			{
 				"id" : "weight",
@@ -2015,7 +2015,7 @@
 				"singleton" : true,
 				"limit" : 10,
 				"order" : "timestamp",
-				"reverse" : false
+				"asc" : false
 			},
 			{
 				"id" : "weight",
@@ -2059,7 +2059,7 @@
 				"singleton" : true,
 				"limit" : 10,
 				"order" : "timestamp",
-				"reverse" : false
+				"asc" : false
 			},
 			{
 				"id" : "weight",
