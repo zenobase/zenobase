@@ -1769,7 +1769,7 @@
 
 		new WidgetDialogControllerSupport($scope);
 
-		$scope.fields = [ 'timestamp', 'timestamp$min', 'timestamp$max' ];
+		$scope.fields = [ 'timestamp' ];
 		$scope.directions = { 'asc' : true, 'desc' : false };
 	}]);
 	
