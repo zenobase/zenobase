@@ -1278,10 +1278,12 @@ Content-Type: application/json
 <dl>
   <dt>field:<em>&lt;String&gt;</em></dt>
   <dd>The field containing the values. Required.</dd>
-  <dt>order:<em>&lt;'count'|'term'|'min'|'max'&gt;</em></dt>
-  <dd>Order results by count, alphabetic, or be earliest or latest time. Defaults to <em>term</em>.</dd>
   <dt>limit:<em>&lt;integer&gt;</em></dt>
   <dd>How many results to return. Defaults to <em>10</em>.</dd>
+  <dt>order:<em>&lt;'term'|'count'|'min'|'max'&gt;</em></dt>
+  <dd>Order results by term, frequency (count), earliest (min) or latest (max) occurence. Defaults to <em>max</em>.</dd>
+  <dt>asc:<em>&lt;boolean&gt;</em></dt>
+  <dd>Order results in ascending order. Defaults to <em>false</em></dd>
   <dt>timezone:<em>&lt;Z&gt;</em></dt>
   <dd>The timezone offset to use. Defaults to <em>+00:00</em></dd>
   <dt>key_field:<em>&lt;'timestamp'|'timestamp$min'|'timestamp$max'&gt;</em></dt>

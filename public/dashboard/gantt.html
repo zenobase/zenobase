@@ -3,8 +3,10 @@
 	<table class="table" data-ng-show="terms.length">
 		<thead>
 			<tr>
-				<th>Tag</th>
-				<th style="text-align: right">Last</th>
+				<th style="text-transform: capitalize">
+					{{settings.field}} <i data-ng-class="getClasses('term')"></i>
+				</th>
+				<th style="text-align: right">Last <i data-ng-class="getClasses('max')"></i></th>
 				<th style="text-align: right">Freq</th>
 			</tr>
 		</thead>
@@ -50,6 +52,19 @@
 					<div class="controls form-horizontal">
 						<select name="keyField" class="input-small" data-ng-model="settings.key_field" data-ng-options="subfield.value as subfield.label for subfield in subfields"></select>
 						<p class="help-block">How to handle events with multiple timestamps.</p>
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label" for="limit">Limit</label>
+					<div class="controls form-horizontal">
+						<input name="limit" type="number" required min="1" max="100" data-ng-model="settings.limit" class="input-mini"/>
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label" for="order">Order</label>
+					<div class="controls form-horizontal">
+						<select required data-ng-model="settings.order" data-ng-options="value for value in orderings" class="input-small"></select>
+						<select required data-ng-model="settings.asc" data-ng-options="value as label for (label, value) in directions" class="input-small"></select>
 					</div>
 				</div>
 				<div class="control-group">

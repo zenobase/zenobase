@@ -34,24 +34,24 @@ public class GanttFacet extends FilteredFacet {
 	private final int limit;
 	private final DateTimeZone timezone;
 
-	private GanttFacet(String id, String keyField, String valueField, String order, int limit, DateTimeZone timezone, FilterBuilder filter) {
+	private GanttFacet(String id, String keyField, String valueField, String order, boolean asc, int limit, DateTimeZone timezone, FilterBuilder filter) {
 		super(id, filter);
 		this.keyField = keyField;
 		this.valueField = valueField;
-		this.order = parseOrder(order, false);
+		this.order = parseOrder(order, asc);
 		this.limit = limit;
 		this.timezone = timezone;
 	}
 
-	private Terms.Order parseOrder(String s, boolean reverse) {
+	private Terms.Order parseOrder(String s, boolean asc) {
 		if ("count".equals(s)) {
-			return Terms.Order.count(reverse);
+			return Terms.Order.count(asc);
 		} else if ("term".equals(s)) {
-			return Terms.Order.term(!reverse);
+			return Terms.Order.term(asc);
 		} else if ("min".equals(s)) {
-			return Terms.Order.aggregation(getId(), "min", !reverse);
+			return Terms.Order.aggregation(getId(), "min", asc);
 		} else if ("max".equals(s)) {
-			return Terms.Order.aggregation(getId(), "max", reverse);
+			return Terms.Order.aggregation(getId(), "max", asc);
 		} else {
 			throw new IllegalArgumentException("Invalid order: " + s);
 		}
@@ -94,7 +94,8 @@ public class GanttFacet extends FilteredFacet {
 					options.get("id"),
 					options.get("field"),
 					options.get("key_field", String.class, Event.TIMESTAMP.getName()),
-					options.get("order", String.class, "term"),
+					options.get("order", String.class, "max"),
+					options.get("asc", Boolean.class, false),
 					options.get("limit", Integer.class, 10),
 					options.get("timezone", DateTimeZone.class, DateTimeZone.UTC),
 					filterParser.parse(options.get("filter")));

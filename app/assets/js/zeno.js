@@ -1177,7 +1177,7 @@
 				label : 'Frequency',
 				description : 'Shows how long ago and how often certain events occur.',
 				thumbnail : cacheBuster.rewrite('/img/widgets/gantt.png'),
-				settings : { field : 'tag', order : 'max', limit : 10 }
+				settings : { field : 'tag', order : 'max', asc : false, limit : 10 }
 			},
 			{
 				type : 'polar',
@@ -1856,6 +1856,7 @@
 				field : $scope.settings.field, 
 				timezone : timezone,
 				order : $scope.settings.order,
+				asc : $scope.settings.asc,
 				limit : $scope.settings.limit,
 				filter : $scope.settings.filter
 			};
@@ -1879,6 +1880,13 @@
 		$scope.filter = function(term) {
 			$scope.addConstraint($scope.settings.field, term.label);
 		};
+		$scope.getClasses = function(column) {
+			var classes = [ 'fa' ];
+			if (column === $scope.settings.order) {
+				classes.push($scope.settings.asc ? 'fa-sort-asc' : 'fa-sort-desc');
+			}
+			return classes;
+		};
 
 		$scope.init();
 		$scope.register($scope);
@@ -1893,9 +1901,9 @@
 		$scope.subfields = $.map(Field.find($scope.keyField).subfields, function(subfield) {
 			return { label : subfield, value : (subfield ? $scope.keyField + '$' + subfield : $scope.keyField) };
 		});
-		$scope.getFields = function() {
-			return Field.findByType('text');
-		};
+		$scope.fields = Field.findByType('text');
+		$scope.orderings = [ 'term', 'max' ];
+		$scope.directions = { 'asc' : true, 'desc' : false };
 	}]);
 	
 	app.controller('RatingsWidgetController', ['$scope', function($scope) {

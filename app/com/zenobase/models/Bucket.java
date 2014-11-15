@@ -169,10 +169,9 @@ public class Bucket extends DomainNode {
 					}
 					widget.remove("reverse");
 					widget.put("asc", false);
-					Logger.info("count: replaced 'reverse' with 'asc'");
+					Logger.info("count: replaced 'reverse' with 'asc:false'");
 				}
-			}
-			if ("scoreboard".equals(widget.path("type").textValue())) {
+			} else if ("scoreboard".equals(widget.path("type").textValue())) {
 				if ("total".equals(widget.path("order").textValue())) {
 					Logger.warn("expected reverse to be false: {}", widget);
 					widget.put("order", "sum");
@@ -180,7 +179,17 @@ public class Bucket extends DomainNode {
 				}
 				if (widget.path("asc").isMissingNode()) {
 					widget.put("asc", false);
-					Logger.info("scoreboard: added 'asc'");
+					Logger.info("scoreboard: added 'asc:false'");
+				}
+			} else if ("gantt".equals(widget.path("type").textValue())) {
+				if (widget.path("order").isMissingNode()) {
+					widget.put("order", "max");
+					Logger.info("gantt: added 'order:max'");
+				}
+				if (widget.path("asc").isMissingNode()) {
+					boolean asc = "term".equals(widget.path("order").textValue());
+					widget.put("asc", asc);
+					Logger.info("gantt: added 'asc:{}'", asc);
 				}
 			}
 		}
