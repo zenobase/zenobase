@@ -41,28 +41,28 @@ public class ScoreboardFacetTest extends FacetTestSupport {
 		addEvent(e2);
 		addEvent(e3);
 		addEvent(e4);
-		addFacet("id:%s,type:%s,key_field:%s,value_field:%s,unit:%s,order:%s,asc:%s",
-			FACET_ID, ScoreboardFacet.TYPE, Event.TAG, Event.DISTANCE, "km", "sum", true);
+		addFacet("id:%s,type:%s,key_field:%s,value_field:%s,unit:%s,order:%s",
+			FACET_ID, ScoreboardFacet.TYPE, Event.TAG, Event.DISTANCE, "km", "-sum");
 
 		ObjectNode result = execute();
 		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(4);
 		NodeAssert node = assertThat(result).path(FACET_ID).hasSize(2);
-		node.path(0).path("label").isEqualTo(e1.getValue(Event.TAG));
+		node.path(0).path("label").isEqualTo(e2.getValue(Event.TAG));
 		node.path(0).path("min").path("@value").isEqualTo(10.0);
-		node.path(0).path("max").path("@value").isEqualTo(10.0);
-		node.path(0).path("avg").path("@value").isEqualTo(10.0);
-		node.path(0).path("sum").path("@value").isEqualTo(10.0);
-		node.path(0).path("count").isEqualTo(1);
-		node.path(1).path("label").isEqualTo(e2.getValue(Event.TAG));
+		node.path(0).path("min").path("unit").isEqualTo("km");
+		node.path(0).path("max").path("@value").isEqualTo(20.0);
+		node.path(0).path("max").path("unit").isEqualTo("km");
+		node.path(0).path("avg").path("@value").isEqualTo(15.0);
+		node.path(0).path("avg").path("unit").isEqualTo("km");
+		node.path(0).path("sum").path("@value").isEqualTo(30.0);
+		node.path(0).path("sum").path("unit").isEqualTo("km");
+		node.path(0).path("count").isEqualTo(2);
+		node.path(1).path("label").isEqualTo(e1.getValue(Event.TAG));
 		node.path(1).path("min").path("@value").isEqualTo(10.0);
-		node.path(1).path("min").path("unit").isEqualTo("km");
-		node.path(1).path("max").path("@value").isEqualTo(20.0);
-		node.path(1).path("max").path("unit").isEqualTo("km");
-		node.path(1).path("avg").path("@value").isEqualTo(15.0);
-		node.path(1).path("avg").path("unit").isEqualTo("km");
-		node.path(1).path("sum").path("@value").isEqualTo(30.0);
-		node.path(1).path("sum").path("unit").isEqualTo("km");
-		node.path(1).path("count").isEqualTo(2);
+		node.path(1).path("max").path("@value").isEqualTo(10.0);
+		node.path(1).path("avg").path("@value").isEqualTo(10.0);
+		node.path(1).path("sum").path("@value").isEqualTo(10.0);
+		node.path(1).path("count").isEqualTo(1);
 	}
 
 	@Test

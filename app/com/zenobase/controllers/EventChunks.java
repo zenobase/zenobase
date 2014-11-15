@@ -2,7 +2,6 @@ package com.zenobase.controllers;
 
 import java.io.IOException;
 
-import org.elasticsearch.search.sort.SortOrder;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Preconditions;
 
@@ -49,7 +48,7 @@ final class EventChunks extends JsonChunks {
 
 	private static Search createSearch(Iterable<String> constraints, int offset) {
 		ListFacet facet = new ListFacet(EventListController.EVENTS.getName(),
-			offset, LIMIT, Event.TIMESTAMP.getName(), SortOrder.ASC);
+			offset, LIMIT, Event.TIMESTAMP.getName(), Event.SCHEMA);
 		return new EventSearchBuilder().addConstraints(constraints).addFacet(facet).buildSearch();
 	}
 

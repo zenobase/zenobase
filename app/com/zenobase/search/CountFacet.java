@@ -24,15 +24,19 @@ public class CountFacet extends FilteredFacet {
 	private final int offset;
 	private final int limit;
 
-	private CountFacet(String id, String field, String order, boolean asc, int offset, int limit, FilterBuilder filter) {
+	private CountFacet(String id, String field, String order, int offset, int limit, FilterBuilder filter) {
 		super(id, filter);
 		this.field = field;
-		this.order = parseOrder(order, asc);
+		this.order = parseOrder(order);
 		this.offset = offset;
 		this.limit = limit;
 	}
 
-	private Terms.Order parseOrder(String s, boolean asc) {
+	private Terms.Order parseOrder(String s) {
+		boolean asc = !s.startsWith("-");
+		if (!asc) {
+			s = s.substring(1);
+		}
 		if ("count".equals(s)) {
 			return Terms.Order.count(asc);
 		} else if ("term".equals(s)) {
@@ -74,8 +78,7 @@ public class CountFacet extends FilteredFacet {
 				return new CountFacet(
 					options.get("id"),
 					options.get("field"),
-					options.get("order", String.class, "count"),
-					options.get("asc", Boolean.class, false),
+					options.get("order", String.class, "-count"),
 					options.get("offset", Integer.class, 0),
 					options.get("limit", Integer.class, 10),
 					filterParser.parse(options.get("filter")));

@@ -38,6 +38,10 @@ public class Bucket extends DomainNode {
 	public static final ObjectField WIDGETS = new ObjectField("widgets");
 	public static final AliasField ALIASES = new AliasField("aliases");
 
+	public static final Schema SCHEMA = new SchemaBuilder(TYPE_NAME).add(VERSION)
+		.add(ID).add(LABEL).add(DESCRIPTION).add(CREATED)
+		.add(ROLES).add(WIDGETS).add(ALIASES).build();
+
 	public Bucket(ObjectNode node) {
 		super(node);
 	}
@@ -140,12 +144,6 @@ public class Bucket extends DomainNode {
 		return !getAliases().isEmpty();
 	}
 
-	public static Schema getSchema() {
-		return new SchemaBuilder(TYPE_NAME).add(VERSION)
-			.add(ID).add(LABEL).add(DESCRIPTION).add(CREATED)
-			.add(ROLES).add(WIDGETS).add(ALIASES).build();
-	}
-
 	public Bucket copy() {
 		return new Bucket(toJson().deepCopy());
 	}
@@ -163,28 +161,35 @@ public class Bucket extends DomainNode {
 	public void migrate() {
 		for (ObjectNode widget : getWidgets()) {
 			if ("list".equals(widget.path("type").textValue())) {
-				if (widget.path("reverse").isBoolean()) {
-					if (widget.path("reverse").booleanValue()) {
-						Logger.warn("expected reverse to be false: {}", widget);
-					}
+				if (!widget.path("reverse").isMissingNode()) {
+					Logger.warn("didn't expect reverse to be set: {}", widget);
 					widget.remove("reverse");
-					widget.put("asc", false);
-					Logger.info("list: replaced 'reverse' with 'asc:false'");
 				}
+				if (!"timestamp".equals(widget.path("order").textValue())) {
+					Logger.warn("expected order to be 'timestamp': {}", widget);
+				}
+				widget.put("order", "-timestamp");
+				Logger.info("list: replaced 'order' with 'order:-timestamp'");
 			} else if ("count".equals(widget.path("type").textValue())) {
 				if (widget.path("reverse").isBoolean()) {
 					if (widget.path("reverse").booleanValue()) {
 						Logger.warn("expected reverse to be false: {}", widget);
 					}
+					if (!"count".equals(widget.path("order").textValue())) {
+						Logger.warn("expected order to be 'count': {}", widget);
+					}
 					widget.remove("reverse");
-					widget.put("asc", false);
-					Logger.info("count: replaced 'reverse' with 'asc:false'");
+					widget.put("order", "-count");
+					Logger.info("count: replaced 'reverse' with 'order:-count'");
 				}
 			} else if ("scoreboard".equals(widget.path("type").textValue())) {
 				if ("total".equals(widget.path("order").textValue())) {
-					Logger.warn("expected reverse to be false: {}", widget);
-					widget.put("order", "sum");
-					Logger.info("scoreboard: replaced 'total' with 'sum'");
+					if (widget.path("reverse").booleanValue()) {
+						Logger.warn("expected reverse to be false: {}", widget);
+					}
+					widget.remove("reverse");
+					widget.put("order", "-sum");
+					Logger.info("scoreboard: replaced 'order:total' with 'order:-sum'");
 				}
 				if (widget.path("asc").isMissingNode()) {
 					widget.put("asc", false);
@@ -192,13 +197,8 @@ public class Bucket extends DomainNode {
 				}
 			} else if ("gantt".equals(widget.path("type").textValue())) {
 				if (widget.path("order").isMissingNode()) {
-					widget.put("order", "max");
-					Logger.info("gantt: added 'order:max'");
-				}
-				if (widget.path("asc").isMissingNode()) {
-					boolean asc = "term".equals(widget.path("order").textValue());
-					widget.put("asc", asc);
-					Logger.info("gantt: added 'asc:{}'", asc);
+					widget.put("order", "-max");
+					Logger.info("gantt: added 'order:-max'");
 				}
 			}
 		}

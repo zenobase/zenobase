@@ -1,14 +1,9 @@
 package com.zenobase.json;
 
 import static com.zenobase.testing.NodeAssert.assertThat;
-
 import static org.fest.assertions.Assertions.assertThat;
 
 import java.io.IOException;
-
-import com.zenobase.json.Schema;
-import com.zenobase.json.SchemaBuilder;
-import com.zenobase.json.TokenField;
 
 import org.junit.Test;
 
@@ -18,12 +13,14 @@ public class SchemaBuilderTest {
 	public void test() throws IOException {
 
 		final String typeName = "test";
-		SchemaBuilder builder = new SchemaBuilder(typeName).add(new TokenField("who"));
+		final TokenField field = new TokenField("who");
+		SchemaBuilder builder = new SchemaBuilder(typeName).add(field);
 		Schema s1 = builder.build();
 		builder.add(new TokenField("what"));
 		Schema s2 = builder.build();
 
 		assertThat(s1.getTypeName()).as("type").isEqualTo(typeName);
+		assertThat(s1.getField("who")).as("field").isEqualTo(field);
 		assertThat(s1.toJson()).path(typeName).path("dynamic").isEqualTo("strict");
 		assertThat(s1.toJson()).path(typeName).path("_source").path("excludes").isArray();
 		assertThat(s1.toJson()).path(typeName).path("_type").path("index").isEqualTo("no");

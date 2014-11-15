@@ -2,6 +2,7 @@ package com.zenobase.json;
 
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMultimap;
 
 import com.zenobase.search.ConstraintBuilder;
@@ -16,6 +17,7 @@ public class SchemaBuilder {
 	private final ObjectNode schema = Nodes.newObject();
 	private final ObjectNode type;
 	private final ObjectNode properties;
+	private final ImmutableMap.Builder<String, Field<?>> fields = ImmutableMap.<String, Field<?>>builder();
 	private final ImmutableMultimap.Builder<String, ConstraintBuilder> constraintBuilders =
 		ImmutableMultimap.<String, ConstraintBuilder>builder();
 
@@ -58,6 +60,7 @@ public class SchemaBuilder {
 	}
 
 	public SchemaBuilder add(Field<?> field) {
+		fields.put(field.getPath(), field);
 		field.createSchema(properties);
 		constraintBuilders.putAll(field.getConstraintBuilders());
 		return this;
@@ -70,6 +73,6 @@ public class SchemaBuilder {
 	}
 
 	public Schema build() {
-		return new Schema(typeName, schema.deepCopy(), constraintBuilders.build());
+		return new Schema(typeName, schema.deepCopy(), fields.build(), constraintBuilders.build());
 	}
 }

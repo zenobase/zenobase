@@ -19,7 +19,7 @@ import com.zenobase.services.SearchOrder;
 
 public class BucketListControllerFindByUserTest extends BucketListControllerTestSupport {
 
-	private static final SearchOrder ORDER_BY = SearchOrder.valueOf("label");
+	private static final SearchOrder ORDER_BY = SearchOrder.valueOf("label", Bucket.SCHEMA);
 
 	@Test
 	public void test() {

@@ -1,11 +1,12 @@
 package com.zenobase.services;
 
-import java.util.Objects;
-
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.elasticsearch.search.sort.SortOrder;
+import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
+
+import com.zenobase.json.Schema;
 
 public class SearchOrder {
 
@@ -25,7 +26,7 @@ public class SearchOrder {
 		return new SearchOrder(field, !asc);
 	}
 
-	public static SearchOrder valueOf(String s) {
+	public static SearchOrder valueOf(String s, Schema schema) {
 		Preconditions.checkArgument(!Strings.isNullOrEmpty(s));
 		boolean asc = true;
 		int sign = s.charAt(0);
@@ -33,7 +34,7 @@ public class SearchOrder {
 			asc = false;
 			s = s.substring(1);
 		}
-		return new SearchOrder(s, asc);
+		return new SearchOrder(schema.getField(s).getPathForSorting(), asc);
 	}
 
 	@Override
@@ -49,7 +50,7 @@ public class SearchOrder {
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(field, asc);
+		return Objects.hashCode(field, asc);
 	}
 
 	@Override

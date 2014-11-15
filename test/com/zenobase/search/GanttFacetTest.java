@@ -63,7 +63,7 @@ public class GanttFacetTest extends FacetTestSupport {
 		addEvent(e3);
 		addEvent(e4);
 		addEvent(e5);
-		addFacet("id:%s,type:%s,field:%s,order:%s,asc:%s", FACET_ID, GanttFacet.TYPE, Event.TAG, "term", true);
+		addFacet("id:%s,type:%s,field:%s,order:%s", FACET_ID, GanttFacet.TYPE, Event.TAG, "term");
 
 		ObjectNode result = execute();
 		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(5);

@@ -30,6 +30,11 @@ public class DecimalMeasureField<Q extends Quantity> extends Field<DecimalMeasur
 	}
 
 	@Override
+	public String getPathForSorting() {
+		return concat(getPath(), VALUE_SI.getName());
+	}
+
+	@Override
 	public void configureSchema(ObjectNode schema) {
 		super.configureSchema(schema);
 		ObjectNode properties = schema.putObject("properties");

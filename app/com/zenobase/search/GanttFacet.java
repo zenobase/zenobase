@@ -34,16 +34,20 @@ public class GanttFacet extends FilteredFacet {
 	private final int limit;
 	private final DateTimeZone timezone;
 
-	private GanttFacet(String id, String keyField, String valueField, String order, boolean asc, int limit, DateTimeZone timezone, FilterBuilder filter) {
+	private GanttFacet(String id, String keyField, String valueField, String order, int limit, DateTimeZone timezone, FilterBuilder filter) {
 		super(id, filter);
 		this.keyField = keyField;
 		this.valueField = valueField;
-		this.order = parseOrder(order, asc);
+		this.order = parseOrder(order);
 		this.limit = limit;
 		this.timezone = timezone;
 	}
 
-	private Terms.Order parseOrder(String s, boolean asc) {
+	private Terms.Order parseOrder(String s) {
+		boolean asc = !s.startsWith("-");
+		if (!asc) {
+			s = s.substring(1);
+		}
 		if ("count".equals(s)) {
 			return Terms.Order.count(asc);
 		} else if ("term".equals(s)) {
@@ -94,8 +98,7 @@ public class GanttFacet extends FilteredFacet {
 					options.get("id"),
 					options.get("field"),
 					options.get("key_field", String.class, Event.TIMESTAMP.getName()),
-					options.get("order", String.class, "max"),
-					options.get("asc", Boolean.class, false),
+					options.get("order", String.class, "-max"),
 					options.get("limit", Integer.class, 10),
 					options.get("timezone", DateTimeZone.class, DateTimeZone.UTC),
 					filterParser.parse(options.get("filter")));

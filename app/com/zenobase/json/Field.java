@@ -37,6 +37,10 @@ public abstract class Field<T> {
 		return path;
 	}
 
+	public String getPathForSorting() {
+		return getPath();
+	}
+
 	public final String getName() {
 		return name;
 	}

@@ -61,12 +61,12 @@ public class ListFacetTest extends FacetTestSupport {
 	}
 
 	@Test
-	public void testConfigured() {
+	public void testOrderByTag() {
 
 		addEvent(e2);
 		addEvent(e1);
 		addEvent(e3);
-		addFacet("id:%s,type:%s,offset:%d,limit:%d,order:%s,asc:%s", FACET_ID, ListFacet.TYPE, 1, 1, Event.TAG.getName(), false);
+		addFacet("id:%s,type:%s,offset:%d,limit:%d,order:%s", FACET_ID, ListFacet.TYPE, 1, 1, Event.TAG.getName());
 
 		ObjectNode result = execute();
 		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(3);

@@ -3,7 +3,6 @@ package com.zenobase.controllers;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 
-import org.elasticsearch.search.sort.SortOrder;
 import play.mvc.Results;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -49,7 +48,7 @@ final class EventRows extends Results.ByteChunks {
 
 	private static Search createSearch(Iterable<String> constraints, int offset) {
 		ListFacet facet = new ListFacet(EventListController.EVENTS.getName(),
-			offset, LIMIT, Event.TIMESTAMP.getName(), SortOrder.ASC);
+			offset, LIMIT, Event.TIMESTAMP.getName(), Event.SCHEMA);
 		return new EventSearchBuilder().addConstraints(constraints).addFacet(facet).buildSearch();
 	}
 }

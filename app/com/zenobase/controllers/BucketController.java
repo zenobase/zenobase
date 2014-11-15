@@ -64,8 +64,6 @@ public class BucketController extends ControllerSupport {
     	}
 		if (bucket.getWidgets().isEmpty()) {
 			setDefaultDashboard(bucket);
-		} else {
-			bucket.migrate();
 		}
     	return ok(labelOnly ? toLabel(bucket) : bucket.toJson());
     }
@@ -107,8 +105,7 @@ public class BucketController extends ControllerSupport {
 			widget.put("placement", "left");
 			widget.put("singleton", true);
 			widget.put("limit", 10);
-			widget.put("order", "timestamp");
-			widget.put("asc", false);
+			widget.put("order", "-timestamp");
 			return widget;
 		}
 
@@ -129,8 +126,7 @@ public class BucketController extends ControllerSupport {
 			widget.put("label", "Tags");
 			widget.put("type", "count");
 			widget.put("field", "tag");
-			widget.put("order", "count");
-			widget.put("asc", false);
+			widget.put("order", "-count");
 			widget.put("limit", 10);
 			widget.put("placement", "right");
 			return widget;

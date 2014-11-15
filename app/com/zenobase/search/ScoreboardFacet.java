@@ -29,16 +29,20 @@ public class ScoreboardFacet extends FilteredFacet {
 	private final Terms.Order order;
 	private final int limit;
 
-	private ScoreboardFacet(String id, String termField, String valueField, Unit<?> unit, String order, boolean asc, int limit, FilterBuilder filter) {
+	private ScoreboardFacet(String id, String termField, String valueField, Unit<?> unit, String order, int limit, FilterBuilder filter) {
 		super(id, filter);
 		this.termField = termField;
 		this.valueField = valueField;
 		this.unit = unit;
-		this.order = parseOrder(order, asc);
+		this.order = parseOrder(order);
 		this.limit = limit;
 	}
 
-	private Terms.Order parseOrder(String s, boolean asc) {
+	private Terms.Order parseOrder(String s) {
+		boolean asc = !s.startsWith("-");
+		if (!asc) {
+			s = s.substring(1);
+		}
 		if ("count".equals(s)) {
 			return Terms.Order.count(asc);
 		} else if ("term".equals(s)) {
@@ -99,8 +103,7 @@ public class ScoreboardFacet extends FilteredFacet {
 					options.get("key_field"),
 					options.get("value_field"),
 					unit != null ? Units.valueOf(unit) : Unit.ONE,
-					options.get("order", String.class, "count"),
-					options.get("asc", Boolean.class, false),
+					options.get("order", String.class, "-count"),
 					options.get("limit", Integer.class, 10),
 					filterParser.parse(options.get("filter")));
 			}

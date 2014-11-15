@@ -32,7 +32,7 @@ public class EventRepository {
 		if (!index.exists()) {
 			Logger.info("Creating event index...");
 			index.create(4, 1);
-			index.putMapping(Event.getSchema());
+			index.putMapping(Event.SCHEMA);
 		}
 	}
 

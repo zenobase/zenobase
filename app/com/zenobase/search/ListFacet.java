@@ -3,12 +3,13 @@ package com.zenobase.search;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
-import org.elasticsearch.search.sort.SortOrder;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 
 import com.zenobase.json.Nodes;
+import com.zenobase.json.Schema;
 import com.zenobase.models.Event;
+import com.zenobase.services.SearchOrder;
 
 public class ListFacet extends Facet {
 
@@ -16,22 +17,20 @@ public class ListFacet extends Facet {
 
 	private final int offset;
 	private final int limit;
-	private final String sort;
-	private final SortOrder order;
+	private final SearchOrder order;
 
-	public ListFacet(String id, int offset, int limit, String sort, SortOrder order) {
+	public ListFacet(String id, int offset, int limit, String order, Schema schema) {
 		super(id);
 		this.offset = offset;
 		this.limit = limit;
-		this.sort = sort;
-		this.order = order;
+		this.order = SearchOrder.valueOf(order, schema);
 	}
 
 	@Override
 	public void configure(SearchSourceBuilder builder) {
 		builder.from(offset);
 		builder.size(limit);
-		builder.sort(sort, order);
+		order.apply(builder);
 		builder.version(Boolean.TRUE);
 	}
 
@@ -46,7 +45,7 @@ public class ListFacet extends Facet {
 		return eventsNode;
 	}
 
-	public static FacetBuilder builder() {
+	public static FacetBuilder builder(final Schema schema) {
 		return new FacetBuilder() {
 			@Override
 			public Facet build(FacetOptions options) {
@@ -54,8 +53,8 @@ public class ListFacet extends Facet {
 					options.get("id"),
 					options.get("offset", Integer.class, 0),
 					options.get("limit", Integer.class, 10),
-					options.get("order", String.class, Event.TIMESTAMP.getName()),
-					options.get("asc", Boolean.class, Boolean.FALSE) ? SortOrder.ASC : SortOrder.DESC);
+					options.get("order", String.class, "-timestamp"),
+					schema);
 			}
 		};
 	}

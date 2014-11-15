@@ -3,7 +3,6 @@ package com.zenobase.services;
 import java.util.List;
 
 import org.elasticsearch.index.query.QueryBuilder;
-import org.elasticsearch.search.sort.SortOrder;
 import org.joda.time.DateTime;
 import org.joda.time.ReadableInstant;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -55,7 +54,7 @@ public abstract class EventEditor {
 
 	private ObjectNode find() {
 		events.refresh(bucketId);
-		Facet facet = new ListFacet(FIELD.getName(), 0, LIMIT, Event.TIMESTAMP.getName(), SortOrder.ASC);
+		Facet facet = new ListFacet(FIELD.getName(), 0, LIMIT, Event.TIMESTAMP.getName(), Event.SCHEMA);
 		QueryBuilder query = new OffsetDateTimeRangeConstraintBuilder(Event.TIMESTAMP.getName()).build(Range.<ReadableInstant>greaterThan(last));
 		return events.find(bucketId, new EventSearchBuilder().addConstraint(query, false).addFacet(facet).buildSearch());
 	}

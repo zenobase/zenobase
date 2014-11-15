@@ -17,8 +17,7 @@
 				"placement" : "left",
 				"singleton" : true,
 				"limit" : 10,
-				"order" : "timestamp",
-				"asc" : false
+				"order" : "-timestamp"
 			},
 			{
 				"id" : "tags",
@@ -27,8 +26,7 @@
 				"placement" : "right",
 				"field" : "tag",
 				"limit" : 10,
-				"order" : "count",
-				"asc" : false
+				"order" : "-count"
 			}
 		]
 	},
@@ -51,8 +49,7 @@
 				"type" : "list",
 				"label" : "Latest",
 				"placement" : "left",
-				"order" : "timestamp",
-				"asc" : false,
+				"order" : "-timestamp",
 				"limit" : 10,
 				"singleton" : true
 			},
@@ -63,8 +60,7 @@
 				"placement" : "left",
 				"field" : "tag",
 				"limit" : 5,
-				"order" : "count",
-				"asc" : false
+				"order" : "-count"
 			},
 			{
 				"id" : "histogram",
@@ -107,8 +103,7 @@
 				"type" : "list",
 				"label" : "Latest",
 				"placement" : "left",
-				"order" : "timestamp",
-				"asc" : false,
+				"order" : "-timestamp",
 				"limit" : 10,
 				"singleton" : true
 			},
@@ -119,8 +114,7 @@
 				"placement" : "left",
 				"field" : "tag",
 				"limit" : 5,
-				"order" : "count",
-				"asc" : false
+				"order" : "-count"
 			},
 			{
 				"id" : "map",
@@ -169,8 +163,7 @@
 				"type" : "list",
 				"label" : "Latest",
 				"placement" : "left",
-				"order" : "timestamp",
-				"asc" : false,
+				"order" : "-timestamp",
 				"limit" : 10,
 				"singleton" : true
 			},
@@ -181,8 +174,7 @@
 				"placement" : "left",
 				"field" : "tag",
 				"limit" : 5,
-				"order" : "count",
-				"asc" : false
+				"order" : "-count"
 			},
 			{
 				"id" : "histogram",
@@ -224,8 +216,7 @@
 				"type" : "list",
 				"label" : "Latest",
 				"placement" : "left",
-				"order" : "timestamp",
-				"asc" : false,
+				"order" : "-timestamp",
 				"limit" : 10,
 				"singleton" : true
 			},
@@ -236,8 +227,7 @@
 				"placement" : "left",
 				"field" : "tag",
 				"limit" : 5,
-				"order" : "count",
-				"asc" : false
+				"order" : "-count"
 			},
 			{
 				"id" : "map",
@@ -285,8 +275,7 @@
 				"type" : "list",
 				"label" : "Latest",
 				"placement" : "left",
-				"order" : "timestamp",
-				"asc" : false,
+				"order" : "-timestamp",
 				"limit" : 10,
 				"singleton" : true
 			},
@@ -297,8 +286,7 @@
 				"placement" : "left",
 				"field" : "tag",
 				"limit" : 5,
-				"order" : "count",
-				"asc" : false
+				"order" : "-count"
 			},
 			{
 				"id" : "map",
@@ -346,8 +334,7 @@
 				"type" : "list",
 				"label" : "Latest",
 				"placement" : "left",
-				"order" : "timestamp",
-				"asc" : false,
+				"order" : "-timestamp",
 				"limit" : 10,
 				"singleton" : true
 			},
@@ -358,8 +345,7 @@
 				"placement" : "left",
 				"field" : "tag",
 				"limit" : 5,
-				"order" : "count",
-				"asc" : false
+				"order" : "-count"
 			},
 			{
 				"id" : "map",
@@ -407,8 +393,7 @@
 				"type" : "list",
 				"label" : "Latest",
 				"placement" : "left",
-				"order" : "timestamp",
-				"asc" : false,
+				"order" : "-timestamp",
 				"limit" : 10,
 				"singleton" : true
 			},
@@ -453,8 +438,7 @@
 				"label" : "Latest",
 				"placement" : "left",
 				"limit" : 10,
-				"order" : "timestamp",
-				"asc" : false,
+				"order" : "-timestamp",
 				"singleton" : true
 			},
 			{
@@ -464,8 +448,7 @@
 				"placement" : "left",
 				"field" : "tag",
 				"limit" : 5,
-				"order" : "count",
-				"asc" : false
+				"order" : "-count"
 			},
 			{
 				"id" : "temperature",
@@ -588,8 +571,7 @@
 				"type" : "list",
 				"label" : "Latest",
 				"placement" : "left",
-				"order" : "timestamp",
-				"asc" : false,
+				"order" : "-timestamp",
 				"limit" : 10,
 				"singleton" : true
 			},
@@ -633,8 +615,7 @@
 				"type" : "list",
 				"label" : "Latest",
 				"placement" : "left",
-				"order" : "timestamp",
-				"asc" : false,
+				"order" : "-timestamp",
 				"limit" : 10,
 				"singleton" : true
 			},
@@ -680,8 +661,7 @@
 				"placement" : "left",
 				"singleton" : true,
 				"limit" : 10,
-				"order" : "timestamp",
-				"asc" : false
+				"order" : "-timestamp"
 			},
 			{
 				"id" : "histogram",
@@ -725,8 +705,7 @@
 				"placement" : "left",
 				"singleton" : true,
 				"limit" : 10,
-				"order" : "timestamp",
-				"asc" : false
+				"order" : "-timestamp"
 			},
 			{
 				"id" : "histogram",
@@ -768,8 +747,7 @@
 				"placement" : "left",
 				"singleton" : true,
 				"limit" : 10,
-				"order" : "timestamp",
-				"asc" : false
+				"order" : "-timestamp"
 			},
 			{
 				"id" : "tags",
@@ -778,8 +756,7 @@
 				"placement" : "right",
 				"field" : "tag",
 				"limit" : 10,
-				"order" : "count",
-				"asc" : false
+				"order" : "-count"
 			},
 			{
 				"id" : "duration_histogram",
@@ -821,8 +798,7 @@
 				"placement" : "left",
 				"singleton" : true,
 				"limit" : 10,
-				"order" : "timestamp",
-				"asc" : false
+				"order" : "-timestamp"
 			},
 			{
 				"id" : "tags",
@@ -831,8 +807,7 @@
 				"placement" : "left",
 				"field" : "tag",
 				"limit" : 10,
-				"order" : "count",
-				"asc" : false
+				"order" : "-count"
 			},
 			{
 				"id" : "map",
@@ -878,8 +853,7 @@
 				"placement" : "left",
 				"singleton" : true,
 				"limit" : 10,
-				"order" : "timestamp",
-				"asc" : false
+				"order" : "-timestamp"
 			},
 			{
 				"id" : "tags",
@@ -888,8 +862,7 @@
 				"placement" : "left",
 				"field" : "tag",
 				"limit" : 10,
-				"order" : "count",
-				"asc" : false
+				"order" : "count"
 			},
 			{
 				"id" : "map",
@@ -922,8 +895,7 @@
 				"key_field" : "tag",
 				"value_field" : "duration",
 				"unit" : null,
-				"order" : "sum",
-				"asc" : false,
+				"order" : "-sum",
 				"limit" : 10
 			}
 		]
@@ -967,8 +939,7 @@
 				"type" : "list",
 				"label" : "Latest",
 				"placement" : "left",
-				"order" : "timestamp",
-				"asc" : false,
+				"order" : "-timestamp",
 				"limit" : 10,
 				"singleton" : true
 			},
@@ -979,8 +950,7 @@
 				"placement" : "left",
 				"field" : "tag",
 				"limit" : 5,
-				"order" : "count",
-				"asc" : false
+				"order" : "-count"
 			},
 			{
 				"id" : "map",
@@ -1030,8 +1000,7 @@
 				"type" : "list",
 				"label" : "Latest",
 				"placement" : "left",
-				"order" : "timestamp",
-				"asc" : false,
+				"order" : "-timestamp",
 				"limit" : 7,
 				"singleton" : true
 			},
@@ -1111,8 +1080,7 @@
 				"type" : "list",
 				"label" : "Latest",
 				"placement" : "left",
-				"order" : "timestamp",
-				"asc" : false,
+				"order" : "-timestamp",
 				"limit" : 7,
 				"singleton" : true
 			},
@@ -1192,8 +1160,7 @@
 				"type" : "list",
 				"label" : "Latest",
 				"placement" : "left",
-				"order" : "timestamp",
-				"asc" : false,
+				"order" : "-timestamp",
 				"limit" : 7,
 				"singleton" : true
 			},
@@ -1284,8 +1251,7 @@
 				"type" : "list",
 				"label" : "Latest",
 				"placement" : "left",
-				"order" : "timestamp",
-				"asc" : false,
+				"order" : "-timestamp",
 				"limit" : 10,
 				"singleton" : true
 			},
@@ -1296,8 +1262,7 @@
 				"placement" : "left",
 				"field" : "tag",
 				"limit" : 10,
-				"order" : "count",
-				"asc" : false
+				"order" : "-count"
 			},
 			{
 				"id" : "polar_hour",
@@ -1378,8 +1343,7 @@
 				"type" : "list",
 				"label" : "Latest",
 				"placement" : "left",
-				"order" : "timestamp",
-				"asc" : false,
+				"order" : "-timestamp",
 				"limit" : 7,
 				"singleton" : true
 			},
@@ -1462,8 +1426,7 @@
 				"type" : "list",
 				"label" : "Latest",
 				"placement" : "left",
-				"order" : "timestamp",
-				"asc" : false,
+				"order" : "-timestamp",
 				"limit" : 7,
 				"singleton" : true
 			},
@@ -1545,8 +1508,7 @@
 				"type" : "list",
 				"label" : "Latest",
 				"placement" : "left",
-				"order" : "timestamp",
-				"asc" : false,
+				"order" : "-timestamp",
 				"limit" : 10,
 				"singleton" : true
 			},
@@ -1600,8 +1562,7 @@
 				"type" : "list",
 				"label" : "Latest",
 				"placement" : "left",
-				"order" : "timestamp",
-				"asc" : false,
+				"order" : "-timestamp",
 				"limit" : 10,
 				"singleton" : true
 			},
@@ -1613,8 +1574,7 @@
 				"key_field" : "author",
 				"value_field" : "count",
 				"unit" : null,
-				"order" : "sum",
-				"asc" : false,
+				"order" : "-sum",
 				"limit" : 10
 			},
 			{
@@ -1648,8 +1608,7 @@
 				"type" : "list",
 				"label" : "Latest",
 				"placement" : "left",
-				"order" : "timestamp",
-				"asc" : false,
+				"order" : "-timestamp",
 				"limit" : 10,
 				"singleton" : true
 			},
@@ -1661,8 +1620,7 @@
 				"key_field" : "author",
 				"value_field" : "count",
 				"unit" : null,
-				"order" : "sum",
-				"asc" : false,
+				"order" : "-sum",
 				"limit" : 10
 			},
 			{
@@ -1696,8 +1654,7 @@
 				"type" : "list",
 				"label" : "Latest",
 				"placement" : "left",
-				"order" : "timestamp",
-				"asc" : false,
+				"order" : "-timestamp",
 				"limit" : 10,
 				"singleton" : true
 			},
@@ -1709,8 +1666,7 @@
 				"key_field" : "author",
 				"value_field" : "count",
 				"unit" : null,
-				"order" : "sum",
-				"asc" : false,
+				"order" : "-sum",
 				"limit" : 10
 			},
 			{
@@ -1745,8 +1701,7 @@
 				"placement" : "left",
 				"singleton" : true,
 				"limit" : 10,
-				"order" : "timestamp",
-				"asc" : false
+				"order" : "-timestamp"
 			},
 			{
 				"id" : "tags",
@@ -1755,8 +1710,7 @@
 				"placement" : "left",
 				"field" : "tag",
 				"limit" : 10,
-				"order" : "count",
-				"asc" : false
+				"order" : "-count"
 			},
 			{
 				"id" : "polar_hours",
@@ -1827,8 +1781,7 @@
 				"type" : "list",
 				"label" : "Latest",
 				"placement" : "left",
-				"order" : "timestamp",
-				"asc" : false,
+				"order" : "-timestamp",
 				"limit" : 5,
 				"singleton" : true
 			},
@@ -1839,8 +1792,7 @@
 				"placement" : "left",
 				"field" : "tag",
 				"limit" : 5,
-				"order" : "count",
-				"asc" : false
+				"order" : "-count"
 			},
 			{
 				"id" : "polar",
@@ -1889,8 +1841,7 @@
 				"placement" : "left",
 				"singleton" : true,
 				"limit" : 10,
-				"order" : "timestamp",
-				"asc" : false
+				"order" : "-timestamp"
 			},
 			{
 				"id" : "weight",
@@ -1933,8 +1884,7 @@
 				"placement" : "left",
 				"singleton" : true,
 				"limit" : 10,
-				"order" : "timestamp",
-				"asc" : false
+				"order" : "-timestamp"
 			},
 			{
 				"id" : "weight",
@@ -1970,8 +1920,7 @@
 				"placement" : "left",
 				"singleton" : true,
 				"limit" : 10,
-				"order" : "timestamp",
-				"asc" : false
+				"order" : "-timestamp"
 			},
 			{
 				"id" : "weight",
@@ -2014,8 +1963,7 @@
 				"placement" : "left",
 				"singleton" : true,
 				"limit" : 10,
-				"order" : "timestamp",
-				"asc" : false
+				"order" : "-timestamp"
 			},
 			{
 				"id" : "weight",
@@ -2058,8 +2006,7 @@
 				"placement" : "left",
 				"singleton" : true,
 				"limit" : 10,
-				"order" : "timestamp",
-				"asc" : false
+				"order" : "-timestamp"
 			},
 			{
 				"id" : "weight",

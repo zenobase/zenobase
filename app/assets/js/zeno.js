@@ -1127,7 +1127,7 @@
 				label : 'List',
 				description : 'Shows all matching events, pageable.',
 				thumbnail : cacheBuster.rewrite('/img/widgets/list.png'),
-				settings : { limit : 10, order : 'timestamp', asc : false },
+				settings : { limit : 10, order : '-timestamp' },
 				singleton : true
 			},
 			{
@@ -1135,7 +1135,7 @@
 				label : 'Count',
 				description : 'Counts events by tag or author.',
 				thumbnail : cacheBuster.rewrite('/img/widgets/count.png'),
-				settings : { field : 'tag', order : 'count', asc : false, limit : 5 }
+				settings : { field : 'tag', order : '-count', limit : 5 }
 			},
 			{
 				type : 'map',
@@ -1170,14 +1170,14 @@
 				label : 'Scoreboard',
 				description : 'Statistics for the values in a field.',
 				thumbnail : cacheBuster.rewrite('/img/widgets/scoreboard.png'),
-				settings : { key_field : 'author', value_field : 'distance', unit : 'mi', order : 'sum', asc : false, limit : 10 }
+				settings : { key_field : 'author', value_field : 'distance', unit : 'mi', order : '-sum', limit : 10 }
 			},
 			{
 				type : 'gantt',
 				label : 'Frequency',
 				description : 'Shows how long ago and how often certain events occur.',
 				thumbnail : cacheBuster.rewrite('/img/widgets/gantt.png'),
-				settings : { field : 'tag', order : 'max', asc : false, limit : 10 }
+				settings : { field : 'tag', order : '-max', limit : 10 }
 			},
 			{
 				type : 'polar',
@@ -1700,7 +1700,59 @@
 			tracker.event('action', 'delete bucket');
 		};
 	}]);
-	
+
+	app.factory('WidgetControllerSupport', function() {
+		return function($scope) {
+			$scope.classesForOrderBy = function(column) {
+				var classes = [ 'fa' ];
+				if ($scope.settings.order && $scope.settings.order.indexOf(column) !== -1) {
+					classes.push($scope.settings.order.charAt(0) === '-' ? 'fa-sort-desc' : 'fa-sort-asc');
+				}
+				return classes;
+			};
+		};
+	});
+
+	app.factory('WidgetDialogControllerSupport', ['Field', function(Field) {
+		return function($scope, orderBy) {
+			$scope.init = function() {
+				$scope.settings = angular.copy($scope.$parent.settings);
+			};
+			$scope.save = function() {
+				$scope.refresh({}, $scope.settings);
+				$scope.closeDialog();
+				$scope.setDirty(true);
+			};
+			$scope.getField = function(name) {
+				return Field.find(name);
+			};
+			if (orderBy) {
+				$scope.orderBy = orderBy;
+				$scope.ascDesc = { 'asc' : true, 'desc' : false };
+				$scope.asc = function(asc) {
+					if (angular.isDefined(asc)) {
+						if (!asc && $scope.asc()) {
+							$scope.settings.order = '-' + $scope.settings.order;
+						} else if (asc && !$scope.asc()) {
+							$scope.settings.order = $scope.settings.order.substr(1);
+						}
+					}
+					return $scope.settings.order && $scope.settings.order.charAt(0) !== '-';
+				};
+				$scope.order = function(order) {
+					if (angular.isDefined(order)) {
+						if (!$scope.asc()) {
+							order = '-' + order;
+						}
+						$scope.settings.order = order;
+					}
+					return $scope.settings.order && $scope.settings.order.charAt(0) === '-' ? 
+						$scope.settings.order.substr(1) : $scope.settings.order;
+				};
+			}
+		};
+	}]);
+
 	app.controller('ListWidgetController', ['$scope', function($scope) {
 	
 		$scope.init = function() {
@@ -1726,8 +1778,7 @@
 				type : 'list',
 				offset : 0, 
 				limit : $scope.settings.limit,
-				order : $scope.settings.order,
-				asc : $scope.settings.asc
+				order : $scope.settings.order
 			};
 		};
 		$scope.refresh = function(options, settings) {
@@ -1749,32 +1800,20 @@
 		$scope.$on('refresh', $scope.init);
 	}]);
 
-	app.factory('WidgetDialogControllerSupport', ['Field', function(Field) {
-		return function($scope) {
-			$scope.init = function() {
-				$scope.settings = angular.copy($scope.$parent.settings);
-			};
-			$scope.save = function() {
-				$scope.refresh({}, $scope.settings);
-				$scope.closeDialog();
-				$scope.setDirty(true);
-			};
-			$scope.getField = function(name) {
-				return Field.find(name);
-			};
-		};
-	}]);
-
 	app.controller('ListWidgetDialogController', ['$scope', 'WidgetDialogControllerSupport', 'Field', function($scope, WidgetDialogControllerSupport, Field) {
 
-		new WidgetDialogControllerSupport($scope);
+		var fields = [ 'timestamp' ];
+		$.each(Field.findByType('numeric'), function(i, field) {
+			fields.push(field.name);
+		});
 
-		$scope.fields = [ 'timestamp' ];
-		$scope.directions = { 'asc' : true, 'desc' : false };
+		new WidgetDialogControllerSupport($scope, fields);
 	}]);
+
+	app.controller('CountWidgetController', ['$scope', 'WidgetControllerSupport', function($scope, WidgetControllerSupport) {
 	
-	app.controller('CountWidgetController', ['$scope', function($scope) {
-	
+		new WidgetControllerSupport($scope);
+
 		$scope.init = function() {
 			$scope.offset = 0;
 			$scope.more = false;
@@ -1792,13 +1831,6 @@
 		$scope.next = function() {
 			$scope.refresh({ offset : $scope.offset + $scope.settings.limit });
 		};
-		$scope.getClasses = function(column) {
-			var classes = [ 'fa' ];
-			if (column === $scope.settings.order) {
-				classes.push($scope.settings.asc ? 'fa-sort-asc' : 'fa-sort-desc');
-			}
-			return classes;
-		};
 		$scope.params = function() {
 			return { 
 				id : $scope.settings.id,
@@ -1807,7 +1839,6 @@
 				offset : $scope.offset, 
 				limit : $scope.settings.limit,
 				order : $scope.settings.order,
-				asc : $scope.settings.asc,
 				filter : $scope.settings.filter
 			};
 		};
@@ -1837,14 +1868,14 @@
 
 	app.controller('CountWidgetDialogController', ['$scope', 'WidgetDialogControllerSupport', 'Field', function($scope, WidgetDialogControllerSupport, Field) {
 
-		new WidgetDialogControllerSupport($scope);
+		new WidgetDialogControllerSupport($scope, [ 'term', 'count' ]);
 
 		$scope.fields = Field.findByType('text');
-		$scope.orderings = [ 'term', 'count' ];
-		$scope.directions = { 'asc' : true, 'desc' : false };
 	}]);
 
-	app.controller('GanttWidgetController', ['$scope', 'timezone', function($scope, timezone) {
+	app.controller('GanttWidgetController', ['$scope', 'WidgetControllerSupport', 'timezone', function($scope, WidgetControllerSupport, timezone) {
+
+		new WidgetControllerSupport($scope);
 
 		$scope.keyField = 'timestamp';
 
@@ -1860,7 +1891,6 @@
 				field : $scope.settings.field, 
 				timezone : timezone,
 				order : $scope.settings.order,
-				asc : $scope.settings.asc,
 				limit : $scope.settings.limit,
 				filter : $scope.settings.filter
 			};
@@ -1884,13 +1914,6 @@
 		$scope.filter = function(term) {
 			$scope.addConstraint($scope.settings.field, term.label);
 		};
-		$scope.getClasses = function(column) {
-			var classes = [ 'fa' ];
-			if (column === $scope.settings.order) {
-				classes.push($scope.settings.asc ? 'fa-sort-asc' : 'fa-sort-desc');
-			}
-			return classes;
-		};
 
 		$scope.init();
 		$scope.register($scope);
@@ -1900,14 +1923,12 @@
 
 	app.controller('GanttWidgetDialogController', ['$scope', 'WidgetDialogControllerSupport', 'Field', function($scope, WidgetDialogControllerSupport, Field) {
 
-		new WidgetDialogControllerSupport($scope);
+		new WidgetDialogControllerSupport($scope, [ 'term', 'max' ]);
 
+		$scope.fields = Field.findByType('text');
 		$scope.subfields = $.map(Field.find($scope.keyField).subfields, function(subfield) {
 			return { label : subfield, value : (subfield ? $scope.keyField + '$' + subfield : $scope.keyField) };
 		});
-		$scope.fields = Field.findByType('text');
-		$scope.orderings = [ 'term', 'max' ];
-		$scope.directions = { 'asc' : true, 'desc' : false };
 	}]);
 	
 	app.controller('RatingsWidgetController', ['$scope', function($scope) {
@@ -2119,8 +2140,10 @@
 		});
 	}]);
 
-	app.controller('ScoreboardWidgetController', ['$scope', function($scope) {
-	
+	app.controller('ScoreboardWidgetController', ['$scope', 'WidgetControllerSupport', function($scope, WidgetControllerSupport) {
+
+		new WidgetControllerSupport($scope);
+
 		$scope.init = function() {
 			$scope.terms = null;
 		};
@@ -2132,7 +2155,6 @@
 				value_field : $scope.settings.value_field,
 				unit : $scope.settings.unit,
 				order : $scope.settings.order,
-				asc : $scope.settings.asc,
 				limit : $scope.settings.limit,
 				filter : $scope.settings.filter
 			};
@@ -2151,13 +2173,6 @@
 		$scope.filter = function(term) {
 			$scope.addConstraint($scope.settings.key_field, term.label);
 		};
-		$scope.getClasses = function(column) {
-			var classes = [ 'fa' ];
-			if (column === $scope.settings.order) {
-				classes.push($scope.settings.asc ? 'fa-sort-asc' : 'fa-sort-desc');
-			}
-			return classes;
-		};
 
 		$scope.init();
 		$scope.register($scope);
@@ -2167,7 +2182,7 @@
 
 	app.controller('ScoreboardWidgetDialogController', ['$scope', 'WidgetDialogControllerSupport', 'Field', function($scope, WidgetDialogControllerSupport, Field) {
 
-		new WidgetDialogControllerSupport($scope);
+		new WidgetDialogControllerSupport($scope, [ 'term', 'count', 'sum', 'min', 'max', 'avg' ]);
 
 		$scope.isUnitValid = function() {
 			var units = $scope.getUnits();
@@ -2185,8 +2200,6 @@
 			var valueField = Field.find($scope.settings.value_field);
 			return valueField ? valueField.units : [];
 		};
-		$scope.orderings = [ 'term', 'count', 'sum', 'min', 'max', 'avg' ];
-		$scope.directions = { 'asc' : true, 'desc' : false };
 
 		$scope.$watch('settings.value_field', function() {
 			if (!$scope.isUnitValid()) {

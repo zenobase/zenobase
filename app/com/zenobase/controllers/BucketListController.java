@@ -92,7 +92,7 @@ public class BucketListController extends ControllerSupport {
 			return forbidden();
 		}
 		BucketQuery query = new BucketQuery().principalEqualTo(principal);
-        PartialList<Bucket> found = buckets.find(query, SearchOrder.valueOf(order), offset, limit);
+        PartialList<Bucket> found = buckets.find(query, SearchOrder.valueOf(order, Bucket.SCHEMA), offset, limit);
 		return ok(labelsOnly ? BucketList.toJsonLabelsOnly(found) : BucketList.toJson(found, events));
     }
 

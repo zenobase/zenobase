@@ -31,7 +31,7 @@ public class BucketRepository extends RepositorySupport<Bucket> {
 		if (!index.exists()) {
 			Logger.info("Creating bucket index...");
 			index.create(Integer.MAX_VALUE);
-			index.putMapping(Bucket.getSchema());
+			index.putMapping(Bucket.SCHEMA);
 		}
 	}
 

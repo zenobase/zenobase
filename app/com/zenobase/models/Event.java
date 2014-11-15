@@ -75,6 +75,8 @@ public class Event extends DomainNode {
 			LOCATION, TAG, RESOURCE, DISTANCE, HEIGHT, WEIGHT, VOLUME, CONCENTRATION, DISTANCE_PER_VOLUME,
 			HUMIDITY, PRESSURE, SOUND, ENERGY, TEMPERATURE, RATING, PERCENTAGE, MOON, CURRENCY, NOTE);
 
+	public static final Schema SCHEMA = buildSchema();
+
 	public Event() {
 		this(Generator.id());
 	}
@@ -143,7 +145,7 @@ public class Event extends DomainNode {
 		return new Event(toJson().deepCopy());
 	}
 
-	public static Schema getSchema() {
+	private static Schema buildSchema() {
 		SchemaBuilder schema = new SchemaBuilder(TYPE_NAME);
 		schema.setRouting(BUCKET.getName());
 		for (Field<?> field : FIELDS) {
@@ -151,13 +153,4 @@ public class Event extends DomainNode {
 		}
 		return schema.build();
     }
-
-	public static Field<?> getField(String name) {
-		for (Field<?> field : FIELDS) {
-			if (field.getName().equals(name)) {
-				return field;
-			}
-		}
-		return null;
-	}
 }

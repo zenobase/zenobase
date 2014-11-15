@@ -91,7 +91,6 @@ public class EventListController extends ControllerSupport {
 			copyRequestParameter("offset", map);
 			copyRequestParameter("limit", map);
 			copyRequestParameter("order", map);
-			copyRequestParameter("asc", map);
     		options.add(new FacetOptions(map));
     	}
 		return options;
