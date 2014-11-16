@@ -1704,8 +1704,9 @@
 	app.factory('WidgetControllerSupport', function() {
 		return function($scope) {
 			$scope.classesForOrderBy = function(column) {
-				var classes = [ 'fa' ];
+				var classes = [];
 				if ($scope.settings.order && $scope.settings.order.indexOf(column) !== -1) {
+					classes.push('fa');
 					classes.push($scope.settings.order.charAt(0) === '-' ? 'fa-sort-desc' : 'fa-sort-asc');
 				}
 				return classes;
