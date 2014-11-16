@@ -6,7 +6,6 @@ import java.util.Map.Entry;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
-import play.Logger;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Objects;
 import com.google.common.base.Strings;
@@ -156,51 +155,5 @@ public class Bucket extends DomainNode {
 	@Override
 	public String toString() {
 		return Objects.firstNonNull(getLabel(), getId());
-	}
-
-	public void migrate() {
-		for (ObjectNode widget : getWidgets()) {
-			if ("list".equals(widget.path("type").textValue())) {
-				if (!widget.path("reverse").isMissingNode()) {
-					Logger.warn("didn't expect reverse to be set: {}", widget);
-					widget.remove("reverse");
-				}
-				if (!"timestamp".equals(widget.path("order").textValue())) {
-					Logger.warn("expected order to be 'timestamp': {}", widget);
-				}
-				widget.put("order", "-timestamp");
-				Logger.info("list: replaced 'order' with 'order:-timestamp'");
-			} else if ("count".equals(widget.path("type").textValue())) {
-				if (widget.path("reverse").isBoolean()) {
-					if (widget.path("reverse").booleanValue()) {
-						Logger.warn("expected reverse to be false: {}", widget);
-					}
-					if (!"count".equals(widget.path("order").textValue())) {
-						Logger.warn("expected order to be 'count': {}", widget);
-					}
-					widget.remove("reverse");
-					widget.put("order", "-count");
-					Logger.info("count: replaced 'reverse' with 'order:-count'");
-				}
-			} else if ("scoreboard".equals(widget.path("type").textValue())) {
-				if ("total".equals(widget.path("order").textValue())) {
-					if (widget.path("reverse").booleanValue()) {
-						Logger.warn("expected reverse to be false: {}", widget);
-					}
-					widget.remove("reverse");
-					widget.put("order", "-sum");
-					Logger.info("scoreboard: replaced 'order:total' with 'order:-sum'");
-				}
-				if (widget.path("asc").isMissingNode()) {
-					widget.put("asc", false);
-					Logger.info("scoreboard: added 'asc:false'");
-				}
-			} else if ("gantt".equals(widget.path("type").textValue())) {
-				if (widget.path("order").isMissingNode()) {
-					widget.put("order", "-max");
-					Logger.info("gantt: added 'order:-max'");
-				}
-			}
-		}
 	}
 }
