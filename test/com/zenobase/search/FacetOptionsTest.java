@@ -16,12 +16,13 @@ public class FacetOptionsTest {
 			.put("c", "1.23456789")
 			.put("d", "true")
 			.put("e", "-08:00")
+			.put("l", "l1,l2,l3,l4")
 			.build()));
 	}
 
 	@Test
 	public void testParse() {
-		check(FacetOptions.parse("a:foo,b:42,c:1.23456789,d:true,e:-08:00,f,g:,h:null,:"));
+		check(FacetOptions.parse("a:foo,b:42,c:1.23456789,d:true,e:-08:00,f,g:,h:null,:,l:l1\\,l2\\,l3\\,l4"));
 	}
 
 	private static void check(FacetOptions options) {
@@ -52,6 +53,8 @@ public class FacetOptionsTest {
 
 		assertThat(options.get("h", String.class, "foo")).isEqualTo("foo");
 		assertThat(options.get("h", String.class, null)).isEqualTo(null);
+
+		assertThat(options.get("l", String.class, null)).isEqualTo("l1,l2,l3,l4");
 	}
 
 

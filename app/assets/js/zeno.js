@@ -1396,10 +1396,17 @@
 		function search(q, facets) {
 			return $http.get('/buckets/' + $scope.bucketId + '/?' + $.param({ 'q' : q, 'facet' : facets }, true));
 		}
+		/**
+		 * Escape commas.
+		 */
+		function escape(s) {
+			return typeof s === 'string' ? s.replace(/,/g, '\\,') : s;
+		}
 		$scope.search = function(params, callback) {
 			var facets = $.map(params, function(param) {
 				return $.map(param, function(value, key) {
-					return angular.isDefined(value) ? key + ':' + value : null;
+					return angular.isDefined(value) && value !== null ? 
+							key + ':' + escape(value) : null;
 				}).join(',');
 			});
 			var t0 = new Date().getTime();
