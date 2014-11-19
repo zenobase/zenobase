@@ -3755,11 +3755,13 @@
 
 				var bounds = new google.maps.LatLngBounds();
 				$.each($scope.getConstraints($scope.field), function(i, constraint) {
-					var c = constraint.value.split(',');
-					if (c.length === 4) {
-						var sw = new google.maps.LatLng(c[0], c[1]);
-						var ne = new google.maps.LatLng(c[2], c[3]);
-						bounds = new google.maps.LatLngBounds(sw, ne);
+					if (!constraint.negated) {
+						var c = constraint.value.split(',');
+						if (c.length === 4) {
+							var sw = new google.maps.LatLng(c[0], c[1]);
+							var ne = new google.maps.LatLng(c[2], c[3]);
+							bounds = new google.maps.LatLngBounds(sw, ne);
+						}
 					}
 				});
 				var filtered = !bounds.isEmpty();
@@ -3945,11 +3947,13 @@
 
 				var bounds = new google.maps.LatLngBounds();
 				$.each($scope.getConstraints($scope.field), function(i, constraint) {
-					var c = constraint.value.split(',');
-					if (c.length === 4){
-						var sw = new google.maps.LatLng(c[0], c[1]);
-						var ne = new google.maps.LatLng(c[2], c[3]);
-						bounds = new google.maps.LatLngBounds(sw, ne);
+					if (!constraint.negated) {
+						var c = constraint.value.split(',');
+						if (c.length === 4){
+							var sw = new google.maps.LatLng(c[0], c[1]);
+							var ne = new google.maps.LatLng(c[2], c[3]);
+							bounds = new google.maps.LatLngBounds(sw, ne);
+						}
 					}
 				});
 				var filtered = !bounds.isEmpty();
