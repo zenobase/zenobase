@@ -1529,6 +1529,10 @@
 			$scope.constraints.push(constraint);
 			$location.search(params());
 		};
+		$scope.addConstraints = function(constraints) {
+			$scope.constraints = $scope.constraints.concat(constraints);
+			$location.search(params());
+		};
 		$scope.removeConstraint = function(constraint) {
 			$scope.constraints = $.grep($scope.constraints, function(c) {
 				return !angular.equals(c, constraint);
@@ -1760,9 +1764,38 @@
 			}
 		};
 	}]);
-
-	app.controller('ListWidgetController', ['$scope', function($scope) {
 	
+
+	app.factory('WidgetFilter', ['Constraint', function(Constraint) {
+
+		var WidgetFilter = function(fields) {
+			this.fields = fields;
+			this.field = fields[0];
+			this.value = null;
+		};
+
+		WidgetFilter.prototype.clear = function() {
+			this.value = null;
+		};
+
+		WidgetFilter.prototype.build = function() {
+			var constraints = [];
+			if (this.value) {
+				var r = /([^"]\S*|".+?")\s*/g;
+				var m;
+				while (m = r.exec(this.value)) {
+					constraints.push(new Constraint(this.field.id, m[1]));
+				}
+			}
+			return constraints;
+		};
+
+		return WidgetFilter;
+	}]);
+
+
+	app.controller('ListWidgetController', ['$scope', 'WidgetFilter', function($scope, WidgetFilter) {
+
 		$scope.init = function() {
 			$scope.offset = 0;
 			$scope.total = 0;
@@ -1780,18 +1813,42 @@
 		$scope.next = function() {
 			$scope.refresh({ offset : $scope.offset + $scope.settings.limit });
 		};
+		$scope.filter = new WidgetFilter([ 
+			{
+				id : 'resource.title',
+				label : 'resources',
+				icon : 'fa-bookmark'
+			}, {
+				id : 'source.title',
+				label : 'sources',
+				icon : 'fa-external-link'
+			}, {
+				id : 'tag',
+				label : 'tags',
+				icon : 'fa-tag'
+			}, {
+				id : 'note',
+				label : 'notes',
+				icon : 'fa-comment-o'
+			}
+		]);
+		$scope.applyFilter = function() {
+			$scope.addConstraints($scope.filter.build());			
+			$scope.filter.clear();
+		};
 		$scope.params = function() {
 			return {
 				id : $scope.settings.id,
 				type : 'list',
 				offset : 0, 
 				limit : $scope.settings.limit,
-				order : $scope.settings.order
+				order : $scope.settings.order,
+				filter : $scope.filter.build().join('|')
 			};
 		};
 		$scope.refresh = function(options, settings) {
-			$scope.init();
 			$scope.search([ $.extend($scope.params(), options, settings) ], function(result) {
+				$scope.init();
 				$.extend($scope, options);
 				$.extend($scope.settings, settings);
 				$scope.update(null, result);
@@ -1801,11 +1858,16 @@
 			$scope.total = result.total;
 			$scope.items = result[$scope.settings.id] || [];
 		};
-	
+
 		$scope.init();
 		$scope.register($scope);
 		$scope.$on('result', $scope.update);
 		$scope.$on('refresh', $scope.init);
+		$scope.$watch('filter', function(to, from) {
+			if (from !== to) {
+				$scope.refresh({ offset : 0 });
+			}
+		}, true);
 	}]);
 
 	app.controller('ListWidgetDialogController', ['$scope', 'WidgetDialogControllerSupport', 'Field', function($scope, WidgetDialogControllerSupport, Field) {

@@ -1,6 +1,7 @@
 package com.zenobase.search;
 
 import org.elasticsearch.action.search.SearchResponse;
+import org.elasticsearch.index.query.FilterBuilder;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -18,11 +19,13 @@ public class ListFacet extends Facet {
 	private final int offset;
 	private final int limit;
 	private final SearchOrder order;
+	private final FilterBuilder filter;
 
-	public ListFacet(String id, int offset, int limit, String order, Schema schema) {
+	public ListFacet(String id, int offset, int limit, String order, FilterBuilder filter, Schema schema) {
 		super(id);
 		this.offset = offset;
 		this.limit = limit;
+		this.filter = filter;
 		this.order = SearchOrder.valueOf(order, schema);
 	}
 
@@ -30,6 +33,7 @@ public class ListFacet extends Facet {
 	public void configure(SearchSourceBuilder builder) {
 		builder.from(offset);
 		builder.size(limit);
+		builder.postFilter(filter);
 		order.apply(builder);
 		builder.version(Boolean.TRUE);
 	}
@@ -45,7 +49,7 @@ public class ListFacet extends Facet {
 		return eventsNode;
 	}
 
-	public static FacetBuilder builder(final Schema schema) {
+	public static FacetBuilder builder(final FilterParser filterParser, final Schema schema) {
 		return new FacetBuilder() {
 			@Override
 			public Facet build(FacetOptions options) {
@@ -54,6 +58,7 @@ public class ListFacet extends Facet {
 					options.get("offset", Integer.class, 0),
 					options.get("limit", Integer.class, 10),
 					options.get("order", String.class, "-timestamp"),
+					filterParser.parse(options.get("filter")),
 					schema);
 			}
 		};

@@ -1,5 +1,28 @@
 <div id="{{settings.id}}-content" data-ng-controller="ListWidgetController">
 
+	<form class="form-search">
+		<div class="input-append">
+			<input type="text" class="search-query input-large" data-ng-model="filter.value" data-ng-model-options="{ debounce: 500 }" data-ui-blur-on-enter 
+				placeholder="search {{filter.field.label}}"
+			/>
+			<div class="btn-group">
+				<button class="btn dropdown-toggle" title="Field" data-toggle="dropdown">
+					<i class="fa" data-ng-class="filter.field.icon"></i>
+					<span class="caret"></span>
+				</button>
+				<button class="btn" title="Clear" data-ng-click="filter.clear()"><i class="fa fa-close"></i></button>
+				<ul class="dropdown-menu" role="menu">
+					<li role="presentation" data-ng-repeat="field in filter.fields">
+						<a role="menuitem" data-ng-click="filter.field = field"><i class="fa" data-ng-class="field.icon"></i> &nbsp; {{field.label}}</a>
+					</li>
+				</ul>
+			</div>
+		</div>
+		<div class="pull-right">
+			<button class="xbtn" title="Filter" data-ng-click="applyFilter()" data-ng-disabled="!filter.value"><i class="fa fa-filter"></i></button>
+		</div>
+	</form>
+
 	<table class="table" data-ng-show="items.length">
 		<tbody>
 			<tr class="event-row" data-ng-repeat="event in items">

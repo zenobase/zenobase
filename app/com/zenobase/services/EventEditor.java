@@ -54,7 +54,7 @@ public abstract class EventEditor {
 
 	private ObjectNode find() {
 		events.refresh(bucketId);
-		Facet facet = new ListFacet(FIELD.getName(), 0, LIMIT, Event.TIMESTAMP.getName(), Event.SCHEMA);
+		Facet facet = new ListFacet(FIELD.getName(), 0, LIMIT, Event.TIMESTAMP.getName(), null, Event.SCHEMA);
 		QueryBuilder query = new OffsetDateTimeRangeConstraintBuilder(Event.TIMESTAMP.getName()).build(Range.<ReadableInstant>greaterThan(last));
 		return events.find(bucketId, new EventSearchBuilder().addConstraint(query, false).addFacet(facet).buildSearch());
 	}

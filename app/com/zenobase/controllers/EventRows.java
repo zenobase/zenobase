@@ -48,7 +48,7 @@ final class EventRows extends Results.ByteChunks {
 
 	private static Search createSearch(Iterable<String> constraints, int offset) {
 		ListFacet facet = new ListFacet(EventListController.EVENTS.getName(),
-			offset, LIMIT, Event.TIMESTAMP.getName(), Event.SCHEMA);
+			offset, LIMIT, Event.TIMESTAMP.getName(), null, Event.SCHEMA);
 		return new EventSearchBuilder().addConstraints(constraints).addFacet(facet).buildSearch();
 	}
 }

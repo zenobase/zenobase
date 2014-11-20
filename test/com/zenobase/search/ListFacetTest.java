@@ -51,6 +51,20 @@ public class ListFacetTest extends FacetTestSupport {
 	}
 
 	@Test
+	public void testFiltered() {
+
+		addEvent(e2);
+		addEvent(e1);
+		addEvent(e3);
+		addFacet("id:%s,type:%s,filter:%s", FACET_ID, ListFacet.TYPE, "tag:gamma");
+
+		ObjectNode result = execute();
+		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(1);
+		NodeAssert node = assertThat(result).path(FACET_ID).hasSize(1);
+		node.path(0).isEqualTo(e2.toJson());
+	}
+
+	@Test
 	public void testEmpty() {
 
 		addFacet("id:%s,type:%s", FACET_ID, ListFacet.TYPE);
