@@ -2,6 +2,7 @@ package com.zenobase.search;
 
 import javax.measure.unit.Unit;
 
+import org.elasticsearch.common.primitives.Doubles;
 import org.elasticsearch.index.query.FilterBuilder;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -38,12 +39,14 @@ abstract class TimelineFacetSupport extends FilteredFacet {
 	}
 
 	protected void addValue(ObjectNode parent, String property, double value) {
-		if (unit != Unit.ONE) {
-			ObjectNode node = parent.putObject(property);
-			node.put("@value", Measures.convert(value, unit));
-			node.put("unit", unit.toString());
-		} else {
-			parent.put(property, Measures.round(value));
+		if (Doubles.isFinite(value)) {
+			if (unit != Unit.ONE) {
+				ObjectNode node = parent.putObject(property);
+				node.put("@value", Measures.convert(value, unit));
+				node.put("unit", unit.toString());
+			} else {
+				parent.put(property, Measures.round(value));
+			}
 		}
 	}
 }
