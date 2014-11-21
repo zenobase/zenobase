@@ -110,7 +110,7 @@
 			{
 				"id" : "tags",
 				"type" : "count",
-				"label" : "Type",
+				"label" : "Activity",
 				"placement" : "left",
 				"field" : "tag",
 				"limit" : 5,
