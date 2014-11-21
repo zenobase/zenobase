@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.node.NullNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import com.zenobase.search.DecimalRangeConstraintBuilder;
+import com.zenobase.search.ExistsConstraintBuilder;
 import com.zenobase.search.TermConstraintBuilder;
 
 public class IntegerField extends Field<Integer> {
@@ -19,8 +20,11 @@ public class IntegerField extends Field<Integer> {
 	public IntegerField(String name, boolean indexed) {
 		super(name, Long.class, "integer");
 		this.indexed = indexed;
-		addConstraintBuilder(name, new DecimalRangeConstraintBuilder(getPath()));
-		addConstraintBuilder(name, new TermConstraintBuilder(getPath()));
+		if (indexed) {
+			addConstraintBuilder(name, new ExistsConstraintBuilder(getPath()));
+			addConstraintBuilder(name, new DecimalRangeConstraintBuilder(getPath()));
+			addConstraintBuilder(name, new TermConstraintBuilder(getPath()));
+		}
 	}
 
 	@Override

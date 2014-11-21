@@ -12,6 +12,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Preconditions;
 
 import com.zenobase.common.Measures;
+import com.zenobase.search.ExistsConstraintBuilder;
 import com.zenobase.search.MeasureConstraintBuilder;
 import com.zenobase.search.MeasureRangeConstraintBuilder;
 import com.zenobase.search.TermConstraintBuilder;
@@ -24,6 +25,7 @@ public class DecimalMeasureField<Q extends Quantity> extends Field<DecimalMeasur
 
 	public DecimalMeasureField(String name) {
 		super(name, DecimalMeasure.class.getGenericSuperclass(), "object");
+		addConstraintBuilder(name, new ExistsConstraintBuilder(getPath()));
 		addConstraintBuilder(name, new MeasureRangeConstraintBuilder(getPath()));
 		addConstraintBuilder(name, new MeasureConstraintBuilder(getPath()));
 		addConstraintBuilder(concat(name, UNIT.getName()), new TermConstraintBuilder(concat(name, UNIT.getName())));

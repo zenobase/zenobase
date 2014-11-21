@@ -27,6 +27,13 @@ public class ResourceConstraintBuilderTest extends ConstraintBuilderTestSupport 
 	}
 
 	@Test
+	public void testExists() {
+		addConstraint("resource:*");
+		ObjectNode result = execute();
+		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(3);
+	}
+
+	@Test
 	public void testSearchTitleWithPrefix() {
 		addConstraint("resource.title:%s", "zeno*");
 		ObjectNode result = execute();

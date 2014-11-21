@@ -16,8 +16,9 @@ please <a href="mailto:info@zenobase.com?subject=Zenobase+API">drop us a note</a
 so we can let you know about upcoming changes.</p>
 
 <dl>
-	<dt>November 20, 2014</dt>
-	<dd>Added a new facet, "geobounds".</dd>
+	<dt>November 21, 2014</dt>
+	<dd>Added a new facet, "geobounds".<br/>
+	    Support "*" constraint for all fields, to match non-null values.</dd>
 	<dt>November 15, 2014</dt>
 	<dd>Replaced "reverse" order param with "-" field prefix.</dd>
 	<dt>November 12, 2014</dt>
@@ -839,7 +840,7 @@ Content-Type: application/json
 <dt>field</dt>
 <dd>The field name.</dd>
 <dt>expression</dt>
-<dd>Type-specific expression.</dd>
+<dd>Type-specific expression, or <code>*</code> to match any non-null value.</dd>
 </dl>
 
 <h4>Expressions</h4>

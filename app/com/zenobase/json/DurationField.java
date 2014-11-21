@@ -7,11 +7,13 @@ import com.fasterxml.jackson.databind.node.NullNode;
 
 import com.zenobase.search.DurationConstraintBuilder;
 import com.zenobase.search.DurationRangeConstraintBuilder;
+import com.zenobase.search.ExistsConstraintBuilder;
 
 public class DurationField extends Field<Duration> {
 
 	public DurationField(String name) {
 		super(name, Duration.class, "long");
+		addConstraintBuilder(name, new ExistsConstraintBuilder(getPath()));
 		addConstraintBuilder(name, new DurationRangeConstraintBuilder(getPath()));
 		addConstraintBuilder(name, new DurationConstraintBuilder(getPath()));
 	}

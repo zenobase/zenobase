@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.node.NullNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import com.zenobase.models.Resource;
+import com.zenobase.search.ExistsConstraintBuilder;
 
 public class ResourceField extends Field<Resource> {
 
@@ -15,6 +16,7 @@ public class ResourceField extends Field<Resource> {
 		super(name, Resource.class, "object");
 		titleField = new TextField(concat(name, "title"), "title");
 		urlField = new TokenField(concat(name, "url"), "url", true);
+		addConstraintBuilder(name, new ExistsConstraintBuilder(getPath()));
 		addAll(titleField.getConstraintBuilders());
 		addAll(urlField.getConstraintBuilders());
 	}

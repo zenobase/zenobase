@@ -4,6 +4,8 @@ import org.joda.time.DateTime;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
+import com.zenobase.search.ExistsConstraintBuilder;
+
 public class DateTimeField extends Field<DateTime> {
 
 	private final OffsetDateTimeField offset;
@@ -15,6 +17,7 @@ public class DateTimeField extends Field<DateTime> {
 		offset.copyConstraintBuilders(this);
 		local = new LocalDateTimeField(name);
 		local.copyConstraintBuilders(this);
+		addConstraintBuilder(name, new ExistsConstraintBuilder(getPath()));
 	}
 
 	@Override

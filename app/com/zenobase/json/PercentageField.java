@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.node.DecimalNode;
 import com.fasterxml.jackson.databind.node.NullNode;
 
 import com.zenobase.models.Percentage;
+import com.zenobase.search.ExistsConstraintBuilder;
 import com.zenobase.search.PercentConstraintBuilder;
 import com.zenobase.search.PercentRangeConstraintBuilder;
 
@@ -12,6 +13,7 @@ public class PercentageField extends Field<Percentage> {
 
 	public PercentageField(String name) {
 		super(name, Percentage.class, "float");
+		addConstraintBuilder(name, new ExistsConstraintBuilder(getPath()));
 		addConstraintBuilder(name, new PercentRangeConstraintBuilder(getPath()));
 		addConstraintBuilder(name, new PercentConstraintBuilder(getPath()));
 	}

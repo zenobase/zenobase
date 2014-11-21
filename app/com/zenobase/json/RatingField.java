@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.node.NullNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import com.zenobase.models.Rating;
+import com.zenobase.search.ExistsConstraintBuilder;
 import com.zenobase.search.PercentConstraintBuilder;
 import com.zenobase.search.PercentRangeConstraintBuilder;
 
@@ -13,6 +14,7 @@ public class RatingField extends Field<Rating> {
 
 	public RatingField(String name) {
 		super(name, Rating.class, "byte");
+		addConstraintBuilder(name, new ExistsConstraintBuilder(getPath()));
 		addConstraintBuilder(name, new PercentRangeConstraintBuilder(getPath()));
 		addConstraintBuilder(name, new PercentConstraintBuilder(getPath()));
 	}

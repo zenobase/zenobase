@@ -16,12 +16,22 @@ public class DateTimeConstraintBuilderTest extends ConstraintBuilderTestSupport 
 		addEvent("2012-01-05T12:00:00Z");
 		addEvent("2012-01-05T12:15:00Z");
 		addEvent("2012-01-05T05:00:00-08:00");
+		addEvent((String) null);
 	}
 
 	private void addEvent(String timestamp) {
 		Event event = new Event();
-		event.setValue(Event.TIMESTAMP, DateTime.parse(timestamp));
+		if (timestamp != null) {
+			event.setValue(Event.TIMESTAMP, DateTime.parse(timestamp));
+		}
 		addEvent(event);
+	}
+
+	@Test
+	public void testExistsConstraint() {
+		addConstraint("%s:*", Event.TIMESTAMP);
+		ObjectNode result = execute();
+		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(3);
 	}
 
 	@Test

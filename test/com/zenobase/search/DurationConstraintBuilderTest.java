@@ -17,12 +17,22 @@ public class DurationConstraintBuilderTest extends ConstraintBuilderTestSupport 
 		addEvent("4h");
 		addEvent("240min");
 		addEvent("1d 1h");
+		addEvent((String) null);
 	}
 
 	private void addEvent(String duration) {
 		Event event = new Event();
-		event.setValue(Event.DURATION, DurationFormat.parse(duration));
+		if (duration != null) {
+			event.setValue(Event.DURATION, DurationFormat.parse(duration));
+		}
 		addEvent(event);
+	}
+
+	@Test
+	public void testExistsConstraint() {
+		addConstraint("%s:*", Event.DURATION);
+		ObjectNode result = execute();
+		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(4);
 	}
 
 	@Test

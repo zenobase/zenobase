@@ -19,12 +19,22 @@ public class MeasureConstraintBuilderTest extends ConstraintBuilderTestSupport {
 		addEvent("4 km");
 		addEvent("4000 m");
 		addEvent("25 km");
+		addEvent((String) null);
 	}
 
 	private void addEvent(String distance) {
 		Event event = new Event();
-		event.setValue(Event.DISTANCE, Measures.<Length>valueOf(distance));
+		if (distance != null) {
+			event.setValue(Event.DISTANCE, Measures.<Length>valueOf(distance));
+		}
 		addEvent(event);
+	}
+
+	@Test
+	public void testExistsConstraint() {
+		addConstraint("%s:*", Event.DISTANCE);
+		ObjectNode result = execute();
+		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(4);
 	}
 
 	@Test

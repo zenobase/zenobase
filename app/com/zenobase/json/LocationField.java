@@ -9,6 +9,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.zenobase.models.Location;
 import com.zenobase.search.BoundingBoxConstraintBuilder;
 import com.zenobase.search.DistanceConstraintBuilder;
+import com.zenobase.search.ExistsConstraintBuilder;
 
 public class LocationField extends Field<Location> {
 
@@ -17,6 +18,7 @@ public class LocationField extends Field<Location> {
 
 	public LocationField(String name) {
 		super(name, Location.class, "geo_point");
+		addConstraintBuilder(name, new ExistsConstraintBuilder(getPath()));
 		addConstraintBuilder(name, new BoundingBoxConstraintBuilder(getPath()));
 		addConstraintBuilder(name, new DistanceConstraintBuilder(getPath()));
 	}
