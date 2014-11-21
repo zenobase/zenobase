@@ -16,6 +16,7 @@ public class EventSearchBuilder extends SearchBuilderSupport {
 		.put(GanttFacet.TYPE, GanttFacet.builder(filterParser))
 		.put(MapFacet.TYPE, MapFacet.builder())
 		.put(HeatmapFacet.TYPE, HeatmapFacet.builder(filterParser))
+		.put(GeoBoundsFacet.TYPE, GeoBoundsFacet.builder(filterParser))
 		.put(RatingsFacet.TYPE, RatingsFacet.builder(filterParser))
 		.put(HistogramFacet.TYPE, HistogramFacet.builder(filterParser))
 		.put(TimelineFacet.TYPE, TimelineFacet.builder(filterParser))

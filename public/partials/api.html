@@ -16,6 +16,8 @@ please <a href="mailto:info@zenobase.com?subject=Zenobase+API">drop us a note</a
 so we can let you know about upcoming changes.</p>
 
 <dl>
+	<dt>November 20, 2014</dt>
+	<dd>Added a new facet, "geobounds".</dd>
 	<dt>November 15, 2014</dt>
 	<dd>Replaced "reverse" order param with "-" field prefix.</dd>
 	<dt>November 12, 2014</dt>
@@ -1153,7 +1155,7 @@ Content-Type: application/json
 <dl>
   <dt>precision:<em>&lt;integer&gt;</em></dt>
   <dd>Determines the grid size, from 1 (~5,000km) to 10 (~1m). Defaults to <em>8</em> (~30m).</dd>
-  <dt>field:<em>&lt;String&gt;</em></dt>
+  <dt>value_field:<em>&lt;String&gt;</em></dt>
   <dd>An optional, numeric field containing values to sum up.</dd>
   <dt>unit:<em>&lt;String&gt;</em></dt>
   <dd>The unit of the values. Required for fields with units.</dd>
@@ -1168,6 +1170,24 @@ Content-Type: application/json
 <pre><code data-ui-highlight class="lang-json">"xyz" : [
   { "lat" : -2.8, "lon" : -40.48, "count" : 1, "sum" : 60000 },
   { "lat" : 14.895, "lon" : -61.823, "count" : 3, "sum" : 180000 },
+  ...
+]</code></pre>
+
+&nbsp;
+
+<h4>Geo Bounds Facet</h4>
+
+<dl>
+  <dt>filter:<em>&lt;constraint&gt;</em></dt>
+  <dd>Optional <a href="/#/api/constraints">constraint</a>.</dd>
+</dl>
+
+<h5>Example:</h5>
+
+<pre>id:xyz,type:geobounds</pre>
+
+<pre><code data-ui-highlight class="lang-json">"xyz" : [
+  { "lat_min" : -2.8, "lat_max" : 14.895, "lon_min" : -40.48, "lon_max" : -61.823 },
   ...
 ]</code></pre>
 

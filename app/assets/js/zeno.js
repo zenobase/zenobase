@@ -3964,39 +3964,62 @@
 		$scope.field = 'location';
 	
 		$scope.init = function() {
-			$scope.points = null;
 			$scope.map = null;
+			$scope.points = null;
+			$scope.pointsB = null;
+			$scope.heatmap = null;
+			$scope.heatmapB = null;
 			$scope.bounds = null;
+			$scope.boundsB = null;
+			$scope.precision = 8;
 			$scope.shown = false;
 		};
+		function params(settings) {
+			if (settings) {
+				var filters = [];
+				if (settings.filter) {
+					filters.push(settings.filter);
+				}
+				if (settings.value_field) {
+					filters.push(settings.value_field + ':*');
+				}
+				return {
+					id : settings.id,
+					type : 'geobounds',
+					filter : filters.join('|')
+				};
+			}
+		}
 		$scope.params = function() {
-			return {
-				id : $scope.settings.id,
-				type : 'heatmap',
-				field : 'location',
-				value_field : $scope.settings.value_field,
-				unit : $scope.settings.unit,
-				filter : $scope.settings.filter
-			};
+			return params($scope.settings);
 		};
 		$scope.refresh = function(options, settings) {
 			$scope.init();
-			$scope.search([ $.extend($scope.params(), settings) ], function(result) {
+			$scope.search([ $.extend(params($scope.settings), params(settings)) ], function(result, resultB) {
 				$.extend($scope, options);
 				$.extend($scope.settings, settings);
-				$scope.update(null, result);
+				$scope.update(null, result, resultB);
 			});
 		};
 		$scope.update = function(event, result, resultB) {
-			$scope.points = result[$scope.settings.id] || [];
-			$scope.pointsB = resultB && resultB[$scope.settings.id] || [];
+			$scope.bounds = toBounds(result[$scope.settings.id] || {});
+			$scope.boundsB = toBounds(resultB && resultB[$scope.settings.id] || {});
 			$timeout($scope.draw, 1); // delay for correct width
 		};
-		$scope.filterBounds = function() {
-			$scope.addConstraint($scope.field, $scope.map.getBounds().toUrlValue(3), true);
-		};
+		function toBounds(result) {
+			var bounds;
+			if (angular.isDefined(result.lat_min)) {
+				var sw = new google.maps.LatLng(result.lat_min, result.lon_min);
+				var ne = new google.maps.LatLng(result.lat_max, result.lon_max);
+				bounds = new google.maps.LatLngBounds(sw, ne);
+			} else {
+				bounds = new google.maps.LatLngBounds();
+			}
+			return bounds;
+		}
+		var boundsUpdate;
 		$scope.draw = function() {
-			if ($scope.points && $scope.points.length || $scope.pointsB && $scope.pointsB.length) {
+			if (!$scope.bounds.isEmpty() || !$scope.boundsB.isEmpty()) {
 				var options = {
 					mapTypeId: google.maps.MapTypeId.TERRAIN,
 					streetViewControl: false,
@@ -4006,97 +4029,65 @@
 					styles : [ { 'stylers' : [ { 'saturation' : -100 } ] } ]
 				};
 				$scope.map = new google.maps.Map(document.getElementById($scope.settings.id + '-map'), options);
-
-				var bounds = new google.maps.LatLngBounds();
-				$.each($scope.getConstraints($scope.field), function(i, constraint) {
-					if (!constraint.negated) {
-						var c = constraint.value.split(',');
-						if (c.length === 4){
-							var sw = new google.maps.LatLng(c[0], c[1]);
-							var ne = new google.maps.LatLng(c[2], c[3]);
-							bounds = new google.maps.LatLngBounds(sw, ne);
-						}
-					}
+				$scope.map.fitBounds($scope.bounds.union($scope.boundsB));
+				google.maps.event.addListener($scope.map, 'bounds_changed', function() {
+					$timeout.cancel(boundsUpdate);
+					boundsUpdate = $timeout(function() {
+						$scope.bounds = $scope.map.getBounds();
+						$scope.precision = Math.min(Math.ceil($scope.map.getZoom() / 3.0) + 3, 9);
+					}, 1000);
 				});
-				var filtered = !bounds.isEmpty();
-				var data = [];
-				var field = Field.find($scope.settings.value_field);
-				$.each($scope.points, function(i, point) {
-					var latLng = new google.maps.LatLng(point.lat, point.lon);
-					var weight = field ? field.toNumber(point.sum) : point.count;
-					data.push({ location : latLng, weight : weight });
-					if (!filtered) {
-						bounds.extend(latLng);
-					}
-				});
-				var dataB = [];
-				$.each($scope.pointsB, function(i, point) {
-					var latLng = new google.maps.LatLng(point.lat, point.lon);
-					var weight = field ? field.toNumber(point.sum) : point.count;
-					dataB.push({ location : latLng, weight : weight });
-					if (!filtered) {
-						bounds.extend(latLng);
-					}
-				});
-				$scope.map.fitBounds(bounds);
-				$scope.bounds = bounds;
 				$scope.shown = false;
+
 				var gradient = [ 'rgba(0, 126, 216, 0.0)' ];
 				for (var r = 0; r < 256; ++r) {
 					gradient.push('rgba(' + r + ', 126, 216, 1.0)');
 				}
-				if (data.length > 0) {
-					new google.maps.visualization.HeatmapLayer({
-						data : data,
-						map : $scope.map,
-						opacity : 0.5,
-						dissipating : true,
-						radius : 20,
-						gradient : gradient
-					});
+				$scope.heatmap = new google.maps.visualization.HeatmapLayer({
+					data : [],
+					map : $scope.map,
+					opacity : 0.5,
+					dissipating : true,
+					radius : 20,
+					gradient : gradient
+				});
+				var gradientB = [ 'rgba(204, 102, 0, 0.0)' ];
+				for (var g = 103; g < 256; ++g) {
+					gradientB.push('rgba(204, ' + g + ', 0, 1.0)');
 				}
-				if (dataB.length > 0) {
-					var gradientB = [ 'rgba(204, 102, 0, 0.0)' ];
-					for (var g = 103; g < 256; ++g) {
-						gradientB.push('rgba(204, ' + g + ', 0, 1.0)');
-					}
-					new google.maps.visualization.HeatmapLayer({
-						data : dataB,
-						map : $scope.map,
-						opacity : 0.5,
-						dissipating : true,
-						radius : 20,
-						gradient : gradientB
-					});
-				}
-				if (filtered) {
-					var world = [
-						new google.maps.LatLng(-90, -180),
-						new google.maps.LatLng(90, -180),
-						new google.maps.LatLng(90, 0),
-						new google.maps.LatLng(90, 180),
-						new google.maps.LatLng(-90, 180),
-						new google.maps.LatLng(-90, 0)
-					];
-					var area = [
-						bounds.getSouthWest(),
-						new google.maps.LatLng(bounds.getSouthWest().lat(), bounds.getNorthEast().lng()),
-						bounds.getNorthEast(),
-						new google.maps.LatLng(bounds.getNorthEast().lat(), bounds.getSouthWest().lng())
-					];
-					new google.maps.Polygon({
-						paths : [ world, area ],
-						strokeWeight: 0,
-						clickable : false,
-						map : $scope.map							
-					});
-				}
-				$scope.map.controls[google.maps.ControlPosition.TOP_RIGHT].push($scope.createFilterControl());
+				$scope.heatmapB = new google.maps.visualization.HeatmapLayer({
+					data : [],
+					map : $scope.map,
+					opacity : 0.5,
+					dissipating : true,
+					radius : 20,
+					gradient : gradientB
+				});
+				drawConstraintBounds($scope.getConstraints($scope.field), 'rgb(47, 126, 216)');
+				drawConstraintBounds($scope.getConstraintsB($scope.field), 'rgb(204, 102, 0)');
+				$scope.map.controls[google.maps.ControlPosition.TOP_RIGHT].push(createFilterControl());
 			} else {
 				$('#' + $scope.settings.id + 'map').html('<i class="none">None</i>');
 			}
 		};
-		$scope.createFilterControl = function() {
+		function drawConstraintBounds(constraints, lineColor) {
+			$.each(constraints, function(i, constraint) {
+				var c = constraint.value.split(',');
+				if (c.length === 4) {
+					var sw = new google.maps.LatLng(c[0], c[1]);
+					var ne = new google.maps.LatLng(c[2], c[3]);
+					new google.maps.Rectangle({
+						strokeColor : lineColor,
+						strokeOpacity : 0.8,
+						strokeWeight : 2,
+						fillOpacity : 0,
+						map : $scope.map,
+						bounds : new google.maps.LatLngBounds(sw, ne)
+					});
+				}
+			});
+		}
+		function createFilterControl() {
 			var parent = document.createElement('div');
 			parent.style.padding = '5px';
 			var control = document.createElement('div');
@@ -4112,12 +4103,72 @@
 				});
 			});
 			return parent;
+		}
+		$scope.pointsParams = function() {
+			return {
+				id : $scope.settings.id,
+				type : 'heatmap',
+				precision : $scope.precision,
+				value_field : $scope.settings.value_field,
+				unit : $scope.settings.unit,
+				filter : getFilter()
+			};
+		};
+		function getFilter() {
+			var filter = $scope.settings.filter;
+			if ($scope.bounds && !$scope.bounds.isEmpty()) {
+				filter = filter ? filter + '|' : '';
+				filter += 'location:' + [
+					$scope.bounds.getSouthWest().lat(),
+					$scope.bounds.getSouthWest().lng(),
+					$scope.bounds.getNorthEast().lat(),
+					$scope.bounds.getNorthEast().lng()
+				].join(',');
+			}
+			return filter;
+		}
+		$scope.refreshPoints = function() {
+			$scope.search([ $scope.pointsParams() ], function(result, resultB) {
+				$scope.updatePoints(null, result, resultB);
+			});
+		};
+		$scope.updatePoints = function(event, result, resultB) {
+			$scope.points = result[$scope.settings.id] || [];
+			$scope.pointsB = resultB && resultB[$scope.settings.id] || [];
+			$scope.addPoints();
+		};
+		$scope.filterBounds = function() {
+			$scope.addConstraint($scope.field, $scope.map.getBounds().toUrlValue(3), true);
+		};
+		$scope.addPoints = function() {
+			if ($scope.map && ($scope.points && $scope.points.length || $scope.pointsB && $scope.pointsB.length)) {
+				var data = [];
+				var field = Field.find($scope.settings.value_field);
+				$.each($scope.points, function(i, point) {
+					var latLng = new google.maps.LatLng(point.lat, point.lon);
+					var weight = field && $scope.points.length > 1 ? field.toNumber(point.sum) : point.count;
+					data.push({ location : latLng, weight : weight });
+				});
+				$scope.heatmap.setData(data);
+				var dataB = [];
+				$.each($scope.pointsB, function(i, point) {
+					var latLng = new google.maps.LatLng(point.lat, point.lon);
+					var weight = field && $scope.pointsB.length > 1 ? field.toNumber(point.sum) : point.count;
+					dataB.push({ location : latLng, weight : weight });
+				});
+				$scope.heatmapB.setData(dataB);
+			}
 		};
 
 		$scope.init();
 		$scope.register($scope);
 		$scope.$on('result', $scope.update);
 		$scope.$on('refresh', $scope.init);
+		$scope.$watch('bounds', function(newBounds, oldBounds) {
+			if ($scope.map) {
+				$scope.refreshPoints();
+			}
+		}, true);
 		$('#' + $scope.settings.id + '-tab').on('shown', function() {
 			if ($scope.map && !$scope.shown) {
 				google.maps.event.trigger($scope.map, 'resize');
