@@ -4033,8 +4033,11 @@
 				google.maps.event.addListener($scope.map, 'bounds_changed', function() {
 					$timeout.cancel(boundsUpdate);
 					boundsUpdate = $timeout(function() {
-						$scope.bounds = $scope.map.getBounds();
-						$scope.precision = Math.min(Math.ceil($scope.map.getZoom() / 3.0) + 3, 9);
+						var bounds = $scope.map.getBounds();
+						if (bounds.toSpan().lat() !== 0) {
+							$scope.precision = Math.min(Math.ceil($scope.map.getZoom() / 3.0) + 3, 9);
+							$scope.bounds = bounds;
+						}
 					}, 1000);
 				});
 				$scope.shown = false;
