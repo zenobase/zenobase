@@ -17,4 +17,4 @@ deployment:
   production:
     branch: master
     commands:
-      - aws s3 cp /home/ubuntu/zenobase/target/universal/zenobase-1.0-SNAPSHOT.zip s3://zeno-app/
+      - aws s3 cp /home/ubuntu/zenobase/target/universal/zenobase-SNAPSHOT.zip s3://zeno-app/
