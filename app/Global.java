@@ -3,7 +3,6 @@ import javax.inject.Inject;
 import play.Application;
 import play.Configuration;
 import play.GlobalSettings;
-import play.Logger;
 import play.Play;
 import play.api.PlayException;
 import play.api.mvc.Handler;
@@ -368,7 +367,7 @@ public class Global extends GlobalSettings {
 						String value = conf.getString(key);
 						bindConstant().annotatedWith(Names.named(key)).to(value);
 					} catch (PlayException e) {
-						Logger.info("Can't bind property from {}", e.description);
+
 					}
 				}
 			}

@@ -92,7 +92,6 @@ public class IndexManager implements Closeable {
 
 	@Override
 	public void close() {
-		Logger.info("Closing node...");
 		flush();
 		client.close();
 		node.close();
