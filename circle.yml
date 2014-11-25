@@ -1,0 +1,20 @@
+general:
+  branches:
+    only:
+      - master
+  artifacts:
+    - "zenobase/target/universal/*.zip"
+
+dependencies:
+  post:
+    - sudo pip install --upgrade awscli
+
+test:
+  override:
+    - play dist
+
+deployment:
+  production:
+    branch: master
+    commands:
+      - aws s3 cp /home/ubuntu/zenobase/target/universal/zenobase-1.0-SNAPSHOT.zip s3://zeno-app/
