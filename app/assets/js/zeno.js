@@ -4167,7 +4167,7 @@
 		$scope.register($scope);
 		$scope.$on('result', $scope.update);
 		$scope.$on('refresh', $scope.init);
-		$scope.$watch('bounds', function(newBounds, oldBounds) {
+		$scope.$watch('bounds', function() {
 			if ($scope.map) {
 				$scope.refreshPoints();
 			}
@@ -5895,7 +5895,7 @@
 				fieldOptions.toText || function(value) { return value; }, 
 				fieldOptions.toHtml || function(value) { return value; },
 				fieldOptions.toNumber || toNumber,
-				fieldOptions.formatAxis || function(options) { },
+				fieldOptions.formatAxis || function() { },
 				fieldOptions.minValue,
 				fieldOptions.maxValue,
 				fieldOptions.subfields
