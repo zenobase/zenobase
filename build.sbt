@@ -36,6 +36,8 @@ libraryDependencies ++= Seq(
 
 sources in (Compile,doc) := Seq.empty
 
+javacOptions ++= Seq("-Xlint:none")
+
 publishArtifact in (Compile, packageDoc) := false
 
 JsTaskKeys.timeoutPerSource := 10.minutes
