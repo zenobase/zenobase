@@ -3,7 +3,7 @@ general:
     only:
       - master
   artifacts:
-    - "zenobase/target/universal/*.zip"
+    - "target/universal/zenobase-SNAPSHOT.zip"
 
 dependencies:
   post:
@@ -17,4 +17,4 @@ deployment:
   production:
     branch: master
     commands:
-      - aws s3 cp /home/ubuntu/zenobase/target/universal/zenobase-SNAPSHOT.zip s3://zeno-app/
+      - aws s3 cp target/universal/zenobase-SNAPSHOT.zip s3://zeno-app/
