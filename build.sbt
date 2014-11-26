@@ -19,8 +19,8 @@ libraryDependencies ++= Seq(
 	"com.google.inject.extensions" % "guice-multibindings" % "3.0",
 	"org.elasticsearch" % "elasticsearch" % "1.4.0",
 	"org.elasticsearch" % "elasticsearch-cloud-aws" % "2.4.0",
-	"com.hazelcast" % "hazelcast" % "3.3.2",
-	"com.hazelcast" % "hazelcast-cloud" % "3.3.2",
+	"com.hazelcast" % "hazelcast" % "3.3.3",
+	"com.hazelcast" % "hazelcast-cloud" % "3.3.3",
 	"org.jscience" % "jscience" % "4.3.1",
 	"org.jsoup" % "jsoup" % "1.7.3",
 	"net.sf.opencsv" % "opencsv" % "2.3",
@@ -35,8 +35,6 @@ libraryDependencies ++= Seq(
 )
 
 sources in (Compile,doc) := Seq.empty
-
-javacOptions ++= Seq("-Xlint:none")
 
 publishArtifact in (Compile, packageDoc) := false
 
