@@ -73,11 +73,11 @@ to be started manually with `sudo start play`.)
 
   1. Push the code to the build server. This should trigger a build.
 
-  2. Obtain the build number [CloudBees].
+  2. Obtain the build number [CircleCI].
 
   3. Edit the "Custom JSON" field for the "Production" stack [OpsWorks]:
 
-     3.1. Set play.build to the new build number.
+     3.1. Set build.number to the new build number.
 
      3.2. (if migrating) Set elasticsearch.replay to the previous clusterName and increment clusterName.
 
@@ -91,7 +91,7 @@ to be started manually with `sudo start play`.)
 
   5. Before proceeding:
   
-     5.1. The build must complete [CloudBees].
+     5.1. The build must complete [CircleCI].
 
      5.2. There should be no (or minimal) traffic [Google Analytics].
 
@@ -113,19 +113,17 @@ to be started manually with `sudo start play`.)
 
   11. Wait for 4 nodes and green health [Zenobase].
 
-  12. Set the "keep this build forever" flag [CloudBees].
+  12. Tag HEAD with the build number.
 
-  13. Tag HEAD with the build number.
+  13. Cleanup (optional):
 
-  14. Cleanup (optional):
+      13.1. Remove stopped instances [OpsWorks].
 
-      14.1. Remove stopped instances [OpsWorks].
+      13.2. Delete builds older than a month or so from the zeno-builds bucket [AWS S3].
 
-      14.2. Remove the "keep this build forever" flag from builds older than a month or so [CloudBees].
+      13.3. Remove instances that are no longer reporting data [New Relic].
 
-      14.3. Remove instances that are no longer reporting data [New Relic].
-
-      14.4. (if migrating) Remove all but the last few snapshot buckets from S3 [AWS Console].
+      13.4. (if migrating) Remove all but the last few snapshot buckets from S3 [AWS Console].
 
 
 Restore Procedure
