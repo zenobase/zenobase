@@ -2,11 +2,11 @@ package com.zenobase.search;
 
 import javax.measure.unit.Unit;
 
-import org.elasticsearch.common.primitives.Doubles;
 import org.elasticsearch.index.query.FilterBuilder;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.common.primitives.Doubles;
 
 import com.zenobase.common.Measures;
 import com.zenobase.json.DecimalMeasureField;
