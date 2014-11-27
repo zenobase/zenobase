@@ -34,7 +34,7 @@ libraryDependencies ++= Seq(
 	"org.jvnet.mock-javamail" % "mock-javamail" % "1.9" % "test"
 )
 
-sources in (Compile,doc) := Seq.empty
+sources in (Compile, doc) := Seq.empty
 
 publishArtifact in (Compile, packageDoc) := false
 
