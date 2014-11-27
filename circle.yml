@@ -4,10 +4,10 @@ dependencies:
 
 test:
   override:
-    - play dist
+    - play universal:package-zip-tarball
 
 deployment:
   production:
     branch: master
     commands:
-      - aws s3 cp target/universal/zenobase-SNAPSHOT.zip s3://zeno-builds/zenobase-$CIRCLE_BUILD_NUM.zip
+      - aws s3 cp target/universal/zenobase-SNAPSHOT.tar.gz s3://zeno-builds/zenobase-$CIRCLE_BUILD_NUM.tar.gz
