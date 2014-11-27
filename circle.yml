@@ -10,4 +10,4 @@ deployment:
   production:
     branch: master
     commands:
-      - aws s3 cp target/universal/zenobase-SNAPSHOT.tar.gz s3://zeno-builds/zenobase-$CIRCLE_BUILD_NUM.tar.gz
+      - aws s3 cp target/universal/zenobase-SNAPSHOT.tgz s3://zeno-builds/zenobase-$CIRCLE_BUILD_NUM.tgz
