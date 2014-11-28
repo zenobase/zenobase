@@ -50,8 +50,6 @@ UglifyKeys.uglifyOps := { js =>
 
 UglifyKeys.sourceMap := false
 
-// UglifyKeys.mangle := false
-
 includeFilter in (Assets, LessKeys.less) := "zeno.less"
 
 includeFilter in uglify := "zeno.js"
@@ -59,3 +57,5 @@ includeFilter in uglify := "zeno.js"
 pipelineStages := Seq(uglify, gzip)
 
 EclipseKeys.createSrc := EclipseCreateSrc.Default + EclipseCreateSrc.Resource
+
+EclipseKeys.withSource := true

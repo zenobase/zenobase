@@ -6,7 +6,7 @@ Eclipse
 
 Following the initial checkout, or after updating dependencies in the build.sbt file, run:
 
-  activator "eclipse with-source=true"
+  activator eclipse
 
 
 Assets
