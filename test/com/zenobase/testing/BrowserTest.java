@@ -47,7 +47,7 @@ public class BrowserTest {
 
 	@Before
 	public void setUp() {
-		Assume.assumeTrue(Boolean.parseBoolean(System.getProperty("webdriver.enabled", "true")));
+		Assume.assumeTrue(Boolean.parseBoolean(System.getProperty("webdriver.enabled", "false")));
 		try {
 			driver = new ChromeDriver();
 			driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
