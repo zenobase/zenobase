@@ -57,5 +57,3 @@ includeFilter in uglify := "zeno.js"
 pipelineStages := Seq(uglify, gzip)
 
 EclipseKeys.createSrc := EclipseCreateSrc.Default + EclipseCreateSrc.Resource
-
-EclipseKeys.withSource := true

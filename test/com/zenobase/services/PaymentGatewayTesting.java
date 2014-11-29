@@ -13,7 +13,8 @@ import com.braintreegateway.Environment;
 import com.zenobase.models.Payment;
 import com.zenobase.models.Plan;
 
-public class PaymentGatewayTest {
+//@Category(ManualTests.class)
+public class PaymentGatewayTesting {
 
 	private static final String USERNAME = "jdoe";
 	private static final String EMAIL = "jdoe@zenobase.com";

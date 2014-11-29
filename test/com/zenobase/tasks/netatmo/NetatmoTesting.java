@@ -3,9 +3,9 @@ package com.zenobase.tasks.netatmo;
 import org.junit.Test;
 
 import com.zenobase.json.Nodes;
-import com.zenobase.tasks.TaskTestSupport;
+import com.zenobase.tasks.TaskTestingSupport;
 
-public class NetatmoTest extends TaskTestSupport {
+public class NetatmoTesting extends TaskTestingSupport {
 
 	@Test
 	public void test() {

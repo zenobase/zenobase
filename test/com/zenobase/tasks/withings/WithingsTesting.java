@@ -4,12 +4,11 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import com.zenobase.json.Nodes;
-import com.zenobase.tasks.TaskTestSupport;
+import com.zenobase.tasks.TaskTestingSupport;
 
-public class WithingsTest extends TaskTestSupport {
+public class WithingsTesting extends TaskTestingSupport {
 
 	@Test
-	@Ignore
 	public void testWeight() {
 		run(new WithingsWeightTaskManager(newCredentialsManager()), Nodes.newObject()
 			.put("tag", "weight")

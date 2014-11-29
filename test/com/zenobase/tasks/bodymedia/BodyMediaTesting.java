@@ -4,12 +4,11 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import com.zenobase.json.Nodes;
-import com.zenobase.tasks.TaskTestSupport;
+import com.zenobase.tasks.TaskTestingSupport;
 
-public class BodyMediaTest extends TaskTestSupport {
+public class BodyMediaTesting extends TaskTestingSupport {
 
 	@Test
-	@Ignore
 	public void testBurn() {
 		run(new BodyMediaBurnTaskManager(newCredentialsManager()), Nodes.newObject("marker", "2013-11-01"));
 	}

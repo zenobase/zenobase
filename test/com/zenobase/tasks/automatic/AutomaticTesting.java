@@ -4,9 +4,9 @@ import org.junit.Test;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import com.zenobase.json.Nodes;
-import com.zenobase.tasks.TaskTestSupport;
+import com.zenobase.tasks.TaskTestingSupport;
 
-public class AutomaticTest extends TaskTestSupport {
+public class AutomaticTesting extends TaskTestingSupport {
 
 	@Test
 	public void test() {

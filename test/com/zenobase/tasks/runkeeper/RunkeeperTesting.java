@@ -6,9 +6,9 @@ import org.junit.Test;
 
 import com.zenobase.json.Nodes;
 import com.zenobase.oauth.CustomX509TrustManager;
-import com.zenobase.tasks.TaskTestSupport;
+import com.zenobase.tasks.TaskTestingSupport;
 
-public class RunkeeperTest extends TaskTestSupport {
+public class RunkeeperTesting extends TaskTestingSupport {
 
 	@BeforeClass
 	public static void setUpSSL() {

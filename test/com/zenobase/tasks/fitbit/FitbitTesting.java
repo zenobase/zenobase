@@ -4,12 +4,11 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import com.zenobase.json.Nodes;
-import com.zenobase.tasks.TaskTestSupport;
+import com.zenobase.tasks.TaskTestingSupport;
 
-public class FitbitTest extends TaskTestSupport {
+public class FitbitTesting extends TaskTestingSupport {
 
 	@Test
-	@Ignore
 	public void testSteps() {
 		run(new FitbitStepsTaskManager(newCredentialsManager()), Nodes.newObject()
 			.put("marker", "2014-10-20")

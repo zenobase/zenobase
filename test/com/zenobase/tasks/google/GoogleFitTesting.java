@@ -4,9 +4,9 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import com.zenobase.json.Nodes;
-import com.zenobase.tasks.TaskTestSupport;
+import com.zenobase.tasks.TaskTestingSupport;
 
-public class GoogleFitTest extends TaskTestSupport {
+public class GoogleFitTesting extends TaskTestingSupport {
 
 	@Test
 	public void testActivities() {

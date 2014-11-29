@@ -19,7 +19,7 @@ import com.zenobase.models.Event;
 import com.zenobase.models.Location;
 import com.zenobase.models.Percentage;
 
-public class ForecasterTest {
+public class ForecasterTesting {
 
 	private final String apiKey = System.getProperty("forecast.apiKey");
 

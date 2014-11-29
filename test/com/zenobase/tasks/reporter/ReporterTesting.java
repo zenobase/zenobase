@@ -3,10 +3,10 @@ package com.zenobase.tasks.reporter;
 import org.junit.Test;
 
 import com.zenobase.json.Nodes;
-import com.zenobase.tasks.TaskTestSupport;
+import com.zenobase.tasks.TaskTestingSupport;
 import com.zenobase.tasks.dropbox.DropboxCredentialsManager;
 
-public class ReporterTest extends TaskTestSupport {
+public class ReporterTesting extends TaskTestingSupport {
 
 	@Test
 	public void test() {

@@ -4,12 +4,11 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import com.zenobase.json.Nodes;
-import com.zenobase.tasks.TaskTestSupport;
+import com.zenobase.tasks.TaskTestingSupport;
 
-public class JawboneTest extends TaskTestSupport {
+public class JawboneTesting extends TaskTestingSupport {
 
 	@Test
-	@Ignore
 	public void testSteps() {
 		run(new JawboneStepsTaskManager(newCredentialsManager()), Nodes.newObject()
 			.put("tag", "steps")

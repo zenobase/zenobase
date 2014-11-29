@@ -3,9 +3,9 @@ package com.zenobase.tasks.strava;
 import org.junit.Test;
 
 import com.zenobase.json.Nodes;
-import com.zenobase.tasks.TaskTestSupport;
+import com.zenobase.tasks.TaskTestingSupport;
 
-public class StravaTest extends TaskTestSupport {
+public class StravaTesting extends TaskTestingSupport {
 
 	@Test
 	public void test() {

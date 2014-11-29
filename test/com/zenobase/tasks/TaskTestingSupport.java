@@ -8,6 +8,7 @@ import org.apache.http.client.utils.URLEncodedUtils;
 import org.joda.time.DateTime;
 import org.junit.Assume;
 import org.junit.Before;
+import org.junit.experimental.categories.Category;
 import org.mockito.Mockito;
 import org.scribe.model.Token;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -21,8 +22,10 @@ import com.zenobase.json.Nodes;
 import com.zenobase.models.Identity;
 import com.zenobase.oauth.ExpiringToken;
 import com.zenobase.services.CredentialsRepository;
+import com.zenobase.testing.ManualTests;
 
-public abstract class TaskTestSupport {
+@Category(ManualTests.class)
+public abstract class TaskTestingSupport {
 
 	protected final Identity principal = new Identity();
 	protected final String bucketId = Generator.id();

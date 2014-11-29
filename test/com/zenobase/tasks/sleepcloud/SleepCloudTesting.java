@@ -3,10 +3,10 @@ package com.zenobase.tasks.sleepcloud;
 import org.junit.Test;
 
 import com.zenobase.json.Nodes;
-import com.zenobase.tasks.TaskTestSupport;
+import com.zenobase.tasks.TaskTestingSupport;
 import com.zenobase.tasks.google.GoogleCredentialsManager;
 
-public class SleepCloudTest extends TaskTestSupport {
+public class SleepCloudTesting extends TaskTestingSupport {
 
 	@Test
 	public void test() {

@@ -3,9 +3,9 @@ package com.zenobase.tasks.foursquare;
 import org.junit.Test;
 
 import com.zenobase.json.Nodes;
-import com.zenobase.tasks.TaskTestSupport;
+import com.zenobase.tasks.TaskTestingSupport;
 
-public class FoursquareTest extends TaskTestSupport {
+public class FoursquareTesting extends TaskTestingSupport {
 
 	@Test
 	public void test() {

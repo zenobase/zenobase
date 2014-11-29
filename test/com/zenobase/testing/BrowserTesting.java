@@ -18,6 +18,7 @@ import org.junit.After;
 import org.junit.Assume;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.jvnet.mock_javamail.Mailbox;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -38,7 +39,8 @@ import com.zenobase.models.Role;
 import com.zenobase.services.BucketRepository;
 import com.zenobase.services.UserRepository;
 
-public class BrowserTest {
+@Category(ManualTests.class)
+public class BrowserTesting {
 
 	private static final int PORT = 9000;
 
@@ -47,7 +49,7 @@ public class BrowserTest {
 
 	@Before
 	public void setUp() {
-		Assume.assumeTrue(Boolean.parseBoolean(System.getProperty("webdriver.enabled", "false")));
+		Assume.assumeFalse(Boolean.parseBoolean(System.getProperty("webdriver.skip", "false")));
 		try {
 			driver = new ChromeDriver();
 			driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);

@@ -3,9 +3,9 @@ package com.zenobase.tasks.mapmyfitness;
 import org.junit.Test;
 
 import com.zenobase.json.Nodes;
-import com.zenobase.tasks.TaskTestSupport;
+import com.zenobase.tasks.TaskTestingSupport;
 
-public class MapMyFitnessTest extends TaskTestSupport {
+public class MapMyFitnessTesting extends TaskTestingSupport {
 
 	@Test
 	public void test() {

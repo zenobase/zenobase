@@ -3,9 +3,9 @@ package com.zenobase.tasks.lastfm;
 import org.junit.Test;
 
 import com.zenobase.json.Nodes;
-import com.zenobase.tasks.TaskTestSupport;
+import com.zenobase.tasks.TaskTestingSupport;
 
-public class LastFmTest extends TaskTestSupport {
+public class LastFmTesting extends TaskTestingSupport {
 
 	@Test
 	public void test() {

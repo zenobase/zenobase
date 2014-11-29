@@ -6,7 +6,7 @@ Eclipse
 
 Following the initial checkout, or after updating dependencies in the build.sbt file, run:
 
-  activator eclipse
+  activator "eclipse with-source=true"
 
 
 Assets
@@ -38,13 +38,15 @@ To add the certificate, download it from https://www.startssl.com/certs/ca-bundl
 Tests
 -----
 
-To run a single test:
+To run all unit tests:
+
+  activator "test-only *Test"
+
+To run a specific test:
   
-  activator "test-only com.zenobase.testing.BrowserTest"
+  activator "test-only com.zenobase.testing.BrowserTesting"
 
-To run all tests except Selenium tests:
-
-  activator -Dwebdriver.enabled=false test
+To skip webdriver tests, set -Dwebdriver.skip=true
 
 
 Profiling

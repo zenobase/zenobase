@@ -12,13 +12,12 @@ import com.zenobase.json.Nodes;
 import com.zenobase.models.Event;
 import com.zenobase.search.Search;
 import com.zenobase.services.EventRepository;
-import com.zenobase.tasks.TaskTestSupport;
+import com.zenobase.tasks.TaskTestingSupport;
 import com.zenobase.tasks.foursquare.FoursquareVenues;
 
-public class MovesTest extends TaskTestSupport {
+public class MovesTesting extends TaskTestingSupport {
 
 	@Test
-	@Ignore
 	public void testActivities() {
 		run(new MovesActivitiesTaskManager(newCredentialsManager()), Nodes.newObject("marker", "2014-02-06"));
 	}

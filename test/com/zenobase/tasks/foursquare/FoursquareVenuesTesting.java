@@ -5,8 +5,12 @@ import static org.fest.assertions.Assertions.assertThat;
 import org.junit.Assume;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
-public class FoursquareVenuesTest {
+import com.zenobase.testing.ManualTests;
+
+@Category(ManualTests.class)
+public class FoursquareVenuesTesting {
 
 	private final String apiKey = System.getProperty("oauth.apiKey");
 	private final String apiSecret = System.getProperty("oauth.apiSecret");
