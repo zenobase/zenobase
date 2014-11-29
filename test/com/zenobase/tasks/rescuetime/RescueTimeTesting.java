@@ -11,7 +11,7 @@ public class RescueTimeTesting extends TaskTestingSupport {
 	public void test() {
 		run(new RescueTimeProductivityTaskManager(newCredentialsManager()), Nodes.newObject()
 			.put("timezone", "America/Los_Angeles")
-			.put("marker", "2014-04-01T10:00:00.000")
+			.put("marker", "2014-11-01T10:00:00.000")
 			.put("kind", "overview"));
 	}
 

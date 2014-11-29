@@ -24,7 +24,7 @@ libraryDependencies ++= Seq(
 	"org.jscience" % "jscience" % "4.3.1",
 	"org.jsoup" % "jsoup" % "1.8.1",
 	"net.sf.opencsv" % "opencsv" % "2.3",
-	"org.scribe" % "scribe" % "1.3.3",
+	"org.scribe" % "scribe" % "1.3.5",
 	"com.braintreepayments.gateway" % "braintree-java" % "2.37.0",
 	"org.logback-extensions" % "logback-ext-loggly" % "0.1.2",
 	"ch.qos.logback.contrib" % "logback-json-classic" % "0.1.2",

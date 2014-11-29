@@ -11,7 +11,7 @@ public class AutomaticTesting extends TaskTestingSupport {
 	@Test
 	public void test() {
 		ObjectNode settings = Nodes.newObject()
-			.put("marker", "2014-04-20T20:00:00.000-07:00")
+			.put("marker", "2014-11-01T12:00:00.000-07:00")
 			.put("tag", "Trip")
 			.put("metric", "false");
 		run(new AutomaticTaskManager(newCredentialsManager()), settings);
