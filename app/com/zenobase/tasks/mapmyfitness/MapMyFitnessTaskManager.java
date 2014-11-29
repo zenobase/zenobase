@@ -8,8 +8,10 @@ import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.scribe.model.OAuthRequest;
 import org.scribe.model.Response;
+import org.scribe.model.Token;
 import org.scribe.model.Verb;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.common.base.Objects;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.Lists;
@@ -18,9 +20,11 @@ import com.google.common.util.concurrent.RateLimiter;
 import com.zenobase.commands.Command;
 import com.zenobase.commands.CompoundCommand;
 import com.zenobase.commands.CreateEventCommand;
+import com.zenobase.commands.UpdateCredentialsCommand;
 import com.zenobase.commands.UpdateTaskCommand;
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
+import com.zenobase.tasks.Credentials;
 import com.zenobase.tasks.OAuthCredentials;
 import com.zenobase.tasks.OAuthTaskManager;
 import com.zenobase.tasks.Task;
@@ -48,6 +52,10 @@ public class MapMyFitnessTaskManager extends OAuthTaskManager {
 	}
 
 	private Command execute(MapMyFitnessTask task, OAuthCredentials credentials) {
+		Token token = credentials.getToken();
+		if (credentials.isExpired()) {
+			reauthorize(credentials);
+		}
 		UserResult user = getUser(credentials);
 		String path = "/v7.0/workout/";
 		List<Workout> workouts = Lists.newArrayList();
@@ -66,7 +74,7 @@ public class MapMyFitnessTaskManager extends OAuthTaskManager {
 		}
 		resolveTypes(workouts, credentials);
 		resolveRoutes(workouts, credentials);
-		return createCommand(task, credentials, getEvents(workouts));
+		return createCommand(task, credentials, getEvents(workouts), token);
 	}
 
 	private UserResult getUser(OAuthCredentials credentials) {
@@ -134,7 +142,7 @@ public class MapMyFitnessTaskManager extends OAuthTaskManager {
 		return super.send(request, credentials);
 	}
 
-	private Command createCommand(Task task, OAuthCredentials credentials, List<Event> events) {
+	private Command createCommand(Task task, OAuthCredentials credentials, List<Event> events, Token expiredToken) {
 		CompoundCommand command = new CompoundCommand(task.getPrincipal(), "ran " + getType() + " task", "reverted " + getType() + " task");
 		command.add(UpdateTaskCommand.builder(task)
 			.set(Task.COMPLETED, task.getCompleted(), new DateTime(DateTimeZone.UTC))
@@ -142,6 +150,12 @@ public class MapMyFitnessTaskManager extends OAuthTaskManager {
 			.set(Task.MARKER, task.getMarker(), events.isEmpty() ? task.getMarker() : getMarker(events).toString())
 			.set(Task.UNDO, task.getUndoId(), command.getId())
 			.build());
+		if (!Objects.equal(credentials.getToken(), expiredToken)) {
+			command.add(UpdateCredentialsCommand.builder(credentials)
+				.with(Credentials.CREDENTIALS)
+				.set(OAuthCredentials.TOKEN, expiredToken, credentials.getToken())
+				.build());
+		}
 		for (Event event : events) {
 			// System.out.println("[event] " + event);
 			command.add(new CreateEventCommand(task.getPrincipal(), task.getBucketId(), event));

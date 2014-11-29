@@ -62,6 +62,7 @@ public class MapMyFitnessCredentialsManager extends OAuthCredentialsManager {
 
 	private void reauthorize(OAuthCredentials credentials) {
 		OAuthRequest request = new OAuthRequest(Verb.POST, "https://oauth2-api.mapmyapi.com/v7.0/oauth2/access_token/");
+		request.addHeader("Api-Key", getApiKey());
 		request.addBodyParameter("grant_type", "refresh_token");
 		request.addBodyParameter("refresh_token", ((ExpiringToken) credentials.getToken()).getRefreshToken());
 		request.addBodyParameter(OAuthConstants.CLIENT_ID, getApiKey());
