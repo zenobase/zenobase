@@ -53,20 +53,6 @@ public class BrowserTesting {
 		Assume.assumeFalse(Boolean.parseBoolean(System.getProperty("webdriver.skip", "false")));
 		try {
 			driver = new ChromeDriver();
-			// DesiredCapabilities caps = new DesiredCapabilities();
-			// caps.setCapability("browser", "Chrome");
-			// caps.setCapability("browser_version", "38.0");
-			// caps.setCapability("os", "OS X");
-			// caps.setCapability("os_version", "Yosemite");
-			// caps.setCapability("resolution", "1024x768");
-			// caps.setCapability("browserstack.debug", "true");
-			// caps.setCapability("browserName", "iPhone");
-			// caps.setCapability("device", "iPhone 5");
-			// caps.setCapability("project", "zenobase");
-			// caps.setCapability("build", "dev");
-			// caps.setCapability("browserstack.local", "true");
-			// caps.setCapability("browserstack.localIdentifier", "Test123");
-			// driver = new RemoteWebDriver(new URL("http://zenobase:424ecd7d-f00d-4916-8577-059a6eb98259@ondemand.saucelabs.com/wd/hub"), caps);
 			driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
 			wait = new WebDriverWait(driver, 10);
 		} catch (IllegalStateException e) {
