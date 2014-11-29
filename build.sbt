@@ -22,7 +22,7 @@ libraryDependencies ++= Seq(
 	"com.hazelcast" % "hazelcast" % "3.3.3",
 	"com.hazelcast" % "hazelcast-cloud" % "3.3.3",
 	"org.jscience" % "jscience" % "4.3.1",
-	"org.jsoup" % "jsoup" % "1.7.3",
+	"org.jsoup" % "jsoup" % "1.8.1",
 	"net.sf.opencsv" % "opencsv" % "2.3",
 	"org.scribe" % "scribe" % "1.3.3",
 	"com.braintreepayments.gateway" % "braintree-java" % "2.37.0",
