@@ -5,9 +5,6 @@ dependencies:
 test:
   override:
     - play 'test-only *Test'
-  post:
-    - mkdir -p ${CIRCLE_TEST_REPORTS}/play
-    - mv target/test-reports/*.xml ${CIRCLE_TEST_REPORTS}/play
 
 deployment:
   production:
