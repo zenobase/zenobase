@@ -121,7 +121,7 @@ public abstract class OAuthCredentialsManager extends CredentialsManager {
 	}
 
 	protected String buildCallback(String baseUrl, OAuthCredentials credentials) {
-		return String.format("%s/oauth/callback/%s", baseUrl, credentials.getId());
+		return baseUrl  + "/oauth/callback/" + credentials.getId();
 	}
 
 	protected void configure(ServiceBuilder builder) {
