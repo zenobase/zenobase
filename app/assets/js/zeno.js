@@ -1405,7 +1405,7 @@
 		$scope.search = function(params, callback) {
 			var facets = $.map(params, function(param) {
 				return $.map(param, function(value, key) {
-					return angular.isDefined(value) && value !== null ? 
+					return angular.isDefined(value) && value !== null && value !== '' ? 
 							key + ':' + escape(value) : null;
 				}).join(',');
 			});
