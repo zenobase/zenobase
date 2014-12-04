@@ -67,65 +67,112 @@ Profiling
 4. Create a JMX connection using the *internal* IP address of the remote machine, and port 1099.
 
 
-Release Procedure
------------------
+Deploy Procedure
+----------------
 
-(Note: Pending resolution of https://github.com/elasticsearch/elasticsearch/issues/7090, the web application has 
-to be started manually with `sudo start play`.)
+Use this procedure when there are no setup or configuration changes:
 
-  1. Push the code to the build server. This should trigger a build.
+  1. Push the code to the build server.
 
   2. Obtain the build number [CircleCI].
 
-  3. Edit the "Custom JSON" field for the "Production" stack [OpsWorks]:
+  3. Update the Play App's "Repository URL" with the build number [OpsWorks].
 
-     3.1. Set build.number to the new build number.
+  4. Deploy the Play App to all machines in the Play Layer [OpsWorks].
 
-     3.2. (if migrating) Set elasticsearch.replay to the previous clusterName and increment clusterName.
+
+Release Procedure
+-----------------
+
+Use this procedure when there are setup or configuration changes, but no database migration is required:
+
+  1. Push the code to the build server.
+
+  2. Obtain the build number [CircleCI].
+
+  3. Update the Play App's "Repository URL" with the build number [OpsWorks].
 
   4. Set up new instances [OpsWorks]:
 
-     4.1. Add two m3.medium instances named "{build number}-1a" in us-east-1a and "{build number}-1c" in us-east-1c to the "Elasticsearch" layer.
-
-     4.2. (if migrating) Add an m3.large instance named "{build number}-1d" in us-east-1d to the "Elasticsearch" layer.
+     4.1. Add two m3.medium instances named "{name}-1a" in us-east-1a and "{name}-1c" in us-east-1c to the "Elasticsearch" layer.
 
      4.3. Add the new instances to the "Play" layer.
 
-  5. Before proceeding:
+  5. Start the new instances [OpsWorks].
+
+  6. Remove all old instances from the load balancer as soon as one of the new instances is listed as "in service" [EC2].
+
+  7. Wait for the status check to show 8 nodes and green health [Zenobase].
+
+  8. Stop the old instances [OpsWorks].
+
+  9. Wait for 4 nodes and green health [Zenobase].
+
+  10. Tag HEAD with the build number.
+
+  11. Cleanup (optional):
+
+      11.1. Remove stopped instances [OpsWorks].
+
+      11.2. Delete builds older than a month or so from the zeno-builds bucket [S3].
+
+      11.3. Remove instances that are no longer reporting data [New Relic].
+
+
+Migration Procedure
+-------------------
+
+Use this procedure to rebuild the database:
+
+  1. Push the code to the build server.
+
+  2. Obtain the build number [CircleCI].
+
+  3. Update the Play App's "Repository URL" with the build number [OpsWorks].
+
+  4. Increment "elasticsearch.replay" and "clusterName" in the "Custom JSON" for the "Production" stack [OpsWorks].
+
+  5. Set up new instances [OpsWorks]:
+
+     4.1. Add two m3.medium instances named "{name}-1a" in us-east-1a and "{name}-1c" in us-east-1c to the "Elasticsearch" layer.
+
+     4.2. Add an m3.large instance named "{name}-1d" in us-east-1d to the "Elasticsearch" layer.
+
+     4.3. Add the new instances to the "Play" layer.
+
+  6. Before proceeding:
   
-     5.1. The build must complete [CircleCI].
+     6.2. There should be no (or minimal) traffic [Google Analytics].
 
-     5.2. There should be no (or minimal) traffic [Google Analytics].
+     6.3. The status check must show 4 nodes and green health [Zenobase].
 
-     5.3. The status check must show 4 nodes and green health [Zenobase].
+     6.4. There should be a recent snapshot.
 
-     5.4. There should be a recent snapshot.
+  7. Start the new m3.large instance [OpsWorks].
 
-  6. Start either the new m3.large instance (if migrating) or the new m3.medium instances [OpsWorks].
+  8. Switch the old cluster into read-only mode [Zenobase].
 
-     6.1 (if migrating) switch the old cluster into read-only mode [Zenobase]
+  9. Remove all old instances from the load balancer as soon as the new instances is listed as "in service" [EC2].
 
-  7. Add all new instance(s) to the load balancer, and remove all old instances as soon as one of the new instances is listed as "in service" [AWS Console].
+  10. Start the two m3.medium instances [OpsWorks].
 
-  8. (if migrating) Start the two m3.medium instances as well [OpsWorks].
+  11. Wait for the status check to show 6 nodes and green health [Zenobase].
 
-  9. Wait for the status check to show 6 (if migrating) or 8 (if not migrating) nodes and green health [Zenobase].
+  12. Stop the m3.large instance and all old instances [OpsWorks].
 
-  10. Stop the m3.large instance (if migrating) as well as any old instances [OpsWorks].
+  13. Wait for 4 nodes and green health [Zenobase].
 
-  11. Wait for 4 nodes and green health [Zenobase].
+  14. Tag HEAD with the build number.
 
-  12. Tag HEAD with the build number.
+  15. Cleanup (optional):
 
-  13. Cleanup (optional):
+      15.1. Remove stopped instances [OpsWorks].
 
-      13.1. Remove stopped instances [OpsWorks].
+      15.2. Delete builds older than a month or so from the zeno-builds bucket [S3].
 
-      13.2. Delete builds older than a month or so from the zeno-builds bucket [AWS S3].
+      15.3. Remove instances that are no longer reporting data [New Relic].
 
-      13.3. Remove instances that are no longer reporting data [New Relic].
-
-      13.4. (if migrating) Remove all but the last few snapshot buckets from S3 [AWS Console].
+      15.4. Remove all but the last few snapshot buckets [S3].
 
 
 Restore Procedure
