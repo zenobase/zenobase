@@ -6692,6 +6692,16 @@
 		return {
 			require : 'ngModel',
 			link : function(scope, element, attrs, controller) {
+				if (!controller.$options) {
+					controller.$options = {
+						updateOn : 'blur',
+						debounce : {
+							'default' : 1000,
+							'blur' : 0
+						}
+					};
+					controller.$options.updateOnDefault = true;
+				}
 				controller.$parsers.unshift(function(value) {
 					var valid = checkSyntax(value);
 					if (valid && value) {
