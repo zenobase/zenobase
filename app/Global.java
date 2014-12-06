@@ -149,6 +149,8 @@ import com.zenobase.tasks.runkeeper.RunkeeperWeightTaskManager;
 import com.zenobase.tasks.sleepcloud.SleepCloudTaskManager;
 import com.zenobase.tasks.strava.StravaCredentialsManager;
 import com.zenobase.tasks.strava.StravaTaskManager;
+import com.zenobase.tasks.trackthisforme.TrackthisformeCredentialsManager;
+import com.zenobase.tasks.trackthisforme.TrackthisformeTaskManager;
 import com.zenobase.tasks.withings.WithingsCardioTaskManager;
 import com.zenobase.tasks.withings.WithingsCredentialsManager;
 import com.zenobase.tasks.withings.WithingsSleepTaskManager;
@@ -274,6 +276,7 @@ public class Global extends GlobalSettings {
 				bindIfConfigured("google", GoogleCredentialsManager.class, credentials);
 				bindIfConfigured("automatic", AutomaticCredentialsManager.class, credentials);
 				bindIfConfigured("jawbone", JawboneCredentialsManager.class, credentials);
+				bindIfConfigured("trackthisforme", TrackthisformeCredentialsManager.class, credentials);
 				bind(CredentialsManagerRegistry.class).in(Singleton.class);
 
 				Multibinder<TaskManager> tasks = Multibinder.newSetBinder(binder(), new TypeLiteral<TaskManager>() {});
@@ -313,6 +316,7 @@ public class Global extends GlobalSettings {
 				bindIfConfigured("jawbone", JawboneSleepTaskManager.class, tasks);
 				bindIfConfigured("jawbone", JawboneFoodTaskManager.class, tasks);
 				bindIfConfigured("jawbone", JawboneWeightTaskManager.class, tasks);
+				bindIfConfigured("trackthisforme", TrackthisformeTaskManager.class, tasks);
 				bind(TaskManagerRegistry.class).in(Singleton.class);
 
 				bind(AccountController.class).in(Singleton.class);
