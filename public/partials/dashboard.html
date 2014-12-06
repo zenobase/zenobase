@@ -257,7 +257,7 @@
 						<td colspan="3"><i>None</i></td>
 					</tr>
 					<tr class="task-row" data-ng-repeat="task in tasks">
-						<td>{{task.type}}</td>
+						<td><abbr title="{{formatTooltip(task)}}">{{task.type}}</abbr></td>
 						<td>
 							<span data-ng-show="task.status">ran {{task.completed | age}}</span>
 						</td>

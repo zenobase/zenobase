@@ -5023,6 +5023,20 @@
 				});
 			tracker.event('action', 'delete task');
 		};
+		$scope.formatTooltip = function(task) {
+			if (task.settings) {
+				var tooltip = '';
+				$.each(task.settings, function(field, value) {
+					if (tooltip) {
+						tooltip += '\n';
+					}
+					tooltip += field + ': ' + value;
+				});
+				return tooltip;
+			} else {
+				return '(no settings)';
+			}
+		};
 	}]);
 
 	app.controller('CreateTaskDialogController', ['$scope', '$http', 'delay', 'tracker', function($scope, $http, delay, tracker) {
