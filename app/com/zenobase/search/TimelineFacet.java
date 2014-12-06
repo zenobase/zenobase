@@ -28,11 +28,15 @@ public class TimelineFacet {
 				FilterBuilder filter = filterParser.parse(options.get("filter"));
 				return timezone != null
 					? new OffsetTimelineFacet(id, keyField, valueField, interval, range, timezone, unit, filter)
-					: new LocalTimelineFacet(id, keyField, valueField, interval, range, unit, filter);
+					: new LocalTimelineFacet(id, local(keyField), valueField.equals(keyField) ? local(valueField) : valueField, interval, range, unit, filter);
 			}
 
 			private Unit<?> getUnit(String value) {
 				return value != null ? Units.valueOf(value) : Unit.ONE;
+			}
+
+			private String local(String field) {
+				return "$" + field + ".time";
 			}
 		};
 	}

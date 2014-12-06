@@ -21,8 +21,8 @@ public class LocalTimelineFacetTest extends FacetTestSupport {
 	@Override
 	public void setUp() {
 		super.setUp();
-		first = newEvent("2012-03-31T20:15:30Z", "5 km", 2500);
-		last = newEvent("2012-05-15T08:30:00Z", "10 km", 5000);
+		first = newEvent("2012-03-31T20:15:30-07:00", "5 km", 2500);
+		last = newEvent("2012-05-15T08:30:00-07:00", "10 km", 5000);
 	}
 
 	private static Event newEvent(String timestamp, String length, int count) {
