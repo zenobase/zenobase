@@ -11,7 +11,7 @@ public class UnitFieldTest extends FieldTestSupport<Unit<Length>> {
 
 	@Override
 	protected Field<Unit<Length>> newField(String name) {
-		return new UnitField<Length>(name);
+		return new UnitField<>(name);
 	}
 
 	@Test

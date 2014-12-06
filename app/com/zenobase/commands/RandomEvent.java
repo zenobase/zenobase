@@ -155,7 +155,7 @@ public class RandomEvent {
 		public RandomElement<Movie> parse(File source) {
 			try {
 				return Files.readLines(source, Charsets.UTF_8, new LineProcessor<RandomElement<Movie>>() {
-					private final RandomElement<Movie> resources = new RandomElement<Movie>();
+					private final RandomElement<Movie> resources = new RandomElement<>();
 					@Override
 					public boolean processLine(String line) {
 						String[] tokens = line.split("\t");

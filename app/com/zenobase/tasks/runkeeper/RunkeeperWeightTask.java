@@ -16,7 +16,7 @@ public class RunkeeperWeightTask extends Task {
 	public static final String TYPE = "runkeeper-weight";
 
 	private static final TokenField TAG = new TokenField("tag");
-	private static final UnitField<Mass> UNIT = new UnitField<Mass>("unit");
+	private static final UnitField<Mass> UNIT = new UnitField<>("unit");
 	private static final TokenField TIMEZONE = new TokenField("timezone");
 
 	public RunkeeperWeightTask(ObjectNode node) {

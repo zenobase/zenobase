@@ -16,8 +16,8 @@ import com.zenobase.tasks.Task;
 public class MovesActivitiesTask extends Task {
 
 	public static final String TYPE = "moves-activities";
-	public static final UnitField<Length> LENGTH_UNIT = new UnitField<Length>("unit");
-	public static final UnitField<Energy> ENERGY_UNIT = new UnitField<Energy>("energy_unit");
+	public static final UnitField<Length> LENGTH_UNIT = new UnitField<>("unit");
+	public static final UnitField<Energy> ENERGY_UNIT = new UnitField<>("energy_unit");
 
 	public MovesActivitiesTask(ObjectNode node) {
 		super(node);

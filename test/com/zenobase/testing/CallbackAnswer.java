@@ -32,6 +32,6 @@ public class CallbackAnswer<T> implements Answer<Callback<T>> {
 	}
 
 	public static <T> Stubber doCallback(T value) {
-		return doAnswer(new CallbackAnswer<T>(ImmutableList.of(value)));
+		return doAnswer(new CallbackAnswer<>(ImmutableList.of(value)));
 	}
 }

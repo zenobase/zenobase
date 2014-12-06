@@ -13,15 +13,15 @@ public class DefaultPartialList<T> extends AbstractList<T> implements PartialLis
 	private final long total;
 
 	public static <T> PartialList<T> of(Iterable<T> elements, long total) {
-		return new DefaultPartialList<T>(elements, total);
+		return new DefaultPartialList<>(elements, total);
 	}
 
 	public static <T> PartialList<T> of() {
-		return new DefaultPartialList<T>(Collections.<T>emptyList(), 0L);
+		return new DefaultPartialList<>(Collections.<T>emptyList(), 0L);
 	}
 
 	public static <T> PartialList<T> of(T element) {
-		return new DefaultPartialList<T>(ImmutableList.of(element), 1);
+		return new DefaultPartialList<>(ImmutableList.of(element), 1);
 	}
 
 	protected DefaultPartialList(Iterable<T> elements, long total) {

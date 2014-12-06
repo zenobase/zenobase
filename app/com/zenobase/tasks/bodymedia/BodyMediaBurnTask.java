@@ -18,7 +18,7 @@ public class BodyMediaBurnTask extends Task {
 	public static final String TYPE = "bodymedia-burn";
 	public static final TokenField TAG = new TokenField("tag");
 	public static final BooleanField HOURLY = new BooleanField("hourly");
-	public static final UnitField<Energy> ENERGY_UNIT = new UnitField<Energy>("energy_unit");
+	public static final UnitField<Energy> ENERGY_UNIT = new UnitField<>("energy_unit");
 
 	public BodyMediaBurnTask(ObjectNode node) {
 		super(node);

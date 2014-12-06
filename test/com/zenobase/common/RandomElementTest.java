@@ -10,7 +10,7 @@ public class RandomElementTest {
 
 	@Test
 	public void test() {
-		RandomElement<Character> rand = new RandomElement<Character>();
+		RandomElement<Character> rand = new RandomElement<>();
 		rand.add('A', 4);
 		rand.add('B', 2);
 		rand.add('C', 1);

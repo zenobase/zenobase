@@ -198,7 +198,7 @@ public abstract class Field<T> {
 	}
 
 	protected <F> NestedField<F> nest(Field<F> field) {
-		return new NestedField<F>(this, field);
+		return new NestedField<>(this, field);
 	}
 
 	protected static String internal(String name) {

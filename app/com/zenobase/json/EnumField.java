@@ -10,7 +10,7 @@ import com.zenobase.search.TermConstraintBuilder;
 public class EnumField<E extends Enum<E>> extends Field<E> {
 
 	public static <T extends Enum<T>> EnumField<T> newInstance(String name, Class<T> type) {
-		return new EnumField<T>(name, type);
+		return new EnumField<>(name, type);
 	}
 
 	private EnumField(String name, Class<E> type) {

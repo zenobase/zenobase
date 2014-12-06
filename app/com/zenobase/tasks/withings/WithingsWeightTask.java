@@ -15,7 +15,7 @@ public class WithingsWeightTask extends Task {
 
 	public static final String TYPE = "withings-weight";
 	public static final TokenField TAG = new TokenField("tag");
-	public static final UnitField<Mass> UNIT = new UnitField<Mass>("unit");
+	public static final UnitField<Mass> UNIT = new UnitField<>("unit");
 	public static final TokenField TIMEZONE = new TokenField("timezone");
 
 	public WithingsWeightTask(ObjectNode node) {

@@ -81,7 +81,7 @@ class WithingsWeightResult {
 
 	private static DecimalMeasure<Mass> getDecimalMeasure(JsonNode measure, Unit<Mass> unit) {
 		BigDecimal value = getBigDecimal(measure);
-		return value != null ? new DecimalMeasure<Mass>(value, Units.KG).to(unit, new MathContext(5)) : null;
+		return value != null ? new DecimalMeasure<>(value, Units.KG).to(unit, new MathContext(5)) : null;
 	}
 
 	private static BigDecimal getBigDecimal(JsonNode node) {

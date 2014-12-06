@@ -15,9 +15,9 @@ public class PartialListTest {
 		List<String> numbers = Lists.newArrayList("1", "2", "3");
 
 		new EqualsTester()
-			.addEqualityGroup(new DefaultPartialList<String>(alphabet, 100), new DefaultPartialList<String>(alphabet, 100))
-			.addEqualityGroup(new DefaultPartialList<String>(alphabet, 200))
-			.addEqualityGroup(new DefaultPartialList<String>(numbers, 100))
+			.addEqualityGroup(new DefaultPartialList<>(alphabet, 100), new DefaultPartialList<>(alphabet, 100))
+			.addEqualityGroup(new DefaultPartialList<>(alphabet, 200))
+			.addEqualityGroup(new DefaultPartialList<>(numbers, 100))
 			.testEquals();
 	}
 }
