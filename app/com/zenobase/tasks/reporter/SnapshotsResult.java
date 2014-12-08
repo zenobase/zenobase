@@ -10,6 +10,7 @@ import javax.measure.quantity.Temperature;
 
 import org.joda.time.DateTime;
 import org.joda.time.format.ISODateTimeFormat;
+import play.Logger;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
@@ -73,13 +74,17 @@ public class SnapshotsResult {
 				add |= true;
 			}
 			for (JsonNode tokenNode : node.path("tokens")) {
-				if (q.getField() == null || Event.NOTE.getName().equals(q.getField())) {
-					event.addValue(Event.NOTE, tokenNode.textValue());
-					add |= true;
-				}
-				if (Event.TAG.getName().equals(q.getField())) {
-					event.addValue(Event.TAG, tokenNode.textValue());
-					add |= true;
+				if (tokenNode.isTextual()) {
+					if (q.getField() == null || Event.NOTE.getName().equals(q.getField())) {
+						event.addValue(Event.NOTE, tokenNode.textValue());
+						add |= true;
+					}
+					if (Event.TAG.getName().equals(q.getField())) {
+						event.addValue(Event.TAG, tokenNode.textValue());
+						add |= true;
+					}
+				} else {
+					Logger.warn("Expected text node but got: {}", tokenNode);
 				}
 			}
 			JsonNode textNode = node.path("textResponse");
