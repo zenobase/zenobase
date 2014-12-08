@@ -74,17 +74,18 @@ public class SnapshotsResult {
 				add |= true;
 			}
 			for (JsonNode tokenNode : node.path("tokens")) {
-				if (tokenNode.isTextual()) {
+				String text = textValue(tokenNode);
+				if (text != null) {
 					if (q.getField() == null || Event.NOTE.getName().equals(q.getField())) {
-						event.addValue(Event.NOTE, tokenNode.textValue());
+						event.addValue(Event.NOTE, text);
 						add |= true;
 					}
 					if (Event.TAG.getName().equals(q.getField())) {
-						event.addValue(Event.TAG, tokenNode.textValue());
+						event.addValue(Event.TAG, text);
 						add |= true;
 					}
 				} else {
-					Logger.warn("Expected text node but got: {}", tokenNode);
+					Logger.warn("Couldn't extract text from token node: {}", tokenNode);
 				}
 			}
 			JsonNode textNode = node.path("textResponse");
@@ -97,6 +98,13 @@ public class SnapshotsResult {
 				events.add(event);
 			}
 		}
+	}
+
+	private String textValue(JsonNode tokenNode) {
+		if (tokenNode.isObject()) {
+			tokenNode = tokenNode.path("text");
+		}
+		return tokenNode.textValue();
 	}
 
 	private DateTime dateTimeValue(JsonNode node) {

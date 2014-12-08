@@ -360,8 +360,14 @@
         {
           "questionPrompt" : "Who are you with?",
           "tokens" : [
-            "Jane Doe",
-            "Joe Doe"
+            {
+              "uniqueIdentifier" : "4F93F7AA-F46C-4DCB-A457-3AB183D201F2",
+              "text" : "Jane Doe"
+            },
+            {
+              "uniqueIdentifier" : "4F93F7AA-F46C-4DCB-A457-3AB183D201F3",
+              "text" : "Joe Doe"
+            }
           ]
         }
       ]
