@@ -257,11 +257,13 @@ public class BrowserTesting {
 				$("#create-view-label").sendKeys("Private View");
 				assertThat($("#create-bucket-button")).isNotEnabled();
 				new Select($("#include-bucket-select")).selectByVisibleText("My Data");
-				assertThat($("#include-bucket-button")).isEnabled();
+				wait.withMessage("include bucket button is enabled after selecting a bucket").until(ExpectedConditions.elementToBeClickable(By.id("include-bucket-button")));
 				$("#include-bucket-filter").sendKeys("walk");
+				sleep(1);
 				assertThat($("#include-bucket-button")).isNotEnabled();
 				$("#include-bucket-filter").clear();
 				$("#include-bucket-filter").sendKeys("tag:walk");
+				sleep(1);
 				$("#include-bucket-button").click();
 				assertThat($("#create-view-button")).isEnabled();
 				$("#create-view-button").click();
@@ -274,6 +276,7 @@ public class BrowserTesting {
 				assertThat($("#save-bucket-button")).isNotEnabled();
 				new Select($("#edit-alias-select")).selectByVisibleText("My Data");
 				$("#edit-alias-filter").sendKeys("tag:hike");
+				sleep(1);
 				$("#edit-alias-button").click();
 				assertThat($("#save-bucket-button")).isEnabled();
 				$("#save-bucket-button").click();
