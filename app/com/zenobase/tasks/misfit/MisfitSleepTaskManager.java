@@ -41,7 +41,7 @@ public class MisfitSleepTaskManager extends MisfitTaskManagerSupport {
 		DateTime begin = task.getBegin();
 		DateTime now = DateTime.now(begin.getZone());
 		List<Event> events = Lists.newArrayList();
-		while (begin.isBefore(now)) {
+		while (begin.toLocalDate().isBefore(now.toLocalDate())) {
 			DateTime end = begin.plusWeeks(4);
 			if (!end.isBefore(now)) {
 				end = now;

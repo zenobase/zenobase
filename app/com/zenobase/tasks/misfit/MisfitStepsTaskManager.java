@@ -44,7 +44,7 @@ public class MisfitStepsTaskManager extends MisfitTaskManagerSupport {
 		DateTime begin = task.getBegin();
 		DateTime now = DateTime.now(begin.getZone()).minusDays(1);
 		List<Event> events = Lists.newArrayList();
-		while (begin.isBefore(now)) {
+		while (begin.toLocalDate().isBefore(now.toLocalDate())) {
 			DateTime end = begin.plusWeeks(4);
 			if (!end.isBefore(now)) {
 				end = now;
