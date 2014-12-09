@@ -622,6 +622,45 @@
 		</div>
 	</script>
 
+	<script id="/misfit-activities-settings.html" type="text/ng-template">
+		<div data-ng-controller="MisfitActivitiesSettingsController">
+			<div class="control-group">
+				<label for="marker" class="control-label">Starting from</label>
+				<input class="input-small" type="text" data-ui-datepicker data-ng-model="settings.marker"/>
+			</div>
+		</div>
+	</script>
+
+	<script id="/misfit-sleep-settings.html" type="text/ng-template">
+		<div data-ng-controller="MisfitSleepSettingsController">
+			<div class="control-group">
+				<label for="tag" class="control-label">Tag</label>
+				<input name="tag" type="text" required data-ng-model="settings.tag"/>
+			</div>
+			<div class="control-group">
+				<label for="marker" class="control-label">Starting from</label>
+				<input class="input-small" type="text" data-ui-datepicker data-ng-model="settings.marker"/>
+			</div>
+		</div>
+	</script>
+
+	<script id="/misfit-steps-settings.html" type="text/ng-template">
+		<div data-ng-controller="MisfitStepsSettingsController">
+			<div class="control-group">
+				<label for="tag" class="control-label">Tag</label>
+				<input name="tag" type="text" required data-ng-model="settings.tag"/>
+			</div>
+			<div class="control-group">
+				<label for="timezone" class="control-label">Timezone</label>
+				<select name="timezone" data-ng-model="settings.timezone" data-ng-options="timezone for timezone in timezones" required></select>
+			</div>
+			<div class="control-group">
+				<label for="marker" class="control-label">Starting from</label>
+				<input class="input-small" type="text" data-ui-datepicker data-ng-model="settings.marker"/>
+			</div>
+		</div>
+	</script>
+
 	<script id="/mapmyfitness-activities-settings.html" type="text/ng-template">
 		<div data-ng-controller="MapMyFitnessSettingsController">
 			<div class="control-group">

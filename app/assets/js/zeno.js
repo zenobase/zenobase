@@ -5062,6 +5062,9 @@
 			{ id : 'jawbone-weight', description : 'Creates an event for body weight measurement.', url : 'https://jawbone.com/up' },
 			{ id : 'lastfm-tracks', description : 'Creates an event for each track played.', url : 'http://www.last.fm/' },
 			{ id : 'mapmyfitness-activities', description : 'Creates an event for each activity.', url : 'http://www.mapmyfitness.com/' },
+			{ id : 'misfit-activities', description : 'Creates an event for each activity.', url : 'http://misfit.com/' },
+			{ id : 'misfit-sleep', description : 'Creates an event for each period of sleep.', url : 'http://misfit.com/' },
+			{ id : 'misfit-steps', description : 'Creates an event for the number of steps each day.', url : 'http://misfit.com/' },
 			{ id : 'moves-activities', description : 'Creates an event for each activity.', url : 'https://moves-app.com/' },
 			{ id : 'moves-places', description : 'Creates an event for each place visited.', url : 'https://moves-app.com/' },
 			{ id : 'moves-locate', description : 'Adds location data to events without a location.', url : 'https://moves-app.com/' },
@@ -5656,6 +5659,53 @@
 					metric : false,
 					marker : new Date(moment().utc().subtract(12, 'months').startOf('month').valueOf())
 			};
+		};
+
+		$scope.init();
+	}]);
+
+	app.controller('MisfitActivitiesSettingsController', ['$scope', 'moment', function($scope, moment) {
+
+		$scope.init = function() {
+			$scope.settings = $scope.$parent.$parent.settings = {
+					marker : new Date(moment().utc().subtract(6, 'months').startOf('month').valueOf())
+			};
+		};
+
+		$scope.init();
+	}]);
+
+	app.controller('MisfitSleepSettingsController', ['$scope', 'moment', function($scope, moment) {
+
+		$scope.init = function() {
+			$scope.settings = $scope.$parent.$parent.settings = {
+					tag : 'Sleep',
+					marker : new Date(moment().utc().subtract(6, 'months').startOf('month').valueOf())
+			};
+		};
+
+		$scope.init();
+	}]);
+
+	app.controller('MisfitStepsSettingsController', ['$scope', '$http', 'moment', function($scope, $http, moment) {
+
+		$scope.init = function() {
+			$scope.settings = $scope.$parent.$parent.settings = {
+					tag : 'Steps',
+					marker : new Date(moment().utc().subtract(6, 'months').startOf('month').valueOf()),
+					timezone : 'UTC'
+			};
+			$http.get('/tz').success(function(response) {
+				$scope.timezones = response;
+				if (navigator.geolocation) {
+					navigator.geolocation.getCurrentPosition(function(position) {
+						$http.get('/tz?' + $.param({ 'lat' : position.coords.latitude, 'lon' : position.coords.longitude }))
+							.success(function(response) {
+								$scope.settings.timezone = response.timeZoneId;
+							});
+					});
+				}
+			});
 		};
 
 		$scope.init();

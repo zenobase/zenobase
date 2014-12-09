@@ -1,0 +1,24 @@
+{
+    "sessions": [
+        {
+            "id": "54868ca42d17ebe427000003",
+            "activityType": "Swimming",
+            "startTime": "2014-12-08T20:00:00-08:00",
+            "duration": 600,
+            "points": 0,
+            "steps": 0,
+            "calories": 0,
+            "distance": 0
+        },
+        {
+            "id": "54868ca42d17ebe427000004",
+            "activityType": "Walking",
+            "startTime": "2014-12-08T20:30:00-08:00",
+            "duration": 1800,
+            "points": 10,
+            "steps": 2500,
+            "calories": 300,
+            "distance": 1.5
+        }
+    ]
+}

@@ -134,6 +134,10 @@ import com.zenobase.tasks.lastfm.LastFmCredentialsManager;
 import com.zenobase.tasks.lastfm.LastFmTaskManager;
 import com.zenobase.tasks.mapmyfitness.MapMyFitnessCredentialsManager;
 import com.zenobase.tasks.mapmyfitness.MapMyFitnessTaskManager;
+import com.zenobase.tasks.misfit.MisfitActivitiesTaskManager;
+import com.zenobase.tasks.misfit.MisfitCredentialsManager;
+import com.zenobase.tasks.misfit.MisfitSleepTaskManager;
+import com.zenobase.tasks.misfit.MisfitStepsTaskManager;
 import com.zenobase.tasks.moves.MovesActivitiesTaskManager;
 import com.zenobase.tasks.moves.MovesCredentialsManager;
 import com.zenobase.tasks.moves.MovesLocateTaskManager;
@@ -276,6 +280,7 @@ public class Global extends GlobalSettings {
 				bindIfConfigured("google", GoogleCredentialsManager.class, credentials);
 				bindIfConfigured("automatic", AutomaticCredentialsManager.class, credentials);
 				bindIfConfigured("jawbone", JawboneCredentialsManager.class, credentials);
+				bindIfConfigured("misfit", MisfitCredentialsManager.class, credentials);
 				bindIfConfigured("trackthisforme", TrackthisformeCredentialsManager.class, credentials);
 				bind(CredentialsManagerRegistry.class).in(Singleton.class);
 
@@ -316,6 +321,9 @@ public class Global extends GlobalSettings {
 				bindIfConfigured("jawbone", JawboneSleepTaskManager.class, tasks);
 				bindIfConfigured("jawbone", JawboneFoodTaskManager.class, tasks);
 				bindIfConfigured("jawbone", JawboneWeightTaskManager.class, tasks);
+				bindIfConfigured("misfit", MisfitActivitiesTaskManager.class, tasks);
+				bindIfConfigured("misfit", MisfitStepsTaskManager.class, tasks);
+				bindIfConfigured("misfit", MisfitSleepTaskManager.class, tasks);
 				bindIfConfigured("trackthisforme", TrackthisformeTaskManager.class, tasks);
 				bind(TaskManagerRegistry.class).in(Singleton.class);
 

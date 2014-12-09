@@ -59,7 +59,6 @@ public class TrackthisformeTaskManager extends OAuthTaskManager {
 		}
 		OAuthRequest request = new OAuthRequest(Verb.GET, String.format("%s/categories/%s/elements/from/%s/to/%s",
 			HOST, category.getId(), toString(begin), toString(end)));
-		Logger.info("r:{}", request.getUrl());
 		Response response = send(request, credentials);
 		TrackthisformeElementsResult result = new TrackthisformeElementsResult(parseObject(response),
 			task.getPrincipal(), begin, category, task.getField(), task.getUnit(), task.includeRatings());
