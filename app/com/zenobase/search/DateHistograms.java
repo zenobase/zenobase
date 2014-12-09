@@ -13,6 +13,7 @@ public class DateHistograms {
 		.put("day", DateHistogram.Interval.DAY)
 		.put("hour", DateHistogram.Interval.HOUR)
 		.put("minute", DateHistogram.Interval.MINUTE)
+		.put("second", DateHistogram.Interval.SECOND)
 		.build();
 
 	private DateHistograms() {
