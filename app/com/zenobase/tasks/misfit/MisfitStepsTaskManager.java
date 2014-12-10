@@ -41,7 +41,7 @@ public class MisfitStepsTaskManager extends MisfitTaskManagerSupport {
 	}
 
 	private Command execute(MisfitStepsTask task, OAuthCredentials credentials) {
-		DateTime begin = task.getBegin();
+		DateTime begin = task.getBegin().withTimeAtStartOfDay().plusDays(1);
 		DateTime now = DateTime.now(begin.getZone()).minusDays(1);
 		List<Event> events = Lists.newArrayList();
 		while (begin.toLocalDate().isBefore(now.toLocalDate())) {

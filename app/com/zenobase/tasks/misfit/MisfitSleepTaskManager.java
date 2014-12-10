@@ -38,7 +38,7 @@ public class MisfitSleepTaskManager extends MisfitTaskManagerSupport {
 	}
 
 	private Command execute(MisfitSleepTask task, OAuthCredentials credentials) {
-		DateTime begin = task.getBegin();
+		DateTime begin = task.getBegin().withTimeAtStartOfDay().plusDays(1);
 		DateTime now = DateTime.now(begin.getZone());
 		List<Event> events = Lists.newArrayList();
 		while (begin.toLocalDate().isBefore(now.toLocalDate())) {
