@@ -3353,14 +3353,14 @@
 					}
 				}
 				var params = regression(x, y);
-				return {
+				return !isNaN(params.slope) ? {
 					data : [
 						[x[min], params.slope * x[min] + params.intercept],
 						[x[max], params.slope * x[max] + params.intercept]
 					],
 					slope : params.slope,
 					intercept : params.intercept
-				};		
+				} : null;
 			},
 			correlate : function(data, ranked) {
 				var x = [];
@@ -3549,30 +3549,36 @@
 					});
 				}
 				if ($scope.data.length > 1 && $scope.settings.regression == 'linear') {
-					options.series.push({
-						type : 'line',
-						data : statistics.regression($scope.data).data,
-						color : 'rgb(119, 152, 191)',
-						dashStyle : 'Dot',
-						lineWidth : 2,
-						enableMouseTracking : false,
-						marker : {
-							enabled : false
-						}
-					});
+					var regression = statistics.regression($scope.data);
+					if (regression) {
+						options.series.push({
+							type : 'line',
+							data : regression.data,
+							color : 'rgb(119, 152, 191)',
+							dashStyle : 'Dot',
+							lineWidth : 2,
+							enableMouseTracking : false,
+							marker : {
+								enabled : false
+							}
+						});
+					}
 				}
 				if ($scope.dataB && $scope.dataB.length > 1 && $scope.settings.regression == 'linear') {
-					options.series.push({
-						type : 'line',
-						data : statistics.regression($scope.dataB).data,
-						color : 'rgb(204, 102, 0)',
-						dashStyle : 'Dot',
-						lineWidth : 2,
-						enableMouseTracking : false,
-						marker : {
-							enabled : false
-						}
-					});
+					var regressionB = statistics.regression($scope.dataB);
+					if (regressionB) {
+						options.series.push({
+							type : 'line',
+							data : regressionB.data,
+							color : 'rgb(204, 102, 0)',
+							dashStyle : 'Dot',
+							lineWidth : 2,
+							enableMouseTracking : false,
+							marker : {
+								enabled : false
+							}
+						});
+					}
 				}
 				if ($scope.data.length > 3 || $scope.dataB.length > 3) {
 					var rChartOptions = {
