@@ -16,7 +16,11 @@ public class OAuthRedirectValidatorTest {
 		assertThat(client, "http://www.here.test/callback").isTrue();
 		assertThat(client, "https://here.test/callback").isTrue();
 		assertThat(client, "https://elsewhere.test/callback").isFalse();
-		assertThat(client, "x-oauth-foo://callback").isTrue();
+		assertThat(client, "foo://").isFalse(); // debatable
+		assertThat(client, "x-foo://callback").isTrue();
+		assertThat(client, "x-foo://").isFalse(); // debatable
+		assertThat(client, "x-foo:///").isTrue();
+		assertThat(client, "foo").isFalse();
 	}
 
 	private static BooleanAssert assertThat(User client, String uri) {

@@ -1,6 +1,7 @@
 package com.zenobase.controllers;
 
 import java.net.URI;
+import java.net.URISyntaxException;
 
 import com.zenobase.models.User;
 
@@ -14,26 +15,26 @@ class OAuthRedirectValidator {
 
 	public boolean valid(String uri) {
 		try {
-			return valid(URI.create(uri));
-		} catch (IllegalArgumentException e) {
+			return valid(new URI(uri));
+		} catch (URISyntaxException e) {
 			return false;
 		}
 	}
 
-	public boolean valid(URI uri) {
+	private boolean valid(URI uri) {
 		return isCustomScheme(uri) || isLocalhost(uri) || sameDomain(client.getEmail(), uri);
 	}
 
 	private static boolean isCustomScheme(URI uri) {
-    	return uri.getScheme().startsWith("x");
+    	return uri.getScheme() != null && uri.getScheme().startsWith("x");
 	}
 
 	private static boolean isLocalhost(URI uri) {
-    	return uri.getHost().equals("localhost");
+    	return "localhost".equals(uri.getHost());
 	}
 
 	private static boolean sameDomain(String email, URI uri) {
 		String domain = email.substring(email.indexOf('@') + 1);
-    	return uri.getHost().equals(domain) || uri.getHost().endsWith('.' + domain);
+    	return uri.getHost() != null && (uri.getHost().equals(domain) || uri.getHost().endsWith('.' + domain));
 	}
 }
