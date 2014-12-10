@@ -12,7 +12,7 @@
 
 	<p data-ng-show="data == null" class="none">Loading...</p>
 
-	<p data-ng-show="data.length + dataB.length == 0" class="none">None</p>
+	<p data-ng-show="data != null && data.length + dataB.length == 0" class="none">None</p>
 
 	<div class="btn-toolbar">
 		<div class="btn-group"></div>
