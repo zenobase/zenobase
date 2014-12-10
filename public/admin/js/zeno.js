@@ -2,7 +2,7 @@
 
 	'use strict';
 
-	var app = angular.module('ZenoAdminModule', [ 'ZenoModule' ]);
+	var app = angular.module('adminModule', [ 'appModule' ]);
 
 	var version = (function() {
 		try {

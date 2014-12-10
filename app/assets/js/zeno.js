@@ -22,7 +22,7 @@
 		});
 	}());
 
-	var app = angular.module('ZenoModule', [ 'ngRoute', 'ngSanitize' ]);
+	var app = angular.module('appModule', [ 'ngRoute', 'ngSanitize' ]);
 
 	app.factory('delay', ['$timeout', function($timeout) {
 		return function(callback) {
