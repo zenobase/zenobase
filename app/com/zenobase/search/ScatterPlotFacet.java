@@ -17,6 +17,7 @@ import org.elasticsearch.search.aggregations.metrics.avg.Avg;
 import org.elasticsearch.search.aggregations.metrics.max.Max;
 import org.elasticsearch.search.aggregations.metrics.min.Min;
 import org.elasticsearch.search.aggregations.metrics.sum.Sum;
+import org.elasticsearch.search.aggregations.metrics.valuecount.ValueCount;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
@@ -222,7 +223,7 @@ public class ScatterPlotFacet extends Facet {
 			}
 			@Override
 			double getValue(DateHistogram.Bucket bucket) {
-				Max aggregation = bucket.getAggregations().get(ID);
+				ValueCount aggregation = bucket.getAggregations().get(ID);
 				return aggregation.getValue();
 			}
 		};
