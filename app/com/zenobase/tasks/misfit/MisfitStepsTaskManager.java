@@ -7,6 +7,7 @@ import javax.inject.Inject;
 import org.elasticsearch.common.collect.Lists;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
+import org.joda.time.LocalDate;
 import org.scribe.model.OAuthRequest;
 import org.scribe.model.Response;
 import org.scribe.model.Verb;
@@ -41,21 +42,21 @@ public class MisfitStepsTaskManager extends MisfitTaskManagerSupport {
 	}
 
 	private Command execute(MisfitStepsTask task, OAuthCredentials credentials) {
-		DateTime begin = task.getBegin().withTimeAtStartOfDay().plusDays(1);
-		DateTime now = DateTime.now(begin.getZone()).minusDays(1);
+		LocalDate begin = task.getBegin().toLocalDate().plusDays(1);
+		LocalDate today = LocalDate.now(task.getBegin().getZone());
 		List<Event> events = Lists.newArrayList();
-		while (begin.toLocalDate().isBefore(now.toLocalDate())) {
-			DateTime end = begin.plusWeeks(4);
-			if (!end.isBefore(now)) {
-				end = now;
-			}
+		while (!begin.isAfter(today)) {
+			LocalDate end = begin.plusWeeks(4);
 			OAuthRequest request = new OAuthRequest(Verb.GET, HOST + "/activity/summary");
-			request.addQuerystringParameter("start_date", begin.toLocalDate().toString());
-			request.addQuerystringParameter("end_date", end.toLocalDate().toString());
+			request.addQuerystringParameter("start_date", begin.toString());
+			request.addQuerystringParameter("end_date", end.toString());
 			request.addQuerystringParameter("detail", "true");
 			Response response = send(request, credentials);
 			events.addAll(new MisfitStepsResult(parseObject(response), task.getPrincipal(), task.getTag(), task.getTimezone()).getEvents());
 			begin = end;
+		}
+		if (!events.isEmpty()) {
+			events.remove(events.size() - 1); // the last event could be incomplete
 		}
 		return createCommand(task, credentials, events);
 	}

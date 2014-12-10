@@ -6,6 +6,7 @@ import javax.inject.Inject;
 
 import org.elasticsearch.common.collect.Lists;
 import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
 import org.scribe.model.OAuthRequest;
 import org.scribe.model.Response;
 import org.scribe.model.Verb;
@@ -38,17 +39,14 @@ public class MisfitSleepTaskManager extends MisfitTaskManagerSupport {
 	}
 
 	private Command execute(MisfitSleepTask task, OAuthCredentials credentials) {
-		DateTime begin = task.getBegin().withTimeAtStartOfDay().plusDays(1);
-		DateTime now = DateTime.now(begin.getZone());
 		List<Event> events = Lists.newArrayList();
-		while (begin.toLocalDate().isBefore(now.toLocalDate())) {
-			DateTime end = begin.plusWeeks(4);
-			if (!end.isBefore(now)) {
-				end = now;
-			}
+		LocalDate begin = task.getBegin().toLocalDate().plusDays(1);
+		LocalDate today = LocalDate.now(task.getBegin().getZone());
+		while (!begin.isAfter(today)) {
+			LocalDate end = begin.plusWeeks(4);
 			OAuthRequest request = new OAuthRequest(Verb.GET, HOST + "/activity/sleeps");
-			request.addQuerystringParameter("start_date", begin.toLocalDate().toString());
-			request.addQuerystringParameter("end_date", end.toLocalDate().toString());
+			request.addQuerystringParameter("start_date", begin.toString());
+			request.addQuerystringParameter("end_date", end.toString());
 			Response response = send(request, credentials);
 			events.addAll(new MisfitSleepResult(parseObject(response), task.getPrincipal(), task.getTag()).getEvents());
 			begin = end;
