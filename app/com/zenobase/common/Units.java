@@ -115,6 +115,7 @@ public class Units {
 
 	public static final Unit<Pressure> PA = valueOf("Pa");
 	public static final Unit<Pressure> HPA = valueOf("hPa");
+	public static final Unit<Pressure> KPA = valueOf("kPa");
 	public static final Unit<Pressure> MMHG = valueOf("mmHg");
 	public static final Unit<Pressure> INHG = valueOf("inHg");
 	public static final Unit<Pressure> PSI = valueOf("psi");

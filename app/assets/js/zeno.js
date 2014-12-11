@@ -6172,7 +6172,7 @@
 			name : 'pressure',
 			icon : 'fa-arrows-alt',
 			type : 'numeric',
-			units : [ 'Pa', 'hPa', 'mmHg', 'inHg', 'psi' ],
+			units : [ 'Pa', 'hPa', 'kPa', 'mmHg', 'inHg', 'psi' ],
 			toText : function(value) {
 				return typeof value === 'object' ? value['@value'] + ' ' + value.unit : value;
 			},

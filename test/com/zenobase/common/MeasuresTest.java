@@ -80,6 +80,8 @@ public class MeasuresTest {
 	@Test
 	public void testPressure() {
 		assertThatIsEqualTo("1 Pa", "1 Pa");
+		assertThatIsEqualTo("100 Pa", "1 hPa");
+		assertThatIsEqualTo("1000 Pa", "1 kPa");
 		assertThatIsEqualTo("133.322 Pa", "1 mmHg");
 		assertThatIsEqualTo("3386.388 Pa", "1 inHg");
 		assertThatIsEqualTo("6894.757 Pa", "1 psi");
