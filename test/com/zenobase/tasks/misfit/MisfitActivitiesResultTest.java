@@ -16,8 +16,7 @@ public class MisfitActivitiesResultTest extends ResultTestSupport {
 	@Test
 	public void test() {
 
-		MisfitActivitiesResult result = new MisfitActivitiesResult(readObject("MisfitActivitiesResultTest.json"), TESTER, dateTime("2014-12-08T20:00:00-08:00")
-		);
+		MisfitActivitiesResult result = new MisfitActivitiesResult(readObject("MisfitActivitiesResultTest.json"), TESTER, dateTime("2014-12-08T20:00:00-08:00"));
 		List<Event> events = result.getEvents();
 		assertThat(events).hasSize(1);
 
