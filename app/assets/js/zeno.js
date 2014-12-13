@@ -5062,6 +5062,13 @@
 			{ id : 'google-activities', description : 'Creates an event for each activity.', url : 'http://fit.google.com/' },
 			{ id : 'google-cardio', description : 'Creates an event for each heart rate measurement.', url : 'http://fit.google.com/' },
 			{ id : 'google-weight', description : 'Creates an event for each body weight measurement.', url : 'http://fit.google.com/' },
+			{ id : 'ihealth-activities', description : 'Creates an event for each activity.', url : 'http://ihealthlabs.com/' },
+			{ id : 'ihealth-cardio', description : 'Creates an event for each heart rate or blood pressure measurement.', url : 'http://ihealthlabs.com/' },
+			{ id : 'ihealth-food', description : 'Creates an event for each meal.', url : 'http://ihealthlabs.com/' },
+			{ id : 'ihealth-glucose', description : 'Creates an event for each glucose measurement.', url : 'http://ihealthlabs.com/' },
+			{ id : 'ihealth-sleep', description : 'Creates an event for each period of sleep.', url : 'http://ihealthlabs.com/' },
+			{ id : 'ihealth-steps', description : 'Creates an event for the number of steps logged.', url : 'http://ihealthlabs.com/' },
+			{ id : 'ihealth-weight', description : 'Creates an event for each body weight measurement.', url : 'http://ihealthlabs.com/' },
 			{ id : 'jawbone-food', description : 'Creates an event for each meal.', url : 'https://jawbone.com/up' },
 			{ id : 'jawbone-sleep', description : 'Creates an event for each period of sleep.', url : 'https://jawbone.com/up' },
 			{ id : 'jawbone-steps', description : 'Creates an event for the number of steps each day or hour.', url : 'https://jawbone.com/up' },
@@ -5082,7 +5089,7 @@
 			{ id : 'sleepcloud', description : 'Creates an event for each period of sleep.', url : 'https://sites.google.com/site/sleepasandroid/sleepcloud' },
 			{ id : 'strava-activities', description : 'Creates an event for each activity.', url : 'http://www.strava.com/dashboard' },
 			{ id : 'trackthisforme', description : 'Creates an event for each element logged in a category.', url : 'https://www.trackthisfor.me/' },
-			{ id : 'withings-cardio', description : 'Creates an event for each heart rate measurement.', url : 'http://www.withings.com/' },
+			{ id : 'withings-cardio', description : 'Creates an event for each heart rate or blood pressure measurement.', url : 'http://www.withings.com/' },
 			{ id : 'withings-sleep', description : 'Creates an event for each period of sleep.', url : 'http://www.withings.com/' },
 			{ id : 'withings-steps', description : 'Creates an event for the number of steps each day.', url : 'http://www.withings.com/' },
 			{ id : 'withings-weight', description : 'Creates an event for each body weight measurement.', url : 'http://www.withings.com/' }
@@ -5614,6 +5621,174 @@
 			$scope.settings = $scope.$parent.$parent.settings = {
 					tag : 'sleep'
 			};
+		};
+
+		$scope.init();
+	}]);
+
+	app.controller('IHealthActivitiesSettingsController', ['$scope', '$http', 'moment', function($scope, $http, moment) {
+
+		$scope.init = function() {
+			$scope.settings = $scope.$parent.$parent.settings = {
+					tag : 'Activity',
+					marker : new Date(moment().utc().subtract(12, 'months').startOf('month').valueOf()),
+					timezone : 'UTC'
+			};
+			$http.get('/tz').success(function(response) {
+				$scope.timezones = response;
+				if (navigator.geolocation) {
+					navigator.geolocation.getCurrentPosition(function(position) {
+						$http.get('/tz?' + $.param({ 'lat' : position.coords.latitude, 'lon' : position.coords.longitude }))
+							.success(function(response) {
+								$scope.settings.timezone = response.timeZoneId;
+							});
+					});
+				}
+			});
+		};
+
+		$scope.init();
+	}]);
+
+	app.controller('IHealthCardioSettingsController', ['$scope', '$http', 'moment', function($scope, $http, moment) {
+
+		$scope.init = function() {
+			$scope.settings = $scope.$parent.$parent.settings = {
+					tag : 'Heart',
+					marker : new Date(moment().utc().subtract(12, 'months').startOf('month').valueOf()),
+					timezone : 'UTC'
+			};
+			$http.get('/tz').success(function(response) {
+				$scope.timezones = response;
+				if (navigator.geolocation) {
+					navigator.geolocation.getCurrentPosition(function(position) {
+						$http.get('/tz?' + $.param({ 'lat' : position.coords.latitude, 'lon' : position.coords.longitude }))
+							.success(function(response) {
+								$scope.settings.timezone = response.timeZoneId;
+							});
+					});
+				}
+			});
+		};
+
+		$scope.init();
+	}]);
+
+	app.controller('IHealthFoodSettingsController', ['$scope', '$http', 'moment', function($scope, $http, moment) {
+
+		$scope.init = function() {
+			$scope.settings = $scope.$parent.$parent.settings = {
+					tag : 'Meal',
+					marker : new Date(moment().utc().subtract(12, 'months').startOf('month').valueOf()),
+					timezone : 'UTC'
+			};
+			$http.get('/tz').success(function(response) {
+				$scope.timezones = response;
+				if (navigator.geolocation) {
+					navigator.geolocation.getCurrentPosition(function(position) {
+						$http.get('/tz?' + $.param({ 'lat' : position.coords.latitude, 'lon' : position.coords.longitude }))
+							.success(function(response) {
+								$scope.settings.timezone = response.timeZoneId;
+							});
+					});
+				}
+			});
+		};
+
+		$scope.init();
+	}]);
+
+	app.controller('IHealthGlucoseSettingsController', ['$scope', '$http', 'moment', function($scope, $http, moment) {
+
+		$scope.init = function() {
+			$scope.settings = $scope.$parent.$parent.settings = {
+					tag : 'Glucose',
+					marker : new Date(moment().utc().subtract(12, 'months').startOf('month').valueOf()),
+					timezone : 'UTC'
+			};
+			$http.get('/tz').success(function(response) {
+				$scope.timezones = response;
+				if (navigator.geolocation) {
+					navigator.geolocation.getCurrentPosition(function(position) {
+						$http.get('/tz?' + $.param({ 'lat' : position.coords.latitude, 'lon' : position.coords.longitude }))
+							.success(function(response) {
+								$scope.settings.timezone = response.timeZoneId;
+							});
+					});
+				}
+			});
+		};
+
+		$scope.init();
+	}]);
+
+	app.controller('IHealthSleepSettingsController', ['$scope', '$http', 'moment', function($scope, $http, moment) {
+
+		$scope.init = function() {
+			$scope.settings = $scope.$parent.$parent.settings = {
+					tag : 'Sleep',
+					marker : new Date(moment().utc().subtract(12, 'months').startOf('month').valueOf()),
+					timezone : 'UTC'
+			};
+			$http.get('/tz').success(function(response) {
+				$scope.timezones = response;
+				if (navigator.geolocation) {
+					navigator.geolocation.getCurrentPosition(function(position) {
+						$http.get('/tz?' + $.param({ 'lat' : position.coords.latitude, 'lon' : position.coords.longitude }))
+							.success(function(response) {
+								$scope.settings.timezone = response.timeZoneId;
+							});
+					});
+				}
+			});
+		};
+
+		$scope.init();
+	}]);
+
+	app.controller('IHealthStepsSettingsController', ['$scope', '$http', 'moment', function($scope, $http, moment) {
+
+		$scope.init = function() {
+			$scope.settings = $scope.$parent.$parent.settings = {
+					tag : 'Steps',
+					marker : new Date(moment().utc().subtract(12, 'months').startOf('month').valueOf()),
+					timezone : 'UTC'
+			};
+			$http.get('/tz').success(function(response) {
+				$scope.timezones = response;
+				if (navigator.geolocation) {
+					navigator.geolocation.getCurrentPosition(function(position) {
+						$http.get('/tz?' + $.param({ 'lat' : position.coords.latitude, 'lon' : position.coords.longitude }))
+							.success(function(response) {
+								$scope.settings.timezone = response.timeZoneId;
+							});
+					});
+				}
+			});
+		};
+
+		$scope.init();
+	}]);
+
+	app.controller('IHealthWeightSettingsController', ['$scope', '$http', 'moment', function($scope, $http, moment) {
+
+		$scope.init = function() {
+			$scope.settings = $scope.$parent.$parent.settings = {
+					tag : 'Body',
+					marker : new Date(moment().utc().subtract(12, 'months').startOf('month').valueOf()),
+					timezone : 'UTC'
+			};
+			$http.get('/tz').success(function(response) {
+				$scope.timezones = response;
+				if (navigator.geolocation) {
+					navigator.geolocation.getCurrentPosition(function(position) {
+						$http.get('/tz?' + $.param({ 'lat' : position.coords.latitude, 'lon' : position.coords.longitude }))
+							.success(function(response) {
+								$scope.settings.timezone = response.timeZoneId;
+							});
+					});
+				}
+			});
 		};
 
 		$scope.init();

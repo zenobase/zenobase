@@ -125,6 +125,14 @@ import com.zenobase.tasks.google.GoogleCredentialsManager;
 import com.zenobase.tasks.google.GoogleFitActivitiesTaskManager;
 import com.zenobase.tasks.google.GoogleFitCardioTaskManager;
 import com.zenobase.tasks.google.GoogleFitWeightTaskManager;
+import com.zenobase.tasks.ihealth.IHealthActivitiesTaskManager;
+import com.zenobase.tasks.ihealth.IHealthCardioTaskManager;
+import com.zenobase.tasks.ihealth.IHealthCredentialsManager;
+import com.zenobase.tasks.ihealth.IHealthFoodTaskManager;
+import com.zenobase.tasks.ihealth.IHealthGlucoseTaskManager;
+import com.zenobase.tasks.ihealth.IHealthSleepTaskManager;
+import com.zenobase.tasks.ihealth.IHealthStepsTaskManager;
+import com.zenobase.tasks.ihealth.IHealthWeightTaskManager;
 import com.zenobase.tasks.jawbone.JawboneCredentialsManager;
 import com.zenobase.tasks.jawbone.JawboneFoodTaskManager;
 import com.zenobase.tasks.jawbone.JawboneSleepTaskManager;
@@ -282,6 +290,7 @@ public class Global extends GlobalSettings {
 				bindIfConfigured("jawbone", JawboneCredentialsManager.class, credentials);
 				bindIfConfigured("misfit", MisfitCredentialsManager.class, credentials);
 				bindIfConfigured("trackthisforme", TrackthisformeCredentialsManager.class, credentials);
+				bindIfConfigured("ihealth", IHealthCredentialsManager.class, credentials);
 				bind(CredentialsManagerRegistry.class).in(Singleton.class);
 
 				Multibinder<TaskManager> tasks = Multibinder.newSetBinder(binder(), new TypeLiteral<TaskManager>() {});
@@ -324,6 +333,13 @@ public class Global extends GlobalSettings {
 				bindIfConfigured("misfit", MisfitActivitiesTaskManager.class, tasks);
 				bindIfConfigured("misfit", MisfitStepsTaskManager.class, tasks);
 				bindIfConfigured("misfit", MisfitSleepTaskManager.class, tasks);
+				bindIfConfigured("ihealth", IHealthActivitiesTaskManager.class, tasks);
+				bindIfConfigured("ihealth", IHealthCardioTaskManager.class, tasks);
+				bindIfConfigured("ihealth", IHealthFoodTaskManager.class, tasks);
+				bindIfConfigured("ihealth", IHealthGlucoseTaskManager.class, tasks);
+				bindIfConfigured("ihealth", IHealthSleepTaskManager.class, tasks);
+				bindIfConfigured("ihealth", IHealthStepsTaskManager.class, tasks);
+				bindIfConfigured("ihealth", IHealthWeightTaskManager.class, tasks);
 				bindIfConfigured("trackthisforme", TrackthisformeTaskManager.class, tasks);
 				bind(TaskManagerRegistry.class).in(Singleton.class);
 

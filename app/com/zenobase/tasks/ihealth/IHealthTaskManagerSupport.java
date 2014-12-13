@@ -1,0 +1,117 @@
+package com.zenobase.tasks.ihealth;
+
+import java.util.List;
+import java.util.Map;
+
+import org.elasticsearch.common.collect.Lists;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
+import org.scribe.model.OAuthRequest;
+import org.scribe.model.Response;
+import org.scribe.model.Token;
+import org.scribe.model.Verb;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.common.base.Objects;
+import com.google.common.base.Preconditions;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Ordering;
+
+import com.zenobase.commands.Command;
+import com.zenobase.commands.CompoundCommand;
+import com.zenobase.commands.CreateEventCommand;
+import com.zenobase.commands.UpdateCredentialsCommand;
+import com.zenobase.commands.UpdateTaskCommand;
+import com.zenobase.models.Event;
+import com.zenobase.tasks.Credentials;
+import com.zenobase.tasks.OAuthCredentials;
+import com.zenobase.tasks.OAuthTaskManager;
+import com.zenobase.tasks.Task;
+
+abstract class IHealthTaskManagerSupport<T extends IHealthTaskSupport> extends OAuthTaskManager {
+
+	protected static final String HOST = "https://api.ihealthlabs.com:8443/openapiv2";
+
+	private final Map<String, ResultHandler<T>> handlers = Maps.newLinkedHashMap();
+	private final Class<T> taskClass;
+
+	protected IHealthTaskManagerSupport(String type, IHealthCredentialsManager credentialsManager, Class<T> taskClass) {
+		super(type, credentialsManager);
+		this.taskClass = taskClass;
+	}
+
+	protected void register(String path, ResultHandler<T> handler) {
+		handlers.put(path, handler);
+	}
+
+	interface ResultHandler<T extends IHealthTaskSupport> {
+		IHealthResultSupport process(T task, ObjectNode result);
+	}
+
+	@Override
+	public Command execute(Task task, OAuthCredentials credentials) {
+		return execute(task.as(taskClass), credentials);
+	}
+
+	private Command execute(T task, OAuthCredentials credentials) {
+		Token token = credentials.getToken();
+		if (credentials.isExpired()) {
+			reauthorize(credentials);
+		}
+		List<Event> events = Lists.newArrayList();
+		for (Map.Entry<String, ResultHandler<T>> entry : handlers.entrySet()) {
+			execute(entry.getKey(), task, entry.getValue(), credentials, events);
+		}
+		return createCommand(task, credentials, events, token);
+	}
+
+	private void execute(String resource, T task, ResultHandler<T> handler, OAuthCredentials credentials, List<Event> events) {
+		DateTime begin = task.getBegin();
+		DateTime end = DateTime.now();
+		for (int page = 1; page <= 50; ++page) {
+			String path = String.format("%s/user/%s/%s.json", HOST, credentials.getScope(), resource);
+			OAuthRequest request = new OAuthRequest(Verb.GET, path);
+			request.addQuerystringParameter("start_time", Long.toString(begin.getMillis() / 1000 + 1));
+			request.addQuerystringParameter("end_time", Long.toString(end.getMillis() / 1000));
+			request.addQuerystringParameter("page_index", Integer.toString(page));
+			request.addQuerystringParameter("locale", "user");
+			Response response = send(request, credentials);
+			IHealthResultSupport result = handler.process(task, parseObject(response));
+			Preconditions.checkState(result.isSuccess(), "Failed: %s", response.getBody());
+			if (!events.addAll(result.getEvents()) || !result.hasNext()) {
+				break;
+			}
+		}
+	}
+
+	private Command createCommand(Task task, OAuthCredentials credentials, List<Event> events, Token expiredToken) {
+		CompoundCommand command = new CompoundCommand(task.getPrincipal(), "ran " + getType() + " task", "reverted " + getType() + " task");
+		command.add(UpdateTaskCommand.builder(task)
+			.set(Task.COMPLETED, task.getCompleted(), new DateTime(DateTimeZone.UTC))
+			.set(Task.STATUS, task.getStatus(), Task.Status.SUCCESS)
+			.set(Task.MARKER, task.getMarker(), events.isEmpty() ? task.getMarker() : getMarker(events).toString())
+			.set(Task.UNDO, task.getUndoId(), command.getId())
+			.build());
+		if (!Objects.equal(credentials.getToken(), expiredToken)) {
+			command.add(UpdateCredentialsCommand.builder(credentials)
+				.with(Credentials.CREDENTIALS)
+				.set(OAuthCredentials.TOKEN, expiredToken, credentials.getToken())
+				.build());
+		}
+		for (Event event : events) {
+			// System.out.println("[event] " + event);
+			command.add(new CreateEventCommand(task.getPrincipal(), task.getBucketId(), event));
+		}
+		return command;
+	}
+
+	private static String getMarker(Iterable<Event> events) {
+		DateTime latest = null;
+		for (Event event : events) {
+			DateTime time = Ordering.natural().max(event.getValues(Event.TIMESTAMP));
+			if (latest == null || time.isAfter(latest)) {
+				latest = time;
+			}
+		}
+		return latest != null ? latest.toString() : null;
+	}
+}

@@ -145,6 +145,59 @@
 		]
 	},
 	{
+		"label" : "Activities (iHealth)",
+		"task" : "ihealth-activities",
+		"widgets" : [
+			{
+				"id" : "timeline",
+				"type" : "timeline",
+				"label" : "Calories (kcal)",
+				"placement" : "top",
+				"field" : "energy",
+				"unit" : "kcal",
+				"statistic" : "avg",
+				"interval" : "month"
+			},
+			{
+				"id" : "latest",
+				"type" : "list",
+				"label" : "Latest",
+				"placement" : "left",
+				"order" : "-timestamp",
+				"limit" : 10,
+				"singleton" : true
+			},
+			{
+				"id" : "tags",
+				"type" : "count",
+				"label" : "Type",
+				"placement" : "left",
+				"field" : "tag",
+				"limit" : 5,
+				"order" : "-count"
+			},
+			{
+				"id" : "histogram",
+				"type" : "histogram",
+				"label" : "Histogram",
+				"placement" : "right",
+				"field" : "energy",
+				"unit" : "kcal",
+				"interval" : 500
+			},
+			{
+				"id" : "polar",
+				"type" : "polar",
+				"label" : "Day of Week",
+				"placement" : "right",
+				"value_field" : "timestamp",
+				"unit" : null,
+				"statistic" : "count",
+				"interval" : "day_of_week"
+			}
+		]
+	},
+	{
 		"label" : "Activities (Misfit)",
 		"task" : "misfit-activities",
 		"widgets" : [
@@ -650,6 +703,59 @@
 		]
 	},
 	{
+		"label" : "Food (iHealth)",
+		"task" : "ihealth-food", 
+		"widgets" : [
+			{
+				"id" : "timeline_kcal",
+				"type" : "timeline",
+				"label" : "Calories",
+				"placement" : "top",
+				"field" : "energy",
+				"unit" : "kcal",
+				"statistic" : "avg",
+				"interval" : "month"
+			},
+			{
+				"id" : "latest",
+				"type" : "list",
+				"label" : "Latest",
+				"placement" : "left",
+				"order" : "-timestamp",
+				"limit" : 10,
+				"singleton" : true
+			},
+			{
+				"id" : "tags",
+				"type" : "count",
+				"label" : "Meal",
+				"placement" : "left",
+				"field" : "tag",
+				"limit" : 5,
+				"order" : "-count"
+			},
+			{
+				"id" : "kcal_by_day",
+				"type" : "polar",
+				"label" : "Day of Week",
+				"placement" : "right",
+				"value_field" : "energy",
+				"unit" : "kcal",
+				"statistic" : "avg",
+				"interval" : "day_of_week"
+			},
+			{
+				"id" : "histogram",
+				"type" : "histogram",
+				"label" : "Histogram",
+				"placement" : "right",
+				"field" : "energy",
+				"unit" : "kcal",
+				"interval" : 500
+			}
+		]
+	},
+	{
 		"label" : "Food (Jawbone)",
 		"task" : "jawbone-food", 
 		"widgets" : [
@@ -694,6 +800,50 @@
 		]
 	},
 	{
+		"label" : "Glucose (iHealth)",
+		"task" : "ihealth-glucose", 
+		"widgets" : [
+			{
+				"id" : "timeline",
+				"type" : "timeline",
+				"label" : "Glucose (mg/dL)",
+				"placement" : "top",
+				"field" : "concentration",
+				"unit" : "mg/dL",
+				"statistic" : "avg",
+				"interval" : "month"
+			},
+			{
+				"id" : "latest",
+				"type" : "list",
+				"label" : "Latest",
+				"placement" : "left",
+				"order" : "-timestamp",
+				"limit" : 10,
+				"singleton" : true
+			},
+			{
+				"id" : "kcal_by_day",
+				"type" : "polar",
+				"label" : "Day of Week",
+				"placement" : "right",
+				"value_field" : "concentration",
+				"unit" : "mg/dL",
+				"statistic" : "avg",
+				"interval" : "day_of_week"
+			},
+			{
+				"id" : "histogram",
+				"type" : "histogram",
+				"label" : "Histogram",
+				"placement" : "right",
+				"field" : "concentration",
+				"unit" : "mg/dL",
+				"interval" : 10
+			}
+		]
+	},
+	{
 		"label" : "Heart Rate (Google Fit)",
 		"task" : "google-cardio", 
 		"widgets" : [
@@ -731,6 +881,49 @@
 				"label" : "Hour of Day",
 				"placement" : "right",
 				"key_field" : "timestamp$min",
+				"value_field" : "frequency",
+				"unit" : "bpm",
+				"statistic" : "avg",
+				"interval" : "hour_of_day"
+			}
+		]
+	},
+	{
+		"label" : "Heart Rate (iHealth)",
+		"task" : "ihealth-cardio", 
+		"widgets" : [
+			{
+				"id" : "timeline",
+				"type" : "timeline",
+				"label" : "Heart Rate (bpm)",
+				"placement" : "top",
+				"field" : "frequency",
+				"statistic" : "avg",
+				"unit" : "bpm"
+			},
+			{
+				"id" : "latest",
+				"type" : "list",
+				"label" : "Latest",
+				"placement" : "left",
+				"singleton" : true,
+				"limit" : 10,
+				"order" : "-timestamp"
+			},
+			{
+				"id" : "histogram",
+				"type" : "histogram",
+				"label" : "Histogram",
+				"placement" : "right",
+				"field" : "frequency",
+				"unit" : "bpm",
+				"interval" : 5
+			},
+			{
+				"id" : "hour_of_day",
+				"type" : "polar",
+				"label" : "Hour of Day",
+				"placement" : "right",
 				"value_field" : "frequency",
 				"unit" : "bpm",
 				"statistic" : "avg",
@@ -1185,6 +1378,89 @@
 				"statistic_x" : "avg",
 				"label_y" : "Efficiency",
 				"field_y" : "rating",
+				"unit_y" : null,
+				"statistic_y" : "avg",
+				"key_field" : "timestamp$max",
+				"interval" : "day",
+				"regression" : "linear"
+			}
+		]
+	},
+	{
+		"label" : "Sleep (iHealth)",
+		"task" : "ihealth-sleep",
+		"widgets" : [
+			{
+				"id" : "timeline",
+				"type" : "timeline",
+				"label" : "Timeline",
+				"placement" : "top",
+				"key_field" : "timestamp$max",
+				"field" : "duration",
+				"unit" : null,
+				"statistic" : "avg",
+				"interval" : "week"
+			},
+			{
+				"id" : "latest",
+				"type" : "list",
+				"label" : "Latest",
+				"placement" : "left",
+				"order" : "-timestamp",
+				"limit" : 7,
+				"singleton" : true
+			},
+			{
+				"id" : "polar_hour",
+				"type" : "polar",
+				"label" : "Hours (Begin)",
+				"placement" : "left",
+				"key_field" : "timestamp$min",
+				"value_field" : "timestamp",
+				"unit" : null,
+				"statistic" : "count",
+				"interval" : "hour_of_day"
+			},
+			{
+				"id" : "polar_day_duration",
+				"type" : "polar",
+				"label" : "Days (Duration)",
+				"placement" : "left",
+				"key_field" : "timestamp$max",
+				"value_field" : "duration",
+				"unit" : null,
+				"statistic" : "avg",
+				"interval" : "day_of_week"
+			},
+			{
+				"id" : "histogram_duration",
+				"type" : "histogram",
+				"label" : "Duration",
+				"placement" : "right",
+				"field" : "duration",
+				"unit" : null,
+				"interval" : 3600000
+			},
+			{
+				"id" : "histogram_efficiency",
+				"type" : "histogram",
+				"label" : "Efficiency",
+				"placement" : "right",
+				"field" : "percentage",
+				"unit" : null,
+				"interval" : 5
+			},
+			{
+				"id" : "scatterplot_duration_percentage",
+				"type" : "scatterplot",
+				"label" : "Duration & Efficiency",
+				"placement" : "right",
+				"label_x" : "Duration",
+				"field_x" : "duration",
+				"unit_x" : null,
+				"statistic_x" : "avg",
+				"label_y" : "Efficiency",
+				"field_y" : "percentage",
 				"unit_y" : null,
 				"statistic_y" : "avg",
 				"key_field" : "timestamp$max",
@@ -1726,6 +2002,52 @@
 		]
 	},
 	{
+		"label" : "Steps (iHealth)",
+		"task" : "ihealth-steps", 
+		"widgets" : [
+			{
+				"id" : "steps",
+				"type" : "timeline",
+				"label" : "Steps",
+				"placement" : "top",
+				"field" : "count",
+				"unit" : null,
+				"statistic" : "sum",
+				"interval" : "month"
+			},
+			{
+				"id" : "latest",
+				"type" : "list",
+				"label" : "Latest",
+				"placement" : "left",
+				"order" : "-timestamp",
+				"limit" : 10,
+				"singleton" : true
+			},
+			{
+				"id" : "steps_scoreboard",
+				"type" : "scoreboard",
+				"label" : "Scoreboard",
+				"placement" : "right",
+				"key_field" : "author",
+				"value_field" : "count",
+				"unit" : null,
+				"order" : "-sum",
+				"limit" : 10
+			},
+			{
+				"id" : "steps_by_day",
+				"type" : "polar",
+				"label" : "Day of Week",
+				"placement" : "right",
+				"value_field" : "count",
+				"unit" : null,
+				"statistic" : "avg",
+				"interval" : "day_of_week"
+			}
+		]
+	},
+	{
 		"label" : "Steps (Jawbone)",
 		"task" : "jawbone-steps", 
 		"widgets" : [
@@ -2088,6 +2410,49 @@
 				"unit" : "kg",
 				"statistic" : "avg",
 				"interval" : "month_of_year"
+			}
+		]
+	},
+	{
+		"label" : "Weight (iHealth)",
+		"task" : "ihealth-weight", 
+		"widgets" : [
+			{
+				"id" : "latest",
+				"type" : "list",
+				"label" : "Latest",
+				"placement" : "left",
+				"singleton" : true,
+				"limit" : 10,
+				"order" : "-timestamp"
+			},
+			{
+				"id" : "weight",
+				"type" : "timeline",
+				"label" : "Weight (lb)",
+				"placement" : "right",
+				"field" : "weight",
+				"statistic" : "avg",
+				"interval" : "week",
+				"unit" : "lb",
+				"regression" : "linear"
+			},
+			{
+				"id" : "scatterplot_weight_percentage",
+				"type" : "scatterplot",
+				"label" : "Weight-Fat",
+				"placement" : "right",
+				"label_x" : "weight",
+				"field_x" : "weight",
+				"unit_x" : "lb",
+				"statistic_x" : "avg",
+				"label_y" : "fat%",
+				"field_y" : "percentage",
+				"unit_y" : null,
+				"statistic_y" : "avg",
+				"key_field" : "timestamp",
+				"interval" : "day",
+				"regression" : "linear"
 			}
 		]
 	},

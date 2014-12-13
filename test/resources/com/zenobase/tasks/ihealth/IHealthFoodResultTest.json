@@ -1,0 +1,23 @@
+{
+    "FoodDataList": [
+        {
+            "Amount": 99.5,
+            "Calories": 500.4,
+            "DataID": "90ab964ced9d46b789d9ab84d51beb4d",
+            "FoodKind": "Breakfast",
+            "FoodName": "Breakfast bars, oats, sugar, raisins, coconut (include granola bar)",
+            "LastChangeTime": 1418329906,
+            "Lat": -1,
+            "Lon": -1,
+            "MDate": 1418301049,
+            "TimeZone": -1
+        }
+    ],
+    "FoodUnit": 1,
+    "CurrentRecordCount": 1,
+    "NextPageUrl": "",
+    "PageLength": 50,
+    "PageNumber": 1,
+    "PrevPageUrl": "",
+    "RecordCount": 1
+}
