@@ -5304,17 +5304,6 @@
 					marker : new Date(moment().utc().subtract(12, 'months').startOf('month').valueOf()),
 					timezone : 'UTC'
 			};
-			$http.get('/tz').success(function(response) {
-				$scope.timezones = response;
-				if (navigator.geolocation) {
-					navigator.geolocation.getCurrentPosition(function(position) {
-						$http.get('/tz?' + $.param({ 'lat' : position.coords.latitude, 'lon' : position.coords.longitude }))
-							.success(function(response) {
-								$scope.settings.timezone = response.timeZoneId;
-							});
-					});
-				}
-			});
 		};
 		$scope.getUnits = function() {
 			return Field.find('distance').units;
@@ -5332,17 +5321,6 @@
 					marker : new Date(moment().utc().subtract(12, 'months').startOf('month').valueOf()),
 					timezone : 'UTC'
 			};
-			$http.get('/tz').success(function(response) {
-				$scope.timezones = response;
-				if (navigator.geolocation) {
-					navigator.geolocation.getCurrentPosition(function(position) {
-						$http.get('/tz?' + $.param({ 'lat' : position.coords.latitude, 'lon' : position.coords.longitude }))
-							.success(function(response) {
-								$scope.settings.timezone = response.timeZoneId;
-							});
-					});
-				}
-			});
 		};
 		$scope.getUnits = function() {
 			return Field.find('weight').units;
@@ -5458,17 +5436,6 @@
 					marker : new Date(moment().utc().subtract(3, 'months').startOf('month').valueOf()),
 					timezone : 'UTC'
 			};
-			$http.get('/tz').success(function(response) {
-				$scope.timezones = response;
-				if (navigator.geolocation) {
-					navigator.geolocation.getCurrentPosition(function(position) {
-						$http.get('/tz?' + $.param({ 'lat' : position.coords.latitude, 'lon' : position.coords.longitude }))
-							.success(function(response) {
-								$scope.settings.timezone = response.timeZoneId;
-							});
-					});
-				}
-			});
 		};
 
 		$scope.init();
@@ -5506,17 +5473,6 @@
 					marker : new Date(moment().utc().subtract(3, 'months').startOf('month').valueOf()),
 					timezone : 'UTC'
 			};
-			$http.get('/tz').success(function(response) {
-				$scope.timezones = response;
-				if (navigator.geolocation) {
-					navigator.geolocation.getCurrentPosition(function(position) {
-						$http.get('/tz?' + $.param({ 'lat' : position.coords.latitude, 'lon' : position.coords.longitude }))
-							.success(function(response) {
-								$scope.settings.timezone = response.timeZoneId;
-							});
-					});
-				}
-			});
 		};
 
 		$scope.init();
@@ -5531,17 +5487,6 @@
 					marker : new Date(moment().utc().subtract(12, 'months').startOf('month').valueOf()),
 					timezone : 'UTC'
 			};
-			$http.get('/tz').success(function(response) {
-				$scope.timezones = response;
-				if (navigator.geolocation) {
-					navigator.geolocation.getCurrentPosition(function(position) {
-						$http.get('/tz?' + $.param({ 'lat' : position.coords.latitude, 'lon' : position.coords.longitude }))
-							.success(function(response) {
-								$scope.settings.timezone = response.timeZoneId;
-							});
-					});
-				}
-			});
 		};
 		$scope.getUnits = function() {
 			return Field.find('weight').units;
@@ -5558,17 +5503,6 @@
 					marker : new Date(moment().utc().subtract(3, 'months').startOf('month').valueOf()),
 					timezone : 'UTC'
 			};
-			$http.get('/tz').success(function(response) {
-				$scope.timezones = response;
-				if (navigator.geolocation) {
-					navigator.geolocation.getCurrentPosition(function(position) {
-						$http.get('/tz?' + $.param({ 'lat' : position.coords.latitude, 'lon' : position.coords.longitude }))
-							.success(function(response) {
-								$scope.settings.timezone = response.timeZoneId;
-							});
-					});
-				}
-			});
 		};
 
 		$scope.init();
@@ -5582,17 +5516,6 @@
 					marker : new Date(moment().utc().subtract(12, 'months').startOf('month').valueOf()),
 					timezone : 'UTC'
 			};
-			$http.get('/tz').success(function(response) {
-				$scope.timezones = response;
-				if (navigator.geolocation) {
-					navigator.geolocation.getCurrentPosition(function(position) {
-						$http.get('/tz?' + $.param({ 'lat' : position.coords.latitude, 'lon' : position.coords.longitude }))
-							.success(function(response) {
-								$scope.settings.timezone = response.timeZoneId;
-							});
-					});
-				}
-			});
 		};
 
 		$scope.init();
@@ -5634,17 +5557,6 @@
 					marker : new Date(moment().utc().subtract(12, 'months').startOf('month').valueOf()),
 					timezone : 'UTC'
 			};
-			$http.get('/tz').success(function(response) {
-				$scope.timezones = response;
-				if (navigator.geolocation) {
-					navigator.geolocation.getCurrentPosition(function(position) {
-						$http.get('/tz?' + $.param({ 'lat' : position.coords.latitude, 'lon' : position.coords.longitude }))
-							.success(function(response) {
-								$scope.settings.timezone = response.timeZoneId;
-							});
-					});
-				}
-			});
 		};
 
 		$scope.init();
@@ -5658,17 +5570,6 @@
 					marker : new Date(moment().utc().subtract(12, 'months').startOf('month').valueOf()),
 					timezone : 'UTC'
 			};
-			$http.get('/tz').success(function(response) {
-				$scope.timezones = response;
-				if (navigator.geolocation) {
-					navigator.geolocation.getCurrentPosition(function(position) {
-						$http.get('/tz?' + $.param({ 'lat' : position.coords.latitude, 'lon' : position.coords.longitude }))
-							.success(function(response) {
-								$scope.settings.timezone = response.timeZoneId;
-							});
-					});
-				}
-			});
 		};
 
 		$scope.init();
@@ -5682,17 +5583,6 @@
 					marker : new Date(moment().utc().subtract(12, 'months').startOf('month').valueOf()),
 					timezone : 'UTC'
 			};
-			$http.get('/tz').success(function(response) {
-				$scope.timezones = response;
-				if (navigator.geolocation) {
-					navigator.geolocation.getCurrentPosition(function(position) {
-						$http.get('/tz?' + $.param({ 'lat' : position.coords.latitude, 'lon' : position.coords.longitude }))
-							.success(function(response) {
-								$scope.settings.timezone = response.timeZoneId;
-							});
-					});
-				}
-			});
 		};
 
 		$scope.init();
@@ -5706,17 +5596,6 @@
 					marker : new Date(moment().utc().subtract(12, 'months').startOf('month').valueOf()),
 					timezone : 'UTC'
 			};
-			$http.get('/tz').success(function(response) {
-				$scope.timezones = response;
-				if (navigator.geolocation) {
-					navigator.geolocation.getCurrentPosition(function(position) {
-						$http.get('/tz?' + $.param({ 'lat' : position.coords.latitude, 'lon' : position.coords.longitude }))
-							.success(function(response) {
-								$scope.settings.timezone = response.timeZoneId;
-							});
-					});
-				}
-			});
 		};
 
 		$scope.init();
@@ -5730,17 +5609,6 @@
 					marker : new Date(moment().utc().subtract(12, 'months').startOf('month').valueOf()),
 					timezone : 'UTC'
 			};
-			$http.get('/tz').success(function(response) {
-				$scope.timezones = response;
-				if (navigator.geolocation) {
-					navigator.geolocation.getCurrentPosition(function(position) {
-						$http.get('/tz?' + $.param({ 'lat' : position.coords.latitude, 'lon' : position.coords.longitude }))
-							.success(function(response) {
-								$scope.settings.timezone = response.timeZoneId;
-							});
-					});
-				}
-			});
 		};
 
 		$scope.init();
@@ -5754,17 +5622,6 @@
 					marker : new Date(moment().utc().subtract(12, 'months').startOf('month').valueOf()),
 					timezone : 'UTC'
 			};
-			$http.get('/tz').success(function(response) {
-				$scope.timezones = response;
-				if (navigator.geolocation) {
-					navigator.geolocation.getCurrentPosition(function(position) {
-						$http.get('/tz?' + $.param({ 'lat' : position.coords.latitude, 'lon' : position.coords.longitude }))
-							.success(function(response) {
-								$scope.settings.timezone = response.timeZoneId;
-							});
-					});
-				}
-			});
 		};
 
 		$scope.init();
@@ -5778,17 +5635,6 @@
 					marker : new Date(moment().utc().subtract(12, 'months').startOf('month').valueOf()),
 					timezone : 'UTC'
 			};
-			$http.get('/tz').success(function(response) {
-				$scope.timezones = response;
-				if (navigator.geolocation) {
-					navigator.geolocation.getCurrentPosition(function(position) {
-						$http.get('/tz?' + $.param({ 'lat' : position.coords.latitude, 'lon' : position.coords.longitude }))
-							.success(function(response) {
-								$scope.settings.timezone = response.timeZoneId;
-							});
-					});
-				}
-			});
 		};
 
 		$scope.init();
@@ -5876,17 +5722,6 @@
 					marker : new Date(moment().utc().subtract(6, 'months').startOf('month').valueOf()),
 					timezone : 'UTC'
 			};
-			$http.get('/tz').success(function(response) {
-				$scope.timezones = response;
-				if (navigator.geolocation) {
-					navigator.geolocation.getCurrentPosition(function(position) {
-						$http.get('/tz?' + $.param({ 'lat' : position.coords.latitude, 'lon' : position.coords.longitude }))
-							.success(function(response) {
-								$scope.settings.timezone = response.timeZoneId;
-							});
-					});
-				}
-			});
 		};
 
 		$scope.init();
@@ -5901,17 +5736,6 @@
 					marker : new Date(moment().utc().subtract(12, 'months').startOf('month').valueOf()),
 					timezone : 'UTC'
 			};
-			$http.get('/tz').success(function(response) {
-				$scope.timezones = response;
-				if (navigator.geolocation) {
-					navigator.geolocation.getCurrentPosition(function(position) {
-						$http.get('/tz?' + $.param({ 'lat' : position.coords.latitude, 'lon' : position.coords.longitude }))
-							.success(function(response) {
-								$scope.settings.timezone = response.timeZoneId;
-							});
-					});
-				}
-			});
 		};
 
 		$scope.init();
@@ -5925,17 +5749,6 @@
 					marker : new Date(moment().utc().subtract(12, 'months').startOf('month').valueOf()),
 					timezone : 'UTC'
 			};
-			$http.get('/tz').success(function(response) {
-				$scope.timezones = response;
-				if (navigator.geolocation) {
-					navigator.geolocation.getCurrentPosition(function(position) {
-						$http.get('/tz?' + $.param({ 'lat' : position.coords.latitude, 'lon' : position.coords.longitude }))
-							.success(function(response) {
-								$scope.settings.timezone = response.timeZoneId;
-							});
-					});
-				}
-			});
 		};
 
 		$scope.init();
@@ -5950,17 +5763,6 @@
 					marker : new Date(moment().utc().subtract(12, 'months').startOf('month').valueOf()),
 					timezone : 'UTC'
 			};
-			$http.get('/tz').success(function(response) {
-				$scope.timezones = response;
-				if (navigator.geolocation) {
-					navigator.geolocation.getCurrentPosition(function(position) {
-						$http.get('/tz?' + $.param({ 'lat' : position.coords.latitude, 'lon' : position.coords.longitude }))
-							.success(function(response) {
-								$scope.settings.timezone = response.timeZoneId;
-							});
-					});
-				}
-			});
 		};
 
 		$scope.init();
@@ -7276,5 +7078,23 @@
 			}
 		};
 	}]);
-	
+
+	app.directive('uiTimezoneSelect', ['$http', function($http) {
+		return {
+			link : function(scope, element) {
+				$http.get('/tz', { cache : true }).success(function(response) {
+					scope.timezones = response;
+					if (navigator.geolocation) {
+						navigator.geolocation.getCurrentPosition(function(position) {
+							$http.get('/tz?' + $.param({ 'lat' : position.coords.latitude, 'lon' : position.coords.longitude }))
+								.success(function(response) {
+									scope.settings.timezone = response.timeZoneId;
+								});
+						});
+					}
+				});
+			}
+		};
+	}]);
+
 }());
