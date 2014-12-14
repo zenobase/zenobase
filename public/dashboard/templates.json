@@ -703,6 +703,50 @@
 		]
 	},
 	{
+		"label" : "Food (Google)",
+		"task" : "google-food", 
+		"widgets" : [
+			{
+				"id" : "timeline_kcal",
+				"type" : "timeline",
+				"label" : "Calories",
+				"placement" : "top",
+				"field" : "energy",
+				"unit" : "kcal",
+				"statistic" : "avg",
+				"interval" : "month"
+			},
+			{
+				"id" : "latest",
+				"type" : "list",
+				"label" : "Latest",
+				"placement" : "left",
+				"order" : "-timestamp",
+				"limit" : 10,
+				"singleton" : true
+			},
+			{
+				"id" : "kcal_by_day",
+				"type" : "polar",
+				"label" : "Day of Week",
+				"placement" : "right",
+				"value_field" : "energy",
+				"unit" : "kcal",
+				"statistic" : "avg",
+				"interval" : "day_of_week"
+			},
+			{
+				"id" : "histogram",
+				"type" : "histogram",
+				"label" : "Histogram",
+				"placement" : "right",
+				"field" : "energy",
+				"unit" : "kcal",
+				"interval" : 500
+			}
+		]
+	},
+	{
 		"label" : "Food (iHealth)",
 		"task" : "ihealth-food", 
 		"widgets" : [

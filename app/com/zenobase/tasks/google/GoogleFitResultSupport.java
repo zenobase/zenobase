@@ -20,6 +20,7 @@ abstract class GoogleFitResultSupport {
 		.put("com.nike.plusgps", new Resource("Nike+", "http://nikeplus.nike.com/"))
 		.put("com.runtastic.android", new Resource("Runtastic", "https://www.runtastic.com/"))
 		.put("com.runtastic.android.pro2", new Resource("Runtastic", "https://www.runtastic.com/"))
+		.put("com.sillens.shapeupclub", new Resource("Lifesum", "https://lifesum.com/"))
 		.put("com.strava", new Resource("Strava", "http://www.strava.com/"))
 		.put("fi.polar.beat", new Resource("Polar Beat", "http://www.polar.com/beat/"))
 		.build();

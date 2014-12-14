@@ -5061,6 +5061,7 @@
 			{ id : 'foursquare', description : 'Creates an event for each place visited.', url : 'https://foursquare.com/' },
 			{ id : 'google-activities', description : 'Creates an event for each activity.', url : 'http://fit.google.com/' },
 			{ id : 'google-cardio', description : 'Creates an event for each heart rate measurement.', url : 'http://fit.google.com/' },
+			{ id : 'google-food', description : 'Creates an event for each number of calories consumed that was recorded.', url : 'http://fit.google.com/' },
 			{ id : 'google-weight', description : 'Creates an event for each body weight measurement.', url : 'http://fit.google.com/' },
 			{ id : 'ihealth-activities', description : 'Creates an event for each activity.', url : 'http://ihealthlabs.com/' },
 			{ id : 'ihealth-cardio', description : 'Creates an event for each heart rate or blood pressure measurement.', url : 'http://ihealthlabs.com/' },
@@ -5746,6 +5747,19 @@
 		$scope.init = function() {
 			$scope.settings = $scope.$parent.$parent.settings = {
 					tag : 'Heart Rate',
+					marker : new Date(moment().utc().subtract(12, 'months').startOf('month').valueOf()),
+					timezone : 'UTC'
+			};
+		};
+
+		$scope.init();
+	}]);
+
+	app.controller('GoogleFitFoodSettingsController', ['$scope', '$http', 'moment', function($scope, $http, moment) {
+
+		$scope.init = function() {
+			$scope.settings = $scope.$parent.$parent.settings = {
+					tag : 'Food',
 					marker : new Date(moment().utc().subtract(12, 'months').startOf('month').valueOf()),
 					timezone : 'UTC'
 			};
