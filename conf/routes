@@ -78,6 +78,7 @@ GET     /snapshots/                    @com.zenobase.controllers.SnapshotControl
 DELETE  /snapshots/:snapshotId         @com.zenobase.controllers.SnapshotController.delete(snapshotId)
 POST    /snapshots/                    @com.zenobase.controllers.SnapshotController.snapshot()
 
+GET     /to                            @com.zenobase.controllers.RedirectController.get(url)
 GET     /og                            @com.zenobase.controllers.OpenGraphController.get(url)
 GET     /tz                            @com.zenobase.controllers.TimezoneController.get(lat ?= null, lon ?= null)
 GET     /*file                         com.zenobase.controllers.Assets.at(path="/public", file)

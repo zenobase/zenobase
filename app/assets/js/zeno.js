@@ -6024,7 +6024,7 @@
 			toHtml : function(value) {
 				return '<span>' +
 					'<i class="fa ' + this.icon + '" title="Resource"></i>&nbsp;' +
-					'<a href="' + encode(value.url) + '" target="_blank" rel="nofollow">' + encode(value.title) + '</a>' +
+					'<a href="/to?url=' + encode(value.url) + '" target="_blank" rel="nofollow">' + encode(value.title) + '</a>' +
 				'</span>';
 			}
 		});
@@ -6458,7 +6458,7 @@
 			},
 			toHtml : function(value) {
 				return '<span class="nowrap">' +
-					'<i class="fa ' + this.icon + '" title="Source"></i> <a href="' + encode(value.url) + '" target="_blank" rel="nofollow">' + encode(value.title) + '</a>' +
+					'<i class="fa ' + this.icon + '" title="Source"></i> <a href="/to?url=' + encode(value.url) + '" target="_blank" rel="nofollow">' + encode(value.title) + '</a>' +
 				'</span>';
 			}
 		});
