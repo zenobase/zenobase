@@ -45,7 +45,12 @@ public class GoogleFitWeightTaskManager extends GoogleFitTaskManagerSupport<Goog
 			for (DataPoint point : getDataPoints(task, credentials, stream)) {
 				Event event = new Event();
 				event.addValue(Event.TAG, task.getTag());
-				event.setValue(Event.TIMESTAMP, point.getBegin());
+				if (point.isRange()) {
+					event.addValue(Event.TIMESTAMP, point.getBegin());
+					event.addValue(Event.TIMESTAMP, point.getEnd());
+				} else {
+					event.setValue(Event.TIMESTAMP, point.getBegin());
+				}
 				Unit<Mass> unit = task.isMetric() ? Units.KG : Units.LB;
 				BigDecimal value = Measures.convert(point.getValue(0).doubleValue(), unit);
 				event.setValue(Event.WEIGHT, Measures.valueOf(value, unit));

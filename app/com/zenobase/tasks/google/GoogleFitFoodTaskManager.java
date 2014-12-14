@@ -41,7 +41,12 @@ public class GoogleFitFoodTaskManager extends GoogleFitTaskManagerSupport<Google
 			for (DataPoint point : getDataPoints(task, credentials, stream)) {
 				Event event = new Event();
 				event.addValue(Event.TAG, task.getTag());
-				event.setValue(Event.TIMESTAMP, point.getBegin());
+				if (point.isRange()) {
+					event.addValue(Event.TIMESTAMP, point.getBegin());
+					event.addValue(Event.TIMESTAMP, point.getEnd());
+				} else {
+					event.setValue(Event.TIMESTAMP, point.getBegin());
+				}
 				event.setValue(Event.ENERGY, Measures.valueOf(point.getValue(0), Units.KCAL));
 				event.setValue(Event.AUTHOR, task.getPrincipal());
 				DataStream origin = streams.get(point.getOrigin());
