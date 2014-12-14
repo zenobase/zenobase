@@ -92,6 +92,7 @@ import com.zenobase.services.LocalNodeFactory;
 import com.zenobase.services.NodeFactory;
 import com.zenobase.services.PaymentGateway;
 import com.zenobase.services.QuotaManager;
+import com.zenobase.services.Scheduler;
 import com.zenobase.services.TaskRepository;
 import com.zenobase.services.TestNodeFactory;
 import com.zenobase.services.UserRepository;
@@ -212,6 +213,7 @@ public class Global extends GlobalSettings {
 				bind(AuthorizationRepository.class).in(Singleton.class);
 				bind(QuotaManager.class).in(Singleton.class);
 				bind(PaymentGateway.class).in(Singleton.class);
+				bind(Scheduler.class).asEagerSingleton();
 
 				if (isConfigured("foursquare")) {
 					bind(FoursquareVenues.class).in(Singleton.class);
@@ -448,6 +450,7 @@ public class Global extends GlobalSettings {
 
 	@Override
 	public void onStop(Application application) {
+		injector.getInstance(Scheduler.class).close();
 		injector.getInstance(IndexManager.class).close();
 		injector.getInstance(Bus.class).close();
 	}

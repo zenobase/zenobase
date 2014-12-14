@@ -24,6 +24,11 @@ public class HazelcastBusTest {
 		assertThat(hazelcast.isReadOnly()).isFalse();
 	}
 
+	@Test
+	public void testMaster() {
+		assertThat(hazelcast.isMaster()).isTrue();
+	}
+
 	@After
 	public void tearDown() {
 		hazelcast.close();

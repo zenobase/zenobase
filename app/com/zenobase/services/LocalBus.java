@@ -5,6 +5,11 @@ public class LocalBus implements Bus {
 	private boolean readOnly = false;
 
 	@Override
+	public boolean isMaster() {
+		return true;
+	}
+
+	@Override
 	public boolean isReadOnly() {
 		return readOnly;
 	}

@@ -2,9 +2,12 @@ package com.zenobase.services;
 
 import java.util.Map;
 
+import org.elasticsearch.common.collect.Iterables;
 import play.Logger;
 import com.hazelcast.core.Hazelcast;
 import com.hazelcast.core.HazelcastInstance;
+import com.hazelcast.core.HazelcastInstanceNotActiveException;
+import com.hazelcast.core.Member;
 
 public class HazelcastBus implements Bus {
 
@@ -15,6 +18,16 @@ public class HazelcastBus implements Bus {
 
 	public HazelcastBus() {
 		map = hazelcast.getMap("map");
+	}
+
+	@Override
+	public boolean isMaster() {
+		try {
+			Member member = hazelcast.getCluster().getLocalMember();
+			return member.equals(Iterables.getFirst(hazelcast.getCluster().getMembers(), member));
+		} catch (HazelcastInstanceNotActiveException e) {
+			return false;
+		}
 	}
 
 	@Override
