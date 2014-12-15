@@ -4,21 +4,21 @@
 		<thead>
 			<tr>
 				<th style="text-transform: capitalize">{{settings.key_field}} <i data-ng-class="classesForOrderBy('term')"></i></th>
-				<th style="text-align: right">Count <i data-ng-class="classesForOrderBy('count')"></i></th>
-				<th style="text-align: right">Min <i data-ng-class="classesForOrderBy('min')"></i></th>
-				<th style="text-align: right">Max <i data-ng-class="classesForOrderBy('max')"></i></th>
-				<th style="text-align: right">Sum <i data-ng-class="classesForOrderBy('sum')"></i></th>
-				<th style="text-align: right">Avg <i data-ng-class="classesForOrderBy('avg')"></i></th>
+				<th style="text-align: right" data-ng-show="selected('count')">Count <i data-ng-class="classesForOrderBy('count')"></i></th>
+				<th style="text-align: right" data-ng-show="selected('min')">Min <i data-ng-class="classesForOrderBy('min')"></i></th>
+				<th style="text-align: right" data-ng-show="selected('max')">Max <i data-ng-class="classesForOrderBy('max')"></i></th>
+				<th style="text-align: right" data-ng-show="selected('sum')">Sum <i data-ng-class="classesForOrderBy('sum')"></i></th>
+				<th style="text-align: right" data-ng-show="selected('avg')">Avg <i data-ng-class="classesForOrderBy('avg')"></i></th>
 			</tr>
 		</thead>
 		<tbody>
 			<tr data-ng-repeat="term in terms">
 				<td><a data-ng-click="filter(term)" data-ng-bind-html="term.label | field:settings.key_field"></a></td>
-				<td style="text-align: right" data-ng-bind-html="term.count | number"></td>
-				<td style="text-align: right" data-ng-bind-html="term.min | field:settings.value_field"></td>
-				<td style="text-align: right" data-ng-bind-html="term.max | field:settings.value_field"></td>
-				<td style="text-align: right" data-ng-bind-html="term.sum | field:settings.value_field"></td>
-				<td style="text-align: right" data-ng-bind-html="term.avg | field:settings.value_field"></td>
+				<td style="text-align: right" data-ng-bind-html="term.count | number" data-ng-show="selected('count')"></td>
+				<td style="text-align: right" data-ng-bind-html="term.min | field:settings.value_field" data-ng-show="selected('min')"></td>
+				<td style="text-align: right" data-ng-bind-html="term.max | field:settings.value_field" data-ng-show="selected('max')"></td>
+				<td style="text-align: right" data-ng-bind-html="term.sum | field:settings.value_field" data-ng-show="selected('sum')"></td>
+				<td style="text-align: right" data-ng-bind-html="term.avg | field:settings.value_field" data-ng-show="selected('avg')"></td>
 			</tr>
 			<tr data-ng-hide="terms">
 				<td colspan="6"><i>None</i></td>
@@ -71,6 +71,26 @@
 					<div class="controls form-horizontal">
 						<select required data-ng-model="order" data-ng-model-options="{ getterSetter : true }" data-ng-options="value for value in orderBy" class="input-small"></select>
 						<select required data-ng-model="asc" data-ng-model-options="{ getterSetter : true }" data-ng-options="value as label for (label, value) in ascDesc" class="input-small"></select>
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label">Statistics</label>
+					<div class="well">
+						<label class="checkbox">
+							<input type="checkbox" data-ng-checked="selected('count')" data-ng-click="toggle('count')"/> Count
+						</label>
+						<label class="checkbox">
+							<input type="checkbox" data-ng-checked="selected('min')" data-ng-click="toggle('min')"/> Min
+						</label>
+						<label class="checkbox">
+							<input type="checkbox" data-ng-checked="selected('max')" data-ng-click="toggle('max')"/> Max
+						</label>
+						<label class="checkbox">
+							<input type="checkbox" data-ng-checked="selected('sum')" data-ng-click="toggle('sum')"/> Sum
+						</label>
+						<label class="checkbox">
+							<input type="checkbox" data-ng-checked="selected('avg')" data-ng-click="toggle('avg')"/> Avg
+						</label>
 					</div>
 				</div>
 				<div class="control-group">

@@ -2216,6 +2216,9 @@
 
 		$scope.init = function() {
 			$scope.terms = null;
+			if (!$scope.settings.statistics) {
+				$scope.settings.statistics = [ 'count', 'sum', 'avg' ];
+			}
 		};
 		$scope.params = function() {
 			return { 
@@ -2243,6 +2246,9 @@
 		$scope.filter = function(term) {
 			$scope.addConstraint($scope.settings.key_field, term.label);
 		};
+		$scope.selected = function(value) {
+			return $scope.settings.statistics.indexOf(value) != -1;
+		};
 
 		$scope.init();
 		$scope.register($scope);
@@ -2269,6 +2275,14 @@
 		$scope.getUnits = function() {
 			var valueField = Field.find($scope.settings.value_field);
 			return valueField ? valueField.units : [];
+		};
+		$scope.toggle = function(value) {
+			var i = $scope.settings.statistics.indexOf(value);
+			if (i != -1) {
+				$scope.settings.statistics.splice(i, 1);
+			} else {
+				$scope.settings.statistics.push(value);
+			}
 		};
 
 		$scope.$watch('settings.value_field', function() {
