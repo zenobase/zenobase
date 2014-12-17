@@ -78,7 +78,7 @@
 		</footer>
 
 		<div id="sign-in-dialog" class="hide" data-ui-modal data-ng-controller="SignInDialogController">
-			<form name="form" data-ng-submit="signIn()" class="modal-form">
+			<form name="form" action="/blank" target="signin-frame" data-ng-submit="signIn()" class="modal-form">
 				<div class="modal-header">
 					<a class="close" data-dismiss="modal">&times;</a>
 					<h4>Sign in</h4>
@@ -105,6 +105,8 @@
 				</div>
 			</form>
 		</div>
+
+		<iframe name="signin-frame" src="/blank" style="display:none"></iframe>
 
 		<div id="lost-password-dialog" class="hide" data-ui-modal data-ng-controller="LostPasswordDialogController">
 			<form name="form" novalidate data-ng-submit="submit()" class="modal-form">

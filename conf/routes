@@ -63,7 +63,7 @@ POST    /oauth/authorize               @com.zenobase.controllers.OAuthController
 POST    /oauth/token                   @com.zenobase.controllers.OAuthController.token()
 GET     /oauth/callback/:id            @com.zenobase.controllers.OAuthController.callback(id)
 
-GET     /authorizations/               @com.zenobase.controllers.AuthorizationListController.findAll(q ?= null, offset : Int  ?= 0, limit : Int ?= 10)
+GET     /authorizations/               @com.zenobase.controllers.AuthorizationListController.findAll(q ?= null, offset : Int ?= 0, limit : Int ?= 10)
 GET     /users/:userId/authorizations/ @com.zenobase.controllers.AuthorizationListController.findByUser(userId, has_client : java.lang.Boolean ?= null, q ?= null, offset : Int ?= 0, limit : Int ?= 10)
 DELETE  /authorizations/               @com.zenobase.controllers.AuthorizationListController.delete()
 
@@ -74,11 +74,12 @@ GET     /users/:userId/payment         @com.zenobase.controllers.PaymentControll
 DELETE  /users/:userId/payment         @com.zenobase.controllers.PaymentController.cancel(userId)
 POST    /payments/                     @com.zenobase.controllers.PaymentController.pay()
 
-GET     /snapshots/                    @com.zenobase.controllers.SnapshotController.findAll(offset : Int  ?= 0, limit : Int ?= 10)
+GET     /snapshots/                    @com.zenobase.controllers.SnapshotController.findAll(offset : Int ?= 0, limit : Int ?= 10)
 DELETE  /snapshots/:snapshotId         @com.zenobase.controllers.SnapshotController.delete(snapshotId)
 POST    /snapshots/                    @com.zenobase.controllers.SnapshotController.snapshot()
 
 GET     /to                            @com.zenobase.controllers.RedirectController.get(url)
 GET     /og                            @com.zenobase.controllers.OpenGraphController.get(url)
 GET     /tz                            @com.zenobase.controllers.TimezoneController.get(lat ?= null, lon ?= null)
-GET     /*file                         com.zenobase.controllers.Assets.at(path="/public", file)
+GET     /blank                         com.zenobase.controllers.BlankController.get()
+GET     /*file                         com.zenobase.controllers.Assets.at(path = "/public", file)
