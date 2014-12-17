@@ -124,7 +124,7 @@ public class BrowserTesting {
 				new Select($("#event-field-select")).selectByVisibleText("tag");
 				assertThat($("#save-event-button")).isNotEnabled();
 				assertThat($("#add-tag-button")).isNotEnabled();
-				$("#tag-value-field").sendKeys("hike");
+				$("#tag-value-field").sendKeys("test");
 				assertThat($("#add-tag-button")).isEnabled();
 				$("#add-tag-button").click();
 				assertThat($("#save-event-button")).isEnabled();
@@ -158,7 +158,7 @@ public class BrowserTesting {
 				// add a resource
 				new Select($("#event-field-select")).selectByVisibleText("resource");
 				assertThat($("#add-resource-button")).isNotEnabled();
-				$("#resource-url-field").sendKeys("http://picasaweb.google.com/eric.jain/MountAdamsAugust2012");
+				$("#resource-url-field").sendKeys("http://localhost:" + PORT);
 				$("#resource-title-field").click();
 				wait.withMessage("title is auto-filled").until(ExpectedConditions.elementToBeClickable(By.id("add-resource-button")));
 				$("#add-resource-button").click();
@@ -275,7 +275,7 @@ public class BrowserTesting {
 				new Actions(driver).moveToElement($(".edit-alias-item")).click().perform();
 				assertThat($("#save-bucket-button")).isNotEnabled();
 				new Select($("#edit-alias-select")).selectByVisibleText("My Data");
-				$("#edit-alias-filter").sendKeys("tag:hike");
+				$("#edit-alias-filter").sendKeys("tag:test");
 				sleep(1);
 				$("#edit-alias-button").click();
 				assertThat($("#save-bucket-button")).isEnabled();
