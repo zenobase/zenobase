@@ -18,6 +18,7 @@ import com.zenobase.commands.Command;
 import com.zenobase.commands.CompoundCommand;
 import com.zenobase.commands.UpdateCredentialsCommand;
 import com.zenobase.commands.UpdateTaskCommand;
+import com.zenobase.common.LocationMap;
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
 import com.zenobase.services.EventEditor;
@@ -63,7 +64,7 @@ public class MovesLocateTaskManager extends MovesTaskManagerSupport {
 
 	private class LocationEditor extends EventEditor {
 
-		private final MovesStoryline storyline = new MovesStoryline();
+		private final LocationMap locations = new LocationMap();
 		private final OAuthCredentials credentials;
 
 		public LocationEditor(String bucketId, Identity principal, DateTime last, OAuthCredentials credentials) {
@@ -74,15 +75,19 @@ public class MovesLocateTaskManager extends MovesTaskManagerSupport {
 		@Override
 		protected Event edit(Event event) {
 			DateTime time = event.getValue(Event.TIMESTAMP);
-			if (!storyline.contains(time)) {
+			if (!locations.contains(time)) {
 				LocalDate today = DateTime.now(time.getZone()).toLocalDate();
 				if (time.toLocalDate().isAfter(today)) {
 					return null;
 				}
-				find(time.toLocalDate(), today).update(storyline);
+				find(time.toLocalDate(), today).update(locations);
 			}
-			storyline.remove(time);
-			return storyline.update(event);
+			locations.remove(time);
+			Event updated = locations.update(event);
+			if (updated != null) {
+				updated.addValue(Event.SOURCE, MovesActivitiesResult.SOURCE);
+			}
+			return updated;
 		}
 
 		private MovesStorylineResult find(LocalDate from, LocalDate today) {

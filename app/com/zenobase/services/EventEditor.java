@@ -2,7 +2,6 @@ package com.zenobase.services;
 
 import java.util.List;
 
-import org.elasticsearch.index.query.QueryBuilder;
 import org.joda.time.DateTime;
 import org.joda.time.ReadableInstant;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -16,9 +15,9 @@ import com.zenobase.json.ObjectField;
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
 import com.zenobase.search.EventSearchBuilder;
-import com.zenobase.search.Facet;
 import com.zenobase.search.ListFacet;
 import com.zenobase.search.OffsetDateTimeRangeConstraintBuilder;
+import com.zenobase.search.SearchBuilderSupport;
 
 public abstract class EventEditor {
 
@@ -41,7 +40,7 @@ public abstract class EventEditor {
 	public void run() {
 		for (ObjectNode node : FIELD.getValues(find())) {
 			Event event = new Event(node);
-			DateTime time = Ordering.natural().min(event.getValues(Event.TIMESTAMP));
+			DateTime time = Ordering.natural().max(event.getValues(Event.TIMESTAMP));
 			Event edited = edit(event);
 			if (last == null || last.isBefore(time)) {
 				last = time;
@@ -54,9 +53,11 @@ public abstract class EventEditor {
 
 	private ObjectNode find() {
 		events.refresh(bucketId);
-		Facet facet = new ListFacet(FIELD.getName(), 0, LIMIT, Event.TIMESTAMP.getName(), null, Event.SCHEMA);
-		QueryBuilder query = new OffsetDateTimeRangeConstraintBuilder(Event.TIMESTAMP.getName()).build(Range.<ReadableInstant>greaterThan(last));
-		return events.find(bucketId, new EventSearchBuilder().addConstraint(query, false).addFacet(facet).buildSearch());
+		SearchBuilderSupport search = new EventSearchBuilder().addFacet(new ListFacet(FIELD.getName(), 0, LIMIT, Event.TIMESTAMP.getName(), null, Event.SCHEMA));
+		if (last != null) {
+			search.addConstraint(new OffsetDateTimeRangeConstraintBuilder(Event.TIMESTAMP.getName()).build(Range.<ReadableInstant>greaterThan(last)), false);
+		}
+		return events.find(bucketId, search.buildSearch());
 	}
 
 	protected abstract Event edit(Event event);

@@ -61,12 +61,17 @@ abstract class GoogleFitTaskManagerSupport<T extends GoogleFitTaskSupport> exten
 			}
 		}*/
 
-		List<Event> events = createEvents(task.as(taskClass), credentials, streams);
+		return execute(task.as(taskClass), streams, credentials, token);
+	}
 
+	protected Command execute(T task, Map<String, DataStream> streams, OAuthCredentials credentials, Token token) {
+		List<Event> events = createEvents(task, credentials, streams);
 		return createCommand(task, credentials, events, token);
 	}
 
-	protected abstract List<Event> createEvents(T task, OAuthCredentials credentials, Map<String, DataStream> streams);
+	protected List<Event> createEvents(T task, OAuthCredentials credentials, Map<String, DataStream> streams) {
+		throw new UnsupportedOperationException();
+	}
 
 	protected Map<String, DataStream> getDataStreams(OAuthCredentials credentials) {
 		OAuthRequest request = new OAuthRequest(Verb.GET, "https://www.googleapis.com/fitness/v1/users/me/dataSources");
@@ -80,12 +85,14 @@ abstract class GoogleFitTaskManagerSupport<T extends GoogleFitTaskSupport> exten
 	}
 
 	protected List<DataPoint> getDataPoints(GoogleFitTaskSupport task, OAuthCredentials credentials, DataStream stream) {
-		DateTime begin = task.getFrom();
-		DateTime end = DateTime.now();
+		return getDataPoints(task.getFrom(), DateTime.now(), task.getTimezone(), credentials, stream);
+	}
+
+	protected List<DataPoint> getDataPoints(DateTime begin, DateTime end, DateTimeZone zone, OAuthCredentials credentials, DataStream stream) {
 		OAuthRequest request = new OAuthRequest(Verb.GET, String.format("https://www.googleapis.com/fitness/v1/users/me/dataSources/%s/datasets/%d-%d",
 			UrlEscapers.urlPathSegmentEscaper().escape(stream.getId()), begin.getMillis() * 1000000, end.getMillis() * 1000000));
 		Response response = send(request, credentials);
-		return new DatasetResult(parseObject(response), task.getTimezone()).getDataPoints();
+		return new DatasetResult(parseObject(response), zone).getDataPoints();
 	}
 
 	protected static Range<DateTime> getRange(Event event) {

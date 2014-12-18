@@ -5076,6 +5076,7 @@
 			{ id : 'google-activities', description : 'Creates an event for each activity.', url : 'http://fit.google.com/' },
 			{ id : 'google-cardio', description : 'Creates an event for each heart rate measurement.', url : 'http://fit.google.com/' },
 			{ id : 'google-food', description : 'Creates an event for each number of calories consumed that was recorded.', url : 'http://fit.google.com/' },
+			{ id : 'google-locate', description : 'Adds location data to events without a location.', url : 'http://fit.google.com/' },
 			{ id : 'google-weight', description : 'Creates an event for each body weight measurement.', url : 'http://fit.google.com/' },
 			{ id : 'ihealth-activities', description : 'Creates an event for each activity.', url : 'http://ihealthlabs.com/' },
 			{ id : 'ihealth-cardio', description : 'Creates an event for each heart rate or blood pressure measurement.', url : 'http://ihealthlabs.com/' },
@@ -5776,6 +5777,17 @@
 					tag : 'Food',
 					marker : new Date(moment().utc().subtract(12, 'months').startOf('month').valueOf()),
 					timezone : 'UTC'
+			};
+		};
+
+		$scope.init();
+	}]);
+
+	app.controller('GoogleFitLocateSettingsController', ['$scope', function($scope) {
+
+		$scope.init = function() {
+			$scope.settings = $scope.$parent.$parent.settings = {
+					
 			};
 		};
 

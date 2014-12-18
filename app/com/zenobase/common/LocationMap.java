@@ -1,6 +1,11 @@
-package com.zenobase.tasks.moves;
+package com.zenobase.common;
+
+import java.util.List;
 
 import org.joda.time.DateTime;
+import com.google.common.base.Preconditions;
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Ordering;
 import com.google.common.collect.Range;
 import com.google.common.collect.RangeMap;
 import com.google.common.collect.TreeRangeMap;
@@ -8,7 +13,7 @@ import com.google.common.collect.TreeRangeMap;
 import com.zenobase.models.Event;
 import com.zenobase.models.Location;
 
-public class MovesStoryline {
+public class LocationMap {
 
 	private final RangeMap<DateTime, Location> locations = TreeRangeMap.create();
 
@@ -20,9 +25,18 @@ public class MovesStoryline {
 		return locations.get(time);
 	}
 
+	public Location getFirst(Range<DateTime> time) {
+		return Iterables.getFirst(locations.subRangeMap(time).asMapOfRanges().values(), null);
+	}
+
 	public boolean contains(DateTime time) {
 		return !locations.asMapOfRanges().isEmpty()
 			&& locations.span().contains(time);
+	}
+
+	public boolean contains(Range<DateTime> time) {
+		return !locations.asMapOfRanges().isEmpty()
+			&& locations.span().isConnected(time);
 	}
 
 	public void remove(DateTime olderThan) {
@@ -30,14 +44,15 @@ public class MovesStoryline {
 	}
 
 	public Event update(Event event) {
-		DateTime time = event.getValue(Event.TIMESTAMP);
-		Location location = get(time);
+		List<DateTime> times = event.getValues(Event.TIMESTAMP);
+		Preconditions.checkState(!times.isEmpty());
+		Location location = times.size() == 1 ? get(times.get(0)) :
+			getFirst(Range.closedOpen(Ordering.natural().min(times), Ordering.natural().max(times)));
 		if (location == null) {
 			return null;
 		}
 		Event copy = event.copy();
 		copy.setValue(Event.LOCATION, location);
-		copy.addValue(Event.SOURCE, MovesActivitiesResult.SOURCE);
 		return copy;
 	}
 

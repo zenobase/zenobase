@@ -7,6 +7,7 @@ import org.joda.time.format.ISODateTimeFormat;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.collect.Lists;
 
+import com.zenobase.common.LocationMap;
 import com.zenobase.models.Location;
 
 class MovesStorylineResult {
@@ -17,25 +18,25 @@ class MovesStorylineResult {
 		this.node = node;
 	}
 
-	public void update(MovesStoryline storyline) {
+	public void update(LocationMap locations) {
 		for (JsonNode dayNode : node) {
-			addDay(dayNode, storyline);
+			addDay(dayNode, locations);
 		}
 	}
 
-	public void addDay(JsonNode node, MovesStoryline storyline) {
+	public void addDay(JsonNode node, LocationMap locations) {
 		for (JsonNode segmentNode : node.path("segments")) {
-			addSegment(segmentNode, storyline);
+			addSegment(segmentNode, locations);
 		}
 	}
 
-	public void addSegment(JsonNode node, MovesStoryline storyline) {
+	public void addSegment(JsonNode node, LocationMap locations) {
 		String type = node.path("type").textValue();
 		if ("move".equals(type)) {
 			TrackPoint previous = null;
 			for (TrackPoint trackPoint : getTrackPoints(node.path("activities"))) {
 				if (previous != null) {
-					storyline.put(previous.getTime(), trackPoint.getTime(), previous.getLocation());
+					locations.put(previous.getTime(), trackPoint.getTime(), previous.getLocation());
 				}
 				previous = trackPoint;
 			}
@@ -44,7 +45,7 @@ class MovesStorylineResult {
 			DateTime begin = dateTimeValue(node.path("startTime"));
 			DateTime end = dateTimeValue(node.path("endTime"));
 			Location location = locationValue(node.path("place").path("location"));
-			storyline.put(begin, end, location);
+			locations.put(begin, end, location);
 		}
 	}
 
