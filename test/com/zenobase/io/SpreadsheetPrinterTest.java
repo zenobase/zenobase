@@ -48,9 +48,9 @@ public class SpreadsheetPrinterTest {
 		assertThat(out.toString()).isEqualTo(
 			"\"label\",\"value\",\"values\",\"object.@value\",\"object.unit\",\"objects.lat\",\"objects.lon\"\n" +
 			"\"Foo\",\"1\\\"\",\"\",\"\",\"\",\"\",\"\"\n" +
-			"\"Bar\",\"\",\"red,green,blue\",\"\",\"\",\"\",\"\"\n" +
+			"\"Bar\",\"\",\"red, green, blue\",\"\",\"\",\"\",\"\"\n" +
 			"\"Baz\",\"\",\"\",\"100\",\"mi\",\"\",\"\"\n" +
-			"\"Qux\",\"\",\"\",\"\",\"\",\"1,3\",\"2,4\"\n"
+			"\"Qux\",\"\",\"\",\"\",\"\",\"1, 3\",\"2, 4\"\n"
 		);
 	}
 }
