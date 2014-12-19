@@ -18,13 +18,15 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
+import com.zenobase.json.Nodes;
+
 public class SpreadsheetPrinter {
 
 	private CSVWriter writer;
 	private ImmutableList<Field> fields;
 
 	public SpreadsheetPrinter(Writer out) {
-		writer = new CSVWriter(out, ',', '"', "\n");
+		writer = new CSVWriter(out, ',', '"', '\\', "\n");
 	}
 
 	private static class Field {
@@ -40,14 +42,18 @@ public class SpreadsheetPrinter {
 		}
 
 		public JsonNode get(JsonNode node) {
-			JsonNode value = node;
 			for (String pathElement : path) {
-				if (value.isArray() && value.size() == 1) {
-					value = value.get(0);
+				if (node.isArray()) {
+					ArrayNode values = Nodes.newArray();
+					for (JsonNode arrayNode : node) {
+						values.add(arrayNode.path(pathElement));
+					}
+					node = values;
+				} else {
+					node = node.path(pathElement);
 				}
-				value = value.path(pathElement);
 			}
-			return value;
+			return node;
 		}
 
 		@Override
@@ -84,16 +90,23 @@ public class SpreadsheetPrinter {
 			Map.Entry<String, JsonNode> entry = i.next();
 			Field field = new Field(parent, entry.getKey());
 			JsonNode value = entry.getValue();
-			if (value.isArray() && value.size() > 0) {
-				value = value.get(0);
-			}
-			if (value.isValueNode()) {
-				fields.add(field);
-			} else if (value.isObject()) {
-				getFields((ObjectNode) value, fields, field);
+			if (value.isArray()) {
+				for (JsonNode arrayNode : value) {
+					addFields(arrayNode, fields, field);
+				}
 			} else {
-				throw new IllegalArgumentException("Expected a value, an array of values, or an object");
+				addFields(value, fields, field);
 			}
+		}
+	}
+
+	private static void addFields(JsonNode node, Set<Field> fields, Field parent) {
+		if (node.isValueNode()) {
+			fields.add(parent);
+		} else if (node.isObject()) {
+			getFields((ObjectNode) node, fields, parent);
+		} else {
+			throw new IllegalArgumentException("Expected a value, an array of values, or an object");
 		}
 	}
 
