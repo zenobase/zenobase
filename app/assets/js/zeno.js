@@ -4746,7 +4746,7 @@
 						if ($.isNumeric(mapping)) {
 							value = row[mapping];
 							if (angular.isDefined(value) && value !== '') {
-								event[field] = value.split(', ');
+								event[field] = value.split(';');
 							}
 						} else {
 							var objects = 1;
@@ -4756,7 +4756,7 @@
 									var offset = mapping[nested];
 									value = row[offset];
 									if (angular.isDefined(value) && value !== '') {
-										var values = value.split(', ');
+										var values = value.split(';');
 										object[nested] = values[i];
 										objects = values.length;
 									}

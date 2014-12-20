@@ -156,6 +156,6 @@ public class SpreadsheetPrinter {
 		for (JsonNode item : node) {
 			stringified.add(toString(item));
 		}
-		return Joiner.on(", ").join(stringified);
+		return Joiner.on(';').join(stringified);
 	}
 }
