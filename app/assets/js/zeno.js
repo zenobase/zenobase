@@ -4696,6 +4696,17 @@
 				}
 				data[data.length - 1].push(matches[2] ? matches[2].replace(new RegExp('""', 'g'), '"') : matches[3]);
 			}
+			return clean(data);
+		}
+
+		function clean(data) {
+			$.each(data, function(i, row) {
+				$.each(row, function(j, value) {
+					if (angular.isDefined(value)) {
+						data[i][j] = value.trim();
+					}
+				});
+			});
 			return data;
 		}
 
@@ -4761,7 +4772,7 @@
 						events.push(event);
 					}
 				});
-				return events;				
+				return events;
 			}
 		};
 	}]);
