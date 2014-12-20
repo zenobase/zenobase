@@ -1542,10 +1542,18 @@
 						<a href="https://zenobase.uservoice.com/">contact us</a>.</span>
 					</div>
 				</div>
+				<div class="modal-body modal-append" data-ng-show="events.length">
+					<p data-ng-repeat="event in events | startFrom:offset | limitTo:1">
+						<span data-ui-bind-event="event"></span>
+					</p>
+					<div class="btn-group pull-right">
+						<button type="button" class="btn disabled zeno-paging">Preview <b>{{offset + 1}}</b> of <b>{{events.length | number}}</b></button>
+						<button type="button" class="btn" title="Previous" data-ng-click="prev()" data-ng-disabled="offset == 0"><i class="fa fa-chevron-left"></i></button>
+						<button type="button" class="btn" title="Next" data-ng-click="next()" data-ng-disabled="offset + 1 >= events.length"><i class="fa fa-chevron-right"></i></button>
+					</div>
+				</div>
 				<div class="modal-footer" class="progress">
-					<button type="submit" class="btn btn-primary" data-ng-disabled="importing || isEmpty()">
-						Import <span data-ng-show="events.length">({{events.length | number}})</span>
-					</button>
+					<button type="submit" class="btn btn-primary" data-ng-disabled="importing || isEmpty()">Import</button>
 					<button type="reset" class="btn" data-dismiss="modal" data-ng-disabled="importing">Cancel</button>
 				</div>
 			</fieldset>

@@ -4907,6 +4907,7 @@
 			$scope.importing = false;
 			$scope.message = '';
 			$scope.events = [];
+			$scope.offset = 0;
 			$scope.clearFiles();
 			$scope.format = $scope.formats[0];
 			if (formatId) {
@@ -4922,9 +4923,16 @@
 		$scope.isEmpty = function() {
 			return !$scope.events || $scope.events.length === 0;
 		};
+		$scope.prev = function() {
+			--$scope.offset;
+		};
+		$scope.next = function() {
+			++$scope.offset;
+		};
 		$scope.setFiles = function(files) {
 			$scope.message = '';
 			$scope.events = [];
+			$scope.offset = 0;
 			$scope.$apply(function(scope) {
 				var reader = new FileReader();
 				reader.onload = function(e) {
@@ -4949,6 +4957,7 @@
 				.success(function(response, status, headers) {
 					$scope.alert.show('Imported events.', 'alert-success', headers('X-Command-ID'));
 					$scope.events = [];
+					$scope.offset = 0;
 					delay($scope.refresh);
 					$scope.closeDialog();
 					$scope.importing = false;
@@ -4956,6 +4965,7 @@
 				.error(function(response) {
 					$scope.message = response.message || 'Couldn\'t import the file. Try again later, or contact support.';
 					$scope.events = [];
+					$scope.offset = 0;
 					$scope.clearFiles();
 					$scope.importing = false;
 				});
@@ -4969,6 +4979,7 @@
 			if (format) {
 				$scope.message = '';
 				$scope.events = [];
+				$scope.offset = 0;
 				$scope.clearFiles();
 			}
 		});
@@ -6604,19 +6615,21 @@
 			link : function(scope, element, attrs) {
 				var event = scope.$eval(attrs.uiBindEvent);
 				var html = '';
-				var count = 0;
-				$.each(Field.findAll(), function(i, field) {
-					var value = event[field.name];
-					if (angular.isDefined(value)) {
-						$.each($.isArray(value) ? value : [ value ], function(i, value) {
-							if (count > 0) {
-								html += ' &nbsp; ';
-							}
-							html += field.toHtml(value, true);
-							++count;
-						});
-					}
-				});
+				if (event) {
+					var count = 0;
+					$.each(Field.findAll(), function(i, field) {
+						var value = event[field.name];
+						if (angular.isDefined(value)) {
+							$.each($.isArray(value) ? value : [ value ], function(i, value) {
+								if (count > 0) {
+									html += ' &nbsp; ';
+								}
+								html += field.toHtml(value, true);
+								++count;
+							});
+						}
+					});
+				}
 				element.html(html);
 				$compile(element.contents())(scope);
 			}
@@ -6655,6 +6668,14 @@
 			return identity ? User.find(identity).getName() : '';
 		};
 	}]);
+
+	app.filter('startFrom', function() {
+		return function(input, start) {
+			if (input) {
+				return input.slice(+start);
+			}	
+		};
+	});
 
 	app.factory('unauthorizedInterceptor', ['$q', '$rootScope', function($q, $rootScope) {
 		return {
