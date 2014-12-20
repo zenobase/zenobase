@@ -4680,49 +4680,23 @@
 
 	app.factory('EventSpreadsheet', ['moment', function(moment) {
 
-		function toArray(strData) {
-
-			var strDelimiter = ',';
-
-			var objPattern = new RegExp(
-			(
-				// Delimiters.
-				"(\\" + strDelimiter + "|\\r?\\n|\\r|^)" +
-				
-				// Quoted fields.
-				"(?:\"([^\"]*(?:\"\"[^\"]*)*)\"|" +
-				
-				// Standard fields.
-				"([^\"\\" + strDelimiter + "\\r\\n]*))"
-				),
-				"gi"
-			);
-
-			var arrData = [[]];
-			var arrMatches = null;
-			
-			while (arrMatches = objPattern.exec(strData)) {
-			
-				var strMatchedDelimiter = arrMatches[1];
-			
-				// Check to see if the given delimiter has a length
-				// (is not the start of string) and if it matches
-				// field delimiter. If id does not, then we know
-				// that this delimiter is a row delimiter.
-				if (strMatchedDelimiter.length && strMatchedDelimiter !== strDelimiter) {
-					arrData.push([]);
+		/**
+		 * Parse a csv string into a [[]]. Based on http://www.bennadel.com/blog/1504-ask-ben-parsing-csv-strings-with-javascript-exec-regular-expression-command.htm. 
+		 */
+		function parseCSV(s) {
+			var pattern = new RegExp(
+					'(\\,|\\r?\\n|\\r|^)' + // delimiters 
+					'(?:"([^"]*(?:""[^"]*)*)"|' + // quoted fields
+					'([^"\\,\\r\\n]*))', 'g'); // standard fields
+			var data = [[]];
+			var matches = null;
+			while (matches = pattern.exec(s)) {
+				if (matches[1].length && matches[1] !== ',') {
+					data.push([]);
 				}
-			
-				var strMatchedValue;
-			
-				if (arrMatches[2]){
-					strMatchedValue = arrMatches[2].replace(new RegExp('""', 'g'), '"');
-				} else {
-					strMatchedValue = arrMatches[ 3 ];
-				}
-				arrData[arrData.length - 1].push(strMatchedValue);
+				data[data.length - 1].push(matches[2] ? matches[2].replace(new RegExp('""', 'g'), '"') : matches[3]);
 			}
-			return arrData;
+			return data;
 		}
 
 		/**
@@ -4752,7 +4726,7 @@
 		return {
 			parse : function(s) {
 				var events = [];
-				var data = toArray(s);
+				var data = parseCSV(s);
 				var mappings = buildMappings(data.shift());
 				$.each(data, function(i, row) {
 					var event = {};
