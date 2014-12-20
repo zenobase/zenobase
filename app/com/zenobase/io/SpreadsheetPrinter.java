@@ -26,7 +26,7 @@ public class SpreadsheetPrinter {
 	private ImmutableList<Field> fields;
 
 	public SpreadsheetPrinter(Writer out) {
-		writer = new CSVWriter(out, ',', '"', '\\', "\n");
+		writer = new CSVWriter(out, ',', '"', '"', "\n");
 	}
 
 	private static class Field {
