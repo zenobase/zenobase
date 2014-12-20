@@ -4678,6 +4678,119 @@
 		$scope.init();
 	}]);
 
+	app.factory('EventSpreadsheet', ['moment', function(moment) {
+
+		function toArray(strData) {
+
+			var strDelimiter = ',';
+
+			var objPattern = new RegExp(
+			(
+				// Delimiters.
+				"(\\" + strDelimiter + "|\\r?\\n|\\r|^)" +
+				
+				// Quoted fields.
+				"(?:\"([^\"]*(?:\"\"[^\"]*)*)\"|" +
+				
+				// Standard fields.
+				"([^\"\\" + strDelimiter + "\\r\\n]*))"
+				),
+				"gi"
+			);
+
+			var arrData = [[]];
+			var arrMatches = null;
+			
+			while (arrMatches = objPattern.exec(strData)) {
+			
+				var strMatchedDelimiter = arrMatches[1];
+			
+				// Check to see if the given delimiter has a length
+				// (is not the start of string) and if it matches
+				// field delimiter. If id does not, then we know
+				// that this delimiter is a row delimiter.
+				if (strMatchedDelimiter.length && strMatchedDelimiter !== strDelimiter) {
+					arrData.push([]);
+				}
+			
+				var strMatchedValue;
+			
+				if (arrMatches[2]){
+					strMatchedValue = arrMatches[2].replace(new RegExp('""', 'g'), '"');
+				} else {
+					strMatchedValue = arrMatches[ 3 ];
+				}
+				arrData[arrData.length - 1].push(strMatchedValue);
+			}
+			return arrData;
+		}
+
+		/**
+		 * input: timestamp, distance.@value, distance.unit, tag
+		 * output: { 'timestamp' : 0, 'distance' : { '@value' : 1, 'unit' : 2 }, 'tag' : 3 }
+		 */
+
+		function buildMappings(headers) {
+			var mappings = {};
+			$.each(headers, function(i, header) {
+				var path = header.split('.', 2);
+				var mapping;
+				if (path.length == 1) {
+					mapping = i;
+				} else {
+					mapping = mappings[path[0]] || {};
+					mapping[path[1]] = i;
+				}
+				mappings[path[0]] = mapping;
+			});
+			delete mappings['@id'];
+			delete mappings['author'];
+			delete mappings['version'];
+			return mappings;
+		}
+
+		return {
+			parse : function(s) {
+				var events = [];
+				var data = toArray(s);
+				var mappings = buildMappings(data.shift());
+				$.each(data, function(i, row) {
+					var event = {};
+					$.each(mappings, function(field, mapping) {
+						var value;
+						if ($.isNumeric(mapping)) {
+							value = row[mapping];
+							if (angular.isDefined(value) && value !== '') {
+								event[field] = value.split(', ');
+							}
+						} else {
+							var objects = 1;
+							for (var i = 0; i < objects; ++i) {
+								var object = {};
+								for (var nested in mapping) {
+									var offset = mapping[nested];
+									value = row[offset];
+									if (angular.isDefined(value) && value !== '') {
+										var values = value.split(', ');
+										object[nested] = values[i];
+										objects = values.length;
+									}
+								}
+								if (!$.isEmptyObject(object)) {
+									event[field] = event[field] || [];
+									event[field].push(object);				
+								}
+							}
+						}
+					});
+					if (!$.isEmptyObject(event)) {
+						events.push(event);
+					}
+				});
+				return events;				
+			}
+		};
+	}]);
 
 	app.factory('SleepCycle', ['moment', function(moment) {
 
@@ -4771,7 +4884,7 @@
 		};
 	}]);
 
-	app.controller('ImportDialogController', ['$scope', '$http', '$routeParams', 'SleepCycle', 'tracker', 'delay', function($scope, $http, $routeParams, SleepCycle, tracker, delay) {
+	app.controller('ImportDialogController', ['$scope', '$http', '$routeParams', 'EventSpreadsheet', 'SleepCycle', 'tracker', 'delay', function($scope, $http, $routeParams, EventSpreadsheet, SleepCycle, tracker, delay) {
 
 		$scope.bucketId = $routeParams.bucketId;
 		$scope.formats = [
@@ -4785,6 +4898,14 @@
 						events = events.events;
 					}
 					return $.isArray(events) ? events : [];
+				}
+			},
+			{
+				id : 'zenobase-csv',
+				label : 'Zenobase (csv)', 
+				description : 'Import data exported from another bucket.',
+				parse : function(data) {
+					return EventSpreadsheet.parse(data);
 				}
 			},
 			{
@@ -6294,7 +6415,7 @@
 			icon : 'fa-clock-o',
 			type : 'numeric',
 			toText : function(value) {
-				return value ? moment.duration(value).countdown() : 0;
+				return value ? moment.duration(toNumber(value)).countdown() : 0;
 			},
 			toHtml : function(value) {
 				return '<span class="nowrap">' +
