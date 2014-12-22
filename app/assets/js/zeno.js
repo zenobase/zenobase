@@ -988,36 +988,69 @@
 		$scope.init = function() {
 			$scope.label = 'My Data';
 			$scope.message = '';
+			$scope.source = null;
+			$scope.category = null;
 			$scope.template = null;
 			$http.get(cacheBuster.rewrite('/dashboard/templates.json')).success(function(response) {
 				$scope.templates = response;
-				$scope.template = $scope.templates[0];
 			});
 			tracker.event('dialog', 'create bucket');
 		};
+		$scope.sources = function() {
+			var sources = [];
+			if ($scope.templates) {
+				$.each($scope.templates, function(i, template) {
+					if (!$scope.category || $scope.category === template.category) {
+						if (sources.indexOf(template.source) === -1) {
+							console.assert(template.source, template);
+							sources.push(template.source);
+						}
+					}
+				});
+			}
+			return sources.sort(function(a, b) {
+				return a.localeCompare(b);
+			});
+		};
+		$scope.categories = function() {
+			var categories = [];
+			if ($scope.templates) {
+				$.each($scope.templates, function(i, template) {
+					if (!$scope.source || $scope.source === template.source) {
+						if (categories.indexOf(template.category) === -1) {
+							console.assert(template.category, template);
+							categories.push(template.category);
+						}
+					}
+				});
+			}
+			return categories.sort();
+		};
 		$scope.valid = function() {
-			return true;
+			return $scope.source && $scope.category || !$scope.source && !$scope.category;
 		};
 		$scope.validLabel = function() {
 			return $scope.label && $scope.label.length > 0;
 		};
 		$scope.create = function() {
 			$scope.alert.clear();
-			$http.post('/buckets/', { label : $scope.label, widgets : $scope.template.widgets })
+			$http.post('/buckets/', { label : $scope.label, widgets : $scope.template ? $scope.template.widgets : [] })
 				.success(function(response, status, headers) {
 					var location = headers('Location');
 					console.assert(status === 201, status);
 					console.assert(location, 'missing location header');
 					$scope.closeDialog();
 					$location.url(location);
-					if ($scope.template.task) {
-						$timeout(function() {
-							$scope.openDialog('create-task-dialog', $scope.template.task);
-						}, 500);
-					} else if ($scope.template.importer) {
-						$timeout(function() {
-							$scope.openDialog('import-dialog', $scope.template.importer);
-						}, 500);
+					if ($scope.template) {
+						if ($scope.template.task) {
+							$timeout(function() {
+								$scope.openDialog('create-task-dialog', $scope.template.task);
+							}, 500);
+						} else if ($scope.template.importer) {
+							$timeout(function() {
+								$scope.openDialog('import-dialog', $scope.template.importer);
+							}, 500);
+						}
 					}
 				})
 				.error(function(response, status) {
@@ -1027,8 +1060,25 @@
 						$scope.message = 'Couldn\'t create bucket. Please try agan later or contact support.';					
 					}
 				});
-			tracker.event('action', 'create bucket', $scope.template.label);
+			tracker.event('action', 'create bucket', $scope.template ? $scope.template.label : undefined);
 		};
+
+		var setTemplate = function() {
+			if ($scope.templates) {
+				if ($scope.source && $scope.category) {
+					$.each($scope.templates, function(i, template) {
+						if (template.source === $scope.source && template.category === $scope.category) {
+							$scope.template = template;
+							return false;
+						}
+					});
+				} else {
+					$scope.template = null;
+				}
+			}
+		};
+		$scope.$watch('source', setTemplate);
+		$scope.$watch('category', setTemplate);
 	}]);
 
 	app.controller('CreateViewDialogController', ['$scope', '$http', '$location', '$timeout', 'tracker', function($scope, $http, $location, $timeout, tracker) {

@@ -1,37 +1,7 @@
 [
 	{
-		"label" : "Default",
-		"widgets" : [
-			{
-				"id" : "timeline",
-				"type" : "timeline",
-				"label" : "Timeline",
-				"placement" : "top",
-				"field" : "timestamp",
-				"statistic" : "count"
-			},
-			{
-				"id" : "latest",
-				"type" : "list",
-				"label" : "Latest",
-				"placement" : "left",
-				"singleton" : true,
-				"limit" : 10,
-				"order" : "-timestamp"
-			},
-			{
-				"id" : "tags",
-				"type" : "count",
-				"label" : "Tags",
-				"placement" : "right",
-				"field" : "tag",
-				"limit" : 10,
-				"order" : "-count"
-			}
-		]
-	},
-	{
-		"label" : "Activities (Fitbit)",
+		"category" : "Activities",
+		"source" : "Fitbit",
 		"task" : "fitbit-activities",
 		"widgets" : [
 			{
@@ -84,7 +54,8 @@
 		]
 	},
 	{
-		"label" : "Activities (Google Fit)",
+		"category" : "Activities",
+		"source" : "Google Fit",
 		"task" : "google-activities",
 		"widgets" : [
 			{
@@ -145,7 +116,8 @@
 		]
 	},
 	{
-		"label" : "Activities (iHealth)",
+		"category" : "Activities",
+		"source" : "iHealth",
 		"task" : "ihealth-activities",
 		"widgets" : [
 			{
@@ -198,7 +170,8 @@
 		]
 	},
 	{
-		"label" : "Activities (Misfit)",
+		"category" : "Activities",
+		"source" : "Misfit",
 		"task" : "misfit-activities",
 		"widgets" : [
 			{
@@ -251,7 +224,8 @@
 		]
 	},
 	{
-		"label" : "Activities (Moves)",
+		"category" : "Activities",
+		"source" : "Moves",
 		"task" : "moves-activities",
 		"widgets" : [
 			{
@@ -304,7 +278,8 @@
 		]
 	},
 	{
-		"label" : "Activities (MapMyFitness)",
+		"category" : "Activities",
+		"source" : "MapMyFitness",
 		"task" : "mapmyfitness-activities",
 		"widgets" : [
 			{
@@ -363,7 +338,8 @@
 		]
 	},
 	{
-		"label" : "Activities (RunKeeper)",
+		"category" : "Activities",
+		"source" : "RunKeeper",
 		"task" : "runkeeper-activities",
 		"widgets" : [
 			{
@@ -422,7 +398,8 @@
 		]
 	},
 	{
-		"label" : "Activities (Strava)",
+		"category" : "Activities",
+		"source" : "Strava",
 		"task" : "strava-activities",
 		"widgets" : [
 			{
@@ -481,7 +458,8 @@
 		]
 	},
 	{
-		"label" : "Burn (BodyMedia)",
+		"category" : "Burn",
+		"source" : "BodyMedia",
 		"task" : "bodymedia-burn",
 		"widgets" : [
 			{
@@ -535,7 +513,8 @@
 		]
 	},
 	{
-		"label" : "Environment (Netatmo)",
+		"category" : "Environment",
+		"source" : "Netatmo",
 		"task" : "netatmo", 
 		"widgets": [
 			{
@@ -659,7 +638,8 @@
 		]
 	},
 	{
-		"label" : "Food (Fitbit)",
+		"category" : "Food",
+		"source" : "Fitbit",
 		"task" : "fitbit-food", 
 		"widgets" : [
 			{
@@ -703,7 +683,8 @@
 		]
 	},
 	{
-		"label" : "Food (Google)",
+		"category" : "Food",
+		"source" : "Google Fit",
 		"task" : "google-food", 
 		"widgets" : [
 			{
@@ -747,7 +728,8 @@
 		]
 	},
 	{
-		"label" : "Food (iHealth)",
+		"category" : "Food",
+		"source" : "iHealth",
 		"task" : "ihealth-food", 
 		"widgets" : [
 			{
@@ -800,7 +782,8 @@
 		]
 	},
 	{
-		"label" : "Food (Jawbone)",
+		"category" : "Food",
+		"source" : "Jawbone",
 		"task" : "jawbone-food", 
 		"widgets" : [
 			{
@@ -844,7 +827,8 @@
 		]
 	},
 	{
-		"label" : "Glucose (iHealth)",
+		"category" : "Glucose",
+		"source" : "iHealth",
 		"task" : "ihealth-glucose", 
 		"widgets" : [
 			{
@@ -888,7 +872,8 @@
 		]
 	},
 	{
-		"label" : "Heart Rate (Google Fit)",
+		"category" : "Heart Rate",
+		"source" : "Google Fit",
 		"task" : "google-cardio", 
 		"widgets" : [
 			{
@@ -933,7 +918,8 @@
 		]
 	},
 	{
-		"label" : "Heart Rate (iHealth)",
+		"category" : "Heart Rate",
+		"source" : "iHealth",
 		"task" : "ihealth-cardio", 
 		"widgets" : [
 			{
@@ -976,7 +962,8 @@
 		]
 	},
 	{
-		"label" : "Heart Rate (Withings)",
+		"category" : "Heart Rate",
+		"source" : "Withings",
 		"task" : "withings-cardio", 
 		"widgets" : [
 			{
@@ -1019,7 +1006,8 @@
 		]
 	},
 	{
-		"label" : "Music (Last.fm)",
+		"category" : "Music",
+		"source" : "Last.fm",
 		"task" : "lastfm-tracks",
 		"widgets" : [
 			{
@@ -1070,7 +1058,8 @@
 		]
 	},
 	{
-		"label" : "Places (Foursquare)",
+		"category" : "Places",
+		"source" : "Foursquare",
 		"task" : "foursquare",
 		"widgets" : [
 			{
@@ -1116,7 +1105,8 @@
 		]
 	},
 	{
-		"label" : "Places (Moves)",
+		"category" : "Places",
+		"source" : "Moves",
 		"task" : "moves-places",
 		"widgets" : [
 			{
@@ -1191,7 +1181,8 @@
 		]
 	},
 	{
-		"label" : "Questions (Reporter)",
+		"category" : "Survey",
+		"source" : "Reporter",
 		"task" : "reporter-questions",
 		"widgets" : [
 			{
@@ -1271,7 +1262,8 @@
 		]
 	},
 	{
-		"label" : "Sleep (BodyMedia)",
+		"category" : "Sleep",
+		"source" : "BodyMedia",
 		"task" : "bodymedia-sleep",
 		"widgets" : [
 			{
@@ -1351,7 +1343,8 @@
 		]
 	},
 	{
-		"label" : "Sleep (Fitbit)",
+		"category" : "Sleep",
+		"source" : "Fitbit",
 		"task" : "fitbit-sleep",
 		"widgets" : [
 			{
@@ -1431,7 +1424,8 @@
 		]
 	},
 	{
-		"label" : "Sleep (iHealth)",
+		"category" : "Sleep",
+		"source" : "iHealth",
 		"task" : "ihealth-sleep",
 		"widgets" : [
 			{
@@ -1514,7 +1508,8 @@
 		]
 	},
 	{
-		"label" : "Sleep (Jawbone)",
+		"category" : "Sleep",
+		"source" : "Jawbone",
 		"task" : "jawbone-sleep",
 		"widgets" : [
 			{
@@ -1594,7 +1589,8 @@
 		]
 	},
 	{
-		"label" : "Sleep (Misfit)",
+		"category" : "Sleep",
+		"source" : "Misfit",
 		"task" : "misfit-sleep",
 		"widgets" : [
 			{
@@ -1677,7 +1673,8 @@
 		]
 	},
 	{
-		"label" : "Sleep (SleepCloud)",
+		"category" : "Sleep",
+		"source" : "SleepCloud",
 		"task" : "sleepcloud",
 		"widgets" : [
 			{
@@ -1780,7 +1777,8 @@
 		]
 	},
 	{
-		"label" : "Sleep (SleepCycle)",
+		"category" : "Sleep",
+		"source" : "SleepCycle",
 		"importer" : "sleepcycle",
 		"widgets" : [
 			{
@@ -1863,7 +1861,8 @@
 		]
 	},
 	{
-		"label" : "Sleep (Withings)",
+		"category" : "Sleep",
+		"source" : "Withings",
 		"task" : "withings-sleep",
 		"widgets" : [
 			{
@@ -1946,7 +1945,8 @@
 		]
 	},
 	{
-		"label" : "Steps (BodyMedia)",
+		"category" : "Steps",
+		"source" : "BodyMedia",
 		"task" : "bodymedia-steps",
 		"widgets" : [
 			{
@@ -2000,7 +2000,8 @@
 		]
 	},
 	{
-		"label" : "Steps (Fitbit)",
+		"category" : "Steps",
+		"source" : "Fitbit",
 		"task" : "fitbit-steps", 
 		"widgets" : [
 			{
@@ -2046,7 +2047,8 @@
 		]
 	},
 	{
-		"label" : "Steps (iHealth)",
+		"category" : "Steps",
+		"source" : "iHealth",
 		"task" : "ihealth-steps", 
 		"widgets" : [
 			{
@@ -2092,7 +2094,8 @@
 		]
 	},
 	{
-		"label" : "Steps (Jawbone)",
+		"category" : "Steps",
+		"source" : "Jawbone",
 		"task" : "jawbone-steps", 
 		"widgets" : [
 			{
@@ -2138,7 +2141,8 @@
 		]
 	},
 	{
-		"label" : "Steps (Misfit)",
+		"category" : "Steps",
+		"source" : "Misfit",
 		"task" : "misfit-steps", 
 		"widgets" : [
 			{
@@ -2184,7 +2188,8 @@
 		]
 	},
 	{
-		"label" : "Steps (Withings)",
+		"category" : "Steps",
+		"source" : "Withings",
 		"task" : "withings-steps", 
 		"widgets" : [
 			{
@@ -2230,7 +2235,8 @@
 		]
 	},
 	{
-		"label" : "Time Tracking (RescueTime)",
+		"category" : "Time Tracking",
+		"source" : "RescueTime",
 		"task" : "rescuetime-productivity",
 		"widgets" : [
 			{
@@ -2291,7 +2297,8 @@
 		]
 	},
 	{
-		"label" : "Trips (Automatic)",
+		"category" : "Trips",
+		"source" : "Automatic",
 		"task" : "automatic-trips",
 		"widgets" : [
 			{
@@ -2379,7 +2386,8 @@
 		]
 	},
 	{
-		"label" : "Weight (Fitbit)",
+		"category" : "Weight",
+		"source" : "Fitbit",
 		"task" : "fitbit-weight", 
 		"widgets" : [
 			{
@@ -2422,7 +2430,8 @@
 		]
 	},
 	{
-		"label" : "Weight (Google Fit)",
+		"category" : "Weight",
+		"source" : "Google Fit",
 		"task" : "google-weight", 
 		"widgets" : [
 			{
@@ -2458,7 +2467,8 @@
 		]
 	},
 	{
-		"label" : "Weight (iHealth)",
+		"category" : "Weight",
+		"source" : "iHealth",
 		"task" : "ihealth-weight", 
 		"widgets" : [
 			{
@@ -2501,7 +2511,8 @@
 		]
 	},
 	{
-		"label" : "Weight (Jawbone)",
+		"category" : "Weight",
+		"source" : "Jawbone",
 		"task" : "jawbone-weight", 
 		"widgets" : [
 			{
@@ -2544,7 +2555,8 @@
 		]
 	},
 	{
-		"label" : "Weight (RunKeeper)",
+		"category" : "Weight",
+		"source" : "RunKeeper",
 		"task" : "runkeeper-weight", 
 		"widgets" : [
 			{
@@ -2587,7 +2599,8 @@
 		]
 	},
 	{
-		"label" : "Weight (Withings)",
+		"category" : "Weight",
+		"source" : "Withings",
 		"task" : "withings-weight", 
 		"widgets" : [
 			{

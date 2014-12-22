@@ -90,7 +90,15 @@
 					</div>
 					<div class="control-group">
 						<label for="bucket-template-select"><strong>Template</strong></label>
-						<select id="bucket-template-select" required data-ng-model="template" data-ng-options="template.label for template in templates"></select>
+						<select id="bucket-source-select" class="input-medium" data-ng-model="source" data-ng-options="source for source in sources()">
+							<option value="">(Source)</option>
+						</select>
+						<select id="bucket-category-select" class="input-medium" data-ng-model="category" data-ng-options="category for category in categories()">
+							<option value="">(Category)</option>
+						</select>
+						<p class="help-block">
+							<i>Choose a template to preconfigure the bucket for a data source.</i>
+						</p>
 					</div>
 				</div>
 				<div class="modal-footer">
