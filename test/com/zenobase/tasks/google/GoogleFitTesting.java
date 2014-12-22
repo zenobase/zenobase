@@ -16,11 +16,10 @@ import com.zenobase.tasks.TaskTestingSupport;
 public class GoogleFitTesting extends TaskTestingSupport {
 
 	@Test
-	@Ignore
 	public void testActivities() {
 		run(new GoogleFitActivitiesTaskManager(newCredentialsManager()), Nodes.newObject()
-			.put("marker", "2014-12-13")
-			.put("timezone", "America/Los_Angeles")
+			.put("marker", "2014-12-20")
+			.put("timezone", "America/Guadeloupe")
 			.put("metric", true)
 			.put("derived", false));
 	}
@@ -54,6 +53,7 @@ public class GoogleFitTesting extends TaskTestingSupport {
 	}
 
 	@Test
+	@Ignore
 	public void testLocate() {
 		run(new GoogleFitLocateTaskManager(newCredentialsManager(), fakeEventRepository()), Nodes.newObject());
 	}
