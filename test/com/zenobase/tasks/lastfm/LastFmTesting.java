@@ -12,7 +12,7 @@ public class LastFmTesting extends TaskTestingSupport {
 		run(new LastFmTaskManager(newCredentialsManager()), Nodes.newObject()
 			.put("tag", "track")
 			.put("timezone", "America/Los_Angeles")
-			.put("marker", "2014-05-01T17:35:45.000Z"));
+			.put("marker", "2014-12-10T17:35:45.000Z"));
 	}
 
 	@Override

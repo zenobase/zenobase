@@ -82,7 +82,7 @@ public class LastFmCredentialsManager extends OAuthCredentialsManager {
 	}
 
 	private void sign(LastFmRequest request, OAuthCredentials credentials) {
-		request.addQuerystringParameter("token", credentials.getToken().getToken());
+		request.addQuerystringParameter("sk", credentials.getToken().getToken());
 		request.addQuerystringParameter("api_key", apiKey);
 		request.addQuerystringParameter("api_sig", signature.sign(request.getQuerystringParameters()));
 	}

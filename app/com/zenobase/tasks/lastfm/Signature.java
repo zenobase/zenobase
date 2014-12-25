@@ -27,7 +27,9 @@ public class Signature {
 	private static String toString(Map<String, String> params) {
 		List<String> sortable = Lists.newArrayList();
 		for (Map.Entry<String, String> param : params.entrySet()) {
-			sortable.add(param.getKey() + param.getValue());
+			if (!"format".equals(param.getKey())) {
+				sortable.add(param.getKey() + param.getValue());
+			}
 		}
 		Collections.sort(sortable);
 		return Joiner.on("").join(sortable);
