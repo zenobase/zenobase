@@ -86,6 +86,9 @@ class MeasurementsResult {
 		return node.isNumber() ? Rating.valueOf(getRating(node.intValue())) : null;
 	}
 
+	/**
+	 * {@link http://www.engineeringtoolbox.com/co2-comfort-level-d_1024.html}
+	 */
 	private static int getRating(int value) {
 		if (value < 450) { // outdoor
 			return 100;
