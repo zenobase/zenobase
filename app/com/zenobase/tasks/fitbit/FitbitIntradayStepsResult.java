@@ -7,6 +7,7 @@ import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.Duration;
 import org.joda.time.LocalDate;
+import org.joda.time.LocalDateTime;
 import org.joda.time.LocalTime;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.base.Objects;
@@ -38,15 +39,21 @@ class FitbitIntradayStepsResult extends FitbitResultSupport {
 		Map<DateTime, Integer> values = Maps.newLinkedHashMap();
 		for (JsonNode recordNode : node.path("activities-steps-intraday").path("dataset")) {
 			DateTime hour = toDateTimeFullHour(LocalTime.parse(recordNode.path("time").textValue()));
-			int value = recordNode.path("value").intValue();
-			Integer count = Objects.firstNonNull(values.get(hour), 0);
-			values.put(hour, count + value);
+			if (hour != null) {
+				int value = recordNode.path("value").intValue();
+				Integer count = Objects.firstNonNull(values.get(hour), 0);
+				values.put(hour, count + value);
+			}
 		}
 		return values;
 	}
 
 	private DateTime toDateTimeFullHour(LocalTime local) {
-		return date.toDateTime(local, timezone).withMinuteOfHour(0).withSecondOfMinute(0).withMillisOfSecond(0);
+		return toDateTimeFullHour(date.toLocalDateTime(local).withMinuteOfHour(0).withSecondOfMinute(0).withMillisOfSecond(0));
+	}
+
+	private DateTime toDateTimeFullHour(LocalDateTime local) {
+		return !timezone.isLocalDateTimeGap(local) ? local.toDateTime(timezone) : null;
 	}
 
 	private Event toEvent(DateTime timestamp, int count) {
