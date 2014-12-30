@@ -48,6 +48,8 @@ public class Units {
 		UnitFormat.getInstance().alias(SI.HERTZ.divide(60L), "rpm");
 
 		UnitFormat.getInstance().label(SI.PASCAL.times(6894.75729), "psi");
+		UnitFormat.getInstance().alias(SI.HECTO(SI.PASCAL), "mbar");
+		UnitFormat.getInstance().alias(SI.HECTO(SI.PASCAL).times(1000), "bar");
 
 		UnitFormat.getInstance().label(SI.CELSIUS, "C");
 		UnitFormat.getInstance().label(NonSI.FAHRENHEIT, "F");
