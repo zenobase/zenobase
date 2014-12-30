@@ -19,7 +19,7 @@ public class GoogleFitTesting extends TaskTestingSupport {
 	public void testActivities() {
 		run(new GoogleFitActivitiesTaskManager(newCredentialsManager()), Nodes.newObject()
 			.put("marker", "2014-12-20")
-			.put("timezone", "America/Guadeloupe")
+			.put("timezone", "America/Los_Angeles")
 			.put("metric", true)
 			.put("derived", false));
 	}
