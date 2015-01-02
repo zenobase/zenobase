@@ -5230,6 +5230,7 @@
 	
 		$scope.types = [ 
 			{ id : 'automatic-trips', description : 'Creates an event for each trip recorded.', url : 'https://www.automatic.com/' },
+			{ id : 'beeminder', description : 'Updates a goal with event counts or value totals for each day.', url : 'https://www.beeminder.com/' },
 			{ id : 'bodymedia-burn', description : 'Creates an event for the number of calories burned each day or hour.', url : 'http://www.bodymedia.com/' },
 			{ id : 'bodymedia-sleep', description : 'Creates an event for each period of sleep.', url : 'http://www.bodymedia.com/' },
 			{ id : 'bodymedia-steps', description : 'Creates an event for the number of steps each day or hour.', url : 'http://www.bodymedia.com/' },
@@ -5561,6 +5562,52 @@
 			updateUnitValidity();
 		});
 
+		$scope.init();
+	}]);
+
+	app.controller('BeeminderSettingsController', ['$scope', 'moment', 'Field', function($scope, moment, Field) {
+
+		$scope.keyField = 'timestamp';
+
+		$scope.init = function() {
+			$scope.settings = $scope.$parent.$parent.settings = {
+					goal : null,
+					filter : null,
+					key_field : $scope.keyField,
+					field : null,
+					unit : null,
+					marker : new Date(moment().utc().startOf('month').valueOf())
+			};
+		};
+		function isUnitValid() {
+			var units = $scope.getUnits();
+			return units.length === 0 ?
+					$scope.settings.unit === null :
+					$.inArray($scope.settings.unit, units) != -1;
+		}
+		function updateUnitValidity() {
+			$scope.$parent.$parent.form.unit.$setValidity('unit', isUnitValid());
+		}
+		$scope.getFields = function() {
+			return Field.findByType('numeric');
+		};
+		$scope.getUnits = function() {
+			var f = Field.find($scope.settings.field);
+			return f ? f.units : [];
+		};
+		$scope.subfields = $.map(Field.find($scope.keyField).subfields, function(subfield) {
+			return { label : subfield, value : (subfield ? $scope.keyField + '$' + subfield : $scope.keyField) };
+		});
+
+		$scope.$watch('settings.field', function() {
+			if (!isUnitValid()) {
+				$scope.settings.unit = null;
+			}
+			updateUnitValidity();
+		});
+		$scope.$watch('settings.unit', function() {
+			updateUnitValidity();
+		});
 		$scope.init();
 	}]);
 

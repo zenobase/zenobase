@@ -532,19 +532,38 @@
 		</div>
 	</script>
 
-	<script id="/trackthisforme-settings.html" type="text/ng-template">
-		<div data-ng-controller="TrackthisformeSettingsController">
+	<script id="/beeminder-settings.html" type="text/ng-template">
+		<div data-ng-controller="BeeminderSettingsController">
 			<div class="control-group">
-				<label for="category" class="control-label">Category-Field Mapping</label>
-				<input name="category" type="text" required class="input-medium" data-ng-model="settings.category"/> as 
+				<label for="goal" class="control-label">Goal</label>
+				<input name="goal" type="text" required class="input-medium" data-ng-model="settings.goal"/>
+				<p class-"help-block">The name of an existing goal in Beeminder.</p>
+			</div>
+			<div class="control-group">
+				<label class="control-label">Values</label>
 				<select name="field" class="input-medium" data-ng-model="settings.field" data-ng-options="field.name as field.name for field in getFields()">
 					<option value=""></option>
 				</select>
 				<span data-ng-show="getUnits().length"> in <select name="unit" class="input-small" data-ng-model="settings.unit" data-ng-options="unit for unit in getUnits()"></select></span>
-				<br/>
-				<label class="checkbox">
-					<input type="checkbox" data-ng-model="settings.rating"/> also map <em>satisfaction</em> to <em>rating</em>
-				</label>
+				<p class-"help-block">Instead of reporting events counts, report values from this field.</p>
+			</div>
+			<div class="control-group">
+				<label class="control-label" for="filter">Filter</label>
+				<div class="controls form-horizontal input-append">
+					<input name="filter" type="text" data-ng-model="settings.filter" data-ui-check-filter="bucket" placeholder="e.g. tag:xyz"/>
+					<span class="add-on">
+						<i class="fa fa-exclamation" title="not valid" data-ng-show="form.filter.$invalid"></i>
+						<i class="fa fa-check" title="valid" data-ng-hide="form.filter.$invalid"></i>
+					</span>
+				</div>
+				<p class-"help-block">Report only values from events that match this constraint.</p>
+			</div>
+			<div class="control-group">
+				<label class="control-label" for="keyField">Timestamp</label>
+				<div class="controls form-horizontal">
+					<select name="keyField" class="input-small" data-ng-model="settings.key_field" data-ng-options="subfield.value as subfield.label for subfield in subfields"></select>
+					<p class="help-block">How to handle events with multiple timestamps that span days.</p>
+				</div>
 			</div>
 			<div class="control-group">
 				<label for="marker" class="control-label">Starting from</label>

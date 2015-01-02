@@ -103,6 +103,8 @@ import com.zenobase.tasks.TaskManagerRegistry;
 import com.zenobase.tasks.TaskRefresher;
 import com.zenobase.tasks.automatic.AutomaticCredentialsManager;
 import com.zenobase.tasks.automatic.AutomaticTaskManager;
+import com.zenobase.tasks.beeminder.BeeminderCredentialsManager;
+import com.zenobase.tasks.beeminder.BeeminderTaskManager;
 import com.zenobase.tasks.bodymedia.BodyMediaBurnTaskManager;
 import com.zenobase.tasks.bodymedia.BodyMediaCredentialsManager;
 import com.zenobase.tasks.bodymedia.BodyMediaSleepTaskManager;
@@ -126,8 +128,8 @@ import com.zenobase.tasks.google.GoogleCredentialsManager;
 import com.zenobase.tasks.google.GoogleFitActivitiesTaskManager;
 import com.zenobase.tasks.google.GoogleFitCardioTaskManager;
 import com.zenobase.tasks.google.GoogleFitFoodTaskManager;
-import com.zenobase.tasks.google.GoogleFitWeightTaskManager;
 import com.zenobase.tasks.google.GoogleFitLocateTaskManager;
+import com.zenobase.tasks.google.GoogleFitWeightTaskManager;
 import com.zenobase.tasks.ihealth.IHealthActivitiesTaskManager;
 import com.zenobase.tasks.ihealth.IHealthCardioTaskManager;
 import com.zenobase.tasks.ihealth.IHealthCredentialsManager;
@@ -295,6 +297,7 @@ public class Global extends GlobalSettings {
 				bindIfConfigured("misfit", MisfitCredentialsManager.class, credentials);
 				bindIfConfigured("trackthisforme", TrackthisformeCredentialsManager.class, credentials);
 				bindIfConfigured("ihealth", IHealthCredentialsManager.class, credentials);
+				bindIfConfigured("beeminder", BeeminderCredentialsManager.class, credentials);
 				bind(CredentialsManagerRegistry.class).in(Singleton.class);
 
 				Multibinder<TaskManager> tasks = Multibinder.newSetBinder(binder(), new TypeLiteral<TaskManager>() {});
@@ -347,6 +350,7 @@ public class Global extends GlobalSettings {
 				bindIfConfigured("ihealth", IHealthStepsTaskManager.class, tasks);
 				bindIfConfigured("ihealth", IHealthWeightTaskManager.class, tasks);
 				bindIfConfigured("trackthisforme", TrackthisformeTaskManager.class, tasks);
+				bindIfConfigured("beeminder", BeeminderTaskManager.class, tasks);
 				bind(TaskManagerRegistry.class).in(Singleton.class);
 
 				bind(AccountController.class).in(Singleton.class);
