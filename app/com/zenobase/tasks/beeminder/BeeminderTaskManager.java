@@ -75,8 +75,11 @@ public class BeeminderTaskManager extends OAuthTaskManager {
 		ObjectNode result = find(task.getBucketId(), task.getKeyField(), task.getField(), task.getUnit(), task.getFrom(), user.getTimezone(), task.getFilter());
 		DateTime to = getLatest(result);
 		ArrayNode datapoints = getDatapoints(result, task.getField() != null, Event.DURATION.getName().equals(task.getField()));
-		send(datapoints, task.getGoal(), credentials);
-		return createCommand(task, to, credentials);
+		if (to != null && datapoints.size() > 0) {
+			send(datapoints, task.getGoal(), credentials);
+			return createCommand(task, to, credentials);
+		}
+		return null;
 	}
 
 	private UserResult getUser(OAuthCredentials credentials) {
