@@ -61,8 +61,8 @@ public class MovesActivitiesTaskManager extends MovesTaskManagerSupport {
 	private List<Event> getEvents(MovesActivitiesTask task, OAuthCredentials credentials, DateTime begin) {
 		List<Event> events = Lists.newArrayList();
 		LocalDate today = LocalDate.now(begin.getZone());
-		for (LocalDate from = begin.toLocalDate(); !from.isAfter(today); from = from.withDayOfMonth(1).plusMonths(1)) {
-			LocalDate to = min(from.dayOfMonth().withMaximumValue(), today);
+		for (LocalDate from = begin.toLocalDate(); !from.isAfter(today); from = from.plusDays(7)) {
+			LocalDate to = min(from.plusDays(6), today);
 			ActivitiesQuery request = new ActivitiesQuery(task.getPrincipal(), begin, task.getUnit(), task.getEnergyUnit(), credentials);
 			events.addAll(request.find(from, to).getEvents());
 		}
