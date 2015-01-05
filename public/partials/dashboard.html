@@ -1557,10 +1557,9 @@
 					</div>
 					<div class="controls">
 						<span class="help-block" data-ng-bind-html="format.description"></span>
-						<span class="help-block">For help with importing data from other sources,
-						<a href="https://zenobase.uservoice.com/">contact us</a>.</span>
 					</div>
 				</div>
+				<div class="modal-body modal-append" data-ng-hide="events.length" data-ng-show="format.settings"  data-ng-include="format.settings"></div>
 				<div class="modal-body modal-append" data-ng-show="events.length">
 					<p data-ng-repeat="event in events | startFrom:offset | limitTo:1">
 						<span data-ui-bind-event="event"></span>
@@ -1571,13 +1570,28 @@
 						<button type="button" class="btn" title="Next" data-ng-click="next()" data-ng-disabled="offset + 1 >= events.length"><i class="fa fa-chevron-right"></i></button>
 					</div>
 				</div>
-				<div class="modal-footer" class="progress">
+				<div class="modal-footer">
+					<p class="pull-left">Want to import from another source? <a href="https://zenobase.uservoice.com/">Let us know!</a></p>
 					<button type="submit" class="btn btn-primary" data-ng-disabled="importing || isEmpty()">Import</button>
 					<button type="reset" class="btn" data-dismiss="modal" data-ng-disabled="importing">Cancel</button>
 				</div>
 			</fieldset>
 		</form>
 	</div>
+
+	<script id="/import-taplog.html" type="text/ng-template">
+		<div data-ng-controller="ImportTapLogController">
+			<div class="controls form-horizontal">
+				<select name="field" class="input-medium" data-ng-model="settings.field" data-ng-options="field.name as field.name for field in fields">
+					<option value="">N/A</option>
+				</select>
+				<span data-ng-show="units.length"> in <select name="unit" class="input-small" data-ng-model="settings.unit" data-ng-options="unit for unit in units"></select></span>
+			</div>
+			<div class="control-group">
+				<p class="help-block">The field to map numbers to.</p>
+			</div>
+		</div>
+	</script>
 
 	<div id="export-dialog" data-ui-modal data-ng-controller="ExportDialogController">
 		<form name="form" class="modal-form">

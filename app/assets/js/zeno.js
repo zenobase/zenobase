@@ -4731,40 +4731,9 @@
 	app.factory('EventSpreadsheet', ['moment', function(moment) {
 
 		/**
-		 * Parse a csv string into a [[]]. Based on http://www.bennadel.com/blog/1504-ask-ben-parsing-csv-strings-with-javascript-exec-regular-expression-command.htm. 
-		 */
-		function parseCSV(s) {
-			var pattern = new RegExp(
-					'(\\,|\\r?\\n|\\r|^)' + // delimiters 
-					'(?:"([^"]*(?:""[^"]*)*)"|' + // quoted fields
-					'([^"\\,\\r\\n]*))', 'g'); // standard fields
-			var data = [[]];
-			var matches = null;
-			while (matches = pattern.exec(s)) {
-				if (matches[1].length && matches[1] !== ',') {
-					data.push([]);
-				}
-				data[data.length - 1].push(matches[2] ? matches[2].replace(new RegExp('""', 'g'), '"') : matches[3]);
-			}
-			return clean(data);
-		}
-
-		function clean(data) {
-			$.each(data, function(i, row) {
-				$.each(row, function(j, value) {
-					if (angular.isDefined(value)) {
-						data[i][j] = value.trim();
-					}
-				});
-			});
-			return data;
-		}
-
-		/**
 		 * input: timestamp, distance.@value, distance.unit, tag
 		 * output: { 'timestamp' : 0, 'distance' : { '@value' : 1, 'unit' : 2 }, 'tag' : 3 }
 		 */
-
 		function buildMappings(headers) {
 			var mappings = {};
 			$.each(headers, function(i, header) {
@@ -4787,9 +4756,13 @@
 		return {
 			parse : function(s) {
 				var events = [];
-				var data = parseCSV(s);
-				var mappings = buildMappings(data.shift());
-				$.each(data, function(i, row) {
+				var csv = Baby.parse(s, { skipEmptyLines : true });
+				console.log('csv', csv);
+				if (csv.errors.length) {
+					throw new Error(csv.errors[0].message + ' in row ' + csv.errors[0].row);
+				}
+				var mappings = buildMappings(csv.data.shift());
+				$.each(csv.data, function(i, row) {
 					var event = {};
 					$.each(mappings, function(field, mapping) {
 						var value;
@@ -4919,42 +4892,95 @@
 		};
 	}]);
 
-	app.controller('ImportDialogController', ['$scope', '$http', '$routeParams', 'EventSpreadsheet', 'SleepCycle', 'tracker', 'delay', function($scope, $http, $routeParams, EventSpreadsheet, SleepCycle, tracker, delay) {
+	app.factory('TapLog', function() {
+
+		return {
+			parse : function(s, settings) {
+				var events = [];
+				var csv = Baby.parse(s, { header : true, skipEmptyLines : true });
+				if (csv.errors.length) {
+					throw new Error(csv.errors[0].message + ' in row ' + csv.errors[0].row);
+				}
+				$.each(csv.data, function(rowNum, row) {
+					var event = {
+						'timestamp' : row['timestamp'],
+						'tag' : [],
+					};
+					for (var i = 1; i < 10; ++i) {
+						var category = row['cat' + i];
+						if (category) {
+							event['tag'].push(category);
+						}
+					}
+					if (settings.field && row['number']) {
+						var value = Number(row['number']);
+						event[settings.field] = settings.unit ? {
+							'@value' : value,
+							'unit' : settings.unit
+						} : value;
+					}
+					if (row['rating']) {
+						event['rating'] = Number(row['rating']) * 20;
+					}
+					if (row['note']) {
+						event['note'] = row['note'];
+					}
+					if (row['latitude']) {
+						var lat = Number(row['latitude']);
+						var lon = Number(row['longitude']);
+						if (lat !== 0 || lon !== 0) {
+							event['location'] = { 'lat' : lat, 'lon' : lon };
+						}
+					}
+					events.push(event);
+				});
+				return events;
+			}
+		};
+	});
+
+	app.controller('ImportDialogController', ['$scope', '$http', '$routeParams', 'EventSpreadsheet', 'SleepCycle', 'TapLog', 'tracker', 'delay', function($scope, $http, $routeParams, EventSpreadsheet, SleepCycle, TapLog, tracker, delay) {
 
 		$scope.bucketId = $routeParams.bucketId;
 		$scope.formats = [
 			{
 				id : 'zenobase',
-				label : 'Zenobase (json)', 
-				description : 'Import data exported from another bucket. The format is described in the <a href="/#/api/events" target="_blank">API docs</a>.',
+				label : 'Zenobase', 
+				description : 'Import a <b>.json</b> or <b>.csv</b> file exported from another bucket.<br/>The fields are described in the <a href="/#/api/events" target="_blank">API docs</a>.',
 				parse : function(data) {
-					var events = JSON.parse(data);
-					if (events && events.events) {
-						events = events.events;
+					if (data.charAt(0) === '{' || data.charAt(0) === '[') {
+						var events = JSON.parse(data);
+						if (events && events.events) {
+							events = events.events;
+						}
+						return $.isArray(events) ? events : [];
+					} else {
+						return EventSpreadsheet.parse(data);
 					}
-					return $.isArray(events) ? events : [];
-				}
-			},
-			{
-				id : 'zenobase-csv',
-				label : 'Zenobase (csv)', 
-				description : 'Import data exported from another bucket.',
-				parse : function(data) {
-					return EventSpreadsheet.parse(data);
 				}
 			},
 			{
 				id : 'sleepcycle',
-				label : 'SleepCycle (csv)',
-				description : 'Import data from <a href="http://www.sleepcycle.com/" target="_blank">SleepCycle</a>.',
+				label : 'SleepCycle',
+				description : 'Import a <b>.csv</b> file from <a href="http://www.sleepcycle.com/" target="_blank">SleepCycle</a>.',
 				parse : function(data) {
 					return SleepCycle.parse(data);
+				}
+			},
+			{
+				id : 'taplog',
+				label : 'TapLog',
+				description : 'Import a <b>.csv</b> file from <a href="http://loggerlife.blogspot.com/" target="_blank">TapLog</a>.',
+				settings : '/import-taplog.html',
+				parse : function(data, settings) {
+					return TapLog.parse(data, settings);
 				}
 			}
 		];
 
 		$scope.init = function(formatId) {
 			$scope.importing = false;
+			$scope.settings = {};
 			$scope.message = '';
 			$scope.events = [];
 			$scope.offset = 0;
@@ -4988,10 +5014,12 @@
 				reader.onload = function(e) {
 					scope.$apply(function(scope) {
 						try {
-							scope.events = $scope.format.parse(e.target.result);
+							scope.events = $scope.format.parse(e.target.result, $scope.settings);
 						} catch(error) {
 							scope.message = error.message;
+							$scope.settings = {};
 							$scope.clearFiles();
+							throw error;
 						}
 					});
 				};
@@ -5006,6 +5034,7 @@
 			$http.post('/buckets/' + $scope.bucketId + '/', { 'events' : $scope.events })
 				.success(function(response, status, headers) {
 					$scope.alert.show('Imported events.', 'alert-success', headers('X-Command-ID'));
+					$scope.settings = {};
 					$scope.events = [];
 					$scope.offset = 0;
 					delay($scope.refresh);
@@ -5014,6 +5043,7 @@
 				})
 				.error(function(response) {
 					$scope.message = response.message || 'Couldn\'t import the file. Try again later, or contact support.';
+					$scope.settings = {};
 					$scope.events = [];
 					$scope.offset = 0;
 					$scope.clearFiles();
@@ -5027,12 +5057,25 @@
 
 		$scope.$watch('format', function(format) {
 			if (format) {
+				$scope.settings = {};
 				$scope.message = '';
 				$scope.events = [];
 				$scope.offset = 0;
 				$scope.clearFiles();
 			}
 		});
+	}]);
+
+	app.controller('ImportTapLogController', ['$scope', 'Field', function($scope, Field) {
+
+		$scope.fields = Field.findByType('numeric');
+		$scope.units = [];
+
+		$scope.$watch('settings.field', function() {
+			$scope.units = $scope.settings.field && Field.find($scope.settings.field).units || [];
+			$scope.settings.unit = $scope.units.length ? $scope.units[0] : null;
+		});
+		$scope.settings = $scope.$parent.settings;
 	}]);
 
 
