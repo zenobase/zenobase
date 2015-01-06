@@ -2,6 +2,7 @@ package com.zenobase.commands;
 
 import javax.inject.Inject;
 
+import play.Logger;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import com.zenobase.json.BooleanField;
@@ -74,8 +75,12 @@ public class SuspendUserCommand extends Command {
 		@Override
 		public void executeTyped(SuspendUserCommand command) {
 			User user = repository.find(command.getName());
-			user.setSuspended(command.isSuspend());
-			repository.update(user, command.getTimestamp());
+			if (user != null) {
+				user.setSuspended(command.isSuspend());
+				repository.update(user, command.getTimestamp());
+			} else {
+				Logger.warn("Tried to suspend a nonexistent user: {}", command.getName());
+			}
 		}
 	}
 }
