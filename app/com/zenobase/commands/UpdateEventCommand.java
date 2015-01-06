@@ -2,6 +2,8 @@ package com.zenobase.commands;
 
 import javax.inject.Inject;
 
+import org.elasticsearch.index.engine.VersionConflictEngineException;
+import play.Logger;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import com.zenobase.json.ObjectField;
@@ -84,6 +86,20 @@ public class UpdateEventCommand extends Command {
 
 		@Override
 		public void executeTyped(UpdateEventCommand command) {
+			try {
+				update(command);
+			} catch (VersionConflictEngineException e) {
+				if (command.getFrom().getVersion() != command.getTo().getVersion()) {
+					Logger.info("Expected from and to versions to match: {}", command);
+				}
+				command.getFrom().setVersion(command.getFrom().getVersion() - 2); // if an update was reversed, we could be two versions ahead
+				command.getTo().setVersion(command.getTo().getVersion() - 2);
+				Logger.info("Recovering from a version conflict...");
+				update(command);
+			}
+		}
+
+		private void update(UpdateEventCommand command) {
 			repository.update(command.getBucketId(), command.getTo().copy(), command.getTimestamp()); // copy to prevent the version number from being incremented
 		}
 	}
