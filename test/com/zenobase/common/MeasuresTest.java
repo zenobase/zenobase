@@ -140,6 +140,11 @@ public class MeasuresTest {
 		assertThatIsEqualTo("42 dB", "42 dB");
 	}
 
+	@Test
+	public void testLight() {
+		assertThatIsEqualTo("1 lx", "1 lx");
+	}
+
 	private static void assertThatIsEqualTo(String expected, String value) {
 		assertThat(Measures.toStandard(DecimalMeasure.valueOf(value))).isEqualTo(DecimalMeasure.valueOf(expected));
 	}

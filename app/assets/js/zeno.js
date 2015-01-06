@@ -6657,6 +6657,21 @@
 		});
 
 		register({
+			name : 'light',
+			icon : 'fa-sun-o',
+			type : 'numeric',
+			units : [ 'lx' ],
+			toText : function(value) {
+				return typeof value === 'object' ? value['@value'] + ' ' + value.unit : value;
+			},
+			toHtml : function(value) {
+				return '<span class="nowrap">' +
+					'<i class="fa ' + this.icon + '" title="Light"></i> ' + this.toText(value) +
+				'</span>';
+			}
+		});
+
+		register({
 			name : 'temperature',
 			icon : 'fa-fire',
 			type : 'numeric',

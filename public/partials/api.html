@@ -16,6 +16,8 @@ please <a href="mailto:info@zenobase.com?subject=Zenobase+API">drop us a note</a
 so we can let you know about upcoming changes.</p>
 
 <dl>
+	<dt>January 6, 2015</dt>
+	<dd>Added a new field, "light", with the unit "lx" (lux).</dd>
 	<dt>December 29, 2014</dt>
 	<dd>Added new pressure units, "bar" and "mbar".</dd>
 	<dt>December 11, 2014</dt>
@@ -619,6 +621,10 @@ Authorization: Bearer <em>&lt;access_token&gt;</em>
     "unit" : <em>&lt;"mi" | "ft" | "in" | "km" | "m" | "cm" | "mm"&gt;</em>
   },
   "humidity" : <em>&lt;(0..100)&gt;</em>,
+  "light" : {
+    "@value" : <em>&lt;Number&gt;</em>,
+    "unit" : <em>&lt;"lx"&gt;</em>
+  },
   "location" : {
     "lat" : <em>&lt;Number&gt;</em>,
     "lon" : <em>&lt;Number&gt;</em>

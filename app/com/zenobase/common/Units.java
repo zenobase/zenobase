@@ -6,6 +6,7 @@ import javax.measure.quantity.DataAmount;
 import javax.measure.quantity.Dimensionless;
 import javax.measure.quantity.Energy;
 import javax.measure.quantity.Frequency;
+import javax.measure.quantity.Illuminance;
 import javax.measure.quantity.Length;
 import javax.measure.quantity.Mass;
 import javax.measure.quantity.Pressure;
@@ -154,6 +155,8 @@ public class Units {
 	public static final Unit<Mass> OZ = valueOf("oz");
 	public static final Unit<Mass> LB = valueOf("lb");
 	public static final Unit<Mass> ST = valueOf("st");
+
+	public static final Unit<Illuminance> LX = valueOf("lx");
 
 	private Units() {
 

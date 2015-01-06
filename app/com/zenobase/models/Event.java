@@ -18,6 +18,7 @@ import com.zenobase.json.IdentityField;
 import com.zenobase.json.IntegerField;
 import com.zenobase.json.LengthField;
 import com.zenobase.json.LengthPerVolumeField;
+import com.zenobase.json.LightField;
 import com.zenobase.json.LocationField;
 import com.zenobase.json.PaceField;
 import com.zenobase.json.PercentageField;
@@ -62,6 +63,7 @@ public class Event extends DomainNode {
 	public static final PressureField PRESSURE = new PressureField("pressure");
 	public static final SoundField SOUND = new SoundField("sound");
 	public static final EnergyField ENERGY = new EnergyField("energy");
+	public static final LightField LIGHT = new LightField("light");
 	public static final TemperatureField TEMPERATURE = new TemperatureField("temperature");
 	public static final RatingField RATING = new RatingField("rating");
 	public static final PercentageField PERCENTAGE = new PercentageField("percentage");
@@ -73,7 +75,7 @@ public class Event extends DomainNode {
 		ImmutableSet.<Field<?>>of(
 			ID, BUCKET, VERSION, AUTHOR, SOURCE, TIMESTAMP, DURATION, FREQUENCY, VELOCITY, PACE, BITS, COUNT,
 			LOCATION, TAG, RESOURCE, DISTANCE, HEIGHT, WEIGHT, VOLUME, CONCENTRATION, DISTANCE_PER_VOLUME,
-			HUMIDITY, PRESSURE, SOUND, ENERGY, TEMPERATURE, RATING, PERCENTAGE, MOON, CURRENCY, NOTE);
+			HUMIDITY, PRESSURE, SOUND, ENERGY, LIGHT, TEMPERATURE, RATING, PERCENTAGE, MOON, CURRENCY, NOTE);
 
 	public static final Schema SCHEMA = buildSchema();
 
