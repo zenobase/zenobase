@@ -89,9 +89,6 @@ public class UpdateEventCommand extends Command {
 			try {
 				update(command);
 			} catch (VersionConflictEngineException e) {
-				if (command.getFrom().getVersion() != command.getTo().getVersion()) {
-					Logger.info("Expected from and to versions to match: {}", command);
-				}
 				command.getFrom().setVersion(command.getFrom().getVersion() - 2); // if an update was reversed, we could be two versions ahead
 				command.getTo().setVersion(command.getTo().getVersion() - 2);
 				Logger.info("Recovering from a version conflict...");
