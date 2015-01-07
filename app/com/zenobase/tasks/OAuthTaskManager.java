@@ -1,5 +1,9 @@
 package com.zenobase.tasks;
 
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.zip.GZIPInputStream;
+
 import org.scribe.model.OAuthRequest;
 import org.scribe.model.Response;
 import org.scribe.model.Token;
@@ -7,6 +11,8 @@ import play.mvc.Http;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.common.base.Charsets;
+import com.google.common.io.CharStreams;
 
 import com.zenobase.commands.Command;
 import com.zenobase.commands.UpdateCredentialsCommand;
@@ -72,15 +78,36 @@ public abstract class OAuthTaskManager extends TaskManager {
 	}
 
 	protected static JsonNode parse(Response response) {
-		return Nodes.read(response.getBody());
+		return Nodes.read(getBody(response));
 	}
 
 	protected static ObjectNode parseObject(Response response) {
-		return Nodes.readObject(response.getBody());
+		return Nodes.readObject(getBody(response));
 	}
 
 	protected static ArrayNode parseArray(Response response) {
-		return Nodes.readArray(response.getBody());
+		return Nodes.readArray(getBody(response));
+	}
+
+	private static String getBody(Response response) {
+		if ("gzip".equals(response.getHeader("Content-Encoding"))) {
+			InputStreamReader in = null;
+			try {
+				in = new InputStreamReader(new GZIPInputStream(response.getStream()), Charsets.UTF_8);
+				return CharStreams.toString(in);
+			} catch (IOException e) {
+				throw new RuntimeException(e);
+			} finally {
+				if (in != null) {
+					try {
+						in.close();
+					} catch (IOException e) {
+
+					}
+				}
+			}
+		}
+		return response.getBody();
 	}
 
 	protected Command createCommand(InvalidTokenException e) {

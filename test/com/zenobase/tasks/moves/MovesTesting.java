@@ -19,7 +19,7 @@ public class MovesTesting extends TaskTestingSupport {
 
 	@Test
 	public void testActivities() {
-		run(new MovesActivitiesTaskManager(newCredentialsManager()), Nodes.newObject("marker", "2014-11-01"));
+		run(new MovesActivitiesTaskManager(newCredentialsManager()), Nodes.newObject());
 	}
 
 	@Test
