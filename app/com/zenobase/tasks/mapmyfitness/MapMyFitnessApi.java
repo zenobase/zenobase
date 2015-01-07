@@ -9,14 +9,16 @@ import com.zenobase.tasks.CustomApi20;
 
 public class MapMyFitnessApi extends CustomApi20 {
 
+	static String ACCESS_TOKEN_ENDPOINT = "https://api.ua.com/v7.0/oauth2/uacf/access_token/";
+
 	@Override
 	public String getAccessTokenEndpoint() {
-		return "https://oauth2-api.mapmyapi.com/v7.0/oauth2/access_token/";
+		return ACCESS_TOKEN_ENDPOINT;
 	}
 
 	@Override
 	public String getAuthorizationUrl(OAuthConfig config) {
-		return new UriBuilder("https://www.mapmyfitness.com/v7.0/oauth2/authorize/")
+		return new UriBuilder("https://www.mapmyfitness.com/v7.0/oauth2/uacf/authorize/")
 			.addParameter("response_type", "code")
 			.addParameter("client_id", config.getApiKey())
 			.addParameter("redirect_uri", config.getCallback())

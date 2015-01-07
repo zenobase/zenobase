@@ -1,0 +1,73 @@
+{
+    "_links": {
+        "self": [
+            {
+                "href": "/api/0.1/bodymass/?target_start_datetime=2015-01-01T00%3A00%3A00.000-08%3A00&limit=40&user=37756949&offset=0"
+            }
+        ],
+        "documentation": [
+            {
+                "href": "https://www.mapmyapi.com/docs/01_Body_Mass"
+            }
+        ]
+    },
+    "_embedded": {
+        "bodymasses": [
+            {
+                "recorder_type_key": "client_manual_creation",
+                "fat_mass": null,
+                "reference_key": "1420639867262",
+                "updated_datetime": "2015-01-07T14:11:08+00:00",
+                "fat_percent": null,
+                "bmi": "21.700",
+                "lean_mass": null,
+                "datetime_utc": "2015-01-07T14:11:07+00:00",
+                "created_datetime": "2015-01-07T14:11:08+00:00",
+                "mass": "72.575",
+                "datetime_timezone": "US/Central",
+                "_links": {
+                    "self": [
+                        {
+                            "href": "/api/0.1/bodymass/7079159/",
+                            "id": "7079159"
+                        }
+                    ],
+                    "user": [
+                        {
+                            "href": "/v7.0/user/37756949/",
+                            "id": "37756949"
+                        }
+                    ]
+                }
+            },
+            {
+                "recorder_type_key": "withings",
+                "fat_mass": "8.09008400",
+                "reference_key": "297773692",
+                "updated_datetime": "2015-01-07T06:31:59+00:00",
+                "fat_percent": "11.299",
+                "bmi": "21.410",
+                "lean_mass": "63.50991600",
+                "datetime_utc": "2015-01-06T16:44:07+00:00",
+                "created_datetime": "2015-01-07T06:31:59+00:00",
+                "mass": "71.600",
+                "datetime_timezone": "America/Los_Angeles",
+                "_links": {
+                    "self": [
+                        {
+                            "href": "/api/0.1/bodymass/7047331/",
+                            "id": "7047331"
+                        }
+                    ],
+                    "user": [
+                        {
+                            "href": "/v7.0/user/37756949/",
+                            "id": "37756949"
+                        }
+                    ]
+                }
+            }
+        ]
+    },
+    "total_count": 8
+}
