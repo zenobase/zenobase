@@ -9,6 +9,7 @@ import org.scribe.model.Response;
 import org.scribe.model.Token;
 import org.scribe.model.Verb;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.common.base.Objects;
 import com.google.common.collect.Lists;
 
 import com.zenobase.commands.Command;
@@ -27,7 +28,8 @@ public class MapMyFitnessWeightTaskManager extends MapMyFitnessTaskManagerSuppor
 	@Override
 	public Task newTask(String bucketId, Identity principal, ObjectNode settings) {
 		String marker = settings.path("marker").textValue();
-		return new MapMyFitnessWeightTask(bucketId, principal, marker);
+		String tag = Objects.firstNonNull(settings.path("tag").textValue(), "body");
+		return new MapMyFitnessWeightTask(bucketId, principal, tag, marker);
 	}
 
 	@Override
@@ -52,7 +54,7 @@ public class MapMyFitnessWeightTaskManager extends MapMyFitnessTaskManagerSuppor
 				request.addQuerystringParameter("target_start_datetime", from.toString());
 			}
 			Response response = send(request, credentials);
-			WeightResult result = new WeightResult(parseObject(response), task.getPrincipal(), user.isImperial());
+			WeightResult result = new WeightResult(parseObject(response), task.getPrincipal(), task.getTag(), user.isImperial());
 			events.addAll(result.getEvents());
 			path = result.getNext();
 		}

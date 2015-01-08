@@ -5684,6 +5684,7 @@
 
 		$scope.init = function() {
 			$scope.settings = $scope.$parent.$parent.settings = {
+					tag : 'Sleep',
 					marker : new Date(moment().utc().subtract(12, 'months').startOf('month').valueOf())
 			};
 		};
@@ -5695,6 +5696,7 @@
 
 		$scope.init = function() {
 			$scope.settings = $scope.$parent.$parent.settings = {
+					tag : 'Body',
 					marker : new Date(moment().utc().subtract(12, 'months').startOf('month').valueOf())
 			};
 		};

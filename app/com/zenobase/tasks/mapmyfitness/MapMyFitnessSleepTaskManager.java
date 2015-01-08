@@ -10,6 +10,7 @@ import org.scribe.model.Response;
 import org.scribe.model.Token;
 import org.scribe.model.Verb;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.common.base.Objects;
 import com.google.common.collect.Lists;
 
 import com.zenobase.commands.Command;
@@ -28,7 +29,8 @@ public class MapMyFitnessSleepTaskManager extends MapMyFitnessTaskManagerSupport
 	@Override
 	public Task newTask(String bucketId, Identity principal, ObjectNode settings) {
 		String marker = settings.path("marker").textValue();
-		return new MapMyFitnessSleepTask(bucketId, principal, marker);
+		String tag = Objects.firstNonNull(settings.path("tag").textValue(), "sleep");
+		return new MapMyFitnessSleepTask(bucketId, principal, tag, marker);
 	}
 
 	@Override
@@ -53,7 +55,7 @@ public class MapMyFitnessSleepTaskManager extends MapMyFitnessTaskManagerSupport
 				request.addQuerystringParameter("start_date", from.toLocalDate().toString());
 			}
 			Response response = send(request, credentials);
-			SleepResult result = new SleepResult(parseObject(response), task.getPrincipal(), from);
+			SleepResult result = new SleepResult(parseObject(response), task.getPrincipal(), task.getTag(), from);
 			events.addAll(result.getEvents());
 			path = result.getNext();
 		}

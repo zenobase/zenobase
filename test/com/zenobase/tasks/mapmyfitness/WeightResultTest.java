@@ -19,12 +19,13 @@ public class WeightResultTest extends ResultTestSupport {
 	@Test
 	public void test() {
 
-		WeightResult result = new WeightResult(readObject("WeightResultTest.json"), TESTER, true);
+		WeightResult result = new WeightResult(readObject("WeightResultTest.json"), TESTER, "mass", true);
 		List<Event> events = result.getEvents();
 		assertThat(events).hasSize(2);
 
 		Event actual = events.get(1);
 		Event expected = new Event(actual.getId());
+		expected.addValue(Event.TAG, "mass");
 		expected.setValue(Event.TIMESTAMP, dateTime("2015-01-06T08:44:07-08:00"));
 		expected.setValue(Event.WEIGHT, DecimalMeasure.<Mass>valueOf("157.9 lb"));
 		expected.setValue(Event.PERCENTAGE, Percentage.valueOf(new BigDecimal("11.299")));

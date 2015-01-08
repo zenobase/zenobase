@@ -16,12 +16,13 @@ public class SleepResultTest extends ResultTestSupport {
 	@Test
 	public void test() {
 
-		SleepResult result = new SleepResult(readObject("SleepResultTest.json"), TESTER, dateTime("2015-01-06T23:30:00-08:00"));
+		SleepResult result = new SleepResult(readObject("SleepResultTest.json"), TESTER, "sleep", dateTime("2015-01-06T23:30:00-08:00"));
 		List<Event> events = result.getEvents();
 		assertThat(events).hasSize(1);
 
 		Event actual = events.get(0);
 		Event expected = new Event(actual.getId());
+		expected.addValue(Event.TAG, "sleep");
 		expected.addValue(Event.TIMESTAMP, dateTime("2015-01-06T23:30:00-08:00"));
 		expected.addValue(Event.TIMESTAMP, dateTime("2015-01-07T05:30:00-08:00"));
 		expected.setValue(Event.DURATION, Duration.standardHours(6));

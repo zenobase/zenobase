@@ -26,11 +26,13 @@ class WeightResult {
 
 	private final JsonNode node;
 	private final Identity author;
+	private final String tag;
 	private final boolean imperial;
 
-	public WeightResult(JsonNode node, Identity author, boolean imperial) {
+	public WeightResult(JsonNode node, Identity author, String tag, boolean imperial) {
 		this.node = Preconditions.checkNotNull(node);
 		this.author = author;
+		this.tag = tag;
 		this.imperial = imperial;
 	}
 
@@ -44,6 +46,7 @@ class WeightResult {
 
 	private Event newEvent(JsonNode node) {
 		Event event = new Event();
+		event.addValue(Event.TAG, tag);
 		event.setValue(Event.TIMESTAMP, dateTimeValue(node.path("datetime_utc"), dateTimeZoneValue(node.path("datetime_timezone"))));
 		event.setValue(Event.WEIGHT, weightValue(node.path("mass")));
 		event.setValue(Event.PERCENTAGE, percentageValue(node.path("fat_percent")));

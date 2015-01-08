@@ -23,11 +23,13 @@ class SleepResult {
 
 	private final JsonNode node;
 	private final Identity author;
+	private final String tag;
 	private final DateTime noEarlierThan;
 
-	public SleepResult(JsonNode node, Identity author, DateTime noEarlierThan) {
+	public SleepResult(JsonNode node, Identity author, String tag, DateTime noEarlierThan) {
 		this.node = Preconditions.checkNotNull(node);
 		this.author = author;
+		this.tag = tag;
 		this.noEarlierThan = noEarlierThan;
 	}
 
@@ -52,6 +54,7 @@ class SleepResult {
 		}
 		Event event = new Event();
 		DateTime end = dateTimeValue(node.path("end_datetime_utc"), zones);
+		event.addValue(Event.TAG, tag);
 		event.addValue(Event.TIMESTAMP, begin);
 		event.addValue(Event.TIMESTAMP, end);
 		event.setValue(Event.DURATION, new Duration(begin, end));
