@@ -5302,6 +5302,7 @@
 			{ id : 'jawbone-weight', description : 'Creates an event for body weight measurement.', url : 'https://jawbone.com/up' },
 			{ id : 'lastfm-tracks', description : 'Creates an event for each track played.', url : 'http://www.last.fm/' },
 			{ id : 'mapmyfitness-activities', description : 'Creates an event for each activity.', url : 'http://www.mapmyfitness.com/' },
+			{ id : 'mapmyfitness-sleep', description : 'Creates an event for each period of sleep.', url : 'http://www.mapmyfitness.com/' },
 			{ id : 'mapmyfitness-weight', description : 'Creates an event for each body weight measurement.', url : 'http://www.mapmyfitness.com/' },
 			{ id : 'misfit-activities', description : 'Creates an event for each activity.', url : 'http://misfit.com/' },
 			{ id : 'misfit-sleep', description : 'Creates an event for each period of sleep.', url : 'http://misfit.com/' },
@@ -5669,6 +5670,17 @@
 	}]);
 
 	app.controller('MapMyFitnessActivitiesSettingsController', ['$scope', 'moment', function($scope, moment) {
+
+		$scope.init = function() {
+			$scope.settings = $scope.$parent.$parent.settings = {
+					marker : new Date(moment().utc().subtract(12, 'months').startOf('month').valueOf())
+			};
+		};
+
+		$scope.init();
+	}]);
+
+	app.controller('MapMyFitnessSleepSettingsController', ['$scope', 'moment', function($scope, moment) {
 
 		$scope.init = function() {
 			$scope.settings = $scope.$parent.$parent.settings = {

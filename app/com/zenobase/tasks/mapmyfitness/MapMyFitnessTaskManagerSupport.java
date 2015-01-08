@@ -11,6 +11,7 @@ import org.scribe.model.Response;
 import org.scribe.model.Token;
 import org.scribe.model.Verb;
 import com.google.common.base.Objects;
+import com.google.common.collect.Ordering;
 import com.google.common.util.concurrent.RateLimiter;
 
 import com.zenobase.commands.Command;
@@ -43,7 +44,7 @@ abstract class MapMyFitnessTaskManagerSupport extends OAuthTaskManager {
 	static String getMarker(Iterable<Event> events) {
 		DateTime latest = null;
 		for (Event event : events) {
-			DateTime time = event.getValue(Event.TIMESTAMP);
+			DateTime time = Ordering.natural().max(event.getValues(Event.TIMESTAMP));
 			if (latest == null || time.isAfter(latest)) {
 				latest = time;
 			}

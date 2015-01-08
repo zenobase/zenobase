@@ -147,6 +147,7 @@ import com.zenobase.tasks.lastfm.LastFmCredentialsManager;
 import com.zenobase.tasks.lastfm.LastFmTaskManager;
 import com.zenobase.tasks.mapmyfitness.MapMyFitnessActivitiesTaskManager;
 import com.zenobase.tasks.mapmyfitness.MapMyFitnessCredentialsManager;
+import com.zenobase.tasks.mapmyfitness.MapMyFitnessSleepTaskManager;
 import com.zenobase.tasks.mapmyfitness.MapMyFitnessWeightTaskManager;
 import com.zenobase.tasks.misfit.MisfitActivitiesTaskManager;
 import com.zenobase.tasks.misfit.MisfitCredentialsManager;
@@ -322,6 +323,7 @@ public class Global extends GlobalSettings {
 				bindIfConfigured("runkeeper", RunkeeperWeightTaskManager.class, tasks);
 				bindIfConfigured("strava", StravaTaskManager.class, tasks);
 				bindIfConfigured("mapmyfitness", MapMyFitnessActivitiesTaskManager.class, tasks);
+				bindIfConfigured("mapmyfitness", MapMyFitnessSleepTaskManager.class, tasks);
 				bindIfConfigured("mapmyfitness", MapMyFitnessWeightTaskManager.class, tasks);
 				bindIfConfigured("moves", MovesPlacesTaskManager.class, tasks);
 				bindIfConfigured("moves", MovesActivitiesTaskManager.class, tasks);
