@@ -30,7 +30,7 @@ public class FitbitSleepTaskManager extends FitbitTaskManagerSupport<FitbitSleep
 	@Override
 	public Task newTask(String bucketId, Identity principal, ObjectNode settings) {
 		String marker = parseMarker(settings.path("marker").textValue()).toString();
-		String tag = Objects.firstNonNull(settings.path("tag").textValue(), "steps");
+		String tag = Objects.firstNonNull(settings.path("tag").textValue(), "sleep");
 		return new FitbitSleepTask(bucketId, principal, marker, tag);
 	}
 
