@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import org.joda.time.DateTime;
 import org.scribe.model.OAuthRequest;
 import org.scribe.model.Response;
 import org.scribe.model.Token;
@@ -30,7 +31,7 @@ public class MapMyFitnessActivitiesTaskManager extends MapMyFitnessTaskManagerSu
 
 	@Override
 	public Task newTask(String bucketId, Identity principal, ObjectNode settings) {
-		String marker = settings.path("marker").textValue();
+		String marker = DateTime.parse(settings.path("marker").textValue()).toString();
 		return new MapMyFitnessTask(bucketId, principal, marker);
 	}
 

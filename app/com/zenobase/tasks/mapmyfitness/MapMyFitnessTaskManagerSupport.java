@@ -49,7 +49,7 @@ abstract class MapMyFitnessTaskManagerSupport extends OAuthTaskManager {
 				latest = time;
 			}
 		}
-		return latest != null ? latest.toString() : null;
+		return latest != null ? latest.plusSeconds(1).toString() : null;
 	}
 
 	@Override
