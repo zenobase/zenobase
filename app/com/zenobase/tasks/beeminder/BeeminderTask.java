@@ -6,6 +6,7 @@ import org.joda.time.DateTime;
 import org.joda.time.format.ISODateTimeFormat;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Preconditions;
+import com.google.common.base.Strings;
 
 import com.zenobase.common.Units;
 import com.zenobase.json.TokenField;
@@ -48,7 +49,7 @@ public class BeeminderTask extends Task {
 	}
 
 	public String getFilter() {
-		return getSetting(FILTER);
+		return Strings.emptyToNull(getSetting(FILTER));
 	}
 
 	public String getField() {
