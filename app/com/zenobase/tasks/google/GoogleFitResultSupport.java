@@ -22,6 +22,7 @@ abstract class GoogleFitResultSupport {
 		.put("com.runtastic.android.pro2", new Resource("Runtastic", "https://www.runtastic.com/"))
 		.put("com.sillens.shapeupclub", new Resource("Lifesum", "https://lifesum.com/"))
 		.put("com.strava", new Resource("Strava", "http://www.strava.com/"))
+		.put("com.vitrox.facion.gui", new Resource("What's My Heart Rate", "http://facion.net/wmhr"))
 		.put("fi.polar.beat", new Resource("Polar Beat", "http://www.polar.com/beat/"))
 		.put("si.modula.android.instantheartrate", new Resource("Azumio", "http://www.azumio.com/"))
 		.build();
