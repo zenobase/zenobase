@@ -1,5 +1,6 @@
 package com.zenobase.tasks.google;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
@@ -38,17 +39,20 @@ public class GoogleFitCardioTaskManager extends GoogleFitTaskManagerSupport<Goog
 		List<Event> events = Lists.newArrayList();
 		for (DataStream stream : filter(streams.values(), "com.google.heart_rate.bpm", "com.google.heart_rate.summary")) {
 			for (DataPoint point : getDataPoints(task, credentials, stream)) {
-				Event event = new Event();
-				event.addValue(Event.TAG, task.getTag());
-				event.setValue(Event.TIMESTAMP, point.getBegin());
-				if (point.isRange()) {
-					event.addValue(Event.TIMESTAMP, point.getEnd());
-					event.setValue(Event.DURATION, point.getDuration());
+				BigDecimal value = point.getValue(0);
+				if (BigDecimal.ZERO.compareTo(value) < 0) {
+					Event event = new Event();
+					event.addValue(Event.TAG, task.getTag());
+					event.setValue(Event.TIMESTAMP, point.getBegin());
+					if (point.isRange()) {
+						event.addValue(Event.TIMESTAMP, point.getEnd());
+						event.setValue(Event.DURATION, point.getDuration());
+					}
+					event.setValue(Event.FREQUENCY, Measures.valueOf(Measures.round(value, 0), Units.BPM));
+					event.setValue(Event.AUTHOR, task.getPrincipal());
+					event.setValue(Event.SOURCE, stream.getSource());
+					events.add(event);
 				}
-				event.setValue(Event.FREQUENCY, Measures.valueOf(Measures.round(point.getValue(0), 0), Units.BPM));
-				event.setValue(Event.AUTHOR, task.getPrincipal());
-				event.setValue(Event.SOURCE, stream.getSource());
-				events.add(event);
 			}
 		}
 		return events;
