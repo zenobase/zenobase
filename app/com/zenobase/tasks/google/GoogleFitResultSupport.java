@@ -18,6 +18,8 @@ abstract class GoogleFitResultSupport {
 		.put("com.google.android.maps.mytracks", new Resource("MyTracks", "https://google.com/"))
 		.put("com.mapmyrun.android2", new Resource("MapMyRun", "http://www.mapmyrun.com/"))
 		.put("com.nike.plusgps", new Resource("Nike+", "http://nikeplus.nike.com/"))
+		.put("com.northpark.pushups", new Resource("Push Ups Workout", "https://play.google.com/store/apps/details?id=com.northpark.pushups"))
+		.put("com.popularapp.sevenmins", new Resource("7 Minute Workout", "https://play.google.com/store/apps/details?id=com.popularapp.sevenmins"))
 		.put("com.runtastic.android", new Resource("Runtastic", "https://www.runtastic.com/"))
 		.put("com.runtastic.android.pro2", new Resource("Runtastic", "https://www.runtastic.com/"))
 		.put("com.sillens.shapeupclub", new Resource("Lifesum", "https://lifesum.com/"))
