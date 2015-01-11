@@ -14,6 +14,7 @@ abstract class GoogleFitResultSupport {
 
 	private static final Resource DEFAULT_SOURCE = new Resource("Google Fit", "https://fit.google.com/");
 	private static final ImmutableMap<String, Resource> SOURCES = ImmutableMap.<String, Resource>builder()
+		.put("com.fatsecret.android", new Resource("FatSecret", "https://www.fatsecret.com/"))
 		.put("com.fitnesskeeper.runkeeper.pro", new Resource("RunKeeper", "http://runkeeper.com/"))
 		.put("com.google.android.maps.mytracks", new Resource("MyTracks", "https://google.com/"))
 		.put("com.mapmyrun.android2", new Resource("MapMyRun", "http://www.mapmyrun.com/"))
