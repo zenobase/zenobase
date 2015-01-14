@@ -4939,7 +4939,47 @@
 		};
 	});
 
-	app.controller('ImportDialogController', ['$scope', '$http', '$routeParams', 'EventSpreadsheet', 'SleepCycle', 'TapLog', 'tracker', 'delay', function($scope, $http, $routeParams, EventSpreadsheet, SleepCycle, TapLog, tracker, delay) {
+	app.factory('Nomie', [ 'moment', function(moment) {
+
+		return {
+			parse : function(s, settings) {
+				var events = [];
+				var csv = Baby.parse(s, { header : true, skipEmptyLines : true });
+				if (csv.errors.length) {
+					throw new Error(csv.errors[0].message + ' in row ' + csv.errors[0].row);
+				}
+				$.each(csv.data, function(rowNum, row) {
+					if (row['type'] !== 'event') {
+						return;
+					}
+					var t0 = moment.utc(Number(row['time']));
+					var t1 = moment.utc(row['iso_date'] + 'Z');
+					var timestamp = t0.zone((t0.unix() - t1.unix()) / 60).format('YYYY-MM-DDTHH:mm:ss.SSSZ');
+					var event = {
+						'timestamp' : timestamp,
+						'tag' : [],
+					};
+					if (row['tracker'] !== 'Unknown') {
+						event['tag'].push(row['tracker']);
+					}
+					if (row['charge'] !== undefined) {
+						event['rating'] = (Number(row['charge']) + 3) * 20;
+					}
+					if (row['lat']) {
+						var lat = Number(row['lat']);
+						var lon = Number(row['long']);
+						if (lat !== 0 || lon !== 0) {
+							event['location'] = { 'lat' : lat, 'lon' : lon };
+						}
+					}
+					events.push(event);
+				});
+				return events;
+			}
+		};
+	}]);
+
+	app.controller('ImportDialogController', ['$scope', '$http', '$routeParams', 'EventSpreadsheet', 'SleepCycle', 'TapLog', 'Nomie', 'tracker', 'delay', function($scope, $http, $routeParams, EventSpreadsheet, SleepCycle, TapLog, Nomie, tracker, delay) {
 
 		$scope.bucketId = $routeParams.bucketId;
 		$scope.formats = [
@@ -4960,6 +5000,15 @@
 				}
 			},
 			{
+				id : 'taplog',
+				label : 'TapLog',
+				description : 'Import a <b>.csv</b> file from <a href="http://loggerlife.blogspot.com/" target="_blank">TapLog</a>.',
+				settings : '/import-taplog.html',
+				parse : function(data, settings) {
+					return TapLog.parse(data, settings);
+				}
+			},
+			{
 				id : 'sleepcycle',
 				label : 'SleepCycle',
 				description : 'Import a <b>.csv</b> file from <a href="http://www.sleepcycle.com/" target="_blank">SleepCycle</a>.',
@@ -4968,12 +5017,11 @@
 				}
 			},
 			{
-				id : 'taplog',
-				label : 'TapLog',
-				description : 'Import a <b>.csv</b> file from <a href="http://loggerlife.blogspot.com/" target="_blank">TapLog</a>.',
-				settings : '/import-taplog.html',
-				parse : function(data, settings) {
-					return TapLog.parse(data, settings);
+				id : 'nomie',
+				label : 'Nomie',
+				description : 'Import a <b>.csv</b> file from <a href="https://nomie.io/" target="_blank">Nomie</a>.',
+				parse : function(data) {
+					return Nomie.parse(data);
 				}
 			}
 		];
