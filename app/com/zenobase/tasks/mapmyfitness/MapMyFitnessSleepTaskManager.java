@@ -44,7 +44,7 @@ public class MapMyFitnessSleepTaskManager extends MapMyFitnessTaskManagerSupport
 			reauthorize(credentials);
 		}
 		UserResult user = getUser(credentials);
-		String path = "/api/0.1/actigraphy/";
+		String path = "/api/0.2/sleep/";
 		List<Event> events = Lists.newArrayList();
 		DateTime from = DateTime.parse(task.getMarker());
 		while (path != null) {
@@ -52,10 +52,10 @@ public class MapMyFitnessSleepTaskManager extends MapMyFitnessTaskManagerSupport
 			request.addQuerystringParameter("user", user.getId());
 			request.addQuerystringParameter("limit", "100");
 			if (from != null) {
-				request.addQuerystringParameter("start_date", from.toLocalDate().toString());
+				request.addQuerystringParameter("target_start_datetime", from.toString());
 			}
 			Response response = send(request, credentials);
-			SleepResult result = new SleepResult(parseObject(response), task.getPrincipal(), task.getTag(), from);
+			SleepResult result = new SleepResult(parseObject(response), task.getPrincipal(), task.getTag());
 			events.addAll(result.getEvents());
 			path = result.getNext();
 		}
