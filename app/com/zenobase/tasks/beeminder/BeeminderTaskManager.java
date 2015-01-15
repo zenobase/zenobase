@@ -95,7 +95,7 @@ public class BeeminderTaskManager extends OAuthTaskManager {
 			.addFacet(new OffsetTimelineFacet(FIELD_STATS.getName(), keyField, field, "day", null, zone, unit, null))
 			.addConstraint(new OffsetDateTimeRangeConstraintBuilder(Event.TIMESTAMP.getName()).build(Range.<ReadableInstant>greaterThan(from)), false);
 		if (filter != null) {
-			search.addConstraint(filter);
+			search.addConstraints(filter);
 		}
 		return events.find(bucketId, search.buildSearch());
 	}
