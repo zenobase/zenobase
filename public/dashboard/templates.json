@@ -117,6 +117,53 @@
 	},
 	{
 		"category" : "Activities",
+		"source" : "Hexoskin",
+		"task" : "hexoskin-activities",
+		"widgets" : [
+			{
+				"id" : "timeline",
+				"type" : "timeline",
+				"label" : "Energy (kcal)",
+				"placement" : "top",
+				"key_field" : "timestamp$min",
+				"field" : "energy",
+				"unit" : "kcal",
+				"statistic" : "sum",
+				"interval" : "month"
+			},
+			{
+				"id" : "latest",
+				"type" : "list",
+				"label" : "Latest",
+				"placement" : "left",
+				"order" : "-timestamp",
+				"limit" : 10,
+				"singleton" : true
+			},
+			{
+				"id" : "histogram",
+				"type" : "histogram",
+				"label" : "HR",
+				"placement" : "right",
+				"field" : "frequency",
+				"unit" : "bpm",
+				"interval" : 10
+			},
+			{
+				"id" : "polar",
+				"type" : "polar",
+				"label" : "Day of Week",
+				"placement" : "right",
+				"key_field" : "timestamp$min",
+				"value_field" : "timestamp",
+				"unit" : null,
+				"statistic" : "count",
+				"interval" : "day_of_week"
+			}
+		]
+	},
+	{
+		"category" : "Activities",
 		"source" : "iHealth",
 		"task" : "ihealth-activities",
 		"widgets" : [
@@ -1415,6 +1462,90 @@
 				"statistic_x" : "avg",
 				"label_y" : "Efficiency",
 				"field_y" : "rating",
+				"unit_y" : null,
+				"statistic_y" : "avg",
+				"key_field" : "timestamp$max",
+				"interval" : "day",
+				"regression" : "linear"
+			}
+		]
+	},
+	{
+		"category" : "Sleep",
+		"source" : "Hexoskin",
+		"task" : "hexoskin-sleep",
+		"widgets" : [
+			{
+				"id" : "timeline",
+				"type" : "timeline",
+				"label" : "Timeline",
+				"placement" : "top",
+				"key_field" : "timestamp$max",
+				"field" : "duration",
+				"unit" : null,
+				"statistic" : "avg",
+				"interval" : "week"
+			},
+			{
+				"id" : "latest",
+				"type" : "list",
+				"label" : "Latest",
+				"placement" : "left",
+				"order" : "-timestamp",
+				"limit" : 7,
+				"singleton" : true
+			},
+			{
+				"id" : "polar_hour",
+				"type" : "polar",
+				"label" : "Hours (Begin)",
+				"placement" : "left",
+				"key_field" : "timestamp$min",
+				"value_field" : "timestamp",
+				"unit" : null,
+				"statistic" : "count",
+				"interval" : "hour_of_day"
+			},
+			{
+				"id" : "polar_day_duration",
+				"type" : "polar",
+				"label" : "Days (Duration)",
+				"placement" : "left",
+				"key_field" : "timestamp$max",
+				"value_field" : "duration",
+				"unit" : null,
+				"statistic" : "avg",
+				"interval" : "day_of_week"
+			},
+			{
+				"id" : "histogram_duration",
+				"type" : "histogram",
+				"label" : "Duration",
+				"placement" : "right",
+				"field" : "duration",
+				"unit" : null,
+				"interval" : 3600000
+			},
+			{
+				"id" : "histogram_efficiency",
+				"type" : "histogram",
+				"label" : "Efficiency",
+				"placement" : "right",
+				"field" : "percentage",
+				"unit" : null,
+				"interval" : 5
+			},
+			{
+				"id" : "scatterplot_duration_percentage",
+				"type" : "scatterplot",
+				"label" : "Duration & Efficiency",
+				"placement" : "right",
+				"label_x" : "Duration",
+				"field_x" : "duration",
+				"unit_x" : null,
+				"statistic_x" : "avg",
+				"label_y" : "Efficiency",
+				"field_y" : "percentage",
 				"unit_y" : null,
 				"statistic_y" : "avg",
 				"key_field" : "timestamp$max",

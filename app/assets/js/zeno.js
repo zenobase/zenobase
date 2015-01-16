@@ -5337,6 +5337,8 @@
 			{ id : 'google-food', description : 'Creates an event for each number of calories consumed that was recorded.', url : 'http://fit.google.com/' },
 			{ id : 'google-locate', description : 'Adds location data to events without a location.', url : 'http://fit.google.com/' },
 			{ id : 'google-weight', description : 'Creates an event for each body weight measurement.', url : 'http://fit.google.com/' },
+			{ id : 'hexoskin-activities', description : 'Creates an event for each activity.', url : 'http://www.hexoskin.com/' },
+			{ id : 'hexoskin-sleep', description : 'Creates an event for each period of sleep.', url : 'http://www.hexoskin.com/' },
 			{ id : 'ihealth-activities', description : 'Creates an event for each activity.', url : 'http://ihealthlabs.com/' },
 			{ id : 'ihealth-cardio', description : 'Creates an event for each heart rate or blood pressure measurement.', url : 'http://ihealthlabs.com/' },
 			{ id : 'ihealth-food', description : 'Creates an event for each meal.', url : 'http://ihealthlabs.com/' },
@@ -5701,6 +5703,32 @@
 		$scope.$watch('settings.unit', function() {
 			updateUnitValidity();
 		});
+		$scope.init();
+	}]);
+
+	app.controller('HexoskinActivitiesSettingsController', ['$scope', 'moment', function($scope, moment) {
+
+		$scope.init = function() {
+			$scope.settings = $scope.$parent.$parent.settings = {
+					tag : 'Training',
+					marker : new Date(moment().utc().subtract(12, 'months').startOf('month').valueOf()),
+					timezone : 'UTC'
+			};
+		};
+
+		$scope.init();
+	}]);
+
+	app.controller('HexoskinSleepSettingsController', ['$scope', 'moment', function($scope, moment) {
+
+		$scope.init = function() {
+			$scope.settings = $scope.$parent.$parent.settings = {
+					tag : 'Sleep',
+					marker : new Date(moment().utc().subtract(12, 'months').startOf('month').valueOf()),
+					timezone : 'UTC'
+			};
+		};
+
 		$scope.init();
 	}]);
 

@@ -130,6 +130,9 @@ import com.zenobase.tasks.google.GoogleFitCardioTaskManager;
 import com.zenobase.tasks.google.GoogleFitFoodTaskManager;
 import com.zenobase.tasks.google.GoogleFitLocateTaskManager;
 import com.zenobase.tasks.google.GoogleFitWeightTaskManager;
+import com.zenobase.tasks.hexoskin.HexoskinActivitiesTaskManager;
+import com.zenobase.tasks.hexoskin.HexoskinCredentialsManager;
+import com.zenobase.tasks.hexoskin.HexoskinSleepTaskManager;
 import com.zenobase.tasks.ihealth.IHealthActivitiesTaskManager;
 import com.zenobase.tasks.ihealth.IHealthCardioTaskManager;
 import com.zenobase.tasks.ihealth.IHealthCredentialsManager;
@@ -300,6 +303,7 @@ public class Global extends GlobalSettings {
 				bindIfConfigured("trackthisforme", TrackthisformeCredentialsManager.class, credentials);
 				bindIfConfigured("ihealth", IHealthCredentialsManager.class, credentials);
 				bindIfConfigured("beeminder", BeeminderCredentialsManager.class, credentials);
+				bindIfConfigured("hexoskin", HexoskinCredentialsManager.class, credentials);
 				bind(CredentialsManagerRegistry.class).in(Singleton.class);
 
 				Multibinder<TaskManager> tasks = Multibinder.newSetBinder(binder(), new TypeLiteral<TaskManager>() {});
@@ -355,6 +359,8 @@ public class Global extends GlobalSettings {
 				bindIfConfigured("ihealth", IHealthWeightTaskManager.class, tasks);
 				bindIfConfigured("trackthisforme", TrackthisformeTaskManager.class, tasks);
 				bindIfConfigured("beeminder", BeeminderTaskManager.class, tasks);
+				bindIfConfigured("hexoskin", HexoskinActivitiesTaskManager.class, tasks);
+				bindIfConfigured("hexoskin", HexoskinSleepTaskManager.class, tasks);
 				bind(TaskManagerRegistry.class).in(Singleton.class);
 
 				bind(AccountController.class).in(Singleton.class);

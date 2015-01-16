@@ -1,0 +1,39 @@
+{
+    "meta": {
+        "limit": 1,
+        "next": null,
+        "offset": 0,
+        "previous": null,
+        "total_count": 1
+    },
+    "objects": [
+        {
+            "email": "athlete@hexoskin.com",
+            "first_name": "Athlete",
+            "id": 1511,
+            "is_staff": false,
+            "last_name": "Hexoskin",
+            "profile": {
+                "date_of_birth": "1980-01-01",
+                "fitness": {
+                    "fitness_percentile": 50,
+                    "height": 1.82,
+                    "hr_max": 175,
+                    "hr_recov": 36,
+                    "hr_rest": 60,
+                    "vo2_max": 225,
+                    "weight": 78
+                },
+                "gender": "M",
+                "height": 1.82,
+                "id": 1460,
+                "preferences": null,
+                "resource_uri": "/api/v1/profile/1460/",
+                "unit_system": "imperial",
+                "weight": 78
+            },
+            "resource_uri": "/api/v1/user/1511/",
+            "username": "athlete@hexoskin.com"
+        }
+    ]
+}
