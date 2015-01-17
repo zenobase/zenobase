@@ -434,6 +434,12 @@ public class Global extends GlobalSettings {
 		}
 	}
 
+	/*@Override
+	@SuppressWarnings("unchecked")
+	public <T extends EssentialFilter> Class<T>[] filters() {
+		return new Class[] { SecurityHeadersFilter.class, GzipFilter.class };
+	}*/
+
 	@Override
 	public Handler onRouteRequest(RequestHeader request) {
 		return canonical.test(request) ? super.onRouteRequest(request) : canonical.redirect(request);
