@@ -115,7 +115,6 @@ import com.zenobase.tasks.dropbox.DropboxCredentialsManager;
 import com.zenobase.tasks.fitbit.FitbitActivitiesTaskManager;
 import com.zenobase.tasks.fitbit.FitbitCredentialsManager;
 import com.zenobase.tasks.fitbit.FitbitFoodTaskManager;
-import com.zenobase.tasks.fitbit.FitbitIntradayTaskManager;
 import com.zenobase.tasks.fitbit.FitbitSleepTaskManager;
 import com.zenobase.tasks.fitbit.FitbitStepsTaskManager;
 import com.zenobase.tasks.fitbit.FitbitWeightTaskManager;
@@ -309,7 +308,6 @@ public class Global extends GlobalSettings {
 				Multibinder<TaskManager> tasks = Multibinder.newSetBinder(binder(), new TypeLiteral<TaskManager>() {});
 				tasks.addBinding().to(DemoTaskManager.class);
 				bindIfConfigured("fitbit", FitbitActivitiesTaskManager.class, tasks);
-				bindIfConfigured("fitbit", FitbitIntradayTaskManager.class, tasks); // TODO drop
 				bindIfConfigured("fitbit", FitbitStepsTaskManager.class, tasks);
 				bindIfConfigured("fitbit", FitbitSleepTaskManager.class, tasks);
 				bindIfConfigured("fitbit", FitbitWeightTaskManager.class, tasks);
