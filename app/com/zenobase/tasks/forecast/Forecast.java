@@ -35,24 +35,24 @@ public class Forecast {
 	public boolean apply(Event event, Set<String> fields) {
 		boolean updated = false;
 		if (event.contains(Event.LOCATION)) {
-			if (fields.contains(Event.TAG.getName())) {
+			if (summary != null && fields.contains(Event.TAG.getName())) {
 				event.addValue(Event.TAG, summary);
 				updated = true;
 			}
-			if (fields.contains(Event.TEMPERATURE.getName())) {
+			if (temperature != null && fields.contains(Event.TEMPERATURE.getName())) {
 				event.setValue(Event.TEMPERATURE, temperature);
 				updated = true;
 			}
-			if (fields.contains(Event.PRESSURE.getName())) {
+			if (pressure != null && fields.contains(Event.PRESSURE.getName())) {
 				event.setValue(Event.PRESSURE, pressure);
 				updated = true;
 			}
-			if (fields.contains(Event.HUMIDITY.getName())) {
+			if (humidity != null && fields.contains(Event.HUMIDITY.getName())) {
 				event.setValue(Event.HUMIDITY, humidity);
 				updated = true;
 			}
 		}
-		if (fields.contains(Event.MOON.getName())) {
+		if (moon != null && fields.contains(Event.MOON.getName())) {
 			event.setValue(Event.MOON, moon);
 			updated = true;
 		}
