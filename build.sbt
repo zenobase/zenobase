@@ -12,6 +12,7 @@ resolvers += "Sonatype Releases" at "https://oss.sonatype.org/content/repositori
 
 libraryDependencies ++= Seq(
 	javaWs,
+	filters,
 	"javax.mail" % "mail" % "1.4.7",
 	"com.google.guava" % "guava" % "17.0",
 	"com.google.guava" % "guava-testlib" % "17.0" % "test",
