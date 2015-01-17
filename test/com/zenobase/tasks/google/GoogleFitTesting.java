@@ -16,9 +16,10 @@ import com.zenobase.tasks.TaskTestingSupport;
 public class GoogleFitTesting extends TaskTestingSupport {
 
 	@Test
+	@Ignore
 	public void testActivities() {
 		run(new GoogleFitActivitiesTaskManager(newCredentialsManager()), Nodes.newObject()
-			.put("marker", "2014-12-20")
+			.put("marker", "2015-01-17")
 			.put("timezone", "America/Los_Angeles")
 			.put("metric", true)
 			.put("derived", false));
@@ -35,10 +36,9 @@ public class GoogleFitTesting extends TaskTestingSupport {
 	}
 
 	@Test
-	@Ignore
 	public void testCardio() {
 		run(new GoogleFitCardioTaskManager(newCredentialsManager()), Nodes.newObject()
-			.put("marker", "2014-10-31")
+			.put("marker", "2015-01-17")
 			.put("timezone", "America/Los_Angeles")
 			.put("tag", "bar"));
 	}
