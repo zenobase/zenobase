@@ -23,8 +23,9 @@ public class Canonical {
 	}
 
 	public boolean test(RequestHeader request) {
+		String agent = request.getHeader("User-Agent");
 		String scheme = request.getHeader("X-Forwarded-Proto");
 		String uri = scheme != null ? scheme + "://" + request.host() : null;
-		return uri == null || baseUri.equals(uri) || apiUri.equals(uri);
+		return agent != null && agent.contains("CloudFront") || uri == null || baseUri.equals(uri) || apiUri.equals(uri);
 	}
 }
