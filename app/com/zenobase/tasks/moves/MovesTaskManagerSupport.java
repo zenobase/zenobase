@@ -37,7 +37,6 @@ abstract class MovesTaskManagerSupport extends OAuthTaskManager {
 	@Override
 	protected Response send(OAuthRequest request, OAuthCredentials credentials) {
 		RATE_LIMITER.acquire();
-		request.addHeader("Accept-Encoding", "gzip");
 		return super.send(request, credentials);
 	}
 

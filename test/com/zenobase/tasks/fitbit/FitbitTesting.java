@@ -11,9 +11,9 @@ public class FitbitTesting extends TaskTestingSupport {
 	@Test
 	public void testSteps() {
 		run(new FitbitStepsTaskManager(newCredentialsManager()), Nodes.newObject()
-			.put("marker", "2014-10-20")
+			.put("marker", "2015-01-01")
 			.put("tag", "walk")
-			.put("hourly", true));
+			.put("hourly", false));
 	}
 
 	@Test

@@ -64,7 +64,6 @@ abstract class HexoskinTaskManagerSupport<T extends HexoskinTaskSupport> extends
 	@Override
 	protected Response send(OAuthRequest request, OAuthCredentials credentials) {
 		RATE_LIMITER.acquire();
-		request.addHeader("Accept-Encoding", "gzip");
 		return super.send(request, credentials);
 	}
 

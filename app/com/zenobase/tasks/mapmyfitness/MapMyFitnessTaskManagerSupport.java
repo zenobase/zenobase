@@ -54,7 +54,7 @@ abstract class MapMyFitnessTaskManagerSupport extends OAuthTaskManager {
 
 	@Override
 	protected Response send(OAuthRequest request, OAuthCredentials credentials) {
-		RATE_LIMITER.acquire(1);
+		RATE_LIMITER.acquire();
 		return super.send(request, credentials);
 	}
 

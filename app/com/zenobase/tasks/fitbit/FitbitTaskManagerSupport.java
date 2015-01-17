@@ -47,10 +47,6 @@ public abstract class FitbitTaskManagerSupport<T extends Task> extends OAuthTask
 
 	protected abstract Command safeExecute(T task, OAuthCredentials credentials);
 
-	protected void checkRateLimit() {
-		RATE_LIMITER.acquire();
-	}
-
 	protected LocalDate getLastDate(DeviceType deviceType, Task task, OAuthCredentials credentials) {
 		OAuthRequest request = new OAuthRequest(Verb.GET, "https://api.fitbit.com/1/user/-/devices.json");
 		Response response = send(request, credentials);
@@ -59,7 +55,7 @@ public abstract class FitbitTaskManagerSupport<T extends Task> extends OAuthTask
 
 	@Override
 	protected Response send(OAuthRequest request, OAuthCredentials credentials) {
-		checkRateLimit();
+		RATE_LIMITER.acquire();
 		return super.send(request, credentials);
 	}
 

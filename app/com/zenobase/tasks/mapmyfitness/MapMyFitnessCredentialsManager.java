@@ -79,6 +79,5 @@ public class MapMyFitnessCredentialsManager extends OAuthCredentialsManager {
 	public void sign(OAuthRequest request, OAuthCredentials credentials) {
 		request.addHeader("Api-Key", getApiKey());
 		request.addHeader("Authorization", "Bearer " + credentials.getToken().getToken());
-		request.addHeader("Accept-Encoding", "gzip");
 	}
 }
