@@ -4954,7 +4954,7 @@
 					}
 					var t0 = moment.utc(Number(row['time']));
 					var t1 = moment.utc(row['iso_date'] + 'Z');
-					var timestamp = t0.zone((t0.unix() - t1.unix()) / 60).format('YYYY-MM-DDTHH:mm:ss.SSSZ');
+					var timestamp = t0.utcOffset((t1.unix() - t0.unix()) / 60).format('YYYY-MM-DDTHH:mm:ss.SSSZ');
 					var event = {
 						'timestamp' : timestamp,
 						'tag' : [],
@@ -6603,7 +6603,7 @@
 			toHtml : function(value) {
 				return '<span class="nowrap">' +
 					'<i class="fa ' + this.icon + '" title="Timestamp"></i> ' +
-					'<abbr title="' + value + '">' + moment(value).zone(value).fromNowOrNow(false) + '</abbr>' +
+					'<abbr title="' + value + '">' + moment(value).utcOffset(value).fromNowOrNow(false) + '</abbr>' +
 				'</span>';
 			},
 			subfields : [ '', 'min', 'max' ]
@@ -6903,7 +6903,7 @@
 
 	app.filter('age', [ 'moment', function(moment) {
 		return function(date) {
-			return date ? moment(date).zone(date).fromNowOrNow(true) : '';
+			return date ? moment(date).utcOffset(date).fromNowOrNow(true) : '';
 		};
 	}]);
 
