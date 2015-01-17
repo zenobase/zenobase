@@ -34,7 +34,8 @@ libraryDependencies ++= Seq(
 	"ch.qos.logback.contrib" % "logback-jackson" % "0.1.2",
 	"org.seleniumhq.selenium" % "selenium-chrome-driver" % "2.39.0" % "test", // Must match Play's version of Selenium!
 	"org.mockito" % "mockito-core" % "1.10.13" % "test",
-	"org.jvnet.mock-javamail" % "mock-javamail" % "1.9" % "test"
+	"org.jvnet.mock-javamail" % "mock-javamail" % "1.9" % "test",
+	"com.novocode" % "junit-interface" % "0.11" % "test" // Older versions don't properly support JUnit Categories.
 )
 
 fork in Test := false
