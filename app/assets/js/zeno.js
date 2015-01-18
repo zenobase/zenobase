@@ -4728,7 +4728,7 @@
 		$scope.init();
 	}]);
 
-	app.factory('EventSpreadsheet', ['moment', function(moment) {
+	app.factory('EventSpreadsheet', function() {
 
 		/**
 		 * input: timestamp, distance.@value, distance.unit, tag
@@ -4798,7 +4798,7 @@
 				return events;
 			}
 		};
-	}]);
+	});
 
 	app.factory('SleepCycle', ['moment', function(moment) {
 
@@ -4942,7 +4942,7 @@
 	app.factory('Nomie', [ 'moment', function(moment) {
 
 		return {
-			parse : function(s, settings) {
+			parse : function(s) {
 				var events = [];
 				var csv = Baby.parse(s, { header : true, skipEmptyLines : true });
 				if (csv.errors.length) {
@@ -7505,7 +7505,7 @@
 
 	app.directive('uiTimezoneSelect', ['$http', function($http) {
 		return {
-			link : function(scope, element) {
+			link : function(scope) {
 				$http.get('/tz', { cache : true }).success(function(response) {
 					scope.timezones = response;
 					if (navigator.geolocation) {
