@@ -63,7 +63,7 @@ public class LastFmTaskManager extends OAuthTaskManager {
 			LastFmRequest request = createRequest(task, now, credentials, page);
 			Response response = send(request, credentials);
 			RecentTracksResult result = new RecentTracksResult(parseObject(response), task.getPrincipal(), task.getTag(), task.getTimezone());
-			Preconditions.checkState(result.isSuccess(), "Request for %s failed: %s", request.getCompleteUrl(), response.getBody());
+			Preconditions.checkState(result.isSuccess(), "Request for %s failed", request.getCompleteUrl());
 			events.addAll(result.getEvents());
 			if (!result.hasNext()) {
 				break;
