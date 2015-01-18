@@ -176,7 +176,7 @@
 		})();
 		return {
 			rewrite : function(path) {
-				return path.replace(/\.(.+)$/, '-' + version + '.$1');
+				return CDN + path.replace(/\.(.+)$/, '-' + version + '.$1');
 			}
 		};
 	}();

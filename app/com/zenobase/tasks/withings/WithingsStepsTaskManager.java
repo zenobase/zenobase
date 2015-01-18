@@ -55,7 +55,7 @@ public class WithingsStepsTaskManager extends OAuthTaskManager {
 		OAuthRequest request = createRequest(task, credentials);
 		Response response = send(request, credentials);
 		WithingsStepsResult result = new WithingsStepsResult(parseObject(response), task.getPrincipal(), task.getTag(), task.getDistanceUnit(), task.getHeightUnit(), task.getEnergyUnit());
-		Preconditions.checkState(result.getStatus() == 0, "Expected status <0> but got <%s> for task <%s>: %s", result.getStatus(), task.getId(), response.getBody());
+		Preconditions.checkState(result.getStatus() == 0, "Expected status <0> but got <%s> for task <%s>", result.getStatus(), task.getId());
 		return createCommand(task, result.getEvents());
 	}
 

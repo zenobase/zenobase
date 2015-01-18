@@ -83,11 +83,11 @@ public class RescueTimeProductivityTaskManager extends OAuthTaskManager {
 		OAuthRequest request = newRequest(kind, source, date);
 		Response response = send(request, credentials);
 		Preconditions.checkState(response.getCode() == 200,
-			"Couldn't request <%s>: %s", request.getCompleteUrl(), response.getBody());
+			"Couldn't request <%s>: %s", request.getCompleteUrl(), response.getCode());
 		ObjectNode node = parseObject(response);
 		ProductivityResult result = new ProductivityResult(node, tag, timezone);
 		Preconditions.checkState(result.isSuccess(),
-			"Request <%s> failed: %s", request.getCompleteUrl(), response.getBody());
+			"Request <%s> failed: %s", request.getCompleteUrl(), response.getCode());
 		return result.getEvents();
 	}
 

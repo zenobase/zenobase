@@ -34,7 +34,7 @@ public class FoursquareVenues {
 				if (response.getStatus() == 502) {
 					response = request(venueId);
 				}
-				Preconditions.checkState(response.getStatus() == 200, "Couldn't find venue <%s>: %s", venueId, response.getBody());
+				Preconditions.checkState(response.getStatus() == 200, "Couldn't find venue <%s>: %s", venueId, response.getStatus());
 				return parse(response.asJson().path("response").path("venue"));
 			}
 		});
