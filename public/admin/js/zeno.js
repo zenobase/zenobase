@@ -25,8 +25,8 @@
 	})();
 
 	app.config(['$routeProvider', function($routeProvider) {
-		$routeProvider.when('/', { templateUrl: CDN + '/admin/partials/dashboard-' + version + '.html' });
-		$routeProvider.otherwise({ templateUrl : CDN + '/partials/404-' + version + '.html' });
+		$routeProvider.when('/', { templateUrl: '/admin/partials/dashboard-' + version + '.html' });
+		$routeProvider.otherwise({ templateUrl : '/partials/404-' + version + '.html' });
 	}]);
 
 	app.config(['$httpProvider', function($httpProvider) {

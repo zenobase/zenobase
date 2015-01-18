@@ -195,7 +195,7 @@
 
 		<script src="/js/LAB-2.0.3.min.js"></script>
 		<script>
-			var CDN = document.location.hostname !== 'localhost' ?
+			var CDN = document.location.hostname == 'test' ?
 					'//dkn38hw4u7rri.cloudfront.net' : ''; 
 			$LAB
 				.script(function() {
