@@ -57,6 +57,8 @@ includeFilter in (Assets, LessKeys.less) := "zeno.less"
 
 includeFilter in uglify := "zeno.js"
 
+includeFilter in gzip := "*.html" || "*.css" || "*.js" || "*.json"
+
 pipelineStages := Seq(uglify, gzip)
 
 EclipseKeys.createSrc := EclipseCreateSrc.Default + EclipseCreateSrc.Resource
