@@ -274,6 +274,12 @@
 			$scope.closeDialog();
 			$location.url(path);
 		};
+		$scope.openDialogInPage = function(path, dialog, param) {
+			$scope.openPage(path);
+			delay(function() {
+				$scope.openDialog(dialog, param);
+			});
+		};
 		$scope.closeDialog = function() {
 			$scope.openDialog(null);
 		};

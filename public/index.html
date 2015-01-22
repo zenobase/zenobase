@@ -27,9 +27,15 @@
 			</div>
 		</div>
 
-		<div id="pay-up-banner" class="ng-cloak" data-ng-show="user && user.getName() != 'guest' && !user.quota">
+		<div id="verify-banner" class="ng-cloak" data-ng-show="user && user.getName() != 'guest' && !user.verified">
+			<div class="alert" style="cursor:pointer;" data-ng-click="openDialogInPage('/users/' + user.getName(), 'account-settings-dialog')">
+				Please <strong>verify your email address</strong>, so we can contact you if your data is on fire (or you need to reset your password). 
+			</div>
+		</div>
+
+		<div id="pay-up-banner" class="ng-cloak" data-ng-show="user && user.getName() != 'guest' && user.verified && !user.quota">
 			<div class="alert" style="cursor:pointer;" data-ng-click="openPage('/pricing')">
-				Select a <strong>personal or commercial plan</strong> to store more data and help support this service.
+				Upgrade to a <strong>paid plan</strong> to store more data, and help support this service.
 			</div>
 		</div>
 

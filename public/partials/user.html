@@ -62,7 +62,7 @@
 				</div>
 				<div class="modal-footer">
 					<a id="close-account-button" data-ng-click="close()" class="pull-left">Close account...</a>
-					<button type="submit" class="btn btn-primary" data-ng-disabled="!form.$valid || !form.$dirty">Save</button>
+					<button type="submit" class="btn btn-primary" data-ng-disabled="!form.$valid || user.verified && !form.$dirty">Save & Verify</button>
 					<button type="reset" class="btn" data-dismiss="modal">Cancel</button>
 				</div>
 			</form>
