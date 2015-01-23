@@ -117,7 +117,7 @@ public class ScatterPlotFacet extends Facet {
 		for (ObjectNode value : values) {
 			JsonNode x = value.get("x");
 			JsonNode y = value.get("y");
-			if (x != null && y != null) {
+			if (x != null && !x.isNull() && y != null && !y.isNull()) {
 				ArrayNode coords = Nodes.newArray();
 				coords.add(x);
 				coords.add(y);

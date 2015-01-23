@@ -30,7 +30,9 @@ public class ScatterPlotFacetTest extends FacetTestSupport {
 	private static Event newEvent(String timestamp, String distance, int steps) {
 		Event event = new Event();
 		event.setValue(Event.TIMESTAMP, DateTime.parse(timestamp));
-		event.setValue(Event.DISTANCE, DecimalMeasure.<Length>valueOf(distance));
+		if (distance != null) {
+			event.setValue(Event.DISTANCE, DecimalMeasure.<Length>valueOf(distance));
+		}
 		event.setValue(Event.COUNT, steps);
 		return event;
 	}
@@ -144,11 +146,12 @@ public class ScatterPlotFacetTest extends FacetTestSupport {
 	@Test
 	public void testEmpty() {
 
+		addEvent(newEvent("2012-03-30T08:00:00-07:00", null, 0));
 		addFacet("id:%s,type:%s,field_x:%s,unit_x:%s,field_y:%s",
 			FACET_ID, ScatterPlotFacet.TYPE, Event.DISTANCE, "km", Event.COUNT);
 
 		ObjectNode result = execute();
-		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(0);
+		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(1);
 		assertThat(result).path(FACET_ID).hasSize(0);
 	}
 }
