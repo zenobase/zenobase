@@ -16,7 +16,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.zenobase.commands.CreateUserCommand;
 import com.zenobase.common.Generator;
 import com.zenobase.models.User;
-import com.zenobase.models.UserInfo;
+import com.zenobase.models.UserProfile;
 import com.zenobase.oauth.Authorization;
 
 public class AccountControllerOpenAccountTest extends AccountControllerTestSupport {
@@ -30,8 +30,8 @@ public class AccountControllerOpenAccountTest extends AccountControllerTestSuppo
 		ArgumentCaptor<CreateUserCommand> commandArg = ArgumentCaptor.forClass(CreateUserCommand.class);
 		when(dispatcher.dispatch(commandArg.capture())).thenReturn(commandId);
 		Result result = call(form.toJson());
-		assertThat(result).hasStatus(CREATED).hasContent(new UserInfo(user).toJson());
 		User actual = commandArg.getValue().getUser();
+		assertThat(result).hasStatus(CREATED).hasContent(new UserProfile(actual).toJson());
 		assertThat(actual.getName()).isEqualTo(user.getName());
 		assertThat(actual.getEmail()).isEqualTo(user.getEmail());
 		ArgumentCaptor<User> userArg = ArgumentCaptor.forClass(User.class);

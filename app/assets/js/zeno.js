@@ -461,18 +461,19 @@
 			if (angular.isDefined(user)) {
 				if (user && $scope.username === user.getName()) {
 					$scope.profile = user;
-				} else {
+				} else if ($scope.username !== 'guest') {
 					$http.get('/users/@' + $scope.username)
-					.success(function(response) {
-						$scope.profile = new User(response);
-					})
-					.error(function(response, status) {
-						if (status < 500) {
-							$scope.message = 'Can\'t retrieve this user.';
-						} else {
-							$scope.message = 'Couldn\'t retrieve this user. Try again later or contact support.';
+						.success(function(response) {
+							$scope.profile = new User(response);
+						})
+						.error(function(response, status) {
+							if (status < 500) {
+								$scope.message = 'Can\'t retrieve this user.';
+							} else {
+								$scope.message = 'Couldn\'t retrieve this user. Try again later or contact support.';
+							}
 						}
-					});
+					);
 				} 
 			}
 		});
@@ -630,7 +631,7 @@
 		};
 	}]);
 
-	app.controller('SignUpDialogController', ['$scope', '$http', '$location', 'User', 'tracker', function($scope, $http, $location, User, tracker) {
+	app.controller('SignUpDialogController', ['$scope', '$http', '$location', 'User', 'delay', 'tracker', function($scope, $http, $location, User, delay, tracker) {
 
 		$scope.init = function() {
 			$scope.username = '';
@@ -653,7 +654,9 @@
 				.success(function(response) {
 					$scope.$parent.user = new User(response);
 					$scope.closeDialog();
-					$location.url('/users/' + $scope.$parent.user.name);
+					delay(function() {
+						$location.url('/users/' + $scope.$parent.user.name);
+					});
 				})
 				.error(function(response, status) {
 					if (status === 409) {

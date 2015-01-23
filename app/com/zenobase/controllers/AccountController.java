@@ -18,7 +18,7 @@ import com.zenobase.mail.VerificationMailer;
 import com.zenobase.models.Bucket;
 import com.zenobase.models.Identity;
 import com.zenobase.models.User;
-import com.zenobase.models.UserInfo;
+import com.zenobase.models.UserProfile;
 import com.zenobase.oauth.Authorization;
 import com.zenobase.services.AuthorizationQuery;
 import com.zenobase.services.AuthorizationRepository;
@@ -84,7 +84,7 @@ public class AccountController extends ControllerSupport {
 		mailer.send(user);
         response().setHeader(LOCATION, com.zenobase.controllers.routes.UserController.get(user.getName()).toString());
 		response().setHeader(COMMAND_ID, commandId);
-		return created(new UserInfo(user).toJson());
+		return created(new UserProfile(user).toJson());
 	}
 
 	public Result close(String userId) {
