@@ -4766,7 +4766,6 @@
 			parse : function(s) {
 				var events = [];
 				var csv = Baby.parse(s, { skipEmptyLines : true });
-				console.log('csv', csv);
 				if (csv.errors.length) {
 					throw new Error(csv.errors[0].message + ' in row ' + csv.errors[0].row);
 				}
