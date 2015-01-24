@@ -4809,6 +4809,99 @@
 		};
 	});
 
+	app.factory('HealthKit', [ 'moment', function(moment) {
+
+		return {
+			parse : function(s) {
+				var events = [];
+				var csv = Baby.parse(s, { header : true, skipEmptyLines : true });
+				if (csv.errors.length) {
+					throw new Error(csv.errors[0].message + ' in row ' + csv.errors[0].row);
+				}
+				$.each(csv.data, function(rowNum, row) {
+					var t0 = moment(row['Start'], 'M/DD/yyyy H:mm:ss');
+					var t1 = moment(row['Finish'], 'M/DD/yyyy H:mm:ss');
+					var duration = t1.valueOf() - t0.valueOf();
+					var timestamp = t0.format('YYYY-MM-DDTHH:mm:ss.SSSZ');
+					function push(tag, field, value) {
+						var event = {
+							'timestamp' : timestamp,
+							'duration' : duration,
+							'tag' : [ tag ]
+						};
+						event[field] = value;
+						events.push(event);
+					}
+					for (var field in row) {
+						var value = Number(row[field]);
+						var m = field.match(/(.+?) \((.+?)\)/);
+						if (m && !isNaN(value) && value !== 0) {
+							var tag = m[1];
+							var unit = m[2];
+							switch (unit) {
+								case 'count':
+									push(tag, 'count', Math.round(value));
+									break;
+								case '%':
+									push(tag, 'percentage', Math.round(100.0 * value));
+									break;
+								case 'mcg':
+									unit = 'ug';
+									/* falls through */
+								case 'mg':
+								case 'g':
+								case 'kg':
+								case 'lb':
+									push(tag, 'weight', {
+										'@value' : value,
+										'unit' : unit
+									});
+									break;
+								case 'L':
+									push(tag, 'volume', {
+										'@value' : value,
+										'unit' : unit
+									});
+									break;
+								case 'mg/dL':
+									push(tag, 'concentration', {
+										'@value' : value,
+										'unit' : unit
+									});
+									break;
+								case 'mmHg':
+									push(tag, 'pressure', {
+										'@value' : value,
+										'unit' : unit
+									});
+									break;
+								case 'degC':
+									push(tag, 'temperature', {
+										'@value' : value,
+										'unit' : 'C'
+									});
+									break;
+								case 'kcal':
+									push(tag, 'energy', {
+										'@value' : value,
+										'unit' : unit
+									});
+									break;
+								case 'count/min':
+									push(tag, 'frequency', {
+										'@value' : value,
+										'unit' : 'bpm'
+									});
+									break;
+							}
+						}
+					}
+				});
+				return events;
+			}
+		};
+	}]);
+
 	app.factory('SleepCycle', ['moment', function(moment) {
 
 		function formatMoment(t) {
@@ -4988,7 +5081,7 @@
 		};
 	}]);
 
-	app.controller('ImportDialogController', ['$scope', '$http', '$routeParams', 'EventSpreadsheet', 'SleepCycle', 'TapLog', 'Nomie', 'tracker', 'delay', function($scope, $http, $routeParams, EventSpreadsheet, SleepCycle, TapLog, Nomie, tracker, delay) {
+	app.controller('ImportDialogController', ['$scope', '$http', '$routeParams', 'EventSpreadsheet', 'HealthKit', 'SleepCycle', 'TapLog', 'Nomie', 'tracker', 'delay', function($scope, $http, $routeParams, EventSpreadsheet, HealthKit, SleepCycle, TapLog, Nomie, tracker, delay) {
 
 		$scope.bucketId = $routeParams.bucketId;
 		$scope.formats = [
@@ -5006,6 +5099,14 @@
 					} else {
 						return EventSpreadsheet.parse(data);
 					}
+				}
+			},
+			{
+				id : 'healthkit',
+				label : 'HealthKit',
+				description : 'Import HealthKit data from a <b>.csv</b> file exported with the <a href="http://quantifiedself.com/access-app/app" target="_blank">QS Access</a> app.',
+				parse : function(data, settings) {
+					return HealthKit.parse(data, settings);
 				}
 			},
 			{
