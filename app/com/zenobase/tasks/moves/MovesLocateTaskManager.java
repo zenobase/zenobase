@@ -74,7 +74,7 @@ public class MovesLocateTaskManager extends MovesTaskManagerSupport {
 
 		@Override
 		protected Event edit(Event event) {
-			DateTime time = event.getValue(Event.TIMESTAMP);
+			DateTime time = Ordering.natural().min(event.getValues(Event.TIMESTAMP));
 			if (!locations.contains(time)) {
 				LocalDate today = DateTime.now(time.getZone()).toLocalDate();
 				if (time.toLocalDate().isAfter(today)) {
