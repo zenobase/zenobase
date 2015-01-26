@@ -4818,8 +4818,9 @@
 					throw new Error(csv.errors[0].message + ' in row ' + csv.errors[0].row);
 				}
 				$.each(csv.data, function(rowNum, row) {
-					var t0 = moment(row['Start'], 'M/DD/YYYY H:mm:ss');
-					var t1 = moment(row['Finish'], 'M/DD/YYYY H:mm:ss');
+					var f = /.+\d{4}/.test(row['Start']) ? 'M/DD/YYYY H:mm:ss' : 'M/DD/YY H:mm:ss';
+					var t0 = moment(row['Start'], f);
+					var t1 = moment(row['Finish'], f);
 					var duration = t1.valueOf() - t0.valueOf();
 					var timestamp = t0.format('YYYY-MM-DDTHH:mm:ss.SSSZ');
 					function push(tag, field, value) {
