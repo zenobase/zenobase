@@ -4880,6 +4880,7 @@
 										'unit' : 'C'
 									});
 									break;
+								case 'cal':
 								case 'kcal':
 									push(tag, 'energy', {
 										'@value' : value,
