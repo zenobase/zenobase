@@ -5084,6 +5084,18 @@
 
 	app.factory('Basis', [ 'moment', function(moment) {
 
+		function meanOfNonZeroValues(values) {
+			var sum = 0;
+			var count = 0;
+			for (var i = 0; i < values.length; ++i) {
+				if (values[i]) {
+					++count;
+					sum += values[i];
+				}
+			}
+			return sum / count;
+		}
+
 		return {
 			parse : function(s, settings) {
 				var events = [];
@@ -5093,39 +5105,46 @@
 				}
 				var hour = null;
 				var rows = 0;
-				var energy = 0.0;
-				var frequency = 0.0;
-				var temperature = 0.0;
 				var count = 0;
+				var energy = 0.0;
+				var frequencies = [];
+				var temperatures = [];
 				function push() {
-					events.push({
+					var event = {
 						'timestamp' : hour,
 						'duration' : 3600000,
 						'tag' : [ settings.tag ],
 						'energy' : {
-							'@value' : energy,
+							'@value' : Math.round(10 * energy) / 10,
 							'unit' : 'kcal'
-						},
-						'frequency' : {
-							'@value' : Math.round(frequency / rows),
-							'unit' : 'bpm'
-						},
-						'temperature' : {
-							'@value' : Math.round(10 * temperature / rows) / 10,
-							'unit' : 'F'
 						},
 						'count' : count,
 						'source' : {
 							'title' : 'Basis',
 							'url' : 'https://www.mybasis.com/'
 						}
-					});
+					};
+					var frequency = meanOfNonZeroValues(frequencies);
+					if (isFinite(frequency)) {
+						event['frequency'] = {
+							'@value' : Math.round(frequency),
+							'unit' : 'bpm'
+						};
+					}
+					var temperature = meanOfNonZeroValues(temperatures);
+					if (isFinite(temperature)) {
+						event['temperature'] = {
+							'@value' : Math.round(10 * temperature) / 10,
+							'unit' : 'F'
+						};
+					}
+					events.push(event);
 					hour = null;
 					rows = 0;
-					energy = 0.0;
-					frequency = 0.0;
-					temperature = 0.0;
 					count = 0;
+					energy = 0.0;
+					frequencies = [];
+					temperatures = [];
 				}
 				$.each(csv.data, function(rowNum, row) {
 					var t = moment(row['date']);
@@ -5133,12 +5152,12 @@
 					if (hour && hour !== h) {
 						push();
 					}
+					++rows;
 					hour = h;
-					rows += 1;
-					energy += Number(row['calories']);
-					frequency += Number(row['heart-rate']);
-					temperature += Number(row['skin-temp']);
 					count += Number(row['steps']);
+					energy += Number(row['calories']);
+					frequencies.push(Number(row['heart-rate']));
+					temperatures.push(Number(row['skin-temp']));
 				});
 				if (hour && rows) {
 					push();
