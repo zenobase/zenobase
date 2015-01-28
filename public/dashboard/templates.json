@@ -506,6 +506,97 @@
 	},
 	{
 		"category" : "Burn",
+		"source" : "Basis",
+		"importer" : "basis",
+		"widgets" : [
+			{
+				"id" : "timeline_energy",
+				"type" : "timeline",
+				"label" : "Burn (kcal)",
+				"placement" : "top",
+				"field" : "energy",
+				"unit" : "kcal",
+				"statistic" : "sum",
+				"interval" : "month"
+			},
+			{
+				"id" : "timeline_frequency",
+				"type" : "timeline",
+				"label" : "Heart Rate (bpm)",
+				"placement" : "top",
+				"field" : "frequency",
+				"unit" : "bpm",
+				"statistic" : "avg",
+				"interval" : "month"
+			},
+			{
+				"id" : "timeline_temperature",
+				"type" : "timeline",
+				"label" : "Skin Temperature (F)",
+				"placement" : "top",
+				"field" : "temperature",
+				"unit" : "F",
+				"statistic" : "avg",
+				"interval" : "month"
+			},
+			{
+				"id" : "timeline_count",
+				"type" : "timeline",
+				"label" : "Steps",
+				"placement" : "top",
+				"field" : "count",
+				"statistic" : "sum",
+				"interval" : "month"
+			},
+			{
+				"id" : "latest",
+				"type" : "list",
+				"label" : "Latest",
+				"placement" : "left",
+				"order" : "-timestamp",
+				"limit" : 10,
+				"singleton" : true
+			},
+			{
+				"id" : "histogram_frequency",
+				"type" : "histogram",
+				"label" : "Histogram",
+				"placement" : "left",
+				"field" : "frequency",
+				"unit" : "bpm",
+				"interval" : 10
+			},
+			{
+				"id" : "polar_frequency",
+				"type" : "polar",
+				"label" : "Hour of Day",
+				"placement" : "right",
+				"value_field" : "frequency",
+				"unit" : "bpm",
+				"statistic" : "avg",
+				"interval" : "hour_of_day"
+			},
+			{
+				"id" : "scatterplot_frequency_temperature",
+				"type" : "scatterplot",
+				"label" : "Scatter Plot",
+				"placement" : "right",
+				"label_x" : "Heart Rate (bpm)",
+				"field_x" : "frequency",
+				"unit_x" : "bpm",
+				"statistic_x" : "avg",
+				"label_y" : "Skin Temperature (F)",
+				"field_y" : "temperature",
+				"unit_y" : "F",
+				"statistic_y" : "avg",
+				"key_field" : "timestamp",
+				"interval" : "hour",
+				"regression" : "linear"
+			}
+		]
+	},
+	{
+		"category" : "Burn",
 		"source" : "BodyMedia",
 		"task" : "bodymedia-burn",
 		"widgets" : [

@@ -5082,7 +5082,73 @@
 		};
 	}]);
 
-	app.controller('ImportDialogController', ['$scope', '$http', '$routeParams', 'EventSpreadsheet', 'HealthKit', 'SleepCycle', 'TapLog', 'Nomie', 'tracker', 'delay', function($scope, $http, $routeParams, EventSpreadsheet, HealthKit, SleepCycle, TapLog, Nomie, tracker, delay) {
+	app.factory('Basis', [ 'moment', function(moment) {
+
+		return {
+			parse : function(s, settings) {
+				var events = [];
+				var csv = Baby.parse(s, { header : true, skipEmptyLines : true });
+				if (csv.errors.length) {
+					throw new Error(csv.errors[0].message + ' in row ' + csv.errors[0].row);
+				}
+				var hour = null;
+				var rows = 0;
+				var energy = 0.0;
+				var frequency = 0.0;
+				var temperature = 0.0;
+				var count = 0;
+				function push() {
+					events.push({
+						'timestamp' : hour,
+						'duration' : 3600000,
+						'tag' : [ settings.tag ],
+						'energy' : {
+							'@value' : energy,
+							'unit' : 'kcal'
+						},
+						'frequency' : {
+							'@value' : Math.round(frequency / rows),
+							'unit' : 'bpm'
+						},
+						'temperature' : {
+							'@value' : Math.round(10 * temperature / rows) / 10,
+							'unit' : 'F'
+						},
+						'count' : count,
+						'source' : {
+							'title' : 'Basis',
+							'url' : 'https://www.mybasis.com/'
+						}
+					});
+					hour = null;
+					rows = 0;
+					energy = 0.0;
+					frequency = 0.0;
+					temperature = 0.0;
+					count = 0;
+				}
+				$.each(csv.data, function(rowNum, row) {
+					var t = moment(row['date']);
+					var h = t.format('YYYY-MM-DDTHH:00:00.000Z');
+					if (hour && hour !== h) {
+						push();
+					}
+					hour = h;
+					rows += 1;
+					energy += Number(row['calories']);
+					frequency += Number(row['heart-rate']);
+					temperature += Number(row['skin-temp']);
+					count += Number(row['steps']);
+				});
+				if (hour && rows) {
+					push();
+				}
+				return events;
+			}
+		};
+	}]);
+
+	app.controller('ImportDialogController', ['$scope', '$http', '$routeParams', 'EventSpreadsheet', 'HealthKit', 'SleepCycle', 'TapLog', 'Nomie', 'Basis', 'tracker', 'delay', function($scope, $http, $routeParams, EventSpreadsheet, HealthKit, SleepCycle, TapLog, Nomie, Basis, tracker, delay) {
 
 		$scope.bucketId = $routeParams.bucketId;
 		$scope.formats = [
@@ -5133,6 +5199,14 @@
 				description : 'Import a <b>.csv</b> file from <a href="https://nomie.io/" target="_blank">Nomie</a>.',
 				parse : function(data) {
 					return Nomie.parse(data);
+				}
+			},
+			{
+				id : 'basis',
+				label : 'Basis',
+				description : 'Import a <b>.csv</b> file from <a href="https://www.mybasis.com/" target="_blank">Basis</a>.',
+				parse : function(data) {
+					return Basis.parse(data, { tag : 'Basis' });
 				}
 			}
 		];
@@ -5432,6 +5506,7 @@
 	
 		$scope.types = [ 
 			{ id : 'automatic-trips', description : 'Creates an event for each trip recorded.', url : 'https://www.automatic.com/' },
+			{ id : 'basis', description : 'Creates an event for each hour of data recorded with the Basis.', url : 'https://www.mybasis.com/' },
 			{ id : 'beeminder', description : 'Updates a goal with event counts or value totals for each day.', url : 'https://www.beeminder.com/' },
 			{ id : 'bodymedia-burn', description : 'Creates an event for the number of calories burned each day or hour.', url : 'http://www.bodymedia.com/' },
 			{ id : 'bodymedia-sleep', description : 'Creates an event for each period of sleep.', url : 'http://www.bodymedia.com/' },
