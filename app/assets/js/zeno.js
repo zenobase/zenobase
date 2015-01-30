@@ -2792,32 +2792,36 @@
 					});
 				}
 				if ($scope.times.length > 1 && $scope.settings.regression == 'linear') {
-					var data = toXY($scope.times);
-					options.series.push({
-						type : 'line',
-						data : statistics.regression(data).data,
-						color : 'rgb(119, 152, 191)',
-						dashStyle : 'Dot',
-						lineWidth : 2,
-						enableMouseTracking : false,
-						marker : {
-							enabled : false
-						}
-					});
+					var regression = statistics.regression(toXY($scope.times));
+					if (regression) {
+						options.series.push({
+							type : 'line',
+							data : regression.data,
+							color : 'rgb(119, 152, 191)',
+							dashStyle : 'Dot',
+							lineWidth : 2,
+							enableMouseTracking : false,
+							marker : {
+								enabled : false
+							}
+						});
+					}
 				}
 				if ($scope.timesB && $scope.timesB.length > 1 && $scope.settings.regression == 'linear') {
-					var xy = toXY($scope.timesB);
-					options.series.push({
-						type : 'line',
-						data : statistics.regression(xy).data,
-						color : 'rgb(204, 102, 0)',
-						dashStyle : 'Dot',
-						lineWidth : 2,
-						enableMouseTracking : false,
-						marker : {
-							enabled : false
-						}
-					});
+					var regressionB = statistics.regression(toXY($scope.timesB));
+					if (regressionB) {
+						options.series.push({
+							type : 'line',
+							data : regressionB.data,
+							color : 'rgb(204, 102, 0)',
+							dashStyle : 'Dot',
+							lineWidth : 2,
+							enableMouseTracking : false,
+							marker : {
+								enabled : false
+							}
+						});
+					}
 				}
 				field.formatAxis(options.yAxis);
 				$scope.chartOptions = options;
