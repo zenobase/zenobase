@@ -5059,9 +5059,12 @@
 					if (row['type'] !== 'event') {
 						return;
 					}
-					var t0 = moment.utc(Number(row['time']));
-					var t1 = moment.utc(row['iso_date'] + 'Z');
-					var timestamp = t0.utcOffset((t1.unix() - t0.unix()) / 60).format('YYYY-MM-DDTHH:mm:ss.SSSZ');
+					var t = moment(Number(row['time']));
+					var offset = Number(row['timezone_offset']);
+					if (isFinite(offset)) {
+						t.utcOffset(-offset);
+					}
+					var timestamp = t.format('YYYY-MM-DDTHH:mm:ss.SSSZ');
 					var event = {
 						'timestamp' : timestamp,
 						'tag' : [],
