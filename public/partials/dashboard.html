@@ -314,6 +314,15 @@
 		</form>
 	</div>
 
+	<script id="/beddit-sleep-settings.html" type="text/ng-template">
+		<div data-ng-controller="BedditSettingsController">
+			<div class="control-group">
+				<label for="tag" class="control-label">Tag</label>
+				<input name="tag" type="text" required data-ng-model="settings.tag"/>
+			</div>
+		</div>
+	</script>
+
 	<script id="/fitbit-activities-settings.html" type="text/ng-template">
 		<div data-ng-controller="FitbitActivitiesSettingsController">
 			<div class="control-group">

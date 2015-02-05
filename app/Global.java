@@ -103,6 +103,8 @@ import com.zenobase.tasks.TaskManagerRegistry;
 import com.zenobase.tasks.TaskRefresher;
 import com.zenobase.tasks.automatic.AutomaticCredentialsManager;
 import com.zenobase.tasks.automatic.AutomaticTaskManager;
+import com.zenobase.tasks.beddit.BedditCredentialsManager;
+import com.zenobase.tasks.beddit.BedditTaskManager;
 import com.zenobase.tasks.beeminder.BeeminderCredentialsManager;
 import com.zenobase.tasks.beeminder.BeeminderTaskManager;
 import com.zenobase.tasks.bodymedia.BodyMediaBurnTaskManager;
@@ -303,6 +305,7 @@ public class Global extends GlobalSettings {
 				bindIfConfigured("ihealth", IHealthCredentialsManager.class, credentials);
 				bindIfConfigured("beeminder", BeeminderCredentialsManager.class, credentials);
 				bindIfConfigured("hexoskin", HexoskinCredentialsManager.class, credentials);
+				bindIfConfigured("beddit", BedditCredentialsManager.class, credentials);
 				bind(CredentialsManagerRegistry.class).in(Singleton.class);
 
 				Multibinder<TaskManager> tasks = Multibinder.newSetBinder(binder(), new TypeLiteral<TaskManager>() {});
@@ -359,6 +362,7 @@ public class Global extends GlobalSettings {
 				bindIfConfigured("beeminder", BeeminderTaskManager.class, tasks);
 				bindIfConfigured("hexoskin", HexoskinActivitiesTaskManager.class, tasks);
 				bindIfConfigured("hexoskin", HexoskinSleepTaskManager.class, tasks);
+				bindIfConfigured("beddit", BedditTaskManager.class, tasks);
 				bind(TaskManagerRegistry.class).in(Singleton.class);
 
 				bind(AccountController.class).in(Singleton.class);

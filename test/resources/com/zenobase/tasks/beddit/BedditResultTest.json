@@ -1,0 +1,38 @@
+[
+    {
+        "updated": 1423066167.113822,
+        "tags": [
+            "sleep_time_success"
+        ],
+        "session_range_end": 1423066164.0000000,
+        "start_timestamp": 1423036672.000,
+        "session_range_start": 1423036672.000,
+        "user": 3015,
+        "date": "2015-02-04",
+        "timezone": "America/Los_Angeles",
+        "tips": [],
+        "properties": {
+            "score_snoring": 0,
+            "stage_duration_S": 28196,
+            "score_sleep_efficiency": 10,
+            "score_sleep_latency": 2,
+            "average_respiration_rate": 14.285787,
+            "total_sleep_score": 112,
+            "stage_duration_A": 456,
+            "total_snoring_episode_duration": 0,
+            "sleep_latency": 840,
+            "short_term_average_respiration_rate": 14.203878,
+            "stage_duration_G": 0,
+            "short_term_resting_heart_rate": 59.541016,
+            "resting_heart_rate": 59.98535,
+            "away_episode_count": 0,
+            "score_awakenings": 0,
+            "sleep_time_target": 25200,
+            "stage_duration_R": 0,
+            "score_bed_exits": 0,
+            "score_amount_of_sleep": 100,
+            "stage_duration_W": 840
+        },
+        "end_timestamp": 1423066164.0000000
+    }
+]
