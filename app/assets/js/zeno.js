@@ -2686,7 +2686,7 @@
 							lineColor: 'rgb(47, 126, 216)'
 						},
 						borderRadius : 5,
-						borderWidth : 2,
+						borderWidth : 0,
 						zIndex: 1
 					}, {
 						name : 'range',
@@ -2764,7 +2764,7 @@
 							lineColor: 'rgb(204, 102, 0)'
 						},
 						borderRadius : 5,
-						borderWidth : 2,
+						borderWidth : 0,
 						zIndex: 1
 					});
 					options.series.push({
