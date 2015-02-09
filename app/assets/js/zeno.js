@@ -7330,7 +7330,7 @@
 				if (attrs.uiSnapshot !== undefined) {
 					scope.$on('snapshot', function() {
 						if (scope.chart) {
-							var filename = scope.settings.label.replace(' ', '-').toLowerCase();
+							var filename = scope.settings.label.replace(/\s+/g, '-').toLowerCase();
 							scope.chart.exportChart({
 								filename : filename,
 								type : 'image/png',
@@ -7717,7 +7717,7 @@
 					var a = document.createElement('a');
 					document.body.appendChild(a);
 					a.style = 'display:none';
-					a.download = scope.settings.label.replace(' ', '-').toLowerCase() + '.csv';
+					a.download = scope.settings.label.replace(/\s+/g, '-').toLowerCase() + '.csv';
 					a.href = url;
 					a.click();
 					document.body.removeChild(a);
