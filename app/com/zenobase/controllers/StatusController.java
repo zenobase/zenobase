@@ -1,7 +1,5 @@
 package com.zenobase.controllers;
 
-import java.util.concurrent.TimeUnit;
-
 import javax.inject.Inject;
 
 import org.elasticsearch.action.admin.cluster.health.ClusterHealthResponse;
@@ -9,7 +7,6 @@ import play.mvc.BodyParser;
 import play.mvc.Http;
 import play.mvc.Result;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.google.common.util.concurrent.Uninterruptibles;
 
 import com.zenobase.models.StatusInfo;
 import com.zenobase.oauth.Authorization;
@@ -36,8 +33,7 @@ public class StatusController extends ControllerSupport {
 
 	public Result get() {
     	if (!Http.Context.current().request().queryString().isEmpty()) {
-    		// throw new RuntimeException("invalid parameters");
-    		Uninterruptibles.sleepUninterruptibly(1, TimeUnit.MINUTES);
+    		throw new RuntimeException("invalid parameters");
     	}
     	return ok(getStatus().toJson());
     }
