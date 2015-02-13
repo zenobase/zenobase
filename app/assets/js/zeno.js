@@ -5573,6 +5573,7 @@
 			{ id : 'moves-activities', description : 'Creates an event for each activity.', url : 'https://moves-app.com/' },
 			{ id : 'moves-places', description : 'Creates an event for each place visited.', url : 'https://moves-app.com/' },
 			{ id : 'moves-locate', description : 'Adds location data to events without a location.', url : 'https://moves-app.com/' },
+			{ id : 'moves-steps', description : 'Creates an event for the number of steps each day.', url : 'https://moves-app.com/' },
 			{ id : 'netatmo', description : 'Creates events for weather station measurements.', url : 'https://www.netatmo.com/' },
 			{ id : 'reporter-questions', description : 'Creates an event for each question answered.', url : 'http://www.reporter-app.com/' },
 			{ id : 'rescuetime-productivity', description : 'Creates an event for every hour the computer was used.', url : 'https://www.rescuetime.com/' },
@@ -5781,6 +5782,21 @@
 			$scope.settings = $scope.$parent.$parent.settings = {
 					
 			};
+		};
+
+		$scope.init();
+	}]);
+
+	app.controller('MovesStepsSettingsController', ['$scope', 'Field', function($scope, Field) {
+
+		$scope.init = function() {
+			$scope.settings = $scope.$parent.$parent.settings = {
+					tag : 'steps',
+					unit : 'km'
+			};
+		};
+		$scope.getUnits = function() {
+			return Field.find('distance').units;
 		};
 
 		$scope.init();

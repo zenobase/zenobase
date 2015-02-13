@@ -467,6 +467,19 @@
 		</div>
 	</script>
 
+	<script id="/moves-steps-settings.html" type="text/ng-template">
+		<div data-ng-controller="MovesStepsSettingsController">
+			<div class="control-group">
+				<label for="tag" class="control-label">Tag</label>
+				<input name="tag" type="text" required data-ng-model="settings.tag"/>
+			</div>
+			<div class="control-group">
+				<label for="unit" class="control-label">Unit</label>
+				<select name="unit" data-ng-model="settings.unit" data-ng-options="unit for unit in getUnits()" required></select>
+			</div>
+		</div>
+	</script>
+
 	<script id="/netatmo-settings.html" type="text/ng-template">
 		<div data-ng-controller="NetatmoSettingsController">
 			<div class="control-group">
