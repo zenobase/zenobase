@@ -52,6 +52,10 @@ public class DataPoint {
 
 	@Override
 	public String toString() {
-		return String.format("%s..%s %s %s", begin, end, dataType, Arrays.toString(values));
+		String s = String.format("%s..%s %s %s", begin, end, dataType, Arrays.toString(values));
+		if (origin != null) {
+			s += " <- " + origin;
+		}
+		return s;
 	}
 }
