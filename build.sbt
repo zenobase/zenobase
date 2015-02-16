@@ -62,5 +62,3 @@ includeFilter in filter := "*.less"
 includeFilter in gzip := "*.html" || "*.css" || "*.js" || "*.json"
 
 pipelineStages := Seq(uglify, filter, gzip)
-
-EclipseKeys.createSrc := EclipseCreateSrc.Default + EclipseCreateSrc.Resource
