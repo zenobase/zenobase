@@ -26,6 +26,7 @@ abstract class GoogleFitResultSupport {
 		.put("com.runtastic.android", new Resource("Runtastic", "https://www.runtastic.com/"))
 		.put("com.runtastic.android.pro2", new Resource("Runtastic", "https://www.runtastic.com/"))
 		.put("com.ryansteckler.heartsync", new Resource("HeartSync", "https://play.google.com/store/apps/details?id=com.ryansteckler.heartsync"))
+		.put("com.ryansteckler.perfectcinch", new Resource("Cinch Weight Loss and Fitness", "http://www.perfectcinch.com/"))
 		.put("com.sillens.shapeupclub", new Resource("Lifesum", "https://lifesum.com/"))
 		.put("com.strava", new Resource("Strava", "http://www.strava.com/"))
 		.put("com.vitrox.facion.gui", new Resource("What's My Heart Rate", "http://facion.net/wmhr"))
