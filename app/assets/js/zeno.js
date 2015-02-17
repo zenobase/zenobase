@@ -5056,10 +5056,10 @@
 					throw new Error(csv.errors[0].message + ' in row ' + csv.errors[0].row);
 				}
 				$.each(csv.data, function(rowNum, row) {
-					if (row['type'] !== 'event') {
+					if (!(row['type'] === 'event' || row['type'] === 'note')) {
 						return;
 					}
-					var t = moment(Number(row['time']));
+					var t = moment(row['iso_date']);
 					var offset = Number(row['timezone_offset']);
 					if (isFinite(offset)) {
 						t.utcOffset(-offset);
@@ -5069,7 +5069,9 @@
 						'timestamp' : timestamp,
 						'tag' : [],
 					};
-					if (row['tracker'] !== 'Unknown') {
+					if (row['tracker'] === '') {
+						event['tag'].push('Note');
+					} else if (row['tracker'] !== 'Unknown') {
 						event['tag'].push(row['tracker']);
 					}
 					if (row['charge'] !== undefined) {
@@ -5081,6 +5083,9 @@
 						if (lat !== 0 || lon !== 0) {
 							event['location'] = { 'lat' : lat, 'lon' : lon };
 						}
+					}
+					if (row['note']) {
+						event['note'] = row['note'];
 					}
 					events.push(event);
 				});
