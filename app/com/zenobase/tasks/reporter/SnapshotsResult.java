@@ -8,6 +8,7 @@ import javax.measure.quantity.Dimensionless;
 import javax.measure.quantity.Pressure;
 import javax.measure.quantity.Temperature;
 
+import org.elasticsearch.common.base.Strings;
 import org.joda.time.DateTime;
 import org.joda.time.format.ISODateTimeFormat;
 import play.Logger;
@@ -70,7 +71,7 @@ public class SnapshotsResult {
 				event.addValue(Event.TAG, q.getTag());
 			}
 			for (JsonNode optionNode : node.path("answeredOptions")) {
-				event.addValue(Event.TAG, optionNode.textValue());
+				event.addValue(Event.TAG, textValue(optionNode));
 				add |= true;
 			}
 			for (JsonNode tokenNode : node.path("tokens")) {
@@ -88,9 +89,13 @@ public class SnapshotsResult {
 					Logger.warn("Couldn't extract text from token node: {}", tokenNode);
 				}
 			}
+			for (JsonNode textNode : node.path("textResponses")) {
+				event.addValue(Event.NOTE, textValue(textNode));
+				add |= true;
+			}
 			JsonNode textNode = node.path("textResponse");
 			if (textNode.isTextual()) {
-				event.addValue(Event.NOTE, textNode.textValue());
+				event.addValue(Event.NOTE, textValue(textNode));
 				add |= true;
 			}
 			add |= setNumericValue(node.path("numericResponse"), q, event);
@@ -104,7 +109,7 @@ public class SnapshotsResult {
 		if (tokenNode.isObject()) {
 			tokenNode = tokenNode.path("text");
 		}
-		return tokenNode.textValue();
+		return Strings.emptyToNull(tokenNode.textValue());
 	}
 
 	private DateTime dateTimeValue(JsonNode node) {
