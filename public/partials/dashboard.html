@@ -559,7 +559,7 @@
 			<div class="control-group">
 				<label for="goal" class="control-label">Goal</label>
 				<input name="goal" type="text" required class="input-medium" data-ng-model="settings.goal"/>
-				<p class-"help-block">The name of an existing goal in Beeminder.</p>
+				<p class="help-block">The name of an existing goal in Beeminder.</p>
 			</div>
 			<div class="control-group">
 				<label class="control-label">Values</label>
@@ -567,7 +567,7 @@
 					<option value=""></option>
 				</select>
 				<span data-ng-show="getUnits().length"> in <select name="unit" class="input-small" data-ng-model="settings.unit" data-ng-options="unit for unit in getUnits()"></select></span>
-				<p class-"help-block">Instead of reporting events counts, report values from this field.</p>
+				<p class="help-block">Instead of reporting events counts, report values from this field.</p>
 			</div>
 			<div class="control-group">
 				<label class="control-label" for="filter">Filter</label>
@@ -578,7 +578,7 @@
 						<i class="fa fa-check" title="valid" data-ng-hide="form.filter.$invalid"></i>
 					</span>
 				</div>
-				<p class-"help-block">Report only values from events that match this constraint.</p>
+				<p class="help-block">Report only values from events that match this constraint.</p>
 			</div>
 			<div class="control-group">
 				<label class="control-label" for="keyField">Timestamp</label>
@@ -895,7 +895,7 @@
 			<div class="control-group">
 				<label for="folder" class="control-label">Folder</label>
 				<input name="folder" class="input-medium" type="text" required data-ng-model="settings.folder"/>
-				<p class-"help-block">The name of the Dropbox folder the data is being exported to.
+				<p class="help-block">The name of the Dropbox folder the data is being exported to.
 				Before proceeding, please add a configuration file to that folder, 
 				<a href="http://blog.zenobase.com/post/77238240850" target="_blank">as described here</a>.</p>
 			</div>
