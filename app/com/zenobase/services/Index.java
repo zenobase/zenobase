@@ -33,7 +33,7 @@ import com.zenobase.json.Schema;
 
 public class Index {
 
-	private final TimeValue timeout = TimeValue.timeValueMillis(1000);
+	private final TimeValue timeout = TimeValue.timeValueMinutes(5);
 	private final String indexName;
 	private final Client client;
 
@@ -131,11 +131,13 @@ public class Index {
 	}
 
 	private void find(SearchSourceBuilder search, Callback<ObjectNode> callback) {
-		for (SearchResponse response = scroll(search); response.getHits().getHits().length > 0; response = scroll(response.getScrollId())) {
+		SearchResponse response;
+		for (response = scroll(search); response.getHits().getHits().length > 0; response = scroll(response.getScrollId())) {
 			for (SearchHit hit : response.getHits()) {
 				callback.call(read(hit));
 			}
 		}
+		clearScroll(response.getScrollId());
 	}
 
 	private SearchResponse scroll(SearchSourceBuilder search) {
@@ -149,6 +151,10 @@ public class Index {
 
 	private SearchResponse scroll(String scrollId) {
 		return client.prepareSearchScroll(scrollId).setScroll(timeout).get();
+	}
+
+	private void clearScroll(String scrollId) {
+		client.prepareClearScroll().addScrollId(scrollId).get();
 	}
 
 	public ObjectNode get(String type, String id) {

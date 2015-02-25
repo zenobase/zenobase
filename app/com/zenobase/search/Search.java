@@ -38,7 +38,7 @@ public class Search {
 	}
 
 	public void execute(Index index, final Callback<ObjectNode> callback) {
-		index.find(buildQuery(), callback, 1000);
+		index.find(buildQuery(), callback, 500);
 	}
 
 	private SearchSourceBuilder buildSearch() {
