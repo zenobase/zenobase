@@ -11,6 +11,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.primitives.Ints;
 
+import com.zenobase.common.Callback;
 import com.zenobase.json.IntegerField;
 import com.zenobase.json.Nodes;
 import com.zenobase.services.Index;
@@ -34,6 +35,10 @@ public class Search {
 		SearchResponse response = index.search(builder);
 		// Logger.info("r: {}", response);
 		return toJson(response);
+	}
+
+	public void execute(Index index, final Callback<ObjectNode> callback) {
+		index.find(buildQuery(), callback, 1000);
 	}
 
 	private SearchSourceBuilder buildSearch() {

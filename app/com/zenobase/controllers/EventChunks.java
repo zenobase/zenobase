@@ -3,19 +3,14 @@ package com.zenobase.controllers;
 import java.io.IOException;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.google.common.base.Preconditions;
 
+import com.zenobase.common.Callback;
 import com.zenobase.json.JsonChunks;
 import com.zenobase.json.JsonStream;
-import com.zenobase.models.Event;
 import com.zenobase.search.EventSearchBuilder;
-import com.zenobase.search.ListFacet;
-import com.zenobase.search.Search;
 import com.zenobase.services.EventRepository;
 
 final class EventChunks extends JsonChunks {
-
-	private static final int LIMIT = 100;
 
 	private final EventRepository events;
 	private final String bucketId;
@@ -28,33 +23,18 @@ final class EventChunks extends JsonChunks {
 	}
 
 	@Override
-	public void onReady(JsonStream out) throws IOException {
+	public void onReady(final JsonStream out) throws IOException {
 		out.writeArrayFieldStart(EventListController.EVENTS.getName());
-		for (int offset = 0;; offset += LIMIT) {
-			ObjectNode result = search(offset);
-			for (ObjectNode event : EventListController.EVENTS.getValues(result)) {
-				out.write(event);
+		events.find(bucketId, new EventSearchBuilder().addConstraints(constraints).buildSearch(), new Callback<ObjectNode>() {
+			@Override
+			public void call(ObjectNode node) {
+				try {
+					out.write(node);
+				} catch (IOException e) {
+					throw new RuntimeException(e);
+				}
 			}
-			if (getTotal(result) <= offset + LIMIT) {
-				break;
-			}
-		}
+		});
 		out.writeEndArray();
-	}
-
-	private ObjectNode search(int offset) {
-		return events.find(bucketId, createSearch(constraints, offset));
-	}
-
-	private static Search createSearch(Iterable<String> constraints, int offset) {
-		ListFacet facet = new ListFacet(EventListController.EVENTS.getName(),
-			offset, LIMIT, Event.TIMESTAMP.getName(), null, Event.SCHEMA);
-		return new EventSearchBuilder().addConstraints(constraints).addFacet(facet).buildSearch();
-	}
-
-	private static int getTotal(ObjectNode result) {
-		Integer total = Search.TOTAL.getValue(result);
-		Preconditions.checkNotNull(total, "missing total: %s", result);
-		return total;
 	}
 }

@@ -14,6 +14,7 @@ import play.Logger;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.Lists;
 
+import com.zenobase.common.Callback;
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
 import com.zenobase.search.Search;
@@ -59,6 +60,10 @@ public class EventRepository {
 
 	public ObjectNode find(String bucketId, Search search) {
 		return search.execute(getIndex(bucketId));
+	}
+
+	public void find(String bucketId, Search search, Callback<ObjectNode> callback) {
+		search.execute(getIndex(bucketId), callback);
 	}
 
 	public List<String> terms(String bucketId, String field) {
