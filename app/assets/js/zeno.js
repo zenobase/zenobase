@@ -5021,13 +5021,13 @@
 					}
 					if (settings.field && row['number']) {
 						var value = Number(row['number']);
+						if (settings.field === 'rating') {
+							value *= 20;
+						}
 						event[settings.field] = settings.unit ? {
 							'@value' : value,
 							'unit' : settings.unit
 						} : value;
-					}
-					if (row['rating']) {
-						event['rating'] = Number(row['rating']) * 20;
 					}
 					if (row['note']) {
 						event['note'] = row['note'];
