@@ -50,7 +50,9 @@ public class DomainNode {
 	}
 
 	protected <T> void addValue(Field<T> field, T value) {
-		field.addValue(node, value);
+		if (value != null) {
+			field.addValue(node, value);
+		}
 	}
 
 	protected <T> void addValues(Field<T> field, Iterable<T> values) {
