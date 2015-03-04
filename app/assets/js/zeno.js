@@ -5636,7 +5636,7 @@
 		};
 	}]);
 
-	app.controller('BedditSettingsController', ['$scope', 'moment', function($scope, moment) {
+	app.controller('BedditSettingsController', ['$scope', 'moment', function($scope) {
 
 		$scope.init = function() {
 			$scope.settings = $scope.$parent.$parent.settings = {
