@@ -8,6 +8,7 @@ import com.hazelcast.core.Hazelcast;
 import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.core.HazelcastInstanceNotActiveException;
 import com.hazelcast.core.Member;
+import com.hazelcast.core.OperationTimeoutException;
 
 public class HazelcastBus implements Bus {
 
@@ -25,7 +26,7 @@ public class HazelcastBus implements Bus {
 		try {
 			Member member = hazelcast.getCluster().getLocalMember();
 			return member.equals(Iterables.getFirst(hazelcast.getCluster().getMembers(), member));
-		} catch (HazelcastInstanceNotActiveException e) {
+		} catch (OperationTimeoutException|HazelcastInstanceNotActiveException e) {
 			return false;
 		}
 	}
@@ -34,7 +35,7 @@ public class HazelcastBus implements Bus {
 	public boolean isReadOnly() {
 		try {
 			return map.containsKey(KEY_READ_ONLY);
-		} catch (HazelcastInstanceNotActiveException e) {
+		} catch (OperationTimeoutException|HazelcastInstanceNotActiveException e) {
 			return false;
 		}
 	}
@@ -54,7 +55,7 @@ public class HazelcastBus implements Bus {
 	public int count() {
 		try {
 			return hazelcast.getCluster().getMembers().size();
-		} catch (HazelcastInstanceNotActiveException e) {
+		} catch (OperationTimeoutException|HazelcastInstanceNotActiveException e) {
 			return -1;
 		}
 	}
