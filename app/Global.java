@@ -405,10 +405,10 @@ public class Global extends GlobalSettings {
 			private Class<? extends NodeFactory> getNodeFactory() {
 				if (Play.isTest()) {
 					return TestNodeFactory.class;
-				} else if (Play.isDev()) {
-					return LocalNodeFactory.class;
-				} else {
+				} else if (isConfigured("aws")) {
 					return ClusterNodeFactory.class;
+				} else {
+					return LocalNodeFactory.class;
 				}
 			}
 
