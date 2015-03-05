@@ -1,6 +1,5 @@
 package com.zenobase.json;
 
-import java.io.BufferedOutputStream;
 import java.io.IOException;
 
 import play.Logger;
@@ -24,7 +23,7 @@ public abstract class JsonChunks extends Results.ByteChunks {
 					Logger.info("Disconnected stream {}", id);
 				}
 			});
-			JsonStream stream = new JsonStream(new BufferedOutputStream(new ChunksOutputStream(out), 1024 * 1024));
+			JsonStream stream = new JsonStream(new ChunksOutputStream(out));
 			onReady(stream);
 			stream.close();
 		} catch (IOException e) {
