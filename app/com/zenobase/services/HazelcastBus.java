@@ -32,7 +32,11 @@ public class HazelcastBus implements Bus {
 
 	@Override
 	public boolean isReadOnly() {
-		return map.containsKey(KEY_READ_ONLY);
+		try {
+			return map.containsKey(KEY_READ_ONLY);
+		} catch (HazelcastInstanceNotActiveException e) {
+			return false;
+		}
 	}
 
 	@Override
@@ -48,7 +52,11 @@ public class HazelcastBus implements Bus {
 
 	@Override
 	public int count() {
-		return hazelcast.getCluster().getMembers().size();
+		try {
+			return hazelcast.getCluster().getMembers().size();
+		} catch (HazelcastInstanceNotActiveException e) {
+			return -1;
+		}
 	}
 
 	@Override
