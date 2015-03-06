@@ -13,7 +13,7 @@
         "tips": [],
         "properties": {
             "score_snoring": 0,
-            "stage_duration_S": 28196,
+            "stage_duration_S": 28076,
             "score_sleep_efficiency": 10,
             "score_sleep_latency": 2,
             "average_respiration_rate": 14.285787,
@@ -28,7 +28,7 @@
             "away_episode_count": 0,
             "score_awakenings": 0,
             "sleep_time_target": 25200,
-            "stage_duration_R": 0,
+            "stage_duration_R": 120,
             "score_bed_exits": 0,
             "score_amount_of_sleep": 100,
             "stage_duration_W": 840

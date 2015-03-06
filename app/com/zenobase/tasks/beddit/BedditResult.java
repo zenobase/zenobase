@@ -63,7 +63,7 @@ public class BedditResult {
 			event.addValue(Event.TIMESTAMP, end);
 			event.setValue(Event.DURATION, new Duration(begin, end));
 			event.setValue(Event.FREQUENCY, frequencyValue(node.path("properties").path("resting_heart_rate")));
-			event.setValue(Event.PERCENTAGE, percentageValue(node.path("properties").path("stage_duration_S"), node.path("properties").path("stage_duration_W")));
+			event.setValue(Event.PERCENTAGE, percentageValue(stageDuration(node, 'S') + stageDuration(node, 'R'), stageDuration(node, 'W')));
 			events.add(event);
 		}
 	}
@@ -82,9 +82,11 @@ public class BedditResult {
 		return node.isBigDecimal() ? Measures.valueOf(node.decimalValue().setScale(0, BigDecimal.ROUND_HALF_UP), Units.BPM) : null;
 	}
 
-	private static Percentage percentageValue(JsonNode aNode, JsonNode bNode) {
-		int a = aNode.intValue();
-		int b = bNode.intValue();
+	private static int stageDuration(JsonNode node, char stage) {
+		return node.path("properties").path("stage_duration_" + stage).intValue();
+	}
+
+	private static Percentage percentageValue(int a, int b) {
 		return a + b > 0 ? Percentage.valueOf(Ints.checkedCast(100 * a / (a + b))) : null;
 	}
 }
