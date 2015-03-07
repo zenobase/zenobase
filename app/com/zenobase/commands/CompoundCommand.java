@@ -132,6 +132,7 @@ public class CompoundCommand extends Command {
 				commands.add(c);
 			}
 		}
+		boolean eventsOnly = commands.isEmpty();
 		if (CreateEventCommand.TYPE.equals(type)) {
 			Preconditions.checkNotNull(bucketId, "Expected a bucket: %s", command);
 			Preconditions.checkState(!events.isEmpty(), "Expected one or more events: %s", command);
@@ -142,15 +143,15 @@ public class CompoundCommand extends Command {
 			commands.add(new DeleteEventsCommand(command.getPrincipal(), bucketId, events, command.getTimestamp()));
 		}
 		if (!events.isEmpty()) {
-			Logger.info("Migrated!");
+			Logger.info("Migrated: {}", eventsOnly);
 			if (events.size() == 7) {
 				Logger.info("From: {}", command);
 			}
 			command.set(commands);
 			if (events.size() == 7) {
-				Logger.info("To: {}", command.unwrap());
+				Logger.info("To: {}", eventsOnly ? command.unwrap() : command);
 			}
 		}
-		return command.unwrap();
+		return eventsOnly ? command.unwrap() : command;
 	}
 }
