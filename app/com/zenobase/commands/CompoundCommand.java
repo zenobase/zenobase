@@ -172,8 +172,8 @@ public class CompoundCommand extends Command {
 				commands.add(new DeleteEventsCommand(command.getPrincipal(), bucketId, events, command.getTimestamp()));
 			}
 			type = null;
-			events.clear();
 			merged = events.size();
+			events.clear();
 		}
 	}
 }
