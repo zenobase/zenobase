@@ -100,58 +100,80 @@ public class CompoundCommand extends Command {
 		@Override
 		public Command parse(ObjectNode node, int version) {
 			switch (version) {
-				case 1: return migrate(new CompoundCommand(node, getRegistry()));
+				case 1: return new Migration(new CompoundCommand(node, getRegistry())).run();
 			}
 			return null;
 		}
 	}
 
-	private static Command migrate(CompoundCommand command) {
+	static class Migration {
+
+		CompoundCommand command;
 		List<Command> commands = Lists.newArrayList();
 		List<Event> events = Lists.newArrayList();
-		String bucketId = null;
-		Command.Type type = null;
-		for (Command c : command.getCommands()) {
-			if (CreateEventCommand.TYPE.equals(c.getType())) {
-				Preconditions.checkState(type == null || type.equals(CreateEventCommand.TYPE), "Expected additions only: %s", command.toJson());
-				type = CreateEventCommand.TYPE;
-				CreateEventCommand cec = new CreateEventCommand(c.toJson());
-				Preconditions.checkState(bucketId == null || bucketId.equals(cec.getBucketId()), "Expected a single bucket: %s", command.toJson());
-				bucketId = cec.getBucketId();
-				events.add(cec.getEvent());
+		String bucketId;
+		Command.Type type;
+		int merged;
 
-			} else if (DeleteEventCommand.TYPE.equals(c.getType())) {
-				Preconditions.checkState(type == null || type.equals(DeleteEventCommand.TYPE), "Expected deletions only: %s", command.toJson());
-				type = DeleteEventCommand.TYPE;
-				DeleteEventCommand dec = new DeleteEventCommand(c.toJson());
-				Preconditions.checkState(bucketId == null || bucketId.equals(dec.getBucketId()), "Expected a single bucket: %s", command.toJson());
-				bucketId = dec.getBucketId();
-				events.add(dec.getEvent());
-			} else {
-				Preconditions.checkState(type == null, "Expected no commands after additions and deletions: %s", command.toJson());
-				commands.add(c);
-			}
+		Migration(CompoundCommand command) {
+			this.command = command;
 		}
-		boolean eventsOnly = commands.isEmpty();
-		if (CreateEventCommand.TYPE.equals(type)) {
-			Preconditions.checkNotNull(bucketId, "Expected a bucket: %s", command.toJson());
-			Preconditions.checkState(!events.isEmpty(), "Expected one or more events: %s", command.toJson());
-			commands.add(new CreateEventsCommand(command.getPrincipal(), bucketId, events, command.getTimestamp()));
-		} else if (DeleteEventCommand.TYPE.equals(type)) {
-			Preconditions.checkNotNull(bucketId, "Expected a bucket: %s", command);
-			Preconditions.checkState(!events.isEmpty(), "Expected one or more events: %s", command.toJson());
-			commands.add(new DeleteEventsCommand(command.getPrincipal(), bucketId, events, command.getTimestamp()));
-		}
-		if (!events.isEmpty()) {
-			Logger.info("Migrated: {}", eventsOnly);
-			if (events.size() == 7) {
-				Logger.info("From: {}", command.toJson());
+
+		Command run() {
+			for (Command c : command.getCommands()) {
+				if (CreateEventCommand.TYPE.equals(c.getType())) {
+					Preconditions.checkState(type == null || type.equals(CreateEventCommand.TYPE), "Expected additions only: %s", command.toJson());
+					type = CreateEventCommand.TYPE;
+					CreateEventCommand cec = new CreateEventCommand(c.toJson());
+					Preconditions.checkState(bucketId == null || bucketId.equals(cec.getBucketId()), "Expected a single bucket: %s", command.toJson());
+					bucketId = cec.getBucketId();
+					events.add(cec.getEvent());
+
+				} else if (DeleteEventCommand.TYPE.equals(c.getType())) {
+					Preconditions.checkState(type == null || type.equals(DeleteEventCommand.TYPE), "Expected deletions only: %s", command.toJson());
+					type = DeleteEventCommand.TYPE;
+					DeleteEventCommand dec = new DeleteEventCommand(c.toJson());
+					Preconditions.checkState(bucketId == null || bucketId.equals(dec.getBucketId()), "Expected a single bucket: %s", command.toJson());
+					bucketId = dec.getBucketId();
+					events.add(dec.getEvent());
+				} else {
+					if (type != null) {
+						merge();
+					}
+					commands.add(c);
+				}
 			}
-			command.set(commands);
-			if (events.size() == 7) {
-				Logger.info("To: {}", eventsOnly ? command.unwrap().toJson() : command.toJson());
+			if (type != null) {
+				merge();
 			}
+			boolean eventsOnly = command.getCommands().size() == merged;
+			if (merged > 0) {
+				Logger.info("Merged: {}", merged);
+				if (merged == 7) {
+					Logger.info("From: {}", command.toJson());
+				}
+				command.set(commands);
+				if (merged == 7) {
+					Logger.info("To: {}", eventsOnly ? command.unwrap().toJson() : command.toJson());
+				}
+			}
+			return eventsOnly ? command.unwrap() : command;
 		}
-		return eventsOnly ? command.unwrap() : command;
+
+		void merge() {
+			Preconditions.checkState(merged == 0, "Can't merge more than once: %s", command.toJson());
+			if (CreateEventCommand.TYPE.equals(type)) {
+				Preconditions.checkNotNull(bucketId, "Expected a bucket: %s", command.toJson());
+				Preconditions.checkState(!events.isEmpty(), "Expected one or more events: %s", command.toJson());
+				commands.add(new CreateEventsCommand(command.getPrincipal(), bucketId, events, command.getTimestamp()));
+			} else if (DeleteEventCommand.TYPE.equals(type)) {
+				Preconditions.checkNotNull(bucketId, "Expected a bucket: %s", command);
+				Preconditions.checkState(!events.isEmpty(), "Expected one or more events: %s", command.toJson());
+				commands.add(new DeleteEventsCommand(command.getPrincipal(), bucketId, events, command.getTimestamp()));
+			}
+			type = null;
+			events.clear();
+			merged = events.size();
+		}
 	}
 }
