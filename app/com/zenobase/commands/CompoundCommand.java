@@ -50,7 +50,7 @@ public class CompoundCommand extends Command {
 	}
 
 	private void set(List<Command> commands) {
-		commands.clear();
+		this.commands.clear();
 		setCost(0);
 		setParameter(COMMANDS, null);
 		for (Command command : commands) {
