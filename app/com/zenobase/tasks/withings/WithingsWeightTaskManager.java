@@ -16,11 +16,10 @@ import com.google.common.base.Preconditions;
 
 import com.zenobase.commands.Command;
 import com.zenobase.commands.CompoundCommand;
-import com.zenobase.commands.CreateEventCommand;
+import com.zenobase.commands.CreateEventsCommand;
 import com.zenobase.commands.UpdateTaskCommand;
 import com.zenobase.common.Units;
 import com.zenobase.json.UnitField;
-import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
 import com.zenobase.tasks.OAuthCredentials;
 import com.zenobase.tasks.OAuthTaskManager;
@@ -79,10 +78,7 @@ public class WithingsWeightTaskManager extends OAuthTaskManager {
 			.set(Task.MARKER, task.getMarker(), result.getMarker())
 			.set(Task.UNDO, task.getUndoId(), command.getId())
 			.build());
-		for (Event event : result.getEvents()) {
-			// System.out.println("[event] " + event);
-			command.add(new CreateEventCommand(task.getPrincipal(), task.getBucketId(), event));
-		}
+		command.add(new CreateEventsCommand(task.getPrincipal(), task.getBucketId(), result.getEvents()));
 		return command;
 	}
 }

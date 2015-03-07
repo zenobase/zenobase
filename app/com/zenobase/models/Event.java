@@ -91,6 +91,7 @@ public class Event extends DomainNode {
 		super(node);
 	}
 
+	@Override
 	public String getId() {
 		return getValue(ID);
 	}

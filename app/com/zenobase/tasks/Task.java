@@ -46,6 +46,7 @@ public class Task extends DomainNode {
 		setValue(CREATED, new DateTime(DateTimeZone.UTC));
 	}
 
+	@Override
 	public String getId() {
 		return getValue(ID);
 	}

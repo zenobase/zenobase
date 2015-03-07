@@ -46,6 +46,7 @@ public class User extends DomainNode {
 		setValue(CREATED, created);
 	}
 
+	@Override
 	public String getId() {
 		return getValue(ID);
 	}

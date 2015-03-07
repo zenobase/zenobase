@@ -13,7 +13,7 @@ import com.google.common.util.concurrent.RateLimiter;
 
 import com.zenobase.commands.Command;
 import com.zenobase.commands.CompoundCommand;
-import com.zenobase.commands.CreateEventCommand;
+import com.zenobase.commands.CreateEventsCommand;
 import com.zenobase.commands.UpdateTaskCommand;
 import com.zenobase.models.Event;
 import com.zenobase.tasks.InvalidStatusException;
@@ -81,10 +81,7 @@ public abstract class FitbitTaskManagerSupport<T extends Task> extends OAuthTask
 			.set(Task.MARKER, task.getMarker(), lastDate.toString())
 			.set(Task.UNDO, task.getUndoId(), command.getId())
 			.build());
-		for (Event event : events) {
-			// System.out.println("[event] " + event);
-			command.add(new CreateEventCommand(task.getPrincipal(), task.getBucketId(), event));
-		}
+		command.add(new CreateEventsCommand(task.getPrincipal(), task.getBucketId(), events));
 		return command;
 	}
 }

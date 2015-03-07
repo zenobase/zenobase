@@ -12,11 +12,11 @@ import com.zenobase.services.EventRepository;
 
 public class DeleteEventCommand extends Command {
 
-	private static final Command.Type TYPE = new Command.Type("delete event", 2);
+	static final Command.Type TYPE = new Command.Type("delete event", 2);
 	private static final TokenField BUCKET_ID = new TokenField("bucketId");
 	private static final ObjectField EVENT = new ObjectField("event");
 
-	private DeleteEventCommand(ObjectNode node) {
+	DeleteEventCommand(ObjectNode node) {
 		super(node);
 		checkType(TYPE);
 	}
@@ -27,11 +27,11 @@ public class DeleteEventCommand extends Command {
 		setParameter(EVENT, event.toJson());
 	}
 
-	private String getBucketId() {
+	public String getBucketId() {
 		return getParameter(BUCKET_ID);
 	}
 
-	private Event getEvent() {
+	public Event getEvent() {
 		return new Event(getParameter(EVENT));
 	}
 

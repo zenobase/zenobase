@@ -18,7 +18,7 @@ import com.google.common.collect.Ordering;
 
 import com.zenobase.commands.Command;
 import com.zenobase.commands.CompoundCommand;
-import com.zenobase.commands.CreateEventCommand;
+import com.zenobase.commands.CreateEventsCommand;
 import com.zenobase.commands.UpdateCredentialsCommand;
 import com.zenobase.commands.UpdateTaskCommand;
 import com.zenobase.models.Event;
@@ -97,10 +97,7 @@ abstract class IHealthTaskManagerSupport<T extends IHealthTaskSupport> extends O
 				.set(OAuthCredentials.TOKEN, expiredToken, credentials.getToken())
 				.build());
 		}
-		for (Event event : events) {
-			// System.out.println("[event] " + event);
-			command.add(new CreateEventCommand(task.getPrincipal(), task.getBucketId(), event));
-		}
+		command.add(new CreateEventsCommand(task.getPrincipal(), task.getBucketId(), events));
 		return command;
 	}
 

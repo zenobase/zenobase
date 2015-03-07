@@ -9,6 +9,7 @@ import com.google.common.collect.ImmutableList;
 
 public class DomainNode {
 
+	public static final TokenField ID = new TokenField("@id", false);
 	public static final LongField VERSION = new LongField("version", false);
 
 	private final ObjectNode node;
@@ -19,6 +20,14 @@ public class DomainNode {
 
 	public DomainNode() {
 		node = Nodes.newObject();
+	}
+
+	public String getId() {
+		return getValue(ID);
+	}
+
+	public void setId(String id) {
+		setValue(ID, id);
 	}
 
 	public long getVersion() {

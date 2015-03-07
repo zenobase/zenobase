@@ -1,5 +1,7 @@
 package com.zenobase.tasks.bodymedia;
 
+import java.util.List;
+
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDate;
@@ -11,7 +13,7 @@ import com.google.common.util.concurrent.RateLimiter;
 
 import com.zenobase.commands.Command;
 import com.zenobase.commands.CompoundCommand;
-import com.zenobase.commands.CreateEventCommand;
+import com.zenobase.commands.CreateEventsCommand;
 import com.zenobase.commands.UpdateCredentialsCommand;
 import com.zenobase.commands.UpdateTaskCommand;
 import com.zenobase.models.Event;
@@ -47,7 +49,7 @@ public abstract class BodyMediaTaskManagerSupport extends OAuthTaskManager {
 		return date.toString("yyyyMMdd");
 	}
 
-	protected Command createCommand(Task task, OAuthCredentials credentials, LocalDate lastSync, Iterable<Event> events, Token expiredToken) {
+	protected Command createCommand(Task task, OAuthCredentials credentials, LocalDate lastSync, List<Event> events, Token expiredToken) {
 		CompoundCommand command = new CompoundCommand(task.getPrincipal(), "ran " + getType() + " task", "reverted " + getType() + " task");
 		command.add(UpdateTaskCommand.builder(task)
 			.set(Task.COMPLETED, task.getCompleted(), new DateTime(DateTimeZone.UTC))
@@ -61,10 +63,7 @@ public abstract class BodyMediaTaskManagerSupport extends OAuthTaskManager {
 				.set(OAuthCredentials.TOKEN, expiredToken, credentials.getToken())
 				.build());
 		}
-		for (Event event : events) {
-			// System.out.println("[event] " + event);
-			command.add(new CreateEventCommand(task.getPrincipal(), task.getBucketId(), event));
-		}
+		command.add(new CreateEventsCommand(task.getPrincipal(), task.getBucketId(), events));
 		return command;
 	}
 }

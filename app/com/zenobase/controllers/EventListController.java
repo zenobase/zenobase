@@ -17,8 +17,8 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
-import com.zenobase.commands.CompoundCommand;
 import com.zenobase.commands.CreateEventCommand;
+import com.zenobase.commands.CreateEventsCommand;
 import com.zenobase.common.Generator;
 import com.zenobase.json.Nodes;
 import com.zenobase.json.ObjectField;
@@ -141,10 +141,7 @@ public class EventListController extends ControllerSupport {
     	ObjectNode body = body();
     	ImmutableList<ObjectNode> nodes = EVENTS.getValues(body);
     	if (!nodes.isEmpty()) {
-    		CompoundCommand command = new CompoundCommand(auth.getPrincipal(), "added events", "removed events");
-    		for (ObjectNode node : nodes) {
-        		command.add(newCreateEventCommand(auth.getPrincipal(), bucketId, node));
-    		}
+    		CreateEventsCommand command = newCreateEventsCommand(auth.getPrincipal(), bucketId, nodes);
     		String commandId = dispatcher.dispatch(command);
     		response().setHeader(COMMAND_ID, commandId);
             return noContent();
@@ -158,15 +155,30 @@ public class EventListController extends ControllerSupport {
     	}
     }
 
+	private static CreateEventsCommand newCreateEventsCommand(Identity principal, String bucketId, List<ObjectNode> nodes) {
+		return new CreateEventsCommand(principal, bucketId, toEvents(principal, nodes));
+	}
+
 	private static CreateEventCommand newCreateEventCommand(Identity principal, String bucketId, ObjectNode node) {
+		return new CreateEventCommand(principal, bucketId, toEvent(principal, node));
+	}
+
+	private static List<Event> toEvents(Identity principal, List<ObjectNode> nodes) {
+		List<Event> events = Lists.newArrayListWithCapacity(nodes.size());
+		for (ObjectNode node : nodes) {
+			events.add(toEvent(principal, node));
+		}
+		return events;
+	}
+
+	private static Event toEvent(Identity principal, ObjectNode node) {
 		Event event = new Event(node);
 		event.setValue(Event.ID, Generator.id());
 		event.setValue(Event.AUTHOR, principal);
 		if (!event.contains(Event.TIMESTAMP)) {
 			event.addValue(Event.TIMESTAMP, new DateTime(DateTimeZone.UTC));
 		}
-		return new CreateEventCommand(principal, bucketId, event);
-
+		return event;
 	}
 
 	public Result count(String userId) {

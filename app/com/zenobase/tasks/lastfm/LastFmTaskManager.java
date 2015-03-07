@@ -18,7 +18,7 @@ import com.google.common.util.concurrent.RateLimiter;
 
 import com.zenobase.commands.Command;
 import com.zenobase.commands.CompoundCommand;
-import com.zenobase.commands.CreateEventCommand;
+import com.zenobase.commands.CreateEventsCommand;
 import com.zenobase.commands.UpdateTaskCommand;
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
@@ -119,7 +119,7 @@ public class LastFmTaskManager extends OAuthTaskManager {
 
 	}
 
-	private static Command createCommand(Task task, Iterable<Event> events, DateTime to) {
+	private static Command createCommand(Task task, List<Event> events, DateTime to) {
 		CompoundCommand command = new CompoundCommand(task.getPrincipal(), "ran lastfm task", "reverted lastfm task");
 		command.add(UpdateTaskCommand.builder(task)
 			.set(Task.COMPLETED, task.getCompleted(), new DateTime(DateTimeZone.UTC))
@@ -127,10 +127,7 @@ public class LastFmTaskManager extends OAuthTaskManager {
 			.set(Task.MARKER, task.getMarker(), Long.toString(to.getMillis() / 1000))
 			.set(Task.UNDO, task.getUndoId(), command.getId())
 			.build());
-		for (Event event : events) {
-			// System.out.println("[event] " + event);
-			command.add(new CreateEventCommand(task.getPrincipal(), task.getBucketId(), event));
-		}
+		command.add(new CreateEventsCommand(task.getPrincipal(), task.getBucketId(), events));
 		return command;
 	}
 }

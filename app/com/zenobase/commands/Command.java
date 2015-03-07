@@ -38,13 +38,18 @@ public class Command extends DomainNode {
 	}
 
 	public Command(Command.Type type, Identity principal) {
+		this(type, principal, new DateTime(DateTimeZone.UTC));
+	}
+
+	public Command(Command.Type type, Identity principal, DateTime timestamp) {
 		setValue(ID, Generator.id());
 		setValue(TYPE, type);
 		setValue(PRINCIPAL, principal);
-		setValue(TIMESTAMP, new DateTime(DateTimeZone.UTC));
+		setValue(TIMESTAMP, timestamp);
 		setValue(PARAMETERS, Nodes.newObject());
 	}
 
+	@Override
 	public String getId() {
 		return getValue(ID);
 	}
