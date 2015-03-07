@@ -127,7 +127,9 @@ public class LastFmTaskManager extends OAuthTaskManager {
 			.set(Task.MARKER, task.getMarker(), Long.toString(to.getMillis() / 1000))
 			.set(Task.UNDO, task.getUndoId(), command.getId())
 			.build());
-		command.add(new CreateEventsCommand(task.getPrincipal(), task.getBucketId(), events));
+		if (!events.isEmpty()) {
+			command.add(new CreateEventsCommand(task.getPrincipal(), task.getBucketId(), events));
+		}
 		return command;
 	}
 }

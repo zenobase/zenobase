@@ -97,7 +97,9 @@ abstract class IHealthTaskManagerSupport<T extends IHealthTaskSupport> extends O
 				.set(OAuthCredentials.TOKEN, expiredToken, credentials.getToken())
 				.build());
 		}
-		command.add(new CreateEventsCommand(task.getPrincipal(), task.getBucketId(), events));
+		if (!events.isEmpty()) {
+			command.add(new CreateEventsCommand(task.getPrincipal(), task.getBucketId(), events));
+		}
 		return command;
 	}
 

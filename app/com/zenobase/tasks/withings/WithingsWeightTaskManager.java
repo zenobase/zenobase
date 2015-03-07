@@ -1,5 +1,7 @@
 package com.zenobase.tasks.withings;
 
+import java.util.List;
+
 import javax.inject.Inject;
 import javax.measure.quantity.Mass;
 import javax.measure.unit.Unit;
@@ -20,6 +22,7 @@ import com.zenobase.commands.CreateEventsCommand;
 import com.zenobase.commands.UpdateTaskCommand;
 import com.zenobase.common.Units;
 import com.zenobase.json.UnitField;
+import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
 import com.zenobase.tasks.OAuthCredentials;
 import com.zenobase.tasks.OAuthTaskManager;
@@ -78,7 +81,10 @@ public class WithingsWeightTaskManager extends OAuthTaskManager {
 			.set(Task.MARKER, task.getMarker(), result.getMarker())
 			.set(Task.UNDO, task.getUndoId(), command.getId())
 			.build());
-		command.add(new CreateEventsCommand(task.getPrincipal(), task.getBucketId(), result.getEvents()));
+		List<Event> events = result.getEvents();
+		if (!events.isEmpty()) {
+			command.add(new CreateEventsCommand(task.getPrincipal(), task.getBucketId(), events));
+		}
 		return command;
 	}
 }

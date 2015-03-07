@@ -108,7 +108,9 @@ public class ReporterTaskManager extends OAuthTaskManager {
 			.set(Task.MARKER, task.getMarker(), marker.toString())
 			.set(Task.UNDO, task.getUndoId(), command.getId())
 			.build());
-		command.add(new CreateEventsCommand(task.getPrincipal(), task.getBucketId(), events));
+		if (!events.isEmpty()) {
+			command.add(new CreateEventsCommand(task.getPrincipal(), task.getBucketId(), events));
+		}
 		return command;
 	}
 }

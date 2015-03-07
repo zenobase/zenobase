@@ -16,8 +16,8 @@ import play.test.Helpers;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
-import com.zenobase.commands.CompoundCommand;
 import com.zenobase.commands.CreateEventCommand;
+import com.zenobase.commands.CreateEventsCommand;
 import com.zenobase.common.Generator;
 import com.zenobase.json.Nodes;
 import com.zenobase.models.Bucket;
@@ -54,7 +54,7 @@ public class EventListControllerHttpPostTest extends EventListControllerTestSupp
 	@Test
 	public void testCreateEvents() {
 		String commandId = Generator.id();
-		ArgumentCaptor<CompoundCommand> commandArg = ArgumentCaptor.forClass(CompoundCommand.class);
+		ArgumentCaptor<CreateEventsCommand> commandArg = ArgumentCaptor.forClass(CreateEventsCommand.class);
 		ArrayNode eventsNode = body.putArray(EventListController.EVENTS.getName());
 		Event.TAG.setValue(eventsNode.addObject(), "a");
 		Event.TAG.setValue(eventsNode.addObject(), "b");
@@ -63,7 +63,7 @@ public class EventListControllerHttpPostTest extends EventListControllerTestSupp
 		when(dispatcher.dispatch(commandArg.capture())).thenReturn(commandId);
 		Result result = call(bucket, body);
 		assertThat(result).hasStatus(NO_CONTENT).hasHeader(COMMAND_ID, commandId).isEmpty();
-		assertThat(commandArg.getValue().getCommands().size()).isEqualTo(2);
+		assertThat(commandArg.getValue().getEvents().size()).isEqualTo(2);
 	}
 
 	@Test

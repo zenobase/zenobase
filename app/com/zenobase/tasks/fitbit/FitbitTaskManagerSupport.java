@@ -81,7 +81,9 @@ public abstract class FitbitTaskManagerSupport<T extends Task> extends OAuthTask
 			.set(Task.MARKER, task.getMarker(), lastDate.toString())
 			.set(Task.UNDO, task.getUndoId(), command.getId())
 			.build());
-		command.add(new CreateEventsCommand(task.getPrincipal(), task.getBucketId(), events));
+		if (!events.isEmpty()) {
+			command.add(new CreateEventsCommand(task.getPrincipal(), task.getBucketId(), events));
+		}
 		return command;
 	}
 }

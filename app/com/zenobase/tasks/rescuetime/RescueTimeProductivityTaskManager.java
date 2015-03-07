@@ -129,7 +129,9 @@ public class RescueTimeProductivityTaskManager extends OAuthTaskManager {
 			.set(Task.MARKER, task.getMarker(), events.isEmpty() ? task.getMarker() : getLast(events).toString())
 			.set(Task.UNDO, task.getUndoId(), command.getId())
 			.build());
-		command.add(new CreateEventsCommand(task.getPrincipal(), task.getBucketId(), events));
+		if (!events.isEmpty()) {
+			command.add(new CreateEventsCommand(task.getPrincipal(), task.getBucketId(), events));
+		}
 		return command;
 	}
 
