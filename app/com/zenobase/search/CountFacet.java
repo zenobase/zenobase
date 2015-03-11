@@ -58,15 +58,17 @@ public class CountFacet extends FilteredFacet {
 		ArrayNode result = Nodes.newArray();
 		Terms terms = getAggregation(response);
 		List<Terms.Bucket> entries = terms.getBuckets();
-		for (Terms.Bucket entry : entries.subList(offset, Math.min(entries.size(), offset + limit))) {
-			ObjectNode entryNode = result.addObject();
-			entryNode.put("label", entry.getKey());
-			entryNode.put("count", entry.getDocCount());
-		}
-		if (terms.getSumOfOtherDocCounts() > 0) {
-			ObjectNode entryNode = result.addObject();
-			entryNode.put("label", LABEL_MORE);
-			entryNode.put("count", terms.getSumOfOtherDocCounts());
+		if (offset < entries.size()) {
+			for (Terms.Bucket entry : entries.subList(offset, Math.min(entries.size(), offset + limit))) {
+				ObjectNode entryNode = result.addObject();
+				entryNode.put("label", entry.getKey());
+				entryNode.put("count", entry.getDocCount());
+			}
+			if (terms.getSumOfOtherDocCounts() > 0) {
+				ObjectNode entryNode = result.addObject();
+				entryNode.put("label", LABEL_MORE);
+				entryNode.put("count", terms.getSumOfOtherDocCounts());
+			}
 		}
 		return result;
 	}
