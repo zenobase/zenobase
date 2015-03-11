@@ -3074,6 +3074,39 @@
 
 		$scope.keyField = 'timestamp';
 
+		/**
+		 * Based on http://stackoverflow.com/a/18070247/1144085
+		 */
+		function circular_avg(data) {
+			var f = 2 * Math.PI / data.length; // factor for converting keys to radians
+			var x = 0;
+			var y = 0;
+			$.each(data, function(i, time) {
+				x += time.count * Math.sin(f * i);
+				y += time.count * Math.cos(f * i);
+			});
+			var z = Math.atan2(x, y);
+			if (z < 0) {
+				z += 2 * Math.PI;
+			}
+			return Math.round(z / f * 2) / 2; // round to 0.5
+		}
+
+		function addPlotBand(chartOptions, value, max, color) {
+			chartOptions.xAxis.plotBands.push({
+				color : color,
+				from: value - 0.5,
+				to : value + 0.5
+			});
+			if (value - 0.5 < 0) {
+				chartOptions.xAxis.plotBands.push({
+					color : color,
+					from: max - 0.5,
+					to : max
+				});
+			}
+		}
+
 		$scope.init = function() {
 			$scope.times = null;
 			$scope.timesB = null;
@@ -3142,7 +3175,8 @@
 						text : null
 					},
 					xAxis : {
-						categories : []
+						categories : [],
+						plotBands: []
 					},
 					yAxis : {
 						title : {
@@ -3188,6 +3222,9 @@
 						enabled: false
 					}
 				};
+				if ($scope.settings.mark === 'avg') {
+					addPlotBand(options, circular_avg($scope.times), $scope.times.length, 'rgba(47, 126, 216, 0.2)');
+				}
 				if ($scope.settings.placement === 'top') {
 					options.chart.height = 150;
 				}
@@ -3214,6 +3251,9 @@
 						options.xAxis.categories.push(time.label);
 						options.series[1].data.push(value !== undefined ? field.toNumber(value) : 0);
 					});
+					if ($scope.settings.mark === 'avg') {
+						addPlotBand(options, circular_avg($scope.timesB), $scope.timesB.length, 'rgba(204, 102, 0, 0.2)');
+					}
 				}
 				field.formatAxis(options.yAxis);
 				$scope.chartOptions = options;				
