@@ -6868,7 +6868,7 @@
 			},
 			toHtml : function(value, interactive) {
 				if (interactive) {
-					var ngClick = "addConstraint('location', '" + this.toText(value).replace(' ', '') + '~100 m' + "', true)";
+					var ngClick = "addConstraint('location', '" + this.toText(value).replace(' ', '') + '~100 m' + "', false)";
 					return '<span class="nowrap">' +
 						'<i class="fa ' + this.icon + '" title="Location"></i> ' +
 						'<a data-ng-click="' + ngClick + '">' + this.toText(value) + '</a>' +
