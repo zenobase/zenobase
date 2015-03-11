@@ -3089,7 +3089,7 @@
 			if (z < 0) {
 				z += 2 * Math.PI;
 			}
-			return Math.round(z / f * 2) / 2; // round to 0.5
+			return (Math.round(z / f * 2) / 2) % data.length; // modulo and round to 0.5
 		}
 
 		function addPlotBand(chartOptions, value, max, color) {
