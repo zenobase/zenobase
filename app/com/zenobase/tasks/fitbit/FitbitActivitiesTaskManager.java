@@ -54,7 +54,6 @@ public class FitbitActivitiesTaskManager extends FitbitTaskManagerSupport<Fitbit
 				throw e;
 			}
 		}
-		// TODO get last timestamp
 		return createCommand(task, events, today);
 	}
 }
