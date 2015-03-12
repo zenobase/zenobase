@@ -1,5 +1,7 @@
 package com.zenobase.tasks.withings;
 
+import java.util.List;
+
 import javax.inject.Inject;
 import javax.measure.quantity.Length;
 import javax.measure.unit.Unit;
@@ -16,7 +18,7 @@ import com.google.common.base.Preconditions;
 
 import com.zenobase.commands.Command;
 import com.zenobase.commands.CompoundCommand;
-import com.zenobase.commands.CreateEventCommand;
+import com.zenobase.commands.CreateEventsCommand;
 import com.zenobase.commands.UpdateTaskCommand;
 import com.zenobase.common.Units;
 import com.zenobase.json.UnitField;
@@ -68,7 +70,7 @@ public class WithingsStepsTaskManager extends OAuthTaskManager {
 		return request;
 	}
 
-	private static Command createCommand(WithingsStepsTask task, Iterable<Event> events) {
+	private static Command createCommand(WithingsStepsTask task, List<Event> events) {
 		CompoundCommand command = new CompoundCommand(task.getPrincipal(), "ran withings-steps task", "reverted withings-steps task");
 		command.add(UpdateTaskCommand.builder(task)
 			.set(Task.COMPLETED, task.getCompleted(), new DateTime(DateTimeZone.UTC))
@@ -76,9 +78,8 @@ public class WithingsStepsTaskManager extends OAuthTaskManager {
 			.set(Task.MARKER, task.getMarker(), next(task.getMarker(), events))
 			.set(Task.UNDO, task.getUndoId(), command.getId())
 			.build());
-		for (Event event : events) {
-			// System.out.println("[event] " + event);
-			command.add(new CreateEventCommand(task.getPrincipal(), task.getBucketId(), event));
+		if (!events.isEmpty()) {
+			command.add(new CreateEventsCommand(task.getPrincipal(), task.getBucketId(), events));
 		}
 		return command;
 	}

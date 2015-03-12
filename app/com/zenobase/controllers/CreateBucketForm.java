@@ -20,6 +20,7 @@ public class CreateBucketForm extends DomainNode {
 		setValues(Bucket.ALIASES, aliases);
 	}
 
+	@Override
 	public String getId() {
 		return getValue(Bucket.ID);
 	}

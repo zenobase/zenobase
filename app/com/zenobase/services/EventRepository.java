@@ -43,6 +43,16 @@ public class EventRepository {
 		event.postPersist();
 	}
 
+	public void add(String bucketId, List<Event> events, DateTime timestamp) {
+		for (Event event : events) {
+			event.prePersist(bucketId);
+		}
+		getIndex(bucketId).store(Event.TYPE_NAME, events, timestamp, false);
+		for (Event event : events) {
+			event.postPersist();
+		}
+	}
+
 	public void update(String bucketId, Event event, DateTime timestamp) {
 		event.prePersist(bucketId);
 		getIndex(bucketId).update(Event.TYPE_NAME, event.getId(), event.toJson(), timestamp, false);
@@ -51,6 +61,10 @@ public class EventRepository {
 
 	public boolean delete(String bucketId, String eventId) {
 		return getIndex(bucketId).delete(Event.TYPE_NAME, eventId, false);
+	}
+
+	public boolean delete(String bucketId, List<String> eventIds) {
+		return getIndex(bucketId).delete(Event.TYPE_NAME, eventIds, false);
 	}
 
 	public Event find(String bucketId, String eventId) {

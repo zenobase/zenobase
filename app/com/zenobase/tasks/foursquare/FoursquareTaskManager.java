@@ -14,7 +14,7 @@ import com.google.common.collect.Lists;
 
 import com.zenobase.commands.Command;
 import com.zenobase.commands.CompoundCommand;
-import com.zenobase.commands.CreateEventCommand;
+import com.zenobase.commands.CreateEventsCommand;
 import com.zenobase.commands.UpdateTaskCommand;
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
@@ -82,9 +82,8 @@ public class FoursquareTaskManager extends OAuthTaskManager {
 			.set(Task.MARKER, task.getMarker(), marker)
 			.set(Task.UNDO, task.getUndoId(), command.getId())
 			.build());
-		for (Event event : events) {
-			// System.out.println("[event] " + event);
-			command.add(new CreateEventCommand(task.getPrincipal(), task.getBucketId(), event));
+		if (!events.isEmpty()) {
+			command.add(new CreateEventsCommand(task.getPrincipal(), task.getBucketId(), events));
 		}
 		return command;
 	}

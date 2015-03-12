@@ -5,6 +5,8 @@ import java.util.Set;
 
 import org.elasticsearch.action.admin.indices.alias.IndicesAliasesRequestBuilder;
 import org.elasticsearch.action.admin.indices.create.CreateIndexResponse;
+import org.elasticsearch.action.bulk.BulkItemResponse;
+import org.elasticsearch.action.bulk.BulkRequestBuilder;
 import org.elasticsearch.action.get.GetResponse;
 import org.elasticsearch.action.index.IndexRequest.OpType;
 import org.elasticsearch.action.index.IndexRequestBuilder;
@@ -68,11 +70,34 @@ public class Index {
 		index(type, id, node, OpType.CREATE, timestamp, refresh);
 	}
 
+	public void store(String type, List<? extends DomainNode> nodes, DateTime timestamp, boolean refresh) {
+		index(type, nodes, OpType.CREATE, timestamp, refresh);
+	}
+
 	public void update(String type, String id, ObjectNode node, DateTime timestamp, boolean refresh) {
 		index(type, id, node, OpType.INDEX, timestamp, refresh);
 	}
 
 	private void index(String type, String id, ObjectNode node, OpType operation, DateTime timestamp, boolean refresh) {
+		IndexRequestBuilder request = buildIndexRequest(type, id, node, operation, timestamp, refresh);
+		long version = request.get().getVersion();
+		DomainNode.VERSION.setValue(node, version);
+	}
+
+	private void index(String type, List<? extends DomainNode> nodes, OpType operation, DateTime timestamp, boolean refresh) {
+		BulkRequestBuilder request = client.prepareBulk();
+		for (DomainNode node : nodes) {
+			request.add(buildIndexRequest(type, node.getId(), node.toJson(), operation, timestamp, refresh));
+		}
+		request.setRefresh(refresh);
+		BulkItemResponse[] responses = request.get().getItems();
+		for (int i = 0; i < nodes.size(); ++i) {
+			long version = responses[i].getVersion();
+			nodes.get(i).setVersion(version);
+		}
+	}
+
+	private IndexRequestBuilder buildIndexRequest(String type, String id, ObjectNode node, OpType operation, DateTime timestamp, boolean refresh) {
 		IndexRequestBuilder request = client.prepareIndex(indexName, type, id);
 		if (operation == OpType.INDEX) {
 			Long version = DomainNode.VERSION.getValue(node);
@@ -83,14 +108,22 @@ public class Index {
 		request.setOpType(operation);
 		request.setTimestamp(timestamp.toString());
 		request.setRefresh(refresh);
-		long version = request.get().getVersion();
-		DomainNode.VERSION.setValue(node, version);
+		return request;
 	}
 
 	public boolean delete(String type, String id, boolean refresh) {
 		return client.prepareDelete(indexName, type, id)
 			.setRefresh(refresh)
 			.get().isFound();
+	}
+
+	public boolean delete(String type, List<String> ids, boolean refresh) {
+		BulkRequestBuilder request = client.prepareBulk().setRefresh(refresh);
+		for (String id : ids) {
+			request.add(client.prepareDelete(indexName, type, id));
+		}
+		request.get();
+		return true;
 	}
 
 	public boolean exists() {

@@ -1,5 +1,7 @@
 package com.zenobase.tasks.withings;
 
+import java.util.List;
+
 import javax.inject.Inject;
 
 import org.joda.time.DateTime;
@@ -14,7 +16,7 @@ import com.google.common.base.Preconditions;
 
 import com.zenobase.commands.Command;
 import com.zenobase.commands.CompoundCommand;
-import com.zenobase.commands.CreateEventCommand;
+import com.zenobase.commands.CreateEventsCommand;
 import com.zenobase.commands.UpdateTaskCommand;
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
@@ -76,9 +78,9 @@ public class WithingsCardioTaskManager extends OAuthTaskManager {
 			.set(Task.MARKER, task.getMarker(), result.getMarker())
 			.set(Task.UNDO, task.getUndoId(), command.getId())
 			.build());
-		for (Event event : result.getEvents()) {
-			// System.out.println("[event] " + event);
-			command.add(new CreateEventCommand(task.getPrincipal(), task.getBucketId(), event));
+		List<Event> events = result.getEvents();
+		if (!events.isEmpty()) {
+			command.add(new CreateEventsCommand(task.getPrincipal(), task.getBucketId(), events));
 		}
 		return command;
 	}

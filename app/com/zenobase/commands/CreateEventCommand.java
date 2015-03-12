@@ -12,11 +12,11 @@ import com.zenobase.services.EventRepository;
 
 public class CreateEventCommand extends Command {
 
-	private static final Command.Type TYPE = new Command.Type("create event", 4);
+	static final Command.Type TYPE = new Command.Type("create event", 4);
 	private static final TokenField BUCKET_ID = new TokenField("bucketId");
 	private static final ObjectField EVENT = new ObjectField("event");
 
-	private CreateEventCommand(ObjectNode node) {
+	CreateEventCommand(ObjectNode node) {
 		super(node);
 		checkType(TYPE);
 	}

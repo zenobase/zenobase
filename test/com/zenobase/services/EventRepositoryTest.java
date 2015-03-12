@@ -7,6 +7,7 @@ import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.junit.Before;
 import org.junit.Test;
+import com.google.common.collect.Lists;
 
 import com.zenobase.models.Bucket;
 import com.zenobase.models.Event;
@@ -66,6 +67,34 @@ public class EventRepositoryTest extends ElasticSearchTestSupport {
 		assertThat(repository.size(bucket.getId())).as("bucket size").isZero();
 		assertThat(repository.find(bucket.getId(), event.getId())).as("event").isNull();
 		assertThat(repository.terms(bucket.getId(), Event.TAG.getName())).as("tags").isEmpty();
+	}
+
+
+	@Test
+	public void testBulk() {
+
+		Bucket bucket = new Bucket();
+		new BucketRepository(getManager()).store(bucket, DateTime.now(), true);
+
+		// create events
+		Event e1 = new Event();
+		e1.setValue(Event.AUTHOR, me);
+		e1.setValue(Event.TIMESTAMP, new DateTime(DateTimeZone.UTC));
+		e1.addValue(Event.TAG, "foo");
+		Event e2 = new Event();
+		e2.setValue(Event.AUTHOR, me);
+		e2.setValue(Event.TIMESTAMP, new DateTime(DateTimeZone.UTC));
+		e2.addValue(Event.TAG, "bar");
+
+		// add events
+		repository.add(bucket.getId(), Lists.newArrayList(e1, e2), DateTime.now());
+		repository.refresh(bucket.getId());
+		assertThat(repository.size()).as("repository size").isEqualTo(2L);
+
+		// remove events
+		repository.delete(bucket.getId(), Lists.newArrayList(e1.getId(), e2.getId()));
+		repository.refresh(bucket.getId());
+		assertThat(repository.size()).as("repository size").isZero();
 	}
 
 	@Test
