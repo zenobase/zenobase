@@ -85,15 +85,19 @@ public class Index {
 	}
 
 	private void index(String type, List<? extends DomainNode> nodes, OpType operation, DateTime timestamp, boolean refresh) {
-		BulkRequestBuilder request = client.prepareBulk();
-		for (DomainNode node : nodes) {
-			request.add(buildIndexRequest(type, node.getId(), node.toJson(), operation, timestamp, refresh));
-		}
-		request.setRefresh(refresh);
-		BulkItemResponse[] responses = request.get().getItems();
-		for (int i = 0; i < nodes.size(); ++i) {
-			long version = responses[i].getVersion();
-			nodes.get(i).setVersion(version);
+		final int BATCH_SIZE = 10000;
+		for (int begin = 0; begin < nodes.size(); begin += BATCH_SIZE) {
+			BulkRequestBuilder request = client.prepareBulk();
+			for (int j = 0; j < BATCH_SIZE && begin + j < nodes.size(); ++j) {
+				DomainNode node = nodes.get(begin + j);
+				request.add(buildIndexRequest(type, node.getId(), node.toJson(), operation, timestamp, refresh));
+			}
+			request.setRefresh(refresh);
+			BulkItemResponse[] responses = request.get().getItems();
+			for (int i = 0; i < responses.length; ++i) {
+				long version = responses[i].getVersion();
+				nodes.get(begin + i).setVersion(version);
+			}
 		}
 	}
 
