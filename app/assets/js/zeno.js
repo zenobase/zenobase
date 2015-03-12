@@ -5604,6 +5604,7 @@
 			{ id : 'ihealth-sleep', description : 'Creates an event for each period of sleep.', url : 'http://ihealthlabs.com/' },
 			{ id : 'ihealth-steps', description : 'Creates an event for the number of steps logged.', url : 'http://ihealthlabs.com/' },
 			{ id : 'ihealth-weight', description : 'Creates an event for each body weight measurement.', url : 'http://ihealthlabs.com/' },
+			{ id : 'jawbone-activities', description : 'Creates an event for each activity.', url : 'https://jawbone.com/up' },
 			{ id : 'jawbone-food', description : 'Creates an event for each meal.', url : 'https://jawbone.com/up' },
 			{ id : 'jawbone-sleep', description : 'Creates an event for each period of sleep.', url : 'https://jawbone.com/up' },
 			{ id : 'jawbone-steps', description : 'Creates an event for the number of steps each day or hour.', url : 'https://jawbone.com/up' },
@@ -6294,6 +6295,18 @@
 					tag : 'Body',
 					marker : new Date(moment().utc().subtract(12, 'months').startOf('month').valueOf()),
 					timezone : 'UTC'
+			};
+		};
+
+		$scope.init();
+	}]);
+
+	app.controller('JawboneActivitiesSettingsController', ['$scope', 'moment', function($scope, moment) {
+
+		$scope.init = function() {
+			$scope.settings = $scope.$parent.$parent.settings = {
+					metric : false,
+					marker : new Date(moment().utc().subtract(12, 'months').startOf('month').valueOf())
 			};
 		};
 

@@ -747,6 +747,21 @@
 		</div>
 	</script>
 
+	<script id="/jawbone-activities-settings.html" type="text/ng-template">
+		<div data-ng-controller="JawboneActivitiesSettingsController">
+			<div class="control-group">
+				<label class="control-label">Units</label>
+				<label class="checkbox">
+					<input type="checkbox" data-ng-model="settings.metric"/> use metric units
+				</label>
+			</div>
+			<div class="control-group">
+				<label for="marker" class="control-label">Starting from</label>
+				<input class="input-small" type="text" data-ui-datepicker data-ng-model="settings.marker"/>
+			</div>
+		</div>
+	</script>
+
 	<script id="/jawbone-food-settings.html" type="text/ng-template">
 		<div data-ng-controller="JawboneFoodSettingsController">
 			<div class="control-group">

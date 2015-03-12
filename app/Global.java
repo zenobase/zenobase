@@ -142,6 +142,7 @@ import com.zenobase.tasks.ihealth.IHealthGlucoseTaskManager;
 import com.zenobase.tasks.ihealth.IHealthSleepTaskManager;
 import com.zenobase.tasks.ihealth.IHealthStepsTaskManager;
 import com.zenobase.tasks.ihealth.IHealthWeightTaskManager;
+import com.zenobase.tasks.jawbone.JawboneActivitiesTaskManager;
 import com.zenobase.tasks.jawbone.JawboneCredentialsManager;
 import com.zenobase.tasks.jawbone.JawboneFoodTaskManager;
 import com.zenobase.tasks.jawbone.JawboneSleepTaskManager;
@@ -346,6 +347,7 @@ public class Global extends GlobalSettings {
 				bindIfConfigured("google", GoogleFitLocateTaskManager.class, tasks);
 				bindIfConfigured("google", GoogleFitWeightTaskManager.class, tasks);
 				bindIfConfigured("automatic", AutomaticTaskManager.class, tasks);
+				bindIfConfigured("jawbone", JawboneActivitiesTaskManager.class, tasks);
 				bindIfConfigured("jawbone", JawboneStepsTaskManager.class, tasks);
 				bindIfConfigured("jawbone", JawboneSleepTaskManager.class, tasks);
 				bindIfConfigured("jawbone", JawboneFoodTaskManager.class, tasks);

@@ -9,6 +9,14 @@ import com.zenobase.tasks.TaskTestingSupport;
 public class JawboneTesting extends TaskTestingSupport {
 
 	@Test
+	public void testActivities() {
+		run(new JawboneActivitiesTaskManager(newCredentialsManager()), Nodes.newObject()
+			.put("marker", "2011-01-01")
+			.put("metric", true));
+	}
+
+	@Test
+	@Ignore
 	public void testSteps() {
 		run(new JawboneStepsTaskManager(newCredentialsManager()), Nodes.newObject()
 			.put("tag", "steps")
@@ -22,7 +30,7 @@ public class JawboneTesting extends TaskTestingSupport {
 	public void testSleep() {
 		run(new JawboneSleepTaskManager(newCredentialsManager()), Nodes.newObject()
 			.put("tag", "sleep")
-			.put("marker", "2014-01-01"));
+			.put("marker", "2013-08-17"));
 	}
 
 	@Test
