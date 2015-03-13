@@ -100,7 +100,7 @@ public class CompoundCommand extends Command {
 		@Override
 		public Command parse(ObjectNode node, int version) {
 			switch (version) {
-				case 1: return new Migration(new CompoundCommand(node, getRegistry())).run();
+				case 1: return new CompoundCommand(node, getRegistry());
 			}
 			return null;
 		}
