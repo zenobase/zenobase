@@ -4,7 +4,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import org.joda.time.DateTime;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.Lists;
 
@@ -27,15 +26,6 @@ public class CreateEventsCommand extends Command {
 
 	public CreateEventsCommand(Identity principal, String bucketId, List<Event> events) {
 		super(TYPE, principal);
-		setParameter(BUCKET_ID, bucketId);
-		for (Event event : events) {
-			addParameter(EVENTS, event.toJson());
-		}
-		addCost(events.size());
-	}
-
-	public CreateEventsCommand(Identity principal, String bucketId, List<Event> events, DateTime timestamp) {
-		super(TYPE, principal, timestamp);
 		setParameter(BUCKET_ID, bucketId);
 		for (Event event : events) {
 			addParameter(EVENTS, event.toJson());
