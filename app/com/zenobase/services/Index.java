@@ -97,6 +97,10 @@ public class Index {
 			for (int i = 0; i < responses.length; ++i) {
 				long version = responses[i].getVersion();
 				nodes.get(begin + i).setVersion(version);
+				if (responses[i].isFailed()) {
+					// TODO revert previous?
+					throw new RuntimeException("Couldn't store one or more items: " + responses[i].getFailureMessage());
+				}
 			}
 		}
 	}
