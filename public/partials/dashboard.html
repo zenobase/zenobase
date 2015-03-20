@@ -1089,6 +1089,27 @@
 		</div>
 	</script>
 
+	<script id="/trackthisforme-settings.html" type="text/ng-template">
+		<div data-ng-controller="TrackthisformeSettingsController">
+			<div class="control-group">
+				<label for="category" class="control-label">Category-Field Mapping</label>
+				<input name="category" type="text" required class="input-medium" data-ng-model="settings.category"/> as
+				<select name="field" class="input-medium" data-ng-model="settings.field" data-ng-options="field.name as field.name for field in getFields()">
+					<option value=""></option>
+				</select>
+				<span data-ng-show="getUnits().length"> in <select name="unit" class="input-small" data-ng-model="settings.unit" data-ng-options="unit for unit in getUnits()"></select></span>
+				<br/>
+				<label class="checkbox">
+					<input type="checkbox" data-ng-model="settings.rating"/> also map <em>satisfaction</em> to <em>rating</em>
+				</label>
+			</div>
+			<div class="control-group">
+				<label for="marker" class="control-label">Starting from</label>
+				<input class="input-small" type="text" data-ui-datepicker data-ng-model="settings.marker"/>
+			</div>
+		</div>
+	</script>
+
 	<script id="/google-activities-settings.html" type="text/ng-template">
 		<div data-ng-controller="GoogleFitActivitiesSettingsController">
 			<div class="control-group">
