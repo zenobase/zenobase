@@ -31,6 +31,7 @@ abstract class GoogleFitResultSupport {
 		.put("com.ryansteckler.perfectcinch", new Resource("Cinch Weight Loss and Fitness", "http://www.perfectcinch.com/"))
 		.put("com.sillens.shapeupclub", new Resource("Lifesum", "https://lifesum.com/"))
 		.put("com.strava", new Resource("Strava", "http://www.strava.com/"))
+		.put("com.ua.record", new Resource("Under Armour Record", "https://record.underarmour.com/"))
 		.put("com.vitrox.facion.gui", new Resource("What's My Heart Rate", "http://facion.net/wmhr"))
 		.put("com.withings", new Resource("Withings", "http://www.withings.com/us/"))
 		.put("com.withings.wiscale2", new Resource("Withings", "http://www.withings.com/us/"))
