@@ -61,7 +61,7 @@ public class AutomaticCredentialsManager extends OAuthCredentialsManager {
 	}
 
 	private void reauthorize(OAuthCredentials credentials) {
-		OAuthRequest request = new OAuthRequest(Verb.POST, "https://www.automatic.com/oauth/access_token");
+		OAuthRequest request = new OAuthRequest(Verb.POST, "https://account.automatic.com/oauth/access_token");
 		request.addBodyParameter("grant_type", "refresh_token");
 		request.addBodyParameter("refresh_token", ((ExpiringToken) credentials.getToken()).getRefreshToken());
 		request.addBodyParameter(OAuthConstants.CLIENT_ID, getApiKey());
