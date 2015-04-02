@@ -2743,6 +2743,52 @@
 		]
 	},
 	{
+		"category" : "Sunlight",
+		"source" : "SunSprite",
+		"importer" : "sunsprite", 
+		"widgets" : [
+			{
+				"id" : "timeline_light",
+				"type" : "timeline",
+				"label" : "Light (lux)",
+				"placement" : "top",
+				"field" : "light",
+				"unit" : "lx",
+				"statistic" : "avg",
+				"interval" : "month"
+			},
+			{
+				"id" : "timeline_rating",
+				"type" : "timeline",
+				"label" : "UV Rating",
+				"placement" : "top",
+				"field" : "rating",
+				"unit" : null,
+				"statistic" : "avg",
+				"interval" : "month"
+			},
+			{
+				"id" : "latest",
+				"type" : "list",
+				"label" : "Latest",
+				"placement" : "left",
+				"order" : "-timestamp",
+				"limit" : 10,
+				"singleton" : true
+			},
+			{
+				"id" : "light_by_hour",
+				"type" : "polar",
+				"label" : "Hour of Day",
+				"placement" : "right",
+				"value_field" : "light",
+				"unit" : "lx",
+				"statistic" : "avg",
+				"interval" : "hour_of_day"
+			}
+		]
+	},
+	{
 		"category" : "Time Tracking",
 		"source" : "RescueTime",
 		"task" : "rescuetime-productivity",

@@ -5219,7 +5219,76 @@
 		};
 	}]);
 
-	app.controller('ImportDialogController', ['$scope', '$http', '$routeParams', 'EventSpreadsheet', 'HealthKit', 'SleepCycle', 'TapLog', 'Nomie', 'Basis', 'tracker', 'delay', function($scope, $http, $routeParams, EventSpreadsheet, HealthKit, SleepCycle, TapLog, Nomie, Basis, tracker, delay) {
+	app.factory('SunSprite', [ 'moment', function(moment) {
+
+		function mean(values) {
+			var sum = 0;
+			for (var i = 0; i < values.length; ++i) {
+					if (values[i] >= 0) {
+						sum += values[i];
+					}
+			}
+			return sum / values.length;
+		}
+
+		return {
+			parse : function(s, settings) {
+				var events = [];
+				var csv = Baby.parse(s, { header : true, skipEmptyLines : true });
+				if (csv.errors.length) {
+					throw new Error(csv.errors[0].message + ' in row ' + csv.errors[0].row);
+				}
+				var hour = null;
+				var rows = 0;
+				var luxes = [];
+				var uvs = [];
+				function push() {
+					var event = {
+						'timestamp' : hour,
+						'duration' : 3600000,
+						'tag' : [ settings.tag ],
+						'source' : {
+							'title' : 'SunSprite',
+							'url' : 'https://www.sunsprite.com/'
+						}
+					};
+					var lux = mean(luxes);
+					if (isFinite(lux)) {
+						event['light'] = {
+							'@value' : Math.round(lux),
+							'unit' : 'lx'
+						};
+					}
+					var uv = mean(uvs);
+					if (isFinite(uv)) {
+						event['rating'] = Math.max(0, 100 - Math.round(10 * uv));
+					}
+					events.push(event);
+					hour = null;
+					rows = 0;
+					luxes = [];
+					uvs = [];
+				}
+				$.each(csv.data, function(rowNum, row) {
+					var t = moment(row['date']);
+					var h = t.format('YYYY-MM-DDTHH:00:00.000Z');
+					if (hour && hour !== h) {
+						push();
+					}
+					++rows;
+					hour = h;
+					luxes.push(Number(row['lux']));
+					uvs.push(Number(row['uv index']));
+				});
+				if (hour && rows) {
+					push();
+				}
+				return events;
+			}
+		};
+	}]);
+
+	app.controller('ImportDialogController', ['$scope', '$http', '$routeParams', 'EventSpreadsheet', 'HealthKit', 'SleepCycle', 'SunSprite', 'TapLog', 'Nomie', 'Basis', 'tracker', 'delay', function($scope, $http, $routeParams, EventSpreadsheet, HealthKit, SleepCycle, SunSprite, TapLog, Nomie, Basis, tracker, delay) {
 
 		$scope.bucketId = $routeParams.bucketId;
 		$scope.formats = [
@@ -5262,6 +5331,15 @@
 				description : 'Import a <b>.csv</b> file from <a href="http://www.sleepcycle.com/" target="_blank">SleepCycle</a>.',
 				parse : function(data) {
 					return SleepCycle.parse(data);
+				}
+			},
+			{
+				id : 'sunsprite',
+				label : 'SunSprite',
+				description : 'Import a <b>.csv</b> file from <a href="http://www.sunsprite.com/" target="_blank">SunSprite</a>.',
+				settings : '/import-sunsprite.html',
+				parse : function(data, settings) {
+					return SunSprite.parse(data, settings);
 				}
 			},
 			{
@@ -5379,6 +5457,14 @@
 			$scope.units = $scope.settings.field && Field.find($scope.settings.field).units || [];
 			$scope.settings.unit = $scope.units.length ? $scope.units[0] : null;
 		});
+		$scope.settings = $scope.$parent.settings;
+	}]);
+
+	app.controller('ImportSunSpriteController', ['$scope', function($scope) {
+
+		$scope.settings.tag = 'Sunlight';
+		$scope.settings.timezone = 'UTC';
+
 		$scope.settings = $scope.$parent.settings;
 	}]);
 
