@@ -17,9 +17,10 @@ public class MovesPlacesTask extends Task {
 		super(node);
 	}
 
-	public MovesPlacesTask(String bucketId, Identity principal, String tag) {
+	public MovesPlacesTask(String bucketId, Identity principal, String tag, String marker) {
 		super(TYPE, bucketId, principal);
 		setSetting(TAG, tag);
+		setMarker(marker);
 	}
 
 	public DateTime getFrom() {

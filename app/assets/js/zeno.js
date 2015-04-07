@@ -5897,11 +5897,12 @@
 		$scope.init();
 	}]);
 
-	app.controller('MovesPlacesSettingsController', ['$scope', function($scope) {
+	app.controller('MovesPlacesSettingsController', ['$scope', 'moment', function($scope, moment) {
 
 		$scope.init = function() {
 			$scope.settings = $scope.$parent.$parent.settings = {
-					tag : 'Place'					
+					tag : 'Place',					
+					marker : new Date(moment().utc().subtract(12, 'months').startOf('month').valueOf())
 			};
 		};
 

@@ -36,7 +36,8 @@ public class MovesPlacesTaskManager extends MovesTaskManagerSupport {
 	@Override
 	public Task newTask(String bucketId, Identity principal, ObjectNode settings) {
 		String tag = Preconditions.checkNotNull(settings.path("tag").textValue());
-		return new MovesPlacesTask(bucketId, principal, tag);
+		String marker = DateTime.parse(settings.path("marker").textValue()).toString();
+		return new MovesPlacesTask(bucketId, principal, tag, marker);
 	}
 
 	@Override
