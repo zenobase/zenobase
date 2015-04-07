@@ -8,6 +8,7 @@ import org.joda.time.format.ISODateTimeFormat;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Preconditions;
+import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 
 import com.zenobase.models.Event;
@@ -21,11 +22,13 @@ class MovesPlacesResult {
 
 	private final Identity author;
 	private final DateTime begin;
+	private final String tag;
 	private final JsonNode node;
 
-	public MovesPlacesResult(Identity author, DateTime begin, JsonNode node) {
+	public MovesPlacesResult(Identity author, DateTime begin, String tag, JsonNode node) {
 		this.author = Preconditions.checkNotNull(author);
 		this.begin = Preconditions.checkNotNull(begin);
+		this.tag = tag;
 		this.node = Preconditions.checkNotNull(node);
 	}
 
@@ -54,7 +57,9 @@ class MovesPlacesResult {
 			DateTime end = dateTimeValue(segmentNode.path("endTime"));
 			event.setValue(Event.TIMESTAMP, begin);
 			event.setValue(Event.DURATION, new Duration(begin, end));
-			event.addValue(Event.TAG, "Place");
+			if (!Strings.isNullOrEmpty(tag)) {
+				event.addValue(Event.TAG, tag);
+			}
 			JsonNode placeNode = segmentNode.path("place");
 			event.setValue(Event.LOCATION, locationValue(placeNode.path("location")));
 			String placeType = segmentNode.path("place").path("type").textValue();

@@ -5901,7 +5901,7 @@
 
 		$scope.init = function() {
 			$scope.settings = $scope.$parent.$parent.settings = {
-					
+					tag : 'Place'					
 			};
 		};
 

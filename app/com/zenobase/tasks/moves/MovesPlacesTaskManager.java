@@ -11,6 +11,7 @@ import org.scribe.model.Response;
 import org.scribe.model.Token;
 import play.Logger;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 
 import com.zenobase.commands.Command;
@@ -34,7 +35,8 @@ public class MovesPlacesTaskManager extends MovesTaskManagerSupport {
 
 	@Override
 	public Task newTask(String bucketId, Identity principal, ObjectNode settings) {
-		return new MovesPlacesTask(bucketId, principal);
+		String tag = Preconditions.checkNotNull(settings.path("tag").textValue());
+		return new MovesPlacesTask(bucketId, principal, tag);
 	}
 
 	@Override
@@ -64,7 +66,7 @@ public class MovesPlacesTaskManager extends MovesTaskManagerSupport {
 		LocalDate today = LocalDate.now(begin.getZone());
 		for (LocalDate from = begin.toLocalDate(); !from.isAfter(today); from = from.withDayOfMonth(1).plusMonths(1)) {
 			LocalDate to = min(from.dayOfMonth().withMaximumValue(), today);
-			PlacesQuery request = new PlacesQuery(begin, task.getPrincipal(), credentials);
+			PlacesQuery request = new PlacesQuery(task.getTag(), begin, task.getPrincipal(), credentials);
 			events.addAll(request.find(from, to).getEvents());
 		}
 		return events;
@@ -72,11 +74,13 @@ public class MovesPlacesTaskManager extends MovesTaskManagerSupport {
 
 	private class PlacesQuery {
 
+		private final String tag;
 		private final DateTime begin;
 		private final Identity principal;
 		private final OAuthCredentials credentials;
 
-		public PlacesQuery(DateTime begin, Identity principal, OAuthCredentials credentials) {
+		public PlacesQuery(String tag, DateTime begin, Identity principal, OAuthCredentials credentials) {
+			this.tag = tag;
 			this.begin = begin;
 			this.principal = principal;
 			this.credentials = credentials;
@@ -87,7 +91,7 @@ public class MovesPlacesTaskManager extends MovesTaskManagerSupport {
 			request.addQuerystringParameter("from", from.toString());
 			request.addQuerystringParameter("to", to.toString());
 			Response response = send(request, credentials);
-			return new MovesPlacesResult(principal, begin, parseArray(response));
+			return new MovesPlacesResult(principal, begin, tag, parseArray(response));
 		}
 	}
 

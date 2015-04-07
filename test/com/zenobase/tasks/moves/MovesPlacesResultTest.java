@@ -17,7 +17,7 @@ public class MovesPlacesResultTest extends ResultTestSupport {
 	@Test
 	public void test() {
 		DateTime begin = dateTime("2012-12-12T07:46:17+0200");
-		MovesPlacesResult result = new MovesPlacesResult(TESTER, begin, readArray("MovesPlacesResultTest.json"));
+		MovesPlacesResult result = new MovesPlacesResult(TESTER, begin, "Place", readArray("MovesPlacesResultTest.json"));
 		List<Event> events = result.getEvents();
 		assertThat(events).as("events").hasSize(4);
 		Event expected = new Event(events.get(0).getId());
