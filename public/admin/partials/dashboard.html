@@ -35,16 +35,24 @@
 				<table class="table">
 					<thead>
 						<tr>
-							<th>Command</th>
-							<th style="text-align: right">Cost</th>
-							<th></th>
+							<th style="width: 0">Command</th>
+							<th style="width: 0">User</th>
+							<th style="width: 99%">Description</th>
+							<th style="width: 0">Created</th>
+							<th style="width: 0; text-align: right">Cost</th>
+							<th style="width: 0"></th>
 						</tr>
 					</thead>
 					<tbody>
 						<tr data-ng-repeat="command in commands">
+							<td>{{command['@id']}}</td>
 							<td>
 								<a data-ng-click="setConstraint(command.principal)">{{command.principal | username}}</a>
+							</td>
+							<td>
 								<span data-ng-bind-html="command.label"></span>
+							</td>
+							<td style="white-space: nowrap">
 								<abbr title="{{command.timestamp}}">{{command.timestamp | age}}</abbr>
 							</td>
 							<td style="text-align: right">
@@ -55,10 +63,10 @@
 							</td>
 						</tr>
 						<tr data-ng-show="commands == null">
-							<td colspan="3"><i>Loading</i></td>
+							<td colspan="6"><i>Loading</i></td>
 						</tr>
 						<tr data-ng-show="commands.length == 0">
-							<td colspan="3"><i>None</i></td>
+							<td colspan="6"><i>None</i></td>
 						</tr>
 					</tbody>
 				</table>
@@ -77,11 +85,11 @@
 				<table class="table">
 					<thead>
 						<tr>
-							<th>Bucket</th>
-							<th>Owner</th>
-							<th>Created</th>
-							<th style="text-align: right">Size</th>
-							<th></th>
+							<th style="width: 0">Bucket</th>
+							<th style="width: 99%">User</th>
+							<th style="width: 0">Created</th>
+							<th style="width: 0; text-align: right">Size</th>
+							<th style="width: 0"></th>
 						</tr>
 					</thead>
 					<tbody>
@@ -89,8 +97,12 @@
 							<td>
 								<span data-ng-class="bucket.aliases && bucket.aliases.length && 'bucket-virtual'">{{bucket['@id']}}</span>
 							</td>
-							<td><a data-ng-click="setConstraint(getOwner(bucket))">{{getOwner(bucket) | username}}</a></td>
-							<td><abbr title="{{bucket.created}}">{{bucket.created | age}}</abbr></td>
+							<td>
+								<a data-ng-click="setConstraint(getOwner(bucket))">{{getOwner(bucket) | username}}</a>
+							</td>
+							<td style="white-space: nowrap">
+								<abbr title="{{bucket.created}}">{{bucket.created | age}}</abbr>
+							</td>
 							<td style="text-align: right">
 								<a data-ng-show="isPublished(bucket)" data-ng-href="/#/buckets/{{bucket['@id']}}">{{bucket.size}}</a>
 								<span data-ng-hide="isPublished(bucket)">{{bucket.size | number}}</span>
@@ -148,11 +160,11 @@
 				<table class="table">
 					<thead>
 						<tr>
-							<th>User</th>
-							<th>Email</th>
-							<th>Signed up</th>
-							<th style="text-align: right">Quota</th>
-							<th></th>
+							<th style="width: 0">User</th>
+							<th style="width: 99%">Email</th>
+							<th style="width: 0">Created</th>
+							<th style="width: 0; text-align: right">Quota</th>
+							<th style="width: 0"></th>
 						</tr>
 					</thead>
 					<tbody>
@@ -163,10 +175,12 @@
 							</td>
 							<td>
 								<a data-ng-href="mailto:{{user.email}}">{{user.email}}</a> 
-								<a title="Resend Verification" data-ng-click="reverify(user)" data-ng-hide="user.verified"><i class="fa fa-play-circle-o"></i></a>
+								<a title="Resend Verification" data-ng-click="reverify(user)" data-ng-hide="user.verified"><i class="fa fa-repeat"></i></a>
 							</td>
-							<td><abbr title="{{user.created}}">{{user.created | age}}</abbr></td>
-							<td style="text-align: right">
+							<td style="white-space: nowrap">
+								<abbr title="{{user.created}}">{{user.created | age}}</abbr>
+							</td>
+							<td style="text-align: right; white-space: nowrap">
 								<a class="action" data-ng-click="openDialog('edit-quota-dialog', user)" title="Edit Quota"><i class="fa fa-pencil"></i></a>
 								<span data-ng-bind="user.quota | number" ></span>
 							</td>
@@ -230,20 +244,26 @@
 				<table class="table">
 					<thead>
 						<tr>
-							<th>Authorization</th>
-							<th>User</th>
-							<th>Client</th>
-							<th>Created</th>
-							<th>Scope</th>
-							<th></th>
+							<th style="width: 0">Authorization</th>
+							<th style="width: 99%">User</th>
+							<th style="width: 0">Created</th>
+							<th style="width: 0">Client</th>
+							<th style="width: 0">Scope</th>
+							<th style="width: 0"></th>
 						</tr>
 					</thead>
 					<tbody>
 						<tr data-ng-repeat="authorization in authorizations">
 							<td>{{authorization['@id']}}</td>
-							<td><a data-ng-click="setConstraint(authorization.principal)">{{authorization.principal | username}}</a></td>
-							<td><a data-ng-click="setConstraint(authorization.client)" data-ng-show="authorization.client">{{authorization.client | username}}</a></td>
-							<td><abbr title="{{authorization.created}}">{{authorization.created | age}}</abbr></td>
+							<td>
+								<a data-ng-click="setConstraint(authorization.principal)">{{authorization.principal | username}}</a>
+							</td>
+							<td style="white-space: nowrap">
+								<abbr title="{{authorization.created}}">{{authorization.created | age}}</abbr>
+							</td>
+							<td>
+								<a data-ng-click="setConstraint(authorization.client)" data-ng-show="authorization.client">{{authorization.client | username}}</a>
+							</td>
 							<td>{{authorization.scope}}</td>
 							<td style="text-align: right">
 								<a class="action" data-ng-click="remove(authorization['@id'])" title="Delete"><i class="fa fa-trash-o"></i></a>
@@ -281,21 +301,21 @@
 				<table class="table">
 					<thead>
 						<tr>
-							<th>Credentials</th>
-							<th>Type</th>
-							<th>Owner</th>
-							<th>Created</th>
-							<th>Authorized</th>
-							<th></th>
+							<th style="width: 0">Credentials</th>
+							<th style="width: 0">User</th>
+							<th style="width: 99%">Type</th>
+							<th style="width: 0">Created</th>
+							<th style="width: 0">Authorized</th>
+							<th style="width: 0"></th>
 						</tr>
 					</thead>
 					<tbody>
 						<tr data-ng-repeat="credential in credentials">
 							<td>{{credential['@id']}}</td>
-							<td>{{credential.type}}</td>
 							<td><a data-ng-click="setConstraint(credential.principal)">{{credential.principal | username}}</a></td>
-							<td><abbr title="{{credential.created}}">{{credential.created | age}}</abbr></td>
-							<td>{{!credential.authorizationUrl}}</td>
+							<td>{{credential.type}}</td>
+							<td style="white-space: nowrap"><abbr title="{{credential.created}}">{{credential.created | age}}</abbr></td>
+							<td style="text-align: center">{{!credential.authorizationUrl}}</td>
 							<td style="text-align: right">
 								<a class="action" data-ng-click="remove(credential['@id'])" title="Delete"><i class="fa fa-trash-o"></i></a>
 							</td>
@@ -329,26 +349,30 @@
 				<table class="table">
 					<thead>
 						<tr>
-							<th>Task</th>
-							<th>Type</th>
-							<th>Owner</th>
-							<th>Bucket</th>
-							<th>Created</th>
-							<th>Completed</th>
-							<th>Status</th>
-							<th></th>
+							<th style="width: 0">Task</th>
+							<th style="width: 0">User</th>
+							<th style="width: 0">Bucket</th>
+							<th style="width: 99%">Type</th>
+							<th style="width: 0">Created</th>
+							<th style="width: 0">Completed</th>
+							<th style="width: 0">Status</th>
+							<th style="width: 0"></th>
 						</tr>
 					</thead>
 					<tbody>
 						<tr data-ng-repeat="task in tasks">
 							<td>{{task['@id']}}</td>
-							<td>{{task.type}}</td>
 							<td><a data-ng-click="setConstraint(task.principal)">{{task.principal | username}}</a></td>
 							<td>{{task.bucket}}</td>
-							<td><abbr title="{{task.created}}">{{task.created | age}}</abbr></td>
-							<td><abbr title="{{task.completed}}">{{task.completed | age}}</abbr></td>
+							<td>{{task.type}}</td>
+							<td style="white-space: nowrap">
+								<abbr title="{{task.created}}">{{task.created | age}}</abbr>
+							</td>
+							<td style="white-space: nowrap">
+								<abbr title="{{task.completed}}">{{task.completed | age}}</abbr>
+							</td>
 							<td>{{task.status}}</td>
-							<td style="text-align: right">
+							<td style="white-space: nowrap; text-align: right">
 								<a class="action" data-ng-click="run(task['@id'])"><i class="fa fa-refresh" data-ng-class="running[task['@id']] && 'fa-spin'" title="Run"></i></a>
 								<a class="action" data-ng-click="remove(task['@id'])" title="Delete"><i class="fa fa-trash-o"></i></a>
 							</td>
@@ -376,19 +400,21 @@
 				<table class="table">
 					<thead>
 						<tr>
-							<th>Snapshot</th>
-							<th>State</th>
-							<th>Created</th>
-							<th>Duration</th>
-							<th></th>
+							<th style="width: 0">Snapshot</th>
+							<th style="width: 99%">State</th>
+							<th style="width: 0">Created</th>
+							<th style="width: 0; text-align: right">Duration</th>
+							<th style="width: 0"></th>
 						</tr>
 					</thead>
 					<tbody>
 						<tr data-ng-repeat="snapshot in snapshots">
 							<td>{{snapshot['@id']}}</td>
 							<td>{{snapshot.state}}</td>
-							<td><abbr title="{{snapshot.created}}">{{snapshot.created | age}}</abbr></td>
-							<td>{{snapshot.duration | duration}}</td>
+							<td style="white-space: nowrap">
+								<abbr title="{{snapshot.created}}">{{snapshot.created | age}}</abbr>
+							</td>
+							<td style="text-align: right">{{snapshot.duration | duration}}</td>
 							<td style="text-align: right">
 								<a class="action" data-ng-click="remove(snapshot['@id'])" title="Delete"><i class="fa fa-trash-o"></i></a>
 							</td>
