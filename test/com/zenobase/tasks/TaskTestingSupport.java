@@ -11,6 +11,7 @@ import org.junit.Before;
 import org.junit.experimental.categories.Category;
 import org.mockito.Mockito;
 import org.scribe.model.Token;
+import play.test.Helpers;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Charsets;
@@ -43,6 +44,15 @@ public abstract class TaskTestingSupport {
 	protected void run(OAuthTaskManager manager, ObjectNode settings) {
 		Task task = manager.newTask(bucketId, principal, settings);
 		print(manager.execute(task, getCredentials()).toJson());
+	}
+
+	protected void runInApplication(final OAuthTaskManager manager, final ObjectNode settings) {
+		Helpers.running(Helpers.fakeApplication(), new Runnable() {
+			@Override
+			public void run() {
+				TaskTestingSupport.this.run(manager, settings);
+			}
+		});
 	}
 
 	private OAuthCredentials getCredentials() {

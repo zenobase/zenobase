@@ -18,14 +18,16 @@ import com.zenobase.tasks.foursquare.FoursquareVenues;
 public class MovesTesting extends TaskTestingSupport {
 
 	@Test
+	@Ignore
 	public void testActivities() {
 		run(new MovesActivitiesTaskManager(newCredentialsManager()), Nodes.newObject());
 	}
 
 	@Test
-	@Ignore
 	public void testPlaces() {
-		run(new MovesPlacesTaskManager(newCredentialsManager(), newFoursquareVenues()), Nodes.newObject("marker", "2014-02-06"));
+		runInApplication(new MovesPlacesTaskManager(newCredentialsManager(), newFoursquareVenues()), Nodes.newObject()
+			.put("marker", "2015-04-01T12:00:00.000-07:00")
+			.put("tag", "Place"));
 	}
 
 	@Test

@@ -51,9 +51,11 @@ public class MovesPlacesTaskManager extends MovesTaskManagerSupport {
 			reauthorize(credentials);
 		}
 		DateTime from = task.getFrom();
-		if (from == null) {
+		if (task.getCompleted() == null) {
 			MovesProfileResult profile = getProfile(credentials);
-			from = profile.getFirstDate();
+			if (from == null || profile.getFirstDate().isAfter(from)) {
+				from = profile.getFirstDate();
+			}
 		}
 		List<Event> events = getEvents(task, credentials, from);
 		removeDuplicates(events);
