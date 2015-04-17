@@ -178,6 +178,8 @@ import com.zenobase.tasks.strava.StravaCredentialsManager;
 import com.zenobase.tasks.strava.StravaTaskManager;
 import com.zenobase.tasks.trackthisforme.TrackthisformeCredentialsManager;
 import com.zenobase.tasks.trackthisforme.TrackthisformeTaskManager;
+import com.zenobase.tasks.trakt.TraktCredentialsManager;
+import com.zenobase.tasks.trakt.TraktTaskManager;
 import com.zenobase.tasks.withings.WithingsCardioTaskManager;
 import com.zenobase.tasks.withings.WithingsCredentialsManager;
 import com.zenobase.tasks.withings.WithingsSleepTaskManager;
@@ -314,6 +316,7 @@ public class Global extends GlobalSettings {
 				bindIfConfigured("beeminder", BeeminderCredentialsManager.class, credentials);
 				bindIfConfigured("hexoskin", HexoskinCredentialsManager.class, credentials);
 				bindIfConfigured("beddit", BedditCredentialsManager.class, credentials);
+				bindIfConfigured("trakt", TraktCredentialsManager.class, credentials);
 				bind(CredentialsManagerRegistry.class).in(Singleton.class);
 
 				Multibinder<TaskManager> tasks = Multibinder.newSetBinder(binder(), new TypeLiteral<TaskManager>() {});
@@ -373,6 +376,7 @@ public class Global extends GlobalSettings {
 				bindIfConfigured("hexoskin", HexoskinActivitiesTaskManager.class, tasks);
 				bindIfConfigured("hexoskin", HexoskinSleepTaskManager.class, tasks);
 				bindIfConfigured("beddit", BedditTaskManager.class, tasks);
+				bindIfConfigured("trakt", TraktTaskManager.class, tasks);
 				bind(TaskManagerRegistry.class).in(Singleton.class);
 
 				bind(AccountController.class).in(Singleton.class);

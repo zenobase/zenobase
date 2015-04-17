@@ -1202,6 +1202,15 @@
 		</div>
 	</script>
 
+	<script id="/trakt-settings.html" type="text/ng-template">
+		<div data-ng-controller="TraktSettingsController">
+			<div class="control-group">
+				<label for="marker" class="control-label">Starting from</label>
+				<input class="input-small" type="text" data-ui-datepicker data-ng-model="settings.marker"/>
+			</div>
+		</div>
+	</script>
+
 	<script id="/demo-settings.html" type="text/ng-template">
 		<div data-ng-controller="DemoSettingsController">
 			<div class="control-group">

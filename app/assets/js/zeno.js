@@ -5714,6 +5714,7 @@
 			{ id : 'sleepcloud', description : 'Creates an event for each period of sleep.', url : 'https://sites.google.com/site/sleepasandroid/sleepcloud' },
 			{ id : 'strava-activities', description : 'Creates an event for each activity.', url : 'http://www.strava.com/dashboard' },
 			{ id : 'trackthisforme', description : 'Creates an event for each element logged in a category.', url : 'https://www.trackthisfor.me/' },
+			{ id : 'trakt', description : 'Creates an event for each movie or episode watched.', url : 'https://trakt.tv/' },
 			{ id : 'withings-cardio', description : 'Creates an event for each heart rate or blood pressure measurement.', url : 'http://www.withings.com/' },
 			{ id : 'withings-sleep', description : 'Creates an event for each period of sleep.', url : 'http://www.withings.com/' },
 			{ id : 'withings-steps', description : 'Creates an event for the number of steps each day.', url : 'http://www.withings.com/' },
@@ -5763,7 +5764,7 @@
 		};
 	}]);
 
-	app.controller('BedditSettingsController', ['$scope', 'moment', function($scope) {
+	app.controller('BedditSettingsController', ['$scope', function($scope) {
 
 		$scope.init = function() {
 			$scope.settings = $scope.$parent.$parent.settings = {
@@ -6546,6 +6547,17 @@
 					metric : false,
 					marker : new Date(moment().utc().subtract(12, 'months').startOf('month').valueOf()),
 					timezone : 'UTC'
+			};
+		};
+
+		$scope.init();
+	}]);
+
+	app.controller('TraktSettingsController', ['$scope', 'moment', function($scope, moment) {
+
+		$scope.init = function() {
+			$scope.settings = $scope.$parent.$parent.settings = {
+					marker : new Date(moment().utc().subtract(12, 'months').startOf('month').valueOf()),
 			};
 		};
 

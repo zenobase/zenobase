@@ -1204,7 +1204,7 @@
 		]
 	},
 	{
-		"category" : "Music",
+		"category" : "Media",
 		"source" : "Last.fm",
 		"task" : "lastfm-tracks",
 		"widgets" : [
@@ -1242,6 +1242,58 @@
 				"field" : "duration",
 				"unit" : null,
 				"interval" : 60000
+			},
+			{
+				"id" : "hour_of_day",
+				"type" : "polar",
+				"label" : "Hour of Day",
+				"statistic" : "count",
+				"placement" : "right",
+				"value_field" : "timestamp",
+				"unit" : null,
+				"interval" : "hour_of_day"
+			}
+		]
+	},
+	{
+		"category" : "Media",
+		"source" : "Trakt.tv",
+		"task" : "trakt",
+		"widgets" : [
+			{
+				"id" : "timeline",
+				"type" : "timeline",
+				"label" : "Timeline",
+				"placement" : "top",
+				"field" : "timestamp",
+				"statistic" : "count"
+			},
+			{
+				"id" : "latest",
+				"type" : "list",
+				"label" : "Latest",
+				"placement" : "left",
+				"singleton" : true,
+				"limit" : 10,
+				"order" : "-timestamp"
+			},
+			{
+				"id" : "tags",
+				"type" : "count",
+				"label" : "Genres",
+				"placement" : "right",
+				"field" : "tag",
+				"limit" : 10,
+				"order" : "-count"
+			},
+			{
+				"id" : "duration_histogram",
+				"type" : "histogram",
+				"label" : "Duration",
+				"placement" : "right",
+				"field" : "duration",
+				"unit" : null,
+				"interval" : 1800000
 			},
 			{
 				"id" : "hour_of_day",
