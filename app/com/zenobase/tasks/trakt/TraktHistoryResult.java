@@ -81,8 +81,7 @@ class TraktHistoryResult {
 	}
 
 	private Duration durationValue(JsonNode node) {
-		Preconditions.checkState(node.isInt(), "expected a node with a duration: <%s>", node);
-		return Duration.standardMinutes(node.intValue());
+		return node.intValue() > 0 ? Duration.standardMinutes(node.intValue()) : null;
 	}
 
 	private Resource movieResourceValue(JsonNode node) {
