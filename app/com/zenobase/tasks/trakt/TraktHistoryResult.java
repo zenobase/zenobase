@@ -96,13 +96,19 @@ class TraktHistoryResult {
 	}
 
 	private Resource episodeResourceValue(JsonNode showNode, JsonNode episodeNode) {
-		String showTitle = showNode.path("title").textValue();
+		String title = showNode.path("title").textValue();
+		Preconditions.checkNotNull(title, "Missing show title: %s", showNode);
 		String episodeTitle = episodeNode.path("title").textValue();
+		if (episodeTitle != null) {
+			title += ": " + episodeTitle;
+		}
+		int season = episodeNode.path("season").intValue();
+		int number = episodeNode.path("number").intValue();
+		if (season * number > 0) {
+			title += String.format(" (Season %d, Episode %d)", season, number);
+		}
 		long id = episodeNode.path("ids").path("trakt").longValue();
-		Preconditions.checkNotNull(showTitle, "Missing show title: %s", showNode);
-		Preconditions.checkNotNull(episodeTitle, "Missing episode title: %s", episodeNode);
 		Preconditions.checkState(id > 0, "Missing trakt id: %s", episodeNode);
-		String title = String.format("%s: %s", showTitle, episodeTitle);
 		return new Resource(title, "https://trakt.tv/search/trakt/" + id + "?id_type=episode");
 	}
 }
