@@ -12,10 +12,6 @@ class TraktSettingsResult {
 		this.node = Preconditions.checkNotNull(node);
 	}
 
-	public String getUsername() {
-		return Preconditions.checkNotNull(node.path("user").path("username").textValue());
-	}
-
 	public DateTimeZone getTimeZone() {
 		return DateTimeZone.forID(node.path("account").path("timezone").textValue());
 	}
