@@ -151,8 +151,7 @@ public class ScatterPlotFacet extends Facet {
 			AggregationBuilder<?> aggregation = AggregationBuilders.dateHistogram(id)
 				.field(timezone != null ? keyField : LocalDateTimeField.getLocalTimePath(keyField))
 				.interval(interval)
-				.preZone(Objects.firstNonNull(timezone, DateTimeZone.UTC).toString())
-				.preZoneAdjustLargeInterval(true)
+				.timeZone(Objects.firstNonNull(timezone, DateTimeZone.UTC).toString())
 				.subAggregation(statistic.createAggregation().field(getField()));
 			if (filter != null) {
 				aggregation = AggregationBuilders.filter(id).filter(filter).subAggregation(aggregation);

@@ -44,7 +44,7 @@ public class QuerySupport {
 	}
 
 	protected QuerySupport queryString(String query) {
-		add(QueryBuilders.queryString(query));
+		add(QueryBuilders.queryStringQuery(query));
 		return this;
 	}
 

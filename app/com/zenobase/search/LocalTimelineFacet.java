@@ -40,8 +40,6 @@ public class LocalTimelineFacet extends TimelineFacetSupport {
 		AggregationBuilder<?> aggregation = AggregationBuilders.dateHistogram(getId())
 			.field(keyField)
 			.interval(DateHistograms.parseInterval(interval))
-			.preZone(DateTimeZone.UTC.toString())
-			.preZoneAdjustLargeInterval(true)
 			.subAggregation(AggregationBuilders.stats(getId()).field(getField()));
 		addAggregation(aggregation, builder);
 	}

@@ -42,8 +42,7 @@ public class OffsetTimelineFacet extends TimelineFacetSupport {
 		AggregationBuilder<?> aggregation = AggregationBuilders.dateHistogram(getId())
 			.field(keyField)
 			.interval(DateHistograms.parseInterval(interval))
-			.preZone(timezone.toString())
-			.preZoneAdjustLargeInterval(true)
+			.timeZone(timezone.toString())
 			.subAggregation(AggregationBuilders.stats(getId()).field(getField()));
 		addAggregation(aggregation, builder);
 	}
