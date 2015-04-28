@@ -9,6 +9,7 @@ import com.zenobase.tasks.TaskTestingSupport;
 public class JawboneTesting extends TaskTestingSupport {
 
 	@Test
+	@Ignore
 	public void testActivities() {
 		run(new JawboneActivitiesTaskManager(newCredentialsManager()), Nodes.newObject()
 			.put("marker", "2011-01-01")
@@ -48,6 +49,13 @@ public class JawboneTesting extends TaskTestingSupport {
 			.put("tag", "Body")
 			.put("metric", "Meal")
 			.put("marker", "2014-01-01"));
+	}
+
+	@Test
+	public void testMood() {
+		run(new JawboneMoodTaskManager(newCredentialsManager()), Nodes.newObject()
+			.put("tag", "Mood")
+			.put("marker", "2015-04-15"));
 	}
 
 	@Override

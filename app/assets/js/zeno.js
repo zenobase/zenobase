@@ -5692,6 +5692,7 @@
 			{ id : 'ihealth-weight', description : 'Creates an event for each body weight measurement.', url : 'http://ihealthlabs.com/' },
 			{ id : 'jawbone-activities', description : 'Creates an event for each activity.', url : 'https://jawbone.com/up' },
 			{ id : 'jawbone-food', description : 'Creates an event for each meal.', url : 'https://jawbone.com/up' },
+			{ id : 'jawbone-mood', description : 'Creates an event for the last mood recorded each day.', url : 'https://jawbone.com/up' },
 			{ id : 'jawbone-sleep', description : 'Creates an event for each period of sleep.', url : 'https://jawbone.com/up' },
 			{ id : 'jawbone-steps', description : 'Creates an event for the number of steps each day or hour.', url : 'https://jawbone.com/up' },
 			{ id : 'jawbone-weight', description : 'Creates an event for body weight measurement.', url : 'https://jawbone.com/up' },
@@ -6407,6 +6408,18 @@
 			$scope.settings = $scope.$parent.$parent.settings = {
 					tag : 'Meal',
 					marker : new Date(moment().utc().subtract(12, 'months').startOf('month').valueOf())
+			};
+		};
+
+		$scope.init();
+	}]);
+
+	app.controller('JawboneMoodSettingsController', ['$scope', 'moment', function($scope, moment) {
+
+		$scope.init = function() {
+			$scope.settings = $scope.$parent.$parent.settings = {
+					tag : 'Mood',
+					marker : new Date(moment().utc().subtract(3, 'months').startOf('month').valueOf())
 			};
 		};
 

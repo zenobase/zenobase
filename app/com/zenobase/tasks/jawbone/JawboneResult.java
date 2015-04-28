@@ -77,7 +77,7 @@ abstract class JawboneResult {
 		if (latNode.isNumber() && lonNode.doubleValue() != 0.0) {
 			return new Location(latNode.decimalValue(), lonNode.decimalValue());
 		}
-		if (latNode.isTextual() && !"".equals(latNode.textValue())) {
+		if (latNode.isTextual() && !"".equals(latNode.textValue()) && !"0.0".equals(latNode.textValue())) {
 			return new Location(latNode.textValue(), lonNode.textValue());
 		}
 		return null;

@@ -147,6 +147,7 @@ import com.zenobase.tasks.ihealth.IHealthWeightTaskManager;
 import com.zenobase.tasks.jawbone.JawboneActivitiesTaskManager;
 import com.zenobase.tasks.jawbone.JawboneCredentialsManager;
 import com.zenobase.tasks.jawbone.JawboneFoodTaskManager;
+import com.zenobase.tasks.jawbone.JawboneMoodTaskManager;
 import com.zenobase.tasks.jawbone.JawboneSleepTaskManager;
 import com.zenobase.tasks.jawbone.JawboneStepsTaskManager;
 import com.zenobase.tasks.jawbone.JawboneWeightTaskManager;
@@ -360,6 +361,7 @@ public class Global extends GlobalSettings {
 				bindIfConfigured("jawbone", JawboneStepsTaskManager.class, tasks);
 				bindIfConfigured("jawbone", JawboneSleepTaskManager.class, tasks);
 				bindIfConfigured("jawbone", JawboneFoodTaskManager.class, tasks);
+				bindIfConfigured("jawbone", JawboneMoodTaskManager.class, tasks);
 				bindIfConfigured("jawbone", JawboneWeightTaskManager.class, tasks);
 				bindIfConfigured("misfit", MisfitActivitiesTaskManager.class, tasks);
 				bindIfConfigured("misfit", MisfitStepsTaskManager.class, tasks);

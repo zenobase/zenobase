@@ -1308,6 +1308,55 @@
 		]
 	},
 	{
+		"category" : "Mood",
+		"source" : "Jawbone",
+		"task" : "jawbone-mood",
+		"widgets" : [
+			{
+				"id" : "timeline",
+				"type" : "timeline",
+				"label" : "Timeline",
+				"placement" : "top",
+				"field" : "rating",
+				"statistic" : "avg"
+			},
+			{
+				"id" : "latest",
+				"type" : "list",
+				"label" : "Latest",
+				"placement" : "left",
+				"singleton" : true,
+				"limit" : 10,
+				"order" : "-timestamp"
+			},
+			{
+				"id" : "tags",
+				"type" : "count",
+				"label" : "Moods",
+				"placement" : "right",
+				"field" : "tag",
+				"limit" : 10,
+				"order" : "-count"
+			},
+			{
+				"id" : "ratings",
+				"type" : "ratings",
+				"label" : "Mood",
+				"placement" : "right"
+			},
+			{
+				"id" : "day_of_week",
+				"type" : "polar",
+				"label" : "Day of Week",
+				"statistic" : "avg",
+				"placement" : "right",
+				"value_field" : "rating",
+				"unit" : null,
+				"interval" : "day_of_week"
+			}
+		]
+	},
+	{
 		"category" : "Places",
 		"source" : "Foursquare",
 		"task" : "foursquare",
