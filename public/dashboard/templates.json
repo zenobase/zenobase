@@ -1309,6 +1309,46 @@
 	},
 	{
 		"category" : "Mood",
+		"source" : "MoodPanda",
+		"task" : "moodpanda",
+		"widgets" : [
+			{
+				"id" : "timeline",
+				"type" : "timeline",
+				"label" : "Timeline",
+				"placement" : "top",
+				"field" : "rating",
+				"statistic" : "avg"
+			},
+			{
+				"id" : "latest",
+				"type" : "list",
+				"label" : "Latest",
+				"placement" : "left",
+				"singleton" : true,
+				"limit" : 10,
+				"order" : "-timestamp"
+			},
+			{
+				"id" : "ratings",
+				"type" : "ratings",
+				"label" : "Mood",
+				"placement" : "right"
+			},
+			{
+				"id" : "day_of_week",
+				"type" : "polar",
+				"label" : "Day of Week",
+				"statistic" : "avg",
+				"placement" : "right",
+				"value_field" : "rating",
+				"unit" : null,
+				"interval" : "day_of_week"
+			}
+		]
+	},
+	{
+		"category" : "Mood",
 		"source" : "Jawbone",
 		"task" : "jawbone-mood",
 		"widgets" : [

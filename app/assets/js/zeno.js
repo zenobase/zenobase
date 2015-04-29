@@ -5703,6 +5703,7 @@
 			{ id : 'misfit-activities', description : 'Creates an event for each activity.', url : 'http://misfit.com/' },
 			{ id : 'misfit-sleep', description : 'Creates an event for each period of sleep.', url : 'http://misfit.com/' },
 			{ id : 'misfit-steps', description : 'Creates an event for the number of steps each day.', url : 'http://misfit.com/' },
+			{ id : 'moodpanda', description : 'Creates an event for each recorded mood.', url : 'http://moodpanda.com/' },
 			{ id : 'moves-activities', description : 'Creates an event for each activity.', url : 'https://moves-app.com/' },
 			{ id : 'moves-places', description : 'Creates an event for each place visited.', url : 'https://moves-app.com/' },
 			{ id : 'moves-locate', description : 'Adds location data to events without a location.', url : 'https://moves-app.com/' },
@@ -6495,6 +6496,19 @@
 					tag : 'Steps',
 					marker : new Date(moment().utc().subtract(6, 'months').startOf('month').valueOf()),
 					timezone : 'UTC'
+			};
+		};
+
+		$scope.init();
+	}]);
+
+	app.controller('MoodPandaSettingsController', ['$scope', 'moment', function($scope, moment) {
+
+		$scope.init = function() {
+			$scope.settings = $scope.$parent.$parent.settings = {
+					tag : 'Mood',
+					email : null,
+					marker : new Date(moment().utc().subtract(12, 'months').valueOf())
 			};
 		};
 

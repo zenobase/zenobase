@@ -161,6 +161,7 @@ import com.zenobase.tasks.misfit.MisfitActivitiesTaskManager;
 import com.zenobase.tasks.misfit.MisfitCredentialsManager;
 import com.zenobase.tasks.misfit.MisfitSleepTaskManager;
 import com.zenobase.tasks.misfit.MisfitStepsTaskManager;
+import com.zenobase.tasks.moodpanda.MoodPandaTaskManager;
 import com.zenobase.tasks.moves.MovesActivitiesTaskManager;
 import com.zenobase.tasks.moves.MovesCredentialsManager;
 import com.zenobase.tasks.moves.MovesLocateTaskManager;
@@ -366,6 +367,7 @@ public class Global extends GlobalSettings {
 				bindIfConfigured("misfit", MisfitActivitiesTaskManager.class, tasks);
 				bindIfConfigured("misfit", MisfitStepsTaskManager.class, tasks);
 				bindIfConfigured("misfit", MisfitSleepTaskManager.class, tasks);
+				bindIfConfigured("moodpanda", MoodPandaTaskManager.class, tasks);
 				bindIfConfigured("ihealth", IHealthActivitiesTaskManager.class, tasks);
 				bindIfConfigured("ihealth", IHealthCardioTaskManager.class, tasks);
 				bindIfConfigured("ihealth", IHealthFoodTaskManager.class, tasks);

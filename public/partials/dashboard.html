@@ -891,6 +891,24 @@
 		</div>
 	</script>
 
+	<script id="/moodpanda-settings.html" type="text/ng-template">
+		<div data-ng-controller="MoodPandaSettingsController">
+			<div class="control-group">
+				<label for="tag" class="control-label">Tag</label>
+				<input name="tag" type="text" required data-ng-model="settings.tag"/>
+			</div>
+			<div class="control-group">
+				<label for="email" class="control-label">Email</label>
+				<input name="email" type="text" required data-ng-model="settings.email"/>
+				<p class="help-block">An email address associated with a MoodPanda account, must have "privacy mode" disabled.</p>
+			</div>
+			<div class="control-group">
+				<label for="marker" class="control-label">Starting from</label>
+				<input class="input-small" type="text" data-ui-datepicker data-ng-model="settings.marker"/>
+			</div>
+		</div>
+	</script>
+
 	<script id="/mapmyfitness-activities-settings.html" type="text/ng-template">
 		<div data-ng-controller="MapMyFitnessActivitiesSettingsController">
 			<div class="control-group">
