@@ -72,7 +72,7 @@ public class MoodPandaTaskManager extends TaskManager {
 		return fetch(WS.url(HOST + "/user/feed/data.ashx")
 			.setQueryParameter("userid", userId)
 			.setQueryParameter("from", from.toLocalDate().toString())
-			.setQueryParameter("to", LocalDate.now(from.getZone()).toString())
+			.setQueryParameter("to", LocalDate.now(from.getZone()).plusDays(1).toString())
 			.setQueryParameter("format", "xml")
 			.setQueryParameter("dateorder", "asc")
 			.setQueryParameter("key", apiKey));
