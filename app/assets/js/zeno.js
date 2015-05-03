@@ -4867,20 +4867,24 @@
 					var t1 = moment(row['Finish'], f);
 					var duration = t1.valueOf() - t0.valueOf();
 					var timestamp = t0.format('YYYY-MM-DDTHH:mm:ss.SSSZ');
+					var eventsByTag = {};
 					function push(tag, field, value) {
-						var event = {
-							'timestamp' : timestamp,
-							'duration' : duration,
-							'tag' : [ tag ]
-						};
-						event[field] = value;
-						events.push(event);
+						var event = eventsByTag[tag];
+						if (!event) {
+							event = {
+								'timestamp' : timestamp,
+								'duration' : duration,
+								'tag' : [ tag ]
+							};
+							events.push(eventsByTag[tag] = event);
+						}
+						(event[field] = event[field] || []).push(value);
 					}
 					for (var field in row) {
 						var value = Number(row[field]);
-						var m = field.match(/(.+?) \((.+?)\)/);
+						var m = field.match(/(.+) \((.+?)\)/);
 						if (m && !isNaN(value) && value !== 0) {
-							var tag = m[1];
+							var tag = m[1].replace(/ \(.+\)/, ''); // "Blood Pressure (Diastolic)" -> "Blood Pressure"
 							var unit = m[2];
 							switch (unit) {
 								case 'count':
