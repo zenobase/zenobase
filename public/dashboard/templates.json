@@ -2992,6 +2992,59 @@
 		]
 	},
 	{
+		"category" : "Time Tracking",
+		"source" : "WakaTime",
+		"task" : "wakatime",
+		"widgets" : [
+			{
+				"id" : "timeline_duration",
+				"type" : "timeline",
+				"label" : "Time Logged",
+				"placement" : "top",
+				"field" : "duration",
+				"statistic" : "sum",
+				"interval" : "week"
+			},
+			{
+				"id" : "latest",
+				"type" : "list",
+				"label" : "Latest",
+				"placement" : "left",
+				"singleton" : true,
+				"limit" : 10,
+				"order" : "-timestamp"
+			},
+			{
+				"id" : "tags",
+				"type" : "count",
+				"label" : "Projects",
+				"placement" : "right",
+				"field" : "tag",
+				"limit" : 10,
+				"order" : "-count"
+			},
+			{
+				"id" : "polar_days",
+				"type" : "polar",
+				"label" : "Day of Week",
+				"placement" : "right",
+				"value_field" : "duration",
+				"unit" : null,
+				"statistic" : "sum",
+				"interval" : "day_of_week"
+			},
+			{
+				"id" : "histogram_duration",
+				"type" : "histogram",
+				"label" : "Durations",
+				"placement" : "right",
+				"field" : "duration",
+				"unit" : null,
+				"interval" : 600000
+			}
+		]
+	},
+	{
 		"category" : "Trips",
 		"source" : "Automatic",
 		"task" : "automatic-trips",

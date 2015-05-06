@@ -1,0 +1,56 @@
+package com.zenobase.tasks.wakatime;
+
+import java.util.List;
+
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
+import org.joda.time.Duration;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.google.common.base.Preconditions;
+import com.google.common.collect.Lists;
+
+import com.zenobase.models.Event;
+import com.zenobase.models.Identity;
+import com.zenobase.models.Resource;
+
+class WakaTimeDurationsResult {
+
+	static final Resource SOURCE = new Resource("WakaTime", "https://wakatime.com/");
+
+	private final JsonNode node;
+	private final Identity author;
+	private final String tag;
+	private final DateTimeZone zone;
+
+	public WakaTimeDurationsResult(JsonNode node, Identity author, String tag) {
+		this.node = Preconditions.checkNotNull(node);
+		this.author = Preconditions.checkNotNull(author);
+		this.tag = tag;
+		this.zone = DateTimeZone.forID(node.path("timezone").textValue());
+	}
+
+	public List<Event> getEvents() {
+		List<Event> events = Lists.newArrayList();
+		for (JsonNode dataNode : node.path("data")) {
+			Event event = newEvent(dataNode);
+			if (event != null) {
+				events.add(event);
+			}
+		}
+		return events;
+	}
+
+	public Event newEvent(JsonNode node) {
+		Event event = new Event();
+		long t = node.path("time").decimalValue().movePointRight(3).longValue();
+		long d = node.path("duration").decimalValue().movePointRight(3).longValue();
+		Preconditions.checkState(t > 0);
+		event.setValue(Event.TIMESTAMP, new DateTime(t, zone));
+		event.setValue(Event.DURATION, Duration.millis(d));
+		event.addValue(Event.TAG, tag);
+		event.addValue(Event.TAG, node.path("project").textValue());
+		event.setValue(Event.AUTHOR, author);
+		event.setValue(Event.SOURCE, SOURCE);
+		return event;
+	}
+}

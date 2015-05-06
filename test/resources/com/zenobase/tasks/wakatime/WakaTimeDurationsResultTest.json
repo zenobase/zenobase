@@ -1,0 +1,70 @@
+{
+    "branches": [
+        "master"
+    ],
+    "data": [
+        {
+            "duration": 6.359999895095825,
+            "project": "zenobase",
+            "time": 1430810153.000400
+        },
+        {
+            "duration": 2375,
+            "project": "zenobase",
+            "time": 1430890673.957098
+        },
+        {
+            "duration": 54,
+            "project": "zenobase-cookbooks",
+            "time": 1430893048.59892
+        },
+        {
+            "duration": 13.079999923706055,
+            "project": "zenobase",
+            "time": 1430893103.020032
+        },
+        {
+            "duration": 5.9100000858306885,
+            "project": "zenobase-cookbooks",
+            "time": 1430893116.099781
+        },
+        {
+            "duration": 7.359999895095825,
+            "project": "zenobase",
+            "time": 1430893122.008119
+        },
+        {
+            "duration": 2.9000000953674316,
+            "project": "zenobase-cookbooks",
+            "time": 1430893129.37254
+        },
+        {
+            "duration": 5,
+            "project": "zenobase",
+            "time": 1430893132.270706
+        },
+        {
+            "duration": 3.740000009536743,
+            "project": "zenobase-cookbooks",
+            "time": 1430893137.497004
+        },
+        {
+            "duration": 559,
+            "project": "zenobase",
+            "time": 1430893141.244219
+        },
+        {
+            "duration": 1.4000000953674316,
+            "project": "zenobase-cookbooks",
+            "time": 1430893700.322196
+        },
+        {
+            "duration": 70,
+            "project": "zenobase",
+            "time": 1430893701.721276
+        }
+    ],
+    "end": 1430895599,
+    "start": 1430809200,
+    "timezone": "America/Los_Angeles"
+}

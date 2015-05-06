@@ -5720,6 +5720,7 @@
 			{ id : 'strava-activities', description : 'Creates an event for each activity.', url : 'http://www.strava.com/dashboard' },
 			{ id : 'trackthisforme', description : 'Creates an event for each element logged in a category.', url : 'https://www.trackthisfor.me/' },
 			{ id : 'trakt', description : 'Creates an event for each movie or episode watched.', url : 'https://trakt.tv/' },
+			{ id : 'wakatime', description : 'Creates an event for every period of time logged for a project.', url : 'https://wakatime.com/' },
 			{ id : 'withings-cardio', description : 'Creates an event for each heart rate or blood pressure measurement.', url : 'http://www.withings.com/' },
 			{ id : 'withings-sleep', description : 'Creates an event for each period of sleep.', url : 'http://www.withings.com/' },
 			{ id : 'withings-steps', description : 'Creates an event for the number of steps each day.', url : 'http://www.withings.com/' },
@@ -6588,6 +6589,18 @@
 		$scope.init = function() {
 			$scope.settings = $scope.$parent.$parent.settings = {
 					marker : new Date(moment().utc().subtract(12, 'months').startOf('month').valueOf()),
+			};
+		};
+
+		$scope.init();
+	}]);
+
+	app.controller('WakaTimeSettingsController', ['$scope', 'moment', function($scope, moment) {
+
+		$scope.init = function() {
+			$scope.settings = $scope.$parent.$parent.settings = {
+					tag : 'project',
+					marker : new Date(moment().utc().subtract(1, 'months').startOf('month').valueOf())
 			};
 		};
 

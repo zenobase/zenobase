@@ -68,7 +68,7 @@ public abstract class OAuthTaskManager extends TaskManager {
 	protected Response send(OAuthRequest request, OAuthCredentials credentials) {
 		request.addHeader("Accept-Encoding", "gzip");
 		Response response = credentialsManager.send(request, credentials);
-		if (!response.isSuccessful()) {
+		if (!isSuccessful(response)) {
 			if (response.getCode() == Http.Status.UNAUTHORIZED) {
 				throw new InvalidTokenException(request, credentials);
 			} else {
@@ -76,6 +76,10 @@ public abstract class OAuthTaskManager extends TaskManager {
 			}
 		}
 		return response;
+	}
+
+	protected boolean isSuccessful(Response response) {
+		return response.isSuccessful();
 	}
 
 	protected static JsonNode parse(Response response) {

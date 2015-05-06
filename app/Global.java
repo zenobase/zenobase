@@ -182,6 +182,8 @@ import com.zenobase.tasks.trackthisforme.TrackthisformeCredentialsManager;
 import com.zenobase.tasks.trackthisforme.TrackthisformeTaskManager;
 import com.zenobase.tasks.trakt.TraktCredentialsManager;
 import com.zenobase.tasks.trakt.TraktTaskManager;
+import com.zenobase.tasks.wakatime.WakaTimeCredentialsManager;
+import com.zenobase.tasks.wakatime.WakaTimeTaskManager;
 import com.zenobase.tasks.withings.WithingsCardioTaskManager;
 import com.zenobase.tasks.withings.WithingsCredentialsManager;
 import com.zenobase.tasks.withings.WithingsSleepTaskManager;
@@ -319,6 +321,7 @@ public class Global extends GlobalSettings {
 				bindIfConfigured("hexoskin", HexoskinCredentialsManager.class, credentials);
 				bindIfConfigured("beddit", BedditCredentialsManager.class, credentials);
 				bindIfConfigured("trakt", TraktCredentialsManager.class, credentials);
+				bindIfConfigured("wakatime", WakaTimeCredentialsManager.class, credentials);
 				bind(CredentialsManagerRegistry.class).in(Singleton.class);
 
 				Multibinder<TaskManager> tasks = Multibinder.newSetBinder(binder(), new TypeLiteral<TaskManager>() {});
@@ -381,6 +384,7 @@ public class Global extends GlobalSettings {
 				bindIfConfigured("hexoskin", HexoskinSleepTaskManager.class, tasks);
 				bindIfConfigured("beddit", BedditTaskManager.class, tasks);
 				bindIfConfigured("trakt", TraktTaskManager.class, tasks);
+				bindIfConfigured("wakatime", WakaTimeTaskManager.class, tasks);
 				bind(TaskManagerRegistry.class).in(Singleton.class);
 
 				bind(AccountController.class).in(Singleton.class);
