@@ -3,14 +3,18 @@ package com.zenobase.tasks.wakatime;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.scribe.model.OAuthConstants;
 import org.scribe.model.OAuthRequest;
 import org.scribe.model.Token;
+import org.scribe.model.Verb;
 import play.Logger;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Preconditions;
 
 import com.zenobase.commands.Command;
 import com.zenobase.commands.UpdateCredentialsCommand;
+import com.zenobase.oauth.ExpiringToken;
+import com.zenobase.oauth.OAuth2TokenExtractor;
 import com.zenobase.services.CredentialsRepository;
 import com.zenobase.tasks.Credentials;
 import com.zenobase.tasks.OAuthCredentials;
@@ -49,6 +53,21 @@ public class WakaTimeCredentialsManager extends OAuthCredentialsManager {
 			.with(Credentials.CREDENTIALS)
 			.set(OAuthCredentials.TOKEN, credentials.getToken(), token)
 			.build();
+	}
+
+	@Override
+	public void reauthorize(Credentials credentials) {
+		reauthorize(credentials.as(OAuthCredentials.class));
+	}
+
+	private void reauthorize(OAuthCredentials credentials) {
+		OAuthRequest request = new OAuthRequest(Verb.POST, "https://wakatime.com/oauth/token");
+		request.addHeader("Api-Key", getApiKey());
+		request.addBodyParameter("grant_type", "refresh_token");
+		request.addBodyParameter("refresh_token", ((ExpiringToken) credentials.getToken()).getRefreshToken());
+		request.addBodyParameter(OAuthConstants.CLIENT_ID, getApiKey());
+		request.addBodyParameter(OAuthConstants.CLIENT_SECRET, getApiSecret());
+		credentials.setToken(new OAuth2TokenExtractor().extract(request.send().getBody()));
 	}
 
 	@Override

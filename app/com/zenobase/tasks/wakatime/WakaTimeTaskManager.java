@@ -10,9 +10,11 @@ import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDate;
 import org.scribe.model.OAuthRequest;
 import org.scribe.model.Response;
+import org.scribe.model.Token;
 import org.scribe.model.Verb;
 import play.mvc.Http;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.common.base.Objects;
 import com.google.common.base.Strings;
 import com.google.common.collect.Ordering;
 import com.google.common.util.concurrent.RateLimiter;
@@ -20,9 +22,11 @@ import com.google.common.util.concurrent.RateLimiter;
 import com.zenobase.commands.Command;
 import com.zenobase.commands.CompoundCommand;
 import com.zenobase.commands.CreateEventsCommand;
+import com.zenobase.commands.UpdateCredentialsCommand;
 import com.zenobase.commands.UpdateTaskCommand;
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
+import com.zenobase.tasks.Credentials;
 import com.zenobase.tasks.OAuthCredentials;
 import com.zenobase.tasks.OAuthTaskManager;
 import com.zenobase.tasks.Task;
@@ -50,6 +54,10 @@ public class WakaTimeTaskManager extends OAuthTaskManager {
 	}
 
 	private Command execute(WakaTimeTask task, OAuthCredentials credentials) {
+		Token token = credentials.getToken();
+		if (credentials.isExpired()) {
+			reauthorize(credentials);
+		}
 		DateTime begin = task.getBegin();
 		LocalDate today = LocalDate.now(DateTimeZone.UTC).plusDays(1);
 		List<Event> events = Lists.newArrayList();
@@ -65,7 +73,7 @@ public class WakaTimeTaskManager extends OAuthTaskManager {
 				}
 			}
 		}
-		return createCommand(task, credentials, events);
+		return createCommand(task, credentials, events, token);
 	}
 
 	@Override
@@ -73,7 +81,7 @@ public class WakaTimeTaskManager extends OAuthTaskManager {
 		return response.isSuccessful() || response.getCode() == Http.Status.BAD_REQUEST; // 400 = no data available
 	}
 
-	protected Command createCommand(Task task, OAuthCredentials credentials, List<Event> events) {
+	protected Command createCommand(Task task, OAuthCredentials credentials, List<Event> events, Token expiredToken) {
 		CompoundCommand command = new CompoundCommand(task.getPrincipal(), "ran " + getType() + " task", "reverted " + getType() + " task");
 		command.add(UpdateTaskCommand.builder(task)
 			.set(Task.COMPLETED, task.getCompleted(), new DateTime(DateTimeZone.UTC))
@@ -81,6 +89,12 @@ public class WakaTimeTaskManager extends OAuthTaskManager {
 			.set(Task.MARKER, task.getMarker(), events.isEmpty() ? task.getMarker() : getMarker(events).toString())
 			.set(Task.UNDO, task.getUndoId(), command.getId())
 			.build());
+		if (!Objects.equal(credentials.getToken(), expiredToken)) {
+			command.add(UpdateCredentialsCommand.builder(credentials)
+				.with(Credentials.CREDENTIALS)
+				.set(OAuthCredentials.TOKEN, expiredToken, credentials.getToken())
+				.build());
+		}
 		if (!events.isEmpty()) {
 			command.add(new CreateEventsCommand(task.getPrincipal(), task.getBucketId(), events));
 		}
