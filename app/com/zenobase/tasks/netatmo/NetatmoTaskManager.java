@@ -16,6 +16,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Objects;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
+import com.google.common.util.concurrent.RateLimiter;
 
 import com.zenobase.commands.Command;
 import com.zenobase.commands.CompoundCommand;
@@ -115,6 +116,7 @@ public class NetatmoTaskManager extends OAuthTaskManager {
 
 	private class MeasurementsQuery {
 
+		private final 	RateLimiter rate = RateLimiter.create(4);
 		private final Identity principal;
 		private final OAuthCredentials credentials;
 		private final Device device;
@@ -141,6 +143,7 @@ public class NetatmoTaskManager extends OAuthTaskManager {
 			request.addQuerystringParameter("scale", hourly ? "1hour" : "max");
 			request.addQuerystringParameter("optimize", "false");
 			request.addQuerystringParameter("type", "Temperature,Pressure,Noise,Humidity,CO2," + (hourly ? "sum_rain" : "Rain"));
+			rate.acquire();
 			Response response = send(request, credentials);
 			return new MeasurementsResult(parseObject(response), principal, device, hourly);
 		}
