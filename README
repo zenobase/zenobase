@@ -30,9 +30,9 @@ SSL Trust Store
 
 Netatmo's SSL certificate is issued by StartCom. The StartCom root certificate is included in Ubuntu's OpenJDK package, but not in Oracle's.  
 
-To add the certificate, download it from https://www.startssl.com/certs/ca-bundle.pem, and run:
+To add the certificate, download it from https://www.startssl.com/certs/ca.crt, and run:
 
-  keytool -import -trustcacerts -keystore /etc/ssl/certs/java/cacerts -storepass changeit -noprompt -alias startcom.ca -file ca-bundle.pem 
+  keytool -import -trustcacerts -keystore /etc/ssl/certs/java/cacerts -storepass changeit -noprompt -file ca.crt 
 
 
 Tests
