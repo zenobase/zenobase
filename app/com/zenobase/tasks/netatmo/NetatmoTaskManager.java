@@ -81,7 +81,7 @@ public class NetatmoTaskManager extends OAuthTaskManager {
 		while (events.size() < 10000) {
 			String from = null;
 			if (!events.isEmpty()) {
-				from = getMarker(events);
+				from = getMarker(events, task.isHourly());
 			} else if (task.getMarker() != null) {
 				from = task.getMarker();
 			} else {
@@ -154,7 +154,7 @@ public class NetatmoTaskManager extends OAuthTaskManager {
 		command.add(UpdateTaskCommand.builder(task)
 			.set(Task.COMPLETED, task.getCompleted(), new DateTime(DateTimeZone.UTC))
 			.set(Task.STATUS, task.getStatus(), Task.Status.SUCCESS)
-			.set(Task.MARKER, task.getMarker(), events.isEmpty() ? task.getMarker() : getMarker(events))
+			.set(Task.MARKER, task.getMarker(), events.isEmpty() ? task.getMarker() : getMarker(events, task.isHourly()))
 			.set(Task.UNDO, task.getUndoId(), command.getId())
 			.build());
 		if (!Objects.equal(credentials.getToken(), expiredToken)) {
@@ -169,7 +169,8 @@ public class NetatmoTaskManager extends OAuthTaskManager {
 		return command;
 	}
 
-	private static String getMarker(List<Event> events) {
-		return formatMarker(Iterables.getLast(events).getValue(Event.TIMESTAMP).plusSeconds(1));
+	private static String getMarker(List<Event> events, boolean hourly) {
+		DateTime last = Iterables.getLast(events).getValue(Event.TIMESTAMP);
+		return formatMarker(hourly ? last.plusHours(1) : last.plusSeconds(1));
 	}
 }
