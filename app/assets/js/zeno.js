@@ -2958,6 +2958,9 @@
 						title : {
 							text : null
 						},
+						labels : {
+							autoRotation : false
+						},
 						lineWidth : 0,
 						tickColor : '#C0C0C0',
 						tickWidth : 1,
@@ -7080,6 +7083,7 @@
 			formatAxis : function(options) {
 				options.type = 'datetime';
 				options.labels = {
+					autoRotation : false,
 					formatter : function() {
 						return this.value !== 0 ? moment.duration(this.value, 'seconds').countdownCompact() : '0'; 
 					}
@@ -7133,6 +7137,7 @@
 			formatAxis : function(options) {
 				options.type = 'datetime';
 				options.labels = {
+					autoRotation : false,
 					formatter : function() {
 						return this.value !== 0 ? moment.duration(this.value).countdown(2) : '0'; 
 					}
