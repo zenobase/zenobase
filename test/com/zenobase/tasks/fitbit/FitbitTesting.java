@@ -28,7 +28,7 @@ public class FitbitTesting extends TaskTestingSupport {
 	@Test
 	public void testActivities() {
 		run(new FitbitActivitiesTaskManager(newCredentialsManager()), Nodes.newObject()
-			.put("marker", "2015-04-28T21:30:00"));
+			.put("marker", "2015-05-11T21:35:00"));
 	}
 
 	@Test

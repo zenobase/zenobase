@@ -10,6 +10,7 @@ import org.scribe.model.Response;
 import org.scribe.model.Verb;
 import play.Logger;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.common.base.Objects;
 import com.google.common.collect.Lists;
 
 import com.zenobase.commands.Command;
@@ -60,7 +61,7 @@ public class FitbitActivitiesTaskManager extends FitbitTaskManagerSupport<Fitbit
 			}
 
 		}
-		return createCommand(task, events, getMarker(events));
+		return createCommand(task, events, Objects.firstNonNull(getMarker(events), task.getMarker()));
 	}
 
 	static String getMarker(Iterable<Event> events) {
