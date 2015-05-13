@@ -9,6 +9,7 @@ import com.zenobase.tasks.TaskTestingSupport;
 public class FitbitTesting extends TaskTestingSupport {
 
 	@Test
+	@Ignore
 	public void testSteps() {
 		run(new FitbitStepsTaskManager(newCredentialsManager()), Nodes.newObject()
 			.put("marker", "2015-01-01")
@@ -25,10 +26,9 @@ public class FitbitTesting extends TaskTestingSupport {
 	}
 
 	@Test
-	@Ignore
 	public void testActivities() {
 		run(new FitbitActivitiesTaskManager(newCredentialsManager()), Nodes.newObject()
-			.put("marker", "2014-11-05"));
+			.put("marker", "2015-04-28T21:30:00"));
 	}
 
 	@Test

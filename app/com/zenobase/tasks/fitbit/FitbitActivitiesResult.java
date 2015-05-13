@@ -12,6 +12,7 @@ import org.joda.time.Duration;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalTime;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 
 import com.zenobase.common.Measures;
@@ -27,6 +28,10 @@ class FitbitActivitiesResult extends FitbitResultSupport {
 	public FitbitActivitiesResult(JsonNode node, Identity author, DateTimeZone timezone, Unit<Length> distanceUnit) {
 		super(node, null, author, timezone);
 		this.distanceUnit = distanceUnit;
+	}
+
+	public String next() {
+		return Strings.emptyToNull(node.path("pagination").path("next").textValue());
 	}
 
 	@Override

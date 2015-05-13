@@ -74,11 +74,15 @@ public abstract class FitbitTaskManagerSupport<T extends Task> extends OAuthTask
 	}
 
 	protected Command createCommand(Task task, List<Event> events, LocalDate lastDate) {
+		return createCommand(task, events, lastDate.toString());
+	}
+
+	protected Command createCommand(Task task, List<Event> events, String marker) {
 		CompoundCommand command = new CompoundCommand(task.getPrincipal(), "ran " + getType() + " task", "reverted " + getType() + " task");
 		command.add(UpdateTaskCommand.builder(task)
 			.set(Task.COMPLETED, task.getCompleted(), new DateTime(DateTimeZone.UTC))
 			.set(Task.STATUS, task.getStatus(), Task.Status.SUCCESS)
-			.set(Task.MARKER, task.getMarker(), lastDate.toString())
+			.set(Task.MARKER, task.getMarker(), marker)
 			.set(Task.UNDO, task.getUndoId(), command.getId())
 			.build());
 		if (!events.isEmpty()) {

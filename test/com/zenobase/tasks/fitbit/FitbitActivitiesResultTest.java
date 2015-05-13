@@ -25,12 +25,13 @@ public class FitbitActivitiesResultTest extends ResultTestSupport {
 	public void test() {
 
 		FitbitActivitiesResult result = new FitbitActivitiesResult(readObject("FitbitActivitiesResultTest.json"), TESTER, DateTimeZone.forID("America/Los_Angeles"), Units.MI);
+		assertThat(result.next()).isNotNull();
 		List<Event> events = result.getEvents();
 		assertThat(events).as("events").hasSize(2);
 
 		Event e1 = new Event(events.get(0).getId());
 		e1.setValue(Event.TAG, "Walk");
-		e1.setValue(Event.TIMESTAMP, dateTime("2014-10-28T18:08:00-07:00"));
+		e1.setValue(Event.TIMESTAMP, dateTime("2014-10-29T18:08:00-07:00"));
 		e1.setValue(Event.DURATION, Duration.standardSeconds(2079));
 		e1.setValue(Event.DISTANCE, Measures.<Length>valueOf("3.72 mi"));
 		e1.setValue(Event.VELOCITY, Measures.<Velocity>valueOf("6.4 mph"));
