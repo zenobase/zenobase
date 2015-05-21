@@ -5295,7 +5295,32 @@
 		};
 	}]);
 
-	app.controller('ImportDialogController', ['$scope', '$http', '$routeParams', 'EventSpreadsheet', 'HealthKit', 'SleepCycle', 'SunSprite', 'TapLog', 'Nomie', 'Basis', 'tracker', 'delay', function($scope, $http, $routeParams, EventSpreadsheet, HealthKit, SleepCycle, SunSprite, TapLog, Nomie, Basis, tracker, delay) {
+	app.factory('HabitBull', [ 'moment', function(moment) {
+
+		return {
+			parse : function(s) {
+				var events = [];
+				var csv = Baby.parse(s, { header : true, skipEmptyLines : true });
+				if (csv.errors.length) {
+					throw new Error(csv.errors[0].message + ' in row ' + csv.errors[0].row);
+				}
+				$.each(csv.data, function(rowNum, row) {
+					var event = {
+						'timestamp' : moment(row['CalendarDate']).format('YYYY-MM-DDTHH:mm:ss.SSSZ'),
+						'tag' : [ row['HabitName'] ],
+						'count' : row['Value']
+					};
+					if (row['CommentText']) {
+						event['note'] = row['CommentText'];
+					}
+					events.push(event);
+				});
+				return events;
+			}
+		};
+	}]);
+
+	app.controller('ImportDialogController', ['$scope', '$http', '$routeParams', 'EventSpreadsheet', 'HealthKit', 'SleepCycle', 'SunSprite', 'TapLog', 'Nomie', 'Basis', 'HabitBull', 'tracker', 'delay', function($scope, $http, $routeParams, EventSpreadsheet, HealthKit, SleepCycle, SunSprite, TapLog, Nomie, Basis, HabitBull, tracker, delay) {
 
 		$scope.bucketId = $routeParams.bucketId;
 		$scope.formats = [
@@ -5316,6 +5341,22 @@
 				}
 			},
 			{
+				id : 'basis',
+				label : 'Basis',
+				description : 'Import a <b>.csv</b> file from <a href="https://www.mybasis.com/" target="_blank">Basis</a>.',
+				parse : function(data) {
+					return Basis.parse(data, { tag : 'Basis' });
+				}
+			},
+			{
+				id : 'habitbull',
+				label : 'HabitBull',
+				description : 'Import a <b>.csv</b> file from <a href="http://www.habitbull.com/" target="_blank">HabitBull</a>.',
+				parse : function(data, settings) {
+					return HabitBull.parse(data);
+				}
+			},
+			{
 				id : 'healthkit',
 				label : 'HealthKit',
 				description : 'Import HealthKit data from a <b>.csv</b> file exported with the <a href="http://quantifiedself.com/access-app/app" target="_blank">QS Access</a> app.',
@@ -5324,12 +5365,11 @@
 				}
 			},
 			{
-				id : 'taplog',
-				label : 'TapLog',
-				description : 'Import a <b>.csv</b> file from <a href="http://loggerlife.blogspot.com/" target="_blank">TapLog</a>.',
-				settings : '/import-taplog.html',
-				parse : function(data, settings) {
-					return TapLog.parse(data, settings);
+				id : 'nomie',
+				label : 'Nomie',
+				description : 'Import a <b>.csv</b> file from <a href="https://nomie.io/" target="_blank">Nomie</a>.',
+				parse : function(data) {
+					return Nomie.parse(data);
 				}
 			},
 			{
@@ -5350,19 +5390,12 @@
 				}
 			},
 			{
-				id : 'nomie',
-				label : 'Nomie',
-				description : 'Import a <b>.csv</b> file from <a href="https://nomie.io/" target="_blank">Nomie</a>.',
-				parse : function(data) {
-					return Nomie.parse(data);
-				}
-			},
-			{
-				id : 'basis',
-				label : 'Basis',
-				description : 'Import a <b>.csv</b> file from <a href="https://www.mybasis.com/" target="_blank">Basis</a>.',
-				parse : function(data) {
-					return Basis.parse(data, { tag : 'Basis' });
+				id : 'taplog',
+				label : 'TapLog',
+				description : 'Import a <b>.csv</b> file from <a href="http://loggerlife.blogspot.com/" target="_blank">TapLog</a>.',
+				settings : '/import-taplog.html',
+				parse : function(data, settings) {
+					return TapLog.parse(data, settings);
 				}
 			}
 		];
