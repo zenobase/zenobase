@@ -59,7 +59,7 @@ public class BodyMediaSleepTaskManager extends BodyMediaTaskManagerSupport {
 				date = date.plusDays(1);
 				++count;
 			} catch (InvalidStatusException e) {
-				Logger.warn("Couldn't complete task: " + task.getId() + " (but got" + events.size() + " events after " + count + " requests)", e);
+				Logger.warn("Couldn't complete task: " + task.getId() + " (but got " + events.size() + " events after " + count + " requests)", e);
 				break;
 			}
 		}
