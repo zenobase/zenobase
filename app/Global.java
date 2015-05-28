@@ -43,6 +43,8 @@ import com.zenobase.commands.DeleteEventCommand;
 import com.zenobase.commands.DeleteEventsCommand;
 import com.zenobase.commands.DeleteTaskCommand;
 import com.zenobase.commands.DeleteUserCommand;
+import com.zenobase.commands.OptInCommand;
+import com.zenobase.commands.OptOutCommand;
 import com.zenobase.commands.RestoreBucketCommand;
 import com.zenobase.commands.SpendQuotaCommand;
 import com.zenobase.commands.SuspendUserCommand;
@@ -260,6 +262,8 @@ public class Global extends GlobalSettings {
 				parsers.addBinding().to(ChangeUserVerifiedCommand.Parser.class);
 				parsers.addBinding().to(ChangeQuotaCommand.Parser.class);
 				parsers.addBinding().to(SpendQuotaCommand.Parser.class);
+				parsers.addBinding().to(OptOutCommand.Parser.class);
+				parsers.addBinding().to(OptInCommand.Parser.class);
 				parsers.addBinding().to(CreateTaskCommand.Parser.class);
 				parsers.addBinding().to(UpdateTaskCommand.Parser.class);
 				parsers.addBinding().to(DeleteTaskCommand.Parser.class);
@@ -288,6 +292,8 @@ public class Global extends GlobalSettings {
 				handlers.addBinding().to(ChangeUserVerifiedCommand.Handler.class);
 				handlers.addBinding().to(ChangeQuotaCommand.Handler.class);
 				handlers.addBinding().to(SpendQuotaCommand.Handler.class);
+				handlers.addBinding().to(OptOutCommand.Handler.class);
+				handlers.addBinding().to(OptInCommand.Handler.class);
 				handlers.addBinding().to(CreateTaskCommand.Handler.class);
 				handlers.addBinding().to(UpdateTaskCommand.Handler.class);
 				handlers.addBinding().to(DeleteTaskCommand.Handler.class);

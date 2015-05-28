@@ -17,9 +17,14 @@ public class UpdateUserForm extends DomainNode {
 	private static final TokenField EXPIRES = new TokenField("expires");
 	private static final IntegerField QUOTA = new IntegerField("quota");
 	private static final BooleanField SUSPENDED = new BooleanField("suspended");
+	private static final BooleanField OPTEDOUT = new BooleanField("optedout");
 
 	public UpdateUserForm(ObjectNode node) {
 		super(node);
+	}
+
+	UpdateUserForm() {
+
 	}
 
 	UpdateUserForm(String email) {
@@ -43,6 +48,12 @@ public class UpdateUserForm extends DomainNode {
 
 	UpdateUserForm(Integer quota) {
 		setValue(QUOTA, quota);
+	}
+
+	static UpdateUserForm withOptedOut(boolean optedout) {
+		UpdateUserForm form = new UpdateUserForm();
+		form.setValue(OPTEDOUT, optedout);
+		return form;
 	}
 
 	public String getEmail() {
@@ -76,5 +87,9 @@ public class UpdateUserForm extends DomainNode {
 
 	public Boolean isSuspended() {
 		return getValue(SUSPENDED);
+	}
+
+	public Boolean isOptedOut() {
+		return getValue(OPTEDOUT);
 	}
 }

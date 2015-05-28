@@ -12,6 +12,7 @@ public class UserProfile extends UserInfo {
 	private static final BooleanField VERIFIED = new BooleanField("verified");
 	private static final BooleanField SUSPENDED = new BooleanField("suspended");
 	private static final BooleanField SUPERUSER = new BooleanField("superuser");
+	private static final BooleanField OPTEDOUT = new BooleanField("optedout");
 	private static final IntegerField QUOTA = new IntegerField("quota");
 
 	public UserProfile(User user) {
@@ -26,6 +27,9 @@ public class UserProfile extends UserInfo {
 		}
 		if (user.isSuperuser()) {
 			setValue(SUPERUSER, true);
+		}
+		if (user.isOptedOut()) {
+			setValue(OPTEDOUT, true);
 		}
 		setValue(QUOTA, user.getQuota());
 	}

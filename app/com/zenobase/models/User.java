@@ -26,6 +26,7 @@ public class User extends DomainNode {
 	public static final BooleanField VERIFIED = new BooleanField("verified");
 	public static final BooleanField SUSPENDED = new BooleanField("suspended");
 	public static final BooleanField SUPERUSER = new BooleanField("superuser");
+	public static final BooleanField OPTEDOUT = new BooleanField("optedout");
 	public static final IntegerField QUOTA = new IntegerField("quota");
 
 	public User(ObjectNode node) {
@@ -111,6 +112,14 @@ public class User extends DomainNode {
 		setValue(SUPERUSER, superuser);
 	}
 
+	public boolean isOptedOut() {
+		return getValue(OPTEDOUT, false);
+	}
+
+	public void setOptedOut(boolean optedOut) {
+		setValue(OPTEDOUT, optedOut);
+	}
+
 	public boolean is(Identity identity) {
 		return getId().equals(identity.getId());
 	}
@@ -136,7 +145,7 @@ public class User extends DomainNode {
 		return new SchemaBuilder(TYPE_NAME)
 			.add(VERSION).add(ID).add(NAME)
 			.add(CREATED).add(PASSWORD).add(EMAIL)
-			.add(VERIFIED).add(SUSPENDED).add(SUPERUSER)
+			.add(VERIFIED).add(SUSPENDED).add(SUPERUSER).add(OPTEDOUT)
 			.add(QUOTA).build();
 	}
 

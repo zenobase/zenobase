@@ -16,6 +16,7 @@ import com.zenobase.commands.ChangeQuotaCommand;
 import com.zenobase.commands.ChangeUserEmailCommand;
 import com.zenobase.commands.ChangeUserVerifiedCommand;
 import com.zenobase.commands.CompoundCommand;
+import com.zenobase.commands.OptOutCommand;
 import com.zenobase.common.Callback;
 import com.zenobase.common.Generator;
 import com.zenobase.json.Nodes;
@@ -35,6 +36,28 @@ public class UserControllerHttpPostTest extends UserControllerTestSupport {
 		Result result = call(user.getId(), new UpdateUserForm("jdoe@zenobase.com").toJson());
 		assertThat(result).hasStatus(NO_CONTENT).hasHeader(COMMAND_ID, commandId).isEmpty();
 		verifyZeroInteractions(payments);
+	}
+
+	@Test
+	public void testOptOut() {
+		String commandId = Generator.id();
+		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
+		when(users.find(user.asIdentity())).thenReturn(user);
+		when(dispatcher.dispatch(any(OptOutCommand.class))).thenReturn(commandId);
+		Result result = call(user.getId(), UpdateUserForm.withOptedOut(true).toJson());
+		assertThat(result).hasStatus(NO_CONTENT).hasHeader(COMMAND_ID, commandId).isEmpty();
+		verifyZeroInteractions(mailer, payments);
+	}
+
+	@Test
+	public void testOptIn() {
+		String commandId = Generator.id();
+		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
+		when(users.find(user.asIdentity())).thenReturn(user);
+		when(dispatcher.dispatch(any(OptOutCommand.class))).thenReturn(commandId);
+		Result result = call(user.getId(), UpdateUserForm.withOptedOut(false).toJson());
+		assertThat(result).hasStatus(NO_CONTENT).hasHeader(COMMAND_ID, commandId).isEmpty();
+		verifyZeroInteractions(mailer, payments);
 	}
 
 	@Test

@@ -14,6 +14,8 @@ import com.zenobase.commands.Command;
 import com.zenobase.commands.CompoundCommand;
 import com.zenobase.commands.CreateAuthorizationCommand;
 import com.zenobase.commands.DeleteAuthorizationCommand;
+import com.zenobase.commands.OptInCommand;
+import com.zenobase.commands.OptOutCommand;
 import com.zenobase.commands.SuspendUserCommand;
 import com.zenobase.common.Callback;
 import com.zenobase.json.Nodes;
@@ -87,6 +89,9 @@ public class UserController extends ControllerSupport {
     	}
     	if (form.isSuspended() != null) {
     		return updateSuspension(user, form.isSuspended());
+    	}
+    	if (form.isOptedOut() != null) {
+    		return updateOptedOut(form, user);
     	}
     	return badRequest("invalid update request");
 	}
@@ -197,6 +202,22 @@ public class UserController extends ControllerSupport {
     		return forbidden();
     	}
 		String commandId = dispatcher.dispatch(new ChangeQuotaCommand(auth.getPrincipal(), user.getName(), user.getQuota(), form.getQuota()));
+		response().setHeader(COMMAND_ID, commandId);
+		return noContent();
+	}
+
+	private Result updateOptedOut(UpdateUserForm form, User user) {
+		Authorization auth = getCurrentAuthorization();
+    	if (auth == null) {
+    		return unauthorized();
+    	}
+    	if (auth.getScope() != null || !user.is(auth.getPrincipal()) && !users.isSuperuser(auth.getPrincipal())) {
+    		return forbidden();
+    	}
+		Command c = form.isOptedOut() ?
+			new OptOutCommand(auth.getPrincipal(), user.getName()) :
+			new OptInCommand(auth.getPrincipal(), user.getName());
+    	String commandId = dispatcher.dispatch(c);
 		response().setHeader(COMMAND_ID, commandId);
 		return noContent();
 	}

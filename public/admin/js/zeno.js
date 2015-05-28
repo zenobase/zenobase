@@ -269,6 +269,18 @@
 					delay($scope.refreshAll);
 				});
 		};
+		$scope.optout = function(user) {
+			$http.post('/users/@' + user.name, { 'optedout' : true })
+				.success(function() {
+					delay($scope.refreshAll);
+				});
+		};
+		$scope.optin = function(user) {
+			$http.post('/users/@' + user.name, { 'optedout' : false })
+				.success(function() {
+					delay($scope.refreshAll);
+				});
+		};
 		$scope.remove = function(username) {
 			$http({ method : 'DELETE', url : '/users/@' + username })
 				.success(function() {

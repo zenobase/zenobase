@@ -175,7 +175,9 @@
 							</td>
 							<td>
 								<a data-ng-href="mailto:{{user.email}}">{{user.email}}</a> 
-								<a title="Resend Verification" data-ng-click="reverify(user)" data-ng-hide="user.verified"><i class="fa fa-repeat"></i></a>
+								<a title="Opt Out" data-ng-click="optout(user)" data-ng-hide="user.optedout"><i class="fa fa-envelope"></i></a>
+								<a title="Opt In" data-ng-click="optin(user)" data-ng-show="user.optedout"><i class="fa fa-envelope-o"></i></a>
+								<a title="Resend Verification" data-ng-click="reverify(user)" data-ng-hide="user.verified"><i class="fa fa-send-o"></i></a>
 							</td>
 							<td style="white-space: nowrap">
 								<abbr title="{{user.created}}">{{user.created | age}}</abbr>
