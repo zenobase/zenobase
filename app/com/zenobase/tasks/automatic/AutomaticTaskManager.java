@@ -56,21 +56,16 @@ public class AutomaticTaskManager extends OAuthTaskManager {
 		}
 		List<Trip> trips = Lists.newArrayList();
 		DateTime from = parseMarker(task.getMarker());
-		TRIPS:
-		for (int i = 0; i < 100; ++i) {
-			OAuthRequest request = new OAuthRequest(Verb.GET, "https://api.automatic.com/v1/trips");
-			request.addQuerystringParameter("per_page", "10");
+		for (int i = 0; i < 10; ++i) {
+			OAuthRequest request = new OAuthRequest(Verb.GET, "https://api.automatic.com/trip/");
+			request.addQuerystringParameter("started_at__gte", Long.toString(from.getMillis() / 1000));
+			request.addQuerystringParameter("limit", "100");
 			request.addQuerystringParameter("page", Integer.toString(i + 1));
 			Response response = send(request, credentials);
-			List<Trip> add = new TripsResult(parseArray(response), task.getPrincipal(), task.getTag(), task.isMetric()).getTrips();
-			if (add.isEmpty()) {
-				break TRIPS;
-			}
-			for (Trip trip : add) {
-				if (from != null && !trip.isAfter(from)) {
-					break TRIPS;
-				}
-				trips.add(trip);
+			TripsResult result = new TripsResult(parse(response), task.getPrincipal(), task.getTag(), task.isMetric());
+			trips.addAll(result.getTrips());
+			if (!result.hasNext()) {
+				break;
 			}
 		}
 		resolveVehicles(trips, credentials);
@@ -82,7 +77,7 @@ public class AutomaticTaskManager extends OAuthTaskManager {
 		LoadingCache<String, String> vehicles = CacheBuilder.newBuilder().maximumSize(10).build(new CacheLoader<String, String>() {
 			@Override
 			public String load(String key) {
-				OAuthRequest request = new OAuthRequest(Verb.GET, "https://api.automatic.com/v1/vehicles/" + key);
+				OAuthRequest request = new OAuthRequest(Verb.GET, key);
 				Response response = send(request, credentials);
 				return new VehicleResult(parseObject(response)).getDisplayName();
 			}
@@ -142,5 +137,11 @@ public class AutomaticTaskManager extends OAuthTaskManager {
 			command.add(new CreateEventsCommand(task.getPrincipal(), task.getBucketId(), events));
 		}
 		return command;
+	}
+
+	@Override
+	protected Response send(OAuthRequest request, OAuthCredentials credentials) {
+		request.addHeader("Accept", "*/*");
+		return super.send(request, credentials);
 	}
 }

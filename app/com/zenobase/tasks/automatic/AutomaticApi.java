@@ -17,7 +17,7 @@ public class AutomaticApi extends CustomApi20 {
 		return new UriBuilder("https://accounts.automatic.com/oauth/authorize/")
 			.addParameter("response_type", "code")
 			.addParameter("client_id", config.getApiKey())
-			.addParameter("scope", "scope:vehicle scope:location scope:trip:summary")
+			.addParameter("scope", "scope:public scope:location scope:vehicle:profile scope:vehicle:events scope:trip scope:behavior")
 			.build();
 	}
 }
