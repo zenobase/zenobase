@@ -39,7 +39,6 @@ class TripsResult {
 		this.author = author;
 		this.tag = tag;
 		this.metric = metric;
-		System.err.println(node);
 	}
 
 	public boolean hasNext() {
