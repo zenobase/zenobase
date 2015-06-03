@@ -9,6 +9,7 @@ import org.junit.Before;
 import org.junit.Test;
 import com.google.common.collect.Lists;
 
+import com.zenobase.json.Nodes;
 import com.zenobase.models.Bucket;
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
@@ -69,7 +70,6 @@ public class EventRepositoryTest extends ElasticSearchTestSupport {
 		assertThat(repository.terms(bucket.getId(), Event.TAG.getName())).as("tags").isEmpty();
 	}
 
-
 	@Test
 	public void testBulk() {
 
@@ -95,6 +95,29 @@ public class EventRepositoryTest extends ElasticSearchTestSupport {
 		repository.delete(bucket.getId(), Lists.newArrayList(e1.getId(), e2.getId()));
 		repository.refresh(bucket.getId());
 		assertThat(repository.size()).as("repository size").isZero();
+	}
+
+	@Test
+	public void testBulkWithInvalidEvent() {
+
+		Bucket bucket = new Bucket();
+		new BucketRepository(getManager()).store(bucket, DateTime.now(), true);
+
+		// create events
+		Event e1 = new Event();
+		e1.addValue(Event.TAG, "good");
+		Event e2 = new Event(Nodes.newObject("foo", "bar"));
+		e2.addValue(Event.TAG, "bad");
+
+		// add events
+		try {
+			repository.add(bucket.getId(), Lists.newArrayList(e1, e2), DateTime.now());
+			throw new AssertionError("Should have thrown an exception");
+		} catch (RuntimeException e) {
+
+		}
+		repository.refresh(bucket.getId());
+		assertThat(repository.size()).as("repository size").isEqualTo(0L);
 	}
 
 	@Test

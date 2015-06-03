@@ -88,21 +88,37 @@ public class Index {
 		final int BATCH_SIZE = 10000;
 		for (int begin = 0; begin < nodes.size(); begin += BATCH_SIZE) {
 			BulkRequestBuilder request = client.prepareBulk();
-			for (int j = 0; j < BATCH_SIZE && begin + j < nodes.size(); ++j) {
-				DomainNode node = nodes.get(begin + j);
+			for (int i = 0; i < BATCH_SIZE && begin + i < nodes.size(); ++i) {
+				DomainNode node = nodes.get(begin + i);
 				request.add(buildIndexRequest(type, node.getId(), node.toJson(), operation, timestamp, refresh));
 			}
 			request.setRefresh(refresh);
 			BulkItemResponse[] responses = request.get().getItems();
+			String failureMessage = getFailureMessage(responses);
+			if (failureMessage != null) {
+				List<String> failed = Lists.newArrayList();
+				for (int i = 0; i < responses.length; ++i) {
+					if (!responses[i].isFailed()) {
+						failed.add(nodes.get(i).getId());
+					}
+				}
+				delete(type, failed, refresh);
+				throw new RuntimeException("Couldn't store an item: " + failureMessage);
+			}
 			for (int i = 0; i < responses.length; ++i) {
 				long version = responses[i].getVersion();
 				nodes.get(begin + i).setVersion(version);
-				if (responses[i].isFailed()) {
-					// TODO revert previous?
-					throw new RuntimeException("Couldn't store one or more items: " + responses[i].getFailureMessage());
-				}
 			}
 		}
+	}
+
+	private static String getFailureMessage(BulkItemResponse[] responses) {
+		for (int i = 0; i < responses.length; ++i) {
+			if (responses[i].isFailed()) {
+				return responses[i].getFailureMessage();
+			}
+		}
+		return null;
 	}
 
 	private IndexRequestBuilder buildIndexRequest(String type, String id, ObjectNode node, OpType operation, DateTime timestamp, boolean refresh) {
