@@ -7970,7 +7970,7 @@
 					var url = ($window.URL || $window.webkitURL).createObjectURL(spreadsheet.toBlob());
 					var a = document.createElement('a');
 					document.body.appendChild(a);
-					a.style = 'display:none';
+					a.style.display = 'none';
 					a.download = scope.settings.label.replace(/\s+/g, '-').toLowerCase() + '.csv';
 					a.href = url;
 					a.click();
