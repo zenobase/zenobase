@@ -2471,6 +2471,7 @@
 		$scope.init = function() {
 			$scope.times = null;
 			$scope.timesB = null;
+			$scope.paired = false;
 			$scope.settings.key_field = $scope.settings.key_field || $scope.keyField;
 		};
 		$scope.params = function() {
@@ -2515,8 +2516,29 @@
 		$scope.update = function(event, result, resultB) {
 			$scope.times = result[$scope.settings.id] || [];
 			$scope.timesB = resultB && resultB[$scope.settings.id] || [];
+			$scope.paired = isPaired($scope.times, $scope.timesB);
 			$timeout($scope.draw, 1); // delay for correct width
 		};
+		/**
+		 * Returns true if the two arrays contain an object with the same "time" properties and non-zero "count" properties.
+		 */
+		function isPaired(a, b) {
+			for (var i = 0, j = 0; b && i < a.length && j < b.length;) {
+				if (a[i].time === b[j].time) {
+					if (a[i].count * b[j].count === 0) {
+						++i;
+						++j;
+					} else {
+						return true;
+					}
+				} else if (a[i].time < b[j].time) {
+					++i;
+				} else if (a[i].time > b[j].time) {
+					++j;
+				}
+			}
+			return false;
+		}
 		function toRanges(times) {
 			var ranges = [];
 			var begin = null;
@@ -2852,7 +2874,7 @@
 			$scope.statsB = null;
 		};
 		function shouldRequestStats() {
-			return $scope.constraintsB && $scope.settings.statistic === 'avg'; 
+			return $scope.constraintsB && $scope.settings.statistic === 'avg' && !$scope.paired; 
 		}
 		$scope.params = function() {
 			return shouldRequestStats() ? { 
