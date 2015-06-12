@@ -421,7 +421,7 @@
 					this.records[i].push(record.slice(1));
 					return;
 				} else if (this.records[i][0] > record[0]) {
-					this.records.splice(i, 0, '', record[1]);
+					this.records.splice(i, 0, [ record[0], '', record[1] ]);
 					return;
 				}
 			}
