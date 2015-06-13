@@ -2874,7 +2874,7 @@
 			$scope.statsB = null;
 		};
 		function shouldRequestStats() {
-			return $scope.constraintsB && $scope.settings.statistic === 'avg' && !$scope.paired; 
+			return $scope.constraintsB && $scope.settings.statistic === 'avg'; 
 		}
 		$scope.params = function() {
 			return shouldRequestStats() ? { 
