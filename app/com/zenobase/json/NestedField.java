@@ -23,6 +23,10 @@ public class NestedField<T> extends Field<T> {
 		return concat(parent.getPath(), field.getName());
 	}
 
+	public String getPath(String parent) {
+		return concat(parent, field.getName());
+	}
+
 	@Override
 	public T getValue(JsonNode node) {
 		return field.getValue(node);
@@ -43,6 +47,7 @@ public class NestedField<T> extends Field<T> {
 		field.configureSchema(schema);
 	}
 
+	// TODO verify that this results in queries with the correct exact path
 	public void addConstraintBuilders(String path, Field<?> target) {
 		for (Map.Entry<String, ConstraintBuilder> entry : field.getConstraintBuilders().entries()) {
 			target.addConstraintBuilder(concat(path, entry.getKey()), entry.getValue());

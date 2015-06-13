@@ -7,8 +7,11 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.NullNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
+import com.zenobase.search.DecimalRangeConstraintBuilder;
+import com.zenobase.search.ExistsConstraintBuilder;
 import com.zenobase.search.LocalDateTimeConstraintBuilder;
 import com.zenobase.search.LocalDateTimeRangeConstraintBuilder;
+import com.zenobase.search.TermConstraintBuilder;
 
 public class LocalDateTimeField extends Field<LocalDateTime> {
 
@@ -23,11 +26,17 @@ public class LocalDateTimeField extends Field<LocalDateTime> {
 		super(internal(name), LocalDateTime.class, "object");
 		addConstraintBuilder(name, new LocalDateTimeRangeConstraintBuilder(timeField.getPath()));
 		addConstraintBuilder(name, new LocalDateTimeConstraintBuilder(timeField.getPath()));
-		monthOfYearField.addConstraintBuilders(name, this);
-		dayOfYearField.addConstraintBuilders(name, this);
-		dayOfMonthField.addConstraintBuilders(name, this);
-		dayOfWeekField.addConstraintBuilders(name, this);
-		hourOfDayField.addConstraintBuilders(name, this);
+		addIntegerConstraintBuilders(name, monthOfYearField);
+		addIntegerConstraintBuilders(name, dayOfYearField);
+		addIntegerConstraintBuilders(name, dayOfMonthField);
+		addIntegerConstraintBuilders(name, dayOfWeekField);
+		addIntegerConstraintBuilders(name, hourOfDayField);
+	}
+
+	private void addIntegerConstraintBuilders(String name, NestedField<Integer> field) {
+		addConstraintBuilder(field.getPath(name), new ExistsConstraintBuilder(field.getPath()));
+		addConstraintBuilder(field.getPath(name), new DecimalRangeConstraintBuilder(field.getPath()));
+		addConstraintBuilder(field.getPath(name), new TermConstraintBuilder(field.getPath()));
 	}
 
 	@Override

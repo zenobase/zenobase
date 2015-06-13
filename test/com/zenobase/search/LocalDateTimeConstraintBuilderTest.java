@@ -24,6 +24,13 @@ public class LocalDateTimeConstraintBuilderTest extends ConstraintBuilderTestSup
 		addEvent(event);
 	}
 
+	private void addEvent(String begin, String end) {
+		Event event = new Event();
+		event.addValue(Event.TIMESTAMP, DateTime.parse(begin));
+		event.addValue(Event.TIMESTAMP, DateTime.parse(end));
+		addEvent(event);
+	}
+
 	@Test
 	public void testFindJanuary() {
 		addConstraint("%s.month_of_year:%s", Event.TIMESTAMP, "1");
@@ -41,6 +48,14 @@ public class LocalDateTimeConstraintBuilderTest extends ConstraintBuilderTestSup
 	@Test
 	public void testFindSunday() {
 		addConstraint("%s.day_of_week:%s", Event.TIMESTAMP, "7");
+		ObjectNode result = execute();
+		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(1);
+	}
+
+	@Test
+	public void testFindEventsEndingOnSunday() {
+		addEvent("2012-02-05T12:00:00Z", "2012-02-06T12:00:00Z");
+		addConstraint("%s$max.day_of_week:%s", Event.TIMESTAMP, "7");
 		ObjectNode result = execute();
 		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(1);
 	}
