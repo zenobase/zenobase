@@ -2542,6 +2542,7 @@
 		function toRanges(times) {
 			var ranges = [];
 			var begin = null;
+			var end = null;
 			var length = 0;
 			$.each(times, function(i, time) {
 				if (time.count > 0) {
@@ -2554,9 +2555,10 @@
 						length = 0;
 					}
 				}
+				end = time.value;
 			});
 			if (begin !== null) {
-				ranges.push(length === 1 ? begin : '[' + begin + '..*)');
+				ranges.push(length === 1 ? begin : '[' + begin + '..' + end + ']');
 			}
 			return ranges;
 		}
@@ -2640,8 +2642,12 @@
 						zoomType : 'x',
 						events : {
 							selection : function(event) {
-								var from = '*';
-								var to = '*';
+								var from = null;
+								var to = null;
+								$.each($scope.times, function(i, time) {
+									from = from || time.label;
+									to = time.label;
+								});
 								$.each($scope.times, function(i, time) {
 									if (time.time >= event.xAxis[0].min) {
 										from = time.label;
@@ -2649,13 +2655,12 @@
 									}
 								});
 								$.each($scope.times, function(i, time) {
-									if (time.time >= event.xAxis[0].max) {
+									if (time.time <= event.xAxis[0].max) {
 										to = time.label;
-										return false;
 									}
 								});
-								if (from != '*' || to != '*') {
-									var range = '[' + from + '..' + to + ')';
+								if (from !== null && to !== null) {
+									var range = from === to ? from : '[' + from + '..' + to + ']';
 									$scope.$apply(function() {
 										filter(range);
 									});
