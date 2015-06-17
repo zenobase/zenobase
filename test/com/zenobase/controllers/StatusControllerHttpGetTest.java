@@ -17,7 +17,7 @@ public class StatusControllerHttpGetTest extends StatusControllerTestSupport {
 	@Test
 	public void test() {
 		ClusterHealthResponse health = mock(ClusterHealthResponse.class);
-		StatusInfo expected = new StatusInfo(Long.MAX_VALUE, ClusterHealthStatus.GREEN, 4, 2, true); // need to use a non-integer value for correct round-tripping
+		StatusInfo expected = new StatusInfo(Long.MAX_VALUE, ClusterHealthStatus.GREEN, 4, 2, true, true); // need to use a non-integer value for correct round-tripping
 		when(health.getStatus()).thenReturn(expected.getHealth());
 		when(health.getNumberOfNodes()).thenReturn(expected.getNodes());
 		when(manager.getCluster()).thenReturn(cluster);
@@ -25,6 +25,7 @@ public class StatusControllerHttpGetTest extends StatusControllerTestSupport {
 		when(cluster.getHealth()).thenReturn(health);
 		when(bus.count()).thenReturn(2);
 		when(bus.isReadOnly()).thenReturn(true);
+		when(bus.isSchedulerDisabled()).thenReturn(true);
 		Result result = call();
 		assertThat(result).hasStatus(OK).hasContent(expected.toJson());
 	}

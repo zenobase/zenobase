@@ -589,4 +589,30 @@
 		$scope.refresh({});
 	}]);
 
+	app.controller('admin.SchedulerController', ['$scope', '$http', 'delay', function($scope, $http, delay) {
+
+		$scope.jobs = null;
+		$scope.paused = false;
+
+		$scope.refresh = function() {
+			$http.get('/jobs/')
+				.success(function(response) {
+					$scope.jobs = response.jobs;
+				});
+		};
+		$scope.disable = function(disabled) {
+			$http.post('/status', { 'scheduler_disabled' : disabled })
+				.success(function(response, code, headers) {
+					delay(function() {
+						$scope.reload();				
+					});
+				});
+		};
+
+		$scope.$on('refreshAll', function() {
+			$scope.refresh();
+		});
+		$scope.refresh();
+	}]);
+
 }());

@@ -8,6 +8,10 @@ public interface Bus {
 
 	void setReadOnly(boolean readOnly);
 
+	boolean isSchedulerDisabled();
+
+	void setSchedulerDisabled(boolean schedulerDisabled);
+
 	int count();
 
 	void close();

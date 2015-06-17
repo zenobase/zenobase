@@ -19,7 +19,7 @@
 
 	<div class="row-fluid">
 
-		<div class="span6">
+		<div class="span8">
 	
 			<ul class="nav nav-tabs">
 				<li class="active"><a href="#widget-journal" target="_self" data-toggle="tab">History</a></li>
@@ -402,15 +402,47 @@
 
 		</div>		
 
-		<div class="span6">
+		<div class="span4">
 	
 			<ul class="nav nav-tabs">
-				<li class="active"><a href="#widget-snapshots" target="_self" data-toggle="tab">Snapshots</a></li>
+				<li class="active"><a href="#widget-scheduler" target="_self" data-toggle="tab">Scheduler</a></li>
+				<li><a href="#widget-snapshots" target="_self" data-toggle="tab">Snapshots</a></li>
 			</ul>
 	    	
 			<div class="tab-content">
 	
-				<div id="widget-snapshots" data-ng-controller="admin.SnapshotController" class="tab-pane active">
+				<div id="widget-scheduler" data-ng-controller="admin.SchedulerController" class="tab-pane active">
+					<table class="table">
+						<thead>
+							<tr>
+								<th style="width: 0">Job</th>
+								<th style="width: 99%">Period</th>
+								<th style="width: 0; text-align: right">Duration</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr data-ng-repeat="job in jobs">
+								<td>{{job.label}}</td>
+								<td>{{job.period}}</td>
+								<td style="text-align: right">{{job.duration | duration}}</td>
+							</tr>
+							<tr data-ng-show="jobs == null">
+								<td colspan="3"><i>Loading</i></td>
+							</tr>
+							<tr data-ng-show="jobs.length == 0">
+								<td colspan="3"><i>None</i></td>
+							</tr>
+						</tbody>
+					</table>
+					<div class="btn-toolbar">
+						<div class="btn-group pull-left">
+							<button class="btn" data-ng-click="disable(true)" data-ng-hide="status.scheduler_disabled" title="Pause"><i class="fa fa-pause"></i></button>
+							<button class="btn" data-ng-click="disable(false)" data-ng-show="status.scheduler_disabled" title="Resume"><i class="fa fa-play"></i></button>
+						</div>
+					</div>
+				</div>
+
+				<div id="widget-snapshots" data-ng-controller="admin.SnapshotController" class="tab-pane">
 					<table class="table">
 						<thead>
 							<tr>
@@ -454,6 +486,7 @@
 						</div>
 					</div>
 				</div>
+
 			</div>
 
 		</div>		

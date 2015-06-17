@@ -40,7 +40,7 @@ public class StatusController extends ControllerSupport {
 
 	private StatusInfo getStatus() {
 		ClusterHealthResponse health = manager.getCluster().getHealth();
-		return new StatusInfo(history.size(), health.getStatus(), health.getNumberOfNodes(), bus.count(), bus.isReadOnly());
+		return new StatusInfo(history.size(), health.getStatus(), health.getNumberOfNodes(), bus.count(), bus.isReadOnly(), bus.isSchedulerDisabled());
 	}
 
 	@BodyParser.Of(BodyParser.Json.class)
@@ -55,11 +55,21 @@ public class StatusController extends ControllerSupport {
 		if (!users.isSuperuser(auth.getPrincipal())) {
 			return forbidden();
 		}
-		JsonNode node = body().path("read_only");
-		if (!node.isBoolean()) {
-			return badRequest();
-		}
-		bus.setReadOnly(node.booleanValue());
+		JsonNode body = body();
+		setReadOnly(body.path("read_only"));
+		setSchedulerDisabled(body.path("scheduler_disabled"));
         return noContent();
     }
+
+	private void setReadOnly(JsonNode node) {
+		if (node.isBoolean()) {
+			bus.setReadOnly(node.booleanValue());
+		}
+	}
+
+	private void setSchedulerDisabled(JsonNode node) {
+		if (node.isBoolean()) {
+			bus.setSchedulerDisabled(node.booleanValue());
+		}
+	}
 }

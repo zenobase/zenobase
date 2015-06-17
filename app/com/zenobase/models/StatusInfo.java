@@ -16,6 +16,7 @@ public class StatusInfo extends DomainNode {
 	private static final IntegerField NODES_DATA = new IntegerField("data_nodes");
 	private static final IntegerField NODES_WEB = new IntegerField("web_nodes");
 	private static final BooleanField READ_ONLY = new BooleanField("read_only");
+	private static final BooleanField SCHEDULER_DISABLED = new BooleanField("scheduler_disabled");
 
 	public StatusInfo(ObjectNode node) {
 		super(node);
@@ -25,12 +26,17 @@ public class StatusInfo extends DomainNode {
 		setValue(READ_ONLY, readOnly);
 	}
 
-	public StatusInfo(long count, ClusterHealthStatus health, int dataNodes, int webNodes, boolean readOnly) {
+	public StatusInfo(long count, ClusterHealthStatus health, int dataNodes, int webNodes, boolean readOnly, boolean schedularDisabled) {
 		setValue(COUNT, count);
 		setValue(HEALTH, health.toString());
 		setValue(NODES_DATA, dataNodes);
 		setValue(NODES_WEB, webNodes);
-		setValue(READ_ONLY, readOnly);
+		if (readOnly) {
+			setValue(READ_ONLY, true);
+		}
+		if (schedularDisabled) {
+			setValue(SCHEDULER_DISABLED, true);
+		}
 	}
 
 	public long getCount() {
@@ -47,5 +53,9 @@ public class StatusInfo extends DomainNode {
 
 	public boolean isReadOnly() {
 		return getValue(READ_ONLY, Boolean.FALSE);
+	}
+
+	public boolean isSchedulerDisabled() {
+		return getValue(SCHEDULER_DISABLED, Boolean.FALSE);
 	}
 }

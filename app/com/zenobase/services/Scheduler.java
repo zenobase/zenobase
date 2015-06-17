@@ -1,6 +1,8 @@
 package com.zenobase.services;
 
+import java.io.IOException;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
@@ -13,19 +15,55 @@ import org.joda.time.Period;
 import play.libs.Akka;
 import scala.concurrent.duration.FiniteDuration;
 import akka.actor.Cancellable;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
+import com.hazelcast.nio.ObjectDataInput;
+import com.hazelcast.nio.ObjectDataOutput;
+import com.hazelcast.nio.serialization.DataSerializable;
 
 public class Scheduler {
 
+	private final Bus bus;
+	private final ImmutableList<Job> jobs;
 	private final List<Cancellable> scheduled = Lists.newArrayList();
 
+	static class JobStatus implements DataSerializable {
+
+		private String state;
+		private Duration duration;
+
+		public JobStatus(String state, Duration duration) {
+			this.state = state;
+			this.duration = duration;
+		}
+
+		@Override
+		public void readData(ObjectDataInput in) throws IOException {
+			state = in.readUTF();
+		}
+
+		@Override
+		public void writeData(ObjectDataOutput out) throws IOException {
+			out.writeUTF(state);
+
+		}
+	}
+
 	@Inject
-	public Scheduler(final Bus bus, final IndexManager manager) {
-		schedule(new LocalTime(1, 0), Period.hours(8), new Runnable() {
+	public Scheduler(Bus bus, Set<Job> jobs) {
+		this.bus = bus;
+		this.jobs = ImmutableList.copyOf(jobs);
+		for (Job job : this.jobs) {
+			schedule(job);
+		}
+	}
+
+	private void schedule(final Job job) {
+		schedule(new LocalTime(1, 0), job.getPeriod(), new Runnable() {
 			@Override
 			public void run() {
-				if (bus.isMaster() && !bus.isReadOnly()) {
-					manager.getSnapshotManager().snapshot();
+				if (bus.isMaster() && !bus.isReadOnly() && !bus.isSchedulerDisabled()) {
+					job.run();
 				}
 			}
 		});
@@ -52,10 +90,14 @@ public class Scheduler {
 		if (period.getHours() > 0) {
 			return FiniteDuration.create(period.getHours(), TimeUnit.HOURS);
 		} else if (period.getMinutes() > 0) {
-			return FiniteDuration.create(period.getMillis(), TimeUnit.MINUTES);
+			return FiniteDuration.create(period.getMinutes(), TimeUnit.MINUTES);
 		} else {
 			throw new IllegalArgumentException("Unsupported period: " + period);
 		}
+	}
+
+	public ImmutableList<Job> findJobs() {
+		return jobs;
 	}
 
 	public void close() {

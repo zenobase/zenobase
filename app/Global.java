@@ -92,12 +92,15 @@ import com.zenobase.services.CredentialsRepository;
 import com.zenobase.services.EventRepository;
 import com.zenobase.services.HazelcastBus;
 import com.zenobase.services.IndexManager;
+import com.zenobase.services.Job;
 import com.zenobase.services.LocalNodeFactory;
 import com.zenobase.services.NodeFactory;
 import com.zenobase.services.PaymentGateway;
 import com.zenobase.services.QuotaManager;
 import com.zenobase.services.Scheduler;
+import com.zenobase.services.SnapshotJob;
 import com.zenobase.services.TaskRepository;
+import com.zenobase.services.TestJob;
 import com.zenobase.services.TestNodeFactory;
 import com.zenobase.services.UserRepository;
 import com.zenobase.tasks.CredentialsManager;
@@ -392,6 +395,10 @@ public class Global extends GlobalSettings {
 				bindIfConfigured("trakt", TraktTaskManager.class, tasks);
 				bindIfConfigured("wakatime", WakaTimeTaskManager.class, tasks);
 				bind(TaskManagerRegistry.class).in(Singleton.class);
+
+				Multibinder<Job> jobs = Multibinder.newSetBinder(binder(), Job.class);
+				jobs.addBinding().to(TestJob.class);
+				jobs.addBinding().to(SnapshotJob.class);
 
 				bind(AccountController.class).in(Singleton.class);
 				bind(BucketController.class).in(Singleton.class);

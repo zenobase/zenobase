@@ -13,6 +13,7 @@ import com.hazelcast.core.OperationTimeoutException;
 public class HazelcastBus implements Bus {
 
 	private static final String KEY_READ_ONLY = "readOnly";
+	private static final String KEY_SCHEDULER_DISABLED = "schedulerDisabled";
 
 	private final HazelcastInstance hazelcast = Hazelcast.newHazelcastInstance();
 	private Map<Object, Object> map;
@@ -33,21 +34,38 @@ public class HazelcastBus implements Bus {
 
 	@Override
 	public boolean isReadOnly() {
+		return is(KEY_READ_ONLY);
+	}
+
+	@Override
+	public void setReadOnly(boolean readOnly) {
+		set(KEY_READ_ONLY, readOnly);
+	}
+
+	@Override
+	public boolean isSchedulerDisabled() {
+		return is(KEY_SCHEDULER_DISABLED);
+	}
+
+	@Override
+	public void setSchedulerDisabled(boolean schedulerDisabled) {
+		set(KEY_SCHEDULER_DISABLED, schedulerDisabled);
+	}
+
+	private boolean is(String key) {
 		try {
-			return map.containsKey(KEY_READ_ONLY);
+			return map.containsKey(key);
 		} catch (OperationTimeoutException|HazelcastInstanceNotActiveException e) {
 			return false;
 		}
 	}
 
-	@Override
-	public void setReadOnly(boolean readOnly) {
-		if (readOnly) {
-			Logger.warn("Enabling read-only mode...");
-			map.put(KEY_READ_ONLY, Boolean.TRUE);
+	private void set(String key, boolean value) {
+		Logger.warn("Setting {} to {}...", key, value);
+		if (value) {
+			map.put(key, Boolean.TRUE);
 		} else {
-			Logger.warn("Disabling read-only mode...");
-			map.remove(KEY_READ_ONLY);
+			map.remove(key);
 		}
 	}
 
