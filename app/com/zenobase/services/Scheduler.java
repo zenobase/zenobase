@@ -1,6 +1,5 @@
 package com.zenobase.services;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
@@ -17,37 +16,12 @@ import scala.concurrent.duration.FiniteDuration;
 import akka.actor.Cancellable;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
-import com.hazelcast.nio.ObjectDataInput;
-import com.hazelcast.nio.ObjectDataOutput;
-import com.hazelcast.nio.serialization.DataSerializable;
 
 public class Scheduler {
 
 	private final Bus bus;
 	private final ImmutableList<Job> jobs;
 	private final List<Cancellable> scheduled = Lists.newArrayList();
-
-	static class JobStatus implements DataSerializable {
-
-		private String state;
-		private Duration duration;
-
-		public JobStatus(String state, Duration duration) {
-			this.state = state;
-			this.duration = duration;
-		}
-
-		@Override
-		public void readData(ObjectDataInput in) throws IOException {
-			state = in.readUTF();
-		}
-
-		@Override
-		public void writeData(ObjectDataOutput out) throws IOException {
-			out.writeUTF(state);
-
-		}
-	}
 
 	@Inject
 	public Scheduler(Bus bus, Set<Job> jobs) {
@@ -59,7 +33,7 @@ public class Scheduler {
 	}
 
 	private void schedule(final Job job) {
-		schedule(new LocalTime(1, 0), job.getPeriod(), new Runnable() {
+		schedule(job.getBegin(), job.getPeriod(), new Runnable() {
 			@Override
 			public void run() {
 				if (bus.isMaster() && !bus.isReadOnly() && !bus.isSchedulerDisabled()) {

@@ -2,6 +2,7 @@ package com.zenobase.services;
 
 import javax.inject.Inject;
 
+import org.joda.time.LocalTime;
 import org.joda.time.Period;
 import play.Logger;
 
@@ -9,7 +10,7 @@ public class TestJob extends Job {
 
 	@Inject
 	public TestJob() {
-		super("test", Period.minutes(5));
+		super("test", new LocalTime(0, 0), Period.minutes(5));
 	}
 
 	@Override

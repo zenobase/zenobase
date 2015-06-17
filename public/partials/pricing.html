@@ -11,7 +11,7 @@
 		<div class="span3 alert" data-ng-class="user && !user.quota && 'alert-success' || 'alert-info'">
 			<h4>Free</h4>
 			<p></p>
-			<p>Record up to one event per hour for <strong>free</strong>.</p>
+			<p>Record up to 50K events per month for <strong>free</strong>, pull in new data manually.</p>
 			<button class="btn" data-ng-hide="user" data-ng-click="start()" data-ng-controller="HomeController">Select</button>
 			<button class="btn" data-ng-show="user" data-ng-disabled="!user.quota" data-ng-click="openDialog('free-plan-dialog')">Select</button>
 		</div>
@@ -19,7 +19,7 @@
 		<div class="span3 alert" data-ng-class="user && user.quota == 3000000 && 'alert-success' || 'alert-info'">
 			<h4>Personal</h4>
 			<p></p>
-			<p>Record up to one event per second for <strong>$5 per month</strong>.</p>
+			<p>Record up to 3M events per month for <strong>$5 per month</strong>, pull in new data automatically.</p>
 			<button class="btn" data-ng-disabled="!user" data-ng-click="openDialog('personal-plan-dialog')">
 				<span data-ng-hide="user.quota">Select</span>
 				<span data-ng-show="user.quota">Edit...</span>
@@ -29,7 +29,7 @@
 		<div class="span3 alert" data-ng-class="user && user.quota > 3000000 && 'alert-success' || 'alert-info'">
 			<h4>Commercial</h4>
 			<p></p>
-			<p>Flexible volume pricing starting at <strong>$30 per month</strong>.</p>
+			<p>Flexible volume pricing and support contracts starting at <strong>$250 per month</strong>.</p>
 			<button class="btn" data-ng-click="openDialog('commercial-plan-dialog')">Select</button>
 		</div>
 

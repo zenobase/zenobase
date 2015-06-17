@@ -2,6 +2,7 @@ package com.zenobase.services;
 
 import javax.inject.Inject;
 
+import org.joda.time.LocalTime;
 import org.joda.time.Period;
 
 public class SnapshotJob extends Job {
@@ -10,7 +11,7 @@ public class SnapshotJob extends Job {
 
 	@Inject
 	public SnapshotJob(IndexManager manager) {
-		super("snapshot", Period.hours(8));
+		super("snapshot", new LocalTime(1, 0), Period.hours(8));
 		this.manager = manager;
 	}
 

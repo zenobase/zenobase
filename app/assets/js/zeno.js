@@ -1704,6 +1704,7 @@
 
 		$scope.init = function() {
 			$scope.newBucket = angular.copy($scope.$parent.bucket);
+			$scope.newBucket.refresh = $scope.newBucket.refresh && $scope.user.quota ? true : false;
 			$scope.isView = $scope.newBucket.aliases && $scope.newBucket.aliases.length > 0;
 			$scope.selected = null;
 			$scope.filter = null;

@@ -415,16 +415,16 @@
 					<table class="table">
 						<thead>
 							<tr>
-								<th style="width: 0">Job</th>
-								<th style="width: 99%">Period</th>
-								<th style="width: 0; text-align: right">Duration</th>
+								<th style="width: 99%">Job</th>
+								<th style="width: 0; text-align: right">Begin</th>
+								<th style="width: 0; text-align: right">Period</th>
 							</tr>
 						</thead>
 						<tbody>
 							<tr data-ng-repeat="job in jobs">
 								<td>{{job.label}}</td>
-								<td>{{job.period}}</td>
-								<td style="text-align: right">{{job.duration | duration}}</td>
+								<td>{{job.begin}}</td>
+								<td style="text-align: right">{{job.period}}</td>
 							</tr>
 							<tr data-ng-show="jobs == null">
 								<td colspan="3"><i>Loading</i></td>

@@ -97,10 +97,10 @@ import com.zenobase.services.LocalNodeFactory;
 import com.zenobase.services.NodeFactory;
 import com.zenobase.services.PaymentGateway;
 import com.zenobase.services.QuotaManager;
+import com.zenobase.services.BucketRefreshJob;
 import com.zenobase.services.Scheduler;
 import com.zenobase.services.SnapshotJob;
 import com.zenobase.services.TaskRepository;
-import com.zenobase.services.TestJob;
 import com.zenobase.services.TestNodeFactory;
 import com.zenobase.services.UserRepository;
 import com.zenobase.tasks.CredentialsManager;
@@ -397,7 +397,7 @@ public class Global extends GlobalSettings {
 				bind(TaskManagerRegistry.class).in(Singleton.class);
 
 				Multibinder<Job> jobs = Multibinder.newSetBinder(binder(), Job.class);
-				jobs.addBinding().to(TestJob.class);
+				jobs.addBinding().to(BucketRefreshJob.class);
 				jobs.addBinding().to(SnapshotJob.class);
 
 				bind(AccountController.class).in(Singleton.class);

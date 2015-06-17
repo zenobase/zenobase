@@ -15,6 +15,7 @@ import com.google.common.collect.Maps;
 
 import com.zenobase.common.Generator;
 import com.zenobase.json.AliasField;
+import com.zenobase.json.BooleanField;
 import com.zenobase.json.DateTimeField;
 import com.zenobase.json.DomainNode;
 import com.zenobase.json.ObjectField;
@@ -36,10 +37,11 @@ public class Bucket extends DomainNode {
 	public static final RolesField ROLES = new RolesField("roles");
 	public static final ObjectField WIDGETS = new ObjectField("widgets");
 	public static final AliasField ALIASES = new AliasField("aliases");
+	public static final BooleanField REFRESH = new BooleanField("refresh");
 
 	public static final Schema SCHEMA = new SchemaBuilder(TYPE_NAME).add(VERSION)
 		.add(ID).add(LABEL).add(DESCRIPTION).add(CREATED)
-		.add(ROLES).add(WIDGETS).add(ALIASES).build();
+		.add(ROLES).add(WIDGETS).add(ALIASES).add(REFRESH).build();
 
 	public Bucket(ObjectNode node) {
 		super(node);
@@ -142,6 +144,10 @@ public class Bucket extends DomainNode {
 
 	public boolean isVirtual() {
 		return !getAliases().isEmpty();
+	}
+
+	public boolean isRefresh() {
+		return getValue(REFRESH) == Boolean.TRUE;
 	}
 
 	public Bucket copy() {

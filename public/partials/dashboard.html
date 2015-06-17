@@ -152,6 +152,15 @@
 						<i>You can make this dashboard public after signing up and verifying your email address.</i>
 					</p>
 				</div>
+				<div class="control-group">
+					<label><strong>Tasks</strong></label>
+					<label class="radio">
+						<input type="radio" data-ng-model="newBucket.refresh" data-ng-value="true" data-ng-disabled="!user.quota"/> automatic refreshing (requires a paid plan)
+					</label>
+					<label class="radio">
+						<input type="radio" data-ng-model="newBucket.refresh" data-ng-value="false" data-ng-disabled="!user.quota"/> manual refreshing only
+					</label>
+				</div>
 				<div class="control-group" data-ng-show="isView" style="clear:both">
 					<label><strong>Aliases</strong></label>
 					<ul class="nav nav-pills gray">
@@ -296,7 +305,7 @@
 					{{message}}
 				</div>
 				<div>
-					<p class="alert alert-info">This task runs incrementally when the bucket is <strong>refreshed manually</strong>.</p>
+					<p class="alert alert-info">This task runs incrementally when the bucket is refreshed.</p>
 				</div>
 				<div class="control-group">
 					<label class="control-label" for="task-type">Type</label>

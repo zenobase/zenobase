@@ -24,4 +24,9 @@ public class BucketQuery extends QuerySupport {
 		}
 		return this;
 	}
+
+	public BucketQuery isRefreshable() {
+		equalTo(Bucket.REFRESH, true);
+		return this;
+	}
 }
