@@ -29,6 +29,7 @@ public class UpdateEventCommand extends Command {
 		setParameter(BUCKET, bucketId);
 		setParameter(FROM, from.toJson());
 		setParameter(TO, to.toJson());
+		addCost(1);
 	}
 
 	private String getBucketId() {
