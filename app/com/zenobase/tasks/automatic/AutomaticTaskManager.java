@@ -56,7 +56,7 @@ public class AutomaticTaskManager extends OAuthTaskManager {
 		}
 		List<Trip> trips = Lists.newArrayList();
 		DateTime from = parseMarker(task.getMarker());
-		for (int i = 0; i < 10; ++i) {
+		for (int i = 0; i < 50; ++i) {
 			OAuthRequest request = new OAuthRequest(Verb.GET, "https://api.automatic.com/trip/");
 			request.addQuerystringParameter("started_at__gte", Long.toString(from.getMillis() / 1000));
 			request.addQuerystringParameter("limit", "100");
