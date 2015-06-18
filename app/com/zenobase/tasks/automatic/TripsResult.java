@@ -61,8 +61,10 @@ class TripsResult {
 		for (JsonNode tagNode : node.path("tags")) {
 			event.addValue(Event.TAG, tagNode.textValue());
 		}
-		addLocationValue(event, node.path("start_location"));
-		addLocationValue(event, node.path("end_location"));
+		if (node.path("path").isTextual()) { // if the path is missing, the start and end location are guesses
+			addLocationValue(event, node.path("start_location"));
+			addLocationValue(event, node.path("end_location"));
+		}
 		event.setValue(Event.RATING, ratingValue(node.path("score_events"), node.path("score_speeding")));
 		event.setValue(Event.CURRENCY, Measures.round(decimalValue(node.path("fuel_cost_usd"))));
 		event.setValue(Event.DISTANCE, Measures.round(distanceValue(node.path("distance_m"))));
