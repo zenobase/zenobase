@@ -75,8 +75,9 @@ abstract class IHealthTaskManagerSupport<T extends IHealthTaskSupport> extends O
 			request.addQuerystringParameter("page_index", Integer.toString(page));
 			request.addQuerystringParameter("locale", "user");
 			Response response = send(request, credentials);
-			IHealthResultSupport result = handler.process(task, parseObject(response));
-			Preconditions.checkState(result.isSuccess(), "Couldn't request <%s>", request.getCompleteUrl());
+			ObjectNode body = parseObject(response);
+			IHealthResultSupport result = handler.process(task, body);
+			Preconditions.checkState(result.isSuccess(), "Couldn't request <%s>: %s", request.getCompleteUrl(), body);
 			if (!events.addAll(result.getEvents()) || !result.hasNext()) {
 				break;
 			}
