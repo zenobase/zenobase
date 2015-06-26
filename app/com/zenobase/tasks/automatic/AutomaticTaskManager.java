@@ -4,19 +4,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
-import org.scribe.model.OAuthRequest;
-import org.scribe.model.Response;
-import org.scribe.model.Token;
-import org.scribe.model.Verb;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.google.common.base.Objects;
-import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.CacheLoader;
-import com.google.common.cache.LoadingCache;
-import com.google.common.collect.Lists;
-
 import com.zenobase.commands.Command;
 import com.zenobase.commands.CompoundCommand;
 import com.zenobase.commands.CreateEventsCommand;
@@ -28,6 +15,19 @@ import com.zenobase.tasks.Credentials;
 import com.zenobase.tasks.OAuthCredentials;
 import com.zenobase.tasks.OAuthTaskManager;
 import com.zenobase.tasks.Task;
+
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.common.base.Objects;
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
+import com.google.common.collect.Lists;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
+import org.scribe.model.OAuthRequest;
+import org.scribe.model.Response;
+import org.scribe.model.Token;
+import org.scribe.model.Verb;
 
 public class AutomaticTaskManager extends OAuthTaskManager {
 
@@ -58,7 +58,7 @@ public class AutomaticTaskManager extends OAuthTaskManager {
 		DateTime from = parseMarker(task.getMarker());
 		for (int i = 0; i < 50; ++i) {
 			OAuthRequest request = new OAuthRequest(Verb.GET, "https://api.automatic.com/trip/");
-			request.addQuerystringParameter("started_at__gte", Long.toString(from.getMillis() / 1000));
+			request.addQuerystringParameter("started_at__gte", Long.toString(from.getMillis() / 1000 + 1));
 			request.addQuerystringParameter("limit", "100");
 			request.addQuerystringParameter("page", Integer.toString(i + 1));
 			Response response = send(request, credentials);
