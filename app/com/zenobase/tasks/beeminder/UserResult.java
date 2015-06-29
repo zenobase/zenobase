@@ -1,8 +1,8 @@
 package com.zenobase.tasks.beeminder;
 
-import org.joda.time.DateTimeZone;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.joda.time.DateTimeZone;
 
 class UserResult {
 
@@ -18,7 +18,7 @@ class UserResult {
 
 	public boolean hasGoal(String slug) {
 		for (JsonNode goalNode : node.path("goals")) {
-			if (slug.equals(goalNode.textValue())) {
+			if (slug.equalsIgnoreCase(goalNode.textValue())) {
 				return true;
 			}
 		}
