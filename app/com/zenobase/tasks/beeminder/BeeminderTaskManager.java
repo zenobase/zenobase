@@ -5,20 +5,6 @@ import java.math.BigDecimal;
 import javax.inject.Inject;
 import javax.measure.unit.Unit;
 
-import org.elasticsearch.common.collect.Ordering;
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
-import org.joda.time.ReadableInstant;
-import org.scribe.model.OAuthRequest;
-import org.scribe.model.Response;
-import org.scribe.model.Verb;
-import play.Logger;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.google.common.base.Objects;
-import com.google.common.collect.Range;
-
 import com.zenobase.commands.Command;
 import com.zenobase.commands.CompoundCommand;
 import com.zenobase.commands.UpdateTaskCommand;
@@ -35,6 +21,20 @@ import com.zenobase.services.EventRepository;
 import com.zenobase.tasks.OAuthCredentials;
 import com.zenobase.tasks.OAuthTaskManager;
 import com.zenobase.tasks.Task;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.common.base.Objects;
+import com.google.common.collect.Range;
+import org.elasticsearch.common.collect.Ordering;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
+import org.joda.time.ReadableInstant;
+import org.scribe.model.OAuthRequest;
+import org.scribe.model.Response;
+import org.scribe.model.Verb;
+import play.Logger;
 
 public class BeeminderTaskManager extends OAuthTaskManager {
 
@@ -91,7 +91,7 @@ public class BeeminderTaskManager extends OAuthTaskManager {
 	private ObjectNode find(String bucketId, String keyField, String field, Unit<?> unit, DateTime from, DateTimeZone zone, String filter) {
 		events.refresh(bucketId);
 		SearchBuilderSupport search = new EventSearchBuilder()
-			.addFacet(new ListFacet(FIELD_LATEST.getName(), 0, 1, '-' + keyField, null, Event.SCHEMA))
+			.addFacet(new ListFacet(FIELD_LATEST.getName(), 0, 1, '-' + Event.TIMESTAMP.getName(), null, Event.SCHEMA))
 			.addFacet(new OffsetTimelineFacet(FIELD_STATS.getName(), keyField, field, "day", null, zone, unit, null))
 			.addConstraint(new OffsetDateTimeRangeConstraintBuilder(Event.TIMESTAMP.getName()).build(Range.<ReadableInstant>greaterThan(from)), false);
 		if (filter != null) {
