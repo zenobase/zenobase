@@ -1,9 +1,9 @@
 package com.zenobase.tasks.strava;
 
-import org.scribe.model.OAuthConfig;
-
 import com.zenobase.common.UriBuilder;
 import com.zenobase.tasks.CustomApi20;
+
+import org.scribe.model.OAuthConfig;
 
 public class StravaApi extends CustomApi20 {
 
@@ -18,6 +18,7 @@ public class StravaApi extends CustomApi20 {
 			.addParameter("response_type", "code")
 			.addParameter("client_id", config.getApiKey())
 			.addParameter("redirect_uri", config.getCallback())
+			.addParameter("scope", "view_private")
 			.build();
 	}
 }
