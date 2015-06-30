@@ -14,8 +14,8 @@ import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
 import com.zenobase.search.EventSearchBuilder;
 import com.zenobase.search.ListFacet;
+import com.zenobase.search.LocalTimelineFacet;
 import com.zenobase.search.OffsetDateTimeRangeConstraintBuilder;
-import com.zenobase.search.OffsetTimelineFacet;
 import com.zenobase.search.SearchBuilderSupport;
 import com.zenobase.services.EventRepository;
 import com.zenobase.tasks.OAuthCredentials;
@@ -30,6 +30,8 @@ import com.google.common.collect.Range;
 import org.elasticsearch.common.collect.Ordering;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
+import org.joda.time.LocalDate;
+import org.joda.time.LocalTime;
 import org.joda.time.ReadableInstant;
 import org.scribe.model.OAuthRequest;
 import org.scribe.model.Response;
@@ -74,7 +76,7 @@ public class BeeminderTaskManager extends OAuthTaskManager {
 		}
 		ObjectNode result = find(task.getBucketId(), task.getKeyField(), task.getField(), task.getUnit(), task.getFrom(), user.getTimezone(), task.getFilter());
 		DateTime to = getLatest(result);
-		ArrayNode datapoints = getDatapoints(result, task.getField() != null, Event.DURATION.getName().equals(task.getField()));
+		ArrayNode datapoints = getDatapoints(result, task.getField() != null, Event.DURATION.getName().equals(task.getField()), user.getTimezone());
 		if (to != null && datapoints.size() > 0) {
 			send(datapoints, task.getGoal(), credentials);
 			return createCommand(task, to, credentials);
@@ -92,7 +94,7 @@ public class BeeminderTaskManager extends OAuthTaskManager {
 		events.refresh(bucketId);
 		SearchBuilderSupport search = new EventSearchBuilder()
 			.addFacet(new ListFacet(FIELD_LATEST.getName(), 0, 1, '-' + Event.TIMESTAMP.getName(), null, Event.SCHEMA))
-			.addFacet(new OffsetTimelineFacet(FIELD_STATS.getName(), keyField, field, "day", null, zone, unit, null))
+			.addFacet(new LocalTimelineFacet(FIELD_STATS.getName(), keyField, field, "day", null, unit, null))
 			.addConstraint(new OffsetDateTimeRangeConstraintBuilder(Event.TIMESTAMP.getName()).build(Range.<ReadableInstant>greaterThan(from)), false);
 		if (filter != null) {
 			search.addConstraints(filter);
@@ -107,10 +109,10 @@ public class BeeminderTaskManager extends OAuthTaskManager {
 		return null;
 	}
 
-	private static ArrayNode getDatapoints(ObjectNode result, boolean useSum, boolean asDuration) {
+	private static ArrayNode getDatapoints(ObjectNode result, boolean useSum, boolean asDuration, DateTimeZone zone) {
 		ArrayNode datapoints = Nodes.newArray();
 		for (ObjectNode node : FIELD_STATS.getValues(result)) {
-			DateTime time = DateTime.parse(node.path("label").textValue());
+			DateTime time = LocalDate.parse(node.path("label").textValue()).toDateTime(new LocalTime(12, 0), zone);
 			BigDecimal value = getValue(node, useSum);
 			datapoints.add(new Datapoint(time, value).toJson(asDuration));
 		}
