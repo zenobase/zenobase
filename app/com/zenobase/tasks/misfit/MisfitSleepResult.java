@@ -1,14 +1,14 @@
 package com.zenobase.tasks.misfit;
 
-import org.joda.time.DateTime;
-import org.joda.time.Duration;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.google.common.base.Preconditions;
-import com.google.common.primitives.Ints;
-
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
 import com.zenobase.models.Percentage;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.google.common.base.Preconditions;
+import com.google.common.primitives.Ints;
+import org.joda.time.DateTime;
+import org.joda.time.Duration;
 
 class MisfitSleepResult extends MisfitResultSupport {
 
@@ -31,7 +31,7 @@ class MisfitSleepResult extends MisfitResultSupport {
 		event.setValue(Event.DURATION, d);
 		if (d.isLongerThan(Duration.ZERO)) {
 			Duration sleep = sleepDurationFromDetails(node.path("sleepDetails"));
-			int efficiency = Ints.checkedCast(100 * sleep.getStandardSeconds() / d.getStandardSeconds());
+			int efficiency = Math.min(100, Ints.checkedCast(100 * sleep.getStandardSeconds() / d.getStandardSeconds()));
 			event.setValue(Event.PERCENTAGE, Percentage.valueOf(efficiency));
 		}
 		event.setValue(Event.AUTHOR, author);
