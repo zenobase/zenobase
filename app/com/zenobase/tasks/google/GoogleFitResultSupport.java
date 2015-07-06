@@ -1,14 +1,14 @@
 package com.zenobase.tasks.google;
 
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
-import play.Logger;
+import com.zenobase.models.Resource;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
-
-import com.zenobase.models.Resource;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
+import play.Logger;
 
 abstract class GoogleFitResultSupport {
 
@@ -33,6 +33,7 @@ abstract class GoogleFitResultSupport {
 		.put("com.sillens.shapeupclub", new Resource("Lifesum", "https://lifesum.com/"))
 		.put("com.strava", new Resource("Strava", "http://www.strava.com/"))
 		.put("com.ua.record", new Resource("Under Armour Record", "https://record.underarmour.com/"))
+		.put("com.urbandroid.sleep", new Resource("Sleep as Android", "https://sites.google.com/site/sleepasandroid/"))
 		.put("com.vitrox.facion.gui", new Resource("What's My Heart Rate", "http://facion.net/wmhr"))
 		.put("com.withings", new Resource("Withings", "http://www.withings.com/us/"))
 		.put("com.withings.wiscale2", new Resource("Withings", "http://www.withings.com/us/"))
