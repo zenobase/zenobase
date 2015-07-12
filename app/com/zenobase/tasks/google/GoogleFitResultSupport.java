@@ -16,6 +16,7 @@ abstract class GoogleFitResultSupport {
 	private static final ImmutableMap<String, Resource> SOURCES = ImmutableMap.<String, Resource>builder()
 		.put("com.azumio.instantheartrate.full", new Resource("Azumio", "http://www.azumio.com/"))
 		.put("com.dungelin.heartrate", new Resource("Heart Rate Plus", "https://play.google.com/store/apps/details?id=com.dungelin.heartrate"))
+		.put("com.endomondo.android", new Resource("Endomondo", "https://www.endomondo.com/"))
 		.put("com.fatsecret.android", new Resource("FatSecret", "https://www.fatsecret.com/"))
 		.put("com.fitnesskeeper.runkeeper.pro", new Resource("RunKeeper", "http://runkeeper.com/"))
 		.put("com.google.android.maps.mytracks", new Resource("MyTracks", "https://google.com/"))
