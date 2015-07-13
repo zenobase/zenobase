@@ -20,7 +20,7 @@ public class AuthorizationExpirationJob extends Job {
 
 	@Inject
 	public AuthorizationExpirationJob(AuthorizationRepository authorizations, CommandDispatcher dispatcher) {
-		super("expire authorizations", new LocalTime(3, 0), Period.minutes(5));
+		super("expire authorizations", new LocalTime(3, 0), Period.days(1));
 		this.authorizations = authorizations;
 		this.dispatcher = dispatcher;
 	}
