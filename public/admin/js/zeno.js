@@ -386,13 +386,6 @@
 					delay($scope.refreshAll);
 				});
 		};
-		$scope.removeExpired = function(bucketId) {
-			$http({ method : 'DELETE', url : '/authorizations/' })
-				.success(function(response, status) {
-					console.assert(status === 204, status);
-					delay($scope.refreshAll);
-				});
-		};
 
 		$scope.$on('refreshAll', function() {
 			$scope.refresh({ offset : 0 });

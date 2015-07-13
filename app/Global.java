@@ -1,24 +1,5 @@
 import javax.inject.Inject;
 
-import play.Application;
-import play.Configuration;
-import play.GlobalSettings;
-import play.Play;
-import play.api.PlayException;
-import play.api.mvc.Handler;
-import play.libs.F.Promise;
-import play.libs.Json;
-import play.mvc.Http.RequestHeader;
-import play.mvc.Result;
-import com.google.common.base.Throwables;
-import com.google.inject.AbstractModule;
-import com.google.inject.Guice;
-import com.google.inject.Injector;
-import com.google.inject.Singleton;
-import com.google.inject.TypeLiteral;
-import com.google.inject.multibindings.Multibinder;
-import com.google.inject.name.Names;
-
 import com.zenobase.actions.Canonical;
 import com.zenobase.commands.ChangeQuotaCommand;
 import com.zenobase.commands.ChangeUserEmailCommand;
@@ -81,7 +62,9 @@ import com.zenobase.mail.Mailer;
 import com.zenobase.mail.PasswordResetMailer;
 import com.zenobase.mail.VerificationMailer;
 import com.zenobase.oauth.CustomX509TrustManager;
+import com.zenobase.services.AuthorizationExpirationJob;
 import com.zenobase.services.AuthorizationRepository;
+import com.zenobase.services.BucketRefreshJob;
 import com.zenobase.services.BucketRepository;
 import com.zenobase.services.Bus;
 import com.zenobase.services.ClusterNodeFactory;
@@ -97,7 +80,6 @@ import com.zenobase.services.LocalNodeFactory;
 import com.zenobase.services.NodeFactory;
 import com.zenobase.services.PaymentGateway;
 import com.zenobase.services.QuotaManager;
-import com.zenobase.services.BucketRefreshJob;
 import com.zenobase.services.Scheduler;
 import com.zenobase.services.SnapshotJob;
 import com.zenobase.services.TaskRepository;
@@ -194,6 +176,25 @@ import com.zenobase.tasks.withings.WithingsCredentialsManager;
 import com.zenobase.tasks.withings.WithingsSleepTaskManager;
 import com.zenobase.tasks.withings.WithingsStepsTaskManager;
 import com.zenobase.tasks.withings.WithingsWeightTaskManager;
+
+import com.google.common.base.Throwables;
+import com.google.inject.AbstractModule;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
+import com.google.inject.Singleton;
+import com.google.inject.TypeLiteral;
+import com.google.inject.multibindings.Multibinder;
+import com.google.inject.name.Names;
+import play.Application;
+import play.Configuration;
+import play.GlobalSettings;
+import play.Play;
+import play.api.PlayException;
+import play.api.mvc.Handler;
+import play.libs.F.Promise;
+import play.libs.Json;
+import play.mvc.Http.RequestHeader;
+import play.mvc.Result;
 
 public class Global extends GlobalSettings {
 
@@ -397,6 +398,7 @@ public class Global extends GlobalSettings {
 				bind(TaskManagerRegistry.class).in(Singleton.class);
 
 				Multibinder<Job> jobs = Multibinder.newSetBinder(binder(), Job.class);
+				jobs.addBinding().to(AuthorizationExpirationJob.class);
 				jobs.addBinding().to(BucketRefreshJob.class);
 				jobs.addBinding().to(SnapshotJob.class);
 

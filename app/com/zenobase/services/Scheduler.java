@@ -6,6 +6,9 @@ import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
+import akka.actor.Cancellable;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Lists;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.Duration;
@@ -13,9 +16,6 @@ import org.joda.time.LocalTime;
 import org.joda.time.Period;
 import play.libs.Akka;
 import scala.concurrent.duration.FiniteDuration;
-import akka.actor.Cancellable;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Lists;
 
 public class Scheduler {
 
@@ -61,7 +61,9 @@ public class Scheduler {
 	}
 
 	private static FiniteDuration toDuration(Period period) {
-		if (period.getHours() > 0) {
+		if (period.getDays() > 0) {
+			return FiniteDuration.create(period.getDays(), TimeUnit.DAYS);
+		} else if (period.getHours() > 0) {
 			return FiniteDuration.create(period.getHours(), TimeUnit.HOURS);
 		} else if (period.getMinutes() > 0) {
 			return FiniteDuration.create(period.getMinutes(), TimeUnit.MINUTES);

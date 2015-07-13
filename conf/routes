@@ -65,7 +65,6 @@ GET     /oauth/callback/:id            @com.zenobase.controllers.OAuthController
 
 GET     /authorizations/               @com.zenobase.controllers.AuthorizationListController.findAll(q ?= null, offset : Int ?= 0, limit : Int ?= 10)
 GET     /users/:userId/authorizations/ @com.zenobase.controllers.AuthorizationListController.findByUser(userId, has_client : java.lang.Boolean ?= null, q ?= null, offset : Int ?= 0, limit : Int ?= 10)
-DELETE  /authorizations/               @com.zenobase.controllers.AuthorizationListController.delete()
 
 GET     /authorizations/:authId        @com.zenobase.controllers.AuthorizationController.get(authId)
 DELETE  /authorizations/:authId        @com.zenobase.controllers.AuthorizationController.delete(authId)
