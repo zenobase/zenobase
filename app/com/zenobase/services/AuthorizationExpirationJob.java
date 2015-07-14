@@ -13,7 +13,7 @@ import play.Logger;
 
 public class AuthorizationExpirationJob extends Job {
 
-	private static final Period MAX_AGE = Period.minutes(5);
+	private static final Period MAX_AGE = Period.months(1);
 
 	private final AuthorizationRepository authorizations;
 	private final CommandDispatcher dispatcher;
