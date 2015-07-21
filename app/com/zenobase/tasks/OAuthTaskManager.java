@@ -4,20 +4,20 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.zip.GZIPInputStream;
 
-import org.scribe.model.OAuthRequest;
-import org.scribe.model.Response;
-import org.scribe.model.Token;
-import play.mvc.Http;
+import com.zenobase.commands.Command;
+import com.zenobase.commands.UpdateCredentialsCommand;
+import com.zenobase.json.Nodes;
+import com.zenobase.models.Identity;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Charsets;
 import com.google.common.io.CharStreams;
-
-import com.zenobase.commands.Command;
-import com.zenobase.commands.UpdateCredentialsCommand;
-import com.zenobase.json.Nodes;
-import com.zenobase.models.Identity;
+import org.scribe.model.OAuthRequest;
+import org.scribe.model.Response;
+import org.scribe.model.Token;
+import play.mvc.Http;
 
 public abstract class OAuthTaskManager extends TaskManager {
 
@@ -72,6 +72,7 @@ public abstract class OAuthTaskManager extends TaskManager {
 			if (response.getCode() == Http.Status.UNAUTHORIZED) {
 				throw new InvalidTokenException(request, credentials);
 			} else {
+				System.err.println(response.getBody());
 				throw new InvalidStatusException(request, response.getCode());
 			}
 		}

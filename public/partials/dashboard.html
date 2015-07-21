@@ -861,6 +861,21 @@
 		</div>
 	</script>
 
+	<script id="/microsoft-activities-settings.html" type="text/ng-template">
+		<div data-ng-controller="MicrosoftHealthActivitiesSettingsController">
+			<div class="control-group">
+				<label class="control-label">Units</label>
+				<label class="checkbox">
+					<input type="checkbox" data-ng-model="settings.metric"/> use metric units
+				</label>
+			</div>
+			<div class="control-group">
+				<label for="marker" class="control-label">Starting from</label>
+				<input class="input-small" type="text" data-ui-datepicker data-ng-model="settings.marker"/>
+			</div>
+		</div>
+	</script>
+
 	<script id="/misfit-activities-settings.html" type="text/ng-template">
 		<div data-ng-controller="MisfitActivitiesSettingsController">
 			<div class="control-group">

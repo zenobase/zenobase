@@ -278,6 +278,68 @@
 	},
 	{
 		"category" : "Activities",
+		"source" : "Microsoft Health",
+		"task" : "microsoft-activities",
+		"widgets" : [
+			{
+				"id" : "timeline",
+				"type" : "timeline",
+				"label" : "Distance (mi)",
+				"placement" : "top",
+				"key_field" : "timestamp",
+				"field" : "distance",
+				"unit" : "mi",
+				"statistic" : "sum",
+				"interval" : "month"
+			},
+			{
+				"id" : "latest",
+				"type" : "list",
+				"label" : "Latest",
+				"placement" : "left",
+				"order" : "-timestamp",
+				"limit" : 10,
+				"singleton" : true
+			},
+			{
+				"id" : "tags",
+				"type" : "count",
+				"label" : "Activity",
+				"placement" : "left",
+				"field" : "tag",
+				"limit" : 5,
+				"order" : "-count"
+			},
+			{
+				"id" : "map",
+				"type" : "heatmap",
+				"label" : "Map",
+				"placement" : "right"
+			},
+			{
+				"id" : "histogram",
+				"type" : "histogram",
+				"label" : "Distances",
+				"placement" : "right",
+				"field" : "distance",
+				"unit" : "mi",
+				"interval" : 5
+			},
+			{
+				"id" : "polar",
+				"type" : "polar",
+				"label" : "Day of Week",
+				"placement" : "right",
+				"key_field" : "timestamp",
+				"value_field" : "timestamp",
+				"unit" : null,
+				"statistic" : "count",
+				"interval" : "day_of_week"
+			}
+		]
+	},
+	{
+		"category" : "Activities",
 		"source" : "Misfit",
 		"task" : "misfit-activities",
 		"widgets" : [

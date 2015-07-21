@@ -1,16 +1,16 @@
 package com.zenobase.tasks.misfit;
 
-import org.junit.Ignore;
-import org.junit.Test;
-
 import com.zenobase.json.Nodes;
 import com.zenobase.tasks.TaskTestingSupport;
+
+import org.junit.Ignore;
+import org.junit.Test;
 
 public class MisfitTesting extends TaskTestingSupport {
 
 	@Test
 	@Ignore
-	public void testActvities() {
+	public void testActivities() {
 		run(new MisfitActivitiesTaskManager(newCredentialsManager()), Nodes.newObject()
 			.put("marker", "2014-10-01T00:00:00-08:00"));
 	}
