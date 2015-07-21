@@ -61,7 +61,7 @@ public class MicrosoftHealthActivitiesTaskManager extends OAuthTaskManager {
 			if (events.isEmpty()) {
 				request.addQuerystringParameter("startTime", from.toString());
 				request.addQuerystringParameter("endTime", now.toString());
-				request.addQuerystringParameter("activityIncludes", "Details,MapPoints");
+				// request.addQuerystringParameter("activityIncludes", "Details,MapPoints");
 				request.addQuerystringParameter("maxPageSize", "100");
 			}
 			Response response = send(request, credentials);

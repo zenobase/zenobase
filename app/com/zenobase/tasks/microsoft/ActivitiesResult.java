@@ -1,6 +1,7 @@
 package com.zenobase.tasks.microsoft;
 
 import java.math.MathContext;
+import java.math.RoundingMode;
 import java.util.List;
 
 import javax.measure.DecimalMeasure;
@@ -34,7 +35,6 @@ class ActivitiesResult {
 		this.node = Preconditions.checkNotNull(node);
 		this.author = author;
 		this.metric = metric;
-		System.err.println(node);
 	}
 
 	public String next() {
@@ -53,8 +53,10 @@ class ActivitiesResult {
 
 	private Event newEvent(JsonNode node) {
 		Event event = new Event();
-		event.setValue(Event.TIMESTAMP, dateTimeValue(node.path("startTime")));
-		event.setValue(Event.DURATION, durationValue(node.path("duration")));
+		DateTime begin = dateTimeValue(node.path("startTime"));
+		DateTime end = dateTimeValue(node.path("endTime"));
+		event.setValue(Event.TIMESTAMP, begin);
+		event.setValue(Event.DURATION, new Duration(begin, end));
 		event.addValue(Event.TAG, node.path("activityType").textValue());
 		for (JsonNode mapPoint : node.path("mapPoints")) {
 			Location location = locationValue(mapPoint.path("location"));
@@ -65,8 +67,8 @@ class ActivitiesResult {
 		}
 		event.setValue(Event.DISTANCE, Measures.round(distanceValue(node.path("distanceSummary").path("totalDistance"))));
 		event.setValue(Event.HEIGHT, Measures.round(heightValue(node.path("distanceSummary").path("altitudeGain"))));
-		event.setValue(Event.FREQUENCY, Measures.round(frequencyValue(node.path("heartRateSummary").path("averageHeartRate"))));
-		event.setValue(Event.ENERGY, Measures.round(energyValue(node.path("caloriesBurnedSummary").path("totalCalories"))));
+		event.setValue(Event.FREQUENCY, frequencyValue(node.path("heartRateSummary").path("averageHeartRate")));
+		event.setValue(Event.ENERGY, energyValue(node.path("caloriesBurnedSummary").path("totalCalories")));
 		event.setValue(Event.SOURCE, SOURCE);
 		event.setValue(Event.AUTHOR, author);
 		return event;
@@ -74,10 +76,6 @@ class ActivitiesResult {
 
 	private static DateTime dateTimeValue(JsonNode node) {
 		return DateTime.parse(node.textValue());
-	}
-
-	private Duration durationValue(JsonNode node) {
-		return !node.isNull() ? Duration.parse(node.textValue()) : null;
 	}
 
 	private static Location locationValue(JsonNode node) {
@@ -93,7 +91,7 @@ class ActivitiesResult {
 		if (!node.isNumber()) {
 			return null;
 		}
-		DecimalMeasure<Length> value = Measures.valueOf(node.decimalValue(), Units.M);
+		DecimalMeasure<Length> value = Measures.valueOf(node.decimalValue(), Units.CM);
 		return value.to(metric ? Units.KM : Units.MI, MathContext.DECIMAL32);
 	}
 
@@ -101,15 +99,15 @@ class ActivitiesResult {
 		if (!node.isNumber()) {
 			return null;
 		}
-		DecimalMeasure<Length> value = Measures.valueOf(node.decimalValue(), Units.M);
+		DecimalMeasure<Length> value = Measures.valueOf(node.decimalValue(), Units.CM);
 		return value.to(metric ? Units.M : Units.FT, MathContext.DECIMAL32);
 	}
 
 	private DecimalMeasure<Frequency> frequencyValue(JsonNode node) {
-		return node.isNumber() ? Measures.valueOf(node.decimalValue(), Units.BPM) : null;
+		return node.isNumber() ? Measures.valueOf(node.decimalValue().setScale(0, RoundingMode.HALF_UP), Units.BPM) : null;
 	}
 
 	private DecimalMeasure<Energy> energyValue(JsonNode node) {
-		return node.isNumber() ? Measures.valueOf(node.decimalValue(), Units.KCAL) : null;
+		return node.isNumber() ? Measures.valueOf(node.decimalValue().setScale(0, RoundingMode.HALF_UP), Units.KCAL) : null;
 	}
 }

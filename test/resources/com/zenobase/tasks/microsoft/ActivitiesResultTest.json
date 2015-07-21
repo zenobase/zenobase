@@ -1,0 +1,355 @@
+{
+    "runActivities": [
+        {
+            "activityType": "Run",
+            "performanceSummary": {
+                "finishHeartRate": 80,
+                "heartRateZones": {
+                    "underAerobic": 54,
+                    "fitnessZone": 1,
+                    "healthyHeart": 3
+                }
+            },
+            "distanceSummary": {
+                "period": "Activity",
+                "totalDistance": 282919,
+                "actualDistance": 283543,
+                "elevationGain": 4800,
+                "elevationLoss": 4900,
+                "maxElevation": 20900,
+                "minElevation": 18100,
+                "waypointDistance": 2500,
+                "pace": 1167609
+            },
+            "splitDistance": 160934,
+            "id": "2519656642229398104",
+            "startTime": "2015-07-11T17:42:57.000+00:00",
+            "endTime": "2015-07-11T18:38:00.000+00:00",
+            "dayId": "2015-07-11T00:00:00.000+00:00",
+            "name": "Karolinenteich ",
+            "duration": "PT55M3S",
+            "caloriesBurnedSummary": {
+                "period": "Activity",
+                "totalCalories": 175
+            },
+            "heartRateSummary": {
+                "period": "Activity",
+                "averageHeartRate": 81,
+                "peakHeartRate": 112,
+                "lowestHeartRate": 59
+            }
+        },
+        {
+            "activityType": "Run",
+            "performanceSummary": {
+                "finishHeartRate": 86,
+                "recoveryHeartRateAt1Minute": 75,
+                "recoveryHeartRateAt2Minutes": 69,
+                "heartRateZones": {
+                    "underAerobic": 44,
+                    "aerobic": 1,
+                    "fitnessZone": 4,
+                    "healthyHeart": 20
+                }
+            },
+            "distanceSummary": {
+                "period": "Activity",
+                "totalDistance": 444740,
+                "actualDistance": 444844,
+                "elevationGain": 4100,
+                "elevationLoss": 4100,
+                "maxElevation": 7400,
+                "minElevation": 5800,
+                "waypointDistance": 2500,
+                "pace": 928869
+            },
+            "splitDistance": 160934,
+            "id": "2519661017365460328",
+            "startTime": "2015-07-06T16:11:03.453+00:00",
+            "endTime": "2015-07-06T17:19:54.453+00:00",
+            "dayId": "2015-07-06T00:00:00.000+00:00",
+            "name": "Wahner Heide",
+            "duration": "PT1H8M51S",
+            "caloriesBurnedSummary": {
+                "period": "Activity",
+                "totalCalories": 322
+            },
+            "heartRateSummary": {
+                "period": "Activity",
+                "averageHeartRate": 87,
+                "peakHeartRate": 134,
+                "lowestHeartRate": 57
+            }
+        },
+        {
+            "activityType": "Run",
+            "performanceSummary": {
+                "finishHeartRate": 82,
+                "recoveryHeartRateAt1Minute": 68,
+                "heartRateZones": {
+                    "underAerobic": 31,
+                    "healthyHeart": 11
+                }
+            },
+            "distanceSummary": {
+                "period": "Activity",
+                "totalDistance": 183980,
+                "actualDistance": 183980,
+                "elevationGain": 2300,
+                "elevationLoss": 2200,
+                "maxElevation": 6700,
+                "minElevation": 5700,
+                "waypointDistance": 2500,
+                "pace": 1332029
+            },
+            "splitDistance": 160934,
+            "id": "2519664502493047056",
+            "startTime": "2015-07-02T15:22:30.695+00:00",
+            "endTime": "2015-07-02T16:03:20.695+00:00",
+            "dayId": "2015-07-02T00:00:00.000+00:00",
+            "name": "Gremberger Wäldchen",
+            "duration": "PT40M50S",
+            "caloriesBurnedSummary": {
+                "period": "Activity",
+                "totalCalories": 154
+            },
+            "heartRateSummary": {
+                "period": "Activity",
+                "averageHeartRate": 86,
+                "peakHeartRate": 106,
+                "lowestHeartRate": 71
+            }
+        },
+        {
+            "activityType": "Run",
+            "performanceSummary": {
+                "finishHeartRate": 113,
+                "heartRateZones": {
+                    "underAerobic": 18,
+                    "aerobic": 27,
+                    "anaerobic": 3,
+                    "fitnessZone": 67,
+                    "healthyHeart": 67,
+                    "redline": 3
+                }
+            },
+            "distanceSummary": {
+                "period": "Activity",
+                "totalDistance": 654580,
+                "actualDistance": 688810,
+                "elevationGain": 56800,
+                "elevationLoss": 55600,
+                "maxElevation": 157400,
+                "minElevation": 121500,
+                "waypointDistance": 2500,
+                "pace": 1310379
+            },
+            "splitDistance": 160934,
+            "id": "2519671413116553955",
+            "startTime": "2015-06-24T15:24:48.344+00:00",
+            "endTime": "2015-06-24T17:47:45.344+00:00",
+            "dayId": "2015-06-24T00:00:00.000+00:00",
+            "duration": "PT2H22M57S",
+            "caloriesBurnedSummary": {
+                "period": "Activity",
+                "totalCalories": 1448
+            },
+            "heartRateSummary": {
+                "period": "Activity",
+                "averageHeartRate": 105,
+                "peakHeartRate": 176,
+                "lowestHeartRate": 61
+            }
+        },
+        {
+            "activityType": "Run",
+            "performanceSummary": {
+                "finishHeartRate": 117,
+                "heartRateZones": {
+                    "underAerobic": 2,
+                    "fitnessZone": 3,
+                    "healthyHeart": 37
+                }
+            },
+            "distanceSummary": {
+                "period": "Activity",
+                "totalDistance": 197148,
+                "actualDistance": 197379,
+                "elevationGain": 700,
+                "elevationLoss": 15100,
+                "maxElevation": 284500,
+                "minElevation": 269900,
+                "waypointDistance": 2500,
+                "pace": 1149350
+            },
+            "splitDistance": 160934,
+            "id": "2519672094075510864",
+            "startTime": "2015-06-23T20:29:52.448+00:00",
+            "endTime": "2015-06-23T21:07:37.448+00:00",
+            "dayId": "2015-06-23T00:00:00.000+00:00",
+            "duration": "PT37M45S",
+            "caloriesBurnedSummary": {
+                "period": "Activity",
+                "totalCalories": 227
+            },
+            "heartRateSummary": {
+                "period": "Activity",
+                "averageHeartRate": 102,
+                "peakHeartRate": 117,
+                "lowestHeartRate": 83
+            }
+        },
+        {
+            "activityType": "Run",
+            "performanceSummary": {
+                "finishHeartRate": 100,
+                "heartRateZones": {
+                    "underAerobic": 2,
+                    "aerobic": 3,
+                    "fitnessZone": 24,
+                    "healthyHeart": 10
+                }
+            },
+            "distanceSummary": {
+                "period": "Activity",
+                "totalDistance": 189638,
+                "actualDistance": 189692,
+                "elevationGain": 15600,
+                "elevationLoss": 1000,
+                "maxElevation": 285000,
+                "minElevation": 269900,
+                "waypointDistance": 2500,
+                "pace": 1119317
+            },
+            "splitDistance": 160934,
+            "id": "2519672125821098632",
+            "startTime": "2015-06-23T19:36:57.890+00:00",
+            "endTime": "2015-06-23T20:12:19.890+00:00",
+            "dayId": "2015-06-23T00:00:00.000+00:00",
+            "duration": "PT35M22S",
+            "caloriesBurnedSummary": {
+                "period": "Activity",
+                "totalCalories": 336
+            },
+            "heartRateSummary": {
+                "period": "Activity",
+                "averageHeartRate": 113,
+                "peakHeartRate": 133,
+                "lowestHeartRate": 74
+            }
+        }
+    ],
+    "sleepActivities": [
+        {
+            "activityType": "Sleep",
+            "awakeDuration": "PT21M22S",
+            "sleepDuration": "PT3H25M8S",
+            "numberOfWakeups": 3,
+            "fallAsleepDuration": "PT4M58S",
+            "sleepEfficiencyPercentage": 93,
+            "totalRestlessSleepDuration": "PT3H25M8S",
+            "restingHeartRate": 55,
+            "fallAsleepTime": "2015-06-28T11:20:55.725+00:00",
+            "wakeupTime": "2015-06-28T14:59:58.726+00:00",
+            "id": "2519668106422747157",
+            "startTime": "2015-06-28T11:15:57.725+00:00",
+            "endTime": "2015-06-28T15:02:27.725+00:00",
+            "dayId": "2015-06-28T00:00:00.000+00:00",
+            "duration": "PT3H46M30S",
+            "caloriesBurnedSummary": {
+                "period": "Activity",
+                "totalCalories": 292
+            },
+            "heartRateSummary": {
+                "period": "Activity",
+                "averageHeartRate": 60,
+                "peakHeartRate": 76,
+                "lowestHeartRate": 53
+            }
+        },
+        {
+            "activityType": "Sleep",
+            "awakeDuration": "PT25M18S",
+            "sleepDuration": "PT2H17M25S",
+            "numberOfWakeups": 3,
+            "fallAsleepDuration": "PT3M28S",
+            "sleepEfficiencyPercentage": 87,
+            "totalRestlessSleepDuration": "PT2H17M25S",
+            "restingHeartRate": 59,
+            "fallAsleepTime": "2015-06-26T19:04:30.558+00:00",
+            "wakeupTime": "2015-06-26T21:41:17.324+00:00",
+            "id": "2519669555374417377",
+            "startTime": "2015-06-26T19:01:02.558+00:00",
+            "endTime": "2015-06-26T21:43:45.558+00:00",
+            "dayId": "2015-06-26T00:00:00.000+00:00",
+            "duration": "PT2H42M43S",
+            "caloriesBurnedSummary": {
+                "period": "Activity",
+                "totalCalories": 220
+            },
+            "heartRateSummary": {
+                "period": "Activity",
+                "averageHeartRate": 63,
+                "peakHeartRate": 79,
+                "lowestHeartRate": 55
+            }
+        },
+        {
+            "activityType": "Sleep",
+            "awakeDuration": "PT2H23M15S",
+            "sleepDuration": "PT2H33M41S",
+            "numberOfWakeups": 7,
+            "fallAsleepDuration": "PT5M28S",
+            "sleepEfficiencyPercentage": 55,
+            "totalRestlessSleepDuration": "PT2H33M41S",
+            "restingHeartRate": 52,
+            "fallAsleepTime": "2015-06-26T07:57:41.298+00:00",
+            "wakeupTime": "2015-06-26T12:32:45.262+00:00",
+            "id": "2519669956667012607",
+            "startTime": "2015-06-26T07:52:13.298+00:00",
+            "endTime": "2015-06-26T12:49:09.298+00:00",
+            "dayId": "2015-06-26T00:00:00.000+00:00",
+            "duration": "PT4H56M56S",
+            "caloriesBurnedSummary": {
+                "period": "Activity",
+                "totalCalories": 363
+            },
+            "heartRateSummary": {
+                "period": "Activity",
+                "averageHeartRate": 58,
+                "peakHeartRate": 88,
+                "lowestHeartRate": 48
+            }
+        },
+        {
+            "activityType": "Sleep",
+            "awakeDuration": "PT39M14S",
+            "sleepDuration": "PT6H24M25S",
+            "numberOfWakeups": 6,
+            "fallAsleepDuration": "PT3M28S",
+            "sleepEfficiencyPercentage": 91,
+            "totalRestlessSleepDuration": "PT4H28M44S",
+            "totalRestfulSleepDuration": "PT1H55M41S",
+            "restingHeartRate": 55,
+            "fallAsleepTime": "2015-06-23T05:21:13.884+00:00",
+            "wakeupTime": "2015-06-23T12:18:56.779+00:00",
+            "id": "2519672641341151341",
+            "startTime": "2015-06-23T05:17:45.884+00:00",
+            "endTime": "2015-06-23T12:21:24.884+00:00",
+            "dayId": "2015-06-22T00:00:00.000+00:00",
+            "duration": "PT7H3M39S",
+            "caloriesBurnedSummary": {
+                "period": "Activity",
+                "totalCalories": 554
+            },
+            "heartRateSummary": {
+                "period": "Activity",
+                "averageHeartRate": 62,
+                "peakHeartRate": 92,
+                "lowestHeartRate": 52
+            }
+        }
+    ],
+    "nextPage": "https://api.microsofthealth.net:443/v1/me/Activities?startTime=2014-01-01T00%3a00%3a00.000-08%3a00&endTime=2015-07-21T08%3a38%3a48.748Z&maxPageSize=10&ct=2519676660635622546",
+    "itemCount": 10
+}

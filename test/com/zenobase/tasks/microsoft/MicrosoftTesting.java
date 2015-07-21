@@ -3,16 +3,15 @@ package com.zenobase.tasks.microsoft;
 import com.zenobase.json.Nodes;
 import com.zenobase.tasks.TaskTestingSupport;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class MicrosoftTesting extends TaskTestingSupport {
 
 	@Test
-	@Ignore
-	public void testActvities() {
+	public void testActivities() {
 		run(new MicrosoftHealthActivitiesTaskManager(newCredentialsManager()), Nodes.newObject()
-			.put("marker", "2014-10-01T00:00:00-08:00"));
+			.put("marker", "2014-01-01T00:00:00-08:00")
+			.put("metric", true));
 	}
 
 	@Override
