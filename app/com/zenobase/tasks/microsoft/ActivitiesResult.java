@@ -17,6 +17,7 @@ import com.zenobase.models.Resource;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
@@ -42,8 +43,10 @@ class ActivitiesResult {
 
 	public List<Event> getEvents() {
 		List<Event> events = Lists.newArrayList();
-		for (JsonNode tripNode : node.path("results")) {
-			events.add(newEvent(tripNode));
+		for (String activityType : ImmutableList.of("bikeActivities", "freePlayActivities", "golfActivities", "guidedWorkoutActivities", "runActivities")) {
+			for (JsonNode activityNode : node.path(activityType)) {
+				events.add(newEvent(activityNode));
+			}
 		}
 		return events;
 	}
