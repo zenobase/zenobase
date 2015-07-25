@@ -38,9 +38,10 @@ public class MicrosoftHealthActivitiesTaskManager extends OAuthTaskManager {
 
 	@Override
 	public Task newTask(String bucketId, Identity principal, ObjectNode settings) {
+		DateTimeZone zone = DateTimeZone.forID(Objects.firstNonNull(settings.path("timezone").textValue(), "UTC"));
 		boolean metric = settings.path("metric").booleanValue();
 		String marker = formatMarker(parseMarker(settings.path("marker").textValue()));
-		return new MicrosoftHealthActivitiesTask(bucketId, principal, metric, marker);
+		return new MicrosoftHealthActivitiesTask(bucketId, principal, zone, metric, marker);
 	}
 
 	@Override
@@ -65,7 +66,7 @@ public class MicrosoftHealthActivitiesTaskManager extends OAuthTaskManager {
 				request.addQuerystringParameter("maxPageSize", "100");
 			}
 			Response response = send(request, credentials);
-			ActivitiesResult result = new ActivitiesResult(parse(response), task.getPrincipal(), task.isMetric());
+			ActivitiesResult result = new ActivitiesResult(parse(response), task.getPrincipal(), task.getTimezone(), task.isMetric());
 			events.addAll(result.getEvents());
 			url = result.next();
 		}

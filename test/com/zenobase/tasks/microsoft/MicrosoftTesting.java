@@ -10,7 +10,8 @@ public class MicrosoftTesting extends TaskTestingSupport {
 	@Test
 	public void testActivities() {
 		run(new MicrosoftHealthActivitiesTaskManager(newCredentialsManager()), Nodes.newObject()
-			.put("marker", "2014-01-01T00:00:00-08:00")
+			.put("marker", "2014-01-01T00:00:00Z")
+			.put("timezone", "Europe/Berlin")
 			.put("metric", true));
 	}
 

@@ -21,6 +21,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.joda.time.Duration;
 
 class ActivitiesResult {
@@ -29,11 +30,13 @@ class ActivitiesResult {
 
 	private final JsonNode node;
 	private final Identity author;
+	private final DateTimeZone zone;
 	private final boolean metric;
 
-	public ActivitiesResult(JsonNode node, Identity author, boolean metric) {
+	public ActivitiesResult(JsonNode node, Identity author, DateTimeZone zone, boolean metric) {
 		this.node = Preconditions.checkNotNull(node);
 		this.author = author;
+		this.zone = zone;
 		this.metric = metric;
 	}
 
@@ -74,8 +77,8 @@ class ActivitiesResult {
 		return event;
 	}
 
-	private static DateTime dateTimeValue(JsonNode node) {
-		return DateTime.parse(node.textValue());
+	private DateTime dateTimeValue(JsonNode node) {
+		return DateTime.parse(node.textValue()).withZone(zone);
 	}
 
 	private static Location locationValue(JsonNode node) {

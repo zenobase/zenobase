@@ -6535,11 +6535,12 @@
 		$scope.init();
 	}]);
 
-	app.controller('MicrosoftHealthActivitiesSettingsController', ['$scope', 'moment', function($scope, moment) {
+	app.controller('MicrosoftHealthActivitiesSettingsController', ['$scope', '$http', 'moment', function($scope, $http, moment) {
 
 		$scope.init = function() {
 			$scope.settings = $scope.$parent.$parent.settings = {
 					marker : new Date(moment().utc().subtract(12, 'months').startOf('month').valueOf()),
+					timezone : 'UTC',
 					metric : false
 			};
 		};

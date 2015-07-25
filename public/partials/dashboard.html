@@ -864,6 +864,10 @@
 	<script id="/microsoft-activities-settings.html" type="text/ng-template">
 		<div data-ng-controller="MicrosoftHealthActivitiesSettingsController">
 			<div class="control-group">
+				<label for="timezone" class="control-label">Timezone</label>
+				<select name="timezone" data-ng-model="settings.timezone" data-ng-options="timezone for timezone in timezones" required data-ui-timezone-select></select>
+			</div>
+			<div class="control-group">
 				<label class="control-label">Units</label>
 				<label class="checkbox">
 					<input type="checkbox" data-ng-model="settings.metric"/> use metric units
