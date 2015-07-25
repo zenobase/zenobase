@@ -1,25 +1,24 @@
 package com.zenobase.tasks.google;
 
-import org.joda.time.DateTime;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.mockito.Mockito;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-
 import com.zenobase.json.Nodes;
 import com.zenobase.models.Event;
 import com.zenobase.search.Search;
 import com.zenobase.services.EventRepository;
 import com.zenobase.tasks.TaskTestingSupport;
 
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.joda.time.DateTime;
+import org.junit.Ignore;
+import org.junit.Test;
+import org.mockito.Mockito;
+
 public class GoogleFitTesting extends TaskTestingSupport {
 
 	@Test
-	@Ignore
 	public void testActivities() {
 		run(new GoogleFitActivitiesTaskManager(newCredentialsManager()), Nodes.newObject()
-			.put("marker", "2015-01-17")
+			.put("marker", "2015-07-24")
 			.put("timezone", "America/Los_Angeles")
 			.put("metric", true)
 			.put("derived", false));
@@ -36,6 +35,7 @@ public class GoogleFitTesting extends TaskTestingSupport {
 	}
 
 	@Test
+	@Ignore
 	public void testCardio() {
 		run(new GoogleFitCardioTaskManager(newCredentialsManager()), Nodes.newObject()
 			.put("marker", "2015-01-17")
