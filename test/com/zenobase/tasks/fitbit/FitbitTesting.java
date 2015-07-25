@@ -1,10 +1,10 @@
 package com.zenobase.tasks.fitbit;
 
-import org.junit.Ignore;
-import org.junit.Test;
-
 import com.zenobase.json.Nodes;
 import com.zenobase.tasks.TaskTestingSupport;
+
+import org.junit.Ignore;
+import org.junit.Test;
 
 public class FitbitTesting extends TaskTestingSupport {
 
@@ -28,7 +28,7 @@ public class FitbitTesting extends TaskTestingSupport {
 	@Test
 	public void testActivities() {
 		run(new FitbitActivitiesTaskManager(newCredentialsManager()), Nodes.newObject()
-			.put("marker", "2015-05-11T21:35:00"));
+			.put("marker", "2015-05-17T14:26:00"));
 	}
 
 	@Test
