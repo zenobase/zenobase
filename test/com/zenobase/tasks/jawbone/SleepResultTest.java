@@ -16,7 +16,7 @@ public class SleepResultTest extends ResultTestSupport {
 
 	@Test
 	public void test() {
-		SleepResult result = new SleepResult(readObject("SleepResultTest.json"), TESTER, "sleep", true);
+		SleepResult result = new SleepResult(readObject("MicrosoftHealthSleepResultTest.json"), TESTER, "sleep", true);
 		List<Event> events = result.getEvents();
 		assertThat(events).as("events").hasSize(10);
 		Event expected = new Event(events.get(0).getId());

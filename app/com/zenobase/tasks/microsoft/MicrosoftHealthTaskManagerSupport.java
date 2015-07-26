@@ -13,15 +13,20 @@ import com.zenobase.tasks.OAuthCredentials;
 import com.zenobase.tasks.OAuthTaskManager;
 import com.zenobase.tasks.Task;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.base.Objects;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Ordering;
 import com.google.common.util.concurrent.RateLimiter;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
+import org.joda.time.Duration;
+import org.joda.time.LocalDate;
 import org.scribe.model.OAuthRequest;
 import org.scribe.model.Response;
 import org.scribe.model.Token;
 
-abstract class MicrosoftHealthTaskManagerSupport<T extends Task> extends OAuthTaskManager {
+abstract class MicrosoftHealthTaskManagerSupport<T extends MicrosoftHealthTaskSupport> extends OAuthTaskManager {
 
 	private static final RateLimiter RATE_LIMITER = RateLimiter.create(5); // actually 500 per minute per user
 
@@ -34,27 +39,31 @@ abstract class MicrosoftHealthTaskManagerSupport<T extends Task> extends OAuthTa
 
 	@Override
 	public final Command execute(Task task, OAuthCredentials credentials) {
+		return executeTyped(task.as(type), credentials);
+	}
+
+	private final Command executeTyped(T task, OAuthCredentials credentials) {
 		Token token = credentials.getToken();
 		if (credentials.isExpired()) {
 			reauthorize(credentials);
 		}
-		return createCommand(task, credentials, newEvents(task.as(type), credentials), token);
+		DateTime begin = task.getFrom();
+		DateTime end = DateTime.now(task.getTimezone()).minusMinutes(5);
+		List<Event> events = end.isAfter(begin) ? newEvents(task, begin, end, credentials) : ImmutableList.<Event>of();
+		return createCommand(task, credentials, events, token);
 	}
 
-	protected abstract List<Event> newEvents(T task, OAuthCredentials credentials);
+	protected abstract List<Event> newEvents(T task, DateTime begin, DateTime end, OAuthCredentials credentials);
 
-	static DateTime parseMarker(String marker) {
-		return marker != null ? DateTime.parse(marker) : null;
+	protected static DateTime markerValue(JsonNode node, DateTimeZone zone) {
+		return LocalDate.parse(node.textValue()).toDateTimeAtStartOfDay(zone);
 	}
 
-	static String formatMarker(DateTime time) {
-		return time != null ? time.toString() : null;
-	}
-
-	static String getMarker(Iterable<Event> events) {
+	private static String getMarker(Iterable<Event> events) {
 		DateTime latest = null;
 		for (Event event : events) {
-			DateTime time = event.getValue(Event.TIMESTAMP);
+			Duration duration = event.getValue(Event.DURATION);
+			DateTime time = Ordering.natural().min(event.getValues(Event.TIMESTAMP)).plus(duration);
 			if (latest == null || time.isAfter(latest)) {
 				latest = time;
 			}

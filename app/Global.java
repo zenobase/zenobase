@@ -146,6 +146,7 @@ import com.zenobase.tasks.mapmyfitness.MapMyFitnessSleepTaskManager;
 import com.zenobase.tasks.mapmyfitness.MapMyFitnessWeightTaskManager;
 import com.zenobase.tasks.microsoft.MicrosoftHealthActivitiesTaskManager;
 import com.zenobase.tasks.microsoft.MicrosoftHealthCredentialsManager;
+import com.zenobase.tasks.microsoft.MicrosoftHealthSleepTaskManager;
 import com.zenobase.tasks.microsoft.MicrosoftHealthStepsTaskManager;
 import com.zenobase.tasks.misfit.MisfitActivitiesTaskManager;
 import com.zenobase.tasks.misfit.MisfitCredentialsManager;
@@ -400,6 +401,7 @@ public class Global extends GlobalSettings {
 				bindIfConfigured("trakt", TraktTaskManager.class, tasks);
 				bindIfConfigured("wakatime", WakaTimeTaskManager.class, tasks);
 				bindIfConfigured("microsoft", MicrosoftHealthActivitiesTaskManager.class, tasks);
+				bindIfConfigured("microsoft", MicrosoftHealthSleepTaskManager.class, tasks);
 				bindIfConfigured("microsoft", MicrosoftHealthStepsTaskManager.class, tasks);
 				bind(TaskManagerRegistry.class).in(Singleton.class);
 

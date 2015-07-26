@@ -6,6 +6,7 @@ import com.zenobase.models.Identity;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Objects;
+import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 
 public class MicrosoftHealthStepsTask extends MicrosoftHealthTaskSupport {
@@ -19,7 +20,7 @@ public class MicrosoftHealthStepsTask extends MicrosoftHealthTaskSupport {
 		super(node);
 	}
 
-	MicrosoftHealthStepsTask(String bucketId, Identity principal, DateTimeZone zone, String tag, boolean hourly, boolean metric, String marker) {
+	MicrosoftHealthStepsTask(String bucketId, Identity principal, DateTimeZone zone, String tag, boolean hourly, boolean metric, DateTime marker) {
 		super(TYPE, bucketId, principal, zone, marker);
 		setSetting(TAG, tag);
 		setSetting(HOURLY, hourly);

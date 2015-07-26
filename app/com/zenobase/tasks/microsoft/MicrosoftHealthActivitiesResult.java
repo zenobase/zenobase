@@ -4,8 +4,6 @@ import java.math.MathContext;
 import java.util.List;
 
 import javax.measure.DecimalMeasure;
-import javax.measure.quantity.Energy;
-import javax.measure.quantity.Frequency;
 import javax.measure.quantity.Length;
 
 import com.zenobase.common.Measures;
@@ -15,18 +13,17 @@ import com.zenobase.models.Identity;
 import com.zenobase.models.Location;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.Duration;
 
-class ActivitiesResult extends MicrosoftHealthResultSupport {
+class MicrosoftHealthActivitiesResult extends MicrosoftHealthResultSupport {
 
 	private final boolean metric;
 
-	public ActivitiesResult(JsonNode node, Identity author, DateTimeZone zone, boolean metric) {
+	public MicrosoftHealthActivitiesResult(JsonNode node, Identity author, DateTimeZone zone, boolean metric) {
 		super(node, author, zone);
 		this.metric = metric;
 	}
@@ -64,15 +61,6 @@ class ActivitiesResult extends MicrosoftHealthResultSupport {
 		return event;
 	}
 
-	private static Location locationValue(JsonNode node) {
-		if (node.isMissingNode() || node.isNull()) {
-			return null;
-		}
-		Preconditions.checkState(node.path("latitude").isNumber(), "expected a numeric latitude in <%s>", node);
-		Preconditions.checkState(node.path("longitude").isNumber(), "expected a numeric longitude in <%s>", node);
-		return new Location(node.path("latitude").decimalValue(), node.path("longitude").decimalValue());
-	}
-
 	private DecimalMeasure<Length> distanceValue(JsonNode node) {
 		if (!node.isNumber()) {
 			return null;
@@ -87,13 +75,5 @@ class ActivitiesResult extends MicrosoftHealthResultSupport {
 		}
 		DecimalMeasure<Length> value = Measures.valueOf(node.decimalValue(), Units.CM);
 		return Measures.round(value.to(metric ? Units.M : Units.FT, MathContext.DECIMAL32), 0);
-	}
-
-	private DecimalMeasure<Frequency> frequencyValue(JsonNode node) {
-		return node.isNumber() ? Measures.valueOf(Measures.round(node.decimalValue(), 0), Units.BPM) : null;
-	}
-
-	private DecimalMeasure<Energy> energyValue(JsonNode node) {
-		return node.isNumber() ? Measures.valueOf(Measures.round(node.decimalValue(), 0), Units.KCAL) : null;
 	}
 }

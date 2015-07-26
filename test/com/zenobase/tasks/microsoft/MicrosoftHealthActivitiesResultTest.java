@@ -16,11 +16,11 @@ import org.joda.time.DateTimeZone;
 import org.joda.time.Duration;
 import org.junit.Test;
 
-public class ActivitiesResultTest extends ResultTestSupport {
+public class MicrosoftHealthActivitiesResultTest extends ResultTestSupport {
 
 	@Test
 	public void test() {
-		ActivitiesResult result = new ActivitiesResult(readObject("ActivitiesResultTest.json"), TESTER, DateTimeZone.forID("Europe/Berlin"), true);
+		MicrosoftHealthActivitiesResult result = new MicrosoftHealthActivitiesResult(readObject("MicrosoftHealthActivitiesResultTest.json"), TESTER, DateTimeZone.forID("Europe/Berlin"), true);
 		List<Event> events = result.getEvents();
 		assertThat(events).as("events").hasSize(6);
 		Event expected = new Event(events.get(0).getId());
@@ -32,13 +32,13 @@ public class ActivitiesResultTest extends ResultTestSupport {
 		expected.setValue(Event.FREQUENCY, Measures.<Frequency>valueOf("81 bpm"));
 		expected.setValue(Event.ENERGY, Measures.<Energy>valueOf("175 kcal"));
 		expected.setValue(Event.AUTHOR, TESTER);
-		expected.setValue(Event.SOURCE, ActivitiesResult.SOURCE);
+		expected.setValue(Event.SOURCE, MicrosoftHealthActivitiesResult.SOURCE);
 		assertThat(events.get(0)).as("first event").isEqualTo(expected);
 	}
 
 	@Test
 	public void testImperialUnits() {
-		ActivitiesResult result = new ActivitiesResult(readObject("ActivitiesResultTest.json"), TESTER, DateTimeZone.forID("Europe/Berlin"), false);
+		MicrosoftHealthActivitiesResult result = new MicrosoftHealthActivitiesResult(readObject("MicrosoftHealthActivitiesResultTest.json"), TESTER, DateTimeZone.forID("Europe/Berlin"), false);
 		List<Event> events = result.getEvents();
 		assertThat(events.get(0).getValue(Event.DISTANCE)).isEqualTo(Measures.valueOf("1.76 mi"));
 		assertThat(events.get(0).getValue(Event.HEIGHT)).isEqualTo(Measures.valueOf("157 ft"));

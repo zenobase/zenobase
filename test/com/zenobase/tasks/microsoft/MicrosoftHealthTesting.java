@@ -6,13 +6,13 @@ import com.zenobase.tasks.TaskTestingSupport;
 import org.junit.Ignore;
 import org.junit.Test;
 
-public class MicrosoftTesting extends TaskTestingSupport {
+public class MicrosoftHealthTesting extends TaskTestingSupport {
 
 	@Test
 	@Ignore
 	public void testActivities() {
 		run(new MicrosoftHealthActivitiesTaskManager(newCredentialsManager()), Nodes.newObject()
-			.put("marker", "2014-01-01T00:00:00Z")
+			.put("marker", "2015-07-01")
 			.put("timezone", "Europe/Berlin")
 			.put("metric", true));
 	}
@@ -20,11 +20,20 @@ public class MicrosoftTesting extends TaskTestingSupport {
 	@Test
 	public void testSteps() {
 		run(new MicrosoftHealthStepsTaskManager(newCredentialsManager()), Nodes.newObject()
-			.put("marker", "2014-01-01T00:00:00Z")
+			.put("marker", "2015-07-24")
 			.put("timezone", "Europe/Berlin")
 			.put("tag", "Summary")
-			.put("hourly", false)
-			.put("metric", false));
+			.put("hourly", true)
+			.put("metric", true));
+	}
+
+	@Test
+	@Ignore
+	public void testSleep() {
+		run(new MicrosoftHealthSleepTaskManager(newCredentialsManager()), Nodes.newObject()
+			.put("marker", "2015-01-01")
+			.put("timezone", "Europe/Berlin")
+			.put("tag", "zzz"));
 	}
 
 	@Override

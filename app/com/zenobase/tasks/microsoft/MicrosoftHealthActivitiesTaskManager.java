@@ -29,25 +29,23 @@ public class MicrosoftHealthActivitiesTaskManager extends MicrosoftHealthTaskMan
 	public Task newTask(String bucketId, Identity principal, ObjectNode settings) {
 		DateTimeZone zone = DateTimeZone.forID(Objects.firstNonNull(settings.path("timezone").textValue(), "UTC"));
 		boolean metric = settings.path("metric").booleanValue();
-		String marker = formatMarker(parseMarker(settings.path("marker").textValue()));
+		DateTime marker = markerValue(settings.path("marker"), zone);
 		return new MicrosoftHealthActivitiesTask(bucketId, principal, zone, metric, marker);
 	}
 
 	@Override
-	protected List<Event> newEvents(MicrosoftHealthActivitiesTask task, OAuthCredentials credentials) {
+	protected List<Event> newEvents(MicrosoftHealthActivitiesTask task, DateTime begin, DateTime end, OAuthCredentials credentials) {
 		List<Event> events = Lists.newArrayList();
-		DateTime from = parseMarker(task.getMarker());
-		DateTime now = DateTime.now(DateTimeZone.UTC).minusMinutes(5);
 		for (String url = "https://api.microsofthealth.net/v1/me/Activities"; url != null;) {
 			OAuthRequest request = new OAuthRequest(Verb.GET, url);
 			if (events.isEmpty()) {
-				request.addQuerystringParameter("startTime", from.toString());
-				request.addQuerystringParameter("endTime", now.toString());
+				request.addQuerystringParameter("startTime", begin.toString());
+				request.addQuerystringParameter("endTime", end.toString());
 				// request.addQuerystringParameter("activityIncludes", "Details,MapPoints");
-				request.addQuerystringParameter("maxPageSize", "100");
+				// request.addQuerystringParameter("maxPageSize", "10");
 			}
 			Response response = send(request, credentials);
-			ActivitiesResult result = new ActivitiesResult(parse(response), task.getPrincipal(), task.getTimezone(), task.isMetric());
+			MicrosoftHealthActivitiesResult result = new MicrosoftHealthActivitiesResult(parse(response), task.getPrincipal(), task.getTimezone(), task.isMetric());
 			events.addAll(result.getEvents());
 			url = result.next();
 		}

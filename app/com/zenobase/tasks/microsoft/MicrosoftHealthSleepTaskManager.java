@@ -18,40 +18,36 @@ import org.scribe.model.OAuthRequest;
 import org.scribe.model.Response;
 import org.scribe.model.Verb;
 
-public class MicrosoftHealthStepsTaskManager extends MicrosoftHealthTaskManagerSupport<MicrosoftHealthStepsTask> {
+public class MicrosoftHealthSleepTaskManager extends MicrosoftHealthTaskManagerSupport<MicrosoftHealthSleepTask> {
 
 	@Inject
-	public MicrosoftHealthStepsTaskManager(MicrosoftHealthCredentialsManager credentialsManager) {
-		super(MicrosoftHealthStepsTask.class, MicrosoftHealthStepsTask.TYPE, credentialsManager);
+	public MicrosoftHealthSleepTaskManager(MicrosoftHealthCredentialsManager credentialsManager) {
+		super(MicrosoftHealthSleepTask.class, MicrosoftHealthSleepTask.TYPE, credentialsManager);
 	}
 
 	@Override
 	public Task newTask(String bucketId, Identity principal, ObjectNode settings) {
-		String tag = Objects.firstNonNull(settings.path("tag").textValue(), "Steps");
 		DateTimeZone zone = DateTimeZone.forID(Objects.firstNonNull(settings.path("timezone").textValue(), "UTC"));
-		boolean hourly = settings.path("hourly").booleanValue();
-		boolean metric = settings.path("metric").booleanValue();
+		String tag = Objects.firstNonNull(settings.path("tag").textValue(), "Sleep");
 		DateTime marker = markerValue(settings.path("marker"), zone);
-		return new MicrosoftHealthStepsTask(bucketId, principal, zone, tag, hourly, metric, marker);
+		return new MicrosoftHealthSleepTask(bucketId, principal, zone, tag, marker);
 	}
 
 	@Override
-	protected List<Event> newEvents(MicrosoftHealthStepsTask task, DateTime begin, DateTime end, OAuthCredentials credentials) {
+	protected List<Event> newEvents(MicrosoftHealthSleepTask task, DateTime begin, DateTime end, OAuthCredentials credentials) {
 		List<Event> events = Lists.newArrayList();
-		String period = task.isHourly() ? "Hourly" : "Daily";
-		for (String url = "https://api.microsofthealth.net/v1/me/Summaries/" + period; url != null;) {
+		for (String url = "https://api.microsofthealth.net/v1/me/Activities"; url != null;) {
 			OAuthRequest request = new OAuthRequest(Verb.GET, url);
 			if (events.isEmpty()) {
 				request.addQuerystringParameter("startTime", begin.toString());
 				request.addQuerystringParameter("endTime", end.toString());
+				request.addQuerystringParameter("activityTypes", "Sleep");
+				request.addQuerystringParameter("maxPageSize", "100");
 			}
 			Response response = send(request, credentials);
-			MicrosoftHealthStepsResult result = new MicrosoftHealthStepsResult(parse(response), task.getPrincipal(), task.getTimezone(), task.getTag(), task.isMetric());
+			MicrosoftHealthSleepResult result = new MicrosoftHealthSleepResult(parse(response), task.getPrincipal(), task.getTimezone(), task.getTag());
 			events.addAll(result.getEvents());
 			url = result.next();
-		}
-		if (!events.isEmpty()) { // could be incomplete
-			events.remove(0);
 		}
 		return events;
 	}
