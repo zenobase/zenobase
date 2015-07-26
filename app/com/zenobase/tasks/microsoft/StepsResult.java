@@ -12,31 +12,28 @@ import com.zenobase.common.Measures;
 import com.zenobase.common.Units;
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
-import com.zenobase.models.Location;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.google.common.base.Preconditions;
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.Duration;
 
-class ActivitiesResult extends MicrosoftHealthResultSupport {
+class StepsResult extends MicrosoftHealthResultSupport {
 
+	private final String tag;
 	private final boolean metric;
 
-	public ActivitiesResult(JsonNode node, Identity author, DateTimeZone zone, boolean metric) {
+	public StepsResult(JsonNode node, Identity author, DateTimeZone zone, String tag, boolean metric) {
 		super(node, author, zone);
+		this.tag = tag;
 		this.metric = metric;
 	}
 
 	public List<Event> getEvents() {
 		List<Event> events = Lists.newArrayList();
-		for (String activityType : ImmutableList.of("bikeActivities", "freePlayActivities", "golfActivities", "guidedWorkoutActivities", "runActivities")) {
-			for (JsonNode activityNode : node.path(activityType)) {
-				events.add(newEvent(activityNode));
-			}
+		for (JsonNode summaryNode : node.path("summaries")) {
+			events.add(newEvent(summaryNode));
 		}
 		return events;
 	}
@@ -47,14 +44,7 @@ class ActivitiesResult extends MicrosoftHealthResultSupport {
 		DateTime end = dateTimeValue(node.path("endTime"));
 		event.setValue(Event.TIMESTAMP, begin);
 		event.setValue(Event.DURATION, new Duration(begin, end));
-		event.addValue(Event.TAG, node.path("activityType").textValue());
-		for (JsonNode mapPoint : node.path("mapPoints")) {
-			Location location = locationValue(mapPoint.path("location"));
-			if (location != null) {
-				event.setValue(Event.LOCATION, location);
-				break;
-			}
-		}
+		event.addValue(Event.TAG, tag);
 		event.setValue(Event.DISTANCE, distanceValue(node.path("distanceSummary").path("totalDistance")));
 		event.setValue(Event.HEIGHT, heightValue(node.path("distanceSummary").path("elevationGain")));
 		event.setValue(Event.FREQUENCY, frequencyValue(node.path("heartRateSummary").path("averageHeartRate")));
@@ -62,15 +52,6 @@ class ActivitiesResult extends MicrosoftHealthResultSupport {
 		event.setValue(Event.SOURCE, SOURCE);
 		event.setValue(Event.AUTHOR, author);
 		return event;
-	}
-
-	private static Location locationValue(JsonNode node) {
-		if (node.isMissingNode() || node.isNull()) {
-			return null;
-		}
-		Preconditions.checkState(node.path("latitude").isNumber(), "expected a numeric latitude in <%s>", node);
-		Preconditions.checkState(node.path("longitude").isNumber(), "expected a numeric longitude in <%s>", node);
-		return new Location(node.path("latitude").decimalValue(), node.path("longitude").decimalValue());
 	}
 
 	private DecimalMeasure<Length> distanceValue(JsonNode node) {

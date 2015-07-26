@@ -1,0 +1,33 @@
+package com.zenobase.tasks.microsoft;
+
+import com.zenobase.json.TokenField;
+import com.zenobase.models.Identity;
+import com.zenobase.tasks.Task;
+
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.joda.time.DateTimeZone;
+
+abstract class MicrosoftHealthTaskSupport extends Task {
+
+	public static final TokenField TIMEZONE = new TokenField("timezone");
+
+	protected MicrosoftHealthTaskSupport(ObjectNode node) {
+		super(node);
+	}
+
+	MicrosoftHealthTaskSupport(String type, String bucketId, Identity principal, DateTimeZone zone, String marker) {
+		super(type, bucketId, principal);
+		setSetting(TIMEZONE, zone != null ? zone.getID() : null);
+		setMarker(marker);
+	}
+
+	public DateTimeZone getTimezone() {
+		String value = getSetting(TIMEZONE);
+		return value != null ? DateTimeZone.forID(value) : DateTimeZone.UTC;
+	}
+
+	@Override
+	public MicrosoftHealthTaskSupport copy() {
+		return copy(getClass());
+	}
+}

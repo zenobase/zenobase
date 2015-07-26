@@ -18,36 +18,37 @@ import org.scribe.model.OAuthRequest;
 import org.scribe.model.Response;
 import org.scribe.model.Verb;
 
-public class MicrosoftHealthActivitiesTaskManager extends MicrosoftHealthTaskManagerSupport<MicrosoftHealthActivitiesTask> {
+public class MicrosoftHealthStepsTaskManager extends MicrosoftHealthTaskManagerSupport<MicrosoftHealthStepsTask> {
 
 	@Inject
-	public MicrosoftHealthActivitiesTaskManager(MicrosoftHealthCredentialsManager credentialsManager) {
-		super(MicrosoftHealthActivitiesTask.class, MicrosoftHealthActivitiesTask.TYPE, credentialsManager);
+	public MicrosoftHealthStepsTaskManager(MicrosoftHealthCredentialsManager credentialsManager) {
+		super(MicrosoftHealthStepsTask.class, MicrosoftHealthStepsTask.TYPE, credentialsManager);
 	}
 
 	@Override
 	public Task newTask(String bucketId, Identity principal, ObjectNode settings) {
+		String tag = Objects.firstNonNull(settings.path("tag").textValue(), "Steps");
 		DateTimeZone zone = DateTimeZone.forID(Objects.firstNonNull(settings.path("timezone").textValue(), "UTC"));
+		boolean hourly = settings.path("hourly").booleanValue();
 		boolean metric = settings.path("metric").booleanValue();
 		String marker = formatMarker(parseMarker(settings.path("marker").textValue()));
-		return new MicrosoftHealthActivitiesTask(bucketId, principal, zone, metric, marker);
+		return new MicrosoftHealthStepsTask(bucketId, principal, zone, tag, hourly, metric, marker);
 	}
 
 	@Override
-	protected List<Event> newEvents(MicrosoftHealthActivitiesTask task, OAuthCredentials credentials) {
+	protected List<Event> newEvents(MicrosoftHealthStepsTask task, OAuthCredentials credentials) {
 		List<Event> events = Lists.newArrayList();
 		DateTime from = parseMarker(task.getMarker());
 		DateTime now = DateTime.now(DateTimeZone.UTC).minusMinutes(5);
-		for (String url = "https://api.microsofthealth.net/v1/me/Activities"; url != null;) {
+		String period = task.isHourly() ? "Hourly" : "Daily";
+		for (String url = "https://api.microsofthealth.net/v1/me/Summaries/" + period; url != null;) {
 			OAuthRequest request = new OAuthRequest(Verb.GET, url);
 			if (events.isEmpty()) {
 				request.addQuerystringParameter("startTime", from.toString());
 				request.addQuerystringParameter("endTime", now.toString());
-				// request.addQuerystringParameter("activityIncludes", "Details,MapPoints");
-				request.addQuerystringParameter("maxPageSize", "100");
 			}
 			Response response = send(request, credentials);
-			ActivitiesResult result = new ActivitiesResult(parse(response), task.getPrincipal(), task.getTimezone(), task.isMetric());
+			StepsResult result = new StepsResult(parse(response), task.getPrincipal(), task.getTimezone(), task.getTag(), task.isMetric());
 			events.addAll(result.getEvents());
 			url = result.next();
 		}
