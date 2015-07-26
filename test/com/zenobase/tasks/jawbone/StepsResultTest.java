@@ -7,18 +7,18 @@ import java.util.List;
 import javax.measure.quantity.Energy;
 import javax.measure.quantity.Length;
 
-import org.joda.time.Duration;
-import org.junit.Test;
-
 import com.zenobase.common.Measures;
 import com.zenobase.models.Event;
 import com.zenobase.tasks.ResultTestSupport;
+
+import org.joda.time.Duration;
+import org.junit.Test;
 
 public class StepsResultTest extends ResultTestSupport {
 
 	@Test
 	public void testDailyMetric() {
-		StepsResult result = new StepsResult(readObject("MicrosoftHealthStepsResultTest.json"), TESTER, "steps", false, true);
+		StepsResult result = new StepsResult(readObject("StepsResultTest.json"), TESTER, "steps", false, true);
 		List<Event> events = result.getEvents();
 		assertThat(events).as("events").hasSize(3);
 		Event expected = new Event(events.get(0).getId());
@@ -35,7 +35,7 @@ public class StepsResultTest extends ResultTestSupport {
 
 	@Test
 	public void testDailyImperial() {
-		StepsResult result = new StepsResult(readObject("MicrosoftHealthStepsResultTest.json"), TESTER, "steps", false, false);
+		StepsResult result = new StepsResult(readObject("StepsResultTest.json"), TESTER, "steps", false, false);
 		List<Event> events = result.getEvents();
 		assertThat(events).as("events").hasSize(3);
 		assertThat(events.get(0).getValue(Event.DISTANCE)).isEqualTo(Measures.<Length>valueOf("7.81 mi"));
@@ -43,7 +43,7 @@ public class StepsResultTest extends ResultTestSupport {
 
 	@Test
 	public void testHourlyMetric() {
-		StepsResult result = new StepsResult(readObject("MicrosoftHealthStepsResultTest.json"), TESTER, "steps", true, true);
+		StepsResult result = new StepsResult(readObject("StepsResultTest.json"), TESTER, "steps", true, true);
 		List<Event> events = result.getEvents();
 		assertThat(events).as("events").hasSize(36);
 		Event expected = new Event(events.get(0).getId());
