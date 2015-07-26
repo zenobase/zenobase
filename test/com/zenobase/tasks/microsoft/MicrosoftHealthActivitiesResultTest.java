@@ -24,7 +24,7 @@ public class MicrosoftHealthActivitiesResultTest extends ResultTestSupport {
 		List<Event> events = result.getEvents();
 		assertThat(events).as("events").hasSize(6);
 		Event expected = new Event(events.get(0).getId());
-		expected.setValue(Event.TIMESTAMP, dateTime("2015-07-11T17:42:57+02:00"));
+		expected.setValue(Event.TIMESTAMP, dateTime("2015-07-11T19:42:57+02:00"));
 		expected.addValue(Event.TAG, "Run");
 		expected.setValue(Event.DURATION, Duration.standardSeconds(3303));
 		expected.setValue(Event.DISTANCE, Measures.<Length>valueOf("2.83 km"));
