@@ -15,6 +15,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Objects;
 import com.google.common.collect.Lists;
 import org.joda.time.DateTime;
+import org.joda.time.Duration;
 import org.scribe.model.OAuthRequest;
 import org.scribe.model.Response;
 import org.scribe.model.Verb;
@@ -38,9 +39,6 @@ public class FitbitActivitiesTaskManager extends FitbitTaskManagerSupport<Fitbit
 		List<Event> events = Lists.newArrayList();
 		FitbitProfileResult profile = getProfile(task, credentials);
 		DateTime afterDate = DateTime.parse(task.getMarker());
-		if (afterDate.getSecondOfMinute() == 0) { // skip to next full minute to avoid duplicates
-			afterDate = afterDate.plusMinutes(1);
-		}
 		for (String url = "https://api.fitbit.com/1/user/-/activities/list.json"; url != null;) {
 			OAuthRequest request = new OAuthRequest(Verb.GET, url);
 			request.addHeader("Accept-Language", profile.getDistanceLocale());
@@ -67,14 +65,15 @@ public class FitbitActivitiesTaskManager extends FitbitTaskManagerSupport<Fitbit
 		return createCommand(task, events, Objects.firstNonNull(getMarker(events), task.getMarker()));
 	}
 
-	static String getMarker(Iterable<Event> events) {
+	private static String getMarker(Iterable<Event> events) {
 		DateTime latest = null;
 		for (Event event : events) {
-			DateTime time = event.getValue(Event.TIMESTAMP);
+			Duration duration = event.getValue(Event.DURATION);
+			DateTime time = event.getValue(Event.TIMESTAMP).plus(duration);
 			if (latest == null || time.isAfter(latest)) {
 				latest = time;
 			}
 		}
-		return latest != null ? latest.plusSeconds(1).toString() : null;
+		return latest != null ? latest.toString() : null;
 	}
 }
