@@ -20,7 +20,7 @@ public class MicrosoftHealthTesting extends TaskTestingSupport {
 	@Test
 	public void testSteps() {
 		run(new MicrosoftHealthStepsTaskManager(newCredentialsManager()), Nodes.newObject()
-			.put("marker", "2015-07-24")
+			.put("marker", "2015-07-24T00:00:00.000Z")
 			.put("timezone", "Europe/Berlin")
 			.put("tag", "Summary")
 			.put("hourly", true)

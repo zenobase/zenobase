@@ -21,7 +21,6 @@ import com.google.common.util.concurrent.RateLimiter;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.Duration;
-import org.joda.time.LocalDate;
 import org.scribe.model.OAuthRequest;
 import org.scribe.model.Response;
 import org.scribe.model.Token;
@@ -56,7 +55,7 @@ abstract class MicrosoftHealthTaskManagerSupport<T extends MicrosoftHealthTaskSu
 	protected abstract List<Event> newEvents(T task, DateTime begin, DateTime end, OAuthCredentials credentials);
 
 	protected static DateTime markerValue(JsonNode node, DateTimeZone zone) {
-		return LocalDate.parse(node.textValue()).toDateTimeAtStartOfDay(zone);
+		return DateTime.parse(node.textValue()).withZoneRetainFields(zone);
 	}
 
 	private static String getMarker(Iterable<Event> events) {
