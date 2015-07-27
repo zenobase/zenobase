@@ -23,6 +23,7 @@ abstract class GoogleFitResultSupport {
 		.put("com.iforpowell.android.ipbike", new Resource("IpBike", "http://www.iforpowell.com/cms/"))
 		.put("com.mapmyfitness.android2", new Resource("MapMyFitness", "http://www.mapmyfitness.com/"))
 		.put("com.mapmyrun.android2", new Resource("MapMyRun", "http://www.mapmyrun.com/"))
+		.put("com.mybasis.android.basis.peak", new Resource("Basis", "http://www.mybasis.com/"))
 		.put("com.nike.plusgps", new Resource("Nike+", "http://nikeplus.nike.com/"))
 		.put("com.wsl.noom", new Resource("Noom", "http://noom.com/"))
 		.put("com.northpark.pushups", new Resource("Push Ups Workout", "https://play.google.com/store/apps/details?id=com.northpark.pushups"))
