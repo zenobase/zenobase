@@ -2,24 +2,29 @@ package com.zenobase.tasks.fitbit;
 
 import java.util.List;
 
+import com.zenobase.commands.Command;
+import com.zenobase.commands.CompoundCommand;
+import com.zenobase.commands.CreateEventsCommand;
+import com.zenobase.commands.UpdateCredentialsCommand;
+import com.zenobase.commands.UpdateTaskCommand;
+import com.zenobase.models.Event;
+import com.zenobase.tasks.Credentials;
+import com.zenobase.tasks.InvalidStatusException;
+import com.zenobase.tasks.OAuthCredentials;
+import com.zenobase.tasks.OAuthTaskManager;
+import com.zenobase.tasks.Task;
+
+import com.google.common.base.Objects;
+import com.google.common.util.concurrent.RateLimiter;
+import org.elasticsearch.common.base.Strings;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDate;
 import org.scribe.model.OAuthRequest;
 import org.scribe.model.Response;
+import org.scribe.model.Token;
 import org.scribe.model.Verb;
 import play.Logger;
-import com.google.common.util.concurrent.RateLimiter;
-
-import com.zenobase.commands.Command;
-import com.zenobase.commands.CompoundCommand;
-import com.zenobase.commands.CreateEventsCommand;
-import com.zenobase.commands.UpdateTaskCommand;
-import com.zenobase.models.Event;
-import com.zenobase.tasks.InvalidStatusException;
-import com.zenobase.tasks.OAuthCredentials;
-import com.zenobase.tasks.OAuthTaskManager;
-import com.zenobase.tasks.Task;
 
 public abstract class FitbitTaskManagerSupport<T extends Task> extends OAuthTaskManager {
 
@@ -34,8 +39,12 @@ public abstract class FitbitTaskManagerSupport<T extends Task> extends OAuthTask
 
 	@Override
 	public final Command execute(Task task, OAuthCredentials credentials) {
+		Token token = credentials.getToken();
+		if (credentials.isExpired() || !Strings.isNullOrEmpty(credentials.getToken().getSecret())) {
+			reauthorize(credentials);
+		}
 		try {
-			return safeExecute(task.as(taskClass), credentials);
+			return safeExecute(task.as(taskClass), credentials, token);
 		} catch (InvalidStatusException e) {
 			if (e.getStatus() == 429) { // reached rate limit
 				Logger.warn("Hit rate limit and couldn't run task: {}", task.getId());
@@ -45,7 +54,7 @@ public abstract class FitbitTaskManagerSupport<T extends Task> extends OAuthTask
 		}
 	}
 
-	protected abstract Command safeExecute(T task, OAuthCredentials credentials);
+	protected abstract Command safeExecute(T task, OAuthCredentials credentials, Token token);
 
 	protected LocalDate getLastDate(DeviceType deviceType, Task task, OAuthCredentials credentials) {
 		OAuthRequest request = new OAuthRequest(Verb.GET, "https://api.fitbit.com/1/user/-/devices.json");
@@ -73,11 +82,11 @@ public abstract class FitbitTaskManagerSupport<T extends Task> extends OAuthTask
 		return new FitbitProfileResult(parseObject(response));
 	}
 
-	protected Command createCommand(Task task, List<Event> events, LocalDate lastDate) {
-		return createCommand(task, events, lastDate.toString());
+	protected Command createCommand(Task task, OAuthCredentials credentials, List<Event> events, LocalDate lastDate, Token expiredToken) {
+		return createCommand(task, credentials, events, lastDate.toString(), expiredToken);
 	}
 
-	protected Command createCommand(Task task, List<Event> events, String marker) {
+	protected Command createCommand(Task task, OAuthCredentials credentials, List<Event> events, String marker, Token expiredToken) {
 		CompoundCommand command = new CompoundCommand(task.getPrincipal(), "ran " + getType() + " task", "reverted " + getType() + " task");
 		command.add(UpdateTaskCommand.builder(task)
 			.set(Task.COMPLETED, task.getCompleted(), new DateTime(DateTimeZone.UTC))
@@ -85,6 +94,12 @@ public abstract class FitbitTaskManagerSupport<T extends Task> extends OAuthTask
 			.set(Task.MARKER, task.getMarker(), marker)
 			.set(Task.UNDO, task.getUndoId(), command.getId())
 			.build());
+		if (!Objects.equal(credentials.getToken(), expiredToken)) {
+			command.add(UpdateCredentialsCommand.builder(credentials)
+				.with(Credentials.CREDENTIALS)
+				.set(OAuthCredentials.TOKEN, expiredToken, credentials.getToken())
+				.build());
+		}
 		if (!events.isEmpty()) {
 			command.add(new CreateEventsCommand(task.getPrincipal(), task.getBucketId(), events));
 		}

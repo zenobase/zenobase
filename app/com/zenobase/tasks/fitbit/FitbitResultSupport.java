@@ -5,24 +5,26 @@ import java.util.List;
 
 import javax.measure.DecimalMeasure;
 import javax.measure.quantity.Energy;
+import javax.measure.quantity.Frequency;
 import javax.measure.quantity.Length;
 import javax.measure.quantity.Mass;
 import javax.measure.unit.Unit;
 
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
-import org.joda.time.Duration;
-import org.joda.time.LocalDateTime;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.google.common.base.Preconditions;
-
 import com.zenobase.common.DateTimeZones;
 import com.zenobase.common.Measures;
+import com.zenobase.common.Units;
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
 import com.zenobase.models.Percentage;
 import com.zenobase.models.Rating;
 import com.zenobase.models.Resource;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.google.common.base.Preconditions;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
+import org.joda.time.Duration;
+import org.joda.time.LocalDateTime;
 
 abstract class FitbitResultSupport {
 
@@ -78,6 +80,10 @@ abstract class FitbitResultSupport {
 
 	protected static Integer countValue(JsonNode node) {
 		return !isZero(node) ? Integer.valueOf(node.intValue()) : null;
+	}
+
+	protected static DecimalMeasure<Frequency> frequencyValue(JsonNode node) {
+		return node.asInt() > 0 ? Measures.valueOf(BigDecimal.valueOf(node.asInt()), Units.BPM) : null;
 	}
 
 	private static boolean isZero(JsonNode node) {

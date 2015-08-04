@@ -1133,6 +1133,51 @@
 	},
 	{
 		"category" : "Heart Rate",
+		"source" : "Fitbit",
+		"task" : "fitbit-cardio", 
+		"widgets" : [
+			{
+				"id" : "timeline",
+				"type" : "timeline",
+				"label" : "Heart Rate (bpm)",
+				"placement" : "top",
+				"field" : "frequency",
+				"statistic" : "avg",
+				"unit" : "bpm",
+				"interval" : "day"
+			},
+			{
+				"id" : "latest",
+				"type" : "list",
+				"label" : "Latest",
+				"placement" : "left",
+				"singleton" : true,
+				"limit" : 10,
+				"order" : "-timestamp"
+			},
+			{
+				"id" : "histogram",
+				"type" : "histogram",
+				"label" : "Histogram",
+				"placement" : "right",
+				"field" : "frequency",
+				"unit" : "bpm",
+				"interval" : 10
+			},
+			{
+				"id" : "day_of_week",
+				"type" : "polar",
+				"label" : "Day of Week",
+				"placement" : "right",
+				"value_field" : "frequency",
+				"unit" : "bpm",
+				"statistic" : "avg",
+				"interval" : "day_of_week"
+			}
+		]
+	},
+	{
+		"category" : "Heart Rate",
 		"source" : "Google Fit",
 		"task" : "google-cardio", 
 		"widgets" : [

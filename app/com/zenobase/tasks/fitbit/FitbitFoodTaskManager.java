@@ -4,22 +4,23 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import org.joda.time.DateTime;
-import org.joda.time.LocalDate;
-import org.scribe.model.OAuthRequest;
-import org.scribe.model.Response;
-import org.scribe.model.Verb;
-import play.Logger;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.google.common.base.Objects;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Ordering;
-
 import com.zenobase.commands.Command;
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
 import com.zenobase.tasks.InvalidStatusException;
 import com.zenobase.tasks.OAuthCredentials;
+
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.common.base.Objects;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Ordering;
+import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
+import org.scribe.model.OAuthRequest;
+import org.scribe.model.Response;
+import org.scribe.model.Token;
+import org.scribe.model.Verb;
+import play.Logger;
 
 public class FitbitFoodTaskManager extends FitbitTaskManagerSupport<FitbitFoodTask> {
 
@@ -36,7 +37,7 @@ public class FitbitFoodTaskManager extends FitbitTaskManagerSupport<FitbitFoodTa
 	}
 
 	@Override
-	protected Command safeExecute(FitbitFoodTask task, OAuthCredentials credentials) {
+	protected Command safeExecute(FitbitFoodTask task, OAuthCredentials credentials, Token token) {
 		List<Event> events = Lists.newArrayList();
 		FitbitProfileResult profile = getProfile(task, credentials);
 		LocalDate today = new DateTime(profile.getTimezone()).toLocalDate();
@@ -56,6 +57,6 @@ public class FitbitFoodTaskManager extends FitbitTaskManagerSupport<FitbitFoodTa
 				throw e;
 			}
 		}
-		return createCommand(task, events, today);
+		return createCommand(task, credentials, events, today, token);
 	}
 }

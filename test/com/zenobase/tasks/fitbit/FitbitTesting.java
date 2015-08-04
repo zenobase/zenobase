@@ -26,9 +26,10 @@ public class FitbitTesting extends TaskTestingSupport {
 	}
 
 	@Test
+	@Ignore
 	public void testActivities() {
 		run(new FitbitActivitiesTaskManager(newCredentialsManager()), Nodes.newObject()
-			.put("marker", "2015-05-17T14:26:00"));
+			.put("marker", "2015-07-25T00:00:00Z"));
 	}
 
 	@Test
@@ -45,6 +46,14 @@ public class FitbitTesting extends TaskTestingSupport {
 		run(new FitbitFoodTaskManager(newCredentialsManager()), Nodes.newObject()
 			.put("marker", "2013-01-01")
 			.put("tag", "eat"));
+	}
+
+	@Test
+	public void testCardio() {
+		run(new FitbitCardioTaskManager(newCredentialsManager()), Nodes.newObject()
+			.put("marker", "2015-07-28")
+			.put("tag", "hr")
+			.put("hourly", true));
 	}
 
 	@Override

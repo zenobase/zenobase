@@ -4,22 +4,23 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import org.joda.time.DateTime;
-import org.joda.time.LocalDate;
-import org.scribe.model.OAuthRequest;
-import org.scribe.model.Response;
-import org.scribe.model.Verb;
-import play.Logger;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.google.common.base.Objects;
-import com.google.common.collect.Lists;
-
 import com.zenobase.commands.Command;
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
 import com.zenobase.tasks.InvalidStatusException;
 import com.zenobase.tasks.OAuthCredentials;
 import com.zenobase.tasks.Task;
+
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.common.base.Objects;
+import com.google.common.collect.Lists;
+import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
+import org.scribe.model.OAuthRequest;
+import org.scribe.model.Response;
+import org.scribe.model.Token;
+import org.scribe.model.Verb;
+import play.Logger;
 
 public class FitbitWeightTaskManager extends FitbitTaskManagerSupport<FitbitWeightTask> {
 
@@ -36,7 +37,7 @@ public class FitbitWeightTaskManager extends FitbitTaskManagerSupport<FitbitWeig
 	}
 
 	@Override
-	protected Command safeExecute(FitbitWeightTask task, OAuthCredentials credentials) {
+	protected Command safeExecute(FitbitWeightTask task, OAuthCredentials credentials, Token token) {
 		List<Event> events = Lists.newArrayList();
 		FitbitProfileResult profile = getProfile(task, credentials);
 		LocalDate syncDate = getLastDate(DeviceType.SCALE, task, credentials);
@@ -59,6 +60,6 @@ public class FitbitWeightTaskManager extends FitbitTaskManagerSupport<FitbitWeig
 				throw e;
 			}
 		}
-		return createCommand(task, events, syncDate);
+		return createCommand(task, credentials, events, syncDate, token);
 	}
 }

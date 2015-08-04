@@ -1,5 +1,9 @@
 package com.zenobase.tasks;
 
+import com.zenobase.oauth.OAuth2TokenExtractor;
+
+import com.google.common.base.Joiner;
+import com.google.common.io.BaseEncoding;
 import org.scribe.builder.api.DefaultApi20;
 import org.scribe.extractors.AccessTokenExtractor;
 import org.scribe.model.OAuthConfig;
@@ -11,8 +15,6 @@ import org.scribe.model.Verb;
 import org.scribe.model.Verifier;
 import org.scribe.oauth.OAuth20ServiceImpl;
 import org.scribe.oauth.OAuthService;
-
-import com.zenobase.oauth.OAuth2TokenExtractor;
 
 public abstract class CustomApi20 extends DefaultApi20 {
 
@@ -33,10 +35,14 @@ public abstract class CustomApi20 extends DefaultApi20 {
 			public Token getAccessToken(Token requestToken, Verifier verifier) {
 				OAuthRequest request = new OAuthRequest(getAccessTokenVerb(), getAccessTokenEndpoint());
 				addParameter(request, "grant_type", "authorization_code");
-				addParameter(request, OAuthConstants.CLIENT_ID, config.getApiKey());
-				addParameter(request, OAuthConstants.CLIENT_SECRET, config.getApiSecret());
 				addParameter(request, OAuthConstants.CODE, verifier.getValue());
 				addParameter(request, OAuthConstants.REDIRECT_URI, config.getCallback());
+				addParameter(request, OAuthConstants.CLIENT_ID, config.getApiKey());
+				if (useBasicAuthHeader()) {
+					addBasicAuthHeader(request, config.getApiKey(), config.getApiSecret());
+				} else {
+					addParameter(request, OAuthConstants.CLIENT_SECRET, config.getApiSecret());
+				}
 				if (config.hasScope()) {
 					addParameter(request, OAuthConstants.SCOPE, config.getScope());
 				}
@@ -44,6 +50,16 @@ public abstract class CustomApi20 extends DefaultApi20 {
 				return getAccessTokenExtractor().extract(response.getBody());
 			}
 		};
+	}
+
+	protected boolean useBasicAuthHeader() {
+		return false;
+	}
+
+	public static void addBasicAuthHeader(OAuthRequest request, String clientId, String clientSecret) {
+		String value = Joiner.on(':').join(clientId, clientSecret);
+		String encoded = BaseEncoding.base64().encode(value.getBytes());
+		request.addHeader("Authorization", "Basic " + encoded);
 	}
 
 	private void addParameter(OAuthRequest request, String key, String value) {

@@ -1,0 +1,36 @@
+{
+    "activities-restingHeartRate": [
+        {
+            "dateTime": "2015-07-25",
+            "value": "61"
+        },
+        {
+            "dateTime": "2015-07-26",
+            "value": "59"
+        },
+        {
+            "dateTime": "2015-07-27",
+            "value": "59"
+        },
+        {
+            "dateTime": "2015-07-28",
+            "value": "60"
+        },
+        {
+            "dateTime": "2015-07-29",
+            "value": "62"
+        },
+        {
+            "dateTime": "2015-07-30",
+            "value": "62"
+        },
+        {
+            "dateTime": "2015-07-31",
+            "value": "61"
+        },
+        {
+            "dateTime": "2015-08-01",
+            "value": "62"
+        }
+    ]
+}

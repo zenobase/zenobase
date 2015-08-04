@@ -18,6 +18,7 @@ import org.joda.time.DateTime;
 import org.joda.time.Duration;
 import org.scribe.model.OAuthRequest;
 import org.scribe.model.Response;
+import org.scribe.model.Token;
 import org.scribe.model.Verb;
 import play.Logger;
 
@@ -35,7 +36,7 @@ public class FitbitActivitiesTaskManager extends FitbitTaskManagerSupport<Fitbit
 	}
 
 	@Override
-	protected Command safeExecute(FitbitActivitiesTask task, OAuthCredentials credentials) {
+	protected Command safeExecute(FitbitActivitiesTask task, OAuthCredentials credentials, Token token) {
 		List<Event> events = Lists.newArrayList();
 		FitbitProfileResult profile = getProfile(task, credentials);
 		DateTime afterDate = DateTime.parse(task.getMarker());
@@ -62,7 +63,7 @@ public class FitbitActivitiesTaskManager extends FitbitTaskManagerSupport<Fitbit
 			}
 
 		}
-		return createCommand(task, events, Objects.firstNonNull(getMarker(events), task.getMarker()));
+		return createCommand(task, credentials, events, Objects.firstNonNull(getMarker(events), task.getMarker()), token);
 	}
 
 	private static String getMarker(Iterable<Event> events) {

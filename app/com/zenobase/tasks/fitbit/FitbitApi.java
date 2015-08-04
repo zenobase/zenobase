@@ -1,7 +1,9 @@
 package com.zenobase.tasks.fitbit;
 
-import org.scribe.builder.api.DefaultApi10a;
-import org.scribe.model.Token;
+import com.zenobase.common.UriBuilder;
+import com.zenobase.tasks.CustomApi20;
+
+import org.scribe.model.OAuthConfig;
 
 /**
  * OAuth API for Fitbit.
@@ -9,20 +11,25 @@ import org.scribe.model.Token;
  * @see <a href="https://wiki.fitbit.com/display/API">Fitbit API</a>
  */
 
-public class FitbitApi extends DefaultApi10a {
-
-	@Override
-	public String getRequestTokenEndpoint() {
-		return "https://api.fitbit.com/oauth/request_token";
-	}
-
-	@Override
-	public String getAuthorizationUrl(Token requestToken) {
-		return "https://www.fitbit.com/oauth/authenticate?oauth_token=" + requestToken.getToken();
-	}
+public class FitbitApi extends CustomApi20 {
 
 	@Override
 	public String getAccessTokenEndpoint() {
-		return "https://api.fitbit.com/oauth/access_token";
+		return "https://api.fitbit.com/oauth2/token";
+	}
+
+	@Override
+	public String getAuthorizationUrl(OAuthConfig config) {
+		return new UriBuilder("https://www.fitbit.com/oauth2/authorize")
+			.addParameter("response_type", "code")
+			.addParameter("client_id", config.getApiKey())
+			.addParameter("redirect_uri", config.getCallback())
+			.addParameter("scope", "activity heartrate location nutrition sleep weight")
+			.build();
+	}
+
+	@Override
+	protected boolean useBasicAuthHeader() {
+		return true;
 	}
 }
