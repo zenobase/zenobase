@@ -3,6 +3,8 @@ package com.zenobase.services;
 import com.zenobase.models.Identity;
 import com.zenobase.tasks.Credentials;
 
+import org.joda.time.DateTime;
+
 public class CredentialsQuery extends QuerySupport {
 
 	public CredentialsQuery principalEqualTo(Identity principal) {
@@ -12,6 +14,16 @@ public class CredentialsQuery extends QuerySupport {
 
 	public CredentialsQuery typeEqualTo(String type) {
 		equalTo(Credentials.TYPE, type);
+		return this;
+	}
+
+	public CredentialsQuery createdBefore(DateTime time) {
+		lessThan(Credentials.CREATED, time);
+		return this;
+	}
+
+	public CredentialsQuery notAuthorized() {
+		notNull(Credentials.AUTHORIZATION_URL);
 		return this;
 	}
 

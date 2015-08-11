@@ -8,15 +8,16 @@ import static org.mockito.Mockito.mock;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import org.joda.time.DateTime;
-import org.junit.Before;
-import org.junit.Test;
-import com.google.common.collect.Lists;
-import com.google.common.util.concurrent.Uninterruptibles;
-
 import com.zenobase.common.Callback;
 import com.zenobase.models.Identity;
 import com.zenobase.tasks.Credentials;
+
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Lists;
+import com.google.common.util.concurrent.Uninterruptibles;
+import org.joda.time.DateTime;
+import org.junit.Before;
+import org.junit.Test;
 
 public class CredentialsRepositoryTest extends ElasticSearchTestSupport {
 
@@ -67,6 +68,29 @@ public class CredentialsRepositoryTest extends ElasticSearchTestSupport {
 		insert("bar", ME);
 		insert("foo", YOU);
 		assertThat(repository.find(ME, "foo")).isEqualTo(c1);
+	}
+
+	@Test
+	public void testFindCreatedBefore() {
+		Credentials c1 = new Credentials(TYPE, ME, DateTime.now());
+		Credentials c2 = new Credentials(TYPE, ME, DateTime.now().minusHours(2));
+		store(c1);
+		store(c2);
+		Callback<Credentials> callback = mock(Callback.class);
+		repository.find(new CredentialsQuery().createdBefore(DateTime.now().minusHours(1)), callback);
+		verifyInteractions(callback, ImmutableList.of(c2));
+	}
+
+	@Test
+	public void testFindNotAuthorized() {
+		Credentials c1 = new Credentials(TYPE, ME);
+		Credentials c2 = new Credentials(TYPE, ME);
+		c2.setAuthorizationUrl("urn:test");
+		store(c1);
+		store(c2);
+		Callback<Credentials> callback = mock(Callback.class);
+		repository.find(new CredentialsQuery().notAuthorized(), callback);
+		verifyInteractions(callback, ImmutableList.of(c2));
 	}
 
 	private List<Credentials> insert(int size) {

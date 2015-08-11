@@ -71,6 +71,7 @@ import com.zenobase.services.ClusterNodeFactory;
 import com.zenobase.services.CommandDispatcher;
 import com.zenobase.services.CommandReplay;
 import com.zenobase.services.CommandRepository;
+import com.zenobase.services.CredentialsCleanupJob;
 import com.zenobase.services.CredentialsRepository;
 import com.zenobase.services.EventRepository;
 import com.zenobase.services.HazelcastBus;
@@ -410,6 +411,7 @@ public class Global extends GlobalSettings {
 				Multibinder<Job> jobs = Multibinder.newSetBinder(binder(), Job.class);
 				jobs.addBinding().to(AuthorizationExpirationJob.class);
 				jobs.addBinding().to(BucketRefreshJob.class);
+				jobs.addBinding().to(CredentialsCleanupJob.class);
 				jobs.addBinding().to(SnapshotJob.class);
 
 				bind(AccountController.class).in(Singleton.class);

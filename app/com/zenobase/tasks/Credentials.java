@@ -1,9 +1,5 @@
 package com.zenobase.tasks;
 
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-
 import com.zenobase.common.Generator;
 import com.zenobase.json.DateTimeField;
 import com.zenobase.json.DomainNode;
@@ -15,6 +11,10 @@ import com.zenobase.json.SchemaBuilder;
 import com.zenobase.json.TokenField;
 import com.zenobase.models.Identity;
 import com.zenobase.oauth.Authorization;
+
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 
 public class Credentials extends DomainNode {
 
@@ -32,10 +32,14 @@ public class Credentials extends DomainNode {
 	}
 
 	public Credentials(String type, Identity principal) {
+		this(type, principal, new DateTime(DateTimeZone.UTC));
+	}
+
+	public Credentials(String type, Identity principal, DateTime created) {
 		setValue(ID, Generator.id());
 		setValue(TYPE, type);
 		setValue(PRINCIPAL, principal);
-		setValue(CREATED, new DateTime(DateTimeZone.UTC));
+		setValue(CREATED, created);
 	}
 
 	@Override
