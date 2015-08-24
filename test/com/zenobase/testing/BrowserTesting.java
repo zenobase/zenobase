@@ -350,6 +350,7 @@ public class BrowserTesting {
 				$("#user-menu").click();
 				$("#account-settings-action").click();
 				$("#close-account-button").click();
+				sleep(1);
 				driver.switchTo().alert().accept();
 				wait.withMessage("home view is displayed").until(ExpectedConditions.visibilityOfElementLocated(By.id("home-view")));
 				assertThat($("#sign-up-banner")).isNotDisplayed();
