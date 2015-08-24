@@ -18,7 +18,6 @@ import org.scribe.model.OAuthRequest;
 import org.scribe.model.Response;
 import org.scribe.model.Token;
 import org.scribe.model.Verb;
-import play.Play;
 
 import com.zenobase.commands.Command;
 import com.zenobase.commands.CompoundCommand;
@@ -50,18 +49,16 @@ abstract class GoogleFitTaskManagerSupport<T extends GoogleFitTaskSupport> exten
 
 		Map<String, DataStream> streams = getDataStreams(credentials);
 
-		if (Play.isTest()) {
-			for (DataStream stream : streams.values()) {
-				List<DataPoint> points = getDataPoints(task.as(taskClass), credentials, stream);
-				if (!points.isEmpty()) {
-					System.err.println("[" + stream.getId() + "]");
-					for (DataPoint dataPoint : points) {
-						System.err.println(dataPoint);
-					}
-					System.err.println();
+		/*for (DataStream stream : streams.values()) {
+			List<DataPoint> points = getDataPoints(task.as(taskClass), credentials, stream);
+			if (!points.isEmpty()) {
+				System.err.println("[" + stream.getId() + "]");
+				for (DataPoint dataPoint : points) {
+					System.err.println(dataPoint);
 				}
+				System.err.println();
 			}
-		}
+		}*/
 
 		return execute(task.as(taskClass), streams, credentials, token);
 	}
