@@ -2,9 +2,9 @@ package com.zenobase.search;
 
 import static org.fest.assertions.Assertions.assertThat;
 
+import com.google.common.collect.ImmutableMap;
 import org.joda.time.DateTimeZone;
 import org.junit.Test;
-import com.google.common.collect.ImmutableMap;
 
 public class FacetOptionsTest {
 

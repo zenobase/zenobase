@@ -4,11 +4,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.zip.GZIPInputStream;
 
-import com.zenobase.commands.Command;
-import com.zenobase.commands.UpdateCredentialsCommand;
-import com.zenobase.json.Nodes;
-import com.zenobase.models.Identity;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -18,6 +13,11 @@ import org.scribe.model.OAuthRequest;
 import org.scribe.model.Response;
 import org.scribe.model.Token;
 import play.mvc.Http;
+
+import com.zenobase.commands.Command;
+import com.zenobase.commands.UpdateCredentialsCommand;
+import com.zenobase.json.Nodes;
+import com.zenobase.models.Identity;
 
 public abstract class OAuthTaskManager extends TaskManager {
 

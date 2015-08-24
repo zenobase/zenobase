@@ -2,9 +2,9 @@ package com.zenobase.tasks.hexoskin;
 
 import javax.inject.Inject;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.joda.time.DateTimeZone;
 import org.scribe.model.Response;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import com.zenobase.models.Identity;
 

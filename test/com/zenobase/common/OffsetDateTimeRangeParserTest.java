@@ -2,9 +2,9 @@ package com.zenobase.common;
 
 import static org.fest.assertions.Assertions.assertThat;
 
+import com.google.common.collect.Range;
 import org.joda.time.DateTime;
 import org.junit.Test;
-import com.google.common.collect.Range;
 
 public class OffsetDateTimeRangeParserTest {
 

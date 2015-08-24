@@ -2,10 +2,10 @@ package com.zenobase.commands;
 
 import static org.mockito.Mockito.*;
 
+import com.google.common.collect.Lists;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.junit.Test;
-import com.google.common.collect.Lists;
 
 import com.zenobase.common.Generator;
 import com.zenobase.models.Event;

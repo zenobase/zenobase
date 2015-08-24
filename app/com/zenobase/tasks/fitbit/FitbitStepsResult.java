@@ -7,12 +7,12 @@ import javax.measure.quantity.Energy;
 import javax.measure.quantity.Length;
 import javax.measure.unit.Unit;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.google.common.collect.Lists;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDate;
 import org.joda.time.Period;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.google.common.collect.Lists;
 
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;

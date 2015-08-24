@@ -6,8 +6,8 @@ import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 
 import com.zenobase.common.Measures;
-import com.zenobase.json.Field;
 import com.zenobase.json.DecimalMeasureField;
+import com.zenobase.json.Field;
 
 public class MeasureConstraintBuilder extends ConstraintBuilder {
 

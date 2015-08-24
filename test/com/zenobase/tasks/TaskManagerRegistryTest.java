@@ -4,9 +4,9 @@ import static org.fest.assertions.Assertions.assertThat;
 
 import java.util.Set;
 
+import com.google.common.collect.Sets;
 import org.junit.Test;
 import org.mockito.Mockito;
-import com.google.common.collect.Sets;
 
 public class TaskManagerRegistryTest {
 

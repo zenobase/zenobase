@@ -5,12 +5,12 @@ import static com.zenobase.testing.NodeAssert.assertThat;
 import java.math.BigDecimal;
 import java.util.List;
 
-import org.fest.assertions.Assertions;
-import org.junit.Test;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.IntNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.Lists;
+import org.fest.assertions.Assertions;
+import org.junit.Test;
 
 public class NodesTest {
 

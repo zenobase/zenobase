@@ -1,7 +1,7 @@
 package com.zenobase.models;
 
-import org.elasticsearch.action.admin.cluster.health.ClusterHealthStatus;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.elasticsearch.action.admin.cluster.health.ClusterHealthStatus;
 
 import com.zenobase.json.BooleanField;
 import com.zenobase.json.DomainNode;

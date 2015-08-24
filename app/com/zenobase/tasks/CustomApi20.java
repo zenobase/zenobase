@@ -1,7 +1,5 @@
 package com.zenobase.tasks;
 
-import com.zenobase.oauth.OAuth2TokenExtractor;
-
 import com.google.common.base.Joiner;
 import com.google.common.io.BaseEncoding;
 import org.scribe.builder.api.DefaultApi20;
@@ -15,6 +13,8 @@ import org.scribe.model.Verb;
 import org.scribe.model.Verifier;
 import org.scribe.oauth.OAuth20ServiceImpl;
 import org.scribe.oauth.OAuthService;
+
+import com.zenobase.oauth.OAuth2TokenExtractor;
 
 public abstract class CustomApi20 extends DefaultApi20 {
 

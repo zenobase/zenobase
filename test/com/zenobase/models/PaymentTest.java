@@ -2,8 +2,8 @@ package com.zenobase.models;
 
 import java.math.BigDecimal;
 
-import org.junit.Test;
 import com.google.common.testing.EqualsTester;
+import org.junit.Test;
 
 public class PaymentTest {
 

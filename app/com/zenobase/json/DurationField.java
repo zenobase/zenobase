@@ -1,9 +1,9 @@
 package com.zenobase.json;
 
-import org.joda.time.Duration;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.LongNode;
 import com.fasterxml.jackson.databind.node.NullNode;
+import org.joda.time.Duration;
 
 import com.zenobase.search.DurationConstraintBuilder;
 import com.zenobase.search.DurationRangeConstraintBuilder;

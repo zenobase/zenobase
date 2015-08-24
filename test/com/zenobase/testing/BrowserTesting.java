@@ -14,6 +14,9 @@ import java.util.regex.Pattern;
 import javax.inject.Inject;
 import javax.mail.MessagingException;
 
+import com.google.common.collect.Iterables;
+import com.google.common.util.concurrent.Uninterruptibles;
+import com.google.inject.Injector;
 import org.joda.time.DateTime;
 import org.junit.After;
 import org.junit.Assume;
@@ -29,9 +32,6 @@ import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import com.google.common.collect.Iterables;
-import com.google.common.util.concurrent.Uninterruptibles;
-import com.google.inject.Injector;
 
 import com.zenobase.common.Globals;
 import com.zenobase.models.Bucket;

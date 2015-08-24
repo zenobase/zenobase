@@ -1,7 +1,7 @@
 package com.zenobase.tasks.misfit;
 
-import org.joda.time.DateTime;
 import com.fasterxml.jackson.databind.JsonNode;
+import org.joda.time.DateTime;
 
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;

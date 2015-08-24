@@ -4,8 +4,8 @@ import static org.fest.assertions.Assertions.assertThat;
 
 import java.util.Map;
 
-import org.junit.Test;
 import com.google.common.collect.ImmutableMap;
+import org.junit.Test;
 
 import com.zenobase.models.Identity;
 import com.zenobase.models.Role;

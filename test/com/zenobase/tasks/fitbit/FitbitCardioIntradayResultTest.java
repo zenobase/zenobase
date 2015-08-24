@@ -6,15 +6,15 @@ import java.util.List;
 
 import javax.measure.quantity.Frequency;
 
-import com.zenobase.common.Measures;
-import com.zenobase.json.Nodes;
-import com.zenobase.models.Event;
-import com.zenobase.tasks.ResultTestSupport;
-
 import org.joda.time.DateTimeZone;
 import org.joda.time.Duration;
 import org.joda.time.LocalDate;
 import org.junit.Test;
+
+import com.zenobase.common.Measures;
+import com.zenobase.json.Nodes;
+import com.zenobase.models.Event;
+import com.zenobase.tasks.ResultTestSupport;
 
 public class FitbitCardioIntradayResultTest extends ResultTestSupport {
 

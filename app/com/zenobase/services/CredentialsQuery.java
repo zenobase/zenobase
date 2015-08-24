@@ -1,9 +1,9 @@
 package com.zenobase.services;
 
+import org.joda.time.DateTime;
+
 import com.zenobase.models.Identity;
 import com.zenobase.tasks.Credentials;
-
-import org.joda.time.DateTime;
 
 public class CredentialsQuery extends QuerySupport {
 

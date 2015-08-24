@@ -4,9 +4,9 @@ import static org.fest.assertions.Assertions.assertThat;
 
 import java.math.BigDecimal;
 
-import org.junit.Test;
 import com.google.common.collect.BoundType;
 import com.google.common.collect.Range;
+import org.junit.Test;
 
 public class DecimalRangeParserTest {
 

@@ -1,8 +1,8 @@
 package com.zenobase.search;
 
-import org.elasticsearch.search.aggregations.bucket.histogram.DateHistogram;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
+import org.elasticsearch.search.aggregations.bucket.histogram.DateHistogram;
 
 public class DateHistograms {
 

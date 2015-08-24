@@ -1,13 +1,13 @@
 package com.zenobase.tasks.microsoft;
 
-import com.zenobase.json.BooleanField;
-import com.zenobase.json.TokenField;
-import com.zenobase.models.Identity;
-
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Objects;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
+
+import com.zenobase.json.BooleanField;
+import com.zenobase.json.TokenField;
+import com.zenobase.models.Identity;
 
 public class MicrosoftHealthStepsTask extends MicrosoftHealthTaskSupport {
 

@@ -1,8 +1,8 @@
 package com.zenobase.search;
 
+import com.google.common.testing.EqualsTester;
 import org.fest.assertions.Assertions;
 import org.junit.Test;
-import com.google.common.testing.EqualsTester;
 
 import com.zenobase.json.Schema;
 import com.zenobase.json.SchemaBuilder;

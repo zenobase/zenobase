@@ -1,8 +1,8 @@
 package com.zenobase.common;
 
-import org.joda.time.ReadablePartial;
 import com.google.common.collect.BoundType;
 import com.google.common.collect.Range;
+import org.joda.time.ReadablePartial;
 
 public class LocalDateTimeRangeParser extends RangeParser<ReadablePartial> {
 

@@ -7,10 +7,10 @@ import static org.mockito.Mockito.mock;
 
 import java.util.List;
 
+import com.google.common.collect.Lists;
 import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
-import com.google.common.collect.Lists;
 
 import com.zenobase.common.Callback;
 import com.zenobase.models.User;

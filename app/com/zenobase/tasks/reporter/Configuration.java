@@ -2,9 +2,9 @@ package com.zenobase.tasks.reporter;
 
 import java.util.Map;
 
-import org.joda.time.DateTimeZone;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
+import org.joda.time.DateTimeZone;
 
 public class Configuration {
 

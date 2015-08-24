@@ -8,13 +8,13 @@ import javax.measure.quantity.Energy;
 import javax.measure.quantity.Frequency;
 import javax.measure.quantity.Length;
 
-import com.zenobase.common.Measures;
-import com.zenobase.models.Event;
-import com.zenobase.tasks.ResultTestSupport;
-
 import org.joda.time.DateTimeZone;
 import org.joda.time.Duration;
 import org.junit.Test;
+
+import com.zenobase.common.Measures;
+import com.zenobase.models.Event;
+import com.zenobase.tasks.ResultTestSupport;
 
 public class MicrosoftHealthStepsResultTest extends ResultTestSupport {
 

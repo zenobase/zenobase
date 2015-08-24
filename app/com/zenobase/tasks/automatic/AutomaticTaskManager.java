@@ -4,18 +4,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import com.zenobase.commands.Command;
-import com.zenobase.commands.CompoundCommand;
-import com.zenobase.commands.CreateEventsCommand;
-import com.zenobase.commands.UpdateCredentialsCommand;
-import com.zenobase.commands.UpdateTaskCommand;
-import com.zenobase.models.Event;
-import com.zenobase.models.Identity;
-import com.zenobase.tasks.Credentials;
-import com.zenobase.tasks.OAuthCredentials;
-import com.zenobase.tasks.OAuthTaskManager;
-import com.zenobase.tasks.Task;
-
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Objects;
 import com.google.common.cache.CacheBuilder;
@@ -28,6 +16,18 @@ import org.scribe.model.OAuthRequest;
 import org.scribe.model.Response;
 import org.scribe.model.Token;
 import org.scribe.model.Verb;
+
+import com.zenobase.commands.Command;
+import com.zenobase.commands.CompoundCommand;
+import com.zenobase.commands.CreateEventsCommand;
+import com.zenobase.commands.UpdateCredentialsCommand;
+import com.zenobase.commands.UpdateTaskCommand;
+import com.zenobase.models.Event;
+import com.zenobase.models.Identity;
+import com.zenobase.tasks.Credentials;
+import com.zenobase.tasks.OAuthCredentials;
+import com.zenobase.tasks.OAuthTaskManager;
+import com.zenobase.tasks.Task;
 
 public class AutomaticTaskManager extends OAuthTaskManager {
 

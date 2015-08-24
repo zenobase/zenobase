@@ -2,10 +2,10 @@ package com.zenobase.tasks.moves;
 
 import java.util.List;
 
-import org.joda.time.DateTime;
-import org.joda.time.format.ISODateTimeFormat;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.collect.Lists;
+import org.joda.time.DateTime;
+import org.joda.time.format.ISODateTimeFormat;
 
 import com.zenobase.common.LocationMap;
 import com.zenobase.models.Location;

@@ -1,7 +1,7 @@
 package com.zenobase.json;
 
-import org.junit.Test;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.junit.Test;
 
 public class ObjectFieldTest extends FieldTestSupport<ObjectNode> {
 

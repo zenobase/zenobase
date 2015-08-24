@@ -2,9 +2,9 @@ package com.zenobase.common;
 
 import static org.fest.assertions.Assertions.assertThat;
 
-import org.junit.Test;
 import com.google.common.collect.Multiset;
 import com.google.common.collect.TreeMultiset;
+import org.junit.Test;
 
 public class GeneratorTest {
 

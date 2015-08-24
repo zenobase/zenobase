@@ -4,9 +4,9 @@ import static com.zenobase.testing.NodeAssert.assertThat;
 
 import java.math.BigDecimal;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.junit.Before;
 import org.junit.Test;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import com.zenobase.common.Measures;
 import com.zenobase.common.Units;

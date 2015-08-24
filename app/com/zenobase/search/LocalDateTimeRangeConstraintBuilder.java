@@ -1,9 +1,9 @@
 package com.zenobase.search;
 
+import com.google.common.collect.Range;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.ReadablePartial;
-import com.google.common.collect.Range;
 
 import com.zenobase.common.LocalDateTimeRangeParser;
 

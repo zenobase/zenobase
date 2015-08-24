@@ -4,10 +4,10 @@ import static com.zenobase.testing.ResultAssert.assertThat;
 import static play.mvc.Http.Status.OK;
 import static play.test.Helpers.*;
 
+import com.google.inject.AbstractModule;
 import org.junit.Test;
 import play.mvc.Result;
 import play.test.FakeApplication;
-import com.google.inject.AbstractModule;
 
 import com.zenobase.services.Bus;
 import com.zenobase.services.LocalBus;

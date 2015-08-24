@@ -1,10 +1,10 @@
 package com.zenobase.tasks.rescuetime;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.common.base.Objects;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.format.ISODateTimeFormat;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.google.common.base.Objects;
 
 import com.zenobase.json.TokenField;
 import com.zenobase.models.Identity;

@@ -3,13 +3,13 @@ package com.zenobase.common;
 import java.util.Collections;
 import java.util.List;
 
+import com.google.common.base.Preconditions;
+import com.google.common.collect.Lists;
 import org.joda.time.DurationFieldType;
 import org.joda.time.LocalDateTime;
 import org.joda.time.Period;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.DateTimeFormatterBuilder;
-import com.google.common.base.Preconditions;
-import com.google.common.collect.Lists;
 
 public class LocalIntervals extends DateTimeFormatSupport {
 

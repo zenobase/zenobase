@@ -2,10 +2,10 @@ package com.zenobase.common;
 
 import static org.fest.assertions.Assertions.assertThat;
 
+import com.google.common.collect.Range;
 import org.joda.time.LocalDateTime;
 import org.joda.time.ReadablePartial;
 import org.junit.Test;
-import com.google.common.collect.Range;
 
 public class LocalDateTimeRangeParserTest {
 

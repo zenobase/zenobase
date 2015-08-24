@@ -2,10 +2,10 @@ package com.zenobase.controllers;
 
 import static org.mockito.Mockito.mock;
 
-import org.junit.Before;
-import play.test.FakeApplication;
 import com.google.inject.AbstractModule;
 import com.google.inject.Singleton;
+import org.junit.Before;
+import play.test.FakeApplication;
 
 import com.zenobase.mail.VerificationMailer;
 import com.zenobase.models.User;

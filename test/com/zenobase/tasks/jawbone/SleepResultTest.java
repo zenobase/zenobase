@@ -4,13 +4,13 @@ import static org.fest.assertions.Assertions.assertThat;
 
 import java.util.List;
 
+import org.joda.time.Duration;
+import org.junit.Test;
+
 import com.zenobase.models.Event;
 import com.zenobase.models.Location;
 import com.zenobase.models.Rating;
 import com.zenobase.tasks.ResultTestSupport;
-
-import org.joda.time.Duration;
-import org.junit.Test;
 
 public class SleepResultTest extends ResultTestSupport {
 

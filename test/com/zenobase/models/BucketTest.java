@@ -2,8 +2,8 @@ package com.zenobase.models;
 
 import static org.fest.assertions.Assertions.assertThat;
 
-import org.junit.Test;
 import com.google.common.testing.EqualsTester;
+import org.junit.Test;
 
 import com.zenobase.common.Generator;
 import com.zenobase.oauth.Authorization;

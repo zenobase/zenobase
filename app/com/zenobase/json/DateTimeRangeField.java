@@ -2,9 +2,9 @@ package com.zenobase.json;
 
 import java.util.List;
 
-import org.joda.time.DateTime;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.Ordering;
+import org.joda.time.DateTime;
 
 public class DateTimeRangeField extends DateTimeField {
 

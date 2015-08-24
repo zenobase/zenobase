@@ -5,14 +5,14 @@ import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import play.libs.ws.WS;
-import play.libs.ws.WSResponse;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.base.Preconditions;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import com.google.common.util.concurrent.RateLimiter;
+import play.libs.ws.WS;
+import play.libs.ws.WSResponse;
 
 public class FoursquareVenues {
 

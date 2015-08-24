@@ -2,19 +2,19 @@ package com.zenobase.search;
 
 import javax.measure.unit.Unit;
 
-import org.elasticsearch.action.search.SearchResponse;
-import org.elasticsearch.index.query.FilterBuilder;
-import org.elasticsearch.search.builder.SearchSourceBuilder;
-import org.elasticsearch.search.facet.histogram.HistogramFacet.ComparatorType;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.Lists;
+import org.elasticsearch.action.search.SearchResponse;
+import org.elasticsearch.index.query.FilterBuilder;
+import org.elasticsearch.search.builder.SearchSourceBuilder;
+import org.elasticsearch.search.facet.histogram.HistogramFacet.ComparatorType;
 
 import com.zenobase.common.Measures;
 import com.zenobase.common.Units;
-import com.zenobase.json.Field;
 import com.zenobase.json.DecimalMeasureField;
+import com.zenobase.json.Field;
 import com.zenobase.json.Nodes;
 import com.zenobase.search.facet.decimalhistogram.DecimalHistogramFacet;
 import com.zenobase.search.facet.decimalhistogram.DecimalHistogramFacetBuilder;

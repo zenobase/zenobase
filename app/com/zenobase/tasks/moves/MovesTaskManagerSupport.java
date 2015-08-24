@@ -3,6 +3,9 @@ package com.zenobase.tasks.moves;
 import java.util.Iterator;
 import java.util.List;
 
+import com.google.common.base.Objects;
+import com.google.common.collect.Iterables;
+import com.google.common.util.concurrent.RateLimiter;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDate;
@@ -10,9 +13,6 @@ import org.scribe.model.OAuthRequest;
 import org.scribe.model.Response;
 import org.scribe.model.Token;
 import org.scribe.model.Verb;
-import com.google.common.base.Objects;
-import com.google.common.collect.Iterables;
-import com.google.common.util.concurrent.RateLimiter;
 
 import com.zenobase.commands.Command;
 import com.zenobase.commands.CompoundCommand;

@@ -2,9 +2,9 @@ package com.zenobase.controllers;
 
 import static org.mockito.Mockito.mock;
 
-import play.test.FakeApplication;
 import com.google.inject.AbstractModule;
 import com.google.inject.Singleton;
+import play.test.FakeApplication;
 
 import com.zenobase.models.Bucket;
 import com.zenobase.models.User;

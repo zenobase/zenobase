@@ -7,12 +7,12 @@ import java.util.List;
 import javax.measure.quantity.Energy;
 import javax.measure.quantity.Length;
 
+import org.joda.time.Duration;
+import org.junit.Test;
+
 import com.zenobase.common.Measures;
 import com.zenobase.models.Event;
 import com.zenobase.tasks.ResultTestSupport;
-
-import org.joda.time.Duration;
-import org.junit.Test;
 
 public class StepsResultTest extends ResultTestSupport {
 

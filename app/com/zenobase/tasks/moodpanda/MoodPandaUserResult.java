@@ -1,7 +1,7 @@
 package com.zenobase.tasks.moodpanda;
 
-import org.w3c.dom.Document;
 import com.google.common.base.Preconditions;
+import org.w3c.dom.Document;
 
 class MoodPandaUserResult extends XmlResultSupport {
 

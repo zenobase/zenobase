@@ -1,6 +1,7 @@
 package com.zenobase.common;
 
 import static org.fest.assertions.Assertions.assertThat;
+
 import org.junit.Test;
 
 public class CharactersTest {

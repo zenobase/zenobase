@@ -3,6 +3,9 @@ package com.zenobase.tasks;
 import java.net.URI;
 import java.util.Scanner;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.common.base.Charsets;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.utils.URLEncodedUtils;
 import org.joda.time.DateTime;
@@ -12,9 +15,6 @@ import org.junit.experimental.categories.Category;
 import org.mockito.Mockito;
 import org.scribe.model.Token;
 import play.test.Helpers;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.google.common.base.Charsets;
 
 import com.zenobase.commands.Command;
 import com.zenobase.commands.UpdateCredentialsCommand;

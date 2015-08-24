@@ -2,6 +2,8 @@ package com.zenobase.controllers;
 
 import javax.inject.Inject;
 
+import play.mvc.Result;
+
 import com.zenobase.models.Identity;
 import com.zenobase.oauth.Authorization;
 import com.zenobase.oauth.AuthorizationList;
@@ -9,8 +11,6 @@ import com.zenobase.services.AuthorizationQuery;
 import com.zenobase.services.AuthorizationRepository;
 import com.zenobase.services.UserLookup;
 import com.zenobase.services.UserRepository;
-
-import play.mvc.Result;
 
 public class AuthorizationListController extends ControllerSupport {
 

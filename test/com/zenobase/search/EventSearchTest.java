@@ -1,8 +1,8 @@
 package com.zenobase.search;
 
-import org.junit.Test;
 import com.google.common.collect.Lists;
 import com.google.common.testing.EqualsTester;
+import org.junit.Test;
 
 public class EventSearchTest {
 

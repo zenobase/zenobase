@@ -1,17 +1,17 @@
 package com.zenobase.tasks.google;
 
-import com.zenobase.json.Nodes;
-import com.zenobase.models.Event;
-import com.zenobase.search.Search;
-import com.zenobase.services.EventRepository;
-import com.zenobase.tasks.TaskTestingSupport;
-
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.joda.time.DateTime;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Mockito;
+
+import com.zenobase.json.Nodes;
+import com.zenobase.models.Event;
+import com.zenobase.search.Search;
+import com.zenobase.services.EventRepository;
+import com.zenobase.tasks.TaskTestingSupport;
 
 public class GoogleFitTesting extends TaskTestingSupport {
 

@@ -2,9 +2,9 @@ package com.zenobase.tasks.lastfm;
 
 import java.util.List;
 
-import org.joda.time.Duration;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
+import org.joda.time.Duration;
 
 import com.zenobase.models.Event;
 import com.zenobase.models.Resource;

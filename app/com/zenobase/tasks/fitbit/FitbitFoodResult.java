@@ -5,12 +5,12 @@ import java.util.List;
 import javax.measure.DecimalMeasure;
 import javax.measure.quantity.Energy;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.google.common.collect.Lists;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDate;
 import org.joda.time.Period;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.google.common.collect.Lists;
 
 import com.zenobase.common.Units;
 import com.zenobase.models.Event;

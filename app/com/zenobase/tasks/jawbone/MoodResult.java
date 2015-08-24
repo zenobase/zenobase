@@ -1,8 +1,8 @@
 package com.zenobase.tasks.jawbone;
 
-import org.joda.time.DateTime;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.base.Strings;
+import org.joda.time.DateTime;
 
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;

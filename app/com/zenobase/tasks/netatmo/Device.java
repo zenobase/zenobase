@@ -1,8 +1,8 @@
 package com.zenobase.tasks.netatmo;
 
-import org.joda.time.DateTime;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
+import org.joda.time.DateTime;
 
 import com.zenobase.models.Location;
 

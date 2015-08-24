@@ -4,9 +4,9 @@ import static org.mockito.Mockito.mock;
 
 import java.math.BigDecimal;
 
-import play.test.FakeApplication;
 import com.google.inject.AbstractModule;
 import com.google.inject.Singleton;
+import play.test.FakeApplication;
 
 import com.zenobase.models.Payment;
 import com.zenobase.models.User;

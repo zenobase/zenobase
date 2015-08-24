@@ -3,11 +3,11 @@ package com.zenobase.tasks.withings;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.scribe.builder.ServiceBuilder;
-import org.scribe.model.SignatureType;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
+import org.scribe.builder.ServiceBuilder;
+import org.scribe.model.SignatureType;
 
 import com.zenobase.commands.Command;
 import com.zenobase.commands.UpdateCredentialsCommand;

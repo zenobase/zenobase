@@ -2,10 +2,10 @@ package com.zenobase.json;
 
 import static com.zenobase.testing.NodeAssert.assertThat;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.joda.time.DateTime;
 import org.junit.After;
 import org.junit.Before;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import com.zenobase.common.Generator;
 import com.zenobase.services.ElasticSearchTestSupport;

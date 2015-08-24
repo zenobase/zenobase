@@ -1,10 +1,5 @@
 package com.zenobase.tasks;
 
-import com.zenobase.commands.Command;
-import com.zenobase.commands.UpdateCredentialsCommand;
-import com.zenobase.models.Identity;
-import com.zenobase.services.CredentialsRepository;
-
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Preconditions;
 import org.scribe.builder.ServiceBuilder;
@@ -15,6 +10,11 @@ import org.scribe.model.Token;
 import org.scribe.model.Verifier;
 import org.scribe.oauth.OAuthService;
 import play.Logger;
+
+import com.zenobase.commands.Command;
+import com.zenobase.commands.UpdateCredentialsCommand;
+import com.zenobase.models.Identity;
+import com.zenobase.services.CredentialsRepository;
 
 public abstract class OAuthCredentialsManager extends CredentialsManager {
 

@@ -5,10 +5,6 @@ import java.util.Set;
 
 import javax.inject.Inject;
 
-import org.elasticsearch.index.query.QueryBuilder;
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
-import org.joda.time.ReadableInstant;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Preconditions;
@@ -17,6 +13,10 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Ordering;
 import com.google.common.collect.Range;
 import com.google.common.collect.Sets;
+import org.elasticsearch.index.query.QueryBuilder;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
+import org.joda.time.ReadableInstant;
 
 import com.zenobase.commands.Command;
 import com.zenobase.commands.CompoundCommand;

@@ -1,9 +1,9 @@
 package com.zenobase.tasks.fitbit;
 
+import org.scribe.model.OAuthConfig;
+
 import com.zenobase.common.UriBuilder;
 import com.zenobase.tasks.CustomApi20;
-
-import org.scribe.model.OAuthConfig;
 
 /**
  * OAuth API for Fitbit.

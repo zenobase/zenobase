@@ -6,8 +6,6 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import play.Logger;
-import play.Play;
 import com.braintreegateway.BraintreeGateway;
 import com.braintreegateway.CreditCard;
 import com.braintreegateway.CreditCardRequest;
@@ -21,6 +19,8 @@ import com.braintreegateway.exceptions.NotFoundException;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
+import play.Logger;
+import play.Play;
 
 import com.zenobase.models.Payment;
 import com.zenobase.models.Plan;

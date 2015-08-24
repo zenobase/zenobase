@@ -2,10 +2,10 @@ package com.zenobase.tasks.lastfm;
 
 import java.util.Map;
 
-import org.scribe.model.OAuthRequest;
-import org.scribe.model.Verb;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
+import org.scribe.model.OAuthRequest;
+import org.scribe.model.Verb;
 
 public class LastFmRequest extends OAuthRequest {
 

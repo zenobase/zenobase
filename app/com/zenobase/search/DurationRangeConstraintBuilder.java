@@ -1,7 +1,7 @@
 package com.zenobase.search;
 
-import org.joda.time.ReadableDuration;
 import com.google.common.collect.Range;
+import org.joda.time.ReadableDuration;
 
 import com.zenobase.common.DurationRangeParser;
 

@@ -3,11 +3,11 @@ package com.zenobase.controllers;
 import static com.zenobase.testing.ResultAssert.assertThat;
 import static org.mockito.Mockito.mock;
 
+import com.google.inject.AbstractModule;
+import com.google.inject.Singleton;
 import play.mvc.Http;
 import play.mvc.Result;
 import play.test.FakeApplication;
-import com.google.inject.AbstractModule;
-import com.google.inject.Singleton;
 
 import com.zenobase.services.AuthorizationRepository;
 import com.zenobase.services.Bus;

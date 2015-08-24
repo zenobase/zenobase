@@ -5,10 +5,10 @@ import static org.fest.assertions.Assertions.assertThat;
 
 import java.math.BigDecimal;
 
+import com.braintreegateway.Environment;
 import org.junit.Assume;
 import org.junit.Before;
 import org.junit.Test;
-import com.braintreegateway.Environment;
 
 import com.zenobase.models.Payment;
 import com.zenobase.models.Plan;

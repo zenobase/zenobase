@@ -4,11 +4,11 @@ import static org.fest.assertions.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 import static play.test.Helpers.*;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import play.mvc.Result;
-import com.fasterxml.jackson.databind.JsonNode;
 
 import com.zenobase.commands.CreateAuthorizationCommand;
 import com.zenobase.models.User;

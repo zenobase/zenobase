@@ -1,7 +1,7 @@
 package com.zenobase.commands;
 
-import org.junit.Test;
 import com.google.common.testing.EqualsTester;
+import org.junit.Test;
 
 import com.zenobase.models.Identity;
 

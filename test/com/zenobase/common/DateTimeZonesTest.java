@@ -7,8 +7,6 @@ import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDateTime;
 import org.junit.Test;
 
-import com.zenobase.common.DateTimeZones;
-
 public class DateTimeZonesTest {
 
 	@Test

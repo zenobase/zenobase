@@ -8,16 +8,16 @@ import static org.mockito.Mockito.mock;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import com.zenobase.common.Callback;
-import com.zenobase.models.Identity;
-import com.zenobase.tasks.Credentials;
-
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.util.concurrent.Uninterruptibles;
 import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
+
+import com.zenobase.common.Callback;
+import com.zenobase.models.Identity;
+import com.zenobase.tasks.Credentials;
 
 public class CredentialsRepositoryTest extends ElasticSearchTestSupport {
 

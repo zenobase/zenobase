@@ -2,9 +2,9 @@ package com.zenobase.testing;
 
 import java.util.List;
 
+import com.google.common.collect.ImmutableList;
 import org.fest.assertions.Assertions;
 import org.fest.assertions.GenericAssert;
-import com.google.common.collect.ImmutableList;
 
 import com.zenobase.common.PartialList;
 

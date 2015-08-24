@@ -1,14 +1,14 @@
 package com.zenobase.controllers;
 
+import com.google.inject.Guice;
+import com.google.inject.Injector;
+import com.google.inject.Module;
 import play.Application;
 import play.GlobalSettings;
 import play.libs.Json;
 import play.test.FakeApplication;
 import play.test.Helpers;
 import play.test.WithApplication;
-import com.google.inject.Guice;
-import com.google.inject.Injector;
-import com.google.inject.Module;
 
 import com.zenobase.json.Nodes;
 

@@ -4,11 +4,11 @@ import static org.fest.assertions.Assertions.assertThat;
 import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.common.collect.Iterables;
 import org.junit.Test;
 import org.scribe.model.OAuthRequest;
 import org.scribe.model.Response;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.google.common.collect.Iterables;
 
 import com.zenobase.commands.Command;
 import com.zenobase.commands.CompoundCommand;

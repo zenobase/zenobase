@@ -2,9 +2,9 @@ package com.zenobase.commands;
 
 import javax.inject.Inject;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.elasticsearch.index.engine.VersionConflictEngineException;
 import play.Logger;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import com.zenobase.json.ObjectField;
 import com.zenobase.json.TokenField;

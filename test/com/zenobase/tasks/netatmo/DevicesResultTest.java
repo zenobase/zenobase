@@ -4,10 +4,10 @@ import static org.fest.assertions.Assertions.assertThat;
 
 import java.util.Collection;
 
+import com.google.common.collect.Iterables;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.junit.Test;
-import com.google.common.collect.Iterables;
 
 import com.zenobase.models.Location;
 import com.zenobase.tasks.ResultTestSupport;

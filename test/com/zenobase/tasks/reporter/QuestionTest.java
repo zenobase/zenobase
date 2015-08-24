@@ -1,7 +1,7 @@
 package com.zenobase.tasks.reporter;
 
-import org.junit.Test;
 import com.google.common.testing.EqualsTester;
+import org.junit.Test;
 
 import com.zenobase.tasks.ResultTestSupport;
 

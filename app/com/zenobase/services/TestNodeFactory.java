@@ -2,11 +2,11 @@ package com.zenobase.services;
 
 import java.io.File;
 
+import com.google.common.io.Files;
 import org.elasticsearch.common.settings.ImmutableSettings;
 import org.elasticsearch.node.Node;
 import org.elasticsearch.node.NodeBuilder;
 import play.Logger;
-import com.google.common.io.Files;
 
 public class TestNodeFactory extends NodeFactorySupport {
 

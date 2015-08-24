@@ -1,12 +1,12 @@
 package com.zenobase.tasks.fitbit;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.common.base.Objects;
+
 import com.zenobase.json.BooleanField;
 import com.zenobase.json.TokenField;
 import com.zenobase.models.Identity;
 import com.zenobase.tasks.Task;
-
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.google.common.base.Objects;
 
 public class FitbitCardioTask extends Task {
 

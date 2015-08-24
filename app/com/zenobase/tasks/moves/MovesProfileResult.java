@@ -1,11 +1,11 @@
 package com.zenobase.tasks.moves;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.google.common.base.Preconditions;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDate;
 import org.joda.time.format.ISODateTimeFormat;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.google.common.base.Preconditions;
 
 class MovesProfileResult {
 

@@ -5,9 +5,9 @@ import static org.fest.assertions.Assertions.assertThat;
 import java.io.IOException;
 import java.io.StringWriter;
 
-import org.junit.Test;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.junit.Test;
 
 import com.zenobase.json.Nodes;
 

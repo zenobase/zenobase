@@ -5,11 +5,11 @@ import static org.mockito.Mockito.*;
 import static play.mvc.Http.Status.*;
 import static play.test.Helpers.*;
 
+import com.google.inject.AbstractModule;
+import com.google.inject.Singleton;
 import org.junit.Test;
 import play.mvc.Result;
 import play.test.FakeApplication;
-import com.google.inject.AbstractModule;
-import com.google.inject.Singleton;
 
 import com.zenobase.models.User;
 import com.zenobase.models.UserProfile;

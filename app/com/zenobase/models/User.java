@@ -1,8 +1,8 @@
 package com.zenobase.models;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import com.zenobase.common.BCrypt;
 import com.zenobase.common.Generator;

@@ -2,11 +2,11 @@ package com.zenobase.services;
 
 import java.math.BigDecimal;
 
-import com.zenobase.models.Plan;
-
+import com.braintreegateway.Customer;
 import org.fest.assertions.Assertions;
 import org.fest.assertions.GenericAssert;
-import com.braintreegateway.Customer;
+
+import com.zenobase.models.Plan;
 
 public class CustomerAssert extends GenericAssert<CustomerAssert, Customer> {
 

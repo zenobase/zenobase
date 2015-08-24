@@ -3,11 +3,11 @@ package com.zenobase.tasks.netatmo;
 import java.util.Collection;
 import java.util.Map;
 
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 
 import com.zenobase.models.Location;
 

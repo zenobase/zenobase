@@ -3,8 +3,8 @@ package com.zenobase.tasks.withings;
 import javax.measure.quantity.Mass;
 import javax.measure.unit.Unit;
 
-import org.joda.time.DateTimeZone;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.joda.time.DateTimeZone;
 
 import com.zenobase.json.TokenField;
 import com.zenobase.json.UnitField;

@@ -2,11 +2,11 @@ package com.zenobase.controllers;
 
 import javax.inject.Inject;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import org.elasticsearch.action.admin.cluster.health.ClusterHealthResponse;
 import play.mvc.BodyParser;
 import play.mvc.Http;
 import play.mvc.Result;
-import com.fasterxml.jackson.databind.JsonNode;
 
 import com.zenobase.models.StatusInfo;
 import com.zenobase.oauth.Authorization;

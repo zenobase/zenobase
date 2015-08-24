@@ -7,14 +7,14 @@ import java.util.List;
 import javax.measure.quantity.Energy;
 import javax.measure.quantity.Frequency;
 
+import org.joda.time.DateTimeZone;
+import org.joda.time.Duration;
+import org.junit.Test;
+
 import com.zenobase.common.Measures;
 import com.zenobase.models.Event;
 import com.zenobase.models.Percentage;
 import com.zenobase.tasks.ResultTestSupport;
-
-import org.joda.time.DateTimeZone;
-import org.joda.time.Duration;
-import org.junit.Test;
 
 public class MicrosoftHealthSleepResultTest extends ResultTestSupport {
 

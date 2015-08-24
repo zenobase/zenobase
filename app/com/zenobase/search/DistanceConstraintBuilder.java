@@ -6,12 +6,12 @@ import java.util.regex.Pattern;
 import javax.measure.DecimalMeasure;
 import javax.measure.quantity.Length;
 
+import com.google.common.base.Objects;
 import org.elasticsearch.common.unit.DistanceUnit;
 import org.elasticsearch.index.query.FilterBuilder;
 import org.elasticsearch.index.query.FilterBuilders;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
-import com.google.common.base.Objects;
 
 import com.zenobase.common.Measures;
 import com.zenobase.common.Units;

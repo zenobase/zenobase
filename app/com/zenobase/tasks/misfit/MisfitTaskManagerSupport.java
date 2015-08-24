@@ -2,9 +2,9 @@ package com.zenobase.tasks.misfit;
 
 import java.util.List;
 
+import com.google.common.collect.Ordering;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
-import com.google.common.collect.Ordering;
 
 import com.zenobase.commands.Command;
 import com.zenobase.commands.CompoundCommand;

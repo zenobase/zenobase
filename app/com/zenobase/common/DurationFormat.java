@@ -2,8 +2,8 @@ package com.zenobase.common;
 
 import java.util.Scanner;
 
-import org.joda.time.Duration;
 import com.google.common.base.Preconditions;
+import org.joda.time.Duration;
 
 public class DurationFormat {
 

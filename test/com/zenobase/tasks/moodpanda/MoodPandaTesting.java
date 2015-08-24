@@ -1,10 +1,10 @@
 package com.zenobase.tasks.moodpanda;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.junit.Assume;
 import org.junit.Before;
 import org.junit.Test;
 import play.test.Helpers;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import com.zenobase.common.Generator;
 import com.zenobase.json.Nodes;

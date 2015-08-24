@@ -2,17 +2,6 @@ package com.zenobase.tasks.microsoft;
 
 import java.util.List;
 
-import com.zenobase.commands.Command;
-import com.zenobase.commands.CompoundCommand;
-import com.zenobase.commands.CreateEventsCommand;
-import com.zenobase.commands.UpdateCredentialsCommand;
-import com.zenobase.commands.UpdateTaskCommand;
-import com.zenobase.models.Event;
-import com.zenobase.tasks.Credentials;
-import com.zenobase.tasks.OAuthCredentials;
-import com.zenobase.tasks.OAuthTaskManager;
-import com.zenobase.tasks.Task;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableList;
@@ -24,6 +13,17 @@ import org.joda.time.Duration;
 import org.scribe.model.OAuthRequest;
 import org.scribe.model.Response;
 import org.scribe.model.Token;
+
+import com.zenobase.commands.Command;
+import com.zenobase.commands.CompoundCommand;
+import com.zenobase.commands.CreateEventsCommand;
+import com.zenobase.commands.UpdateCredentialsCommand;
+import com.zenobase.commands.UpdateTaskCommand;
+import com.zenobase.models.Event;
+import com.zenobase.tasks.Credentials;
+import com.zenobase.tasks.OAuthCredentials;
+import com.zenobase.tasks.OAuthTaskManager;
+import com.zenobase.tasks.Task;
 
 abstract class MicrosoftHealthTaskManagerSupport<T extends MicrosoftHealthTaskSupport> extends OAuthTaskManager {
 

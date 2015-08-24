@@ -1,9 +1,9 @@
 package com.zenobase.tasks.ihealth;
 
-import org.joda.time.DateTimeZone;
-import org.joda.time.Duration;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.base.Preconditions;
+import org.joda.time.DateTimeZone;
+import org.joda.time.Duration;
 
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;

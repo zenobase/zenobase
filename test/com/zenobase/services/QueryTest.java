@@ -1,8 +1,8 @@
 package com.zenobase.services;
 
+import com.google.common.testing.EqualsTester;
 import org.fest.assertions.Assertions;
 import org.junit.Test;
-import com.google.common.testing.EqualsTester;
 
 import com.zenobase.json.Field;
 import com.zenobase.json.TokenField;

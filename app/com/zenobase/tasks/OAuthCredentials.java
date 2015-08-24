@@ -1,9 +1,9 @@
 package com.zenobase.tasks;
 
-import org.scribe.model.Token;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.NullNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.scribe.model.Token;
 
 import com.zenobase.json.DateTimeField;
 import com.zenobase.json.Field;

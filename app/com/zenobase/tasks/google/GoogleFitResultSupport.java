@@ -1,7 +1,5 @@
 package com.zenobase.tasks.google;
 
-import com.zenobase.models.Resource;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
@@ -9,6 +7,8 @@ import com.google.common.collect.ImmutableMap;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import play.Logger;
+
+import com.zenobase.models.Resource;
 
 abstract class GoogleFitResultSupport {
 

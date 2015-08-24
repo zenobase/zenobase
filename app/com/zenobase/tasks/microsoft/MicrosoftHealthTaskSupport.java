@@ -1,12 +1,12 @@
 package com.zenobase.tasks.microsoft;
 
-import com.zenobase.json.TokenField;
-import com.zenobase.models.Identity;
-import com.zenobase.tasks.Task;
-
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
+
+import com.zenobase.json.TokenField;
+import com.zenobase.models.Identity;
+import com.zenobase.tasks.Task;
 
 abstract class MicrosoftHealthTaskSupport extends Task {
 

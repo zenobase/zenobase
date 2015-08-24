@@ -7,13 +7,13 @@ import java.util.List;
 import javax.measure.DecimalMeasure;
 import javax.measure.quantity.Frequency;
 
-import com.zenobase.json.Nodes;
-import com.zenobase.models.Event;
-import com.zenobase.tasks.ResultTestSupport;
-
 import org.joda.time.DateTimeZone;
 import org.joda.time.Duration;
 import org.junit.Test;
+
+import com.zenobase.json.Nodes;
+import com.zenobase.models.Event;
+import com.zenobase.tasks.ResultTestSupport;
 
 public class FitbitCardioResultTest extends ResultTestSupport {
 

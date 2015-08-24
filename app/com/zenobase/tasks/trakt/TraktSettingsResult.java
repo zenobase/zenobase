@@ -1,8 +1,8 @@
 package com.zenobase.tasks.trakt;
 
-import org.joda.time.DateTimeZone;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.base.Preconditions;
+import org.joda.time.DateTimeZone;
 
 class TraktSettingsResult {
 

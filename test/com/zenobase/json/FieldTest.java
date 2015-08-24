@@ -4,9 +4,9 @@ import static org.fest.assertions.Assertions.assertThat;
 
 import java.util.Collections;
 
-import org.junit.Test;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.ImmutableList;
+import org.junit.Test;
 
 public class FieldTest {
 

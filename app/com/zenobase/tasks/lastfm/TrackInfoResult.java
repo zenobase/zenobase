@@ -1,9 +1,9 @@
 package com.zenobase.tasks.lastfm;
 
-import org.joda.time.Duration;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
+import org.joda.time.Duration;
 
 import com.zenobase.models.Resource;
 

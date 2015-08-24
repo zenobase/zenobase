@@ -1,10 +1,10 @@
 package com.zenobase.tasks.beddit;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.scribe.extractors.AccessTokenExtractor;
 import org.scribe.model.OAuthConfig;
 import org.scribe.model.OAuthConstants;
 import org.scribe.model.Token;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import com.zenobase.common.UriBuilder;
 import com.zenobase.json.Nodes;

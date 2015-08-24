@@ -1,8 +1,8 @@
 package com.zenobase.common;
 
-import org.joda.time.ReadableInstant;
 import com.google.common.collect.BoundType;
 import com.google.common.collect.Range;
+import org.joda.time.ReadableInstant;
 
 public class OffsetDateTimeRangeParser extends RangeParser<ReadableInstant> {
 

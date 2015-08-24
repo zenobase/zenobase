@@ -5,10 +5,10 @@ import static org.fest.assertions.Assertions.assertThat;
 import java.util.List;
 import java.util.Properties;
 
+import com.google.common.collect.Iterables;
 import org.junit.After;
 import org.junit.Test;
 import org.jvnet.mock_javamail.Mailbox;
-import com.google.common.collect.Iterables;
 
 public class MailerTest {
 

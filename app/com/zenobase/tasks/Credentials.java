@@ -1,5 +1,9 @@
 package com.zenobase.tasks;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
+
 import com.zenobase.common.Generator;
 import com.zenobase.json.DateTimeField;
 import com.zenobase.json.DomainNode;
@@ -11,10 +15,6 @@ import com.zenobase.json.SchemaBuilder;
 import com.zenobase.json.TokenField;
 import com.zenobase.models.Identity;
 import com.zenobase.oauth.Authorization;
-
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
 
 public class Credentials extends DomainNode {
 

@@ -8,8 +8,8 @@ import com.google.common.collect.Range;
 
 import com.zenobase.common.MeasureRangeParser;
 import com.zenobase.common.Measures;
-import com.zenobase.json.Field;
 import com.zenobase.json.DecimalMeasureField;
+import com.zenobase.json.Field;
 
 public class MeasureRangeConstraintBuilder extends RangeConstraintBuilderSupport<Measurable<Quantity>> {
 

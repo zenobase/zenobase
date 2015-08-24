@@ -1,8 +1,8 @@
 package com.zenobase.controllers;
 
-import com.zenobase.common.BCrypt;
-
 import com.google.common.base.Joiner;
+
+import com.zenobase.common.BCrypt;
 
 public class EmailVerificationKey {
 

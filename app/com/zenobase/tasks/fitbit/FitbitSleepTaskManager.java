@@ -4,13 +4,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import com.zenobase.commands.Command;
-import com.zenobase.models.Event;
-import com.zenobase.models.Identity;
-import com.zenobase.tasks.InvalidStatusException;
-import com.zenobase.tasks.OAuthCredentials;
-import com.zenobase.tasks.Task;
-
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Objects;
 import com.google.common.collect.Lists;
@@ -20,6 +13,13 @@ import org.scribe.model.Response;
 import org.scribe.model.Token;
 import org.scribe.model.Verb;
 import play.Logger;
+
+import com.zenobase.commands.Command;
+import com.zenobase.models.Event;
+import com.zenobase.models.Identity;
+import com.zenobase.tasks.InvalidStatusException;
+import com.zenobase.tasks.OAuthCredentials;
+import com.zenobase.tasks.Task;
 
 public class FitbitSleepTaskManager extends FitbitTaskManagerSupport<FitbitSleepTask> {
 

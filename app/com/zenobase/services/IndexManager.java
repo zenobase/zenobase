@@ -6,6 +6,10 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import com.google.common.base.Joiner;
+import com.google.common.base.Preconditions;
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
 import org.elasticsearch.action.admin.indices.alias.IndicesAliasesRequestBuilder;
 import org.elasticsearch.action.admin.indices.alias.IndicesAliasesResponse;
 import org.elasticsearch.client.Client;
@@ -13,10 +17,6 @@ import org.elasticsearch.cluster.metadata.AliasAction;
 import org.elasticsearch.index.query.BoolFilterBuilder;
 import org.elasticsearch.node.Node;
 import play.Logger;
-import com.google.common.base.Joiner;
-import com.google.common.base.Preconditions;
-import com.google.common.collect.Iterables;
-import com.google.common.collect.Lists;
 
 import com.zenobase.models.Alias;
 import com.zenobase.models.Event;

@@ -2,14 +2,14 @@ package com.zenobase.services;
 
 import javax.inject.Inject;
 
-import com.zenobase.commands.DeleteAuthorizationCommand;
-import com.zenobase.common.Callback;
-import com.zenobase.oauth.Authorization;
-
 import org.joda.time.DateTime;
 import org.joda.time.LocalTime;
 import org.joda.time.Period;
 import play.Logger;
+
+import com.zenobase.commands.DeleteAuthorizationCommand;
+import com.zenobase.common.Callback;
+import com.zenobase.oauth.Authorization;
 
 public class AuthorizationExpirationJob extends Job {
 

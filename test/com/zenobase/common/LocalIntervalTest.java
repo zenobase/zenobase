@@ -2,9 +2,9 @@ package com.zenobase.common;
 
 import static org.fest.assertions.Assertions.assertThat;
 
+import com.google.common.testing.EqualsTester;
 import org.joda.time.LocalDateTime;
 import org.junit.Test;
-import com.google.common.testing.EqualsTester;
 
 public class LocalIntervalTest {
 

@@ -1,8 +1,8 @@
 package com.zenobase.tasks.moves;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.joda.time.DateTime;
 import org.joda.time.format.ISODateTimeFormat;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import com.zenobase.models.Identity;
 import com.zenobase.tasks.Task;

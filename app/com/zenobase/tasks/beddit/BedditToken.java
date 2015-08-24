@@ -1,7 +1,7 @@
 package com.zenobase.tasks.beddit;
 
-import org.scribe.model.Token;
 import com.google.common.base.Preconditions;
+import org.scribe.model.Token;
 
 class BedditToken extends Token {
 

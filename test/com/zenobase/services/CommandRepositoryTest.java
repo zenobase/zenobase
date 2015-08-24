@@ -8,12 +8,12 @@ import static org.mockito.Mockito.mock;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import org.joda.time.DateTime;
-import org.junit.Before;
-import org.junit.Test;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.util.concurrent.Uninterruptibles;
+import org.joda.time.DateTime;
+import org.junit.Before;
+import org.junit.Test;
 
 import com.zenobase.commands.Command;
 import com.zenobase.commands.CommandParserRegistry;

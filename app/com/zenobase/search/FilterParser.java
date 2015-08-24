@@ -1,8 +1,8 @@
 package com.zenobase.search;
 
-import org.elasticsearch.index.query.FilterBuilder;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMultimap;
+import org.elasticsearch.index.query.FilterBuilder;
 
 public class FilterParser {
 

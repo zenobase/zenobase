@@ -1,7 +1,7 @@
 package com.zenobase.tasks.automatic;
 
-import org.junit.Test;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.junit.Test;
 
 import com.zenobase.json.Nodes;
 import com.zenobase.tasks.TaskTestingSupport;

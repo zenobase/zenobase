@@ -6,8 +6,8 @@ import java.math.BigDecimal;
 
 import javax.measure.Measurable;
 
-import org.junit.Test;
 import com.google.common.collect.Range;
+import org.junit.Test;
 
 public class MeasureRangeParserTest {
 

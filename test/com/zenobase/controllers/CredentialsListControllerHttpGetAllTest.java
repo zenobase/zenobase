@@ -5,9 +5,9 @@ import static org.mockito.Mockito.when;
 import static play.mvc.Http.Status.*;
 import static play.test.Helpers.callAction;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.junit.Test;
 import play.mvc.Result;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import com.zenobase.common.DefaultPartialList;
 import com.zenobase.models.Identity;

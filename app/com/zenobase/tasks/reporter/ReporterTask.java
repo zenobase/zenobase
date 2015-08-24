@@ -1,7 +1,7 @@
 package com.zenobase.tasks.reporter;
 
-import org.joda.time.LocalDate;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.joda.time.LocalDate;
 
 import com.zenobase.json.TokenField;
 import com.zenobase.models.Identity;

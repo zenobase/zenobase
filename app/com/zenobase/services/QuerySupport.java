@@ -2,12 +2,12 @@ package com.zenobase.services;
 
 import java.util.List;
 
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.FilterBuilders;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
-import com.google.common.collect.Iterables;
-import com.google.common.collect.Lists;
 
 import com.zenobase.json.Field;
 

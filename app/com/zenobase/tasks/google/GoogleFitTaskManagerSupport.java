@@ -3,12 +3,6 @@ package com.zenobase.tasks.google;
 import java.util.List;
 import java.util.Map;
 
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
-import org.scribe.model.OAuthRequest;
-import org.scribe.model.Response;
-import org.scribe.model.Token;
-import org.scribe.model.Verb;
 import com.google.common.base.Function;
 import com.google.common.base.Objects;
 import com.google.common.base.Predicate;
@@ -18,6 +12,13 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Ordering;
 import com.google.common.collect.Range;
 import com.google.common.net.UrlEscapers;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
+import org.scribe.model.OAuthRequest;
+import org.scribe.model.Response;
+import org.scribe.model.Token;
+import org.scribe.model.Verb;
+import play.Play;
 
 import com.zenobase.commands.Command;
 import com.zenobase.commands.CompoundCommand;
@@ -48,8 +49,9 @@ abstract class GoogleFitTaskManagerSupport<T extends GoogleFitTaskSupport> exten
 		}
 
 		Map<String, DataStream> streams = getDataStreams(credentials);
-		/*for (DataStream stream : streams.values()) {
-			if (!stream.getId().contains("xxx")) {
+
+		if (Play.isTest()) {
+			for (DataStream stream : streams.values()) {
 				List<DataPoint> points = getDataPoints(task.as(taskClass), credentials, stream);
 				if (!points.isEmpty()) {
 					System.err.println("[" + stream.getId() + "]");
@@ -59,7 +61,7 @@ abstract class GoogleFitTaskManagerSupport<T extends GoogleFitTaskSupport> exten
 					System.err.println();
 				}
 			}
-		}*/
+		}
 
 		return execute(task.as(taskClass), streams, credentials, token);
 	}

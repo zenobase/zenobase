@@ -1,5 +1,24 @@
 import javax.inject.Inject;
 
+import com.google.common.base.Throwables;
+import com.google.inject.AbstractModule;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
+import com.google.inject.Singleton;
+import com.google.inject.TypeLiteral;
+import com.google.inject.multibindings.Multibinder;
+import com.google.inject.name.Names;
+import play.Application;
+import play.Configuration;
+import play.GlobalSettings;
+import play.Play;
+import play.api.PlayException;
+import play.api.mvc.Handler;
+import play.libs.F.Promise;
+import play.libs.Json;
+import play.mvc.Http.RequestHeader;
+import play.mvc.Result;
+
 import com.zenobase.actions.Canonical;
 import com.zenobase.commands.ChangeQuotaCommand;
 import com.zenobase.commands.ChangeUserEmailCommand;
@@ -182,25 +201,6 @@ import com.zenobase.tasks.withings.WithingsCredentialsManager;
 import com.zenobase.tasks.withings.WithingsSleepTaskManager;
 import com.zenobase.tasks.withings.WithingsStepsTaskManager;
 import com.zenobase.tasks.withings.WithingsWeightTaskManager;
-
-import com.google.common.base.Throwables;
-import com.google.inject.AbstractModule;
-import com.google.inject.Guice;
-import com.google.inject.Injector;
-import com.google.inject.Singleton;
-import com.google.inject.TypeLiteral;
-import com.google.inject.multibindings.Multibinder;
-import com.google.inject.name.Names;
-import play.Application;
-import play.Configuration;
-import play.GlobalSettings;
-import play.Play;
-import play.api.PlayException;
-import play.api.mvc.Handler;
-import play.libs.F.Promise;
-import play.libs.Json;
-import play.mvc.Http.RequestHeader;
-import play.mvc.Result;
 
 public class Global extends GlobalSettings {
 

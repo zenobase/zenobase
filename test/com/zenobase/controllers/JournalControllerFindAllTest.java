@@ -5,9 +5,9 @@ import static org.mockito.Mockito.when;
 import static play.mvc.Http.Status.*;
 import static play.test.Helpers.callAction;
 
+import com.google.common.collect.ImmutableList;
 import org.junit.Test;
 import play.mvc.Result;
-import com.google.common.collect.ImmutableList;
 
 import com.zenobase.commands.Command;
 import com.zenobase.commands.TestCommand;

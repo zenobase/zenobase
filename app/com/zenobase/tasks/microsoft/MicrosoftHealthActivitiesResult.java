@@ -6,18 +6,18 @@ import java.util.List;
 import javax.measure.DecimalMeasure;
 import javax.measure.quantity.Length;
 
-import com.zenobase.common.Measures;
-import com.zenobase.common.Units;
-import com.zenobase.models.Event;
-import com.zenobase.models.Identity;
-import com.zenobase.models.Location;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.Duration;
+
+import com.zenobase.common.Measures;
+import com.zenobase.common.Units;
+import com.zenobase.models.Event;
+import com.zenobase.models.Identity;
+import com.zenobase.models.Location;
 
 class MicrosoftHealthActivitiesResult extends MicrosoftHealthResultSupport {
 

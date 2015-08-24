@@ -1,14 +1,14 @@
 package com.zenobase.tasks.misfit;
 
-import com.zenobase.models.Event;
-import com.zenobase.models.Identity;
-import com.zenobase.models.Percentage;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.base.Preconditions;
 import com.google.common.primitives.Ints;
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
+
+import com.zenobase.models.Event;
+import com.zenobase.models.Identity;
+import com.zenobase.models.Percentage;
 
 class MisfitSleepResult extends MisfitResultSupport {
 

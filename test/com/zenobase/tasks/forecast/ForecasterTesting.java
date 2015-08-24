@@ -7,12 +7,12 @@ import java.util.Set;
 import javax.measure.quantity.Pressure;
 import javax.measure.quantity.Temperature;
 
+import com.google.common.collect.ImmutableSet;
 import org.joda.time.DateTime;
 import org.joda.time.format.ISODateTimeFormat;
 import org.junit.Assume;
 import org.junit.Before;
 import org.junit.Test;
-import com.google.common.collect.ImmutableSet;
 
 import com.zenobase.common.Measures;
 import com.zenobase.models.Event;

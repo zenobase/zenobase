@@ -1,12 +1,12 @@
 package com.zenobase.tasks.moves;
 
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.joda.time.DateTime;
 import org.junit.Assume;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Mockito;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import com.zenobase.json.Nodes;
 import com.zenobase.models.Event;
