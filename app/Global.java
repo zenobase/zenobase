@@ -13,7 +13,10 @@ import play.Configuration;
 import play.GlobalSettings;
 import play.Play;
 import play.api.PlayException;
+import play.api.mvc.EssentialFilter;
 import play.api.mvc.Handler;
+import play.filters.gzip.GzipFilter;
+import play.filters.headers.SecurityHeadersFilter;
 import play.libs.F.Promise;
 import play.libs.Json;
 import play.mvc.Http.RequestHeader;
@@ -487,11 +490,11 @@ public class Global extends GlobalSettings {
 		}
 	}
 
-	/*@Override
+	@Override
 	@SuppressWarnings("unchecked")
 	public <T extends EssentialFilter> Class<T>[] filters() {
 		return new Class[] { SecurityHeadersFilter.class, GzipFilter.class };
-	}*/
+	}
 
 	@Override
 	public Handler onRouteRequest(RequestHeader request) {
