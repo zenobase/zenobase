@@ -41,7 +41,6 @@ public class BucketRefreshJob extends Job {
 		buckets.find(new BucketQuery().isRefreshable(), new Callback<Bucket>() {
 			@Override
 			public void call(Bucket bucket) {
-				Logger.warn("Refreshing bucket {}...", bucket.getId());
 				User owner = users.find(Iterables.getOnlyElement(bucket.getPrincipals(Role.OWNER)));
 				if (owner.getQuota() == null) {
 					Logger.warn("Bucket owner does not have refresh privileges: {}", owner.getName());
@@ -49,7 +48,6 @@ public class BucketRefreshJob extends Job {
 				}
 				try {
 					for (Task task : tasks.find(new TaskQuery().bucketEqualTo(bucket.getId()), TaskQuery.orderByCreated(true), 0, 100)) {
-						Logger.warn("Refreshing task {}...", task.getId());
 						refresher.refresh(task);
 					}
 				} catch (CredentialsException e) {
