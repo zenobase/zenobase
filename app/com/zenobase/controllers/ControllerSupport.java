@@ -3,6 +3,8 @@ package com.zenobase.controllers;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Objects;
+import org.jsoup.Jsoup;
+import org.jsoup.safety.Whitelist;
 import play.mvc.Controller;
 import play.mvc.With;
 
@@ -60,6 +62,10 @@ public abstract class ControllerSupport extends Controller implements CustomHead
 	}
 
 	private static Status result(int status, String message) {
-		return status(status, Nodes.newObject("message", Objects.firstNonNull(message, "?")));
+		return status(status, Nodes.newObject("message", sanitize(Objects.firstNonNull(message, "?"))));
+	}
+
+	private static String sanitize(String message) {
+		return message.contains("<") ? Jsoup.clean(message, Whitelist.basic()) : message;
 	}
 }
