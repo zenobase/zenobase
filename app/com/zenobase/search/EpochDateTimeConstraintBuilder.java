@@ -13,6 +13,6 @@ public class EpochDateTimeConstraintBuilder extends ConstraintBuilder {
 
 	@Override
 	public QueryBuilder build(String value) {
-		return Characters.isDigits(value) && value.length() > 4 ? QueryBuilders.termQuery(getPath(), value) : null;
+		return Characters.isDigits(value) && value.length() > 4 ? QueryBuilders.matchQuery(getPath(), Long.parseLong(value)) : null;
 	}
 }
