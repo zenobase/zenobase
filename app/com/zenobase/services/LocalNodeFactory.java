@@ -10,7 +10,7 @@ public class LocalNodeFactory extends NodeFactorySupport {
 	@Override
 	public Node createNode(String clusterName) {
 		Logger.info("Starting local node...");
-		ImmutableSettings.Builder settings = createDefaultSettings();
+		ImmutableSettings.Builder settings = createDefaultSettings().put("path.repo", "${user.dir}");
 		Node node = NodeBuilder.nodeBuilder().clusterName(clusterName).client(false).local(true).settings(settings.build()).node();
 		registerSnapshotRepository(node, clusterName.toLowerCase());
 		return node;
