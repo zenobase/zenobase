@@ -24,7 +24,7 @@ public class FitbitApi extends CustomApi20 {
 			.addParameter("response_type", "code")
 			.addParameter("client_id", config.getApiKey())
 			.addParameter("redirect_uri", config.getCallback())
-			.addParameter("scope", "activity heartrate location nutrition sleep weight")
+			.addParameter("scope", "profile settings activity heartrate location nutrition sleep weight")
 			.build();
 	}
 
