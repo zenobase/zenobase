@@ -11,6 +11,6 @@ import play.mvc.Result;
 public class BlankController extends Controller {
 
 	public static Result get() {
-    	return status(Http.Status.OK);
+		return status(Http.Status.OK, "");
     }
 }
