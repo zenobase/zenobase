@@ -18,6 +18,7 @@ public class FitbitStepsTask extends Task {
 	public static final String TYPE = "fitbit-steps";
 	public static final TokenField TAG = new TokenField("tag");
 	public static final BooleanField HOURLY = new BooleanField("hourly");
+	public static final BooleanField INCLUDE_BMR = new BooleanField("bmr");
 	public static final UnitField<Energy> ENERGY_UNIT = new UnitField<>("energy_unit");
 
 	public FitbitStepsTask(ObjectNode node) {
@@ -30,6 +31,7 @@ public class FitbitStepsTask extends Task {
 		setSetting(TAG, tag);
 		setSetting(HOURLY, hourly);
 		setSetting(ENERGY_UNIT, energyUnit);
+		setSetting(INCLUDE_BMR, true);
 	}
 
 	public String getTag() {
@@ -38,6 +40,10 @@ public class FitbitStepsTask extends Task {
 
 	public boolean isHourly() {
 		return Objects.firstNonNull(getSetting(HOURLY), false);
+	}
+
+	public boolean includeBMR() {
+		return Objects.firstNonNull(getSetting(INCLUDE_BMR), false);
 	}
 
 	public Unit<Energy> getEnergyUnit() {

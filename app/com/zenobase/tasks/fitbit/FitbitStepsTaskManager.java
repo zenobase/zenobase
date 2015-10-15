@@ -56,7 +56,7 @@ public class FitbitStepsTaskManager extends FitbitTaskManagerSupport<FitbitSteps
 					request.addHeader("Accept-Language", profile.getDistanceLocale());
 					Response response = send(request, credentials);
 					events.addAll(new FitbitStepsResult(parseObject(response), task.getTag(), task.getPrincipal(), date, profile.getTimezone(),
-						profile.getDistanceUnit(), profile.getHeightUnit(), task.getEnergyUnit()).getEvents());
+						profile.getDistanceUnit(), profile.getHeightUnit(), task.getEnergyUnit(), task.includeBMR()).getEvents());
 				}
 			} catch (InvalidStatusException e) {
 				if (e.getStatus() == 429) { // reached rate limit

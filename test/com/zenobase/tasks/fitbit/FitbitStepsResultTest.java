@@ -26,7 +26,7 @@ public class FitbitStepsResultTest extends ResultTestSupport {
 
 	@Test
 	public void test() {
-		FitbitStepsResult result = new FitbitStepsResult(readObject("FitbitStepsResultTest.json"), TAG, TESTER, DATE, TIMEZONE, Units.MI, Units.FT, Units.KCAL);
+		FitbitStepsResult result = new FitbitStepsResult(readObject("FitbitStepsResultTest.json"), TAG, TESTER, DATE, TIMEZONE, Units.MI, Units.FT, Units.KCAL, true);
 		List<Event> events = result.getEvents();
 		assertThat(events).as("events").hasSize(1);
 		Event expected = new Event(events.get(0).getId());
@@ -36,7 +36,7 @@ public class FitbitStepsResultTest extends ResultTestSupport {
 		expected.setValue(Event.COUNT, 9366);
 		expected.setValue(Event.DISTANCE, DecimalMeasure.<Length>valueOf("4.47 mi"));
 		expected.setValue(Event.HEIGHT, DecimalMeasure.<Length>valueOf("540 ft"));
-		expected.setValue(Event.ENERGY, DecimalMeasure.<Energy>valueOf("1071 kcal"));
+		expected.setValue(Event.ENERGY, DecimalMeasure.<Energy>valueOf("2535 kcal"));
 		expected.setValue(Event.AUTHOR, TESTER);
 		expected.setValue(Event.SOURCE, FitbitStepsResult.SOURCE);
 		assertThat(events.get(0)).as("first event").isEqualTo(expected);
@@ -44,7 +44,7 @@ public class FitbitStepsResultTest extends ResultTestSupport {
 
 	@Test
 	public void testEmpty() {
-		FitbitStepsResult result = new FitbitStepsResult(Nodes.newObject(), TAG, TESTER, DATE, TIMEZONE, Units.MI, Units.FT, Units.KCAL);
+		FitbitStepsResult result = new FitbitStepsResult(Nodes.newObject(), TAG, TESTER, DATE, TIMEZONE, Units.MI, Units.FT, Units.KCAL, false);
 		List<Event> events = result.getEvents();
 		assertThat(events).as("events").isEmpty();
 	}
