@@ -44,6 +44,7 @@ public class Units {
 
 		UnitFormat.getInstance().label(SI.JOULE.divide(0.239005736), "cal");
 		UnitFormat.getInstance().label(SI.JOULE.divide(0.000239005736), "kcal");
+		UnitFormat.getInstance().label(SI.JOULE.times(3600000), "kWh");
 
 		UnitFormat.getInstance().label(SI.HERTZ.divide(60L), "bpm");
 		UnitFormat.getInstance().alias(SI.HERTZ.divide(60L), "rpm");
@@ -111,6 +112,7 @@ public class Units {
 	public static final Unit<Energy> KJ = valueOf("kJ");
 	public static final Unit<Energy> CAL = valueOf("cal");
 	public static final Unit<Energy> KCAL = valueOf("kcal");
+	public static final Unit<Energy> KWH = valueOf("kWh");
 
 	public static final Unit<Frequency> BPM = valueOf("bpm");
 	public static final Unit<Frequency> RPM = valueOf("rpm");

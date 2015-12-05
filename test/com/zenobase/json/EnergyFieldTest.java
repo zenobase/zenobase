@@ -17,5 +17,6 @@ public class EnergyFieldTest extends DecimalMeasureFieldTestSupport<Energy> {
 		roundtrip(null);
 		roundtrip(valueOf("1 kJ"));
 		roundtrip(valueOf("5000 kcal"));
+		roundtrip(valueOf("1.5 kWh"));
 	}
 }

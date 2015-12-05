@@ -7301,7 +7301,7 @@
 			name : 'energy',
 			icon : 'fa-fire',
 			type : 'numeric',
-			units : [ 'J', 'kJ', 'cal', 'kcal' ],
+			units : [ 'J', 'kJ', 'cal', 'kcal', 'kWh' ],
 			toText : function(value) {
 				return typeof value === 'object' ? value['@value'] + ' ' + value.unit : value;
 			},
