@@ -5123,38 +5123,82 @@
 
 	app.factory('Nomie', [ 'moment', function(moment) {
 
-		return {
-			parse : function(s) {
-				var events = [];
-				var data = JSON.parse(s);
-				var tags = {};
-				var add = function(i, item) {
-					var event = {
-						'timestamp' : moment(item.time).utcOffset(-item.offset).format('YYYY-MM-DDTHH:mm:ss.SSSZ'),
-						'tag' : tags[item.parent],
-						'rating' : (Number(item.charge) + 3) * 20
-					};
-					if (item.geo.length === 2) {
-						event['location'] = { 'lat' : Number(item.geo[0]), 'lon' : Number(item.geo[1]) };
-					}
-					if (item.value) {
-						event['note'] = item.value;
-					}
-					console.log('item', item, event);
-					events.push(event);
+		function parseJSON(s) {
+			var events = [];
+			var data = JSON.parse(s);
+			var tags = {};
+			var add = function(i, item) {
+				var event = {
+					'timestamp' : moment(item.time).utcOffset(-item.offset).format('YYYY-MM-DDTHH:mm:ss.SSSZ'),
+					'tag' : tags[item.parent],
+					'rating' : (Number(item.charge) + 3) * 20
 				};
-				$.each(data.trackers, function(i, tracker) {
-					tags[tracker._id] = [ tracker.label ];
+				if (item.geo.length === 2) {
+					event['location'] = { 'lat' : Number(item.geo[0]), 'lon' : Number(item.geo[1]) };
+				}
+				if (typeof item.value === 'string') {
+					event['note'] = item.value;
+				}
+				events.push(event);
+			};
+			$.each(data.trackers, function(i, tracker) {
+				tags[tracker._id] = [ tracker.label ];
+				if (tracker.groups) {
 					$.each(tracker.groups, function(i, group) {
 						if (group) {
 							tags[tracker._id].push(group);
 						}
 					});
-				});
-				console.log('tags', tags);
-				$.each(data.ticks, add);
-				$.each(data.notes, add);
-				return events;
+				}
+			});
+			$.each(data.ticks, add);
+			$.each(data.notes, add);
+			return events;
+		}
+
+		function parseCSV(s) {
+			var events = [];
+			var csv = Baby.parse(s, { header : true, skipEmptyLines : true });
+			if (csv.errors.length) {
+				throw new Error(csv.errors[0].message + ' in row ' + csv.errors[0].row);
+			}
+			$.each(csv.data, function(rowNum, row) {
+				var t = moment(row['iso_date']);
+				var offset = Number(row['offset']);
+				if (isFinite(offset)) {
+					t.utcOffset(-offset);
+				}
+				var timestamp = t.format('YYYY-MM-DDTHH:mm:ss.SSSZ');
+				var event = {
+					'timestamp' : timestamp,
+					'tag' : [],
+				};
+				if (row['tracker'] === '') {
+					event['tag'].push('Note');
+				} else if (row['tracker'] !== 'Unknown') {
+					event['tag'].push(row['tracker']);
+				}
+				if (row['charge'] !== undefined) {
+					event['rating'] = (Number(row['charge']) + 3) * 20;
+				}
+				if (row['lat']) {
+					var lat = Number(row['lat']);
+					var lon = Number(row['long']);
+					if (lat !== 0 || lon !== 0) {
+						event['location'] = { 'lat' : lat, 'lon' : lon };
+					}
+				}
+				if (row['note']) {
+					event['note'] = row['note'];
+				}
+				events.push(event);
+			});
+			return events;
+		}
+
+		return {
+			parse : function(s) {
+				return s.charAt(0) === '{' ? parseJSON(s) : parseCSV(s);
 			}
 		};
 	}]);
@@ -5385,7 +5429,7 @@
 			{
 				id : 'nomie',
 				label : 'Nomie',
-				description : 'Import a <b>.json</b> file from <a href="https://nomie.io/" target="_blank">Nomie</a>.',
+				description : 'Import a <b>.json</b> or <b>.csv</b> file from <a href="https://nomie.io/" target="_blank">Nomie</a>.',
 				parse : function(data) {
 					return Nomie.parse(data);
 				}
