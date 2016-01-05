@@ -1895,6 +1895,20 @@
 		</div>
 	</script>
 
+	<script id="/import-nomie.html" type="text/ng-template">
+		<div data-ng-controller="ImportNomieController">
+			<div class="controls form-horizontal">
+				<select name="field" class="input-medium" data-ng-model="settings.field" data-ng-options="field.name as field.name for field in fields">
+					<option value="">N/A</option>
+				</select>
+				<span data-ng-show="units.length"> in <select name="unit" class="input-small" data-ng-model="settings.unit" data-ng-options="unit for unit in units"></select></span>
+			</div>
+			<div class="control-group">
+				<p class="help-block">The field to map values to.</p>
+			</div>
+		</div>
+	</script>
+
 	<div id="export-dialog" data-ui-modal data-ng-controller="ExportDialogController">
 		<form name="form" class="modal-form">
 			<div class="modal-header">

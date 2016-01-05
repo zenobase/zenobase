@@ -5123,7 +5123,7 @@
 
 	app.factory('Nomie', [ 'moment', function(moment) {
 
-		function parseJSON(s) {
+		function parseJSON(s, settings) {
 			var events = [];
 			var data = JSON.parse(s);
 			var tags = {};
@@ -5138,6 +5138,11 @@
 				}
 				if (typeof item.value === 'string') {
 					event['note'] = item.value;
+				} else if (typeof item.value === 'number' && settings.field) {
+					event[settings.field] = settings.unit ? {
+						'@value' : item.value,
+						'unit' : settings.unit
+					} : item.value;
 				}
 				events.push(event);
 			};
@@ -5156,7 +5161,7 @@
 			return events;
 		}
 
-		function parseCSV(s) {
+		function parseCSV(s, settings) {
 			var events = [];
 			var csv = Baby.parse(s, { header : true, skipEmptyLines : true });
 			if (csv.errors.length) {
@@ -5174,12 +5179,19 @@
 					'tag' : [],
 				};
 				if (row['tracker'] === '') {
-					event['tag'].push('Note');
+					return;
 				} else if (row['tracker'] !== 'Unknown') {
 					event['tag'].push(row['tracker']);
 				}
 				if (row['charge'] !== undefined) {
 					event['rating'] = (Number(row['charge']) + 3) * 20;
+				}
+				var value = Number(row['value']);
+				if (value && settings.field) {
+					event[settings.field] = settings.unit ? {
+						'@value' : value,
+						'unit' : settings.unit
+					} : value;
 				}
 				if (row['lat']) {
 					var lat = Number(row['lat']);
@@ -5188,17 +5200,14 @@
 						event['location'] = { 'lat' : lat, 'lon' : lon };
 					}
 				}
-				if (row['note']) {
-					event['note'] = row['note'];
-				}
 				events.push(event);
 			});
 			return events;
 		}
 
 		return {
-			parse : function(s) {
-				return s.charAt(0) === '{' ? parseJSON(s) : parseCSV(s);
+			parse : function(s, settings) {
+				return s.charAt(0) === '{' ? parseJSON(s, settings) : parseCSV(s, settings);
 			}
 		};
 	}]);
@@ -5430,8 +5439,9 @@
 				id : 'nomie',
 				label : 'Nomie',
 				description : 'Import a <b>.json</b> or <b>.csv</b> file from <a href="https://nomie.io/" target="_blank">Nomie</a>.',
-				parse : function(data) {
-					return Nomie.parse(data);
+				settings : '/import-nomie.html',
+				parse : function(data, settings) {
+					return Nomie.parse(data, settings);
 				}
 			},
 			{
@@ -5567,6 +5577,18 @@
 		$scope.settings.tag = 'Sunlight';
 		$scope.settings.timezone = 'UTC';
 
+		$scope.settings = $scope.$parent.settings;
+	}]);
+
+	app.controller('ImportNomieController', ['$scope', 'Field', function($scope, Field) {
+
+		$scope.fields = Field.findByType('numeric');
+		$scope.units = [];
+
+		$scope.$watch('settings.field', function() {
+			$scope.units = $scope.settings.field && Field.find($scope.settings.field).units || [];
+			$scope.settings.unit = $scope.units.length ? $scope.units[0] : null;
+		});
 		$scope.settings = $scope.$parent.settings;
 	}]);
 
