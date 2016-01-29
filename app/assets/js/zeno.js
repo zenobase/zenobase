@@ -5792,6 +5792,7 @@
 			{ id : 'bodymedia-burn', description : 'Creates an event for the number of calories burned each day or hour.', url : 'http://www.bodymedia.com/' },
 			{ id : 'bodymedia-sleep', description : 'Creates an event for each period of sleep.', url : 'http://www.bodymedia.com/' },
 			{ id : 'bodymedia-steps', description : 'Creates an event for the number of steps each day or hour.', url : 'http://www.bodymedia.com/' },
+			{ id : 'fitbark', description : 'Creates an event for the activity level for every day or hour.', url : 'https://www.fitbark.com/' },
 			{ id : 'fitbit-activities', description : 'Creates an event for each activity.', url : 'https://www.fitbit.com/' },
 			{ id : 'fitbit-cardio', description : 'Creates an event for the daily resting heart rate, or the average hourly heart rate.', url : 'https://www.fitbit.com/' },
 			{ id : 'fitbit-food', description : 'Creates an event for the number of calories consumed each day.', url : 'https://www.fitbit.com/' },
@@ -5899,6 +5900,19 @@
 		$scope.init = function() {
 			$scope.settings = $scope.$parent.$parent.settings = {
 					tag : 'Sleep'
+			};
+		};
+
+		$scope.init();
+	}]);
+
+	app.controller('FitBarkSettingsController', ['$scope', 'moment', function($scope, moment) {
+
+		$scope.init = function() {
+			$scope.settings = $scope.$parent.$parent.settings = {
+					tag : '',
+					hourly : false,
+					marker : new Date(moment().utc().subtract(3, 'months').startOf('month').valueOf())
 			};
 		};
 

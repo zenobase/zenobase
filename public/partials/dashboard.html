@@ -332,6 +332,26 @@
 		</div>
 	</script>
 
+	<script id="/fitbark-settings.html" type="text/ng-template">
+		<div data-ng-controller="FitBarkSettingsController">
+			<div class="control-group">
+				<label for="name" class="control-label">Dog Name</label>
+				<input name="name" type="text" required data-ng-model="settings.name"/>
+				<p class="help-block">The exact name of your dog, as entered in FitBark.</p>
+			</div>
+			<div class="control-group">
+				<label class="control-label">Resolution</label>
+				<label class="radio"><input type="radio" data-ng-model="settings.hourly" data-ng-value="false"/> day</label>
+				<label class="radio"><input type="radio" data-ng-model="settings.hourly" data-ng-value="true"/> hour</label>
+				</label>
+			</div>
+			<div class="control-group">
+				<label for="marker" class="control-label">Starting from</label>
+				<input class="input-small" type="text" data-ui-datepicker data-ng-model="settings.marker"/>
+			</div>
+		</div>
+	</script>
+
 	<script id="/fitbit-activities-settings.html" type="text/ng-template">
 		<div data-ng-controller="FitbitActivitiesSettingsController">
 			<div class="control-group">

@@ -1,6 +1,51 @@
 [
 	{
 		"category" : "Activities",
+		"source" : "FitBark",
+		"task" : "fitbark", 
+		"widgets" : [
+			{
+				"id" : "timeline",
+				"type" : "timeline",
+				"label" : "Points",
+				"placement" : "top",
+				"field" : "count",
+				"statistic" : "sum",
+				"unit" : "bpm",
+				"interval" : "day"
+			},
+			{
+				"id" : "latest",
+				"type" : "list",
+				"label" : "Latest",
+				"placement" : "left",
+				"singleton" : true,
+				"limit" : 10,
+				"order" : "-timestamp"
+			},
+			{
+				"id" : "histogram",
+				"type" : "histogram",
+				"label" : "Histogram",
+				"placement" : "right",
+				"field" : "count",
+				"unit" : null,
+				"interval" : 1000
+			},
+			{
+				"id" : "day_of_week",
+				"type" : "polar",
+				"label" : "Day of Week",
+				"placement" : "right",
+				"value_field" : "count",
+				"unit" : null,
+				"statistic" : "avg",
+				"interval" : "day_of_week"
+			}
+		]
+	},
+	{
+		"category" : "Activities",
 		"source" : "Fitbit",
 		"task" : "fitbit-activities",
 		"widgets" : [

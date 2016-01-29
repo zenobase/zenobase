@@ -1,0 +1,245 @@
+{
+    "activity_series": {
+        "slug": "10a91cf6-ab2c-42f9-9e9a-1f3f7cab0532",
+        "records": [
+            {
+                "date": "2016-01-28 00:00:00",
+                "activity_value": 0,
+                "min_play": 0,
+                "min_active": 0,
+                "min_rest": 60
+            },
+            {
+                "date": "2016-01-28 01:00:00",
+                "activity_value": 0,
+                "min_play": 0,
+                "min_active": 0,
+                "min_rest": 60
+            },
+            {
+                "date": "2016-01-28 02:00:00",
+                "activity_value": 0,
+                "min_play": 0,
+                "min_active": 0,
+                "min_rest": 60
+            },
+            {
+                "date": "2016-01-28 03:00:00",
+                "activity_value": 0,
+                "min_play": 0,
+                "min_active": 0,
+                "min_rest": 60
+            },
+            {
+                "date": "2016-01-28 04:00:00",
+                "activity_value": 0,
+                "min_play": 0,
+                "min_active": 0,
+                "min_rest": 60
+            },
+            {
+                "date": "2016-01-28 05:00:00",
+                "activity_value": 0,
+                "min_play": 0,
+                "min_active": 0,
+                "min_rest": 60
+            },
+            {
+                "date": "2016-01-28 06:00:00",
+                "activity_value": 0,
+                "min_play": 0,
+                "min_active": 0,
+                "min_rest": 60
+            },
+            {
+                "date": "2016-01-28 07:00:00",
+                "activity_value": 0,
+                "min_play": 0,
+                "min_active": 0,
+                "min_rest": 60
+            },
+            {
+                "date": "2016-01-28 08:00:00",
+                "activity_value": 0,
+                "min_play": 0,
+                "min_active": 0,
+                "min_rest": 60
+            },
+            {
+                "date": "2016-01-28 09:00:00",
+                "activity_value": 0,
+                "min_play": 0,
+                "min_active": 0,
+                "min_rest": 60
+            },
+            {
+                "date": "2016-01-28 10:00:00",
+                "activity_value": 2,
+                "min_play": 0,
+                "min_active": 1,
+                "min_rest": 59
+            },
+            {
+                "date": "2016-01-28 11:00:00",
+                "activity_value": 125,
+                "min_play": 1,
+                "min_active": 13,
+                "min_rest": 46
+            },
+            {
+                "date": "2016-01-28 12:00:00",
+                "activity_value": 3615,
+                "min_play": 25,
+                "min_active": 14,
+                "min_rest": 21
+            },
+            {
+                "date": "2016-01-28 13:00:00",
+                "activity_value": 769,
+                "min_play": 6,
+                "min_active": 17,
+                "min_rest": 37
+            },
+            {
+                "date": "2016-01-28 14:00:00",
+                "activity_value": 73,
+                "min_play": 0,
+                "min_active": 26,
+                "min_rest": 34
+            },
+            {
+                "date": "2016-01-28 15:00:00",
+                "activity_value": 27,
+                "min_play": 0,
+                "min_active": 16,
+                "min_rest": 44
+            },
+            {
+                "date": "2016-01-28 16:00:00",
+                "activity_value": 13,
+                "min_play": 0,
+                "min_active": 20,
+                "min_rest": 40
+            },
+            {
+                "date": "2016-01-28 17:00:00",
+                "activity_value": 55,
+                "min_play": 0,
+                "min_active": 18,
+                "min_rest": 42
+            },
+            {
+                "date": "2016-01-28 18:00:00",
+                "activity_value": 202,
+                "min_play": 1,
+                "min_active": 32,
+                "min_rest": 27
+            },
+            {
+                "date": "2016-01-28 19:00:00",
+                "activity_value": 80,
+                "min_play": 0,
+                "min_active": 21,
+                "min_rest": 39
+            },
+            {
+                "date": "2016-01-28 20:00:00",
+                "activity_value": 1794,
+                "min_play": 13,
+                "min_active": 11,
+                "min_rest": 36
+            },
+            {
+                "date": "2016-01-28 21:00:00",
+                "activity_value": 1436,
+                "min_play": 13,
+                "min_active": 19,
+                "min_rest": 28
+            },
+            {
+                "date": "2016-01-28 22:00:00",
+                "activity_value": 0,
+                "min_play": 0,
+                "min_active": 0,
+                "min_rest": 60
+            },
+            {
+                "date": "2016-01-28 23:00:00",
+                "activity_value": 1,
+                "min_play": 0,
+                "min_active": 1,
+                "min_rest": 59
+            },
+            {
+                "date": "2016-01-29 00:00:00",
+                "activity_value": 0,
+                "min_play": 0,
+                "min_active": 0,
+                "min_rest": 60
+            },
+            {
+                "date": "2016-01-29 01:00:00",
+                "activity_value": 0,
+                "min_play": 0,
+                "min_active": 0,
+                "min_rest": 60
+            },
+            {
+                "date": "2016-01-29 02:00:00",
+                "activity_value": 0,
+                "min_play": 0,
+                "min_active": 0,
+                "min_rest": 60
+            },
+            {
+                "date": "2016-01-29 03:00:00",
+                "activity_value": 0,
+                "min_play": 0,
+                "min_active": 0,
+                "min_rest": 60
+            },
+            {
+                "date": "2016-01-29 04:00:00",
+                "activity_value": 0,
+                "min_play": 0,
+                "min_active": 0,
+                "min_rest": 60
+            },
+            {
+                "date": "2016-01-29 05:00:00",
+                "activity_value": 0,
+                "min_play": 0,
+                "min_active": 0,
+                "min_rest": 60
+            },
+            {
+                "date": "2016-01-29 06:00:00",
+                "activity_value": 0,
+                "min_play": 0,
+                "min_active": 0,
+                "min_rest": 60
+            },
+            {
+                "date": "2016-01-29 08:00:00",
+                "activity_value": 257,
+                "min_play": 4,
+                "min_active": 11,
+                "min_rest": 45
+            },
+            {
+                "date": "2016-01-29 09:00:00",
+                "activity_value": 112,
+                "min_play": 0,
+                "min_active": 20,
+                "min_rest": 40
+            },
+            {
+                "date": "2016-01-29 10:00:00",
+                "activity_value": 10,
+                "min_play": 0,
+                "min_active": 4,
+                "min_rest": 1
+            }
+        ]
+    }
+}

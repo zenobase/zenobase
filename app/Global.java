@@ -126,6 +126,8 @@ import com.zenobase.tasks.bodymedia.BodyMediaStepsTaskManager;
 import com.zenobase.tasks.demo.DemoCredentialsManager;
 import com.zenobase.tasks.demo.DemoTaskManager;
 import com.zenobase.tasks.dropbox.DropboxCredentialsManager;
+import com.zenobase.tasks.fitbark.FitBarkCredentialsManager;
+import com.zenobase.tasks.fitbark.FitBarkTaskManager;
 import com.zenobase.tasks.fitbit.FitbitActivitiesTaskManager;
 import com.zenobase.tasks.fitbit.FitbitCardioTaskManager;
 import com.zenobase.tasks.fitbit.FitbitCredentialsManager;
@@ -342,6 +344,7 @@ public class Global extends GlobalSettings {
 				bindIfConfigured("trakt", TraktCredentialsManager.class, credentials);
 				bindIfConfigured("wakatime", WakaTimeCredentialsManager.class, credentials);
 				bindIfConfigured("microsoft", MicrosoftHealthCredentialsManager.class, credentials);
+				bindIfConfigured("fitbark", FitBarkCredentialsManager.class, credentials);
 				bind(CredentialsManagerRegistry.class).in(Singleton.class);
 
 				Multibinder<TaskManager> tasks = Multibinder.newSetBinder(binder(), new TypeLiteral<TaskManager>() {});
@@ -409,6 +412,7 @@ public class Global extends GlobalSettings {
 				bindIfConfigured("microsoft", MicrosoftHealthActivitiesTaskManager.class, tasks);
 				bindIfConfigured("microsoft", MicrosoftHealthSleepTaskManager.class, tasks);
 				bindIfConfigured("microsoft", MicrosoftHealthStepsTaskManager.class, tasks);
+				bindIfConfigured("fitbark", FitBarkTaskManager.class, tasks);
 				bind(TaskManagerRegistry.class).in(Singleton.class);
 
 				Multibinder<Job> jobs = Multibinder.newSetBinder(binder(), Job.class);

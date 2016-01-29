@@ -1,0 +1,42 @@
+{
+    "dog_relations": [
+        {
+            "id": 8096,
+            "status": "OWNER",
+            "date": "2015-08-28T19:03:04.000Z",
+            "dog": {
+                "slug": "10a91cf6-ab2c-42f9-9e9a-1f3f7cab0532",
+                "name": "Jessie",
+                "bluetooth_id": "36692484bec4",
+                "activity_value": 658,
+                "activity_date": "2016-01-28T11:04:54.000Z",
+                "birth": "1991-06-01",
+                "breed1": {
+                    "id": 382,
+                    "name": "Human (Pocket)",
+                    "not_a_dog": true
+                },
+                "breed2": {},
+                "gender": "F",
+                "weight": 50,
+                "weight_unit": "lbs",
+                "country": "US",
+                "zip": "98119",
+                "tzoffset": -28800,
+                "tzname": "America/Los_Angeles",
+                "min_play": 1,
+                "min_active": 5,
+                "min_rest": 659,
+                "medical_conditions": [],
+                "hourly_average": 412,
+                "picture_hash": "4d091689065d077126e34e1e7bc0b3d6",
+                "neutered": true,
+                "last_min_time": "2016-01-28T11:04:00.000Z",
+                "last_min_activity": 14,
+                "daily_goal": 4200,
+                "battery_level": 61,
+                "description": null
+            }
+        }
+    ]
+}

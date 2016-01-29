@@ -62,3 +62,5 @@ includeFilter in filter := "*.less"
 includeFilter in gzip := "*.html" || "*.css" || "*.js" || "*.json"
 
 pipelineStages := Seq(uglify, filter, gzip)
+
+// javacOptions ++= Seq("-source", "1.8", "-target", "1.8")
