@@ -61,7 +61,7 @@ public class FitBarkTaskManager extends OAuthTaskManager {
 					.put("resolution", task.isHourly() ? "HOURLY" : "DAILY")
 					.put("from", from.toString())
 					.put("to", to.toString());
-				OAuthRequest request = new OAuthRequest(Verb.POST, "http://app.fitbark.com/api/v2/activity_series");
+				OAuthRequest request = new OAuthRequest(Verb.POST, "https://app.fitbark.com/api/v2/activity_series");
 				request.addHeader("Content-Type", "application/json");
 				request.addPayload(payload.toString());
 				Response response = send(request, credentials);
@@ -78,7 +78,7 @@ public class FitBarkTaskManager extends OAuthTaskManager {
 	}
 
 	private Dog findDog(String name, OAuthCredentials credentials) {
-		OAuthRequest request = new OAuthRequest(Verb.GET, "http://app.fitbark.com/api/v2/dog_relations");
+		OAuthRequest request = new OAuthRequest(Verb.GET, "https://app.fitbark.com/api/v2/dog_relations");
 		Response response = send(request, credentials);
 		for (Dog dog : new DogsResult(parse(response)).getDogs()) {
 			if (dog.getName().equalsIgnoreCase(name)) {

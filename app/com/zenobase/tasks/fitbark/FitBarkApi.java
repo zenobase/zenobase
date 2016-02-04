@@ -15,12 +15,12 @@ public class FitBarkApi extends CustomApi20 {
 
 	@Override
 	public String getAccessTokenEndpoint() {
-		return "http://app.fitbark.com/oauth/token";
+		return "https://app.fitbark.com/oauth/token";
 	}
 
 	@Override
 	public String getAuthorizationUrl(OAuthConfig config) {
-		return new UriBuilder("http://app.fitbark.com/oauth/authorize")
+		return new UriBuilder("https://app.fitbark.com/oauth/authorize")
 			.addParameter("response_type", "code")
 			.addParameter("client_id", config.getApiKey())
 			.addParameter("redirect_uri", config.getCallback())
