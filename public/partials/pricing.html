@@ -93,52 +93,15 @@
 						</div>
 					</div>
 					<div data-ng-show="addCard">
-						<div class="control-group">
-							<label class="control-label">Card#</label>
-							<div class="controls">
-								<span class="input-append">
-									<input name="ccnumber" type="text" class="input-large" required autocomplete="off" data-ui-payment-number data-ui-focus-on="openDialog:payment-dialog" data-ng-model="newCard.number"/>
-									<span class="add-on">
-										<i class="fa fa-exclamation" title="not valid" data-ng-show="form.ccnumber.$invalid"></i>
-										<i class="fa fa-check" title="valid" data-ng-hide="form.ccnumber.$invalid"></i>
-									</span>
-								</span>
-								<span class="input-append">
-									<input name="cvv" type="text" class="input-mini" required autocomplete="off" data-ui-payment-cvv data-ng-model="newCard.cvv" placeholder="CVV"/>
-									<span class="add-on">
-										<i class="fa fa-exclamation" title="not valid" data-ng-show="form.cvv.$invalid"></i>
-										<i class="fa fa-check" title="valid" data-ng-hide="form.cvv.$invalid"></i>
-									</span>
-								</span>
-							</div>
-						</div>
-						<div class="control-group">
-							<label class="control-label">Expires</label>
-							<div class="controls">
-								<span class="input-append">
-									<input name="expirationMonth" type="number" class="input-mini" required min="1" max="12" data-ng-model="newCard.expirationMonth" placeholder="MM"/>
-									<span class="add-on">
-										<i class="fa fa-exclamation" title="not valid" data-ng-show="form.expirationMonth.$invalid"></i>
-										<i class="fa fa-check" title="valid" data-ng-hide="form.expirationMonth.$invalid"></i>
-									</span>
-								</span>
-								<span class="input-append">
-									<input name="expirationYear" type="number" class="input-mini" required min="2014" max="2100"  data-ng-model="newCard.expirationYear" placeholder="YYYY"/>
-									<span class="add-on">
-										<i class="fa fa-exclamation" title="not valid" data-ng-show="form.expirationYear.$invalid"></i>
-										<i class="fa fa-check" title="valid" data-ng-hide="form.expirationYear.$invalid"></i>
-									</span>
-								</span>
-							</div>
-						</div>
+						<div id="braintree" class="control-group"></div>
 					</div>
 				</div>
 			</div>
 			<div class="modal-footer">
 				<a data-ng-href="https://www.braintreegateway.com/merchants/{{merchantId}}/verified" title="Braintree Secure Payments" target="_blank" class="pull-left">
-					<img src="https://braintree-badges.s3.amazonaws.com/14.png" border="0"/>
+					<img src="https://s3.amazonaws.com/braintree-badges/braintree-badge-dark.png" width="164px" height ="44px" border="0"/>
 				</a>
-				<button type="submit" class="btn btn-primary" data-ng-disabled="processing || !user.verified || addCard && !form.$valid">Confirm</button>
+				<button type="submit" class="btn btn-primary" data-ng-disabled="processing || !user.verified || !addCard">Confirm</button>
 				<button type="reset" class="btn" data-dismiss="modal">Cancel</button>
 			</div>
 		</form>

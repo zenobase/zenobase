@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import play.mvc.Result;
 
 import com.zenobase.commands.ChangeQuotaCommand;
+import com.zenobase.json.Nodes;
 import com.zenobase.models.Payment;
 import com.zenobase.models.Plan;
 import com.zenobase.models.User;
@@ -46,6 +47,10 @@ public class PaymentController extends ControllerSupport {
 		}
 		Payment payment = payments.findPayment(user.getName());
 		return payment != null ? ok(payment.toJson()) : noContent();
+    }
+
+	public Result token() {
+		return ok(Nodes.newObject("value", payments.token()));
     }
 
 	public Result pay() {

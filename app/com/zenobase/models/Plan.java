@@ -20,6 +20,10 @@ public enum Plan {
 		return id;
 	}
 
+	public BigDecimal getPrice() {
+		return price;
+	}
+
 	public int getQuota() {
 		return quota;
 	}

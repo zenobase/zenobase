@@ -6887,12 +6887,26 @@
 		};
 	}]);
 
-	app.controller('PersonalPlanDialogController', ['$scope', '$http', '$location', 'braintree', 'tracker', function($scope, $http, $location, braintree, tracker) {
+	app.controller('PersonalPlanDialogController', ['$scope', '$http', '$location', '$window', 'braintree', 'tracker', function($scope, $http, $location, $window, braintree, tracker) {
 
 		$scope.merchantId = braintree.merchantId;
 
+		$http.get('/payments/token').success(function(response) {
+			$window.braintree.setup(response.value, 'dropin', {
+				container : 'braintree',
+				onPaymentMethodReceived : function(payment) { 
+					console.log('received', payment);
+					pay(payment.nonce);
+				},
+				onError : function(error) {
+					console.log('error', error);
+				}
+			});
+		});
+
 		$scope.init = function() {
 			$scope.message = '';
+			$scope.nonce = null;
 			$scope.newCard = {};
 			$scope.oldCard = null;
 			$scope.addCard = false;
@@ -6911,19 +6925,10 @@
 			tracker.event('dialog', 'payment');
 		};
 
-		$scope.pay = function() {
+		function pay(nonce) {
 			$scope.processing = true;
-			var data = {
-				'price' : 5.0
-			};
-			if ($scope.addCard) {
-				data.number = braintree.encrypt($scope.newCard.number);
-				data.cvv = braintree.encrypt($scope.newCard.cvv);
-				data.expiration_year = braintree.encrypt($scope.newCard.expirationYear);
-				data.expiration_month = braintree.encrypt($scope.newCard.expirationMonth);
-			}
 			$scope.alert.clear();
-			$http.post('/payments/', data)
+			$http.post('/payments/', { 'price' : 5.0, 'nonce' : nonce })
 				.success(function() {
 					$scope.processing = false;
 					$scope.closeDialog();
@@ -6938,7 +6943,7 @@
 					}
 				});
 			tracker.event('action', 'payment');
-		};
+		}
 	}]);
 
 	app.factory('Field', ['User', 'moment', function(User, moment) {

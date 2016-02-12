@@ -2,9 +2,7 @@ package com.zenobase.models;
 
 import java.math.BigDecimal;
 
-import com.braintreegateway.CreditCardRequest;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.google.common.base.Objects;
 
 import com.zenobase.json.BooleanField;
 import com.zenobase.json.DecimalField;
@@ -14,6 +12,7 @@ import com.zenobase.json.TokenField;
 public class Payment extends DomainNode {
 
 	public static final DecimalField PRICE = new DecimalField("price");
+	public static final TokenField NONCE = new TokenField("nonce");
 	public static final TokenField NUMBER = new TokenField("number");
 	public static final TokenField CVV = new TokenField("cvv");
 	public static final TokenField EXPIRATION_YEAR = new TokenField("expiration_year");
@@ -41,8 +40,17 @@ public class Payment extends DomainNode {
 		setValue(PAST_DUE, pastDue);
 	}
 
+	public Payment(BigDecimal price, String nonce) {
+		setValue(PRICE, price);
+		setValue(NONCE, nonce);
+	}
+
 	public BigDecimal getPrice() {
 		return getValue(PRICE);
+	}
+
+	public String getNonce() {
+		return getValue(NONCE);
 	}
 
 	public String getNumber() {
@@ -63,15 +71,5 @@ public class Payment extends DomainNode {
 
 	public boolean hasCreditCard() {
 		return getNumber() != null;
-	}
-
-	public boolean isPastDue() {
-		return Objects.firstNonNull(getValue(PAST_DUE), Boolean.FALSE);
-	}
-
-	public void fill(CreditCardRequest request) {
-		request.number(getNumber()).cvv(getCVV())
-			.expirationYear(getExpirationYear())
-			.expirationMonth(getExpirationMonth());
 	}
 }

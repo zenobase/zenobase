@@ -8,10 +8,11 @@ import javax.inject.Named;
 
 import com.braintreegateway.BraintreeGateway;
 import com.braintreegateway.CreditCard;
-import com.braintreegateway.CreditCardRequest;
 import com.braintreegateway.Customer;
 import com.braintreegateway.CustomerRequest;
 import com.braintreegateway.Environment;
+import com.braintreegateway.PaymentMethod;
+import com.braintreegateway.PaymentMethodRequest;
 import com.braintreegateway.Result;
 import com.braintreegateway.Subscription;
 import com.braintreegateway.SubscriptionRequest;
@@ -57,11 +58,11 @@ public class PaymentGateway {
 
 	private void replaceSubscription(Customer customer, Payment payment, Plan plan) {
 		Subscription subscription = getSubscription(customer);
-		CreditCard creditCard = payment.hasCreditCard() ? newCreditCard(customer.getId(), payment) : getCreditCard(customer);
-		Preconditions.checkArgument(creditCard != null, "Expected a card for <%s>", customer.getId());
-		SubscriptionRequest request = new SubscriptionRequest().paymentMethodToken(creditCard.getToken());
+		PaymentMethod paymentMethod = payment.getNonce() != null ? newPaymentMethod(customer.getId(), payment) : getCreditCard(customer);
+		Preconditions.checkArgument(paymentMethod != null, "Expected a card for <%s>", customer.getId());
+		SubscriptionRequest request = new SubscriptionRequest().paymentMethodToken(paymentMethod.getToken());
 		if (subscription == null || subscription.getStatus() != Subscription.Status.PAST_DUE) {
-			request = request.planId(plan.getId()).price(payment.getPrice());
+			request = request.planId(plan.getId());
 		}
 		Result<Subscription> result = subscription != null
 			? gateway.subscription().update(subscription.getId(), request)
@@ -72,23 +73,21 @@ public class PaymentGateway {
 	private void newSubscription(String username, String email, Payment payment, Plan plan) {
 		Preconditions.checkNotNull(payment, "Can't create customer <%s> without a card", username);
 		Customer customer = newCustomer(username, email, payment);
-		SubscriptionRequest request = new SubscriptionRequest().planId(plan.getId()).price(payment.getPrice()).paymentMethodToken(getCreditCard(customer).getToken());
+		SubscriptionRequest request = new SubscriptionRequest().planId(plan.getId()).paymentMethodToken(customer.getDefaultPaymentMethod().getToken());
 		Result<Subscription> result = gateway.subscription().create(request);
 		Preconditions.checkArgument(result.isSuccess(), "Couldn't subscribe <%s> to <%s>: %s", username, plan.getId(), result.getMessage());
 	}
 
-	private Customer newCustomer(String username, String email, Payment card) {
-		CustomerRequest request = new CustomerRequest().id(username).email(email);
-		card.fill(request.creditCard());
+	private Customer newCustomer(String username, String email, Payment payment) {
+		CustomerRequest request = new CustomerRequest().id(username).email(email).paymentMethodNonce(payment.getNonce());
 		Result<Customer> result = gateway.customer().create(request);
 		Preconditions.checkArgument(result.isSuccess(), "Couldn't create customer <%s>: %s", username, result.getMessage());
 		return result.getTarget();
 	}
 
-	private CreditCard newCreditCard(String username, Payment card) {
-		CreditCardRequest request = new CreditCardRequest().customerId(username).options().makeDefault(true).done();
-		card.fill(request);
-		Result<CreditCard> result = gateway.creditCard().create(request);
+	private PaymentMethod newPaymentMethod(String username, Payment payment) {
+		PaymentMethodRequest request = new PaymentMethodRequest().customerId(username).paymentMethodNonce(payment.getNonce()).options().makeDefault(true).done();
+		Result<? extends PaymentMethod> result = gateway.paymentMethod().create(request);
 		Preconditions.checkArgument(result.isSuccess(), "Couldn't store credit card for <%s>: %s", username, result.getMessage());
 		return result.getTarget();
 	}
@@ -108,7 +107,7 @@ public class PaymentGateway {
 
 	static CreditCard getCreditCard(Customer customer) {
 		for (CreditCard card : customer.getCreditCards()) {
-			if (card.isDefault() && !card.isExpired()) {
+			if (card.isDefault()) {
 				return card;
 			}
 		}
@@ -153,5 +152,9 @@ public class PaymentGateway {
 		} catch (NotFoundException e) {
 			return false;
 		}
+	}
+
+	public String token() {
+		return gateway.clientToken().generate();
 	}
 }
