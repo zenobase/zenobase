@@ -30,7 +30,7 @@ public class PaymentController extends ControllerSupport {
 		this.dispatcher = dispatcher;
 	}
 
-	public Result get(String userId) {
+	public Result token() {
 		Authorization auth = getCurrentAuthorization();
     	if (auth == null) {
     		return unauthorized();
@@ -38,19 +38,11 @@ public class PaymentController extends ControllerSupport {
     	if (auth.getScope() != null) {
     		return forbidden();
     	}
-		User user = new UserLookup(users).getUser(userId);
+		User user = users.find(auth.getPrincipal());
 		if (user == null) {
 			return notFound("user not found");
 		}
-		if (!auth.getPrincipal().equals(user.asIdentity())) {
-			return forbidden();
-		}
-		Payment payment = payments.findPayment(user.getName());
-		return payment != null ? ok(payment.toJson()) : noContent();
-    }
-
-	public Result token() {
-		return ok(Nodes.newObject("value", payments.token()));
+		return ok(Nodes.newObject("value", payments.token(user.getName())));
     }
 
 	public Result pay() {

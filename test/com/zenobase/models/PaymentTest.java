@@ -11,8 +11,8 @@ public class PaymentTest {
 	public void testEqualsHashCode() {
 		new EqualsTester()
 			.addEqualityGroup(new Payment(new BigDecimal("5.00")), new Payment(new BigDecimal("5.00")))
-			.addEqualityGroup(new Payment(new BigDecimal("5.00"), "4111 1111 1111 1111", "100", "2015", "01"), new Payment(new BigDecimal("5.00"), "4111 1111 1111 1111", "100", "2015", "01"))
-			.addEqualityGroup(new Payment(new BigDecimal("5.00"), "4111 1111 1111 1111", "100", "2015", "02"))
+			.addEqualityGroup(new Payment(new BigDecimal("5.00"), "xyz"), new Payment(new BigDecimal("5.00"), "xyz"))
+			.addEqualityGroup(new Payment(new BigDecimal("5.00"), "abc"))
 			.addEqualityGroup(new Payment(new BigDecimal("10.00")))
 			.testEquals();
 	}

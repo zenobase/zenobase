@@ -1,12 +1,12 @@
 package com.zenobase.services;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 
 import com.braintreegateway.BraintreeGateway;
+import com.braintreegateway.ClientTokenRequest;
 import com.braintreegateway.CreditCard;
 import com.braintreegateway.Customer;
 import com.braintreegateway.CustomerRequest;
@@ -58,7 +58,7 @@ public class PaymentGateway {
 
 	private void replaceSubscription(Customer customer, Payment payment, Plan plan) {
 		Subscription subscription = getSubscription(customer);
-		PaymentMethod paymentMethod = payment.getNonce() != null ? newPaymentMethod(customer.getId(), payment) : getCreditCard(customer);
+		PaymentMethod paymentMethod = payment.getNonce() != null ? newPaymentMethod(customer.getId(), payment) : customer.getDefaultPaymentMethod();
 		Preconditions.checkArgument(paymentMethod != null, "Expected a card for <%s>", customer.getId());
 		SubscriptionRequest request = new SubscriptionRequest().paymentMethodToken(paymentMethod.getToken());
 		if (subscription == null || subscription.getStatus() != Subscription.Status.PAST_DUE) {
@@ -105,27 +105,6 @@ public class PaymentGateway {
 		return Iterables.getOnlyElement(subscriptions, null);
 	}
 
-	static CreditCard getCreditCard(Customer customer) {
-		for (CreditCard card : customer.getCreditCards()) {
-			if (card.isDefault()) {
-				return card;
-			}
-		}
-		return null;
-	}
-
-	public Payment findPayment(String username) {
-		Customer customer = findCustomer(username);
-		if (customer == null) {
-			return null;
-		}
-		CreditCard card = getCreditCard(customer);
-		Subscription subscription = getSubscription(customer);
-		BigDecimal price = subscription != null ? subscription.getPrice() : null;
-		Boolean pastDue = subscription != null && subscription.getStatus() == Subscription.Status.PAST_DUE ? Boolean.TRUE : null;
-		return card != null ? new Payment(price, card.getMaskedNumber(), null, card.getExpirationYear(), card.getExpirationMonth(), pastDue) : null;
-	}
-
 	public void unsubscribe(String username) {
 		Customer customer = findCustomer(username);
 		Preconditions.checkArgument(customer != null, "Couldn't find customer: <%s>", customer.getId());
@@ -154,7 +133,12 @@ public class PaymentGateway {
 		}
 	}
 
-	public String token() {
-		return gateway.clientToken().generate();
+	public String token(String username) {
+		Customer customer = findCustomer(username);
+		ClientTokenRequest request = new ClientTokenRequest();
+		if (customer != null) {
+			request.customerId(username);
+		}
+		return gateway.clientToken().generate(request);
 	}
 }

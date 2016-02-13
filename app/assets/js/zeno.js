@@ -142,16 +142,11 @@
 		return moment().format('Z');
 	}]);
 
-	app.factory('braintree', function() {
-		/* sandbox key */
-		// var clientKey = 'MIIBCgKCAQEA8GcDKmhjpEOK2TUoeCDf5NaOdD1TtjknS5Xqka7RZLRm53+fghvlQu5OaNiao+U61MiWYMQKJN1zd1tq9NvPfn/bhlucv+ftNvfCA2x29A09ZIO0TVC2whwrRRuZEssX0EKjHnWPwpyXxpyl87mrafhO2BjIEvdFn89rt80PwFCT6rPLq8oF57VvQ+5sTtTVLOUpDG8xhku71BZILX/rypmVChbOf6kgtSpJI1KzxQ637ePNE10YNHbTxJOfcxBWnuz3Qek8gGo69CznVndLwchSoSgKbbyHRyE43RbVLZCG3sF8JlYlIkskWuGU6Zphax+HHxwrnlrIuKDo0B0PswIDAQAB';
-		/* production key */
-		var clientKey = 'MIIBCgKCAQEAubMOBpnM2FjuuK9lE8FK7XJ04nAtB0NTcKW2Xq8EiziguQji4KAA9WaIIRmHc4D377l35MMmwMWmhFhIxyBhjmEbOC+WMSqcgkPYKbVeIfMjKni1mWIKfcGq5aFDbHS0dZm87yStVl+sHS0Dwm9x87EuLRQQFM6hUdmSfkHn8J23RtN11YyZWZtysbqBEURdczOsDepMoanmfEpxOU8x7OBNfyqdEoaR0p8eSuO1LKLNpTFpJXPMyjYp23FEePZ7lUUDrxa119O7a+sFHlx1j0WwxE8C/zHEDxwLd5iD/yhWdb4bZVGNWyw3+W23Eajjw1HXknC1euvCb//4Nci6vQIDAQAB';
-		return {
-			merchantId : 'tzq6d3tr7npjqzpt',
-			encrypt : Braintree.create(clientKey).encrypt
-		};
-	});
+	app.factory('braintree', ['$window', function($window) {
+		return $window.braintree;
+	}]);
+
+	app.constant('merchantId', 'tzq6d3tr7npjqzpt');
 
 	// TODO should inject this, but can't inject into config...
 	var cacheBuster = function() {
@@ -6887,46 +6882,34 @@
 		};
 	}]);
 
-	app.controller('PersonalPlanDialogController', ['$scope', '$http', '$location', '$window', 'braintree', 'tracker', function($scope, $http, $location, $window, braintree, tracker) {
+	app.controller('PersonalPlanDialogController', ['$scope', '$http', '$location', 'braintree', 'merchantId', 'tracker', function($scope, $http, $location, braintree, merchantId, tracker) {
 
-		$scope.merchantId = braintree.merchantId;
-
-		$http.get('/payments/token').success(function(response) {
-			$window.braintree.setup(response.value, 'dropin', {
-				container : 'braintree',
-				onPaymentMethodReceived : function(payment) { 
-					console.log('received', payment);
-					pay(payment.nonce);
-				},
-				onError : function(error) {
-					console.log('error', error);
-				}
-			});
-		});
+		$scope.merchantId = merchantId;
+		$scope.integration = null;
 
 		$scope.init = function() {
-			$scope.message = '';
-			$scope.nonce = null;
-			$scope.newCard = {};
-			$scope.oldCard = null;
-			$scope.addCard = false;
-			$scope.ready = false;
 			$scope.processing = false;
-			if ($scope.user.verified) {
-				$scope.addCard = true;
-				$http.get('/users/' + $scope.user['@id'] + '/payment').success(function(response) {
-					if (response) {
-						$scope.oldCard = response;
-						$scope.addCard = false;
+			$scope.message = '';
+			$http.post('/payments/token').success(function(response) {
+				braintree.setup(response.value, 'dropin', {
+					container : 'braintree',
+					onReady : function(integration) {
+						$scope.integration = integration;
+					},
+					onPaymentMethodReceived : function(payment) { 
+						pay(payment.nonce);
+					},
+					onError : function(error) {
+						$scope.message = 'Couldn\'t save the payment method. Try again later or contact support.';
 					}
-					$scope.ready = true;
 				});
-			}
+			});
 			tracker.event('dialog', 'payment');
 		};
 
 		function pay(nonce) {
 			$scope.processing = true;
+			$scope.message = '';
 			$scope.alert.clear();
 			$http.post('/payments/', { 'price' : 5.0, 'nonce' : nonce })
 				.success(function() {
@@ -6944,6 +6927,13 @@
 				});
 			tracker.event('action', 'payment');
 		}
+		
+		$scope.close = function() {
+			if ($scope.integration) {
+				$scope.integration.teardown();
+			}
+		};
+
 	}]);
 
 	app.factory('Field', ['User', 'moment', function(User, moment) {
@@ -7650,6 +7640,9 @@
 				element.addClass('modal hide');
 				element.on('hidden', function() {
 					scope.closeDialog();
+					if (scope.close) {
+						scope.close();
+					}
 				});
 				scope.$on('openDialog', function(event, dialogId, param) {
 					if (dialogId === id) {

@@ -45,12 +45,12 @@
 				<div class="alert alert-error" data-ng-show="message">
 					{{message}}
 				</div>
-				<div data-ng-hide="ready">
+				<div>
 					<p class="lead">Your credit card will <strong>no longer</strong> be charged.</p>
 				</div>
 			</div>
 			<div class="modal-footer">
-				<button type="submit" class="btn btn-primary"data-ng-disabled="processing">Confirm</button>
+				<button type="submit" class="btn btn-primary" data-ng-disabled="processing">Confirm</button>
 				<button type="reset" class="btn" data-dismiss="modal">Cancel</button>
 			</div>
 		</form>
@@ -69,30 +69,10 @@
 				<div class="alert alert-error" data-ng-show="message">
 					{{message}}
 				</div>
-				<div data-ng-hide="ready">
-					<em>Loading...</em>
-				</div>
-				<div data-ng-show="ready">
+				<div>
 					<p class="lead" data-ng-hide="user.quota">Your credit card will be charged <strong>$5 once a month</strong>.</p>
-					<p class="lead" data-ng-show="user.quota && !oldCard.past_due">Your credit card is being charged <strong>$5 once a month</strong>.</p>
-					<p class="lead" data-ng-show="user.quota && oldCard.past_due">Your <strong>$5 a month</strong> payment is past due, please update!</p>
-					<div data-ng-hide="addCard || !oldCard">
-						<div class="control-group">
-							<label class="control-label">Card#</label>
-							<div class="controls form-horizontal">
-								<input type="text" class="input-large" data-ng-model="oldCard.number" disabled/>
-								<a data-ng-click="addCard = true">update card</a>
-							</div>
-						</div>
-						<div class="control-group">
-							<label class="control-label">Expires</label>
-							<div class="controls">
-								<input type="text" class="input-mini" data-ng-model="oldCard.expiration_month" disabled/>
-								<input type="text" class="input-mini" data-ng-model="oldCard.expiration_year" disabled/>
-							</div>
-						</div>
-					</div>
-					<div data-ng-show="addCard">
+					<p class="lead" data-ng-show="user.quota">Your credit card is being charged <strong>$5 once a month</strong>.</p>
+					<div>
 						<div id="braintree" class="control-group"></div>
 					</div>
 				</div>
@@ -101,7 +81,7 @@
 				<a data-ng-href="https://www.braintreegateway.com/merchants/{{merchantId}}/verified" title="Braintree Secure Payments" target="_blank" class="pull-left">
 					<img src="https://s3.amazonaws.com/braintree-badges/braintree-badge-dark.png" width="164px" height ="44px" border="0"/>
 				</a>
-				<button type="submit" class="btn btn-primary" data-ng-disabled="processing || !user.verified || !addCard">Confirm</button>
+				<button type="submit" class="btn btn-primary" data-ng-disabled="processing || !user.verified">Confirm</button>
 				<button type="reset" class="btn" data-dismiss="modal">Cancel</button>
 			</div>
 		</form>

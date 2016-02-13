@@ -23,7 +23,7 @@ public abstract class PaymentControllerTestSupport extends ControllerTestSupport
 	protected final UserRepository users = mock(UserRepository.class);
 	protected final CommandDispatcher dispatcher = mock(CommandDispatcher.class);
 	protected final User user = new User("jdoe");
-	protected final Payment payment = new Payment(new BigDecimal("5.00"), "4111 1111 1111 1111", "100", "2050", "01");
+	protected final Payment payment = new Payment(new BigDecimal("5.00"));
 
 	@Override
 	protected FakeApplication provideFakeApplication() {

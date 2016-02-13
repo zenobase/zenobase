@@ -69,9 +69,8 @@ GET     /users/:userId/authorizations/ @com.zenobase.controllers.AuthorizationLi
 GET     /authorizations/:authId        @com.zenobase.controllers.AuthorizationController.get(authId)
 DELETE  /authorizations/:authId        @com.zenobase.controllers.AuthorizationController.delete(authId)
 
-GET     /users/:userId/payment         @com.zenobase.controllers.PaymentController.get(userId)
 DELETE  /users/:userId/payment         @com.zenobase.controllers.PaymentController.cancel(userId)
-GET     /payments/token                @com.zenobase.controllers.PaymentController.token()
+POST    /payments/token                @com.zenobase.controllers.PaymentController.token()
 POST    /payments/                     @com.zenobase.controllers.PaymentController.pay()
 
 GET     /snapshots/                    @com.zenobase.controllers.SnapshotController.findAll(offset : Int ?= 0, limit : Int ?= 10)

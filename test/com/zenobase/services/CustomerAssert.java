@@ -26,9 +26,9 @@ public class CustomerAssert extends GenericAssert<CustomerAssert, Customer> {
 		return this;
 	}
 
-	public CustomerAssert hasCardEndingWith(String last4) {
+	public CustomerAssert hasPaymentMethod() {
 		isNotNull();
-		Assertions.assertThat(PaymentGateway.getCreditCard(actual).getLast4()).isEqualTo(last4);
+		Assertions.assertThat(actual.getDefaultPaymentMethod().getToken()).hasSize(6);
 		return this;
 	}
 
