@@ -19,7 +19,7 @@ public class User extends DomainNode {
 	public static final String TYPE_NAME = "user";
 
 	public static final TokenField ID = new TokenField("@id");
-	public static final TokenField NAME = new TokenField("name", true);
+	public static final TokenField NAME = new TokenField("name");
 	public static final DateTimeField CREATED = new DateTimeField("created");
 	public static final TokenField PASSWORD = new TokenField("password", false);
 	public static final TokenField EMAIL = new TokenField("email");
