@@ -119,10 +119,6 @@ import com.zenobase.tasks.beddit.BedditCredentialsManager;
 import com.zenobase.tasks.beddit.BedditTaskManager;
 import com.zenobase.tasks.beeminder.BeeminderCredentialsManager;
 import com.zenobase.tasks.beeminder.BeeminderTaskManager;
-import com.zenobase.tasks.bodymedia.BodyMediaBurnTaskManager;
-import com.zenobase.tasks.bodymedia.BodyMediaCredentialsManager;
-import com.zenobase.tasks.bodymedia.BodyMediaSleepTaskManager;
-import com.zenobase.tasks.bodymedia.BodyMediaStepsTaskManager;
 import com.zenobase.tasks.demo.DemoCredentialsManager;
 import com.zenobase.tasks.demo.DemoTaskManager;
 import com.zenobase.tasks.dropbox.DropboxCredentialsManager;
@@ -323,7 +319,6 @@ public class Global extends GlobalSettings {
 				bindIfConfigured("fitbit", FitbitCredentialsManager.class, credentials);
 				bindIfConfigured("foursquare", FoursquareCredentialsManager.class, credentials);
 				bindIfConfigured("withings", WithingsCredentialsManager.class, credentials);
-				bindIfConfigured("bodymedia", BodyMediaCredentialsManager.class, credentials);
 				bindIfConfigured("netatmo", NetatmoCredentialsManager.class, credentials);
 				bindIfConfigured("runkeeper", RunkeeperCredentialsManager.class, credentials);
 				bindIfConfigured("strava", StravaCredentialsManager.class, credentials);
@@ -360,9 +355,6 @@ public class Global extends GlobalSettings {
 				bindIfConfigured("withings", WithingsStepsTaskManager.class, tasks);
 				bindIfConfigured("withings", WithingsWeightTaskManager.class, tasks);
 				bindIfConfigured("withings", WithingsSleepTaskManager.class, tasks);
-				bindIfConfigured("bodymedia", BodyMediaBurnTaskManager.class, tasks);
-				bindIfConfigured("bodymedia", BodyMediaStepsTaskManager.class, tasks);
-				bindIfConfigured("bodymedia", BodyMediaSleepTaskManager.class, tasks);
 				bindIfConfigured("netatmo", NetatmoTaskManager.class, tasks);
 				bindIfConfigured("runkeeper", RunkeeperActivitiesTaskManager.class, tasks);
 				bindIfConfigured("runkeeper", RunkeeperWeightTaskManager.class, tasks);

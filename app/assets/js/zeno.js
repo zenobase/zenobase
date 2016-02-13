@@ -5784,9 +5784,6 @@
 			{ id : 'automatic-trips', description : 'Creates an event for each trip recorded.', url : 'https://www.automatic.com/' },
 			{ id : 'beddit-sleep', description : 'Creates an event for each period of sleep.', url : 'http://www.beddit.com/' },
 			{ id : 'beeminder', description : 'Updates a goal with event counts or value totals for each day.', url : 'https://www.beeminder.com/' },
-			{ id : 'bodymedia-burn', description : 'Creates an event for the number of calories burned each day or hour.', url : 'http://www.bodymedia.com/' },
-			{ id : 'bodymedia-sleep', description : 'Creates an event for each period of sleep.', url : 'http://www.bodymedia.com/' },
-			{ id : 'bodymedia-steps', description : 'Creates an event for the number of steps each day or hour.', url : 'http://www.bodymedia.com/' },
 			{ id : 'fitbark', description : 'Creates an event for the activity level for every day or hour.', url : 'https://www.fitbark.com/' },
 			{ id : 'fitbit-activities', description : 'Creates an event for each activity.', url : 'https://www.fitbit.com/' },
 			{ id : 'fitbit-cardio', description : 'Creates an event for the daily resting heart rate, or the average hourly heart rate.', url : 'https://www.fitbit.com/' },
@@ -5980,44 +5977,6 @@
 		$scope.init = function() {
 			$scope.settings = $scope.$parent.$parent.settings = {
 					tag : 'body',
-					marker : new Date(moment().utc().subtract(3, 'months').startOf('month').valueOf())
-			};
-		};
-
-		$scope.init();
-	}]);
-
-	app.controller('BodyMediaBurnSettingsController', ['$scope', 'moment', function($scope, moment) {
-
-		$scope.init = function() {
-			$scope.settings = $scope.$parent.$parent.settings = {
-					tag : 'burn',
-					hourly : true,
-					marker : new Date(moment().utc().subtract(3, 'months').startOf('month').valueOf())
-			};
-		};
-
-		$scope.init();
-	}]);
-
-	app.controller('BodyMediaSleepSettingsController', ['$scope', 'moment', function($scope, moment) {
-
-		$scope.init = function() {
-			$scope.settings = $scope.$parent.$parent.settings = {
-					tag : 'sleep',
-					marker : new Date(moment().utc().subtract(3, 'months').startOf('month').valueOf())
-			};
-		};
-
-		$scope.init();
-	}]);
-
-	app.controller('BodyMediaStepsSettingsController', ['$scope', 'moment', function($scope, moment) {
-
-		$scope.init = function() {
-			$scope.settings = $scope.$parent.$parent.settings = {
-					tag : 'steps',
-					hourly : true,
 					marker : new Date(moment().utc().subtract(3, 'months').startOf('month').valueOf())
 			};
 		};
