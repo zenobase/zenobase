@@ -14,6 +14,7 @@ import com.zenobase.models.Bucket;
 import com.zenobase.models.BucketList;
 import com.zenobase.models.Identity;
 import com.zenobase.oauth.Authorization;
+import com.zenobase.services.BucketQuery;
 
 public class BucketListControllerFindAllTest extends BucketListControllerTestSupport {
 
@@ -22,8 +23,8 @@ public class BucketListControllerFindAllTest extends BucketListControllerTestSup
 		PartialList<Bucket> list = DefaultPartialList.of();
 		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
 		when(users.isSuperuser(user.asIdentity())).thenReturn(true);
-		when(buckets.find(0, 10)).thenReturn(list);
-		Result result = call(0, 10);
+		when(buckets.find(new BucketQuery().queryString("foo"), BucketQuery.DEFAULT_ORDER, 0, 10)).thenReturn(list);
+		Result result = call("foo", 0, 10);
 		assertThat(result).hasStatus(OK).hasContent(BucketList.toJson(list, events));
 	}
 
@@ -31,31 +32,31 @@ public class BucketListControllerFindAllTest extends BucketListControllerTestSup
 	public void testDownload() {
 		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
 		when(users.isSuperuser(user.asIdentity())).thenReturn(true);
-		Result result = call(0, Integer.MAX_VALUE);
+		Result result = call(null, 0, Integer.MAX_VALUE);
 		assertThat(result).hasStatus(OK).hasContentType("text/plain");
 	}
 
 	@Test
 	public void testWithoutAuthorization() {
-		Result result = call(0, 10);
+		Result result = call(null, 0, 10);
 		assertThat(result).hasStatus(UNAUTHORIZED);
 	}
 
 	@Test
 	public void testWithScopedAuthorization() {
 		when(auth.current()).thenReturn(new Authorization(user.asIdentity(), new Identity(), "someScope"));
-		Result result = call(0, 10);
+		Result result = call(null, 0, 10);
 		assertThat(result).hasStatus(FORBIDDEN);
 	}
 
 	@Test
 	public void testWithNonSuperuser() {
 		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
-		Result result = call(0, 10);
+		Result result = call(null, 0, 10);
 		assertThat(result).hasStatus(FORBIDDEN);
 	}
 
-	private static Result call(int offset, int limit) {
-		return callAction(com.zenobase.controllers.routes.ref.BucketListController.findAll(offset, limit));
+	private static Result call(String q, int offset, int limit) {
+		return callAction(com.zenobase.controllers.routes.ref.BucketListController.findAll(q, offset, limit));
 	}
 }

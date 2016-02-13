@@ -39,7 +39,7 @@ public class BucketListController extends ControllerSupport {
 		this.users = users;
 	}
 
-	public Result findAll(int offset, int limit) {
+	public Result findAll(String q, int offset, int limit) {
     	Authorization auth = getCurrentAuthorization();
     	if (auth == null) {
     		return unauthorized();
@@ -50,13 +50,14 @@ public class BucketListController extends ControllerSupport {
 		if (!users.isSuperuser(auth.getPrincipal())) {
 			return forbidden();
 		}
-        return find(offset, limit);
-    }
-
-    private Result find(int offset, int limit) {
-    	return limit < Integer.MAX_VALUE
-    		? ok(BucketList.toJson(buckets.find(offset, limit), events))
-    		: findAll();
+    	if (limit == Integer.MAX_VALUE) {
+    		return findAll();
+    	}
+    	BucketQuery query = new BucketQuery();
+    	if (q != null) {
+    		query = query.queryString(q);
+    	}
+    	return ok(BucketList.toJson(buckets.find(query, BucketQuery.DEFAULT_ORDER, offset, limit), events));
     }
 
     private Result findAll() {

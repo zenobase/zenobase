@@ -11,4 +11,10 @@ public class CommandQuery extends QuerySupport {
 		equalTo(Command.PRINCIPAL, principal);
 		return this;
 	}
+
+	@Override
+	public CommandQuery queryString(String query) {
+		super.queryString(query, Command.ID.getName());
+		return this;
+	}
 }

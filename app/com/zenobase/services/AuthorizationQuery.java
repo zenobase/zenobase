@@ -48,7 +48,7 @@ public class AuthorizationQuery extends QuerySupport {
 
 	@Override
 	public AuthorizationQuery queryString(String query) {
-		super.queryString(query);
+		super.queryString(query, Authorization.ID.getName());
 		return this;
 	}
 }

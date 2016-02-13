@@ -29,4 +29,10 @@ public class BucketQuery extends QuerySupport {
 		equalTo(Bucket.REFRESH, true);
 		return this;
 	}
+
+	@Override
+	public BucketQuery queryString(String query) {
+		super.queryString(query, Bucket.ID.getName());
+		return this;
+	}
 }

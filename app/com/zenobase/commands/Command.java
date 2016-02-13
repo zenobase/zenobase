@@ -26,7 +26,7 @@ public class Command extends DomainNode {
 
 	public static final String TYPE_NAME = "command";
 
-	public static final TokenField ID = new TokenField("@id", false);
+	public static final TokenField ID = new TokenField("@id");
 	public static final CommandTypeField TYPE = new CommandTypeField("@type");
 	public static final IdentityField PRINCIPAL = new IdentityField("principal");
 	public static final DateTimeField TIMESTAMP = new DateTimeField("timestamp");

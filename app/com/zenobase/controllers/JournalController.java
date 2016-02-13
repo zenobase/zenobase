@@ -31,7 +31,7 @@ public class JournalController extends ControllerSupport {
 		this.users = users;
 	}
 
-	public Result findAll(int offset, int limit) {
+	public Result findAll(String q, int offset, int limit) {
     	Authorization auth = getCurrentAuthorization();
     	if (auth == null) {
     		return unauthorized();
@@ -42,7 +42,11 @@ public class JournalController extends ControllerSupport {
     	if (!users.isSuperuser(auth.getPrincipal())) {
     		return forbidden();
     	}
-    	return ok(CommandList.toJson(repository.find(new CommandQuery(), CommandQuery.DEFAULT_ORDER, offset, limit)));
+    	CommandQuery query = new CommandQuery();
+    	if (q != null) {
+    		query = query.queryString(q);
+    	}
+    	return ok(CommandList.toJson(repository.find(query, CommandQuery.DEFAULT_ORDER, offset, limit)));
     }
 
 	public Result findByUser(String userId, int offset, int limit) {

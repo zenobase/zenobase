@@ -29,32 +29,32 @@ public class JournalControllerFindAllTest extends JournalControllerTestSupport {
 		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
 		when(users.isSuperuser(user.asIdentity())).thenReturn(true);
 		when(commands.size()).thenReturn(history.getTotal());
-		when(commands.find(new CommandQuery(), CommandQuery.DEFAULT_ORDER, 0, 2)).thenReturn(history);
-		Result result = call(0, 2);
+		when(commands.find(new CommandQuery().queryString("foo"), CommandQuery.DEFAULT_ORDER, 0, 2)).thenReturn(history);
+		Result result = call("foo", 0, 2);
 		assertThat(result).hasStatus(OK).hasContent(CommandList.toJson(history));
 	}
 
 	@Test
 	public void testNotAuthorized() {
-		Result result = call(0, 10);
+		Result result = call(null, 0, 10);
 		assertThat(result).hasStatus(UNAUTHORIZED);
 	}
 
 	@Test
 	public void testScopedAuthorization() {
 		when(auth.current()).thenReturn(new Authorization(user.asIdentity(), new Identity(), Generator.id()));
-		Result result = call(0, 10);
+		Result result = call(null, 0, 10);
 		assertThat(result).hasStatus(FORBIDDEN);
 	}
 
 	@Test
 	public void testNotSuperuser() {
 		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
-		Result result = call(0, 10);
+		Result result = call(null, 0, 10);
 		assertThat(result).hasStatus(FORBIDDEN);
 	}
 
-	private Result call(int offset, int limit) {
-		return callAction(com.zenobase.controllers.routes.ref.JournalController.findAll(offset, limit));
+	private Result call(String q, int offset, int limit) {
+		return callAction(com.zenobase.controllers.routes.ref.JournalController.findAll(q, offset, limit));
 	}
 }

@@ -29,7 +29,7 @@ public class UserQuery extends QuerySupport {
 
 	@Override
 	public UserQuery queryString(String query) {
-		super.queryString(query);
+		super.queryString(query, User.ID.getName());
 		return this;
 	}
 }

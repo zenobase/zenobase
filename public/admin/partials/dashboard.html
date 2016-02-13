@@ -33,6 +33,12 @@
 			<div class="tab-content">
 	
 				<div id="widget-journal" data-ng-controller="admin.JournalController" class="tab-pane active">
+					<form class="form-search" data-ng-hide="constraint">
+	 					<div class="input-append">
+							<input type="text" class="search-query input-xlarge" data-ng-model="filter" data-ng-model-options="{ updateOn: 'blur' }" data-ui-blur-on-enter placeholder="@id, @type.name"/>
+							<button class="btn" data-ng-click="filter = null" data-ng-disabled="!filter"><i class="fa fa-close"></i></button>
+	 					</div>
+	 				</form>
 					<table class="table">
 						<thead>
 							<tr>
@@ -83,6 +89,12 @@
 				</div>
 	
 				<div id="widget-buckets" data-ng-controller="admin.BucketListController" class="tab-pane">
+					<form class="form-search" data-ng-hide="constraint">
+	 					<div class="input-append">
+							<input type="text" class="search-query input-xlarge" data-ng-model="filter" data-ng-model-options="{ updateOn: 'blur' }" data-ui-blur-on-enter placeholder="@id, refresh"/>
+							<button class="btn" data-ng-click="filter = null" data-ng-disabled="!filter"><i class="fa fa-close"></i></button>
+	 					</div>
+	 				</form>
 					<table class="table">
 						<thead>
 							<tr>
@@ -129,12 +141,6 @@
 							<tr data-ng-show="buckets.length == 0">
 								<td colspan="5"><i>None</i></td>
 							</tr>
-							<tr data-ng-show="buckets == null">
-								<td colspan="5"><i>Loading</i></td>
-							</tr>
-							<tr data-ng-show="buckets.length == 0">
-								<td colspan="5"><i>None</i></td>
-							</tr>
 						</tbody>
 					</table>
 					<div class="btn-toolbar" data-ng-show="buckets.length">
@@ -152,9 +158,9 @@
 				</div>
 			
 				<div id="widget-users" data-ng-controller="admin.UserListController" class="tab-pane">
-					<form class="form-search">
+					<form class="form-search" data-ng-hide="constraint">
 	 					<div class="input-append">
-							<input type="text" class="search-query input-xlarge" data-ng-model="filter" data-ng-model-options="{ updateOn: 'blur' }" data-ui-blur-on-enter placeholder="name, email, verified, suspended, quota"/>
+							<input type="text" class="search-query input-xlarge" data-ng-model="filter" data-ng-model-options="{ updateOn: 'blur' }" data-ui-blur-on-enter placeholder="@id, name, email, verified, suspended, quota"/>
 							<button class="btn" data-ng-click="filter = null" data-ng-disabled="!filter"><i class="fa fa-close"></i></button>
 	 					</div>
 	 				</form>
@@ -238,9 +244,9 @@
 				</div>
 	
 				<div id="widget-authorizations" data-ng-controller="admin.AuthorizationListController" class="tab-pane">
-					<form class="form-search">
+					<form class="form-search" data-ng-hide="constraint">
 	 					<div class="input-append">
-							<input type="text" class="search-query input-xlarge" data-ng-model="filter" data-ng-model-options="{ updateOn: 'blur' }" data-ui-blur-on-enter placeholder="client, scope"/>
+							<input type="text" class="search-query input-xlarge" data-ng-model="filter" data-ng-model-options="{ updateOn: 'blur' }" data-ui-blur-on-enter placeholder="@id, client, scope"/>
 							<button class="btn" data-ng-click="filter = null" data-ng-disabled="!filter"><i class="fa fa-close"></i></button>
 	 					</div>
 	 				</form>
@@ -292,9 +298,9 @@
 				</div>
 	
 				<div id="widget-credentials" data-ng-controller="admin.CredentialsListController" class="tab-pane">
-					<form class="form-search">
+					<form class="form-search" data-ng-hide="constraint">
 	 					<div class="input-append">
-							<input type="text" class="search-query input-xlarge" data-ng-model="filter" data-ng-model-options="{ updateOn: 'blur' }" data-ui-blur-on-enter placeholder="type, authorizationUrl"/>
+							<input type="text" class="search-query input-xlarge" data-ng-model="filter" data-ng-model-options="{ updateOn: 'blur' }" data-ui-blur-on-enter placeholder="@id, type, authorizationUrl"/>
 							<button class="btn" data-ng-click="filter = null" data-ng-disabled="!filter"><i class="fa fa-close"></i></button>
 	 					</div>
 	 				</form>
@@ -340,9 +346,9 @@
 				</div>
 	
 				<div id="widget-tasks" data-ng-controller="admin.TaskListController" class="tab-pane">
-					<form class="form-search">
+					<form class="form-search" data-ng-hide="constraint">
 						<div class="input-append">
-							<input type="text" class="search-query input-xlarge" data-ng-model="filter" data-ng-model-options="{ updateOn: 'blur' }" data-ui-blur-on-enter placeholder="type, status, bucket, completed"/>
+							<input type="text" class="search-query input-xlarge" data-ng-model="filter" data-ng-model-options="{ updateOn: 'blur' }" data-ui-blur-on-enter placeholder="@id, type, status, bucket, completed"/>
 							<button class="btn" data-ng-click="filter = null" data-ng-disabled="!filter"><i class="fa fa-close"></i></button>
 						</div>
 					</form>

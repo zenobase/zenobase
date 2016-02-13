@@ -48,6 +48,11 @@ public class QuerySupport {
 		return this;
 	}
 
+	protected QuerySupport queryString(String query, String defaultField) {
+		add(QueryBuilders.queryStringQuery(query).defaultField(defaultField));
+		return this;
+	}
+
 	protected void add(QueryBuilder constraint) {
 		constraints.add(constraint);
 	}

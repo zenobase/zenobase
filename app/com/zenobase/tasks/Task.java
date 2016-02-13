@@ -23,7 +23,7 @@ public class Task extends DomainNode {
 
 	public static final String TYPE_NAME = "task";
 
-	public static final TokenField ID = new TokenField("@id", false);
+	public static final TokenField ID = new TokenField("@id");
 	public static final TokenField TYPE = new TokenField("type");
 	public static final TokenField BUCKET = new TokenField("bucket");
 	public static final IdentityField PRINCIPAL = new IdentityField("principal");

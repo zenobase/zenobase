@@ -16,7 +16,7 @@ POST    /users/:userId                 @com.zenobase.controllers.UserController.
 POST    /users/                        @com.zenobase.controllers.AccountController.open()
 DELETE  /users/:userId                 @com.zenobase.controllers.AccountController.close(userId)
 
-GET     /buckets/                      @com.zenobase.controllers.BucketListController.findAll(offset : Int ?= 0, limit : Int ?= java.lang.Integer.MAX_VALUE)
+GET     /buckets/                      @com.zenobase.controllers.BucketListController.findAll(q ?= null, offset : Int ?= 0, limit : Int ?= java.lang.Integer.MAX_VALUE)
 GET     /users/:userId/buckets/        @com.zenobase.controllers.BucketListController.findByUser(userId, order : String ?= "-created", offset : Int ?= 0, limit : Int ?= 10, labels_only : Boolean ?= false)
 POST    /buckets/                      @com.zenobase.controllers.BucketListController.post()
 
@@ -38,7 +38,7 @@ DELETE  /buckets/:bucketId/:eventId    @com.zenobase.controllers.EventController
 
 GET     /buckets/:bucketId/tags/       @com.zenobase.controllers.TagController.get(bucketId)
 
-GET     /journal/                      @com.zenobase.controllers.JournalController.findAll(offset : Int ?= 0, limit : Int ?= 10)
+GET     /journal/                      @com.zenobase.controllers.JournalController.findAll(q ?= null, offset : Int ?= 0, limit : Int ?= 10)
 GET     /users/:userId/journal/        @com.zenobase.controllers.JournalController.findByUser(userId, offset : Int, limit : Int)
 POST    /journal/                      @com.zenobase.controllers.JournalController.post()
 

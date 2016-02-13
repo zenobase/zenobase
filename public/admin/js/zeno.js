@@ -106,6 +106,7 @@
 		$scope.limit = 10;
 		$scope.total = 0;
 		$scope.commands = null;
+		$scope.filter = null;
 
 		$scope.hasPrev = function() {
 			return $scope.offset > 0;
@@ -120,10 +121,14 @@
 			$scope.refresh({ offset : $scope.offset + $scope.limit });
 		}
 		$scope.params = function() {
-			return {
+			var params = {
 				offset : $scope.offset,
 				limit : $scope.limit
 			};
+			if ($scope.filter) {
+				params.q = $scope.filter;
+			}
+			return params;
 		}
 		$scope.refresh = function(params) {
 			var path = $scope.constraint ? '/users/' + $scope.constraint + '/journal/' : '/journal/';
@@ -142,6 +147,11 @@
 		$scope.$on('refreshAll', function() {
 			$scope.refresh({ offset : 0 });
 		});
+		$scope.$watch('filter', function(to, from) {
+			if (from !== to) {
+				$scope.refresh({ offset : 0 });
+			}
+		});
 		$scope.refresh({});
 	}]);
 
@@ -151,6 +161,7 @@
 		$scope.limit = 10;
 		$scope.total = 0;
 		$scope.buckets = null;
+		$scope.filter = null;
 		$scope.events = 0;
 
 		$scope.hasPrev = function() {
@@ -166,10 +177,14 @@
 			$scope.refresh({ offset : $scope.offset + $scope.limit });
 		}
 		$scope.params = function() {
-			return {
+			var params = {
 				offset : $scope.offset,
 				limit : $scope.limit
 			};
+			if ($scope.filter) {
+				params.q = $scope.filter;
+			}
+			return params;
 		}
 		var path = function(resource) {
 			return $scope.constraint ? '/users/' + $scope.constraint + resource : resource;
@@ -201,6 +216,11 @@
 
 		$scope.$on('refreshAll', function() {
 			$scope.refresh({ offset : 0 });
+		});
+		$scope.$watch('filter', function(to, from) {
+			if (from !== to) {
+				$scope.refresh({ offset : 0 });
+			}
 		});
 		$scope.refresh({});
 	}]);
