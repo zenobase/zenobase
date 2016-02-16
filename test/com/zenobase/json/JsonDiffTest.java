@@ -29,12 +29,12 @@ public class JsonDiffTest {
 		ObjectNode original = Nodes.newObject();
 		ObjectNode orifinalNested = Nodes.newObject();
 		orifinalNested.put("value", 1);
-		original.put("a", orifinalNested);
+		original.set("a", orifinalNested);
 
 		ObjectNode modified = Nodes.newObject();
 		ObjectNode modifiedNested = Nodes.newObject();
 		modifiedNested.put("value", 2);
-		modified.put("a", modifiedNested);
+		modified.set("a", modifiedNested);
 
 		test(original, modified);
 	}
@@ -45,12 +45,12 @@ public class JsonDiffTest {
 		ObjectNode original = Nodes.newObject();
 		ObjectNode orifinalNested = Nodes.newObject();
 		orifinalNested.put("value", 1);
-		original.put("a", orifinalNested);
+		original.set("a", orifinalNested);
 
 		ObjectNode modified = Nodes.newObject();
 		ObjectNode modifiedNested = Nodes.newObject();
 		modifiedNested.put("value", 1);
-		modified.put("a", modifiedNested);
+		modified.set("a", modifiedNested);
 
 		test(original, modified);
 	}
@@ -64,7 +64,7 @@ public class JsonDiffTest {
 		ObjectNode modified = Nodes.newObject();
 		ObjectNode nested = Nodes.newObject();
 		nested.put("value", 1);
-		modified.put("a", nested);
+		modified.set("a", nested);
 
 		test(original, modified);
 	}
@@ -76,7 +76,7 @@ public class JsonDiffTest {
 		ObjectNode original = Nodes.newObject();
 		ObjectNode nested = Nodes.newObject();
 		nested.put("value", 1);
-		original.put("a", nested);
+		original.set("a", nested);
 
 		ObjectNode modified = Nodes.newObject();
 		modified.put("a", 1);

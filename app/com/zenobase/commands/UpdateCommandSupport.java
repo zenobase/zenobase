@@ -54,8 +54,8 @@ public abstract class UpdateCommandSupport extends Command {
 
 		public <V> Builder set(Field<V> field, V fromValue, V toValue) {
 			if (!Objects.equal(fromValue, toValue)) {
-				fromLeaf.put(field.getName(), field.toJson(fromValue));
-				toLeaf.put(field.getName(), field.toJson(toValue));
+				fromLeaf.set(field.getName(), field.toJson(fromValue));
+				toLeaf.set(field.getName(), field.toJson(toValue));
 			}
 			return this;
 		}

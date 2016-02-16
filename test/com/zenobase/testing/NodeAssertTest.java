@@ -16,7 +16,7 @@ public class NodeAssertTest {
 	public void testPath() {
 		ObjectNode node = Nodes.newObject();
 		TextNode nameNode = new TextNode("Foo");
-		node.put("name", nameNode);
+		node.set("name", nameNode);
 		assertThat(node).path("name").isEqualTo(nameNode);
 	}
 

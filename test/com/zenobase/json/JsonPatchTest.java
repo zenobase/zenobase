@@ -40,7 +40,7 @@ public class JsonPatchTest {
 
 		original.put("foo", 41);
 
-		from.put("bar", NullNode.getInstance());
+		from.set("bar", NullNode.getInstance());
 
 		to.put("bar", "xyz");
 
@@ -58,7 +58,7 @@ public class JsonPatchTest {
 
 		from.put("foo", 41);
 
-		to.put("foo", NullNode.getInstance());
+		to.set("foo", NullNode.getInstance());
 
 		expected.put("bar", "xyz");
 
@@ -70,20 +70,20 @@ public class JsonPatchTest {
 
 		ObjectNode nestedOriginal = Nodes.newObject();
 		nestedOriginal.put("foo", 41);
-		original.put("nested", nestedOriginal);
+		original.set("nested", nestedOriginal);
 
 		ObjectNode nestedFrom = Nodes.newObject();
-		nestedFrom.put("bar", NullNode.getInstance());
-		from.put("nested", nestedFrom);
+		nestedFrom.set("bar", NullNode.getInstance());
+		from.set("nested", nestedFrom);
 
 		ObjectNode nestedTo = Nodes.newObject();
 		nestedTo.put("bar", "xyz");
-		to.put("nested", nestedTo);
+		to.set("nested", nestedTo);
 
 		ObjectNode nestedExpected= Nodes.newObject();
 		nestedExpected.put("foo", 41);
 		nestedExpected.put("bar", "xyz");
-		expected.put("nested", nestedExpected);
+		expected.set("nested", nestedExpected);
 
 		runTest();
 	}
@@ -107,19 +107,19 @@ public class JsonPatchTest {
 
 		ObjectNode nestedOriginal = Nodes.newObject();
 		nestedOriginal.put("foo", 41);
-		original.put("nested", nestedOriginal);
+		original.set("nested", nestedOriginal);
 
 		ObjectNode nestedFrom = Nodes.newObject();
 		nestedFrom.put("foo", 40);
-		from.put("nested", nestedFrom);
+		from.set("nested", nestedFrom);
 
 		ObjectNode nestedTo = Nodes.newObject();
 		nestedTo.put("foo", 41);
-		to.put("nested", nestedTo);
+		to.set("nested", nestedTo);
 
 		ObjectNode nestedExpected= Nodes.newObject();
 		nestedExpected.put("foo", 41);
-		expected.put("nested", nestedExpected);
+		expected.set("nested", nestedExpected);
 
 		runTest();
 	}

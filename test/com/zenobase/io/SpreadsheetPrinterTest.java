@@ -25,17 +25,17 @@ public class SpreadsheetPrinterTest {
 
 		ObjectNode n2 = Nodes.newObject();
 		n2.put("label", "Bar");
-		n2.put("values", Nodes.newArray().add("red").add("green").add("blue"));
+		n2.set("values", Nodes.newArray().add("red").add("green").add("blue"));
 		node.add(n2);
 
 		ObjectNode n3 = Nodes.newObject();
 		n3.put("label", "Baz");
-		n3.put("object", Nodes.newObject().put("@value", 100).put("unit", "mi"));
+		n3.set("object", Nodes.newObject().put("@value", 100).put("unit", "mi"));
 		node.add(n3);
 
 		ObjectNode n4 = Nodes.newObject();
 		n4.put("label", "Qux");
-		n4.put("objects", Nodes.newArray()
+		n4.set("objects", Nodes.newArray()
 			.add(Nodes.newObject().put("lat", 1).put("lon", 2))
 			.add(Nodes.newObject().put("lat", 3).put("lon", 4)));
 		node.add(n4);

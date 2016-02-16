@@ -10,7 +10,7 @@ public class Migration {
 	public static <T> void copy(Field<T> field, ObjectNode from, ObjectNode to) {
 		JsonNode value = from.get(field.getName());
 		if (value != null) {
-			to.put(field.getName(), value);
+			to.set(field.getName(), value);
 		}
 	}
 }

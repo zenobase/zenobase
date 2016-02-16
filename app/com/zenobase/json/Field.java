@@ -131,7 +131,7 @@ public abstract class Field<T> {
 
 	public final void setValue(ObjectNode node, T value) {
 		if (value != null) {
-			node.put(name, toJson(value));
+			node.set(name, toJson(value));
 		}
 		else {
 			node.remove(name);

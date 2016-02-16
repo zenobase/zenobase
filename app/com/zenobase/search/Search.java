@@ -69,7 +69,7 @@ public class Search {
 		ObjectNode node = Nodes.newObject();
 		TOTAL.setValue(node, Ints.checkedCast(response.getHits().getTotalHits()));
 		for (Facet facet : facets) {
-			node.put(facet.getId(), facet.process(response));
+			node.set(facet.getId(), facet.process(response));
 		}
 		return node;
 	}

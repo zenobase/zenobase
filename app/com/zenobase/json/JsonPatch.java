@@ -50,9 +50,9 @@ public class JsonPatch {
 			if (entry.getValue().isNull()) {
 				target.remove(entry.getKey());
 			} else if (entry.getValue().isValueNode()) {
-				target.put(entry.getKey(), entry.getValue());
+				target.set(entry.getKey(), entry.getValue());
 			} else if (target.path(entry.getKey()).isValueNode()) {
-				target.put(entry.getKey(), entry.getValue());
+				target.set(entry.getKey(), entry.getValue());
 			} else if (entry.getValue().isObject()) {
 				apply(target.with(entry.getKey()), (ObjectNode) entry.getValue());
 			} else {
