@@ -1,6 +1,6 @@
-<hazelcast-client 
-	xsi:schemaLocation="http://www.hazelcast.com/schema/client-config hazelcast-client-config-3.3.xsd"
-	xmlns="http://www.hazelcast.com/schema/client-config"
+<hazelcast
+	xsi:schemaLocation="http://www.hazelcast.com/schema/client-config hazelcast-config-3.6.xsd"
+	xmlns="http://www.hazelcast.com/schema/config"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 >
 
@@ -25,12 +25,4 @@
 		</join>
 	</network>
 
-	<executor-pool-size>10</executor-pool-size>
-
-	<security>
-		<credentials>com.hazelcast.security.UsernamePasswordCredentials</credentials>
-	</security>
-
-	<load-balancer type="random"/>
-
-</hazelcast-client>
+</hazelcast>
