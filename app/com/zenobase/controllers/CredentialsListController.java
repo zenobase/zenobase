@@ -81,7 +81,7 @@ public class CredentialsListController extends ControllerSupport {
 		if (!auth.getPrincipal().equals(principal) && !users.isSuperuser(auth.getPrincipal())) {
 			return forbidden();
 		}
-		CredentialsQuery query = new CredentialsQuery().principalEqualTo(principal);
+		CredentialsQuery query = new CredentialsQuery().principalEqualTo(principal).order(Credentials.TYPE.getName(), true);
 		if (q != null) {
 			query = query.queryString(q);
 		}

@@ -5,7 +5,6 @@ import javax.inject.Inject;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.Iterables;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
-import org.elasticsearch.search.sort.SortOrder;
 import org.joda.time.DateTime;
 import play.Logger;
 
@@ -63,8 +62,8 @@ public class CredentialsRepository extends RepositorySupport<Credentials> {
 
 	public PartialList<Credentials> find(CredentialsQuery query, int offset, int limit) {
 		SearchSourceBuilder search = new SearchSourceBuilder()
-			.query(query.build()).version(true).from(offset).size(limit)
-			.sort(Credentials.CREATED.getName(), SortOrder.DESC);
+			.query(query.build()).version(true).from(offset).size(limit);
+		query.order().apply(search);
 		return new CredentialsList(index.find(search));
 	}
 

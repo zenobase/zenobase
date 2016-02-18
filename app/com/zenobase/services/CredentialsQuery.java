@@ -7,6 +7,8 @@ import com.zenobase.tasks.Credentials;
 
 public class CredentialsQuery extends QuerySupport {
 
+	private SearchOrder order = new SearchOrder(Credentials.CREATED.getName(), false);
+
 	public CredentialsQuery principalEqualTo(Identity principal) {
 		equalTo(Credentials.PRINCIPAL, principal.getId());
 		return this;
@@ -31,5 +33,14 @@ public class CredentialsQuery extends QuerySupport {
 	public CredentialsQuery queryString(String query) {
 		super.queryString(query, Credentials.ID.getName());
 		return this;
+	}
+
+	public CredentialsQuery order(String field, boolean asc) {
+		this.order = new SearchOrder(field, asc);
+		return this;
+	}
+
+	public SearchOrder order() {
+		return order;
 	}
 }
