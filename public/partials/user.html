@@ -31,7 +31,7 @@
 		<div id="account-settings-dialog" data-ui-modal data-ng-controller="AccountSettingsController">
 			<form name="form" data-ng-submit="save()" class="modal-form">
 				<div class="modal-header">
-					<a class="close" data-ng-click="cancel()">&times;</a>
+					<a class="close" data-dismiss="modal">&times;</a>
 					<h4>Account Settings</h4>
 				</div>
 				<div class="modal-body">
@@ -61,8 +61,8 @@
 					</div>
 				</div>
 				<div class="modal-footer">
-					<a id="close-account-button" data-ng-click="close()" class="pull-left">Close account...</a>
-					<button type="submit" class="btn btn-primary" data-ng-disabled="!form.$valid || user.verified && !form.$dirty">Save & Verify</button>
+					<a id="close-account-button" data-ng-click="terminate()" class="pull-left">Close account...</a>
+					<button type="submit" class="btn btn-primary" data-ng-disabled="!form.$valid || user.verified && !form.$dirty">Save &amp; Verify</button>
 					<button type="reset" class="btn" data-dismiss="modal">Cancel</button>
 				</div>
 			</form>

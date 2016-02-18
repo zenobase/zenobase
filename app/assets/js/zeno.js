@@ -511,7 +511,7 @@
 			}
 			tracker.event('action', 'save user');
 		};
-		$scope.close = function() {
+		$scope.terminate = function() {
 			if (confirm('Close your account and delete all associated data?')) {
 				tracker.event('action', 'close account');
 				$http({ method : 'DELETE', url : '/users/@' + $scope.username })
