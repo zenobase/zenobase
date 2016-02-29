@@ -6,6 +6,7 @@ import javax.inject.Named;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Preconditions;
 import org.scribe.model.OAuthRequest;
+import org.scribe.model.Response;
 import org.scribe.model.Token;
 import org.scribe.model.Verb;
 import play.Logger;
@@ -71,7 +72,12 @@ public class FitbitCredentialsManager extends OAuthCredentialsManager {
 		request.addBodyParameter("grant_type", "refresh_token");
 		request.addBodyParameter("refresh_token", refreshToken);
 		CustomApi20.addBasicAuthHeader(request, getApiKey(), getApiSecret());
-		credentials.setToken(new OAuth2TokenExtractor().extract(request.send().getBody()));
+		Response response = request.send();
+		if (response.isSuccessful()) {
+			credentials.setToken(new OAuth2TokenExtractor().extract(response.getBody()));
+		} else {
+			Logger.warn("Couldn't refresh credentials {}: {} -> {}", credentials.getId(), response.getHeaders(), response.getBody());
+		}
 	}
 
 	@Override
