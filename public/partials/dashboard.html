@@ -1039,6 +1039,23 @@
 		</div>
 	</script>
 
+	<script id="/dash-trips-settings.html" type="text/ng-template">
+		<div data-ng-controller="DashSettingsController">
+			<div class="control-group">
+				<label for="tag" class="control-label">Tag</label>
+				<input name="tag" type="text" required data-ng-model="settings.tag"/>
+			</div>
+			<div class="control-group">
+				<label for="timezone" class="control-label">Timezone</label>
+				<select name="timezone" data-ng-model="settings.timezone" data-ng-options="timezone for timezone in timezones" required data-ui-timezone-select></select>
+			</div>
+			<div class="control-group">
+				<label for="marker" class="control-label">Starting from</label>
+				<input class="input-small" type="text" data-ui-datepicker data-ng-model="settings.marker"/>
+			</div>
+    	</div>
+	</script>
+
 	<script id="/rescuetime-productivity-settings.html" type="text/ng-template">
 		<div data-ng-controller="RescueTimeProductivitySettingsController">
 			<div class="control-group">

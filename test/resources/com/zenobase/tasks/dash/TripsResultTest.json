@@ -1,0 +1,132 @@
+{
+    "result": [
+        {
+            "id": "7061f4c3-b77c-45c6-a054-3c211f9e1a3b-1408736142667-1408736755024",
+            "dateStart": "2014-08-22T19:35Z",
+            "dateEnd": "2014-08-22T19:45Z",
+            "vehicleId": "7061f4c3-b77c-45c6-a054-3c211f9e1a3b",
+            "startAddress": "Charlton St, Lower Manhattan 10014",
+            "endAddress": "Charlton St, Lower Manhattan 10014",
+            "startLatitude": 40.7270733,
+            "startLongitude": -74.0061488,
+            "endLatitude": 40.7270986,
+            "endLongitude": -74.0061726,
+            "startMapImageUrl": "https://dash.by/api/s/SUN15lfcrzJzrdziwZO_dQ",
+            "endMapImageUrl": "https://dash.by/api/s/2seesPlq070qdkHP62GyTQ",
+            "score": 70,
+            "stats": {
+                "dateStart": "2014-08-22T19:35Z",
+                "dateEnd": "2014-08-22T19:45Z",
+                "averageFuelEfficiency": 26,
+                "averageSpeed": 41,
+                "distanceDriven": 6.280972003936768,
+                "timeDriven": 10.205950140953064,
+                "fuelConsumed": 0.23831914365291595
+            },
+            "startTemperature": 74,
+            "endTemperature": 74,
+            "startWeatherConditions": "Overcast",
+            "endWeatherConditions": "Overcast",
+            "startWeatherConditionsImageUrl": "https://dash.by/api/s/S8FD1UgkWNXrWGHayZAVXA",
+            "endWeatherConditionsImageUrl": "https://dash.by/api/s/S8FD1UgkWNXrWGHayZAVXA"
+        },
+        {
+            "id": "7061f4c3-b77c-45c6-a054-3c211f9e1a3b-1407803278311-1407803723590",
+            "dateStart": "2014-08-12T00:27Z",
+            "dateEnd": "2014-08-12T00:35Z",
+            "vehicleId": "7061f4c3-b77c-45c6-a054-3c211f9e1a3b",
+            "startAddress": "Charlton St, Lower Manhattan 10014",
+            "endAddress": "Charlton St, Lower Manhattan 10014",
+            "startLatitude": 40.7270794,
+            "startLongitude": -74.0061067,
+            "endLatitude": 40.7270899,
+            "endLongitude": -74.0061352,
+            "startMapImageUrl": "https://dash.by/api/s/D-ASmHUVsISGzT0-UB1Sag",
+            "endMapImageUrl": "https://dash.by/api/s/gQiU0orgQd9utF2io6jjnA",
+            "score": 47,
+            "stats": {
+                "dateStart": "2014-08-12T00:27Z",
+                "dateEnd": "2014-08-12T00:35Z",
+                "averageFuelEfficiency": 25,
+                "averageSpeed": 71,
+                "distanceDriven": 7.791615009307861,
+                "timeDriven": 7.421316504478455,
+                "fuelConsumed": 0.31191563606262207
+            },
+            "startTemperature": 75,
+            "endTemperature": 74,
+            "startWeatherConditions": "Mostly Cloudy",
+            "endWeatherConditions": "Partly Cloudy",
+            "startWeatherConditionsImageUrl": "https://dash.by/api/s/4sGWfqnJ2FyBqMqX0SO-Fw",
+            "endWeatherConditionsImageUrl": "https://dash.by/api/s/4sGWfqnJ2FyBqMqX0SO-Fw",
+            "alerts": [
+                {
+                    "alertType": "HardBrake",
+                    "dateOccurred": "2014-08-12T00:33Z",
+                    "description": "De-accelerated by 22.0 mph in 0.676 seconds.",
+                    "value": 22
+                },
+                {
+                    "alertType": "HardBrake",
+                    "dateOccurred": "2014-08-12T00:31Z",
+                    "description": "De-accelerated by 23.0 mph in 0.501 seconds.",
+                    "value": 23
+                },
+                {
+                    "alertType": "HardBrake",
+                    "dateOccurred": "2014-08-12T00:30Z",
+                    "description": "De-accelerated by 13.0 mph in 0.601 seconds.",
+                    "value": 13
+                },
+                {
+                    "alertType": "HardAcceleration",
+                    "dateOccurred": "2014-08-12T00:30Z",
+                    "description": "Accelerated by 14.0 mph in 0.729 seconds.",
+                    "value": 14
+                },
+                {
+                    "alertType": "Speed",
+                    "dateOccurred": "2014-08-12T00:27Z",
+                    "description": "Spent 90 seconds speeding.",
+                    "value": 90
+                }
+            ]
+        },
+        {
+            "id": "7061f4c3-b77c-45c6-a054-3c211f9e1a3b-1407797112445-1407803272959",
+            "dateStart": "2014-08-11T22:45Z",
+            "dateEnd": "2014-08-12T00:27Z",
+            "vehicleId": "7061f4c3-b77c-45c6-a054-3c211f9e1a3b",
+            "startAddress": "Charlton St, Lower Manhattan 10014",
+            "endAddress": "Charlton St, Lower Manhattan 10014",
+            "startLatitude": 40.7270702,
+            "startLongitude": -74.0061385,
+            "endLatitude": 40.7270794,
+            "endLongitude": -74.0061067,
+            "startMapImageUrl": "https://dash.by/api/s/r6GjNep5yO0EoCSlDJf1eg",
+            "endMapImageUrl": "https://dash.by/api/s/IoR0D5ALL3oEOkfM3dlK3A",
+            "score": 61,
+            "stats": {
+                "dateStart": "2014-08-11T22:45Z",
+                "dateEnd": "2014-08-12T00:27Z",
+                "averageFuelEfficiency": 23,
+                "averageSpeed": 66,
+                "distanceDriven": 11.148161888122559,
+                "timeDriven": 102.67523288726807,
+                "fuelConsumed": 0.480073481798172
+            },
+            "endTemperature": 76,
+            "endWeatherConditions": "Mostly Cloudy",
+            "endWeatherConditionsImageUrl": "https://dash.by/api/s/4sGWfqnJ2FyBqMqX0SO-Fw",
+            "alerts": [
+                {
+                    "alertType": "HardAcceleration",
+                    "dateOccurred": "2014-08-11T22:50Z",
+                    "description": "Accelerated by 21.0 mph in 1.007 seconds.",
+                    "value": 21
+                }
+            ]
+        }
+    ],
+    "nextUrl": "https://dash.by/api/chassis/v1/trips?startTime=1403654400000&endTime=1404345599999"
+}

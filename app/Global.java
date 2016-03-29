@@ -119,6 +119,8 @@ import com.zenobase.tasks.beddit.BedditCredentialsManager;
 import com.zenobase.tasks.beddit.BedditTaskManager;
 import com.zenobase.tasks.beeminder.BeeminderCredentialsManager;
 import com.zenobase.tasks.beeminder.BeeminderTaskManager;
+import com.zenobase.tasks.dash.DashCredentialsManager;
+import com.zenobase.tasks.dash.DashTaskManager;
 import com.zenobase.tasks.demo.DemoCredentialsManager;
 import com.zenobase.tasks.demo.DemoTaskManager;
 import com.zenobase.tasks.dropbox.DropboxCredentialsManager;
@@ -340,6 +342,7 @@ public class Global extends GlobalSettings {
 				bindIfConfigured("wakatime", WakaTimeCredentialsManager.class, credentials);
 				bindIfConfigured("microsoft", MicrosoftHealthCredentialsManager.class, credentials);
 				bindIfConfigured("fitbark", FitBarkCredentialsManager.class, credentials);
+				bindIfConfigured("dash", DashCredentialsManager.class, credentials);
 				bind(CredentialsManagerRegistry.class).in(Singleton.class);
 
 				Multibinder<TaskManager> tasks = Multibinder.newSetBinder(binder(), new TypeLiteral<TaskManager>() {});
@@ -405,6 +408,7 @@ public class Global extends GlobalSettings {
 				bindIfConfigured("microsoft", MicrosoftHealthSleepTaskManager.class, tasks);
 				bindIfConfigured("microsoft", MicrosoftHealthStepsTaskManager.class, tasks);
 				bindIfConfigured("fitbark", FitBarkTaskManager.class, tasks);
+				bindIfConfigured("dash", DashTaskManager.class, tasks);
 				bind(TaskManagerRegistry.class).in(Singleton.class);
 
 				Multibinder<Job> jobs = Multibinder.newSetBinder(binder(), Job.class);

@@ -1,0 +1,42 @@
+{
+    "id": "DFG678-787GHGHG-GHGghfghfhf",
+    "firstName": "mavi",
+    "lastName": "puri",
+    "gender": "female",
+    "userProfileImageUrl": "https://dash.by/api/s/Zs3eFzijcTciCY_93KWuKw",
+    "overallScore": 80,
+    "preferredUnits": {
+        "distance": "Miles",
+        "temperature": "Fahrenheit",
+        "volume": "USGallon",
+        "fuelEfficiency": "MilesPerUSGallon"
+    },
+    "currentVehicle": {
+        "id": "7061f4c3-b77c-45c6-a054-3c211f9e1a3b",
+        "make": "Acura",
+        "model": "ILX",
+        "year": 2014,
+        "name": "pro",
+        "engineDisplacementLiters": 2,
+        "cityFuelEfficiency": 23.6858,
+        "highwayFuelEfficiency": 35.124,
+        "fuelType": "Premium",
+        "vehicleProfileImageUrl": "https://dash.by/api/s/4zFdqEFVRQkcd9259TEYHQ",
+        "makeLogoImageUrl": "https://dash.by/api/s/uqQ4SX7OJ_fu6i9AQ_ey6A"
+    },
+    "vehicles": [
+        {
+            "id": "7061f4c3-b77c-45c6-a054-3c211f9e1a3b",
+            "make": "Acura",
+            "model": "ILX",
+            "year": 2014,
+            "name": "pro",
+            "engineDisplacementLiters": 2,
+            "cityFuelEfficiency": 23.6858,
+            "highwayFuelEfficiency": 35.124,
+            "fuelType": "Premium",
+            "vehicleProfileImageUrl": "https://dash.by/api/s/4zFdqEFVRQkcd9259TEYHQ",
+            "makeLogoImageUrl": "https://dash.by/api/s/uqQ4SX7OJ_fu6i9AQ_ey6A"
+        }
+    ]
+}

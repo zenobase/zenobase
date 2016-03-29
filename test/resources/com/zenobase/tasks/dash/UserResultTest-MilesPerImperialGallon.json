@@ -1,0 +1,14 @@
+{
+    "id": "DFG678-787GHGHG-GHGghfghfhf",
+    "firstName": "mavi",
+    "lastName": "puri",
+    "gender": "female",
+    "userProfileImageUrl": "https://dash.by/api/s/Zs3eFzijcTciCY_93KWuKw",
+    "overallScore": 80,
+    "preferredUnits": {
+        "distance": "Miles",
+        "temperature": "Celsius",
+        "volume": "ImperialGallon",
+        "fuelEfficiency": "MilesPerImperialGallon"
+    }
+}
