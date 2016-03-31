@@ -1246,6 +1246,14 @@
 				description : 'Correlates values from two fields.',
 				thumbnail : cacheBuster.rewrite('/img/widgets/scatterplot.png'),
 				settings : { field_x : 'count', field_y : 'count' }
+			},
+			{
+				type : 'sonification',
+				label : 'Sonify',
+				description : 'Plays data from timeline widgets as sounds.',
+				thumbnail : cacheBuster.rewrite('/img/widgets/sonification.png'),
+				settings : { tempo : 176, scale : 'chromatic' },
+				singleton : true
 			}
 		];
 		$scope.init = function(placement) {
@@ -1632,8 +1640,17 @@
 		$scope.setDirty = function(dirty) {
 			$scope.dirty = dirty;
 		};
+
+		var clock = 0;
+		$scope.tic = function() {
+			$scope.$broadcast('tic', clock++, true);
+		};
+		$scope.untic = function() {
+			$scope.$broadcast('tic', clock, false);
+			clock = 0;
+		};
 	}]);
-	
+
 	app.controller('EditWidgetsController', ['$scope', '$http', '$route', 'tracker', function($scope, $http, $route, tracker) {
 		$scope.save = function() {
 			$scope.alert.clear();
@@ -2055,7 +2072,7 @@
 			return { label : subfield, value : (subfield ? $scope.keyField + '$' + subfield : $scope.keyField) };
 		});
 	}]);
-	
+
 	app.controller('RatingsWidgetController', ['$scope', function($scope) {
 	
 		$scope.field = 'rating';
@@ -2732,9 +2749,10 @@
 					legend : {
 						enabled : false
 					},
-					credits: {
-						enabled: false
-					}
+					credits : {
+						enabled : false
+					},
+					playable : true
 				};
 				if ($scope.interval != Interval.VALUES[Interval.VALUES.length - 1]) {
 					options.plotOptions.series.cursor = 'pointer';
@@ -4343,6 +4361,191 @@
 			$scope.settings.unit = field && field.units.length ? field.units[0] : '';
 		});
 
+	}]);
+
+	app.controller('SonificationWidgetController', ['$scope', '$window', '$interval', function($scope, $window, $interval) {
+
+		var audio = null;
+
+		var pitches = {
+			'A3' : 220.0,
+			'Bb3' : 233.1,
+			'B3' : 246.9,
+			'C4' : 261.6,
+			'C#4' : 277.2,
+			'D4' : 293.7,
+			'Eb4' : 311.1,
+			'E4' : 329.6,
+			'F4' : 349.2,
+			'F#4' : 370.0,
+			'G4' : 392.0,
+			'G#4' : 415.3,
+			'A4' : 440.0,
+			'Bb4' : 466.2,
+			'B4' : 493.9,
+			'C5' : 523.3,
+			'Cs5' : 554.4,
+			'D5' : 587.3,
+			'Eb5' : 622.3,
+			'E5' : 659.3,
+			'F5' : 698.5,
+			'F#5' : 740.0
+		};
+
+		var scales = {
+			chromatic : [
+				pitches['C4'],
+				pitches['C#4'],
+				pitches['D4'],
+				pitches['Eb4'],
+				pitches['E4'],
+				pitches['F4'],
+				pitches['F#4'],
+				pitches['G4'],
+				pitches['G#4'],
+				pitches['A4'],
+				pitches['Bb4'],
+				pitches['B4'],
+				pitches['C5']
+			],
+			octatonic : [
+				pitches['C4'],
+				pitches['C#4'],
+				pitches['Eb4'],
+				pitches['E4'],
+				pitches['F#4'],
+				pitches['G4'],
+				pitches['A4'],
+				pitches['Bb4'],
+				pitches['C5']
+			],
+			pentatonic : [
+				pitches['C4'],
+				pitches['D4'],
+				pitches['E4'],
+				pitches['G4'],
+				pitches['A4'],
+				pitches['C5']
+			]
+		};
+
+		$scope.init = function() {
+			$scope.stop();
+			$scope.tracks = [];
+		};
+		$scope.params = function() {
+			return null;
+		};
+		$scope.update = function(event, result) {
+			$.each(result, function(id, data) {
+				if ($.isArray(data) && data.length && data[0].time) {
+					var useCounts = true;
+					var unit = null;
+					var values = $.map(data, function(item) {
+						if (item.hasOwnProperty('avg')) {
+							if (typeof item.avg === 'object') {
+								unit = item.avg.unit;
+								return item.avg['@value'];
+							}
+							useCounts = false;
+							return item.avg;
+						} else {
+							return useCounts ? item.count : 0;
+						}
+					});
+					$scope.tracks.push(normalize(values));
+				}
+			});
+		};
+		$scope.refresh = function(options, settings) {
+			$scope.stop();
+			$.extend($scope.settings, settings);
+			if ($scope.tracks.length === 0) {
+				$scope.$parent.refresh();
+			}
+		};
+		$scope.play = function() {
+			audio.resume();
+			if ($scope.playing === 0) {
+				$.each($scope.tracks, function(i, track) {
+					play(track, scales[$scope.settings.scale], $scope.settings.tempo, 1.0 / $scope.tracks.length);
+				});
+			}
+		};
+		$scope.stop = function() {
+			if (audio) {
+				audio.suspend();
+				audio.close();
+			}
+			audio = $window.AudioContext ? new $window.AudioContext() : new $window.webkitAudioContext();
+			audio.suspend();
+			var ticker = null;
+			audio.onstatechange = function() {
+				if (audio.state === 'running') {
+					$scope.tic();
+					ticker = $interval(function() {
+						$scope.tic();
+					}, Math.round(60000 / $scope.settings.tempo));
+				} else if (ticker) {
+					$interval.cancel(ticker);
+					$scope.untic();
+				}
+			};
+			$scope.playing = 0;			
+		};
+		$scope.isRunning = function() {
+			return audio.state === 'running';
+		};
+
+		$scope.init();
+		$scope.register($scope);
+		$scope.$on('result', $scope.update);
+		$scope.$on('refresh', $scope.init);
+
+		function normalize(values) {
+			var nonZeroValues = $.grep(values, function(value) { return value !== 0; });
+			var min = Math.min.apply(null, nonZeroValues) || 0;
+			values = $.map(values, function(value) {
+				return Math.max(value - min, 0);
+			});
+			var max = Math.max.apply(null, values) || 1;
+			return $.map(values, function(value) {
+				return value / max;
+			});
+		}
+
+		function play(notes, scale, tempo, volume) {
+			for (var i = 0; i < notes.length; ++i) {
+				var freq = notes[i] > 0 ? scale[Math.ceil(notes[i] * scale.length) - 1] : 0;
+				var d = 60 / tempo;
+				var t = audio.currentTime + i * d;
+				var gain = audio.createGain();
+				gain.connect(audio.destination);
+				gain.gain.setValueAtTime(0.0, t);
+				gain.gain.linearRampToValueAtTime(volume, t + d / 5);
+				gain.gain.linearRampToValueAtTime(0.0, t + d);
+				var osc = audio.createOscillator();
+				osc.frequency.value = freq;
+				osc.connect(gain);
+				osc.start(t);
+				osc.stop(t + d + d / 5);
+				osc.onended = ended;
+				++$scope.playing;
+			}
+		}
+
+		function ended() {
+			$scope.$apply(function() {
+				if (--$scope.playing === 0) {
+					audio.suspend();
+				}
+			});
+		}
+	}]);
+
+	app.controller('SonificationWidgetDialogController', ['$scope', 'WidgetDialogControllerSupport', function($scope, WidgetDialogControllerSupport) {
+		new WidgetDialogControllerSupport($scope);
+		$scope.scales = [ 'chromatic', 'octatonic', 'pentatonic' ];
 	}]);
 
 	app.factory('Event', function() {
@@ -7734,6 +7937,12 @@
 							$('#' + attrs.uiId + '-tab').on('shown', function() { 
 								scope.chart.reflow();
 							});
+							if (newOptions.playable) {
+								scope.$on('tic', function(event, clock, active) {
+									var data = scope.chart.series[0].data;
+									data[clock % data.length].select(active);
+								});
+							}
 						}
 					}
 				}, true);
