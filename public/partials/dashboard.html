@@ -355,6 +355,11 @@
 	<script id="/fitbit-activities-settings.html" type="text/ng-template">
 		<div data-ng-controller="FitbitActivitiesSettingsController">
 			<div class="control-group">
+				<label class="checkbox">
+					<input type="checkbox" data-ng-model="settings.autodetected"/> include autodetected activities
+				</label>
+			</div>
+			<div class="control-group">
 				<label for="marker" class="control-label">Starting from</label>
 				<input class="input-small" type="text" data-ui-datepicker data-ng-model="settings.marker"/>
 			</div>

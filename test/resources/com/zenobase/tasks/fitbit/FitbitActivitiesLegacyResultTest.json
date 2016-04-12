@@ -1,0 +1,44 @@
+{
+    "activities": [
+        {
+            "activityId": 17220,
+            "activityParentId": 90013,
+            "activityParentName": "Walk",
+            "calories": 240,
+            "description": "4.0 mph, very brisk pace",
+            "distance": 3.72,
+            "duration": 2079000,
+            "hasStartTime": true,
+            "isFavorite": false,
+            "lastModified": "2014-10-29T18:44:08.000-07:00",
+            "logId": 113469958,
+            "name": "Walk",
+            "startDate": "2014-10-29",
+            "startTime": "18:08",
+            "steps": 4848
+        },
+        {
+            "activityId": 17190,
+            "activityParentId": 90013,
+            "activityParentName": "Dynaflex",
+            "calories": 105,
+            "description": "",
+            "duration": 300000,
+            "hasStartTime": true,
+            "isFavorite": false,
+            "lastModified": "2014-10-28T12:53:01.000-07:00",
+            "logId": 113335963,
+            "name": "Dynaflex",
+            "startDate": "2014-10-28",
+            "startTime": "12:22"
+        }
+    ],
+    "pagination": {
+        "afterDate": "2014-10-28",
+        "limit": 2,
+        "next": "https://api.fitbit.com/1/user/-/activities/list.json?offset=0&limit=10&sort=desc&afterDate=2014-10-28",
+        "offset": 0,
+        "previous": "",
+        "sort": "desc"
+    }
+}

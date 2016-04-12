@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Objects;
 import com.google.common.collect.Lists;
@@ -32,7 +33,8 @@ public class FitbitActivitiesTaskManager extends FitbitTaskManagerSupport<Fitbit
 	@Override
 	public Task newTask(String bucketId, Identity principal, ObjectNode settings) {
 		String marker = DateTime.parse(settings.path("marker").textValue()).toString();
-		return new FitbitActivitiesTask(bucketId, principal, marker);
+		boolean autodetected = settings.path("autodetected").booleanValue();
+		return new FitbitActivitiesTask(bucketId, principal, marker, autodetected);
 	}
 
 	@Override
@@ -51,9 +53,16 @@ public class FitbitActivitiesTaskManager extends FitbitTaskManagerSupport<Fitbit
 			}
 			try {
 				Response response = send(request, credentials);
-				FitbitActivitiesResult result = new FitbitActivitiesResult(parseObject(response), task.getPrincipal(), profile.getTimezone(), profile.getDistanceUnit());
-				events.addAll(result.getEvents());
-				url = result.next();
+				JsonNode node = parseObject(response);
+				if (FitbitActivitiesLegacyResult.isLegacyResult(node)) {
+					FitbitActivitiesLegacyResult result = new FitbitActivitiesLegacyResult(node, task.getPrincipal(), profile.getTimezone(), profile.getDistanceUnit());
+					events.addAll(result.getEvents());
+					url = result.next();
+				} else {
+					FitbitActivitiesResult result = new FitbitActivitiesResult(node, task.getPrincipal(), task.includeAutodetected(), profile.getDistanceUnit());
+					events.addAll(result.getEvents());
+					url = result.next();
+				}
 			} catch (InvalidStatusException e) {
 				if (e.getStatus() == 429) { // reached rate limit
 					Logger.warn("Hit rate limit and couldn't complete task: {}", task.getId());
