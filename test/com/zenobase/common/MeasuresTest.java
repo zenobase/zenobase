@@ -14,6 +14,7 @@ public class MeasuresTest {
 	public void testLength() {
 		assertThatIsEqualTo("1.00 m", "1.00 m");
 		assertThatIsEqualTo("0.3048 m", "1 ft");
+		assertThatIsEqualTo("0.9144 m", "1 yd");
 		assertThatIsEqualTo("1609.344 m", "1 mi");
 		assertThatIsEqualTo("1000 m", "1 km");
 		assertThatIsEqualTo("0.01 m", "1 cm");

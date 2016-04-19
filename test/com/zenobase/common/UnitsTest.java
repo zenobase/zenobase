@@ -33,6 +33,7 @@ public class UnitsTest {
 		assertThat(Units.isMetric(Units.KM)).as("km are metric").isTrue();
 		assertThat(Units.isMetric(Units.CM)).as("cm are metric").isTrue();
 		assertThat(Units.isMetric(Units.FT)).as("ft are metric").isFalse();
+		assertThat(Units.isMetric(Units.YD)).as("yd are metric").isFalse();
 		assertThat(Units.isMetric(Units.MI)).as("mi are metric").isFalse();
 	}
 }

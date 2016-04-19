@@ -103,6 +103,7 @@ public class Units {
 	public static final Unit<Length> KM = valueOf("km");
 	public static final Unit<Length> IN = valueOf("in");
 	public static final Unit<Length> FT = valueOf("ft");
+	public static final Unit<Length> YD = valueOf("yd");
 	public static final Unit<Length> MI = valueOf("mi");
 
 	public static final Unit<LengthPerVolume> KPL = valueOf("kpl");

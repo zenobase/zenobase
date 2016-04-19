@@ -7221,7 +7221,7 @@
 			name : 'distance',
 			icon : 'fa-arrows-h',
 			type : 'numeric',
-			units : [ 'mi', 'ft', 'in', 'km', 'm', 'cm', 'mm' ],
+			units : [ 'mi', 'yd', 'ft', 'in', 'km', 'm', 'cm', 'mm' ],
 			toText : function(value) {
 				return typeof value === 'object' ? value['@value'] + ' ' + value.unit : value;
 			},
