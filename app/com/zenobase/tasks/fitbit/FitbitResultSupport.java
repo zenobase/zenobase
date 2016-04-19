@@ -8,6 +8,7 @@ import javax.measure.quantity.Energy;
 import javax.measure.quantity.Frequency;
 import javax.measure.quantity.Length;
 import javax.measure.quantity.Mass;
+import javax.measure.quantity.Velocity;
 import javax.measure.unit.Unit;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -19,6 +20,7 @@ import org.joda.time.LocalDateTime;
 
 import com.zenobase.common.DateTimeZones;
 import com.zenobase.common.Measures;
+import com.zenobase.common.Pace;
 import com.zenobase.common.Units;
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
@@ -84,6 +86,14 @@ abstract class FitbitResultSupport {
 
 	protected static DecimalMeasure<Frequency> frequencyValue(JsonNode node) {
 		return node.asInt() > 0 ? Measures.valueOf(BigDecimal.valueOf(node.asInt()), Units.BPM) : null;
+	}
+
+	protected static DecimalMeasure<Velocity> velocityValue(JsonNode node, Unit<Velocity> unit) {
+		return node.asInt() > 0 ? Measures.valueOf(Measures.round(node.decimalValue()), unit) : null;
+	}
+
+	protected static DecimalMeasure<Pace> paceValue(JsonNode node, Unit<Pace> unit) {
+		return node.asInt() > 0 ? Measures.valueOf(BigDecimal.valueOf(node.asInt()), unit) : null;
 	}
 
 	private static boolean isZero(JsonNode node) {

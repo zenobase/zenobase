@@ -35,8 +35,8 @@ public class FitbitActivitiesResultTest extends ResultTestSupport {
 		e1.setValue(Event.TIMESTAMP, dateTime("2015-05-25T14:08:12-07:00"));
 		e1.setValue(Event.DURATION, Duration.standardSeconds(7272));
 		e1.setValue(Event.DISTANCE, Measures.<Length>valueOf("5.600688 mi"));
-		e1.setValue(Event.VELOCITY, Measures.<Velocity>valueOf("2.8 mph"));
-		e1.setValue(Event.PACE, Measures.<Pace>valueOf("1298 s/mi"));
+		e1.setValue(Event.VELOCITY, Measures.<Velocity>valueOf("3.24 mph"));
+		e1.setValue(Event.PACE, Measures.<Pace>valueOf("1111 s/mi"));
 		e1.setValue(Event.ENERGY, Measures.<Energy>valueOf("582 kcal"));
 		e1.setValue(Event.FREQUENCY, Measures.<Frequency>valueOf("102 bpm"));
 		e1.setValue(Event.COUNT, 7295);
