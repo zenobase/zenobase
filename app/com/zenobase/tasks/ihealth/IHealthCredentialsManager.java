@@ -24,11 +24,13 @@ public class IHealthCredentialsManager extends OAuthCredentialsManager {
 	public static final String TYPE = "ihealth";
 
 	private final String callbackUrl;
+	private final String sc;
 
 	@Inject
-	public IHealthCredentialsManager(CredentialsRepository integrations, @Named("ihealth.api.key") String apiKey, @Named("ihealth.api.secret") String apiSecret, @Named("oauth.hostname") String callbackUrl) {
+	public IHealthCredentialsManager(CredentialsRepository integrations, @Named("ihealth.api.key") String apiKey, @Named("ihealth.api.secret") String apiSecret, @Named("ihealth.api.sc") String sc, @Named("oauth.hostname") String callbackUrl) {
 		super(TYPE, integrations, new IHealthApi(), apiKey, apiSecret, callbackUrl);
 		this.callbackUrl = callbackUrl;
+		this.sc = sc;
 	}
 
 	@Override
@@ -68,6 +70,7 @@ public class IHealthCredentialsManager extends OAuthCredentialsManager {
 		request.addQuerystringParameter("access_token", credentials.getToken().getToken());
 		request.addQuerystringParameter("client_id", getApiKey());
 		request.addQuerystringParameter("client_secret", getApiSecret());
+		request.addQuerystringParameter("sc", sc);
 	}
 
 	@Override

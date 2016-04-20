@@ -1,6 +1,7 @@
 package com.zenobase.tasks.ihealth;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Objects;
@@ -14,9 +15,9 @@ import com.zenobase.tasks.Task;
 public class IHealthGlucoseTaskManager extends IHealthTaskManagerSupport<IHealthGlucoseTask> {
 
 	@Inject
-	public IHealthGlucoseTaskManager(IHealthCredentialsManager credentialsManager) {
+	public IHealthGlucoseTaskManager(IHealthCredentialsManager credentialsManager, @Named("ihealth.api.sv.glucose") String sv) {
 		super(IHealthGlucoseTask.TYPE, credentialsManager, IHealthGlucoseTask.class);
-		register("glucose", new ResultHandler<IHealthGlucoseTask>() {
+		register("glucose", sv, new ResultHandler<IHealthGlucoseTask>() {
 			@Override
 			public IHealthResultSupport process(IHealthGlucoseTask task, ObjectNode node) {
 				return new IHealthGlucoseResult(node, task.getPrincipal(), task.getTag(), task.getTimezone());

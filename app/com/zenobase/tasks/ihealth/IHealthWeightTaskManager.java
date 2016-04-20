@@ -1,6 +1,7 @@
 package com.zenobase.tasks.ihealth;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Objects;
@@ -14,9 +15,9 @@ import com.zenobase.tasks.Task;
 public class IHealthWeightTaskManager extends IHealthTaskManagerSupport<IHealthWeightTask> {
 
 	@Inject
-	public IHealthWeightTaskManager(IHealthCredentialsManager credentialsManager) {
+	public IHealthWeightTaskManager(IHealthCredentialsManager credentialsManager, @Named("ihealth.api.sv.weight") String sv) {
 		super(IHealthWeightTask.TYPE, credentialsManager, IHealthWeightTask.class);
-		register("weight", new ResultHandler<IHealthWeightTask>() {
+		register("weight", sv, new ResultHandler<IHealthWeightTask>() {
 			@Override
 			public IHealthResultSupport process(IHealthWeightTask task, ObjectNode node) {
 				return new IHealthWeightResult(node, task.getPrincipal(), task.getTag(), task.getTimezone());

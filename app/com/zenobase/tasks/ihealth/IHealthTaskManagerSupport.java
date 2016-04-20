@@ -32,6 +32,7 @@ abstract class IHealthTaskManagerSupport<T extends IHealthTaskSupport> extends O
 	protected static final String HOST = "https://api.ihealthlabs.com:8443/openapiv2";
 
 	private final Map<String, ResultHandler<T>> handlers = Maps.newLinkedHashMap();
+	private final Map<String, String> svs = Maps.newLinkedHashMap();
 	private final Class<T> taskClass;
 
 	protected IHealthTaskManagerSupport(String type, IHealthCredentialsManager credentialsManager, Class<T> taskClass) {
@@ -39,8 +40,9 @@ abstract class IHealthTaskManagerSupport<T extends IHealthTaskSupport> extends O
 		this.taskClass = taskClass;
 	}
 
-	protected void register(String path, ResultHandler<T> handler) {
+	protected void register(String path, String sv, ResultHandler<T> handler) {
 		handlers.put(path, handler);
+		svs.put(path, sv);
 	}
 
 	interface ResultHandler<T extends IHealthTaskSupport> {
@@ -74,6 +76,7 @@ abstract class IHealthTaskManagerSupport<T extends IHealthTaskSupport> extends O
 			request.addQuerystringParameter("end_time", Long.toString(end.getMillis() / 1000));
 			request.addQuerystringParameter("page_index", Integer.toString(page));
 			request.addQuerystringParameter("locale", "user");
+			request.addQuerystringParameter("sv", svs.get(resource));
 			Response response = send(request, credentials);
 			ObjectNode body = parseObject(response);
 			IHealthResultSupport result = handler.process(task, body);

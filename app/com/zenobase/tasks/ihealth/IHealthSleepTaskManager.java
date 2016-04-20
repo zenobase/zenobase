@@ -1,6 +1,7 @@
 package com.zenobase.tasks.ihealth;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Objects;
@@ -14,9 +15,9 @@ import com.zenobase.tasks.Task;
 public class IHealthSleepTaskManager extends IHealthTaskManagerSupport<IHealthSleepTask> {
 
 	@Inject
-	public IHealthSleepTaskManager(IHealthCredentialsManager credentialsManager) {
+	public IHealthSleepTaskManager(IHealthCredentialsManager credentialsManager, @Named("ihealth.api.sv.sleep") String sv) {
 		super(IHealthSleepTask.TYPE, credentialsManager, IHealthSleepTask.class);
-		register("sleep", new ResultHandler<IHealthSleepTask>() {
+		register("sleep", sv, new ResultHandler<IHealthSleepTask>() {
 			@Override
 			public IHealthResultSupport process(IHealthSleepTask task, ObjectNode node) {
 				return new IHealthSleepResult(node, task.getPrincipal(), task.getTag(), task.getTimezone());
