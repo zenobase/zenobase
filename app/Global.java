@@ -184,6 +184,7 @@ import com.zenobase.tasks.moves.MovesPlacesTaskManager;
 import com.zenobase.tasks.moves.MovesStepsTaskManager;
 import com.zenobase.tasks.netatmo.NetatmoCredentialsManager;
 import com.zenobase.tasks.netatmo.NetatmoTaskManager;
+import com.zenobase.tasks.openmhealth.HipboneTaskManager;
 import com.zenobase.tasks.reporter.ReporterTaskManager;
 import com.zenobase.tasks.rescuetime.RescueTimeCredentialsManager;
 import com.zenobase.tasks.rescuetime.RescueTimeProductivityTaskManager;
@@ -370,6 +371,7 @@ public class Global extends GlobalSettings {
 				bindIfConfigured("moves", MovesPlacesTaskManager.class, tasks);
 				bindIfConfigured("moves", MovesStepsTaskManager.class, tasks);
 				bindIfConfigured("dropbox", ReporterTaskManager.class, tasks);
+				bindIfConfigured("dropbox", HipboneTaskManager.class, tasks);
 				bindIfConfigured("lastfm", LastFmTaskManager.class, tasks);
 				bindIfConfigured("forecast", ForecastTaskManager.class, tasks);
 				bindIfConfigured("rescuetime", RescueTimeProductivityTaskManager.class, tasks);

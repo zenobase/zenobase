@@ -1,0 +1,16 @@
+{
+    "header": {
+        "id": "1A7133C2-E556-4C4B-AE06-963B4BE85E38",
+        "creation_date_time": "2016-04-07T06:36:07.679-07:00",
+        "schema_id": {
+            "version": "1.0",
+            "name": "minimal",
+            "namespace": "omh"
+        }
+    },
+    "body": {
+        "effective_time_frame": {
+            "date_time": "2013-02-05T07:25:00Z"
+        }
+    }
+}

@@ -72,7 +72,7 @@ public abstract class OAuthTaskManager extends TaskManager {
 			if (response.getCode() == Http.Status.UNAUTHORIZED) {
 				throw new InvalidTokenException(request, credentials);
 			} else {
-				throw new InvalidStatusException(request, response.getCode());
+				throw new InvalidStatusException(request, response.getCode(), response.getBody());
 			}
 		}
 		return response;

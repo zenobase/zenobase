@@ -6004,6 +6004,7 @@
 			{ id : 'google-weight', description : 'Creates an event for each body weight measurement.', url : 'http://fit.google.com/' },
 			{ id : 'hexoskin-activities', description : 'Creates an event for each activity.', url : 'http://www.hexoskin.com/' },
 			{ id : 'hexoskin-sleep', description : 'Creates an event for each period of sleep.', url : 'http://www.hexoskin.com/' },
+			{ id : 'hipbone', description : 'Creates events for Apple Health data exported to Dropbox with the Hipbone app.', url : 'https://hipboneapp.com/' },
 			{ id : 'ihealth-activities', description : 'Creates an event for each activity.', url : 'http://ihealthlabs.com/' },
 			{ id : 'ihealth-cardio', description : 'Creates an event for each heart rate or blood pressure measurement.', url : 'http://ihealthlabs.com/' },
 			{ id : 'ihealth-food', description : 'Creates an event for each meal.', url : 'http://ihealthlabs.com/' },
@@ -6476,6 +6477,17 @@
 			$scope.settings = $scope.$parent.$parent.settings = {
 					tag : 'Body',
 					marker : new Date(moment().utc().subtract(12, 'months').startOf('month').valueOf())
+			};
+		};
+
+		$scope.init();
+	}]);
+
+	app.controller('HipboneSettingsController', ['$scope', function($scope) {
+
+		$scope.init = function() {
+			$scope.settings = $scope.$parent.$parent.settings = {
+					folder : '/Apps/Hipbone/data'
 			};
 		};
 
