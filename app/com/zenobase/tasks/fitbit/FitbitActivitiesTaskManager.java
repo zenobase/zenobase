@@ -54,15 +54,9 @@ public class FitbitActivitiesTaskManager extends FitbitTaskManagerSupport<Fitbit
 			try {
 				Response response = send(request, credentials);
 				JsonNode node = parseObject(response);
-				if (FitbitActivitiesLegacyResult.isLegacyResult(node)) {
-					FitbitActivitiesLegacyResult result = new FitbitActivitiesLegacyResult(node, task.getPrincipal(), profile.getTimezone(), profile.getDistanceUnit());
-					events.addAll(result.getEvents());
-					url = result.next();
-				} else {
-					FitbitActivitiesResult result = new FitbitActivitiesResult(node, task.getPrincipal(), task.includeAutodetected(), profile.getDistanceUnit());
-					events.addAll(result.getEvents());
-					url = result.next();
-				}
+				FitbitActivitiesResult result = new FitbitActivitiesResult(node, task.getPrincipal(), task.includeAutodetected(), profile.getDistanceUnit());
+				events.addAll(result.getEvents());
+				url = result.next();
 			} catch (InvalidStatusException e) {
 				if (e.getStatus() == 429) { // reached rate limit
 					Logger.warn("Hit rate limit and couldn't complete task: {}", task.getId());

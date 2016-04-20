@@ -9,7 +9,6 @@ import javax.measure.quantity.Frequency;
 import javax.measure.quantity.Length;
 import javax.measure.quantity.Velocity;
 
-import org.joda.time.DateTimeZone;
 import org.joda.time.Duration;
 import org.junit.Test;
 
@@ -67,7 +66,7 @@ public class FitbitActivitiesResultTest extends ResultTestSupport {
 
 	@Test
 	public void testEmpty() {
-		FitbitActivitiesLegacyResult result = new FitbitActivitiesLegacyResult(Nodes.newObject(), TESTER, DateTimeZone.forID("America/Los_Angeles"), Units.MI);
+		FitbitActivitiesResult result = new FitbitActivitiesResult(Nodes.newObject(), TESTER, false, Units.MI);
 		List<Event> events = result.getEvents();
 		assertThat(events).as("events").hasSize(0);
 	}
