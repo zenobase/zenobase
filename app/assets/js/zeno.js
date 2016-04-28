@@ -5990,6 +5990,7 @@
 			{ id : 'dash-trips', description : 'Creates an event for each trip recorded.', url : 'https://dash.by/' },
 			{ id : 'fitbark', description : 'Creates an event for the activity level for every day or hour.', url : 'https://www.fitbark.com/' },
 			{ id : 'fitbit-activities', description : 'Creates an event for each activity.', url : 'https://www.fitbit.com/' },
+			{ id : 'fitbit-burn', description : 'Creates an event for the number of calories burned each day or hour.', url : 'https://www.fitbit.com/' },
 			{ id : 'fitbit-cardio', description : 'Creates an event for the daily resting heart rate, or the average hourly heart rate.', url : 'https://www.fitbit.com/' },
 			{ id : 'fitbit-food', description : 'Creates an event for the number of calories consumed each day.', url : 'https://www.fitbit.com/' },
 			{ id : 'fitbit-sleep', description : 'Creates an event for each period of sleep.', url : 'https://www.fitbit.com/' },
@@ -6120,6 +6121,19 @@
 
 		$scope.init = function() {
 			$scope.settings = $scope.$parent.$parent.settings = {
+					marker : new Date(moment().utc().subtract(3, 'months').startOf('month').valueOf())
+			};
+		};
+
+		$scope.init();
+	}]);
+
+	app.controller('FitbitBurnSettingsController', ['$scope', 'moment', function($scope, moment) {
+
+		$scope.init = function() {
+			$scope.settings = $scope.$parent.$parent.settings = {
+					tag : 'burn',
+					hourly : false,
 					marker : new Date(moment().utc().subtract(3, 'months').startOf('month').valueOf())
 			};
 		};

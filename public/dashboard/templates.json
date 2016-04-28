@@ -763,6 +763,42 @@
 		]
 	},
 	{
+		"category" : "Burn",
+		"source" : "Fitbit",
+		"task" : "fitbit-burn",
+		"widgets" : [
+			{
+				"id" : "timeline_energy",
+				"type" : "timeline",
+				"label" : "Burn (kcal)",
+				"placement" : "top",
+				"field" : "energy",
+				"unit" : "kcal",
+				"statistic" : "sum",
+				"interval" : "month"
+			},
+			{
+				"id" : "latest",
+				"type" : "list",
+				"label" : "Latest",
+				"placement" : "left",
+				"order" : "-timestamp",
+				"limit" : 10,
+				"singleton" : true
+			},
+			{
+				"id" : "polar_energy",
+				"type" : "polar",
+				"label" : "Day of Week",
+				"placement" : "right",
+				"value_field" : "energy",
+				"unit" : "kcal",
+				"statistic" : "avg",
+				"interval" : "day_of_week"
+			}
+		]
+	},
+	{
 		"category" : "Environment",
 		"source" : "Netatmo",
 		"task" : "netatmo", 
