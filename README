@@ -19,6 +19,8 @@ When updating angular-custom.js, append angular-route and angular-sanitize. Remo
 
 When updating highcharts.js, append highcharts-more.js and modules/exporting.js.
 
+When updating moment.js, append moment-timezone-all-years.js.
+
 When updating Font Awesome, use the unminified css version as the less file, and copy the font files to public/fonts/.
 
 When updating highlight.js, create a custom package with support for bash and json, and copy styles/railscasts.css to 

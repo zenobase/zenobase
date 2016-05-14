@@ -5546,7 +5546,7 @@
 					uvs = [];
 				}
 				$.each(csv.data, function(rowNum, row) {
-					var t = moment(row['date']);
+					var t = moment.tz(row['date'], settings.timezone);
 					var h = t.format('YYYY-MM-DDTHH:00:00.000Z');
 					if (hour && hour !== h) {
 						push();
