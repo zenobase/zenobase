@@ -5482,10 +5482,14 @@
 					}
 					++rows;
 					hour = h;
-					count += Number(row['steps']);
-					energy += Number(row['calories']);
-					frequencies.push(Number(row['heart-rate']));
-					temperatures.push(Number(row['skin-temp']));
+					count += Number(row['steps'] || 0);
+					energy += Number(row['calories'] || 0);
+					if (row['heart-rate']) {
+						frequencies.push(Number(row['heart-rate']));
+					}
+					if (row['skin-temp']) {
+						temperatures.push(Number(row['skin-temp']));
+					}
 				});
 				if (hour && rows) {
 					push();
