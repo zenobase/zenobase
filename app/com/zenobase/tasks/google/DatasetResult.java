@@ -1,12 +1,12 @@
 package com.zenobase.tasks.google;
 
-import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
+import org.elasticsearch.common.collect.Maps;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 
@@ -29,7 +29,7 @@ public class DatasetResult extends GoogleFitResultSupport {
 		DateTime end = dateTimeValue(node.path("endTimeNanos"));
 		String dataType = node.path("dataTypeName").textValue();
 		String origin = node.path("originDataSourceId").textValue();
-		BigDecimal[] values = decimalValues(node.path("value"));
+		Object[] values = objectValues(node.path("value"));
 		dataPoints.add(new DataPoint(begin, end, dataType, origin, values));
 	}
 
@@ -40,11 +40,31 @@ public class DatasetResult extends GoogleFitResultSupport {
 		return new DateTime(value / 1000000, zone);
 	}
 
-	private static BigDecimal[] decimalValues(JsonNode node) {
-		BigDecimal[] values = new BigDecimal[node.size()];
+	private static Object[] objectValues(JsonNode node) {
+		Object[] values = new Object[node.size()];
 		for (int i = 0; i < node.size(); ++i) {
-			values[i] = Objects.firstNonNull(node.get(i).get("fpVal"), node.get(i).get("intVal")).decimalValue();
+			values[i] = objectValue(node.get(i));
 		}
 		return values;
+	}
+
+	private static Object objectValue(JsonNode node) {
+		if (node.has("fpVal")) {
+			return node.get("fpVal").decimalValue();
+		}
+		if (node.has("intVal")) {
+			return node.get("intVal").decimalValue();
+		}
+		if (node.has("stringVal")) {
+			return node.get("stringVal").textValue();
+		}
+		if (node.has("mapVal")) {
+			Map<String, Object> value = Maps.newLinkedHashMap();
+			for (JsonNode entryNode : node.get("mapVal")) {
+				value.put(entryNode.get("key").textValue(), objectValue(entryNode.get("value")));
+			}
+			return value;
+		}
+		return null;
 	}
 }

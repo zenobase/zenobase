@@ -21,6 +21,7 @@ abstract class GoogleFitResultSupport {
 		.put("com.endomondo.android", new Resource("Endomondo", "https://www.endomondo.com/"))
 		.put("com.fatsecret.android", new Resource("FatSecret", "https://www.fatsecret.com/"))
 		.put("com.fitnesskeeper.runkeeper.pro", new Resource("RunKeeper", "http://runkeeper.com/"))
+		.put("com.fitnow.loseit", new Resource("Lose It!", "https://www.loseit.com/"))
 		.put("com.google.android.maps.mytracks", new Resource("MyTracks", "https://google.com/"))
 		.put("com.iforpowell.android.ipbike", new Resource("IpBike", "http://www.iforpowell.com/cms/"))
 		.put("com.mapmyfitness.android2", new Resource("MapMyFitness", "http://www.mapmyfitness.com/"))

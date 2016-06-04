@@ -1,5 +1,6 @@
 package com.zenobase.tasks.google;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
@@ -68,7 +69,7 @@ public class GoogleFitLocateTaskManager extends GoogleFitTaskManagerSupport<Goog
 		Location beginLocation = null;
 		DateTime begin = null;
 		for (DataPoint point : getDataPoints(t.lowerEndpoint().minusHours(1), t.upperEndpoint().plusHours(3), DateTimeZone.UTC, credentials, stream)) {
-			Location location = new Location(point.getValue(0), point.getValue(1));
+			Location location = new Location(point.getValue(0, BigDecimal.class), point.getValue(1, BigDecimal.class));
 			if (begin != null) {
 				locations.put(begin, point.getEnd(), beginLocation);
 			}

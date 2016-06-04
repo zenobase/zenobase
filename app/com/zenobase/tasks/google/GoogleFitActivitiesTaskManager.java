@@ -107,7 +107,7 @@ public class GoogleFitActivitiesTaskManager extends GoogleFitTaskManagerSupport<
 					event.addValue(Event.TIMESTAMP, point.getEnd());
 					event.setValue(Event.DURATION, point.getDuration());
 				}
-				String tag = ActivityTypes.forID(point.getValue(0).intValueExact());
+				String tag = ActivityTypes.forID(point.getValue(0, BigDecimal.class).intValueExact());
 				if (tag != null) {
 					event.addValue(Event.TAG, tag);
 				} else {
@@ -135,7 +135,7 @@ public class GoogleFitActivitiesTaskManager extends GoogleFitTaskManagerSupport<
 			for (DataPoint point : getDataPoints(task, credentials, stream)) {
 				Preconditions.checkState("com.google.location.sample".equals(point.getDataType()));
 				Preconditions.checkState(!point.isRange());
-				Location location = new Location(point.getValue(0), point.getValue(1));
+				Location location = new Location(point.getValue(0, BigDecimal.class), point.getValue(1, BigDecimal.class));
 				if (begin != null) {
 					locations.put(Range.openClosed(begin, point.getEnd()), beginLocation);
 				}
@@ -157,7 +157,7 @@ public class GoogleFitActivitiesTaskManager extends GoogleFitTaskManagerSupport<
 		for (DataStream stream : streams) {
 			for (DataPoint point : getDataPoints(task, credentials, stream)) {
 				Preconditions.checkState("com.google.distance.cumulative".equals(point.getDataType()));
-				BigDecimal value = point.getValue(0);
+				BigDecimal value = point.getValue(0, BigDecimal.class);
 				if (value.compareTo(BigDecimal.ZERO) > 0) {
 					values.put(Range.closed(point.getBegin(), point.getEnd()), value);
 				}
@@ -180,7 +180,7 @@ public class GoogleFitActivitiesTaskManager extends GoogleFitTaskManagerSupport<
 			RangeMap<DateTime, BigDecimal> values = TreeRangeMap.create();
 			for (DataPoint point : getDataPoints(task, credentials, stream)) {
 				Preconditions.checkState("com.google.distance.delta".equals(point.getDataType()));
-				BigDecimal value = point.getValue(0);
+				BigDecimal value = point.getValue(0, BigDecimal.class);
 				if (value.compareTo(BigDecimal.ZERO) > 0) {
 					values.put(Range.closed(point.getBegin(), point.getEnd()), value);
 				}
@@ -211,7 +211,7 @@ public class GoogleFitActivitiesTaskManager extends GoogleFitTaskManagerSupport<
 			RangeMap<DateTime, BigDecimal> values = TreeRangeMap.create();
 			for (DataPoint point : getDataPoints(task, credentials, stream)) {
 				Preconditions.checkState("com.google.step_count.delta".equals(point.getDataType()));
-				BigDecimal value = point.getValue(0);
+				BigDecimal value = point.getValue(0, BigDecimal.class);
 				if (value.compareTo(BigDecimal.ZERO) > 0) {
 					values.put(Range.closed(point.getBegin(), point.getEnd()), value);
 				}
@@ -241,7 +241,7 @@ public class GoogleFitActivitiesTaskManager extends GoogleFitTaskManagerSupport<
 		for (DataStream stream : streams) {
 			for (DataPoint point : getDataPoints(task, credentials, stream)) {
 				Preconditions.checkState("com.google.speed.summary".equals(point.getDataType()));
-				BigDecimal value = point.getValue(0);
+				BigDecimal value = point.getValue(0, BigDecimal.class);
 				if (value.compareTo(BigDecimal.ZERO) > 0) {
 					values.put(Range.closed(point.getBegin(), point.getEnd()), value);
 				}
@@ -268,7 +268,7 @@ public class GoogleFitActivitiesTaskManager extends GoogleFitTaskManagerSupport<
 		for (DataStream stream : streams) {
 			for (DataPoint point : getDataPoints(task, credentials, stream)) {
 				Preconditions.checkState("com.google.calories.expended".equals(point.getDataType()));
-				BigDecimal value = point.getValue(0);
+				BigDecimal value = point.getValue(0, BigDecimal.class);
 				if (value.compareTo(BigDecimal.ZERO) > 0) {
 					values.put(Range.closed(point.getBegin(), point.getEnd()), value);
 				}
@@ -290,7 +290,7 @@ public class GoogleFitActivitiesTaskManager extends GoogleFitTaskManagerSupport<
 		for (DataStream stream : streams) {
 			for (DataPoint point : getDataPoints(task, credentials, stream)) {
 				Preconditions.checkState("com.google.heart_rate.summary".equals(point.getDataType()));
-				BigDecimal value = point.getValue(0);
+				BigDecimal value = point.getValue(0, BigDecimal.class);
 				if (value.compareTo(BigDecimal.ZERO) > 0) {
 					values.put(Range.closed(point.getBegin(), point.getEnd()), value);
 				}
@@ -312,7 +312,7 @@ public class GoogleFitActivitiesTaskManager extends GoogleFitTaskManagerSupport<
 			RangeMap<DateTime, Integer> values = TreeRangeMap.create();
 			for (DataPoint point : getDataPoints(task, credentials, stream)) {
 				Preconditions.checkState("com.google.heart_rate.bpm".equals(point.getDataType()));
-				int value = point.getValue(0).intValue();
+				int value = point.getValue(0, BigDecimal.class).intValue();
 				if (value > 0) {
 					values.put(Range.closed(point.getBegin(), point.getEnd()), value);
 				}

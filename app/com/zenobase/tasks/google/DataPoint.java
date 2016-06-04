@@ -1,6 +1,5 @@
 package com.zenobase.tasks.google;
 
-import java.math.BigDecimal;
 import java.util.Arrays;
 
 import org.joda.time.DateTime;
@@ -12,9 +11,9 @@ public class DataPoint {
 	private final DateTime end;
 	private final String dataType;
 	private final String origin;
-	private final BigDecimal[] values;
+	private final Object[] values;
 
-	public DataPoint(DateTime begin, DateTime end, String dataType, String origin, BigDecimal[] values) {
+	public DataPoint(DateTime begin, DateTime end, String dataType, String origin, Object[] values) {
 		this.begin = begin;
 		this.end = end;
 		this.dataType = dataType;
@@ -46,8 +45,12 @@ public class DataPoint {
 		return origin;
 	}
 
-	public BigDecimal getValue(int i) {
+	public Object getValue(int i) {
 		return values[i];
+	}
+
+	public <T> T getValue(int i, Class<T> type) {
+		return type.isInstance(values[i]) ? type.cast(values[i]) : null;
 	}
 
 	@Override

@@ -26,6 +26,43 @@
                 }
             ],
             "modifiedTimeMillis": "1414607623718"
+        },
+        {
+            "startTimeNanos": "1464905858000000000",
+            "endTimeNanos": "1464905860000000000",
+            "dataTypeName": "com.google.nutrition",
+            "originDataSourceId": "raw:com.google.nutrition:com.fitnow.loseit:",
+            "value": [
+                {
+                    "mapVal": [
+                        {
+                            "key": "protein",
+                            "value": {
+                                "fpVal": 5.32574987411499
+                            }
+                        },
+                        {
+                            "key": "calories",
+                            "value": {
+                                "fpVal": 153.4949951171875
+                            }
+                        },
+                        {
+                            "key": "sugar",
+                            "value": {
+                                "fpVal": 0.40095001459121704
+                            }
+                        }
+                    ]
+                },
+                {
+                    "intVal": 1
+                },
+                {
+                    "stringVal": "Oatmeal"
+                }
+            ],
+            "modifiedTimeMillis": "1464992349373"
         }
     ]
 }

@@ -40,7 +40,7 @@ public class GoogleFitCardioTaskManager extends GoogleFitTaskManagerSupport<Goog
 		for (DataStream stream : filter(streams.values(), "com.google.heart_rate.bpm", "com.google.heart_rate.summary")) {
 			if (!stream.getId().contains("derived")) {
 				for (DataPoint point : getDataPoints(task, credentials, stream)) {
-					BigDecimal value = point.getValue(0);
+					BigDecimal value = point.getValue(0, BigDecimal.class);
 					if (BigDecimal.ZERO.compareTo(value) < 0) {
 						Event event = new Event();
 						event.addValue(Event.TAG, task.getTag());
