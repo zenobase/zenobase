@@ -13,4 +13,22 @@ public class VehicleResultTest extends ResultTestSupport {
 		VehicleResult result = new VehicleResult(readObject("VehicleResultTest.json"));
 		assertThat(result.getDisplayName()).isEqualTo("My Speed Demon");
 	}
+
+    @Test
+    public void testVehicleNoDisplayName() {
+        VehicleResult result = new VehicleResult(readObject("VehicleResultTest-NoDisplayName.json"));
+        assertThat(result.getDisplayName()).isEqualTo("2001 Acura MDX");
+    }
+
+    @Test
+    public void testVehicleNoDisplayNameNoYear() {
+        VehicleResult result = new VehicleResult(readObject("VehicleResultTest-NoDisplayNameNoYear.json"));
+        assertThat(result.getDisplayName()).isEqualTo("Acura MDX");
+    }
+
+    @Test
+    public void testVehicleNoNothing() {
+        VehicleResult result = new VehicleResult(readObject("VehicleResultTest-NoNothing.json"));
+        assertThat(result.getDisplayName()).isNull();
+    }
 }
