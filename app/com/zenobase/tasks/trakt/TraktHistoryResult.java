@@ -85,13 +85,14 @@ class TraktHistoryResult {
 	}
 
 	private Resource movieResourceValue(JsonNode node) {
-		String movieTitle = node.path("title").textValue();
+		String title = node.path("title").textValue();
 		int year = node.path("year").intValue();
 		long id = node.path("ids").path("trakt").longValue();
-		Preconditions.checkNotNull(movieTitle, "Missing title: %s", node);
-		Preconditions.checkState(year > 0, "Missing year: %s", node);
+		Preconditions.checkNotNull(title, "Missing title: %s", node);
 		Preconditions.checkState(id > 0, "Missing trakt id: %s", node);
-		String title = String.format("%s (%d)", movieTitle, year);
+		if (year > 0) {
+		    title = String.format("%s (%d)", title, year);
+		}
 		return new Resource(title, "https://trakt.tv/search/trakt/" + id + "?id_type=movie");
 	}
 
