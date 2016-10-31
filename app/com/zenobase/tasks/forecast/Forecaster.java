@@ -39,7 +39,7 @@ public class Forecaster {
 	}
 
 	private WSRequestHolder newRequest(Location location, DateTime time, boolean includeDaily, boolean standardUnits) {
-		String url = String.format("https://api.forecast.io/forecast/%s/%s,%s,%s",
+		String url = String.format("https://api.darksky.net/forecast/%s/%s,%s,%s",
 			apiKey, location.getLatitude(), location.getLongitude(),
 			time.toString(ISODateTimeFormat.dateTimeNoMillis()));
 		String exclude = "minutely,hourly,alerts,flags";
