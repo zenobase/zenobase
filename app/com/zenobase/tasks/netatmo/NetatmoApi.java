@@ -9,12 +9,12 @@ public class NetatmoApi extends CustomApi20 {
 
 	@Override
 	public String getAccessTokenEndpoint() {
-		return "https://api.netatmo.net/oauth2/token";
+		return "https://api.netatmo.com/oauth2/token";
 	}
 
 	@Override
 	public String getAuthorizationUrl(OAuthConfig config) {
-		return new UriBuilder("https://api.netatmo.net/oauth2/authorize")
+		return new UriBuilder("https://api.netatmo.com/oauth2/authorize")
 			.addParameter("client_id", config.getApiKey())
 			.addParameter("redirect_uri", config.getCallback())
 			.build();

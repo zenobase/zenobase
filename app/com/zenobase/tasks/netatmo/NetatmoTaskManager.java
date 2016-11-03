@@ -107,10 +107,10 @@ public class NetatmoTaskManager extends OAuthTaskManager {
 			this.credentials = credentials;
 		}
 
-		public DevicesResult execute(boolean includeModules) {
-			OAuthRequest request = new OAuthRequest(Verb.GET, "https://api.netatmo.net/api/devicelist");
+		public StationsResult execute(boolean includeModules) {
+			OAuthRequest request = new OAuthRequest(Verb.GET, "https://api.netatmo.com/api/getstationsdata");
 			Response response = send(request, credentials);
-			return new DevicesResult(parseObject(response), includeModules);
+			return new StationsResult(parseObject(response), includeModules);
 		}
 	}
 
@@ -130,7 +130,7 @@ public class NetatmoTaskManager extends OAuthTaskManager {
 		}
 
 		public MeasurementsResult find(String from, String to) {
-			OAuthRequest request = new OAuthRequest(Verb.GET, "https://api.netatmo.net/api/getmeasure");
+			OAuthRequest request = new OAuthRequest(Verb.GET, "https://api.netatmo.com/api/getmeasure");
 			request.addQuerystringParameter("device_id", device.getId());
 			if (device.getModuleId() != null) {
 				request.addQuerystringParameter("module_id", device.getModuleId());
@@ -142,7 +142,7 @@ public class NetatmoTaskManager extends OAuthTaskManager {
 			request.addQuerystringParameter("limit", "1000");
 			request.addQuerystringParameter("scale", hourly ? "1hour" : "max");
 			request.addQuerystringParameter("optimize", "false");
-			request.addQuerystringParameter("type", "Temperature,Pressure,Noise,Humidity,CO2," + (hourly ? "sum_rain" : "Rain"));
+			request.addQuerystringParameter("type", "Temperature,Pressure,Noise,Humidity,CO2,WindStrength," + (hourly ? "sum_rain" : "Rain"));
 			rate.acquire();
 			Response response = send(request, credentials);
 			return new MeasurementsResult(parseObject(response), principal, device, hourly);

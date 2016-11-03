@@ -32,7 +32,7 @@ class MeasurementsResult {
 	private final boolean hourly;
 
 	public MeasurementsResult(JsonNode node, Identity author, Device device, boolean hourly) {
-		this.node = Preconditions.checkNotNull(node);
+	    this.node = Preconditions.checkNotNull(node);
 		this.author = Preconditions.checkNotNull(author);
 		this.device = Preconditions.checkNotNull(device);
 		this.hourly = hourly;
@@ -68,7 +68,8 @@ class MeasurementsResult {
 		event.setValue(Event.SOUND, getMeasure(node.get(2), Units.DB));
 		event.setValue(Event.HUMIDITY, getInteger(node.get(3)));
 		event.setValue(Event.RATING, getRating(node.get(4)));
-		event.setValue(Event.HEIGHT, getMeasure(node.get(5), Units.MM));
+        event.setValue(Event.VELOCITY, getMeasure(node.get(5), Units.KMH));
+		event.setValue(Event.HEIGHT, getMeasure(node.get(6), Units.MM));
 		event.setValue(Event.AUTHOR, author);
 		event.setValue(Event.SOURCE, SOURCE);
 		return event;

@@ -1,0 +1,95 @@
+{
+  "body": {
+    "devices": [
+      {
+        "_id": "70:ee:50:00:80:ee",
+        "cipher_id": "enc:16:qHHJPm4fVUHhMWYKmcuSN/xiUhbXfMl4aSQNrvtipHss24frAryZ0PBFvhh3pFpv",
+        "last_status_store": 1478199494,
+        "modules": [
+          {
+            "_id": "02:00:00:00:7b:a2",
+            "type": "NAModule1",
+            "last_message": 1478199492,
+            "last_seen": 1478199473,
+            "dashboard_data": {
+              "time_utc": 1478199422,
+              "Temperature": 22,
+              "temp_trend": "stable",
+              "Humidity": 59,
+              "date_max_temp": 1478164160,
+              "date_min_temp": 1478187990,
+              "min_temp": 21,
+              "max_temp": 22.1
+            },
+            "data_type": [
+              "Temperature",
+              "Humidity"
+            ],
+            "module_name": "Bathroom",
+            "last_setup": 1364533042,
+            "battery_vp": 5362,
+            "battery_percent": 73,
+            "rf_status": 74,
+            "firmware": 43
+          }
+        ],
+        "place": {
+          "altitude": 51,
+          "city": "Seattle",
+          "country": "US",
+          "timezone": "America/Los_Angeles",
+          "location": [
+            -122.3331,
+            47.6097
+          ]
+        },
+        "station_name": "Home",
+        "type": "NAMain",
+        "dashboard_data": {
+          "AbsolutePressure": 1019.9,
+          "time_utc": 1478199464,
+          "Noise": 41,
+          "Temperature": 22,
+          "temp_trend": "up",
+          "Humidity": 56,
+          "Pressure": 1026,
+          "pressure_trend": "up",
+          "CO2": 638,
+          "date_max_temp": 1478158658,
+          "date_min_temp": 1478191042,
+          "min_temp": 19.1,
+          "max_temp": 22.3
+        },
+        "data_type": [
+          "Temperature",
+          "CO2",
+          "Humidity",
+          "Noise",
+          "Pressure"
+        ],
+        "co2_calibrating": false,
+        "date_setup": 1364514007,
+        "last_setup": 1364514007,
+        "module_name": "Bedroom",
+        "firmware": 102,
+        "last_upgrade": 1439971587,
+        "wifi_status": 84
+      }
+    ],
+    "user": {
+      "mail": "me@example.org",
+      "administrative": {
+        "country": "US",
+        "feel_like_algo": 1,
+        "lang": "en-US",
+        "pressureunit": 1,
+        "reg_locale": "en-US",
+        "unit": 0,
+        "windunit": 1
+      }
+    }
+  },
+  "status": "ok",
+  "time_exec": 0.46301198005676,
+  "time_server": 1478199868
+}

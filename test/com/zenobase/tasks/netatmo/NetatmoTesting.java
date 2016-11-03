@@ -10,7 +10,8 @@ public class NetatmoTesting extends TaskTestingSupport {
 	@Test
 	public void test() {
 		run(new NetatmoTaskManager(newCredentialsManager()), Nodes.newObject()
-			.put("marker", "2014-11-29")
+			.put("marker", "2016-11-03")
+            .put("modules", true)
 			.put("hourly", true));
 	}
 

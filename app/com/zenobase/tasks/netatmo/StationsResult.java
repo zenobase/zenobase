@@ -1,22 +1,22 @@
 package com.zenobase.tasks.netatmo;
 
 import java.util.Collection;
-import java.util.Map;
+import java.util.List;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.base.Preconditions;
-import com.google.common.collect.Maps;
+import com.google.common.collect.Lists;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 
 import com.zenobase.models.Location;
 
-class DevicesResult {
+class StationsResult {
 
 	private final JsonNode node;
 	private final boolean includeModules;
 
-	public DevicesResult(JsonNode node, boolean includeModules) {
+	public StationsResult(JsonNode node, boolean includeModules) {
 		this.node = Preconditions.checkNotNull(node);
 		this.includeModules = includeModules;
 	}
@@ -27,34 +27,32 @@ class DevicesResult {
 
 	public Collection<Device> getDevices() {
 		Preconditions.checkState(isSuccess(), "Expected a successful response but got <%s>", node);
-		Map<String, Device> devices = Maps.newLinkedHashMap();
-		for (JsonNode item : node.path("body").path("devices")) {
-			addDevice(item, devices);
-		}
-		if (includeModules) {
-			for (JsonNode item : node.path("body").path("modules")) {
-				addModule(item, devices);
+		List<Device> devices = Lists.newArrayList();
+		for (JsonNode deviceNode : node.path("body").path("devices")) {
+			Device device = parseDevice(deviceNode);
+			devices.add(device);
+			if (includeModules) {
+			    for (JsonNode moduleNode : deviceNode.path("modules")) {
+			        devices.add(parseModule(device, moduleNode));
+			    }
 			}
 		}
-		return devices.values();
+		return devices;
 	}
 
-	private static void addDevice(JsonNode node, Map<String, Device> devices) {
+	private static Device parseDevice(JsonNode node) {
 		String id = node.path("_id").textValue();
 		String label = node.path("module_name").textValue();
-		DateTime created = getTimestamp(node.path("date_setup").path("sec"), DateTimeZone.UTC);
+		DateTime created = getTimestamp(node.path("date_setup"), DateTimeZone.UTC);
 		DateTime updated = getTimestamp(node.path("last_status_store"), getTimezone(node.path("place").path("timezone")));
 		Location location = getLocation(node.path("place").path("location"));
-		devices.put(id, new Device(id, label, created, updated, location));
+		return new Device(id, label, created, updated, location);
 	}
 
-	private static void addModule(JsonNode node, Map<String, Device> devices) {
-		String moduleId = node.path("_id").textValue();
+	private static Device parseModule(Device device, JsonNode node) {
+	    String moduleId = node.path("_id").textValue();
 		String moduleLabel = node.path("module_name").textValue();
-		String parentId = node.path("main_device").textValue();
-		Device parent = devices.get(parentId);
-		Preconditions.checkNotNull(parent, "Can't find module %s in %s", parentId, devices.keySet());
-		devices.put(moduleId, new Device(parentId, moduleId, moduleLabel, parent.getCreated(), parent.getUpdated(), parent.getLocation()));
+		return new Device(device.getId(), moduleId, moduleLabel, device.getCreated(), device.getUpdated(), device.getLocation());
 	}
 
 	private static DateTimeZone getTimezone(JsonNode node) {
