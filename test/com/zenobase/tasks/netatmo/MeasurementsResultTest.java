@@ -8,6 +8,7 @@ import javax.measure.quantity.Dimensionless;
 import javax.measure.quantity.Length;
 import javax.measure.quantity.Pressure;
 import javax.measure.quantity.Temperature;
+import javax.measure.quantity.Velocity;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
@@ -38,6 +39,7 @@ public class MeasurementsResultTest extends ResultTestSupport {
 		expected.setValue(Event.SOUND, Measures.<Dimensionless>valueOf("40 dB"));
 		expected.setValue(Event.HUMIDITY, 48);
 		expected.setValue(Event.RATING, Rating.valueOf(80));
+        expected.setValue(Event.VELOCITY, Measures.<Velocity>valueOf("20 kmh"));
 		expected.setValue(Event.HEIGHT, Measures.<Length>valueOf("11 mm"));
 		expected.setValue(Event.AUTHOR, TESTER);
 		expected.setValue(Event.SOURCE, MeasurementsResult.SOURCE);
