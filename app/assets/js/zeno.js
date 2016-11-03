@@ -5581,7 +5581,7 @@
 					var event = {
 						'timestamp' : moment(row['CalendarDate']).format('YYYY-MM-DDTHH:mm:ss.SSSZ'),
 						'tag' : [ row['HabitName'] ],
-						'count' : row['Value']
+						'count' : Math.round(Number(row['Value']))
 					};
 					if (row['CommentText']) {
 						event['note'] = row['CommentText'];
