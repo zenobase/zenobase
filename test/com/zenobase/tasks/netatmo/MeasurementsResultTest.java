@@ -3,6 +3,7 @@ package com.zenobase.tasks.netatmo;
 import static org.fest.assertions.Assertions.assertThat;
 
 import java.util.List;
+import java.util.Set;
 
 import javax.measure.quantity.Dimensionless;
 import javax.measure.quantity.Length;
@@ -10,6 +11,7 @@ import javax.measure.quantity.Pressure;
 import javax.measure.quantity.Temperature;
 import javax.measure.quantity.Velocity;
 
+import com.google.common.collect.ImmutableSet;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.Duration;
@@ -23,10 +25,12 @@ import com.zenobase.tasks.ResultTestSupport;
 
 public class MeasurementsResultTest extends ResultTestSupport {
 
-	@Test
+    private static Set<String> TYPES = ImmutableSet.of("Temperature", "Pressure", "Noise", "Humidity", "CO2", "GustStrength", "Rain");
+
+    @Test
 	public void test5min() {
 		DateTimeZone tz = DateTimeZone.forOffsetHours(-7);
-		Device device = new Device("1", "test", DateTime.now(tz), DateTime.now(tz), new Location("1", "2"));
+		Device device = new Device("1", "test", DateTime.now(tz), DateTime.now(tz), new Location("1", "2"), TYPES);
 		MeasurementsResult result = new MeasurementsResult(readObject("MeasurementsResultTest-5min.json"), TESTER, device, false);
 		List<Event> events = result.getEvents();
 		assertThat(events).as("events").hasSize(10);
@@ -49,7 +53,7 @@ public class MeasurementsResultTest extends ResultTestSupport {
 	@Test
 	public void test1h() {
 		DateTimeZone tz = DateTimeZone.forOffsetHours(-7);
-		Device device = new Device("1", "test", DateTime.now(tz), DateTime.now(tz), new Location("1", "2"));
+		Device device = new Device("1", "test", DateTime.now(tz), DateTime.now(tz), new Location("1", "2"), TYPES);
 		MeasurementsResult result = new MeasurementsResult(readObject("MeasurementsResultTest-1h.json"), TESTER, device, true);
 		List<Event> events = result.getEvents();
 		assertThat(events).as("events").hasSize(16);
@@ -67,4 +71,21 @@ public class MeasurementsResultTest extends ResultTestSupport {
 		expected.setValue(Event.SOURCE, MeasurementsResult.SOURCE);
 		assertThat(events.get(0)).as("first event").isEqualTo(expected);
 	}
+
+    @Test
+    public void test1hNoTypes() {
+        DateTimeZone tz = DateTimeZone.forOffsetHours(-7);
+        Device device = new Device("1", "test", DateTime.now(tz), DateTime.now(tz), new Location("1", "2"), ImmutableSet.<String>of());
+        MeasurementsResult result = new MeasurementsResult(readObject("MeasurementsResultTest-1h.json"), TESTER, device, true);
+        List<Event> events = result.getEvents();
+        assertThat(events).as("events").hasSize(16);
+        Event expected = new Event(events.get(0).getId());
+        expected.setValue(Event.TIMESTAMP, dateTime("2014-10-27T00:00:00-07:00"));
+        expected.setValue(Event.DURATION, Duration.standardHours(1));
+        expected.addValue(Event.TAG, device.getLabel());
+        expected.setValue(Event.LOCATION, device.getLocation());
+        expected.setValue(Event.AUTHOR, TESTER);
+        expected.setValue(Event.SOURCE, MeasurementsResult.SOURCE);
+        assertThat(events.get(0)).as("first event").isEqualTo(expected);
+    }
 }

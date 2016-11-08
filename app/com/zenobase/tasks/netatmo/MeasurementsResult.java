@@ -63,13 +63,27 @@ class MeasurementsResult {
 		}
 		event.addValue(Event.TAG, device.getLabel());
 		event.setValue(Event.LOCATION, device.getLocation());
-		event.setValue(Event.TEMPERATURE, getMeasure(node.get(0), Units.C));
-		event.setValue(Event.PRESSURE, getMeasure(node.get(1), Units.HPA));
-		event.setValue(Event.SOUND, getMeasure(node.get(2), Units.DB));
-		event.setValue(Event.HUMIDITY, getInteger(node.get(3)));
-		event.setValue(Event.RATING, getRating(node.get(4)));
-        event.setValue(Event.VELOCITY, getMeasure(node.get(5), Units.KMH));
-		event.setValue(Event.HEIGHT, getMeasure(node.get(6), Units.MM));
+		if (device.supports("Temperature")) {
+		    event.setValue(Event.TEMPERATURE, getMeasure(node.get(0), Units.C));
+		}
+        if (device.supports("Pressure")) {
+            event.setValue(Event.PRESSURE, getMeasure(node.get(1), Units.HPA));
+        }
+        if (device.supports("Noise")) {
+            event.setValue(Event.SOUND, getMeasure(node.get(2), Units.DB));
+        }
+        if (device.supports("Humidity")) {
+            event.setValue(Event.HUMIDITY, getInteger(node.get(3)));
+        }
+        if (device.supports("CO2")) {
+            event.setValue(Event.RATING, getRating(node.get(4)));
+        }
+        if (device.supports("GustStrength")) {
+            event.setValue(Event.VELOCITY, getMeasure(node.get(5), Units.KMH));
+        }
+        if (device.supports("Rain")) {
+            event.setValue(Event.HEIGHT, getMeasure(node.get(6), Units.MM));
+        }
 		event.setValue(Event.AUTHOR, author);
 		event.setValue(Event.SOURCE, SOURCE);
 		return event;
