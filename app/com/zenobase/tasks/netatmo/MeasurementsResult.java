@@ -78,9 +78,9 @@ class MeasurementsResult {
         if (device.supports("CO2")) {
             event.setValue(Event.RATING, getRating(node.get(4)));
         }
-        //if (device.supports("GustStrength")) {
+        if (device.supports("Wind")) {
             event.setValue(Event.VELOCITY, getMeasure(node.get(5), Units.KMH));
-        //}
+        }
         if (device.supports("Rain")) {
             event.setValue(Event.HEIGHT, getMeasure(node.get(6), Units.MM));
         }

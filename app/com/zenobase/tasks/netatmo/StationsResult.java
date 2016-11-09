@@ -8,7 +8,6 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
-import org.slf4j.LoggerFactory;
 
 import com.zenobase.models.Location;
 
@@ -55,7 +54,6 @@ class StationsResult {
 	    String moduleId = node.path("_id").textValue();
 		String moduleLabel = node.path("module_name").textValue();
         List<String> types = parseTypes(node.path("data_type"));
-        LoggerFactory.getLogger(StationsResult.class).warn("Module data types: {}", types);
 		return new Device(device.getId(), moduleId, moduleLabel, device.getCreated(), device.getUpdated(), device.getLocation(), types);
 	}
 

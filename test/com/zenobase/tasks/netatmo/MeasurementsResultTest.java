@@ -25,7 +25,7 @@ import com.zenobase.tasks.ResultTestSupport;
 
 public class MeasurementsResultTest extends ResultTestSupport {
 
-    private static Set<String> TYPES = ImmutableSet.of("Temperature", "Pressure", "Noise", "Humidity", "CO2", "GustStrength", "Rain");
+    private static Set<String> TYPES = ImmutableSet.of("Temperature", "Pressure", "Noise", "Humidity", "CO2", "Wind", "Rain");
 
     @Test
 	public void test5min() {
