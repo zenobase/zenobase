@@ -52,6 +52,7 @@ public class Units {
 		UnitFormat.getInstance().label(SI.PASCAL.times(6894.75729), "psi");
 		UnitFormat.getInstance().alias(SI.HECTO(SI.PASCAL), "mbar");
 		UnitFormat.getInstance().alias(SI.HECTO(SI.PASCAL).times(1000), "bar");
+        UnitFormat.getInstance().label(SI.PASCAL.times(98.0665), "cm_wg");
 
 		UnitFormat.getInstance().label(SI.CELSIUS, "C");
 		UnitFormat.getInstance().label(NonSI.FAHRENHEIT, "F");
@@ -125,6 +126,7 @@ public class Units {
 	public static final Unit<Pressure> MMHG = valueOf("mmHg");
 	public static final Unit<Pressure> INHG = valueOf("inHg");
 	public static final Unit<Pressure> PSI = valueOf("psi");
+    public static final Unit<Pressure> CM_WG = valueOf("cm_wg");
 
 	public static final Unit<Dimensionless> DB = valueOf("dB");
 

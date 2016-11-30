@@ -5593,7 +5593,39 @@
 		};
 	}]);
 
-	app.controller('ImportDialogController', ['$scope', '$http', '$routeParams', 'EventSpreadsheet', 'HealthKit', 'SleepCycle', 'SunSprite', 'TapLog', 'Nomie', 'Basis', 'HabitBull', 'tracker', 'delay', function($scope, $http, $routeParams, EventSpreadsheet, HealthKit, SleepCycle, SunSprite, TapLog, Nomie, Basis, HabitBull, tracker, delay) {
+	app.factory('SleepyHead', [ 'moment', function(moment) {
+
+		return {
+			parse : function(s, settings) {
+				var events = [];
+				var csv = Baby.parse(s, { header : true, skipEmptyLines : true });
+				if (csv.errors.length) {
+					throw new Error(csv.errors[0].message + ' in row ' + csv.errors[0].row);
+				}
+				$.each(csv.data, function(rowNum, row) {
+					var t0 = moment.tz(row['Start'], settings.timezone);
+					var t1 = moment.tz(row['End'], settings.timezone);
+					var event = {
+						'timestamp' : [
+							t0.format('YYYY-MM-DDTHH:mm:ss.SSSZ'),
+							t1.format('YYYY-MM-DDTHH:mm:ss.SSSZ'),
+						],
+						'duration' : t1.valueOf() - t0.valueOf(),
+						'tag' : settings.tag,
+						'rating' : Math.round(100 * Math.exp(-Number(row['AHI']) / 32)),
+						'pressure' : {
+							'@value' : Number(row['Pressure  Avg']),
+							'unit' : 'cm_wg'
+						}
+					};
+					events.push(event);
+				});
+				return events;
+			}
+		};
+	}]);
+
+	app.controller('ImportDialogController', ['$scope', '$http', '$routeParams', 'EventSpreadsheet', 'HealthKit', 'SleepCycle', 'SleepyHead', 'SunSprite', 'TapLog', 'Nomie', 'Basis', 'HabitBull', 'tracker', 'delay', function($scope, $http, $routeParams, EventSpreadsheet, HealthKit, SleepCycle, SleepyHead, SunSprite, TapLog, Nomie, Basis, HabitBull, tracker, delay) {
 
 		$scope.bucketId = $routeParams.bucketId;
 		$scope.formats = [
@@ -5652,6 +5684,15 @@
 				description : 'Import a <b>.csv</b> file from <a href="http://www.sleepcycle.com/" target="_blank">SleepCycle</a>.',
 				parse : function(data) {
 					return SleepCycle.parse(data);
+				}
+			},
+			{
+				id : 'sleepyhead',
+				label : 'SleepyHead',
+				description : 'Import a <b>.csv</b> file from <a href="https://sleepyhead.jedimark.net/" target="_blank">SleepyHead</a>.',
+				settings : '/import-sleepyhead.html',
+				parse : function(data, settings) {
+					return SleepyHead.parse(data, settings);
 				}
 			},
 			{
@@ -5791,6 +5832,14 @@
 			$scope.units = $scope.settings.field && Field.find($scope.settings.field).units || [];
 			$scope.settings.unit = $scope.units.length ? $scope.units[0] : null;
 		});
+		$scope.settings = $scope.$parent.settings;
+	}]);
+
+	app.controller('ImportSleepyHeadController', ['$scope', function($scope) {
+
+		$scope.settings.tag = 'sleep';
+		$scope.settings.timezone = 'UTC';
+
 		$scope.settings = $scope.$parent.settings;
 	}]);
 
@@ -7381,7 +7430,7 @@
 			name : 'pressure',
 			icon : 'fa-arrows-alt',
 			type : 'numeric',
-			units : [ 'Pa', 'hPa', 'kPa', 'mbar', 'bar', 'mmHg', 'inHg', 'psi' ],
+			units : [ 'Pa', 'hPa', 'kPa', 'mbar', 'bar', 'mmHg', 'inHg', 'psi', 'cm_wg' ],
 			toText : function(value) {
 				return typeof value === 'object' ? value['@value'] + ' ' + value.unit : value;
 			},

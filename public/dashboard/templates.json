@@ -2611,6 +2611,79 @@
 	},
 	{
 		"category" : "Sleep",
+		"source" : "SleepyHead",
+		"importer" : "sleepyhead",
+		"widgets" : [
+			{
+				"id" : "timeline_duration",
+				"type" : "timeline",
+				"label" : "Timeline",
+				"placement" : "top",
+				"key_field" : "timestamp$max",
+				"field" : "duration",
+				"unit" : null,
+				"statistic" : "avg",
+				"interval" : "week"
+			},
+			{
+				"id" : "latest",
+				"type" : "list",
+				"label" : "Latest",
+				"placement" : "left",
+				"order" : "-timestamp",
+				"limit" : 7,
+				"singleton" : true
+			},
+			{
+				"id" : "polar_hour",
+				"type" : "polar",
+				"label" : "Hours (Begin)",
+				"placement" : "left",
+				"key_field" : "timestamp$min",
+				"value_field" : "timestamp",
+				"unit" : null,
+				"statistic" : "count",
+				"interval" : "hour_of_day"
+			},
+			{
+				"id" : "polar_day_duration",
+				"type" : "polar",
+				"label" : "Days (Duration)",
+				"placement" : "left",
+				"key_field" : "timestamp$max",
+				"value_field" : "duration",
+				"unit" : null,
+				"statistic" : "avg",
+				"interval" : "day_of_week"
+			},
+			{
+				"id" : "histogram_duration",
+				"type" : "histogram",
+				"label" : "Duration",
+				"placement" : "right",
+				"field" : "duration",
+				"unit" : null,
+				"interval" : 3600000
+			},
+			{
+				"id" : "histogram_pressure",
+				"type" : "histogram",
+				"label" : "Water Pressure",
+				"placement" : "right",
+				"field" : "pressure",
+				"unit" : "cm_wg",
+				"interval" : 10
+			},
+			{
+				"id" : "ratings",
+				"type" : "ratings",
+				"label" : "AHI",
+				"placement" : "right"
+			}
+		]
+	},
+	{
+		"category" : "Sleep",
 		"source" : "Withings",
 		"task" : "withings-sleep",
 		"widgets" : [

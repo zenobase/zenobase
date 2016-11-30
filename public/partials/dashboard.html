@@ -1931,6 +1931,19 @@
 		</div>
 	</script>
 
+	<script id="/import-sleepyhead.html" type="text/ng-template">
+		<div data-ng-controller="ImportSleepyHeadController">
+			<div class="control-group">
+				<input name="tag" type="text" required data-ng-model="settings.tag"/>
+				<p class="help-block">A tag to add to every event.</p>
+			</div>
+			<div class="control-group">
+				<select name="timezone" data-ng-model="settings.timezone" data-ng-options="timezone for timezone in timezones" required data-ui-timezone-select></select>
+				<p class="help-block">The timezone to use.</p>
+			</div>
+		</div>
+	</script>
+
 	<div id="export-dialog" data-ui-modal data-ng-controller="ExportDialogController">
 		<form name="form" class="modal-form">
 			<div class="modal-header">
