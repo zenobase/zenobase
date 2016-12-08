@@ -14,6 +14,7 @@ import org.joda.time.DateTimeZone;
 import org.joda.time.Duration;
 import org.joda.time.LocalTime;
 import org.joda.time.Period;
+import play.Logger;
 import play.libs.Akka;
 import scala.concurrent.duration.FiniteDuration;
 
@@ -30,6 +31,7 @@ public class Scheduler {
 	}
 
 	public void start() {
+        Logger.info("Scheduling jobs...");
         for (Job job : this.jobs) {
             schedule(job);
         }
