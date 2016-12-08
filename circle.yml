@@ -12,7 +12,7 @@ test:
 
 deployment:
   production:
-    branch: master
+    branch: [ master, java-8 ]
     commands:
       - play universal:package-zip-tarball
       - aws s3 cp target/universal/zenobase-SNAPSHOT.tgz s3://zeno-builds/zenobase-$CIRCLE_BUILD_NUM.tgz
