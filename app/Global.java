@@ -219,6 +219,7 @@ public class Global extends GlobalSettings {
 		Json.setObjectMapper(Nodes.MAPPER);
 		createInjector();
 		replay();
+		startScheduler();
 	}
 
 	private void createInjector() {
@@ -493,6 +494,10 @@ public class Global extends GlobalSettings {
 			injector.getInstance(CommandReplay.class).replay();
 		}
 	}
+
+    private void startScheduler() {
+        injector.getInstance(Scheduler.class).start();
+    }
 
 	@Override
 	@SuppressWarnings("unchecked")

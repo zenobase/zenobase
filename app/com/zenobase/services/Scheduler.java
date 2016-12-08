@@ -27,9 +27,12 @@ public class Scheduler {
 	public Scheduler(Bus bus, Set<Job> jobs) {
 		this.bus = bus;
 		this.jobs = ImmutableList.copyOf(jobs);
-		for (Job job : this.jobs) {
-			schedule(job);
-		}
+	}
+
+	public void start() {
+        for (Job job : this.jobs) {
+            schedule(job);
+        }
 	}
 
 	private void schedule(final Job job) {
