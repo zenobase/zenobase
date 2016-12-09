@@ -3,13 +3,13 @@ machine:
     version: openjdk8
 
 dependencies:
+  override:
+    - sbt update
   post:
     - sudo pip install --upgrade awscli
 
 test:
   override:
-  override:
-    - sbt update
     - sbt 'test-only *Test'
 
 deployment:
