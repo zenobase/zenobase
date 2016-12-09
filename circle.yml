@@ -8,11 +8,13 @@ dependencies:
 
 test:
   override:
-    - activator 'test-only *Test'
+  override:
+    - sbt update
+    - sbt 'test-only *Test'
 
 deployment:
   production:
     branch: master
     commands:
-      - activator universal:package-zip-tarball
+      - sbt universal:package-zip-tarball
       - aws s3 cp target/universal/zenobase-SNAPSHOT.tgz s3://zeno-builds/zenobase-$CIRCLE_BUILD_NUM.tgz
