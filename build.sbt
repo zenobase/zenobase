@@ -18,7 +18,7 @@ libraryDependencies ++= Seq(
 	"com.google.guava" % "guava-testlib" % "17.0" % "test",
 	"com.google.inject" % "guice" % "3.0",
 	"com.google.inject.extensions" % "guice-multibindings" % "3.0",
-	"org.elasticsearch" % "elasticsearch" % "1.7.4",
+	"org.elasticsearch" % "elasticsearch" % "1.7.6",
 	"org.elasticsearch" % "elasticsearch-cloud-aws" % "2.7.1",
 	"com.hazelcast" % "hazelcast" % "3.6",
 	"com.hazelcast" % "hazelcast-cloud" % "3.6",
