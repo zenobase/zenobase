@@ -5,8 +5,6 @@ machine:
 dependencies:
   override:
     - sbt update
-  post:
-    - sudo pip install --upgrade awscli
 
 test:
   override:
