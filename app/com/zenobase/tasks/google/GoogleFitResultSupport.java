@@ -29,6 +29,7 @@ abstract class GoogleFitResultSupport {
 		.put("com.mapmywalk.android2", new Resource("MapMyWalk", "http://www.mapmywalk.com/"))
 		.put("com.motorola.omni", new Resource("Moto Body", "http://www.motorola.com/us/software/moto-body.html"))
 		.put("com.mybasis.android.basis.peak", new Resource("Basis", "http://www.mybasis.com/"))
+        .put("com.myfitnesspal.android", new Resource("MyFitnessPal", "https://www.myfitnesspal.com/"))
 		.put("com.nike.plusgps", new Resource("Nike+", "http://nikeplus.nike.com/"))
 		.put("com.wsl.noom", new Resource("Noom", "http://noom.com/"))
 		.put("com.northpark.pushups", new Resource("Push Ups Workout", "https://play.google.com/store/apps/details?id=com.northpark.pushups"))
