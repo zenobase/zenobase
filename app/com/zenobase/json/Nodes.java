@@ -10,8 +10,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+import com.fasterxml.jackson.databind.node.MissingNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Preconditions;
+import com.google.common.base.Strings;
 
 public class Nodes {
 
@@ -90,7 +92,7 @@ public class Nodes {
 
     public static JsonNode read(String in) {
         try {
-            return MAPPER.readTree(in);
+            return !Strings.isNullOrEmpty(in) ? MAPPER.readTree(in) : MissingNode.getInstance();
         } catch (IOException e) {
             throw new IllegalArgumentException("Can't read json: '" + new String(in) + "'");
         }

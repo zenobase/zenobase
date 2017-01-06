@@ -7,6 +7,7 @@ import java.util.List;
 
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.IntNode;
+import com.fasterxml.jackson.databind.node.MissingNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.Lists;
 import org.fest.assertions.Assertions;
@@ -66,4 +67,11 @@ public class NodesTest {
 		Assertions.assertThat(Nodes.size(new IntNode(42))).as("int node").isEqualTo(0);
 		Assertions.assertThat(Nodes.size(Nodes.newObject("name", "Foo"))).as("object node with one field").isEqualTo(1);
 	}
+
+    @Test
+    public void testParseEmptyString() {
+
+        assertThat(Nodes.read("")).isEqualTo(MissingNode.getInstance());
+        assertThat(Nodes.read((String) null)).isEqualTo(MissingNode.getInstance());
+    }
 }

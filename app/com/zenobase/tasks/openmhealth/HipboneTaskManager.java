@@ -74,7 +74,7 @@ public class HipboneTaskManager extends OAuthTaskManager {
 			request.addPayload(Nodes.newObject("path", folder).toString());
 		}
 		Response response = send(request, credentials);
-		return new ListFolderResult(parseObject(response));
+		return new ListFolderResult(parse(response));
 	}
 
 	private Event getEvent(OAuthCredentials credentials, Identity author, String path) {
@@ -83,7 +83,7 @@ public class HipboneTaskManager extends OAuthTaskManager {
 		request.addHeader(HttpHeaders.CONTENT_TYPE, "");
 		request.addHeader("Dropbox-API-Arg", Nodes.newObject("path", path).toString());
 		Response response = send(request, credentials);
-		return new DataPointResult(author, parseObject(response)).getEvent();
+		return new DataPointResult(author, parse(response)).getEvent();
 	}
 
 	private Command createCommand(Task task, String cursor, List<Event> events) {
