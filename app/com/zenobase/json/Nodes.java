@@ -91,10 +91,13 @@ public class Nodes {
     }
 
     public static JsonNode read(String in) {
+        if (Strings.isNullOrEmpty(in)) {
+            return MissingNode.getInstance();
+        }
         try {
-            return !Strings.isNullOrEmpty(in) ? MAPPER.readTree(in) : MissingNode.getInstance();
+            return MAPPER.readTree(in);
         } catch (IOException e) {
-            throw new IllegalArgumentException("Can't read json: '" + new String(in) + "'");
+            throw new IllegalArgumentException("Can't read json: '" + in + "' [" + in.length() + "]");
         }
     }
 
