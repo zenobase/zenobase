@@ -33,7 +33,7 @@ import com.zenobase.tasks.Task;
 
 public class WakaTimeTaskManager extends OAuthTaskManager {
 
-	private static final RateLimiter RATE_LIMITER = RateLimiter.create(10);
+	private static final RateLimiter RATE_LIMITER = RateLimiter.create(5);
 	private static final String HOST = "https://wakatime.com/api/v1";
 
 	@Inject
