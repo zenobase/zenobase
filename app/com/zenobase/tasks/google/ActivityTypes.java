@@ -2,6 +2,9 @@ package com.zenobase.tasks.google;
 
 import com.google.common.collect.ImmutableMap;
 
+/**
+ * @see <a href="https://developers.google.com/fit/rest/v1/reference/activity-types">Activity Types</a>
+ */
 public class ActivityTypes {
 
 	private static final ImmutableMap<Integer, String> TYPES = ImmutableMap.<Integer, String>builder()
@@ -115,7 +118,16 @@ public class ActivityTypes {
 		.put(99, "Windsurfing")
 		.put(100, "Yoga")
 		.put(101, "Zumba")
-		.put(108, "Other") // not documented
+		.put(108, "Other")
+		// not documented:
+        .put(113, "CrossFit")
+        .put(114, "HIIT")
+        .put(115, "Interval training")
+        .put(116, "Walking (stroller)")
+        .put(117, "Elevator")
+        .put(118, "Escalator")
+        .put(119, "Archery")
+        .put(120, "Softball")
 		.build();
 
 	private ActivityTypes() {
