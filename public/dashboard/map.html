@@ -1,10 +1,10 @@
 <div id="{{settings.id}}-content" data-ng-controller="MapWidgetController">
 
-	<div id="{{settings.id}}-map" style="height: 350px" class="map" data-ng-show="points.length"></div>
+	<div id="{{settings.id}}-map" style="height: 350px" class="map" data-ng-show="!bounds.isEmpty() || !boundsB.isEmpty()"></div>
 
-	<p data-ng-show="points == null" class="none">Loading...</p>
+	<p data-ng-show="bounds == null" class="none">Loading...</p>
 
-	<p data-ng-show="points.length == 0" class="none">None</p>
+	<p data-ng-show="bounds.isEmpty() && boundsB.isEmpty()" class="none">None</p>
 
 	<div class="btn-toolbar">
 		<div class="btn-group"></div>
@@ -21,20 +21,6 @@
 					<label class="control-label" for="label">Title</label>
 					<div class="controls">
 						<input name="label" type="text" required min="1" max="20" data-ng-model="settings.label"/>
-					</div>
-				</div>
-				<div class="control-group">
-					<label class="control-label" for="unit">Color</label>
-					<div class="controls">
-						<select name="color" data-ng-model="settings.marker_color" data-ng-options="color for color in getColors()"></select>
-						<p class="help-block">The cluster color.</p>
-					</div>
-				</div>
-				<div class="control-group">
-					<label class="control-label" for="factor">Factor</label>
-					<div class="controls">
-						<input name="factor" type="number" required min="0.0" max="1.0" step="0.1" data-ng-model="settings.factor"/>
-						<p class="help-block">Controls the clustering, from 0.0 (show each point) to 1.0 (one big cluster).</p>
 					</div>
 				</div>
 			</div>

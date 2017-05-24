@@ -12,9 +12,9 @@ import com.zenobase.testing.NodeAssert;
 
 public class MapFacetTest extends FacetTestSupport {
 
-	private static final Location DENVER = new Location("39.75", "-104.87");
-	private static final Location LAS_VEGAS = new Location("36.08", "-115.17");
-	private static final Location SAN_DIEGO = new Location("32.82", "-117.13");
+	private static final Location SEATTLE = new Location("47.6062", "-122.3321");
+	private static final Location REDMOND = new Location("47.6740", "-122.1215");
+	private static final Location KIRKLAND = new Location("47.6769", "-122.2060");
 
 	private Event e1, e2, e3, e4;
 
@@ -22,10 +22,10 @@ public class MapFacetTest extends FacetTestSupport {
 	@Override
 	public void setUp() {
 		super.setUp();
-		e1 = newEvent(DENVER);
-		e2 = newEvent(DENVER);
-		e3 = newEvent(LAS_VEGAS);
-		e4 = newEvent(SAN_DIEGO);
+		e1 = newEvent(SEATTLE);
+		e2 = newEvent(SEATTLE);
+		e3 = newEvent(REDMOND);
+		e4 = newEvent(KIRKLAND);
 	}
 
 	private static Event newEvent(Location location) {
@@ -35,27 +35,47 @@ public class MapFacetTest extends FacetTestSupport {
 	}
 
 	@Test
+	public void testClusterMin() {
+
+		addEvent(e1);
+		addEvent(e2);
+		addEvent(e3);
+		addEvent(e4);
+		addFacet("id:%s,type:%s,factor:%s", FACET_ID, MapFacet.TYPE, 0.0);
+
+		ObjectNode result = execute();
+		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(4);
+		NodeAssert node = assertThat(result).path(FACET_ID).hasSize(3);
+		node.path(0).path("count").isEqualTo(2);
+		node.path(0).path("lat").isEqualTo(47.6061);
+		node.path(0).path("lon").isEqualTo(-122.3320);
+		node.path(1).path("count").isEqualTo(1);
+		node.path(1).path("lat").isEqualTo(47.6739);
+		node.path(1).path("lon").isEqualTo(-122.1215);
+	}
+
+	@Test
 	public void testClusterSome() {
 
 		addEvent(e1);
 		addEvent(e2);
 		addEvent(e3);
 		addEvent(e4);
-		addFacet("id:%s,type:%s,factor:%s", FACET_ID, MapFacet.TYPE, 0.5);
+		addFacet("id:%s,type:%s,factor:%s", FACET_ID, MapFacet.TYPE, 0.8);
 
 		ObjectNode result = execute();
 		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(4);
 		NodeAssert node = assertThat(result).path(FACET_ID).hasSize(2);
 		node.path(0).path("count").isEqualTo(2);
-		node.path(0).path("lat").isEqualTo(39.75);
-		node.path(0).path("lon").isEqualTo(-104.87);
+		node.path(0).path("lat").isEqualTo(47.6147);
+		node.path(0).path("lon").isEqualTo(-122.3217);
 		node.path(1).path("count").isEqualTo(2);
-		node.path(1).path("lat").isEqualTo(34.45);
-		node.path(1).path("lon").isEqualTo(-116.15);
+		node.path(1).path("lat").isEqualTo(47.6586);
+		node.path(1).path("lon").isEqualTo(-122.1459);
 	}
 
 	@Test
-	public void testClusterAll() {
+	public void testClusterMax() {
 
 		addEvent(e1);
 		addEvent(e2);
@@ -67,12 +87,12 @@ public class MapFacetTest extends FacetTestSupport {
 		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(4);
 		NodeAssert node = assertThat(result).path(FACET_ID).hasSize(1);
 		node.path(0).path("count").isEqualTo(4);
-		node.path(0).path("lat").isEqualTo(37.1);
-		node.path(0).path("lon").isEqualTo(-110.51);
-		node.path(0).path("lat_min").isEqualTo(32.82);
-		node.path(0).path("lat_max").isEqualTo(39.75);
-		node.path(0).path("lon_min").isEqualTo(-117.13);
-		node.path(0).path("lon_max").isEqualTo(-104.87);
+		node.path(0).path("lat").isEqualTo(47.6367);
+		node.path(0).path("lon").isEqualTo(-122.1679);
+		node.path(0).path("lat_min").isEqualTo(46.4062);
+		node.path(0).path("lat_max").isEqualTo(47.8125);
+		node.path(0).path("lon_min").isEqualTo(-122.3437);
+		node.path(0).path("lon_max").isEqualTo(-120.9375);
 	}
 
 	@Test

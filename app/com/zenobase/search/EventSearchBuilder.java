@@ -14,7 +14,7 @@ public class EventSearchBuilder extends SearchBuilderSupport {
 		.put(ListFacet.TYPE, ListFacet.builder(filterParser, Event.SCHEMA))
 		.put(CountFacet.TYPE, CountFacet.builder(filterParser))
 		.put(GanttFacet.TYPE, GanttFacet.builder(filterParser))
-		.put(MapFacet.TYPE, MapFacet.builder())
+		.put(MapFacet.TYPE, MapFacet.builder(filterParser))
 		.put(HeatmapFacet.TYPE, HeatmapFacet.builder(filterParser))
 		.put(GeoBoundsFacet.TYPE, GeoBoundsFacet.builder(filterParser))
 		.put(RatingsFacet.TYPE, RatingsFacet.builder(filterParser))
