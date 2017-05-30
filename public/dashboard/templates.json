@@ -134,7 +134,7 @@
 			},
 			{
 				"id" : "map",
-				"type" : "heatmap",
+				"type" : "map",
 				"label" : "Map",
 				"placement" : "right"
 			},
@@ -296,7 +296,7 @@
 			},
 			{
 				"id" : "map",
-				"type" : "heatmap",
+				"type" : "map",
 				"label" : "Map",
 				"placement" : "right"
 			},
@@ -357,7 +357,7 @@
 			},
 			{
 				"id" : "map",
-				"type" : "heatmap",
+				"type" : "map",
 				"label" : "Map",
 				"placement" : "right"
 			},
@@ -526,7 +526,7 @@
 			},
 			{
 				"id" : "map",
-				"type" : "heatmap",
+				"type" : "map",
 				"label" : "Map",
 				"placement" : "right"
 			},
@@ -586,7 +586,7 @@
 			},
 			{
 				"id" : "map",
-				"type" : "heatmap",
+				"type" : "map",
 				"label" : "Map",
 				"placement" : "right"
 			},
@@ -646,7 +646,7 @@
 			},
 			{
 				"id" : "map",
-				"type" : "heatmap",
+				"type" : "map",
 				"label" : "Map",
 				"placement" : "right"
 			},
@@ -1562,7 +1562,7 @@
 			},
 			{
 				"id" : "map",
-				"type" : "heatmap",
+				"type" : "map",
 				"label" : "Map",
 				"placement" : "right"
 			},
@@ -1618,7 +1618,7 @@
 			},
 			{
 				"id" : "map",
-				"type" : "heatmap",
+				"type" : "map",
 				"label" : "Map",
 				"placement" : "right"
 			},
@@ -1707,7 +1707,7 @@
 			},
 			{
 				"id" : "map",
-				"type" : "heatmap",
+				"type" : "map",
 				"label" : "Map",
 				"placement" : "right"
 			},
@@ -3321,7 +3321,7 @@
 			},
 			{
 				"id" : "map",
-				"type" : "heatmap",
+				"type" : "map",
 				"label" : "Map",
 				"placement" : "right"
 			},
@@ -3400,7 +3400,7 @@
 			},
 			{
 				"id" : "map",
-				"type" : "heatmap",
+				"type" : "map",
 				"label" : "Map",
 				"placement" : "right"
 			},
