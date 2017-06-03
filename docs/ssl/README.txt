@@ -8,13 +8,13 @@ Signing Request
 openssl req -new -newkey rsa:2048 -keyout server.key -out server.csr
 # z3nowhat
 
-# for aws-lb:
+# for aws:
 openssl rsa -in server.key -text > server_rsa.key
 
 
-Elastic Load Balancer
----------------------
+AWS Certificate Manager
+-----------------------
 
 Private Key: server_rsa.key
 Public Key Certificate: STAR_zenobase_com.crt
-Certificate Chain: COMODORSADomainValidationSecureServerCA.crt + COMODORSAAddTrustCA.crt + AddTrustExternalCARoot.crt
+Certificate Chain: STAR_zenobase_com.ca-bundle
