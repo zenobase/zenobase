@@ -52,7 +52,7 @@ abstract class HexoskinTaskManagerSupport<T extends HexoskinTaskSupport> extends
 	}
 
 	private HexoskinProfileResult getProfile(OAuthCredentials credentials) {
-		OAuthRequest request = new OAuthRequest(Verb.GET, "https://api.hexoskin.com/api/v1/account/");
+		OAuthRequest request = new OAuthRequest(Verb.GET, "https://api.hexoskin.com/api/v1/profile/");
 		Response response = send(request, credentials);
 		return new HexoskinProfileResult(parseObject(response));
 	}

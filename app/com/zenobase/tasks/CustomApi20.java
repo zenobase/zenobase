@@ -31,6 +31,7 @@ public abstract class CustomApi20 extends DefaultApi20 {
 	@Override
 	public OAuthService createService(final OAuthConfig config) {
 		return new OAuth20ServiceImpl(this, config) {
+
 			@Override
 			public Token getAccessToken(Token requestToken, Verifier verifier) {
 				OAuthRequest request = new OAuthRequest(getAccessTokenVerb(), getAccessTokenEndpoint());
@@ -49,7 +50,20 @@ public abstract class CustomApi20 extends DefaultApi20 {
 				Response response = send(request, config);
 				return getAccessTokenExtractor().extract(response.getBody());
 			}
+
+			@Override
+			public void signRequest(Token accessToken, OAuthRequest request) {
+				if (passTokenInHeader()) {
+				    request.addHeader(OAuthConstants.HEADER, "Bearer " + accessToken.getToken());
+				} else {
+					super.signRequest(accessToken, request);
+				}
+			}
 		};
+	}
+
+	protected boolean passTokenInHeader() {
+		return false;
 	}
 
 	protected boolean useBasicAuthHeader() {
