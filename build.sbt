@@ -28,6 +28,7 @@ libraryDependencies ++= Seq(
 	"org.scribe" % "scribe" % "1.3.5",
 	"org.apache.httpcomponents" % "httpcore" % "4.3",
 	"org.apache.httpcomponents" % "httpclient" % "4.3.1",
+	"org.apache.httpcomponents" % "fluent-hc" % "4.3.1",
 	"com.braintreepayments.gateway" % "braintree-java" % "2.69.0",
 	"org.logback-extensions" % "logback-ext-loggly" % "0.1.2",
 	"ch.qos.logback.contrib" % "logback-json-classic" % "0.1.2",

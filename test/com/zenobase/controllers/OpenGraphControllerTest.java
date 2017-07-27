@@ -49,6 +49,14 @@ public class OpenGraphControllerTest extends ControllerTestSupport {
 		assertThat(result).hasStatus(BAD_REQUEST);
 	}
 
+	@Test
+	public void testHostWithSNI() {
+		Result result = call("https://photos.app.goo.gl/hgUiwXNbTmJ6yHe43");
+		NodeAssert node = assertThat(result).hasStatus(OK).asObjectNode();
+		node.path("url").isEqualTo("https://photos.app.goo.gl/hgUiwXNbTmJ6yHe43");
+		node.path("title").isEqualTo("Johnson Ridge July 2017");
+	}
+
 	private static Result call(String url) {
 		return callAction(com.zenobase.controllers.routes.ref.OpenGraphController.get(url), fakeRequest());
 	}
