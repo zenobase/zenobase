@@ -11,7 +11,7 @@ public class SnapshotJob extends Job {
 
 	@Inject
 	public SnapshotJob(IndexManager manager) {
-		super("snapshot", new LocalTime(1, 0), Period.hours(8));
+		super("snapshot", new LocalTime(1, 0), Period.days(1));
 		this.manager = manager;
 	}
 
