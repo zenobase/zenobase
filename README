@@ -92,7 +92,7 @@ Use this procedure when there are setup or configuration changes, but no databas
 
   7. Set up new instances [OpsWorks]:
 
-     7.1. Add two m4.large instances named "{name}-1a" in us-east-1a and "{name}-1b" in us-east-1b to the "Elasticsearch" layer.
+     7.1. Add two m5.large instances named "{name}-1a" in us-east-1a and "{name}-1b" in us-east-1b to the "Elasticsearch" layer.
 
      7.2. Add the new instances to the "Play" layer.
 
@@ -130,7 +130,7 @@ Use this procedure to rebuild the database:
 
   5. Set up new instances [OpsWorks]:
 
-     4.1. Add two m4.large instances named "{name}-1a" in us-east-1a and "{name}-1b" in us-east-1b to the "Elasticsearch" layer.
+     4.1. Add two m5.large instances named "{name}-1a" in us-east-1a and "{name}-1b" in us-east-1b to the "Elasticsearch" layer.
 
      4.2. Add the new instances to the "Play" layer.
 
