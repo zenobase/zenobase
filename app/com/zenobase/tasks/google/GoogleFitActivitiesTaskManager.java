@@ -186,7 +186,7 @@ public class GoogleFitActivitiesTaskManager extends GoogleFitTaskManagerSupport<
 				}
 			}
 			for (Event event : events) {
-				if (!events.contains(Event.DISTANCE)) {
+				if (!event.contains(Event.DISTANCE)) {
 					Range<DateTime> range = getRange(event);
 					double sum = sum(values.subRangeMap(range).asMapOfRanges().values());
 					if (sum > 0.0) {
@@ -318,7 +318,7 @@ public class GoogleFitActivitiesTaskManager extends GoogleFitTaskManagerSupport<
 				}
 			}
 			for (Event event : events) {
-				if (!events.contains(Event.FREQUENCY)) {
+				if (!event.contains(Event.FREQUENCY)) {
 					Range<DateTime> range = getRange(event);
 					BigDecimal value = mean(values.subRangeMap(range).asMapOfRanges().values());
 					if (value != null) {
