@@ -283,8 +283,9 @@
 			$scope.alert.clear();
 		});
 		$scope.$on('$routeChangeSuccess', function() {
-			tracker.pageview($location.path());
-			tracker.event('page', $location.path());
+			var path = $location.path().replace(/^\/(users|buckets)\/.+$/, '/$1/'); // remove personally identifiable information
+			tracker.pageview(path);
+			tracker.event('page', path);
 		});
 		$scope.whoami();
 	}]);
