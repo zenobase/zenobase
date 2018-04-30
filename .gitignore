@@ -8,7 +8,9 @@ tmp
 /.cache
 /.project
 /.classpath
+/.idea*
 /dist
 /.target
 /*.log
+/*.iml
 /bin
