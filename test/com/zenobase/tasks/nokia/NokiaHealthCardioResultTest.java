@@ -1,4 +1,4 @@
-package com.zenobase.tasks.withings;
+package com.zenobase.tasks.nokia;
 
 import static org.fest.assertions.Assertions.assertThat;
 
@@ -15,11 +15,11 @@ import com.zenobase.models.Event;
 import com.zenobase.models.Percentage;
 import com.zenobase.tasks.ResultTestSupport;
 
-public class WithingsCardioResultTest extends ResultTestSupport {
+public class NokiaHealthCardioResultTest extends ResultTestSupport {
 
 	@Test
 	public void test() {
-		WithingsCardioResult result = new WithingsCardioResult(readObject("WithingsCardioResultTest.json"), TESTER, "heart rate", DateTimeZone.forID("America/Los_Angeles"));
+		NokiaHealthCardioResult result = new NokiaHealthCardioResult(readObject("NokiaHealthCardioResultTest.json"), TESTER, "heart rate", DateTimeZone.forID("America/Los_Angeles"));
 		assertThat(result.getStatus()).as("status").isEqualTo(0);
 		assertThat(result.getMarker()).as("marker").isEqualTo("1387899568");
 		List<Event> events = result.getEvents();
@@ -35,7 +35,7 @@ public class WithingsCardioResultTest extends ResultTestSupport {
 		expected.setValue(Event.PERCENTAGE, Percentage.valueOf(97));
 		expected.setValue(Event.TIMESTAMP, dateTime("2013-12-22T22:59:41-08:00"));
 		expected.setValue(Event.AUTHOR, TESTER);
-		expected.setValue(Event.SOURCE, WithingsWeightResult.SOURCE);
+		expected.setValue(Event.SOURCE, NokiaHealthWeightResult.SOURCE);
 		assertThat(event).as("first event").isEqualTo(expected);
 	}
 
@@ -47,7 +47,7 @@ public class WithingsCardioResultTest extends ResultTestSupport {
 		expected.addValue(Event.PRESSURE, DecimalMeasure.<Pressure>valueOf("110 mmHg"));
 		expected.setValue(Event.TIMESTAMP, dateTime("2013-12-17T07:24:27-08:00"));
 		expected.setValue(Event.AUTHOR, TESTER);
-		expected.setValue(Event.SOURCE, WithingsWeightResult.SOURCE);
+		expected.setValue(Event.SOURCE, NokiaHealthWeightResult.SOURCE);
 		assertThat(event).as("last event").isEqualTo(expected);
 	}
 }

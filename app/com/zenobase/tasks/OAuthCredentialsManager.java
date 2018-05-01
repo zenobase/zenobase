@@ -42,7 +42,11 @@ public abstract class OAuthCredentialsManager extends CredentialsManager {
 	}
 
 	protected Credentials find(Identity principal) {
-		return repository.find(principal, getType());
+		return find(principal, getType());
+	}
+
+	protected Credentials find(Identity principal, String type) {
+		return repository.find(principal, type);
 	}
 
 	@Override

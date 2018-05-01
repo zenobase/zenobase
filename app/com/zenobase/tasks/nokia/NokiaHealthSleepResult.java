@@ -1,4 +1,4 @@
-package com.zenobase.tasks.withings;
+package com.zenobase.tasks.nokia;
 
 import java.util.List;
 
@@ -18,9 +18,9 @@ import com.zenobase.models.Identity;
 import com.zenobase.models.Percentage;
 import com.zenobase.models.Resource;
 
-class WithingsSleepResult {
+class NokiaHealthSleepResult {
 
-	public static final Resource SOURCE = new Resource("Withings", "http://withings.com/");
+	public static final Resource SOURCE = new Resource("Nokia Health", "https://health.nokia.com/");
 
 	private final ObjectNode node;
 	private final Identity author;
@@ -28,7 +28,7 @@ class WithingsSleepResult {
 	private final boolean useRanges;
 	private final DateTimeZone timezone;
 
-	public WithingsSleepResult(ObjectNode node, Identity author, String tag, boolean useRanges, DateTimeZone timezone) {
+	public NokiaHealthSleepResult(ObjectNode node, Identity author, String tag, boolean useRanges, DateTimeZone timezone) {
 		this.node = node;
 		this.author = author;
 		this.tag = tag;

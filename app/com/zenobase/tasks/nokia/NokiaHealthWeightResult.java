@@ -1,4 +1,4 @@
-package com.zenobase.tasks.withings;
+package com.zenobase.tasks.nokia;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
@@ -21,9 +21,9 @@ import com.zenobase.models.Identity;
 import com.zenobase.models.Percentage;
 import com.zenobase.models.Resource;
 
-class WithingsWeightResult {
+class NokiaHealthWeightResult {
 
-	public static final Resource SOURCE = new Resource("Withings", "http://withings.com/");
+	public static final Resource SOURCE = new Resource("Nokia Health", "https://health.nokia.com/");
 
 	private final ObjectNode node;
 	private final Identity author;
@@ -31,7 +31,7 @@ class WithingsWeightResult {
 	private final Unit<Mass> unit;
 	private final DateTimeZone timezone;
 
-	public WithingsWeightResult(ObjectNode node, Identity author, String tag, Unit<Mass> unit, DateTimeZone timezone) {
+	public NokiaHealthWeightResult(ObjectNode node, Identity author, String tag, Unit<Mass> unit, DateTimeZone timezone) {
 		this.node = node;
 		this.author = author;
 		this.tag = tag;

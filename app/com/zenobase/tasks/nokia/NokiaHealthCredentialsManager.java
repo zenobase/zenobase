@@ -1,4 +1,4 @@
-package com.zenobase.tasks.withings;
+package com.zenobase.tasks.nokia;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -6,6 +6,7 @@ import javax.inject.Named;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
+import com.zenobase.models.Identity;
 import org.scribe.builder.ServiceBuilder;
 import org.scribe.model.SignatureType;
 
@@ -16,13 +17,13 @@ import com.zenobase.tasks.Credentials;
 import com.zenobase.tasks.OAuthCredentials;
 import com.zenobase.tasks.OAuthCredentialsManager;
 
-public class WithingsCredentialsManager extends OAuthCredentialsManager {
+public class NokiaHealthCredentialsManager extends OAuthCredentialsManager {
 
-	public static final String TYPE = "withings";
+	private static final String TYPE = "nokia";
 
 	@Inject
-	public WithingsCredentialsManager(CredentialsRepository repository, @Named("withings.api.key") String apiKey, @Named("withings.api.secret") String apiSecret, @Named("oauth.hostname") String callbackUrl) {
-		super(TYPE, repository, new WithingsApi(), apiKey, apiSecret, callbackUrl);
+	public NokiaHealthCredentialsManager(CredentialsRepository repository, @Named("nokia.api.key") String apiKey, @Named("nokia.api.secret") String apiSecret, @Named("oauth.hostname") String callbackUrl) {
+		super(TYPE, repository, new NokiaHealthApi(), apiKey, apiSecret, callbackUrl);
 	}
 
 	@Override
@@ -54,5 +55,14 @@ public class WithingsCredentialsManager extends OAuthCredentialsManager {
 	@Override
 	protected void configure(ServiceBuilder builder) {
 		builder.signatureType(SignatureType.QueryString);
+	}
+
+	@Override
+	protected Credentials find(Identity principal) {
+		Credentials credentials = super.find(principal, TYPE);
+		if (credentials == null) { // TODO remove after the next migration
+			credentials = super.find(principal, "withings");
+		}
+		return credentials;
 	}
 }

@@ -36,6 +36,10 @@ public class Task extends DomainNode {
 
 	public Task(ObjectNode node) {
 		super(node);
+		// TODO remove after the next migration
+		if (getType().startsWith("withings")) {
+			setValue(TYPE, getType().replace("withings", "nokia"));
+		}
 	}
 
 	public Task(String type, String bucketId, Identity principal) {

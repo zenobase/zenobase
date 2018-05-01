@@ -1,4 +1,4 @@
-package com.zenobase.tasks.withings;
+package com.zenobase.tasks.nokia;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Objects;
@@ -10,18 +10,18 @@ import com.zenobase.json.TokenField;
 import com.zenobase.models.Identity;
 import com.zenobase.tasks.Task;
 
-public class WithingsSleepTask extends Task {
+public class NokiaHealthSleepTask extends Task {
 
-	public static final String TYPE = "withings-sleep";
+	public static final String TYPE = "nokia-sleep";
 	public static final TokenField TAG = new TokenField("tag");
 	public static final TokenField TIMEZONE = new TokenField("timezone");
 	public static final BooleanField RANGES = new BooleanField("ranges");
 
-	public WithingsSleepTask(ObjectNode node) {
+	public NokiaHealthSleepTask(ObjectNode node) {
 		super(node);
 	}
 
-	WithingsSleepTask(String bucketId, Identity principal, String marker) {
+	NokiaHealthSleepTask(String bucketId, Identity principal, String marker) {
 		super(TYPE, bucketId, principal);
 		setMarker(marker);
 		setSetting(RANGES, true);
@@ -54,7 +54,7 @@ public class WithingsSleepTask extends Task {
 	}
 
 	@Override
-	public WithingsSleepTask copy() {
+	public NokiaHealthSleepTask copy() {
 		return copy(getClass());
 	}
 }

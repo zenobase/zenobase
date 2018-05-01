@@ -199,11 +199,11 @@ import com.zenobase.tasks.trakt.TraktCredentialsManager;
 import com.zenobase.tasks.trakt.TraktTaskManager;
 import com.zenobase.tasks.wakatime.WakaTimeCredentialsManager;
 import com.zenobase.tasks.wakatime.WakaTimeTaskManager;
-import com.zenobase.tasks.withings.WithingsCardioTaskManager;
-import com.zenobase.tasks.withings.WithingsCredentialsManager;
-import com.zenobase.tasks.withings.WithingsSleepTaskManager;
-import com.zenobase.tasks.withings.WithingsStepsTaskManager;
-import com.zenobase.tasks.withings.WithingsWeightTaskManager;
+import com.zenobase.tasks.nokia.NokiaHealthCardioTaskManager;
+import com.zenobase.tasks.nokia.NokiaHealthCredentialsManager;
+import com.zenobase.tasks.nokia.NokiaHealthSleepTaskManager;
+import com.zenobase.tasks.nokia.NokiaHealthStepsTaskManager;
+import com.zenobase.tasks.nokia.NokiaHealthWeightTaskManager;
 
 public class Global extends GlobalSettings {
 
@@ -321,7 +321,7 @@ public class Global extends GlobalSettings {
 				credentials.addBinding().to(DemoCredentialsManager.class);
 				bindIfConfigured("fitbit", FitbitCredentialsManager.class, credentials);
 				bindIfConfigured("foursquare", FoursquareCredentialsManager.class, credentials);
-				bindIfConfigured("withings", WithingsCredentialsManager.class, credentials);
+				bindIfConfigured("nokia", NokiaHealthCredentialsManager.class, credentials);
 				bindIfConfigured("netatmo", NetatmoCredentialsManager.class, credentials);
 				bindIfConfigured("runkeeper", RunkeeperCredentialsManager.class, credentials);
 				bindIfConfigured("strava", StravaCredentialsManager.class, credentials);
@@ -356,10 +356,10 @@ public class Global extends GlobalSettings {
 				bindIfConfigured("fitbit", FitbitWeightTaskManager.class, tasks);
 				bindIfConfigured("fitbit", FitbitFoodTaskManager.class, tasks);
 				bindIfConfigured("foursquare", FoursquareTaskManager.class, tasks);
-				bindIfConfigured("withings", WithingsCardioTaskManager.class, tasks);
-				bindIfConfigured("withings", WithingsStepsTaskManager.class, tasks);
-				bindIfConfigured("withings", WithingsWeightTaskManager.class, tasks);
-				bindIfConfigured("withings", WithingsSleepTaskManager.class, tasks);
+				bindIfConfigured("nokia", NokiaHealthCardioTaskManager.class, tasks);
+				bindIfConfigured("nokia", NokiaHealthStepsTaskManager.class, tasks);
+				bindIfConfigured("nokia", NokiaHealthWeightTaskManager.class, tasks);
+				bindIfConfigured("nokia", NokiaHealthSleepTaskManager.class, tasks);
 				bindIfConfigured("netatmo", NetatmoTaskManager.class, tasks);
 				bindIfConfigured("runkeeper", RunkeeperActivitiesTaskManager.class, tasks);
 				bindIfConfigured("runkeeper", RunkeeperWeightTaskManager.class, tasks);

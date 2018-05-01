@@ -1,4 +1,4 @@
-package com.zenobase.tasks.withings;
+package com.zenobase.tasks.nokia;
 
 import java.util.List;
 
@@ -28,19 +28,19 @@ import com.zenobase.tasks.OAuthCredentials;
 import com.zenobase.tasks.OAuthTaskManager;
 import com.zenobase.tasks.Task;
 
-public class WithingsStepsTaskManager extends OAuthTaskManager {
+public class NokiaHealthStepsTaskManager extends OAuthTaskManager {
 
 	@Inject
-	public WithingsStepsTaskManager(WithingsCredentialsManager credentialsManager) {
-		super(WithingsStepsTask.TYPE, credentialsManager);
+	public NokiaHealthStepsTaskManager(NokiaHealthCredentialsManager credentialsManager) {
+		super(NokiaHealthStepsTask.TYPE, credentialsManager);
 	}
 
 	@Override
-	public WithingsStepsTask newTask(String bucketId, Identity principal, ObjectNode settings) {
+	public NokiaHealthStepsTask newTask(String bucketId, Identity principal, ObjectNode settings) {
 		String tag = Objects.firstNonNull(settings.path("tag").textValue(), "steps");
 		Unit<Length> lengthUnit = Objects.firstNonNull(new UnitField<Length>("unit").getValue(settings), Units.KM);
 		String marker = parseMarker(settings.path("marker").textValue());
-		WithingsStepsTask task = new WithingsStepsTask(bucketId, principal, tag, lengthUnit, Units.KCAL, marker);
+		NokiaHealthStepsTask task = new NokiaHealthStepsTask(bucketId, principal, tag, lengthUnit, Units.KCAL, marker);
 		return task;
 	}
 
@@ -50,19 +50,19 @@ public class WithingsStepsTaskManager extends OAuthTaskManager {
 
 	@Override
 	public Command execute(Task task, OAuthCredentials credentials) {
-		return execute(task.as(WithingsStepsTask.class), credentials);
+		return execute(task.as(NokiaHealthStepsTask.class), credentials);
 	}
 
-	private Command execute(WithingsStepsTask task, OAuthCredentials credentials) {
+	private Command execute(NokiaHealthStepsTask task, OAuthCredentials credentials) {
 		OAuthRequest request = createRequest(task, credentials);
 		Response response = send(request, credentials);
-		WithingsStepsResult result = new WithingsStepsResult(parseObject(response), task.getPrincipal(), task.getTag(), task.getDistanceUnit(), task.getHeightUnit(), task.getEnergyUnit());
+		NokiaHealthStepsResult result = new NokiaHealthStepsResult(parseObject(response), task.getPrincipal(), task.getTag(), task.getDistanceUnit(), task.getHeightUnit(), task.getEnergyUnit());
 		Preconditions.checkState(result.getStatus() == 0, "Expected status <0> but got <%s> for task <%s>", result.getStatus(), task.getId());
 		return createCommand(task, result.getEvents());
 	}
 
-	private OAuthRequest createRequest(WithingsStepsTask task, OAuthCredentials credentials) {
-		OAuthRequest request = new OAuthRequest(Verb.GET, "http://wbsapi.withings.net/v2/measure");
+	private OAuthRequest createRequest(NokiaHealthStepsTask task, OAuthCredentials credentials) {
+		OAuthRequest request = new OAuthRequest(Verb.GET, "https://api.health.nokia.com/v2/measure");
 		request.addQuerystringParameter("action", "getactivity");
 		request.addQuerystringParameter("userid", credentials.getScope());
 		request.addQuerystringParameter("startdateymd", LocalDate.parse(task.getMarker()).toString());
@@ -70,8 +70,8 @@ public class WithingsStepsTaskManager extends OAuthTaskManager {
 		return request;
 	}
 
-	private static Command createCommand(WithingsStepsTask task, List<Event> events) {
-		CompoundCommand command = new CompoundCommand(task.getPrincipal(), "ran withings-steps task", "reverted withings-steps task");
+	private static Command createCommand(NokiaHealthStepsTask task, List<Event> events) {
+		CompoundCommand command = new CompoundCommand(task.getPrincipal(), "ran nokia-steps task", "reverted nokia-steps task");
 		command.add(UpdateTaskCommand.builder(task)
 			.set(Task.COMPLETED, task.getCompleted(), new DateTime(DateTimeZone.UTC))
 			.set(Task.STATUS, task.getStatus(), Task.Status.SUCCESS)

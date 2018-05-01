@@ -1,10 +1,8 @@
-package com.zenobase.tasks.withings;
+package com.zenobase.tasks.nokia;
 
 import java.util.List;
 
 import javax.inject.Inject;
-import javax.measure.quantity.Mass;
-import javax.measure.unit.Unit;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Objects;
@@ -20,28 +18,27 @@ import com.zenobase.commands.Command;
 import com.zenobase.commands.CompoundCommand;
 import com.zenobase.commands.CreateEventsCommand;
 import com.zenobase.commands.UpdateTaskCommand;
-import com.zenobase.common.Units;
-import com.zenobase.json.UnitField;
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
 import com.zenobase.tasks.OAuthCredentials;
 import com.zenobase.tasks.OAuthTaskManager;
 import com.zenobase.tasks.Task;
 
-public class WithingsWeightTaskManager extends OAuthTaskManager {
+public class NokiaHealthCardioTaskManager extends OAuthTaskManager {
 
 	@Inject
-	public WithingsWeightTaskManager(WithingsCredentialsManager credentialsManager) {
-		super(WithingsWeightTask.TYPE, credentialsManager);
+	public NokiaHealthCardioTaskManager(NokiaHealthCredentialsManager credentialsManager) {
+		super(NokiaHealthCardioTask.TYPE, credentialsManager);
 	}
 
 	@Override
-	public WithingsWeightTask newTask(String bucketId, Identity principal, ObjectNode settings) {
-		String tag = Objects.firstNonNull(settings.path("tag").textValue(), "body");
-		Unit<Mass> unit = Objects.firstNonNull(new UnitField<Mass>("unit").getValue(settings), Units.KG);
+	public NokiaHealthCardioTask newTask(String bucketId, Identity principal, ObjectNode settings) {
 		DateTimeZone timezone = DateTimeZone.forID(Objects.firstNonNull(settings.path("timezone").textValue(), "UTC"));
 		String marker = parseMarker(settings.path("marker").textValue(), timezone);
-		WithingsWeightTask task = new WithingsWeightTask(bucketId, principal, tag, unit, timezone, marker);
+		String tag = Objects.firstNonNull(settings.path("tag").textValue(), "heart rate");
+		NokiaHealthCardioTask task = new NokiaHealthCardioTask(bucketId, principal, marker);
+		task.setTag(tag);
+		task.setTimezone(timezone);
 		return task;
 	}
 
@@ -51,19 +48,19 @@ public class WithingsWeightTaskManager extends OAuthTaskManager {
 
 	@Override
 	public Command execute(Task task, OAuthCredentials credentials) {
-		return execute(task.as(WithingsWeightTask.class), credentials);
+		return execute(task.as(NokiaHealthCardioTask.class), credentials);
 	}
 
-	private Command execute(WithingsWeightTask task, OAuthCredentials credentials) {
+	private Command execute(NokiaHealthCardioTask task, OAuthCredentials credentials) {
 		OAuthRequest request = createRequest(task, credentials);
 		Response response = send(request, credentials);
-		WithingsWeightResult result = new WithingsWeightResult(parseObject(response), task.getPrincipal(), task.getTag(), task.getUnit(), task.getTimezone());
+		NokiaHealthCardioResult result = new NokiaHealthCardioResult(parseObject(response), task.getPrincipal(), task.getTag(), task.getTimezone());
 		Preconditions.checkState(result.getStatus() == 0, "Expected status <0> but got <%s> for task <%s>", result.getStatus(), task.getId());
 		return createCommand(task, result);
 	}
 
-	private OAuthRequest createRequest(WithingsWeightTask task, OAuthCredentials credentials) {
-		OAuthRequest request = new OAuthRequest(Verb.GET, "http://wbsapi.withings.net/measure");
+	private OAuthRequest createRequest(NokiaHealthCardioTask task, OAuthCredentials credentials) {
+		OAuthRequest request = new OAuthRequest(Verb.GET, "https://api.health.nokia.com/measure");
 		request.addQuerystringParameter("userid", credentials.getScope());
 		request.addQuerystringParameter("action", "getmeas");
 		request.addQuerystringParameter("category", "1"); // actual measurements
@@ -73,8 +70,8 @@ public class WithingsWeightTaskManager extends OAuthTaskManager {
 		return request;
 	}
 
-	private static Command createCommand(WithingsWeightTask task, WithingsWeightResult result) {
-		CompoundCommand command = new CompoundCommand(task.getPrincipal(), "ran withings task", "reverted withings task");
+	private static Command createCommand(NokiaHealthCardioTask task, NokiaHealthCardioResult result) {
+		CompoundCommand command = new CompoundCommand(task.getPrincipal(), "ran nokia-cardio task", "reverted nokia-cardio task");
 		command.add(UpdateTaskCommand.builder(task)
 			.set(Task.COMPLETED, task.getCompleted(), new DateTime(DateTimeZone.UTC))
 			.set(Task.STATUS, task.getStatus(), Task.Status.SUCCESS)

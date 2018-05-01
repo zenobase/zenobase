@@ -6171,10 +6171,10 @@
 			{ id : 'trackthisforme', description : 'Creates an event for each element logged in a category.', url : 'https://www.trackthisfor.me/' },
 			{ id : 'trakt', description : 'Creates an event for each movie or episode watched.', url : 'https://trakt.tv/' },
 			{ id : 'wakatime', description : 'Creates an event for every period of time logged for a project.', url : 'https://wakatime.com/' },
-			{ id : 'withings-cardio', description : 'Creates an event for each heart rate or blood pressure measurement.', url : 'http://www.withings.com/' },
-			{ id : 'withings-sleep', description : 'Creates an event for each period of sleep.', url : 'http://www.withings.com/' },
-			{ id : 'withings-steps', description : 'Creates an event for the number of steps each day.', url : 'http://www.withings.com/' },
-			{ id : 'withings-weight', description : 'Creates an event for each body weight measurement.', url : 'http://www.withings.com/' }
+			{ id : 'nokia-cardio', description : 'Creates an event for each heart rate or blood pressure measurement.', url : 'https://health.nokia.com/' },
+			{ id : 'nokia-sleep', description : 'Creates an event for each period of sleep.', url : 'https://health.nokia.com/' },
+			{ id : 'nokia-steps', description : 'Creates an event for the number of steps each day.', url : 'https://health.nokia.com/' },
+			{ id : 'nokia-weight', description : 'Creates an event for each body weight measurement.', url : 'https://health.nokia.com/' }
 			// { id : 'demo', description : 'Creates a single event each time this task is run.' }
 		];
 
@@ -6708,7 +6708,7 @@
 		$scope.init();
 	}]);
 
-	app.controller('WithingsWeightSettingsController', ['$scope', '$http', 'Field', 'moment', function($scope, $http, Field, moment) {
+	app.controller('NokiaHealthWeightSettingsController', ['$scope', '$http', 'Field', 'moment', function($scope, $http, Field, moment) {
 
 		$scope.init = function() {
 			$scope.settings = $scope.$parent.$parent.settings = {
@@ -6725,7 +6725,7 @@
 		$scope.init();
 	}]);
 
-	app.controller('WithingsSleepSettingsController', ['$scope', '$http', 'moment', function($scope, $http, moment) {
+	app.controller('NokiaHealthSleepSettingsController', ['$scope', '$http', 'moment', function($scope, $http, moment) {
 
 		$scope.init = function() {
 			$scope.settings = $scope.$parent.$parent.settings = {
@@ -6738,7 +6738,7 @@
 		$scope.init();
 	}]);
 
-	app.controller('WithingsCardioSettingsController', ['$scope', '$http', 'Field', 'moment', function($scope, $http, Field, moment) {
+	app.controller('NokiaHealthCardioSettingsController', ['$scope', '$http', 'Field', 'moment', function($scope, $http, Field, moment) {
 
 		$scope.init = function() {
 			$scope.settings = $scope.$parent.$parent.settings = {
@@ -6751,7 +6751,7 @@
 		$scope.init();
 	}]);
 
-	app.controller('WithingsStepsSettingsController', ['$scope', '$http', 'Field', 'moment', function($scope, $http, Field, moment) {
+	app.controller('NokiaHealthStepsSettingsController', ['$scope', '$http', 'Field', 'moment', function($scope, $http, Field, moment) {
 
 		$scope.init = function() {
 			$scope.settings = $scope.$parent.$parent.settings = {

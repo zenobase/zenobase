@@ -1,4 +1,4 @@
-package com.zenobase.tasks.withings;
+package com.zenobase.tasks.nokia;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -20,16 +20,16 @@ import com.zenobase.models.Identity;
 import com.zenobase.models.Percentage;
 import com.zenobase.models.Resource;
 
-class WithingsCardioResult {
+class NokiaHealthCardioResult {
 
-	private static final Resource SOURCE = new Resource("Withings", "http://withings.com/");
+	private static final Resource SOURCE = new Resource("Nokia Health", "https://health.nokia.com/");
 
 	private final ObjectNode node;
 	private final Identity author;
 	private final String tag;
 	private final DateTimeZone timezone;
 
-	public WithingsCardioResult(ObjectNode node, Identity author, String tag, DateTimeZone timezone) {
+	public NokiaHealthCardioResult(ObjectNode node, Identity author, String tag, DateTimeZone timezone) {
 		this.node = node;
 		this.author = author;
 		this.tag = tag;

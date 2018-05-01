@@ -1,4 +1,4 @@
-package com.zenobase.tasks.withings;
+package com.zenobase.tasks.nokia;
 
 import java.util.Collections;
 import java.util.Comparator;
@@ -23,9 +23,9 @@ import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
 import com.zenobase.models.Resource;
 
-class WithingsStepsResult {
+class NokiaHealthStepsResult {
 
-	public static final Resource SOURCE = new Resource("Withings", "http://withings.com/");
+	public static final Resource SOURCE = new Resource("Nokia Health", "https://health.nokia.com/");
 
 	private final ObjectNode node;
 	private final Identity author;
@@ -33,7 +33,7 @@ class WithingsStepsResult {
 	private final Unit<Length> distanceUnit, heightUnit;
 	private final Unit<Energy> energyUnit;
 
-	public WithingsStepsResult(ObjectNode node, Identity author, String tag, Unit<Length> distanceUnit, Unit<Length> heightUnit, Unit<Energy> energyUnit) {
+	public NokiaHealthStepsResult(ObjectNode node, Identity author, String tag, Unit<Length> distanceUnit, Unit<Length> heightUnit, Unit<Energy> energyUnit) {
 		this.node = node;
 		this.author = author;
 		this.tag = tag;

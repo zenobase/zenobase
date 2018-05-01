@@ -1,4 +1,4 @@
-package com.zenobase.tasks.withings;
+package com.zenobase.tasks.nokia;
 
 import javax.measure.quantity.Energy;
 import javax.measure.quantity.Length;
@@ -13,18 +13,18 @@ import com.zenobase.json.UnitField;
 import com.zenobase.models.Identity;
 import com.zenobase.tasks.Task;
 
-public class WithingsStepsTask extends Task {
+public class NokiaHealthStepsTask extends Task {
 
-	public static final String TYPE = "withings-steps";
+	public static final String TYPE = "nokia-steps";
 	public static final TokenField TAG = new TokenField("tag");
 	public static final UnitField<Length> LENGTH_UNIT = new UnitField<>("unit");
 	public static final UnitField<Energy> ENERGY_UNIT = new UnitField<>("energy_unit");
 
-	public WithingsStepsTask(ObjectNode node) {
+	public NokiaHealthStepsTask(ObjectNode node) {
 		super(node);
 	}
 
-	WithingsStepsTask(String bucketId, Identity principal, String tag, Unit<Length> lengthUnit, Unit<Energy> energyUnit, String marker) {
+	NokiaHealthStepsTask(String bucketId, Identity principal, String tag, Unit<Length> lengthUnit, Unit<Energy> energyUnit, String marker) {
 		super(TYPE, bucketId, principal);
 		setMarker(marker);
 		setSetting(TAG, tag);
@@ -49,7 +49,7 @@ public class WithingsStepsTask extends Task {
 	}
 
 	@Override
-	public WithingsStepsTask copy() {
+	public NokiaHealthStepsTask copy() {
 		return copy(getClass());
 	}
 }

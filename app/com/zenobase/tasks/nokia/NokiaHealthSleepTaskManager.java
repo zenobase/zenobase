@@ -1,4 +1,4 @@
-package com.zenobase.tasks.withings;
+package com.zenobase.tasks.nokia;
 
 import java.util.List;
 
@@ -28,21 +28,21 @@ import com.zenobase.tasks.OAuthCredentials;
 import com.zenobase.tasks.OAuthTaskManager;
 import com.zenobase.tasks.Task;
 
-public class WithingsSleepTaskManager extends OAuthTaskManager {
+public class NokiaHealthSleepTaskManager extends OAuthTaskManager {
 
 	private static final RateLimiter RATE_LIMITER = RateLimiter.create(2);
 
 	@Inject
-	public WithingsSleepTaskManager(WithingsCredentialsManager credentialsManager) {
-		super(WithingsSleepTask.TYPE, credentialsManager);
+	public NokiaHealthSleepTaskManager(NokiaHealthCredentialsManager credentialsManager) {
+		super(NokiaHealthSleepTask.TYPE, credentialsManager);
 	}
 
 	@Override
-	public WithingsSleepTask newTask(String bucketId, Identity principal, ObjectNode settings) {
+	public NokiaHealthSleepTask newTask(String bucketId, Identity principal, ObjectNode settings) {
 		String tag = Objects.firstNonNull(settings.path("tag").textValue(), "steps");
 		DateTimeZone timezone = DateTimeZone.forID(Objects.firstNonNull(settings.path("timezone").textValue(), "UTC"));
 		String marker = parseMarker(settings.path("marker").textValue(), timezone);
-		WithingsSleepTask task = new WithingsSleepTask(bucketId, principal, marker);
+		NokiaHealthSleepTask task = new NokiaHealthSleepTask(bucketId, principal, marker);
 		task.setTag(tag);
 		task.setTimezone(timezone);
 		return task;
@@ -58,27 +58,27 @@ public class WithingsSleepTaskManager extends OAuthTaskManager {
 
 	@Override
 	public Command execute(Task task, OAuthCredentials credentials) {
-		return execute(task.as(WithingsSleepTask.class), credentials);
+		return execute(task.as(NokiaHealthSleepTask.class), credentials);
 	}
 
-	private Command execute(WithingsSleepTask task, OAuthCredentials credentials) {
+	private Command execute(NokiaHealthSleepTask task, OAuthCredentials credentials) {
 		List<Event> events = Lists.newArrayList();
 		for (DateTime from = task.getFrom(); from.isBefore(DateTime.now()); from = from.plusWeeks(1)) {
 			events.addAll(execute(task, credentials, from));
 		}
-		return createCommand(task, WithingsSleepResult.merge(events));
+		return createCommand(task, NokiaHealthSleepResult.merge(events));
 	}
 
-	private List<Event> execute(WithingsSleepTask task, OAuthCredentials credentials, DateTime from) {
+	private List<Event> execute(NokiaHealthSleepTask task, OAuthCredentials credentials, DateTime from) {
 		OAuthRequest request = createRequest(task, credentials, from);
 		Response response = send(request, credentials);
-		WithingsSleepResult result = new WithingsSleepResult(parseObject(response), task.getPrincipal(), task.getTag(), task.useRanges(), task.getTimezone());
+		NokiaHealthSleepResult result = new NokiaHealthSleepResult(parseObject(response), task.getPrincipal(), task.getTag(), task.useRanges(), task.getTimezone());
 		Preconditions.checkState(result.getStatus() == 0, "Expected status <0> but got <%s> for task <%s>", result.getStatus(), task.getId());
 		return result.getEvents();
 	}
 
-	private OAuthRequest createRequest(WithingsSleepTask task, OAuthCredentials credentials, DateTime from) {
-		OAuthRequest request = new OAuthRequest(Verb.GET, "http://wbsapi.withings.net/v2/sleep");
+	private OAuthRequest createRequest(NokiaHealthSleepTask task, OAuthCredentials credentials, DateTime from) {
+		OAuthRequest request = new OAuthRequest(Verb.GET, "https://api.health.nokia.com/v2/sleep");
 		request.addQuerystringParameter("action", "get");
 		request.addQuerystringParameter("userid", credentials.getScope());
 		request.addQuerystringParameter("startdate", toString(from));
@@ -92,8 +92,8 @@ public class WithingsSleepTaskManager extends OAuthTaskManager {
 		return super.send(request, credentials);
 	}
 
-	private static Command createCommand(WithingsSleepTask task, List<Event> events) {
-		CompoundCommand command = new CompoundCommand(task.getPrincipal(), "ran withings-sleep task", "reverted withings-sleep task");
+	private static Command createCommand(NokiaHealthSleepTask task, List<Event> events) {
+		CompoundCommand command = new CompoundCommand(task.getPrincipal(), "ran nokia-sleep task", "reverted nokia-sleep task");
 		command.add(UpdateTaskCommand.builder(task)
 			.set(Task.COMPLETED, task.getCompleted(), new DateTime(DateTimeZone.UTC))
 			.set(Task.STATUS, task.getStatus(), Task.Status.SUCCESS)

@@ -1294,8 +1294,8 @@
 	},
 	{
 		"category" : "Heart Rate",
-		"source" : "Withings",
-		"task" : "withings-cardio", 
+		"source" : "Nokia Health (Withings)",
+		"task" : "nokia-cardio",
 		"widgets" : [
 			{
 				"id" : "timeline",
@@ -2684,8 +2684,8 @@
 	},
 	{
 		"category" : "Sleep",
-		"source" : "Withings",
-		"task" : "withings-sleep",
+		"source" : "Nokia Health (Withings)",
+		"task" : "nokia-sleep",
 		"widgets" : [
 			{
 				"id" : "timeline_duration",
@@ -3050,8 +3050,8 @@
 	},
 	{
 		"category" : "Steps",
-		"source" : "Withings",
-		"task" : "withings-steps", 
+		"source" : "Nokia Health (Withings)",
+		"task" : "nokia-steps",
 		"widgets" : [
 			{
 				"id" : "steps",
@@ -3683,8 +3683,8 @@
 	},
 	{
 		"category" : "Weight",
-		"source" : "Withings",
-		"task" : "withings-weight", 
+		"source" : "Nokia Health (Withings)",
+		"task" : "nokia-weight",
 		"widgets" : [
 			{
 				"id" : "latest",
