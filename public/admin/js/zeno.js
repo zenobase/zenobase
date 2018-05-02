@@ -110,16 +110,16 @@
 
 		$scope.hasPrev = function() {
 			return $scope.offset > 0;
-		}
+		};
 		$scope.hasNext = function() {
 			return $scope.offset + $scope.limit < $scope.total;
-		}
+		};
 		$scope.prev = function() {
 			$scope.refresh({ offset : $scope.offset - $scope.limit });
-		}
+		};
 		$scope.next = function() {
 			$scope.refresh({ offset : $scope.offset + $scope.limit });
-		}
+		};
 		$scope.params = function() {
 			var params = {
 				offset : $scope.offset,
@@ -129,7 +129,7 @@
 				params.q = $scope.filter;
 			}
 			return params;
-		}
+		};
 		$scope.refresh = function(params) {
 			var path = $scope.constraint ? '/users/' + $scope.constraint + '/journal/' : '/journal/';
 			$http.get(path + '?' + $.param($.extend($scope.params(), params)))
@@ -166,16 +166,16 @@
 
 		$scope.hasPrev = function() {
 			return $scope.offset > 0;
-		}
+		};
 		$scope.hasNext = function() {
 			return $scope.offset + $scope.limit < $scope.total;
-		}
+		};
 		$scope.prev = function() {
 			$scope.refresh({ offset : $scope.offset - $scope.limit });
-		}
+		};
 		$scope.next = function() {
 			$scope.refresh({ offset : $scope.offset + $scope.limit });
-		}
+		};
 		$scope.params = function() {
 			var params = {
 				offset : $scope.offset,
@@ -185,10 +185,10 @@
 				params.q = $scope.filter;
 			}
 			return params;
-		}
+		};
 		var path = function(resource) {
 			return $scope.constraint ? '/users/' + $scope.constraint + resource : resource;
-		}
+		};
 		$scope.refresh = function(params) {
 			$scope.token = token.get();
 			$http.get(path('/buckets/') + '?' + $.param($.extend($scope.params(), params)))
@@ -428,16 +428,16 @@
 
 		$scope.hasPrev = function() {
 			return $scope.offset > 0;
-		}
+		};
 		$scope.hasNext = function() {
 			return $scope.offset + $scope.limit < $scope.total;
-		}
+		};
 		$scope.prev = function() {
 			$scope.refresh({ offset : $scope.offset - $scope.limit });
-		}
+		};
 		$scope.next = function() {
 			$scope.refresh({ offset : $scope.offset + $scope.limit });
-		}
+		};
 		$scope.params = function() {
 			var params = {
 				offset : $scope.offset,
@@ -447,7 +447,7 @@
 				params.q = $scope.filter;
 			}
 			return params;
-		}
+		};
 		$scope.refresh = function(params) {
 			var path = $scope.constraint ? '/users/' + $scope.constraint + '/credentials/' : '/credentials/';
 			$http.get(path + '?' + $.param($.extend($scope.params(), params)))
@@ -486,16 +486,16 @@
 
 		$scope.hasPrev = function() {
 			return $scope.offset > 0;
-		}
+		};
 		$scope.hasNext = function() {
 			return $scope.offset + $scope.limit < $scope.total;
-		}
+		};
 		$scope.prev = function() {
 			$scope.refresh({ offset : $scope.offset - $scope.limit });
-		}
+		};
 		$scope.next = function() {
 			$scope.refresh({ offset : $scope.offset + $scope.limit });
-		}
+		};
 		$scope.params = function() {
 			var params = {
 				offset : $scope.offset,
@@ -505,7 +505,7 @@
 				params.q = $scope.filter;
 			}
 			return params;
-		}
+		};
 		$scope.refresh = function(params) {
 			var path = $scope.constraint ? '/users/' + $scope.constraint + '/tasks/' : '/tasks/';
 			$http.get(path + '?' + $.param($.extend($scope.params(), params)))
@@ -553,22 +553,22 @@
 
 		$scope.hasPrev = function() {
 			return $scope.offset > 0;
-		}
+		};
 		$scope.hasNext = function() {
 			return $scope.offset + $scope.limit < $scope.total;
-		}
+		};
 		$scope.prev = function() {
 			$scope.refresh({ offset : $scope.offset - $scope.limit });
-		}
+		};
 		$scope.next = function() {
 			$scope.refresh({ offset : $scope.offset + $scope.limit });
-		}
+		};
 		$scope.params = function() {
 			return {
 				offset : $scope.offset,
 				limit : $scope.limit
 			};
-		}
+		};
 		$scope.refresh = function(params) {
 			$http.get('/snapshots/?' + $.param($.extend($scope.params(), params)))
 				.success(function(response) {
