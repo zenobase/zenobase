@@ -31,7 +31,7 @@ public class CommandDispatcher {
 
 	public String dispatch(Command command) {
 		DateTime t = command.getTimestamp();
-		log.info("[{}] {} {}", t, command.getPrincipal(), command);
+		log.info("{} [{}] {} {}", command.getId(), t, command.getPrincipal(), command);
 		if (command.getCost() > 0 && t.isAfter(now)) { // don't spend while replaying commands
 			quotas.spend(command.getPrincipal(), command.getCost());
 		}
