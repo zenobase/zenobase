@@ -91,13 +91,19 @@ public class UpdateEventCommand extends Command {
 				update(command);
 			} catch (VersionConflictEngineException e) {
 				if (e.getCurrentVersion() == -1) {
-					Logger.info("Recovering from a missing event...");
+					Logger.warn("Recovering from a missing event...");
 					create(command);
-				} else {
-					command.getFrom().setVersion(command.getFrom().getVersion() - 2); // if an update was reversed, we could be two versions ahead
-					command.getTo().setVersion(command.getTo().getVersion() - 2);
-					Logger.info("Recovering from a version conflict...");
+				} else if (e.getCurrentVersion() < e.getProvidedVersion()) {
+					Logger.warn("Recovering from a version conflict: {} -> {}...", command.getFrom().getVersion(), command.getTo().getVersion());
+					Event correctedFrom = command.getFrom().copy();
+					correctedFrom.setVersion(e.getCurrentVersion());
+					command.setParameter(FROM, correctedFrom.toJson());
+					Event correctedTo = command.getTo().copy();
+					correctedTo.setVersion(e.getCurrentVersion());
+					command.setParameter(TO, correctedTo.toJson());
 					update(command);
+				} else {
+					throw e;
 				}
 			}
 		}

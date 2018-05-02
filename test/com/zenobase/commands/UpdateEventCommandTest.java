@@ -3,6 +3,7 @@ package com.zenobase.commands;
 import static org.mockito.Mockito.*;
 
 import org.elasticsearch.index.engine.VersionConflictEngineException;
+import org.junit.Before;
 import org.junit.Test;
 
 import com.zenobase.common.Generator;
@@ -15,17 +16,21 @@ public class UpdateEventCommandTest {
 	private final EventRepository repository = mock(EventRepository.class);
 	private final CommandHandlerRegistry registry = CommandHandlerRegistry.containing(
 		new UpdateEventCommand.Handler(repository));
+	private final String bucketId = Generator.id();
+	private final Identity principal = new Identity();
+	private final Event from = new Event();
+	private final Event to = from.copy();
+
+	@Before
+	public void setUp() {
+		from.setValue(Event.TAG, "foo");
+		from.setVersion(2);
+		to.setValue(Event.TAG, "bar");
+		to.setVersion(2);
+	}
 
 	@Test
 	public void test() {
-
-		String bucketId = Generator.id();
-		Identity principal = new Identity();
-		Event from = new Event();
-		from.setValue(Event.TAG, "foo");
-		from.setVersion(1L);
-		Event to = from.copy();
-		from.setValue(Event.TAG, "bar");
 
 		Command command = new UpdateEventCommand(principal, bucketId, from, to);
 		registry.execute(command);
@@ -44,18 +49,34 @@ public class UpdateEventCommandTest {
 	}
 
 	@Test
-	public void testRecoverMissing() {
+	public void testRecoverFromVersionConflict() {
 
-		String bucketId = Generator.id();
-		Identity principal = new Identity();
-		Event from = new Event();
-		from.setValue(Event.TAG, "foo");
-		from.setVersion(1L);
-		Event to = from.copy();
-		from.setValue(Event.TAG, "bar");
+		Event to2 = to.copy();
+		to2.setVersion(1);
 
 		Command command = new UpdateEventCommand(principal, bucketId, from, to);
-		Exception e = new VersionConflictEngineException(null, null, null, -1, 2L);
+		Exception e = new VersionConflictEngineException(null, null, null, 1, 2);
+		doThrow(e).when(repository).update(bucketId, to, command.getTimestamp());
+		registry.execute(command);
+		verify(repository).update(bucketId, to2, command.getTimestamp());
+		reset(repository);
+	}
+
+	@Test(expected = VersionConflictEngineException.class)
+	public void testUnrecoverableVersionConflict() {
+
+		Command command = new UpdateEventCommand(principal, bucketId, from, to);
+		Exception e = new VersionConflictEngineException(null, null, null, 3, 2);
+		doThrow(e).when(repository).update(bucketId, to, command.getTimestamp());
+		registry.execute(command);
+		reset(repository);
+	}
+
+	@Test
+	public void testRecoverFromMissingEvent() {
+
+		Command command = new UpdateEventCommand(principal, bucketId, from, to);
+		Exception e = new VersionConflictEngineException(null, null, null, -1, 2);
 		doThrow(e).when(repository).update(bucketId, to, command.getTimestamp());
 		registry.execute(command);
 		verify(repository).add(bucketId, to, command.getTimestamp());
