@@ -3994,7 +3994,7 @@
 		$scope.draw = function() {
 			if (!$scope.bounds.isEmpty() || !$scope.boundsB.isEmpty()) {
 				var options = {
-					mapTypeId : google.maps.MapTypeId.TERRAIN,
+					mapTypeId : google.maps.MapTypeId.ROADMAP,
 					streetViewControl : false,
 					mapTypeControlOptions : {
 						style : google.maps.MapTypeControlStyle.DROPDOWN_MENU
@@ -4766,7 +4766,7 @@
 			var options = {
 				center : center,
 				zoom : 2,
-				mapTypeId: google.maps.MapTypeId.TERRAIN,
+				mapTypeId: google.maps.MapTypeId.ROADMAP,
 				streetViewControl: false,
 				draggableCursor : 'crosshair',
 				mapTypeControlOptions : {
