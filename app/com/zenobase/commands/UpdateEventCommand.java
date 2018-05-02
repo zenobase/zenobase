@@ -90,15 +90,24 @@ public class UpdateEventCommand extends Command {
 			try {
 				update(command);
 			} catch (VersionConflictEngineException e) {
-				command.getFrom().setVersion(command.getFrom().getVersion() - 2); // if an update was reversed, we could be two versions ahead
-				command.getTo().setVersion(command.getTo().getVersion() - 2);
-				Logger.info("Recovering from a version conflict...");
-				update(command);
+				if (e.getCurrentVersion() == -1) {
+					Logger.info("Recovering from a missing event...");
+					create(command);
+				} else {
+					command.getFrom().setVersion(command.getFrom().getVersion() - 2); // if an update was reversed, we could be two versions ahead
+					command.getTo().setVersion(command.getTo().getVersion() - 2);
+					Logger.info("Recovering from a version conflict...");
+					update(command);
+				}
 			}
 		}
 
 		private void update(UpdateEventCommand command) {
 			repository.update(command.getBucketId(), command.getTo().copy(), command.getTimestamp()); // copy to prevent the version number from being incremented
+		}
+
+		private void create(UpdateEventCommand command) {
+			repository.add(command.getBucketId(), command.getTo().copy(), command.getTimestamp());
 		}
 	}
 }
