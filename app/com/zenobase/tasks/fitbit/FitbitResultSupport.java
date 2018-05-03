@@ -81,7 +81,7 @@ abstract class FitbitResultSupport {
 	}
 
 	protected static Integer countValue(JsonNode node) {
-		return !isZero(node) ? Integer.valueOf(node.intValue()) : null;
+		return !isZero(node) ? node.intValue() : null;
 	}
 
 	protected static DecimalMeasure<Frequency> frequencyValue(JsonNode node) {

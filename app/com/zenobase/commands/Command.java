@@ -92,7 +92,7 @@ public class Command extends DomainNode {
 	}
 
 	public int getCost() {
-		return getValue(COST, Integer.valueOf(0));
+		return getValue(COST, 0);
 	}
 
 	protected void setCost(int cost) {

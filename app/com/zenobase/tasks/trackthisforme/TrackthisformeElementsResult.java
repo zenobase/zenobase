@@ -97,7 +97,7 @@ class TrackthisformeElementsResult {
 		} else if (field instanceof DecimalMeasureField) {
 			return Measures.valueOf(value, unit);
 		} else if (field instanceof IntegerField) {
-			return Integer.valueOf(value.intValue());
+			return value.intValue();
 		} else if (field instanceof PercentageField) {
 			return Percentage.valueOf(value.intValue());
 		} else if (field instanceof RatingField) {
