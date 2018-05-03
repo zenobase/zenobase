@@ -92,7 +92,7 @@ abstract class IHealthTaskManagerSupport<T extends IHealthTaskSupport> extends O
 		command.add(UpdateTaskCommand.builder(task)
 			.set(Task.COMPLETED, task.getCompleted(), new DateTime(DateTimeZone.UTC))
 			.set(Task.STATUS, task.getStatus(), Task.Status.SUCCESS)
-			.set(Task.MARKER, task.getMarker(), events.isEmpty() ? task.getMarker() : getMarker(events).toString())
+			.set(Task.MARKER, task.getMarker(), events.isEmpty() ? task.getMarker() : getMarker(events))
 			.set(Task.UNDO, task.getUndoId(), command.getId())
 			.build());
 		if (!Objects.equal(credentials.getToken(), expiredToken)) {
