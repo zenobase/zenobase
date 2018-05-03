@@ -107,11 +107,11 @@ public class PaymentGateway {
 
 	public void unsubscribe(String username) {
 		Customer customer = findCustomer(username);
-		Preconditions.checkArgument(customer != null, "Couldn't find customer: <%s>", customer.getId());
+		Preconditions.checkArgument(customer != null, "Couldn't find customer: <%s>", username);
 		Subscription subscription = getSubscription(customer);
-		Preconditions.checkArgument(subscription != null, "Expected at least one subscription for <%s>", customer.getId());
+		Preconditions.checkArgument(subscription != null, "Expected at least one subscription for <%s>", username);
 		Result<Subscription> result = gateway.subscription().cancel(subscription.getId());
-		Preconditions.checkArgument(result.isSuccess(), "Couldn't unsubscribe <%s>: %s", customer.getId(), result.getMessage());
+		Preconditions.checkArgument(result.isSuccess(), "Couldn't unsubscribe <%s>: %s", username, result.getMessage());
 	}
 
 	public boolean update(String username, String email) {
