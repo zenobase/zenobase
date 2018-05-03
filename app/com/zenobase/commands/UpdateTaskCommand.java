@@ -1,14 +1,13 @@
 package com.zenobase.commands;
 
-import javax.inject.Inject;
-
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Preconditions;
-
 import com.zenobase.json.JsonPatch;
 import com.zenobase.models.Identity;
 import com.zenobase.services.TaskRepository;
 import com.zenobase.tasks.Task;
+
+import javax.inject.Inject;
 
 public class UpdateTaskCommand extends UpdateCommandSupport {
 
@@ -29,7 +28,7 @@ public class UpdateTaskCommand extends UpdateCommandSupport {
 	}
 
 	public Task apply(Task task) {
-		return new Task(new JsonPatch(getFrom(), getTo()).apply(task.toJson()));
+		return new Task(new JsonPatch(getFrom(), getTo()).lenient(true).apply(task.toJson()));
 	}
 
 	@Override
