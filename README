@@ -187,3 +187,7 @@ Restore Procedure
   4. Restore a snapshot:
 
     curl -XPOST 'localhost:9200/_snapshot/prod-xx/yyyyyyyyyy/_restore'
+
+  5. Monitor progress:
+
+    curl 'localhost:9200/_cat/recovery'
