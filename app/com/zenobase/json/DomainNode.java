@@ -135,13 +135,7 @@ public class DomainNode {
 	private static <T extends DomainNode> T as(Class<T> type, ObjectNode node) {
 		try {
 			return type.getConstructor(ObjectNode.class).newInstance(node);
-		} catch (InstantiationException e) {
-			throw new AssertionError(e);
-		} catch (IllegalAccessException e) {
-			throw new AssertionError(e);
-		} catch (InvocationTargetException e) {
-			throw new AssertionError(e);
-		} catch (NoSuchMethodException e) {
+		} catch (InstantiationException | NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
 			throw new AssertionError(e);
 		}
 	}

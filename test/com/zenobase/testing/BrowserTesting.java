@@ -365,9 +365,7 @@ public class BrowserTesting {
 			private String readMessage(String receipient) {
 				try {
 					return Iterables.getOnlyElement(Mailbox.get("jdoe@zenobase.com")).getContent().toString();
-				} catch (IOException e) {
-					throw new AssertionError(e);
-				} catch (MessagingException e) {
+				} catch (IOException | MessagingException e) {
 					throw new AssertionError(e);
 				} finally {
 					Mailbox.clearAll();
