@@ -102,7 +102,7 @@ class MeasurementsResult {
 	}
 
 	/**
-	 * {@link http://www.engineeringtoolbox.com/co2-comfort-level-d_1024.html}
+	 * @see <a href="http://www.engineeringtoolbox.com/co2-comfort-level-d_1024.html">CO2 Comfort Levels</a>
 	 */
 	private static int getRating(int value) {
 		if (value < 450) { // outdoor

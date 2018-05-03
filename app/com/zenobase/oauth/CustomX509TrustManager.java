@@ -43,7 +43,6 @@ public class CustomX509TrustManager implements X509TrustManager {
      * Defers to the default trust manager first, checks the cert supplied in the ctor if that fails.
      * @param chain the server's certificate chain
      * @param authType the authentication type based on the client certificate
-     * @throws java.security.cert.CertificateException
      */
     @Override
 	public void checkServerTrusted(X509Certificate[] chain, String authType) throws java.security.cert.CertificateException {
