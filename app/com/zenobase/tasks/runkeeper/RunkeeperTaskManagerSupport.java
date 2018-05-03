@@ -26,11 +26,6 @@ abstract class RunkeeperTaskManagerSupport extends OAuthTaskManager {
 		super(type, credentialsManager);
 	}
 
-	@Override
-	public Command execute(Task task, OAuthCredentials credentials) {
-		return execute(task.as(RunkeeperWeightTask.class), credentials);
-	}
-
 	protected static LocalDateTime parseMarker(String marker) {
 		return marker != null ? LocalDateTime.parse(marker.replaceAll("Z", "")) : null;
 	}
