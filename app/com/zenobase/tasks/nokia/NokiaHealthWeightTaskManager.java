@@ -41,8 +41,7 @@ public class NokiaHealthWeightTaskManager extends OAuthTaskManager {
 		Unit<Mass> unit = Objects.firstNonNull(new UnitField<Mass>("unit").getValue(settings), Units.KG);
 		DateTimeZone timezone = DateTimeZone.forID(Objects.firstNonNull(settings.path("timezone").textValue(), "UTC"));
 		String marker = parseMarker(settings.path("marker").textValue(), timezone);
-		NokiaHealthWeightTask task = new NokiaHealthWeightTask(bucketId, principal, tag, unit, timezone, marker);
-		return task;
+		return new NokiaHealthWeightTask(bucketId, principal, tag, unit, timezone, marker);
 	}
 
 	private static String parseMarker(String marker, DateTimeZone timezone) {

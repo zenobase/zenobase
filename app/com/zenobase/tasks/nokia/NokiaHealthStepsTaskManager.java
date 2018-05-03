@@ -40,8 +40,7 @@ public class NokiaHealthStepsTaskManager extends OAuthTaskManager {
 		String tag = Objects.firstNonNull(settings.path("tag").textValue(), "steps");
 		Unit<Length> lengthUnit = Objects.firstNonNull(new UnitField<Length>("unit").getValue(settings), Units.KM);
 		String marker = parseMarker(settings.path("marker").textValue());
-		NokiaHealthStepsTask task = new NokiaHealthStepsTask(bucketId, principal, tag, lengthUnit, Units.KCAL, marker);
-		return task;
+		return new NokiaHealthStepsTask(bucketId, principal, tag, lengthUnit, Units.KCAL, marker);
 	}
 
 	private static String parseMarker(String marker) {
