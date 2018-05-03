@@ -28,7 +28,7 @@ public class UpdateCredentialsCommand extends UpdateCommandSupport {
 	}
 
 	public Credentials apply(Credentials credentials) {
-		return new Credentials(new JsonPatch(getFrom(), getTo()).lenient(true).apply(credentials.toJson())); // TODO no more lenient after the next migration
+		return new Credentials(new JsonPatch(getFrom(), getTo()).apply(credentials.toJson()));
 	}
 
 	@Override

@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
-import play.Logger;
 
 import java.util.Iterator;
 import java.util.Map;
@@ -12,16 +11,10 @@ import java.util.Map;
 public class JsonPatch {
 
 	private final ObjectNode from, to;
-	private boolean lenient;
 
 	public JsonPatch(ObjectNode from, ObjectNode to) {
 		this.from = from;
 		this.to = to;
-	}
-
-	public JsonPatch lenient(boolean lenient) {
-		this.lenient = lenient;
-		return this;
 	}
 
 	public ObjectNode apply(ObjectNode node) {
@@ -39,15 +32,8 @@ public class JsonPatch {
 				Preconditions.checkState(found.isMissingNode(),
 					"Expected value of field <%s> to be empty but found <%s>", entry.getKey(), found);
 			} else if (entry.getValue().isValueNode()) {
-				if (lenient) {
-					if (!entry.getValue().equals(found)) {
-						Logger.warn("Expected value of field <{}> to be <{}> but found <{}>", entry.getKey(), entry.getValue(), found);
-						node.replace(entry.getKey(), entry.getValue());
-					}
-				} else {
-					Preconditions.checkState(entry.getValue().equals(found),
-							"Expected value of field <%s> to be <%s> but found <%s>", entry.getKey(), entry.getValue(), found);
-				}
+				Preconditions.checkState(entry.getValue().equals(found),
+					"Expected value of field <%s> to be <%s> but found <%s>", entry.getKey(), entry.getValue(), found);
 			} else if (entry.getValue().isObject()) {
 				Preconditions.checkState(found.isObject(),
 					"Expected value of field <%s> to be an object node but found <%s>", entry.getKey(), found);

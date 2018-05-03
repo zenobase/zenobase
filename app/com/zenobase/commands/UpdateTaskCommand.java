@@ -28,7 +28,7 @@ public class UpdateTaskCommand extends UpdateCommandSupport {
 	}
 
 	public Task apply(Task task) {
-		return new Task(new JsonPatch(getFrom(), getTo()).lenient(true).apply(task.toJson()));
+		return new Task(new JsonPatch(getFrom(), getTo()).apply(task.toJson()));
 	}
 
 	@Override
