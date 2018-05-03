@@ -103,6 +103,7 @@ import com.zenobase.services.NodeFactory;
 import com.zenobase.services.PaymentGateway;
 import com.zenobase.services.QuotaManager;
 import com.zenobase.services.Scheduler;
+import com.zenobase.services.SnapshotJob;
 import com.zenobase.services.TaskRepository;
 import com.zenobase.services.TestNodeFactory;
 import com.zenobase.services.UserRepository;
@@ -183,6 +184,11 @@ import com.zenobase.tasks.moves.MovesPlacesTaskManager;
 import com.zenobase.tasks.moves.MovesStepsTaskManager;
 import com.zenobase.tasks.netatmo.NetatmoCredentialsManager;
 import com.zenobase.tasks.netatmo.NetatmoTaskManager;
+import com.zenobase.tasks.nokia.NokiaHealthCardioTaskManager;
+import com.zenobase.tasks.nokia.NokiaHealthCredentialsManager;
+import com.zenobase.tasks.nokia.NokiaHealthSleepTaskManager;
+import com.zenobase.tasks.nokia.NokiaHealthStepsTaskManager;
+import com.zenobase.tasks.nokia.NokiaHealthWeightTaskManager;
 import com.zenobase.tasks.openmhealth.HipboneTaskManager;
 import com.zenobase.tasks.reporter.ReporterTaskManager;
 import com.zenobase.tasks.rescuetime.RescueTimeCredentialsManager;
@@ -199,11 +205,6 @@ import com.zenobase.tasks.trakt.TraktCredentialsManager;
 import com.zenobase.tasks.trakt.TraktTaskManager;
 import com.zenobase.tasks.wakatime.WakaTimeCredentialsManager;
 import com.zenobase.tasks.wakatime.WakaTimeTaskManager;
-import com.zenobase.tasks.nokia.NokiaHealthCardioTaskManager;
-import com.zenobase.tasks.nokia.NokiaHealthCredentialsManager;
-import com.zenobase.tasks.nokia.NokiaHealthSleepTaskManager;
-import com.zenobase.tasks.nokia.NokiaHealthStepsTaskManager;
-import com.zenobase.tasks.nokia.NokiaHealthWeightTaskManager;
 
 public class Global extends GlobalSettings {
 
@@ -418,7 +419,7 @@ public class Global extends GlobalSettings {
 				jobs.addBinding().to(AuthorizationExpirationJob.class);
 				//jobs.addBinding().to(BucketRefreshJob.class);
 				jobs.addBinding().to(CredentialsCleanupJob.class);
-				//jobs.addBinding().to(SnapshotJob.class);
+				jobs.addBinding().to(SnapshotJob.class);
 
 				bind(AccountController.class).in(Singleton.class);
 				bind(BucketController.class).in(Singleton.class);
