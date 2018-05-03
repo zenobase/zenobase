@@ -1,15 +1,14 @@
 package com.zenobase.commands;
 
-import static org.mockito.Mockito.*;
-
-import org.elasticsearch.index.engine.VersionConflictEngineException;
-import org.junit.Before;
-import org.junit.Test;
-
 import com.zenobase.common.Generator;
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
 import com.zenobase.services.EventRepository;
+import org.elasticsearch.index.engine.VersionConflictEngineException;
+import org.junit.Before;
+import org.junit.Test;
+
+import static org.mockito.Mockito.*;
 
 public class UpdateEventCommandTest {
 
@@ -59,7 +58,6 @@ public class UpdateEventCommandTest {
 		doThrow(e).when(repository).update(bucketId, to, command.getTimestamp());
 		registry.execute(command);
 		verify(repository).update(bucketId, to2, command.getTimestamp());
-		reset(repository);
 	}
 
 	@Test(expected = VersionConflictEngineException.class)
@@ -69,7 +67,6 @@ public class UpdateEventCommandTest {
 		Exception e = new VersionConflictEngineException(null, null, null, 3, 2);
 		doThrow(e).when(repository).update(bucketId, to, command.getTimestamp());
 		registry.execute(command);
-		reset(repository);
 	}
 
 	@Test
@@ -80,6 +77,5 @@ public class UpdateEventCommandTest {
 		doThrow(e).when(repository).update(bucketId, to, command.getTimestamp());
 		registry.execute(command);
 		verify(repository).add(bucketId, to, command.getTimestamp());
-		reset(repository);
 	}
 }

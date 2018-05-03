@@ -72,7 +72,6 @@ public class UpdateBucketCommandTest {
 		doThrow(e).when(repository).update(from, to, command.getTimestamp());
 		registry.execute(command);
 		verify(repository).update(from2, to2, command.getTimestamp());
-		reset(repository);
 	}
 
 	@Test(expected = VersionConflictEngineException.class)
@@ -82,6 +81,5 @@ public class UpdateBucketCommandTest {
 		Exception e = new VersionConflictEngineException(null, null, null, 3, 2);
 		doThrow(e).when(repository).update(from, to, command.getTimestamp());
 		registry.execute(command);
-		reset(repository);
 	}
 }
