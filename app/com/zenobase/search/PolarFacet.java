@@ -146,7 +146,7 @@ public class PolarFacet extends FilteredFacet {
 
 		private final int offset, size;
 
-		private Interval(int offset, int size) {
+		Interval(int offset, int size) {
 			this.offset = offset;
 			this.size = size;
 		}

@@ -109,7 +109,7 @@ public class LocalIntervals extends DateTimeFormatSupport {
 		private final int length;
 		private final Period period;
 
-		private IntervalType(DurationFieldType type) {
+		IntervalType(DurationFieldType type) {
 			this.format = configure(new DateTimeFormatterBuilder()).toFormatter();
 			this.length = format.getParser().estimateParsedLength();
 			this.period = new Period().withField(type, 1);

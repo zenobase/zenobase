@@ -6,7 +6,7 @@ import com.zenobase.json.IntegerField;
 
 public interface PartialList<T> extends List<T> {
 
-	final IntegerField TOTAL = new IntegerField("total");
+	IntegerField TOTAL = new IntegerField("total");
 
 	long getTotal();
 }

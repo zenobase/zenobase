@@ -10,7 +10,7 @@ public enum Plan {
 	private final BigDecimal price;
 	private final int quota;
 
-	private Plan(String id, int quota, BigDecimal price) {
+	Plan(String id, int quota, BigDecimal price) {
 		this.id = id;
 		this.quota = quota;
 		this.price = price;
