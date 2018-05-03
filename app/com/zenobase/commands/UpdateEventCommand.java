@@ -1,16 +1,15 @@
 package com.zenobase.commands;
 
-import javax.inject.Inject;
-
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.elasticsearch.index.engine.VersionConflictEngineException;
-import play.Logger;
-
 import com.zenobase.json.ObjectField;
 import com.zenobase.json.TokenField;
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
 import com.zenobase.services.EventRepository;
+import org.elasticsearch.index.engine.VersionConflictEngineException;
+import play.Logger;
+
+import javax.inject.Inject;
 
 public class UpdateEventCommand extends Command {
 
@@ -91,10 +90,10 @@ public class UpdateEventCommand extends Command {
 				update(command);
 			} catch (VersionConflictEngineException e) {
 				if (e.getCurrentVersion() == -1) {
-					Logger.warn("Recovering from a missing event...");
+					Logger.warn("Recovering a missing event...");
 					create(command);
 				} else if (e.getCurrentVersion() < e.getProvidedVersion()) {
-					Logger.warn("Recovering from a version conflict: {} -> {}...", command.getFrom().getVersion(), command.getTo().getVersion());
+					Logger.warn("Recovering from an event version conflict: {} -> {}...", e.getProvidedVersion(), e.getCurrentVersion());
 					Event correctedFrom = command.getFrom().copy();
 					correctedFrom.setVersion(e.getCurrentVersion());
 					command.setParameter(FROM, correctedFrom.toJson());

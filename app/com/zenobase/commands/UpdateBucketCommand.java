@@ -1,13 +1,14 @@
 package com.zenobase.commands;
 
-import javax.inject.Inject;
-
 import com.fasterxml.jackson.databind.node.ObjectNode;
-
 import com.zenobase.json.ObjectField;
 import com.zenobase.models.Bucket;
 import com.zenobase.models.Identity;
 import com.zenobase.services.BucketRepository;
+import org.elasticsearch.index.engine.VersionConflictEngineException;
+import play.Logger;
+
+import javax.inject.Inject;
 
 public class UpdateBucketCommand extends Command {
 
@@ -77,9 +78,26 @@ public class UpdateBucketCommand extends Command {
 
 		@Override
 		public void executeTyped(UpdateBucketCommand command) {
-			Bucket from = command.getFrom();
-			Bucket to = command.getTo();
-			repository.update(from, to.copy(), command.getTimestamp()); // copy to prevent the version number from being incremented
+			try {
+				update(command);
+			} catch (VersionConflictEngineException e) {
+				if (e.getCurrentVersion() < e.getProvidedVersion()) {
+					Logger.warn("Recovering from a bucket version conflict: {} -> {}...", e.getProvidedVersion(), e.getCurrentVersion());
+					Bucket correctedFrom = command.getFrom().copy();
+					correctedFrom.setVersion(e.getCurrentVersion());
+					command.setParameter(FROM, correctedFrom.toJson());
+					Bucket correctedTo = command.getTo().copy();
+					correctedTo.setVersion(e.getCurrentVersion());
+					command.setParameter(TO, correctedTo.toJson());
+					update(command);
+				} else {
+					throw e;
+				}
+			}
+		}
+
+		private void update(UpdateBucketCommand command) {
+			repository.update(command.getFrom(), command.getTo().copy(), command.getTimestamp()); // copy to prevent the version number from being incremented
 		}
 	}
 }
