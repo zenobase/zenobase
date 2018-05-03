@@ -162,7 +162,7 @@
 						break;
 					}
 				}
-				var m = stackLines[callerIndex].match(/\-([0-9a-f]+).js:/);
+				var m = stackLines[callerIndex].match(/-([0-9a-f]+).js:/);
 				if (!m) {
 					throw new Error('missing version');
 				}
