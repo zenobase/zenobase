@@ -99,7 +99,7 @@ class FoursquareResult {
 		private static Location getLocation(JsonNode node) {
 			BigDecimal lat = node.path("lat").decimalValue();
 			BigDecimal lon = node.path("lng").decimalValue();
-			return lat != BigDecimal.ZERO && lon != BigDecimal.ZERO ? new Location(lat, lon) : null;
+			return !BigDecimal.ZERO.equals(lat) && !BigDecimal.ZERO.equals(lon) ? new Location(lat, lon) : null;
 		}
 
 		public List<String> getTags() {
