@@ -2,9 +2,9 @@ package com.zenobase.json;
 
 import com.fasterxml.jackson.databind.node.NullNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.junit.Test;
-
 import com.zenobase.testing.NodeAssert;
+import org.fest.assertions.Assertions;
+import org.junit.Test;
 
 public class JsonPatchTest {
 
@@ -102,6 +102,22 @@ public class JsonPatchTest {
 		runTest();
 	}
 
+	@Test
+	public void testLenientValueConflict() {
+
+		original.put("foo", 41);
+
+		from.put("foo", 40);
+
+		to.put("foo", 41);
+
+		expected.put("foo", 41);
+
+		runTest(true);
+
+		Assertions.assertThat(original.get("foo").intValue()).isEqualTo(40);
+	}
+
 	@Test(expected = IllegalStateException.class)
 	public void testObjectConflict() {
 
@@ -125,6 +141,10 @@ public class JsonPatchTest {
 	}
 
 	private void runTest() {
-		NodeAssert.assertThat(new JsonPatch(from, to).apply(original)).isEqualTo(expected);
+		runTest(false);
+	}
+
+	private void runTest(boolean lenient) {
+		NodeAssert.assertThat(new JsonPatch(from, to).lenient(lenient).apply(original)).isEqualTo(expected);
 	}
 }
