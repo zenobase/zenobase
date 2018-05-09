@@ -20,7 +20,7 @@ public class CreateBucketCommand extends Command {
 	}
 
 	public CreateBucketCommand(Identity principal, Bucket bucket) {
-		super(TYPE, principal);
+		super(TYPE, principal, bucket.getCreated());
 		setParameter(BUCKET, bucket.toJson());
 	}
 

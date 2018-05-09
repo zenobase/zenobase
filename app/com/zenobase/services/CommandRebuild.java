@@ -9,6 +9,7 @@ import javax.inject.Named;
 
 import com.google.common.base.Stopwatch;
 import com.google.common.collect.Iterables;
+import org.joda.time.DateTime;
 import play.Logger;
 
 import com.zenobase.commands.CreateAuthorizationCommand;
@@ -74,22 +75,22 @@ public class CommandRebuild {
 			Identity owner = Iterables.getOnlyElement(bucket.getPrincipals(Role.OWNER));
 			dispatcher.dispatch(new CreateBucketCommand(owner, bucket));
 			if (!bucket.isVirtual()) {
-				rebuildEvents(events, owner, bucket.getId());
+				rebuildEvents(events, owner, bucket.getId(), bucket.getCreated());
 			}
 		});
 	}
 
-	private void rebuildEvents(EventRepository events, Identity owner, String bucketId) {
+	private void rebuildEvents(EventRepository events, Identity owner, String bucketId, DateTime timestamp) {
 		List<Event> batch = new ArrayList<>();
 		events.findAll(bucketId, event -> {
 			batch.add(event);
 			if (batch.size() == 1000) {
-				dispatcher.dispatch(new CreateEventsCommand(owner, bucketId, batch));
+				dispatcher.dispatch(new CreateEventsCommand(owner, bucketId, batch, timestamp));
 				batch.clear();
 			}
 		});
 		if (!batch.isEmpty()) {
-			dispatcher.dispatch(new CreateEventsCommand(owner, bucketId, batch));
+			dispatcher.dispatch(new CreateEventsCommand(owner, bucketId, batch, timestamp));
 		}
 	}
 

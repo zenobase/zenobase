@@ -20,7 +20,7 @@ public class CreateUserCommand extends Command {
 	}
 
 	public CreateUserCommand(Identity principal, User user) {
-		super(TYPE, principal);
+		super(TYPE, principal, user.getCreated());
 		setParameter(USER, user.toJson());
 	}
 

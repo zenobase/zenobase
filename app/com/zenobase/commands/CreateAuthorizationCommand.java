@@ -20,7 +20,7 @@ public class CreateAuthorizationCommand extends Command {
 	}
 
 	public CreateAuthorizationCommand(Identity principal, Authorization authorization) {
-		super(TYPE, principal);
+		super(TYPE, principal, authorization.getCreated());
 		setParameter(AUTHORIZATION, authorization.toJson());
 	}
 

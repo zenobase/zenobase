@@ -20,7 +20,7 @@ public class CreateCredentialsCommand extends Command {
 	}
 
 	public CreateCredentialsCommand(Identity principal, Credentials credentials) {
-		super(TYPE, principal);
+		super(TYPE, principal, credentials.getCreated());
 		setParameter(CREDENTIALS, credentials.toJson());
 	}
 

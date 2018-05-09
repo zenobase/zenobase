@@ -6,6 +6,8 @@ import javax.inject.Inject;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.Lists;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 
 import com.zenobase.json.ObjectField;
 import com.zenobase.json.TokenField;
@@ -25,7 +27,11 @@ public class CreateEventsCommand extends Command {
 	}
 
 	public CreateEventsCommand(Identity principal, String bucketId, List<Event> events) {
-		super(TYPE, principal);
+		this(principal, bucketId, events, DateTime.now(DateTimeZone.UTC));
+	}
+
+	public CreateEventsCommand(Identity principal, String bucketId, List<Event> events, DateTime timestamp) {
+		super(TYPE, principal, timestamp);
 		setParameter(BUCKET_ID, bucketId);
 		for (Event event : events) {
 			addParameter(EVENTS, event.toJson());

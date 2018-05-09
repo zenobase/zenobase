@@ -23,7 +23,7 @@ public class CreateTaskCommand extends Command {
 	}
 
 	public CreateTaskCommand(Identity principal, Task task) {
-		super(TYPE, principal);
+		super(TYPE, principal, task.getCreated());
 		setParameter(TASK, task.toJson());
 	}
 
