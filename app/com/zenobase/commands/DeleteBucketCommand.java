@@ -3,7 +3,6 @@ package com.zenobase.commands;
 import javax.inject.Inject;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import play.Logger;
 
 import com.zenobase.json.ObjectField;
 import com.zenobase.models.Bucket;
@@ -68,9 +67,7 @@ public class DeleteBucketCommand extends Command {
 
 		@Override
 		public void executeTyped(DeleteBucketCommand command) {
-			if (!repository.delete(command.getBucket().getId())) {
-				Logger.warn("Tried to delete a nonexistent bucket: {}", command.getBucket().getId());
-			}
+			repository.delete(command.getBucket().getId());
 		}
 	}
 }

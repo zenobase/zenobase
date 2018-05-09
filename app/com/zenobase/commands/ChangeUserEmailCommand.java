@@ -3,6 +3,7 @@ package com.zenobase.commands;
 import javax.inject.Inject;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import play.Logger;
 
 import com.zenobase.json.BooleanField;
 import com.zenobase.json.TokenField;
@@ -92,9 +93,13 @@ public class ChangeUserEmailCommand extends Command {
 		@Override
 		public void executeTyped(ChangeUserEmailCommand command) {
 			User user = repository.find(command.getUsername());
-			user.setEmail(command.getTo());
-			user.setVerified(command.getToVerified());
-			repository.update(user, command.getTimestamp());
+			if (user != null) {
+				user.setEmail(command.getTo());
+				user.setVerified(command.getToVerified());
+				repository.update(user, command.getTimestamp());
+			} else {
+				Logger.warn("Tried to change the email of a nonexistent user: {}", command.getUsername());
+			}
 		}
 	}
 }
