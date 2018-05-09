@@ -1,7 +1,6 @@
 package com.zenobase.tasks.nokia;
 
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 import javax.measure.DecimalMeasure;

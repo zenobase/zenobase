@@ -10,7 +10,6 @@ import play.Logger;
 
 import com.zenobase.commands.Command;
 import com.zenobase.commands.CommandParserRegistry;
-import com.zenobase.common.Callback;
 import com.zenobase.common.StringBloomFilter;
 
 public class CommandReplay {

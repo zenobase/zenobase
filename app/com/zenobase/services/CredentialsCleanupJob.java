@@ -8,8 +8,6 @@ import org.joda.time.Period;
 import play.Logger;
 
 import com.zenobase.commands.DeleteCredentialsCommand;
-import com.zenobase.common.Callback;
-import com.zenobase.tasks.Credentials;
 
 public class CredentialsCleanupJob extends Job {
 

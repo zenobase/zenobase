@@ -10,8 +10,6 @@ import org.joda.time.LocalTime;
 import org.joda.time.Period;
 import play.Logger;
 
-import com.zenobase.common.Callback;
-import com.zenobase.models.Bucket;
 import com.zenobase.models.Role;
 import com.zenobase.models.User;
 import com.zenobase.tasks.CredentialsException;

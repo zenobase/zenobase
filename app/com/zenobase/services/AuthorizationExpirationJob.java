@@ -8,8 +8,6 @@ import org.joda.time.Period;
 import play.Logger;
 
 import com.zenobase.commands.DeleteAuthorizationCommand;
-import com.zenobase.common.Callback;
-import com.zenobase.oauth.Authorization;
 
 public class AuthorizationExpirationJob extends Job {
 
