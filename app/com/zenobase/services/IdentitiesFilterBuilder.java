@@ -22,7 +22,7 @@ public class IdentitiesFilterBuilder {
 	}
 
 	public StringBloomFilter build() {
-		final StringBloomFilter filter = new StringBloomFilter(Ints.checkedCast(users.size()));
+		StringBloomFilter filter = new StringBloomFilter(Ints.checkedCast(users.size()));
 		users.find(new Callback<User>() {
 			@Override
 			public void call(User user) {

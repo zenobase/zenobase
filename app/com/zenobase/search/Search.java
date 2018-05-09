@@ -37,7 +37,7 @@ public class Search {
 		return toJson(response);
 	}
 
-	public void execute(Index index, final Callback<ObjectNode> callback) {
+	public void execute(Index index, Callback<ObjectNode> callback) {
 		index.find(buildQuery(), callback, 1000);
 	}
 

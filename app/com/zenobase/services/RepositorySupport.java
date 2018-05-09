@@ -8,11 +8,11 @@ import com.zenobase.common.Callback;
 
 public abstract class RepositorySupport<T> {
 
-	public void findAll(final Callback<T> callback) {
+	public void findAll(Callback<T> callback) {
 		find(QueryBuilders.matchAllQuery(), callback);
 	}
 
-	protected void find(QueryBuilder query, final Callback<T> callback) {
+	protected void find(QueryBuilder query, Callback<T> callback) {
 		getIndex().find(query, new Callback<ObjectNode>() {
 			@Override
 			public void call(ObjectNode node) {

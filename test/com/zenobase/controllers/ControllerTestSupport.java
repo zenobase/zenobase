@@ -14,7 +14,7 @@ import com.zenobase.json.Nodes;
 
 public class ControllerTestSupport extends WithApplication implements CustomHeaders {
 
-	protected FakeApplication fakeApplication(final Module module) {
+	protected FakeApplication fakeApplication(Module module) {
 
 		return Helpers.fakeApplication(new GlobalSettings() {
 

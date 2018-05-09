@@ -49,7 +49,7 @@ public class ListFacet extends Facet {
 		return eventsNode;
 	}
 
-	public static FacetBuilder builder(final FilterParser filterParser, final Schema schema) {
+	public static FacetBuilder builder(FilterParser filterParser, Schema schema) {
 		return new FacetBuilder() {
 			@Override
 			public Facet build(FacetOptions options) {

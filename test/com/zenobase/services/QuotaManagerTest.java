@@ -33,7 +33,7 @@ public class QuotaManagerTest {
 
 	@Test
 	public void testCustomQuota() {
-		final int limit = 5000;
+		int limit = 5000;
 		user.setQuota(limit);
 		when(users.find(user.asIdentity())).thenReturn(user);
 		Quota quota = quotas.getQuota(user.asIdentity());
@@ -43,7 +43,7 @@ public class QuotaManagerTest {
 
 	@Test
 	public void testPartiallyUsedQuota() {
-		final int spent = 1000;
+		int spent = 1000;
 		when(users.find(user.getId())).thenReturn(user);
 		when(commands.getTotalCost(eq(user.asIdentity()), any(DateTime.class))).thenReturn(1000);
 		Quota quota = quotas.getQuota(user.asIdentity());

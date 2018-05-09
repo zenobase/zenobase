@@ -29,7 +29,7 @@ public abstract class CustomApi20 extends DefaultApi20 {
 	}
 
 	@Override
-	public OAuthService createService(final OAuthConfig config) {
+	public OAuthService createService(OAuthConfig config) {
 		return new OAuth20ServiceImpl(this, config) {
 
 			@Override

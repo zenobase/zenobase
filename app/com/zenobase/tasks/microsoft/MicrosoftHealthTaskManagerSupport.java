@@ -41,7 +41,7 @@ abstract class MicrosoftHealthTaskManagerSupport<T extends MicrosoftHealthTaskSu
 		return executeTyped(task.as(type), credentials);
 	}
 
-	private final Command executeTyped(T task, OAuthCredentials credentials) {
+	private Command executeTyped(T task, OAuthCredentials credentials) {
 		Token token = credentials.getToken();
 		if (credentials.isExpired()) {
 			reauthorize(credentials);

@@ -1,13 +1,14 @@
 package com.zenobase.commands;
 
+import javax.inject.Inject;
+
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Preconditions;
+
 import com.zenobase.json.JsonPatch;
 import com.zenobase.models.Identity;
 import com.zenobase.services.CredentialsRepository;
 import com.zenobase.tasks.Credentials;
-
-import javax.inject.Inject;
 
 public class UpdateCredentialsCommand extends UpdateCommandSupport {
 
@@ -36,7 +37,7 @@ public class UpdateCredentialsCommand extends UpdateCommandSupport {
 		return String.format("updated credentials %s", getObjectId());
 	}
 
-	public static Builder builder(final Credentials credentials) {
+	public static Builder builder(Credentials credentials) {
 		return new Builder() {
 			@Override
 			public UpdateCredentialsCommand build() {

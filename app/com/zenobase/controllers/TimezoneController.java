@@ -24,7 +24,7 @@ public class TimezoneController extends Controller {
 		return lat != null ? find(new Location(lat, lon)) : find();
 	}
 
-	public Promise<Result> find(final Location location) {
+	public Promise<Result> find(Location location) {
 		return createRequest(location).get()
 			.map(new F.Function<WSResponse, ObjectNode>() {
 				@Override

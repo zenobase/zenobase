@@ -24,13 +24,13 @@ public class Mailer {
 
 	@Inject
 	public Mailer(
-		@Named("mail.user") final String user,
-		@Named("mail.pass") final String pass,
+		@Named("mail.user") String user,
+		@Named("mail.pass") String pass,
 		@Named("mail.smtp.auth") String auth,
 		@Named("mail.smtp.starttls.enable") String starttls,
 		@Named("mail.smtp.host") String host,
 		@Named("mail.smtp.port") String port,
-		@Named("mail.from") final String from) throws AddressException {
+		@Named("mail.from") String from) throws AddressException {
 
 		this(user, pass, from, new PropertiesBuilder()
 			.put("mail.smtp.auth", auth)
@@ -40,7 +40,7 @@ public class Mailer {
 			.put("mail.user", user).build());
 	}
 
-	public Mailer(final String username, final String password, String from, Properties properties) throws AddressException {
+	public Mailer(String username, String password, String from, Properties properties) throws AddressException {
 		this.from = InternetAddress.parse(from, true)[0];
 		this.session = Session.getInstance(properties, new Authenticator() {
 			@Override
@@ -50,7 +50,7 @@ public class Mailer {
 		});
 	}
 
-	public void send(final Message message) {
+	public void send(Message message) {
 		Logger.info("Sending message: {}", message.getSubject());
 		try {
 			MimeMessage mime = new MimeMessage(session);

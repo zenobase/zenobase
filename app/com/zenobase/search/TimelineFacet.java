@@ -12,7 +12,7 @@ public class TimelineFacet {
 
 	public static final String TYPE = "timeline";
 
-	public static FacetBuilder builder(final FilterParser filterParser) {
+	public static FacetBuilder builder(FilterParser filterParser) {
 
 		return new FacetBuilder() {
 

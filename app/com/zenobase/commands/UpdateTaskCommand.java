@@ -36,7 +36,7 @@ public class UpdateTaskCommand extends UpdateCommandSupport {
 		return String.format("updated task %s", getObjectId());
 	}
 
-	public static Builder builder(final Task task) {
+	public static Builder builder(Task task) {
 		return new Builder() {
 			@Override
 			public UpdateTaskCommand build() {

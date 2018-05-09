@@ -39,9 +39,9 @@ public class CommandReplay {
 		}
 	}
 
-	void replay(final IndexManager indexManager) {
-		final CommandRepository repository = new CommandRepository(indexManager, parsers);
-		final StringBloomFilter identities = new IdentitiesFilterBuilder(new UserRepository(indexManager), new AuthorizationRepository(indexManager)).build();
+	void replay(IndexManager indexManager) {
+		CommandRepository repository = new CommandRepository(indexManager, parsers);
+		StringBloomFilter identities = new IdentitiesFilterBuilder(new UserRepository(indexManager), new AuthorizationRepository(indexManager)).build();
 		Logger.info("Replaying {} commands from {}...", repository.size(), sourceCluster);
 		Stopwatch timer = Stopwatch.createStarted();
 		try {

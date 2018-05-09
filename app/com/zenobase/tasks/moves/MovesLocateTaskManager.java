@@ -47,7 +47,7 @@ public class MovesLocateTaskManager extends MovesTaskManagerSupport {
 		return execute(task.as(MovesLocateTask.class), credentials);
 	}
 
-	private Command execute(MovesLocateTask task, final OAuthCredentials credentials) {
+	private Command execute(MovesLocateTask task, OAuthCredentials credentials) {
 		Token token = credentials.getToken();
 		if (credentials.isExpired()) {
 			reauthorize(credentials);

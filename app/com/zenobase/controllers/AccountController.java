@@ -76,7 +76,7 @@ public class AccountController extends ControllerSupport {
 		if (auth == null || auth.getScope() != null) {
 			return unauthorized();
 		}
-		final User user = new User(auth.getPrincipal().getId(), form.getUsername());
+		User user = new User(auth.getPrincipal().getId(), form.getUsername());
 		user.setEmail(form.getEmail());
 		user.setHashedPassword(User.hashPassword(form.getPassword()));
 		user.setSuperuser(users.isEmpty());
@@ -106,8 +106,8 @@ public class AccountController extends ControllerSupport {
 		return noContent();
 	}
 
-	public Command buildCloseAccountCommand(final Identity principal, User user, final Authorization current) {
-		final CompoundCommand command = new CompoundCommand(principal, String.format("closed account %s", user.getName()), String.format("reopened account %s", user.getName()));
+	public Command buildCloseAccountCommand(Identity principal, User user, Authorization current) {
+		CompoundCommand command = new CompoundCommand(principal, String.format("closed account %s", user.getName()), String.format("reopened account %s", user.getName()));
 		command.add(new DeleteUserCommand(principal, user));
 		buckets.find(new BucketQuery().principalEqualTo(user.asIdentity()).isAlias(true), new Callback<Bucket>() {
 			@Override

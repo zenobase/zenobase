@@ -175,7 +175,7 @@ public class BucketController extends ControllerSupport {
     }
 
 	public Result delete(String bucketId) {
-    	final Authorization auth = getCurrentAuthorization();
+    	Authorization auth = getCurrentAuthorization();
 		if (auth == null) {
 			return unauthorized();
 		}
@@ -189,7 +189,7 @@ public class BucketController extends ControllerSupport {
     	if (buckets.isAliased(bucketId)) {
     		return conflict("bucket is aliased");
     	}
-    	final CompoundCommand command = new CompoundCommand(auth.getPrincipal(), "deleted bucket and associated data", "restored bucket and associated data");
+    	CompoundCommand command = new CompoundCommand(auth.getPrincipal(), "deleted bucket and associated data", "restored bucket and associated data");
     	authorizations.find(new AuthorizationQuery().scopeEqualTo(bucket.getId()), new Callback<Authorization>() {
 			@Override
 			public void call(Authorization authorization) {

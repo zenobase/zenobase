@@ -87,8 +87,8 @@ public class EventRepository {
 	}
 
 	public List<String> terms(String bucketId, String field) {
-		final int limit = 100;
-		final String id = "terms";
+		int limit = 100;
+		String id = "terms";
 		SearchSourceBuilder search = new SearchSourceBuilder().field(field)
 			.aggregation(AggregationBuilders.terms(id).field(field).size(limit).order(Terms.Order.count(false)));
 		SearchResponse response = getIndex(bucketId).search(search);

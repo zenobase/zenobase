@@ -103,7 +103,7 @@ abstract class GoogleFitTaskManagerSupport<T extends GoogleFitTaskSupport> exten
 		return Range.closed(Ordering.natural().min(values), Ordering.natural().max(values));
 	}
 
-	protected Iterable<DataStream> filter(Iterable<DataStream> streams, final String... dataTypes) {
+	protected Iterable<DataStream> filter(Iterable<DataStream> streams, String... dataTypes) {
 		return Iterables.filter(streams, new Predicate<DataStream>() {
 			@Override
 			public boolean apply(DataStream stream) {

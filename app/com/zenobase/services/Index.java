@@ -85,7 +85,7 @@ public class Index {
 	}
 
 	private void index(String type, List<? extends DomainNode> nodes, OpType operation, DateTime timestamp, boolean refresh) {
-		final int BATCH_SIZE = 10000;
+		int BATCH_SIZE = 10000;
 		for (int begin = 0; begin < nodes.size(); begin += BATCH_SIZE) {
 			BulkRequestBuilder request = client.prepareBulk();
 			for (int i = 0; i < BATCH_SIZE && begin + i < nodes.size(); ++i) {

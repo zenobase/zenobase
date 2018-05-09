@@ -73,7 +73,7 @@ public class AutomaticTaskManager extends OAuthTaskManager {
 	}
 
 
-	private void resolveVehicles(Iterable<Trip> trips, final OAuthCredentials credentials) {
+	private void resolveVehicles(Iterable<Trip> trips, OAuthCredentials credentials) {
 		LoadingCache<String, String> vehicles = CacheBuilder.newBuilder().maximumSize(10).build(new CacheLoader<String, String>() {
 			@Override
 			public String load(String key) {

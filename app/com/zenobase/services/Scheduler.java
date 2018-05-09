@@ -37,7 +37,7 @@ public class Scheduler {
         }
 	}
 
-	private void schedule(final Job job) {
+	private void schedule(Job job) {
 		schedule(job.getBegin(), job.getPeriod(), new Runnable() {
 			@Override
 			public void run() {

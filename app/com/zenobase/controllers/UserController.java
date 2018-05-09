@@ -114,7 +114,7 @@ public class UserController extends ControllerSupport {
 		return noContent();
 	}
 
-	private Result updatePassword(UpdateUserForm form, final User user) {
+	private Result updatePassword(UpdateUserForm form, User user) {
     	String key = form.getKey();
     	if (key == null) {
     		return badRequest("missing key field");
@@ -131,7 +131,7 @@ public class UserController extends ControllerSupport {
 			return badRequest("invalid key");
 		}
 		Authorization auth = new Authorization(user.asIdentity(), null, null);
-		final CompoundCommand command = new CompoundCommand(user.asIdentity(), "updated password", "reverted password");
+		CompoundCommand command = new CompoundCommand(user.asIdentity(), "updated password", "reverted password");
 		command.add(new ChangeUserPasswordCommand(user.asIdentity(), user.getName(), user.getHashedPassword(), User.hashPassword(password)));
 		command.add(new CreateAuthorizationCommand(user.asIdentity(), auth));
 		AuthorizationQuery query = new AuthorizationQuery()
@@ -148,8 +148,8 @@ public class UserController extends ControllerSupport {
 		return ok(Nodes.newObject("access_token", auth.getId()));
 	}
 
-	private Result updateSuspension(final User user, boolean suspended) {
-		final Authorization auth = getCurrentAuthorization();
+	private Result updateSuspension(User user, boolean suspended) {
+		Authorization auth = getCurrentAuthorization();
     	if (auth == null) {
     		return unauthorized();
     	}
@@ -157,7 +157,7 @@ public class UserController extends ControllerSupport {
     		return forbidden();
     	}
 		Command command = new SuspendUserCommand(auth.getPrincipal(), user.getName(), suspended);
-    	final CompoundCommand commands = new CompoundCommand(auth.getPrincipal(), command.toString(), command.reverse(auth.getPrincipal()).toString());
+    	CompoundCommand commands = new CompoundCommand(auth.getPrincipal(), command.toString(), command.reverse(auth.getPrincipal()).toString());
 		commands.add(command);
 		authorizations.find(new AuthorizationQuery().principalEqualTo(user.asIdentity()), new Callback<Authorization>() {
 			@Override

@@ -12,8 +12,8 @@ public class SchemaBuilderTest {
 	@Test
 	public void test() throws IOException {
 
-		final String typeName = "test";
-		final TokenField field = new TokenField("who");
+		String typeName = "test";
+		TokenField field = new TokenField("who");
 		SchemaBuilder builder = new SchemaBuilder(typeName).add(field);
 		Schema s1 = builder.build();
 		builder.add(new TokenField("what"));

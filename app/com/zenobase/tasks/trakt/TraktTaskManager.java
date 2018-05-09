@@ -68,7 +68,7 @@ public class TraktTaskManager extends OAuthTaskManager {
 	}
 
 	private void addEvents(String type, OAuthCredentials credentials, TraktTask task, TraktSettingsResult settings, DateTime after, List<Event> events) {
-		final int limit = 10;
+		int limit = 10;
 		for (int page = 1; page < 100; ++page) {
 			OAuthRequest request = new OAuthRequest(Verb.GET, host + "/users/me/history/" + type);
 			request.addQuerystringParameter("limit", Integer.toString(limit));

@@ -62,7 +62,7 @@ public class StatsFacet extends FilteredFacet {
 		}
 	}
 
-	public static FacetBuilder builder(final FilterParser filterParser) {
+	public static FacetBuilder builder(FilterParser filterParser) {
 
 		return new FacetBuilder() {
 

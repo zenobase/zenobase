@@ -80,7 +80,7 @@ public class HeatmapFacet extends FilteredFacet {
 		}
 	}
 
-	public static FacetBuilder builder(final FilterParser filterParser) {
+	public static FacetBuilder builder(FilterParser filterParser) {
 		return new FacetBuilder() {
 			@Override
 			public Facet build(FacetOptions options) {

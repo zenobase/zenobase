@@ -41,7 +41,7 @@ public class UserListController extends ControllerSupport {
 	private Result find() {
     	Chunks<String> chunks = new StringChunks() {
 			@Override
-			public void onReady(final Out<String> out) {
+			public void onReady(Out<String> out) {
 				repository.find(new UserPrinter(out));
 		    	out.close();
 			}

@@ -143,7 +143,7 @@ public abstract class Field<T> {
 		addValues(arrayNode, values);
 	}
 
-	private final void addValues(ArrayNode node, Iterable<T> values) {
+	private void addValues(ArrayNode node, Iterable<T> values) {
 		for (T value : values) {
 			Preconditions.checkNotNull(value, "Can't add null value");
 			node.add(toJson(value));

@@ -43,7 +43,7 @@ public class GoogleFitLocateTaskManager extends GoogleFitTaskManagerSupport<Goog
 	}
 
 	@Override
-	protected Command execute(GoogleFitLocateTask task, final Map<String, DataStream> streams, final OAuthCredentials credentials, Token token) {
+	protected Command execute(GoogleFitLocateTask task, Map<String, DataStream> streams, OAuthCredentials credentials, Token token) {
 
 		EventEditor editor = new EventEditor(task.getBucketId(), task.getPrincipal(), events, task.getFrom()) {
 

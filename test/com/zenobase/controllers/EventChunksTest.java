@@ -25,9 +25,9 @@ public class EventChunksTest {
 	@Test
 	public void test() throws IOException {
 
-		final int total = 102;
-		final String bucketId = Generator.id();
-		final EventRepository events = mock(EventRepository.class);
+		int total = 102;
+		String bucketId = Generator.id();
+		EventRepository events = mock(EventRepository.class);
 
 		doAnswer(new Answer<Void>() {
 			@Override

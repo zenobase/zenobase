@@ -63,7 +63,7 @@ public class TripsResultTest extends ResultTestSupport {
 		assertThat(event.getValue(Event.DISTANCE_PER_VOLUME)).isEqualTo(Measures.valueOf("3.85 kpl"));
 	}
 
-	private final List<Event> readTrips(String settingsFile, String tripsFile) {
+	private List<Event> readTrips(String settingsFile, String tripsFile) {
 		UserSettings settings = new UserSettingsResult(readObject(settingsFile)).get();
 		DateTimeZone timezone = DateTimeZone.forID("America/Los_Angeles");
 		return new TripsResult(readObject(tripsFile), TESTER, settings, "trip", timezone).getTrips();
