@@ -35,7 +35,7 @@ public class CreateAuthorizationCommand extends Command {
 
 	@Override
 	public String toString() {
-		return String.format("created an authorization");
+		return "created an authorization";
 	}
 
 	public static class Parser extends CommandParser {

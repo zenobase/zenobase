@@ -27,7 +27,7 @@ public class SpendQuotaCommand extends Command {
 
 	@Override
 	public String toString() {
-		return String.format("spent quota");
+		return "spent quota";
 	}
 
 	public static class Parser extends CommandParser {

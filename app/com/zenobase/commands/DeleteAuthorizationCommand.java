@@ -35,7 +35,7 @@ public class DeleteAuthorizationCommand extends Command {
 
 	@Override
 	public String toString() {
-		return String.format("removed an authorization");
+		return "removed an authorization";
 	}
 
 	public static class Parser extends CommandParser {

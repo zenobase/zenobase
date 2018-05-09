@@ -78,7 +78,7 @@ public class HipboneTaskManager extends OAuthTaskManager {
 	}
 
 	private Event getEvent(OAuthCredentials credentials, Identity author, String path) {
-		String url = String.format("https://content.dropboxapi.com/2/files/download");
+		String url = "https://content.dropboxapi.com/2/files/download";
 		OAuthRequest request = new OAuthRequest(Verb.POST, url);
 		request.addHeader(HttpHeaders.CONTENT_TYPE, "");
 		request.addHeader("Dropbox-API-Arg", Nodes.newObject("path", path).toString());
