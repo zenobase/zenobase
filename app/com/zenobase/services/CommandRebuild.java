@@ -3,6 +3,7 @@ package com.zenobase.services;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -82,15 +83,17 @@ public class CommandRebuild {
 
 	private void rebuildEvents(EventRepository events, Identity owner, String bucketId, DateTime timestamp) {
 		List<Event> batch = new ArrayList<>();
+		AtomicInteger batchNum = new AtomicInteger(1);
 		events.findAll(bucketId, event -> {
 			batch.add(event);
 			if (batch.size() == 1000) {
-				dispatcher.dispatch(new CreateEventsCommand(owner, bucketId, batch, timestamp));
+				dispatcher.dispatch(new CreateEventsCommand(owner, bucketId, batch, timestamp.plusMillis(batchNum.get())));
 				batch.clear();
+				batchNum.incrementAndGet();
 			}
 		});
 		if (!batch.isEmpty()) {
-			dispatcher.dispatch(new CreateEventsCommand(owner, bucketId, batch, timestamp));
+			dispatcher.dispatch(new CreateEventsCommand(owner, bucketId, batch, timestamp.plusMillis(batchNum.get())));
 		}
 	}
 
