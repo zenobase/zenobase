@@ -29,17 +29,17 @@ public class VirtualBucketTest extends ElasticSearchTestSupport {
 	public void test() {
 
 		Bucket b1 = newBucket("First Bucket", me);
-		buckets.store(b1, DateTime.now(), true);
+		buckets.store(b1, DateTime.now());
 		assertThat(buckets.isAliased(b1.getId())).isFalse();
 
 		Bucket b2 = newBucket("Second Bucket", me);
-		buckets.store(b2, DateTime.now(), true);
+		buckets.store(b2, DateTime.now());
 		assertThat(buckets.isAliased(b2.getId())).isFalse();
 
 		Bucket b3 = newBucket("My Data", me);
 		b3.addAlias(new Alias(b1.getId()));
 		b3.addAlias(new Alias(b2.getId(), "tag:bar"));
-		buckets.store(b3, DateTime.now(), true);
+		buckets.store(b3, DateTime.now());
 		assertThat(buckets.isAliased(b1.getId())).isTrue();
 		assertThat(buckets.isAliased(b2.getId())).isTrue();
 		assertThat(buckets.isAliased(b3.getId())).isFalse();

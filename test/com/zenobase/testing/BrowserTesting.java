@@ -384,7 +384,7 @@ public class BrowserTesting {
 					Bucket b = new Bucket();
 					b.addRole(owner, Role.OWNER);
 					b.setLabel("Bucket #" + i);
-					buckets.store(b, DateTime.now(), true);
+					buckets.store(b, DateTime.now());
 				}
 			}
 		});

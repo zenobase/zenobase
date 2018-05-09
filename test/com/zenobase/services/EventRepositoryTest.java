@@ -34,7 +34,7 @@ public class EventRepositoryTest extends ElasticSearchTestSupport {
 	public void testCRUD() {
 
 		Bucket bucket = new Bucket();
-		new BucketRepository(getManager()).store(bucket, DateTime.now(), true);
+		new BucketRepository(getManager()).store(bucket, DateTime.now());
 
 		// create event
 		Event event = new Event();
@@ -80,7 +80,7 @@ public class EventRepositoryTest extends ElasticSearchTestSupport {
 	public void testBulk() {
 
 		Bucket bucket = new Bucket();
-		new BucketRepository(getManager()).store(bucket, DateTime.now(), true);
+		new BucketRepository(getManager()).store(bucket, DateTime.now());
 
 		// create events
 		Event e1 = new Event();
@@ -107,7 +107,7 @@ public class EventRepositoryTest extends ElasticSearchTestSupport {
 	public void testBulkWithInvalidEvent() {
 
 		Bucket bucket = new Bucket();
-		new BucketRepository(getManager()).store(bucket, DateTime.now(), true);
+		new BucketRepository(getManager()).store(bucket, DateTime.now());
 
 		// create events
 		Event e1 = new Event();
@@ -130,7 +130,7 @@ public class EventRepositoryTest extends ElasticSearchTestSupport {
 	public void testTimestamp() {
 
 		Bucket bucket = new Bucket();
-		new BucketRepository(getManager()).store(bucket, DateTime.now(), true);
+		new BucketRepository(getManager()).store(bucket, DateTime.now());
 		Event event = new Event();
 		event.setValue(Event.AUTHOR, me);
 		event.addValue(Event.TAG, "test");

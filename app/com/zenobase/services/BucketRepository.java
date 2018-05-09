@@ -35,7 +35,7 @@ public class BucketRepository extends RepositorySupport<Bucket> {
 		}
 	}
 
-	public void store(Bucket bucket, DateTime timestamp, boolean createIndex) {
+	public void store(Bucket bucket, DateTime timestamp) {
 		manager.createAlias(EventRepository.INDEX_NAME, bucket.getId(), bucket.isVirtual() ? bucket.getAliases() : Lists.newArrayList(new Alias(bucket.getId())));
 		index.store(Bucket.TYPE_NAME, bucket.getId(), bucket.toJson(), timestamp, true);
 	}

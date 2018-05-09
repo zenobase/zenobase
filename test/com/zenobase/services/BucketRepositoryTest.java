@@ -44,7 +44,7 @@ public class BucketRepositoryTest extends ElasticSearchTestSupport {
 		b1.setWidgets(ImmutableList.of(newWidget()));
 
 		// store and retrieve bucket
-		repository.store(b1, DateTime.now(), true);
+		repository.store(b1, DateTime.now());
 		assertThat(repository.find(b1.getId()).toJson()).isEqualTo(b1.toJson());
 
 		// update bucket
@@ -57,7 +57,7 @@ public class BucketRepositoryTest extends ElasticSearchTestSupport {
 		assertThat(repository.delete(b2.getId())).isTrue();
 		assertThat(repository.find(b2.getId())).as("bucket").isNull();
 		assertThat(repository.delete(b2.getId())).isFalse();
-		repository.store(b2, DateTime.now(), false);
+		repository.store(b2, DateTime.now());
 		assertThat(repository.find(b2.getId()).toJson()).isEqualTo(b2.toJson());
 	}
 
@@ -70,7 +70,7 @@ public class BucketRepositoryTest extends ElasticSearchTestSupport {
 
 		Bucket v1 = newBucket("View", ME);
 		v1.setAliases(ImmutableList.of(new Alias(b1.getId()), new Alias(b2.getId())));
-		repository.store(v1, DateTime.now(), true);
+		repository.store(v1, DateTime.now());
 		assertThat(repository.find(v1.getId()).getAliases()).isEqualTo(v1.getAliases());
 
 		Bucket v2 = v1.copy();
@@ -143,7 +143,7 @@ public class BucketRepositoryTest extends ElasticSearchTestSupport {
 			Uninterruptibles.sleepUninterruptibly(5, TimeUnit.MILLISECONDS); // sleep so we can sort by creation time later
 			Bucket bucket = newBucket(String.format("bucket%03d", i + 1), ME);
 			buckets.add(bucket);
-			repository.store(bucket, DateTime.now(), true);
+			repository.store(bucket, DateTime.now());
 		}
 		return buckets;
 	}
@@ -154,7 +154,7 @@ public class BucketRepositoryTest extends ElasticSearchTestSupport {
 
 	private Bucket insert(String label, Identity owner, String aliasId) {
 		Bucket bucket = newBucket(label, owner, aliasId);
-		repository.store(bucket, DateTime.now(), true);
+		repository.store(bucket, DateTime.now());
 		return bucket;
 	}
 

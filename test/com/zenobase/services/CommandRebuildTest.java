@@ -50,8 +50,8 @@ public class CommandRebuildTest extends ElasticSearchTestSupport {
 		users.store(user, now);
 		authorizations.store(authorization, now);
 		credentials.store(credential, now);
-		buckets.store(bucket, now, true);
-		buckets.store(view, now, true);
+		buckets.store(bucket, now);
+		buckets.store(view, now);
 		events.add(bucket.getId(), event, now);
 		events.refresh(bucket.getId());
 		tasks.store(task, now);

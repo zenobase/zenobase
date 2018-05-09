@@ -66,7 +66,7 @@ public class RestoreBucketCommand extends Command {
 
 		@Override
 		public void executeTyped(RestoreBucketCommand command) {
-			repository.store(command.getBucket(), command.getTimestamp(), false);
+			repository.store(command.getBucket(), command.getTimestamp());
 		}
 	}
 }
