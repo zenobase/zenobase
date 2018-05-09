@@ -28,9 +28,9 @@ public class MicrosoftHealthStepsResultTest extends ResultTestSupport {
 		expected.addValue(Event.TAG, "Day");
 		expected.setValue(Event.DURATION, Duration.standardDays(1));
 		expected.setValue(Event.COUNT, 5678);
-		expected.setValue(Event.DISTANCE, Measures.<Length>valueOf("1.86 km"));
-		expected.setValue(Event.FREQUENCY, Measures.<Frequency>valueOf("68 bpm"));
-		expected.setValue(Event.ENERGY, Measures.<Energy>valueOf("501 kcal"));
+		expected.setValue(Event.DISTANCE, Measures.valueOf("1.86 km"));
+		expected.setValue(Event.FREQUENCY, Measures.valueOf("68 bpm"));
+		expected.setValue(Event.ENERGY, Measures.valueOf("501 kcal"));
 		expected.setValue(Event.AUTHOR, TESTER);
 		expected.setValue(Event.SOURCE, MicrosoftHealthStepsResult.SOURCE);
 		assertThat(events.get(0)).as("first event").isEqualTo(expected);

@@ -73,7 +73,7 @@ public class EventListController extends ControllerSupport {
 
 	private static List<String> getConstraints() {
 		String[] q = request().queryString().get("q");
-		return q != null ? Arrays.asList(q) : ImmutableList.<String>of();
+		return q != null ? Arrays.asList(q) : ImmutableList.of();
 	}
 
 	private static List<FacetOptions> getFacets() {

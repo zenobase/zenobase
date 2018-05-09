@@ -20,7 +20,7 @@ public class CredentialsListControllerHttpGetByUserTest extends CredentialsListC
 
 	@Test
 	public void test() {
-		CredentialsList list = new CredentialsList(DefaultPartialList.<ObjectNode>of());
+		CredentialsList list = new CredentialsList(DefaultPartialList.of());
 		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
 		when(repository.find(new CredentialsQuery().principalEqualTo(user.asIdentity()), 0, 10)).thenReturn(list);
 		Result result = call(user.getId(), null, 0, 10);
@@ -82,7 +82,7 @@ public class CredentialsListControllerHttpGetByUserTest extends CredentialsListC
 	@Test
 	public void testSuperuser() {
 		Identity superuser = new Identity();
-		CredentialsList list = new CredentialsList(DefaultPartialList.<ObjectNode>of());
+		CredentialsList list = new CredentialsList(DefaultPartialList.of());
 		when(auth.current()).thenReturn(new Authorization(superuser));
 		when(users.find(user.getName())).thenReturn(user);
 		when(users.isSuperuser(superuser)).thenReturn(true);

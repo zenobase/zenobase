@@ -29,7 +29,7 @@ public class ScoreboardFacetTest extends FacetTestSupport {
 	private static Event newEvent(String tag, String distance, Integer count) {
 		Event event = new Event();
 		event.setValue(Event.TAG, tag);
-		event.setValue(Event.DISTANCE, distance != null ? DecimalMeasure.<Length>valueOf(distance) : null);
+		event.setValue(Event.DISTANCE, distance != null ? DecimalMeasure.valueOf(distance) : null);
 		event.setValue(Event.COUNT, count);
 		return event;
 	}

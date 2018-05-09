@@ -48,7 +48,7 @@ abstract class MicrosoftHealthTaskManagerSupport<T extends MicrosoftHealthTaskSu
 		}
 		DateTime begin = task.getFrom();
 		DateTime end = DateTime.now(task.getTimezone()).minusMinutes(5);
-		List<Event> events = end.isAfter(begin) ? newEvents(task, begin, end, credentials) : ImmutableList.<Event>of();
+		List<Event> events = end.isAfter(begin) ? newEvents(task, begin, end, credentials) : ImmutableList.of();
 		return createCommand(task, credentials, events, token);
 	}
 

@@ -29,7 +29,7 @@ public class FitbitCardioResultTest extends ResultTestSupport {
 		expected.setValue(Event.TAG, TAG);
 		expected.setValue(Event.TIMESTAMP, dateTime("2015-07-25T00:00:00-07:00"));
 		expected.setValue(Event.DURATION, Duration.standardDays(1));
-		expected.setValue(Event.FREQUENCY, DecimalMeasure.<Frequency>valueOf("61 bpm"));
+		expected.setValue(Event.FREQUENCY, DecimalMeasure.valueOf("61 bpm"));
 		expected.setValue(Event.AUTHOR, TESTER);
 		expected.setValue(Event.SOURCE, FitbitCardioResult.SOURCE);
 		assertThat(events.get(0)).as("first event").isEqualTo(expected);

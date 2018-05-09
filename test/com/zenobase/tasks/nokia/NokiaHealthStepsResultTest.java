@@ -28,9 +28,9 @@ public class NokiaHealthStepsResultTest extends ResultTestSupport {
 		expected.setValue(Event.DURATION, Duration.standardDays(1));
 		expected.setValue(Event.TAG, "walk");
 		expected.setValue(Event.COUNT, 13548);
-		expected.setValue(Event.ENERGY, Measures.<Energy>valueOf("1231.8 kcal"));
-		expected.setValue(Event.DISTANCE, Measures.<Length>valueOf("7.87 mi"));
-		expected.setValue(Event.HEIGHT, Measures.<Length>valueOf("1055.31 ft"));
+		expected.setValue(Event.ENERGY, Measures.valueOf("1231.8 kcal"));
+		expected.setValue(Event.DISTANCE, Measures.valueOf("7.87 mi"));
+		expected.setValue(Event.HEIGHT, Measures.valueOf("1055.31 ft"));
 		expected.setValue(Event.AUTHOR, TESTER);
 		expected.setValue(Event.SOURCE, NokiaHealthStepsResult.SOURCE);
 		assertThat(actual.get(0)).isEqualTo(expected);

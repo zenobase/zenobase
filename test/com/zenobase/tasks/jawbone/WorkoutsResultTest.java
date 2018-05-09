@@ -28,8 +28,8 @@ public class WorkoutsResultTest extends ResultTestSupport {
 		expected.addValue(Event.TAG, "walk");
 		expected.setValue(Event.LOCATION, new Location("47.6097", "-122.3331"));
 		expected.setValue(Event.COUNT, 47);
-		expected.setValue(Event.DISTANCE, Measures.<Length>valueOf("0.04 km"));
-		expected.setValue(Event.ENERGY, Measures.<Energy>valueOf("1.88942942023 kcal"));
+		expected.setValue(Event.DISTANCE, Measures.valueOf("0.04 km"));
+		expected.setValue(Event.ENERGY, Measures.valueOf("1.88942942023 kcal"));
 		expected.setValue(Event.AUTHOR, TESTER);
 		expected.setValue(Event.SOURCE, JawboneResult.SOURCE);
 		assertThat(events.get(0)).as("first event").isEqualTo(expected);

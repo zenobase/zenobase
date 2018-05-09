@@ -27,7 +27,7 @@ public class WeightResultTest extends ResultTestSupport {
 		Event expected = new Event(actual.getId());
 		expected.addValue(Event.TAG, "mass");
 		expected.setValue(Event.TIMESTAMP, dateTime("2015-01-06T08:44:07-08:00"));
-		expected.setValue(Event.WEIGHT, DecimalMeasure.<Mass>valueOf("157.9 lb"));
+		expected.setValue(Event.WEIGHT, DecimalMeasure.valueOf("157.9 lb"));
 		expected.setValue(Event.PERCENTAGE, Percentage.valueOf(new BigDecimal("11.299")));
 		expected.setValue(Event.AUTHOR, TESTER);
 		expected.setValue(Event.SOURCE, WeightResult.SOURCE);

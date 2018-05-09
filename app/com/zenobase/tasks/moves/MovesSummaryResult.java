@@ -75,7 +75,7 @@ class MovesSummaryResult {
 			event.setValue(Event.DISTANCE, Measures.valueOf(Measures.convert(distance, lengthUnit), lengthUnit));
 		}
 		if (energy > 0) {
-			event.setValue(Event.ENERGY, Measures.<Energy>valueOf(new BigDecimal(energy), Units.KCAL));
+			event.setValue(Event.ENERGY, Measures.valueOf(new BigDecimal(energy), Units.KCAL));
 		}
 		event.setValue(Event.AUTHOR, author);
 		event.setValue(Event.SOURCE, SOURCE);

@@ -20,7 +20,7 @@ public class TaskListControllerFindByUserTest extends TaskListControllerTestSupp
 
 	@Test
 	public void test() {
-		TaskList list = new TaskList(DefaultPartialList.<ObjectNode>of());
+		TaskList list = new TaskList(DefaultPartialList.of());
 		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
 		when(tasks.find(new TaskQuery().principalEqualTo(user.asIdentity()), 0, 10)).thenReturn(list);
 		Result result = call(user.getId(), null, 0, 10);
@@ -82,7 +82,7 @@ public class TaskListControllerFindByUserTest extends TaskListControllerTestSupp
 	@Test
 	public void testSuperuser() {
 		Identity superuser = new Identity();
-		TaskList list = new TaskList(DefaultPartialList.<ObjectNode>of());
+		TaskList list = new TaskList(DefaultPartialList.of());
 		when(auth.current()).thenReturn(new Authorization(superuser));
 		when(users.find(user.getId())).thenReturn(user);
 		when(users.isSuperuser(superuser)).thenReturn(true);

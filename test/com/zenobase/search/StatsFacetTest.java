@@ -28,7 +28,7 @@ public class StatsFacetTest extends FacetTestSupport {
 	private static Event newEvent(String length, int count) {
 		Event event = new Event();
 		event.setValue(Event.TIMESTAMP, DateTime.now());
-		event.setValue(Event.DISTANCE, DecimalMeasure.<Length>valueOf(length));
+		event.setValue(Event.DISTANCE, DecimalMeasure.valueOf(length));
 		event.setValue(Event.COUNT, count);
 		return event;
 	}

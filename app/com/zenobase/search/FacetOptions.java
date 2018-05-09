@@ -10,7 +10,7 @@ public class FacetOptions {
 	private final Map<String, String> map;
 
 	private FacetOptions() {
-		this(Maps.<String, String>newLinkedHashMap());
+		this(Maps.newLinkedHashMap());
 	}
 
 	public FacetOptions(Map<String, String> map) {

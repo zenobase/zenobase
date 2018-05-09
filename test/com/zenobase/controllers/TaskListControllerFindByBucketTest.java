@@ -25,7 +25,7 @@ public class TaskListControllerFindByBucketTest extends TaskListControllerTestSu
 	@Test
 	public void test() {
 		bucket.addRole(user.asIdentity(), Role.OWNER);
-		TaskList list = new TaskList(DefaultPartialList.<ObjectNode>of());
+		TaskList list = new TaskList(DefaultPartialList.of());
 		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
 		when(buckets.find(bucket.getId())).thenReturn(bucket);
 		when(tasks.find(new TaskQuery().bucketEqualTo(bucket.getId()), TaskQuery.orderByCreated(true), 0, 10)).thenReturn(list);
@@ -81,7 +81,7 @@ public class TaskListControllerFindByBucketTest extends TaskListControllerTestSu
 	@Test
 	public void testSuperuser() {
 		Identity superuser = new Identity();
-		TaskList list = new TaskList(DefaultPartialList.<ObjectNode>of());
+		TaskList list = new TaskList(DefaultPartialList.of());
 		when(auth.current()).thenReturn(new Authorization(superuser));
 		when(buckets.find(bucket.getId())).thenReturn(bucket);
 		when(users.isSuperuser(superuser)).thenReturn(true);

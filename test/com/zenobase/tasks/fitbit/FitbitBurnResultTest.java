@@ -29,7 +29,7 @@ public class FitbitBurnResultTest extends ResultTestSupport {
 		expected.setValue(Event.TAG, TAG);
 		expected.setValue(Event.TIMESTAMP, dateTime("2016-04-25T00:00:00-07:00"));
 		expected.setValue(Event.DURATION, Duration.standardDays(1));
-		expected.setValue(Event.ENERGY, DecimalMeasure.<Energy>valueOf("2789 kcal"));
+		expected.setValue(Event.ENERGY, DecimalMeasure.valueOf("2789 kcal"));
 		expected.setValue(Event.AUTHOR, TESTER);
 		expected.setValue(Event.SOURCE, FitbitBurnResult.SOURCE);
 		assertThat(events.get(0)).as("first event").isEqualTo(expected);

@@ -103,7 +103,7 @@ class MovesActivitiesResult {
 	}
 
 	private static <Q extends Quantity> DecimalMeasure<Q> measureValue(JsonNode node, Unit<Q> unit) {
-		return node.isNumber() ? Measures.<Q>valueOf(node.decimalValue(), unit) : null;
+		return node.isNumber() ? Measures.valueOf(node.decimalValue(), unit) : null;
 	}
 
 	private static <Q extends Quantity> DecimalMeasure<Q> convertValue(JsonNode node, Unit<Q> unit) {

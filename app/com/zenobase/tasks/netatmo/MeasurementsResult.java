@@ -90,7 +90,7 @@ class MeasurementsResult {
 	}
 
 	private static <Q extends Quantity> DecimalMeasure<Q> getMeasure(JsonNode node, Unit<Q> unit) {
-		return node.isNumber() ? Measures.<Q>valueOf(node.decimalValue(), unit) : null;
+		return node.isNumber() ? Measures.valueOf(node.decimalValue(), unit) : null;
 	}
 
 	private static Integer getInteger(JsonNode node) {

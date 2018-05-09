@@ -72,7 +72,7 @@ public class FieldTest {
 
 	@Test
 	public void testGetValueFromEmptyList() {
-		FIELD.addValues(node, Collections.<String>emptyList());
+		FIELD.addValues(node, Collections.emptyList());
 		assertThat(FIELD.getValue(node)).isNull();
 	}
 

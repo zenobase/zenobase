@@ -66,7 +66,7 @@ class RunkeeperActivitiesResult extends RunkeeperResultSupport {
 	}
 
 	private DecimalMeasure<Energy> energyValue(JsonNode node) {
-		return !isZero(node) ? Measures.<Energy>valueOf(Measures.round(node.decimalValue(), 0), energyUnit) : null;
+		return !isZero(node) ? Measures.valueOf(Measures.round(node.decimalValue(), 0), energyUnit) : null;
 	}
 
 	private DecimalMeasure<Velocity> calculateVelocity(DecimalMeasure<Length> distance, Duration duration) {

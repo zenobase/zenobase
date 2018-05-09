@@ -31,7 +31,7 @@ public class ScatterPlotFacetTest extends FacetTestSupport {
 		Event event = new Event();
 		event.setValue(Event.TIMESTAMP, DateTime.parse(timestamp));
 		if (distance != null) {
-			event.setValue(Event.DISTANCE, DecimalMeasure.<Length>valueOf(distance));
+			event.setValue(Event.DISTANCE, DecimalMeasure.valueOf(distance));
 		}
 		event.setValue(Event.COUNT, steps);
 		return event;

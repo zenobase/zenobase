@@ -41,7 +41,7 @@ public class OAuthControllerImplicitGrantTest extends OAuthControllerTestSupport
 			.principalEqualTo(user.asIdentity())
 			.clientEqualTo(client.asIdentity())
 			.scopeEqualTo(scope);
-		when(authorizations.find(eq(query), anyInt(), anyInt())).thenReturn(DefaultPartialList.<Authorization>of());
+		when(authorizations.find(eq(query), anyInt(), anyInt())).thenReturn(DefaultPartialList.of());
 		ArgumentCaptor<CreateAuthorizationCommand> arg = ArgumentCaptor.forClass(CreateAuthorizationCommand.class);
 		when(dispatcher.dispatch(arg.capture())).thenReturn("c1");
 		Result result = call(new AuthorizeForm(OAuthController.RESPONSE_TYPE_TOKEN, client.asIdentity(), redirectUri, scope));

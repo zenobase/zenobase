@@ -43,7 +43,7 @@ public class ForecastTask extends Task {
 	}
 
 	public Set<String> getFields() {
-		Set<String> fields = Sets.newHashSet(Objects.firstNonNull(getSettings(FIELDS), ImmutableSet.<String>of()));
+		Set<String> fields = Sets.newHashSet(Objects.firstNonNull(getSettings(FIELDS), ImmutableSet.of()));
 		if (fields.isEmpty()) {
 			fields.add(Event.TEMPERATURE.getName());
 			fields.add(Event.PRESSURE.getName());

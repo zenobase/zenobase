@@ -21,7 +21,7 @@ public class WeightResultTest extends ResultTestSupport {
 		Event expected = new Event(found.getId());
 		expected.setValue(Event.TIMESTAMP, dateTime("2014-11-05T17:00:00Z"));
 		expected.addValue(Event.TAG, "Body");
-		expected.setValue(Event.WEIGHT, Measures.<Mass>valueOf("70.76 kg"));
+		expected.setValue(Event.WEIGHT, Measures.valueOf("70.76 kg"));
 		expected.setValue(Event.PERCENTAGE, Percentage.valueOf(12));
 		expected.setValue(Event.AUTHOR, TESTER);
 		expected.setValue(Event.SOURCE, JawboneResult.SOURCE);
@@ -35,7 +35,7 @@ public class WeightResultTest extends ResultTestSupport {
 		Event expected = new Event(found.getId());
 		expected.setValue(Event.TIMESTAMP, dateTime("2014-11-05T17:00:00Z"));
 		expected.addValue(Event.TAG, "Body");
-		expected.setValue(Event.WEIGHT, Measures.<Mass>valueOf("156.00 lb"));
+		expected.setValue(Event.WEIGHT, Measures.valueOf("156.00 lb"));
 		expected.setValue(Event.PERCENTAGE, Percentage.valueOf(12));
 		expected.setValue(Event.AUTHOR, TESTER);
 		expected.setValue(Event.SOURCE, JawboneResult.SOURCE);

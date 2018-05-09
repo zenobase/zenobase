@@ -20,7 +20,7 @@ public class TaskListControllerFindAllTest extends TaskListControllerTestSupport
 
 	@Test
 	public void test() {
-		TaskList list = new TaskList(DefaultPartialList.<ObjectNode>of());
+		TaskList list = new TaskList(DefaultPartialList.of());
 		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
 		when(users.isSuperuser(user.asIdentity())).thenReturn(true);
 		when(tasks.find(new TaskQuery().queryString("type:foo"), 0, 10)).thenReturn(list);

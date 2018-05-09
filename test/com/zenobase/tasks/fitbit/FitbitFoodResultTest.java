@@ -28,7 +28,7 @@ public class FitbitFoodResultTest extends ResultTestSupport {
 		expected.setValue(Event.TAG, TAG);
 		expected.setValue(Event.TIMESTAMP, dateTime("2014-01-01T00:00:00-08:00"));
 		expected.setValue(Event.DURATION, Duration.standardDays(1));
-		expected.setValue(Event.ENERGY, DecimalMeasure.<Energy>valueOf("2500 kcal"));
+		expected.setValue(Event.ENERGY, DecimalMeasure.valueOf("2500 kcal"));
 		expected.setValue(Event.AUTHOR, TESTER);
 		expected.setValue(Event.SOURCE, FitbitFoodResult.SOURCE);
 		assertThat(events.get(0)).as("first event").isEqualTo(expected);

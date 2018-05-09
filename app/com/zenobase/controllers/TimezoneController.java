@@ -47,6 +47,6 @@ public class TimezoneController extends Controller {
 	}
 
 	private Promise<Result> find() {
-		return Promise.<Result>pure(ok(Nodes.newArray(DateTimeZone.getAvailableIDs())));
+		return Promise.pure(ok(Nodes.newArray(DateTimeZone.getAvailableIDs())));
     }
 }

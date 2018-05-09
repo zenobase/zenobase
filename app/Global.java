@@ -514,21 +514,21 @@ public class Global extends GlobalSettings {
 	@Override
 	public Promise<Result> onError(RequestHeader request, Throwable t) {
 		return isProgrammatic(request)
-			? Promise.<Result>pure(ControllerSupport.internalServerError(Throwables.getRootCause(t).getMessage()))
+			? Promise.pure(ControllerSupport.internalServerError(Throwables.getRootCause(t).getMessage()))
 			: super.onError(request, t);
 	}
 
 	@Override
 	public Promise<Result> onHandlerNotFound(RequestHeader request) {
 		return isProgrammatic(request)
-			? Promise.<Result>pure(ControllerSupport.notFound())
+			? Promise.pure(ControllerSupport.notFound())
 			: super.onHandlerNotFound(request);
 	}
 
 	@Override
 	public Promise<Result> onBadRequest(RequestHeader request, String error) {
 		return isProgrammatic(request)
-			? Promise.<Result>pure(ControllerSupport.badRequest(error))
+			? Promise.pure(ControllerSupport.badRequest(error))
 			: super.onBadRequest(request, error);
 	}
 

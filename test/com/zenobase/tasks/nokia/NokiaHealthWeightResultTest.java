@@ -27,7 +27,7 @@ public class NokiaHealthWeightResultTest extends ResultTestSupport {
 		assertThat(events).as("events").hasSize(2);
 		Event expected = new Event(events.get(0).getId());
 		expected.setValue(Event.TAG, "body");
-		expected.setValue(Event.WEIGHT, DecimalMeasure.<Mass>valueOf("157.74 lb"));
+		expected.setValue(Event.WEIGHT, DecimalMeasure.valueOf("157.74 lb"));
 		expected.setValue(Event.PERCENTAGE, Percentage.valueOf(new BigDecimal("13.459")));
 		expected.setValue(Event.TIMESTAMP, dateTime("2012-11-22T09:49:17-08:00"));
 		expected.setValue(Event.AUTHOR, TESTER);

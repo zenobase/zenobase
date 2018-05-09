@@ -26,9 +26,9 @@ public class MovesSummaryResultTest extends ResultTestSupport {
 		Event expected = new Event(events.get(0).getId());
 		expected.setValue(Event.TIMESTAMP, begin);
 		expected.addValue(Event.TAG, "steps");
-		expected.setValue(Event.DISTANCE, Measures.<Length>valueOf("2.28 km"));
+		expected.setValue(Event.DISTANCE, Measures.valueOf("2.28 km"));
 		expected.setValue(Event.COUNT, 3124);
-		expected.setValue(Event.ENERGY, Measures.<Energy>valueOf("159 kcal"));
+		expected.setValue(Event.ENERGY, Measures.valueOf("159 kcal"));
 		expected.setValue(Event.AUTHOR, TESTER);
 		expected.setValue(Event.SOURCE, MovesSummaryResult.SOURCE);
 		assertThat(events.get(0)).as("first event").isEqualTo(expected);

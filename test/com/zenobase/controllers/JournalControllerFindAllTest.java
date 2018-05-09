@@ -23,7 +23,7 @@ public class JournalControllerFindAllTest extends JournalControllerTestSupport {
 
 	@Test
 	public void test() {
-		PartialList<Command> history = DefaultPartialList.of(ImmutableList.<Command>of(
+		PartialList<Command> history = DefaultPartialList.of(ImmutableList.of(
 			new TestCommand(user.asIdentity(), "do it"),
 			new TestCommand(user.asIdentity(), "do it again")), 10);
 		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));

@@ -38,7 +38,7 @@ public class DistanceConstraintBuilder extends ConstraintBuilder {
 
 	private DecimalMeasure<Length> extractDistance(Matcher m) {
 		String value = Objects.firstNonNull(m.group(3), DEFAULT_DISTANCE);
-		return Measures.<Length>valueOf(value);
+		return Measures.valueOf(value);
 	}
 
 	private QueryBuilder build(Location location, DecimalMeasure<Length> distance) {

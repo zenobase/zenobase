@@ -28,7 +28,7 @@ public class LocalTimelineFacetTest extends FacetTestSupport {
 	private static Event newEvent(String timestamp, String length, int count) {
 		Event event = new Event();
 		event.setValue(Event.TIMESTAMP, DateTime.parse(timestamp));
-		event.setValue(Event.DISTANCE, DecimalMeasure.<Length>valueOf(length));
+		event.setValue(Event.DISTANCE, DecimalMeasure.valueOf(length));
 		event.setValue(Event.COUNT, count);
 		return event;
 	}

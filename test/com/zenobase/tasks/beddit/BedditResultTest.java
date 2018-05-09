@@ -31,7 +31,7 @@ public class BedditResultTest extends ResultTestSupport {
 		expected.addValue(Event.TIMESTAMP, dateTime("2015-02-04T08:09:24-08:00"));
 		expected.setValue(Event.DURATION, Duration.standardSeconds(29492));
 		expected.setValue(Event.PERCENTAGE, Percentage.valueOf(97));
-		expected.setValue(Event.FREQUENCY, Measures.<Frequency>valueOf("60 bpm"));
+		expected.setValue(Event.FREQUENCY, Measures.valueOf("60 bpm"));
 		assertThat(events.get(0)).isEqualTo(expected);
 	}
 }

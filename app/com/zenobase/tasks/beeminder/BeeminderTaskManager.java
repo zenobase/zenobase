@@ -95,7 +95,7 @@ public class BeeminderTaskManager extends OAuthTaskManager {
 		SearchBuilderSupport search = new EventSearchBuilder()
 			.addFacet(new ListFacet(FIELD_LATEST.getName(), 0, 1, '-' + Event.TIMESTAMP.getName(), null, Event.SCHEMA))
 			.addFacet(new LocalTimelineFacet(FIELD_STATS.getName(), keyField, field, "day", null, unit, null))
-			.addConstraint(new OffsetDateTimeRangeConstraintBuilder(Event.TIMESTAMP.getName()).build(Range.<ReadableInstant>greaterThan(from)), false);
+			.addConstraint(new OffsetDateTimeRangeConstraintBuilder(Event.TIMESTAMP.getName()).build(Range.greaterThan(from)), false);
 		if (filter != null) {
 			search.addConstraints(filter);
 		}

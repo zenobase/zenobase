@@ -31,7 +31,7 @@ public class FitbitCardioIntradayResultTest extends ResultTestSupport {
 		expected.setValue(Event.TAG, TAG);
 		expected.setValue(Event.TIMESTAMP, dateTime("2015-07-28T00:00:00-07:00"));
 		expected.setValue(Event.DURATION, Duration.standardHours(1));
-		expected.setValue(Event.FREQUENCY, Measures.<Frequency>valueOf("56 bpm"));
+		expected.setValue(Event.FREQUENCY, Measures.valueOf("56 bpm"));
 		expected.setValue(Event.AUTHOR, TESTER);
 		expected.setValue(Event.SOURCE, FitbitIntradayStepsResult.SOURCE);
 		assertThat(events.get(0)).as("first event").isEqualTo(expected);

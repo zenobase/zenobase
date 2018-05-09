@@ -31,7 +31,7 @@ public class NokiaHealthCardioResultTest extends ResultTestSupport {
 	private void checkFirst(Event event) {
 		Event expected = new Event(event.getId());
 		expected.setValue(Event.TAG, "heart rate");
-		expected.setValue(Event.FREQUENCY, DecimalMeasure.<Frequency>valueOf("59 bpm"));
+		expected.setValue(Event.FREQUENCY, DecimalMeasure.valueOf("59 bpm"));
 		expected.setValue(Event.PERCENTAGE, Percentage.valueOf(97));
 		expected.setValue(Event.TIMESTAMP, dateTime("2013-12-22T22:59:41-08:00"));
 		expected.setValue(Event.AUTHOR, TESTER);
@@ -42,9 +42,9 @@ public class NokiaHealthCardioResultTest extends ResultTestSupport {
 	private void checkLast(Event event) {
 		Event expected = new Event(event.getId());
 		expected.setValue(Event.TAG, "heart rate");
-		expected.setValue(Event.FREQUENCY, DecimalMeasure.<Frequency>valueOf("80 bpm"));
-		expected.addValue(Event.PRESSURE, DecimalMeasure.<Pressure>valueOf("70 mmHg"));
-		expected.addValue(Event.PRESSURE, DecimalMeasure.<Pressure>valueOf("110 mmHg"));
+		expected.setValue(Event.FREQUENCY, DecimalMeasure.valueOf("80 bpm"));
+		expected.addValue(Event.PRESSURE, DecimalMeasure.valueOf("70 mmHg"));
+		expected.addValue(Event.PRESSURE, DecimalMeasure.valueOf("110 mmHg"));
 		expected.setValue(Event.TIMESTAMP, dateTime("2013-12-17T07:24:27-08:00"));
 		expected.setValue(Event.AUTHOR, TESTER);
 		expected.setValue(Event.SOURCE, NokiaHealthWeightResult.SOURCE);

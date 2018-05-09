@@ -23,7 +23,7 @@ public class CompoundCommandTest {
 
 	@Test
 	public void testCopy() {
-		CommandParserRegistry registry = new CommandParserRegistry(ImmutableSet.<CommandParser>of(new TestCommand.Parser()));
+		CommandParserRegistry registry = new CommandParserRegistry(ImmutableSet.of(new TestCommand.Parser()));
 		CompoundCommand copy = new CompoundCommand(command.toJson(), registry);
 		assertThat(copy.getCommands()).isEqualTo(command.getCommands());
 	}

@@ -29,7 +29,7 @@ public class PolarFacetTest extends FacetTestSupport {
 	private static Event newEvent(String timestamp, String distance, Integer count) {
 		Event event = new Event();
 		event.setValue(Event.TIMESTAMP, DateTime.parse(timestamp));
-		event.setValue(Event.DISTANCE, distance != null ? DecimalMeasure.<Length>valueOf(distance) : null);
+		event.setValue(Event.DISTANCE, distance != null ? DecimalMeasure.valueOf(distance) : null);
 		event.setValue(Event.COUNT, count);
 		return event;
 	}

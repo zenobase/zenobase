@@ -31,7 +31,7 @@ public class FitbitWeightResultTest extends ResultTestSupport {
 		Event expected = new Event(events.get(0).getId());
 		expected.setValue(Event.TAG, TAG);
 		expected.setValue(Event.TIMESTAMP, dateTime("2014-10-08T00:00:00-07:00"));
-		expected.setValue(Event.WEIGHT, DecimalMeasure.<Mass>valueOf("72.6 kg"));
+		expected.setValue(Event.WEIGHT, DecimalMeasure.valueOf("72.6 kg"));
 		expected.setValue(Event.PERCENTAGE, Percentage.valueOf(13));
 		expected.setValue(Event.AUTHOR, TESTER);
 		expected.setValue(Event.SOURCE, FitbitWeightResult.SOURCE);

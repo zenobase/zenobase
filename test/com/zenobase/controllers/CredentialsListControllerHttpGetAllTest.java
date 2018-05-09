@@ -19,7 +19,7 @@ public class CredentialsListControllerHttpGetAllTest extends CredentialsListCont
 
 	@Test
 	public void test() {
-		CredentialsList list = new CredentialsList(DefaultPartialList.<ObjectNode>of());
+		CredentialsList list = new CredentialsList(DefaultPartialList.of());
 		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
 		when(users.isSuperuser(user.asIdentity())).thenReturn(true);
 		when(repository.find(new CredentialsQuery().queryString("type:foo"), 0, 10)).thenReturn(list);

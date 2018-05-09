@@ -15,7 +15,7 @@ public class QuotaExceptionHandler extends Action.Simple {
 		try {
 			return delegate.call(context);
 		} catch (QuotaException e) {
-			return Promise.<Result>pure(ControllerSupport.forbidden(e.getMessage()));
+			return Promise.pure(ControllerSupport.forbidden(e.getMessage()));
 		}
 	}
 }

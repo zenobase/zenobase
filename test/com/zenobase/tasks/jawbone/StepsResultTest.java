@@ -26,8 +26,8 @@ public class StepsResultTest extends ResultTestSupport {
 		expected.setValue(Event.DURATION, Duration.standardMinutes(719));
 		expected.addValue(Event.TAG, "steps");
 		expected.setValue(Event.COUNT, 16071);
-		expected.setValue(Event.DISTANCE, Measures.<Length>valueOf("12.57 km"));
-		expected.setValue(Event.ENERGY, Measures.<Energy>valueOf("1440 kcal"));
+		expected.setValue(Event.DISTANCE, Measures.valueOf("12.57 km"));
+		expected.setValue(Event.ENERGY, Measures.valueOf("1440 kcal"));
 		expected.setValue(Event.AUTHOR, TESTER);
 		expected.setValue(Event.SOURCE, JawboneResult.SOURCE);
 		assertThat(events.get(0)).as("first event").isEqualTo(expected);
@@ -51,8 +51,8 @@ public class StepsResultTest extends ResultTestSupport {
 		expected.setValue(Event.DURATION, Duration.standardHours(1));
 		expected.addValue(Event.TAG, "steps");
 		expected.setValue(Event.COUNT, 1268);
-		expected.setValue(Event.DISTANCE, Measures.<Length>valueOf("994 m"));
-		expected.setValue(Event.ENERGY, Measures.<Energy>valueOf("120 kcal"));
+		expected.setValue(Event.DISTANCE, Measures.valueOf("994 m"));
+		expected.setValue(Event.ENERGY, Measures.valueOf("120 kcal"));
 		expected.setValue(Event.AUTHOR, TESTER);
 		expected.setValue(Event.SOURCE, JawboneResult.SOURCE);
 		assertThat(events.get(0)).as("first event").isEqualTo(expected);

@@ -28,9 +28,9 @@ public class MovesActivitiesResultTest extends ResultTestSupport {
 		expected.setValue(Event.TIMESTAMP, begin);
 		expected.addValue(Event.TAG, "walking");
 		expected.setValue(Event.DURATION, Duration.standardSeconds(782));
-		expected.setValue(Event.DISTANCE, Measures.<Length>valueOf("1.25 km"));
+		expected.setValue(Event.DISTANCE, Measures.valueOf("1.25 km"));
 		expected.setValue(Event.COUNT, 1353);
-		expected.setValue(Event.ENERGY, Measures.<Energy>valueOf("99 kcal"));
+		expected.setValue(Event.ENERGY, Measures.valueOf("99 kcal"));
 		expected.setValue(Event.AUTHOR, TESTER);
 		expected.setValue(Event.SOURCE, MovesPlacesResult.SOURCE);
 		assertThat(events.get(0)).as("first event").isEqualTo(expected);

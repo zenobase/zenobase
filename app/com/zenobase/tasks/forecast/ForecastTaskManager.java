@@ -73,7 +73,7 @@ public class ForecastTaskManager extends TaskManager {
 		String field = "timestamp";
 		Facet list = new ListFacet(objects.getName(), 0, 5000, field, null, Event.SCHEMA);
 		DateTime from = task.getFrom();
-		QueryBuilder query = new OffsetDateTimeRangeConstraintBuilder(field).build(Range.<ReadableInstant>greaterThan(from));
+		QueryBuilder query = new OffsetDateTimeRangeConstraintBuilder(field).build(Range.greaterThan(from));
 		ObjectNode result = events.find(task.getBucketId(), new EventSearchBuilder().addConstraint(query, false).addFacet(list).buildSearch());
 		DateTime marker = from;
 		for (ObjectNode node : objects.getValues(result)) {

@@ -95,7 +95,7 @@ class WorkoutsResult {
 	}
 
 	private DecimalMeasure<Frequency> frequencyValue(JsonNode node) {
-		return !isZero(node) ? Measures.<Frequency>valueOf(BigDecimal.valueOf(node.intValue()), Units.BPM) : null;
+		return !isZero(node) ? Measures.valueOf(BigDecimal.valueOf(node.intValue()), Units.BPM) : null;
 	}
 
 	private Resource resourceValue(JsonNode node) {

@@ -34,9 +34,9 @@ public class FitbitStepsResultTest extends ResultTestSupport {
 		expected.setValue(Event.TIMESTAMP, dateTime("2013-11-03T00:00:00-07:00"));
 		expected.setValue(Event.DURATION, Duration.standardHours(25));
 		expected.setValue(Event.COUNT, 9366);
-		expected.setValue(Event.DISTANCE, DecimalMeasure.<Length>valueOf("4.47 mi"));
-		expected.setValue(Event.HEIGHT, DecimalMeasure.<Length>valueOf("540 ft"));
-		expected.setValue(Event.ENERGY, DecimalMeasure.<Energy>valueOf("2535 kcal"));
+		expected.setValue(Event.DISTANCE, DecimalMeasure.valueOf("4.47 mi"));
+		expected.setValue(Event.HEIGHT, DecimalMeasure.valueOf("540 ft"));
+		expected.setValue(Event.ENERGY, DecimalMeasure.valueOf("2535 kcal"));
 		expected.setValue(Event.AUTHOR, TESTER);
 		expected.setValue(Event.SOURCE, FitbitStepsResult.SOURCE);
 		assertThat(events.get(0)).as("first event").isEqualTo(expected);

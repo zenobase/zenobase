@@ -88,6 +88,6 @@ class NokiaHealthStepsResult {
 	}
 
 	private static <Q extends Quantity> DecimalMeasure<Q> convertMeasureValue(JsonNode node, Unit<Q> unit) {
-		return node.isNumber() ? Measures.<Q>valueOf(Measures.convert(node.doubleValue(), unit), unit) : null;
+		return node.isNumber() ? Measures.valueOf(Measures.convert(node.doubleValue(), unit), unit) : null;
 	}
 }

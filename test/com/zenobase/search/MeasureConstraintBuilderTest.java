@@ -25,7 +25,7 @@ public class MeasureConstraintBuilderTest extends ConstraintBuilderTestSupport {
 	private void addEvent(String distance) {
 		Event event = new Event();
 		if (distance != null) {
-			event.setValue(Event.DISTANCE, Measures.<Length>valueOf(distance));
+			event.setValue(Event.DISTANCE, Measures.valueOf(distance));
 		}
 		addEvent(event);
 	}

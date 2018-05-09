@@ -38,9 +38,9 @@ public class SnapshotsResultTest extends ResultTestSupport {
 		e1.setValue(Event.AUTHOR, TESTER);
 		e1.setValue(Event.SOURCE, SnapshotsResult.SOURCE);
 		e1.setValue(Event.LOCATION, new Location("41.41948377668317", "-71.70834391640776"));
-		e1.setValue(Event.PRESSURE, DecimalMeasure.<Pressure>valueOf("1024 hPa"));
-		e1.setValue(Event.TEMPERATURE, DecimalMeasure.<Temperature>valueOf("-7.2 C"));
-		e1.setValue(Event.SOUND, DecimalMeasure.<Dimensionless>valueOf("-44.06892 dB"));
+		e1.setValue(Event.PRESSURE, DecimalMeasure.valueOf("1024 hPa"));
+		e1.setValue(Event.TEMPERATURE, DecimalMeasure.valueOf("-7.2 C"));
+		e1.setValue(Event.SOUND, DecimalMeasure.valueOf("-44.06892 dB"));
 		e1.addValue(Event.TAG, "Color");
 		e1.addValue(Event.TAG, "Orange");
 		assertThat(events.get(0)).as("1st event").isEqualTo(e1);
@@ -50,9 +50,9 @@ public class SnapshotsResultTest extends ResultTestSupport {
 		e2.setValue(Event.AUTHOR, TESTER);
 		e2.setValue(Event.SOURCE, SnapshotsResult.SOURCE);
 		e2.setValue(Event.LOCATION, new Location("41.41948377668317", "-71.70834391640776"));
-		e2.setValue(Event.PRESSURE, DecimalMeasure.<Pressure>valueOf("1024 hPa"));
-		e2.setValue(Event.TEMPERATURE, DecimalMeasure.<Temperature>valueOf("-7.2 C"));
-		e2.setValue(Event.SOUND, DecimalMeasure.<Dimensionless>valueOf("-44.06892 dB"));
+		e2.setValue(Event.PRESSURE, DecimalMeasure.valueOf("1024 hPa"));
+		e2.setValue(Event.TEMPERATURE, DecimalMeasure.valueOf("-7.2 C"));
+		e2.setValue(Event.SOUND, DecimalMeasure.valueOf("-44.06892 dB"));
 		e2.addValue(Event.TAG, "Mood");
 		e2.setValue(Event.RATING, Rating.valueOf(60));
 		assertThat(events.get(1)).as("2nd event").isEqualTo(e2);
@@ -62,9 +62,9 @@ public class SnapshotsResultTest extends ResultTestSupport {
 		e3.setValue(Event.AUTHOR, TESTER);
 		e3.setValue(Event.SOURCE, SnapshotsResult.SOURCE);
 		e3.setValue(Event.LOCATION, new Location("41.41948377668317", "-71.70834391640776"));
-		e3.setValue(Event.PRESSURE, DecimalMeasure.<Pressure>valueOf("1024 hPa"));
-		e3.setValue(Event.TEMPERATURE, DecimalMeasure.<Temperature>valueOf("-7.2 C"));
-		e3.setValue(Event.SOUND, DecimalMeasure.<Dimensionless>valueOf("-44.06892 dB"));
+		e3.setValue(Event.PRESSURE, DecimalMeasure.valueOf("1024 hPa"));
+		e3.setValue(Event.TEMPERATURE, DecimalMeasure.valueOf("-7.2 C"));
+		e3.setValue(Event.SOUND, DecimalMeasure.valueOf("-44.06892 dB"));
 		e3.addValue(Event.NOTE, "Working from home");
 		assertThat(events.get(2)).as("3rd event").isEqualTo(e3);
 
@@ -73,9 +73,9 @@ public class SnapshotsResultTest extends ResultTestSupport {
 		e4.setValue(Event.AUTHOR, TESTER);
 		e4.setValue(Event.SOURCE, SnapshotsResult.SOURCE);
 		e4.setValue(Event.LOCATION, new Location("41.41948377668317", "-71.70834391640776"));
-		e4.setValue(Event.PRESSURE, DecimalMeasure.<Pressure>valueOf("1024 hPa"));
-		e4.setValue(Event.TEMPERATURE, DecimalMeasure.<Temperature>valueOf("-7.2 C"));
-		e4.setValue(Event.SOUND, DecimalMeasure.<Dimensionless>valueOf("-44.06892 dB"));
+		e4.setValue(Event.PRESSURE, DecimalMeasure.valueOf("1024 hPa"));
+		e4.setValue(Event.TEMPERATURE, DecimalMeasure.valueOf("-7.2 C"));
+		e4.setValue(Event.SOUND, DecimalMeasure.valueOf("-44.06892 dB"));
 		e4.addValue(Event.TAG, "People");
 		e4.addValue(Event.TAG, "Jane Doe");
 		e4.addValue(Event.TAG, "John Doe");

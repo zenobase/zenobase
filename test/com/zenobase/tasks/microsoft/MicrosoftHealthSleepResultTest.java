@@ -29,8 +29,8 @@ public class MicrosoftHealthSleepResultTest extends ResultTestSupport {
 		expected.addValue(Event.TAG, "zzz");
 		expected.setValue(Event.DURATION, Duration.standardHours(7));
 		expected.setValue(Event.PERCENTAGE, Percentage.valueOf(95));
-		expected.setValue(Event.FREQUENCY, Measures.<Frequency>valueOf("50 bpm"));
-		expected.setValue(Event.ENERGY, Measures.<Energy>valueOf("465 kcal"));
+		expected.setValue(Event.FREQUENCY, Measures.valueOf("50 bpm"));
+		expected.setValue(Event.ENERGY, Measures.valueOf("465 kcal"));
 		expected.setValue(Event.AUTHOR, TESTER);
 		expected.setValue(Event.SOURCE, MicrosoftHealthSleepResult.SOURCE);
 		assertThat(events.get(0)).as("first event").isEqualTo(expected);

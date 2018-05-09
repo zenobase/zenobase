@@ -38,7 +38,7 @@ public class EventChunksTest {
 			return null;
 		}).when(events).find(eq(bucketId), any(Search.class), any(Callback.class));
 
-		ObjectNode result = onReady(new EventChunks(events, bucketId, ImmutableList.<String>of()));
+		ObjectNode result = onReady(new EventChunks(events, bucketId, ImmutableList.of()));
 
 		assertThat(result).path(EventListController.EVENTS.getName()).hasSize(total);
 	}

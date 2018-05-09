@@ -36,10 +36,10 @@ public class RunkeeperActivitiesResultTest extends ResultTestSupport {
 		e1.addValue(Event.TAG, "Hiking");
 		e1.setValue(Event.TIMESTAMP, dateTime("2013-11-09T11:50:48-08:00"));
 		e1.setValue(Event.DURATION, Duration.millis(16121187L));
-		e1.setValue(Event.DISTANCE, Measures.<Length>valueOf("6.16 km"));
-		e1.setValue(Event.VELOCITY, Measures.<Velocity>valueOf("1.4 kmh"));
-		e1.setValue(Event.PACE, Measures.<Pace>valueOf("2617 s/km"));
-		e1.setValue(Event.ENERGY, Measures.<Energy>valueOf("1561 kcal"));
+		e1.setValue(Event.DISTANCE, Measures.valueOf("6.16 km"));
+		e1.setValue(Event.VELOCITY, Measures.valueOf("1.4 kmh"));
+		e1.setValue(Event.PACE, Measures.valueOf("2617 s/km"));
+		e1.setValue(Event.ENERGY, Measures.valueOf("1561 kcal"));
 		e1.setValue(Event.SOURCE, new Resource("RunKeeper", "/fitnessActivities/268390846"));
 		e1.setValue(Event.AUTHOR, author);
 		assertThat(events.get(0)).isEqualTo(e1);

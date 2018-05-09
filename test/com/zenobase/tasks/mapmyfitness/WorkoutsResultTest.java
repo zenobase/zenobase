@@ -33,10 +33,10 @@ public class WorkoutsResultTest extends ResultTestSupport {
 		e1.setValue(Event.TIMESTAMP, dateTime("2014-04-24T15:36:33-07:00"));
 		e1.setValue(Event.DURATION, Duration.standardSeconds(2992));
 		e1.setValue(Event.COUNT, 1000);
-		e1.setValue(Event.DISTANCE, DecimalMeasure.<Length>valueOf("3.3 mi"));
-		e1.setValue(Event.VELOCITY,  DecimalMeasure.<Velocity>valueOf("4.0 mph"));
-		e1.setValue(Event.PACE,  DecimalMeasure.<Pace>valueOf("895 s/mi"));
-		e1.setValue(Event.FREQUENCY, DecimalMeasure.<Frequency>valueOf("115 bpm"));
+		e1.setValue(Event.DISTANCE, DecimalMeasure.valueOf("3.3 mi"));
+		e1.setValue(Event.VELOCITY,  DecimalMeasure.valueOf("4.0 mph"));
+		e1.setValue(Event.PACE,  DecimalMeasure.valueOf("895 s/mi"));
+		e1.setValue(Event.FREQUENCY, DecimalMeasure.valueOf("115 bpm"));
 		e1.setValue(Event.AUTHOR, TESTER);
 		e1.setValue(Event.SOURCE, new Resource("MapMyFitness", "http://www.mapmyfitness.com/workout/547836386"));
 		assertThat(w1.getEvent()).isEqualTo(e1);

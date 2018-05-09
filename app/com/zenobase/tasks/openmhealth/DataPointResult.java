@@ -142,7 +142,7 @@ public class DataPointResult {
 	private static <Q extends Quantity> DecimalMeasure<Q> measureValue(JsonNode node, Class<Q> q) {
 		String unit = unitValue(node.path("unit"));
 		BigDecimal value = node.path("value").decimalValue();
-		return unit != null ? Measures.<Q>valueOf(Measures.round(value), unit) : null;
+		return unit != null ? Measures.valueOf(Measures.round(value), unit) : null;
 	}
 
 	private static Percentage percentageValue(JsonNode node) {

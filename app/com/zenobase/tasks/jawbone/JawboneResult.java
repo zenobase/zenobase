@@ -88,7 +88,7 @@ abstract class JawboneResult {
 	}
 
 	protected DecimalMeasure<Energy> energyValue(JsonNode node) {
-		return node.isNumber() ? Measures.<Energy>valueOf(node.decimalValue(), Units.KCAL) : null;
+		return node.isNumber() ? Measures.valueOf(node.decimalValue(), Units.KCAL) : null;
 	}
 
 	protected DecimalMeasure<Mass> weightValue(JsonNode node, Unit<Mass> unit) {

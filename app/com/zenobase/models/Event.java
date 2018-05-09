@@ -72,7 +72,7 @@ public class Event extends DomainNode {
 	public static final TextField NOTE = new TextField("note");
 
 	private static final ImmutableSet<Field<?>> FIELDS =
-		ImmutableSet.<Field<?>>of(
+		ImmutableSet.of(
 			ID, BUCKET, VERSION, AUTHOR, SOURCE, TIMESTAMP, DURATION, FREQUENCY, VELOCITY, PACE, BITS, COUNT,
 			LOCATION, TAG, RESOURCE, DISTANCE, HEIGHT, WEIGHT, VOLUME, CONCENTRATION, DISTANCE_PER_VOLUME,
 			HUMIDITY, PRESSURE, SOUND, ENERGY, LIGHT, TEMPERATURE, RATING, PERCENTAGE, MOON, CURRENCY, NOTE);
