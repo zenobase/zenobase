@@ -57,7 +57,7 @@ class NokiaHealthStepsResult {
 		if (events.size() < 2) {
 			return Collections.emptyList();
 		}
-		Collections.sort(events, (left, right) -> right.getValue(Event.TIMESTAMP).compareTo(left.getValue(Event.TIMESTAMP)));
+		events.sort((left, right) -> right.getValue(Event.TIMESTAMP).compareTo(left.getValue(Event.TIMESTAMP)));
 		return events.subList(1, events.size());
 	}
 
