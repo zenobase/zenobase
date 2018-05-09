@@ -1,10 +1,7 @@
 package com.zenobase.controllers;
 
-import java.util.List;
-
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Preconditions;
-import com.google.common.collect.Lists;
 import org.joda.time.DateTimeZone;
 import play.Logger;
 import play.libs.F;
@@ -60,10 +57,6 @@ public class TimezoneController extends Controller {
 	}
 
 	private Promise<Result> find() {
-		List<String> timezones = Lists.newArrayList();
-		for (String id : DateTimeZone.getAvailableIDs()) {
-			timezones.add(id);
-		}
-		return Promise.<Result>pure(ok(Nodes.newArray(timezones)));
+		return Promise.<Result>pure(ok(Nodes.newArray(DateTimeZone.getAvailableIDs())));
     }
 }
