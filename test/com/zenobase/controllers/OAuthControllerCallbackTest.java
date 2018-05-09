@@ -1,7 +1,6 @@
 package com.zenobase.controllers;
 
 import static com.zenobase.testing.ResultAssert.assertThat;
-import static play.mvc.Http.Status.SEE_OTHER;
 import static play.test.Helpers.*;
 
 import org.junit.Test;

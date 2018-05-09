@@ -1,7 +1,6 @@
 package com.zenobase.services;
 
 import static org.fest.assertions.Assertions.assertThat;
-import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 
 import org.joda.time.DateTime;

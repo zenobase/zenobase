@@ -3,7 +3,6 @@ package com.zenobase.controllers;
 import static com.zenobase.testing.ResultAssert.assertThat;
 import static org.fest.assertions.Assertions.assertThat;
 import static org.mockito.Mockito.*;
-import static play.mvc.Http.Status.*;
 import static play.test.Helpers.*;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;

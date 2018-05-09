@@ -2,7 +2,6 @@ package com.zenobase.controllers;
 
 import static com.zenobase.testing.ResultAssert.assertThat;
 import static org.mockito.Mockito.when;
-import static play.mvc.Http.Status.*;
 import static play.test.Helpers.*;
 
 import com.google.common.collect.ImmutableList;

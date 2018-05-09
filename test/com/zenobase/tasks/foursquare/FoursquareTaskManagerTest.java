@@ -1,7 +1,6 @@
 package com.zenobase.tasks.foursquare;
 
 import static org.fest.assertions.Assertions.assertThat;
-import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;

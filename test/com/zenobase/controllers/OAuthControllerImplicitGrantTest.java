@@ -4,7 +4,6 @@ import static com.zenobase.testing.ResultAssert.assertThat;
 import static org.fest.assertions.Assertions.assertThat;
 import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.when;
-import static play.mvc.Http.Status.UNAUTHORIZED;
 import static play.test.Helpers.*;
 
 import org.junit.Before;

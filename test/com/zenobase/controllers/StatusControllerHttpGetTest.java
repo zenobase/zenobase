@@ -2,7 +2,6 @@ package com.zenobase.controllers;
 
 import static com.zenobase.testing.ResultAssert.assertThat;
 import static org.mockito.Mockito.*;
-import static play.mvc.Http.Status.OK;
 import static play.test.Helpers.*;
 
 import org.elasticsearch.action.admin.cluster.health.ClusterHealthResponse;
