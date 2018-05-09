@@ -8,9 +8,9 @@ import com.zenobase.json.Nodes;
 
 public abstract class Job {
 
-	private String label;
-	private LocalTime begin;
-	private Period period;
+	private final String label;
+	private final LocalTime begin;
+	private final Period period;
 
 	public Job(String label, LocalTime begin, Period period) {
 		this.label = label;

@@ -16,7 +16,7 @@ public class HazelcastBus implements Bus {
 	private static final String KEY_SCHEDULER_DISABLED = "schedulerDisabled";
 
 	private final HazelcastInstance hazelcast = Hazelcast.newHazelcastInstance();
-	private Map<Object, Object> map;
+	private final Map<Object, Object> map;
 
 	public HazelcastBus() {
 		map = hazelcast.getMap("map");

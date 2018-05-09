@@ -26,8 +26,8 @@ import com.zenobase.search.SearchBuilderSupport;
 public class IndexManager implements Closeable {
 
 	private final String clusterName;
-	private Node node;
-	private Client client;
+	private final Node node;
+	private final Client client;
 
 	@Inject
 	public IndexManager(NodeFactory nodeFactory, @Named("es.cluster") String clusterName) {

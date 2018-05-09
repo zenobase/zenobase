@@ -9,8 +9,8 @@ import com.zenobase.search.ExistsConstraintBuilder;
 
 public class ResourceField extends Field<Resource> {
 
-	private Field<String> titleField;
-	private Field<String> urlField;
+	private final Field<String> titleField;
+	private final Field<String> urlField;
 
 	public ResourceField(String name) {
 		super(name, Resource.class, "object");

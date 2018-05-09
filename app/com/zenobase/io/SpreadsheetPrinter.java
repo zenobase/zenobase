@@ -22,7 +22,7 @@ import com.zenobase.json.Nodes;
 
 public class SpreadsheetPrinter {
 
-	private CSVWriter writer;
+	private final CSVWriter writer;
 	private ImmutableList<Field> fields;
 
 	public SpreadsheetPrinter(Writer out) {

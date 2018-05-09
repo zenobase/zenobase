@@ -28,7 +28,7 @@ public abstract class EventEditor {
 	private final Identity principal;
 	private final EventRepository events;
 	private DateTime last;
-	private List<Command> edits = Lists.newArrayList();
+	private final List<Command> edits = Lists.newArrayList();
 
 	public EventEditor(String bucketId, Identity principal, EventRepository events, DateTime last) {
 		this.bucketId = bucketId;

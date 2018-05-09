@@ -7,9 +7,9 @@ import org.elasticsearch.common.geo.GeoPoint;
 
 public class GeoCluster {
 
-	private long count;
-	private String geohash;
-	private GeoPoint center;
+	private final long count;
+	private final String geohash;
+	private final GeoPoint center;
 
 	public GeoCluster(long count, String geohash, GeoPoint center) {
 		this.count = count;

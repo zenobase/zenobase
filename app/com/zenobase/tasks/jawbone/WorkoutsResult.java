@@ -18,7 +18,7 @@ import com.zenobase.models.Identity;
 
 class WorkoutsResult extends JawboneResult {
 
-	private static Map<Integer, String> TYPES = ImmutableMap.<Integer, String>builder()
+	private static final Map<Integer, String> TYPES = ImmutableMap.<Integer, String>builder()
 		.put(1, "walk")
 		.put(2, "run")
 		.put(3, "lift weights")
