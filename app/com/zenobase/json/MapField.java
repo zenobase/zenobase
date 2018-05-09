@@ -39,7 +39,7 @@ public abstract class MapField<K, V> extends Field<Map.Entry<K, V>> {
 	}
 
 	private Map.Entry<K, V> get(ObjectNode node) {
-		return Maps.immutableEntry(get((ObjectNode) node, keyField), get((ObjectNode) node, valueField));
+		return Maps.immutableEntry(get(node, keyField), get(node, valueField));
 	}
 
 	private static <T> T get(JsonNode node, Field<T> field) {

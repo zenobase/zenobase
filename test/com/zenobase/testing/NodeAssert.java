@@ -66,17 +66,17 @@ public class NodeAssert extends GenericAssert<NodeAssert, JsonNode> {
 
 	public NodeAssert path(String fieldName) {
 		isObject();
-		return new NodeAssert(((ObjectNode) actual).path(fieldName));
+		return new NodeAssert(actual.path(fieldName));
 	}
 
 	public NodeAssert path(int index) {
 		isArray();
-		return new NodeAssert(((ArrayNode) actual).path(index));
+		return new NodeAssert(actual.path(index));
 	}
 
 	public NodeAssert hasSize(int expected) {
 		isArray();
-		Assertions.assertThat(((ArrayNode) actual).size()).as("array size").isEqualTo(expected);
+		Assertions.assertThat(actual.size()).as("array size").isEqualTo(expected);
 		return this;
 	}
 }

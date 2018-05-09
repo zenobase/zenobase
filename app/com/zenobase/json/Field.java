@@ -56,7 +56,7 @@ public abstract class Field<T> {
 	public final T getValue(ObjectNode node) {
 		JsonNode fieldNode = node.get(name);
 		if (fieldNode != null && fieldNode.isArray() && fieldNode.size() > 0) {
-			return getValue(Iterables.getOnlyElement(((ArrayNode) fieldNode)));
+			return getValue(Iterables.getOnlyElement(fieldNode));
 		}
 		if (fieldNode != null) {
 			return getValue(fieldNode);
@@ -68,7 +68,7 @@ public abstract class Field<T> {
 		ImmutableList.Builder<T> values = ImmutableList.builder();
 		JsonNode fieldNode = node.get(name);
 		if (fieldNode != null && fieldNode.isArray()) {
-			for (JsonNode element : ((ArrayNode) fieldNode)) {
+			for (JsonNode element : fieldNode) {
 				values.add(getValue(element));
 			}
 		}
@@ -82,7 +82,7 @@ public abstract class Field<T> {
 		ImmutableList.Builder<JsonNode> values = ImmutableList.builder();
 		JsonNode fieldNode = node.get(name);
 		if (fieldNode != null && fieldNode.isArray()) {
-			for (JsonNode element : ((ArrayNode) fieldNode)) {
+			for (JsonNode element : fieldNode) {
 				values.add(element);
 			}
 		}
