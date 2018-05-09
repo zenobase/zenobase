@@ -90,6 +90,7 @@ import com.zenobase.services.BucketRepository;
 import com.zenobase.services.Bus;
 import com.zenobase.services.ClusterNodeFactory;
 import com.zenobase.services.CommandDispatcher;
+import com.zenobase.services.CommandRebuild;
 import com.zenobase.services.CommandReplay;
 import com.zenobase.services.CommandRepository;
 import com.zenobase.services.CredentialsCleanupJob;
@@ -490,7 +491,8 @@ public class Global extends GlobalSettings {
 	private void replay() {
 		UserRepository users = injector.getInstance(UserRepository.class);
 		if (users.isEmpty()) {
-			injector.getInstance(CommandReplay.class).replay();
+			// injector.getInstance(CommandReplay.class).replay();
+			injector.getInstance(CommandRebuild.class).rebuild();
 		}
 	}
 

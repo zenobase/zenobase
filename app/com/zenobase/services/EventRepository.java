@@ -80,6 +80,12 @@ public class EventRepository {
 		search.execute(getIndex(bucketId), callback);
 	}
 
+	public void findAll(String bucketId, Callback<Event> callback) {
+		getIndex(bucketId).find(QueryBuilders.matchAllQuery(), node -> {
+			callback.call(new Event(node));
+		}, 100);
+	}
+
 	public List<String> terms(String bucketId, String field) {
 		final int limit = 100;
 		final String id = "terms";

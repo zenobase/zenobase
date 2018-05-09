@@ -3,6 +3,9 @@ package com.zenobase.services;
 import static com.zenobase.testing.NodeAssert.assertThat;
 import static org.fest.assertions.Assertions.assertThat;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.google.common.collect.Lists;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
@@ -51,6 +54,9 @@ public class EventRepositoryTest extends ElasticSearchTestSupport {
 		assertThat(repository.size(bucket.getId())).as("bucket size").isEqualTo(1L);
 		assertThat(repository.find(bucket.getId(), event.getId()).toJson()).isEqualTo(event.toJson());
 		NodeAssert.assertThat(repository.find(bucket.getId(), new EventSearchBuilder().buildSearch())).path(Search.TOTAL.getName()).isEqualTo(1);
+		List<Event> all = new ArrayList<>();
+		repository.findAll(bucket.getId(), all::add);
+		assertThat(all).as("event count in bucket").hasSize(1);
 		assertThat(repository.terms(bucket.getId(), Event.TAG.getName())).as("tags").containsOnly("test", "demo");
 
 		// update event
