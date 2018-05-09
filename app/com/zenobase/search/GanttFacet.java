@@ -91,18 +91,13 @@ public class GanttFacet extends FilteredFacet {
 	}
 
 	public static FacetBuilder builder(FilterParser filterParser) {
-		return new FacetBuilder() {
-			@Override
-			public Facet build(FacetOptions options) {
-				return new GanttFacet(
-					options.get("id"),
-					options.get("field"),
-					options.get("key_field", String.class, Event.TIMESTAMP.getName()),
-					options.get("order", String.class, "-max"),
-					options.get("limit", Integer.class, 10),
-					options.get("timezone", DateTimeZone.class, DateTimeZone.UTC),
-					filterParser.parse(options.get("filter")));
-			}
-		};
+		return options -> new GanttFacet(
+			options.get("id"),
+			options.get("field"),
+			options.get("key_field", String.class, Event.TIMESTAMP.getName()),
+			options.get("order", String.class, "-max"),
+			options.get("limit", Integer.class, 10),
+			options.get("timezone", DateTimeZone.class, DateTimeZone.UTC),
+			filterParser.parse(options.get("filter")));
 	}
 }

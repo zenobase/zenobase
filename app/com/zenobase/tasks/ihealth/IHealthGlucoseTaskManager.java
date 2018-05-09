@@ -17,12 +17,7 @@ public class IHealthGlucoseTaskManager extends IHealthTaskManagerSupport<IHealth
 	@Inject
 	public IHealthGlucoseTaskManager(IHealthCredentialsManager credentialsManager, @Named("ihealth.api.sv.glucose") String sv) {
 		super(IHealthGlucoseTask.TYPE, credentialsManager, IHealthGlucoseTask.class);
-		register("glucose", sv, new ResultHandler<IHealthGlucoseTask>() {
-			@Override
-			public IHealthResultSupport process(IHealthGlucoseTask task, ObjectNode node) {
-				return new IHealthGlucoseResult(node, task.getPrincipal(), task.getTag(), task.getTimezone());
-			}
-		});
+		register("glucose", sv, (task, node) -> new IHealthGlucoseResult(node, task.getPrincipal(), task.getTag(), task.getTimezone()));
 	}
 
 	@Override

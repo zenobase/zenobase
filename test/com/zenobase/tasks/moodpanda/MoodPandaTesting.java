@@ -22,17 +22,14 @@ public class MoodPandaTesting {
 
 	@Test
 	public void test() {
-		Helpers.running(Helpers.fakeApplication(), new Runnable() {
-			@Override
-			public void run() {
-				ObjectNode settings = Nodes.newObject()
-					.put("tag", "moo")
-					.put("email", "eric.jain@gmail.com")
-					.put("marker", "2014-04-01T00:00:00-08:00");
-				MoodPandaTaskManager manager = new MoodPandaTaskManager(apiKey);
-				Task task = manager.newTask(Generator.id(), new Identity(), settings);
-				System.err.println(Nodes.toString(manager.execute(task).toJson()));
-			}
+		Helpers.running(Helpers.fakeApplication(), () -> {
+			ObjectNode settings = Nodes.newObject()
+				.put("tag", "moo")
+				.put("email", "eric.jain@gmail.com")
+				.put("marker", "2014-04-01T00:00:00-08:00");
+			MoodPandaTaskManager manager = new MoodPandaTaskManager(apiKey);
+			Task task = manager.newTask(Generator.id(), new Identity(), settings);
+			System.err.println(Nodes.toString(manager.execute(task).toJson()));
 		});
 	}
 }

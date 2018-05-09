@@ -17,12 +17,7 @@ public class IHealthActivitiesTaskManager extends IHealthTaskManagerSupport<IHea
 	@Inject
 	public IHealthActivitiesTaskManager(IHealthCredentialsManager credentialsManager, @Named("ihealth.api.sv.sport") String sv) {
 		super(IHealthActivitiesTask.TYPE, credentialsManager, IHealthActivitiesTask.class);
-		register("sport", sv, new ResultHandler<IHealthActivitiesTask>() {
-			@Override
-			public IHealthResultSupport process(IHealthActivitiesTask task, ObjectNode node) {
-				return new IHealthActivitiesResult(node, task.getPrincipal(), task.getTag(), task.getTimezone());
-			}
-		});
+		register("sport", sv, (task, node) -> new IHealthActivitiesResult(node, task.getPrincipal(), task.getTag(), task.getTimezone()));
 	}
 
 	@Override

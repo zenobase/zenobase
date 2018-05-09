@@ -17,12 +17,7 @@ public class IHealthWeightTaskManager extends IHealthTaskManagerSupport<IHealthW
 	@Inject
 	public IHealthWeightTaskManager(IHealthCredentialsManager credentialsManager, @Named("ihealth.api.sv.weight") String sv) {
 		super(IHealthWeightTask.TYPE, credentialsManager, IHealthWeightTask.class);
-		register("weight", sv, new ResultHandler<IHealthWeightTask>() {
-			@Override
-			public IHealthResultSupport process(IHealthWeightTask task, ObjectNode node) {
-				return new IHealthWeightResult(node, task.getPrincipal(), task.getTag(), task.getTimezone());
-			}
-		});
+		register("weight", sv, (task, node) -> new IHealthWeightResult(node, task.getPrincipal(), task.getTag(), task.getTimezone()));
 	}
 
 	@Override

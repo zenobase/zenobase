@@ -29,11 +29,6 @@ public class AuthorizationExpirationJob extends Job {
 	public void run() {
 		Logger.info("Expiring authorizations...");
 		AuthorizationQuery query = new AuthorizationQuery().createdBefore(DateTime.now().minus(MAX_AGE)).clientIsNull();
-		authorizations.find(query, new Callback<Authorization>() {
-			@Override
-			public void call(Authorization authorization) {
-				dispatcher.dispatch(new DeleteAuthorizationCommand(authorization.getPrincipal(), authorization));
-			}
-		});
+		authorizations.find(query, authorization -> dispatcher.dispatch(new DeleteAuthorizationCommand(authorization.getPrincipal(), authorization)));
 	}
 }

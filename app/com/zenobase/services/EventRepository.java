@@ -81,9 +81,7 @@ public class EventRepository {
 	}
 
 	public void findAll(String bucketId, Callback<Event> callback) {
-		getIndex(bucketId).find(QueryBuilders.matchAllQuery(), node -> {
-			callback.call(new Event(node));
-		}, 100);
+		getIndex(bucketId).find(QueryBuilders.matchAllQuery(), node -> callback.call(new Event(node)), 100);
 	}
 
 	public List<String> terms(String bucketId, String field) {

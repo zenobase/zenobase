@@ -45,21 +45,18 @@ public class CommandReplay {
 		Logger.info("Replaying {} commands from {}...", repository.size(), sourceCluster);
 		Stopwatch timer = Stopwatch.createStarted();
 		try {
-			repository.find(new CommandQuery(), ORDER, new Callback<Command>() {
-				@Override
-				public void call(Command command) {
-					try {
-						if (identities.mightContain(command.getPrincipal().getId())) {
-							dispatcher.dispatch(command);
-							++replayed;
-						} else {
-							dispatcher.discard(command);
-						}
-						++count;
-					} catch (RuntimeException e) {
-						Logger.error("Couldn't replay command: " + command, e);
-						throw e;
+			repository.find(new CommandQuery(), ORDER, command -> {
+				try {
+					if (identities.mightContain(command.getPrincipal().getId())) {
+						dispatcher.dispatch(command);
+						++replayed;
+					} else {
+						dispatcher.discard(command);
 					}
+					++count;
+				} catch (RuntimeException e) {
+					Logger.error("Couldn't replay command: " + command, e);
+					throw e;
 				}
 			});
 		} finally {

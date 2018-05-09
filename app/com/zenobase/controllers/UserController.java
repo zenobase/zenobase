@@ -17,7 +17,6 @@ import com.zenobase.commands.DeleteAuthorizationCommand;
 import com.zenobase.commands.OptInCommand;
 import com.zenobase.commands.OptOutCommand;
 import com.zenobase.commands.SuspendUserCommand;
-import com.zenobase.common.Callback;
 import com.zenobase.json.Nodes;
 import com.zenobase.mail.VerificationMailer;
 import com.zenobase.models.User;
@@ -137,12 +136,7 @@ public class UserController extends ControllerSupport {
 		AuthorizationQuery query = new AuthorizationQuery()
 			.principalEqualTo(user.asIdentity())
 			.clientIsNull();
-		authorizations.find(query, new Callback<Authorization>() {
-			@Override
-			public void call(Authorization authorization) {
-				command.add(new DeleteAuthorizationCommand(user.asIdentity(), authorization));
-			}
-		});
+		authorizations.find(query, authorization -> command.add(new DeleteAuthorizationCommand(user.asIdentity(), authorization)));
 		String commandId = dispatcher.dispatch(command);
 		response().setHeader(COMMAND_ID, commandId);
 		return ok(Nodes.newObject("access_token", auth.getId()));
@@ -159,18 +153,8 @@ public class UserController extends ControllerSupport {
 		Command command = new SuspendUserCommand(auth.getPrincipal(), user.getName(), suspended);
     	CompoundCommand commands = new CompoundCommand(auth.getPrincipal(), command.toString(), command.reverse(auth.getPrincipal()).toString());
 		commands.add(command);
-		authorizations.find(new AuthorizationQuery().principalEqualTo(user.asIdentity()), new Callback<Authorization>() {
-			@Override
-			public void call(Authorization authorization) {
-				commands.add(new DeleteAuthorizationCommand(auth.getPrincipal(), authorization));
-			}
-		});
-		authorizations.find(new AuthorizationQuery().clientEqualTo(user.asIdentity()), new Callback<Authorization>() {
-			@Override
-			public void call(Authorization authorization) {
-				commands.add(new DeleteAuthorizationCommand(auth.getPrincipal(), authorization));
-			}
-		});
+		authorizations.find(new AuthorizationQuery().principalEqualTo(user.asIdentity()), authorization -> commands.add(new DeleteAuthorizationCommand(auth.getPrincipal(), authorization)));
+		authorizations.find(new AuthorizationQuery().clientEqualTo(user.asIdentity()), authorization -> commands.add(new DeleteAuthorizationCommand(auth.getPrincipal(), authorization)));
 		String commandId = dispatcher.dispatch(commands.unwrap());
 		response().setHeader(COMMAND_ID, commandId);
 		return noContent();

@@ -44,14 +44,9 @@ public class GeoBoundsFacet extends FilteredFacet {
 	}
 
 	public static FacetBuilder builder(FilterParser filterParser) {
-		return new FacetBuilder() {
-			@Override
-			public Facet build(FacetOptions options) {
-				return new GeoBoundsFacet(
-					options.get("id"),
-					options.get("field", String.class, Event.LOCATION.getName()),
-					filterParser.parse(options.get("filter")));
-			}
-		};
+		return options -> new GeoBoundsFacet(
+			options.get("id"),
+			options.get("field", String.class, Event.LOCATION.getName()),
+			filterParser.parse(options.get("filter")));
 	}
 }

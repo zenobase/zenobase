@@ -13,9 +13,7 @@ import com.zenobase.commands.DeleteBucketCommand;
 import com.zenobase.commands.DeleteCredentialsCommand;
 import com.zenobase.commands.DeleteTaskCommand;
 import com.zenobase.commands.DeleteUserCommand;
-import com.zenobase.common.Callback;
 import com.zenobase.mail.VerificationMailer;
-import com.zenobase.models.Bucket;
 import com.zenobase.models.Identity;
 import com.zenobase.models.User;
 import com.zenobase.models.UserProfile;
@@ -32,8 +30,6 @@ import com.zenobase.services.TaskQuery;
 import com.zenobase.services.TaskRepository;
 import com.zenobase.services.UserLookup;
 import com.zenobase.services.UserRepository;
-import com.zenobase.tasks.Credentials;
-import com.zenobase.tasks.Task;
 
 public class AccountController extends ControllerSupport {
 
@@ -109,44 +105,16 @@ public class AccountController extends ControllerSupport {
 	public Command buildCloseAccountCommand(Identity principal, User user, Authorization current) {
 		CompoundCommand command = new CompoundCommand(principal, String.format("closed account %s", user.getName()), String.format("reopened account %s", user.getName()));
 		command.add(new DeleteUserCommand(principal, user));
-		buckets.find(new BucketQuery().principalEqualTo(user.asIdentity()).isAlias(true), new Callback<Bucket>() {
-			@Override
-			public void call(Bucket bucket) {
-				command.add(new DeleteBucketCommand(principal, bucket));
-			}
-		});
-		buckets.find(new BucketQuery().principalEqualTo(user.asIdentity()).isAlias(false), new Callback<Bucket>() {
-			@Override
-			public void call(Bucket bucket) {
-				command.add(new DeleteBucketCommand(principal, bucket));
-			}
-		});
-    	tasks.find(new TaskQuery().principalEqualTo(user.asIdentity()), new Callback<Task>() {
-    		@Override
-    		public void call(Task task) {
-    			command.add(new DeleteTaskCommand(principal, task));
-    		}
-		});
-    	authorizations.find(new AuthorizationQuery().principalEqualTo(user.asIdentity()), new Callback<Authorization>() {
-			@Override
-			public void call(Authorization authorization) {
-				if (!current.getId().equals(authorization.getId())) {
-					command.add(new DeleteAuthorizationCommand(principal, authorization));
-				}
-			}
-		});
-    	authorizations.find(new AuthorizationQuery().clientEqualTo(user.asIdentity()), new Callback<Authorization>() {
-			@Override
-			public void call(Authorization authorization) {
+		buckets.find(new BucketQuery().principalEqualTo(user.asIdentity()).isAlias(true), bucket -> command.add(new DeleteBucketCommand(principal, bucket)));
+		buckets.find(new BucketQuery().principalEqualTo(user.asIdentity()).isAlias(false), bucket -> command.add(new DeleteBucketCommand(principal, bucket)));
+    	tasks.find(new TaskQuery().principalEqualTo(user.asIdentity()), task -> command.add(new DeleteTaskCommand(principal, task)));
+    	authorizations.find(new AuthorizationQuery().principalEqualTo(user.asIdentity()), authorization -> {
+			if (!current.getId().equals(authorization.getId())) {
 				command.add(new DeleteAuthorizationCommand(principal, authorization));
 			}
 		});
-    	credentials.find(new CredentialsQuery().principalEqualTo(user.asIdentity()), new Callback<Credentials>() {
-    		@Override
-    		public void call(Credentials credentials) {
-    			command.add(new DeleteCredentialsCommand(principal, credentials));
-    		}
-		});
+    	authorizations.find(new AuthorizationQuery().clientEqualTo(user.asIdentity()), authorization -> command.add(new DeleteAuthorizationCommand(principal, authorization)));
+    	credentials.find(new CredentialsQuery().principalEqualTo(user.asIdentity()), credentials -> command.add(new DeleteCredentialsCommand(principal, credentials)));
 		return command;
 	}
 }

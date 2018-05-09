@@ -22,12 +22,7 @@ public class LazyListTest {
 		assertThat(actual).hasTotal(expected.getTotal()).isEqualTo((List<?>) expected);
 	}
 
-	private static Function<DomainNode, ObjectNode> TO_JSON = new Function<DomainNode, ObjectNode>() {
-		@Override
-		public ObjectNode apply(DomainNode object) {
-			return object.toJson();
-		}
-	};
+	private static Function<DomainNode, ObjectNode> TO_JSON = DomainNode::toJson;
 
 	private static class TestableList extends LazyList<Thneed> {
 

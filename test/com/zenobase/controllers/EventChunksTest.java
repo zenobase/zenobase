@@ -28,17 +28,14 @@ public class EventChunksTest {
 		String bucketId = Generator.id();
 		EventRepository events = mock(EventRepository.class);
 
-		doAnswer(new Answer<Void>() {
-			@Override
-			public Void answer(InvocationOnMock invocation) throws Throwable {
-				Callback<ObjectNode> callback = (Callback<ObjectNode>) invocation.getArgumentAt(2, Callback.class);
-				for (int i = 0; i < total; ++i) {
-					ObjectNode fakeEvent = Nodes.newObject();
-					fakeEvent.put("@id", Generator.id());
-					callback.call(fakeEvent);
-				}
-				return null;
+		doAnswer((Answer<Void>) invocation -> {
+			Callback<ObjectNode> callback = (Callback<ObjectNode>) invocation.getArgumentAt(2, Callback.class);
+			for (int i = 0; i < total; ++i) {
+				ObjectNode fakeEvent = Nodes.newObject();
+				fakeEvent.put("@id", Generator.id());
+				callback.call(fakeEvent);
 			}
+			return null;
 		}).when(events).find(eq(bucketId), any(Search.class), any(Callback.class));
 
 		ObjectNode result = onReady(new EventChunks(events, bucketId, ImmutableList.<String>of()));

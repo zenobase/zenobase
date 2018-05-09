@@ -1,7 +1,6 @@
 package com.zenobase.search.geo;
 
 import java.util.Map;
-import java.util.function.BiFunction;
 
 import com.google.common.collect.Maps;
 import org.elasticsearch.common.collect.ImmutableList;
@@ -16,12 +15,7 @@ public class GeoClusterBuilder {
 	}
 
 	public void add(GeoCluster cluster) {
-		clusters.merge(cluster.geohash(), cluster, new BiFunction<GeoCluster, GeoCluster, GeoCluster>() {
-			@Override
-			public GeoCluster apply(GeoCluster a, GeoCluster b) {
-				return a.merge(b);
-			}
-		});
+		clusters.merge(cluster.geohash(), cluster, GeoCluster::merge);
 	}
 
 	private static String reducePrecision(String geohash) {

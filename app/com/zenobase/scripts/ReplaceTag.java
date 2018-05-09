@@ -5,7 +5,6 @@ import java.util.List;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.google.common.base.Function;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import org.apache.http.HttpResponse;
@@ -32,12 +31,7 @@ public class ReplaceTag extends ClientSupport {
 	@Override
 	protected void doRun() throws IOException {
 		for (Event event : find("tag:" + from)) {
-			event.setValues(Event.TAG, Iterables.transform(event.getValues(Event.TAG), new Function<String, String>() {
-				@Override
-				public String apply(String tag) {
-					return from.equals(tag) ? to : tag;
-				}
-			}));
+			event.setValues(Event.TAG, Iterables.transform(event.getValues(Event.TAG), tag -> from.equals(tag) ? to : tag));
 			update(event);
 		}
 	}

@@ -8,7 +8,6 @@ import play.libs.F;
 import play.libs.F.Promise;
 import play.libs.ws.WS;
 import play.libs.ws.WSRequestHolder;
-import play.libs.ws.WSResponse;
 import play.mvc.Controller;
 import play.mvc.Result;
 
@@ -23,30 +22,21 @@ public class TimezoneController extends Controller {
 
 	public Promise<Result> find(Location location) {
 		return createRequest(location).get()
-			.map(new F.Function<WSResponse, ObjectNode>() {
-				@Override
-				public ObjectNode apply(WSResponse response) {
-					Preconditions.checkState(response.getStatus() == OK,
-						"Expected 200 status but got %d", response.getStatus());
-					return Nodes.readObject(response.getBody());
-				}
+			.map(response -> {
+				Preconditions.checkState(response.getStatus() == OK,
+					"Expected 200 status but got %d", response.getStatus());
+				return Nodes.readObject(response.getBody());
 			})
-			.map(new F.Function<ObjectNode, Result>() {
-				@Override
-				public Result apply(ObjectNode node) {
-					Preconditions.checkState("OK".equals(node.path("status").textValue()),
-						"Expected 'OK' status but got %s", node);
-					return ok(node);
-				}
+			.map((F.Function<ObjectNode, Result>) node -> {
+				Preconditions.checkState("OK".equals(node.path("status").textValue()),
+					"Expected 'OK' status but got %s", node);
+				return ok(node);
 			})
-			.recover(new F.Function<Throwable, Result>() {
-				@Override
-				public Result apply(Throwable t) {
-					Logger.error("Couldn't look up timezone for " + location, t);
-					return internalServerError();
-				}
+			.recover(t -> {
+				Logger.error("Couldn't look up timezone for " + location, t);
+				return internalServerError();
 			}
-		);
+			);
 	}
 
 	private WSRequestHolder createRequest(Location location) {

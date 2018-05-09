@@ -13,12 +13,7 @@ public abstract class RepositorySupport<T> {
 	}
 
 	protected void find(QueryBuilder query, Callback<T> callback) {
-		getIndex().find(query, new Callback<ObjectNode>() {
-			@Override
-			public void call(ObjectNode node) {
-				callback.call(toObject(node));
-			}
-		}, 100);
+		getIndex().find(query, node -> callback.call(toObject(node)), 100);
 	}
 
 	protected abstract Index getIndex();

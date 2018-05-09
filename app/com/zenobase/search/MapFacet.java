@@ -59,15 +59,10 @@ public class MapFacet extends FilteredFacet {
 	}
 
 	public static FacetBuilder builder(FilterParser filterParser) {
-		return new FacetBuilder() {
-			@Override
-			public Facet build(FacetOptions options) {
-				return new MapFacet(
-					options.get("id"),
-					options.get("field", String.class, Event.LOCATION.getName()),
-					options.get("factor", Double.class, 0.2),
-					filterParser.parse(options.get("filter")));
-			}
-		};
+		return options -> new MapFacet(
+			options.get("id"),
+			options.get("field", String.class, Event.LOCATION.getName()),
+			options.get("factor", Double.class, 0.2),
+			filterParser.parse(options.get("filter")));
 	}
 }

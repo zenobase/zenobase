@@ -17,12 +17,7 @@ public class IHealthFoodTaskManager extends IHealthTaskManagerSupport<IHealthFoo
 	@Inject
 	public IHealthFoodTaskManager(IHealthCredentialsManager credentialsManager, @Named("ihealth.api.sv.food") String sv) {
 		super(IHealthFoodTask.TYPE, credentialsManager, IHealthFoodTask.class);
-		register("food", sv, new ResultHandler<IHealthFoodTask>() {
-			@Override
-			public IHealthResultSupport process(IHealthFoodTask task, ObjectNode node) {
-				return new IHealthFoodResult(node, task.getPrincipal(), task.getTag(), task.getTimezone());
-			}
-		});
+		register("food", sv, (task, node) -> new IHealthFoodResult(node, task.getPrincipal(), task.getTag(), task.getTimezone()));
 	}
 
 	@Override

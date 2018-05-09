@@ -23,18 +23,8 @@ public class IdentitiesFilterBuilder {
 
 	public StringBloomFilter build() {
 		StringBloomFilter filter = new StringBloomFilter(Ints.checkedCast(users.size()));
-		users.find(new Callback<User>() {
-			@Override
-			public void call(User user) {
-				filter.put(user.getId());
-			}
-		});
-		authorizations.find(new AuthorizationQuery().clientIsNull(), new Callback<Authorization>() {
-			@Override
-			public void call(Authorization authorization) {
-				filter.put(authorization.getPrincipal().getId());
-			}
-		});
+		users.find(user -> filter.put(user.getId()));
+		authorizations.find(new AuthorizationQuery().clientIsNull(), authorization -> filter.put(authorization.getPrincipal().getId()));
 		return filter;
 	}
 }

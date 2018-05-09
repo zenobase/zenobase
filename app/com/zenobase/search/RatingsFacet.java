@@ -61,15 +61,10 @@ public class RatingsFacet extends FilteredFacet {
 	}
 
 	public static FacetBuilder builder(FilterParser filterParser) {
-		return new FacetBuilder() {
-			@Override
-			public Facet build(FacetOptions options) {
-				return new RatingsFacet(
-					options.get("id"),
-					Event.RATING.getName(),
-					options.get("scale", Integer.class, 5),
-					filterParser.parse(options.get("filter")));
-			}
-		};
+		return options -> new RatingsFacet(
+			options.get("id"),
+			Event.RATING.getName(),
+			options.get("scale", Integer.class, 5),
+			filterParser.parse(options.get("filter")));
 	}
 }

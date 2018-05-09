@@ -47,12 +47,7 @@ public abstract class TaskTestingSupport {
 	}
 
 	protected void runInApplication(OAuthTaskManager manager, ObjectNode settings) {
-		Helpers.running(Helpers.fakeApplication(), new Runnable() {
-			@Override
-			public void run() {
-				TaskTestingSupport.this.run(manager, settings);
-			}
-		});
+		Helpers.running(Helpers.fakeApplication(), () -> TaskTestingSupport.this.run(manager, settings));
 	}
 
 	private OAuthCredentials getCredentials() {

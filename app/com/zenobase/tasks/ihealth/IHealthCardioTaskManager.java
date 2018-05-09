@@ -17,18 +17,8 @@ public class IHealthCardioTaskManager extends IHealthTaskManagerSupport<IHealthC
 	@Inject
 	public IHealthCardioTaskManager(IHealthCredentialsManager credentialsManager, @Named("ihealth.api.sv.bp") String svBp, @Named("ihealth.api.sv.spo2") String svSpO2) {
 		super(IHealthCardioTask.TYPE, credentialsManager, IHealthCardioTask.class);
-		register("bp", svBp, new ResultHandler<IHealthCardioTask>() {
-			@Override
-			public IHealthResultSupport process(IHealthCardioTask task, ObjectNode node) {
-				return new IHealthBloodPressureResult(node, task.getPrincipal(), task.getTag(), task.getTimezone());
-			}
-		});
-		register("spo2", svSpO2, new ResultHandler<IHealthCardioTask>() {
-			@Override
-			public IHealthResultSupport process(IHealthCardioTask task, ObjectNode node) {
-				return new IHealthBloodOxygenResult(node, task.getPrincipal(), task.getTag(), task.getTimezone());
-			}
-		});
+		register("bp", svBp, (task, node) -> new IHealthBloodPressureResult(node, task.getPrincipal(), task.getTag(), task.getTimezone()));
+		register("spo2", svSpO2, (task, node) -> new IHealthBloodOxygenResult(node, task.getPrincipal(), task.getTag(), task.getTimezone()));
 	}
 
 	@Override

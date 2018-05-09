@@ -81,18 +81,15 @@ public class HeatmapFacet extends FilteredFacet {
 	}
 
 	public static FacetBuilder builder(FilterParser filterParser) {
-		return new FacetBuilder() {
-			@Override
-			public Facet build(FacetOptions options) {
-				String unit = options.get("unit");
-				return new HeatmapFacet(
-					options.get("id"),
-					options.get("field", String.class, Event.LOCATION.getName()),
-					options.get("value_field", String.class, null),
-					unit != null ? Units.valueOf(unit) : Unit.ONE,
-					options.get("precision", Integer.class, 8),
-					filterParser.parse(options.get("filter")));
-			}
+		return options -> {
+			String unit = options.get("unit");
+			return new HeatmapFacet(
+				options.get("id"),
+				options.get("field", String.class, Event.LOCATION.getName()),
+				options.get("value_field", String.class, null),
+				unit != null ? Units.valueOf(unit) : Unit.ONE,
+				options.get("precision", Integer.class, 8),
+				filterParser.parse(options.get("filter")));
 		};
 	}
 }

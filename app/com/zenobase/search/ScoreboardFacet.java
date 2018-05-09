@@ -94,19 +94,16 @@ public class ScoreboardFacet extends FilteredFacet {
 	}
 
 	public static FacetBuilder builder(FilterParser filterParser) {
-		return new FacetBuilder() {
-			@Override
-			public Facet build(FacetOptions options) {
-				String unit = options.get("unit");
-				return new ScoreboardFacet(
-					options.get("id"),
-					options.get("key_field"),
-					options.get("value_field"),
-					unit != null ? Units.valueOf(unit) : Unit.ONE,
-					options.get("order", String.class, "-count"),
-					options.get("limit", Integer.class, 10),
-					filterParser.parse(options.get("filter")));
-			}
+		return options -> {
+			String unit = options.get("unit");
+			return new ScoreboardFacet(
+				options.get("id"),
+				options.get("key_field"),
+				options.get("value_field"),
+				unit != null ? Units.valueOf(unit) : Unit.ONE,
+				options.get("order", String.class, "-count"),
+				options.get("limit", Integer.class, 10),
+				filterParser.parse(options.get("filter")));
 		};
 	}
 }

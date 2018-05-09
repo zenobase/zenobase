@@ -1,12 +1,12 @@
 package com.zenobase.controllers;
 
 import java.util.List;
+import java.util.function.Function;
 
 import javax.inject.Inject;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.google.common.base.Function;
 import com.google.common.collect.ImmutableList;
 import org.elasticsearch.index.engine.VersionConflictEngineException;
 import play.mvc.BodyParser;
@@ -17,7 +17,6 @@ import com.zenobase.commands.DeleteAuthorizationCommand;
 import com.zenobase.commands.DeleteBucketCommand;
 import com.zenobase.commands.DeleteTaskCommand;
 import com.zenobase.commands.UpdateBucketCommand;
-import com.zenobase.common.Callback;
 import com.zenobase.json.Nodes;
 import com.zenobase.models.Bucket;
 import com.zenobase.models.Role;
@@ -30,7 +29,6 @@ import com.zenobase.services.CommandDispatcher;
 import com.zenobase.services.TaskQuery;
 import com.zenobase.services.TaskRepository;
 import com.zenobase.services.UserRepository;
-import com.zenobase.tasks.Task;
 
 public class BucketController extends ControllerSupport {
 
@@ -190,18 +188,8 @@ public class BucketController extends ControllerSupport {
     		return conflict("bucket is aliased");
     	}
     	CompoundCommand command = new CompoundCommand(auth.getPrincipal(), "deleted bucket and associated data", "restored bucket and associated data");
-    	authorizations.find(new AuthorizationQuery().scopeEqualTo(bucket.getId()), new Callback<Authorization>() {
-			@Override
-			public void call(Authorization authorization) {
-				command.add(new DeleteAuthorizationCommand(auth.getPrincipal(), authorization));
-			}
-		});
-    	tasks.find(new TaskQuery().bucketEqualTo(bucketId), new Callback<Task>() {
-    		@Override
-    		public void call(Task task) {
-    			command.add(new DeleteTaskCommand(auth.getPrincipal(), task));
-    		}
-		});
+    	authorizations.find(new AuthorizationQuery().scopeEqualTo(bucket.getId()), authorization -> command.add(new DeleteAuthorizationCommand(auth.getPrincipal(), authorization)));
+    	tasks.find(new TaskQuery().bucketEqualTo(bucketId), task -> command.add(new DeleteTaskCommand(auth.getPrincipal(), task)));
     	command.add(new DeleteBucketCommand(auth.getPrincipal(), bucket));
     	String commandId = dispatcher.dispatch(command.unwrap());
 		response().setHeader(COMMAND_ID, commandId);

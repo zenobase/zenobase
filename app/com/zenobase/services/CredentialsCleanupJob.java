@@ -29,11 +29,6 @@ public class CredentialsCleanupJob extends Job {
 	public void run() {
 		Logger.info("Cleaning up credentials...");
 		CredentialsQuery query = new CredentialsQuery().notAuthorized().createdBefore(DateTime.now().minus(MAX_AGE));
-		credentials.find(query, new Callback<Credentials>() {
-			@Override
-			public void call(Credentials credentials) {
-				dispatcher.dispatch(new DeleteCredentialsCommand(credentials.getPrincipal(), credentials));
-			}
-		});
+		credentials.find(query, credentials -> dispatcher.dispatch(new DeleteCredentialsCommand(credentials.getPrincipal(), credentials)));
 	}
 }

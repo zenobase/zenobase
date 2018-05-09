@@ -3,9 +3,7 @@ package com.zenobase.tasks.google;
 import java.util.List;
 import java.util.Map;
 
-import com.google.common.base.Function;
 import com.google.common.base.Objects;
-import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Maps;
@@ -79,12 +77,7 @@ abstract class GoogleFitTaskManagerSupport<T extends GoogleFitTaskSupport> exten
 	protected Map<String, DataStream> getDataStreams(OAuthCredentials credentials) {
 		OAuthRequest request = new OAuthRequest(Verb.GET, "https://www.googleapis.com/fitness/v1/users/me/dataSources");
 		Response response = send(request, credentials);
-		return Maps.uniqueIndex(new DataSourcesResult(parseObject(response)).get(), new Function<DataStream, String>() {
-			@Override
-			public String apply(DataStream stream) {
-				return stream.getId();
-			}
-		});
+		return Maps.uniqueIndex(new DataSourcesResult(parseObject(response)).get(), DataStream::getId);
 	}
 
 	protected List<DataPoint> getDataPoints(GoogleFitTaskSupport task, OAuthCredentials credentials, DataStream stream) {
@@ -104,16 +97,13 @@ abstract class GoogleFitTaskManagerSupport<T extends GoogleFitTaskSupport> exten
 	}
 
 	protected Iterable<DataStream> filter(Iterable<DataStream> streams, String... dataTypes) {
-		return Iterables.filter(streams, new Predicate<DataStream>() {
-			@Override
-			public boolean apply(DataStream stream) {
-				for (String dataType : dataTypes) {
-					if (dataType.equals(stream.getDataType())) {
-						return true;
-					}
+		return Iterables.filter(streams, stream -> {
+			for (String dataType : dataTypes) {
+				if (dataType.equals(stream.getDataType())) {
+					return true;
 				}
-				return false;
 			}
+			return false;
 		});
 	}
 

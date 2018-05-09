@@ -88,17 +88,14 @@ public class HistogramFacet extends Facet {
 	}
 
 	public static FacetBuilder builder(FilterParser filterParser) {
-		return new FacetBuilder() {
-			@Override
-			public Facet build(FacetOptions options) {
-				String unit = options.get("unit");
-				return new HistogramFacet(
-					options.get("id"),
-					options.get("field"),
-					options.get("interval", Double.class, 10.0),
-					unit != null ? Units.valueOf(unit) : Unit.ONE,
-					filterParser.parse(options.get("filter")));
-			}
+		return options -> {
+			String unit = options.get("unit");
+			return new HistogramFacet(
+				options.get("id"),
+				options.get("field"),
+				options.get("interval", Double.class, 10.0),
+				unit != null ? Units.valueOf(unit) : Unit.ONE,
+				filterParser.parse(options.get("filter")));
 		};
 	}
 }

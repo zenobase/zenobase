@@ -38,23 +38,20 @@ public class BucketRefreshJob extends Job {
 	public void run() {
 		Stopwatch timer = Stopwatch.createStarted();
 		Logger.warn("Refreshing buckets...");
-		buckets.find(new BucketQuery().isRefreshable(), new Callback<Bucket>() {
-			@Override
-			public void call(Bucket bucket) {
-				User owner = users.find(Iterables.getOnlyElement(bucket.getPrincipals(Role.OWNER)));
-				if (owner.getQuota() == null) {
-					Logger.warn("Bucket owner does not have refresh privileges: {}", owner.getName());
-					return;
+		buckets.find(new BucketQuery().isRefreshable(), bucket -> {
+			User owner = users.find(Iterables.getOnlyElement(bucket.getPrincipals(Role.OWNER)));
+			if (owner.getQuota() == null) {
+				Logger.warn("Bucket owner does not have refresh privileges: {}", owner.getName());
+				return;
+			}
+			try {
+				for (Task task : tasks.find(new TaskQuery().bucketEqualTo(bucket.getId()), TaskQuery.orderByCreated(true), 0, 100)) {
+					refresher.refresh(task);
 				}
-				try {
-					for (Task task : tasks.find(new TaskQuery().bucketEqualTo(bucket.getId()), TaskQuery.orderByCreated(true), 0, 100)) {
-						refresher.refresh(task);
-					}
-				} catch (CredentialsException e) {
-					Logger.warn("Bucket owner needs to update credentials: {}", owner.getName());
-				} catch (RuntimeException e) {
-					Logger.error("Couldn't refresh bucket {} for: {}", bucket.getId(), owner.getName(), e);
-				}
+			} catch (CredentialsException e) {
+				Logger.warn("Bucket owner needs to update credentials: {}", owner.getName());
+			} catch (RuntimeException e) {
+				Logger.error("Couldn't refresh bucket {} for: {}", bucket.getId(), owner.getName(), e);
 			}
 		});
 		Logger.warn("Refreshed all buckets in {} ms", timer.elapsed(TimeUnit.MILLISECONDS));

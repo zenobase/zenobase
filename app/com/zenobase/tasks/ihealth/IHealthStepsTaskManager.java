@@ -17,12 +17,7 @@ public class IHealthStepsTaskManager extends IHealthTaskManagerSupport<IHealthSt
 	@Inject
 	public IHealthStepsTaskManager(IHealthCredentialsManager credentialsManager, @Named("ihealth.api.sv.activity") String sv) {
 		super(IHealthStepsTask.TYPE, credentialsManager, IHealthStepsTask.class);
-		register("activity", sv, new ResultHandler<IHealthStepsTask>() {
-			@Override
-			public IHealthResultSupport process(IHealthStepsTask task, ObjectNode node) {
-				return new IHealthStepsResult(node, task.getPrincipal(), task.getTag(), task.getTimezone());
-			}
-		});
+		register("activity", sv, (task, node) -> new IHealthStepsResult(node, task.getPrincipal(), task.getTag(), task.getTimezone()));
 	}
 
 	@Override

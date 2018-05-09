@@ -28,14 +28,11 @@ public class BedditApi extends CustomApi20 {
 
 	@Override
 	public AccessTokenExtractor getAccessTokenExtractor() {
-		return new AccessTokenExtractor() {
-			@Override
-			public Token extract(String response) {
-				ObjectNode node = Nodes.readObject(response);
-				String token = node.path(OAuthConstants.ACCESS_TOKEN).textValue();
-				int userId = node.path("user").intValue();
-				return new BedditToken(token, userId);
-			}
+		return response -> {
+			ObjectNode node = Nodes.readObject(response);
+			String token = node.path(OAuthConstants.ACCESS_TOKEN).textValue();
+			int userId = node.path("user").intValue();
+			return new BedditToken(token, userId);
 		};
 	}
 }

@@ -38,12 +38,9 @@ public class Scheduler {
 	}
 
 	private void schedule(Job job) {
-		schedule(job.getBegin(), job.getPeriod(), new Runnable() {
-			@Override
-			public void run() {
-				if (bus.isMaster() && !bus.isReadOnly() && !bus.isSchedulerDisabled()) {
-					job.run();
-				}
+		schedule(job.getBegin(), job.getPeriod(), () -> {
+			if (bus.isMaster() && !bus.isReadOnly() && !bus.isSchedulerDisabled()) {
+				job.run();
 			}
 		});
 	}

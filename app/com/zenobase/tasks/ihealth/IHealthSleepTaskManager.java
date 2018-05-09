@@ -17,12 +17,7 @@ public class IHealthSleepTaskManager extends IHealthTaskManagerSupport<IHealthSl
 	@Inject
 	public IHealthSleepTaskManager(IHealthCredentialsManager credentialsManager, @Named("ihealth.api.sv.sleep") String sv) {
 		super(IHealthSleepTask.TYPE, credentialsManager, IHealthSleepTask.class);
-		register("sleep", sv, new ResultHandler<IHealthSleepTask>() {
-			@Override
-			public IHealthResultSupport process(IHealthSleepTask task, ObjectNode node) {
-				return new IHealthSleepResult(node, task.getPrincipal(), task.getTag(), task.getTimezone());
-			}
-		});
+		register("sleep", sv, (task, node) -> new IHealthSleepResult(node, task.getPrincipal(), task.getTag(), task.getTimezone()));
 	}
 
 	@Override

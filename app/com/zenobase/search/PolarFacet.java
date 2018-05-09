@@ -167,18 +167,15 @@ public class PolarFacet extends FilteredFacet {
 	}
 
 	public static FacetBuilder builder(FilterParser filterParser) {
-		return new FacetBuilder() {
-			@Override
-			public Facet build(FacetOptions options) {
-				String unit = options.get("unit");
-				return new PolarFacet(
-					options.get("id"),
-					options.get("key_field", String.class, Event.TIMESTAMP.getName()),
-					options.get("value_field", String.class, Event.TIMESTAMP.getName()),
-					Interval.valueOf(options.get("interval").toUpperCase()),
-					unit != null ? Units.valueOf(unit) : Unit.ONE,
-					filterParser.parse(options.get("filter")));
-			}
+		return options -> {
+			String unit = options.get("unit");
+			return new PolarFacet(
+				options.get("id"),
+				options.get("key_field", String.class, Event.TIMESTAMP.getName()),
+				options.get("value_field", String.class, Event.TIMESTAMP.getName()),
+				Interval.valueOf(options.get("interval").toUpperCase()),
+				unit != null ? Units.valueOf(unit) : Unit.ONE,
+				filterParser.parse(options.get("filter")));
 		};
 	}
 }

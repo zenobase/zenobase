@@ -235,26 +235,23 @@ public class ScatterPlotFacet extends Facet {
 	}
 
 	public static FacetBuilder builder(FilterParser filterParser) {
-		return new FacetBuilder() {
-			@Override
-			public Facet build(FacetOptions options) {
-				String id = options.get("id");
-				Series x = new Series(id + "-x",
-					options.get("field_x"),
-					parseUnit(options.get("unit_x")),
-					parseStatistic(options.get("statistic_x", String.class, "avg")),
-					filterParser.parse(options.get("filter_x")));
-				Series y = new Series(id + "-y",
-					options.get("field_y"),
-					parseUnit(options.get("unit_y")),
-					parseStatistic(options.get("statistic_y", String.class, "avg")),
-					filterParser.parse(options.get("filter_y")));
-				return new ScatterPlotFacet(id, x, y,
-					options.get("key_field", String.class, Event.TIMESTAMP.getName()),
-					options.get("interval", String.class, "day"),
-					options.get("timezone", DateTimeZone.class, null),
-					options.get("lag", Integer.class, 0));
-			}
+		return options -> {
+			String id = options.get("id");
+			Series x = new Series(id + "-x",
+				options.get("field_x"),
+				parseUnit(options.get("unit_x")),
+				parseStatistic(options.get("statistic_x", String.class, "avg")),
+				filterParser.parse(options.get("filter_x")));
+			Series y = new Series(id + "-y",
+				options.get("field_y"),
+				parseUnit(options.get("unit_y")),
+				parseStatistic(options.get("statistic_y", String.class, "avg")),
+				filterParser.parse(options.get("filter_y")));
+			return new ScatterPlotFacet(id, x, y,
+				options.get("key_field", String.class, Event.TIMESTAMP.getName()),
+				options.get("interval", String.class, "day"),
+				options.get("timezone", DateTimeZone.class, null),
+				options.get("lag", Integer.class, 0));
 		};
 	}
 

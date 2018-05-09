@@ -50,17 +50,12 @@ public class ListFacet extends Facet {
 	}
 
 	public static FacetBuilder builder(FilterParser filterParser, Schema schema) {
-		return new FacetBuilder() {
-			@Override
-			public Facet build(FacetOptions options) {
-				return new ListFacet(
-					options.get("id"),
-					options.get("offset", Integer.class, 0),
-					options.get("limit", Integer.class, 10),
-					options.get("order", String.class, "-timestamp"),
-					filterParser.parse(options.get("filter")),
-					schema);
-			}
-		};
+		return options -> new ListFacet(
+			options.get("id"),
+			options.get("offset", Integer.class, 0),
+			options.get("limit", Integer.class, 10),
+			options.get("order", String.class, "-timestamp"),
+			filterParser.parse(options.get("filter")),
+			schema);
 	}
 }
