@@ -1,6 +1,5 @@
 package com.zenobase.tasks.rescuetime;
 
-import java.util.Iterator;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -114,11 +113,7 @@ public class RescueTimeProductivityTaskManager extends OAuthTaskManager {
 	}
 
 	private void removeNotAfter(List<Event> events, DateTime last) {
-		for (Iterator<Event> i = events.iterator(); i.hasNext();) {
-			if (!i.next().getValue(Event.TIMESTAMP).isAfter(last)) {
-				i.remove();
-			}
-		}
+		events.removeIf(event -> !event.getValue(Event.TIMESTAMP).isAfter(last));
 	}
 
 	private Command createCommand(Task task, List<Event> events) {
