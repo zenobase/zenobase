@@ -5,7 +5,6 @@ import static org.fest.assertions.Assertions.assertThat;
 import static play.test.Helpers.*;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
@@ -49,7 +48,7 @@ public class BrowserTesting {
 	private WebDriverWait wait;
 
 	@Before
-	public void setUp() throws MalformedURLException {
+	public void setUp() {
 		Assume.assumeFalse(Boolean.parseBoolean(System.getProperty("webdriver.skip", "false")));
 		try {
 			driver = new ChromeDriver();

@@ -19,7 +19,7 @@ public class CallbackAnswer<T> implements Answer<Callback<T>> {
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public Callback<T> answer(InvocationOnMock invocation) throws Throwable {
+	public Callback<T> answer(InvocationOnMock invocation) {
 		for (Object arg : invocation.getArguments()) {
 			if (arg instanceof Callback) {
 				for (T value : values) {

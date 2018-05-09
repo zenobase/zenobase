@@ -3,14 +3,12 @@ package com.zenobase.json;
 import static com.zenobase.testing.NodeAssert.assertThat;
 import static org.fest.assertions.Assertions.assertThat;
 
-import java.io.IOException;
-
 import org.junit.Test;
 
 public class SchemaBuilderTest {
 
 	@Test
-	public void test() throws IOException {
+	public void test() {
 
 		String typeName = "test";
 		TokenField field = new TokenField("who");
