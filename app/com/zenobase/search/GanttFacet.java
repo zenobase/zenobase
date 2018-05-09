@@ -48,16 +48,17 @@ public class GanttFacet extends FilteredFacet {
 		if (!asc) {
 			s = s.substring(1);
 		}
-		if ("count".equals(s)) {
-			return Terms.Order.count(asc);
-		} else if ("term".equals(s)) {
-			return Terms.Order.term(asc);
-		} else if ("min".equals(s)) {
-			return Terms.Order.aggregation(getId(), "min", asc);
-		} else if ("max".equals(s)) {
-			return Terms.Order.aggregation(getId(), "max", asc);
-		} else {
-			throw new IllegalArgumentException("Invalid order: " + s);
+		switch (s) {
+			case "count":
+				return Terms.Order.count(asc);
+			case "term":
+				return Terms.Order.term(asc);
+			case "min":
+				return Terms.Order.aggregation(getId(), "min", asc);
+			case "max":
+				return Terms.Order.aggregation(getId(), "max", asc);
+			default:
+				throw new IllegalArgumentException("Invalid order: " + s);
 		}
 	}
 

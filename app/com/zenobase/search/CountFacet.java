@@ -37,12 +37,13 @@ public class CountFacet extends FilteredFacet {
 		if (!asc) {
 			s = s.substring(1);
 		}
-		if ("count".equals(s)) {
-			return Terms.Order.count(asc);
-		} else if ("term".equals(s)) {
-			return Terms.Order.term(asc);
-		} else {
-			throw new IllegalArgumentException("Invalid order: " + s);
+		switch (s) {
+			case "count":
+				return Terms.Order.count(asc);
+			case "term":
+				return Terms.Order.term(asc);
+			default:
+				throw new IllegalArgumentException("Invalid order: " + s);
 		}
 	}
 
