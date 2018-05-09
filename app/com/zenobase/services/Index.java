@@ -113,9 +113,9 @@ public class Index {
 	}
 
 	private static String getFailureMessage(BulkItemResponse[] responses) {
-		for (int i = 0; i < responses.length; ++i) {
-			if (responses[i].isFailed()) {
-				return responses[i].getFailureMessage();
+		for (BulkItemResponse response : responses) {
+			if (response.isFailed()) {
+				return response.getFailureMessage();
 			}
 		}
 		return null;
