@@ -1852,15 +1852,22 @@
 		};
 
 		WidgetFilter.prototype.build = function() {
-			var constraints = [];
+			var field = this.field.id;
+			var values = [];
 			if (this.value) {
-				var r = /([^"]\S*|".+?")\s*/g;
-				var m;
-				while (m = r.exec(this.value)) {
-					constraints.push(new Constraint(this.field.id, m[1]));
+				if (this.field.tokenized) {
+					var r = /([^"]\S*|".+?")\s*/g;
+					var m;
+					while (m = r.exec(this.value)) {
+						values.push(m[1]);
+					}
+				} else {
+					values = [ this.value ];
 				}
 			}
-			return constraints;
+			return $.map(values, function (value) {
+				return new Constraint(field, value);
+			});
 		};
 
 		return WidgetFilter;
@@ -1890,19 +1897,23 @@
 			{
 				id : 'resource.title',
 				label : 'resources',
-				icon : 'fa-bookmark'
+				icon : 'fa-bookmark',
+				tokenized : true
 			}, {
 				id : 'source.title',
 				label : 'sources',
-				icon : 'fa-external-link'
+				icon : 'fa-external-link',
+                tokenized : true
 			}, {
 				id : 'tag',
 				label : 'tags',
-				icon : 'fa-tag'
+				icon : 'fa-tag',
+                tokenized : false
 			}, {
 				id : 'note',
 				label : 'notes',
-				icon : 'fa-comment-o'
+				icon : 'fa-comment-o',
+                tokenized : true
 			}
 		]);
 		$scope.applyFilter = function() {
