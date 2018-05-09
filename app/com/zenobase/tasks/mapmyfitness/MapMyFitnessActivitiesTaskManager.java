@@ -54,7 +54,7 @@ public class MapMyFitnessActivitiesTaskManager extends MapMyFitnessTaskManagerSu
 			request.addQuerystringParameter("user", user.getId());
 			request.addQuerystringParameter("limit", "100");
 			if (from != null) {
-				request.addQuerystringParameter("started_after", from.toString());
+				request.addQuerystringParameter("started_after", from);
 			}
 			Response response = send(request, credentials);
 			WorkoutsResult result = new WorkoutsResult(parseObject(response), task.getPrincipal(), user.isImperial());

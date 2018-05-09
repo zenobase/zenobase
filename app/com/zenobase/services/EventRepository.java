@@ -93,7 +93,7 @@ public class EventRepository {
 		List<String> terms = Lists.newArrayList();
 		Terms aggregation = response.getAggregations().get(id);
 		for (Terms.Bucket bucket : aggregation.getBuckets()) {
-			terms.add(bucket.getKey().toString());
+			terms.add(bucket.getKey());
 		}
 		return terms;
 	}

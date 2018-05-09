@@ -67,7 +67,7 @@ public class NokiaHealthWeightTaskManager extends OAuthTaskManager {
 		request.addQuerystringParameter("action", "getmeas");
 		request.addQuerystringParameter("category", "1"); // actual measurements
 		if (task.getMarker() != null) {
-			request.addQuerystringParameter("lastupdate", task.getMarker().toString());
+			request.addQuerystringParameter("lastupdate", task.getMarker());
 		}
 		return request;
 	}

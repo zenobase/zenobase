@@ -52,7 +52,7 @@ public class MapMyFitnessWeightTaskManager extends MapMyFitnessTaskManagerSuppor
 			request.addQuerystringParameter("user", user.getId());
 			request.addQuerystringParameter("limit", "100");
 			if (from != null) {
-				request.addQuerystringParameter("target_start_datetime", from.toString());
+				request.addQuerystringParameter("target_start_datetime", from);
 			}
 			Response response = send(request, credentials);
 			WeightResult result = new WeightResult(parseObject(response), task.getPrincipal(), task.getTag(), user.isImperial());

@@ -101,7 +101,7 @@ public class OffsetTimelineFacet extends TimelineFacetSupport {
 	private Map<String, ObjectNode> getMap(Interval interval) {
 		Map<String, ObjectNode> counts = Maps.newTreeMap();
 		if (interval != null) {
-			for (DateTime time : OffsetIntervals.expand(interval.getStart(), interval.getEnd(), this.interval.toString())) {
+			for (DateTime time : OffsetIntervals.expand(interval.getStart(), interval.getEnd(), this.interval)) {
 				String label = getLabel(time);
 				ObjectNode node = Nodes.newObject();
 				node.put("label", label);
