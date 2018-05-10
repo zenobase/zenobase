@@ -72,7 +72,12 @@ public class CommandRebuild {
 
 	private void rebuildBuckets(IndexManager indexManager) {
 		EventRepository events = new EventRepository(indexManager);
-		new BucketRepository(indexManager).findAll(bucket -> {
+		BucketRepository buckets = new BucketRepository(indexManager);
+		buckets.findAll(bucket -> {
+			if (!events.exists(bucket.getId())) {
+				Logger.warn("Fixing missing aliases for bucket {}", bucket.getId());
+				buckets.realias(bucket);
+			}
 			Identity owner = Iterables.getOnlyElement(bucket.getPrincipals(Role.OWNER));
 			dispatcher.dispatch(new CreateBucketCommand(owner, bucket));
 			if (!bucket.isVirtual()) {

@@ -84,6 +84,10 @@ public class EventRepository {
 		getIndex(bucketId).find(QueryBuilders.matchAllQuery(), node -> callback.call(new Event(node)), 100);
 	}
 
+	public boolean exists(String bucketId) {
+		return getIndex(bucketId).exists();
+	}
+
 	public List<String> terms(String bucketId, String field) {
 		int limit = 100;
 		String id = "terms";
