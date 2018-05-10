@@ -1,0 +1,33 @@
+version: 2
+jobs:
+  build:
+    working_directory: ~/zenobase
+    environment:
+      SBT_VERSION: 0.13.16
+    docker:
+    - image: openjdk:8
+    steps:
+    - run:
+        command: |
+          apt update && apt install -y curl
+          curl -L -o sbt-$SBT_VERSION.deb https://dl.bintray.com/sbt/debian/sbt-$SBT_VERSION.deb
+          dpkg -i sbt-$SBT_VERSION.deb
+          rm sbt-$SBT_VERSION.deb
+          apt-get update
+          apt-get install -y sbt python-pip git
+          pip install awscli
+          apt-get clean && apt-get autoclean
+    - checkout
+    - restore_cache:
+        key: sbt-cache
+    - run: sbt 'test-only *Test'
+    - save_cache:
+        key: sbt-cache
+        paths:
+        - ~/.ivy2
+        - ~/.sbt
+        - ~/.m2
+    - deploy:
+        command: |
+          sbt universal:package-zip-tarball
+          aws s3 cp target/universal/zenobase-SNAPSHOT.tgz s3://zeno-builds/zenobase-$CIRCLE_BUILD_NUM.tgz
