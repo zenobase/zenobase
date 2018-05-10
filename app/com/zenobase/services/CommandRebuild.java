@@ -30,7 +30,7 @@ public class CommandRebuild {
 	private final CommandDispatcher dispatcher;
 
 	@Inject
-	public CommandRebuild(@Named("es.replay") String sourceCluster, NodeFactory nodeFactory, CommandDispatcher dispatcher) {
+	public CommandRebuild(@Named("es.rebuild") String sourceCluster, NodeFactory nodeFactory, CommandDispatcher dispatcher) {
 		this.sourceCluster = sourceCluster;
 		this.nodeFactory = nodeFactory;
 		this.dispatcher = dispatcher;

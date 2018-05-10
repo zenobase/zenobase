@@ -468,7 +468,7 @@ public class Global extends GlobalSettings {
 			}
 
 			private void bindConfiguration() {
-				Configuration conf = Play.application().configuration();
+				Configuration conf = getApplicationConfig();
 				for (String key : conf.keys()) {
 					try {
 						String value = conf.getString(key);
@@ -491,9 +491,17 @@ public class Global extends GlobalSettings {
 	private void replay() {
 		UserRepository users = injector.getInstance(UserRepository.class);
 		if (users.isEmpty()) {
-			// injector.getInstance(CommandReplay.class).replay();
-			injector.getInstance(CommandRebuild.class).rebuild();
+			Configuration esConfig = getApplicationConfig().getConfig("es");
+			if (esConfig.getString("replay") != null) {
+				injector.getInstance(CommandReplay.class).replay();
+			} else if (esConfig.getString("rebuild") != null) {
+				injector.getInstance(CommandRebuild.class).rebuild();
+			}
 		}
+	}
+
+	private static Configuration getApplicationConfig() {
+		return Play.application().configuration();
 	}
 
     private void startScheduler() {

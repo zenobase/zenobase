@@ -126,7 +126,7 @@ Use this procedure to rebuild the database:
 
   3. Update the build number in the stack settings [OpsWorks].
 
-  4. Increment "elasticsearch.replay" and "clusterName" in the stack settings [OpsWorks].
+  4. Increment "elasticsearch.clusterName" and ".replay" (or ".rebuild", to compact the history during the migration) in the stack settings [OpsWorks].
 
   5. Set up new instances [OpsWorks]:
 
