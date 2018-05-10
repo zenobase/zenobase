@@ -81,7 +81,7 @@ public class GoogleFitLocateTaskManager extends GoogleFitTaskManagerSupport<Goog
 	private Command createCommand(Task task, DateTime marker, OAuthCredentials credentials, List<Command> updates, Token expiredToken) {
 		CompoundCommand command = new CompoundCommand(task.getPrincipal(), "ran " + getType() + " task", "reverted " + getType() + " task");
 		command.add(UpdateTaskCommand.builder(task)
-			.set(Task.COMPLETED, task.getCompleted(), new DateTime(DateTimeZone.UTC))
+			.set(Task.COMPLETED, task.getCompleted(), DateTime.now(DateTimeZone.UTC))
 			.set(Task.STATUS, task.getStatus(), Task.Status.SUCCESS)
 			.set(Task.MARKER, task.getMarker(), marker != null ? marker.toString() : null)
 			.set(Task.UNDO, task.getUndoId(), command.getId())

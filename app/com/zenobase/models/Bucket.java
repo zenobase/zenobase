@@ -53,7 +53,7 @@ public class Bucket extends DomainNode {
 
 	public Bucket(String id) {
 		setValue(ID, id);
-		setValue(CREATED, new DateTime(DateTimeZone.UTC));
+		setValue(CREATED, DateTime.now(DateTimeZone.UTC));
 	}
 
 	@Override

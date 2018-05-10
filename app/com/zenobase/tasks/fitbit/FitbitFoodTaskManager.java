@@ -40,7 +40,7 @@ public class FitbitFoodTaskManager extends FitbitTaskManagerSupport<FitbitFoodTa
 	protected Command safeExecute(FitbitFoodTask task, OAuthCredentials credentials, Token token) {
 		List<Event> events = Lists.newArrayList();
 		FitbitProfileResult profile = getProfile(task, credentials);
-		LocalDate today = new DateTime(profile.getTimezone()).toLocalDate();
+		LocalDate today = DateTime.now(profile.getTimezone()).toLocalDate();
 		LocalDate fromDate = getFromDate(task);
 		for (LocalDate date = fromDate; date.isBefore(today); date = date.plusYears(1)) {
 			LocalDate toDate = Ordering.natural().min(today, date.plusYears(1)).minusDays(1);

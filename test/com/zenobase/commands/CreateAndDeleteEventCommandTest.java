@@ -24,7 +24,7 @@ public class CreateAndDeleteEventCommandTest {
 		Identity principal = new Identity();
 		String bucketId = Generator.id();
 		Event event = new Event();
-		event.setValue(Event.TIMESTAMP, new DateTime(DateTimeZone.UTC));
+		event.setValue(Event.TIMESTAMP, DateTime.now(DateTimeZone.UTC));
 
 		Command command = new CreateEventCommand(principal, bucketId, event);
 		registry.execute(command);

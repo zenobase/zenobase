@@ -30,7 +30,7 @@ public class ListFacetTest extends FacetTestSupport {
 		Event event = new Event();
 		event.setValue(Event.AUTHOR, principal);
 		event.setValue(Event.TAG, tag);
-		event.setValue(Event.TIMESTAMP, new DateTime(DateTimeZone.UTC).minusHours(hoursAgo));
+		event.setValue(Event.TIMESTAMP, DateTime.now(DateTimeZone.UTC).minusHours(hoursAgo));
 		return event;
 	}
 

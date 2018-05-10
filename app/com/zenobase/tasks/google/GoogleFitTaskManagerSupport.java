@@ -3,6 +3,7 @@ package com.zenobase.tasks.google;
 import java.util.List;
 import java.util.Map;
 
+import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Maps;
@@ -109,7 +110,7 @@ abstract class GoogleFitTaskManagerSupport<T extends GoogleFitTaskSupport> exten
 	protected Command createCommand(Task task, OAuthCredentials credentials, List<Event> events, Token expiredToken) {
 		CompoundCommand command = new CompoundCommand(task.getPrincipal(), "ran " + getType() + " task", "reverted " + getType() + " task");
 		command.add(UpdateTaskCommand.builder(task)
-			.set(Task.COMPLETED, task.getCompleted(), new DateTime(DateTimeZone.UTC))
+			.set(Task.COMPLETED, task.getCompleted(), DateTime.now(DateTimeZone.UTC))
 			.set(Task.STATUS, task.getStatus(), Task.Status.SUCCESS)
 			.set(Task.MARKER, task.getMarker(), events.isEmpty() ? task.getMarker() : getMarker(events))
 			.set(Task.UNDO, task.getUndoId(), command.getId())

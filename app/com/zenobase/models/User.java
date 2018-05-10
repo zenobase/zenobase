@@ -38,7 +38,7 @@ public class User extends DomainNode {
 	}
 
 	public User(String id, String name) {
-		this(id, name, new DateTime(DateTimeZone.UTC));
+		this(id, name, DateTime.now(DateTimeZone.UTC));
 	}
 
 	public User(String id, String name, DateTime created) {

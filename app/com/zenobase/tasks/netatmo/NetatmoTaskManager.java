@@ -56,7 +56,7 @@ public class NetatmoTaskManager extends OAuthTaskManager {
 			reauthorize(credentials);
 		}
 		List<Event> events = Lists.newArrayList();
-		String to = formatMarker(new DateTime(DateTimeZone.UTC).minusMinutes(1));
+		String to = formatMarker(DateTime.now(DateTimeZone.UTC).minusMinutes(1));
 		for (Device device : getDevices(credentials, task.includeModules())) {
 			events.addAll(getEvents(task, credentials, device, to));
 		}
@@ -152,7 +152,7 @@ public class NetatmoTaskManager extends OAuthTaskManager {
 	private Command createCommand(NetatmoTask task, OAuthCredentials credentials, List<Event> events, Token expiredToken) {
 		CompoundCommand command = new CompoundCommand(task.getPrincipal(), "ran netatmo task", "reverted netatmo task");
 		command.add(UpdateTaskCommand.builder(task)
-			.set(Task.COMPLETED, task.getCompleted(), new DateTime(DateTimeZone.UTC))
+			.set(Task.COMPLETED, task.getCompleted(), DateTime.now(DateTimeZone.UTC))
 			.set(Task.STATUS, task.getStatus(), Task.Status.SUCCESS)
 			.set(Task.MARKER, task.getMarker(), events.isEmpty() ? task.getMarker() : getMarker(events, task.isHourly()))
 			.set(Task.UNDO, task.getUndoId(), command.getId())

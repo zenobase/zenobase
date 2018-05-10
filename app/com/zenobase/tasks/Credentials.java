@@ -36,7 +36,7 @@ public class Credentials extends DomainNode {
 	}
 
 	public Credentials(String type, Identity principal) {
-		this(type, principal, new DateTime(DateTimeZone.UTC));
+		this(type, principal, DateTime.now(DateTimeZone.UTC));
 	}
 
 	public Credentials(String type, Identity principal, DateTime created) {

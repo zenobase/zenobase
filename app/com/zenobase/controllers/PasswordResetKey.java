@@ -14,7 +14,7 @@ public class PasswordResetKey {
 	private final DateTime expires;
 
 	public PasswordResetKey(User user) {
-		this(user, new DateTime(DateTimeZone.UTC).plusDays(1));
+		this(user, DateTime.now(DateTimeZone.UTC).plusDays(1));
 	}
 
 	public PasswordResetKey(User user, String expirationToken) {

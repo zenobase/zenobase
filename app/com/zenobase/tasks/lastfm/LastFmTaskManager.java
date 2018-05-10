@@ -122,7 +122,7 @@ public class LastFmTaskManager extends OAuthTaskManager {
 	private static Command createCommand(Task task, List<Event> events, DateTime to) {
 		CompoundCommand command = new CompoundCommand(task.getPrincipal(), "ran lastfm task", "reverted lastfm task");
 		command.add(UpdateTaskCommand.builder(task)
-			.set(Task.COMPLETED, task.getCompleted(), new DateTime(DateTimeZone.UTC))
+			.set(Task.COMPLETED, task.getCompleted(), DateTime.now(DateTimeZone.UTC))
 			.set(Task.STATUS, task.getStatus(), Task.Status.SUCCESS)
 			.set(Task.MARKER, task.getMarker(), Long.toString(to.getMillis() / 1000))
 			.set(Task.UNDO, task.getUndoId(), command.getId())

@@ -110,7 +110,7 @@ public class FitBarkTaskManager extends OAuthTaskManager {
 	private Command createCommand(Task task, List<Event> events) {
 		CompoundCommand command = new CompoundCommand(task.getPrincipal(), "ran " + getType() + " task", "reverted " + getType() + " task");
 		command.add(UpdateTaskCommand.builder(task)
-			.set(Task.COMPLETED, task.getCompleted(), new DateTime(DateTimeZone.UTC))
+			.set(Task.COMPLETED, task.getCompleted(), DateTime.now(DateTimeZone.UTC))
 			.set(Task.STATUS, task.getStatus(), Task.Status.SUCCESS)
 			.set(Task.MARKER, task.getMarker(), events.isEmpty() ? task.getMarker() : getMarker(events))
 			.set(Task.UNDO, task.getUndoId(), command.getId())

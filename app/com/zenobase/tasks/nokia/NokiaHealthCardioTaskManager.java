@@ -73,7 +73,7 @@ public class NokiaHealthCardioTaskManager extends OAuthTaskManager {
 	private static Command createCommand(NokiaHealthCardioTask task, NokiaHealthCardioResult result) {
 		CompoundCommand command = new CompoundCommand(task.getPrincipal(), "ran nokia-cardio task", "reverted nokia-cardio task");
 		command.add(UpdateTaskCommand.builder(task)
-			.set(Task.COMPLETED, task.getCompleted(), new DateTime(DateTimeZone.UTC))
+			.set(Task.COMPLETED, task.getCompleted(), DateTime.now(DateTimeZone.UTC))
 			.set(Task.STATUS, task.getStatus(), Task.Status.SUCCESS)
 			.set(Task.MARKER, task.getMarker(), result.getMarker())
 			.set(Task.UNDO, task.getUndoId(), command.getId())

@@ -176,7 +176,7 @@ public class EventListController extends ControllerSupport {
 		event.setValue(Event.ID, Generator.id());
 		event.setValue(Event.AUTHOR, principal);
 		if (!event.contains(Event.TIMESTAMP)) {
-			event.addValue(Event.TIMESTAMP, new DateTime(DateTimeZone.UTC));
+			event.addValue(Event.TIMESTAMP, DateTime.now(DateTimeZone.UTC));
 		}
 		return event;
 	}

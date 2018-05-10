@@ -39,7 +39,7 @@ public class EventRepositoryTest extends ElasticSearchTestSupport {
 		// create event
 		Event event = new Event();
 		event.setValue(Event.AUTHOR, me);
-		event.setValue(Event.TIMESTAMP, new DateTime(DateTimeZone.UTC));
+		event.setValue(Event.TIMESTAMP, DateTime.now(DateTimeZone.UTC));
 		event.addValue(Event.TAG, "test");
 		event.addValue(Event.TAG, "demo");
 
@@ -85,11 +85,11 @@ public class EventRepositoryTest extends ElasticSearchTestSupport {
 		// create events
 		Event e1 = new Event();
 		e1.setValue(Event.AUTHOR, me);
-		e1.setValue(Event.TIMESTAMP, new DateTime(DateTimeZone.UTC));
+		e1.setValue(Event.TIMESTAMP, DateTime.now(DateTimeZone.UTC));
 		e1.addValue(Event.TAG, "foo");
 		Event e2 = new Event();
 		e2.setValue(Event.AUTHOR, me);
-		e2.setValue(Event.TIMESTAMP, new DateTime(DateTimeZone.UTC));
+		e2.setValue(Event.TIMESTAMP, DateTime.now(DateTimeZone.UTC));
 		e2.addValue(Event.TAG, "bar");
 
 		// add events

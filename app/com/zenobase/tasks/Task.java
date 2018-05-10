@@ -47,7 +47,7 @@ public class Task extends DomainNode {
 		setValue(TYPE, type);
 		setValue(BUCKET, bucketId);
 		setValue(PRINCIPAL, principal);
-		setValue(CREATED, new DateTime(DateTimeZone.UTC));
+		setValue(CREATED, DateTime.now(DateTimeZone.UTC));
 	}
 
 	@Override

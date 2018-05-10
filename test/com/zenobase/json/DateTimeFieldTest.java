@@ -17,8 +17,8 @@ public class DateTimeFieldTest extends FieldTestSupport<DateTime> {
 	@Test
 	public void test() {
 		roundtrip(null);
-		roundtrip(new DateTime(DateTimeZone.UTC));
-		roundtrip(new DateTime(DateTimeZone.forOffsetHours(-7)));
+		roundtrip(DateTime.now(DateTimeZone.UTC));
+		roundtrip(DateTime.now(DateTimeZone.forOffsetHours(-7)));
 	}
 
 	@Test

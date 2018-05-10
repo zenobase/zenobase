@@ -43,10 +43,10 @@ public class DemoTaskManager extends TaskManager {
 		Event event = new Event();
 		event.setValue(Event.AUTHOR, task.getPrincipal());
 		event.setValue(Event.SOURCE, SOURCE);
-		event.setValue(Event.TIMESTAMP, new DateTime(DateTimeZone.UTC));
+		event.setValue(Event.TIMESTAMP, DateTime.now(DateTimeZone.UTC));
 		event.setValue(Event.TAG, task.getTag());
 		command.add(UpdateTaskCommand.builder(task)
-			.set(Task.COMPLETED, task.getCompleted(), new DateTime(DateTimeZone.UTC))
+			.set(Task.COMPLETED, task.getCompleted(), DateTime.now(DateTimeZone.UTC))
 			.set(Task.STATUS, task.getStatus(), Task.Status.SUCCESS)
 			.set(Task.UNDO, task.getUndoId(), command.getId())
 			.build());

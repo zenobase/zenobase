@@ -103,7 +103,7 @@ public class ReporterTaskManager extends OAuthTaskManager {
 	private Command createCommand(Task task, LocalDate marker, List<Event> events) {
 		CompoundCommand command = new CompoundCommand(task.getPrincipal(), "ran reporter task", "reverted reporter task");
 		command.add(UpdateTaskCommand.builder(task)
-			.set(Task.COMPLETED, task.getCompleted(), new DateTime(DateTimeZone.UTC))
+			.set(Task.COMPLETED, task.getCompleted(), DateTime.now(DateTimeZone.UTC))
 			.set(Task.STATUS, task.getStatus(), Task.Status.SUCCESS)
 			.set(Task.MARKER, task.getMarker(), marker.toString())
 			.set(Task.UNDO, task.getUndoId(), command.getId())

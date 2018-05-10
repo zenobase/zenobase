@@ -32,7 +32,7 @@ public class Authorization extends DomainNode {
 	}
 
 	public Authorization(Identity principal, Identity client, String scope) {
-		this(principal, client, scope, new DateTime(DateTimeZone.UTC));
+		this(principal, client, scope, DateTime.now(DateTimeZone.UTC));
 	}
 
 	public Authorization(Identity principal, Identity client, String scope, DateTime created) {

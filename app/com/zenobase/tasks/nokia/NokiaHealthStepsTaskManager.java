@@ -72,7 +72,7 @@ public class NokiaHealthStepsTaskManager extends OAuthTaskManager {
 	private static Command createCommand(NokiaHealthStepsTask task, List<Event> events) {
 		CompoundCommand command = new CompoundCommand(task.getPrincipal(), "ran nokia-steps task", "reverted nokia-steps task");
 		command.add(UpdateTaskCommand.builder(task)
-			.set(Task.COMPLETED, task.getCompleted(), new DateTime(DateTimeZone.UTC))
+			.set(Task.COMPLETED, task.getCompleted(), DateTime.now(DateTimeZone.UTC))
 			.set(Task.STATUS, task.getStatus(), Task.Status.SUCCESS)
 			.set(Task.MARKER, task.getMarker(), next(task.getMarker(), events))
 			.set(Task.UNDO, task.getUndoId(), command.getId())

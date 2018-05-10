@@ -33,7 +33,7 @@ public class PasswordResetKeyTest {
 
 	@Test
 	public void testExpiredKey() {
-		PasswordResetKey key = new PasswordResetKey(user, new DateTime().minusHours(1));
+		PasswordResetKey key = new PasswordResetKey(user, DateTime.now().minusHours(1));
 		assertThat(new PasswordResetKey(user, key.getExpirationToken()).validate(key.getKey())).isFalse();
 	}
 

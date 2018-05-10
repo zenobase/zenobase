@@ -69,7 +69,7 @@ public class EventListControllerHttpPostTest extends EventListControllerTestSupp
 	@Test
 	public void testCreateEventWithData() {
 		String commandId = Generator.id();
-		DateTime now = new DateTime(DateTimeZone.UTC);
+		DateTime now = DateTime.now(DateTimeZone.UTC);
 		String tag = "test";
 		ArgumentCaptor<CreateEventCommand> commandArg = ArgumentCaptor.forClass(CreateEventCommand.class);
 		Event.TIMESTAMP.setValue(body, now);

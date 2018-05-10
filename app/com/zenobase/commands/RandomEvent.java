@@ -109,7 +109,7 @@ public class RandomEvent {
 		}
 
 		protected DateTime nextTimestamp() {
-			return new DateTime().minusMinutes(rand.nextInt(60 * 24 * 365)); // 1 year
+			return DateTime.now().minusMinutes(rand.nextInt(60 * 24 * 365)); // 1 year
 		}
 
 		protected Duration nextDuration(int minMinutes, int maxMinutes) {

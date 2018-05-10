@@ -38,7 +38,7 @@ public class Command extends DomainNode {
 	}
 
 	public Command(Command.Type type, Identity principal) {
-		this(type, principal, new DateTime(DateTimeZone.UTC));
+		this(type, principal, DateTime.now(DateTimeZone.UTC));
 	}
 
 	public Command(Command.Type type, Identity principal, DateTime timestamp) {

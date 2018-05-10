@@ -42,7 +42,7 @@ public class FitbitWeightTaskManager extends FitbitTaskManagerSupport<FitbitWeig
 		FitbitProfileResult profile = getProfile(task, credentials);
 		LocalDate syncDate = getLastDate(DeviceType.SCALE, task, credentials);
 		if (syncDate == null) {
-			syncDate = new DateTime(profile.getTimezone()).toLocalDate();
+			syncDate = DateTime.now(profile.getTimezone()).toLocalDate();
 		}
 		LocalDate fromDate = getFromDate(task);
 		for (LocalDate date = fromDate; date.isBefore(syncDate); date = date.plusDays(1)) {
