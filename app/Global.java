@@ -1,5 +1,6 @@
 import javax.inject.Inject;
 
+import com.google.common.base.Strings;
 import com.google.common.base.Throwables;
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
@@ -492,9 +493,9 @@ public class Global extends GlobalSettings {
 		UserRepository users = injector.getInstance(UserRepository.class);
 		if (users.isEmpty()) {
 			Configuration esConfig = getApplicationConfig().getConfig("es");
-			if (esConfig.getString("replay") != null) {
+			if (!Strings.isNullOrEmpty(esConfig.getString("replay"))) {
 				injector.getInstance(CommandReplay.class).replay();
-			} else if (esConfig.getString("rebuild") != null) {
+			} else if (!Strings.isNullOrEmpty(esConfig.getString("rebuild"))) {
 				injector.getInstance(CommandRebuild.class).rebuild();
 			}
 		}
