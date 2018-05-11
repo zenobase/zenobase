@@ -29,10 +29,6 @@ public class Credentials extends DomainNode {
 
 	public Credentials(ObjectNode node) {
 		super(node);
-		// TODO remove after the next migration
-		if ("withings".equals(getType())) {
-			setValue(TYPE, "nokia");
-		}
 	}
 
 	public Credentials(String type, Identity principal) {

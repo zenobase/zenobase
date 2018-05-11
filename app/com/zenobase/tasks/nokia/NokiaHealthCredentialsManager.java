@@ -6,7 +6,6 @@ import javax.inject.Named;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
-import com.zenobase.models.Identity;
 import org.scribe.builder.ServiceBuilder;
 import org.scribe.model.SignatureType;
 
@@ -55,14 +54,5 @@ public class NokiaHealthCredentialsManager extends OAuthCredentialsManager {
 	@Override
 	protected void configure(ServiceBuilder builder) {
 		builder.signatureType(SignatureType.QueryString);
-	}
-
-	@Override
-	protected Credentials find(Identity principal) {
-		Credentials credentials = super.find(principal, TYPE);
-		if (credentials == null) { // TODO remove after the next migration
-			credentials = super.find(principal, "withings");
-		}
-		return credentials;
 	}
 }
