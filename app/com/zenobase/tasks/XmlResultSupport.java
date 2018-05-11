@@ -1,4 +1,4 @@
-package com.zenobase.tasks.moodpanda;
+package com.zenobase.tasks;
 
 import java.io.StringWriter;
 
@@ -14,7 +14,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import play.libs.XPath;
 
-class XmlResultSupport {
+public class XmlResultSupport {
 
 	private final Document document;
 

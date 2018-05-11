@@ -1390,6 +1390,57 @@
 	},
 	{
 		"category" : "Media",
+		"source" : "Goodreads",
+		"task" : "goodreads",
+		"widgets" : [
+			{
+				"id" : "timeline",
+				"type" : "timeline",
+				"label" : "Books Completed",
+				"placement" : "top",
+				"field" : "timestamp",
+				"key_field": "timestamp$max",
+				"statistic" : "count"
+			},
+			{
+				"id" : "latest",
+				"type" : "list",
+				"label" : "Latest",
+				"placement" : "left",
+				"singleton" : true,
+				"limit" : 10,
+				"order" : "-timestamp"
+			},
+			{
+				"id" : "pages_histogram",
+				"type" : "histogram",
+				"label" : "Page Counts",
+				"placement" : "right",
+				"field" : "count",
+				"unit" : null,
+				"interval" : 100
+			},
+			{
+				"id": "pages_durations",
+				"label": "Page Counts & Durations",
+				"type": "scatterplot",
+				"statistic_x": "sum",
+				"statistic_y": "sum",
+				"key_field": "timestamp$max",
+				"label_y": "Duration",
+				"label_x": "Pages",
+				"regression": "linear",
+				"unit_y": null,
+				"field_x": "count",
+				"interval": "minute",
+				"placement": "right",
+				"unit_x": null,
+				"field_y": "duration"
+			}
+		]
+	},
+	{
+		"category" : "Media",
 		"source" : "Trakt.tv",
 		"task" : "trakt",
 		"widgets" : [

@@ -94,7 +94,7 @@ public abstract class OAuthTaskManager extends TaskManager {
 		return Nodes.readArray(getBody(response));
 	}
 
-	private static String getBody(Response response) {
+	protected static String getBody(Response response) {
 		if ("gzip".equals(response.getHeader("Content-Encoding"))) {
 			try (InputStreamReader in = new InputStreamReader(new GZIPInputStream(response.getStream()), Charsets.UTF_8)) {
 				return CharStreams.toString(in);

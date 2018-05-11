@@ -13,6 +13,7 @@ import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
 import com.zenobase.models.Rating;
 import com.zenobase.models.Resource;
+import com.zenobase.tasks.XmlResultSupport;
 
 class MoodPandaFeedResult extends XmlResultSupport {
 

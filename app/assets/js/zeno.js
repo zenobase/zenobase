@@ -6136,6 +6136,7 @@
 			{ id : 'fitbit-weight', description : 'Creates an event for the body weight each day.', url : 'https://www.fitbit.com/' },
 			{ id : 'forecast', description : 'Adds weather conditions and moon phase to existing events that have a location.' },
 			{ id : 'foursquare', description : 'Creates an event for each place visited.', url : 'https://foursquare.com/' },
+			{ id : 'goodreads', description : 'Creates an event for each book read.', url : 'https://www.goodreads.com/' },
 			{ id : 'google-activities', description : 'Creates an event for each activity.', url : 'http://fit.google.com/' },
 			{ id : 'google-cardio', description : 'Creates an event for each heart rate measurement.', url : 'http://fit.google.com/' },
 			{ id : 'google-food', description : 'Creates an event for each number of calories consumed that was recorded.', url : 'http://fit.google.com/' },
@@ -7040,6 +7041,19 @@
 					tag : 'Mood',
 					email : null,
 					marker : new Date(moment().utc().subtract(12, 'months').valueOf())
+			};
+		};
+
+		$scope.init();
+	}]);
+
+	app.controller('GoodreadsSettingsController', ['$scope', '$http', 'moment', function($scope, $http, moment) {
+
+		$scope.init = function() {
+			$scope.settings = $scope.$parent.$parent.settings = {
+				tag : 'Book',
+				shelf : 'read',
+				marker : new Date(moment('2007-01-01').valueOf())
 			};
 		};
 

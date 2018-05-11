@@ -141,6 +141,8 @@ import com.zenobase.tasks.forecast.Forecaster;
 import com.zenobase.tasks.foursquare.FoursquareCredentialsManager;
 import com.zenobase.tasks.foursquare.FoursquareTaskManager;
 import com.zenobase.tasks.foursquare.FoursquareVenues;
+import com.zenobase.tasks.goodreads.GoodreadsCredentialsManager;
+import com.zenobase.tasks.goodreads.GoodreadsTaskManager;
 import com.zenobase.tasks.google.GoogleCredentialsManager;
 import com.zenobase.tasks.google.GoogleFitActivitiesTaskManager;
 import com.zenobase.tasks.google.GoogleFitCardioTaskManager;
@@ -348,6 +350,7 @@ public class Global extends GlobalSettings {
 				bindIfConfigured("microsoft", MicrosoftHealthCredentialsManager.class, credentials);
 				bindIfConfigured("fitbark", FitBarkCredentialsManager.class, credentials);
 				bindIfConfigured("dash", DashCredentialsManager.class, credentials);
+				bindIfConfigured("goodreads", GoodreadsCredentialsManager.class, credentials);
 				bind(CredentialsManagerRegistry.class).in(Singleton.class);
 
 				Multibinder<TaskManager> tasks = Multibinder.newSetBinder(binder(), new TypeLiteral<TaskManager>() {});
@@ -416,6 +419,7 @@ public class Global extends GlobalSettings {
 				bindIfConfigured("microsoft", MicrosoftHealthStepsTaskManager.class, tasks);
 				bindIfConfigured("fitbark", FitBarkTaskManager.class, tasks);
 				bindIfConfigured("dash", DashTaskManager.class, tasks);
+				bindIfConfigured("goodreads", GoodreadsTaskManager.class, tasks);
 				bind(TaskManagerRegistry.class).in(Singleton.class);
 
 				Multibinder<Job> jobs = Multibinder.newSetBinder(binder(), Job.class);

@@ -1,0 +1,319 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GoodreadsResponse>
+    <Request>
+        <authentication>true</authentication>
+        <key><![CDATA[O03UKXMB1KGZWCOk3zNng]]></key>
+        <method><![CDATA[review_list]]></method>
+    </Request>
+
+    <shelf exclusive='true' id='208704650' name='read' sortable='false'></shelf>
+
+    <reviews start="1" end="5" total="32">
+        <review>
+            <id>2386002357</id>
+            <book>
+                <id type="integer">34466963</id>
+                <isbn>1501144316</isbn>
+                <isbn13>9781501144318</isbn13>
+                <text_reviews_count type="integer">491</text_reviews_count>
+                <uri>kca://book/amzn1.gr.book.v1.3UCkxIR7crzVijosMwzCDw</uri>
+                <title>Why We Sleep: Unlocking the Power of Sleep and Dreams</title>
+                <title_without_series>Why We Sleep: Unlocking the Power of Sleep and Dreams</title_without_series>
+                <image_url>https://images.gr-assets.com/books/1506854639m/34466963.jpg</image_url>
+                <small_image_url>https://images.gr-assets.com/books/1506854639s/34466963.jpg</small_image_url>
+                <large_image_url/>
+                <link>https://www.goodreads.com/book/show/34466963-why-we-sleep</link>
+                <num_pages>368</num_pages>
+                <format>Hardcover</format>
+                <edition_information/>
+                <publisher>Scribner</publisher>
+                <publication_day>3</publication_day>
+                <publication_year>2017</publication_year>
+                <publication_month>10</publication_month>
+                <average_rating>4.42</average_rating>
+                <ratings_count>3627</ratings_count>
+                <description>&lt;b&gt;A &lt;i&gt;New York Times&lt;/i&gt; bestseller&lt;/b&gt;&lt;br /&gt;&lt;br /&gt;The first sleep book by a leading scientific expert—Professor Matthew Walker, Director of UC Berkeley’s Sleep and Neuroimaging Lab—reveals his groundbreaking exploration of sleep, explaining how we can harness its transformative power to change our lives for the better.&lt;br /&gt;&lt;br /&gt;Sleep is one of the most important but least understood aspects of our life, wellness, and longevity. Until very recently, science had no answer to the question of why we sleep, or what good it served, or why we suffer such devastating health consequences when we don't sleep. Compared to the other basic drives in life—eating, drinking, and reproducing—the purpose of sleep remained elusive.&lt;br /&gt;&lt;br /&gt; An explosion of scientific discoveries in the last twenty years has shed new light on this fundamental aspect of our lives. Now, preeminent neuroscientist and sleep expert Matthew Walker gives us a new understanding of the vital importance of sleep and dreaming. Within the brain, sleep enriches our ability to learn, memorize, and make logical decisions. It recalibrates our emotions, restocks our immune system, fine-tunes our metabolism, and regulates our appetite. Dreaming mollifies painful memories and creates a virtual reality space in which the brain melds past and present knowledge to inspire creativity.&lt;br /&gt;&lt;br /&gt; Walker answers important questions about sleep: how do caffeine and alcohol affect sleep? What really happens during REM sleep? Why do our sleep patterns change across a lifetime? How do common sleep aids affect us and can they do long-term damage? Charting cutting-edge scientific breakthroughs, and synthesizing decades of research and clinical practice, Walker explains how we can harness sleep to improve learning, mood, and energy levels; regulate hormones; prevent cancer, Alzheimer’s, and diabetes; slow the effects of aging; increase longevity; enhance the education and lifespan of our children, and boost the efficiency, success, and productivity of our businesses. Clear-eyed, fascinating, and accessible, &lt;i&gt;Why We Sleep&lt;/i&gt; is a crucial and illuminating book.</description>
+                <authors>
+                    <author>
+                        <id>17598733</id>
+                        <name>Matthew P. Walker</name>
+                        <role></role>
+                        <image_url nophoto='false'>
+                            <![CDATA[https://images.gr-assets.com/authors/1515791699p5/17598733.jpg]]>
+                        </image_url>
+                        <small_image_url nophoto='false'>
+                            <![CDATA[https://images.gr-assets.com/authors/1515791699p2/17598733.jpg]]>
+                        </small_image_url>
+                        <link><![CDATA[https://www.goodreads.com/author/show/17598733.Matthew_P_Walker]]></link>
+                        <average_rating>4.41</average_rating>
+                        <ratings_count>2472</ratings_count>
+                        <text_reviews_count>491</text_reviews_count>
+                    </author>
+                </authors>
+                <published>2017</published>
+                <work>  <id>55587034</id>
+                    <uri>kca://work/amzn1.gr.work.v1.xu3zE4mJobjg9T7BeVt_vw</uri>
+                </work></book>
+
+
+            <rating>0</rating>
+            <votes>0</votes>
+            <spoiler_flag>false</spoiler_flag>
+            <spoilers_state>none</spoilers_state>
+
+
+            <shelves>
+
+                <shelf exclusive='true' id='208704649' name='currently-reading' review_shelf_id='2032373587' sortable='false'></shelf>
+
+            </shelves>
+
+            <recommended_for></recommended_for>
+            <recommended_by></recommended_by>
+            <started_at>Tue May 08 16:14:18 -0700 2018</started_at>
+            <read_at></read_at>
+            <date_added>Tue May 08 16:14:18 -0700 2018</date_added>
+            <date_updated>Tue May 08 16:14:18 -0700 2018</date_updated>
+            <read_count>1</read_count>
+            <body>
+            </body>
+
+
+
+            <comments_count>0</comments_count>
+            <url><![CDATA[https://www.goodreads.com/review/show/2386002357]]></url>
+            <link><![CDATA[https://www.goodreads.com/review/show/2386002357]]></link>
+            <owned>0</owned>
+        </review>
+
+        <review>
+            <id>2347385187</id>
+            <book>
+                <id type="integer">13358979</id>
+                <isbn>1594630933</isbn>
+                <isbn13>9781594630934</isbn13>
+                <text_reviews_count type="integer">436</text_reviews_count>
+                <uri>kca://book/amzn1.gr.book.v1.O0M07JBcm5roHzS4E7PdrA</uri>
+                <title>The First 20 Minutes: Surprising Science Reveals How We Can: Exercise Better, Train Smarter, Live Longer</title>
+                <title_without_series>The First 20 Minutes: Surprising Science Reveals How We Can: Exercise Better, Train Smarter, Live Longer</title_without_series>
+                <image_url>https://s.gr-assets.com/assets/nophoto/book/111x148-bcc042a9c91a29c1d680899eff700a03.png</image_url>
+                <small_image_url>https://s.gr-assets.com/assets/nophoto/book/50x75-a91bf249278a81aabab721ef782c4a74.png</small_image_url>
+                <large_image_url/>
+                <link>https://www.goodreads.com/book/show/13358979-the-first-20-minutes</link>
+                <num_pages>100</num_pages>
+                <format></format>
+                <edition_information/>
+                <publisher></publisher>
+                <publication_day></publication_day>
+                <publication_year></publication_year>
+                <publication_month></publication_month>
+                <average_rating>3.80</average_rating>
+                <ratings_count>3269</ratings_count>
+                <description>&lt;br /&gt;&lt;b&gt;A cutting-edge prescription for exercise by the New York Times “Phys Ed” columnist &lt;/b&gt;&lt;br /&gt;&lt;br /&gt; At one point or another, nearly every person who works out wonders: Am I doing this right? Which class is best? Do I work out enough? Answering those questions and more, &lt;i&gt;The First 20 Minutes&lt;/i&gt; helps both weekend warriors dedicated to their performance and readers who simply want to get and stay fit gain the most from any workout.&lt;br /&gt;&lt;br /&gt; With the latest findings about the mental and physical benefits of exercise, personal stories from scientists and laypeople alike, as well as researched-based prescriptions for readers, Gretchen Reynolds shows what kind of exercise—and how much—is necessary to stay healthy, get fit, and attain a smaller jeans size. Inspired by Reynolds's wildly popular “Phys Ed” column for &lt;i&gt;The New York Times&lt;/i&gt;, this book explains how exercise affects the body in distinct ways and provides the tools readers need to achieve their fitness goals, whether that's a faster 5K or staying trim.</description>
+                <authors>
+                    <author>
+                        <id>6153565</id>
+                        <name>Gretchen  Reynolds</name>
+                        <role></role>
+                        <image_url nophoto='false'>
+                            <![CDATA[https://images.gr-assets.com/authors/1442631149p5/6153565.jpg]]>
+                        </image_url>
+                        <small_image_url nophoto='false'>
+                            <![CDATA[https://images.gr-assets.com/authors/1442631149p2/6153565.jpg]]>
+                        </small_image_url>
+                        <link><![CDATA[https://www.goodreads.com/author/show/6153565.Gretchen_Reynolds]]></link>
+                        <average_rating>3.79</average_rating>
+                        <ratings_count>3038</ratings_count>
+                        <text_reviews_count>456</text_reviews_count>
+                    </author>
+                </authors>
+                <published></published>
+                <work>  <id>18587254</id>
+                    <uri>kca://work/amzn1.gr.work.v1.nQA7UYr_xkli5VBu8POPLg</uri>
+                </work></book>
+
+
+            <rating>4</rating>
+            <votes>0</votes>
+            <spoiler_flag>false</spoiler_flag>
+            <spoilers_state>none</spoilers_state>
+
+
+            <shelves>
+                <shelf name="read" exclusive="true" id="208704650" review_shelf_id= ""/>
+
+            </shelves>
+
+            <recommended_for></recommended_for>
+            <recommended_by></recommended_by>
+            <started_at>Sun Apr 01 20:57:22 -0700 2018</started_at>
+            <read_at>Sat Apr 14 20:57:22 -0700 2018</read_at>
+            <date_added>Sun Apr 01 20:57:22 -0700 2018</date_added>
+            <date_updated>Sat Apr 14 11:34:53 -0700 2018</date_updated>
+            <read_count>1</read_count>
+            <body>
+            </body>
+
+
+
+            <comments_count>0</comments_count>
+            <url><![CDATA[https://www.goodreads.com/review/show/2347385187]]></url>
+            <link><![CDATA[https://www.goodreads.com/review/show/2347385187]]></link>
+            <owned>0</owned>
+        </review>
+
+        <review>
+            <id>2333456173</id>
+            <book>
+                <id type="integer">36061540</id>
+                <isbn nil="true"/>
+                <isbn13 nil="true"/>
+                <text_reviews_count type="integer">5</text_reviews_count>
+                <uri>kca://book/amzn1.gr.book.v1.vza6FiTcU4YSHijGyIu0yw</uri>
+                <title>Jupiter's Sword (Earth Dawning, #2)</title>
+                <title_without_series>Jupiter's Sword</title_without_series>
+                <image_url>https://s.gr-assets.com/assets/nophoto/book/111x148-bcc042a9c91a29c1d680899eff700a03.png</image_url>
+                <small_image_url>https://s.gr-assets.com/assets/nophoto/book/50x75-a91bf249278a81aabab721ef782c4a74.png</small_image_url>
+                <large_image_url/>
+                <link>https://www.goodreads.com/book/show/36061540-jupiter-s-sword</link>
+                <num_pages></num_pages>
+                <format></format>
+                <edition_information/>
+                <publisher></publisher>
+                <publication_day></publication_day>
+                <publication_year></publication_year>
+                <publication_month></publication_month>
+                <average_rating>4.28</average_rating>
+                <ratings_count>155</ratings_count>
+                <description></description>
+                <authors>
+                    <author>
+                        <id>206</id>
+                        <name>Nick Webb</name>
+                        <role></role>
+                        <image_url nophoto='false'>
+                            <![CDATA[https://images.gr-assets.com/authors/1484211324p5/206.jpg]]>
+                        </image_url>
+                        <small_image_url nophoto='false'>
+                            <![CDATA[https://images.gr-assets.com/authors/1484211324p2/206.jpg]]>
+                        </small_image_url>
+                        <link><![CDATA[https://www.goodreads.com/author/show/206.Nick_Webb]]></link>
+                        <average_rating>4.02</average_rating>
+                        <ratings_count>11836</ratings_count>
+                        <text_reviews_count>723</text_reviews_count>
+                    </author>
+                </authors>
+                <published></published>
+                <work>  <id>57642252</id>
+                    <uri>kca://work/amzn1.gr.work.v1.yXoO_ONl1rMFRJvH5pdk5w</uri>
+                </work></book>
+
+
+            <rating>3</rating>
+            <votes>0</votes>
+            <spoiler_flag>false</spoiler_flag>
+            <spoilers_state>none</spoilers_state>
+
+
+            <shelves>
+                <shelf name="read" exclusive="true" id="208704650" review_shelf_id= ""/>
+
+            </shelves>
+
+            <recommended_for></recommended_for>
+            <recommended_by></recommended_by>
+            <started_at>Mon Mar 19 22:56:51 -0700 2018</started_at>
+            <read_at>Fri Apr 06 22:45:19 -0700 2018</read_at>
+            <date_added>Mon Mar 19 22:56:51 -0700 2018</date_added>
+            <date_updated>Fri Apr 06 22:45:19 -0700 2018</date_updated>
+            <read_count>1</read_count>
+            <body>
+            </body>
+
+
+
+            <comments_count>0</comments_count>
+            <url><![CDATA[https://www.goodreads.com/review/show/2333456173]]></url>
+            <link><![CDATA[https://www.goodreads.com/review/show/2333456173]]></link>
+            <owned>0</owned>
+        </review>
+
+        <review>
+            <id>2331848978</id>
+            <book>
+                <id type="integer">35068622</id>
+                <isbn>0062499971</isbn>
+                <isbn13>9780062499974</isbn13>
+                <text_reviews_count type="integer">59</text_reviews_count>
+                <uri>kca://book/amzn1.gr.book.v1.NevZC8pClAYPLaFxjt351A</uri>
+                <title>Endure: Mind, Body, and the Curiously Elastic Limits of Human Performance</title>
+                <title_without_series>Endure: Mind, Body, and the Curiously Elastic Limits of Human Performance</title_without_series>
+                <image_url>https://images.gr-assets.com/books/1502095296m/35068622.jpg</image_url>
+                <small_image_url>https://images.gr-assets.com/books/1502095296s/35068622.jpg</small_image_url>
+                <large_image_url/>
+                <link>https://www.goodreads.com/book/show/35068622-endure</link>
+                <num_pages>320</num_pages>
+                <format>ebook</format>
+                <edition_information/>
+                <publisher>William Morrow</publisher>
+                <publication_day>6</publication_day>
+                <publication_year>2018</publication_year>
+                <publication_month>2</publication_month>
+                <average_rating>4.21</average_rating>
+                <ratings_count>642</ratings_count>
+                <description>&lt;strong&gt;"Reveals how we can all surpass our perceived physical limits." --Adam Grant - "This book is AMAZING!" --Malcolm Gladwell&lt;/strong&gt;&lt;br /&gt;&lt;br /&gt;&lt;em&gt;Limits are an illusion: a revolutionary book that reveals the secrets of reaching the hidden extra potential within us all&lt;/em&gt;&lt;br /&gt;&lt;br /&gt;&lt;strong&gt;Foreword by Malcolm Gladwell&lt;/strong&gt;&lt;br /&gt;&lt;br /&gt;The capacity to endure is the key trait that underlies great performance in virtually every field--from a 100-meter sprint to a 100-mile ultramarathon, from summiting Everest to acing final exams or completing any difficult project. But what if we all can go farther, push harder, and achieve more than we think we're capable of?&lt;br /&gt;&lt;br /&gt;Blending cutting-edge science and gripping storytelling in the spirit of Malcolm Gladwell--who contributes the book's foreword--award-winning journalist Alex Hutchinson reveals that a wave of paradigm-altering research over the past decade suggests the seemingly physical barriers you encounter as set as much by your brain as by your body. This means the mind is the new frontier of endurance--and that the horizons of performance are much more elastic than we once thought.&lt;br /&gt;&lt;br /&gt;But, of course, it's not "all in your head." For each of the physical limits that Hutchinson explores--pain, muscle, oxygen, heat, thirst, fuel--he carefully disentangles the delicate interplay of mind and body by telling the riveting stories of men and women who've pushed their own limits in extraordinary ways.&lt;br /&gt;&lt;br /&gt;The longtime "Sweat Science" columnist for &lt;em&gt;Outside&lt;/em&gt; and &lt;em&gt;Runner's World&lt;/em&gt;, Hutchinson, a former national-team long-distance runner and Cambridge-trained physicist, was one of only two reporters granted access to Nike's top-secret training project to break the two-hour marathon barrier, an extreme quest he traces throughout the book. But the lessons he draws from shadowing elite athletes and from traveling to high-tech labs around the world are surprisingly universal. Endurance, Hutchinson writes, is "the struggle to continue against a mounting desire to stop"--and we're always capable of pushing a little farther.</description>
+                <authors>
+                    <author>
+                        <id>5038088</id>
+                        <name>Alex  Hutchinson</name>
+                        <role></role>
+                        <image_url nophoto='false'>
+                            <![CDATA[https://images.gr-assets.com/authors/1518724873p5/5038088.jpg]]>
+                        </image_url>
+                        <small_image_url nophoto='false'>
+                            <![CDATA[https://images.gr-assets.com/authors/1518724873p2/5038088.jpg]]>
+                        </small_image_url>
+                        <link><![CDATA[https://www.goodreads.com/author/show/5038088.Alex_Hutchinson]]></link>
+                        <average_rating>4.05</average_rating>
+                        <ratings_count>1827</ratings_count>
+                        <text_reviews_count>226</text_reviews_count>
+                    </author>
+                </authors>
+                <published>2018</published>
+                <work>  <id>56364072</id>
+                    <uri>kca://work/amzn1.gr.work.v1.PjLYDTbZOLz1Dj1ZyF8KAQ</uri>
+                </work></book>
+
+
+            <rating>4</rating>
+            <votes>0</votes>
+            <spoiler_flag>false</spoiler_flag>
+            <spoilers_state>none</spoilers_state>
+
+
+            <shelves>
+                <shelf name="read" exclusive="true" id="208704650" review_shelf_id= ""/>
+
+            </shelves>
+
+            <recommended_for></recommended_for>
+            <recommended_by></recommended_by>
+            <started_at>Sun Mar 18 14:35:29 -0700 2018</started_at>
+            <read_at>Fri Mar 30 09:11:28 -0700 2018</read_at>
+            <date_added>Sun Mar 18 14:35:29 -0700 2018</date_added>
+            <date_updated>Sun Apr 01 11:49:26 -0700 2018</date_updated>
+            <read_count>1</read_count>
+            <body>
+            </body>
+
+
+
+            <comments_count>0</comments_count>
+            <url><![CDATA[https://www.goodreads.com/review/show/2331848978]]></url>
+            <link><![CDATA[https://www.goodreads.com/review/show/2331848978]]></link>
+            <owned>0</owned>
+        </review>
+
+    </reviews>
+
+</GoodreadsResponse>

@@ -1258,6 +1258,23 @@
 		</div>
 	</script>
 
+	<script id="/goodreads-settings.html" type="text/ng-template">
+		<div data-ng-controller="GoodreadsSettingsController">
+			<div class="control-group">
+				<label for="tag" class="control-label">Tag</label>
+				<input name="tag" type="text" required data-ng-model="settings.tag"/>
+			</div>
+			<div class="control-group">
+				<label for="shelf" class="control-label">Shelf</label>
+				<input name="shelf" type="text" required data-ng-model="settings.shelf"/>
+			</div>
+			<div class="control-group">
+				<label for="marker" class="control-label">Starting from</label>
+				<input class="input-small" type="text" data-ui-datepicker data-ng-model="settings.marker"/>
+			</div>
+		</div>
+	</script>
+
 	<script id="/google-activities-settings.html" type="text/ng-template">
 		<div data-ng-controller="GoogleFitActivitiesSettingsController">
 			<div class="control-group">

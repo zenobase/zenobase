@@ -3,6 +3,8 @@ package com.zenobase.tasks.moodpanda;
 import com.google.common.base.Preconditions;
 import org.w3c.dom.Document;
 
+import com.zenobase.tasks.XmlResultSupport;
+
 class MoodPandaUserResult extends XmlResultSupport {
 
 	public MoodPandaUserResult(Document document) {

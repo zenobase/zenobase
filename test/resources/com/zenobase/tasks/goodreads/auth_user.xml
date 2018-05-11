@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GoodreadsResponse>
+    <Request>
+        <authentication>true</authentication>
+        <key><![CDATA[O03UKXMB1KGZWCOk3zNng]]></key>
+        <method><![CDATA[api_auth_user]]></method>
+    </Request>
+    <user id="63900829">
+        <name>Eric Jain</name>
+        <link><![CDATA[https://www.goodreads.com/user/show/63900829-eric-jain?utm_medium=api]]></link>
+    </user>
+
+</GoodreadsResponse>
