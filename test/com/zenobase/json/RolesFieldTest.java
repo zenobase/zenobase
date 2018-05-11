@@ -23,7 +23,7 @@ public class RolesFieldTest extends FieldTestSupport<Map.Entry<Identity, Role>> 
 
 	@Test
 	public void test() {
-		assertThat(RolesField.toMap(map.entrySet())).isEqualTo(map);
+		assertThat(MapField.toMap(map.entrySet())).isEqualTo(map);
 		for (Map.Entry<Identity, Role> entry : map.entrySet()) {
 			roundtrip(entry);
 		}

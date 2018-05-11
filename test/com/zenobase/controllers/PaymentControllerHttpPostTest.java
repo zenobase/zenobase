@@ -7,7 +7,7 @@ import static play.test.Helpers.*;
 import java.math.BigDecimal;
 
 import org.junit.Test;
-import org.mockito.Mockito;
+import org.mockito.Matchers;
 import play.mvc.Result;
 
 import com.zenobase.commands.ChangeQuotaCommand;
@@ -27,7 +27,7 @@ public class PaymentControllerHttpPostTest extends PaymentControllerTestSupport 
 		Result result = call(payment);
 		assertThat(result).hasStatus(OK);
 		verify(payments).subscribe(user.getName(), user.getEmail(), payment, Plan.PERSONAL);
-		verify(dispatcher).dispatch(Mockito.any(ChangeQuotaCommand.class));
+		verify(dispatcher).dispatch(Matchers.any(ChangeQuotaCommand.class));
 	}
 
 	@Test
@@ -39,7 +39,7 @@ public class PaymentControllerHttpPostTest extends PaymentControllerTestSupport 
 		Result result = call(payment);
 		assertThat(result).hasStatus(OK);
 		verify(payments).subscribe(user.getName(), user.getEmail(), payment, Plan.PERSONAL);
-		verify(dispatcher).dispatch(Mockito.any(ChangeQuotaCommand.class));
+		verify(dispatcher).dispatch(Matchers.any(ChangeQuotaCommand.class));
 	}
 
 	@Test

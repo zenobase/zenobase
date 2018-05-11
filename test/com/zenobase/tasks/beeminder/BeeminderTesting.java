@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.joda.time.DateTime;
 import org.junit.Test;
+import org.mockito.Matchers;
 import org.mockito.Mockito;
 
 import com.zenobase.json.Nodes;
@@ -36,7 +37,7 @@ public class BeeminderTesting extends TaskTestingSupport {
 		add(stats, "2015-01-02T-08:00", 2, 120000L);
 		add(stats, "2015-01-03T-08:00", 0, null);
 		add(stats, "2015-01-04T-08:00", 1, 90000L);
-		Mockito.when(repository.find(Mockito.anyString(), Mockito.any(Search.class))).thenReturn(result);
+		Mockito.when(repository.find(Matchers.anyString(), Matchers.any(Search.class))).thenReturn(result);
 		return repository;
 	}
 

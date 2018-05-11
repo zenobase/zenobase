@@ -6,7 +6,7 @@ import static play.mvc.Http.Status.*;
 import static play.test.Helpers.callAction;
 
 import org.junit.Test;
-import org.mockito.Mockito;
+import org.mockito.Matchers;
 import play.mvc.Result;
 
 import com.zenobase.commands.ChangeQuotaCommand;
@@ -22,7 +22,7 @@ public class PaymentControllerHttpDeleteTest extends PaymentControllerTestSuppor
 		Result result = call(user.getName());
 		assertThat(result).hasStatus(OK);
 		verify(payments).unsubscribe(user.getName());
-		verify(dispatcher).dispatch(Mockito.any(ChangeQuotaCommand.class));
+		verify(dispatcher).dispatch(Matchers.any(ChangeQuotaCommand.class));
 	}
 
 	@Test

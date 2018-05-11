@@ -7,7 +7,7 @@ import static play.test.Helpers.*;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mockito;
+import org.mockito.Matchers;
 import play.mvc.Result;
 
 import com.zenobase.json.Nodes;
@@ -57,7 +57,7 @@ public class EventListControllerHttpGetTest extends EventListControllerTestSuppo
 	public void testExportEventsToJson() {
 		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
 		when(buckets.find(bucket.getId())).thenReturn(bucket);
-		when(events.find(Mockito.eq(bucket.getId()), Mockito.any(Search.class))).thenReturn(Nodes.newObject());
+		when(events.find(Matchers.eq(bucket.getId()), Matchers.any(Search.class))).thenReturn(Nodes.newObject());
 		Result result = call(bucket, "");
 		assertThat(result).hasStatus(OK).hasContentType("application/json");
 	}
@@ -66,7 +66,7 @@ public class EventListControllerHttpGetTest extends EventListControllerTestSuppo
 	public void testExportEventsToCsv() {
 		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
 		when(buckets.find(bucket.getId())).thenReturn(bucket);
-		when(events.find(Mockito.eq(bucket.getId()), Mockito.any(Search.class))).thenReturn(Nodes.newObject());
+		when(events.find(Matchers.eq(bucket.getId()), Matchers.any(Search.class))).thenReturn(Nodes.newObject());
 		Result result = call(bucket, "?accept=text/plain");
 		assertThat(result).hasStatus(OK).hasContentType("text/plain");
 	}
@@ -75,7 +75,7 @@ public class EventListControllerHttpGetTest extends EventListControllerTestSuppo
 	public void testExportEventsToInvalidFormat() {
 		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
 		when(buckets.find(bucket.getId())).thenReturn(bucket);
-		when(events.find(Mockito.eq(bucket.getId()), Mockito.any(Search.class))).thenReturn(Nodes.newObject());
+		when(events.find(Matchers.eq(bucket.getId()), Matchers.any(Search.class))).thenReturn(Nodes.newObject());
 		Result result = call(bucket, "?accept=foo/bar");
 		assertThat(result).hasStatus(BAD_REQUEST);
 	}

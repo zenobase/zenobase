@@ -6,6 +6,7 @@ import org.joda.time.DateTime;
 import org.junit.Assume;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.mockito.Matchers;
 import org.mockito.Mockito;
 
 import com.zenobase.json.Nodes;
@@ -50,7 +51,7 @@ public class MovesTesting extends TaskTestingSupport {
 		eventNodes.add(newEvent("2014-03-17T12:00:00.000-07:00").toJson());
 		eventNodes.add(newEvent("2014-03-17T13:00:00.000-07:00").toJson());
 		eventNodes.add(newEvent("2014-03-17T13:00:00.000-07:00").toJson());
-		Mockito.when(repository.find(Mockito.anyString(), Mockito.any(Search.class))).thenReturn(result);
+		Mockito.when(repository.find(Matchers.anyString(), Matchers.any(Search.class))).thenReturn(result);
 		return repository;
 	}
 

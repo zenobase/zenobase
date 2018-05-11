@@ -22,6 +22,7 @@ import play.libs.F.Promise;
 import play.libs.Json;
 import play.mvc.Http.RequestHeader;
 import play.mvc.Result;
+import play.mvc.Results;
 
 import com.zenobase.actions.Canonical;
 import com.zenobase.commands.ChangeQuotaCommand;
@@ -530,7 +531,7 @@ public class Global extends GlobalSettings {
 	@Override
 	public Promise<Result> onHandlerNotFound(RequestHeader request) {
 		return isProgrammatic(request)
-			? Promise.pure(ControllerSupport.notFound())
+			? Promise.pure(Results.notFound())
 			: super.onHandlerNotFound(request);
 	}
 
