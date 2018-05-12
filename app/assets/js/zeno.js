@@ -7635,11 +7635,12 @@
 			icon : 'fa-clock-o',
 			type : 'numeric',
 			toText : function(value) {
-				return value ? moment.duration(toNumber(value)).countdown() : 0;
+				return value ? moment.duration(toNumber(value)).countdown(2) : 0;
 			},
 			toHtml : function(value) {
 				return '<span class="nowrap">' +
-					'<i class="fa ' + this.icon + '" title="Duration"></i> ' + this.toText(value) +
+					'<i class="fa ' + this.icon + '" title="Duration"></i> ' +
+					'<abbr title="' + moment.duration(value).toISOString() + '">' + this.toText(value) + '</abbr>' +
 				'</span>';
 			},
 			toNumber : function(value) {
