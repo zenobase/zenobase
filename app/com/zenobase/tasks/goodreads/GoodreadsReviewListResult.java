@@ -39,7 +39,8 @@ class GoodreadsReviewListResult extends XmlResultSupport {
 		.appendTimeZoneOffset(null, false, 2, 2)
 		.appendLiteral(' ')
 		.appendYearOfEra(4, 4)
-		.toFormatter();
+		.toFormatter()
+		.withOffsetParsed();
 
 	private final Identity author;
 	private final String tag;
