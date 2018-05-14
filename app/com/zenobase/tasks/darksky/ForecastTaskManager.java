@@ -1,4 +1,4 @@
-package com.zenobase.tasks.forecast;
+package com.zenobase.tasks.darksky;
 
 import java.util.List;
 import java.util.Set;
@@ -16,7 +16,6 @@ import com.google.common.collect.Sets;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
-import org.joda.time.ReadableInstant;
 
 import com.zenobase.commands.Command;
 import com.zenobase.commands.CompoundCommand;

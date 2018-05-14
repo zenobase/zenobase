@@ -1,4 +1,4 @@
-package com.zenobase.tasks.forecast;
+package com.zenobase.tasks.darksky;
 
 import java.util.Set;
 

@@ -136,8 +136,8 @@ import com.zenobase.tasks.fitbit.FitbitFoodTaskManager;
 import com.zenobase.tasks.fitbit.FitbitSleepTaskManager;
 import com.zenobase.tasks.fitbit.FitbitStepsTaskManager;
 import com.zenobase.tasks.fitbit.FitbitWeightTaskManager;
-import com.zenobase.tasks.forecast.ForecastTaskManager;
-import com.zenobase.tasks.forecast.Forecaster;
+import com.zenobase.tasks.darksky.ForecastTaskManager;
+import com.zenobase.tasks.darksky.Forecaster;
 import com.zenobase.tasks.foursquare.FoursquareCredentialsManager;
 import com.zenobase.tasks.foursquare.FoursquareTaskManager;
 import com.zenobase.tasks.foursquare.FoursquareVenues;
@@ -260,7 +260,7 @@ public class Global extends GlobalSettings {
 				if (isConfigured("foursquare")) {
 					bind(FoursquareVenues.class).in(Singleton.class);
 				}
-				if (isConfigured("forecast")) {
+				if (isConfigured("darksky")) {
 					bind(Forecaster.class).in(Singleton.class);
 				}
 
@@ -381,7 +381,7 @@ public class Global extends GlobalSettings {
 				bindIfConfigured("dropbox", ReporterTaskManager.class, tasks);
 				bindIfConfigured("dropbox", HipboneTaskManager.class, tasks);
 				bindIfConfigured("lastfm", LastFmTaskManager.class, tasks);
-				bindIfConfigured("forecast", ForecastTaskManager.class, tasks);
+				bindIfConfigured("darksky", ForecastTaskManager.class, tasks);
 				bindIfConfigured("rescuetime", RescueTimeProductivityTaskManager.class, tasks);
 				bindIfConfigured("google", SleepCloudTaskManager.class, tasks);
 				bindIfConfigured("google", GoogleFitActivitiesTaskManager.class, tasks);

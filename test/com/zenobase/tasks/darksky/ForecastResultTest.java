@@ -1,9 +1,6 @@
-package com.zenobase.tasks.forecast;
+package com.zenobase.tasks.darksky;
 
 import static org.fest.assertions.Assertions.assertThat;
-
-import javax.measure.quantity.Pressure;
-import javax.measure.quantity.Temperature;
 
 import org.junit.Test;
 

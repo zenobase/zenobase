@@ -1,4 +1,4 @@
-package com.zenobase.tasks.forecast;
+package com.zenobase.tasks.darksky;
 
 import java.util.Set;
 
@@ -24,7 +24,7 @@ public class Forecaster {
 	private final String apiKey;
 
 	@Inject
-	public Forecaster(@Named("forecast.api.key") String apiKey) {
+	public Forecaster(@Named("darksky.api.key") String apiKey) {
 		this.apiKey = apiKey;
 	}
 

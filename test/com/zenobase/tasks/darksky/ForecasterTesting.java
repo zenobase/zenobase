@@ -1,11 +1,8 @@
-package com.zenobase.tasks.forecast;
+package com.zenobase.tasks.darksky;
 
 import static org.fest.assertions.Assertions.assertThat;
 
 import java.util.Set;
-
-import javax.measure.quantity.Pressure;
-import javax.measure.quantity.Temperature;
 
 import com.google.common.collect.ImmutableSet;
 import org.joda.time.DateTime;
@@ -21,7 +18,7 @@ import com.zenobase.models.Percentage;
 
 public class ForecasterTesting {
 
-	private final String apiKey = System.getProperty("forecast.apiKey");
+	private final String apiKey = System.getProperty("darksky.apiKey");
 
 	@Before
 	public void setUp() {
