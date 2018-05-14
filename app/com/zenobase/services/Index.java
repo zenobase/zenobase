@@ -102,7 +102,9 @@ public class Index {
 						failed.add(nodes.get(i).getId());
 					}
 				}
-				delete(type, failed, refresh);
+				if (!failed.isEmpty()) {
+					delete(type, failed, refresh);
+				}
 				throw new RuntimeException("Couldn't store an item: " + failureMessage);
 			}
 			for (int i = 0; i < responses.length; ++i) {
