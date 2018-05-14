@@ -40,6 +40,18 @@ To run a specific test:
 
 To skip webdriver tests, set -Dwebdriver.skip=true
 
+To test specific tasks manually:
+
+  1. Find the appropriate *Testing class, e.g. FitbitTesting.
+
+  2. Set up a launch configuration with appropriate oauth.apiKey and oauth.apiSecret system properties.
+
+  3. Run the test. Open the provided URL, complete the authorization, and paste the final URL back into the console.
+     Note that IntelliJ has to be started with -Deditable.java.test.console=true in order for this step to work.
+
+  4. Verify the result in the console. Copy the provided oauth.token and oauth.secret system properties into the launch
+     configuration to bypass the authorization step in future test runs.
+
 
 Profiling
 ---------
