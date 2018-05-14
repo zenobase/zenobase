@@ -3131,7 +3131,7 @@
 		$scope.keyField = 'timestamp';
 
 		/**
-		 * Based on http://stackoverflow.com/a/18070247/1144085
+		 * Based on https://stackoverflow.com/a/18070247/1144085
 		 */
 		function circular_avg(data) {
 			var f = 2 * Math.PI / data.length; // factor for converting keys to radians
@@ -3497,7 +3497,7 @@
 
 		/**
 		 * Computes the 95% confidence interval for a correlation coefficient. 
-		 * Based on http://stats.stackexchange.com/a/18904.
+		 * Based on https://stats.stackexchange.com/a/18904.
 		 */
 		function confidence(r, n) {
 			console.assert(n > 3, 'not enough samples');
@@ -5346,7 +5346,7 @@
 							'rating' : parseWakeUp(fields[4]),
 							'source' : {
 								'title' : 'SleepCycle',
-								'url' : 'http://www.sleepcycle.com/'
+								'url' : 'https://www.sleepcycle.com/'
 							}
 						};
 						events.push(event);
@@ -5766,7 +5766,7 @@
 			{
 				id : 'sleepcycle',
 				label : 'SleepCycle',
-				description : 'Import a <b>.csv</b> file from <a href="http://www.sleepcycle.com/" target="_blank">SleepCycle</a>.',
+				description : 'Import a <b>.csv</b> file from <a href="https://www.sleepcycle.com/" target="_blank">SleepCycle</a>.',
 				parse : function(data) {
 					return SleepCycle.parse(data);
 				}
@@ -5783,7 +5783,7 @@
 			{
 				id : 'sunsprite',
 				label : 'SunSprite',
-				description : 'Import a <b>.csv</b> file from <a href="http://www.sunsprite.com/" target="_blank">SunSprite</a>.',
+				description : 'Import a <b>.csv</b> file from <a href="https://www.sunsprite.com/" target="_blank">SunSprite</a>.',
 				settings : '/import-sunsprite.html',
 				parse : function(data, settings) {
 					return SunSprite.parse(data, settings);
@@ -5792,7 +5792,7 @@
 			{
 				id : 'taplog',
 				label : 'TapLog',
-				description : 'Import a <b>.csv</b> file from <a href="http://loggerlife.blogspot.com/" target="_blank">TapLog</a>.',
+				description : 'Import a <b>.csv</b> file from <a href="https://welcome.taplog.info/" target="_blank">TapLog</a>.',
 				settings : '/import-taplog.html',
 				parse : function(data, settings) {
 					return TapLog.parse(data, settings);
@@ -6123,7 +6123,7 @@
 	
 		$scope.types = [ 
 			{ id : 'automatic-trips', description : 'Creates an event for each trip recorded.', url : 'https://www.automatic.com/' },
-			{ id : 'beddit-sleep', description : 'Creates an event for each period of sleep.', url : 'http://www.beddit.com/' },
+			{ id : 'beddit-sleep', description : 'Creates an event for each period of sleep.', url : 'https://www.beddit.com/' },
 			{ id : 'beeminder', description : 'Updates a goal with event counts or value totals for each day.', url : 'https://www.beeminder.com/' },
 			{ id : 'dash-trips', description : 'Creates an event for each trip recorded.', url : 'https://dash.by/' },
 			{ id : 'fitbark', description : 'Creates an event for the activity level for every day or hour.', url : 'https://www.fitbark.com/' },
@@ -6137,38 +6137,38 @@
 			{ id : 'forecast', description : 'Adds weather conditions and moon phase to existing events that have a location.' },
 			{ id : 'foursquare', description : 'Creates an event for each place visited.', url : 'https://foursquare.com/' },
 			{ id : 'goodreads', description : 'Creates an event for each book read.', url : 'https://www.goodreads.com/' },
-			{ id : 'google-activities', description : 'Creates an event for each activity.', url : 'http://fit.google.com/' },
-			{ id : 'google-cardio', description : 'Creates an event for each heart rate measurement.', url : 'http://fit.google.com/' },
-			{ id : 'google-food', description : 'Creates an event for each number of calories consumed that was recorded.', url : 'http://fit.google.com/' },
-			{ id : 'google-locate', description : 'Adds location data to events without a location.', url : 'http://fit.google.com/' },
-			{ id : 'google-weight', description : 'Creates an event for each body weight measurement.', url : 'http://fit.google.com/' },
-			{ id : 'hexoskin-activities', description : 'Creates an event for each activity.', url : 'http://www.hexoskin.com/' },
-			{ id : 'hexoskin-sleep', description : 'Creates an event for each period of sleep.', url : 'http://www.hexoskin.com/' },
+			{ id : 'google-activities', description : 'Creates an event for each activity.', url : 'https://fit.google.com/' },
+			{ id : 'google-cardio', description : 'Creates an event for each heart rate measurement.', url : 'https://fit.google.com/' },
+			{ id : 'google-food', description : 'Creates an event for each number of calories consumed that was recorded.', url : 'https://fit.google.com/' },
+			{ id : 'google-locate', description : 'Adds location data to events without a location.', url : 'https://fit.google.com/' },
+			{ id : 'google-weight', description : 'Creates an event for each body weight measurement.', url : 'https://fit.google.com/' },
+			{ id : 'hexoskin-activities', description : 'Creates an event for each activity.', url : 'https://www.hexoskin.com/' },
+			{ id : 'hexoskin-sleep', description : 'Creates an event for each period of sleep.', url : 'https://www.hexoskin.com/' },
 			{ id : 'hipbone', description : 'Creates events for Apple Health data exported to Dropbox with the Hipbone app.', url : 'https://hipboneapp.com/' },
-			{ id : 'ihealth-activities', description : 'Creates an event for each activity.', url : 'http://ihealthlabs.com/' },
-			{ id : 'ihealth-cardio', description : 'Creates an event for each heart rate or blood pressure measurement.', url : 'http://ihealthlabs.com/' },
-			{ id : 'ihealth-food', description : 'Creates an event for each meal.', url : 'http://ihealthlabs.com/' },
-			{ id : 'ihealth-glucose', description : 'Creates an event for each glucose measurement.', url : 'http://ihealthlabs.com/' },
-			{ id : 'ihealth-sleep', description : 'Creates an event for each period of sleep.', url : 'http://ihealthlabs.com/' },
-			{ id : 'ihealth-steps', description : 'Creates an event for the number of steps logged.', url : 'http://ihealthlabs.com/' },
-			{ id : 'ihealth-weight', description : 'Creates an event for each body weight measurement.', url : 'http://ihealthlabs.com/' },
+			{ id : 'ihealth-activities', description : 'Creates an event for each activity.', url : 'https://ihealthlabs.com/' },
+			{ id : 'ihealth-cardio', description : 'Creates an event for each heart rate or blood pressure measurement.', url : 'https://ihealthlabs.com/' },
+			{ id : 'ihealth-food', description : 'Creates an event for each meal.', url : 'https://ihealthlabs.com/' },
+			{ id : 'ihealth-glucose', description : 'Creates an event for each glucose measurement.', url : 'https://ihealthlabs.com/' },
+			{ id : 'ihealth-sleep', description : 'Creates an event for each period of sleep.', url : 'https://ihealthlabs.com/' },
+			{ id : 'ihealth-steps', description : 'Creates an event for the number of steps logged.', url : 'https://ihealthlabs.com/' },
+			{ id : 'ihealth-weight', description : 'Creates an event for each body weight measurement.', url : 'https://ihealthlabs.com/' },
 			{ id : 'jawbone-activities', description : 'Creates an event for each activity.', url : 'https://jawbone.com/up' },
 			{ id : 'jawbone-food', description : 'Creates an event for each meal.', url : 'https://jawbone.com/up' },
 			{ id : 'jawbone-mood', description : 'Creates an event for the last mood recorded each day.', url : 'https://jawbone.com/up' },
 			{ id : 'jawbone-sleep', description : 'Creates an event for each period of sleep.', url : 'https://jawbone.com/up' },
 			{ id : 'jawbone-steps', description : 'Creates an event for the number of steps each day or hour.', url : 'https://jawbone.com/up' },
 			{ id : 'jawbone-weight', description : 'Creates an event for body weight measurement.', url : 'https://jawbone.com/up' },
-			{ id : 'lastfm-tracks', description : 'Creates an event for each track played.', url : 'http://www.last.fm/' },
-			{ id : 'mapmyfitness-activities', description : 'Creates an event for each activity.', url : 'http://www.mapmyfitness.com/' },
-			{ id : 'mapmyfitness-sleep', description : 'Creates an event for each period of sleep.', url : 'http://www.mapmyfitness.com/' },
-			{ id : 'mapmyfitness-weight', description : 'Creates an event for each body weight measurement.', url : 'http://www.mapmyfitness.com/' },
+			{ id : 'lastfm-tracks', description : 'Creates an event for each track played.', url : 'https://www.last.fm/' },
+			{ id : 'mapmyfitness-activities', description : 'Creates an event for each activity.', url : 'https://www.mapmyfitness.com/' },
+			{ id : 'mapmyfitness-sleep', description : 'Creates an event for each period of sleep.', url : 'https://www.mapmyfitness.com/' },
+			{ id : 'mapmyfitness-weight', description : 'Creates an event for each body weight measurement.', url : 'https://www.mapmyfitness.com/' },
 			{ id : 'microsoft-activities', description : 'Creates an event for each activity.', url : 'https://www.microsoft.com/microsoft-health/' },
 			{ id : 'microsoft-sleep', description : 'Creates an event for each period of sleep.', url : 'https://www.microsoft.com/microsoft-health/' },
 			{ id : 'microsoft-steps', description : 'Creates an event for the number of steps each day or hour.', url : 'https://www.microsoft.com/microsoft-health/' },
-			{ id : 'misfit-activities', description : 'Creates an event for each activity.', url : 'http://misfit.com/' },
-			{ id : 'misfit-sleep', description : 'Creates an event for each period of sleep.', url : 'http://misfit.com/' },
-			{ id : 'misfit-steps', description : 'Creates an event for the number of steps each day.', url : 'http://misfit.com/' },
-			{ id : 'moodpanda', description : 'Creates an event for each recorded mood.', url : 'http://moodpanda.com/' },
+			{ id : 'misfit-activities', description : 'Creates an event for each activity.', url : 'https://misfit.com/' },
+			{ id : 'misfit-sleep', description : 'Creates an event for each period of sleep.', url : 'https://misfit.com/' },
+			{ id : 'misfit-steps', description : 'Creates an event for the number of steps each day.', url : 'https://misfit.com/' },
+			{ id : 'moodpanda', description : 'Creates an event for each recorded mood.', url : 'https://moodpanda.com/' },
 			{ id : 'moves-activities', description : 'Creates an event for each activity.', url : 'https://moves-app.com/' },
 			{ id : 'moves-places', description : 'Creates an event for each place visited.', url : 'https://moves-app.com/' },
 			{ id : 'moves-locate', description : 'Adds location data to events without a location.', url : 'https://moves-app.com/' },
@@ -6176,10 +6176,10 @@
 			{ id : 'netatmo', description : 'Creates events for weather station measurements.', url : 'https://www.netatmo.com/' },
 			{ id : 'reporter-questions', description : 'Creates an event for each question answered.', url : 'http://www.reporter-app.com/' },
 			{ id : 'rescuetime-productivity', description : 'Creates an event for every hour the computer was used.', url : 'https://www.rescuetime.com/' },
-			{ id : 'runkeeper-activities', description : 'Creates an event for each activity.', url : 'http://runkeeper.com/' },
-			{ id : 'runkeeper-weight', description : 'Creates an event for each body weight measurement.', url : 'http://runkeeper.com/' },
+			{ id : 'runkeeper-activities', description : 'Creates an event for each activity.', url : 'https://runkeeper.com/' },
+			{ id : 'runkeeper-weight', description : 'Creates an event for each body weight measurement.', url : 'https://runkeeper.com/' },
 			{ id : 'sleepcloud', description : 'Creates an event for each period of sleep.', url : 'https://sites.google.com/site/sleepasandroid/sleepcloud' },
-			{ id : 'strava-activities', description : 'Creates an event for each activity.', url : 'http://www.strava.com/dashboard' },
+			{ id : 'strava-activities', description : 'Creates an event for each activity.', url : 'https://www.strava.com/' },
 			{ id : 'trackthisforme', description : 'Creates an event for each element logged in a category.', url : 'https://www.trackthisfor.me/' },
 			{ id : 'trakt', description : 'Creates an event for each movie or episode watched.', url : 'https://trakt.tv/' },
 			{ id : 'wakatime', description : 'Creates an event for every period of time logged for a project.', url : 'https://wakatime.com/' },

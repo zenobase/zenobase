@@ -25,7 +25,7 @@ import com.zenobase.models.Resource;
 
 abstract class IHealthResultSupport {
 
-	static final Resource SOURCE = new Resource("iHealth", "http://ihealthlabs.com/");
+	static final Resource SOURCE = new Resource("iHealth", "https://ihealthlabs.com/");
 
 	protected final String root;
 	protected final JsonNode node;

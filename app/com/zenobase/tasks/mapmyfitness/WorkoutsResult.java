@@ -101,7 +101,7 @@ class WorkoutsResult {
 	private Resource resourceValue(JsonNode node) {
 		String value = node.textValue();
 		Preconditions.checkNotNull(value, "Can't find workout id: %s", this.node);
-		return new Resource("MapMyFitness", "http://www.mapmyfitness.com/workout/" + value);
+		return new Resource("MapMyFitness", "https://www.mapmyfitness.com/workout/" + value);
 	}
 
 	public String getNext() {

@@ -8,7 +8,7 @@ import com.zenobase.tasks.CustomApi20;
 /**
  * OAuth API for FitbitBark.
  *
- * @see <a href="http://www.fitbark.com/dev/">FitBark API</a>
+ * @see <a href="https://www.fitbark.com/dev/">FitBark API</a>
  */
 
 public class FitBarkApi extends CustomApi20 {

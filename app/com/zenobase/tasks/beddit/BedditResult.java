@@ -24,7 +24,7 @@ import com.zenobase.models.Resource;
 
 public class BedditResult {
 
-	public static final Resource SOURCE = new Resource("Beddit", "http://www.beddit.com/");
+	public static final Resource SOURCE = new Resource("Beddit", "https://www.beddit.com/");
 
 	private final String tag;
 	private final Identity author;

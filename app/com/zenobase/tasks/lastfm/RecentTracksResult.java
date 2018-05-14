@@ -16,8 +16,8 @@ import com.zenobase.models.Resource;
 
 class RecentTracksResult {
 
-	static final String MUSICBRAINZ_URL = "http://musicbrainz.org/recording/";
-	static final Resource SOURCE = new Resource("Last.fm", "http://www.last.fm/");
+	static final String MUSICBRAINZ_URL = "https://musicbrainz.org/recording/";
+	static final Resource SOURCE = new Resource("Last.fm", "https://www.last.fm/");
 
 	private final ObjectNode node;
 	private final Identity author;

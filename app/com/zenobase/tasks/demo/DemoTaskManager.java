@@ -20,7 +20,7 @@ import com.zenobase.tasks.TaskManager;
 
 public class DemoTaskManager extends TaskManager {
 
-	private static final Resource SOURCE = new Resource("Zenobase", "http://zenobase.com/");
+	private static final Resource SOURCE = new Resource("Zenobase", "https://zenobase.com/");
 
 	public DemoTaskManager() {
 		super(DemoTask.TYPE);

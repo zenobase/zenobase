@@ -36,7 +36,7 @@ public class StravaActivitiesResultTest extends ResultTestSupport {
 		assertThat(events.get(0).getValue(Event.VELOCITY)).isEqualTo(Measures.valueOf("12.2 kmh"));
 		assertThat(events.get(0).getValue(Event.PACE)).isEqualTo(Measures.valueOf("294 s/km"));
 		assertThat(events.get(0).getValue(Event.FREQUENCY)).isEqualTo(Measures.<Frequency>valueOf("139 bpm"));
-		assertThat(events.get(0).getValue(Event.SOURCE)).isEqualTo(new Resource("Strava", "http://www.strava.com/activities/8529483"));
+		assertThat(events.get(0).getValue(Event.SOURCE)).isEqualTo(new Resource("Strava", "https://www.strava.com/activities/8529483"));
 		assertThat(events.get(0).getValue(Event.AUTHOR)).isEqualTo(TESTER);
 
 		assertThat(events.get(1).getValue(Event.TAG)).isEqualTo("Workout");
@@ -49,7 +49,7 @@ public class StravaActivitiesResultTest extends ResultTestSupport {
 		assertThat(events.get(1).getValue(Event.VELOCITY)).isNull();
 		assertThat(events.get(1).getValue(Event.PACE)).isNull();
 		assertThat(events.get(1).getValue(Event.FREQUENCY)).isNull();
-		assertThat(events.get(1).getValue(Event.SOURCE)).isEqualTo(new Resource("Strava", "http://www.strava.com/activities/216228151"));
+		assertThat(events.get(1).getValue(Event.SOURCE)).isEqualTo(new Resource("Strava", "https://www.strava.com/activities/216228151"));
 		assertThat(events.get(1).getValue(Event.AUTHOR)).isEqualTo(TESTER);
 	}
 

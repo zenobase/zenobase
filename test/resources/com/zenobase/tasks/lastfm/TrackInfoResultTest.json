@@ -3,7 +3,7 @@
         "id": "10164325",
         "name": "Galvanize",
         "mbid": "9dbadd08-ae0e-4d33-b3d6-43a9eb42bee0",
-        "url": "http://www.last.fm/music/The+Chemical+Brothers/_/Galvanize",
+        "url": "https://www.last.fm/music/The+Chemical+Brothers/_/Galvanize",
         "duration": "163000",
         "streamable": {
             "#text": "1",
@@ -14,24 +14,24 @@
         "artist": {
             "name": "The Chemical Brothers",
             "mbid": "1946a82a-f927-40c2-8235-38d64f50d043",
-            "url": "http://www.last.fm/music/The+Chemical+Brothers"
+            "url": "https://www.last.fm/music/The+Chemical+Brothers"
         },
         "album": {
             "artist": "The Chemical Brothers",
             "title": "Push the Button",
             "mbid": "5c686915-64f6-3c6c-a3b0-a908bb874797",
-            "url": "http://www.last.fm/music/The+Chemical+Brothers/Push+the+Button",
+            "url": "https://www.last.fm/music/The+Chemical+Brothers/Push+the+Button",
             "image": [
                 {
-                    "#text": "http://userserve-ak.last.fm/serve/64s/49154403.png",
+                    "#text": "https://userserve-ak.last.fm/serve/64s/49154403.png",
                     "size": "small"
                 },
                 {
-                    "#text": "http://userserve-ak.last.fm/serve/126/49154403.png",
+                    "#text": "https://userserve-ak.last.fm/serve/126/49154403.png",
                     "size": "medium"
                 },
                 {
-                    "#text": "http://userserve-ak.last.fm/serve/174s/49154403.png",
+                    "#text": "https://userserve-ak.last.fm/serve/174s/49154403.png",
                     "size": "large"
                 },
                 {
@@ -47,23 +47,23 @@
             "tag": [
                 {
                     "name": "electronic",
-                    "url": "http://www.last.fm/tag/electronic"
+                    "url": "https://www.last.fm/tag/electronic"
                 },
                 {
                     "name": "dance",
-                    "url": "http://www.last.fm/tag/dance"
+                    "url": "https://www.last.fm/tag/dance"
                 },
                 {
                     "name": "electronica",
-                    "url": "http://www.last.fm/tag/electronica"
+                    "url": "https://www.last.fm/tag/electronica"
                 },
                 {
                     "name": "big beat",
-                    "url": "http://www.last.fm/tag/big%20beat"
+                    "url": "https://www.last.fm/tag/big%20beat"
                 },
                 {
                     "name": "techno",
-                    "url": "http://www.last.fm/tag/techno"
+                    "url": "https://www.last.fm/tag/techno"
                 }
             ]
         },

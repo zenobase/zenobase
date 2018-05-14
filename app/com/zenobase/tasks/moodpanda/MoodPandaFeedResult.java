@@ -17,7 +17,7 @@ import com.zenobase.tasks.XmlResultSupport;
 
 class MoodPandaFeedResult extends XmlResultSupport {
 
-	public static final Resource SOURCE = new Resource("MoodPanda", "http://moodpanda.com/");
+	public static final Resource SOURCE = new Resource("MoodPanda", "https://moodpanda.com/");
 
 	private final Identity author;
 	private final double offset;

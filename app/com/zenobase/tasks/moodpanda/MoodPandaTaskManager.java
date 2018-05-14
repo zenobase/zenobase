@@ -26,7 +26,7 @@ import com.zenobase.tasks.TaskManager;
 
 public class MoodPandaTaskManager extends TaskManager {
 
-	private static final String HOST = "http://www.moodpanda.com/api";
+	private static final String HOST = "https://www.moodpanda.com/api";
 
 	private final String apiKey;
 

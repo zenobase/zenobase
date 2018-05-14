@@ -3,7 +3,6 @@ package com.zenobase.tasks.moves;
 import java.math.BigDecimal;
 import java.util.List;
 
-import javax.measure.quantity.Energy;
 import javax.measure.quantity.Length;
 import javax.measure.unit.Unit;
 
@@ -25,7 +24,7 @@ import com.zenobase.models.Resource;
 class MovesSummaryResult {
 
 	static final DateTimeFormatter DATE_FORMAT = DateTimeFormat.forPattern("yyyyMMdd");
-	static final Resource SOURCE = new Resource("Moves", "http://www.moves-app.com/");
+	static final Resource SOURCE = new Resource("Moves", "https://www.moves-app.com/");
 
 	private final JsonNode node;
 	private final Identity author;

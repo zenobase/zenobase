@@ -24,7 +24,7 @@ import com.zenobase.models.Resource;
 
 class MeasurementsResult {
 
-	public static final Resource SOURCE = new Resource("Netatmo", "http://www.netatmo.com/");
+	public static final Resource SOURCE = new Resource("Netatmo", "https://www.netatmo.com/");
 
 	private final JsonNode node;
 	private final Identity author;

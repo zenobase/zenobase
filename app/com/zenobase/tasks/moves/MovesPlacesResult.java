@@ -18,7 +18,7 @@ import com.zenobase.models.Resource;
 
 class MovesPlacesResult {
 
-	public static final Resource SOURCE = new Resource("Moves", "http://www.moves-app.com/");
+	public static final Resource SOURCE = new Resource("Moves", "https://www.moves-app.com/");
 
 	private final Identity author;
 	private final DateTime begin;

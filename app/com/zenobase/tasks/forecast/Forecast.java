@@ -65,7 +65,7 @@ public class Forecast {
 	private static Resource newResource(Event event) {
 		DateTime timestamp = Ordering.natural().min(event.getValues(Event.TIMESTAMP));
 		Location location = Iterables.getFirst(event.getValues(Event.LOCATION), null);
-		String url = "http://forecast.io/";
+		String url = "https://forecast.io/";
 		if (location != null) {
 			url += String.format("#/f/%s,%s/%d",
 				location.getLatitude(), location.getLongitude(),

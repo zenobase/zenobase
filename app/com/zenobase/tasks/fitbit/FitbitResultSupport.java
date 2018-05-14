@@ -30,7 +30,7 @@ import com.zenobase.models.Resource;
 
 abstract class FitbitResultSupport {
 
-	public static final Resource SOURCE = new Resource("Fitbit", "http://fitbit.com/");
+	public static final Resource SOURCE = new Resource("Fitbit", "https://fitbit.com/");
 
 	protected final JsonNode node;
 	protected final String tag;

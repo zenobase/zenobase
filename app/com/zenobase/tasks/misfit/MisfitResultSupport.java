@@ -22,7 +22,7 @@ import com.zenobase.models.Resource;
 
 abstract class MisfitResultSupport {
 
-	static final Resource SOURCE = new Resource("Misfit", "http://misfit.com/");
+	static final Resource SOURCE = new Resource("Misfit", "https://misfit.com/");
 
 	protected final String root;
 	protected final JsonNode node;

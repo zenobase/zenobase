@@ -108,7 +108,7 @@ class StravaActivitiesResult {
 	}
 
 	private Resource resourceValue(JsonNode node) {
-		return !isZero(node) ? new Resource("Strava", "http://www.strava.com/activities/" + node.intValue()) : null;
+		return !isZero(node) ? new Resource("Strava", "https://www.strava.com/activities/" + node.intValue()) : null;
 	}
 
 	private static boolean isZero(JsonNode node) {

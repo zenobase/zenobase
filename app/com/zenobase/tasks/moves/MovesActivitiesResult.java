@@ -26,7 +26,7 @@ import com.zenobase.models.Resource;
 
 class MovesActivitiesResult {
 
-	public static final Resource SOURCE = new Resource("Moves", "http://www.moves-app.com/");
+	public static final Resource SOURCE = new Resource("Moves", "https://www.moves-app.com/");
 
 	private final JsonNode node;
 	private final Identity author;

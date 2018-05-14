@@ -12,7 +12,7 @@ public class LastFmRequest extends OAuthRequest {
 	private final Map<String, String> params = Maps.newHashMap();
 
 	public LastFmRequest() {
-		super(Verb.GET, "http://ws.audioscrobbler.com/2.0/");
+		super(Verb.GET, "https://ws.audioscrobbler.com/2.0/");
 	}
 
 	@Override

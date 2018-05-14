@@ -16,7 +16,7 @@ import com.zenobase.models.Resource;
 
 class FoursquareResult {
 
-	public static final Resource SOURCE = new Resource("Foursquare", "http://foursquare.com/");
+	public static final Resource SOURCE = new Resource("Foursquare", "https://foursquare.com/");
 
 	private final Identity author;
 	private final JsonNode node;

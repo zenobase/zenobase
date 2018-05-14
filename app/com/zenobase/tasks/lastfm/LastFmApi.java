@@ -12,6 +12,6 @@ public class LastFmApi extends DefaultApi20 {
 
 	@Override
 	public String getAuthorizationUrl(OAuthConfig config) {
-		return String.format("http://www.last.fm/api/auth/?api_key=%s&cb=%s", config.getApiKey(), config.getCallback());
+		return String.format("https://www.last.fm/api/auth/?api_key=%s&cb=%s", config.getApiKey(), config.getCallback());
 	}
 }

@@ -9,7 +9,7 @@ import com.zenobase.models.Resource;
 
 class MisfitActivitiesResult extends MisfitResultSupport {
 
-	static final Resource SOURCE = new Resource("Misfit", "http://misfit.com/");
+	static final Resource SOURCE = new Resource("Misfit", "https://misfit.com/");
 
 	private final DateTime begin;
 

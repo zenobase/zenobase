@@ -16,7 +16,7 @@ import com.zenobase.models.Resource;
 
 class SleepResult {
 
-	static final Resource SOURCE = new Resource("MapMyFitness", "http://www.mapmyfitness.com/");
+	static final Resource SOURCE = new Resource("MapMyFitness", "https://www.mapmyfitness.com/");
 
 	private final JsonNode node;
 	private final Identity author;

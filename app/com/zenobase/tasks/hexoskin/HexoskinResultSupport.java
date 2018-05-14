@@ -25,7 +25,7 @@ import com.zenobase.models.Resource;
 
 abstract class HexoskinResultSupport {
 
-	static final Resource SOURCE = new Resource("Hexoskin", "http://www.hexoskin.com/");
+	static final Resource SOURCE = new Resource("Hexoskin", "https://www.hexoskin.com/");
 
 	private final JsonNode node;
 	private final Identity author;
