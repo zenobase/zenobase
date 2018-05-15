@@ -16,6 +16,10 @@ public class DatasetResult extends GoogleFitResultSupport {
 		super(node, zone);
 	}
 
+	public String getNextPageToken() {
+		return node.path("nextPageToken").textValue();
+	}
+
 	public List<DataPoint> getDataPoints() {
 		List<DataPoint> dataPoints = Lists.newArrayList();
 		for (JsonNode pointNode : node.path("point")) {

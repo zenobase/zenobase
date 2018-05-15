@@ -2,6 +2,7 @@ package com.zenobase.tasks.google;
 
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 
 import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableList;
@@ -55,7 +56,6 @@ abstract class GoogleFitTaskManagerSupport<T extends GoogleFitTaskSupport> exten
 					System.err.println("[" + stream.getId() + "]");
 					for (DataPoint dataPoint : points) {
 						System.err.println(dataPoint);
-						break;
 					}
 					System.err.println();
 				}
@@ -74,7 +74,7 @@ abstract class GoogleFitTaskManagerSupport<T extends GoogleFitTaskSupport> exten
 		throw new UnsupportedOperationException();
 	}
 
-	protected Map<String, DataStream> getDataStreams(OAuthCredentials credentials) {
+	private Map<String, DataStream> getDataStreams(OAuthCredentials credentials) {
 		OAuthRequest request = new OAuthRequest(Verb.GET, "https://www.googleapis.com/fitness/v1/users/me/dataSources");
 		Response response = send(request, credentials);
 		return Maps.uniqueIndex(new DataSourcesResult(parseObject(response)).get(), DataStream::getId);
@@ -89,6 +89,26 @@ abstract class GoogleFitTaskManagerSupport<T extends GoogleFitTaskSupport> exten
 			UrlEscapers.urlPathSegmentEscaper().escape(stream.getId()), begin.getMillis() * 1000000, end.getMillis() * 1000000));
 		Response response = send(request, credentials);
 		return new DatasetResult(parseObject(response), zone).getDataPoints();
+	}
+
+	protected void getDataPoints(GoogleFitTaskSupport task, OAuthCredentials credentials, DataStream stream, Consumer<DataPoint> consumer) {
+		getDataPoints(task.getFrom(), DateTime.now(), task.getTimezone(), credentials, stream, consumer);
+	}
+
+	private void getDataPoints(DateTime begin, DateTime end, DateTimeZone zone, OAuthCredentials credentials, DataStream stream, Consumer<DataPoint> consumer) {
+		String pageToken = null;
+		do {
+			OAuthRequest request = new OAuthRequest(Verb.GET, String.format("https://www.googleapis.com/fitness/v1/users/me/dataSources/%s/datasets/%d-%d",
+				UrlEscapers.urlPathSegmentEscaper().escape(stream.getId()), begin.getMillis() * 1000000, end.getMillis() * 1000000));
+			request.addQuerystringParameter("limit", "1000");
+			if (pageToken != null) {
+				request.addQuerystringParameter("pageToken", pageToken);
+			}
+			Response response = send(request, credentials);
+			DatasetResult result = new DatasetResult(parseObject(response), zone);
+			result.getDataPoints().forEach(consumer);
+			pageToken = result.getNextPageToken();
+		} while (pageToken != null);
 	}
 
 	protected static Range<DateTime> getRange(Event event) {

@@ -99,7 +99,7 @@ public class GoogleFitActivitiesTaskManager extends GoogleFitTaskManagerSupport<
 		List<Event> events = Lists.newArrayList();
 		DataStream stream = streams.get("derived:com.google.activity.segment:com.google.android.gms:merge_activity_segments");
 		if (stream != null) {
-			for (DataPoint point : getDataPoints(task, credentials, stream)) {
+			getDataPoints(task, credentials, stream, point -> {
 				Preconditions.checkState("com.google.activity.segment".equals(point.getDataType()));
 				Event event = new Event();
 				event.setValue(Event.TIMESTAMP, point.getBegin());
@@ -119,7 +119,7 @@ public class GoogleFitActivitiesTaskManager extends GoogleFitTaskManagerSupport<
 					event.setValue(Event.SOURCE, origin.getSource());
 				}
 				events.add(event);
-			}
+			});
 		}
 		if (!events.isEmpty()) {
 			events.remove(events.size() - 1); // could still be in progress
@@ -132,7 +132,7 @@ public class GoogleFitActivitiesTaskManager extends GoogleFitTaskManagerSupport<
 			RangeMap<DateTime, Location> locations = TreeRangeMap.create();
 			Location beginLocation = null;
 			DateTime begin = null;
-			for (DataPoint point : getDataPoints(task, credentials, stream)) {
+			for (DataPoint point : getDataPoints(task, credentials, stream)) { // can't use paging because of ordering
 				Preconditions.checkState("com.google.location.sample".equals(point.getDataType()));
 				Preconditions.checkState(!point.isRange());
 				Location location = new Location(point.getValue(0, BigDecimal.class), point.getValue(1, BigDecimal.class));
@@ -155,13 +155,13 @@ public class GoogleFitActivitiesTaskManager extends GoogleFitTaskManagerSupport<
 	private void processDistanceCumulative(GoogleFitActivitiesTask task, OAuthCredentials credentials, Iterable<DataStream> streams, List<Event> events) {
 		RangeMap<DateTime, BigDecimal> values = TreeRangeMap.create();
 		for (DataStream stream : streams) {
-			for (DataPoint point : getDataPoints(task, credentials, stream)) {
+			getDataPoints(task, credentials, stream, point -> {
 				Preconditions.checkState("com.google.distance.cumulative".equals(point.getDataType()));
 				BigDecimal value = point.getValue(0, BigDecimal.class);
 				if (value.compareTo(BigDecimal.ZERO) > 0) {
 					values.put(Range.closed(point.getBegin(), point.getEnd()), value);
 				}
-			}
+			});
 		}
 		if (!values.asMapOfRanges().isEmpty()) {
 			for (Event event : events) {
@@ -178,13 +178,13 @@ public class GoogleFitActivitiesTaskManager extends GoogleFitTaskManagerSupport<
 	private void processDistanceDelta(GoogleFitActivitiesTask task, OAuthCredentials credentials, DataStream stream, List<Event> events) {
 		if (stream != null) {
 			RangeMap<DateTime, BigDecimal> values = TreeRangeMap.create();
-			for (DataPoint point : getDataPoints(task, credentials, stream)) {
+			getDataPoints(task, credentials, stream, point -> {
 				Preconditions.checkState("com.google.distance.delta".equals(point.getDataType()));
 				BigDecimal value = point.getValue(0, BigDecimal.class);
 				if (value.compareTo(BigDecimal.ZERO) > 0) {
 					values.put(Range.closed(point.getBegin(), point.getEnd()), value);
 				}
-			}
+			});
 			for (Event event : events) {
 				if (!event.contains(Event.DISTANCE)) {
 					Range<DateTime> range = getRange(event);
@@ -209,13 +209,13 @@ public class GoogleFitActivitiesTaskManager extends GoogleFitTaskManagerSupport<
 	private void processStepCountDelta(GoogleFitActivitiesTask task, OAuthCredentials credentials, DataStream stream, List<Event> events) {
 		if (stream != null) {
 			RangeMap<DateTime, BigDecimal> values = TreeRangeMap.create();
-			for (DataPoint point : getDataPoints(task, credentials, stream)) {
+			getDataPoints(task, credentials, stream, point -> {
 				Preconditions.checkState("com.google.step_count.delta".equals(point.getDataType()));
 				BigDecimal value = point.getValue(0, BigDecimal.class);
 				if (value.compareTo(BigDecimal.ZERO) > 0) {
 					values.put(Range.closed(point.getBegin(), point.getEnd()), value);
 				}
-			}
+			});
 			if (!values.asMapOfRanges().isEmpty()) {
 				for (Event event : events) {
 					Range<DateTime> range = getRange(event);
@@ -239,13 +239,13 @@ public class GoogleFitActivitiesTaskManager extends GoogleFitTaskManagerSupport<
 	private void processSpeedSummary(GoogleFitActivitiesTask task, OAuthCredentials credentials, Iterable<DataStream> streams, List<Event> events) {
 		RangeMap<DateTime, BigDecimal> values = TreeRangeMap.create();
 		for (DataStream stream : streams) {
-			for (DataPoint point : getDataPoints(task, credentials, stream)) {
+			getDataPoints(task, credentials, stream, point -> {
 				Preconditions.checkState("com.google.speed.summary".equals(point.getDataType()));
 				BigDecimal value = point.getValue(0, BigDecimal.class);
 				if (value.compareTo(BigDecimal.ZERO) > 0) {
 					values.put(Range.closed(point.getBegin(), point.getEnd()), value);
 				}
-			}
+			});
 		}
 		if (!values.asMapOfRanges().isEmpty()) {
 			for (Event event : events) {
@@ -266,13 +266,13 @@ public class GoogleFitActivitiesTaskManager extends GoogleFitTaskManagerSupport<
 	private void processCaloriesExpended(GoogleFitActivitiesTask task, OAuthCredentials credentials, Iterable<DataStream> streams, List<Event> events) {
 		RangeMap<DateTime, BigDecimal> values = TreeRangeMap.create();
 		for (DataStream stream : streams) {
-			for (DataPoint point : getDataPoints(task, credentials, stream)) {
+			getDataPoints(task, credentials, stream, point -> {
 				Preconditions.checkState("com.google.calories.expended".equals(point.getDataType()));
 				BigDecimal value = point.getValue(0, BigDecimal.class);
 				if (value.compareTo(BigDecimal.ZERO) > 0) {
 					values.put(Range.closed(point.getBegin(), point.getEnd()), value);
 				}
-			}
+			});
 		}
 		if (!values.asMapOfRanges().isEmpty()) {
 			for (Event event : events) {
@@ -288,13 +288,13 @@ public class GoogleFitActivitiesTaskManager extends GoogleFitTaskManagerSupport<
 	private void processHeartRateSummary(GoogleFitActivitiesTask task, OAuthCredentials credentials, Iterable<DataStream> streams, List<Event> events) {
 		RangeMap<DateTime, BigDecimal> values = TreeRangeMap.create();
 		for (DataStream stream : streams) {
-			for (DataPoint point : getDataPoints(task, credentials, stream)) {
+			getDataPoints(task, credentials, stream, point -> {
 				Preconditions.checkState("com.google.heart_rate.summary".equals(point.getDataType()));
 				BigDecimal value = point.getValue(0, BigDecimal.class);
 				if (value.compareTo(BigDecimal.ZERO) > 0) {
 					values.put(Range.closed(point.getBegin(), point.getEnd()), value);
 				}
-			}
+			});
 		}
 		if (!values.asMapOfRanges().isEmpty()) {
 			for (Event event : events) {
@@ -310,13 +310,13 @@ public class GoogleFitActivitiesTaskManager extends GoogleFitTaskManagerSupport<
 	private void processHeartRate(GoogleFitActivitiesTask task, OAuthCredentials credentials, Iterable<DataStream> streams, List<Event> events) {
 		for (DataStream stream : streams) {
 			RangeMap<DateTime, Integer> values = TreeRangeMap.create();
-			for (DataPoint point : getDataPoints(task, credentials, stream)) {
+			getDataPoints(task, credentials, stream, point -> {
 				Preconditions.checkState("com.google.heart_rate.bpm".equals(point.getDataType()));
 				int value = point.getValue(0, BigDecimal.class).intValue();
 				if (value > 0) {
 					values.put(Range.closed(point.getBegin(), point.getEnd()), value);
 				}
-			}
+			});
 			for (Event event : events) {
 				if (!event.contains(Event.FREQUENCY)) {
 					Range<DateTime> range = getRange(event);

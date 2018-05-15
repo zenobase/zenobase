@@ -42,7 +42,7 @@ public class GoogleFitWeightTaskManager extends GoogleFitTaskManagerSupport<Goog
 		List<Event> events = Lists.newArrayList();
 		DataStream stream = streams.get("derived:com.google.weight:com.google.android.gms:merge_weight");
 		if (stream != null) {
-			for (DataPoint point : getDataPoints(task, credentials, stream)) {
+			getDataPoints(task, credentials, stream, point -> {
 				Event event = new Event();
 				event.addValue(Event.TAG, task.getTag());
 				if (point.isRange()) {
@@ -60,7 +60,7 @@ public class GoogleFitWeightTaskManager extends GoogleFitTaskManagerSupport<Goog
 					event.setValue(Event.SOURCE, origin.getSource());
 				}
 				events.add(event);
-			}
+			});
 		}
 		return events;
 	}

@@ -22,6 +22,7 @@ public class DatasetResultTest extends ResultTestSupport {
 	public void test() {
 
 		DatasetResult result = new DatasetResult(readObject("DatasetResultTest.json"), TIMEZONE);
+		assertThat(result.getNextPageToken()).isEqualTo("xxx");
 		List<DataPoint> points = result.getDataPoints();
 		assertThat(points).hasSize(3);
 

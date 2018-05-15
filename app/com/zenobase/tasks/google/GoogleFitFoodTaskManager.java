@@ -46,7 +46,7 @@ public class GoogleFitFoodTaskManager extends GoogleFitTaskManagerSupport<Google
 	private List<Event> createEventsFromNutritionStreams(GoogleFitFoodTask task, OAuthCredentials credentials, Map<String, DataStream> streams) {
 		List<Event> events = Lists.newArrayList();
 		for (DataStream stream : filter(streams.values(), "com.google.nutrition")) {
-			for (DataPoint point : getDataPoints(task, credentials, stream)) {
+			getDataPoints(task, credentials, stream, point -> {
 				Event event = newEvent(point, task, streams);
 				Map<String, Object> values = point.getValue(0, Map.class);
 				if (values != null) {
@@ -56,7 +56,7 @@ public class GoogleFitFoodTaskManager extends GoogleFitTaskManagerSupport<Google
 						events.add(event);
 					}
 				}
-			}
+			});
 		}
 		return events;
 	}
@@ -65,12 +65,12 @@ public class GoogleFitFoodTaskManager extends GoogleFitTaskManagerSupport<Google
 		List<Event> events = Lists.newArrayList();
 		DataStream stream = streams.get("derived:com.google.calories.consumed:com.google.android.gms:merge_calories_consumed");
 		if (stream != null) {
-			for (DataPoint point : getDataPoints(task, credentials, stream)) {
+			getDataPoints(task, credentials, stream, point -> {
 				Event event = newEvent(point, task, streams);
 				BigDecimal value = point.getValue(0, BigDecimal.class);
 				event.setValue(Event.ENERGY, Measures.valueOf(value, Units.KCAL));
 				events.add(event);
-			}
+			});
 		}
 		return events;
 	}

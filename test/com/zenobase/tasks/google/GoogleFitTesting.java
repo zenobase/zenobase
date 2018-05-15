@@ -17,7 +17,6 @@ import com.zenobase.tasks.TaskTestingSupport;
 public class GoogleFitTesting extends TaskTestingSupport {
 
 	@Test
-	@Ignore
 	public void testActivities() {
 		runInApplication(new GoogleFitActivitiesTaskManager(newCredentialsManager()), Nodes.newObject()
 			.put("marker", "2016-01-27")
@@ -46,6 +45,7 @@ public class GoogleFitTesting extends TaskTestingSupport {
 	}
 
 	@Test
+	@Ignore
 	public void testFood() {
 		runInApplication(new GoogleFitFoodTaskManager(newCredentialsManager()), Nodes.newObject()
 			.put("marker", "2016-06-01")
