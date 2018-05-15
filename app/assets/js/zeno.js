@@ -817,8 +817,12 @@
 			$http.get('/users/' + $scope.profile['@id'] + '/buckets/?' + $.param($.extend($scope.params(), params)))
 				.success(function(response) {
 					$.extend($scope, params);
-					$scope.total = response.total;
-					$scope.buckets = response.buckets;
+					if (response.total === 0 && !$scope.include_archived) {
+						$scope.refresh({ include_archived : true });
+					} else {
+						$scope.total = response.total;
+						$scope.buckets = response.buckets;
+					}
 				});
 		};
 		$scope.loading = {};
