@@ -21,7 +21,7 @@
 		<div class="row-fluid page-titlebar">
 
 			<p class="pull-left page-title">
-				<span id="bucket-title" class="page-title-text">{{bucket.label}}</span>
+				<span id="bucket-title" class="page-title-text" data-ng-class="bucket.archived && 'bucket-archived'">{{bucket.label}}</span>
 				<span id="event-count" class="badge badge-success page-title-decoration" title="Events" data-ng-show="total >= 0">{{total | number}}</span>
 				<span class="badge badge-important page-title-decoration" title="Couldn't load any events" data-ng-show="total < 0">0</span>
 				<a class="page-title-decoration" data-ng-click="run()" title="Refresh" data-ng-show="editable"><i class="fa fa-refresh" data-ng-class="loading && 'fa-spin'"></i></a>
@@ -185,7 +185,11 @@
 				</div>
 			</div>
 			<div class="modal-footer">
-				<a id="delete-bucket-button" data-ng-click="deleteBucket()" class="pull-left">Delete bucket</a>
+				<span class="pull-left">
+					<a id="archive-bucket-button" data-ng-hide="bucket.archived" data-ng-click="archiveBucket(true)">Archive</a>
+					<a id="unarchive-bucket-button" data-ng-show="bucket.archived" data-ng-click="archiveBucket(false)">Un-archive</a> or
+					<a id="delete-bucket-button" data-ng-click="deleteBucket()">delete</a> this bucket
+				</span>
 				<button id="save-bucket-button" type="submit" class="btn btn-primary" data-ng-disabled="!form.$valid || !valid()">Update</button>
 				<button class="btn" data-dismiss="modal">Cancel</button>
 			</div>

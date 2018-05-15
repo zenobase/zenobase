@@ -28,6 +28,12 @@ public class QuerySupport {
 		return this;
 	}
 
+	protected QuerySupport notEqualTo(Field<?> field, Object value) {
+		add(QueryBuilders.boolQuery().mustNot(QueryBuilders.termQuery(field.getName(), value)));
+		return this;
+	}
+
+
 	protected QuerySupport isNull(Field<?> field) {
 		add(QueryBuilders.constantScoreQuery(FilterBuilders.missingFilter(field.getName())));
 		return this;

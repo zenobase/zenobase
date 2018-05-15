@@ -30,6 +30,13 @@ public class BucketQuery extends QuerySupport {
 		return this;
 	}
 
+	public BucketQuery includeArchived(boolean b) {
+		if (!b) {
+			notEqualTo(Bucket.ARCHIVED, true);
+		}
+		return this;
+	}
+
 	@Override
 	public BucketQuery queryString(String query) {
 		super.queryString(query, Bucket.ID.getName());

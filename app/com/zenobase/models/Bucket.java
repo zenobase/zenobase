@@ -38,10 +38,11 @@ public class Bucket extends DomainNode {
 	public static final ObjectField WIDGETS = new ObjectField("widgets");
 	public static final AliasField ALIASES = new AliasField("aliases");
 	public static final BooleanField REFRESH = new BooleanField("refresh");
+	public static final BooleanField ARCHIVED = new BooleanField("archived");
 
 	public static final Schema SCHEMA = new SchemaBuilder(TYPE_NAME).add(VERSION)
 		.add(ID).add(LABEL).add(DESCRIPTION).add(CREATED)
-		.add(ROLES).add(WIDGETS).add(ALIASES).add(REFRESH).build();
+		.add(ROLES).add(WIDGETS).add(ALIASES).add(REFRESH).add(ARCHIVED).build();
 
 	public Bucket(ObjectNode node) {
 		super(node);
@@ -146,8 +147,20 @@ public class Bucket extends DomainNode {
 		return !getAliases().isEmpty();
 	}
 
+	public void setRefresh(boolean refresh) {
+		setValue(REFRESH, refresh ? Boolean.TRUE : null);
+	}
+
 	public boolean isRefresh() {
 		return getValue(REFRESH) == Boolean.TRUE;
+	}
+
+	public void setArchived(boolean archived) {
+		setValue(ARCHIVED, archived ? Boolean.TRUE : null);
+	}
+
+	public boolean isArchived() {
+		return getValue(ARCHIVED) == Boolean.TRUE;
 	}
 
 	public Bucket copy() {

@@ -788,6 +788,7 @@
 		$scope.limit = 10;
 		$scope.total = 0;
 		$scope.buckets = null;
+		$scope.include_archived = false;
 
 		$scope.hasPrev = function() {
 			return $scope.offset > 0;
@@ -801,11 +802,15 @@
 		$scope.next = function() {
 			$scope.refresh({ offset : $scope.offset + $scope.limit });
 		};
+		$scope.includeArchived = function(includeArchived) {
+			$scope.refresh({ include_archived : includeArchived });
+		};
 		$scope.params = function() {
 			return {
-				order : 'label', 
+				order : 'label',
 				offset : $scope.offset,
-				limit : $scope.limit
+				limit : $scope.limit,
+				include_archived : $scope.include_archived
 			};
 		};
 		$scope.refresh = function(params) {
@@ -1766,6 +1771,27 @@
 						$scope.message = 'Couldn\'t save this bucket. Try again later or contact support.';						
 					}
 				});
+		};
+		$scope.archiveBucket = function(archive) {
+			$scope.alert.clear();
+			if (archive) {
+				$scope.newBucket.archived = true;
+			} else {
+				delete $scope.newBucket.archived;
+			}
+			$http.put('/buckets/' + $scope.bucketId, $scope.newBucket)
+				.success(function() {
+					$scope.closeDialog();
+					$location.url('/users/' + $scope.$parent.user.getName());
+				})
+				.error(function(response, status) {
+					if (status < 500) {
+						$scope.message = 'Can\'t archive this bucket.';
+					} else {
+						$scope.message = 'Couldn\'t archive this bucket. Try again later or contact support.';
+					}
+				});
+			tracker.event('action', 'delete bucket');
 		};
 		$scope.deleteBucket = function() {
 			$scope.alert.clear();

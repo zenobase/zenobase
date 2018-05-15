@@ -137,6 +137,42 @@ public class BucketRepositoryTest extends ElasticSearchTestSupport {
 		verifyInteractions(c2, ImmutableList.of(b1));
 	}
 
+	@Test
+	public void testFindIsRefreshable() {
+
+		Bucket b1 = newBucket("foo", ME);
+		b1.setRefresh(false);
+		repository.store(b1, DateTime.now());
+
+		Bucket b2 = newBucket("bar", ME);
+		b2.setRefresh(true);
+		repository.store(b2, DateTime.now());
+
+		Callback<Bucket> c = mock(Callback.class);
+		repository.find(new BucketQuery().isRefreshable(), c);
+		verifyInteractions(c, ImmutableList.of(b2));
+	}
+
+	@Test
+	public void testFindIncludeArchived() {
+
+		Bucket b1 = newBucket("foo", ME);
+		b1.setArchived(false);
+		repository.store(b1, DateTime.now());
+
+		Bucket b2 = newBucket("bar", ME);
+		b2.setArchived(true);
+		repository.store(b2, DateTime.now());
+
+		Callback<Bucket> c1 = mock(Callback.class);
+		repository.find(new BucketQuery().includeArchived(false), c1);
+		verifyInteractions(c1, ImmutableList.of(b1));
+
+		Callback<Bucket> c2 = mock(Callback.class);
+		repository.find(new BucketQuery().includeArchived(true), c2);
+		verifyInteractions(c2, ImmutableList.of(b1, b2));
+	}
+
 	private List<Bucket> insert(int size) {
 		List<Bucket> buckets = Lists.newArrayListWithCapacity(size);
 		for (int i = 0; i < size; ++i) {

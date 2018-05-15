@@ -16,6 +16,8 @@ please <a href="mailto:info@zenobase.com?subject=Zenobase+API">drop us a note</a
 so we can let you know about upcoming changes.</p>
 
 <dl>
+    <dt>May 15, 2018</dt>
+    <dd>Archived state for buckets.</dd>
 	<dt>January 6, 2015</dt>
 	<dd>Added a new field, "light", with the unit "lx" (lux).</dd>
 	<dt>December 29, 2014</dt>
@@ -255,7 +257,7 @@ but also include permissions and dashboard settings.</p>
 
 <h3>List buckets</h3>
 
-<pre>GET /users/<em>&lt;user_id&gt;</em>/buckets/?offset=<em>&lt;offset&gt;</em>&amp;limit=<em>&lt;limit&gt;</em>
+<pre>GET /users/<em>&lt;user_id&gt;</em>/buckets/?offset=<em>&lt;offset&gt;</em>&amp;limit=<em>&lt;limit&gt;</em>&amp;include_archived=<em>&lt;include_archived&gt;</em>
 Host: api.zenobase.com
 Authorization: Bearer <em>&lt;access_token&gt;</em></pre>
 
@@ -263,6 +265,7 @@ Authorization: Bearer <em>&lt;access_token&gt;</em></pre>
   <dt>user_id</dt><dd>The user whose buckets we want to retrieve.</dd>
   <dt>offset</dt><dd>How many buckets to skip. Defaults to 0.</dd>
   <dt>limit</dt><dd>The number of buckets to return, up to 100. Defaults to 10.</dd>
+  <dt>include_archived</dt><dd>Whether to include archived buckets. Defaults to false.</dd>
 </dl>
 
 <h5>Example</h5>
@@ -336,6 +339,7 @@ Authorization: Bearer <em>&lt;access_token&gt;</em>
 <code data-ui-highlight class="lang-json">{
   "label" : <em>&lt;label&gt;</em>,
   "description" : <em>&lt;description&gt;</em>,
+  "archived" : <em>&lt;archived&gt;</em>,
   "aliases" : [
     { "@id" : <em>&lt;bucket_id&gt;</em> },
     { "@id" : <em>&lt;bucket_id&gt;</em> },
@@ -347,6 +351,8 @@ Authorization: Bearer <em>&lt;access_token&gt;</em>
   <dd>A human-readable name for the bucket. Required, 1-20 characters from <code>a-zA-Z0-9-_ </code>.</dd>
   <dt>description</dt>
   <dd>One or two sentences describing this bucket. Optional.</dd>
+  <dt>archived</dt>
+  <dd>Whether this bucket is archived; archived buckets are not listed by default. Optional.</dd>
   <dt>aliases</dt>
   <dd>Optional list of existing buckets; creates a virtual bucket that serves as a read-only view.</dd>
 </dl>
@@ -424,6 +430,7 @@ Authorization: Bearer <em>&lt;access_token&gt;</em>
 <code data-ui-highlight class="lang-json">{
   "label" : <em>&lt;label&gt;</em>,
   "description" : <em>&lt;description&gt;</em>,
+  "archived" : <em>&lt;archived&gt;</em>,
   "roles" : [
     {
       "principal" : <em>&lt;user_id&gt;</em>,
@@ -448,7 +455,8 @@ Authorization: Bearer <em>&lt;access_token&gt;</em>
   -H 'Authorization: Bearer e7975e8bb6eabc3ef567 \  
   -d '{
     "label" : "Updated Bucket",
-    "description" : "This bucket is public!",
+    "description" : "This bucket is archived, but still public!",
+    "archived" : true,
     "roles" : [
       { "principal" : "args4iqh2c", "role" : "owner" },
       { "principal" : "*", "role" : "viewer" }

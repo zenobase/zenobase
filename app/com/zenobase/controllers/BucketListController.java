@@ -71,7 +71,7 @@ public class BucketListController extends ControllerSupport {
         return ok(chunks);
 	}
 
-	public Result findByUser(String userId, String order, int offset, int limit, boolean labelsOnly) {
+	public Result findByUser(String userId, String order, int offset, int limit, boolean labelsOnly, boolean includeArchived) {
 		if (offset < 0 || offset > 1000) {
 			return badRequest("expected offset in [0..1000]");
 		}
@@ -92,7 +92,7 @@ public class BucketListController extends ControllerSupport {
 		if (!auth.getPrincipal().equals(principal) && !users.isSuperuser(auth.getPrincipal())) {
 			return forbidden();
 		}
-		BucketQuery query = new BucketQuery().principalEqualTo(principal);
+		BucketQuery query = new BucketQuery().principalEqualTo(principal).includeArchived(includeArchived);
         PartialList<Bucket> found = buckets.find(query, SearchOrder.valueOf(order, Bucket.SCHEMA), offset, limit);
 		return ok(labelsOnly ? BucketList.toJsonLabelsOnly(found) : BucketList.toJson(found, events));
     }

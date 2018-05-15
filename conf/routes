@@ -17,7 +17,7 @@ POST    /users/                        @com.zenobase.controllers.AccountControll
 DELETE  /users/:userId                 @com.zenobase.controllers.AccountController.close(userId)
 
 GET     /buckets/                      @com.zenobase.controllers.BucketListController.findAll(q ?= null, offset : Int ?= 0, limit : Int ?= java.lang.Integer.MAX_VALUE)
-GET     /users/:userId/buckets/        @com.zenobase.controllers.BucketListController.findByUser(userId, order : String ?= "-created", offset : Int ?= 0, limit : Int ?= 10, labels_only : Boolean ?= false)
+GET     /users/:userId/buckets/        @com.zenobase.controllers.BucketListController.findByUser(userId, order : String ?= "-created", offset : Int ?= 0, limit : Int ?= 10, labels_only : Boolean ?= false, include_archived : Boolean ?= false)
 POST    /buckets/                      @com.zenobase.controllers.BucketListController.post()
 
 GET     /buckets/:bucketId             @com.zenobase.controllers.BucketController.get(bucketId, labelOnly : Boolean = false)
