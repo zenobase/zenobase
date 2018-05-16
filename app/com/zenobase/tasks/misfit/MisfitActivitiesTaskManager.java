@@ -5,7 +5,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.elasticsearch.common.collect.Lists;
+import com.google.common.collect.Lists;
 import org.joda.time.DateTime;
 import org.scribe.model.OAuthRequest;
 import org.scribe.model.Response;

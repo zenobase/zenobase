@@ -8,7 +8,7 @@ import javax.measure.DecimalMeasure;
 import javax.measure.quantity.Length;
 import javax.measure.quantity.Volume;
 
-import org.elasticsearch.common.collect.Maps;
+import com.google.common.collect.Maps;
 
 import com.zenobase.common.LengthPerVolume;
 

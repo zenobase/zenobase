@@ -2,8 +2,8 @@ package com.zenobase.search.geo;
 
 import java.util.Map;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Maps;
-import org.elasticsearch.common.collect.ImmutableList;
 import org.elasticsearch.common.geo.GeoPoint;
 
 public class GeoClusterBuilder {
