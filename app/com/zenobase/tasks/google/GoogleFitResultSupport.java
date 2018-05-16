@@ -18,6 +18,7 @@ abstract class GoogleFitResultSupport {
 		.put("com.bidusoft.plexfit", new Resource("PlexFit", "https://bidusoft.blogspot.com/"))
 		.put("com.calm.android", new Resource("Calm", "https://www.calm.com/"))
 		.put("com.dungelin.heartrate", new Resource("Heart Rate Plus", "https://play.google.com/store/apps/details?id=com.dungelin.heartrate"))
+		.put("com.emberify.instant", new Resource("Instant", "https://instantapp.today/"))
 		.put("com.endomondo.android", new Resource("Endomondo", "https://www.endomondo.com/"))
 		.put("com.fatsecret.android", new Resource("FatSecret", "https://www.fatsecret.com/"))
 		.put("com.fitnesskeeper.runkeeper.pro", new Resource("RunKeeper", "https://runkeeper.com/"))
