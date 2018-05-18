@@ -3,8 +3,8 @@ package com.zenobase.tasks.fitbit;
 import java.util.List;
 
 import com.google.common.base.Objects;
+import com.google.common.base.Strings;
 import com.google.common.util.concurrent.RateLimiter;
-import org.elasticsearch.common.base.Strings;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDate;
