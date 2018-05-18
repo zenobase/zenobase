@@ -83,7 +83,7 @@ public class GoodreadsTaskManager extends OAuthTaskManager {
 			request.addQuerystringParameter("shelf", task.getShelf());
 		}
 		request.addQuerystringParameter("sort", "date_read");
-		request.addQuerystringParameter("per_page", "10"); // TODO bump to 200!
+		request.addQuerystringParameter("per_page", "200");
 		request.addQuerystringParameter("page", Integer.toString(page));
 		Response response = send(request, credentials);
 		return new GoodreadsReviewListResult(parseDocument(response), task.getPrincipal(), task.getTag());
