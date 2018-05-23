@@ -66,7 +66,7 @@ public class RunkeeperActivitiesTaskManager extends RunkeeperTaskManagerSupport 
 		for (Event event : events) {
 			addDetails(event, task.getHeightUnit(), credentials);
 		}
-		return createCommand(task, credentials, events);
+		return createCommand(task, events);
 	}
 
 	private void addDetails(Event event, Unit<Length> heightUnit, OAuthCredentials credentials) {

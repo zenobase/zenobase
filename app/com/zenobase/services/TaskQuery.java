@@ -15,7 +15,6 @@ public class TaskQuery extends QuerySupport {
 		return this;
 	}
 
-	@Override
 	public TaskQuery queryString(String query) {
 		super.queryString(query, Task.ID.getName());
 		return this;

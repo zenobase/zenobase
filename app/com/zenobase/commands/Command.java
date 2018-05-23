@@ -91,10 +91,6 @@ public class Command extends DomainNode {
 		field.addValue(getValue(PARAMETERS), value);
 	}
 
-	protected <T> void addParameters(Field<T> field, Iterable<T> values) {
-		field.addValues(getValue(PARAMETERS), values);
-	}
-
 	public int getCost() {
 		return getValue(COST, 0);
 	}

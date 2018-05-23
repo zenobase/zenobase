@@ -62,7 +62,7 @@ public class TrackthisformeTaskManager extends OAuthTaskManager {
 		Response response = send(request, credentials);
 		TrackthisformeElementsResult result = new TrackthisformeElementsResult(parseObject(response),
 			task.getPrincipal(), begin, category, task.getField(), task.getUnit(), task.includeRatings());
-		return createCommand(task, credentials, result.getEvents());
+		return createCommand(task, result.getEvents());
 	}
 
 	private Category getCategory(TrackthisformeTask task, OAuthCredentials credentials) {
@@ -86,7 +86,7 @@ public class TrackthisformeTaskManager extends OAuthTaskManager {
 		return latest != null ? latest.toString() : null;
 	}
 
-	private Command createCommand(Task task, OAuthCredentials credentials, List<Event> events) {
+	private Command createCommand(Task task, List<Event> events) {
 		CompoundCommand command = new CompoundCommand(task.getPrincipal(), "ran " + getType() + " task", "reverted " + getType() + " task");
 		command.add(UpdateTaskCommand.builder(task)
 			.set(Task.COMPLETED, task.getCompleted(), DateTime.now(DateTimeZone.UTC))

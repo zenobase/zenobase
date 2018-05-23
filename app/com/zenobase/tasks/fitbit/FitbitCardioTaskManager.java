@@ -39,12 +39,12 @@ public class FitbitCardioTaskManager extends FitbitTaskManagerSupport<FitbitCard
 	protected Command safeExecute(FitbitCardioTask task, OAuthCredentials credentials, Token token) {
 
 		List<Event> events = Lists.newArrayList();
-		LocalDate syncDate = getLastDate(DeviceType.TRACKER, task, credentials);
+		LocalDate syncDate = getLastDate(DeviceType.TRACKER, credentials);
 		if (syncDate == null) {
 			return null;
 		}
 		LocalDate fromDate = getFromDate(task);
-		FitbitProfileResult profile = getProfile(task, credentials);
+		FitbitProfileResult profile = getProfile(credentials);
 
 		if (task.isHourly()) {
 			for (LocalDate date = fromDate; date.isBefore(syncDate); date = date.plusDays(1)) {

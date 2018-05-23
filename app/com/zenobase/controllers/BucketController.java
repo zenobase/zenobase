@@ -1,7 +1,6 @@
 package com.zenobase.controllers;
 
 import java.util.List;
-import java.util.function.Function;
 
 import javax.inject.Inject;
 
@@ -69,21 +68,6 @@ public class BucketController extends ControllerSupport {
 	private static JsonNode toLabel(Bucket bucket) {
 		return Nodes.newObject("label", bucket.getLabel());
 	}
-
-	public Result get(String bucketId, Function<Bucket, JsonNode> f) {
-		Authorization auth = getCurrentAuthorization();
-		Bucket bucket = buckets.find(bucketId);
-		if (bucket == null) {
-			return notFound();
-		}
-    	if (!bucket.hasRole(auth, Role.VIEWER)) {
-    		return auth == null ? unauthorized() : forbidden();
-    	}
-		if (bucket.getWidgets().isEmpty()) {
-			setDefaultDashboard(bucket);
-		}
-    	return ok(f.apply(bucket));
-    }
 
 	static void setDefaultDashboard(Bucket bucket) {
 		bucket.setWidgets(new DefaultDashboard().widgets());

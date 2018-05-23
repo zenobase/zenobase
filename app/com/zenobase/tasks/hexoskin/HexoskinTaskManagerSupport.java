@@ -67,10 +67,6 @@ abstract class HexoskinTaskManagerSupport<T extends HexoskinTaskSupport> extends
 		return super.send(request, credentials);
 	}
 
-	protected LocalDate getFromDate(Task task) {
-		return LocalDate.parse(task.getMarker());
-	}
-
 	protected LocalDate parseMarker(String marker) {
 		return marker != null ? DateTime.parse(marker).toLocalDate() : LocalDate.now().withDayOfMonth(1);
 	}

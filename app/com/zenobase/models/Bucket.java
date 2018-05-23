@@ -151,16 +151,8 @@ public class Bucket extends DomainNode {
 		setValue(REFRESH, refresh ? Boolean.TRUE : null);
 	}
 
-	public boolean isRefresh() {
-		return getValue(REFRESH) == Boolean.TRUE;
-	}
-
 	public void setArchived(boolean archived) {
 		setValue(ARCHIVED, archived ? Boolean.TRUE : null);
-	}
-
-	public boolean isArchived() {
-		return getValue(ARCHIVED) == Boolean.TRUE;
 	}
 
 	public Bucket copy() {

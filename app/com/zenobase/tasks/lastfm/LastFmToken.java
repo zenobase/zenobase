@@ -11,7 +11,7 @@ public class LastFmToken extends Token {
 
 	private final String scope;
 
-	public LastFmToken(String token, String secret, String scope) {
+	public LastFmToken(String token, String scope) {
 		super(token, "");
 		this.scope = scope;
 	}

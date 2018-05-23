@@ -26,7 +26,6 @@ class FitbitWeightResult extends FitbitResultSupport {
 		this.weightUnit = weightUnit;
 	}
 
-	@Override
 	public List<Event> getEvents() {
 		List<Event> events = Lists.newArrayList();
 		DecimalMeasure<Mass> weight = weightValue(node.path("body").path("weight"), weightUnit);

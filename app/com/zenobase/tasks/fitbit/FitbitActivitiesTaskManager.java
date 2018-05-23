@@ -40,7 +40,7 @@ public class FitbitActivitiesTaskManager extends FitbitTaskManagerSupport<Fitbit
 	@Override
 	protected Command safeExecute(FitbitActivitiesTask task, OAuthCredentials credentials, Token token) {
 		List<Event> events = Lists.newArrayList();
-		FitbitProfileResult profile = getProfile(task, credentials);
+		FitbitProfileResult profile = getProfile(credentials);
 		DateTime afterDate = DateTime.parse(task.getMarker());
 		for (String url = "https://api.fitbit.com/1/user/-/activities/list.json"; url != null;) {
 			OAuthRequest request = new OAuthRequest(Verb.GET, url);

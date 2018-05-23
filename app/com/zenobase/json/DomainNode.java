@@ -26,10 +26,6 @@ public class DomainNode {
 		return getValue(ID);
 	}
 
-	public void setId(String id) {
-		setValue(ID, id);
-	}
-
 	public long getVersion() {
 		return getValue(VERSION);
 	}
@@ -62,10 +58,6 @@ public class DomainNode {
 		if (value != null) {
 			field.addValue(node, value);
 		}
-	}
-
-	protected <T> void addValues(Field<T> field, Iterable<T> values) {
-		field.addValues(node, values);
 	}
 
 	protected <T> boolean contains(Field<T> field) {

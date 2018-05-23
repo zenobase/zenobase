@@ -61,10 +61,6 @@ public class UserRepository extends RepositorySupport<User> {
 		return new UserList(index.find(search));
 	}
 
-	public void find(UserQuery query, Callback<User> callback) {
-		super.find(query.build(), callback);
-	}
-
 	public void find(Callback<User> callback) {
 		super.find(new UserQuery().build(), callback);
 	}

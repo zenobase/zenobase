@@ -1,11 +1,8 @@
 package com.zenobase.commands;
 
-import java.util.Map;
-
 import javax.inject.Inject;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.google.common.collect.Maps;
 
 import com.zenobase.json.ObjectField;
 import com.zenobase.models.Identity;
@@ -41,8 +38,6 @@ public class CreateTaskCommand extends Command {
 		Task task = getTask();
 		return String.format("created %s task %s", task.getType(), task.getId());
 	}
-
-	public static Map<String, String> taskToCredentials = Maps.newHashMap();
 
 	public static class Parser extends CommandParser {
 

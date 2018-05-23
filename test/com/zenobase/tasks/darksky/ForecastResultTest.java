@@ -14,7 +14,7 @@ public class ForecastResultTest extends ResultTestSupport {
 	public void test() {
 		ForecastResult result = new ForecastResult(readObject("ForecastResultTest.json"), true);
 		Forecast expected = new Forecast("Light Rain", Measures.valueOf("6.78 C"), Measures.valueOf("1024.18 hPa"), 94, Percentage.valueOf(74));
-		Forecast forecast = result.get(dateTime("2014-02-25T03:15:05-08:00"));
+		Forecast forecast = result.get();
 		assertThat(forecast).isEqualTo(expected);
 	}
 

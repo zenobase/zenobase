@@ -10,7 +10,6 @@ import javax.measure.unit.Unit;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.joda.time.DateTime;
 
 import com.zenobase.common.Measures;
 import com.zenobase.common.Units;
@@ -26,7 +25,7 @@ public class ForecastResult {
 		this.standardUnits = standardUnits;
 	}
 
-	public Forecast get(DateTime time) {
+	public Forecast get() {
 		String tag = node.path("currently").path("summary").textValue();
 		DecimalMeasure<Temperature> temperature = measureValue(node.path("currently").path("temperature"), getTemperatureUnit());
 		DecimalMeasure<Pressure> pressure = measureValue(node.path("currently").path("pressure"), Units.HPA);

@@ -20,7 +20,6 @@ class FitbitSleepResult extends FitbitResultSupport {
 		this.useRanges = useRanges;
 	}
 
-	@Override
 	public List<Event> getEvents() {
 		List<Event> events = Lists.newArrayList();
 		for (JsonNode item : node.path("sleep")) {

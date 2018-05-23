@@ -22,7 +22,6 @@ class FitbitFoodResult extends FitbitResultSupport {
 		super(node, tag, author, timezone);
 	}
 
-	@Override
 	public List<Event> getEvents() {
 		List<Event> events = Lists.newArrayList();
 		for (JsonNode foodNode : node.path("foods-log-caloriesIn")) {

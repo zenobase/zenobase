@@ -51,6 +51,6 @@ public class MisfitSleepTaskManager extends MisfitTaskManagerSupport {
 			events.addAll(new MisfitSleepResult(parseObject(response), task.getPrincipal(), task.getTag()).getEvents());
 			begin = end;
 		}
-		return createCommand(task, credentials, events);
+		return createCommand(task, events);
 	}
 }

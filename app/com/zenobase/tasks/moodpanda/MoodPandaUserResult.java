@@ -20,10 +20,4 @@ class MoodPandaUserResult extends XmlResultSupport {
 		Preconditions.checkArgument(value.startsWith("GMT +"), "Can't parse timezone offset: %s", value);
 		return Double.parseDouble(value.substring(5));
 	}
-
-	public double getZone() {
-		String value = Preconditions.checkNotNull(selectText("/UserList/User/TimeZone"), "Missing TimeZone");
-		Preconditions.checkArgument(value.startsWith("GMT +"), "Can't parse timezone offset: %s", value);
-		return Double.parseDouble(value.substring(5));
-	}
 }

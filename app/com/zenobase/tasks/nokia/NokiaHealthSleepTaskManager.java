@@ -70,14 +70,14 @@ public class NokiaHealthSleepTaskManager extends OAuthTaskManager {
 	}
 
 	private List<Event> execute(NokiaHealthSleepTask task, OAuthCredentials credentials, DateTime from) {
-		OAuthRequest request = createRequest(task, credentials, from);
+		OAuthRequest request = createRequest(credentials, from);
 		Response response = send(request, credentials);
 		NokiaHealthSleepResult result = new NokiaHealthSleepResult(parseObject(response), task.getPrincipal(), task.getTag(), task.useRanges(), task.getTimezone());
 		Preconditions.checkState(result.getStatus() == 0, "Expected status <0> but got <%s> for task <%s>", result.getStatus(), task.getId());
 		return result.getEvents();
 	}
 
-	private OAuthRequest createRequest(NokiaHealthSleepTask task, OAuthCredentials credentials, DateTime from) {
+	private OAuthRequest createRequest(OAuthCredentials credentials, DateTime from) {
 		OAuthRequest request = new OAuthRequest(Verb.GET, "https://api.health.nokia.com/v2/sleep");
 		request.addQuerystringParameter("action", "get");
 		request.addQuerystringParameter("userid", credentials.getScope());

@@ -47,6 +47,7 @@ public class DecimalRangeParserTest {
 		testRange("[1..1]", Range.singleton(BigDecimal.ONE));
 	}
 
+	@Test
 	public void testUnparsedRange() {
 		testRange("{-3.1415..1}", null);
 		testRange("(*..*)", null);

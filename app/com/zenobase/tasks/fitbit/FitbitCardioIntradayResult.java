@@ -31,7 +31,6 @@ class FitbitCardioIntradayResult extends FitbitResultSupport {
 		this.date = date;
 	}
 
-	@Override
 	public List<Event> getEvents() {
 		List<Event> events = Lists.newArrayList();
 		for (Map.Entry<DateTime, Collection<Integer>> entry : valuesByHour().asMap().entrySet()) {

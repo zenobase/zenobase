@@ -39,8 +39,8 @@ public class FitbitWeightTaskManager extends FitbitTaskManagerSupport<FitbitWeig
 	@Override
 	protected Command safeExecute(FitbitWeightTask task, OAuthCredentials credentials, Token token) {
 		List<Event> events = Lists.newArrayList();
-		FitbitProfileResult profile = getProfile(task, credentials);
-		LocalDate syncDate = getLastDate(DeviceType.SCALE, task, credentials);
+		FitbitProfileResult profile = getProfile(credentials);
+		LocalDate syncDate = getLastDate(DeviceType.SCALE, credentials);
 		if (syncDate == null) {
 			syncDate = DateTime.now(profile.getTimezone()).toLocalDate();
 		}

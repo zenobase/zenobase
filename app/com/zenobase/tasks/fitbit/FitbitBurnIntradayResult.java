@@ -32,7 +32,6 @@ class FitbitBurnIntradayResult extends FitbitResultSupport {
 		this.date = date;
 	}
 
-	@Override
 	public List<Event> getEvents() {
 		List<Event> events = Lists.newArrayList();
 		for (Map.Entry<DateTime, Collection<BigDecimal>> entry : valuesByHour().asMap().entrySet()) {

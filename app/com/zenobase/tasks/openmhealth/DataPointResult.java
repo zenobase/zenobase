@@ -3,14 +3,7 @@ package com.zenobase.tasks.openmhealth;
 import java.math.BigDecimal;
 
 import javax.measure.DecimalMeasure;
-import javax.measure.quantity.Energy;
-import javax.measure.quantity.Frequency;
-import javax.measure.quantity.Length;
-import javax.measure.quantity.Mass;
-import javax.measure.quantity.Pressure;
 import javax.measure.quantity.Quantity;
-import javax.measure.quantity.Temperature;
-import javax.measure.quantity.VolumetricDensity;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import org.joda.time.DateTime;
@@ -88,15 +81,15 @@ public class DataPointResult {
 	}
 
 	private static void addConcentration(JsonNode node, Event event) {
-		event.addValue(Event.CONCENTRATION, measureValue(node, VolumetricDensity.class));
+		event.addValue(Event.CONCENTRATION, measureValue(node));
 	}
 
 	private static void addPressure(JsonNode node, Event event) {
-		event.addValue(Event.PRESSURE, measureValue(node, Pressure.class));
+		event.addValue(Event.PRESSURE, measureValue(node));
 	}
 
 	private static void addTemperature(JsonNode node, Event event) {
-		event.addValue(Event.TEMPERATURE, measureValue(node, Temperature.class));
+		event.addValue(Event.TEMPERATURE, measureValue(node));
 	}
 
 	private static void addPercentage(JsonNode node, Event event) {
@@ -104,15 +97,15 @@ public class DataPointResult {
 	}
 
 	private static void addHeight(JsonNode node, Event event) {
-		event.addValue(Event.HEIGHT, measureValue(node, Length.class));
+		event.addValue(Event.HEIGHT, measureValue(node));
 	}
 
 	private static void addWeight(JsonNode node, Event event) {
-		event.addValue(Event.WEIGHT, measureValue(node, Mass.class));
+		event.addValue(Event.WEIGHT, measureValue(node));
 	}
 
 	private static void addEnergy(JsonNode node, Event event) {
-		event.addValue(Event.ENERGY, measureValue(node, Energy.class));
+		event.addValue(Event.ENERGY, measureValue(node));
 	}
 
 	private static void addTag(JsonNode node, Event event) {
@@ -124,11 +117,11 @@ public class DataPointResult {
 	}
 
 	private static void addFrequency(JsonNode node, Event event) {
-		event.addValue(Event.FREQUENCY, measureValue(node, Frequency.class));
+		event.addValue(Event.FREQUENCY, measureValue(node));
 	}
 
 	private static void addDistance(JsonNode node, Event event) {
-		event.addValue(Event.DISTANCE, measureValue(node, Length.class));
+		event.addValue(Event.DISTANCE, measureValue(node));
 	}
 
 	private static void addCount(JsonNode node, Event event) {
@@ -139,7 +132,7 @@ public class DataPointResult {
 		return node.isTextual() ? DateTime.parse(node.textValue()) : null;
 	}
 
-	private static <Q extends Quantity> DecimalMeasure<Q> measureValue(JsonNode node, Class<Q> q) {
+	private static <Q extends Quantity> DecimalMeasure<Q> measureValue(JsonNode node) {
 		String unit = unitValue(node.path("unit"));
 		BigDecimal value = node.path("value").decimalValue();
 		return unit != null ? Measures.valueOf(Measures.round(value), unit) : null;

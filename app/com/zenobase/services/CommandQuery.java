@@ -12,7 +12,6 @@ public class CommandQuery extends QuerySupport {
 		return this;
 	}
 
-	@Override
 	public CommandQuery queryString(String query) {
 		super.queryString(query, Command.ID.getName());
 		return this;

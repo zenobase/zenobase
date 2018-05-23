@@ -13,7 +13,6 @@ import com.zenobase.commands.CompoundCommand;
 import com.zenobase.commands.CreateEventsCommand;
 import com.zenobase.commands.UpdateTaskCommand;
 import com.zenobase.models.Event;
-import com.zenobase.tasks.OAuthCredentials;
 import com.zenobase.tasks.OAuthTaskManager;
 import com.zenobase.tasks.Task;
 
@@ -45,7 +44,7 @@ abstract class RunkeeperTaskManagerSupport extends OAuthTaskManager {
 		return latest != null ? latest.plusSeconds(1).toLocalDateTime().toString() : null;
 	}
 
-	protected Command createCommand(Task task, OAuthCredentials credentials, List<Event> events) {
+	protected Command createCommand(Task task, List<Event> events) {
 		CompoundCommand command = new CompoundCommand(task.getPrincipal(), "ran " + getType() + " task", "reverted " + getType() + " task");
 		command.add(UpdateTaskCommand.builder(task)
 			.set(Task.COMPLETED, task.getCompleted(), DateTime.now(DateTimeZone.UTC))

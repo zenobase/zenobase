@@ -37,7 +37,6 @@ public class BucketQuery extends QuerySupport {
 		return this;
 	}
 
-	@Override
 	public BucketQuery queryString(String query) {
 		super.queryString(query, Bucket.ID.getName());
 		return this;

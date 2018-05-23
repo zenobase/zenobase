@@ -13,14 +13,6 @@ public class FolderResult {
 		this.node = node;
 	}
 
-	public int getStatus() {
-		return node.path("meta").path("code").intValue();
-	}
-
-	public int getTotal() {
-		return node.path("response").path("checkins").path("count").intValue();
-	}
-
 	public List<String> getFiles() {
 		List<String> files = Lists.newArrayList();
 		for (JsonNode contentNode : node.path("contents")) {

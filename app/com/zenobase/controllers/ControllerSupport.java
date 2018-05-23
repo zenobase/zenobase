@@ -41,10 +41,6 @@ public abstract class ControllerSupport extends Controller implements CustomHead
 		return result(BAD_REQUEST, message);
 	}
 
-	public static Status unauthorized(String message) {
-		return result(UNAUTHORIZED, message);
-	}
-
 	public static Status forbidden(String message) {
 		return result(FORBIDDEN, message);
 	}

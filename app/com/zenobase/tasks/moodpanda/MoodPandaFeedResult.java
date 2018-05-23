@@ -54,7 +54,7 @@ class MoodPandaFeedResult extends XmlResultSupport {
 	}
 
 	private DateTime selectDateTime(String path, Object node) {
-		DateTime t = DateTime.parse(selectText("Date", node));
+		DateTime t = DateTime.parse(selectText(path, node));
 		DateTimeZone zone = DateTimeZone.forOffsetMillis(t.getZone().getOffset(t) + (int) (offset * 60 * 60 * 1000));
 		return t.withZoneRetainFields(zone);
 	}

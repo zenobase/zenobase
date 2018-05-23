@@ -48,6 +48,6 @@ public class MisfitActivitiesTaskManager extends MisfitTaskManagerSupport {
 			events.addAll(new MisfitActivitiesResult(parseObject(response), task.getPrincipal(), begin).getEvents());
 			begin = end;
 		}
-		return createCommand(task, credentials, events);
+		return createCommand(task, events);
 	}
 }

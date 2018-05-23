@@ -73,12 +73,12 @@ public class BeeminderTaskManager extends OAuthTaskManager {
 			Logger.warn("Can't run task {} because goal does not exist: {}", task.getId(), task.getGoal());
 			return null;
 		}
-		ObjectNode result = find(task.getBucketId(), task.getKeyField(), task.getField(), task.getUnit(), task.getFrom(), user.getTimezone(), task.getFilter());
+		ObjectNode result = find(task.getBucketId(), task.getKeyField(), task.getField(), task.getUnit(), task.getFrom(), task.getFilter());
 		DateTime to = getLatest(result);
 		ArrayNode datapoints = getDatapoints(result, task.getField() != null, Event.DURATION.getName().equals(task.getField()), user.getTimezone());
 		if (to != null && datapoints.size() > 0) {
 			send(datapoints, task.getGoal(), credentials);
-			return createCommand(task, to, credentials);
+			return createCommand(task, to);
 		}
 		return null;
 	}
@@ -89,7 +89,7 @@ public class BeeminderTaskManager extends OAuthTaskManager {
 		return new UserResult(parseObject(response));
 	}
 
-	private ObjectNode find(String bucketId, String keyField, String field, Unit<?> unit, DateTime from, DateTimeZone zone, String filter) {
+	private ObjectNode find(String bucketId, String keyField, String field, Unit<?> unit, DateTime from, String filter) {
 		events.refresh(bucketId);
 		SearchBuilderSupport search = new EventSearchBuilder()
 			.addFacet(new ListFacet(FIELD_LATEST.getName(), 0, 1, '-' + Event.TIMESTAMP.getName(), null, Event.SCHEMA))
@@ -137,7 +137,7 @@ public class BeeminderTaskManager extends OAuthTaskManager {
 		send(request, credentials);
 	}
 
-	private Command createCommand(Task task, DateTime marker, OAuthCredentials credentials) {
+	private Command createCommand(Task task, DateTime marker) {
 		CompoundCommand command = new CompoundCommand(task.getPrincipal(), "ran " + getType() + " task", "reverted " + getType() + " task");
 		command.add(UpdateTaskCommand.builder(task)
 			.set(Task.COMPLETED, task.getCompleted(), DateTime.now(DateTimeZone.UTC))

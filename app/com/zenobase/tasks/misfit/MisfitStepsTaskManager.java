@@ -58,6 +58,6 @@ public class MisfitStepsTaskManager extends MisfitTaskManagerSupport {
 		if (!events.isEmpty()) {
 			events.remove(events.size() - 1); // the last event could be incomplete
 		}
-		return createCommand(task, credentials, events);
+		return createCommand(task, events);
 	}
 }

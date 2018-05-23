@@ -29,7 +29,6 @@ public class CredentialsQuery extends QuerySupport {
 		return this;
 	}
 
-	@Override
 	public CredentialsQuery queryString(String query) {
 		super.queryString(query, Credentials.ID.getName());
 		return this;

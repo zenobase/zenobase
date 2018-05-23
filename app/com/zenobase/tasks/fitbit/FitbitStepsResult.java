@@ -33,7 +33,6 @@ class FitbitStepsResult extends FitbitResultSupport {
 		this.includeBMR = includeBMR;
 	}
 
-	@Override
 	public List<Event> getEvents() {
 		List<Event> events = Lists.newArrayList();
 		int steps = node.path("summary").path("steps").intValue();

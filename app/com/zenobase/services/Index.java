@@ -252,12 +252,6 @@ public class Index {
 			.get().getCount());
 	}
 
-	public void open() {
-		client.admin().indices()
-			.prepareOpen(indexName)
-			.get();
-	}
-
 	public boolean close() {
 		Set<String> aliases = aliases();
 		if (aliases.isEmpty()) {
@@ -277,7 +271,7 @@ public class Index {
 
 	private boolean close(Iterable<String> aliases) {
 		IndicesAliasesRequestBuilder request = client.admin().indices().prepareAliases();
-		for (String alias : aliases()) {
+		for (String alias : aliases) {
 			request.removeAlias(alias, indexName);
 		}
 		return request.get().isAcknowledged();

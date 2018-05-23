@@ -103,6 +103,7 @@ public class OffsetIntervalsTest {
 		assertThat(OffsetIntervals.toString(time, "year")).as(time + " as year with offset").isEqualTo("2012T-08:00");
 	}
 
+	@Test
 	public void testIllegalFormat() {
 		assertThat(OffsetIntervals.valueOf("bla")).isNull();
 	}

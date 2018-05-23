@@ -56,7 +56,7 @@ public abstract class FitbitTaskManagerSupport<T extends Task> extends OAuthTask
 
 	protected abstract Command safeExecute(T task, OAuthCredentials credentials, Token token);
 
-	protected LocalDate getLastDate(DeviceType deviceType, Task task, OAuthCredentials credentials) {
+	protected LocalDate getLastDate(DeviceType deviceType, OAuthCredentials credentials) {
 		OAuthRequest request = new OAuthRequest(Verb.GET, "https://api.fitbit.com/1/user/-/devices.json");
 		Response response = send(request, credentials);
 		return new FitbitDevicesResult(parseArray(response)).getLastDate(deviceType);
@@ -76,7 +76,7 @@ public abstract class FitbitTaskManagerSupport<T extends Task> extends OAuthTask
 		return marker != null ? DateTime.parse(marker).toLocalDate() : LocalDate.now().withDayOfMonth(1);
 	}
 
-	protected FitbitProfileResult getProfile(Task task, OAuthCredentials credentials) {
+	protected FitbitProfileResult getProfile(OAuthCredentials credentials) {
 		OAuthRequest request = new OAuthRequest(Verb.GET, "https://api.fitbit.com/1/user/-/profile.json");
 		Response response = send(request, credentials);
 		return new FitbitProfileResult(parseObject(response));

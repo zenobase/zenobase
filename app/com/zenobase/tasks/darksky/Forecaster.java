@@ -35,7 +35,7 @@ public class Forecaster {
 		Preconditions.checkState(response.getStatus() == 200,
 			"Couldn't request <%s>: %s", response.getUri(), response.getBody());
 		ObjectNode node = Nodes.readObject(response.asByteArray());
-		return new ForecastResult(node, standardUnits).get(time);
+		return new ForecastResult(node, standardUnits).get();
 	}
 
 	private WSRequestHolder newRequest(Location location, DateTime time, boolean includeDaily, boolean standardUnits) {

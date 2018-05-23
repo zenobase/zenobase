@@ -38,10 +38,6 @@ public class BedditResult {
 		this.node = node;
 	}
 
-	public String getCursor() {
-		return node.path("cursor").textValue();
-	}
-
 	public List<Event> getEvents() {
 		List<Event> events = Lists.newArrayList();
 		for (JsonNode sleepNode : node) {

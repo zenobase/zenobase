@@ -39,7 +39,7 @@ public class FitbitFoodTaskManager extends FitbitTaskManagerSupport<FitbitFoodTa
 	@Override
 	protected Command safeExecute(FitbitFoodTask task, OAuthCredentials credentials, Token token) {
 		List<Event> events = Lists.newArrayList();
-		FitbitProfileResult profile = getProfile(task, credentials);
+		FitbitProfileResult profile = getProfile(credentials);
 		LocalDate today = DateTime.now(profile.getTimezone()).toLocalDate();
 		LocalDate fromDate = getFromDate(task);
 		for (LocalDate date = fromDate; date.isBefore(today); date = date.plusYears(1)) {

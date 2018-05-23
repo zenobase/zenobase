@@ -1,6 +1,5 @@
 package com.zenobase.models;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.elasticsearch.action.admin.cluster.health.ClusterHealthStatus;
 
 import com.zenobase.json.BooleanField;
@@ -17,10 +16,6 @@ public class StatusInfo extends DomainNode {
 	private static final IntegerField NODES_WEB = new IntegerField("web_nodes");
 	private static final BooleanField READ_ONLY = new BooleanField("read_only");
 	private static final BooleanField SCHEDULER_DISABLED = new BooleanField("scheduler_disabled");
-
-	public StatusInfo(ObjectNode node) {
-		super(node);
-	}
 
 	public StatusInfo(boolean readOnly) {
 		setValue(READ_ONLY, readOnly);

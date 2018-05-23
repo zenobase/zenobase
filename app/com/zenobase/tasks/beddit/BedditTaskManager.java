@@ -49,10 +49,10 @@ public class BedditTaskManager extends OAuthTaskManager {
 		request.addQuerystringParameter("end_date", LocalDate.now().plusMonths(1).toString());
 		Response response = send(request, credentials);
 		BedditResult result = new BedditResult(task.getTag(), task.getPrincipal(), from, parseArray(response));
-		return createCommand(task, credentials, result.getEvents());
+		return createCommand(task, result.getEvents());
 	}
 
-	private Command createCommand(Task task, OAuthCredentials credentials, List<Event> events) {
+	private Command createCommand(Task task, List<Event> events) {
 		CompoundCommand command = new CompoundCommand(task.getPrincipal(), "ran " + getType() + " task", "reverted " + getType() + " task");
 		command.add(UpdateTaskCommand.builder(task)
 			.set(Task.COMPLETED, task.getCompleted(), DateTime.now(DateTimeZone.UTC))

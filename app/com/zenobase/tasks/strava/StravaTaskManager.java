@@ -59,7 +59,7 @@ public class StravaTaskManager extends OAuthTaskManager {
 				break;
 			}
 		}
-		return createCommand(task, credentials, events);
+		return createCommand(task, events);
 	}
 
 	static DateTime parseMarker(String marker) {
@@ -81,7 +81,7 @@ public class StravaTaskManager extends OAuthTaskManager {
 		return latest != null ? latest.toString() : null;
 	}
 
-	private Command createCommand(StravaTask task, OAuthCredentials credentials, List<Event> events) {
+	private Command createCommand(StravaTask task, List<Event> events) {
 		CompoundCommand command = new CompoundCommand(task.getPrincipal(), "ran " + getType() + " task", "reverted " + getType() + " task");
 		command.add(UpdateTaskCommand.builder(task)
 			.set(Task.COMPLETED, task.getCompleted(), DateTime.now(DateTimeZone.UTC))

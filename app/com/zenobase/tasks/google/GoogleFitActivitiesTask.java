@@ -1,6 +1,5 @@
 package com.zenobase.tasks.google;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.joda.time.DateTimeZone;
 
 import com.zenobase.json.BooleanField;
@@ -11,10 +10,6 @@ public class GoogleFitActivitiesTask extends GoogleFitTaskSupport {
 	public static final String TYPE = "google-activities";
 	public static final BooleanField METRIC = new BooleanField("metric");
 	public static final BooleanField DERIVED = new BooleanField("derived");
-
-	public GoogleFitActivitiesTask(ObjectNode node) {
-		super(node);
-	}
 
 	public GoogleFitActivitiesTask(String bucketId, Identity principal, DateTimeZone timezone, boolean metric, boolean derived, String marker) {
 		super(TYPE, bucketId, principal, timezone, marker);

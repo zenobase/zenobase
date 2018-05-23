@@ -85,14 +85,6 @@ public class ReporterTaskManager extends OAuthTaskManager {
 		return m.find() ? LocalDate.parse(m.group(1)) : null;
 	}
 
-	static DateTime parseMarker(String marker) {
-		return marker != null ? DateTime.parse(marker) : null;
-	}
-
-	static String formatMarker(DateTime time) {
-		return time != null ? Long.toString(time.getMillis() / 1000) : null;
-	}
-
 	private void getEvents(OAuthCredentials credentials, Configuration config, Identity author, String folder, LocalDate date, List<Event> events) {
 		String url = String.format("https://api-content.dropbox.com/1/files/dropbox/%s/%s-reporter-export.json", folder, date);
 		OAuthRequest request = new OAuthRequest(Verb.GET, url);

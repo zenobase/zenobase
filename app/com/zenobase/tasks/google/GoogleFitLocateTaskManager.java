@@ -53,7 +53,7 @@ public class GoogleFitLocateTaskManager extends GoogleFitTaskManagerSupport<Goog
 			protected Event edit(Event event) {
 				Range<DateTime> t = getRange(event);
 				if (!locations.contains(t)) {
-					addLocations(locations, t, credentials, streams);
+					addLocations(locations, t, credentials);
 				}
 				return locations.update(event);
 			}
@@ -64,7 +64,7 @@ public class GoogleFitLocateTaskManager extends GoogleFitTaskManagerSupport<Goog
 		return createCommand(task, editor.getLast(), credentials, editor.getEdits(), token);
 	}
 
-	private void addLocations(LocationMap locations, Range<DateTime> t, OAuthCredentials credentials, Map<String, DataStream> streams) {
+	private void addLocations(LocationMap locations, Range<DateTime> t, OAuthCredentials credentials) {
 		DataStream stream = new DataStream("derived:com.google.location.sample:com.google.android.gms:merge_location_samples", "com.google.location.sample", null);
 		Location beginLocation = null;
 		DateTime begin = null;

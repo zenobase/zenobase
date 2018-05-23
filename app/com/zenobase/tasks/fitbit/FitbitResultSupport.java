@@ -1,7 +1,6 @@
 package com.zenobase.tasks.fitbit;
 
 import java.math.BigDecimal;
-import java.util.List;
 
 import javax.measure.DecimalMeasure;
 import javax.measure.quantity.Energy;
@@ -22,7 +21,6 @@ import com.zenobase.common.DateTimeZones;
 import com.zenobase.common.Measures;
 import com.zenobase.common.Pace;
 import com.zenobase.common.Units;
-import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
 import com.zenobase.models.Percentage;
 import com.zenobase.models.Rating;
@@ -43,8 +41,6 @@ abstract class FitbitResultSupport {
 		this.author = author;
 		this.timezone = timezone;
 	}
-
-	public abstract List<Event> getEvents();
 
 	protected DateTime dateTimeValue(JsonNode item) {
 		return DateTimeZones.toDateTime(LocalDateTime.parse(item.textValue()), timezone);

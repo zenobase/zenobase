@@ -31,7 +31,6 @@ class FitbitActivitiesResult extends FitbitResultSupport {
 		return Strings.emptyToNull(node.path("pagination").path("next").textValue());
 	}
 
-	@Override
 	public List<Event> getEvents() {
 		List<Event> events = Lists.newArrayList();
 		for (JsonNode item : node.path("activities")) {

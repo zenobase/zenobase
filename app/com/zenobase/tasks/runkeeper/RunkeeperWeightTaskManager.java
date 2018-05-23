@@ -64,6 +64,6 @@ public class RunkeeperWeightTaskManager extends RunkeeperTaskManagerSupport {
 			}
 			path = result.getNext();
 		}
-		return createCommand(task, credentials, events);
+		return createCommand(task, events);
 	}
 }

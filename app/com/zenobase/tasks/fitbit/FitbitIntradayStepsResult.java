@@ -26,7 +26,6 @@ class FitbitIntradayStepsResult extends FitbitResultSupport {
 		this.date = date;
 	}
 
-	@Override
 	public List<Event> getEvents() {
 		List<Event> events = Lists.newArrayList();
 		for (Map.Entry<DateTime, Integer> entry : valuesByHour().entrySet()) {
