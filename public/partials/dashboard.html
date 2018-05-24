@@ -977,24 +977,6 @@
 		</div>
 	</script>
 
-	<script id="/moodpanda-settings.html" type="text/ng-template">
-		<div data-ng-controller="MoodPandaSettingsController">
-			<div class="control-group">
-				<label for="tag" class="control-label">Tag</label>
-				<input name="tag" type="text" required data-ng-model="settings.tag"/>
-			</div>
-			<div class="control-group">
-				<label for="email" class="control-label">Email</label>
-				<input name="email" type="text" required data-ng-model="settings.email"/>
-				<p class="help-block">An email address associated with a MoodPanda account, must have "privacy mode" disabled.</p>
-			</div>
-			<div class="control-group">
-				<label for="marker" class="control-label">Starting from</label>
-				<input class="input-small" type="text" data-ui-datepicker data-ng-model="settings.marker"/>
-			</div>
-		</div>
-	</script>
-
 	<script id="/mapmyfitness-activities-settings.html" type="text/ng-template">
 		<div data-ng-controller="MapMyFitnessActivitiesSettingsController">
 			<div class="control-group">
@@ -1948,6 +1930,19 @@
 
 	<script id="/import-sleepyhead.html" type="text/ng-template">
 		<div data-ng-controller="ImportSleepyHeadController">
+			<div class="control-group">
+				<input name="tag" type="text" required data-ng-model="settings.tag"/>
+				<p class="help-block">A tag to add to every event.</p>
+			</div>
+			<div class="control-group">
+				<select name="timezone" data-ng-model="settings.timezone" data-ng-options="timezone for timezone in timezones" required data-ui-timezone-select></select>
+				<p class="help-block">The timezone to use.</p>
+			</div>
+		</div>
+	</script>
+
+	<script id="/import-moodpanda.html" type="text/ng-template">
+		<div data-ng-controller="ImportMoodPandaController">
 			<div class="control-group">
 				<input name="tag" type="text" required data-ng-model="settings.tag"/>
 				<p class="help-block">A tag to add to every event.</p>

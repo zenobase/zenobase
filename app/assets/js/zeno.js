@@ -5740,7 +5740,32 @@
 		};
 	}]);
 
-	app.controller('ImportDialogController', ['$scope', '$http', '$routeParams', 'EventSpreadsheet', 'HealthKit', 'SleepCycle', 'SleepyHead', 'SunSprite', 'TapLog', 'Nomie', 'Basis', 'HabitBull', 'tracker', 'delay', function($scope, $http, $routeParams, EventSpreadsheet, HealthKit, SleepCycle, SleepyHead, SunSprite, TapLog, Nomie, Basis, HabitBull, tracker, delay) {
+	app.factory('MoodPanda', [ 'moment', function(moment) {
+
+		return {
+			parse : function(s, settings) {
+				var events = [];
+				var csv = Baby.parse(s, { header : true, skipEmptyLines : true });
+				if (csv.errors.length) {
+					throw new Error(csv.errors[0].message + ' in row ' + csv.errors[0].row);
+				}
+				$.each(csv.data, function(rowNum, row) {
+					var event = {
+						'timestamp' : moment.tz(row['Date'], 'DD/MM/YYYY HH:mm:ss', settings.timezone).format('YYYY-MM-DDTHH:mm:ss.SSSZ'),
+						'tag' : [ settings.tag ],
+						'rating' : Number(row['Rating']) * 10
+					};
+					if (row['Reason']) {
+						event['note'] = row['Reason'];
+					}
+					events.push(event);
+				});
+				return events;
+			}
+		};
+	}]);
+
+	app.controller('ImportDialogController', ['$scope', '$http', '$routeParams', 'EventSpreadsheet', 'HealthKit', 'SleepCycle', 'SleepyHead', 'SunSprite', 'TapLog', 'MoodPanda', 'Nomie', 'Basis', 'HabitBull', 'tracker', 'delay', function($scope, $http, $routeParams, EventSpreadsheet, HealthKit, SleepCycle, SleepyHead, SunSprite, TapLog, MoodPanda, Nomie, Basis, HabitBull, tracker, delay) {
 
 		$scope.bucketId = $routeParams.bucketId;
 		$scope.formats = [
@@ -5791,6 +5816,15 @@
 				settings : '/import-nomie.html',
 				parse : function(data, settings) {
 					return Nomie.parse(data, settings);
+				}
+			},
+			{
+				id : 'moodpanda',
+				label : 'MoodPanda',
+				description : 'Import a <b>.csv</b> file from <a href="https://moodpanda.com/" target="_blank">MoodPanda</a>.',
+				settings : '/import-moodpanda.html',
+				parse : function(data, settings) {
+					return MoodPanda.parse(data, settings);
 				}
 			},
 			{
@@ -5953,6 +5987,14 @@
 	app.controller('ImportSleepyHeadController', ['$scope', function($scope) {
 
 		$scope.settings.tag = 'sleep';
+		$scope.settings.timezone = 'UTC';
+
+		$scope.settings = $scope.$parent.settings;
+	}]);
+
+	app.controller('ImportMoodPandaController', ['$scope', function($scope) {
+
+		$scope.settings.tag = 'Mood';
 		$scope.settings.timezone = 'UTC';
 
 		$scope.settings = $scope.$parent.settings;
@@ -6198,7 +6240,6 @@
 			{ id : 'misfit-activities', description : 'Creates an event for each activity.', url : 'https://misfit.com/' },
 			{ id : 'misfit-sleep', description : 'Creates an event for each period of sleep.', url : 'https://misfit.com/' },
 			{ id : 'misfit-steps', description : 'Creates an event for the number of steps each day.', url : 'https://misfit.com/' },
-			{ id : 'moodpanda', description : 'Creates an event for each recorded mood.', url : 'https://moodpanda.com/' },
 			{ id : 'moves-activities', description : 'Creates an event for each activity.', url : 'https://moves-app.com/' },
 			{ id : 'moves-places', description : 'Creates an event for each place visited.', url : 'https://moves-app.com/' },
 			{ id : 'moves-locate', description : 'Adds location data to events without a location.', url : 'https://moves-app.com/' },
@@ -7058,19 +7099,6 @@
 					tag : 'Steps',
 					marker : new Date(moment().utc().subtract(6, 'months').startOf('month').valueOf()),
 					timezone : 'UTC'
-			};
-		};
-
-		$scope.init();
-	}]);
-
-	app.controller('MoodPandaSettingsController', ['$scope', 'moment', function($scope, moment) {
-
-		$scope.init = function() {
-			$scope.settings = $scope.$parent.$parent.settings = {
-					tag : 'Mood',
-					email : null,
-					marker : new Date(moment().utc().subtract(12, 'months').valueOf())
 			};
 		};
 

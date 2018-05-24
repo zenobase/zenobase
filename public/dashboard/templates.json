@@ -1494,7 +1494,7 @@
 	{
 		"category" : "Mood",
 		"source" : "MoodPanda",
-		"task" : "moodpanda",
+		"importer" : "moodpanda",
 		"widgets" : [
 			{
 				"id" : "timeline",
