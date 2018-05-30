@@ -1,5 +1,6 @@
 package com.zenobase.tasks.google;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.joda.time.DateTimeZone;
 
 import com.zenobase.json.TokenField;
@@ -9,6 +10,10 @@ public class GoogleFitCardioTask extends GoogleFitTaskSupport {
 
 	public static final String TYPE = "google-cardio";
 	public static final TokenField TAG = new TokenField("tag");
+
+	public GoogleFitCardioTask(ObjectNode node) {
+		super(node);
+	}
 
 	public GoogleFitCardioTask(String bucketId, Identity principal, DateTimeZone timezone, String tag, String marker) {
 		super(TYPE, bucketId, principal, timezone, marker);

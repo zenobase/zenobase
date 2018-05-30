@@ -1,5 +1,6 @@
 package com.zenobase.tasks.google;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.format.ISODateTimeFormat;
@@ -11,6 +12,10 @@ import com.zenobase.tasks.Task;
 abstract class GoogleFitTaskSupport extends Task {
 
 	public static final TokenField TIMEZONE = new TokenField("timezone");
+
+	public GoogleFitTaskSupport(ObjectNode node) {
+		super(node);
+	}
 
 	public GoogleFitTaskSupport(String type, String bucketId, Identity principal, DateTimeZone timezone, String marker) {
 		super(type, bucketId, principal);
