@@ -14,12 +14,14 @@ import org.joda.time.LocalDateTime;
 import org.scribe.model.OAuthRequest;
 import org.scribe.model.Response;
 import org.scribe.model.Verb;
+import play.Logger;
 
 import com.zenobase.commands.Command;
 import com.zenobase.common.Units;
 import com.zenobase.json.UnitField;
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
+import com.zenobase.tasks.InvalidStatusException;
 import com.zenobase.tasks.OAuthCredentials;
 import com.zenobase.tasks.Task;
 
@@ -47,24 +49,32 @@ public class RunkeeperActivitiesTaskManager extends RunkeeperTaskManagerSupport 
 		String path = "/fitnessActivities";
 		List<Event> events = Lists.newArrayList();
 		LocalDateTime from = parseMarker(task.getMarker());
-		while (path != null) {
-			OAuthRequest request = new OAuthRequest(Verb.GET, host + path);
-			request.addHeader("Accept", "application/vnd.com.runkeeper.FitnessActivityFeed+json");
-			if (from != null) {
-				request.addQuerystringParameter("noEarlierThan", from.toLocalDate().toString());
-			}
-			request.addQuerystringParameter("pageSize", "100");
-			Response response = send(request, credentials);
-			RunkeeperActivitiesResult result = new RunkeeperActivitiesResult(parseObject(response), task.getPrincipal(), task.getDistanceUnit(), task.getEnergyUnit(), task.getTimezone());
-			for (Event event : result.getEvents()) {
-				if (from == null || event.getValue(Event.TIMESTAMP).toLocalDateTime().isAfter(from)) {
-					events.add(event);
+		try {
+			while (path != null) {
+				OAuthRequest request = new OAuthRequest(Verb.GET, host + path);
+				request.addHeader("Accept", "application/vnd.com.runkeeper.FitnessActivityFeed+json");
+				if (from != null) {
+					request.addQuerystringParameter("noEarlierThan", from.toLocalDate().toString());
 				}
+				request.addQuerystringParameter("pageSize", "100");
+				Response response = send(request, credentials);
+				RunkeeperActivitiesResult result = new RunkeeperActivitiesResult(parseObject(response), task.getPrincipal(), task.getDistanceUnit(), task.getEnergyUnit(), task.getTimezone());
+				for (Event event : result.getEvents()) {
+					if (from == null || event.getValue(Event.TIMESTAMP).toLocalDateTime().isAfter(from)) {
+						events.add(event);
+					}
+				}
+				path = result.getNext();
 			}
-			path = result.getNext();
-		}
-		for (Event event : events) {
-			addDetails(event, task.getHeightUnit(), credentials);
+			for (Event event : events) {
+				addDetails(event, task.getHeightUnit(), credentials);
+			}
+		} catch (InvalidStatusException e) {
+			if (e.getStatus() == 429) { // reached rate limit
+				Logger.warn("Hit rate limit and couldn't complete task: {}", task.getId());
+			} else {
+				throw e;
+			}
 		}
 		return createCommand(task, events);
 	}

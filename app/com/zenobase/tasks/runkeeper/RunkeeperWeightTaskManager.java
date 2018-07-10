@@ -14,12 +14,14 @@ import org.joda.time.LocalDateTime;
 import org.scribe.model.OAuthRequest;
 import org.scribe.model.Response;
 import org.scribe.model.Verb;
+import play.Logger;
 
 import com.zenobase.commands.Command;
 import com.zenobase.common.Units;
 import com.zenobase.json.UnitField;
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
+import com.zenobase.tasks.InvalidStatusException;
 import com.zenobase.tasks.OAuthCredentials;
 import com.zenobase.tasks.Task;
 
@@ -55,14 +57,23 @@ public class RunkeeperWeightTaskManager extends RunkeeperTaskManagerSupport {
 				request.addQuerystringParameter("noEarlierThan", from.toLocalDate().toString());
 			}
 			request.addQuerystringParameter("pageSize", "100");
-			Response response = send(request, credentials);
-			RunkeeperWeightResult result = new RunkeeperWeightResult(parseObject(response), task.getPrincipal(), task.getTag(), task.getUnit(), task.getTimezone());
-			for (Event event : result.getEvents()) {
-				if (from == null || event.getValue(Event.TIMESTAMP).toLocalDateTime().isAfter(from)) {
-					events.add(event);
+			try {
+				Response response = send(request, credentials);
+				RunkeeperWeightResult result = new RunkeeperWeightResult(parseObject(response), task.getPrincipal(), task.getTag(), task.getUnit(), task.getTimezone());
+				for (Event event : result.getEvents()) {
+					if (from == null || event.getValue(Event.TIMESTAMP).toLocalDateTime().isAfter(from)) {
+						events.add(event);
+					}
+				}
+				path = result.getNext();
+			} catch (InvalidStatusException e) {
+				if (e.getStatus() == 429) { // reached rate limit
+					Logger.warn("Hit rate limit and couldn't complete task: {}", task.getId());
+					break;
+				} else {
+					throw e;
 				}
 			}
-			path = result.getNext();
 		}
 		return createCommand(task, events);
 	}
