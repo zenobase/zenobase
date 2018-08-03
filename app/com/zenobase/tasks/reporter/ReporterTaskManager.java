@@ -15,9 +15,6 @@ import com.google.common.collect.Sets;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDate;
-import org.scribe.model.OAuthRequest;
-import org.scribe.model.Response;
-import org.scribe.model.Verb;
 
 import com.zenobase.commands.Command;
 import com.zenobase.commands.CompoundCommand;
@@ -26,12 +23,12 @@ import com.zenobase.commands.UpdateTaskCommand;
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
 import com.zenobase.tasks.OAuthCredentials;
-import com.zenobase.tasks.OAuthTaskManager;
 import com.zenobase.tasks.Task;
 import com.zenobase.tasks.dropbox.DropboxCredentialsManager;
-import com.zenobase.tasks.dropbox.FolderResult;
+import com.zenobase.tasks.dropbox.DropboxTaskManagerSupport;
+import com.zenobase.tasks.dropbox.ListFolderResult;
 
-public class ReporterTaskManager extends OAuthTaskManager {
+public class ReporterTaskManager extends DropboxTaskManagerSupport {
 
 	@Inject
 	public ReporterTaskManager(DropboxCredentialsManager credentialsManager) {
@@ -61,21 +58,24 @@ public class ReporterTaskManager extends OAuthTaskManager {
 	}
 
 	private Configuration getConfiguration(OAuthCredentials credentials, String folder) {
-		OAuthRequest request = new OAuthRequest(Verb.GET, "https://api-content.dropbox.com/1/files/dropbox/" + folder + "/zenobase-conf.json");
-		Response response = send(request, credentials);
-		return new ConfigurationResult(parseObject(response)).get();
+		return new ConfigurationResult(download(credentials, "/" + folder + "/zenobase-conf.json")).get();
 	}
 
+
 	private SortedSet<LocalDate> getDates(OAuthCredentials credentials, String folder, LocalDate firstDate) {
-		OAuthRequest request = new OAuthRequest(Verb.GET, "https://api.dropbox.com/1/metadata/dropbox/" + folder);
-		Response response = send(request, credentials);
 		SortedSet<LocalDate> dates = Sets.newTreeSet();
-		for (String file : new FolderResult(parseObject(response)).getFiles()) {
-			LocalDate date = parseLocalDate(file);
-			if (date != null && (firstDate == null || !date.isBefore(firstDate))) {
-				dates.add(date);
+		ListFolderResult result;
+		String cursor = null;
+		do {
+			result = list(credentials, "/" + folder, cursor);
+			for (String file : result.getFiles()) {
+				LocalDate date = parseLocalDate(file);
+				if (date != null && (firstDate == null || !date.isBefore(firstDate))) {
+					dates.add(date);
+				}
 			}
-		}
+			cursor = result.getCursor();
+		} while (result.hasMore());
 		return dates;
 	}
 
@@ -86,10 +86,8 @@ public class ReporterTaskManager extends OAuthTaskManager {
 	}
 
 	private void getEvents(OAuthCredentials credentials, Configuration config, Identity author, String folder, LocalDate date, List<Event> events) {
-		String url = String.format("https://api-content.dropbox.com/1/files/dropbox/%s/%s-reporter-export.json", folder, date);
-		OAuthRequest request = new OAuthRequest(Verb.GET, url);
-		Response response = send(request, credentials);
-		events.addAll(new SnapshotsResult(config, author, parseObject(response)).getEvents());
+		String path = String.format("/%s/%s-reporter-export.json", folder, date);
+		events.addAll(new SnapshotsResult(config, author, download(credentials, path)).getEvents());
 	}
 
 	private Command createCommand(Task task, LocalDate marker, List<Event> events) {
