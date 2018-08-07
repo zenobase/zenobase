@@ -439,60 +439,6 @@
 	},
 	{
 		"category" : "Activities",
-		"source" : "Moves",
-		"task" : "moves-activities",
-		"widgets" : [
-			{
-				"id" : "timeline",
-				"type" : "timeline",
-				"label" : "Distance (mi)",
-				"placement" : "top",
-				"field" : "distance",
-				"unit" : "mi",
-				"statistic" : "sum",
-				"interval" : "month"
-			},
-			{
-				"id" : "latest",
-				"type" : "list",
-				"label" : "Latest",
-				"placement" : "left",
-				"order" : "-timestamp",
-				"limit" : 10,
-				"singleton" : true
-			},
-			{
-				"id" : "tags",
-				"type" : "count",
-				"label" : "Type",
-				"placement" : "left",
-				"field" : "tag",
-				"limit" : 5,
-				"order" : "-count"
-			},
-			{
-				"id" : "histogram",
-				"type" : "histogram",
-				"label" : "Distances",
-				"placement" : "right",
-				"field" : "distance",
-				"unit" : "mi",
-				"interval" : 5
-			},
-			{
-				"id" : "polar",
-				"type" : "polar",
-				"label" : "Day of Week",
-				"placement" : "right",
-				"value_field" : "timestamp",
-				"unit" : null,
-				"statistic" : "count",
-				"interval" : "day_of_week"
-			}
-		]
-	},
-	{
-		"category" : "Activities",
 		"source" : "MapMyFitness",
 		"task" : "mapmyfitness-activities",
 		"widgets" : [
@@ -1624,82 +1570,6 @@
 				"placement" : "right",
 				"interval" : "day_of_week",
 				"value_field" : "timestamp"
-			}
-		]
-	},
-	{
-		"category" : "Places",
-		"source" : "Moves",
-		"task" : "moves-places",
-		"widgets" : [
-			{
-				"id" : "timeline",
-				"type" : "timeline",
-				"label" : "Timeline",
-				"placement" : "top",
-				"field" : "timestamp",
-				"statistic" : "count"
-			},
-			{
-				"id" : "timeline_home",
-				"type" : "timeline",
-				"label" : "Time at Home",
-				"placement" : "top",
-				"field" : "duration",
-				"statistic" : "sum",
-				"filter" : "tag:Home"
-			},
-			{
-				"id" : "latest",
-				"type" : "list",
-				"label" : "Latest",
-				"placement" : "left",
-				"singleton" : true,
-				"limit" : 10,
-				"order" : "-timestamp"
-			},
-			{
-				"id" : "tags",
-				"type" : "count",
-				"label" : "Tags",
-				"placement" : "left",
-				"field" : "tag",
-				"limit" : 10,
-				"order" : "count"
-			},
-			{
-				"id" : "map",
-				"type" : "map",
-				"label" : "Map",
-				"placement" : "right"
-			},
-			{
-				"id" : "duration",
-				"type" : "histogram",
-				"label" : "Duration",
-				"placement" : "right",
-				"field" : "duration",
-				"unit" : null,
-				"interval" : 3600000
-			},
-			{
-				"id" : "day_of_week",
-				"type" : "polar",
-				"label" : "Day of Week",
-				"placement" : "right",
-				"interval" : "day_of_week",
-				"value_field" : "timestamp"
-			},
-			{
-				"id" : "top10",
-				"type" : "scoreboard",
-				"label" : "Top 10",
-				"placement" : "right",
-				"key_field" : "tag",
-				"value_field" : "duration",
-				"unit" : null,
-				"order" : "-sum",
-				"limit" : 10
 			}
 		]
 	},
@@ -3018,53 +2888,6 @@
 				"field" : "count",
 				"unit" : null,
 				"statistic" : "avg",
-				"interval" : "month"
-			},
-			{
-				"id" : "latest",
-				"type" : "list",
-				"label" : "Latest",
-				"placement" : "left",
-				"order" : "-timestamp",
-				"limit" : 10,
-				"singleton" : true
-			},
-			{
-				"id" : "steps_scoreboard",
-				"type" : "scoreboard",
-				"label" : "Scoreboard",
-				"placement" : "right",
-				"key_field" : "author",
-				"value_field" : "count",
-				"unit" : null,
-				"order" : "-sum",
-				"limit" : 10
-			},
-			{
-				"id" : "steps_by_day",
-				"type" : "polar",
-				"label" : "Day of Week",
-				"placement" : "right",
-				"value_field" : "count",
-				"unit" : null,
-				"statistic" : "avg",
-				"interval" : "day_of_week"
-			}
-		]
-	},
-	{
-		"category" : "Steps",
-		"source" : "Moves",
-		"task" : "moves-steps", 
-		"widgets" : [
-			{
-				"id" : "steps",
-				"type" : "timeline",
-				"label" : "Steps",
-				"placement" : "top",
-				"field" : "count",
-				"unit" : null,
-				"statistic" : "sum",
 				"interval" : "month"
 			},
 			{
