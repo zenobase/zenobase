@@ -20,29 +20,17 @@ import org.joda.time.Period;
 import com.zenobase.common.Measures;
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
-import com.zenobase.models.Resource;
 
-class NokiaHealthStepsResult {
+class NokiaHealthStepsResult extends NokiaHealthResult {
 
-	public static final Resource SOURCE = new Resource("Nokia Health", "https://health.nokia.com/");
-
-	private final ObjectNode node;
-	private final Identity author;
-	private final String tag;
 	private final Unit<Length> distanceUnit, heightUnit;
 	private final Unit<Energy> energyUnit;
 
 	public NokiaHealthStepsResult(ObjectNode node, Identity author, String tag, Unit<Length> distanceUnit, Unit<Length> heightUnit, Unit<Energy> energyUnit) {
-		this.node = node;
-		this.author = author;
-		this.tag = tag;
+		super(node, author, tag);
 		this.distanceUnit = distanceUnit;
 		this.heightUnit = heightUnit;
 		this.energyUnit = energyUnit;
-	}
-
-	public int getStatus() {
-		return node.path("status").isInt() ? node.path("status").intValue() : -1;
 	}
 
 	public List<Event> getEvents() {

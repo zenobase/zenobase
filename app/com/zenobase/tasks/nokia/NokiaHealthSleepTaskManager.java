@@ -10,7 +10,6 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Ordering;
-import com.google.common.util.concurrent.RateLimiter;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDateTime;
@@ -25,16 +24,13 @@ import com.zenobase.commands.UpdateTaskCommand;
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
 import com.zenobase.tasks.OAuthCredentials;
-import com.zenobase.tasks.OAuthTaskManager;
 import com.zenobase.tasks.Task;
 
-public class NokiaHealthSleepTaskManager extends OAuthTaskManager {
-
-	private static final RateLimiter RATE_LIMITER = RateLimiter.create(2);
+public class NokiaHealthSleepTaskManager extends NokiaHealthTaskManagerSupport<NokiaHealthSleepTask> {
 
 	@Inject
 	public NokiaHealthSleepTaskManager(NokiaHealthCredentialsManager credentialsManager) {
-		super(NokiaHealthSleepTask.TYPE, credentialsManager);
+		super(NokiaHealthSleepTask.TYPE, NokiaHealthSleepTask.class, credentialsManager);
 	}
 
 	@Override
@@ -57,11 +53,7 @@ public class NokiaHealthSleepTaskManager extends OAuthTaskManager {
 	}
 
 	@Override
-	public Command execute(Task task, OAuthCredentials credentials) {
-		return execute(task.as(NokiaHealthSleepTask.class), credentials);
-	}
-
-	private Command execute(NokiaHealthSleepTask task, OAuthCredentials credentials) {
+	Command safeExecute(NokiaHealthSleepTask task, OAuthCredentials credentials) {
 		List<Event> events = Lists.newArrayList();
 		for (DateTime from = task.getFrom(); from.isBefore(DateTime.now()); from = from.plusWeeks(1)) {
 			events.addAll(execute(task, credentials, from));
@@ -70,26 +62,19 @@ public class NokiaHealthSleepTaskManager extends OAuthTaskManager {
 	}
 
 	private List<Event> execute(NokiaHealthSleepTask task, OAuthCredentials credentials, DateTime from) {
-		OAuthRequest request = createRequest(credentials, from);
+		OAuthRequest request = createRequest(from);
 		Response response = send(request, credentials);
 		NokiaHealthSleepResult result = new NokiaHealthSleepResult(parseObject(response), task.getPrincipal(), task.getTag(), task.useRanges(), task.getTimezone());
 		Preconditions.checkState(result.getStatus() == 0, "Expected status <0> but got <%s> for task <%s>", result.getStatus(), task.getId());
 		return result.getEvents();
 	}
 
-	private OAuthRequest createRequest(OAuthCredentials credentials, DateTime from) {
+	private OAuthRequest createRequest(DateTime from) {
 		OAuthRequest request = new OAuthRequest(Verb.GET, "https://api.health.nokia.com/v2/sleep");
 		request.addQuerystringParameter("action", "get");
-		request.addQuerystringParameter("userid", credentials.getScope());
 		request.addQuerystringParameter("startdate", toString(from));
 		request.addQuerystringParameter("enddate", toString(from.plusWeeks(1)));
 		return request;
-	}
-
-	@Override
-	protected Response send(OAuthRequest request, OAuthCredentials credentials) {
-		RATE_LIMITER.acquire();
-		return super.send(request, credentials);
 	}
 
 	private static Command createCommand(NokiaHealthSleepTask task, List<Event> events) {
@@ -105,7 +90,6 @@ public class NokiaHealthSleepTaskManager extends OAuthTaskManager {
 		}
 		return command;
 	}
-
 
 	private static DateTime next(List<Event> events) {
 		Event latest = Iterables.getLast(events);

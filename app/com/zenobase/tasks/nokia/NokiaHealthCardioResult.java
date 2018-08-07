@@ -18,26 +18,14 @@ import com.zenobase.common.Units;
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
 import com.zenobase.models.Percentage;
-import com.zenobase.models.Resource;
 
-class NokiaHealthCardioResult {
+class NokiaHealthCardioResult extends NokiaHealthResult {
 
-	private static final Resource SOURCE = new Resource("Nokia Health", "https://health.nokia.com/");
-
-	private final ObjectNode node;
-	private final Identity author;
-	private final String tag;
 	private final DateTimeZone timezone;
 
 	public NokiaHealthCardioResult(ObjectNode node, Identity author, String tag, DateTimeZone timezone) {
-		this.node = node;
-		this.author = author;
-		this.tag = tag;
+		super(node, author, tag);
 		this.timezone = timezone;
-	}
-
-	public int getStatus() {
-		return node.path("status").isInt() ? node.path("status").intValue() : -1;
 	}
 
 	public String getMarker() {

@@ -1,8 +1,9 @@
 package com.zenobase.tasks.nokia;
 
-import org.scribe.builder.api.DefaultApi10a;
-import org.scribe.model.Token;
-import org.scribe.model.Verb;
+import org.scribe.model.OAuthConfig;
+
+import com.zenobase.common.UriBuilder;
+import com.zenobase.tasks.CustomApi20;
 
 /**
  * OAuth API for Nokia Health (Withings).
@@ -10,25 +11,21 @@ import org.scribe.model.Verb;
  * @see <a href="https://developer.health.nokia.com/api/doc">Nokia Health API</a>
  */
 
-public class NokiaHealthApi extends DefaultApi10a {
+public class NokiaHealthApi extends CustomApi20 {
 
 	@Override
-	public String getRequestTokenEndpoint() {
-		return "https://developer.health.nokia.com/account/request_token";
-	}
-
-	@Override
-	public Verb getRequestTokenVerb() {
-		return Verb.GET;
-	}
-
-	@Override
-	public String getAuthorizationUrl(Token requestToken) {
-		return "https://developer.health.nokia.com/account/authorize?oauth_token=" + requestToken.getToken();
+	public String getAuthorizationUrl(OAuthConfig config) {
+		return new UriBuilder("https://account.health.nokia.com/oauth2_user/authorize2")
+			.addParameter("response_type", "code")
+			.addParameter("client_id", config.getApiKey())
+			.addParameter("redirect_uri", config.getCallback())
+			.addParameter("scope", "user.info,user.metrics,user.activity")
+			.addParameter("state", "enlightened")
+			.build();
 	}
 
 	@Override
 	public String getAccessTokenEndpoint() {
-		return "https://developer.health.nokia.com/account/access_token";
+		return "https://account.health.nokia.com/oauth2/token";
 	}
 }

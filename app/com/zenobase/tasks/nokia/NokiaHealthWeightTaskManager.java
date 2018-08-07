@@ -25,14 +25,13 @@ import com.zenobase.json.UnitField;
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
 import com.zenobase.tasks.OAuthCredentials;
-import com.zenobase.tasks.OAuthTaskManager;
 import com.zenobase.tasks.Task;
 
-public class NokiaHealthWeightTaskManager extends OAuthTaskManager {
+public class NokiaHealthWeightTaskManager extends NokiaHealthTaskManagerSupport<NokiaHealthWeightTask> {
 
 	@Inject
 	public NokiaHealthWeightTaskManager(NokiaHealthCredentialsManager credentialsManager) {
-		super(NokiaHealthWeightTask.TYPE, credentialsManager);
+		super(NokiaHealthWeightTask.TYPE, NokiaHealthWeightTask.class, credentialsManager);
 	}
 
 	@Override
@@ -49,21 +48,16 @@ public class NokiaHealthWeightTaskManager extends OAuthTaskManager {
 	}
 
 	@Override
-	public Command execute(Task task, OAuthCredentials credentials) {
-		return execute(task.as(NokiaHealthWeightTask.class), credentials);
-	}
-
-	private Command execute(NokiaHealthWeightTask task, OAuthCredentials credentials) {
-		OAuthRequest request = createRequest(task, credentials);
+	Command safeExecute(NokiaHealthWeightTask task, OAuthCredentials credentials) {
+		OAuthRequest request = createRequest(task);
 		Response response = send(request, credentials);
 		NokiaHealthWeightResult result = new NokiaHealthWeightResult(parseObject(response), task.getPrincipal(), task.getTag(), task.getUnit(), task.getTimezone());
 		Preconditions.checkState(result.getStatus() == 0, "Expected status <0> but got <%s> for task <%s>", result.getStatus(), task.getId());
 		return createCommand(task, result);
 	}
 
-	private OAuthRequest createRequest(NokiaHealthWeightTask task, OAuthCredentials credentials) {
+	private OAuthRequest createRequest(NokiaHealthWeightTask task) {
 		OAuthRequest request = new OAuthRequest(Verb.GET, "https://api.health.nokia.com/measure");
-		request.addQuerystringParameter("userid", credentials.getScope());
 		request.addQuerystringParameter("action", "getmeas");
 		request.addQuerystringParameter("category", "1"); // actual measurements
 		if (task.getMarker() != null) {

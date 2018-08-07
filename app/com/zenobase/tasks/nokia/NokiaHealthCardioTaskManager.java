@@ -21,14 +21,13 @@ import com.zenobase.commands.UpdateTaskCommand;
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
 import com.zenobase.tasks.OAuthCredentials;
-import com.zenobase.tasks.OAuthTaskManager;
 import com.zenobase.tasks.Task;
 
-public class NokiaHealthCardioTaskManager extends OAuthTaskManager {
+public class NokiaHealthCardioTaskManager extends NokiaHealthTaskManagerSupport<NokiaHealthCardioTask> {
 
 	@Inject
 	public NokiaHealthCardioTaskManager(NokiaHealthCredentialsManager credentialsManager) {
-		super(NokiaHealthCardioTask.TYPE, credentialsManager);
+		super(NokiaHealthCardioTask.TYPE, NokiaHealthCardioTask.class, credentialsManager);
 	}
 
 	@Override
@@ -47,21 +46,16 @@ public class NokiaHealthCardioTaskManager extends OAuthTaskManager {
 	}
 
 	@Override
-	public Command execute(Task task, OAuthCredentials credentials) {
-		return execute(task.as(NokiaHealthCardioTask.class), credentials);
-	}
-
-	private Command execute(NokiaHealthCardioTask task, OAuthCredentials credentials) {
-		OAuthRequest request = createRequest(task, credentials);
+	Command safeExecute(NokiaHealthCardioTask task, OAuthCredentials credentials) {
+		OAuthRequest request = createRequest(task);
 		Response response = send(request, credentials);
 		NokiaHealthCardioResult result = new NokiaHealthCardioResult(parseObject(response), task.getPrincipal(), task.getTag(), task.getTimezone());
 		Preconditions.checkState(result.getStatus() == 0, "Expected status <0> but got <%s> for task <%s>", result.getStatus(), task.getId());
 		return createCommand(task, result);
 	}
 
-	private OAuthRequest createRequest(NokiaHealthCardioTask task, OAuthCredentials credentials) {
+	private OAuthRequest createRequest(NokiaHealthCardioTask task) {
 		OAuthRequest request = new OAuthRequest(Verb.GET, "https://api.health.nokia.com/measure");
-		request.addQuerystringParameter("userid", credentials.getScope());
 		request.addQuerystringParameter("action", "getmeas");
 		request.addQuerystringParameter("category", "1"); // actual measurements
 		if (task.getMarker() != null) {

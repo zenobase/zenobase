@@ -19,34 +19,23 @@ import com.zenobase.common.Units;
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
 import com.zenobase.models.Percentage;
-import com.zenobase.models.Resource;
 
-class NokiaHealthWeightResult {
+class NokiaHealthWeightResult extends NokiaHealthResult {
 
-	public static final Resource SOURCE = new Resource("Nokia Health", "https://health.nokia.com/");
-
-	private final ObjectNode node;
-	private final Identity author;
-	private final String tag;
 	private final Unit<Mass> unit;
 	private final DateTimeZone timezone;
 
 	public NokiaHealthWeightResult(ObjectNode node, Identity author, String tag, Unit<Mass> unit, DateTimeZone timezone) {
-		this.node = node;
-		this.author = author;
-		this.tag = tag;
+		super(node, author, tag);
 		this.unit = unit;
 		this.timezone = timezone;
-	}
-
-	public int getStatus() {
-		return node.path("status").isInt() ? node.path("status").intValue() : -1;
 	}
 
 	public String getMarker() {
 		return Strings.emptyToNull(node.path("body").path("updatetime").asText());
 	}
 
+	@Override
 	public List<Event> getEvents() {
 		List<Event> events = Lists.newArrayList();
 		for (JsonNode group : node.path("body").path("measuregrps")) {

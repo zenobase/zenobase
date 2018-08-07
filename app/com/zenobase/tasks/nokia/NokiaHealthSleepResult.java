@@ -16,28 +16,16 @@ import play.Logger;
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
 import com.zenobase.models.Percentage;
-import com.zenobase.models.Resource;
 
-class NokiaHealthSleepResult {
+class NokiaHealthSleepResult extends NokiaHealthResult {
 
-	public static final Resource SOURCE = new Resource("Nokia Health", "https://health.nokia.com/");
-
-	private final ObjectNode node;
-	private final Identity author;
-	private final String tag;
 	private final boolean useRanges;
 	private final DateTimeZone timezone;
 
 	public NokiaHealthSleepResult(ObjectNode node, Identity author, String tag, boolean useRanges, DateTimeZone timezone) {
-		this.node = node;
-		this.author = author;
-		this.tag = tag;
+		super(node, author, tag);
 		this.useRanges = useRanges;
 		this.timezone = timezone;
-	}
-
-	public int getStatus() {
-		return node.path("status").isInt() ? node.path("status").intValue() : -1;
 	}
 
 	public List<Event> getEvents() {

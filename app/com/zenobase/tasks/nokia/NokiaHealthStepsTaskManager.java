@@ -25,14 +25,13 @@ import com.zenobase.json.UnitField;
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
 import com.zenobase.tasks.OAuthCredentials;
-import com.zenobase.tasks.OAuthTaskManager;
 import com.zenobase.tasks.Task;
 
-public class NokiaHealthStepsTaskManager extends OAuthTaskManager {
+public class NokiaHealthStepsTaskManager extends NokiaHealthTaskManagerSupport<NokiaHealthStepsTask> {
 
 	@Inject
 	public NokiaHealthStepsTaskManager(NokiaHealthCredentialsManager credentialsManager) {
-		super(NokiaHealthStepsTask.TYPE, credentialsManager);
+		super(NokiaHealthStepsTask.TYPE, NokiaHealthStepsTask.class, credentialsManager);
 	}
 
 	@Override
@@ -48,22 +47,17 @@ public class NokiaHealthStepsTaskManager extends OAuthTaskManager {
 	}
 
 	@Override
-	public Command execute(Task task, OAuthCredentials credentials) {
-		return execute(task.as(NokiaHealthStepsTask.class), credentials);
-	}
-
-	private Command execute(NokiaHealthStepsTask task, OAuthCredentials credentials) {
-		OAuthRequest request = createRequest(task, credentials);
+	Command safeExecute(NokiaHealthStepsTask task, OAuthCredentials credentials) {
+		OAuthRequest request = createRequest(task);
 		Response response = send(request, credentials);
 		NokiaHealthStepsResult result = new NokiaHealthStepsResult(parseObject(response), task.getPrincipal(), task.getTag(), task.getDistanceUnit(), task.getHeightUnit(), task.getEnergyUnit());
 		Preconditions.checkState(result.getStatus() == 0, "Expected status <0> but got <%s> for task <%s>", result.getStatus(), task.getId());
 		return createCommand(task, result.getEvents());
 	}
 
-	private OAuthRequest createRequest(NokiaHealthStepsTask task, OAuthCredentials credentials) {
+	private OAuthRequest createRequest(NokiaHealthStepsTask task) {
 		OAuthRequest request = new OAuthRequest(Verb.GET, "https://api.health.nokia.com/v2/measure");
 		request.addQuerystringParameter("action", "getactivity");
-		request.addQuerystringParameter("userid", credentials.getScope());
 		request.addQuerystringParameter("startdateymd", LocalDate.parse(task.getMarker()).toString());
 		request.addQuerystringParameter("enddateymd", LocalDate.now().toString());
 		return request;
