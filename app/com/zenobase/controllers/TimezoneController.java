@@ -1,5 +1,8 @@
 package com.zenobase.controllers;
 
+import javax.inject.Inject;
+import javax.inject.Named;
+
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Preconditions;
 import org.joda.time.DateTimeZone;
@@ -15,6 +18,13 @@ import com.zenobase.json.Nodes;
 import com.zenobase.models.Location;
 
 public class TimezoneController extends Controller {
+
+	private final String serviceKey;
+
+	@Inject
+	public TimezoneController(@Named("google.service.key") String serviceKey) {
+		this.serviceKey = Preconditions.checkNotNull(serviceKey);
+	}
 
 	public Promise<Result> get(String lat, String lon) {
 		return lat != null ? find(new Location(lat, lon)) : find();
@@ -43,6 +53,7 @@ public class TimezoneController extends Controller {
 		return WS.url("https://maps.googleapis.com/maps/api/timezone/json")
 			.setQueryParameter("location", location.toString())
 			.setQueryParameter("timestamp", Long.toString(System.currentTimeMillis() / 1000))
+			.setQueryParameter("key", serviceKey)
 			.setQueryParameter("sensor", "false");
 	}
 
