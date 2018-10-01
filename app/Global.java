@@ -88,6 +88,7 @@ import com.zenobase.mail.VerificationMailer;
 import com.zenobase.oauth.CustomX509TrustManager;
 import com.zenobase.services.AuthorizationExpirationJob;
 import com.zenobase.services.AuthorizationRepository;
+import com.zenobase.services.BucketRefreshJob;
 import com.zenobase.services.BucketRepository;
 import com.zenobase.services.Bus;
 import com.zenobase.services.ClusterNodeFactory;
@@ -412,7 +413,7 @@ public class Global extends GlobalSettings {
 
 				Multibinder<Job> jobs = Multibinder.newSetBinder(binder(), Job.class);
 				jobs.addBinding().to(AuthorizationExpirationJob.class);
-				//jobs.addBinding().to(BucketRefreshJob.class);
+				jobs.addBinding().to(BucketRefreshJob.class);
 				jobs.addBinding().to(CredentialsCleanupJob.class);
 				jobs.addBinding().to(SnapshotJob.class);
 
