@@ -24,6 +24,7 @@ abstract class GoogleFitResultSupport {
 		.put("com.fitnesskeeper.runkeeper.pro", new Resource("RunKeeper", "https://runkeeper.com/"))
 		.put("com.fitnow.loseit", new Resource("Lose It!", "https://www.loseit.com/"))
 		.put("com.google.android.maps.mytracks", new Resource("MyTracks", "https://google.com/"))
+		.put("com.getsomeheadspace.android", new Resource("Headspace", "https://www.headspace.com/"))
 		.put("com.iforpowell.android.ipbike", new Resource("IpBike", "http://www.iforpowell.com/cms/"))
 		.put("com.mapmyfitness.android2", new Resource("MapMyFitness", "https://www.mapmyfitness.com/"))
 		.put("com.mapmyrun.android2", new Resource("MapMyRun", "https://www.mapmyrun.com/"))
