@@ -7392,7 +7392,7 @@
 			toHtml : function(value) {
 				return '<span>' +
 					'<i class="fa ' + this.icon + '" title="Resource"></i>&nbsp;' +
-					'<a href="/to?url=' + encode(value.url) + '" target="_blank" rel="nofollow">' + encode(value.title) + '</a>' +
+					'<a href="/to?url=' + encode(value.url) + '" target="_blank" rel="nofollow noopener noreferrer">' + encode(value.title) + '</a>' +
 				'</span>';
 			}
 		});
