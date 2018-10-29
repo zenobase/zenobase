@@ -5,6 +5,7 @@ import static play.test.Helpers.*;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.name.Names;
+import org.junit.Assume;
 import org.junit.Test;
 import play.mvc.Result;
 import play.test.FakeApplication;
@@ -16,11 +17,13 @@ public class TimezoneControllerTest extends ControllerTestSupport {
 
 	@Override
 	protected FakeApplication provideFakeApplication() {
+		String serviceKey = System.getProperty("google.serviceKey");
+		Assume.assumeNotNull(serviceKey);
 		return fakeApplication(new AbstractModule() {
 			@Override
 			protected void configure() {
 				bind(Bus.class).to(LocalBus.class);
-				bindConstant().annotatedWith(Names.named("google.service.key")).to("");
+				bindConstant().annotatedWith(Names.named("google.service.key")).to(serviceKey);
 			}
 		});
 	}
