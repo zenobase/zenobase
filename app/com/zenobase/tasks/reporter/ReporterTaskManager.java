@@ -95,7 +95,7 @@ public class ReporterTaskManager extends DropboxTaskManagerSupport {
 		command.add(UpdateTaskCommand.builder(task)
 			.set(Task.COMPLETED, task.getCompleted(), DateTime.now(DateTimeZone.UTC))
 			.set(Task.STATUS, task.getStatus(), Task.Status.SUCCESS)
-			.set(Task.MARKER, task.getMarker(), marker.toString())
+			.set(Task.MARKER, task.getMarker(), marker != null ? marker.toString() : null)
 			.set(Task.UNDO, task.getUndoId(), command.getId())
 			.build());
 		if (!events.isEmpty()) {
