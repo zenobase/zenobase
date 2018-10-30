@@ -50,6 +50,7 @@ abstract class GoogleFitResultSupport {
 		.put("com.withings.wiscale2", new Resource("Withings", "https://www.withings.com/us/"))
 		.put("com.xiaomi.hm.health", new Resource("Mi Fit", "http://www.mi.com/"))
 		.put("fi.polar.beat", new Resource("Polar Beat", "https://www.polar.com/beat/"))
+		.put("fi.polar.polarflow", new Resource("Polar Flow", "https://flow.polar.com/"))
 		.put("si.modula.android.instantheartrate", new Resource("Azumio", "https://www.azumio.com/"))
 		.build();
 
