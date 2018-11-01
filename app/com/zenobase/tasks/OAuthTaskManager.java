@@ -67,6 +67,7 @@ public abstract class OAuthTaskManager extends TaskManager {
 
 	protected Response send(OAuthRequest request, OAuthCredentials credentials) {
 		request.addHeader("Accept-Encoding", "gzip");
+		request.addHeader("User-Agent", "zeno");
 		Response response = credentialsManager.send(request, credentials);
 		if (!isSuccessful(response)) {
 			if (response.getCode() == Http.Status.UNAUTHORIZED) {

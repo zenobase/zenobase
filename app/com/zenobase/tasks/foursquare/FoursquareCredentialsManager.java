@@ -5,7 +5,6 @@ import javax.inject.Named;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Preconditions;
-import org.scribe.builder.api.Foursquare2Api;
 import org.scribe.model.OAuthRequest;
 import org.scribe.model.Token;
 import play.Logger;
@@ -23,7 +22,7 @@ public class FoursquareCredentialsManager extends OAuthCredentialsManager {
 
 	@Inject
 	public FoursquareCredentialsManager(CredentialsRepository integrations, @Named("foursquare.api.key") String apiKey, @Named("foursquare.api.secret") String apiSecret, @Named("oauth.hostname") String callbackUrl) {
-		super(TYPE, integrations, new Foursquare2Api(), apiKey, apiSecret, callbackUrl);
+		super(TYPE, integrations, new FoursquareApi(), apiKey, apiSecret, callbackUrl);
 	}
 
 	@Override
