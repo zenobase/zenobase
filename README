@@ -12,7 +12,7 @@ Following the initial checkout, or after updating dependencies in the build.sbt 
 Assets
 ------
 
-When updating the bootstrap.js file, concatenate the "Modals", "Dropdowns", "Toggleable tabs" and the "Typeahead" plugins, 
+When updating the bootstrap.js file, concatenate the "Modals", "Dropdowns", "Toggleable tabs" and the "Typeahead" plugins,
 and append the bootstrap-fileupload, bootstrap-datepicker and bootstrap-timepicker plugins.
 
 When updating angular-custom.js, append angular-route and angular-sanitize. Remove any "//# sourceMappingURL" lines.
@@ -23,7 +23,7 @@ When updating moment.js, append moment-timezone-all-years.js.
 
 When updating Font Awesome, use the unminified css version as the less file, and copy the font files to public/fonts/.
 
-When updating highlight.js, create a custom package with support for bash and json, and copy styles/railscasts.css to 
+When updating highlight.js, create a custom package with support for bash and json, and copy styles/railscasts.css to
 app/assets/css/highlight-railscasts-x.y.less.
 
 
@@ -35,7 +35,7 @@ To run all unit tests:
   activator "test-only *Test"
 
 To run a specific test:
-  
+
   activator "test-only com.zenobase.testing.BrowserTesting"
 
 To skip webdriver tests, set -Dwebdriver.skip=true
@@ -60,11 +60,11 @@ Profiling
 
    -Dcom.sun.management.jmxremote \
    -Dcom.sun.management.jmxremote.port=1099 \
-   -Dcom.sun.management.jmxremote.rmi.port=1099 \ 
-   -Dcom.sun.management.jmxremote.authenticate=false \ 
+   -Dcom.sun.management.jmxremote.rmi.port=1099 \
+   -Dcom.sun.management.jmxremote.authenticate=false \
    -Dcom.sun.management.jmxremote.ssl=false
 
-2. Create an ssh tunnel (with dynamic port forwarding and listening on port 1999) to the remote machine. 
+2. Create an ssh tunnel (with dynamic port forwarding and listening on port 1999) to the remote machine.
 
 3. Configure jvisualvm or jmc to use localhost:1999 as a SOCKS proxy.
 
@@ -104,7 +104,7 @@ Use this procedure when there are setup or configuration changes, but no databas
 
   7. Set up new instances [OpsWorks]:
 
-     7.1. Add two m5.large instances named "{name}-1a" in us-east-1a and "{name}-1b" in us-east-1b to the "Elasticsearch" layer.
+     7.1. Add two t3.large instances named "{name}-1a" in us-east-1a and "{name}-1b" in us-east-1b to the "Elasticsearch" layer.
 
      7.2. Add the new instances to the "Play" layer.
 
@@ -142,12 +142,12 @@ Use this procedure to rebuild the database:
 
   5. Set up new instances [OpsWorks]:
 
-     4.1. Add two m5.large instances named "{name}-1a" in us-east-1a and "{name}-1b" in us-east-1b to the "Elasticsearch" layer.
+     4.1. Add two t3.large instances named "{name}-1a" in us-east-1a and "{name}-1b" in us-east-1b to the "Elasticsearch" layer.
 
      4.2. Add the new instances to the "Play" layer.
 
   6. Before proceeding:
-  
+
      6.1. The status check must show 4 nodes and green health [Zenobase].
 
      6.2. There should be a recent snapshot.
@@ -183,7 +183,7 @@ Restore Procedure
   1. Bring up an empty elasticsearch instance.
 
   2. Register a snapshot repository, e.g.
-  
+
     curl -XPUT 'localhost:9200/_snapshot/prod-xx' -d '{
       "type": "s3",
       "settings": {
