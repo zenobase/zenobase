@@ -1,24 +1,17 @@
 package com.zenobase.tasks.runkeeper;
 
-import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
 import com.zenobase.json.Nodes;
-import com.zenobase.oauth.CustomX509TrustManager;
 import com.zenobase.tasks.TaskTestingSupport;
 
 public class RunkeeperTesting extends TaskTestingSupport {
 
-	@BeforeClass
-	public static void setUpSSL() {
-		CustomX509TrustManager.setDefault();
-	}
-
 	@Test
 	public void testActivities() {
 		run(new RunkeeperActivitiesTaskManager(newCredentialsManager()), Nodes.newObject()
-			.put("marker", "2014-11-13")
+			.put("marker", "2018-11-13")
 			.put("unit", "mi")
 			.put("timezone", "America/Los_Angeles"));
 	}

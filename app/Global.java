@@ -85,7 +85,6 @@ import com.zenobase.json.Nodes;
 import com.zenobase.mail.Mailer;
 import com.zenobase.mail.PasswordResetMailer;
 import com.zenobase.mail.VerificationMailer;
-import com.zenobase.oauth.CustomX509TrustManager;
 import com.zenobase.services.AuthorizationExpirationJob;
 import com.zenobase.services.AuthorizationRepository;
 import com.zenobase.services.BucketRefreshJob;
@@ -214,7 +213,6 @@ public class Global extends GlobalSettings {
 
 	@Override
 	public void onStart(Application application) {
-		CustomX509TrustManager.setDefault();
 		Json.setObjectMapper(Nodes.MAPPER);
 		createInjector();
 		replay();
