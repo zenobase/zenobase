@@ -6,8 +6,10 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.joda.time.DateTime;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 
 import com.zenobase.common.Generator;
+import com.zenobase.common.Units;
 import com.zenobase.services.ElasticSearchTestSupport;
 import com.zenobase.services.Index;
 
@@ -19,6 +21,11 @@ public abstract class FieldTestSupport<T> extends ElasticSearchTestSupport {
 
 	private Field<T> field;
 	private Index index;
+
+	@BeforeClass
+	public static void initUnits() {
+		Units.isMetric(Units.M);
+	}
 
 	@Before
 	public void setUp() {
