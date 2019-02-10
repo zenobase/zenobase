@@ -1,14 +1,14 @@
 package com.zenobase.tasks;
 
 
-public class IncompleteCredentialsException extends CredentialsException {
+public class InvalidCredentialsException extends CredentialsException {
 
 	private static final long serialVersionUID = 1L;
 
 	private final OAuthCredentials credentials;
 
-	public IncompleteCredentialsException(OAuthCredentials credentials) {
-		super("incomplete credentials");
+	public InvalidCredentialsException(OAuthCredentials credentials) {
+		super("invalid credentials");
 		this.credentials = credentials;
 	}
 

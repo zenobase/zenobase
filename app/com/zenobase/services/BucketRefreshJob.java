@@ -47,9 +47,9 @@ public class BucketRefreshJob extends Job {
 					refresher.refresh(task);
 				}
 			} catch (CredentialsException e) {
-				Logger.warn("Bucket owner needs to update credentials: {}", owner.getName());
+				Logger.warn("Couldn't refresh bucket {} for {}: {}", bucket.getId(), owner.getName(), e.getMessage());
 			} catch (RuntimeException e) {
-				Logger.error("Couldn't refresh bucket {} for: {}", bucket.getId(), owner.getName(), e);
+				Logger.error("Couldn't refresh bucket {} for {}", bucket.getId(), owner.getName(), e);
 			}
 		});
 		Logger.warn("Refreshed all buckets in {} ms", timer.elapsed(TimeUnit.MILLISECONDS));

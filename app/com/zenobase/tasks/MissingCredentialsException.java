@@ -7,6 +7,7 @@ public class MissingCredentialsException extends CredentialsException {
 	private final String expectedType;
 
 	public MissingCredentialsException(String expectedType) {
+		super("missing credentials of type " + expectedType);
 		this.expectedType = expectedType;
 	}
 

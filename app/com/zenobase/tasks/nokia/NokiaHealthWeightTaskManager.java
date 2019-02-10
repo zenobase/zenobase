@@ -24,6 +24,7 @@ import com.zenobase.common.Units;
 import com.zenobase.json.UnitField;
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
+import com.zenobase.tasks.InvalidCredentialsException;
 import com.zenobase.tasks.OAuthCredentials;
 import com.zenobase.tasks.Task;
 
@@ -52,6 +53,9 @@ public class NokiaHealthWeightTaskManager extends NokiaHealthTaskManagerSupport<
 		OAuthRequest request = createRequest(task);
 		Response response = send(request, credentials);
 		NokiaHealthWeightResult result = new NokiaHealthWeightResult(parseObject(response), task.getPrincipal(), task.getTag(), task.getUnit(), task.getTimezone());
+		if (result.getStatus() == 401) {
+			throw new InvalidCredentialsException(credentials);
+		}
 		Preconditions.checkState(result.getStatus() == 0, "Expected status <0> but got <%s> for task <%s>", result.getStatus(), task.getId());
 		return createCommand(task, result);
 	}

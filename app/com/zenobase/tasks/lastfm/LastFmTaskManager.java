@@ -23,6 +23,8 @@ import com.zenobase.commands.UpdateTaskCommand;
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
 import com.zenobase.models.Resource;
+import com.zenobase.tasks.InvalidCredentialsException;
+import com.zenobase.tasks.InvalidStatusException;
 import com.zenobase.tasks.OAuthCredentials;
 import com.zenobase.tasks.OAuthTaskManager;
 import com.zenobase.tasks.Task;
@@ -59,18 +61,26 @@ public class LastFmTaskManager extends OAuthTaskManager {
 	private Command execute(LastFmTask task, OAuthCredentials credentials) {
 		List<Event> events = Lists.newArrayList();
 		DateTime now = DateTime.now().minusMinutes(5);
-		for (int page = 1; page < 10; ++page) {
-			LastFmRequest request = createRequest(task, now, credentials, page);
-			Response response = send(request, credentials);
-			RecentTracksResult result = new RecentTracksResult(parseObject(response), task.getPrincipal(), task.getTag(), task.getTimezone());
-			Preconditions.checkState(result.isSuccess(), "Request for %s failed", request.getCompleteUrl());
-			events.addAll(result.getEvents());
-			if (!result.hasNext()) {
-				break;
+		try {
+			for (int page = 1; page < 10; ++page) {
+				LastFmRequest request = createRequest(task, now, credentials, page);
+				Response response = send(request, credentials);
+				RecentTracksResult result = new RecentTracksResult(parseObject(response), task.getPrincipal(), task.getTag(), task.getTimezone());
+				Preconditions.checkState(result.isSuccess(), "Request for %s failed", request.getCompleteUrl());
+				events.addAll(result.getEvents());
+				if (!result.hasNext()) {
+					break;
+				}
+			}
+			resolveTracks(events, credentials);
+			return createCommand(task, events, now);
+		} catch (InvalidStatusException e) {
+			if (e.getStatus() == 403) {
+				throw new InvalidCredentialsException(credentials);
+			} else {
+				throw e;
 			}
 		}
-		resolveTracks(events, credentials);
-		return createCommand(task, events, now);
 	}
 
 	private LastFmRequest createRequest(LastFmTask task, DateTime now, OAuthCredentials credentials, int page) {
