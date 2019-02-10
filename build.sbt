@@ -30,7 +30,10 @@ libraryDependencies ++= Seq(
 	"org.apache.httpcomponents" % "httpclient" % "4.3.1",
 	"org.apache.httpcomponents" % "fluent-hc" % "4.3.1",
 	"com.braintreepayments.gateway" % "braintree-java" % "2.90.0",
-	"org.logback-extensions" % "logback-ext-loggly" % "0.1.5",
+	"com.fasterxml.jackson.core" % "jackson-core" % "2.9.8",
+	"com.fasterxml.jackson.core" % "jackson-databind" % "2.9.8",
+  "com.fasterxml.jackson.core" % "jackson-annotations" % "2.9.8",
+  "org.logback-extensions" % "logback-ext-loggly" % "0.1.5",
 	"ch.qos.logback.contrib" % "logback-json-classic" % "0.1.5",
 	"ch.qos.logback.contrib" % "logback-jackson" % "0.1.5",
 	"org.seleniumhq.selenium" % "selenium-chrome-driver" % "2.39.0" % "test", // Must match Play's version of Selenium!
