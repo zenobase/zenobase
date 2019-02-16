@@ -3,6 +3,8 @@ package com.zenobase.tasks.google;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.ImmutableMap;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
@@ -53,6 +55,7 @@ abstract class GoogleFitResultSupport {
 		.put("fi.polar.polarflow", new Resource("Polar Flow", "https://flow.polar.com/"))
 		.put("si.modula.android.instantheartrate", new Resource("Azumio", "https://www.azumio.com/"))
 		.build();
+	private static final Cache<String, Boolean> NEW_SOURCES = CacheBuilder.newBuilder().maximumSize(100).build();
 
 	protected final JsonNode node;
 	protected final DateTimeZone zone;
@@ -81,8 +84,9 @@ abstract class GoogleFitResultSupport {
 			resource = new Resource(title, detailsUrl);
 		} else if (packageName != null) {
 			resource = SOURCES.get(packageName);
-			if (resource == null && !packageName.startsWith("com.google")) {
+			if (resource == null && !packageName.startsWith("com.google") && NEW_SOURCES.getIfPresent(packageName) == null) {
 				Logger.warn("Found new package: {}", packageName);
+				NEW_SOURCES.put(packageName, Boolean.TRUE);
 			}
 		}
 		return Objects.firstNonNull(resource, DEFAULT_SOURCE);
