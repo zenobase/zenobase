@@ -6,6 +6,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import com.google.common.base.Stopwatch;
+import org.elasticsearch.index.engine.DocumentAlreadyExistsException;
 import play.Logger;
 
 import com.zenobase.commands.Command;
@@ -53,6 +54,8 @@ public class CommandReplay {
 						dispatcher.discard(command);
 					}
 					++count;
+				} catch (DocumentAlreadyExistsException e) {
+					Logger.warn("Skipping duplicate command: " + command);
 				} catch (RuntimeException e) {
 					Logger.error("Couldn't replay command: " + command, e);
 					throw e;
