@@ -103,7 +103,9 @@ public class CommandRebuild {
 	}
 
 	private void rebuildTasks(IndexManager indexManager) {
-		new TaskRepository(indexManager).findAll(task ->
-			dispatcher.dispatch(new CreateTaskCommand(task.getPrincipal(), task)));
+		new TaskRepository(indexManager).findAll(task -> {
+			task.setUndoId(null);
+			dispatcher.dispatch(new CreateTaskCommand(task.getPrincipal(), task));
+		});
 	}
 }
