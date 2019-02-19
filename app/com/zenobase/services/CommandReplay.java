@@ -22,7 +22,7 @@ public class CommandReplay {
 	private final NodeFactory nodeFactory;
 	private final CommandParserRegistry parsers;
 	private final CommandDispatcher dispatcher;
-	private int count, replayed;
+	private int count, replayed, failures;
 
 	@Inject
 	public CommandReplay(@Named("es.replay") String sourceCluster, NodeFactory nodeFactory, CommandParserRegistry parsers, CommandDispatcher dispatcher) {
@@ -61,12 +61,15 @@ public class CommandReplay {
 					Logger.warn("Skipping duplicate command: " + command);
 				} catch (RuntimeException e) {
 					Logger.error("Couldn't replay command: " + command, e);
-					throw e;
+					++failures;
 				}
 			});
 		} finally {
-			Logger.warn("Replayed {} and discarded {} commands out of {} in {} s",
-				replayed, count - replayed, repository.size(), timer.elapsed(TimeUnit.SECONDS));
+			Logger.warn("Replayed {} and discarded {} commands out of {} with {} failures in {} s",
+				replayed, count - replayed, repository.size(), failures, timer.elapsed(TimeUnit.SECONDS));
+		}
+		if (failures > 0) {
+			throw new IllegalStateException("Replay completed with one or more failures");
 		}
 	}
 }
