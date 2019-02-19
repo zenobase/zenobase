@@ -1,9 +1,9 @@
 package com.zenobase.commands;
 
 import static org.fest.assertions.Assertions.assertThat;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
-import org.joda.time.DateTime;
 import org.junit.Test;
 
 import com.zenobase.models.User;
@@ -44,15 +44,12 @@ public class ChangeUserEmailCommandTest {
 		assertThat(user.isVerified()).as("user is verified").isTrue();
 	}
 
-	@Test
-	public void testOnMissingUser() {
+	@Test(expected = NonExistentUserException.class)
+	public void testChangeNonExistentUser() {
 
 		User user = new User("tester");
-		when(users.find(user.getName())).thenReturn(null);
 
 		Command command = new ChangeUserEmailCommand(user.asIdentity(), user.getName(), null, null, false, false);
 		registry.execute(command);
-
-		verify(users, never()).update(any(User.class), any(DateTime.class));
 	}
 }

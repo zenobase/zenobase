@@ -5,7 +5,6 @@ import javax.inject.Inject;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
-import play.Logger;
 
 import com.zenobase.json.IntegerField;
 import com.zenobase.json.TokenField;
@@ -89,7 +88,7 @@ public class ChangeQuotaCommand extends Command {
 				user.setQuota(command.getTo());
 				repository.update(user, command.getTimestamp());
 			} else {
-				Logger.warn("Tried to change the quota of a nonexistent user: {}", command.getUsername());
+				throw new NonExistentUserException("Tried to change the quota of a nonexistent user: " + command.getUsername());
 			}
 		}
 	}

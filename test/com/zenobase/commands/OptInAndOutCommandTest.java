@@ -1,9 +1,9 @@
 package com.zenobase.commands;
 
 import static org.fest.assertions.Assertions.assertThat;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
-import org.joda.time.DateTime;
 import org.junit.Test;
 
 import com.zenobase.models.User;
@@ -35,15 +35,20 @@ public class OptInAndOutCommandTest {
 		assertThat(user.isOptedOut()).isTrue();
 	}
 
-	@Test
-	public void testOnMissingUser() {
+	@Test(expected = NonExistentUserException.class)
+	public void testOptInNonExistentUser() {
 
 		User user = new User("tester");
 		when(users.find(user.getName())).thenReturn(null);
 
-		registry.execute(new OptOutCommand(user.asIdentity(), user.getName()));
 		registry.execute(new OptInCommand(user.asIdentity(), user.getName()));
+	}
 
-		verify(users, never()).update(any(User.class), any(DateTime.class));
+	@Test(expected = NonExistentUserException.class)
+	public void testOptOutNonExistentUser() {
+
+		User user = new User("tester");
+
+		registry.execute(new OptOutCommand(user.asIdentity(), user.getName()));
 	}
 }

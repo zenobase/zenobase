@@ -25,6 +25,7 @@ public class CreateAndDeleteUserCommandTest {
 		reset(repository);
 
 		Command undo = command.reverse(user.asIdentity());
+		when(repository.delete(user)).thenReturn(true);
 		registry.execute(undo);
 		verify(repository).delete(user);
 		reset(repository);
@@ -33,5 +34,14 @@ public class CreateAndDeleteUserCommandTest {
 		registry.execute(redo);
 		verify(repository).store(user, redo.getTimestamp());
 		reset(repository);
+	}
+
+	@Test(expected = NonExistentUserException.class)
+	public void testDeleteNonExistentUser() {
+
+		User user = new User("tester");
+
+		Command command = new DeleteUserCommand(user.asIdentity(), user);
+		registry.execute(command);
 	}
 }

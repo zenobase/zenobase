@@ -32,4 +32,13 @@ public class SuspendUserCommandTest {
 		registry.execute(redo);
 		assertThat(user.isSuspended()).as("user is suspended").isTrue();
 	}
+
+	@Test(expected = NonExistentUserException.class)
+	public void testSuspendNonExistentUser() {
+
+		User user = new User("tester");
+
+		Command command = new SuspendUserCommand(user.asIdentity(), user.getName(), true);
+		registry.execute(command);
+	}
 }

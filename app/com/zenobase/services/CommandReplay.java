@@ -11,6 +11,7 @@ import play.Logger;
 
 import com.zenobase.commands.Command;
 import com.zenobase.commands.CommandParserRegistry;
+import com.zenobase.commands.NonExistentUserException;
 import com.zenobase.common.StringBloomFilter;
 
 public class CommandReplay {
@@ -54,6 +55,8 @@ public class CommandReplay {
 						dispatcher.discard(command);
 					}
 					++count;
+				} catch (NonExistentUserException e) {
+					Logger.warn("Skipping command applying to a non-existent user: " + command);
 				} catch (DocumentAlreadyExistsException e) {
 					Logger.warn("Skipping duplicate command: " + command);
 				} catch (RuntimeException e) {

@@ -3,7 +3,6 @@ package com.zenobase.commands;
 import javax.inject.Inject;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import play.Logger;
 
 import com.zenobase.json.TokenField;
 import com.zenobase.models.Identity;
@@ -72,7 +71,7 @@ public class OptInCommand extends Command {
 				user.setOptedOut(false);
 				repository.update(user, command.getTimestamp());
 			} else {
-				Logger.warn("Tried to opt in a nonexistent user: {}", command.getName());
+				throw new NonExistentUserException("Tried to opt in a nonexistent user: " + command.getName());
 			}
 		}
 	}
