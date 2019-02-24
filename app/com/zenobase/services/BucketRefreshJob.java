@@ -1,6 +1,7 @@
 package com.zenobase.services;
 
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.inject.Inject;
 
@@ -35,23 +36,27 @@ public class BucketRefreshJob extends Job {
 	@Override
 	public void run() {
 		Stopwatch timer = Stopwatch.createStarted();
+		AtomicInteger counter = new AtomicInteger();
 		Logger.warn("Refreshing buckets...");
 		buckets.find(new BucketQuery().isRefreshable(), bucket -> {
 			User owner = users.find(Iterables.getOnlyElement(bucket.getPrincipals(Role.OWNER)));
-			if (owner.getQuota() == null) {
-				Logger.warn("Bucket owner does not have refresh privileges: {}", owner.getName());
-				return;
-			}
-			try {
-				for (Task task : tasks.find(new TaskQuery().bucketEqualTo(bucket.getId()), TaskQuery.orderByCreated(true), 0, 100)) {
-					refresher.refresh(task);
+			if (hasRefreshPrivilege(owner)) {
+				try {
+					for (Task task : tasks.find(new TaskQuery().bucketEqualTo(bucket.getId()), TaskQuery.orderByCreated(true), 0, 100)) {
+						refresher.refresh(task);
+						counter.incrementAndGet();
+					}
+				} catch (CredentialsException e) {
+					Logger.warn("Couldn't refresh bucket {} for {}: {}", bucket.getId(), owner.getName(), e.getMessage());
+				} catch (RuntimeException e) {
+					Logger.error("Couldn't refresh bucket {} for {}", bucket.getId(), owner.getName(), e);
 				}
-			} catch (CredentialsException e) {
-				Logger.warn("Couldn't refresh bucket {} for {}: {}", bucket.getId(), owner.getName(), e.getMessage());
-			} catch (RuntimeException e) {
-				Logger.error("Couldn't refresh bucket {} for {}", bucket.getId(), owner.getName(), e);
 			}
 		});
-		Logger.warn("Refreshed all buckets in {} ms", timer.elapsed(TimeUnit.MILLISECONDS));
+		Logger.warn("Refreshed {} buckets in {} ms", counter, timer.elapsed(TimeUnit.MILLISECONDS));
+	}
+
+	private boolean hasRefreshPrivilege(User user) {
+		return user.getQuota() != null;
 	}
 }
