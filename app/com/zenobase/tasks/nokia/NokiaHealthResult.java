@@ -10,7 +10,7 @@ import com.zenobase.models.Resource;
 
 public abstract class NokiaHealthResult {
 
-	public static final Resource SOURCE = new Resource("Nokia Health", "https://health.nokia.com/");
+	public static final Resource SOURCE = new Resource("Withings", "https://withings.com/");
 
 	protected final ObjectNode node;
 	protected final Identity author;

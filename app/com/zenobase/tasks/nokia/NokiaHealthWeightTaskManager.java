@@ -61,7 +61,7 @@ public class NokiaHealthWeightTaskManager extends NokiaHealthTaskManagerSupport<
 	}
 
 	private OAuthRequest createRequest(NokiaHealthWeightTask task) {
-		OAuthRequest request = new OAuthRequest(Verb.GET, "https://api.health.nokia.com/measure");
+		OAuthRequest request = new OAuthRequest(Verb.GET, "https://wbsapi.withings.net/measure");
 		request.addQuerystringParameter("action", "getmeas");
 		request.addQuerystringParameter("category", "1"); // actual measurements
 		if (task.getMarker() != null) {

@@ -6,16 +6,16 @@ import com.zenobase.common.UriBuilder;
 import com.zenobase.tasks.CustomApi20;
 
 /**
- * OAuth API for Nokia Health (Withings).
+ * OAuth API for Withings (formerly Nokia Health, formerly Withings).
  *
- * @see <a href="https://developer.health.nokia.com/api/doc">Nokia Health API</a>
+ * @see <a href="http://developer.withings.com/">Withings API</a>
  */
 
 public class NokiaHealthApi extends CustomApi20 {
 
 	@Override
 	public String getAuthorizationUrl(OAuthConfig config) {
-		return new UriBuilder("https://account.health.nokia.com/oauth2_user/authorize2")
+		return new UriBuilder("https://account.withings.com/oauth2_user/authorize2")
 			.addParameter("response_type", "code")
 			.addParameter("client_id", config.getApiKey())
 			.addParameter("redirect_uri", config.getCallback())
@@ -26,6 +26,6 @@ public class NokiaHealthApi extends CustomApi20 {
 
 	@Override
 	public String getAccessTokenEndpoint() {
-		return "https://account.health.nokia.com/oauth2/token";
+		return "https://account.withings.com/oauth2/token";
 	}
 }

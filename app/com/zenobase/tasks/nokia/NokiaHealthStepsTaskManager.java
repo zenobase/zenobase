@@ -56,7 +56,7 @@ public class NokiaHealthStepsTaskManager extends NokiaHealthTaskManagerSupport<N
 	}
 
 	private OAuthRequest createRequest(NokiaHealthStepsTask task) {
-		OAuthRequest request = new OAuthRequest(Verb.GET, "https://api.health.nokia.com/v2/measure");
+		OAuthRequest request = new OAuthRequest(Verb.GET, "https://wbsapi.withings.net/v2/measure");
 		request.addQuerystringParameter("action", "getactivity");
 		request.addQuerystringParameter("startdateymd", LocalDate.parse(task.getMarker()).toString());
 		request.addQuerystringParameter("enddateymd", LocalDate.now().toString());

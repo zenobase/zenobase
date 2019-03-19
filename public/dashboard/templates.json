@@ -2,7 +2,7 @@
 	{
 		"category" : "Activities",
 		"source" : "FitBark",
-		"task" : "fitbark", 
+		"task" : "fitbark",
 		"widgets" : [
 			{
 				"id" : "timeline",
@@ -747,7 +747,7 @@
 	{
 		"category" : "Environment",
 		"source" : "Netatmo",
-		"task" : "netatmo", 
+		"task" : "netatmo",
 		"widgets": [
 			{
 				"id" : "latest",
@@ -872,7 +872,7 @@
 	{
 		"category" : "Food",
 		"source" : "Fitbit",
-		"task" : "fitbit-food", 
+		"task" : "fitbit-food",
 		"widgets" : [
 			{
 				"id" : "timeline_kcal",
@@ -917,7 +917,7 @@
 	{
 		"category" : "Food",
 		"source" : "Google Fit",
-		"task" : "google-food", 
+		"task" : "google-food",
 		"widgets" : [
 			{
 				"id" : "timeline_kcal",
@@ -962,7 +962,7 @@
 	{
 		"category" : "Food",
 		"source" : "iHealth",
-		"task" : "ihealth-food", 
+		"task" : "ihealth-food",
 		"widgets" : [
 			{
 				"id" : "timeline_kcal",
@@ -1016,7 +1016,7 @@
 	{
 		"category" : "Food",
 		"source" : "Jawbone",
-		"task" : "jawbone-food", 
+		"task" : "jawbone-food",
 		"widgets" : [
 			{
 				"id" : "timeline_kcal",
@@ -1061,7 +1061,7 @@
 	{
 		"category" : "Glucose",
 		"source" : "iHealth",
-		"task" : "ihealth-glucose", 
+		"task" : "ihealth-glucose",
 		"widgets" : [
 			{
 				"id" : "timeline",
@@ -1106,7 +1106,7 @@
 	{
 		"category" : "Heart Rate",
 		"source" : "Fitbit",
-		"task" : "fitbit-cardio", 
+		"task" : "fitbit-cardio",
 		"widgets" : [
 			{
 				"id" : "timeline",
@@ -1151,7 +1151,7 @@
 	{
 		"category" : "Heart Rate",
 		"source" : "Google Fit",
-		"task" : "google-cardio", 
+		"task" : "google-cardio",
 		"widgets" : [
 			{
 				"id" : "timeline",
@@ -1197,7 +1197,7 @@
 	{
 		"category" : "Heart Rate",
 		"source" : "iHealth",
-		"task" : "ihealth-cardio", 
+		"task" : "ihealth-cardio",
 		"widgets" : [
 			{
 				"id" : "timeline",
@@ -1240,7 +1240,7 @@
 	},
 	{
 		"category" : "Heart Rate",
-		"source" : "Nokia Health (Withings)",
+		"source" : "Withings (Nokia Health)",
 		"task" : "nokia-cardio",
 		"widgets" : [
 			{
@@ -2605,7 +2605,7 @@
 	},
 	{
 		"category" : "Sleep",
-		"source" : "Nokia Health (Withings)",
+		"source" : "Withings (Nokia Health)",
 		"task" : "nokia-sleep",
 		"widgets" : [
 			{
@@ -2690,7 +2690,7 @@
 	{
 		"category" : "Steps",
 		"source" : "Fitbit",
-		"task" : "fitbit-steps", 
+		"task" : "fitbit-steps",
 		"widgets" : [
 			{
 				"id" : "steps",
@@ -2737,7 +2737,7 @@
 	{
 		"category" : "Steps",
 		"source" : "iHealth",
-		"task" : "ihealth-steps", 
+		"task" : "ihealth-steps",
 		"widgets" : [
 			{
 				"id" : "steps",
@@ -2784,7 +2784,7 @@
 	{
 		"category" : "Steps",
 		"source" : "Jawbone",
-		"task" : "jawbone-steps", 
+		"task" : "jawbone-steps",
 		"widgets" : [
 			{
 				"id" : "steps",
@@ -2831,7 +2831,7 @@
 	{
 		"category" : "Steps",
 		"source" : "Microsoft Health",
-		"task" : "microsoft-steps", 
+		"task" : "microsoft-steps",
 		"widgets" : [
 			{
 				"id" : "steps",
@@ -2878,7 +2878,7 @@
 	{
 		"category" : "Steps",
 		"source" : "Misfit",
-		"task" : "misfit-steps", 
+		"task" : "misfit-steps",
 		"widgets" : [
 			{
 				"id" : "steps",
@@ -2924,7 +2924,7 @@
 	},
 	{
 		"category" : "Steps",
-		"source" : "Nokia Health (Withings)",
+		"source" : "Withings (Nokia Health)",
 		"task" : "nokia-steps",
 		"widgets" : [
 			{
@@ -2972,7 +2972,7 @@
 	{
 		"category" : "Sunlight",
 		"source" : "SunSprite",
-		"importer" : "sunsprite", 
+		"importer" : "sunsprite",
 		"widgets" : [
 			{
 				"id" : "timeline_light",
@@ -3301,7 +3301,7 @@
 	{
 		"category" : "Weight",
 		"source" : "Fitbit",
-		"task" : "fitbit-weight", 
+		"task" : "fitbit-weight",
 		"widgets" : [
 			{
 				"id" : "latest",
@@ -3345,7 +3345,7 @@
 	{
 		"category" : "Weight",
 		"source" : "Google Fit",
-		"task" : "google-weight", 
+		"task" : "google-weight",
 		"widgets" : [
 			{
 				"id" : "latest",
@@ -3382,7 +3382,7 @@
 	{
 		"category" : "Weight",
 		"source" : "iHealth",
-		"task" : "ihealth-weight", 
+		"task" : "ihealth-weight",
 		"widgets" : [
 			{
 				"id" : "latest",
@@ -3426,7 +3426,7 @@
 	{
 		"category" : "Weight",
 		"source" : "Jawbone",
-		"task" : "jawbone-weight", 
+		"task" : "jawbone-weight",
 		"widgets" : [
 			{
 				"id" : "latest",
@@ -3470,7 +3470,7 @@
 	{
 		"category" : "Weight",
 		"source" : "MapMyFitness",
-		"task" : "mapmyfitness-weight", 
+		"task" : "mapmyfitness-weight",
 		"widgets" : [
 			{
 				"id" : "latest",
@@ -3514,7 +3514,7 @@
 	{
 		"category" : "Weight",
 		"source" : "RunKeeper",
-		"task" : "runkeeper-weight", 
+		"task" : "runkeeper-weight",
 		"widgets" : [
 			{
 				"id" : "latest",
@@ -3557,7 +3557,7 @@
 	},
 	{
 		"category" : "Weight",
-		"source" : "Nokia Health (Withings)",
+		"source" : "Withings (Nokia Health)",
 		"task" : "nokia-weight",
 		"widgets" : [
 			{

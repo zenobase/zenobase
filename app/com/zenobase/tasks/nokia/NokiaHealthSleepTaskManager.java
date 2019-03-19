@@ -70,7 +70,7 @@ public class NokiaHealthSleepTaskManager extends NokiaHealthTaskManagerSupport<N
 	}
 
 	private OAuthRequest createRequest(DateTime from) {
-		OAuthRequest request = new OAuthRequest(Verb.GET, "https://api.health.nokia.com/v2/sleep");
+		OAuthRequest request = new OAuthRequest(Verb.GET, "https://wbsapi.withings.net/v2/sleep");
 		request.addQuerystringParameter("action", "get");
 		request.addQuerystringParameter("startdate", toString(from));
 		request.addQuerystringParameter("enddate", toString(from.plusWeeks(1)));
