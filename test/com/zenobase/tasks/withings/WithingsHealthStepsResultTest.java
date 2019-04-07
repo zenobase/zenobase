@@ -1,11 +1,8 @@
-package com.zenobase.tasks.nokia;
+package com.zenobase.tasks.withings;
 
 import static org.fest.assertions.Assertions.assertThat;
 
 import java.util.List;
-
-import javax.measure.quantity.Energy;
-import javax.measure.quantity.Length;
 
 import org.joda.time.Duration;
 import org.junit.Test;
@@ -15,11 +12,11 @@ import com.zenobase.common.Units;
 import com.zenobase.models.Event;
 import com.zenobase.tasks.ResultTestSupport;
 
-public class NokiaHealthStepsResultTest extends ResultTestSupport {
+public class WithingsHealthStepsResultTest extends ResultTestSupport {
 
 	@Test
 	public void test() {
-		NokiaHealthStepsResult result = new NokiaHealthStepsResult(readObject("NokiaHealthStepsResultTest.json"), TESTER, "walk", Units.MI, Units.FT, Units.KCAL);
+		WithingsHealthStepsResult result = new WithingsHealthStepsResult(readObject("WithingsHealthStepsResultTest.json"), TESTER, "walk", Units.MI, Units.FT, Units.KCAL);
 		assertThat(result.getStatus()).as("status").isEqualTo(0);
 		List<Event> actual = result.getEvents();
 		assertThat(actual).hasSize(2);
@@ -32,7 +29,7 @@ public class NokiaHealthStepsResultTest extends ResultTestSupport {
 		expected.setValue(Event.DISTANCE, Measures.valueOf("7.87 mi"));
 		expected.setValue(Event.HEIGHT, Measures.valueOf("1055.31 ft"));
 		expected.setValue(Event.AUTHOR, TESTER);
-		expected.setValue(Event.SOURCE, NokiaHealthStepsResult.SOURCE);
+		expected.setValue(Event.SOURCE, WithingsHealthStepsResult.SOURCE);
 		assertThat(actual.get(0)).isEqualTo(expected);
 	}
 }

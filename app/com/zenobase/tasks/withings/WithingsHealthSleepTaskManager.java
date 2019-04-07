@@ -1,4 +1,4 @@
-package com.zenobase.tasks.nokia;
+package com.zenobase.tasks.withings;
 
 import java.util.List;
 
@@ -26,19 +26,19 @@ import com.zenobase.models.Identity;
 import com.zenobase.tasks.OAuthCredentials;
 import com.zenobase.tasks.Task;
 
-public class NokiaHealthSleepTaskManager extends NokiaHealthTaskManagerSupport<NokiaHealthSleepTask> {
+public class WithingsHealthSleepTaskManager extends WithingsHealthTaskManagerSupport<WithingsHealthSleepTask> {
 
 	@Inject
-	public NokiaHealthSleepTaskManager(NokiaHealthCredentialsManager credentialsManager) {
-		super(NokiaHealthSleepTask.TYPE, NokiaHealthSleepTask.class, credentialsManager);
+	public WithingsHealthSleepTaskManager(WithingsHealthCredentialsManager credentialsManager) {
+		super(WithingsHealthSleepTask.TYPE, WithingsHealthSleepTask.class, credentialsManager);
 	}
 
 	@Override
-	public NokiaHealthSleepTask newTask(String bucketId, Identity principal, ObjectNode settings) {
+	public WithingsHealthSleepTask newTask(String bucketId, Identity principal, ObjectNode settings) {
 		String tag = Objects.firstNonNull(settings.path("tag").textValue(), "steps");
 		DateTimeZone timezone = DateTimeZone.forID(Objects.firstNonNull(settings.path("timezone").textValue(), "UTC"));
 		String marker = parseMarker(settings.path("marker").textValue(), timezone);
-		NokiaHealthSleepTask task = new NokiaHealthSleepTask(bucketId, principal, marker);
+		WithingsHealthSleepTask task = new WithingsHealthSleepTask(bucketId, principal, marker);
 		task.setTag(tag);
 		task.setTimezone(timezone);
 		return task;
@@ -53,18 +53,18 @@ public class NokiaHealthSleepTaskManager extends NokiaHealthTaskManagerSupport<N
 	}
 
 	@Override
-	Command safeExecute(NokiaHealthSleepTask task, OAuthCredentials credentials) {
+	Command safeExecute(WithingsHealthSleepTask task, OAuthCredentials credentials) {
 		List<Event> events = Lists.newArrayList();
 		for (DateTime from = task.getFrom(); from.isBefore(DateTime.now()); from = from.plusWeeks(1)) {
 			events.addAll(execute(task, credentials, from));
 		}
-		return createCommand(task, NokiaHealthSleepResult.merge(events));
+		return createCommand(task, WithingsHealthSleepResult.merge(events));
 	}
 
-	private List<Event> execute(NokiaHealthSleepTask task, OAuthCredentials credentials, DateTime from) {
+	private List<Event> execute(WithingsHealthSleepTask task, OAuthCredentials credentials, DateTime from) {
 		OAuthRequest request = createRequest(from);
 		Response response = send(request, credentials);
-		NokiaHealthSleepResult result = new NokiaHealthSleepResult(parseObject(response), task.getPrincipal(), task.getTag(), task.useRanges(), task.getTimezone());
+		WithingsHealthSleepResult result = new WithingsHealthSleepResult(parseObject(response), task.getPrincipal(), task.getTag(), task.useRanges(), task.getTimezone());
 		Preconditions.checkState(result.getStatus() == 0, "Expected status <0> but got <%s> for task <%s>", result.getStatus(), task.getId());
 		return result.getEvents();
 	}
@@ -77,8 +77,8 @@ public class NokiaHealthSleepTaskManager extends NokiaHealthTaskManagerSupport<N
 		return request;
 	}
 
-	private static Command createCommand(NokiaHealthSleepTask task, List<Event> events) {
-		CompoundCommand command = new CompoundCommand(task.getPrincipal(), "ran nokia-sleep task", "reverted nokia-sleep task");
+	private static Command createCommand(WithingsHealthSleepTask task, List<Event> events) {
+		CompoundCommand command = new CompoundCommand(task.getPrincipal(), "ran withings-sleep task", "reverted withings-sleep task");
 		command.add(UpdateTaskCommand.builder(task)
 			.set(Task.COMPLETED, task.getCompleted(), DateTime.now(DateTimeZone.UTC))
 			.set(Task.STATUS, task.getStatus(), Task.Status.SUCCESS)

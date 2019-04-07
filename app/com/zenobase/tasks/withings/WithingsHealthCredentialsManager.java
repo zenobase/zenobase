@@ -1,4 +1,4 @@
-package com.zenobase.tasks.nokia;
+package com.zenobase.tasks.withings;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -20,13 +20,13 @@ import com.zenobase.tasks.Credentials;
 import com.zenobase.tasks.OAuthCredentials;
 import com.zenobase.tasks.OAuthCredentialsManager;
 
-public class NokiaHealthCredentialsManager extends OAuthCredentialsManager {
+public class WithingsHealthCredentialsManager extends OAuthCredentialsManager {
 
-	private static final String TYPE = "nokia";
+	private static final String TYPE = "withings";
 
 	@Inject
-	public NokiaHealthCredentialsManager(CredentialsRepository repository, @Named("nokia.api.key") String apiKey, @Named("nokia.api.secret") String apiSecret, @Named("oauth.hostname") String callbackUrl) {
-		super(TYPE, repository, new NokiaHealthApi(), apiKey, apiSecret, callbackUrl);
+	public WithingsHealthCredentialsManager(CredentialsRepository repository, @Named("withings.api.key") String apiKey, @Named("withings.api.secret") String apiSecret, @Named("oauth.hostname") String callbackUrl) {
+		super(TYPE, repository, new WithingsHealthApi(), apiKey, apiSecret, callbackUrl);
 	}
 
 	@Override

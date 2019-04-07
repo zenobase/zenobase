@@ -29,6 +29,9 @@ public class Credentials extends DomainNode {
 
 	public Credentials(ObjectNode node) {
 		super(node);
+		if ("nokia".equals(getType())) {
+			setValue(TYPE, "withings");
+		}
 	}
 
 	public Credentials(String type, Identity principal) {

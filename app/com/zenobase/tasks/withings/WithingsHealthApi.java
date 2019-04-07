@@ -1,4 +1,4 @@
-package com.zenobase.tasks.nokia;
+package com.zenobase.tasks.withings;
 
 import org.scribe.model.OAuthConfig;
 
@@ -11,7 +11,7 @@ import com.zenobase.tasks.CustomApi20;
  * @see <a href="http://developer.withings.com/">Withings API</a>
  */
 
-public class NokiaHealthApi extends CustomApi20 {
+public class WithingsHealthApi extends CustomApi20 {
 
 	@Override
 	public String getAuthorizationUrl(OAuthConfig config) {

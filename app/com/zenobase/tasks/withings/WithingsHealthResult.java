@@ -1,4 +1,4 @@
-package com.zenobase.tasks.nokia;
+package com.zenobase.tasks.withings;
 
 import java.util.List;
 
@@ -8,7 +8,7 @@ import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
 import com.zenobase.models.Resource;
 
-public abstract class NokiaHealthResult {
+public abstract class WithingsHealthResult {
 
 	public static final Resource SOURCE = new Resource("Withings", "https://withings.com/");
 
@@ -16,7 +16,7 @@ public abstract class NokiaHealthResult {
 	protected final Identity author;
 	protected final String tag;
 
-	public NokiaHealthResult(ObjectNode node, Identity author, String tag) {
+	public WithingsHealthResult(ObjectNode node, Identity author, String tag) {
 		this.node = node;
 		this.author = author;
 		this.tag = tag;

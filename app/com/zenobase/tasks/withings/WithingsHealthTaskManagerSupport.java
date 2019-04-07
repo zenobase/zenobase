@@ -1,4 +1,4 @@
-package com.zenobase.tasks.nokia;
+package com.zenobase.tasks.withings;
 
 import com.google.common.base.Strings;
 import com.google.common.util.concurrent.RateLimiter;
@@ -10,13 +10,13 @@ import com.zenobase.tasks.OAuthCredentials;
 import com.zenobase.tasks.OAuthTaskManager;
 import com.zenobase.tasks.Task;
 
-abstract class NokiaHealthTaskManagerSupport<T extends Task> extends OAuthTaskManager {
+abstract class WithingsHealthTaskManagerSupport<T extends Task> extends OAuthTaskManager {
 
 	private static final RateLimiter RATE_LIMITER = RateLimiter.create(2);
 
 	private final Class<T> taskClass;
 
-	NokiaHealthTaskManagerSupport(String type, Class<T> taskClass, NokiaHealthCredentialsManager credentialsManager) {
+	WithingsHealthTaskManagerSupport(String type, Class<T> taskClass, WithingsHealthCredentialsManager credentialsManager) {
 		super(type, credentialsManager);
 		this.taskClass = taskClass;
 	}

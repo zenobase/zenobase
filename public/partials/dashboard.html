@@ -5,13 +5,13 @@
 	</div>
 
 	<div id="dashboard-loading-message" data-ng-hide="bucket || message">
-		Loading...		
+		Loading...
 	</div>
 
 	<div class="alert alert-block alert-info" data-ng-controller="EditWidgetsController" data-ng-show="dirty && editable">
 		<a class="close" data-ng-click="revert()">&times;</a>
 		<p>
-			<strong><a id="save-widgets-button" data-ng-click="save()">Save</a></strong> or 
+			<strong><a id="save-widgets-button" data-ng-click="save()">Save</a></strong> or
 			<strong><a data-ng-click="revert()">revert</a></strong> changes to this dashboard.
 		</p>
 	</div>
@@ -56,16 +56,16 @@
 			<ul class="nav nav-pills pull-left" data-ng-show="constraints.length || constraintsB.length">
 				<li class="active" data-ng-repeat="constraint in constraints">
 					<a title="{{constraint.toString()}}">
-						<i class="fa fa-minus fa-white" data-ng-show="constraint.negated"></i> 
-						<i class="fa fa-white" data-ng-class="getConstraintIcon(constraint)" data-ng-click="invertConstraint(constraint)"></i> {{constraint.shortValue()}} 
+						<i class="fa fa-minus fa-white" data-ng-show="constraint.negated"></i>
+						<i class="fa fa-white" data-ng-class="getConstraintIcon(constraint)" data-ng-click="invertConstraint(constraint)"></i> {{constraint.shortValue()}}
 						<i class="fa fa-times fa-white" data-ng-click="removeConstraint(constraint)"></i>
 					</a>
 				</li>
 				<li><a title="A/B Comparison" data-ng-click="swapAB()"><i class="fa fa-adjust"></i></a></li>
 				<li class="active active-b" data-ng-repeat="constraint in constraintsB">
 					<a title="{{constraint.toString()}}">
-						<i class="fa fa-minus fa-white" data-ng-show="constraint.negated"></i> 
-						<i class="fa fa-white" data-ng-class="getConstraintIcon(constraint)" data-ng-click="invertConstraintB(constraint)"></i> {{constraint.shortValue()}} 
+						<i class="fa fa-minus fa-white" data-ng-show="constraint.negated"></i>
+						<i class="fa fa-white" data-ng-class="getConstraintIcon(constraint)" data-ng-click="invertConstraintB(constraint)"></i> {{constraint.shortValue()}}
 						<i class="fa fa-times fa-white" data-ng-click="removeConstraintB(constraint)"></i>
 					</a>
 				</li>
@@ -85,7 +85,7 @@
 				</div>
 			</div>
 		</div>
-	
+
 		<div class="row-fluid">
 			<div class="span6" data-ng-show="hasWidgets('left') || dirty">
 				<ul class="nav nav-tabs">
@@ -988,7 +988,7 @@
 				<label for="folder" class="control-label">Folder</label>
 				<input name="folder" class="input-medium" type="text" required data-ng-model="settings.folder"/>
 				<p class="help-block">The name of the Dropbox folder the data is being exported to.
-				Before proceeding, please add a configuration file to that folder, 
+				Before proceeding, please add a configuration file to that folder,
 				<a href="https://blog.zenobase.com/post/77238240850" target="_blank">as described here</a>.</p>
 			</div>
 		</div>
@@ -1102,8 +1102,8 @@
 		</div>
 	</script>
 
-	<script id="/nokia-weight-settings.html" type="text/ng-template">
-		<div data-ng-controller="NokiaHealthWeightSettingsController">
+	<script id="/withings-weight-settings.html" type="text/ng-template">
+		<div data-ng-controller="WithingsHealthWeightSettingsController">
 			<div class="control-group">
 				<label for="tag" class="control-label">Tag</label>
 				<input name="tag" type="text" required data-ng-model="settings.tag"/>
@@ -1123,8 +1123,8 @@
 		</div>
 	</script>
 
-	<script id="/nokia-cardio-settings.html" type="text/ng-template">
-		<div data-ng-controller="NokiaHealthCardioSettingsController">
+	<script id="/withings-cardio-settings.html" type="text/ng-template">
+		<div data-ng-controller="WithingsHealthCardioSettingsController">
 			<div class="control-group">
 				<label for="tag" class="control-label">Tag</label>
 				<input name="tag" type="text" required data-ng-model="settings.tag"/>
@@ -1140,8 +1140,8 @@
 		</div>
 	</script>
 
-	<script id="/nokia-sleep-settings.html" type="text/ng-template">
-		<div data-ng-controller="NokiaHealthSleepSettingsController">
+	<script id="/withings-sleep-settings.html" type="text/ng-template">
+		<div data-ng-controller="WithingsHealthSleepSettingsController">
 			<div class="control-group">
 				<label for="tag" class="control-label">Tag</label>
 				<input name="tag" type="text" required data-ng-model="settings.tag"/>
@@ -1157,8 +1157,8 @@
 		</div>
 	</script>
 
-	<script id="/nokia-steps-settings.html" type="text/ng-template">
-		<div data-ng-controller="NokiaHealthStepsSettingsController">
+	<script id="/withings-steps-settings.html" type="text/ng-template">
+		<div data-ng-controller="WithingsHealthStepsSettingsController">
 			<div class="control-group">
 				<label for="tag" class="control-label">Tag</label>
 				<input name="tag" type="text" required data-ng-model="settings.tag"/>

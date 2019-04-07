@@ -1,4 +1,4 @@
-package com.zenobase.tasks.nokia;
+package com.zenobase.tasks.withings;
 
 import java.util.Collections;
 import java.util.List;
@@ -21,12 +21,12 @@ import com.zenobase.common.Measures;
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
 
-class NokiaHealthStepsResult extends NokiaHealthResult {
+class WithingsHealthStepsResult extends WithingsHealthResult {
 
 	private final Unit<Length> distanceUnit, heightUnit;
 	private final Unit<Energy> energyUnit;
 
-	public NokiaHealthStepsResult(ObjectNode node, Identity author, String tag, Unit<Length> distanceUnit, Unit<Length> heightUnit, Unit<Energy> energyUnit) {
+	public WithingsHealthStepsResult(ObjectNode node, Identity author, String tag, Unit<Length> distanceUnit, Unit<Length> heightUnit, Unit<Energy> energyUnit) {
 		super(node, author, tag);
 		this.distanceUnit = distanceUnit;
 		this.heightUnit = heightUnit;

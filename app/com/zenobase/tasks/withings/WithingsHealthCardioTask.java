@@ -1,4 +1,4 @@
-package com.zenobase.tasks.nokia;
+package com.zenobase.tasks.withings;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.joda.time.DateTimeZone;
@@ -7,17 +7,17 @@ import com.zenobase.json.TokenField;
 import com.zenobase.models.Identity;
 import com.zenobase.tasks.Task;
 
-public class NokiaHealthCardioTask extends Task {
+public class WithingsHealthCardioTask extends Task {
 
-	public static final String TYPE = "nokia-cardio";
+	public static final String TYPE = "withings-cardio";
 	public static final TokenField TAG = new TokenField("tag");
 	public static final TokenField TIMEZONE = new TokenField("timezone");
 
-	public NokiaHealthCardioTask(ObjectNode node) {
+	public WithingsHealthCardioTask(ObjectNode node) {
 		super(node);
 	}
 
-	NokiaHealthCardioTask(String bucketId, Identity principal, String marker) {
+	WithingsHealthCardioTask(String bucketId, Identity principal, String marker) {
 		super(TYPE, bucketId, principal);
 		setMarker(marker);
 	}
@@ -40,7 +40,7 @@ public class NokiaHealthCardioTask extends Task {
 	}
 
 	@Override
-	public NokiaHealthCardioTask copy() {
+	public WithingsHealthCardioTask copy() {
 		return copy(getClass());
 	}
 }

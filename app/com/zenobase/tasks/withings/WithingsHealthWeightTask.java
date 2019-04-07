@@ -1,4 +1,4 @@
-package com.zenobase.tasks.nokia;
+package com.zenobase.tasks.withings;
 
 import javax.measure.quantity.Mass;
 import javax.measure.unit.Unit;
@@ -11,18 +11,18 @@ import com.zenobase.json.UnitField;
 import com.zenobase.models.Identity;
 import com.zenobase.tasks.Task;
 
-public class NokiaHealthWeightTask extends Task {
+public class WithingsHealthWeightTask extends Task {
 
-	public static final String TYPE = "nokia-weight";
+	public static final String TYPE = "withings-weight";
 	public static final TokenField TAG = new TokenField("tag");
 	public static final UnitField<Mass> UNIT = new UnitField<>("unit");
 	public static final TokenField TIMEZONE = new TokenField("timezone");
 
-	public NokiaHealthWeightTask(ObjectNode node) {
+	public WithingsHealthWeightTask(ObjectNode node) {
 		super(node);
 	}
 
-	NokiaHealthWeightTask(String bucketId, Identity principal, String tag, Unit<Mass> unit, DateTimeZone timezone, String marker) {
+	WithingsHealthWeightTask(String bucketId, Identity principal, String tag, Unit<Mass> unit, DateTimeZone timezone, String marker) {
 		super(TYPE, bucketId, principal);
 		setMarker(marker);
 		setSetting(TAG, tag);
@@ -44,7 +44,7 @@ public class NokiaHealthWeightTask extends Task {
 	}
 
 	@Override
-	public NokiaHealthWeightTask copy() {
+	public WithingsHealthWeightTask copy() {
 		return copy(getClass());
 	}
 }

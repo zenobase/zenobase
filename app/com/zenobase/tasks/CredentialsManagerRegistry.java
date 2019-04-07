@@ -21,6 +21,9 @@ public class CredentialsManagerRegistry {
 
 	public CredentialsManager find(String type) {
 		Preconditions.checkNotNull(type);
+		if ("nokia".equals(type)) {
+			type = "withings";
+		}
 		CredentialsManager manager = managers.get(type);
 		Preconditions.checkNotNull(manager, "Missing manager for integration type '%s'", type);
 		return manager;

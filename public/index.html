@@ -29,7 +29,7 @@
 
 		<div id="verify-banner" class="ng-cloak" data-ng-show="user && user.getName() != 'guest' && !user.verified">
 			<div class="alert" style="cursor:pointer;" data-ng-click="openDialogInPage('/users/' + user.getName(), 'account-settings-dialog')">
-				Please <strong>verify your email address</strong>, so we can contact you if your data is on fire (or you need to reset your password). 
+				Please <strong>verify your email address</strong>, so we can contact you if your data is on fire (or you need to reset your password).
 			</div>
 		</div>
 
@@ -71,7 +71,7 @@
 		<div id="content" data-ng-hide="user.suspended" data-ng-view>
 			<div class="container-fluid" style="margin-top: 14px">
 				Loading...
-			</div>			
+			</div>
 		</div>
 
 		<footer class="container-fluid">
@@ -202,7 +202,7 @@
 		<script src="/js/LAB-2.0.3.min.js"></script>
 		<script>
 			var CDN = document.location.hostname !== 'localhost' ?
-				'//dkn38hw4u7rri.cloudfront.net' : ''; 
+				'//dkn38hw4u7rri.cloudfront.net' : '';
 			$LAB
 				.script(function() {
 					window._gaq = window._gaq || [];
@@ -222,7 +222,7 @@
 				.script("https://js.braintreegateway.com/v2/braintree.js")
 				.script(CDN + "/js/babyparse-0.4.1.min.js")
 				.script("//maps.googleapis.com/maps/api/js?libraries=places,visualization&v=3.32&key=AIzaSyDv7t1arxF_85-QF-ZUi9C4MV1z94BsH0I&callback=noop").wait()
-				.script(CDN + "/js/zeno-39af5c7a.js").wait(function() {
+				.script(CDN + "/js/zeno-39af5c7b.js").wait(function() {
 					angular.bootstrap(document.documentElement, ['appModule']);
 				})
 				.script(CDN + "/js/highlight-8.4.min.js")

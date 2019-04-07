@@ -1,4 +1,4 @@
-package com.zenobase.tasks.nokia;
+package com.zenobase.tasks.withings;
 
 import static org.fest.assertions.Assertions.assertThat;
 
@@ -12,15 +12,15 @@ import com.zenobase.models.Event;
 import com.zenobase.models.Percentage;
 import com.zenobase.tasks.ResultTestSupport;
 
-public class NokiaHealthSleepResultTest extends ResultTestSupport {
+public class WithingsHealthSleepResultTest extends ResultTestSupport {
 
 	@Test
 	public void test() {
-		NokiaHealthSleepResult result = new NokiaHealthSleepResult(readObject("NokiaHealthSleepResultTest.json"), TESTER, "sleep", true, DateTimeZone.forID("America/Los_Angeles"));
+		WithingsHealthSleepResult result = new WithingsHealthSleepResult(readObject("WithingsHealthSleepResultTest.json"), TESTER, "sleep", true, DateTimeZone.forID("America/Los_Angeles"));
 		assertThat(result.getStatus()).as("status").isEqualTo(0);
 		List<Event> events = result.getEvents();
 		assertThat(events).as("events").hasSize(6);
-		events = NokiaHealthSleepResult.merge(result.getEvents());
+		events = WithingsHealthSleepResult.merge(result.getEvents());
 		assertThat(events).as("events").hasSize(2);
 		checkFirst(events.get(0));
 		checkLast(events.get(1));
@@ -34,7 +34,7 @@ public class NokiaHealthSleepResultTest extends ResultTestSupport {
 		expected.setValue(Event.DURATION, Duration.standardSeconds(25500));
 		expected.setValue(Event.PERCENTAGE, Percentage.valueOf(98));
 		expected.setValue(Event.AUTHOR, TESTER);
-		expected.setValue(Event.SOURCE, NokiaHealthWeightResult.SOURCE);
+		expected.setValue(Event.SOURCE, WithingsHealthWeightResult.SOURCE);
 		assertThat(event).as("first event").isEqualTo(expected);
 	}
 
@@ -46,7 +46,7 @@ public class NokiaHealthSleepResultTest extends ResultTestSupport {
 		expected.setValue(Event.DURATION, Duration.standardSeconds(26880));
 		expected.setValue(Event.PERCENTAGE, Percentage.valueOf(96));
 		expected.setValue(Event.AUTHOR, TESTER);
-		expected.setValue(Event.SOURCE, NokiaHealthWeightResult.SOURCE);
+		expected.setValue(Event.SOURCE, WithingsHealthWeightResult.SOURCE);
 		assertThat(event).as("last event").isEqualTo(expected);
 	}
 }

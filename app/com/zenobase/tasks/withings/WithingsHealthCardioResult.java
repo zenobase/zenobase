@@ -1,4 +1,4 @@
-package com.zenobase.tasks.nokia;
+package com.zenobase.tasks.withings;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -19,11 +19,11 @@ import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
 import com.zenobase.models.Percentage;
 
-class NokiaHealthCardioResult extends NokiaHealthResult {
+class WithingsHealthCardioResult extends WithingsHealthResult {
 
 	private final DateTimeZone timezone;
 
-	public NokiaHealthCardioResult(ObjectNode node, Identity author, String tag, DateTimeZone timezone) {
+	public WithingsHealthCardioResult(ObjectNode node, Identity author, String tag, DateTimeZone timezone) {
 		super(node, author, tag);
 		this.timezone = timezone;
 	}

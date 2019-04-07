@@ -1,18 +1,18 @@
 (function() {
-	
+
 	'use strict';
 
 	/**
-	 * Stub console object if not present. 
+	 * Stub console object if not present.
 	 */
 	(function(console) {
 		$.each([ 'assert', 'log' ], function(i, method) {
-			console[method] = console[method] || function() {};	
+			console[method] = console[method] || function() {};
 		});
-	}(window.console = window.console || {})); 
+	}(window.console = window.console || {}));
 
 	/**
-	 * Prevent charts from capturing single finger swipes. 
+	 * Prevent charts from capturing single finger swipes.
 	 */
 	(function() {
 		Highcharts.wrap(Highcharts.Pointer.prototype, 'pinch', function(proceed, e) {
@@ -40,7 +40,7 @@
 				store[key] = value;
 			},
 			removeItem : function(key) {
-				delete store[key];				
+				delete store[key];
 			}
 		};
 	}]);
@@ -63,36 +63,36 @@
 		moment.duration.fn.countdown = function(precision) {
 			var args = [];
 			if (this.years()) {
-				args.push(this.years() + 'y'); 
+				args.push(this.years() + 'y');
 			}
 			if (this.months()) {
-				args.push(this.months() + 'm'); 
+				args.push(this.months() + 'm');
 			}
 			if (this.days()) {
-				args.push(this.days() + 'd'); 
+				args.push(this.days() + 'd');
 			}
 			if (this.hours()) {
-				args.push(this.hours() + 'h'); 
+				args.push(this.hours() + 'h');
 			}
 			if (this.minutes()) {
-				args.push(this.minutes() + 'min'); 
+				args.push(this.minutes() + 'min');
 			}
 			if (this.seconds()) {
-				args.push(this.seconds() + 's'); 
+				args.push(this.seconds() + 's');
 			}
 			if (precision > 0 && args.length > 1) {
 				args = args.slice(0, precision);
 			}
-			return args.length ? args.join(' ') : this.milliseconds() + 'ms';			
+			return args.length ? args.join(' ') : this.milliseconds() + 'ms';
 		};
 
 		moment.duration.fn.countdownCompact = function() {
-			var minutes = Math.floor(this.asMinutes()); 
-			var seconds = this.seconds(); 
+			var minutes = Math.floor(this.asMinutes());
+			var seconds = this.seconds();
 			if (seconds < 10) {
 				seconds = '0' + seconds;
 			}
-			return minutes + '\'' + seconds + '"';			
+			return minutes + '\'' + seconds + '"';
 		};
 
 		return moment;
@@ -107,7 +107,7 @@
 			if (token) {
 				localStorage.setItem(key, token);
 			} else {
-				localStorage.removeItem(key);				
+				localStorage.removeItem(key);
 			}
 			configure(token);
 		};
@@ -127,7 +127,7 @@
 				_gaq.push([ '_trackEvent', category, action, label ]);
 			},
 			timing : function(category, action, time, label) {
-				_gaq.push([ '_trackTiming', category, action, time, label, 100 ]);				
+				_gaq.push([ '_trackTiming', category, action, time, label, 100 ]);
 			},
 			pageview : function(url) {
 				_gaq.push([ '_trackPageview', url ]);
@@ -439,7 +439,7 @@
 
 		$scope.username = $routeParams.username;
 		$scope.profile = null;
-		
+
 		$scope.isSelf = function() {
 			return $scope.user && $scope.profile && $scope.profile.getName() === $scope.user.getName();
 		};
@@ -470,13 +470,13 @@
 							}
 						}
 					);
-				} 
+				}
 			}
 		});
 	}]);
 
 	app.controller('AccountSettingsController', ['$scope', '$http', 'tracker', function($scope, $http, tracker) {
-	
+
 		$scope.init = function() {
 			$scope.message = '';
 			$scope.email = $scope.profile.email;
@@ -493,7 +493,7 @@
 		$scope.save = function() {
 			$scope.alert.clear();
 			var data = $scope.data();
-			if (!$.isEmptyObject(data)) { 
+			if (!$.isEmptyObject(data)) {
 				$http.post('/users/@' + $scope.username, data)
 					.success(function(response, status, headers) {
 						$scope.alert.show('Updated account settings.', 'alert-success', headers('X-Command-ID'));
@@ -532,7 +532,7 @@
 	}]);
 
 	app.controller('PlanDialogController', ['$scope', '$http', 'tracker', function($scope, $http, tracker) {
-	
+
 		$scope.init = function() {
 			$scope.message = '';
 			$scope.plan = $scope.user.quota;
@@ -553,7 +553,7 @@
 			$scope.password = '';
 			tracker.event('dialog', 'sign in');
 		};
-		/** Ensures that autocompleted values are propagates to the model. */ 
+		/** Ensures that autocompleted values are propagates to the model. */
 		function update() {
 			$scope.username = $("#sign-in-username").val();
 			$scope.password = $("#sign-in-password").val();
@@ -564,7 +564,7 @@
 				$scope.message = 'Please enter your username, not your email address.';
 				return;
 			}
-			$http({ method: 'POST', url: '/oauth/token', 
+			$http({ method: 'POST', url: '/oauth/token',
 				data: $.param({ 'grant_type' : 'password', 'username' : $scope.username, 'password' : $scope.password }),
 				headers: { 'Content-Type' : 'application/x-www-form-urlencoded' }
 			})
@@ -677,7 +677,7 @@
 				$location.url('/users/' + $routeParams.username);
 			});
 	}]);
-	
+
 	app.controller('PasswordResetController', ['$scope', '$http', '$location', '$routeParams', 'token', function($scope, $http, $location, $routeParams, token) {
 
 		var username = $routeParams.username;
@@ -709,12 +709,12 @@
 					} else {
 						$scope.alert.show('Your password could not be changed. Try again later or contact support.', 'alert-error');
 					}
-				});		
+				});
 		};
 
 		$scope.init();
 	}]);
-	
+
 	app.controller('OAuthController', ['$scope', '$http', '$location', '$window', 'token', function($scope, $http, $location, $window, token) {
 
 		var getRedirectUri = function(params) {
@@ -775,7 +775,7 @@
 					} else {
 						$scope.message = 'Could not list buckets. Try again later or contact support.';
 					}
-				});		
+				});
 			} else {
 				$scope.bucket = null;
 			}
@@ -783,7 +783,7 @@
 	}]);
 
 	app.controller('BucketListController', ['$scope', '$http', 'delay', 'taskRunner', 'tracker', function($scope, $http, delay, taskRunner, tracker) {
-	
+
 		$scope.offset = 0;
 		$scope.limit = 10;
 		$scope.total = 0;
@@ -1069,9 +1069,9 @@
 				})
 				.error(function(response, status) {
 					if (status === 400) {
-						$scope.message = 'Can\'t create bucket.';					
+						$scope.message = 'Can\'t create bucket.';
 					} else {
-						$scope.message = 'Couldn\'t create bucket. Please try agan later or contact support.';					
+						$scope.message = 'Couldn\'t create bucket. Please try agan later or contact support.';
 					}
 				});
 			tracker.event('action', 'create bucket', $scope.template ? $scope.template.label : undefined);
@@ -1127,9 +1127,9 @@
 				})
 				.error(function(response, status) {
 					if (status === 400) {
-						$scope.message = 'Can\'t create view.';					
+						$scope.message = 'Can\'t create view.';
 					} else {
-						$scope.message = 'Couldn\'t create view. Please try agan later or contact support.';					
+						$scope.message = 'Couldn\'t create view. Please try agan later or contact support.';
 					}
 				});
 			tracker.event('action', 'create view');
@@ -1359,7 +1359,7 @@
 
 		function updateEditable() {
 			$scope.editable = $scope.user && $scope.bucket.canEdit($scope.user['@id']);
-		} 
+		}
 
 		$scope.bucketId = $routeParams.bucketId;
 		$http.get('/buckets/' + $scope.bucketId)
@@ -1464,7 +1464,7 @@
 				}
 			}
 		};
-	
+
 		function search(q, facets) {
 			return $http.get('/buckets/' + $scope.bucketId + '/?' + $.param({ 'q' : q, 'facet' : facets }, true));
 		}
@@ -1477,7 +1477,7 @@
 		$scope.search = function(params, callback) {
 			var facets = $.map(params, function(param) {
 				return $.map(param, function(value, key) {
-					return angular.isDefined(value) && value !== null && value !== '' ? 
+					return angular.isDefined(value) && value !== null && value !== '' ?
 							key + ':' + escape(value) : null;
 				}).join(',');
 			});
@@ -1542,7 +1542,7 @@
 				value = value.split('|');
 			}
 			return value ? $.map(value, function(s) { return Constraint.parse(s); }) : [];
-			
+
 		}
 		$scope.updateConstraints = function() {
 			$scope.constraints = parseConstraints($location.search()['q']);
@@ -1569,7 +1569,7 @@
 		}
 		function mapToString(values) {
 			return values.length > 0 ?
-				$.map(values, function(value) { return value.toString(); }) : 
+				$.map(values, function(value) { return value.toString(); }) :
 				null;
 		}
 		function params() {
@@ -1674,7 +1674,7 @@
 					if (status === 400) {
 						$scope.alert.show('Can\'t save this bucket', 'alert-error');
 					} else {
-						$scope.alert.show('Couldn\'t save this bucket. Try again later or contact support.', 'alert-error');						
+						$scope.alert.show('Couldn\'t save this bucket. Try again later or contact support.', 'alert-error');
 					}
 				});
 			tracker.event('action', 'save widgets');
@@ -1697,7 +1697,7 @@
 				'widgets' : $scope.$parent.bucket.widgets,
 				'aliases' : [
 					{
-						'@id' : $scope.bucket['@id'], 
+						'@id' : $scope.bucket['@id'],
 						'filter' : $scope.$parent.getConstraintsString()
 					}
 				]
@@ -1713,9 +1713,9 @@
 				})
 				.error(function(response, status) {
 					if (status === 400) {
-						$scope.message = 'Can\'t create view.';					
+						$scope.message = 'Can\'t create view.';
 					} else {
-						$scope.message = 'Couldn\'t create view. Please try agan later or contact support.';					
+						$scope.message = 'Couldn\'t create view. Please try agan later or contact support.';
 					}
 				});
 			tracker.event('action', 'create view');
@@ -1772,7 +1772,7 @@
 					if (status === 400) {
 						$scope.message = 'Can\'t save this bucket';
 					} else {
-						$scope.message = 'Couldn\'t save this bucket. Try again later or contact support.';						
+						$scope.message = 'Couldn\'t save this bucket. Try again later or contact support.';
 					}
 				});
 		};
@@ -1861,13 +1861,13 @@
 						}
 						$scope.settings.order = order;
 					}
-					return $scope.settings.order && $scope.settings.order.charAt(0) === '-' ? 
+					return $scope.settings.order && $scope.settings.order.charAt(0) === '-' ?
 						$scope.settings.order.substr(1) : $scope.settings.order;
 				};
 			}
 		};
 	}]);
-	
+
 
 	app.factory('WidgetFilter', ['Constraint', function(Constraint) {
 
@@ -1923,7 +1923,7 @@
 		$scope.next = function() {
 			$scope.refresh({ offset : $scope.offset + $scope.settings.limit });
 		};
-		$scope.filter = new WidgetFilter([ 
+		$scope.filter = new WidgetFilter([
 			{
 				id : 'resource.title',
 				label : 'resources',
@@ -1947,14 +1947,14 @@
 			}
 		]);
 		$scope.applyFilter = function() {
-			$scope.addConstraints($scope.filter.build());			
+			$scope.addConstraints($scope.filter.build());
 			$scope.filter.clear();
 		};
 		$scope.params = function() {
 			return {
 				id : $scope.settings.id,
 				type : 'list',
-				offset : 0, 
+				offset : 0,
 				limit : $scope.settings.limit,
 				order : $scope.settings.order,
 				filter : $scope.filter.build().join('|')
@@ -1995,7 +1995,7 @@
 	}]);
 
 	app.controller('CountWidgetController', ['$scope', 'WidgetControllerSupport', function($scope, WidgetControllerSupport) {
-	
+
 		new WidgetControllerSupport($scope);
 
 		$scope.init = function() {
@@ -2016,11 +2016,11 @@
 			$scope.refresh({ offset : $scope.offset + $scope.settings.limit });
 		};
 		$scope.params = function() {
-			return { 
+			return {
 				id : $scope.settings.id,
 				type : 'count',
-				field : $scope.settings.field, 
-				offset : $scope.offset, 
+				field : $scope.settings.field,
+				offset : $scope.offset,
 				limit : $scope.settings.limit,
 				order : $scope.settings.order,
 				filter : $scope.settings.filter
@@ -2043,7 +2043,7 @@
 			$scope.offset = 0;
 			$scope.addConstraint($scope.settings.field, term.label);
 		};
-	
+
 		$scope.init();
 		$scope.register($scope);
 		$scope.$on('result', $scope.update);
@@ -2068,11 +2068,11 @@
 			$scope.settings.key_field = $scope.settings.key_field || $scope.keyField;
 		};
 		$scope.params = function() {
-			return { 
+			return {
 				id : $scope.settings.id,
 				type : 'gantt',
 				key_field : $scope.settings.key_field,
-				field : $scope.settings.field, 
+				field : $scope.settings.field,
 				timezone : timezone,
 				order : $scope.settings.order,
 				limit : $scope.settings.limit,
@@ -2116,14 +2116,14 @@
 	}]);
 
 	app.controller('RatingsWidgetController', ['$scope', function($scope) {
-	
+
 		$scope.field = 'rating';
 
 		$scope.init = function() {
 			$scope.ratings = null;
 		};
 		$scope.params = function() {
-			return { 
+			return {
 				id : $scope.settings.id,
 				type : 'ratings',
 				filter : $scope.settings.filter
@@ -2159,15 +2159,15 @@
 	}]);
 
 	app.controller('HistogramWidgetController', ['$scope', '$timeout', 'Field', 'Spreadsheet', function($scope, $timeout, Field, Spreadsheet) {
-	
+
 		$scope.init = function() {
 			$scope.intervals = null;
 		};
 		$scope.params = function() {
-			return { 
+			return {
 				id : $scope.settings.id,
 				type : 'histogram',
-				field : $scope.settings.field, 
+				field : $scope.settings.field,
 				interval : $scope.settings.interval,
 				unit : $scope.settings.unit,
 				filter : $scope.settings.filter
@@ -2215,7 +2215,7 @@
 								var min = (event.xAxis[0].min !== undefined) ? Math.ceil(event.xAxis[0].min) : 0;
 								var max = (event.xAxis[0].max !== undefined) ? Math.floor(event.xAxis[0].max) : $scope.intervals.length - 1;
 								if (min <= max) {
-									var from = field.toText($scope.intervals[max].from); 
+									var from = field.toText($scope.intervals[max].from);
 									var to = field.toText($scope.intervals[min].to);
 									if (from || to) {
 										var range = '[' + from + '..' + to + ')';
@@ -2335,10 +2335,10 @@
 			}
 		};
 		$scope.params = function() {
-			return { 
+			return {
 				id : $scope.settings.id,
 				type : 'scoreboard',
-				key_field : $scope.settings.key_field, 
+				key_field : $scope.settings.key_field,
 				value_field : $scope.settings.value_field,
 				unit : $scope.settings.unit,
 				order : $scope.settings.order,
@@ -2417,16 +2417,16 @@
 
 		Interval.VALUES = [
 			new Interval('year', 'yyyy', 366 * 24 * 60 * 60 * 1000, 'y'),
-			new Interval('month', 'yyyy-MM', 28 * 24 * 60 * 60 * 1000, 'M'), 
-			new Interval('week', 'yyyy-Www', 7 * 24 * 60 * 60 * 1000, 'w'), 
-			new Interval('day', 'yyyy-MM-dd', 24 * 60 * 60 * 1000, 'd'), 
-			new Interval('hour', 'yyyy-MM-ddTHH', 60 * 60 * 1000, 'h'), 
+			new Interval('month', 'yyyy-MM', 28 * 24 * 60 * 60 * 1000, 'M'),
+			new Interval('week', 'yyyy-Www', 7 * 24 * 60 * 60 * 1000, 'w'),
+			new Interval('day', 'yyyy-MM-dd', 24 * 60 * 60 * 1000, 'd'),
+			new Interval('hour', 'yyyy-MM-ddTHH', 60 * 60 * 1000, 'h'),
 			new Interval('minute', 'yyyy-MM-ddTHH:mm', 60 * 1000, 'm'),
 			new Interval('second', 'yyyy-MM-ddTHH:mm:ss', 1000, 's')
 		];
 
-		Interval.VALUES[0].zoomIn = Interval.VALUES[1]; // year -> month 
-		Interval.VALUES[1].zoomIn = Interval.VALUES[3]; // month -> day 
+		Interval.VALUES[0].zoomIn = Interval.VALUES[1]; // year -> month
+		Interval.VALUES[1].zoomIn = Interval.VALUES[3]; // month -> day
 		Interval.VALUES[2].zoomIn = Interval.VALUES[3]; // week -> day
 		Interval.VALUES[3].zoomIn = Interval.VALUES[4]; // day -> hour
 		Interval.VALUES[4].zoomIn = Interval.VALUES[5]; // hour -> minute
@@ -2520,7 +2520,7 @@
 			return at.slice(0, i).join('');
 		}
 		function filter(value) {
-			$scope.addConstraint($scope.settings.key_field, value, true);			
+			$scope.addConstraint($scope.settings.key_field, value, true);
 		}
 
 		$scope.init = function() {
@@ -2548,7 +2548,7 @@
 					// $scope.range = prefix; // doesn't handle OR constraints
 				}
 			}
-			return { 
+			return {
 				id : $scope.settings.id,
 				type : 'timeline',
 				key_field : $scope.settings.key_field,
@@ -2660,7 +2660,7 @@
 					}
 					var ranges = toRanges(times);
 					if (ranges.length) {
-						filter(ranges.join(' OR '));			
+						filter(ranges.join(' OR '));
 					}
 				}
 		};
@@ -2814,10 +2814,10 @@
 					if (value !== undefined) {
 						options.series[0].data.push({ x : time.time, y : field.toNumber(value), filter : time.label, tooltip : field.toText(value) });
 						if ($scope.settings.statistic === 'avg') {
-							options.series[1].data.push({ 
-								x : time.time, 
-								low : field.toNumber(time['min']), 
-								high : field.toNumber(time['max']), 
+							options.series[1].data.push({
+								x : time.time,
+								low : field.toNumber(time['min']),
+								high : field.toNumber(time['max']),
 								filter : time.label,
 								tooltip : field.toText(time['min']) + '..' + field.toText(time['max'])
 							});
@@ -2825,9 +2825,9 @@
 					} else {
 						options.series[0].data.push({ x : time.time, y : null });
 						if ($scope.settings.statistic === 'avg') {
-							options.series[1].data.push({ 
-								x : time.time, 
-								low : null, 
+							options.series[1].data.push({
+								x : time.time,
+								low : null,
 								high : null
 							});
 						}
@@ -2935,10 +2935,10 @@
 			$scope.statsB = null;
 		};
 		function shouldRequestStats() {
-			return $scope.constraintsB && $scope.settings.statistic === 'avg'; 
+			return $scope.constraintsB && $scope.settings.statistic === 'avg';
 		}
 		$scope.params = function() {
-			return shouldRequestStats() ? { 
+			return shouldRequestStats() ? {
 				id : $scope.settings.id + '-stats',
 				type : 'stats',
 				field : $scope.settings.field,
@@ -3199,7 +3199,7 @@
 			$scope.settings.key_field = $scope.settings.key_field || $scope.keyField;
 		};
 		$scope.params = function() {
-			return { 
+			return {
 				id : $scope.settings.id,
 				type : 'polar',
 				key_field : $scope.settings.key_field,
@@ -3342,10 +3342,10 @@
 					}
 				}
 				field.formatAxis(options.yAxis);
-				$scope.chartOptions = options;				
+				$scope.chartOptions = options;
 			}
 		};
-	
+
 		$scope.init();
 		$scope.register($scope);
 		$scope.$on('result', $scope.update);
@@ -3429,7 +3429,7 @@
 			}
 			var slope = (N * SXY - SX * SY) / (N * SXX - SX * SX);
 			var intercept = (SY - slope * SX) / N;
-			return { 
+			return {
 				slope : slope,
 				intercept : intercept
 			};
@@ -3438,7 +3438,7 @@
 		function pearson(x, y) {
 
 			console.assert(x.length == y.length, 'expected arrays with same length');
-			
+
 			var n = x.length;
 			var xy = [];
 			var x2 = [];
@@ -3486,7 +3486,7 @@
 					}
 				});
 				if (freq > 1) {
-					rank = (freq * (2 * rank + freq - 1)) / (2 * freq); // derived from sum of arithmetic sequence formula 
+					rank = (freq * (2 * rank + freq - 1)) / (2 * freq); // derived from sum of arithmetic sequence formula
 				}
 				ranked.push(rank);
 			});
@@ -3502,8 +3502,8 @@
 			return 0.5 * (log1p(x) - log1p(-x));
 		}
 
-		/** 
-		 * Computes log(1 + x) accurately for small values of x. 
+		/**
+		 * Computes log(1 + x) accurately for small values of x.
 		 * Based on http://phpjs.org/functions/log1p/.
 		 */
 		function log1p(x) {
@@ -3526,7 +3526,7 @@
 		}
 
 		/**
-		 * Computes the 95% confidence interval for a correlation coefficient. 
+		 * Computes the 95% confidence interval for a correlation coefficient.
 		 * Based on https://stats.stackexchange.com/a/18904.
 		 */
 		function confidence(r, n) {
@@ -3583,7 +3583,7 @@
 					r : r,
 					lower : c[0],
 					upper : c[1]
-				};		
+				};
 			}
 		};
 	});
@@ -3645,9 +3645,9 @@
 				return header;
 			}
 			var compareMode = $scope.dataB && $scope.dataB.length;
-			var spreadsheet = new Spreadsheet([ 
-				buildHeader($scope.settings.label_x, $scope.settings.statistic_x, $scope.settings.field_x, $scope.settings.unit_x), 
-				buildHeader($scope.settings.label_y, $scope.settings.statistic_y, $scope.settings.field_y, $scope.settings.unit_y), 
+			var spreadsheet = new Spreadsheet([
+				buildHeader($scope.settings.label_x, $scope.settings.statistic_x, $scope.settings.field_x, $scope.settings.unit_x),
+				buildHeader($scope.settings.label_y, $scope.settings.statistic_y, $scope.settings.field_y, $scope.settings.unit_y),
 				compareMode ? 'dataset' : ''
 			]);
 			$.each($scope.data, function(i, value) {
@@ -3859,7 +3859,7 @@
 							animation : false,
 							tooltip : {
 								headerFormat : '',
-								pointFormat : '<b>95% confidence interval:</b> [' + correlation.lower.toFixed(3) + '..' + correlation.upper.toFixed(3) + ']<br/>' 
+								pointFormat : '<b>95% confidence interval:</b> [' + correlation.lower.toFixed(3) + '..' + correlation.upper.toFixed(3) + ']<br/>'
 							}
 						});
 					}
@@ -3892,7 +3892,7 @@
 							animation : false,
 							tooltip : {
 								headerFormat : '',
-								pointFormat : '<b>95% confidence interval:</b> [' + correlationB.lower.toFixed(3) + '..' + correlationB.upper.toFixed(3) + ']<br/>' 
+								pointFormat : '<b>95% confidence interval:</b> [' + correlationB.lower.toFixed(3) + '..' + correlationB.upper.toFixed(3) + ']<br/>'
 							}
 						});
 					}
@@ -3906,7 +3906,7 @@
 				$scope.chartOptions = options;
 			}
 		};
-	
+
 		$scope.init();
 		$scope.register($scope);
 		$scope.$on('result', $scope.update);
@@ -3961,7 +3961,7 @@
 			swap($scope.settings, 'unit_x', 'unit_y');
 			swap($scope.settings, 'filter_x', 'filter_y');
 			if ($scope.settings.lag) {
-				$scope.settings.lag = -$scope.settings.lag; 
+				$scope.settings.lag = -$scope.settings.lag;
 			}
 		};
 
@@ -3980,7 +3980,7 @@
 	app.controller('MapWidgetController', ['$scope', '$timeout', function($scope, $timeout) {
 
 		$scope.field = 'location';
-	
+
 		$scope.init = function() {
 			$scope.map = null;
 			$scope.points = null;
@@ -4051,7 +4051,7 @@
 						var bounds = $scope.map.getBounds();
 						if (bounds.toSpan().lat() !== 0) {
 							if ($scope.map.getZoom() <= 4) {
-								$scope.factor = 1.0;								
+								$scope.factor = 1.0;
 							} else if ($scope.map.getZoom() <= 7) {
 								$scope.factor = 0.8;
 							} else if ($scope.map.getZoom() <= 9) {
@@ -4062,7 +4062,7 @@
 								$scope.factor = 0.2;
 							} else {
 								$scope.factor = 0.0;
-							} 
+							}
 							$scope.bounds = bounds;
 						}
 					}, 1000);
@@ -4099,7 +4099,7 @@
 			var control = document.createElement('div');
 			control.title = 'Click to filter using the current map bounds';
 			control.className = 'map-control';
-			parent.appendChild(control);	
+			parent.appendChild(control);
 			var label = document.createElement('div');
 			label.innerHTML = 'Filter';
 			control.appendChild(label);
@@ -4111,10 +4111,10 @@
 			return parent;
 		};
 		$scope.pointsParams = function() {
-			return { 
+			return {
 				id : $scope.settings.id,
 				type : 'map',
-				field : 'location', 
+				field : 'location',
 				factor : $scope.factor,
 				filter : getFilter()
 			};
@@ -4153,7 +4153,7 @@
 			if ($scope.map && ($scope.points && $scope.points.length || $scope.pointsB && $scope.pointsB.length)) {
 				$.each($scope.points, function(i, point) {
 					var marker = new google.maps.Marker({
-						position : new google.maps.LatLng(point.lat, point.lon), 
+						position : new google.maps.LatLng(point.lat, point.lon),
 						map : $scope.map,
 						title : point.count + (point.count == 1 ? ' event' : ' events'),
 						icon : {
@@ -4201,7 +4201,7 @@
 				});
 				$.each($scope.pointsB, function(i, point) {
 					$scope.markers.push(new google.maps.Marker({
-						position : new google.maps.LatLng(point.lat, point.lon), 
+						position : new google.maps.LatLng(point.lat, point.lon),
 						map : $scope.map,
 						title : point.count + (point.count == 1 ? ' event' : ' events'),
 						icon : {
@@ -4242,7 +4242,7 @@
 	app.controller('HeatmapWidgetController', ['$scope', '$timeout', 'Field', function($scope, $timeout, Field) {
 
 		$scope.field = 'location';
-	
+
 		$scope.init = function() {
 			$scope.map = null;
 			$scope.points = null;
@@ -4378,7 +4378,7 @@
 			var control = document.createElement('div');
 			control.title = 'Click to filter using the current map bounds';
 			control.className = 'map-control';
-			parent.appendChild(control);	
+			parent.appendChild(control);
 			var label = document.createElement('div');
 			label.innerHTML = 'Filter';
 			control.appendChild(label);
@@ -4606,7 +4606,7 @@
 					$scope.untic();
 				}
 			};
-			$scope.playing = 0;			
+			$scope.playing = 0;
 		};
 		$scope.isRunning = function() {
 			return audio.state === 'running';
@@ -4750,14 +4750,14 @@
 					return value !== entry.value;
 				});
 				if (values.length === 1) {
-					$scope.event[entry.field.name] = values[0];					
+					$scope.event[entry.field.name] = values[0];
 				} else if (values.length > 0) {
 					$scope.event[entry.field.name] = values;
 				} else {
 					delete $scope.event[entry.field.name];
 				}
 			} else {
-				delete $scope.event[entry.field.name];				
+				delete $scope.event[entry.field.name];
 			}
 		};
 		$scope.reset = function() {
@@ -4875,7 +4875,7 @@
 			});
 		};
 		$scope.valid = function() {
-			return $scope.value && $scope.value.lat >= -90 && $scope.value.lat <= 90 && 
+			return $scope.value && $scope.value.lat >= -90 && $scope.value.lat <= 90 &&
 				$scope.value.lon >= -180 && $scope.value.lon <= 180;
 		};
 		$scope.addField = function() {
@@ -4885,7 +4885,7 @@
 
 		$scope.init();
 	}]);
-	
+
 
 	app.controller('CreateTimestampFieldController', ['$scope', 'timezone', 'moment', function($scope, timezone, moment) {
 
@@ -4965,7 +4965,7 @@
 
 		$scope.init();
 	}]);
-	
+
 	app.controller('CreateResourceFieldController', ['$scope', '$http', function($scope, $http) {
 
 		$scope.init = function() {
@@ -4982,10 +4982,10 @@
 				$http.get('/og?' + $.param({ url : $scope.value.url }))
 					.success(function(response) {
 						$scope.value.title = response.title;
-						$scope.loading = false;					
+						$scope.loading = false;
 					})
 					.error(function() {
-						$scope.loading = false;					
+						$scope.loading = false;
 					});
 			}
 		};
@@ -4993,16 +4993,16 @@
 			return $scope.value.url && $scope.value.title;
 		};
 		$scope.change = function() {
-			
+
 		};
 		$scope.$watch('value.url', function(url) {
 			if (url && !$scope.value.title) {
-				$scope.prefillTitle(); 
+				$scope.prefillTitle();
 			}
 		});
 		$scope.init();
 	}]);
-	
+
 	app.controller('CreateUnitFieldController', ['$scope', function($scope) {
 
 		$scope.init = function() {
@@ -5021,7 +5021,7 @@
 
 		$scope.init();
 	}]);
-	
+
 	app.controller('CreateIntegerFieldController', ['$scope', function($scope) {
 
 		$scope.init = function() {
@@ -5037,7 +5037,7 @@
 
 		$scope.init();
 	}]);
-	
+
 	app.controller('CreateRatingFieldController', ['$scope', function($scope) {
 
 		$scope.init = function() {
@@ -5182,7 +5182,7 @@
 								}
 								if (!$.isEmptyObject(object)) {
 									event[field] = event[field] || [];
-									event[field].push(object);				
+									event[field].push(object);
 								}
 							}
 						}
@@ -5350,7 +5350,7 @@
 			}
 			return tags;
 		}
-		
+
 		return {
 			parse : function(data) {
 				var events = [];
@@ -5382,7 +5382,7 @@
 						events.push(event);
 					}
 				});
-				return events;				
+				return events;
 			}
 		};
 	}]);
@@ -5771,7 +5771,7 @@
 		$scope.formats = [
 			{
 				id : 'zenobase',
-				label : 'Zenobase', 
+				label : 'Zenobase',
 				description : 'Import a <b>.json</b> or <b>.csv</b> file exported from another bucket.<br/>The fields are described in the <a href="/#/api/events" target="_blank">API docs</a>.',
 				parse : function(data) {
 					if (data.charAt(0) === '{' || data.charAt(0) === '[') {
@@ -6030,7 +6030,7 @@
 				params.accept = 'text/plain';
 			}
 			if (!$.isEmptyObject(params)) {
-				url += '?' + $.param(params, true); 
+				url += '?' + $.param(params, true);
 			}
 			return url;
 		};
@@ -6039,7 +6039,7 @@
 		};
 		$scope.submit = function() {
 			$scope.alert.clear();
-			$scope.closeDialog();			
+			$scope.closeDialog();
 			tracker.event('action', 'export events', $scope.format);
 		};
 	}]);
@@ -6092,9 +6092,9 @@
 					return $q.reject();
 				}, function(response) {
 					if (response.status === 400) {
-						$scope.alert.show('Can\'t create credentials: ' + response.data.message, 'alert-error');					
+						$scope.alert.show('Can\'t create credentials: ' + response.data.message, 'alert-error');
 					} else {
-						$scope.alert.show('Couldn\'t create credentials. Please try again later or contact support.', 'alert-error');					
+						$scope.alert.show('Couldn\'t create credentials. Please try again later or contact support.', 'alert-error');
 					}
 					return $q.reject();
 				});
@@ -6108,7 +6108,7 @@
 				$window.open(url);
 			});
 		};
-		
+
 		return {
 			runAll : runAll,
 			runOne : runOne
@@ -6192,8 +6192,8 @@
 	}]);
 
 	app.controller('CreateTaskDialogController', ['$scope', '$http', 'delay', 'tracker', function($scope, $http, delay, tracker) {
-	
-		$scope.types = [ 
+
+		$scope.types = [
 			{ id : 'automatic-trips', description : 'Creates an event for each trip recorded.', url : 'https://www.automatic.com/' },
 			{ id : 'beddit-sleep', description : 'Creates an event for each period of sleep.', url : 'https://www.beddit.com/' },
 			{ id : 'beeminder', description : 'Updates a goal with event counts or value totals for each day.', url : 'https://www.beeminder.com/' },
@@ -6250,10 +6250,10 @@
 			{ id : 'trackthisforme', description : 'Creates an event for each element logged in a category.', url : 'https://www.trackthisfor.me/' },
 			{ id : 'trakt', description : 'Creates an event for each movie or episode watched.', url : 'https://trakt.tv/' },
 			{ id : 'wakatime', description : 'Creates an event for every period of time logged for a project.', url : 'https://wakatime.com/' },
-			{ id : 'nokia-cardio', description : 'Creates an event for each heart rate or blood pressure measurement.', url : 'https://health.nokia.com/' },
-			{ id : 'nokia-sleep', description : 'Creates an event for each period of sleep.', url : 'https://health.nokia.com/' },
-			{ id : 'nokia-steps', description : 'Creates an event for the number of steps each day.', url : 'https://health.nokia.com/' },
-			{ id : 'nokia-weight', description : 'Creates an event for each body weight measurement.', url : 'https://health.nokia.com/' }
+			{ id : 'withings-cardio', description : 'Creates an event for each heart rate or blood pressure measurement.', url : 'https://www.withings.com/' },
+			{ id : 'withings-sleep', description : 'Creates an event for each period of sleep.', url : 'https://www.withings.com/' },
+			{ id : 'withings-steps', description : 'Creates an event for the number of steps each day.', url : 'https://www.withings.com/' },
+			{ id : 'withings-weight', description : 'Creates an event for each body weight measurement.', url : 'https://www.withings.com/' }
 			// { id : 'demo', description : 'Creates a single event each time this task is run.' }
 		];
 
@@ -6428,7 +6428,7 @@
 					hourly : true,
 					marker : new Date(moment().utc().subtract(3, 'months').startOf('month').valueOf())
 			};
-		};	
+		};
 
 		$scope.init();
 	}]);
@@ -6735,7 +6735,7 @@
 		$scope.init();
 	}]);
 
-	app.controller('NokiaHealthWeightSettingsController', ['$scope', '$http', 'Field', 'moment', function($scope, $http, Field, moment) {
+	app.controller('WithingsHealthWeightSettingsController', ['$scope', '$http', 'Field', 'moment', function($scope, $http, Field, moment) {
 
 		$scope.init = function() {
 			$scope.settings = $scope.$parent.$parent.settings = {
@@ -6752,7 +6752,7 @@
 		$scope.init();
 	}]);
 
-	app.controller('NokiaHealthSleepSettingsController', ['$scope', '$http', 'moment', function($scope, $http, moment) {
+	app.controller('WithingsHealthSleepSettingsController', ['$scope', '$http', 'moment', function($scope, $http, moment) {
 
 		$scope.init = function() {
 			$scope.settings = $scope.$parent.$parent.settings = {
@@ -6765,7 +6765,7 @@
 		$scope.init();
 	}]);
 
-	app.controller('NokiaHealthCardioSettingsController', ['$scope', '$http', 'Field', 'moment', function($scope, $http, Field, moment) {
+	app.controller('WithingsHealthCardioSettingsController', ['$scope', '$http', 'Field', 'moment', function($scope, $http, Field, moment) {
 
 		$scope.init = function() {
 			$scope.settings = $scope.$parent.$parent.settings = {
@@ -6778,7 +6778,7 @@
 		$scope.init();
 	}]);
 
-	app.controller('NokiaHealthStepsSettingsController', ['$scope', '$http', 'Field', 'moment', function($scope, $http, Field, moment) {
+	app.controller('WithingsHealthStepsSettingsController', ['$scope', '$http', 'Field', 'moment', function($scope, $http, Field, moment) {
 
 		$scope.init = function() {
 			$scope.settings = $scope.$parent.$parent.settings = {
@@ -7106,7 +7106,7 @@
 
 		$scope.init = function() {
 			$scope.settings = $scope.$parent.$parent.settings = {
-					
+
 			};
 		};
 
@@ -7162,7 +7162,7 @@
 	}]);
 
 	app.controller('CredentialsController', ['$scope', '$http', '$routeParams', '$location', '$window', 'localStorage', function($scope, $http, $routeParams, $location, $window, localStorage) {
-		
+
 		$scope.credentialsId = $routeParams.credentialsId;
 		if ($scope.credentialsId === '-') {
 			$scope.credentialsId = localStorage.getItem('credentials');
@@ -7191,7 +7191,7 @@
 			var id = $location.path().substring(1).replace('/', '-');
 			var element = document.getElementById(id);
 			if (element) {
-				$timeout(function() { 
+				$timeout(function() {
 					element.scrollIntoView(true);
 				});
 			}
@@ -7252,7 +7252,7 @@
 					onReady : function(integration) {
 						$scope.integration = integration;
 					},
-					onPaymentMethodReceived : function(payment) { 
+					onPaymentMethodReceived : function(payment) {
 						pay(payment.nonce);
 					},
 					onError : function(error) {
@@ -7283,7 +7283,7 @@
 				});
 			tracker.event('action', 'payment');
 		}
-		
+
 		$scope.close = function() {
 			if ($scope.integration) {
 				$scope.integration.teardown();
@@ -7327,11 +7327,11 @@
 			}
 			return Number.NaN;
 		};
-		
+
 		Field.find = function(name) {
 			return fieldsByName[name];
 		};
-		
+
 		Field.findAll = function() {
 			return fields;
 		};
@@ -7357,12 +7357,12 @@
 		function register(fieldOptions) {
 			console.assert(fieldOptions.name, 'missing <name>');
 			var field = new Field(
-				fieldOptions.name, 
-				fieldOptions.icon || '', 
+				fieldOptions.name,
+				fieldOptions.icon || '',
 				fieldOptions.type || 'numeric',
-				fieldOptions.units || [], 
-				fieldOptions.readOnly === true, 
-				fieldOptions.toText || function(value) { return value; }, 
+				fieldOptions.units || [],
+				fieldOptions.readOnly === true,
+				fieldOptions.toText || function(value) { return value; },
 				fieldOptions.toHtml || function(value) { return value; },
 				fieldOptions.toNumber || toNumber,
 				fieldOptions.formatAxis || function() { },
@@ -7370,8 +7370,8 @@
 				fieldOptions.maxValue,
 				fieldOptions.subfields
 			);
-			fields.push(field); 
-			fieldsByName[field.name] = field; 
+			fields.push(field);
+			fieldsByName[field.name] = field;
 		}
 
 		register({
@@ -7573,7 +7573,7 @@
 					'</span>';
 				} else {
 					return '<span class="nowrap">' +
-						'<i class="fa ' + this.icon + '" title="Location"></i> ' + this.toText(value) + 
+						'<i class="fa ' + this.icon + '" title="Location"></i> ' + this.toText(value) +
 					'</span>';
 				}
 			}
@@ -7625,7 +7625,7 @@
 				options.labels = {
 					autoRotation : false,
 					formatter : function() {
-						return this.value !== 0 ? moment.duration(this.value, 'seconds').countdownCompact() : '0'; 
+						return this.value !== 0 ? moment.duration(this.value, 'seconds').countdownCompact() : '0';
 					}
 				};
 			},
@@ -7680,7 +7680,7 @@
 				options.labels = {
 					autoRotation : false,
 					formatter : function() {
-						return this.value !== 0 ? moment.duration(this.value).countdown(2) : '0'; 
+						return this.value !== 0 ? moment.duration(this.value).countdown(2) : '0';
 					}
 				};
 			},
@@ -7916,7 +7916,7 @@
 		return function(input, start) {
 			if (input) {
 				return input.slice(+start);
-			}	
+			}
 		};
 	});
 
@@ -8012,7 +8012,7 @@
 					}
 				});
 			}
-		};		
+		};
 	});
 
 	app.directive('uiDatepicker', ['moment', function(moment) {
@@ -8115,7 +8115,7 @@
 						}
 						if (newOptions) {
 							scope.chart = new Highcharts.Chart($.extend(true, {}, newOptions, defaultOptions));
-							$('#' + attrs.uiId + '-tab').on('shown', function() { 
+							$('#' + attrs.uiId + '-tab').on('shown', function() {
 								scope.chart.reflow();
 							});
 							if (newOptions.playable) {
@@ -8225,7 +8225,7 @@
 					var valid = checkSyntax(value);
 					controller.$setValidity(validationErrorKey, valid);
 					return value;
-				});				
+				});
 			}
 		};
 	}]);
