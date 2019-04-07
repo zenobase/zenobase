@@ -11,18 +11,18 @@ import com.zenobase.json.UnitField;
 import com.zenobase.models.Identity;
 import com.zenobase.tasks.Task;
 
-public class WithingsHealthWeightTask extends Task {
+public class WithingsWeightTask extends Task {
 
 	public static final String TYPE = "withings-weight";
 	public static final TokenField TAG = new TokenField("tag");
 	public static final UnitField<Mass> UNIT = new UnitField<>("unit");
 	public static final TokenField TIMEZONE = new TokenField("timezone");
 
-	public WithingsHealthWeightTask(ObjectNode node) {
+	public WithingsWeightTask(ObjectNode node) {
 		super(node);
 	}
 
-	WithingsHealthWeightTask(String bucketId, Identity principal, String tag, Unit<Mass> unit, DateTimeZone timezone, String marker) {
+	WithingsWeightTask(String bucketId, Identity principal, String tag, Unit<Mass> unit, DateTimeZone timezone, String marker) {
 		super(TYPE, bucketId, principal);
 		setMarker(marker);
 		setSetting(TAG, tag);
@@ -44,7 +44,7 @@ public class WithingsHealthWeightTask extends Task {
 	}
 
 	@Override
-	public WithingsHealthWeightTask copy() {
+	public WithingsWeightTask copy() {
 		return copy(getClass());
 	}
 }

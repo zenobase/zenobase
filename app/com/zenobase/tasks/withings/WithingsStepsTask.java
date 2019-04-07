@@ -13,18 +13,18 @@ import com.zenobase.json.UnitField;
 import com.zenobase.models.Identity;
 import com.zenobase.tasks.Task;
 
-public class WithingsHealthStepsTask extends Task {
+public class WithingsStepsTask extends Task {
 
 	public static final String TYPE = "withings-steps";
 	public static final TokenField TAG = new TokenField("tag");
 	public static final UnitField<Length> LENGTH_UNIT = new UnitField<>("unit");
 	public static final UnitField<Energy> ENERGY_UNIT = new UnitField<>("energy_unit");
 
-	public WithingsHealthStepsTask(ObjectNode node) {
+	public WithingsStepsTask(ObjectNode node) {
 		super(node);
 	}
 
-	WithingsHealthStepsTask(String bucketId, Identity principal, String tag, Unit<Length> lengthUnit, Unit<Energy> energyUnit, String marker) {
+	WithingsStepsTask(String bucketId, Identity principal, String tag, Unit<Length> lengthUnit, Unit<Energy> energyUnit, String marker) {
 		super(TYPE, bucketId, principal);
 		setMarker(marker);
 		setSetting(TAG, tag);
@@ -49,7 +49,7 @@ public class WithingsHealthStepsTask extends Task {
 	}
 
 	@Override
-	public WithingsHealthStepsTask copy() {
+	public WithingsStepsTask copy() {
 		return copy(getClass());
 	}
 }

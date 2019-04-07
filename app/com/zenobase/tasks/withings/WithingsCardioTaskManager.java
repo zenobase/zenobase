@@ -23,19 +23,19 @@ import com.zenobase.models.Identity;
 import com.zenobase.tasks.OAuthCredentials;
 import com.zenobase.tasks.Task;
 
-public class WithingsHealthCardioTaskManager extends WithingsHealthTaskManagerSupport<WithingsHealthCardioTask> {
+public class WithingsCardioTaskManager extends WithingsTaskManagerSupport<WithingsCardioTask> {
 
 	@Inject
-	public WithingsHealthCardioTaskManager(WithingsHealthCredentialsManager credentialsManager) {
-		super(WithingsHealthCardioTask.TYPE, WithingsHealthCardioTask.class, credentialsManager);
+	public WithingsCardioTaskManager(WithingsCredentialsManager credentialsManager) {
+		super(WithingsCardioTask.TYPE, WithingsCardioTask.class, credentialsManager);
 	}
 
 	@Override
-	public WithingsHealthCardioTask newTask(String bucketId, Identity principal, ObjectNode settings) {
+	public WithingsCardioTask newTask(String bucketId, Identity principal, ObjectNode settings) {
 		DateTimeZone timezone = DateTimeZone.forID(Objects.firstNonNull(settings.path("timezone").textValue(), "UTC"));
 		String marker = parseMarker(settings.path("marker").textValue(), timezone);
 		String tag = Objects.firstNonNull(settings.path("tag").textValue(), "heart rate");
-		WithingsHealthCardioTask task = new WithingsHealthCardioTask(bucketId, principal, marker);
+		WithingsCardioTask task = new WithingsCardioTask(bucketId, principal, marker);
 		task.setTag(tag);
 		task.setTimezone(timezone);
 		return task;
@@ -46,15 +46,15 @@ public class WithingsHealthCardioTaskManager extends WithingsHealthTaskManagerSu
 	}
 
 	@Override
-	Command safeExecute(WithingsHealthCardioTask task, OAuthCredentials credentials) {
+	Command safeExecute(WithingsCardioTask task, OAuthCredentials credentials) {
 		OAuthRequest request = createRequest(task);
 		Response response = send(request, credentials);
-		WithingsHealthCardioResult result = new WithingsHealthCardioResult(parseObject(response), task.getPrincipal(), task.getTag(), task.getTimezone());
+		WithingsCardioResult result = new WithingsCardioResult(parseObject(response), task.getPrincipal(), task.getTag(), task.getTimezone());
 		Preconditions.checkState(result.getStatus() == 0, "Expected status <0> but got <%s> for task <%s>", result.getStatus(), task.getId());
 		return createCommand(task, result);
 	}
 
-	private OAuthRequest createRequest(WithingsHealthCardioTask task) {
+	private OAuthRequest createRequest(WithingsCardioTask task) {
 		OAuthRequest request = new OAuthRequest(Verb.GET, "https://wbsapi.withings.net/measure");
 		request.addQuerystringParameter("action", "getmeas");
 		request.addQuerystringParameter("category", "1"); // actual measurements
@@ -64,7 +64,7 @@ public class WithingsHealthCardioTaskManager extends WithingsHealthTaskManagerSu
 		return request;
 	}
 
-	private static Command createCommand(WithingsHealthCardioTask task, WithingsHealthCardioResult result) {
+	private static Command createCommand(WithingsCardioTask task, WithingsCardioResult result) {
 		CompoundCommand command = new CompoundCommand(task.getPrincipal(), "ran withings-cardio task", "reverted withings-cardio task");
 		command.add(UpdateTaskCommand.builder(task)
 			.set(Task.COMPLETED, task.getCompleted(), DateTime.now(DateTimeZone.UTC))

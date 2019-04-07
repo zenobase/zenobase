@@ -12,11 +12,11 @@ import com.zenobase.common.Units;
 import com.zenobase.models.Event;
 import com.zenobase.tasks.ResultTestSupport;
 
-public class WithingsHealthStepsResultTest extends ResultTestSupport {
+public class WithingsStepsResultTest extends ResultTestSupport {
 
 	@Test
 	public void test() {
-		WithingsHealthStepsResult result = new WithingsHealthStepsResult(readObject("WithingsHealthStepsResultTest.json"), TESTER, "walk", Units.MI, Units.FT, Units.KCAL);
+		WithingsStepsResult result = new WithingsStepsResult(readObject("WithingsStepsResultTest.json"), TESTER, "walk", Units.MI, Units.FT, Units.KCAL);
 		assertThat(result.getStatus()).as("status").isEqualTo(0);
 		List<Event> actual = result.getEvents();
 		assertThat(actual).hasSize(2);
@@ -29,7 +29,7 @@ public class WithingsHealthStepsResultTest extends ResultTestSupport {
 		expected.setValue(Event.DISTANCE, Measures.valueOf("7.87 mi"));
 		expected.setValue(Event.HEIGHT, Measures.valueOf("1055.31 ft"));
 		expected.setValue(Event.AUTHOR, TESTER);
-		expected.setValue(Event.SOURCE, WithingsHealthStepsResult.SOURCE);
+		expected.setValue(Event.SOURCE, WithingsStepsResult.SOURCE);
 		assertThat(actual.get(0)).isEqualTo(expected);
 	}
 }

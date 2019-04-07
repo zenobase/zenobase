@@ -8,7 +8,7 @@ import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
 import com.zenobase.models.Resource;
 
-public abstract class WithingsHealthResult {
+public abstract class WithingsResult {
 
 	public static final Resource SOURCE = new Resource("Withings", "https://withings.com/");
 
@@ -16,7 +16,7 @@ public abstract class WithingsHealthResult {
 	protected final Identity author;
 	protected final String tag;
 
-	public WithingsHealthResult(ObjectNode node, Identity author, String tag) {
+	public WithingsResult(ObjectNode node, Identity author, String tag) {
 		this.node = node;
 		this.author = author;
 		this.tag = tag;

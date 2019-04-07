@@ -28,20 +28,20 @@ import com.zenobase.tasks.InvalidCredentialsException;
 import com.zenobase.tasks.OAuthCredentials;
 import com.zenobase.tasks.Task;
 
-public class WithingsHealthWeightTaskManager extends WithingsHealthTaskManagerSupport<WithingsHealthWeightTask> {
+public class WithingsWeightTaskManager extends WithingsTaskManagerSupport<WithingsWeightTask> {
 
 	@Inject
-	public WithingsHealthWeightTaskManager(WithingsHealthCredentialsManager credentialsManager) {
-		super(WithingsHealthWeightTask.TYPE, WithingsHealthWeightTask.class, credentialsManager);
+	public WithingsWeightTaskManager(WithingsCredentialsManager credentialsManager) {
+		super(WithingsWeightTask.TYPE, WithingsWeightTask.class, credentialsManager);
 	}
 
 	@Override
-	public WithingsHealthWeightTask newTask(String bucketId, Identity principal, ObjectNode settings) {
+	public WithingsWeightTask newTask(String bucketId, Identity principal, ObjectNode settings) {
 		String tag = Objects.firstNonNull(settings.path("tag").textValue(), "body");
 		Unit<Mass> unit = Objects.firstNonNull(new UnitField<Mass>("unit").getValue(settings), Units.KG);
 		DateTimeZone timezone = DateTimeZone.forID(Objects.firstNonNull(settings.path("timezone").textValue(), "UTC"));
 		String marker = parseMarker(settings.path("marker").textValue(), timezone);
-		return new WithingsHealthWeightTask(bucketId, principal, tag, unit, timezone, marker);
+		return new WithingsWeightTask(bucketId, principal, tag, unit, timezone, marker);
 	}
 
 	private static String parseMarker(String marker, DateTimeZone timezone) {
@@ -49,10 +49,10 @@ public class WithingsHealthWeightTaskManager extends WithingsHealthTaskManagerSu
 	}
 
 	@Override
-	Command safeExecute(WithingsHealthWeightTask task, OAuthCredentials credentials) {
+	Command safeExecute(WithingsWeightTask task, OAuthCredentials credentials) {
 		OAuthRequest request = createRequest(task);
 		Response response = send(request, credentials);
-		WithingsHealthWeightResult result = new WithingsHealthWeightResult(parseObject(response), task.getPrincipal(), task.getTag(), task.getUnit(), task.getTimezone());
+		WithingsWeightResult result = new WithingsWeightResult(parseObject(response), task.getPrincipal(), task.getTag(), task.getUnit(), task.getTimezone());
 		if (result.getStatus() == 401) {
 			throw new InvalidCredentialsException(credentials);
 		}
@@ -60,7 +60,7 @@ public class WithingsHealthWeightTaskManager extends WithingsHealthTaskManagerSu
 		return createCommand(task, result);
 	}
 
-	private OAuthRequest createRequest(WithingsHealthWeightTask task) {
+	private OAuthRequest createRequest(WithingsWeightTask task) {
 		OAuthRequest request = new OAuthRequest(Verb.GET, "https://wbsapi.withings.net/measure");
 		request.addQuerystringParameter("action", "getmeas");
 		request.addQuerystringParameter("category", "1"); // actual measurements
@@ -70,7 +70,7 @@ public class WithingsHealthWeightTaskManager extends WithingsHealthTaskManagerSu
 		return request;
 	}
 
-	private static Command createCommand(WithingsHealthWeightTask task, WithingsHealthWeightResult result) {
+	private static Command createCommand(WithingsWeightTask task, WithingsWeightResult result) {
 		CompoundCommand command = new CompoundCommand(task.getPrincipal(), "ran withings-weight task", "reverted withings-weight task");
 		command.add(UpdateTaskCommand.builder(task)
 			.set(Task.COMPLETED, task.getCompleted(), DateTime.now(DateTimeZone.UTC))

@@ -6735,7 +6735,7 @@
 		$scope.init();
 	}]);
 
-	app.controller('WithingsHealthWeightSettingsController', ['$scope', '$http', 'Field', 'moment', function($scope, $http, Field, moment) {
+	app.controller('WithingsWeightSettingsController', ['$scope', '$http', 'Field', 'moment', function($scope, $http, Field, moment) {
 
 		$scope.init = function() {
 			$scope.settings = $scope.$parent.$parent.settings = {
@@ -6752,7 +6752,7 @@
 		$scope.init();
 	}]);
 
-	app.controller('WithingsHealthSleepSettingsController', ['$scope', '$http', 'moment', function($scope, $http, moment) {
+	app.controller('WithingsSleepSettingsController', ['$scope', '$http', 'moment', function($scope, $http, moment) {
 
 		$scope.init = function() {
 			$scope.settings = $scope.$parent.$parent.settings = {
@@ -6765,7 +6765,7 @@
 		$scope.init();
 	}]);
 
-	app.controller('WithingsHealthCardioSettingsController', ['$scope', '$http', 'Field', 'moment', function($scope, $http, Field, moment) {
+	app.controller('WithingsCardioSettingsController', ['$scope', '$http', 'Field', 'moment', function($scope, $http, Field, moment) {
 
 		$scope.init = function() {
 			$scope.settings = $scope.$parent.$parent.settings = {
@@ -6778,7 +6778,7 @@
 		$scope.init();
 	}]);
 
-	app.controller('WithingsHealthStepsSettingsController', ['$scope', '$http', 'Field', 'moment', function($scope, $http, Field, moment) {
+	app.controller('WithingsStepsSettingsController', ['$scope', '$http', 'Field', 'moment', function($scope, $http, Field, moment) {
 
 		$scope.init = function() {
 			$scope.settings = $scope.$parent.$parent.settings = {

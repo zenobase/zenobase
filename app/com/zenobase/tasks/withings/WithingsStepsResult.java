@@ -21,12 +21,12 @@ import com.zenobase.common.Measures;
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
 
-class WithingsHealthStepsResult extends WithingsHealthResult {
+class WithingsStepsResult extends WithingsResult {
 
 	private final Unit<Length> distanceUnit, heightUnit;
 	private final Unit<Energy> energyUnit;
 
-	public WithingsHealthStepsResult(ObjectNode node, Identity author, String tag, Unit<Length> distanceUnit, Unit<Length> heightUnit, Unit<Energy> energyUnit) {
+	public WithingsStepsResult(ObjectNode node, Identity author, String tag, Unit<Length> distanceUnit, Unit<Length> heightUnit, Unit<Energy> energyUnit) {
 		super(node, author, tag);
 		this.distanceUnit = distanceUnit;
 		this.heightUnit = heightUnit;

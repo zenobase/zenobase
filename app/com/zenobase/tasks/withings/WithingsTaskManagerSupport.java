@@ -10,13 +10,13 @@ import com.zenobase.tasks.OAuthCredentials;
 import com.zenobase.tasks.OAuthTaskManager;
 import com.zenobase.tasks.Task;
 
-abstract class WithingsHealthTaskManagerSupport<T extends Task> extends OAuthTaskManager {
+abstract class WithingsTaskManagerSupport<T extends Task> extends OAuthTaskManager {
 
 	private static final RateLimiter RATE_LIMITER = RateLimiter.create(2);
 
 	private final Class<T> taskClass;
 
-	WithingsHealthTaskManagerSupport(String type, Class<T> taskClass, WithingsHealthCredentialsManager credentialsManager) {
+	WithingsTaskManagerSupport(String type, Class<T> taskClass, WithingsCredentialsManager credentialsManager) {
 		super(type, credentialsManager);
 		this.taskClass = taskClass;
 	}

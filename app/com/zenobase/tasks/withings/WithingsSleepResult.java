@@ -17,12 +17,12 @@ import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
 import com.zenobase.models.Percentage;
 
-class WithingsHealthSleepResult extends WithingsHealthResult {
+class WithingsSleepResult extends WithingsResult {
 
 	private final boolean useRanges;
 	private final DateTimeZone timezone;
 
-	public WithingsHealthSleepResult(ObjectNode node, Identity author, String tag, boolean useRanges, DateTimeZone timezone) {
+	public WithingsSleepResult(ObjectNode node, Identity author, String tag, boolean useRanges, DateTimeZone timezone) {
 		super(node, author, tag);
 		this.useRanges = useRanges;
 		this.timezone = timezone;

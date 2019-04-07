@@ -26,19 +26,19 @@ import com.zenobase.models.Identity;
 import com.zenobase.tasks.OAuthCredentials;
 import com.zenobase.tasks.Task;
 
-public class WithingsHealthSleepTaskManager extends WithingsHealthTaskManagerSupport<WithingsHealthSleepTask> {
+public class WithingsSleepTaskManager extends WithingsTaskManagerSupport<WithingsSleepTask> {
 
 	@Inject
-	public WithingsHealthSleepTaskManager(WithingsHealthCredentialsManager credentialsManager) {
-		super(WithingsHealthSleepTask.TYPE, WithingsHealthSleepTask.class, credentialsManager);
+	public WithingsSleepTaskManager(WithingsCredentialsManager credentialsManager) {
+		super(WithingsSleepTask.TYPE, WithingsSleepTask.class, credentialsManager);
 	}
 
 	@Override
-	public WithingsHealthSleepTask newTask(String bucketId, Identity principal, ObjectNode settings) {
+	public WithingsSleepTask newTask(String bucketId, Identity principal, ObjectNode settings) {
 		String tag = Objects.firstNonNull(settings.path("tag").textValue(), "steps");
 		DateTimeZone timezone = DateTimeZone.forID(Objects.firstNonNull(settings.path("timezone").textValue(), "UTC"));
 		String marker = parseMarker(settings.path("marker").textValue(), timezone);
-		WithingsHealthSleepTask task = new WithingsHealthSleepTask(bucketId, principal, marker);
+		WithingsSleepTask task = new WithingsSleepTask(bucketId, principal, marker);
 		task.setTag(tag);
 		task.setTimezone(timezone);
 		return task;
@@ -53,18 +53,18 @@ public class WithingsHealthSleepTaskManager extends WithingsHealthTaskManagerSup
 	}
 
 	@Override
-	Command safeExecute(WithingsHealthSleepTask task, OAuthCredentials credentials) {
+	Command safeExecute(WithingsSleepTask task, OAuthCredentials credentials) {
 		List<Event> events = Lists.newArrayList();
 		for (DateTime from = task.getFrom(); from.isBefore(DateTime.now()); from = from.plusWeeks(1)) {
 			events.addAll(execute(task, credentials, from));
 		}
-		return createCommand(task, WithingsHealthSleepResult.merge(events));
+		return createCommand(task, WithingsSleepResult.merge(events));
 	}
 
-	private List<Event> execute(WithingsHealthSleepTask task, OAuthCredentials credentials, DateTime from) {
+	private List<Event> execute(WithingsSleepTask task, OAuthCredentials credentials, DateTime from) {
 		OAuthRequest request = createRequest(from);
 		Response response = send(request, credentials);
-		WithingsHealthSleepResult result = new WithingsHealthSleepResult(parseObject(response), task.getPrincipal(), task.getTag(), task.useRanges(), task.getTimezone());
+		WithingsSleepResult result = new WithingsSleepResult(parseObject(response), task.getPrincipal(), task.getTag(), task.useRanges(), task.getTimezone());
 		Preconditions.checkState(result.getStatus() == 0, "Expected status <0> but got <%s> for task <%s>", result.getStatus(), task.getId());
 		return result.getEvents();
 	}
@@ -77,7 +77,7 @@ public class WithingsHealthSleepTaskManager extends WithingsHealthTaskManagerSup
 		return request;
 	}
 
-	private static Command createCommand(WithingsHealthSleepTask task, List<Event> events) {
+	private static Command createCommand(WithingsSleepTask task, List<Event> events) {
 		CompoundCommand command = new CompoundCommand(task.getPrincipal(), "ran withings-sleep task", "reverted withings-sleep task");
 		command.add(UpdateTaskCommand.builder(task)
 			.set(Task.COMPLETED, task.getCompleted(), DateTime.now(DateTimeZone.UTC))

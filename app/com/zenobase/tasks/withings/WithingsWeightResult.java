@@ -20,12 +20,12 @@ import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
 import com.zenobase.models.Percentage;
 
-class WithingsHealthWeightResult extends WithingsHealthResult {
+class WithingsWeightResult extends WithingsResult {
 
 	private final Unit<Mass> unit;
 	private final DateTimeZone timezone;
 
-	public WithingsHealthWeightResult(ObjectNode node, Identity author, String tag, Unit<Mass> unit, DateTimeZone timezone) {
+	public WithingsWeightResult(ObjectNode node, Identity author, String tag, Unit<Mass> unit, DateTimeZone timezone) {
 		super(node, author, tag);
 		this.unit = unit;
 		this.timezone = timezone;

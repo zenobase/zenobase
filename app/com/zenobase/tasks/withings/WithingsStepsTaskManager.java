@@ -27,19 +27,19 @@ import com.zenobase.models.Identity;
 import com.zenobase.tasks.OAuthCredentials;
 import com.zenobase.tasks.Task;
 
-public class WithingsHealthStepsTaskManager extends WithingsHealthTaskManagerSupport<WithingsHealthStepsTask> {
+public class WithingsStepsTaskManager extends WithingsTaskManagerSupport<WithingsStepsTask> {
 
 	@Inject
-	public WithingsHealthStepsTaskManager(WithingsHealthCredentialsManager credentialsManager) {
-		super(WithingsHealthStepsTask.TYPE, WithingsHealthStepsTask.class, credentialsManager);
+	public WithingsStepsTaskManager(WithingsCredentialsManager credentialsManager) {
+		super(WithingsStepsTask.TYPE, WithingsStepsTask.class, credentialsManager);
 	}
 
 	@Override
-	public WithingsHealthStepsTask newTask(String bucketId, Identity principal, ObjectNode settings) {
+	public WithingsStepsTask newTask(String bucketId, Identity principal, ObjectNode settings) {
 		String tag = Objects.firstNonNull(settings.path("tag").textValue(), "steps");
 		Unit<Length> lengthUnit = Objects.firstNonNull(new UnitField<Length>("unit").getValue(settings), Units.KM);
 		String marker = parseMarker(settings.path("marker").textValue());
-		return new WithingsHealthStepsTask(bucketId, principal, tag, lengthUnit, Units.KCAL, marker);
+		return new WithingsStepsTask(bucketId, principal, tag, lengthUnit, Units.KCAL, marker);
 	}
 
 	private static String parseMarker(String marker) {
@@ -47,15 +47,15 @@ public class WithingsHealthStepsTaskManager extends WithingsHealthTaskManagerSup
 	}
 
 	@Override
-	Command safeExecute(WithingsHealthStepsTask task, OAuthCredentials credentials) {
+	Command safeExecute(WithingsStepsTask task, OAuthCredentials credentials) {
 		OAuthRequest request = createRequest(task);
 		Response response = send(request, credentials);
-		WithingsHealthStepsResult result = new WithingsHealthStepsResult(parseObject(response), task.getPrincipal(), task.getTag(), task.getDistanceUnit(), task.getHeightUnit(), task.getEnergyUnit());
+		WithingsStepsResult result = new WithingsStepsResult(parseObject(response), task.getPrincipal(), task.getTag(), task.getDistanceUnit(), task.getHeightUnit(), task.getEnergyUnit());
 		Preconditions.checkState(result.getStatus() == 0, "Expected status <0> but got <%s> for task <%s>", result.getStatus(), task.getId());
 		return createCommand(task, result.getEvents());
 	}
 
-	private OAuthRequest createRequest(WithingsHealthStepsTask task) {
+	private OAuthRequest createRequest(WithingsStepsTask task) {
 		OAuthRequest request = new OAuthRequest(Verb.GET, "https://wbsapi.withings.net/v2/measure");
 		request.addQuerystringParameter("action", "getactivity");
 		request.addQuerystringParameter("startdateymd", LocalDate.parse(task.getMarker()).toString());
@@ -63,7 +63,7 @@ public class WithingsHealthStepsTaskManager extends WithingsHealthTaskManagerSup
 		return request;
 	}
 
-	private static Command createCommand(WithingsHealthStepsTask task, List<Event> events) {
+	private static Command createCommand(WithingsStepsTask task, List<Event> events) {
 		CompoundCommand command = new CompoundCommand(task.getPrincipal(), "ran withings-steps task", "reverted withings-steps task");
 		command.add(UpdateTaskCommand.builder(task)
 			.set(Task.COMPLETED, task.getCompleted(), DateTime.now(DateTimeZone.UTC))

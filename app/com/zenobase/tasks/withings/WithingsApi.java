@@ -11,7 +11,7 @@ import com.zenobase.tasks.CustomApi20;
  * @see <a href="http://developer.withings.com/">Withings API</a>
  */
 
-public class WithingsHealthApi extends CustomApi20 {
+public class WithingsApi extends CustomApi20 {
 
 	@Override
 	public String getAuthorizationUrl(OAuthConfig config) {

@@ -19,11 +19,11 @@ import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
 import com.zenobase.models.Percentage;
 
-class WithingsHealthCardioResult extends WithingsHealthResult {
+class WithingsCardioResult extends WithingsResult {
 
 	private final DateTimeZone timezone;
 
-	public WithingsHealthCardioResult(ObjectNode node, Identity author, String tag, DateTimeZone timezone) {
+	public WithingsCardioResult(ObjectNode node, Identity author, String tag, DateTimeZone timezone) {
 		super(node, author, tag);
 		this.timezone = timezone;
 	}

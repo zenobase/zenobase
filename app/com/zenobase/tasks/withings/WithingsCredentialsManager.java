@@ -20,13 +20,13 @@ import com.zenobase.tasks.Credentials;
 import com.zenobase.tasks.OAuthCredentials;
 import com.zenobase.tasks.OAuthCredentialsManager;
 
-public class WithingsHealthCredentialsManager extends OAuthCredentialsManager {
+public class WithingsCredentialsManager extends OAuthCredentialsManager {
 
 	private static final String TYPE = "withings";
 
 	@Inject
-	public WithingsHealthCredentialsManager(CredentialsRepository repository, @Named("withings.api.key") String apiKey, @Named("withings.api.secret") String apiSecret, @Named("oauth.hostname") String callbackUrl) {
-		super(TYPE, repository, new WithingsHealthApi(), apiKey, apiSecret, callbackUrl);
+	public WithingsCredentialsManager(CredentialsRepository repository, @Named("withings.api.key") String apiKey, @Named("withings.api.secret") String apiSecret, @Named("oauth.hostname") String callbackUrl) {
+		super(TYPE, repository, new WithingsApi(), apiKey, apiSecret, callbackUrl);
 	}
 
 	@Override
