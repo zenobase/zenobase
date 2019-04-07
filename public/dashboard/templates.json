@@ -3598,5 +3598,42 @@
 				"regression" : "linear"
 			}
 		]
+	},
+	{
+		"category" : "Body Temperature",
+		"source" : "Withings",
+		"task" : "withings-temperature",
+		"widgets" : [
+			{
+				"id" : "temperature",
+				"type" : "timeline",
+				"label" : "Temperature (F)",
+				"placement" : "top",
+				"field" : "temperature",
+				"statistic" : "avg",
+				"interval" : "week",
+				"unit" : "F",
+				"regression" : "linear"
+			},
+			{
+				"id" : "latest",
+				"type" : "list",
+				"label" : "Latest",
+				"placement" : "left",
+				"singleton" : true,
+				"limit" : 10,
+				"order" : "-timestamp"
+			},
+			{
+				"id" : "hour_of_day",
+				"type" : "polar",
+				"label" : "Hours",
+				"placement" : "right",
+				"value_field" : "temperature",
+				"unit" : "F",
+				"statistic" : "avg",
+				"interval" : "hour_of_day"
+			}
+		]
 	}
 ]

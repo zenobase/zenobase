@@ -9,6 +9,7 @@ import com.zenobase.tasks.TaskTestingSupport;
 public class WithingsTesting extends TaskTestingSupport {
 
 	@Test
+	@Ignore
 	public void testWeight() {
 		run(new WithingsWeightTaskManager(newCredentialsManager()), Nodes.newObject()
 			.put("tag", "weight")
@@ -42,6 +43,15 @@ public class WithingsTesting extends TaskTestingSupport {
 			.put("tag", "cardio")
 			.put("timezone", "America/Los_Angeles")
 			.put("marker", "2014-04-16"));
+	}
+
+	@Test
+	public void testTemperature() {
+		run(new WithingsTemperatureTaskManager(newCredentialsManager()), Nodes.newObject()
+			.put("tag", "temp")
+			.put("unit", "C")
+			.put("timezone", "America/Los_Angeles")
+			.put("marker", "2019-04-01"));
 	}
 
 	@Override

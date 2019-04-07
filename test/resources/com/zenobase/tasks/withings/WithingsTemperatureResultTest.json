@@ -1,0 +1,43 @@
+{
+  "status": 0,
+  "body": {
+    "updatetime": 1353615011,
+    "measuregrps": [
+      {
+        "grpid": 88946637,
+        "attrib": 0,
+        "date": 1353606557,
+        "created": 1353606557,
+        "category": 1,
+        "deviceid": "xyz",
+        "measures": [
+          {
+            "value": 20000,
+            "type": 12,
+            "unit": -3,
+            "algo": 0,
+            "fw": 1401,
+            "fm": 131
+          },
+          {
+            "value": 37778,
+            "type": 71,
+            "unit": -3,
+            "algo": 0,
+            "fw": 0,
+            "fm": 0
+          },
+          {
+            "value": 36000,
+            "type": 73,
+            "unit": -3,
+            "algo": 0,
+            "fw": 0,
+            "fm": 0
+          }
+        ],
+        "comment": null
+      }
+    ]
+  }
+}

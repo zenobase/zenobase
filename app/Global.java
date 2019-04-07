@@ -183,11 +183,6 @@ import com.zenobase.tasks.misfit.MisfitSleepTaskManager;
 import com.zenobase.tasks.misfit.MisfitStepsTaskManager;
 import com.zenobase.tasks.netatmo.NetatmoCredentialsManager;
 import com.zenobase.tasks.netatmo.NetatmoTaskManager;
-import com.zenobase.tasks.withings.WithingsCardioTaskManager;
-import com.zenobase.tasks.withings.WithingsCredentialsManager;
-import com.zenobase.tasks.withings.WithingsSleepTaskManager;
-import com.zenobase.tasks.withings.WithingsStepsTaskManager;
-import com.zenobase.tasks.withings.WithingsWeightTaskManager;
 import com.zenobase.tasks.openmhealth.HipboneTaskManager;
 import com.zenobase.tasks.reporter.ReporterTaskManager;
 import com.zenobase.tasks.rescuetime.RescueTimeCredentialsManager;
@@ -204,6 +199,12 @@ import com.zenobase.tasks.trakt.TraktCredentialsManager;
 import com.zenobase.tasks.trakt.TraktTaskManager;
 import com.zenobase.tasks.wakatime.WakaTimeCredentialsManager;
 import com.zenobase.tasks.wakatime.WakaTimeTaskManager;
+import com.zenobase.tasks.withings.WithingsCardioTaskManager;
+import com.zenobase.tasks.withings.WithingsCredentialsManager;
+import com.zenobase.tasks.withings.WithingsSleepTaskManager;
+import com.zenobase.tasks.withings.WithingsStepsTaskManager;
+import com.zenobase.tasks.withings.WithingsTemperatureTaskManager;
+import com.zenobase.tasks.withings.WithingsWeightTaskManager;
 
 public class Global extends GlobalSettings {
 
@@ -359,6 +360,7 @@ public class Global extends GlobalSettings {
 				bindIfConfigured("withings", WithingsStepsTaskManager.class, tasks);
 				bindIfConfigured("withings", WithingsWeightTaskManager.class, tasks);
 				bindIfConfigured("withings", WithingsSleepTaskManager.class, tasks);
+				bindIfConfigured("withings", WithingsTemperatureTaskManager.class, tasks);
 				bindIfConfigured("netatmo", NetatmoTaskManager.class, tasks);
 				bindIfConfigured("runkeeper", RunkeeperActivitiesTaskManager.class, tasks);
 				bindIfConfigured("runkeeper", RunkeeperWeightTaskManager.class, tasks);

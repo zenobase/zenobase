@@ -6253,7 +6253,8 @@
 			{ id : 'withings-cardio', description : 'Creates an event for each heart rate or blood pressure measurement.', url : 'https://www.withings.com/' },
 			{ id : 'withings-sleep', description : 'Creates an event for each period of sleep.', url : 'https://www.withings.com/' },
 			{ id : 'withings-steps', description : 'Creates an event for the number of steps each day.', url : 'https://www.withings.com/' },
-			{ id : 'withings-weight', description : 'Creates an event for each body weight measurement.', url : 'https://www.withings.com/' }
+			{ id : 'withings-weight', description : 'Creates an event for each body weight measurement.', url : 'https://www.withings.com/' },
+			{ id : 'withings-temperature', description : 'Creates an event for each body temperature measurement.', url : 'https://www.withings.com/' }
 			// { id : 'demo', description : 'Creates a single event each time this task is run.' }
 		];
 
@@ -6790,6 +6791,23 @@
 		};
 		$scope.getUnits = function() {
 			return Field.find('distance').units;
+		};
+
+		$scope.init();
+	}]);
+
+	app.controller('WithingsTemperatureSettingsController', ['$scope', '$http', 'Field', 'moment', function($scope, $http, Field, moment) {
+
+		$scope.init = function() {
+			$scope.settings = $scope.$parent.$parent.settings = {
+				tag : 'body',
+				unit : 'C',
+				marker : new Date(moment().utc().subtract(12, 'months').startOf('month').valueOf()),
+				timezone : 'UTC'
+			};
+		};
+		$scope.getUnits = function() {
+			return Field.find('temperature').units;
 		};
 
 		$scope.init();
