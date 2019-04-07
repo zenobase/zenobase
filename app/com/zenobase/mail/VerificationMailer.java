@@ -31,9 +31,7 @@ public class VerificationMailer {
 			"  " + username + "\n\n" +
 			"Please verify your email address by opening the following link:\n\n" +
 			"  " + hostname + "/#/users/" + username + "/verify?key=" + key.getKey() + "\n\n" +
-			"Thanks!\n\n" +
-			"P.S. For regular updates, follow us on Twitter <https://twitter.com/zenobase>, " +
-			"Google+ <https://plus.google.com/+Zenobase> or Facebook <https://www.facebook.com/zenobase>.";
+			"Thanks!\n";
 
 		mailer.send(new Message(email, "Your Zenobase Account", text));
 	}
