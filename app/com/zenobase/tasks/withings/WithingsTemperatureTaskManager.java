@@ -3,7 +3,7 @@ package com.zenobase.tasks.withings;
 import java.util.List;
 
 import javax.inject.Inject;
-import javax.measure.quantity.Mass;
+import javax.measure.quantity.Temperature;
 import javax.measure.unit.Unit;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -36,12 +36,12 @@ public class WithingsTemperatureTaskManager extends WithingsTaskManagerSupport<W
 	}
 
 	@Override
-	public WithingsWeightTask newTask(String bucketId, Identity principal, ObjectNode settings) {
+	public WithingsTemperatureTask newTask(String bucketId, Identity principal, ObjectNode settings) {
 		String tag = Objects.firstNonNull(settings.path("tag").textValue(), "body");
-		Unit<Mass> unit = Objects.firstNonNull(new UnitField<Mass>("unit").getValue(settings), Units.KG);
+		Unit<Temperature> unit = Objects.firstNonNull(new UnitField<Temperature>("unit").getValue(settings), Units.C);
 		DateTimeZone timezone = DateTimeZone.forID(Objects.firstNonNull(settings.path("timezone").textValue(), "UTC"));
 		String marker = parseMarker(settings.path("marker").textValue(), timezone);
-		return new WithingsWeightTask(bucketId, principal, tag, unit, timezone, marker);
+		return new WithingsTemperatureTask(bucketId, principal, tag, unit, timezone, marker);
 	}
 
 	private static String parseMarker(String marker, DateTimeZone timezone) {
