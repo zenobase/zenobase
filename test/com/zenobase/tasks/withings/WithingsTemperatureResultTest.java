@@ -21,13 +21,14 @@ public class WithingsTemperatureResultTest extends ResultTestSupport {
 		assertThat(result.getStatus()).as("status").isEqualTo(0);
 		assertThat(result.getMarker()).as("marker").isEqualTo("1353615011");
 		List<Event> events = result.getEvents();
-		assertThat(events).as("events").hasSize(1);
-		Event expected = new Event(events.get(0).getId());
+		assertThat(events).as("events").hasSize(3);
+		Event actual = events.get(1);
+		Event expected = new Event(actual.getId());
 		expected.setValue(Event.TAG, "body");
 		expected.setValue(Event.TEMPERATURE, DecimalMeasure.valueOf("100.000 F"));
 		expected.setValue(Event.TIMESTAMP, dateTime("2012-11-22T09:49:17-08:00"));
 		expected.setValue(Event.AUTHOR, TESTER);
 		expected.setValue(Event.SOURCE, WithingsTemperatureResult.SOURCE);
-		assertThat(events.get(0)).as("first event").isEqualTo(expected);
+		assertThat(actual).isEqualTo(expected);
 	}
 }

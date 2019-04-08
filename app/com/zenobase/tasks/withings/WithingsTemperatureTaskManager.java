@@ -63,7 +63,8 @@ public class WithingsTemperatureTaskManager extends WithingsTaskManagerSupport<W
 	private OAuthRequest createRequest(WithingsTemperatureTask task) {
 		OAuthRequest request = new OAuthRequest(Verb.GET, "https://wbsapi.withings.net/measure");
 		request.addQuerystringParameter("action", "getmeas");
-		request.addQuerystringParameter("category", "1"); // temperature
+		request.addQuerystringParameter("category", "1"); // actual measurements
+		request.addQuerystringParameter("meastype", "71"); // body temperature
 		if (task.getMarker() != null) {
 			request.addQuerystringParameter("lastupdate", task.getMarker());
 		}
