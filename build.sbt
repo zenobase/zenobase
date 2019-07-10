@@ -31,7 +31,7 @@ libraryDependencies ++= Seq(
 	"org.apache.httpcomponents" % "fluent-hc" % "4.3.1",
 	"com.braintreepayments.gateway" % "braintree-java" % "2.90.0",
 	"com.fasterxml.jackson.core" % "jackson-core" % "2.9.9",
-	"com.fasterxml.jackson.core" % "jackson-databind" % "2.9.9",
+	"com.fasterxml.jackson.core" % "jackson-databind" % "2.9.9.1",
   "com.fasterxml.jackson.core" % "jackson-annotations" % "2.9.9",
   "org.logback-extensions" % "logback-ext-loggly" % "0.1.5",
 	"ch.qos.logback.contrib" % "logback-json-classic" % "0.1.5",
