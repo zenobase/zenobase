@@ -117,8 +117,6 @@ import com.zenobase.tasks.TaskManagerRegistry;
 import com.zenobase.tasks.TaskRefresher;
 import com.zenobase.tasks.automatic.AutomaticCredentialsManager;
 import com.zenobase.tasks.automatic.AutomaticTaskManager;
-import com.zenobase.tasks.beddit.BedditCredentialsManager;
-import com.zenobase.tasks.beddit.BedditTaskManager;
 import com.zenobase.tasks.beeminder.BeeminderCredentialsManager;
 import com.zenobase.tasks.beeminder.BeeminderTaskManager;
 import com.zenobase.tasks.darksky.ForecastTaskManager;
@@ -337,7 +335,6 @@ public class Global extends GlobalSettings {
 				bindIfConfigured("ihealth", IHealthCredentialsManager.class, credentials);
 				bindIfConfigured("beeminder", BeeminderCredentialsManager.class, credentials);
 				bindIfConfigured("hexoskin", HexoskinCredentialsManager.class, credentials);
-				bindIfConfigured("beddit", BedditCredentialsManager.class, credentials);
 				bindIfConfigured("trakt", TraktCredentialsManager.class, credentials);
 				bindIfConfigured("wakatime", WakaTimeCredentialsManager.class, credentials);
 				bindIfConfigured("microsoft", MicrosoftHealthCredentialsManager.class, credentials);
@@ -400,7 +397,6 @@ public class Global extends GlobalSettings {
 				bindIfConfigured("beeminder", BeeminderTaskManager.class, tasks);
 				bindIfConfigured("hexoskin", HexoskinActivitiesTaskManager.class, tasks);
 				bindIfConfigured("hexoskin", HexoskinSleepTaskManager.class, tasks);
-				bindIfConfigured("beddit", BedditTaskManager.class, tasks);
 				bindIfConfigured("trakt", TraktTaskManager.class, tasks);
 				bindIfConfigured("wakatime", WakaTimeTaskManager.class, tasks);
 				bindIfConfigured("microsoft", MicrosoftHealthActivitiesTaskManager.class, tasks);

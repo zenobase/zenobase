@@ -6195,7 +6195,6 @@
 
 		$scope.types = [
 			{ id : 'automatic-trips', description : 'Creates an event for each trip recorded.', url : 'https://www.automatic.com/' },
-			{ id : 'beddit-sleep', description : 'Creates an event for each period of sleep.', url : 'https://www.beddit.com/' },
 			{ id : 'beeminder', description : 'Updates a goal with event counts or value totals for each day.', url : 'https://www.beeminder.com/' },
 			{ id : 'dash-trips', description : 'Creates an event for each trip recorded.', url : 'https://dash.by/' },
 			{ id : 'fitbark', description : 'Creates an event for the activity level for every day or hour.', url : 'https://www.fitbark.com/' },
@@ -6298,17 +6297,6 @@
 				});
 			tracker.event('action', 'create task');
 		};
-	}]);
-
-	app.controller('BedditSettingsController', ['$scope', function($scope) {
-
-		$scope.init = function() {
-			$scope.settings = $scope.$parent.$parent.settings = {
-					tag : 'Sleep'
-			};
-		};
-
-		$scope.init();
 	}]);
 
 	app.controller('FitBarkSettingsController', ['$scope', 'moment', function($scope, moment) {
