@@ -6223,12 +6223,6 @@
 			{ id : 'ihealth-sleep', description : 'Creates an event for each period of sleep.', url : 'https://ihealthlabs.com/' },
 			{ id : 'ihealth-steps', description : 'Creates an event for the number of steps logged.', url : 'https://ihealthlabs.com/' },
 			{ id : 'ihealth-weight', description : 'Creates an event for each body weight measurement.', url : 'https://ihealthlabs.com/' },
-			{ id : 'jawbone-activities', description : 'Creates an event for each activity.', url : 'https://jawbone.com/up' },
-			{ id : 'jawbone-food', description : 'Creates an event for each meal.', url : 'https://jawbone.com/up' },
-			{ id : 'jawbone-mood', description : 'Creates an event for the last mood recorded each day.', url : 'https://jawbone.com/up' },
-			{ id : 'jawbone-sleep', description : 'Creates an event for each period of sleep.', url : 'https://jawbone.com/up' },
-			{ id : 'jawbone-steps', description : 'Creates an event for the number of steps each day or hour.', url : 'https://jawbone.com/up' },
-			{ id : 'jawbone-weight', description : 'Creates an event for body weight measurement.', url : 'https://jawbone.com/up' },
 			{ id : 'lastfm-tracks', description : 'Creates an event for each track played.', url : 'https://www.last.fm/' },
 			{ id : 'mapmyfitness-activities', description : 'Creates an event for each activity.', url : 'https://www.mapmyfitness.com/' },
 			{ id : 'mapmyfitness-sleep', description : 'Creates an event for each period of sleep.', url : 'https://www.mapmyfitness.com/' },
@@ -6897,81 +6891,6 @@
 					tag : 'Body',
 					marker : new Date(moment().utc().subtract(12, 'months').startOf('month').valueOf()),
 					timezone : 'UTC'
-			};
-		};
-
-		$scope.init();
-	}]);
-
-	app.controller('JawboneActivitiesSettingsController', ['$scope', 'moment', function($scope, moment) {
-
-		$scope.init = function() {
-			$scope.settings = $scope.$parent.$parent.settings = {
-					metric : false,
-					marker : new Date(moment().utc().subtract(12, 'months').startOf('month').valueOf())
-			};
-		};
-
-		$scope.init();
-	}]);
-
-	app.controller('JawboneFoodSettingsController', ['$scope', 'moment', function($scope, moment) {
-
-		$scope.init = function() {
-			$scope.settings = $scope.$parent.$parent.settings = {
-					tag : 'Meal',
-					marker : new Date(moment().utc().subtract(12, 'months').startOf('month').valueOf())
-			};
-		};
-
-		$scope.init();
-	}]);
-
-	app.controller('JawboneMoodSettingsController', ['$scope', 'moment', function($scope, moment) {
-
-		$scope.init = function() {
-			$scope.settings = $scope.$parent.$parent.settings = {
-					tag : 'Mood',
-					marker : new Date(moment().utc().subtract(3, 'months').startOf('month').valueOf())
-			};
-		};
-
-		$scope.init();
-	}]);
-
-	app.controller('JawboneSleepSettingsController', ['$scope', 'moment', function($scope, moment) {
-
-		$scope.init = function() {
-			$scope.settings = $scope.$parent.$parent.settings = {
-					tag : 'sleep',
-					marker : new Date(moment().utc().subtract(12, 'months').startOf('month').valueOf())
-			};
-		};
-
-		$scope.init();
-	}]);
-
-	app.controller('JawboneStepsSettingsController', ['$scope', 'moment', function($scope, moment) {
-
-		$scope.init = function() {
-			$scope.settings = $scope.$parent.$parent.settings = {
-					tag : 'steps',
-					metric : false,
-					hourly : false,
-					marker : new Date(moment().utc().subtract(12, 'months').startOf('month').valueOf())
-			};
-		};
-
-		$scope.init();
-	}]);
-
-	app.controller('JawboneWeightSettingsController', ['$scope', 'moment', function($scope, moment) {
-
-		$scope.init = function() {
-			$scope.settings = $scope.$parent.$parent.settings = {
-					tag : 'body',
-					metric : false,
-					marker : new Date(moment().utc().subtract(12, 'months').startOf('month').valueOf())
 			};
 		};
 

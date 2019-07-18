@@ -263,66 +263,6 @@
 	},
 	{
 		"category" : "Activities",
-		"source" : "Jawbone",
-		"task" : "jawbone-activities",
-		"widgets" : [
-			{
-				"id" : "timeline",
-				"type" : "timeline",
-				"label" : "Distance (mi)",
-				"placement" : "top",
-				"field" : "distance",
-				"unit" : "mi",
-				"statistic" : "sum",
-				"interval" : "month"
-			},
-			{
-				"id" : "latest",
-				"type" : "list",
-				"label" : "Latest",
-				"placement" : "left",
-				"order" : "-timestamp",
-				"limit" : 10,
-				"singleton" : true
-			},
-			{
-				"id" : "tags",
-				"type" : "count",
-				"label" : "Type",
-				"placement" : "left",
-				"field" : "tag",
-				"limit" : 5,
-				"order" : "-count"
-			},
-			{
-				"id" : "map",
-				"type" : "map",
-				"label" : "Map",
-				"placement" : "right"
-			},
-			{
-				"id" : "histogram",
-				"type" : "histogram",
-				"label" : "Distances",
-				"placement" : "right",
-				"field" : "distance",
-				"unit" : "mi",
-				"interval" : 5
-			},
-			{
-				"id" : "polar",
-				"type" : "polar",
-				"label" : "Day of Week",
-				"placement" : "right",
-				"value_field" : "timestamp",
-				"unit" : null,
-				"statistic" : "count",
-				"interval" : "day_of_week"
-			}
-		]
-	},
-	{
-		"category" : "Activities",
 		"source" : "Microsoft Health",
 		"task" : "microsoft-activities",
 		"widgets" : [
@@ -1014,51 +954,6 @@
 		]
 	},
 	{
-		"category" : "Food",
-		"source" : "Jawbone",
-		"task" : "jawbone-food",
-		"widgets" : [
-			{
-				"id" : "timeline_kcal",
-				"type" : "timeline",
-				"label" : "Calories",
-				"placement" : "top",
-				"field" : "energy",
-				"unit" : "kcal",
-				"statistic" : "avg",
-				"interval" : "month"
-			},
-			{
-				"id" : "latest",
-				"type" : "list",
-				"label" : "Latest",
-				"placement" : "left",
-				"order" : "-timestamp",
-				"limit" : 10,
-				"singleton" : true
-			},
-			{
-				"id" : "kcal_by_day",
-				"type" : "polar",
-				"label" : "Day of Week",
-				"placement" : "right",
-				"value_field" : "energy",
-				"unit" : "kcal",
-				"statistic" : "avg",
-				"interval" : "day_of_week"
-			},
-			{
-				"id" : "histogram",
-				"type" : "histogram",
-				"label" : "Histogram",
-				"placement" : "right",
-				"field" : "energy",
-				"unit" : "kcal",
-				"interval" : 500
-			}
-		]
-	},
-	{
 		"category" : "Glucose",
 		"source" : "iHealth",
 		"task" : "ihealth-glucose",
@@ -1478,55 +1373,6 @@
 		]
 	},
 	{
-		"category" : "Mood",
-		"source" : "Jawbone",
-		"task" : "jawbone-mood",
-		"widgets" : [
-			{
-				"id" : "timeline",
-				"type" : "timeline",
-				"label" : "Timeline",
-				"placement" : "top",
-				"field" : "rating",
-				"statistic" : "avg"
-			},
-			{
-				"id" : "latest",
-				"type" : "list",
-				"label" : "Latest",
-				"placement" : "left",
-				"singleton" : true,
-				"limit" : 10,
-				"order" : "-timestamp"
-			},
-			{
-				"id" : "tags",
-				"type" : "count",
-				"label" : "Moods",
-				"placement" : "right",
-				"field" : "tag",
-				"limit" : 10,
-				"order" : "-count"
-			},
-			{
-				"id" : "ratings",
-				"type" : "ratings",
-				"label" : "Mood",
-				"placement" : "right"
-			},
-			{
-				"id" : "day_of_week",
-				"type" : "polar",
-				"label" : "Day of Week",
-				"statistic" : "avg",
-				"placement" : "right",
-				"value_field" : "rating",
-				"unit" : null,
-				"interval" : "day_of_week"
-			}
-		]
-	},
-	{
 		"category" : "Places",
 		"source" : "Foursquare",
 		"task" : "foursquare",
@@ -1895,87 +1741,6 @@
 				"statistic_x" : "avg",
 				"label_y" : "Efficiency",
 				"field_y" : "percentage",
-				"unit_y" : null,
-				"statistic_y" : "avg",
-				"key_field" : "timestamp$max",
-				"interval" : "day",
-				"regression" : "linear"
-			}
-		]
-	},
-	{
-		"category" : "Sleep",
-		"source" : "Jawbone",
-		"task" : "jawbone-sleep",
-		"widgets" : [
-			{
-				"id" : "timeline",
-				"type" : "timeline",
-				"label" : "Timeline",
-				"placement" : "top",
-				"key_field" : "timestamp$max",
-				"field" : "duration",
-				"unit" : null,
-				"statistic" : "avg",
-				"interval" : "week"
-			},
-			{
-				"id" : "latest",
-				"type" : "list",
-				"label" : "Latest",
-				"placement" : "left",
-				"order" : "-timestamp",
-				"limit" : 7,
-				"singleton" : true
-			},
-			{
-				"id" : "polar_hour",
-				"type" : "polar",
-				"label" : "Hours (Begin)",
-				"placement" : "left",
-				"key_field" : "timestamp$min",
-				"value_field" : "timestamp",
-				"unit" : null,
-				"statistic" : "count",
-				"interval" : "hour_of_day"
-			},
-			{
-				"id" : "polar_day_duration",
-				"type" : "polar",
-				"label" : "Days (Duration)",
-				"placement" : "left",
-				"key_field" : "timestamp$max",
-				"value_field" : "duration",
-				"unit" : null,
-				"statistic" : "avg",
-				"interval" : "day_of_week"
-			},
-			{
-				"id" : "histogram_duration",
-				"type" : "histogram",
-				"label" : "Duration",
-				"placement" : "right",
-				"field" : "duration",
-				"unit" : null,
-				"interval" : 3600000
-			},
-			{
-				"id" : "ratings",
-				"type" : "ratings",
-				"label" : "Quality",
-				"placement" : "right"
-			},
-			{
-				"id" : "scatterplot_duration_percentage",
-				"type" : "scatterplot",
-				"label" : "Duration & Quality",
-				"placement" : "right",
-				"label_x" : "Duration",
-				"field_x" : "duration",
-				"unit_x" : null,
-				"statistic_x" : "avg",
-				"label_y" : "Quality",
-				"field_y" : "rating",
 				"unit_y" : null,
 				"statistic_y" : "avg",
 				"key_field" : "timestamp$max",
@@ -2688,53 +2453,6 @@
 	},
 	{
 		"category" : "Steps",
-		"source" : "Jawbone",
-		"task" : "jawbone-steps",
-		"widgets" : [
-			{
-				"id" : "steps",
-				"type" : "timeline",
-				"label" : "Steps",
-				"placement" : "top",
-				"field" : "count",
-				"unit" : null,
-				"statistic" : "sum",
-				"interval" : "month"
-			},
-			{
-				"id" : "latest",
-				"type" : "list",
-				"label" : "Latest",
-				"placement" : "left",
-				"order" : "-timestamp",
-				"limit" : 10,
-				"singleton" : true
-			},
-			{
-				"id" : "steps_scoreboard",
-				"type" : "scoreboard",
-				"label" : "Scoreboard",
-				"placement" : "right",
-				"key_field" : "author",
-				"value_field" : "count",
-				"unit" : null,
-				"order" : "-sum",
-				"limit" : 10
-			},
-			{
-				"id" : "steps_by_day",
-				"type" : "polar",
-				"label" : "Day of Week",
-				"placement" : "right",
-				"value_field" : "count",
-				"unit" : null,
-				"statistic" : "avg",
-				"interval" : "day_of_week"
-			}
-		]
-	},
-	{
-		"category" : "Steps",
 		"source" : "Microsoft Health",
 		"task" : "microsoft-steps",
 		"widgets" : [
@@ -3288,50 +3006,6 @@
 		"category" : "Weight",
 		"source" : "iHealth",
 		"task" : "ihealth-weight",
-		"widgets" : [
-			{
-				"id" : "latest",
-				"type" : "list",
-				"label" : "Latest",
-				"placement" : "left",
-				"singleton" : true,
-				"limit" : 10,
-				"order" : "-timestamp"
-			},
-			{
-				"id" : "weight",
-				"type" : "timeline",
-				"label" : "Weight (lb)",
-				"placement" : "right",
-				"field" : "weight",
-				"statistic" : "avg",
-				"interval" : "week",
-				"unit" : "lb",
-				"regression" : "linear"
-			},
-			{
-				"id" : "scatterplot_weight_percentage",
-				"type" : "scatterplot",
-				"label" : "Weight-Fat",
-				"placement" : "right",
-				"label_x" : "weight",
-				"field_x" : "weight",
-				"unit_x" : "lb",
-				"statistic_x" : "avg",
-				"label_y" : "fat%",
-				"field_y" : "percentage",
-				"unit_y" : null,
-				"statistic_y" : "avg",
-				"key_field" : "timestamp",
-				"interval" : "day",
-				"regression" : "linear"
-			}
-		]
-	},
-	{
-		"category" : "Weight",
-		"source" : "Jawbone",
-		"task" : "jawbone-weight",
 		"widgets" : [
 			{
 				"id" : "latest",
