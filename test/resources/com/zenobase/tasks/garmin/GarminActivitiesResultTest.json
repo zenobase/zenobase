@@ -1,0 +1,42 @@
+{
+  "activities": [
+    {
+      "userId": "1c950ee0-fd6e-4de3-a8ef-e560da513079",
+      "userAccessToken": "de6a200c-71ff-4fa0-8e59-b35aad857282",
+      "summaryId": "4776426962",
+      "durationInSeconds": 934,
+      "startTimeInSeconds": 1586744742,
+      "startTimeOffsetInSeconds": -25200,
+      "activityType": "BREATHWORK",
+      "averageHeartRateInBeatsPerMinute": 69,
+      "activeKilocalories": 0,
+      "deviceName": "fenix 6s Pro / Sapphire",
+      "maxHeartRateInBeatsPerMinute": 79
+    },
+    {
+      "userId": "1c950ee0-fd6e-4de3-a8ef-e560da513079",
+      "userAccessToken": "de6a200c-71ff-4fa0-8e59-b35aad857282",
+      "summaryId": "4832634877",
+      "durationInSeconds": 18831,
+      "startTimeInSeconds": 1587749867,
+      "startTimeOffsetInSeconds": -25200,
+      "activityType": "HIKING",
+      "averageHeartRateInBeatsPerMinute": 133,
+      "averageRunCadenceInStepsPerMinute": 44.3125,
+      "averageSpeedInMetersPerSecond": 0.657,
+      "averagePaceInMinutesPerKilometer": 25.367832,
+      "activeKilocalories": 2178,
+      "deviceName": "fenix 6s Pro / Sapphire",
+      "distanceInMeters": 12377.73,
+      "maxHeartRateInBeatsPerMinute": 179,
+      "maxPaceInMinutesPerKilometer": 6.56685,
+      "maxRunCadenceInStepsPerMinute": 226,
+      "maxSpeedInMetersPerSecond": 2.538,
+      "startingLatitudeInDegree": 47.267407067120075,
+      "startingLongitudeInDegree": -121.17427350953221,
+      "steps": 16978,
+      "totalElevationGainInMeters": 1062,
+      "totalElevationLossInMeters": 1077
+    }
+  ]
+}

@@ -6,6 +6,7 @@ import java.util.Scanner;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Charsets;
+import com.google.common.base.Strings;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.utils.URLEncodedUtils;
 import org.joda.time.DateTime;
@@ -60,7 +61,7 @@ public abstract class TaskTestingSupport {
 		String secret = System.getProperty("oauth.secret", "");
 		String refresh = System.getProperty("oauth.refresh");
 		String scope = System.getProperty("oauth.scope");
-		return token != null ? newCredentials(newToken(token, secret, refresh), scope) : null;
+		return !Strings.isNullOrEmpty(token) ? newCredentials(newToken(token, secret, refresh), scope) : null;
 	}
 
 	private static Token newToken(String token, String secret, String refresh) {
