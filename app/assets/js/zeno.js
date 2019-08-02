@@ -6234,6 +6234,8 @@
 			{ id : 'misfit-sleep', description : 'Creates an event for each period of sleep.', url : 'https://misfit.com/' },
 			{ id : 'misfit-steps', description : 'Creates an event for the number of steps each day.', url : 'https://misfit.com/' },
 			{ id : 'netatmo', description : 'Creates events for weather station measurements.', url : 'https://www.netatmo.com/' },
+			{ id : 'oura-steps', description : 'Creates an event for the number of steps and calories burned each day.', url : 'https://ouraring.com/' },
+			{ id : 'oura-sleep', description : 'Creates an event for each period of sleep.', url : 'https://ouraring.com/' },
 			{ id : 'reporter-questions', description : 'Creates an event for each question answered.', url : 'http://www.reporter-app.com/' },
 			{ id : 'rescuetime-productivity', description : 'Creates an event for every hour the computer was used.', url : 'https://www.rescuetime.com/' },
 			{ id : 'runkeeper-activities', description : 'Creates an event for each activity.', url : 'https://runkeeper.com/' },
@@ -6968,6 +6970,30 @@
 					tag : 'Steps',
 					marker : new Date(moment().utc().subtract(6, 'months').startOf('month').valueOf()),
 					timezone : 'UTC'
+			};
+		};
+
+		$scope.init();
+	}]);
+
+	app.controller('OuraStepsSettingsController', ['$scope', '$http', 'moment', function($scope, $http, moment) {
+
+		$scope.init = function() {
+			$scope.settings = $scope.$parent.$parent.settings = {
+				tag : 'Steps',
+				marker : new Date(moment().utc().subtract(6, 'months').startOf('month').valueOf())
+			};
+		};
+
+		$scope.init();
+	}]);
+
+	app.controller('OuraSleepSettingsController', ['$scope', '$http', 'moment', function($scope, $http, moment) {
+
+		$scope.init = function() {
+			$scope.settings = $scope.$parent.$parent.settings = {
+				tag : 'Sleep',
+				marker : new Date(moment().utc().subtract(6, 'months').startOf('month').valueOf())
 			};
 		};
 

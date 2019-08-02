@@ -866,6 +866,32 @@
 		</div>
 	</script>
 
+	<script id="/oura-steps-settings.html" type="text/ng-template">
+		<div data-ng-controller="OuraStepsSettingsController">
+			<div class="control-group">
+				<label for="tag" class="control-label">Tag</label>
+				<input name="tag" type="text" required data-ng-model="settings.tag"/>
+			</div>
+			<div class="control-group">
+				<label for="marker" class="control-label">Starting from</label>
+				<input class="input-small" type="text" data-ui-datepicker data-ng-model="settings.marker"/>
+			</div>
+		</div>
+	</script>
+
+	<script id="/oura-sleep-settings.html" type="text/ng-template">
+		<div data-ng-controller="OuraSleepSettingsController">
+			<div class="control-group">
+				<label for="tag" class="control-label">Tag</label>
+				<input name="tag" type="text" required data-ng-model="settings.tag"/>
+			</div>
+			<div class="control-group">
+				<label for="marker" class="control-label">Starting from</label>
+				<input class="input-small" type="text" data-ui-datepicker data-ng-model="settings.marker"/>
+			</div>
+		</div>
+	</script>
+
 	<script id="/hipbone-settings.html" type="text/ng-template">
 		<div data-ng-controller="HipboneSettingsController">
 			<div class="control-group">

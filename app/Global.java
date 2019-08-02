@@ -175,6 +175,9 @@ import com.zenobase.tasks.misfit.MisfitStepsTaskManager;
 import com.zenobase.tasks.netatmo.NetatmoCredentialsManager;
 import com.zenobase.tasks.netatmo.NetatmoTaskManager;
 import com.zenobase.tasks.openmhealth.HipboneTaskManager;
+import com.zenobase.tasks.oura.OuraCredentialsManager;
+import com.zenobase.tasks.oura.OuraSleepTaskManager;
+import com.zenobase.tasks.oura.OuraStepsTaskManager;
 import com.zenobase.tasks.reporter.ReporterTaskManager;
 import com.zenobase.tasks.rescuetime.RescueTimeCredentialsManager;
 import com.zenobase.tasks.rescuetime.RescueTimeProductivityTaskManager;
@@ -333,6 +336,7 @@ public class Global extends GlobalSettings {
 				bindIfConfigured("fitbark", FitBarkCredentialsManager.class, credentials);
 				bindIfConfigured("dash", DashCredentialsManager.class, credentials);
 				bindIfConfigured("goodreads", GoodreadsCredentialsManager.class, credentials);
+				bindIfConfigured("oura", OuraCredentialsManager.class, credentials);
 				bind(CredentialsManagerRegistry.class).in(Singleton.class);
 
 				Multibinder<TaskManager> tasks = Multibinder.newSetBinder(binder(), new TypeLiteral<TaskManager>() {});
@@ -391,6 +395,8 @@ public class Global extends GlobalSettings {
 				bindIfConfigured("fitbark", FitBarkTaskManager.class, tasks);
 				bindIfConfigured("dash", DashTaskManager.class, tasks);
 				bindIfConfigured("goodreads", GoodreadsTaskManager.class, tasks);
+				bindIfConfigured("oura", OuraSleepTaskManager.class, tasks);
+				bindIfConfigured("oura", OuraStepsTaskManager.class, tasks);
 				bind(TaskManagerRegistry.class).in(Singleton.class);
 
 				Multibinder<Job> jobs = Multibinder.newSetBinder(binder(), Job.class);

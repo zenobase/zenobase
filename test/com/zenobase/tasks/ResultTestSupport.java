@@ -12,12 +12,17 @@ import org.joda.time.DateTime;
 import org.joda.time.format.ISODateTimeFormat;
 import org.w3c.dom.Document;
 
+import com.zenobase.common.Units;
 import com.zenobase.json.Nodes;
 import com.zenobase.models.Identity;
 
 public class ResultTestSupport {
 
 	protected static final Identity TESTER = new Identity();
+
+	static {
+		Units.isStandard(Units.K); // called to ensure that custom Units are registered
+	}
 
 	protected ObjectNode readObject(String filename) {
 		try {

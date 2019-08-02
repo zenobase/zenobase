@@ -2014,6 +2014,87 @@
 	},
 	{
 		"category" : "Sleep",
+		"source" : "Oura",
+		"task" : "oura-sleep",
+		"widgets" : [
+			{
+				"id" : "timeline",
+				"type" : "timeline",
+				"label" : "Timeline",
+				"placement" : "top",
+				"key_field" : "timestamp$max",
+				"field" : "duration",
+				"unit" : null,
+				"statistic" : "avg",
+				"interval" : "week"
+			},
+			{
+				"id" : "latest",
+				"type" : "list",
+				"label" : "Latest",
+				"placement" : "left",
+				"order" : "-timestamp",
+				"limit" : 7,
+				"singleton" : true
+			},
+			{
+				"id" : "polar_hour",
+				"type" : "polar",
+				"label" : "Hours (Begin)",
+				"placement" : "left",
+				"key_field" : "timestamp$min",
+				"value_field" : "timestamp",
+				"unit" : null,
+				"statistic" : "count",
+				"interval" : "hour_of_day"
+			},
+			{
+				"id" : "polar_day_duration",
+				"type" : "polar",
+				"label" : "Days (Duration)",
+				"placement" : "left",
+				"key_field" : "timestamp$max",
+				"value_field" : "duration",
+				"unit" : null,
+				"statistic" : "avg",
+				"interval" : "day_of_week"
+			},
+			{
+				"id" : "histogram_duration",
+				"type" : "histogram",
+				"label" : "Duration",
+				"placement" : "right",
+				"field" : "duration",
+				"unit" : null,
+				"interval" : 3600000
+			},
+			{
+				"id" : "ratings",
+				"type" : "ratings",
+				"label" : "Score",
+				"placement" : "right"
+			},
+			{
+				"id" : "scatterplot_duration_percentage",
+				"type" : "scatterplot",
+				"label" : "Duration & Score",
+				"placement" : "right",
+				"label_x" : "Duration",
+				"field_x" : "duration",
+				"unit_x" : null,
+				"statistic_x" : "avg",
+				"label_y" : "Score",
+				"field_y" : "rating",
+				"unit_y" : null,
+				"statistic_y" : "avg",
+				"key_field" : "timestamp$max",
+				"interval" : "day",
+				"regression" : "linear"
+			}
+		]
+	},
+	{
+		"category" : "Sleep",
 		"source" : "SleepCloud",
 		"task" : "sleepcloud",
 		"widgets" : [
@@ -2538,6 +2619,55 @@
 				"type" : "polar",
 				"label" : "Day of Week",
 				"placement" : "right",
+				"value_field" : "count",
+				"unit" : null,
+				"statistic" : "avg",
+				"interval" : "day_of_week"
+			}
+		]
+	},
+	{
+		"category" : "Steps",
+		"source" : "Oura",
+		"task" : "oura-steps",
+		"widgets" : [
+			{
+				"id" : "steps",
+				"type" : "timeline",
+				"label" : "Steps",
+				"placement" : "top",
+				"field" : "count",
+				"key_field": "timestamp$max",
+				"unit" : null,
+				"statistic" : "sum",
+				"interval" : "month"
+			},
+			{
+				"id" : "latest",
+				"type" : "list",
+				"label" : "Latest",
+				"placement" : "left",
+				"order" : "-timestamp",
+				"limit" : 10,
+				"singleton" : true
+			},
+			{
+				"id" : "steps_scoreboard",
+				"type" : "scoreboard",
+				"label" : "Scoreboard",
+				"placement" : "right",
+				"key_field" : "author",
+				"value_field" : "count",
+				"unit" : null,
+				"order" : "-sum",
+				"limit" : 10
+			},
+			{
+				"id" : "steps_by_day",
+				"type" : "polar",
+				"label" : "Day of Week",
+				"placement" : "right",
+				"key_field": "timestamp$max",
 				"value_field" : "count",
 				"unit" : null,
 				"statistic" : "avg",
