@@ -892,6 +892,23 @@
 		</div>
 	</script>
 
+	<script id="/oura-readiness-settings.html" type="text/ng-template">
+		<div data-ng-controller="OuraReadinessSettingsController">
+			<div class="control-group">
+				<label for="tag" class="control-label">Tag</label>
+				<input name="tag" type="text" required data-ng-model="settings.tag"/>
+			</div>
+			<div class="control-group">
+				<label for="marker" class="control-label">Starting from</label>
+				<input class="input-small" type="text" data-ui-datepicker data-ng-model="settings.marker"/>
+			</div>
+			<div class="control-group">
+				<label for="timezone" class="control-label">Timezone</label>
+				<select name="timezone" data-ng-model="settings.timezone" data-ng-options="timezone for timezone in timezones" required data-ui-timezone-select></select>
+			</div>
+		</div>
+	</script>
+
 	<script id="/hipbone-settings.html" type="text/ng-template">
 		<div data-ng-controller="HipboneSettingsController">
 			<div class="control-group">

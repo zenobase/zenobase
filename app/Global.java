@@ -176,6 +176,7 @@ import com.zenobase.tasks.netatmo.NetatmoCredentialsManager;
 import com.zenobase.tasks.netatmo.NetatmoTaskManager;
 import com.zenobase.tasks.openmhealth.HipboneTaskManager;
 import com.zenobase.tasks.oura.OuraCredentialsManager;
+import com.zenobase.tasks.oura.OuraReadinessTaskManager;
 import com.zenobase.tasks.oura.OuraSleepTaskManager;
 import com.zenobase.tasks.oura.OuraStepsTaskManager;
 import com.zenobase.tasks.reporter.ReporterTaskManager;
@@ -397,6 +398,7 @@ public class Global extends GlobalSettings {
 				bindIfConfigured("goodreads", GoodreadsTaskManager.class, tasks);
 				bindIfConfigured("oura", OuraSleepTaskManager.class, tasks);
 				bindIfConfigured("oura", OuraStepsTaskManager.class, tasks);
+				bindIfConfigured("oura", OuraReadinessTaskManager.class, tasks);
 				bind(TaskManagerRegistry.class).in(Singleton.class);
 
 				Multibinder<Job> jobs = Multibinder.newSetBinder(binder(), Job.class);

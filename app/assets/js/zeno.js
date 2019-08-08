@@ -6236,6 +6236,7 @@
 			{ id : 'netatmo', description : 'Creates events for weather station measurements.', url : 'https://www.netatmo.com/' },
 			{ id : 'oura-steps', description : 'Creates an event for the number of steps and calories burned each day.', url : 'https://ouraring.com/' },
 			{ id : 'oura-sleep', description : 'Creates an event for each period of sleep.', url : 'https://ouraring.com/' },
+			{ id : 'oura-readiness', description : 'Creates an event for the readiness score for each day.', url : 'https://ouraring.com/' },
 			{ id : 'reporter-questions', description : 'Creates an event for each question answered.', url : 'http://www.reporter-app.com/' },
 			{ id : 'rescuetime-productivity', description : 'Creates an event for every hour the computer was used.', url : 'https://www.rescuetime.com/' },
 			{ id : 'runkeeper-activities', description : 'Creates an event for each activity.', url : 'https://runkeeper.com/' },
@@ -6994,6 +6995,19 @@
 			$scope.settings = $scope.$parent.$parent.settings = {
 				tag : 'Sleep',
 				marker : new Date(moment().utc().subtract(6, 'months').startOf('month').valueOf())
+			};
+		};
+
+		$scope.init();
+	}]);
+
+	app.controller('OuraReadinessSettingsController', ['$scope', '$http', 'moment', function($scope, $http, moment) {
+
+		$scope.init = function() {
+			$scope.settings = $scope.$parent.$parent.settings = {
+				tag : 'Readiness',
+				marker : new Date(moment().utc().subtract(6, 'months').startOf('month').valueOf()),
+				timezone : 'UTC'
 			};
 		};
 

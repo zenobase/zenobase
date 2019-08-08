@@ -16,8 +16,16 @@ public class OuraTesting extends TaskTestingSupport {
 	}
 
 	@Test
+	@Ignore
 	public void testSleep() {
 		run(new OuraSleepTaskManager(newCredentialsManager()), Nodes.newObject()
+			.put("marker", "2018-12-01T00:00:00+02:00"));
+	}
+
+	@Test
+	public void testReadiness() {
+		run(new OuraReadinessTaskManager(newCredentialsManager()), Nodes.newObject()
+			.put("timezone", "Europe/Berlin")
 			.put("marker", "2018-12-01T00:00:00+02:00"));
 	}
 
