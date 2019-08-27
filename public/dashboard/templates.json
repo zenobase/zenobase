@@ -978,14 +978,59 @@
 				"singleton" : true
 			},
 			{
-				"id" : "kcal_by_day",
+				"id" : "hour_of_day",
 				"type" : "polar",
-				"label" : "Day of Week",
+				"label" : "Hour of Day",
 				"placement" : "right",
 				"value_field" : "concentration",
 				"unit" : "mg/dL",
 				"statistic" : "avg",
-				"interval" : "day_of_week"
+				"interval" : "hour_of_day"
+			},
+			{
+				"id" : "histogram",
+				"type" : "histogram",
+				"label" : "Histogram",
+				"placement" : "right",
+				"field" : "concentration",
+				"unit" : "mg/dL",
+				"interval" : 10
+			}
+		]
+	},
+	{
+		"category" : "Glucose",
+		"source" : "LibreView",
+		"importer" : "libreview",
+		"widgets" : [
+			{
+				"id" : "timeline",
+				"type" : "timeline",
+				"label" : "Glucose (mg/dL)",
+				"placement" : "top",
+				"field" : "concentration",
+				"unit" : "mg/dL",
+				"statistic" : "avg",
+				"interval" : "month"
+			},
+			{
+				"id" : "latest",
+				"type" : "list",
+				"label" : "Latest",
+				"placement" : "left",
+				"order" : "-timestamp",
+				"limit" : 10,
+				"singleton" : true
+			},
+			{
+				"id" : "hour_of_day",
+				"type" : "polar",
+				"label" : "Hour of Day",
+				"placement" : "right",
+				"value_field" : "concentration",
+				"unit" : "mg/dL",
+				"statistic" : "avg",
+				"interval" : "hour_of_day"
 			},
 			{
 				"id" : "histogram",

@@ -1857,6 +1857,15 @@
 		</div>
 	</script>
 
+	<script id="/import-libreview.html" type="text/ng-template">
+		<div data-ng-controller="ImportLibreViewController">
+			<div class="control-group">
+				<select name="timezone" data-ng-model="settings.timezone" data-ng-options="timezone for timezone in timezones" required data-ui-timezone-select></select>
+				<p class="help-block">The timezone to use.</p>
+			</div>
+		</div>
+	</script>
+
 	<div id="export-dialog" data-ui-modal data-ng-controller="ExportDialogController">
 		<form name="form" class="modal-form">
 			<div class="modal-header">

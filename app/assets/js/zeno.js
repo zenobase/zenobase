@@ -5765,7 +5765,70 @@
 		};
 	}]);
 
-	app.controller('ImportDialogController', ['$scope', '$http', '$routeParams', 'EventSpreadsheet', 'HealthKit', 'SleepCycle', 'SleepyHead', 'SunSprite', 'TapLog', 'MoodPanda', 'Nomie', 'Basis', 'HabitBull', 'tracker', 'delay', function($scope, $http, $routeParams, EventSpreadsheet, HealthKit, SleepCycle, SleepyHead, SunSprite, TapLog, MoodPanda, Nomie, Basis, HabitBull, tracker, delay) {
+	app.factory('LibreView', [ 'moment', function(moment) {
+
+		return {
+			parse : function(s, settings) {
+				var lines = s.split("\n");
+				if (lines.length > 0 && lines[0].startsWith('Export')) {
+					lines.shift();
+				}
+				if (lines.length > 0 && lines[0].startsWith('Meter')) {
+					lines.shift();
+				}
+				s = lines.join("\n");
+				var events = [];
+				var csv = Baby.parse(s, { header : false, skipEmptyLines : true });
+				if (csv.errors.length) {
+					throw new Error(csv.errors[0].message + ' in row ' + csv.errors[0].row);
+				}
+				$.each(csv.data, function(rowNum, row) {
+					var t = moment.tz(row[2], 'MM-DD-YYYY LT', settings.timezone);
+					var event = {
+						'timestamp' : t.format('YYYY-MM-DDTHH:mm:00.000Z'),
+						'tag' : [ settings.tag ],
+						'source' : {
+							'title' : row[0],
+							'url' : 'https://www.libreview.com/'
+						}
+					};
+					switch (row[3]) {
+						case "0":
+							event['tag'] = [ 'Glucose', 'Historic' ];
+							event['concentration'] = {
+								'@value' : Number(row[4]),
+								'unit' : 'mg/dL'
+							};
+							break;
+						case "1":
+							event['tag'] = [ 'Glucose', 'Scan' ];
+							event['concentration'] = {
+								'@value' : Number(row[5]),
+								'unit' : 'mg/dL'
+							};
+							break;
+						case "2":
+							event['tag'] = [ 'Glucose', 'Strip' ];
+							event['concentration'] = {
+								'@value' : Number(row[14]),
+								'unit' : 'mg/dL'
+							};
+							break;
+						case "6":
+							event['tag'] = [ "Note" ];
+							event['note'] = row[13];
+							break;
+						default:
+							return;
+					}
+					events.push(event);
+				});
+				return events;
+			}
+		};
+	}]);
+
+	app.controller('ImportDialogController', ['$scope', '$http', '$routeParams', 'EventSpreadsheet', 'HealthKit', 'SleepCycle', 'SleepyHead', 'SunSprite', 'TapLog', 'MoodPanda', 'Nomie', 'Basis', 'HabitBull', 'LibreView', 'tracker', 'delay', function($scope, $http, $routeParams, EventSpreadsheet, HealthKit, SleepCycle, SleepyHead, SunSprite, TapLog, MoodPanda, Nomie, Basis, HabitBull, LibreView, tracker, delay) {
 
 		$scope.bucketId = $routeParams.bucketId;
 		$scope.formats = [
@@ -5807,6 +5870,15 @@
 				description : 'Import HealthKit data from a <b>.csv</b> file exported with the <a href="http://quantifiedself.com/access-app/app" target="_blank">QS Access</a> app.',
 				parse : function(data, settings) {
 					return HealthKit.parse(data, settings);
+				}
+			},
+			{
+				id : 'libreview',
+				label : 'LibreView',
+				description : 'Import a <b>.csv</b> file containing blood sugar readings and notes from <a href="https://www.libreview.com/" target="_blank">LibreView</a>.',
+				settings : '/import-libreview.html',
+				parse : function(data, settings) {
+					return LibreView.parse(data, settings);
 				}
 			},
 			{
@@ -5910,7 +5982,7 @@
 					});
 				};
 				if (files.length) {
-					reader.readAsText(files[0]);
+					reader.readAsText(files[0], $scope.settings.encoding);
 				}
 			});
 		};
@@ -5968,6 +6040,14 @@
 
 		$scope.settings.tag = 'Sunlight';
 		$scope.settings.timezone = 'UTC';
+
+		$scope.settings = $scope.$parent.settings;
+	}]);
+
+	app.controller('ImportLibreViewController', ['$scope', function($scope) {
+
+		$scope.settings.timezone = 'UTC';
+		$scope.settings.encoding = 'UTF-16LE';
 
 		$scope.settings = $scope.$parent.settings;
 	}]);
