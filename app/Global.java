@@ -121,8 +121,6 @@ import com.zenobase.tasks.beeminder.BeeminderCredentialsManager;
 import com.zenobase.tasks.beeminder.BeeminderTaskManager;
 import com.zenobase.tasks.darksky.ForecastTaskManager;
 import com.zenobase.tasks.darksky.Forecaster;
-import com.zenobase.tasks.dash.DashCredentialsManager;
-import com.zenobase.tasks.dash.DashTaskManager;
 import com.zenobase.tasks.demo.DemoCredentialsManager;
 import com.zenobase.tasks.demo.DemoTaskManager;
 import com.zenobase.tasks.dropbox.DropboxCredentialsManager;
@@ -335,7 +333,6 @@ public class Global extends GlobalSettings {
 				bindIfConfigured("wakatime", WakaTimeCredentialsManager.class, credentials);
 				bindIfConfigured("microsoft", MicrosoftHealthCredentialsManager.class, credentials);
 				bindIfConfigured("fitbark", FitBarkCredentialsManager.class, credentials);
-				bindIfConfigured("dash", DashCredentialsManager.class, credentials);
 				bindIfConfigured("goodreads", GoodreadsCredentialsManager.class, credentials);
 				bindIfConfigured("oura", OuraCredentialsManager.class, credentials);
 				bind(CredentialsManagerRegistry.class).in(Singleton.class);
@@ -394,7 +391,6 @@ public class Global extends GlobalSettings {
 				bindIfConfigured("microsoft", MicrosoftHealthSleepTaskManager.class, tasks);
 				bindIfConfigured("microsoft", MicrosoftHealthStepsTaskManager.class, tasks);
 				bindIfConfigured("fitbark", FitBarkTaskManager.class, tasks);
-				bindIfConfigured("dash", DashTaskManager.class, tasks);
 				bindIfConfigured("goodreads", GoodreadsTaskManager.class, tasks);
 				bindIfConfigured("oura", OuraSleepTaskManager.class, tasks);
 				bindIfConfigured("oura", OuraStepsTaskManager.class, tasks);

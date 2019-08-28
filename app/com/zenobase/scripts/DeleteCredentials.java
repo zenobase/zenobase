@@ -24,7 +24,7 @@ public class DeleteCredentials extends ClientSupport {
 	}
 
 	public static void main(String[] args) throws IOException {
-		new DeleteCredentials("google", DateTime.parse("2014-11-01T00:00:00Z")).run();
+		new DeleteCredentials("dash", DateTime.parse("2020-11-01T00:00:00Z")).run();
 	}
 
 	@Override

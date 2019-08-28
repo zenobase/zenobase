@@ -6196,7 +6196,6 @@
 		$scope.types = [
 			{ id : 'automatic-trips', description : 'Creates an event for each trip recorded.', url : 'https://www.automatic.com/' },
 			{ id : 'beeminder', description : 'Updates a goal with event counts or value totals for each day.', url : 'https://www.beeminder.com/' },
-			{ id : 'dash-trips', description : 'Creates an event for each trip recorded.', url : 'https://dash.by/' },
 			{ id : 'fitbark', description : 'Creates an event for the activity level for every day or hour.', url : 'https://www.fitbark.com/' },
 			{ id : 'fitbit-activities', description : 'Creates an event for each activity.', url : 'https://www.fitbit.com/' },
 			{ id : 'fitbit-burn', description : 'Creates an event for the number of calories burned each day or hour.', url : 'https://www.fitbit.com/' },
@@ -6582,19 +6581,6 @@
 			$scope.settings = $scope.$parent.$parent.settings = {
 					tag : 'Trip',
 					metric : false,
-					marker : new Date(moment().utc().subtract(12, 'months').startOf('month').valueOf())
-			};
-		};
-
-		$scope.init();
-	}]);
-
-	app.controller('DashSettingsController', ['$scope', 'moment', function($scope, moment) {
-
-		$scope.init = function() {
-			$scope.settings = $scope.$parent.$parent.settings = {
-					tag : 'Trip',
-					timezone : 'UTC',
 					marker : new Date(moment().utc().subtract(12, 'months').startOf('month').valueOf())
 			};
 		};
