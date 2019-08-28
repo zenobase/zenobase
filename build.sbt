@@ -26,7 +26,7 @@ libraryDependencies ++= Seq(
 	"org.jsoup" % "jsoup" % "1.8.3",
 	"net.sf.opencsv" % "opencsv" % "2.3",
 	"org.scribe" % "scribe" % "1.3.5",
-	"com.amazonaws" % "aws-java-sdk-ses" % "1.11.618",
+	"com.amazonaws" % "aws-java-sdk-ses" % "1.10.12",
 	"org.apache.httpcomponents" % "httpcore" % "4.3",
 	"org.apache.httpcomponents" % "httpclient" % "4.3.1",
 	"org.apache.httpcomponents" % "fluent-hc" % "4.3.1",

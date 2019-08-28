@@ -3,9 +3,8 @@ package com.zenobase.scripts;
 import java.io.File;
 import java.io.IOException;
 
-import com.amazonaws.regions.Regions;
 import com.amazonaws.services.simpleemail.AmazonSimpleEmailService;
-import com.amazonaws.services.simpleemail.AmazonSimpleEmailServiceClientBuilder;
+import com.amazonaws.services.simpleemail.AmazonSimpleEmailServiceClient;
 import com.amazonaws.services.simpleemail.model.Body;
 import com.amazonaws.services.simpleemail.model.Content;
 import com.amazonaws.services.simpleemail.model.Destination;
@@ -18,9 +17,7 @@ public class Mailer {
 
 	public static void main(String[] args) throws IOException {
 
-		AmazonSimpleEmailService client = AmazonSimpleEmailServiceClientBuilder
-			.standard()
-			.withRegion(Regions.US_EAST_1).build();
+		AmazonSimpleEmailService client = new AmazonSimpleEmailServiceClient();
 
 		String from = "";
 		String body = Files.toString(new File("template.txt"), Charsets.UTF_8);
