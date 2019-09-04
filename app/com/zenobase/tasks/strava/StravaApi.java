@@ -18,7 +18,7 @@ public class StravaApi extends CustomApi20 {
 			.addParameter("response_type", "code")
 			.addParameter("client_id", config.getApiKey())
 			.addParameter("redirect_uri", config.getCallback())
-			.addParameter("scope", "view_private")
+			.addParameter("scope", "activity:read_all")
 			.build();
 	}
 }

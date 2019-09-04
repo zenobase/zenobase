@@ -5,19 +5,23 @@ import java.util.List;
 import javax.inject.Inject;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.common.base.Objects;
 import com.google.common.collect.Lists;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.scribe.model.OAuthRequest;
 import org.scribe.model.Response;
+import org.scribe.model.Token;
 import org.scribe.model.Verb;
 
 import com.zenobase.commands.Command;
 import com.zenobase.commands.CompoundCommand;
 import com.zenobase.commands.CreateEventsCommand;
+import com.zenobase.commands.UpdateCredentialsCommand;
 import com.zenobase.commands.UpdateTaskCommand;
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
+import com.zenobase.tasks.Credentials;
 import com.zenobase.tasks.OAuthCredentials;
 import com.zenobase.tasks.OAuthTaskManager;
 import com.zenobase.tasks.Task;
@@ -44,6 +48,10 @@ public class StravaTaskManager extends OAuthTaskManager {
 	}
 
 	private Command execute(StravaTask task, OAuthCredentials credentials) {
+		Token token = credentials.getToken();
+		if (credentials.isExpired()) {
+			reauthorize(credentials);
+		}
 		List<Event> events = Lists.newArrayList();
 		DateTime from = parseMarker(task.getMarker());
 		for (int i = 0; i < 10; ++i) {
@@ -59,7 +67,7 @@ public class StravaTaskManager extends OAuthTaskManager {
 				break;
 			}
 		}
-		return createCommand(task, events);
+		return createCommand(task, credentials, events, token);
 	}
 
 	static DateTime parseMarker(String marker) {
@@ -81,7 +89,7 @@ public class StravaTaskManager extends OAuthTaskManager {
 		return latest != null ? latest.toString() : null;
 	}
 
-	private Command createCommand(StravaTask task, List<Event> events) {
+	private Command createCommand(StravaTask task, OAuthCredentials credentials, List<Event> events, Token expiredToken) {
 		CompoundCommand command = new CompoundCommand(task.getPrincipal(), "ran " + getType() + " task", "reverted " + getType() + " task");
 		command.add(UpdateTaskCommand.builder(task)
 			.set(Task.COMPLETED, task.getCompleted(), DateTime.now(DateTimeZone.UTC))
@@ -89,6 +97,12 @@ public class StravaTaskManager extends OAuthTaskManager {
 			.set(Task.MARKER, task.getMarker(), events.isEmpty() ? task.getMarker() : getMarker(events))
 			.set(Task.UNDO, task.getUndoId(), command.getId())
 			.build());
+		if (!Objects.equal(credentials.getToken(), expiredToken)) {
+			command.add(UpdateCredentialsCommand.builder(credentials)
+				.with(Credentials.CREDENTIALS)
+				.set(OAuthCredentials.TOKEN, expiredToken, credentials.getToken())
+				.build());
+		}
 		if (!events.isEmpty()) {
 			command.add(new CreateEventsCommand(task.getPrincipal(), task.getBucketId(), events));
 		}
