@@ -7094,7 +7094,7 @@
 		$scope.init = function() {
 			$scope.settings = $scope.$parent.$parent.settings = {
 					tag : 'project',
-					marker : new Date(moment().utc().subtract(1, 'months').startOf('month').valueOf())
+					marker : new Date(moment().utc().subtract(2, 'weeks').valueOf())
 			};
 		};
 
