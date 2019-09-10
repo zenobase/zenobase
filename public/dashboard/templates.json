@@ -1023,6 +1023,15 @@
 				"singleton" : true
 			},
 			{
+				"id" : "tags",
+				"type" : "count",
+				"label" : "Tags",
+				"placement" : "left",
+				"field" : "tag",
+				"limit" : 10,
+				"order" : "-count"
+			},
+			{
 				"id" : "hour_of_day",
 				"type" : "polar",
 				"label" : "Hour of Day",
