@@ -27,6 +27,7 @@ import com.zenobase.commands.UpdateTaskCommand;
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
 import com.zenobase.tasks.Credentials;
+import com.zenobase.tasks.InvalidStatusException;
 import com.zenobase.tasks.OAuthCredentials;
 import com.zenobase.tasks.OAuthTaskManager;
 import com.zenobase.tasks.Task;
@@ -65,11 +66,19 @@ public class WakaTimeTaskManager extends OAuthTaskManager {
 			RATE_LIMITER.acquire();
 			OAuthRequest request = new OAuthRequest(Verb.GET, HOST + "/users/current/durations");
 			request.addQuerystringParameter("date", date.toString());
-			Response response = send(request, credentials);
-			WakaTimeDurationsResult result = new WakaTimeDurationsResult(parseObject(response), task.getPrincipal(), task.getTag());
-			for (Event event : result.getEvents()) {
-				if (event.getValue(Event.TIMESTAMP).isAfter(begin)) {
-					events.add(event);
+			try {
+				Response response = send(request, credentials);
+				WakaTimeDurationsResult result = new WakaTimeDurationsResult(parseObject(response), task.getPrincipal(), task.getTag());
+				for (Event event : result.getEvents()) {
+					if (event.getValue(Event.TIMESTAMP).isAfter(begin)) {
+						events.add(event);
+					}
+				}
+			} catch (InvalidStatusException e) {
+				if (e.getStatus() == 402 && date.isBefore(today.minusWeeks(2))) { // free WakaTime accounts are limited to 2 weeks of history
+					date = today.minusWeeks(2);
+				} else {
+					throw e;
 				}
 			}
 		}
