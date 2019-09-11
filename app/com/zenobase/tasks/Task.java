@@ -36,9 +36,6 @@ public class Task extends DomainNode {
 
 	public Task(ObjectNode node) {
 		super(node);
-		if (getType().startsWith("nokia")) {
-			setValue(TYPE, getType().replace("nokia", "withings"));
-		}
 	}
 
 	public Task(String type, String bucketId, Identity principal) {
