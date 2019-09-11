@@ -2,7 +2,6 @@ package com.zenobase.tasks.google;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -32,7 +31,6 @@ import com.zenobase.common.Pace;
 import com.zenobase.common.Units;
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
-import com.zenobase.models.Location;
 import com.zenobase.tasks.OAuthCredentials;
 import com.zenobase.tasks.Task;
 
@@ -60,7 +58,6 @@ public class GoogleFitActivitiesTaskManager extends GoogleFitTaskManagerSupport<
 			: createEventsFromSessions(task, credentials);
 
 		if (!events.isEmpty()) {
-			processLocationSample(task, credentials, streams.get("derived:com.google.location.sample:com.google.android.gms:merge_location_samples"), events);
 			processDistanceCumulative(task, credentials, filter(streams.values(), "com.google.distance.cumulative"), events);
 			processDistanceDelta(task, credentials, streams.get("derived:com.google.distance.delta:com.google.android.gms:pruned_distance"), events);
 			processStepCountDelta(task, credentials, streams.get("derived:com.google.step_count.delta:com.google.android.gms:merge_step_deltas"), events);
@@ -125,31 +122,6 @@ public class GoogleFitActivitiesTaskManager extends GoogleFitTaskManagerSupport<
 			events.remove(events.size() - 1); // could still be in progress
 		}
 		return events;
-	}
-
-	private void processLocationSample(GoogleFitActivitiesTask task, OAuthCredentials credentials, DataStream stream, List<Event> events) {
-		if (stream != null) {
-			RangeMap<DateTime, Location> locations = TreeRangeMap.create();
-			Location beginLocation = null;
-			DateTime begin = null;
-			for (DataPoint point : getDataPoints(task, credentials, stream)) { // can't use paging because of ordering
-				Preconditions.checkState("com.google.location.sample".equals(point.getDataType()));
-				Preconditions.checkState(!point.isRange());
-				Location location = new Location(point.getValue(0, BigDecimal.class), point.getValue(1, BigDecimal.class));
-				if (begin != null) {
-					locations.put(Range.openClosed(begin, point.getEnd()), beginLocation);
-				}
-				begin = point.getEnd();
-				beginLocation = location;
-			}
-			for (Event event : events) {
-				Range<DateTime> range = getRange(event);
-				Collection<Location> matches = locations.subRangeMap(range).asMapOfRanges().values();
-				if (!matches.isEmpty()) {
-					event.setValue(Event.LOCATION, matches.iterator().next());
-				}
-			}
-		}
 	}
 
 	private void processDistanceCumulative(GoogleFitActivitiesTask task, OAuthCredentials credentials, Iterable<DataStream> streams, List<Event> events) {
