@@ -6290,7 +6290,6 @@
 			{ id : 'google-activities', description : 'Creates an event for each activity.', url : 'https://fit.google.com/' },
 			{ id : 'google-cardio', description : 'Creates an event for each heart rate measurement.', url : 'https://fit.google.com/' },
 			{ id : 'google-food', description : 'Creates an event for each number of calories consumed that was recorded.', url : 'https://fit.google.com/' },
-			{ id : 'google-locate', description : 'Adds location data to events without a location.', url : 'https://fit.google.com/' },
 			{ id : 'google-weight', description : 'Creates an event for each body weight measurement.', url : 'https://fit.google.com/' },
 			{ id : 'hexoskin-activities', description : 'Creates an event for each activity.', url : 'https://www.hexoskin.com/' },
 			{ id : 'hexoskin-sleep', description : 'Creates an event for each period of sleep.', url : 'https://www.hexoskin.com/' },
@@ -7127,17 +7126,6 @@
 					tag : 'Food',
 					marker : new Date(moment().utc().subtract(12, 'months').startOf('month').valueOf()),
 					timezone : 'UTC'
-			};
-		};
-
-		$scope.init();
-	}]);
-
-	app.controller('GoogleFitLocateSettingsController', ['$scope', function($scope) {
-
-		$scope.init = function() {
-			$scope.settings = $scope.$parent.$parent.settings = {
-
 			};
 		};
 
