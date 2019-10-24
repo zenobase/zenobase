@@ -7,24 +7,19 @@ import javax.inject.Inject;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
-import com.google.common.collect.Iterables;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Ordering;
+import com.google.common.collect.ImmutableList;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDateTime;
 import org.scribe.model.OAuthRequest;
 import org.scribe.model.Response;
+import org.scribe.model.Token;
 import org.scribe.model.Verb;
 
 import com.zenobase.commands.Command;
-import com.zenobase.commands.CompoundCommand;
-import com.zenobase.commands.CreateEventsCommand;
-import com.zenobase.commands.UpdateTaskCommand;
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
 import com.zenobase.tasks.OAuthCredentials;
-import com.zenobase.tasks.Task;
 
 public class WithingsSleepTaskManager extends WithingsTaskManagerSupport<WithingsSleepTask> {
 
@@ -53,12 +48,12 @@ public class WithingsSleepTaskManager extends WithingsTaskManagerSupport<Withing
 	}
 
 	@Override
-	Command safeExecute(WithingsSleepTask task, OAuthCredentials credentials) {
-		List<Event> events = Lists.newArrayList();
+	Command safeExecute(WithingsSleepTask task, OAuthCredentials credentials, Token token) {
+		WithingsSleepResult result = new WithingsSleepResult(ImmutableList.of(), task.getPrincipal(), task.getTag(), task.useRanges(), task.getTimezone());
 		for (DateTime from = task.getFrom(); from.isBefore(DateTime.now()); from = from.plusWeeks(1)) {
-			events.addAll(execute(task, credentials, from));
+			result.add(execute(task, credentials, from));
 		}
-		return createCommand(task, WithingsSleepResult.merge(events));
+		return createCommand(task, credentials, token, result.merge());
 	}
 
 	private List<Event> execute(WithingsSleepTask task, OAuthCredentials credentials, DateTime from) {
@@ -75,24 +70,5 @@ public class WithingsSleepTaskManager extends WithingsTaskManagerSupport<Withing
 		request.addQuerystringParameter("startdate", toString(from));
 		request.addQuerystringParameter("enddate", toString(from.plusWeeks(1)));
 		return request;
-	}
-
-	private static Command createCommand(WithingsSleepTask task, List<Event> events) {
-		CompoundCommand command = new CompoundCommand(task.getPrincipal(), "ran withings-sleep task", "reverted withings-sleep task");
-		command.add(UpdateTaskCommand.builder(task)
-			.set(Task.COMPLETED, task.getCompleted(), DateTime.now(DateTimeZone.UTC))
-			.set(Task.STATUS, task.getStatus(), Task.Status.SUCCESS)
-			.set(Task.MARKER, task.getMarker(), !events.isEmpty() ? toString(next(events)) : task.getMarker())
-			.set(Task.UNDO, task.getUndoId(), command.getId())
-			.build());
-		if (!events.isEmpty()) {
-			command.add(new CreateEventsCommand(task.getPrincipal(), task.getBucketId(), events));
-		}
-		return command;
-	}
-
-	private static DateTime next(List<Event> events) {
-		Event latest = Iterables.getLast(events);
-		return Ordering.natural().max(latest.getValues(Event.TIMESTAMP));
 	}
 }

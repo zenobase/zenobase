@@ -5,6 +5,7 @@ import java.util.List;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Ordering;
 import com.google.common.primitives.Ints;
@@ -13,12 +14,14 @@ import org.joda.time.DateTimeZone;
 import org.joda.time.Duration;
 import play.Logger;
 
+import com.zenobase.json.Nodes;
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
 import com.zenobase.models.Percentage;
 
 class WithingsSleepResult extends WithingsResult {
 
+	private final List<Event> events = Lists.newArrayList();
 	private final boolean useRanges;
 	private final DateTimeZone timezone;
 
@@ -28,12 +31,18 @@ class WithingsSleepResult extends WithingsResult {
 		this.timezone = timezone;
 	}
 
+	public WithingsSleepResult(List<Event> events, Identity author, String tag, boolean useRanges, DateTimeZone timezone) {
+		this(Nodes.newObject(), author, tag, useRanges, timezone);
+		this.events.addAll(events);
+	}
+
 	public List<Event> getEvents() {
-		List<Event> events = Lists.newArrayList();
-		for (JsonNode seriesNode : node.path("body").path("series")) {
-			Event event = getEvent(seriesNode);
-			if (event != null) {
-				events.add(event);
+		if (events.isEmpty()) {
+			for (JsonNode seriesNode : node.path("body").path("series")) {
+				Event event = getEvent(seriesNode);
+				if (event != null) {
+					events.add(event);
+				}
 			}
 		}
 		return events;
@@ -67,11 +76,15 @@ class WithingsSleepResult extends WithingsResult {
 		return Percentage.valueOf(node.intValue() > 0 ? 100 : 0);
 	}
 
-	public static List<Event> merge(List<Event> events) {
+	public void add(List<Event> events) {
+		getEvents().addAll(events);
+	}
+
+	public WithingsSleepResult merge() {
 		List<Event> merged = Lists.newArrayList();
 		Event prev = null;
 		DateTime end = null;
-		for (Event event : events) {
+		for (Event event : getEvents()) {
 			DateTime begin = getBegin(event);
 			Duration duration = event.getValue(Event.DURATION);
 			if (prev != null && end != null && end.equals(begin)) {
@@ -85,7 +98,7 @@ class WithingsSleepResult extends WithingsResult {
 			prev = event;
 			end = getEnd(event);
 		}
-		return merged;
+		return new WithingsSleepResult(merged, author, tag, useRanges, timezone);
 	}
 
 	private static DateTime getBegin(Event event) {
@@ -94,6 +107,11 @@ class WithingsSleepResult extends WithingsResult {
 
 	private static DateTime getEnd(Event event) {
 		return Ordering.natural().max(event.getValues(Event.TIMESTAMP));
+	}
+
+	@Override
+	public String getMarker() {
+		return !getEvents().isEmpty() ? Ordering.natural().max(Iterables.getLast(getEvents()).getValues(Event.TIMESTAMP)).toString() : null;
 	}
 
 	private static Percentage meanPercentage(Event left, Event right) {

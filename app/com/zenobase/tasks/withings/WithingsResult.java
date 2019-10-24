@@ -26,5 +26,7 @@ public abstract class WithingsResult {
 		return node.path("status").isInt() ? node.path("status").intValue() : -1;
 	}
 
+	public abstract String getMarker();
+
 	public abstract List<Event> getEvents();
 }

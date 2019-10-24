@@ -1,7 +1,5 @@
 package com.zenobase.tasks.withings;
 
-import java.util.List;
-
 import javax.inject.Inject;
 import javax.measure.quantity.Temperature;
 import javax.measure.unit.Unit;
@@ -9,24 +7,19 @@ import javax.measure.unit.Unit;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
-import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDateTime;
 import org.scribe.model.OAuthRequest;
 import org.scribe.model.Response;
+import org.scribe.model.Token;
 import org.scribe.model.Verb;
 
 import com.zenobase.commands.Command;
-import com.zenobase.commands.CompoundCommand;
-import com.zenobase.commands.CreateEventsCommand;
-import com.zenobase.commands.UpdateTaskCommand;
 import com.zenobase.common.Units;
 import com.zenobase.json.UnitField;
-import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
 import com.zenobase.tasks.InvalidCredentialsException;
 import com.zenobase.tasks.OAuthCredentials;
-import com.zenobase.tasks.Task;
 
 public class WithingsTemperatureTaskManager extends WithingsTaskManagerSupport<WithingsTemperatureTask> {
 
@@ -49,7 +42,7 @@ public class WithingsTemperatureTaskManager extends WithingsTaskManagerSupport<W
 	}
 
 	@Override
-	Command safeExecute(WithingsTemperatureTask task, OAuthCredentials credentials) {
+	Command safeExecute(WithingsTemperatureTask task, OAuthCredentials credentials, Token token) {
 		OAuthRequest request = createRequest(task);
 		Response response = send(request, credentials);
 		WithingsTemperatureResult result = new WithingsTemperatureResult(parseObject(response), task.getPrincipal(), task.getTag(), task.getUnit(), task.getTimezone());
@@ -57,7 +50,7 @@ public class WithingsTemperatureTaskManager extends WithingsTaskManagerSupport<W
 			throw new InvalidCredentialsException(credentials);
 		}
 		Preconditions.checkState(result.getStatus() == 0, "Expected status <0> but got <%s> for task <%s>", result.getStatus(), task.getId());
-		return createCommand(task, result);
+		return createCommand(task, credentials, token, result);
 	}
 
 	private OAuthRequest createRequest(WithingsTemperatureTask task) {
@@ -69,20 +62,5 @@ public class WithingsTemperatureTaskManager extends WithingsTaskManagerSupport<W
 			request.addQuerystringParameter("lastupdate", task.getMarker());
 		}
 		return request;
-	}
-
-	private static Command createCommand(Task task, WithingsTemperatureResult result) {
-		CompoundCommand command = new CompoundCommand(task.getPrincipal(), "ran withings-temperature task", "reverted withings-temperature task");
-		command.add(UpdateTaskCommand.builder(task)
-			.set(Task.COMPLETED, task.getCompleted(), DateTime.now(DateTimeZone.UTC))
-			.set(Task.STATUS, task.getStatus(), Task.Status.SUCCESS)
-			.set(Task.MARKER, task.getMarker(), result.getMarker())
-			.set(Task.UNDO, task.getUndoId(), command.getId())
-			.build());
-		List<Event> events = result.getEvents();
-		if (!events.isEmpty()) {
-			command.add(new CreateEventsCommand(task.getPrincipal(), task.getBucketId(), events));
-		}
-		return command;
 	}
 }

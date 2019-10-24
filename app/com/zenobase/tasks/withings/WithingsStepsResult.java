@@ -11,6 +11,7 @@ import javax.measure.unit.Unit;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
@@ -63,6 +64,12 @@ class WithingsStepsResult extends WithingsResult {
 		event.setValue(Event.AUTHOR, author);
 		event.setValue(Event.SOURCE, SOURCE);
 		return event;
+	}
+
+	@Override
+	public String getMarker() {
+		List<Event> events = getEvents();
+		return !events.isEmpty() ? Iterables.getLast(events).getValue(Event.TIMESTAMP).toLocalDate().plusDays(1).toString() : null;
 	}
 
 	private static DateTime dateTimeValue(JsonNode node, DateTimeZone timezone) {

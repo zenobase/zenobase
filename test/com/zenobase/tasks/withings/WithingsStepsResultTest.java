@@ -18,6 +18,7 @@ public class WithingsStepsResultTest extends ResultTestSupport {
 	public void test() {
 		WithingsStepsResult result = new WithingsStepsResult(readObject("WithingsStepsResultTest.json"), TESTER, "walk", Units.MI, Units.FT, Units.KCAL);
 		assertThat(result.getStatus()).as("status").isEqualTo(0);
+		assertThat(result.getMarker()).as("marker").isEqualTo("2013-12-16");
 		List<Event> actual = result.getEvents();
 		assertThat(actual).hasSize(2);
 		Event expected = new Event(actual.get(0).getId());

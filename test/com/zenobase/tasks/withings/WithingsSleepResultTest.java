@@ -2,8 +2,6 @@ package com.zenobase.tasks.withings;
 
 import static org.fest.assertions.Assertions.assertThat;
 
-import java.util.List;
-
 import org.joda.time.DateTimeZone;
 import org.joda.time.Duration;
 import org.junit.Test;
@@ -18,12 +16,12 @@ public class WithingsSleepResultTest extends ResultTestSupport {
 	public void test() {
 		WithingsSleepResult result = new WithingsSleepResult(readObject("WithingsSleepResultTest.json"), TESTER, "sleep", true, DateTimeZone.forID("America/Los_Angeles"));
 		assertThat(result.getStatus()).as("status").isEqualTo(0);
-		List<Event> events = result.getEvents();
-		assertThat(events).as("events").hasSize(6);
-		events = WithingsSleepResult.merge(result.getEvents());
-		assertThat(events).as("events").hasSize(2);
-		checkFirst(events.get(0));
-		checkLast(events.get(1));
+		assertThat(result.getEvents()).as("events").hasSize(6);
+		WithingsSleepResult merged = result.merge();
+		assertThat(merged.getEvents()).as("events").hasSize(2);
+		checkFirst(merged.getEvents().get(0));
+		checkLast(merged.getEvents().get(1));
+		assertThat(merged.getMarker()).as("marker").isEqualTo("2014-03-12T11:03:17.000-07:00");
 	}
 
 	private void checkFirst(Event event) {
