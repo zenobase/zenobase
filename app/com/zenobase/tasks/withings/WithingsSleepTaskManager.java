@@ -40,11 +40,7 @@ public class WithingsSleepTaskManager extends WithingsTaskManagerSupport<Withing
 	}
 
 	private static String parseMarker(String marker, DateTimeZone timezone) {
-		return marker != null ? toString(LocalDateTime.parse(marker.replaceAll("Z", "")).toDateTime(timezone).withHourOfDay(12)) : null;
-	}
-
-	private static String toString(DateTime time) {
-		return Long.toString(time.getMillis() / 1000);
+		return marker != null ? LocalDateTime.parse(marker.replaceAll("Z", "")).toDateTime(timezone).withHourOfDay(12).toString() : null;
 	}
 
 	@Override
@@ -70,5 +66,9 @@ public class WithingsSleepTaskManager extends WithingsTaskManagerSupport<Withing
 		request.addQuerystringParameter("startdate", toString(from));
 		request.addQuerystringParameter("enddate", toString(from.plusWeeks(1)));
 		return request;
+	}
+
+	private static String toString(DateTime time) {
+		return Long.toString(time.getMillis() / 1000);
 	}
 }

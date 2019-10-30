@@ -46,7 +46,11 @@ public class WithingsSleepTask extends Task {
 
 	public DateTime getFrom() {
 		String value = getMarker();
-		return value != null ? new DateTime(Long.parseLong(value) * 1000, getTimezone()) : null;
+		try {
+			return value != null ? DateTime.parse(value) : null;
+		} catch (IllegalArgumentException e) { // legacy
+			return new DateTime(Long.parseLong(value) * 1000, getTimezone());
+		}
 	}
 
 	public boolean useRanges() {
