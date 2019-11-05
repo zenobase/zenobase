@@ -11,7 +11,9 @@ import org.mockito.Matchers;
 import play.mvc.Result;
 
 import com.zenobase.commands.ChangeQuotaCommand;
+import com.zenobase.common.DefaultPartialList;
 import com.zenobase.json.Nodes;
+import com.zenobase.models.Bucket;
 import com.zenobase.models.Identity;
 import com.zenobase.models.Payment;
 import com.zenobase.models.Plan;
@@ -23,6 +25,7 @@ public class PaymentControllerHttpPostTest extends PaymentControllerTestSupport 
 	public void testPay() {
 		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
 		when(users.find(user.asIdentity())).thenReturn(user);
+		when(buckets.find(any(), any(), anyInt(), anyInt())).thenReturn(DefaultPartialList.of(new Bucket()));
 		user.setVerified(true);
 		Result result = call(payment);
 		assertThat(result).hasStatus(OK);
@@ -34,6 +37,7 @@ public class PaymentControllerHttpPostTest extends PaymentControllerTestSupport 
 	public void testPayWithExistingCard() {
 		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
 		when(users.find(user.asIdentity())).thenReturn(user);
+		when(buckets.find(any(), any(), anyInt(), anyInt())).thenReturn(DefaultPartialList.of(new Bucket()));
 		user.setVerified(true);
 		Payment payment = new Payment(new BigDecimal("5.00"));
 		Result result = call(payment);
@@ -82,6 +86,17 @@ public class PaymentControllerHttpPostTest extends PaymentControllerTestSupport 
 		user.setVerified(true);
 		Result result = call(new Payment(Nodes.newObject()));
 		assertThat(result).hasStatus(BAD_REQUEST);
+		verifyZeroInteractions(payments, dispatcher);
+	}
+
+	@Test
+	public void testPayWithUserWithoutBuckets() {
+		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
+		when(users.find(user.asIdentity())).thenReturn(user);
+		when(buckets.find(any(), any(), anyInt(), anyInt())).thenReturn(DefaultPartialList.of());
+		user.setVerified(true);
+		Result result = call(payment);
+		assertThat(result).hasStatus(CONFLICT);
 		verifyZeroInteractions(payments, dispatcher);
 	}
 
