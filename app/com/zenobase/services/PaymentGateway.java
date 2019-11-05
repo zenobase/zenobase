@@ -8,6 +8,7 @@ import javax.inject.Named;
 import com.braintreegateway.BraintreeGateway;
 import com.braintreegateway.ClientTokenRequest;
 import com.braintreegateway.CreditCard;
+import com.braintreegateway.CreditCardVerification;
 import com.braintreegateway.Customer;
 import com.braintreegateway.CustomerRequest;
 import com.braintreegateway.Environment;
@@ -77,7 +78,6 @@ public class PaymentGateway {
 		Result<Subscription> result = gateway.subscription().create(request);
 		Preconditions.checkArgument(result.isSuccess(), "Couldn't subscribe <%s> to <%s>: %s", username, plan.getId(), result.getMessage());
 	}
-
 	private Customer newCustomer(String username, String email, Payment payment) {
 		CustomerRequest request = new CustomerRequest().id(username).email(email).paymentMethodNonce(payment.getNonce());
 		Result<Customer> result = gateway.customer().create(request);
@@ -89,7 +89,12 @@ public class PaymentGateway {
 		PaymentMethodRequest request = new PaymentMethodRequest().customerId(username).paymentMethodNonce(payment.getNonce()).options().makeDefault(true).done();
 		Result<? extends PaymentMethod> result = gateway.paymentMethod().create(request);
 		Preconditions.checkArgument(result.isSuccess(), "Couldn't store credit card for <%s>: %s", username, result.getMessage());
+		Preconditions.checkArgument(isVerified(result), "Couldn't verify credit card for <%s>: %s", username, result.getCreditCardVerification().getStatus());
 		return result.getTarget();
+	}
+
+	private static boolean isVerified(Result<? extends PaymentMethod> result) {
+		return result.getCreditCardVerification().getStatus() == CreditCardVerification.Status.VERIFIED;
 	}
 
 	static Subscription getSubscription(Customer customer) {
