@@ -94,7 +94,7 @@ public class PaymentGateway {
 	}
 
 	private static boolean isVerified(Result<? extends PaymentMethod> result) {
-		return result.getCreditCardVerification().getStatus() == CreditCardVerification.Status.VERIFIED;
+		return result.getCreditCardVerification() != null && result.getCreditCardVerification().getStatus() == CreditCardVerification.Status.VERIFIED;
 	}
 
 	static Subscription getSubscription(Customer customer) {

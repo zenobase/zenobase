@@ -3,6 +3,7 @@ package com.zenobase.controllers;
 import javax.inject.Inject;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import play.Logger;
 import play.mvc.Result;
 
 import com.zenobase.commands.ChangeQuotaCommand;
@@ -11,9 +12,8 @@ import com.zenobase.models.Payment;
 import com.zenobase.models.Plan;
 import com.zenobase.models.User;
 import com.zenobase.oauth.Authorization;
-import com.zenobase.services.BucketQuery;
-import com.zenobase.services.BucketRepository;
 import com.zenobase.services.CommandDispatcher;
+import com.zenobase.services.EventRepository;
 import com.zenobase.services.PaymentGateway;
 import com.zenobase.services.UserLookup;
 import com.zenobase.services.UserRepository;
@@ -22,15 +22,15 @@ public class PaymentController extends ControllerSupport {
 
 	private final PaymentGateway payments;
 	private final UserRepository users;
-	private final BucketRepository buckets;
+	private final EventRepository events;
 	private final CommandDispatcher dispatcher;
 
 	@Inject
-	public PaymentController(AuthorizationContext security, PaymentGateway payments, UserRepository users, BucketRepository buckets, CommandDispatcher dispatcher) {
+	public PaymentController(AuthorizationContext security, PaymentGateway payments, UserRepository users, EventRepository events, CommandDispatcher dispatcher) {
 		super(security);
 		this.payments = payments;
 		this.users = users;
-		this.buckets = buckets;
+		this.events = events;
 		this.dispatcher = dispatcher;
 	}
 
@@ -73,16 +73,17 @@ public class PaymentController extends ControllerSupport {
 		if (plan == null) {
 			return badRequest("no matching plan");
 		}
-		if (!hasBuckets(user)) {
-			return conflict("user not eligible");
+		if (hasData(user)) {
+			payments.subscribe(user.getName(), user.getEmail(), payment, plan);
+			dispatcher.dispatch(new ChangeQuotaCommand(auth.getPrincipal(), user.getName(), user.getQuota(), plan.getQuota()));
+		} else {
+			Logger.warn("Ignoring payment attempt from user without data: {}", user.getName());
 		}
-		payments.subscribe(user.getName(), user.getEmail(), payment, plan);
-		dispatcher.dispatch(new ChangeQuotaCommand(auth.getPrincipal(), user.getName(), user.getQuota(), plan.getQuota()));
 		return ok();
 	}
 
-	private boolean hasBuckets(User user) {
-		return !buckets.find(new BucketQuery().principalEqualTo(user.asIdentity()), BucketQuery.DEFAULT_ORDER, 0, 1).isEmpty();
+	private boolean hasData(User user) {
+		return events.size(user.asIdentity()) > 0;
 	}
 
 	public Result cancel(String userId) {
