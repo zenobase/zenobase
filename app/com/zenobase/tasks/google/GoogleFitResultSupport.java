@@ -16,6 +16,7 @@ abstract class GoogleFitResultSupport {
 
 	private static final Resource DEFAULT_SOURCE = new Resource("Google Fit", "https://fit.google.com/");
 	private static final ImmutableMap<String, Resource> SOURCES = ImmutableMap.<String, Resource>builder()
+		.put("com.alivecor.aliveecg", new Resource("AliceCor", "https://www.alivecor.com/"))
 		.put("com.azumio.instantheartrate.full", new Resource("Azumio", "https://www.azumio.com/"))
 		.put("com.bidusoft.plexfit", new Resource("PlexFit", "https://bidusoft.blogspot.com/"))
 		.put("com.calm.android", new Resource("Calm", "https://www.calm.com/"))
@@ -29,6 +30,7 @@ abstract class GoogleFitResultSupport {
 		.put("com.getsomeheadspace.android", new Resource("Headspace", "https://www.headspace.com/"))
 		.put("com.iforpowell.android.ipbike", new Resource("IpBike", "http://www.iforpowell.com/cms/"))
 		.put("com.mapmyfitness.android2", new Resource("MapMyFitness", "https://www.mapmyfitness.com/"))
+		.put("com.mapmyhike.android2", new Resource("MapMyHike", "https://www.mapmyhike.com/"))
 		.put("com.mapmyrun.android2", new Resource("MapMyRun", "https://www.mapmyrun.com/"))
 		.put("com.mapmywalk.android2", new Resource("MapMyWalk", "https://www.mapmywalk.com/"))
 		.put("com.misfitwearables.prometheus", new Resource("Misfit", "https://misfit.com/"))
