@@ -34,6 +34,7 @@ public class CreateEventsCommand extends Command {
 		super(TYPE, principal, timestamp);
 		setParameter(BUCKET_ID, bucketId);
 		for (Event event : events) {
+			event.setValue(Event.AUTHOR, principal);
 			addParameter(EVENTS, event.toJson());
 		}
 		addCost(events.size());

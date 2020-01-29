@@ -13,6 +13,7 @@ import org.joda.time.IllegalInstantException;
 import org.joda.time.LocalDateTime;
 
 import com.zenobase.models.Event;
+import com.zenobase.models.Identity;
 import com.zenobase.models.Rating;
 import com.zenobase.models.Resource;
 
@@ -21,11 +22,13 @@ public class ProductivityResult {
 	public static final Resource SOURCE = new Resource("RescueTime", "https://www.rescuetime.com/");
 
 	private final ObjectNode node;
+	private final Identity author;
 	private final String tag;
 	private final DateTimeZone timezone;
 
-	public ProductivityResult(ObjectNode node, String tag, DateTimeZone timezone) {
+	public ProductivityResult(ObjectNode node, Identity author, String tag, DateTimeZone timezone) {
 		this.node = node;
+		this.author = author;
 		this.tag = tag;
 		this.timezone = timezone;
 	}
@@ -59,6 +62,7 @@ public class ProductivityResult {
 		if (node.path(4).isNumber()) {
 			event.setValue(Event.RATING, Rating.valueOf(Ints.checkedCast(Math.round(node.get(4).doubleValue()))));
 		}
+		event.setValue(Event.AUTHOR, author);
 		event.setValue(Event.SOURCE, SOURCE);
 		return event;
 	}

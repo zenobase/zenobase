@@ -62,7 +62,7 @@ public class RescueTimeProductivityTaskManager extends OAuthTaskManager {
 		DateTime last = task.getLast();
 		List<Event> events = Lists.newArrayList();
 		for (DateTime from = last; from == null || from.isBefore(DateTime.now()); from = from.plusWeeks(1)) {
-			events.addAll(get(credentials, task.getTag(), task.getKind(), task.getSource(), task.getTimezone(), from != null ? from.toLocalDate() : null));
+			events.addAll(get(credentials, task, from != null ? from.toLocalDate() : null));
 			if (from == null) {
 				from = getFirst(events);
 			}
@@ -77,14 +77,14 @@ public class RescueTimeProductivityTaskManager extends OAuthTaskManager {
 		return createCommand(task, events);
 	}
 
-	private List<Event> get(OAuthCredentials credentials, String tag, String kind, String source, DateTimeZone timezone, LocalDate date) {
+	private List<Event> get(OAuthCredentials credentials, RescueTimeProductivityTask task, LocalDate date) {
 		rateLimit.acquire();
-		OAuthRequest request = newRequest(kind, source, date);
+		OAuthRequest request = newRequest(task.getKind(), task.getSource(), date);
 		Response response = send(request, credentials);
 		Preconditions.checkState(response.getCode() == 200,
 			"Couldn't request <%s>: %s", request.getCompleteUrl(), response.getCode());
 		ObjectNode node = parseObject(response);
-		ProductivityResult result = new ProductivityResult(node, tag, timezone);
+		ProductivityResult result = new ProductivityResult(node, task.getPrincipal(), task.getTag(), task.getTimezone());
 		Preconditions.checkState(result.isSuccess(),
 			"Request <%s> failed: %s", request.getCompleteUrl(), response.getCode());
 		return result.getEvents();
