@@ -116,7 +116,7 @@ public class NetatmoTaskManager extends OAuthTaskManager {
 
 	private class MeasurementsQuery {
 
-		private final 	RateLimiter rate = RateLimiter.create(4);
+		private final RateLimiter rate = RateLimiter.create(4);
 		private final Identity principal;
 		private final OAuthCredentials credentials;
 		private final Device device;
