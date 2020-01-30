@@ -161,10 +161,6 @@ import com.zenobase.tasks.mapmyfitness.MapMyFitnessActivitiesTaskManager;
 import com.zenobase.tasks.mapmyfitness.MapMyFitnessCredentialsManager;
 import com.zenobase.tasks.mapmyfitness.MapMyFitnessSleepTaskManager;
 import com.zenobase.tasks.mapmyfitness.MapMyFitnessWeightTaskManager;
-import com.zenobase.tasks.microsoft.MicrosoftHealthActivitiesTaskManager;
-import com.zenobase.tasks.microsoft.MicrosoftHealthCredentialsManager;
-import com.zenobase.tasks.microsoft.MicrosoftHealthSleepTaskManager;
-import com.zenobase.tasks.microsoft.MicrosoftHealthStepsTaskManager;
 import com.zenobase.tasks.misfit.MisfitActivitiesTaskManager;
 import com.zenobase.tasks.misfit.MisfitCredentialsManager;
 import com.zenobase.tasks.misfit.MisfitSleepTaskManager;
@@ -330,7 +326,6 @@ public class Global extends GlobalSettings {
 				bindIfConfigured("hexoskin", HexoskinCredentialsManager.class, credentials);
 				bindIfConfigured("trakt", TraktCredentialsManager.class, credentials);
 				bindIfConfigured("wakatime", WakaTimeCredentialsManager.class, credentials);
-				bindIfConfigured("microsoft", MicrosoftHealthCredentialsManager.class, credentials);
 				bindIfConfigured("fitbark", FitBarkCredentialsManager.class, credentials);
 				bindIfConfigured("goodreads", GoodreadsCredentialsManager.class, credentials);
 				bindIfConfigured("oura", OuraCredentialsManager.class, credentials);
@@ -385,9 +380,6 @@ public class Global extends GlobalSettings {
 				bindIfConfigured("hexoskin", HexoskinSleepTaskManager.class, tasks);
 				bindIfConfigured("trakt", TraktTaskManager.class, tasks);
 				bindIfConfigured("wakatime", WakaTimeTaskManager.class, tasks);
-				bindIfConfigured("microsoft", MicrosoftHealthActivitiesTaskManager.class, tasks);
-				bindIfConfigured("microsoft", MicrosoftHealthSleepTaskManager.class, tasks);
-				bindIfConfigured("microsoft", MicrosoftHealthStepsTaskManager.class, tasks);
 				bindIfConfigured("fitbark", FitBarkTaskManager.class, tasks);
 				bindIfConfigured("goodreads", GoodreadsTaskManager.class, tasks);
 				bindIfConfigured("oura", OuraSleepTaskManager.class, tasks);

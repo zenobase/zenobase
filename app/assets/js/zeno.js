@@ -6305,9 +6305,6 @@
 			{ id : 'mapmyfitness-activities', description : 'Creates an event for each activity.', url : 'https://www.mapmyfitness.com/' },
 			{ id : 'mapmyfitness-sleep', description : 'Creates an event for each period of sleep.', url : 'https://www.mapmyfitness.com/' },
 			{ id : 'mapmyfitness-weight', description : 'Creates an event for each body weight measurement.', url : 'https://www.mapmyfitness.com/' },
-			{ id : 'microsoft-activities', description : 'Creates an event for each activity.', url : 'https://www.microsoft.com/microsoft-health/' },
-			{ id : 'microsoft-sleep', description : 'Creates an event for each period of sleep.', url : 'https://www.microsoft.com/microsoft-health/' },
-			{ id : 'microsoft-steps', description : 'Creates an event for the number of steps each day or hour.', url : 'https://www.microsoft.com/microsoft-health/' },
 			{ id : 'misfit-activities', description : 'Creates an event for each activity.', url : 'https://misfit.com/' },
 			{ id : 'misfit-sleep', description : 'Creates an event for each period of sleep.', url : 'https://misfit.com/' },
 			{ id : 'misfit-steps', description : 'Creates an event for the number of steps each day.', url : 'https://misfit.com/' },
@@ -6959,47 +6956,6 @@
 					tag : 'Body',
 					marker : new Date(moment().utc().subtract(12, 'months').startOf('month').valueOf()),
 					timezone : 'UTC'
-			};
-		};
-
-		$scope.init();
-	}]);
-
-	app.controller('MicrosoftHealthActivitiesSettingsController', ['$scope', '$http', 'moment', function($scope, $http, moment) {
-
-		$scope.init = function() {
-			$scope.settings = $scope.$parent.$parent.settings = {
-					marker : new Date(moment().utc().subtract(12, 'months').startOf('month').valueOf()),
-					timezone : 'UTC',
-					metric : false
-			};
-		};
-
-		$scope.init();
-	}]);
-
-	app.controller('MicrosoftHealthSleepSettingsController', ['$scope', '$http', 'moment', function($scope, $http, moment) {
-
-		$scope.init = function() {
-			$scope.settings = $scope.$parent.$parent.settings = {
-					marker : new Date(moment().utc().subtract(12, 'months').startOf('month').valueOf()),
-					tag : 'Sleep',
-					timezone : 'UTC'
-			};
-		};
-
-		$scope.init();
-	}]);
-
-	app.controller('MicrosoftHealthStepsSettingsController', ['$scope', '$http', 'moment', function($scope, $http, moment) {
-
-		$scope.init = function() {
-			$scope.settings = $scope.$parent.$parent.settings = {
-					marker : new Date(moment().utc().subtract(12, 'months').startOf('month').valueOf()),
-					tag : 'Steps',
-					timezone : 'UTC',
-					hourly : false,
-					metric : false
 			};
 		};
 
