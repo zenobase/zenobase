@@ -5,6 +5,7 @@ import static org.fest.assertions.Assertions.assertThat;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDateTime;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class DateTimeZonesTest {
@@ -19,5 +20,11 @@ public class DateTimeZonesTest {
 
 	private static void assertThatIsEqualTo(DateTimeZone timezone, String local, String expected) {
 		assertThat(DateTimeZones.toDateTime(LocalDateTime.parse(local), timezone).toString()).isEqualTo(DateTime.parse(expected).toString());
+	}
+
+	@Test
+	@Ignore
+	public void testMyanmar() {
+		DateTimeZone.forID("Asia/Yangon"); // should have replaced Asia/Rangoon in tzdb-2016g
 	}
 }
