@@ -5,7 +5,6 @@ import static org.fest.assertions.Assertions.assertThat;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDateTime;
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class DateTimeZonesTest {
@@ -23,8 +22,7 @@ public class DateTimeZonesTest {
 	}
 
 	@Test
-	@Ignore
 	public void testMyanmar() {
-		DateTimeZone.forID("Asia/Yangon"); // should have replaced Asia/Rangoon in tzdb-2016g
+		DateTimeZone.forID("Asia/Yangon"); // replaces Asia/Rangoon in tzdb-2016g
 	}
 }
