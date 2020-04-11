@@ -15,6 +15,7 @@ libraryDependencies ++= Seq(
 	filters,
 	"javax.mail" % "mail" % "1.4.7",
 	"joda-time" % "joda-time" % "2.10.5",
+	"commons-codec" % "commons-codec" % "1.14",
 	"com.google.guava" % "guava" % "17.0",
 	"com.google.guava" % "guava-testlib" % "17.0" % "test",
 	"com.google.inject" % "guice" % "3.0",
