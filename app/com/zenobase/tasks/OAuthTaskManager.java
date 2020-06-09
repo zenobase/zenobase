@@ -96,7 +96,7 @@ public abstract class OAuthTaskManager extends TaskManager {
 	}
 
 	protected static String getBody(Response response) {
-		if ("gzip".equals(response.getHeader("Content-Encoding"))) {
+		if (isEncoded(response, "gzip")) {
 			try (InputStreamReader in = new InputStreamReader(new GZIPInputStream(response.getStream()), Charsets.UTF_8)) {
 				return CharStreams.toString(in);
 			} catch (IOException e) {
@@ -104,6 +104,11 @@ public abstract class OAuthTaskManager extends TaskManager {
 			}
 		}
 		return response.getBody();
+	}
+
+	private static boolean isEncoded(Response response, String encoding) {
+		return encoding.equals(response.getHeader("Content-Encoding")) ||
+			encoding.equals(response.getHeader("content-encoding"));
 	}
 
 	protected Command createCommand(InvalidTokenException e) {

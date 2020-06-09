@@ -9,10 +9,9 @@ import com.zenobase.tasks.TaskTestingSupport;
 public class FitbitTesting extends TaskTestingSupport {
 
 	@Test
-	@Ignore
 	public void testSteps() {
 		run(new FitbitStepsTaskManager(newCredentialsManager()), Nodes.newObject()
-			.put("marker", "2015-10-01")
+			.put("marker", "2020-06-01")
 			.put("tag", "walk")
 			.put("hourly", false));
 	}
@@ -58,6 +57,7 @@ public class FitbitTesting extends TaskTestingSupport {
 	}
 
 	@Test
+	@Ignore
 	public void testBurn() {
 		run(new FitbitBurnTaskManager(newCredentialsManager()), Nodes.newObject()
 			.put("marker", "2016-04-25")
