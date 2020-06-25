@@ -5525,6 +5525,60 @@
 		};
 	}]);
 
+	app.factory('Nomie5', [ 'moment', function(moment) {
+
+		function parseCSV(s, settings) {
+			var events = [];
+			var csv = Baby.parse(s, { header : true, skipEmptyLines : true });
+			if (csv.errors.length) {
+				throw new Error(csv.errors[0].message + ' in row ' + csv.errors[0].row);
+			}
+			$.each(csv.data, function(rowNum, row) {
+				var t0 = moment(row['start']);
+				var t1 = moment(row['end']);
+				var offset = Number(row['offset']);
+				if (isFinite(offset)) {
+					t0.utcOffset(-offset);
+					t1.utcOffset(-offset);
+				}
+				var event = {
+					'timestamp' : [
+						t0.format('YYYY-MM-DDTHH:mm:ss.SSSZ'),
+						t1.format('YYYY-MM-DDTHH:mm:ss.SSSZ')
+					],
+					'tag' : [],
+				};
+				if (row['tracker'] === '') {
+					return;
+				} else if (row['tracker'] !== 'Unknown') {
+					event['tag'].push(row['tracker']);
+				}
+				var value = Number(row['value']);
+				if (value && settings.field) {
+					event[settings.field] = settings.unit ? {
+						'@value' : value,
+						'unit' : settings.unit
+					} : value;
+				}
+				if (row['lat']) {
+					var lat = Number(row['lat']);
+					var lon = Number(row['lng']);
+					if (lat !== 0 || lon !== 0) {
+						event['location'] = { 'lat' : lat, 'lon' : lon };
+					}
+				}
+				events.push(event);
+			});
+			return events;
+		}
+
+		return {
+			parse : function(s, settings) {
+				return parseCSV(s, settings);
+			}
+		};
+	}]);
+
 	app.factory('Basis', [ 'moment', function(moment) {
 
 		function meanOfNonZeroValues(values) {
@@ -5828,7 +5882,7 @@
 		};
 	}]);
 
-	app.controller('ImportDialogController', ['$scope', '$http', '$routeParams', 'EventSpreadsheet', 'HealthKit', 'SleepCycle', 'SleepyHead', 'SunSprite', 'TapLog', 'MoodPanda', 'Nomie', 'Basis', 'HabitBull', 'LibreView', 'tracker', 'delay', function($scope, $http, $routeParams, EventSpreadsheet, HealthKit, SleepCycle, SleepyHead, SunSprite, TapLog, MoodPanda, Nomie, Basis, HabitBull, LibreView, tracker, delay) {
+	app.controller('ImportDialogController', ['$scope', '$http', '$routeParams', 'EventSpreadsheet', 'HealthKit', 'SleepCycle', 'SleepyHead', 'SunSprite', 'TapLog', 'MoodPanda', 'Nomie', 'Nomie5', 'Basis', 'HabitBull', 'LibreView', 'tracker', 'delay', function($scope, $http, $routeParams, EventSpreadsheet, HealthKit, SleepCycle, SleepyHead, SunSprite, TapLog, MoodPanda, Nomie, Nomie5, Basis, HabitBull, LibreView, tracker, delay) {
 
 		$scope.bucketId = $routeParams.bucketId;
 		$scope.formats = [
@@ -5888,6 +5942,15 @@
 				settings : '/import-nomie.html',
 				parse : function(data, settings) {
 					return Nomie.parse(data, settings);
+				}
+			},
+			{
+				id : 'nomie5',
+				label : 'Nomie 5',
+				description : 'Import a <b>.csv</b> file from <a href="https://nomie.io/" target="_blank">Nomie</a>.',
+				settings : '/import-nomie.html',
+				parse : function(data, settings) {
+					return Nomie5.parse(data, settings);
 				}
 			},
 			{
