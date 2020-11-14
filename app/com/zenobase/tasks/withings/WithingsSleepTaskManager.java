@@ -6,7 +6,6 @@ import javax.inject.Inject;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Objects;
-import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
@@ -56,7 +55,7 @@ public class WithingsSleepTaskManager extends WithingsTaskManagerSupport<Withing
 		OAuthRequest request = createRequest(from);
 		Response response = send(request, credentials);
 		WithingsSleepResult result = new WithingsSleepResult(parseObject(response), task.getPrincipal(), task.getTag(), task.useRanges(), task.getTimezone());
-		Preconditions.checkState(result.getStatus() == 0, "Expected status <0> but got <%s> for task <%s>", result.getStatus(), task.getId());
+		checkStatus(result, request, credentials);
 		return result.getEvents();
 	}
 

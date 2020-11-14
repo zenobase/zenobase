@@ -2,6 +2,7 @@ package com.zenobase.tasks.withings;
 
 import com.google.common.base.Objects;
 import com.google.common.base.Strings;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.util.concurrent.RateLimiter;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
@@ -15,6 +16,8 @@ import com.zenobase.commands.CreateEventsCommand;
 import com.zenobase.commands.UpdateCredentialsCommand;
 import com.zenobase.commands.UpdateTaskCommand;
 import com.zenobase.tasks.Credentials;
+import com.zenobase.tasks.InvalidStatusException;
+import com.zenobase.tasks.InvalidTokenException;
 import com.zenobase.tasks.OAuthCredentials;
 import com.zenobase.tasks.OAuthTaskManager;
 import com.zenobase.tasks.Task;
@@ -22,6 +25,9 @@ import com.zenobase.tasks.Task;
 abstract class WithingsTaskManagerSupport<T extends Task> extends OAuthTaskManager {
 
 	private static final RateLimiter RATE_LIMITER = RateLimiter.create(2);
+
+	private static final ImmutableSet<Integer> RESPONSE_CODES_UNAUTHORIZED =
+		ImmutableSet.of(100, 101, 102, 214, 401, 402, 2553, 2555); // https://developer.withings.com/oauth2/#section/Response-status
 
 	private final Class<T> taskClass;
 
@@ -45,6 +51,15 @@ abstract class WithingsTaskManagerSupport<T extends Task> extends OAuthTaskManag
 	protected Response send(OAuthRequest request, OAuthCredentials credentials) {
 		RATE_LIMITER.acquire();
 		return super.send(request, credentials);
+	}
+
+	protected void checkStatus(WithingsResult result, OAuthRequest request, OAuthCredentials credentials) {
+		if (RESPONSE_CODES_UNAUTHORIZED.contains(result.getStatus())) {
+			throw new InvalidTokenException(request, credentials);
+		}
+		if (result.getStatus() != 0) {
+			throw new InvalidStatusException(request, result.getStatus(), result.node.toString());
+		}
 	}
 
 	protected Command createCommand(Task task, OAuthCredentials credentials, Token expiredToken, WithingsResult result) {

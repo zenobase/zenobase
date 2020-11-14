@@ -6,7 +6,6 @@ import javax.measure.unit.Unit;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Objects;
-import com.google.common.base.Preconditions;
 import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDateTime;
 import org.scribe.model.OAuthRequest;
@@ -49,7 +48,7 @@ public class WithingsWeightTaskManager extends WithingsTaskManagerSupport<Within
 		if (result.getStatus() == 401) {
 			throw new InvalidCredentialsException(credentials);
 		}
-		Preconditions.checkState(result.getStatus() == 0, "Expected status <0> but got <%s> for task <%s>", result.getStatus(), task.getId());
+		checkStatus(result, request, credentials);
 		return createCommand(task, credentials, token, result);
 	}
 

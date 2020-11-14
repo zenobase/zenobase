@@ -6,7 +6,6 @@ import javax.measure.unit.Unit;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Objects;
-import com.google.common.base.Preconditions;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.scribe.model.OAuthRequest;
@@ -44,7 +43,7 @@ public class WithingsStepsTaskManager extends WithingsTaskManagerSupport<Withing
 		OAuthRequest request = createRequest(task);
 		Response response = send(request, credentials);
 		WithingsStepsResult result = new WithingsStepsResult(parseObject(response), task.getPrincipal(), task.getTag(), task.getDistanceUnit(), task.getHeightUnit(), task.getEnergyUnit());
-		Preconditions.checkState(result.getStatus() == 0, "Expected status <0> but got <%s> for task <%s>", result.getStatus(), task.getId());
+		checkStatus(result, request, credentials);
 		return createCommand(task, credentials, token, result);
 	}
 
