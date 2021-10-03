@@ -25,7 +25,7 @@ libraryDependencies ++= Seq(
 	"com.hazelcast" % "hazelcast" % "3.6.8",
 	"com.hazelcast" % "hazelcast-cloud" % "3.6.8",
 	"org.jscience" % "jscience" % "4.3.1",
-	"org.jsoup" % "jsoup" % "1.8.3",
+	"org.jsoup" % "jsoup" % "1.14.2",
 	"net.sf.opencsv" % "opencsv" % "2.3",
 	"org.scribe" % "scribe" % "1.3.5",
 	"com.amazonaws" % "aws-java-sdk-ses" % "1.10.12",
