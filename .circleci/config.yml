@@ -3,19 +3,17 @@ jobs:
   build:
     working_directory: ~/zenobase
     environment:
-      SBT_VERSION: 0.13.16
+      SBT_VERSION: 0.13.18
     docker:
     - image: openjdk:8
     steps:
     - run:
         command: |
-          apt update && apt install -y curl
-          curl -L -o sbt-$SBT_VERSION.deb https://dl.bintray.com/sbt/debian/sbt-$SBT_VERSION.deb
-          dpkg -i sbt-$SBT_VERSION.deb
-          rm sbt-$SBT_VERSION.deb
-          apt-get update
-          apt-get install -y sbt python-pip
+          apt-get update && apt-get install -y curl python3-pip
           apt-get clean && apt-get autoclean
+          curl -Ls https://github.com/sbt/sbt/releases/download/v$SBT_VERSION/sbt-$SBT_VERSION.tgz | tar xvz -C /usr/share/
+          update-alternatives --install /usr/local/bin/sbt sbt /usr/share/sbt/bin/sbt 20
+          sbt about
           pip install awscli
     - checkout
     - restore_cache:
