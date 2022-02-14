@@ -1,7 +1,6 @@
 package com.zenobase.oauth;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Preconditions;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
@@ -14,9 +13,12 @@ public class OAuth2TokenExtractor implements AccessTokenExtractor {
 
 	@Override
 	public ExpiringToken extract(String response) {
-		ObjectNode node = Nodes.readObject(response);
+		return extract(Nodes.readObject(response));
+	}
+
+	protected ExpiringToken extract(JsonNode node) {
 		String token = node.path(OAuthConstants.ACCESS_TOKEN).textValue();
-		Preconditions.checkArgument(token != null, "Can't find access_token in <%s>", response);
+		Preconditions.checkArgument(token != null, "Can't find access_token in <%s>", node);
 		String refreshToken = node.path("refresh_token").textValue();
 		DateTime expires = getDateTime(node.path("expires_in"));
 		return new ExpiringToken(token, "", expires, refreshToken);

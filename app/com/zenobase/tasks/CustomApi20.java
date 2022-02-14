@@ -48,6 +48,7 @@ public abstract class CustomApi20 extends DefaultApi20 {
 				if (config.hasScope()) {
 					addParameter(request, OAuthConstants.SCOPE, config.getScope());
 				}
+				configureAccessTokenRequest(request);
 				Response response = send(request, config);
 				return getAccessTokenExtractor().extract(response.getBody());
 			}
@@ -77,7 +78,11 @@ public abstract class CustomApi20 extends DefaultApi20 {
 		request.addHeader("Authorization", "Basic " + encoded);
 	}
 
-	private void addParameter(OAuthRequest request, String key, String value) {
+	protected void configureAccessTokenRequest(OAuthRequest request) {
+
+	}
+
+	protected void addParameter(OAuthRequest request, String key, String value) {
 		if (getAccessTokenVerb() == Verb.POST) {
 			request.addBodyParameter(key, value);
 		} else if (getAccessTokenVerb() == Verb.GET) {
