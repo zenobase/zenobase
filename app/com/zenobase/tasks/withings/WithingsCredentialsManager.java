@@ -76,7 +76,7 @@ public class WithingsCredentialsManager extends OAuthCredentialsManager {
 		request.addBodyParameter("refresh_token", refreshToken);
 		Response response = request.send();
 		if (response.isSuccessful()) {
-			credentials.setToken(new OAuth2TokenExtractor().extract(response.getBody()));
+			credentials.setToken(new WithingsAccessTokenExtractor().extract(response.getBody()));
 		} else {
 			Logger.warn("Couldn't refresh credentials {}: {} -> {}", credentials.getId(), response.getHeaders(), response.getBody());
 		}
