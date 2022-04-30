@@ -1,8 +1,18 @@
 Developer Guide
 ===============
 
-Assets
-------
+Getting Started
+---------------
+
+Install Java 8.
+
+Install Typesafe Activator 1.3.12 [https://downloads.typesafe.com/typesafe-activator/1.3.12/typesafe-activator-1.3.12-minimal.zip].
+
+Run `activator run` to start the web app on http://localhost:9000/.
+
+
+Updating Assets
+---------------
 
 When updating the bootstrap.js file, concatenate the "Modals", "Dropdowns", "Toggleable tabs" and the "Typeahead" plugins,
 and append the bootstrap-fileupload, bootstrap-datepicker and bootstrap-timepicker plugins.
@@ -19,8 +29,8 @@ When updating highlight.js, create a custom package with support for bash and js
 app/assets/css/highlight-railscasts-x.y.less.
 
 
-Tests
------
+Running Tests
+-------------
 
 To run all unit tests:
 
@@ -75,6 +85,8 @@ Use this procedure when there are no setup or configuration changes:
   3. Update the build number in the stack settings [OpsWorks].
 
   4. Deploy the "Play" App to all machines in the Play Layer [OpsWorks].
+
+  5. Tag HEAD with the build number.
 
 
 Release Procedure
