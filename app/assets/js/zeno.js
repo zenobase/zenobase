@@ -6337,7 +6337,6 @@
 	app.controller('CreateTaskDialogController', ['$scope', '$http', 'delay', 'tracker', function($scope, $http, delay, tracker) {
 
 		$scope.types = [
-			{ id : 'automatic-trips', description : 'Creates an event for each trip recorded.', url : 'https://www.automatic.com/' },
 			{ id : 'beeminder', description : 'Updates a goal with event counts or value totals for each day.', url : 'https://www.beeminder.com/' },
 			{ id : 'fitbark', description : 'Creates an event for the activity level for every day or hour.', url : 'https://www.fitbark.com/' },
 			{ id : 'fitbit-activities', description : 'Creates an event for each activity.', url : 'https://www.fitbit.com/' },
@@ -6708,19 +6707,6 @@
 					tag : 'Sleep',
 					marker : new Date(moment().utc().subtract(12, 'months').startOf('month').valueOf()),
 					timezone : 'UTC'
-			};
-		};
-
-		$scope.init();
-	}]);
-
-	app.controller('AutomaticSettingsController', ['$scope', 'moment', function($scope, moment) {
-
-		$scope.init = function() {
-			$scope.settings = $scope.$parent.$parent.settings = {
-					tag : 'Trip',
-					metric : false,
-					marker : new Date(moment().utc().subtract(12, 'months').startOf('month').valueOf())
 			};
 		};
 

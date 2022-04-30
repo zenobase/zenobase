@@ -115,8 +115,6 @@ import com.zenobase.tasks.CredentialsManagerRegistry;
 import com.zenobase.tasks.TaskManager;
 import com.zenobase.tasks.TaskManagerRegistry;
 import com.zenobase.tasks.TaskRefresher;
-import com.zenobase.tasks.automatic.AutomaticCredentialsManager;
-import com.zenobase.tasks.automatic.AutomaticTaskManager;
 import com.zenobase.tasks.beeminder.BeeminderCredentialsManager;
 import com.zenobase.tasks.beeminder.BeeminderTaskManager;
 import com.zenobase.tasks.darksky.ForecastTaskManager;
@@ -318,7 +316,6 @@ public class Global extends GlobalSettings {
 				bindIfConfigured("lastfm", LastFmCredentialsManager.class, credentials);
 				bindIfConfigured("rescuetime", RescueTimeCredentialsManager.class, credentials);
 				bindIfConfigured("google", GoogleCredentialsManager.class, credentials);
-				bindIfConfigured("automatic", AutomaticCredentialsManager.class, credentials);
 				bindIfConfigured("misfit", MisfitCredentialsManager.class, credentials);
 				bindIfConfigured("trackthisforme", TrackthisformeCredentialsManager.class, credentials);
 				bindIfConfigured("ihealth", IHealthCredentialsManager.class, credentials);
@@ -363,7 +360,6 @@ public class Global extends GlobalSettings {
 				bindIfConfigured("google", GoogleFitCardioTaskManager.class, tasks);
 				bindIfConfigured("google", GoogleFitFoodTaskManager.class, tasks);
 				bindIfConfigured("google", GoogleFitWeightTaskManager.class, tasks);
-				bindIfConfigured("automatic", AutomaticTaskManager.class, tasks);
 				bindIfConfigured("misfit", MisfitActivitiesTaskManager.class, tasks);
 				bindIfConfigured("misfit", MisfitStepsTaskManager.class, tasks);
 				bindIfConfigured("misfit", MisfitSleepTaskManager.class, tasks);
