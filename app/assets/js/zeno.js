@@ -4103,7 +4103,7 @@
 			var label = document.createElement('div');
 			label.innerHTML = 'Filter';
 			control.appendChild(label);
-			google.maps.event.addDomListener(control, 'click', function() {
+			control.addEventListener('click', function() {
 				$scope.$apply(function() {
 					$scope.filterBounds();
 				});
@@ -4382,7 +4382,7 @@
 			var label = document.createElement('div');
 			label.innerHTML = 'Filter';
 			control.appendChild(label);
-			google.maps.event.addDomListener(control, 'click', function() {
+			control.addEventListener('click', function() {
 				$scope.$apply(function() {
 					$scope.filterBounds();
 				});
