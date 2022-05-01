@@ -6380,7 +6380,6 @@
 			{ id : 'runkeeper-weight', description : 'Creates an event for each body weight measurement.', url : 'https://runkeeper.com/' },
 			{ id : 'sleepcloud', description : 'Creates an event for each period of sleep.', url : 'https://sites.google.com/site/sleepasandroid/sleepcloud' },
 			{ id : 'strava-activities', description : 'Creates an event for each activity.', url : 'https://www.strava.com/' },
-			{ id : 'trackthisforme', description : 'Creates an event for each element logged in a category.', url : 'https://www.trackthisfor.me/' },
 			{ id : 'trakt', description : 'Creates an event for each movie or episode watched.', url : 'https://trakt.tv/' },
 			{ id : 'wakatime', description : 'Creates an event for every period of time logged for a project.', url : 'https://wakatime.com/' },
 			{ id : 'withings-cardio', description : 'Creates an event for each heart rate or blood pressure measurement.', url : 'https://www.withings.com/' },
@@ -6597,46 +6596,6 @@
 					marker : new Date(moment().utc().subtract(12, 'months').startOf('month').valueOf())
 			};
 		};
-
-		$scope.init();
-	}]);
-
-	app.controller('TrackthisformeSettingsController', ['$scope', 'moment', 'Field', function($scope, moment, Field) {
-
-		$scope.init = function() {
-			$scope.settings = $scope.$parent.$parent.settings = {
-					category : null,
-					field : null,
-					unit : null,
-					ratings : true,
-					marker : new Date(moment().utc().subtract(12, 'months').startOf('month').valueOf())
-			};
-		};
-		function isUnitValid() {
-			var units = $scope.getUnits();
-			return units.length === 0 ?
-					$scope.settings.unit === null :
-					$.inArray($scope.settings.unit, units) != -1;
-		}
-		function updateUnitValidity() {
-			$scope.$parent.$parent.form.unit.$setValidity('unit', isUnitValid());
-		}
-		$scope.getFields = function() {
-			return Field.findByType('numeric');
-		};
-		$scope.getUnits = function() {
-			var f = Field.find($scope.settings.field);
-			return f ? f.units : [];
-		};
-		$scope.$watch('settings.field', function() {
-			if (!isUnitValid()) {
-				$scope.settings.unit = null;
-			}
-			updateUnitValidity();
-		});
-		$scope.$watch('settings.unit', function() {
-			updateUnitValidity();
-		});
 
 		$scope.init();
 	}]);

@@ -179,8 +179,6 @@ import com.zenobase.tasks.runkeeper.RunkeeperWeightTaskManager;
 import com.zenobase.tasks.sleepcloud.SleepCloudTaskManager;
 import com.zenobase.tasks.strava.StravaCredentialsManager;
 import com.zenobase.tasks.strava.StravaTaskManager;
-import com.zenobase.tasks.trackthisforme.TrackthisformeCredentialsManager;
-import com.zenobase.tasks.trackthisforme.TrackthisformeTaskManager;
 import com.zenobase.tasks.trakt.TraktCredentialsManager;
 import com.zenobase.tasks.trakt.TraktTaskManager;
 import com.zenobase.tasks.wakatime.WakaTimeCredentialsManager;
@@ -317,7 +315,6 @@ public class Global extends GlobalSettings {
 				bindIfConfigured("rescuetime", RescueTimeCredentialsManager.class, credentials);
 				bindIfConfigured("google", GoogleCredentialsManager.class, credentials);
 				bindIfConfigured("misfit", MisfitCredentialsManager.class, credentials);
-				bindIfConfigured("trackthisforme", TrackthisformeCredentialsManager.class, credentials);
 				bindIfConfigured("ihealth", IHealthCredentialsManager.class, credentials);
 				bindIfConfigured("beeminder", BeeminderCredentialsManager.class, credentials);
 				bindIfConfigured("hexoskin", HexoskinCredentialsManager.class, credentials);
@@ -370,7 +367,6 @@ public class Global extends GlobalSettings {
 				bindIfConfigured("ihealth", IHealthSleepTaskManager.class, tasks);
 				bindIfConfigured("ihealth", IHealthStepsTaskManager.class, tasks);
 				bindIfConfigured("ihealth", IHealthWeightTaskManager.class, tasks);
-				bindIfConfigured("trackthisforme", TrackthisformeTaskManager.class, tasks);
 				bindIfConfigured("beeminder", BeeminderTaskManager.class, tasks);
 				bindIfConfigured("hexoskin", HexoskinActivitiesTaskManager.class, tasks);
 				bindIfConfigured("hexoskin", HexoskinSleepTaskManager.class, tasks);
