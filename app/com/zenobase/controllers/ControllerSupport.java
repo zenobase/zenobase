@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Objects;
 import org.jsoup.Jsoup;
-import org.jsoup.safety.Whitelist;
+import org.jsoup.safety.Safelist;
 import play.mvc.Controller;
 import play.mvc.With;
 
@@ -62,6 +62,6 @@ public abstract class ControllerSupport extends Controller implements CustomHead
 	}
 
 	private static String sanitize(String message) {
-		return message.contains("<") ? Jsoup.clean(message, Whitelist.basic()) : message;
+		return message.contains("<") ? Jsoup.clean(message, Safelist.basic()) : message;
 	}
 }
