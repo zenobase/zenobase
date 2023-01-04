@@ -32,7 +32,7 @@ libraryDependencies ++= Seq(
 	"org.apache.httpcomponents" % "httpcore" % "4.3",
 	"org.apache.httpcomponents" % "httpclient" % "4.3.1",
 	"org.apache.httpcomponents" % "fluent-hc" % "4.3.1",
-	"com.braintreepayments.gateway" % "braintree-java" % "2.90.0",
+	"com.braintreepayments.gateway" % "braintree-java" % "2.109.0",
 	"com.fasterxml.jackson.core" % "jackson-core" % "2.13.2",
 	"com.fasterxml.jackson.core" % "jackson-databind" % "2.13.2.2",
 	"com.fasterxml.jackson.core" % "jackson-annotations" % "2.13.2",
