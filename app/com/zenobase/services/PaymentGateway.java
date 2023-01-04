@@ -17,6 +17,7 @@ import com.braintreegateway.PaymentMethodRequest;
 import com.braintreegateway.Result;
 import com.braintreegateway.Subscription;
 import com.braintreegateway.SubscriptionRequest;
+import com.braintreegateway.ValidationError;
 import com.braintreegateway.exceptions.NotFoundException;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Iterables;
@@ -89,12 +90,27 @@ public class PaymentGateway {
 		PaymentMethodRequest request = new PaymentMethodRequest().customerId(username).paymentMethodNonce(payment.getNonce()).options().makeDefault(true).done();
 		Result<? extends PaymentMethod> result = gateway.paymentMethod().create(request);
 		Preconditions.checkArgument(result.isSuccess(), "Couldn't store credit card for <%s>: %s", username, result.getMessage());
-		Preconditions.checkArgument(isVerified(result), "Couldn't verify credit card for <%s>: %s", username, result.getCreditCardVerification().getStatus());
+		Preconditions.checkArgument(isVerified(result), "Couldn't verify credit card for <%s> (%s): %s", username, getStatus(result), getErrorMessage(result));
 		return result.getTarget();
 	}
 
 	private static boolean isVerified(Result<? extends PaymentMethod> result) {
-		return result.getCreditCardVerification() != null && result.getCreditCardVerification().getStatus() == CreditCardVerification.Status.VERIFIED;
+		return getStatus(result) == CreditCardVerification.Status.VERIFIED;
+	}
+
+	private static CreditCardVerification.Status getStatus(Result<? extends PaymentMethod> result) {
+		return result.getCreditCardVerification() != null ? result.getCreditCardVerification().getStatus() : null;
+	}
+
+	private static String getErrorMessage(Result<? extends PaymentMethod> result) {
+		StringBuilder msg = new StringBuilder();
+		if (result.getErrors() != null) {
+			for (ValidationError error : result.getErrors().getAllValidationErrors()) {
+				msg.append("[").append(error.getAttribute()).append("] ").append(error.getMessage()).append(" (").append(error.getCode()).append(")");
+				break;
+			}
+		}
+		return msg.toString();
 	}
 
 	static Subscription getSubscription(Customer customer) {
