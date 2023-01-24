@@ -18,7 +18,7 @@ public class WakaTimeApi extends CustomApi20 {
 			.addParameter("response_type", "code")
 			.addParameter("client_id", config.getApiKey())
 			.addParameter("redirect_uri", config.getCallback())
-			.addParameter("scope", "read_logged_time,read_languages_used")
+			.addParameter("scope", "read_logged_time,read_stats")
 			.build();
 	}
 }

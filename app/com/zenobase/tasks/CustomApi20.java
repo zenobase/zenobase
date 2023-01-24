@@ -36,6 +36,7 @@ public abstract class CustomApi20 extends DefaultApi20 {
 			public Token getAccessToken(Token requestToken, Verifier verifier) {
 				OAuthRequest request = new OAuthRequest(getAccessTokenVerb(), getAccessTokenEndpoint());
 				request.addHeader("User-Agent", "zeno");
+				request.addHeader("Accept", "application/json");
 				addParameter(request, "grant_type", "authorization_code");
 				addParameter(request, OAuthConstants.CODE, verifier.getValue());
 				addParameter(request, OAuthConstants.REDIRECT_URI, config.getCallback());
