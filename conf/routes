@@ -81,6 +81,5 @@ GET     /jobs/                         @com.zenobase.controllers.SchedulerContro
 
 GET     /to                            @com.zenobase.controllers.RedirectController.get(url)
 GET     /og                            @com.zenobase.controllers.OpenGraphController.get(url)
-GET     /tz                            @com.zenobase.controllers.TimezoneController.get(lat ?= null, lon ?= null)
 GET     /blank                         com.zenobase.controllers.BlankController.get()
 GET     /*file                         com.zenobase.controllers.Assets.at(path = "/public", file)

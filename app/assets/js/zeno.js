@@ -8326,17 +8326,8 @@
 	app.directive('uiTimezoneSelect', ['$http', function($http) {
 		return {
 			link : function(scope) {
-				$http.get('/tz', { cache : true }).success(function(response) {
-					scope.timezones = response;
-					if (navigator.geolocation) {
-						navigator.geolocation.getCurrentPosition(function(position) {
-							$http.get('/tz?' + $.param({ 'lat' : position.coords.latitude, 'lon' : position.coords.longitude }))
-								.success(function(response) {
-									scope.settings.timezone = response.timeZoneId;
-								});
-						});
-					}
-				});
+				scope.timezones = Intl.supportedValuesOf('timeZone');
+				scope.settings.timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 			}
 		};
 	}]);

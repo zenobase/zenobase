@@ -77,7 +77,6 @@ import com.zenobase.controllers.StatusController;
 import com.zenobase.controllers.TagController;
 import com.zenobase.controllers.TaskController;
 import com.zenobase.controllers.TaskListController;
-import com.zenobase.controllers.TimezoneController;
 import com.zenobase.controllers.UserController;
 import com.zenobase.controllers.UserListController;
 import com.zenobase.controllers.WhoController;
@@ -404,7 +403,6 @@ public class Global extends GlobalSettings {
 				bind(OAuthController.class).in(Singleton.class);
 				bind(AuthorizationController.class).in(Singleton.class);
 				bind(AuthorizationListController.class).in(Singleton.class);
-				bind(TimezoneController.class).in(Singleton.class);
 				bind(PaymentController.class).in(Singleton.class);
 
 				requestInjection(Global.this);
