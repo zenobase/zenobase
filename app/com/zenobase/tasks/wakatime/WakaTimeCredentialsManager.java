@@ -63,6 +63,7 @@ public class WakaTimeCredentialsManager extends OAuthCredentialsManager {
 	private void reauthorize(OAuthCredentials credentials) {
 		OAuthRequest request = new OAuthRequest(Verb.POST, "https://wakatime.com/oauth/token");
 		request.addHeader("Api-Key", getApiKey());
+		request.addHeader("Accept", "application/json");
 		request.addBodyParameter("grant_type", "refresh_token");
 		request.addBodyParameter("refresh_token", ((ExpiringToken) credentials.getToken()).getRefreshToken());
 		request.addBodyParameter(OAuthConstants.CLIENT_ID, getApiKey());
