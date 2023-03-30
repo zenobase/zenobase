@@ -79,6 +79,7 @@ public class PaymentGateway {
 		Result<Subscription> result = gateway.subscription().create(request);
 		Preconditions.checkArgument(result.isSuccess(), "Couldn't subscribe <%s> to <%s>: %s", username, plan.getId(), result.getMessage());
 	}
+
 	private Customer newCustomer(String username, String email, Payment payment) {
 		CustomerRequest request = new CustomerRequest().id(username).email(email).paymentMethodNonce(payment.getNonce());
 		Result<Customer> result = gateway.customer().create(request);
