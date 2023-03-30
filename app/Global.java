@@ -116,8 +116,6 @@ import com.zenobase.tasks.TaskManagerRegistry;
 import com.zenobase.tasks.TaskRefresher;
 import com.zenobase.tasks.beeminder.BeeminderCredentialsManager;
 import com.zenobase.tasks.beeminder.BeeminderTaskManager;
-import com.zenobase.tasks.darksky.ForecastTaskManager;
-import com.zenobase.tasks.darksky.Forecaster;
 import com.zenobase.tasks.demo.DemoCredentialsManager;
 import com.zenobase.tasks.demo.DemoTaskManager;
 import com.zenobase.tasks.dropbox.DropboxCredentialsManager;
@@ -237,9 +235,6 @@ public class Global extends GlobalSettings {
 				if (isConfigured("foursquare")) {
 					bind(FoursquareVenues.class).in(Singleton.class);
 				}
-				if (isConfigured("darksky")) {
-					bind(Forecaster.class).in(Singleton.class);
-				}
 
 				Multibinder<CommandParser> parsers = Multibinder.newSetBinder(binder(), CommandParser.class);
 				parsers.addBinding().to(CreateBucketCommand.Parser.class);
@@ -349,7 +344,6 @@ public class Global extends GlobalSettings {
 				bindIfConfigured("dropbox", ReporterTaskManager.class, tasks);
 				bindIfConfigured("dropbox", HipboneTaskManager.class, tasks);
 				bindIfConfigured("lastfm", LastFmTaskManager.class, tasks);
-				bindIfConfigured("darksky", ForecastTaskManager.class, tasks);
 				bindIfConfigured("rescuetime", RescueTimeProductivityTaskManager.class, tasks);
 				bindIfConfigured("google", SleepCloudTaskManager.class, tasks);
 				bindIfConfigured("google", GoogleFitActivitiesTaskManager.class, tasks);

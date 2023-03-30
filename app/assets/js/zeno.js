@@ -6346,7 +6346,6 @@
 			{ id : 'fitbit-sleep', description : 'Creates an event for each period of sleep.', url : 'https://www.fitbit.com/' },
 			{ id : 'fitbit-steps', description : 'Creates an event for the number of steps each day or hour.', url : 'https://www.fitbit.com/' },
 			{ id : 'fitbit-weight', description : 'Creates an event for the body weight each day.', url : 'https://www.fitbit.com/' },
-			{ id : 'forecast', description : 'Adds weather conditions and moon phase to existing events that have a location.' },
 			{ id : 'foursquare', description : 'Creates an event for each place visited.', url : 'https://foursquare.com/' },
 			{ id : 'goodreads', description : 'Creates an event for each book read.', url : 'https://www.goodreads.com/' },
 			{ id : 'google-activities', description : 'Creates an event for each activity.', url : 'https://fit.google.com/' },
@@ -6751,30 +6750,6 @@
 			};
 		};
 
-		$scope.init();
-	}]);
-
-	app.controller('ForecastSettingsController', ['$scope', function($scope) {
-
-		$scope.selected = function(field) {
-			return $scope.settings.fields.indexOf(field) != -1;
-		};
-		$scope.toggle = function(field) {
-			var i = $scope.settings.fields.indexOf(field);
-			if (i != -1) {
-				$scope.settings.fields.splice(i, 1);
-			} else {
-				$scope.settings.fields.push(field);
-			}
-			$scope.count = $scope.settings.fields.length || undefined;
-		};
-		$scope.init = function() {
-			$scope.count = undefined;
-			$scope.settings = $scope.$parent.$parent.settings = {
-					fields : [],
-					si : true
-			};
-		};
 		$scope.init();
 	}]);
 
