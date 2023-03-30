@@ -122,18 +122,26 @@
 	}]);
 
 	app.factory('tracker', [function() {
+		var toTitleCase = function(str) {
+			return str.replace(/\w\S*/g, function(token) {
+				return token.charAt(0).toUpperCase() + token.substring(1).toLowerCase();
+			});
+		};
 		return {
-			event : function(category, action, label) {
-				_gaq.push([ '_trackEvent', category, action, label ]);
+			identify : function(userId) {
+				mixpanel.identify(userId);
 			},
-			timing : function(category, action, time, label) {
-				_gaq.push([ '_trackTiming', category, action, time, label, 100 ]);
+			event : function(category, action, properties) {
+				category = toTitleCase(category);
+				action = toTitleCase(action);
+				properties = properties || {};
+				properties[category] = action;
+				mixpanel.track(category, properties);
 			},
-			pageview : function(url) {
-				_gaq.push([ '_trackPageview', url ]);
-			},
-			variable : function(index, name, value, scope) {
-				_gaq.push([ '_setCustomVar', index, name, value, scope ]);
+			pageview : function(page) {
+				mixpanel.track_pageview({
+					'Page': page
+				});
 			}
 		};
 	}]);
@@ -206,7 +214,6 @@
 	app.factory('$exceptionHandler', ['$log', 'tracker', function($log, tracker) {
 		return function(e) {
 			$log.error.apply($log, arguments);
-			tracker.event('error', e.toString());
 		};
 	}]);
 
@@ -220,8 +227,8 @@
 				if ($scope.user) {
 					if (success) {
 						success($scope.user);
+						tracker.identify($scope.user['@id']);
 					}
-					tracker.variable(1, 'user type', $scope.user.name ? 'registered' : 'unregistered', 1);
 				}
 			});
 		};
@@ -285,7 +292,6 @@
 		$scope.$on('$routeChangeSuccess', function() {
 			var path = $location.path().replace(/^\/(users|buckets)\/.+$/, '/$1/'); // remove personally identifiable information
 			tracker.pageview(path);
-			tracker.event('page', path);
 		});
 		$scope.whoami();
 	}]);
@@ -541,7 +547,7 @@
 
 		$scope.select = function() {
 			$scope.alert.clear();
-			tracker.event('action', 'select plan', $scope.plan);
+			tracker.event('action', 'select plan', { 'Plan': $scope.plan });
 		};
 	}]);
 
@@ -1074,7 +1080,7 @@
 						$scope.message = 'Couldn\'t create bucket. Please try agan later or contact support.';
 					}
 				});
-			tracker.event('action', 'create bucket', $scope.template ? $scope.template.label : undefined);
+			tracker.event('action', 'create bucket', { 'Template': $scope.template ? $scope.template.label : undefined });
 		};
 
 		var setTemplate = function() {
@@ -1489,7 +1495,6 @@
 			$q.all(requests).then(function(responses) {
 				var t1 = new Date().getTime();
 				callback(responses[0].data, responses.length > 1 ? responses[1].data : null);
-				tracker.timing('action', 'refresh', t1 - t0, $scope.bucketId);
 			}, function() {
 				callback({ total : -1 });
 			});
@@ -6183,7 +6188,7 @@
 		$scope.submit = function() {
 			$scope.alert.clear();
 			$scope.closeDialog();
-			tracker.event('action', 'export events', $scope.format);
+			tracker.event('action', 'export events', { 'Format': $scope.format });
 		};
 	}]);
 
