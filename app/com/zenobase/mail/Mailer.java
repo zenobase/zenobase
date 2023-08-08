@@ -35,6 +35,7 @@ public class Mailer {
 		this(user, pass, from, new PropertiesBuilder()
 			.put("mail.smtp.auth", auth)
 			.put("mail.smtp.starttls.enable", starttls)
+			.put("mail.smtp.ssl.protocols", "TLSv1.2")
 			.put("mail.smtp.host", host)
 			.put("mail.smtp.port", port)
 			.put("mail.user", user).build());
