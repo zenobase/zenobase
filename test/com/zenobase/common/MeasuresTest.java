@@ -60,14 +60,17 @@ public class MeasuresTest {
 		assertThatIsEqualTo("0.001 kg/m^3", "1 mg/L");
 		assertThatIsEqualTo("0.000001 kg/m^3", "1 ug/L");
 		assertThatIsEqualTo("0.000000001 kg/m^3", "1 ng/L");
+		assertThatIsEqualTo("0.000000000001 kg/m^3", "1 pg/L");
 		assertThatIsEqualTo("10 kg/m^3", "1 g/dL");
 		assertThatIsEqualTo("0.01 kg/m^3", "1 mg/dL");
 		assertThatIsEqualTo("0.00001 kg/m^3", "1 ug/dL");
 		assertThatIsEqualTo("0.00000001 kg/m^3", "1 ng/dL");
+		assertThatIsEqualTo("0.00000000001 kg/m^3", "1 pg/dL");
 		assertThatIsEqualTo("1000 kg/m^3", "1 g/mL");
 		assertThatIsEqualTo("1.0 kg/m^3", "1 mg/mL");
 		assertThatIsEqualTo("0.001 kg/m^3", "1 ug/mL");
 		assertThatIsEqualTo("0.000001 kg/m^3", "1 ng/mL");
+		assertThatIsEqualTo("0.000000001 kg/m^3", "1 pg/mL");
 	}
 
 	@Test

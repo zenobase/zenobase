@@ -7448,7 +7448,7 @@
 			name : 'concentration',
 			icon : 'fa-tint',
 			type : 'numeric',
-			units : [ 'g/L', 'mg/L', 'ug/L', 'ng/L', 'g/dL', 'mg/dL', 'ug/dL', 'ng/dL', 'g/mL', 'mg/mL', 'ug/mL', 'ng/mL' ],
+			units : [ 'g/L', 'mg/L', 'ug/L', 'ng/L', 'pg/L', 'g/dL', 'mg/dL', 'ug/dL', 'ng/dL', 'pg/dL', 'g/mL', 'mg/mL', 'ug/mL', 'ng/mL', 'pg/mL' ],
 			toText : function(value) {
 				return typeof value === 'object' ? value['@value'] + ' ' + value.unit : value;
 			},

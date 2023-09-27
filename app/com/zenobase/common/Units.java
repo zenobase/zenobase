@@ -89,14 +89,17 @@ public class Units {
 	public static final Unit<VolumetricDensity> MG_PER_L = valueOf("mg/L");
 	public static final Unit<VolumetricDensity> UG_PER_L = valueOf("ug/L");
 	public static final Unit<VolumetricDensity> NG_PER_L = valueOf("ng/L");
+	public static final Unit<VolumetricDensity> PG_PER_L = valueOf("pg/L");
 	public static final Unit<VolumetricDensity> G_PER_DL = valueOf("g/dL");
 	public static final Unit<VolumetricDensity> MG_PER_DL = valueOf("mg/dL");
 	public static final Unit<VolumetricDensity> UG_PER_DL = valueOf("ug/dL");
 	public static final Unit<VolumetricDensity> NG_PER_DL = valueOf("ng/dL");
+	public static final Unit<VolumetricDensity> PG_PER_DL = valueOf("pg/dL");
 	public static final Unit<VolumetricDensity> G_PER_ML = valueOf("g/mL");
 	public static final Unit<VolumetricDensity> MG_PER_ML = valueOf("mg/mL");
 	public static final Unit<VolumetricDensity> UG_PER_ML = valueOf("ug/mL");
 	public static final Unit<VolumetricDensity> NG_PER_ML = valueOf("ng/mL");
+	public static final Unit<VolumetricDensity> PG_PER_ML = valueOf("pg/mL");
 
 	public static final Unit<Length> MM = valueOf("mm");
 	public static final Unit<Length> CM = valueOf("cm");
