@@ -61,7 +61,7 @@ public class TraktCredentialsManager extends OAuthCredentialsManager {
 	}
 
 	private void reauthorize(OAuthCredentials credentials) {
-		OAuthRequest request = new OAuthRequest(Verb.POST, "https://api-v2launch.trakt.tv/oauth/token");
+		OAuthRequest request = new OAuthRequest(Verb.POST, "https://api.trakt.tv/oauth/token");
 		request.addHeader("trakt-api-version", "2");
 		request.addHeader("trakt-api-key", getApiKey());
 		request.addBodyParameter("grant_type", "refresh_token");

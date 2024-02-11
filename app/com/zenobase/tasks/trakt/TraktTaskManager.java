@@ -28,7 +28,7 @@ import com.zenobase.tasks.Task;
 
 public class TraktTaskManager extends OAuthTaskManager {
 
-	private static final String host = "https://api-v2launch.trakt.tv";
+	private static final String host = "https://api.trakt.tv";
 
 	@Inject
 	public TraktTaskManager(TraktCredentialsManager credentialsManager) {

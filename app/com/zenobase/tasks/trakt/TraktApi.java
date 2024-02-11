@@ -9,7 +9,7 @@ public class TraktApi extends CustomApi20 {
 
 	@Override
 	public String getAccessTokenEndpoint() {
-		return "https://api-v2launch.trakt.tv/oauth/token";
+		return "https://api.trakt.tv/oauth/token";
 	}
 
 	@Override
