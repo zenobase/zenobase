@@ -14,7 +14,7 @@ class OuraReadinessResult extends OuraResultSupport {
 	private final DateTimeZone zone;
 
 	public OuraReadinessResult(JsonNode node, Identity author, String tag, DateTimeZone zone) {
-		super("readiness", node, author);
+		super(node, author);
 		this.tag = tag;
 		this.zone = zone;
 	}
@@ -22,10 +22,9 @@ class OuraReadinessResult extends OuraResultSupport {
 	@Override
 	protected Event newEvent(JsonNode node) {
 		Event event = new Event();
-		DateTime t = dateValue(node.path("summary_date")).toDateTimeAtStartOfDay(zone);
+		DateTime t = dateValue(node.path("day")).toDateTimeAtStartOfDay(zone);
 		event.addValue(Event.TAG, tag);
 		event.setValues(Event.TIMESTAMP, ImmutableList.of(t, t.plusDays(1)));
-		event.setValue(Event.RATING, ratingValue(node.path("score")));
 		event.setValue(Event.AUTHOR, author);
 		event.setValue(Event.SOURCE, SOURCE);
 		return event;

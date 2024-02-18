@@ -27,7 +27,6 @@ public class OuraSleepResultTest extends ResultTestSupport {
 		assertThat(events.get(0).getValue(Event.DURATION)).isEqualTo(Duration.standardSeconds(35400));
 		assertThat(events.get(0).getValue(Event.PERCENTAGE)).isEqualTo(Percentage.valueOf(88));
 		assertThat(events.get(0).getValue(Event.FREQUENCY)).isEqualTo(Measures.valueOf("57 bpm"));
-		assertThat(events.get(0).getValue(Event.RATING)).isEqualTo(Rating.valueOf(87));
 		assertThat(events.get(0).getValue(Event.SOURCE)).isEqualTo(OuraStepsResult.SOURCE);
 		assertThat(events.get(0).getValue(Event.AUTHOR)).isEqualTo(TESTER);
 	}

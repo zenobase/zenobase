@@ -27,19 +27,17 @@ abstract class OuraResultSupport {
 
 	static final Resource SOURCE = new Resource("Oura", "https://ouraring.com/");
 
-	protected final String root;
 	protected final JsonNode node;
 	protected final Identity author;
 
-	protected OuraResultSupport(String root, JsonNode node, Identity author) {
-		this.root = Preconditions.checkNotNull(root);
+	protected OuraResultSupport(JsonNode node, Identity author) {
 		this.node = Preconditions.checkNotNull(node);
 		this.author = Preconditions.checkNotNull(author);
 	}
 
 	public List<Event> getEvents() {
 		List<Event> events = Lists.newArrayList();
-		for (JsonNode eventNode : node.path(root)) {
+		for (JsonNode eventNode : node.path("data")) {
 			Event event = newEvent(eventNode);
 			if (event != null) {
 				events.add(event);

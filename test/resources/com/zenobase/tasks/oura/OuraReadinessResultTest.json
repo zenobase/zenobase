@@ -1,40 +1,16 @@
 {
-  "readiness": [
+  "data": [
     {
-      "period_id": 0,
-      "score_previous_night": 71,
-      "score_resting_hr": 0,
-      "score_sleep_balance": 99,
-      "score_recovery_index": 0,
-      "score_activity_balance": 65,
-      "score": 82,
-      "score_previous_day": 85,
-      "score_temperature": 0,
-      "summary_date": "2018-12-01"
+      "day": "2018-12-01",
+      "score": 82
     },
     {
-      "period_id": 0,
-      "score_previous_night": 92,
-      "score_resting_hr": 100,
-      "score_sleep_balance": 100,
-      "score_recovery_index": 80,
-      "score_activity_balance": 75,
-      "score": 91,
-      "score_previous_day": 0,
-      "score_temperature": 83,
-      "summary_date": "2018-12-02"
+      "day": "2018-12-02",
+      "score": 91
     },
     {
-      "period_id": 0,
-      "score_previous_night": 11,
-      "score_resting_hr": 84,
-      "score_sleep_balance": 95,
-      "score_recovery_index": 81,
-      "score_activity_balance": 80,
-      "score": 70,
-      "score_previous_day": 76,
-      "score_temperature": 100,
-      "summary_date": "2018-12-03"
+      "day": "2018-12-03",
+      "score": 70
     }
   ]
 }

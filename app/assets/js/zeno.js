@@ -6986,7 +6986,8 @@
 		$scope.init = function() {
 			$scope.settings = $scope.$parent.$parent.settings = {
 				tag : 'Steps',
-				marker : new Date(moment().utc().subtract(6, 'months').startOf('month').valueOf())
+				marker : new Date(moment().utc().subtract(6, 'months').startOf('month').valueOf()),
+				timezone : 'UTC'
 			};
 		};
 

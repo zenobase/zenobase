@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Objects;
 import com.google.common.collect.Lists;
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.scribe.model.OAuthRequest;
 import org.scribe.model.Response;
 import org.scribe.model.Token;
@@ -30,7 +31,8 @@ public class OuraStepsTaskManager extends OuraTaskManagerSupport {
 	public Task newTask(String bucketId, Identity principal, ObjectNode settings) {
 		String marker = DateTime.parse(settings.path("marker").textValue()).toString();
 		String tag = Objects.firstNonNull(settings.path("tag").textValue(), "steps");
-		return new OuraStepsTask(bucketId, principal, marker, tag);
+		DateTimeZone zone = DateTimeZone.forID(Objects.firstNonNull(settings.path("timezone").textValue(), "UTC"));
+		return new OuraStepsTask(bucketId, principal, marker, tag, zone);
 	}
 
 	@Override
@@ -46,11 +48,11 @@ public class OuraStepsTaskManager extends OuraTaskManagerSupport {
 		DateTime begin = task.getBegin();
 		DateTime end = DateTime.now(begin.getZone()).plusDays(1);
 		List<Event> events = Lists.newArrayList();
-		OAuthRequest request = new OAuthRequest(Verb.GET, HOST + "/v1/activity");
-		request.addQuerystringParameter("start", begin.toLocalDate().toString());
-		request.addQuerystringParameter("end", end.toLocalDate().toString());
+		OAuthRequest request = new OAuthRequest(Verb.GET, HOST + "/v2/usercollection/daily_activity");
+		request.addQuerystringParameter("start_date", begin.toLocalDate().toString());
+		request.addQuerystringParameter("end_date", end.toLocalDate().toString());
 		Response response = send(request, credentials);
-		events.addAll(new OuraStepsResult(parseObject(response), task.getPrincipal(), task.getTag()).getEvents());
+		events.addAll(new OuraStepsResult(parseObject(response), task.getPrincipal(), task.getTag(), task.getTimezone()).getEvents());
 		return createCommand(task, credentials, events, token);
 	}
 }

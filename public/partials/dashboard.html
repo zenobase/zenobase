@@ -812,6 +812,10 @@
 				<label for="marker" class="control-label">Starting from</label>
 				<input class="input-small" type="text" data-ui-datepicker data-ng-model="settings.marker"/>
 			</div>
+			<div class="control-group">
+				<label for="timezone" class="control-label">Timezone</label>
+				<select name="timezone" data-ng-model="settings.timezone" data-ng-options="timezone for timezone in timezones" required data-ui-timezone-select></select>
+			</div>
 		</div>
 	</script>
 

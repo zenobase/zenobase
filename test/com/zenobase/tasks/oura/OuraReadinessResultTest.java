@@ -22,7 +22,6 @@ public class OuraReadinessResultTest extends ResultTestSupport {
 
 		assertThat(events.get(0).getValue(Event.TAG)).isEqualTo("Readiness");
 		assertThat(events.get(0).getValues(Event.TIMESTAMP)).containsSequence(dateTime("2018-12-01T00:00:00+01:00"), dateTime("2018-12-02T00:00:00+01:00"));
-		assertThat(events.get(0).getValue(Event.RATING)).isEqualTo(Rating.valueOf(82));
 		assertThat(events.get(0).getValue(Event.SOURCE)).isEqualTo(OuraStepsResult.SOURCE);
 		assertThat(events.get(0).getValue(Event.AUTHOR)).isEqualTo(TESTER);
 	}
