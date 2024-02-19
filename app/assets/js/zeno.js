@@ -6366,9 +6366,6 @@
 			{ id : 'mapmyfitness-activities', description : 'Creates an event for each activity.', url : 'https://www.mapmyfitness.com/' },
 			{ id : 'mapmyfitness-sleep', description : 'Creates an event for each period of sleep.', url : 'https://www.mapmyfitness.com/' },
 			{ id : 'mapmyfitness-weight', description : 'Creates an event for each body weight measurement.', url : 'https://www.mapmyfitness.com/' },
-			{ id : 'misfit-activities', description : 'Creates an event for each activity.', url : 'https://misfit.com/' },
-			{ id : 'misfit-sleep', description : 'Creates an event for each period of sleep.', url : 'https://misfit.com/' },
-			{ id : 'misfit-steps', description : 'Creates an event for the number of steps each day.', url : 'https://misfit.com/' },
 			{ id : 'netatmo', description : 'Creates events for weather station measurements.', url : 'https://www.netatmo.com/' },
 			{ id : 'oura-steps', description : 'Creates an event for the number of steps and calories burned each day.', url : 'https://ouraring.com/' },
 			{ id : 'oura-sleep', description : 'Creates an event for each period of sleep.', url : 'https://ouraring.com/' },
@@ -6938,42 +6935,6 @@
 			$scope.settings = $scope.$parent.$parent.settings = {
 					tag : 'Body',
 					marker : new Date(moment().utc().subtract(12, 'months').startOf('month').valueOf()),
-					timezone : 'UTC'
-			};
-		};
-
-		$scope.init();
-	}]);
-
-	app.controller('MisfitActivitiesSettingsController', ['$scope', 'moment', function($scope, moment) {
-
-		$scope.init = function() {
-			$scope.settings = $scope.$parent.$parent.settings = {
-					marker : new Date(moment().utc().subtract(6, 'months').startOf('month').valueOf())
-			};
-		};
-
-		$scope.init();
-	}]);
-
-	app.controller('MisfitSleepSettingsController', ['$scope', 'moment', function($scope, moment) {
-
-		$scope.init = function() {
-			$scope.settings = $scope.$parent.$parent.settings = {
-					tag : 'Sleep',
-					marker : new Date(moment().utc().subtract(6, 'months').startOf('month').valueOf())
-			};
-		};
-
-		$scope.init();
-	}]);
-
-	app.controller('MisfitStepsSettingsController', ['$scope', '$http', 'moment', function($scope, $http, moment) {
-
-		$scope.init = function() {
-			$scope.settings = $scope.$parent.$parent.settings = {
-					tag : 'Steps',
-					marker : new Date(moment().utc().subtract(6, 'months').startOf('month').valueOf()),
 					timezone : 'UTC'
 			};
 		};

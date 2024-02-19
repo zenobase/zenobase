@@ -156,10 +156,6 @@ import com.zenobase.tasks.mapmyfitness.MapMyFitnessActivitiesTaskManager;
 import com.zenobase.tasks.mapmyfitness.MapMyFitnessCredentialsManager;
 import com.zenobase.tasks.mapmyfitness.MapMyFitnessSleepTaskManager;
 import com.zenobase.tasks.mapmyfitness.MapMyFitnessWeightTaskManager;
-import com.zenobase.tasks.misfit.MisfitActivitiesTaskManager;
-import com.zenobase.tasks.misfit.MisfitCredentialsManager;
-import com.zenobase.tasks.misfit.MisfitSleepTaskManager;
-import com.zenobase.tasks.misfit.MisfitStepsTaskManager;
 import com.zenobase.tasks.netatmo.NetatmoCredentialsManager;
 import com.zenobase.tasks.netatmo.NetatmoTaskManager;
 import com.zenobase.tasks.openmhealth.HipboneTaskManager;
@@ -308,7 +304,6 @@ public class Global extends GlobalSettings {
 				bindIfConfigured("lastfm", LastFmCredentialsManager.class, credentials);
 				bindIfConfigured("rescuetime", RescueTimeCredentialsManager.class, credentials);
 				bindIfConfigured("google", GoogleCredentialsManager.class, credentials);
-				bindIfConfigured("misfit", MisfitCredentialsManager.class, credentials);
 				bindIfConfigured("ihealth", IHealthCredentialsManager.class, credentials);
 				bindIfConfigured("beeminder", BeeminderCredentialsManager.class, credentials);
 				bindIfConfigured("hexoskin", HexoskinCredentialsManager.class, credentials);
@@ -350,9 +345,6 @@ public class Global extends GlobalSettings {
 				bindIfConfigured("google", GoogleFitCardioTaskManager.class, tasks);
 				bindIfConfigured("google", GoogleFitFoodTaskManager.class, tasks);
 				bindIfConfigured("google", GoogleFitWeightTaskManager.class, tasks);
-				bindIfConfigured("misfit", MisfitActivitiesTaskManager.class, tasks);
-				bindIfConfigured("misfit", MisfitStepsTaskManager.class, tasks);
-				bindIfConfigured("misfit", MisfitSleepTaskManager.class, tasks);
 				bindIfConfigured("ihealth", IHealthActivitiesTaskManager.class, tasks);
 				bindIfConfigured("ihealth", IHealthCardioTaskManager.class, tasks);
 				bindIfConfigured("ihealth", IHealthFoodTaskManager.class, tasks);
