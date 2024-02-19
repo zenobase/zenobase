@@ -158,7 +158,6 @@ import com.zenobase.tasks.mapmyfitness.MapMyFitnessSleepTaskManager;
 import com.zenobase.tasks.mapmyfitness.MapMyFitnessWeightTaskManager;
 import com.zenobase.tasks.netatmo.NetatmoCredentialsManager;
 import com.zenobase.tasks.netatmo.NetatmoTaskManager;
-import com.zenobase.tasks.openmhealth.HipboneTaskManager;
 import com.zenobase.tasks.oura.OuraCredentialsManager;
 import com.zenobase.tasks.oura.OuraReadinessTaskManager;
 import com.zenobase.tasks.oura.OuraSleepTaskManager;
@@ -337,7 +336,6 @@ public class Global extends GlobalSettings {
 				bindIfConfigured("mapmyfitness", MapMyFitnessSleepTaskManager.class, tasks);
 				bindIfConfigured("mapmyfitness", MapMyFitnessWeightTaskManager.class, tasks);
 				bindIfConfigured("dropbox", ReporterTaskManager.class, tasks);
-				bindIfConfigured("dropbox", HipboneTaskManager.class, tasks);
 				bindIfConfigured("lastfm", LastFmTaskManager.class, tasks);
 				bindIfConfigured("rescuetime", RescueTimeProductivityTaskManager.class, tasks);
 				bindIfConfigured("google", SleepCloudTaskManager.class, tasks);
