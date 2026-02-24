@@ -1,0 +1,12 @@
+{
+    "name": "zenobase-infra",
+    "main": "index.ts",
+    "devDependencies": {
+        "@types/node": "^18",
+        "typescript": "^5"
+    },
+    "dependencies": {
+        "@pulumi/aws": "^6",
+        "@pulumi/pulumi": "^3"
+    }
+}

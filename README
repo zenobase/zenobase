@@ -10,6 +10,13 @@ Install Typesafe Activator 1.3.12 [https://downloads.typesafe.com/typesafe-activ
 
 Run `activator run` to start the web app on http://localhost:9000/.
 
+Alternatively, run with Docker (requires zenobase-cookbooks to be checked out alongside this repo):
+
+  docker/build.sh
+  docker compose -f docker/docker-compose.local.yml up
+
+This starts both the Play app (port 9000) and Elasticsearch (port 9200) in containers.
+
 
 Updating Assets
 ---------------
@@ -76,109 +83,68 @@ Profiling
 Deploy Procedure
 ----------------
 
-Use this procedure when there are no setup or configuration changes:
+Normal deploys (code changes only) are fully automated:
 
-  1. Push the code to the build server.
+  1. Push to master.
 
-  2. Obtain the build number [CircleCI].
+  2. GitHub Actions runs tests, builds Docker images, pushes to ECR.
 
-  3. Update the build number in the stack settings [OpsWorks].
+  3. The deploy workflow runs Pulumi to create a new EC2 instance in the inactive
+     target group. ES on the new instance joins the existing cluster via unicast
+     and replicates data automatically.
 
-  4. Deploy the "Play" App to all machines in the Play Layer [OpsWorks].
+  4. Once the ALB health check passes, the listener switches to the new target group.
 
-  5. Tag HEAD with the build number.
+  5. The old instance is terminated after the drain period.
 
 
 Release Procedure
 -----------------
 
-Use this procedure when there are setup or configuration changes, but no database migration is required:
+Use this procedure when there are infrastructure or configuration changes:
 
-  1. Push zenobase-cookbooks to the build server.
+  1. Update secrets in Secrets Manager if needed.
 
-  2. Obtain the build number [CircleCI].
+  2. Update Pulumi config (infra/Pulumi.prod.yaml) if needed.
 
-  3. Update the "Repository URL" with the build number in the stack settings [OpsWorks].
+  3. Run `pulumi up` from the infra/ directory to apply changes.
 
-  4. Push the application code to the build server.
-
-  5. Obtain the build number [CircleCI].
-
-  6. Update the build number in the stack settings [OpsWorks].
-
-  7. Set up new instances [OpsWorks]:
-
-     7.1. Add two t3.large instances named "{name}-1a" in us-east-1a and "{name}-1b" in us-east-1b to the "Elasticsearch" layer.
-
-     7.2. Add the new instances to the "Play" layer.
-
-  8. Start the new instances [OpsWorks].
-
-  9. Wait for the status check to show 8 nodes and green health [Zenobase].
-
-  10. Stop the old instances [OpsWorks].
-
-  11. Wait for 4 nodes and green health [Zenobase].
-
-  12. Tag HEAD with the build number.
-
-  13. Cleanup (optional):
-
-      13.1. Remove stopped instances [OpsWorks].
-
-      13.2. Delete builds older than a month or so from the zeno-builds bucket [S3].
-
-      13.3. Remove instances that are no longer reporting data [New Relic].
+  4. Push code to master to trigger the CI/CD pipeline.
 
 
 Migration Procedure
 -------------------
 
-Use this procedure to rebuild the database:
+Use this procedure to rebuild the database (e.g. after data model changes):
 
-  1. Push the code to the build server.
+  1. Note the current EC2 instance's private IP.
 
-  2. Obtain the build number [CircleCI].
+  2. Set migration config:
 
-  3. Update the build number in the stack settings [OpsWorks].
+       cd infra
+       pulumi config set zenobase:esCluster "<new-cluster-name>"
+       pulumi config set zenobase:esReplayCluster "<old-cluster-name>"
+       pulumi config set zenobase:esReplayHost "<old-instance-ip>"
+       pulumi config set zenobase:oldInstanceIp "<old-instance-ip>"
 
-  4. Increment "elasticsearch.clusterName" and ".replay" (or ".rebuild", to compact the history during the migration) in the stack settings [OpsWorks].
+  3. Run `pulumi up` to create the new instance (do NOT switch the ALB yet).
 
-  5. Set up new instances [OpsWorks]:
+  4. The new instance starts with an empty ES cluster. The Play app connects to the
+     old cluster via es.replay.host and replays all commands.
 
-     4.1. Add two t3.large instances named "{name}-1a" in us-east-1a and "{name}-1b" in us-east-1b to the "Elasticsearch" layer.
+  5. Monitor replay progress in CloudWatch Logs.
 
-     4.2. Add the new instances to the "Play" layer.
+  6. When replay completes, verify data on the new instance.
 
-  6. Before proceeding:
+  7. Switch the ALB to the new target group (via Pulumi config or AWS console).
 
-     6.1. The status check must show 4 nodes and green health [Zenobase].
+  8. Terminate the old instance.
 
-     6.2. There should be a recent snapshot.
+  9. Clear migration config:
 
-  7. Start one of the new instances [OpsWorks].
-
-  8. Switch the old cluster into read-only mode [Zenobase].
-
-  9. Remove all old instances from the load balancer as soon as the new instances is listed as "in service" [EC2].
-
-  10. Start other new instance [OpsWorks].
-
-  11. Wait for the status check to show 4 nodes and green health [Zenobase].
-
-  12. Stop the old instances [OpsWorks].
-
-  13. Tag HEAD with the build number.
-
-  14. Cleanup (optional):
-
-      14.1. Remove stopped instances [OpsWorks].
-
-      14.2. Delete builds older than a month or so from the zeno-builds bucket [S3].
-
-      14.3. Remove instances that are no longer reporting data [New Relic].
-
-      14.4. Remove all but the last few snapshot buckets [S3].
+       pulumi config set zenobase:esReplayCluster ""
+       pulumi config set zenobase:esReplayHost ""
+       pulumi config set zenobase:oldInstanceIp ""
 
 
 Restore Procedure

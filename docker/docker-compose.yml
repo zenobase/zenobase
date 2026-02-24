@@ -1,0 +1,60 @@
+services:
+  elasticsearch:
+    image: ${ECR_REGISTRY}/zenobase-elasticsearch:${IMAGE_TAG:-latest}
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    volumes:
+      - es-data:/var/lib/elasticsearch
+      - ./elasticsearch/config/elasticsearch.yml:/etc/elasticsearch/elasticsearch.yml:ro
+      - ./elasticsearch/config/logback-elasticsearch.xml:/etc/elasticsearch/logback.xml:ro
+    environment:
+      - ES_HEAP_SIZE=${ES_HEAP_SIZE:-4g}
+      - ES_CLUSTER_NAME=${ES_CLUSTER_NAME:-elasticsearch}
+      - ES_UNICAST_HOSTS=${ES_UNICAST_HOSTS:-}
+      - AWS_ACCESS_KEY=${AWS_ACCESS_KEY}
+      - AWS_SECRET_KEY=${AWS_SECRET_KEY}
+      - AWS_REGION=${AWS_REGION:-us-east-1}
+    ulimits:
+      nofile:
+        soft: 64000
+        hard: 64000
+      memlock:
+        soft: -1
+        hard: -1
+    restart: unless-stopped
+    logging:
+      driver: awslogs
+      options:
+        awslogs-region: ${AWS_REGION:-us-east-1}
+        awslogs-group: /zenobase/elasticsearch
+        awslogs-stream-prefix: es
+
+  play:
+    image: ${ECR_REGISTRY}/zenobase-play:${IMAGE_TAG:-latest}
+    ports:
+      - "9000:9000"
+    volumes:
+      - /etc/play/prod.conf:/etc/play/prod.conf:ro
+      - ./play/config/logback-play.xml:/etc/play/logback.xml:ro
+      - ./play/config/hazelcast.xml:/etc/play/hazelcast.xml:ro
+      - ./play/config/enableLegacyTLS.security:/etc/play/enableLegacyTLS.security:ro
+    environment:
+      - JAVA_HEAP=${JAVA_HEAP:-2g}
+      - ES_CLUSTER=${ES_CLUSTER:-elasticsearch}
+      - ES_REPLAY_CLUSTER=${ES_REPLAY_CLUSTER:-}
+      - ES_REPLAY_HOST=${ES_REPLAY_HOST:-}
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+    restart: unless-stopped
+    logging:
+      driver: awslogs
+      options:
+        awslogs-region: ${AWS_REGION:-us-east-1}
+        awslogs-group: /zenobase/play
+        awslogs-stream-prefix: play
+
+volumes:
+  es-data:
+    driver: local

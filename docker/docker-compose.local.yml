@@ -1,0 +1,63 @@
+services:
+  elasticsearch:
+    image: zenobase-elasticsearch:latest
+    pull_policy: never
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    volumes:
+      - es-data:/var/lib/elasticsearch
+      - ./elasticsearch/config/elasticsearch.yml:/etc/elasticsearch/elasticsearch.yml:ro
+      - ./elasticsearch/config/logback-elasticsearch.xml:/etc/elasticsearch/logback.xml:ro
+    environment:
+      - ES_HEAP_SIZE=2g
+      - ES_CLUSTER_NAME=elasticsearch
+      - ES_UNICAST_HOSTS=
+      - AWS_ACCESS_KEY=
+      - AWS_SECRET_KEY=
+      - AWS_REGION=us-east-1
+    ulimits:
+      nofile:
+        soft: 64000
+        hard: 64000
+      memlock:
+        soft: -1
+        hard: -1
+
+  play:
+    image: zenobase-play:latest
+    pull_policy: never
+    build:
+      context: ..
+      dockerfile: docker/play/Dockerfile
+    ports:
+      - "9000:9000"
+    volumes:
+      - ./play/config/play.conf:/etc/play/prod.conf:ro
+      - ./play/config/logback-play.xml:/etc/play/logback.xml:ro
+      - ./play/config/hazelcast.xml:/etc/play/hazelcast.xml:ro
+      - ./play/config/enableLegacyTLS.security:/etc/play/enableLegacyTLS.security:ro
+      - ../conf/local.conf:/etc/play/local.conf:ro
+    environment:
+      - JAVA_HEAP=1g
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+    develop:
+      watch:
+        - action: rebuild
+          path: ../app
+        - action: rebuild
+          path: ../conf
+          ignore:
+            - local.conf
+        - action: rebuild
+          path: ../public
+        - action: rebuild
+          path: ../build.sbt
+        - action: rebuild
+          path: ../project
+
+volumes:
+  es-data:
+    driver: local

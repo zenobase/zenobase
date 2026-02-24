@@ -1,0 +1,24 @@
+cluster.name: ${ES_CLUSTER_NAME}
+
+bootstrap.sigar: false
+
+indices.store.throttle.type: none
+indices.breaker.fielddata.limit: 80%
+indices.breaker.request.limit: 80%
+indices.breaker.total.limit: 80%
+
+plugin.mandatory: cloud-aws,geocluster-facet,decimal-histogram-facet
+
+cloud:
+    aws:
+        access_key: ${AWS_ACCESS_KEY}
+        secret_key: ${AWS_SECRET_KEY}
+        region: ${AWS_REGION}
+
+discovery:
+    zen:
+        ping:
+            unicast:
+                hosts: ${ES_UNICAST_HOSTS:}
+            multicast:
+                enabled: false

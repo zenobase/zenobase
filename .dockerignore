@@ -1,0 +1,9 @@
+docker/
+infra/
+.github/
+.circleci/
+.git/
+target/
+logs/
+data/
+*.md

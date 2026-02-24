@@ -25,7 +25,7 @@ public class CommandReplay {
 	private int count, replayed, failures;
 
 	@Inject
-	public CommandReplay(@Named("es.replay") String sourceCluster, NodeFactory nodeFactory, CommandParserRegistry parsers, CommandDispatcher dispatcher) {
+	public CommandReplay(@Named("es.replay.cluster") String sourceCluster, NodeFactory nodeFactory, CommandParserRegistry parsers, CommandDispatcher dispatcher) {
 		this.sourceCluster = sourceCluster;
 		this.nodeFactory = nodeFactory;
 		this.parsers = parsers;

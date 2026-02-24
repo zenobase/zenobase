@@ -90,6 +90,7 @@ import com.zenobase.services.BucketRefreshJob;
 import com.zenobase.services.BucketRepository;
 import com.zenobase.services.Bus;
 import com.zenobase.services.ClusterNodeFactory;
+import com.zenobase.services.DockerNodeFactory;
 import com.zenobase.services.CommandDispatcher;
 import com.zenobase.services.CommandRebuild;
 import com.zenobase.services.CommandReplay;
@@ -197,6 +198,7 @@ public class Global extends GlobalSettings {
 	}
 
 	private void createInjector() {
+		try {
 		injector = Guice.createInjector(new AbstractModule() {
 			@Override
 			protected void configure() {
@@ -405,6 +407,8 @@ public class Global extends GlobalSettings {
 			private Class<? extends NodeFactory> getNodeFactory() {
 				if (Play.isTest()) {
 					return TestNodeFactory.class;
+				} else if (!Play.application().configuration().getString("es.host", "").isEmpty()) {
+					return DockerNodeFactory.class;
 				} else if (isConfigured("aws")) {
 					return ClusterNodeFactory.class;
 				} else {
@@ -418,12 +422,18 @@ public class Global extends GlobalSettings {
 					try {
 						String value = conf.getString(key);
 						bindConstant().annotatedWith(Names.named(key)).to(value);
-					} catch (PlayException e) {
+					} catch (Exception e) {
 
 					}
 				}
 			}
 		});
+		} catch (com.google.inject.CreationException e) {
+			for (com.google.inject.spi.Message msg : e.getErrorMessages()) {
+				play.Logger.error("Guice: " + msg.getMessage());
+			}
+			throw e;
+		}
 
 		Globals.put(Injector.class, injector);
 	}
@@ -437,7 +447,7 @@ public class Global extends GlobalSettings {
 		UserRepository users = injector.getInstance(UserRepository.class);
 		if (users.isEmpty()) {
 			Configuration esConfig = getApplicationConfig().getConfig("es");
-			if (!Strings.isNullOrEmpty(esConfig.getString("replay"))) {
+			if (!Strings.isNullOrEmpty(esConfig.getString("replay.cluster"))) {
 				injector.getInstance(CommandReplay.class).replay();
 			} else if (!Strings.isNullOrEmpty(esConfig.getString("rebuild"))) {
 				injector.getInstance(CommandRebuild.class).rebuild();
