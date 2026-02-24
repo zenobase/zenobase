@@ -107,9 +107,14 @@ Use this procedure when there are infrastructure or configuration changes:
 
   2. Update Pulumi config (infra/Pulumi.prod.yaml) if needed.
 
-  3. Run `pulumi up` from the infra/ directory to apply changes.
+  3. Sign in to AWS and export credentials:
 
-  4. Push code to master to trigger the CI/CD pipeline.
+       aws login
+       eval $(aws configure export-credentials --format env)
+
+  4. Run `pulumi up` from the infra/ directory to apply changes.
+
+  5. Push code to master to trigger the CI/CD pipeline.
 
 
 Migration Procedure
