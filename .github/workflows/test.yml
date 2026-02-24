@@ -5,6 +5,7 @@ on:
 
 env:
   SBT_VERSION: "0.13.18"
+  SBT_OPTS: "-Xmx2g"
 
 jobs:
   test:
