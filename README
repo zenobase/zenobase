@@ -6,9 +6,7 @@ Getting Started
 
 Install Java 8.
 
-Install Typesafe Activator 1.3.12 [https://downloads.typesafe.com/typesafe-activator/1.3.12/typesafe-activator-1.3.12-minimal.zip].
-
-Run `activator run` to start the web app on http://localhost:9000/.
+Run `./sbt run` to start the web app on http://localhost:9000/.
 
 Alternatively, run with Docker:
 
@@ -41,11 +39,11 @@ Running Tests
 
 To run all unit tests:
 
-  activator "test-only *Test"
+  ./sbt "test-only *Test"
 
 To run a specific test:
 
-  activator "test-only com.zenobase.testing.BrowserTesting"
+  ./sbt "test-only com.zenobase.testing.BrowserTesting"
 
 To skip webdriver tests, set -Dwebdriver.skip=true
 
