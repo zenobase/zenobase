@@ -34,7 +34,6 @@ services:
     volumes:
       - ./play/config/play.conf:/etc/play/prod.conf:ro
       - ./play/config/logback-play.xml:/etc/play/logback.xml:ro
-      - ./play/config/hazelcast.xml:/etc/play/hazelcast.xml:ro
       - ./play/config/enableLegacyTLS.security:/etc/play/enableLegacyTLS.security:ro
       - ../conf/local.conf:/etc/play/local.conf:ro
     environment:

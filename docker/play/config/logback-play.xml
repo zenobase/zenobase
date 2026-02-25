@@ -11,7 +11,6 @@
 	<logger name="play" level="INFO" />
 	<logger name="application" level="INFO" />
 	<logger name="com.zenobase" level="INFO"/>
-	<logger name="com.hazelcast" level="ERROR"/>
 
 	<root level="WARN">
 		<appender-ref ref="STDOUT"/>

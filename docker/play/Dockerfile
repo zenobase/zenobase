@@ -39,7 +39,6 @@ ENTRYPOINT ["/bin/sh", "-c", \
     -Duser.timezone=UTC \
     -Dconfig.file=/etc/play/prod.conf \
     -Dlogger.file=/etc/play/logback.xml \
-    -Dhazelcast.config=/etc/play/hazelcast.xml \
     -Djava.security.properties=/etc/play/enableLegacyTLS.security \
     -Djdk.tls.client.protocols=TLSv1.2 \
     -J-Xms${JAVA_HEAP} \

@@ -22,8 +22,6 @@ libraryDependencies ++= Seq(
 	"com.google.inject.extensions" % "guice-multibindings" % "3.0",
 	"org.elasticsearch" % "elasticsearch" % "1.7.6",
 	"org.elasticsearch" % "elasticsearch-cloud-aws" % "2.7.1",
-	"com.hazelcast" % "hazelcast" % "3.6.8",
-	"com.hazelcast" % "hazelcast-cloud" % "3.6.8",
 	"org.jscience" % "jscience" % "4.3.1",
 	"org.jsoup" % "jsoup" % "1.15.3",
 	"net.sf.opencsv" % "opencsv" % "2.3",

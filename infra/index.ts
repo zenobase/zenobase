@@ -357,7 +357,6 @@ cat > config/logback-play.xml << 'LPEOF'
   <logger name="play" level="INFO" />
   <logger name="application" level="INFO" />
   <logger name="com.zenobase" level="INFO"/>
-  <logger name="com.hazelcast" level="ERROR"/>
   <root level="WARN"><appender-ref ref="STDOUT"/></root>
 </configuration>
 LPEOF
@@ -372,28 +371,6 @@ cat > config/logback-elasticsearch.xml << 'LEEOF'
   <root level="INFO"><appender-ref ref="STDOUT"/></root>
 </configuration>
 LEEOF
-
-cat > config/hazelcast.xml << 'HZEOF'
-<hazelcast xmlns="http://www.hazelcast.com/schema/config">
-  <properties>
-    <property name="hazelcast.logging.type">slf4j</property>
-    <property name="hazelcast.icmp.enabled">true</property>
-    <property name="hazelcast.max.operation.timeout">5000</property>
-  </properties>
-  <network>
-    <port auto-increment="false">5701</port>
-    <join>
-      <multicast enabled="false"/>
-      <tcp-ip enabled="true"><interface>127.0.0.1</interface></tcp-ip>
-      <aws enabled="false"/>
-    </join>
-  </network>
-  <map name="map">
-    <backup-count>4</backup-count>
-    <read-backup-data>true</read-backup-data>
-  </map>
-</hazelcast>
-HZEOF
 
 cat > config/enableLegacyTLS.security << 'TLSEOF'
 jdk.tls.disabledAlgorithms=SSLv3, RC4, DES, MD5withRSA, \\
@@ -442,7 +419,6 @@ services:
     volumes:
       - /etc/play/prod.conf:/etc/play/prod.conf:ro
       - ./play/config/logback-play.xml:/etc/play/logback.xml:ro
-      - ./play/config/hazelcast.xml:/etc/play/hazelcast.xml:ro
       - ./play/config/enableLegacyTLS.security:/etc/play/enableLegacyTLS.security:ro
     environment:
       - JAVA_HEAP=${playHeap}

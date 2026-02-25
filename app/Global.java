@@ -98,7 +98,7 @@ import com.zenobase.services.CommandRepository;
 import com.zenobase.services.CredentialsCleanupJob;
 import com.zenobase.services.CredentialsRepository;
 import com.zenobase.services.EventRepository;
-import com.zenobase.services.HazelcastBus;
+import com.zenobase.services.LocalBus;
 import com.zenobase.services.IndexManager;
 import com.zenobase.services.Job;
 import com.zenobase.services.LocalNodeFactory;
@@ -205,7 +205,7 @@ public class Global extends GlobalSettings {
 
 				bindConfiguration();
 
-				bind(Bus.class).to(HazelcastBus.class).in(Singleton.class);
+				bind(Bus.class).to(LocalBus.class).in(Singleton.class);
 				bind(NodeFactory.class).to(getNodeFactory()).in(Singleton.class);
 				bind(IndexManager.class).in(Singleton.class);
 				bind(BucketRepository.class).in(Singleton.class);
