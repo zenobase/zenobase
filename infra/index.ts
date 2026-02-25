@@ -423,7 +423,7 @@ services:
     environment:
       - JAVA_HEAP=${playHeap}
       - ES_CLUSTER=${esCluster}
-      - ES_REPLAY_CLUSTER=${esReplayCluster}
+      - ES_REPLAY=${esReplayCluster}
     depends_on:
       elasticsearch:
         condition: service_healthy

@@ -41,7 +41,7 @@ services:
     environment:
       - JAVA_HEAP=${JAVA_HEAP:-2g}
       - ES_CLUSTER=${ES_CLUSTER:-elasticsearch}
-      - ES_REPLAY_CLUSTER=${ES_REPLAY_CLUSTER:-}
+      - ES_REPLAY=${ES_REPLAY:-}
     depends_on:
       elasticsearch:
         condition: service_healthy
