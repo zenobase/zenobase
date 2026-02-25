@@ -7,4 +7,3 @@ config:
   zenobase:esHeap: 4g
   zenobase:esCluster: elasticsearch
   zenobase:esReplayCluster: ""
-  zenobase:esReplayHost: ""

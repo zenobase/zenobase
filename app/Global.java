@@ -407,10 +407,10 @@ public class Global extends GlobalSettings {
 			private Class<? extends NodeFactory> getNodeFactory() {
 				if (Play.isTest()) {
 					return TestNodeFactory.class;
-				} else if (!Play.application().configuration().getString("es.host", "").isEmpty()) {
-					return DockerNodeFactory.class;
 				} else if (isConfigured("aws")) {
 					return ClusterNodeFactory.class;
+				} else if (!Play.application().configuration().getString("es.host", "").isEmpty()) {
+					return DockerNodeFactory.class;
 				} else {
 					return LocalNodeFactory.class;
 				}

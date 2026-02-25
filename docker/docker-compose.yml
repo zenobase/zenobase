@@ -11,7 +11,7 @@ services:
     environment:
       - ES_HEAP_SIZE=${ES_HEAP_SIZE:-4g}
       - ES_CLUSTER_NAME=${ES_CLUSTER_NAME:-elasticsearch}
-      - ES_UNICAST_HOSTS=${ES_UNICAST_HOSTS:-}
+      - ES_DISCOVERY_TYPE=${ES_DISCOVERY_TYPE:-zen}
       - AWS_ACCESS_KEY=${AWS_ACCESS_KEY}
       - AWS_SECRET_KEY=${AWS_SECRET_KEY}
       - AWS_REGION=${AWS_REGION:-us-east-1}
@@ -43,7 +43,6 @@ services:
       - JAVA_HEAP=${JAVA_HEAP:-2g}
       - ES_CLUSTER=${ES_CLUSTER:-elasticsearch}
       - ES_REPLAY_CLUSTER=${ES_REPLAY_CLUSTER:-}
-      - ES_REPLAY_HOST=${ES_REPLAY_HOST:-}
     depends_on:
       elasticsearch:
         condition: service_healthy

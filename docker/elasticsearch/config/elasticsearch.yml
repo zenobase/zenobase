@@ -16,9 +16,13 @@ cloud:
         region: ${AWS_REGION}
 
 discovery:
+    type: ${ES_DISCOVERY_TYPE:zen}
+    ec2:
+        tag:
+            Service: zenobase
     zen:
         ping:
             unicast:
-                hosts: ${ES_UNICAST_HOSTS:}
+                hosts: ""
             multicast:
                 enabled: false

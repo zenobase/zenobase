@@ -13,10 +13,8 @@ const esHeap = config.get("esHeap") || "4g";
 const playImageTag = config.get("playImageTag") || "latest";
 const esImageTag = config.get("esImageTag") || "latest";
 const activeTargetGroup = config.get("activeTargetGroup") || "blue";
-const oldInstanceIp = config.get("oldInstanceIp") || "";
 const esCluster = config.get("esCluster") || "elasticsearch";
 const esReplayCluster = config.get("esReplayCluster") || "";
-const esReplayHost = config.get("esReplayHost") || "";
 
 // ---------- VPC ----------
 
@@ -168,6 +166,11 @@ const instancePolicy = new aws.iam.RolePolicy("zenobase-instance-policy", {
                     "ecr:GetDownloadUrlForLayer",
                     "ecr:BatchGetImage",
                 ],
+                Resource: "*",
+            },
+            {
+                Effect: "Allow",
+                Action: ["ec2:DescribeInstances"],
                 Resource: "*",
             },
         ],
@@ -333,10 +336,14 @@ cloud:
         region: \${AWS_REGION}
 
 discovery:
+    type: \${ES_DISCOVERY_TYPE:zen}
+    ec2:
+        tag:
+            Service: zenobase
     zen:
         ping:
             unicast:
-                hosts: \${ES_UNICAST_HOSTS:}
+                hosts: ""
             multicast:
                 enabled: false
 ESEOF
@@ -409,7 +416,7 @@ services:
     environment:
       - ES_HEAP_SIZE=${esHeap}
       - ES_CLUSTER_NAME=${esCluster}
-      - ES_UNICAST_HOSTS=${oldInstanceIp}
+      - ES_DISCOVERY_TYPE=ec2
       - AWS_ACCESS_KEY=\\\$(grep 'aws.access_key=' /etc/play/prod.conf | cut -d'"' -f2)
       - AWS_SECRET_KEY=\\\$(grep 'aws.secret_key=' /etc/play/prod.conf | cut -d'"' -f2)
       - AWS_REGION=${region}
@@ -441,7 +448,6 @@ services:
       - JAVA_HEAP=${playHeap}
       - ES_CLUSTER=${esCluster}
       - ES_REPLAY_CLUSTER=${esReplayCluster}
-      - ES_REPLAY_HOST=${esReplayHost}
     depends_on:
       elasticsearch:
         condition: service_healthy
@@ -465,7 +471,7 @@ AWS_SK=\$(grep 'aws.secret_key=' /etc/play/prod.conf | cut -d'"' -f2)
 # Write .env for docker-compose variable substitution
 cat > .env << ENVEOF
 ES_CLUSTER_NAME=${esCluster}
-ES_UNICAST_HOSTS=${oldInstanceIp}
+ES_DISCOVERY_TYPE=ec2
 AWS_ACCESS_KEY=\${AWS_AK}
 AWS_SECRET_KEY=\${AWS_SK}
 AWS_REGION=${region}
@@ -492,6 +498,7 @@ const instance = new aws.ec2.Instance("zenobase-instance", {
     },
     tags: {
         Name: `zenobase-${activeTargetGroup === "blue" ? "green" : "blue"}`,
+        Service: "zenobase",
     },
 });
 
