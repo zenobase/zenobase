@@ -8,8 +8,6 @@ lazy val root = (project in file(".")).enablePlugins(PlayJava).enablePlugins(Sbt
 
 scalaVersion := "2.11.1"
 
-resolvers += "Sonatype Releases" at "https://oss.sonatype.org/content/repositories/releases/"
-
 libraryDependencies ++= Seq(
 	javaWs,
 	filters,
@@ -22,8 +20,6 @@ libraryDependencies ++= Seq(
 	"com.google.inject.extensions" % "guice-multibindings" % "3.0",
 	"org.elasticsearch" % "elasticsearch" % "1.7.6",
 	"org.elasticsearch" % "elasticsearch-cloud-aws" % "2.7.1",
-	"com.hazelcast" % "hazelcast" % "3.6.8",
-	"com.hazelcast" % "hazelcast-cloud" % "3.6.8",
 	"org.jscience" % "jscience" % "4.3.1",
 	"org.jsoup" % "jsoup" % "1.15.3",
 	"net.sf.opencsv" % "opencsv" % "2.3",
@@ -75,3 +71,5 @@ includeFilter in gzip := "*.html" || "*.css" || "*.js" || "*.json"
 pipelineStages := Seq(uglify, filter, gzip)
 
 javacOptions ++= Seq("-source", "1.8", "-target", "1.8")
+
+updateOptions := updateOptions.value.withCachedResolution(true)

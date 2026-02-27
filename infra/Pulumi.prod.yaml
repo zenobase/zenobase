@@ -1,0 +1,9 @@
+config:
+  aws:region: us-east-1
+  zenobase:certificateArn: arn:aws:acm:us-east-1:694665597187:certificate/aa7538d0-05ca-4459-9fc2-ad2301efa13d
+  zenobase:keyPairName: zeno
+  zenobase:instanceType: t4g.large
+  zenobase:playHeap: 2g
+  zenobase:esHeap: 4g
+  zenobase:esCluster: elasticsearch
+  zenobase:esReplayCluster: ""

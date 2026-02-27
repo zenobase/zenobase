@@ -1,0 +1,124 @@
+name: Deploy
+
+on:
+  push:
+    branches: [master]
+  workflow_dispatch:
+    inputs:
+      image-tag:
+        description: 'Image tag to deploy (leave empty to build from current branch)'
+        required: false
+        type: string
+
+env:
+  AWS_REGION: us-east-1
+  PULUMI_STACK: prod
+
+jobs:
+  test:
+    if: ${{ inputs.image-tag == '' }}
+    uses: ./.github/workflows/test.yml
+
+  build:
+    needs: test
+    if: ${{ !failure() && !cancelled() && inputs.image-tag == '' }}
+    uses: ./.github/workflows/build.yml
+    permissions:
+      id-token: write
+      contents: read
+    with:
+      image-tag: ${{ github.sha }}
+      tag-latest: ${{ github.event_name == 'push' }}
+
+  deploy:
+    needs: build
+    if: ${{ !failure() && !cancelled() }}
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Determine image tag
+        id: tag
+        run: |
+          if [ -n "${{ inputs.image-tag }}" ]; then
+            echo "image_tag=${{ inputs.image-tag }}" >> "$GITHUB_OUTPUT"
+          else
+            echo "image_tag=${{ github.sha }}" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ vars.AWS_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+
+      - name: Install Pulumi
+        uses: pulumi/actions@v5
+
+      - name: Install dependencies
+        working-directory: infra
+        run: npm install
+
+      - name: Get current active target group
+        id: current-tg
+        working-directory: infra
+        env:
+          PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
+        run: |
+          CURRENT=$(pulumi stack output activeTarget --stack $PULUMI_STACK 2>/dev/null || echo "blue")
+          echo "active=$CURRENT" >> "$GITHUB_OUTPUT"
+          if [ "$CURRENT" = "blue" ]; then
+            echo "deploy=green" >> "$GITHUB_OUTPUT"
+          else
+            echo "deploy=blue" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Deploy new instance (inactive target group)
+        working-directory: infra
+        env:
+          PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
+        run: |
+          pulumi up --yes --stack $PULUMI_STACK \
+            --config zenobase:playImageTag=${{ steps.tag.outputs.image_tag }} \
+            --config zenobase:esImageTag=${{ steps.tag.outputs.image_tag }} \
+            --config zenobase:deployTarget=${{ steps.current-tg.outputs.deploy }}
+
+      - name: Wait for health check
+        working-directory: infra
+        env:
+          PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
+        run: |
+          DEPLOY_TG_ARN=$(pulumi stack output deployTargetGroupArn --stack $PULUMI_STACK)
+          echo "Waiting for new instance to become healthy in $DEPLOY_TG_ARN..."
+          for i in $(seq 1 60); do
+            HEALTHY=$(aws elbv2 describe-target-health \
+              --region $AWS_REGION \
+              --target-group-arn "$DEPLOY_TG_ARN" \
+              --query 'TargetHealthDescriptions[0].TargetHealth.State' --output text 2>/dev/null || echo "unknown")
+            if [ "$HEALTHY" = "healthy" ]; then
+              echo "Instance is healthy!"
+              break
+            fi
+            echo "Attempt $i/60: status=$HEALTHY, waiting 30s..."
+            sleep 30
+          done
+          if [ "$HEALTHY" != "healthy" ]; then
+            echo "ERROR: Instance did not become healthy within 30 minutes"
+            exit 1
+          fi
+
+      - name: Switch traffic
+        working-directory: infra
+        env:
+          PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
+        run: |
+          pulumi up --yes --stack $PULUMI_STACK \
+            --config zenobase:activeTargetGroup=${{ steps.current-tg.outputs.deploy }}

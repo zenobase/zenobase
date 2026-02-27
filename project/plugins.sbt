@@ -1,6 +1,8 @@
 logLevel := Level.Warn
 
-resolvers += "Typesafe repository" at "https://repo.typesafe.com/typesafe/releases/"
+updateOptions := updateOptions.value.withCachedResolution(true)
+
+resolvers += "Lightbend Maven Releases" at "https://dl.cloudsmith.io/public/lightbend/maven-releases/maven/"
 
 addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.3.10")
 
