@@ -304,7 +304,7 @@ systemctl start docker
 
 # Install docker-compose
 COMPOSE_VERSION=v2.24.5
-curl -L "https://github.com/docker/compose/releases/download/\${COMPOSE_VERSION}/docker-compose-linux-x86_64" -o /usr/local/bin/docker-compose
+curl -L "https://github.com/docker/compose/releases/download/\${COMPOSE_VERSION}/docker-compose-linux-aarch64" -o /usr/local/bin/docker-compose
 chmod +x /usr/local/bin/docker-compose
 
 # ECR login
@@ -315,11 +315,11 @@ mkdir -p /etc/play
 aws secretsmanager get-secret-value --secret-id zenobase/prod-conf --region ${region} --query SecretString --output text > /etc/play/prod.conf
 
 # Set up docker-compose directory
-mkdir -p /opt/zenobase/config
+mkdir -p /opt/zenobase/elasticsearch/config /opt/zenobase/play/config
 cd /opt/zenobase
 
 # Write config files
-cat > config/elasticsearch.yml << 'ESEOF'
+cat > elasticsearch/config/elasticsearch.yml << 'ESEOF'
 cluster.name: \${ES_CLUSTER_NAME}
 
 indices.store.throttle.type: none
@@ -348,7 +348,7 @@ discovery:
                 enabled: false
 ESEOF
 
-cat > config/logback-play.xml << 'LPEOF'
+cat > play/config/logback-play.xml << 'LPEOF'
 <configuration>
   <contextName>play</contextName>
   <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
@@ -361,7 +361,7 @@ cat > config/logback-play.xml << 'LPEOF'
 </configuration>
 LPEOF
 
-cat > config/logback-elasticsearch.xml << 'LEEOF'
+cat > elasticsearch/config/logback-elasticsearch.xml << 'LEEOF'
 <configuration>
   <contextName>elasticsearch</contextName>
   <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
@@ -372,7 +372,7 @@ cat > config/logback-elasticsearch.xml << 'LEEOF'
 </configuration>
 LEEOF
 
-cat > config/enableLegacyTLS.security << 'TLSEOF'
+cat > play/config/enableLegacyTLS.security << 'TLSEOF'
 jdk.tls.disabledAlgorithms=SSLv3, RC4, DES, MD5withRSA, \\
     DH keySize < 1024, EC keySize < 224, 3DES_EDE_CBC, anon, NULL, \\
     include jdk.disabled.namedCurves
