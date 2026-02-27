@@ -14,3 +14,5 @@ tmp
 /*.log
 /*.iml
 /bin
+node_modules/
+.sbt-launch/

@@ -90,6 +90,7 @@ import com.zenobase.services.BucketRefreshJob;
 import com.zenobase.services.BucketRepository;
 import com.zenobase.services.Bus;
 import com.zenobase.services.ClusterNodeFactory;
+import com.zenobase.services.DockerNodeFactory;
 import com.zenobase.services.CommandDispatcher;
 import com.zenobase.services.CommandRebuild;
 import com.zenobase.services.CommandReplay;
@@ -97,7 +98,7 @@ import com.zenobase.services.CommandRepository;
 import com.zenobase.services.CredentialsCleanupJob;
 import com.zenobase.services.CredentialsRepository;
 import com.zenobase.services.EventRepository;
-import com.zenobase.services.HazelcastBus;
+import com.zenobase.services.LocalBus;
 import com.zenobase.services.IndexManager;
 import com.zenobase.services.Job;
 import com.zenobase.services.LocalNodeFactory;
@@ -197,13 +198,14 @@ public class Global extends GlobalSettings {
 	}
 
 	private void createInjector() {
+		try {
 		injector = Guice.createInjector(new AbstractModule() {
 			@Override
 			protected void configure() {
 
 				bindConfiguration();
 
-				bind(Bus.class).to(HazelcastBus.class).in(Singleton.class);
+				bind(Bus.class).to(LocalBus.class).in(Singleton.class);
 				bind(NodeFactory.class).to(getNodeFactory()).in(Singleton.class);
 				bind(IndexManager.class).in(Singleton.class);
 				bind(BucketRepository.class).in(Singleton.class);
@@ -407,6 +409,8 @@ public class Global extends GlobalSettings {
 					return TestNodeFactory.class;
 				} else if (isConfigured("aws")) {
 					return ClusterNodeFactory.class;
+				} else if (!Play.application().configuration().getString("es.host", "").isEmpty()) {
+					return DockerNodeFactory.class;
 				} else {
 					return LocalNodeFactory.class;
 				}
@@ -418,12 +422,18 @@ public class Global extends GlobalSettings {
 					try {
 						String value = conf.getString(key);
 						bindConstant().annotatedWith(Names.named(key)).to(value);
-					} catch (PlayException e) {
+					} catch (Exception e) {
 
 					}
 				}
 			}
 		});
+		} catch (com.google.inject.CreationException e) {
+			for (com.google.inject.spi.Message msg : e.getErrorMessages()) {
+				play.Logger.error("Guice: " + msg.getMessage());
+			}
+			throw e;
+		}
 
 		Globals.put(Injector.class, injector);
 	}

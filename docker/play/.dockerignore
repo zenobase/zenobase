@@ -1,0 +1,9 @@
+# This file is used when the build context is the repo root
+docker/
+infra/
+.github/
+.circleci/
+.git/
+target/
+logs/
+data/

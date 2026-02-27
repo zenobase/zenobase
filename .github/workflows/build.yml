@@ -1,0 +1,58 @@
+name: Build and Push
+
+on:
+  workflow_call:
+    inputs:
+      image-tag:
+        required: true
+        type: string
+      tag-latest:
+        required: false
+        type: boolean
+        default: false
+
+env:
+  AWS_REGION: us-east-1
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ vars.AWS_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Login to ECR
+        id: ecr-login
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build and push Play image
+        env:
+          ECR_REGISTRY: ${{ steps.ecr-login.outputs.registry }}
+          IMAGE_TAG: ${{ inputs.image-tag }}
+        run: |
+          docker build -t $ECR_REGISTRY/zenobase-play:$IMAGE_TAG -f docker/play/Dockerfile .
+          docker push $ECR_REGISTRY/zenobase-play:$IMAGE_TAG
+          if [ "${{ inputs.tag-latest }}" = "true" ]; then
+            docker tag $ECR_REGISTRY/zenobase-play:$IMAGE_TAG $ECR_REGISTRY/zenobase-play:latest
+            docker push $ECR_REGISTRY/zenobase-play:latest
+          fi
+
+      - name: Build and push ES image
+        env:
+          ECR_REGISTRY: ${{ steps.ecr-login.outputs.registry }}
+          IMAGE_TAG: ${{ inputs.image-tag }}
+        run: |
+          docker build -t $ECR_REGISTRY/zenobase-elasticsearch:$IMAGE_TAG docker/elasticsearch/
+          docker push $ECR_REGISTRY/zenobase-elasticsearch:$IMAGE_TAG
+          if [ "${{ inputs.tag-latest }}" = "true" ]; then
+            docker tag $ECR_REGISTRY/zenobase-elasticsearch:$IMAGE_TAG $ECR_REGISTRY/zenobase-elasticsearch:latest
+            docker push $ECR_REGISTRY/zenobase-elasticsearch:latest
+          fi

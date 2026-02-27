@@ -1,0 +1,45 @@
+name: Test
+
+on:
+  workflow_call:
+
+env:
+  SBT_VERSION: "0.13.18"
+  SBT_OPTS: "-Xmx2g"
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    container:
+      image: eclipse-temurin:8-jdk
+    steps:
+      - name: Cache SBT installation
+        id: cache-sbt
+        uses: actions/cache@v4
+        with:
+          path: /usr/share/sbt
+          key: sbt-install-${{ env.SBT_VERSION }}
+
+      - name: Install SBT
+        if: steps.cache-sbt.outputs.cache-hit != 'true'
+        run: |
+          apt-get update && apt-get install -y curl
+          curl -Ls https://github.com/sbt/sbt/releases/download/v${SBT_VERSION}/sbt-${SBT_VERSION}.tgz | tar xvz -C /usr/share/
+
+      - name: Link SBT
+        run: ln -sf /usr/share/sbt/bin/sbt /usr/local/bin/sbt
+
+      - uses: actions/checkout@v4
+
+      - name: Cache SBT
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.ivy2
+            ~/.sbt
+            ~/.m2
+          key: sbt-${{ hashFiles('build.sbt', 'project/build.properties', 'project/plugins.sbt') }}
+          restore-keys: sbt-
+
+      - name: Test
+        run: sbt 'test-only *Test'
