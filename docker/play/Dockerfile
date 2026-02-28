@@ -1,3 +1,5 @@
+# syntax=docker/dockerfile:1
+
 # Stage 1: Build
 FROM eclipse-temurin:8-jdk AS builder
 
@@ -8,13 +10,19 @@ RUN curl -Ls https://github.com/sbt/sbt/releases/download/v${SBT_VERSION}/sbt-${
 
 WORKDIR /build
 COPY project/build.properties project/plugins.sbt project/
-RUN sbt about
+RUN --mount=type=cache,target=/root/.ivy2 \
+    --mount=type=cache,target=/root/.sbt \
+    sbt about
 
 COPY build.sbt .
-RUN sbt update
+RUN --mount=type=cache,target=/root/.ivy2 \
+    --mount=type=cache,target=/root/.sbt \
+    sbt update
 
 COPY . .
-RUN sbt universal:package-zip-tarball
+RUN --mount=type=cache,target=/root/.ivy2 \
+    --mount=type=cache,target=/root/.sbt \
+    sbt universal:package-zip-tarball
 
 # Stage 2: Runtime
 FROM eclipse-temurin:8-jre
