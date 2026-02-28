@@ -1,35 +1,8 @@
-# syntax=docker/dockerfile:1
-
-# Stage 1: Build
-FROM eclipse-temurin:8-jdk AS builder
-
-ENV SBT_VERSION=0.13.18
-
-RUN curl -Ls https://github.com/sbt/sbt/releases/download/v${SBT_VERSION}/sbt-${SBT_VERSION}.tgz | tar xvz -C /usr/share/ && \
-    ln -s /usr/share/sbt/bin/sbt /usr/local/bin/sbt
-
-WORKDIR /build
-COPY project/build.properties project/plugins.sbt project/
-RUN --mount=type=cache,target=/root/.ivy2 \
-    --mount=type=cache,target=/root/.sbt \
-    sbt about
-
-COPY build.sbt .
-RUN --mount=type=cache,target=/root/.ivy2 \
-    --mount=type=cache,target=/root/.sbt \
-    sbt update
-
-COPY . .
-RUN --mount=type=cache,target=/root/.ivy2 \
-    --mount=type=cache,target=/root/.sbt \
-    sbt universal:package-zip-tarball
-
-# Stage 2: Runtime
 FROM eclipse-temurin:8-jre
 
 RUN groupadd -r play && useradd -r -g play play
 
-COPY --from=builder /build/target/universal/zenobase-SNAPSHOT.tgz /tmp/
+COPY target/universal/zenobase-SNAPSHOT.tgz /tmp/
 RUN mkdir -p /var/play && \
     tar xzf /tmp/zenobase-SNAPSHOT.tgz -C /var/play --strip-components=1 && \
     rm /tmp/zenobase-SNAPSHOT.tgz && \

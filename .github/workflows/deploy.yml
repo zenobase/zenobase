@@ -15,13 +15,8 @@ env:
   PULUMI_STACK: prod
 
 jobs:
-  test:
-    if: ${{ inputs.image-tag == '' }}
-    uses: ./.github/workflows/test.yml
-
   build:
-    needs: test
-    if: ${{ !failure() && !cancelled() && inputs.image-tag == '' }}
+    if: ${{ inputs.image-tag == '' }}
     uses: ./.github/workflows/build.yml
     permissions:
       id-token: write

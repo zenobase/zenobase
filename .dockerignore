@@ -4,6 +4,7 @@ infra/
 .circleci/
 .git/
 target/
+!target/universal/zenobase-SNAPSHOT.tgz
 logs/
 data/
 *.md

@@ -4,6 +4,10 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 REPO_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
 
+echo "==> Building application tarball..."
+cd "$REPO_DIR"
+./sbt universal:packageZipTarball
+
 echo "==> Building Elasticsearch image..."
 docker build -t zenobase-elasticsearch "$SCRIPT_DIR/elasticsearch"
 
