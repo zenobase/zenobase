@@ -1,6 +1,6 @@
 services:
   elasticsearch:
-    image: ${ECR_REGISTRY}/zenobase-elasticsearch:${IMAGE_TAG:-latest}
+    image: ${ECR_REGISTRY}/zenobase-elasticsearch:${ES_IMAGE_TAG:-latest}
     ports:
       - "9200:9200"
       - "9300:9300"
@@ -31,7 +31,7 @@ services:
         awslogs-stream-prefix: es
 
   play:
-    image: ${ECR_REGISTRY}/zenobase-play:${IMAGE_TAG:-latest}
+    image: ${ECR_REGISTRY}/zenobase-play:${PLAY_IMAGE_TAG:-latest}
     ports:
       - "9000:9000"
     volumes:

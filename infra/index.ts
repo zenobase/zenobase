@@ -1,5 +1,12 @@
 import * as pulumi from "@pulumi/pulumi";
 import * as aws from "@pulumi/aws";
+import * as fs from "fs";
+
+const esConfig = fs.readFileSync("../docker/elasticsearch/config/elasticsearch.yml", "utf8");
+const esLogback = fs.readFileSync("../docker/elasticsearch/config/logback-elasticsearch.xml", "utf8");
+const playLogback = fs.readFileSync("../docker/play/config/logback-play.xml", "utf8");
+const tlsSecurity = fs.readFileSync("../docker/play/config/enableLegacyTLS.security", "utf8");
+const composeTemplate = fs.readFileSync("../docker/docker-compose.yml", "utf8");
 
 const config = new pulumi.Config("zenobase");
 const awsConfig = new pulumi.Config("aws");
@@ -7,7 +14,7 @@ const region = awsConfig.require("region");
 const certificateArn = config.require("certificateArn");
 const adminCidr = config.get("adminCidr");
 const keyPairName = config.require("keyPairName");
-const instanceType = config.get("instanceType") || "t3.large";
+const instanceType = config.get("instanceType") || "t4g.large";
 const playHeap = config.get("playHeap") || "2g";
 const esHeap = config.get("esHeap") || "4g";
 const playImageTag = config.get("playImageTag") || "latest";
@@ -299,6 +306,7 @@ const userData = pulumi.all([
     esRepo.repositoryUrl,
     prodConfSecret.arn,
 ]).apply(([playRepoUrl, esRepoUrl, secretArn]) => {
+    const ecrRegistry = playRepoUrl.split("/")[0];
     return `#!/bin/bash
 set -euo pipefail
 exec > /var/log/user-data.log 2>&1
@@ -314,7 +322,7 @@ curl -L "https://github.com/docker/compose/releases/download/\${COMPOSE_VERSION}
 chmod +x /usr/local/bin/docker-compose
 
 # ECR login
-aws ecr get-login-password --region ${region} | docker login --username AWS --password-stdin ${playRepoUrl.split("/")[0]}
+aws ecr get-login-password --region ${region} | docker login --username AWS --password-stdin ${ecrRegistry}
 
 # Retrieve prod.conf from Secrets Manager
 mkdir -p /etc/play
@@ -326,125 +334,20 @@ cd /opt/zenobase
 
 # Write config files
 cat > elasticsearch/config/elasticsearch.yml << 'ESEOF'
-cluster.name: \${ES_CLUSTER_NAME}
-
-indices.store.throttle.type: none
-indices.breaker.fielddata.limit: 80%
-indices.breaker.request.limit: 80%
-indices.breaker.total.limit: 80%
-
-plugin.mandatory: cloud-aws,geocluster-facet,decimal-histogram-facet
-
-cloud:
-    aws:
-        access_key: \${AWS_ACCESS_KEY}
-        secret_key: \${AWS_SECRET_KEY}
-        region: \${AWS_REGION}
-
-discovery:
-    type: \${ES_DISCOVERY_TYPE:zen}
-    ec2:
-        tag:
-            Service: zenobase
-    zen:
-        ping:
-            unicast:
-                hosts: ""
-            multicast:
-                enabled: false
-ESEOF
-
-cat > play/config/logback-play.xml << 'LPEOF'
-<configuration>
-  <contextName>play</contextName>
-  <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
-    <encoder><pattern>%date [%level] %logger - %message%n%xException</pattern></encoder>
-  </appender>
-  <logger name="play" level="INFO" />
-  <logger name="application" level="INFO" />
-  <logger name="com.zenobase" level="INFO"/>
-  <root level="WARN"><appender-ref ref="STDOUT"/></root>
-</configuration>
-LPEOF
+${esConfig}ESEOF
 
 cat > elasticsearch/config/logback-elasticsearch.xml << 'LEEOF'
-<configuration>
-  <contextName>elasticsearch</contextName>
-  <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
-    <encoder><pattern>%date [%level] %logger - %message%n%xException</pattern></encoder>
-  </appender>
-  <logger name="com.amazonaws" level="WARN" />
-  <root level="INFO"><appender-ref ref="STDOUT"/></root>
-</configuration>
-LEEOF
+${esLogback}LEEOF
+
+cat > play/config/logback-play.xml << 'LPEOF'
+${playLogback}LPEOF
 
 cat > play/config/enableLegacyTLS.security << 'TLSEOF'
-jdk.tls.disabledAlgorithms=SSLv3, RC4, DES, MD5withRSA, \\
-    DH keySize < 1024, EC keySize < 224, 3DES_EDE_CBC, anon, NULL, \\
-    include jdk.disabled.namedCurves
-TLSEOF
+${tlsSecurity}TLSEOF
 
 # Write docker-compose.yml
-cat > docker-compose.yml << DCEOF
-services:
-  elasticsearch:
-    image: ${esRepoUrl}:${esImageTag}
-    ports:
-      - "9200:9200"
-      - "9300:9300"
-    volumes:
-      - es-data:/var/lib/elasticsearch
-      - ./elasticsearch/config/elasticsearch.yml:/etc/elasticsearch/elasticsearch.yml:ro
-      - ./elasticsearch/config/logback-elasticsearch.xml:/etc/elasticsearch/logback.xml:ro
-    environment:
-      - ES_HEAP_SIZE=${esHeap}
-      - ES_CLUSTER_NAME=${esCluster}
-      - ES_DISCOVERY_TYPE=ec2
-      - AWS_ACCESS_KEY=\\\${AWS_ACCESS_KEY}
-      - AWS_SECRET_KEY=\\\${AWS_SECRET_KEY}
-      - AWS_REGION=${region}
-    ulimits:
-      nofile:
-        soft: 64000
-        hard: 64000
-      memlock:
-        soft: -1
-        hard: -1
-    restart: unless-stopped
-    logging:
-      driver: awslogs
-      options:
-        awslogs-region: ${region}
-        awslogs-group: /zenobase/elasticsearch
-        awslogs-stream: es
-
-  play:
-    image: ${playRepoUrl}:${playImageTag}
-    ports:
-      - "9000:9000"
-    volumes:
-      - /etc/play/prod.conf:/etc/play/prod.conf:ro
-      - ./play/config/logback-play.xml:/etc/play/logback.xml:ro
-      - ./play/config/enableLegacyTLS.security:/etc/play/enableLegacyTLS.security:ro
-    environment:
-      - JAVA_HEAP=${playHeap}
-      - ES_CLUSTER=${esCluster}
-      - ES_REPLAY=${esReplayCluster}
-    depends_on:
-      elasticsearch:
-        condition: service_healthy
-    restart: unless-stopped
-    logging:
-      driver: awslogs
-      options:
-        awslogs-region: ${region}
-        awslogs-group: /zenobase/play
-        awslogs-stream: play
-
-volumes:
-  es-data:
-    driver: local
-DCEOF
+cat > docker-compose.yml << 'DCEOF'
+${composeTemplate}DCEOF
 
 # Extract AWS credentials from prod.conf for ES
 AWS_AK=\$(grep 'aws.access_key=' /etc/play/prod.conf | cut -d'"' -f2)
@@ -452,11 +355,18 @@ AWS_SK=\$(grep 'aws.secret_key=' /etc/play/prod.conf | cut -d'"' -f2)
 
 # Write .env for docker-compose variable substitution
 cat > .env << ENVEOF
+ECR_REGISTRY=${ecrRegistry}
+PLAY_IMAGE_TAG=${playImageTag}
+ES_IMAGE_TAG=${esImageTag}
+ES_HEAP_SIZE=${esHeap}
 ES_CLUSTER_NAME=${esCluster}
 ES_DISCOVERY_TYPE=ec2
 AWS_ACCESS_KEY=\${AWS_AK}
 AWS_SECRET_KEY=\${AWS_SK}
 AWS_REGION=${region}
+JAVA_HEAP=${playHeap}
+ES_CLUSTER=${esCluster}
+ES_REPLAY=${esReplayCluster}
 ENVEOF
 
 # Pull images and start

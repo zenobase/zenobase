@@ -41,20 +41,6 @@ services:
     depends_on:
       elasticsearch:
         condition: service_healthy
-    develop:
-      watch:
-        - action: rebuild
-          path: ../app
-        - action: rebuild
-          path: ../conf
-          ignore:
-            - local.conf
-        - action: rebuild
-          path: ../public
-        - action: rebuild
-          path: ../build.sbt
-        - action: rebuild
-          path: ../project
 
 volumes:
   es-data:
