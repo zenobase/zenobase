@@ -33,6 +33,9 @@ jobs:
         id: ecr-login
         uses: aws-actions/amazon-ecr-login@v2
 
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
@@ -41,6 +44,7 @@ jobs:
         with:
           context: .
           file: docker/play/Dockerfile
+          platforms: linux/arm64
           push: true
           tags: |
             ${{ steps.ecr-login.outputs.registry }}/zenobase-play:${{ inputs.image-tag }}
@@ -52,6 +56,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: docker/elasticsearch
+          platforms: linux/arm64
           push: true
           tags: |
             ${{ steps.ecr-login.outputs.registry }}/zenobase-elasticsearch:${{ inputs.image-tag }}
