@@ -91,21 +91,32 @@ jobs:
         env:
           PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
         run: |
-          DEPLOY_TG_ARN=$(pulumi stack output deployTargetGroupArn --stack $PULUMI_STACK)
-          echo "Waiting for new instance to become healthy in $DEPLOY_TG_ARN..."
+          INSTANCE_ID=$(pulumi stack output instanceId --stack $PULUMI_STACK)
+          echo "Waiting for instance $INSTANCE_ID to become healthy..."
           for i in $(seq 1 60); do
-            HEALTHY=$(aws elbv2 describe-target-health \
+            RESULT=$(aws ssm send-command \
               --region $AWS_REGION \
-              --target-group-arn "$DEPLOY_TG_ARN" \
-              --query 'TargetHealthDescriptions[0].TargetHealth.State' --output text 2>/dev/null || echo "unknown")
-            if [ "$HEALTHY" = "healthy" ]; then
-              echo "Instance is healthy!"
-              break
+              --instance-ids "$INSTANCE_ID" \
+              --document-name "AWS-RunShellScript" \
+              --parameters commands='["curl -sf http://localhost:9000/status"]' \
+              --query 'Command.CommandId' --output text || echo "")
+            if [ -n "$RESULT" ]; then
+              sleep 5
+              OUTPUT=$(aws ssm get-command-invocation \
+                --region $AWS_REGION \
+                --command-id "$RESULT" \
+                --instance-id "$INSTANCE_ID" \
+                --query 'StandardOutputContent' --output text || echo "")
+              if echo "$OUTPUT" | grep -q '"health":"GREEN"'; then
+                echo "Instance is healthy: $OUTPUT"
+                break
+              fi
+              STATUS="not healthy: $OUTPUT"
             fi
-            echo "Attempt $i/60: status=$HEALTHY, waiting 30s..."
+            echo "Attempt $i/60: ${STATUS:-waiting for SSM}, waiting 30s..."
             sleep 30
           done
-          if [ "$HEALTHY" != "healthy" ]; then
+          if ! echo "$OUTPUT" | grep -q '"health":"GREEN"'; then
             echo "ERROR: Instance did not become healthy within 30 minutes"
             exit 1
           fi

@@ -51,11 +51,17 @@ aws iam create-role \
 for policy in AmazonEC2FullAccess AmazonVPCFullAccess \
   ElasticLoadBalancingFullAccess AmazonEC2ContainerRegistryFullAccess \
   IAMFullAccess SecretsManagerReadWrite CloudWatchFullAccess \
-  AmazonS3FullAccess AmazonSESFullAccess; do
+  AmazonS3FullAccess AmazonSESFullAccess AmazonSSMReadOnlyAccess; do
   aws iam attach-role-policy \
     --role-name GitHubActionsZenobase \
     --policy-arn "arn:aws:iam::aws:policy/$policy"
 done
+
+# Inline policy for SSM send-command (used by deploy health checks)
+aws iam put-role-policy \
+  --role-name GitHubActionsZenobase \
+  --policy-name SSMSendCommand \
+  --policy-document '{"Version":"2012-10-17","Statement":[{"Effect":"Allow","Action":["ssm:SendCommand","ssm:GetCommandInvocation"],"Resource":"*"}]}'
 ```
 
 ## AWS: ACM Certificate
@@ -174,4 +180,4 @@ pulumi up --stack prod
 **Deploy workflow** (triggered after CI succeeds on `master`):
 1. Flip the active target group (blue &rarr; green or green &rarr; blue)
 2. Run `pulumi up` to create a new EC2 instance attached to the inactive target group
-3. Wait up to 30 minutes for the new instance to pass ALB health checks (`/status`)
+3. Wait up to 30 minutes for the new instance to pass health checks (via SSM `curl localhost:9000/status`)

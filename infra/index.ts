@@ -126,6 +126,11 @@ new aws.iam.RolePolicyAttachment("zenobase-ecr-policy", {
     policyArn: "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly",
 });
 
+new aws.iam.RolePolicyAttachment("zenobase-ssm-policy", {
+    role: instanceRole.name,
+    policyArn: "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore",
+});
+
 const instancePolicy = new aws.iam.RolePolicy("zenobase-instance-policy", {
     role: instanceRole.id,
     policy: pulumi.all([playRepo.arn, esRepo.arn]).apply(([playArn, esArn]) => JSON.stringify({
