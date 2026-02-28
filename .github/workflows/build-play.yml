@@ -1,15 +1,21 @@
-name: Build and Push
+name: Build and Push Play
 
 on:
+  push:
+    branches: [master]
+    paths:
+      - 'app/**'
+      - 'conf/**'
+      - 'docker/play/**'
+      - 'project/**'
+      - 'public/**'
+      - 'build.sbt'
   workflow_call:
     inputs:
       image-tag:
         required: true
         type: string
-      tag-latest:
-        required: false
-        type: boolean
-        default: false
+  workflow_dispatch:
 
 env:
   AWS_REGION: us-east-1
@@ -56,19 +62,7 @@ jobs:
           platforms: linux/arm64
           push: true
           tags: |
-            ${{ steps.ecr-login.outputs.registry }}/zenobase-play:${{ inputs.image-tag }}
-            ${{ inputs.tag-latest && format('{0}/zenobase-play:latest', steps.ecr-login.outputs.registry) || '' }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
-
-      - name: Build and push ES image
-        uses: docker/build-push-action@v6
-        with:
-          context: docker/elasticsearch
-          platforms: linux/arm64
-          push: true
-          tags: |
-            ${{ steps.ecr-login.outputs.registry }}/zenobase-elasticsearch:${{ inputs.image-tag }}
-            ${{ inputs.tag-latest && format('{0}/zenobase-elasticsearch:latest', steps.ecr-login.outputs.registry) || '' }}
+            ${{ steps.ecr-login.outputs.registry }}/zenobase-play:${{ github.sha }}
+            ${{ steps.ecr-login.outputs.registry }}/zenobase-play:${{ inputs.image-tag || 'latest' }}
           cache-from: type=gha
           cache-to: type=gha,mode=max

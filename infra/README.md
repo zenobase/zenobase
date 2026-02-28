@@ -51,17 +51,11 @@ aws iam create-role \
 for policy in AmazonEC2FullAccess AmazonVPCFullAccess \
   ElasticLoadBalancingFullAccess AmazonEC2ContainerRegistryFullAccess \
   IAMFullAccess SecretsManagerReadWrite CloudWatchFullAccess \
-  AmazonS3FullAccess AmazonSESFullAccess AmazonSSMReadOnlyAccess; do
+  AmazonS3FullAccess AmazonSESFullAccess; do
   aws iam attach-role-policy \
     --role-name GitHubActionsZenobase \
     --policy-arn "arn:aws:iam::aws:policy/$policy"
 done
-
-# Inline policy for SSM send-command (used by deploy health checks)
-aws iam put-role-policy \
-  --role-name GitHubActionsZenobase \
-  --policy-name SSMSendCommand \
-  --policy-document '{"Version":"2012-10-17","Statement":[{"Effect":"Allow","Action":["ssm:SendCommand","ssm:GetCommandInvocation"],"Resource":"*"}]}'
 ```
 
 ## AWS: ACM Certificate
@@ -107,7 +101,6 @@ chmod 400 zeno.pem
 
 ```sh
 gh variable set AWS_ROLE_ARN --body "<IAM role ARN from above>"
-gh secret set PULUMI_ACCESS_TOKEN --body "<token from Pulumi Cloud>"
 ```
 
 ## Pulumi: Initial Setup
@@ -138,46 +131,5 @@ The EC2 instance retrieves this secret on startup and mounts it at `/etc/play/pr
 1. Run `pulumi up --stack prod` locally to create all infrastructure.
 2. Create a DNS CNAME record pointing `zenobase.com` to the ALB DNS name (`pulumi stack output albDnsName --stack prod`).
 3. On the first run the instance will be unhealthy because there are no images in ECR yet.
-4. Push to `master` to trigger the CI workflow (tests, builds, and pushes images to ECR), then the Deploy workflow (runs `pulumi up` with a blue/green flip and waits for the health check to pass).
-
-## SSH Access
-
-SSH is disabled by default (no `adminCidr` configured in the security group).
-
-To enable temporarily:
-
-```sh
-pulumi config set zenobase:adminCidr "$(curl -s ifconfig.me)/32" --stack prod
-pulumi up --stack prod
-ssh -i <key>.pem ec2-user@<ip>
-```
-
-To disable:
-
-```sh
-pulumi config rm zenobase:adminCidr --stack prod
-pulumi up --stack prod
-```
-
-## Architecture Overview
-
-**Infrastructure:**
-- VPC with two public subnets across two AZs
-- Application Load Balancer with HTTPS (TLS 1.3), HTTP-to-HTTPS redirect
-- Blue/green target groups for zero-downtime deployments
-- EC2 instance (Amazon Linux 2023 ARM64) running Docker Compose
-  - Play application container (port 9000)
-  - Elasticsearch container (ports 9200, 9300)
-- ECR repositories: `zenobase-play`, `zenobase-elasticsearch`
-- CloudWatch log groups (`/zenobase/play`, `/zenobase/elasticsearch`) with 30-day retention
-- CloudWatch alarms for unhealthy hosts and 5xx errors
-- S3 bucket `zeno-snapshots` for Elasticsearch snapshots
-
-**CI workflow** (on push to `master`):
-1. Run tests (`sbt test`)
-2. Build and push Docker images to ECR (tagged with commit SHA + `latest`)
-
-**Deploy workflow** (triggered after CI succeeds on `master`):
-1. Flip the active target group (blue &rarr; green or green &rarr; blue)
-2. Run `pulumi up` to create a new EC2 instance attached to the inactive target group
-3. Wait up to 30 minutes for the new instance to pass health checks (via SSM `curl localhost:9000/status`)
+4. Push to `master` to trigger the CI workflow (tests, builds, and pushes images to ECR).
+5. Deploy using the procedure in the root README.

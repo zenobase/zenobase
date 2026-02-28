@@ -60,56 +60,33 @@ To test specific tasks manually:
      configuration to bypass the authorization step in future test runs.
 
 
-Profiling
----------
-
-1. Run the JVM that will be monitored with the following properties:
-
-   -Dcom.sun.management.jmxremote \
-   -Dcom.sun.management.jmxremote.port=1099 \
-   -Dcom.sun.management.jmxremote.rmi.port=1099 \
-   -Dcom.sun.management.jmxremote.authenticate=false \
-   -Dcom.sun.management.jmxremote.ssl=false
-
-2. Create an ssh tunnel (with dynamic port forwarding and listening on port 1999) to the remote machine.
-
-3. Configure jvisualvm or jmc to use localhost:1999 as a SOCKS proxy.
-
-4. Create a JMX connection using the *internal* IP address of the remote machine, and port 1099.
-
-
 Deploy Procedure
 ----------------
 
-Normal deploys (code changes only) are fully automated:
+  1. Push to master. CI runs tests, builds Docker images, and pushes to ECR.
 
-  1. Push to master.
+  2. Sign in to AWS with `aws login --profile signin`
 
-  2. GitHub Actions runs tests, builds Docker images, pushes to ECR.
+  3. If there are infrastructure or configuration changes, update secrets in
+     Secrets Manager and/or Pulumi config (infra/Pulumi.prod.yaml) first.
 
-  3. The deploy workflow runs Pulumi to create a new EC2 instance in the inactive
-     target group. ES on the new instance uses EC2 discovery to find existing
-     cluster nodes and replicates data automatically.
+  4. Deploy to the inactive target group:
 
-  4. Once the ALB health check passes, the listener switches to the new target group.
+       cd infra
+       pulumi config set zenobase:deployTarget green  # or blue
+       pulumi up --stack prod
 
-  5. The old instance is terminated after the drain period.
+  5. Verify health (monitor in CloudWatch Logs, check ALB target health in AWS console).
 
+  6. Switch traffic:
 
-Release Procedure
------------------
+       pulumi config set zenobase:activeTargetGroup green  # match deployTarget
+       pulumi up --stack prod
 
-Use this procedure when there are infrastructure or configuration changes:
+To rollback to a specific image version:
 
-  1. Update secrets in Secrets Manager if needed.
-
-  2. Update Pulumi config (infra/Pulumi.prod.yaml) if needed.
-
-  3. Sign in to AWS with `aws login --profile signin`
-
-  4. Run `pulumi up` from the infra/ directory to apply changes.
-
-  5. Push code to master to trigger the CI/CD pipeline.
+  pulumi config set zenobase:playImageTag <sha>
+  pulumi up --stack prod
 
 
 Migration Procedure
@@ -123,28 +100,34 @@ Use this procedure to rebuild the database (e.g. after data model changes):
        pulumi config set zenobase:esCluster "<new-cluster-name>"
        pulumi config set zenobase:esReplayCluster "<old-cluster-name>"
 
-  2. Run `pulumi up` to create the new instance (do NOT switch the ALB yet).
+  2. Deploy to the inactive target group:
 
-  3. The new instance starts with an empty ES cluster. The Play app uses EC2
-     discovery to connect to the old cluster and replays all commands.
+       pulumi config set zenobase:deployTarget green  # or blue
+       pulumi up --stack prod
 
-  4. Monitor replay progress in CloudWatch Logs.
+     The new instance starts with an empty ES cluster and replays all commands
+     from the old cluster.
 
-  5. When replay completes, verify data on the new instance.
+  3. Monitor replay progress in CloudWatch Logs.
 
-  6. Switch the ALB to the new target group (via Pulumi config or AWS console).
+  4. When replay completes, switch traffic:
 
-  7. Terminate the old instance.
+       pulumi config set zenobase:activeTargetGroup green  # match deployTarget
+       pulumi up --stack prod
 
-  8. Clear migration config:
+  5. Clear migration config and redeploy:
 
        pulumi config set zenobase:esReplayCluster ""
+       pulumi up --stack prod
 
 
 Restore Procedure
 -----------------
 
-  1. Bring up an empty elasticsearch instance.
+  1. Bring up an empty elasticsearch instance:
+
+       pulumi config set zenobase:esCluster prod-NNN  # new cluster name
+       pulumi up --stack prod
 
   2. Register a snapshot repository, e.g.
 
@@ -167,3 +150,21 @@ Restore Procedure
   5. Monitor progress:
 
     curl 'localhost:9200/_cat/recovery'
+
+
+SSH Access
+----------
+
+SSH is disabled by default (no adminCidr configured in the security group).
+
+To enable temporarily:
+
+  cd infra
+  pulumi config set zenobase:adminCidr "$(curl -s ifconfig.me)/32" --stack prod
+  pulumi up --stack prod
+  ssh -i <key>.pem ec2-user@<ip>
+
+To disable:
+
+  pulumi config rm zenobase:adminCidr --stack prod
+  pulumi up --stack prod
