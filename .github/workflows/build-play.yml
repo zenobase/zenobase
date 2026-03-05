@@ -4,6 +4,7 @@ on:
   push:
     branches: [master]
     paths:
+      - 'docker/docker-compose.yml'
       - 'app/**'
       - 'conf/**'
       - 'docker/play/**'

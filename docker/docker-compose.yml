@@ -28,7 +28,7 @@ services:
       options:
         awslogs-region: ${AWS_REGION:-us-east-1}
         awslogs-group: /zenobase/elasticsearch
-        awslogs-stream-prefix: es
+        tag: es
 
   play:
     image: ${ECR_REGISTRY}/zenobase-play:${PLAY_IMAGE_TAG:-latest}
@@ -51,7 +51,7 @@ services:
       options:
         awslogs-region: ${AWS_REGION:-us-east-1}
         awslogs-group: /zenobase/play
-        awslogs-stream-prefix: play
+        tag: play
 
 volumes:
   es-data:
