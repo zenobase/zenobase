@@ -1,9 +1,7 @@
 services:
   elasticsearch:
     image: ${ECR_REGISTRY}/zenobase-elasticsearch:${ES_IMAGE_TAG:-latest}
-    ports:
-      - "9200:9200"
-      - "9300:9300"
+    network_mode: host
     volumes:
       - es-data:/var/lib/elasticsearch
       - ./elasticsearch/config/elasticsearch.yml:/etc/elasticsearch/elasticsearch.yml:ro
@@ -33,8 +31,7 @@ services:
 
   play:
     image: ${ECR_REGISTRY}/zenobase-play:${PLAY_IMAGE_TAG:-latest}
-    ports:
-      - "9000:9000"
+    network_mode: host
     volumes:
       - /etc/play/prod.conf:/etc/play/prod.conf:ro
       - ./play/config/logback-play.xml:/etc/play/logback.xml:ro
