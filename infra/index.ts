@@ -253,7 +253,12 @@ const httpsListener = new aws.lb.Listener("zenobase-https", {
     sslPolicy: "ELBSecurityPolicy-TLS13-1-2-2021-06",
     defaultActions: [{
         type: "forward",
-        targetGroupArn: activeTg.arn,
+        forward: {
+            targetGroups: [
+                { arn: tgBlue.arn, weight: activeTargetGroup === "blue" ? 100 : 0 },
+                { arn: tgGreen.arn, weight: activeTargetGroup === "green" ? 100 : 0 },
+            ],
+        },
     }],
 });
 
