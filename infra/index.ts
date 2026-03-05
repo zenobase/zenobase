@@ -302,7 +302,8 @@ const ami = aws.ec2.getAmi({
     ],
 });
 
-const deployTg = deployTarget === "blue" ? tgBlue : tgGreen;
+const needBlue = deployTarget === "blue" || activeTargetGroup === "blue";
+const needGreen = deployTarget === "green" || activeTargetGroup === "green";
 
 const userData = pulumi.all([
     playRepo.repositoryUrl,
@@ -381,30 +382,51 @@ docker-compose up -d
 `;
 });
 
-const instance = new aws.ec2.Instance("zenobase-instance", {
-    ami: ami.then(a => a.id),
-    instanceType: instanceType,
-    subnetId: subnetA.id,
-    vpcSecurityGroupIds: [ec2Sg.id],
-    iamInstanceProfile: instanceProfile.name,
-    keyName: keyPairName,
-    userData: userData,
-    userDataReplaceOnChange: true,
-    rootBlockDevice: {
-        volumeSize: 20,
-        volumeType: "gp3",
-    },
-    tags: {
-        Name: `zenobase-${deployTarget}`,
-        Service: "zenobase",
-    },
-});
+let blueInstance: aws.ec2.Instance | undefined;
+if (needBlue) {
+    blueInstance = new aws.ec2.Instance("zenobase-blue", {
+        ami: ami.then(a => a.id),
+        instanceType,
+        subnetId: subnetA.id,
+        vpcSecurityGroupIds: [ec2Sg.id],
+        iamInstanceProfile: instanceProfile.name,
+        keyName: keyPairName,
+        userData,
+        userDataReplaceOnChange: true,
+        rootBlockDevice: { volumeSize: 20, volumeType: "gp3" },
+        tags: { Name: "zenobase-blue", Service: "zenobase" },
+    });
+    new aws.lb.TargetGroupAttachment("zenobase-tg-blue-attach", {
+        targetGroupArn: tgBlue.arn,
+        targetId: blueInstance.id,
+        port: 9000,
+    });
+}
 
-new aws.lb.TargetGroupAttachment("zenobase-tg-attachment", {
-    targetGroupArn: deployTg.arn,
-    targetId: instance.id,
-    port: 9000,
-});
+let greenInstance: aws.ec2.Instance | undefined;
+if (needGreen) {
+    greenInstance = new aws.ec2.Instance("zenobase-green", {
+        ami: ami.then(a => a.id),
+        instanceType,
+        subnetId: subnetA.id,
+        vpcSecurityGroupIds: [ec2Sg.id],
+        iamInstanceProfile: instanceProfile.name,
+        keyName: keyPairName,
+        userData,
+        userDataReplaceOnChange: true,
+        rootBlockDevice: { volumeSize: 20, volumeType: "gp3" },
+        tags: { Name: "zenobase-green", Service: "zenobase" },
+    }, {
+        aliases: [{ name: "zenobase-instance" }],
+    });
+    new aws.lb.TargetGroupAttachment("zenobase-tg-green-attach", {
+        targetGroupArn: tgGreen.arn,
+        targetId: greenInstance.id,
+        port: 9000,
+    }, {
+        aliases: [{ name: "zenobase-tg-attachment" }],
+    });
+}
 
 // ---------- CloudWatch Alarms ----------
 
@@ -446,11 +468,16 @@ export const albDnsName = alb.dnsName;
 export const albArn = alb.arn;
 export const playEcrUrl = playRepo.repositoryUrl;
 export const esEcrUrl = esRepo.repositoryUrl;
-export const instanceId = instance.id;
-export const instancePublicIp = instance.publicIp;
-export const instancePrivateIp = instance.privateIp;
+const activeInstance = (activeTargetGroup === "blue" ? blueInstance : greenInstance)!;
+const deployInstance = (deployTarget === "blue" ? blueInstance : greenInstance)!;
+
+export const instanceId = activeInstance.id;
+export const instancePublicIp = activeInstance.publicIp;
+export const instancePrivateIp = activeInstance.privateIp;
+export const deployInstanceId = deployInstance.id;
+export const deployInstancePublicIp = deployInstance.publicIp;
+export const deployInstancePrivateIp = deployInstance.privateIp;
 export const blueTargetGroupArn = tgBlue.arn;
 export const greenTargetGroupArn = tgGreen.arn;
 export const activeTarget = activeTargetGroup;
-export const deployTargetGroup = deployTarget;
-export const deployTargetGroupArn = deployTg.arn;
+export const deployTargetOutput = deployTarget;
