@@ -11,10 +11,12 @@ import play.Logger;
 public class DockerNodeFactory extends NodeFactorySupport {
 
 	private final String host;
+	private final String publishHost;
 
 	@Inject
-	public DockerNodeFactory(@Named("es.host") String host) {
+	public DockerNodeFactory(@Named("es.host") String host, @Named("es.publish_host") String publishHost) {
 		this.host = host;
+		this.publishHost = publishHost;
 	}
 
 	@Override
@@ -23,6 +25,9 @@ public class DockerNodeFactory extends NodeFactorySupport {
 		ImmutableSettings.Builder settings = createDefaultSettings()
 			.put("discovery.zen.ping.unicast.hosts", host)
 			.put("discovery.zen.ping.multicast.enabled", false);
+		if (!publishHost.isEmpty()) {
+			settings.put("network.publish_host", publishHost);
+		}
 		return NodeBuilder.nodeBuilder().clusterName(clusterName).client(true).local(false).settings(settings.build()).node();
 	}
 }

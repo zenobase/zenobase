@@ -12,6 +12,7 @@ services:
       - ES_HEAP_SIZE=${ES_HEAP_SIZE:-4g}
       - ES_CLUSTER_NAME=${ES_CLUSTER_NAME:-elasticsearch}
       - ES_DISCOVERY_TYPE=${ES_DISCOVERY_TYPE:-zen}
+      - ES_PUBLISH_HOST=${ES_PUBLISH_HOST:-}
       - AWS_ACCESS_KEY=${AWS_ACCESS_KEY}
       - AWS_SECRET_KEY=${AWS_SECRET_KEY}
       - AWS_REGION=${AWS_REGION:-us-east-1}
@@ -40,6 +41,7 @@ services:
       - ./play/config/enableLegacyTLS.security:/etc/play/enableLegacyTLS.security:ro
     environment:
       - JAVA_HEAP=${JAVA_HEAP:-2g}
+      - ES_PUBLISH_HOST=${ES_PUBLISH_HOST:-}
       - ES_CLUSTER=${ES_CLUSTER:-elasticsearch}
       - ES_REPLAY=${ES_REPLAY:-}
       - HOSTNAME=${HOSTNAME:-http://localhost:9000}

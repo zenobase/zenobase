@@ -357,6 +357,10 @@ ${composeTemplate}DCEOF
 AWS_AK=\$(grep 'aws.access_key=' /etc/play/prod.conf | cut -d'"' -f2)
 AWS_SK=\$(grep 'aws.secret_key=' /etc/play/prod.conf | cut -d'"' -f2)
 
+# Fetch EC2 private IP via IMDSv2
+TOKEN=\$(curl -s -X PUT "http://169.254.169.254/latest/api/token" -H "X-aws-ec2-metadata-token-ttl-seconds: 21600")
+HOST_IP=\$(curl -s -H "X-aws-ec2-metadata-token: \$TOKEN" http://169.254.169.254/latest/meta-data/local-ipv4)
+
 # Write .env for docker-compose variable substitution
 cat > .env << ENVEOF
 ECR_REGISTRY=${ecrRegistry}
@@ -374,6 +378,7 @@ ES_REPLAY=${esReplayCluster}
 HOSTNAME=${hostname}
 API_HOSTNAME=${apiHostname}
 OAUTH_HOSTNAME=${oauthHostname}
+ES_PUBLISH_HOST=\${HOST_IP}
 ENVEOF
 
 # Pull images and start

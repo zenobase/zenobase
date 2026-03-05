@@ -2,7 +2,7 @@ cluster.name: ${ES_CLUSTER_NAME}
 
 bootstrap.sigar: false
 
-network.publish_host: _ec2:privateIpv4_
+network.publish_host: ${ES_PUBLISH_HOST:_local_}
 
 indices.store.throttle.type: none
 indices.breaker.fielddata.limit: 80%
