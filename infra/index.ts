@@ -395,6 +395,8 @@ if (needBlue) {
         userDataReplaceOnChange: true,
         rootBlockDevice: { volumeSize: 20, volumeType: "gp3" },
         tags: { Name: "zenobase-blue", Service: "zenobase" },
+    }, {
+        ...(deployTarget !== "blue" && { ignoreChanges: ["userData"] }),
     });
     new aws.lb.TargetGroupAttachment("zenobase-tg-blue-attach", {
         targetGroupArn: tgBlue.arn,
@@ -418,6 +420,7 @@ if (needGreen) {
         tags: { Name: "zenobase-green", Service: "zenobase" },
     }, {
         aliases: [{ name: "zenobase-instance" }],
+        ...(deployTarget !== "green" && { ignoreChanges: ["userData"] }),
     });
     new aws.lb.TargetGroupAttachment("zenobase-tg-green-attach", {
         targetGroupArn: tgGreen.arn,
