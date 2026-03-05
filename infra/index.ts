@@ -23,6 +23,9 @@ const activeTargetGroup = config.get("activeTargetGroup") || "blue";
 const deployTarget = config.get("deployTarget") || activeTargetGroup;
 const esCluster = config.get("esCluster") || "elasticsearch";
 const esReplayCluster = config.get("esReplayCluster") || "";
+const hostname = config.get("hostname") || "http://localhost:9000";
+const apiHostname = config.get("apiHostname") || "http://localhost:9000";
+const oauthHostname = config.get("oauthHostname") || "https://zenobase.com";
 
 // ---------- VPC ----------
 
@@ -367,6 +370,9 @@ AWS_REGION=${region}
 JAVA_HEAP=${playHeap}
 ES_CLUSTER=${esCluster}
 ES_REPLAY=${esReplayCluster}
+HOSTNAME=${hostname}
+API_HOSTNAME=${apiHostname}
+OAUTH_HOSTNAME=${oauthHostname}
 ENVEOF
 
 # Pull images and start

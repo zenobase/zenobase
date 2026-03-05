@@ -67,8 +67,16 @@ Deploy Procedure
 
   2. Sign in to AWS with `aws login --profile signin`
 
-  3. If there are infrastructure or configuration changes, update secrets in
-     Secrets Manager and/or Pulumi config (infra/Pulumi.prod.yaml) first.
+  3. If there are infrastructure or configuration changes, update Pulumi config
+     (infra/Pulumi.prod.yaml) and/or the secrets (zenobase/prod-conf) first.
+
+     To edit the secrets:
+
+       aws secretsmanager get-secret-value --secret-id zenobase/prod-conf \
+         --query SecretString --output text > prod.conf
+
+       aws secretsmanager put-secret-value --secret-id zenobase/prod-conf \
+         --secret-string file://./prod.conf
 
   4. Deploy to the inactive target group:
 

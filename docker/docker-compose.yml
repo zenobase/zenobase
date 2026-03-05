@@ -42,6 +42,9 @@ services:
       - JAVA_HEAP=${JAVA_HEAP:-2g}
       - ES_CLUSTER=${ES_CLUSTER:-elasticsearch}
       - ES_REPLAY=${ES_REPLAY:-}
+      - HOSTNAME=${HOSTNAME:-http://localhost:9000}
+      - API_HOSTNAME=${API_HOSTNAME:-http://localhost:9000}
+      - OAUTH_HOSTNAME=${OAUTH_HOSTNAME:-https://zenobase.com}
     depends_on:
       elasticsearch:
         condition: service_healthy
