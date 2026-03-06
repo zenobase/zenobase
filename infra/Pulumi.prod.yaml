@@ -8,6 +8,7 @@ config:
   zenobase:hostname: "https://zenobase.com"
   zenobase:apiHostname: "https://api.zenobase.com"
   zenobase:oauthHostname: "https://zenobase.com"
+  zenobase:sesIdentity: info@zenobase.com
   zenobase:esSnapshotBucket: zeno-snapshots
   zenobase:esCluster: prod-next-116
   zenobase:esReplayCluster: ""
