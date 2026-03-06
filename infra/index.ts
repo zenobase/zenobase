@@ -177,7 +177,7 @@ const instancePolicy = new aws.iam.RolePolicy("zenobase-instance-policy", {
                     "logs:PutLogEvents",
                     "logs:DescribeLogStreams",
                 ],
-                Resource: "arn:aws:logs:*:*:*",
+                Resource: [`arn:aws:logs:${region}:${account}:log-group:/zenobase/*`],
             },
             {
                 Effect: "Allow",
