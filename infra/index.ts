@@ -203,13 +203,48 @@ const instanceProfile = new aws.iam.InstanceProfile("zenobase-instance-profile",
 
 // ---------- ALB ----------
 
+const albLogsBucket = new aws.s3.Bucket("zenobase-lb-logs", {
+    bucket: "zenobase-lb-logs",
+    tags: { Name: "zenobase-lb-logs" },
+});
+
+new aws.s3.BucketLifecycleConfiguration("zenobase-lb-logs-lifecycle", {
+    bucket: albLogsBucket.id,
+    rules: [{
+        id: "expire-logs",
+        status: "Enabled",
+        expiration: { days: 90 },
+    }],
+});
+
+const elbAccount = aws.elb.getServiceAccount();
+
+const albLogsBucketPolicy = new aws.s3.BucketPolicy("zenobase-lb-logs-policy", {
+    bucket: albLogsBucket.id,
+    policy: pulumi.all([albLogsBucket.arn, elbAccount.then(a => a.arn)]).apply(([bucketArn, elbArn]) =>
+        JSON.stringify({
+            Version: "2012-10-17",
+            Statement: [{
+                Effect: "Allow",
+                Principal: { AWS: elbArn },
+                Action: "s3:PutObject",
+                Resource: `${bucketArn}/*`,
+            }],
+        }),
+    ),
+});
+
 const alb = new aws.lb.LoadBalancer("zenobase-alb", {
     internal: false,
     loadBalancerType: "application",
     securityGroups: [albSg.id],
     subnets: [subnetA.id, subnetB.id],
+    accessLogs: {
+        bucket: albLogsBucket.bucket,
+        enabled: true,
+    },
     tags: { Name: "zenobase" },
-});
+}, { dependsOn: [albLogsBucketPolicy] });
 
 const tgBlue = new aws.lb.TargetGroup("zenobase-tg-blue", {
     port: 9000,
