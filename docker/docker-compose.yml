@@ -11,9 +11,6 @@ services:
       - ES_CLUSTER_NAME=${ES_CLUSTER_NAME:-elasticsearch}
       - ES_DISCOVERY_TYPE=${ES_DISCOVERY_TYPE:-zen}
       - ES_PUBLISH_HOST=${ES_PUBLISH_HOST:-}
-      - AWS_ACCESS_KEY=${AWS_ACCESS_KEY}
-      - AWS_SECRET_KEY=${AWS_SECRET_KEY}
-      - AWS_REGION=${AWS_REGION:-us-east-1}
     ulimits:
       nofile:
         soft: 64000

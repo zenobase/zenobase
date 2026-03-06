@@ -27,9 +27,6 @@ USER elasticsearch
 ENV ES_HEAP_SIZE=4g
 ENV ES_CLUSTER_NAME=elasticsearch
 ENV ES_DISCOVERY_TYPE=zen
-ENV AWS_ACCESS_KEY=""
-ENV AWS_SECRET_KEY=""
-ENV AWS_REGION=us-east-1
 
 CMD ["bin/elasticsearch", \
     "-Des.default.path.home=/usr/share/elasticsearch", \

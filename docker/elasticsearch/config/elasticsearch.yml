@@ -11,12 +11,6 @@ indices.breaker.total.limit: 80%
 
 plugin.mandatory: cloud-aws,geocluster-facet,decimal-histogram-facet
 
-cloud:
-    aws:
-        access_key: ${AWS_ACCESS_KEY}
-        secret_key: ${AWS_SECRET_KEY}
-        region: ${AWS_REGION}
-
 discovery:
     type: ${ES_DISCOVERY_TYPE:zen}
     ec2:

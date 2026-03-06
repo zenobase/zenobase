@@ -363,10 +363,6 @@ ${tlsSecurity}TLSEOF
 cat > docker-compose.yml << 'DCEOF'
 ${composeTemplate}DCEOF
 
-# Extract AWS credentials from prod.conf for ES
-AWS_AK=\$(grep 'aws.access_key=' /etc/play/prod.conf | cut -d'"' -f2)
-AWS_SK=\$(grep 'aws.secret_key=' /etc/play/prod.conf | cut -d'"' -f2)
-
 # Fetch EC2 private IP via IMDSv2
 TOKEN=\$(curl -s -X PUT "http://169.254.169.254/latest/api/token" -H "X-aws-ec2-metadata-token-ttl-seconds: 21600")
 HOST_IP=\$(curl -s -H "X-aws-ec2-metadata-token: \$TOKEN" http://169.254.169.254/latest/meta-data/local-ipv4)
@@ -379,8 +375,6 @@ ES_IMAGE_TAG=${esImageTag}
 ES_HEAP_SIZE=${esHeap}
 ES_CLUSTER_NAME=${esCluster}
 ES_DISCOVERY_TYPE=ec2
-AWS_ACCESS_KEY=\${AWS_AK}
-AWS_SECRET_KEY=\${AWS_SK}
 AWS_REGION=${region}
 JAVA_HEAP=${playHeap}
 ES_CLUSTER=${esCluster}
