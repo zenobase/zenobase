@@ -1,5 +1,6 @@
 import * as pulumi from "@pulumi/pulumi";
 import * as aws from "@pulumi/aws";
+import * as command from "@pulumi/command";
 import * as fs from "fs";
 
 const esConfig = fs.readFileSync("../docker/elasticsearch/config/elasticsearch.yml", "utf8");
@@ -307,8 +308,8 @@ const ami = aws.ec2.getAmi({
     ],
 });
 
-const needBlue = deployTarget === "blue" || activeTargetGroup === "blue";
-const needGreen = deployTarget === "green" || activeTargetGroup === "green";
+const blueNeeded = deployTarget === "blue" || activeTargetGroup === "blue";
+const greenNeeded = deployTarget === "green" || activeTargetGroup === "green";
 
 const userData = pulumi.all([
     playRepo.repositoryUrl,
@@ -392,54 +393,65 @@ docker-compose up -d
 `;
 });
 
-let blueInstance: aws.ec2.Instance | undefined;
-if (needBlue) {
-    blueInstance = new aws.ec2.Instance("zenobase-blue", {
-        ami: ami.then(a => a.id),
-        instanceType,
-        subnetId: subnetA.id,
-        vpcSecurityGroupIds: [ec2Sg.id],
-        iamInstanceProfile: instanceProfile.name,
-        keyName: keyPairName,
-        userData,
-        userDataReplaceOnChange: true,
-        rootBlockDevice: { volumeSize: 20, volumeType: "gp3" },
-        tags: { Name: "zenobase-blue", Service: "zenobase" },
-    }, {
-        ...(deployTarget !== "blue" && { ignoreChanges: ["userData"] }),
-    });
-    new aws.lb.TargetGroupAttachment("zenobase-tg-blue-attach", {
-        targetGroupArn: tgBlue.arn,
-        targetId: blueInstance.id,
-        port: 9000,
-    });
-}
+const blueInstance = new aws.ec2.Instance("zenobase-blue", {
+    ami: ami.then(a => a.id),
+    instanceType,
+    subnetId: subnetA.id,
+    vpcSecurityGroupIds: [ec2Sg.id],
+    iamInstanceProfile: instanceProfile.name,
+    keyName: keyPairName,
+    userData,
+    userDataReplaceOnChange: true,
+    rootBlockDevice: { volumeSize: 20, volumeType: "gp3" },
+    tags: { Name: "zenobase-blue", Service: "zenobase" },
+}, {
+    retainOnDelete: true,
+    ...(deployTarget !== "blue" && { ignoreChanges: ["userData"] }),
+});
+new aws.lb.TargetGroupAttachment("zenobase-tg-blue-attach", {
+    targetGroupArn: tgBlue.arn,
+    targetId: blueInstance.id,
+    port: 9000,
+});
 
-let greenInstance: aws.ec2.Instance | undefined;
-if (needGreen) {
-    greenInstance = new aws.ec2.Instance("zenobase-green", {
-        ami: ami.then(a => a.id),
-        instanceType,
-        subnetId: subnetA.id,
-        vpcSecurityGroupIds: [ec2Sg.id],
-        iamInstanceProfile: instanceProfile.name,
-        keyName: keyPairName,
-        userData,
-        userDataReplaceOnChange: true,
-        rootBlockDevice: { volumeSize: 20, volumeType: "gp3" },
-        tags: { Name: "zenobase-green", Service: "zenobase" },
-    }, {
-        aliases: [{ name: "zenobase-instance" }],
-        ...(deployTarget !== "green" && { ignoreChanges: ["userData"] }),
-    });
-    new aws.lb.TargetGroupAttachment("zenobase-tg-green-attach", {
-        targetGroupArn: tgGreen.arn,
-        targetId: greenInstance.id,
-        port: 9000,
-    }, {
-        aliases: [{ name: "zenobase-tg-attachment" }],
-    });
-}
+const greenInstance = new aws.ec2.Instance("zenobase-green", {
+    ami: ami.then(a => a.id),
+    instanceType,
+    subnetId: subnetA.id,
+    vpcSecurityGroupIds: [ec2Sg.id],
+    iamInstanceProfile: instanceProfile.name,
+    keyName: keyPairName,
+    userData,
+    userDataReplaceOnChange: true,
+    rootBlockDevice: { volumeSize: 20, volumeType: "gp3" },
+    tags: { Name: "zenobase-green", Service: "zenobase" },
+}, {
+    retainOnDelete: true,
+    aliases: [{ name: "zenobase-instance" }],
+    ...(deployTarget !== "green" && { ignoreChanges: ["userData"] }),
+});
+new aws.lb.TargetGroupAttachment("zenobase-tg-green-attach", {
+    targetGroupArn: tgGreen.arn,
+    targetId: greenInstance.id,
+    port: 9000,
+}, {
+    aliases: [{ name: "zenobase-tg-attachment" }],
+});
+
+// Stop/start instances based on whether they're needed
+new command.local.Command("zenobase-blue-state", {
+    create: blueNeeded
+        ? pulumi.interpolate`aws ec2 start-instances --instance-ids ${blueInstance.id} --region ${region} && aws ec2 wait instance-running --instance-ids ${blueInstance.id} --region ${region}`
+        : pulumi.interpolate`aws ec2 stop-instances --instance-ids ${blueInstance.id} --region ${region}`,
+    triggers: [blueNeeded],
+});
+
+new command.local.Command("zenobase-green-state", {
+    create: greenNeeded
+        ? pulumi.interpolate`aws ec2 start-instances --instance-ids ${greenInstance.id} --region ${region} && aws ec2 wait instance-running --instance-ids ${greenInstance.id} --region ${region}`
+        : pulumi.interpolate`aws ec2 stop-instances --instance-ids ${greenInstance.id} --region ${region}`,
+    triggers: [greenNeeded],
+});
 
 // ---------- CloudWatch Alarms ----------
 
@@ -481,8 +493,8 @@ export const albDnsName = alb.dnsName;
 export const albArn = alb.arn;
 export const playEcrUrl = playRepo.repositoryUrl;
 export const esEcrUrl = esRepo.repositoryUrl;
-const activeInstance = (activeTargetGroup === "blue" ? blueInstance : greenInstance)!;
-const deployInstance = (deployTarget === "blue" ? blueInstance : greenInstance)!;
+const activeInstance = activeTargetGroup === "blue" ? blueInstance : greenInstance;
+const deployInstance = deployTarget === "blue" ? blueInstance : greenInstance;
 
 export const instanceId = activeInstance.id;
 export const instancePublicIp = activeInstance.publicIp;

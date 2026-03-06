@@ -91,6 +91,12 @@ Deploy Procedure
        pulumi config set zenobase:activeTargetGroup green  # match deployTarget
        pulumi up --stack prod
 
+     This also stops the old instance (preserving its EBS data for quick restarts).
+
+  7. To revert after the switch is complete, set both deployTarget and
+     activeTargetGroup back to the old color and run `pulumi up`. The old
+     instance will be restarted (takes a few minutes).
+
 To rollback to a specific image version:
 
   pulumi config set zenobase:playImageTag <sha>
