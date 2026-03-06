@@ -2,6 +2,7 @@ import * as pulumi from "@pulumi/pulumi";
 import * as aws from "@pulumi/aws";
 import * as command from "@pulumi/command";
 import * as fs from "fs";
+import { execFileSync } from "child_process";
 
 const esConfig = fs.readFileSync("../docker/elasticsearch/config/elasticsearch.yml", "utf8");
 const esLogback = fs.readFileSync("../docker/elasticsearch/config/logback-elasticsearch.xml", "utf8");
@@ -13,7 +14,9 @@ const config = new pulumi.Config("zenobase");
 const awsConfig = new pulumi.Config("aws");
 const region = awsConfig.require("region");
 const certificateArn = config.require("certificateArn");
-const adminCidr = config.get("adminCidr");
+const adminCidr = process.env.ENABLE_SSH
+    ? `${execFileSync("curl", ["-s", "ifconfig.me"], { encoding: "utf8" }).trim()}/32`
+    : undefined;
 const keyPairName = config.require("keyPairName");
 const instanceType = config.get("instanceType") || "t4g.large";
 const playHeap = config.get("playHeap") || "2g";

@@ -12,4 +12,3 @@ config:
   zenobase:esReplayCluster: ""
   zenobase:deployTarget: green
   zenobase:activeTargetGroup: green
-  zenobase:adminCidr: ""

@@ -128,8 +128,8 @@ The EC2 instance retrieves this secret on startup and mounts it at `/etc/play/pr
 
 ## Bootstrap
 
-1. Run `pulumi up --stack prod` locally to create all infrastructure.
-2. Create a DNS CNAME record pointing `zenobase.com` to the ALB DNS name (`pulumi stack output albDnsName --stack prod`).
+1. Run `pulumi up` locally to create all infrastructure.
+2. Create a DNS CNAME record pointing `zenobase.com` to the ALB DNS name (`pulumi stack output albDnsName`).
 3. On the first run the instance will be unhealthy because there are no images in ECR yet.
 4. Push to `master` to trigger the CI workflow (tests, builds, and pushes images to ECR).
 5. Deploy using the procedure in the root README.

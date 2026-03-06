@@ -82,14 +82,14 @@ Deploy Procedure
 
        cd infra
        pulumi config set zenobase:deployTarget green  # or blue
-       pulumi up --stack prod
+       pulumi up
 
   5. Verify health (monitor in CloudWatch Logs, check ALB target health in AWS console).
 
   6. Switch traffic:
 
        pulumi config set zenobase:activeTargetGroup green  # match deployTarget
-       pulumi up --stack prod
+       pulumi up
 
      This also stops the old instance (preserving its EBS data for quick restarts).
 
@@ -100,7 +100,7 @@ Deploy Procedure
 To rollback to a specific image version:
 
   pulumi config set zenobase:playImageTag <sha>
-  pulumi up --stack prod
+  pulumi up
 
 
 Migration Procedure
@@ -117,7 +117,7 @@ Use this procedure to rebuild the database (e.g. after data model changes):
   2. Deploy to the inactive target group:
 
        pulumi config set zenobase:deployTarget green  # or blue
-       pulumi up --stack prod
+       pulumi up
 
      The new instance starts with an empty ES cluster and replays all commands
      from the old cluster.
@@ -127,7 +127,7 @@ Use this procedure to rebuild the database (e.g. after data model changes):
   4. When replay completes, switch traffic:
 
        pulumi config set zenobase:activeTargetGroup green  # match deployTarget
-       pulumi up --stack prod
+       pulumi up
 
   5. Clear migration config for the next deploy:
 
@@ -141,7 +141,7 @@ Restore Procedure
 
        pulumi config set zenobase:deployTarget green  # or blue
        pulumi config set zenobase:esCluster prod-NNN  # new cluster name
-       pulumi up --stack prod
+       pulumi up
 
   2. Stop the play service:
 
@@ -181,22 +181,21 @@ Restore Procedure
   9. Switch traffic to the new instance:
 
     pulumi config set zenobase:activeTargetGroup green  # match deployTarget
-    pulumi up --stack prod
+    pulumi up
 
 
 SSH Access
 ----------
 
-SSH is disabled by default (no adminCidr configured in the security group).
+SSH is disabled by default (no ENABLE_SSH configured in the security group).
 
-To enable temporarily:
+To enable temporarily for your current IP address:
 
   cd infra
-  pulumi config set zenobase:adminCidr "$(curl -s ifconfig.me)/32" --stack prod
-  pulumi up --stack prod
+  ENABLE_SSH=true pulumi up
   ssh -i <key>.pem ec2-user@<ip>
 
 To disable:
 
-  pulumi config rm zenobase:adminCidr --stack prod
-  pulumi up --stack prod
+  cd infra
+  pulumi up
