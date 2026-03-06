@@ -4,6 +4,7 @@ import javax.inject.Inject;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import org.elasticsearch.action.admin.cluster.health.ClusterHealthResponse;
+import org.elasticsearch.action.admin.cluster.health.ClusterHealthStatus;
 import play.mvc.BodyParser;
 import play.mvc.Http;
 import play.mvc.Result;
@@ -35,7 +36,14 @@ public class StatusController extends ControllerSupport {
     	if (!Http.Context.current().request().queryString().isEmpty()) {
     		throw new RuntimeException("invalid parameters");
     	}
-    	return ok(getStatus().toJson());
+    	StatusInfo statusInfo = getStatus();
+    	JsonNode json = statusInfo.toJson();
+    	switch (statusInfo.getHealth()) {
+    		case RED:
+    			return status(503, json);
+    		default:
+    			return ok(json);
+    	}
     }
 
 	private StatusInfo getStatus() {
