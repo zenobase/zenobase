@@ -8,14 +8,16 @@ import play.mvc.Controller;
 
 /**
  * Custom asset controller that delegates to the default asset controller, after
- * stripping cache buster strings.
+ * stripping cache buster strings. Disables aggressive caching for index.html.
  */
 public class Assets extends Controller {
 
 	private static final Pattern CACHE_BUSTER = Pattern.compile("-[0-9a-f]{8}\\b");
 
 	public static Action<AnyContent> at(String path, String file) {
-		return controllers.Assets.at(path, stripCacheBuster(file), true);
+		String resolved = stripCacheBuster(file);
+		boolean aggressiveCaching = !resolved.endsWith("index.html");
+		return controllers.Assets.at(path, resolved, aggressiveCaching);
 	}
 
 	static String stripCacheBuster(String file) {
