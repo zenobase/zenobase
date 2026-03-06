@@ -11,5 +11,5 @@ config:
   zenobase:esSnapshotBucket: zeno-snapshots
   zenobase:esCluster: prod-next-116
   zenobase:esReplayCluster: ""
-  zenobase:deployTarget: green
-  zenobase:activeTargetGroup: green
+  zenobase:deployTarget: blue
+  zenobase:activeTargetGroup: blue
