@@ -404,12 +404,16 @@ public class Global extends GlobalSettings {
 				return Play.application().configuration().getConfig(key) != null;
 			}
 
+			private boolean hasValue(String key) {
+				return !Play.application().configuration().getString(key, "").isEmpty();
+			}
+
 			private Class<? extends NodeFactory> getNodeFactory() {
 				if (Play.isTest()) {
 					return TestNodeFactory.class;
-				} else if (isConfigured("aws")) {
+				} else if (hasValue("es.snapshot.bucket")) {
 					return ClusterNodeFactory.class;
-				} else if (!Play.application().configuration().getString("es.host", "").isEmpty()) {
+				} else if (hasValue("es.host")) {
 					return DockerNodeFactory.class;
 				} else {
 					return LocalNodeFactory.class;

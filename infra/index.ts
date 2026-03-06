@@ -26,6 +26,7 @@ const playImageTag = config.get("playImageTag") || "latest";
 const esImageTag = config.get("esImageTag") || "latest";
 const activeTargetGroup = config.get("activeTargetGroup") || "blue";
 const deployTarget = config.get("deployTarget") || activeTargetGroup;
+const esSnapshotBucket = config.get("esSnapshotBucket") || "";
 const esCluster = config.get("esCluster") || "elasticsearch";
 const esReplayCluster = config.get("esReplayCluster") || "";
 const hostname = config.get("hostname") || "http://localhost:9000";
@@ -382,6 +383,7 @@ ES_REPLAY=${esReplayCluster}
 HOSTNAME=${hostname}
 API_HOSTNAME=${apiHostname}
 OAUTH_HOSTNAME=${oauthHostname}
+ES_SNAPSHOT_BUCKET=${esSnapshotBucket}
 ES_PUBLISH_HOST=\${HOST_IP}
 ENVEOF
 

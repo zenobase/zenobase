@@ -13,7 +13,7 @@ public class ClusterNodeFactory extends NodeFactorySupport {
 	private final String bucket;
 
 	@Inject
-	public ClusterNodeFactory(@Named("aws.bucket") String bucket) {
+	public ClusterNodeFactory(@Named("es.snapshot.bucket") String bucket) {
 		this.bucket = bucket;
 	}
 

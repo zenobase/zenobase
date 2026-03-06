@@ -36,6 +36,7 @@ services:
     environment:
       - JAVA_HEAP=${JAVA_HEAP:-2g}
       - ES_PUBLISH_HOST=${ES_PUBLISH_HOST:-}
+      - ES_SNAPSHOT_BUCKET=${ES_SNAPSHOT_BUCKET:-}
       - ES_CLUSTER=${ES_CLUSTER:-elasticsearch}
       - ES_REPLAY=${ES_REPLAY:-}
       - HOSTNAME=${HOSTNAME:-http://localhost:9000}
