@@ -129,10 +129,9 @@ Use this procedure to rebuild the database (e.g. after data model changes):
        pulumi config set zenobase:activeTargetGroup green  # match deployTarget
        pulumi up --stack prod
 
-  5. Clear migration config and redeploy:
+  5. Clear migration config for the next deploy:
 
        pulumi config set zenobase:esReplayCluster ""
-       pulumi up --stack prod
 
 
 Restore Procedure
