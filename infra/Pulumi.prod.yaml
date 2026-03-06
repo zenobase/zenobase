@@ -5,10 +5,10 @@ config:
   zenobase:instanceType: t4g.large
   zenobase:playHeap: 2g
   zenobase:esHeap: 4g
-  zenobase:hostname: "https://next.zenobase.com"
+  zenobase:hostname: "https://zenobase.com"
   zenobase:apiHostname: "https://api.zenobase.com"
-  zenobase:oauthHostname: "https://next.zenobase.com"
-  zenobase:esCluster: prod-next-114
+  zenobase:oauthHostname: "https://zenobase.com"
+  zenobase:esCluster: prod-next-116
   zenobase:esReplayCluster: ""
   zenobase:deployTarget: green
   zenobase:activeTargetGroup: green
