@@ -13,6 +13,7 @@ const composeTemplate = fs.readFileSync("../docker/docker-compose.yml", "utf8");
 const config = new pulumi.Config("zenobase");
 const awsConfig = new pulumi.Config("aws");
 const region = awsConfig.require("region");
+const accountId = aws.getCallerIdentity().then(id => id.accountId);
 const certificateArn = config.require("certificateArn");
 const adminCidr = process.env.ENABLE_SSH
     ? `${execFileSync("curl", ["-s", "ifconfig.me"], { encoding: "utf8" }).trim()}/32`
@@ -147,7 +148,7 @@ new aws.iam.RolePolicyAttachment("zenobase-ssm-policy", {
 
 const instancePolicy = new aws.iam.RolePolicy("zenobase-instance-policy", {
     role: instanceRole.id,
-    policy: pulumi.all([playRepo.arn, esRepo.arn]).apply(([playArn, esArn]) => JSON.stringify({
+    policy: pulumi.all([playRepo.arn, esRepo.arn, accountId]).apply(([playArn, esArn, account]) => JSON.stringify({
         Version: "2012-10-17",
         Statement: [
             {
@@ -161,7 +162,7 @@ const instancePolicy = new aws.iam.RolePolicy("zenobase-instance-policy", {
             {
                 Effect: "Allow",
                 Action: ["secretsmanager:GetSecretValue"],
-                Resource: [`arn:aws:secretsmanager:${region}:*:secret:zenobase/*`],
+                Resource: [`arn:aws:secretsmanager:${region}:${account}:secret:zenobase/*`],
             },
             {
                 Effect: "Allow",
