@@ -12,7 +12,7 @@ import play.Logger;
 import com.zenobase.commands.Command;
 import com.zenobase.commands.CommandParserRegistry;
 import com.zenobase.commands.NonExistentUserException;
-import com.zenobase.common.StringBloomFilter;
+import com.zenobase.common.StringFilter;
 
 public class CommandReplay {
 
@@ -41,8 +41,13 @@ public class CommandReplay {
 	}
 
 	void replay(IndexManager indexManager) {
+		replay(indexManager, new IdentitiesFilterBuilder(
+			new UserRepository(indexManager), new AuthorizationRepository(indexManager)));
+	}
+
+	void replay(IndexManager indexManager, IdentitiesFilterBuilder identitiesFilterBuilder) {
 		CommandRepository repository = new CommandRepository(indexManager, parsers);
-		StringBloomFilter identities = new IdentitiesFilterBuilder(new UserRepository(indexManager), new AuthorizationRepository(indexManager)).build();
+		StringFilter identities = identitiesFilterBuilder.build();
 		Logger.info("Replaying {} commands from {}...", repository.size(), sourceCluster);
 		Stopwatch timer = Stopwatch.createStarted();
 		try {
