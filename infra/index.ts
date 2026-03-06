@@ -405,7 +405,7 @@ const blueInstance = new aws.ec2.Instance("zenobase-blue", {
     keyName: keyPairName,
     userData,
     userDataReplaceOnChange: true,
-    rootBlockDevice: { volumeSize: 20, volumeType: "gp3" },
+    rootBlockDevice: { volumeSize: 20, volumeType: "gp3", encrypted: true },
     tags: { Name: "zenobase-blue", Service: "zenobase" },
 }, {
     retainOnDelete: true,
@@ -426,7 +426,7 @@ const greenInstance = new aws.ec2.Instance("zenobase-green", {
     keyName: keyPairName,
     userData,
     userDataReplaceOnChange: true,
-    rootBlockDevice: { volumeSize: 20, volumeType: "gp3" },
+    rootBlockDevice: { volumeSize: 20, volumeType: "gp3", encrypted: true },
     tags: { Name: "zenobase-green", Service: "zenobase" },
 }, {
     retainOnDelete: true,
