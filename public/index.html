@@ -79,7 +79,6 @@
 			&bull; <a href="/#/legal/" class="footer-link">Legal</a>
 			&bull; <a href="/#/pricing/" class="footer-link">Pricing</a>
 			&bull; <a href="/#/api/" class="footer-link">API</a>
-			&bull; <a href="https://zenobase.uservoice.com/knowledgebase/topics/54521-faq" class="footer-link">FAQ</a>
 			&bull; <a href="mailto:info@zenobase.com" class="footer-link">Contact</a>
 		</footer>
 
@@ -226,16 +225,7 @@
 					angular.bootstrap(document.documentElement, ['appModule']);
 				})
 				.script(CDN + "/js/highlight-8.4.min.js")
-				.script("//google-analytics.com/ga.js")
-				.script("//widget.uservoice.com/AsJzuiXVFfxoIEqdMJnow.js").wait(function() {
-					UserVoice = window.UserVoice || [];
-					UserVoice.push(['set', {
-					  accent_color: '#448dd6',
-					  trigger_color: 'white',
-					  trigger_background_color: 'rgba(46, 49, 51, 0.6)'
-					}]);
-					UserVoice.push(['addTrigger', { mode: 'contact', trigger_position: 'bottom-right' }]);
-				});
+				.script("//google-analytics.com/ga.js");
 	</script>
 
 	</body>
