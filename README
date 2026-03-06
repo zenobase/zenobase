@@ -132,32 +132,51 @@ Use this procedure to rebuild the database (e.g. after data model changes):
 Restore Procedure
 -----------------
 
-  1. Bring up an empty elasticsearch instance:
+  1. Create a new instance in a new cluster:
 
+       pulumi config set zenobase:deployTarget green  # or blue
        pulumi config set zenobase:esCluster prod-NNN  # new cluster name
        pulumi up --stack prod
 
-  2. Register a snapshot repository, e.g.
+  2. Stop the play service:
 
-    curl -XPUT 'localhost:9200/_snapshot/prod-xx' -d '{
+    cd /opt/zenobase
+    sudo docker-compose stop play
+
+  3. Delete all indices:
+
+    curl -XDELETE 'localhost:9200/_all'
+
+  4. Register a snapshot repository, e.g.
+
+    curl -XPUT 'localhost:9200/_snapshot/$OLD_CLUSTER_NAME' -d '{
       "type": "s3",
       "settings": {
           "bucket": "zeno-snapshots",
-          "base_path": "prod-xx"
+          "base_path": "$OLD_CLUSTER_NAME"
       }
     }'
 
-  3. List snapshots:
+  5. List snapshots:
 
-    curl 'localhost:9200/_snapshot/prod-xx/_all?pretty=true'
+    curl 'localhost:9200/_snapshot/$OLD_CLUSTER_NAME/_all?pretty=true'
 
-  4. Restore a snapshot:
+  6. Restore a snapshot:
 
-    curl -XPOST 'localhost:9200/_snapshot/prod-xx/yyyyyyyyyy/_restore'
+    curl -XPOST 'localhost:9200/_snapshot/$OLD_CLUSTER_NAME/$SNAPSHOT_ID/_restore'
 
-  5. Monitor progress:
+  7. Monitor progress:
 
-    curl 'localhost:9200/_cat/recovery'
+    watch curl -s 'localhost:9200/_cat/recovery'
+
+  8. Start the play service:
+
+    sudo docker-compose start play
+
+  9. Switch traffic to the new instance:
+
+    pulumi config set zenobase:activeTargetGroup green  # match deployTarget
+    pulumi up --stack prod
 
 
 SSH Access
