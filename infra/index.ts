@@ -403,10 +403,14 @@ const blueInstance = new aws.ec2.Instance("zenobase-blue", {
     userData,
     userDataReplaceOnChange: true,
     rootBlockDevice: { volumeSize: 20, volumeType: "gp3", encrypted: true },
+    metadataOptions: {
+        httpTokens: "optional",    // allow IMDSv1 (needed by old AWS SDK in ES)
+        httpEndpoint: "enabled",
+    },
     tags: { Name: "zenobase-blue", Service: "zenobase" },
 }, {
     retainOnDelete: true,
-    ...(deployTarget !== "blue" && { ignoreChanges: ["userData"] }),
+    ...(deployTarget !== "blue" && { ignoreChanges: ["ami", "userData", "rootBlockDevice", "metadataOptions"] }),
 });
 new aws.lb.TargetGroupAttachment("zenobase-tg-blue-attach", {
     targetGroupArn: tgBlue.arn,
@@ -424,11 +428,15 @@ const greenInstance = new aws.ec2.Instance("zenobase-green", {
     userData,
     userDataReplaceOnChange: true,
     rootBlockDevice: { volumeSize: 20, volumeType: "gp3", encrypted: true },
+    metadataOptions: {
+        httpTokens: "optional",    // allow IMDSv1 (needed by old AWS SDK in ES)
+        httpEndpoint: "enabled",
+    },
     tags: { Name: "zenobase-green", Service: "zenobase" },
 }, {
     retainOnDelete: true,
     aliases: [{ name: "zenobase-instance" }],
-    ...(deployTarget !== "green" && { ignoreChanges: ["userData"] }),
+    ...(deployTarget !== "green" && { ignoreChanges: ["ami", "userData", "rootBlockDevice", "metadataOptions"] }),
 });
 new aws.lb.TargetGroupAttachment("zenobase-tg-green-attach", {
     targetGroupArn: tgGreen.arn,
