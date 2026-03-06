@@ -115,13 +115,11 @@ const ec2Sg = new aws.ec2.SecurityGroup("zenobase-ec2-sg", {
 const playRepo = new aws.ecr.Repository("zenobase-play", {
     name: "zenobase-play",
     imageTagMutability: "MUTABLE",
-    forceDelete: true,
 });
 
 const esRepo = new aws.ecr.Repository("zenobase-elasticsearch", {
     name: "zenobase-elasticsearch",
     imageTagMutability: "MUTABLE",
-    forceDelete: true,
 });
 
 // ---------- IAM ----------
