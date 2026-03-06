@@ -137,11 +137,6 @@ const instanceRole = new aws.iam.Role("zenobase-instance-role", {
     tags: { Name: "zenobase-instance" },
 });
 
-new aws.iam.RolePolicyAttachment("zenobase-ecr-policy", {
-    role: instanceRole.name,
-    policyArn: "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly",
-});
-
 new aws.iam.RolePolicyAttachment("zenobase-ssm-policy", {
     role: instanceRole.name,
     policyArn: "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore",
@@ -182,13 +177,17 @@ const instancePolicy = new aws.iam.RolePolicy("zenobase-instance-policy", {
             },
             {
                 Effect: "Allow",
+                Action: ["ecr:GetAuthorizationToken"],
+                Resource: "*",
+            },
+            {
+                Effect: "Allow",
                 Action: [
-                    "ecr:GetAuthorizationToken",
                     "ecr:BatchCheckLayerAvailability",
                     "ecr:GetDownloadUrlForLayer",
                     "ecr:BatchGetImage",
                 ],
-                Resource: "*",
+                Resource: [playArn, esArn],
             },
             {
                 Effect: "Allow",
