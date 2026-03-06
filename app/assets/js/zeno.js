@@ -122,19 +122,12 @@
 	}]);
 
 	app.factory('tracker', [function() {
+		var noop = function() {};
 		return {
-			event : function(category, action, label) {
-				_gaq.push([ '_trackEvent', category, action, label ]);
-			},
-			timing : function(category, action, time, label) {
-				_gaq.push([ '_trackTiming', category, action, time, label, 100 ]);
-			},
-			pageview : function(url) {
-				_gaq.push([ '_trackPageview', url ]);
-			},
-			variable : function(index, name, value, scope) {
-				_gaq.push([ '_setCustomVar', index, name, value, scope ]);
-			}
+			event : noop,
+			timing : noop,
+			pageview : noop,
+			variable : noop
 		};
 	}]);
 
