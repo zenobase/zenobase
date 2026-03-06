@@ -16,6 +16,8 @@ import com.zenobase.commands.TestCommand;
 import com.zenobase.models.Identity;
 import com.zenobase.models.User;
 
+import static org.junit.Assert.assertEquals;
+
 public class CommandReplayTest extends ElasticSearchTestSupport {
 
 	private final User user = new User("jdoe");
@@ -32,19 +34,20 @@ public class CommandReplayTest extends ElasticSearchTestSupport {
 		CommandDispatcher dispatcher = Mockito.mock(CommandDispatcher.class);
 
 		new UserRepository(getManager()).store(user, DateTime.now());
-		new CommandReplay(getClusterName(), getNodeFactory(), parsers, dispatcher)
+		new CommandReplay(getClusterName(), 4, getNodeFactory(), parsers, dispatcher)
 			.replay(getManager(), new IdentitiesFilterBuilder(
 				new UserRepository(getManager()), new AuthorizationRepository(getManager()))
 				.deterministic(true));
 
-		InOrder ordered = Mockito.inOrder(dispatcher);
+		InOrder dispatchOrder = Mockito.inOrder(dispatcher);
 		for (Command command : commandsToReplay) {
-			ordered.verify(dispatcher).dispatch(command);
+			dispatchOrder.verify(dispatcher).dispatch(command);
 		}
 		for (Command command : commandsToDiscard) {
-			ordered.verify(dispatcher).discard(command);
+			Mockito.verify(dispatcher).discard(command);
 		}
-		ordered.verifyNoMoreInteractions();
+		assertEquals(commandsToReplay.size() + commandsToDiscard.size(),
+			Mockito.mockingDetails(dispatcher).getInvocations().size());
 	}
 
 	private List<Command> newCommands(int count, Identity principal) {
