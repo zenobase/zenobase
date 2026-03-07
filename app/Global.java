@@ -451,9 +451,9 @@ public class Global extends GlobalSettings {
 		UserRepository users = injector.getInstance(UserRepository.class);
 		if (users.isEmpty()) {
 			Configuration esConfig = getApplicationConfig().getConfig("es");
-			if (!Strings.isNullOrEmpty(esConfig.getString("replay"))) {
+			if (!Strings.isNullOrEmpty(esConfig.getString("replay.cluster"))) {
 				injector.getInstance(CommandReplay.class).replay();
-			} else if (!Strings.isNullOrEmpty(esConfig.getString("rebuild"))) {
+			} else if (!Strings.isNullOrEmpty(esConfig.getString("rebuild.cluster"))) {
 				injector.getInstance(CommandRebuild.class).rebuild();
 			}
 		}

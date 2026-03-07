@@ -33,7 +33,7 @@ public class CommandRebuild {
 	private final CommandDispatcher dispatcher;
 
 	@Inject
-	public CommandRebuild(@Named("es.rebuild") String sourceCluster, @Named("es.rebuild.parallelism") int parallelism, NodeFactory nodeFactory, CommandDispatcher dispatcher) {
+	public CommandRebuild(@Named("es.rebuild.cluster") String sourceCluster, @Named("es.rebuild.parallelism") int parallelism, NodeFactory nodeFactory, CommandDispatcher dispatcher) {
 		this.sourceCluster = sourceCluster;
 		this.parallelism = parallelism;
 		this.nodeFactory = nodeFactory;
