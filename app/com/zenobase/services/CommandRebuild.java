@@ -36,7 +36,7 @@ public class CommandRebuild {
 	@Inject
 	public CommandRebuild(@Named("es.rebuild.cluster") String sourceCluster, @Named("es.rebuild.parallelism") int parallelism, NodeFactory nodeFactory, CommandDispatcher dispatcher) {
 		this.sourceCluster = sourceCluster;
-		this.parallelism = parallelism;
+		this.parallelism = parallelism > 0 ? parallelism : Runtime.getRuntime().availableProcessors();
 		this.nodeFactory = nodeFactory;
 		this.dispatcher = dispatcher;
 	}

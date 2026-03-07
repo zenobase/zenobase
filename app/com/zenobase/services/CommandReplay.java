@@ -34,7 +34,7 @@ public class CommandReplay {
 	@Inject
 	public CommandReplay(@Named("es.replay.cluster") String sourceCluster, @Named("es.replay.parallelism") int parallelism, NodeFactory nodeFactory, CommandParserRegistry parsers, CommandDispatcher dispatcher) {
 		this.sourceCluster = sourceCluster;
-		this.parallelism = parallelism;
+		this.parallelism = parallelism > 0 ? parallelism : Runtime.getRuntime().availableProcessors();
 		this.nodeFactory = nodeFactory;
 		this.parsers = parsers;
 		this.dispatcher = dispatcher;
