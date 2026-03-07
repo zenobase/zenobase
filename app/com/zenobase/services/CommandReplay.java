@@ -2,6 +2,7 @@ package com.zenobase.services;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -61,11 +62,13 @@ public class CommandReplay {
 		for (int i = 0; i < parallelism; ++i) {
 			lanes[i] = Executors.newSingleThreadExecutor();
 		}
+		Semaphore semaphore = new Semaphore(parallelism * 100);
 		try {
 			repository.find(new CommandQuery(), ORDER, command -> {
 				if (identities.mightContain(command.getPrincipal().getId())) {
 					String principalId = command.getPrincipal().getId();
 					int lane = Math.floorMod(principalId.hashCode(), parallelism);
+					semaphore.acquireUninterruptibly();
 					lanes[lane].submit(() -> {
 						try {
 							dispatcher.dispatch(command);
@@ -77,6 +80,8 @@ public class CommandReplay {
 						} catch (RuntimeException e) {
 							Logger.error("Couldn't replay command: " + command, e);
 							failures.incrementAndGet();
+						} finally {
+							semaphore.release();
 						}
 					});
 				} else {

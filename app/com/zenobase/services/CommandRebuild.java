@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -82,6 +83,7 @@ public class CommandRebuild {
 		for (int i = 0; i < parallelism; ++i) {
 			lanes[i] = Executors.newSingleThreadExecutor();
 		}
+		Semaphore semaphore = new Semaphore(parallelism * 100);
 		try {
 			buckets.findAll(bucket -> {
 				if (!events.exists(bucket.getId())) {
@@ -90,6 +92,7 @@ public class CommandRebuild {
 				}
 				Identity owner = Iterables.getOnlyElement(bucket.getPrincipals(Role.OWNER));
 				int lane = Math.floorMod(owner.getId().hashCode(), parallelism);
+				semaphore.acquireUninterruptibly();
 				lanes[lane].submit(() -> {
 					try {
 						dispatcher.dispatch(new CreateBucketCommand(owner, bucket));
@@ -99,6 +102,8 @@ public class CommandRebuild {
 					} catch (RuntimeException e) {
 						Logger.error("Couldn't rebuild bucket: " + bucket.getId(), e);
 						failures.incrementAndGet();
+					} finally {
+						semaphore.release();
 					}
 				});
 			});
