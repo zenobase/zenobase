@@ -103,10 +103,10 @@ To rollback to a specific image version:
   pulumi up
 
 
-Migration Procedure
--------------------
+Migration Procedure (Replay)
+----------------------------
 
-Use this procedure to rebuild the database (e.g. after data model changes):
+Use this procedure to rebuild the database by replaying the entire command history (e.g. after data model changes):
 
   1. Set migration config:
 
@@ -132,6 +132,37 @@ Use this procedure to rebuild the database (e.g. after data model changes):
   5. Clear migration config for the next deploy:
 
        pulumi config set zenobase:esReplayCluster ""
+
+
+Migration Procedure (Rebuild)
+-----------------------------
+
+Use this procedure to rebuild the database and compact the command history.
+
+  1. Set migration config:
+
+       cd infra
+       pulumi config set zenobase:esCluster "<new-cluster-name>"
+       pulumi config set zenobase:esRebuildCluster "<old-cluster-name>"
+
+  2. Deploy to the inactive target group:
+
+       pulumi config set zenobase:deployTarget green  # or blue
+       pulumi up
+
+     The new instance starts with an empty ES cluster and rebuilds state
+     from the old cluster's raw data.
+
+  3. Monitor rebuild progress in CloudWatch Logs.
+
+  4. When rebuild completes, switch traffic:
+
+       pulumi config set zenobase:activeTargetGroup green  # match deployTarget
+       pulumi up
+
+  5. Clear migration config for the next deploy:
+
+       pulumi config set zenobase:esRebuildCluster ""
 
 
 Restore Procedure
