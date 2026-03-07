@@ -27,6 +27,9 @@ public class CommandReplay {
 	private final NodeFactory nodeFactory;
 	private final CommandParserRegistry parsers;
 	private final CommandDispatcher dispatcher;
+	private final AtomicInteger count = new AtomicInteger();
+	private final AtomicInteger replayed = new AtomicInteger();
+	private final AtomicInteger failures = new AtomicInteger();
 
 	@Inject
 	public CommandReplay(@Named("es.replay.cluster") String sourceCluster, @Named("es.replay.parallelism") int parallelism, NodeFactory nodeFactory, CommandParserRegistry parsers, CommandDispatcher dispatcher) {
@@ -55,9 +58,6 @@ public class CommandReplay {
 		StringFilter identities = identitiesFilterBuilder.build();
 		Logger.info("Replaying {} commands from {} with {}x...", repository.size(), sourceCluster, parallelism);
 		Stopwatch timer = Stopwatch.createStarted();
-		AtomicInteger count = new AtomicInteger();
-		AtomicInteger replayed = new AtomicInteger();
-		AtomicInteger failures = new AtomicInteger();
 		ExecutorService[] lanes = new ExecutorService[parallelism];
 		for (int i = 0; i < parallelism; ++i) {
 			lanes[i] = Executors.newSingleThreadExecutor();
@@ -71,15 +71,7 @@ public class CommandReplay {
 					semaphore.acquireUninterruptibly();
 					lanes[lane].submit(() -> {
 						try {
-							dispatcher.dispatch(command);
-							replayed.incrementAndGet();
-						} catch (NonExistentUserException e) {
-							Logger.warn("Skipping command applying to a non-existent user: " + command);
-						} catch (DocumentAlreadyExistsException e) {
-							Logger.warn("Skipping duplicate command: " + command);
-						} catch (RuntimeException e) {
-							Logger.error("Couldn't replay command: " + command, e);
-							failures.incrementAndGet();
+							dispatchWithRetry(command);
 						} finally {
 							semaphore.release();
 						}
@@ -108,5 +100,40 @@ public class CommandReplay {
 		if (failures.get() > 0) {
 			throw new IllegalStateException("Replay completed with one or more failures");
 		}
+	}
+
+	private void dispatchWithRetry(Command command) {
+		try {
+			dispatcher.dispatch(command);
+			replayed.incrementAndGet();
+		} catch (NonExistentUserException e) {
+			Logger.warn("Skipping command applying to a non-existent user: " + command);
+		} catch (DocumentAlreadyExistsException e) {
+			Logger.warn("Skipping duplicate command: " + command);
+		} catch (IllegalStateException e) {
+			retryCommand(command, e);
+		} catch (RuntimeException e) {
+			Logger.error("Couldn't replay command: " + command, e);
+			failures.incrementAndGet();
+		}
+	}
+
+	private void retryCommand(Command command, IllegalStateException cause) {
+		for (int retry = 1; retry <= 3; retry++) {
+			Logger.warn("Retrying command (attempt {}): {}", retry, command);
+			try {
+				Thread.sleep(retry * 1000L);
+				dispatcher.dispatch(command);
+				replayed.incrementAndGet();
+				return;
+			} catch (IllegalStateException e) {
+				// continue retrying
+			} catch (InterruptedException e) {
+				Thread.currentThread().interrupt();
+				break;
+			}
+		}
+		Logger.error("Couldn't replay command: " + command, cause);
+		failures.incrementAndGet();
 	}
 }
