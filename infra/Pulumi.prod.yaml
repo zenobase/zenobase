@@ -12,5 +12,7 @@ config:
   zenobase:esSnapshotBucket: zeno-snapshots
   zenobase:esCluster: prod-next-116
   zenobase:esReplayCluster: ""
+  zenobase:playImageTag: "30dc05d0776393f7571af49c6f909a29edf42d7b"
+  zenobase:esImageTag: "1a610ab804fd737d18a6f5458d5c21a7815edce7"
   zenobase:deployTarget: blue
   zenobase:activeTargetGroup: blue
