@@ -93,8 +93,8 @@ public class GanttFacet extends FilteredFacet {
 		return result;
 	}
 
-	private DateTime asDateTime(double value) {
-		return !Double.isInfinite(value) ? new DateTime((long) value, timezone) : null;
+	private DateTime asDateTime(Double value) {
+		return value != null && !Double.isInfinite(value) ? new DateTime(value.longValue(), timezone) : null;
 	}
 
 	public static FacetBuilder builder(FilterParser filterParser) {

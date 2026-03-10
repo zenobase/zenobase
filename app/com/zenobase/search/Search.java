@@ -52,13 +52,13 @@ public class Search {
 
 	private Query buildQuery() {
 		if (must.isEmpty() && mustNot.isEmpty()) {
-			return MatchAllQuery.of(m -> m)._toQuery();
+			return Query.of(q -> q.matchAll(m -> m));
 		}
-		return BoolQuery.of(b -> {
+		return Query.of(q -> q.bool(b -> {
 			if (!must.isEmpty()) b.must(must);
 			if (!mustNot.isEmpty()) b.mustNot(mustNot);
 			return b;
-		})._toQuery();
+		}));
 	}
 
 	private ObjectNode toJson(SearchResponse<ObjectNode> response) {

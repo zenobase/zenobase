@@ -22,7 +22,7 @@ public class MeasureConstraintBuilder extends ConstraintBuilder {
 	}
 
 	private Query build(BigDecimal value) {
-		return TermQuery.of(t -> t.field(getPath()).value(FieldValue.of(value.doubleValue())))._toQuery();
+		return Query.of(q -> q.term(t -> t.field(getPath()).value(FieldValue.of(value.doubleValue()))));
 	}
 
 	@Override

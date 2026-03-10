@@ -12,6 +12,6 @@ public class TermConstraintBuilder extends ConstraintBuilder {
 
 	@Override
 	public Query build(String value) {
-		return TermQuery.of(t -> t.field(getPath()).value(FieldValue.of(value)))._toQuery();
+		return Query.of(q -> q.term(t -> t.field(getPath()).value(FieldValue.of(value))));
 	}
 }

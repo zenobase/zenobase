@@ -9,7 +9,6 @@ services:
       - DISABLE_INSTALL_DEMO_CONFIG=true
       - plugins.security.disabled=true
       - OPENSEARCH_JAVA_OPTS=-Xms${OS_HEAP_SIZE:-4g} -Xmx${OS_HEAP_SIZE:-4g}
-      - compatibility.override_main_response_version=true
       - ES_SNAPSHOT_BUCKET=${ES_SNAPSHOT_BUCKET:-}
     ulimits:
       nofile:

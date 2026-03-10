@@ -12,6 +12,7 @@ import org.opensearch.client.opensearch._types.SortOrder;
 import org.opensearch.client.opensearch._types.aggregations.Aggregation;
 import org.opensearch.client.opensearch._types.aggregations.StringTermsBucket;
 import org.opensearch.client.opensearch._types.query_dsl.MatchAllQuery;
+import org.opensearch.client.opensearch._types.query_dsl.Query;
 import org.opensearch.client.opensearch._types.query_dsl.TermQuery;
 import org.opensearch.client.opensearch.core.SearchRequest;
 import org.opensearch.client.opensearch.core.SearchResponse;
@@ -88,7 +89,7 @@ public class EventRepository {
 	}
 
 	public void findAll(String bucketId, Callback<Event> callback) {
-		getIndex(bucketId).find(MatchAllQuery.of(m -> m)._toQuery(), node -> callback.call(new Event(node)), 100);
+		getIndex(bucketId).find(Query.of(q -> q.matchAll(m -> m)), node -> callback.call(new Event(node)), 100);
 	}
 
 	public boolean exists(String bucketId) {
@@ -119,7 +120,7 @@ public class EventRepository {
 	}
 
 	public long size(Identity author) {
-		return index.count(TermQuery.of(t -> t.field(Event.AUTHOR.getName()).value(FieldValue.of(author.getId())))._toQuery());
+		return index.count(Query.of(q -> q.term(t -> t.field(Event.AUTHOR.getName()).value(FieldValue.of(author.getId())))));
 	}
 
 	public long size(String bucketId) {

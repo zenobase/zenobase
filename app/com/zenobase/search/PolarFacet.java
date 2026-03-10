@@ -69,7 +69,7 @@ public class PolarFacet extends FilteredFacet {
 			result = interval.emptyMap();
 			for (LongTermsBucket bucket : buckets) {
 				StatsAggregate stats = bucket.aggregations().get(getId()).stats();
-				result.put((int) Long.parseLong(bucket.key()), stats);
+				result.put(bucket.key().signed().intValue(), stats);
 			}
 		}
 		return toJson(result);

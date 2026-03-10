@@ -16,9 +16,9 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Stopwatch;
 import com.google.common.collect.Iterables;
-import org.apache.http.HttpHost;
-import org.apache.http.entity.ContentType;
-import org.apache.http.entity.StringEntity;
+import org.apache.hc.core5.http.ContentType;
+import org.apache.hc.core5.http.HttpHost;
+import org.apache.hc.core5.http.io.entity.StringEntity;
 import org.opensearch.client.Request;
 import org.opensearch.client.Response;
 import org.opensearch.client.RestClient;
@@ -58,7 +58,7 @@ public class CommandMigration {
 	public void migrate() {
 		Logger.info("Migrating from {}...", sourceHost);
 		Stopwatch timer = Stopwatch.createStarted();
-		try (RestClient client = RestClient.builder(HttpHost.create(sourceHost)).build()) {
+		try (RestClient client = RestClient.builder(HttpHost.create(java.net.URI.create(sourceHost))).build()) {
 			migrateUsers(client);
 			migrateAuthorizations(client);
 			migrateCredentials(client);
