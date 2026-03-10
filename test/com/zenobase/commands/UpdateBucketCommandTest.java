@@ -4,7 +4,8 @@ import com.zenobase.models.Alias;
 import com.zenobase.models.Bucket;
 import com.zenobase.models.Identity;
 import com.zenobase.services.BucketRepository;
-import org.elasticsearch.index.engine.VersionConflictEngineException;
+import org.opensearch.OpenSearchStatusException;
+import org.opensearch.rest.RestStatus;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -68,18 +69,24 @@ public class UpdateBucketCommandTest {
 		to2.setVersion(1);
 
 		Command command = new UpdateBucketCommand(principal, from, to);
-		Exception e = new VersionConflictEngineException(null, null, null, 1, 2);
+		Exception e = new OpenSearchStatusException("version conflict", RestStatus.CONFLICT);
 		doThrow(e).when(repository).update(from, to, command.getTimestamp());
+		Bucket current = from.copy();
+		current.setVersion(1);
+		when(repository.find(to.getId())).thenReturn(current);
 		registry.execute(command);
 		verify(repository).update(from2, to2, command.getTimestamp());
 	}
 
-	@Test(expected = VersionConflictEngineException.class)
+	@Test(expected = OpenSearchStatusException.class)
 	public void testUnrecoverableVersionConflict() {
 
 		Command command = new UpdateBucketCommand(principal, from, to);
-		Exception e = new VersionConflictEngineException(null, null, null, 3, 2);
+		Exception e = new OpenSearchStatusException("version conflict", RestStatus.CONFLICT);
 		doThrow(e).when(repository).update(from, to, command.getTimestamp());
+		Bucket current = from.copy();
+		current.setVersion(3);
+		when(repository.find(to.getId())).thenReturn(current);
 		registry.execute(command);
 	}
 }

@@ -2,11 +2,12 @@ package com.zenobase.search;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
-import org.elasticsearch.action.search.SearchResponse;
-import org.elasticsearch.index.query.FilterBuilder;
-import org.elasticsearch.search.SearchHit;
-import org.elasticsearch.search.builder.SearchSourceBuilder;
+import org.opensearch.action.search.SearchResponse;
+import org.opensearch.index.query.QueryBuilder;
+import org.opensearch.search.SearchHit;
+import org.opensearch.search.builder.SearchSourceBuilder;
 
+import com.zenobase.json.DomainNode;
 import com.zenobase.json.Nodes;
 import com.zenobase.json.Schema;
 import com.zenobase.models.Event;
@@ -19,9 +20,9 @@ public class ListFacet extends Facet {
 	private final int offset;
 	private final int limit;
 	private final SearchOrder order;
-	private final FilterBuilder filter;
+	private final QueryBuilder filter;
 
-	public ListFacet(String id, int offset, int limit, String order, FilterBuilder filter, Schema schema) {
+	public ListFacet(String id, int offset, int limit, String order, QueryBuilder filter, Schema schema) {
 		super(id);
 		this.offset = offset;
 		this.limit = limit;
@@ -36,14 +37,17 @@ public class ListFacet extends Facet {
 		builder.postFilter(filter);
 		order.apply(builder);
 		builder.version(Boolean.TRUE);
+		builder.seqNoAndPrimaryTerm(Boolean.TRUE);
 	}
 
 	@Override
 	public JsonNode process(SearchResponse response) {
 		ArrayNode eventsNode = Nodes.newArray();
 		for (SearchHit hit : response.getHits()) {
-			Event event = new Event(Nodes.readObject(hit.source()));
-			event.setVersion(hit.version());
+			Event event = new Event(Nodes.readObject(hit.getSourceRef().toBytesRef().bytes));
+			event.setVersion(hit.getVersion());
+			DomainNode.SEQ_NO.setValue(event.toJson(), hit.getSeqNo());
+			DomainNode.PRIMARY_TERM.setValue(event.toJson(), hit.getPrimaryTerm());
 			eventsNode.add(event.toJson());
 		}
 		return eventsNode;

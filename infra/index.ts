@@ -4,8 +4,6 @@ import * as command from "@pulumi/command";
 import * as fs from "fs";
 import { execFileSync } from "child_process";
 
-const esConfig = fs.readFileSync("../docker/elasticsearch/config/elasticsearch.yml", "utf8");
-const esLogback = fs.readFileSync("../docker/elasticsearch/config/logback-elasticsearch.xml", "utf8");
 const playLogback = fs.readFileSync("../docker/play/config/logback-play.xml", "utf8");
 const tlsSecurity = fs.readFileSync("../docker/play/config/enableLegacyTLS.security", "utf8");
 const composeTemplate = fs.readFileSync("../docker/docker-compose.yml", "utf8");
@@ -118,8 +116,8 @@ const playRepo = new aws.ecr.Repository("zenobase-play", {
     imageTagMutability: "MUTABLE",
 });
 
-const esRepo = new aws.ecr.Repository("zenobase-elasticsearch", {
-    name: "zenobase-elasticsearch",
+const esRepo = new aws.ecr.Repository("zenobase-opensearch", {
+    name: "zenobase-opensearch",
     imageTagMutability: "MUTABLE",
 });
 
@@ -331,7 +329,7 @@ new aws.cloudwatch.LogGroup("zenobase-play-logs", {
 });
 
 new aws.cloudwatch.LogGroup("zenobase-es-logs", {
-    name: "/zenobase/elasticsearch",
+    name: "/zenobase/opensearch",
     retentionInDays: 30,
 });
 
@@ -378,16 +376,10 @@ mkdir -p /etc/play
 aws secretsmanager get-secret-value --secret-id zenobase/prod-conf --region ${region} --query SecretString --output text > /etc/play/prod.conf
 
 # Set up docker-compose directory
-mkdir -p /opt/zenobase/elasticsearch/config /opt/zenobase/play/config
+mkdir -p /opt/zenobase/play/config
 cd /opt/zenobase
 
 # Write config files
-cat > elasticsearch/config/elasticsearch.yml << 'ESEOF'
-${esConfig}ESEOF
-
-cat > elasticsearch/config/logback-elasticsearch.xml << 'LEEOF'
-${esLogback}LEEOF
-
 cat > play/config/logback-play.xml << 'LPEOF'
 ${playLogback}LPEOF
 
@@ -406,7 +398,7 @@ HOST_IP=\$(curl -s -H "X-aws-ec2-metadata-token: \$TOKEN" http://169.254.169.254
 cat > .env << ENVEOF
 ECR_REGISTRY=${ecrRegistry}
 PLAY_IMAGE_TAG=${playImageTag}
-ES_IMAGE_TAG=${esImageTag}
+OS_IMAGE_TAG=${esImageTag}
 ES_HEAP_SIZE=${esHeap}
 ES_CLUSTER_NAME=${esCluster}
 ES_DISCOVERY_TYPE=ec2

@@ -1,6 +1,6 @@
 package com.zenobase.search;
 
-import org.elasticsearch.index.query.QueryBuilder;
+import org.opensearch.index.query.QueryBuilder;
 
 public class PercentConstraintBuilder extends TermConstraintBuilder {
 

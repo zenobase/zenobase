@@ -12,13 +12,14 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
-import org.elasticsearch.action.search.SearchResponse;
-import org.elasticsearch.index.query.FilterBuilder;
-import org.elasticsearch.search.aggregations.AggregationBuilders;
-import org.elasticsearch.search.aggregations.bucket.terms.Terms;
-import org.elasticsearch.search.aggregations.bucket.terms.TermsBuilder;
-import org.elasticsearch.search.aggregations.metrics.stats.Stats;
-import org.elasticsearch.search.builder.SearchSourceBuilder;
+import org.opensearch.action.search.SearchResponse;
+import org.opensearch.index.query.QueryBuilder;
+import org.opensearch.search.aggregations.AggregationBuilders;
+import org.opensearch.search.aggregations.BucketOrder;
+import org.opensearch.search.aggregations.bucket.terms.Terms;
+import org.opensearch.search.aggregations.bucket.terms.TermsAggregationBuilder;
+import org.opensearch.search.aggregations.metrics.Stats;
+import org.opensearch.search.builder.SearchSourceBuilder;
 
 import com.zenobase.common.Measures;
 import com.zenobase.common.Units;
@@ -37,7 +38,7 @@ public class PolarFacet extends FilteredFacet {
 	private final Interval interval;
 	private final Unit<?> unit;
 
-	private PolarFacet(String id, String keyField, String valueField, Interval interval, Unit<?> unit, FilterBuilder filter) {
+	private PolarFacet(String id, String keyField, String valueField, Interval interval, Unit<?> unit, QueryBuilder filter) {
 		super(id, filter);
 		this.keyField = Preconditions.checkNotNull(keyField);
 		this.valueField = Preconditions.checkNotNull(valueField);
@@ -47,9 +48,9 @@ public class PolarFacet extends FilteredFacet {
 
 	@Override
 	public void configure(SearchSourceBuilder builder) {
-		TermsBuilder terms = AggregationBuilders.terms(getId())
+		TermsAggregationBuilder terms = AggregationBuilders.terms(getId())
 			.field(interval.getField(keyField))
-			.order(Terms.Order.term(true))
+			.order(BucketOrder.key(true))
 			.size(31);
 		terms.subAggregation(AggregationBuilders.stats(getId())
 			.field(unit == Unit.ONE ? valueField : Field.concat(valueField, DecimalMeasureField.VALUE_SI.getName())));
@@ -64,7 +65,7 @@ public class PolarFacet extends FilteredFacet {
 			result = interval.emptyMap();
 			for (Terms.Bucket bucket : terms.getBuckets()) {
 				Stats stats = bucket.getAggregations().get(getId());
-				result.put(Integer.valueOf(bucket.getKey()), stats);
+				result.put(Integer.valueOf(bucket.getKeyAsString()), stats);
 			}
 		}
 		return toJson(result);

@@ -32,6 +32,5 @@ public class RatingField extends Field<Rating> {
 	@Override
 	public void configureSchema(ObjectNode schema) {
 		super.configureSchema(schema);
-		schema.put("precision_step", "32");
 	}
 }

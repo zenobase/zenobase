@@ -5,13 +5,14 @@ import javax.measure.unit.Unit;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.elasticsearch.action.search.SearchResponse;
-import org.elasticsearch.index.query.FilterBuilder;
-import org.elasticsearch.search.aggregations.AggregationBuilder;
-import org.elasticsearch.search.aggregations.AggregationBuilders;
-import org.elasticsearch.search.aggregations.bucket.terms.Terms;
-import org.elasticsearch.search.aggregations.metrics.stats.extended.ExtendedStats;
-import org.elasticsearch.search.builder.SearchSourceBuilder;
+import org.opensearch.action.search.SearchResponse;
+import org.opensearch.index.query.QueryBuilder;
+import org.opensearch.search.aggregations.AggregationBuilder;
+import org.opensearch.search.aggregations.AggregationBuilders;
+import org.opensearch.search.aggregations.BucketOrder;
+import org.opensearch.search.aggregations.bucket.terms.Terms;
+import org.opensearch.search.aggregations.metrics.ExtendedStats;
+import org.opensearch.search.builder.SearchSourceBuilder;
 
 import com.zenobase.common.Measures;
 import com.zenobase.common.Units;
@@ -26,10 +27,10 @@ public class ScoreboardFacet extends FilteredFacet {
 	private final String termField;
 	private final String valueField;
 	private final Unit<?> unit;
-	private final Terms.Order order;
+	private final BucketOrder order;
 	private final int limit;
 
-	private ScoreboardFacet(String id, String termField, String valueField, Unit<?> unit, String order, int limit, FilterBuilder filter) {
+	private ScoreboardFacet(String id, String termField, String valueField, Unit<?> unit, String order, int limit, QueryBuilder filter) {
 		super(id, filter);
 		this.termField = termField;
 		this.valueField = valueField;
@@ -38,24 +39,24 @@ public class ScoreboardFacet extends FilteredFacet {
 		this.limit = limit;
 	}
 
-	private Terms.Order parseOrder(String s) {
+	private BucketOrder parseOrder(String s) {
 		boolean asc = !s.startsWith("-");
 		if (!asc) {
 			s = s.substring(1);
 		}
 		switch (s) {
 			case "count":
-				return Terms.Order.count(asc);
+				return BucketOrder.count(asc);
 			case "term":
-				return Terms.Order.term(asc);
+				return BucketOrder.key(asc);
 			default:
-				return Terms.Order.aggregation(getId(), s, asc);
+				return BucketOrder.aggregation(getId(), s, asc);
 		}
 	}
 
 	@Override
 	public void configure(SearchSourceBuilder builder) {
-		AggregationBuilder<?> terms = AggregationBuilders.terms(getId())
+		AggregationBuilder terms = AggregationBuilders.terms(getId())
 			.field(termField).order(order).size(limit)
 			.subAggregation(AggregationBuilders.extendedStats(getId()).field(getValueField()));
 		addAggregation(terms, builder);
@@ -73,7 +74,7 @@ public class ScoreboardFacet extends FilteredFacet {
 			ExtendedStats stats = bucket.getAggregations().get(getId());
 			if (stats.getCount() > 0) {
 				ObjectNode entryNode = result.addObject();
-				entryNode.put("label", bucket.getKey());
+				entryNode.put("label", bucket.getKeyAsString());
 				entryNode.put("count", bucket.getDocCount());
 				addValue(entryNode, "min", stats.getMin());
 				addValue(entryNode, "max", stats.getMax());

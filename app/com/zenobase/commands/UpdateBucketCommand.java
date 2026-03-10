@@ -2,10 +2,12 @@ package com.zenobase.commands;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.zenobase.json.ObjectField;
+import com.zenobase.json.DomainNode;
 import com.zenobase.models.Bucket;
 import com.zenobase.models.Identity;
 import com.zenobase.services.BucketRepository;
-import org.elasticsearch.index.engine.VersionConflictEngineException;
+import org.opensearch.OpenSearchStatusException;
+import org.opensearch.rest.RestStatus;
 import play.Logger;
 
 import javax.inject.Inject;
@@ -80,14 +82,18 @@ public class UpdateBucketCommand extends Command {
 		public void executeTyped(UpdateBucketCommand command) {
 			try {
 				update(command);
-			} catch (VersionConflictEngineException e) {
-				if (e.getCurrentVersion() < e.getProvidedVersion()) {
-					Logger.warn("Recovering from a bucket version conflict: {} -> {}...", e.getProvidedVersion(), e.getCurrentVersion());
+			} catch (OpenSearchStatusException e) {
+				if (e.status() != RestStatus.CONFLICT) throw e;
+				Bucket current = repository.find(command.getTo().getId());
+				if (current != null && current.getVersion() < command.getTo().getVersion()) {
+					Logger.warn("Recovering from a bucket version conflict: {} -> {}...", command.getTo().getVersion(), current.getVersion());
 					Bucket correctedFrom = command.getFrom().copy();
-					correctedFrom.setVersion(e.getCurrentVersion());
+					correctedFrom.setVersion(current.getVersion());
+					DomainNode.SEQ_NO.setValue(correctedFrom.toJson(), DomainNode.SEQ_NO.getValue(current.toJson()));
+					DomainNode.PRIMARY_TERM.setValue(correctedFrom.toJson(), DomainNode.PRIMARY_TERM.getValue(current.toJson()));
 					command.setParameter(FROM, correctedFrom.toJson());
 					Bucket correctedTo = command.getTo().copy();
-					correctedTo.setVersion(e.getCurrentVersion());
+					correctedTo.setVersion(current.getVersion());
 					command.setParameter(TO, correctedTo.toJson());
 					update(command);
 				} else {

@@ -1,7 +1,7 @@
 package com.zenobase.search;
 
-import org.elasticsearch.index.query.QueryBuilder;
-import org.elasticsearch.index.query.QueryBuilders;
+import org.opensearch.index.query.QueryBuilder;
+import org.opensearch.index.query.QueryBuilders;
 
 public class WildcardConstraintBuilder extends ConstraintBuilder {
 

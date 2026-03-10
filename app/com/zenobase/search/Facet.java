@@ -1,8 +1,8 @@
 package com.zenobase.search;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import org.elasticsearch.action.search.SearchResponse;
-import org.elasticsearch.search.builder.SearchSourceBuilder;
+import org.opensearch.action.search.SearchResponse;
+import org.opensearch.search.builder.SearchSourceBuilder;
 
 public abstract class Facet {
 

@@ -65,8 +65,9 @@ public class EventRepositoryTest extends ElasticSearchTestSupport {
 		assertThat(repository.terms(bucket.getId(), Event.TAG.getName())).as("tags").containsOnly("test", "demo");
 
 		// update event
+		Event before = event.copy();
 		event.addValue(Event.TAG, "updated");
-		repository.update(bucket.getId(), event, DateTime.now());
+		repository.update(bucket.getId(), before, event, DateTime.now());
 		repository.refresh(bucket.getId());
 		assertThat(repository.find(bucket.getId(), event.getId()).toJson()).isEqualTo(event.toJson());
 		assertThat(repository.terms(bucket.getId(), Event.TAG.getName())).as("tags").containsOnly("test", "demo", "updated");

@@ -1,8 +1,7 @@
 package com.zenobase.search;
 
-import org.elasticsearch.index.query.FilterBuilders;
-import org.elasticsearch.index.query.QueryBuilder;
-import org.elasticsearch.index.query.QueryBuilders;
+import org.opensearch.index.query.QueryBuilder;
+import org.opensearch.index.query.QueryBuilders;
 
 public class ExistsConstraintBuilder extends ConstraintBuilder {
 
@@ -12,6 +11,6 @@ public class ExistsConstraintBuilder extends ConstraintBuilder {
 
 	@Override
 	public QueryBuilder build(String value) {
-		return "*".equals(value) ? QueryBuilders.constantScoreQuery(FilterBuilders.existsFilter(getPath())) : null;
+		return "*".equals(value) ? QueryBuilders.existsQuery(getPath()) : null;
 	}
 }

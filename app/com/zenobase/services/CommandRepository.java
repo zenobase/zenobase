@@ -3,14 +3,14 @@ package com.zenobase.services;
 import javax.inject.Inject;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.elasticsearch.action.search.SearchResponse;
-import org.elasticsearch.index.query.FilterBuilder;
-import org.elasticsearch.index.query.FilterBuilders;
-import org.elasticsearch.search.aggregations.AbstractAggregationBuilder;
-import org.elasticsearch.search.aggregations.AggregationBuilders;
-import org.elasticsearch.search.aggregations.HasAggregations;
-import org.elasticsearch.search.aggregations.metrics.sum.Sum;
-import org.elasticsearch.search.builder.SearchSourceBuilder;
+import org.opensearch.action.search.SearchResponse;
+import org.opensearch.index.query.QueryBuilder;
+import org.opensearch.index.query.QueryBuilders;
+import org.opensearch.search.aggregations.AggregationBuilder;
+import org.opensearch.search.aggregations.AggregationBuilders;
+import org.opensearch.search.aggregations.HasAggregations;
+import org.opensearch.search.aggregations.metrics.Sum;
+import org.opensearch.search.builder.SearchSourceBuilder;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import play.Logger;
@@ -80,8 +80,7 @@ public class CommandRepository extends RepositorySupport<Command> {
 
 	public int getTotalCost(Identity principal, DateTime since) {
 		String id = "cost";
-		AbstractAggregationBuilder filter = AggregationBuilders.filter(id)
-			.filter(createFilter(principal, since))
+		AggregationBuilder filter = AggregationBuilders.filter(id, createFilter(principal, since))
 			.subAggregation(AggregationBuilders.sum(id).field(Command.COST.getName()));
 		SearchSourceBuilder search = new SearchSourceBuilder().size(1).aggregation(filter);
 		SearchResponse response = index.search(search);
@@ -89,10 +88,10 @@ public class CommandRepository extends RepositorySupport<Command> {
 		return (int) sum.getValue();
 	}
 
-	private static FilterBuilder createFilter(Identity principal, DateTime since) {
-		return FilterBuilders.boolFilter().must(
-			FilterBuilders.termFilter(Command.PRINCIPAL.getName(), principal.getId()),
-			FilterBuilders.rangeFilter(Command.TIMESTAMP.getName()).from(since.getMillis()));
+	private static QueryBuilder createFilter(Identity principal, DateTime since) {
+		return QueryBuilders.boolQuery()
+			.must(QueryBuilders.termQuery(Command.PRINCIPAL.getName(), principal.getId()))
+			.must(QueryBuilders.rangeQuery(Command.TIMESTAMP.getName()).from(since.getMillis()));
 	}
 
 	@Override

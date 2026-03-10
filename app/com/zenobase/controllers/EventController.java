@@ -2,7 +2,8 @@ package com.zenobase.controllers;
 
 import javax.inject.Inject;
 
-import org.elasticsearch.index.engine.VersionConflictEngineException;
+import org.opensearch.OpenSearchStatusException;
+import org.opensearch.rest.RestStatus;
 import play.mvc.BodyParser;
 import play.mvc.Result;
 
@@ -72,8 +73,9 @@ public class EventController extends ControllerSupport {
 			String commandId = dispatcher.dispatch(new UpdateEventCommand(auth.getPrincipal(), bucketId, event, updated));
     		response().setHeader(COMMAND_ID, commandId);
 			return noContent();
-		} catch (VersionConflictEngineException e) {
-			return conflict("event is stale");
+		} catch (OpenSearchStatusException e) {
+			if (e.status() == RestStatus.CONFLICT) return conflict("event is stale");
+			throw e;
 		}
     }
 

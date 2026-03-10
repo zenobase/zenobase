@@ -1,7 +1,7 @@
 package com.zenobase.search.geo;
 
 import com.google.common.base.Preconditions;
-import org.elasticsearch.common.geo.GeoPoint;
+import org.opensearch.common.geo.GeoPoint;
 
 public class GeoBoundingBox {
 

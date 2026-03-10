@@ -5,12 +5,13 @@ import java.util.List;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.elasticsearch.action.search.SearchResponse;
-import org.elasticsearch.index.query.FilterBuilder;
-import org.elasticsearch.search.aggregations.AggregationBuilders;
-import org.elasticsearch.search.aggregations.bucket.terms.Terms;
-import org.elasticsearch.search.aggregations.bucket.terms.TermsBuilder;
-import org.elasticsearch.search.builder.SearchSourceBuilder;
+import org.opensearch.action.search.SearchResponse;
+import org.opensearch.index.query.QueryBuilder;
+import org.opensearch.search.aggregations.AggregationBuilders;
+import org.opensearch.search.aggregations.BucketOrder;
+import org.opensearch.search.aggregations.bucket.terms.Terms;
+import org.opensearch.search.aggregations.bucket.terms.TermsAggregationBuilder;
+import org.opensearch.search.builder.SearchSourceBuilder;
 
 import com.zenobase.json.Nodes;
 
@@ -20,11 +21,11 @@ public class CountFacet extends FilteredFacet {
 	public static final String LABEL_MORE = "...";
 
 	private final String field;
-	private final Terms.Order order;
+	private final BucketOrder order;
 	private final int offset;
 	private final int limit;
 
-	private CountFacet(String id, String field, String order, int offset, int limit, FilterBuilder filter) {
+	private CountFacet(String id, String field, String order, int offset, int limit, QueryBuilder filter) {
 		super(id, filter);
 		this.field = field;
 		this.order = parseOrder(order);
@@ -32,16 +33,16 @@ public class CountFacet extends FilteredFacet {
 		this.limit = limit;
 	}
 
-	private Terms.Order parseOrder(String s) {
+	private BucketOrder parseOrder(String s) {
 		boolean asc = !s.startsWith("-");
 		if (!asc) {
 			s = s.substring(1);
 		}
 		switch (s) {
 			case "count":
-				return Terms.Order.count(asc);
+				return BucketOrder.count(asc);
 			case "term":
-				return Terms.Order.term(asc);
+				return BucketOrder.key(asc);
 			default:
 				throw new IllegalArgumentException("Invalid order: " + s);
 		}
@@ -49,7 +50,7 @@ public class CountFacet extends FilteredFacet {
 
 	@Override
 	public void configure(SearchSourceBuilder builder) {
-		TermsBuilder terms = AggregationBuilders.terms(getId())
+		TermsAggregationBuilder terms = AggregationBuilders.terms(getId())
 			.field(field).size(offset + limit).order(order);
 		addAggregation(terms, builder);
 	}
@@ -58,11 +59,11 @@ public class CountFacet extends FilteredFacet {
 	public JsonNode process(SearchResponse response) {
 		ArrayNode result = Nodes.newArray();
 		Terms terms = getAggregation(response);
-		List<Terms.Bucket> entries = terms.getBuckets();
+		List<? extends Terms.Bucket> entries = terms.getBuckets();
 		if (offset < entries.size()) {
 			for (Terms.Bucket entry : entries.subList(offset, Math.min(entries.size(), offset + limit))) {
 				ObjectNode entryNode = result.addObject();
-				entryNode.put("label", entry.getKey());
+				entryNode.put("label", entry.getKeyAsString());
 				entryNode.put("count", entry.getDocCount());
 			}
 			if (terms.getSumOfOtherDocCounts() > 0) {

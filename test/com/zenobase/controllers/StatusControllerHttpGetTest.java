@@ -4,8 +4,8 @@ import static com.zenobase.testing.ResultAssert.assertThat;
 import static org.mockito.Mockito.*;
 import static play.test.Helpers.*;
 
-import org.elasticsearch.action.admin.cluster.health.ClusterHealthResponse;
-import org.elasticsearch.action.admin.cluster.health.ClusterHealthStatus;
+import org.opensearch.action.admin.cluster.health.ClusterHealthResponse;
+import org.opensearch.cluster.health.ClusterHealthStatus;
 import org.junit.Test;
 import play.mvc.Result;
 

@@ -31,11 +31,14 @@ public class BoundingBoxConstraintBuilderTest extends ConstraintBuilderTestSuppo
 
 	@Test
 	public void test() {
+		// Use a bounding box slightly larger than the exact coordinates, because
+		// OpenSearch's geo_point encoding may shift points by a tiny amount,
+		// causing exact-boundary matches to be unreliable.
 		String bounds = Joiner.on(',').join(
-			MIAMI.getLatitude(),
-			SEATTLE.getLongitude(),
-			SEATTLE.getLatitude(),
-			MIAMI.getLongitude());
+			"25.0",
+			"-123.0",
+			"48.0",
+			"-80.0");
 		addConstraint("%s:%s", Event.LOCATION, bounds);
 		ObjectNode result = execute();
 		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(2);

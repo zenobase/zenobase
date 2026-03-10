@@ -5,11 +5,12 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Preconditions;
 import com.google.common.primitives.Ints;
-import org.elasticsearch.action.search.SearchResponse;
-import org.elasticsearch.index.query.FilterBuilder;
-import org.elasticsearch.search.aggregations.AggregationBuilders;
-import org.elasticsearch.search.aggregations.bucket.geogrid.GeoHashGrid;
-import org.elasticsearch.search.builder.SearchSourceBuilder;
+import org.opensearch.action.search.SearchResponse;
+import org.opensearch.common.geo.GeoPoint;
+import org.opensearch.index.query.QueryBuilder;
+import org.opensearch.search.aggregations.AggregationBuilders;
+import org.opensearch.search.aggregations.bucket.geogrid.GeoGrid;
+import org.opensearch.search.builder.SearchSourceBuilder;
 
 import com.zenobase.json.Nodes;
 import com.zenobase.models.Event;
@@ -24,7 +25,7 @@ public class MapFacet extends FilteredFacet {
 	private final String field;
 	private final int precision;
 
-	private MapFacet(String id, String field, double factor, FilterBuilder filter) {
+	private MapFacet(String id, String field, double factor, QueryBuilder filter) {
 		super(id, filter);
 		Preconditions.checkArgument(factor >= 0.0 && factor <= 1.0, "invalid factor value: %d", factor);
 		this.field = field;
@@ -39,10 +40,10 @@ public class MapFacet extends FilteredFacet {
 	@Override
 	public JsonNode process(SearchResponse response) {
 		ArrayNode result = Nodes.newArray();
-		GeoHashGrid grid = getAggregation(response);
+		GeoGrid grid = getAggregation(response);
 		GeoClusterBuilder builder = new GeoClusterBuilder();
-		for (GeoHashGrid.Bucket bucket : grid.getBuckets()) {
-			builder.add(bucket.getDocCount(), bucket.getKeyAsText().toString(), bucket.getKeyAsGeoPoint());
+		for (GeoGrid.Bucket bucket : grid.getBuckets()) {
+			builder.add(bucket.getDocCount(), bucket.getKeyAsString(), GeoPoint.fromGeohash(bucket.getKeyAsString()));
 		}
 		for (GeoCluster cluster : builder.build()) {
 			GeoBoundingBox bounds = cluster.bounds();

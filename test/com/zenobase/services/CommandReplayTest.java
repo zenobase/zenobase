@@ -34,7 +34,7 @@ public class CommandReplayTest extends ElasticSearchTestSupport {
 		CommandDispatcher dispatcher = Mockito.mock(CommandDispatcher.class);
 
 		new UserRepository(getManager()).store(user, DateTime.now());
-		new CommandReplay(getClusterName(), 4, getNodeFactory(), parsers, dispatcher)
+		new CommandReplay("", 4, parsers, dispatcher)
 			.replay(getManager(), new IdentitiesFilterBuilder(
 				new UserRepository(getManager()), new AuthorizationRepository(getManager()))
 				.deterministic(true));

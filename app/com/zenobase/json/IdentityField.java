@@ -11,7 +11,7 @@ import com.zenobase.search.TermConstraintBuilder;
 public class IdentityField extends Field<Identity> {
 
 	public IdentityField(String name) {
-		super(name, Identity.class, "string");
+		super(name, Identity.class, "keyword");
 		addConstraintBuilder(name, new TermConstraintBuilder(getPath()));
 	}
 
@@ -28,6 +28,5 @@ public class IdentityField extends Field<Identity> {
 	@Override
 	public void configureSchema(ObjectNode schema) {
 		super.configureSchema(schema);
-		schema.put("index", "not_analyzed");
 	}
 }

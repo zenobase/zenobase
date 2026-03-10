@@ -37,6 +37,6 @@ public class OffsetDateTimeField extends Field<DateTime> {
 	@Override
 	public void configureSchema(ObjectNode schema) {
 		super.configureSchema(schema);
-		schema.put("format", "date_time");
+		schema.put("format", "date_time||epoch_millis");
 	}
 }

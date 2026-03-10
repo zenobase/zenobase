@@ -1,20 +1,17 @@
 services:
-  elasticsearch:
-    image: zenobase-elasticsearch:latest
+  opensearch:
+    image: zenobase-opensearch:latest
     pull_policy: never
     ports:
       - "9200:9200"
-      - "9300:9300"
     volumes:
-      - es-data:/var/lib/elasticsearch
-      - ./elasticsearch/config/elasticsearch.yml:/etc/elasticsearch/elasticsearch.yml:ro
-      - ./elasticsearch/config/logback-elasticsearch.xml:/etc/elasticsearch/logback.xml:ro
+      - opensearch-data:/usr/share/opensearch/data
     environment:
-      - ES_HEAP_SIZE=2g
-      - ES_CLUSTER_NAME=elasticsearch
-      - AWS_ACCESS_KEY=
-      - AWS_SECRET_KEY=
-      - AWS_REGION=us-east-1
+      - discovery.type=single-node
+      - DISABLE_INSTALL_DEMO_CONFIG=true
+      - plugins.security.disabled=true
+      - OPENSEARCH_JAVA_OPTS=-Xms2g -Xmx2g
+      - compatibility.override_main_response_version=true
     ulimits:
       nofile:
         soft: 64000
@@ -39,9 +36,9 @@ services:
     environment:
       - JAVA_HEAP=1g
     depends_on:
-      elasticsearch:
+      opensearch:
         condition: service_healthy
 
 volumes:
-  es-data:
+  opensearch-data:
     driver: local

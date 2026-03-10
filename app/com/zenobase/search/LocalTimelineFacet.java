@@ -10,13 +10,14 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Objects;
 import com.google.common.base.Strings;
 import com.google.common.collect.Maps;
-import org.elasticsearch.action.search.SearchResponse;
-import org.elasticsearch.index.query.FilterBuilder;
-import org.elasticsearch.search.aggregations.AggregationBuilder;
-import org.elasticsearch.search.aggregations.AggregationBuilders;
-import org.elasticsearch.search.aggregations.bucket.histogram.DateHistogram;
-import org.elasticsearch.search.aggregations.metrics.stats.Stats;
-import org.elasticsearch.search.builder.SearchSourceBuilder;
+import org.opensearch.action.search.SearchResponse;
+import org.opensearch.index.query.QueryBuilder;
+import org.opensearch.search.aggregations.AggregationBuilder;
+import org.opensearch.search.aggregations.AggregationBuilders;
+import org.opensearch.search.aggregations.bucket.histogram.DateHistogramInterval;
+import org.opensearch.search.aggregations.bucket.histogram.Histogram;
+import org.opensearch.search.aggregations.metrics.Stats;
+import org.opensearch.search.builder.SearchSourceBuilder;
 import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDateTime;
 
@@ -29,7 +30,7 @@ public class LocalTimelineFacet extends TimelineFacetSupport {
 	private final String interval;
 	private final LocalInterval range;
 
-	public LocalTimelineFacet(String id, String keyField, String valueField, String interval, String range, Unit<?> unit, FilterBuilder filter) {
+	public LocalTimelineFacet(String id, String keyField, String valueField, String interval, String range, Unit<?> unit, QueryBuilder filter) {
 		super(id, keyField, valueField, unit, filter);
 		this.interval = interval;
 		this.range = !Strings.isNullOrEmpty(range) ? LocalIntervals.valueOf(range) : null;
@@ -37,26 +38,27 @@ public class LocalTimelineFacet extends TimelineFacetSupport {
 
 	@Override
 	public void configure(SearchSourceBuilder builder) {
-		AggregationBuilder<?> aggregation = AggregationBuilders.dateHistogram(getId())
+		DateHistogramInterval histogramInterval = DateHistograms.parseInterval(interval);
+		AggregationBuilder aggregation = AggregationBuilders.dateHistogram(getId())
 			.field(keyField)
-			.interval(DateHistograms.parseInterval(interval))
+			.dateHistogramInterval(histogramInterval)
 			.subAggregation(AggregationBuilders.stats(getId()).field(getField()));
 		addAggregation(aggregation, builder);
 	}
 
 	@Override
 	public JsonNode process(SearchResponse response) {
-		DateHistogram histogram = getAggregation(response);
+		Histogram histogram = getAggregation(response);
 		Map<String, ObjectNode> counts = Collections.emptyMap();
 		if (!histogram.getBuckets().isEmpty()) {
 			counts = getMap(getInterval(histogram.getBuckets()));
-			for (DateHistogram.Bucket bucket : histogram.getBuckets()) {
+			for (Histogram.Bucket bucket : histogram.getBuckets()) {
 				if (bucket.getDocCount() > 0) {
-					String key = getLabel(toLocalDateTime(bucket.getKeyAsNumber().longValue()));
+					String key = getLabel(toLocalDateTime(DateHistograms.toEpochMillis(bucket.getKey())));
 					if (range == null || counts.containsKey(key)) {
 						ObjectNode entryNode = Objects.firstNonNull(counts.get(key), Nodes.newObject());
 						entryNode.put("label", key);
-						entryNode.put("time", bucket.getKeyAsNumber().longValue());
+						entryNode.put("time", DateHistograms.toEpochMillis(bucket.getKey()));
 						entryNode.put("count", bucket.getDocCount());
 						if (!keyField.equals(valueField) && bucket.getDocCount() > 0) {
 							Stats stats = bucket.getAggregations().get(getId());
@@ -73,15 +75,15 @@ public class LocalTimelineFacet extends TimelineFacetSupport {
 		return toJson(counts.values());
 	}
 
-	private LocalInterval getInterval(Iterable<? extends DateHistogram.Bucket> buckets) {
+	private LocalInterval getInterval(Iterable<? extends Histogram.Bucket> buckets) {
 		if (range != null) {
 			return range;
 		}
 		long min = Long.MAX_VALUE, max = Long.MIN_VALUE;
-		for (DateHistogram.Bucket bucket : buckets) {
+		for (Histogram.Bucket bucket : buckets) {
 			if (bucket.getDocCount() > 0) {
-				min = Math.min(min, bucket.getKeyAsNumber().longValue());
-				max = Math.max(max, bucket.getKeyAsNumber().longValue());
+				min = Math.min(min, DateHistograms.toEpochMillis(bucket.getKey()));
+				max = Math.max(max, DateHistograms.toEpochMillis(bucket.getKey()));
 			}
 		}
 		return min <= max ? new LocalInterval(toLocalDateTime(min), toLocalDateTime(max)) : null;

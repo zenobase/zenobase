@@ -26,7 +26,6 @@ public class LocationField extends Field<Location> {
 	@Override
 	public void configureSchema(ObjectNode schema) {
 		super.configureSchema(schema);
-		schema.put("lat_lon", true);
 	}
 
 	@Override

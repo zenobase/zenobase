@@ -11,6 +11,8 @@ public class DomainNode {
 
 	public static final TokenField ID = new TokenField("@id", false);
 	public static final LongField VERSION = new LongField("version", false);
+	public static final LongField SEQ_NO = new LongField("seq_no", false);
+	public static final LongField PRIMARY_TERM = new LongField("primary_term", false);
 
 	private final ObjectNode node;
 
