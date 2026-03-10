@@ -1,6 +1,6 @@
 services:
   opensearch:
-    image: ${ECR_REGISTRY}/zenobase-opensearch:${OS_IMAGE_TAG:-latest}
+    image: ${ECR_REGISTRY}/zenobase-elasticsearch:${OS_IMAGE_TAG:-latest}
     network_mode: host
     volumes:
       - os-data:/usr/share/opensearch/data
@@ -22,7 +22,7 @@ services:
       driver: awslogs
       options:
         awslogs-region: ${AWS_REGION:-us-east-1}
-        awslogs-group: /zenobase/opensearch
+        awslogs-group: /zenobase/elasticsearch
         tag: opensearch
 
   play:
