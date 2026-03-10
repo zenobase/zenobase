@@ -40,9 +40,7 @@ libraryDependencies ++= Seq(
 	"com.fasterxml.jackson.core" % "jackson-core" % "2.13.2",
 	"com.fasterxml.jackson.core" % "jackson-databind" % "2.13.2.2",
 	"com.fasterxml.jackson.core" % "jackson-annotations" % "2.13.2",
-	"org.logback-extensions" % "logback-ext-loggly" % "0.1.5",
-	"ch.qos.logback.contrib" % "logback-json-classic" % "0.1.5",
-	"ch.qos.logback.contrib" % "logback-jackson" % "0.1.5",
+	"ch.qos.logback" % "logback-classic" % "1.3.14",
 	"org.seleniumhq.selenium" % "selenium-chrome-driver" % "2.39.0" % "test", // Must match Play's version of Selenium!
 	"org.mockito" % "mockito-core" % "1.10.19" % "test",
 	"org.jvnet.mock-javamail" % "mock-javamail" % "1.9" % "test"
