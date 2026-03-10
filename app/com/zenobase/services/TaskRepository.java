@@ -3,7 +3,7 @@ package com.zenobase.services;
 import javax.inject.Inject;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.opensearch.search.builder.SearchSourceBuilder;
+import org.opensearch.client.opensearch.core.SearchRequest;
 import org.joda.time.DateTime;
 import play.Logger;
 
@@ -54,11 +54,12 @@ public class TaskRepository extends RepositorySupport<Task> {
 	}
 
 	public PartialList<Task> find(TaskQuery query, SearchOrder order, int offset, int limit) {
-		SearchSourceBuilder search = new SearchSourceBuilder()
-			.query(query.build()).version(true)
+		SearchRequest.Builder builder = new SearchRequest.Builder()
+			.index(index.getIndexName())
+			.query(query.build()).version(true).seqNoPrimaryTerm(true)
 			.from(offset).size(limit);
-		order.apply(search);
-		return new TaskList(index.find(search));
+		order.apply(builder);
+		return new TaskList(index.find(builder.build()));
 	}
 
 	public void find(TaskQuery query, Callback<Task> callback) {

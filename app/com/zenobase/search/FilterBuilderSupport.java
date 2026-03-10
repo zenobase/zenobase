@@ -7,15 +7,15 @@ import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Lists;
-import org.opensearch.index.query.BoolQueryBuilder;
-import org.opensearch.index.query.QueryBuilder;
-import org.opensearch.index.query.QueryBuilders;
+import org.opensearch.client.opensearch._types.query_dsl.BoolQuery;
+import org.opensearch.client.opensearch._types.query_dsl.MatchAllQuery;
+import org.opensearch.client.opensearch._types.query_dsl.Query;
 
 public class FilterBuilderSupport {
 
 	private final ImmutableMultimap<String, ConstraintBuilder> constraintBuilders;
-	private final List<QueryBuilder> must = Lists.newArrayList();
-	private final List<QueryBuilder> mustNot = Lists.newArrayList();
+	private final List<Query> must = Lists.newArrayList();
+	private final List<Query> mustNot = Lists.newArrayList();
 
 	public FilterBuilderSupport(ImmutableMultimap<String, ConstraintBuilder> constraintBuilders) {
 		this.constraintBuilders = constraintBuilders;
@@ -47,10 +47,10 @@ public class FilterBuilderSupport {
 			negated = true;
 			field = field.substring(1);
 		}
-		List<QueryBuilder> builders = Lists.newArrayList();
+		List<Query> builders = Lists.newArrayList();
 		for (String value : values) {
 			for (ConstraintBuilder constraint : constraintBuilders.get(field)) {
-				QueryBuilder builder = constraint.build(value);
+				Query builder = constraint.build(value);
 				if (builder != null) {
 					builders.add(builder);
 					break;
@@ -60,42 +60,33 @@ public class FilterBuilderSupport {
 		if (builders.size() == 1) {
 			return addConstraint(builders.get(0), negated);
 		} else if (builders.size() > 1) {
-			BoolQueryBuilder or = new BoolQueryBuilder();
-			for (QueryBuilder builder : builders) {
-				or.should(builder);
-			}
+			Query or = BoolQuery.of(b -> b.should(builders))._toQuery();
 			return addConstraint(or, negated);
 		}
 		throw new IllegalArgumentException("Don't know what to do with constraint: " + expression);
 	}
 
-	public FilterBuilderSupport addConstraint(QueryBuilder builder, boolean negated) {
+	public FilterBuilderSupport addConstraint(Query builder, boolean negated) {
 		(negated ? mustNot : must).add(builder);
 		return this;
 	}
 
-	protected List<QueryBuilder> getMust() {
+	protected List<Query> getMust() {
 		return must;
 	}
 
-	protected List<QueryBuilder> getMustNot() {
+	protected List<Query> getMustNot() {
 		return mustNot;
 	}
 
-	public QueryBuilder buildFilter() {
-		QueryBuilder filter;
+	public Query buildFilter() {
 		if (must.isEmpty() && mustNot.isEmpty()) {
-			filter = QueryBuilders.matchAllQuery();
-		} else {
-			BoolQueryBuilder boolFilter = QueryBuilders.boolQuery();
-			for (QueryBuilder constraint : must) {
-				boolFilter.must(constraint);
-			}
-			for (QueryBuilder constraint : mustNot) {
-				boolFilter.mustNot(constraint);
-			}
-			filter = boolFilter;
+			return MatchAllQuery.of(m -> m)._toQuery();
 		}
-		return filter;
+		return BoolQuery.of(b -> {
+			if (!must.isEmpty()) b.must(must);
+			if (!mustNot.isEmpty()) b.mustNot(mustNot);
+			return b;
+		})._toQuery();
 	}
 }

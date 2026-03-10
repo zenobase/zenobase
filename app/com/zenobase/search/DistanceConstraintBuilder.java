@@ -7,9 +7,10 @@ import javax.measure.DecimalMeasure;
 import javax.measure.quantity.Length;
 
 import com.google.common.base.Objects;
-import org.opensearch.common.unit.DistanceUnit;
-import org.opensearch.index.query.QueryBuilder;
-import org.opensearch.index.query.QueryBuilders;
+import org.opensearch.client.opensearch._types.query_dsl.GeoDistanceQuery;
+import org.opensearch.client.opensearch._types.query_dsl.Query;
+import org.opensearch.client.opensearch._types.GeoLocation;
+import org.opensearch.client.opensearch._types.LatLonGeoLocation;
 
 import com.zenobase.common.Measures;
 import com.zenobase.common.Units;
@@ -25,7 +26,7 @@ public class DistanceConstraintBuilder extends ConstraintBuilder {
 	}
 
 	@Override
-	public QueryBuilder build(String value) {
+	public Query build(String value) {
 		Matcher m = PATTERN.matcher(value);
 		return m.matches() ? build(extractLocation(m), extractDistance(m)) : null;
 	}
@@ -39,9 +40,14 @@ public class DistanceConstraintBuilder extends ConstraintBuilder {
 		return Measures.valueOf(value);
 	}
 
-	private QueryBuilder build(Location location, DecimalMeasure<Length> distance) {
-		return QueryBuilders.geoDistanceQuery(getPath())
-			.point(location.getLatitude().doubleValue(), location.getLongitude().doubleValue())
-			.distance(distance.doubleValue(Units.KM), DistanceUnit.KILOMETERS);
+	private Query build(Location location, DecimalMeasure<Length> distance) {
+		double lat = location.getLatitude().doubleValue();
+		double lon = location.getLongitude().doubleValue();
+		String dist = distance.doubleValue(Units.KM) + "km";
+		return GeoDistanceQuery.of(g -> g
+			.field(getPath())
+			.location(GeoLocation.of(gl -> gl.latlon(LatLonGeoLocation.of(ll -> ll.lat(lat).lon(lon)))))
+			.distance(dist)
+		)._toQuery();
 	}
 }

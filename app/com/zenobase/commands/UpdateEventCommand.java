@@ -7,8 +7,7 @@ import com.zenobase.json.DomainNode;
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
 import com.zenobase.services.EventRepository;
-import org.opensearch.OpenSearchStatusException;
-import org.opensearch.rest.RestStatus;
+import org.opensearch.client.opensearch._types.OpenSearchException;
 import play.Logger;
 
 import javax.inject.Inject;
@@ -90,8 +89,8 @@ public class UpdateEventCommand extends Command {
 		public void executeTyped(UpdateEventCommand command) {
 			try {
 				update(command);
-			} catch (OpenSearchStatusException e) {
-				if (e.status() != RestStatus.CONFLICT) throw e;
+			} catch (OpenSearchException e) {
+				if (e.status() != 409) throw e;
 				Event current = repository.find(command.getBucketId(), command.getTo().getId());
 				if (current == null) {
 					Logger.warn("Recovering a missing event...");

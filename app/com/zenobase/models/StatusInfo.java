@@ -1,6 +1,6 @@
 package com.zenobase.models;
 
-import org.opensearch.cluster.health.ClusterHealthStatus;
+import org.opensearch.client.opensearch._types.HealthStatus;
 
 import com.zenobase.json.BooleanField;
 import com.zenobase.json.DomainNode;
@@ -21,9 +21,9 @@ public class StatusInfo extends DomainNode {
 		setValue(READ_ONLY, readOnly);
 	}
 
-	public StatusInfo(long count, ClusterHealthStatus health, int dataNodes, int webNodes, boolean readOnly, boolean schedularDisabled) {
+	public StatusInfo(long count, HealthStatus health, int dataNodes, int webNodes, boolean readOnly, boolean schedularDisabled) {
 		setValue(COUNT, count);
-		setValue(HEALTH, health.toString());
+		setValue(HEALTH, health.jsonValue());
 		setValue(NODES_DATA, dataNodes);
 		setValue(NODES_WEB, webNodes);
 		if (readOnly) {
@@ -38,8 +38,14 @@ public class StatusInfo extends DomainNode {
 		return getValue(COUNT);
 	}
 
-	public ClusterHealthStatus getHealth() {
-		return ClusterHealthStatus.valueOf(getValue(HEALTH));
+	public HealthStatus getHealth() {
+		String value = getValue(HEALTH);
+		for (HealthStatus status : HealthStatus.values()) {
+			if (status.jsonValue().equals(value)) {
+				return status;
+			}
+		}
+		return HealthStatus.Red;
 	}
 
 	public int getNodes() {

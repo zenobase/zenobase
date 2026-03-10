@@ -6,15 +6,16 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Preconditions;
-import org.opensearch.action.search.SearchResponse;
-import org.opensearch.common.geo.GeoPoint;
-import org.opensearch.index.query.QueryBuilder;
-import org.opensearch.search.aggregations.AggregationBuilder;
-import org.opensearch.search.aggregations.AggregationBuilders;
-import org.opensearch.search.aggregations.bucket.geogrid.GeoGrid;
-import org.opensearch.search.aggregations.metrics.Sum;
-import org.opensearch.search.aggregations.metrics.SumAggregationBuilder;
-import org.opensearch.search.builder.SearchSourceBuilder;
+import org.locationtech.spatial4j.context.SpatialContext;
+import org.locationtech.spatial4j.io.GeohashUtils;
+import org.locationtech.spatial4j.shape.Point;
+import org.opensearch.client.opensearch._types.aggregations.Aggregate;
+import org.opensearch.client.opensearch._types.aggregations.Aggregation;
+import org.opensearch.client.opensearch._types.aggregations.GeoHashGridBucket;
+import org.opensearch.client.opensearch._types.aggregations.SumAggregate;
+import org.opensearch.client.opensearch._types.query_dsl.Query;
+import org.opensearch.client.opensearch.core.SearchRequest;
+import org.opensearch.client.opensearch.core.SearchResponse;
 
 import com.zenobase.common.Measures;
 import com.zenobase.common.Units;
@@ -32,7 +33,7 @@ public class HeatmapFacet extends FilteredFacet {
 	private final Unit<?> unit;
 	private final int precision;
 
-	private HeatmapFacet(String id, String keyField, String valueField, Unit<?> unit, int precision, QueryBuilder filter) {
+	private HeatmapFacet(String id, String keyField, String valueField, Unit<?> unit, int precision, Query filter) {
 		super(id, filter);
 		Preconditions.checkArgument(precision >= 1 && precision <= 10, "invalid precision value: %d", precision);
 		this.keyField = keyField;
@@ -42,28 +43,38 @@ public class HeatmapFacet extends FilteredFacet {
 	}
 
 	@Override
-	public void configure(SearchSourceBuilder builder) {
-		AggregationBuilder grid = AggregationBuilders.geohashGrid(getId()).field(keyField).precision(precision);
-		if (valueField != null) {
-			grid.subAggregation(new SumAggregationBuilder("sum").field(unit == Unit.ONE ? valueField : Field.concat(valueField, DecimalMeasureField.VALUE_SI.getName())));
+	public void configure(SearchRequest.Builder builder) {
+		String vf = valueField;
+		Aggregation aggregation;
+		if (vf != null) {
+			String sumField = unit == Unit.ONE ? vf : Field.concat(vf, DecimalMeasureField.VALUE_SI.getName());
+			aggregation = Aggregation.of(a -> a
+				.geohashGrid(g -> g.field(keyField).precision(p -> p.geohashLength(precision)))
+				.aggregations("sum", Aggregation.of(sa -> sa.sum(s -> s.field(sumField))))
+			);
+		} else {
+			aggregation = Aggregation.of(a -> a
+				.geohashGrid(g -> g.field(keyField).precision(p -> p.geohashLength(precision)))
+			);
 		}
-		addAggregation(grid, builder);
+		addAggregation(getId(), aggregation, builder);
 	}
 
 	@Override
-	public JsonNode process(SearchResponse response) {
+	public JsonNode process(SearchResponse<ObjectNode> response) {
 		ArrayNode result = Nodes.newArray();
-		GeoGrid grid = getAggregation(response);
-		for (GeoGrid.Bucket bucket : grid.getBuckets()) {
-			Sum sum = bucket.getAggregations().get("sum");
-			if (sum == null || sum.getValue() > 0.0) {
+		Aggregate agg = getAggregate(response);
+		for (GeoHashGridBucket bucket : agg.geohashGrid().buckets().array()) {
+			Aggregate sumAgg = bucket.aggregations().get("sum");
+			double sumValue = sumAgg != null ? sumAgg.sum().value() : -1;
+			if (sumAgg == null || sumValue > 0.0) {
 				ObjectNode entryNode = result.addObject();
-				GeoPoint point = GeoPoint.fromGeohash(bucket.getKeyAsString());
-				entryNode.put("lat", point.lat());
-				entryNode.put("lon", point.lon());
-				entryNode.put("count", bucket.getDocCount());
-				if (sum != null) {
-					addValue(entryNode, "sum", sum.getValue());
+				Point point = GeohashUtils.decode(bucket.key(), SpatialContext.GEO);
+				entryNode.put("lat", point.getY());
+				entryNode.put("lon", point.getX());
+				entryNode.put("count", bucket.docCount());
+				if (sumAgg != null) {
+					addValue(entryNode, "sum", sumValue);
 				}
 			}
 		}

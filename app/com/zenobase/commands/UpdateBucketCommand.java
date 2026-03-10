@@ -6,8 +6,7 @@ import com.zenobase.json.DomainNode;
 import com.zenobase.models.Bucket;
 import com.zenobase.models.Identity;
 import com.zenobase.services.BucketRepository;
-import org.opensearch.OpenSearchStatusException;
-import org.opensearch.rest.RestStatus;
+import org.opensearch.client.opensearch._types.OpenSearchException;
 import play.Logger;
 
 import javax.inject.Inject;
@@ -82,8 +81,8 @@ public class UpdateBucketCommand extends Command {
 		public void executeTyped(UpdateBucketCommand command) {
 			try {
 				update(command);
-			} catch (OpenSearchStatusException e) {
-				if (e.status() != RestStatus.CONFLICT) throw e;
+			} catch (OpenSearchException e) {
+				if (e.status() != 409) throw e;
 				Bucket current = repository.find(command.getTo().getId());
 				if (current != null && current.getVersion() < command.getTo().getVersion()) {
 					Logger.warn("Recovering from a bucket version conflict: {} -> {}...", command.getTo().getVersion(), current.getVersion());

@@ -2,7 +2,7 @@ package com.zenobase.search;
 
 import javax.measure.unit.Unit;
 
-import org.opensearch.index.query.QueryBuilder;
+import org.opensearch.client.opensearch._types.query_dsl.Query;
 import org.joda.time.DateTimeZone;
 
 import com.zenobase.common.Units;
@@ -25,7 +25,7 @@ public class TimelineFacet {
 				String interval = options.get("interval", String.class, "month");
 				String range = options.get("range");
 				DateTimeZone timezone = options.get("timezone", DateTimeZone.class, null);
-				QueryBuilder filter = filterParser.parse(options.get("filter"));
+				Query filter = filterParser.parse(options.get("filter"));
 				return timezone != null
 					? new OffsetTimelineFacet(id, keyField, valueField, interval, range, timezone, unit, filter)
 					: new LocalTimelineFacet(id, local(keyField), valueField.equals(keyField) ? local(valueField) : valueField, interval, range, unit, filter);

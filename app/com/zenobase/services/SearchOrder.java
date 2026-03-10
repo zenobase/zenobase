@@ -3,8 +3,8 @@ package com.zenobase.services;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
-import org.opensearch.search.builder.SearchSourceBuilder;
-import org.opensearch.search.sort.SortOrder;
+import org.opensearch.client.opensearch._types.SortOrder;
+import org.opensearch.client.opensearch.core.SearchRequest;
 
 import com.zenobase.json.Schema;
 
@@ -18,8 +18,8 @@ public class SearchOrder {
 		this.asc = asc;
 	}
 
-	public void apply(SearchSourceBuilder search) {
-		search.sort(field, asc ? SortOrder.ASC : SortOrder.DESC);
+	public void apply(SearchRequest.Builder builder) {
+		builder.sort(s -> s.field(f -> f.field(field).order(asc ? SortOrder.Asc : SortOrder.Desc)));
 	}
 
 	public SearchOrder reverse() {

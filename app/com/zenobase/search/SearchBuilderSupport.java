@@ -5,7 +5,7 @@ import java.util.Set;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Sets;
-import org.opensearch.index.query.QueryBuilder;
+import org.opensearch.client.opensearch._types.query_dsl.Query;
 import play.Logger;
 
 public class SearchBuilderSupport extends FilterBuilderSupport {
@@ -25,7 +25,7 @@ public class SearchBuilderSupport extends FilterBuilderSupport {
 	}
 
 	@Override
-	public SearchBuilderSupport addConstraint(QueryBuilder builder, boolean negated) {
+	public SearchBuilderSupport addConstraint(Query builder, boolean negated) {
 		super.addConstraint(builder, negated);
 		return this;
 	}

@@ -1,6 +1,6 @@
 package com.zenobase.search;
 
-import org.opensearch.index.query.QueryBuilder;
+import org.opensearch.client.opensearch._types.query_dsl.Query;
 
 public abstract class ConstraintBuilder {
 
@@ -14,5 +14,5 @@ public abstract class ConstraintBuilder {
 		return path;
 	}
 
-	public abstract QueryBuilder build(String value);
+	public abstract Query build(String value);
 }

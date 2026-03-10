@@ -2,23 +2,22 @@ package com.zenobase.services;
 
 import java.io.IOException;
 
-import org.opensearch.action.admin.cluster.health.ClusterHealthRequest;
-import org.opensearch.action.admin.cluster.health.ClusterHealthResponse;
-import org.opensearch.client.RestHighLevelClient;
-import org.opensearch.cluster.health.ClusterHealthStatus;
-import org.opensearch.common.unit.TimeValue;
+import org.opensearch.client.opensearch.OpenSearchClient;
+import org.opensearch.client.opensearch.cluster.HealthRequest;
+import org.opensearch.client.opensearch.cluster.HealthResponse;
+import org.opensearch.client.opensearch._types.HealthStatus;
 
 public class Cluster {
 
-	private final RestHighLevelClient client;
+	private final OpenSearchClient client;
 
-	public Cluster(RestHighLevelClient client) {
+	public Cluster(OpenSearchClient client) {
 		this.client = client;
 	}
 
-	public ClusterHealthResponse getHealth() {
+	public HealthResponse getHealth() {
 		try {
-			return client.cluster().health(new ClusterHealthRequest(), TypeInjectingInterceptor.OPTIONS);
+			return client.cluster().health(h -> h);
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
@@ -26,10 +25,11 @@ public class Cluster {
 
 	public boolean isReady() {
 		try {
-			ClusterHealthRequest request = new ClusterHealthRequest()
-				.waitForYellowStatus()
-				.timeout(new TimeValue(30000));
-			return client.cluster().health(request, TypeInjectingInterceptor.OPTIONS).getStatus() != ClusterHealthStatus.RED;
+			HealthResponse response = client.cluster().health(h -> h
+				.waitForStatus(HealthStatus.Yellow)
+				.timeout(t -> t.time("30s"))
+			);
+			return response.status() != HealthStatus.Red;
 		} catch (IOException e) {
 			return false;
 		}

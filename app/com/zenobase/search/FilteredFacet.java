@@ -1,34 +1,41 @@
 package com.zenobase.search;
 
-import org.opensearch.action.search.SearchResponse;
-import org.opensearch.index.query.QueryBuilder;
-import org.opensearch.search.aggregations.AggregationBuilder;
-import org.opensearch.search.aggregations.Aggregation;
-import org.opensearch.search.aggregations.AggregationBuilders;
-import org.opensearch.search.aggregations.HasAggregations;
-import org.opensearch.search.builder.SearchSourceBuilder;
+import java.util.Map;
+
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.opensearch.client.opensearch._types.aggregations.Aggregate;
+import org.opensearch.client.opensearch._types.aggregations.Aggregation;
+import org.opensearch.client.opensearch._types.query_dsl.Query;
+import org.opensearch.client.opensearch.core.SearchRequest;
+import org.opensearch.client.opensearch.core.SearchResponse;
 
 public abstract class FilteredFacet extends Facet {
 
-	private final QueryBuilder filter;
+	private final Query filter;
 
-	protected FilteredFacet(String id, QueryBuilder filter) {
+	protected FilteredFacet(String id, Query filter) {
 		super(id);
 		this.filter = filter;
 	}
 
-	protected void addAggregation(AggregationBuilder aggregation, SearchSourceBuilder builder) {
+	protected void addAggregation(String name, Aggregation aggregation, SearchRequest.Builder builder) {
 		if (filter != null) {
-			aggregation = AggregationBuilders.filter(getId(), filter).subAggregation(aggregation);
+			Aggregation filtered = Aggregation.of(a -> a
+				.filter(filter)
+				.aggregations(name, aggregation)
+			);
+			builder.aggregations(getId(), filtered);
+		} else {
+			builder.aggregations(name, aggregation);
 		}
-		builder.aggregation(aggregation);
 	}
 
-	protected <A extends Aggregation> A getAggregation(SearchResponse response) {
-		A aggregation = response.getAggregations().get(getId());
-		if (aggregation instanceof HasAggregations) {
-			aggregation = ((HasAggregations) aggregation).getAggregations().get(getId());
+	@SuppressWarnings("unchecked")
+	protected Aggregate getAggregate(SearchResponse<ObjectNode> response) {
+		Aggregate agg = response.aggregations().get(getId());
+		if (agg != null && agg.isFilter()) {
+			return agg.filter().aggregations().get(getId());
 		}
-		return aggregation;
+		return agg;
 	}
 }

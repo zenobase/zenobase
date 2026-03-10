@@ -4,14 +4,14 @@ import java.util.Map;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Maps;
-import org.opensearch.common.geo.GeoPoint;
+import org.locationtech.spatial4j.shape.Point;
 
 public class GeoClusterBuilder {
 
 	private final Map<String, GeoCluster> clusters = Maps.newLinkedHashMap();
 
-	public void add(long count, String geohash, GeoPoint point) {
-		add(new GeoCluster(count, reducePrecision(geohash), new GeoPoint(point.lat(), point.lon())));
+	public void add(long count, String geohash, Point point) {
+		add(new GeoCluster(count, reducePrecision(geohash), point));
 	}
 
 	public void add(GeoCluster cluster) {

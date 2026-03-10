@@ -4,12 +4,12 @@ import javax.measure.unit.Unit;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.opensearch.action.search.SearchResponse;
-import org.opensearch.index.query.QueryBuilder;
-import org.opensearch.search.aggregations.AggregationBuilders;
-import org.opensearch.search.aggregations.metrics.ExtendedStats;
-import org.opensearch.search.aggregations.metrics.ExtendedStatsAggregationBuilder;
-import org.opensearch.search.builder.SearchSourceBuilder;
+import org.opensearch.client.opensearch._types.aggregations.Aggregate;
+import org.opensearch.client.opensearch._types.aggregations.Aggregation;
+import org.opensearch.client.opensearch._types.aggregations.ExtendedStatsAggregate;
+import org.opensearch.client.opensearch._types.query_dsl.Query;
+import org.opensearch.client.opensearch.core.SearchRequest;
+import org.opensearch.client.opensearch.core.SearchResponse;
 
 import com.zenobase.common.Measures;
 import com.zenobase.common.Units;
@@ -24,30 +24,30 @@ public class StatsFacet extends FilteredFacet {
 	private final String field;
 	private final Unit<?> unit;
 
-	public StatsFacet(String id, String field, Unit<?> unit, QueryBuilder filter) {
+	public StatsFacet(String id, String field, Unit<?> unit, Query filter) {
 		super(id, filter);
 		this.field = field;
 		this.unit = unit;
 	}
 
 	@Override
-	public void configure(SearchSourceBuilder builder) {
-		ExtendedStatsAggregationBuilder stats = AggregationBuilders.extendedStats(getId())
-			.field(unit == Unit.ONE ? field : Field.concat(field, DecimalMeasureField.VALUE_SI.getName()));
-		addAggregation(stats, builder);
+	public void configure(SearchRequest.Builder builder) {
+		String f = unit == Unit.ONE ? field : Field.concat(field, DecimalMeasureField.VALUE_SI.getName());
+		Aggregation stats = Aggregation.of(a -> a.extendedStats(e -> e.field(f)));
+		addAggregation(getId(), stats, builder);
 	}
 
 	@Override
-	public JsonNode process(SearchResponse response) {
-		ExtendedStats stats = getAggregation(response);
+	public JsonNode process(SearchResponse<ObjectNode> response) {
+		ExtendedStatsAggregate stats = getAggregate(response).extendedStats();
 		ObjectNode node = Nodes.newObject();
-		node.put("count", stats.getCount());
-		if (stats.getCount() > 0) {
-			put(node, "min",  stats.getMin());
-			put(node, "max",  stats.getMax());
-			put(node, "sum",  stats.getSum());
-			put(node, "avg",  stats.getAvg());
-			put(node, "stdev", stats.getStdDeviation());
+		node.put("count", stats.count());
+		if (stats.count() > 0) {
+			put(node, "min",  stats.min());
+			put(node, "max",  stats.max());
+			put(node, "sum",  stats.sum());
+			put(node, "avg",  stats.avg());
+			put(node, "stdev", stats.stdDeviation());
 		}
 		return node;
 	}

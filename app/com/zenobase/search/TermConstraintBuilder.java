@@ -1,7 +1,8 @@
 package com.zenobase.search;
 
-import org.opensearch.index.query.QueryBuilder;
-import org.opensearch.index.query.QueryBuilders;
+import org.opensearch.client.opensearch._types.FieldValue;
+import org.opensearch.client.opensearch._types.query_dsl.Query;
+import org.opensearch.client.opensearch._types.query_dsl.TermQuery;
 
 public class TermConstraintBuilder extends ConstraintBuilder {
 
@@ -10,7 +11,7 @@ public class TermConstraintBuilder extends ConstraintBuilder {
 	}
 
 	@Override
-	public QueryBuilder build(String value) {
-		return QueryBuilders.termQuery(getPath(), value);
+	public Query build(String value) {
+		return TermQuery.of(t -> t.field(getPath()).value(FieldValue.of(value)))._toQuery();
 	}
 }

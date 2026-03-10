@@ -2,8 +2,7 @@ package com.zenobase.controllers;
 
 import javax.inject.Inject;
 
-import org.opensearch.OpenSearchStatusException;
-import org.opensearch.rest.RestStatus;
+import org.opensearch.client.opensearch._types.OpenSearchException;
 import play.mvc.BodyParser;
 import play.mvc.Result;
 
@@ -73,8 +72,8 @@ public class EventController extends ControllerSupport {
 			String commandId = dispatcher.dispatch(new UpdateEventCommand(auth.getPrincipal(), bucketId, event, updated));
     		response().setHeader(COMMAND_ID, commandId);
 			return noContent();
-		} catch (OpenSearchStatusException e) {
-			if (e.status() == RestStatus.CONFLICT) return conflict("event is stale");
+		} catch (OpenSearchException e) {
+			if (e.status() == 409) return conflict("event is stale");
 			throw e;
 		}
     }

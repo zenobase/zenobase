@@ -1,17 +1,20 @@
 package com.zenobase.services;
 
+import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.Lists;
-import org.opensearch.action.search.SearchResponse;
-import org.opensearch.index.query.QueryBuilders;
-import org.opensearch.search.aggregations.AggregationBuilders;
-import org.opensearch.search.aggregations.BucketOrder;
-import org.opensearch.search.aggregations.bucket.terms.Terms;
-import org.opensearch.search.builder.SearchSourceBuilder;
+import org.opensearch.client.opensearch._types.FieldValue;
+import org.opensearch.client.opensearch._types.SortOrder;
+import org.opensearch.client.opensearch._types.aggregations.Aggregation;
+import org.opensearch.client.opensearch._types.aggregations.StringTermsBucket;
+import org.opensearch.client.opensearch._types.query_dsl.MatchAllQuery;
+import org.opensearch.client.opensearch._types.query_dsl.TermQuery;
+import org.opensearch.client.opensearch.core.SearchRequest;
+import org.opensearch.client.opensearch.core.SearchResponse;
 import org.joda.time.DateTime;
 import play.Logger;
 
@@ -85,7 +88,7 @@ public class EventRepository {
 	}
 
 	public void findAll(String bucketId, Callback<Event> callback) {
-		getIndex(bucketId).find(QueryBuilders.matchAllQuery(), node -> callback.call(new Event(node)), 100);
+		getIndex(bucketId).find(MatchAllQuery.of(m -> m)._toQuery(), node -> callback.call(new Event(node)), 100);
 	}
 
 	public boolean exists(String bucketId) {
@@ -95,13 +98,18 @@ public class EventRepository {
 	public List<String> terms(String bucketId, String field) {
 		int limit = 100;
 		String id = "terms";
-		SearchSourceBuilder search = new SearchSourceBuilder().size(0)
-			.aggregation(AggregationBuilders.terms(id).field(field).size(limit).order(BucketOrder.count(false)));
-		SearchResponse response = getIndex(bucketId).search(search);
+		SearchRequest request = SearchRequest.of(s -> s
+			.index(getIndex(bucketId).getIndexName())
+			.size(0)
+			.aggregations(id, Aggregation.of(a -> a
+				.terms(t -> t.field(field).size(limit)
+					.order(Collections.singletonMap("_count", SortOrder.Desc)))
+			))
+		);
+		SearchResponse<ObjectNode> response = getIndex(bucketId).search(request);
 		List<String> terms = Lists.newArrayList();
-		Terms aggregation = response.getAggregations().get(id);
-		for (Terms.Bucket bucket : aggregation.getBuckets()) {
-			terms.add(bucket.getKeyAsString());
+		for (StringTermsBucket bucket : response.aggregations().get(id).sterms().buckets().array()) {
+			terms.add(bucket.key());
 		}
 		return terms;
 	}
@@ -111,7 +119,7 @@ public class EventRepository {
 	}
 
 	public long size(Identity author) {
-		return index.count(QueryBuilders.termQuery(Event.AUTHOR.getName(), author.getId()));
+		return index.count(TermQuery.of(t -> t.field(Event.AUTHOR.getName()).value(FieldValue.of(author.getId())))._toQuery());
 	}
 
 	public long size(String bucketId) {

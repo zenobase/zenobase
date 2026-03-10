@@ -14,19 +14,13 @@ public class QueryTest {
 	@Test
 	public void testEmpty() {
 		assertThatQueryBuildsTo(new QuerySupport(),
-			"{ " +
-			"  \"match_all\" : { \"boost\" : 1.0 } " +
-			"}");
+			"{\"match_all\":{}}");
 	}
 
 	@Test
 	public void testEqualTo() {
 		assertThatQueryBuildsTo(new QuerySupport().equalTo(FIELD, "foo"),
-			"{ " +
-			"  \"term\" : { " +
-			"    \"tag\" : { \"value\" : \"foo\", \"boost\" : 1.0 } " +
-			"  }" +
-			"}");
+			"{\"term\":{\"tag\":{\"value\":\"foo\"}}}");
 	}
 
 	@Test
@@ -38,66 +32,29 @@ public class QueryTest {
 	@Test
 	public void testIsNull() {
 		assertThatQueryBuildsTo(new QuerySupport().isNull(FIELD),
-			"{ " +
-			"  \"bool\" : { " +
-			"    \"must_not\" : [{ " +
-			"      \"exists\" : { \"field\" : \"tag\", \"boost\" : 1.0 } " +
-			"    }], " +
-			"    \"adjust_pure_negative\" : true, " +
-			"    \"boost\" : 1.0 " +
-			"  } " +
-			"}");
+			"{\"bool\":{\"must_not\":[{\"exists\":{\"field\":\"tag\"}}]}}");
 	}
 
 	@Test
 	public void testNotNull() {
 		assertThatQueryBuildsTo(new QuerySupport().notNull(FIELD),
-			"{ " +
-			"  \"exists\" : { " +
-			"    \"field\" : \"tag\", " +
-			"    \"boost\" : 1.0 " +
-			"  } " +
-			"}");
+			"{\"exists\":{\"field\":\"tag\"}}");
 	}
 
 	@Test
 	public void testLessThan() {
 		assertThatQueryBuildsTo(new QuerySupport().lessThan(FIELD, 10),
-			"{ " +
-			"  \"range\" : { " +
-			"    \"tag\" : { " +
-			"      \"from\" : null, " +
-			"      \"to\" : 10, " +
-			"      \"include_lower\" : true, " +
-			"      \"include_upper\" : false, " +
-			"      \"boost\" : 1.0 " +
-			"    }" +
-			"  }" +
-			"}");
+			"{\"range\":{\"tag\":{\"lt\":10}}}");
 	}
 
 	@Test
 	public void testBoolean() {
 		assertThatQueryBuildsTo(new QuerySupport().equalTo(FIELD, "foo").equalTo(FIELD, "bar"),
-			"{ " +
-			"  \"bool\" : { " +
-			"    \"must\" : [{ " +
-			"      \"term\" : { " +
-			"        \"tag\" : { \"value\" : \"foo\", \"boost\" : 1.0 } " +
-			"      } " +
-			"    }, { " +
-			"      \"term\" : { " +
-			"        \"tag\" : { \"value\" : \"bar\", \"boost\" : 1.0 } " +
-			"      } " +
-			"    }], " +
-			"    \"adjust_pure_negative\" : true, " +
-			"    \"boost\" : 1.0 " +
-			"  } " +
-			"}");
+			"{\"bool\":{\"must\":[{\"term\":{\"tag\":{\"value\":\"foo\"}}},{\"term\":{\"tag\":{\"value\":\"bar\"}}}]}}");
 	}
 
 	private static void assertThatQueryBuildsTo(QuerySupport query, String expected) {
-		Assertions.assertThat(normalize(query.build().toString())).isEqualTo(normalize(expected));
+		Assertions.assertThat(normalize(query.build().toJsonString())).isEqualTo(normalize(expected));
 	}
 
 	private static String normalize(String s) {

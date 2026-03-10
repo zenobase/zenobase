@@ -10,14 +10,14 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Objects;
 import com.google.common.base.Strings;
 import com.google.common.collect.Maps;
-import org.opensearch.action.search.SearchResponse;
-import org.opensearch.index.query.QueryBuilder;
-import org.opensearch.search.aggregations.AggregationBuilder;
-import org.opensearch.search.aggregations.AggregationBuilders;
-import org.opensearch.search.aggregations.bucket.histogram.DateHistogramInterval;
-import org.opensearch.search.aggregations.bucket.histogram.Histogram;
-import org.opensearch.search.aggregations.metrics.Stats;
-import org.opensearch.search.builder.SearchSourceBuilder;
+import org.opensearch.client.opensearch._types.aggregations.Aggregate;
+import org.opensearch.client.opensearch._types.aggregations.Aggregation;
+import org.opensearch.client.opensearch._types.aggregations.CalendarInterval;
+import org.opensearch.client.opensearch._types.aggregations.DateHistogramBucket;
+import org.opensearch.client.opensearch._types.aggregations.StatsAggregate;
+import org.opensearch.client.opensearch._types.query_dsl.Query;
+import org.opensearch.client.opensearch.core.SearchRequest;
+import org.opensearch.client.opensearch.core.SearchResponse;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.Interval;
@@ -31,7 +31,7 @@ public class OffsetTimelineFacet extends TimelineFacetSupport {
 	private final Interval range;
 	private final DateTimeZone timezone;
 
-	public OffsetTimelineFacet(String id, String keyField, String valueField, String interval, String range, DateTimeZone timezone, Unit<?> unit, QueryBuilder filter) {
+	public OffsetTimelineFacet(String id, String keyField, String valueField, String interval, String range, DateTimeZone timezone, Unit<?> unit, Query filter) {
 		super(id, keyField, valueField, unit, filter);
 		this.interval = interval;
 		this.range = !Strings.isNullOrEmpty(range) ? OffsetIntervals.valueOf(range) : null;
@@ -39,36 +39,43 @@ public class OffsetTimelineFacet extends TimelineFacetSupport {
 	}
 
 	@Override
-	public void configure(SearchSourceBuilder builder) {
-		DateHistogramInterval histogramInterval = DateHistograms.parseInterval(interval);
-		AggregationBuilder aggregation = AggregationBuilders.dateHistogram(getId())
-			.field(keyField)
-			.dateHistogramInterval(histogramInterval)
-			.timeZone(timezone.toTimeZone().toZoneId())
-			.subAggregation(AggregationBuilders.stats(getId()).field(getField()));
-		addAggregation(aggregation, builder);
+	public void configure(SearchRequest.Builder builder) {
+		CalendarInterval calendarInterval = DateHistograms.parseInterval(interval);
+		String tz = timezone.toTimeZone().toZoneId().getId();
+		String f = getField();
+		Aggregation aggregation = Aggregation.of(a -> a
+			.dateHistogram(dh -> dh
+				.field(keyField)
+				.calendarInterval(calendarInterval)
+				.timeZone(tz)
+			)
+			.aggregations(getId(), Aggregation.of(sa -> sa.stats(s -> s.field(f))))
+		);
+		addAggregation(getId(), aggregation, builder);
 	}
 
 	@Override
-	public JsonNode process(SearchResponse response) {
-		Histogram histogram = getAggregation(response);
+	public JsonNode process(SearchResponse<ObjectNode> response) {
+		Aggregate agg = getAggregate(response);
+		java.util.List<DateHistogramBucket> buckets = agg.dateHistogram().buckets().array();
 		Map<String, ObjectNode> counts = Collections.emptyMap();
-		if (!histogram.getBuckets().isEmpty()) {
-			counts = getMap(getInterval(histogram.getBuckets()));
-			for (Histogram.Bucket bucket : histogram.getBuckets()) {
-				if (bucket.getDocCount() > 0) {
-					String key = getLabel(toDateTime(DateHistograms.toEpochMillis(bucket.getKey())));
+		if (!buckets.isEmpty()) {
+			counts = getMap(getInterval(buckets));
+			for (DateHistogramBucket bucket : buckets) {
+				if (bucket.docCount() > 0) {
+					long bucketTime = DateHistograms.toEpochMillis(bucket.key());
+					String key = getLabel(toDateTime(bucketTime));
 					if (range == null || counts.containsKey(key)) {
 						ObjectNode entryNode = Objects.firstNonNull(counts.get(key), Nodes.newObject());
 						entryNode.put("label", key);
-						entryNode.put("time", addOffset(DateHistograms.toEpochMillis(bucket.getKey())));
-						entryNode.put("count", bucket.getDocCount());
-						if (!keyField.equals(valueField) && bucket.getDocCount() > 0) {
-							Stats stats = bucket.getAggregations().get(getId());
-							addValue(entryNode, "min",  stats.getMin());
-							addValue(entryNode, "max", stats.getMax());
-							addValue(entryNode, "sum", stats.getSum());
-							addValue(entryNode, "avg", stats.getAvg());
+						entryNode.put("time", addOffset(bucketTime));
+						entryNode.put("count", bucket.docCount());
+						if (!keyField.equals(valueField) && bucket.docCount() > 0) {
+							StatsAggregate stats = bucket.aggregations().get(getId()).stats();
+							addValue(entryNode, "min",  stats.min());
+							addValue(entryNode, "max", stats.max());
+							addValue(entryNode, "sum", stats.sum());
+							addValue(entryNode, "avg", stats.avg());
 						}
 						counts.put(key, entryNode);
 					}
@@ -82,15 +89,16 @@ public class OffsetTimelineFacet extends TimelineFacetSupport {
 		return time + (timezone != null ? timezone.getOffset(time) : 0);
 	}
 
-	private Interval getInterval(Iterable<? extends Histogram.Bucket> buckets) {
+	private Interval getInterval(java.util.List<DateHistogramBucket> buckets) {
 		if (range != null) {
 			return range;
 		}
 		long min = Long.MAX_VALUE, max = Long.MIN_VALUE;
-		for (Histogram.Bucket bucket : buckets) {
-			if (bucket.getDocCount() > 0) {
-				min = Math.min(min, DateHistograms.toEpochMillis(bucket.getKey()));
-				max = Math.max(max, DateHistograms.toEpochMillis(bucket.getKey()));
+		for (DateHistogramBucket bucket : buckets) {
+			if (bucket.docCount() > 0) {
+				long bucketTime = DateHistograms.toEpochMillis(bucket.key());
+				min = Math.min(min, bucketTime);
+				max = Math.max(max, bucketTime);
 			}
 		}
 		return min <= max ? new Interval(toDateTime(min), toDateTime(max)) : null;

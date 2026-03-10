@@ -3,8 +3,8 @@ package com.zenobase.services;
 import javax.inject.Inject;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.opensearch.search.builder.SearchSourceBuilder;
-import org.opensearch.search.sort.SortOrder;
+import org.opensearch.client.opensearch._types.SortOrder;
+import org.opensearch.client.opensearch.core.SearchRequest;
 import org.joda.time.DateTime;
 import play.Logger;
 
@@ -47,10 +47,12 @@ public class AuthorizationRepository extends RepositorySupport<Authorization> {
 	}
 
 	public PartialList<Authorization> find(AuthorizationQuery query, int offset, int limit) {
-		SearchSourceBuilder search = new SearchSourceBuilder()
-			.query(query.build()).version(true).from(offset).size(limit)
-			.sort(Authorization.CREATED.getName(), SortOrder.DESC);
-		return new AuthorizationList(index.find(search));
+		SearchRequest request = SearchRequest.of(s -> s
+			.index(index.getIndexName())
+			.query(query.build()).version(true).seqNoPrimaryTerm(true).from(offset).size(limit)
+			.sort(so -> so.field(f -> f.field(Authorization.CREATED.getName()).order(SortOrder.Desc)))
+		);
+		return new AuthorizationList(index.find(request));
 	}
 
 	public void find(AuthorizationQuery query, Callback<Authorization> callback) {

@@ -5,11 +5,11 @@ import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.primitives.Ints;
-import org.opensearch.action.search.SearchResponse;
-import org.opensearch.index.query.BoolQueryBuilder;
-import org.opensearch.index.query.QueryBuilder;
-import org.opensearch.index.query.QueryBuilders;
-import org.opensearch.search.builder.SearchSourceBuilder;
+import org.opensearch.client.opensearch._types.query_dsl.BoolQuery;
+import org.opensearch.client.opensearch._types.query_dsl.MatchAllQuery;
+import org.opensearch.client.opensearch._types.query_dsl.Query;
+import org.opensearch.client.opensearch.core.SearchRequest;
+import org.opensearch.client.opensearch.core.SearchResponse;
 
 import com.zenobase.common.Callback;
 import com.zenobase.json.IntegerField;
@@ -21,19 +21,17 @@ public class Search {
 	public static final IntegerField TOTAL = new IntegerField("total");
 
 	private final ImmutableSet<Facet> facets;
-	private final ImmutableList<QueryBuilder> must, mustNot;
+	private final ImmutableList<Query> must, mustNot;
 
-	public Search(Iterable<Facet> facets, Iterable<QueryBuilder> must, Iterable<QueryBuilder> mustNot) {
+	public Search(Iterable<Facet> facets, Iterable<Query> must, Iterable<Query> mustNot) {
 		this.facets = ImmutableSet.copyOf(facets);
 		this.must = ImmutableList.copyOf(must);
 		this.mustNot = ImmutableList.copyOf(mustNot);
 	}
 
 	public ObjectNode execute(Index index) {
-		SearchSourceBuilder builder = buildSearch();
-		// Logger.info("q: {}", builder);
-		SearchResponse response = index.search(builder);
-		// Logger.info("r: {}", response);
+		SearchRequest request = buildSearch(index.getIndexName());
+		SearchResponse<ObjectNode> response = index.search(request);
 		return toJson(response);
 	}
 
@@ -41,33 +39,31 @@ public class Search {
 		index.find(buildQuery(), callback, 1000);
 	}
 
-	private SearchSourceBuilder buildSearch() {
-		SearchSourceBuilder builder = new SearchSourceBuilder().query(buildQuery()).size(0);
+	private SearchRequest buildSearch(String indexName) {
+		SearchRequest.Builder builder = new SearchRequest.Builder();
+		builder.index(indexName);
+		builder.query(buildQuery());
+		builder.size(0);
 		for (Facet facet : facets) {
 			facet.configure(builder);
 		}
-		return builder;
+		return builder.build();
 	}
 
-	private QueryBuilder buildQuery() {
-		QueryBuilder query = null;
+	private Query buildQuery() {
 		if (must.isEmpty() && mustNot.isEmpty()) {
-			query = QueryBuilders.matchAllQuery();
-		} else {
-			query = QueryBuilders.boolQuery();
-			for (QueryBuilder constraint : must) {
-				((BoolQueryBuilder) query).must(constraint);
-			}
-			for (QueryBuilder constraint : mustNot) {
-				((BoolQueryBuilder) query).mustNot(constraint);
-			}
+			return MatchAllQuery.of(m -> m)._toQuery();
 		}
-		return query;
+		return BoolQuery.of(b -> {
+			if (!must.isEmpty()) b.must(must);
+			if (!mustNot.isEmpty()) b.mustNot(mustNot);
+			return b;
+		})._toQuery();
 	}
 
-	private ObjectNode toJson(SearchResponse response) {
+	private ObjectNode toJson(SearchResponse<ObjectNode> response) {
 		ObjectNode node = Nodes.newObject();
-		TOTAL.setValue(node, Ints.checkedCast(response.getHits().getTotalHits().value));
+		TOTAL.setValue(node, Ints.checkedCast(response.hits().total().value()));
 		for (Facet facet : facets) {
 			node.set(facet.getId(), facet.process(response));
 		}
@@ -87,12 +83,21 @@ public class Search {
 
 	private boolean equals(Search that) {
 		return facets.toString().equals(that.facets.toString()) &&
-			must.toString().equals(that.must.toString()) &&
-			mustNot.toString().equals(that.mustNot.toString());
+			toJsonStrings(must).equals(toJsonStrings(that.must)) &&
+			toJsonStrings(mustNot).equals(toJsonStrings(that.mustNot));
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hashCode(facets.toString(), must.toString(), mustNot.toString());
+		return Objects.hashCode(facets.toString(), toJsonStrings(must), toJsonStrings(mustNot));
+	}
+
+	private static String toJsonStrings(ImmutableList<Query> queries) {
+		StringBuilder sb = new StringBuilder("[");
+		for (int i = 0; i < queries.size(); i++) {
+			if (i > 0) sb.append(",");
+			sb.append(queries.get(i).toJsonString());
+		}
+		return sb.append("]").toString();
 	}
 }

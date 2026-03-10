@@ -1,7 +1,7 @@
 package com.zenobase.services;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.opensearch.snapshots.SnapshotInfo;
+import org.opensearch.client.opensearch.snapshot.SnapshotInfo;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.Duration;
@@ -19,11 +19,13 @@ public class Snapshot extends DomainNode {
 	private static final DurationField DURATION = new DurationField("duration");
 
 	public Snapshot(SnapshotInfo info) {
-		setValue(ID, info.snapshotId().getName());
-		setValue(STATE, info.state().name().toLowerCase().replace('_', ' '));
-		setValue(CREATED, new DateTime(info.startTime(), DateTimeZone.UTC));
-		if (info.endTime() > 0) {
-			setValue(DURATION, Duration.millis(info.endTime() - info.startTime()));
+		setValue(ID, info.snapshot());
+		setValue(STATE, info.state() != null ? info.state().toLowerCase().replace('_', ' ') : "unknown");
+		long startTime = info.startTimeInMillis() != null ? Long.parseLong(info.startTimeInMillis()) : 0;
+		setValue(CREATED, new DateTime(startTime, DateTimeZone.UTC));
+		long endTime = info.endTimeInMillis() != null ? Long.parseLong(info.endTimeInMillis()) : 0;
+		if (endTime > 0) {
+			setValue(DURATION, Duration.millis(endTime - startTime));
 		}
 	}
 

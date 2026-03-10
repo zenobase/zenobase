@@ -3,7 +3,8 @@ package com.zenobase.controllers;
 import javax.inject.Inject;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import org.opensearch.action.admin.cluster.health.ClusterHealthResponse;
+import org.opensearch.client.opensearch._types.HealthStatus;
+import org.opensearch.client.opensearch.cluster.HealthResponse;
 import play.mvc.BodyParser;
 import play.mvc.Http;
 import play.mvc.Result;
@@ -38,7 +39,7 @@ public class StatusController extends ControllerSupport {
     	StatusInfo statusInfo = getStatus();
     	JsonNode json = statusInfo.toJson();
     	switch (statusInfo.getHealth()) {
-    		case RED:
+    		case Red:
     			return status(503, json);
     		default:
     			return ok(json);
@@ -46,8 +47,8 @@ public class StatusController extends ControllerSupport {
     }
 
 	private StatusInfo getStatus() {
-		ClusterHealthResponse health = manager.getCluster().getHealth();
-		return new StatusInfo(history.size(), health.getStatus(), health.getNumberOfNodes(), bus.count(), bus.isReadOnly(), bus.isSchedulerDisabled());
+		HealthResponse health = manager.getCluster().getHealth();
+		return new StatusInfo(history.size(), health.status(), health.numberOfNodes(), bus.count(), bus.isReadOnly(), bus.isSchedulerDisabled());
 	}
 
 	@BodyParser.Of(BodyParser.Json.class)

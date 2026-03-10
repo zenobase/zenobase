@@ -5,12 +5,14 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Preconditions;
 import com.google.common.primitives.Ints;
-import org.opensearch.action.search.SearchResponse;
-import org.opensearch.common.geo.GeoPoint;
-import org.opensearch.index.query.QueryBuilder;
-import org.opensearch.search.aggregations.AggregationBuilders;
-import org.opensearch.search.aggregations.bucket.geogrid.GeoGrid;
-import org.opensearch.search.builder.SearchSourceBuilder;
+import org.locationtech.spatial4j.context.SpatialContext;
+import org.locationtech.spatial4j.io.GeohashUtils;
+import org.opensearch.client.opensearch._types.aggregations.Aggregate;
+import org.opensearch.client.opensearch._types.aggregations.Aggregation;
+import org.opensearch.client.opensearch._types.aggregations.GeoHashGridBucket;
+import org.opensearch.client.opensearch._types.query_dsl.Query;
+import org.opensearch.client.opensearch.core.SearchRequest;
+import org.opensearch.client.opensearch.core.SearchResponse;
 
 import com.zenobase.json.Nodes;
 import com.zenobase.models.Event;
@@ -25,7 +27,7 @@ public class MapFacet extends FilteredFacet {
 	private final String field;
 	private final int precision;
 
-	private MapFacet(String id, String field, double factor, QueryBuilder filter) {
+	private MapFacet(String id, String field, double factor, Query filter) {
 		super(id, filter);
 		Preconditions.checkArgument(factor >= 0.0 && factor <= 1.0, "invalid factor value: %d", factor);
 		this.field = field;
@@ -33,28 +35,33 @@ public class MapFacet extends FilteredFacet {
 	}
 
 	@Override
-	public void configure(SearchSourceBuilder builder) {
-		builder.aggregation(AggregationBuilders.geohashGrid(getId()).field(field).precision(precision));
+	public void configure(SearchRequest.Builder builder) {
+		Aggregation grid = Aggregation.of(a -> a.geohashGrid(g -> g
+			.field(field)
+			.precision(p -> p.geohashLength(precision))
+		));
+		addAggregation(getId(), grid, builder);
 	}
 
 	@Override
-	public JsonNode process(SearchResponse response) {
+	public JsonNode process(SearchResponse<ObjectNode> response) {
 		ArrayNode result = Nodes.newArray();
-		GeoGrid grid = getAggregation(response);
+		Aggregate agg = getAggregate(response);
 		GeoClusterBuilder builder = new GeoClusterBuilder();
-		for (GeoGrid.Bucket bucket : grid.getBuckets()) {
-			builder.add(bucket.getDocCount(), bucket.getKeyAsString(), GeoPoint.fromGeohash(bucket.getKeyAsString()));
+		for (GeoHashGridBucket bucket : agg.geohashGrid().buckets().array()) {
+			builder.add(bucket.docCount(), bucket.key(),
+				GeohashUtils.decode(bucket.key(), SpatialContext.GEO));
 		}
 		for (GeoCluster cluster : builder.build()) {
 			GeoBoundingBox bounds = cluster.bounds();
 			ObjectNode entryNode = result.addObject();
 			entryNode.put("count", cluster.count());
-			entryNode.put("lat", cluster.center().lat());
-			entryNode.put("lon", cluster.center().lon());
-			entryNode.put("lat_min", bounds.bottomRight().getLat());
-			entryNode.put("lat_max", bounds.topLeft().getLat());
-			entryNode.put("lon_min", bounds.topLeft().getLon());
-			entryNode.put("lon_max", bounds.bottomRight().getLon());
+			entryNode.put("lat", cluster.center().getY());
+			entryNode.put("lon", cluster.center().getX());
+			entryNode.put("lat_min", bounds.bottomRight().getY());
+			entryNode.put("lat_max", bounds.topLeft().getY());
+			entryNode.put("lon_min", bounds.topLeft().getX());
+			entryNode.put("lon_max", bounds.bottomRight().getX());
 		}
 		return result;
 	}

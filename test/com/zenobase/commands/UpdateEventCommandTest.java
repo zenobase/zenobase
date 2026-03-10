@@ -4,8 +4,8 @@ import com.zenobase.common.Generator;
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
 import com.zenobase.services.EventRepository;
-import org.opensearch.OpenSearchStatusException;
-import org.opensearch.rest.RestStatus;
+import org.opensearch.client.opensearch._types.OpenSearchException;
+import org.opensearch.client.opensearch._types.ErrorResponse;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -55,7 +55,7 @@ public class UpdateEventCommandTest {
 		to2.setVersion(1);
 
 		Command command = new UpdateEventCommand(principal, bucketId, from, to);
-		Exception e = new OpenSearchStatusException("version conflict", RestStatus.CONFLICT);
+		Exception e = new OpenSearchException(ErrorResponse.of(r -> r.status(409).error(e2 -> e2.type("version_conflict_engine_exception").reason("version conflict"))));
 		doThrow(e).doNothing().when(repository).update(eq(bucketId), any(Event.class), any(Event.class), eq(command.getTimestamp()));
 		Event current = from.copy();
 		current.setVersion(1);
@@ -64,11 +64,11 @@ public class UpdateEventCommandTest {
 		verify(repository, times(2)).update(eq(bucketId), any(Event.class), any(Event.class), eq(command.getTimestamp()));
 	}
 
-	@Test(expected = OpenSearchStatusException.class)
+	@Test(expected = OpenSearchException.class)
 	public void testUnrecoverableVersionConflict() {
 
 		Command command = new UpdateEventCommand(principal, bucketId, from, to);
-		Exception e = new OpenSearchStatusException("version conflict", RestStatus.CONFLICT);
+		Exception e = new OpenSearchException(ErrorResponse.of(r -> r.status(409).error(e2 -> e2.type("version_conflict_engine_exception").reason("version conflict"))));
 		doThrow(e).when(repository).update(eq(bucketId), any(Event.class), any(Event.class), eq(command.getTimestamp()));
 		Event current = from.copy();
 		current.setVersion(3);
@@ -80,7 +80,7 @@ public class UpdateEventCommandTest {
 	public void testRecoverFromMissingEvent() {
 
 		Command command = new UpdateEventCommand(principal, bucketId, from, to);
-		Exception e = new OpenSearchStatusException("version conflict", RestStatus.CONFLICT);
+		Exception e = new OpenSearchException(ErrorResponse.of(r -> r.status(409).error(e2 -> e2.type("version_conflict_engine_exception").reason("version conflict"))));
 		doThrow(e).when(repository).update(eq(bucketId), any(Event.class), any(Event.class), eq(command.getTimestamp()));
 		when(repository.find(bucketId, to.getId())).thenReturn(null);
 		registry.execute(command);

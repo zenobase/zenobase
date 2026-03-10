@@ -1,8 +1,9 @@
 package com.zenobase.search;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import org.opensearch.action.search.SearchResponse;
-import org.opensearch.search.builder.SearchSourceBuilder;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.opensearch.client.opensearch.core.SearchRequest;
+import org.opensearch.client.opensearch.core.SearchResponse;
 
 public abstract class Facet {
 
@@ -16,9 +17,9 @@ public abstract class Facet {
 		return id;
 	}
 
-	public abstract void configure(SearchSourceBuilder request);
+	public abstract void configure(SearchRequest.Builder request);
 
-	public abstract JsonNode process(SearchResponse response);
+	public abstract JsonNode process(SearchResponse<ObjectNode> response);
 
 	@Override
 	public boolean equals(Object that) {
