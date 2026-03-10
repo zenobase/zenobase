@@ -15,7 +15,7 @@ public class QueryTest {
 	public void testEmpty() {
 		assertThatQueryBuildsTo(new QuerySupport(),
 			"{ " +
-			"  \"match_all\" : { } " +
+			"  \"match_all\" : { \"boost\" : 1.0 } " +
 			"}");
 	}
 
@@ -24,7 +24,7 @@ public class QueryTest {
 		assertThatQueryBuildsTo(new QuerySupport().equalTo(FIELD, "foo"),
 			"{ " +
 			"  \"term\" : { " +
-			"    \"tag\" : \"foo\" " +
+			"    \"tag\" : { \"value\" : \"foo\", \"boost\" : 1.0 } " +
 			"  }" +
 			"}");
 	}
@@ -39,12 +39,12 @@ public class QueryTest {
 	public void testIsNull() {
 		assertThatQueryBuildsTo(new QuerySupport().isNull(FIELD),
 			"{ " +
-			"  \"constant_score\" : { " +
-			"    \"filter\" : { " +
-			"      \"missing\" : { " +
-			"        \"field\" : \"tag\" " +
-			"      } " +
-			"    } " +
+			"  \"bool\" : { " +
+			"    \"must_not\" : [{ " +
+			"      \"exists\" : { \"field\" : \"tag\", \"boost\" : 1.0 } " +
+			"    }], " +
+			"    \"adjust_pure_negative\" : true, " +
+			"    \"boost\" : 1.0 " +
 			"  } " +
 			"}");
 	}
@@ -53,12 +53,9 @@ public class QueryTest {
 	public void testNotNull() {
 		assertThatQueryBuildsTo(new QuerySupport().notNull(FIELD),
 			"{ " +
-			"  \"constant_score\" : { " +
-			"    \"filter\" : { " +
-			"      \"exists\" : { " +
-			"        \"field\" : \"tag\" " +
-			"      } " +
-			"    } " +
+			"  \"exists\" : { " +
+			"    \"field\" : \"tag\", " +
+			"    \"boost\" : 1.0 " +
 			"  } " +
 			"}");
 	}
@@ -72,7 +69,8 @@ public class QueryTest {
 			"      \"from\" : null, " +
 			"      \"to\" : 10, " +
 			"      \"include_lower\" : true, " +
-			"      \"include_upper\" : false " +
+			"      \"include_upper\" : false, " +
+			"      \"boost\" : 1.0 " +
 			"    }" +
 			"  }" +
 			"}");
@@ -85,13 +83,15 @@ public class QueryTest {
 			"  \"bool\" : { " +
 			"    \"must\" : [{ " +
 			"      \"term\" : { " +
-			"        \"tag\" : \"foo\" " +
+			"        \"tag\" : { \"value\" : \"foo\", \"boost\" : 1.0 } " +
 			"      } " +
 			"    }, { " +
 			"      \"term\" : { " +
-			"        \"tag\" : \"bar\" " +
+			"        \"tag\" : { \"value\" : \"bar\", \"boost\" : 1.0 } " +
 			"      } " +
-			"    }] " +
+			"    }], " +
+			"    \"adjust_pure_negative\" : true, " +
+			"    \"boost\" : 1.0 " +
 			"  } " +
 			"}");
 	}

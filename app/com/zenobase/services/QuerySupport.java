@@ -4,10 +4,9 @@ import java.util.List;
 
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
-import org.elasticsearch.index.query.BoolQueryBuilder;
-import org.elasticsearch.index.query.FilterBuilders;
-import org.elasticsearch.index.query.QueryBuilder;
-import org.elasticsearch.index.query.QueryBuilders;
+import org.opensearch.index.query.BoolQueryBuilder;
+import org.opensearch.index.query.QueryBuilder;
+import org.opensearch.index.query.QueryBuilders;
 
 import com.zenobase.json.Field;
 
@@ -35,12 +34,12 @@ public class QuerySupport {
 
 
 	protected QuerySupport isNull(Field<?> field) {
-		add(QueryBuilders.constantScoreQuery(FilterBuilders.missingFilter(field.getName())));
+		add(QueryBuilders.boolQuery().mustNot(QueryBuilders.existsQuery(field.getName())));
 		return this;
 	}
 
 	protected QuerySupport notNull(Field<?> field) {
-		add(QueryBuilders.constantScoreQuery(FilterBuilders.existsFilter(field.getName())));
+		add(QueryBuilders.existsQuery(field.getName()));
 		return this;
 	}
 

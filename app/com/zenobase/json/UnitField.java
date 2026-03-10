@@ -12,7 +12,7 @@ import com.zenobase.common.Units;
 public class UnitField<Q extends Quantity> extends Field<Unit<Q>> {
 
 	public UnitField(String name) {
-		super(name, String.class, "string");
+		super(name, String.class, "keyword");
 	}
 
 	@Override

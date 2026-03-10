@@ -4,12 +4,12 @@ import javax.measure.unit.Unit;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.elasticsearch.action.search.SearchResponse;
-import org.elasticsearch.index.query.FilterBuilder;
-import org.elasticsearch.search.aggregations.AggregationBuilders;
-import org.elasticsearch.search.aggregations.metrics.stats.extended.ExtendedStats;
-import org.elasticsearch.search.aggregations.metrics.stats.extended.ExtendedStatsBuilder;
-import org.elasticsearch.search.builder.SearchSourceBuilder;
+import org.opensearch.action.search.SearchResponse;
+import org.opensearch.index.query.QueryBuilder;
+import org.opensearch.search.aggregations.AggregationBuilders;
+import org.opensearch.search.aggregations.metrics.ExtendedStats;
+import org.opensearch.search.aggregations.metrics.ExtendedStatsAggregationBuilder;
+import org.opensearch.search.builder.SearchSourceBuilder;
 
 import com.zenobase.common.Measures;
 import com.zenobase.common.Units;
@@ -24,7 +24,7 @@ public class StatsFacet extends FilteredFacet {
 	private final String field;
 	private final Unit<?> unit;
 
-	public StatsFacet(String id, String field, Unit<?> unit, FilterBuilder filter) {
+	public StatsFacet(String id, String field, Unit<?> unit, QueryBuilder filter) {
 		super(id, filter);
 		this.field = field;
 		this.unit = unit;
@@ -32,7 +32,7 @@ public class StatsFacet extends FilteredFacet {
 
 	@Override
 	public void configure(SearchSourceBuilder builder) {
-		ExtendedStatsBuilder stats = AggregationBuilders.extendedStats(getId())
+		ExtendedStatsAggregationBuilder stats = AggregationBuilders.extendedStats(getId())
 			.field(unit == Unit.ONE ? field : Field.concat(field, DecimalMeasureField.VALUE_SI.getName()));
 		addAggregation(stats, builder);
 	}

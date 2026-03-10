@@ -1,9 +1,9 @@
 package com.zenobase.search.geo;
 
-import com.spatial4j.core.context.SpatialContext;
-import com.spatial4j.core.io.GeohashUtils;
-import com.spatial4j.core.shape.Rectangle;
-import org.elasticsearch.common.geo.GeoPoint;
+import org.locationtech.spatial4j.context.SpatialContext;
+import org.locationtech.spatial4j.io.GeohashUtils;
+import org.locationtech.spatial4j.shape.Rectangle;
+import org.opensearch.common.geo.GeoPoint;
 
 public class GeoCluster {
 

@@ -6,13 +6,14 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
-import org.elasticsearch.index.query.QueryBuilders;
-import org.elasticsearch.search.builder.SearchSourceBuilder;
+import org.opensearch.index.query.QueryBuilders;
+import org.opensearch.search.builder.SearchSourceBuilder;
 import org.joda.time.DateTime;
 import play.Logger;
 
 import com.zenobase.common.Callback;
 import com.zenobase.common.PartialList;
+import com.zenobase.json.DomainNode;
 import com.zenobase.models.Alias;
 import com.zenobase.models.Bucket;
 import com.zenobase.models.BucketList;
@@ -48,6 +49,8 @@ public class BucketRepository extends RepositorySupport<Bucket> {
 		if (!Objects.equal(from.getAliases(), to.getAliases())) {
 			manager.updateAlias(EventRepository.INDEX_NAME, from.getId(), to.getAliases());
 		}
+		DomainNode.SEQ_NO.setValue(to.toJson(), DomainNode.SEQ_NO.getValue(from.toJson()));
+		DomainNode.PRIMARY_TERM.setValue(to.toJson(), DomainNode.PRIMARY_TERM.getValue(from.toJson()));
 		index.update(Bucket.TYPE_NAME, to.getId(), to.toJson(), timestamp, true);
 	}
 

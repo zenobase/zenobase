@@ -1,6 +1,7 @@
 package com.zenobase.services;
 
 import java.io.Closeable;
+import java.io.IOException;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -10,12 +11,11 @@ import com.google.common.base.Joiner;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
-import org.elasticsearch.action.admin.indices.alias.IndicesAliasesRequestBuilder;
-import org.elasticsearch.action.admin.indices.alias.IndicesAliasesResponse;
-import org.elasticsearch.client.Client;
-import org.elasticsearch.cluster.metadata.AliasAction;
-import org.elasticsearch.index.query.BoolFilterBuilder;
-import org.elasticsearch.node.Node;
+import org.opensearch.action.admin.indices.alias.IndicesAliasesRequest;
+import org.opensearch.action.support.master.AcknowledgedResponse;
+import org.opensearch.client.RestHighLevelClient;
+import org.opensearch.index.query.BoolQueryBuilder;
+import org.opensearch.index.query.QueryBuilder;
 import play.Logger;
 
 import com.zenobase.models.Alias;
@@ -25,18 +25,20 @@ import com.zenobase.search.SearchBuilderSupport;
 
 public class IndexManager implements Closeable {
 
-	private final String clusterName;
-	private final Node node;
-	private final Client client;
+	private final RestHighLevelClient client;
+	private final String snapshotRepository;
 
 	@Inject
-	public IndexManager(NodeFactory nodeFactory, @Named("es.cluster") String clusterName) {
-		this.clusterName = clusterName;
-		node = nodeFactory.createNode(clusterName);
-		client = node.client();
+	public IndexManager(ClientFactory clientFactory, @Named("es.snapshot.repository") String snapshotRepository) {
+		this.snapshotRepository = snapshotRepository;
+		client = clientFactory.createClient();
 		while (!new Cluster(client).isReady()) {
 			Logger.warn("Waiting for cluster to recover...");
 		}
+	}
+
+	public IndexManager(ClientFactory clientFactory) {
+		this(clientFactory, "");
 	}
 
 	public Index getIndex(String indexName) {
@@ -48,27 +50,40 @@ public class IndexManager implements Closeable {
 	}
 
 	public SnapshotManager getSnapshotManager() {
-		return new SnapshotManager(client, clusterName.toLowerCase());
+		return new SnapshotManager(client, snapshotRepository);
+	}
+
+	public SnapshotManager getSnapshotManager(String repositoryName) {
+		return new SnapshotManager(client, repositoryName);
 	}
 
 	public void createAlias(String indexName, String aliasName, List<Alias> targets) {
-		IndicesAliasesRequestBuilder request = client.admin().indices().prepareAliases();
+		IndicesAliasesRequest request = new IndicesAliasesRequest();
 		buildAlias(indexName, aliasName, targets, request);
-		IndicesAliasesResponse response = request.get();
-		Preconditions.checkState(response.isAcknowledged(), "Expected acknowledgement of alias creation: %s", aliasName);
+		try {
+			AcknowledgedResponse response = client.indices().updateAliases(request, TypeInjectingInterceptor.OPTIONS);
+			Preconditions.checkState(response.isAcknowledged(), "Expected acknowledgement of alias creation: %s", aliasName);
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	public void updateAlias(String indexName, String aliasName, List<Alias> targets) {
 		Preconditions.checkArgument(!targets.isEmpty(), "Can't remove all aliases from %s", aliasName);
-		IndicesAliasesRequestBuilder request = client.admin().indices().prepareAliases();
-		request.removeAlias(indexName, aliasName);
+		IndicesAliasesRequest request = new IndicesAliasesRequest();
+		request.addAliasAction(new IndicesAliasesRequest.AliasActions(IndicesAliasesRequest.AliasActions.Type.REMOVE)
+			.index(indexName).alias(aliasName));
 		buildAlias(indexName, aliasName, targets, request);
-		IndicesAliasesResponse response = request.get();
-		Preconditions.checkState(response.isAcknowledged(), "Expected acknowledgement of alias update: %s", aliasName);
+		try {
+			AcknowledgedResponse response = client.indices().updateAliases(request, TypeInjectingInterceptor.OPTIONS);
+			Preconditions.checkState(response.isAcknowledged(), "Expected acknowledgement of alias update: %s", aliasName);
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
-	private void buildAlias(String indexName, String aliasName, List<Alias> targets, IndicesAliasesRequestBuilder request) {
-		BoolFilterBuilder filter = new BoolFilterBuilder();
+	private void buildAlias(String indexName, String aliasName, List<Alias> targets, IndicesAliasesRequest request) {
+		BoolQueryBuilder filter = new BoolQueryBuilder();
 		List<String> routing = Lists.newArrayList();
 		for (Alias target : targets) {
 			SearchBuilderSupport search = new EventSearchBuilder().addConstraint(Event.BUCKET.getName() + ":" + target.getId());
@@ -78,26 +93,31 @@ public class IndexManager implements Closeable {
 			}
 			filter.should(search.buildFilter());
 		}
-		request.addAliasAction(AliasAction.newAddAliasAction(indexName, aliasName)
+		request.addAliasAction(new IndicesAliasesRequest.AliasActions(IndicesAliasesRequest.AliasActions.Type.ADD)
+			.index(indexName).alias(aliasName)
 			.filter(filter)
 			.indexRouting(Iterables.get(routing, 0))
 			.searchRouting(Joiner.on(',').join(routing)));
 	}
 
 	public void deleteAlias(String indexName, String aliasName) {
-		IndicesAliasesRequestBuilder request = client.admin().indices().prepareAliases().removeAlias(indexName, aliasName);
-		IndicesAliasesResponse response = request.get();
-		Preconditions.checkState(response.isAcknowledged(), "Expected acknowledgement of alias deletion: %s", aliasName);
+		IndicesAliasesRequest request = new IndicesAliasesRequest();
+		request.addAliasAction(new IndicesAliasesRequest.AliasActions(IndicesAliasesRequest.AliasActions.Type.REMOVE)
+			.index(indexName).alias(aliasName));
+		try {
+			AcknowledgedResponse response = client.indices().updateAliases(request, TypeInjectingInterceptor.OPTIONS);
+			Preconditions.checkState(response.isAcknowledged(), "Expected acknowledgement of alias deletion: %s", aliasName);
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	@Override
 	public void close() {
-		flush();
-		client.close();
-		node.close();
-	}
-
-	private void flush() {
-		client.admin().indices().prepareFlush("_all").execute().actionGet();
+		try {
+			client.close();
+		} catch (IOException e) {
+			Logger.error("Error closing client", e);
+		}
 	}
 }

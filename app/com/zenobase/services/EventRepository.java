@@ -6,15 +6,17 @@ import javax.inject.Inject;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.Lists;
-import org.elasticsearch.action.search.SearchResponse;
-import org.elasticsearch.index.query.QueryBuilders;
-import org.elasticsearch.search.aggregations.AggregationBuilders;
-import org.elasticsearch.search.aggregations.bucket.terms.Terms;
-import org.elasticsearch.search.builder.SearchSourceBuilder;
+import org.opensearch.action.search.SearchResponse;
+import org.opensearch.index.query.QueryBuilders;
+import org.opensearch.search.aggregations.AggregationBuilders;
+import org.opensearch.search.aggregations.BucketOrder;
+import org.opensearch.search.aggregations.bucket.terms.Terms;
+import org.opensearch.search.builder.SearchSourceBuilder;
 import org.joda.time.DateTime;
 import play.Logger;
 
 import com.zenobase.common.Callback;
+import com.zenobase.json.DomainNode;
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
 import com.zenobase.search.Search;
@@ -53,7 +55,9 @@ public class EventRepository {
 		}
 	}
 
-	public void update(String bucketId, Event event, DateTime timestamp) {
+	public void update(String bucketId, Event from, Event event, DateTime timestamp) {
+		DomainNode.SEQ_NO.setValue(event.toJson(), DomainNode.SEQ_NO.getValue(from.toJson()));
+		DomainNode.PRIMARY_TERM.setValue(event.toJson(), DomainNode.PRIMARY_TERM.getValue(from.toJson()));
 		event.prePersist(bucketId);
 		getIndex(bucketId).update(Event.TYPE_NAME, event.getId(), event.toJson(), timestamp, false);
 		event.postPersist();
@@ -91,13 +95,13 @@ public class EventRepository {
 	public List<String> terms(String bucketId, String field) {
 		int limit = 100;
 		String id = "terms";
-		SearchSourceBuilder search = new SearchSourceBuilder().field(field)
-			.aggregation(AggregationBuilders.terms(id).field(field).size(limit).order(Terms.Order.count(false)));
+		SearchSourceBuilder search = new SearchSourceBuilder().size(0)
+			.aggregation(AggregationBuilders.terms(id).field(field).size(limit).order(BucketOrder.count(false)));
 		SearchResponse response = getIndex(bucketId).search(search);
 		List<String> terms = Lists.newArrayList();
 		Terms aggregation = response.getAggregations().get(id);
 		for (Terms.Bucket bucket : aggregation.getBuckets()) {
-			terms.add(bucket.getKey());
+			terms.add(bucket.getKeyAsString());
 		}
 		return terms;
 	}

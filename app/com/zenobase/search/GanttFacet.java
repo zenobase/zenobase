@@ -3,13 +3,14 @@ package com.zenobase.search;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.elasticsearch.action.search.SearchResponse;
-import org.elasticsearch.index.query.FilterBuilder;
-import org.elasticsearch.search.aggregations.AggregationBuilder;
-import org.elasticsearch.search.aggregations.AggregationBuilders;
-import org.elasticsearch.search.aggregations.bucket.terms.Terms;
-import org.elasticsearch.search.aggregations.metrics.stats.Stats;
-import org.elasticsearch.search.builder.SearchSourceBuilder;
+import org.opensearch.action.search.SearchResponse;
+import org.opensearch.index.query.QueryBuilder;
+import org.opensearch.search.aggregations.AggregationBuilder;
+import org.opensearch.search.aggregations.AggregationBuilders;
+import org.opensearch.search.aggregations.BucketOrder;
+import org.opensearch.search.aggregations.bucket.terms.Terms;
+import org.opensearch.search.aggregations.metrics.Stats;
+import org.opensearch.search.builder.SearchSourceBuilder;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 
@@ -30,11 +31,11 @@ public class GanttFacet extends FilteredFacet {
 
 	private final String keyField;
 	private final String valueField;
-	private final Terms.Order order;
+	private final BucketOrder order;
 	private final int limit;
 	private final DateTimeZone timezone;
 
-	private GanttFacet(String id, String keyField, String valueField, String order, int limit, DateTimeZone timezone, FilterBuilder filter) {
+	private GanttFacet(String id, String keyField, String valueField, String order, int limit, DateTimeZone timezone, QueryBuilder filter) {
 		super(id, filter);
 		this.keyField = keyField;
 		this.valueField = valueField;
@@ -43,20 +44,20 @@ public class GanttFacet extends FilteredFacet {
 		this.timezone = timezone;
 	}
 
-	private Terms.Order parseOrder(String s) {
+	private BucketOrder parseOrder(String s) {
 		boolean asc = !s.startsWith("-");
 		if (!asc) {
 			s = s.substring(1);
 		}
 		switch (s) {
 			case "count":
-				return Terms.Order.count(asc);
+				return BucketOrder.count(asc);
 			case "term":
-				return Terms.Order.term(asc);
+				return BucketOrder.key(asc);
 			case "min":
-				return Terms.Order.aggregation(getId(), "min", asc);
+				return BucketOrder.aggregation(getId(), "min", asc);
 			case "max":
-				return Terms.Order.aggregation(getId(), "max", asc);
+				return BucketOrder.aggregation(getId(), "max", asc);
 			default:
 				throw new IllegalArgumentException("Invalid order: " + s);
 		}
@@ -64,7 +65,7 @@ public class GanttFacet extends FilteredFacet {
 
 	@Override
 	public void configure(SearchSourceBuilder builder) {
-		AggregationBuilder<?> aggregation = AggregationBuilders.terms(getId()).field(keyField).order(order).size(limit)
+		AggregationBuilder aggregation = AggregationBuilders.terms(getId()).field(keyField).order(order).size(limit)
 			.subAggregation(AggregationBuilders.stats(getId()).field(valueField));
 		addAggregation(aggregation, builder);
 	}
@@ -78,7 +79,7 @@ public class GanttFacet extends FilteredFacet {
 			DateTime first = asDateTime(stats.getMin());
 			if (first != null) {
 				ObjectNode entryNode = result.addObject();
-				LABEL.setValue(entryNode, bucket.getKey());
+				LABEL.setValue(entryNode, bucket.getKeyAsString());
 				COUNT.setValue(entryNode, bucket.getDocCount());
 				FIRST.setValue(entryNode, first);
 				LAST.setValue(entryNode, asDateTime(stats.getMax()));

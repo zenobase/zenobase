@@ -10,7 +10,10 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import com.google.common.base.Stopwatch;
-import org.elasticsearch.index.engine.DocumentAlreadyExistsException;
+import org.apache.http.HttpHost;
+import org.opensearch.OpenSearchStatusException;
+import org.opensearch.client.RestClient;
+import org.opensearch.client.RestHighLevelClient;
 import play.Logger;
 
 import com.zenobase.commands.Command;
@@ -22,9 +25,8 @@ public class CommandReplay {
 
 	private static final SearchOrder ORDER = new SearchOrder(Command.TIMESTAMP.getName(), true);
 
-	private final String sourceCluster;
+	private final String sourceHost;
 	private final int parallelism;
-	private final NodeFactory nodeFactory;
 	private final CommandParserRegistry parsers;
 	private final CommandDispatcher dispatcher;
 	private final AtomicInteger count = new AtomicInteger();
@@ -32,17 +34,17 @@ public class CommandReplay {
 	private final AtomicInteger failures = new AtomicInteger();
 
 	@Inject
-	public CommandReplay(@Named("es.replay.cluster") String sourceCluster, @Named("es.replay.parallelism") int parallelism, NodeFactory nodeFactory, CommandParserRegistry parsers, CommandDispatcher dispatcher) {
-		this.sourceCluster = sourceCluster;
+	public CommandReplay(@Named("es.replay.host") String sourceHost, @Named("es.replay.parallelism") int parallelism, CommandParserRegistry parsers, CommandDispatcher dispatcher) {
+		this.sourceHost = sourceHost;
 		this.parallelism = parallelism > 0 ? parallelism : Runtime.getRuntime().availableProcessors();
-		this.nodeFactory = nodeFactory;
 		this.parsers = parsers;
 		this.dispatcher = dispatcher;
 	}
 
 	public void replay() {
-		if (!sourceCluster.isEmpty()) {
-			IndexManager indexManager = new IndexManager(nodeFactory, sourceCluster);
+		if (!sourceHost.isEmpty()) {
+			ClientFactory factory = () -> new RestHighLevelClient(RestClient.builder(HttpHost.create(sourceHost)));
+			IndexManager indexManager = new IndexManager(factory);
 			replay(indexManager);
 			indexManager.close();
 		}
@@ -56,7 +58,7 @@ public class CommandReplay {
 	void replay(IndexManager indexManager, IdentitiesFilterBuilder identitiesFilterBuilder) {
 		CommandRepository repository = new CommandRepository(indexManager, parsers);
 		StringFilter identities = identitiesFilterBuilder.build();
-		Logger.info("Replaying {} commands from {} with {}x...", repository.size(), sourceCluster, parallelism);
+		Logger.info("Replaying {} commands from {} with {}x...", repository.size(), sourceHost, parallelism);
 		Stopwatch timer = Stopwatch.createStarted();
 		ExecutorService[] lanes = new ExecutorService[parallelism];
 		for (int i = 0; i < parallelism; ++i) {
@@ -108,7 +110,7 @@ public class CommandReplay {
 			replayed.incrementAndGet();
 		} catch (NonExistentUserException e) {
 			Logger.warn("Skipping command applying to a non-existent user: " + command);
-		} catch (DocumentAlreadyExistsException e) {
+		} catch (OpenSearchStatusException e) {
 			Logger.warn("Skipping duplicate command: " + command);
 		} catch (IllegalStateException e) {
 			retryCommand(command, e);

@@ -2,7 +2,7 @@ package com.zenobase.search;
 
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMultimap;
-import org.elasticsearch.index.query.FilterBuilder;
+import org.opensearch.index.query.QueryBuilder;
 
 public class FilterParser {
 
@@ -12,7 +12,7 @@ public class FilterParser {
 		this.constraintBuilders = constraintBuilders;
 	}
 
-	public FilterBuilder parse(String value) {
+	public QueryBuilder parse(String value) {
 		return !Strings.isNullOrEmpty(value) ? new FilterBuilderSupport(constraintBuilders).addConstraints(value).buildFilter() : null;
 	}
 }

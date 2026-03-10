@@ -39,7 +39,7 @@ public class LongField extends Field<Long> {
 	public void configureSchema(ObjectNode schema) {
 		super.configureSchema(schema);
 		if (!indexed) {
-			schema.put("index", "no");
+			schema.put("index", false);
 		}
 	}
 }

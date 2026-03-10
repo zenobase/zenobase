@@ -57,7 +57,7 @@ public class CommandRebuildTest extends ElasticSearchTestSupport {
 		tasks.store(task, now);
 		tasks.refresh();
 
-		new CommandRebuild(getClusterName(), 1, getNodeFactory(), dispatcher).rebuild(getManager());
+		new CommandRebuild("", 1, dispatcher).rebuild(getManager());
 
 		InOrder ordered = Mockito.inOrder(dispatcher);
 		ordered.verify(dispatcher).dispatch(isA(CreateUserCommand.class));

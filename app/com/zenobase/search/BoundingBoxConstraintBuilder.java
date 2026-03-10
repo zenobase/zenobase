@@ -1,9 +1,7 @@
 package com.zenobase.search;
 
-import org.elasticsearch.index.query.FilterBuilder;
-import org.elasticsearch.index.query.FilterBuilders;
-import org.elasticsearch.index.query.QueryBuilder;
-import org.elasticsearch.index.query.QueryBuilders;
+import org.opensearch.index.query.QueryBuilder;
+import org.opensearch.index.query.QueryBuilders;
 
 import com.zenobase.models.Location;
 
@@ -20,9 +18,8 @@ public class BoundingBoxConstraintBuilder extends ConstraintBuilder {
 	}
 
 	private QueryBuilder build(Location topLeft, Location bottomRight) {
-		FilterBuilder filter = FilterBuilders.geoBoundingBoxFilter(getPath()).type("indexed")
-			.topLeft(topLeft.getLatitude().doubleValue(), topLeft.getLongitude().doubleValue())
-			.bottomRight(bottomRight.getLatitude().doubleValue(), bottomRight.getLongitude().doubleValue());
-		return QueryBuilders.constantScoreQuery(filter);
+		return QueryBuilders.geoBoundingBoxQuery(getPath()).setCorners(
+			topLeft.getLatitude().doubleValue(), topLeft.getLongitude().doubleValue(),
+			bottomRight.getLatitude().doubleValue(), bottomRight.getLongitude().doubleValue());
 	}
 }

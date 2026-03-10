@@ -89,8 +89,8 @@ import com.zenobase.services.AuthorizationRepository;
 import com.zenobase.services.BucketRefreshJob;
 import com.zenobase.services.BucketRepository;
 import com.zenobase.services.Bus;
-import com.zenobase.services.ClusterNodeFactory;
-import com.zenobase.services.DockerNodeFactory;
+import com.zenobase.services.ClientFactory;
+import com.zenobase.services.RestClientFactory;
 import com.zenobase.services.CommandDispatcher;
 import com.zenobase.services.CommandRebuild;
 import com.zenobase.services.CommandReplay;
@@ -101,14 +101,11 @@ import com.zenobase.services.EventRepository;
 import com.zenobase.services.LocalBus;
 import com.zenobase.services.IndexManager;
 import com.zenobase.services.Job;
-import com.zenobase.services.LocalNodeFactory;
-import com.zenobase.services.NodeFactory;
 import com.zenobase.services.PaymentGateway;
 import com.zenobase.services.QuotaManager;
 import com.zenobase.services.Scheduler;
 import com.zenobase.services.SnapshotJob;
 import com.zenobase.services.TaskRepository;
-import com.zenobase.services.TestNodeFactory;
 import com.zenobase.services.UserRepository;
 import com.zenobase.tasks.CredentialsManager;
 import com.zenobase.tasks.CredentialsManagerRegistry;
@@ -206,7 +203,7 @@ public class Global extends GlobalSettings {
 				bindConfiguration();
 
 				bind(Bus.class).to(LocalBus.class).in(Singleton.class);
-				bind(NodeFactory.class).to(getNodeFactory()).in(Singleton.class);
+				bind(ClientFactory.class).to(RestClientFactory.class).in(Singleton.class);
 				bind(IndexManager.class).in(Singleton.class);
 				bind(BucketRepository.class).in(Singleton.class);
 				bind(EventRepository.class).in(Singleton.class);
@@ -404,22 +401,6 @@ public class Global extends GlobalSettings {
 				return Play.application().configuration().getConfig(key) != null;
 			}
 
-			private boolean hasValue(String key) {
-				return !Play.application().configuration().getString(key, "").isEmpty();
-			}
-
-			private Class<? extends NodeFactory> getNodeFactory() {
-				if (Play.isTest()) {
-					return TestNodeFactory.class;
-				} else if (hasValue("es.snapshot.bucket")) {
-					return ClusterNodeFactory.class;
-				} else if (hasValue("es.host")) {
-					return DockerNodeFactory.class;
-				} else {
-					return LocalNodeFactory.class;
-				}
-			}
-
 			private void bindConfiguration() {
 				Configuration conf = getApplicationConfig();
 				for (String key : conf.keys()) {
@@ -451,9 +432,9 @@ public class Global extends GlobalSettings {
 		UserRepository users = injector.getInstance(UserRepository.class);
 		if (users.isEmpty()) {
 			Configuration esConfig = getApplicationConfig().getConfig("es");
-			if (!Strings.isNullOrEmpty(esConfig.getString("replay.cluster"))) {
+			if (!Strings.isNullOrEmpty(esConfig.getString("replay.host"))) {
 				injector.getInstance(CommandReplay.class).replay();
-			} else if (!Strings.isNullOrEmpty(esConfig.getString("rebuild.cluster"))) {
+			} else if (!Strings.isNullOrEmpty(esConfig.getString("rebuild.host"))) {
 				injector.getInstance(CommandRebuild.class).rebuild();
 			}
 		}

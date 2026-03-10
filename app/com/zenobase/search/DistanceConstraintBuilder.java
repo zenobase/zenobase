@@ -7,11 +7,9 @@ import javax.measure.DecimalMeasure;
 import javax.measure.quantity.Length;
 
 import com.google.common.base.Objects;
-import org.elasticsearch.common.unit.DistanceUnit;
-import org.elasticsearch.index.query.FilterBuilder;
-import org.elasticsearch.index.query.FilterBuilders;
-import org.elasticsearch.index.query.QueryBuilder;
-import org.elasticsearch.index.query.QueryBuilders;
+import org.opensearch.common.unit.DistanceUnit;
+import org.opensearch.index.query.QueryBuilder;
+import org.opensearch.index.query.QueryBuilders;
 
 import com.zenobase.common.Measures;
 import com.zenobase.common.Units;
@@ -42,10 +40,8 @@ public class DistanceConstraintBuilder extends ConstraintBuilder {
 	}
 
 	private QueryBuilder build(Location location, DecimalMeasure<Length> distance) {
-		FilterBuilder filter = FilterBuilders.geoDistanceFilter(getPath())
-			.lat(location.getLatitude().doubleValue())
-			.lon(location.getLongitude().doubleValue())
+		return QueryBuilders.geoDistanceQuery(getPath())
+			.point(location.getLatitude().doubleValue(), location.getLongitude().doubleValue())
 			.distance(distance.doubleValue(Units.KM), DistanceUnit.KILOMETERS);
-		return QueryBuilders.constantScoreQuery(filter);
 	}
 }

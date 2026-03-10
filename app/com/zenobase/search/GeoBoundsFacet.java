@@ -2,12 +2,12 @@ package com.zenobase.search;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.elasticsearch.action.search.SearchResponse;
-import org.elasticsearch.common.geo.GeoPoint;
-import org.elasticsearch.index.query.FilterBuilder;
-import org.elasticsearch.search.aggregations.AggregationBuilders;
-import org.elasticsearch.search.aggregations.metrics.geobounds.GeoBounds;
-import org.elasticsearch.search.builder.SearchSourceBuilder;
+import org.opensearch.action.search.SearchResponse;
+import org.opensearch.common.geo.GeoPoint;
+import org.opensearch.index.query.QueryBuilder;
+import org.opensearch.search.aggregations.AggregationBuilders;
+import org.opensearch.search.aggregations.metrics.GeoBounds;
+import org.opensearch.search.builder.SearchSourceBuilder;
 
 import com.zenobase.json.Nodes;
 import com.zenobase.models.Event;
@@ -18,7 +18,7 @@ public class GeoBoundsFacet extends FilteredFacet {
 
 	private final String field;
 
-	private GeoBoundsFacet(String id, String field, FilterBuilder filter) {
+	private GeoBoundsFacet(String id, String field, QueryBuilder filter) {
 		super(id, filter);
 		this.field = field;
 	}

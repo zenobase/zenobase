@@ -5,11 +5,11 @@ import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.primitives.Ints;
-import org.elasticsearch.action.search.SearchResponse;
-import org.elasticsearch.index.query.BoolQueryBuilder;
-import org.elasticsearch.index.query.QueryBuilder;
-import org.elasticsearch.index.query.QueryBuilders;
-import org.elasticsearch.search.builder.SearchSourceBuilder;
+import org.opensearch.action.search.SearchResponse;
+import org.opensearch.index.query.BoolQueryBuilder;
+import org.opensearch.index.query.QueryBuilder;
+import org.opensearch.index.query.QueryBuilders;
+import org.opensearch.search.builder.SearchSourceBuilder;
 
 import com.zenobase.common.Callback;
 import com.zenobase.json.IntegerField;
@@ -67,7 +67,7 @@ public class Search {
 
 	private ObjectNode toJson(SearchResponse response) {
 		ObjectNode node = Nodes.newObject();
-		TOTAL.setValue(node, Ints.checkedCast(response.getHits().getTotalHits()));
+		TOTAL.setValue(node, Ints.checkedCast(response.getHits().getTotalHits().value));
 		for (Facet facet : facets) {
 			node.set(facet.getId(), facet.process(response));
 		}

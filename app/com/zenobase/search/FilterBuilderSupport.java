@@ -7,11 +7,9 @@ import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Lists;
-import org.elasticsearch.index.query.BoolFilterBuilder;
-import org.elasticsearch.index.query.BoolQueryBuilder;
-import org.elasticsearch.index.query.FilterBuilder;
-import org.elasticsearch.index.query.FilterBuilders;
-import org.elasticsearch.index.query.QueryBuilder;
+import org.opensearch.index.query.BoolQueryBuilder;
+import org.opensearch.index.query.QueryBuilder;
+import org.opensearch.index.query.QueryBuilders;
 
 public class FilterBuilderSupport {
 
@@ -84,18 +82,19 @@ public class FilterBuilderSupport {
 		return mustNot;
 	}
 
-	public FilterBuilder buildFilter() {
-		FilterBuilder filter = null;
+	public QueryBuilder buildFilter() {
+		QueryBuilder filter;
 		if (must.isEmpty() && mustNot.isEmpty()) {
-			filter = FilterBuilders.matchAllFilter();
+			filter = QueryBuilders.matchAllQuery();
 		} else {
-			filter = FilterBuilders.boolFilter();
+			BoolQueryBuilder boolFilter = QueryBuilders.boolQuery();
 			for (QueryBuilder constraint : must) {
-				((BoolFilterBuilder) filter).must(FilterBuilders.queryFilter(constraint));
+				boolFilter.must(constraint);
 			}
 			for (QueryBuilder constraint : mustNot) {
-				((BoolFilterBuilder) filter).mustNot(FilterBuilders.queryFilter(constraint));
+				boolFilter.mustNot(constraint);
 			}
+			filter = boolFilter;
 		}
 		return filter;
 	}

@@ -16,7 +16,7 @@ public class TextField extends Field<String> {
 	}
 
 	public TextField(String path, String name) {
-		super(path, name, String.class, "string");
+		super(path, name, String.class, "text");
 		addConstraintBuilder(path, new PhraseConstraintBuilder(path));
 		addConstraintBuilder(path, new WildcardConstraintBuilder(path));
 		addConstraintBuilder(path, new TermConstraintBuilder(path));
@@ -35,6 +35,5 @@ public class TextField extends Field<String> {
 	@Override
 	public void configureSchema(ObjectNode schema) {
 		super.configureSchema(schema);
-		schema.put("index", "analyzed");
 	}
 }

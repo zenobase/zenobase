@@ -1,7 +1,7 @@
 package com.zenobase.services;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.elasticsearch.snapshots.SnapshotInfo;
+import org.opensearch.snapshots.SnapshotInfo;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.Duration;
@@ -19,7 +19,7 @@ public class Snapshot extends DomainNode {
 	private static final DurationField DURATION = new DurationField("duration");
 
 	public Snapshot(SnapshotInfo info) {
-		setValue(ID, info.name());
+		setValue(ID, info.snapshotId().getName());
 		setValue(STATE, info.state().name().toLowerCase().replace('_', ' '));
 		setValue(CREATED, new DateTime(info.startTime(), DateTimeZone.UTC));
 		if (info.endTime() > 0) {

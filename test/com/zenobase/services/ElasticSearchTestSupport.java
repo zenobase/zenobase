@@ -2,38 +2,57 @@ package com.zenobase.services;
 
 import static org.mockito.Mockito.*;
 
+import java.io.IOException;
+import java.time.Duration;
+
+import org.apache.http.HttpHost;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Rule;
-import org.junit.rules.TemporaryFolder;
+import org.opensearch.action.admin.indices.delete.DeleteIndexRequest;
+import org.opensearch.client.RestClient;
+import org.opensearch.client.RestHighLevelClient;
+import org.testcontainers.containers.GenericContainer;
+import org.testcontainers.containers.wait.strategy.Wait;
 
 import com.zenobase.common.Callback;
 
 public abstract class ElasticSearchTestSupport {
 
-	@Rule
-	public TemporaryFolder folder = new TemporaryFolder();
+	private static final GenericContainer<?> container;
+	static {
+		container = new GenericContainer<>("opensearchproject/opensearch:2.19.1")
+			.withEnv("discovery.type", "single-node")
+			.withEnv("DISABLE_INSTALL_DEMO_CONFIG", "true")
+			.withEnv("plugins.security.disabled", "true")
+			.withEnv("OPENSEARCH_JAVA_OPTS", "-Xms512m -Xmx512m")
+			.withEnv("compatibility.override_main_response_version", "true")
+			.withExposedPorts(9200)
+			.waitingFor(Wait.forHttp("/_cluster/health").forStatusCode(200)
+				.withStartupTimeout(Duration.ofMinutes(2)));
+		container.start();
+	}
 
-	private String clusterName = "test";
-	private NodeFactory nodeFactory;
+	private ClientFactory clientFactory;
 	private IndexManager manager;
 
 	@Before
 	public void createManager() {
-		nodeFactory = new TestNodeFactory(folder.getRoot());
-		manager = new IndexManager(nodeFactory, clusterName);
+		String host = "http://" + container.getHost() + ":" + container.getMappedPort(9200);
+		clientFactory = () -> new RestHighLevelClient(RestClient.builder(HttpHost.create(host)));
+		try (RestHighLevelClient client = clientFactory.createClient()) {
+			client.indices().delete(new DeleteIndexRequest("*"), TypeInjectingInterceptor.OPTIONS);
+		} catch (IOException e) {
+			// OK if no indices exist
+		}
+		manager = new IndexManager(clientFactory);
 	}
 
-	protected NodeFactory getNodeFactory() {
-		return nodeFactory;
+	protected ClientFactory getClientFactory() {
+		return clientFactory;
 	}
 
 	protected IndexManager getManager() {
 		return manager;
-	}
-
-	protected String getClusterName() {
-		return clusterName;
 	}
 
 	@After

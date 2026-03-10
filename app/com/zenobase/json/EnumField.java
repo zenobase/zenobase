@@ -14,7 +14,7 @@ public class EnumField<E extends Enum<E>> extends Field<E> {
 	}
 
 	private EnumField(String name, Class<E> type) {
-		super(name, type, "string");
+		super(name, type, "keyword");
 		addConstraintBuilder(name, new TermConstraintBuilder(getPath()));
 	}
 
@@ -33,6 +33,5 @@ public class EnumField<E extends Enum<E>> extends Field<E> {
 	@Override
 	public void configureSchema(ObjectNode schema) {
 		super.configureSchema(schema);
-		schema.put("index", "not_analyzed");
 	}
 }

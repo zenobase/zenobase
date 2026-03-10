@@ -41,7 +41,7 @@ public class IntegerField extends Field<Integer> {
 	public void configureSchema(ObjectNode schema) {
 		super.configureSchema(schema);
 		if (!indexed) {
-			schema.put("index", "no");
+			schema.put("index", false);
 		}
 	}
 }

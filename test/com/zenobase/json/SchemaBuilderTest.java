@@ -19,12 +19,10 @@ public class SchemaBuilderTest {
 
 		assertThat(s1.getTypeName()).as("type").isEqualTo(typeName);
 		assertThat(s1.getField("who")).as("field").isEqualTo(field);
-		assertThat(s1.toJson()).path(typeName).path("dynamic").isEqualTo("strict");
-		assertThat(s1.toJson()).path(typeName).path("_source").path("excludes").isArray();
-		assertThat(s1.toJson()).path(typeName).path("_type").path("index").isEqualTo("no");
-		assertThat(s1.toJson()).path(typeName).path("_all").path("enabled").isEqualTo(false);
-		assertThat(s1.toJson()).path(typeName).path("properties").path("who").isObject();
-		assertThat(s1.toJson()).path(typeName).path("properties").path("what").isMissingNode();
-		assertThat(s2.toJson()).path(typeName).path("properties").path("what").isObject();
+		assertThat(s1.toJson()).path("dynamic").isEqualTo("strict");
+		assertThat(s1.toJson()).path("_source").path("excludes").isArray();
+		assertThat(s1.toJson()).path("properties").path("who").isObject();
+		assertThat(s1.toJson()).path("properties").path("what").isMissingNode();
+		assertThat(s2.toJson()).path("properties").path("what").isObject();
 	}
 }

@@ -21,7 +21,7 @@ public class TokenField extends Field<String> {
 	}
 
 	public TokenField(String path, String name, boolean indexed) {
-		super(path, name, String.class, "string");
+		super(path, name, String.class, "keyword");
 		this.indexed = indexed;
 		if (indexed) {
 			addConstraintBuilder(path, new WildcardConstraintBuilder(path));
@@ -42,6 +42,8 @@ public class TokenField extends Field<String> {
 	@Override
 	public void configureSchema(ObjectNode schema) {
 		super.configureSchema(schema);
-		schema.put("index", indexed ? "not_analyzed" : "no");
+		if (!indexed) {
+			schema.put("index", false);
+		}
 	}
 }

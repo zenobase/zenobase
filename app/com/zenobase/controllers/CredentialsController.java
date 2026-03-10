@@ -3,7 +3,8 @@ package com.zenobase.controllers;
 import javax.inject.Inject;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.elasticsearch.index.engine.VersionConflictEngineException;
+import org.opensearch.OpenSearchStatusException;
+import org.opensearch.rest.RestStatus;
 import play.mvc.BodyParser;
 import play.mvc.Result;
 
@@ -88,8 +89,9 @@ public class CredentialsController extends ControllerSupport {
     		String commandId = dispatcher.dispatch(command);
     		response().setHeader(COMMAND_ID, commandId);
     		return noContent();
-		} catch (VersionConflictEngineException e) {
-			return conflict("credentials are stale");
+		} catch (OpenSearchStatusException e) {
+			if (e.status() == RestStatus.CONFLICT) return conflict("credentials are stale");
+			throw e;
 		}
     }
 

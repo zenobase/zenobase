@@ -13,6 +13,9 @@ import javax.inject.Named;
 
 import com.google.common.base.Stopwatch;
 import com.google.common.collect.Iterables;
+import org.apache.http.HttpHost;
+import org.opensearch.client.RestClient;
+import org.opensearch.client.RestHighLevelClient;
 import org.joda.time.DateTime;
 import play.Logger;
 
@@ -28,29 +31,28 @@ import com.zenobase.models.Role;
 
 public class CommandRebuild {
 
-	private final String sourceCluster;
+	private final String sourceHost;
 	private final int parallelism;
-	private final NodeFactory nodeFactory;
 	private final CommandDispatcher dispatcher;
 
 	@Inject
-	public CommandRebuild(@Named("es.rebuild.cluster") String sourceCluster, @Named("es.rebuild.parallelism") int parallelism, NodeFactory nodeFactory, CommandDispatcher dispatcher) {
-		this.sourceCluster = sourceCluster;
+	public CommandRebuild(@Named("es.rebuild.host") String sourceHost, @Named("es.rebuild.parallelism") int parallelism, CommandDispatcher dispatcher) {
+		this.sourceHost = sourceHost;
 		this.parallelism = parallelism > 0 ? parallelism : Runtime.getRuntime().availableProcessors();
-		this.nodeFactory = nodeFactory;
 		this.dispatcher = dispatcher;
 	}
 
 	public void rebuild() {
-		if (!sourceCluster.isEmpty()) {
-			IndexManager indexManager = new IndexManager(nodeFactory, sourceCluster);
+		if (!sourceHost.isEmpty()) {
+			ClientFactory factory = () -> new RestHighLevelClient(RestClient.builder(HttpHost.create(sourceHost)));
+			IndexManager indexManager = new IndexManager(factory);
 			rebuild(indexManager);
 			indexManager.close();
 		}
 	}
 
 	void rebuild(IndexManager indexManager) {
-		Logger.info("Rebuilding history from {}...", sourceCluster);
+		Logger.info("Rebuilding history from {}...", sourceHost);
 		Stopwatch timer = Stopwatch.createStarted();
 		rebuildUsers(indexManager);
 		rebuildAuthorizations(indexManager);

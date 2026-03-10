@@ -6,15 +6,15 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Preconditions;
-import org.elasticsearch.action.search.SearchResponse;
-import org.elasticsearch.common.geo.GeoPoint;
-import org.elasticsearch.index.query.FilterBuilder;
-import org.elasticsearch.search.aggregations.AggregationBuilder;
-import org.elasticsearch.search.aggregations.AggregationBuilders;
-import org.elasticsearch.search.aggregations.bucket.geogrid.GeoHashGrid;
-import org.elasticsearch.search.aggregations.metrics.sum.Sum;
-import org.elasticsearch.search.aggregations.metrics.sum.SumBuilder;
-import org.elasticsearch.search.builder.SearchSourceBuilder;
+import org.opensearch.action.search.SearchResponse;
+import org.opensearch.common.geo.GeoPoint;
+import org.opensearch.index.query.QueryBuilder;
+import org.opensearch.search.aggregations.AggregationBuilder;
+import org.opensearch.search.aggregations.AggregationBuilders;
+import org.opensearch.search.aggregations.bucket.geogrid.GeoGrid;
+import org.opensearch.search.aggregations.metrics.Sum;
+import org.opensearch.search.aggregations.metrics.SumAggregationBuilder;
+import org.opensearch.search.builder.SearchSourceBuilder;
 
 import com.zenobase.common.Measures;
 import com.zenobase.common.Units;
@@ -32,7 +32,7 @@ public class HeatmapFacet extends FilteredFacet {
 	private final Unit<?> unit;
 	private final int precision;
 
-	private HeatmapFacet(String id, String keyField, String valueField, Unit<?> unit, int precision, FilterBuilder filter) {
+	private HeatmapFacet(String id, String keyField, String valueField, Unit<?> unit, int precision, QueryBuilder filter) {
 		super(id, filter);
 		Preconditions.checkArgument(precision >= 1 && precision <= 10, "invalid precision value: %d", precision);
 		this.keyField = keyField;
@@ -43,9 +43,9 @@ public class HeatmapFacet extends FilteredFacet {
 
 	@Override
 	public void configure(SearchSourceBuilder builder) {
-		AggregationBuilder<?> grid = AggregationBuilders.geohashGrid(getId()).field(keyField).precision(precision);
+		AggregationBuilder grid = AggregationBuilders.geohashGrid(getId()).field(keyField).precision(precision);
 		if (valueField != null) {
-			grid.subAggregation(new SumBuilder("sum").field(unit == Unit.ONE ? valueField : Field.concat(valueField, DecimalMeasureField.VALUE_SI.getName())));
+			grid.subAggregation(new SumAggregationBuilder("sum").field(unit == Unit.ONE ? valueField : Field.concat(valueField, DecimalMeasureField.VALUE_SI.getName())));
 		}
 		addAggregation(grid, builder);
 	}
@@ -53,12 +53,12 @@ public class HeatmapFacet extends FilteredFacet {
 	@Override
 	public JsonNode process(SearchResponse response) {
 		ArrayNode result = Nodes.newArray();
-		GeoHashGrid grid = getAggregation(response);
-		for (GeoHashGrid.Bucket bucket : grid.getBuckets()) {
+		GeoGrid grid = getAggregation(response);
+		for (GeoGrid.Bucket bucket : grid.getBuckets()) {
 			Sum sum = bucket.getAggregations().get("sum");
 			if (sum == null || sum.getValue() > 0.0) {
 				ObjectNode entryNode = result.addObject();
-				GeoPoint point = bucket.getKeyAsGeoPoint();
+				GeoPoint point = GeoPoint.fromGeohash(bucket.getKeyAsString());
 				entryNode.put("lat", point.lat());
 				entryNode.put("lon", point.lon());
 				entryNode.put("count", bucket.getDocCount());

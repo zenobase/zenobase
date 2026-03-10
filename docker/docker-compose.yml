@@ -1,16 +1,16 @@
 services:
-  elasticsearch:
-    image: ${ECR_REGISTRY}/zenobase-elasticsearch:${ES_IMAGE_TAG:-latest}
+  opensearch:
+    image: ${ECR_REGISTRY}/zenobase-opensearch:${OS_IMAGE_TAG:-latest}
     network_mode: host
     volumes:
-      - es-data:/var/lib/elasticsearch
-      - ./elasticsearch/config/elasticsearch.yml:/etc/elasticsearch/elasticsearch.yml:ro
-      - ./elasticsearch/config/logback-elasticsearch.xml:/etc/elasticsearch/logback.xml:ro
+      - os-data:/usr/share/opensearch/data
     environment:
-      - ES_HEAP_SIZE=${ES_HEAP_SIZE:-4g}
-      - ES_CLUSTER_NAME=${ES_CLUSTER_NAME:-elasticsearch}
-      - ES_DISCOVERY_TYPE=${ES_DISCOVERY_TYPE:-zen}
-      - ES_PUBLISH_HOST=${ES_PUBLISH_HOST:-}
+      - discovery.type=single-node
+      - DISABLE_INSTALL_DEMO_CONFIG=true
+      - plugins.security.disabled=true
+      - OPENSEARCH_JAVA_OPTS=-Xms${OS_HEAP_SIZE:-4g} -Xmx${OS_HEAP_SIZE:-4g}
+      - compatibility.override_main_response_version=true
+      - ES_SNAPSHOT_BUCKET=${ES_SNAPSHOT_BUCKET:-}
     ulimits:
       nofile:
         soft: 64000
@@ -23,8 +23,8 @@ services:
       driver: awslogs
       options:
         awslogs-region: ${AWS_REGION:-us-east-1}
-        awslogs-group: /zenobase/elasticsearch
-        tag: es
+        awslogs-group: /zenobase/opensearch
+        tag: opensearch
 
   play:
     image: ${ECR_REGISTRY}/zenobase-play:${PLAY_IMAGE_TAG:-latest}
@@ -35,15 +35,18 @@ services:
       - ./play/config/enableLegacyTLS.security:/etc/play/enableLegacyTLS.security:ro
     environment:
       - JAVA_HEAP=${JAVA_HEAP:-2g}
-      - ES_PUBLISH_HOST=${ES_PUBLISH_HOST:-}
+      - ES_HOST=${ES_HOST:-http://localhost:9200}
       - ES_SNAPSHOT_BUCKET=${ES_SNAPSHOT_BUCKET:-}
-      - ES_CLUSTER=${ES_CLUSTER:-elasticsearch}
+      - ES_SNAPSHOT_REPOSITORY=${ES_SNAPSHOT_REPOSITORY:-}
       - ES_REPLAY=${ES_REPLAY:-}
+      - ES_REPLAY_PARALLELISM=${ES_REPLAY_PARALLELISM:-0}
+      - ES_REBUILD=${ES_REBUILD:-}
+      - ES_REBUILD_PARALLELISM=${ES_REBUILD_PARALLELISM:-0}
       - HOSTNAME=${HOSTNAME:-http://localhost:9000}
       - API_HOSTNAME=${API_HOSTNAME:-http://localhost:9000}
       - OAUTH_HOSTNAME=${OAUTH_HOSTNAME:-https://zenobase.com}
     depends_on:
-      elasticsearch:
+      opensearch:
         condition: service_healthy
     restart: unless-stopped
     logging:
@@ -54,5 +57,5 @@ services:
         tag: play
 
 volumes:
-  es-data:
+  os-data:
     driver: local

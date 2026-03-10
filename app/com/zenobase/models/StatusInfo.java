@@ -1,6 +1,6 @@
 package com.zenobase.models;
 
-import org.elasticsearch.action.admin.cluster.health.ClusterHealthStatus;
+import org.opensearch.cluster.health.ClusterHealthStatus;
 
 import com.zenobase.json.BooleanField;
 import com.zenobase.json.DomainNode;

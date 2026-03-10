@@ -1,6 +1,7 @@
 package com.zenobase.services;
 
-import org.elasticsearch.index.query.QueryBuilders;
+import org.apache.lucene.search.join.ScoreMode;
+import org.opensearch.index.query.QueryBuilders;
 
 import com.zenobase.json.RolesField;
 import com.zenobase.models.Bucket;
@@ -12,7 +13,8 @@ public class BucketQuery extends QuerySupport {
 
 	public BucketQuery principalEqualTo(Identity principal) {
 		add(QueryBuilders.nestedQuery(Bucket.ROLES.getName(),
-			QueryBuilders.termQuery(RolesField.PRINCIPAL, principal.getId())));
+			QueryBuilders.termQuery(Bucket.ROLES.getName() + "." + RolesField.PRINCIPAL, principal.getId()),
+			ScoreMode.None));
 		return this;
 	}
 
