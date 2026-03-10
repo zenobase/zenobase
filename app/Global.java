@@ -92,6 +92,7 @@ import com.zenobase.services.Bus;
 import com.zenobase.services.ClientFactory;
 import com.zenobase.services.RestClientFactory;
 import com.zenobase.services.CommandDispatcher;
+import com.zenobase.services.CommandMigration;
 import com.zenobase.services.CommandRebuild;
 import com.zenobase.services.CommandReplay;
 import com.zenobase.services.CommandRepository;
@@ -432,7 +433,9 @@ public class Global extends GlobalSettings {
 		UserRepository users = injector.getInstance(UserRepository.class);
 		if (users.isEmpty()) {
 			Configuration esConfig = getApplicationConfig().getConfig("es");
-			if (!Strings.isNullOrEmpty(esConfig.getString("replay.host"))) {
+			if (!Strings.isNullOrEmpty(esConfig.getString("migration.host"))) {
+				injector.getInstance(CommandMigration.class).migrate();
+			} else if (!Strings.isNullOrEmpty(esConfig.getString("replay.host"))) {
 				injector.getInstance(CommandReplay.class).replay();
 			} else if (!Strings.isNullOrEmpty(esConfig.getString("rebuild.host"))) {
 				injector.getInstance(CommandRebuild.class).rebuild();
