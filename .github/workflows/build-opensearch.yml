@@ -48,7 +48,7 @@ jobs:
           platforms: linux/arm64
           push: true
           tags: |
-            ${{ steps.ecr-login.outputs.registry }}/zenobase-opensearch:${{ github.sha }}
-            ${{ steps.ecr-login.outputs.registry }}/zenobase-opensearch:${{ inputs.image-tag || 'latest' }}
+            ${{ steps.ecr-login.outputs.registry }}/zenobase-elasticsearch:${{ github.sha }}
+            ${{ steps.ecr-login.outputs.registry }}/zenobase-elasticsearch:${{ inputs.image-tag || 'latest' }}
           cache-from: type=gha
           cache-to: type=gha,mode=max

@@ -118,8 +118,10 @@ const playRepo = new aws.ecr.Repository("zenobase-play", {
 });
 
 const esRepo = new aws.ecr.Repository("zenobase-opensearch", {
-    name: "zenobase-opensearch",
+    name: "zenobase-elasticsearch",
     imageTagMutability: "MUTABLE",
+}, {
+    aliases: [{ name: "zenobase-elasticsearch" }],
 });
 
 // ---------- IAM ----------
@@ -330,7 +332,7 @@ new aws.cloudwatch.LogGroup("zenobase-play-logs", {
 });
 
 new aws.cloudwatch.LogGroup("zenobase-es-logs", {
-    name: "/zenobase/opensearch",
+    name: "/zenobase/elasticsearch",
     retentionInDays: 30,
 });
 
