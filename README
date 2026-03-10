@@ -13,7 +13,7 @@ Alternatively, run with Docker:
   docker/build.sh
   docker compose -f docker/docker-compose.local.yml up
 
-This starts both the Play app (port 9000) and Elasticsearch (port 9200) in containers.
+This starts both the Play app (port 9000) and OpenSearch (port 9200) in containers.
 
 
 Updating Assets
@@ -112,15 +112,15 @@ Use this procedure to rebuild the database by replaying the entire command histo
 
        cd infra
        pulumi config set zenobase:esCluster "<new-cluster-name>"
-       pulumi config set zenobase:esReplayCluster "<old-cluster-name>"
+       pulumi config set zenobase:esReplayHost "<old-host-url>"
 
   2. Deploy to the inactive target group:
 
        pulumi config set zenobase:deployTarget green  # or blue
        pulumi up
 
-     The new instance starts with an empty ES cluster and replays all commands
-     from the old cluster.
+     The new instance starts with an empty OpenSearch cluster and replays all
+     commands from the old cluster.
 
   3. Monitor replay progress in CloudWatch Logs.
 
@@ -131,7 +131,7 @@ Use this procedure to rebuild the database by replaying the entire command histo
 
   5. Clear migration config for the next deploy:
 
-       pulumi config set zenobase:esReplayCluster ""
+       pulumi config set zenobase:esReplayHost ""
 
 
 Migration Procedure (Rebuild)
@@ -143,14 +143,14 @@ Use this procedure to rebuild the database and compact the command history.
 
        cd infra
        pulumi config set zenobase:esCluster "<new-cluster-name>"
-       pulumi config set zenobase:esRebuildCluster "<old-cluster-name>"
+       pulumi config set zenobase:esRebuildHost "<old-host-url>"
 
   2. Deploy to the inactive target group:
 
        pulumi config set zenobase:deployTarget green  # or blue
        pulumi up
 
-     The new instance starts with an empty ES cluster and rebuilds state
+     The new instance starts with an empty OpenSearch cluster and rebuilds state
      from the old cluster's raw data.
 
   3. Monitor rebuild progress in CloudWatch Logs.
@@ -162,7 +162,7 @@ Use this procedure to rebuild the database and compact the command history.
 
   5. Clear migration config for the next deploy:
 
-       pulumi config set zenobase:esRebuildCluster ""
+       pulumi config set zenobase:esRebuildHost ""
 
 
 Restore Procedure
