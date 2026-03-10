@@ -1,7 +1,10 @@
 package com.zenobase.search;
 
-import org.opensearch.index.query.QueryBuilder;
-import org.opensearch.index.query.QueryBuilders;
+import org.opensearch.client.json.JsonData;
+import org.opensearch.client.opensearch._types.FieldValue;
+import org.opensearch.client.opensearch._types.query_dsl.Query;
+import org.opensearch.client.opensearch._types.query_dsl.RangeQuery;
+import org.opensearch.client.opensearch._types.query_dsl.TermQuery;
 import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDateTime;
 
@@ -15,17 +18,22 @@ public class LocalDateTimeConstraintBuilder extends ConstraintBuilder {
 	}
 
 	@Override
-	public QueryBuilder build(String value) {
+	public Query build(String value) {
 		return build(LocalIntervals.valueOf(value));
 	}
 
-	private QueryBuilder build(LocalInterval interval) {
+	private Query build(LocalInterval interval) {
 		if (interval == null) {
 			return null;
 		} else if (interval.toDurationMillis() > 1L) {
-			return QueryBuilders.rangeQuery(getPath()).gte(toString(interval.getStart())).lt(toString(interval.getEnd()));
+			String gte = toString(interval.getStart());
+			String lt = toString(interval.getEnd());
+			return RangeQuery.of(r -> r.field(getPath())
+				.gte(JsonData.of(gte))
+				.lt(JsonData.of(lt)))._toQuery();
 		} else {
-			return QueryBuilders.termQuery(getPath(), toString(interval.getStart()));
+			String val = toString(interval.getStart());
+			return TermQuery.of(t -> t.field(getPath()).value(FieldValue.of(val)))._toQuery();
 		}
 	}
 

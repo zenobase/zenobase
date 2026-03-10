@@ -3,14 +3,15 @@ package com.zenobase.services;
 import javax.inject.Inject;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.opensearch.action.search.SearchResponse;
-import org.opensearch.index.query.QueryBuilder;
-import org.opensearch.index.query.QueryBuilders;
-import org.opensearch.search.aggregations.AggregationBuilder;
-import org.opensearch.search.aggregations.AggregationBuilders;
-import org.opensearch.search.aggregations.HasAggregations;
-import org.opensearch.search.aggregations.metrics.Sum;
-import org.opensearch.search.builder.SearchSourceBuilder;
+import org.opensearch.client.json.JsonData;
+import org.opensearch.client.opensearch._types.FieldValue;
+import org.opensearch.client.opensearch._types.aggregations.Aggregation;
+import org.opensearch.client.opensearch._types.query_dsl.BoolQuery;
+import org.opensearch.client.opensearch._types.query_dsl.Query;
+import org.opensearch.client.opensearch._types.query_dsl.RangeQuery;
+import org.opensearch.client.opensearch._types.query_dsl.TermQuery;
+import org.opensearch.client.opensearch.core.SearchRequest;
+import org.opensearch.client.opensearch.core.SearchResponse;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import play.Logger;
@@ -64,10 +65,11 @@ public class CommandRepository extends RepositorySupport<Command> {
 	}
 
 	public PartialList<Command> find(CommandQuery query, SearchOrder order, int offset, int limit) {
-		SearchSourceBuilder search = new SearchSourceBuilder()
+		SearchRequest.Builder builder = new SearchRequest.Builder()
+			.index(index.getIndexName())
 			.query(query.build()).from(offset).size(limit);
-		order.apply(search);
-		return new CommandList(index.find(search), parsers);
+		order.apply(builder);
+		return new CommandList(index.find(builder.build()), parsers);
 	}
 
 	public long size() {
@@ -80,18 +82,27 @@ public class CommandRepository extends RepositorySupport<Command> {
 
 	public int getTotalCost(Identity principal, DateTime since) {
 		String id = "cost";
-		AggregationBuilder filter = AggregationBuilders.filter(id, createFilter(principal, since))
-			.subAggregation(AggregationBuilders.sum(id).field(Command.COST.getName()));
-		SearchSourceBuilder search = new SearchSourceBuilder().size(1).aggregation(filter);
-		SearchResponse response = index.search(search);
-		Sum sum = ((HasAggregations) response.getAggregations().get(id)).getAggregations().get(id);
-		return (int) sum.getValue();
+		Query filter = createFilter(principal, since);
+		SearchRequest request = SearchRequest.of(s -> s
+			.index(index.getIndexName())
+			.size(1)
+			.aggregations(id, Aggregation.of(a -> a
+				.filter(filter)
+				.aggregations(id, Aggregation.of(sa -> sa
+					.sum(sum -> sum.field(Command.COST.getName()))
+				))
+			))
+		);
+		SearchResponse<ObjectNode> response = index.search(request);
+		double value = response.aggregations().get(id).filter().aggregations().get(id).sum().value();
+		return (int) value;
 	}
 
-	private static QueryBuilder createFilter(Identity principal, DateTime since) {
-		return QueryBuilders.boolQuery()
-			.must(QueryBuilders.termQuery(Command.PRINCIPAL.getName(), principal.getId()))
-			.must(QueryBuilders.rangeQuery(Command.TIMESTAMP.getName()).from(since.getMillis()));
+	private static Query createFilter(Identity principal, DateTime since) {
+		return BoolQuery.of(b -> b
+			.must(TermQuery.of(t -> t.field(Command.PRINCIPAL.getName()).value(FieldValue.of(principal.getId())))._toQuery())
+			.must(RangeQuery.of(r -> r.field(Command.TIMESTAMP.getName()).gte(JsonData.of(since.getMillis())))._toQuery())
+		)._toQuery();
 	}
 
 	@Override

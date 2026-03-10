@@ -1,7 +1,8 @@
 package com.zenobase.search;
 
-import org.opensearch.index.query.QueryBuilder;
-import org.opensearch.index.query.QueryBuilders;
+import org.opensearch.client.opensearch._types.FieldValue;
+import org.opensearch.client.opensearch._types.query_dsl.Query;
+import org.opensearch.client.opensearch._types.query_dsl.TermQuery;
 import org.joda.time.Duration;
 
 import com.zenobase.common.DurationFormat;
@@ -13,11 +14,11 @@ public class DurationConstraintBuilder extends ConstraintBuilder {
 	}
 
 	@Override
-	public QueryBuilder build(String value) {
+	public Query build(String value) {
 		return build(DurationFormat.parse(value));
 	}
 
-	private QueryBuilder build(Duration value) {
-		return QueryBuilders.termQuery(getPath(), value.getMillis());
+	private Query build(Duration value) {
+		return TermQuery.of(t -> t.field(getPath()).value(FieldValue.of(value.getMillis())))._toQuery();
 	}
 }

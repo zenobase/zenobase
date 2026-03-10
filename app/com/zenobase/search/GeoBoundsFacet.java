@@ -2,12 +2,15 @@ package com.zenobase.search;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.opensearch.action.search.SearchResponse;
-import org.opensearch.common.geo.GeoPoint;
-import org.opensearch.index.query.QueryBuilder;
-import org.opensearch.search.aggregations.AggregationBuilders;
-import org.opensearch.search.aggregations.metrics.GeoBounds;
-import org.opensearch.search.builder.SearchSourceBuilder;
+import org.opensearch.client.opensearch._types.GeoLocation;
+import org.opensearch.client.opensearch._types.LatLonGeoLocation;
+import org.opensearch.client.opensearch._types.TopLeftBottomRightGeoBounds;
+import org.opensearch.client.opensearch._types.aggregations.Aggregate;
+import org.opensearch.client.opensearch._types.aggregations.Aggregation;
+import org.opensearch.client.opensearch._types.aggregations.GeoBoundsAggregate;
+import org.opensearch.client.opensearch._types.query_dsl.Query;
+import org.opensearch.client.opensearch.core.SearchRequest;
+import org.opensearch.client.opensearch.core.SearchResponse;
 
 import com.zenobase.json.Nodes;
 import com.zenobase.models.Event;
@@ -18,27 +21,30 @@ public class GeoBoundsFacet extends FilteredFacet {
 
 	private final String field;
 
-	private GeoBoundsFacet(String id, String field, QueryBuilder filter) {
+	private GeoBoundsFacet(String id, String field, Query filter) {
 		super(id, filter);
 		this.field = field;
 	}
 
 	@Override
-	public void configure(SearchSourceBuilder builder) {
-		addAggregation(AggregationBuilders.geoBounds(getId()).field(field), builder);
+	public void configure(SearchRequest.Builder builder) {
+		addAggregation(getId(), Aggregation.of(a -> a.geoBounds(g -> g.field(field))), builder);
 	}
 
 	@Override
-	public JsonNode process(SearchResponse response) {
+	public JsonNode process(SearchResponse<ObjectNode> response) {
 		ObjectNode result = Nodes.newObject();
-		GeoBounds bounds = getAggregation(response);
-		GeoPoint sw = bounds.bottomRight();
-		GeoPoint ne = bounds.topLeft();
-		if (sw != null && ne != null) {
-			result.put("lat_min", sw.getLat());
-			result.put("lat_max", ne.getLat());
-			result.put("lon_min", ne.getLon());
-			result.put("lon_max", sw.getLon());
+		GeoBoundsAggregate bounds = getAggregate(response).geoBounds();
+		if (bounds.bounds() != null && bounds.bounds()._kind() == org.opensearch.client.opensearch._types.GeoBounds.Kind.Tlbr) {
+			TopLeftBottomRightGeoBounds tlbr = bounds.bounds().tlbr();
+			GeoLocation tl = tlbr.topLeft();
+			GeoLocation br = tlbr.bottomRight();
+			if (tl.isLatlon() && br.isLatlon()) {
+				result.put("lat_min", br.latlon().lat());
+				result.put("lat_max", tl.latlon().lat());
+				result.put("lon_min", tl.latlon().lon());
+				result.put("lon_max", br.latlon().lon());
+			}
 		}
 		return result;
 	}

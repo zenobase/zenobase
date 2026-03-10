@@ -1,16 +1,18 @@
 package com.zenobase.search;
 
+import java.util.Collections;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.opensearch.action.search.SearchResponse;
-import org.opensearch.index.query.QueryBuilder;
-import org.opensearch.search.aggregations.AggregationBuilder;
-import org.opensearch.search.aggregations.AggregationBuilders;
-import org.opensearch.search.aggregations.BucketOrder;
-import org.opensearch.search.aggregations.bucket.terms.Terms;
-import org.opensearch.search.aggregations.metrics.Stats;
-import org.opensearch.search.builder.SearchSourceBuilder;
+import org.opensearch.client.opensearch._types.SortOrder;
+import org.opensearch.client.opensearch._types.aggregations.Aggregate;
+import org.opensearch.client.opensearch._types.aggregations.Aggregation;
+import org.opensearch.client.opensearch._types.aggregations.StatsAggregate;
+import org.opensearch.client.opensearch._types.aggregations.StringTermsBucket;
+import org.opensearch.client.opensearch._types.query_dsl.Query;
+import org.opensearch.client.opensearch.core.SearchRequest;
+import org.opensearch.client.opensearch.core.SearchResponse;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 
@@ -31,58 +33,61 @@ public class GanttFacet extends FilteredFacet {
 
 	private final String keyField;
 	private final String valueField;
-	private final BucketOrder order;
+	private final String order;
 	private final int limit;
 	private final DateTimeZone timezone;
 
-	private GanttFacet(String id, String keyField, String valueField, String order, int limit, DateTimeZone timezone, QueryBuilder filter) {
+	private GanttFacet(String id, String keyField, String valueField, String order, int limit, DateTimeZone timezone, Query filter) {
 		super(id, filter);
 		this.keyField = keyField;
 		this.valueField = valueField;
-		this.order = parseOrder(order);
+		this.order = order;
 		this.limit = limit;
 		this.timezone = timezone;
 	}
 
-	private BucketOrder parseOrder(String s) {
-		boolean asc = !s.startsWith("-");
-		if (!asc) {
-			s = s.substring(1);
-		}
-		switch (s) {
-			case "count":
-				return BucketOrder.count(asc);
-			case "term":
-				return BucketOrder.key(asc);
-			case "min":
-				return BucketOrder.aggregation(getId(), "min", asc);
-			case "max":
-				return BucketOrder.aggregation(getId(), "max", asc);
-			default:
-				throw new IllegalArgumentException("Invalid order: " + s);
-		}
+	@Override
+	public void configure(SearchRequest.Builder builder) {
+		Aggregation aggregation = Aggregation.of(a -> a
+			.terms(t -> {
+				t.field(keyField).size(limit);
+				boolean asc = !order.startsWith("-");
+				String orderField = asc ? order : order.substring(1);
+				SortOrder sortOrder = asc ? SortOrder.Asc : SortOrder.Desc;
+				switch (orderField) {
+					case "count":
+						t.order(Collections.singletonMap("_count", sortOrder));
+						break;
+					case "term":
+						t.order(Collections.singletonMap("_key", sortOrder));
+						break;
+					case "min":
+						t.order(Collections.singletonMap(getId() + ".min", sortOrder));
+						break;
+					case "max":
+						t.order(Collections.singletonMap(getId() + ".max", sortOrder));
+						break;
+				}
+				return t;
+			})
+			.aggregations(getId(), Aggregation.of(sa -> sa.stats(s -> s.field(valueField))))
+		);
+		addAggregation(getId(), aggregation, builder);
 	}
 
 	@Override
-	public void configure(SearchSourceBuilder builder) {
-		AggregationBuilder aggregation = AggregationBuilders.terms(getId()).field(keyField).order(order).size(limit)
-			.subAggregation(AggregationBuilders.stats(getId()).field(valueField));
-		addAggregation(aggregation, builder);
-	}
-
-	@Override
-	public JsonNode process(SearchResponse response) {
+	public JsonNode process(SearchResponse<ObjectNode> response) {
 		ArrayNode result = Nodes.newArray();
-		Terms terms = getAggregation(response);
-		for (Terms.Bucket bucket : terms.getBuckets()) {
-			Stats stats = bucket.getAggregations().get(getId());
-			DateTime first = asDateTime(stats.getMin());
+		Aggregate agg = getAggregate(response);
+		for (StringTermsBucket bucket : agg.sterms().buckets().array()) {
+			StatsAggregate stats = bucket.aggregations().get(getId()).stats();
+			DateTime first = asDateTime(stats.min());
 			if (first != null) {
 				ObjectNode entryNode = result.addObject();
-				LABEL.setValue(entryNode, bucket.getKeyAsString());
-				COUNT.setValue(entryNode, bucket.getDocCount());
+				LABEL.setValue(entryNode, bucket.key());
+				COUNT.setValue(entryNode, bucket.docCount());
 				FIRST.setValue(entryNode, first);
-				LAST.setValue(entryNode, asDateTime(stats.getMax()));
+				LAST.setValue(entryNode, asDateTime(stats.max()));
 			}
 		}
 		return result;

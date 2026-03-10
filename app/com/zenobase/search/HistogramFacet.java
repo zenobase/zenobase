@@ -6,12 +6,12 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.Lists;
-import org.opensearch.action.search.SearchResponse;
-import org.opensearch.index.query.QueryBuilder;
-import org.opensearch.search.aggregations.AggregationBuilder;
-import org.opensearch.search.aggregations.AggregationBuilders;
-import org.opensearch.search.aggregations.bucket.histogram.Histogram;
-import org.opensearch.search.builder.SearchSourceBuilder;
+import org.opensearch.client.opensearch._types.aggregations.Aggregate;
+import org.opensearch.client.opensearch._types.aggregations.Aggregation;
+import org.opensearch.client.opensearch._types.aggregations.HistogramBucket;
+import org.opensearch.client.opensearch._types.query_dsl.Query;
+import org.opensearch.client.opensearch.core.SearchRequest;
+import org.opensearch.client.opensearch.core.SearchResponse;
 
 import com.zenobase.common.Measures;
 import com.zenobase.common.Units;
@@ -27,7 +27,7 @@ public class HistogramFacet extends FilteredFacet {
 	private final double interval;
 	private final Unit<?> unit;
 
-	public HistogramFacet(String id, String field, double interval, Unit<?> unit, QueryBuilder filter) {
+	public HistogramFacet(String id, String field, double interval, Unit<?> unit, Query filter) {
 		super(id, filter);
 		this.field = field;
 		this.interval = interval;
@@ -35,13 +35,16 @@ public class HistogramFacet extends FilteredFacet {
 	}
 
 	@Override
-	public void configure(SearchSourceBuilder builder) {
-		String field = unit == Unit.ONE ? this.field : Field.concat(this.field, DecimalMeasureField.VALUE_SI.getName());
-		AggregationBuilder histogram = AggregationBuilders.histogram(getId())
-			.field(field)
-			.interval(getStandardInterval())
-			.offset(getStandardOffset());
-		addAggregation(histogram, builder);
+	public void configure(SearchRequest.Builder builder) {
+		String f = unit == Unit.ONE ? this.field : Field.concat(this.field, DecimalMeasureField.VALUE_SI.getName());
+		double stdInterval = getStandardInterval();
+		double stdOffset = getStandardOffset();
+		Aggregation histogram = Aggregation.of(a -> a.histogram(h -> h
+			.field(f)
+			.interval(stdInterval)
+			.offset(stdOffset)
+		));
+		addAggregation(getId(), histogram, builder);
 	}
 
 	private double getStandardInterval() {
@@ -66,14 +69,14 @@ public class HistogramFacet extends FilteredFacet {
 	}
 
 	@Override
-	public JsonNode process(SearchResponse response) {
+	public JsonNode process(SearchResponse<ObjectNode> response) {
 		ArrayNode result = Nodes.newArray();
-		Histogram histogram = getAggregation(response);
-		for (Histogram.Bucket bucket : Lists.reverse(histogram.getBuckets())) {
-			if (bucket.getDocCount() > 0) {
+		Aggregate agg = getAggregate(response);
+		for (HistogramBucket bucket : Lists.reverse(agg.histogram().buckets().array())) {
+			if (bucket.docCount() > 0) {
 				ObjectNode entryNode = result.addObject();
-				entryNode.put("count", bucket.getDocCount());
-				double key = ((Number) bucket.getKey()).doubleValue();
+				entryNode.put("count", bucket.docCount());
+				double key = bucket.key();
 				addValue(entryNode, "from", key);
 				addValue(entryNode, "to", key + getStandardInterval());
 			}

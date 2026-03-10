@@ -5,8 +5,8 @@ import static org.mockito.Mockito.*;
 import static play.test.Helpers.*;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.opensearch.OpenSearchStatusException;
-import org.opensearch.rest.RestStatus;
+import org.opensearch.client.opensearch._types.OpenSearchException;
+import org.opensearch.client.opensearch._types.ErrorResponse;
 import org.junit.Before;
 import org.junit.Test;
 import play.mvc.Result;
@@ -126,7 +126,7 @@ public class CredentialsControllerHttpPostTest extends CredentialsControllerTest
 		when(repository.find(from.getId())).thenReturn(from.copy());
 		when(registry.find(from.getType())).thenReturn(manager);
 		when(manager.authorize(from, Credentials.CREDENTIALS.getValue(update))).thenReturn(command);
-		when(dispatcher.dispatch(command)).thenThrow(new OpenSearchStatusException("version conflict", RestStatus.CONFLICT));
+		when(dispatcher.dispatch(command)).thenThrow(new OpenSearchException(ErrorResponse.of(r -> r.status(409).error(e2 -> e2.type("version_conflict_engine_exception").reason("version conflict")))));
 		Result result = call(from.getId(), update);
 		assertThat(result).hasStatus(CONFLICT);
 	}

@@ -7,8 +7,7 @@ import javax.inject.Inject;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.ImmutableList;
-import org.opensearch.OpenSearchStatusException;
-import org.opensearch.rest.RestStatus;
+import org.opensearch.client.opensearch._types.OpenSearchException;
 import play.mvc.BodyParser;
 import play.mvc.Result;
 
@@ -152,8 +151,8 @@ public class BucketController extends ControllerSupport {
 			String commandId = dispatcher.dispatch(new UpdateBucketCommand(auth.getPrincipal(), bucket, updated));
     		response().setHeader(COMMAND_ID, commandId);
 			return noContent();
-		} catch (OpenSearchStatusException e) {
-			if (e.status() == RestStatus.CONFLICT) return conflict("bucket is stale");
+		} catch (OpenSearchException e) {
+			if (e.status() == 409) return conflict("bucket is stale");
 			throw e;
 		}
     }

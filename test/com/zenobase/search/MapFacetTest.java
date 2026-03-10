@@ -67,11 +67,11 @@ public class MapFacetTest extends FacetTestSupport {
 		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(4);
 		NodeAssert node = assertThat(result).path(FACET_ID).hasSize(2);
 		node.path(0).path("count").isEqualTo(2);
-		node.path(0).path("lat").isEqualTo(47.5928);
-		node.path(0).path("lon").isEqualTo(-122.3438);
+		node.path(0).path("lat").isEqualTo(47.6147);
+		node.path(0).path("lon").isEqualTo(-122.3218);
 		node.path(1).path("count").isEqualTo(2);
-		node.path(1).path("lat").isEqualTo(47.6367);
-		node.path(1).path("lon").isEqualTo(-122.1680);
+		node.path(1).path("lat").isEqualTo(47.6587);
+		node.path(1).path("lon").isEqualTo(-122.146);
 	}
 
 	@Test
@@ -87,8 +87,8 @@ public class MapFacetTest extends FacetTestSupport {
 		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(4);
 		NodeAssert node = assertThat(result).path(FACET_ID).hasSize(1);
 		node.path(0).path("count").isEqualTo(4);
-		node.path(0).path("lat").isEqualTo(47.5488);
-		node.path(0).path("lon").isEqualTo(-122.3438);
+		node.path(0).path("lat").isEqualTo(47.6367);
+		node.path(0).path("lon").isEqualTo(-122.168);
 		node.path(0).path("lat_min").isEqualTo(46.4063);
 		node.path(0).path("lat_max").isEqualTo(47.8125);
 		node.path(0).path("lon_min").isEqualTo(-122.3438);

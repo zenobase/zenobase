@@ -2,8 +2,9 @@ package com.zenobase.search;
 
 import java.math.BigDecimal;
 
-import org.opensearch.index.query.QueryBuilder;
-import org.opensearch.index.query.QueryBuilders;
+import org.opensearch.client.opensearch._types.FieldValue;
+import org.opensearch.client.opensearch._types.query_dsl.Query;
+import org.opensearch.client.opensearch._types.query_dsl.TermQuery;
 
 import com.zenobase.common.Measures;
 import com.zenobase.json.DecimalMeasureField;
@@ -16,12 +17,12 @@ public class MeasureConstraintBuilder extends ConstraintBuilder {
 	}
 
 	@Override
-	public QueryBuilder build(String value) {
+	public Query build(String value) {
 		return build(Measures.toStandard(Measures.valueOf(value)).getValue());
 	}
 
-	private QueryBuilder build(BigDecimal value) {
-		return QueryBuilders.termQuery(getPath(), value);
+	private Query build(BigDecimal value) {
+		return TermQuery.of(t -> t.field(getPath()).value(FieldValue.of(value.doubleValue())))._toQuery();
 	}
 
 	@Override

@@ -3,9 +3,9 @@ package com.zenobase.search;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.BoundType;
 import com.google.common.collect.Range;
-import org.opensearch.index.query.QueryBuilder;
-import org.opensearch.index.query.QueryBuilders;
-import org.opensearch.index.query.RangeQueryBuilder;
+import org.opensearch.client.json.JsonData;
+import org.opensearch.client.opensearch._types.query_dsl.Query;
+import org.opensearch.client.opensearch._types.query_dsl.RangeQuery;
 
 public abstract class RangeConstraintBuilderSupport<C extends Comparable<C>> extends ConstraintBuilder {
 
@@ -14,30 +14,32 @@ public abstract class RangeConstraintBuilderSupport<C extends Comparable<C>> ext
 	}
 
 	@Override
-	public QueryBuilder build(String value) {
+	public Query build(String value) {
 		Range<C> range = parseRange(value);
 		return range != null ? build(range) : null;
 	}
 
-	public QueryBuilder build(Range<C> range) {
-		RangeQueryBuilder query = QueryBuilders.rangeQuery(getPath());
+	public Query build(Range<C> range) {
+		RangeQuery.Builder builder = new RangeQuery.Builder().field(getPath());
 		if (range.hasLowerBound()) {
+			JsonData val = JsonData.of(getValue(range.lowerEndpoint()));
 			if (range.lowerBoundType() == BoundType.CLOSED) {
-				query = query.gte(getValue(range.lowerEndpoint()));
+				builder.gte(val);
 			} else {
 				checkBoundType(BoundType.OPEN, range.lowerBoundType());
-				query = query.gt(getValue(range.lowerEndpoint()));
+				builder.gt(val);
 			}
 		}
 		if (range.hasUpperBound()) {
+			JsonData val = JsonData.of(getValue(range.upperEndpoint()));
 			if (range.upperBoundType() == BoundType.CLOSED) {
-				query = query.lte(getValue(range.upperEndpoint()));
+				builder.lte(val);
 			} else {
 				checkBoundType(BoundType.OPEN, range.upperBoundType());
-				query = query.lt(getValue(range.upperEndpoint()));
+				builder.lt(val);
 			}
 		}
-		return query;
+		return builder.build()._toQuery();
 	}
 
 	protected abstract Range<C> parseRange(String value);

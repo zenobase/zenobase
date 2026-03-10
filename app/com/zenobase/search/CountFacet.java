@@ -1,17 +1,18 @@
 package com.zenobase.search;
 
+import java.util.Collections;
 import java.util.List;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.opensearch.action.search.SearchResponse;
-import org.opensearch.index.query.QueryBuilder;
-import org.opensearch.search.aggregations.AggregationBuilders;
-import org.opensearch.search.aggregations.BucketOrder;
-import org.opensearch.search.aggregations.bucket.terms.Terms;
-import org.opensearch.search.aggregations.bucket.terms.TermsAggregationBuilder;
-import org.opensearch.search.builder.SearchSourceBuilder;
+import org.opensearch.client.opensearch._types.SortOrder;
+import org.opensearch.client.opensearch._types.aggregations.Aggregate;
+import org.opensearch.client.opensearch._types.aggregations.Aggregation;
+import org.opensearch.client.opensearch._types.aggregations.StringTermsBucket;
+import org.opensearch.client.opensearch._types.query_dsl.Query;
+import org.opensearch.client.opensearch.core.SearchRequest;
+import org.opensearch.client.opensearch.core.SearchResponse;
 
 import com.zenobase.json.Nodes;
 
@@ -21,55 +22,54 @@ public class CountFacet extends FilteredFacet {
 	public static final String LABEL_MORE = "...";
 
 	private final String field;
-	private final BucketOrder order;
+	private final String order;
 	private final int offset;
 	private final int limit;
 
-	private CountFacet(String id, String field, String order, int offset, int limit, QueryBuilder filter) {
+	private CountFacet(String id, String field, String order, int offset, int limit, Query filter) {
 		super(id, filter);
 		this.field = field;
-		this.order = parseOrder(order);
+		this.order = order;
 		this.offset = offset;
 		this.limit = limit;
 	}
 
-	private BucketOrder parseOrder(String s) {
-		boolean asc = !s.startsWith("-");
-		if (!asc) {
-			s = s.substring(1);
-		}
-		switch (s) {
-			case "count":
-				return BucketOrder.count(asc);
-			case "term":
-				return BucketOrder.key(asc);
-			default:
-				throw new IllegalArgumentException("Invalid order: " + s);
-		}
-	}
-
 	@Override
-	public void configure(SearchSourceBuilder builder) {
-		TermsAggregationBuilder terms = AggregationBuilders.terms(getId())
-			.field(field).size(offset + limit).order(order);
-		addAggregation(terms, builder);
-	}
-
-	@Override
-	public JsonNode process(SearchResponse response) {
-		ArrayNode result = Nodes.newArray();
-		Terms terms = getAggregation(response);
-		List<? extends Terms.Bucket> entries = terms.getBuckets();
-		if (offset < entries.size()) {
-			for (Terms.Bucket entry : entries.subList(offset, Math.min(entries.size(), offset + limit))) {
-				ObjectNode entryNode = result.addObject();
-				entryNode.put("label", entry.getKeyAsString());
-				entryNode.put("count", entry.getDocCount());
+	public void configure(SearchRequest.Builder builder) {
+		Aggregation terms = Aggregation.of(a -> a.terms(t -> {
+			t.field(field).size(offset + limit);
+			boolean asc = !order.startsWith("-");
+			String orderField = asc ? order : order.substring(1);
+			SortOrder sortOrder = asc ? SortOrder.Asc : SortOrder.Desc;
+			switch (orderField) {
+				case "count":
+					t.order(Collections.singletonMap("_count", sortOrder));
+					break;
+				case "term":
+					t.order(Collections.singletonMap("_key", sortOrder));
+					break;
 			}
-			if (terms.getSumOfOtherDocCounts() > 0) {
+			return t;
+		}));
+		addAggregation(getId(), terms, builder);
+	}
+
+	@Override
+	public JsonNode process(SearchResponse<ObjectNode> response) {
+		ArrayNode result = Nodes.newArray();
+		Aggregate agg = getAggregate(response);
+		List<StringTermsBucket> entries = agg.sterms().buckets().array();
+		if (offset < entries.size()) {
+			for (StringTermsBucket entry : entries.subList(offset, Math.min(entries.size(), offset + limit))) {
+				ObjectNode entryNode = result.addObject();
+				entryNode.put("label", entry.key());
+				entryNode.put("count", entry.docCount());
+			}
+			long sumOther = agg.sterms().sumOtherDocCount();
+			if (sumOther > 0) {
 				ObjectNode entryNode = result.addObject();
 				entryNode.put("label", LABEL_MORE);
-				entryNode.put("count", terms.getSumOfOtherDocCounts());
+				entryNode.put("count", sumOther);
 			}
 		}
 		return result;

@@ -11,9 +11,11 @@ import javax.inject.Named;
 
 import com.google.common.base.Stopwatch;
 import org.apache.http.HttpHost;
-import org.opensearch.OpenSearchStatusException;
 import org.opensearch.client.RestClient;
-import org.opensearch.client.RestHighLevelClient;
+import org.opensearch.client.json.jackson.JacksonJsonpMapper;
+import org.opensearch.client.opensearch.OpenSearchClient;
+import org.opensearch.client.opensearch._types.OpenSearchException;
+import org.opensearch.client.transport.rest_client.RestClientTransport;
 import play.Logger;
 
 import com.zenobase.commands.Command;
@@ -43,7 +45,10 @@ public class CommandReplay {
 
 	public void replay() {
 		if (!sourceHost.isEmpty()) {
-			ClientFactory factory = () -> new RestHighLevelClient(RestClient.builder(HttpHost.create(sourceHost)));
+			ClientFactory factory = () -> {
+				RestClient restClient = RestClient.builder(HttpHost.create(sourceHost)).build();
+				return new OpenSearchClient(new RestClientTransport(restClient, new JacksonJsonpMapper()));
+			};
 			IndexManager indexManager = new IndexManager(factory);
 			replay(indexManager);
 			indexManager.close();
@@ -110,7 +115,7 @@ public class CommandReplay {
 			replayed.incrementAndGet();
 		} catch (NonExistentUserException e) {
 			Logger.warn("Skipping command applying to a non-existent user: " + command);
-		} catch (OpenSearchStatusException e) {
+		} catch (OpenSearchException e) {
 			Logger.warn("Skipping duplicate command: " + command);
 		} catch (IllegalStateException e) {
 			retryCommand(command, e);

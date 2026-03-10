@@ -1,24 +1,24 @@
 package com.zenobase.search.geo;
 
 import com.google.common.base.Preconditions;
-import org.opensearch.common.geo.GeoPoint;
+import org.locationtech.spatial4j.shape.Point;
 
 public class GeoBoundingBox {
 
-	private final GeoPoint topLeft, bottomRight;
+	private final Point topLeft, bottomRight;
 
-	public GeoBoundingBox(GeoPoint topLeft, GeoPoint bottomRight) {
-		Preconditions.checkArgument(topLeft.getLat() >= bottomRight.getLat());
-		Preconditions.checkArgument(topLeft.getLon() <= bottomRight.getLon());
+	public GeoBoundingBox(Point topLeft, Point bottomRight) {
+		Preconditions.checkArgument(topLeft.getY() >= bottomRight.getY());
+		Preconditions.checkArgument(topLeft.getX() <= bottomRight.getX());
 		this.topLeft = topLeft;
 		this.bottomRight = bottomRight;
 	}
 
-	public GeoPoint topLeft() {
+	public Point topLeft() {
 		return topLeft;
 	}
 
-	public GeoPoint bottomRight() {
+	public Point bottomRight() {
 		return bottomRight;
 	}
 }

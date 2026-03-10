@@ -1,7 +1,9 @@
 package com.zenobase.services;
 
-import org.apache.lucene.search.join.ScoreMode;
-import org.opensearch.index.query.QueryBuilders;
+import org.opensearch.client.opensearch._types.FieldValue;
+import org.opensearch.client.opensearch._types.query_dsl.ChildScoreMode;
+import org.opensearch.client.opensearch._types.query_dsl.NestedQuery;
+import org.opensearch.client.opensearch._types.query_dsl.TermQuery;
 
 import com.zenobase.json.RolesField;
 import com.zenobase.models.Bucket;
@@ -12,9 +14,14 @@ public class BucketQuery extends QuerySupport {
 	public static final SearchOrder DEFAULT_ORDER = new SearchOrder(Bucket.CREATED.getName(), false);
 
 	public BucketQuery principalEqualTo(Identity principal) {
-		add(QueryBuilders.nestedQuery(Bucket.ROLES.getName(),
-			QueryBuilders.termQuery(Bucket.ROLES.getName() + "." + RolesField.PRINCIPAL, principal.getId()),
-			ScoreMode.None));
+		add(NestedQuery.of(n -> n
+			.path(Bucket.ROLES.getName())
+			.query(TermQuery.of(t -> t
+				.field(Bucket.ROLES.getName() + "." + RolesField.PRINCIPAL)
+				.value(FieldValue.of(principal.getId()))
+			)._toQuery())
+			.scoreMode(ChildScoreMode.None)
+		)._toQuery());
 		return this;
 	}
 

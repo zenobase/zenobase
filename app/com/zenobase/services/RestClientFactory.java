@@ -5,7 +5,9 @@ import javax.inject.Named;
 
 import org.apache.http.HttpHost;
 import org.opensearch.client.RestClient;
-import org.opensearch.client.RestHighLevelClient;
+import org.opensearch.client.json.jackson.JacksonJsonpMapper;
+import org.opensearch.client.opensearch.OpenSearchClient;
+import org.opensearch.client.transport.rest_client.RestClientTransport;
 import play.Logger;
 
 public class RestClientFactory implements ClientFactory {
@@ -18,8 +20,10 @@ public class RestClientFactory implements ClientFactory {
 	}
 
 	@Override
-	public RestHighLevelClient createClient() {
+	public OpenSearchClient createClient() {
 		Logger.info("Connecting to {}...", host);
-		return new RestHighLevelClient(RestClient.builder(HttpHost.create(host)));
+		RestClient restClient = RestClient.builder(HttpHost.create(host)).build();
+		RestClientTransport transport = new RestClientTransport(restClient, new JacksonJsonpMapper());
+		return new OpenSearchClient(transport);
 	}
 }

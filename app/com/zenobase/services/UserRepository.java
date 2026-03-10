@@ -4,8 +4,8 @@ import javax.inject.Inject;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.Iterables;
-import org.opensearch.search.builder.SearchSourceBuilder;
-import org.opensearch.search.sort.SortOrder;
+import org.opensearch.client.opensearch._types.SortOrder;
+import org.opensearch.client.opensearch.core.SearchRequest;
 import org.joda.time.DateTime;
 import play.Logger;
 
@@ -53,12 +53,15 @@ public class UserRepository extends RepositorySupport<User> {
 	}
 
 	public PartialList<User> find(UserQuery query, int offset, int limit) {
-		SearchSourceBuilder search = new SearchSourceBuilder()
+		SearchRequest request = SearchRequest.of(s -> s
+			.index(index.getIndexName())
 			.query(query.build())
-			.sort(User.NAME.getName(), SortOrder.ASC)
+			.sort(so -> so.field(f -> f.field(User.NAME.getName()).order(SortOrder.Asc)))
 			.from(offset).size(limit)
-			.version(true);
-		return new UserList(index.find(search));
+			.version(true)
+			.seqNoPrimaryTerm(true)
+		);
+		return new UserList(index.find(request));
 	}
 
 	public void find(Callback<User> callback) {

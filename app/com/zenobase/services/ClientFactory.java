@@ -1,8 +1,8 @@
 package com.zenobase.services;
 
-import org.opensearch.client.RestHighLevelClient;
+import org.opensearch.client.opensearch.OpenSearchClient;
 
 public interface ClientFactory {
 
-	RestHighLevelClient createClient();
+	OpenSearchClient createClient();
 }

@@ -11,11 +11,8 @@ import com.google.common.base.Joiner;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
-import org.opensearch.action.admin.indices.alias.IndicesAliasesRequest;
-import org.opensearch.action.support.master.AcknowledgedResponse;
-import org.opensearch.client.RestHighLevelClient;
-import org.opensearch.index.query.BoolQueryBuilder;
-import org.opensearch.index.query.QueryBuilder;
+import org.opensearch.client.opensearch.OpenSearchClient;
+import org.opensearch.client.opensearch._types.query_dsl.Query;
 import play.Logger;
 
 import com.zenobase.models.Alias;
@@ -25,7 +22,7 @@ import com.zenobase.search.SearchBuilderSupport;
 
 public class IndexManager implements Closeable {
 
-	private final RestHighLevelClient client;
+	private final OpenSearchClient client;
 	private final String snapshotRepository;
 
 	@Inject
@@ -58,11 +55,12 @@ public class IndexManager implements Closeable {
 	}
 
 	public void createAlias(String indexName, String aliasName, List<Alias> targets) {
-		IndicesAliasesRequest request = new IndicesAliasesRequest();
-		buildAlias(indexName, aliasName, targets, request);
 		try {
-			AcknowledgedResponse response = client.indices().updateAliases(request, TypeInjectingInterceptor.OPTIONS);
-			Preconditions.checkState(response.isAcknowledged(), "Expected acknowledgement of alias creation: %s", aliasName);
+			boolean acknowledged = client.indices().updateAliases(u -> {
+				buildAlias(indexName, aliasName, targets, u);
+				return u;
+			}).acknowledged();
+			Preconditions.checkState(acknowledged, "Expected acknowledgement of alias creation: %s", aliasName);
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
@@ -70,20 +68,21 @@ public class IndexManager implements Closeable {
 
 	public void updateAlias(String indexName, String aliasName, List<Alias> targets) {
 		Preconditions.checkArgument(!targets.isEmpty(), "Can't remove all aliases from %s", aliasName);
-		IndicesAliasesRequest request = new IndicesAliasesRequest();
-		request.addAliasAction(new IndicesAliasesRequest.AliasActions(IndicesAliasesRequest.AliasActions.Type.REMOVE)
-			.index(indexName).alias(aliasName));
-		buildAlias(indexName, aliasName, targets, request);
 		try {
-			AcknowledgedResponse response = client.indices().updateAliases(request, TypeInjectingInterceptor.OPTIONS);
-			Preconditions.checkState(response.isAcknowledged(), "Expected acknowledgement of alias update: %s", aliasName);
+			boolean acknowledged = client.indices().updateAliases(u -> {
+				u.actions(a -> a.remove(r -> r.index(indexName).alias(aliasName)));
+				buildAlias(indexName, aliasName, targets, u);
+				return u;
+			}).acknowledged();
+			Preconditions.checkState(acknowledged, "Expected acknowledgement of alias update: %s", aliasName);
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
 	}
 
-	private void buildAlias(String indexName, String aliasName, List<Alias> targets, IndicesAliasesRequest request) {
-		BoolQueryBuilder filter = new BoolQueryBuilder();
+	private void buildAlias(String indexName, String aliasName, List<Alias> targets,
+			org.opensearch.client.opensearch.indices.UpdateAliasesRequest.Builder u) {
+		List<Query> shoulds = Lists.newArrayList();
 		List<String> routing = Lists.newArrayList();
 		for (Alias target : targets) {
 			SearchBuilderSupport search = new EventSearchBuilder().addConstraint(Event.BUCKET.getName() + ":" + target.getId());
@@ -91,22 +90,26 @@ public class IndexManager implements Closeable {
 			if (target.getFilter() != null) {
 				search.addConstraints(target.getFilter());
 			}
-			filter.should(search.buildFilter());
+			shoulds.add(search.buildFilter());
 		}
-		request.addAliasAction(new IndicesAliasesRequest.AliasActions(IndicesAliasesRequest.AliasActions.Type.ADD)
-			.index(indexName).alias(aliasName)
+		Query filter = Query.of(q -> q.bool(b -> b.should(shoulds)));
+		String indexRouting = Iterables.get(routing, 0);
+		String searchRouting = Joiner.on(',').join(routing);
+		u.actions(a -> a.add(add -> add
+			.index(indexName)
+			.alias(aliasName)
 			.filter(filter)
-			.indexRouting(Iterables.get(routing, 0))
-			.searchRouting(Joiner.on(',').join(routing)));
+			.indexRouting(indexRouting)
+			.searchRouting(searchRouting)
+		));
 	}
 
 	public void deleteAlias(String indexName, String aliasName) {
-		IndicesAliasesRequest request = new IndicesAliasesRequest();
-		request.addAliasAction(new IndicesAliasesRequest.AliasActions(IndicesAliasesRequest.AliasActions.Type.REMOVE)
-			.index(indexName).alias(aliasName));
 		try {
-			AcknowledgedResponse response = client.indices().updateAliases(request, TypeInjectingInterceptor.OPTIONS);
-			Preconditions.checkState(response.isAcknowledged(), "Expected acknowledgement of alias deletion: %s", aliasName);
+			boolean acknowledged = client.indices().updateAliases(u -> u
+				.actions(a -> a.remove(r -> r.index(indexName).alias(aliasName)))
+			).acknowledged();
+			Preconditions.checkState(acknowledged, "Expected acknowledgement of alias deletion: %s", aliasName);
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
@@ -115,8 +118,8 @@ public class IndexManager implements Closeable {
 	@Override
 	public void close() {
 		try {
-			client.close();
-		} catch (IOException e) {
+			client.shutdown();
+		} catch (Exception e) {
 			Logger.error("Error closing client", e);
 		}
 	}

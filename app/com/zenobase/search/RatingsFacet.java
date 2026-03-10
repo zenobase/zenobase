@@ -4,12 +4,12 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.ImmutableList;
-import org.opensearch.action.search.SearchResponse;
-import org.opensearch.index.query.QueryBuilder;
-import org.opensearch.search.aggregations.AggregationBuilders;
-import org.opensearch.search.aggregations.bucket.range.Range;
-import org.opensearch.search.aggregations.bucket.range.RangeAggregationBuilder;
-import org.opensearch.search.builder.SearchSourceBuilder;
+import org.opensearch.client.opensearch._types.aggregations.Aggregate;
+import org.opensearch.client.opensearch._types.aggregations.Aggregation;
+import org.opensearch.client.opensearch._types.aggregations.RangeBucket;
+import org.opensearch.client.opensearch._types.query_dsl.Query;
+import org.opensearch.client.opensearch.core.SearchRequest;
+import org.opensearch.client.opensearch.core.SearchResponse;
 
 import com.zenobase.json.Nodes;
 import com.zenobase.models.Event;
@@ -22,7 +22,7 @@ public class RatingsFacet extends FilteredFacet {
 	private final String field;
 	private final double from, to, step;
 
-	public RatingsFacet(String id, String field, int scale, QueryBuilder filter) {
+	public RatingsFacet(String id, String field, int scale, Query filter) {
 		super(id, filter);
 		this.field = field;
 		step = Rating.MAX_VALUE / scale;
@@ -31,32 +31,37 @@ public class RatingsFacet extends FilteredFacet {
 	}
 
 	@Override
-	public void configure(SearchSourceBuilder builder) {
-		RangeAggregationBuilder range = AggregationBuilders.range(getId()).field(field);
-		range.addUnboundedTo(from);
-		for (double i = from; i < to; i += step) {
-			range.addRange(i, Math.min(i + step, to));
-		}
-		range.addUnboundedFrom(to);
-		addAggregation(range, builder);
+	public void configure(SearchRequest.Builder builder) {
+		Aggregation range = Aggregation.of(a -> a.range(r -> {
+			r.field(field);
+			r.ranges(rng -> rng.to(String.valueOf(from)));
+			for (double i = from; i < to; i += step) {
+				double rangeFrom = i;
+				double rangeTo = Math.min(i + step, to);
+				r.ranges(rng -> rng.from(String.valueOf(rangeFrom)).to(String.valueOf(rangeTo)));
+			}
+			r.ranges(rng -> rng.from(String.valueOf(to)));
+			return r;
+		}));
+		addAggregation(getId(), range, builder);
 	}
 
 	@Override
-	public JsonNode process(SearchResponse response) {
+	public JsonNode process(SearchResponse<ObjectNode> response) {
 		ArrayNode result = Nodes.newArray();
-		Range range = getAggregation(response);
-		for (Range.Bucket entry : ImmutableList.copyOf(range.getBuckets()).reverse()) {
-			if (entry.getDocCount() > 0L) {
+		Aggregate agg = getAggregate(response);
+		for (RangeBucket entry : ImmutableList.copyOf(agg.range().buckets().array()).reverse()) {
+			if (entry.docCount() > 0L) {
 				ObjectNode entryNode = result.addObject();
-				Number fromValue = (Number) entry.getFrom();
-				Number toValue = (Number) entry.getTo();
-				if (fromValue != null && fromValue.intValue() != Integer.MIN_VALUE && !Double.isInfinite(fromValue.doubleValue())) {
+				Double fromValue = entry.from();
+				Double toValue = entry.to();
+				if (fromValue != null && !Double.isInfinite(fromValue)) {
 					entryNode.put("from", fromValue.intValue());
 				}
-				if (toValue != null && toValue.intValue() != Integer.MAX_VALUE && !Double.isInfinite(toValue.doubleValue())) {
+				if (toValue != null && !Double.isInfinite(toValue)) {
 					entryNode.put("to", toValue.intValue());
 				}
-				entryNode.put("count", entry.getDocCount());
+				entryNode.put("count", entry.docCount());
 			}
 		}
 		return result;

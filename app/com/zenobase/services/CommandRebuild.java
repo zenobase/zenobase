@@ -15,7 +15,9 @@ import com.google.common.base.Stopwatch;
 import com.google.common.collect.Iterables;
 import org.apache.http.HttpHost;
 import org.opensearch.client.RestClient;
-import org.opensearch.client.RestHighLevelClient;
+import org.opensearch.client.json.jackson.JacksonJsonpMapper;
+import org.opensearch.client.opensearch.OpenSearchClient;
+import org.opensearch.client.transport.rest_client.RestClientTransport;
 import org.joda.time.DateTime;
 import play.Logger;
 
@@ -44,7 +46,10 @@ public class CommandRebuild {
 
 	public void rebuild() {
 		if (!sourceHost.isEmpty()) {
-			ClientFactory factory = () -> new RestHighLevelClient(RestClient.builder(HttpHost.create(sourceHost)));
+			ClientFactory factory = () -> {
+				RestClient restClient = RestClient.builder(HttpHost.create(sourceHost)).build();
+				return new OpenSearchClient(new RestClientTransport(restClient, new JacksonJsonpMapper()));
+			};
 			IndexManager indexManager = new IndexManager(factory);
 			rebuild(indexManager);
 			indexManager.close();

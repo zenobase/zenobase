@@ -1,7 +1,7 @@
 package com.zenobase.search;
 
-import org.opensearch.index.query.QueryBuilder;
-import org.opensearch.index.query.QueryBuilders;
+import org.opensearch.client.opensearch._types.query_dsl.ExistsQuery;
+import org.opensearch.client.opensearch._types.query_dsl.Query;
 
 public class ExistsConstraintBuilder extends ConstraintBuilder {
 
@@ -10,7 +10,7 @@ public class ExistsConstraintBuilder extends ConstraintBuilder {
 	}
 
 	@Override
-	public QueryBuilder build(String value) {
-		return "*".equals(value) ? QueryBuilders.existsQuery(getPath()) : null;
+	public Query build(String value) {
+		return "*".equals(value) ? ExistsQuery.of(e -> e.field(getPath()))._toQuery() : null;
 	}
 }

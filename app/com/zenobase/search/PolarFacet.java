@@ -12,14 +12,14 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
-import org.opensearch.action.search.SearchResponse;
-import org.opensearch.index.query.QueryBuilder;
-import org.opensearch.search.aggregations.AggregationBuilders;
-import org.opensearch.search.aggregations.BucketOrder;
-import org.opensearch.search.aggregations.bucket.terms.Terms;
-import org.opensearch.search.aggregations.bucket.terms.TermsAggregationBuilder;
-import org.opensearch.search.aggregations.metrics.Stats;
-import org.opensearch.search.builder.SearchSourceBuilder;
+import org.opensearch.client.opensearch._types.SortOrder;
+import org.opensearch.client.opensearch._types.aggregations.Aggregate;
+import org.opensearch.client.opensearch._types.aggregations.Aggregation;
+import org.opensearch.client.opensearch._types.aggregations.LongTermsBucket;
+import org.opensearch.client.opensearch._types.aggregations.StatsAggregate;
+import org.opensearch.client.opensearch._types.query_dsl.Query;
+import org.opensearch.client.opensearch.core.SearchRequest;
+import org.opensearch.client.opensearch.core.SearchResponse;
 
 import com.zenobase.common.Measures;
 import com.zenobase.common.Units;
@@ -38,7 +38,7 @@ public class PolarFacet extends FilteredFacet {
 	private final Interval interval;
 	private final Unit<?> unit;
 
-	private PolarFacet(String id, String keyField, String valueField, Interval interval, Unit<?> unit, QueryBuilder filter) {
+	private PolarFacet(String id, String keyField, String valueField, Interval interval, Unit<?> unit, Query filter) {
 		super(id, filter);
 		this.keyField = Preconditions.checkNotNull(keyField);
 		this.valueField = Preconditions.checkNotNull(valueField);
@@ -47,43 +47,47 @@ public class PolarFacet extends FilteredFacet {
 	}
 
 	@Override
-	public void configure(SearchSourceBuilder builder) {
-		TermsAggregationBuilder terms = AggregationBuilders.terms(getId())
-			.field(interval.getField(keyField))
-			.order(BucketOrder.key(true))
-			.size(31);
-		terms.subAggregation(AggregationBuilders.stats(getId())
-			.field(unit == Unit.ONE ? valueField : Field.concat(valueField, DecimalMeasureField.VALUE_SI.getName())));
-		addAggregation(terms, builder);
+	public void configure(SearchRequest.Builder builder) {
+		String vf = unit == Unit.ONE ? valueField : Field.concat(valueField, DecimalMeasureField.VALUE_SI.getName());
+		Aggregation terms = Aggregation.of(a -> a
+			.terms(t -> t
+				.field(interval.getField(keyField))
+				.order(Collections.singletonMap("_key", SortOrder.Asc))
+				.size(31)
+			)
+			.aggregations(getId(), Aggregation.of(sa -> sa.stats(s -> s.field(vf))))
+		);
+		addAggregation(getId(), terms, builder);
 	}
 
 	@Override
-	public JsonNode process(SearchResponse response) {
-		Terms terms = getAggregation(response);
-		Map<Integer, Stats> result = Collections.emptyMap();
-		if (!terms.getBuckets().isEmpty()) {
+	public JsonNode process(SearchResponse<ObjectNode> response) {
+		Aggregate agg = getAggregate(response);
+		java.util.List<LongTermsBucket> buckets = agg.lterms().buckets().array();
+		Map<Integer, StatsAggregate> result = Collections.emptyMap();
+		if (!buckets.isEmpty()) {
 			result = interval.emptyMap();
-			for (Terms.Bucket bucket : terms.getBuckets()) {
-				Stats stats = bucket.getAggregations().get(getId());
-				result.put(Integer.valueOf(bucket.getKeyAsString()), stats);
+			for (LongTermsBucket bucket : buckets) {
+				StatsAggregate stats = bucket.aggregations().get(getId()).stats();
+				result.put((int) Long.parseLong(bucket.key()), stats);
 			}
 		}
 		return toJson(result);
 	}
 
-	private JsonNode toJson(Map<Integer, Stats> map) {
+	private JsonNode toJson(Map<Integer, StatsAggregate> map) {
 		ArrayNode node = Nodes.newArray();
-		for (Map.Entry<Integer, Stats> entry : map.entrySet()) {
+		for (Map.Entry<Integer, StatsAggregate> entry : map.entrySet()) {
 			ObjectNode entryNode = Nodes.newObject();
 			entryNode.put("value", entry.getKey());
 			entryNode.put("label", interval.getLabel(entry.getKey()));
 			if (entry.getValue() != null) {
-				entryNode.put("count", entry.getValue().getCount());
-				if (!keyField.equals(valueField) && entry.getValue().getCount() > 0) {
-					addValue(entryNode, "min", entry.getValue().getMin());
-					addValue(entryNode, "max", entry.getValue().getMax());
-					addValue(entryNode, "sum", entry.getValue().getSum());
-					addValue(entryNode, "avg", entry.getValue().getAvg());
+				entryNode.put("count", entry.getValue().count());
+				if (!keyField.equals(valueField) && entry.getValue().count() > 0) {
+					addValue(entryNode, "min", entry.getValue().min());
+					addValue(entryNode, "max", entry.getValue().max());
+					addValue(entryNode, "sum", entry.getValue().sum());
+					addValue(entryNode, "avg", entry.getValue().avg());
 				}
 			} else {
 				entryNode.put("count", 0);
@@ -152,8 +156,8 @@ public class PolarFacet extends FilteredFacet {
 			this.size = size;
 		}
 
-		public Map<Integer, Stats> emptyMap() {
-			Map<Integer, Stats> map = Maps.newTreeMap();
+		public Map<Integer, StatsAggregate> emptyMap() {
+			Map<Integer, StatsAggregate> map = Maps.newTreeMap();
 			for (int i = offset; i < offset + size; ++i) {
 				map.put(i, null);
 			}

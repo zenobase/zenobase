@@ -2,10 +2,11 @@ package com.zenobase.search;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
-import org.opensearch.action.search.SearchResponse;
-import org.opensearch.index.query.QueryBuilder;
-import org.opensearch.search.SearchHit;
-import org.opensearch.search.builder.SearchSourceBuilder;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.opensearch.client.opensearch._types.query_dsl.Query;
+import org.opensearch.client.opensearch.core.SearchRequest;
+import org.opensearch.client.opensearch.core.SearchResponse;
+import org.opensearch.client.opensearch.core.search.Hit;
 
 import com.zenobase.json.DomainNode;
 import com.zenobase.json.Nodes;
@@ -20,9 +21,9 @@ public class ListFacet extends Facet {
 	private final int offset;
 	private final int limit;
 	private final SearchOrder order;
-	private final QueryBuilder filter;
+	private final Query filter;
 
-	public ListFacet(String id, int offset, int limit, String order, QueryBuilder filter, Schema schema) {
+	public ListFacet(String id, int offset, int limit, String order, Query filter, Schema schema) {
 		super(id);
 		this.offset = offset;
 		this.limit = limit;
@@ -31,23 +32,27 @@ public class ListFacet extends Facet {
 	}
 
 	@Override
-	public void configure(SearchSourceBuilder builder) {
+	public void configure(SearchRequest.Builder builder) {
 		builder.from(offset);
 		builder.size(limit);
-		builder.postFilter(filter);
+		if (filter != null) {
+			builder.postFilter(filter);
+		}
 		order.apply(builder);
-		builder.version(Boolean.TRUE);
-		builder.seqNoAndPrimaryTerm(Boolean.TRUE);
+		builder.version(true);
+		builder.seqNoPrimaryTerm(true);
 	}
 
 	@Override
-	public JsonNode process(SearchResponse response) {
+	public JsonNode process(SearchResponse<ObjectNode> response) {
 		ArrayNode eventsNode = Nodes.newArray();
-		for (SearchHit hit : response.getHits()) {
-			Event event = new Event(Nodes.readObject(hit.getSourceRef().toBytesRef().bytes));
-			event.setVersion(hit.getVersion());
-			DomainNode.SEQ_NO.setValue(event.toJson(), hit.getSeqNo());
-			DomainNode.PRIMARY_TERM.setValue(event.toJson(), hit.getPrimaryTerm());
+		for (Hit<ObjectNode> hit : response.hits().hits()) {
+			Event event = new Event(hit.source());
+			if (hit.version() != null) {
+				event.setVersion(hit.version());
+			}
+			DomainNode.SEQ_NO.setValue(event.toJson(), hit.seqNo());
+			DomainNode.PRIMARY_TERM.setValue(event.toJson(), hit.primaryTerm());
 			eventsNode.add(event.toJson());
 		}
 		return eventsNode;

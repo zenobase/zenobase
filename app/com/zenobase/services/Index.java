@@ -1,6 +1,7 @@
 package com.zenobase.services;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -9,38 +10,27 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
 import com.google.common.primitives.Ints;
-import org.opensearch.action.DocWriteRequest;
-import org.opensearch.action.admin.indices.alias.IndicesAliasesRequest;
-import org.opensearch.action.admin.indices.alias.get.GetAliasesRequest;
-import org.opensearch.client.indices.CloseIndexRequest;
-import org.opensearch.action.bulk.BulkItemResponse;
-import org.opensearch.action.bulk.BulkRequest;
-import org.opensearch.action.bulk.BulkResponse;
-import org.opensearch.action.delete.DeleteRequest;
-import org.opensearch.action.get.GetRequest;
-import org.opensearch.action.get.GetResponse;
-import org.opensearch.action.index.IndexRequest;
-import org.opensearch.action.search.ClearScrollRequest;
-import org.opensearch.action.search.SearchRequest;
-import org.opensearch.action.search.SearchResponse;
-import org.opensearch.action.search.SearchScrollRequest;
-import org.opensearch.action.support.WriteRequest;
-import org.opensearch.client.GetAliasesResponse;
-import org.opensearch.client.RestHighLevelClient;
-import org.opensearch.client.indices.CreateIndexRequest;
-import org.opensearch.client.indices.CreateIndexResponse;
-import org.opensearch.client.indices.GetIndexRequest;
-import org.opensearch.client.indices.PutMappingRequest;
-import org.opensearch.common.settings.Settings;
-import org.opensearch.common.unit.TimeValue;
-import org.opensearch.common.xcontent.XContentType;
-import org.opensearch.index.query.QueryBuilder;
-import org.opensearch.index.reindex.DeleteByQueryRequest;
-import org.opensearch.search.SearchHit;
-import org.opensearch.search.SearchHits;
-import org.opensearch.search.builder.SearchSourceBuilder;
-import org.opensearch.action.admin.indices.refresh.RefreshRequest;
-import org.opensearch.action.admin.indices.flush.FlushRequest;
+import org.opensearch.client.opensearch.OpenSearchClient;
+import org.opensearch.client.opensearch._types.OpType;
+import org.opensearch.client.opensearch._types.Refresh;
+import org.opensearch.client.opensearch._types.Time;
+import org.opensearch.client.opensearch._types.query_dsl.Query;
+import org.opensearch.client.opensearch.core.BulkRequest;
+import org.opensearch.client.opensearch.core.BulkResponse;
+import org.opensearch.client.opensearch.core.ClearScrollRequest;
+import org.opensearch.client.opensearch.core.DeleteRequest;
+import org.opensearch.client.opensearch.core.GetRequest;
+import org.opensearch.client.opensearch.core.GetResponse;
+import org.opensearch.client.opensearch.core.IndexRequest;
+import org.opensearch.client.opensearch.core.IndexResponse;
+import org.opensearch.client.opensearch.core.ScrollRequest;
+import org.opensearch.client.opensearch.core.SearchRequest;
+import org.opensearch.client.opensearch.core.SearchResponse;
+import org.opensearch.client.opensearch.core.bulk.BulkOperation;
+import org.opensearch.client.opensearch.core.bulk.BulkResponseItem;
+import org.opensearch.client.opensearch.core.search.Hit;
+import org.opensearch.client.opensearch.indices.CreateIndexRequest;
+import org.opensearch.client.opensearch.indices.IndexSettings;
 import org.joda.time.DateTime;
 
 import com.zenobase.common.Callback;
@@ -51,13 +41,17 @@ import com.zenobase.json.Schema;
 
 public class Index {
 
-	private final TimeValue timeout = TimeValue.timeValueMinutes(5);
+	private static final Time SCROLL_TIMEOUT = Time.of(t -> t.time("5m"));
 	private final String indexName;
-	private final RestHighLevelClient client;
+	private final OpenSearchClient client;
 
-	public Index(String indexName, RestHighLevelClient client) {
+	public Index(String indexName, OpenSearchClient client) {
 		this.indexName = indexName;
 		this.client = client;
+	}
+
+	public String getIndexName() {
+		return indexName;
 	}
 
 	public void create(int replicas) {
@@ -65,14 +59,16 @@ public class Index {
 	}
 
 	public void create(int shards, int replicas) {
-		Settings settings = Settings.builder()
-			.put("number_of_shards", shards)
-			.put("auto_expand_replicas", replicas == Integer.MAX_VALUE ? "0-all" : "0-" + replicas)
-			.build();
 		try {
-			CreateIndexRequest request = new CreateIndexRequest(indexName).settings(settings);
-			CreateIndexResponse response = client.indices().create(request, TypeInjectingInterceptor.OPTIONS);
-			Preconditions.checkState(response.isAcknowledged(), "Expected acknowledgement of index creation: %s", indexName);
+			String autoExpandReplicas = replicas == Integer.MAX_VALUE ? "0-all" : "0-" + replicas;
+			boolean acknowledged = client.indices().create(c -> c
+				.index(indexName)
+				.settings(s -> s
+					.numberOfShards(String.valueOf(shards))
+					.autoExpandReplicas(autoExpandReplicas)
+				)
+			).acknowledged();
+			Preconditions.checkState(acknowledged, "Expected acknowledgement of index creation: %s", indexName);
 			Preconditions.checkState(new Cluster(client).isReady(), "Expected at least one shard in cluster");
 		} catch (IOException e) {
 			throw new RuntimeException(e);
@@ -81,55 +77,87 @@ public class Index {
 
 	public void putMapping(Schema schema) {
 		try {
-			PutMappingRequest request = new PutMappingRequest(indexName)
-				.source(schema.toJson().toString(), XContentType.JSON);
-			client.indices().putMapping(request, TypeInjectingInterceptor.OPTIONS);
+			String json = schema.toJson().toString();
+			client.generic().execute(
+				org.opensearch.client.opensearch.generic.Requests.builder()
+					.endpoint(indexName + "/_mapping")
+					.method("PUT")
+					.json(json)
+					.build()
+			).close();
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
 	}
 
 	public void store(String type, String id, ObjectNode node, DateTime timestamp, boolean refresh) {
-		index(type, id, node, DocWriteRequest.OpType.CREATE, timestamp, refresh);
+		index(type, id, node, OpType.Create, timestamp, refresh);
 	}
 
 	public void store(String type, List<? extends DomainNode> nodes, DateTime timestamp, boolean refresh) {
-		index(type, nodes, DocWriteRequest.OpType.CREATE, timestamp, refresh);
+		index(type, nodes, OpType.Create, timestamp, refresh);
 	}
 
 	public void update(String type, String id, ObjectNode node, DateTime timestamp, boolean refresh) {
-		index(type, id, node, DocWriteRequest.OpType.INDEX, timestamp, refresh);
+		index(type, id, node, OpType.Index, timestamp, refresh);
 	}
 
-	private void index(String type, String id, ObjectNode node, DocWriteRequest.OpType operation, DateTime timestamp, boolean refresh) {
-		IndexRequest request = buildIndexRequest(type, id, node, operation, timestamp, refresh);
+	private void index(String type, String id, ObjectNode node, OpType operation, DateTime timestamp, boolean refresh) {
 		try {
-			org.opensearch.action.index.IndexResponse response = client.index(request, TypeInjectingInterceptor.OPTIONS);
-			DomainNode.VERSION.setValue(node, response.getVersion());
-			DomainNode.SEQ_NO.setValue(node, response.getSeqNo());
-			DomainNode.PRIMARY_TERM.setValue(node, response.getPrimaryTerm());
+			IndexRequest.Builder<ObjectNode> builder = new IndexRequest.Builder<ObjectNode>()
+				.index(indexName)
+				.id(id)
+				.document(stripMetadata(node))
+				.opType(operation)
+				.refresh(refresh ? Refresh.True : Refresh.False);
+			if (operation == OpType.Index) {
+				Long seqNo = DomainNode.SEQ_NO.getValue(node);
+				Long primaryTerm = DomainNode.PRIMARY_TERM.getValue(node);
+				Preconditions.checkNotNull(seqNo, "Missing seq_no field: %s", node);
+				Preconditions.checkNotNull(primaryTerm, "Missing primary_term field: %s", node);
+				builder.ifSeqNo(seqNo);
+				builder.ifPrimaryTerm(primaryTerm);
+			}
+			IndexResponse response = client.index(builder.build());
+			DomainNode.VERSION.setValue(node, response.version());
+			DomainNode.SEQ_NO.setValue(node, response.seqNo());
+			DomainNode.PRIMARY_TERM.setValue(node, response.primaryTerm());
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
 	}
 
-	private void index(String type, List<? extends DomainNode> nodes, DocWriteRequest.OpType operation, DateTime timestamp, boolean refresh) {
+	private void index(String type, List<? extends DomainNode> nodes, OpType operation, DateTime timestamp, boolean refresh) {
 		int BATCH_SIZE = 10000;
 		for (int begin = 0; begin < nodes.size(); begin += BATCH_SIZE) {
-			BulkRequest request = new BulkRequest();
+			List<BulkOperation> operations = new ArrayList<>();
 			for (int i = 0; i < BATCH_SIZE && begin + i < nodes.size(); ++i) {
 				DomainNode node = nodes.get(begin + i);
-				request.add(buildIndexRequest(type, node.getId(), node.toJson(), operation, timestamp, refresh));
+				ObjectNode doc = stripMetadata(node.toJson());
+				BulkOperation.Builder opBuilder = new BulkOperation.Builder();
+				if (operation == OpType.Create) {
+					opBuilder.create(c -> c.index(indexName).id(node.getId()).document(doc));
+				} else {
+					Long seqNo = DomainNode.SEQ_NO.getValue(node.toJson());
+					Long primaryTerm = DomainNode.PRIMARY_TERM.getValue(node.toJson());
+					Preconditions.checkNotNull(seqNo, "Missing seq_no field: %s", node.toJson());
+					Preconditions.checkNotNull(primaryTerm, "Missing primary_term field: %s", node.toJson());
+					opBuilder.index(idx -> idx.index(indexName).id(node.getId()).document(doc)
+						.ifSeqNo(seqNo).ifPrimaryTerm(primaryTerm));
+				}
+				operations.add(opBuilder.build());
 			}
-			request.setRefreshPolicy(refresh ? WriteRequest.RefreshPolicy.IMMEDIATE : WriteRequest.RefreshPolicy.NONE);
 			try {
-				BulkResponse bulkResponse = client.bulk(request, TypeInjectingInterceptor.OPTIONS);
-				BulkItemResponse[] responses = bulkResponse.getItems();
-				String failureMessage = getFailureMessage(responses);
+				BulkResponse bulkResponse = client.bulk(b -> b
+					.operations(operations)
+					.refresh(refresh ? Refresh.True : Refresh.False)
+				);
+				List<BulkResponseItem> items = bulkResponse.items();
+				String failureMessage = getFailureMessage(items);
 				if (failureMessage != null) {
 					List<String> failed = Lists.newArrayList();
-					for (int i = 0; i < responses.length; ++i) {
-						if (!responses[i].isFailed()) {
+					for (int i = 0; i < items.size(); ++i) {
+						if (items.get(i).error() == null) {
 							failed.add(nodes.get(begin + i).getId());
 						}
 					}
@@ -138,11 +166,11 @@ public class Index {
 					}
 					throw new RuntimeException("Couldn't store an item: " + failureMessage);
 				}
-				for (int i = 0; i < responses.length; ++i) {
+				for (int i = 0; i < items.size(); ++i) {
 					DomainNode node = nodes.get(begin + i);
-					node.setVersion(responses[i].getVersion());
-					DomainNode.SEQ_NO.setValue(node.toJson(), responses[i].getResponse().getSeqNo());
-					DomainNode.PRIMARY_TERM.setValue(node.toJson(), responses[i].getResponse().getPrimaryTerm());
+					node.setVersion(items.get(i).version());
+					DomainNode.SEQ_NO.setValue(node.toJson(), items.get(i).seqNo());
+					DomainNode.PRIMARY_TERM.setValue(node.toJson(), items.get(i).primaryTerm());
 				}
 			} catch (IOException e) {
 				throw new RuntimeException(e);
@@ -150,29 +178,13 @@ public class Index {
 		}
 	}
 
-	private static String getFailureMessage(BulkItemResponse[] responses) {
-		for (BulkItemResponse response : responses) {
-			if (response.isFailed()) {
-				return response.getFailureMessage();
+	private static String getFailureMessage(List<BulkResponseItem> items) {
+		for (BulkResponseItem item : items) {
+			if (item.error() != null) {
+				return item.error().reason();
 			}
 		}
 		return null;
-	}
-
-	private IndexRequest buildIndexRequest(String type, String id, ObjectNode node, DocWriteRequest.OpType operation, DateTime timestamp, boolean refresh) {
-		IndexRequest request = new IndexRequest(indexName).id(id);
-		if (operation == DocWriteRequest.OpType.INDEX) {
-			Long seqNo = DomainNode.SEQ_NO.getValue(node);
-			Long primaryTerm = DomainNode.PRIMARY_TERM.getValue(node);
-			Preconditions.checkNotNull(seqNo, "Missing seq_no field: %s", node);
-			Preconditions.checkNotNull(primaryTerm, "Missing primary_term field: %s", node);
-			request.setIfSeqNo(seqNo);
-			request.setIfPrimaryTerm(primaryTerm);
-		}
-		request.source(Nodes.toByteArray(stripMetadata(node)), XContentType.JSON);
-		request.opType(operation);
-		request.setRefreshPolicy(refresh ? WriteRequest.RefreshPolicy.IMMEDIATE : WriteRequest.RefreshPolicy.NONE);
-		return request;
 	}
 
 	private static ObjectNode stripMetadata(ObjectNode node) {
@@ -185,22 +197,23 @@ public class Index {
 
 	public boolean delete(String type, String id, boolean refresh) {
 		try {
-			DeleteRequest request = new DeleteRequest(indexName, id)
-				.setRefreshPolicy(refresh ? WriteRequest.RefreshPolicy.IMMEDIATE : WriteRequest.RefreshPolicy.NONE);
-			return client.delete(request, TypeInjectingInterceptor.OPTIONS).getResult() == org.opensearch.action.DocWriteResponse.Result.DELETED;
+			return client.delete(d -> d
+				.index(indexName)
+				.id(id)
+				.refresh(refresh ? Refresh.True : Refresh.False)
+			).result().jsonValue().equals("deleted");
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
 	}
 
 	public boolean delete(String type, List<String> ids, boolean refresh) {
-		BulkRequest request = new BulkRequest()
-			.setRefreshPolicy(refresh ? WriteRequest.RefreshPolicy.IMMEDIATE : WriteRequest.RefreshPolicy.NONE);
+		List<BulkOperation> operations = new ArrayList<>();
 		for (String id : ids) {
-			request.add(new DeleteRequest(indexName, id));
+			operations.add(BulkOperation.of(op -> op.delete(d -> d.index(indexName).id(id))));
 		}
 		try {
-			client.bulk(request, TypeInjectingInterceptor.OPTIONS);
+			client.bulk(b -> b.operations(operations).refresh(refresh ? Refresh.True : Refresh.False));
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
@@ -209,7 +222,7 @@ public class Index {
 
 	public boolean exists() {
 		try {
-			return client.indices().exists(new GetIndexRequest(indexName), TypeInjectingInterceptor.OPTIONS);
+			return client.indices().exists(e -> e.index(indexName)).value();
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
@@ -217,56 +230,64 @@ public class Index {
 
 	public void refresh() {
 		try {
-			client.indices().refresh(new RefreshRequest(indexName), TypeInjectingInterceptor.OPTIONS);
+			client.indices().refresh(r -> r.index(indexName));
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
 	}
 
-	public NodeList find(QueryBuilder query) {
-		return find(new SearchSourceBuilder().query(query).version(Boolean.TRUE).seqNoAndPrimaryTerm(Boolean.TRUE));
-	}
-
-	public NodeList find(SearchSourceBuilder search) {
-		search.seqNoAndPrimaryTerm(Boolean.TRUE);
-		SearchResponse response = search(search);
-		SearchHits hits = response.getHits();
-		List<ObjectNode> nodes = Lists.newArrayListWithCapacity(hits.getHits().length);
-		for (SearchHit hit : hits) {
+	public NodeList find(Query query) {
+		SearchRequest request = SearchRequest.of(s -> s
+			.index(indexName)
+			.query(query)
+			.version(true)
+			.seqNoPrimaryTerm(true)
+		);
+		SearchResponse<ObjectNode> response = search(request);
+		List<ObjectNode> nodes = Lists.newArrayListWithCapacity(response.hits().hits().size());
+		for (Hit<ObjectNode> hit : response.hits().hits()) {
 			nodes.add(read(hit));
 		}
-		return new NodeList(nodes, hits.getTotalHits().value);
+		return new NodeList(nodes, response.hits().total().value());
 	}
 
-	public SearchResponse search(SearchSourceBuilder search) {
+	public NodeList find(SearchRequest request) {
+		SearchResponse<ObjectNode> response = search(request);
+		List<ObjectNode> nodes = Lists.newArrayListWithCapacity(response.hits().hits().size());
+		for (Hit<ObjectNode> hit : response.hits().hits()) {
+			nodes.add(read(hit));
+		}
+		return new NodeList(nodes, response.hits().total().value());
+	}
+
+	public SearchResponse<ObjectNode> search(SearchRequest request) {
 		try {
-			SearchRequest request = new SearchRequest(indexName).source(search);
-			return client.search(request, TypeInjectingInterceptor.OPTIONS);
+			return client.search(request, ObjectNode.class);
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
 	}
 
-	public void find(QueryBuilder query, Callback<ObjectNode> callback, int scrollSize) {
-		find(new SearchSourceBuilder().query(query).size(scrollSize).version(true).seqNoAndPrimaryTerm(true), callback);
-	}
-
-	private void find(SearchSourceBuilder search, Callback<ObjectNode> callback) {
+	public void find(Query query, Callback<ObjectNode> callback, int scrollSize) {
 		try {
-			SearchRequest searchRequest = new SearchRequest(indexName)
-				.source(search)
-				.scroll(timeout);
-			SearchResponse response = client.search(searchRequest, TypeInjectingInterceptor.OPTIONS);
-			while (response.getHits().getHits().length > 0) {
-				for (SearchHit hit : response.getHits()) {
+			SearchRequest searchRequest = SearchRequest.of(s -> s
+				.index(indexName)
+				.query(query)
+				.size(scrollSize)
+				.version(true)
+				.seqNoPrimaryTerm(true)
+				.scroll(SCROLL_TIMEOUT)
+			);
+			SearchResponse<ObjectNode> response = client.search(searchRequest, ObjectNode.class);
+			while (!response.hits().hits().isEmpty()) {
+				for (Hit<ObjectNode> hit : response.hits().hits()) {
 					callback.call(read(hit));
 				}
-				SearchScrollRequest scrollRequest = new SearchScrollRequest(response.getScrollId()).scroll(timeout);
-				response = client.scroll(scrollRequest, TypeInjectingInterceptor.OPTIONS);
+				String scrollId = response.scrollId();
+				response = client.scroll(sr -> sr.scrollId(scrollId).scroll(SCROLL_TIMEOUT), ObjectNode.class);
 			}
-			ClearScrollRequest clearScrollRequest = new ClearScrollRequest();
-			clearScrollRequest.addScrollId(response.getScrollId());
-			client.clearScroll(clearScrollRequest, TypeInjectingInterceptor.OPTIONS);
+			String finalScrollId = response.scrollId();
+			client.clearScroll(c -> c.scrollId(finalScrollId));
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
@@ -274,55 +295,51 @@ public class Index {
 
 	public ObjectNode get(String type, String id) {
 		try {
-			GetResponse response = client.get(new GetRequest(indexName, id), TypeInjectingInterceptor.OPTIONS);
-			if (!response.isExists()) return null;
-			ObjectNode node = read(response.getSourceAsBytes(), response.getVersion());
-			DomainNode.SEQ_NO.setValue(node, response.getSeqNo());
-			DomainNode.PRIMARY_TERM.setValue(node, response.getPrimaryTerm());
+			GetResponse<ObjectNode> response = client.get(g -> g.index(indexName).id(id), ObjectNode.class);
+			if (!response.found()) return null;
+			ObjectNode node = response.source();
+			DomainNode.VERSION.setValue(node, response.version());
+			DomainNode.SEQ_NO.setValue(node, response.seqNo());
+			DomainNode.PRIMARY_TERM.setValue(node, response.primaryTerm());
 			return node;
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
 	}
 
-	private static ObjectNode read(SearchHit hit) {
-		ObjectNode node = read(hit.getSourceRef().toBytesRef().bytes, hit.getVersion());
-		DomainNode.SEQ_NO.setValue(node, hit.getSeqNo());
-		DomainNode.PRIMARY_TERM.setValue(node, hit.getPrimaryTerm());
-		return node;
-	}
-
-	private static ObjectNode read(byte[] source, long version) {
-		ObjectNode node = Nodes.readObject(source);
-		if (version > 0) {
-			DomainNode.VERSION.setValue(node, version);
+	private static ObjectNode read(Hit<ObjectNode> hit) {
+		ObjectNode node = hit.source();
+		if (hit.version() != null) {
+			DomainNode.VERSION.setValue(node, hit.version());
 		}
+		DomainNode.SEQ_NO.setValue(node, hit.seqNo());
+		DomainNode.PRIMARY_TERM.setValue(node, hit.primaryTerm());
 		return node;
 	}
 
 	public boolean exists(String type, String id) {
 		try {
-			return client.get(new GetRequest(indexName, id), TypeInjectingInterceptor.OPTIONS).isExists();
+			return client.get(g -> g.index(indexName).id(id), ObjectNode.class).found();
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
 	}
 
 	public int count() {
-		SearchSourceBuilder search = new SearchSourceBuilder().size(0).trackTotalHits(true);
-		return Ints.saturatedCast(search(search).getHits().getTotalHits().value);
+		SearchRequest request = SearchRequest.of(s -> s.index(indexName).size(0).trackTotalHits(t -> t.enabled(true)));
+		return Ints.saturatedCast(search(request).hits().total().value());
 	}
 
-	public int count(QueryBuilder query) {
-		SearchSourceBuilder search = new SearchSourceBuilder().query(query).size(0).trackTotalHits(true);
-		return Ints.saturatedCast(search(search).getHits().getTotalHits().value);
+	public int count(Query query) {
+		SearchRequest request = SearchRequest.of(s -> s.index(indexName).query(query).size(0).trackTotalHits(t -> t.enabled(true)));
+		return Ints.saturatedCast(search(request).hits().total().value());
 	}
 
 	public boolean close() {
 		Set<String> aliases = aliases();
 		if (aliases.isEmpty()) {
 			try {
-				return client.indices().close(new CloseIndexRequest(indexName), TypeInjectingInterceptor.OPTIONS).isAcknowledged();
+				return client.indices().close(c -> c.index(indexName)).acknowledged();
 			} catch (IOException e) {
 				throw new RuntimeException(e);
 			}
@@ -333,10 +350,10 @@ public class Index {
 
 	private Set<String> aliases() {
 		try {
-			GetAliasesRequest request = new GetAliasesRequest().indices(indexName);
-			GetAliasesResponse response = client.indices().getAlias(request, TypeInjectingInterceptor.OPTIONS);
 			ImmutableSet.Builder<String> builder = ImmutableSet.builder();
-			response.getAliases().values().forEach(aliasSet -> aliasSet.forEach(meta -> builder.add(meta.alias())));
+			client.indices().getAlias(a -> a.index(indexName))
+				.result().values().forEach(indexAliases ->
+					indexAliases.aliases().keySet().forEach(builder::add));
 			return builder.build();
 		} catch (IOException e) {
 			throw new RuntimeException(e);
@@ -344,13 +361,13 @@ public class Index {
 	}
 
 	private boolean close(Iterable<String> aliases) {
-		IndicesAliasesRequest request = new IndicesAliasesRequest();
-		for (String alias : aliases) {
-			request.addAliasAction(new IndicesAliasesRequest.AliasActions(IndicesAliasesRequest.AliasActions.Type.REMOVE)
-				.index(indexName).alias(alias));
-		}
 		try {
-			return client.indices().updateAliases(request, TypeInjectingInterceptor.OPTIONS).isAcknowledged();
+			return client.indices().updateAliases(u -> {
+				for (String alias : aliases) {
+					u.actions(a -> a.remove(r -> r.index(indexName).alias(alias)));
+				}
+				return u;
+			}).acknowledged();
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}

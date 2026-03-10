@@ -5,8 +5,8 @@ import static org.mockito.Mockito.*;
 import static play.test.Helpers.*;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.opensearch.OpenSearchStatusException;
-import org.opensearch.rest.RestStatus;
+import org.opensearch.client.opensearch._types.OpenSearchException;
+import org.opensearch.client.opensearch._types.ErrorResponse;
 import org.junit.Before;
 import org.junit.Test;
 import play.mvc.Result;
@@ -81,7 +81,7 @@ public class BucketControllerHttpPostTest extends BucketControllerTestSupport {
 	public void testConflict() {
 		when(auth.current()).thenReturn(new Authorization(user.asIdentity()));
 		when(buckets.find(from.getId())).thenReturn(from.copy());
-		when(dispatcher.dispatch(any(UpdateBucketCommand.class))).thenThrow(new OpenSearchStatusException("version conflict", RestStatus.CONFLICT));
+		when(dispatcher.dispatch(any(UpdateBucketCommand.class))).thenThrow(new OpenSearchException(ErrorResponse.of(r -> r.status(409).error(e2 -> e2.type("version_conflict_engine_exception").reason("version conflict")))));
 		Result result = call(from.getId(), to.toJson());
 		assertThat(result).hasStatus(CONFLICT);
 	}
