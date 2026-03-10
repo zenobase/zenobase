@@ -116,7 +116,12 @@ public class CommandReplay {
 		} catch (NonExistentUserException e) {
 			Logger.warn("Skipping command applying to a non-existent user: " + command);
 		} catch (OpenSearchException e) {
-			Logger.warn("Skipping duplicate command: " + command);
+			if (e.status() == 409) {
+				Logger.warn("Skipping duplicate command: " + command);
+			} else {
+				Logger.error("Couldn't replay command: " + command, e);
+				failures.incrementAndGet();
+			}
 		} catch (IllegalStateException e) {
 			retryCommand(command, e);
 		} catch (RuntimeException e) {
