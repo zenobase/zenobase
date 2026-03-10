@@ -1,6 +1,7 @@
 FROM opensearchproject/opensearch:3.1.0
 
 RUN opensearch-plugin install --batch repository-s3
+RUN opensearch-plugin install --batch discovery-ec2
 
 EXPOSE 9200
 

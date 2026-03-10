@@ -5,7 +5,12 @@ services:
     volumes:
       - os-data:/usr/share/opensearch/data
     environment:
-      - discovery.type=single-node
+      - cluster.name=${CLUSTER_NAME:-opensearch}
+      - node.name=${NODE_NAME:-opensearch-node}
+      - network.publish_host=${PUBLISH_HOST:-_local_}
+      - discovery.seed_providers=ec2
+      - discovery.ec2.tag.Service=zenobase
+      - discovery.ec2.endpoint=ec2.${AWS_REGION:-us-east-1}.amazonaws.com
       - DISABLE_INSTALL_DEMO_CONFIG=true
       - plugins.security.disabled=true
       - OPENSEARCH_JAVA_OPTS=-Xms${OS_HEAP_SIZE:-4g} -Xmx${OS_HEAP_SIZE:-4g}
