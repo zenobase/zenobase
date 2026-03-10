@@ -20,7 +20,7 @@ public abstract class ElasticSearchTestSupport {
 
 	private static final GenericContainer<?> container;
 	static {
-		container = new GenericContainer<>("opensearchproject/opensearch:2.19.1")
+		container = new GenericContainer<>("opensearchproject/opensearch:2.19.4")
 			.withEnv("discovery.type", "single-node")
 			.withEnv("DISABLE_INSTALL_DEMO_CONFIG", "true")
 			.withEnv("plugins.security.disabled", "true")

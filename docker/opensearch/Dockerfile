@@ -1,4 +1,4 @@
-FROM opensearchproject/opensearch:2.19.1
+FROM opensearchproject/opensearch:2.19.4
 
 ENV compatibility.override_main_response_version=true
 
