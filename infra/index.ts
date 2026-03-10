@@ -393,21 +393,37 @@ ${tlsSecurity}TLSEOF
 cat > docker-compose.yml << 'DCEOF'
 ${composeTemplate}DCEOF
 
-# Fetch EC2 private IP via IMDSv2
+# Fetch EC2 metadata via IMDSv2
 TOKEN=\$(curl -s -X PUT "http://169.254.169.254/latest/api/token" -H "X-aws-ec2-metadata-token-ttl-seconds: 21600")
 HOST_IP=\$(curl -s -H "X-aws-ec2-metadata-token: \$TOKEN" http://169.254.169.254/latest/meta-data/local-ipv4)
+INSTANCE_ID=\$(curl -s -H "X-aws-ec2-metadata-token: \$TOKEN" http://169.254.169.254/latest/meta-data/instance-id)
+
+# Check if any peer OpenSearch node is already running
+PEER_COUNT=\$(aws ec2 describe-instances \
+  --region ${region} \
+  --filters "Name=tag:Service,Values=zenobase" "Name=instance-state-name,Values=running" \
+  --query "Reservations[].Instances[?InstanceId!=\\\`\$INSTANCE_ID\\\`].InstanceId" \
+  --output text | wc -w)
+
+# If no peer exists, write override to bootstrap this node as initial cluster manager
+if [ "\$PEER_COUNT" -eq 0 ]; then
+  cat > docker-compose.override.yml << 'OVEOF'
+services:
+  opensearch:
+    environment:
+      - cluster.initial_cluster_manager_nodes=\${NODE_NAME}
+OVEOF
+fi
 
 # Write .env for docker-compose variable substitution
 cat > .env << ENVEOF
 ECR_REGISTRY=${ecrRegistry}
 PLAY_IMAGE_TAG=${playImageTag}
 OS_IMAGE_TAG=${esImageTag}
-ES_HEAP_SIZE=${esHeap}
-ES_CLUSTER_NAME=${esCluster}
-ES_DISCOVERY_TYPE=ec2
+OS_HEAP_SIZE=${esHeap}
+CLUSTER_NAME=${esCluster}
 AWS_REGION=${region}
 JAVA_HEAP=${playHeap}
-ES_CLUSTER=${esCluster}
 ES_REPLAY=${esReplayHost}
 ES_REBUILD=${esRebuildHost}
 ES_MIGRATION=${esMigrationHost}
@@ -415,7 +431,8 @@ HOSTNAME=${hostname}
 API_HOSTNAME=${apiHostname}
 OAUTH_HOSTNAME=${oauthHostname}
 ES_SNAPSHOT_BUCKET=${esSnapshotBucket}
-ES_PUBLISH_HOST=\${HOST_IP}
+PUBLISH_HOST=\${HOST_IP}
+NODE_NAME=\${INSTANCE_ID}
 ENVEOF
 
 # Pull images and start
