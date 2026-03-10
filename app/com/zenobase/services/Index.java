@@ -213,7 +213,11 @@ public class Index {
 			operations.add(BulkOperation.of(op -> op.delete(d -> d.index(indexName).id(id))));
 		}
 		try {
-			client.bulk(b -> b.operations(operations).refresh(refresh ? Refresh.True : Refresh.False));
+			BulkResponse bulkResponse = client.bulk(b -> b.operations(operations).refresh(refresh ? Refresh.True : Refresh.False));
+			String failureMessage = getFailureMessage(bulkResponse.items());
+			if (failureMessage != null) {
+				throw new RuntimeException("Couldn't delete an item: " + failureMessage);
+			}
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
