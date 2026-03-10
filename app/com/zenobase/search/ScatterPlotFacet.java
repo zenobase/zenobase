@@ -161,7 +161,7 @@ public class ScatterPlotFacet extends Facet {
 		}
 
 		public BigDecimal getValue(DateHistogramBucket bucket) {
-			long count = (long) bucket.aggregations().get("_count").valueCount().value();
+			long count = bucket.aggregations().get("_count").valueCount().value().longValue();
 			if (count == 0) {
 				return null;
 			}

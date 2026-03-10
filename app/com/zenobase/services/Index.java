@@ -64,7 +64,7 @@ public class Index {
 			boolean acknowledged = client.indices().create(c -> c
 				.index(indexName)
 				.settings(s -> s
-					.numberOfShards(String.valueOf(shards))
+					.numberOfShards(shards)
 					.autoExpandReplicas(autoExpandReplicas)
 				)
 			).acknowledged();

@@ -11,7 +11,6 @@ services:
       - DISABLE_INSTALL_DEMO_CONFIG=true
       - plugins.security.disabled=true
       - OPENSEARCH_JAVA_OPTS=-Xms2g -Xmx2g
-      - compatibility.override_main_response_version=true
     ulimits:
       nofile:
         soft: 64000

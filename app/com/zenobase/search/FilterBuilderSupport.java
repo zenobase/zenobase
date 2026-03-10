@@ -60,7 +60,7 @@ public class FilterBuilderSupport {
 		if (builders.size() == 1) {
 			return addConstraint(builders.get(0), negated);
 		} else if (builders.size() > 1) {
-			Query or = BoolQuery.of(b -> b.should(builders))._toQuery();
+			Query or = Query.of(q -> q.bool(b -> b.should(builders)));
 			return addConstraint(or, negated);
 		}
 		throw new IllegalArgumentException("Don't know what to do with constraint: " + expression);
@@ -81,12 +81,12 @@ public class FilterBuilderSupport {
 
 	public Query buildFilter() {
 		if (must.isEmpty() && mustNot.isEmpty()) {
-			return MatchAllQuery.of(m -> m)._toQuery();
+			return Query.of(q -> q.matchAll(m -> m));
 		}
-		return BoolQuery.of(b -> {
+		return Query.of(q -> q.bool(b -> {
 			if (!must.isEmpty()) b.must(must);
 			if (!mustNot.isEmpty()) b.mustNot(mustNot);
 			return b;
-		})._toQuery();
+		}));
 	}
 }

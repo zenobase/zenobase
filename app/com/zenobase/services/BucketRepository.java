@@ -7,6 +7,7 @@ import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import org.opensearch.client.opensearch._types.FieldValue;
+import org.opensearch.client.opensearch._types.query_dsl.Query;
 import org.opensearch.client.opensearch._types.query_dsl.TermQuery;
 import org.opensearch.client.opensearch.core.SearchRequest;
 import org.joda.time.DateTime;
@@ -68,7 +69,7 @@ public class BucketRepository extends RepositorySupport<Bucket> {
 	 * Returns <code>true</code> if a bucket is aliased from another bucket.
 	 */
 	public boolean isAliased(String bucketId) {
-		return !index.find(TermQuery.of(t -> t.field(Bucket.ALIASES + ".@id").value(FieldValue.of(bucketId)))._toQuery()).isEmpty();
+		return !index.find(Query.of(q -> q.term(t -> t.field(Bucket.ALIASES + ".@id").value(FieldValue.of(bucketId))))).isEmpty();
 	}
 
 	public Bucket find(String bucketId) {

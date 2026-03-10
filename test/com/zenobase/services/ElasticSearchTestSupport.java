@@ -5,7 +5,7 @@ import static org.mockito.Mockito.*;
 import java.io.IOException;
 import java.time.Duration;
 
-import org.apache.http.HttpHost;
+import org.apache.hc.core5.http.HttpHost;
 import org.junit.After;
 import org.junit.Before;
 import org.opensearch.client.RestClient;
@@ -22,7 +22,7 @@ public abstract class ElasticSearchTestSupport {
 	private static final GenericContainer<?> container;
 	private static final OpenSearchClient sharedClient;
 	static {
-		container = new GenericContainer<>("opensearchproject/opensearch:2.19.4")
+		container = new GenericContainer<>("opensearchproject/opensearch:3.1.0")
 			.withEnv("discovery.type", "single-node")
 			.withEnv("DISABLE_INSTALL_DEMO_CONFIG", "true")
 			.withEnv("plugins.security.disabled", "true")
@@ -32,7 +32,7 @@ public abstract class ElasticSearchTestSupport {
 				.withStartupTimeout(Duration.ofMinutes(2)));
 		container.start();
 		String host = "http://" + container.getHost() + ":" + container.getMappedPort(9200);
-		RestClient restClient = RestClient.builder(HttpHost.create(host)).build();
+		RestClient restClient = RestClient.builder(HttpHost.create(java.net.URI.create(host))).build();
 		sharedClient = new OpenSearchClient(new RestClientTransport(restClient, new JacksonJsonpMapper()));
 	}
 

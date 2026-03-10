@@ -25,7 +25,7 @@ public class QuerySupport {
 
 	protected QuerySupport equalTo(Field<?> field, Object value) {
 		if (value != null) {
-			add(TermQuery.of(t -> t.field(field.getName()).value(toFieldValue(value)))._toQuery());
+			add(Query.of(q -> q.term(t -> t.field(field.getName()).value(toFieldValue(value)))));
 		} else {
 			isNull(field);
 		}
@@ -33,28 +33,28 @@ public class QuerySupport {
 	}
 
 	protected QuerySupport notEqualTo(Field<?> field, Object value) {
-		add(BoolQuery.of(b -> b.mustNot(TermQuery.of(t -> t.field(field.getName()).value(toFieldValue(value)))._toQuery()))._toQuery());
+		add(Query.of(q -> q.bool(b -> b.mustNot(Query.of(q2 -> q2.term(t -> t.field(field.getName()).value(toFieldValue(value))))))));
 		return this;
 	}
 
 	protected QuerySupport isNull(Field<?> field) {
-		add(BoolQuery.of(b -> b.mustNot(ExistsQuery.of(e -> e.field(field.getName()))._toQuery()))._toQuery());
+		add(Query.of(q -> q.bool(b -> b.mustNot(Query.of(q2 -> q2.exists(e -> e.field(field.getName())))))));
 		return this;
 	}
 
 	protected QuerySupport notNull(Field<?> field) {
-		add(ExistsQuery.of(e -> e.field(field.getName()))._toQuery());
+		add(Query.of(q -> q.exists(e -> e.field(field.getName()))));
 		return this;
 	}
 
 	protected QuerySupport lessThan(Field<?> field, Object value) {
 		Object jsonValue = value instanceof org.joda.time.DateTime ? value.toString() : value;
-		add(RangeQuery.of(r -> r.field(field.getName()).lt(org.opensearch.client.json.JsonData.of(jsonValue)))._toQuery());
+		add(Query.of(q -> q.range(r -> r.field(field.getName()).lt(org.opensearch.client.json.JsonData.of(jsonValue)))));
 		return this;
 	}
 
 	protected QuerySupport queryString(String query, String defaultField) {
-		add(QueryStringQuery.of(qs -> qs.query(query).defaultField(defaultField))._toQuery());
+		add(Query.of(q -> q.queryString(qs -> qs.query(query).defaultField(defaultField))));
 		return this;
 	}
 
@@ -64,12 +64,12 @@ public class QuerySupport {
 
 	public Query build() {
 		if (constraints.isEmpty()) {
-			return MatchAllQuery.of(m -> m)._toQuery();
+			return Query.of(q -> q.matchAll(m -> m));
 		}
 		if (constraints.size() == 1) {
 			return Iterables.getOnlyElement(constraints);
 		}
-		return BoolQuery.of(b -> b.must(constraints))._toQuery();
+		return Query.of(q -> q.bool(b -> b.must(constraints)));
 	}
 
 	@Override

@@ -9,7 +9,7 @@ import com.zenobase.common.Callback;
 public abstract class RepositorySupport<T> {
 
 	public void findAll(Callback<T> callback) {
-		find(MatchAllQuery.of(m -> m)._toQuery(), callback);
+		find(Query.of(q -> q.matchAll(m -> m)), callback);
 	}
 
 	protected void find(Query query, Callback<T> callback) {

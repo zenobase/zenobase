@@ -1,6 +1,4 @@
-FROM opensearchproject/opensearch:2.19.4
-
-ENV compatibility.override_main_response_version=true
+FROM opensearchproject/opensearch:3.1.0
 
 RUN opensearch-plugin install --batch repository-s3
 

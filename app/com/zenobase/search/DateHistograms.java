@@ -25,7 +25,7 @@ public class DateHistograms {
 		return Preconditions.checkNotNull(interval, "Invalid interval: %s", s);
 	}
 
-	public static long toEpochMillis(String bucketKey) {
-		return Long.parseLong(bucketKey);
+	public static long toEpochMillis(long bucketKey) {
+		return bucketKey;
 	}
 }

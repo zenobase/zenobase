@@ -39,7 +39,7 @@ public abstract class RangeConstraintBuilderSupport<C extends Comparable<C>> ext
 				builder.lt(val);
 			}
 		}
-		return builder.build()._toQuery();
+		return Query.of(q -> q.range(builder.build()));
 	}
 
 	protected abstract Range<C> parseRange(String value);

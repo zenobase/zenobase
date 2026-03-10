@@ -26,12 +26,12 @@ public class BoundingBoxConstraintBuilder extends ConstraintBuilder {
 		double tlLon = topLeft.getLongitude().doubleValue();
 		double brLat = bottomRight.getLatitude().doubleValue();
 		double brLon = bottomRight.getLongitude().doubleValue();
-		return GeoBoundingBoxQuery.of(g -> g
+		return Query.of(q -> q.geoBoundingBox(g -> g
 			.field(getPath())
 			.boundingBox(GeoBounds.of(gb -> gb.tlbr(TopLeftBottomRightGeoBounds.of(tlbr -> tlbr
 				.topLeft(GeoLocation.of(gl -> gl.latlon(LatLonGeoLocation.of(ll -> ll.lat(tlLat).lon(tlLon)))))
 				.bottomRight(GeoLocation.of(gl -> gl.latlon(LatLonGeoLocation.of(ll -> ll.lat(brLat).lon(brLon)))))
 			))))
-		)._toQuery();
+		));
 	}
 }

@@ -10,7 +10,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import com.google.common.base.Stopwatch;
-import org.apache.http.HttpHost;
+import org.apache.hc.core5.http.HttpHost;
 import org.opensearch.client.RestClient;
 import org.opensearch.client.json.jackson.JacksonJsonpMapper;
 import org.opensearch.client.opensearch.OpenSearchClient;
@@ -46,7 +46,7 @@ public class CommandReplay {
 	public void replay() {
 		if (!sourceHost.isEmpty()) {
 			ClientFactory factory = () -> {
-				RestClient restClient = RestClient.builder(HttpHost.create(sourceHost)).build();
+				RestClient restClient = RestClient.builder(HttpHost.create(java.net.URI.create(sourceHost))).build();
 				return new OpenSearchClient(new RestClientTransport(restClient, new JacksonJsonpMapper()));
 			};
 			IndexManager indexManager = new IndexManager(factory);

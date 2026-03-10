@@ -19,6 +19,6 @@ public class DurationConstraintBuilder extends ConstraintBuilder {
 	}
 
 	private Query build(Duration value) {
-		return TermQuery.of(t -> t.field(getPath()).value(FieldValue.of(value.getMillis())))._toQuery();
+		return Query.of(q -> q.term(t -> t.field(getPath()).value(FieldValue.of(value.getMillis()))));
 	}
 }

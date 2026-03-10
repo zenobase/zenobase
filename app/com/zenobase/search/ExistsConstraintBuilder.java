@@ -11,6 +11,6 @@ public class ExistsConstraintBuilder extends ConstraintBuilder {
 
 	@Override
 	public Query build(String value) {
-		return "*".equals(value) ? ExistsQuery.of(e -> e.field(getPath()))._toQuery() : null;
+		return "*".equals(value) ? Query.of(q -> q.exists(e -> e.field(getPath()))) : null;
 	}
 }

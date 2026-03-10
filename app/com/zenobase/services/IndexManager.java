@@ -118,7 +118,7 @@ public class IndexManager implements Closeable {
 	@Override
 	public void close() {
 		try {
-			client.shutdown();
+			client._transport().close();
 		} catch (Exception e) {
 			Logger.error("Error closing client", e);
 		}

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.ImmutableList;
+import org.opensearch.client.json.JsonData;
 import org.opensearch.client.opensearch._types.aggregations.Aggregate;
 import org.opensearch.client.opensearch._types.aggregations.Aggregation;
 import org.opensearch.client.opensearch._types.aggregations.RangeBucket;
@@ -34,13 +35,13 @@ public class RatingsFacet extends FilteredFacet {
 	public void configure(SearchRequest.Builder builder) {
 		Aggregation range = Aggregation.of(a -> a.range(r -> {
 			r.field(field);
-			r.ranges(rng -> rng.to(String.valueOf(from)));
+			r.ranges(rng -> rng.to(JsonData.of(from)));
 			for (double i = from; i < to; i += step) {
 				double rangeFrom = i;
 				double rangeTo = Math.min(i + step, to);
-				r.ranges(rng -> rng.from(String.valueOf(rangeFrom)).to(String.valueOf(rangeTo)));
+				r.ranges(rng -> rng.from(JsonData.of(rangeFrom)).to(JsonData.of(rangeTo)));
 			}
-			r.ranges(rng -> rng.from(String.valueOf(to)));
+			r.ranges(rng -> rng.from(JsonData.of(to)));
 			return r;
 		}));
 		addAggregation(getId(), range, builder);
