@@ -38,8 +38,8 @@ abstract class TimelineFacetSupport extends FilteredFacet {
 		return node;
 	}
 
-	protected void addValue(ObjectNode parent, String property, double value) {
-		if (Doubles.isFinite(value)) {
+	protected void addValue(ObjectNode parent, String property, Double value) {
+		if (value != null && Doubles.isFinite(value)) {
 			if (unit != Unit.ONE) {
 				ObjectNode node = parent.putObject(property);
 				node.put("@value", Measures.convert(value, unit));

@@ -97,7 +97,10 @@ public class PolarFacet extends FilteredFacet {
 		return node;
 	}
 
-	private void addValue(ObjectNode parent, String property, double value) {
+	private void addValue(ObjectNode parent, String property, Double value) {
+		if (value == null) {
+			return;
+		}
 		if (unit != Unit.ONE) {
 			ObjectNode node = parent.putObject(property);
 			node.put("@value", Measures.convert(value, unit));
