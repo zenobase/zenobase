@@ -323,7 +323,7 @@ public class Index {
 
 	public boolean exists(String id) {
 		try {
-			return client.get(g -> g.index(indexName).id(id), ObjectNode.class).found();
+			return client.exists(e -> e.index(indexName).id(id)).value();
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
