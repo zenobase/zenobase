@@ -81,7 +81,7 @@ public class ScatterPlotFacet extends Facet {
 		}
 		for (DateHistogramBucket bucket : agg.dateHistogram().buckets().array()) {
 			if (bucket.docCount() > 0) {
-				long time = addLag(DateHistograms.toEpochMillis(bucket.key()), lag);
+				long time = addLag(bucket.key(), lag);
 				ObjectNode entryNode = values.get(time);
 				if (entryNode == null) {
 					entryNode = Nodes.newObject();
