@@ -9,8 +9,11 @@ import javax.inject.Named;
 
 import jakarta.json.Json;
 
+import java.util.concurrent.TimeUnit;
+
 import com.google.common.base.Joiner;
 import com.google.common.base.Preconditions;
+import com.google.common.util.concurrent.Uninterruptibles;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import org.opensearch.client.opensearch.OpenSearchClient;
@@ -34,6 +37,7 @@ public class IndexManager implements Closeable {
 		client = clientFactory.createClient();
 		while (!new Cluster(client).isReady()) {
 			Logger.warn("Waiting for cluster to recover...");
+			Uninterruptibles.sleepUninterruptibly(5, TimeUnit.SECONDS);
 		}
 		if (!snapshotRepository.isEmpty()) {
 			registerSnapshotRepository(snapshotRepository, snapshotBucket);
