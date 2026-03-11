@@ -30,15 +30,15 @@ public class AuthorizationRepository extends RepositorySupport<Authorization> {
 	}
 
 	public void store(Authorization authorization, DateTime timestamp) {
-		this.index.store(Authorization.TYPE_NAME, authorization.getId(), authorization.toJson(), timestamp, true);
+		this.index.store(authorization.getId(), authorization.toJson(), timestamp, true);
 	}
 
 	public boolean delete(String authId) {
-		return index.delete(Authorization.TYPE_NAME, authId, true);
+		return index.delete(authId, true);
 	}
 
 	public Authorization find(String authId) {
-		ObjectNode node = index.get(Authorization.TYPE_NAME, authId);
+		ObjectNode node = index.get(authId);
 		return node != null ? new Authorization(node) : null;
 	}
 

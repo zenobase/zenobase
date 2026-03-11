@@ -29,19 +29,19 @@ public class TaskRepository extends RepositorySupport<Task> {
 	}
 
 	public void store(Task task, DateTime timestamp) {
-		this.index.store(Task.TYPE_NAME, task.getId(), task.toJson(), timestamp, false);
+		this.index.store(task.getId(), task.toJson(), timestamp, false);
 	}
 
 	public void update(Task task, DateTime timestamp) {
-		index.update(Task.TYPE_NAME, task.getId(), task.toJson(), timestamp, false);
+		index.update(task.getId(), task.toJson(), timestamp, false);
 	}
 
 	public boolean delete(String taskId) {
-		return index.delete(Task.TYPE_NAME, taskId, false);
+		return index.delete(taskId, false);
 	}
 
 	public Task find(String taskId) {
-		ObjectNode node = index.get(Task.TYPE_NAME, taskId);
+		ObjectNode node = index.get(taskId);
 		return node != null ? new Task(node) : null;
 	}
 

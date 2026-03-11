@@ -42,9 +42,9 @@ public abstract class FieldTestSupport<T> extends ElasticSearchTestSupport {
 		field.setValue(node, value);
 		field.prePersist(node);
 		String id = Generator.id();
-		index.store(TYPE_NAME, id, node, DateTime.now(), true);
+		index.store(id, node, DateTime.now(), true);
 		field.postPersist(node);
-		ObjectNode foundNode = index.get(TYPE_NAME, id);
+		ObjectNode foundNode = index.get(id);
 		assertThat(Nodes.readObject(foundNode.toString())).isEqualTo(Nodes.readObject(node.toString())); // TODO investigate why some tests fail if we don't reparse the json
 	}
 

@@ -90,19 +90,19 @@ public class Index {
 		}
 	}
 
-	public void store(String type, String id, ObjectNode node, DateTime timestamp, boolean refresh) {
-		index(type, id, node, OpType.Create, timestamp, refresh);
+	public void store(String id, ObjectNode node, DateTime timestamp, boolean refresh) {
+		index(id, node, OpType.Create, timestamp, refresh);
 	}
 
-	public void store(String type, List<? extends DomainNode> nodes, DateTime timestamp, boolean refresh) {
-		index(type, nodes, OpType.Create, timestamp, refresh);
+	public void store(List<? extends DomainNode> nodes, DateTime timestamp, boolean refresh) {
+		index(nodes, OpType.Create, timestamp, refresh);
 	}
 
-	public void update(String type, String id, ObjectNode node, DateTime timestamp, boolean refresh) {
-		index(type, id, node, OpType.Index, timestamp, refresh);
+	public void update(String id, ObjectNode node, DateTime timestamp, boolean refresh) {
+		index(id, node, OpType.Index, timestamp, refresh);
 	}
 
-	private void index(String type, String id, ObjectNode node, OpType operation, DateTime timestamp, boolean refresh) {
+	private void index(String id, ObjectNode node, OpType operation, DateTime timestamp, boolean refresh) {
 		try {
 			IndexRequest.Builder<ObjectNode> builder = new IndexRequest.Builder<ObjectNode>()
 				.index(indexName)
@@ -127,7 +127,7 @@ public class Index {
 		}
 	}
 
-	private void index(String type, List<? extends DomainNode> nodes, OpType operation, DateTime timestamp, boolean refresh) {
+	private void index(List<? extends DomainNode> nodes, OpType operation, DateTime timestamp, boolean refresh) {
 		int BATCH_SIZE = 10000;
 		for (int begin = 0; begin < nodes.size(); begin += BATCH_SIZE) {
 			List<BulkOperation> operations = new ArrayList<>();
@@ -162,7 +162,7 @@ public class Index {
 						}
 					}
 					if (!failed.isEmpty()) {
-						delete(type, failed, refresh);
+						delete(failed, refresh);
 					}
 					throw new RuntimeException("Couldn't store an item: " + failureMessage);
 				}
@@ -195,7 +195,7 @@ public class Index {
 		return copy;
 	}
 
-	public boolean delete(String type, String id, boolean refresh) {
+	public boolean delete(String id, boolean refresh) {
 		try {
 			return client.delete(d -> d
 				.index(indexName)
@@ -207,7 +207,7 @@ public class Index {
 		}
 	}
 
-	public boolean delete(String type, List<String> ids, boolean refresh) {
+	public boolean delete(List<String> ids, boolean refresh) {
 		List<BulkOperation> operations = new ArrayList<>();
 		for (String id : ids) {
 			operations.add(BulkOperation.of(op -> op.delete(d -> d.index(indexName).id(id))));
@@ -297,7 +297,7 @@ public class Index {
 		}
 	}
 
-	public ObjectNode get(String type, String id) {
+	public ObjectNode get(String id) {
 		try {
 			GetResponse<ObjectNode> response = client.get(g -> g.index(indexName).id(id), ObjectNode.class);
 			if (!response.found()) return null;
@@ -321,7 +321,7 @@ public class Index {
 		return node;
 	}
 
-	public boolean exists(String type, String id) {
+	public boolean exists(String id) {
 		try {
 			return client.get(g -> g.index(indexName).id(id), ObjectNode.class).found();
 		} catch (IOException e) {

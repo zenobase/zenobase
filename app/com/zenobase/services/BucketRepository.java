@@ -40,7 +40,7 @@ public class BucketRepository extends RepositorySupport<Bucket> {
 
 	public void store(Bucket bucket, DateTime timestamp) {
 		realias(bucket);
-		index.store(Bucket.TYPE_NAME, bucket.getId(), bucket.toJson(), timestamp, true);
+		index.store(bucket.getId(), bucket.toJson(), timestamp, true);
 	}
 
 	public void realias(Bucket bucket) {
@@ -53,12 +53,12 @@ public class BucketRepository extends RepositorySupport<Bucket> {
 		}
 		DomainNode.SEQ_NO.setValue(to.toJson(), DomainNode.SEQ_NO.getValue(from.toJson()));
 		DomainNode.PRIMARY_TERM.setValue(to.toJson(), DomainNode.PRIMARY_TERM.getValue(from.toJson()));
-		index.update(Bucket.TYPE_NAME, to.getId(), to.toJson(), timestamp, true);
+		index.update(to.getId(), to.toJson(), timestamp, true);
 	}
 
 	public boolean delete(String bucketId) {
 		Preconditions.checkState(!isAliased(bucketId), "Can't delete an aliased bucket");
-		boolean deleted = index.delete(Bucket.TYPE_NAME, bucketId, true);
+		boolean deleted = index.delete(bucketId, true);
 		if (deleted) {
 			manager.deleteAlias(EventRepository.INDEX_NAME, bucketId);
 		}
@@ -73,7 +73,7 @@ public class BucketRepository extends RepositorySupport<Bucket> {
 	}
 
 	public Bucket find(String bucketId) {
-		ObjectNode node = index.get(Bucket.TYPE_NAME, bucketId);
+		ObjectNode node = index.get(bucketId);
 		return node != null ? toObject(node) : null;
 	}
 
