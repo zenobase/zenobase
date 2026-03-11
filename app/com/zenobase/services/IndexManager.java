@@ -7,12 +7,15 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import jakarta.json.Json;
+
 import com.google.common.base.Joiner;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import org.opensearch.client.opensearch.OpenSearchClient;
 import org.opensearch.client.opensearch._types.query_dsl.Query;
+import org.opensearch.client.opensearch.generic.Requests;
 import play.Logger;
 
 import com.zenobase.models.Alias;
@@ -26,16 +29,19 @@ public class IndexManager implements Closeable {
 	private final String snapshotRepository;
 
 	@Inject
-	public IndexManager(ClientFactory clientFactory, @Named("es.snapshot.repository") String snapshotRepository) {
+	public IndexManager(ClientFactory clientFactory, @Named("es.snapshot.repository") String snapshotRepository, @Named("es.snapshot.bucket") String snapshotBucket) {
 		this.snapshotRepository = snapshotRepository;
 		client = clientFactory.createClient();
 		while (!new Cluster(client).isReady()) {
 			Logger.warn("Waiting for cluster to recover...");
 		}
+		if (!snapshotRepository.isEmpty()) {
+			registerSnapshotRepository(snapshotRepository, snapshotBucket);
+		}
 	}
 
 	public IndexManager(ClientFactory clientFactory) {
-		this(clientFactory, "");
+		this(clientFactory, "", "");
 	}
 
 	public Index getIndex(String indexName) {
@@ -50,8 +56,31 @@ public class IndexManager implements Closeable {
 		return new SnapshotManager(client, snapshotRepository);
 	}
 
-	public SnapshotManager getSnapshotManager(String repositoryName) {
-		return new SnapshotManager(client, repositoryName);
+	private void registerSnapshotRepository(String repositoryName, String bucket) {
+		try {
+			if (!bucket.isEmpty()) {
+				client.generic().execute(
+					Requests.builder()
+						.endpoint("/_snapshot/" + repositoryName)
+						.method("PUT")
+						.json(Json.createObjectBuilder()
+							.add("type", "s3")
+							.add("settings", Json.createObjectBuilder()
+								.add("bucket", bucket)
+								.add("base_path", repositoryName)))
+						.build()
+				).close();
+			} else {
+				client.snapshot().createRepository(r -> r
+					.name(repositoryName)
+					.type("fs")
+					.settings(s -> s.location(repositoryName))
+				);
+			}
+			Logger.info("Registered snapshot repository: {} ({})", repositoryName, bucket.isEmpty() ? "fs" : "s3");
+		} catch (IOException e) {
+			throw new RuntimeException("Failed to register snapshot repository: " + repositoryName, e);
+		}
 	}
 
 	public void createAlias(String indexName, String aliasName, List<Alias> targets) {
