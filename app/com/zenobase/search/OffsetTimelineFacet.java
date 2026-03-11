@@ -63,7 +63,7 @@ public class OffsetTimelineFacet extends TimelineFacetSupport {
 			counts = getMap(getInterval(buckets));
 			for (DateHistogramBucket bucket : buckets) {
 				if (bucket.docCount() > 0) {
-					long bucketTime = DateHistograms.toEpochMillis(bucket.key());
+					long bucketTime = bucket.key();
 					String key = getLabel(toDateTime(bucketTime));
 					if (range == null || counts.containsKey(key)) {
 						ObjectNode entryNode = Objects.firstNonNull(counts.get(key), Nodes.newObject());
@@ -96,7 +96,7 @@ public class OffsetTimelineFacet extends TimelineFacetSupport {
 		long min = Long.MAX_VALUE, max = Long.MIN_VALUE;
 		for (DateHistogramBucket bucket : buckets) {
 			if (bucket.docCount() > 0) {
-				long bucketTime = DateHistograms.toEpochMillis(bucket.key());
+				long bucketTime = bucket.key();
 				min = Math.min(min, bucketTime);
 				max = Math.max(max, bucketTime);
 			}
