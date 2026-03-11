@@ -2,6 +2,7 @@ package com.zenobase.search;
 
 import java.text.DateFormatSymbols;
 import java.util.Collections;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -63,7 +64,7 @@ public class PolarFacet extends FilteredFacet {
 	@Override
 	public JsonNode process(SearchResponse<ObjectNode> response) {
 		Aggregate agg = getAggregate(response);
-		java.util.List<LongTermsBucket> buckets = agg.lterms().buckets().array();
+		List<LongTermsBucket> buckets = agg.lterms().buckets().array();
 		Map<Integer, StatsAggregate> result = Collections.emptyMap();
 		if (!buckets.isEmpty()) {
 			result = interval.emptyMap();

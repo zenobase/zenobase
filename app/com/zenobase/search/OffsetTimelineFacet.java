@@ -1,6 +1,7 @@
 package com.zenobase.search;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 import javax.measure.unit.Unit;
@@ -57,7 +58,7 @@ public class OffsetTimelineFacet extends TimelineFacetSupport {
 	@Override
 	public JsonNode process(SearchResponse<ObjectNode> response) {
 		Aggregate agg = getAggregate(response);
-		java.util.List<DateHistogramBucket> buckets = agg.dateHistogram().buckets().array();
+		List<DateHistogramBucket> buckets = agg.dateHistogram().buckets().array();
 		Map<String, ObjectNode> counts = Collections.emptyMap();
 		if (!buckets.isEmpty()) {
 			counts = getMap(getInterval(buckets));
@@ -89,7 +90,7 @@ public class OffsetTimelineFacet extends TimelineFacetSupport {
 		return time + (timezone != null ? timezone.getOffset(time) : 0);
 	}
 
-	private Interval getInterval(java.util.List<DateHistogramBucket> buckets) {
+	private Interval getInterval(List<DateHistogramBucket> buckets) {
 		if (range != null) {
 			return range;
 		}
