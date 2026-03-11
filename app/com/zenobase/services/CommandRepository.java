@@ -42,11 +42,11 @@ public class CommandRepository extends RepositorySupport<Command> {
 	}
 
 	public void put(Command command) {
-		index.store(Command.TYPE_NAME, command.getId(), command.toJson(), DateTime.now(DateTimeZone.UTC), false);
+		index.store(command.getId(), command.toJson(), DateTime.now(DateTimeZone.UTC), false);
 	}
 
 	public Command find(String id) {
-		ObjectNode node = index.get(Command.TYPE_NAME, id);
+		ObjectNode node = index.get(id);
 		return node != null ? toObject(node) : null;
 	}
 

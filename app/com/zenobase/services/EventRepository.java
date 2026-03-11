@@ -45,7 +45,7 @@ public class EventRepository {
 
 	public void add(String bucketId, Event event, DateTime timestamp) {
 		event.prePersist(bucketId);
-		getIndex(bucketId).store(Event.TYPE_NAME, event.getId(), event.toJson(), timestamp, false);
+		getIndex(bucketId).store(event.getId(), event.toJson(), timestamp, false);
 		event.postPersist();
 	}
 
@@ -53,7 +53,7 @@ public class EventRepository {
 		for (Event event : events) {
 			event.prePersist(bucketId);
 		}
-		getIndex(bucketId).store(Event.TYPE_NAME, events, timestamp, false);
+		getIndex(bucketId).store(events, timestamp, false);
 		for (Event event : events) {
 			event.postPersist();
 		}
@@ -63,20 +63,20 @@ public class EventRepository {
 		DomainNode.SEQ_NO.setValue(event.toJson(), DomainNode.SEQ_NO.getValue(from.toJson()));
 		DomainNode.PRIMARY_TERM.setValue(event.toJson(), DomainNode.PRIMARY_TERM.getValue(from.toJson()));
 		event.prePersist(bucketId);
-		getIndex(bucketId).update(Event.TYPE_NAME, event.getId(), event.toJson(), timestamp, false);
+		getIndex(bucketId).update(event.getId(), event.toJson(), timestamp, false);
 		event.postPersist();
 	}
 
 	public boolean delete(String bucketId, String eventId) {
-		return getIndex(bucketId).delete(Event.TYPE_NAME, eventId, false);
+		return getIndex(bucketId).delete(eventId, false);
 	}
 
 	public boolean delete(String bucketId, List<String> eventIds) {
-		return getIndex(bucketId).delete(Event.TYPE_NAME, eventIds, false);
+		return getIndex(bucketId).delete(eventIds, false);
 	}
 
 	public Event find(String bucketId, String eventId) {
-		ObjectNode node = getIndex(bucketId).get(Event.TYPE_NAME, eventId);
+		ObjectNode node = getIndex(bucketId).get(eventId);
 		return node != null ? new Event(node) : null;
 	}
 

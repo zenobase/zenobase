@@ -33,7 +33,7 @@ public class SearchTestSupport extends ElasticSearchTestSupport {
 
 	protected void addEvent(Event event, DateTime timestamp) {
 		event.prePersist(bucketId);
-		index.store(Event.TYPE_NAME, event.getId(), event.toJson(), timestamp, true);
+		index.store(event.getId(), event.toJson(), timestamp, true);
 		event.postPersist();
 	}
 

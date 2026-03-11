@@ -31,19 +31,19 @@ public class CredentialsRepository extends RepositorySupport<Credentials> {
 	}
 
 	public void store(Credentials credentials, DateTime timestamp) {
-		this.index.store(Credentials.TYPE_NAME, credentials.getId(), credentials.toJson(), timestamp, true);
+		this.index.store(credentials.getId(), credentials.toJson(), timestamp, true);
 	}
 
 	public void update(Credentials credentials, DateTime timestamp) {
-		index.update(Credentials.TYPE_NAME, credentials.getId(), credentials.toJson(), timestamp, true);
+		index.update(credentials.getId(), credentials.toJson(), timestamp, true);
 	}
 
 	public boolean delete(String credentialsId) {
-		return index.delete(Credentials.TYPE_NAME, credentialsId, false);
+		return index.delete(credentialsId, false);
 	}
 
 	public Credentials find(String credentialsId) {
-		ObjectNode node = index.get(Credentials.TYPE_NAME, credentialsId);
+		ObjectNode node = index.get(credentialsId);
 		return node != null ? new Credentials(node) : null;
 	}
 

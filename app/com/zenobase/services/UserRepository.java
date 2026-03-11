@@ -32,19 +32,19 @@ public class UserRepository extends RepositorySupport<User> {
 	}
 
 	public void store(User user, DateTime timestamp) {
-		index.store(User.TYPE_NAME, user.getName(), user.toJson(), timestamp, true);
+		index.store(user.getName(), user.toJson(), timestamp, true);
 	}
 
 	public void update(User user, DateTime timestamp) {
-		index.update(User.TYPE_NAME, user.getName(), user.toJson(), timestamp, true);
+		index.update(user.getName(), user.toJson(), timestamp, true);
 	}
 
 	public boolean delete(User user) {
-		return index.delete(User.TYPE_NAME, user.getName(), true);
+		return index.delete(user.getName(), true);
 	}
 
 	public User find(String name) {
-		ObjectNode node = index.get(User.TYPE_NAME, name);
+		ObjectNode node = index.get(name);
 		return node != null ? new User(node) : null;
 	}
 
@@ -75,7 +75,7 @@ public class UserRepository extends RepositorySupport<User> {
 	}
 
 	public boolean exists(String name) {
-		return index.exists(User.TYPE_NAME, name);
+		return index.exists(name);
 	}
 
 	public long size() {
