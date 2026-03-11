@@ -303,6 +303,20 @@ const httpsListener = new aws.lb.Listener("zenobase-https", {
     }],
 });
 
+new aws.lb.ListenerRule("zenobase-blue-host-rule", {
+    listenerArn: httpsListener.arn,
+    priority: 10,
+    conditions: [{ hostHeader: { values: ["blue.zenobase.com"] } }],
+    actions: [{ type: "forward", targetGroupArn: tgBlue.arn }],
+});
+
+new aws.lb.ListenerRule("zenobase-green-host-rule", {
+    listenerArn: httpsListener.arn,
+    priority: 11,
+    conditions: [{ hostHeader: { values: ["green.zenobase.com"] } }],
+    actions: [{ type: "forward", targetGroupArn: tgGreen.arn }],
+});
+
 new aws.lb.Listener("zenobase-http-redirect", {
     loadBalancerArn: alb.arn,
     port: 80,
