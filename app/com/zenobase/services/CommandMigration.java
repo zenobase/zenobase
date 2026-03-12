@@ -211,6 +211,13 @@ public class CommandMigration {
 		JsonNode rawValue = source.get(field.getName());
 		if (rawValue == null) return false;
 
+		if (rawValue.isNull()) {
+			Logger.warn("Repaired " + field.getName() + " in event " + eventId
+				+ " of bucket " + bucketId + ": removed null value");
+			source.remove(field.getName());
+			return true;
+		}
+
 		if (rawValue.isArray()) {
 			ArrayNode array = (ArrayNode) rawValue;
 			boolean anyRepaired = false;
