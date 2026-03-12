@@ -196,6 +196,23 @@ public class CommandMigration {
 				return false;
 			}
 		}
+		if (field == Event.RESOURCE && rawValue != null) {
+			boolean anyRepaired = false;
+			if (rawValue.isObject()) {
+				anyRepaired = repairResource((ObjectNode) rawValue);
+			} else if (rawValue.isArray()) {
+				for (JsonNode element : rawValue) {
+					if (element.isObject()) {
+						anyRepaired |= repairResource((ObjectNode) element);
+					}
+				}
+			}
+			if (anyRepaired) {
+				Logger.warn("Repaired " + field.getName() + " in event " + eventId
+					+ " of bucket " + bucketId + ": added missing title/url");
+				return true;
+			}
+		}
 		if (field == Event.TIMESTAMP && rawValue != null) {
 			if (rawValue.isTextual()) {
 				String repaired = rawValue.textValue().toUpperCase();
@@ -223,6 +240,21 @@ public class CommandMigration {
 			}
 		}
 		return false;
+	}
+
+	private boolean repairResource(ObjectNode resource) {
+		boolean repaired = false;
+		if (resource.get("url") == null) {
+			resource.put("url", "");
+			repaired = true;
+		}
+		if (resource.get("title") == null) {
+			if ("http://www.moves-app.com/".equals(resource.path("url").textValue())) {
+				resource.put("title", "Moves");
+				repaired = true;
+			}
+		}
+		return repaired;
 	}
 
 	private int validateEvent(Event event, ObjectNode source, String bucketId, AtomicInteger repairs) {
