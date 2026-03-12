@@ -3,6 +3,7 @@ package com.zenobase.services;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -40,6 +41,7 @@ import com.zenobase.json.DecimalField;
 import com.zenobase.json.PercentageField;
 import com.zenobase.json.DomainNode;
 import com.zenobase.json.IntegerField;
+import com.zenobase.json.LocationField;
 import com.zenobase.json.Nodes;
 import com.zenobase.models.Bucket;
 import com.zenobase.json.Field;
@@ -194,6 +196,9 @@ public class CommandMigration {
 		if (field == Event.RESOURCE && element.isObject()) {
 			if (repairResource((ObjectNode) element)) return element;
 		}
+		if (field instanceof LocationField && element.isObject()) {
+			if (repairLocation((ObjectNode) element)) return element;
+		}
 		return null;
 	}
 
@@ -249,6 +254,38 @@ public class CommandMigration {
 			}
 		}
 		return repaired;
+	}
+
+	private boolean repairLocation(ObjectNode location) {
+		boolean repaired = false;
+		Iterator<String> fieldNames = location.fieldNames();
+		while (fieldNames.hasNext()) {
+			String name = fieldNames.next();
+			if (!"lat".equals(name) && !"lon".equals(name)) {
+				fieldNames.remove();
+				repaired = true;
+			}
+		}
+		repaired |= repairCoordinate(location, "lat");
+		repaired |= repairCoordinate(location, "lon");
+		if (location.get("lat") == null || location.get("lon") == null) {
+			return false;
+		}
+		return repaired;
+	}
+
+	private boolean repairCoordinate(ObjectNode location, String name) {
+		JsonNode value = location.get(name);
+		if (value == null) return false;
+		if (value.isTextual()) {
+			try {
+				location.put(name, Double.parseDouble(value.textValue()));
+				return true;
+			} catch (NumberFormatException e) {
+				return false;
+			}
+		}
+		return false;
 	}
 
 	private int validateEvent(Event event, ObjectNode source, String bucketId, AtomicInteger repairs) {
