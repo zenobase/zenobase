@@ -24,8 +24,8 @@ public abstract class ElasticSearchTestSupport {
 	static {
 		container = new GenericContainer<>("opensearchproject/opensearch:3.1.0")
 			.withEnv("discovery.type", "single-node")
-			.withEnv("DISABLE_INSTALL_DEMO_CONFIG", "true")
 			.withEnv("plugins.security.disabled", "true")
+			.withEnv("DISABLE_INSTALL_DEMO_CONFIG", "true")
 			.withEnv("OPENSEARCH_JAVA_OPTS", "-Xms512m -Xmx512m")
 			.withExposedPorts(9200)
 			.waitingFor(Wait.forHttp("/_cluster/health").forStatusCode(200)
