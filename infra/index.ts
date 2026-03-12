@@ -412,10 +412,10 @@ TOKEN=\$(curl -s -X PUT "http://169.254.169.254/latest/api/token" -H "X-aws-ec2-
 HOST_IP=\$(curl -s -H "X-aws-ec2-metadata-token: \$TOKEN" http://169.254.169.254/latest/meta-data/local-ipv4)
 INSTANCE_ID=\$(curl -s -H "X-aws-ec2-metadata-token: \$TOKEN" http://169.254.169.254/latest/meta-data/instance-id)
 
-# Check if any peer OpenSearch node is already running
+# Check if any peer OpenSearch node with the same cluster name is already running
 PEER_COUNT=\$(aws ec2 describe-instances \
   --region ${region} \
-  --filters "Name=tag:Service,Values=zenobase" "Name=instance-state-name,Values=running" \
+  --filters "Name=tag:Service,Values=zenobase" "Name=tag:ClusterName,Values=${esCluster}" "Name=instance-state-name,Values=running" \
   --query "Reservations[].Instances[?InstanceId!=\\\`\$INSTANCE_ID\\\`].InstanceId" \
   --output text | wc -w)
 
@@ -469,10 +469,10 @@ const blueInstance = new aws.ec2.Instance("zenobase-blue", {
         httpTokens: "optional",    // allow IMDSv1 (needed by old AWS SDK in ES)
         httpEndpoint: "enabled",
     },
-    tags: { Name: "zenobase-blue", Service: "zenobase" },
+    tags: { Name: "zenobase-blue", Service: "zenobase", ClusterName: esCluster },
 }, {
     retainOnDelete: true,
-    ...(deployTarget !== "blue" && { ignoreChanges: ["ami", "instanceType", "userData", "rootBlockDevice", "metadataOptions"] }),
+    ...(deployTarget !== "blue" && { ignoreChanges: ["ami", "instanceType", "userData", "rootBlockDevice", "metadataOptions", "tags"] }),
 });
 new aws.lb.TargetGroupAttachment("zenobase-tg-blue-attach", {
     targetGroupArn: tgBlue.arn,
@@ -494,11 +494,11 @@ const greenInstance = new aws.ec2.Instance("zenobase-green", {
         httpTokens: "optional",    // allow IMDSv1 (needed by old AWS SDK in ES)
         httpEndpoint: "enabled",
     },
-    tags: { Name: "zenobase-green", Service: "zenobase" },
+    tags: { Name: "zenobase-green", Service: "zenobase", ClusterName: esCluster },
 }, {
     retainOnDelete: true,
     aliases: [{ name: "zenobase-instance" }],
-    ...(deployTarget !== "green" && { ignoreChanges: ["ami", "instanceType", "userData", "rootBlockDevice", "metadataOptions"] }),
+    ...(deployTarget !== "green" && { ignoreChanges: ["ami", "instanceType", "userData", "rootBlockDevice", "metadataOptions", "tags"] }),
 });
 new aws.lb.TargetGroupAttachment("zenobase-tg-green-attach", {
     targetGroupArn: tgGreen.arn,
