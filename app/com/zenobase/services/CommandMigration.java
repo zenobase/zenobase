@@ -34,6 +34,7 @@ import com.zenobase.common.Callback;
 import com.zenobase.json.DomainNode;
 import com.zenobase.json.Nodes;
 import com.zenobase.models.Bucket;
+import com.zenobase.json.Field;
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
 import com.zenobase.models.Role;
@@ -108,7 +109,7 @@ public class CommandMigration {
 					try {
 						dispatcher.dispatch(new CreateBucketCommand(owner, bucket));
 						if (!bucket.isVirtual()) {
-							migrateEvents(client, owner, bucket);
+							migrateEvents(client, owner, bucket, failures);
 						}
 					} catch (RuntimeException e) {
 						Logger.error("Couldn't migrate bucket: " + bucket.getId(), e);
@@ -137,11 +138,13 @@ public class CommandMigration {
 		}
 	}
 
-	private void migrateEvents(RestClient client, Identity owner, Bucket bucket) {
+	private void migrateEvents(RestClient client, Identity owner, Bucket bucket, AtomicInteger failures) {
 		List<Event> batch = new ArrayList<>();
 		AtomicInteger batchNum = new AtomicInteger(1);
 		scroll(client, bucket.getId(), 1000, source -> {
-			batch.add(new Event(source));
+			Event event = new Event(source);
+			failures.addAndGet(validateEvent(event, source, bucket.getId()));
+			batch.add(event);
 			if (batch.size() == 1000) {
 				dispatcher.dispatch(new CreateEventsCommand(owner, bucket.getId(), batch, bucket.getCreated().plusMillis(batchNum.get())));
 				batch.clear();
@@ -151,6 +154,25 @@ public class CommandMigration {
 		if (!batch.isEmpty()) {
 			dispatcher.dispatch(new CreateEventsCommand(owner, bucket.getId(), batch, bucket.getCreated().plusMillis(batchNum.get())));
 		}
+	}
+
+	private int validateEvent(Event event, ObjectNode source, String bucketId) {
+		int failures = 0;
+		for (Field<?> field : Event.FIELDS) {
+			if (event.contains(field)) {
+				try {
+					field.getValues(source);
+				} catch (Exception e) {
+					JsonNode rawValue = source.get(field.getName());
+					Logger.error("Malformed " + field.getName() + " in event " + event.getId()
+						+ " of bucket " + bucketId + ": value=" + rawValue
+						+ ", error=" + e.getMessage());
+					source.remove(field.getName());
+					failures++;
+				}
+			}
+		}
+		return failures;
 	}
 
 	private void migrateTasks(RestClient client) {
@@ -174,7 +196,7 @@ public class CommandMigration {
 			try {
 				while (true) {
 					JsonNode hits = response.get("hits").get("hits");
-					if (hits.size() == 0) {
+					if (hits.isEmpty()) {
 						break;
 					}
 					for (JsonNode hit : hits) {
