@@ -11,14 +11,12 @@ services:
       - discovery.seed_providers=ec2
       - discovery.ec2.tag.Service=zenobase
       - discovery.ec2.endpoint=ec2.${AWS_REGION:-us-east-1}.amazonaws.com
-      - DISABLE_INSTALL_DEMO_CONFIG=true
-      - plugins.security.disabled=true
       - OPENSEARCH_JAVA_OPTS=-Xms${OS_HEAP_SIZE:-4g} -Xmx${OS_HEAP_SIZE:-4g}
       - ES_SNAPSHOT_BUCKET=${ES_SNAPSHOT_BUCKET:-}
     ulimits:
       nofile:
-        soft: 64000
-        hard: 64000
+        soft: 65536
+        hard: 65536
       memlock:
         soft: -1
         hard: -1

@@ -375,6 +375,10 @@ const userData = pulumi.all([
 set -euo pipefail
 exec > /var/log/user-data.log 2>&1
 
+# OpenSearch requires vm.max_map_count >= 262144
+sysctl -w vm.max_map_count=262144
+echo "vm.max_map_count=262144" >> /etc/sysctl.conf
+
 # Install Docker
 dnf install -y docker aws-cli jq
 systemctl enable docker
