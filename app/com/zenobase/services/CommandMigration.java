@@ -36,6 +36,7 @@ import com.zenobase.common.Callback;
 import com.zenobase.json.DecimalField;
 import com.zenobase.json.DomainNode;
 import com.zenobase.json.IntegerField;
+import com.zenobase.json.TokenField;
 import com.zenobase.json.Nodes;
 import com.zenobase.models.Bucket;
 import com.zenobase.json.Field;
@@ -194,6 +195,21 @@ public class CommandMigration {
 				return true;
 			} catch (NumberFormatException e) {
 				return false;
+			}
+		}
+		if (field instanceof TokenField && rawValue != null && rawValue.isArray()) {
+			ArrayNode array = (ArrayNode) rawValue;
+			boolean anyRepaired = false;
+			for (int i = array.size() - 1; i >= 0; i--) {
+				if (array.get(i).isNull()) {
+					array.remove(i);
+					anyRepaired = true;
+				}
+			}
+			if (anyRepaired) {
+				Logger.warn("Repaired " + field.getName() + " in event " + eventId
+					+ " of bucket " + bucketId + ": removed null values");
+				return true;
 			}
 		}
 		if (field == Event.RESOURCE && rawValue != null) {
