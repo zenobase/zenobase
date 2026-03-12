@@ -100,6 +100,8 @@ const ec2Sg = new aws.ec2.SecurityGroup("zenobase-ec2-sg", {
     description: "EC2 - app traffic from ALB, SSH from admin, ES transport between instances",
     ingress: [
         { protocol: "tcp", fromPort: 9000, toPort: 9000, securityGroups: [albSg.id] },
+        // ES REST API port for migration between old and new instances
+        { protocol: "tcp", fromPort: 9200, toPort: 9200, cidrBlocks: ["10.0.0.0/16"] },
         // ES transport port for cluster replication between old and new instances
         { protocol: "tcp", fromPort: 9300, toPort: 9302, cidrBlocks: ["10.0.0.0/16"] },
         ...(adminCidr ? [{ protocol: "tcp", fromPort: 22, toPort: 22, cidrBlocks: [adminCidr] }] : []),
