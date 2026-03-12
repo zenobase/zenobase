@@ -1,6 +1,7 @@
 package com.zenobase.services;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -34,6 +35,7 @@ import com.zenobase.commands.CreateTaskCommand;
 import com.zenobase.commands.CreateUserCommand;
 import com.zenobase.common.Callback;
 import com.zenobase.json.DecimalField;
+import com.zenobase.json.PercentageField;
 import com.zenobase.json.DomainNode;
 import com.zenobase.json.IntegerField;
 import com.zenobase.json.TokenField;
@@ -174,6 +176,16 @@ public class CommandMigration {
 				+ " of bucket " + bucketId + ": " + rawValue + " -> " + clamped);
 			source.put(field.getName(), clamped);
 			return true;
+		}
+		if (field instanceof PercentageField && rawValue != null && rawValue.isNumber()) {
+			BigDecimal value = rawValue.decimalValue();
+			BigDecimal clamped = value.max(BigDecimal.ZERO).min(BigDecimal.valueOf(100));
+			if (clamped.compareTo(value) != 0) {
+				Logger.warn("Repaired " + field.getName() + " in event " + eventId
+					+ " of bucket " + bucketId + ": " + value + " -> " + clamped);
+				source.put(field.getName(), clamped);
+				return true;
+			}
 		}
 		if (field instanceof IntegerField && rawValue != null && rawValue.isTextual()) {
 			try {
