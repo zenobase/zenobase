@@ -1,6 +1,8 @@
 FROM opensearchproject/opensearch:3.1.0
 
-RUN opensearch-plugin remove opensearch-alerting && \
+RUN opensearch-plugin remove opensearch-neural-search && \
+    opensearch-plugin remove opensearch-security-analytics && \
+    opensearch-plugin remove opensearch-alerting && \
     opensearch-plugin remove opensearch-anomaly-detection && \
     opensearch-plugin remove opensearch-asynchronous-search && \
     opensearch-plugin remove opensearch-cross-cluster-replication && \
@@ -9,16 +11,20 @@ RUN opensearch-plugin remove opensearch-alerting && \
     opensearch-plugin remove opensearch-geospatial && \
     opensearch-plugin remove opensearch-index-management && \
     opensearch-plugin remove opensearch-knn && \
-    opensearch-plugin remove opensearch-ml-commons && \
-    opensearch-plugin remove opensearch-neural-search && \
+    opensearch-plugin remove opensearch-ltr && \
+    opensearch-plugin remove opensearch-skills && \
+    opensearch-plugin remove opensearch-ml && \
     opensearch-plugin remove opensearch-notifications && \
     opensearch-plugin remove opensearch-notifications-core && \
     opensearch-plugin remove opensearch-observability && \
     opensearch-plugin remove opensearch-performance-analyzer && \
     opensearch-plugin remove opensearch-reports-scheduler && \
+    opensearch-plugin remove opensearch-search-relevance && \
     opensearch-plugin remove opensearch-security && \
-    opensearch-plugin remove opensearch-skills && \
-    opensearch-plugin remove opensearch-sql
+    opensearch-plugin remove opensearch-sql && \
+    opensearch-plugin remove opensearch-system-templates && \
+    opensearch-plugin remove opensearch-ubi && \
+    opensearch-plugin remove query-insights
 
 RUN opensearch-plugin install --batch repository-s3
 RUN opensearch-plugin install --batch discovery-ec2
