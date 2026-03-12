@@ -47,6 +47,7 @@ import com.zenobase.models.Bucket;
 import com.zenobase.json.Field;
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
+import com.zenobase.models.Location;
 import com.zenobase.models.Rating;
 import com.zenobase.models.Role;
 import com.zenobase.models.User;
@@ -271,17 +272,25 @@ public class CommandMigration {
 		if (location.get("lat") == null || location.get("lon") == null) {
 			return false;
 		}
+		if (!new Location(location.get("lat").decimalValue(), location.get("lon").decimalValue()).isValid()) {
+			return false;
+		}
 		return repaired;
 	}
 
 	private boolean repairCoordinate(ObjectNode location, String name) {
 		JsonNode value = location.get(name);
 		if (value == null) return false;
+		if (value.isNull()) {
+			location.remove(name);
+			return false;
+		}
 		if (value.isTextual()) {
 			try {
 				location.put(name, Double.parseDouble(value.textValue()));
 				return true;
 			} catch (NumberFormatException e) {
+				location.remove(name);
 				return false;
 			}
 		}

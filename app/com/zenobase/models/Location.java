@@ -14,6 +14,13 @@ public class Location {
 	public Location(BigDecimal latitude, BigDecimal longitude) {
 		this.latitude = Preconditions.checkNotNull(latitude);
 		this.longitude = Preconditions.checkNotNull(longitude);
+		Preconditions.checkArgument(isValid(), "Coordinate out of range: %s", this);
+	}
+
+	public boolean isValid() {
+		double lat = latitude.doubleValue();
+		double lon = longitude.doubleValue();
+		return lat >= -90 && lat <= 90 && lon >= -180 && lon <= 180;
 	}
 
 	public Location(String latitude, String longitude) {

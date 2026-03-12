@@ -30,8 +30,14 @@ public class LocationField extends Field<Location> {
 
 	@Override
 	protected Location getValue(JsonNode node) {
-		BigDecimal lat = latitude.getValue((ObjectNode) node);
-		BigDecimal lon = longitude.getValue((ObjectNode) node);
+		ObjectNode obj = (ObjectNode) node;
+		JsonNode latNode = obj.get("lat");
+		JsonNode lonNode = obj.get("lon");
+		if (latNode == null || latNode.isNull() || lonNode == null || lonNode.isNull()) {
+			throw new IllegalArgumentException("Null coordinate in location: " + node);
+		}
+		BigDecimal lat = latitude.getValue(obj);
+		BigDecimal lon = longitude.getValue(obj);
 		return new Location(lat, lon);
 	}
 
