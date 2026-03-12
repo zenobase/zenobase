@@ -301,8 +301,8 @@ public class CommandMigration {
 		if (location.get("lat") == null || location.get("lon") == null) {
 			return false;
 		}
-		if (!new Location(location.get("lat").decimalValue(), location.get("lon").decimalValue()).isValid()) {
-			if (new Location(location.get("lon").decimalValue(), location.get("lat").decimalValue()).isValid()) {
+		if (!Location.isValid(location.get("lat").decimalValue(), location.get("lon").decimalValue())) {
+			if (Location.isValid(location.get("lon").decimalValue(), location.get("lat").decimalValue())) {
 				BigDecimal lat = location.get("lat").decimalValue();
 				BigDecimal lon = location.get("lon").decimalValue();
 				location.put("lat", lon);

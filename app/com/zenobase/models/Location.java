@@ -7,20 +7,12 @@ import com.google.common.base.Preconditions;
 
 public class Location {
 
-	public static final Location ORIGIN = new Location("51.48", "0.00");
-
 	private final BigDecimal latitude, longitude;
 
 	public Location(BigDecimal latitude, BigDecimal longitude) {
 		this.latitude = Preconditions.checkNotNull(latitude);
 		this.longitude = Preconditions.checkNotNull(longitude);
-		Preconditions.checkArgument(isValid(), "Coordinate out of range: %s", this);
-	}
-
-	public boolean isValid() {
-		double lat = latitude.doubleValue();
-		double lon = longitude.doubleValue();
-		return lat >= -90 && lat <= 90 && lon >= -180 && lon <= 180;
+		Preconditions.checkArgument(isValid(latitude, longitude), "Coordinate out of range: %s", this);
 	}
 
 	public Location(String latitude, String longitude) {
@@ -54,5 +46,11 @@ public class Location {
 	@Override
 	public String toString() {
 		return String.format("%s,%s", latitude, longitude);
+	}
+
+	public static boolean isValid(BigDecimal latitude, BigDecimal longitude) {
+		double lat = latitude.doubleValue();
+		double lon = longitude.doubleValue();
+		return lat >= -90 && lat <= 90 && lon >= -180 && lon <= 180;
 	}
 }

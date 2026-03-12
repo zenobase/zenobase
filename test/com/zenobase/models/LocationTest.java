@@ -3,7 +3,7 @@ package com.zenobase.models;
 import com.google.common.testing.EqualsTester;
 import org.junit.Test;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
 
 public class LocationTest {
 
@@ -21,18 +21,18 @@ public class LocationTest {
 
 	@Test
 	public void testIsValid() {
-		assertTrue(new Location("0", "0").isValid());
-		assertTrue(new Location("90", "180").isValid());
-		assertTrue(new Location("-90", "-180").isValid());
+		new Location("0", "0");
+		new Location("90", "180");
+		new Location("-90", "-180");
 	}
 
 	@Test(expected = IllegalArgumentException.class)
-	public void testOutOfRangeLatitude() {
+	public void testLatitudeOutOfRange() {
 		new Location("91", "0");
 	}
 
 	@Test(expected = IllegalArgumentException.class)
-	public void testOutOfRangeLongitude() {
+	public void testLongitudeOutOfRange() {
 		new Location("0", "181");
 	}
 }
