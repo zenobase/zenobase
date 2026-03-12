@@ -185,20 +185,14 @@ public class CommandMigration {
 						}
 						callback.call(source);
 					}
-					Request scrollRequest = new Request("POST", "/_search/scroll");
-					scrollRequest.setEntity(new StringEntity(
-						"{\"scroll\":\"5m\",\"scroll_id\":\"" + scrollId + "\"}",
-						ContentType.APPLICATION_JSON));
+					Request scrollRequest = new Request("POST", "/_search/scroll?scroll=5m&scroll_id=" + scrollId);
 					Response scrollResponse = client.performRequest(scrollRequest);
 					response = (ObjectNode) Nodes.MAPPER.readTree(scrollResponse.getEntity().getContent());
 					scrollId = response.get("_scroll_id").asText();
 				}
 			} finally {
 				try {
-					Request clearRequest = new Request("DELETE", "/_search/scroll");
-					clearRequest.setEntity(new StringEntity(
-						"{\"scroll_id\":\"" + scrollId + "\"}",
-						ContentType.APPLICATION_JSON));
+					Request clearRequest = new Request("DELETE", "/_search/scroll?scroll_id=" + scrollId);
 					client.performRequest(clearRequest);
 				} catch (IOException e) {
 					Logger.warn("Failed to clear scroll", e);
