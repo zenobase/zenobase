@@ -302,7 +302,15 @@ public class CommandMigration {
 			return false;
 		}
 		if (!new Location(location.get("lat").decimalValue(), location.get("lon").decimalValue()).isValid()) {
-			return false;
+			if (new Location(location.get("lon").decimalValue(), location.get("lat").decimalValue()).isValid()) {
+				BigDecimal lat = location.get("lat").decimalValue();
+				BigDecimal lon = location.get("lon").decimalValue();
+				location.put("lat", lon);
+				location.put("lon", lat);
+				repaired = true;
+			} else {
+				return false;
+			}
 		}
 		return repaired;
 	}
