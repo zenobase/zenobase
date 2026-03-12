@@ -33,7 +33,9 @@ import com.zenobase.commands.CreateEventsCommand;
 import com.zenobase.commands.CreateTaskCommand;
 import com.zenobase.commands.CreateUserCommand;
 import com.zenobase.common.Callback;
+import com.zenobase.json.DecimalField;
 import com.zenobase.json.DomainNode;
+import com.zenobase.json.IntegerField;
 import com.zenobase.json.Nodes;
 import com.zenobase.models.Bucket;
 import com.zenobase.json.Field;
@@ -171,6 +173,28 @@ public class CommandMigration {
 				+ " of bucket " + bucketId + ": " + rawValue + " -> " + clamped);
 			source.put(field.getName(), clamped);
 			return true;
+		}
+		if (field instanceof IntegerField && rawValue != null && rawValue.isTextual()) {
+			try {
+				int repaired = Integer.parseInt(rawValue.textValue());
+				Logger.warn("Repaired " + field.getName() + " in event " + eventId
+					+ " of bucket " + bucketId + ": \"" + rawValue.textValue() + "\" -> " + repaired);
+				source.put(field.getName(), repaired);
+				return true;
+			} catch (NumberFormatException e) {
+				return false;
+			}
+		}
+		if (field instanceof DecimalField && rawValue != null && rawValue.isTextual()) {
+			try {
+				double repaired = Double.parseDouble(rawValue.textValue());
+				Logger.warn("Repaired " + field.getName() + " in event " + eventId
+					+ " of bucket " + bucketId + ": \"" + rawValue.textValue() + "\" -> " + repaired);
+				source.put(field.getName(), repaired);
+				return true;
+			} catch (NumberFormatException e) {
+				return false;
+			}
 		}
 		if (field == Event.TIMESTAMP && rawValue != null) {
 			if (rawValue.isTextual()) {
