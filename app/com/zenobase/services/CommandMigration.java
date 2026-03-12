@@ -15,6 +15,8 @@ import javax.inject.Named;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.DecimalNode;
+import com.fasterxml.jackson.databind.node.IntNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.node.TextNode;
 import com.google.common.base.Stopwatch;
@@ -38,7 +40,6 @@ import com.zenobase.json.DecimalField;
 import com.zenobase.json.PercentageField;
 import com.zenobase.json.DomainNode;
 import com.zenobase.json.IntegerField;
-import com.zenobase.json.TokenField;
 import com.zenobase.json.Nodes;
 import com.zenobase.models.Bucket;
 import com.zenobase.json.Field;
@@ -168,50 +169,50 @@ public class CommandMigration {
 		}
 	}
 
+	private JsonNode repairElement(Field<?> field, JsonNode element) {
+		if (field == Event.RATING && element.isNumber()) {
+			int clamped = Math.max(Rating.MIN_VALUE, Math.min(Rating.MAX_VALUE, element.intValue()));
+			if (clamped != element.intValue()) return IntNode.valueOf(clamped);
+		}
+		if (field instanceof PercentageField && element.isNumber()) {
+			BigDecimal value = element.decimalValue();
+			BigDecimal clamped = value.max(BigDecimal.ZERO).min(BigDecimal.valueOf(100));
+			if (clamped.compareTo(value) != 0) return DecimalNode.valueOf(clamped);
+		}
+		if (field instanceof IntegerField && element.isTextual()) {
+			try { return IntNode.valueOf(Integer.parseInt(element.textValue())); }
+			catch (NumberFormatException e) { return null; }
+		}
+		if (field instanceof DecimalField && element.isTextual()) {
+			try { return DecimalNode.valueOf(BigDecimal.valueOf(Double.parseDouble(element.textValue()))); }
+			catch (NumberFormatException e) { return null; }
+		}
+		if (field == Event.TIMESTAMP && element.isTextual()) {
+			String upper = element.textValue().toUpperCase();
+			if (!upper.equals(element.textValue())) return new TextNode(upper);
+		}
+		if (field == Event.RESOURCE && element.isObject()) {
+			if (repairResource((ObjectNode) element)) return element;
+		}
+		return null;
+	}
+
 	private boolean repairField(Field<?> field, ObjectNode source, String eventId, String bucketId) {
 		JsonNode rawValue = source.get(field.getName());
-		if (field == Event.RATING && rawValue != null && rawValue.isNumber()) {
-			int clamped = Math.max(Rating.MIN_VALUE, Math.min(Rating.MAX_VALUE, rawValue.intValue()));
-			Logger.warn("Repaired " + field.getName() + " in event " + eventId
-				+ " of bucket " + bucketId + ": " + rawValue + " -> " + clamped);
-			source.put(field.getName(), clamped);
-			return true;
-		}
-		if (field instanceof PercentageField && rawValue != null && rawValue.isNumber()) {
-			BigDecimal value = rawValue.decimalValue();
-			BigDecimal clamped = value.max(BigDecimal.ZERO).min(BigDecimal.valueOf(100));
-			if (clamped.compareTo(value) != 0) {
-				Logger.warn("Repaired " + field.getName() + " in event " + eventId
-					+ " of bucket " + bucketId + ": " + value + " -> " + clamped);
-				source.put(field.getName(), clamped);
-				return true;
-			}
-		}
-		if (field instanceof IntegerField && rawValue != null && rawValue.isTextual()) {
-			try {
-				int repaired = Integer.parseInt(rawValue.textValue());
-				Logger.warn("Repaired " + field.getName() + " in event " + eventId
-					+ " of bucket " + bucketId + ": \"" + rawValue.textValue() + "\" -> " + repaired);
-				source.put(field.getName(), repaired);
-				return true;
-			} catch (NumberFormatException e) {
-				return false;
-			}
-		}
-		if (field instanceof DecimalField && rawValue != null && rawValue.isTextual()) {
-			try {
-				double repaired = Double.parseDouble(rawValue.textValue());
-				Logger.warn("Repaired " + field.getName() + " in event " + eventId
-					+ " of bucket " + bucketId + ": \"" + rawValue.textValue() + "\" -> " + repaired);
-				source.put(field.getName(), repaired);
-				return true;
-			} catch (NumberFormatException e) {
-				return false;
-			}
-		}
-		if (field instanceof TokenField && rawValue != null && rawValue.isArray()) {
+		if (rawValue == null) return false;
+
+		if (rawValue.isArray()) {
 			ArrayNode array = (ArrayNode) rawValue;
 			boolean anyRepaired = false;
+			for (int i = 0; i < array.size(); i++) {
+				JsonNode repaired = repairElement(field, array.get(i));
+				if (repaired != null) {
+					Logger.warn("Repaired " + field.getName() + "[" + i + "] in event " + eventId
+						+ " of bucket " + bucketId + ": " + array.get(i) + " -> " + repaired);
+					array.set(i, repaired);
+					anyRepaired = true;
+				}
+			}
 			for (int i = array.size() - 1; i >= 0; i--) {
 				if (array.get(i).isNull()) {
 					array.remove(i);
@@ -220,51 +221,16 @@ public class CommandMigration {
 			}
 			if (anyRepaired) {
 				Logger.warn("Repaired " + field.getName() + " in event " + eventId
-					+ " of bucket " + bucketId + ": removed null values");
+					+ " of bucket " + bucketId);
 				return true;
 			}
-		}
-		if (field == Event.RESOURCE && rawValue != null) {
-			boolean anyRepaired = false;
-			if (rawValue.isObject()) {
-				anyRepaired = repairResource((ObjectNode) rawValue);
-			} else if (rawValue.isArray()) {
-				for (JsonNode element : rawValue) {
-					if (element.isObject()) {
-						anyRepaired |= repairResource((ObjectNode) element);
-					}
-				}
-			}
-			if (anyRepaired) {
+		} else {
+			JsonNode repaired = repairElement(field, rawValue);
+			if (repaired != null) {
 				Logger.warn("Repaired " + field.getName() + " in event " + eventId
-					+ " of bucket " + bucketId + ": added missing title/url");
+					+ " of bucket " + bucketId + ": " + rawValue + " -> " + repaired);
+				source.set(field.getName(), repaired);
 				return true;
-			}
-		}
-		if (field == Event.TIMESTAMP && rawValue != null) {
-			if (rawValue.isTextual()) {
-				String repaired = rawValue.textValue().toUpperCase();
-				if (!repaired.equals(rawValue.textValue())) {
-					Logger.warn("Repaired " + field.getName() + " in event " + eventId
-						+ " of bucket " + bucketId + ": " + rawValue.textValue() + " -> " + repaired);
-					source.put(field.getName(), repaired);
-					return true;
-				}
-			} else if (rawValue.isArray()) {
-				boolean anyRepaired = false;
-				ArrayNode array = (ArrayNode) rawValue;
-				for (int i = 0; i < array.size(); i++) {
-					if (array.get(i).isTextual()) {
-						String repaired = array.get(i).textValue().toUpperCase();
-						if (!repaired.equals(array.get(i).textValue())) {
-							Logger.warn("Repaired " + field.getName() + "[" + i + "] in event " + eventId
-								+ " of bucket " + bucketId + ": " + array.get(i).textValue() + " -> " + repaired);
-							array.set(i, new TextNode(repaired));
-							anyRepaired = true;
-						}
-					}
-				}
-				return anyRepaired;
 			}
 		}
 		return false;
