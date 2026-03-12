@@ -29,6 +29,11 @@ public class OffsetDateTimeFormatTest {
 		test("xxx", null);
 	}
 
+	@Test(expected = IllegalArgumentException.class)
+	public void testParseBadCasing() {
+		OffsetDateTimeFormat.parse("2020-12-15t19:22:19.933z");
+	}
+
 	private static void test(String value, String expected) {
 		DateTime actual = OffsetDateTimeFormat.parse(value);
 		assertThat(actual).isEqualTo(DateTime.parse(expected));

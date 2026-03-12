@@ -2,6 +2,7 @@ package com.zenobase.common;
 
 import java.util.regex.Pattern;
 
+import com.google.common.base.Preconditions;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.DateTimeFormatterBuilder;
@@ -36,6 +37,7 @@ public class OffsetDateTimeFormat extends DateTimeFormatSupport {
 		.withOffsetParsed();
 
 	public static DateTime parse(String s) {
+		Preconditions.checkArgument(s.equals(s.toUpperCase()), "Invalid timestamp casing: %s", s);
 		return s.contains("W")
 			? PARSER_WEEK.parseDateTime(s)
 			: PARSER.parseDateTime(s);
