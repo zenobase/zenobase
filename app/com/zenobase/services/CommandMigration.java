@@ -18,6 +18,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.DecimalNode;
 import com.fasterxml.jackson.databind.node.IntNode;
+import com.fasterxml.jackson.databind.node.NullNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.node.TextNode;
 import com.google.common.base.Stopwatch;
@@ -42,6 +43,7 @@ import com.zenobase.json.PercentageField;
 import com.zenobase.json.DomainNode;
 import com.zenobase.json.IntegerField;
 import com.zenobase.json.LocationField;
+import com.zenobase.json.ResourceField;
 import com.zenobase.json.Nodes;
 import com.zenobase.models.Bucket;
 import com.zenobase.json.Field;
@@ -194,8 +196,10 @@ public class CommandMigration {
 			String upper = element.textValue().toUpperCase();
 			if (!upper.equals(element.textValue())) return new TextNode(upper);
 		}
-		if (field == Event.RESOURCE && element.isObject()) {
-			if (repairResource((ObjectNode) element)) return element;
+		if (field instanceof ResourceField && element.isObject()) {
+			repairResource((ObjectNode) element);
+			if (element.has("title") && element.has("url")) return element;
+			return NullNode.getInstance();
 		}
 		if (field instanceof LocationField && element.isObject()) {
 			if (repairLocation((ObjectNode) element)) return element;
@@ -213,8 +217,13 @@ public class CommandMigration {
 			for (int i = 0; i < array.size(); i++) {
 				JsonNode repaired = repairElement(field, array.get(i));
 				if (repaired != null) {
-					Logger.warn("Repaired " + field.getName() + "[" + i + "] in event " + eventId
-						+ " of bucket " + bucketId + ": " + array.get(i) + " -> " + repaired);
+					if (repaired.isNull()) {
+						Logger.warn("Removed " + field.getName() + "[" + i + "] in event " + eventId
+							+ " of bucket " + bucketId + ": " + array.get(i));
+					} else {
+						Logger.warn("Repaired " + field.getName() + "[" + i + "] in event " + eventId
+							+ " of bucket " + bucketId + ": " + array.get(i) + " -> " + repaired);
+					}
 					array.set(i, repaired);
 					anyRepaired = true;
 				}
@@ -226,6 +235,9 @@ public class CommandMigration {
 				}
 			}
 			if (anyRepaired) {
+				if (array.isEmpty()) {
+					source.remove(field.getName());
+				}
 				Logger.warn("Repaired " + field.getName() + " in event " + eventId
 					+ " of bucket " + bucketId);
 				return true;
@@ -233,6 +245,12 @@ public class CommandMigration {
 		} else {
 			JsonNode repaired = repairElement(field, rawValue);
 			if (repaired != null) {
+				if (repaired.isNull()) {
+					Logger.warn("Removed " + field.getName() + " in event " + eventId
+						+ " of bucket " + bucketId + ": " + rawValue);
+					source.remove(field.getName());
+					return true;
+				}
 				Logger.warn("Repaired " + field.getName() + " in event " + eventId
 					+ " of bucket " + bucketId + ": " + rawValue + " -> " + repaired);
 				source.set(field.getName(), repaired);
