@@ -278,8 +278,10 @@ public class CommandMigration {
 		if (resource.get("title") == null) {
 			if ("http://www.moves-app.com/".equals(resource.path("url").textValue())) {
 				resource.put("title", "Moves");
-				repaired = true;
+			} else {
+				resource.put("title", "?");
 			}
+			repaired = true;
 		}
 		return repaired;
 	}
