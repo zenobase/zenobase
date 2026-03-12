@@ -30,6 +30,7 @@ import org.opensearch.client.Request;
 import org.opensearch.client.Response;
 import org.opensearch.client.RestClient;
 import play.Logger;
+import play.Logger.ALogger;
 
 import com.zenobase.commands.CreateAuthorizationCommand;
 import com.zenobase.commands.CreateBucketCommand;
@@ -59,6 +60,7 @@ import com.zenobase.tasks.Task;
 
 public class CommandMigration {
 
+	private final ALogger log = Logger.of("migration");
 	private final String sourceHost;
 	private final int parallelism;
 	private final CommandDispatcher dispatcher;
@@ -71,7 +73,7 @@ public class CommandMigration {
 	}
 
 	public void migrate() {
-		Logger.info("Migrating from {}...", sourceHost);
+		log.info("Migrating from {}...", sourceHost);
 		Stopwatch timer = Stopwatch.createStarted();
 		try (RestClient client = RestClient.builder(HttpHost.create(java.net.URI.create(sourceHost))).build()) {
 			migrateUsers(client);
@@ -82,7 +84,7 @@ public class CommandMigration {
 		} catch (IOException e) {
 			throw new RuntimeException("Migration failed", e);
 		}
-		Logger.warn("Migrated in {} s", timer.elapsed(TimeUnit.SECONDS));
+		log.warn("Migrated in {} s", timer.elapsed(TimeUnit.SECONDS));
 	}
 
 	private void migrateUsers(RestClient client) {
@@ -127,7 +129,7 @@ public class CommandMigration {
 							migrateEvents(client, owner, bucket, failures, repairs);
 						}
 					} catch (RuntimeException e) {
-						Logger.error("Couldn't migrate bucket: " + bucket.getId(), e);
+						log.error("Couldn't migrate bucket: " + bucket.getId(), e);
 						failures.incrementAndGet();
 					} finally {
 						semaphore.release();
@@ -149,7 +151,7 @@ public class CommandMigration {
 			}
 		}
 		if (repairs.get() > 0) {
-			Logger.warn("Migration repaired {} field value(s)", repairs.get());
+			log.warn("Migration repaired {} field value(s)", repairs.get());
 		}
 		if (failures.get() > 0) {
 			throw new IllegalStateException("Migration completed with one or more failures");
@@ -212,7 +214,7 @@ public class CommandMigration {
 		if (rawValue == null) return false;
 
 		if (rawValue.isNull()) {
-			Logger.warn("Repaired " + field.getName() + " in event " + eventId
+			log.warn("Repaired " + field.getName() + " in event " + eventId
 				+ " of bucket " + bucketId + ": removed null value");
 			source.remove(field.getName());
 			return true;
@@ -225,10 +227,10 @@ public class CommandMigration {
 				JsonNode repaired = repairElement(field, array.get(i));
 				if (repaired != null) {
 					if (repaired.isNull()) {
-						Logger.warn("Removed " + field.getName() + "[" + i + "] in event " + eventId
+						log.warn("Removed " + field.getName() + "[" + i + "] in event " + eventId
 							+ " of bucket " + bucketId + ": " + array.get(i));
 					} else {
-						Logger.warn("Repaired " + field.getName() + "[" + i + "] in event " + eventId
+						log.warn("Repaired " + field.getName() + "[" + i + "] in event " + eventId
 							+ " of bucket " + bucketId + ": " + array.get(i) + " -> " + repaired);
 					}
 					array.set(i, repaired);
@@ -245,7 +247,7 @@ public class CommandMigration {
 				if (array.isEmpty()) {
 					source.remove(field.getName());
 				}
-				Logger.warn("Repaired " + field.getName() + " in event " + eventId
+				log.warn("Repaired " + field.getName() + " in event " + eventId
 					+ " of bucket " + bucketId);
 				return true;
 			}
@@ -253,12 +255,12 @@ public class CommandMigration {
 			JsonNode repaired = repairElement(field, rawValue);
 			if (repaired != null) {
 				if (repaired.isNull()) {
-					Logger.warn("Removed " + field.getName() + " in event " + eventId
+					log.warn("Removed " + field.getName() + " in event " + eventId
 						+ " of bucket " + bucketId + ": " + rawValue);
 					source.remove(field.getName());
 					return true;
 				}
-				Logger.warn("Repaired " + field.getName() + " in event " + eventId
+				log.warn("Repaired " + field.getName() + " in event " + eventId
 					+ " of bucket " + bucketId + ": " + rawValue + " -> " + repaired);
 				source.set(field.getName(), repaired);
 				return true;
@@ -332,7 +334,7 @@ public class CommandMigration {
 					if (repairField(field, source, event.getId(), bucketId)) {
 						repairs.incrementAndGet();
 					} else {
-						Logger.error("Malformed " + field.getName() + " in event " + event.getId()
+						log.error("Malformed " + field.getName() + " in event " + event.getId()
 							+ " of bucket " + bucketId + ": value=" + source.get(field.getName())
 							+ ", error=" + e.getMessage());
 						source.remove(field.getName());
@@ -386,7 +388,7 @@ public class CommandMigration {
 					Request clearRequest = new Request("DELETE", "/_search/scroll?scroll_id=" + scrollId);
 					client.performRequest(clearRequest);
 				} catch (IOException e) {
-					Logger.warn("Failed to clear scroll", e);
+					log.warn("Failed to clear scroll", e);
 				}
 			}
 		} catch (IOException e) {
