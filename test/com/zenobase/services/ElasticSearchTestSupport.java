@@ -8,10 +8,9 @@ import java.time.Duration;
 import org.apache.hc.core5.http.HttpHost;
 import org.junit.After;
 import org.junit.Before;
-import org.opensearch.client.RestClient;
 import org.opensearch.client.json.jackson.JacksonJsonpMapper;
 import org.opensearch.client.opensearch.OpenSearchClient;
-import org.opensearch.client.transport.rest_client.RestClientTransport;
+import org.opensearch.client.transport.httpclient5.ApacheHttpClient5TransportBuilder;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.wait.strategy.Wait;
 
@@ -32,8 +31,11 @@ public abstract class ElasticSearchTestSupport {
 				.withStartupTimeout(Duration.ofMinutes(2)));
 		container.start();
 		String host = "http://" + container.getHost() + ":" + container.getMappedPort(9200);
-		RestClient restClient = RestClient.builder(HttpHost.create(java.net.URI.create(host))).build();
-		sharedClient = new OpenSearchClient(new RestClientTransport(restClient, new JacksonJsonpMapper()));
+		HttpHost httpHost = HttpHost.create(java.net.URI.create(host));
+		sharedClient = new OpenSearchClient(ApacheHttpClient5TransportBuilder
+			.builder(httpHost)
+			.setMapper(new JacksonJsonpMapper())
+			.build());
 	}
 
 	private IndexManager manager;

@@ -10,11 +10,10 @@ config:
   zenobase:oauthHostname: "https://zenobase.com"
   zenobase:sesIdentity: info@zenobase.com
   zenobase:esSnapshotBucket: zeno-snapshots
-  zenobase:esCluster: prod-next-117
+  zenobase:esCluster: prod-opensearch-118
   zenobase:esReplayHost: ""
   zenobase:esRebuildHost: ""
-  zenobase:esMigrationHost: ""
-  zenobase:playImageTag: "ad2d4706c7b2ade9495f3d64183076bdd8ad2ff0"
-  zenobase:esImageTag: "1a610ab804fd737d18a6f5458d5c21a7815edce7"
+  zenobase:playImageTag: "7d25a4cc01672631684c827eb8bedcef74b63c26"
+  zenobase:esImageTag: "7d25a4cc01672631684c827eb8bedcef74b63c26"
   zenobase:deployTarget: blue
   zenobase:activeTargetGroup: blue
