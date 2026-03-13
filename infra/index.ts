@@ -478,7 +478,7 @@ if [ "$NODE_COUNT" -le 1 ]; then
 fi
 
 echo "Excluding node $NODE_NAME from voting configuration..."
-curl -sf -X POST "http://localhost:9200/_cluster/voting_config_exclusions?node_names=${NODE_NAME}&timeout=30s" || true
+curl -sf -X POST "http://localhost:9200/_cluster/voting_config_exclusions?node_names=\${NODE_NAME}&timeout=30s" || true
 echo "Node $NODE_NAME excluded from voting configuration"
 DEREGEOF
 chmod +x /opt/zenobase/opensearch-deregister.sh
