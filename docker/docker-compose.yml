@@ -20,6 +20,7 @@ services:
       memlock:
         soft: -1
         hard: -1
+    stop_grace_period: 60s
     restart: unless-stopped
     logging:
       driver: awslogs
