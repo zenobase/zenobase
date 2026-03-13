@@ -35,7 +35,6 @@ services:
     environment:
       - JAVA_HEAP=1g
       - ES_SNAPSHOT_BUCKET=
-      - ES_SNAPSHOT_REPOSITORY=
     depends_on:
       opensearch:
         condition: service_healthy

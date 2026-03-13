@@ -32,15 +32,18 @@ public class IndexManager implements Closeable {
 	private final String snapshotRepository;
 
 	@Inject
-	public IndexManager(ClientFactory clientFactory, @Named("es.snapshot.repository") String snapshotRepository, @Named("es.snapshot.bucket") String snapshotBucket) {
-		this.snapshotRepository = snapshotRepository;
+	public IndexManager(ClientFactory clientFactory, @Named("es.snapshot.bucket") String snapshotBucket, @Named("es.snapshot.region") String snapshotRegion) {
 		client = clientFactory.createClient();
 		while (!new Cluster(client).isReady()) {
 			Logger.warn("Waiting for cluster to recover...");
 			Uninterruptibles.sleepUninterruptibly(5, TimeUnit.SECONDS);
 		}
-		if (!snapshotRepository.isEmpty()) {
-			registerSnapshotRepository(snapshotRepository, snapshotBucket);
+		if (!snapshotBucket.isEmpty()) {
+			String repositoryName = new Cluster(client).getHealth().clusterName();
+			registerSnapshotRepository(repositoryName, snapshotBucket, snapshotRegion);
+			this.snapshotRepository = repositoryName;
+		} else {
+			this.snapshotRepository = "";
 		}
 	}
 
@@ -60,28 +63,21 @@ public class IndexManager implements Closeable {
 		return new SnapshotManager(client, snapshotRepository);
 	}
 
-	private void registerSnapshotRepository(String repositoryName, String bucket) {
+	private void registerSnapshotRepository(String repositoryName, String bucket, String region) {
 		try {
-			if (!bucket.isEmpty()) {
-				client.generic().execute(
-					Requests.builder()
-						.endpoint("/_snapshot/" + repositoryName)
-						.method("PUT")
-						.json(Json.createObjectBuilder()
-							.add("type", "s3")
-							.add("settings", Json.createObjectBuilder()
-								.add("bucket", bucket)
-								.add("base_path", repositoryName)))
-						.build()
-				).close();
-			} else {
-				client.snapshot().createRepository(r -> r
-					.name(repositoryName)
-					.type("fs")
-					.settings(s -> s.location(repositoryName))
-				);
-			}
-			Logger.info("Registered snapshot repository: {} ({})", repositoryName, bucket.isEmpty() ? "fs" : "s3");
+			client.generic().execute(
+				Requests.builder()
+					.endpoint("/_snapshot/" + repositoryName)
+					.method("PUT")
+					.json(Json.createObjectBuilder()
+						.add("type", "s3")
+						.add("settings", Json.createObjectBuilder()
+							.add("bucket", bucket)
+							.add("base_path", repositoryName)
+							.add("region", region)))
+					.build()
+			).close();
+			Logger.info("Registered snapshot repository: {} (s3)", repositoryName);
 		} catch (IOException e) {
 			throw new RuntimeException("Failed to register snapshot repository: " + repositoryName, e);
 		}
