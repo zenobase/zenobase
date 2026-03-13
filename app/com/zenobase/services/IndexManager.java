@@ -69,7 +69,8 @@ public class IndexManager implements Closeable {
 			JsonObjectBuilder settings = Json.createObjectBuilder()
 				.add("bucket", bucket)
 				.add("base_path", repositoryName)
-				.add("region", region);
+				.add("region", region)
+				.add("shard_path_type", "FIXED");
 			if (!roleArn.isEmpty()) {
 				settings.add("role_arn", roleArn);
 			}
