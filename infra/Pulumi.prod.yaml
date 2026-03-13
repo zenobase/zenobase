@@ -4,16 +4,14 @@ config:
   zenobase:keyPairName: zeno
   zenobase:instanceType: t4g.large
   zenobase:playHeap: 2g
-  zenobase:esHeap: 4g
   zenobase:hostname: "https://zenobase.com"
   zenobase:apiHostname: "https://api.zenobase.com"
   zenobase:oauthHostname: "https://zenobase.com"
   zenobase:sesIdentity: info@zenobase.com
   zenobase:esSnapshotBucket: zeno-snapshots
-  zenobase:esCluster: prod-opensearch-118
+  zenobase:osDomainName: prod-119
   zenobase:esReplayHost: ""
   zenobase:esRebuildHost: ""
-  zenobase:playImageTag: "7d25a4cc01672631684c827eb8bedcef74b63c26"
-  zenobase:esImageTag: "7d25a4cc01672631684c827eb8bedcef74b63c26"
+  zenobase:playImageTag: "2b2dbc091beced12d0c6b5e6df21b84119195a4d"
   zenobase:deployTarget: blue
-  zenobase:activeTargetGroup: blue
+  zenobase:activeTargetGroup: green

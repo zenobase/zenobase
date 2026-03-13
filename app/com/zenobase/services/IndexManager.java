@@ -8,6 +8,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import jakarta.json.Json;
+import jakarta.json.JsonObjectBuilder;
 
 import java.util.concurrent.TimeUnit;
 
@@ -32,7 +33,7 @@ public class IndexManager implements Closeable {
 	private final String snapshotRepository;
 
 	@Inject
-	public IndexManager(ClientFactory clientFactory, @Named("es.snapshot.bucket") String snapshotBucket, @Named("es.snapshot.region") String snapshotRegion) {
+	public IndexManager(ClientFactory clientFactory, @Named("es.snapshot.bucket") String snapshotBucket, @Named("es.snapshot.region") String snapshotRegion, @Named("es.snapshot.role_arn") String snapshotRoleArn) {
 		client = clientFactory.createClient();
 		while (!new Cluster(client).isReady()) {
 			Logger.warn("Waiting for cluster to recover...");
@@ -40,7 +41,7 @@ public class IndexManager implements Closeable {
 		}
 		if (!snapshotBucket.isEmpty()) {
 			String repositoryName = new Cluster(client).getHealth().clusterName();
-			registerSnapshotRepository(repositoryName, snapshotBucket, snapshotRegion);
+			registerSnapshotRepository(repositoryName, snapshotBucket, snapshotRegion, snapshotRoleArn);
 			this.snapshotRepository = repositoryName;
 		} else {
 			this.snapshotRepository = "";
@@ -48,7 +49,7 @@ public class IndexManager implements Closeable {
 	}
 
 	public IndexManager(ClientFactory clientFactory) {
-		this(clientFactory, "", "");
+		this(clientFactory, "", "", "");
 	}
 
 	public Index getIndex(String indexName) {
@@ -63,18 +64,22 @@ public class IndexManager implements Closeable {
 		return new SnapshotManager(client, snapshotRepository);
 	}
 
-	private void registerSnapshotRepository(String repositoryName, String bucket, String region) {
+	private void registerSnapshotRepository(String repositoryName, String bucket, String region, String roleArn) {
 		try {
+			JsonObjectBuilder settings = Json.createObjectBuilder()
+				.add("bucket", bucket)
+				.add("base_path", repositoryName)
+				.add("region", region);
+			if (!roleArn.isEmpty()) {
+				settings.add("role_arn", roleArn);
+			}
 			client.generic().execute(
 				Requests.builder()
 					.endpoint("/_snapshot/" + repositoryName)
 					.method("PUT")
 					.json(Json.createObjectBuilder()
 						.add("type", "s3")
-						.add("settings", Json.createObjectBuilder()
-							.add("bucket", bucket)
-							.add("base_path", repositoryName)
-							.add("region", region)))
+						.add("settings", settings))
 					.build()
 			).close();
 			Logger.info("Registered snapshot repository: {} (s3)", repositoryName);

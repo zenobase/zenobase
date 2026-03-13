@@ -1,33 +1,4 @@
 services:
-  opensearch:
-    image: ${ECR_REGISTRY}/zenobase-elasticsearch:${OS_IMAGE_TAG:-latest}
-    network_mode: host
-    volumes:
-      - os-data:/usr/share/opensearch/data
-    environment:
-      - cluster.name=${CLUSTER_NAME:-opensearch}
-      - node.name=${NODE_NAME:-opensearch-node}
-      - network.publish_host=${PUBLISH_HOST:-_local_}
-      - discovery.seed_providers=ec2
-      - discovery.ec2.tag.Service=zenobase
-      - discovery.ec2.endpoint=ec2.${AWS_REGION:-us-east-1}.amazonaws.com
-      - OPENSEARCH_JAVA_OPTS=-Xms${OS_HEAP_SIZE:-4g} -Xmx${OS_HEAP_SIZE:-4g}
-      - ES_SNAPSHOT_BUCKET=${ES_SNAPSHOT_BUCKET:-}
-    ulimits:
-      nofile:
-        soft: 65536
-        hard: 65536
-      memlock:
-        soft: -1
-        hard: -1
-    restart: unless-stopped
-    logging:
-      driver: awslogs
-      options:
-        awslogs-region: ${AWS_REGION:-us-east-1}
-        awslogs-group: /zenobase/elasticsearch
-        tag: opensearch
-
   play:
     image: ${ECR_REGISTRY}/zenobase-play:${PLAY_IMAGE_TAG:-latest}
     network_mode: host
@@ -39,6 +10,7 @@ services:
       - JAVA_HEAP=${JAVA_HEAP:-2g}
       - ES_HOST=${ES_HOST:-http://localhost:9200}
       - ES_SNAPSHOT_BUCKET=${ES_SNAPSHOT_BUCKET:-}
+      - ES_SNAPSHOT_ROLE_ARN=${ES_SNAPSHOT_ROLE_ARN:-}
       - AWS_REGION=${AWS_REGION:-us-east-1}
       - ES_REPLAY=${ES_REPLAY:-}
       - ES_REPLAY_PARALLELISM=${ES_REPLAY_PARALLELISM:-0}
@@ -47,9 +19,6 @@ services:
       - HOSTNAME=${HOSTNAME:-http://localhost:9000}
       - API_HOSTNAME=${API_HOSTNAME:-http://localhost:9000}
       - OAUTH_HOSTNAME=${OAUTH_HOSTNAME:-https://zenobase.com}
-    depends_on:
-      opensearch:
-        condition: service_healthy
     restart: unless-stopped
     logging:
       driver: awslogs
@@ -57,7 +26,3 @@ services:
         awslogs-region: ${AWS_REGION:-us-east-1}
         awslogs-group: /zenobase/play
         tag: play
-
-volumes:
-  os-data:
-    driver: local

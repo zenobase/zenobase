@@ -47,11 +47,11 @@ aws iam create-role \
   --role-name GitHubActionsZenobase \
   --assume-role-policy-document file://trust-policy.json
 
-# Attach permissions (EC2, VPC, ELB, ECR, IAM, Secrets Manager, CloudWatch, S3, SES)
+# Attach permissions (EC2, VPC, ELB, ECR, IAM, Secrets Manager, CloudWatch, S3, SES, OpenSearch)
 for policy in AmazonEC2FullAccess AmazonVPCFullAccess \
   ElasticLoadBalancingFullAccess AmazonEC2ContainerRegistryFullAccess \
   IAMFullAccess SecretsManagerReadWrite CloudWatchFullAccess \
-  AmazonS3FullAccess AmazonSESFullAccess; do
+  AmazonS3FullAccess AmazonSESFullAccess AmazonOpenSearchServiceFullAccess; do
   aws iam attach-role-policy \
     --role-name GitHubActionsZenobase \
     --policy-arn "arn:aws:iam::aws:policy/$policy"

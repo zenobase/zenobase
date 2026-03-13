@@ -106,113 +106,97 @@ To rollback to a specific image version:
 Migration Procedure (Replay)
 ----------------------------
 
-Use this procedure to rebuild the database by replaying the entire command history (e.g. after data model changes):
+Use this procedure to rebuild the database by replaying the entire command history
+(e.g. after data model changes). Creates a new managed OpenSearch domain and replays
+from the old domain.
 
-  1. Set migration config:
+  1. Set migration config (note: creating the domain takes 15-30 minutes):
 
        cd infra
-       pulumi config set zenobase:esCluster "<new-cluster-name>"
-       pulumi config set zenobase:esReplayHost "<old-host-url>"
-
-  2. Deploy to the inactive target group:
-
+       pulumi config set zenobase:osDomainName <new-domain-name>
+       pulumi config set zenobase:esReplayHost "https://<old-domain-endpoint>"
        pulumi config set zenobase:deployTarget green  # or blue
        pulumi up
 
-     The new instance starts with an empty OpenSearch cluster and replays all
-     commands from the old cluster.
+     The new instance connects to the new OpenSearch domain and replays all
+     commands from the old domain.
 
-  3. Monitor replay progress in CloudWatch Logs.
+  2. Monitor replay progress in CloudWatch Logs.
 
-  4. When replay completes, switch traffic:
+  3. When replay completes, switch traffic:
 
        pulumi config set zenobase:activeTargetGroup green  # match deployTarget
        pulumi up
 
-  5. Clear migration config for the next deploy:
+  4. Clear migration config for the next deploy:
 
        pulumi config set zenobase:esReplayHost ""
+
+  5. Delete the old OpenSearch domain via the AWS console.
 
 
 Migration Procedure (Rebuild)
 -----------------------------
 
 Use this procedure to rebuild the database and compact the command history.
+Same pattern as Replay but uses esRebuildHost.
 
-  1. Set migration config:
+  1. Set migration config (note: creating the domain takes 15-30 minutes):
 
        cd infra
-       pulumi config set zenobase:esCluster "<new-cluster-name>"
-       pulumi config set zenobase:esRebuildHost "<old-host-url>"
-
-  2. Deploy to the inactive target group:
-
+       pulumi config set zenobase:osDomainName <new-domain-name>
+       pulumi config set zenobase:esRebuildHost "https://<old-domain-endpoint>"
        pulumi config set zenobase:deployTarget green  # or blue
        pulumi up
 
-     The new instance starts with an empty OpenSearch cluster and rebuilds state
-     from the old cluster's raw data.
+     The new instance connects to the new OpenSearch domain and rebuilds state
+     from the old domain's raw data.
 
-  3. Monitor rebuild progress in CloudWatch Logs.
+  2. Monitor rebuild progress in CloudWatch Logs.
 
-  4. When rebuild completes, switch traffic:
+  3. When rebuild completes, switch traffic:
 
        pulumi config set zenobase:activeTargetGroup green  # match deployTarget
        pulumi up
 
-  5. Clear migration config for the next deploy:
+  4. Clear migration config for the next deploy:
 
        pulumi config set zenobase:esRebuildHost ""
+
+  5. Delete the old OpenSearch domain via the AWS console.
 
 
 Restore Procedure
 -----------------
 
-  1. Create a new instance in a new cluster:
+Use this procedure to restore from an S3 snapshot into a new managed OpenSearch domain.
 
+  1. Create a new domain:
+
+       cd infra
+       pulumi config set zenobase:osDomainName "zenobase-v2"
        pulumi config set zenobase:deployTarget green  # or blue
-       pulumi config set zenobase:esCluster prod-NNN  # new cluster name
        pulumi up
 
-  2. Stop the play service:
+     Wait for the domain to become active (15-30 minutes).
 
-    cd /opt/zenobase
-    sudo docker-compose stop play
+  2. The app registers the S3 snapshot repository on startup (with role_arn).
+     Verify via:
 
-  3. Delete all indices:
+       curl 'https://<domain-endpoint>/_snapshot/_all?pretty=true'
 
-    curl -XDELETE 'localhost:9200/_all'
+  3. Restore a snapshot:
 
-  4. Register a snapshot repository, e.g.
+       curl -XPOST 'https://<domain-endpoint>/_snapshot/<repo-name>/<snapshot-id>/_restore'
 
-    curl -XPUT 'localhost:9200/_snapshot/$OLD_CLUSTER_NAME' -d '{
-      "type": "s3",
-      "settings": {
-          "bucket": "zeno-snapshots",
-          "base_path": "$OLD_CLUSTER_NAME"
-      }
-    }'
+  4. Monitor progress:
 
-  5. List snapshots:
+       curl 'https://<domain-endpoint>/_cat/recovery'
 
-    curl 'localhost:9200/_snapshot/$OLD_CLUSTER_NAME/_all?pretty=true'
+  5. Switch traffic:
 
-  6. Restore a snapshot:
-
-    curl -XPOST 'localhost:9200/_snapshot/$OLD_CLUSTER_NAME/$SNAPSHOT_ID/_restore'
-
-  7. Monitor progress:
-
-    watch curl -s 'localhost:9200/_cat/recovery'
-
-  8. Start the play service:
-
-    sudo docker-compose start play
-
-  9. Switch traffic to the new instance:
-
-    pulumi config set zenobase:activeTargetGroup green  # match deployTarget
-    pulumi up
+       pulumi config set zenobase:activeTargetGroup green  # match deployTarget
+       pulumi up
 
 
 SSH Access

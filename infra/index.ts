@@ -19,13 +19,11 @@ const adminCidr = process.env.ENABLE_SSH
 const keyPairName = config.require("keyPairName");
 const instanceType = config.get("instanceType") || "t4g.large";
 const playHeap = config.get("playHeap") || "2g";
-const esHeap = config.get("esHeap") || "4g";
 const playImageTag = config.get("playImageTag") || "latest";
-const esImageTag = config.get("esImageTag") || "latest";
 const activeTargetGroup = config.get("activeTargetGroup") || "blue";
 const deployTarget = config.get("deployTarget") || activeTargetGroup;
 const esSnapshotBucket = config.get("esSnapshotBucket") || "";
-const esCluster = config.get("esCluster") || "elasticsearch";
+const osDomainName = config.get("osDomainName") || "zenobase";
 const esReplayHost = config.get("esReplayHost") || "";
 const esRebuildHost = config.get("esRebuildHost") || "";
 const hostname = config.get("hostname") || "http://localhost:9000";
@@ -96,19 +94,27 @@ const albSg = new aws.ec2.SecurityGroup("zenobase-alb-sg", {
 
 const ec2Sg = new aws.ec2.SecurityGroup("zenobase-ec2-sg", {
     vpcId: vpc.id,
-    description: "EC2 - app traffic from ALB, SSH from admin, ES transport between instances",
+    description: "EC2 - app traffic from ALB, SSH from admin",
     ingress: [
         { protocol: "tcp", fromPort: 9000, toPort: 9000, securityGroups: [albSg.id] },
-        // ES REST API port for migration between old and new instances
-        { protocol: "tcp", fromPort: 9200, toPort: 9200, cidrBlocks: ["10.0.0.0/16"] },
-        // ES transport port for cluster replication between old and new instances
-        { protocol: "tcp", fromPort: 9300, toPort: 9302, cidrBlocks: ["10.0.0.0/16"] },
         ...(adminCidr ? [{ protocol: "tcp", fromPort: 22, toPort: 22, cidrBlocks: [adminCidr] }] : []),
     ],
     egress: [
         { protocol: "-1", fromPort: 0, toPort: 0, cidrBlocks: ["0.0.0.0/0"] },
     ],
     tags: { Name: "zenobase-ec2" },
+});
+
+const osSg = new aws.ec2.SecurityGroup("zenobase-os-sg", {
+    vpcId: vpc.id,
+    description: "OpenSearch - HTTPS from EC2",
+    ingress: [
+        { protocol: "tcp", fromPort: 443, toPort: 443, securityGroups: [ec2Sg.id] },
+    ],
+    egress: [
+        { protocol: "-1", fromPort: 0, toPort: 0, cidrBlocks: ["0.0.0.0/0"] },
+    ],
+    tags: { Name: "zenobase-opensearch" },
 });
 
 // ---------- ECR Repositories ----------
@@ -118,11 +124,75 @@ const playRepo = new aws.ecr.Repository("zenobase-play", {
     imageTagMutability: "MUTABLE",
 });
 
-const esRepo = new aws.ecr.Repository("zenobase-opensearch", {
-    name: "zenobase-elasticsearch",
-    imageTagMutability: "MUTABLE",
-}, {
-    aliases: [{ name: "zenobase-elasticsearch" }],
+// ---------- OpenSearch Service ----------
+
+const osServiceLinkedRole = new aws.iam.ServiceLinkedRole("zenobase-os-slr", {
+    awsServiceName: "opensearchservice.amazonaws.com",
+});
+
+const osDomain = new aws.opensearch.Domain("zenobase-os", {
+    domainName: osDomainName,
+    engineVersion: "OpenSearch_3.1",
+    clusterConfig: {
+        instanceType: "t3.medium.search",
+        instanceCount: 1,
+    },
+    ebsOptions: {
+        ebsEnabled: true,
+        volumeSize: 20,
+        volumeType: "gp3",
+    },
+    vpcOptions: {
+        subnetIds: [subnetA.id],
+        securityGroupIds: [osSg.id],
+    },
+    domainEndpointOptions: {
+        enforceHttps: true,
+    },
+    nodeToNodeEncryption: {
+        enabled: true,
+    },
+    encryptAtRest: {
+        enabled: true,
+    },
+    accessPolicies: pulumi.all([accountId]).apply(([account]) => JSON.stringify({
+        Version: "2012-10-17",
+        Statement: [{
+            Effect: "Allow",
+            Principal: { AWS: "*" },
+            Action: "es:*",
+            Resource: `arn:aws:es:${region}:${account}:domain/${osDomainName}/*`,
+        }],
+    })),
+    tags: { Name: osDomainName },
+}, { dependsOn: [osServiceLinkedRole] });
+
+// Snapshot IAM role for OpenSearch to access S3
+const osSnapshotRole = new aws.iam.Role("zenobase-os-snapshot-role", {
+    assumeRolePolicy: JSON.stringify({
+        Version: "2012-10-17",
+        Statement: [{
+            Action: "sts:AssumeRole",
+            Effect: "Allow",
+            Principal: { Service: "es.amazonaws.com" },
+        }],
+    }),
+    tags: { Name: "zenobase-os-snapshot" },
+});
+
+new aws.iam.RolePolicy("zenobase-os-snapshot-policy", {
+    role: osSnapshotRole.id,
+    policy: JSON.stringify({
+        Version: "2012-10-17",
+        Statement: [{
+            Effect: "Allow",
+            Action: ["s3:GetObject", "s3:PutObject", "s3:ListBucket", "s3:DeleteObject"],
+            Resource: [
+                "arn:aws:s3:::zeno-snapshots",
+                "arn:aws:s3:::zeno-snapshots/*",
+            ],
+        }],
+    }),
 });
 
 // ---------- IAM ----------
@@ -146,17 +216,9 @@ new aws.iam.RolePolicyAttachment("zenobase-ssm-policy", {
 
 const instancePolicy = new aws.iam.RolePolicy("zenobase-instance-policy", {
     role: instanceRole.id,
-    policy: pulumi.all([playRepo.arn, esRepo.arn, accountId]).apply(([playArn, esArn, account]) => JSON.stringify({
+    policy: pulumi.all([playRepo.arn, accountId, osSnapshotRole.arn, osDomain.arn]).apply(([playArn, account, snapshotRoleArn, domainArn]) => JSON.stringify({
         Version: "2012-10-17",
         Statement: [
-            {
-                Effect: "Allow",
-                Action: ["s3:GetObject", "s3:PutObject", "s3:ListBucket", "s3:DeleteObject"],
-                Resource: [
-                    "arn:aws:s3:::zeno-snapshots",
-                    "arn:aws:s3:::zeno-snapshots/*",
-                ],
-            },
             {
                 Effect: "Allow",
                 Action: ["secretsmanager:GetSecretValue"],
@@ -189,12 +251,17 @@ const instancePolicy = new aws.iam.RolePolicy("zenobase-instance-policy", {
                     "ecr:GetDownloadUrlForLayer",
                     "ecr:BatchGetImage",
                 ],
-                Resource: [playArn, esArn],
+                Resource: [playArn],
             },
             {
                 Effect: "Allow",
-                Action: ["ec2:DescribeInstances"],
-                Resource: "*",
+                Action: ["iam:PassRole"],
+                Resource: [snapshotRoleArn],
+            },
+            {
+                Effect: "Allow",
+                Action: ["es:ESHttpGet", "es:ESHttpPut", "es:ESHttpPost", "es:ESHttpDelete", "es:ESHttpHead"],
+                Resource: [`${domainArn}/*`],
             },
         ],
     })),
@@ -346,10 +413,6 @@ new aws.cloudwatch.LogGroup("zenobase-play-logs", {
     retentionInDays: 30,
 });
 
-new aws.cloudwatch.LogGroup("zenobase-es-logs", {
-    name: "/zenobase/elasticsearch",
-    retentionInDays: 30,
-});
 
 // ---------- EC2 Instance ----------
 
@@ -368,17 +431,14 @@ const greenNeeded = deployTarget === "green" || activeTargetGroup === "green";
 
 const userData = pulumi.all([
     playRepo.repositoryUrl,
-    esRepo.repositoryUrl,
     prodConfSecret.arn,
-]).apply(([playRepoUrl, esRepoUrl, secretArn]) => {
+    osDomain.endpoint,
+    osSnapshotRole.arn,
+]).apply(([playRepoUrl, secretArn, osEndpoint, snapshotRoleArn]) => {
     const ecrRegistry = playRepoUrl.split("/")[0];
     return `#!/bin/bash
 set -euo pipefail
 exec > /var/log/user-data.log 2>&1
-
-# OpenSearch requires vm.max_map_count >= 262144
-sysctl -w vm.max_map_count=262144
-echo "vm.max_map_count=262144" >> /etc/sysctl.conf
 
 # Install Docker
 dnf install -y docker aws-cli jq
@@ -412,116 +472,21 @@ ${tlsSecurity}TLSEOF
 cat > docker-compose.yml << 'DCEOF'
 ${composeTemplate}DCEOF
 
-# Fetch EC2 metadata via IMDSv2
-TOKEN=\$(curl -s -X PUT "http://169.254.169.254/latest/api/token" -H "X-aws-ec2-metadata-token-ttl-seconds: 21600")
-HOST_IP=\$(curl -s -H "X-aws-ec2-metadata-token: \$TOKEN" http://169.254.169.254/latest/meta-data/local-ipv4)
-INSTANCE_ID=\$(curl -s -H "X-aws-ec2-metadata-token: \$TOKEN" http://169.254.169.254/latest/meta-data/instance-id)
-
-# Check if any peer OpenSearch node with the same cluster name is already running
-PEER_COUNT=\$(aws ec2 describe-instances \
-  --region ${region} \
-  --filters "Name=tag:Service,Values=zenobase" "Name=tag:ClusterName,Values=${esCluster}" "Name=instance-state-name,Values=running" \
-  --query "Reservations[].Instances[?InstanceId!=\\\`\$INSTANCE_ID\\\`].InstanceId" \
-  --output text | wc -w)
-
-# If no peer exists, write override to bootstrap this node as initial cluster manager
-if [ "\$PEER_COUNT" -eq 0 ]; then
-  cat > docker-compose.override.yml << 'OVEOF'
-services:
-  opensearch:
-    environment:
-      - cluster.initial_cluster_manager_nodes=\${NODE_NAME}
-OVEOF
-fi
-
 # Write .env for docker-compose variable substitution
 cat > .env << ENVEOF
 ECR_REGISTRY=${ecrRegistry}
 PLAY_IMAGE_TAG=${playImageTag}
-OS_IMAGE_TAG=${esImageTag}
-OS_HEAP_SIZE=${esHeap}
-CLUSTER_NAME=${esCluster}
 AWS_REGION=${region}
 JAVA_HEAP=${playHeap}
+ES_HOST=https://${osEndpoint}
 ES_REPLAY=${esReplayHost}
 ES_REBUILD=${esRebuildHost}
 HOSTNAME=${hostname}
 API_HOSTNAME=${apiHostname}
 OAUTH_HOSTNAME=${oauthHostname}
 ES_SNAPSHOT_BUCKET=${esSnapshotBucket}
-PUBLISH_HOST=\${HOST_IP}
-NODE_NAME=\${INSTANCE_ID}
+ES_SNAPSHOT_ROLE_ARN=${snapshotRoleArn}
 ENVEOF
-
-# Write opensearch deregister script (runs on shutdown)
-cat > /opt/zenobase/opensearch-deregister.sh << 'DEREGEOF'
-#!/bin/bash
-set -e
-
-# Get this node's instance ID (used as node name)
-TOKEN=$(curl -s -X PUT "http://169.254.169.254/latest/api/token" -H "X-aws-ec2-metadata-token-ttl-seconds: 21600")
-NODE_NAME=$(curl -s -H "X-aws-ec2-metadata-token: $TOKEN" http://169.254.169.254/latest/meta-data/instance-id)
-
-# Check if OpenSearch is reachable
-if ! curl -sf -o /dev/null http://localhost:9200; then
-  echo "OpenSearch not reachable, skipping deregistration"
-  exit 0
-fi
-
-# Check if cluster has more than one node
-NODE_COUNT=$(curl -sf http://localhost:9200/_cat/nodes?h=name | wc -l)
-if [ "$NODE_COUNT" -le 1 ]; then
-  echo "Single-node cluster, skipping voting exclusion"
-  exit 0
-fi
-
-echo "Excluding node $NODE_NAME from voting configuration..."
-curl -sf -X POST "http://localhost:9200/_cluster/voting_config_exclusions?node_names=\${NODE_NAME}&timeout=30s" || true
-echo "Node $NODE_NAME excluded from voting configuration"
-DEREGEOF
-chmod +x /opt/zenobase/opensearch-deregister.sh
-
-# Write opensearch clear-exclusions script (runs on boot)
-cat > /opt/zenobase/opensearch-clear-exclusions.sh << 'CLEAREOF'
-#!/bin/bash
-set -e
-
-echo "Waiting for OpenSearch to become healthy..."
-for i in $(seq 1 60); do
-  if curl -sf -o /dev/null http://localhost:9200/_cluster/health; then
-    echo "OpenSearch is healthy, clearing voting config exclusions..."
-    curl -sf -X DELETE "http://localhost:9200/_cluster/voting_config_exclusions" || true
-    echo "Voting config exclusions cleared"
-    exit 0
-  fi
-  sleep 5
-done
-echo "OpenSearch did not become healthy within 5 minutes, skipping exclusion cleanup"
-CLEAREOF
-chmod +x /opt/zenobase/opensearch-clear-exclusions.sh
-
-# Write systemd service for opensearch deregistration
-cat > /etc/systemd/system/opensearch-deregister.service << 'SVCEOF'
-[Unit]
-Description=OpenSearch voting config deregistration
-After=docker.service
-Before=shutdown.target
-
-[Service]
-Type=oneshot
-RemainAfterExit=yes
-ExecStart=/opt/zenobase/opensearch-clear-exclusions.sh
-ExecStop=/opt/zenobase/opensearch-deregister.sh
-TimeoutStartSec=360
-TimeoutStopSec=45
-
-[Install]
-WantedBy=multi-user.target
-SVCEOF
-
-systemctl daemon-reload
-systemctl enable opensearch-deregister.service
-systemctl start opensearch-deregister.service
 
 # Pull images and start
 docker-compose pull
@@ -540,13 +505,13 @@ const blueInstance = new aws.ec2.Instance("zenobase-blue", {
     userDataReplaceOnChange: true,
     rootBlockDevice: { volumeSize: 20, volumeType: "gp3", encrypted: true },
     metadataOptions: {
-        httpTokens: "optional",    // allow IMDSv1 (needed by old AWS SDK in ES)
+        httpTokens: "required",
         httpEndpoint: "enabled",
     },
-    tags: { Name: "zenobase-blue", Service: "zenobase", ClusterName: esCluster },
+    tags: { Name: "zenobase-blue", Service: "zenobase" },
 }, {
     retainOnDelete: true,
-    ...(deployTarget !== "blue" && { ignoreChanges: ["ami", "instanceType", "userData", "rootBlockDevice", "metadataOptions", "tags"] }),
+    ...(deployTarget !== "blue" && { ignoreChanges: ["ami", "instanceType", "userData", "rootBlockDevice", "metadataOptions", "tags", "vpcSecurityGroupIds"] }),
 });
 new aws.lb.TargetGroupAttachment("zenobase-tg-blue-attach", {
     targetGroupArn: tgBlue.arn,
@@ -565,14 +530,14 @@ const greenInstance = new aws.ec2.Instance("zenobase-green", {
     userDataReplaceOnChange: true,
     rootBlockDevice: { volumeSize: 20, volumeType: "gp3", encrypted: true },
     metadataOptions: {
-        httpTokens: "optional",    // allow IMDSv1 (needed by old AWS SDK in ES)
+        httpTokens: "required",
         httpEndpoint: "enabled",
     },
-    tags: { Name: "zenobase-green", Service: "zenobase", ClusterName: esCluster },
+    tags: { Name: "zenobase-green", Service: "zenobase" },
 }, {
     retainOnDelete: true,
     aliases: [{ name: "zenobase-instance" }],
-    ...(deployTarget !== "green" && { ignoreChanges: ["ami", "instanceType", "userData", "rootBlockDevice", "metadataOptions", "tags"] }),
+    ...(deployTarget !== "green" && { ignoreChanges: ["ami", "instanceType", "userData", "rootBlockDevice", "metadataOptions", "tags", "vpcSecurityGroupIds"] }),
 });
 new aws.lb.TargetGroupAttachment("zenobase-tg-green-attach", {
     targetGroupArn: tgGreen.arn,
@@ -636,7 +601,7 @@ export const vpcId = vpc.id;
 export const albDnsName = alb.dnsName;
 export const albArn = alb.arn;
 export const playEcrUrl = playRepo.repositoryUrl;
-export const esEcrUrl = esRepo.repositoryUrl;
+export const opensearchEndpoint = osDomain.endpoint;
 const activeInstance = activeTargetGroup === "blue" ? blueInstance : greenInstance;
 const deployInstance = deployTarget === "blue" ? blueInstance : greenInstance;
 
