@@ -44,6 +44,7 @@ public class Search {
 		builder.index(indexName);
 		builder.query(buildQuery());
 		builder.size(0);
+		builder.trackTotalHits(t -> t.enabled(true));
 		for (Facet facet : facets) {
 			facet.configure(builder);
 		}
