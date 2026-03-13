@@ -455,6 +455,76 @@ PUBLISH_HOST=\${HOST_IP}
 NODE_NAME=\${INSTANCE_ID}
 ENVEOF
 
+# Write opensearch deregister script (runs on shutdown)
+cat > /opt/zenobase/opensearch-deregister.sh << 'DEREGEOF'
+#!/bin/bash
+set -e
+
+# Get this node's instance ID (used as node name)
+TOKEN=$(curl -s -X PUT "http://169.254.169.254/latest/api/token" -H "X-aws-ec2-metadata-token-ttl-seconds: 21600")
+NODE_NAME=$(curl -s -H "X-aws-ec2-metadata-token: $TOKEN" http://169.254.169.254/latest/meta-data/instance-id)
+
+# Check if OpenSearch is reachable
+if ! curl -sf -o /dev/null http://localhost:9200; then
+  echo "OpenSearch not reachable, skipping deregistration"
+  exit 0
+fi
+
+# Check if cluster has more than one node
+NODE_COUNT=$(curl -sf http://localhost:9200/_cat/nodes?h=name | wc -l)
+if [ "$NODE_COUNT" -le 1 ]; then
+  echo "Single-node cluster, skipping voting exclusion"
+  exit 0
+fi
+
+echo "Excluding node $NODE_NAME from voting configuration..."
+curl -sf -X POST "http://localhost:9200/_cluster/voting_config_exclusions?node_names=${NODE_NAME}&timeout=30s" || true
+echo "Node $NODE_NAME excluded from voting configuration"
+DEREGEOF
+chmod +x /opt/zenobase/opensearch-deregister.sh
+
+# Write opensearch clear-exclusions script (runs on boot)
+cat > /opt/zenobase/opensearch-clear-exclusions.sh << 'CLEAREOF'
+#!/bin/bash
+set -e
+
+echo "Waiting for OpenSearch to become healthy..."
+for i in $(seq 1 60); do
+  if curl -sf -o /dev/null http://localhost:9200/_cluster/health; then
+    echo "OpenSearch is healthy, clearing voting config exclusions..."
+    curl -sf -X DELETE "http://localhost:9200/_cluster/voting_config_exclusions" || true
+    echo "Voting config exclusions cleared"
+    exit 0
+  fi
+  sleep 5
+done
+echo "OpenSearch did not become healthy within 5 minutes, skipping exclusion cleanup"
+CLEAREOF
+chmod +x /opt/zenobase/opensearch-clear-exclusions.sh
+
+# Write systemd service for opensearch deregistration
+cat > /etc/systemd/system/opensearch-deregister.service << 'SVCEOF'
+[Unit]
+Description=OpenSearch voting config deregistration
+After=docker.service
+Before=shutdown.target
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/opt/zenobase/opensearch-clear-exclusions.sh
+ExecStop=/opt/zenobase/opensearch-deregister.sh
+TimeoutStartSec=360
+TimeoutStopSec=45
+
+[Install]
+WantedBy=multi-user.target
+SVCEOF
+
+systemctl daemon-reload
+systemctl enable opensearch-deregister.service
+systemctl start opensearch-deregister.service
+
 # Pull images and start
 docker-compose pull
 docker-compose up -d
