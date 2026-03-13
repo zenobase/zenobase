@@ -12,6 +12,6 @@ config:
   zenobase:osDomainName: prod-119
   zenobase:esReplayHost: ""
   zenobase:esRebuildHost: ""
-  zenobase:playImageTag: "2b2dbc091beced12d0c6b5e6df21b84119195a4d"
+  zenobase:playImageTag: "39db391bf2da6c957fd0c2a558c29d224fae9045"
   zenobase:deployTarget: blue
   zenobase:activeTargetGroup: green
