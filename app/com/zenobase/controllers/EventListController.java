@@ -13,6 +13,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
+import org.opensearch.client.opensearch._types.OpenSearchException;
 import play.mvc.BodyParser;
 import play.mvc.Result;
 
@@ -108,6 +109,11 @@ public class EventListController extends ControllerSupport {
 			return ok(events.find(bucketId, search));
 		} catch (IllegalArgumentException e) {
 			return badRequest("Invalid parameters");
+		} catch (OpenSearchException e) {
+			if (e.getMessage() != null && e.getMessage().contains("too_many_buckets")) {
+				return badRequest("Too many data points for the selected interval; try a coarser interval");
+			}
+			throw e;
 		}
     }
 
