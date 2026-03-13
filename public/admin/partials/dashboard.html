@@ -4,7 +4,7 @@
 		<p class="pull-left page-title">
 			<span class="page-title-text">Admin</span>
 			<span class="badge page-title-decoration" title="Cluster Health" data-ng-show="status"
-				data-ng-class="{ 'badge-success' : status.health == 'GREEN', 'badge-warning' : status.health == 'YELLOW', 'badge-important' : status.health == 'RED' }" 
+				data-ng-class="{ 'badge-success' : status.health == 'green', 'badge-warning' : status.health == 'yellow', 'badge-important' : status.health == 'red' }" 
 			>{{status.data_nodes}}</span>
 			<a class="page-title-decoration" data-ng-click="refreshAll()" title="Refresh"><i class="fa fa-refresh" data-ng-class="progress.isIncomplete() && 'fa-spin'"></i></a>
 			<a class="page-title-decoration" data-ng-show="status.read_only" data-ng-click="setReadOnly(false)" title="in read-only mode"><i class="fa fa-lock"></i></a>
