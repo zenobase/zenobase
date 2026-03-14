@@ -180,18 +180,44 @@ Use this procedure to restore from an S3 snapshot into a new managed OpenSearch 
 
      Wait for the domain to become active (15-30 minutes).
 
-  2. The app registers the S3 snapshot repository on startup (with role_arn).
-     Verify via:
+  2. SSH into the EC2 instance and install awscurl (needed to sign requests):
 
-       curl 'https://<domain-endpoint>/_snapshot/_all?pretty=true'
+       sudo yum install python3-pip
+       pip3 install awscurl
 
-  3. Restore a snapshot:
+  3. Register the S3 snapshot repository (the base_path must match the
+     source domain name, as snapshots are stored under that path in S3):
 
-       curl -XPOST 'https://<domain-endpoint>/_snapshot/<repo-name>/<snapshot-id>/_restore'
+       awscurl --service es --region us-east-1 \
+         -X PUT "https://<domain-endpoint>/_snapshot/<source-domain-name>" \
+         -H "Content-Type: application/json" \
+         -d '{
+           "type": "s3",
+           "settings": {
+             "bucket": "zeno-snapshots",
+             "base_path": "<source-domain-name>",
+             "region": "us-east-1",
+             "role_arn": "arn:aws:iam::694665597187:role/<snapshot-role-name>"
+           }
+         }'
 
-  4. Monitor progress:
+     The snapshot role ARN can be found in `pulumi stack output`.
 
-       curl 'https://<domain-endpoint>/_cat/recovery'
+  4. List available snapshots:
+
+       awscurl --service es --region us-east-1 \
+         "https://<domain-endpoint>/_snapshot/<source-domain-name>/_all?pretty=true"
+
+  5. Restore a snapshot:
+
+       awscurl --service es --region us-east-1 \
+         -X POST "https://<domain-endpoint>/_snapshot/<source-domain-name>/<snapshot-id>/_restore" \
+         -H "Content-Type: application/json"
+
+  6. Monitor progress:
+
+       awscurl --service es --region us-east-1 \
+         "https://<domain-endpoint>/_cat/recovery"
 
   5. Switch traffic:
 
