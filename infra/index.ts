@@ -126,10 +126,6 @@ const playRepo = new aws.ecr.Repository("zenobase-play", {
 
 // ---------- OpenSearch Service ----------
 
-const osServiceLinkedRole = new aws.iam.ServiceLinkedRole("zenobase-os-slr", {
-    awsServiceName: "opensearchservice.amazonaws.com",
-});
-
 const osDomain = new aws.opensearch.Domain("zenobase-os", {
     domainName: osDomainName,
     engineVersion: "OpenSearch_3.1",
@@ -165,7 +161,7 @@ const osDomain = new aws.opensearch.Domain("zenobase-os", {
         }],
     })),
     tags: { Name: osDomainName },
-}, { dependsOn: [osServiceLinkedRole] });
+});
 
 // Snapshot IAM role for OpenSearch to access S3
 const osSnapshotRole = new aws.iam.Role("zenobase-os-snapshot-role", {
@@ -369,20 +365,6 @@ const httpsListener = new aws.lb.Listener("zenobase-https", {
             ],
         },
     }],
-});
-
-new aws.lb.ListenerRule("zenobase-blue-host-rule", {
-    listenerArn: httpsListener.arn,
-    priority: 10,
-    conditions: [{ hostHeader: { values: ["blue.zenobase.com"] } }],
-    actions: [{ type: "forward", targetGroupArn: tgBlue.arn }],
-});
-
-new aws.lb.ListenerRule("zenobase-green-host-rule", {
-    listenerArn: httpsListener.arn,
-    priority: 11,
-    conditions: [{ hostHeader: { values: ["green.zenobase.com"] } }],
-    actions: [{ type: "forward", targetGroupArn: tgGreen.arn }],
 });
 
 new aws.lb.Listener("zenobase-http-redirect", {
