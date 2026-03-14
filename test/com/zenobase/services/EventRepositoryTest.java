@@ -22,7 +22,7 @@ import com.zenobase.search.EventSearchBuilder;
 import com.zenobase.search.Search;
 import com.zenobase.testing.NodeAssert;
 
-public class EventRepositoryTest extends ElasticSearchTestSupport {
+public class EventRepositoryTest extends OpenSearchTestSupport {
 
 	private Identity me = new Identity("me");
 	private EventRepository repository;

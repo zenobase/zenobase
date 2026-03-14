@@ -10,10 +10,10 @@ import org.junit.BeforeClass;
 
 import com.zenobase.common.Generator;
 import com.zenobase.common.Units;
-import com.zenobase.services.ElasticSearchTestSupport;
+import com.zenobase.services.OpenSearchTestSupport;
 import com.zenobase.services.Index;
 
-public abstract class FieldTestSupport<T> extends ElasticSearchTestSupport {
+public abstract class FieldTestSupport<T> extends OpenSearchTestSupport {
 
 	private static final String INDEX_NAME = "index";
 	private static final String TYPE_NAME = "type";

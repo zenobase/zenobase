@@ -22,7 +22,7 @@ import com.zenobase.common.Callback;
 import com.zenobase.models.Identity;
 import com.zenobase.testing.PartialListAssert;
 
-public class CommandRepositoryTest extends ElasticSearchTestSupport {
+public class CommandRepositoryTest extends OpenSearchTestSupport {
 
 	private final Identity principal = new Identity();
 

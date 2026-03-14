@@ -18,7 +18,7 @@ import com.zenobase.models.User;
 
 import static org.junit.Assert.assertEquals;
 
-public class CommandReplayTest extends ElasticSearchTestSupport {
+public class CommandReplayTest extends OpenSearchTestSupport {
 
 	private final User user = new User("jdoe");
 	private final CommandParserRegistry parsers = CommandParserRegistry.containing(new TestCommand.Parser());

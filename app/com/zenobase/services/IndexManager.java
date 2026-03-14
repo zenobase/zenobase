@@ -33,7 +33,7 @@ public class IndexManager implements Closeable {
 	private final String snapshotRepository;
 
 	@Inject
-	public IndexManager(ClientFactory clientFactory, @Named("es.snapshot.bucket") String snapshotBucket, @Named("es.snapshot.region") String snapshotRegion, @Named("es.snapshot.role_arn") String snapshotRoleArn) {
+	public IndexManager(ClientFactory clientFactory, @Named("opensearch.snapshot.bucket") String snapshotBucket, @Named("opensearch.snapshot.region") String snapshotRegion, @Named("opensearch.snapshot.role_arn") String snapshotRoleArn) {
 		client = clientFactory.createClient();
 		while (!new Cluster(client).isReady()) {
 			Logger.warn("Waiting for cluster to recover...");

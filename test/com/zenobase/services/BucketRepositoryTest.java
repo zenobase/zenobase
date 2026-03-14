@@ -23,7 +23,7 @@ import com.zenobase.models.Bucket;
 import com.zenobase.models.Identity;
 import com.zenobase.models.Role;
 
-public class BucketRepositoryTest extends ElasticSearchTestSupport {
+public class BucketRepositoryTest extends OpenSearchTestSupport {
 
 	private static final Identity ME = new Identity("me");
 	private static final Identity YOU = new Identity("you");

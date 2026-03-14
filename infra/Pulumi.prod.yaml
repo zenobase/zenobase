@@ -8,10 +8,10 @@ config:
   zenobase:apiHostname: "https://api.zenobase.com"
   zenobase:oauthHostname: "https://zenobase.com"
   zenobase:sesIdentity: info@zenobase.com
-  zenobase:esSnapshotBucket: zeno-snapshots
-  zenobase:osDomainName: zeno-opensearch-119
-  zenobase:esReplayHost: ""
-  zenobase:esRebuildHost: ""
+  zenobase:opensearchSnapshotBucket: zeno-snapshots
+  zenobase:opensearchDomain: zeno-opensearch-119
+  zenobase:opensearchReplayHost: ""
+  zenobase:opensearchRebuildHost: ""
   zenobase:playImageTag: "87a4c76734b82d20fae9afedea1cfc78dd425633"
   zenobase:deployTarget: blue
   zenobase:activeTargetGroup: blue

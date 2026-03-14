@@ -37,7 +37,7 @@ public class CommandRebuild {
 	private final CommandDispatcher dispatcher;
 
 	@Inject
-	public CommandRebuild(@Named("es.rebuild.host") String sourceHost, @Named("es.rebuild.parallelism") int parallelism, CommandDispatcher dispatcher) {
+	public CommandRebuild(@Named("opensearch.rebuild.host") String sourceHost, @Named("opensearch.rebuild.parallelism") int parallelism, CommandDispatcher dispatcher) {
 		this.sourceHost = sourceHost;
 		this.parallelism = parallelism > 0 ? parallelism : Runtime.getRuntime().availableProcessors();
 		this.dispatcher = dispatcher;

@@ -20,7 +20,7 @@ import com.zenobase.common.Generator;
 import com.zenobase.models.Identity;
 import com.zenobase.oauth.Authorization;
 
-public class AuthorizationRepositoryTest extends ElasticSearchTestSupport {
+public class AuthorizationRepositoryTest extends OpenSearchTestSupport {
 
 	private static final Identity ME = new Identity();
 	private static final Identity YOU = new Identity();

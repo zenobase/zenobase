@@ -19,7 +19,7 @@ import com.zenobase.common.Callback;
 import com.zenobase.models.Identity;
 import com.zenobase.tasks.Credentials;
 
-public class CredentialsRepositoryTest extends ElasticSearchTestSupport {
+public class CredentialsRepositoryTest extends OpenSearchTestSupport {
 
 	private static final Identity ME = new Identity("me");
 	private static final Identity YOU = new Identity("you");

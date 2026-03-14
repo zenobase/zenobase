@@ -15,7 +15,7 @@ import org.junit.Test;
 import com.zenobase.common.Callback;
 import com.zenobase.models.User;
 
-public class UserRepositoryTest extends ElasticSearchTestSupport {
+public class UserRepositoryTest extends OpenSearchTestSupport {
 
 	private UserRepository repository;
 

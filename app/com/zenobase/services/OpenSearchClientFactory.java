@@ -23,7 +23,7 @@ public class OpenSearchClientFactory implements ClientFactory {
 	private final String region;
 
 	@Inject
-	public OpenSearchClientFactory(@Named("es.host") String host, @Named("es.snapshot.region") String region) {
+	public OpenSearchClientFactory(@Named("opensearch.host") String host, @Named("opensearch.snapshot.region") String region) {
 		this.host = host;
 		this.region = region;
 	}

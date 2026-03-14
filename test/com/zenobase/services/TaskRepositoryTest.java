@@ -20,7 +20,7 @@ import com.zenobase.common.Generator;
 import com.zenobase.models.Identity;
 import com.zenobase.tasks.Task;
 
-public class TaskRepositoryTest extends ElasticSearchTestSupport {
+public class TaskRepositoryTest extends OpenSearchTestSupport {
 
 	private static final String TYPE = "test";
 	private static final String BUCKET = Generator.id();

@@ -7,15 +7,15 @@ services:
       - ./play/config/logback-play.xml:/etc/play/logback.xml:ro
       - ./play/config/enableLegacyTLS.security:/etc/play/enableLegacyTLS.security:ro
     environment:
-      - JAVA_HEAP=${JAVA_HEAP:-2g}
-      - ES_HOST=${ES_HOST:-http://localhost:9200}
-      - ES_SNAPSHOT_BUCKET=${ES_SNAPSHOT_BUCKET:-}
-      - ES_SNAPSHOT_ROLE_ARN=${ES_SNAPSHOT_ROLE_ARN:-}
       - AWS_REGION=${AWS_REGION:-us-east-1}
-      - ES_REPLAY=${ES_REPLAY:-}
-      - ES_REPLAY_PARALLELISM=${ES_REPLAY_PARALLELISM:-0}
-      - ES_REBUILD=${ES_REBUILD:-}
-      - ES_REBUILD_PARALLELISM=${ES_REBUILD_PARALLELISM:-0}
+      - JAVA_HEAP=${JAVA_HEAP:-2g}
+      - OPENSEARCH_HOST=${OPENSEARCH_HOST:-http://localhost:9200}
+      - OPENSEARCH_SNAPSHOT_BUCKET=${OPENSEARCH_SNAPSHOT_BUCKET:-}
+      - OPENSEARCH_SNAPSHOT_ROLE_ARN=${OPENSEARCH_SNAPSHOT_ROLE_ARN:-}
+      - OPENSEARCH_REPLAY=${OPENSEARCH_REPLAY:-}
+      - OPENSEARCH_REPLAY_PARALLELISM=${OPENSEARCH_REPLAY_PARALLELISM:-0}
+      - OPENSEARCH_REBUILD=${OPENSEARCH_REBUILD:-}
+      - OPENSEARCH_REBUILD_PARALLELISM=${OPENSEARCH_REBUILD_PARALLELISM:-0}
       - HOSTNAME=${HOSTNAME:-http://localhost:9000}
       - API_HOSTNAME=${API_HOSTNAME:-http://localhost:9000}
       - OAUTH_HOSTNAME=${OAUTH_HOSTNAME:-https://zenobase.com}

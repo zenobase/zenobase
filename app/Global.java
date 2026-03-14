@@ -431,7 +431,7 @@ public class Global extends GlobalSettings {
 	private void replay() {
 		UserRepository users = injector.getInstance(UserRepository.class);
 		if (users.isEmpty()) {
-			Configuration esConfig = getApplicationConfig().getConfig("es");
+			Configuration esConfig = getApplicationConfig().getConfig("opensearch");
 			if (!Strings.isNullOrEmpty(esConfig.getString("replay.host"))) {
 				injector.getInstance(CommandReplay.class).replay();
 			} else if (!Strings.isNullOrEmpty(esConfig.getString("rebuild.host"))) {

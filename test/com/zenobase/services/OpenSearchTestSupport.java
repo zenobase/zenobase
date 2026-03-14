@@ -16,7 +16,7 @@ import org.testcontainers.containers.wait.strategy.Wait;
 
 import com.zenobase.common.Callback;
 
-public abstract class ElasticSearchTestSupport {
+public abstract class OpenSearchTestSupport {
 
 	private static final GenericContainer<?> container;
 	private static final OpenSearchClient sharedClient;

@@ -22,7 +22,7 @@ import com.zenobase.oauth.Authorization;
 import com.zenobase.tasks.Credentials;
 import com.zenobase.tasks.Task;
 
-public class CommandRebuildTest extends ElasticSearchTestSupport {
+public class CommandRebuildTest extends OpenSearchTestSupport {
 
 	@Test
 	public void test() {

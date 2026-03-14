@@ -6,10 +6,10 @@ import org.junit.Before;
 
 import com.zenobase.common.Generator;
 import com.zenobase.models.Event;
-import com.zenobase.services.ElasticSearchTestSupport;
+import com.zenobase.services.OpenSearchTestSupport;
 import com.zenobase.services.Index;
 
-public class SearchTestSupport extends ElasticSearchTestSupport {
+public class SearchTestSupport extends OpenSearchTestSupport {
 
 	private final EventSearchBuilder search = new EventSearchBuilder();
 	private final String bucketId = Generator.id();

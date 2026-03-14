@@ -113,8 +113,8 @@ from the old domain.
   1. Set migration config (note: creating the domain takes 15-30 minutes):
 
        cd infra
-       pulumi config set zenobase:osDomainName <new-domain-name>
-       pulumi config set zenobase:esReplayHost "https://<old-domain-endpoint>"
+       pulumi config set zenobase:opensearchDomain <new-domain-name>
+       pulumi config set zenobase:opensearchReplayHost "https://<old-domain-endpoint>"
        pulumi config set zenobase:deployTarget green  # or blue
        pulumi up
 
@@ -130,7 +130,7 @@ from the old domain.
 
   4. Clear migration config for the next deploy:
 
-       pulumi config set zenobase:esReplayHost ""
+       pulumi config set zenobase:opensearchReplayHost ""
 
   5. Delete the old OpenSearch domain via the AWS console.
 
@@ -139,13 +139,13 @@ Migration Procedure (Rebuild)
 -----------------------------
 
 Use this procedure to rebuild the database and compact the command history.
-Same pattern as Replay but uses esRebuildHost.
+Same pattern as Replay but uses opensearchRebuildHost.
 
   1. Set migration config (note: creating the domain takes 15-30 minutes):
 
        cd infra
-       pulumi config set zenobase:osDomainName <new-domain-name>
-       pulumi config set zenobase:esRebuildHost "https://<old-domain-endpoint>"
+       pulumi config set zenobase:opensearchDomain <new-domain-name>
+       pulumi config set zenobase:opensearchRebuildHost "https://<old-domain-endpoint>"
        pulumi config set zenobase:deployTarget green  # or blue
        pulumi up
 
@@ -161,7 +161,7 @@ Same pattern as Replay but uses esRebuildHost.
 
   4. Clear migration config for the next deploy:
 
-       pulumi config set zenobase:esRebuildHost ""
+       pulumi config set zenobase:opensearchRebuildHost ""
 
   5. Delete the old OpenSearch domain via the AWS console.
 
@@ -174,7 +174,7 @@ Use this procedure to restore from an S3 snapshot into a new managed OpenSearch 
   1. Create a new domain:
 
        cd infra
-       pulumi config set zenobase:osDomainName "zenobase-v2"
+       pulumi config set zenobase:opensearchDomain "zenobase-v2"
        pulumi config set zenobase:deployTarget green  # or blue
        pulumi up
 

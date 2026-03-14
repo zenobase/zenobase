@@ -13,7 +13,7 @@ import com.zenobase.models.Identity;
 import com.zenobase.models.Role;
 import com.zenobase.testing.NodeAssert;
 
-public class VirtualBucketTest extends ElasticSearchTestSupport {
+public class VirtualBucketTest extends OpenSearchTestSupport {
 
 	private Identity me = new Identity("me");
 	private BucketRepository buckets;

@@ -22,10 +22,10 @@ const playHeap = config.get("playHeap") || "2g";
 const playImageTag = config.get("playImageTag") || "latest";
 const activeTargetGroup = config.get("activeTargetGroup") || "blue";
 const deployTarget = config.get("deployTarget") || activeTargetGroup;
-const esSnapshotBucket = config.get("esSnapshotBucket") || "";
-const osDomainName = config.get("osDomainName") || "zenobase";
-const esReplayHost = config.get("esReplayHost") || "";
-const esRebuildHost = config.get("esRebuildHost") || "";
+const opensearchSnapshotBucket = config.get("opensearchSnapshotBucket") || "";
+const opensearchDomain = config.get("opensearchDomain") || "zenobase";
+const opensearchReplayHost = config.get("opensearchReplayHost") || "";
+const opensearchRebuildHost = config.get("opensearchRebuildHost") || "";
 const hostname = config.get("hostname") || "http://localhost:9000";
 const apiHostname = config.get("apiHostname") || "http://localhost:9000";
 const oauthHostname = config.get("oauthHostname") || "https://zenobase.com";
@@ -127,7 +127,7 @@ const playRepo = new aws.ecr.Repository("zenobase-play", {
 // ---------- OpenSearch Service ----------
 
 const osDomain = new aws.opensearch.Domain("zenobase-os", {
-    domainName: osDomainName,
+    domainName: opensearchDomain,
     engineVersion: "OpenSearch_3.1",
     clusterConfig: {
         instanceType: "t3.medium.search",
@@ -157,10 +157,10 @@ const osDomain = new aws.opensearch.Domain("zenobase-os", {
             Effect: "Allow",
             Principal: { AWS: "*" },
             Action: "es:*",
-            Resource: `arn:aws:es:${region}:${account}:domain/${osDomainName}/*`,
+            Resource: `arn:aws:es:${region}:${account}:domain/${opensearchDomain}/*`,
         }],
     })),
-    tags: { Name: osDomainName },
+    tags: { Name: opensearchDomain },
 });
 
 // Snapshot IAM role for OpenSearch to access S3
@@ -460,14 +460,14 @@ ECR_REGISTRY=${ecrRegistry}
 PLAY_IMAGE_TAG=${playImageTag}
 AWS_REGION=${region}
 JAVA_HEAP=${playHeap}
-ES_HOST=https://${osEndpoint}
-ES_REPLAY=${esReplayHost}
-ES_REBUILD=${esRebuildHost}
+OPENSEARCH_HOST=https://${osEndpoint}
+OPENSEARCH_SNAPSHOT_BUCKET=${opensearchSnapshotBucket}
+OPENSEARCH_SNAPSHOT_ROLE_ARN=${snapshotRoleArn}
+OPENSEARCH_REPLAY=${opensearchReplayHost}
+OPENSEARCH_REBUILD=${opensearchRebuildHost}
 HOSTNAME=${hostname}
 API_HOSTNAME=${apiHostname}
 OAUTH_HOSTNAME=${oauthHostname}
-ES_SNAPSHOT_BUCKET=${esSnapshotBucket}
-ES_SNAPSHOT_ROLE_ARN=${snapshotRoleArn}
 ENVEOF
 
 # Pull images and start

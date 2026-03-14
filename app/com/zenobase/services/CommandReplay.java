@@ -35,7 +35,7 @@ public class CommandReplay {
 	private final AtomicInteger failures = new AtomicInteger();
 
 	@Inject
-	public CommandReplay(@Named("es.replay.host") String sourceHost, @Named("es.replay.parallelism") int parallelism, CommandParserRegistry parsers, CommandDispatcher dispatcher) {
+	public CommandReplay(@Named("opensearch.replay.host") String sourceHost, @Named("opensearch.replay.parallelism") int parallelism, CommandParserRegistry parsers, CommandDispatcher dispatcher) {
 		this.sourceHost = sourceHost;
 		this.parallelism = parallelism > 0 ? parallelism : Runtime.getRuntime().availableProcessors();
 		this.parsers = parsers;
