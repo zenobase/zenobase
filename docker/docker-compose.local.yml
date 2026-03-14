@@ -1,7 +1,6 @@
 services:
   opensearch:
-    image: zenobase-opensearch:latest
-    pull_policy: never
+    image: opensearchproject/opensearch:3.1.0
     ports:
       - "9200:9200"
     volumes:
@@ -11,6 +10,14 @@ services:
       - discovery.type=single-node
       - path.repo=/usr/share/opensearch/data/snapshots
       - OPENSEARCH_JAVA_OPTS=-Xms2g -Xmx2g
+      - plugins.security.disabled=true
+      - DISABLE_INSTALL_DEMO_CONFIG=true
+    healthcheck:
+      test: curl -f http://localhost:9200/_cluster/health || exit 1
+      interval: 30s
+      timeout: 10s
+      start_period: 60s
+      retries: 3
     ulimits:
       nofile:
         soft: 64000
