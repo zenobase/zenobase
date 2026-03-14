@@ -40,7 +40,8 @@ public class IndexManager implements Closeable {
 			Uninterruptibles.sleepUninterruptibly(5, TimeUnit.SECONDS);
 		}
 		if (!snapshotBucket.isEmpty()) {
-			String repositoryName = new Cluster(client).getHealth().clusterName();
+			String clusterName = new Cluster(client).getHealth().clusterName();
+			String repositoryName = clusterName.contains(":") ? clusterName.substring(clusterName.indexOf(':') + 1) : clusterName;
 			registerSnapshotRepository(repositoryName, snapshotBucket, snapshotRegion, snapshotRoleArn);
 			this.snapshotRepository = repositoryName;
 		} else {
