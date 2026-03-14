@@ -2,16 +2,16 @@ config:
   aws:region: us-east-1
   zenobase:certificateArn: arn:aws:acm:us-east-1:694665597187:certificate/aa7538d0-05ca-4459-9fc2-ad2301efa13d
   zenobase:keyPairName: zeno
-  zenobase:instanceType: t4g.large
+  zenobase:instanceType: t4g.medium
   zenobase:playHeap: 2g
   zenobase:hostname: "https://zenobase.com"
   zenobase:apiHostname: "https://api.zenobase.com"
   zenobase:oauthHostname: "https://zenobase.com"
   zenobase:sesIdentity: info@zenobase.com
   zenobase:esSnapshotBucket: zeno-snapshots
-  zenobase:osDomainName: prod-119
+  zenobase:osDomainName: zeno-opensearch-119
   zenobase:esReplayHost: ""
   zenobase:esRebuildHost: ""
-  zenobase:playImageTag: "39db391bf2da6c957fd0c2a558c29d224fae9045"
+  zenobase:playImageTag: "87a4c76734b82d20fae9afedea1cfc78dd425633"
   zenobase:deployTarget: blue
-  zenobase:activeTargetGroup: green
+  zenobase:activeTargetGroup: blue
