@@ -3,6 +3,13 @@
 ## Prerequisites
 
 - AWS account with CLI configured
+- [Session Manager plugin](https://docs.aws.amazon.com/systems-manager/latest/userguide/session-manager-working-with-install-plugin.html) (for bastion access):
+  ```sh
+  curl "https://s3.amazonaws.com/session-manager-downloads/plugin/latest/mac_arm64/session-manager-plugin.pkg" -o "session-manager-plugin.pkg"
+  sudo installer -pkg session-manager-plugin.pkg -target /
+  sudo ln -s /usr/local/sessionmanagerplugin/bin/session-manager-plugin /usr/local/bin/session-manager-plugin
+  rm session-manager-plugin.pkg
+  ```
 - GitHub repo (zenobase/zenobase)
 - [Pulumi Cloud](https://app.pulumi.com/) account
 - Node.js 18+

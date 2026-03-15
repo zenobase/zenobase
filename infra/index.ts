@@ -16,6 +16,7 @@ const hostname = config.get("hostname") || "http://localhost:9000";
 const apiHostname = config.get("apiHostname") || "http://localhost:9000";
 const oauthHostname = config.get("oauthHostname") || "https://zenobase.com";
 const sesIdentity = config.get("sesIdentity") || "";
+const bastionEnabled = config.get("bastionEnabled") === "true";
 
 // ---------- VPC ----------
 
@@ -114,6 +115,72 @@ const osSg = new aws.ec2.SecurityGroup("zenobase-os-sg", {
     ],
     tags: { Name: "zenobase-opensearch" },
 });
+
+// ---------- Bastion (for OpenSearch diagnostics) ----------
+
+let bastionInstanceId: pulumi.Output<string> | undefined;
+
+if (bastionEnabled) {
+    const bastionSg = new aws.ec2.SecurityGroup("zenobase-bastion-sg", {
+        vpcId: vpc.id,
+        description: "Bastion - SSM only, no SSH",
+        egress: [
+            { protocol: "-1", fromPort: 0, toPort: 0, cidrBlocks: ["0.0.0.0/0"] },
+        ],
+        tags: { Name: "zenobase-bastion" },
+    });
+
+    new aws.ec2.SecurityGroupRule("zenobase-os-bastion-ingress", {
+        type: "ingress",
+        securityGroupId: osSg.id,
+        protocol: "tcp",
+        fromPort: 443,
+        toPort: 443,
+        sourceSecurityGroupId: bastionSg.id,
+    });
+
+    const bastionRole = new aws.iam.Role("zenobase-bastion-role", {
+        assumeRolePolicy: JSON.stringify({
+            Version: "2012-10-17",
+            Statement: [{
+                Action: "sts:AssumeRole",
+                Effect: "Allow",
+                Principal: { Service: "ec2.amazonaws.com" },
+            }],
+        }),
+        tags: { Name: "zenobase-bastion" },
+    });
+
+    new aws.iam.RolePolicyAttachment("zenobase-bastion-ssm", {
+        role: bastionRole.name,
+        policyArn: "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore",
+    });
+
+    const bastionInstanceProfile = new aws.iam.InstanceProfile("zenobase-bastion-profile", {
+        role: bastionRole.name,
+    });
+
+    const al2023Ami = aws.ec2.getAmi({
+        mostRecent: true,
+        owners: ["amazon"],
+        filters: [
+            { name: "name", values: ["al2023-ami-*-arm64"] },
+            { name: "architecture", values: ["arm64"] },
+            { name: "virtualization-type", values: ["hvm"] },
+        ],
+    });
+
+    const bastion = new aws.ec2.Instance("zenobase-bastion", {
+        ami: al2023Ami.then(ami => ami.id),
+        instanceType: "t4g.nano",
+        subnetId: subnetA.id,
+        vpcSecurityGroupIds: [bastionSg.id],
+        iamInstanceProfile: bastionInstanceProfile.name,
+        tags: { Name: "zenobase-bastion" },
+    });
+
+    bastionInstanceId = bastion.id;
+}
 
 // ---------- ECR Repositories ----------
 
@@ -493,3 +560,4 @@ export const playEcrUrl = playRepo.repositoryUrl;
 export const opensearchEndpoint = osDomain.endpoint;
 export const ecsClusterName = cluster.name;
 export const ecsServiceName = "zenobase-play";
+export { bastionInstanceId };

@@ -207,3 +207,31 @@ Use this procedure to restore from an S3 snapshot into a new managed OpenSearch 
 
        awscurl --service es --region us-east-1 \
          "https://<domain-endpoint>/_cat/recovery"
+
+
+Troubleshooting
+---------------
+
+An on-demand bastion instance can be enabled for direct access to the OpenSearch cluster. It uses SSM Session Manager, so no SSH keys or open inbound ports required.
+
+    1. Enable
+
+        pulumi config set zenobase:bastionEnabled true
+        pulumi up
+
+    2. Connect
+
+        aws ssm start-session --target $(pulumi stack output bastionInstanceId)
+
+    3. Example queries from the bastion
+
+        curl -s https://<os-endpoint>/_cat/indices?v
+        curl -s https://<os-endpoint>/_cat/shards?v
+        curl -s https://<os-endpoint>/_cluster/settings?include_defaults
+
+    4. Disable when done
+
+        pulumi config set zenobase:bastionEnabled ""
+        pulumi up
+
+The bastion creates a `t4g.nano` instance, a security group, an IAM role with SSM access, and an ingress rule on the OpenSearch security group. All resources are removed when disabled.
