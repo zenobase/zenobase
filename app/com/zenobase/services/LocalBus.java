@@ -6,11 +6,6 @@ public class LocalBus implements Bus {
 	private boolean schedulerDisabled;
 
 	@Override
-	public boolean isMaster() {
-		return true;
-	}
-
-	@Override
 	public boolean isReadOnly() {
 		return readOnly;
 	}
@@ -28,11 +23,6 @@ public class LocalBus implements Bus {
 	@Override
 	public void setSchedulerDisabled(boolean schedulerDisabled) {
 		this.schedulerDisabled = schedulerDisabled;
-	}
-
-	@Override
-	public int count() {
-		return 1;
 	}
 
 	@Override

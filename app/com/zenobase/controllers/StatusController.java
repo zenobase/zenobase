@@ -48,7 +48,7 @@ public class StatusController extends ControllerSupport {
 
 	private StatusInfo getStatus() {
 		HealthResponse health = manager.getCluster().getHealth();
-		return new StatusInfo(history.size(), health.status(), health.numberOfNodes(), bus.count(), bus.isReadOnly(), bus.isSchedulerDisabled());
+		return new StatusInfo(history.size(), health.status(), health.numberOfNodes(), bus.isReadOnly(), bus.isSchedulerDisabled());
 	}
 
 	@BodyParser.Of(BodyParser.Json.class)

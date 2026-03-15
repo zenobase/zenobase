@@ -15,12 +15,11 @@ public class StatusControllerHttpGetTest extends StatusControllerTestSupport {
 
 	@Test
 	public void testGreen() {
-		StatusInfo expected = new StatusInfo(Long.MAX_VALUE, HealthStatus.Green, 4, 2, true, true);
+		StatusInfo expected = new StatusInfo(Long.MAX_VALUE, HealthStatus.Green, 4, true, true);
 		HealthResponse health = buildHealthResponse(expected.getHealth(), expected.getNodes());
 		when(manager.getCluster()).thenReturn(cluster);
 		when(history.size()).thenReturn(expected.getCount());
 		when(cluster.getHealth()).thenReturn(health);
-		when(bus.count()).thenReturn(2);
 		when(bus.isReadOnly()).thenReturn(true);
 		when(bus.isSchedulerDisabled()).thenReturn(true);
 		Result result = call();
@@ -29,12 +28,11 @@ public class StatusControllerHttpGetTest extends StatusControllerTestSupport {
 
 	@Test
 	public void testRed() {
-		StatusInfo expected = new StatusInfo(Long.MAX_VALUE, HealthStatus.Red, 4, 2, true, true);
+		StatusInfo expected = new StatusInfo(Long.MAX_VALUE, HealthStatus.Red, 4, true, true);
 		HealthResponse health = buildHealthResponse(expected.getHealth(), expected.getNodes());
 		when(manager.getCluster()).thenReturn(cluster);
 		when(history.size()).thenReturn(expected.getCount());
 		when(cluster.getHealth()).thenReturn(health);
-		when(bus.count()).thenReturn(2);
 		when(bus.isReadOnly()).thenReturn(true);
 		when(bus.isSchedulerDisabled()).thenReturn(true);
 		Result result = call();

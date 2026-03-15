@@ -13,7 +13,6 @@ public class StatusInfo extends DomainNode {
 	private static final LongField COUNT = new LongField("count");
 	private static final TokenField HEALTH = new TokenField("health");
 	private static final IntegerField NODES_DATA = new IntegerField("data_nodes");
-	private static final IntegerField NODES_WEB = new IntegerField("web_nodes");
 	private static final BooleanField READ_ONLY = new BooleanField("read_only");
 	private static final BooleanField SCHEDULER_DISABLED = new BooleanField("scheduler_disabled");
 
@@ -21,11 +20,10 @@ public class StatusInfo extends DomainNode {
 		setValue(READ_ONLY, readOnly);
 	}
 
-	public StatusInfo(long count, HealthStatus health, int dataNodes, int webNodes, boolean readOnly, boolean schedularDisabled) {
+	public StatusInfo(long count, HealthStatus health, int dataNodes, boolean readOnly, boolean schedularDisabled) {
 		setValue(COUNT, count);
 		setValue(HEALTH, health.jsonValue());
 		setValue(NODES_DATA, dataNodes);
-		setValue(NODES_WEB, webNodes);
 		if (readOnly) {
 			setValue(READ_ONLY, true);
 		}
