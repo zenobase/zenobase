@@ -13,7 +13,6 @@ import play.Application;
 import play.Configuration;
 import play.GlobalSettings;
 import play.Play;
-import play.api.PlayException;
 import play.api.mvc.EssentialFilter;
 import play.api.mvc.Handler;
 import play.filters.gzip.GzipFilter;
@@ -191,6 +190,7 @@ public class Global extends GlobalSettings {
 		Json.setObjectMapper(Nodes.MAPPER);
 		createInjector();
 		replay();
+		enableWrites();
 		startScheduler();
 	}
 
@@ -202,7 +202,10 @@ public class Global extends GlobalSettings {
 
 				bindConfiguration();
 
-				bind(Bus.class).to(LocalBus.class).in(Singleton.class);
+				Bus bus = new LocalBus();
+				bus.setReadOnly(true);
+				bind(Bus.class).toInstance(bus);
+
 				bind(ClientFactory.class).to(OpenSearchClientFactory.class).in(Singleton.class);
 				bind(IndexManager.class).in(Singleton.class);
 				bind(BucketRepository.class).in(Singleton.class);
@@ -444,9 +447,14 @@ public class Global extends GlobalSettings {
 		return Play.application().configuration();
 	}
 
-    private void startScheduler() {
-        injector.getInstance(Scheduler.class).start();
-    }
+	private void enableWrites() {
+		Bus bus = injector.getInstance(Bus.class);
+		bus.setReadOnly(false);
+	}
+
+	private void startScheduler() {
+		injector.getInstance(Scheduler.class).start();
+	}
 
 	@Override
 	@SuppressWarnings("unchecked")
