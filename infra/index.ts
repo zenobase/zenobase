@@ -123,9 +123,9 @@ const playRepo = new aws.ecr.Repository("zenobase-play", {
 
 // ---------- OpenSearch Service ----------
 
-const osDomain = new aws.opensearch.Domain("zenobase-os", {
+const osDomain = new aws.opensearch.Domain(`zenobase-os-${opensearchDomain}`, {
     domainName: opensearchDomain,
-    engineVersion: "OpenSearch_3.1",
+    engineVersion: "OpenSearch_3.3",
     clusterConfig: {
         instanceType: "t3.medium.search",
         instanceCount: 1,

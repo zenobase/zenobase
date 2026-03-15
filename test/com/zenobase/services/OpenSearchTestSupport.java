@@ -21,7 +21,7 @@ public abstract class OpenSearchTestSupport {
 	private static final GenericContainer<?> container;
 	private static final OpenSearchClient sharedClient;
 	static {
-		container = new GenericContainer<>("opensearchproject/opensearch:3.1.0")
+		container = new GenericContainer<>("opensearchproject/opensearch:3.3.0")
 			.withEnv("discovery.type", "single-node")
 			.withEnv("plugins.security.disabled", "true")
 			.withEnv("DISABLE_INSTALL_DEMO_CONFIG", "true")
