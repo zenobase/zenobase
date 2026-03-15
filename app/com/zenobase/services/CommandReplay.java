@@ -118,7 +118,9 @@ public class CommandReplay {
 		} catch (NonExistentUserException e) {
 			Logger.warn("Skipping command applying to a non-existent user: " + command);
 		} catch (OpenSearchException e) {
-			if (e.status() == 409) {
+			if (e.status() == 404) {
+				Logger.warn("Skipping command for deleted bucket: " + command);
+			} else if (e.status() == 409) {
 				Logger.warn("Skipping duplicate command: " + command);
 			} else {
 				Logger.error("Couldn't replay command: " + command, e);

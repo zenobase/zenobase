@@ -35,10 +35,12 @@ public class IndexManager implements Closeable {
 	@Inject
 	public IndexManager(ClientFactory clientFactory, @Named("opensearch.snapshot.bucket") String snapshotBucket, @Named("opensearch.snapshot.region") String snapshotRegion, @Named("opensearch.snapshot.role_arn") String snapshotRoleArn) {
 		client = clientFactory.createClient();
-		while (!new Cluster(client).isReady()) {
+		Cluster cluster = new Cluster(client);
+		while (!cluster.isReady()) {
 			Logger.warn("Waiting for cluster to recover...");
 			Uninterruptibles.sleepUninterruptibly(5, TimeUnit.SECONDS);
 		}
+		cluster.disableAutoCreateIndex();
 		if (!snapshotBucket.isEmpty()) {
 			String clusterName = new Cluster(client).getHealth().clusterName();
 			String repositoryName = clusterName.contains(":") ? clusterName.substring(clusterName.indexOf(':') + 1) : clusterName;
