@@ -8,7 +8,6 @@ services:
       - ./play/config/enableLegacyTLS.security:/etc/play/enableLegacyTLS.security:ro
     environment:
       - AWS_REGION=${AWS_REGION:-us-east-1}
-      - JAVA_HEAP=${JAVA_HEAP:-2g}
       - OPENSEARCH_HOST=${OPENSEARCH_HOST:-http://localhost:9200}
       - OPENSEARCH_SNAPSHOT_BUCKET=${OPENSEARCH_SNAPSHOT_BUCKET:-}
       - OPENSEARCH_SNAPSHOT_ROLE_ARN=${OPENSEARCH_SNAPSHOT_ROLE_ARN:-}

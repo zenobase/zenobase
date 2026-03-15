@@ -3,7 +3,6 @@ config:
   zenobase:certificateArn: arn:aws:acm:us-east-1:694665597187:certificate/aa7538d0-05ca-4459-9fc2-ad2301efa13d
   zenobase:keyPairName: zeno
   zenobase:instanceType: t4g.medium
-  zenobase:playHeap: 2g
   zenobase:hostname: "https://zenobase.com"
   zenobase:apiHostname: "https://api.zenobase.com"
   zenobase:oauthHostname: "https://zenobase.com"

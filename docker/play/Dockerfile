@@ -13,8 +13,6 @@ RUN mkdir -p /etc/play && chown -R play:play /etc/play
 WORKDIR /var/play
 USER play
 
-ENV JAVA_HEAP=2g
-
 ENTRYPOINT ["/bin/sh", "-c", \
     "exec /var/play/bin/zenobase \
     -Duser.timezone=UTC \
@@ -22,8 +20,8 @@ ENTRYPOINT ["/bin/sh", "-c", \
     -Dlogger.file=/etc/play/logback.xml \
     -Djava.security.properties=/etc/play/enableLegacyTLS.security \
     -Djdk.tls.client.protocols=TLSv1.2 \
-    -J-Xms${JAVA_HEAP} \
-    -J-Xmx${JAVA_HEAP}"]
+    -J-XX:+UseContainerSupport \
+    -J-XX:MaxRAMPercentage=75.0"]
 
 EXPOSE 9000
 

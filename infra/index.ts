@@ -18,7 +18,6 @@ const adminCidr = process.env.ENABLE_SSH
     : undefined;
 const keyPairName = config.require("keyPairName");
 const instanceType = config.get("instanceType") || "t4g.large";
-const playHeap = config.get("playHeap") || "2g";
 const playImageTag = config.get("playImageTag") || "latest";
 const activeTargetGroup = config.get("activeTargetGroup") || "blue";
 const deployTarget = config.get("deployTarget") || activeTargetGroup;
@@ -459,7 +458,6 @@ cat > .env << ENVEOF
 ECR_REGISTRY=${ecrRegistry}
 PLAY_IMAGE_TAG=${playImageTag}
 AWS_REGION=${region}
-JAVA_HEAP=${playHeap}
 OPENSEARCH_HOST=https://${osEndpoint}
 OPENSEARCH_SNAPSHOT_BUCKET=${opensearchSnapshotBucket}
 OPENSEARCH_SNAPSHOT_ROLE_ARN=${snapshotRoleArn}
