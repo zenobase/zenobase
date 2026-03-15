@@ -6,7 +6,8 @@ config:
   zenobase:oauthHostname: "https://zenobase.com"
   zenobase:sesIdentity: info@zenobase.com
   zenobase:opensearchSnapshotBucket: zeno-snapshots
-  zenobase:opensearchDomain: zeno-opensearch-120
-  zenobase:opensearchReplayHost: "https://vpc-zeno-opensearch-119-itbs7dgzpjjtiecx2f5xb6rmum.us-east-1.es.amazonaws.com"
-  zenobase:opensearchRebuildHost: ""
-  zenobase:playImageTag: "23dd133317f70ccace08a2a79f31b0301417f297"
+  zenobase:opensearchVersion: "OpenSearch_3.1"
+  zenobase:opensearchDomain: zeno-opensearch-119
+  zenobase:opensearchReplayDomain: ""
+  zenobase:opensearchRebuildDomain: ""
+  zenobase:playImageTag: "ca157215cd11e9ac1ddbce916e5fcd627da869e7"

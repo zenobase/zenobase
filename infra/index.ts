@@ -9,8 +9,9 @@ const certificateArn = config.require("certificateArn");
 const playImageTag = config.get("playImageTag") || "latest";
 const opensearchSnapshotBucket = config.get("opensearchSnapshotBucket") || "";
 const opensearchDomain = config.get("opensearchDomain") || "zenobase";
-const opensearchReplayHost = config.get("opensearchReplayHost") || "";
-const opensearchRebuildHost = config.get("opensearchRebuildHost") || "";
+const opensearchReplayDomain = config.get("opensearchReplayDomain") || "";
+const opensearchRebuildDomain = config.get("opensearchRebuildDomain") || "";
+const opensearchVersion = config.get("opensearchVersion") || "OpenSearch_3.3";
 const hostname = config.get("hostname") || "http://localhost:9000";
 const apiHostname = config.get("apiHostname") || "http://localhost:9000";
 const oauthHostname = config.get("oauthHostname") || "https://zenobase.com";
@@ -125,7 +126,7 @@ const playRepo = new aws.ecr.Repository("zenobase-play", {
 
 const osDomain = new aws.opensearch.Domain(`zenobase-os-${opensearchDomain}`, {
     domainName: opensearchDomain,
-    engineVersion: "OpenSearch_3.3",
+    engineVersion: opensearchVersion,
     clusterConfig: {
         instanceType: "t3.medium.search",
         instanceCount: 1,
@@ -365,6 +366,13 @@ const cluster = new aws.ecs.Cluster("zenobase-cluster", {
     tags: { Name: "zenobase" },
 });
 
+const opensearchReplayUrl = opensearchReplayDomain
+    ? pulumi.output(aws.opensearch.getDomain({ domainName: opensearchReplayDomain })).apply(d => `https://${d.endpoint}`)
+    : pulumi.output("");
+const opensearchRebuildUrl = opensearchRebuildDomain
+    ? pulumi.output(aws.opensearch.getDomain({ domainName: opensearchRebuildDomain })).apply(d => `https://${d.endpoint}`)
+    : pulumi.output("");
+
 const taskDefinition = new aws.ecs.TaskDefinition("zenobase-task", {
     family: "zenobase-play",
     requiresCompatibilities: ["FARGATE"],
@@ -382,7 +390,9 @@ const taskDefinition = new aws.ecs.TaskDefinition("zenobase-task", {
         osDomain.endpoint,
         osSnapshotRole.arn,
         prodConfSecret.arn,
-    ]).apply(([repoUrl, osEndpoint, snapshotRoleArn, secretArn]) =>
+        opensearchReplayUrl,
+        opensearchRebuildUrl,
+    ]).apply(([repoUrl, osEndpoint, snapshotRoleArn, secretArn, replayUrl, rebuildUrl]) =>
         JSON.stringify([{
             name: "play",
             image: `${repoUrl}:${playImageTag}`,
@@ -393,8 +403,8 @@ const taskDefinition = new aws.ecs.TaskDefinition("zenobase-task", {
                 { name: "OPENSEARCH_HOST", value: `https://${osEndpoint}` },
                 { name: "OPENSEARCH_SNAPSHOT_BUCKET", value: opensearchSnapshotBucket },
                 { name: "OPENSEARCH_SNAPSHOT_ROLE_ARN", value: snapshotRoleArn },
-                { name: "OPENSEARCH_REPLAY", value: opensearchReplayHost },
-                { name: "OPENSEARCH_REBUILD", value: opensearchRebuildHost },
+                { name: "OPENSEARCH_REPLAY", value: replayUrl },
+                { name: "OPENSEARCH_REBUILD", value: rebuildUrl },
                 { name: "HOSTNAME", value: hostname },
                 { name: "API_HOSTNAME", value: apiHostname },
                 { name: "OAUTH_HOSTNAME", value: oauthHostname },
