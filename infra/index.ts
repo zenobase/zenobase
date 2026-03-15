@@ -158,7 +158,7 @@ const osDomain = new aws.opensearch.Domain("zenobase-os", {
         }],
     })),
     tags: { Name: opensearchDomain },
-});
+}, { retainOnDelete: true });
 
 // Snapshot IAM role for OpenSearch to access S3
 const osSnapshotRole = new aws.iam.Role("zenobase-os-snapshot-role", {
