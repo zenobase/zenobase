@@ -11,6 +11,6 @@ config:
   zenobase:opensearchDomain: zeno-opensearch-119
   zenobase:opensearchReplayHost: ""
   zenobase:opensearchRebuildHost: ""
-  zenobase:playImageTag: "bd5c4b015f1df30ec7e2433c9f9846c8b124899b"
-  zenobase:deployTarget: green
-  zenobase:activeTargetGroup: green
+  zenobase:playImageTag: "4d699f5f1454d5561b07d23b4ed69069e15345f2"
+  zenobase:deployTarget: blue
+  zenobase:activeTargetGroup: blue
