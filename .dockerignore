@@ -1,10 +1,5 @@
-docker/
-infra/
-.github/
-.circleci/
-.git/
-target/
+*
+!docker/play/config/logback-play.xml
+!docker/play/config/enableLegacyTLS.security
+!docker/play/entrypoint.sh
 !target/universal/zenobase-SNAPSHOT.tgz
-logs/
-data/
-*.md
