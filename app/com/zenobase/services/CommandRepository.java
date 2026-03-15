@@ -51,17 +51,12 @@ public class CommandRepository extends RepositorySupport<Command> {
 	}
 
 	public void find(CommandQuery query, SearchOrder order, Callback<Command> callback) {
-		long count = 0;
-		for (int offset = 0, limit = 100; ; offset += limit) {
-			PartialList<Command> commands = find(query, order, offset, limit);
-			for (Command command : commands) {
-				callback.call(command);
-				++count;
-			}
-			if (commands.getTotal() == count) {
-				break;
-			}
-		}
+		SearchRequest.Builder builder = new SearchRequest.Builder()
+			.index(index.getIndexName())
+			.query(query.build())
+			.size(100);
+		order.apply(builder);
+		index.find(builder, node -> callback.call(toObject(node)));
 	}
 
 	public PartialList<Command> find(CommandQuery query, SearchOrder order, int offset, int limit) {

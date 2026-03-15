@@ -273,15 +273,18 @@ public class Index {
 	}
 
 	public void find(Query query, Callback<ObjectNode> callback, int scrollSize) {
+		SearchRequest.Builder builder = new SearchRequest.Builder()
+			.index(indexName)
+			.query(query)
+			.size(scrollSize)
+			.version(true)
+			.seqNoPrimaryTerm(true);
+		find(builder, callback);
+	}
+
+	public void find(SearchRequest.Builder requestBuilder, Callback<ObjectNode> callback) {
 		try {
-			SearchRequest searchRequest = SearchRequest.of(s -> s
-				.index(indexName)
-				.query(query)
-				.size(scrollSize)
-				.version(true)
-				.seqNoPrimaryTerm(true)
-				.scroll(SCROLL_TIMEOUT)
-			);
+			SearchRequest searchRequest = requestBuilder.scroll(SCROLL_TIMEOUT).build();
 			SearchResponse<ObjectNode> response = client.search(searchRequest, ObjectNode.class);
 			while (!response.hits().hits().isEmpty()) {
 				for (Hit<ObjectNode> hit : response.hits().hits()) {
