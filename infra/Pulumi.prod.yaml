@@ -1,8 +1,6 @@
 config:
   aws:region: us-east-1
   zenobase:certificateArn: arn:aws:acm:us-east-1:694665597187:certificate/aa7538d0-05ca-4459-9fc2-ad2301efa13d
-  zenobase:keyPairName: zeno
-  zenobase:instanceType: t4g.medium
   zenobase:hostname: "https://zenobase.com"
   zenobase:apiHostname: "https://api.zenobase.com"
   zenobase:oauthHostname: "https://zenobase.com"
@@ -12,5 +10,3 @@ config:
   zenobase:opensearchReplayHost: ""
   zenobase:opensearchRebuildHost: ""
   zenobase:playImageTag: "4d699f5f1454d5561b07d23b4ed69069e15345f2"
-  zenobase:deployTarget: blue
-  zenobase:activeTargetGroup: blue

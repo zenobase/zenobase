@@ -1,26 +1,12 @@
 import * as pulumi from "@pulumi/pulumi";
 import * as aws from "@pulumi/aws";
-import * as command from "@pulumi/command";
-import * as fs from "fs";
-import { execFileSync } from "child_process";
-
-const playLogback = fs.readFileSync("../docker/play/config/logback-play.xml", "utf8");
-const tlsSecurity = fs.readFileSync("../docker/play/config/enableLegacyTLS.security", "utf8");
-const composeTemplate = fs.readFileSync("../docker/docker-compose.yml", "utf8");
 
 const config = new pulumi.Config("zenobase");
 const awsConfig = new pulumi.Config("aws");
 const region = awsConfig.require("region");
 const accountId = aws.getCallerIdentity().then(id => id.accountId);
 const certificateArn = config.require("certificateArn");
-const adminCidr = process.env.ENABLE_SSH
-    ? `${execFileSync("curl", ["-s", "ifconfig.me"], { encoding: "utf8" }).trim()}/32`
-    : undefined;
-const keyPairName = config.require("keyPairName");
-const instanceType = config.get("instanceType") || "t4g.large";
 const playImageTag = config.get("playImageTag") || "latest";
-const activeTargetGroup = config.get("activeTargetGroup") || "blue";
-const deployTarget = config.get("deployTarget") || activeTargetGroup;
 const opensearchSnapshotBucket = config.get("opensearchSnapshotBucket") || "";
 const opensearchDomain = config.get("opensearchDomain") || "zenobase";
 const opensearchReplayHost = config.get("opensearchReplayHost") || "";
@@ -91,12 +77,24 @@ const albSg = new aws.ec2.SecurityGroup("zenobase-alb-sg", {
     tags: { Name: "zenobase-alb" },
 });
 
-const ec2Sg = new aws.ec2.SecurityGroup("zenobase-ec2-sg", {
+const ecsSg = new aws.ec2.SecurityGroup("zenobase-ecs-sg", {
     vpcId: vpc.id,
-    description: "EC2 - app traffic from ALB, SSH from admin",
+    description: "ECS - app traffic from ALB",
     ingress: [
         { protocol: "tcp", fromPort: 9000, toPort: 9000, securityGroups: [albSg.id] },
-        ...(adminCidr ? [{ protocol: "tcp", fromPort: 22, toPort: 22, cidrBlocks: [adminCidr] }] : []),
+    ],
+    egress: [
+        { protocol: "-1", fromPort: 0, toPort: 0, cidrBlocks: ["0.0.0.0/0"] },
+    ],
+    tags: { Name: "zenobase-ecs" },
+});
+
+// TODO: Remove ec2Sg and its reference in osSg ingress. This will cause 15-30 min downtime.
+const ec2Sg = new aws.ec2.SecurityGroup("zenobase-ec2-sg", {
+    vpcId: vpc.id,
+    description: "EC2 - app traffic from ALB (retained for migration rollback)",
+    ingress: [
+        { protocol: "tcp", fromPort: 9000, toPort: 9000, securityGroups: [albSg.id] },
     ],
     egress: [
         { protocol: "-1", fromPort: 0, toPort: 0, cidrBlocks: ["0.0.0.0/0"] },
@@ -106,9 +104,9 @@ const ec2Sg = new aws.ec2.SecurityGroup("zenobase-ec2-sg", {
 
 const osSg = new aws.ec2.SecurityGroup("zenobase-os-sg", {
     vpcId: vpc.id,
-    description: "OpenSearch - HTTPS from EC2",
+    description: "OpenSearch - HTTPS from ECS and EC2",
     ingress: [
-        { protocol: "tcp", fromPort: 443, toPort: 443, securityGroups: [ec2Sg.id] },
+        { protocol: "tcp", fromPort: 443, toPort: 443, securityGroups: [ecsSg.id, ec2Sg.id] },
     ],
     egress: [
         { protocol: "-1", fromPort: 0, toPort: 0, cidrBlocks: ["0.0.0.0/0"] },
@@ -192,61 +190,56 @@ new aws.iam.RolePolicy("zenobase-os-snapshot-policy", {
 
 // ---------- IAM ----------
 
-const instanceRole = new aws.iam.Role("zenobase-instance-role", {
+const ecsExecutionRole = new aws.iam.Role("zenobase-ecs-execution-role", {
     assumeRolePolicy: JSON.stringify({
         Version: "2012-10-17",
         Statement: [{
             Action: "sts:AssumeRole",
             Effect: "Allow",
-            Principal: { Service: "ec2.amazonaws.com" },
+            Principal: { Service: "ecs-tasks.amazonaws.com" },
         }],
     }),
-    tags: { Name: "zenobase-instance" },
+    tags: { Name: "zenobase-ecs-execution" },
 });
 
-new aws.iam.RolePolicyAttachment("zenobase-ssm-policy", {
-    role: instanceRole.name,
-    policyArn: "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore",
+new aws.iam.RolePolicyAttachment("zenobase-ecs-execution-policy", {
+    role: ecsExecutionRole.name,
+    policyArn: "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy",
 });
 
-const instancePolicy = new aws.iam.RolePolicy("zenobase-instance-policy", {
-    role: instanceRole.id,
-    policy: pulumi.all([playRepo.arn, accountId, osSnapshotRole.arn, osDomain.arn]).apply(([playArn, account, snapshotRoleArn, domainArn]) => JSON.stringify({
+new aws.iam.RolePolicy("zenobase-ecs-execution-secrets", {
+    role: ecsExecutionRole.id,
+    policy: pulumi.all([accountId]).apply(([account]) => JSON.stringify({
+        Version: "2012-10-17",
+        Statement: [{
+            Effect: "Allow",
+            Action: ["secretsmanager:GetSecretValue"],
+            Resource: [`arn:aws:secretsmanager:${region}:${account}:secret:zenobase/*`],
+        }],
+    })),
+});
+
+const ecsTaskRole = new aws.iam.Role("zenobase-ecs-task-role", {
+    assumeRolePolicy: JSON.stringify({
+        Version: "2012-10-17",
+        Statement: [{
+            Action: "sts:AssumeRole",
+            Effect: "Allow",
+            Principal: { Service: "ecs-tasks.amazonaws.com" },
+        }],
+    }),
+    tags: { Name: "zenobase-ecs-task" },
+});
+
+new aws.iam.RolePolicy("zenobase-ecs-task-policy", {
+    role: ecsTaskRole.id,
+    policy: pulumi.all([accountId, osSnapshotRole.arn, osDomain.arn]).apply(([account, snapshotRoleArn, domainArn]) => JSON.stringify({
         Version: "2012-10-17",
         Statement: [
             {
                 Effect: "Allow",
-                Action: ["secretsmanager:GetSecretValue"],
-                Resource: [`arn:aws:secretsmanager:${region}:${account}:secret:zenobase/*`],
-            },
-            {
-                Effect: "Allow",
                 Action: ["ses:SendEmail", "ses:SendRawEmail"],
                 Resource: [`arn:aws:ses:${region}:${account}:identity/${sesIdentity}`],
-            },
-            {
-                Effect: "Allow",
-                Action: [
-                    "logs:CreateLogGroup",
-                    "logs:CreateLogStream",
-                    "logs:PutLogEvents",
-                    "logs:DescribeLogStreams",
-                ],
-                Resource: [`arn:aws:logs:${region}:${account}:log-group:/zenobase/*`],
-            },
-            {
-                Effect: "Allow",
-                Action: ["ecr:GetAuthorizationToken"],
-                Resource: "*",
-            },
-            {
-                Effect: "Allow",
-                Action: [
-                    "ecr:BatchCheckLayerAvailability",
-                    "ecr:GetDownloadUrlForLayer",
-                    "ecr:BatchGetImage",
-                ],
-                Resource: [playArn],
             },
             {
                 Effect: "Allow",
@@ -260,10 +253,6 @@ const instancePolicy = new aws.iam.RolePolicy("zenobase-instance-policy", {
             },
         ],
     })),
-});
-
-const instanceProfile = new aws.iam.InstanceProfile("zenobase-instance-profile", {
-    role: instanceRole.name,
 });
 
 // ---------- ALB ----------
@@ -311,11 +300,11 @@ const alb = new aws.lb.LoadBalancer("zenobase-alb", {
     tags: { Name: "zenobase" },
 }, { dependsOn: [albLogsBucketPolicy] });
 
-const tgBlue = new aws.lb.TargetGroup("zenobase-tg-blue", {
+const tg = new aws.lb.TargetGroup("zenobase-tg", {
     port: 9000,
     protocol: "HTTP",
     vpcId: vpc.id,
-    targetType: "instance",
+    targetType: "ip",
     healthCheck: {
         path: "/status",
         port: "9000",
@@ -326,28 +315,8 @@ const tgBlue = new aws.lb.TargetGroup("zenobase-tg-blue", {
         interval: 30,
     },
     deregistrationDelay: 60,
-    tags: { Name: "zenobase-blue" },
+    tags: { Name: "zenobase" },
 });
-
-const tgGreen = new aws.lb.TargetGroup("zenobase-tg-green", {
-    port: 9000,
-    protocol: "HTTP",
-    vpcId: vpc.id,
-    targetType: "instance",
-    healthCheck: {
-        path: "/status",
-        port: "9000",
-        protocol: "HTTP",
-        healthyThreshold: 2,
-        unhealthyThreshold: 5,
-        timeout: 10,
-        interval: 30,
-    },
-    deregistrationDelay: 60,
-    tags: { Name: "zenobase-green" },
-});
-
-const activeTg = activeTargetGroup === "blue" ? tgBlue : tgGreen;
 
 const httpsListener = new aws.lb.Listener("zenobase-https", {
     loadBalancerArn: alb.arn,
@@ -357,12 +326,7 @@ const httpsListener = new aws.lb.Listener("zenobase-https", {
     sslPolicy: "ELBSecurityPolicy-TLS13-1-2-2021-06",
     defaultActions: [{
         type: "forward",
-        forward: {
-            targetGroups: [
-                { arn: tgBlue.arn, weight: activeTargetGroup === "blue" ? 100 : 0 },
-                { arn: tgGreen.arn, weight: activeTargetGroup === "green" ? 100 : 0 },
-            ],
-        },
+        targetGroupArn: tg.arn,
     }],
 });
 
@@ -394,153 +358,88 @@ new aws.cloudwatch.LogGroup("zenobase-play-logs", {
     retentionInDays: 30,
 });
 
+// ---------- ECS Fargate ----------
 
-// ---------- EC2 Instance ----------
-
-// Find latest Amazon Linux 2023 AMI
-const ami = aws.ec2.getAmi({
-    mostRecent: true,
-    owners: ["amazon"],
-    filters: [
-        { name: "name", values: ["al2023-ami-2023*-arm64"] },
-        { name: "state", values: ["available"] },
-    ],
+const cluster = new aws.ecs.Cluster("zenobase-cluster", {
+    name: "zenobase",
+    tags: { Name: "zenobase" },
 });
 
-const blueNeeded = deployTarget === "blue" || activeTargetGroup === "blue";
-const greenNeeded = deployTarget === "green" || activeTargetGroup === "green";
-
-const userData = pulumi.all([
-    playRepo.repositoryUrl,
-    prodConfSecret.arn,
-    osDomain.endpoint,
-    osSnapshotRole.arn,
-]).apply(([playRepoUrl, secretArn, osEndpoint, snapshotRoleArn]) => {
-    const ecrRegistry = playRepoUrl.split("/")[0];
-    return `#!/bin/bash
-set -euo pipefail
-exec > /var/log/user-data.log 2>&1
-
-# Install Docker
-dnf install -y docker aws-cli jq
-systemctl enable docker
-systemctl start docker
-
-# Install docker-compose
-COMPOSE_VERSION=v2.24.5
-curl -L "https://github.com/docker/compose/releases/download/\${COMPOSE_VERSION}/docker-compose-linux-aarch64" -o /usr/local/bin/docker-compose
-chmod +x /usr/local/bin/docker-compose
-
-# ECR login
-aws ecr get-login-password --region ${region} | docker login --username AWS --password-stdin ${ecrRegistry}
-
-# Retrieve prod.conf from Secrets Manager
-mkdir -p /etc/play
-aws secretsmanager get-secret-value --secret-id zenobase/prod-conf --region ${region} --query SecretString --output text > /etc/play/prod.conf
-
-# Set up docker-compose directory
-mkdir -p /opt/zenobase/play/config
-cd /opt/zenobase
-
-# Write config files
-cat > play/config/logback-play.xml << 'LPEOF'
-${playLogback}LPEOF
-
-cat > play/config/enableLegacyTLS.security << 'TLSEOF'
-${tlsSecurity}TLSEOF
-
-# Write docker-compose.yml
-cat > docker-compose.yml << 'DCEOF'
-${composeTemplate}DCEOF
-
-# Write .env for docker-compose variable substitution
-cat > .env << ENVEOF
-ECR_REGISTRY=${ecrRegistry}
-PLAY_IMAGE_TAG=${playImageTag}
-AWS_REGION=${region}
-OPENSEARCH_HOST=https://${osEndpoint}
-OPENSEARCH_SNAPSHOT_BUCKET=${opensearchSnapshotBucket}
-OPENSEARCH_SNAPSHOT_ROLE_ARN=${snapshotRoleArn}
-OPENSEARCH_REPLAY=${opensearchReplayHost}
-OPENSEARCH_REBUILD=${opensearchRebuildHost}
-HOSTNAME=${hostname}
-API_HOSTNAME=${apiHostname}
-OAUTH_HOSTNAME=${oauthHostname}
-ENVEOF
-
-# Pull images and start
-docker-compose pull
-docker-compose up -d
-`;
-});
-
-const blueInstance = new aws.ec2.Instance("zenobase-blue", {
-    ami: ami.then(a => a.id),
-    instanceType,
-    subnetId: subnetA.id,
-    vpcSecurityGroupIds: [ec2Sg.id],
-    iamInstanceProfile: instanceProfile.name,
-    keyName: keyPairName,
-    userData,
-    userDataReplaceOnChange: true,
-    rootBlockDevice: { volumeSize: 20, volumeType: "gp3", encrypted: true },
-    metadataOptions: {
-        httpTokens: "required",
-        httpEndpoint: "enabled",
+const taskDefinition = new aws.ecs.TaskDefinition("zenobase-task", {
+    family: "zenobase-play",
+    requiresCompatibilities: ["FARGATE"],
+    networkMode: "awsvpc",
+    cpu: "1024",
+    memory: "2048",
+    runtimePlatform: {
+        cpuArchitecture: "ARM64",
+        operatingSystemFamily: "LINUX",
     },
-    tags: { Name: "zenobase-blue", Service: "zenobase" },
-}, {
-    retainOnDelete: true,
-    ...(deployTarget !== "blue" && { ignoreChanges: ["ami", "instanceType", "userData", "rootBlockDevice", "metadataOptions", "tags", "vpcSecurityGroupIds"] }),
-});
-new aws.lb.TargetGroupAttachment("zenobase-tg-blue-attach", {
-    targetGroupArn: tgBlue.arn,
-    targetId: blueInstance.id,
-    port: 9000,
+    executionRoleArn: ecsExecutionRole.arn,
+    taskRoleArn: ecsTaskRole.arn,
+    containerDefinitions: pulumi.all([
+        playRepo.repositoryUrl,
+        osDomain.endpoint,
+        osSnapshotRole.arn,
+        prodConfSecret.arn,
+    ]).apply(([repoUrl, osEndpoint, snapshotRoleArn, secretArn]) =>
+        JSON.stringify([{
+            name: "play",
+            image: `${repoUrl}:${playImageTag}`,
+            essential: true,
+            portMappings: [{ containerPort: 9000, protocol: "tcp" }],
+            environment: [
+                { name: "AWS_REGION", value: region },
+                { name: "OPENSEARCH_HOST", value: `https://${osEndpoint}` },
+                { name: "OPENSEARCH_SNAPSHOT_BUCKET", value: opensearchSnapshotBucket },
+                { name: "OPENSEARCH_SNAPSHOT_ROLE_ARN", value: snapshotRoleArn },
+                { name: "OPENSEARCH_REPLAY", value: opensearchReplayHost },
+                { name: "OPENSEARCH_REBUILD", value: opensearchRebuildHost },
+                { name: "HOSTNAME", value: hostname },
+                { name: "API_HOSTNAME", value: apiHostname },
+                { name: "OAUTH_HOSTNAME", value: oauthHostname },
+            ],
+            secrets: [
+                { name: "PROD_CONF", valueFrom: secretArn },
+            ],
+            logConfiguration: {
+                logDriver: "awslogs",
+                options: {
+                    "awslogs-region": region,
+                    "awslogs-group": "/zenobase/play",
+                    "awslogs-stream-prefix": "ecs",
+                },
+            },
+            healthCheck: {
+                command: ["CMD-SHELL", "curl -f http://localhost:9000/status || exit 1"],
+                interval: 30,
+                timeout: 10,
+                retries: 3,
+                startPeriod: 120,
+            },
+        }]),
+    ),
 });
 
-const greenInstance = new aws.ec2.Instance("zenobase-green", {
-    ami: ami.then(a => a.id),
-    instanceType,
-    subnetId: subnetA.id,
-    vpcSecurityGroupIds: [ec2Sg.id],
-    iamInstanceProfile: instanceProfile.name,
-    keyName: keyPairName,
-    userData,
-    userDataReplaceOnChange: true,
-    rootBlockDevice: { volumeSize: 20, volumeType: "gp3", encrypted: true },
-    metadataOptions: {
-        httpTokens: "required",
-        httpEndpoint: "enabled",
+new aws.ecs.Service("zenobase-service", {
+    name: "zenobase-play",
+    cluster: cluster.arn,
+    taskDefinition: taskDefinition.arn,
+    desiredCount: 1,
+    launchType: "FARGATE",
+    platformVersion: "LATEST",
+    networkConfiguration: {
+        subnets: [subnetA.id, subnetB.id],
+        securityGroups: [ecsSg.id],
+        assignPublicIp: true,
     },
-    tags: { Name: "zenobase-green", Service: "zenobase" },
-}, {
-    retainOnDelete: true,
-    aliases: [{ name: "zenobase-instance" }],
-    ...(deployTarget !== "green" && { ignoreChanges: ["ami", "instanceType", "userData", "rootBlockDevice", "metadataOptions", "tags", "vpcSecurityGroupIds"] }),
-});
-new aws.lb.TargetGroupAttachment("zenobase-tg-green-attach", {
-    targetGroupArn: tgGreen.arn,
-    targetId: greenInstance.id,
-    port: 9000,
-}, {
-    aliases: [{ name: "zenobase-tg-attachment" }],
-});
-
-// Stop/start instances based on whether they're needed
-new command.local.Command("zenobase-blue-state", {
-    create: blueNeeded
-        ? pulumi.interpolate`aws ec2 start-instances --instance-ids ${blueInstance.id} --region ${region} && aws ec2 wait instance-running --instance-ids ${blueInstance.id} --region ${region}`
-        : pulumi.interpolate`aws ec2 stop-instances --instance-ids ${blueInstance.id} --region ${region}`,
-    triggers: [blueNeeded],
-});
-
-new command.local.Command("zenobase-green-state", {
-    create: greenNeeded
-        ? pulumi.interpolate`aws ec2 start-instances --instance-ids ${greenInstance.id} --region ${region} && aws ec2 wait instance-running --instance-ids ${greenInstance.id} --region ${region}`
-        : pulumi.interpolate`aws ec2 stop-instances --instance-ids ${greenInstance.id} --region ${region}`,
-    triggers: [greenNeeded],
-});
+    loadBalancers: [{
+        targetGroupArn: tg.arn,
+        containerName: "play",
+        containerPort: 9000,
+    }],
+    healthCheckGracePeriodSeconds: 10800,
+}, { dependsOn: [httpsListener] });
 
 // ---------- CloudWatch Alarms ----------
 
@@ -550,7 +449,7 @@ new aws.cloudwatch.MetricAlarm("zenobase-unhealthy-hosts", {
     metricName: "UnHealthyHostCount",
     dimensions: {
         LoadBalancer: alb.arnSuffix,
-        TargetGroup: activeTg.arnSuffix,
+        TargetGroup: tg.arnSuffix,
     },
     statistic: "Maximum",
     period: 60,
@@ -582,16 +481,5 @@ export const albDnsName = alb.dnsName;
 export const albArn = alb.arn;
 export const playEcrUrl = playRepo.repositoryUrl;
 export const opensearchEndpoint = osDomain.endpoint;
-const activeInstance = activeTargetGroup === "blue" ? blueInstance : greenInstance;
-const deployInstance = deployTarget === "blue" ? blueInstance : greenInstance;
-
-export const instanceId = activeInstance.id;
-export const instancePublicIp = activeInstance.publicIp;
-export const instancePrivateIp = activeInstance.privateIp;
-export const deployInstanceId = deployInstance.id;
-export const deployInstancePublicIp = deployInstance.publicIp;
-export const deployInstancePrivateIp = deployInstance.privateIp;
-export const blueTargetGroupArn = tgBlue.arn;
-export const greenTargetGroupArn = tgGreen.arn;
-export const activeTarget = activeTargetGroup;
-export const deployTargetOutput = deployTarget;
+export const ecsClusterName = cluster.name;
+export const ecsServiceName = "zenobase-play";

@@ -63,6 +63,9 @@ To test specific tasks manually:
 Deploy Procedure
 ----------------
 
+The Play app runs on ECS Fargate. Deployments use ECS rolling updates — a new
+task starts, passes health checks, then the old task is drained automatically.
+
   1. Push to master. CI runs tests, builds Docker images, and pushes to ECR.
 
   2. Sign in to AWS with `aws login --profile signin`
@@ -78,26 +81,18 @@ Deploy Procedure
        aws secretsmanager put-secret-value --secret-id zenobase/prod-conf \
          --secret-string file://./prod.conf
 
-  4. Deploy to the inactive target group:
+  4. Deploy:
 
        cd infra
-       pulumi config set zenobase:deployTarget green  # or blue
+       pulumi config set zenobase:playImageTag <sha>
        pulumi up
 
-  5. Verify health (monitor in CloudWatch Logs, check ALB target health in AWS console).
+     ECS starts a new task with the updated image. The old task continues
+     serving traffic until the new task passes the ALB health check (/status).
 
-  6. Switch traffic:
+  5. Verify health (monitor in CloudWatch Logs, check ECS service in AWS console).
 
-       pulumi config set zenobase:activeTargetGroup green  # match deployTarget
-       pulumi up
-
-     This also stops the old instance (preserving its EBS data for quick restarts).
-
-  7. To revert after the switch is complete, set both deployTarget and
-     activeTargetGroup back to the old color and run `pulumi up`. The old
-     instance will be restarted (takes a few minutes).
-
-To rollback to a specific image version:
+To rollback to a previous image version:
 
   pulumi config set zenobase:playImageTag <sha>
   pulumi up
@@ -115,18 +110,17 @@ from the old domain.
        cd infra
        pulumi config set zenobase:opensearchDomain <new-domain-name>
        pulumi config set zenobase:opensearchReplayHost "https://<old-domain-endpoint>"
-       pulumi config set zenobase:deployTarget green  # or blue
        pulumi up
 
-     The new instance connects to the new OpenSearch domain and replays all
-     commands from the old domain.
+     ECS starts a new task that connects to the new OpenSearch domain and
+     replays all commands from the old domain. The old task continues serving
+     traffic during the replay (healthCheckGracePeriodSeconds allows up to
+     3 hours for the new task to become healthy).
 
   2. Monitor replay progress in CloudWatch Logs.
 
-  3. When replay completes, switch traffic:
-
-       pulumi config set zenobase:activeTargetGroup green  # match deployTarget
-       pulumi up
+  3. When replay completes, the new task passes its health check and ECS
+     automatically routes traffic to it.
 
   4. Clear migration config for the next deploy:
 
@@ -146,18 +140,15 @@ Same pattern as Replay but uses opensearchRebuildHost.
        cd infra
        pulumi config set zenobase:opensearchDomain <new-domain-name>
        pulumi config set zenobase:opensearchRebuildHost "https://<old-domain-endpoint>"
-       pulumi config set zenobase:deployTarget green  # or blue
        pulumi up
 
-     The new instance connects to the new OpenSearch domain and rebuilds state
-     from the old domain's raw data.
+     ECS starts a new task that connects to the new OpenSearch domain and
+     rebuilds state from the old domain's raw data.
 
   2. Monitor rebuild progress in CloudWatch Logs.
 
-  3. When rebuild completes, switch traffic:
-
-       pulumi config set zenobase:activeTargetGroup green  # match deployTarget
-       pulumi up
+  3. When rebuild completes, the new task passes its health check and ECS
+     automatically routes traffic to it.
 
   4. Clear migration config for the next deploy:
 
@@ -175,14 +166,12 @@ Use this procedure to restore from an S3 snapshot into a new managed OpenSearch 
 
        cd infra
        pulumi config set zenobase:opensearchDomain "zenobase-v2"
-       pulumi config set zenobase:deployTarget green  # or blue
        pulumi up
 
      Wait for the domain to become active (15-30 minutes).
 
-  2. SSH into the EC2 instance and install awscurl (needed to sign requests):
+  2. Install awscurl locally (needed to sign requests to VPC-internal OpenSearch):
 
-       sudo yum install python3-pip
        pip3 install awscurl
 
   3. Register the S3 snapshot repository (the base_path must match the
@@ -218,25 +207,3 @@ Use this procedure to restore from an S3 snapshot into a new managed OpenSearch 
 
        awscurl --service es --region us-east-1 \
          "https://<domain-endpoint>/_cat/recovery"
-
-  5. Switch traffic:
-
-       pulumi config set zenobase:activeTargetGroup green  # match deployTarget
-       pulumi up
-
-
-SSH Access
-----------
-
-SSH is disabled by default (no ENABLE_SSH configured in the security group).
-
-To enable temporarily for your current IP address:
-
-  cd infra
-  ENABLE_SSH=true pulumi up
-  ssh -i <key>.pem ec2-user@<ip>
-
-To disable:
-
-  cd infra
-  pulumi up
