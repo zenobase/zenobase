@@ -10,8 +10,8 @@ Run `./sbt run` to start the web app on http://localhost:9000/.
 
 Alternatively, run with Docker:
 
-  docker/build.sh
-  docker compose -f docker/docker-compose.local.yml up
+  cd docker
+  ./build.sh && docker-compose up -d
 
 This starts both the Play app (port 9000) and OpenSearch (port 9200) in containers.
 

@@ -9,4 +9,4 @@ cd "$REPO_DIR"
 ./sbt universal:packageZipTarball
 docker build -t zenobase-play -f "$SCRIPT_DIR/play/Dockerfile" "$REPO_DIR"
 
-echo "==> Done. Run with: docker compose -f docker/docker-compose.local.yml up -d"
+echo "==> Done. Run with: docker-compose -f docker/docker-compose.yml up -d"
