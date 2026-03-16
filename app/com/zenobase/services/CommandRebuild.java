@@ -19,6 +19,7 @@ import org.opensearch.client.opensearch.OpenSearchClient;
 import org.opensearch.client.transport.httpclient5.ApacheHttpClient5TransportBuilder;
 import org.joda.time.DateTime;
 import play.Logger;
+import play.Logger.ALogger;
 
 import com.zenobase.commands.CreateAuthorizationCommand;
 import com.zenobase.commands.CreateBucketCommand;
@@ -32,6 +33,7 @@ import com.zenobase.models.Role;
 
 public class CommandRebuild {
 
+	private final ALogger log = Logger.of("rebuild");
 	private final String sourceHost;
 	private final int parallelism;
 	private final CommandDispatcher dispatcher;
@@ -59,14 +61,14 @@ public class CommandRebuild {
 	}
 
 	void rebuild(IndexManager indexManager) {
-		Logger.info("Rebuilding history from {}...", sourceHost);
+		log.info("Rebuilding history from {}...", sourceHost);
 		Stopwatch timer = Stopwatch.createStarted();
 		rebuildUsers(indexManager);
 		rebuildAuthorizations(indexManager);
 		rebuildCredentials(indexManager);
 		rebuildBuckets(indexManager);
 		rebuildTasks(indexManager);
-		Logger.warn("Rebuilt history in {} s", timer.elapsed(TimeUnit.SECONDS));
+		log.warn("Rebuilt history in {} s", timer.elapsed(TimeUnit.SECONDS));
 	}
 
 	private void rebuildUsers(IndexManager indexManager) {
@@ -96,7 +98,7 @@ public class CommandRebuild {
 		try {
 			buckets.findAll(bucket -> {
 				if (!events.exists(bucket.getId())) {
-					Logger.warn("Fixing missing aliases for bucket {}", bucket.getId());
+					log.warn("Fixing missing aliases for bucket {}", bucket.getId());
 					buckets.realias(bucket);
 				}
 				Identity owner = Iterables.getOnlyElement(bucket.getPrincipals(Role.OWNER));
@@ -109,7 +111,7 @@ public class CommandRebuild {
 							rebuildEvents(events, owner, bucket.getId(), bucket.getCreated());
 						}
 					} catch (RuntimeException e) {
-						Logger.error("Couldn't rebuild bucket: " + bucket.getId(), e);
+						log.error("Couldn't rebuild bucket: " + bucket.getId(), e);
 						failures.incrementAndGet();
 					} finally {
 						semaphore.release();

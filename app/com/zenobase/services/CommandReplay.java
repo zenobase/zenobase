@@ -16,6 +16,7 @@ import org.opensearch.client.opensearch.OpenSearchClient;
 import org.opensearch.client.opensearch._types.OpenSearchException;
 import org.opensearch.client.transport.httpclient5.ApacheHttpClient5TransportBuilder;
 import play.Logger;
+import play.Logger.ALogger;
 
 import com.zenobase.commands.Command;
 import com.zenobase.commands.CommandParserRegistry;
@@ -24,6 +25,7 @@ import com.zenobase.common.StringFilter;
 
 public class CommandReplay {
 
+	private final ALogger log = Logger.of("replay");
 	private static final SearchOrder ORDER = new SearchOrder(Command.TIMESTAMP.getName(), true);
 
 	private final String sourceHost;
@@ -65,7 +67,7 @@ public class CommandReplay {
 	void replay(IndexManager indexManager, IdentitiesFilterBuilder identitiesFilterBuilder) {
 		CommandRepository repository = new CommandRepository(indexManager, parsers);
 		StringFilter identities = identitiesFilterBuilder.build();
-		Logger.info("Replaying {} commands from {} with {}x...", repository.size(), sourceHost, parallelism);
+		log.info("Replaying {} commands from {} with {}x...", repository.size(), sourceHost, parallelism);
 		Stopwatch timer = Stopwatch.createStarted();
 		ExecutorService[] lanes = new ExecutorService[parallelism];
 		for (int i = 0; i < parallelism; ++i) {
@@ -103,7 +105,7 @@ public class CommandReplay {
 			for (ExecutorService lane : lanes) {
 				lane.shutdownNow();
 			}
-			Logger.warn("Replayed {} and discarded {} commands out of {} with {} failures in {} s",
+			log.warn("Replayed {} and discarded {} commands out of {} with {} failures in {} s",
 				replayed.get(), count.get() - replayed.get(), repository.size(), failures.get(), timer.elapsed(TimeUnit.SECONDS));
 		}
 		if (failures.get() > 0) {
@@ -116,27 +118,27 @@ public class CommandReplay {
 			dispatcher.dispatch(command);
 			replayed.incrementAndGet();
 		} catch (NonExistentUserException e) {
-			Logger.warn("Skipping command applying to a non-existent user: " + command);
+			log.warn("Skipping command applying to a non-existent user: " + command);
 		} catch (OpenSearchException e) {
 			if (e.status() == 404) {
-				Logger.warn("Skipping command for deleted bucket: " + command);
+				log.warn("Skipping command for deleted bucket: " + command);
 			} else if (e.status() == 409) {
-				Logger.warn("Skipping duplicate command: " + command);
+				log.warn("Skipping duplicate command: " + command);
 			} else {
-				Logger.error("Couldn't replay command: " + command, e);
+				log.error("Couldn't replay command: " + command, e);
 				failures.incrementAndGet();
 			}
 		} catch (IllegalStateException e) {
 			retryCommand(command, e);
 		} catch (RuntimeException e) {
-			Logger.error("Couldn't replay command: " + command, e);
+			log.error("Couldn't replay command: " + command, e);
 			failures.incrementAndGet();
 		}
 	}
 
 	private void retryCommand(Command command, IllegalStateException cause) {
 		for (int retry = 1; retry <= 3; retry++) {
-			Logger.warn("Retrying command (attempt {}): {}", retry, command);
+			log.warn("Retrying command (attempt {}): {}", retry, command);
 			try {
 				Thread.sleep(retry * 1000L);
 				dispatcher.dispatch(command);
@@ -149,7 +151,7 @@ public class CommandReplay {
 				break;
 			}
 		}
-		Logger.error("Couldn't replay command: " + command, cause);
+		log.error("Couldn't replay command: " + command, cause);
 		failures.incrementAndGet();
 	}
 }
