@@ -14,7 +14,7 @@ import org.opensearch.client.transport.httpclient5.ApacheHttpClient5Transport;
 import org.opensearch.client.transport.httpclient5.ApacheHttpClient5TransportBuilder;
 import play.Logger;
 import software.amazon.awssdk.http.SdkHttpClient;
-import software.amazon.awssdk.http.apache.ApacheHttpClient;
+import software.amazon.awssdk.http.crt.AwsCrtHttpClient;
 import software.amazon.awssdk.regions.Region;
 
 public class OpenSearchClientFactory implements ClientFactory {
@@ -33,7 +33,7 @@ public class OpenSearchClientFactory implements ClientFactory {
 		Logger.info("Connecting to {}...", host);
 		URI uri = URI.create(host);
 		if ("https".equals(uri.getScheme())) {
-			SdkHttpClient httpClient = ApacheHttpClient.builder().build();
+			SdkHttpClient httpClient = AwsCrtHttpClient.builder().build();
 			AwsSdk2Transport transport = new AwsSdk2Transport(
 				httpClient,
 				uri.getHost(),
