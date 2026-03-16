@@ -63,7 +63,8 @@ public class CredentialsRepository extends RepositorySupport<Credentials> {
 	public PartialList<Credentials> find(CredentialsQuery query, int offset, int limit) {
 		SearchRequest.Builder builder = new SearchRequest.Builder()
 			.index(index.getIndexName())
-			.query(query.build()).version(true).seqNoPrimaryTerm(true).from(offset).size(limit);
+			.query(query.build()).version(true).seqNoPrimaryTerm(true).from(offset).size(limit)
+			.trackTotalHits(t -> t.enabled(true));
 		query.order().apply(builder);
 		return new CredentialsList(index.find(builder.build()));
 	}

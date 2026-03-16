@@ -58,6 +58,7 @@ public class UserRepository extends RepositorySupport<User> {
 			.query(query.build())
 			.sort(so -> so.field(f -> f.field(User.NAME.getName()).order(SortOrder.Asc)))
 			.from(offset).size(limit)
+			.trackTotalHits(t -> t.enabled(true))
 			.version(true)
 			.seqNoPrimaryTerm(true)
 		);

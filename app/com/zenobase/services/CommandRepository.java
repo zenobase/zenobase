@@ -62,7 +62,8 @@ public class CommandRepository extends RepositorySupport<Command> {
 	public PartialList<Command> find(CommandQuery query, SearchOrder order, int offset, int limit) {
 		SearchRequest.Builder builder = new SearchRequest.Builder()
 			.index(index.getIndexName())
-			.query(query.build()).from(offset).size(limit);
+			.query(query.build()).from(offset).size(limit)
+			.trackTotalHits(t -> t.enabled(true));
 		order.apply(builder);
 		return new CommandList(index.find(builder.build()), parsers);
 	}

@@ -84,7 +84,8 @@ public class BucketRepository extends RepositorySupport<Bucket> {
 	public PartialList<Bucket> find(BucketQuery query, SearchOrder order, int offset, int limit) {
 		SearchRequest.Builder builder = new SearchRequest.Builder()
 			.index(index.getIndexName())
-			.query(query.build()).version(true).seqNoPrimaryTerm(true).from(offset).size(limit);
+			.query(query.build()).version(true).seqNoPrimaryTerm(true).from(offset).size(limit)
+			.trackTotalHits(t -> t.enabled(true));
 		order.apply(builder);
 		return new BucketList(index.find(builder.build()));
 	}

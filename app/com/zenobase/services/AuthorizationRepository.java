@@ -50,6 +50,7 @@ public class AuthorizationRepository extends RepositorySupport<Authorization> {
 		SearchRequest request = SearchRequest.of(s -> s
 			.index(index.getIndexName())
 			.query(query.build()).version(true).seqNoPrimaryTerm(true).from(offset).size(limit)
+			.trackTotalHits(t -> t.enabled(true))
 			.sort(so -> so.field(f -> f.field(Authorization.CREATED.getName()).order(SortOrder.Desc)))
 		);
 		return new AuthorizationList(index.find(request));
