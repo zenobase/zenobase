@@ -2,9 +2,6 @@ package com.zenobase.services;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -35,13 +32,11 @@ public class CommandRebuild {
 
 	private final ALogger log = Logger.of("rebuild");
 	private final String sourceHost;
-	private final int parallelism;
 	private final CommandDispatcher dispatcher;
 
 	@Inject
-	public CommandRebuild(@Named("opensearch.rebuild.host") String sourceHost, @Named("opensearch.rebuild.parallelism") int parallelism, CommandDispatcher dispatcher) {
+	public CommandRebuild(@Named("opensearch.rebuild.host") String sourceHost, CommandDispatcher dispatcher) {
 		this.sourceHost = sourceHost;
-		this.parallelism = parallelism > 0 ? parallelism : Runtime.getRuntime().availableProcessors();
 		this.dispatcher = dispatcher;
 	}
 
@@ -90,48 +85,22 @@ public class CommandRebuild {
 		EventRepository events = new EventRepository(indexManager);
 		BucketRepository buckets = new BucketRepository(indexManager);
 		AtomicInteger failures = new AtomicInteger();
-		ExecutorService[] lanes = new ExecutorService[parallelism];
-		for (int i = 0; i < parallelism; ++i) {
-			lanes[i] = Executors.newSingleThreadExecutor();
-		}
-		Semaphore semaphore = new Semaphore(parallelism * 100);
-		try {
-			buckets.findAll(bucket -> {
-				if (!events.exists(bucket.getId())) {
-					log.warn("Fixing missing aliases for bucket {}", bucket.getId());
-					buckets.realias(bucket);
+		buckets.findAll(bucket -> {
+			if (!events.exists(bucket.getId())) {
+				log.warn("Fixing missing aliases for bucket {}", bucket.getId());
+				buckets.realias(bucket);
+			}
+			Identity owner = Iterables.getOnlyElement(bucket.getPrincipals(Role.OWNER));
+			try {
+				dispatcher.dispatch(new CreateBucketCommand(owner, bucket));
+				if (!bucket.isVirtual()) {
+					rebuildEvents(events, owner, bucket.getId(), bucket.getCreated());
 				}
-				Identity owner = Iterables.getOnlyElement(bucket.getPrincipals(Role.OWNER));
-				int lane = Math.floorMod(owner.getId().hashCode(), parallelism);
-				semaphore.acquireUninterruptibly();
-				lanes[lane].submit(() -> {
-					try {
-						dispatcher.dispatch(new CreateBucketCommand(owner, bucket));
-						if (!bucket.isVirtual()) {
-							rebuildEvents(events, owner, bucket.getId(), bucket.getCreated());
-						}
-					} catch (RuntimeException e) {
-						log.error("Couldn't rebuild bucket: " + bucket.getId(), e);
-						failures.incrementAndGet();
-					} finally {
-						semaphore.release();
-					}
-				});
-			});
-			for (ExecutorService lane : lanes) {
-				lane.shutdown();
+			} catch (RuntimeException e) {
+				log.error("Couldn't rebuild bucket: " + bucket.getId(), e);
+				failures.incrementAndGet();
 			}
-			for (ExecutorService lane : lanes) {
-				lane.awaitTermination(Long.MAX_VALUE, TimeUnit.MILLISECONDS);
-			}
-		} catch (InterruptedException e) {
-			Thread.currentThread().interrupt();
-			throw new RuntimeException("Rebuild interrupted", e);
-		} finally {
-			for (ExecutorService lane : lanes) {
-				lane.shutdownNow();
-			}
-		}
+		});
 		if (failures.get() > 0) {
 			throw new IllegalStateException("Rebuild completed with one or more failures");
 		}

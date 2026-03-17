@@ -1,8 +1,5 @@
 package com.zenobase.services;
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -29,7 +26,6 @@ public class CommandReplay {
 	private static final SearchOrder ORDER = new SearchOrder(Command.TIMESTAMP.getName(), true);
 
 	private final String sourceHost;
-	private final int parallelism;
 	private final CommandParserRegistry parsers;
 	private final CommandDispatcher dispatcher;
 	private final AtomicInteger count = new AtomicInteger();
@@ -37,9 +33,8 @@ public class CommandReplay {
 	private final AtomicInteger failures = new AtomicInteger();
 
 	@Inject
-	public CommandReplay(@Named("opensearch.replay.host") String sourceHost, @Named("opensearch.replay.parallelism") int parallelism, CommandParserRegistry parsers, CommandDispatcher dispatcher) {
+	public CommandReplay(@Named("opensearch.replay.host") String sourceHost, CommandParserRegistry parsers, CommandDispatcher dispatcher) {
 		this.sourceHost = sourceHost;
-		this.parallelism = parallelism > 0 ? parallelism : Runtime.getRuntime().availableProcessors();
 		this.parsers = parsers;
 		this.dispatcher = dispatcher;
 	}
@@ -67,47 +62,18 @@ public class CommandReplay {
 	void replay(IndexManager indexManager, IdentitiesFilterBuilder identitiesFilterBuilder) {
 		CommandRepository repository = new CommandRepository(indexManager, parsers);
 		StringFilter identities = identitiesFilterBuilder.build();
-		log.info("Replaying {} commands from {} with {}x...", repository.size(), sourceHost, parallelism);
+		log.info("Replaying {} commands from {}...", repository.size(), sourceHost);
 		Stopwatch timer = Stopwatch.createStarted();
-		ExecutorService[] lanes = new ExecutorService[parallelism];
-		for (int i = 0; i < parallelism; ++i) {
-			lanes[i] = Executors.newSingleThreadExecutor();
-		}
-		Semaphore semaphore = new Semaphore(parallelism * 100);
-		try {
-			repository.find(new CommandQuery(), ORDER, command -> {
-				if (identities.mightContain(command.getPrincipal().getId())) {
-					String principalId = command.getPrincipal().getId();
-					int lane = Math.floorMod(principalId.hashCode(), parallelism);
-					semaphore.acquireUninterruptibly();
-					lanes[lane].submit(() -> {
-						try {
-							dispatchWithRetry(command);
-						} finally {
-							semaphore.release();
-						}
-					});
-				} else {
-					dispatcher.discard(command);
-				}
-				count.incrementAndGet();
-			});
-			for (ExecutorService lane : lanes) {
-				lane.shutdown();
+		repository.find(new CommandQuery(), ORDER, command -> {
+			if (identities.mightContain(command.getPrincipal().getId())) {
+				dispatchWithRetry(command);
+			} else {
+				dispatcher.discard(command);
 			}
-			for (ExecutorService lane : lanes) {
-				lane.awaitTermination(Long.MAX_VALUE, TimeUnit.MILLISECONDS);
-			}
-		} catch (InterruptedException e) {
-			Thread.currentThread().interrupt();
-			throw new RuntimeException("Replay interrupted", e);
-		} finally {
-			for (ExecutorService lane : lanes) {
-				lane.shutdownNow();
-			}
-			log.warn("Replayed {} and discarded {} commands out of {} with {} failures in {} s",
-				replayed.get(), count.get() - replayed.get(), repository.size(), failures.get(), timer.elapsed(TimeUnit.SECONDS));
-		}
+			count.incrementAndGet();
+		});
+		log.warn("Replayed {} and discarded {} commands out of {} with {} failures in {} s",
+			replayed.get(), count.get() - replayed.get(), repository.size(), failures.get(), timer.elapsed(TimeUnit.SECONDS));
 		if (failures.get() > 0) {
 			throw new IllegalStateException("Replay completed with one or more failures");
 		}
