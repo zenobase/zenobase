@@ -17,6 +17,9 @@ const apiHostname = config.get("apiHostname") || "http://localhost:9000";
 const oauthHostname = config.get("oauthHostname") || "https://zenobase.com";
 const sesIdentity = config.get("sesIdentity") || "";
 const bastionEnabled = config.get("bastionEnabled") === "true";
+const playCpu = config.get("playCpu") || "1024";
+const playMemory = config.get("playMemory") || "2048";
+const opensearchInstanceType = config.get("opensearchInstanceType") || "t3.medium.search";
 
 // ---------- VPC ----------
 
@@ -195,7 +198,7 @@ const osDomain = new aws.opensearch.Domain(`zenobase-os-${opensearchDomain}`, {
     domainName: opensearchDomain,
     engineVersion: opensearchVersion,
     clusterConfig: {
-        instanceType: "t3.medium.search",
+        instanceType: opensearchInstanceType,
         instanceCount: 1,
     },
     ebsOptions: {
@@ -444,8 +447,8 @@ const taskDefinition = new aws.ecs.TaskDefinition("zenobase-task", {
     family: "zenobase-play",
     requiresCompatibilities: ["FARGATE"],
     networkMode: "awsvpc",
-    cpu: "1024",
-    memory: "2048",
+    cpu: playCpu,
+    memory: playMemory,
     runtimePlatform: {
         cpuArchitecture: "ARM64",
         operatingSystemFamily: "LINUX",
