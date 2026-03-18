@@ -11,6 +11,7 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
 import com.google.common.primitives.Ints;
 import org.opensearch.client.opensearch.OpenSearchClient;
+import org.opensearch.client.opensearch._types.OpenSearchException;
 import org.opensearch.client.opensearch._types.OpType;
 import org.opensearch.client.opensearch._types.Refresh;
 import org.opensearch.client.opensearch._types.Time;
@@ -291,13 +292,31 @@ public class Index {
 					callback.call(read(hit));
 				}
 				String scrollId = response.scrollId();
-				response = client.scroll(sr -> sr.scrollId(scrollId).scroll(SCROLL_TIMEOUT), ObjectNode.class);
+				response = scrollWithRetry(scrollId);
 			}
 			String finalScrollId = response.scrollId();
 			client.clearScroll(c -> c.scrollId(finalScrollId));
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
+	}
+
+	private SearchResponse<ObjectNode> scrollWithRetry(String scrollId) throws IOException {
+		OpenSearchException lastException = null;
+		for (int attempt = 1; attempt <= 3; attempt++) {
+			try {
+				return client.scroll(sr -> sr.scrollId(scrollId).scroll(SCROLL_TIMEOUT), ObjectNode.class);
+			} catch (OpenSearchException e) {
+				lastException = e;
+				try {
+					Thread.sleep(attempt * 1000L);
+				} catch (InterruptedException ie) {
+					Thread.currentThread().interrupt();
+					break;
+				}
+			}
+		}
+		throw new RuntimeException(lastException);
 	}
 
 	public ObjectNode get(String id) {
