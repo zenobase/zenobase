@@ -194,6 +194,24 @@ const playRepo = new aws.ecr.Repository("zenobase-play", {
 
 // ---------- OpenSearch Service ----------
 
+const osLogGroup = new aws.cloudwatch.LogGroup("zenobase-opensearch-logs", {
+    name: "/zenobase/opensearch",
+    retentionInDays: 30,
+});
+
+new aws.cloudwatch.LogResourcePolicy("zenobase-opensearch-log-policy", {
+    policyName: "zenobase-opensearch-log-policy",
+    policyDocument: pulumi.all([accountId]).apply(([account]) => JSON.stringify({
+        Version: "2012-10-17",
+        Statement: [{
+            Effect: "Allow",
+            Principal: { Service: "es.amazonaws.com" },
+            Action: ["logs:PutLogEvents", "logs:CreateLogStream"],
+            Resource: `arn:aws:logs:${region}:${account}:log-group:/zenobase/opensearch:*`,
+        }],
+    })),
+});
+
 const osDomain = new aws.opensearch.Domain(`zenobase-os-${opensearchDomain}`, {
     domainName: opensearchDomain,
     engineVersion: opensearchVersion,
@@ -228,6 +246,20 @@ const osDomain = new aws.opensearch.Domain(`zenobase-os-${opensearchDomain}`, {
             Resource: `arn:aws:es:${region}:${account}:domain/${opensearchDomain}/*`,
         }],
     })),
+    logPublishingOptions: [
+        {
+            logType: "ES_APPLICATION_LOGS",
+            cloudwatchLogGroupArn: osLogGroup.arn,
+        },
+        {
+            logType: "INDEX_SLOW_LOGS",
+            cloudwatchLogGroupArn: osLogGroup.arn,
+        },
+        {
+            logType: "SEARCH_SLOW_LOGS",
+            cloudwatchLogGroupArn: osLogGroup.arn,
+        },
+    ],
     tags: { Name: opensearchDomain },
 }, { retainOnDelete: true });
 
