@@ -551,6 +551,10 @@ new aws.ecs.Service("zenobase-service", {
         containerPort: 9000,
     }],
     healthCheckGracePeriodSeconds: 10800,
+    deploymentCircuitBreaker: {
+        enable: true,
+        rollback: true,
+    },
 }, { dependsOn: [httpsListener] });
 
 // ---------- CloudWatch Alarms ----------

@@ -432,12 +432,17 @@ public class Global extends GlobalSettings {
 	}
 
 	private void replay() {
-		UserRepository users = injector.getInstance(UserRepository.class);
-		if (users.isEmpty()) {
-			Configuration esConfig = getApplicationConfig().getConfig("opensearch");
-			if (!Strings.isNullOrEmpty(esConfig.getString("replay.host"))) {
+		Configuration esConfig = getApplicationConfig().getConfig("opensearch");
+		boolean replayConfigured = !Strings.isNullOrEmpty(esConfig.getString("replay.host"));
+		boolean rebuildConfigured = !Strings.isNullOrEmpty(esConfig.getString("rebuild.host"));
+		if (replayConfigured || rebuildConfigured) {
+			UserRepository users = injector.getInstance(UserRepository.class);
+			if (!users.isEmpty()) {
+				throw new IllegalStateException("Migration incomplete: replay/rebuild is configured but target domain already has data");
+			}
+			if (replayConfigured) {
 				injector.getInstance(CommandReplay.class).replay();
-			} else if (!Strings.isNullOrEmpty(esConfig.getString("rebuild.host"))) {
+			} else {
 				injector.getInstance(CommandRebuild.class).rebuild();
 			}
 		}
