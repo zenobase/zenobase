@@ -6,7 +6,7 @@ const awsConfig = new pulumi.Config("aws");
 const region = awsConfig.require("region");
 const accountId = aws.getCallerIdentity().then(id => id.accountId);
 const certificateArn = config.require("certificateArn");
-const playImageTag = config.get("playImageTag") || "latest";
+const playImageTag = config.require("playImageTag");
 const opensearchSnapshotBucket = config.get("opensearchSnapshotBucket") || "";
 const opensearchDomain = config.get("opensearchDomain") || "zenobase";
 const opensearchReplayDomain = config.get("opensearchReplayDomain") || "";
@@ -189,7 +189,7 @@ if (bastionEnabled) {
 
 const playRepo = new aws.ecr.Repository("zenobase-play", {
     name: "zenobase-play",
-    imageTagMutability: "MUTABLE",
+    imageTagMutability: "IMMUTABLE",
 });
 
 // ---------- OpenSearch Service ----------

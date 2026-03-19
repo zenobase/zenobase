@@ -14,11 +14,6 @@ on:
       - 'project/**'
       - 'public/**'
       - 'build.sbt'
-  workflow_call:
-    inputs:
-      image-tag:
-        required: true
-        type: string
   workflow_dispatch:
 
 env:
@@ -65,8 +60,6 @@ jobs:
           file: docker/play/Dockerfile
           platforms: linux/arm64
           push: true
-          tags: |
-            ${{ steps.ecr-login.outputs.registry }}/zenobase-play:${{ github.sha }}
-            ${{ steps.ecr-login.outputs.registry }}/zenobase-play:${{ inputs.image-tag || 'latest' }}
+          tags: ${{ steps.ecr-login.outputs.registry }}/zenobase-play:${{ github.sha }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
