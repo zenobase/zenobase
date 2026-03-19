@@ -4240,8 +4240,7 @@
 			$scope.map = null;
 			$scope.points = null;
 			$scope.pointsB = null;
-			$scope.heatmap = null;
-			$scope.heatmapB = null;
+			$scope.overlay = null;
 			$scope.bounds = null;
 			$scope.boundsB = null;
 			$scope.precision = 8;
@@ -4316,30 +4315,8 @@
 				});
 				$scope.shown = false;
 
-				var gradient = [ 'rgba(0, 126, 216, 0.0)' ];
-				for (var r = 0; r < 256; ++r) {
-					gradient.push('rgba(' + r + ', 126, 216, 1.0)');
-				}
-				$scope.heatmap = new google.maps.visualization.HeatmapLayer({
-					data : [],
-					map : $scope.map,
-					opacity : 0.5,
-					dissipating : true,
-					radius : 20,
-					gradient : gradient
-				});
-				var gradientB = [ 'rgba(204, 102, 0, 0.0)' ];
-				for (var g = 103; g < 256; ++g) {
-					gradientB.push('rgba(204, ' + g + ', 0, 1.0)');
-				}
-				$scope.heatmapB = new google.maps.visualization.HeatmapLayer({
-					data : [],
-					map : $scope.map,
-					opacity : 0.5,
-					dissipating : true,
-					radius : 20,
-					gradient : gradientB
-				});
+				$scope.overlay = new deck.GoogleMapsOverlay();
+				$scope.overlay.setMap($scope.map);
 				drawConstraintBounds($scope.getConstraints($scope.field), 'rgb(47, 126, 216)');
 				drawConstraintBounds($scope.getConstraintsB($scope.field), 'rgb(204, 102, 0)');
 				$scope.map.controls[google.maps.ControlPosition.TOP_RIGHT].push(createFilterControl());
@@ -4420,21 +4397,41 @@
 		};
 		$scope.addPoints = function() {
 			if ($scope.map && ($scope.points && $scope.points.length || $scope.pointsB && $scope.pointsB.length)) {
-				var data = [];
 				var field = Field.find($scope.settings.value_field);
+				var data = [];
 				$.each($scope.points, function(i, point) {
-					var latLng = new google.maps.LatLng(point.lat, point.lon);
 					var weight = field && $scope.points.length > 1 ? field.toNumber(point.sum) : point.count;
-					data.push({ location : latLng, weight : weight });
+					data.push({ position : [point.lon, point.lat], weight : weight });
 				});
-				$scope.heatmap.setData(data);
 				var dataB = [];
 				$.each($scope.pointsB, function(i, point) {
-					var latLng = new google.maps.LatLng(point.lat, point.lon);
 					var weight = field && $scope.pointsB.length > 1 ? field.toNumber(point.sum) : point.count;
-					dataB.push({ location : latLng, weight : weight });
+					dataB.push({ position : [point.lon, point.lat], weight : weight });
 				});
-				$scope.heatmapB.setData(dataB);
+				var layers = [];
+				if (data.length) {
+					layers.push(new deck.HeatmapLayer({
+						id : 'heatmap-primary',
+						data : data,
+						getPosition : function(d) { return d.position; },
+						getWeight : function(d) { return d.weight; },
+						radiusPixels : 20,
+						opacity : 0.5,
+						colorRange : [[0,126,216], [64,126,216], [128,126,216], [192,126,216], [255,126,216]]
+					}));
+				}
+				if (dataB.length) {
+					layers.push(new deck.HeatmapLayer({
+						id : 'heatmap-secondary',
+						data : dataB,
+						getPosition : function(d) { return d.position; },
+						getWeight : function(d) { return d.weight; },
+						radiusPixels : 20,
+						opacity : 0.5,
+						colorRange : [[204,103,0], [204,140,0], [204,180,0], [204,220,0], [204,255,0]]
+					}));
+				}
+				$scope.overlay.setProps({ layers : layers });
 			}
 		};
 
