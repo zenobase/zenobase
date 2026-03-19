@@ -24,6 +24,7 @@ import com.zenobase.commands.CreateCredentialsCommand;
 import com.zenobase.commands.CreateEventsCommand;
 import com.zenobase.commands.CreateTaskCommand;
 import com.zenobase.commands.CreateUserCommand;
+import com.zenobase.models.Bucket;
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
 import com.zenobase.models.Role;
@@ -84,23 +85,25 @@ public class CommandRebuild {
 	private void rebuildBuckets(IndexManager indexManager) {
 		EventRepository events = new EventRepository(indexManager);
 		BucketRepository buckets = new BucketRepository(indexManager);
+		List<Bucket> allBuckets = new ArrayList<>();
+		buckets.findAll(allBuckets::add);
 		AtomicInteger failures = new AtomicInteger();
-		buckets.findAll(bucket -> {
-			if (!events.exists(bucket.getId())) {
-				log.warn("Fixing missing aliases for bucket {}", bucket.getId());
-				buckets.realias(bucket);
-			}
-			Identity owner = Iterables.getOnlyElement(bucket.getPrincipals(Role.OWNER));
-			try {
-				dispatcher.dispatch(new CreateBucketCommand(owner, bucket));
-				if (!bucket.isVirtual()) {
-					rebuildEvents(events, owner, bucket.getId(), bucket.getCreated());
-				}
-			} catch (RuntimeException e) {
-				log.error("Couldn't rebuild bucket: " + bucket.getId(), e);
-				failures.incrementAndGet();
-			}
-		});
+        for (Bucket bucket : allBuckets) {
+            if (!events.exists(bucket.getId())) {
+                log.warn("Fixing missing aliases for bucket {}", bucket.getId());
+                buckets.realias(bucket);
+            }
+            Identity owner = Iterables.getOnlyElement(bucket.getPrincipals(Role.OWNER));
+            try {
+                dispatcher.dispatch(new CreateBucketCommand(owner, bucket));
+                if (!bucket.isVirtual()) {
+                    rebuildEvents(events, owner, bucket.getId(), bucket.getCreated());
+                }
+            } catch (RuntimeException e) {
+                log.error("Couldn't rebuild bucket: " + bucket.getId(), e);
+                failures.incrementAndGet();
+            }
+        }
 		if (failures.get() > 0) {
 			throw new IllegalStateException("Rebuild completed with one or more failures");
 		}
