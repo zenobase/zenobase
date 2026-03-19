@@ -165,20 +165,22 @@ Use this procedure to restore from an S3 snapshot into a new managed OpenSearch 
   1. Create a new domain:
 
        cd infra
-       pulumi config set zenobase:opensearchDomain "zenobase-v2"
+       pulumi config set zenobase:opensearchDomain "zeno-opensearch-NNN"
        pulumi up
 
      Wait for the domain to become active (15-30 minutes).
 
-  2. Install awscurl locally (needed to sign requests to VPC-internal OpenSearch):
+  2. Enable and connect to the bastion host (see Troubleshooting):
 
-       pip3 install awscurl
+       cd infra
+       pulumi config set zenobase:bastionEnabled true
+       pulumi up
+       aws ssm start-session --target $(pulumi stack output bastionInstanceId)
 
   3. Register the S3 snapshot repository (the base_path must match the
      source domain name, as snapshots are stored under that path in S3):
 
-       awscurl --service es --region us-east-1 \
-         -X PUT "https://<domain-endpoint>/_snapshot/<source-domain-name>" \
+       curl -X PUT "https://<domain-endpoint>/_snapshot/<source-domain-name>" \
          -H "Content-Type: application/json" \
          -d '{
            "type": "s3",
@@ -194,19 +196,21 @@ Use this procedure to restore from an S3 snapshot into a new managed OpenSearch 
 
   4. List available snapshots:
 
-       awscurl --service es --region us-east-1 \
-         "https://<domain-endpoint>/_snapshot/<source-domain-name>/_all?pretty=true"
+       curl -s "https://<domain-endpoint>/_snapshot/<source-domain-name>/_all?pretty=true"
 
   5. Restore a snapshot:
 
-       awscurl --service es --region us-east-1 \
-         -X POST "https://<domain-endpoint>/_snapshot/<source-domain-name>/<snapshot-id>/_restore" \
+       curl -X POST "https://<domain-endpoint>/_snapshot/<source-domain-name>/<snapshot-id>/_restore" \
          -H "Content-Type: application/json"
 
   6. Monitor progress:
 
-       awscurl --service es --region us-east-1 \
-         "https://<domain-endpoint>/_cat/recovery"
+       curl -s "https://<domain-endpoint>/_cat/recovery"
+
+  7. Disable the bastion when done:
+
+       pulumi config set zenobase:bastionEnabled ""
+       pulumi up
 
 
 Troubleshooting

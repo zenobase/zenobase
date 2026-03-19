@@ -121,7 +121,7 @@ const osSg = new aws.ec2.SecurityGroup("zenobase-os-sg", {
 
 // ---------- Bastion (for OpenSearch diagnostics) ----------
 
-let bastionInstanceId: pulumi.Output<string> | undefined;
+let bastionInstanceId: pulumi.Output<string> = pulumi.output("");
 
 if (bastionEnabled) {
     const bastionSg = new aws.ec2.SecurityGroup("zenobase-bastion-sg", {
