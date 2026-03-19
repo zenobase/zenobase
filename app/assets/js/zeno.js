@@ -4088,13 +4088,13 @@
 		}
 		$scope.createFilterControl = function() {
 			var parent = document.createElement('div');
-			parent.style.padding = '5px';
+			parent.style.padding = '0 10px';
 			var control = document.createElement('div');
-			control.title = 'Click to filter using the current map bounds';
+			control.title = 'Filter bucket for events in this area';
 			control.className = 'map-control';
 			parent.appendChild(control);
-			var label = document.createElement('div');
-			label.innerHTML = 'Filter';
+			var label = document.createElement('i');
+			label.className = 'fa fa-filter';
 			control.appendChild(label);
 			control.addEventListener('click', function() {
 				$scope.$apply(function() {
@@ -4344,13 +4344,13 @@
 		}
 		function createFilterControl() {
 			var parent = document.createElement('div');
-			parent.style.padding = '5px';
+			parent.style.padding = '0 10px';
 			var control = document.createElement('div');
-			control.title = 'Click to filter using the current map bounds';
+			control.title = 'Filter bucket for events in this area';
 			control.className = 'map-control';
 			parent.appendChild(control);
-			var label = document.createElement('div');
-			label.innerHTML = 'Filter';
+			var label = document.createElement('i');
+			label.className = 'fa fa-filter';
 			control.appendChild(label);
 			control.addEventListener('click', function() {
 				$scope.$apply(function() {
