@@ -89,7 +89,7 @@ public class EventRepository {
 	}
 
 	public void findAll(String bucketId, Callback<Event> callback) {
-		getIndex(bucketId).find(Query.of(q -> q.matchAll(m -> m)), node -> callback.call(new Event(node)), 100);
+		getIndex(bucketId).find(Query.of(q -> q.matchAll(m -> m)), node -> callback.call(new Event(node)), 1000);
 	}
 
 	public boolean exists(String bucketId) {
