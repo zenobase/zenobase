@@ -192,6 +192,22 @@ const playRepo = new aws.ecr.Repository("zenobase-play", {
     imageTagMutability: "IMMUTABLE",
 });
 
+new aws.ecr.LifecyclePolicy("zenobase-play-lifecycle", {
+    repository: playRepo.name,
+    policy: JSON.stringify({
+        rules: [{
+            rulePriority: 1,
+            description: "Keep only the last 10 images",
+            selection: {
+                tagStatus: "any",
+                countType: "imageCountMoreThan",
+                countNumber: 10,
+            },
+            action: { type: "expire" },
+        }],
+    }),
+});
+
 // ---------- OpenSearch Service ----------
 
 const osLogGroup = new aws.cloudwatch.LogGroup("zenobase-opensearch-logs", {
