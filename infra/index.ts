@@ -447,6 +447,85 @@ new aws.lb.Listener("zenobase-http-redirect", {
     }],
 });
 
+// ---------- WAF ----------
+
+// Uncomment to block specific IP addresses (must be declared before the WebAcl):
+// const wafBlockedIps = new aws.wafv2.IpSet("zenobase-blocked-ips", {
+//     scope: "REGIONAL",
+//     ipAddressVersion: "IPV4",
+//     addresses: ["1.2.3.4/32", "5.6.0.0/16"],
+//     tags: { Name: "zenobase" },
+// });
+
+const waf = new aws.wafv2.WebAcl("zenobase-waf", {
+    scope: "REGIONAL",
+    defaultAction: { allow: {} },
+    visibilityConfig: {
+        cloudwatchMetricsEnabled: true,
+        metricName: "zenobase-waf",
+        sampledRequestsEnabled: true,
+    },
+    rules: [
+        // Uncomment to block specific IP addresses (also uncomment the IpSet above):
+        // {
+        //     name: "blocked-ips",
+        //     priority: 0,
+        //     action: { block: {} },
+        //     statement: { ipSetReferenceStatement: { arn: wafBlockedIps.arn } },
+        //     visibilityConfig: { cloudwatchMetricsEnabled: true, metricName: "blocked-ips", sampledRequestsEnabled: true },
+        // },
+        {
+            name: "aws-common",
+            priority: 1,
+            overrideAction: { none: {} },
+            statement: {
+                managedRuleGroupStatement: { vendorName: "AWS", name: "AWSManagedRulesCommonRuleSet" },
+            },
+            visibilityConfig: { cloudwatchMetricsEnabled: true, metricName: "aws-common", sampledRequestsEnabled: true },
+        },
+        {
+            name: "aws-known-bad-inputs",
+            priority: 2,
+            overrideAction: { none: {} },
+            statement: {
+                managedRuleGroupStatement: { vendorName: "AWS", name: "AWSManagedRulesKnownBadInputsRuleSet" },
+            },
+            visibilityConfig: { cloudwatchMetricsEnabled: true, metricName: "aws-known-bad-inputs", sampledRequestsEnabled: true },
+        },
+        // Uncomment to block a specific user agent (inline, no separate resource needed):
+        // {
+        //     name: "blocked-useragent",
+        //     priority: 3,
+        //     action: { block: {} },
+        //     statement: {
+        //         byteMatchStatement: {
+        //             searchString: "badbot",
+        //             fieldToMatch: { singleHeader: { name: "user-agent" } },
+        //             textTransformations: [{ priority: 0, type: "LOWERCASE" }],
+        //             positionalConstraint: "CONTAINS",
+        //         },
+        //     },
+        //     visibilityConfig: { cloudwatchMetricsEnabled: true, metricName: "blocked-useragent", sampledRequestsEnabled: true },
+        // },
+        // Uncomment to block by country (ISO 3166-1 alpha-2 codes):
+        // {
+        //     name: "blocked-countries",
+        //     priority: 4,
+        //     action: { block: {} },
+        //     statement: {
+        //         geoMatchStatement: { countryCodes: ["CN", "RU"] },
+        //     },
+        //     visibilityConfig: { cloudwatchMetricsEnabled: true, metricName: "blocked-countries", sampledRequestsEnabled: true },
+        // },
+    ],
+    tags: { Name: "zenobase" },
+});
+
+new aws.wafv2.WebAclAssociation("zenobase-waf-alb", {
+    resourceArn: alb.arn,
+    webAclArn: waf.arn,
+});
+
 // ---------- Secrets Manager ----------
 
 const prodConfSecret = new aws.secretsmanager.Secret("zenobase-prod-conf", {
