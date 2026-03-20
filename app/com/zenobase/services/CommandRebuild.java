@@ -7,6 +7,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.ToIntFunction;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -64,30 +65,48 @@ public class CommandRebuild {
 	void rebuild(IndexManager indexManager) {
 		log.info("Rebuilding history from {}...", sourceHost);
 		Stopwatch timer = Stopwatch.createStarted();
-		rebuildUsers(indexManager);
-		rebuildAuthorizations(indexManager);
-		rebuildCredentials(indexManager);
-		rebuildBuckets(indexManager);
-		rebuildTasks(indexManager);
+		rebuild("users", indexManager, this::rebuildUsers);
+		rebuild("authorizations", indexManager, this::rebuildAuthorizations);
+		rebuild("credentials", indexManager, this::rebuildCredentials);
+		rebuild("buckets", indexManager, this::rebuildBuckets);
+		rebuild("tasks", indexManager, this::rebuildTasks);
 		log.warn("Rebuilt history in {} s", timer.elapsed(TimeUnit.SECONDS));
 	}
 
-	private void rebuildUsers(IndexManager indexManager) {
-		new UserRepository(indexManager).findAll(user ->
-			dispatcher.dispatch(new CreateUserCommand(user.asIdentity(), user)));
+	private void rebuild(String label, IndexManager indexManager, ToIntFunction<IndexManager> action) {
+		Stopwatch timer = Stopwatch.createStarted();
+		int count = action.applyAsInt(indexManager);
+		log.info("Rebuilt {} {} in {} s", count, label, timer.elapsed(TimeUnit.SECONDS));
 	}
 
-	private void rebuildAuthorizations(IndexManager indexManager) {
-		new AuthorizationRepository(indexManager).findAll(authorization ->
-			dispatcher.dispatch(new CreateAuthorizationCommand(authorization.getPrincipal(), authorization)));
+	private int rebuildUsers(IndexManager indexManager) {
+		AtomicInteger count = new AtomicInteger();
+		new UserRepository(indexManager).findAll(user -> {
+			dispatcher.dispatch(new CreateUserCommand(user.asIdentity(), user));
+			count.incrementAndGet();
+		});
+		return count.get();
 	}
 
-	private void rebuildCredentials(IndexManager indexManager) {
-		new CredentialsRepository(indexManager).findAll(credential ->
-			dispatcher.dispatch(new CreateCredentialsCommand(credential.getPrincipal(), credential)));
+	private int rebuildAuthorizations(IndexManager indexManager) {
+		AtomicInteger count = new AtomicInteger();
+		new AuthorizationRepository(indexManager).findAll(authorization -> {
+			dispatcher.dispatch(new CreateAuthorizationCommand(authorization.getPrincipal(), authorization));
+			count.incrementAndGet();
+		});
+		return count.get();
 	}
 
-	private void rebuildBuckets(IndexManager indexManager) {
+	private int rebuildCredentials(IndexManager indexManager) {
+		AtomicInteger count = new AtomicInteger();
+		new CredentialsRepository(indexManager).findAll(credential -> {
+			dispatcher.dispatch(new CreateCredentialsCommand(credential.getPrincipal(), credential));
+			count.incrementAndGet();
+		});
+		return count.get();
+	}
+
+	private int rebuildBuckets(IndexManager indexManager) {
 		EventRepository events = new EventRepository(indexManager);
 		BucketRepository buckets = new BucketRepository(indexManager);
 		List<Bucket> allBuckets = new ArrayList<>();
@@ -140,6 +159,7 @@ public class CommandRebuild {
 		if (failures.get() > 0) {
 			throw new IllegalStateException("Rebuild completed with one or more failures");
 		}
+		return allBuckets.size();
 	}
 
 	private void rebuildEvents(EventRepository events, Identity owner, String bucketId, DateTime timestamp) {
@@ -158,10 +178,13 @@ public class CommandRebuild {
 		}
 	}
 
-	private void rebuildTasks(IndexManager indexManager) {
+	private int rebuildTasks(IndexManager indexManager) {
+		AtomicInteger count = new AtomicInteger();
 		new TaskRepository(indexManager).findAll(task -> {
 			task.setUndoId(null);
 			dispatcher.dispatch(new CreateTaskCommand(task.getPrincipal(), task));
+			count.incrementAndGet();
 		});
+		return count.get();
 	}
 }
