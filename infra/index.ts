@@ -622,7 +622,7 @@ const taskDefinition = new aws.ecs.TaskDefinition("zenobase-task", {
                 interval: 30,
                 timeout: 10,
                 retries: 3,
-                startPeriod: 120,
+                startPeriod: 21600, // 6h, to allow migrations to complete
             },
         }]),
     ),
