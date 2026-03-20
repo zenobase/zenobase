@@ -28,6 +28,10 @@ import com.zenobase.commands.CreateUserCommand;
 import com.zenobase.models.Bucket;
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
+import com.zenobase.models.User;
+import com.zenobase.oauth.Authorization;
+import com.zenobase.tasks.Credentials;
+import com.zenobase.tasks.Task;
 import com.zenobase.models.Role;
 
 public class CommandRebuild {
@@ -71,30 +75,24 @@ public class CommandRebuild {
 	}
 
 	private int rebuildUsers(IndexManager indexManager) {
-		AtomicInteger count = new AtomicInteger();
-		new UserRepository(indexManager).findAll(user -> {
-			dispatcher.dispatch(new CreateUserCommand(user.asIdentity(), user));
-			count.incrementAndGet();
-		});
-		return count.get();
+		List<User> allUsers = new ArrayList<>();
+		new UserRepository(indexManager).findAll(allUsers::add);
+		allUsers.forEach(user -> dispatcher.dispatch(new CreateUserCommand(user.asIdentity(), user)));
+		return allUsers.size();
 	}
 
 	private int rebuildAuthorizations(IndexManager indexManager) {
-		AtomicInteger count = new AtomicInteger();
-		new AuthorizationRepository(indexManager).findAll(authorization -> {
-			dispatcher.dispatch(new CreateAuthorizationCommand(authorization.getPrincipal(), authorization));
-			count.incrementAndGet();
-		});
-		return count.get();
+		List<Authorization> allAuthorizations = new ArrayList<>();
+		new AuthorizationRepository(indexManager).findAll(allAuthorizations::add);
+		allAuthorizations.forEach(authorization -> dispatcher.dispatch(new CreateAuthorizationCommand(authorization.getPrincipal(), authorization)));
+		return allAuthorizations.size();
 	}
 
 	private int rebuildCredentials(IndexManager indexManager) {
-		AtomicInteger count = new AtomicInteger();
-		new CredentialsRepository(indexManager).findAll(credential -> {
-			dispatcher.dispatch(new CreateCredentialsCommand(credential.getPrincipal(), credential));
-			count.incrementAndGet();
-		});
-		return count.get();
+		List<Credentials> allCredentials = new ArrayList<>();
+		new CredentialsRepository(indexManager).findAll(allCredentials::add);
+		allCredentials.forEach(credential -> dispatcher.dispatch(new CreateCredentialsCommand(credential.getPrincipal(), credential)));
+		return allCredentials.size();
 	}
 
 	private int rebuildBuckets(IndexManager indexManager) {
@@ -184,12 +182,12 @@ public class CommandRebuild {
 	}
 
 	private int rebuildTasks(IndexManager indexManager) {
-		AtomicInteger count = new AtomicInteger();
-		new TaskRepository(indexManager).findAll(task -> {
+		List<Task> allTasks = new ArrayList<>();
+		new TaskRepository(indexManager).findAll(allTasks::add);
+		allTasks.forEach(task -> {
 			task.setUndoId(null);
 			dispatcher.dispatch(new CreateTaskCommand(task.getPrincipal(), task));
-			count.incrementAndGet();
 		});
-		return count.get();
+		return allTasks.size();
 	}
 }
