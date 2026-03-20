@@ -24,6 +24,7 @@ import play.mvc.Result;
 import play.mvc.Results;
 
 import com.zenobase.actions.Canonical;
+import com.zenobase.filters.CorsFilter;
 import com.zenobase.commands.ChangeQuotaCommand;
 import com.zenobase.commands.ChangeUserEmailCommand;
 import com.zenobase.commands.ChangeUserPasswordCommand;
@@ -464,7 +465,7 @@ public class Global extends GlobalSettings {
 	@Override
 	@SuppressWarnings("unchecked")
 	public <T extends EssentialFilter> Class<T>[] filters() {
-		return new Class[] { SecurityHeadersFilter.class, GzipFilter.class };
+		return new Class[] { CorsFilter.class, SecurityHeadersFilter.class, GzipFilter.class };
 	}
 
 	@Override
