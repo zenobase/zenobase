@@ -7,6 +7,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.ToIntFunction;
 
 import javax.inject.Inject;
@@ -111,16 +113,35 @@ public class CommandRebuild {
 		BucketRepository buckets = new BucketRepository(indexManager);
 		List<Bucket> allBuckets = new ArrayList<>();
 		buckets.findAll(allBuckets::add);
+		runInParallel(
+			allBuckets,
+			bucket -> Iterables.getOnlyElement(bucket.getPrincipals(Role.OWNER)).getId(),
+			bucket -> {
+				Identity owner = Iterables.getOnlyElement(bucket.getPrincipals(Role.OWNER));
+				if (!events.exists(bucket.getId())) {
+					log.warn("Fixing missing aliases for bucket {}", bucket.getId());
+					buckets.realias(bucket);
+				}
+				dispatcher.dispatch(new CreateBucketCommand(owner, bucket));
+				if (!bucket.isVirtual()) {
+					rebuildEvents(events, owner, bucket.getId(), bucket.getCreated());
+				}
+			},
+			Bucket::getId
+		);
+		return allBuckets.size();
+	}
+
+	private <T> void runInParallel(List<T> items, Function<T, String> laneKey, Consumer<T> action, Function<T, String> itemLabel) {
 		AtomicInteger failures = new AtomicInteger();
 		int effectiveParallelism = Math.max(parallelism, 1);
 		ExecutorService[] lanes = new ExecutorService[effectiveParallelism];
-		for (int i = 0; i < effectiveParallelism; i++) {
+		for (int i = 0; i < effectiveParallelism; ++i) {
 			lanes[i] = Executors.newSingleThreadExecutor();
 		}
 		Semaphore semaphore = new Semaphore(effectiveParallelism * 100);
-		for (Bucket bucket : allBuckets) {
-			Identity owner = Iterables.getOnlyElement(bucket.getPrincipals(Role.OWNER));
-			int lane = Math.abs(owner.getId().hashCode() % effectiveParallelism);
+		for (T item : items) {
+			int lane = Math.abs(laneKey.apply(item).hashCode() % effectiveParallelism);
 			try {
 				semaphore.acquire();
 			} catch (InterruptedException e) {
@@ -129,16 +150,9 @@ public class CommandRebuild {
 			}
 			lanes[lane].submit(() -> {
 				try {
-					if (!events.exists(bucket.getId())) {
-						log.warn("Fixing missing aliases for bucket {}", bucket.getId());
-						buckets.realias(bucket);
-					}
-					dispatcher.dispatch(new CreateBucketCommand(owner, bucket));
-					if (!bucket.isVirtual()) {
-						rebuildEvents(events, owner, bucket.getId(), bucket.getCreated());
-					}
+					action.accept(item);
 				} catch (RuntimeException e) {
-					log.error("Couldn't rebuild bucket: " + bucket.getId(), e);
+					log.error("Couldn't rebuild: " + itemLabel.apply(item), e);
 					failures.incrementAndGet();
 				} finally {
 					semaphore.release();
@@ -159,7 +173,6 @@ public class CommandRebuild {
 		if (failures.get() > 0) {
 			throw new IllegalStateException("Rebuild completed with one or more failures");
 		}
-		return allBuckets.size();
 	}
 
 	private void rebuildEvents(EventRepository events, Identity owner, String bucketId, DateTime timestamp) {
