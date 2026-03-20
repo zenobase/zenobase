@@ -47,7 +47,8 @@ public class IndexManager implements Closeable {
 			registerSnapshotRepository(repositoryName, snapshotBucket, snapshotRegion, snapshotRoleArn);
 			this.snapshotRepository = repositoryName;
 		} else {
-			this.snapshotRepository = "";
+			registerLocalSnapshotRepository("snapshots", "snapshots");
+			this.snapshotRepository = "snapshots";
 		}
 	}
 
@@ -89,6 +90,24 @@ public class IndexManager implements Closeable {
 			Logger.info("Registered snapshot repository: {} (s3)", repositoryName);
 		} catch (IOException e) {
 			throw new RuntimeException("Failed to register snapshot repository: " + repositoryName, e);
+		}
+	}
+
+	private void registerLocalSnapshotRepository(String repositoryName, String location) {
+		try {
+			client.generic().execute(
+				Requests.builder()
+					.endpoint("/_snapshot/" + repositoryName)
+					.method("PUT")
+					.json(Json.createObjectBuilder()
+						.add("type", "fs")
+						.add("settings", Json.createObjectBuilder()
+							.add("location", location)))
+					.build()
+			).close();
+			Logger.info("Registered snapshot repository: {} (fs)", repositoryName);
+		} catch (IOException e) {
+			throw new RuntimeException("Failed to register local snapshot repository: " + repositoryName, e);
 		}
 	}
 
