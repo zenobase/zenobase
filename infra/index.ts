@@ -645,7 +645,7 @@ new aws.ecs.Service("zenobase-service", {
         containerName: "play",
         containerPort: 9000,
     }],
-    healthCheckGracePeriodSeconds: 10800,
+    healthCheckGracePeriodSeconds: 21600, // 6h, to allow migrations to complete
     deploymentCircuitBreaker: {
         enable: true,
         rollback: true,
