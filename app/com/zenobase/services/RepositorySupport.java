@@ -13,7 +13,7 @@ public abstract class RepositorySupport<T> {
 	}
 
 	protected void find(Query query, Callback<T> callback) {
-		getIndex().find(query, node -> callback.call(toObject(node)), 100);
+		getIndex().find(query, node -> callback.call(toObject(node)), 1000);
 	}
 
 	protected abstract Index getIndex();
