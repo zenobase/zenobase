@@ -17,28 +17,20 @@ import org.opensearch.client.opensearch._types.OpType;
 import org.opensearch.client.opensearch._types.Refresh;
 import org.opensearch.client.opensearch._types.Time;
 import org.opensearch.client.opensearch._types.query_dsl.Query;
-import org.opensearch.client.opensearch.core.BulkRequest;
 import org.opensearch.client.opensearch.core.BulkResponse;
-import org.opensearch.client.opensearch.core.ClearScrollRequest;
-import org.opensearch.client.opensearch.core.DeleteRequest;
-import org.opensearch.client.opensearch.core.GetRequest;
 import org.opensearch.client.opensearch.core.GetResponse;
 import org.opensearch.client.opensearch.core.IndexRequest;
 import org.opensearch.client.opensearch.core.IndexResponse;
-import org.opensearch.client.opensearch.core.ScrollRequest;
 import org.opensearch.client.opensearch.core.SearchRequest;
 import org.opensearch.client.opensearch.core.SearchResponse;
 import org.opensearch.client.opensearch.core.bulk.BulkOperation;
 import org.opensearch.client.opensearch.core.bulk.BulkResponseItem;
 import org.opensearch.client.opensearch.core.search.Hit;
-import org.opensearch.client.opensearch.indices.CreateIndexRequest;
-import org.opensearch.client.opensearch.indices.IndexSettings;
 import org.joda.time.DateTime;
 
 import com.zenobase.common.Callback;
 import com.zenobase.json.DomainNode;
 import com.zenobase.json.NodeList;
-import com.zenobase.json.Nodes;
 import com.zenobase.json.Schema;
 
 public class Index {
@@ -46,10 +38,19 @@ public class Index {
 	private static final Time SCROLL_TIMEOUT = Time.of(t -> t.time("5m"));
 	private final String indexName;
 	private final OpenSearchClient client;
+	private boolean disableRefresh;
 
 	public Index(String indexName, OpenSearchClient client) {
 		this.indexName = indexName;
 		this.client = client;
+	}
+
+	public void disableRefresh(boolean disable) {
+		this.disableRefresh = disable;
+	}
+
+	private Refresh refreshPolicy(boolean refresh) {
+		return (refresh && !disableRefresh) ? Refresh.True : Refresh.False;
 	}
 
 	public String getIndexName() {
@@ -111,7 +112,7 @@ public class Index {
 				.id(id)
 				.document(stripMetadata(node))
 				.opType(operation)
-				.refresh(refresh ? Refresh.True : Refresh.False);
+				.refresh(refreshPolicy(refresh));
 			if (operation == OpType.Index) {
 				Long seqNo = DomainNode.SEQ_NO.getValue(node);
 				Long primaryTerm = DomainNode.PRIMARY_TERM.getValue(node);
@@ -152,7 +153,7 @@ public class Index {
 			try {
 				BulkResponse bulkResponse = client.bulk(b -> b
 					.operations(operations)
-					.refresh(refresh ? Refresh.True : Refresh.False)
+					.refresh(refreshPolicy(refresh))
 				);
 				List<BulkResponseItem> items = bulkResponse.items();
 				String failureMessage = getFailureMessage(items);
@@ -202,7 +203,7 @@ public class Index {
 			return client.delete(d -> d
 				.index(indexName)
 				.id(id)
-				.refresh(refresh ? Refresh.True : Refresh.False)
+				.refresh(refreshPolicy(refresh))
 			).result().jsonValue().equals("deleted");
 		} catch (IOException e) {
 			throw new RuntimeException(e);
@@ -215,7 +216,7 @@ public class Index {
 			operations.add(BulkOperation.of(op -> op.delete(d -> d.index(indexName).id(id))));
 		}
 		try {
-			BulkResponse bulkResponse = client.bulk(b -> b.operations(operations).refresh(refresh ? Refresh.True : Refresh.False));
+			BulkResponse bulkResponse = client.bulk(b -> b.operations(operations).refresh(refreshPolicy(refresh)));
 			String failureMessage = getFailureMessage(bulkResponse.items());
 			if (failureMessage != null) {
 				throw new RuntimeException("Couldn't delete an item: " + failureMessage);
@@ -235,10 +236,12 @@ public class Index {
 	}
 
 	public void refresh() {
-		try {
-			client.indices().refresh(r -> r.index(indexName));
-		} catch (IOException e) {
-			throw new RuntimeException(e);
+		if (!disableRefresh) {
+			try {
+				client.indices().refresh(r -> r.index(indexName));
+			} catch (IOException e) {
+				throw new RuntimeException(e);
+			}
 		}
 	}
 

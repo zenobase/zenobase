@@ -40,12 +40,23 @@ public class CommandRebuild {
 	private final String sourceHost;
 	private final int parallelism;
 	private final CommandDispatcher dispatcher;
+	private final UserRepository targetUsers;
+	private final AuthorizationRepository targetAuthorizations;
+	private final CredentialsRepository targetCredentials;
+	private final BucketRepository targetBuckets;
+	private final TaskRepository targetTasks;
 
 	@Inject
-	public CommandRebuild(@Named("opensearch.rebuild.host") String sourceHost, @Named("opensearch.rebuild.parallelism") int parallelism, CommandDispatcher dispatcher) {
+	public CommandRebuild(@Named("opensearch.rebuild.host") String sourceHost, @Named("opensearch.rebuild.parallelism") int parallelism, CommandDispatcher dispatcher,
+			UserRepository targetUsers, AuthorizationRepository targetAuthorizations, CredentialsRepository targetCredentials, BucketRepository targetBuckets, TaskRepository targetTasks) {
 		this.sourceHost = sourceHost;
 		this.parallelism = parallelism;
 		this.dispatcher = dispatcher;
+		this.targetUsers = targetUsers;
+		this.targetAuthorizations = targetAuthorizations;
+		this.targetCredentials = targetCredentials;
+		this.targetBuckets = targetBuckets;
+		this.targetTasks = targetTasks;
 	}
 
 	public void rebuild() {
@@ -60,18 +71,24 @@ public class CommandRebuild {
 	void rebuild(IndexManager indexManager) {
 		log.info("Rebuilding history from {}...", sourceHost);
 		Stopwatch timer = Stopwatch.createStarted();
-		rebuild("users", indexManager, this::rebuildUsers);
-		rebuild("authorizations", indexManager, this::rebuildAuthorizations);
-		rebuild("credentials", indexManager, this::rebuildCredentials);
-		rebuild("buckets", indexManager, this::rebuildBuckets);
-		rebuild("tasks", indexManager, this::rebuildTasks);
+		rebuild(indexManager, targetUsers, "users", this::rebuildUsers);
+		rebuild(indexManager, targetAuthorizations, "authorizations", this::rebuildAuthorizations);
+		rebuild(indexManager, targetCredentials, "credentials", this::rebuildCredentials);
+		rebuild(indexManager, targetBuckets, "buckets", this::rebuildBuckets);
+		rebuild(indexManager, targetTasks, "tasks", this::rebuildTasks);
 		log.warn("Rebuilt history in {} s", timer.elapsed(TimeUnit.SECONDS));
 	}
 
-	private void rebuild(String label, IndexManager indexManager, ToIntFunction<IndexManager> action) {
-		Stopwatch timer = Stopwatch.createStarted();
-		int count = action.applyAsInt(indexManager);
-		log.info("Rebuilt {} {} in {} s", count, label, timer.elapsed(TimeUnit.SECONDS));
+	private void rebuild(IndexManager indexManager, RepositorySupport<?> targetRepo, String label, ToIntFunction<IndexManager> action) {
+		targetRepo.disableRefresh(true);
+		try {
+			Stopwatch timer = Stopwatch.createStarted();
+			int count = action.applyAsInt(indexManager);
+			log.info("Rebuilt {} {} in {} s", count, label, timer.elapsed(TimeUnit.SECONDS));
+		} finally {
+			targetRepo.refresh();
+			targetRepo.disableRefresh(false);
+		}
 	}
 
 	private int rebuildUsers(IndexManager indexManager) {
@@ -105,10 +122,6 @@ public class CommandRebuild {
 			bucket -> Iterables.getOnlyElement(bucket.getPrincipals(Role.OWNER)).getId(),
 			bucket -> {
 				Identity owner = Iterables.getOnlyElement(bucket.getPrincipals(Role.OWNER));
-				if (!events.exists(bucket.getId())) {
-					log.warn("Fixing missing aliases for bucket {}", bucket.getId());
-					buckets.realias(bucket);
-				}
 				dispatcher.dispatch(new CreateBucketCommand(owner, bucket));
 				if (!bucket.isVirtual()) {
 					rebuildEvents(events, owner, bucket.getId(), bucket.getCreated());
@@ -121,7 +134,7 @@ public class CommandRebuild {
 
 	private <T> void runInParallel(List<T> items, Function<T, String> laneKey, Consumer<T> action, Function<T, String> itemLabel) {
 		AtomicInteger failures = new AtomicInteger();
-		int effectiveParallelism = Math.max(parallelism, 1);
+		int effectiveParallelism = parallelism > 0 ? parallelism : Runtime.getRuntime().availableProcessors();
 		log.info("Using {} executor(s)", effectiveParallelism);
 		ThreadPoolExecutor[] lanes = new ThreadPoolExecutor[effectiveParallelism];
 		for (int i = 0; i < effectiveParallelism; ++i) {
@@ -170,7 +183,7 @@ public class CommandRebuild {
 		AtomicInteger batchNum = new AtomicInteger(1);
 		events.findAll(bucketId, event -> {
 			batch.add(event);
-			if (batch.size() == 1000) {
+			if (batch.size() == 5000) {
 				dispatcher.dispatch(new CreateEventsCommand(owner, bucketId, batch, timestamp.plusMillis(batchNum.get())));
 				batch.clear();
 				batchNum.incrementAndGet();
