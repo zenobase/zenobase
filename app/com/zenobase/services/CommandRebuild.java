@@ -2,9 +2,8 @@ package com.zenobase.services;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Semaphore;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
@@ -135,36 +134,38 @@ public class CommandRebuild {
 	private <T> void runInParallel(List<T> items, Function<T, String> laneKey, Consumer<T> action, Function<T, String> itemLabel) {
 		AtomicInteger failures = new AtomicInteger();
 		int effectiveParallelism = Math.max(parallelism, 1);
-		ExecutorService[] lanes = new ExecutorService[effectiveParallelism];
+		ThreadPoolExecutor[] lanes = new ThreadPoolExecutor[effectiveParallelism];
 		for (int i = 0; i < effectiveParallelism; ++i) {
-			lanes[i] = Executors.newSingleThreadExecutor();
+			lanes[i] = new ThreadPoolExecutor(1, 1, 0L, TimeUnit.MILLISECONDS,
+				new LinkedBlockingQueue<>(100),
+				(r, executor) -> {
+					try {
+						executor.getQueue().put(r);
+					} catch (InterruptedException e) {
+						Thread.currentThread().interrupt();
+						throw new RuntimeException(e);
+					}
+				});
 		}
-		Semaphore semaphore = new Semaphore(effectiveParallelism * 100);
 		for (T item : items) {
 			int lane = Math.abs(laneKey.apply(item).hashCode() % effectiveParallelism);
-			try {
-				semaphore.acquire();
-			} catch (InterruptedException e) {
-				Thread.currentThread().interrupt();
-				throw new RuntimeException(e);
-			}
-			lanes[lane].submit(() -> {
+			lanes[lane].execute(() -> {
 				try {
 					action.accept(item);
 				} catch (RuntimeException e) {
 					log.error("Couldn't rebuild: " + itemLabel.apply(item), e);
 					failures.incrementAndGet();
-				} finally {
-					semaphore.release();
 				}
 			});
 		}
-		for (ExecutorService lane : lanes) {
+		for (ThreadPoolExecutor lane : lanes) {
 			lane.shutdown();
 		}
-		for (ExecutorService lane : lanes) {
+		for (ThreadPoolExecutor lane : lanes) {
 			try {
-				lane.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
+				if (!lane.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS)) {
+					log.warn("Lane did not terminate within the timeout");
+				}
 			} catch (InterruptedException e) {
 				Thread.currentThread().interrupt();
 				throw new RuntimeException(e);
