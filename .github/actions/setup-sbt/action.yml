@@ -2,12 +2,12 @@ name: 'Setup SBT'
 runs:
   using: 'composite'
   steps:
-    - uses: actions/setup-java@v4
+    - uses: actions/setup-java@v5
       with:
         distribution: temurin
         java-version: 8
     - id: cache-sbt
-      uses: actions/cache@v4
+      uses: actions/cache@v5
       with:
         path: ~/sbt
         key: sbt-install-0.13.18
@@ -16,7 +16,7 @@ runs:
       run: curl -Ls https://github.com/sbt/sbt/releases/download/v0.13.18/sbt-0.13.18.tgz | tar xvz -C ~/
     - shell: bash
       run: echo "$HOME/sbt/bin" >> $GITHUB_PATH
-    - uses: actions/cache@v4
+    - uses: actions/cache@v5
       with:
         path: |
           ~/.ivy2
