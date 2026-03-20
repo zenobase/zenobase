@@ -13,6 +13,7 @@ on:
       - 'docker/play/**'
       - 'project/**'
       - 'public/**'
+      - 'test/**'
       - 'build.sbt'
   workflow_dispatch:
 
