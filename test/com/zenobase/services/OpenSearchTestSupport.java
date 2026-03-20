@@ -26,6 +26,7 @@ public abstract class OpenSearchTestSupport {
 			.withEnv("plugins.security.disabled", "true")
 			.withEnv("DISABLE_INSTALL_DEMO_CONFIG", "true")
 			.withEnv("OPENSEARCH_JAVA_OPTS", "-Xms512m -Xmx512m")
+			.withEnv("path.repo", "/tmp/snapshots")
 			.withExposedPorts(9200)
 			.waitingFor(Wait.forHttp("/_cluster/health").forStatusCode(200)
 				.withStartupTimeout(Duration.ofMinutes(2)));
