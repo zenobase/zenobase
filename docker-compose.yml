@@ -1,11 +1,12 @@
+name: zenobase-api
 services:
   opensearch:
     image: opensearchproject/opensearch:3.3.0
     ports:
       - "9200:9200"
     volumes:
-      - ../data/opensearch:/usr/share/opensearch/data
-      - ../data/snapshots:/usr/share/opensearch/data/snapshots
+      - ./data/opensearch:/usr/share/opensearch/data
+      - ./data/snapshots:/usr/share/opensearch/data/snapshots
     environment:
       - discovery.type=single-node
       - path.repo=/usr/share/opensearch/data/snapshots
@@ -31,15 +32,15 @@ services:
     image: zenobase-play:latest
     pull_policy: never
     build:
-      context: ..
+      context: .
       dockerfile: docker/play/Dockerfile
     ports:
       - "9000:9000"
     volumes:
-      - ./play/config/play.conf:/etc/play/prod.conf:ro
-      - ./play/config/logback-play.xml:/etc/play/logback.xml:ro
-      - ./play/config/enableLegacyTLS.security:/etc/play/enableLegacyTLS.security:ro
-      - ../conf/local.conf:/etc/play/local.conf:ro
+      - ./docker/play/config/play.conf:/etc/play/prod.conf:ro
+      - ./docker/play/config/logback-play.xml:/etc/play/logback.xml:ro
+      - ./docker/play/config/enableLegacyTLS.security:/etc/play/enableLegacyTLS.security:ro
+      - ./conf/local.conf:/etc/play/local.conf:ro
     mem_limit: 1g
     environment:
       - OPENSEARCH_SNAPSHOT_BUCKET=
