@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Set;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import play.Logger;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
@@ -302,14 +303,16 @@ public class Index {
 	}
 
 	private SearchResponse<ObjectNode> scrollWithRetry(String scrollId) throws IOException {
+		final int maxScrollAttempts = 5;
 		OpenSearchException lastException = null;
-		for (int attempt = 1; attempt <= 3; attempt++) {
+		for (int attempt = 1; attempt <= maxScrollAttempts; attempt++) {
 			try {
 				return client.scroll(sr -> sr.scrollId(scrollId).scroll(SCROLL_TIMEOUT), ObjectNode.class);
 			} catch (OpenSearchException e) {
 				lastException = e;
+				Logger.warn("Scroll attempt {}/{} failed: {}", attempt, maxScrollAttempts, e.getMessage());
 				try {
-					Thread.sleep(attempt * 1000L);
+					Thread.sleep(attempt * 5000L);
 				} catch (InterruptedException ie) {
 					Thread.currentThread().interrupt();
 					break;
