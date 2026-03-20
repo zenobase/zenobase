@@ -53,7 +53,8 @@ public class IndexManager implements Closeable {
 	}
 
 	public IndexManager(ClientFactory clientFactory) {
-		this(clientFactory, "", "", "");
+		client = clientFactory.createClient();
+		this.snapshotRepository = "";
 	}
 
 	public Index getIndex(String indexName) {
