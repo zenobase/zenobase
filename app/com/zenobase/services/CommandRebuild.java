@@ -15,10 +15,6 @@ import javax.inject.Named;
 
 import com.google.common.base.Stopwatch;
 import com.google.common.collect.Iterables;
-import org.apache.hc.core5.http.HttpHost;
-import org.opensearch.client.json.jackson.JacksonJsonpMapper;
-import org.opensearch.client.opensearch.OpenSearchClient;
-import org.opensearch.client.transport.httpclient5.ApacheHttpClient5TransportBuilder;
 import org.joda.time.DateTime;
 import play.Logger;
 import play.Logger.ALogger;
@@ -50,13 +46,7 @@ public class CommandRebuild {
 
 	public void rebuild() {
 		if (!sourceHost.isEmpty()) {
-			ClientFactory factory = () -> {
-				HttpHost httpHost = HttpHost.create(java.net.URI.create(sourceHost));
-				return new OpenSearchClient(ApacheHttpClient5TransportBuilder
-					.builder(httpHost)
-					.setMapper(new JacksonJsonpMapper())
-					.build());
-			};
+			ClientFactory factory = () -> OpenSearchClientFactory.createHttpClient(sourceHost);
 			IndexManager indexManager = new IndexManager(factory);
 			rebuild(indexManager);
 			indexManager.close();

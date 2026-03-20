@@ -7,11 +7,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import com.google.common.base.Stopwatch;
-import org.apache.hc.core5.http.HttpHost;
-import org.opensearch.client.json.jackson.JacksonJsonpMapper;
-import org.opensearch.client.opensearch.OpenSearchClient;
 import org.opensearch.client.opensearch._types.OpenSearchException;
-import org.opensearch.client.transport.httpclient5.ApacheHttpClient5TransportBuilder;
 import play.Logger;
 import play.Logger.ALogger;
 
@@ -41,13 +37,7 @@ public class CommandReplay {
 
 	public void replay() {
 		if (!sourceHost.isEmpty()) {
-			ClientFactory factory = () -> {
-				HttpHost httpHost = HttpHost.create(java.net.URI.create(sourceHost));
-				return new OpenSearchClient(ApacheHttpClient5TransportBuilder
-					.builder(httpHost)
-					.setMapper(new JacksonJsonpMapper())
-					.build());
-			};
+			ClientFactory factory = () -> OpenSearchClientFactory.createHttpClient(sourceHost);
 			IndexManager indexManager = new IndexManager(factory);
 			replay(indexManager);
 			indexManager.close();

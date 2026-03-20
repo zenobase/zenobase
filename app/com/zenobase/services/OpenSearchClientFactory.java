@@ -1,10 +1,13 @@
 package com.zenobase.services;
 
 import java.net.URI;
+import java.time.Duration;
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.apache.hc.client5.http.config.RequestConfig;
 import org.apache.hc.core5.http.HttpHost;
 import org.opensearch.client.json.jackson.JacksonJsonpMapper;
 import org.opensearch.client.opensearch.OpenSearchClient;
@@ -33,7 +36,9 @@ public class OpenSearchClientFactory implements ClientFactory {
 		Logger.info("Connecting to {}...", host);
 		URI uri = URI.create(host);
 		if ("https".equals(uri.getScheme())) {
-			SdkHttpClient httpClient = AwsCrtHttpClient.builder().build();
+			SdkHttpClient httpClient = AwsCrtHttpClient.builder()
+				.connectionTimeout(Duration.ofSeconds(30))
+				.build();
 			AwsSdk2Transport transport = new AwsSdk2Transport(
 				httpClient,
 				uri.getHost(),
@@ -49,5 +54,19 @@ public class OpenSearchClientFactory implements ClientFactory {
 			.setMapper(new JacksonJsonpMapper())
 			.build();
 		return new OpenSearchClient(transport);
+	}
+
+	public static OpenSearchClient createHttpClient(String host) {
+		HttpHost httpHost = HttpHost.create(URI.create(host));
+		return new OpenSearchClient(ApacheHttpClient5TransportBuilder
+			.builder(httpHost)
+			.setMapper(new JacksonJsonpMapper())
+			.setHttpClientConfigCallback(builder -> builder
+				.addRequestInterceptorFirst((request, entity, context) ->
+					request.setHeader("Accept-Encoding", "gzip"))
+				.setDefaultRequestConfig(RequestConfig.custom()
+					.setResponseTimeout(60, TimeUnit.SECONDS)
+					.build()))
+			.build());
 	}
 }
