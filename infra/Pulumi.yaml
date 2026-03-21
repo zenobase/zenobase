@@ -1,3 +1,3 @@
 name: zenobase
 runtime: nodejs
-description: Zenobase infrastructure - EC2 + Docker Compose with ALB blue-green deployments
+description: Zenobase backend (AWS Fargate + AWS OpenSearch)
