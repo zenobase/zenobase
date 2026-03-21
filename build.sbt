@@ -1,10 +1,8 @@
-import scala.concurrent.duration._
-
 name := "zenobase"
 
 version := "SNAPSHOT"
 
-lazy val root = (project in file(".")).enablePlugins(PlayJava).enablePlugins(SbtWeb)
+lazy val root = (project in file(".")).enablePlugins(PlayJava)
 
 scalaVersion := "2.11.1"
 
@@ -45,26 +43,6 @@ fork in Test := false
 sources in (Compile, doc) := Seq.empty
 
 publishArtifact in (Compile, packageDoc) := false
-
-JsTaskKeys.timeoutPerSource := 10.minutes
-
-LessKeys.compress := true
-
-UglifyKeys.uglifyOps := { js =>
-	Seq((js.sortBy(_._2), "js/zeno.js"))
-}
-
-UglifyKeys.sourceMap := false
-
-includeFilter in (Assets, LessKeys.less) := "zeno.less"
-
-includeFilter in uglify := "zeno.js"
-
-includeFilter in filter := "*.less"
-
-includeFilter in gzip := "*.html" || "*.css" || "*.js" || "*.json"
-
-pipelineStages := Seq(uglify, filter, gzip)
 
 javacOptions ++= Seq("-source", "1.8", "-target", "1.8")
 

@@ -1,6 +1,3 @@
-GET     /                              com.zenobase.controllers.Assets.at(path="/public", file="index.html")
-GET     /admin/                        com.zenobase.controllers.Assets.at(path="/public/admin", file="index.html")
-
 GET     /status                        @com.zenobase.controllers.StatusController.get()
 POST    /status                        @com.zenobase.controllers.StatusController.post()
 
@@ -81,5 +78,3 @@ GET     /jobs/                         @com.zenobase.controllers.SchedulerContro
 
 GET     /to                            @com.zenobase.controllers.RedirectController.get(url)
 GET     /og                            @com.zenobase.controllers.OpenGraphController.get(url)
-GET     /blank                         com.zenobase.controllers.BlankController.get()
-GET     /*file                         com.zenobase.controllers.Assets.at(path = "/public", file)
