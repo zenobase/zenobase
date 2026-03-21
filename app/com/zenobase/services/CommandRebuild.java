@@ -134,7 +134,7 @@ public class CommandRebuild {
 
 	private <T> void runInParallel(List<T> items, Function<T, String> laneKey, Consumer<T> action, Function<T, String> itemLabel) {
 		AtomicInteger failures = new AtomicInteger();
-		int effectiveParallelism = parallelism > 0 ? parallelism : Runtime.getRuntime().availableProcessors();
+		int effectiveParallelism = parallelism > 0 ? parallelism : Math.max(2, Runtime.getRuntime().availableProcessors());
 		log.info("Using {} executor(s)", effectiveParallelism);
 		ThreadPoolExecutor[] lanes = new ThreadPoolExecutor[effectiveParallelism];
 		for (int i = 0; i < effectiveParallelism; ++i) {
