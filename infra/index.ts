@@ -21,6 +21,52 @@ const playCpu = config.get("playCpu") || "1024";
 const playMemory = config.get("playMemory") || "2048";
 const opensearchInstanceType = config.get("opensearchInstanceType") || "t3.medium.search";
 
+// ---------- GitHub Actions IAM Role ----------
+
+const ghOidcArn = pulumi.all([accountId]).apply(([account]) =>
+    `arn:aws:iam::${account}:oidc-provider/token.actions.githubusercontent.com`);
+
+const ghActionsRole = new aws.iam.Role("zenobase-github-actions", {
+    name: "GitHubActionsZenobase",
+    assumeRolePolicy: ghOidcArn.apply(oidcArn => JSON.stringify({
+        Version: "2012-10-17",
+        Statement: [{
+            Effect: "Allow",
+            Principal: { Federated: oidcArn },
+            Action: "sts:AssumeRoleWithWebIdentity",
+            Condition: {
+                StringEquals: {
+                    "token.actions.githubusercontent.com:aud": "sts.amazonaws.com",
+                },
+                StringLike: {
+                    "token.actions.githubusercontent.com:sub": "repo:zenobase/zenobase:*",
+                },
+            },
+        }],
+    })),
+    tags: { Name: "zenobase-github-actions" },
+});
+
+const ghActionsPolicies = [
+    "AmazonEC2FullAccess",
+    "AmazonVPCFullAccess",
+    "ElasticLoadBalancingFullAccess",
+    "AmazonEC2ContainerRegistryFullAccess",
+    "IAMFullAccess",
+    "SecretsManagerReadWrite",
+    "CloudWatchFullAccess",
+    "AmazonS3FullAccess",
+    "AmazonSESFullAccess",
+    "AmazonOpenSearchServiceFullAccess",
+];
+
+for (const policy of ghActionsPolicies) {
+    new aws.iam.RolePolicyAttachment(`zenobase-github-actions-${policy}`, {
+        role: ghActionsRole.name,
+        policyArn: `arn:aws:iam::aws:policy/${policy}`,
+    });
+}
+
 // ---------- VPC ----------
 
 const vpc = new aws.ec2.Vpc("zenobase-vpc", {
@@ -687,6 +733,7 @@ new aws.cloudwatch.MetricAlarm("zenobase-5xx-errors", {
 
 // ---------- Exports ----------
 
+export const ghActionsRoleArn = ghActionsRole.arn;
 export const vpcId = vpc.id;
 export const albDnsName = alb.dnsName;
 export const albArn = alb.arn;

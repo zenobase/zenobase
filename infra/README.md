@@ -14,55 +14,15 @@
 - [Pulumi Cloud](https://app.pulumi.com/) account
 - Node.js 18+
 
-## AWS: OIDC Identity Provider
+## AWS: GitHub OIDC Identity Provider
 
-Create a GitHub OIDC provider so GitHub Actions can assume an AWS role without long-lived credentials.
+Create a GitHub OIDC provider (once per AWS account) so GitHub Actions can assume AWS roles without long-lived credentials. Skip if already created for another project.
 
 ```sh
 aws iam create-open-id-connect-provider \
   --url https://token.actions.githubusercontent.com \
   --client-id-list sts.amazonaws.com \
   --thumbprint-list 6938fd4d98bab03faadb97b34396831e3780aea1
-```
-
-Save the following as `trust-policy.json`:
-
-```json
-{
-  "Version": "2012-10-17",
-  "Statement": [{
-    "Effect": "Allow",
-    "Principal": {
-      "Federated": "arn:aws:iam::<ACCOUNT_ID>:oidc-provider/token.actions.githubusercontent.com"
-    },
-    "Action": "sts:AssumeRoleWithWebIdentity",
-    "Condition": {
-      "StringEquals": {
-        "token.actions.githubusercontent.com:aud": "sts.amazonaws.com"
-      },
-      "StringLike": {
-        "token.actions.githubusercontent.com:sub": "repo:zenobase/zenobase:*"
-      }
-    }
-  }]
-}
-```
-
-```sh
-# Create the IAM role
-aws iam create-role \
-  --role-name GitHubActionsZenobase \
-  --assume-role-policy-document file://trust-policy.json
-
-# Attach permissions (EC2, VPC, ELB, ECR, IAM, Secrets Manager, CloudWatch, S3, SES, OpenSearch)
-for policy in AmazonEC2FullAccess AmazonVPCFullAccess \
-  ElasticLoadBalancingFullAccess AmazonEC2ContainerRegistryFullAccess \
-  IAMFullAccess SecretsManagerReadWrite CloudWatchFullAccess \
-  AmazonS3FullAccess AmazonSESFullAccess AmazonOpenSearchServiceFullAccess; do
-  aws iam attach-role-policy \
-    --role-name GitHubActionsZenobase \
-    --policy-arn "arn:aws:iam::aws:policy/$policy"
-done
 ```
 
 ## AWS: ACM Certificate
@@ -104,12 +64,6 @@ aws ec2 create-key-pair \
 chmod 400 zeno.pem
 ```
 
-## GitHub: Actions Configuration
-
-```sh
-gh variable set AWS_ROLE_ARN --body "<IAM role ARN from above>"
-```
-
 ## Pulumi: Initial Setup
 
 ```sh
@@ -135,8 +89,12 @@ The EC2 instance retrieves this secret on startup and mounts it at `/etc/play/pr
 
 ## Bootstrap
 
-1. Run `pulumi up` locally to create all infrastructure.
-2. Create a DNS CNAME record pointing `zenobase.com` to the ALB DNS name (`pulumi stack output albDnsName`).
-3. On the first run the instance will be unhealthy because there are no images in ECR yet.
-4. Push to `master` to trigger the CI workflow (tests, builds, and pushes images to ECR).
-5. Deploy using the procedure in the root README.
+1. Run `pulumi up` locally to create all infrastructure (including the GitHub Actions IAM role).
+2. Configure the GitHub Actions role ARN:
+   ```sh
+   gh variable set AWS_ROLE_ARN --body "$(pulumi stack output ghActionsRoleArn)"
+   ```
+3. Create a DNS CNAME record pointing `zenobase.com` to the ALB DNS name (`pulumi stack output albDnsName`).
+4. On the first run the instance will be unhealthy because there are no images in ECR yet.
+5. Push to `master` to trigger the CI workflow (tests, builds, and pushes images to ECR).
+6. Deploy using the procedure in the root README.
