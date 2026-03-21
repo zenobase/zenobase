@@ -10,8 +10,9 @@ class CorsFilter extends EssentialFilter {
 
   private val corsHeaders = Seq(
     "Access-Control-Allow-Methods" -> "GET, POST, PUT, DELETE, OPTIONS",
-    "Access-Control-Allow-Headers" -> "Authorization, Content-Type, X-Command-ID",
+    "Access-Control-Allow-Headers" -> "Authorization, Content-Type",
     "Access-Control-Allow-Credentials" -> "true",
+    "Access-Control-Expose-Headers" -> "Link, Location, X-Command-ID, X-Credentials",
     "Access-Control-Max-Age" -> "3600"
   )
 
