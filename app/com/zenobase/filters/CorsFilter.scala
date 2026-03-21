@@ -29,7 +29,8 @@ class CorsFilter extends EssentialFilter {
         origin.filter(_ == allowedOrigin).map { o =>
           result.withHeaders(
             "Access-Control-Allow-Origin" -> o,
-            "Access-Control-Allow-Credentials" -> "true"
+            "Access-Control-Allow-Credentials" -> "true",
+            "Access-Control-Expose-Headers" -> "Link, Location, X-Command-ID, X-Credentials"
           )
         }.getOrElse(result)
       }(play.api.libs.concurrent.Execution.defaultContext)
