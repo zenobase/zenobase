@@ -1,17 +1,17 @@
 config:
   aws:region: us-east-1
   zenobase:certificateArn: arn:aws:acm:us-east-1:694665597187:certificate/aa7538d0-05ca-4459-9fc2-ad2301efa13d
-  zenobase:bastionEnabled: "true"
+  zenobase:bastionEnabled: "false"
   zenobase:hostname: "https://zenobase.com"
   zenobase:apiHostname: "https://api.zenobase.com"
   zenobase:oauthHostname: "https://zenobase.com"
   zenobase:sesIdentity: info@zenobase.com
   zenobase:opensearchSnapshotBucket: zeno-snapshots
-  zenobase:opensearchVersion: "OpenSearch_3.1"
-  # zenobase:opensearchInstanceType: "t3.large.search"
-  zenobase:opensearchDomain: zeno-opensearch-119
+  zenobase:opensearchVersion: "OpenSearch_3.3"
+#  zenobase:opensearchInstanceType: "m8g.large.search"
+  zenobase:opensearchDomain: zeno-opensearch-121
   zenobase:opensearchReplayDomain: ""
   zenobase:opensearchRebuildDomain: ""
-  # zenobase:playCpu: "2048"
-  # zenobase:playMemory: "4096"
-  zenobase:playImageTag: "d70f981056ae7e1051919681ed049334971195fa"
+#  zenobase:playCpu: "2048"
+#  zenobase:playMemory: "4096"
+  zenobase:playImageTag: "e5890dc4d45628a328ef39509ecaca6295dc16db"

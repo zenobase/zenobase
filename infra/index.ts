@@ -168,6 +168,7 @@ const osSg = new aws.ec2.SecurityGroup("zenobase-os-sg", {
 // ---------- Bastion (for OpenSearch diagnostics) ----------
 
 let bastionInstanceId: pulumi.Output<string> = pulumi.output("");
+let bastionRoleName: pulumi.Output<string> | undefined;
 
 if (bastionEnabled) {
     const bastionSg = new aws.ec2.SecurityGroup("zenobase-bastion-sg", {
@@ -229,6 +230,7 @@ if (bastionEnabled) {
     });
 
     bastionInstanceId = bastion.id;
+    bastionRoleName = bastionRole.name;
 }
 
 // ---------- ECR Repositories ----------
@@ -353,6 +355,27 @@ new aws.iam.RolePolicy("zenobase-os-snapshot-policy", {
     }),
 });
 
+if (bastionRoleName) {
+    new aws.iam.RolePolicy("zenobase-bastion-opensearch", {
+        role: bastionRoleName,
+        policy: pulumi.all([osDomain.arn, osSnapshotRole.arn]).apply(([domainArn, snapshotRoleArn]) => JSON.stringify({
+            Version: "2012-10-17",
+            Statement: [
+                {
+                    Effect: "Allow",
+                    Action: "es:ESHttp*",
+                    Resource: `${domainArn}/*`,
+                },
+                {
+                    Effect: "Allow",
+                    Action: "iam:PassRole",
+                    Resource: snapshotRoleArn,
+                },
+            ],
+        })),
+    });
+}
+
 // ---------- IAM ----------
 
 const ecsExecutionRole = new aws.iam.Role("zenobase-ecs-execution-role", {
@@ -474,7 +497,7 @@ const tg = new aws.lb.TargetGroup("zenobase-tg", {
         path: "/status",
         port: "9000",
         protocol: "HTTP",
-        healthyThreshold: 1,
+        healthyThreshold: 2,
         unhealthyThreshold: 5,
         timeout: 10,
         interval: 30,
@@ -739,6 +762,7 @@ export const albDnsName = alb.dnsName;
 export const albArn = alb.arn;
 export const playEcrUrl = playRepo.repositoryUrl;
 export const opensearchEndpoint = osDomain.endpoint;
+export const opensearchSnapshotRoleArn = osSnapshotRole.arn;
 export const ecsClusterName = cluster.name;
 export const ecsServiceName = "zenobase-play";
 export { bastionInstanceId };

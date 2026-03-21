@@ -161,52 +161,104 @@ Restore Procedure
 
 Use this procedure to restore from an S3 snapshot into a new managed OpenSearch domain.
 
-  1. Create a new domain:
+  1. Enable the bastion host (see Troubleshooting):
 
-       cd infra
-       pulumi config set zenobase:opensearchDomain "zeno-opensearch-NNN"
+       pulumi config set zenobase:bastionEnabled true
        pulumi up
+
+  2. Create a new domain (without changing the running service):
+
+       pulumi config set zenobase:opensearchDomain "zeno-opensearch-NNN"
+       pulumi preview
+
+     Copy the URN of the new OpenSearch domain from the preview output, then
+     create only that resource:
+
+       pulumi up --target '<opensearch-domain-urn>'
 
      Wait for the domain to become active (15-30 minutes).
 
-  2. Enable and connect to the bastion host (see Troubleshooting):
+  3. Gather values needed on the bastion, then connect:
 
-       cd infra
-       pulumi config set zenobase:bastionEnabled true
-       pulumi up
+       SOURCE_DOMAIN=<source-domain-name>
+       TARGET_ENDPOINT=$(pulumi stack output opensearchEndpoint)
+       SNAPSHOT_ROLE_ARN=$(pulumi stack output opensearchSnapshotRoleArn)
+
+       echo "SOURCE_DOMAIN=$SOURCE_DOMAIN"
+       echo "TARGET_ENDPOINT=$TARGET_ENDPOINT"
+       echo "SNAPSHOT_ROLE_ARN=$SNAPSHOT_ROLE_ARN"
+
        aws ssm start-session --target $(pulumi stack output bastionInstanceId)
 
-  3. Register the S3 snapshot repository (the base_path must match the
+     Once connected, set the variables on the bastion using the echoed values,
+     then load instance profile credentials for the curl commands below:
+
+       TOKEN=$(curl -s -X PUT "http://169.254.169.254/latest/api/token" \
+         -H "X-aws-ec2-metadata-token-ttl-seconds: 3600")
+       ROLE=$(curl -s -H "X-aws-ec2-metadata-token: $TOKEN" \
+         http://169.254.169.254/latest/meta-data/iam/security-credentials/)
+       CREDS=$(curl -s -H "X-aws-ec2-metadata-token: $TOKEN" \
+         http://169.254.169.254/latest/meta-data/iam/security-credentials/$ROLE)
+       export AWS_ACCESS_KEY_ID=$(echo "$CREDS" | python3 -c "import sys,json; print(json.load(sys.stdin)['AccessKeyId'])")
+       export AWS_SECRET_ACCESS_KEY=$(echo "$CREDS" | python3 -c "import sys,json; print(json.load(sys.stdin)['SecretAccessKey'])")
+       export AWS_SESSION_TOKEN=$(echo "$CREDS" | python3 -c "import sys,json; print(json.load(sys.stdin)['Token'])")
+
+  4. Register the S3 snapshot repository (the base_path must match the
      source domain name, as snapshots are stored under that path in S3):
 
-       curl -X PUT "https://<domain-endpoint>/_snapshot/<source-domain-name>" \
+       curl -X PUT "https://$TARGET_ENDPOINT/_snapshot/$SOURCE_DOMAIN" \
+         --aws-sigv4 "aws:amz:us-east-1:es" \
+         --user "$AWS_ACCESS_KEY_ID:$AWS_SECRET_ACCESS_KEY" \
+         -H "x-amz-security-token: $AWS_SESSION_TOKEN" \
          -H "Content-Type: application/json" \
          -d '{
            "type": "s3",
            "settings": {
              "bucket": "zeno-snapshots",
-             "base_path": "<source-domain-name>",
+             "base_path": "'$SOURCE_DOMAIN'",
              "region": "us-east-1",
-             "role_arn": "arn:aws:iam::694665597187:role/<snapshot-role-name>"
+             "role_arn": "'$SNAPSHOT_ROLE_ARN'"
            }
          }'
 
-     The snapshot role ARN can be found in `pulumi stack output`.
+  5. List available snapshots:
 
-  4. List available snapshots:
+       curl -s "https://$TARGET_ENDPOINT/_snapshot/$SOURCE_DOMAIN/_all?pretty=true" \
+         --aws-sigv4 "aws:amz:us-east-1:es" \
+         --user "$AWS_ACCESS_KEY_ID:$AWS_SECRET_ACCESS_KEY" \
+         -H "x-amz-security-token: $AWS_SESSION_TOKEN"
 
-       curl -s "https://<domain-endpoint>/_snapshot/<source-domain-name>/_all?pretty=true"
+  6. Delete default indices that conflict with the snapshot:
 
-  5. Restore a snapshot:
+       curl -X DELETE "https://$TARGET_ENDPOINT/.*" \
+         --aws-sigv4 "aws:amz:us-east-1:es" \
+         --user "$AWS_ACCESS_KEY_ID:$AWS_SECRET_ACCESS_KEY" \
+         -H "x-amz-security-token: $AWS_SESSION_TOKEN"
 
-       curl -X POST "https://<domain-endpoint>/_snapshot/<source-domain-name>/<snapshot-id>/_restore" \
+  7. Restore a snapshot:
+
+       SNAPSHOT_ID=<snapshot-id>
+
+       curl -X POST "https://$TARGET_ENDPOINT/_snapshot/$SOURCE_DOMAIN/$SNAPSHOT_ID/_restore" \
+         --aws-sigv4 "aws:amz:us-east-1:es" \
+         --user "$AWS_ACCESS_KEY_ID:$AWS_SECRET_ACCESS_KEY" \
+         -H "x-amz-security-token: $AWS_SESSION_TOKEN" \
          -H "Content-Type: application/json"
 
-  6. Monitor progress:
+  8. Monitor progress:
 
-       curl -s "https://<domain-endpoint>/_cat/recovery"
+       curl -s "https://$TARGET_ENDPOINT/_cat/recovery" \
+         --aws-sigv4 "aws:amz:us-east-1:es" \
+         --user "$AWS_ACCESS_KEY_ID:$AWS_SECRET_ACCESS_KEY" \
+         -H "x-amz-security-token: $AWS_SESSION_TOKEN"
 
-  7. Disable the bastion when done:
+  9. Switch the service to the new domain:
+
+       pulumi up
+
+     This updates the ECS task definition to point at the new domain.
+
+ 10. Disable the bastion and delete the old domain when done:
 
        pulumi config set zenobase:bastionEnabled ""
        pulumi up
