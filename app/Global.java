@@ -14,7 +14,6 @@ import play.Configuration;
 import play.GlobalSettings;
 import play.Play;
 import play.api.mvc.EssentialFilter;
-import play.api.mvc.Handler;
 import play.filters.gzip.GzipFilter;
 import play.filters.headers.SecurityHeadersFilter;
 import play.libs.F.Promise;
@@ -23,7 +22,6 @@ import play.mvc.Http.RequestHeader;
 import play.mvc.Result;
 import play.mvc.Results;
 
-import com.zenobase.actions.Canonical;
 import com.zenobase.filters.CorsFilter;
 import com.zenobase.commands.ChangeQuotaCommand;
 import com.zenobase.commands.ChangeUserEmailCommand;
@@ -182,9 +180,7 @@ import com.zenobase.tasks.withings.WithingsWeightTaskManager;
 
 public class Global extends GlobalSettings {
 
-	@Inject
-	private Canonical canonical;
-	private Injector injector;
+private Injector injector;
 
 	@Override
 	public void onStart(Application application) {
@@ -221,7 +217,6 @@ public class Global extends GlobalSettings {
 				bind(VerificationMailer.class).in(Singleton.class);
 				bind(PasswordResetMailer.class).in(Singleton.class);
 				bind(AuthorizationContext.class).in(Singleton.class);
-				bind(Canonical.class).in(Singleton.class);
 				bind(TaskRepository.class).in(Singleton.class);
 				bind(TaskRefresher.class).in(Singleton.class);
 				bind(CredentialsRepository.class).in(Singleton.class);
@@ -466,11 +461,6 @@ public class Global extends GlobalSettings {
 	@SuppressWarnings("unchecked")
 	public <T extends EssentialFilter> Class<T>[] filters() {
 		return new Class[] { CorsFilter.class, SecurityHeadersFilter.class, GzipFilter.class };
-	}
-
-	@Override
-	public Handler onRouteRequest(RequestHeader request) {
-		return canonical.test(request) ? super.onRouteRequest(request) : canonical.redirect(request);
 	}
 
 	@Override
