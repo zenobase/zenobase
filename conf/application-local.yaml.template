@@ -1,0 +1,126 @@
+mail:
+  smtp:
+    host: "email-smtp.us-east-1.amazonaws.com"
+  user: ""
+  pass: ""
+
+netatmo:
+  api:
+    key: ""
+    secret: ""
+
+withings:
+  api:
+    key: ""
+    secret: ""
+
+fitbit:
+  api:
+    key: ""
+    secret: ""
+
+foursquare:
+  api:
+    key: ""
+    secret: ""
+
+runkeeper:
+  api:
+    key: ""
+    secret: ""
+
+strava:
+  api:
+    key: ""
+    secret: ""
+
+mapmyfitness:
+  api:
+    key: ""
+    secret: ""
+
+dropbox:
+  api:
+    key: ""
+    secret: ""
+
+lastfm:
+  api:
+    key: ""
+    secret: ""
+
+rescuetime:
+  api:
+    key: ""
+    secret: ""
+
+google:
+  api:
+    key: ""
+    secret: ""
+  service:
+    key: ""
+
+ihealth:
+  api:
+    key: ""
+    secret: ""
+    sc: ""
+    sv:
+      activity: ""
+      bp: ""
+      glucose: ""
+      food: ""
+      sleep: ""
+      spo2: ""
+      sport: ""
+      weight: ""
+
+beeminder:
+  api:
+    key: ""
+    secret: ""
+
+hexoskin:
+  api:
+    key: ""
+    secret: ""
+
+trakt:
+  api:
+    key: ""
+    secret: ""
+
+wakatime:
+  api:
+    key: ""
+    secret: ""
+
+fitbark:
+  api:
+    key: ""
+    secret: ""
+
+goodreads:
+  api:
+    key: ""
+    secret: ""
+
+braintree:
+  merchant_id: ""
+  public_key: ""
+  private_key: ""
+
+garmin:
+  api:
+    key: ""
+    secret: ""
+
+oura:
+  api:
+    key: ""
+    secret: ""
+
+cors:
+  allowed:
+    origin: "http://localhost:8080"

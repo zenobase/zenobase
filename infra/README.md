@@ -76,16 +76,16 @@ Config values are in `Pulumi.prod.yaml`.
 
 ## AWS: Secrets Manager
 
-Store the production Play secrets file (API keys, credentials — not ES config, which is in `Pulumi.prod.yaml`):
+Store the production secrets file (API keys, credentials — not ES config, which is in `Pulumi.prod.yaml`):
 
 ```sh
 aws secretsmanager create-secret \
-  --name zenobase/prod-conf \
-  --secret-string file://./prod.conf \
+  --name zenobase/prod/zenobase-api-config \
+  --secret-string file://./prod.yaml \
   --region us-east-1
 ```
 
-The EC2 instance retrieves this secret on startup and mounts it at `/etc/play/prod.conf`.
+The ECS task retrieves this secret on startup and writes it to `/etc/app/prod.yaml`.
 
 ## Bootstrap
 

@@ -1,5 +1,5 @@
 *
-!docker/play/config/logback-play.xml
-!docker/play/config/enableLegacyTLS.security
-!docker/play/entrypoint.sh
-!target/universal/zenobase-SNAPSHOT.tgz
+!docker/config/logback.xml
+!docker/entrypoint.sh
+!target/zenobase.jar
+!target/libs/

@@ -1,0 +1,31 @@
+server:
+  port: 9000
+  max-payload-size: 10485760
+
+hostname: "http://localhost:9000"
+oauth:
+  hostname: "https://zenobase.com"
+
+opensearch:
+  host: "http://localhost:9200"
+  replay: ""
+  rebuild: ""
+  rebuild_parallelism: 0
+  snapshot:
+    bucket: ""
+  snapshot_role_arn: ""
+
+aws:
+  region: ""
+
+mail:
+  smtp:
+    auth: true
+    starttls:
+      enable: true
+    port: 587
+  from: "info@zenobase.com"
+
+cors:
+  allowed:
+    origin: "https://zenobase.com"

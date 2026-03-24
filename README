@@ -4,47 +4,46 @@ Developer Guide
 Getting Started
 ---------------
 
-Install Java 8.
+Install Java 25.
 
-Run `./sbt run` to start the web app on http://localhost:9000/.
+Copy conf/application-local.yaml.template to conf/application-local.yaml
+(and fill in API keys for third-party integrations as needed).
 
-Alternatively, run with Docker:
+Run with Docker:
 
   ./run.sh
 
-This starts both the Play app (port 9000) and OpenSearch (port 9200) in containers.
+This starts both the app (port 9000) and OpenSearch (port 9200) in containers.
+
+Alternatively, run without Docker for faster iteration:
+
+  docker compose up opensearch
+  ./mvnw compile exec:exec -Dexec.executable=java \
+    -Dexec.classpathScope=runtime \
+    -Dexec.args="-classpath %classpath com.zenobase.Main"
+
 
 
 Running Tests
 -------------
 
-To run all unit tests:
+To run all tests:
 
-  ./sbt "test-only *Test"
+  ./mvnw test
 
-To run a specific test:
+To run a specific test class:
 
-  ./sbt "test-only com.zenobase.testing.BrowserTesting"
+  ./mvnw test -Dtest=com.zenobase.models.LocationTest
 
-To skip webdriver tests, set -Dwebdriver.skip=true
+To run a specific test method:
 
-To test specific tasks manually:
-
-  1. Find the appropriate *Testing class, e.g. FitbitTesting.
-
-  2. Set up a launch configuration with appropriate oauth.apiKey and oauth.apiSecret system properties.
-
-  3. Run the test. Open the provided URL, complete the authorization, and paste the final URL back into the console.
-     Note that IntelliJ has to be started with -Deditable.java.test.console=true in order for this step to work.
-
-  4. Verify the result in the console. Copy the provided oauth.token and oauth.secret system properties into the launch
-     configuration to bypass the authorization step in future test runs.
+  ./mvnw test -Dtest="com.zenobase.models.LocationTest#testIsValid"
 
 
 Deploy Procedure
 ----------------
 
-The Play app runs on ECS Fargate. Deployments use ECS rolling updates — a new
+The container runs on ECS Fargate. Deployments use ECS rolling updates — a new
 task starts, passes health checks, then the old task is drained automatically.
 
   1. Push to master. CI runs tests, builds Docker images, and pushes to ECR.
@@ -52,20 +51,20 @@ task starts, passes health checks, then the old task is drained automatically.
   2. Sign in to AWS with `aws login --profile signin`
 
   3. If there are infrastructure or configuration changes, update Pulumi config
-     (infra/Pulumi.prod.yaml) and/or the secrets (zenobase/prod-conf) first.
+     (infra/Pulumi.prod.yaml) and/or the secrets (zenobase/prod/zenobase-api-config) first.
 
      To edit the secrets:
 
-       aws secretsmanager get-secret-value --secret-id zenobase/prod-conf \
-         --query SecretString --output text > prod.conf
+       aws secretsmanager get-secret-value --secret-id zenobase/prod/zenobase-api-config \
+         --query SecretString --output text > prod.yaml
 
-       aws secretsmanager put-secret-value --secret-id zenobase/prod-conf \
-         --secret-string file://./prod.conf
+       aws secretsmanager put-secret-value --secret-id zenobase/prod/zenobase-api-config \
+         --secret-string file://./prod.yaml
 
   4. Deploy:
 
        cd infra
-       pulumi config set zenobase:playImageTag <sha>
+       pulumi config set zenobase:imageTag <sha>
        pulumi up
 
      ECS starts a new task with the updated image. The old task continues
@@ -75,7 +74,7 @@ task starts, passes health checks, then the old task is drained automatically.
 
 To rollback to a previous image version:
 
-  pulumi config set zenobase:playImageTag <sha>
+  pulumi config set zenobase:imageTag <sha>
   pulumi up
 
 

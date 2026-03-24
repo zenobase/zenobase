@@ -1,6 +1,3 @@
-#!/bin/bash
-set -euo pipefail
-
-./sbt universal:packageZipTarball
-docker build -t zenobase-play -f docker/play/Dockerfile .
-docker compose up -d
+#!/bin/sh
+./mvnw package -DskipTests
+docker compose up --build -d

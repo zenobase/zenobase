@@ -6,7 +6,7 @@ const awsConfig = new pulumi.Config("aws");
 const region = awsConfig.require("region");
 const accountId = aws.getCallerIdentity().then(id => id.accountId);
 const certificateArn = config.require("certificateArn");
-const playImageTag = config.require("playImageTag");
+const imageTag = config.require("imageTag");
 const opensearchSnapshotBucket = config.get("opensearchSnapshotBucket") || "";
 const opensearchDomain = config.get("opensearchDomain") || "zenobase";
 const opensearchReplayDomain = config.get("opensearchReplayDomain") || "";
@@ -17,8 +17,8 @@ const apiHostname = config.get("apiHostname") || "http://localhost:9000";
 const oauthHostname = config.get("oauthHostname") || "https://zenobase.com";
 const sesIdentity = config.get("sesIdentity") || "";
 const bastionEnabled = config.get("bastionEnabled") === "true";
-const playCpu = config.get("playCpu") || "1024";
-const playMemory = config.get("playMemory") || "2048";
+const fargateCpu = config.get("fargateCpu") || "1024";
+const fargateMemory = config.get("fargateMemory") || "2048";
 const opensearchInstanceType = config.get("opensearchInstanceType") || "t3.medium.search";
 
 // ---------- GitHub Actions IAM Role ----------
@@ -235,13 +235,13 @@ if (bastionEnabled) {
 
 // ---------- ECR Repositories ----------
 
-const playRepo = new aws.ecr.Repository("zenobase-play", {
-    name: "zenobase-play",
+const ecrRepo = new aws.ecr.Repository("zenobase-api", {
+    name: "zenobase-api",
     imageTagMutability: "IMMUTABLE",
 });
 
-new aws.ecr.LifecyclePolicy("zenobase-play-lifecycle", {
-    repository: playRepo.name,
+new aws.ecr.LifecyclePolicy("zenobase-api-lifecycle", {
+    repository: ecrRepo.name,
     policy: JSON.stringify({
         rules: [{
             rulePriority: 1,
@@ -613,15 +613,20 @@ new aws.wafv2.WebAclAssociation("zenobase-waf-alb", {
 
 // ---------- Secrets Manager ----------
 
-const prodConfSecret = new aws.secretsmanager.Secret("zenobase-prod-conf", {
+new aws.secretsmanager.Secret("zenobase-prod-conf", {
     name: "zenobase/prod-conf",
-    description: "Zenobase production configuration (prod.conf)",
+    description: "Zenobase production configuration (deprecated, use zenobase/prod/zenobase-api-config)",
+}, { retainOnDelete: true });
+
+const apiConfig = new aws.secretsmanager.Secret("zenobase-prod-api-config", {
+    name: "zenobase/prod/zenobase-api-config",
+    description: "Zenobase API application configuration",
 });
 
 // ---------- CloudWatch Log Groups ----------
 
-new aws.cloudwatch.LogGroup("zenobase-play-logs", {
-    name: "/zenobase/play",
+new aws.cloudwatch.LogGroup("zenobase-api-logs", {
+    name: "/zenobase/api",
     retentionInDays: 30,
 });
 
@@ -640,11 +645,11 @@ const opensearchRebuildUrl = opensearchRebuildDomain
     : pulumi.output("");
 
 const taskDefinition = new aws.ecs.TaskDefinition("zenobase-task", {
-    family: "zenobase-play",
+    family: "zenobase-api",
     requiresCompatibilities: ["FARGATE"],
     networkMode: "awsvpc",
-    cpu: playCpu,
-    memory: playMemory,
+    cpu: fargateCpu,
+    memory: fargateMemory,
     runtimePlatform: {
         cpuArchitecture: "ARM64",
         operatingSystemFamily: "LINUX",
@@ -652,16 +657,16 @@ const taskDefinition = new aws.ecs.TaskDefinition("zenobase-task", {
     executionRoleArn: ecsExecutionRole.arn,
     taskRoleArn: ecsTaskRole.arn,
     containerDefinitions: pulumi.all([
-        playRepo.repositoryUrl,
+        ecrRepo.repositoryUrl,
         osDomain.endpoint,
         osSnapshotRole.arn,
-        prodConfSecret.arn,
+        apiConfig.arn,
         opensearchReplayUrl,
         opensearchRebuildUrl,
     ]).apply(([repoUrl, osEndpoint, snapshotRoleArn, secretArn, replayUrl, rebuildUrl]) =>
         JSON.stringify([{
-            name: "play",
-            image: `${repoUrl}:${playImageTag}`,
+            name: "api",
+            image: `${repoUrl}:${imageTag}`,
             essential: true,
             portMappings: [{ containerPort: 9000, protocol: "tcp" }],
             environment: [
@@ -676,13 +681,13 @@ const taskDefinition = new aws.ecs.TaskDefinition("zenobase-task", {
                 { name: "OAUTH_HOSTNAME", value: oauthHostname },
             ],
             secrets: [
-                { name: "PROD_CONF", valueFrom: secretArn },
+                { name: "APPLICATION_CONF", valueFrom: secretArn },
             ],
             logConfiguration: {
                 logDriver: "awslogs",
                 options: {
                     "awslogs-region": region,
-                    "awslogs-group": "/zenobase/play",
+                    "awslogs-group": "/zenobase/api",
                     "awslogs-stream-prefix": "ecs",
                 },
             },
@@ -698,7 +703,7 @@ const taskDefinition = new aws.ecs.TaskDefinition("zenobase-task", {
 });
 
 new aws.ecs.Service("zenobase-service", {
-    name: "zenobase-play",
+    name: "zenobase-api",
     cluster: cluster.arn,
     taskDefinition: taskDefinition.arn,
     desiredCount: 1,
@@ -711,7 +716,7 @@ new aws.ecs.Service("zenobase-service", {
     },
     loadBalancers: [{
         targetGroupArn: tg.arn,
-        containerName: "play",
+        containerName: "api",
         containerPort: 9000,
     }],
     healthCheckGracePeriodSeconds: 21600, // 6h, to allow migrations to complete
@@ -760,9 +765,9 @@ export const ghActionsRoleArn = ghActionsRole.arn;
 export const vpcId = vpc.id;
 export const albDnsName = alb.dnsName;
 export const albArn = alb.arn;
-export const playEcrUrl = playRepo.repositoryUrl;
+export const ecrUrl = ecrRepo.repositoryUrl;
 export const opensearchEndpoint = osDomain.endpoint;
 export const opensearchSnapshotRoleArn = osSnapshotRole.arn;
 export const ecsClusterName = cluster.name;
-export const ecsServiceName = "zenobase-play";
+export const ecsServiceName = "zenobase-api";
 export { bastionInstanceId };
