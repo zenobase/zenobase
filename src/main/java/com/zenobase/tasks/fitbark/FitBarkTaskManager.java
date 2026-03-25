@@ -64,7 +64,7 @@ public class FitBarkTaskManager extends OAuthTaskManager {
 					.put("resolution", task.isHourly() ? "HOURLY" : "DAILY")
 					.put("from", from.toString())
 					.put("to", to.toString());
-				OAuthRequest request = new OAuthRequest(Verb.POST, "https://app.fitbark.com/api/v2/activity_series");
+				var request = new OAuthRequest(Verb.POST, "https://app.fitbark.com/api/v2/activity_series");
 				request.addHeader("Content-Type", "application/json");
 				request.addPayload(payload.toString());
 				Response response = send(request, credentials);
@@ -81,7 +81,7 @@ public class FitBarkTaskManager extends OAuthTaskManager {
 	}
 
 	private Dog findDog(String name, OAuthCredentials credentials) {
-		OAuthRequest request = new OAuthRequest(Verb.GET, "https://app.fitbark.com/api/v2/dog_relations");
+		var request = new OAuthRequest(Verb.GET, "https://app.fitbark.com/api/v2/dog_relations");
 		Response response = send(request, credentials);
 		for (Dog dog : new DogsResult(parse(response)).getDogs()) {
 			if (dog.getName().equalsIgnoreCase(name)) {
@@ -111,7 +111,7 @@ public class FitBarkTaskManager extends OAuthTaskManager {
 	}
 
 	private Command createCommand(Task task, List<Event> events) {
-		CompoundCommand command = new CompoundCommand(task.getPrincipal(), "ran " + getType() + " task", "reverted " + getType() + " task");
+		var command = new CompoundCommand(task.getPrincipal(), "ran " + getType() + " task", "reverted " + getType() + " task");
 		command.add(UpdateTaskCommand.builder(task)
 			.set(Task.COMPLETED, task.getCompleted(), DateTime.now(DateTimeZone.UTC))
 			.set(Task.STATUS, task.getStatus(), Task.Status.SUCCESS)

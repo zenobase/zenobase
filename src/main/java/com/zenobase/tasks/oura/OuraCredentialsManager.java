@@ -64,7 +64,7 @@ public class OuraCredentialsManager extends OAuthCredentialsManager {
 	}
 
 	private void reauthorize(OAuthCredentials credentials) {
-		OAuthRequest request = new OAuthRequest(Verb.POST, OuraApi.ACCESS_TOKEN_ENDPOINT);
+		var request = new OAuthRequest(Verb.POST, OuraApi.ACCESS_TOKEN_ENDPOINT);
 		request.addBodyParameter("grant_type", "refresh_token");
 		request.addBodyParameter("refresh_token", ((ExpiringToken) credentials.getToken()).getRefreshToken());
 		request.addBodyParameter(OAuthConstants.CLIENT_ID, getApiKey());

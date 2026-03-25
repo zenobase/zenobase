@@ -18,7 +18,7 @@ class OuraSleepResult extends OuraResultSupport {
 
 	@Override
 	protected Event newEvent(JsonNode node) {
-		Event event = new Event();
+		var event = new Event();
 		event.addValue(Event.TAG, tag);
 		event.setValues(Event.TIMESTAMP, ImmutableList.of(dateTimeValue(node.path("bedtime_start")), dateTimeValue(node.path("bedtime_end"))));
 		event.setValue(Event.DURATION, Duration.standardSeconds(intValue(node.path("total_sleep_duration"))));

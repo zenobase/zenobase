@@ -57,7 +57,7 @@ class FitbitIntradayStepsResult extends FitbitResultSupport {
 	}
 
 	private Event toEvent(DateTime timestamp, int count) {
-		Event event = new Event();
+		var event = new Event();
 		event.setValue(Event.TAG, tag);
 		event.setValue(Event.TIMESTAMP, timestamp);
 		event.setValue(Event.DURATION, Duration.standardHours(1));

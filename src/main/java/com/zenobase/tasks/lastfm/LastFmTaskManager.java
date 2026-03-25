@@ -47,7 +47,7 @@ public class LastFmTaskManager extends OAuthTaskManager {
 		DateTimeZone timezone = DateTimeZone.forID(MoreObjects.firstNonNull(settings.path("timezone").textValue(), "UTC"));
 		String marker = parseMarker(settings.path("marker").textValue(), timezone);
 		String tag = MoreObjects.firstNonNull(settings.path("tag").textValue(), "body");
-		LastFmTask task = new LastFmTask(bucketId, principal, marker);
+		var task = new LastFmTask(bucketId, principal, marker);
 		task.setTag(tag);
 		task.setTimezone(timezone);
 		return task;
@@ -88,7 +88,7 @@ public class LastFmTaskManager extends OAuthTaskManager {
 	}
 
 	private LastFmRequest createRequest(LastFmTask task, DateTime now, OAuthCredentials credentials, int page) {
-		LastFmRequest request = new LastFmRequest();
+		var request = new LastFmRequest();
 		request.addQuerystringParameter("user", credentials.getScope());
 		request.addQuerystringParameter("method", "user.getrecenttracks");
 		request.addQuerystringParameter("extended", "0");
@@ -119,7 +119,7 @@ public class LastFmTaskManager extends OAuthTaskManager {
 	}
 
 	private LastFmRequest createTrackInfoRequest(String mbid) {
-		LastFmRequest request = new LastFmRequest();
+		var request = new LastFmRequest();
 		request.addQuerystringParameter("method", "track.getinfo");
 		request.addQuerystringParameter("mbid", mbid);
 		return request;
@@ -134,7 +134,7 @@ public class LastFmTaskManager extends OAuthTaskManager {
 	}
 
 	private static Command createCommand(Task task, List<Event> events, DateTime to) {
-		CompoundCommand command = new CompoundCommand(task.getPrincipal(), "ran lastfm task", "reverted lastfm task");
+		var command = new CompoundCommand(task.getPrincipal(), "ran lastfm task", "reverted lastfm task");
 		command.add(UpdateTaskCommand.builder(task)
 			.set(Task.COMPLETED, task.getCompleted(), DateTime.now(DateTimeZone.UTC))
 			.set(Task.STATUS, task.getStatus(), Task.Status.SUCCESS)

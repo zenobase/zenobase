@@ -33,7 +33,7 @@ public class SessionsResult extends GoogleFitResultSupport {
 	}
 
 	private void addEvent(JsonNode node, List<Event> events) {
-		Event event = new Event();
+		var event = new Event();
 		DateTime begin = dateTimeValue(node.path("startTimeMillis"));
 		DateTime end = dateTimeValue(node.path("endTimeMillis"));
 		event.addValue(Event.TIMESTAMP, begin);

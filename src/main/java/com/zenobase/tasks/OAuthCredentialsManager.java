@@ -54,7 +54,7 @@ public abstract class OAuthCredentialsManager extends CredentialsManager {
 
 	@Override
 	public OAuthCredentials newCredentials(Identity principal) {
-		OAuthCredentials credentials = new OAuthCredentials(getType(), principal);
+		var credentials = new OAuthCredentials(getType(), principal);
 		credentials.setToken(getRequestToken(credentials));
 		credentials.setAuthorizationUrl(getService(credentials).getAuthorizationUrl(credentials.getToken()));
 		return credentials;
@@ -118,7 +118,7 @@ public abstract class OAuthCredentialsManager extends CredentialsManager {
 	}
 
 	protected OAuthService getService(OAuthCredentials credentials) {
-		ServiceBuilder builder = new ServiceBuilder()
+		var builder = new ServiceBuilder()
 			.provider(provider)
 			.apiKey(apiKey)
 			.apiSecret(apiSecret)

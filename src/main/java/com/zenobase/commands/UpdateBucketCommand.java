@@ -62,7 +62,7 @@ public class UpdateBucketCommand extends Command {
 
 		@Override
 		public Command parse(ObjectNode node, int version) {
-			UpdateBucketCommand command = new UpdateBucketCommand(node);
+			var command = new UpdateBucketCommand(node);
 			switch (version) {
 				case 5: return command;
 			}

@@ -149,7 +149,7 @@ public class Event extends DomainNode {
 	}
 
 	private static Schema buildSchema() {
-		SchemaBuilder schema = new SchemaBuilder(TYPE_NAME);
+		var schema = new SchemaBuilder(TYPE_NAME);
 		schema.setRouting(BUCKET.getName());
 		for (Field<?> field : FIELDS) {
 			schema.add(field);

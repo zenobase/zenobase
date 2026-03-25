@@ -60,7 +60,7 @@ public abstract class FitbitTaskManagerSupport<T extends Task> extends OAuthTask
 	protected abstract Command safeExecute(T task, OAuthCredentials credentials, Token token);
 
 	protected LocalDate getLastDate(DeviceType deviceType, OAuthCredentials credentials) {
-		OAuthRequest request = new OAuthRequest(Verb.GET, "https://api.fitbit.com/1/user/-/devices.json");
+		var request = new OAuthRequest(Verb.GET, "https://api.fitbit.com/1/user/-/devices.json");
 		Response response = send(request, credentials);
 		return new FitbitDevicesResult(parseArray(response)).getLastDate(deviceType);
 	}
@@ -80,7 +80,7 @@ public abstract class FitbitTaskManagerSupport<T extends Task> extends OAuthTask
 	}
 
 	protected FitbitProfileResult getProfile(OAuthCredentials credentials) {
-		OAuthRequest request = new OAuthRequest(Verb.GET, "https://api.fitbit.com/1/user/-/profile.json");
+		var request = new OAuthRequest(Verb.GET, "https://api.fitbit.com/1/user/-/profile.json");
 		Response response = send(request, credentials);
 		return new FitbitProfileResult(parseObject(response));
 	}
@@ -90,7 +90,7 @@ public abstract class FitbitTaskManagerSupport<T extends Task> extends OAuthTask
 	}
 
 	protected Command createCommand(Task task, OAuthCredentials credentials, List<Event> events, String marker, Token expiredToken) {
-		CompoundCommand command = new CompoundCommand(task.getPrincipal(), "ran " + getType() + " task", "reverted " + getType() + " task");
+		var command = new CompoundCommand(task.getPrincipal(), "ran " + getType() + " task", "reverted " + getType() + " task");
 		command.add(UpdateTaskCommand.builder(task)
 			.set(Task.COMPLETED, task.getCompleted(), DateTime.now(DateTimeZone.UTC))
 			.set(Task.STATUS, task.getStatus(), Task.Status.SUCCESS)

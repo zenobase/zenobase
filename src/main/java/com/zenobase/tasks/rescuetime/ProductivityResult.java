@@ -50,7 +50,7 @@ public class ProductivityResult {
 	}
 
 	private Event getEvent(JsonNode node) {
-		Event event = new Event();
+		var event = new Event();
 		if (tag != null) {
 			event.addValue(Event.TAG, tag);
 		}

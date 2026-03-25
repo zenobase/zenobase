@@ -45,7 +45,7 @@ public class WithingsWeightTaskManager extends WithingsTaskManagerSupport<Within
 	Command safeExecute(WithingsWeightTask task, OAuthCredentials credentials, Token token) {
 		OAuthRequest request = createRequest(task);
 		Response response = send(request, credentials);
-		WithingsWeightResult result = new WithingsWeightResult(parseObject(response), task.getPrincipal(), task.getTag(), task.getUnit(), task.getTimezone());
+		var result = new WithingsWeightResult(parseObject(response), task.getPrincipal(), task.getTag(), task.getUnit(), task.getTimezone());
 		if (result.getStatus() == 401) {
 			throw new InvalidCredentialsException(credentials);
 		}
@@ -54,7 +54,7 @@ public class WithingsWeightTaskManager extends WithingsTaskManagerSupport<Within
 	}
 
 	private OAuthRequest createRequest(WithingsWeightTask task) {
-		OAuthRequest request = new OAuthRequest(Verb.GET, "https://wbsapi.withings.net/measure");
+		var request = new OAuthRequest(Verb.GET, "https://wbsapi.withings.net/measure");
 		request.addQuerystringParameter("action", "getmeas");
 		request.addQuerystringParameter("category", "1"); // actual measurements
 		if (task.getMarker() != null) {

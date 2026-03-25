@@ -45,7 +45,7 @@ class WeightResult {
 	}
 
 	private Event newEvent(JsonNode node) {
-		Event event = new Event();
+		var event = new Event();
 		event.addValue(Event.TAG, tag);
 		event.setValue(Event.TIMESTAMP, dateTimeValue(node.path("datetime_utc"), dateTimeZoneValue(node.path("datetime_timezone"))));
 		event.setValue(Event.WEIGHT, weightValue(node.path("mass")));

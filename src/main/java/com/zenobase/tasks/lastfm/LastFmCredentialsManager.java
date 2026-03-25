@@ -64,7 +64,7 @@ public class LastFmCredentialsManager extends OAuthCredentialsManager {
 
 	@Override
 	protected LastFmToken getAccessToken(OAuthCredentials credentials, String verifier) {
-		LastFmRequest request = new LastFmRequest();
+		var request = new LastFmRequest();
 		request.addQuerystringParameter("method", "auth.getSession");
 		request.addQuerystringParameter("token", verifier);
 		request.addQuerystringParameter("api_key", apiKey);

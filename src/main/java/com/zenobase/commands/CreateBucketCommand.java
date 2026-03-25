@@ -47,7 +47,7 @@ public class CreateBucketCommand extends Command {
 
 		@Override
 		public Command parse(ObjectNode node, int version) {
-			CreateBucketCommand command = new CreateBucketCommand(node);
+			var command = new CreateBucketCommand(node);
 			command.setType(TYPE);
 			switch (version) {
 				case 4: return command;

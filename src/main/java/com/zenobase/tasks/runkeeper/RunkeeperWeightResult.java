@@ -25,7 +25,7 @@ class RunkeeperWeightResult extends RunkeeperResultSupport {
 
 	@Override
 	protected Event newEvent(JsonNode node) {
-		Event event = new Event();
+		var event = new Event();
 		event.addValue(Event.TAG, tag);
 		event.setValue(Event.TIMESTAMP, dateTimeValue(node.path("timestamp")));
 		event.setValue(Event.WEIGHT, massValue(node.path("weight")));

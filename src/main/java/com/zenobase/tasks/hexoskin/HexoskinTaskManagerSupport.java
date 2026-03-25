@@ -52,7 +52,7 @@ abstract class HexoskinTaskManagerSupport<T extends HexoskinTaskSupport> extends
 	}
 
 	private HexoskinProfileResult getProfile(OAuthCredentials credentials) {
-		OAuthRequest request = new OAuthRequest(Verb.GET, "https://api.hexoskin.com/api/v1/profile/");
+		var request = new OAuthRequest(Verb.GET, "https://api.hexoskin.com/api/v1/profile/");
 		Response response = send(request, credentials);
 		return new HexoskinProfileResult(parseObject(response));
 	}
@@ -72,7 +72,7 @@ abstract class HexoskinTaskManagerSupport<T extends HexoskinTaskSupport> extends
 	}
 
 	protected Command createCommand(Task task, List<Event> events) {
-		CompoundCommand command = new CompoundCommand(task.getPrincipal(), "ran " + getType() + " task", "reverted " + getType() + " task");
+		var command = new CompoundCommand(task.getPrincipal(), "ran " + getType() + " task", "reverted " + getType() + " task");
 		command.add(UpdateTaskCommand.builder(task)
 			.set(Task.COMPLETED, task.getCompleted(), DateTime.now(DateTimeZone.UTC))
 			.set(Task.STATUS, task.getStatus(), Task.Status.SUCCESS)

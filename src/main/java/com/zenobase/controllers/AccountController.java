@@ -60,7 +60,7 @@ public class AccountController extends ControllerSupport {
 	}
 
 	public void open(ServerRequest req, ServerResponse res) {
-		SignUpForm form = new SignUpForm(body(req));
+		var form = new SignUpForm(body(req));
 		if (!form.valid()) {
 			sendBadRequest(res, "invalid request body");
 			return;
@@ -74,7 +74,7 @@ public class AccountController extends ControllerSupport {
 			sendUnauthorized(res);
 			return;
 		}
-		User user = new User(auth.getPrincipal().getId(), form.getUsername());
+		var user = new User(auth.getPrincipal().getId(), form.getUsername());
 		user.setEmail(form.getEmail());
 		user.setHashedPassword(User.hashPassword(form.getPassword()));
 		user.setSuperuser(users.isEmpty());
@@ -109,7 +109,7 @@ public class AccountController extends ControllerSupport {
 	}
 
 	public Command buildCloseAccountCommand(Identity principal, User user, Authorization current) {
-		CompoundCommand command = new CompoundCommand(principal, String.format("closed account %s", user.getName()), String.format("reopened account %s", user.getName()));
+		var command = new CompoundCommand(principal, String.format("closed account %s", user.getName()), String.format("reopened account %s", user.getName()));
 		command.add(new DeleteUserCommand(principal, user));
 		buckets.find(new BucketQuery().principalEqualTo(user.asIdentity()).isAlias(true), bucket -> command.add(new DeleteBucketCommand(principal, bucket)));
 		buckets.find(new BucketQuery().principalEqualTo(user.asIdentity()).isAlias(false), bucket -> command.add(new DeleteBucketCommand(principal, bucket)));

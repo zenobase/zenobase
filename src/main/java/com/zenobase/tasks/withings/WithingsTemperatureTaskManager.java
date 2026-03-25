@@ -45,7 +45,7 @@ public class WithingsTemperatureTaskManager extends WithingsTaskManagerSupport<W
 	Command safeExecute(WithingsTemperatureTask task, OAuthCredentials credentials, Token token) {
 		OAuthRequest request = createRequest(task);
 		Response response = send(request, credentials);
-		WithingsTemperatureResult result = new WithingsTemperatureResult(parseObject(response), task.getPrincipal(), task.getTag(), task.getUnit(), task.getTimezone());
+		var result = new WithingsTemperatureResult(parseObject(response), task.getPrincipal(), task.getTag(), task.getUnit(), task.getTimezone());
 		if (result.getStatus() == 401) {
 			throw new InvalidCredentialsException(credentials);
 		}
@@ -54,7 +54,7 @@ public class WithingsTemperatureTaskManager extends WithingsTaskManagerSupport<W
 	}
 
 	private OAuthRequest createRequest(WithingsTemperatureTask task) {
-		OAuthRequest request = new OAuthRequest(Verb.GET, "https://wbsapi.withings.net/measure");
+		var request = new OAuthRequest(Verb.GET, "https://wbsapi.withings.net/measure");
 		request.addQuerystringParameter("action", "getmeas");
 		request.addQuerystringParameter("category", "1"); // actual measurements
 		request.addQuerystringParameter("meastype", "71"); // body temperature

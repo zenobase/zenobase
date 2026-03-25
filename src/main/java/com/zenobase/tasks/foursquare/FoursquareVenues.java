@@ -84,7 +84,7 @@ public class FoursquareVenues {
 	private static FoursquareVenue parse(JsonNode node) {
 		String id = node.path("id").textValue();
 		String name = node.path("name").textValue();
-		FoursquareVenue venue = new FoursquareVenue(id, name);
+		var venue = new FoursquareVenue(id, name);
 		for (JsonNode categoryNode : node.path("categories")) {
 			venue.addCategory(categoryNode.path("shortName").textValue());
 		}

@@ -21,7 +21,7 @@ public class PasswordResetMailer {
 
 	public void send(User user) {
 		Preconditions.checkNotNull(user.getEmail());
-		PasswordResetKey key = new PasswordResetKey(user);
+		var key = new PasswordResetKey(user);
 		String text =
 			"Account:\n\n" +
 			"  " + user.getName() + "\n\n" +

@@ -188,7 +188,7 @@ public class EventListController extends ControllerSupport {
 	}
 
 	private static Search createExportSearch(Iterable<String> constraints, int offset) {
-		ListFacet facet = new ListFacet(EVENTS.getName(),
+		var facet = new ListFacet(EVENTS.getName(),
 			offset, EXPORT_LIMIT, Event.TIMESTAMP.getName(), null, Event.SCHEMA);
 		return new EventSearchBuilder().addConstraints(constraints).addFacet(facet).buildSearch();
 	}
@@ -243,7 +243,7 @@ public class EventListController extends ControllerSupport {
 	}
 
 	private static Event toEvent(Identity principal, ObjectNode node) {
-		Event event = new Event(node);
+		var event = new Event(node);
 		event.setValue(Event.ID, Generator.id());
 		event.setValue(Event.AUTHOR, principal);
 		if (!event.contains(Event.TIMESTAMP)) {

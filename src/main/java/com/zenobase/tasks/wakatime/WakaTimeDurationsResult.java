@@ -41,7 +41,7 @@ class WakaTimeDurationsResult {
 	}
 
 	public Event newEvent(JsonNode node) {
-		Event event = new Event();
+		var event = new Event();
 		long t = node.path("time").decimalValue().movePointRight(3).longValue();
 		long d = node.path("duration").decimalValue().movePointRight(3).longValue();
 		Preconditions.checkState(t > 0);

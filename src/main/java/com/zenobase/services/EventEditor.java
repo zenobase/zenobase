@@ -53,7 +53,7 @@ public abstract class EventEditor {
 
 	private ObjectNode find() {
 		events.refresh(bucketId);
-		SearchBuilderSupport search = new EventSearchBuilder().addFacet(new ListFacet(FIELD.getName(), 0, LIMIT, Event.TIMESTAMP.getName(), null, Event.SCHEMA));
+		var search = new EventSearchBuilder().addFacet(new ListFacet(FIELD.getName(), 0, LIMIT, Event.TIMESTAMP.getName(), null, Event.SCHEMA));
 		if (last != null) {
 			search.addConstraint(new OffsetDateTimeRangeConstraintBuilder(Event.TIMESTAMP.getName()).build(Range.greaterThan(last)), false);
 		}

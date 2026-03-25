@@ -51,7 +51,7 @@ public class CredentialsRepository extends RepositorySupport<Credentials> {
 	}
 
 	public Credentials find(Identity principal, String type) {
-		CredentialsQuery query = new CredentialsQuery().principalEqualTo(principal).typeEqualTo(type);
+		var query = new CredentialsQuery().principalEqualTo(principal).typeEqualTo(type);
 		PartialList<Credentials> results = find(query, 0, 2);
 		if (results.getTotal() > 1) {
 			logger.warn("Found duplicate {} credentials for {}", type, principal);

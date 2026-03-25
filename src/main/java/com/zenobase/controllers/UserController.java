@@ -149,11 +149,11 @@ public class UserController extends ControllerSupport {
 			sendBadRequest(res, "invalid key");
 			return;
 		}
-		Authorization auth = new Authorization(user.asIdentity(), null, null);
-		CompoundCommand command = new CompoundCommand(user.asIdentity(), "updated password", "reverted password");
+		var auth = new Authorization(user.asIdentity(), null, null);
+		var command = new CompoundCommand(user.asIdentity(), "updated password", "reverted password");
 		command.add(new ChangeUserPasswordCommand(user.asIdentity(), user.getName(), user.getHashedPassword(), User.hashPassword(password)));
 		command.add(new CreateAuthorizationCommand(user.asIdentity(), auth));
-		AuthorizationQuery query = new AuthorizationQuery()
+		var query = new AuthorizationQuery()
 			.principalEqualTo(user.asIdentity())
 			.clientIsNull();
 		authorizations.find(query, authorization -> command.add(new DeleteAuthorizationCommand(user.asIdentity(), authorization)));

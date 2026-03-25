@@ -51,7 +51,7 @@ public class SnapshotsResult {
 	}
 
 	private void addSnapshot(JsonNode node, List<Event> events) {
-		Event event = new Event();
+		var event = new Event();
 		event.setValue(Event.SOURCE, SOURCE);
 		event.setValue(Event.AUTHOR, author);
 		event.setValue(Event.TIMESTAMP, dateTimeValue(node.path("date")));

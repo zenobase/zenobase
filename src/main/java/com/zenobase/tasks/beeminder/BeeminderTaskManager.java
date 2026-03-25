@@ -88,7 +88,7 @@ public class BeeminderTaskManager extends OAuthTaskManager {
 	}
 
 	private UserResult getUser(OAuthCredentials credentials) {
-		OAuthRequest request = new OAuthRequest(Verb.GET, String.format("%s/users/me.json", BASE));
+		var request = new OAuthRequest(Verb.GET, String.format("%s/users/me.json", BASE));
 		Response response = send(request, credentials);
 		return new UserResult(parseObject(response));
 	}
@@ -136,13 +136,13 @@ public class BeeminderTaskManager extends OAuthTaskManager {
 	}
 
 	private void send(ArrayNode datapoints, String goal, OAuthCredentials credentials) {
-		OAuthRequest request = new OAuthRequest(Verb.POST, String.format("%s/users/me/goals/%s/datapoints/create_all.json", BASE, goal));
+		var request = new OAuthRequest(Verb.POST, String.format("%s/users/me/goals/%s/datapoints/create_all.json", BASE, goal));
 		request.addBodyParameter("datapoints", datapoints.toString());
 		send(request, credentials);
 	}
 
 	private Command createCommand(Task task, DateTime marker) {
-		CompoundCommand command = new CompoundCommand(task.getPrincipal(), "ran " + getType() + " task", "reverted " + getType() + " task");
+		var command = new CompoundCommand(task.getPrincipal(), "ran " + getType() + " task", "reverted " + getType() + " task");
 		command.add(UpdateTaskCommand.builder(task)
 			.set(Task.COMPLETED, task.getCompleted(), DateTime.now(DateTimeZone.UTC))
 			.set(Task.STATUS, task.getStatus(), Task.Status.SUCCESS)

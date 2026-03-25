@@ -47,7 +47,7 @@ public class OuraSleepTaskManager extends OuraTaskManagerSupport {
 		DateTime begin = task.getBegin();
 		DateTime end = DateTime.now(begin.getZone()).plusDays(1);
 		List<Event> events = Lists.newArrayList();
-		OAuthRequest request = new OAuthRequest(Verb.GET, HOST + "/v2/usercollection/sleep");
+		var request = new OAuthRequest(Verb.GET, HOST + "/v2/usercollection/sleep");
 		request.addQuerystringParameter("start_date", begin.toLocalDate().toString());
 		request.addQuerystringParameter("end_date", end.toLocalDate().toString());
 		Response response = send(request, credentials);

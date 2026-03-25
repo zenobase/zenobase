@@ -77,7 +77,7 @@ public class GoogleFitFoodTaskManager extends GoogleFitTaskManagerSupport<Google
 	}
 
 	private static Event newEvent(DataPoint point, GoogleFitFoodTask task, Map<String, DataStream> streams) {
-		Event event = new Event();
+		var event = new Event();
 		event.addValue(Event.TAG, task.getTag());
 		if (point.isRange()) {
 			event.addValue(Event.TIMESTAMP, point.getBegin());

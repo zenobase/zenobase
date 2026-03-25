@@ -61,7 +61,7 @@ public class CredentialsListController extends ControllerSupport {
 			sendForbidden(res);
 			return;
 		}
-		CredentialsQuery query = new CredentialsQuery();
+		var query = new CredentialsQuery();
 		if (q != null) {
 			query = query.queryString(q);
 		}
@@ -99,7 +99,7 @@ public class CredentialsListController extends ControllerSupport {
 			sendForbidden(res);
 			return;
 		}
-		CredentialsQuery query = new CredentialsQuery().principalEqualTo(principal).order(Credentials.TYPE.getName(), true);
+		var query = new CredentialsQuery().principalEqualTo(principal).order(Credentials.TYPE.getName(), true);
 		if (q != null) {
 			query = query.queryString(q);
 		}
@@ -112,7 +112,7 @@ public class CredentialsListController extends ControllerSupport {
     		sendUnauthorized(res);
     		return;
     	}
-		CreateCredentialsForm form = new CreateCredentialsForm(body(req));
+		var form = new CreateCredentialsForm(body(req));
 		if (!form.valid()) {
 			sendBadRequest(res, "bad request");
 			return;

@@ -55,7 +55,7 @@ public class StravaTaskManager extends OAuthTaskManager {
 		List<Event> events = Lists.newArrayList();
 		DateTime from = parseMarker(task.getMarker());
 		for (int i = 0; i < 10; ++i) {
-			OAuthRequest request = new OAuthRequest(Verb.GET, host + "/athlete/activities");
+			var request = new OAuthRequest(Verb.GET, host + "/athlete/activities");
 			if (from != null) {
 				request.addQuerystringParameter("after", Long.toString(from.getMillis() / 1000));
 			}
@@ -90,7 +90,7 @@ public class StravaTaskManager extends OAuthTaskManager {
 	}
 
 	private Command createCommand(StravaTask task, OAuthCredentials credentials, List<Event> events, Token expiredToken) {
-		CompoundCommand command = new CompoundCommand(task.getPrincipal(), "ran " + getType() + " task", "reverted " + getType() + " task");
+		var command = new CompoundCommand(task.getPrincipal(), "ran " + getType() + " task", "reverted " + getType() + " task");
 		command.add(UpdateTaskCommand.builder(task)
 			.set(Task.COMPLETED, task.getCompleted(), DateTime.now(DateTimeZone.UTC))
 			.set(Task.STATUS, task.getStatus(), Task.Status.SUCCESS)

@@ -50,7 +50,7 @@ class WithingsTemperatureResult extends WithingsResult {
 				case 12: // air (?) temperature
 				case 71: // body temperature
 				case 73: // skin temperature
-					Event event = new Event();
+					var event = new Event();
 					event.setValue(Event.TAG, tag);
 					event.setValue(Event.TIMESTAMP, getDateTime(node, timezone));
 					event.setValue(Event.TEMPERATURE, getDecimalMeasure(measure, unit));

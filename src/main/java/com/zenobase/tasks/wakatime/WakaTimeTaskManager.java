@@ -64,11 +64,11 @@ public class WakaTimeTaskManager extends OAuthTaskManager {
 		List<Event> events = Lists.newArrayList();
 		for (LocalDate date = begin.toLocalDate(); !date.isAfter(today); date = date.plusDays(1)) {
 			RATE_LIMITER.acquire();
-			OAuthRequest request = new OAuthRequest(Verb.GET, HOST + "/users/current/durations");
+			var request = new OAuthRequest(Verb.GET, HOST + "/users/current/durations");
 			request.addQuerystringParameter("date", date.toString());
 			try {
 				Response response = send(request, credentials);
-				WakaTimeDurationsResult result = new WakaTimeDurationsResult(parseObject(response), task.getPrincipal(), task.getTag());
+				var result = new WakaTimeDurationsResult(parseObject(response), task.getPrincipal(), task.getTag());
 				for (Event event : result.getEvents()) {
 					if (event.getValue(Event.TIMESTAMP).isAfter(begin)) {
 						events.add(event);
@@ -91,7 +91,7 @@ public class WakaTimeTaskManager extends OAuthTaskManager {
 	}
 
 	protected Command createCommand(Task task, OAuthCredentials credentials, List<Event> events, Token expiredToken) {
-		CompoundCommand command = new CompoundCommand(task.getPrincipal(), "ran " + getType() + " task", "reverted " + getType() + " task");
+		var command = new CompoundCommand(task.getPrincipal(), "ran " + getType() + " task", "reverted " + getType() + " task");
 		command.add(UpdateTaskCommand.builder(task)
 			.set(Task.COMPLETED, task.getCompleted(), DateTime.now(DateTimeZone.UTC))
 			.set(Task.STATUS, task.getStatus(), Task.Status.SUCCESS)

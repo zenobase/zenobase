@@ -57,7 +57,7 @@ public class Nodes {
 	}
 
 	public static byte[] toByteArray(JsonNode node) {
-		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		var out = new ByteArrayOutputStream();
 		try {
 			MAPPER.writer().writeValue(out, node);
 		} catch (IOException e) {
@@ -109,9 +109,9 @@ public class Nodes {
 	 * Pretty-prints a node.
 	 */
 	public static String toString(JsonNode node) {
-		ObjectMapper mapper = new ObjectMapper();
+		var mapper = new ObjectMapper();
 		mapper.enable(SerializationFeature.INDENT_OUTPUT);
-		StringWriter s = new StringWriter();
+		var s = new StringWriter();
 		try {
 			mapper.writeValue(s, node);
 		} catch (IOException e) {

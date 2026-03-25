@@ -80,7 +80,7 @@ public class PaymentController extends ControllerSupport {
 			sendBadRequest(res, "missing payment data");
 			return;
 		}
-		Payment payment = new Payment(body);
+		var payment = new Payment(body);
 		Plan plan = Plan.getPlan(payment.getPrice());
 		if (plan == null) {
 			sendBadRequest(res, "no matching plan");

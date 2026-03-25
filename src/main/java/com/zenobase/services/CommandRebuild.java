@@ -114,8 +114,8 @@ public class CommandRebuild {
 	}
 
 	private int rebuildBuckets(IndexManager indexManager) {
-		EventRepository events = new EventRepository(indexManager);
-		BucketRepository buckets = new BucketRepository(indexManager);
+		var events = new EventRepository(indexManager);
+		var buckets = new BucketRepository(indexManager);
 		List<Bucket> allBuckets = new ArrayList<>();
 		buckets.findAll(allBuckets::add);
 		runInParallel(
@@ -134,7 +134,7 @@ public class CommandRebuild {
 	}
 
 	private <T> void runInParallel(List<T> items, Function<T, String> laneKey, Consumer<T> action, Function<T, String> itemLabel) {
-		AtomicInteger failures = new AtomicInteger();
+		var failures = new AtomicInteger();
 		int effectiveParallelism = parallelism > 0 ? parallelism : Math.max(2, Runtime.getRuntime().availableProcessors());
 		logger.info("Using {} executor(s)", effectiveParallelism);
 		ThreadPoolExecutor[] lanes = new ThreadPoolExecutor[effectiveParallelism];
@@ -181,7 +181,7 @@ public class CommandRebuild {
 
 	private void rebuildEvents(EventRepository events, Identity owner, String bucketId, DateTime timestamp) {
 		List<Event> batch = new ArrayList<>();
-		AtomicInteger batchNum = new AtomicInteger(1);
+		var batchNum = new AtomicInteger(1);
 		events.findAll(bucketId, event -> {
 			batch.add(event);
 			if (batch.size() == 5000) {

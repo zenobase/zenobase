@@ -28,7 +28,7 @@ class FitbitBurnResult extends FitbitResultSupport {
 
 	private Event newEvent(JsonNode node) {
 		DateTime begin = dateTimeValue(node.path("dateTime"));
-		Event event = new Event();
+		var event = new Event();
 		event.setValue(Event.TAG, tag);
 		event.setValue(Event.TIMESTAMP, begin);
 		event.setValue(Event.DURATION, Period.days(1).toDurationFrom(begin));

@@ -21,7 +21,7 @@ class OuraStepsResult extends OuraResultSupport {
 
 	@Override
 	protected Event newEvent(JsonNode node) {
-		Event event = new Event();
+		var event = new Event();
 		DateTime t = dateValue(node.path("day")).toDateTimeAtStartOfDay(zone);
 		event.addValue(Event.TAG, tag);
 		event.setValues(Event.TIMESTAMP, ImmutableList.of(t, t.plusDays(1)));

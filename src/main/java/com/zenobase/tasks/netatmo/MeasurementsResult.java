@@ -53,7 +53,7 @@ class MeasurementsResult {
 
 	public Event getEvent(Map.Entry<String, JsonNode> entry) {
 		ArrayNode node = (ArrayNode) entry.getValue();
-		Event event = new Event();
+		var event = new Event();
 		DateTime timestamp = new DateTime(Long.parseLong(entry.getKey()) * 1000, device.getUpdated().getZone());
 		if (hourly) {
 			event.setValue(Event.TIMESTAMP, timestamp.withMinuteOfHour(0));

@@ -24,7 +24,7 @@ public class VerificationMailer {
 	}
 
 	public void send(String username, String email) {
-		EmailVerificationKey key = new EmailVerificationKey(username, email);
+		var key = new EmailVerificationKey(username, email);
 		Preconditions.checkNotNull(email);
 		String text =
 			"Account:\n\n" +

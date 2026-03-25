@@ -60,7 +60,7 @@ abstract class HexoskinResultSupport {
 		if (ignore(node)) {
 			return null;
 		}
-		Event event = new Event();
+		var event = new Event();
 		DateTime t0 = dateTimeValue(node.path("start_date"));
 		DateTime t1 = dateTimeValue(node.path("end"));
 		event.addValue(Event.TIMESTAMP, t0);

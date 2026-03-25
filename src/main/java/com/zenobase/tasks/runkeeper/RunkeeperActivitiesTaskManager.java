@@ -55,7 +55,7 @@ public class RunkeeperActivitiesTaskManager extends RunkeeperTaskManagerSupport 
 		LocalDateTime from = parseMarker(task.getMarker());
 		try {
 			while (path != null) {
-				OAuthRequest request = new OAuthRequest(Verb.GET, host + path);
+				var request = new OAuthRequest(Verb.GET, host + path);
 				request.addHeader("Accept", "application/vnd.com.runkeeper.FitnessActivityFeed+json");
 				if (from != null) {
 					request.addQuerystringParameter("noEarlierThan", from.toLocalDate().toString());
@@ -84,7 +84,7 @@ public class RunkeeperActivitiesTaskManager extends RunkeeperTaskManagerSupport 
 	}
 
 	private void addDetails(Event event, Unit<Length> heightUnit, OAuthCredentials credentials) {
-		OAuthRequest request = new OAuthRequest(Verb.GET, host + event.getValue(Event.SOURCE).getUrl());
+		var request = new OAuthRequest(Verb.GET, host + event.getValue(Event.SOURCE).getUrl());
 		request.addHeader("Accept", "application/vnd.com.runkeeper.FitnessActivity+json");
 		Response response = send(request, credentials);
 		new RunkeeperActivityResult(parseObject(response), heightUnit).addDetails(event);

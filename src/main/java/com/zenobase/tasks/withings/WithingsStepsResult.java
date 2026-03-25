@@ -53,7 +53,7 @@ class WithingsStepsResult extends WithingsResult {
 	private Event getEvent(ObjectNode node) {
 		DateTimeZone timezone = DateTimeZone.forID(node.path("timezone").textValue());
 		DateTime time = dateTimeValue(node.path("date"), timezone);
-		Event event = new Event();
+		var event = new Event();
 		event.setValue(Event.TAG, tag);
 		event.setValue(Event.TIMESTAMP, time);
 		event.setValue(Event.DURATION, Period.days(1).toDurationFrom(time));

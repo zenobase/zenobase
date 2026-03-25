@@ -59,7 +59,7 @@ public class FoursquareTaskManager extends OAuthTaskManager {
 	}
 
 	private boolean execute(FoursquareTask task, OAuthCredentials credentials, String marker, int offset, List<Event> events) {
-		OAuthRequest request = new OAuthRequest(Verb.GET, "https://api.foursquare.com/v2/users/self/checkins");
+		var request = new OAuthRequest(Verb.GET, "https://api.foursquare.com/v2/users/self/checkins");
 		request.addQuerystringParameter("v", API_VERSION);
 		if (task.getMarker() != null) {
 			request.addQuerystringParameter("afterTimestamp", task.getMarker());
@@ -68,14 +68,14 @@ public class FoursquareTaskManager extends OAuthTaskManager {
 		request.addQuerystringParameter("offset", Integer.toString(offset));
 		request.addQuerystringParameter("limit", Integer.toString(LIMIT));
 		Response response = send(request, credentials);
-		FoursquareResult result = new FoursquareResult(task.getPrincipal(), parseObject(response));
+		var result = new FoursquareResult(task.getPrincipal(), parseObject(response));
 		List<Event> found = result.getEvents();
 		events.addAll(found);
 		return found.size() == LIMIT && result.getTotal() > offset + LIMIT;
 	}
 
 	private Command createCommand(FoursquareTask task, String marker, List<Event> events) {
-		CompoundCommand command = new CompoundCommand(task.getPrincipal(), "ran foursquare task", "reverted foursquare task");
+		var command = new CompoundCommand(task.getPrincipal(), "ran foursquare task", "reverted foursquare task");
 		command.add(UpdateTaskCommand.builder(task)
 			.set(Task.COMPLETED, task.getCompleted(), DateTime.now(DateTimeZone.UTC))
 			.set(Task.STATUS, task.getStatus(), Task.Status.SUCCESS)

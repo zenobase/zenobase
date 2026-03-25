@@ -28,7 +28,7 @@ class IHealthStepsResult extends IHealthResultSupport {
 
 	@Override
 	protected Event newEvent(JsonNode node) {
-		Event event = new Event();
+		var event = new Event();
 		event.addValue(Event.TAG, tag);
 		event.setValue(Event.TIMESTAMP, dateTimeValue(node.path("MDate"), zone));
 		event.setValue(Event.COUNT, intValue(node.path("Steps")));

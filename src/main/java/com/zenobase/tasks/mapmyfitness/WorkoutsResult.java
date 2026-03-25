@@ -44,7 +44,7 @@ class WorkoutsResult {
 	}
 
 	private Workout newWorkout(JsonNode node) {
-		Event event = new Event();
+		var event = new Event();
 		event.setValue(Event.TIMESTAMP, dateTimeValue(node.path("start_datetime"), dateTimeZoneValue(node.path("start_locale_timezone"))));
 		event.setValue(Event.DURATION, durationValue(node.path("aggregates").path("elapsed_time_total")));
 		event.setValue(Event.COUNT, countValue(node.path("aggregates").path("steps_total")));

@@ -21,7 +21,7 @@ class IHealthSleepResult extends IHealthResultSupport {
 
 	@Override
 	protected Event newEvent(JsonNode node) {
-		Event event = new Event();
+		var event = new Event();
 		event.addValue(Event.TAG, tag);
 		event.addValue(Event.TIMESTAMP, dateTimeValue(node.path("StartTime"), zone));
 		event.addValue(Event.TIMESTAMP, dateTimeValue(node.path("EndTime"), zone));

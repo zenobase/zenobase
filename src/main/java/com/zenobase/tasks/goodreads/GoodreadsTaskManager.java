@@ -70,13 +70,13 @@ public class GoodreadsTaskManager extends OAuthTaskManager {
 	}
 
 	private GoodreadsUserResult getUser(OAuthCredentials credentials) {
-		OAuthRequest request = new OAuthRequest(Verb.GET, HOST + "/api/auth_user");
+		var request = new OAuthRequest(Verb.GET, HOST + "/api/auth_user");
 		Response response = send(request, credentials);
 		return new GoodreadsUserResult(parseDocument(response));
 	}
 
 	private GoodreadsReviewListResult getReviewList(OAuthCredentials credentials, GoodreadsTask task, String userId, int page) {
-		OAuthRequest request = new OAuthRequest(Verb.GET, HOST + "/review/list.xml");
+		var request = new OAuthRequest(Verb.GET, HOST + "/review/list.xml");
 		request.addQuerystringParameter("v", "2");
 		request.addQuerystringParameter("id", userId);
 		if (task.getShelf() != null) {
@@ -124,7 +124,7 @@ public class GoodreadsTaskManager extends OAuthTaskManager {
 	}
 
 	private Command createCommand(Task task, List<Event> events) {
-		CompoundCommand command = new CompoundCommand(task.getPrincipal(), "ran " + getType() + " task", "reverted " + getType() + " task");
+		var command = new CompoundCommand(task.getPrincipal(), "ran " + getType() + " task", "reverted " + getType() + " task");
 		command.add(UpdateTaskCommand.builder(task)
 			.set(Task.COMPLETED, task.getCompleted(), DateTime.now(DateTimeZone.UTC))
 			.set(Task.STATUS, task.getStatus(), Task.Status.SUCCESS)

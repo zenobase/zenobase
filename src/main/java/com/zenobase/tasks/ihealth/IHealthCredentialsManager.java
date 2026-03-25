@@ -82,7 +82,7 @@ public class IHealthCredentialsManager extends OAuthCredentialsManager {
 	}
 
 	private void reauthorize(OAuthCredentials credentials) {
-		OAuthRequest request = new OAuthRequest(Verb.GET, IHealthApi.ENDPOINT);
+		var request = new OAuthRequest(Verb.GET, IHealthApi.ENDPOINT);
 		request.addQuerystringParameter("UserID", credentials.getScope());
 		request.addQuerystringParameter("redirect_uri", buildCallback(callbackUrl, credentials));
 		request.addQuerystringParameter("response_type", "refresh_token");

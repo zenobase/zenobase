@@ -26,7 +26,7 @@ class TrackInfoResult {
 	public TrackInfo get() {
 		Resource resource = resourceValue(node.path("track"));
 		Duration duration = durationValue(node.path("track").path("duration"));
-		TrackInfo track = new TrackInfo(resource, duration);
+		var track = new TrackInfo(resource, duration);
 		for (JsonNode tagNode : node.path("track").path("toptags").path("tag")) {
 			String tag = tagNode.path("name").textValue();
 			if (tag != null) {

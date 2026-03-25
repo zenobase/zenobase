@@ -111,7 +111,7 @@ public class NetatmoTaskManager extends OAuthTaskManager {
 		}
 
 		public StationsResult execute(boolean includeModules) {
-			OAuthRequest request = new OAuthRequest(Verb.GET, "https://api.netatmo.com/api/getstationsdata");
+			var request = new OAuthRequest(Verb.GET, "https://api.netatmo.com/api/getstationsdata");
 			Response response = send(request, credentials);
 			return new StationsResult(parseObject(response), includeModules);
 		}
@@ -133,7 +133,7 @@ public class NetatmoTaskManager extends OAuthTaskManager {
 		}
 
 		public MeasurementsResult find(String from, String to) {
-			OAuthRequest request = new OAuthRequest(Verb.GET, "https://api.netatmo.com/api/getmeasure");
+			var request = new OAuthRequest(Verb.GET, "https://api.netatmo.com/api/getmeasure");
 			request.addQuerystringParameter("device_id", device.getId());
 			if (device.getModuleId() != null) {
 				request.addQuerystringParameter("module_id", device.getModuleId());
@@ -153,7 +153,7 @@ public class NetatmoTaskManager extends OAuthTaskManager {
 	}
 
 	private Command createCommand(NetatmoTask task, OAuthCredentials credentials, List<Event> events, Token expiredToken) {
-		CompoundCommand command = new CompoundCommand(task.getPrincipal(), "ran netatmo task", "reverted netatmo task");
+		var command = new CompoundCommand(task.getPrincipal(), "ran netatmo task", "reverted netatmo task");
 		command.add(UpdateTaskCommand.builder(task)
 			.set(Task.COMPLETED, task.getCompleted(), DateTime.now(DateTimeZone.UTC))
 			.set(Task.STATUS, task.getStatus(), Task.Status.SUCCESS)

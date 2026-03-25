@@ -58,7 +58,7 @@ class WithingsSleepResult extends WithingsResult {
 			logger.warn("Missing a start or end date: {}", node);
 			return null;
 		}
-		Event event = new Event();
+		var event = new Event();
 		event.setValue(Event.TAG, tag);
 		event.setValue(Event.TIMESTAMP, begin);
 		if (useRanges) {

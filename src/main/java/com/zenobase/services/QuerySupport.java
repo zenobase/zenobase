@@ -88,7 +88,7 @@ public class QuerySupport {
 	}
 
 	private static String toJsonStrings(List<Query> queries) {
-		StringBuilder sb = new StringBuilder("[");
+		var sb = new StringBuilder("[");
 		for (int i = 0; i < queries.size(); i++) {
 			if (i > 0) sb.append(",");
 			sb.append(queries.get(i).toJsonString());

@@ -13,7 +13,7 @@ public class ConfigurationResult {
 	}
 
 	public Configuration get() {
-		Configuration config = new Configuration();
+		var config = new Configuration();
 		String timezone = node.path("timezone").textValue();
 		if (timezone != null) {
 			config.setTimezone(DateTimeZone.forID(timezone));

@@ -51,7 +51,7 @@ public class CommandReplay {
 	}
 
 	void replay(IndexManager indexManager, IdentitiesFilterBuilder identitiesFilterBuilder) {
-		CommandRepository repository = new CommandRepository(indexManager, parsers);
+		var repository = new CommandRepository(indexManager, parsers);
 		StringFilter identities = identitiesFilterBuilder.build();
 		logger.info("Replaying {} commands from {}...", repository.size(), sourceHost);
 		Stopwatch timer = Stopwatch.createStarted();

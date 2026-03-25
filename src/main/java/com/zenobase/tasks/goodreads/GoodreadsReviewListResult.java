@@ -78,7 +78,7 @@ class GoodreadsReviewListResult extends XmlResultSupport {
 		if (begin == null || end == null || from != null && !end.isAfter(from)) {
 			return null;
 		}
-		Event event = new Event();
+		var event = new Event();
 		event.setValues(Event.TIMESTAMP, ImmutableList.of(begin, end));
 		event.setValue(Event.DURATION, new Duration(begin, end));
 		event.addValue(Event.TAG, tag);

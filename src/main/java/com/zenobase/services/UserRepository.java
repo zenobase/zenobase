@@ -73,7 +73,7 @@ public class UserRepository extends RepositorySupport<User> {
 	}
 
 	public boolean isSuperuser(Identity identity) {
-		UserQuery query = new UserQuery().principalEqualTo(identity).isSuperuser(true);
+		var query = new UserQuery().principalEqualTo(identity).isSuperuser(true);
 		PartialList<User> users = find(query, 0, 1);
 		return !users.isEmpty();
 	}

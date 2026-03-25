@@ -32,7 +32,7 @@ class RunkeeperActivitiesResult extends RunkeeperResultSupport {
 
 	@Override
 	protected Event newEvent(JsonNode node) {
-		Event event = new Event();
+		var event = new Event();
 		Duration duration = durationValue(node.path("duration"));
 		DecimalMeasure<Length> distance = distanceValue(node.path("total_distance"));
 		event.addValue(Event.TAG, node.path("type").textValue());

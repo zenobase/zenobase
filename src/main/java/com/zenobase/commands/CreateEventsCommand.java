@@ -72,7 +72,7 @@ public class CreateEventsCommand extends Command {
 
 		@Override
 		public Command parse(ObjectNode node, int version) {
-			CreateEventsCommand command = new CreateEventsCommand(node);
+			var command = new CreateEventsCommand(node);
 			switch (version) {
 				case 1: return command;
 			}

@@ -91,7 +91,7 @@ public class ReporterTaskManager extends DropboxTaskManagerSupport {
 	}
 
 	private Command createCommand(Task task, LocalDate marker, List<Event> events) {
-		CompoundCommand command = new CompoundCommand(task.getPrincipal(), "ran reporter task", "reverted reporter task");
+		var command = new CompoundCommand(task.getPrincipal(), "ran reporter task", "reverted reporter task");
 		command.add(UpdateTaskCommand.builder(task)
 			.set(Task.COMPLETED, task.getCompleted(), DateTime.now(DateTimeZone.UTC))
 			.set(Task.STATUS, task.getStatus(), Task.Status.SUCCESS)

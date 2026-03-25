@@ -85,14 +85,14 @@ public class RescueTimeProductivityTaskManager extends OAuthTaskManager {
 		Preconditions.checkState(response.getCode() == 200,
 			"Couldn't request <%s>: %s", request.getCompleteUrl(), response.getCode());
 		ObjectNode node = parseObject(response);
-		ProductivityResult result = new ProductivityResult(node, task.getPrincipal(), task.getTag(), task.getTimezone());
+		var result = new ProductivityResult(node, task.getPrincipal(), task.getTag(), task.getTimezone());
 		Preconditions.checkState(result.isSuccess(),
 			"Request <%s> failed: %s", request.getCompleteUrl(), response.getCode());
 		return result.getEvents();
 	}
 
 	private OAuthRequest newRequest(String kind, String source, LocalDate date) {
-		OAuthRequest request = new OAuthRequest(Verb.GET, "https://www.rescuetime.com/api/oauth/data");
+		var request = new OAuthRequest(Verb.GET, "https://www.rescuetime.com/api/oauth/data");
 		request.addQuerystringParameter("format", "json");
 		request.addQuerystringParameter("operation", "select");
 		request.addQuerystringParameter("perspective", "interval");
@@ -118,7 +118,7 @@ public class RescueTimeProductivityTaskManager extends OAuthTaskManager {
 	}
 
 	private Command createCommand(Task task, List<Event> events) {
-		CompoundCommand command = new CompoundCommand(task.getPrincipal(), "ran " + getType() + " task", "reverted " + getType() + " task");
+		var command = new CompoundCommand(task.getPrincipal(), "ran " + getType() + " task", "reverted " + getType() + " task");
 		command.add(UpdateTaskCommand.builder(task)
 			.set(Task.COMPLETED, task.getCompleted(), DateTime.now(DateTimeZone.UTC))
 			.set(Task.STATUS, task.getStatus(), Task.Status.SUCCESS)

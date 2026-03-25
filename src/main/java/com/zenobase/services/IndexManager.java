@@ -38,7 +38,7 @@ public class IndexManager implements Closeable {
 	@Inject
 	public IndexManager(ClientFactory clientFactory, @Named("opensearch.snapshot.bucket") String snapshotBucket, @Named("aws.region") String snapshotRegion, @Named("opensearch.snapshot_role_arn") String snapshotRoleArn) {
 		client = clientFactory.createClient();
-		Cluster cluster = new Cluster(client);
+		var cluster = new Cluster(client);
 		while (!cluster.isReady()) {
 			logger.warn("Waiting for cluster to recover...");
 			Uninterruptibles.sleepUninterruptibly(5, TimeUnit.SECONDS);

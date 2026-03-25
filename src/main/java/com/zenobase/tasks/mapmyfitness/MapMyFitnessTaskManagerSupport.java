@@ -36,7 +36,7 @@ abstract class MapMyFitnessTaskManagerSupport extends OAuthTaskManager {
 	}
 
 	protected UserResult getUser(OAuthCredentials credentials) {
-		OAuthRequest request = new OAuthRequest(Verb.GET, HOST + "/v7.0/user/self/");
+		var request = new OAuthRequest(Verb.GET, HOST + "/v7.0/user/self/");
 		Response response = send(request, credentials);
 		return new UserResult(parseObject(response));
 	}
@@ -59,7 +59,7 @@ abstract class MapMyFitnessTaskManagerSupport extends OAuthTaskManager {
 	}
 
 	protected Command createCommand(Task task, OAuthCredentials credentials, List<Event> events, Token expiredToken) {
-		CompoundCommand command = new CompoundCommand(task.getPrincipal(), "ran " + getType() + " task", "reverted " + getType() + " task");
+		var command = new CompoundCommand(task.getPrincipal(), "ran " + getType() + " task", "reverted " + getType() + " task");
 		command.add(UpdateTaskCommand.builder(task)
 			.set(Task.COMPLETED, task.getCompleted(), DateTime.now(DateTimeZone.UTC))
 			.set(Task.STATUS, task.getStatus(), Task.Status.SUCCESS)

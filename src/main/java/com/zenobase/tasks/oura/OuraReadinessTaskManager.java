@@ -49,7 +49,7 @@ public class OuraReadinessTaskManager extends OuraTaskManagerSupport {
 		DateTime begin = task.getBegin();
 		DateTime end = DateTime.now(begin.getZone()).plusDays(1);
 		List<Event> events = Lists.newArrayList();
-		OAuthRequest request = new OAuthRequest(Verb.GET, HOST + "/v2/usercollection/daily_readiness");
+		var request = new OAuthRequest(Verb.GET, HOST + "/v2/usercollection/daily_readiness");
 		request.addQuerystringParameter("start_date", begin.toLocalDate().toString());
 		request.addQuerystringParameter("end_date", end.toLocalDate().toString());
 		Response response = send(request, credentials);

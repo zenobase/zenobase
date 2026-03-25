@@ -45,7 +45,7 @@ class StravaActivitiesResult {
 	}
 
 	private Event newEvent(JsonNode node) {
-		Event event = new Event();
+		var event = new Event();
 		event.addValue(Event.TAG, node.path("type").textValue());
 		event.setValue(Event.TIMESTAMP, dateTimeValue(node.path("start_date"), dateTimeZoneValue(node.path("timezone"))));
 		event.setValue(Event.DURATION, durationValue(node.path("elapsed_time")));

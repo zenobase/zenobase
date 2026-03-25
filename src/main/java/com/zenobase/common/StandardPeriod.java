@@ -37,7 +37,7 @@ public class StandardPeriod implements Comparable<StandardPeriod> {
 	}
 
 	public static StandardPeriod valueOf(String s) {
-		Period period = new Period();
+		var period = new Period();
 		Matcher m = PATTERN.matcher(s);
 		int offset = 0;
 		while (m.find()) {
@@ -63,7 +63,7 @@ public class StandardPeriod implements Comparable<StandardPeriod> {
 
 	@Override
 	public String toString() {
-		StringBuilder s = new StringBuilder();
+		var s = new StringBuilder();
 		for (Map.Entry<Character, DurationFieldType> entry : FIELDS.entrySet()) {
 			append(entry.getValue(), entry.getKey(), s);
 		}

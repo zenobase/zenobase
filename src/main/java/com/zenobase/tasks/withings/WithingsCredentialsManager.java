@@ -71,7 +71,7 @@ public class WithingsCredentialsManager extends OAuthCredentialsManager {
 			logger.warn("Converting oauth1 token...");
 			refreshToken = credentials.getToken().getToken() + ":" + credentials.getToken().getSecret();
 		}
-		OAuthRequest request = new OAuthRequest(Verb.POST, "https://wbsapi.withings.net/v2/oauth2");
+		var request = new OAuthRequest(Verb.POST, "https://wbsapi.withings.net/v2/oauth2");
 		request.addBodyParameter("action", "requesttoken");
 		request.addBodyParameter("grant_type", "refresh_token");
 		request.addBodyParameter("client_id", getApiKey());

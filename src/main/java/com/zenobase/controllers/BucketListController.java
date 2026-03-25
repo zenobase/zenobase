@@ -125,7 +125,7 @@ public class BucketListController extends ControllerSupport {
 			sendForbidden(res);
 			return;
 		}
-		BucketQuery query = new BucketQuery().principalEqualTo(principal).includeArchived(includeArchived);
+		var query = new BucketQuery().principalEqualTo(principal).includeArchived(includeArchived);
         PartialList<Bucket> found = buckets.find(query, SearchOrder.valueOf(order, Bucket.SCHEMA), offset, limit);
 		sendOk(res, labelsOnly ? BucketList.toJsonLabelsOnly(found) : BucketList.toJson(found, events));
     }
@@ -136,7 +136,7 @@ public class BucketListController extends ControllerSupport {
     		sendUnauthorized(res);
     		return;
     	}
-		CreateBucketForm form = new CreateBucketForm(body(req));
+		var form = new CreateBucketForm(body(req));
 		Bucket bucket = form.getId() != null ? new Bucket(form.getId()) : new Bucket();
 		bucket.setLabel(form.getLabel());
 		bucket.setDescription(form.getDescription());

@@ -66,7 +66,7 @@ public class TaskListController extends ControllerSupport {
 			sendForbidden(res);
 			return;
 		}
-		TaskQuery query = new TaskQuery();
+		var query = new TaskQuery();
 		if (q != null) {
 			query = query.queryString(q);
 		}
@@ -99,7 +99,7 @@ public class TaskListController extends ControllerSupport {
 			sendForbidden(res);
 			return;
 		}
-		TaskQuery query = new TaskQuery().bucketEqualTo(bucketId);
+		var query = new TaskQuery().bucketEqualTo(bucketId);
 		sendOk(res, TaskList.toJson(tasks.find(query, TaskQuery.orderByCreated(true), offset, limit)));
     }
 
@@ -134,7 +134,7 @@ public class TaskListController extends ControllerSupport {
 			sendForbidden(res);
 			return;
 		}
-		TaskQuery query = new TaskQuery().principalEqualTo(principal);
+		var query = new TaskQuery().principalEqualTo(principal);
 		if (q != null) {
 			query = query.queryString(q);
 		}
@@ -147,7 +147,7 @@ public class TaskListController extends ControllerSupport {
     		sendUnauthorized(res);
     		return;
     	}
-		CreateTaskForm form = new CreateTaskForm(body(req));
+		var form = new CreateTaskForm(body(req));
 		if (!form.valid()) {
 			sendBadRequest(res, "bad request");
 			return;

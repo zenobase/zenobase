@@ -64,7 +64,7 @@ public class PaymentGateway {
 		Subscription subscription = getSubscription(customer);
 		PaymentMethod paymentMethod = payment.getNonce() != null ? newPaymentMethod(customer.getId(), payment) : customer.getDefaultPaymentMethod();
 		Preconditions.checkArgument(paymentMethod != null, "Expected a card for <%s>", customer.getId());
-		SubscriptionRequest request = new SubscriptionRequest().paymentMethodToken(paymentMethod.getToken());
+		var request = new SubscriptionRequest().paymentMethodToken(paymentMethod.getToken());
 		if (subscription == null || subscription.getStatus() != Subscription.Status.PAST_DUE) {
 			request = request.planId(plan.getId());
 		}
@@ -77,20 +77,20 @@ public class PaymentGateway {
 	private void newSubscription(String username, String email, Payment payment, Plan plan) {
 		Preconditions.checkNotNull(payment, "Can't create customer <%s> without a card", username);
 		Customer customer = newCustomer(username, email, payment);
-		SubscriptionRequest request = new SubscriptionRequest().planId(plan.getId()).paymentMethodToken(customer.getDefaultPaymentMethod().getToken());
+		var request = new SubscriptionRequest().planId(plan.getId()).paymentMethodToken(customer.getDefaultPaymentMethod().getToken());
 		Result<Subscription> result = gateway.subscription().create(request);
 		Preconditions.checkArgument(result.isSuccess(), "Couldn't subscribe <%s> to <%s>: %s", username, plan.getId(), result.getMessage());
 	}
 
 	private Customer newCustomer(String username, String email, Payment payment) {
-		CustomerRequest request = new CustomerRequest().id(username).email(email).paymentMethodNonce(payment.getNonce());
+		var request = new CustomerRequest().id(username).email(email).paymentMethodNonce(payment.getNonce());
 		Result<Customer> result = gateway.customer().create(request);
 		Preconditions.checkArgument(result.isSuccess(), "Couldn't create customer <%s>: %s", username, result.getMessage());
 		return result.getTarget();
 	}
 
 	private PaymentMethod newPaymentMethod(String username, Payment payment) {
-		PaymentMethodRequest request = new PaymentMethodRequest().customerId(username).paymentMethodNonce(payment.getNonce()).options().makeDefault(true).done();
+		var request = new PaymentMethodRequest().customerId(username).paymentMethodNonce(payment.getNonce()).options().makeDefault(true).done();
 		Result<? extends PaymentMethod> result = gateway.paymentMethod().create(request);
 		Preconditions.checkArgument(result.isSuccess(), "Couldn't store credit card for <%s>: %s", username, result.getMessage());
 		Preconditions.checkArgument(isVerified(result), "Couldn't verify credit card for <%s> (%s): %s", username, getStatus(result), getErrorMessage(result));
@@ -106,7 +106,7 @@ public class PaymentGateway {
 	}
 
 	private static String getErrorMessage(Result<? extends PaymentMethod> result) {
-		StringBuilder msg = new StringBuilder();
+		var msg = new StringBuilder();
 		if (result.getErrors() != null) {
 			for (ValidationError error : result.getErrors().getAllValidationErrors()) {
 				msg.append("[").append(error.getAttribute()).append("] ").append(error.getMessage()).append(" (").append(error.getCode()).append(")");
@@ -159,7 +159,7 @@ public class PaymentGateway {
 
 	public String token(String username) {
 		Customer customer = findCustomer(username);
-		ClientTokenRequest request = new ClientTokenRequest();
+		var request = new ClientTokenRequest();
 		if (customer != null) {
 			request.customerId(username);
 		}

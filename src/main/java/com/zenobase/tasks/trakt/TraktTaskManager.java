@@ -62,7 +62,7 @@ public class TraktTaskManager extends OAuthTaskManager {
 	}
 
 	private TraktSettingsResult getSettings(OAuthCredentials credentials) {
-		OAuthRequest request = new OAuthRequest(Verb.GET, host + "/users/settings");
+		var request = new OAuthRequest(Verb.GET, host + "/users/settings");
 		Response response = send(request, credentials);
 		return new TraktSettingsResult(parseObject(response));
 	}
@@ -70,7 +70,7 @@ public class TraktTaskManager extends OAuthTaskManager {
 	private void addEvents(String type, OAuthCredentials credentials, TraktTask task, TraktSettingsResult settings, DateTime after, List<Event> events) {
 		int limit = 10;
 		for (int page = 1; page < 100; ++page) {
-			OAuthRequest request = new OAuthRequest(Verb.GET, host + "/users/me/history/" + type);
+			var request = new OAuthRequest(Verb.GET, host + "/users/me/history/" + type);
 			request.addQuerystringParameter("limit", Integer.toString(limit));
 			request.addQuerystringParameter("page", Integer.toString(page));
 			request.addQuerystringParameter("extended", "full");
@@ -104,7 +104,7 @@ public class TraktTaskManager extends OAuthTaskManager {
 	}
 
 	private Command createCommand(TraktTask task, OAuthCredentials credentials, List<Event> events, Token expiredToken) {
-		CompoundCommand command = new CompoundCommand(task.getPrincipal(), "ran " + getType() + " task", "reverted " + getType() + " task");
+		var command = new CompoundCommand(task.getPrincipal(), "ran " + getType() + " task", "reverted " + getType() + " task");
 		command.add(UpdateTaskCommand.builder(task)
 			.set(Task.COMPLETED, task.getCompleted(), DateTime.now(DateTimeZone.UTC))
 			.set(Task.STATUS, task.getStatus(), Task.Status.SUCCESS)

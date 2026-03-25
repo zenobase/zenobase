@@ -40,8 +40,8 @@ public class DemoTaskManager extends TaskManager {
 	}
 
 	private Command execute(DemoTask task) {
-		CompoundCommand command = new CompoundCommand(task.getPrincipal(), "ran demo task", "reverted demo task");
-		Event event = new Event();
+		var command = new CompoundCommand(task.getPrincipal(), "ran demo task", "reverted demo task");
+		var event = new Event();
 		event.setValue(Event.AUTHOR, task.getPrincipal());
 		event.setValue(Event.SOURCE, SOURCE);
 		event.setValue(Event.TIMESTAMP, DateTime.now(DateTimeZone.UTC));

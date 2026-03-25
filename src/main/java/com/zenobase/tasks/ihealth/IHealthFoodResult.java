@@ -28,7 +28,7 @@ class IHealthFoodResult extends IHealthResultSupport {
 
 	@Override
 	protected Event newEvent(JsonNode node) {
-		Event event = new Event();
+		var event = new Event();
 		event.addValue(Event.TAG, tag);
 		String kind = textValue(node.path("FoodKind"));
 		if (kind != null) {

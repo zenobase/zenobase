@@ -43,7 +43,7 @@ public class AuthorizationListController extends ControllerSupport {
 			sendForbidden(res);
 			return;
 		}
-		AuthorizationQuery query = new AuthorizationQuery();
+		var query = new AuthorizationQuery();
 		if (q != null) {
 			query = query.queryString(q);
 		}
@@ -83,7 +83,7 @@ public class AuthorizationListController extends ControllerSupport {
 			sendForbidden(res);
 			return;
 		}
-		AuthorizationQuery query = new AuthorizationQuery()
+		var query = new AuthorizationQuery()
 			.principalEqualTo(principal)
 			.clientNotNull(hasClient);
 		if (q != null) {

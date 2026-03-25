@@ -41,7 +41,7 @@ class WithingsCardioResult extends WithingsResult {
 	}
 
 	private void addEvents(JsonNode node, List<Event> events) {
-		Event event = new Event();
+		var event = new Event();
 		event.setValue(Event.TAG, tag);
 		event.setValue(Event.TIMESTAMP, getDateTime(node, timezone));
 		int count = 0;

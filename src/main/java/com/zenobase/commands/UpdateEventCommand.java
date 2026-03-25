@@ -70,7 +70,7 @@ public class UpdateEventCommand extends Command {
 
 		@Override
 		public Command parse(ObjectNode node, int version) {
-			UpdateEventCommand command = new UpdateEventCommand(node);
+			var command = new UpdateEventCommand(node);
 			switch (version) {
 				case 3: return command;
 			}

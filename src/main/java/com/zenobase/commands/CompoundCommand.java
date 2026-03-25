@@ -66,7 +66,7 @@ public class CompoundCommand extends Command {
 
 	@Override
 	public CompoundCommand reverse(Identity principal) {
-		CompoundCommand reverse = new CompoundCommand(principal, getUndoMessage(), getMessage());
+		var reverse = new CompoundCommand(principal, getUndoMessage(), getMessage());
 		for (Command c : Lists.reverse(getCommands())) {
 			reverse.add(c.reverse(principal));
 		}

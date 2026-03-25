@@ -55,7 +55,7 @@ public class SleepCloudTaskManager extends OAuthTaskManager {
 		List<Event> events = Lists.newArrayList();
 		String cursor = null;
 		do {
-			OAuthRequest request = new OAuthRequest(Verb.GET, "https://sleep-cloud.appspot.com/fetchRecords");
+			var request = new OAuthRequest(Verb.GET, "https://sleep-cloud.appspot.com/fetchRecords");
 			request.addQuerystringParameter("tags", "true");
 			request.addQuerystringParameter("comments", "true");
 			// request.addQuerystringParameter("sample", "true"); // test data
@@ -67,7 +67,7 @@ public class SleepCloudTaskManager extends OAuthTaskManager {
 				request.addQuerystringParameter("cursor", cursor);
 			}
 			Response response = send(request, credentials);
-			SleepCloudResult result = new SleepCloudResult(task.getTag(), task.getPrincipal(), task.useRanges(), parseObject(response));
+			var result = new SleepCloudResult(task.getTag(), task.getPrincipal(), task.useRanges(), parseObject(response));
 			if (!events.addAll(result.getEvents())) {
 				break;
 			}
@@ -77,7 +77,7 @@ public class SleepCloudTaskManager extends OAuthTaskManager {
 	}
 
 	private Command createCommand(Task task, OAuthCredentials credentials, List<Event> events, Token expiredToken) {
-		CompoundCommand command = new CompoundCommand(task.getPrincipal(), "ran sleepcloud task", "reverted sleepcloud task");
+		var command = new CompoundCommand(task.getPrincipal(), "ran sleepcloud task", "reverted sleepcloud task");
 		command.add(UpdateTaskCommand.builder(task)
 			.set(Task.COMPLETED, task.getCompleted(), DateTime.now(DateTimeZone.UTC))
 			.set(Task.STATUS, task.getStatus(), Task.Status.SUCCESS)

@@ -42,7 +42,7 @@ class SleepResult {
 	private Event newEvent(JsonNode node) {
 		DateTimeZone zone = dateTimeZoneValue(node.path("start_datetime_timezone"));
 		DateTime begin = dateTimeValue(node.path("start_datetime_utc"), zone);
-		Event event = new Event();
+		var event = new Event();
 		DateTime end = dateTimeValue(node.path("end_datetime_utc"), zone);
 		event.addValue(Event.TAG, tag);
 		event.addValue(Event.TIMESTAMP, begin);

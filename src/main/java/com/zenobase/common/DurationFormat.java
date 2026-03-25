@@ -15,8 +15,8 @@ public class DurationFormat {
 		if (isLong(s)) {
 			return Duration.millis(Long.parseLong(s));
 		}
-		Duration duration = new Duration(0);
-		Scanner scanner = new Scanner(s);
+		var duration = new Duration(0);
+		var scanner = new Scanner(s);
 		while (scanner.hasNext()) {
 			String token = scanner.next();
 			int i = indexOfFirstLetter(token);

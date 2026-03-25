@@ -64,7 +64,7 @@ abstract class WithingsTaskManagerSupport<T extends Task> extends OAuthTaskManag
 	}
 
 	protected Command createCommand(Task task, OAuthCredentials credentials, Token expiredToken, WithingsResult result) {
-		CompoundCommand command = new CompoundCommand(task.getPrincipal(), "ran " + getType() + " task", "reverted " + getType() + " task");
+		var command = new CompoundCommand(task.getPrincipal(), "ran " + getType() + " task", "reverted " + getType() + " task");
 		command.add(UpdateTaskCommand.builder(task)
 			.set(Task.COMPLETED, task.getCompleted(), DateTime.now(DateTimeZone.UTC))
 			.set(Task.STATUS, task.getStatus(), Task.Status.SUCCESS)

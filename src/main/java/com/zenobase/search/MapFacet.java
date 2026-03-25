@@ -47,7 +47,7 @@ public class MapFacet extends FilteredFacet {
 	public JsonNode process(SearchResponse<ObjectNode> response) {
 		ArrayNode result = Nodes.newArray();
 		Aggregate agg = getAggregate(response);
-		GeoClusterBuilder builder = new GeoClusterBuilder();
+		var builder = new GeoClusterBuilder();
 		for (GeoHashGridBucket bucket : agg.geohashGrid().buckets().array()) {
 			builder.add(bucket.docCount(), bucket.key(),
 				GeohashUtils.decode(bucket.key(), SpatialContext.GEO));

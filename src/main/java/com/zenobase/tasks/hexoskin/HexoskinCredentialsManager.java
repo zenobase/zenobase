@@ -66,7 +66,7 @@ public class HexoskinCredentialsManager extends OAuthCredentialsManager {
 		} else {
 			refreshToken = credentials.getToken().getToken() + ":" + credentials.getToken().getSecret();
 		}
-		OAuthRequest request = new OAuthRequest(Verb.POST, "https://api.hexoskin.com/api/connect/oauth2/token/");
+		var request = new OAuthRequest(Verb.POST, "https://api.hexoskin.com/api/connect/oauth2/token/");
 		request.addBodyParameter("grant_type", "refresh_token");
 		request.addBodyParameter("refresh_token", refreshToken);
 		CustomApi20.addBasicAuthHeader(request, getApiKey(), getApiSecret());

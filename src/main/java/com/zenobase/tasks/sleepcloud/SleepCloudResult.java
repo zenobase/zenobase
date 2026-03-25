@@ -44,7 +44,7 @@ public class SleepCloudResult {
 	}
 
 	private void addSleep(JsonNode node, List<Event> events) {
-		Event event = new Event();
+		var event = new Event();
 		event.addValue(Event.TAG, tag);
 		for (JsonNode tagNode : node.path("tags")) {
 			event.addValue(Event.TAG, tagNode.textValue());

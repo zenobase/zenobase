@@ -51,7 +51,7 @@ public class UpdateUserForm extends DomainNode {
 	}
 
 	static UpdateUserForm withOptedOut(boolean optedout) {
-		UpdateUserForm form = new UpdateUserForm();
+		var form = new UpdateUserForm();
 		form.setValue(OPTEDOUT, optedout);
 		return form;
 	}

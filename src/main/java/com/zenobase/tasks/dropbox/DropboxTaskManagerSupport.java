@@ -33,7 +33,7 @@ public abstract class DropboxTaskManagerSupport extends OAuthTaskManager {
 	}
 
 	protected ObjectNode download(OAuthCredentials credentials, String path) {
-		OAuthRequest request = new OAuthRequest(Verb.POST, "https://content.dropboxapi.com/2/files/download");
+		var request = new OAuthRequest(Verb.POST, "https://content.dropboxapi.com/2/files/download");
 		request.addHeader(HttpHeaders.CONTENT_TYPE, "");
 		request.addHeader("Dropbox-API-Arg", Nodes.newObject("path", path).toString());
 		Response response = send(request, credentials);

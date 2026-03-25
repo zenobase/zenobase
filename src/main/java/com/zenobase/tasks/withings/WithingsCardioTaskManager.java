@@ -28,7 +28,7 @@ public class WithingsCardioTaskManager extends WithingsTaskManagerSupport<Within
 		DateTimeZone timezone = DateTimeZone.forID(MoreObjects.firstNonNull(settings.path("timezone").textValue(), "UTC"));
 		String marker = parseMarker(settings.path("marker").textValue(), timezone);
 		String tag = MoreObjects.firstNonNull(settings.path("tag").textValue(), "heart rate");
-		WithingsCardioTask task = new WithingsCardioTask(bucketId, principal, marker);
+		var task = new WithingsCardioTask(bucketId, principal, marker);
 		task.setTag(tag);
 		task.setTimezone(timezone);
 		return task;
@@ -42,13 +42,13 @@ public class WithingsCardioTaskManager extends WithingsTaskManagerSupport<Within
 	Command safeExecute(WithingsCardioTask task, OAuthCredentials credentials, Token token) {
 		OAuthRequest request = createRequest(task);
 		Response response = send(request, credentials);
-		WithingsCardioResult result = new WithingsCardioResult(parseObject(response), task.getPrincipal(), task.getTag(), task.getTimezone());
+		var result = new WithingsCardioResult(parseObject(response), task.getPrincipal(), task.getTag(), task.getTimezone());
 		checkStatus(result, request, credentials);
 		return createCommand(task, credentials, token, result);
 	}
 
 	private OAuthRequest createRequest(WithingsCardioTask task) {
-		OAuthRequest request = new OAuthRequest(Verb.GET, "https://wbsapi.withings.net/measure");
+		var request = new OAuthRequest(Verb.GET, "https://wbsapi.withings.net/measure");
 		request.addQuerystringParameter("action", "getmeas");
 		request.addQuerystringParameter("category", "1"); // actual measurements
 		if (task.getMarker() != null) {
