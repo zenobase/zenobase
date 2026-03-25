@@ -21,7 +21,6 @@ class Routing {
 
 		// Error handlers
 		routing.error(HttpException.class, (req, res, e) -> {
-			logger.warn("{} {} {}: {}", e.status().code(), req.prologue().method(), req.prologue().uriPath().rawPath(), e.getMessage());
 			ControllerSupport.sendError(res, e.status(), e.getMessage());
 		});
 		routing.error(Exception.class, (req, res, e) -> {
