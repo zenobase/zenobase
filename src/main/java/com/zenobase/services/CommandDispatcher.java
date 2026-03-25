@@ -36,10 +36,9 @@ public class CommandDispatcher {
 		if (command.getCost() > 0 && t.isAfter(now)) { // don't spend while replaying commands
 			quotas.spend(command.getPrincipal(), command.getCost());
 		}
-		if (command instanceof CompoundCommand) {
-			dispatch((CompoundCommand) command);
-		}
-		else {
+		if (command instanceof CompoundCommand c) {
+			dispatch(c);
+		} else {
 			handlers.execute(command);
 		}
 		repository.put(command);

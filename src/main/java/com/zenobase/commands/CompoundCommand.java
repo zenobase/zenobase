@@ -54,8 +54,8 @@ public class CompoundCommand extends Command {
 		if (commands.isEmpty() && registry != null) {
 			for (ObjectNode commandNode : getParameters(COMMANDS)) {
 				Command command = registry.parse(commandNode);
-				if (command instanceof CompoundCommand) {
-					commands.addAll(((CompoundCommand) command).getCommands());
+				if (command instanceof CompoundCommand c) {
+					commands.addAll(c.getCommands());
 				} else {
 					commands.add(command);
 				}

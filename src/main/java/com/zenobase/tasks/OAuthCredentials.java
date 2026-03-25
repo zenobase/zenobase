@@ -86,9 +86,9 @@ public class OAuthCredentials extends Credentials {
 			ObjectNode node = Nodes.newObject();
 			VALUE.setValue(node, value.getToken());
 			SECRET.setValue(node, value.getSecret());
-			if (value instanceof ExpiringToken) {
-				REFRESH.setValue(node, ((ExpiringToken) value).getRefreshToken());
-				EXPIRES.setValue(node, ((ExpiringToken) value).getExpires());
+			if (value instanceof ExpiringToken token) {
+				REFRESH.setValue(node, token.getRefreshToken());
+				EXPIRES.setValue(node, token.getExpires());
 			}
 			return node;
 		}

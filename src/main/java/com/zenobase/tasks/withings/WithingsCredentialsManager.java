@@ -65,8 +65,8 @@ public class WithingsCredentialsManager extends OAuthCredentialsManager {
 
 	private void reauthorize(OAuthCredentials credentials) {
 		String refreshToken;
-		if (credentials.getToken() instanceof ExpiringToken) {
-			refreshToken = ((ExpiringToken) credentials.getToken()).getRefreshToken();
+		if (credentials.getToken() instanceof ExpiringToken token) {
+			refreshToken = token.getRefreshToken();
 		} else {
 			logger.warn("Converting oauth1 token...");
 			refreshToken = credentials.getToken().getToken() + ":" + credentials.getToken().getSecret();

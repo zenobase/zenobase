@@ -74,8 +74,8 @@ public class QuerySupport {
 
 	@Override
 	public boolean equals(Object that) {
-		return that instanceof QuerySupport
-			&& equals((QuerySupport) that);
+		return that instanceof QuerySupport qs
+			&& equals(qs);
 	}
 
 	private boolean equals(QuerySupport that) {
@@ -97,19 +97,14 @@ public class QuerySupport {
 	}
 
 	static FieldValue toFieldValue(Object value) {
-		if (value instanceof String) {
-			return FieldValue.of((String) value);
-		} else if (value instanceof Boolean) {
-			return FieldValue.of((Boolean) value);
-		} else if (value instanceof Long) {
-			return FieldValue.of((Long) value);
-		} else if (value instanceof Integer) {
-			return FieldValue.of((long)(Integer) value);
-		} else if (value instanceof Double) {
-			return FieldValue.of((Double) value);
-		} else {
-			return FieldValue.of(value.toString());
-		}
+		return switch (value) {
+			case String s -> FieldValue.of(s);
+			case Boolean b -> FieldValue.of(b);
+			case Long l -> FieldValue.of(l);
+			case Integer i -> FieldValue.of((long) i);
+			case Double d -> FieldValue.of(d);
+			default -> FieldValue.of(value.toString());
+		};
 	}
 
 }
