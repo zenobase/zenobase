@@ -4,8 +4,9 @@ import java.util.List;
 
 import jakarta.inject.Inject;
 
+import java.util.ArrayList;
+
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.google.common.collect.Lists;
 
 import com.zenobase.json.ObjectField;
 import com.zenobase.json.TokenField;
@@ -38,7 +39,7 @@ public class DeleteEventsCommand extends Command {
 
 	private List<Event> getEvents() {
 		List<ObjectNode> nodes = getParameters(EVENTS);
-		List<Event> events = Lists.newArrayListWithCapacity(nodes.size());
+		List<Event> events = new ArrayList<>(nodes.size());
 		for (ObjectNode node : nodes) {
 			events.add(new Event(node));
 		}
@@ -84,7 +85,7 @@ public class DeleteEventsCommand extends Command {
 		@Override
 		public void executeTyped(DeleteEventsCommand command) {
 			List<Event> events = command.getEvents();
-			List<String> ids = Lists.newArrayListWithCapacity(events.size());
+			List<String> ids = new ArrayList<>(events.size());
 			for (Event event : events) {
 				ids.add(event.getId());
 			}

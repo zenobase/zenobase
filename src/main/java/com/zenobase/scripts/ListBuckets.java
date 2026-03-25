@@ -2,10 +2,10 @@ package com.zenobase.scripts;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.ArrayList;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.google.common.collect.Lists;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.util.EntityUtils;
@@ -27,7 +27,7 @@ public class ListBuckets extends ClientSupport {
 
 	@Override
 	protected void doRun() throws IOException {
-		List<Bucket> buckets = Lists.newArrayList();
+		List<Bucket> buckets = new ArrayList<>();
 		HttpGet request = new HttpGet(String.format("%s/buckets/?q=roles.principal:%s&offset=0&limit=100", host, userId));
 		request.addHeader("Authorization", "Bearer " + token);
 		HttpResponse response = client.execute(request);

@@ -4,13 +4,13 @@ import java.util.List;
 import java.util.SortedSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.ArrayList;
 
 import jakarta.inject.Inject;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Iterables;
-import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
@@ -50,7 +50,7 @@ public class ReporterTaskManager extends DropboxTaskManagerSupport {
 	private Command execute(ReporterTask task, OAuthCredentials credentials) {
 		Configuration config = getConfiguration(credentials, task.getFolder());
 		SortedSet<LocalDate> dates = getDates(credentials, task.getFolder(), task.getFirstDate());
-		List<Event> events = Lists.newArrayList();
+		List<Event> events = new ArrayList<>();
 		for (LocalDate date : dates) {
 			getEvents(credentials, config, task.getPrincipal(), task.getFolder(), date, events);
 		}

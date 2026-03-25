@@ -2,6 +2,7 @@ package com.zenobase.tasks.reporter;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.ArrayList;
 
 import javax.measure.DecimalMeasure;
 import javax.measure.quantity.Dimensionless;
@@ -11,7 +12,6 @@ import javax.measure.quantity.Temperature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
-import com.google.common.collect.Lists;
 import org.joda.time.DateTime;
 import org.joda.time.format.ISODateTimeFormat;
 import org.slf4j.Logger;
@@ -43,7 +43,7 @@ public class SnapshotsResult {
 	}
 
 	public List<Event> getEvents() {
-		List<Event> events = Lists.newArrayList();
+		List<Event> events = new ArrayList<>();
 		for (JsonNode snapshotNode : node.path("snapshots")) {
 			addSnapshot(snapshotNode, events);
 		}

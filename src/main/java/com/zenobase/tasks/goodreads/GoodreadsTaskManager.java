@@ -3,6 +3,7 @@ package com.zenobase.tasks.goodreads;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.List;
+import java.util.ArrayList;
 
 import jakarta.inject.Inject;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -10,7 +11,6 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Preconditions;
-import com.google.common.collect.Lists;
 import com.google.common.collect.Ordering;
 import com.google.common.util.concurrent.RateLimiter;
 import org.joda.time.DateTime;
@@ -57,7 +57,7 @@ public class GoodreadsTaskManager extends OAuthTaskManager {
 	}
 
 	private Command execute(GoodreadsTask task, OAuthCredentials credentials) {
-		List<Event> events = Lists.newArrayList();
+		List<Event> events = new ArrayList<>();
 		DateTime from = parseMarker(task.getMarker());
 		String userId = getUser(credentials).getId();
 		for (int page = 1; page <= MAX_PAGES; ++page) {

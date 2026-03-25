@@ -1,8 +1,8 @@
 package com.zenobase.tasks.hexoskin;
 
 import java.util.List;
+import java.util.ArrayList;
 
-import com.google.common.collect.Lists;
 import com.google.common.collect.Ordering;
 import com.google.common.util.concurrent.RateLimiter;
 import org.joda.time.DateTime;
@@ -40,7 +40,7 @@ abstract class HexoskinTaskManagerSupport<T extends HexoskinTaskSupport> extends
 
 	private Command execute(T task, OAuthCredentials credentials) {
 		HexoskinProfileResult profile = getProfile(credentials);
-		List<Event> events = Lists.newArrayList();
+		List<Event> events = new ArrayList<>();
 		for (String path = getPath(task); path != null;) {
 			OAuthRequest request = new OAuthRequest(Verb.GET, HOST + path);
 			Response response = send(request, credentials);

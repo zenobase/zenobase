@@ -2,10 +2,10 @@ package com.zenobase.tasks.google;
 
 import java.util.List;
 import java.util.Map;
+import java.util.ArrayList;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.base.Preconditions;
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
@@ -21,7 +21,7 @@ public class DatasetResult extends GoogleFitResultSupport {
 	}
 
 	public List<DataPoint> getDataPoints() {
-		List<DataPoint> dataPoints = Lists.newArrayList();
+		List<DataPoint> dataPoints = new ArrayList<>();
 		for (JsonNode pointNode : node.path("point")) {
 			addDataPoint(pointNode, dataPoints);
 		}

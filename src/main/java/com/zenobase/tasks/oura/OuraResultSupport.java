@@ -2,6 +2,7 @@ package com.zenobase.tasks.oura;
 
 import java.math.RoundingMode;
 import java.util.List;
+import java.util.ArrayList;
 
 import javax.measure.DecimalMeasure;
 import javax.measure.quantity.Energy;
@@ -10,7 +11,6 @@ import javax.measure.quantity.Length;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.base.Preconditions;
-import com.google.common.collect.Lists;
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
 import org.joda.time.LocalDate;
@@ -36,7 +36,7 @@ abstract class OuraResultSupport {
 	}
 
 	public List<Event> getEvents() {
-		List<Event> events = Lists.newArrayList();
+		List<Event> events = new ArrayList<>();
 		for (JsonNode eventNode : node.path("data")) {
 			Event event = newEvent(eventNode);
 			if (event != null) {

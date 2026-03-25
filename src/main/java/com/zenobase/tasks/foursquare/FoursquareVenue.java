@@ -1,8 +1,8 @@
 package com.zenobase.tasks.foursquare;
 
 import java.util.List;
+import java.util.ArrayList;
 
-import com.google.common.collect.Lists;
 
 import com.zenobase.models.Resource;
 
@@ -12,7 +12,7 @@ public class FoursquareVenue {
 
 	private final String id;
 	private final String name;
-	private final List<String> categories = Lists.newArrayList();
+	private final List<String> categories = new ArrayList<>();
 
 	public FoursquareVenue(String id, String name) {
 		this.id = id;

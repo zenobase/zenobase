@@ -3,8 +3,9 @@ package com.zenobase.common;
 import java.util.Collections;
 import java.util.List;
 
+import java.util.ArrayList;
+
 import com.google.common.base.Preconditions;
-import com.google.common.collect.Lists;
 import org.joda.time.DurationFieldType;
 import org.joda.time.LocalDateTime;
 import org.joda.time.Period;
@@ -130,7 +131,7 @@ public class LocalIntervals extends DateTimeFormatSupport {
 		}
 
 		public List<LocalDateTime> toList(LocalInterval interval) {
-			List<LocalDateTime> instants = Lists.newArrayList();
+			List<LocalDateTime> instants = new ArrayList<>();
 			for (LocalDateTime start = interval.getStart(); interval.contains(start); start = start.plus(period)) {
 				if (instants.size() > 1440) {
 					return Collections.emptyList();

@@ -20,8 +20,9 @@ import com.braintreegateway.SubscriptionRequest;
 import com.braintreegateway.ValidationError;
 import com.braintreegateway.exceptions.NotFoundException;
 import com.google.common.base.Preconditions;
+import java.util.ArrayList;
+
 import com.google.common.collect.Iterables;
-import com.google.common.collect.Lists;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -117,7 +118,7 @@ public class PaymentGateway {
 	}
 
 	static Subscription getSubscription(Customer customer) {
-		List<Subscription> subscriptions = Lists.newArrayList();
+		List<Subscription> subscriptions = new ArrayList<>();
 		for (CreditCard card : customer.getCreditCards()) {
 			for (Subscription subscription : card.getSubscriptions()) {
 				if (!Subscription.Status.CANCELED.equals(subscription.getStatus())) {

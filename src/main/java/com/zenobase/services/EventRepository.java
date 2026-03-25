@@ -5,8 +5,9 @@ import java.util.List;
 
 import jakarta.inject.Inject;
 
+import java.util.ArrayList;
+
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.google.common.collect.Lists;
 import org.opensearch.client.opensearch._types.FieldValue;
 import org.opensearch.client.opensearch._types.SortOrder;
 import org.opensearch.client.opensearch._types.aggregations.Aggregation;
@@ -111,7 +112,7 @@ public class EventRepository {
 			))
 		);
 		SearchResponse<ObjectNode> response = getIndex(bucketId).search(request);
-		List<String> terms = Lists.newArrayList();
+		List<String> terms = new ArrayList<>();
 		for (StringTermsBucket bucket : response.aggregations().get(id).sterms().buckets().array()) {
 			terms.add(bucket.key());
 		}

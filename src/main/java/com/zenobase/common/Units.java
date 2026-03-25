@@ -21,7 +21,7 @@ import javax.measure.unit.SI;
 import javax.measure.unit.Unit;
 import javax.measure.unit.UnitFormat;
 
-import com.google.common.collect.Lists;
+import java.util.ArrayList;
 
 public class Units {
 
@@ -187,7 +187,7 @@ public class Units {
 	}
 
 	public static <Q extends Quantity> Iterable<Unit<Q>> getUnits(Dimension dimension, Class<Q> type) {
-		List<Unit<Q>> units = Lists.newArrayList();
+		List<Unit<Q>> units = new ArrayList<>();
 		for (Unit<?> unit : SI.getInstance().getUnits()) {
 			if (unit.getDimension().equals(dimension)) {
 				units.add(unit.asType(type));

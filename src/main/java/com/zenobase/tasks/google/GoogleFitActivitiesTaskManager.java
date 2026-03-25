@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
 import java.util.Map;
+import java.util.ArrayList;
 
 import jakarta.inject.Inject;
 import javax.measure.quantity.Length;
@@ -15,7 +16,6 @@ import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Iterables;
-import com.google.common.collect.Lists;
 import com.google.common.collect.Range;
 import com.google.common.collect.RangeMap;
 import com.google.common.collect.TreeRangeMap;
@@ -75,7 +75,7 @@ public class GoogleFitActivitiesTaskManager extends GoogleFitTaskManagerSupport<
 	}
 
 	private List<Event> createEventsFromSessions(GoogleFitActivitiesTask task, OAuthCredentials credentials) {
-		List<Event> events = Lists.newArrayList();
+		List<Event> events = new ArrayList<>();
 		String pageToken = null;
 		do {
 			OAuthRequest request = new OAuthRequest(Verb.GET, "https://www.googleapis.com/fitness/v1/users/me/sessions");
@@ -97,7 +97,7 @@ public class GoogleFitActivitiesTaskManager extends GoogleFitTaskManagerSupport<
 	}
 
 	private List<Event> createEventsFromActivities(GoogleFitActivitiesTask task, OAuthCredentials credentials, Map<String, DataStream> streams) {
-		List<Event> events = Lists.newArrayList();
+		List<Event> events = new ArrayList<>();
 		DataStream stream = streams.get("derived:com.google.activity.segment:com.google.android.gms:merge_activity_segments");
 		if (stream != null) {
 			getDataPoints(task, credentials, stream, point -> {

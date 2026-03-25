@@ -2,6 +2,7 @@ package com.zenobase.tasks.mapmyfitness;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.ArrayList;
 
 import javax.measure.DecimalMeasure;
 import javax.measure.quantity.Mass;
@@ -9,7 +10,6 @@ import javax.measure.unit.Unit;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.base.Preconditions;
-import com.google.common.collect.Lists;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 
@@ -37,7 +37,7 @@ class WeightResult {
 	}
 
 	public List<Event> getEvents() {
-		List<Event> events = Lists.newArrayList();
+		List<Event> events = new ArrayList<>();
 		for (JsonNode bodymassNode : node.path("_embedded").path("bodymasses")) {
 			events.add(newEvent(bodymassNode));
 		}

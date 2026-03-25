@@ -3,13 +3,13 @@ package com.zenobase.tasks.google;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
+import java.util.ArrayList;
 
 import jakarta.inject.Inject;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
-import com.google.common.collect.Lists;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 
@@ -37,7 +37,7 @@ public class GoogleFitCardioTaskManager extends GoogleFitTaskManagerSupport<Goog
 
 	@Override
 	protected List<Event> createEvents(GoogleFitCardioTask task, OAuthCredentials credentials, Map<String, DataStream> streams) {
-		List<Event> events = Lists.newArrayList();
+		List<Event> events = new ArrayList<>();
 		for (DataStream stream : filter(streams.values(), "com.google.heart_rate.bpm", "com.google.heart_rate.summary")) {
 			if (!stream.getId().contains("derived")) {
 				getDataPoints(task, credentials, stream, point -> {

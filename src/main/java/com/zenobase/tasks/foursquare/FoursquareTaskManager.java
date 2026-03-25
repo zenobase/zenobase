@@ -1,11 +1,11 @@
 package com.zenobase.tasks.foursquare;
 
 import java.util.List;
+import java.util.ArrayList;
 
 import jakarta.inject.Inject;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.google.common.collect.Lists;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.scribe.model.OAuthRequest;
@@ -45,7 +45,7 @@ public class FoursquareTaskManager extends OAuthTaskManager {
 
 	private Command execute(FoursquareTask task, OAuthCredentials credentials) {
 		String marker = formatMarker(DateTime.now(DateTimeZone.UTC).minusMinutes(1));
-		List<Event> events = Lists.newArrayList();
+		List<Event> events = new ArrayList<>();
 		for (int offset = 0; execute(task, credentials, marker, offset, events); offset += LIMIT) {}
 		return createCommand(task, marker, events);
 	}

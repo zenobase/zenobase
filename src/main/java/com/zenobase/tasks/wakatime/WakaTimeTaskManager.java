@@ -1,13 +1,13 @@
 package com.zenobase.tasks.wakatime;
 
 import java.util.List;
+import java.util.ArrayList;
 
 import jakarta.inject.Inject;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Objects;
 import com.google.common.base.Strings;
-import com.google.common.collect.Lists;
 import com.google.common.collect.Ordering;
 import com.google.common.util.concurrent.RateLimiter;
 import org.joda.time.DateTime;
@@ -61,7 +61,7 @@ public class WakaTimeTaskManager extends OAuthTaskManager {
 		}
 		DateTime begin = task.getBegin();
 		LocalDate today = LocalDate.now(DateTimeZone.UTC).plusDays(1);
-		List<Event> events = Lists.newArrayList();
+		List<Event> events = new ArrayList<>();
 		for (LocalDate date = begin.toLocalDate(); !date.isAfter(today); date = date.plusDays(1)) {
 			RATE_LIMITER.acquire();
 			var request = new OAuthRequest(Verb.GET, HOST + "/users/current/durations");

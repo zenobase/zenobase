@@ -2,11 +2,11 @@ package com.zenobase.tasks.ihealth;
 
 import java.util.List;
 import java.util.Map;
+import java.util.ArrayList;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Ordering;
 import org.joda.time.DateTime;
@@ -59,7 +59,7 @@ abstract class IHealthTaskManagerSupport<T extends IHealthTaskSupport> extends O
 		if (credentials.isExpired()) {
 			reauthorize(credentials);
 		}
-		List<Event> events = Lists.newArrayList();
+		List<Event> events = new ArrayList<>();
 		for (Map.Entry<String, ResultHandler<T>> entry : handlers.entrySet()) {
 			execute(entry.getKey(), task, entry.getValue(), credentials, events);
 		}

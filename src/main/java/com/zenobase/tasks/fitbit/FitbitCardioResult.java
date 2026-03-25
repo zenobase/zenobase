@@ -1,9 +1,9 @@
 package com.zenobase.tasks.fitbit;
 
 import java.util.List;
+import java.util.ArrayList;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.google.common.collect.Lists;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.Period;
@@ -18,7 +18,7 @@ class FitbitCardioResult extends FitbitResultSupport {
 	}
 
 	public List<Event> getEvents() {
-		List<Event> events = Lists.newArrayList();
+		List<Event> events = new ArrayList<>();
 		for (JsonNode dayNode : node.path("activities-restingHeartRate")) {
 			events.add(newEvent(dayNode));
 		}

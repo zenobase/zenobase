@@ -1,13 +1,13 @@
 package com.zenobase.tasks.oura;
 
 import java.util.List;
+import java.util.ArrayList;
 
 import jakarta.inject.Inject;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
-import com.google.common.collect.Lists;
 import org.joda.time.DateTime;
 import org.scribe.model.OAuthRequest;
 import org.scribe.model.Response;
@@ -46,7 +46,7 @@ public class OuraSleepTaskManager extends OuraTaskManagerSupport {
 		}
 		DateTime begin = task.getBegin();
 		DateTime end = DateTime.now(begin.getZone()).plusDays(1);
-		List<Event> events = Lists.newArrayList();
+		List<Event> events = new ArrayList<>();
 		var request = new OAuthRequest(Verb.GET, HOST + "/v2/usercollection/sleep");
 		request.addQuerystringParameter("start_date", begin.toLocalDate().toString());
 		request.addQuerystringParameter("end_date", end.toLocalDate().toString());

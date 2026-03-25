@@ -15,8 +15,9 @@ import java.util.concurrent.TimeUnit;
 import com.google.common.base.Joiner;
 import com.google.common.base.Preconditions;
 import com.google.common.util.concurrent.Uninterruptibles;
+import java.util.ArrayList;
+
 import com.google.common.collect.Iterables;
-import com.google.common.collect.Lists;
 import org.opensearch.client.opensearch.OpenSearchClient;
 import org.opensearch.client.opensearch._types.query_dsl.Query;
 import org.opensearch.client.opensearch.generic.Requests;
@@ -143,8 +144,8 @@ public class IndexManager implements Closeable {
 
 	private void buildAlias(String indexName, String aliasName, List<Alias> targets,
 			org.opensearch.client.opensearch.indices.UpdateAliasesRequest.Builder u) {
-		List<Query> shoulds = Lists.newArrayList();
-		List<String> routing = Lists.newArrayList();
+		List<Query> shoulds = new ArrayList<>();
+		List<String> routing = new ArrayList<>();
 		for (Alias target : targets) {
 			SearchBuilderSupport search = new EventSearchBuilder().addConstraint(Event.BUCKET.getName() + ":" + target.id());
 			routing.add(target.id());

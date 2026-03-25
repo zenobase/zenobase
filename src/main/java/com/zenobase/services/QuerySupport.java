@@ -2,8 +2,9 @@ package com.zenobase.services;
 
 import java.util.List;
 
+import java.util.ArrayList;
+
 import com.google.common.collect.Iterables;
-import com.google.common.collect.Lists;
 import org.opensearch.client.opensearch._types.query_dsl.BoolQuery;
 import org.opensearch.client.opensearch._types.query_dsl.ExistsQuery;
 import org.opensearch.client.opensearch._types.query_dsl.MatchAllQuery;
@@ -17,7 +18,7 @@ import com.zenobase.json.Field;
 
 public class QuerySupport {
 
-	private final List<Query> constraints = Lists.newArrayList();
+	private final List<Query> constraints = new ArrayList<>();
 
 	protected QuerySupport() {
 

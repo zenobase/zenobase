@@ -1,13 +1,13 @@
 package com.zenobase.tasks.fitbit;
 
 import java.util.List;
+import java.util.ArrayList;
 
 import javax.measure.DecimalMeasure;
 import javax.measure.quantity.Mass;
 import javax.measure.unit.Unit;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.google.common.collect.Lists;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDate;
@@ -27,7 +27,7 @@ class FitbitWeightResult extends FitbitResultSupport {
 	}
 
 	public List<Event> getEvents() {
-		List<Event> events = Lists.newArrayList();
+		List<Event> events = new ArrayList<>();
 		DecimalMeasure<Mass> weight = weightValue(node.path("body").path("weight"), weightUnit);
 		if (weight != null) {
 			DateTime begin = date.toDateTimeAtStartOfDay(timezone);

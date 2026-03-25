@@ -10,7 +10,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Lists;
 import com.google.common.primitives.Ints;
 import org.opensearch.client.opensearch.OpenSearchClient;
 import org.opensearch.client.opensearch._types.OpenSearchException;
@@ -161,7 +160,7 @@ public class Index {
 				List<BulkResponseItem> items = bulkResponse.items();
 				String failureMessage = getFailureMessage(items);
 				if (failureMessage != null) {
-					List<String> failed = Lists.newArrayList();
+					List<String> failed = new ArrayList<>();
 					for (int i = 0; i < items.size(); ++i) {
 						if (items.get(i).error() == null) {
 							failed.add(nodes.get(begin + i).getId());
@@ -256,7 +255,7 @@ public class Index {
 			.seqNoPrimaryTerm(true)
 		);
 		SearchResponse<ObjectNode> response = search(request);
-		List<ObjectNode> nodes = Lists.newArrayListWithCapacity(response.hits().hits().size());
+		List<ObjectNode> nodes = new ArrayList<>(response.hits().hits().size());
 		for (Hit<ObjectNode> hit : response.hits().hits()) {
 			nodes.add(read(hit));
 		}
@@ -265,7 +264,7 @@ public class Index {
 
 	public NodeList find(SearchRequest request) {
 		SearchResponse<ObjectNode> response = search(request);
-		List<ObjectNode> nodes = Lists.newArrayListWithCapacity(response.hits().hits().size());
+		List<ObjectNode> nodes = new ArrayList<>(response.hits().hits().size());
 		for (Hit<ObjectNode> hit : response.hits().hits()) {
 			nodes.add(read(hit));
 		}

@@ -2,10 +2,10 @@ package com.zenobase.tasks.netatmo;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.ArrayList;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.base.Preconditions;
-import com.google.common.collect.Lists;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 
@@ -27,7 +27,7 @@ class StationsResult {
 
 	public Collection<Device> getDevices() {
 		Preconditions.checkState(isSuccess(), "Expected a successful response but got <%s>", node);
-		List<Device> devices = Lists.newArrayList();
+		List<Device> devices = new ArrayList<>();
 		for (JsonNode deviceNode : node.path("body").path("devices")) {
 			Device device = parseDevice(deviceNode);
 			devices.add(device);
@@ -76,7 +76,7 @@ class StationsResult {
 	}
 
     private static List<String> parseTypes(JsonNode node) {
-        List<String> types = Lists.newArrayList();
+        List<String> types = new ArrayList<>();
         for (JsonNode typeNode : node) {
             types.add(typeNode.textValue());
         }

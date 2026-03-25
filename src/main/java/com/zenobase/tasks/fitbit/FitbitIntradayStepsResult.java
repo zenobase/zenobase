@@ -2,11 +2,11 @@ package com.zenobase.tasks.fitbit;
 
 import java.util.List;
 import java.util.Map;
+import java.util.ArrayList;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
@@ -28,7 +28,7 @@ class FitbitIntradayStepsResult extends FitbitResultSupport {
 	}
 
 	public List<Event> getEvents() {
-		List<Event> events = Lists.newArrayList();
+		List<Event> events = new ArrayList<>();
 		for (Map.Entry<DateTime, Integer> entry : valuesByHour().entrySet()) {
 			events.add(toEvent(entry.getKey(), entry.getValue()));
 		}

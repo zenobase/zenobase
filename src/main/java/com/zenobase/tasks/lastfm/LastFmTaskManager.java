@@ -1,6 +1,7 @@
 package com.zenobase.tasks.lastfm;
 
 import java.util.List;
+import java.util.ArrayList;
 
 import jakarta.inject.Inject;
 
@@ -8,7 +9,6 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
-import com.google.common.collect.Lists;
 import com.google.common.util.concurrent.RateLimiter;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
@@ -63,7 +63,7 @@ public class LastFmTaskManager extends OAuthTaskManager {
 	}
 
 	private Command execute(LastFmTask task, OAuthCredentials credentials) {
-		List<Event> events = Lists.newArrayList();
+		List<Event> events = new ArrayList<>();
 		DateTime now = DateTime.now().minusMinutes(5);
 		try {
 			for (int page = 1; page < 10; ++page) {

@@ -2,6 +2,7 @@ package com.zenobase.tasks.withings;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.ArrayList;
 
 import javax.measure.DecimalMeasure;
 import javax.measure.quantity.Energy;
@@ -12,7 +13,6 @@ import javax.measure.unit.Unit;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.Iterables;
-import com.google.common.collect.Lists;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDate;
@@ -35,7 +35,7 @@ class WithingsStepsResult extends WithingsResult {
 	}
 
 	public List<Event> getEvents() {
-		List<Event> events = Lists.newArrayList();
+		List<Event> events = new ArrayList<>();
 		for (JsonNode activityNode : node.path("body").path("activities")) {
 			events.add(getEvent((ObjectNode) activityNode));
 		}

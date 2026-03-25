@@ -1,12 +1,12 @@
 package com.zenobase.tasks.fitbit;
 
 import java.util.List;
+import java.util.ArrayList;
 
 import javax.measure.DecimalMeasure;
 import javax.measure.quantity.Energy;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.google.common.collect.Lists;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDate;
@@ -23,7 +23,7 @@ class FitbitFoodResult extends FitbitResultSupport {
 	}
 
 	public List<Event> getEvents() {
-		List<Event> events = Lists.newArrayList();
+		List<Event> events = new ArrayList<>();
 		for (JsonNode foodNode : node.path("foods-log-caloriesIn")) {
 			DecimalMeasure<Energy> value = energyValue(foodNode.path("value"), Units.KCAL);
 			if (value != null) {

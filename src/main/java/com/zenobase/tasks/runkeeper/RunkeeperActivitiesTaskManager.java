@@ -1,6 +1,7 @@
 package com.zenobase.tasks.runkeeper;
 
 import java.util.List;
+import java.util.ArrayList;
 
 import jakarta.inject.Inject;
 import javax.measure.quantity.Length;
@@ -9,7 +10,6 @@ import javax.measure.unit.Unit;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
-import com.google.common.collect.Lists;
 import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDateTime;
 import org.scribe.model.OAuthRequest;
@@ -51,7 +51,7 @@ public class RunkeeperActivitiesTaskManager extends RunkeeperTaskManagerSupport 
 
 	private Command execute(RunkeeperActivitiesTask task, OAuthCredentials credentials) {
 		String path = "/fitnessActivities";
-		List<Event> events = Lists.newArrayList();
+		List<Event> events = new ArrayList<>();
 		LocalDateTime from = parseMarker(task.getMarker());
 		try {
 			while (path != null) {

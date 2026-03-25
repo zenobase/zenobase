@@ -1,6 +1,7 @@
 package com.zenobase.tasks.fitbit;
 
 import java.util.List;
+import java.util.ArrayList;
 
 import jakarta.inject.Inject;
 
@@ -8,7 +9,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
-import com.google.common.collect.Lists;
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
 import org.scribe.model.OAuthRequest;
@@ -43,7 +43,7 @@ public class FitbitActivitiesTaskManager extends FitbitTaskManagerSupport<Fitbit
 
 	@Override
 	protected Command safeExecute(FitbitActivitiesTask task, OAuthCredentials credentials, Token token) {
-		List<Event> events = Lists.newArrayList();
+		List<Event> events = new ArrayList<>();
 		FitbitProfileResult profile = getProfile(credentials);
 		DateTime afterDate = DateTime.parse(task.getMarker());
 		for (String url = "https://api.fitbit.com/1/user/-/activities/list.json"; url != null;) {

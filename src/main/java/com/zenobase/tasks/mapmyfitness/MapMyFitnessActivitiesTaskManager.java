@@ -1,13 +1,13 @@
 package com.zenobase.tasks.mapmyfitness;
 
 import java.util.List;
+import java.util.ArrayList;
 
 import jakarta.inject.Inject;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
-import com.google.common.collect.Lists;
 import org.joda.time.DateTime;
 import org.scribe.model.OAuthRequest;
 import org.scribe.model.Response;
@@ -47,7 +47,7 @@ public class MapMyFitnessActivitiesTaskManager extends MapMyFitnessTaskManagerSu
 		}
 		UserResult user = getUser(credentials);
 		String path = "/v7.0/workout/";
-		List<Workout> workouts = Lists.newArrayList();
+		List<Workout> workouts = new ArrayList<>();
 		String from = task.getMarker();
 		while (path != null) {
 			OAuthRequest request = new OAuthRequest(Verb.GET, HOST + path);
@@ -101,7 +101,7 @@ public class MapMyFitnessActivitiesTaskManager extends MapMyFitnessTaskManagerSu
 	}
 
 	private List<Event> getEvents(List<Workout> workouts) {
-		List<Event> events = Lists.newArrayListWithExpectedSize(workouts.size());
+		List<Event> events = new ArrayList<>(workouts.size());
 		for (Workout workout : workouts) {
 			events.add(workout.getEvent());
 		}

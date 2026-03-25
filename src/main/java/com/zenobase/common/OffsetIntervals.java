@@ -3,8 +3,9 @@ package com.zenobase.common;
 import java.util.Collections;
 import java.util.List;
 
+import java.util.ArrayList;
+
 import com.google.common.base.Preconditions;
-import com.google.common.collect.Lists;
 import org.joda.time.DateTime;
 import org.joda.time.DurationFieldType;
 import org.joda.time.Interval;
@@ -143,7 +144,7 @@ public class OffsetIntervals extends DateTimeFormatSupport {
 		}
 
 		public List<DateTime> toList(Interval interval) {
-			List<DateTime> instants = Lists.newArrayList();
+			List<DateTime> instants = new ArrayList<>();
 			for (DateTime start = interval.getStart(); interval.contains(start); start = start.plus(period)) {
 				if (instants.size() > 1440) {
 					return Collections.emptyList();

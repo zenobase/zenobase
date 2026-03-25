@@ -1,9 +1,9 @@
 package com.zenobase.tasks.google;
 
 import java.util.List;
+import java.util.ArrayList;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.google.common.collect.Lists;
 
 import com.zenobase.models.Resource;
 
@@ -14,7 +14,7 @@ public class DataSourcesResult extends GoogleFitResultSupport {
 	}
 
 	public List<DataStream> get() {
-		List<DataStream> streams = Lists.newArrayList();
+		List<DataStream> streams = new ArrayList<>();
 		for (JsonNode dataSourceNode : node.path("dataSource")) {
 			addDataStream(dataSourceNode, streams);
 		}

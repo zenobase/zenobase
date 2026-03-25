@@ -1,12 +1,12 @@
 package com.zenobase.tasks.fitbark;
 
 import java.util.List;
+import java.util.ArrayList;
 
 import jakarta.inject.Inject;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Preconditions;
-import com.google.common.collect.Lists;
 import com.google.common.collect.Ordering;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
@@ -51,7 +51,7 @@ public class FitBarkTaskManager extends OAuthTaskManager {
 	}
 
 	private Command execute(FitBarkTask task, OAuthCredentials credentials) {
-		List<Event> events = Lists.newArrayList();
+		List<Event> events = new ArrayList<>();
 		Dog dog = findDog(task.getName(), credentials);
 		if (dog != null) {
 			DateTime marker = Ordering.natural().max(parseMarker(task.getMarker()), dog.getCreated());

@@ -1,9 +1,9 @@
 package com.zenobase.tasks.dropbox;
 
 import java.util.List;
+import java.util.ArrayList;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.google.common.collect.Lists;
 
 public class ListFolderResult {
 
@@ -22,7 +22,7 @@ public class ListFolderResult {
 	}
 
 	public List<String> getFiles() {
-		List<String> files = Lists.newArrayList();
+		List<String> files = new ArrayList<>();
 		for (JsonNode entryNode : node.path("entries")) {
 			if ("file".equals(entryNode.path(".tag").textValue())) {
 				String path = entryNode.path("path_lower").textValue();

@@ -1,10 +1,10 @@
 package com.zenobase.tasks.fitbark;
 
 import java.util.List;
+import java.util.ArrayList;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.google.common.collect.Lists;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.Duration;
@@ -34,7 +34,7 @@ class ActivitySeriesResult {
 	}
 
 	public List<Event> getEvents() {
-		List<Event> events = Lists.newArrayList();
+		List<Event> events = new ArrayList<>();
 		for (JsonNode recordNode : node.path("activity_series").path("records")) {
 			addRecord(recordNode, events);
 		}

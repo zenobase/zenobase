@@ -1,10 +1,10 @@
 package com.zenobase.tasks.trakt;
 
 import java.util.List;
+import java.util.ArrayList;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.base.Preconditions;
-import com.google.common.collect.Lists;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.Duration;
@@ -30,7 +30,7 @@ class TraktHistoryResult {
 	}
 
 	public List<Event> getEvents() {
-		List<Event> events = Lists.newArrayList();
+		List<Event> events = new ArrayList<>();
 		for (JsonNode activityNode : node) {
 			Event event = newEvent(activityNode);
 			if (event != null) {

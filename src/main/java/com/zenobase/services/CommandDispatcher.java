@@ -1,10 +1,9 @@
 package com.zenobase.services;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import jakarta.inject.Inject;
-
-import com.google.common.collect.Lists;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.slf4j.Logger;
@@ -46,7 +45,7 @@ public class CommandDispatcher {
 	}
 
 	private void dispatch(CompoundCommand command) {
-		List<Command> dispatched = Lists.newArrayList();
+		List<Command> dispatched = new ArrayList<>();
 		try {
 			for (Command c : command.getCommands()) {
 				handlers.execute(c);

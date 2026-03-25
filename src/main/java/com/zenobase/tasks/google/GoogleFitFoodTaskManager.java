@@ -3,13 +3,13 @@ package com.zenobase.tasks.google;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
+import java.util.ArrayList;
 
 import jakarta.inject.Inject;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
-import com.google.common.collect.Lists;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 
@@ -45,7 +45,7 @@ public class GoogleFitFoodTaskManager extends GoogleFitTaskManagerSupport<Google
 	}
 
 	private List<Event> createEventsFromNutritionStreams(GoogleFitFoodTask task, OAuthCredentials credentials, Map<String, DataStream> streams) {
-		List<Event> events = Lists.newArrayList();
+		List<Event> events = new ArrayList<>();
 		for (DataStream stream : filter(streams.values(), "com.google.nutrition")) {
 			getDataPoints(task, credentials, stream, point -> {
 				Event event = newEvent(point, task, streams);
@@ -63,7 +63,7 @@ public class GoogleFitFoodTaskManager extends GoogleFitTaskManagerSupport<Google
 	}
 
 	private List<Event> createEventsFromLegacyStream(GoogleFitFoodTask task, OAuthCredentials credentials, Map<String, DataStream> streams) {
-		List<Event> events = Lists.newArrayList();
+		List<Event> events = new ArrayList<>();
 		DataStream stream = streams.get("derived:com.google.calories.consumed:com.google.android.gms:merge_calories_consumed");
 		if (stream != null) {
 			getDataPoints(task, credentials, stream, point -> {

@@ -1,12 +1,12 @@
 package com.zenobase.tasks.strava;
 
 import java.util.List;
+import java.util.ArrayList;
 
 import jakarta.inject.Inject;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Objects;
-import com.google.common.collect.Lists;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.scribe.model.OAuthRequest;
@@ -52,7 +52,7 @@ public class StravaTaskManager extends OAuthTaskManager {
 		if (credentials.isExpired()) {
 			reauthorize(credentials);
 		}
-		List<Event> events = Lists.newArrayList();
+		List<Event> events = new ArrayList<>();
 		DateTime from = parseMarker(task.getMarker());
 		for (int i = 0; i < 10; ++i) {
 			var request = new OAuthRequest(Verb.GET, host + "/athlete/activities");

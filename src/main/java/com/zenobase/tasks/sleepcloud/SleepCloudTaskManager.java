@@ -1,13 +1,13 @@
 package com.zenobase.tasks.sleepcloud;
 
 import java.util.List;
+import java.util.ArrayList;
 
 import jakarta.inject.Inject;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
-import com.google.common.collect.Lists;
 import com.google.common.collect.Ordering;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
@@ -52,7 +52,7 @@ public class SleepCloudTaskManager extends OAuthTaskManager {
 		if (credentials.isExpired()) {
 			reauthorize(credentials);
 		}
-		List<Event> events = Lists.newArrayList();
+		List<Event> events = new ArrayList<>();
 		String cursor = null;
 		do {
 			var request = new OAuthRequest(Verb.GET, "https://sleep-cloud.appspot.com/fetchRecords");

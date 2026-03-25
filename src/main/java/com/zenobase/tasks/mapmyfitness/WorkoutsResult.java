@@ -2,6 +2,7 @@ package com.zenobase.tasks.mapmyfitness;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.ArrayList;
 
 import javax.measure.DecimalMeasure;
 import javax.measure.quantity.Frequency;
@@ -11,7 +12,6 @@ import javax.measure.unit.Unit;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.base.Preconditions;
-import com.google.common.collect.Lists;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.Duration;
@@ -36,7 +36,7 @@ class WorkoutsResult {
 	}
 
 	public List<Workout> getWorkouts() {
-		List<Workout> workouts = Lists.newArrayList();
+		List<Workout> workouts = new ArrayList<>();
 		for (JsonNode workoutNode : node.path("_embedded").path("workouts")) {
 			workouts.add(newWorkout(workoutNode));
 		}

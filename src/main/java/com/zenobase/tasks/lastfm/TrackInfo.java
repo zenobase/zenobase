@@ -1,9 +1,9 @@
 package com.zenobase.tasks.lastfm;
 
 import java.util.List;
+import java.util.ArrayList;
 
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Lists;
 import org.joda.time.Duration;
 
 import com.zenobase.models.Event;
@@ -13,7 +13,7 @@ class TrackInfo {
 
 	private final Resource resource;
 	private final Duration duration;
-	private final List<String> tags = Lists.newArrayList();
+	private final List<String> tags = new ArrayList<>();
 
 	public TrackInfo(Resource resource, Duration duration) {
 		this.resource = resource;

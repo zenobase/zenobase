@@ -12,8 +12,9 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
+import java.util.ArrayList;
+
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import io.helidon.webserver.http.ServerRequest;
 import io.helidon.webserver.http.ServerResponse;
@@ -98,7 +99,7 @@ public class EventListController extends ControllerSupport {
 	}
 
 	private static List<FacetOptions> getFacets(ServerRequest req) {
-		List<FacetOptions> options = Lists.newArrayList();
+		List<FacetOptions> options = new ArrayList<>();
 		try {
 			List<String> facets = req.query().all("facet");
 			if (facets != null) {
@@ -235,7 +236,7 @@ public class EventListController extends ControllerSupport {
 	}
 
 	private static List<Event> toEvents(Identity principal, List<ObjectNode> nodes) {
-		List<Event> events = Lists.newArrayListWithCapacity(nodes.size());
+		List<Event> events = new ArrayList<>(nodes.size());
 		for (ObjectNode node : nodes) {
 			events.add(toEvent(principal, node));
 		}

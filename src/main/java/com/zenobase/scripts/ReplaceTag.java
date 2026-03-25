@@ -2,11 +2,11 @@ package com.zenobase.scripts;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.ArrayList;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.Iterables;
-import com.google.common.collect.Lists;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPut;
@@ -37,7 +37,7 @@ public class ReplaceTag extends ClientSupport {
 	}
 
 	private List<Event> find(String query) throws IOException {
-		List<Event> events = Lists.newArrayList();
+		List<Event> events = new ArrayList<>();
 		HttpGet request = new HttpGet(String.format("%s/buckets/%s/?code=%s&q=%s", host, bucketId, token, query));
 		HttpResponse response = client.execute(request);
 		ObjectNode node = Nodes.readObject(EntityUtils.toByteArray(response.getEntity()));

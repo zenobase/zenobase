@@ -1,10 +1,10 @@
 package com.zenobase.tasks.fitbark;
 
 import java.util.List;
+import java.util.ArrayList;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.base.Preconditions;
-import com.google.common.collect.Lists;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 
@@ -17,7 +17,7 @@ class DogsResult {
 	}
 
 	public List<Dog> getDogs() {
-		List<Dog> dogs = Lists.newArrayList();
+		List<Dog> dogs = new ArrayList<>();
 		for (JsonNode dogNode : node.path("dog_relations")) {
 			dogs.add(newDog(dogNode));
 		}

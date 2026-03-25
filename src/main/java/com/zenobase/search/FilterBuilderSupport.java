@@ -5,8 +5,9 @@ import java.util.List;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
+import java.util.ArrayList;
+
 import com.google.common.collect.ImmutableMultimap;
-import com.google.common.collect.Lists;
 import org.opensearch.client.opensearch._types.query_dsl.BoolQuery;
 import org.opensearch.client.opensearch._types.query_dsl.MatchAllQuery;
 import org.opensearch.client.opensearch._types.query_dsl.Query;
@@ -14,8 +15,8 @@ import org.opensearch.client.opensearch._types.query_dsl.Query;
 public class FilterBuilderSupport {
 
 	private final ImmutableMultimap<String, ConstraintBuilder> constraintBuilders;
-	private final List<Query> must = Lists.newArrayList();
-	private final List<Query> mustNot = Lists.newArrayList();
+	private final List<Query> must = new ArrayList<>();
+	private final List<Query> mustNot = new ArrayList<>();
 
 	public FilterBuilderSupport(ImmutableMultimap<String, ConstraintBuilder> constraintBuilders) {
 		this.constraintBuilders = constraintBuilders;
@@ -47,7 +48,7 @@ public class FilterBuilderSupport {
 			negated = true;
 			field = field.substring(1);
 		}
-		List<Query> builders = Lists.newArrayList();
+		List<Query> builders = new ArrayList<>();
 		for (String value : values) {
 			for (ConstraintBuilder constraint : constraintBuilders.get(field)) {
 				Query builder = constraint.build(value);

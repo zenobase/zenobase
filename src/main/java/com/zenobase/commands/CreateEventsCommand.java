@@ -4,8 +4,9 @@ import java.util.List;
 
 import jakarta.inject.Inject;
 
+import java.util.ArrayList;
+
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.google.common.collect.Lists;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 
@@ -46,7 +47,7 @@ public class CreateEventsCommand extends Command {
 
 	public List<Event> getEvents() {
 		List<ObjectNode> nodes = getParameters(EVENTS);
-		List<Event> events = Lists.newArrayListWithCapacity(nodes.size());
+		List<Event> events = new ArrayList<>(nodes.size());
 		for (ObjectNode node : nodes) {
 			events.add(new Event(node));
 		}

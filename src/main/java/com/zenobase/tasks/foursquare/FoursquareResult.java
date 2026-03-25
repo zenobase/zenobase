@@ -2,11 +2,11 @@ package com.zenobase.tasks.foursquare;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.ArrayList;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
-import com.google.common.collect.Lists;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 
@@ -36,7 +36,7 @@ class FoursquareResult {
 	}
 
 	public List<Event> getEvents() {
-		List<Event> events = Lists.newArrayList();
+		List<Event> events = new ArrayList<>();
 		for (JsonNode item : node.path("response").path("checkins").path("items")) {
 			events.add(getCheckin(item).getEvent());
 		}
@@ -104,7 +104,7 @@ class FoursquareResult {
 		}
 
 		public List<String> getTags() {
-			List<String> tags = Lists.newArrayList();
+			List<String> tags = new ArrayList<>();
 			for (JsonNode category : node.path("categories")) {
 				tags.add(category.get("name").textValue());
 			}

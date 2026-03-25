@@ -1,10 +1,10 @@
 package com.zenobase.tasks.rescuetime;
 
 import java.util.List;
+import java.util.ArrayList;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.google.common.collect.Lists;
 import com.google.common.primitives.Ints;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
@@ -38,7 +38,7 @@ public class ProductivityResult {
 	}
 
 	public List<Event> getEvents() {
-		List<Event> events = Lists.newArrayList();
+		List<Event> events = new ArrayList<>();
 		for (JsonNode hourNode : node.path("rows")) {
 			try {
 				events.add(getEvent(hourNode));

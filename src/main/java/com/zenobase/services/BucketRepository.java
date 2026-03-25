@@ -3,9 +3,11 @@ package com.zenobase.services;
 import jakarta.inject.Inject;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import java.util.ArrayList;
+import java.util.List;
+
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
-import com.google.common.collect.Lists;
 import org.opensearch.client.opensearch._types.FieldValue;
 import org.opensearch.client.opensearch._types.query_dsl.Query;
 import org.opensearch.client.opensearch._types.query_dsl.TermQuery;
@@ -47,7 +49,7 @@ public class BucketRepository extends RepositorySupport<Bucket> {
 	}
 
 	public void realias(Bucket bucket) {
-		manager.createAlias(EventRepository.INDEX_NAME, bucket.getId(), bucket.isVirtual() ? bucket.getAliases() : Lists.newArrayList(new Alias(bucket.getId())));
+		manager.createAlias(EventRepository.INDEX_NAME, bucket.getId(), bucket.isVirtual() ? bucket.getAliases() : new ArrayList<>(List.of(new Alias(bucket.getId()))));
 	}
 
 	public void update(Bucket from, Bucket to, DateTime timestamp) {

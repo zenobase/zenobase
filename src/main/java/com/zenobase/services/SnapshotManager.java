@@ -3,6 +3,8 @@ package com.zenobase.services;
 import java.io.IOException;
 import java.util.List;
 
+import java.util.ArrayList;
+
 import com.google.common.collect.Lists;
 import org.opensearch.client.opensearch.OpenSearchClient;
 import org.opensearch.client.opensearch._types.OpenSearchException;
@@ -29,7 +31,7 @@ public class SnapshotManager {
 
 	public PartialList<Snapshot> findAll(int offset, int limit) {
 		try {
-			List<Snapshot> snapshots = Lists.newArrayListWithExpectedSize(limit);
+			List<Snapshot> snapshots = new ArrayList<>(limit);
 			GetSnapshotResponse response = client.snapshot().get(g -> g
 				.repository(repositoryName)
 				.snapshot("*")
@@ -41,7 +43,7 @@ public class SnapshotManager {
 			return DefaultPartialList.of(snapshots, response.snapshots().size());
 		} catch (OpenSearchException e) {
 			if (e.error().type().equals("snapshot_missing_exception")) {
-				return DefaultPartialList.of(Lists.newArrayList(), 0);
+				return DefaultPartialList.of(new ArrayList<>(), 0);
 			}
 			throw e;
 		} catch (IOException e) {

@@ -1,6 +1,7 @@
 package com.zenobase.tasks.hexoskin;
 
 import java.util.List;
+import java.util.ArrayList;
 
 import javax.measure.DecimalMeasure;
 import javax.measure.quantity.Energy;
@@ -11,7 +12,6 @@ import javax.measure.unit.Unit;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
-import com.google.common.collect.Lists;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.Duration;
@@ -46,7 +46,7 @@ abstract class HexoskinResultSupport {
 	}
 
 	public List<Event> getEvents() {
-		List<Event> events = Lists.newArrayList();
+		List<Event> events = new ArrayList<>();
 		for (JsonNode objectNode : node.path("objects")) {
 			Event event = newEvent(objectNode);
 			if (event != null) {

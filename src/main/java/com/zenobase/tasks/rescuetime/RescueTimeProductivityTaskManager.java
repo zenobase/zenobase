@@ -1,6 +1,7 @@
 package com.zenobase.tasks.rescuetime;
 
 import java.util.List;
+import java.util.ArrayList;
 
 import jakarta.inject.Inject;
 
@@ -10,7 +11,6 @@ import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.common.collect.Iterables;
-import com.google.common.collect.Lists;
 import com.google.common.util.concurrent.RateLimiter;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
@@ -61,7 +61,7 @@ public class RescueTimeProductivityTaskManager extends OAuthTaskManager {
 
 	private Command execute(RescueTimeProductivityTask task, OAuthCredentials credentials) {
 		DateTime last = task.getLast();
-		List<Event> events = Lists.newArrayList();
+		List<Event> events = new ArrayList<>();
 		for (DateTime from = last; from == null || from.isBefore(DateTime.now()); from = from.plusWeeks(1)) {
 			events.addAll(get(credentials, task, from != null ? from.toLocalDate() : null));
 			if (from == null) {

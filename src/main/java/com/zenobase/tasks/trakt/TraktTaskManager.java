@@ -1,12 +1,12 @@
 package com.zenobase.tasks.trakt;
 
 import java.util.List;
+import java.util.ArrayList;
 
 import jakarta.inject.Inject;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Objects;
-import com.google.common.collect.Lists;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.scribe.model.OAuthRequest;
@@ -54,7 +54,7 @@ public class TraktTaskManager extends OAuthTaskManager {
 		}
 
 		TraktSettingsResult settings = getSettings(credentials);
-		List<Event> events = Lists.newArrayList();
+		List<Event> events = new ArrayList<>();
 		DateTime after = parseMarker(task.getMarker());
 		addEvents("movies", credentials, task, settings, after, events);
 		addEvents("episodes", credentials, task, settings, after, events);

@@ -4,12 +4,12 @@ import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.ArrayList;
 
 import javax.measure.DecimalMeasure;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.collect.LinkedListMultimap;
-import com.google.common.collect.Lists;
 import com.google.common.collect.Multimap;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
@@ -32,7 +32,7 @@ class FitbitCardioIntradayResult extends FitbitResultSupport {
 	}
 
 	public List<Event> getEvents() {
-		List<Event> events = Lists.newArrayList();
+		List<Event> events = new ArrayList<>();
 		for (Map.Entry<DateTime, Collection<Integer>> entry : valuesByHour().asMap().entrySet()) {
 			events.add(toEvent(entry.getKey(), mean(entry.getValue())));
 		}

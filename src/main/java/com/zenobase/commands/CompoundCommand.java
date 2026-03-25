@@ -1,5 +1,6 @@
 package com.zenobase.commands;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -18,7 +19,7 @@ public class CompoundCommand extends Command {
 	private static final ObjectField COMMANDS = new ObjectField("commands");
 
 	private CommandParserRegistry registry;
-	private final List<Command> commands = Lists.newArrayList();
+	private final List<Command> commands = new ArrayList<>();
 
 	CompoundCommand(ObjectNode node, CommandParserRegistry registry) {
 		super(node);

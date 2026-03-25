@@ -3,11 +3,11 @@ package com.zenobase.tasks.lastfm;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.ArrayList;
 
 import com.google.common.base.Charsets;
 import com.google.common.base.Joiner;
 import com.google.common.base.Preconditions;
-import com.google.common.collect.Lists;
 import com.google.common.hash.Hashing;
 
 public class Signature {
@@ -25,7 +25,7 @@ public class Signature {
 	}
 
 	private static String toString(Map<String, String> params) {
-		List<String> sortable = Lists.newArrayList();
+		List<String> sortable = new ArrayList<>();
 		for (Map.Entry<String, String> param : params.entrySet()) {
 			if (!"format".equals(param.getKey())) {
 				sortable.add(param.getKey() + param.getValue());

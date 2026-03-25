@@ -15,7 +15,7 @@ import com.google.common.base.Joiner;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Lists;
+import java.util.ArrayList;
 import com.google.common.collect.Sets;
 
 import com.zenobase.json.Nodes;
@@ -134,7 +134,7 @@ public class SpreadsheetPrinter {
 	}
 
 	private String[] toRow(ObjectNode node) {
-		List<String> row = Lists.newArrayListWithCapacity(fields.size());
+		List<String> row = new ArrayList<>(fields.size());
 		for (Field field : fields) {
 			row.add(toString(field.get(node)));
 		}
@@ -152,7 +152,7 @@ public class SpreadsheetPrinter {
 	}
 
 	private static String toString(ArrayNode node) {
-		List<String> stringified = Lists.newArrayListWithCapacity(node.size());
+		List<String> stringified = new ArrayList<>(node.size());
 		for (JsonNode item : node) {
 			stringified.add(toString(item));
 		}

@@ -2,6 +2,7 @@ package com.zenobase.tasks.withings;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.ArrayList;
 
 import javax.measure.DecimalMeasure;
 import javax.measure.quantity.Quantity;
@@ -10,7 +11,6 @@ import javax.measure.unit.Unit;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Strings;
-import com.google.common.collect.Lists;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 
@@ -33,7 +33,7 @@ class WithingsCardioResult extends WithingsResult {
 	}
 
 	public List<Event> getEvents() {
-		List<Event> events = Lists.newArrayList();
+		List<Event> events = new ArrayList<>();
 		for (JsonNode group : node.path("body").path("measuregrps")) {
 			addEvents(group, events);
 		}

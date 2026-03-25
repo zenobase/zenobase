@@ -1,12 +1,12 @@
 package com.zenobase.tasks.withings;
 
 import java.util.List;
+import java.util.ArrayList;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
-import com.google.common.collect.Lists;
 import com.google.common.collect.Ordering;
 import com.google.common.primitives.Ints;
 import org.joda.time.DateTime;
@@ -24,7 +24,7 @@ class WithingsSleepResult extends WithingsResult {
 
 	private static final Logger logger = LoggerFactory.getLogger(WithingsSleepResult.class);
 
-	private final List<Event> events = Lists.newArrayList();
+	private final List<Event> events = new ArrayList<>();
 	private final boolean useRanges;
 	private final DateTimeZone timezone;
 
@@ -84,7 +84,7 @@ class WithingsSleepResult extends WithingsResult {
 	}
 
 	public WithingsSleepResult merge() {
-		List<Event> merged = Lists.newArrayList();
+		List<Event> merged = new ArrayList<>();
 		Event prev = null;
 		DateTime end = null;
 		for (Event event : getEvents()) {

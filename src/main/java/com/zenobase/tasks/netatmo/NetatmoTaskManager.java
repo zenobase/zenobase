@@ -2,13 +2,13 @@ package com.zenobase.tasks.netatmo;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.ArrayList;
 
 import jakarta.inject.Inject;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Objects;
 import com.google.common.collect.Iterables;
-import com.google.common.collect.Lists;
 import com.google.common.util.concurrent.RateLimiter;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
@@ -58,7 +58,7 @@ public class NetatmoTaskManager extends OAuthTaskManager {
 		if (credentials.isExpired()) {
 			reauthorize(credentials);
 		}
-		List<Event> events = Lists.newArrayList();
+		List<Event> events = new ArrayList<>();
 		String to = formatMarker(DateTime.now(DateTimeZone.UTC).minusMinutes(1));
 		for (Device device : getDevices(credentials, task.includeModules())) {
 			events.addAll(getEvents(task, credentials, device, to));
@@ -79,7 +79,7 @@ public class NetatmoTaskManager extends OAuthTaskManager {
 	}
 
 	private List<Event> getEvents(NetatmoTask task, OAuthCredentials credentials, Device device, String to) {
-		List<Event> events = Lists.newArrayList();
+		List<Event> events = new ArrayList<>();
 		MeasurementsQuery request = new MeasurementsQuery(task.getPrincipal(), credentials, device, task.isHourly());
 		while (events.size() < 10000) {
 			String from = null;

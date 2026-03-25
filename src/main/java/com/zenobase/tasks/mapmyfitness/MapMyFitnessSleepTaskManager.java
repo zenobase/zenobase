@@ -1,13 +1,13 @@
 package com.zenobase.tasks.mapmyfitness;
 
 import java.util.List;
+import java.util.ArrayList;
 
 import jakarta.inject.Inject;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
-import com.google.common.collect.Lists;
 import org.joda.time.DateTime;
 import org.scribe.model.OAuthRequest;
 import org.scribe.model.Response;
@@ -46,7 +46,7 @@ public class MapMyFitnessSleepTaskManager extends MapMyFitnessTaskManagerSupport
 		}
 		UserResult user = getUser(credentials);
 		String path = "/api/0.2/sleep/";
-		List<Event> events = Lists.newArrayList();
+		List<Event> events = new ArrayList<>();
 		DateTime from = DateTime.parse(task.getMarker());
 		while (path != null) {
 			OAuthRequest request = new OAuthRequest(Verb.GET, HOST + path);

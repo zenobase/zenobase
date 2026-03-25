@@ -2,8 +2,9 @@ package com.zenobase.services;
 
 import java.util.List;
 
+import java.util.ArrayList;
+
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.google.common.collect.Lists;
 import com.google.common.collect.Ordering;
 import com.google.common.collect.Range;
 import org.joda.time.DateTime;
@@ -28,7 +29,7 @@ public abstract class EventEditor {
 	private final Identity principal;
 	private final EventRepository events;
 	private DateTime last;
-	private final List<Command> edits = Lists.newArrayList();
+	private final List<Command> edits = new ArrayList<>();
 
 	public EventEditor(String bucketId, Identity principal, EventRepository events, DateTime last) {
 		this.bucketId = bucketId;

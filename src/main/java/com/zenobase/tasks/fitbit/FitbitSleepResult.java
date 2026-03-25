@@ -1,9 +1,9 @@
 package com.zenobase.tasks.fitbit;
 
 import java.util.List;
+import java.util.ArrayList;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.google.common.collect.Lists;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.Duration;
@@ -21,7 +21,7 @@ class FitbitSleepResult extends FitbitResultSupport {
 	}
 
 	public List<Event> getEvents() {
-		List<Event> events = Lists.newArrayList();
+		List<Event> events = new ArrayList<>();
 		for (JsonNode item : node.path("sleep")) {
 			DateTime begin = dateTimeValue(item.path("startTime"));
 			Duration duration = durationValue(item.path("duration"));

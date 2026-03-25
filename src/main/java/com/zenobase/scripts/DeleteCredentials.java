@@ -2,10 +2,10 @@ package com.zenobase.scripts;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.ArrayList;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.google.common.collect.Lists;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
@@ -37,14 +37,14 @@ public class DeleteCredentials extends ClientSupport {
 	}
 
 	private List<Credentials> find(String query) throws IOException {
-		List<Credentials> credentials = Lists.newArrayList();
+		List<Credentials> credentials = new ArrayList<>();
 		for (int offset = 0, limit = 100; credentials.addAll(find(query, offset, limit)); offset += limit) {}
 		System.out.format("Found %d credentials for <%s>\n", credentials.size(), query);
 		return credentials;
 	}
 
 	private List<Credentials> find(String query, int offset, int limit) throws IOException {
-		List<Credentials> credentials = Lists.newArrayList();
+		List<Credentials> credentials = new ArrayList<>();
 		HttpGet request = new HttpGet(String.format("%s/credentials/?code=%s&q=%s&offset=%d&limit=%d", host, token, query, offset, limit));
 		HttpResponse response = client.execute(request);
 		for (JsonNode eventNode : readObject(response).path("items")) {
