@@ -10,8 +10,8 @@ public class QueryConstraintBuilderTest {
 	public void test() {
 		QueryConstraint c = QueryConstraint.parse("foo:bar:baz");
 		assertThat(c).isNotNull();
-		assertThat(c.getField()).as("field").isEqualTo("foo");
-		assertThat(c.getValue()).as("value").isEqualTo("bar:baz");
+		assertThat(c.field()).as("field").isEqualTo("foo");
+		assertThat(c.value()).as("value").isEqualTo("bar:baz");
 	}
 
 	@Test(expected=IllegalArgumentException.class)

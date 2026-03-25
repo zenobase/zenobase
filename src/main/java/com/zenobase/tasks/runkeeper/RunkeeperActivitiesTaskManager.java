@@ -84,7 +84,7 @@ public class RunkeeperActivitiesTaskManager extends RunkeeperTaskManagerSupport 
 	}
 
 	private void addDetails(Event event, Unit<Length> heightUnit, OAuthCredentials credentials) {
-		var request = new OAuthRequest(Verb.GET, host + event.getValue(Event.SOURCE).getUrl());
+		var request = new OAuthRequest(Verb.GET, host + event.getValue(Event.SOURCE).url());
 		request.addHeader("Accept", "application/vnd.com.runkeeper.FitnessActivity+json");
 		Response response = send(request, credentials);
 		new RunkeeperActivityResult(parseObject(response), heightUnit).addDetails(event);

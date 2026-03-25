@@ -3,24 +3,11 @@ package com.zenobase.search;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 
-public class QueryConstraint {
+public record QueryConstraint(String field, String value) {
 
-	private final String field;
-	private final String value;
-
-	private QueryConstraint(String field, String value) {
+	public QueryConstraint {
 		Preconditions.checkArgument(!Strings.isNullOrEmpty(field));
 		Preconditions.checkArgument(!Strings.isNullOrEmpty(value));
-		this.field = field;
-		this.value = value;
-	}
-
-	public String getField() {
-		return field;
-	}
-
-	public String getValue() {
-		return value;
 	}
 
 	public static QueryConstraint parse(String value) {

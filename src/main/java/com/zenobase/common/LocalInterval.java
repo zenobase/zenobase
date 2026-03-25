@@ -48,8 +48,8 @@ public class LocalInterval implements Comparable<LocalInterval> {
 
 	@Override
 	public boolean equals(Object that) {
-		return that instanceof LocalInterval
-			&& equals((LocalInterval) that);
+		return that instanceof LocalInterval li
+			&& equals(li);
 	}
 
 	private boolean equals(LocalInterval that) {

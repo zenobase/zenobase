@@ -12,7 +12,7 @@ public class RatingTest {
 		Rating r1 = Rating.valueOf(0);
 		Rating r2 = Rating.valueOf(50);
 		new EqualsTester()
-			.addEqualityGroup(r1, Rating.valueOf(r1.getValue()))
+			.addEqualityGroup(r1, Rating.valueOf(r1.value()))
 			.addEqualityGroup(r2).testEquals();
 	}
 

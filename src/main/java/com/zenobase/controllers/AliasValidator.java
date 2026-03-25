@@ -16,7 +16,7 @@ class AliasValidator {
 
 	public boolean checkPermissions(Bucket bucket, Authorization auth) {
 		for (Alias alias : bucket.getAliases()) {
-			Bucket b = repository.find(alias.getId());
+			Bucket b = repository.find(alias.id());
 			if (b == null || !b.hasRole(auth, Role.OWNER)) {
 				return false;
 			}

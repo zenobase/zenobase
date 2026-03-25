@@ -42,8 +42,8 @@ public class DistanceConstraintBuilder extends ConstraintBuilder {
 	}
 
 	private Query build(Location location, DecimalMeasure<Length> distance) {
-		double lat = location.getLatitude().doubleValue();
-		double lon = location.getLongitude().doubleValue();
+		double lat = location.latitude().doubleValue();
+		double lon = location.longitude().doubleValue();
 		String dist = distance.doubleValue(Units.KM) + "km";
 		return Query.of(q -> q.geoDistance(g -> g
 			.field(getPath())

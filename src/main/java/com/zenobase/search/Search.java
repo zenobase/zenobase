@@ -78,8 +78,8 @@ public class Search {
 
 	@Override
 	public boolean equals(Object that) {
-		return that instanceof Search &&
-			equals((Search) that);
+		return that instanceof Search s &&
+			equals(s);
 	}
 
 	private boolean equals(Search that) {

@@ -12,7 +12,7 @@ public class ResourceTest {
 		Resource r3 = new Resource("Pulp Fiction", "http://www.imdb.com/title/tt0053291/");
 		Resource r4 = new Resource("Pulp Fiction", "http://www.imdb.com/title/tt0110912/");
 		new EqualsTester()
-			.addEqualityGroup(r1, new Resource(r1.getTitle(), r1.getUrl()))
+			.addEqualityGroup(r1, new Resource(r1.title(), r1.url()))
 			.addEqualityGroup(r2).addEqualityGroup(r3)
 			.addEqualityGroup(r4).testEquals();
 	}

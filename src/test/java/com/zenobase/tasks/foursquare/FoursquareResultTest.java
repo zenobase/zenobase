@@ -24,7 +24,7 @@ public class FoursquareResultTest extends ResultTestSupport {
 		expected.setValue(Event.TIMESTAMP, dateTime("2012-11-29T21:23:46-08:00"));
 		expected.setValue(Event.AUTHOR, TESTER);
 		expected.setValue(Event.SOURCE, FoursquareResult.SOURCE);
-		expected.setValue(Event.RESOURCE, new Resource("Queen Anne Pool", FoursquareResult.SOURCE.getUrl()));
+		expected.setValue(Event.RESOURCE, new Resource("Queen Anne Pool", FoursquareResult.SOURCE.url()));
 		expected.setValue(Event.LOCATION, new Location("47.636366468491374", "-122.35784366726875"));
 		expected.addValue(Event.TAG, "Pool");
 		expected.setValue(Event.NOTE, "20 laps");

@@ -36,7 +36,7 @@ public class AliasField extends Field<Alias> {
 	@Override
 	public JsonNode toJson(Alias value) {
 		return value != null
-			? toJson(value.getId(), value.getFilter())
+			? toJson(value.id(), value.filter())
 			: NullNode.getInstance();
 	}
 

@@ -26,7 +26,7 @@ public class RatingField extends Field<Rating> {
 
 	@Override
 	public JsonNode toJson(Rating value) {
-		return value != null ? new IntNode(value.getValue()) : NullNode.getInstance();
+		return value != null ? new IntNode(value.value()) : NullNode.getInstance();
 	}
 
 	@Override

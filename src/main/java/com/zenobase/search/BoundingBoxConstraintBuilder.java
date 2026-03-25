@@ -22,10 +22,10 @@ public class BoundingBoxConstraintBuilder extends ConstraintBuilder {
 	}
 
 	private Query build(Location topLeft, Location bottomRight) {
-		double tlLat = topLeft.getLatitude().doubleValue();
-		double tlLon = topLeft.getLongitude().doubleValue();
-		double brLat = bottomRight.getLatitude().doubleValue();
-		double brLon = bottomRight.getLongitude().doubleValue();
+		double tlLat = topLeft.latitude().doubleValue();
+		double tlLon = topLeft.longitude().doubleValue();
+		double brLat = bottomRight.latitude().doubleValue();
+		double brLon = bottomRight.longitude().doubleValue();
 		return Query.of(q -> q.geoBoundingBox(g -> g
 			.field(getPath())
 			.boundingBox(GeoBounds.of(gb -> gb.tlbr(TopLeftBottomRightGeoBounds.of(tlbr -> tlbr

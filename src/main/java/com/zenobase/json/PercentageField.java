@@ -25,6 +25,6 @@ public class PercentageField extends Field<Percentage> {
 
 	@Override
 	public JsonNode toJson(Percentage value) {
-		return value != null ? new DecimalNode(value.getValue()) : NullNode.getInstance();
+		return value != null ? new DecimalNode(value.value()) : NullNode.getInstance();
 	}
 }

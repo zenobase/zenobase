@@ -26,7 +26,7 @@ public class FoursquareVenuesTesting {
 		FoursquareVenues venues = new FoursquareVenues(apiKey, apiSecret);
 		FoursquareVenue venue = venues.find("416dc180f964a5209b1d1fe3");
 		assertThat(venue).isNotNull();
-		assertThat(venue.toResource().getTitle()).isEqualTo("Space Needle");
+		assertThat(venue.toResource().title()).isEqualTo("Space Needle");
 		assertThat(venue.getCategories()).containsExactly("Landmark", "Historic Site", "Scenic Lookout");
 	}
 

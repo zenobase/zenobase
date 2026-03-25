@@ -123,6 +123,6 @@ class WithingsSleepResult extends WithingsResult {
 	}
 
 	private static Percentage mean(Percentage left, int leftWeight, Percentage right, int rightWeight) {
-		return Percentage.valueOf((left.getValue().intValue() * leftWeight + right.getValue().intValue() * rightWeight) / (leftWeight + rightWeight));
+		return Percentage.valueOf((left.value().intValue() * leftWeight + right.value().intValue() * rightWeight) / (leftWeight + rightWeight));
 	}
 }

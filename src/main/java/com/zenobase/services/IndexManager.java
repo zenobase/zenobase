@@ -146,10 +146,10 @@ public class IndexManager implements Closeable {
 		List<Query> shoulds = Lists.newArrayList();
 		List<String> routing = Lists.newArrayList();
 		for (Alias target : targets) {
-			SearchBuilderSupport search = new EventSearchBuilder().addConstraint(Event.BUCKET.getName() + ":" + target.getId());
-			routing.add(target.getId());
-			if (target.getFilter() != null) {
-				search.addConstraints(target.getFilter());
+			SearchBuilderSupport search = new EventSearchBuilder().addConstraint(Event.BUCKET.getName() + ":" + target.id());
+			routing.add(target.id());
+			if (target.filter() != null) {
+				search.addConstraints(target.filter());
 			}
 			shoulds.add(search.buildFilter());
 		}

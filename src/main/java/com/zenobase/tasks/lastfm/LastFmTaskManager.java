@@ -104,8 +104,8 @@ public class LastFmTaskManager extends OAuthTaskManager {
 	private void resolveTracks(List<Event> events, OAuthCredentials credentials) {
 		for (Event event : events) {
 			Resource resource = event.getValue(Event.RESOURCE);
-			if (resource.getUrl().startsWith(RecentTracksResult.MUSICBRAINZ_URL)) {
-				String mbid = resource.getUrl().substring(resource.getUrl().lastIndexOf('/') + 1);
+			if (resource.url().startsWith(RecentTracksResult.MUSICBRAINZ_URL)) {
+				String mbid = resource.url().substring(resource.url().lastIndexOf('/') + 1);
 				LastFmRequest request = createTrackInfoRequest(mbid);
 				Response response = send(request, credentials);
 				TrackInfoResult result = new TrackInfoResult(parse(response));
