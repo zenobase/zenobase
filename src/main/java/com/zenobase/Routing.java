@@ -27,6 +27,7 @@ class Routing {
 		// Status
 		var status = injector.getInstance(StatusController.class);
 		routing.get("/status", status::get);
+		routing.head("/status", status::get);
 		routing.post("/status", status::post);
 
 		// Who
