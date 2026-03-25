@@ -26,12 +26,17 @@ public class VerificationMailer {
 	public void send(String username, String email) {
 		var key = new EmailVerificationKey(username, email);
 		Preconditions.checkNotNull(email);
-		String text =
-			"Account:\n\n" +
-			"  " + username + "\n\n" +
-			"Please verify your email address by opening the following link:\n\n" +
-			"  " + hostname + "/#/users/" + username + "/verify?key=" + key.getKey() + "\n\n" +
-			"Thanks!\n";
+		String text = """
+			Account:
+
+			  %s
+
+			Please verify your email address by opening the following link:
+
+			  %s/#/users/%s/verify?key=%s
+
+			Thanks!
+			""".formatted(username, hostname, username, key.getKey());
 
 		mailer.send(new Message(email, "Your Zenobase Account", text));
 	}

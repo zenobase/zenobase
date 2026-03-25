@@ -22,12 +22,17 @@ public class PasswordResetMailer {
 	public void send(User user) {
 		Preconditions.checkNotNull(user.getEmail());
 		var key = new PasswordResetKey(user);
-		String text =
-			"Account:\n\n" +
-			"  " + user.getName() + "\n\n" +
-			"Follow the following link to reset your password:\n\n" +
-			"  " + hostname + "/#/users/" + user.getName() + "/reset?key=" + key.getKey() + "&expires=" + key.getExpirationToken() + "\n\n" +
-			"If this was a mistake, just ignore this email and nothing will happen.\n";
+		String text = """
+			Account:
+
+			  %s
+
+			Follow the following link to reset your password:
+
+			  %s/#/users/%s/reset?key=%s&expires=%s
+
+			If this was a mistake, just ignore this email and nothing will happen.
+			""".formatted(user.getName(), hostname, user.getName(), key.getKey(), key.getExpirationToken());
 		mailer.send(new Message(user.getEmail(), "Your Zenobase Password", text));
 	}
 }
