@@ -76,7 +76,7 @@ abstract class IHealthResultSupport {
 	protected String textValue(JsonNode node) {
 		String value = node.textValue();
 		if (value != null) {
-			value = value.trim();
+			value = value.strip();
 		}
 		return Strings.emptyToNull(value);
 	}
