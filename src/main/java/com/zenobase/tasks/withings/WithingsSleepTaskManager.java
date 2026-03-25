@@ -7,7 +7,6 @@ import jakarta.inject.Inject;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
-import com.google.common.collect.ImmutableList;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDateTime;
@@ -45,7 +44,7 @@ public class WithingsSleepTaskManager extends WithingsTaskManagerSupport<Withing
 
 	@Override
 	Command safeExecute(WithingsSleepTask task, OAuthCredentials credentials, Token token) {
-		var result = new WithingsSleepResult(ImmutableList.of(), task.getPrincipal(), task.getTag(), task.useRanges(), task.getTimezone());
+		var result = new WithingsSleepResult(List.of(), task.getPrincipal(), task.getTag(), task.useRanges(), task.getTimezone());
 		for (DateTime from = task.getFrom(); from.isBefore(DateTime.now()); from = from.plusWeeks(1)) {
 			result.add(execute(task, credentials, from));
 		}

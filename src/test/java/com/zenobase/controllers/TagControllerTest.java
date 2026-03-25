@@ -5,7 +5,6 @@ import static org.mockito.Mockito.*;
 
 import java.util.List;
 
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.inject.AbstractModule;
 import com.google.inject.Injector;
@@ -67,7 +66,7 @@ public class TagControllerTest extends ControllerTestSupport {
 	@Test
 	public void testGetTags() {
 		List<String> tags = Lists.newArrayList("foo", "bar");
-		bucket.setWidgets(ImmutableList.of(Nodes.newObject()));
+		bucket.setWidgets(List.of(Nodes.newObject()));
 		when(auth.current(any())).thenReturn(new Authorization(user.asIdentity()));
 		when(buckets.find(bucket.getId())).thenReturn(bucket);
 		when(events.terms(bucket.getId(), Event.TAG.getName())).thenReturn(tags);

@@ -5,7 +5,6 @@ import java.util.ArrayList;
 
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
-import com.google.common.collect.ImmutableList;
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
 import org.joda.time.format.DateTimeFormatter;
@@ -79,7 +78,7 @@ class GoodreadsReviewListResult extends XmlResultSupport {
 			return null;
 		}
 		var event = new Event();
-		event.setValues(Event.TIMESTAMP, ImmutableList.of(begin, end));
+		event.setValues(Event.TIMESTAMP, List.of(begin, end));
 		event.setValue(Event.DURATION, new Duration(begin, end));
 		event.addValue(Event.TAG, tag);
 		event.setValue(Event.RATING, selectRating("rating", node));

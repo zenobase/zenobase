@@ -7,7 +7,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.google.common.collect.ImmutableList;
+import java.util.List;
 import org.junit.Test;
 import org.mockito.stubbing.Answer;
 
@@ -37,7 +37,7 @@ public class EventChunksTest {
 			return null;
 		}).when(events).find(eq(bucketId), any(Search.class), any(Callback.class));
 
-		ObjectNode result = onReady(new EventChunks(events, bucketId, ImmutableList.of()));
+		ObjectNode result = onReady(new EventChunks(events, bucketId, List.of()));
 
 		assertThat(result).path(EventListController.EVENTS.getName()).hasSize(total);
 	}

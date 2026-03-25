@@ -8,7 +8,6 @@ import static org.mockito.Mockito.mock;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.util.concurrent.Uninterruptibles;
 import org.joda.time.DateTime;
@@ -78,7 +77,7 @@ public class CredentialsRepositoryTest extends OpenSearchTestSupport {
 		store(c2);
 		Callback<Credentials> callback = mock(Callback.class);
 		repository.find(new CredentialsQuery().createdBefore(DateTime.now().minusHours(1)), callback);
-		verifyInteractions(callback, ImmutableList.of(c2));
+		verifyInteractions(callback, List.of(c2));
 	}
 
 	@Test
@@ -90,7 +89,7 @@ public class CredentialsRepositoryTest extends OpenSearchTestSupport {
 		store(c2);
 		Callback<Credentials> callback = mock(Callback.class);
 		repository.find(new CredentialsQuery().notAuthorized(), callback);
-		verifyInteractions(callback, ImmutableList.of(c2));
+		verifyInteractions(callback, List.of(c2));
 	}
 
 	private List<Credentials> insert(int size) {

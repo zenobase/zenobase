@@ -6,7 +6,6 @@ import jakarta.inject.Inject;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.google.common.collect.ImmutableList;
 import org.opensearch.client.opensearch._types.OpenSearchException;
 import io.helidon.webserver.http.ServerRequest;
 import io.helidon.webserver.http.ServerResponse;
@@ -92,7 +91,7 @@ public class BucketController extends ControllerSupport {
 	private static class DefaultDashboard {
 
 		public List<ObjectNode> widgets(){
-			return ImmutableList.of(timeline(), list(), count());
+			return List.of(timeline(), list(), count());
 		}
 
 		private ObjectNode list(){

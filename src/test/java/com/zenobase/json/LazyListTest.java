@@ -6,7 +6,6 @@ import java.util.List;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Function;
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import org.junit.Test;
 
@@ -17,7 +16,7 @@ public class LazyListTest {
 
 	@Test
 	public void test() {
-		PartialList<Thneed> expected = DefaultPartialList.of(ImmutableList.of(new Thneed("alpha"), new Thneed("beta")), 42L);
+		PartialList<Thneed> expected = DefaultPartialList.of(List.of(new Thneed("alpha"), new Thneed("beta")), 42L);
 		LazyList<Thneed> actual = new TestableList(new NodeList(Iterables.transform(expected, TO_JSON), expected.getTotal()));
 		assertThat(actual).hasTotal(expected.getTotal()).isEqualTo((List<?>) expected);
 	}

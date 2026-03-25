@@ -2,7 +2,7 @@ package com.zenobase.commands;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.google.common.collect.ImmutableSet;
+import java.util.Set;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -23,7 +23,7 @@ public class CompoundCommandTest {
 
 	@Test
 	public void testCopy() {
-		CommandParserRegistry registry = new CommandParserRegistry(ImmutableSet.of(new TestCommand.Parser()));
+		CommandParserRegistry registry = new CommandParserRegistry(Set.of(new TestCommand.Parser()));
 		CompoundCommand copy = new CompoundCommand(command.toJson(), registry);
 		assertThat(copy.getCommands()).isEqualTo(command.getCommands());
 	}

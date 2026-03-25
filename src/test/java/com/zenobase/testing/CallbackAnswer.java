@@ -2,7 +2,7 @@ package com.zenobase.testing;
 
 import static org.mockito.Mockito.doAnswer;
 
-import com.google.common.collect.ImmutableList;
+import java.util.List;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.mockito.stubbing.Stubber;
@@ -11,9 +11,9 @@ import com.zenobase.common.Callback;
 
 public class CallbackAnswer<T> implements Answer<Callback<T>> {
 
-	private final ImmutableList<T> values;
+	private final List<T> values;
 
-	private CallbackAnswer(ImmutableList<T> values) {
+	private CallbackAnswer(List<T> values) {
 		this.values = values;
 	}
 
@@ -32,6 +32,6 @@ public class CallbackAnswer<T> implements Answer<Callback<T>> {
 	}
 
 	public static <T> Stubber doCallback(T value) {
-		return doAnswer(new CallbackAnswer<>(ImmutableList.of(value)));
+		return doAnswer(new CallbackAnswer<>(List.of(value)));
 	}
 }

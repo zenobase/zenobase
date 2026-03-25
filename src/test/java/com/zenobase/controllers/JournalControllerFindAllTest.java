@@ -3,7 +3,7 @@ package com.zenobase.controllers;
 import static com.zenobase.testing.ResultAssert.assertThat;
 import static org.mockito.Mockito.*;
 
-import com.google.common.collect.ImmutableList;
+import java.util.List;
 import io.helidon.webclient.http1.Http1ClientResponse;
 import org.junit.Test;
 
@@ -21,7 +21,7 @@ public class JournalControllerFindAllTest extends JournalControllerTestSupport {
 
 	@Test
 	public void test() {
-		PartialList<Command> history = DefaultPartialList.of(ImmutableList.of(
+		PartialList<Command> history = DefaultPartialList.of(List.of(
 			new TestCommand(user.asIdentity(), "do it"),
 			new TestCommand(user.asIdentity(), "do it again")), 10);
 		when(auth.current(any())).thenReturn(new Authorization(user.asIdentity()));

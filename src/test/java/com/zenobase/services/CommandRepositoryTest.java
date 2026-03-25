@@ -8,7 +8,6 @@ import static org.mockito.Mockito.mock;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.util.concurrent.Uninterruptibles;
 import org.joda.time.DateTime;
@@ -59,7 +58,7 @@ public class CommandRepositoryTest extends OpenSearchTestSupport {
 		assertThat(repository.getTotalCost(new Identity(), DateTime.now().minusHours(1))).as("cost for different user").isZero();
 		assertThat(repository.getTotalCost(principal, DateTime.now().plus(1L))).as("cost since now").isZero();
 
-		PartialListAssert.assertThat(repository.find(new CommandQuery(), CommandQuery.DEFAULT_ORDER, 0, 10)).hasTotal(2).isEqualTo(ImmutableList.of(command2, command1));
+		PartialListAssert.assertThat(repository.find(new CommandQuery(), CommandQuery.DEFAULT_ORDER, 0, 10)).hasTotal(2).isEqualTo(List.of(command2, command1));
 	}
 
 	@Test
@@ -94,7 +93,7 @@ public class CommandRepositoryTest extends OpenSearchTestSupport {
 		insert(new Identity());
 		Callback<Command> callback = mock(Callback.class);
 		repository.find(new CommandQuery().principalEqualTo(expected.getPrincipal()), CommandQuery.DEFAULT_ORDER, callback);
-		verifyInteractions(callback, ImmutableList.of(expected));
+		verifyInteractions(callback, List.of(expected));
 	}
 
 	private List<Command> insert(int size) {

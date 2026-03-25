@@ -11,7 +11,6 @@ import javax.measure.quantity.Pressure;
 import javax.measure.quantity.Temperature;
 import javax.measure.quantity.Velocity;
 
-import com.google.common.collect.ImmutableSet;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.Duration;
@@ -25,7 +24,7 @@ import com.zenobase.tasks.ResultTestSupport;
 
 public class MeasurementsResultTest extends ResultTestSupport {
 
-    private static Set<String> TYPES = ImmutableSet.of("Temperature", "Pressure", "Noise", "Humidity", "CO2", "Wind", "Rain");
+    private static Set<String> TYPES = Set.of("Temperature", "Pressure", "Noise", "Humidity", "CO2", "Wind", "Rain");
 
     @Test
 	public void test5min() {
@@ -75,7 +74,7 @@ public class MeasurementsResultTest extends ResultTestSupport {
     @Test
     public void test1hNoTypes() {
         DateTimeZone tz = DateTimeZone.forOffsetHours(-7);
-        Device device = new Device("1", "test", DateTime.now(tz), DateTime.now(tz), new Location("1", "2"), ImmutableSet.of());
+        Device device = new Device("1", "test", DateTime.now(tz), DateTime.now(tz), new Location("1", "2"), Set.of());
         MeasurementsResult result = new MeasurementsResult(readObject("MeasurementsResultTest-1h.json"), TESTER, device, true);
         List<Event> events = result.getEvents();
         assertThat(events).as("events").hasSize(16);

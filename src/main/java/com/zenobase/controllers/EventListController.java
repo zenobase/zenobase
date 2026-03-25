@@ -14,7 +14,6 @@ import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import java.util.ArrayList;
 
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Maps;
 import io.helidon.webserver.http.ServerRequest;
 import io.helidon.webserver.http.ServerResponse;
@@ -92,9 +91,9 @@ public class EventListController extends ControllerSupport {
 	private static List<String> getConstraints(ServerRequest req) {
 		try {
 			List<String> q = req.query().all("q");
-			return q != null && !q.isEmpty() ? q : ImmutableList.of();
+			return q != null && !q.isEmpty() ? q : List.of();
 		} catch (java.util.NoSuchElementException e) {
-			return ImmutableList.of();
+			return List.of();
 		}
 	}
 
@@ -211,7 +210,7 @@ public class EventListController extends ControllerSupport {
     		return;
     	}
     	ObjectNode body = body(req);
-    	ImmutableList<ObjectNode> nodes = EVENTS.getValues(body);
+    	var nodes = EVENTS.getValues(body);
     	if (!nodes.isEmpty()) {
     		CreateEventsCommand command = newCreateEventsCommand(auth.getPrincipal(), bucketId, nodes);
     		String commandId = dispatcher.dispatch(command);

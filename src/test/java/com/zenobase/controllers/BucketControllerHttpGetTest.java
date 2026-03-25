@@ -3,7 +3,7 @@ package com.zenobase.controllers;
 import static com.zenobase.testing.ResultAssert.assertThat;
 import static org.mockito.Mockito.*;
 
-import com.google.common.collect.ImmutableList;
+import java.util.List;
 import io.helidon.webclient.http1.Http1ClientResponse;
 import org.junit.Before;
 import org.junit.Test;
@@ -25,7 +25,7 @@ public class BucketControllerHttpGetTest extends BucketControllerTestSupport {
 
 	@Test
 	public void testGetBucketWithDashboard() {
-		bucket.setWidgets(ImmutableList.of(Nodes.newObject()));
+		bucket.setWidgets(List.of(Nodes.newObject()));
 		when(auth.current(any())).thenReturn(new Authorization(user.asIdentity()));
 		when(buckets.find(bucket.getId())).thenReturn(bucket.copy());
 		try (Http1ClientResponse result = call(bucket.getId(), false)) {

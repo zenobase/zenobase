@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.util.concurrent.Uninterruptibles;
 import org.joda.time.DateTime;
@@ -41,7 +40,7 @@ public class BucketRepositoryTest extends OpenSearchTestSupport {
 
 		// create bucket
 		Bucket b1 = newBucket("Test Bucket", ME);
-		b1.setWidgets(ImmutableList.of(newWidget()));
+		b1.setWidgets(List.of(newWidget()));
 
 		// store and retrieve bucket
 		repository.store(b1, DateTime.now());
@@ -69,12 +68,12 @@ public class BucketRepositoryTest extends OpenSearchTestSupport {
 		Bucket b3 = insert("Baz", ME);
 
 		Bucket v1 = newBucket("View", ME);
-		v1.setAliases(ImmutableList.of(new Alias(b1.getId()), new Alias(b2.getId())));
+		v1.setAliases(List.of(new Alias(b1.getId()), new Alias(b2.getId())));
 		repository.store(v1, DateTime.now());
 		assertThat(repository.find(v1.getId()).getAliases()).isEqualTo(v1.getAliases());
 
 		Bucket v2 = v1.copy();
-		v2.setAliases(ImmutableList.of(new Alias(b1.getId()), new Alias(b3.getId())));
+		v2.setAliases(List.of(new Alias(b1.getId()), new Alias(b3.getId())));
 		repository.update(v1, v2, DateTime.now());
 		assertThat(repository.find(v2.getId()).getAliases()).isEqualTo(v2.getAliases());
 	}
@@ -117,7 +116,7 @@ public class BucketRepositoryTest extends OpenSearchTestSupport {
 		insert("foo", YOU);
 		Callback<Bucket> callback = mock(Callback.class);
 		repository.find(new BucketQuery().principalEqualTo(ME), callback);
-		verifyInteractions(callback, ImmutableList.of(b1, b2));
+		verifyInteractions(callback, List.of(b1, b2));
 	}
 
 	@Test
@@ -130,11 +129,11 @@ public class BucketRepositoryTest extends OpenSearchTestSupport {
 
 		Callback<Bucket> c1 = mock(Callback.class);
 		repository.find(new BucketQuery().isAlias(true), c1);
-		verifyInteractions(c1, ImmutableList.of(b2));
+		verifyInteractions(c1, List.of(b2));
 
 		Callback<Bucket> c2 = mock(Callback.class);
 		repository.find(new BucketQuery().isAlias(false), c2);
-		verifyInteractions(c2, ImmutableList.of(b1));
+		verifyInteractions(c2, List.of(b1));
 	}
 
 	@Test
@@ -150,7 +149,7 @@ public class BucketRepositoryTest extends OpenSearchTestSupport {
 
 		Callback<Bucket> c = mock(Callback.class);
 		repository.find(new BucketQuery().isRefreshable(), c);
-		verifyInteractions(c, ImmutableList.of(b2));
+		verifyInteractions(c, List.of(b2));
 	}
 
 	@Test
@@ -166,11 +165,11 @@ public class BucketRepositoryTest extends OpenSearchTestSupport {
 
 		Callback<Bucket> c1 = mock(Callback.class);
 		repository.find(new BucketQuery().includeArchived(false), c1);
-		verifyInteractions(c1, ImmutableList.of(b1));
+		verifyInteractions(c1, List.of(b1));
 
 		Callback<Bucket> c2 = mock(Callback.class);
 		repository.find(new BucketQuery().includeArchived(true), c2);
-		verifyInteractions(c2, ImmutableList.of(b1, b2));
+		verifyInteractions(c2, List.of(b1, b2));
 	}
 
 	private List<Bucket> insert(int size) {

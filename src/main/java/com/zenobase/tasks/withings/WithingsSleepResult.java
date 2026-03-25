@@ -5,7 +5,6 @@ import java.util.ArrayList;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Ordering;
 import com.google.common.primitives.Ints;
@@ -94,7 +93,7 @@ class WithingsSleepResult extends WithingsResult {
 				prev.setValue(Event.PERCENTAGE, meanPercentage(prev, event));
 				prev.setValue(Event.DURATION, prev.getValue(Event.DURATION).plus(duration));
 				end = getEnd(event);
-				prev.setValues(Event.TIMESTAMP, ImmutableList.of(getBegin(prev), end));
+				prev.setValues(Event.TIMESTAMP, List.of(getBegin(prev), end));
 				continue;
 			}
 			merged.add(event);

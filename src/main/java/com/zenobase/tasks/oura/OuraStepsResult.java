@@ -1,7 +1,7 @@
 package com.zenobase.tasks.oura;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.google.common.collect.ImmutableList;
+import java.util.List;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 
@@ -24,7 +24,7 @@ class OuraStepsResult extends OuraResultSupport {
 		var event = new Event();
 		DateTime t = dateValue(node.path("day")).toDateTimeAtStartOfDay(zone);
 		event.addValue(Event.TAG, tag);
-		event.setValues(Event.TIMESTAMP, ImmutableList.of(t, t.plusDays(1)));
+		event.setValues(Event.TIMESTAMP, List.of(t, t.plusDays(1)));
 		event.setValue(Event.COUNT, intValue(node.path("steps")));
 		event.setValue(Event.ENERGY, energyValue(node.path("total_calories")));
 		event.setValue(Event.RATING, ratingValue(node.path("score")));

@@ -8,7 +8,6 @@ import static org.mockito.Mockito.mock;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.util.concurrent.Uninterruptibles;
 import org.joda.time.DateTime;
@@ -65,7 +64,7 @@ public class AuthorizationRepositoryTest extends OpenSearchTestSupport {
 		insert(YOU, null, null);
 		Callback<Authorization> callback = mock(Callback.class);
 		repository.find(new AuthorizationQuery().principalEqualTo(ME), callback);
-		verifyInteractions(callback, ImmutableList.of(a1));
+		verifyInteractions(callback, List.of(a1));
 	}
 
 	@Test
@@ -75,7 +74,7 @@ public class AuthorizationRepositoryTest extends OpenSearchTestSupport {
 		insert(ME, null, null);
 		Callback<Authorization> callback = mock(Callback.class);
 		repository.find(new AuthorizationQuery().clientEqualTo(ME), callback);
-		verifyInteractions(callback, ImmutableList.of(a1, a2));
+		verifyInteractions(callback, List.of(a1, a2));
 	}
 
 	@Test
@@ -85,7 +84,7 @@ public class AuthorizationRepositoryTest extends OpenSearchTestSupport {
 		insert(ME, YOU, null);
 		Callback<Authorization> callback = mock(Callback.class);
 		repository.find(new AuthorizationQuery().clientIsNull(), callback);
-		verifyInteractions(callback, ImmutableList.of(a1, a2));
+		verifyInteractions(callback, List.of(a1, a2));
 	}
 
 	@Test
@@ -95,7 +94,7 @@ public class AuthorizationRepositoryTest extends OpenSearchTestSupport {
 		insert(ME, null, null);
 		Callback<Authorization> callback = mock(Callback.class);
 		repository.find(new AuthorizationQuery().clientNotNull(), callback);
-		verifyInteractions(callback, ImmutableList.of(a1, a2));
+		verifyInteractions(callback, List.of(a1, a2));
 	}
 
 	@Test
@@ -106,7 +105,7 @@ public class AuthorizationRepositoryTest extends OpenSearchTestSupport {
 		insert(ME, null, null);
 		Callback<Authorization> callback = mock(Callback.class);
 		repository.find(new AuthorizationQuery().scopeEqualTo(scope), callback);
-		verifyInteractions(callback, ImmutableList.of(a1));
+		verifyInteractions(callback, List.of(a1));
 	}
 
 	@Test
@@ -116,7 +115,7 @@ public class AuthorizationRepositoryTest extends OpenSearchTestSupport {
 		insert(ME, DateTime.now());
 		Callback<Authorization> callback = mock(Callback.class);
 		repository.find(new AuthorizationQuery().createdBefore(t), callback);
-		verifyInteractions(callback, ImmutableList.of(a1));
+		verifyInteractions(callback, List.of(a1));
 	}
 
 	private List<Authorization> insert(int size) {

@@ -8,7 +8,6 @@ import static org.mockito.Mockito.mock;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.util.concurrent.Uninterruptibles;
 import org.joda.time.DateTime;
@@ -71,7 +70,7 @@ public class TaskRepositoryTest extends OpenSearchTestSupport {
 		insert("bar", ME);
 		Callback<Task> callback = mock(Callback.class);
 		repository.find(new TaskQuery().bucketEqualTo("foo"), callback);
-		verifyInteractions(callback, ImmutableList.of(t1, t2));
+		verifyInteractions(callback, List.of(t1, t2));
 	}
 
 	@Test
@@ -81,7 +80,7 @@ public class TaskRepositoryTest extends OpenSearchTestSupport {
 		insert("bar", YOU);
 		Callback<Task> callback = mock(Callback.class);
 		repository.find(new TaskQuery().principalEqualTo(t1.getPrincipal()), callback);
-		verifyInteractions(callback, ImmutableList.of(t1, t2));
+		verifyInteractions(callback, List.of(t1, t2));
 	}
 
 	private List<Task> insert(int size) {
