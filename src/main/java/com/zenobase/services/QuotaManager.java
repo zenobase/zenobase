@@ -12,11 +12,10 @@ import com.zenobase.models.User;
 
 public class QuotaManager {
 
-	private static final Logger logger = LoggerFactory.getLogger(QuotaManager.class);
-
 	public static final int DEFAULT_QUOTA = 50000;
 
-	private static final Logger log = LoggerFactory.getLogger("quota");
+	private static final Logger logger = LoggerFactory.getLogger(QuotaManager.class);
+
 	private final UserRepository users;
 	private final CommandRepository commands;
 
@@ -29,7 +28,7 @@ public class QuotaManager {
 	public void spend(Identity principal, int cost) {
 		Quota quota = getQuota(principal);
 		if (quota.getRemaining() < cost) {
-			log.warn("{} has {} but needs {}", principal, quota.getRemaining(), cost);
+			logger.warn("{} has {} but needs {}", principal, quota.getRemaining(), cost);
 			throw new QuotaException(quota.getRemaining(), cost);
 		}
 	}

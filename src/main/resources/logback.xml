@@ -7,10 +7,6 @@
 	</appender>
 
 	<logger name="com.zenobase" level="DEBUG"/>
-	<logger name="dispatch" level="DEBUG"/>
-	<logger name="replay" level="DEBUG"/>
-	<logger name="rebuild" level="DEBUG"/>
-	<logger name="quota" level="DEBUG"/>
 
 	<root level="WARN">
 		<appender-ref ref="STDOUT"/>

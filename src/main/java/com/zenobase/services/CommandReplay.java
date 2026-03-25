@@ -20,7 +20,6 @@ public class CommandReplay {
 
 	private static final Logger logger = LoggerFactory.getLogger(CommandReplay.class);
 
-	private static final Logger log = LoggerFactory.getLogger("replay");
 	private static final SearchOrder ORDER = new SearchOrder(Command.TIMESTAMP.getName(), true);
 
 	private final String sourceHost;
@@ -54,7 +53,7 @@ public class CommandReplay {
 	void replay(IndexManager indexManager, IdentitiesFilterBuilder identitiesFilterBuilder) {
 		CommandRepository repository = new CommandRepository(indexManager, parsers);
 		StringFilter identities = identitiesFilterBuilder.build();
-		log.info("Replaying {} commands from {}...", repository.size(), sourceHost);
+		logger.info("Replaying {} commands from {}...", repository.size(), sourceHost);
 		Stopwatch timer = Stopwatch.createStarted();
 		repository.find(new CommandQuery(), ORDER, command -> {
 			if (identities.mightContain(command.getPrincipal().getId())) {
@@ -64,7 +63,7 @@ public class CommandReplay {
 			}
 			count.incrementAndGet();
 		});
-		log.warn("Replayed {} and discarded {} commands out of {} with {} failures in {} s",
+		logger.warn("Replayed {} and discarded {} commands out of {} with {} failures in {} s",
 			replayed.get(), count.get() - replayed.get(), repository.size(), failures.get(), timer.elapsed(TimeUnit.SECONDS));
 		if (failures.get() > 0) {
 			throw new IllegalStateException("Replay completed with one or more failures");
@@ -76,27 +75,27 @@ public class CommandReplay {
 			dispatcher.dispatch(command);
 			replayed.incrementAndGet();
 		} catch (NonExistentUserException e) {
-			log.warn("Skipping command applying to a non-existent user: " + command);
+			logger.warn("Skipping command applying to a non-existent user: " + command);
 		} catch (OpenSearchException e) {
 			if (e.status() == 404) {
-				log.warn("Skipping command for deleted bucket: " + command);
+				logger.warn("Skipping command for deleted bucket: " + command);
 			} else if (e.status() == 409) {
-				log.warn("Skipping duplicate command: " + command);
+				logger.warn("Skipping duplicate command: " + command);
 			} else {
-				log.error("Couldn't replay command: " + command, e);
+				logger.error("Couldn't replay command: " + command, e);
 				failures.incrementAndGet();
 			}
 		} catch (IllegalStateException e) {
 			retryCommand(command, e);
 		} catch (RuntimeException e) {
-			log.error("Couldn't replay command: " + command, e);
+			logger.error("Couldn't replay command: " + command, e);
 			failures.incrementAndGet();
 		}
 	}
 
 	private void retryCommand(Command command, IllegalStateException cause) {
 		for (int retry = 1; retry <= 3; retry++) {
-			log.warn("Retrying command (attempt {}): {}", retry, command);
+			logger.warn("Retrying command (attempt {}): {}", retry, command);
 			try {
 				Thread.sleep(retry * 1000L);
 				dispatcher.dispatch(command);
@@ -109,7 +108,7 @@ public class CommandReplay {
 				break;
 			}
 		}
-		log.error("Couldn't replay command: " + command, cause);
+		logger.error("Couldn't replay command: " + command, cause);
 		failures.incrementAndGet();
 	}
 }

@@ -3,12 +3,9 @@
 	<contextName>zenobase</contextName>
 
 	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
-		<encoder>
-			<pattern>%date [%level] %logger - %message%n%xException</pattern>
-		</encoder>
+		<encoder class="net.logstash.logback.encoder.LogstashEncoder"/>
 	</appender>
 
-	<logger name="application" level="INFO" />
 	<logger name="com.zenobase" level="INFO"/>
 
 	<root level="WARN">

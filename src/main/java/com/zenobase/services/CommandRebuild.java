@@ -38,7 +38,6 @@ public class CommandRebuild {
 
 	private static final Logger logger = LoggerFactory.getLogger(CommandRebuild.class);
 
-	private static final Logger log = LoggerFactory.getLogger("rebuild");
 	private final String sourceHost;
 	private final int parallelism;
 	private final CommandDispatcher dispatcher;
@@ -71,14 +70,14 @@ public class CommandRebuild {
 	}
 
 	void rebuild(IndexManager indexManager) {
-		log.info("Rebuilding history from {}...", sourceHost);
+		logger.info("Rebuilding history from {}...", sourceHost);
 		Stopwatch timer = Stopwatch.createStarted();
 		rebuild(indexManager, targetUsers, "users", this::rebuildUsers);
 		rebuild(indexManager, targetAuthorizations, "authorizations", this::rebuildAuthorizations);
 		rebuild(indexManager, targetCredentials, "credentials", this::rebuildCredentials);
 		rebuild(indexManager, targetBuckets, "buckets", this::rebuildBuckets);
 		rebuild(indexManager, targetTasks, "tasks", this::rebuildTasks);
-		log.warn("Rebuilt history in {} s", timer.elapsed(TimeUnit.SECONDS));
+		logger.warn("Rebuilt history in {} s", timer.elapsed(TimeUnit.SECONDS));
 	}
 
 	private void rebuild(IndexManager indexManager, RepositorySupport<?> targetRepo, String label, ToIntFunction<IndexManager> action) {
@@ -86,7 +85,7 @@ public class CommandRebuild {
 		try {
 			Stopwatch timer = Stopwatch.createStarted();
 			int count = action.applyAsInt(indexManager);
-			log.info("Rebuilt {} {} in {} s", count, label, timer.elapsed(TimeUnit.SECONDS));
+			logger.info("Rebuilt {} {} in {} s", count, label, timer.elapsed(TimeUnit.SECONDS));
 		} finally {
 			targetRepo.refresh();
 			targetRepo.disableRefresh(false);
@@ -137,7 +136,7 @@ public class CommandRebuild {
 	private <T> void runInParallel(List<T> items, Function<T, String> laneKey, Consumer<T> action, Function<T, String> itemLabel) {
 		AtomicInteger failures = new AtomicInteger();
 		int effectiveParallelism = parallelism > 0 ? parallelism : Math.max(2, Runtime.getRuntime().availableProcessors());
-		log.info("Using {} executor(s)", effectiveParallelism);
+		logger.info("Using {} executor(s)", effectiveParallelism);
 		ThreadPoolExecutor[] lanes = new ThreadPoolExecutor[effectiveParallelism];
 		for (int i = 0; i < effectiveParallelism; ++i) {
 			lanes[i] = new ThreadPoolExecutor(1, 1, 0L, TimeUnit.MILLISECONDS,
@@ -157,7 +156,7 @@ public class CommandRebuild {
 				try {
 					action.accept(item);
 				} catch (RuntimeException e) {
-					log.error("Couldn't rebuild: " + itemLabel.apply(item), e);
+					logger.error("Couldn't rebuild: " + itemLabel.apply(item), e);
 					failures.incrementAndGet();
 				}
 			});
@@ -168,7 +167,7 @@ public class CommandRebuild {
 		for (ThreadPoolExecutor lane : lanes) {
 			try {
 				if (!lane.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS)) {
-					log.warn("Lane did not terminate within the timeout");
+					logger.warn("Lane did not terminate within the timeout");
 				}
 			} catch (InterruptedException e) {
 				Thread.currentThread().interrupt();
