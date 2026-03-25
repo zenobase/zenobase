@@ -85,16 +85,16 @@ public class Main {
 
 		logger.info("Server started on port {}", server.port());
 
-		replay(injector, config);
-		enableWrites(injector);
-		startScheduler(injector);
-
-		Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+		io.helidon.Main.addShutdownHandler(() -> {
+			logger.info("Shutting down...");
 			injector.getInstance(Scheduler.class).close();
 			injector.getInstance(IndexManager.class).close();
 			injector.getInstance(Bus.class).close();
-			server.stop();
-		}));
+		});
+
+		replay(injector, config);
+		enableWrites(injector);
+		startScheduler(injector);
 	}
 
 	static Injector createInjector(Config config) {
