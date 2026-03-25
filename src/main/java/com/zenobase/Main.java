@@ -73,7 +73,7 @@ public class Main {
 					.pathPattern("/{+}")
 					.allowOrigins(Set.of(allowedOrigin))
 					.allowMethods(Set.of("GET", "POST", "PUT", "DELETE", "OPTIONS"))
-					.allowHeaders(Set.of("Authorization", "Content-Type"))
+					.allowHeaders(Set.of("*"))
 					.exposeHeaders(Set.of("Link", "Location", "X-Command-ID", "X-Credentials"))
 					.allowCredentials(true)
 					.maxAge(Duration.ofSeconds(3600))
