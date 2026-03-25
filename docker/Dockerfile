@@ -1,6 +1,6 @@
-FROM eclipse-temurin:25-jre
+FROM eclipse-temurin:25-jre-alpine-3.23
 
-RUN groupadd -r app && useradd -r -g app app
+RUN addgroup -S app && adduser -S app -G app
 
 COPY target/zenobase.jar /app/zenobase.jar
 COPY target/libs/ /app/libs/
@@ -18,5 +18,3 @@ ENTRYPOINT ["/app/entrypoint.sh"]
 
 EXPOSE 9000
 
-HEALTHCHECK --interval=30s --timeout=10s --start-period=120s --retries=3 \
-    CMD curl -f http://localhost:9000/status || exit 1

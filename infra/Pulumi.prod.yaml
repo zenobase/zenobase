@@ -14,4 +14,4 @@ config:
   zenobase:opensearchRebuildDomain: ""
 #  zenobase:fargateCpu: "2048"
 #  zenobase:fargateMemory: "4096"
-  zenobase:imageTag: "4621a3d5abc331b377b4dae654b7a9c4e8aa5950"
+  zenobase:imageTag: ""
