@@ -52,10 +52,10 @@ class IHealthGlucoseResult extends IHealthResultSupport {
 
 	private BigDecimal getConversionFactor() {
 		int unit = node.path("BGUnit").intValue();
-		switch (unit) {
-			case 0: return BigDecimal.ONE;
-			case 1: return MMOL_PER_L_TO_MG_PER_DL;
-			default: throw new IllegalArgumentException("Can't handle unit: " + unit);
-		}
+		return switch (unit) {
+			case 0 -> BigDecimal.ONE;
+			case 1 -> MMOL_PER_L_TO_MG_PER_DL;
+			default -> throw new IllegalArgumentException("Can't handle unit: " + unit);
+		};
 	}
 }

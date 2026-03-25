@@ -47,10 +47,10 @@ public class OptInCommand extends Command {
 
 		@Override
 		public Command parse(ObjectNode node, int version) {
-			switch (version) {
-				case 1: return new OptInCommand(node);
-			}
-			return null;
+			return switch (version) {
+				case 1 -> new OptInCommand(node);
+				default -> null;
+			};
 		}
 	}
 

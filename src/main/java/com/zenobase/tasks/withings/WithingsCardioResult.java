@@ -47,19 +47,18 @@ class WithingsCardioResult extends WithingsResult {
 		int count = 0;
 		for (JsonNode measure : node.path("measures")) {
 			switch (measure.path("type").intValue()) {
-				case 9: // diastolic blood pressure
-				case 10: // systolic blood pressure
+				case 9, 10 -> { // diastolic/systolic blood pressure
 					event.addValue(Event.PRESSURE, getDecimalMeasure(measure, Units.MMHG));
 					++count;
-					break;
-				case 11: // heart rate
+				}
+				case 11 -> { // heart rate
 					event.setValue(Event.FREQUENCY, getDecimalMeasure(measure, Units.BPM));
 					++count;
-					break;
-				case 54: // SpO2
+				}
+				case 54 -> { // SpO2
 					event.setValue(Event.PERCENTAGE, getPercentage(measure));
 					++count;
-					break;
+				}
 			}
 		}
 		if (count > 0) {

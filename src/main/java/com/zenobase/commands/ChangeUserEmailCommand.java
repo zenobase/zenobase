@@ -72,10 +72,10 @@ public class ChangeUserEmailCommand extends Command {
 
 		@Override
 		public Command parse(ObjectNode node, int version) {
-			switch (version) {
-				case 1: return new ChangeUserEmailCommand(node);
-			}
-			return null;
+			return switch (version) {
+				case 1 -> new ChangeUserEmailCommand(node);
+				default -> null;
+			};
 		}
 	}
 

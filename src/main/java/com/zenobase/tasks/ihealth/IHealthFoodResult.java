@@ -50,10 +50,10 @@ class IHealthFoodResult extends IHealthResultSupport {
 
 	private Unit<Mass> getUnit() {
 		int unit = node.path("FoodUnit").intValue();
-		switch (unit) {
-			case 0: return Units.OZ;
-			case 1: return Units.G;
-			default: throw new IllegalArgumentException("Can't handle unit: " + unit);
-		}
+		return switch (unit) {
+			case 0 -> Units.OZ;
+			case 1 -> Units.G;
+			default -> throw new IllegalArgumentException("Can't handle unit: " + unit);
+		};
 	}
 }

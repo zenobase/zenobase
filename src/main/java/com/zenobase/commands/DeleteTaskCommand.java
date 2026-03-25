@@ -47,10 +47,10 @@ public class DeleteTaskCommand extends Command {
 
 		@Override
 		public Command parse(ObjectNode node, int version) {
-			switch (version) {
-				case 2: return new DeleteTaskCommand(node);
-			}
-			return null;
+			return switch (version) {
+				case 2 -> new DeleteTaskCommand(node);
+				default -> null;
+			};
 		}
 	}
 

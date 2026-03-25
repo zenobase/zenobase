@@ -87,10 +87,10 @@ public class CompoundCommand extends Command {
 
 		@Override
 		public Command parse(ObjectNode node, int version) {
-			switch (version) {
-				case 1: return new CompoundCommand(node, getRegistry());
-			}
-			return null;
+			return switch (version) {
+				case 1 -> new CompoundCommand(node, getRegistry());
+				default -> null;
+			};
 		}
 	}
 }

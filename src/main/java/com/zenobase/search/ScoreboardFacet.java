@@ -51,15 +51,9 @@ public class ScoreboardFacet extends FilteredFacet {
 				String orderField = asc ? order : order.substring(1);
 				SortOrder sortOrder = asc ? SortOrder.Asc : SortOrder.Desc;
 				switch (orderField) {
-					case "count":
-						t.order(Collections.singletonMap("_count", sortOrder));
-						break;
-					case "term":
-						t.order(Collections.singletonMap("_key", sortOrder));
-						break;
-					default:
-						t.order(Collections.singletonMap(getId() + "." + orderField, sortOrder));
-						break;
+					case "count" -> t.order(Collections.singletonMap("_count", sortOrder));
+					case "term" -> t.order(Collections.singletonMap("_key", sortOrder));
+					default -> t.order(Collections.singletonMap(getId() + "." + orderField, sortOrder));
 				}
 				return t;
 			})

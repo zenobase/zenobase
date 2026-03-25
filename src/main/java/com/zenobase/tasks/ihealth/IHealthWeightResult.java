@@ -45,11 +45,11 @@ class IHealthWeightResult extends IHealthResultSupport {
 
 	private Unit<Mass> getUnit() {
 		int unit = node.path("WeightUnit").intValue();
-		switch (unit) {
-			case 0: return Units.KG;
-			case 1: return Units.LB;
-			case 2: return Units.ST;
-			default: throw new IllegalArgumentException("Can't handle unit: " + unit);
-		}
+		return switch (unit) {
+			case 0 -> Units.KG;
+			case 1 -> Units.LB;
+			case 2 -> Units.ST;
+			default -> throw new IllegalArgumentException("Can't handle unit: " + unit);
+		};
 	}
 }

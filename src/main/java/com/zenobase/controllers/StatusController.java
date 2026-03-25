@@ -38,12 +38,8 @@ public class StatusController extends ControllerSupport {
     	StatusInfo statusInfo = getStatus();
     	JsonNode json = statusInfo.toJson();
     	switch (statusInfo.getHealth()) {
-    		case Red:
-    			sendStatus(res, 503, json);
-    			return;
-    		default:
-    			sendOk(res, json);
-    			return;
+    		case Red -> sendStatus(res, 503, json);
+    		default -> sendOk(res, json);
     	}
     }
 

@@ -54,10 +54,10 @@ public class SuspendUserCommand extends Command {
 
 		@Override
 		public Command parse(ObjectNode node, int version) {
-			switch (version) {
-				case 1: return new SuspendUserCommand(node);
-			}
-			return null;
+			return switch (version) {
+				case 1 -> new SuspendUserCommand(node);
+				default -> null;
+			};
 		}
 	}
 

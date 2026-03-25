@@ -47,10 +47,10 @@ public class DeleteCredentialsCommand extends Command {
 
 		@Override
 		public Command parse(ObjectNode node, int version) {
-			switch (version) {
-				case 1: return new DeleteCredentialsCommand(node);
-			}
-			return null;
+			return switch (version) {
+				case 1 -> new DeleteCredentialsCommand(node);
+				default -> null;
+			};
 		}
 	}
 

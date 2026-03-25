@@ -42,12 +42,8 @@ public class CountFacet extends FilteredFacet {
 			String orderField = asc ? order : order.substring(1);
 			SortOrder sortOrder = asc ? SortOrder.Asc : SortOrder.Desc;
 			switch (orderField) {
-				case "count":
-					t.order(Collections.singletonMap("_count", sortOrder));
-					break;
-				case "term":
-					t.order(Collections.singletonMap("_key", sortOrder));
-					break;
+				case "count" -> t.order(Collections.singletonMap("_count", sortOrder));
+				case "term" -> t.order(Collections.singletonMap("_key", sortOrder));
 			}
 			return t;
 		}));

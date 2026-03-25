@@ -85,21 +85,11 @@ abstract class HexoskinResultSupport {
 
 	private void setMetric(Event event, JsonNode node) {
 		switch (node.path("name").textValue()) {
-			case "heartrate_avg": // 44
-				event.setValue(Event.FREQUENCY, frequencyValue(node.path("value")));
-				break;
-			case "step_count": // 71
-				event.setValue(Event.COUNT, intValue(node.path("value")));
-				break;
-			case "SleepEfficiency": // 1039
-				event.setValue(Event.PERCENTAGE, percentageValue(node.path("value")));
-				break;
-			case "energyecg_total_kcal": // 2003
-				event.setValue(Event.ENERGY, energyValue(node.path("value")));
-				break;
-			case "distance": // 2038
-				event.setValue(Event.DISTANCE, distanceValue(node.path("value")));
-				break;
+			case "heartrate_avg" -> event.setValue(Event.FREQUENCY, frequencyValue(node.path("value")));
+			case "step_count" -> event.setValue(Event.COUNT, intValue(node.path("value")));
+			case "SleepEfficiency" -> event.setValue(Event.PERCENTAGE, percentageValue(node.path("value")));
+			case "energyecg_total_kcal" -> event.setValue(Event.ENERGY, energyValue(node.path("value")));
+			case "distance" -> event.setValue(Event.DISTANCE, distanceValue(node.path("value")));
 		}
 	}
 

@@ -47,9 +47,7 @@ class WithingsTemperatureResult extends WithingsResult {
 	private void addEvents(JsonNode node, List<Event> events) {
 		for (JsonNode measure : node.path("measures")) {
 			switch (measure.path("type").intValue()) {
-				case 12: // air (?) temperature
-				case 71: // body temperature
-				case 73: // skin temperature
+				case 12, 71, 73 -> { // air/body/skin temperature
 					var event = new Event();
 					event.setValue(Event.TAG, tag);
 					event.setValue(Event.TIMESTAMP, getDateTime(node, timezone));
@@ -57,7 +55,7 @@ class WithingsTemperatureResult extends WithingsResult {
 					event.setValue(Event.AUTHOR, author);
 					event.setValue(Event.SOURCE, SOURCE);
 					events.add(event);
-					break;
+				}
 			}
 		}
 	}

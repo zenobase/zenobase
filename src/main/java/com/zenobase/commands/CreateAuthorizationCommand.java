@@ -47,10 +47,10 @@ public class CreateAuthorizationCommand extends Command {
 
 		@Override
 		public Command parse(ObjectNode node, int version) {
-			switch (version) {
-				case 1: return new CreateAuthorizationCommand(node);
-			}
-			return null;
+			return switch (version) {
+				case 1 -> new CreateAuthorizationCommand(node);
+				default -> null;
+			};
 		}
 	}
 

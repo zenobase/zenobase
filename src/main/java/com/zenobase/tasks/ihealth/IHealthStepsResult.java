@@ -51,10 +51,10 @@ class IHealthStepsResult extends IHealthResultSupport {
 
 	private Unit<Length> getUnit() {
 		int unit = node.path("DistanceUnit").intValue();
-		switch (unit) {
-			case 0: return Units.KM;
-			case 1: return Units.MI;
-			default: throw new IllegalArgumentException("Can't handle unit: " + unit);
-		}
+		return switch (unit) {
+			case 0 -> Units.KM;
+			case 1 -> Units.MI;
+			default -> throw new IllegalArgumentException("Can't handle unit: " + unit);
+		};
 	}
 }

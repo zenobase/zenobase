@@ -47,10 +47,10 @@ public class DeleteAuthorizationCommand extends Command {
 
 		@Override
 		public Command parse(ObjectNode node, int version) {
-			switch (version) {
-				case 1: return new DeleteAuthorizationCommand(node);
-			}
-			return null;
+			return switch (version) {
+				case 1 -> new DeleteAuthorizationCommand(node);
+				default -> null;
+			};
 		}
 	}
 

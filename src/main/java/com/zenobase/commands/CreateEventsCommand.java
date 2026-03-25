@@ -73,10 +73,10 @@ public class CreateEventsCommand extends Command {
 		@Override
 		public Command parse(ObjectNode node, int version) {
 			var command = new CreateEventsCommand(node);
-			switch (version) {
-				case 1: return command;
-			}
-			return null;
+			return switch (version) {
+				case 1 -> command;
+				default -> null;
+			};
 		}
 	}
 

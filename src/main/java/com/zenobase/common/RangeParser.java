@@ -36,16 +36,11 @@ public abstract class RangeParser<T extends Comparable<T>> {
 	}
 
 	private BoundType getBoundType(char symbol) {
-		switch (symbol) {
-			case '[':
-			case ']':
-				return BoundType.CLOSED;
-			case '(':
-			case ')':
-				return BoundType.OPEN;
-			default:
-				return null;
-		}
+		return switch (symbol) {
+			case '[', ']' -> BoundType.CLOSED;
+			case '(', ')' -> BoundType.OPEN;
+			default -> null;
+		};
 	}
 
 	private T getOptionalValue(String s) {

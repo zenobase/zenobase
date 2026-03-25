@@ -45,10 +45,10 @@ class IHealthBloodPressureResult extends IHealthResultSupport {
 
 	private Unit<Pressure> getUnit() {
 		int unit = node.path("BPUnit").intValue();
-		switch (unit) {
-			case 0: return Units.MMHG;
-			case 1: return Units.KPA;
-			default: throw new IllegalArgumentException("Can't handle unit: " + unit);
-		}
+		return switch (unit) {
+			case 0 -> Units.MMHG;
+			case 1 -> Units.KPA;
+			default -> throw new IllegalArgumentException("Can't handle unit: " + unit);
+		};
 	}
 }

@@ -39,10 +39,10 @@ public class SpendQuotaCommand extends Command {
 
 		@Override
 		public Command parse(ObjectNode node, int version) {
-			switch (version) {
-				case 1: return new SpendQuotaCommand(node);
-			}
-			return null;
+			return switch (version) {
+				case 1 -> new SpendQuotaCommand(node);
+				default -> null;
+			};
 		}
 	}
 

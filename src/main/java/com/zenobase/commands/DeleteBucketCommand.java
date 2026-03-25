@@ -48,10 +48,10 @@ public class DeleteBucketCommand extends Command {
 		@Override
 		public Command parse(ObjectNode node, int version) {
 			var command = new DeleteBucketCommand(node);
-			switch (version) {
-				case 3: return command;
-			}
-			return null;
+			return switch (version) {
+				case 3 -> command;
+				default -> null;
+			};
 		}
 	}
 

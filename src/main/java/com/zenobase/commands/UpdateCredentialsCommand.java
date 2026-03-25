@@ -55,10 +55,10 @@ public class UpdateCredentialsCommand extends UpdateCommandSupport {
 
 		@Override
 		public Command parse(ObjectNode node, int version) {
-			switch (version) {
-				case 1: return new UpdateCredentialsCommand(node);
-			}
-			return null;
+			return switch (version) {
+				case 1 -> new UpdateCredentialsCommand(node);
+				default -> null;
+			};
 		}
 	}
 

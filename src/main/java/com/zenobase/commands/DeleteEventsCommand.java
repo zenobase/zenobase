@@ -64,10 +64,10 @@ public class DeleteEventsCommand extends Command {
 
 		@Override
 		public Command parse(ObjectNode node, int version) {
-			switch (version) {
-				case 1: return new DeleteEventsCommand(node);
-			}
-			return null;
+			return switch (version) {
+				case 1 -> new DeleteEventsCommand(node);
+				default -> null;
+			};
 		}
 	}
 

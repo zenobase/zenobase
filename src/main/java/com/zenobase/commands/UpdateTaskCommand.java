@@ -54,10 +54,10 @@ public class UpdateTaskCommand extends UpdateCommandSupport {
 
 		@Override
 		public Command parse(ObjectNode node, int version) {
-			switch (version) {
-				case 3: return new UpdateTaskCommand(node);
-			}
-			return null;
+			return switch (version) {
+				case 3 -> new UpdateTaskCommand(node);
+				default -> null;
+			};
 		}
 	}
 

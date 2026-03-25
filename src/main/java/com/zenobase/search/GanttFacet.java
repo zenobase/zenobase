@@ -55,18 +55,10 @@ public class GanttFacet extends FilteredFacet {
 				String orderField = asc ? order : order.substring(1);
 				SortOrder sortOrder = asc ? SortOrder.Asc : SortOrder.Desc;
 				switch (orderField) {
-					case "count":
-						t.order(Collections.singletonMap("_count", sortOrder));
-						break;
-					case "term":
-						t.order(Collections.singletonMap("_key", sortOrder));
-						break;
-					case "min":
-						t.order(Collections.singletonMap(getId() + ".min", sortOrder));
-						break;
-					case "max":
-						t.order(Collections.singletonMap(getId() + ".max", sortOrder));
-						break;
+					case "count" -> t.order(Collections.singletonMap("_count", sortOrder));
+					case "term" -> t.order(Collections.singletonMap("_key", sortOrder));
+					case "min" -> t.order(Collections.singletonMap(getId() + ".min", sortOrder));
+					case "max" -> t.order(Collections.singletonMap(getId() + ".max", sortOrder));
 				}
 				return t;
 			})

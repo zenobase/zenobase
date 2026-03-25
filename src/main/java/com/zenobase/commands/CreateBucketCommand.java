@@ -49,10 +49,10 @@ public class CreateBucketCommand extends Command {
 		public Command parse(ObjectNode node, int version) {
 			var command = new CreateBucketCommand(node);
 			command.setType(TYPE);
-			switch (version) {
-				case 4: return command;
-			}
-			return null;
+			return switch (version) {
+				case 4 -> command;
+				default -> null;
+			};
 		}
 	}
 

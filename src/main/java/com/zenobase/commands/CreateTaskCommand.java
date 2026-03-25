@@ -48,10 +48,10 @@ public class CreateTaskCommand extends Command {
 
 		@Override
 		public Command parse(ObjectNode node, int version) {
-			switch (version) {
-				case 2: return new CreateTaskCommand(node);
-			}
-			return null;
+			return switch (version) {
+				case 2 -> new CreateTaskCommand(node);
+				default -> null;
+			};
 		}
 	}
 
