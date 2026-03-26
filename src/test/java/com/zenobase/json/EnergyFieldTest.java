@@ -3,7 +3,7 @@ package com.zenobase.json;
 import javax.measure.DecimalMeasure;
 import javax.measure.quantity.Energy;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class EnergyFieldTest extends DecimalMeasureFieldTestSupport<Energy> {
 

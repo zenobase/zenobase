@@ -5,8 +5,8 @@ import static com.zenobase.testing.NodeAssert.assertThat;
 import java.math.BigDecimal;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import com.zenobase.common.Measures;
 import com.zenobase.common.Units;
@@ -22,7 +22,7 @@ public class GeoBoundsFacetTest extends FacetTestSupport {
 
 	private Event e1, e2, e3, e4;
 
-	@Before
+	@BeforeEach
 	@Override
 	public void setUp() {
 		super.setUp();

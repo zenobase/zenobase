@@ -3,7 +3,7 @@ package com.zenobase.services;
 import static org.mockito.ArgumentMatchers.isA;
 
 import org.joda.time.DateTime;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.mockito.InOrder;
 import org.mockito.Mockito;
 

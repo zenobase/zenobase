@@ -2,6 +2,7 @@ package com.zenobase.services;
 
 import static com.zenobase.testing.NodeAssert.assertThat;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,10 +10,8 @@ import java.util.List;
 import com.google.common.collect.Lists;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import com.zenobase.json.Nodes;
 import com.zenobase.models.Bucket;
@@ -27,10 +26,7 @@ public class EventRepositoryTest extends OpenSearchTestSupport {
 	private Identity me = new Identity("me");
 	private EventRepository repository;
 
-	@Rule
-	public ExpectedException exception = ExpectedException.none();
-
-	@Before
+	@BeforeEach
 	public void setUp() {
 		repository = new EventRepository(getManager());
 	}
@@ -120,9 +116,6 @@ public class EventRepositoryTest extends OpenSearchTestSupport {
 	@Test
 	public void testBulkWithNoValidEvents() {
 
-		exception.expect(RuntimeException.class);
-		exception.expectMessage("is not allowed");
-
 		Bucket bucket = new Bucket();
 		new BucketRepository(getManager()).store(bucket, DateTime.now());
 
@@ -131,19 +124,15 @@ public class EventRepositoryTest extends OpenSearchTestSupport {
 		e1.addValue(Event.TAG, "bad");
 
 		// add event
-		try {
-			repository.add(bucket.getId(), Lists.newArrayList(e1), DateTime.now());
-		} finally {
-			repository.refresh(bucket.getId());
-			assertThat(repository.size()).as("repository size").isEqualTo(0L);
-		}
+		assertThatThrownBy(() -> repository.add(bucket.getId(), Lists.newArrayList(e1), DateTime.now()))
+				.isInstanceOf(RuntimeException.class)
+				.hasMessageContaining("is not allowed");
+		repository.refresh(bucket.getId());
+		assertThat(repository.size()).as("repository size").isEqualTo(0L);
 	}
 
 	@Test
 	public void testBulkWithInvalidEvent() {
-
-		exception.expect(RuntimeException.class);
-		exception.expectMessage("is not allowed");
 
 		Bucket bucket = new Bucket();
 		new BucketRepository(getManager()).store(bucket, DateTime.now());
@@ -155,12 +144,11 @@ public class EventRepositoryTest extends OpenSearchTestSupport {
 		e2.addValue(Event.TAG, "bad");
 
 		// add events
-		try {
-			repository.add(bucket.getId(), Lists.newArrayList(e1, e2), DateTime.now());
-		} finally {
-			repository.refresh(bucket.getId());
-			assertThat(repository.size()).as("repository size").isEqualTo(0L);
-		}
+		assertThatThrownBy(() -> repository.add(bucket.getId(), Lists.newArrayList(e1, e2), DateTime.now()))
+				.isInstanceOf(RuntimeException.class)
+				.hasMessageContaining("is not allowed");
+		repository.refresh(bucket.getId());
+		assertThat(repository.size()).as("repository size").isEqualTo(0L);
 	}
 
 	@Test

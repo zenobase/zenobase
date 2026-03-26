@@ -1,9 +1,10 @@
 package com.zenobase.common;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import org.joda.time.Duration;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class DurationFormatTest {
 
@@ -22,13 +23,13 @@ public class DurationFormatTest {
 		assertThat(DurationFormat.parse("10000")).isEqualTo(Duration.standardSeconds(10L));
 	}
 
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void testParseBadFormat() {
-		DurationFormat.parse("1 h");
+		assertThatThrownBy(() -> DurationFormat.parse("1 h")).isInstanceOf(IllegalArgumentException.class);
 	}
 
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void testParseBadUnit() {
-		DurationFormat.parse("1parsec");
+		assertThatThrownBy(() -> DurationFormat.parse("1parsec")).isInstanceOf(IllegalArgumentException.class);
 	}
 }

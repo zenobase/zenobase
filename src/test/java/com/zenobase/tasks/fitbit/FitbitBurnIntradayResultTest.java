@@ -7,7 +7,7 @@ import java.util.List;
 import org.joda.time.DateTimeZone;
 import org.joda.time.Duration;
 import org.joda.time.LocalDate;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.zenobase.common.Measures;
 import com.zenobase.json.Nodes;

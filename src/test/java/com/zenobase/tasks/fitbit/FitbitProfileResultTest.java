@@ -3,7 +3,7 @@ package com.zenobase.tasks.fitbit;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.joda.time.DateTimeZone;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.zenobase.common.Units;
 import com.zenobase.json.Nodes;

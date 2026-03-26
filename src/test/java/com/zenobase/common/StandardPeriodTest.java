@@ -1,10 +1,11 @@
 package com.zenobase.common;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.google.common.testing.EqualsTester;
 import org.joda.time.Period;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class StandardPeriodTest {
 
@@ -23,14 +24,14 @@ public class StandardPeriodTest {
 		assertThat(StandardPeriod.valueOf(period).toString()).isEqualTo(s);
 	}
 
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void testParseIllegalFormat() {
-		StandardPeriod.valueOf("+1y-2");
+		assertThatThrownBy(() -> StandardPeriod.valueOf("+1y-2")).isInstanceOf(IllegalArgumentException.class);
 	}
 
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void testParseIllegalUnit() {
-		StandardPeriod.valueOf("+1x");
+		assertThatThrownBy(() -> StandardPeriod.valueOf("+1x")).isInstanceOf(IllegalArgumentException.class);
 	}
 
 	@Test

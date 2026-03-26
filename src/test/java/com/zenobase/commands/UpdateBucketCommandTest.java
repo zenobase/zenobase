@@ -1,9 +1,10 @@
 package com.zenobase.commands;
 
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.*;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.opensearch.client.opensearch._types.ErrorResponse;
 import org.opensearch.client.opensearch._types.OpenSearchException;
 
@@ -21,7 +22,7 @@ public class UpdateBucketCommandTest {
 	private final Bucket from = new Bucket();
 	private final Bucket to = from.copy();
 
-	@Before
+	@BeforeEach
 	public void setUp() {
 		from.setLabel("Test Bucket");
 		from.setVersion(2);
@@ -80,7 +81,7 @@ public class UpdateBucketCommandTest {
 		verify(repository).update(from2, to2, command.getTimestamp());
 	}
 
-	@Test(expected = OpenSearchException.class)
+	@Test
 	public void testUnrecoverableVersionConflict() {
 
 		Command command = new UpdateBucketCommand(principal, from, to);
@@ -90,6 +91,6 @@ public class UpdateBucketCommandTest {
 		Bucket current = from.copy();
 		current.setVersion(3);
 		when(repository.find(to.getId())).thenReturn(current);
-		registry.execute(command);
+		assertThatThrownBy(() -> registry.execute(command)).isInstanceOf(OpenSearchException.class);
 	}
 }

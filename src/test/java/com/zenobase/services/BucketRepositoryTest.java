@@ -12,8 +12,8 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.Lists;
 import com.google.common.util.concurrent.Uninterruptibles;
 import org.joda.time.DateTime;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import com.zenobase.common.Callback;
 import com.zenobase.json.Nodes;
@@ -29,7 +29,7 @@ public class BucketRepositoryTest extends OpenSearchTestSupport {
 
 	private BucketRepository repository;
 
-	@Before
+	@BeforeEach
 	public void setUp() {
 		repository = new BucketRepository(getManager());
 		new EventRepository(getManager());

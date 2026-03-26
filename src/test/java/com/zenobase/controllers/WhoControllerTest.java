@@ -8,7 +8,7 @@ import com.google.inject.Injector;
 import com.google.inject.Module;
 import io.helidon.webclient.http1.Http1ClientResponse;
 import io.helidon.webserver.http.HttpRouting;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.zenobase.models.User;
 import com.zenobase.models.UserProfile;

@@ -10,8 +10,8 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.helidon.webclient.http1.Http1ClientResponse;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 
 import com.zenobase.commands.CreateEventCommand;
@@ -28,7 +28,7 @@ public class EventListControllerHttpPostTest extends EventListControllerTestSupp
 
 	private final ObjectNode body = Nodes.newObject();
 
-	@Before
+	@BeforeEach
 	public void setUp() {
 		bucket.addRole(user.asIdentity(), Role.OWNER);
 	}

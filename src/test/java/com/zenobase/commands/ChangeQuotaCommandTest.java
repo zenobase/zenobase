@@ -1,10 +1,11 @@
 package com.zenobase.commands;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.zenobase.models.User;
 import com.zenobase.services.UserRepository;
@@ -34,12 +35,12 @@ public class ChangeQuotaCommandTest {
 		assertThat(user.getQuota()).isEqualTo(50000);
 	}
 
-	@Test(expected = NonExistentUserException.class)
+	@Test
 	public void testChangeNonExistentUser() {
 
 		User user = new User("tester");
 
 		Command command = new ChangeQuotaCommand(user.asIdentity(), user.getName(), null, 50000);
-		registry.execute(command);
+		assertThatThrownBy(() -> registry.execute(command)).isInstanceOf(NonExistentUserException.class);
 	}
 }

@@ -1,17 +1,18 @@
 package com.zenobase.search;
 
 import static com.zenobase.testing.NodeAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import com.zenobase.common.Measures;
 import com.zenobase.models.Event;
 
 public class MeasureConstraintBuilderTest extends ConstraintBuilderTestSupport {
 
-	@Before
+	@BeforeEach
 	public void addEvents() {
 		addEvent("0 km");
 		addEvent("4 km");
@@ -56,9 +57,12 @@ public class MeasureConstraintBuilderTest extends ConstraintBuilderTestSupport {
 		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(3);
 	}
 
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void testIllegalContraint() {
-		addConstraint("%s:%s", Event.DISTANCE, "foo");
-		execute();
+		assertThatThrownBy(() -> {
+					addConstraint("%s:%s", Event.DISTANCE, "foo");
+					execute();
+				})
+				.isInstanceOf(IllegalArgumentException.class);
 	}
 }

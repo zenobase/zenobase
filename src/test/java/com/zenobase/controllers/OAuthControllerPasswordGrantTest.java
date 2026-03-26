@@ -6,8 +6,8 @@ import static org.mockito.Mockito.when;
 import com.fasterxml.jackson.databind.JsonNode;
 import io.helidon.http.HeaderNames;
 import io.helidon.webclient.http1.Http1ClientResponse;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 
 import com.zenobase.commands.CreateAuthorizationCommand;
@@ -19,7 +19,7 @@ public class OAuthControllerPasswordGrantTest extends OAuthControllerTestSupport
 	private User user = new User("me");
 	private String password = "secret123";
 
-	@Before
+	@BeforeEach
 	public void setUp() {
 		user.setVerified(true);
 		user.setSuspended(false);

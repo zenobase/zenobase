@@ -9,9 +9,8 @@ import com.google.common.base.Charsets;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.utils.URLEncodedUtils;
 import org.joda.time.DateTime;
-import org.junit.Assume;
-import org.junit.Before;
-import org.junit.experimental.categories.Category;
+import org.junit.jupiter.api.Assumptions;
+import org.junit.jupiter.api.BeforeEach;
 import org.mockito.Mockito;
 import org.scribe.model.Token;
 
@@ -22,9 +21,9 @@ import com.zenobase.json.Nodes;
 import com.zenobase.models.Identity;
 import com.zenobase.oauth.ExpiringToken;
 import com.zenobase.services.CredentialsRepository;
-import com.zenobase.testing.ManualTests;
+import com.zenobase.testing.Manual;
 
-@Category(ManualTests.class)
+@Manual
 public abstract class TaskTestingSupport {
 
 	protected final Identity principal = new Identity();
@@ -34,10 +33,10 @@ public abstract class TaskTestingSupport {
 	protected final String callbackUrl = "https://zenobase.com";
 	protected final CredentialsRepository repository = Mockito.mock(CredentialsRepository.class);
 
-	@Before
+	@BeforeEach
 	public void setUp() {
-		Assume.assumeNotNull(apiKey);
-		Assume.assumeNotNull(apiSecret);
+		Assumptions.assumeTrue(apiKey != null);
+		Assumptions.assumeTrue(apiSecret != null);
 	}
 
 	protected void run(OAuthTaskManager manager, ObjectNode settings) {

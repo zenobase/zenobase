@@ -1,6 +1,6 @@
 package com.zenobase.json;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class LongFieldTest extends FieldTestSupport<Long> {
 

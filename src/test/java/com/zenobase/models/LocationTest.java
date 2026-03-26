@@ -1,7 +1,9 @@
 package com.zenobase.models;
 
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
 import com.google.common.testing.EqualsTester;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class LocationTest {
 
@@ -26,13 +28,13 @@ public class LocationTest {
 		new Location("-90", "-180");
 	}
 
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void testLatitudeOutOfRange() {
-		new Location("91", "0");
+		assertThatThrownBy(() -> new Location("91", "0")).isInstanceOf(IllegalArgumentException.class);
 	}
 
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void testLongitudeOutOfRange() {
-		new Location("0", "181");
+		assertThatThrownBy(() -> new Location("0", "181")).isInstanceOf(IllegalArgumentException.class);
 	}
 }

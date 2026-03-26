@@ -9,8 +9,8 @@ import java.util.List;
 
 import com.google.common.collect.Lists;
 import org.joda.time.DateTime;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import com.zenobase.common.Callback;
 import com.zenobase.models.User;
@@ -19,7 +19,7 @@ public class UserRepositoryTest extends OpenSearchTestSupport {
 
 	private UserRepository repository;
 
-	@Before
+	@BeforeEach
 	public void setUp() {
 		repository = new UserRepository(getManager());
 	}

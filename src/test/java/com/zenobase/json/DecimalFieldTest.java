@@ -2,7 +2,7 @@ package com.zenobase.json;
 
 import java.math.BigDecimal;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class DecimalFieldTest extends FieldTestSupport<BigDecimal> {
 

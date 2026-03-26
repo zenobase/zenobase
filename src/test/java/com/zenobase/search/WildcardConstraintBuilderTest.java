@@ -3,14 +3,14 @@ package com.zenobase.search;
 import static com.zenobase.testing.NodeAssert.assertThat;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import com.zenobase.models.Event;
 
 public class WildcardConstraintBuilderTest extends ConstraintBuilderTestSupport {
 
-	@Before
+	@BeforeEach
 	public void addEvents() {
 		addEvent("lunch");
 		addEvent("lurch");

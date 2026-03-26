@@ -1,10 +1,11 @@
 package com.zenobase.search;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.google.common.collect.ImmutableMap;
 import org.joda.time.DateTimeZone;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class FacetOptionsTest {
 
@@ -57,8 +58,9 @@ public class FacetOptionsTest {
 		assertThat(options.get("l", String.class, null)).isEqualTo("l1,l2,l3,l4");
 	}
 
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void testBadType() {
-		FacetOptions.parse("a:1").get("a", FacetOptions.class, null);
+		assertThatThrownBy(() -> FacetOptions.parse("a:1").get("a", FacetOptions.class, null))
+				.isInstanceOf(IllegalArgumentException.class);
 	}
 }

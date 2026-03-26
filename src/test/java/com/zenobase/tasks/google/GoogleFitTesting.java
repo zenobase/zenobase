@@ -1,8 +1,8 @@
 package com.zenobase.tasks.google;
 
 import org.joda.time.DateTime;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 import com.zenobase.json.Nodes;
 import com.zenobase.models.Event;
@@ -22,7 +22,7 @@ public class GoogleFitTesting extends TaskTestingSupport {
 	}
 
 	@Test
-	@Ignore
+	@Disabled
 	public void testWeight() {
 		runInApplication(
 				new GoogleFitWeightTaskManager(newCredentialsManager()),
@@ -34,7 +34,7 @@ public class GoogleFitTesting extends TaskTestingSupport {
 	}
 
 	@Test
-	@Ignore
+	@Disabled
 	public void testCardio() {
 		runInApplication(
 				new GoogleFitCardioTaskManager(newCredentialsManager()),
@@ -45,7 +45,7 @@ public class GoogleFitTesting extends TaskTestingSupport {
 	}
 
 	@Test
-	@Ignore
+	@Disabled
 	public void testFood() {
 		runInApplication(
 				new GoogleFitFoodTaskManager(newCredentialsManager()),

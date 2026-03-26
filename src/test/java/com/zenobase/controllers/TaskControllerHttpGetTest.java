@@ -5,7 +5,7 @@ import static org.mockito.Mockito.*;
 
 import io.helidon.webclient.http1.Http1ClientResponse;
 import org.joda.time.DateTime;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.zenobase.models.Bucket;
 import com.zenobase.models.Identity;

@@ -4,8 +4,8 @@ import static com.zenobase.testing.ResultAssert.assertThat;
 import static org.mockito.Mockito.*;
 
 import io.helidon.webclient.http1.Http1ClientResponse;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import com.zenobase.commands.Command;
 import com.zenobase.commands.DeleteBucketCommand;
@@ -22,7 +22,7 @@ public class BucketControllerHttpDeleteTest extends BucketControllerTestSupport 
 
 	private Bucket bucket = new Bucket();
 
-	@Before
+	@BeforeEach
 	public void setUp() {
 		bucket.setLabel("Obsolete Bucket");
 		bucket.addRole(user.asIdentity(), Role.OWNER);

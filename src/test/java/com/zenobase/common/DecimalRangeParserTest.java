@@ -1,12 +1,13 @@
 package com.zenobase.common;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.math.BigDecimal;
 
 import com.google.common.collect.BoundType;
 import com.google.common.collect.Range;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class DecimalRangeParserTest {
 
@@ -53,9 +54,9 @@ public class DecimalRangeParserTest {
 		testRange("(*..*)", null);
 	}
 
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void testInvertedRange() {
-		testRange("[1..-3.1415]", null);
+		assertThatThrownBy(() -> testRange("[1..-3.1415]", null)).isInstanceOf(IllegalArgumentException.class);
 	}
 
 	private void testRange(String value, Range<BigDecimal> expected) {

@@ -1,9 +1,10 @@
 package com.zenobase.common;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import org.joda.time.LocalDateTime;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class LocalDateTimeFormatTest {
 
@@ -19,9 +20,9 @@ public class LocalDateTimeFormatTest {
 		test("2012-02-03T04:05:06.007", "2012-02-03T04:05:06.007");
 	}
 
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void testParseBadInput() {
-		test("xxx", null);
+		assertThatThrownBy(() -> test("xxx", null)).isInstanceOf(IllegalArgumentException.class);
 	}
 
 	private static void test(String value, String expected) {

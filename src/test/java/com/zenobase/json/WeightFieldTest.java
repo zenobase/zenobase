@@ -3,7 +3,7 @@ package com.zenobase.json;
 import javax.measure.DecimalMeasure;
 import javax.measure.quantity.Mass;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class WeightFieldTest extends DecimalMeasureFieldTestSupport<Mass> {
 

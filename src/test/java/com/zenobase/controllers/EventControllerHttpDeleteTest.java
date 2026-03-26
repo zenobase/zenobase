@@ -4,8 +4,8 @@ import static com.zenobase.testing.ResultAssert.assertThat;
 import static org.mockito.Mockito.*;
 
 import io.helidon.webclient.http1.Http1ClientResponse;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import com.zenobase.commands.DeleteEventCommand;
 import com.zenobase.common.Generator;
@@ -20,7 +20,7 @@ public class EventControllerHttpDeleteTest extends EventControllerTestSupport {
 	private final Event event = new Event();
 	private final Identity friend = new Identity();
 
-	@Before
+	@BeforeEach
 	public void setUp() {
 		bucket.addRole(user.asIdentity(), Role.OWNER);
 		bucket.addRole(friend, Role.CONTRIBUTOR);

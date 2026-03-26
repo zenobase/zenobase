@@ -3,7 +3,7 @@ package com.zenobase.models;
 import static com.zenobase.testing.NodeAssert.assertThat;
 
 import com.google.common.testing.EqualsTester;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class IdentityTest {
 

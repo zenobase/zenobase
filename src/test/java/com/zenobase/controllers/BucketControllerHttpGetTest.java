@@ -6,8 +6,8 @@ import static org.mockito.Mockito.*;
 import java.util.List;
 
 import io.helidon.webclient.http1.Http1ClientResponse;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import com.zenobase.json.Nodes;
 import com.zenobase.models.Bucket;
@@ -19,7 +19,7 @@ public class BucketControllerHttpGetTest extends BucketControllerTestSupport {
 
 	private final Bucket bucket = new Bucket();
 
-	@Before
+	@BeforeEach
 	public void setUp() {
 		bucket.addRole(user.asIdentity(), Role.OWNER);
 	}

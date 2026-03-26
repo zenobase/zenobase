@@ -1,6 +1,6 @@
 package com.zenobase.tasks.sleepcloud;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.zenobase.json.Nodes;
 import com.zenobase.tasks.TaskTestingSupport;

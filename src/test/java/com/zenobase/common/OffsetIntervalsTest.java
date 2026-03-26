@@ -6,7 +6,7 @@ import java.util.List;
 
 import org.joda.time.DateTime;
 import org.joda.time.Interval;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class OffsetIntervalsTest {
 

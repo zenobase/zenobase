@@ -1,7 +1,7 @@
 package com.zenobase.tasks.fitbit;
 
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 import com.zenobase.json.Nodes;
 import com.zenobase.tasks.TaskTestingSupport;
@@ -16,7 +16,7 @@ public class FitbitTesting extends TaskTestingSupport {
 	}
 
 	@Test
-	@Ignore
+	@Disabled
 	public void testSleep() {
 		run(
 				new FitbitSleepTaskManager(newCredentialsManager()),
@@ -24,7 +24,7 @@ public class FitbitTesting extends TaskTestingSupport {
 	}
 
 	@Test
-	@Ignore
+	@Disabled
 	public void testActivities() {
 		run(
 				new FitbitActivitiesTaskManager(newCredentialsManager()),
@@ -32,7 +32,7 @@ public class FitbitTesting extends TaskTestingSupport {
 	}
 
 	@Test
-	@Ignore
+	@Disabled
 	public void testWeight() {
 		run(
 				new FitbitWeightTaskManager(newCredentialsManager()),
@@ -40,7 +40,7 @@ public class FitbitTesting extends TaskTestingSupport {
 	}
 
 	@Test
-	@Ignore
+	@Disabled
 	public void testFood() {
 		run(
 				new FitbitFoodTaskManager(newCredentialsManager()),
@@ -48,7 +48,7 @@ public class FitbitTesting extends TaskTestingSupport {
 	}
 
 	@Test
-	@Ignore
+	@Disabled
 	public void testCardio() {
 		run(
 				new FitbitCardioTaskManager(newCredentialsManager()),
@@ -56,7 +56,7 @@ public class FitbitTesting extends TaskTestingSupport {
 	}
 
 	@Test
-	@Ignore
+	@Disabled
 	public void testBurn() {
 		run(
 				new FitbitBurnTaskManager(newCredentialsManager()),

@@ -6,8 +6,8 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 
 import io.helidon.webclient.http1.Http1ClientResponse;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 
 import com.zenobase.commands.CreateAuthorizationCommand;
@@ -24,7 +24,7 @@ public class OAuthControllerImplicitGrantTest extends OAuthControllerTestSupport
 	private String redirectUri = "https://zenobase.com/callback";
 	private String scope = Generator.id();
 
-	@Before
+	@BeforeEach
 	public void setUp() {
 		oauthClient.setVerified(true);
 		oauthClient.setSuspended(false);

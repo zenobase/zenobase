@@ -8,7 +8,7 @@ import java.util.Set;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.Duration;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.zenobase.common.Measures;
 import com.zenobase.models.Event;

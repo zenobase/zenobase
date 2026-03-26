@@ -1,7 +1,7 @@
 package com.zenobase.json;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.zenobase.testing.NodeAssert;
 

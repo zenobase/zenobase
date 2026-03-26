@@ -5,8 +5,8 @@ import static com.zenobase.testing.NodeAssert.assertThat;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import com.zenobase.models.Event;
 import com.zenobase.models.Identity;
@@ -16,7 +16,7 @@ public class ListFacetTest extends FacetTestSupport {
 
 	private Event e1, e2, e3;
 
-	@Before
+	@BeforeEach
 	@Override
 	public void setUp() {
 		super.setUp();

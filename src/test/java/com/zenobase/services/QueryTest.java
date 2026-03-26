@@ -2,7 +2,7 @@ package com.zenobase.services;
 
 import com.google.common.testing.EqualsTester;
 import org.assertj.core.api.Assertions;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.zenobase.json.Field;
 import com.zenobase.json.TokenField;

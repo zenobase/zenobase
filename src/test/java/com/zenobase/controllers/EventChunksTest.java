@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.util.List;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.mockito.stubbing.Answer;
 
 import com.zenobase.common.Callback;

@@ -1,7 +1,7 @@
 package com.zenobase.tasks.mapmyfitness;
 
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 import com.zenobase.json.Nodes;
 import com.zenobase.tasks.TaskTestingSupport;
@@ -9,7 +9,7 @@ import com.zenobase.tasks.TaskTestingSupport;
 public class MapMyFitnessTesting extends TaskTestingSupport {
 
 	@Test
-	@Ignore
+	@Disabled
 	public void testActivities() {
 		run(
 				new MapMyFitnessActivitiesTaskManager(newCredentialsManager()),
@@ -17,7 +17,7 @@ public class MapMyFitnessTesting extends TaskTestingSupport {
 	}
 
 	@Test
-	@Ignore
+	@Disabled
 	public void testWeight() {
 		run(
 				new MapMyFitnessWeightTaskManager(newCredentialsManager()),

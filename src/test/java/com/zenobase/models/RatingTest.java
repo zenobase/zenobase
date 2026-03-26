@@ -1,9 +1,10 @@
 package com.zenobase.models;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.google.common.testing.EqualsTester;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class RatingTest {
 
@@ -26,13 +27,13 @@ public class RatingTest {
 		assertThat(r2.compareTo(r1)).isPositive();
 	}
 
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void testTooLowRating() {
-		Rating.valueOf(-1);
+		assertThatThrownBy(() -> Rating.valueOf(-1)).isInstanceOf(IllegalArgumentException.class);
 	}
 
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void testTooHighRating() {
-		Rating.valueOf(101);
+		assertThatThrownBy(() -> Rating.valueOf(101)).isInstanceOf(IllegalArgumentException.class);
 	}
 }

@@ -3,7 +3,7 @@ package com.zenobase.services;
 import static org.mockito.Mockito.*;
 
 import org.joda.time.DateTime;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.zenobase.commands.Command;
 import com.zenobase.commands.CommandHandlerRegistry;

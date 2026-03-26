@@ -1,8 +1,10 @@
 package com.zenobase.search;
 
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
 import com.google.common.testing.EqualsTester;
 import org.assertj.core.api.Assertions;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.zenobase.json.Schema;
 import com.zenobase.json.SchemaBuilder;
@@ -22,9 +24,9 @@ public class SearchOrderTest {
 		assertThatToStringEqualsValueOf("-foo");
 	}
 
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void testEmptyString() {
-		assertThatToStringEqualsValueOf("");
+		assertThatThrownBy(() -> assertThatToStringEqualsValueOf("")).isInstanceOf(IllegalArgumentException.class);
 	}
 
 	private static void assertThatToStringEqualsValueOf(String s) {

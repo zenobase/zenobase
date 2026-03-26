@@ -4,7 +4,7 @@ import static org.mockito.Mockito.*;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.zenobase.common.Generator;
 import com.zenobase.models.Event;

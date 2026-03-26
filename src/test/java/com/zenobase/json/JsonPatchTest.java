@@ -1,8 +1,10 @@
 package com.zenobase.json;
 
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
 import com.fasterxml.jackson.databind.node.NullNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.zenobase.testing.NodeAssert;
 
@@ -88,7 +90,7 @@ public class JsonPatchTest {
 		runTest();
 	}
 
-	@Test(expected = IllegalStateException.class)
+	@Test
 	public void testValueConflict() {
 
 		original.put("foo", 41);
@@ -99,10 +101,10 @@ public class JsonPatchTest {
 
 		expected.put("foo", 41);
 
-		runTest();
+		assertThatThrownBy(() -> runTest()).isInstanceOf(IllegalStateException.class);
 	}
 
-	@Test(expected = IllegalStateException.class)
+	@Test
 	public void testObjectConflict() {
 
 		ObjectNode nestedOriginal = Nodes.newObject();
@@ -121,7 +123,7 @@ public class JsonPatchTest {
 		nestedExpected.put("foo", 41);
 		expected.set("nested", nestedExpected);
 
-		runTest();
+		assertThatThrownBy(() -> runTest()).isInstanceOf(IllegalStateException.class);
 	}
 
 	private void runTest() {

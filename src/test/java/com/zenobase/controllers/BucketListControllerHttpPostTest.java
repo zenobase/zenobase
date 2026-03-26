@@ -8,7 +8,7 @@ import java.util.List;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.helidon.webclient.http1.Http1ClientResponse;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 
 import com.zenobase.commands.CreateBucketCommand;

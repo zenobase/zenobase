@@ -6,7 +6,7 @@ import static org.mockito.Mockito.when;
 import com.fasterxml.jackson.databind.JsonNode;
 import io.helidon.http.HeaderNames;
 import io.helidon.webclient.http1.Http1ClientResponse;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 
 import com.zenobase.commands.CreateAuthorizationCommand;

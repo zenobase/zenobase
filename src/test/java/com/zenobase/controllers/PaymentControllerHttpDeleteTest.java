@@ -4,7 +4,7 @@ import static com.zenobase.testing.ResultAssert.assertThat;
 import static org.mockito.Mockito.*;
 
 import io.helidon.webclient.http1.Http1ClientResponse;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentMatchers;
 
 import com.zenobase.commands.ChangeQuotaCommand;

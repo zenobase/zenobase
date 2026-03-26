@@ -3,7 +3,7 @@ package com.zenobase.json;
 import javax.measure.DecimalMeasure;
 import javax.measure.quantity.Frequency;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class FrequencyFieldTest extends DecimalMeasureFieldTestSupport<Frequency> {
 

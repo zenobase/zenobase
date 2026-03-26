@@ -3,7 +3,7 @@ package com.zenobase.tasks.reporter;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.joda.time.DateTimeZone;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.zenobase.tasks.ResultTestSupport;
 

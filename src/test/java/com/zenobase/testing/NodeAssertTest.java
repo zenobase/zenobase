@@ -1,12 +1,13 @@
 package com.zenobase.testing;
 
 import static com.zenobase.testing.NodeAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.fasterxml.jackson.databind.node.BooleanNode;
 import com.fasterxml.jackson.databind.node.MissingNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.node.TextNode;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.zenobase.json.Nodes;
 
@@ -25,9 +26,9 @@ public class NodeAssertTest {
 		assertThat(MissingNode.getInstance()).isMissingNode();
 	}
 
-	@Test(expected = AssertionError.class)
+	@Test
 	public void testFailMissingNode() {
-		assertThat(Nodes.newObject()).isMissingNode();
+		assertThatThrownBy(() -> assertThat(Nodes.newObject()).isMissingNode()).isInstanceOf(AssertionError.class);
 	}
 
 	@Test
@@ -35,9 +36,9 @@ public class NodeAssertTest {
 		assertThat(Nodes.newObject()).isObject();
 	}
 
-	@Test(expected = AssertionError.class)
+	@Test
 	public void testFailObject() {
-		assertThat(Nodes.newArray()).isObject();
+		assertThatThrownBy(() -> assertThat(Nodes.newArray()).isObject()).isInstanceOf(AssertionError.class);
 	}
 
 	@Test
@@ -45,9 +46,9 @@ public class NodeAssertTest {
 		assertThat(Nodes.newArray()).isArray();
 	}
 
-	@Test(expected = AssertionError.class)
+	@Test
 	public void testFailArray() {
-		assertThat(Nodes.newObject()).isArray();
+		assertThatThrownBy(() -> assertThat(Nodes.newObject()).isArray()).isInstanceOf(AssertionError.class);
 	}
 
 	@Test
@@ -55,9 +56,10 @@ public class NodeAssertTest {
 		assertThat(new TextNode("Foo")).isEqualTo("Foo");
 	}
 
-	@Test(expected = AssertionError.class)
+	@Test
 	public void testFailEqualToText() {
-		assertThat(new TextNode("Foo")).isEqualTo("Bar");
+		assertThatThrownBy(() -> assertThat(new TextNode("Foo")).isEqualTo("Bar"))
+				.isInstanceOf(AssertionError.class);
 	}
 
 	@Test
@@ -65,8 +67,8 @@ public class NodeAssertTest {
 		assertThat(BooleanNode.TRUE).isEqualTo(true);
 	}
 
-	@Test(expected = AssertionError.class)
+	@Test
 	public void testFailEqualToBoolean() {
-		assertThat(BooleanNode.TRUE).isEqualTo(false);
+		assertThatThrownBy(() -> assertThat(BooleanNode.TRUE).isEqualTo(false)).isInstanceOf(AssertionError.class);
 	}
 }

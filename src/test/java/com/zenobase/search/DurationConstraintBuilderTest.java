@@ -1,17 +1,18 @@
 package com.zenobase.search;
 
 import static com.zenobase.testing.NodeAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import com.zenobase.common.DurationFormat;
 import com.zenobase.models.Event;
 
 public class DurationConstraintBuilderTest extends ConstraintBuilderTestSupport {
 
-	@Before
+	@BeforeEach
 	public void addEvents() {
 		addEvent("0s");
 		addEvent("4h");
@@ -49,9 +50,12 @@ public class DurationConstraintBuilderTest extends ConstraintBuilderTestSupport 
 		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(4);
 	}
 
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void testIllegalConstraint() {
-		addConstraint("%s:%s", Event.DURATION, "foo");
-		execute();
+		assertThatThrownBy(() -> {
+					addConstraint("%s:%s", Event.DURATION, "foo");
+					execute();
+				})
+				.isInstanceOf(IllegalArgumentException.class);
 	}
 }

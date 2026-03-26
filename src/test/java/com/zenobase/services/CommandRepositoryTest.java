@@ -11,8 +11,8 @@ import java.util.concurrent.TimeUnit;
 import com.google.common.collect.Lists;
 import com.google.common.util.concurrent.Uninterruptibles;
 import org.joda.time.DateTime;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import com.zenobase.commands.Command;
 import com.zenobase.commands.CommandParserRegistry;
@@ -27,7 +27,7 @@ public class CommandRepositoryTest extends OpenSearchTestSupport {
 
 	private CommandRepository repository;
 
-	@Before
+	@BeforeEach
 	public void setUp() {
 		CommandParserRegistry parsers = CommandParserRegistry.containing(new TestCommand.Parser());
 		repository = new CommandRepository(getManager(), parsers);

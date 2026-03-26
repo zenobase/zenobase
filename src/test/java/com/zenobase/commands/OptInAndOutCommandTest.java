@@ -1,10 +1,11 @@
 package com.zenobase.commands;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.zenobase.models.User;
 import com.zenobase.services.UserRepository;
@@ -34,20 +35,22 @@ public class OptInAndOutCommandTest {
 		assertThat(user.isOptedOut()).isTrue();
 	}
 
-	@Test(expected = NonExistentUserException.class)
+	@Test
 	public void testOptInNonExistentUser() {
 
 		User user = new User("tester");
 		when(users.find(user.getName())).thenReturn(null);
 
-		registry.execute(new OptInCommand(user.asIdentity(), user.getName()));
+		assertThatThrownBy(() -> registry.execute(new OptInCommand(user.asIdentity(), user.getName())))
+				.isInstanceOf(NonExistentUserException.class);
 	}
 
-	@Test(expected = NonExistentUserException.class)
+	@Test
 	public void testOptOutNonExistentUser() {
 
 		User user = new User("tester");
 
-		registry.execute(new OptOutCommand(user.asIdentity(), user.getName()));
+		assertThatThrownBy(() -> registry.execute(new OptOutCommand(user.asIdentity(), user.getName())))
+				.isInstanceOf(NonExistentUserException.class);
 	}
 }

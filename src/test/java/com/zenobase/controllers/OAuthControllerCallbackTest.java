@@ -3,7 +3,7 @@ package com.zenobase.controllers;
 import static com.zenobase.testing.ResultAssert.assertThat;
 
 import io.helidon.webclient.http1.Http1ClientResponse;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class OAuthControllerCallbackTest extends OAuthControllerTestSupport {
 

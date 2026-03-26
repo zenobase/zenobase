@@ -1,8 +1,9 @@
 package com.zenobase.oauth;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class OAuth2TokenExtractorTest {
 
@@ -30,8 +31,8 @@ public class OAuth2TokenExtractorTest {
 		assertThat(token.isExpired()).as("expired").isFalse();
 	}
 
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void testInvalidToken() {
-		new OAuth2TokenExtractor().extract("{}");
+		assertThatThrownBy(() -> new OAuth2TokenExtractor().extract("{}")).isInstanceOf(IllegalArgumentException.class);
 	}
 }

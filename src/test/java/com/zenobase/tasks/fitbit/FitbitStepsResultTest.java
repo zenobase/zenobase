@@ -8,7 +8,7 @@ import javax.measure.DecimalMeasure;
 import org.joda.time.DateTimeZone;
 import org.joda.time.Duration;
 import org.joda.time.LocalDate;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.zenobase.common.Units;
 import com.zenobase.json.Nodes;

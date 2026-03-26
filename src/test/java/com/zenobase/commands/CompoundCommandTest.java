@@ -4,8 +4,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Set;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import com.zenobase.models.Identity;
 
@@ -14,7 +14,7 @@ public class CompoundCommandTest {
 	private final Identity principal = new Identity();
 	private final CompoundCommand command = new CompoundCommand(principal, "do it all", "undo it all");
 
-	@Before
+	@BeforeEach
 	public void setUp() {
 		assertThat(command.getCommands()).isEmpty();
 		command.add(new TestCommand(principal, "foo"));

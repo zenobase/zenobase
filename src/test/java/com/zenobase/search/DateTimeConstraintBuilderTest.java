@@ -4,14 +4,14 @@ import static com.zenobase.testing.NodeAssert.assertThat;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.joda.time.DateTime;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import com.zenobase.models.Event;
 
 public class DateTimeConstraintBuilderTest extends ConstraintBuilderTestSupport {
 
-	@Before
+	@BeforeEach
 	public void addEvents() {
 		addEvent("2012-01-05T12:00:00Z");
 		addEvent("2012-01-05T12:15:00Z");

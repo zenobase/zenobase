@@ -4,7 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import com.google.common.collect.Multiset;
 import com.google.common.collect.TreeMultiset;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class RandomElementTest {
 

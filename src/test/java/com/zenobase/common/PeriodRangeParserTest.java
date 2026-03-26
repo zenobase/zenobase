@@ -3,7 +3,7 @@ package com.zenobase.common;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.google.common.collect.Range;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class PeriodRangeParserTest {
 

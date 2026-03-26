@@ -1,10 +1,11 @@
 package com.zenobase.commands;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.zenobase.models.User;
 import com.zenobase.services.UserRepository;
@@ -45,12 +46,12 @@ public class ChangeUserEmailCommandTest {
 		assertThat(user.isVerified()).as("user is verified").isTrue();
 	}
 
-	@Test(expected = NonExistentUserException.class)
+	@Test
 	public void testChangeNonExistentUser() {
 
 		User user = new User("tester");
 
 		Command command = new ChangeUserEmailCommand(user.asIdentity(), user.getName(), null, null, false, false);
-		registry.execute(command);
+		assertThatThrownBy(() -> registry.execute(command)).isInstanceOf(NonExistentUserException.class);
 	}
 }

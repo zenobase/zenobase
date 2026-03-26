@@ -6,7 +6,7 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Injector;
 import com.google.inject.Module;
 import io.helidon.webserver.http.HttpRouting;
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 
 import com.zenobase.mail.VerificationMailer;
 import com.zenobase.models.User;
@@ -60,7 +60,7 @@ public abstract class AccountControllerTestSupport extends ControllerTestSupport
 		builder.delete("/users/{userId}", controller::close);
 	}
 
-	@Before
+	@BeforeEach
 	public void setUp() {
 		user.setEmail("jdoe@zenobase.com");
 		user.setPassword(password);

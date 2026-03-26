@@ -1,7 +1,7 @@
 package com.zenobase.models;
 
 import com.google.common.testing.EqualsTester;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.zenobase.common.Generator;
 

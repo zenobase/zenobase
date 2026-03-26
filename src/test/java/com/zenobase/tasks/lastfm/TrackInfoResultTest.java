@@ -3,7 +3,7 @@ package com.zenobase.tasks.lastfm;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.joda.time.Duration;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.zenobase.models.Resource;
 import com.zenobase.tasks.ResultTestSupport;

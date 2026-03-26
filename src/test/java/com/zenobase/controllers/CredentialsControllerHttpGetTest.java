@@ -5,7 +5,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 import io.helidon.webclient.http1.Http1ClientResponse;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.zenobase.models.Identity;
 import com.zenobase.oauth.Authorization;

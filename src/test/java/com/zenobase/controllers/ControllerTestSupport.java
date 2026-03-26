@@ -15,7 +15,7 @@ public abstract class ControllerTestSupport implements CustomHeaders {
 
 	protected abstract void routing(HttpRouting.Builder builder, Injector injector);
 
-	@org.junit.Before
+	@org.junit.jupiter.api.BeforeEach
 	public void setUpClient() {
 		injector = Guice.createInjector(module());
 		HttpRouting.Builder routingBuilder = HttpRouting.builder();

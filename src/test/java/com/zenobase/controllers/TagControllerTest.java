@@ -12,8 +12,8 @@ import com.google.inject.Module;
 import com.google.inject.Singleton;
 import io.helidon.webclient.http1.Http1ClientResponse;
 import io.helidon.webserver.http.HttpRouting;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import com.zenobase.json.Nodes;
 import com.zenobase.models.Bucket;
@@ -58,7 +58,7 @@ public class TagControllerTest extends ControllerTestSupport {
 		builder.get("/buckets/{bucketId}/tags/", controller::get);
 	}
 
-	@Before
+	@BeforeEach
 	public void setUp() {
 		bucket.addRole(user.asIdentity(), Role.OWNER);
 	}

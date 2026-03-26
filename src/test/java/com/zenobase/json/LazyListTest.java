@@ -7,7 +7,7 @@ import java.util.List;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Function;
 import com.google.common.collect.Iterables;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.zenobase.common.DefaultPartialList;
 import com.zenobase.common.PartialList;

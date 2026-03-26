@@ -1,7 +1,7 @@
 package com.zenobase.tasks.hexoskin;
 
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 import com.zenobase.json.Nodes;
 import com.zenobase.tasks.TaskTestingSupport;
@@ -19,7 +19,7 @@ public class HexoskinTesting extends TaskTestingSupport {
 	}
 
 	@Test
-	@Ignore
+	@Disabled
 	public void testSleep() {
 		run(
 				new HexoskinSleepTaskManager(newCredentialsManager()),

@@ -5,8 +5,8 @@ import static org.mockito.Mockito.*;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.helidon.webclient.http1.Http1ClientResponse;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.opensearch.client.opensearch._types.ErrorResponse;
 import org.opensearch.client.opensearch._types.OpenSearchException;
 
@@ -23,7 +23,7 @@ public class EventControllerHttpPostTest extends EventControllerTestSupport {
 	private Bucket bucket = new Bucket();
 	private Event from, to;
 
-	@Before
+	@BeforeEach
 	public void setUp() {
 		bucket.addRole(user.asIdentity(), Role.OWNER);
 		from = new Event();

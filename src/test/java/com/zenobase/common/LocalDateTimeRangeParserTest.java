@@ -5,7 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import com.google.common.collect.Range;
 import org.joda.time.LocalDateTime;
 import org.joda.time.ReadablePartial;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class LocalDateTimeRangeParserTest {
 

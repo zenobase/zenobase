@@ -2,7 +2,7 @@ package com.zenobase.services;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import com.zenobase.models.Identity;

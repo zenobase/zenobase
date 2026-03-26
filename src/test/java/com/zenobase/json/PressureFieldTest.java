@@ -3,7 +3,7 @@ package com.zenobase.json;
 import javax.measure.DecimalMeasure;
 import javax.measure.quantity.Pressure;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class PressureFieldTest extends DecimalMeasureFieldTestSupport<Pressure> {
 

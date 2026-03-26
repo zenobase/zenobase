@@ -6,7 +6,7 @@ import org.joda.time.DateTime;
 import org.joda.time.Duration;
 import org.joda.time.LocalTime;
 import org.joda.time.Period;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class SchedulerTest {
 

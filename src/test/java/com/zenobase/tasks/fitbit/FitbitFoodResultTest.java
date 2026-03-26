@@ -7,7 +7,7 @@ import javax.measure.DecimalMeasure;
 
 import org.joda.time.DateTimeZone;
 import org.joda.time.Duration;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.zenobase.models.Event;
 import com.zenobase.tasks.ResultTestSupport;

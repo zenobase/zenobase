@@ -1,10 +1,11 @@
 package com.zenobase.common;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.google.common.testing.EqualsTester;
 import org.joda.time.LocalDateTime;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class LocalIntervalTest {
 
@@ -21,9 +22,9 @@ public class LocalIntervalTest {
 		assertThat(interval.toDurationMillis()).isEqualTo(86400000L);
 	}
 
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void testIllegalInterval() {
-		new LocalInterval(end, start);
+		assertThatThrownBy(() -> new LocalInterval(end, start)).isInstanceOf(IllegalArgumentException.class);
 	}
 
 	@Test

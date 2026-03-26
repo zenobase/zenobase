@@ -6,8 +6,8 @@ import java.util.List;
 import java.util.Properties;
 
 import com.google.common.collect.Iterables;
-import org.junit.After;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
 import org.jvnet.mock_javamail.Mailbox;
 
 public class MailerTest {
@@ -29,7 +29,7 @@ public class MailerTest {
 		assertThat(m.getContent()).as("content").isEqualTo(message.getText());
 	}
 
-	@After
+	@AfterEach
 	public void tearDown() {
 		Mailbox.clearAll();
 	}

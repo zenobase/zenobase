@@ -3,7 +3,7 @@ package com.zenobase.tasks;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.joda.time.DateTime;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.zenobase.common.Generator;
 import com.zenobase.models.Identity;

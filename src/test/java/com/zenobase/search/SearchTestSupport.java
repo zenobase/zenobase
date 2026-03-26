@@ -2,7 +2,7 @@ package com.zenobase.search;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.joda.time.DateTime;
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 
 import com.zenobase.common.Generator;
 import com.zenobase.models.Event;
@@ -15,7 +15,7 @@ public class SearchTestSupport extends OpenSearchTestSupport {
 	private final String bucketId = Generator.id();
 	private Index index;
 
-	@Before
+	@BeforeEach
 	public void setUp() {
 		index = getManager().getIndex(bucketId);
 		index.create(0);

@@ -3,8 +3,8 @@ package com.zenobase.search;
 import static com.zenobase.testing.NodeAssert.assertThat;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import com.zenobase.models.Event;
 import com.zenobase.models.Location;
@@ -18,7 +18,7 @@ public class MapFacetTest extends FacetTestSupport {
 
 	private Event e1, e2, e3, e4;
 
-	@Before
+	@BeforeEach
 	@Override
 	public void setUp() {
 		super.setUp();

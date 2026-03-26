@@ -7,7 +7,7 @@ import java.util.List;
 import javax.measure.DecimalMeasure;
 
 import org.joda.time.DateTimeZone;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.zenobase.common.Units;
 import com.zenobase.models.Event;

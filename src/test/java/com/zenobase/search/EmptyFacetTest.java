@@ -3,7 +3,7 @@ package com.zenobase.search;
 import static com.zenobase.testing.NodeAssert.assertThat;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.zenobase.commands.RandomEvent;
 import com.zenobase.models.Identity;

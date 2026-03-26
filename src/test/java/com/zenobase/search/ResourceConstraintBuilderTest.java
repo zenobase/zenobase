@@ -3,8 +3,8 @@ package com.zenobase.search;
 import static com.zenobase.testing.NodeAssert.assertThat;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import com.zenobase.json.ResourceField;
 import com.zenobase.models.Event;
@@ -12,7 +12,7 @@ import com.zenobase.models.Resource;
 
 public class ResourceConstraintBuilderTest extends ConstraintBuilderTestSupport {
 
-	@Before
+	@BeforeEach
 	public void addEvents() {
 		addEvent(Event.RESOURCE, "Zenobase", "https://zenobase.com/");
 		addEvent(Event.RESOURCE, "Zenobase Blog", "http://blog.zenobase.com/");

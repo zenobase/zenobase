@@ -7,7 +7,7 @@ import java.util.Collection;
 import com.google.common.collect.Iterables;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.zenobase.models.Location;
 import com.zenobase.tasks.ResultTestSupport;

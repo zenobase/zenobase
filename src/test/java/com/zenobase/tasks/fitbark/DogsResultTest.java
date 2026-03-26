@@ -3,7 +3,7 @@ package com.zenobase.tasks.fitbark;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.google.common.collect.Iterables;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.zenobase.tasks.ResultTestSupport;
 

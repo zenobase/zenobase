@@ -1,11 +1,12 @@
 package com.zenobase.models;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.math.BigDecimal;
 
 import com.google.common.testing.EqualsTester;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class PercentageTest {
 
@@ -28,14 +29,14 @@ public class PercentageTest {
 		assertThat(r2.compareTo(r1)).isPositive();
 	}
 
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void testTooLowPercentage() {
-		valueOf("-1");
+		assertThatThrownBy(() -> valueOf("-1")).isInstanceOf(IllegalArgumentException.class);
 	}
 
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void testTooHighPercentage() {
-		valueOf("101");
+		assertThatThrownBy(() -> valueOf("101")).isInstanceOf(IllegalArgumentException.class);
 	}
 
 	private static Percentage valueOf(String value) {

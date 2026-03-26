@@ -1,10 +1,11 @@
 package com.zenobase.services;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.*;
 
 import org.joda.time.DateTime;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.zenobase.models.User;
 
@@ -55,8 +56,8 @@ public class QuotaManagerTest {
 		quotas.spend(user.asIdentity(), 1000);
 	}
 
-	@Test(expected = QuotaException.class)
+	@Test
 	public void testOverspend() {
-		quotas.spend(user.asIdentity(), 4000000);
+		assertThatThrownBy(() -> quotas.spend(user.asIdentity(), 4000000)).isInstanceOf(QuotaException.class);
 	}
 }

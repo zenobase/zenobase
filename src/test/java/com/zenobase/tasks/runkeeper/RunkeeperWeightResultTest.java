@@ -6,7 +6,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 import org.joda.time.DateTimeZone;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.zenobase.common.Measures;
 import com.zenobase.common.Units;

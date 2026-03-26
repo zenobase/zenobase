@@ -1,9 +1,10 @@
 package com.zenobase.common;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import org.joda.time.DateTime;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class OffsetDateTimeFormatTest {
 
@@ -24,14 +25,15 @@ public class OffsetDateTimeFormatTest {
 		test("2012T-08:00", "2012-01-01T00:00:00.000-08:00");
 	}
 
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void testParseBadInput() {
-		test("xxx", null);
+		assertThatThrownBy(() -> test("xxx", null)).isInstanceOf(IllegalArgumentException.class);
 	}
 
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void testParseBadCasing() {
-		OffsetDateTimeFormat.parse("2020-12-15t19:22:19.933z");
+		assertThatThrownBy(() -> OffsetDateTimeFormat.parse("2020-12-15t19:22:19.933z"))
+				.isInstanceOf(IllegalArgumentException.class);
 	}
 
 	private static void test(String value, String expected) {

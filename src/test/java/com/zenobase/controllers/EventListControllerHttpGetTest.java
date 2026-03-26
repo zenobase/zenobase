@@ -6,8 +6,8 @@ import static org.mockito.Mockito.when;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.helidon.webclient.http1.Http1ClientResponse;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentMatchers;
 
 import com.zenobase.json.Nodes;
@@ -20,7 +20,7 @@ import com.zenobase.search.Search;
 
 public class EventListControllerHttpGetTest extends EventListControllerTestSupport {
 
-	@Before
+	@BeforeEach
 	public void setUp() {
 		bucket.addRole(user.asIdentity(), Role.OWNER);
 	}

@@ -6,8 +6,8 @@ import javax.measure.DecimalMeasure;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.joda.time.DateTime;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import com.zenobase.models.Event;
 import com.zenobase.testing.NodeAssert;
@@ -16,7 +16,7 @@ public class ScatterPlotFacetTest extends FacetTestSupport {
 
 	private Event e1, e2, e3, e4;
 
-	@Before
+	@BeforeEach
 	@Override
 	public void setUp() {
 		super.setUp();

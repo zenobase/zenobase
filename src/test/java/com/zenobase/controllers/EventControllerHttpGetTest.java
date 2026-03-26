@@ -4,8 +4,8 @@ import static com.zenobase.testing.ResultAssert.assertThat;
 import static org.mockito.Mockito.*;
 
 import io.helidon.webclient.http1.Http1ClientResponse;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import com.zenobase.models.Bucket;
 import com.zenobase.models.Event;
@@ -17,7 +17,7 @@ public class EventControllerHttpGetTest extends EventControllerTestSupport {
 
 	private final Event event = new Event();
 
-	@Before
+	@BeforeEach
 	public void setUp() {
 		bucket.addRole(user.asIdentity(), Role.OWNER);
 		event.setValue(Event.AUTHOR, user.asIdentity());

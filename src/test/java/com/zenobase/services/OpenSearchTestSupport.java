@@ -6,8 +6,8 @@ import java.io.IOException;
 import java.time.Duration;
 
 import org.apache.hc.core5.http.HttpHost;
-import org.junit.After;
-import org.junit.Before;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.opensearch.client.json.jackson.JacksonJsonpMapper;
 import org.opensearch.client.opensearch.OpenSearchClient;
 import org.opensearch.client.transport.httpclient5.ApacheHttpClient5TransportBuilder;
@@ -41,7 +41,7 @@ public abstract class OpenSearchTestSupport {
 
 	private IndexManager manager;
 
-	@Before
+	@BeforeEach
 	public void createManager() {
 		try {
 			sharedClient.indices().delete(d -> d.index("*"));
@@ -59,7 +59,7 @@ public abstract class OpenSearchTestSupport {
 		return manager;
 	}
 
-	@After
+	@AfterEach
 	public void closeManager() {
 		// Shared client is reused across all tests; don't close it
 	}

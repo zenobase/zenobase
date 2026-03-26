@@ -3,7 +3,7 @@ package com.zenobase.json;
 import static com.zenobase.testing.NodeAssert.assertThat;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class SchemaBuilderTest {
 

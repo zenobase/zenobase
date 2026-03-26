@@ -1,9 +1,10 @@
 package com.zenobase.commands;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.*;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.zenobase.models.User;
 import com.zenobase.services.UserRepository;
@@ -33,12 +34,12 @@ public class SuspendUserCommandTest {
 		assertThat(user.isSuspended()).as("user is suspended").isTrue();
 	}
 
-	@Test(expected = NonExistentUserException.class)
+	@Test
 	public void testSuspendNonExistentUser() {
 
 		User user = new User("tester");
 
 		Command command = new SuspendUserCommand(user.asIdentity(), user.getName(), true);
-		registry.execute(command);
+		assertThatThrownBy(() -> registry.execute(command)).isInstanceOf(NonExistentUserException.class);
 	}
 }

@@ -2,23 +2,22 @@ package com.zenobase.tasks.foursquare;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.junit.Assume;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import org.junit.jupiter.api.Assumptions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import com.zenobase.testing.ManualTests;
+import com.zenobase.testing.Manual;
 
-@Category(ManualTests.class)
+@Manual
 public class FoursquareVenuesTesting {
 
 	private final String apiKey = System.getProperty("oauth.apiKey");
 	private final String apiSecret = System.getProperty("oauth.apiSecret");
 
-	@Before
+	@BeforeEach
 	public void setUp() {
-		Assume.assumeNotNull(apiKey);
-		Assume.assumeNotNull(apiSecret);
+		Assumptions.assumeTrue(apiKey != null);
+		Assumptions.assumeTrue(apiSecret != null);
 	}
 
 	@Test

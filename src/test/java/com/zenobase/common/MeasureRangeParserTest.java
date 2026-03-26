@@ -6,7 +6,7 @@ import java.math.BigDecimal;
 import javax.measure.Measurable;
 
 import com.google.common.collect.Range;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class MeasureRangeParserTest {
 

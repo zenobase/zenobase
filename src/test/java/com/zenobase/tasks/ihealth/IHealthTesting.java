@@ -1,7 +1,7 @@
 package com.zenobase.tasks.ihealth;
 
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 import com.zenobase.json.Nodes;
 import com.zenobase.tasks.TaskTestingSupport;
@@ -15,7 +15,7 @@ public class IHealthTesting extends TaskTestingSupport {
 	}
 
 	@Test
-	@Ignore
+	@Disabled
 	public void testWeight() {
 		run(
 				new IHealthWeightTaskManager(newCredentialsManager(), getSV("weight")),
@@ -26,7 +26,7 @@ public class IHealthTesting extends TaskTestingSupport {
 	}
 
 	@Test
-	@Ignore
+	@Disabled
 	public void testGlucose() {
 		run(
 				new IHealthGlucoseTaskManager(newCredentialsManager(), getSV("glucose")),
@@ -37,7 +37,7 @@ public class IHealthTesting extends TaskTestingSupport {
 	}
 
 	@Test
-	@Ignore
+	@Disabled
 	public void testCardio() {
 		run(
 				new IHealthCardioTaskManager(newCredentialsManager(), getSV("bp"), getSV("spo2")),
@@ -48,7 +48,7 @@ public class IHealthTesting extends TaskTestingSupport {
 	}
 
 	@Test
-	@Ignore
+	@Disabled
 	public void testFood() {
 		run(
 				new IHealthFoodTaskManager(newCredentialsManager(), getSV("food")),
@@ -59,7 +59,7 @@ public class IHealthTesting extends TaskTestingSupport {
 	}
 
 	@Test
-	@Ignore
+	@Disabled
 	public void testSleep() {
 		run(
 				new IHealthSleepTaskManager(newCredentialsManager(), getSV("sleep")),
@@ -70,7 +70,7 @@ public class IHealthTesting extends TaskTestingSupport {
 	}
 
 	@Test
-	@Ignore
+	@Disabled
 	public void testSteps() {
 		run(
 				new IHealthStepsTaskManager(newCredentialsManager(), getSV("activity")),

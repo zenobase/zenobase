@@ -1,6 +1,7 @@
 package com.zenobase.json;
 
 import static com.zenobase.testing.NodeAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -11,7 +12,7 @@ import com.fasterxml.jackson.databind.node.MissingNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.Lists;
 import org.assertj.core.api.Assertions;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class NodesTest {
 
@@ -42,10 +43,10 @@ public class NodesTest {
 		assertThat(Nodes.readArray(bytes)).as("deserialized array node").isEqualTo(node);
 	}
 
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void testReadInvalidJson() {
 
-		Nodes.readObject("{".getBytes());
+		assertThatThrownBy(() -> Nodes.readObject("{".getBytes())).isInstanceOf(IllegalArgumentException.class);
 	}
 
 	@Test

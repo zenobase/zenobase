@@ -1,8 +1,9 @@
 package com.zenobase.search;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class QueryConstraintBuilderTest {
 
@@ -14,28 +15,28 @@ public class QueryConstraintBuilderTest {
 		assertThat(c.value()).as("value").isEqualTo("bar:baz");
 	}
 
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void testMissingColon() {
-		QueryConstraint.parse("foobar");
+		assertThatThrownBy(() -> QueryConstraint.parse("foobar")).isInstanceOf(IllegalArgumentException.class);
 	}
 
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void testMissingField() {
-		QueryConstraint.parse(":bar");
+		assertThatThrownBy(() -> QueryConstraint.parse(":bar")).isInstanceOf(IllegalArgumentException.class);
 	}
 
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void testMissingValue() {
-		QueryConstraint.parse("foo:");
+		assertThatThrownBy(() -> QueryConstraint.parse("foo:")).isInstanceOf(IllegalArgumentException.class);
 	}
 
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void testEmpty() {
-		QueryConstraint.parse("");
+		assertThatThrownBy(() -> QueryConstraint.parse("")).isInstanceOf(IllegalArgumentException.class);
 	}
 
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void testNull() {
-		QueryConstraint.parse("");
+		assertThatThrownBy(() -> QueryConstraint.parse("")).isInstanceOf(IllegalArgumentException.class);
 	}
 }

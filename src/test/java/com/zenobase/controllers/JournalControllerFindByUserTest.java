@@ -6,7 +6,7 @@ import static org.mockito.Mockito.*;
 import java.util.List;
 
 import io.helidon.webclient.http1.Http1ClientResponse;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.zenobase.commands.Command;
 import com.zenobase.commands.TestCommand;

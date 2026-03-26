@@ -3,7 +3,7 @@ package com.zenobase.models;
 import java.math.BigDecimal;
 
 import com.google.common.testing.EqualsTester;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class PaymentTest {
 

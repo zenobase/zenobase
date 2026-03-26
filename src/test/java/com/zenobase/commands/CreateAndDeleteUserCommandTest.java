@@ -1,8 +1,9 @@
 package com.zenobase.commands;
 
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.*;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.zenobase.models.User;
 import com.zenobase.services.UserRepository;
@@ -35,12 +36,12 @@ public class CreateAndDeleteUserCommandTest {
 		reset(repository);
 	}
 
-	@Test(expected = NonExistentUserException.class)
+	@Test
 	public void testDeleteNonExistentUser() {
 
 		User user = new User("tester");
 
 		Command command = new DeleteUserCommand(user.asIdentity(), user);
-		registry.execute(command);
+		assertThatThrownBy(() -> registry.execute(command)).isInstanceOf(NonExistentUserException.class);
 	}
 }

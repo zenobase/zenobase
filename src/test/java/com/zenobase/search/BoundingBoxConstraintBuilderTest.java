@@ -4,8 +4,8 @@ import static com.zenobase.testing.NodeAssert.assertThat;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Joiner;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import com.zenobase.models.Event;
 import com.zenobase.models.Location;
@@ -16,7 +16,7 @@ public class BoundingBoxConstraintBuilderTest extends ConstraintBuilderTestSuppo
 	private static final Location MIAMI = new Location("25.7878", "-80.2242");
 	private static final Location PARIS = new Location("48.8742", "2.3470");
 
-	@Before
+	@BeforeEach
 	public void addEvents() {
 		addEvent(SEATTLE);
 		addEvent(MIAMI);

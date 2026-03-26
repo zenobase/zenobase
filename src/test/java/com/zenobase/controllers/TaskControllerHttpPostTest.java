@@ -5,8 +5,8 @@ import static org.mockito.Mockito.*;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.helidon.webclient.http1.Http1ClientResponse;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import com.zenobase.commands.UpdateTaskCommand;
 import com.zenobase.common.Generator;
@@ -21,7 +21,7 @@ public class TaskControllerHttpPostTest extends TaskControllerTestSupport {
 	private final TaskManager manager = mock(TaskManager.class);
 	private Task task;
 
-	@Before
+	@BeforeEach
 	public void setUp() {
 		task = new Task("test", Generator.id(), user.asIdentity());
 	}

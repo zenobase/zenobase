@@ -4,9 +4,9 @@ import static com.zenobase.testing.NodeAssert.assertThat;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.joda.time.DateTime;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.BeforeClass;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 
 import com.zenobase.common.Generator;
 import com.zenobase.common.Units;
@@ -22,12 +22,12 @@ public abstract class FieldTestSupport<T> extends OpenSearchTestSupport {
 	private Field<T> field;
 	private Index index;
 
-	@BeforeClass
+	@BeforeAll
 	public static void initUnits() {
 		Units.isMetric(Units.M);
 	}
 
-	@Before
+	@BeforeEach
 	public void setUp() {
 		field = newField(FIELD_NAME);
 		index = getManager().getIndex(INDEX_NAME);
@@ -50,7 +50,7 @@ public abstract class FieldTestSupport<T> extends OpenSearchTestSupport {
 						node.toString())); // TODO investigate why some tests fail if we don't reparse the json
 	}
 
-	@After
+	@AfterEach
 	public void tearDown() {
 		index.close();
 	}

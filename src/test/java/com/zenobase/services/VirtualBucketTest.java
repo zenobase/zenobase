@@ -3,8 +3,8 @@ package com.zenobase.services;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.joda.time.DateTime;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import com.zenobase.models.Alias;
 import com.zenobase.models.Bucket;
@@ -19,7 +19,7 @@ public class VirtualBucketTest extends OpenSearchTestSupport {
 	private BucketRepository buckets;
 	private EventRepository events;
 
-	@Before
+	@BeforeEach
 	public void setUp() {
 		buckets = new BucketRepository(getManager());
 		events = new EventRepository(getManager());

@@ -1,14 +1,17 @@
 package com.zenobase.search;
 
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
 import com.google.common.collect.Lists;
 import com.google.common.testing.EqualsTester;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class EventSearchTest {
 
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void testUnsupportedFilter() {
-		new EventSearchBuilder().addConstraint("xxx:lunch");
+		assertThatThrownBy(() -> new EventSearchBuilder().addConstraint("xxx:lunch"))
+				.isInstanceOf(IllegalArgumentException.class);
 	}
 
 	@Test

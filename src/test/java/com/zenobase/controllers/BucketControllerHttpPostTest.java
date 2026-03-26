@@ -5,8 +5,8 @@ import static org.mockito.Mockito.*;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.helidon.webclient.http1.Http1ClientResponse;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.opensearch.client.opensearch._types.ErrorResponse;
 import org.opensearch.client.opensearch._types.OpenSearchException;
 
@@ -22,7 +22,7 @@ public class BucketControllerHttpPostTest extends BucketControllerTestSupport {
 
 	private Bucket from, to;
 
-	@Before
+	@BeforeEach
 	public void setUp() {
 		from = new Bucket();
 		from.setLabel("Test Bucket");

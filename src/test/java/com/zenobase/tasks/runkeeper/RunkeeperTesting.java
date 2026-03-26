@@ -1,7 +1,7 @@
 package com.zenobase.tasks.runkeeper;
 
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 import com.zenobase.json.Nodes;
 import com.zenobase.tasks.TaskTestingSupport;
@@ -16,7 +16,7 @@ public class RunkeeperTesting extends TaskTestingSupport {
 	}
 
 	@Test
-	@Ignore
+	@Disabled
 	public void testWeight() {
 		run(
 				new RunkeeperWeightTaskManager(newCredentialsManager()),

@@ -1,10 +1,11 @@
 package com.zenobase.search;
 
 import static com.zenobase.testing.NodeAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import com.zenobase.models.Event;
 import com.zenobase.models.Location;
@@ -15,7 +16,7 @@ public class DistanceConstraintBuilderTest extends ConstraintBuilderTestSupport 
 	private static final Location SAN_DIEGO = new Location("32.82", "-117.13");
 	private static final Location DENVER = new Location("39.75", "-104.87");
 
-	@Before
+	@BeforeEach
 	public void addEvents() {
 		addEvent(LAS_VEGAS);
 		addEvent(LAS_VEGAS);
@@ -43,9 +44,12 @@ public class DistanceConstraintBuilderTest extends ConstraintBuilderTestSupport 
 		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(3);
 	}
 
-	@Test(expected = NumberFormatException.class)
+	@Test
 	public void testBadDistance() {
-		addConstraint("%s:%s~%s", Event.LOCATION, LAS_VEGAS, "x"); // location:-115.17,36.08~x
-		execute();
+		assertThatThrownBy(() -> {
+					addConstraint("%s:%s~%s", Event.LOCATION, LAS_VEGAS, "x"); // location:-115.17,36.08~x
+					execute();
+				})
+				.isInstanceOf(NumberFormatException.class);
 	}
 }

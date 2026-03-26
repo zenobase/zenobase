@@ -1,17 +1,18 @@
 package com.zenobase.search;
 
 import static com.zenobase.testing.NodeAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import com.zenobase.models.Event;
 import com.zenobase.models.Rating;
 
 public class DecimalRangeConstraintBuilderTest extends ConstraintBuilderTestSupport {
 
-	@Before
+	@BeforeEach
 	public void addEvents() {
 		addEvent(0);
 		addEvent(40);
@@ -53,9 +54,12 @@ public class DecimalRangeConstraintBuilderTest extends ConstraintBuilderTestSupp
 		assertThat(result).path(Search.TOTAL.getName()).isEqualTo(1);
 	}
 
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void testInvalidRange() {
-		addConstraint("%s:%s", Event.RATING, "[100..0]");
-		execute();
+		assertThatThrownBy(() -> {
+					addConstraint("%s:%s", Event.RATING, "[100..0]");
+					execute();
+				})
+				.isInstanceOf(IllegalArgumentException.class);
 	}
 }
