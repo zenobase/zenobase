@@ -28,4 +28,5 @@ mail:
 
 cors:
   allowed:
-    origin: "https://zenobase.com"
+    origins:
+      - "https://zenobase.com"

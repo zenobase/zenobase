@@ -1,6 +1,7 @@
 package com.zenobase;
 
 import java.time.Duration;
+import java.util.List;
 import java.util.Set;
 
 import com.google.common.base.Strings;
@@ -65,13 +66,13 @@ public class Main {
 
 		Globals.put(Injector.class, injector);
 
-		String allowedOrigin = config.get("cors.allowed.origin").asString().orElse("https://zenobase.com");
+		Set<String> allowedOrigins = Set.copyOf(config.get("cors.allowed.origins").asList(String.class).orElse(List.of("https://zenobase.com")));
 		WebServer server = WebServer.builder()
 				.config(config.get("server"))
 				.addFeature(CorsFeature.builder()
 						.addPath(CorsPathConfig.builder()
 								.pathPattern("/{+}")
-								.allowOrigins(Set.of(allowedOrigin))
+								.allowOrigins(allowedOrigins)
 								.allowMethods(Set.of("GET", "POST", "PUT", "DELETE", "OPTIONS"))
 								.allowHeaders(Set.of("*"))
 								.exposeHeaders(Set.of("Link", "Location", "X-Command-ID", "X-Credentials"))
